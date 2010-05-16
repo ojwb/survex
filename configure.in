@@ -25,6 +25,14 @@ AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, ["$AVEN_COPYRIGHT_MSG"],
 AC_SUBST(COPYRIGHT_MSG)
 AC_SUBST(AVEN_COPYRIGHT_MSG)
 
+COPYRIGHT_MSG_UTF8=`echo "$COPYRIGHT_MSG"|sed 's/(C)/©/'`
+AVEN_COPYRIGHT_MSG_UTF8=`echo "$AVEN_COPYRIGHT_MSG"|sed 's/(C)/©/'`
+
+AC_DEFINE_UNQUOTED(COPYRIGHT_MSG_UTF8, ["$COPYRIGHT_MSG_UTF8"],
+		   [Copyright Message in UTF-8])
+AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG_UTF8, ["$AVEN_COPYRIGHT_MSG_UTF8"],
+		   [Copyright Message for Aven in UTF-8])
+
 dnl set PRETTYPACKAGE to PACKAGE with the first character capitalised
 PRETTYPACKAGE=`echo "$PACKAGE"|cut -b1|tr a-z A-Z``echo "$PACKAGE"|cut -b2-`
 AC_DEFINE_UNQUOTED(PRETTYPACKAGE, "$PRETTYPACKAGE",
@@ -167,9 +175,17 @@ else
   fi
 fi
 
-if (exec >&5 2>&5;$WX_CONFIG --unicode=yes --version;exit $?) ; then
-  AC_MSG_ERROR(['$WX_CONFIG' is for a unicode build of wxWidgets - Survex currently requires a non-unicode build])
-fi
+dnl Unless the user has explicitly specified a --unicode setting, prefer
+dnl --unicode=yes if we can get it.
+case $WX_CONFIG in
+  *--unicode=*) ;;
+  *)
+    if (exec >&5 2>&5;$WX_CONFIG --unicode=yes --version;exit $?) ; then
+      WX_CONFIG="$WX_CONFIG --unicode=yes"
+    elif (exec >&5 2>&5;$WX_CONFIG --unicode=no --version;exit $?) ; then
+      WX_CONFIG="$WX_CONFIG --unicode=no"
+    fi ;;
+esac
 
 dnl Call wx-config twice to avoid getting a newline in WX_LIBS.
 WX_LIBS=`$WX_CONFIG --libs`" "`$WX_CONFIG --gl-libs`

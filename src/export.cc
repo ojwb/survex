@@ -656,19 +656,19 @@ EPS::header(const char *title)
       fputs(buf, fh);
    }
 
-   wxString name;
+   string name;
 #if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
    struct passwd * ent = getpwuid(getuid());
    if (ent && ent->pw_gecos[0]) name = ent->pw_gecos;
 #endif
    if (name.empty()) {
-       name = ::wxGetUserName();
+       name = ::wxGetUserName().mb_str();
        if (name.empty()) {
-	   name = ::wxGetUserId();
+	   name = ::wxGetUserId().mb_str();
        }
    }
-   if (name) {
-      fprintf(fh, "%%%%For: %s\n", name.c_str());
+   if (!name.empty()) {
+       fprintf(fh, "%%%%For: %s\n", name.c_str());
    }
 
    fprintf(fh, "%%%%BoundingBox: %d %d %d %d\n",
@@ -969,7 +969,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
       for (i = 0; i < FMT_ENDMARKER; ++i) {
 	 size_t l = strlen(extensions[i]);
 	 if (len > l + 1 && fnm_out[len - l - 1] == FNM_SEP_EXT &&
-	     strcasecmp(fnm_out.c_str() + len - l, extensions[i]) == 0) {
+	     strcasecmp(fnm_out.mb_str() + len - l, extensions[i]) == 0) {
 	    format = export_format(i);
 	    break;
 	 }
@@ -1004,7 +1004,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	   return false;
    }
 
-   if (!filt->fopen(fnm_out.c_str())) {
+   if (!filt->fopen(fnm_out.fn_str())) {
        delete filt;
        return false;
    }
@@ -1082,7 +1082,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    }
 
    /* Header */
-   filt->header(title.c_str());
+   filt->header(title.mb_str());
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
@@ -1221,7 +1221,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	       * a surface and underground survey meet to be in the
 	       * underground layer */
 	      if (labels_this_pass)
-		  filt->label(&p, (*pos)->GetText(), !(*pos)->IsUnderground());
+		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground());
 	      if (crosses_this_pass)
 		  filt->cross(&p, !(*pos)->IsUnderground());
 	  }

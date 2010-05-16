@@ -79,58 +79,58 @@ class EditMarkDlg : public wxDialog {
     wxTextCtrl * angle, * tilt_angle, * scale, * time;
 public:
     EditMarkDlg(wxWindow* parent, const PresentationMark & p)
-	: wxDialog(parent, 500, wxString("Edit Waypoint"))
+	: wxDialog(parent, 500, wxT("Edit Waypoint"))
     {
-	easting = new wxTextCtrl(this, 601, wxString::Format("%.3f", p.GetX()));
-	northing = new wxTextCtrl(this, 602, wxString::Format("%.3f", p.GetY()));
-	altitude = new wxTextCtrl(this, 603, wxString::Format("%.3f", p.GetZ()));
-	angle = new wxTextCtrl(this, 604, wxString::Format("%.3f", p.angle));
-	tilt_angle = new wxTextCtrl(this, 605, wxString::Format("%.3f", p.tilt_angle));
-	scale = new wxTextCtrl(this, 606, wxString::Format("%.3f", p.scale));
+	easting = new wxTextCtrl(this, 601, wxString::Format(wxT("%.3f"), p.GetX()));
+	northing = new wxTextCtrl(this, 602, wxString::Format(wxT("%.3f"), p.GetY()));
+	altitude = new wxTextCtrl(this, 603, wxString::Format(wxT("%.3f"), p.GetZ()));
+	angle = new wxTextCtrl(this, 604, wxString::Format(wxT("%.3f"), p.angle));
+	tilt_angle = new wxTextCtrl(this, 605, wxString::Format(wxT("%.3f"), p.tilt_angle));
+	scale = new wxTextCtrl(this, 606, wxString::Format(wxT("%.3f"), p.scale));
 	if (p.time > 0.0) {
-	    time = new wxTextCtrl(this, 607, wxString::Format("%.3f", p.time));
+	    time = new wxTextCtrl(this, 607, wxString::Format(wxT("%.3f"), p.time));
 	} else if (p.time < 0.0) {
-	    time = new wxTextCtrl(this, 607, wxString::Format("*%.3f", -p.time));
+	    time = new wxTextCtrl(this, 607, wxString::Format(wxT("*%.3f"), -p.time));
 	} else {
-	    time = new wxTextCtrl(this, 607, "0");
+	    time = new wxTextCtrl(this, 607, wxT("0"));
 	}
 
 	wxBoxSizer * coords = new wxBoxSizer(wxHORIZONTAL);
-	coords->Add(new wxStaticText(this, 610, "("), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(new wxStaticText(this, 610, wxT("(")), 0, wxALIGN_CENTRE_VERTICAL);
 	coords->Add(easting, 1);
-	coords->Add(new wxStaticText(this, 611, ","), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(new wxStaticText(this, 611, wxT(",")), 0, wxALIGN_CENTRE_VERTICAL);
 	coords->Add(northing, 1);
-	coords->Add(new wxStaticText(this, 612, ","), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(new wxStaticText(this, 612, wxT(",")), 0, wxALIGN_CENTRE_VERTICAL);
 	coords->Add(altitude, 1);
-	coords->Add(new wxStaticText(this, 613, ")"), 0, wxALIGN_CENTRE_VERTICAL);
+	coords->Add(new wxStaticText(this, 613, wxT(")")), 0, wxALIGN_CENTRE_VERTICAL);
 	wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 	vert->Add(coords, 0, wxALL, 8);
 	wxBoxSizer * r2 = new wxBoxSizer(wxHORIZONTAL);
-	r2->Add(new wxStaticText(this, 614, "Bearing: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r2->Add(new wxStaticText(this, 614, wxT("Bearing: ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r2->Add(angle);
 	vert->Add(r2, 0, wxALL, 8);
 	wxBoxSizer * r3 = new wxBoxSizer(wxHORIZONTAL);
-	r3->Add(new wxStaticText(this, 615, "Elevation: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r3->Add(new wxStaticText(this, 615, wxT("Elevation: ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r3->Add(tilt_angle);
 	vert->Add(r3, 0, wxALL, 8);
 	wxBoxSizer * r4 = new wxBoxSizer(wxHORIZONTAL);
-	r4->Add(new wxStaticText(this, 616, "Scale: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r4->Add(new wxStaticText(this, 616, wxT("Scale: ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r4->Add(scale);
-	r4->Add(new wxStaticText(this, 617, " (unused in perspective view)"),
+	r4->Add(new wxStaticText(this, 617, wxT(" (unused in perspective view)")),
 		0, wxALIGN_CENTRE_VERTICAL);
 	vert->Add(r4, 0, wxALL, 8);
 
 	wxBoxSizer * r5 = new wxBoxSizer(wxHORIZONTAL);
-	r5->Add(new wxStaticText(this, 616, "Time: "), 0, wxALIGN_CENTRE_VERTICAL);
+	r5->Add(new wxStaticText(this, 616, wxT("Time: ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r5->Add(time);
-	r5->Add(new wxStaticText(this, 617, " secs (0 = auto; *6 = 6 times auto)"),
+	r5->Add(new wxStaticText(this, 617, wxT(" secs (0 = auto; *6 = 6 times auto)")),
 		0, wxALIGN_CENTRE_VERTICAL);
 	vert->Add(r5, 0, wxALL, 8);
 
 	wxBoxSizer * buttons = new wxBoxSizer(wxHORIZONTAL);
-	wxButton* cancel = new wxButton(this, wxID_CANCEL, wxString("Cancel"));
+	wxButton* cancel = new wxButton(this, wxID_CANCEL, wxT("Cancel"));
 	buttons->Add(cancel, 0, wxALL, 8);
-	wxButton* ok = new wxButton(this, wxID_OK, wxString("OK"));
+	wxButton* ok = new wxButton(this, wxID_OK, wxT("OK"));
 	ok->SetDefault();
 	buttons->Add(ok, 0, wxALL, 8);
 	vert->Add(buttons, 0, wxALL|wxALIGN_RIGHT);
@@ -143,15 +143,15 @@ public:
     }
     PresentationMark GetMark() const {
 	double a, t, s, T;
-	Vector3 v(atof(easting->GetValue().c_str()),
-		  atof(northing->GetValue().c_str()),
-		  atof(altitude->GetValue().c_str()));
-	a = atof(angle->GetValue().c_str());
-	t = atof(tilt_angle->GetValue().c_str());
-	s = atof(scale->GetValue().c_str());
+	Vector3 v(atof(easting->GetValue().char_str()),
+		  atof(northing->GetValue().char_str()),
+		  atof(altitude->GetValue().char_str()));
+	a = atof(angle->GetValue().char_str());
+	t = atof(tilt_angle->GetValue().char_str());
+	s = atof(scale->GetValue().char_str());
 	wxString str = time->GetValue();
 	if (str[0u] == '*') str[0u] = '-';
-	T = atof(str.c_str());
+	T = atof(str.char_str());
 	return PresentationMark(v, a, t, s, T);
     }
 
@@ -187,9 +187,9 @@ class AvenPresList : public wxListCtrl {
 	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false),
 	      force_save_as(true)
 	    {
-		InsertColumn(0, msg(/*Easting*/378));
-		InsertColumn(1, msg(/*Northing*/379));
-		InsertColumn(2, msg(/*Altitude*/335));
+		InsertColumn(0, wmsg(/*Easting*/378));
+		InsertColumn(1, wmsg(/*Northing*/379));
+		InsertColumn(2, wmsg(/*Altitude*/335));
 	    }
 
 	void OnBeginLabelEdit(wxListEvent& event) {
@@ -209,7 +209,7 @@ class AvenPresList : public wxListCtrl {
 	void OnDeleteAllItems(wxListEvent& event) {
 	    entries.clear();
 	    SetItemCount(entries.size());
-	    filename = "";
+	    filename = wxString();
 	    modified = false;
 	    force_save_as = true;
 	}
@@ -278,7 +278,7 @@ class AvenPresList : public wxListCtrl {
 	    modified = true;
 	}
 	virtual wxString OnGetItemText(long item, long column) const {
-	    if (item < 0 || item >= (long)entries.size()) return "";
+	    if (item < 0 || item >= (long)entries.size()) return wxString();
 	    const PresentationMark & p = entries[item];
 	    double v;
 	    switch (column) {
@@ -291,32 +291,33 @@ class AvenPresList : public wxListCtrl {
 		case 5: v = p.scale; break;
 		case 6: v = p.time; break;
 #endif
-		default: return "";
+		default: return wxString();
 	    }
-	    return wxString::Format("%ld", (long)v);
+	    return wxString::Format(wxT("%ld"), (long)v);
 	}
 	void Save(bool use_default_name) {
 	    wxString fnm = filename;
 	    if (!use_default_name || force_save_as) {
 		AvenAllowOnTop ontop(mainfrm);
 #ifdef __WXMOTIF__
-		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
-				  "*.fly", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		wxString ext(wxT("*.fly"));
 #else
-		wxFileDialog dlg (this, wxString(msg(/*Select an output filename*/319)), "", fnm,
-				  wxString::Format("%s|*.fly|%s|%s",
-						   msg(/*Aven presentations*/320),
-						   msg(/*All files*/208),
-						   wxFileSelectorDefaultWildcardStr),
-				  wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+		wxString ext = wmsg(/*Aven presentations*/320);
+		ext += wxT("|*.fly|");
+		ext += wmsg(/*All files*/208);
+		ext += wxT("|");
+		ext += wxFileSelectorDefaultWildcardStr;
 #endif
+		wxFileDialog dlg(this, wmsg(/*Select an output filename*/319),
+				 wxString(), fnm, ext,
+				 wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 		if (dlg.ShowModal() != wxID_OK) return;
 		fnm = dlg.GetPath();
 	    }
 
-	    FILE * fh_pres = fopen(fnm.c_str(), "w");
+	    FILE * fh_pres = fopen(fnm.fn_str(), "w");
 	    if (!fh_pres) {
-		wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), fnm.c_str()));
+		wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
 		return;
 	    }
 	    vector<PresentationMark>::const_iterator i;
@@ -346,17 +347,17 @@ class AvenPresList : public wxListCtrl {
 	}
 	void New(const wxString &fnm) {
 	    DeleteAllItems();
-	    char *baseleaf = baseleaf_from_fnm(fnm.c_str());
-	    filename = baseleaf;
+	    char *baseleaf = baseleaf_from_fnm(fnm.fn_str());
+	    filename = wxString(baseleaf, wxConvUTF8);
 	    free(baseleaf);
-	    filename += ".fly";
+	    filename += wxT(".fly");
 	    force_save_as = true;
 	}
 	bool Load(const wxString &fnm) {
-	    FILE * fh_pres = fopen(fnm.c_str(), "r");
+	    FILE * fh_pres = fopen(fnm.fn_str(), "r");
 	    if (!fh_pres) {
 		wxString m;
-		m.Printf(msg(/*Couldn't open file `%s'*/93), fnm.c_str());
+		m.Printf(wmsg(/*Couldn't open file `%s'*/93), fnm.c_str());
 		wxGetApp().ReportError(m);
 		return false;
 	    }
@@ -380,7 +381,7 @@ class AvenPresList : public wxListCtrl {
 			c = sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s, &T);
 			if (c < 6) {
 			    DeleteAllItems();
-			    wxGetApp().ReportError(wxString::Format(msg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
+			    wxGetApp().ReportError(wxString::Format(wmsg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
 			    return false;
 			}
 		    }
@@ -646,7 +647,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
     assert(filenames.GetCount() > 0);
 
     if (filenames.GetCount() != 1) {
-	wxGetApp().ReportError(msg(/*You may only view one 3d file at a time.*/336));
+	wxGetApp().ReportError(wmsg(/*You may only view one 3d file at a time.*/336));
 	return FALSE;
     }
 
@@ -664,15 +665,15 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     , m_PrefsDlg(NULL)
 #endif
 {
-    icon_path = msg_cfgpth();
+    icon_path = wxString(msg_cfgpth(), wxConvUTF8);
     icon_path += wxCONFIG_PATH_SEPARATOR;
-    icon_path += "icons";
+    icon_path += wxT("icons");
     icon_path += wxCONFIG_PATH_SEPARATOR;
 
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Microsoft Windows for this type of icon)
-    SetIcon(wxIcon("aaaaaAven"));
+    SetIcon(wxIcon(wxT("aaaaaAven")));
 #else
     SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
 #endif
@@ -841,7 +842,7 @@ void MainFrm::CreateMenuBar()
 }
 
 // ICON must be a literal string.
-#define TOOLBAR_BITMAP(ICON) wxBitmap(icon_path + ICON".png", wxBITMAP_TYPE_PNG)
+#define TOOLBAR_BITMAP(ICON) wxBitmap(icon_path + wxT(ICON".png"), wxBITMAP_TYPE_PNG)
 
 void MainFrm::CreateToolBar()
 {
@@ -854,41 +855,41 @@ void MainFrm::CreateToolBar()
 #endif
 
     // FIXME: TRANSLATE tooltips
-    toolbar->AddTool(menu_FILE_OPEN, "Open", TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
-    toolbar->AddTool(menu_PRES_OPEN, "Open presentation", TOOLBAR_BITMAP("open-pres"), "Open a presentation");
+    toolbar->AddTool(menu_FILE_OPEN, wxT("Open"), TOOLBAR_BITMAP("open"), wxT("Open a 3D file for viewing"));
+    toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOLBAR_BITMAP("open-pres"), wxT("Open a presentation"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_ROTATION_TOGGLE, "Toggle rotation", TOOLBAR_BITMAP("rotation"), wxNullBitmap, "Toggle rotation");
-    toolbar->AddTool(menu_ORIENT_PLAN, "Plan", TOOLBAR_BITMAP("plan"), "Switch to plan view");
-    toolbar->AddTool(menu_ORIENT_ELEVATION, "Elevation", TOOLBAR_BITMAP("elevation"), "Switch to elevation view");
-    toolbar->AddTool(menu_ORIENT_DEFAULTS, "Default view", TOOLBAR_BITMAP("defaults"), "Restore default view");
+    toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), TOOLBAR_BITMAP("rotation"), wxNullBitmap, wxT("Toggle rotation"));
+    toolbar->AddTool(menu_ORIENT_PLAN, wxT("Plan"), TOOLBAR_BITMAP("plan"), wxT("Switch to plan view"));
+    toolbar->AddTool(menu_ORIENT_ELEVATION, wxT("Elevation"), TOOLBAR_BITMAP("elevation"), wxT("Switch to elevation view"));
+    toolbar->AddTool(menu_ORIENT_DEFAULTS, wxT("Default view"), TOOLBAR_BITMAP("defaults"), wxT("Restore default view"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_VIEW_SHOW_NAMES, "Names", TOOLBAR_BITMAP("names"), wxNullBitmap, "Show station names");
-    toolbar->AddCheckTool(menu_VIEW_SHOW_CROSSES, "Crosses", TOOLBAR_BITMAP("crosses"), wxNullBitmap, "Show crosses on stations");
-    toolbar->AddCheckTool(menu_VIEW_SHOW_ENTRANCES, "Entrances", TOOLBAR_BITMAP("entrances"), wxNullBitmap, "Highlight entrances");
-    toolbar->AddCheckTool(menu_VIEW_SHOW_FIXED_PTS, "Fixed points", TOOLBAR_BITMAP("fixed-pts"), wxNullBitmap, "Highlight fixed points");
-    toolbar->AddCheckTool(menu_VIEW_SHOW_EXPORTED_PTS, "Exported points", TOOLBAR_BITMAP("exported-pts"), wxNullBitmap, "Highlight exported stations");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_NAMES, wxT("Names"), TOOLBAR_BITMAP("names"), wxNullBitmap, wxT("Show station names"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_CROSSES, wxT("Crosses"), TOOLBAR_BITMAP("crosses"), wxNullBitmap, wxT("Show crosses on stations"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_ENTRANCES, wxT("Entrances"), TOOLBAR_BITMAP("entrances"), wxNullBitmap, wxT("Highlight entrances"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_FIXED_PTS, wxT("Fixed points"), TOOLBAR_BITMAP("fixed-pts"), wxNullBitmap, wxT("Highlight fixed points"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_EXPORTED_PTS, wxT("Exported points"), TOOLBAR_BITMAP("exported-pts"), wxNullBitmap, wxT("Highlight exported stations"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_VIEW_SHOW_LEGS, "Underground legs", TOOLBAR_BITMAP("ug-legs"), wxNullBitmap, "Show underground surveys");
-    toolbar->AddCheckTool(menu_VIEW_SHOW_SURFACE, "Surface legs", TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, "Show surface surveys");
-    toolbar->AddCheckTool(menu_VIEW_SHOW_TUBES, "Tubes", TOOLBAR_BITMAP("tubes"), wxNullBitmap, "Show passage tubes");
+    toolbar->AddCheckTool(menu_VIEW_SHOW_LEGS, wxT("Underground legs"), TOOLBAR_BITMAP("ug-legs"), wxNullBitmap, wxT("Show underground surveys"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_SURFACE, wxT("Surface legs"), TOOLBAR_BITMAP("surface-legs"), wxNullBitmap, wxT("Show surface surveys"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_TUBES, wxT("Tubes"), TOOLBAR_BITMAP("tubes"), wxNullBitmap, wxT("Show passage tubes"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_PRES_FREWIND, "Fast Rewind", TOOLBAR_BITMAP("pres-frew"), wxNullBitmap, "Very Fast Rewind");
-    toolbar->AddCheckTool(menu_PRES_REWIND, "Rewind", TOOLBAR_BITMAP("pres-rew"), wxNullBitmap, "Fast Rewind");
-    toolbar->AddCheckTool(menu_PRES_REVERSE, "Backwards", TOOLBAR_BITMAP("pres-go-back"), wxNullBitmap, "Play Backwards");
-    toolbar->AddCheckTool(menu_PRES_PAUSE, "Pause", TOOLBAR_BITMAP("pres-pause"), wxNullBitmap, "Pause");
-    toolbar->AddCheckTool(menu_PRES_PLAY, "Go", TOOLBAR_BITMAP("pres-go"), wxNullBitmap, "Play");
-    toolbar->AddCheckTool(menu_PRES_FF, "FF", TOOLBAR_BITMAP("pres-ff"), wxNullBitmap, "Fast Forward");
-    toolbar->AddCheckTool(menu_PRES_FFF, "Very FF", TOOLBAR_BITMAP("pres-fff"), wxNullBitmap, "Very Fast Forward");
-    toolbar->AddTool(menu_PRES_STOP, "Stop", TOOLBAR_BITMAP("pres-stop"), "Stop");
+    toolbar->AddCheckTool(menu_PRES_FREWIND, wxT("Fast Rewind"), TOOLBAR_BITMAP("pres-frew"), wxNullBitmap, wxT("Very Fast Rewind"));
+    toolbar->AddCheckTool(menu_PRES_REWIND, wxT("Rewind"), TOOLBAR_BITMAP("pres-rew"), wxNullBitmap, wxT("Fast Rewind"));
+    toolbar->AddCheckTool(menu_PRES_REVERSE, wxT("Backwards"), TOOLBAR_BITMAP("pres-go-back"), wxNullBitmap, wxT("Play Backwards"));
+    toolbar->AddCheckTool(menu_PRES_PAUSE, wxT("Pause"), TOOLBAR_BITMAP("pres-pause"), wxNullBitmap, wxT("Pause"));
+    toolbar->AddCheckTool(menu_PRES_PLAY, wxT("Go"), TOOLBAR_BITMAP("pres-go"), wxNullBitmap, wxT("Play"));
+    toolbar->AddCheckTool(menu_PRES_FF, wxT("FF"), TOOLBAR_BITMAP("pres-ff"), wxNullBitmap, wxT("Fast Forward"));
+    toolbar->AddCheckTool(menu_PRES_FFF, wxT("Very FF"), TOOLBAR_BITMAP("pres-fff"), wxNullBitmap, wxT("Very Fast Forward"));
+    toolbar->AddTool(menu_PRES_STOP, wxT("Stop"), TOOLBAR_BITMAP("pres-stop"), wxT("Stop"));
 
     toolbar->AddSeparator();
-    m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, "", wxDefaultPosition,
+    m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, wxString(), wxDefaultPosition,
 			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
     toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find"),
-		     msg(/*Find*/332)/*"Search for station name"*/);
+		     wmsg(/*Find*/332)/*"Search for station name"*/);
     toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults"),
-		     msg(/*Hide*/333)/*"Hide search results"*/);
+		     wmsg(/*Hide*/333)/*"Hide search results"*/);
 
     toolbar->Realize();
 }
@@ -932,13 +933,15 @@ void MainFrm::CreateSidePanel()
     // Overall tabbed structure:
     // FIXME: this assumes images are 15x15
     wxImageList* image_list = new wxImageList(15, 15);
-    const wxString path = wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
-			  wxString("icons") + wxCONFIG_PATH_SEPARATOR;
-    image_list->Add(wxBitmap(path + "survey-tree.png", wxBITMAP_TYPE_PNG));
-    image_list->Add(wxBitmap(path + "pres-tree.png", wxBITMAP_TYPE_PNG));
+    wxString path = wxString(msg_cfgpth(), wxConvUTF8);
+    path += wxCONFIG_PATH_SEPARATOR;
+    path += wxT("icons") ;
+    path += wxCONFIG_PATH_SEPARATOR;
+    image_list->Add(wxBitmap(path + wxT("survey-tree.png"), wxBITMAP_TYPE_PNG));
+    image_list->Add(wxBitmap(path + wxT("pres-tree.png"), wxBITMAP_TYPE_PNG));
     m_Notebook->SetImageList(image_list);
-    m_Notebook->AddPage(panel, msg(/*Surveys*/376), true, 0);
-    m_Notebook->AddPage(prespanel, msg(/*Presentation*/377), false, 1);
+    m_Notebook->AddPage(panel, wmsg(/*Surveys*/376), true, 0);
+    m_Notebook->AddPage(prespanel, wmsg(/*Presentation*/377), false, 1);
 
     m_Splitter->Initialize(m_Gfx);
 }
@@ -946,8 +949,10 @@ void MainFrm::CreateSidePanel()
 bool
 MainFrm::ProcessSVXFile(const wxString & file)
 {
+    m_Splitter->Show(false);
+#if 0
     wxFrame * frm;
-    frm = new wxFrame(NULL, wxID_ANY, "Processing: " + file, wxDefaultPosition, wxSize(700, 512));
+    frm = new wxFrame(NULL, wxID_ANY, wxT("Processing: ") + file, wxDefaultPosition, wxSize(700, 512));
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Microsoft Windows for this type of icon)
@@ -955,14 +960,19 @@ MainFrm::ProcessSVXFile(const wxString & file)
 #else
     frm->SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
 #endif
-
-    CavernLogWindow * log = new CavernLogWindow(frm);
-#ifdef _WIN32
-    log->SetSize(frm->GetClientSize());
 #endif
+
+    wxFrame * frm = this;
+    CavernLogWindow * log = new CavernLogWindow(frm);
+    log->SetSize(frm->GetClientSize());
     frm->Show(true);
 
-    return log->process(file);
+    int result = log->process(file);
+    if (result == 0) {
+	log->Show(false);
+	m_Splitter->Show();
+    }
+    return result >= 0;
 }
 
 bool MainFrm::LoadData(const wxString& file_, wxString prefix)
@@ -980,23 +990,23 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     // Check if this is an unprocessed survey data file.
     if (file.length() > 4 && file[file.length() - 4] == '.') {
 	wxString ext = file.substr(file.length() - 3, 3);
-	if (strcasecmp(ext.c_str(), "svx") == 0 ||
-	    strcasecmp(ext.c_str(), "dat") == 0 ||
-	    strcasecmp(ext.c_str(), "mak") == 0) {
+	if (strcasecmp(ext.char_str(), "svx") == 0 ||
+	    strcasecmp(ext.char_str(), "dat") == 0 ||
+	    strcasecmp(ext.char_str(), "mak") == 0) {
 	    if (!ProcessSVXFile(file)) return false;
 	    filename_used = file;
-	    char * base_fnm = base_from_fnm(file.c_str());
+	    char * base_fnm = base_from_fnm(file.char_str());
 	    char * fnm_3d = add_ext(base_fnm, "3d");
-	    file = fnm_3d;
+	    file = wxString(fnm_3d, wxConvUTF8);
 	    osfree(fnm_3d);
 	    osfree(base_fnm);
 	}
     }
 
     // Load the survey data.
-    img* survey = img_open_survey(file, prefix.c_str());
+    img* survey = img_open_survey(file.char_str(), prefix.char_str());
     if (!survey) {
-	wxString m = wxString::Format(msg(img_error()), file.c_str());
+	wxString m = wxString::Format(wmsg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
     }
@@ -1004,7 +1014,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     if (!filename_used.empty()) {
 	m_File = filename_used;
     } else {
-	m_File = survey->filename_opened;
+	m_File = wxString(survey->filename_opened, wxConvUTF8);
     }
     m_IsExtendedElevation = survey->is_extended_elevation;
 
@@ -1165,7 +1175,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 		if (flags & img_SFLAG_ENTRANCE) {
 		    flags ^= (img_SFLAG_ENTRANCE | LFLAG_ENTRANCE);
 		}
-		LabelInfo* label = new LabelInfo(pt, survey->label, flags);
+		LabelInfo* label = new LabelInfo(pt, wxString(survey->label, wxConvUTF8), flags);
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;
 		}
@@ -1188,7 +1198,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 
 		// FIXME: avoid linear search...
 		list<LabelInfo*>::const_iterator i = m_Labels.begin();
-		while (i != m_Labels.end() && (*i)->GetText() != survey->label) ++i;
+		wxString label(survey->label, wxConvUTF8);
+		while (i != m_Labels.end() && (*i)->GetText() != label) ++i;
 
 		if (i == m_Labels.end()) {
 		    // Unattached cross-section - ignore for now.
@@ -1266,7 +1277,7 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 
 		img_close(survey);
 
-		wxString m = wxString::Format(msg(img_error()), file.c_str());
+		wxString m = wxString::Format(wmsg(img_error()), file.c_str());
 		wxGetApp().ReportError(m);
 
 		return false;
@@ -1289,13 +1300,13 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	tubes.resize(tubes.size() - 1);
 
     separator = survey->separator;
-    m_Title = survey->title;
-    m_DateStamp = survey->datestamp;
+    m_Title = wxString(survey->title, wxConvUTF8);
+    m_DateStamp = wxString(survey->datestamp, wxConvUTF8);
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
     if (!m_HasUndergroundLegs && !m_HasSurfaceLegs && m_Labels.empty()) {
-	wxString m = wxString::Format(msg(/*No survey data in 3d file `%s'*/202), file.c_str());
+	wxString m = wxString::Format(wmsg(/*No survey data in 3d file `%s'*/202), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
     }
@@ -1431,7 +1442,7 @@ void MainFrm::FillTree()
 
     // Fill the tree of stations and prefixes.
     stack<wxTreeItemId> previous_ids;
-    wxString current_prefix = "";
+    wxString current_prefix;
     wxTreeItemId current_id = treeroot;
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
@@ -1449,7 +1460,7 @@ void MainFrm::FillTree()
 	else if (prefix.length() > current_prefix.length() &&
 		 prefix.StartsWith(current_prefix) &&
 		 (prefix[current_prefix.length()] == separator ||
-		  current_prefix == "")) {
+		  current_prefix.empty())) {
 	    // We have, so start as many new branches as required.
 	    int current_prefix_length = current_prefix.length();
 	    current_prefix = prefix;
@@ -1462,7 +1473,7 @@ void MainFrm::FillTree()
 		next_dot = prefix.find(separator, prev_dot + 1);
 
 		wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
-		assert(bit != "");
+		assert(!bit.empty());
 
 		// Add the current tree ID to the stack.
 		previous_ids.push(current_id);
@@ -1478,7 +1489,7 @@ void MainFrm::FillTree()
 	    bool ascent_only = (prefix.length() < current_prefix.length() &&
 				current_prefix.StartsWith(prefix) &&
 				(current_prefix[prefix.length()] == separator ||
-				 prefix == ""));
+				 prefix.empty()));
 	    if (!ascent_only) {
 		// Find out how much of the current prefix and the new prefix
 		// are the same.
@@ -1516,7 +1527,7 @@ void MainFrm::FillTree()
 		    next_dot = prefix.find(separator, prev_dot + 1);
 
 		    wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
-		    assert(bit != "");
+		    assert(!bit.empty());
 
 		    // Add the current tree ID to the stack.
 		    previous_ids.push(current_id);
@@ -1532,7 +1543,7 @@ void MainFrm::FillTree()
 
 	// Now add the leaf.
 	wxString bit = label->GetText().AfterLast(separator);
-	assert(bit != "");
+	assert(!bit.empty());
 	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
 	m_Tree->SetItemData(id, new TreeData(label));
 	label->tree_id = id;
@@ -1615,7 +1626,9 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	if (wxIsAbsolutePath(m_File)) {
 	    m_history.AddFileToHistory(m_File);
 	} else {
-	    wxString abs = wxGetCwd() + wxString(FNM_SEP_LEV) + m_File;
+	    wxString abs = wxGetCwd();
+	    abs += wxCONFIG_PATH_SEPARATOR;
+	    abs += m_File;
 	    m_history.AddFileToHistory(abs);
 	}
 	wxConfigBase *b = wxConfigBase::Get();
@@ -1658,30 +1671,30 @@ void MainFrm::OnOpen(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
 #ifdef __WXMOTIF__
-    wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
-		     "*.3d", wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    wxString filetypes = wxT("*.3d");
 #else
     wxString filetypes;
-    filetypes.Printf("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.xyz"
+    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.xyz"
 		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.XYZ")
 		     "|%s|*.3d"CASE("*.3D")
 		     "|%s|*.svx"CASE("*.SVX")
 		     "|%s|*.plt;*.plf"CASE("*.PLT;*.PLF")
 		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
 		     "|%s|*.xyz"CASE("*.XYZ")
-		     "|%s|%s",
-		     "All survey files",
-		     msg(/*Survex 3d files*/207),
-		     "Survex svx files",
-		     msg(/*Compass PLT files*/324),
-		     "Compass DAT and MAK files",
-		     msg(/*CMAP XYZ files*/325),
-		     msg(/*All files*/208),
+		     "|%s|%s"),
+		     wxT("All survey files"),
+		     wmsg(/*Survex 3d files*/207).c_str(),
+		     wxT("Survex svx files"),
+		     wmsg(/*Compass PLT files*/324).c_str(),
+		     wxT("Compass DAT and MAK files"),
+		     wmsg(/*CMAP XYZ files*/325).c_str(),
+		     wmsg(/*All files*/208).c_str(),
 		     wxFileSelectorDefaultWildcardStr);
-    // FIXME: drop "3d" from this message?
-    wxFileDialog dlg(this, msg(/*Select a 3d file to view*/206), "", "",
-		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #endif
+    // FIXME: drop "3d" from this message?
+    wxFileDialog dlg(this, wmsg(/*Select a 3d file to view*/206),
+		     wxString(), wxString(),
+		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
     }
@@ -1690,10 +1703,10 @@ void MainFrm::OnOpen(wxCommandEvent&)
 void MainFrm::OnScreenshot(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
-    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
-    wxFileDialog dlg (this, msg(/*Save Screenshot*/321), "",
-		      wxString(baseleaf) + ".png",
-		      "*.png", wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    char *baseleaf = baseleaf_from_fnm(m_File.char_str());
+    wxFileDialog dlg(this, wmsg(/*Save Screenshot*/321), wxString(),
+		     wxString(baseleaf, wxConvUTF8) + wxT(".png"),
+		     wxT("*.png"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	static bool png_handled = false;
@@ -1706,7 +1719,7 @@ void MainFrm::OnScreenshot(wxCommandEvent&)
 	    png_handled = true;
 	}
 	if (!m_Gfx->SaveScreenshot(dlg.GetPath(), wxBITMAP_TYPE_PNG)) {
-	    wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
+	    wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
 	}
     }
 }
@@ -1747,24 +1760,24 @@ void MainFrm::OnQuit(wxCommandEvent&)
     if (m_PresList->Modified()) {
 	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
-			 msg(/*Modified Presentation*/326),
+	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 wmsg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
     }
     wxConfigBase *b = wxConfigBase::Get();
     if (IsFullScreen()) {
-	b->Write("width", -2);
-	b->DeleteEntry("height");
+	b->Write(wxT("width"), -2);
+	b->DeleteEntry(wxT("height"));
     } else if (IsMaximized()) {
-	b->Write("width", -1);
-	b->DeleteEntry("height");
+	b->Write(wxT("width"), -1);
+	b->DeleteEntry(wxT("height"));
     } else {
 	int width, height;
 	GetSize(&width, &height);
-	b->Write("width", width);
-	b->Write("height", height);
+	b->Write(wxT("width"), width);
+	b->Write(wxT("height"), height);
     }
     b->Flush();
     exit(0);
@@ -1793,8 +1806,8 @@ void MainFrm::UpdateStatusBar()
 	GetStatusBar()->SetStatusText(coords_text);
 	GetStatusBar()->SetStatusText(distfree_text, 1);
     } else {
-	GetStatusBar()->SetStatusText("");
-	GetStatusBar()->SetStatusText("", 1);
+	GetStatusBar()->SetStatusText(wxString());
+	GetStatusBar()->SetStatusText(wxString(), 1);
     }
 }
 
@@ -1802,7 +1815,7 @@ void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
     if (!dist_text.empty()) {
-	dist_text = "";
+	dist_text = wxString();
 	UpdateStatusBar();
     }
     m_Gfx->SetThere();
@@ -1811,7 +1824,7 @@ void MainFrm::ClearTreeSelection()
 void MainFrm::ClearCoords()
 {
     if (!coords_text.empty()) {
-	coords_text = "";
+	coords_text = wxString();
 	UpdateStatusBar();
     }
 }
@@ -1820,15 +1833,15 @@ void MainFrm::SetCoords(const Vector3 &v)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
-	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335), v.GetZ());
+	s.Printf(wmsg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
+	s += wxString::Format(wxT(", %s %.2fm"), wmsg(/*Altitude*/335).c_str(), v.GetZ());
     } else {
-	s.Printf(msg(/*%.2f E, %.2f N*/338),
+	s.Printf(wmsg(/*%.2f E, %.2f N*/338),
 		 v.GetX() / METRES_PER_FOOT, v.GetY() / METRES_PER_FOOT);
-	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
+	s += wxString::Format(wxT(", %s %.2fft"), wmsg(/*Altitude*/335).c_str(),
 			      v.GetZ() / METRES_PER_FOOT);
     }
-    distfree_text = "";
+    distfree_text = wxString();
     UpdateStatusBar();
 }
 
@@ -1846,14 +1859,14 @@ void MainFrm::SetCoords(Double x, Double y)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%.2f E, %.2f N*/338), x, y);
+	s.Printf(wmsg(/*%.2f E, %.2f N*/338), x, y);
     } else {
-	s.Printf(msg(/*%.2f E, %.2f N*/338),
+	s.Printf(wmsg(/*%.2f E, %.2f N*/338),
 		 x / METRES_PER_FOOT, y / METRES_PER_FOOT);
     }
 
     wxString & t = distfree_text;
-    t = "";
+    t = wxString();
     const LabelInfo* label;
     if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
 	Vector3 delta(x - m_Offsets.GetX() - label->GetX(),
@@ -1863,22 +1876,22 @@ void MainFrm::SetCoords(Double x, Double y)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
+	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	wxString brg_unit;
 	if (m_Gfx->GetDegrees()) {
-	    brg_unit = msg(/*&deg;*/344);
+	    brg_unit = wmsg(/*&deg;*/344);
 	} else {
 	    brg *= 400.0 / 360.0;
-	    brg_unit = msg(/*grad*/345);
+	    brg_unit = wmsg(/*grad*/345);
 	}
 
 	if (m_Gfx->GetMetric()) {
-	    t.Printf(msg(/*%s: H %.2f%s, Brg %03d%s*/374),
-		     from_str.c_str(), dh, "m", int(brg), brg_unit.c_str());
+	    t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
+		     from_str.c_str(), dh, wxT("m"), int(brg), brg_unit.c_str());
 	} else {
-	    t.Printf(msg(/*%s: H %.2f%s, Brg %03d%s*/374),
-		     from_str.c_str(), dh / METRES_PER_FOOT, "ft", int(brg),
+	    t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
+		     from_str.c_str(), dh / METRES_PER_FOOT, wxT("ft"), int(brg),
 		     brg_unit.c_str());
 	}
     }
@@ -1890,26 +1903,26 @@ void MainFrm::SetAltitude(Double z)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf("%s %.2fm", msg(/*Altitude*/335), double(z));
+	s.Printf(wxT("%s %.2fm"), wmsg(/*Altitude*/335).c_str(), double(z));
     } else {
-	s.Printf("%s %.2fft", msg(/*Altitude*/335), double(z / METRES_PER_FOOT));
+	s.Printf(wxT("%s %.2fft"), wmsg(/*Altitude*/335).c_str(), double(z / METRES_PER_FOOT));
     }
 
     wxString & t = distfree_text;
-    t = "";
+    t = wxString();
     const LabelInfo* label;
     if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
 	Double dz = z - m_Offsets.GetZ() - label->GetZ();
 
 	wxString from_str;
-	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
+	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	if (m_Gfx->GetMetric()) {
-	    t.Printf(msg(/*%s: V %.2f%s*/375),
-		     from_str.c_str(), dz, "m");
+	    t.Printf(wmsg(/*%s: V %.2f%s*/375),
+		     from_str.c_str(), dz, wxT("m"));
 	} else {
-	    t.Printf(msg(/*%s: V %.2f%s*/375),
-		     from_str.c_str(), dz / METRES_PER_FOOT, "ft");
+	    t.Printf(wmsg(/*%s: V %.2f%s*/375),
+		     from_str.c_str(), dz / METRES_PER_FOOT, wxT("ft"));
 	}
     }
 
@@ -1925,8 +1938,8 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	m_Tree->SetHere(wxTreeItemId());
 	// Don't clear "There" mark here.
 	if (here_text.empty() && dist_text.empty()) return;
-	here_text = "";
-	dist_text = "";
+	here_text = wxString();
+	dist_text = wxString();
 	UpdateStatusBar();
 	return;
     }
@@ -1934,15 +1947,15 @@ void MainFrm::ShowInfo(const LabelInfo *here)
     Vector3 v = *here + m_Offsets;
     wxString & s = here_text;
     if (m_Gfx->GetMetric()) {
-	s.Printf(msg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
-	s += wxString::Format(", %s %.2fm", msg(/*Altitude*/335), v.GetZ());
+	s.Printf(wmsg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
+	s += wxString::Format(wxT(", %s %.2fm"), wmsg(/*Altitude*/335).c_str(), v.GetZ());
     } else {
-	s.Printf(msg(/*%.2f E, %.2f N*/338),
+	s.Printf(wmsg(/*%.2f E, %.2f N*/338),
 		 v.GetX() / METRES_PER_FOOT, v.GetY() / METRES_PER_FOOT);
-	s += wxString::Format(", %s %.2fft", msg(/*Altitude*/335),
+	s += wxString::Format(wxT(", %s %.2fft"), wmsg(/*Altitude*/335).c_str(),
 			      v.GetZ() / METRES_PER_FOOT);
     }
-    s += ": ";
+    s += wxT(": ");
     s += here->GetText();
     m_Gfx->SetHere(*here);
     m_Tree->SetHere(here->tree_id);
@@ -1958,38 +1971,38 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	from_str.Printf(msg(/*From %s*/339), label->GetText().c_str());
+	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	wxString hv_str;
 	if (m_Gfx->GetMetric()) {
-	    hv_str.Printf(msg(/*H %.2f%s, V %.2f%s*/340),
-			  d_horiz, "m", delta.GetZ(), "m");
+	    hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
+			  d_horiz, wxT("m"), delta.GetZ(), wxT("m"));
 	} else {
-	    hv_str.Printf(msg(/*H %.2f%s, V %.2f%s*/340),
-			  d_horiz / METRES_PER_FOOT, "ft",
-			  delta.GetZ() / METRES_PER_FOOT, "ft");
+	    hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
+			  d_horiz / METRES_PER_FOOT, wxT("ft"),
+			  delta.GetZ() / METRES_PER_FOOT, wxT("ft"));
 	}
 	wxString brg_unit;
 	if (m_Gfx->GetDegrees()) {
-	    brg_unit = msg(/*&deg;*/344);
+	    brg_unit = wmsg(/*&deg;*/344);
 	} else {
 	    brg *= 400.0 / 360.0;
-	    brg_unit = msg(/*grad*/345);
+	    brg_unit = wmsg(/*grad*/345);
 	}
 	wxString & d = dist_text;
 	if (m_Gfx->GetMetric()) {
-	    d.Printf(msg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
+	    d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
 		     from_str.c_str(), hv_str.c_str(),
-		     dr, "m", int(brg), brg_unit.c_str());
+		     dr, wxT("m"), int(brg), brg_unit.c_str());
 	} else {
-	    d.Printf(msg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
+	    d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
 		     from_str.c_str(), hv_str.c_str(),
-		     dr / METRES_PER_FOOT, "ft", int(brg),
+		     dr / METRES_PER_FOOT, wxT("ft"), int(brg),
 		     brg_unit.c_str());
 	}
 	m_Gfx->SetThere(*label);
     } else {
-	dist_text = "";
+	dist_text = wxString();
 	m_Gfx->SetThere();
     }
     UpdateStatusBar();
@@ -2014,23 +2027,23 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
 	const LabelInfo* label = data->GetLabel();
 	if (zoom) m_Gfx->CentreOn(*label);
 	m_Gfx->SetThere(*label);
-	dist_text = "";
+	dist_text = wxString();
 	// FIXME: Need to update dist_text (From ... etc)
 	// But we don't currently know where "here" is at this point in the
 	// code!
     } else {
-	dist_text = "";
+	dist_text = wxString();
 	m_Gfx->SetThere();
     }
     if (!data) {
 	// Must be the root.
-	m_FindBox->SetValue("");
+	m_FindBox->SetValue(wxString());
 	if (zoom) {
 	    wxCommandEvent dummy;
 	    OnDefaults(dummy);
 	}
     } else if (data && !data->IsStation()) {
-	m_FindBox->SetValue(data->GetSurvey() + ".*");
+	m_FindBox->SetValue(data->GetSurvey() + wxT(".*"));
 	if (zoom) {
 	    wxCommandEvent dummy;
 	    OnGotoFound(dummy);
@@ -2044,8 +2057,8 @@ void MainFrm::OnPresNew(wxCommandEvent&)
     if (m_PresList->Modified()) {
 	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
-			 msg(/*Modified Presentation*/326),
+	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 wmsg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
@@ -2061,22 +2074,22 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
     AvenAllowOnTop ontop(this);
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
-	if (wxMessageBox(msg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
-			 msg(/*Modified Presentation*/326),
+	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 wmsg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
 	}
     }
 #ifdef __WXMOTIF__
-    wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      "*.fly", wxFD_OPEN);
+    wxFileDialog dlg(this, wmsg(/*Select a presentation to open*/322), wxString(), wxString(),
+		     wxT("*.fly"), wxFD_OPEN);
 #else
-    wxFileDialog dlg (this, wxString(msg(/*Select a presentation to open*/322)), "", "",
-		      wxString::Format("%s|*.fly|%s|%s",
-				       msg(/*Aven presentations*/320),
-				       msg(/*All files*/208),
-				       wxFileSelectorDefaultWildcardStr),
-		      wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    wxFileDialog dlg(this, wmsg(/*Select a presentation to open*/322), wxString(), wxString(),
+		     wxString::Format(wxT("%s|*.fly|%s|%s"),
+		       	       wmsg(/*Aven presentations*/320).c_str(),
+		       	       wmsg(/*All files*/208).c_str(),
+		       	       wxFileSelectorDefaultWildcardStr),
+		     wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_PresList->Load(dlg.GetPath())) {
@@ -2149,15 +2162,15 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
     AvenAllowOnTop ontop(this);
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
-    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
-    wxFileDialog dlg(this, wxString("Export Movie"), "",
-		     wxString(baseleaf) + ".mpg",
-		     "MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf",
+    char *baseleaf = baseleaf_from_fnm(m_File.char_str());
+    wxFileDialog dlg(this, wxT("Export Movie"), wxString(),
+		     wxString(baseleaf, wxConvUTF8) + wxT(".mpg"),
+		     wxT("MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_Gfx->ExportMovie(dlg.GetPath())) {
-	    wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
+	    wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
 	}
     }
 }
@@ -2277,19 +2290,19 @@ void MainFrm::OnFind(wxCommandEvent&)
 	} else if (true /* simple glob-style */) {
 	    wxString pat;
 	    for (size_t i = 0; i < pattern.size(); i++) {
-	       char ch = pattern[i];
+	       wxChar ch = pattern[i];
 	       // ^ only special at start; $ at end.  But this is simpler...
 	       switch (ch) {
 		case '^': case '$': case '.': case '[': case '\\':
-		  pat += '\\';
+		  pat += wxT('\\');
 		  pat += ch;
 		  break;
 		case '*':
-		  pat += ".*";
+		  pat += wxT(".*");
 		  substring = false;
 		  break;
 		case '?':
-		  pat += '.';
+		  pat += wxT('.');
 		  substring = false;
 		  break;
 		default:
@@ -2301,11 +2314,11 @@ void MainFrm::OnFind(wxCommandEvent&)
 	} else {
 	    wxString pat;
 	    for (size_t i = 0; i < pattern.size(); i++) {
-	       char ch = pattern[i];
+	       wxChar ch = pattern[i];
 	       // ^ only special at start; $ at end.  But this is simpler...
 	       switch (ch) {
 		case '^': case '$': case '*': case '.': case '[': case '\\':
-		  pat += '\\';
+		  pat += wxT('\\');
 	       }
 	       pat += ch;
 	    }
@@ -2315,9 +2328,9 @@ void MainFrm::OnFind(wxCommandEvent&)
 
 	if (!substring) {
 	    // FIXME "0u" required to avoid compilation error with g++-3.0
-	    if (pattern.empty() || pattern[0u] != '^') pattern = '^' + pattern;
+	    if (pattern.empty() || pattern[0u] != '^') pattern = wxT('^') + pattern;
 	    // FIXME: this fails to cope with "\$" at the end of pattern...
-	    if (pattern[pattern.size() - 1] != '$') pattern += '$';
+	    if (pattern[pattern.size() - 1] != '$') pattern += wxT('$');
 	}
 
 	wxRegEx regex;
@@ -2350,16 +2363,16 @@ void MainFrm::OnFind(wxCommandEvent&)
     m_Gfx->ForceRefresh();
 
     if (!m_NumHighlighted) {
-        GetToolBar()->SetToolShortHelp(button_HIDE, msg(/*No matches were found.*/328));
+        GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*No matches were found.*/328));
     } else {
-        GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format("Unhilight %d found stations", m_NumHighlighted));
+        GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format(wxT("Unhilight %d found stations"), m_NumHighlighted));
     }
 }
 
 void MainFrm::OnGotoFound(wxCommandEvent&)
 {
     if (!m_NumHighlighted) {
-	wxGetApp().ReportError(msg(/*No matches were found.*/328));
+	wxGetApp().ReportError(wmsg(/*No matches were found.*/328));
 	return;
     }
 
@@ -2390,7 +2403,7 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
 
 void MainFrm::OnHide(wxCommandEvent&)
 {
-    m_FindBox->SetValue("");
+    m_FindBox->SetValue(wxString());
 }
 
 void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)

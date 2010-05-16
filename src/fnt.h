@@ -33,6 +33,8 @@
 #  include <GL/gl.h>
 #endif
 
+#include "wx.h" // For wxChar
+
 #include <string.h>
 
 #define FNT_MAXCHAR 256
@@ -66,7 +68,7 @@ class fntTexFont {
 
     int getFontSize() const { return fnt_size; }
 
-    void getTextExtent(const char *s, int *width, int *height) const {
+    void getTextExtent(const wxChar *s, int *width, int *height) const {
 	if (width) {
 	    int w = -1;
 	    while (*s) w += widths[(unsigned char)*s++];
@@ -76,14 +78,24 @@ class fntTexFont {
 	if (height) *height = fnt_size + 1;
     }
 
-    void puts(int x, int y, const char *s) const {
+    void puts(int x, int y, const wxChar *s) const {
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
 	glTranslated(x, y, 0);
 	glListBase(list_base);
-	glCallLists(strlen(s), GL_UNSIGNED_BYTE, s);
+	if (sizeof(wxChar) == 1) {
+	    glCallLists(strlen((const char *)s), GL_UNSIGNED_BYTE, s);
+	} else if (sizeof(wxChar) == 2) {
+	    size_t len = 0;
+	    while (s[len]) ++len;
+	    glCallLists(len, GL_UNSIGNED_SHORT, s);
+	} else if (sizeof(wxChar) == 4) {
+	    size_t len = 0;
+	    while (s[len]) ++len;
+	    glCallLists(len, GL_UNSIGNED_INT, s);
+	}
 	glPopMatrix();
     }
 #if 0

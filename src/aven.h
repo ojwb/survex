@@ -28,9 +28,9 @@
 
 #include <stdarg.h>
 
-#define APP_NAME "Aven"
-#define APP_IMAGE "aven.png"
-#define APP_ABOUT_IMAGE "aven-about.png"
+#define APP_NAME wxT("Aven")
+#define APP_IMAGE wxT("aven.png")
+#define APP_ABOUT_IMAGE wxT("aven-about.png")
 
 extern
 #ifdef __cplusplus
@@ -42,6 +42,38 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 #ifdef __cplusplus
 
 #include "wx.h"
+
+#include <string>
+
+inline std::string
+string_formatv(const char * fmt, va_list args)
+{
+    static size_t len = 4096;
+    static char * buf = NULL;
+    while (true) {
+	if (!buf) buf = new char[len];
+	int r = vsnprintf(buf, len, fmt, args);
+	if (r < int(len) && r != -1) {
+	    return std::string(buf, r);
+	}
+	delete [] buf;
+	buf = NULL;
+	len += len;
+    }
+}
+
+inline std::string
+string_format(const char * fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    std::string s = string_formatv(fmt, args);
+    va_end(args);
+    return s;
+}
+
+// wmsg is the unicode version of msg.
+wxString wmsg(int msg_no);
 
 class MainFrm;
 
@@ -57,7 +89,9 @@ public:
     Aven();
     ~Aven();
 
+#ifdef __WXMSW__
     virtual bool Initialize(int& argc, wxChar **argv);
+#endif
     virtual bool OnInit();
 
     wxPageSetupDialogData * GetPageSetupDialogData();

@@ -966,7 +966,7 @@ void GUIControl::OnToggleMetric()
 {
     m_View->ToggleMetric();
 
-    wxConfigBase::Get()->Write("metric", m_View->GetMetric());
+    wxConfigBase::Get()->Write(wxT("metric"), m_View->GetMetric());
     wxConfigBase::Get()->Flush();
 }
 
@@ -980,7 +980,7 @@ void GUIControl::OnToggleDegrees()
 {
     m_View->ToggleDegrees();
 
-    wxConfigBase::Get()->Write("degrees", m_View->GetDegrees());
+    wxConfigBase::Get()->Write(wxT("degrees"), m_View->GetDegrees());
     wxConfigBase::Get()->Flush();
 }
 

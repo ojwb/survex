@@ -74,7 +74,7 @@ const double BLOB_DIAMETER = 5.0;
 
 static bool opengl_initialised = false;
 
-wxString GetGLSystemDescription()
+string GetGLSystemDescription()
 {
     // If OpenGL isn't initialised we may get a SEGV from glGetString.
     if (!opengl_initialised)
@@ -83,7 +83,7 @@ wxString GetGLSystemDescription()
     if (!p)
 	return "Couldn't read OpenGL version!";
 
-    wxString info;
+    string info;
     info += "OpenGL ";
     info += p;
     info += '\n';
@@ -92,11 +92,6 @@ wxString GetGLSystemDescription()
     info += (const char*)glGetString(GL_RENDERER);
     info += '\n';
 
-    const GLubyte* gl_extensions = glGetString(GL_EXTENSIONS);
-    if (*gl_extensions) {
-	info += gl_extensions;
-	info += '\n';
-    }
     GLint red, green, blue;
     glGetIntegerv(GL_RED_BITS, &red);
     glGetIntegerv(GL_GREEN_BITS, &green);
@@ -109,8 +104,7 @@ wxString GetGLSystemDescription()
     glGetDoublev(GL_POINT_SIZE_RANGE, point_size_range);
     GLdouble point_size_granularity;
     glGetDoublev(GL_POINT_SIZE_GRANULARITY, &point_size_granularity);
-    wxString s;
-    s.Printf("R%dG%dB%d\n"
+    info += string_format("R%dG%dB%d\n"
 	     "Max Texture size: %dx%d\n"
 	     "Max Viewport size: %dx%d\n"
 	     "Point Size %.3f-%.3f (granularity %.3f)",
@@ -119,7 +113,12 @@ wxString GetGLSystemDescription()
 	     (int)max_viewport[0], (int)max_viewport[1],
 	     point_size_range[0], point_size_range[1],
 	     point_size_granularity);
-    info += s;
+
+    const GLubyte* gl_extensions = glGetString(GL_EXTENSIONS);
+    if (*gl_extensions) {
+	info += '\n';
+	info += (const char*)gl_extensions;
+    }
     return info;
 }
 
@@ -129,8 +128,10 @@ wxString GetGLSystemDescription()
 #define CHECK_GL_ERROR(M, F) do { \
     GLenum error_code_ = glGetError(); \
     if (error_code_ != GL_NO_ERROR) \
-	wxLogError(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
-		   "(call "F" in method "M")", gluErrorString(error_code_)); \
+	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
+		   "(call "F" in method "M")"), \
+		   wxString((const char *)gluErrorString(error_code_), \
+			    wxConvUTF8).c_str()); \
 } while (0)
 
 //
@@ -300,10 +301,10 @@ void GLACanvas::FirstShow()
 
 #ifdef USE_FNT
     // Load font
-    wxString path(msg_cfgpth());
+    wxString path(msg_cfgpth(), wxConvUTF8);
     path += wxCONFIG_PATH_SEPARATOR;
-    path += "aven.txf";
-    m_Font.load(path.c_str());
+    path += wxT("aven.txf");
+    m_Font.load(path.fn_str());
 #endif
 
     // Check if we can use GL_POINTS to plot blobs at stations.
@@ -1298,14 +1299,19 @@ void GLACanvas::ToggleTextured()
 	CHECK_GL_ERROR("ToggleTextured", "glBindTexture");
 
 	::wxInitAllImageHandlers();
+
 	wxImage img;
-	if (!img.LoadFile(wxString(msg_cfgpth()) + wxCONFIG_PATH_SEPARATOR +
-			  wxString("icons") + wxCONFIG_PATH_SEPARATOR +
-			  wxString("texture.png"), wxBITMAP_TYPE_PNG)) {
+	wxString texture(msg_cfgpth(), wxConvUTF8);
+	texture += wxCONFIG_PATH_SEPARATOR;
+	texture += wxT("icons");
+	texture += wxCONFIG_PATH_SEPARATOR;
+	texture += wxT("texture.png");
+	if (!img.LoadFile(texture, wxBITMAP_TYPE_PNG)) {
 	    // FIXME
 	    fprintf(stderr, "Couldn't load image.\n");
 	    exit(1);
 	}
+
 	// Generate mipmaps.
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, // was GL_LUMINANCE
 			  img.GetWidth(), img.GetHeight(),

@@ -52,9 +52,9 @@
 layout::layout(wxPageSetupDialogData* data)
 	: Labels(false), Crosses(false), Shots(true), Surface(false),
 	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
-	  title(NULL), datestamp(NULL), Scale(0), rot(0), tilt(0),
+	  title(), datestamp(), Scale(0), rot(0), tilt(0),
 	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
-	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer(NULL)
+	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer()
 {
     // Create a temporary wxPrinterDC/wxPostScriptDC so we can get access to
     // the size of the printable area in mm to allow us to calculate how many

@@ -22,6 +22,7 @@
 #define survex_included_avenprcore_h
 
 #include "img.h"
+#include <wx.h>
 
 extern bool fBlankPage;
 
@@ -58,8 +59,8 @@ public:
     bool Border;
     bool Cutlines;
     bool Raw;
-    char *title;
-    char *datestamp;
+    wxString title;
+    wxString datestamp;
     double Scale;
     int rot, tilt;
     enum {PLAN, ELEV, TILT, EXTELEV} view;
@@ -70,7 +71,7 @@ public:
     double PaperWidth, PaperDepth;
     int pagesX, pagesY, pages;
     double xOrg, yOrg;
-    const char* footer;
+    wxString footer;
 
     layout(wxPageSetupDialogData* data);
 #if 0

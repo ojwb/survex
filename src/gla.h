@@ -24,6 +24,7 @@
 // Use texture mapped fonts (lots faster, at least with hardware 3d)
 #define USE_FNT
 
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -38,7 +39,7 @@ using namespace std;
 
 class GfxCore;
 
-wxString GetGLSystemDescription();
+string GetGLSystemDescription();
 
 // #define GLA_DEBUG
 

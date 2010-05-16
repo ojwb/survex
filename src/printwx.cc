@@ -104,7 +104,7 @@ class svxPrintout : public wxPrintout {
     void DrawCross(long x, long y);
     void SetFont(int fontcode);
     void SetColour(int colourcode);
-    void WriteString(const char *s);
+    void WriteString(const wxString & s);
     void DrawEllipse(long x, long y, long r, long R);
     void SolidRectangle(long x, long y, long w, long h);
     int Charset(void);
@@ -142,19 +142,19 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
 END_EVENT_TABLE()
 
 static wxString scales[] = {
-    "",
-    "25",
-    "50",
-    "100",
-    "250",
-    "500",
-    "1000",
-    "2500",
-    "5000",
-    "10000",
-    "25000",
-    "50000",
-    "100000"
+    wxT(""),
+    wxT("25"),
+    wxT("50"),
+    wxT("100"),
+    wxT("250"),
+    wxT("500"),
+    wxT("1000"),
+    wxT("2500"),
+    wxT("5000"),
+    wxT("10000"),
+    wxT("25000"),
+    wxT("50000"),
+    wxT("100000")
 };
 
 // there are three jobs to do here...
@@ -164,7 +164,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool printing)
-	: wxDialog(mainfrm_, -1, wxString(printing ? msg(/*Print*/399) : msg(/*Export*/383))),
+	: wxDialog(mainfrm_, -1, wxString(printing ? wmsg(/*Print*/399) : wmsg(/*Export*/383))),
 	  m_layout(wxGetApp().GetPageSetupDialogData()),
 	  m_File(filename), mainfrm(mainfrm_)
 {
@@ -183,9 +183,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_layout.Crosses = crosses;
     m_layout.Shots = legs;
     m_layout.Surface = surf;
-    m_layout.datestamp = osstrdup(datestamp.c_str());
+    m_layout.datestamp = datestamp;
     m_layout.rot = int(angle + .001);
-    m_layout.title = osstrdup(title.c_str());
+    m_layout.title = title;
     if (mainfrm->IsExtendedElevation()) {
 	m_layout.view = layout::EXTELEV;
 	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
@@ -207,14 +207,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*View*/255)), wxVERTICAL);
-    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, msg(/*Elements*/256)), wxVERTICAL);
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/255)), wxVERTICAL);
+    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     if (printing) {
 	wxStaticText* label;
-	label = new wxStaticText(this, -1, wxString(msg(/*Scale*/154)) + " 1:");
-	if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
+	label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
+	if (scales[0].empty()) scales[0].assign(wmsg(/*One page*/258));
 	m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
 				 wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
 				 scales);
@@ -227,19 +227,19 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	// Make the dummy string wider than any sane value and use that to
 	// fix the width of the control so the sizers allow space for bigger
 	// page layouts.
-	m_printSize = new wxStaticText(this, -1, wxString::Format(msg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
+	m_printSize = new wxStaticText(this, -1, wxString::Format(wmsg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
 	v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
 	wxStaticText * brg_label, * tilt_label;
-	brg_label = new wxStaticText(this, -1, msg(/*Bearing*/259));
+	brg_label = new wxStaticText(this, -1, wmsg(/*Bearing*/259));
 	anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	m_bearing = new wxSpinCtrl(this, svx_BEARING);
 	m_bearing->SetRange(0, 359);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
-	tilt_label = new wxStaticText(this, -1, msg(/*Tilt angle*/263));
+	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	m_tilt = new wxSpinCtrl(this, svx_TILT);
 	m_tilt->SetRange(-90, 90);
@@ -248,9 +248,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
 
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
-	planelevsizer->Add(new wxButton(this, svx_PLAN, msg(/*Plan*/117)),
+	planelevsizer->Add(new wxButton(this, svx_PLAN, wmsg(/*Plan*/117)),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
-	planelevsizer->Add(new wxButton(this, svx_ELEV, msg(/*Elevation*/118)),
+	planelevsizer->Add(new wxButton(this, svx_ELEV, wmsg(/*Elevation*/118)),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
 
 	v2->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
@@ -258,20 +258,20 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     h1->Add(v2, 0, wxALIGN_LEFT|wxALL, 5);
 
-    m_legs = new wxCheckBox(this, svx_LEGS, msg(/*Underground Survey Legs*/262));
+    m_legs = new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262));
     v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
-    m_surface = new wxCheckBox(this, svx_SURFACE, msg(/*Sur&amp;face Survey Legs*/403));
+    m_surface = new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&amp;face Survey Legs*/403));
     v3->Add(m_surface, 0, wxALIGN_LEFT|wxALL, 2);
-    m_stations = new wxCheckBox(this, svx_STATIONS, msg(/*Crosses*/261));
+    m_stations = new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261));
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
-    m_names = new wxCheckBox(this, svx_NAMES, msg(/*Station Names*/260));
+    m_names = new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260));
     v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
     if (printing) {
-	m_borders = new wxCheckBox(this, svx_BORDERS, msg(/*Page Borders*/264));
+	m_borders = new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264));
 	v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
-//	m_blanks = new wxCheckBox(this, svx_BLANKS, msg(/*Blank Pages*/266));
+//	m_blanks = new wxCheckBox(this, svx_BLANKS, wmsg(/*Blank Pages*/266));
 //	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
-	m_infoBox = new wxCheckBox(this, svx_INFOBOX, msg(/*Info Box*/265));
+	m_infoBox = new wxCheckBox(this, svx_INFOBOX, wmsg(/*Info Box*/265));
 	v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
     }
 
@@ -280,18 +280,18 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxButton * but;
-    but = new wxButton(this, wxID_CANCEL, msg(/*&Cancel*/402));
+    but = new wxButton(this, wxID_CANCEL, wmsg(/*&Cancel*/402));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     if (printing) {
 #ifndef __WXMAC__
-	but = new wxButton(this, svx_PREVIEW, msg(/*Pre&view*/401));
+	but = new wxButton(this, svx_PREVIEW, wmsg(/*Pre&view*/401));
 	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
-	but = new wxButton(this, svx_PRINT, msg(/*&Print*/400));
+	but = new wxButton(this, svx_PRINT, wmsg(/*&Print*/400));
 #else
-	but = new wxButton(this, svx_PRINT, wxString(msg(/*&Print*/400)) + "...");
+	but = new wxButton(this, svx_PRINT, wmsg(/*&Print*/400) + wxT("..."));
 #endif
     } else {
-	but = new wxButton(this, svx_EXPORT, wxString(msg(/*&Export...*/230)));
+	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export...*/230));
     }
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
@@ -304,11 +304,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     LayoutToUI();
     SomethingChanged();
-}
-
-svxPrintDlg::~svxPrintDlg() {
-    osfree(m_layout.title);
-    osfree(m_layout.datestamp);
 }
 
 void
@@ -327,18 +322,18 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void
 svxPrintDlg::OnExport(wxCommandEvent&) {
     UIToLayout();
-    char *baseleaf = baseleaf_from_fnm(m_File.c_str());
-    wxFileDialog dlg(this, wxString("Export as:"), "",
-		     wxString(baseleaf),
-		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl",
+    char *baseleaf = baseleaf_from_fnm(m_File.fn_str());
+//    wxFileName::SplitPath(m_File,NULL,NULL,&baseleaf,NULL,wxPATH_NATIVE);
+    wxFileDialog dlg(this, wxT("Export as:"), wxString(),
+		     wxString(baseleaf, wxConvUTF8),
+		     wxT("DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-    free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
 		    m_layout.rot, m_layout.tilt,
 		    m_layout.Labels, m_layout.Crosses,
 		    m_layout.Shots, m_layout.Surface)) {
-	    wxGetApp().ReportError(wxString::Format("Couldn't write file `%s'", m_File.c_str()));
+	    wxGetApp().ReportError(wxString::Format(wxT("Couldn't write file `%s'"), m_File.c_str()));
 	}
     }
     Destroy();
@@ -353,7 +348,7 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
     pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout, psdd, m_File),
 			    new svxPrintout(mainfrm, &m_layout, psdd, m_File),
 			    &pd);
-    wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, msg(/*Print Preview*/398));
+    wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, wmsg(/*Print Preview*/398));
     frame->Initialize();
 
     // Size preview frame so that all of the controlbar and canvas can be seen
@@ -418,7 +413,7 @@ svxPrintDlg::SomethingChanged() {
     RecalcBounds();
     if (m_layout.xMax >= m_layout.xMin) {
 	m_layout.pages_required();
-	m_printSize->SetLabel(wxString::Format(msg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
+	m_printSize->SetLabel(wxString::Format(wmsg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
     }
 }
 
@@ -450,7 +445,7 @@ svxPrintDlg::LayoutToUI(){
 	    temp << m_layout.Scale;
 	    m_scale->SetValue(temp);
 	} else {
-	    if (scales[0].empty()) scales[0].assign(msg(/*One page*/258));
+	    if (scales[0].empty()) scales[0].assign(wmsg(/*One page*/258));
 	    m_scale->SetValue(scales[0]);
 	}
     }
@@ -567,8 +562,8 @@ static int fontsize, fontsize_labels;
 static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 // wx <-> prcore (calls to print_page etc...)
-svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l, wxPageSetupDialogData *data,
-			 const wxString & title)
+svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
+			 wxPageSetupDialogData *data, const wxString & title)
     : wxPrintout(title)
 {
     mainfrm = mainfrm_;
@@ -581,8 +576,6 @@ void
 svxPrintout::draw_info_box()
 {
    layout *l = m_layout;
-   char szTmp[256];
-   char *p;
    int boxwidth = 60;
    int boxheight = 30;
 
@@ -633,10 +626,10 @@ svxPrintout::draw_info_box()
 
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(62, 36);
-      WriteString(msg(/*North*/115));
+      WriteString(wmsg(/*North*/115));
 
       MOVEMM(5, 23);
-      WriteString(msg(/*Plan view*/117));
+      WriteString(wmsg(/*Plan view*/117));
       break;
     }
     case layout::ELEV: case layout::TILT:
@@ -650,43 +643,42 @@ svxPrintout::draw_info_box()
 
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(62, 33);
-      WriteString(msg(/*Elevation on*/116));
-
-      sprintf(szTmp, "%03d"DEG, (l->rot + 270) % 360);
-      MOVEMM(65, 20); WriteString(szTmp);
-      sprintf(szTmp, "%03d"DEG, (l->rot + 90) % 360);
-      MOVEMM(85, 20); WriteString(szTmp);
-
+      WriteString(wmsg(/*Elevation on*/116));
+      
+      MOVEMM(65, 20); 
+      WriteString(wxString::Format(wxT("%03d"DEG),
+				   (l->rot + 270) % 360 ));
+      MOVEMM(85, 20);
+      WriteString(wxString::Format(wxT("%03d"DEG),
+				   (l->rot + 90) % 360 ));
       MOVEMM(5, 23);
-      WriteString(msg(/*Elevation*/118));
+      WriteString(wmsg(/*Elevation*/118));
       break;
     case layout::EXTELEV:
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(5, 13);
-      WriteString(msg(/*Extended elevation*/191));
+      WriteString(wmsg(/*Extended elevation*/191));
       break;
    }
 
    MOVEMM(5, boxheight - 7); WriteString(l->title);
 
-   strcpy(szTmp, msg(/*Scale*/154));
-   p = szTmp + strlen(szTmp);
-   sprintf(p, " 1:%.0f", l->Scale);
-   MOVEMM(5, boxheight - 27); WriteString(szTmp);
+   MOVEMM(5, boxheight - 27); 
+   WriteString(wxString::Format(wmsg(/*Scale*/154) + wxT(" 1:%.0f"),
+				l->Scale));
 
    if (l->view != layout::EXTELEV) {
-      strcpy(szTmp,
-	     msg(l->view == layout::PLAN ? /*Up page*/168 : /*View*/169));
-      p = szTmp + strlen(szTmp);
-      sprintf(p, " %03d"DEG, l->rot);
-      MOVEMM(5, 3); WriteString(szTmp);
+      wxString s;
+      s = wmsg(l->view == layout::PLAN ? /*Up page*/168 : /*View*/169);
+      s.Append(wxString::Format(wxT(" %03d"DEG), l->rot));
+      MOVEMM(5, 3); WriteString(s);
    }
 
    /* This used to be a copyright line, but it was occasionally
     * mis-interpreted as us claiming copyright on the survey, so let's
     * give the website URL instead */
    MOVEMM(boxwidth + 2, 2);
-   WriteString("Survex "VERSION" - http://www.survex.com/");
+   WriteString(wxT("Survex "VERSION" - http://www.survex.com/"));
 
    draw_scale_bar(boxwidth + 10.0, 17.0, l->PaperWidth - boxwidth - 18.0);
 }
@@ -697,9 +689,9 @@ void
 svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 {
    double StepEst, d;
-   int E, Step, n, le, c;
-   char u_buf[3], buf[256];
-   char *p;
+   int E, Step, n, c;
+   char u_buf[3];
+   wxString buf;
    static const signed char powers[] = {
       12, 9, 9, 9, 6, 6, 6, 3, 2, 2, 0, 0, 0, -3, -3, -3, -6, -6, -6, -9,
    };
@@ -733,12 +725,10 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
    u_buf[1] = '\0';
    strcat(u_buf, "m");
 
-   strcpy(buf, msg(/*Scale*/154));
+   buf = wmsg(/*Scale*/154);
 
    /* Add units used - eg. "Scale (10m)" */
-   p = buf + strlen(buf);
-   sprintf(p, " (%.0f%s)", (double)pow(10.0, (double)E), u_buf);
-
+   buf.Append(wxString::Format(wxT(" (%.0f%s)"), (double)pow(10.0, (double)E), wxString(u_buf, wxConvUTF8).c_str()));
    SetColour(PR_COLOUR_TEXT);
    MOVEMM(x, y + 4); WriteString(buf);
 
@@ -773,12 +763,9 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 	  SolidRectangle(X, Y, X2 - X, Y2 - Y);
       }
 #endif
-      /* ANSI sprintf returns length of formatted string, but some pre-ANSI Unix
-       * implementations return char* (ptr to end of written string I think) */
-      sprintf(buf, "%d", c * Step);
-      le = strlen(buf);
+      buf.Printf(wxT("%d"), c * Step);
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(x + c * d - le, y - 4);
+      MOVEMM(x + c * d - buf.length(), y - 4);
       WriteString(buf);
    }
 }
@@ -1106,8 +1093,8 @@ svxPrintout::OnPrintPage(int pageNum) {
     if (!l->Raw) {
 	char szTmp[256];
 	SetColour(PR_COLOUR_TEXT);
-	sprintf(szTmp, l->footer, l->title, pageNum, l->pagesX * l->pagesY,
-		l->datestamp);
+	sprintf(szTmp,(const char*) l->footer.mb_str(), (const char*)l->title.mb_str(), pageNum, l->pagesX * l->pagesY,
+		(const char*)l->datestamp.mb_str());
 	ShowPage(szTmp);
     } else {
 	ShowPage("");
@@ -1175,7 +1162,7 @@ svxPrintout::OnBeginPrinting() {
     Init(pfh, false);
     for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
     Pre();
-    m_layout->footer = msgPerm(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167);
+    m_layout->footer = wxString(msgPerm(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167),wxConvUTF8);
 }
 
 void
@@ -1347,7 +1334,7 @@ svxPrintout::SetColour(int colourcode)
 }
 
 void
-svxPrintout::WriteString(const char *s)
+svxPrintout::WriteString(const wxString & s)
 {
     double xsc, ysc;
     pdc->GetUserScale(&xsc, &ysc);
@@ -1355,7 +1342,7 @@ svxPrintout::WriteString(const char *s)
     pdc->SetFont(*current_font);
     int w, h;
     if (cur_pass != -1) {
-	pdc->GetTextExtent("My", &w, &h);
+	pdc->GetTextExtent(wxT("My"), &w, &h);
 	pdc->DrawText(s,
 		      long(x_t / font_scaling_x),
 		      long(y_t / font_scaling_y) - h);
@@ -1399,8 +1386,12 @@ svxPrintout::Charset(void)
 int
 svxPrintout::Pre()
 {
-    font_labels = new wxFont(fontsize_labels,wxDEFAULT,wxNORMAL,wxNORMAL,false,fontname_labels,wxFONTENCODING_ISO8859_1);
-    font_default = new wxFont(fontsize,wxDEFAULT,wxNORMAL,wxNORMAL,false,fontname,wxFONTENCODING_ISO8859_1);
+    font_labels = new wxFont(fontsize_labels, wxDEFAULT, wxNORMAL, wxNORMAL,
+			     false, wxString(fontname_labels, wxConvUTF8),
+			     wxFONTENCODING_ISO8859_1);
+    font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
+			      false, wxString(fontname, wxConvUTF8),
+			      wxFONTENCODING_ISO8859_1);
     current_font = font_default;
     pen_leg = new wxPen(colour_leg,0,wxSOLID);
     pen_surface_leg = new wxPen(colour_surface_leg,0,wxSOLID);
@@ -1425,9 +1416,12 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     pdc->SetFont(*font_labels);
     MoveTo((long)(6 * m_layout->scX) + clip.x_min,
 	   clip.y_min - (long)(7 * m_layout->scY));
-    char szFooter[256];
-    sprintf(szFooter, m_layout->footer, m_layout->title, pg,
-	    m_layout->pagesX * m_layout->pagesY,m_layout->datestamp);
+    wxString szFooter;
+    szFooter.Printf(m_layout->footer, 
+		    m_layout->title.c_str(), 
+		    pg,
+		    m_layout->pagesX * m_layout->pagesY,
+		    m_layout->datestamp.c_str());
     WriteString(szFooter);
     pdc->DestroyClippingRegion();
     pdc->SetClippingRegion(x_offset, y_offset,xpPageWidth+1, ypPageDepth+1);

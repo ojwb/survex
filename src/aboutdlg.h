@@ -27,18 +27,21 @@
 #include "wx.h"
 
 enum {
-    about_TIMER = 1000
+    about_TIMER = 1000,
+    about_COPY
 };
 
 class AboutDlg : public wxDialog {
 public:
     AboutDlg(wxWindow* parent, const wxString & icon_path);
     void OnTimer(wxTimerEvent &e);
+    void OnCopy(wxCommandEvent &e);
 
 private:
     wxBitmap bitmap, bitmap_icon;
     wxString icon_path;
     wxTimer timer;
+    wxString info;
 
     DECLARE_EVENT_TABLE()
 };

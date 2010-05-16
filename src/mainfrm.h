@@ -37,6 +37,7 @@
 #include "img.h"
 #include "message.h"
 #include "vector3.h"
+#include "aven.h"
 //#include "prefsdlg.h"
 
 #include <list>
@@ -248,12 +249,12 @@ class MainFrm : public wxFrame {
 
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
-    bool LoadData(const wxString& file, wxString prefix = "");
+    bool LoadData(const wxString& file, wxString prefix = wxString());
 //    void FixLRUD(traverse & centreline);
     void CentreDataset(const Vector3 & vmin);
 
     wxString GetTabMsg(int key) {
-	wxString x(msg(key)); x.Replace("##", "\t"); x.Replace("@", "&"); return x;
+	wxString x(wmsg(key)); x.Replace(wxT("##"), wxT("\t")); x.Replace(wxT("@"), wxT("&")); return x;
     }
 
     void CreateMenuBar();
@@ -267,7 +268,7 @@ public:
     ~MainFrm();
 
     void OnMRUFile(wxCommandEvent& event);
-    void OpenFile(const wxString& file, wxString survey = "");
+    void OpenFile(const wxString& file, wxString survey = wxString());
 
     void OnPresNewUpdate(wxUpdateUIEvent& event);
     void OnPresOpenUpdate(wxUpdateUIEvent& event);

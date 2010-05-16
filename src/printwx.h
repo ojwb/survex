@@ -58,7 +58,6 @@ protected:
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf,
 		    bool printing);
-	~svxPrintDlg();
 	void OnPrint(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
 	void OnPreview(wxCommandEvent& event);

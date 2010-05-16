@@ -29,13 +29,13 @@
 
 // FIXME: Make window title available for translation.
 MyLogWindow::MyLogWindow()
-    : wxLogWindow(NULL, APP_NAME" Error Log", false, false), first(true)
+    : wxLogWindow(NULL,APP_NAME wxT(" Error Log"), false, false), first(true)
 {
 }
 
 void MyLogWindow::DoLogString(const wxChar *msg, time_t timestamp) {
     if (first) {
-	wxLogWindow::DoLogString(GetGLSystemDescription().c_str(), timestamp);
+	wxLogWindow::DoLogString(wxString(GetGLSystemDescription().c_str(), wxConvUTF8), timestamp);
 	first = false;
     }
     wxLogWindow::DoLogString(msg, timestamp);

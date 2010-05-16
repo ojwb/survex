@@ -136,8 +136,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_ColourBy = COLOUR_BY_DEPTH;
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
-    wxConfigBase::Get()->Read("metric", &m_Metric, true);
-    wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
+    wxConfigBase::Get()->Read(wxT("metric"), &m_Metric, true);
+    wxConfigBase::Get()->Read(wxT("degrees"), &m_Degrees, true);
     m_here.Invalidate();
     m_there.Invalidate();
     presentation_mode = 0;
@@ -635,7 +635,7 @@ void GfxCore::Draw2dIndicators()
     static int triple_zero_width = 0;
     static int height = 0;
     if (!triple_zero_width) {
-	GetTextExtent(wxString("000"), &triple_zero_width, &height);
+	GetTextExtent(wxT("000"), &triple_zero_width, &height);
     }
     const int y_off = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + height / 2;
 
@@ -647,21 +647,10 @@ void GfxCore::Draw2dIndicators()
 	} else {
 	    value = int(m_PanAngle * 200.0 / 180.0);
 	}
-	str = wxString::Format("%03d", value);
+	str.Printf(wxT("%03d"), value);
 	DrawIndicatorText(comp_centre_x - triple_zero_width / 2, y_off, str);
 
-	str = wxString(msg(/*Facing*/203));
-	// Force to iso-8859-1 for now.
-	for (size_t i = 0; i < str.size(); ++i) {
-	    unsigned char ch = str[i];
-	    if (i + 1 < str.size() && ch >= 0xc0 && ch < 0xe0) {
-		char buf[2];
-		buf[0] = ((ch & 0x1f) << 6) | (str[i + 1] & 0x3f);
-		buf[1] = '\0';
-		str.replace(i, 2, buf);
-	    }
-	}
-
+	str = wmsg(/*Facing*/203);
 	int w;
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(comp_centre_x - w / 2, y_off + height, str);
@@ -674,15 +663,15 @@ void GfxCore::Draw2dIndicators()
 	if (m_Degrees) {
 	    static int zero_zero_width = 0;
 	    if (!zero_zero_width) {
-		GetTextExtent(wxString("00"), &zero_zero_width, NULL);
+		GetTextExtent(wxT("00"), &zero_zero_width, NULL);
 	    }
 	    width = zero_zero_width;
 	    angle = int(-m_TiltAngle);
-	    str = angle ? wxString::Format("%+03d", angle) : wxString("00");
+	    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("00");
 	} else {
 	    width = triple_zero_width;
 	    angle = int(-m_TiltAngle * 200.0 / 180.0);
-	    str = angle ? wxString::Format("%+04d", angle) : wxString("000");
+	    str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
 	}
 
 	// Adjust horizontal position so the left of the first digit is
@@ -691,30 +680,19 @@ void GfxCore::Draw2dIndicators()
 	if (angle < 0) {
 	    static int minus_width = 0;
 	    if (!minus_width) {
-		GetTextExtent(wxString("-"), &minus_width, NULL);
+		GetTextExtent(wxT("-"), &minus_width, NULL);
 	    }
 	    sign_offset = minus_width + 1;
 	} else if (angle > 0) {
 	    static int plus_width = 0;
 	    if (!plus_width) {
-		GetTextExtent(wxString("+"), &plus_width, NULL);
+		GetTextExtent(wxT("+"), &plus_width, NULL);
 	    }
 	    sign_offset = plus_width + 1;
 	}
 	DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
 
-	str = wxString(msg(/*Elevation*/118));
-	// Force to iso-8859-1 for now.
-	for (size_t i = 0; i < str.size(); ++i) {
-	    unsigned char ch = str[i];
-	    if (i + 1 < str.size() && ch >= 0xc0 && ch < 0xe0) {
-		char buf[2];
-		buf[0] = ((ch & 0x1f) << 6) | (str[i + 1] & 0x3f);
-		buf[1] = '\0';
-		str.replace(i, 2, buf);
-	    }
-	}
-
+	str = wmsg(/*Elevation*/118);
 	int w;
 	GetTextExtent(str, &w, NULL);
 	DrawIndicatorText(elev_centre_x - w / 2, y_off + height, str);
@@ -869,7 +847,7 @@ void GfxCore::DrawDatebar()
 
     int size = 0;
     if (!m_Parent->HasCompleteDateInfo()) {
-	GetTextExtent("No info", &size, NULL);
+	GetTextExtent(wxT("No info"), &size, NULL);
     }
 
     wxString* strs = new wxString[GetNumDepthBands()];
@@ -881,7 +859,7 @@ void GfxCore::DrawDatebar()
 	size_t res = strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&date));
 	// Insert extra "" to avoid trigraphs issues.
 	if (res == 0 || res == sizeof(buf)) strcpy(buf, "?""?""?""?-?""?-?""?");
-	strs[band] = buf;
+	strs[band] = wxString(buf, wxConvUTF8);
 
 	int x;
 	GetTextExtent(strs[band], &x, NULL);
@@ -919,7 +897,7 @@ void GfxCore::DrawDatebar()
 
     if (!m_Parent->HasCompleteDateInfo()) {
 	y += DEPTH_BAR_MARGIN;
-	DrawIndicatorText(left, y, "No info");
+	DrawIndicatorText(left, y, wxT("No info"));
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
@@ -939,13 +917,13 @@ void GfxCore::DrawErrorbar()
     const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
 
     int size = 0;
-    GetTextExtent("Not a loop", &size, NULL);
+    GetTextExtent(wxT("Not a loop"), &size, NULL);
 
     wxString* strs = new wxString[GetNumDepthBands()];
     int band;
     for (band = 0; band < GetNumDepthBands(); band++) {
 	double E = MAX_ERROR * band / (GetNumDepthBands() - 1);
-	strs[band].Printf("%.2f", E);
+	strs[band].Printf(wxT("%.2f"), E);
 
 	int x;
 	GetTextExtent(strs[band], &x, NULL);
@@ -980,7 +958,7 @@ void GfxCore::DrawErrorbar()
     SetColour(TEXT_COLOUR);
 
     y += DEPTH_BAR_MARGIN;
-    DrawIndicatorText(left, y, "Not in loop");
+    DrawIndicatorText(left, y, wxT("Not in loop"));
     y += DEPTH_BAR_BLOCK_HEIGHT;
 
     for (band = 0; band < GetNumDepthBands(); band++) {
@@ -1001,37 +979,37 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
     }
 
     if (size_snap == 0.0) {
-	str = "0";
+	str = wxT("0");
     } else if (m_Metric) {
 #ifdef SILLY_UNITS
 	if (size_snap < 1e-12) {
-	    str = wxString::Format("%.3gpm", size_snap * 1e12);
+	    str.Printf(wxT("%.3gpm"), size_snap * 1e12);
 	} else if (size_snap < 1e-9) {
-	    str = wxString::Format("%.fpm", size_snap * 1e12);
+	    str.Printf(wxT("%.fpm"), size_snap * 1e12);
 	} else if (size_snap < 1e-6) {
-	    str = wxString::Format("%.fnm", size_snap * 1e9);
+	    str.Printf(wxT("%.fnm"), size_snap * 1e9);
 	} else if (size_snap < 1e-3) {
-	    str = wxString::Format("%.fum", size_snap * 1e6);
+	    str.Printf(wxT("%.fum"), size_snap * 1e6);
 #else
 	if (size_snap < 1e-3) {
-	    str = wxString::Format("%.3gmm", size_snap * 1e3);
+	    str.Printf(wxT("%.3gmm"), size_snap * 1e3);
 #endif
 	} else if (size_snap < 1e-2) {
-	    str = wxString::Format("%.fmm", size_snap * 1e3);
+	    str.Printf(wxT("%.fmm"), size_snap * 1e3);
 	} else if (size_snap < 1.0) {
-	    str = wxString::Format("%.fcm", size_snap * 100.0);
+	    str.Printf(wxT("%.fcm"), size_snap * 100.0);
 	} else if (size_snap < 1e3) {
-	    str = wxString::Format("%.fm", size_snap);
+	    str.Printf(wxT("%.fm"), size_snap);
 #ifdef SILLY_UNITS
 	} else if (size_snap < 1e6) {
-	    str = wxString::Format("%.fkm", size_snap * 1e-3);
+	    str.Printf(wxT("%.fkm"), size_snap * 1e-3);
 	} else if (size_snap < 1e9) {
-	    str = wxString::Format("%.fMm", size_snap * 1e-6);
+	    str.Printf(wxT("%.fMm"), size_snap * 1e-6);
 	} else {
-	    str = wxString::Format("%.fGm", size_snap * 1e-9);
+	    str.Printf(wxT("%.fGm"), size_snap * 1e-9);
 #else
 	} else {
-	    str = wxString::Format(scalebar ? "%.fkm" : "%.2fkm", size_snap * 1e-3);
+	    str.Printf(scalebar ? wxT("%.fkm") : wxT("%.2fkm"), size_snap * 1e-3);
 #endif
 	}
     } else {
@@ -1039,20 +1017,20 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 	if (scalebar) {
 	    Double inches = size_snap * 12;
 	    if (inches < 1.0) {
-		str = wxString::Format("%.3gin", inches);
+		str.Printf(wxT("%.3gin"), inches);
 	    } else if (size_snap < 1.0) {
-		str = wxString::Format("%.fin", inches);
+		str.Printf(wxT("%.fin"), inches);
 	    } else if (size_snap < 5279.5) {
-		str = wxString::Format("%.fft", size_snap);
+		str.Printf(wxT("%.fft"), size_snap);
 	    } else {
-		str = wxString::Format("%.f miles", size_snap / 5280.0);
+		str.Printf(wxT("%.f miles"), size_snap / 5280.0);
 	    }
 	} else {
-	    str = wxString::Format("%.fft", size_snap);
+	    str.Printf(wxT("%.fft"), size_snap);
 	}
     }
 
-    return negative ? wxString("-") + str : str;
+    return negative ? wxString(wxT("-")) + str : str;
 }
 
 void GfxCore::DrawScalebar()
@@ -1110,7 +1088,7 @@ void GfxCore::DrawScalebar()
     GetTextExtent(str, &text_width, &text_height);
     const int text_y = end_y - text_height + 1;
     SetColour(TEXT_COLOUR);
-    DrawIndicatorText(SCALE_BAR_OFFSET_X, text_y, "0");
+    DrawIndicatorText(SCALE_BAR_OFFSET_X, text_y, wxT("0"));
     DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, text_y, str);
 }
 
@@ -2885,9 +2863,9 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
     mpeg = new MovieMaker();
 
-    if (!mpeg->Open(fnm.c_str(), width, height)) {
+    if (!mpeg->Open(fnm.fn_str(), width, height)) {
 	// FIXME : sort out reporting actual errors from ffmpeg library
-	wxGetApp().ReportError(wxString::Format(msg(/*Error writing to file `%s'*/110), fnm.c_str()));
+	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
 	delete mpeg;
 	mpeg = 0;
 	return false;
@@ -2913,7 +2891,7 @@ void
 GfxCore::OnExport(const wxString &filename, const wxString &title)
 {
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, "",
+    p = new svxPrintDlg(m_Parent, filename, title, wxString(),
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface,
 			false);

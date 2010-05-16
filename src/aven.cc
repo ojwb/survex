@@ -61,7 +61,12 @@ static struct help_msg help[] = {
     {0, 0}
 };
 
+#ifdef __WXMSW__
 IMPLEMENT_APP(Aven)
+#else
+IMPLEMENT_APP_NO_MAIN(Aven)
+IMPLEMENT_WX_THEME_SUPPORT
+#endif
 
 Aven::Aven() :
     m_Frame(NULL), m_pageSetupData(NULL)
@@ -74,19 +79,36 @@ Aven::~Aven()
     if (m_pageSetupData) delete m_pageSetupData;
 }
 
-static void init_msg_and_cmdline(int& my_argc, char **my_argv) {
-    msg_init(my_argv);
+static int getopt_first_response = 0;
+
+#ifdef __WXMSW__
+bool Aven::Initialize(int& my_argc, wxChar **my_argv)
+{
+    // Call msg_init() and start processing the command line first so that
+    // we can respond to --help and --version even without an X display.
+    // However, wxWidgets passes us wxChars, which may be wide characters
+    // and cmdline wants UTF-8 so we need to convert.
+    char *utf8_argv[my_argc + 1];
+    for (int i = 0; i < my_argc; ++i){
+	utf8_argv[i] = strdup(wxString(my_argv[i]).mb_str());
+    }
+    utf8_argv[my_argc] = NULL;
+
+    msg_init(utf8_argv);
     select_charset(CHARSET_UTF8);
     /* Want --version and a decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
     cmdline_set_syntax_message("[3d file]", NULL);
-    cmdline_init(my_argc, my_argv, short_opts, long_opts, NULL, help, 0, 1);
+    cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
+    getopt_first_response = cmdline_getopt();
+    return wxApp::Initialize(my_argc, my_argv);
 }
+#define real_argv argv
+#else
+static char ** real_argv;
 
-static int getopt_first_response = 0;
-
-bool Aven::Initialize(int& my_argc, wxChar **my_argv)
+int main(int argc, char **argv) 
 {
 #ifdef __WXMAC__
     // Tell wxMac which the About and Quit menu items are so they can be put
@@ -97,17 +119,37 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
     // wx ignores for us, but in wxApp::Initialize() which hasn't been
     // called yet.  So we need to remove it ourselves.
-    if (my_argc > 1 && strncmp(my_argv[1], "-psn_", 5) == 0) {
-	--my_argc;
-	memmove(my_argv + 1, my_argv + 2, my_argc * sizeof(char *));
+    if (argc > 1 && strncmp(argv[1], "-psn_", 5) == 0) {
+	--argc;
+	memmove(argv + 1, argv + 2, argc * sizeof(char *));
     }
 #endif
     // Call msg_init() and start processing the command line first so that
     // we can respond to --help and --version even without an X display.
-    init_msg_and_cmdline(my_argc, my_argv);
+    msg_init(argv);
+    select_charset(CHARSET_UTF8);
+    /* Want --version and a decent --help output, which cmdline does for us.
+     * wxCmdLine is much less good.
+     */
+    cmdline_set_syntax_message("[3d file]", NULL);
+    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
-    return wxApp::Initialize(my_argc, my_argv);
+
+    real_argv = argv;
+
+    wxWCharBuffer buf(wxConvFileName->cMB2WX(argv[0]));
+    wxChar * wargv[2];
+    if (buf) {
+	wargv[0] = wxStrdup(buf);
+    } else {
+	// Eep - couldn't convert the executable's name to wide characters!
+	wargv[0] = wxStrdup(APP_NAME);
+    }
+    wargv[1] = NULL;
+    int wargc = 1;
+    return wxEntry(wargc, wargv);
 }
+#endif
 
 bool Aven::OnInit()
 {
@@ -118,12 +160,14 @@ bool Aven::OnInit()
 	// suppress message box warnings about messages not found
 	wxLogNull logNo;
 	wxLocale *loc = new wxLocale();
-	loc->AddCatalogLookupPathPrefix(msg_cfgpth());
-	if (!loc->Init(msg_lang, lang, msg_lang, TRUE, TRUE)) {
+	loc->AddCatalogLookupPathPrefix(wxString(msg_cfgpth(), wxConvUTF8));
+	if (!loc->Init(wxString(msg_lang, wxConvUTF8),
+		       wxString(lang, wxConvUTF8),
+		       wxString(msg_lang, wxConvUTF8), TRUE, TRUE)) {
 	    if (lang && strcmp(lang, "sk") == 0) {
 	       // As of 2.6.3, wxWidgets has cs but not sk - the two languages
 	       // are close, so this makes sense...
-	       loc->Init("cs", "cs", "cs", TRUE, TRUE);
+	       loc->Init(wxT("cs"), wxT("cs"), wxT("cs"), TRUE, TRUE);
 	    }
 	}
 	// The existence of the wxLocale object is enough - no need to keep a
@@ -143,21 +187,30 @@ bool Aven::OnInit()
 	}
 	if (opt == EOF) break;
 	if (opt == 's') {
-	    survey = optarg;
+	    survey = wxString(optarg, wxConvUTF8);
 	}
 	if (opt == 'p') {
 	    print_and_exit = true;
 	}
     }
 
-    if (print_and_exit && !argv[optind]) {
+    if (print_and_exit && !real_argv[optind]) {
 	cmdline_syntax(); // FIXME : not a helpful error...
 	exit(1);
     }
 
+    wxString fnm;
+    if (real_argv[optind]) {
+	fnm = wxString(real_argv[optind], wxConvUTF8);
+	if (fnm.empty() && *(real_argv[optind])) {
+	    wxGetApp().ReportError(wxT("File argument's filename has bad encoding"));
+	    return false;
+	}
+    }
+
     if (!InitGLVisual(NULL)) {
 	wxString m;
-	m.Printf(msg(/*This version of %s requires OpenGL to work, but it isn't available*/405), APP_NAME);
+	m.Printf(wmsg(/*This version of %s requires OpenGL to work, but it isn't available*/405), APP_NAME);
 	wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
 	exit(1);
     }
@@ -167,8 +220,8 @@ bool Aven::OnInit()
     // Obtain the screen size.
     wxPoint pos(wxDefaultPosition);
     int width, height;
-    wxConfigBase::Get()->Read("width", &width, 0);
-    if (width > 0) wxConfigBase::Get()->Read("height", &height, 0);
+    wxConfigBase::Get()->Read(wxT("width"), &width, 0);
+    if (width > 0) wxConfigBase::Get()->Read(wxT("height"), &height, 0);
     bool maximized = (width == -1);
     bool full_screen = (width <= -2);
     if (width <= 0 || height <= 0) {
@@ -206,8 +259,8 @@ bool Aven::OnInit()
 	m_Frame->Maximize();
     }
 
-    if (argv[optind]) {
-	m_Frame->OpenFile(wxString(argv[optind]), survey);
+    if (real_argv[optind]) {
+	m_Frame->OpenFile(fnm, survey);
     }
 
     if (print_and_exit) {
@@ -234,10 +287,10 @@ Aven::GetPageSetupDialogData()
     wxConfigBase * cfg = wxConfigBase::Get();
     // These default margins were chosen by looking at all the .ppd files
     // on my machine.
-    cfg->Read("paper_margin_left", &left, 7);
-    cfg->Read("paper_margin_right", &right, 7);
-    cfg->Read("paper_margin_top", &top, 14);
-    cfg->Read("paper_margin_bottom", &bottom, 14);
+    cfg->Read(wxT("paper_margin_left"), &left, 7);
+    cfg->Read(wxT("paper_margin_right"), &right, 7);
+    cfg->Read(wxT("paper_margin_top"), &top, 14);
+    cfg->Read(wxT("paper_margin_bottom"), &bottom, 14);
     m_pageSetupData->SetMarginTopLeft(wxPoint(left, top));
     m_pageSetupData->SetMarginBottomRight(wxPoint(right, bottom));
 #endif
@@ -255,10 +308,10 @@ Aven::SetPageSetupDialogData(const wxPageSetupDialogData & psdd)
 
     // Store user specified paper margins on disk/in registry.
     wxConfigBase * cfg = wxConfigBase::Get();
-    cfg->Write("paper_margin_left", topleft.x);
-    cfg->Write("paper_margin_right", bottomright.x);
-    cfg->Write("paper_margin_top", topleft.y);
-    cfg->Write("paper_margin_bottom", bottomright.y);
+    cfg->Write(wxT("paper_margin_left"), topleft.x);
+    cfg->Write(wxT("paper_margin_right"), bottomright.x);
+    cfg->Write(wxT("paper_margin_top"), topleft.y);
+    cfg->Write(wxT("paper_margin_bottom"), bottomright.y);
     cfg->Flush();
 #endif
 }
@@ -270,24 +323,28 @@ void Aven::ReportError(const wxString& msg)
     dlg.ShowModal();
 }
 
+wxString
+wmsg(int msg_no) 
+{
+    return wxString(msg(msg_no), wxConvUTF8);
+}
+
 // called to report errors by message.c
 extern "C" void
 aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
 {
    wxString m;
    if (fnm) {
-      m = fnm;
-      if (line) m += wxString::Format(":%d", line);
-      m += ": ";
+       m = wxString(fnm, wxConvUTF8);
+       if (line) m += wxString::Format(wxT(":%d"), line);
+       m += wxT(": ");
    }
 
    if (severity == 0) {
-      m += msg(/*warning*/4);
-      m += ": ";
+       m += wmsg(/*warning*/4);
+       m += wxT(": ");
    }
 
-   wxString s;
-   s.PrintfV(msg(en), ap);
-   m += s;
+   m += wxString::FormatV(wmsg(en), ap);
    wxGetApp().ReportError(m);
 }
