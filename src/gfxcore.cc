@@ -188,8 +188,11 @@ void GfxCore::Initialise(bool same_file)
     m_DoneFirstShow = false;
 
     m_HitTestGridValid = false;
+    m_here_is_temporary = true;
     m_here.Invalidate();
     m_there.Invalidate();
+
+    m_MouseOutsideCompass = m_MouseOutsideElev = false;
 
     if (!same_file) {
 	// Apply default parameters unless reloading the same file.
