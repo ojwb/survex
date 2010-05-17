@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005,2006 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -577,6 +577,7 @@ v03d:
       error:
       osfree(pimg->title);
       osfree(pimg->datestamp);
+      osfree(pimg->filename_opened);
       fclose(pimg->fh);
       osfree(pimg);
       return NULL;
@@ -655,6 +656,8 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       img_errno = IMG_CANTOPENOUT;
       return NULL;
    }
+
+   pimg->filename_opened = NULL;
 
    /* Output image file header */
    fputs("Survex 3D Image File\n", pimg->fh); /* file identifier string */
@@ -1810,6 +1813,7 @@ img_close(img *pimg)
 	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
       }
       osfree(pimg->label_buf);
+      osfree(pimg->filename_opened);
       osfree(pimg);
    }
    return result;
