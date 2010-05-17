@@ -176,6 +176,7 @@ CavernLogWindow::process(const wxString &file)
 
     wxString escaped_file = escape_for_shell(file, true);
     wxString cmd = escape_for_shell(wxString(cavern,wxConvUTF8), false);
+    osfree(cavern);
     cmd += wxT(" -o ");
     cmd += escaped_file;
     cmd += wxT(' ');
