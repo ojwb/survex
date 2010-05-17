@@ -77,14 +77,18 @@ class PresentationMark : public Point {
     bool is_valid() const { return scale > 0; }
 };
 
-#define COLOUR_BY_NONE 0
-#define COLOUR_BY_DEPTH 1
-#define COLOUR_BY_DATE 2
-#define COLOUR_BY_ERROR 3
+enum {
+    COLOUR_BY_NONE,
+    COLOUR_BY_DEPTH,
+    COLOUR_BY_DATE,
+    COLOUR_BY_ERROR
+};
 
-#define UPDATE_NONE 0
-#define UPDATE_BLOBS 1
-#define UPDATE_BLOBS_AND_CROSSES 2
+enum {
+    UPDATE_NONE,
+    UPDATE_BLOBS,
+    UPDATE_BLOBS_AND_CROSSES
+};
 
 class GfxCore : public GLACanvas {
     Double m_Scale;
