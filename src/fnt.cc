@@ -101,25 +101,15 @@ fntTexFont::load(const char *fname)
     // Load the image part of the file
     int ntexels = tex_width * tex_height;
 
-    unsigned char *teximage;
+    unsigned char *teximage = new unsigned char[ntexels];
 
     switch (format) {
 	case FNT_BYTE_FORMAT: {
-	    unsigned char *orig = new unsigned char[ntexels];
-
-	    if ((int)fread(orig, 1, ntexels, fd) != ntexels) {
+	    if ((int)fread(teximage, 1, ntexels, fd) != ntexels) {
+		delete [] teximage;
 		fprintf(stderr, "Premature EOF in '%s'.\n", fname);
 		return false;
 	    }
-
-	    teximage = new unsigned char [2 * ntexels];
-
-	    for (i = 0; i < ntexels; ++i) {
-		teximage [i * 2] = orig[i];
-		teximage [i * 2 + 1] = orig[i];
-	    }
-
-	    delete [] orig;
 	    break;
 	}
 
@@ -130,19 +120,18 @@ fntTexFont::load(const char *fname)
 
 	    if ((int)fread(texbitmap, 1, stride * tex_height, fd)
 		    != stride * tex_height) {
-		delete [] texbitmap ;
+		delete [] texbitmap;
+		delete [] teximage;
 		fprintf(stderr, "Premature EOF in '%s'.\n", fname);
 		return false;
 	    }
 
-	    teximage = new unsigned char[2 * ntexels];
-	    memset((void*)teximage, 0, 2 * ntexels);
+	    memset((void*)teximage, 0, ntexels);
 
 	    for (i = 0; i < tex_height; ++i) {
 		for (j = 0; j < tex_width; ++j) {
 		    if (texbitmap[i * stride + (j >> 3)] & (1 << (j & 7))) {
-			teximage[(i * tex_width + j) * 2    ] = 255;
-			teximage[(i * tex_width + j) * 2 + 1] = 255;
+			teximage[(i * tex_width + j)] = 1;
 		    }
 		}
 	    }
@@ -152,6 +141,7 @@ fntTexFont::load(const char *fname)
 	}
 
 	default:
+	    delete [] teximage;
 	    fprintf(stderr, "Unrecognised format type in '%s'.\n", fname);
 	    return false;
     }
@@ -164,9 +154,13 @@ fntTexFont::load(const char *fname)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, tex_width, tex_height,
-		 0 /* Border */, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
-		 (GLvoid *)teximage);
+    GLuint map[2] = { 0, 0xffffffff };
+    glPixelMapuiv(GL_PIXEL_MAP_I_TO_A, 2, map);
+    glPixelMapuiv(GL_PIXEL_MAP_I_TO_R, 2, map);
+    glPixelMapuiv(GL_PIXEL_MAP_I_TO_G, 2, map);
+    glPixelMapuiv(GL_PIXEL_MAP_I_TO_B, 2, map);
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, tex_width, tex_height, 0 /* Border */,
+		 GL_COLOR_INDEX, GL_UNSIGNED_BYTE, (GLvoid *)teximage);
     delete [] teximage;
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
