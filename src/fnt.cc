@@ -154,7 +154,7 @@ fntTexFont::load(const char *fname)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    GLuint map[2] = { 0, 0xffffffff };
+    static const GLuint map[2] = { 0, 0xffffffff };
     glPixelMapuiv(GL_PIXEL_MAP_I_TO_A, 2, map);
     glPixelMapuiv(GL_PIXEL_MAP_I_TO_R, 2, map);
     glPixelMapuiv(GL_PIXEL_MAP_I_TO_G, 2, map);
