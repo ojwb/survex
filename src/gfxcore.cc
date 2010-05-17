@@ -110,41 +110,55 @@ BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
 END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
-    GLACanvas(parent_win, 100), m_HaveData(false)
+    GLACanvas(parent_win, 100),
+    m_Scale(0.0),
+    m_ScaleBarWidth(0),
+    m_Control(control),
+    m_LabelGrid(NULL),
+    m_Parent(parent),
+    m_DoneFirstShow(false),
+    m_TiltAngle(0.0),
+    m_PanAngle(0.0),
+    m_Rotating(false),
+    m_RotationStep(0.0),
+    m_SwitchingTo(0),
+    m_Crosses(false),
+    m_Legs(true),
+    m_Names(false),
+    m_Scalebar(true),
+    m_Depthbar(true),
+    m_OverlappingNames(false),
+    m_Compass(true),
+    m_Clino(true),
+    m_Tubes(false),
+    m_XSize(0),
+    m_YSize(0),
+    m_ColourBy(COLOUR_BY_DEPTH),
+    m_HaveData(false),
+    m_MouseOutsideCompass(false),
+    m_MouseOutsideElev(false),
+    m_Surface(false),
+    m_Entrances(false),
+    m_FixedPts(false),
+    m_ExportedPts(false),
+    m_Grid(false),
+    m_BoundingBox(false),
+    m_Degrees(false),
+    m_Metric(false),
+    m_HitTestGridValid(false),
+    m_here_is_temporary(false),
+    presentation_mode(0),
+    pres_reverse(false),
+    pres_speed(0.0),
+    mpeg(NULL),
+    current_cursor(GfxCore::CURSOR_DEFAULT)
 {
-    m_Control = control;
-    m_ScaleBarWidth = 0;
-    m_Parent = parent;
-    m_DoneFirstShow = false;
-    m_Crosses = false;
-    m_Legs = true;
-    m_Names = false;
-    m_OverlappingNames = false;
-    m_Compass = true;
-    m_Clino = true;
-    m_Depthbar = true;
-    m_Scalebar = true;
-    m_LabelGrid = NULL;
-    m_Rotating = false;
-    m_SwitchingTo = 0;
-    m_Entrances = false;
-    m_FixedPts = false;
-    m_ExportedPts = false;
-    m_Tubes = false;
-    m_Grid = false;
-    m_BoundingBox = false;
-    m_ColourBy = COLOUR_BY_DEPTH;
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
     wxConfigBase::Get()->Read(wxT("metric"), &m_Metric, true);
     wxConfigBase::Get()->Read(wxT("degrees"), &m_Degrees, true);
     m_here.Invalidate();
     m_there.Invalidate();
-    presentation_mode = 0;
-    pres_speed = 0.0;
-    pres_reverse = false;
-    mpeg = NULL;
-    current_cursor = GfxCore::CURSOR_DEFAULT;
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
