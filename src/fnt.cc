@@ -131,7 +131,7 @@ fntTexFont::load(const char *fname)
 	    for (i = 0; i < tex_height; ++i) {
 		for (j = 0; j < tex_width; ++j) {
 		    if (texbitmap[i * stride + (j >> 3)] & (1 << (j & 7))) {
-			teximage[(i * tex_width + j)] = 1;
+			teximage[i * tex_width + j] = 1;
 		    }
 		}
 	    }
