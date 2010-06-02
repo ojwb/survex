@@ -1,3 +1,13 @@
+Wed Jun 02 13:30:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,doc/GPL.htm,doc/index.htm.in: Remove HTML version of GPL
+	  - just link to the FSF's page.
+
+Wed Jun 02 13:26:55 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,make_release,make_release.in,update-debcl.pl: Use dch to
+	  update debian/changelog.
+
 Wed Jun 02 12:59:33 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in,doc/Makefile.am,doc/cl2html.pl,doc/index.htm.in: Stop
