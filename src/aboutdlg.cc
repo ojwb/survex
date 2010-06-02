@@ -36,7 +36,8 @@
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
     EVT_TIMER(about_TIMER, AboutDlg::OnTimer)
-    EVT_BUTTON(about_COPY, AboutDlg::OnCopy)
+    EVT_BUTTON(wxID_COPY, AboutDlg::OnCopy)
+    EVT_BUTTON(wxID_CLOSE, AboutDlg::OnClose)
 END_EVENT_TABLE()
 
 void
@@ -53,7 +54,15 @@ AboutDlg::OnCopy(wxCommandEvent &e)
     if (wxTheClipboard->Open()) {
 	wxTheClipboard->SetData(new wxTextDataObject(info));
 	wxTheClipboard->Close();
+	// (Try to) make the selection persist after aven exits.
+	(void)wxTheClipboard->Flush();
     }
+}
+
+void
+AboutDlg::OnClose(wxCommandEvent &e)
+{
+    Destroy();
 }
 
 AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
@@ -111,8 +120,6 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     } while (!l.empty());
 
     wxStaticText* licence = new wxStaticText(this, 504, licence_str);
-    wxButton* ok = new wxButton(this, wxID_OK, _("OK"));
-    ok->SetDefault();
 
     vert->Add(10, 5, 0, wxTOP, 5);
     vert->Add(title, 0, wxLEFT | wxRIGHT, 20);
@@ -168,12 +175,14 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
     bottom->Add(5, 5, 1);
-    bottom->Add(new wxButton(this, about_COPY, _("Copy")), 0, wxRIGHT | wxBOTTOM, 6);
-    bottom->Add(ok, 0, wxRIGHT | wxBOTTOM, 15);
+    bottom->Add(new wxButton(this, wxID_COPY), 0, wxRIGHT | wxBOTTOM, 6);
+    wxButton* close = new wxButton(this, wxID_CLOSE);
+    bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
     vert->SetMinSize(0, bitmap.GetHeight());
 
     SetSizer(horiz);
+    close->SetDefault();
 
     horiz->Fit(this);
     horiz->SetSizeHints(this);
