@@ -175,7 +175,7 @@ CavernLogWindow::process(const wxString &file)
 #endif
 
     wxString escaped_file = escape_for_shell(file, true);
-    wxString cmd = escape_for_shell(wxString(cavern,wxConvUTF8), false);
+    wxString cmd = escape_for_shell(wxString(cavern, wxConvUTF8), false);
     osfree(cavern);
     cmd += wxT(" -o ");
     cmd += escaped_file;
@@ -187,7 +187,7 @@ CavernLogWindow::process(const wxString &file)
 	wxString m;
 	m.Printf(wmsg(/*Couldn't open pipe: `%s'*/17), cmd.c_str());
 	m += wxT(" (");
-	m += wxString(strerror(errno),wxConvUTF8);
+	m += wxString(strerror(errno), wxConvUTF8);
 	m += wxT(')');
 	wxGetApp().ReportError(m);
 	return -2;
