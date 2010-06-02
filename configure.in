@@ -380,8 +380,13 @@ if test no = "$mswindows"; then
   AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 fi
 
-AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
+AC_CONFIG_FILES([make_release], [chmod +x make_release])
+AC_CONFIG_FILES([
+ Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile vim/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
- doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys)
+ doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys
+ make_release
+ ])
+AC_OUTPUT
 dnl FIXME update msvc makefile for 1.1 branch
 dnl src/msvc/config.h
