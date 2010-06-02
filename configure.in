@@ -7,8 +7,6 @@ dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
 AC_INIT(src/aven.cc)
 
-dnl next line is for make_release
-CHANGELOG_FROM_TAG=v1_1_11
 AM_INIT_AUTOMAKE(survex, 1.1.12)
 RELEASE=1
 
@@ -363,7 +361,7 @@ esac])
 DOCS_OTHER="manual.rtf manual.txt manual.ps"
 AC_SUBST(DOCS_OTHER)
 
-HTMLFILES="AUTHORS.htm ChngeLog.htm GPL.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm 3dformat.htm"
+HTMLFILES="AUTHORS.htm GPL.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm 3dformat.htm"
 AC_SUBST(HTMLFILES)
 
 EXTRA_TEXT="AUTHORS COPYING NEWS TODO ChangeLog"

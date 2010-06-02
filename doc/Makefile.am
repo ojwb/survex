@@ -19,11 +19,8 @@ EXTRA_DIST = manual $(HTMLFILES) $(DOCS_OTHER) survex.1.in index.htm.in\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml\
- man_print.ini.sgml man_svxedit.sgml cl2html.pl news2html.pl\
+ man_print.ini.sgml man_svxedit.sgml news2html.pl\
  version.ent version.ent.in
-
-ChngeLog.htm: ../ChangeLog
-	./cl2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../ChangeLog > ChngeLog.htm
 
 NEWS.htm: ../NEWS news2html.pl
 	./news2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../NEWS > NEWS.htm
@@ -32,7 +29,7 @@ OLDNEWS.htm: ../OLDNEWS news2html.pl
 	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
 MAINTAINERCLEANFILES = @DOCS_OTHER@ $(other_mans)\
- ChngeLog.htm NEWS.htm OLDNEWS.htm
+ NEWS.htm OLDNEWS.htm
 
 pkgdoc_DATA = @HTMLFILES@ @DOCS_OTHER@
 
