@@ -1,11 +1,69 @@
-Changes in 1.1.13 (2007-XX-XX):
+Changes in 1.1.13 (2010-06-03):
+
+* Say "wxWidgets" instead of "wxWindows" consistently.
+
+* img.c: Fix memory leak of filename_opened member.
+
+* cad3d, aven: Fix export to SVG when a label contains a '%' character.
 
 * aven:
 
-  + Require at least wxWidgets 2.6.0.
+  + wxWidgets 2.6.0 or newer is now required.
 
-  + (Unix version): Fix display of degree symbol in status bar and menu items
-    with accented characters in.
+  + A "Unicode" build of wxWidgets is now supported.  An "ANSI" build may still
+    work but hasn't been tested recently (all packaged versions of wxWidgets
+    seem to be Unicode now).
+
+  + Fix potential uses of uninitialised variables which may have been causing
+    occasional glitches when loading a file on start-up.
+
+  + Loading the font used for plotting labels and other text on the survey
+    pane is now more efficient.
+
+  + "About" dialog:
+
+    - Add "Copy" button to copy the system info to the clipboard for easier
+      bug reporting.
+
+    - List OpenGL extensions last, since there are usually lots of them with a
+      modern gfx card.
+
+    - Fix 100% CPU usage while the "About" dialog is open.
+
+  + Processing .svx files:
+
+    - Put the survey data log window in a splitter in the usual frame rather
+      than having a separate frame for it.
+
+    - Passing a .svx file on the command line now works better.
+
+    - Auto-scroll the log window until we've reported a warning or error.
+
+    - Fix small memory leak.
+
+  + The presentation filename now defaults to using the basename of the
+    currently loaded dataset, but we always prompt before we first save with
+    such a name.
+
+  + Reduce memory usage when saving a screenshot.
+
+  + Fix reporting of OpenGL errors.
+
+  + Fix glitches when tilting while looking East.
+
+* Documentation:
+
+  + 3dformat.htm: Update for v6 format (thanks to Mike McCombe).
+
+  + GPL.htm: Replace HTML version of licence with a link to the version on
+    the FSF website.
+
+  + ChngeLog.htm: Stop generating an HTML version of the ChangeLog - it's too
+    low level to be of interest to non-developers, and developers can look at
+    the source code.
+
+* (Unix version): configure: New preferred name for specifying wx-config script
+  is WX_CONFIG.  WXCONFIG still supported for compatibility.
 
 Changes in 1.1.12 (2007-02-07):
 
@@ -87,7 +145,7 @@ Changes in 1.1.10 (2006-07-14):
 * aven: The measuring line can now measure to anywhere in plan or elevation
   view (not just to a station!)  In plan view the horizontal distance and
   bearing are shown, while in elevation view the vertical distance is shown.
-    
+
 * aven: Moving the mouse over a station in the survey view now highlights
   that station in the survey tree (though it may not be visible if the
   survey(s) it is in aren't expanded).
@@ -364,7 +422,7 @@ Changes in 1.1.5 (2005.09.20):
 
 * aven: If the graphics drivers support it, draw crosses as texture mapped
   OpenGL point markers which is much faster.
- 
+
 * aven: Cross size increased to match Survex 1.0.
 
 * aven: We must update which blobs are displayed if display of surface or

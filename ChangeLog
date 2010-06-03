@@ -1,3 +1,7 @@
+Thu Jun 03 13:53:57 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog for 1.1.13.
+
 Thu Jun 03 12:25:14 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Makefile.am,configure.in,debian/Makefile.am,debian/changelog: Remove
