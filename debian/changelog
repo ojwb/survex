@@ -1,3 +1,9 @@
+survex (1.1.13-1) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Olly Betts <olly@survex.com>  Thu, 03 Jun 2010 05:26:38 +0000
+
 survex (1.1.12-1) unstable; urgency=low
 
   * New upstream release

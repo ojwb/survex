@@ -6,7 +6,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
-SUBDIRS = . lib src doc tests debian
+SUBDIRS = . lib src doc tests
 
 # We never want to implicitly recurse into the vim subdirectory, but we still
 # want to distribute the files there.
@@ -48,19 +48,6 @@ rpm : dist
 	mkdir BUILD
 	: #
 	rpmbuild -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
-
-debian : dist
-	: # overkill maybe - we could probably just use this tree
-	: # but then the .deb-s go in the parent directory, plus we get
-	: # lintian moaning about the directory name not having the
-	: # version number
-	-rm -rf deb
-	mkdir deb
-	cd deb && tar zxvf ../${PACKAGE}-${VERSION}.tar.gz
-	: # -us and -uc mean don't sign packages
-	cd deb/${PACKAGE}-${VERSION} && debuild --no-tgz-check -us -uc
-	mv deb/*.deb deb/*.dsc deb/*.changes deb/*.gz .
-	rm -rf deb
 
 mingw : all mingw_iss
 
@@ -117,4 +104,4 @@ dos_doc_zip :
 	: # -l means convert LF to CR+LF
 	cd doc && zip -9 -l ../$(dos_doc_zip_name) @DOCS_OTHER@
 
-.PHONY: rpm debian mingw mingw_iss dos_doc_exe dos_doc_zip
+.PHONY: rpm mingw mingw_iss dos_doc_exe dos_doc_zip

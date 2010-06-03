@@ -7,7 +7,7 @@ dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
 AC_INIT(src/aven.cc)
 
-AM_INIT_AUTOMAKE(survex, 1.1.12)
+AM_INIT_AUTOMAKE(survex, 1.1.13)
 RELEASE=1
 
 AC_SUBST(RELEASE)
@@ -383,9 +383,8 @@ fi
 AC_CONFIG_FILES([make_release], [chmod +x make_release])
 AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
- tests/Makefile vim/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
- doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys
- make_release
+ tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.1
+ doc/version.ent survex.spec src/svxedit lib/survex.keys
  ])
 AC_OUTPUT
 dnl FIXME update msvc makefile for 1.1 branch
