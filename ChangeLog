@@ -1,3 +1,10 @@
+Thu Jun 03 12:14:16 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release.in: Remove ancient workaround for getting wine to work.
+	  Remove .deb building machinery.  Reenable distcheck to see if the
+	  problem with extend.tst has gone away.  Update mingw cross-building
+	  machinery.
+
 Wed Jun 02 13:30:28 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in,doc/GPL.htm,doc/index.htm.in: Remove HTML version of GPL

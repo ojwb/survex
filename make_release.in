@@ -1,9 +1,5 @@
 #! /bin/sh
 
-# Needed for wine to run on roadkill:
-LD_ASSUME_KERNEL=2.4.1
-export LD_ASSUME_KERNEL
-
 VERSION="@VERSION@"
 
 # flags to consider:
@@ -14,11 +10,8 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${@-src rpm deb doc mingw}
+mk=${@-src rpm doc mingw}
 if test x"$rel" = xyes ; then
-   # Update debian changelog entry if necessary
-   # If it does get updated, then the next check will fail...
-   dch -v"$VERSION-1" "New upstream release." || true
    # Check everything is checked into SVN.
    if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
       echo There are changes not checked into SVN - please rectify
@@ -52,7 +45,7 @@ if test yes = "$rel" ; then
 # FIXME   CXXFLAGS="-Werror"
    CFLAGS="-Wp,-std=c89"
    CXXFLAGS=
-   if ! make dist ; then # distcheck fails extend.tst for some reason!
+   if ! make distcheck ; then # distcheck fails extend.tst for some reason!
       echo make distcheck failed
       exit 1
    fi
@@ -74,12 +67,6 @@ if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
        echo rpmbuild not installed - skipping rpm generation
    fi
 fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<deb\>' || test x"$mk" = xdeb ; then
-   if ! make debian ; then
-      echo make debian failed
-      exit 1
-   fi
-fi
 if test x"$rel" = xyes && expr "$mk" : '.*\<doc\>' || test x"$mk" = xdoc ; then
    if ! make dos_doc_exe ; then
       echo make dos_doc_exe failed
@@ -95,34 +82,26 @@ unset CXX
 if expr "$mk" : '.*\<mingw\>'; then
    test -n "$build_platform" || build_platform=`sh config.guess`
    SAVE_PATH="$PATH"
-   if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
-      # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
-      PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
+   if test -d /usr/i586-mingw32msvc/bin ; then
+      # debian mingw32 package
+      PATH=/usr/i586-mingw32msvc/bin:$PATH
+      CC=/usr/bin/i586-mingw32msvc-gcc
+      export CC
+      CXX=/usr/bin/i586-mingw32msvc-g++
+      export CXX
    else
-      if test -d /usr/i586-mingw32msvc/bin ; then
-         # debian mingw32 package
-	 PATH=/usr/i586-mingw32msvc/bin:$PATH
-	 CC=/usr/bin/i586-mingw32msvc-gcc
-	 export CC
-	 CXX=/usr/bin/i586-mingw32msvc-g++
-	 export CXX
-      else
-	 # variant of debian mingw32 package?
-	 PATH=/usr/i386-mingw32msvc/bin:$PATH
-	 CC=/usr/bin/i386-mingw32msvc-gcc
-	 export CC
-	 CXX=/usr/bin/i386-mingw32msvc-g++
-	 export CXX
-      fi
+      # variant of debian mingw32 package?
+      PATH=/usr/i386-mingw32msvc/bin:$PATH
+      CC=/usr/bin/i386-mingw32msvc-gcc
+      export CC
+      CXX=/usr/bin/i386-mingw32msvc-g++
+      export CXX
    fi
-   wxc=wxmsw-2.5-config
-   for a in /usr/i586-mingw32msvc/bin/wx-config ; do
-      test -x "$a" && wxc="$a"
-   done
+   wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-ansi-release-static-2.8
    LDFLAGS=
    CPPFLAGS=
-#if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" CFLAGS=-Werror CXXFLAGS=-Werror ; then
-   if ! ./configure --host=mingw32 --build="$build_platform" WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
+   # CFLAGS=-Werror CXXFLAGS=-Werror
+   if ! ./configure --host=mingw32 --build="$build_platform" WX_CONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
       echo mingw configure failed
       exit 1
    fi
