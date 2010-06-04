@@ -18,6 +18,7 @@ Uninstallable=yes
 AppCopyright=@COPYRIGHT_MSG@
 ;WizardImageFile=survey.bmp
 ;WizardSmallImageFile=??? (up to 55x58)
+LZMANumFastBytes=273
 SolidCompression=yes
 MinVersion=4,4
 ; Only show the "choose language" dialog if there isn't an exact match for
@@ -36,8 +37,7 @@ TimeStampsInUTC=yes
 ; SignedUninstaller ???
 ; If upgrading, default to the language selected last time.
 UsePreviousLanguage=yes
-; FIXME: check...
-;DisableWelcomePage=yes
+DisableWelcomePage=yes
 
 [Languages]
 ; Official translations:

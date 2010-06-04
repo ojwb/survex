@@ -1,3 +1,9 @@
+Fri Jun 04 15:32:27 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Specify "LZMANumFastBytes=273" which shaves a small
+	  amount of the installer size.  Specify "DisableWelcomePage=yes"
+	  which is apparently in line with what other modern installers do.
+
 Fri Jun 04 14:32:04 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in,make_release,make_release.in: We no longer need VERSION
