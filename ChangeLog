@@ -1,3 +1,8 @@
+Fri Jun 04 05:08:14 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Fix character constant to be a string constant when
+	  building under WXMSW.
+
 Thu Jun 03 13:53:57 GMT 2010  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog for 1.1.13.

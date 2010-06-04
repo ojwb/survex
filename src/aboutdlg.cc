@@ -138,26 +138,26 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     info += wxT("\n") wxVERSION_STRING
 #ifdef __WXGTK__
 # if defined __WXGTK26__
-        wxT(" (GTK+ >= 2.6)\n");
+	wxT(" (GTK+ >= 2.6)\n");
 # elif defined __WXGTK24__
-        wxT(" (GTK+ >= 2.4)\n");
+	wxT(" (GTK+ >= 2.4)\n");
 # elif defined __WXGTK20__
-        wxT(" (GTK+ >= 2.0)\n");
+	wxT(" (GTK+ >= 2.0)\n");
 # elif defined __WXGTK12__
-        wxT(" (GTK+ >= 1.2)\n");
+	wxT(" (GTK+ >= 1.2)\n");
 # else
-        wxT(" (GTK+ < 1.2)\n");
+	wxT(" (GTK+ < 1.2)\n");
 # endif
 #elif defined __WXMOTIF__
 # if defined __WXMOTIF20__
-        wxT(" (Motif >= 2.0)\n");
+	wxT(" (Motif >= 2.0)\n");
 # else
-        wxT(" (Motif < 2.0)\n");
+	wxT(" (Motif < 2.0)\n");
 # endif
 #elif defined __WXX11__
-        wxT(" (X11)\n");
+	wxT(" (X11)\n");
 #else
-        wxT('\n');
+	wxT("\n");
 #endif
     int bpp = wxDisplayDepth();
     info += wxString::Format(wxT("Display Depth: %d bpp"), bpp);
