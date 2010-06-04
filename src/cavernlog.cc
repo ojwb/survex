@@ -44,16 +44,16 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 #ifdef __WXMSW__
     bool needs_quotes = false;
     while (p < s.size()) {
-	if (p == '"') {
-	    s.insert(p, '\\');
+	if (s[p] == wxT('"')) {
+	    s.insert(p, wxT('\\'));
 	    ++p;
 	    needs_quotes = true;
 	}
 	++p;
     }
     if (needs_quotes) {
-	s.insert(0, '"');
-	s += '"';
+	s.insert(0, wxT('"'));
+	s += wxT('"');
     }
 #else
     if (protect_dash && !s.empty() && s[0u] == '-') {
@@ -169,7 +169,7 @@ CavernLogWindow::process(const wxString &file)
 {
     char *cavern = use_path(msg_exepth(), "cavern");
 #ifdef __WXMSW__
-    SetEnvironmentVariable("SURVEX_UTF8", "1");
+    SetEnvironmentVariable(wxT("SURVEX_UTF8"), wxT("1"));
 #else
     setenv("SURVEX_UTF8", "1", 1);
 #endif

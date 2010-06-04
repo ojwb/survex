@@ -1,3 +1,8 @@
+Fri Jun 04 12:41:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Add missing wxT() to string and character
+	  constants only used in __WXMSW__ build.
+
 Fri Jun 04 12:19:18 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: wxWidgets now has a Slovak translation, so remove the
