@@ -1,3 +1,8 @@
+Fri Jun 04 12:44:39 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Explicitly construct temporary wxString() which
+	  is needed to avoid overload ambiguity under __WXMSW__.
+
 Fri Jun 04 12:41:59 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Add missing wxT() to string and character

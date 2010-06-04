@@ -79,7 +79,7 @@ class EditMarkDlg : public wxDialog {
     wxTextCtrl * angle, * tilt_angle, * scale, * time;
 public:
     EditMarkDlg(wxWindow* parent, const PresentationMark & p)
-	: wxDialog(parent, 500, wxT("Edit Waypoint"))
+	: wxDialog(parent, 500, wxString(wxT("Edit Waypoint")))
     {
 	easting = new wxTextCtrl(this, 601, wxString::Format(wxT("%.3f"), p.GetX()));
 	northing = new wxTextCtrl(this, 602, wxString::Format(wxT("%.3f"), p.GetY()));
