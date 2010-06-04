@@ -66,19 +66,21 @@ and I'll incorporate patches provided they're fairly clean.
 <H2>Microsoft Windows Installer Builder</H2>
 
 <P>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
-build the MS Windows Installer.  At the time of writing, I've just updated
-Survex 1.1.X to use InnoSetup version 5.1.5.  Here are some random notes.
+build the MS Windows Installer.  Survex 1.1.3 was built using InnoSetup
+5.3.9 (non-unicode version, so that the installer works on older versions
+of Microsoft Windows).
+
+<P>Here are some random notes:
 
 <H3>Translations</H3>
 
-<P>In addition to the translations included as standard, we also add:
+<P>In addition to the translations included with InnoSetup as standard, we also
+add these, which you can find in the <code>lib</code> subdirectory of Xapian's
+SVN tree:
 
 <UL>
-<LI>UK English (unofficial, done by Olly)
-<LI>Slovak-6-5.1.0.isl (official, but not in 5.1.5)
-<LI>Slovak-6-5.1.0.isl (official, but not in 5.1.5)
-<LI>SpanishStd-2-5.1.0.isl (unofficial, asked Josep to check it over)
-<LI>Romanian-5-5.1.0.isl (unofficial, asked Cristian to check it over)
+<LI>English_GB.isl (unofficial, done by Olly)
+<LI>Romanian-7-5.1.11.isl (unofficial, asked Cristian to check it over)
 </UL>
 
 <H3>survex.iss</H3>
