@@ -1,3 +1,8 @@
+Fri Jun 04 14:32:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,make_release,make_release.in: We no longer need VERSION
+	  in make_release, so no need to generate it from configure.
+
 Fri Jun 04 14:00:58 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Makefile.am,xvfb-run: We no longer need an X display to run ISCC

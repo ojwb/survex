@@ -380,7 +380,6 @@ if test no = "$mswindows"; then
   AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 fi
 
-AC_CONFIG_FILES([make_release], [chmod +x make_release])
 AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.1
