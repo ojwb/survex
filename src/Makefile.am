@@ -68,9 +68,9 @@ svxedit.ico: ../lib/icons/svxedit.ico
 
 editwrap_LDADD = svxeditrc.o
 
-# FIXME: use path on WXCONFIG to get --include-dir?
+# FIXME: use path on WXCONFIG to get --include-dir, or something?
 avenrc.o: $(srcdir)/aven.rc aven.ico
-	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include -o "$$pwd/avenrc.o" aven.rc
+	pwd=`pwd` && cd $(srcdir) && i586-mingw32msvc-windres --include-dir /opt/wxmsw/include --include-dir /usr/i586-mingw32msvc/include/wx-2.8 -o "$$pwd/avenrc.o" aven.rc
 
 aven.ico: ../lib/icons/aven.ico
 	cp ../lib/icons/aven.ico .
