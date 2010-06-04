@@ -1,3 +1,8 @@
+Fri Jun 04 12:19:18 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: wxWidgets now has a Slovak translation, so remove the
+	  kludge to substitute Czech if Slovak isn't found.
+
 Fri Jun 04 05:08:14 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aboutdlg.cc: Fix character constant to be a string constant when

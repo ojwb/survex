@@ -155,21 +155,15 @@ bool Aven::OnInit()
 {
     wxLog::SetActiveTarget(new MyLogWindow());
 
-    const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
     {
-	// suppress message box warnings about messages not found
+	// Suppress message box warnings about messages not found.
 	wxLogNull logNo;
 	wxLocale *loc = new wxLocale();
 	loc->AddCatalogLookupPathPrefix(wxString(msg_cfgpth(), wxConvUTF8));
-	if (!loc->Init(wxString(msg_lang, wxConvUTF8),
-		       wxString(lang, wxConvUTF8),
-		       wxString(msg_lang, wxConvUTF8), TRUE, TRUE)) {
-	    if (lang && strcmp(lang, "sk") == 0) {
-	       // As of 2.6.3, wxWidgets has cs but not sk - the two languages
-	       // are close, so this makes sense...
-	       loc->Init(wxT("cs"), wxT("cs"), wxT("cs"), TRUE, TRUE);
-	    }
-	}
+	wxString msg_lang_str(msg_lang, wxConvUTF8);
+	const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
+	wxString lang_str(lang, wxConvUTF8);
+	loc->Init(msg_lang_str, lang_str, msg_lang_str, TRUE, TRUE);
 	// The existence of the wxLocale object is enough - no need to keep a
 	// pointer to it!
     }
