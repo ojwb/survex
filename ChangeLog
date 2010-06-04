@@ -1,3 +1,19 @@
+Fri Jun 04 14:00:58 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,xvfb-run: We no longer need an X display to run ISCC
+	  under Wine, so just run wine directly and removed version of
+	  Debian's xvfb-run script.
+	* make_release.in: Pass variables to configure on the command line
+	  rather than in the enviornment.  Running "make distcheck" no longer
+	  fails extend.tst, so remove comment about that.  Use case rather
+	  than expr to check what we've been asked to build.  Update to use
+	  unicode wx-config script for wxmsw.  The wxmsw build spews warnings
+	  about aliasing issues, so turn on -fno-strict-aliasing to avoid any
+	  potential bugs from that.  Enable -Werror for the wxmsw build.
+	* Makefile.am: Update list of wxstd.mo files we package for wxmsw
+	  (add pt and sk) and where we copy them from.  Copy the unofficial
+	  InnoSetup i18n files (.isl) from lib.
+
 Fri Jun 04 13:40:35 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Update InnoSetup info.

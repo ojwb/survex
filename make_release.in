@@ -29,11 +29,7 @@ if test yes = "$rel" ; then
    cp -u /usr/share/misc/config.sub .
 fi
 autoreconf --force -i
-export CC
-export CXX
-CC=gcc
-CXX=g++
-if ! ./configure ; then
+if ! ./configure CC=gcc CXX=g++ ; then
    echo configure failed
    exit 1
 fi
@@ -45,7 +41,7 @@ if test yes = "$rel" ; then
 # FIXME   CXXFLAGS="-Werror"
    CFLAGS="-Wp,-std=c89"
    CXXFLAGS=
-   if ! make distcheck ; then # distcheck fails extend.tst for some reason!
+   if ! make distcheck ; then
       echo make distcheck failed
       exit 1
    fi
@@ -57,67 +53,67 @@ else
       exit 1
    fi
 fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
-   if rpmbuild --version > /dev/null 2> /dev/null ; then
+if test x"$rel" = xyes ; then
+  case $mk in
+  *rpm*)
+    if rpmbuild --version > /dev/null 2> /dev/null ; then
       if ! make rpm ; then
-         echo make rpm failed
-         exit 1
-       fi
-   else
-       echo rpmbuild not installed - skipping rpm generation
-   fi
-fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<doc\>' || test x"$mk" = xdoc ; then
-   if ! make dos_doc_exe ; then
+        echo make rpm failed
+        exit 1
+      fi
+    else
+      echo rpmbuild not installed - skipping rpm generation
+    fi
+    ;;
+  esac
+  case $mk in
+  *doc*)
+    if ! make dos_doc_exe ; then
       echo make dos_doc_exe failed
       exit 1
-   fi
+    fi
+    ;;
+  esac
 fi
 if ! make distclean ; then
    echo make distclean failed
    exit 1
 fi
-unset CC
-unset CXX
-if expr "$mk" : '.*\<mingw\>'; then
-   test -n "$build_platform" || build_platform=`sh config.guess`
-   SAVE_PATH="$PATH"
-   if test -d /usr/i586-mingw32msvc/bin ; then
+case $mk in
+  *mingw*)
+    test -n "$build_platform" || build_platform=`sh config.guess`
+    SAVE_PATH="$PATH"
+    if test -d /usr/i586-mingw32msvc/bin ; then
       # debian mingw32 package
       PATH=/usr/i586-mingw32msvc/bin:$PATH
       CC=/usr/bin/i586-mingw32msvc-gcc
-      export CC
       CXX=/usr/bin/i586-mingw32msvc-g++
-      export CXX
-   else
+    else
       # variant of debian mingw32 package?
       PATH=/usr/i386-mingw32msvc/bin:$PATH
       CC=/usr/bin/i386-mingw32msvc-gcc
-      export CC
       CXX=/usr/bin/i386-mingw32msvc-g++
-      export CXX
-   fi
-   wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-ansi-release-static-2.8
-   LDFLAGS=
-   CPPFLAGS=
-   # CFLAGS=-Werror CXXFLAGS=-Werror
-   if ! ./configure --host=mingw32 --build="$build_platform" WX_CONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
+    fi
+    wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8
+    # -Werror here causes AC_CHECK_FUNCS to fail.
+    CFLAGS=
+    CXXFLAGS='-fno-strict-aliasing -Werror'
+    if ! ./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s ; then
       echo mingw configure failed
       exit 1
-   fi
-   if ! make ; then
+    fi
+    if ! make CFLAGS=-Werror ; then
       echo mingw make failed
       exit 1
-   fi
-   if ! make mingw_iss ; then
+    fi
+    if ! make mingw_iss ; then
       echo mingw make mingw_iss failed
       exit 1
-   fi
-   if ! make distclean ; then
+    fi
+    if ! make distclean ; then
       echo make distclean failed
       exit 1
-   fi
-   PATH="$SAVE_PATH"
-   CC=
-   CXX=
-fi
+    fi
+    PATH="$SAVE_PATH"
+    ;;
+esac
