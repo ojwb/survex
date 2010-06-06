@@ -1,3 +1,8 @@
+Sun Jun 06 09:36:06 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Use wx-config's --rescomp option to get the command
+	  and options needed to turn .rc files into object files.
+
 Fri Jun 04 15:32:27 GMT 2010  Olly Betts <olly@survex.com>
 
 	* survex.iss.in: Specify "LZMANumFastBytes=273" which shaves a small
