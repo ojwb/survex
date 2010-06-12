@@ -320,7 +320,7 @@ void Aven::ReportError(const wxString& msg)
 wxString
 wmsg(int msg_no) 
 {
-    return wxString(msg(msg_no), wxConvUTF8);
+    return wxString::FromUTF8(msg(msg_no));
 }
 
 // called to report errors by message.c
