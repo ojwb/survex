@@ -1,3 +1,8 @@
+Sat Jun 12 14:26:32 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Use wxString::FromAscii() to convert date to
+	  wxString.
+
 Sun Jun 06 09:36:06 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Use wx-config's --rescomp option to get the command

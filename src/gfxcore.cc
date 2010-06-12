@@ -874,9 +874,12 @@ void GfxCore::DrawDatebar()
 	time_t date = m_Parent->GetDateMin() +
 		   time_t((double)m_Parent->GetDateExtent() * band / (GetNumDepthBands() - 1));
 	size_t res = strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&date));
-	// Insert extra "" to avoid trigraphs issues.
-	if (res == 0 || res == sizeof(buf)) strcpy(buf, "?""?""?""?-?""?-?""?");
-	strs[band] = wxString(buf, wxConvUTF8);
+	if (res == 0 || res == sizeof(buf)) {
+	    // Insert extra "" to avoid trigraphs issues.
+	    strs[band] = wxT("?""?""?""?-?""?-?""?");
+	} else {
+	    strs[band] = wxString::FromAscii(buf);
+	}
 
 	int x;
 	GetTextExtent(strs[band], &x, NULL);
