@@ -1,8 +1,8 @@
-Changes in 1.1.13 (2010-06-03):
+Changes in 1.1.13 (2010-06-13):
 
 * Say "wxWidgets" instead of "wxWindows" consistently.
 
-* img.c: Fix memory leak of filename_opened member.
+* img.c: Fix small memory leak (filename_opened member).
 
 * cad3d, aven: Fix export to SVG when a label contains a '%' character.
 
@@ -32,10 +32,10 @@ Changes in 1.1.13 (2010-06-03):
 
   + Processing .svx files:
 
-    - Put the survey data log window in a splitter in the usual frame rather
-      than having a separate frame for it.
-
     - Passing a .svx file on the command line now works better.
+
+    - Put the survey data log window in a splitter in the usual frame rather
+      than opening a separate frame for it.
 
     - Auto-scroll the log window until we've reported a warning or error.
 
@@ -51,6 +51,8 @@ Changes in 1.1.13 (2010-06-03):
 
   + Fix glitches when tilting while looking East.
 
+  + Added Portuguese and Slovak translations of wxWidgets messages.
+
 * Documentation:
 
   + 3dformat.htm: Update for v6 format (thanks to Mike McCombe).
@@ -64,6 +66,9 @@ Changes in 1.1.13 (2010-06-03):
 
 * (Unix version): configure: New preferred name for specifying wx-config script
   is WX_CONFIG.  WXCONFIG still supported for compatibility.
+
+* (Microsoft Windows version): The installer is now created with a newer
+  version of InnoSetup, which gives a 10% smaller download.
 
 Changes in 1.1.12 (2007-02-07):
 
