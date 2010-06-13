@@ -728,7 +728,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
    buf = wmsg(/*Scale*/154);
 
    /* Add units used - eg. "Scale (10m)" */
-   buf.Append(wxString::Format(wxT(" (%.0f%s)"), (double)pow(10.0, (double)E), wxString(u_buf, wxConvUTF8).c_str()));
+   buf.Append(wxString::Format(wxT(" (%.0f%s)"), (double)pow(10.0, (double)E), wxString::FromAscii(u_buf).c_str()));
    SetColour(PR_COLOUR_TEXT);
    MOVEMM(x, y + 4); WriteString(buf);
 
@@ -1162,7 +1162,7 @@ svxPrintout::OnBeginPrinting() {
     Init(pfh, false);
     for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
     Pre();
-    m_layout->footer = wxString(msgPerm(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167),wxConvUTF8);
+    m_layout->footer = wmsg(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167);
 }
 
 void

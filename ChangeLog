@@ -1,3 +1,9 @@
+Sun Jun 13 05:41:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Use wxString::FromAscii() for the units on the scale
+	  bar which we know to be ASCII.  No need to use msgPerm() for a
+	  message we assign to a wxString.
+
 Sun Jun 13 04:44:30 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc,src/printwx.cc: Use wxFileName::SplitPath() instead of
