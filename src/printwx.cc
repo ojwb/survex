@@ -34,6 +34,7 @@ using namespace std;
 #include <ctype.h>
 #include <float.h>
 #include <limits.h>
+#include <wx/filename.h>
 #include <wx/print.h>
 #include <wx/printdlg.h>
 #include <wx/spinctrl.h>
@@ -322,10 +323,9 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void
 svxPrintDlg::OnExport(wxCommandEvent&) {
     UIToLayout();
-    char *baseleaf = baseleaf_from_fnm(m_File.fn_str());
-//    wxFileName::SplitPath(m_File,NULL,NULL,&baseleaf,NULL,wxPATH_NATIVE);
-    wxFileDialog dlg(this, wxT("Export as:"), wxString(),
-		     wxString(baseleaf, wxConvUTF8),
+    wxString baseleaf;
+    wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
+    wxFileDialog dlg(this, wxT("Export as:"), wxString(), baseleaf,
 		     wxT("DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {

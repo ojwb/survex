@@ -1,3 +1,8 @@
+Sun Jun 13 04:44:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/printwx.cc: Use wxFileName::SplitPath() instead of
+	  baseleaf_from_fnm().
+
 Sun Jun 13 00:57:11 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/export.cc,src/gfxcore.cc: wxString::fn_str() on wxmsw returns

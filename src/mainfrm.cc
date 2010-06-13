@@ -39,6 +39,7 @@
 #include "useful.h"
 
 #include <wx/confbase.h>
+#include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>
 #include <wx/process.h>
@@ -1690,11 +1691,11 @@ void MainFrm::OnOpen(wxCommandEvent&)
 void MainFrm::OnScreenshot(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
-    char *baseleaf = baseleaf_from_fnm(m_File.char_str());
+    wxString baseleaf;
+    wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
     wxFileDialog dlg(this, wmsg(/*Save Screenshot*/321), wxString(),
-		     wxString(baseleaf, wxConvUTF8) + wxT(".png"),
+		     baseleaf + wxT(".png"),
 		     wxT("*.png"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-    free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	static bool png_handled = false;
 	if (!png_handled) {
@@ -2149,12 +2150,12 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
     AvenAllowOnTop ontop(this);
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
-    char *baseleaf = baseleaf_from_fnm(m_File.char_str());
+    wxString baseleaf;
+    wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
     wxFileDialog dlg(this, wxT("Export Movie"), wxString(),
-		     wxString(baseleaf, wxConvUTF8) + wxT(".mpg"),
+		     baseleaf + wxT(".mpg"),
 		     wxT("MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-    free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!m_Gfx->ExportMovie(dlg.GetPath())) {
 	    wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
