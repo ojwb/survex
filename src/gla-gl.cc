@@ -301,7 +301,7 @@ void GLACanvas::FirstShow()
 
 #ifdef USE_FNT
     // Load font
-    wxString path(msg_cfgpth(), wxConvUTF8);
+    wxString path = wmsg_cfgpth();
     path += wxCONFIG_PATH_SEPARATOR;
     path += wxT("aven.txf");
     // FIXME: This should really use fn_str() - currently we probably can't
@@ -1303,7 +1303,7 @@ void GLACanvas::ToggleTextured()
 	::wxInitAllImageHandlers();
 
 	wxImage img;
-	wxString texture(msg_cfgpth(), wxConvUTF8);
+	wxString texture(wmsg_cfgpth());
 	texture += wxCONFIG_PATH_SEPARATOR;
 	texture += wxT("icons");
 	texture += wxCONFIG_PATH_SEPARATOR;

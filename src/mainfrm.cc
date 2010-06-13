@@ -668,7 +668,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     , m_PrefsDlg(NULL)
 #endif
 {
-    icon_path = wxString(msg_cfgpth(), wxConvUTF8);
+    icon_path = wxString(wmsg_cfgpth());
     icon_path += wxCONFIG_PATH_SEPARATOR;
     icon_path += wxT("icons");
     icon_path += wxCONFIG_PATH_SEPARATOR;
@@ -936,7 +936,7 @@ void MainFrm::CreateSidePanel()
     // Overall tabbed structure:
     // FIXME: this assumes images are 15x15
     wxImageList* image_list = new wxImageList(15, 15);
-    wxString path = wxString(msg_cfgpth(), wxConvUTF8);
+    wxString path = wxString(wmsg_cfgpth());
     path += wxCONFIG_PATH_SEPARATOR;
     path += wxT("icons") ;
     path += wxCONFIG_PATH_SEPARATOR;

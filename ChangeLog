@@ -1,3 +1,8 @@
+Sun Jun 13 12:23:23 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Add wmsg_cfgpth() which caches the result of msg_cfgpth() as
+	  a wxString.
+
 Sun Jun 13 06:57:07 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc,src/gla-gl.cc,src/mainfrm.cc: wxString::fn_str() on

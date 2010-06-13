@@ -72,9 +72,11 @@ wxBitmap PrefsDlg::LoadPreferencesIcon(const wxString& icon) const
     // Load an icon for use in the preferences dialog.
     //FIXME share code with LoadIcon...
 
-    const wxString path = wxString(msg_cfgpth()) +
-                          wxCONFIG_PATH_SEPARATOR + wxString("icons") +
-                          wxCONFIG_PATH_SEPARATOR +
-                          wxString(icon) + wxString("prefs.png");
+    wxString path = wmsg_cfgpth();
+    path += wxCONFIG_PATH_SEPARATOR;
+    path += wxString("icons");
+    path += wxCONFIG_PATH_SEPARATOR;
+    path += wxString(icon);
+    path += wxString("prefs.png");
     return wxBitmap(path, wxBITMAP_TYPE_PNG);
 }

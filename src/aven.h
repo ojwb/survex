@@ -75,6 +75,8 @@ string_format(const char * fmt, ...)
 // wmsg is the unicode version of msg.
 wxString wmsg(int msg_no);
 
+const wxString & wmsg_cfgpth();
+
 class MainFrm;
 
 class Aven : public wxGLApp {

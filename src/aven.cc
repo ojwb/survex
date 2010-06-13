@@ -159,7 +159,7 @@ bool Aven::OnInit()
 	// Suppress message box warnings about messages not found.
 	wxLogNull logNo;
 	wxLocale *loc = new wxLocale();
-	loc->AddCatalogLookupPathPrefix(wxString(msg_cfgpth(), wxConvUTF8));
+	loc->AddCatalogLookupPathPrefix(wmsg_cfgpth());
 	wxString msg_lang_str(msg_lang, wxConvUTF8);
 	const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
 	wxString lang_str(lang, wxConvUTF8);
@@ -321,6 +321,15 @@ wxString
 wmsg(int msg_no) 
 {
     return wxString::FromUTF8(msg(msg_no));
+}
+
+const wxString &
+wmsg_cfgpth()
+{
+    static wxString path;
+    if (path.empty())
+	path = wxString(msg_cfgpth(), wxConvUTF8);
+    return path;
 }
 
 // called to report errors by message.c
