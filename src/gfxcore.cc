@@ -2883,7 +2883,9 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
     mpeg = new MovieMaker();
 
-    if (!mpeg->Open(fnm.fn_str(), width, height)) {
+    // FIXME: This should really use fn_str() - currently we probably can't
+    // save to a Unicode path on wxmsw.
+    if (!mpeg->Open(fnm.char_str(), width, height)) {
 	// FIXME : sort out reporting actual errors from ffmpeg library
 	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
 	delete mpeg;

@@ -1004,7 +1004,9 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	   return false;
    }
 
-   if (!filt->fopen(fnm_out.fn_str())) {
+   // FIXME: This should really use fn_str() - currently we probably can't
+   // save to a Unicode path on wxmsw.
+   if (!filt->fopen(fnm_out.char_str())) {
        delete filt;
        return false;
    }

@@ -1,3 +1,9 @@
+Sun Jun 13 00:57:11 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/export.cc,src/gfxcore.cc: wxString::fn_str() on wxmsw returns
+	  a wide string, which doesn't work with fopen(), etc, so call
+	  char_str() instead for now.
+
 Sat Jun 12 15:07:54 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: We can rely on our message catalog being UTF-8 so use
