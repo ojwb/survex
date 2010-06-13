@@ -955,12 +955,13 @@ MainFrm::ProcessSVXFile(const wxString & file)
     Show(true);
     m_Splitter->Show(false);
     CavernLogWindow * log = new CavernLogWindow(this);
-    log->SetSize(GetClientSize());
+    m_Splitter->ReplaceWindow(m_Gfx, log);
 
     int result = log->process(file);
     if (result == 0) {
-	log->Show(false);
+	m_Splitter->ReplaceWindow(log, m_Gfx);
 	m_Splitter->Show();
+	log->Destroy();
     }
     return result >= 0;
 }
