@@ -1,3 +1,9 @@
+Sun Jun 13 06:57:07 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc,src/gla-gl.cc,src/mainfrm.cc: wxString::fn_str() on
+	  wxmsw returns a wide string, which doesn't work with fopen(), etc, so
+	  call char_str() instead for now.
+
 Sun Jun 13 05:41:30 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Use wxString::FromAscii() for the units on the scale

@@ -160,7 +160,9 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 			++i;
 		}
 	}
-	system(cmd.fn_str());
+	// FIXME: This should really use fn_str() - currently we probably can't
+	// process a Unicode path on wxmsw.
+	system(cmd.char_str());
     }
 }
 
@@ -182,7 +184,9 @@ CavernLogWindow::process(const wxString &file)
     cmd += wxT(' ');
     cmd += escaped_file;
 
-    FILE * cavern_out = popen(cmd.fn_str(), "r");
+    // FIXME: This should really use fn_str() - currently we probably can't
+    // process a Unicode path on wxmsw.
+    FILE * cavern_out = popen(cmd.char_str(), "r");
     if (!cavern_out) {
 	wxString m;
 	m.Printf(wmsg(/*Couldn't open pipe: `%s'*/17), cmd.c_str());

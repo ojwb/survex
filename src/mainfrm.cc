@@ -316,7 +316,9 @@ class AvenPresList : public wxListCtrl {
 		fnm = dlg.GetPath();
 	    }
 
-	    FILE * fh_pres = fopen(fnm.fn_str(), "w");
+	    // FIXME: This should really use fn_str() - currently we probably can't
+	    // save to a Unicode path on wxmsw.
+	    FILE * fh_pres = fopen(fnm.char_str(), "w");
 	    if (!fh_pres) {
 		wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
 		return;
@@ -348,14 +350,14 @@ class AvenPresList : public wxListCtrl {
 	}
 	void New(const wxString &fnm) {
 	    DeleteAllItems();
-	    char *baseleaf = baseleaf_from_fnm(fnm.fn_str());
-	    filename = wxString(baseleaf, wxConvUTF8);
-	    free(baseleaf);
+	    wxFileName::SplitPath(fnm, NULL, NULL, &filename, NULL, wxPATH_NATIVE);
 	    filename += wxT(".fly");
 	    force_save_as = true;
 	}
 	bool Load(const wxString &fnm) {
-	    FILE * fh_pres = fopen(fnm.fn_str(), "r");
+	    // FIXME: This should really use fn_str() - currently we probably
+	    // can't save to a Unicode path on wxmsw.
+	    FILE * fh_pres = fopen(fnm.char_str(), "r");
 	    if (!fh_pres) {
 		wxString m;
 		m.Printf(wmsg(/*Couldn't open file `%s'*/93), fnm.c_str());
