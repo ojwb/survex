@@ -1,3 +1,9 @@
+Mon Jun 14 04:23:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.h,src/gla-gl.cc: Pass the length of the string to
+	  fntTexFont::puts() rather than recalculating it inside the
+	  method.
+
 Sun Jun 13 12:57:08 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Fix switching to and from the CavernLogWindow pane

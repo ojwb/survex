@@ -3,7 +3,7 @@
 //
 //  Draw text using texture mapped fonts.
 //
-//  Copyright (C) 2003,2004,2006 Olly Betts
+//  Copyright (C) 2003,2004,2006,2010 Olly Betts
 //
 //     Based on code from PLIB - http://plib.sourceforge.net
 //     Copyright (C) 1998,2002  Steve Baker
@@ -78,7 +78,7 @@ class fntTexFont {
 	if (height) *height = fnt_size + 1;
     }
 
-    void puts(int x, int y, const wxChar *s) const {
+    void puts(int x, int y, const wxChar *s, size_t len) const {
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
@@ -86,14 +86,10 @@ class fntTexFont {
 	glTranslated(x, y, 0);
 	glListBase(list_base);
 	if (sizeof(wxChar) == 1) {
-	    glCallLists(strlen((const char *)s), GL_UNSIGNED_BYTE, s);
+	    glCallLists(len, GL_UNSIGNED_BYTE, s);
 	} else if (sizeof(wxChar) == 2) {
-	    size_t len = 0;
-	    while (s[len]) ++len;
 	    glCallLists(len, GL_UNSIGNED_SHORT, s);
 	} else if (sizeof(wxChar) == 4) {
-	    size_t len = 0;
-	    while (s[len]) ++len;
 	    glCallLists(len, GL_UNSIGNED_INT, s);
 	}
 	glPopMatrix();

@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -816,7 +816,7 @@ void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
     glEnable(GL_ALPHA_TEST);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
-    m_Font.puts(x, y, str.c_str());
+    m_Font.puts(x, y, str.data(), str.size());
     glPopAttrib();
 #else
     DrawText(x, y, 0.0, str);
