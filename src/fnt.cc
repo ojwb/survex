@@ -131,7 +131,7 @@ fntTexFont::load(const char *fname)
 	    for (i = 0; i < tex_height; ++i) {
 		for (j = 0; j < tex_width; ++j) {
 		    if (texbitmap[i * stride + (j >> 3)] & (1 << (j & 7))) {
-			teximage[i * tex_width + j] = 1;
+			teximage[i * tex_width + j] = 0xff;
 		    }
 		}
 	    }
@@ -154,13 +154,8 @@ fntTexFont::load(const char *fname)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    static const GLuint map[2] = { 0, 0xffffffff };
-    glPixelMapuiv(GL_PIXEL_MAP_I_TO_A, 2, map);
-    glPixelMapuiv(GL_PIXEL_MAP_I_TO_R, 2, map);
-    glPixelMapuiv(GL_PIXEL_MAP_I_TO_G, 2, map);
-    glPixelMapuiv(GL_PIXEL_MAP_I_TO_B, 2, map);
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, tex_width, tex_height, 0 /* Border */,
-		 GL_COLOR_INDEX, GL_UNSIGNED_BYTE, (GLvoid *)teximage);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, tex_width, tex_height, 0 /* Border */,
+		 GL_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)teximage);
     delete [] teximage;
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
