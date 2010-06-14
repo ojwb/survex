@@ -1,3 +1,7 @@
+Mon Jun 14 05:20:44 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Handle the left bearing and character width correctly.
+
 Mon Jun 14 04:44:22 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/fnt.cc: Change back to not using GL_COLOR_INDEX, but with still
