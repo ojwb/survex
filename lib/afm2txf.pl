@@ -94,7 +94,7 @@ foreach my $m (grep {/^(C|FontName) /} @lines) {
     # "position"
     my ($x, $y) = (-$left, -$bottom);
     my ($w, $h) = ($right-$left, $top-$bottom);
-    
+
     $metrics{$name} = [$nomwid, $x, $y, $w, $h];
 }
 
@@ -106,7 +106,7 @@ die "No FontName found in metrics" if not defined $FONT;
 my $maxhgt = 0;
 foreach my $c (keys %CHARS) {
     if(!defined $metrics{$c}) {
-	print STDERR "% WARNING: no metrics for char $c.  Skipping.\n";	
+	print STDERR "% WARNING: no metrics for char $c.  Skipping.\n";
 	next;
     }
     if($metrics{$c}->[4] > $maxhgt) { $maxhgt = $metrics{$c}->[4]; }
@@ -225,14 +225,14 @@ sub genPostscript {
     my $rowhgt = 1/$rows;
 
     my @PS = ();
-    
+
     # The canonical "point size" number, in texture space
     $LINEHGT = ($rowhgt - 2*$PADDING/$TEXSIZ) / $maxhgt;
 
     # Get to where we want.  Draw the whole thing in a 1 inch square at
     # the bottom left of the "page".
     push @PS, "72 72 scale";
-    
+
     # Fill the square with black
     push @PS, "0 setgray";
     push @PS, "-1 -1 moveto";
@@ -242,10 +242,10 @@ sub genPostscript {
 
     # Draw in white
     push @PS, "1 setgray";
-    
+
     # Generate our PUSH @PS, font
     push @PS, "/$FONT findfont $LINEHGT scalefont setfont";
-    
+
     my $x = $PADDING/$TEXSIZ;
     my $y = 1 - $rowhgt + $PADDING/$TEXSIZ;
     my @chars = sort { $CHARS{$a} <=> $CHARS{$b} } (keys %CHARS);
@@ -254,7 +254,7 @@ sub genPostscript {
 	next if !defined $m;
 
 	my $id = sprintf "%2.2x", $CHARS{$c};
-	
+
 	# No space?
 	my $w = $m->[3]*$LINEHGT;
 	if($x + $w + $PADDING/$TEXSIZ > 1) {
@@ -268,16 +268,15 @@ sub genPostscript {
 
 	my $vx = $x + $m->[1]*$LINEHGT;
 	my $vy = $y + $m->[2]*$LINEHGT;
-	
+
 	push @PS, "$vx $vy moveto";
 	push @PS, "<$id> show";
-	
+
 	# Next box...
 	$x += $w + 2*$PADDING/$TEXSIZ;
     }
-    
+
     push @PS, "showpage";
 
     return \@PS;
 }
-
