@@ -1,3 +1,8 @@
+Tue Jun 15 08:53:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gettexttomsg.pl,src/wx.h: Add GPL boilerplate to files which were
+	  missing it.
+
 Tue Jun 15 08:46:28 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/: Update FSF address in licence notices.
