@@ -87,7 +87,8 @@ fntTexFont::load(const char *fname)
     int format      = fnt_readInt(fd);
     int tex_width   = fnt_readInt(fd);
     int tex_height  = fnt_readInt(fd);
-    /* int max_height = */ fnt_readInt(fd);
+    fnt_size = fnt_readInt(fd);
+    fnt_size += fnt_size >> 2;
     /* int unknown = */ fnt_readInt(fd);
     int num_glyphs  = fnt_readInt(fd);
     list_base = glGenLists(256 - 32) - 32;
@@ -170,7 +171,6 @@ fntTexFont::load(const char *fname)
     float W = 1.0f / (float)tex_width;
     float H = 1.0f / (float)tex_height;
     unsigned char max_w = 0;
-    int u = 0, d = 0;
     for (i = 0; i < num_glyphs; ++i) {
 	unsigned short ch = fnt_readShort(fd);
 	unsigned char w = fnt_readByte(fd);
@@ -207,10 +207,7 @@ fntTexFont::load(const char *fname)
 	widths[ch] = step;
 	glTranslated(widths[ch], 0, 0);
 	glEndList();
-	if (vtx_bot < d) d = vtx_bot;
-	if (vtx_top > u) u = vtx_top;
     }
-    fnt_size = u - d;
 
     if (widths[(int)' '] == -1) {
 	glNewList(list_base + ' ', GL_COMPILE);
