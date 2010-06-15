@@ -1,3 +1,13 @@
+Tue Jun 15 12:13:42 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Remove out of date postal addresses - we can
+	  probably safely assume people have email these days.  Direct
+	  people to the mailing list since they are likely to get a
+	  quicker response rather than mailing individuals.  Remove
+	  mention of a paper mailing list.  Remove mention of sending
+	  us a floppy (!) or blank CDR to get a version as I can't recall
+	  the last time I gave someone a copy on physical media.
+
 Tue Jun 15 11:22:56 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Makefile.am,make_release: I can't persuade rpmbuild to work sanely,
