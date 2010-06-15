@@ -157,7 +157,7 @@ print STDERR " ($rows rows)\n";
 #
 print STDERR "Rendering Postscript...\n";
 my $res = $TEXSIZ * $DOWNSAMPLE;
-my $pid = open PS, "|gs -r$res -g${res}x${res} -sDEVICE=ppm -sOutputFile=$FONT.ppm > /dev/null";
+my $pid = open PS, "|gs -r$res -g${res}x${res} -sDEVICE=ppm -sOutputFile=\Q$FONT\E.ppm > /dev/null";
 die "Couldn't spawn ghostscript interpreter" if !defined $pid;
 print PS join("\n", @$PS), "\n";
 close PS;
@@ -167,7 +167,7 @@ waitpid($pid, 0);
 # Downsample with ImageMagick
 #
 print STDERR "Antialiasing image...\n";
-system("mogrify -geometry ${TEXSIZ}x${TEXSIZ} $FONT.ppm") == 0
+system("mogrify -geometry ${TEXSIZ}x${TEXSIZ} \Q$FONT\E.ppm") == 0
     or die "Couldn't rescale $FONT.ppm";
 
 #
