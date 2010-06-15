@@ -1,3 +1,13 @@
+Tue Jun 15 14:09:29 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,configure.in,doc/Makefile.am,make_release: Scrap the
+	  "alternative manual formats" zip file - people will generally just
+	  want one of them, so downloading several together isn't very useful.
+	  Replace PostScript version of manual with a PDF version (more
+	  compact and more people will have software to read PDF).  Don't
+	  generate RTF format by default as PDF is more useful if you want
+	  a formatted version to print.
+
 Tue Jun 15 13:36:30 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Merge the "Contributing" section into the "Mailing

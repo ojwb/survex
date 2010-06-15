@@ -10,7 +10,6 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${*:-"src doc mingw"}
 
 if test x"$rel" = xyes ; then
    # Check everything is checked into SVN.
@@ -19,12 +18,8 @@ if test x"$rel" = xyes ; then
       exit 1
    fi
 fi
-if test -f Makefile ; then
-   if ! make distclean ; then
-      echo make distclean failed
-      exit 1
-   fi
-fi
+
+test ! -f Makefile || make distclean
 
 if test yes = "$rel" ; then
    cp -u /usr/share/misc/config.guess .
@@ -48,36 +43,28 @@ else
    make dist
 fi
 
-case $mk in
-  *doc*)
-    make doc_zip ;;
-esac
-
 make distclean
 
-case $mk in
-  *mingw*)
-    test -n "$build_platform" || build_platform=`sh config.guess`
-    SAVE_PATH=$PATH
-    if test -d /usr/i586-mingw32msvc/bin ; then
-      # debian mingw32 package
-      PATH=/usr/i586-mingw32msvc/bin:$PATH
-      CC=/usr/bin/i586-mingw32msvc-gcc
-      CXX=/usr/bin/i586-mingw32msvc-g++
-    else
-      # variant of debian mingw32 package?
-      PATH=/usr/i386-mingw32msvc/bin:$PATH
-      CC=/usr/bin/i386-mingw32msvc-gcc
-      CXX=/usr/bin/i386-mingw32msvc-g++
-    fi
-    wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8
-    # -Werror here causes AC_CHECK_FUNCS to fail.
-    CFLAGS=
-    CXXFLAGS='-fno-strict-aliasing -Werror'
-    ./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s
-    make CFLAGS=-Werror
-    make mingw_iss
-    make distclean
-    PATH=$SAVE_PATH
-    ;;
-esac
+test -n "$build_platform" || build_platform=`sh config.guess`
+SAVE_PATH=$PATH
+if test -d /usr/i586-mingw32msvc/bin ; then
+  # debian mingw32 package
+  PATH=/usr/i586-mingw32msvc/bin:$PATH
+  CC=/usr/bin/i586-mingw32msvc-gcc
+  CXX=/usr/bin/i586-mingw32msvc-g++
+else
+  # variant of debian mingw32 package?
+  PATH=/usr/i386-mingw32msvc/bin:$PATH
+  CC=/usr/bin/i386-mingw32msvc-gcc
+  CXX=/usr/bin/i386-mingw32msvc-g++
+fi
+wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8
+# -Werror here causes AC_CHECK_FUNCS to fail.
+CFLAGS=
+CXXFLAGS='-fno-strict-aliasing -Werror'
+./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s
+make CFLAGS=-Werror
+make mingw_iss
+PATH=$SAVE_PATH
+
+make distclean

@@ -13,7 +13,9 @@ manual_sources = manual.sgml cad3d.sgml cavern.sgml\
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
-EXTRA_DIST = manual $(HTMLFILES) $(DOCS_OTHER) survex.1.in index.htm.in\
+EXTRA_DIST = manual $(HTMLFILES)\
+ manual.txt manual.pdf\
+ survex.1.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
@@ -88,16 +90,23 @@ manual: $(manual_sources) custom.dsl survex.ent ../configure.in
 	$(SGMLTOOLS) --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
 	cp caution.png note.png manual
 
-# this rule is not used by the build system - it's for "manual" use (ho ho)
+manual.txt: $(manual_sources) survex.ent ../configure.in
+	$(SGMLTOOLS) --backend=txt manual.sgml
+
+manual.pdf: $(manual_sources) survex.ent ../configure.in
+	$(SGMLTOOLS) --backend=ps manual.sgml
+	ps2pdf manual.ps manual.pdf
+	rm manual.ps
+
+# The rules below aren't used by the build system - they're for "manual" use
+# (ho ho)
+
 manual.html: $(manual_sources) custom.dsl survex.ent ../configure.in
 	$(SGMLTOOLS) --backend=onehtml \
 		--dsssl-spec='custom.dsl#onehtml' manual.sgml
 
 manual.rtf: $(manual_sources) survex.ent ../configure.in
 	$(SGMLTOOLS) --backend=rtf manual.sgml
-
-manual.txt: $(manual_sources) survex.ent ../configure.in
-	$(SGMLTOOLS) --backend=txt manual.sgml
 
 manual.ps: $(manual_sources) survex.ent ../configure.in
 	$(SGMLTOOLS) --backend=ps manual.sgml
