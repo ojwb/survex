@@ -71,18 +71,11 @@ mingw_iss : survex.iss
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp
 
-dos_doc_zip_name = svxdoc-doswin-@VERSION@.zip
-dos_doc_exe_name = svxdoc-doswin-@VERSION@.exe
+doc_zip_name = svxdoc-@VERSION@.zip
 
-dos_doc_exe : dos_doc_zip
-	$(RM) $(dos_doc_exe_name)~
-	cat dos_extras/unzipsfx.exe $(dos_doc_zip_name) > $(dos_doc_exe_name)~
-	zip -A $(dos_doc_exe_name)~
-	mv $(dos_doc_exe_name)~ $(dos_doc_exe_name)
-
-dos_doc_zip :
-	$(RM) $(dos_doc_zip_name)
+doc_zip :
+	$(RM) $(doc_zip_name)
 	: # -l means convert LF to CR+LF
-	cd doc && zip -9 -l ../$(dos_doc_zip_name) @DOCS_OTHER@
+	cd doc && zip -9 -l ../$(doc_zip_name) $(DOCS_OTHER)
 
-.PHONY: mingw mingw_iss dos_doc_exe dos_doc_zip
+.PHONY: mingw mingw_iss doc_zip

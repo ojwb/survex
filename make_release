@@ -50,7 +50,7 @@ fi
 
 case $mk in
   *doc*)
-    make dos_doc_exe ;;
+    make doc_zip ;;
 esac
 
 make distclean
