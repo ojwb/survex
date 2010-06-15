@@ -33,22 +33,6 @@ HACKING: doc/HACKING.htm
 TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
 
-rpm : dist
-	: # spec file is produced using AC_OUTPUT
-	echo %_topdir `pwd` > rpmmacros
-	echo %_rpmdir `pwd` >> rpmmacros
-	echo %_sourcedir `pwd` >> rpmmacros
-	echo %_specdir `pwd` >> rpmmacros
-	echo %_srcrpmdir `pwd` >> rpmmacros
-	echo %_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm >> rpmmacros
-	: #
-	echo macrofiles : `rpmbuild --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
-	: #
-	rm -rf BUILD
-	mkdir BUILD
-	: #
-	rpmbuild -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
-
 mingw : all mingw_iss
 
 mingw_iss : survex.iss
@@ -101,4 +85,4 @@ dos_doc_zip :
 	: # -l means convert LF to CR+LF
 	cd doc && zip -9 -l ../$(dos_doc_zip_name) @DOCS_OTHER@
 
-.PHONY: rpm mingw mingw_iss dos_doc_exe dos_doc_zip
+.PHONY: mingw mingw_iss dos_doc_exe dos_doc_zip

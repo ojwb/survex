@@ -10,7 +10,7 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${*:-"src rpm doc mingw"}
+mk=${*:-"src doc mingw"}
 
 if test x"$rel" = xyes ; then
    # Check everything is checked into SVN.
@@ -47,16 +47,6 @@ if test yes = "$rel" ; then
 else
    make dist
 fi
-
-case $mk in
-  *rpm*)
-    if rpmbuild --version > /dev/null 2> /dev/null ; then
-      make rpm
-    else
-      echo rpmbuild not installed - skipping rpm generation
-    fi
-    ;;
-esac
 
 case $mk in
   *doc*)

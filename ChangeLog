@@ -1,3 +1,11 @@
+Tue Jun 15 11:22:56 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,make_release: I can't persuade rpmbuild to work sanely,
+	  and people can just as easily build binary RPMs from the source
+	  tarball as from the srpm, so just remove the rpm target from the
+	  makefile and code which uses it from make_release - it's less to
+	  have to maintain too.
+
 Tue Jun 15 10:59:12 GMT 2010  Olly Betts <olly@survex.com>
 
 	* make_release: Use "set -e" rather than checking the exit codes of
