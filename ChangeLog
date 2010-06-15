@@ -1,3 +1,10 @@
+Tue Jun 15 12:36:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Update survex.com URLs to drop "www.".  Update
+	  wxGTK dependency to >= 2.6.0.  Reenable "BuildRequires:" as
+	  the issue with building the package on Debian is no longer
+	  relevant.
+
 Tue Jun 15 12:35:19 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Update (C) years.  "MacOS X" -> "Mac OS X".
