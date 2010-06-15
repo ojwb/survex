@@ -1,3 +1,7 @@
+Tue Jun 15 04:22:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Extend to cover ISO-8859-1, not just ASCII.
+
 Tue Jun 15 04:08:34 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Clean up trailing whitespace.
