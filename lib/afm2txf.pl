@@ -13,6 +13,7 @@
 #       0.1 (06/28/2002): Initial version
 #
 # Copyright (C) 2002 Andrew James Ross
+# Copyright (C) 2010 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -124,6 +125,9 @@ foreach my $m (grep {/^(C|FontName) /} @lines) {
 }
 
 die "No FontName found in metrics" if not defined $FONT;
+
+# Sanitise $FONT.
+$FONT =~ s!/!_!g;
 
 #
 # Find the height of the tallest character, and print some warnings
@@ -239,7 +243,7 @@ for(my $r=(@rows - 1); $r>=0; $r--) {
 close TXF;
 
 # Clean up
-#system("rm $FONT.ppm");
+unlink("$FONT.ppm");
 
 ########################################################################
 ########################################################################

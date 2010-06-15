@@ -1,3 +1,8 @@
+Tue Jun 15 07:10:16 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Sanitise $FONT to ensure it doesn't contain a '/'.
+	  Remove the temporary .ppm file at the end.
+
 Tue Jun 15 06:13:30 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Fix alignment of characters, backported from PLIB
