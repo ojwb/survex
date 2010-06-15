@@ -1,3 +1,9 @@
+Tue Jun 15 07:48:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/TexFont.h,lib/gentexfont.c: Generate aven.txf with
+	  afm2txf.pl instead of gentexfont because gentexfont's licence doesn't
+	  allow distribution of modified versions.
+
 Tue Jun 15 07:43:48 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Add support for -o option to specify output .txf

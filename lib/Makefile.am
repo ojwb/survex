@@ -16,7 +16,7 @@ hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
 EXTRA_DIST = messages.txt\
  named-entities.txt makemsgs.pl checkshortcut.pl\
  $(hdr_files) survex.keys.in\
- gentexfont.c TexFont.h\
+ afm2txf.pl\
  INSTALL.OSX
 
 MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) *.todo aven.txf
@@ -44,8 +44,4 @@ dist_mime_DATA = survex.mime
 mime_DATA = survex.keys
 
 aven.txf:
-	$(MAKE) gentexfont$(EXEEXT)
-	./gentexfont$(EXEEXT) -w 128 -h 128 -glist `perl -e 'for (33..126,160..255) {print chr $$_}'` -fn -*-helvetica-*-r-*-*-12-*-*-*-*-67-iso8859-1 -file aven.txf
-
-gentexfont$(EXEEXT): gentexfont.c TexFont.h
-	$(CC) -o gentexfont$(EXEEXT) gentexfont.c @X_LIBS@ @X_PRE_LIBS@ -lX11 @X_EXTRA_LIBS@
+	$(srcdir)/afm2txf.pl -o aven.txf /usr/share/texmf-texlive/fonts/afm/urw/helvetic/uhvr8a.afm
