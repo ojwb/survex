@@ -1,3 +1,7 @@
+Tue Jun 15 17:01:41 GMT 2010  Olly Betts <olly@survex.com>
+
+	* INSTALL: Update.
+
 Tue Jun 15 16:53:28 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Fix to work with wxWidgets 2.6 too.
