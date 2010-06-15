@@ -1,3 +1,7 @@
+Tue Jun 15 09:10:02 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gdtconvert: Add GPL license boilerplate.
+
 Tue Jun 15 08:53:28 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gettexttomsg.pl,src/wx.h: Add GPL boilerplate to files which were
