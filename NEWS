@@ -1,4 +1,4 @@
-Changes in 1.1.13 (2010-06-13):
+Changes in 1.1.13 (2010-06-15):
 
 * Say "wxWidgets" instead of "wxWindows" consistently.
 
@@ -17,8 +17,14 @@ Changes in 1.1.13 (2010-06-13):
   + Fix potential uses of uninitialised variables which may have been causing
     occasional glitches when loading a file on start-up.
 
-  + Loading the font used for plotting labels and other text on the survey
-    pane is now more efficient.
+  + Improvements to the handling of the font used for plotting labels and other
+    text on the survey pane:
+
+    - Loading the font file is more efficient.
+
+    - Character spacing is improved.
+
+    - Default font is now anti-aliased.
 
   + "About" dialog:
 
@@ -47,6 +53,10 @@ Changes in 1.1.13 (2010-06-13):
 
   + Reduce memory usage when saving a screenshot.
 
+  + Allow "Toggle Fullscreen" to work even if no survey is loaded now that we
+    persist the window size (and maximised or fullscreen state) between
+    invocations.
+
   + Fix reporting of OpenGL errors.
 
   + Fix glitches when tilting while looking East.
@@ -54,6 +64,12 @@ Changes in 1.1.13 (2010-06-13):
   + Added Portuguese and Slovak translations of wxWidgets messages.
 
 * Documentation:
+
+  + Rationalise manual formats - replace PostScript with PDF and drop RTF.
+
+  + Drop the "alternative manual formats" self-extracting zip file - people
+    will generally just want one of the formats, so downloading several
+    together isn't very useful.
 
   + 3dformat.htm: Update for v6 format (thanks to Mike McCombe).
 
@@ -66,6 +82,9 @@ Changes in 1.1.13 (2010-06-13):
 
 * (Unix version): configure: New preferred name for specifying wx-config script
   is WX_CONFIG.  WXCONFIG still supported for compatibility.
+
+* (Linux version): Source RPM package dropped as you can just build an RPM
+  package from the source tarball.
 
 * (Microsoft Windows version): The installer is now created with a newer
   version of InnoSetup, which gives a 10% smaller download.
