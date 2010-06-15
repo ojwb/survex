@@ -1,3 +1,8 @@
+Tue Jun 15 10:59:12 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: Use "set -e" rather than checking the exit codes of
+	  commands.  -t no longer disables targets - set mk to do that.
+
 Tue Jun 15 09:41:11 GMT 2010  Olly Betts <olly@survex.com>
 
 	* make_release: Fix defaulting of list of things to do.

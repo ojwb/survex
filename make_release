@@ -1,5 +1,7 @@
 #! /bin/sh
 
+set -e
+
 # flags to consider:
 # CFLAGS="-O2 -fomit-frame-pointer"
 # CXXFLAGS="-O2 -fno-rtti -fomit-frame-pointer"
@@ -23,15 +25,14 @@ if test -f Makefile ; then
       exit 1
    fi
 fi
+
 if test yes = "$rel" ; then
    cp -u /usr/share/misc/config.guess .
    cp -u /usr/share/misc/config.sub .
 fi
+
 autoreconf --force -i
-if ! ./configure CC=gcc CXX=g++ ; then
-   echo configure failed
-   exit 1
-fi
+./configure CC=gcc CXX=g++
 if test yes = "$rel" ; then
    export CFLAGS
    export CXXFLAGS
@@ -40,48 +41,34 @@ if test yes = "$rel" ; then
 # FIXME   CXXFLAGS="-Werror"
    CFLAGS="-Wp,-std=c89"
    CXXFLAGS=
-   if ! make distcheck ; then
-      echo make distcheck failed
-      exit 1
-   fi
+   make distcheck
    CFLAGS=
    CXXFLAGS=
 else
-   if ! make dist ; then
-      echo make dist failed
-      exit 1
-   fi
+   make dist
 fi
-if test x"$rel" = xyes ; then
-  case $mk in
+
+case $mk in
   *rpm*)
     if rpmbuild --version > /dev/null 2> /dev/null ; then
-      if ! make rpm ; then
-        echo make rpm failed
-        exit 1
-      fi
+      make rpm
     else
       echo rpmbuild not installed - skipping rpm generation
     fi
     ;;
-  esac
-  case $mk in
+esac
+
+case $mk in
   *doc*)
-    if ! make dos_doc_exe ; then
-      echo make dos_doc_exe failed
-      exit 1
-    fi
-    ;;
-  esac
-fi
-if ! make distclean ; then
-   echo make distclean failed
-   exit 1
-fi
+    make dos_doc_exe ;;
+esac
+
+make distclean
+
 case $mk in
   *mingw*)
     test -n "$build_platform" || build_platform=`sh config.guess`
-    SAVE_PATH="$PATH"
+    SAVE_PATH=$PATH
     if test -d /usr/i586-mingw32msvc/bin ; then
       # debian mingw32 package
       PATH=/usr/i586-mingw32msvc/bin:$PATH
@@ -97,22 +84,10 @@ case $mk in
     # -Werror here causes AC_CHECK_FUNCS to fail.
     CFLAGS=
     CXXFLAGS='-fno-strict-aliasing -Werror'
-    if ! ./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s ; then
-      echo mingw configure failed
-      exit 1
-    fi
-    if ! make CFLAGS=-Werror ; then
-      echo mingw make failed
-      exit 1
-    fi
-    if ! make mingw_iss ; then
-      echo mingw make mingw_iss failed
-      exit 1
-    fi
-    if ! make distclean ; then
-      echo make distclean failed
-      exit 1
-    fi
-    PATH="$SAVE_PATH"
+    ./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s
+    make CFLAGS=-Werror
+    make mingw_iss
+    make distclean
+    PATH=$SAVE_PATH
     ;;
 esac
