@@ -1,3 +1,7 @@
+Tue Jun 15 08:46:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Update FSF address in licence notices.
+
 Tue Jun 15 08:06:09 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: Allow "Toggle Fullscreen" to work even if no
