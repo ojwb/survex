@@ -1141,7 +1141,6 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 
 void GUIControl::OnViewFullScreenUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData());
     cmd.Check(m_View->IsFullScreen());
 }
 

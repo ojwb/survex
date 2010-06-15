@@ -1,3 +1,9 @@
+Tue Jun 15 08:06:09 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Allow "Toggle Fullscreen" to work even if no
+	  survey is loaded now that we persist the window size between
+	  invocations.
+
 Tue Jun 15 08:03:53 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Use GL_BLEND rather than GL_ALPHA to work better with
