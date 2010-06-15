@@ -1,3 +1,8 @@
+Tue Jun 15 13:36:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Merge the "Contributing" section into the "Mailing
+	  List" section.
+
 Tue Jun 15 12:57:13 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Makefile.am,make_release: Just produce a zip file with the

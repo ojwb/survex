@@ -3483,12 +3483,22 @@ what you have to do:
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
 
-<Para>We'd be delighted to hear how you get on with &survexsuite; and
-welcome comments and suggestions for improvements.</Para>
-
 <Para>The best way to contact the authors and other Survex users is the
 Survex mailing list - for details visit:
 <ulink url="http://survex.com/maillist.html">http://survex.com/maillist.html</ulink>
+</Para>
+
+<Para>We'd be delighted to hear how you get on with &survexsuite; and
+welcome comments and suggestions for improvements.</Para>
+
+<Para>
+And we'd love you to contribute your skills to help make &survexsuite; even
+better.  Point out areas of the documentation which could be made clearer, or
+sections which are missing entirely.  Download test releases, try them out, and
+let us know if you find problems or have suggestions for improvements.
+If there's no translation to your language, you could provide one.
+Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
+plenty to do, so feel free to join in.
 </Para>
 
 </Sect1>
@@ -3509,26 +3519,6 @@ Unix, Microsoft Windows, and Mac OS X.</Para>
 <Para>More information on our plans is on the <ulink
 url="&survexwebsite;">web site</ulink>.
 </Para>
-
-</Sect1>
-
-<Sect2><title>Contributing</title>
-
-<!--FIXME rewrite and elaborate -->
-<Para>Monetary donations are welcome, but if you want a more personal way to
-say thankyou we'd love a copy of a survey you've produced using
-&survexsuite;.  Two copies would be best to save us arguing over who gets
-it.</Para>
-
-<Para>Or contribute your skills to help make &survexsuite; even better.
-Point out areas of the documentation which could be made clearer, or sections
-which are missing entirely.  Download test releases, try them out, and let
-us know if you find problems or have suggestions for improvements.
-If there's no translation to your language, you could provide one.
-Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
-plenty to do, so feel free to join in.
-</Para>
-</Sect2>
 
 </Sect1>
 
