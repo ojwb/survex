@@ -1,3 +1,8 @@
+Tue Jun 15 15:38:49 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/survex-aven.desktop,lib/survex-svxedit.desktop: Merge in .desktop
+	  file updates from 1.0.39.1-4 Debian package.
+
 Tue Jun 15 14:40:04 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/Makefile.am: Fix lingering references to @DOCS_OTHER@.

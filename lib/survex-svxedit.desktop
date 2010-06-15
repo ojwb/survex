@@ -1,10 +1,9 @@
 [Desktop Entry]
 Version=1.0
-Encoding=UTF-8
 Name=SvxEdit Cave Survey Data Editor
 GenericName=Cave Survey Data Editor
 Comment=Enter cave survey data for Survex
 Type=Application
 Exec=svxedit
 Icon=svxedit
-Categories=Application;Education;Geology;Science;
+Categories=Education;Geology;Science;
