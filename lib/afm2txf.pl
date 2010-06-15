@@ -201,8 +201,8 @@ foreach my $c (@chars) {
     # the downsampling.
     my $w = round($m->[3] * $LINEHGT * $TEXSIZ + 2*$PADDING);
     my $h = round($m->[4] * $LINEHGT * $TEXSIZ + 2*$PADDING);
-    my $xoff = -round($m->[1] * $LINEHGT * $TEXSIZ - $PADDING);
-    my $yoff = -round($m->[2] * $LINEHGT * $TEXSIZ - $PADDING);
+    my $xoff = -round($m->[1] * $LINEHGT * $TEXSIZ) - $PADDING;
+    my $yoff = -round($m->[2] * $LINEHGT * $TEXSIZ) - $PADDING;
     my $x = round($p->[0] * $TEXSIZ - $PADDING);
     my $y = round($p->[1] * $TEXSIZ - $PADDING);
 
