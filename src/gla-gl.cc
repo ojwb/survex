@@ -813,7 +813,9 @@ void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
 {
 #ifdef USE_FNT
     glPushAttrib(GL_ENABLE_BIT);
-    glEnable(GL_ALPHA_TEST);
+    glDisable(GL_ALPHA_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
     glDisable(GL_DEPTH_TEST);
     m_Font.puts(x, y, str.data(), str.size());
