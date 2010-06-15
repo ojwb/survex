@@ -6,7 +6,7 @@
 # Requirements: Ghostscript, ImageMagick
 #
 # Usage:
-#       afm2txf.pl whatever.afm
+#       afm2txf.pl [-o OUTPUT.txf] whatever.afm
 #
 # Changelog:
 #       0.2 (06/28/2002): Generate fonts with proper padding
@@ -20,6 +20,22 @@
 # published by the Free Software Foundation.
 
 use strict;
+
+my $output;
+if (scalar @ARGV >= 1) {
+    my $arg = $ARGV[0];
+    if ($arg =~ s/^-o//) {
+	shift;
+	if ($arg eq '') {
+	    if (scalar @ARGV == 0) {
+		die "-o needs an argument\n";
+	    }
+	    $output = shift;
+	} else {
+	    $output = $arg;
+	}
+    }
+}
 
 my $METRICS = shift or die; # AFM file
 
@@ -185,7 +201,8 @@ foreach my $c (keys %metrics) {
 }
 
 sub round { sprintf "%.0f", $_[0] }
-open TXF, ">$FONT.txf" or die;
+$output = "$FONT.txf" unless defined $output;
+open TXF, '>', $output or die;
 print TXF pack "V", 0x667874ff;
 print TXF pack "V", 0x12345678;
 print TXF pack "V", 0;

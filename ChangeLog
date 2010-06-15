@@ -1,3 +1,8 @@
+Tue Jun 15 07:43:48 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Add support for -o option to specify output .txf
+	  file.
+
 Tue Jun 15 07:10:16 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Sanitise $FONT to ensure it doesn't contain a '/'.
