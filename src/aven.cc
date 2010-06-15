@@ -320,7 +320,11 @@ void Aven::ReportError(const wxString& msg)
 wxString
 wmsg(int msg_no) 
 {
+#if !wxCHECK_VERSION(2,8,0)
+    return wxString(msg(msg_no), wxConvUTF8);
+#else
     return wxString::FromUTF8(msg(msg_no));
+#endif
 }
 
 const wxString &
