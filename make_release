@@ -8,7 +8,8 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${@-src rpm doc mingw}
+mk=${*:-"src rpm doc mingw"}
+
 if test x"$rel" = xyes ; then
    # Check everything is checked into SVN.
    if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
