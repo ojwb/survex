@@ -104,7 +104,7 @@ joining it, e.g. at a T-junction. And so on.
    </Author>
   </AuthorGroup>
   <copyright>
-   <year>1998-2002</year>
+   <year>1998-2010</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
   <pubdate role="rcs">$Date: 2005-10-17 04:49:04 $</pubdate>
@@ -131,7 +131,7 @@ manual.
 package.
 Version 1.1
 currently runs on &unix;, Microsoft Windows 95/NT and
-successors, and MacOS X.
+successors, and Mac OS X.
 We're investigating support for various
 palmtop devices.
 Version 1.0 has fewer features, but also runs of &msdos; and &riscos; machines.
