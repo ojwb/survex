@@ -1,389 +1,229 @@
-survex (1.1.13-1) karmic; urgency=low
+survex (1.1.13-1) unstable; urgency=low
 
+  [Olly Betts]
   * New upstream release.
+  * Drop "www." from Homepage, as that's canonical now.
+  * Use vim-addon-manager to manage the Survex vim syntax highlighting mode.
+  * debian/watch: Update to look on the right download page.
+  * debian/copyright: Update to list all copyright holders.
 
- -- Olly Betts <olly@survex.com>  Thu, 03 Jun 2010 05:26:38 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 16 Jun 2010 03:01:57 +0000
 
-survex (1.1.12-1) unstable; urgency=low
+survex (1.0.39.1-4) unstable; urgency=low
 
-  * New upstream release
+  [Olly Betts]
+  * debian/control:
+    + Drop dependency on dpkg-dev entirely as it's build-essential.
+    + "wxWindows" -> "wxWidgets" in description.
+    + survex-svxedit: Move ${misc:Depends} from Recommends to Depends.
+  * debian/rules: "dh_clean -k" -> "dh_prep".
 
- -- Wookey <wookey@survex.com>  Wed, 07 Feb 2007 04:22:55 +0000
+ -- Olly Betts <olly@survex.com>  Sun, 16 May 2010 12:11:18 +0000
 
-survex (1.1.11-1) unstable; urgency=low
+survex (1.0.39.1-3) unstable; urgency=low
 
-  * New upstream release.
+  [Olly Betts]
+  * Add myself as co-maintainer with consent of maintainer.
+  * ACK NMU.  (Closes: #515392)
+    + debian/rules: Force $DISPLAY to be empty rather than disabling the
+      testsuite as the NMU did.
+  * Upgrade from debhelper compat level 4 to 7.
+  * debian/control:
+    + Add ${misc:Depends} for survex-svxedit.
+    + Standards-Version: 3.8.4.
+    + Remove version requirement from dpkg-dev build dependency as even etch
+      had a new enough version.
+  * Use latest config.sub and config.guess from autotools-dev.
+    (Closes: #567630)
+  * debian/rules:
+    + Support nocheck and parallel=<n> in DEB_BUILD_OPTIONS.
+    + Remove calls to dh_desktop (now deprecated and a no-op).
+  * debian/source/format: "3.0 (quilt)"
+  * debian/survex-aven.desktop,debian/survex-svxedit.desktop: Remove deprecated
+    "Encoding: UTF-8"; remove deprecated category "Application".
 
- -- Wookey <wookey@survex.com>  Sat, 25 Nov 2006 00:49:37 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 15 May 2010 22:46:04 +0000
 
-survex (1.1.10-1) unstable; urgency=low
+survex (1.0.39.1-2.2) unstable; urgency=low
 
-  * aven: Clicking on a survey name in the survey tree now highlights it in
-    the map view.  Double-clicking zooms the view to show the clicked survey
-    highlighted.  Clicking the root clears the highlighting and double-clicking
-    the root restores the default view.  To expand/collapse a branch, click
-    on the "[+]" or "[-]" icon to the left of the survey name.
-  * aven: The measuring line can now measure to anywhere in plan or elevation
-    view (not just to a station!)  In plan view the horizontal distance and
-    bearing are shown, while in elevation view the vertical distance is shown.
-  * aven: Moving the mouse over a station in the survey view now highlights
-    that station in the survey tree (though it may not be visible if the
-    survey(s) it is in aren't expanded).
-  * aven: Clicking on a station to centre the view now moves the mouse pointer
-    to the new location of the station (except on Mac OS X where this isn't
-    allowed).
-  * aven: Fix which presentation toolbar buttons are shown as depressed.
-  * Fix infinite loop reading 3d files with LRUD data (bug introduced in
-    1.1.9).
-  * vim files are now installed with the correct paths (bug introduced in
-    1.1.9).
+  [Jari Aalto]
+  * Non-maintainer upload.
+  * debian/control
+    - (Build-Depends): update obsolete x-dev to x11proto-core-dev.
+      (important RC bug; Closes: #515392).
+  * debian/rules
+    - (build-stamp): Check that DISPLAY is set before running tests.
 
- -- Wookey <wookey@survex.com>  Thu, 13 Jul 2006 23:47:31 +0100
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 31 Mar 2010 07:16:32 +0300
 
-survex (1.1.9-1) unstable; urgency=low
+survex (1.0.39.1-2.1) unstable; urgency=medium
 
-  * Fix img to filter out cross-sections which don't match the subsurvey (if
-    specified).  The API now returns img_XSECT_END to mark the end of a
-    passage rather than setting a flag on the last img_XSECT of the passage.
-  * Enhance integration with the vim editor - this can now colour .err files,
-    run cavern from vim and parse error output, and run aven from vim.  Tweak
-    the existing vim mode for .svx files to fix a few minor bugs and add
-    support for the new "*data passage" style.
-  * aven: fix drawing of the "blob" end of the measuring line on graphics
-    cards which can't draw large enough blobs for us.
-  * aven: sort out confusion about what encoding everything is in which means
-    that the distance measured by the measuring line actually gets displayed
-    and also fixes problems with empty menu items in non-English locales in
-    some cases.
-  * aven: redraw grey background after a menu is closed over the aven window
-    with no survey loaded.
-  * aven: fix bug which caused printing to crash (introduced in 1.1.8).
-  * aven: avoid crash on some machines when opening "About" dialog before having
-    loaded a survey.
-  * aven: Translate "Plan" and "Elevation" buttons in print view dialog.
-  * aven: Fix character set handling of cavern output.
-  * cavern: Report an error if a cross-section is specified for a station which
-    doesn't exist.
-  * Updated French and Italian translations.
-  * aven: Fix "Can't open message file `en_US' using path
-    `${prefix}/share/survex'" error.
-  * Fix bug in 3d file reading on 64 bit platforms when used in STANDALONE mode
-    (doesn't affect Survex itself, but other applications which use img.c should
-    update their copy).
+  * Non-maintainer upload.
+  * Fix FTBFS due to unquoted configure arguments.  (Closes: #476026)
+  * Change doc-base section to Science/Geoscience to fix a Lintian warning.
 
- -- Wookey <wookey@survex.com>  Tue, 04 Jul 2006 05:18:20 +0100
+ -- James Vega <jamessan@debian.org>  Wed, 30 Apr 2008 23:12:41 -0400
 
-survex (1.1.8-1) unstable; urgency=low
+survex (1.0.39.1-2) unstable; urgency=low
 
-  * No longer a debian native package.
-  * Updated "Build-Depends:" for the new X library packaging.
-  * Incorporate rebuilt debian/rules from 1.0 branch.
-  * "Standards-Version: 3.7.2" - no changes required.
-  * Add desktop file for aven contributed to the Ubuntu package by Phil Bull.
-  * debian/doc-base: Register the manual in Apps/Science rather than Apps/Math
-    for consistency with where we put the Debian menu entry.
-  * Add Conflicts/Replaces with survex-aven package.
-  * Restore survex-svxedit package.
-  * New upstream release:
-    + Drop support for building with wxWidgets versions prior to 2.4.0
-      (which was released on 2003-01-07).
-    + aven: Printing through aven now uses settings from the "[aven]" section
-      of print.ini, and support for hierarchical sections (using "like=") has
-      been disabled.
-    + aven: Change mouse actions to be compatible with those in Survex 1.0.
-      The mousewheel now zooms in/out (it doesn't do anything in 1.0) and
-      left drag is now smart about not rotating and zooming at the same
-      time.
-    + aven: Highlighting stations now happens as you type, and pressing
-      "Enter" or clicking the "Find" button now pans and zooms to show the
-      highlighted stations.
-    + aven: Left-clicking away from a station now cancels measuring line.
-    + aven: Setting view to North, South, East, or West is now animated like
-      the tilt from plan to elevation.
-    + aven: Fix presentation saving to also write "." for decimal points and
-      presentation loading to accept either "." or ",".
-    + aven: Add text for all toolbar items so that aven will work with the
-      Gnome desktop preference for displaying toolbars as icons with text or
-      just text (wxWidgets needs fixing first though).
-    + aven: Remove the ability to detach the menu bar (yell if you actually
-      used it and I'll restore it!)
-    + aven: Add "all survey files" option to the "open file" dialog.
-    + aven: Disable "Highlight exported points" if there aren't any.
-    + Updates to French translation from Michel Bovey.  Also updates to German,
-      Italian, Catalan, Spanish, and Romanian translations.
-    + test suite: fix smoke test to pass even without X running (it was meant
-      to but the code had a bug).
-    + aven: Check if OpenGL is available and exit cleanly with a helpful error
-      if it isn't.
-    + aven: Fix --help and --version to work without a working X display
-      (provided it's built with wxWidgets 2.5.1 or newer which the debian
-      package sadly isn't currently).
-    + aven: Automatically select the presentation tab of the notebook when the
-      user selects "New Presentation" or "Open Presentation".
-    + aven: Fix "Delete" in the presentation list to not get passed on (and so
-      not reset to default view as well).
-    + aven: Fix Ctrl+Insert in the presentation list not to segfault if the
-      list is empty.
-    + aven: Fix Cursor Up and Down in the presentation list to move the
-      highlight up and down instead of being passed on and moving the survey.
-    + aven: Improve SVG output compatibility.  Tested with Mozilla Firefox 1.5,
-      Adobe's SVG browser plugin, Gimp 2.2.8, Gqview 2.0.0, Opera 8.5,
-      Safari 2.0.3, and InkScape 0.42.
-    + aven: Put a 5mm border around exported SVG files to allow for station
-      markers and non-zero width lines.
-    + aven: Fix crash when exporting as SVG or Sketch if labels or surface data
-      was turned on.
-    + aven: Actually close the file we're exporting which fixes problems with
-      it not always being fully written.
+  * Patch to use wx2.6 as 2.4 has been removed from Debian (closes: bug#462031)
+  * Add note that vim addons no longer automatically included (closes: bug#464822)
+  * Fix Lintian issues
 
- -- Wookey <wookey@survex.com>  Fri, 30 Jun 2006 01:33:03 +0100
+ -- wookey <wookey@survex.com>  Wed, 20 Feb 2008 03:30:25 +0000
 
-survex (1.1.7) unstable; urgency=low
+survex (1.0.39.1-1) unstable; urgency=low
 
-  * cavern: Add validity checking for dates in *date commands (with feature
-    test in testsuite).  A date entered as just "year" or "year.month" now
-    becomes a date range for the relevant period (previously it became a single
-    date near the middle of that period).
-  * extend: Fixed 2 uninitialised flags (problem apparently never manifests
-    on Linux - presumably we're lucky and always get zeroed memory from malloc
-    if we never call free).
-  * extend: Default output name for a file called input.3d is now
-    input_extend.3d rather than just extend.3d (which was annoying if you
-    wanted to extend several surveys in the same directory).
-  * aven: OpenGL 2.0 always includes support for point sprites so rework
-    our for them to include that knowledge.
-  * aven: Regenerate depth bar if user switches to/from metric units.
-  * aven: Don't clear the "there" mark just because the mouse pointer has
-    moved off a station.
-  * aven: When processing a .svx file, put the resultant .3d file in the
-    same directory (since that's where we then try to load it from).
-  * aven: Fix labelling of date colouring on 32 bit platforms.
-  * aven: If "colour by date" is on and we load a survey with no date info
-    (or all surveyed on the same date) then set "colour by none".
-  * aven: Make the error dialog modal and remove a signal handler once it
-    has fired to prevent endless (or seemingly endless) cascades of error
-    dialogs.
-  * aven: Enforce a minimum object volume diameter of 1m to avoid problems
-    if a survey file with only one station in is loaded.
-  * aven: Fix problems with indicators disappearing when we're drawing
-    blobs and/or crosses the slow (but always supported) way.  (Problem
-    introduced in 1.1.6).
-  * aven: Really stop setting extra toolbar margin when using GTK2.0.  The
-    attempt to fix this in 1.1.3 failed because __WXGTK12__ is set for GTK+
-    1.2 or *any later release* so is true for GTK+ 2.0 too!
-  * aven: Add details of which of wxGTK, wxMotif, and wxX11 we've been
-    compiled with, and which GTK+/Motif version where appropriate.
-  * documentation: Updates to 3d file format specification from Mike McCombe.
+  * Upload with version number that sorts higher than the hppa binNMU,
+    to actually fix the uninstallable on hppa problem
+  * Add .desktop files: (closes: bug#403870)
 
- -- Wookey <wookey@survex.com>  Tue, 18 Oct 2005 03:19:42 +0100
+ -- Wookey <wookey@survex.com>  Thu, 28 Dec 2006 13:45:09 +0000
 
-survex (1.1.6) unstable; urgency=low
+survex (1.0.39-1) unstable; urgency=high
 
-  * aven: If aven is asked to load a .svx, .dat, or .mak file, run cavern on
-    it, showing cavern's output in a window (with errors and warnings clickable
-    to load the offending file into an editor), and then loading the resulting
-    3d file.
-  * aven: Added "Colour by Date" option.
-  * aven: Disable "Colour by Depth" option if there's no elevation variation.
-  * aven: Don't crash if trying to load a survey with no elevation variation.
-    Instead turn off depth colouring.
-  * aven: Export as HPGL added.
-  * aven: Improved update of mouse coordinates and measuring line (thanks to
-    Martin Green).
-  * aven: Show the coordinates of either the mouse pointer or the nearest
-    survey station to it (if there is one near enough).  Showing both was
-    confusing and meant the status bar overflowed on smaller displays.
-  * aven: When printing an extended elevation, don't show bearing and elevation.
-  * aven: Don't lock "flat" surveys which aren't extended elevations - a
-    flat survey with LRUD data isn't flat any more!
-  * aven: When we have to draw blobs and crosses the slow way (because the
-    graphics hardware doesn't support the fast way), draw them so that they
-    should appear at the correct depth into the 3D scene instead of on top
-    of everything else.
-  * aven: Make "play presentation backwards" icon green to match the other
-    presentation icons.
-  * cavern: Store dates for img_XSECT.
-  * cavern: Fixed small one-off memory leak if you specify -o more than once.
+  * "urgency=high" because survex-aven is currently uninstallable on hppa
+    after a binNMU (which is an RC bug).  The other changes are very safe too.
+  * debian/control: Make binNMU safe.
+  * debian/control: Lowercase first letter of description for survex package
+    as recommended by "best packaging practices".
+  * debian/copyright.in,debian/copyright: Fix failed automatic substitution
+    of copyright statements.
+  * debian/control: "Standards-Version: 3.7.2" - no changes required.
+  * debian/doc-base: Use valid "Apps/Science" section, not invalid "math";
+    Use document ID "survex-manual" rather than the overly generic "manual"
+    since the document ID is supposed to be unique.
+
+ -- Wookey <wookey@survex.com>  Sat, 16 Dec 2006 04:50:47 +0000
+
+survex (1.0.39) unstable; urgency=low
+
+  * Updates to French translation from Michel Bovey.  Also updates to German,
+    Italian, Catalan, Spanish, and Romanian translations.
+  * test suite: fix smoke test to pass even without X running (it was meant to
+    but the code had a bug).  Bug introduced in 1.0.38.
+  * Updated "Build-Depends:" for the new X library packaging. Closes: #347108
+  * Rebuilt debian/rules starting from debhelper example rules.multi2 to
+    eliminate cruft such as use of debhelper programs which are deprecated or
+    have better alternatives.  The new rules file puts exactly the same set of
+    files in each package as the old one does, but should be easier to
+    understand and maintain.
+
+ -- Wookey <wookey@survex.com>  Thu, 12 Jan 2006 03:36:05 +0000
+
+survex (1.0.38) unstable; urgency=low
+
+  All changes backported from 1.1.7:
   * Check environmental variable LC_MESSAGES when deciding what language to use
     for messages.
-  * Removed old printer drivers.
-  * img library: When creating a 3d file, ignore img_XSECT if we've been asked
-    to write a file format version which doesn't support it.
-
- -- Wookey <wookey@survex.com>  Mon, 10 Oct 2005 05:09:19 +0100
-
-survex (1.1.5) unstable; urgency=low
-
-  * aven: Make blobs round like they are in Survex 1.0.
-  * aven: If the graphics drivers don't support drawing blobs using OpenGL
-    point markers, fall back to drawing filled circles.
-  * aven: If the graphics drivers support it, draw crosses as texture mapped
-    OpenGL point markers which is much faster.
-  * aven: Cross size increased to match Survex 1.0.
-  * aven: We must update which blobs are displayed if display of surface or
-    underground legs is toggled.
-  * cavern: Fix handling of a *solve followed by survey data, none of which is
-    attached to the previous data.
-  * cavern: Fixed "No survey data" error when a *solve is followed by another
-    *solve (or the implicit solve at the end of processing) with no data between
-    them.
-
- -- Wookey <wookey@survex.com>  Tue, 20 Sep 2005 15:08:53 +0100
-
-survex (1.1.4) unstable; urgency=low
-
+  * aven: Improved update of mouse coordinates and measuring line (thanks to
+    Martin Green).
+  * aven: When printing an extended elevation, don't show bearing and elevation.
   * aven: Added Aven's icon to the "About" dialog.
   * aven: Use localised character for the decimal point (e.g. "," in most
     continental European countries).
   * aven: Previously the survey tree would get focus and then take keypresses
     (e.g. "P", "L", "Delete").  Now we pass most keypresses across so they
     operate on the cave, and transfer the input focus across when we do.
-  * aven: Make pressing "Return" in the tree control expand/collapse a
-    subtree.
-  * aven: Speed up intialisation by delaying creation of OpenGL lists until
-    they're needed.
-  * aven: Added Mark Shinwell's bounding box with shadow of the survey.
-  * aven: Disable the "Tubes" button/menu item when there's no LRUD data.
+  * aven: Make pressing "Return" in the tree control expand/collapse a subtree.
+  * aven: Make entrances green in side panel tree list to match green blobs used
+    in cave view.
   * aven: Reworded "Restore Default Settings" as "Restore Default View".
   * aven: Set sensible default margins for printing and preserve any margin
     values the user specifies between runs (previously margins defaulted to 0
     each time aven was run).
-  * Documentation: Document *DATA PASSAGE in the manual.
-
- -- Wookey <wookey@survex.com>  Sat, 17 Sep 2005 21:34:57 +0100
-
-survex (1.1.3) unstable; urgency=low
-
-  * cavern: Allow OMIT character (-) for left/right/up/down.
-  * aven: Remove an unnecessary menu separator.
-  * aven: Fix "Find" and "Hide" toolbar buttons to work with GTK2.0.
-  * aven: Make the tooltip for "Hide" show the number of found stations.
-  * aven: If * or ? is used in a glob-style pattern, force a non-substring
-    match.
-  * aven: Enable "New Presentation" when there's a 3d file loaded, rather than
-    when there's a presentation loaded.
-  * aven: Make entrances green in side panel tree list to match green blobs used
-    in cave view.
-  * aven: Don't show surface labels if we're not showing surface data, etc.
-  * aven: Merge "Start Rotation" and "Stop Rotation" into "Toggle Rotation" and
-    make "Space" the key for this.  Keep Return working "Stop Rotation" so
-    existing users are happy, but don't advertise it.
-  * aven: Normalise filename by adding any extension used, and use the
-    normalised filename for file history and window title.
-  * aven: Stop setting extra toolbar margin when using GTK2.0 as the toolbar
-    buttons already have a sensible margin - the extra margin is only needed
-    with GTK1.2.
-  * aven: Fix handling of plumb legs in tube model.
-  * aven: Fixed swapped L and R in tube model.
-  * extend: Preserve UD cross-section information in extended elevation.
-  * extend: Add new messages for John Pybus' enhancements.
-
- -- Wookey <wookey@survex.com>  Wed, 07 Sep 2005 00:33:01 +0100
-
-survex (1.1.2) experimental; urgency=low
-
-  * Added support for LRUD data in .svx files, in .3d files, and aven can
-    now load and display it on screen and on printouts.  The ability to "fake"
-    LRUD data in aven is gone for now but will reappear in some form later.
-  * cavern: Removed support for writing Chasm's 3dx format.  We're going to
-    fold any desirable missing chasm functionality into aven.
-  * aven: Rearranged mouse actions as discussed on the mailing list.  Added
-    cursors for each different mouse action to help the user learn what each
-    does.  Also added cursors for the "compass" and "clino" as well as the
-    scalebar to suggest to the user that they can be dragged to change the view.
-  * aven: Don't segfault on Unix if LANG isn't a known language.
-  * tests/smoketest.tst: If X windows is running, check that we can run aven
-    with --help and --version.
-  * tests/cavern.tst: Fixed cavern.tst to warn if it is skipping a test because
-    no results are listed for it.  This revealed that there was a "newline" test
-    which should have been called "newline", and was a broken testcase too!
-    Fixed all these problems.
+  * aven: Really stop setting extra toolbar margin when using GTK2.0.  The
+    attempt to fix this backported in 1.0.36 failed because __WXGTK12__ is set
+    for GTK+ 1.2 or *any later release* so it is true for GTK+ 2.0 too!
+  * aven: Add details of which of wxGTK, wxMotif, and wxX11 we've been
+    compiled with, and which GTK+/Motif version where appropriate.
+  * extend: Fixed 2 uninitialised flags (problem apparently never manifests
+    on Linux - presumably we're lucky and always get zeroed memory from malloc
+    if we never call free).
+  * extend: Default output name for a file called input.3d is now
+    input_extend.3d rather than just extend.3d (which was annoying if you
+    wanted to extend several surveys in the same directory).
   * cavern: Applied Simeon Warner's patch for handling backcompass, backclino,
     and omitted forward compass/clino readings in Compass DAT files.  Added
     a feature test for this to the testsuite.
-  * It no longer makes sense to have an option not to build aven or to build
-    aven without OpenGL so remove old machinery for this from configure and
-    the sources.
-  * configure: Check if "-lXxf86vm" is needed on UNIX.
-  * configure: Better output for strcasecmp test.
-  * aven: Fix crosses to work much better.  Not a total fix - their position
-    in the Z buffer isn't correct and they're rather slow to plot.
-  * aven: Don't regenerate the hittest grid every time the mouse moves while
-    animating, which solves the mysterious pausing effect (thanks go to Martin
-    Green for spotting this!)  Also clear all the status bar coordinates when
-    animating.
-  * aven: Sort out clashing menu shortcuts in some languages.
-  * aven: Fixed compilation problem on x86_64
-  * SPUD: Pruned out stuff which has been done or which is not actually relevant
-    to this branch.
-  * Merge various changes from 1.0 branch:
-    + aven: Port over "printing from aven" functionality.
-    + aven: Port over "export as" functionality,
-    + Add David Loeffler's vim mode for .svx files.
-  * aven: Fix check for whether a label is behind us in perspective view.
-  * aven: Don't use an opengl list for drawing the indicators - we typically
-    make a new list each time we plot them anyway.
-  * Remove lingering traces of support for RISC OS and pre-386 MSDOS
-  * aven: Set icon on non-Windows platforms too.  This means that with
-    WindowMaker on UNIX you get an icon on the AppIcon by default.
-  * configure: Update wxWindows checks to handle newer wx versions.
-  * Make all maintainer perl scripts "use bytes;" to avoid utf-8 double
-    encoding problems.  They also all require Perl 5.8 now (hopefully this
-    isn't an issue for anyone building from CVS).
-  * acinclude.m4: Quote macro name for fix autotools warning.
-  * doc/aven.sgml: "tilt up" is "'" not ",".
-  * aven: Add support for mousewheels (to tilt the cave).
-  * aven: Fixed twisted transitions to and from pitches in certain cases.
-  * aven: Pick a sensible initial window size when the user's desktop is
-    spread over more than one monitor (works best with wx2.5 or newer, but try
-    to do better with wx2.4 or earlier as well).
-  * aven: Initialise GfxCore slightly later to avoid visual glitch from notebook
-    contents being visible before any survey is loaded.
-  * aven: Allow a coloured texture to be used
-  * aven: Don't initialise until we have data (to the user, this means the
-    window is default colour (grey for most systems) not black until a survey
-    is loaded).
-  * aven: Fixed weird "shadowed" icons.
+  * cavern: Fix handling of a *solve followed by survey data, none of which is
+    attached to the previous data.
+  * cavern: Fixed "No survey data" error when a *solve is followed by another
+    *solve (or the implicit solve at the end of processing) with no data between
+    them.
+  * cavern: Fixed small one-off memory leak if you specify -o more than once.
 
- -- Wookey <wookey@survex.com>  Fri, 15 Jul 2005 21:16:30 +0100
+ -- Wookey <wookey@survex.com>  Tue, 18 Oct 2005 04:33:32 +0100
 
-survex (1.1.1) experimental; urgency=low
+survex (1.0.37) unstable; urgency=low
 
-  * aven: Delay loading the bitmap for the "About" dialog until it is first
-    needed.  We want start up to be as quick as possible.
+  * cavern: Also ignore any arguments after "*data passage" which makes this
+    feature actually useful as intended.
+  * aven: Recognise .3d file format versions 4 and 5 so you can load .3d files
+    processed by 1.1.x test builds.
+  * aven: Normalise filename by adding any extension used, and use the
+    normalised filename for file history and window title.
 
- -- Wookey <wookey@survex.com>  Tue, 05 Oct 2004 02:42:30 +0100
+ -- Wookey <wookey@survex.com>  Sat, 10 Sep 2005 19:31:20 +0100
 
-survex (1.1.0) experimental; urgency=low
+survex (1.0.36) unstable; urgency=low
 
-  * aven: Now uses OpenGL for 3d rendering.
-  * aven: Solid passages - passage dimensions are currently inferred from
-    the leg length (pretty effective as you can measure longer legs in
-    larger passages).  Use of real LRUD data coming soon...
-  * aven: Depth colouring is now continuously varying.
-  * aven: Colour by depth can now be turned off (and there's the start of a
-    framework for properly implementing colour by date, error, etc).
-  * aven: Find stations moved onto the toolbar and now uses a simple wildcarded
-    match (? matches any character, * matches any number of characters).
-  * aven: We now use the status bar for coordinates, distances, etc to make
-    better use of screen space.
-  * aven: Full screen mode (F11).
-  * aven: Perspective view.
-  * aven: Context sensitive cursor shape - needs more work.
-  * aven: Mouse actions changed (hopefully they're now more natural, but
-    you may find the change disorientating - feedback wanted on this).
-  * aven: Added "presentations" which allow you to set up fly-through paths
-    and load/save/run them.
-  * aven: A presentation can be exported as a movie file.
-  * aven: Added Save screenshot facility.
-  * aven: Depth fogging option.
-  * aven: Added Smooth Lines option.
-  * aven: Added Textured Walls option.
-  * aven: If a survey has surface legs but no underground legs, default to
-    showing the surface legs.
-  * cavern: Dates given to *date are now stored in the 3d file.
+  * cavern: Ignore "*data passage" data style so you can process files
+    containing LRUD data for Survex 1.1.3 and later.
+  * cavern: Fix assertion failure when handling a survey with a station only
+    attached by a nosurvey leg.
+  * Capitalise first word of debian package description.
+  * Install vim syntax file as debian vim policy describes.
+  * Changes backported from 1.1.3:
+    + aven: Improve initial window sizing and placement on multimonitor
+      displays when using wx2.4 or earlier.
+    + testsuite: Fix cavern.tst to report misspelled test names and
+      make badnewline test case actually run and actually pass.
+    + aven: Only add toolbar margins for gtk1.2
+    + configure: Updated check for wx version.
 
- -- Wookey <wookey@survex.com>  Fri, 01 Oct 2004 21:24:12 +0100
+ -- Wookey <wookey@survex.com>  Thu, 08 Sep 2005 00:39:51 +0100
+
+survex (1.0.35) unstable; urgency=low
+
+  * Standards-Version: 3.6.2 (no changes).
+  * aven: Fix printing which was deciding how many pages to spread the plot
+    over by looking at the whole paper size, not the printable area.
+  * aven: When exporting, omit surface data if it's not being shown at the
+    moment.  Also omit unnecessary MOVE ops from generated files (which saves
+    quite a lot of space when surface data is turned off).
+  * Set Aven's icon on non-Windows platforms too.  This means that with
+    windowmaker the appicon has an icon without user intervention, and
+    probably improves things with other windowmanagers too.
+  * extend: Added documentation and test cases for the new extend features.
+  * manual: Fix example of setting decimal separator.
+  * Include syntax colouring mode for .svx files for the vim editor, written
+    by David Loeffler.
+
+ -- Wookey <wookey@survex.com>  Mon, 27 Jun 2005 22:32:19 +0100
+
+survex (1.0.34) unstable; urgency=low
+
+  * extend: Added changes from John Pybus which allow you to specify a
+    configuration file to control how the centreline is extended - e.g.
+    where to fold and where to break loops.
+
+ -- Wookey <wookey@survex.com>  Sat, 22 Jan 2005 01:44:39 +0000
+
+survex (1.0.33) unstable; urgency=low
+
+  * aven: Fixed bug which would sometimes pick one too few pages
+    vertically resulting in the survey escaping off the top of the topmost
+    pages.
+  * aven: Changed the toner-wasting, hard-to-measure-exactly alternately filled
+    scale bar to a simple line with ticks.
+  * aven: SVG export fixes: second and subsequent exports had bogus extra
+    "</g>"; Fixed to invert all Y coordinates, not just some; Fixed tags for
+    layers.
+  * aven: Added EPS export option.
+  * Minor documentation updates.
+
+ -- Wookey <wookey@survex.com>  Wed, 13 Jan 2005 05:40:38 +0000
 
 survex (1.0.32) unstable; urgency=low
 
