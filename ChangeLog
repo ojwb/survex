@@ -1,3 +1,8 @@
+Wed Jun 16 14:41:47 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Backport change from branches/survex-1_1:
+	* src/aboutdlg.cc: Add case for "GTK+ >= 2.6".
+
 Wed Jun 16 14:14:11 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in: Backport change to add support for WX_CONFIG as a

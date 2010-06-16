@@ -136,6 +136,8 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path) :
     info += '\n';
     info += wxVERSION_STRING;
 #ifdef __WXGTK__
+#if defined __WXGTK26__
+    info += " (GTK+ >= 2.6)";
 #if defined __WXGTK24__
     info += " (GTK+ >= 2.4)";
 #elif defined __WXGTK20__
