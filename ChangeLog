@@ -1,0 +1,7 @@
+Wed Jun 16 14:14:11 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: Backport change to add support for WX_CONFIG as a
+	  preferred new replacement for WXCONFIG.  Add wx2.8 and remove
+	  wx2.5 (development version) from the list of wx versions to
+	  check.
+
