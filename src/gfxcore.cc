@@ -156,6 +156,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
     m_there.x = DBL_MAX;
     clipping = false;
 
+    m_MouseOutsideCompass = m_MouseOutsideElev = false;
+
     // Create pens and brushes for drawing.
     int num_colours = (int) col_LAST;
     m_Pens = new wxPen[num_colours];

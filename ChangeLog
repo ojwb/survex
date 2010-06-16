@@ -1,3 +1,8 @@
+Wed Jun 16 15:04:03 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Initialise m_MouseOutsideCompass and
+	  m_MouseOutsideElev to avoid using them potentially uninitialised.
+
 Wed Jun 16 14:41:47 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Backport change from branches/survex-1_1:
