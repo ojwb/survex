@@ -15,7 +15,7 @@ manual_alt = manual.txt manual.pdf
 # People can build from CVS without sgmltools v2 or v3 installed but they
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
-EXTRA_DIST = manual $(HTMLFILES) $(manual_alt)\
+EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
  survex.1.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
@@ -86,9 +86,11 @@ maintainer-clean-local:
 # manual, etc depend on configure.in so they get rebuilt when the
 # version number is bumped
 
-manual: $(manual_sources) custom.dsl survex.ent ../configure.in
+manual: manual/stampfile
+manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.in
 	$(SGMLTOOLS) --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
 	cp caution.png note.png manual
+	touch manual/stampfile
 
 manual.txt: $(manual_sources) survex.ent ../configure.in
 	$(SGMLTOOLS) --backend=txt manual.sgml
