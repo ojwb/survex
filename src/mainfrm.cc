@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2010 Olly Betts
 //  Copyright (C) 2004 Philip Underwood
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #ifdef HAVE_CONFIG_H
@@ -462,7 +462,14 @@ void MainFrm::CreateSidePanel()
     wxButton *find_button, *hide_button;
     find_button = new wxButton(find_panel, button_FIND, msg(/*Find*/332));
     find_button->SetDefault();
+    // SetDefaultItem() was moved from wxPanel to wxTopLevelWindow in wx2.8.
+    // No idea how to work around that, but it doesn't seem to be needed with
+    // wx2.8 (at least with wxGTK - perhaps the SetDefault() call above does
+    // the trick.  Seems safest to still call this for older version in case
+    // they need it.
+#if !wxCHECK_VERSION(2,8,0)
     find_panel->SetDefaultItem(find_button);
+#endif
     hide_button = new wxButton(find_panel, button_HIDE, msg(/*Hide*/333));
     m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
 				      msg(/*Regular expression*/334));
@@ -1117,7 +1124,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 				      msg(/*CMAP XYZ files*/325),
 				      msg(/*All files*/208),
 				      wxFileSelectorDefaultWildcardStr),
-		     wxOPEN);
+		     wxFD_OPEN);
 #endif
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
@@ -1143,7 +1150,7 @@ void MainFrm::OnExport(wxCommandEvent&)
     wxFileDialog dlg(this, wxString("Export as:"), "",
 		     wxString(baseleaf),
 		     "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt",
-		     wxSAVE|wxOVERWRITE_PROMPT);
+		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     free(baseleaf);
     if (dlg.ShowModal() == wxID_OK) {
 	wxString fnm = dlg.GetPath();

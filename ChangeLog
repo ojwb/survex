@@ -1,3 +1,7 @@
+Thu Jun 17 16:25:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/wx.h: Fix to compile with wx2.8.
+
 Thu Jun 17 15:44:48 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aboutdlg.cc: Fix typo in recent change to report "GTK+ >= 2.6".
