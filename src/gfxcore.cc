@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2010 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #ifdef HAVE_CONFIG_H
@@ -654,7 +654,9 @@ void GfxCore::RedrawOffscreen()
     // Invalidate hit-test grid.
     m_HitTestGridValid = false;
 
+#if !wxCHECK_VERSION(2,6,0)
     m_DrawDC.BeginDrawing();
+#endif
 
     // Set the font.
     m_DrawDC.SetFont(m_Font);
@@ -817,7 +819,9 @@ void GfxCore::RedrawOffscreen()
 	}
     }
 
+#if !wxCHECK_VERSION(2,6,0)
     m_DrawDC.EndDrawing();
+#endif
 
     drawtime = timer.Time();
 }
@@ -842,7 +846,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
     const wxRegion& region = GetUpdateRegion();
 
+#if !wxCHECK_VERSION(2,6,0)
     dc.BeginDrawing();
+#endif
 
     // Get the areas to redraw and update them.
     wxRegionIterator iter(region);
@@ -881,7 +887,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
     }
 
+#if !wxCHECK_VERSION(2,6,0)
     dc.EndDrawing();
+#endif
 }
 
 Double GfxCore::GridXToScreen(Double x, Double y, Double z)
