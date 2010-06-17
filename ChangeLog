@@ -1,3 +1,7 @@
+Thu Jun 17 15:42:29 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc: Fix to compile with wx >= 2.7.
+
 Thu Jun 17 15:36:50 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/img.c,src/img.h: Update to the version from 1.1.13 so that we

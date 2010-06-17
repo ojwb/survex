@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003,2005 Olly Betts
+//  Copyright (C) 2001-2003,2005,2010 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #ifdef HAVE_CONFIG_H
@@ -150,8 +150,14 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 	}
 	case WXK_LEFT: case WXK_RIGHT: case WXK_UP: case WXK_DOWN:
 	case WXK_HOME: case WXK_END: case WXK_PAGEUP: case WXK_PAGEDOWN:
-	// PRIOR/NEXT seem to actually be PAGEUP/PAGEDOWN (tested on wxGtk)
+	// On wx 2.6 and earlier, PRIOR/NEXT seem to actually be
+	// PAGEUP/PAGEDOWN (on wxGtk at least).  In wx 2.7 and later
+	// they're just compatibility aliases, so either they have the
+	// same value or aren't defined - either way the code won't
+	// compile.
+#if !wxCHECK_VERSION(2,7,0)
 	case WXK_PRIOR: case WXK_NEXT:
+#endif
 	    e.Skip();
 	    break;
 	default:
