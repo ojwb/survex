@@ -108,7 +108,7 @@ joining it, e.g. at a T-junction. And so on.
    </Author>
   </AuthorGroup>
   <copyright>
-   <year>1998-2002</year>
+   <year>1998-2010</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
   <pubdate role="rcs">$Date: 2006-02-05 00:10:41 $</pubdate>
@@ -134,7 +134,7 @@ manual.
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.
 currently runs on &unix;, Microsoft Windows 95/NT and
-successors, MacOS X, &msdos;, and Acorn &riscos; machines.
+successors, Mac OS X, &msdos;, and Acorn &riscos; machines.
 We're investigating support for various
 palmtop devices.
 </Para>
@@ -3569,13 +3569,22 @@ what you have to do:
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
 
-<!-- FIXME: URL to list, contact wookey for paper -->
+<Para>The best way to contact the authors and other Survex users is the
+Survex mailing list - for details visit:
+<ulink url="http://survex.com/maillist.html">http://survex.com/maillist.html</ulink>
+</Para>
 
-<Para>We have both email and paper mailing lists for &survexsuite;, to
-keep users informed of new versions and so forth.  This is available free
-by e-mail, or by post for a small charge (to cover photocopying, disks,
-and postage). We recommend you register to receive automatic updates
-and other information.
+<Para>We'd be delighted to hear how you get on with &survexsuite; and
+welcome comments and suggestions for improvements.</Para>
+
+<Para>
+And we'd love you to contribute your skills to help make &survexsuite; even
+better.  Point out areas of the documentation which could be made clearer, or
+sections which are missing entirely.  Download test releases, try them out, and
+let us know if you find problems or have suggestions for improvements.
+If there's no translation to your language, you could provide one.
+Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
+plenty to do, so feel free to join in.
 </Para>
 
 </Sect1>
@@ -3590,83 +3599,12 @@ Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
-<Para>Aven is built on &wxwindows;, which means that can easily support
-Unix, Microsoft Windows, and MacOS X.  MacOS 9 support is possible, but
-requires somebody with MacOS 9 and a compiler to build it with.
-Support for &msdos; is possible if there's sufficient interest.
-Support for &riscos; is unlikely unless someone very enthusiastic steps
-forward to do the porting work.</Para>
+<Para>Aven is built on &wxwindows;, which means that it can easily support
+Unix, Microsoft Windows, and Mac OS X.</Para>
 
 <Para>More information on our plans is on the <ulink
 url="&survexwebsite;">web site</ulink>.
 </Para>
-
-</Sect1>
-
-<Sect1><title>Contacting the authors</title>
-<?dbhtml filename="contact.htm">
-
-<Para>We'd be delighted to hear how you get on with &survexsuite; and
-welcome comments and suggestions for improvements.</Para>
-
-<Para>If you want the latest version and don't have net access, please
-enclose a suitably formatted floppy and an SAE.  These days, we'd probably
-struggle to cope with anything other than 3.5" floppies.  &msdos; format is
-easiest for us.  Alternatively, send a blank CDR and we can burn you a
-CD with all the versions on.</Para>
-
-<Address>
-Wookey
-<Street/734 Newmarket Rd/
-<City/Cambridge/
-<PostCode/CB5 8RS/
-<Country/UK/
-<Phone/Tel: 01223 504881 (home)/
-<Phone/Tel: 01223 811679 (work)/
-<Email/&wookeyemail;/
-</Address>
-
-<Para>or</Para>
-
-<Address>
-Olly Betts
-<Street/6 Ashcroft Court/
-<City/Cambridge/
-<PostCode/CB4 2SN/
-<Country/UK/
-<Phone/Tel: 01223 513644 (home and work)/
-<Email/&ollyemail;/
-</Address>
-
-<!-- FIXME: Mark too? -->
-
-<Para>Or if neither of these get any response try:</Para>
-
-<Address>
-Cambridge University Caving Club,
-c/o James Hickson,
-<Street>Pembroke College</Street>
-<City>Cambridge</City>
-<Country>UK</Country>
-</Address>
-
-<Sect2><title>Contributing</title>
-
-<!--FIXME rewrite and elaborate -->
-<Para>Monetary donations are welcome, but if you want a more personal way to
-say thankyou we'd love a copy of a survey you've produced using
-&survexsuite;.  Two copies would be best to save us arguing over who gets
-it.</Para>
-
-<Para>Or contribute your skills to help make &survexsuite; even better.
-Point out areas of the documentation which could be made clearer, or sections
-which are missing entirely.  Download test releases, try them out, and let
-us know if you find problems or have suggestions for improvements.
-If there's no translation to your language, you could provide one.
-Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
-plenty to do, so feel free to join in.
-</Para>
-</Sect2>
 
 </Sect1>
 
