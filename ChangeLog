@@ -1,3 +1,7 @@
+Thu Jun 17 15:44:48 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Fix typo in recent change to report "GTK+ >= 2.6".
+
 Thu Jun 17 15:43:04 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: wxDC::BeginDrawing() and wxDC::EndDrawing() are
