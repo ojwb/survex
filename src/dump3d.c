@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002 Olly Betts
+/* Copyright (C) 2001,2002,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -71,6 +71,7 @@ main(int argc, char **argv)
    fnm = argv[optind];
 
 #if 0
+   img_output_version = 3;
    pimg = img_open_write("dump3d.3d", "dump3d", fTrue);
    if (!pimg) fatalerror(img_error(), "dump3d.3d");
    img_write_item(pimg, img_MOVE, 0, NULL, 0, 0, 0);

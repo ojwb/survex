@@ -1,3 +1,12 @@
+Thu Jun 17 15:36:50 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/img.h: Update to the version from 1.1.13 so that we
+	  can read version 6 .3d files written by newer 1.1.x releases.
+	* src/dump3d.c,src/extend.c,src/netskel.c: Set img_output_version to 3
+	  before writing out a .3d file for compatibility with older 1.0.x
+	  releases.  We don't use any of the newer features, so there's no
+	  benefit to using a newer format version.
+
 Wed Jun 16 15:04:03 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Initialise m_MouseOutsideCompass and
