@@ -534,7 +534,7 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-// wxGtk loses the dialog under the always-on-top, maximised window.
+// wxGTK loses the dialog under the always-on-top, maximised window.
 // By creating this object on the stack, you can get the dialog on top...
 class AvenAllowOnTop {
 #ifndef _WIN32

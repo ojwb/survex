@@ -167,7 +167,7 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 	case WXK_LEFT: case WXK_RIGHT: case WXK_UP: case WXK_DOWN:
 	case WXK_HOME: case WXK_END: case WXK_PAGEUP: case WXK_PAGEDOWN:
 	// On wx 2.6 and earlier, PRIOR/NEXT seem to actually be
-	// PAGEUP/PAGEDOWN (on wxGtk at least).  In wx 2.7 and later
+	// PAGEUP/PAGEDOWN (on wxGTK at least).  In wx 2.7 and later
 	// they're just compatibility aliases, so either they have the
 	// same value or aren't defined - either way the code won't
 	// compile.

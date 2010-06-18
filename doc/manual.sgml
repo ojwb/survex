@@ -355,8 +355,8 @@ if you don't have root access on the machine you wish to install
 
 <Para>
 There's a GUI cave viewer called aven, which needs &wxwidgets; to build,
-which in turn needs Gtk+ (or Motif or just X11, but we only regularly
-test with the Gtk+ version).
+which in turn needs GTK+ (or Motif or just X11, but we only regularly
+test with the GTK+ version).
 </Para>
 
 </Sect3>
