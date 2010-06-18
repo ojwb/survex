@@ -90,6 +90,7 @@ binary-common:
 	dh_installmenu
 # FIXME: investigate using dh_installmime
 #	dh_installmime
+	dh_lintian
 	dh_strip
 	dh_link
 	dh_compress

@@ -1,3 +1,11 @@
+survex (1.1.13-2) UNRELEASED; urgency=low
+
+  [Olly Betts]
+  * debian/survex-aven.lintian-overrides: The warning for the misspelling of
+    "reencode" is incorrect - it's a PostScript command in this context.
+
+ -- Olly Betts <olly@survex.com>  Fri, 18 Jun 2010 13:19:22 +0000
+
 survex (1.1.13-1) unstable; urgency=low
 
   [Olly Betts]
@@ -7,7 +15,7 @@ survex (1.1.13-1) unstable; urgency=low
   * debian/watch: Update to look on the right download page.
   * debian/copyright: Update to list all copyright holders.
 
- -- Olly Betts <olly@survex.com>  Wed, 16 Jun 2010 03:01:57 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 18 Jun 2010 13:18:15 +0000
 
 survex (1.0.39.1-4) unstable; urgency=low
 
