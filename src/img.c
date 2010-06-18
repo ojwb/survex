@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -30,6 +30,8 @@
 
 #include "img.h"
 
+#define LATEST_IMG_VERSION 6
+
 #ifdef IMG_HOSTED
 # include "debug.h"
 # include "filelist.h"
@@ -39,7 +41,7 @@
 # define TIMENA msg(/*Date and time not available.*/108)
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
-# define INT32_T long
+# define INT32_T int
 # define TIMENA "Time not available."
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
@@ -65,13 +67,13 @@
 # define fputsnl(S, FH) do {fputs((S), (FH)); putc('\n', (FH));} while(0)
 # define SVX_ASSERT(X)
 
-static long
+static INT32_T
 get32(FILE *fh)
 {
-   long w = getc(fh);
-   w |= (long)getc(fh) << 8l;
-   w |= (long)getc(fh) << 16l;
-   w |= (long)getc(fh) << 24l;
+   INT32_T w = getc(fh);
+   w |= (INT32_T)getc(fh) << 8l;
+   w |= (INT32_T)getc(fh) << 16l;
+   w |= (INT32_T)getc(fh) << 24l;
    return w;
 }
 
@@ -151,7 +153,7 @@ int my_strcasecmp(const char *s1, const char *s2) {
 }
 #endif
 
-unsigned int img_output_version = 3;
+unsigned int img_output_version = LATEST_IMG_VERSION;
 
 #ifdef IMG_HOSTED
 static enum {
@@ -177,6 +179,12 @@ static img_errcode img_errno = IMG_NONE;
 
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
+
+/* Fake "version numbers" for non-3d formats we can read. */
+#define VERSION_CMAP_SHOT	-4
+#define VERSION_CMAP_STATION	-3
+#define VERSION_COMPASS_PLT	-2
+#define VERSION_SURVEX_POS	-1
 
 static char *
 my_strdup(const char *str)
@@ -294,9 +302,10 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->flags = 0;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
-   /* for version -2, 0 value indicates we haven't entered a survey yet */
-   /* for version -4, we store the last station here to detect whether
-    * we MOVE or LINE */
+   /* for VERSION_COMPASS_PLT, 0 value indicates we haven't
+    * entered a survey yet */
+   /* for VERSION_CMAP_SHOT, we store the last station here
+    * to detect whether we MOVE or LINE */
    pimg->label_len = 0;
    pimg->label_buf[0] = '\0';
 
@@ -305,6 +314,7 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->separator = '.';
    pimg->date1 = 0;
    pimg->date2 = 0;
+   pimg->is_extended_elevation = 0;
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
@@ -337,8 +347,9 @@ img_open_survey(const char *fnm, const char *survey)
       pimg->survey_len = len;
    }
 
-   /* [version -2, -3, -4] pending IMG_LINE or IMG_MOVE - both have 4 added
-    * [version -1] already skipped heading line, or there wasn't one
+   /* [VERSION_COMPASS_PLT, VERSION_CMAP_STATION, VERSION_CMAP_SHOT] pending
+    * IMG_LINE or IMG_MOVE - both have 4 added.
+    * [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE
     */
@@ -347,7 +358,7 @@ img_open_survey(const char *fnm, const char *survey)
    len = strlen(fnm);
    if (has_ext(fnm, len, EXT_SVX_POS)) {
 pos_file:
-      pimg->version = -1;
+      pimg->version = VERSION_SURVEX_POS;
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
@@ -361,7 +372,7 @@ pos_file:
    if (has_ext(fnm, len, EXT_PLT) || has_ext(fnm, len, EXT_PLF)) {
       long fpos;
 plt_file:
-      pimg->version = -2;
+      pimg->version = VERSION_COMPASS_PLT;
       /* Spaces aren't legal in Compass station names, but dots are, so
        * use space as the level separator */
       pimg->separator = ' ';
@@ -479,9 +490,9 @@ xyz_file:
 	 goto error;
       }
       if (line[1] == 'S') {
-	 pimg->version = -3; /* Station format */
+	 pimg->version = VERSION_CMAP_STATION;
       } else {
-	 pimg->version = -4; /* Shot format */
+	 pimg->version = VERSION_CMAP_SHOT;
       }
       osfree(line);
       line = getline_alloc(pimg->fh);
@@ -545,7 +556,7 @@ xyz_file:
       }
       /* nothing special to do */
    } else if (pimg->version == 0) {
-      if (ch < '2' || ch > '5' || getc(pimg->fh) != '\n') {
+      if (ch < '2' || ch > '0' + LATEST_IMG_VERSION || getc(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
@@ -566,12 +577,19 @@ v03d:
       error:
       osfree(pimg->title);
       osfree(pimg->datestamp);
+      osfree(pimg->filename_opened);
       fclose(pimg->fh);
       osfree(pimg);
       return NULL;
    }
 
    pimg->start = ftell(pimg->fh);
+
+   len = strlen(pimg->title);
+   if (len > 11 && strcmp(pimg->title + len - 11, " (extended)") == 0) {
+       pimg->title[len - 11] = '\0';
+       pimg->is_extended_elevation = 1;
+   }
 
    return pimg;
 }
@@ -588,7 +606,7 @@ img_rewind(img *pimg)
       return 0;
    }
    clearerr(pimg->fh);
-   /* [version -1] already skipped heading line, or there wasn't one
+   /* [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE */
    pimg->pending = 0;
@@ -596,8 +614,9 @@ img_rewind(img *pimg)
    img_errno = IMG_NONE;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
-   /* for version -2, 0 value indicates we haven't entered a survey yet */
-   /* for version -4, we store the last station here to detect whether
+   /* for VERSION_COMPASS_PLT, 0 value indicates we haven't entered a survey
+    * yet */
+   /* for VERSION_CMAP_SHOT, we store the last station here to detect whether
     * we MOVE or LINE */
    pimg->label_len = 0;
    return 1;
@@ -638,13 +657,15 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       return NULL;
    }
 
+   pimg->filename_opened = NULL;
+
    /* Output image file header */
    fputs("Survex 3D Image File\n", pimg->fh); /* file identifier string */
    if (img_output_version < 2) {
       pimg->version = 1;
       fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    } else {
-      pimg->version = (img_output_version > 5) ? 5 : img_output_version;
+      pimg->version = (img_output_version > LATEST_IMG_VERSION) ? LATEST_IMG_VERSION : img_output_version;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
    fputsnl(title_buf, pimg->fh);
@@ -657,6 +678,15 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       strftime(date, 256, TIMEFMT, localtime(&tm));
       fputsnl(date, pimg->fh);
    }
+#if 0
+   if (img_output_version >= 5) {
+       static const unsigned char codelengths[32] = {
+	   4,  8,  8,  16, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
+       };
+       fwrite(codelengths, 32, 1, pimg->fh);
+   }
+#endif
    pimg->fRead = fFalse; /* writing to this file */
    img_errno = IMG_NONE;
 
@@ -671,6 +701,10 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->olddate2 = 0;
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+
+   pimg->n_legs = 0;
+   pimg->length = 0.0;
+   pimg->E = pimg->H = pimg->V = 0.0;
 
    /* Don't check for write errors now - let img_close() report them... */
    return pimg;
@@ -795,6 +829,10 @@ img_read_item(img *pimg, img_point *p)
    if (pimg->version >= 3) {
       int opt;
       pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+      if (pimg->pending == 256) {
+	 pimg->pending = 0;
+	 return img_XSECT_END;
+      }
       if (pimg->pending >= 0x80) {
 	 *p = pimg->mv;
 	 pimg->flags = (int)(pimg->pending) & 0x3f;
@@ -850,23 +888,46 @@ img_read_item(img *pimg, img_point *p)
 		     pimg->date1 = get32(pimg->fh);
 		     pimg->date2 = get32(pimg->fh);
 		     break;
+		 case 0x22: /* Error info */
+		     pimg->n_legs = get32(pimg->fh);
+		     pimg->length = get32(pimg->fh) / 100.0;
+		     pimg->E = get32(pimg->fh) / 100.0;
+		     pimg->H = get32(pimg->fh) / 100.0;
+		     pimg->V = get32(pimg->fh) / 100.0;
+		     return img_ERROR_INFO;
 		 case 0x30: case 0x31: /* LRUD */
-		     if (read_v3label(pimg) == img_BAD) return img_BAD;
-		     pimg->flags = (int)opt & 0x01;
-		     pimg->l = get16(pimg->fh) / 100.0;
-		     pimg->r = get16(pimg->fh) / 100.0;
-		     pimg->u = get16(pimg->fh) / 100.0;
-		     pimg->d = get16(pimg->fh) / 100.0;
-		     return img_XSECT;
 		 case 0x32: case 0x33: /* Big LRUD! */
 		     if (read_v3label(pimg) == img_BAD) return img_BAD;
 		     pimg->flags = (int)opt & 0x01;
-		     pimg->l = get32(pimg->fh) / 100.0;
-		     pimg->r = get32(pimg->fh) / 100.0;
-		     pimg->u = get32(pimg->fh) / 100.0;
-		     pimg->d = get32(pimg->fh) / 100.0;
+		     if (opt < 0x32) {
+			 pimg->l = get16(pimg->fh) / 100.0;
+			 pimg->r = get16(pimg->fh) / 100.0;
+			 pimg->u = get16(pimg->fh) / 100.0;
+			 pimg->d = get16(pimg->fh) / 100.0;
+		     } else {
+			 pimg->l = get32(pimg->fh) / 100.0;
+			 pimg->r = get32(pimg->fh) / 100.0;
+			 pimg->u = get32(pimg->fh) / 100.0;
+			 pimg->d = get32(pimg->fh) / 100.0;
+		     }
+		     if (pimg->survey_len) {
+			 size_t l = pimg->survey_len;
+			 const char *s = pimg->label_buf;
+			 if (strncmp(pimg->survey, s, l + 1) != 0) {
+			     return img_XSECT_END;
+			 }
+			 pimg->label += l;
+			 /* skip the dot if there */
+			 if (*pimg->label) pimg->label++;
+		     }
+		     /* If this is the last cross-section in this passage, set
+		      * pending so we return img_XSECT_END next time. */
+		     if (pimg->flags & 0x01) {
+			 pimg->pending = 256;
+			 pimg->flags &= ~0x01;
+		     }
 		     return img_XSECT;
-		 default: /* 0x24 - 0x2f and 0x34 - 0x3f are currently unallocated. */
+		 default: /* 0x23 - 0x2f and 0x34 - 0x3f are currently unallocated. */
 		     img_errno = IMG_BADFORMAT;
 		     return img_BAD;
 	     }
@@ -1172,6 +1233,8 @@ img_read_item_ascii(img *pimg, img_point *p)
 	    pimg->label = pimg->label_buf;
 	    if (pimg->label[0] == '\\') pimg->label++;
 
+	    pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
+
 	    result = img_LABEL;
 	 } else {
 	    img_errno = IMG_BADFORMAT;
@@ -1191,8 +1254,8 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       return result;
-   } else if (pimg->version == -1) {
-      /* version -1: .pos file */
+   } else if (pimg->version == VERSION_SURVEX_POS) {
+      /* Survex .pos file */
       size_t off;
       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
       againpos:
@@ -1244,8 +1307,8 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       return img_LABEL;
-   } else if (pimg->version == -2) {
-      /* version -2: Compass .plt file */
+   } else if (pimg->version == VERSION_COMPASS_PLT) {
+      /* Compass .plt file */
       if (pimg->pending > 0) {
 	 /* -1 signals we've entered the first survey we want to
 	  * read, and need to fudge lots if the first action is 'D'...
@@ -1327,7 +1390,7 @@ skip_to_N:
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
-	       /* Compass store coordinates as North, East, Up = (y,x,z)! */
+	       /* Compass stores coordinates as North, East, Up = (y,x,z)! */
 	       if (sscanf(line, "%lf%lf%lf", &p->y, &p->x, &p->z) != 3) {
 		  osfree(line);
 		  if (ferror(pimg->fh)) {
@@ -1402,7 +1465,7 @@ skip_to_N:
 	 }
       }
    } else {
-      /* version -3 or -4: CMAP .xyz file */
+      /* CMAP .xyz file */
       char *line = NULL;
       char *q;
       size_t len;
@@ -1446,7 +1509,7 @@ skip_to_N:
       if (line[0] == '\x1a') return img_STOP;
 
       len = strlen(line);
-      if (pimg->version == -3) {
+      if (pimg->version == VERSION_CMAP_STATION) {
 	 /* station variant */
 	 if (len < 37) {
 	    osfree(line);
@@ -1568,6 +1631,25 @@ write_v3label(img *pimg, int opt, const char *s)
    return !ferror(pimg->fh);
 }
 
+static void
+img_write_item_date(img *pimg)
+{
+    if (pimg->date1 != pimg->olddate1 ||
+	    pimg->date2 != pimg->olddate2) {
+	/* Only write dates when they've changed. */
+	if (pimg->date1 == pimg->date2) {
+	    putc(0x20, pimg->fh);
+	    put32(pimg->date1, pimg->fh);
+	} else {
+	    putc(0x21, pimg->fh);
+	    put32(pimg->date1, pimg->fh);
+	    put32(pimg->date2, pimg->fh);
+	}
+	pimg->olddate1 = pimg->date1;
+	pimg->olddate2 = pimg->date2;
+    }
+}
+
 void
 img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
@@ -1581,15 +1663,19 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 opt = 0;
 	 break;
        case img_XSECT: {
-	 INT32_T l = (INT32_T)my_round(pimg->l * 100.0);
-	 INT32_T r = (INT32_T)my_round(pimg->r * 100.0);
-	 INT32_T u = (INT32_T)my_round(pimg->u * 100.0);
-	 INT32_T d = (INT32_T)my_round(pimg->d * 100.0);
-	 INT32_T max_dim = max(max(l, r), max(u, d));
+	 INT32_T l, r, u, d, max_dim;
+	 /* Need at least version 5 for img_XSECT. */
+	 if (pimg->version < 5) break;
+	 img_write_item_date(pimg);
+	 l = (INT32_T)my_round(pimg->l * 100.0);
+	 r = (INT32_T)my_round(pimg->r * 100.0);
+	 u = (INT32_T)my_round(pimg->u * 100.0);
+	 d = (INT32_T)my_round(pimg->d * 100.0);
 	 if (l < 0) l = -1;
 	 if (r < 0) r = -1;
 	 if (u < 0) u = -1;
 	 if (d < 0) d = -1;
+	 max_dim = max(max(l, r), max(u, d));
 	 flags &= 1;
 	 if (max_dim >= 32768) flags |= 2;
 	 write_v3label(pimg, 0x30 | flags, s);
@@ -1612,20 +1698,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 break;
        case img_LINE:
 	 if (pimg->version >= 4) {
-	     if (pimg->date1 != pimg->olddate1 ||
-		 pimg->date2 != pimg->olddate2) {
-		 /* Only write dates when they've changed. */
-		 if (pimg->date1 == pimg->date2) {
-		     putc(0x20, pimg->fh);
-		     put32(pimg->date1, pimg->fh);
-		 } else {
-		     putc(0x21, pimg->fh);
-		     put32(pimg->date1, pimg->fh);
-		     put32(pimg->date2, pimg->fh);
-		 }
-		 pimg->olddate1 = pimg->date1;
-		 pimg->olddate2 = pimg->date2;
-	     }
+	     img_write_item_date(pimg);
 	 }
 	 write_v3label(pimg, 0x80 | flags, s ? s : "");
 	 opt = 0;
@@ -1691,6 +1764,25 @@ img_write_item(img *pimg, int code, int flags, const char *s,
    }
 }
 
+/* Write error information for the current traverse
+ * n_legs is the number of legs in the traverse
+ * length is the traverse length (in m)
+ * E is the ratio of the observed misclosure to the theoretical one
+ * H is the ratio of the observed horizontal misclosure to the theoretical one
+ * V is the ratio of the observed vertical misclosure to the theoretical one
+ */
+void
+img_write_errors(img *pimg, int n_legs, double length,
+		 double E, double H, double V)
+{
+    putc(0x22, pimg->fh);
+    put32(n_legs, pimg->fh);
+    put32((INT32_T)my_round(length * 100.0), pimg->fh);
+    put32((INT32_T)my_round(E * 100.0), pimg->fh);
+    put32((INT32_T)my_round(H * 100.0), pimg->fh);
+    put32((INT32_T)my_round(V * 100.0), pimg->fh);
+}
+
 int
 img_close(img *pimg)
 {
@@ -1721,6 +1813,7 @@ img_close(img *pimg)
 	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
       }
       osfree(pimg->label_buf);
+      osfree(pimg->filename_opened);
       osfree(pimg);
    }
    return result;

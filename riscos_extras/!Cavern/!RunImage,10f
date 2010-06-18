@@ -1,7 +1,0 @@
-V2
-Name:Cavern
-Sprites:!Survex
-Flags:%01100001
-Help:Drag a Survex data file here
-Init:
-Command:Wimpslot -min 1600K;<survex$dir>.cavern --output=%0 %0

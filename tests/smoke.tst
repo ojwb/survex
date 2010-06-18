@@ -28,13 +28,9 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-PROGS="cad3d cavern printdm printps printpcl printhpgl diffpos extend sorterr\
- 3dtopos"
-if test -r "$testdir"/../src/xcaverot ; then
-   PROGS="$PROGS xcaverot"
-fi
+PROGS="cad3d cavern diffpos extend sorterr 3dtopos"
 # aven tries to open an X display even for --help and --version
-if test -n "$DISPLAY" && test -r "$testdir"/../src/aven ; then
+if test -n "$DISPLAY" ; then
    PROGS="$PROGS aven"
 fi
 

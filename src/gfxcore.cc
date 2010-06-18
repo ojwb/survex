@@ -3,8 +3,9 @@
 //
 //  Core drawing code for Aven.
 //
-//  Copyright (C) 2000-2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003,2004,2005 Olly Betts
+//  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
+//  Copyright (C) 2001-2003,2004,2005,2006,2007 Olly Betts
+//  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,7 +19,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
 #ifdef HAVE_CONFIG_H
@@ -34,32 +35,34 @@
 #include "message.h"
 #include "useful.h"
 #include "printwx.h"
-#include "export.h"
+#include "guicontrol.h"
+#include "moviemaker.h"
 
 #include <wx/confbase.h>
 #include <wx/image.h>
 
-#define HEAVEN 5000.0 // altitude of heaven
-#define INTERPOLATE(a, b, t) ((a) + (((b) - (a)) * Double(t) / 100.0))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
-#define TEXT_COLOUR  wxColour(0, 255, 40)
-#define LABEL_COLOUR wxColour(160, 255, 0)
 
 // Values for m_SwitchingTo
 #define PLAN 1
 #define ELEVATION 2
+#define NORTH 3
+#define EAST 4
+#define SOUTH 5
+#define WEST 6
+
+// Any error value higher than this is clamped to this.
+#define MAX_ERROR 12.0
 
 // How many bins per letter height to use when working out non-overlapping
 // labels.
 const unsigned int QUANTISE_FACTOR = 2;
 
-#ifdef _WIN32
-static const int FONT_SIZE = 8;
-#else
-static const int FONT_SIZE = 9;
-#endif
-static const int CROSS_SIZE = 3;
+const int NUM_DEPTH_COLOURS = 13;
+
+#include "avenpal.h"
+
 static const int COMPASS_OFFSET_X = 60;
 static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
@@ -67,6 +70,7 @@ static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
+static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int DEPTH_BAR_OFFSET_X = 16;
@@ -76,32 +80,20 @@ static const int DEPTH_BAR_BLOCK_HEIGHT = 15;
 static const int DEPTH_BAR_MARGIN = 6;
 static const int DEPTH_BAR_OFFSET_Y = 16 + DEPTH_BAR_MARGIN;
 static const int TICK_LENGTH = 4;
-static const int DISPLAY_SHIFT = 50;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
 static const int SCALE_BAR_HEIGHT = 12;
-static const int HIGHLIGHTED_PT_SIZE = 2;
 
-const ColourTriple COLOURS[] = {
-    { 0, 0, 0 },       // black
-    { 100, 100, 100 }, // grey
-    { 180, 180, 180 }, // light grey
-    { 140, 140, 140 }, // light grey 2
-    { 90, 90, 90 },    // dark grey
-    { 255, 255, 255 }, // white
-    { 0, 100, 255},    // turquoise
-    { 0, 255, 40 },    // green
-    { 150, 205, 224 }, // indicator 1
-    { 114, 149, 160 }, // indicator 2
-    { 255, 255, 0 },   // yellow
-    { 255, 0, 0 },     // red
-};
-
-#define DELETE_ARRAY(A) do { assert((A)); delete[] (A); } while (0)
+static const gla_colour TEXT_COLOUR = col_GREEN;
+static const gla_colour HERE_COLOUR = col_WHITE;
+static const gla_colour NAME_COLOUR = col_GREEN;
 
 #define HITTEST_SIZE 20
 
-BEGIN_EVENT_TABLE(GfxCore, wxWindow)
+// vector for lighting angle
+static const Vector3 light(.577, .577, .577);
+
+BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
     EVT_PAINT(GfxCore::OnPaint)
     EVT_LEFT_DOWN(GfxCore::OnLButtonDown)
     EVT_LEFT_UP(GfxCore::OnLButtonUp)
@@ -109,81 +101,81 @@ BEGIN_EVENT_TABLE(GfxCore, wxWindow)
     EVT_MIDDLE_UP(GfxCore::OnMButtonUp)
     EVT_RIGHT_DOWN(GfxCore::OnRButtonDown)
     EVT_RIGHT_UP(GfxCore::OnRButtonUp)
+    EVT_MOUSEWHEEL(GfxCore::OnMouseWheel)
     EVT_MOTION(GfxCore::OnMouseMove)
+    EVT_LEAVE_WINDOW(GfxCore::OnLeaveWindow)
     EVT_SIZE(GfxCore::OnSize)
     EVT_IDLE(GfxCore::OnIdle)
     EVT_CHAR(GfxCore::OnKeyPress)
 END_EVENT_TABLE()
 
-GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win) :
-    wxWindow(parent_win, 100, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
-    m_Font(FONT_SIZE, wxSWISS, wxNORMAL, wxNORMAL, FALSE, "Helvetica",
-	   wxFONTENCODING_ISO8859_1),
-    m_InitialisePending(false)
+GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
+    GLACanvas(parent_win, 100),
+    m_Scale(0.0),
+    m_ScaleBarWidth(0),
+    m_Control(control),
+    m_LabelGrid(NULL),
+    m_Parent(parent),
+    m_DoneFirstShow(false),
+    m_TiltAngle(0.0),
+    m_PanAngle(0.0),
+    m_Rotating(false),
+    m_RotationStep(0.0),
+    m_SwitchingTo(0),
+    m_Crosses(false),
+    m_Legs(true),
+    m_Names(false),
+    m_Scalebar(true),
+    m_Depthbar(true),
+    m_OverlappingNames(false),
+    m_Compass(true),
+    m_Clino(true),
+    m_Tubes(false),
+    m_XSize(0),
+    m_YSize(0),
+    m_ColourBy(COLOUR_BY_DEPTH),
+    m_HaveData(false),
+    m_MouseOutsideCompass(false),
+    m_MouseOutsideElev(false),
+    m_Surface(false),
+    m_Entrances(false),
+    m_FixedPts(false),
+    m_ExportedPts(false),
+    m_Grid(false),
+    m_BoundingBox(false),
+    m_Degrees(false),
+    m_Metric(false),
+    m_HitTestGridValid(false),
+    m_here_is_temporary(false),
+    presentation_mode(0),
+    pres_reverse(false),
+    pres_speed(0.0),
+    mpeg(NULL),
+    current_cursor(GfxCore::CURSOR_DEFAULT)
 {
-    m_OffscreenBitmap = NULL;
-    m_LastDrag = drag_NONE;
-    m_ScaleBar.offset_x = SCALE_BAR_OFFSET_X;
-    m_ScaleBar.offset_y = SCALE_BAR_OFFSET_Y;
-    m_ScaleBar.width = 0;
-    m_DraggingLeft = false;
-    m_DraggingMiddle = false;
-    m_DraggingRight = false;
-    m_Parent = parent;
-    m_RotationOK = true;
-    m_DoneFirstShow = false;
-    m_PlotData = NULL;
-    m_RedrawOffscreen = false;
-    m_Crosses = false;
-    m_Legs = true;
-    m_Names = false;
-    m_OverlappingNames = false;
-    m_Compass = true;
-    m_Clino = true;
-    m_Depthbar = true;
-    m_Scalebar = true;
-    m_ReverseControls = false;
-    m_LabelGrid = NULL;
-    m_Rotating = false;
-    m_SwitchingTo = 0;
-    m_Entrances = false;
-    m_FixedPts = false;
-    m_ExportedPts = false;
-    m_Grid = false;
-    wxConfigBase::Get()->Read("metric", &m_Metric, true);
-    wxConfigBase::Get()->Read("degrees", &m_Degrees, true);
-    m_here.x = DBL_MAX;
-    m_there.x = DBL_MAX;
-    clipping = false;
-
-    // Create pens and brushes for drawing.
-    int num_colours = (int) col_LAST;
-    m_Pens = new wxPen[num_colours];
-    m_Brushes = new wxBrush[num_colours];
-    for (int col = 0; col < num_colours; col++) {
-	m_Pens[col].SetColour(COLOURS[col].r, COLOURS[col].g, COLOURS[col].b);
-	assert(m_Pens[col].Ok());
-	m_Brushes[col].SetColour(COLOURS[col].r, COLOURS[col].g, COLOURS[col].b);
-	assert(m_Brushes[col].Ok());
-    }
-
-    SetBackgroundColour(wxColour(0, 0, 0));
+    AddQuad = &GfxCore::AddQuadrilateralDepth;
+    AddPoly = &GfxCore::AddPolylineDepth;
+    wxConfigBase::Get()->Read(wxT("metric"), &m_Metric, true);
+    wxConfigBase::Get()->Read(wxT("degrees"), &m_Degrees, true);
+    m_here.Invalidate();
+    m_there.Invalidate();
 
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
+
+    m_Pens = new GLAPen[NUM_DEPTH_COLOURS + 1];
+    for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
+	m_Pens[pen].SetColour(REDS[pen] / 255.0,
+			      GREENS[pen] / 255.0,
+			      BLUES[pen] / 255.0);
+    }
 }
 
 GfxCore::~GfxCore()
 {
     TryToFreeArrays();
 
-    if (m_OffscreenBitmap) {
-	delete m_OffscreenBitmap;
-    }
-
-    DELETE_ARRAY(m_Pens);
-    DELETE_ARRAY(m_Brushes);
-
+    delete[] m_Pens;
     delete[] m_PointGrid;
 }
 
@@ -191,24 +183,9 @@ void GfxCore::TryToFreeArrays()
 {
     // Free up any memory allocated for arrays.
 
-    if (m_PlotData) {
-	for (int band = 0; band < m_Bands; band++) {
-	    DELETE_ARRAY(m_PlotData[band].vertices);
-	    DELETE_ARRAY(m_PlotData[band].num_segs);
-	    DELETE_ARRAY(m_PlotData[band].surface_vertices);
-	    DELETE_ARRAY(m_PlotData[band].surface_num_segs);
-	}
-
-	DELETE_ARRAY(m_PlotData);
-	DELETE_ARRAY(m_Polylines);
-	DELETE_ARRAY(m_SurfacePolylines);
-
-	if (m_LabelGrid) {
-	    DELETE_ARRAY(m_LabelGrid);
-	    m_LabelGrid = NULL;
-	}
-
-	m_PlotData = NULL;
+    if (m_LabelGrid) {
+	delete[] m_LabelGrid;
+	m_LabelGrid = NULL;
     }
 }
 
@@ -216,608 +193,138 @@ void GfxCore::TryToFreeArrays()
 //  Initialisation methods
 //
 
-void GfxCore::Initialise()
+void GfxCore::Initialise(bool same_file)
 {
     // Initialise the view from the parent holding the survey data.
 
     TryToFreeArrays();
 
-    if (!m_InitialisePending) {
-	GetSize(&m_XSize, &m_YSize);
-    }
-
-    m_Bands = m_Parent->GetNumDepthBands(); // last band is surface data
-    m_PlotData = new PlotData[m_Bands];
-    m_Polylines = new int[m_Bands];
-    m_SurfacePolylines = new int[m_Bands];
-
-    for (int band = 0; band < m_Bands; band++) {
-	m_PlotData[band].vertices = new Point[m_Parent->GetNumPoints()];
-	m_PlotData[band].num_segs = new int[m_Parent->GetNumLegs()];
-	m_PlotData[band].surface_vertices = new Point[m_Parent->GetNumPoints()];
-	m_PlotData[band].surface_num_segs = new int[m_Parent->GetNumLegs()];
-    }
-
-    m_UndergroundLegs = false;
-    m_SurfaceLegs = false;
+    m_DoneFirstShow = false;
 
     m_HitTestGridValid = false;
-    m_here.x = DBL_MAX;
-    m_there.x = DBL_MAX;
+    m_here_is_temporary = true;
+    m_here.Invalidate();
+    m_there.Invalidate();
 
-    // Check for flat/linear/point surveys.
-    m_RotationOK = true;
+    m_MouseOutsideCompass = m_MouseOutsideElev = false;
 
-    m_Lock = lock_NONE;
-    if (m_Parent->GetXExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_X);
-    if (m_Parent->GetYExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Y);
-    if (m_Parent->GetZExtent() == 0.0) m_Lock = LockFlags(m_Lock | lock_Z);
+    if (!same_file) {
+	// Apply default parameters unless reloading the same file.
+	DefaultParameters();
 
-    // Scale the survey to a reasonable initial size.
-    switch (m_Lock) {
-	case lock_POINT:
-	    m_RotationOK = false;
-	    m_InitialScale = 1.0;
-	    break;
-	case lock_YZ:
-	    m_InitialScale = Double(m_XSize) / m_Parent->GetXExtent();
-	    break;
-	case lock_XZ:
-	    m_InitialScale = Double(m_YSize) / m_Parent->GetYExtent();
-	    break;
-	case lock_XY:
-	    m_RotationOK = false;
-	    m_InitialScale = Double(m_YSize) / m_Parent->GetZExtent();
-	    break;
-	case lock_X:
-	    m_RotationOK = false;
-	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-				 Double(m_XSize) / m_Parent->GetYExtent());
-	    break;
-	case lock_Y:
-	    m_RotationOK = false;
-	    m_InitialScale = min(Double(m_YSize) / m_Parent->GetZExtent(),
-				 Double(m_XSize) / m_Parent->GetXExtent());
-	    break;
-	default:
-	    m_InitialScale = min(Double(m_XSize) / m_Parent->GetXExtent(),
-				 Double(m_YSize) / m_Parent->GetYExtent());
+	// Set the initial scale.
+	SetScale(1.0);
     }
 
-    m_InitialScale *= .85;
+    switch (m_ColourBy) {
+	case COLOUR_BY_DEPTH:
+	    if (m_Parent->GetDepthExtent() == 0.0) {
+		SetColourBy(COLOUR_BY_NONE);
+	    }
+	    break;
+	case COLOUR_BY_DATE:
+	    if (m_Parent->GetDateExtent() == 0) {
+		SetColourBy(COLOUR_BY_NONE);
+	    }
+	    break;
+	case COLOUR_BY_ERROR:
+	    if (!m_Parent->HasErrorInformation()) {
+		SetColourBy(COLOUR_BY_NONE);
+	    }
+	    break;
+    }
 
-    // Calculate screen coordinates and redraw.
-    SetScaleInitial(m_InitialScale);
+    m_HaveData = true;
 
-    // Apply default parameters.
-    OnDefaults();
+    ForceRefresh();
 }
 
 void GfxCore::FirstShow()
 {
+    GLACanvas::FirstShow();
+
+    const unsigned int quantise(GetFontSize() / QUANTISE_FACTOR);
+    list<LabelInfo*>::iterator pos = m_Parent->GetLabelsNC();
+    while (pos != m_Parent->GetLabelsNCEnd()) {
+	LabelInfo* label = *pos++;
+	// Calculate and set the label width for use when plotting
+	// none-overlapping labels.
+	int ext_x;
+	GLACanvas::GetTextExtent(label->GetText(), &ext_x, NULL);
+	label->set_width(unsigned(ext_x) / quantise + 1);
+    }
+
+    SetBackgroundColour(0.0, 0.0, 0.0);
+
+    // Set diameter of the viewing volume.
+    SetVolumeDiameter(sqrt(sqrd(m_Parent->GetXExtent()) +
+			   sqrd(m_Parent->GetYExtent()) +
+			   sqrd(m_Parent->GetZExtent())));
+
     // Update our record of the client area size and centre.
     GetClientSize(&m_XSize, &m_YSize);
-    m_XCentre = m_XSize / 2;
-    m_YCentre = m_YSize / 2;
-
-    // Create the offscreen bitmap.
-    m_OffscreenBitmap = new wxBitmap;
-    m_OffscreenBitmap->Create(m_XSize, m_YSize);
-
-    m_DrawDC.SelectObject(*m_OffscreenBitmap);
 
     m_DoneFirstShow = true;
-
-    RedrawOffscreen();
 }
 
 //
 //  Recalculating methods
 //
 
-void GfxCore::SetScaleInitial(Double scale)
-{
-    SetScale(scale);
-
-    // Invalidate hit-test grid.
-    m_HitTestGridValid = false;
-
-    for (int band = 0; band < m_Bands; band++) {
-	Point* pt = m_PlotData[band].vertices;
-	assert(pt);
-	int* count = m_PlotData[band].num_segs;
-	assert(count);
-	Point* spt = m_PlotData[band].surface_vertices;
-	assert(spt);
-	int* scount = m_PlotData[band].surface_num_segs;
-	assert(scount);
-	count--;
-	scount--;
-
-	m_Polylines[band] = 0;
-	m_SurfacePolylines[band] = 0;
-	Double x = 0, y = 0, z = 0;
-
-	list<PointInfo*>::iterator pos = m_Parent->GetPointsNC(band);
-	list<PointInfo*>::iterator end = m_Parent->GetPointsEndNC(band);
-	bool first_point = true;
-	bool last_was_move = true;
-	bool current_polyline_is_surface = false;
-	while (pos != end) {
-	    PointInfo* pti = *pos++;
-
-	    if (pti->IsLine()) {
-		// We have a leg.
-
-		assert(!first_point); // The first point must always be a move.
-		bool changing_ug_state = (current_polyline_is_surface != pti->IsSurface());
-		// Record new underground/surface state.
-		current_polyline_is_surface = pti->IsSurface();
-
-		if (changing_ug_state || last_was_move) {
-		    // Start a new polyline if we're switching
-		    // underground/surface state or if the previous point
-		    // was a move.
-		    Point** dest;
-
-		    if (current_polyline_is_surface) {
-			m_SurfacePolylines[band]++;
-			// initialise number of vertices for next polyline
-			*(++scount) = 1;
-			dest = &spt;
-		    }
-		    else {
-			m_Polylines[band]++;
-			// initialise number of vertices for next polyline
-			*(++count) = 1;
-			dest = &pt;
-		    }
-
-		    (*dest)->x = x;
-		    (*dest)->y = y;
-		    (*dest)->z = z;
-
-		    // Advance the relevant coordinate pointer to the next
-		    // position.
-		    (*dest)++;
-		}
-
-		// Add the leg onto the current polyline.
-		Point** dest = &(current_polyline_is_surface ? spt : pt);
-
-		(*dest)->x = x = pti->GetX();
-		(*dest)->y = y = pti->GetY();
-		(*dest)->z = z = pti->GetZ();
-
-		// Advance the relevant coordinate pointer to the next
-		// position.
-		(*dest)++;
-
-		// Increment the relevant vertex count.
-		if (current_polyline_is_surface) {
-		    (*scount)++;
-		}
-		else {
-		    (*count)++;
-		}
-		last_was_move = false;
-	    }
-	    else {
-		first_point = false;
-		last_was_move = true;
-
-		// Save the current coordinates for the next time around
-		// the loop.
-		x = pti->GetX();
-		y = pti->GetY();
-		z = pti->GetZ();
-	    }
-	}
-	if (!m_UndergroundLegs) {
-	    m_UndergroundLegs = (m_Polylines[band] > 0);
-	}
-	if (!m_SurfaceLegs) {
-	    m_SurfaceLegs = (m_SurfacePolylines[band] > 0);
-	}
-    }
-}
-
 void GfxCore::SetScale(Double scale)
 {
     // Fill the plot data arrays with screen coordinates, scaling the survey
     // to a particular absolute scale.
 
-    clipping = false;
-    if (scale < m_InitialScale / 20) {
-	scale = m_InitialScale / 20;
+    if (scale < 0.05) {
+	scale = 0.05;
     } else {
 	if (scale > 1000.0) scale = 1000.0;
-	Double max_scale = 32767.0 / MAX(m_Parent->GetXExtent(), m_Parent->GetYExtent());
-	if (scale > max_scale) clipping = true;
     }
 
-    m_Params.scale = scale;
-}
-
-//
-//  Repainting methods
-//
-
-void
-GfxCore::DrawBand(int num_polylines, const int *num_segs, const Point *vertices,
-		  Double m_00, Double m_01, Double m_02,
-		  Double m_20, Double m_21, Double m_22)
-{
-    if (clipping) {
-	while (num_polylines--) {
-	    double X = vertices->x + m_Params.translation.x;
-	    double Y = vertices->y + m_Params.translation.y;
-	    double Z = vertices->z + m_Params.translation.z;
-	    ++vertices;
-
-	    int x = int(X * m_00 + Y * m_01 + Z * m_02) + m_XCentre;
-	    int y = -int(X * m_20 + Y * m_21 + Z * m_22) + m_YCentre;
-#define U 1
-#define D 2
-#define L 4
-#define R 8
-	    int mask = 0;
-	    if (x < 0)
-		mask = L;
-	    else if (x > m_XSize)
-		mask = R;
-
-	    if (y < 0)
-		mask |= D;
-	    else if (y > m_YSize)
-		mask |= U;
-
-	    for (size_t n = *num_segs; n > 1; --n) {
-		X = vertices->x + m_Params.translation.x;
-		Y = vertices->y + m_Params.translation.y;
-		Z = vertices->z + m_Params.translation.z;
-		++vertices;
-
-		int x2 = x;
-		int y2 = y;
-		int mask2 = mask;
-
-		x = int(X * m_00 + Y * m_01 + Z * m_02) + m_XCentre;
-		y = -int(X * m_20 + Y * m_21 + Z * m_22) + m_YCentre;
-
-		mask = 0;
-		if (x < 0)
-		    mask = L;
-		else if (x > m_XSize)
-		    mask = R;
-
-		if (y < 0)
-		    mask |= D;
-		else if (y > m_YSize)
-		    mask |= U;
-
-		// See if whole line is above, left, right, or below
-		// screen.
-		if (mask & mask2) continue;
-		//printf("(%d,%d) - (%d,%d)\n", x, y, x2, y2);
-
-		int a = x, b = y;
-		int c = x2, d = y2;
-
-		// Actually need to clip line to screen...
-		if (mask & U) {
-		    b = m_YSize;
-		    a = ((x - x2) * b + x2 * y - x * y2) / (y - y2);
-		} else if (mask & D) {
-		    b = 0;
-		    a = (x2 * y - x * y2) / (y - y2);
-		}
-
-		//printf("(%d,%d) -\n", a, b);
-		if (a < 0 || a > m_XSize) {
-		    if (!(mask & (L|R))) continue;
-		    if (mask & L) {
-			a = 0;
-			b = (x * y2 - x2 * y) / (x - x2);
-		    } else if (mask & R) {
-			a = m_XSize;
-			b = ((y - y2) * a + x * y2 - x2 * y) / (x - x2);
-		    }
-		    //printf("(%d,%d) -\n", a, b);
-		    if (b < 0 || b > m_YSize) continue;
-		}
-
-		if (mask2 & U) {
-		    d = m_YSize;
-		    c = ((x - x2) * d + x2 * y - x * y2) / (y - y2);
-		} else if (mask2 & D) {
-		    d = 0;
-		    c = (x2 * y - x * y2) / (y - y2);
-		}
-
-		//printf(" - (%d,%d)\n", c, d);
-		if (c < 0 || c > m_XSize) {
-		    if (!(mask2 & (L|R))) continue;
-		    if (mask2 & L) {
-			c = 0;
-			d = (x * y2 - x2 * y) / (x - x2);
-		    } else if (mask2 & R) {
-			c = m_XSize;
-			d = ((y - y2) * c + x * y2 - x2 * y) / (x - x2);
-		    }
-		    //printf(" - (%d,%d)\n", c, d);
-		    if (d < 0 || d > m_YSize) continue;
-		}
-#undef U
-#undef D
-#undef L
-#undef R
-		m_DrawDC.DrawLine(a, b, c, d);
-	    }
-	    ++num_segs;
-	}
-    } else {
-#define MAX_SEGS 64 // Longest run in all.3d is 44 segments - set dynamically?
-	wxPoint tmp[MAX_SEGS];
-	while (num_polylines--) {
-	    double X = vertices->x + m_Params.translation.x;
-	    double Y = vertices->y + m_Params.translation.y;
-	    double Z = vertices->z + m_Params.translation.z;
-	    ++vertices;
-
-	    int x = int(X * m_00 + Y * m_01 + Z * m_02);
-	    int y = -int(X * m_20 + Y * m_21 + Z * m_22);
-	    tmp[0].x = x;
-	    tmp[0].y = y;
-	    size_t count = 1;
-	    size_t n = *num_segs;
-	    while (1) {
-		X = vertices->x + m_Params.translation.x;
-		Y = vertices->y + m_Params.translation.y;
-		Z = vertices->z + m_Params.translation.z;
-		++vertices;
-
-		x = int(X * m_00 + Y * m_01 + Z * m_02);
-		y = -int(X * m_20 + Y * m_21 + Z * m_22);
-		tmp[count].x = x;
-		tmp[count].y = y;
-		++count;
-		--n;
-		if (count == MAX_SEGS || n == 1) {
-		    m_DrawDC.DrawLines(count, tmp, m_XCentre, m_YCentre);
-		    if (n == 1) break;
-		    // printf("had to split traverse with %d segs\n", *num_segs);
-		    tmp[0].x = x;
-		    tmp[0].y = y;
-		    count = 1;
-		}
-	    }
-	    ++num_segs;
-	}
-    }
-}
-
-static wxPoint blob[10] = {
-    wxPoint(-1,  2),
-    wxPoint( 1,  2),
-    wxPoint( 2,  1),
-    wxPoint(-2,  1),
-    wxPoint(-2,  0),
-    wxPoint( 2,  0),
-    wxPoint( 2, -1),
-    wxPoint(-2, -1),
-    wxPoint(-1, -2),
-    wxPoint( 2, -2) // (1, -2) for any platform which draws the last dot
-};
-
-static wxPoint ring[9] = {
-    wxPoint(-1,  4),
-    wxPoint( 1,  4),
-    wxPoint( 4,  1),
-    wxPoint( 4, -1),
-    wxPoint( 1, -4),
-    wxPoint(-1, -4),
-    wxPoint(-4, -1),
-    wxPoint(-4,  1),
-    wxPoint(-1,  4)
-};
-
-void GfxCore::RedrawOffscreen()
-{
-    static wxPoint cross1[2] = {
-	wxPoint(-CROSS_SIZE, -CROSS_SIZE),
-	wxPoint(CROSS_SIZE + 1, CROSS_SIZE + 1) // remove +1 if last dot drawn
-    };
-    static wxPoint cross2[2] = {
-	wxPoint(-CROSS_SIZE, CROSS_SIZE),
-	wxPoint(CROSS_SIZE + 1, -CROSS_SIZE - 1) // remove +/-1 if last dot
-    };
-#if 0
-    static int ignore = 10; // Ignore the first few redraws before averaging
-    static double total = 0.0;
-    static int count = 0;
-    double t = timer.Time() * 1.0e-3;
-    if (ignore) {
-	--ignore;
-    } else {
-	total += t;
-	count++;
-	cout << count / total << " average fps; " << 1.0 / t << " fps (" << t << " sec)\n";
-    }
-#endif
-    timer.Start(); // reset timer
-
-    // Redraw the offscreen bitmap
-
-    // Invalidate hit-test grid.
+    m_Scale = scale;
     m_HitTestGridValid = false;
+    if (m_here_is_temporary) SetHere();
 
-    m_DrawDC.BeginDrawing();
+    GLACanvas::SetScale(scale);
+}
 
-    // Set the font.
-    m_DrawDC.SetFont(m_Font);
+bool GfxCore::HasUndergroundLegs() const
+{
+    return m_Parent->HasUndergroundLegs();
+}
 
-    // Clear the background to black.
-    SetColour(col_BLACK);
-    SetColour(col_BLACK, true);
-    m_DrawDC.DrawRectangle(0, 0, m_XSize, m_YSize);
+bool GfxCore::HasSurfaceLegs() const
+{
+    return m_Parent->HasSurfaceLegs();
+}
 
-    if (m_PlotData) {
-	Double m_00 = m_RotationMatrix.get(0, 0) * m_Params.scale;
-	Double m_01 = m_RotationMatrix.get(0, 1) * m_Params.scale;
-	Double m_02 = m_RotationMatrix.get(0, 2) * m_Params.scale;
-	Double m_20 = m_RotationMatrix.get(2, 0) * m_Params.scale;
-	Double m_21 = m_RotationMatrix.get(2, 1) * m_Params.scale;
-	Double m_22 = m_RotationMatrix.get(2, 2) * m_Params.scale;
+bool GfxCore::HasTubes() const
+{
+    return m_Parent->HasTubes();
+}
 
-	bool grid_first = (m_TiltAngle >= 0.0);
+void GfxCore::UpdateBlobs()
+{
+    InvalidateList(LIST_BLOBS);
+}
 
-	if (m_Grid && grid_first) {
-	    DrawGrid();
-	}
+//
+//  Event handlers
+//
 
-	// Draw underground legs.
-	if (m_Legs) {
-	    int start;
-	    int end;
-	    int inc;
+void GfxCore::OnLeaveWindow(wxMouseEvent& event) {
+    SetHere();
+    ClearCoords();
+}
 
-	    if (m_TiltAngle >= 0.0) {
-		start = 0;
-		end = m_Bands;
-		inc = 1;
-	    } else {
-		start = m_Bands - 1;
-		end = -1;
-		inc = -1;
-	    }
-
-	    for (int band = start; band != end; band += inc) {
-		m_DrawDC.SetPen(m_Parent->GetPen(band));
-		DrawBand(m_Polylines[band], m_PlotData[band].num_segs,
-			 m_PlotData[band].vertices,
-			 m_00, m_01, m_02, m_20, m_21, m_22);
-	    }
-	}
-
-	if (m_Surface) {
-	    // Draw the surface legs.
-	    int start;
-	    int end;
-	    int inc;
-
-	    if (m_TiltAngle >= 0.0) {
-		start = 0;
-		end = m_Bands;
-		inc = 1;
-	    } else {
-		start = m_Bands - 1;
-		end = -1;
-		inc = -1;
-	    }
-
-	    for (int band = start; band != end; band += inc) {
-		wxPen pen = m_SurfaceDepth ? m_Parent->GetPen(band) : m_Parent->GetSurfacePen();
-		if (m_SurfaceDashed) {
-#ifdef _WIN32
-		    pen.SetStyle(wxDOT);
-#else
-		    pen.SetStyle(wxSHORT_DASH);
-#endif
-		}
-		m_DrawDC.SetPen(pen);
-		DrawBand(m_SurfacePolylines[band],
-			 m_PlotData[band].surface_num_segs,
-			 m_PlotData[band].surface_vertices,
-			 m_00, m_01, m_02, m_20, m_21, m_22);
-		if (m_SurfaceDashed) {
-		    pen.SetStyle(wxSOLID);
-		}
-	    }
-	}
-
-	// Plot crosses and/or blobs.
-	if (true || // FIXME : replace true with test for there being highlighted points...
-		m_Crosses || m_Entrances || m_FixedPts || m_ExportedPts) {
-	    list<LabelInfo*>::const_reverse_iterator pos =
-		m_Parent->GetRevLabels();
-	    while (pos != m_Parent->GetRevLabelsEnd()) {
-		LabelInfo* label = *pos++;
-
-		// When more than one flag is set on a point:
-		// search results take priority over entrance highlighting
-		// which takes priority over fixed point
-		// highlighting, which in turn takes priority over exported
-		// point highlighting.
-
-		enum AvenColour col;
-		enum {BLOB, CROSS} shape = BLOB;
-		if (!((m_Surface && label->IsSurface()) ||
-		      (m_Legs && label->IsUnderground()) ||
-		      (!label->IsSurface() && !label->IsUnderground()))) {
-		    // if this station isn't to be displayed, skip to the next
-		    // (last case is for stns with no legs attached)
-		    continue;
-		}
-
-		if (label->IsHighLighted()) {
-		    col = col_YELLOW;
-		} else if (m_Entrances && label->IsEntrance()) {
-		    col = col_GREEN;
-		} else if (m_FixedPts && label->IsFixedPt()) {
-		    col = col_RED;
-		} else if (m_ExportedPts && label->IsExportedPt()) {
-		    col = col_TURQUOISE;
-		} else if (m_Crosses) {
-		    col = col_LIGHT_GREY;
-		    shape = CROSS;
-		} else {
-		    continue;
-		}
-
-		Double x3 = label->GetX() + m_Params.translation.x;
-		Double y3 = label->GetY() + m_Params.translation.y;
-		Double z3 = label->GetZ() + m_Params.translation.z;
-
-		// Calculate screen coordinates, and check if the point is
-		// visible - this is faster, and avoids coordinate
-		// wrap-around problems
-		int x = (int) (x3 * m_00 + y3 * m_01 + z3 * m_02) + m_XCentre;
-		if (x < -CROSS_SIZE || x >= m_XSize + CROSS_SIZE) continue;
-		int y = -(int) (x3 * m_20 + y3 * m_21 + z3 * m_22) + m_YCentre;
-		if (y < -CROSS_SIZE || y >= m_YSize + CROSS_SIZE) continue;
-
-		SetColour(col);
-		if (shape == CROSS) {
-		    m_DrawDC.DrawLines(2, cross1, x, y);
-		    m_DrawDC.DrawLines(2, cross2, x, y);
-		} else {
-		    SetColour(col, true);
-		    m_DrawDC.DrawLines(10, blob, x, y);
-		}
-	    }
-	}
-
-	if (m_Grid && !grid_first) DrawGrid();
-
-	// Draw station names.
-	if (m_Names) DrawNames();
-
-	// Draw scalebar.
-	if (m_Scalebar) DrawScalebar();
-
-	// Draw depthbar.
-	if (m_Depthbar) DrawDepthbar();
-
-	// Draw compass or elevation/heading indicators.
-	if ((m_Compass && m_RotationOK) || (m_Clino && m_Lock == lock_NONE)) {
-	    Draw2dIndicators();
-	}
+void GfxCore::OnIdle(wxIdleEvent& event)
+{
+    // Handle an idle event.
+    if (Animate()) {
+	ForceRefresh();
+	event.RequestMore();
     }
-
-    m_DrawDC.EndDrawing();
-
-    drawtime = timer.Time();
 }
 
 void GfxCore::OnPaint(wxPaintEvent&)
@@ -827,77 +334,168 @@ void GfxCore::OnPaint(wxPaintEvent&)
     // Get a graphics context.
     wxPaintDC dc(this);
 
-    // Make sure we're initialised.
-    if (!m_DoneFirstShow) {
-	FirstShow();
-    }
+    assert(GetContext());
 
-    // Redraw the offscreen bitmap if it's out of date.
-    if (m_RedrawOffscreen) {
-	m_RedrawOffscreen = false;
-	RedrawOffscreen();
-    }
-
-    const wxRegion& region = GetUpdateRegion();
-
-    dc.BeginDrawing();
-
-    // Get the areas to redraw and update them.
-    wxRegionIterator iter(region);
-    while (iter) {
-	// Blit the bitmap onto the window.
-
-	int x = iter.GetX();
-	int y = iter.GetY();
-	int width = iter.GetW();
-	int height = iter.GetH();
-
-	dc.Blit(x, y, width, height, &m_DrawDC, x, y);
-
-	iter++;
-    }
-
-    if (!m_Rotating && !m_SwitchingTo) {
-	int here_x = INT_MAX, here_y = INT_MAX;
-	// Draw "here" and "there".
-	if (m_here.x != DBL_MAX) {
-	    dc.SetPen(*wxWHITE_PEN);
-	    dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	    here_x = (int)GridXToScreen(m_here);
-	    here_y = (int)GridYToScreen(m_here);
-	    dc.DrawLines(10, blob, here_x, here_y);
+    if (m_HaveData) {
+	// Make sure we're initialised.
+	bool first_time = !m_DoneFirstShow;
+	if (first_time) {
+	    FirstShow();
 	}
-	if (m_there.x != DBL_MAX) {
-	    if (here_x == INT_MAX) dc.SetPen(*wxWHITE_PEN);
-	    dc.SetBrush(*wxWHITE_BRUSH);
-	    int there_x = (int)GridXToScreen(m_there);
-	    int there_y = (int)GridYToScreen(m_there);
-	    if (here_x != INT_MAX) {
-		dc.DrawLine(here_x, here_y, there_x, there_y);
+
+	StartDrawing();
+
+	// Clear the background.
+	Clear();
+
+	// Set up model transformation matrix.
+	SetDataTransform();
+
+	timer.Start(); // reset timer
+
+	if (m_Legs || m_Tubes) {
+	    if (m_Tubes) {
+		EnableSmoothPolygons(true); // FIXME: allow false for wireframe view
+		DrawList(LIST_TUBES);
+		DisableSmoothPolygons();
 	    }
-	    dc.DrawLines(9, ring, there_x, there_y);
+
+	    // Draw the underground legs.  Do this last so that anti-aliasing
+	    // works over polygons.
+	    SetColour(col_GREEN);
+	    DrawList(LIST_UNDERGROUND_LEGS);
 	}
+
+	if (m_Surface) {
+	    // Draw the surface legs.
+	    DrawList(LIST_SURFACE_LEGS);
+	}
+
+	DrawList(LIST_BLOBS);
+
+	if (m_BoundingBox) {
+	    DrawShadowedBoundingBox();
+	}
+	if (m_Grid) {
+	    // Draw the grid.
+	    DrawList(LIST_GRID);
+	}
+
+	if (m_Crosses) {
+	    DrawList(LIST_CROSSES);
+	}
+
+	SetIndicatorTransform();
+
+	// Draw station names.
+	if (m_Names /*&& !m_Control->MouseDown() && !Animating()*/) {
+	    SetColour(NAME_COLOUR);
+
+	    if (m_OverlappingNames) {
+		SimpleDrawNames();
+	    } else {
+		NattyDrawNames();
+	    }
+	}
+
+	if (!Animating() && (m_here.IsValid() || m_there.IsValid())) {
+	    // Draw "here" and "there".
+	    Double hx, hy;
+	    SetColour(HERE_COLOUR);
+	    if (m_here.IsValid()) {
+		Double dummy;
+		Transform(m_here, &hx, &hy, &dummy);
+		if (!m_here_is_temporary) DrawRing(hx, hy);
+	    }
+	    if (m_there.IsValid()) {
+		Double tx, ty;
+		Double dummy;
+		Transform(m_there, &tx, &ty, &dummy);
+		if (m_here.IsValid()) {
+		    BeginLines();
+		    PlaceIndicatorVertex(hx, hy);
+		    PlaceIndicatorVertex(tx, ty);
+		    EndLines();
+		}
+		BeginBlobs();
+		DrawBlob(tx, ty);
+		EndBlobs();
+	    }
+	}
+
+	// Draw indicators.
+	//
+	// There's no advantage in generating an OpenGL list for the
+	// indicators since they change with almost every redraw (and
+	// sometimes several times between redraws).  This way we avoid
+	// the need to track when to update the indicator OpenGL list,
+	// and also avoid indicator update bugs when we don't quite get this
+	// right...
+	DrawIndicators();
+
+	FinishDrawing();
+
+	drawtime = timer.Time();
+    } else {
+	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
+	dc.Clear();
     }
-
-    dc.EndDrawing();
 }
 
-Double GfxCore::GridXToScreen(Double x, Double y, Double z)
+void GfxCore::DrawBoundingBox()
 {
-    x += m_Params.translation.x;
-    y += m_Params.translation.y;
-    z += m_Params.translation.z;
+    const Vector3 v = 0.5 * m_Parent->GetExtent();
 
-    return (XToScreen(x, y, z) * m_Params.scale) + m_XCentre;
+    SetColour(col_BLUE);
+    EnableDashedLines();
+    BeginPolyline();
+    PlaceVertex(-v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), -v.GetY(), v.GetZ());
+    EndPolyline();
+    BeginPolyline();
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    EndPolyline();
+    BeginLines();
+    PlaceVertex(-v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
+    EndLines();
+    DisableDashedLines();
 }
 
-Double GfxCore::GridYToScreen(Double x, Double y, Double z)
+void GfxCore::DrawShadowedBoundingBox()
 {
-    x += m_Params.translation.x;
-    y += m_Params.translation.y;
-    z += m_Params.translation.z;
+    const Vector3 v = 0.5 * m_Parent->GetExtent();
 
-    return m_YCentre - ((ZToScreen(x, y, z) * m_Params.scale));
+    DrawBoundingBox();
+
+    // FIXME: these gl* calls should be in gla-gl.cc
+    glPolygonOffset(1.0, 1.0);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+
+    SetColour(col_DARK_GREY);
+    BeginQuadrilaterals();
+    PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
+    PlaceVertex(-v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
+    PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
+    EndQuadrilaterals();
+
+    glDisable(GL_POLYGON_OFFSET_FILL);
+
+    DrawList(LIST_SHADOW);
 }
 
 void GfxCore::DrawGrid()
@@ -906,7 +504,7 @@ void GfxCore::DrawGrid()
     SetColour(col_RED);
 
     // Calculate the extent of the survey, in metres across the screen plane.
-    Double m_across_screen = Double(m_XSize / m_Params.scale);
+    Double m_across_screen = SurveyUnitsAcrossViewport();
     // Calculate the length of the scale bar in metres.
     //--move this elsewhere
     Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
@@ -918,242 +516,218 @@ void GfxCore::DrawGrid()
 	size_snap *= 2.0;
     }
 
-    Double grid_size = size_snap / 10.0;
+    Double grid_size = size_snap * 0.1;
     Double edge = grid_size * 2.0;
-    Double grid_z = -m_Parent->GetZExtent()/2.0 - grid_size;
-    Double left = -m_Parent->GetXExtent()/2.0 - edge;
-    Double right = m_Parent->GetXExtent()/2.0 + edge;
-    Double bottom = -m_Parent->GetYExtent()/2.0 - edge;
-    Double top = m_Parent->GetYExtent()/2.0 + edge;
+    Double grid_z = -m_Parent->GetZExtent() * 0.5 - grid_size;
+    Double left = -m_Parent->GetXExtent() * 0.5 - edge;
+    Double right = m_Parent->GetXExtent() * 0.5 + edge;
+    Double bottom = -m_Parent->GetYExtent() * 0.5 - edge;
+    Double top = m_Parent->GetYExtent() * 0.5 + edge;
     int count_x = (int) ceil((right - left) / grid_size);
     int count_y = (int) ceil((top - bottom) / grid_size);
     Double actual_right = left + count_x*grid_size;
     Double actual_top = bottom + count_y*grid_size;
 
+    BeginLines();
+
     for (int xc = 0; xc <= count_x; xc++) {
 	Double x = left + xc*grid_size;
-	m_DrawDC.DrawLine((int) GridXToScreen(x, bottom, grid_z), (int) GridYToScreen(x, bottom, grid_z),
-			  (int) GridXToScreen(x, actual_top, grid_z), (int) GridYToScreen(x, actual_top, grid_z));
+
+	PlaceVertex(x, bottom, grid_z);
+	PlaceVertex(x, actual_top, grid_z);
     }
 
     for (int yc = 0; yc <= count_y; yc++) {
 	Double y = bottom + yc*grid_size;
-	m_DrawDC.DrawLine((int) GridXToScreen(left, y, grid_z), (int) GridYToScreen(left, y, grid_z),
-			  (int) GridXToScreen(actual_right, y, grid_z),
-			  (int) GridYToScreen(actual_right, y, grid_z));
+	PlaceVertex(left, y, grid_z);
+	PlaceVertex(actual_right, y, grid_z);
     }
+
+    EndLines();
 }
 
-wxCoord GfxCore::GetClinoOffset()
+int GfxCore::GetClinoOffset() const
 {
     return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
 }
 
-wxPoint GfxCore::CompassPtToScreen(Double x, Double y, Double z)
+void GfxCore::DrawTick(int angle_cw)
 {
-    return wxPoint(long(-XToScreen(x, y, z)) + m_XSize - COMPASS_OFFSET_X,
-		   long(ZToScreen(x, y, z)) + m_YSize - COMPASS_OFFSET_Y);
-}
-
-wxPoint GfxCore::IndicatorCompassToScreenPan(int angle)
-{
-    Double theta = (angle * M_PI / 180.0) + m_PanAngle;
-    wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-    wxCoord x = wxCoord(length * sin(theta));
-    wxCoord y = wxCoord(length * cos(theta));
-
-    return wxPoint(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2 - x,
-		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
-}
-
-wxPoint GfxCore::IndicatorCompassToScreenElev(int angle)
-{
-    Double theta = (angle * M_PI / 180.0) + m_TiltAngle + M_PI_2;
-    wxCoord length = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-    wxCoord x = wxCoord(length * sin(-theta));
-    wxCoord y = wxCoord(length * cos(-theta));
-
-    return wxPoint(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2 - x,
-		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2 - y);
-}
-
-void GfxCore::DrawTick(wxCoord cx, wxCoord cy, int angle_cw)
-{
-    Double theta = angle_cw * M_PI / 180.0;
-    wxCoord length1 = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-    wxCoord length0 = length1 + TICK_LENGTH;
+    const Double theta = rad(angle_cw);
+    const wxCoord length1 = INDICATOR_RADIUS;
+    const wxCoord length0 = length1 + TICK_LENGTH;
     wxCoord x0 = wxCoord(length0 * sin(theta));
-    wxCoord y0 = wxCoord(length0 * -cos(theta));
+    wxCoord y0 = wxCoord(length0 * cos(theta));
     wxCoord x1 = wxCoord(length1 * sin(theta));
-    wxCoord y1 = wxCoord(length1 * -cos(theta));
+    wxCoord y1 = wxCoord(length1 * cos(theta));
 
-    m_DrawDC.DrawLine(cx + x0, cy + y0, cx + x1, cy + y1);
+    PlaceIndicatorVertex(x0, y0);
+    PlaceIndicatorVertex(x1, y1);
+}
+
+void GfxCore::DrawArrow(gla_colour col1, gla_colour col2) {
+    Vector3 p1(0, INDICATOR_RADIUS, 0);
+    Vector3 p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
+    Vector3 p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
+    Vector3 pc(0, 0, 0);
+
+    DrawTriangle(col_LIGHT_GREY, col1, p2, p1, pc);
+    DrawTriangle(col_LIGHT_GREY, col2, p3, p1, pc);
+}
+
+void GfxCore::DrawCompass() {
+    // Ticks.
+    BeginLines();
+    for (int angle = 315; angle > 0; angle -= 45) {
+	DrawTick(angle);
+    }
+    SetColour(col_GREEN);
+    DrawTick(0);
+    EndLines();
+
+    // Compass background.
+    DrawCircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS);
+
+    // Compass arrow.
+    DrawArrow(col_INDICATOR_1, col_INDICATOR_2);
+}
+
+// Draw the non-rotating background to the clino.
+void GfxCore::DrawClinoBack() {
+    BeginLines();
+    for (int angle = 0; angle <= 180; angle += 90) {
+	DrawTick(angle);
+    }
+
+    SetColour(col_GREY);
+    PlaceIndicatorVertex(0, INDICATOR_RADIUS);
+    PlaceIndicatorVertex(0, -INDICATOR_RADIUS);
+    PlaceIndicatorVertex(0, 0);
+    PlaceIndicatorVertex(INDICATOR_RADIUS, 0);
+
+    EndLines();
+}
+
+void GfxCore::DrawClino() {
+    // Ticks.
+    SetColour(col_GREEN);
+    BeginLines();
+    DrawTick(0);
+    EndLines();
+
+    // Clino background.
+    DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS, 0);
+
+    // Elevation arrow.
+    DrawArrow(col_INDICATOR_2, col_INDICATOR_1);
 }
 
 void GfxCore::Draw2dIndicators()
 {
-    // Draw the "traditional" elevation and compass indicators.
+    // Draw the compass and elevation indicators.
 
-    //-- code is a bit messy...
+    const int centre_y = INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y;
 
-    // Indicator backgrounds
-    SetColour(col_GREY, true);
-    SetColour(col_LIGHT_GREY_2);
+    const int comp_centre_x = GetCompassXPosition();
 
-    if (m_Compass && m_RotationOK) {
-	m_DrawDC.DrawEllipse(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-			     m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN,
-			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-			     INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2);
-    }
-    if (m_Clino && m_Lock == lock_NONE) {
-	int tilt = (int) (m_TiltAngle * 180.0 / M_PI);
-	m_DrawDC.DrawEllipticArc(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE +
-				 INDICATOR_MARGIN,
-				 m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE +
-				 INDICATOR_MARGIN,
-				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-				 INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2,
-				 -180 - tilt, -tilt); // do not change the order of these two
-						      // or the code will fail on Windows
-
-	m_DrawDC.DrawLine(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_MARGIN,
-			  m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE + INDICATOR_MARGIN);
-
-	m_DrawDC.DrawLine(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2,
-			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2,
-			  m_XSize - GetClinoOffset() - INDICATOR_MARGIN,
-			  m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2);
+    if (m_Compass && !m_Parent->IsExtendedElevation()) {
+	// If the user is dragging the compass with the pointer outside the
+	// compass, we snap to 45 degree multiples, and the ticks go white.
+	SetColour(m_MouseOutsideCompass ? col_WHITE : col_LIGHT_GREY_2);
+	DrawList2D(LIST_COMPASS, comp_centre_x, centre_y, -m_PanAngle);
     }
 
-    // Ticks
-    bool white = m_DraggingLeft && m_LastDrag == drag_COMPASS && m_MouseOutsideCompass;
-    wxCoord pan_centre_x = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
-    wxCoord centre_y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
-    wxCoord elev_centre_x = m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2;
-    if (m_Compass && m_RotationOK) {
-	int deg_pan = (int) (m_PanAngle * 180.0 / M_PI);
-	//--FIXME: bodge by Olly to stop wrong tick highlighting
-	if (deg_pan) deg_pan = 360 - deg_pan;
-	for (int angle = deg_pan; angle <= 315 + deg_pan; angle += 45) {
-	    if (deg_pan == angle) {
-		SetColour(col_GREEN);
-	    }
-	    else {
-		SetColour(white ? col_WHITE : col_LIGHT_GREY_2);
-	    }
-	    DrawTick(pan_centre_x, centre_y, angle);
-	}
-    }
-    if (m_Clino && m_Lock == lock_NONE) {
-	white = m_DraggingLeft && m_LastDrag == drag_ELEV && m_MouseOutsideElev;
-	int deg_elev = (int) (m_TiltAngle * 180.0 / M_PI);
-	for (int angle = 0; angle <= 180; angle += 90) {
-	    if (deg_elev == angle - 90) {
-		SetColour(col_GREEN);
-	    }
-	    else {
-		SetColour(white ? col_WHITE : col_LIGHT_GREY_2);
-	    }
-	    DrawTick(elev_centre_x, centre_y, angle);
-	}
+    const int elev_centre_x = GetClinoXPosition();
+
+    if (m_Clino) {
+	// If the user is dragging the clino with the pointer outside the
+	// clino, we snap to 90 degree multiples, and the ticks go white.
+	SetColour(m_MouseOutsideElev ? col_WHITE : col_LIGHT_GREY_2);
+	DrawList2D(LIST_CLINO_BACK, elev_centre_x, centre_y, 0);
+	DrawList2D(LIST_CLINO, elev_centre_x, centre_y, 90 + m_TiltAngle);
     }
 
-    // Pan arrow
-    if (m_Compass && m_RotationOK) {
-	wxPoint p1 = IndicatorCompassToScreenPan(0);
-	wxPoint p2 = IndicatorCompassToScreenPan(150);
-	wxPoint p3 = IndicatorCompassToScreenPan(210);
-	wxPoint pc(pan_centre_x, centre_y);
-	wxPoint pts1[3] = { p2, p1, pc };
-	wxPoint pts2[3] = { p3, p1, pc };
-	SetColour(col_LIGHT_GREY);
-	SetColour(col_INDICATOR_1, true);
-	m_DrawDC.DrawPolygon(3, pts1);
-	SetColour(col_INDICATOR_2, true);
-	m_DrawDC.DrawPolygon(3, pts2);
+    SetColour(TEXT_COLOUR);
+
+    static int triple_zero_width = 0;
+    static int height = 0;
+    if (!triple_zero_width) {
+	GetTextExtent(wxT("000"), &triple_zero_width, &height);
     }
+    const int y_off = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + height / 2;
 
-    // Elevation arrow
-    if (m_Clino && m_Lock == lock_NONE) {
-	wxPoint p1e = IndicatorCompassToScreenElev(0);
-	wxPoint p2e = IndicatorCompassToScreenElev(150);
-	wxPoint p3e = IndicatorCompassToScreenElev(210);
-	wxPoint pce(elev_centre_x, centre_y);
-	wxPoint pts1e[3] = { p2e, p1e, pce };
-	wxPoint pts2e[3] = { p3e, p1e, pce };
-	SetColour(col_LIGHT_GREY);
-	SetColour(col_INDICATOR_2, true);
-	m_DrawDC.DrawPolygon(3, pts1e);
-	SetColour(col_INDICATOR_1, true);
-	m_DrawDC.DrawPolygon(3, pts2e);
-    }
-
-    // Text
-    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
-    m_DrawDC.SetTextForeground(TEXT_COLOUR);
-
-    wxCoord w, h;
-    wxCoord width, height;
-    wxString str;
-
-    m_DrawDC.GetTextExtent(wxString("000"), &width, &h);
-    height = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE - INDICATOR_GAP - h;
-
-    if (m_Compass && m_RotationOK) {
+    if (m_Compass && !m_Parent->IsExtendedElevation()) {
+	wxString str;
+	int value;
 	if (m_Degrees) {
-	    str = wxString::Format("%03d", int(m_PanAngle * 180.0 / M_PI));
+	    value = int(m_PanAngle);
 	} else {
-	    str = wxString::Format("%03d", int(m_PanAngle * 200.0 / M_PI));
+	    value = int(m_PanAngle * 200.0 / 180.0);
 	}
-	m_DrawDC.GetTextExtent(str, &w, &h);
-	m_DrawDC.DrawText(str, pan_centre_x + width / 2 - w, height);
-	str = wxString(msg(/*Facing*/203));
-	m_DrawDC.GetTextExtent(str, &w, &h);
-	m_DrawDC.DrawText(str, pan_centre_x - w / 2, height - h);
+	str.Printf(wxT("%03d"), value);
+	DrawIndicatorText(comp_centre_x - triple_zero_width / 2, y_off, str);
+
+	str = wmsg(/*Facing*/203);
+	int w;
+	GetTextExtent(str, &w, NULL);
+	DrawIndicatorText(comp_centre_x - w / 2, y_off + height, str);
     }
 
-    if (m_Clino && m_Lock == lock_NONE) {
+    if (m_Clino) {
 	int angle;
+	wxString str;
+	int width;
 	if (m_Degrees) {
-	    angle = int(-m_TiltAngle * 180.0 / M_PI);
+	    static int zero_zero_width = 0;
+	    if (!zero_zero_width) {
+		GetTextExtent(wxT("00"), &zero_zero_width, NULL);
+	    }
+	    width = zero_zero_width;
+	    angle = int(-m_TiltAngle);
+	    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("00");
 	} else {
-	    angle = int(-m_TiltAngle * 200.0 / M_PI);
+	    width = triple_zero_width;
+	    angle = int(-m_TiltAngle * 200.0 / 180.0);
+	    str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
 	}
-	str = angle ? wxString::Format("%+03d", angle) : wxString("00");
-	m_DrawDC.GetTextExtent(str, &w, &h);
-	m_DrawDC.DrawText(str, elev_centre_x + width / 2 - w, height);
-	str = wxString(msg(/*Elevation*/118));
-	m_DrawDC.GetTextExtent(str, &w, &h);
-	m_DrawDC.DrawText(str, elev_centre_x - w / 2, height - h);
-    }
-}
 
-void GfxCore::DrawNames()
-{
-    // Draw station names.
-    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
-    m_DrawDC.SetTextForeground(LABEL_COLOUR);
+	// Adjust horizontal position so the left of the first digit is
+	// always in the same place.
+	int sign_offset = 0;
+	if (angle < 0) {
+	    static int minus_width = 0;
+	    if (!minus_width) {
+		GetTextExtent(wxT("-"), &minus_width, NULL);
+	    }
+	    sign_offset = minus_width + 1;
+	} else if (angle > 0) {
+	    static int plus_width = 0;
+	    if (!plus_width) {
+		GetTextExtent(wxT("+"), &plus_width, NULL);
+	    }
+	    sign_offset = plus_width + 1;
+	}
+	DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
 
-    if (m_OverlappingNames) {
-	SimpleDrawNames();
-    } else {
-	NattyDrawNames();
+	str = wmsg(/*Elevation*/118);
+	int w;
+	GetTextExtent(str, &w, NULL);
+	DrawIndicatorText(elev_centre_x - w / 2, y_off + height, str);
     }
 }
 
 void GfxCore::NattyDrawNames()
 {
     // Draw station names, without overlapping.
-    // FIXME: copied to OnSize()
-    const int quantise(FONT_SIZE / QUANTISE_FACTOR);
-    const int quantised_x = m_XSize / quantise;
-    const int quantised_y = m_YSize / quantise;
+
+    const unsigned int quantise(GetFontSize() / QUANTISE_FACTOR);
+    const unsigned int quantised_x = m_XSize / quantise;
+    const unsigned int quantised_y = m_YSize / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
+
     if (!m_LabelGrid) m_LabelGrid = new char[buffer_size];
-    memset((void*)m_LabelGrid, 0, buffer_size);
+
+    memset((void*) m_LabelGrid, 0, buffer_size);
 
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
@@ -1165,40 +739,45 @@ void GfxCore::NattyDrawNames()
 	    continue;
 	}
 
-	Double x = GridXToScreen((*label)->x, (*label)->y, (*label)->z);
-	Double y = GridYToScreen((*label)->x, (*label)->y, (*label)->z)
-	    + CROSS_SIZE - FONT_SIZE;
+	Double x, y, z;
 
-	wxString str = (*label)->GetText();
+	Transform(**label, &x, &y, &z);
+	// Check if the label is behind us (in perspective view).
+	if (z <= 0.0 || z >= 1.0) continue;
 
-	Double t = GridXToScreen(0, 0, 0);
-	t -= floor(t / quantise) * quantise;
-	int ix = int(x - t) / quantise;
-	t = GridYToScreen(0, 0, 0);
-	t -= floor(t / quantise) * quantise;
-	int iy = int(y - t) / quantise;
+	// Apply a small shift so that translating the view doesn't make which
+	// labels are displayed change as the resulting twinkling effect is
+	// distracting.
+	Double tx, ty, tz;
+	Transform(Vector3(), &tx, &ty, &tz);
+	tx -= floor(tx / quantise) * quantise;
+	ty -= floor(ty / quantise) * quantise;
 
-	bool reject = true;
+	tx = x - tx;
+	if (tx < 0) continue;
 
-	if (ix >= 0 && ix < quantised_x && iy >= 0 && iy < quantised_y) {
-	    char * test = &m_LabelGrid[ix + iy * quantised_x];
-	    int len = str.Length() * QUANTISE_FACTOR + 1;
-	    reject = (ix + len >= quantised_x);
-	    int i = 0;
-	    while (!reject && i++ < len) {
-		reject = *test++;
-	    }
+	ty = y - ty;
+	if (ty < 0) continue;
 
-	    if (!reject) {
-		m_DrawDC.DrawText(str, (wxCoord)x, (wxCoord)y);
+	unsigned int iy = unsigned(ty) / quantise;
+	if (iy >= quantised_y) continue;
+	unsigned int width = (*label)->get_width();
+	unsigned int ix = unsigned(tx) / quantise;
+	if (ix + width >= quantised_x) continue;
 
-		int ymin = (iy >= 2) ? iy - 2 : iy;
-		int ymax = (iy < quantised_y - 2) ? iy + 2 : iy;
-		for (int y0 = ymin; y0 <= ymax; y0++) {
-		    assert((ix + y0 * quantised_x) < (quantised_x * quantised_y));
-		    memset((void*) &m_LabelGrid[ix + y0 * quantised_x], 1, len);
-		}
-	    }
+	char * test = m_LabelGrid + ix + iy * quantised_x;
+	if (memchr(test, 1, width)) continue;
+
+	x += 3;
+	y -= GetFontSize() / 2;
+	DrawIndicatorText((int)x, (int)y, (*label)->GetText());
+
+	if (iy > QUANTISE_FACTOR) iy = QUANTISE_FACTOR;
+	test -= quantised_x * iy;
+	iy += 4;
+	while (--iy && test < m_LabelGrid + buffer_size) {
+	    memset(test, 1, width);
+	    test += quantised_x;
 	}
     }
 }
@@ -1207,63 +786,204 @@ void GfxCore::SimpleDrawNames()
 {
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
-    while (label != m_Parent->GetLabelsEnd()) {
-	wxCoord x = (wxCoord)GridXToScreen((*label)->x, (*label)->y, (*label)->z);
-	wxCoord y = (wxCoord)GridYToScreen((*label)->x, (*label)->y, (*label)->z);
-	m_DrawDC.DrawText((*label)->GetText(), x, y + CROSS_SIZE - FONT_SIZE);
-	++label;
+    for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
+	if (!((m_Surface && (*label)->IsSurface()) ||
+	      (m_Legs && (*label)->IsUnderground()) ||
+	      (!(*label)->IsSurface() && !(*label)->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
+	    continue;
+	}
+
+	Double x, y, z;
+	Transform(**label, &x, &y, &z);
+
+	// Check if the label is behind us (in perspective view).
+	if (z <= 0) continue;
+
+	x += 3;
+	y -= GetFontSize() / 2;
+	DrawIndicatorText((int)x, (int)y, (*label)->GetText());
     }
 }
 
 void GfxCore::DrawDepthbar()
 {
-    if (m_Parent->GetZExtent() == 0.0) return;
-
-    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
-    m_DrawDC.SetTextForeground(TEXT_COLOUR);
-
-    int y = DEPTH_BAR_BLOCK_HEIGHT * (m_Bands - 1) + DEPTH_BAR_OFFSET_Y;
+    const int total_block_height =
+	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
     int size = 0;
 
-    wxString* strs = new wxString[m_Bands];
+    wxString* strs = new wxString[GetNumDepthBands()];
     int band;
-    for (band = 0; band < m_Bands; band++) {
-	Double z = m_Parent->GetZMin() + m_Parent->GetZExtent() * band
-		/ (m_Bands - 1);
-
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
+		   m_Parent->GetDepthExtent() * band / (GetNumDepthBands() - 1);
 	strs[band] = FormatLength(z, false);
 
-	int x, dummy;
-	m_DrawDC.GetTextExtent(strs[band], &x, &dummy);
+	int x;
+	GetTextExtent(strs[band], &x, NULL);
 	if (x > size) size = x;
     }
 
-    int x_min = m_XSize - DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
-	    - DEPTH_BAR_MARGIN - size;
+    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+		- DEPTH_BAR_MARGIN - size;
 
-    SetColour(col_BLACK);
-    SetColour(col_DARK_GREY, true);
-    m_DrawDC.DrawRectangle(x_min - DEPTH_BAR_MARGIN
-			     - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-			   DEPTH_BAR_OFFSET_Y - DEPTH_BAR_MARGIN*2,
-			   DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN*3 +
-			     DEPTH_BAR_EXTRA_LEFT_MARGIN,
-			   DEPTH_BAR_BLOCK_HEIGHT*(m_Bands - 1) + DEPTH_BAR_MARGIN*4);
+    DrawRectangle(col_BLACK, col_DARK_GREY,
+		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  top - DEPTH_BAR_MARGIN * 2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
+		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  total_block_height + DEPTH_BAR_MARGIN*4);
 
-    for (band = 0; band < m_Bands; band++) {
-	if (band < m_Bands - 1) {
-	    m_DrawDC.SetPen(m_Parent->GetPen(band));
-	    m_DrawDC.SetBrush(m_Parent->GetBrush(band));
-	    m_DrawDC.DrawRectangle(x_min,
-				   y - DEPTH_BAR_BLOCK_HEIGHT,
-				   DEPTH_BAR_BLOCK_WIDTH,
-				   DEPTH_BAR_BLOCK_HEIGHT);
+    int y = top;
+    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    y = top - GetFontSize() / 2;
+    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+
+    SetColour(TEXT_COLOUR);
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	DrawIndicatorText(left, y, strs[band]);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    delete[] strs;
+}
+
+void GfxCore::DrawDatebar()
+{
+    int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    if (!m_Parent->HasCompleteDateInfo())
+	total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+
+    int size = 0;
+    if (!m_Parent->HasCompleteDateInfo()) {
+	GetTextExtent(wxT("No info"), &size, NULL);
+    }
+
+    wxString* strs = new wxString[GetNumDepthBands()];
+    char buf[128];
+    int band;
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	time_t date = m_Parent->GetDateMin() +
+		   time_t((double)m_Parent->GetDateExtent() * band / (GetNumDepthBands() - 1));
+	size_t res = strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&date));
+	if (res == 0 || res == sizeof(buf)) {
+	    // Insert extra "" to avoid trigraphs issues.
+	    strs[band] = wxT("?""?""?""?-?""?-?""?");
+	} else {
+	    strs[band] = wxString::FromAscii(buf);
 	}
 
-	m_DrawDC.DrawText(strs[band], x_min + DEPTH_BAR_BLOCK_WIDTH + 5,
-			  y - (FONT_SIZE / 2) - 1);
+	int x;
+	GetTextExtent(strs[band], &x, NULL);
+	if (x > size) size = x;
+    }
 
-	y -= DEPTH_BAR_BLOCK_HEIGHT;
+    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+		- DEPTH_BAR_MARGIN - size;
+
+    DrawRectangle(col_BLACK, col_DARK_GREY,
+		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  top - DEPTH_BAR_MARGIN * 2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
+		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  total_block_height + DEPTH_BAR_MARGIN*4);
+
+    int y = top;
+
+    if (!m_Parent->HasCompleteDateInfo()) {
+	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
+		DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+    }
+
+    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    y = top - GetFontSize() / 2;
+    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+
+    SetColour(TEXT_COLOUR);
+
+    if (!m_Parent->HasCompleteDateInfo()) {
+	y += DEPTH_BAR_MARGIN;
+	DrawIndicatorText(left, y, wxT("No info"));
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	DrawIndicatorText(left, y, strs[band]);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    delete[] strs;
+}
+
+void GfxCore::DrawErrorbar()
+{
+    int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    // Always show the "Not a loop" legend for now (FIXME).
+    total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+
+    int size = 0;
+    GetTextExtent(wxT("Not a loop"), &size, NULL);
+
+    wxString* strs = new wxString[GetNumDepthBands()];
+    int band;
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	double E = MAX_ERROR * band / (GetNumDepthBands() - 1);
+	strs[band].Printf(wxT("%.2f"), E);
+
+	int x;
+	GetTextExtent(strs[band], &x, NULL);
+	if (x > size) size = x;
+    }
+
+    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
+		- DEPTH_BAR_MARGIN - size;
+
+    DrawRectangle(col_BLACK, col_DARK_GREY,
+		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  top - DEPTH_BAR_MARGIN * 2,
+		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
+		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
+		  total_block_height + DEPTH_BAR_MARGIN*4);
+
+    int y = top;
+
+    DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
+	    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+    y += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+
+    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
+    }
+
+    y = top - GetFontSize() / 2;
+    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+
+    SetColour(TEXT_COLOUR);
+
+    y += DEPTH_BAR_MARGIN;
+    DrawIndicatorText(left, y, wxT("Not in loop"));
+    y += DEPTH_BAR_BLOCK_HEIGHT;
+
+    for (band = 0; band < GetNumDepthBands(); band++) {
+	DrawIndicatorText(left, y, strs[band]);
+	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
     delete[] strs;
@@ -1279,37 +999,37 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
     }
 
     if (size_snap == 0.0) {
-	str = "0";
+	str = wxT("0");
     } else if (m_Metric) {
 #ifdef SILLY_UNITS
 	if (size_snap < 1e-12) {
-	    str = wxString::Format("%.3gpm", size_snap * 1e12);
+	    str.Printf(wxT("%.3gpm"), size_snap * 1e12);
 	} else if (size_snap < 1e-9) {
-	    str = wxString::Format("%.fpm", size_snap * 1e12);
+	    str.Printf(wxT("%.fpm"), size_snap * 1e12);
 	} else if (size_snap < 1e-6) {
-	    str = wxString::Format("%.fnm", size_snap * 1e9);
+	    str.Printf(wxT("%.fnm"), size_snap * 1e9);
 	} else if (size_snap < 1e-3) {
-	    str = wxString::Format("%.fum", size_snap * 1e6);
+	    str.Printf(wxT("%.fum"), size_snap * 1e6);
 #else
 	if (size_snap < 1e-3) {
-	    str = wxString::Format("%.3gmm", size_snap * 1e3);
+	    str.Printf(wxT("%.3gmm"), size_snap * 1e3);
 #endif
 	} else if (size_snap < 1e-2) {
-	    str = wxString::Format("%.fmm", size_snap * 1e3);
+	    str.Printf(wxT("%.fmm"), size_snap * 1e3);
 	} else if (size_snap < 1.0) {
-	    str = wxString::Format("%.fcm", size_snap * 100.0);
+	    str.Printf(wxT("%.fcm"), size_snap * 100.0);
 	} else if (size_snap < 1e3) {
-	    str = wxString::Format("%.fm", size_snap);
+	    str.Printf(wxT("%.fm"), size_snap);
 #ifdef SILLY_UNITS
 	} else if (size_snap < 1e6) {
-	    str = wxString::Format("%.fkm", size_snap * 1e-3);
+	    str.Printf(wxT("%.fkm"), size_snap * 1e-3);
 	} else if (size_snap < 1e9) {
-	    str = wxString::Format("%.fMm", size_snap * 1e-6);
+	    str.Printf(wxT("%.fMm"), size_snap * 1e-6);
 	} else {
-	    str = wxString::Format("%.fGm", size_snap * 1e-9);
+	    str.Printf(wxT("%.fGm"), size_snap * 1e-9);
 #else
 	} else {
-	    str = wxString::Format(scalebar ? "%.fkm" : "%.2fkm", size_snap * 1e-3);
+	    str.Printf(scalebar ? wxT("%.fkm") : wxT("%.2fkm"), size_snap * 1e-3);
 #endif
 	}
     } else {
@@ -1317,32 +1037,30 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
 	if (scalebar) {
 	    Double inches = size_snap * 12;
 	    if (inches < 1.0) {
-		str = wxString::Format("%.3gin", inches);
+		str.Printf(wxT("%.3gin"), inches);
 	    } else if (size_snap < 1.0) {
-		str = wxString::Format("%.fin", inches);
+		str.Printf(wxT("%.fin"), inches);
 	    } else if (size_snap < 5279.5) {
-		str = wxString::Format("%.fft", size_snap);
+		str.Printf(wxT("%.fft"), size_snap);
 	    } else {
-		str = wxString::Format("%.f miles", size_snap / 5280.0);
+		str.Printf(wxT("%.f miles"), size_snap / 5280.0);
 	    }
 	} else {
-	    str = wxString::Format("%.fft", size_snap);
+	    str.Printf(wxT("%.fft"), size_snap);
 	}
     }
 
-    return negative ? wxString("-") + str : str;
+    return negative ? wxString(wxT("-")) + str : str;
 }
 
 void GfxCore::DrawScalebar()
 {
     // Draw the scalebar.
-
-    if (m_Lock == lock_POINT) return;
+    if (GetPerspective()) return;
 
     // Calculate how many metres of survey are currently displayed across the
     // screen.
-    int x_size = m_XSize;
-    Double across_screen = Double(x_size / m_Params.scale);
+    Double across_screen = SurveyUnitsAcrossViewport();
 
     // Convert to imperial measurements if required.
     Double multiplier = 1.0;
@@ -1356,8 +1074,8 @@ void GfxCore::DrawScalebar()
     }
 
     // Calculate the length of the scale bar.
-    Double size_snap = pow(10.0, floor(log10(0.75 * across_screen)));
-    Double t = across_screen * 0.75 / size_snap;
+    Double size_snap = pow(10.0, floor(log10(0.65 * across_screen)));
+    Double t = across_screen * 0.65 / size_snap;
     if (t >= 5.0) {
 	size_snap *= 5.0;
     } else if (t >= 2.0) {
@@ -1367,238 +1085,43 @@ void GfxCore::DrawScalebar()
     if (!m_Metric) size_snap *= multiplier;
 
     // Actual size of the thing in pixels:
-    int size = int(size_snap * m_Params.scale);
-    m_ScaleBar.width = size;
+    int size = int((size_snap / SurveyUnitsAcrossViewport()) * m_XSize);
+    m_ScaleBarWidth = size;
 
     // Draw it...
-    //--FIXME: improve this
-    int end_x = m_ScaleBar.offset_x;
-    int height = SCALE_BAR_HEIGHT;
-    int end_y = m_YSize - m_ScaleBar.offset_y - height;
+    const int end_y = SCALE_BAR_OFFSET_Y + SCALE_BAR_HEIGHT;
     int interval = size / 10;
 
-    bool solid = true;
+    gla_colour col = col_WHITE;
     for (int ix = 0; ix < 10; ix++) {
-	int x = end_x + int(ix * ((Double) size / 10.0));
+	int x = SCALE_BAR_OFFSET_X + int(ix * ((Double) size / 10.0));
 
-	SetColour(solid ? col_GREY : col_WHITE);
-	SetColour(solid ? col_GREY : col_WHITE, true);
+	DrawRectangle(col, col, x, end_y, interval + 2, SCALE_BAR_HEIGHT);
 
-	m_DrawDC.DrawRectangle(x, end_y, interval + 2, height);
-
-	solid = !solid;
+	col = (col == col_WHITE) ? col_GREY : col_WHITE;
     }
 
     // Add labels.
     wxString str = FormatLength(size_snap);
 
-    m_DrawDC.SetTextBackground(wxColour(0, 0, 0));
-    m_DrawDC.SetTextForeground(TEXT_COLOUR);
-    m_DrawDC.DrawText("0", end_x, end_y - FONT_SIZE - 4);
-
     int text_width, text_height;
-    m_DrawDC.GetTextExtent(str, &text_width, &text_height);
-    m_DrawDC.DrawText(str, end_x + size - text_width, end_y - FONT_SIZE - 4);
+    GetTextExtent(str, &text_width, &text_height);
+    const int text_y = end_y - text_height + 1;
+    SetColour(TEXT_COLOUR);
+    DrawIndicatorText(SCALE_BAR_OFFSET_X, text_y, wxT("0"));
+    DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, text_y, str);
 }
 
-//
-//  Mouse event handling methods
-//
-
-void GfxCore::OnLButtonDown(wxMouseEvent& event)
+bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 {
-    SetFocus();
-    if (m_PlotData && m_Lock != lock_POINT) {
-	m_DraggingLeft = true;
-	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
-	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
-	m_DragStart = m_DragRealStart = wxPoint(event.GetX(), event.GetY());
+    if (Animating()) return false;
 
-	CaptureMouse();
-    }
-}
-
-void GfxCore::OnLButtonUp(wxMouseEvent& event)
-{
-    if (m_PlotData && m_Lock != lock_POINT) {
-	if (event.GetPosition() == m_DragRealStart) {
-	    // just a "click"...
-	    CheckHitTestGrid(m_DragStart, true);
-	}
-
-	m_LastDrag = drag_NONE;
-	m_DraggingLeft = false;
-	const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 - INDICATOR_GAP,
-		       m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
-		       INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
-		       INDICATOR_BOX_SIZE);
-	m_RedrawOffscreen = true;
-	Refresh(false, &r);
-	ReleaseMouse();
-    }
-}
-
-void GfxCore::OnMButtonDown(wxMouseEvent& event)
-{
-    SetFocus();
-    if (m_PlotData && m_Lock == lock_NONE) {
-	m_DraggingMiddle = true;
-	m_DragStart = wxPoint(event.GetX(), event.GetY());
-
-	CaptureMouse();
-    }
-}
-
-void GfxCore::OnMButtonUp(wxMouseEvent&)
-{
-    if (m_PlotData && m_Lock == lock_NONE) {
-	m_DraggingMiddle = false;
-	ReleaseMouse();
-    }
-}
-
-void GfxCore::OnRButtonDown(wxMouseEvent& event)
-{
-    SetFocus();
-    if (m_PlotData) {
-	m_DragStart = wxPoint(event.GetX(), event.GetY());
-	m_ScaleBar.drag_start_offset_x = m_ScaleBar.offset_x;
-	m_ScaleBar.drag_start_offset_y = m_ScaleBar.offset_y;
-	m_DraggingRight = true;
-
-	CaptureMouse();
-    }
-}
-
-void GfxCore::OnRButtonUp(wxMouseEvent&)
-{
-    m_DraggingRight = false;
-    m_LastDrag = drag_NONE;
-    ReleaseMouse();
-}
-
-void GfxCore::HandleScaleRotate(bool control, wxPoint point)
-{
-    // Handle a mouse movement during scale/rotate mode.
-    int dx = point.x - m_DragStart.x;
-    int dy = point.y - m_DragStart.y;
-
-    if (m_ReverseControls) {
-	dx = -dx;
-	dy = -dy;
+    if (point.x < 0 || point.x >= m_XSize ||
+	point.y < 0 || point.y >= m_YSize) {
+	return false;
     }
 
-    Double pan_angle = m_RotationOK ? (Double(dx) * (-M_PI / 500.0)) : 0.0;
-
-    // left/right => rotate, up/down => scale
-    TurnCave(pan_angle);
-
-    if (control) {
-	// For now...
-	if (m_RotationOK) TiltCave(Double(-dy) * M_PI / 500.0);
-    } else {
-	SetScale(m_Params.scale *= pow(1.06, 0.08 * dy));
-    }
-
-    ForceRefresh();
-
-    m_DragStart = point;
-}
-
-void GfxCore::TurnCave(Double angle)
-{
-    // Turn the cave around its z-axis by a given angle.
-    m_PanAngle += angle;
-    if (m_PanAngle >= M_PI * 2.0) {
-	m_PanAngle -= M_PI * 2.0;
-    } else if (m_PanAngle < 0.0) {
-	m_PanAngle += M_PI * 2.0;
-    }
-    m_Params.rotation.setFromEulerAngles(0.0, 0.0, m_PanAngle);
-    Quaternion q;
-    q.setFromEulerAngles(m_TiltAngle, 0.0, 0.0);
-    m_Params.rotation = q * m_Params.rotation;
-    m_RotationMatrix = m_Params.rotation.asMatrix();
-}
-
-void GfxCore::TurnCaveTo(Double angle)
-{
-    // Turn the cave to a particular pan angle.
-    TurnCave(angle - m_PanAngle);
-}
-
-void GfxCore::TiltCave(Double tilt_angle)
-{
-    // Tilt the cave by a given angle.
-    if (m_TiltAngle + tilt_angle > M_PI_2) {
-	tilt_angle = M_PI_2 - m_TiltAngle;
-    } else if (m_TiltAngle + tilt_angle < -M_PI_2) {
-	tilt_angle = -M_PI_2 - m_TiltAngle;
-    }
-
-    m_TiltAngle += tilt_angle;
-
-    m_Params.rotation.setFromEulerAngles(0.0, 0.0, m_PanAngle);
-    Quaternion q;
-    q.setFromEulerAngles(m_TiltAngle, 0.0, 0.0);
-    m_Params.rotation = q * m_Params.rotation;
-    m_RotationMatrix = m_Params.rotation.asMatrix();
-}
-
-void GfxCore::HandleTilt(wxPoint point)
-{
-    // Handle a mouse movement during tilt mode.
-    int dy = point.y - m_DragStart.y;
-
-    if (m_ReverseControls) dy = -dy;
-
-    TiltCave(Double(-dy) * M_PI / 500.0);
-
-    m_DragStart = point;
-
-    ForceRefresh();
-}
-
-void GfxCore::HandleTranslate(wxPoint point)
-{
-    // Handle a mouse movement during translation mode.
-    int dx = point.x - m_DragStart.x;
-    int dy = point.y - m_DragStart.y;
-
-    if (m_ReverseControls) {
-	dx = -dx;
-	dy = -dy;
-    }
-
-    TranslateCave(dx, dy);
-    m_DragStart = point;
-}
-
-void GfxCore::TranslateCave(int dx, int dy)
-{
-    // Find out how far the screen movement takes us in cave coords.
-    Double x = Double(dx / m_Params.scale);
-    Double z = Double(-dy / m_Params.scale);
-
-    Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
-
-    Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*z);
-    Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*z);
-    Double cz = Double(inverse_rotation.get(2, 0)*x + inverse_rotation.get(2, 2)*z);
-
-    // Update parameters and redraw.
-    m_Params.translation.x += cx;
-    m_Params.translation.y += cy;
-    m_Params.translation.z += cz;
-
-    ForceRefresh();
-}
-
-void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
-{
-    if (point.x < 0 || point.x >= m_XSize || point.y < 0 || point.y >= m_YSize) {
-	return;
-    }
+    SetDataTransform();
 
     if (!m_HitTestGridValid) CreateHitTestGrid();
 
@@ -1609,15 +1132,20 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
     int dist_sqrd = 25;
     int square = grid_x + grid_y * HITTEST_SIZE;
     list<LabelInfo*>::iterator iter = m_PointGrid[square].begin();
+
     while (iter != m_PointGrid[square].end()) {
 	LabelInfo *pt = *iter++;
 
-	int dx = point.x -
-		(int)GridXToScreen(pt->GetX(), pt->GetY(), pt->GetZ());
+	Double cx, cy, cz;
+
+	Transform(*pt, &cx, &cy, &cz);
+
+	cy = m_YSize - cy;
+
+	int dx = point.x - int(cx);
 	int ds = dx * dx;
 	if (ds >= dist_sqrd) continue;
-	int dy = point.y -
-		(int)GridYToScreen(pt->GetX(), pt->GetY(), pt->GetZ());
+	int dy = point.y - int(cy);
 
 	ds += dy * dy;
 	if (ds >= dist_sqrd) continue;
@@ -1628,149 +1156,28 @@ void GfxCore::CheckHitTestGrid(wxPoint& point, bool centre)
 	if (ds == 0) break;
     }
 
+    m_Parent->ShowInfo(best);
     if (best) {
-	m_Parent->SetMouseOverStation(best);
 	if (centre) {
-	    CentreOn(best->GetX(), best->GetY(), best->GetZ());
-	    SetThere(best->GetX(), best->GetY(), best->GetZ());
+	    // FIXME: allow Ctrl-Click to not set there or something?
+	    CentreOn(*best);
+	    WarpPointer(m_XSize / 2, m_YSize / 2);
+	    SetThere(*best);
 	    m_Parent->SelectTreeItem(best);
 	}
     } else {
-	m_Parent->SetMouseOverStation(NULL);
-    }
-}
-
-void GfxCore::OnMouseMove(wxMouseEvent& event)
-{
-    // Mouse motion event handler.
-    if (!m_PlotData) return;
-
-    wxPoint point = wxPoint(event.GetX(), event.GetY());
-
-    // Check hit-test grid (only if no buttons are pressed).
-    if (!event.LeftIsDown() && !event.MiddleIsDown() && !event.RightIsDown()) {
-	CheckHitTestGrid(point, false);
-    }
-
-    // Update coordinate display if in plan view, or altitude if in elevation
-    // view.
-    if (m_TiltAngle == M_PI_2) {
-	int x = event.GetX() - m_XCentre;
-	int y = -(event.GetY() - m_YCentre);
-	Matrix4 inverse_rotation = m_Params.rotation.asInverseMatrix();
-
-	Double cx = Double(inverse_rotation.get(0, 0)*x + inverse_rotation.get(0, 2)*y);
-	Double cy = Double(inverse_rotation.get(1, 0)*x + inverse_rotation.get(1, 2)*y);
-
-	m_Parent->SetCoords(cx / m_Params.scale - m_Params.translation.x + m_Parent->GetXOffset(),
-			    cy / m_Params.scale - m_Params.translation.y + m_Parent->GetYOffset());
-    } else if (m_TiltAngle == 0.0) {
-	int z = -(event.GetY() - m_YCentre);
-	m_Parent->SetAltitude(z / m_Params.scale - m_Params.translation.z + m_Parent->GetZOffset());
-    } else {
-	m_Parent->ClearCoords();
-    }
-
-    if (!m_SwitchingTo) {
-	if (m_DraggingLeft) {
-	    wxCoord x0 = m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE/2;
-	    wxCoord x1 = wxCoord(m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE/2);
-	    wxCoord y = m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE/2;
-
-	    wxCoord dx0 = point.x - x0;
-	    wxCoord dx1 = point.x - x1;
-	    wxCoord dy = point.y - y;
-
-	    wxCoord radius = (INDICATOR_BOX_SIZE - INDICATOR_MARGIN*2) / 2;
-
-	    if (m_LastDrag == drag_NONE) {
-		if (m_Compass && dx0 * dx0 + dy * dy <= radius * radius)
-		    m_LastDrag = drag_COMPASS;
-		else if (m_Clino && dx1 * dx1 + dy * dy <= radius * radius)
-		    m_LastDrag = drag_ELEV;
-		else if (point.x >= m_ScaleBar.offset_x &&
-			 point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-			 point.y <= m_YSize - m_ScaleBar.offset_y &&
-			 point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT)
-		    m_LastDrag = drag_SCALE;
-	    }
-	    if (m_LastDrag == drag_COMPASS) {
-		// drag in heading indicator
-		double angle = atan2(double(dx0), double(dy)) - M_PI;
-		if (dx0 * dx0 + dy * dy <= radius * radius) {
-		    TurnCaveTo(angle);
-		    m_MouseOutsideCompass = false;
-		}
-		else {
-		    TurnCaveTo(int(int(angle * 180.0 / M_PI) / 45) *
-			       M_PI_4);
-		    m_MouseOutsideCompass = true;
-		}
-		ForceRefresh();
-	    }
-	    else if (m_LastDrag == drag_ELEV) {
-		// drag in elevation indicator
-		if (dx1 >= 0 && dx1 * dx1 + dy * dy <= radius * radius) {
-		    TiltCave(atan2(double(dy), double(dx1)) - m_TiltAngle);
-		    m_MouseOutsideElev = false;
-		}
-		else if (dy >= INDICATOR_MARGIN) {
-		    TiltCave(M_PI_2 - m_TiltAngle);
-		    m_MouseOutsideElev = true;
-		}
-		else if (dy <= -INDICATOR_MARGIN) {
-		    TiltCave(-M_PI_2 - m_TiltAngle);
-		    m_MouseOutsideElev = true;
-		}
-		else {
-		    TiltCave(-m_TiltAngle);
-		    m_MouseOutsideElev = true;
-		}
-		ForceRefresh();
-	    }
-	    else if (m_LastDrag == drag_SCALE) {
-		if (point.x >= 0 && point.x <= m_XSize) {
-		    Double size_snap = Double(m_ScaleBar.width) / m_Params.scale;
-		    int dx = point.x - m_DragLast.x;
-
-		    SetScale((m_ScaleBar.width + dx) / size_snap);
-		    ForceRefresh();
-		}
-	    }
-	    else if (m_LastDrag == drag_NONE || m_LastDrag == drag_MAIN) {
-		m_LastDrag = drag_MAIN;
-		HandleScaleRotate(event.ControlDown(), point);
-	    }
-	}
-	else if (m_DraggingMiddle) {
-	    HandleTilt(point);
-	}
-	else if (m_DraggingRight) {
-	    if ((m_LastDrag == drag_NONE &&
-		 point.x >= m_ScaleBar.offset_x &&
-		 point.x <= m_ScaleBar.offset_x + m_ScaleBar.width &&
-		 point.y <= m_YSize - m_ScaleBar.offset_y &&
-		 point.y >= m_YSize - m_ScaleBar.offset_y - SCALE_BAR_HEIGHT) ||
-		 m_LastDrag == drag_SCALE) {
-		  if (point.x < 0) point.x = 0;
-		  if (point.y < 0) point.y = 0;
-		  if (point.x > m_XSize) point.x = m_XSize;
-		  if (point.y > m_YSize) point.y = m_YSize;
-		  m_LastDrag = drag_SCALE;
-		  int x_inside_bar = m_DragStart.x - m_ScaleBar.drag_start_offset_x;
-		  int y_inside_bar = m_YSize - m_ScaleBar.drag_start_offset_y - m_DragStart.y;
-		  m_ScaleBar.offset_x = point.x - x_inside_bar;
-		  m_ScaleBar.offset_y = (m_YSize - point.y) - y_inside_bar;
-		  ForceRefresh();
-	    }
-	    else {
-		m_LastDrag = drag_MAIN;
-		HandleTranslate(point);
-	    }
+	// Left-clicking not on a survey cancels the measuring line.
+	if (centre) {
+	    ClearTreeSelection();
+	} else {
+	    Double x, y, z;
+	    ReverseTransform(point.x, m_YSize - point.y, &x, &y, &z);
+	    SetHere(Point(Vector3(x, y, z)));
+	    m_here_is_temporary = true;
 	}
     }
 
-    m_DragLast = point;
+    return best;
 }
 
 void GfxCore::OnSize(wxSizeEvent& event)
@@ -1782,466 +1189,187 @@ void GfxCore::OnSize(wxSizeEvent& event)
     if (size.GetWidth() <= 0 || size.GetHeight() <= 0) {
 	// Before things are fully initialised, we sometimes get a bogus
 	// resize message...
+	// FIXME have changes in MainFrm cured this?  It still happens with
+	// 1.0.32 and wxGTK 2.5.2 (load a file from the command line).
+	// With 1.1.6 and wxGTK 2.4.2 we only get negative sizes if MainFrm
+	// is resized such that the GfxCore window isn't visible.
+	//printf("OnSize(%d,%d)\n", size.GetWidth(), size.GetHeight());
 	return;
     }
 
+    wxGLCanvas::OnSize(event);
+
     m_XSize = size.GetWidth();
     m_YSize = size.GetHeight();
-    m_XCentre = m_XSize / 2;
-    m_YCentre = m_YSize / 2;
-
-    if (m_InitialisePending) {
-	Initialise();
-	m_InitialisePending = false;
-	m_DoneFirstShow = true;
-    }
 
     if (m_DoneFirstShow) {
-	// FIXME: copied from NattyDrawNames()
-	const int quantise(FONT_SIZE / QUANTISE_FACTOR);
-	const int quantised_x = m_XSize / quantise;
-	const int quantised_y = m_YSize / quantise;
-	const size_t buffer_size = quantised_x * quantised_y;
-	if (m_LabelGrid) delete[] m_LabelGrid;
-
-	m_LabelGrid = new char[buffer_size];
-	CreateHitTestGrid();
-
-#ifndef __WXMOTIF__
-	m_DrawDC.SelectObject(wxNullBitmap);
-#endif
-	if (m_OffscreenBitmap) {
-	    delete m_OffscreenBitmap;
+	if (m_LabelGrid) {
+	    delete[] m_LabelGrid;
+	    m_LabelGrid = NULL;
 	}
-	m_OffscreenBitmap = new wxBitmap;
-	m_OffscreenBitmap->Create(m_XSize, m_YSize);
-	m_DrawDC.SelectObject(*m_OffscreenBitmap);
-	RedrawOffscreen();
-	Refresh(false);
+
+	m_HitTestGridValid = false;
+
+	ForceRefresh();
     }
 }
 
-void GfxCore::OnDisplayOverlappingNames()
+void GfxCore::DefaultParameters()
 {
-    m_OverlappingNames = !m_OverlappingNames;
-    ForceRefresh();
-}
+    // Set default viewing parameters.
 
-void GfxCore::OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Names);
-    cmd.Check(m_OverlappingNames);
-}
-
-void GfxCore::OnShowCrosses()
-{
-    m_Crosses = !m_Crosses;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowCrossesUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-    cmd.Check(m_Crosses);
-}
-
-void GfxCore::OnShowStationNames()
-{
-    m_Names = !m_Names;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowStationNamesUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-    cmd.Check(m_Names);
-}
-
-void GfxCore::OnShowSurveyLegs()
-{
-    m_Legs = !m_Legs;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT && m_UndergroundLegs);
-    cmd.Check(m_Legs);
-}
-
-void GfxCore::OnMoveEast()
-{
-    TurnCaveTo(M_PI_2);
-    ForceRefresh();
-}
-
-void GfxCore::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_Y));
-}
-
-void GfxCore::OnMoveNorth()
-{
-    TurnCaveTo(0.0);
-    ForceRefresh();
-}
-
-void GfxCore::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_X));
-}
-
-void GfxCore::OnMoveSouth()
-{
-    TurnCaveTo(M_PI);
-    ForceRefresh();
-}
-
-void GfxCore::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_X));
-}
-
-void GfxCore::OnMoveWest()
-{
-    TurnCaveTo(M_PI * 1.5);
-    ForceRefresh();
-}
-
-void GfxCore::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && !(m_Lock & lock_Y));
-}
-
-void GfxCore::OnStartRotation()
-{
-    m_Rotating = true;
-    timer.Start(drawtime);
-}
-
-void GfxCore::OnStartRotationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && !m_Rotating && m_RotationOK);
-}
-
-void GfxCore::OnToggleRotation()
-{
-    m_Rotating = !m_Rotating;
-    if (m_Rotating) timer.Start(drawtime);
-}
-
-void GfxCore::OnToggleRotationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK);
-    cmd.Check(m_PlotData != NULL && m_Rotating);
-}
-
-void GfxCore::OnStopRotation()
-{
-    m_Rotating = false;
-}
-
-void GfxCore::OnStopRotationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Rotating);
-}
-
-void GfxCore::OnReverseControls()
-{
-    m_ReverseControls = !m_ReverseControls;
-}
-
-void GfxCore::OnReverseControlsUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-    cmd.Check(m_ReverseControls);
-}
-
-void GfxCore::OnReverseDirectionOfRotation()
-{
-    m_RotationStep = -m_RotationStep;
-}
-
-void GfxCore::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK);
-}
-
-void GfxCore::OnSlowDown(bool accel)
-{
-    m_RotationStep /= accel ? 1.44 : 1.2;
-    if (m_RotationStep < M_PI / 180.0) {
-	m_RotationStep = (Double) M_PI / 180.0;
-    }
-}
-
-void GfxCore::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK);
-}
-
-void GfxCore::OnSpeedUp(bool accel)
-{
-    m_RotationStep *= accel ? 1.44 : 1.2;
-    if (m_RotationStep > 2.5 * M_PI) {
-	m_RotationStep = (Double) 2.5 * M_PI;
-    }
-}
-
-void GfxCore::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK);
-}
-
-void GfxCore::OnStepOnceAnticlockwise(bool accel)
-{
-    TurnCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
-    ForceRefresh();
-}
-
-void GfxCore::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK && !m_Rotating);
-}
-
-void GfxCore::OnStepOnceClockwise(bool accel)
-{
-    TurnCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
-    ForceRefresh();
-}
-
-void GfxCore::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK && !m_Rotating);
-}
-
-void GfxCore::OnDefaults()
-{
-    // If there are no legs (e.g. after loading a .pos file), turn crosses on.
-    if (m_Parent->GetNumLegs() == 0) {
-	m_Crosses = true;
+    m_Surface = false;
+    if (!m_Parent->HasUndergroundLegs()) {
+	if (m_Parent->HasSurfaceLegs()) {
+	    // If there are surface legs, but no underground legs, turn
+	    // surface surveys on.
+	    m_Surface = true;
+	} else {
+	    // If there are no legs (e.g. after loading a .pos file), turn
+	    // crosses on.
+	    m_Crosses = true;
+	}
     }
 
     m_PanAngle = 0.0;
-    m_TiltAngle = M_PI_2;
-    switch (m_Lock) {
-	case lock_X:
-	{
-	    // elevation looking along X axis (East)
-	    m_PanAngle = M_PI * 1.5;
-	    m_TiltAngle = 0.0;
-	    break;
-	}
-
-	case lock_Y:
-	case lock_XY: // survey is linearface and parallel to the Z axis => display in elevation.
-	    // elevation looking along Y axis (North)
-	    m_TiltAngle = 0.0;
-	    break;
-
-	case lock_Z:
-	case lock_XZ: // linearface survey parallel to Y axis
-	case lock_YZ: // linearface survey parallel to X axis
-	{
-	    // flat survey (zero height range) => go into plan view (default orientation).
-	    break;
-	}
-
-	case lock_POINT:
-	    m_Crosses = true;
-	    break;
-
-	case lock_NONE:
-	    break;
+    if (m_Parent->IsExtendedElevation()) {
+	m_TiltAngle = 0.0;
+    } else {
+	m_TiltAngle = 90.0;
     }
 
-    m_Params.rotation.setFromEulerAngles(m_TiltAngle, 0.0, m_PanAngle);
-    m_RotationMatrix = m_Params.rotation.asMatrix();
+    SetRotation(m_PanAngle, m_TiltAngle);
+    SetTranslation(Vector3());
 
-    m_Params.translation.x = 0.0;
-    m_Params.translation.y = 0.0;
-    m_Params.translation.z = 0.0;
-
-    m_Surface = false;
-    m_SurfaceDepth = false;
-    m_SurfaceDashed = true;
-    m_RotationStep = M_PI / 6.0;
+    m_RotationStep = 30.0;
     m_Rotating = false;
     m_SwitchingTo = 0;
     m_Entrances = false;
     m_FixedPts = false;
     m_ExportedPts = false;
     m_Grid = false;
-    SetScale(m_InitialScale);
+    m_BoundingBox = false;
+    m_Tubes = false;
+    if (GetPerspective()) TogglePerspective();
+}
+
+void GfxCore::Defaults()
+{
+    // Restore default scale, rotation and translation parameters.
+    DefaultParameters();
+    SetScale(1.0);
+
+    // Invalidate all the cached lists.
+    GLACanvas::FirstShow();
+
     ForceRefresh();
-}
-
-void GfxCore::OnDefaultsUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-}
-
-void GfxCore::OnElevation()
-{
-    // Switch to elevation view.
-    switch (m_SwitchingTo) {
-	case 0:
-	    timer.Start(drawtime);
-	    m_SwitchingTo = ELEVATION;
-	    break;
-	case PLAN:
-	    m_SwitchingTo = ELEVATION;
-	    break;
-	case ELEVATION:
-	    // A second order to switch takes us there right away
-	    TiltCave(-m_TiltAngle);
-	    m_SwitchingTo = 0;
-	    ForceRefresh();
-    }
-}
-
-void GfxCore::OnElevationUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock == lock_NONE && m_TiltAngle != 0.0);
-}
-
-void GfxCore::OnHigherViewpoint(bool accel)
-{
-    // Raise the viewpoint.
-    TiltCave(accel ? 5.0 * M_PI / 18.0 : M_PI / 18.0);
-    ForceRefresh();
-}
-
-void GfxCore::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_TiltAngle < M_PI_2 &&
-	       m_Lock == lock_NONE);
-}
-
-void GfxCore::OnLowerViewpoint(bool accel)
-{
-    // Lower the viewpoint.
-    TiltCave(accel ? 5.0 * -M_PI / 18.0 : -M_PI / 18.0);
-    ForceRefresh();
-}
-
-void GfxCore::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_TiltAngle > -M_PI_2 &&
-	       m_Lock == lock_NONE);
-}
-
-void GfxCore::OnPlan()
-{
-    // Switch to plan view.
-    switch (m_SwitchingTo) {
-	case 0:
-	    timer.Start(drawtime);
-	    m_SwitchingTo = PLAN;
-	    break;
-	case ELEVATION:
-	    m_SwitchingTo = PLAN;
-	    break;
-	case PLAN:
-	    // A second order to switch takes us there right away
-	    TiltCave(M_PI_2 - m_TiltAngle);
-	    m_SwitchingTo = 0;
-	    ForceRefresh();
-    }
-}
-
-void GfxCore::OnPlanUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock == lock_NONE &&
-	       m_TiltAngle != M_PI_2);
-}
-
-void GfxCore::OnShiftDisplayDown(bool accel)
-{
-    TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
-}
-
-void GfxCore::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-}
-
-void GfxCore::OnShiftDisplayLeft(bool accel)
-{
-    TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
-}
-
-void GfxCore::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-}
-
-void GfxCore::OnShiftDisplayRight(bool accel)
-{
-    TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
-}
-
-void GfxCore::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-}
-
-void GfxCore::OnShiftDisplayUp(bool accel)
-{
-    TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
-}
-
-void GfxCore::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL);
-}
-
-void GfxCore::OnZoomIn(bool accel)
-{
-    // Increase the scale.
-
-    SetScale(m_Params.scale * (accel ? 1.1236 : 1.06));
-    ForceRefresh();
-}
-
-void GfxCore::OnZoomInUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
-}
-
-void GfxCore::OnZoomOut(bool accel)
-{
-    // Decrease the scale.
-
-    SetScale(m_Params.scale / (accel ? 1.1236 : 1.06));
-    ForceRefresh();
-}
-
-void GfxCore::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
-}
-
-void GfxCore::OnIdle(wxIdleEvent& event)
-{
-    // Handle an idle event.
-    if (Animate()) ForceRefresh();
 }
 
 // return: true if animation occured (and ForceRefresh() needs to be called)
 bool GfxCore::Animate()
 {
-    if (!m_Rotating && !m_SwitchingTo) {
-	return false;
-    }
+    if (!Animating()) return false;
+
+    // Don't show pointer coordinates while animating.
+    // FIXME : only do this when we *START* animating!  Use a static copy
+    // of the value of "Animating()" last time we were here to track this?
+    // MainFrm now checks if we're trying to clear already cleared labels
+    // and just returns, but it might be simpler to check here!
+    ClearCoords();
+    m_Parent->ShowInfo(NULL);
 
     static double last_t = 0;
-    double t = timer.Time() * 1.0e-3;
-//    cout << 1.0 / t << " fps (i.e. " << t << " sec)\n";
-    if (t == 0) t = 0.001;
-    else if (t > 1.0) t = 1.0;
-    if (last_t > 0) t = (t + last_t) / 2;
-    last_t = t;
+    double t;
+    if (mpeg) {
+	// FIXME: this glReadPixels call should be in gla-gl.cc
+	glReadPixels(0, 0, mpeg->GetWidth(), mpeg->GetHeight(), GL_RGB,
+		     GL_UNSIGNED_BYTE, (GLvoid *)mpeg->GetBuffer());
+	mpeg->AddFrame();
+	t = 1.0 / 25.0; // 25 frames per second
+    } else {
+	t = timer.Time() * 1.0e-3;
+	if (t == 0) t = 0.001;
+	else if (t > 1.0) t = 1.0;
+	if (last_t > 0) t = (t + last_t) / 2;
+	last_t = t;
+    }
+
+    if (presentation_mode == PLAYING && pres_speed != 0.0) {
+	t *= fabs(pres_speed);
+	while (t >= next_mark_time) {
+	    t -= next_mark_time;
+	    this_mark_total = 0;
+	    PresentationMark prev_mark = next_mark;
+	    if (prev_mark.angle < 0) prev_mark.angle += 360.0;
+	    else if (prev_mark.angle >= 360.0) prev_mark.angle -= 360.0;
+	    if (pres_reverse)
+		next_mark = m_Parent->GetPresMark(MARK_PREV);
+	    else
+		next_mark = m_Parent->GetPresMark(MARK_NEXT);
+	    if (!next_mark.is_valid()) {
+		SetView(prev_mark);
+		presentation_mode = 0;
+		if (mpeg) {
+		    delete mpeg;
+		    mpeg = 0;
+		}
+		break;
+	    }
+
+	    double tmp = (pres_reverse ? prev_mark.time : next_mark.time);
+	    if (tmp > 0) {
+		next_mark_time = tmp;
+	    } else {
+		double d = (next_mark - prev_mark).magnitude();
+		// FIXME: should ignore component of d which is unseen in
+		// non-perspective mode?
+		next_mark_time = sqrd(d / 30.0);
+		double a = next_mark.angle - prev_mark.angle;
+		if (a > 180.0) {
+		    next_mark.angle -= 360.0;
+		    a = 360.0 - a;
+		} else if (a < -180.0) {
+		    next_mark.angle += 360.0;
+		    a += 360.0;
+		} else {
+		    a = fabs(a);
+		}
+		next_mark_time += sqrd(a / 60.0);
+		double ta = fabs(next_mark.tilt_angle - prev_mark.tilt_angle);
+		next_mark_time += sqrd(ta / 60.0);
+		double s = fabs(log(next_mark.scale) - log(prev_mark.scale));
+		next_mark_time += sqrd(s / 2.0);
+		next_mark_time = sqrt(next_mark_time);
+		// was: next_mark_time = max(max(d / 30, s / 2), max(a, ta) / 60);
+		//printf("*** %.6f from (\nd: %.6f\ns: %.6f\na: %.6f\nt: %.6f )\n",
+		//       next_mark_time, d/30.0, s/2.0, a/60.0, ta/60.0);
+		if (tmp < 0) next_mark_time /= -tmp;
+	    }
+	}
+
+	if (presentation_mode) {
+	    // Advance position towards next_mark
+	    double p = t / next_mark_time;
+	    double q = 1 - p;
+	    PresentationMark here = GetView();
+	    if (next_mark.angle < 0) {
+		if (here.angle >= next_mark.angle + 360.0)
+		    here.angle -= 360.0;
+	    } else if (next_mark.angle >= 360.0) {
+		if (here.angle <= next_mark.angle - 360.0)
+		    here.angle += 360.0;
+	    }
+	    here.assign(q * here + p * next_mark);
+	    here.angle = q * here.angle + p * next_mark.angle;
+	    if (here.angle < 0) here.angle += 360.0;
+	    else if (here.angle >= 360.0) here.angle -= 360.0;
+	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
+	    here.scale = exp(q * log(here.scale) + p * log(next_mark.scale));
+	    SetView(here);
+	    this_mark_total += t;
+	    next_mark_time -= t;
+	}
+    }
 
     // When rotating...
     if (m_Rotating) {
@@ -2250,234 +1378,87 @@ bool GfxCore::Animate()
 
     if (m_SwitchingTo == PLAN) {
 	// When switching to plan view...
-	TiltCave(M_PI_2 * t);
-	if (m_TiltAngle == M_PI_2) m_SwitchingTo = 0;
+	TiltCave(90.0 * t);
+	if (m_TiltAngle == 90.0) {
+	    m_SwitchingTo = 0;
+	}
     } else if (m_SwitchingTo == ELEVATION) {
 	// When switching to elevation view...
-	if (fabs(m_TiltAngle) < M_PI_2 * t) {
-	    TiltCave(-m_TiltAngle);
+	if (fabs(m_TiltAngle) < 90.0 * t) {
 	    m_SwitchingTo = 0;
+	    TiltCave(-m_TiltAngle);
 	} else if (m_TiltAngle < 0.0) {
-	    TiltCave(M_PI_2 * t);
+	    TiltCave(90.0 * t);
 	} else {
-	    TiltCave(-M_PI_2 * t);
+	    TiltCave(-90.0 * t);
+	}
+    } else if (m_SwitchingTo) {
+	int angle = (m_SwitchingTo - NORTH) * 90;
+	double diff = angle - m_PanAngle;
+	if (diff < -180) diff += 360;
+	if (diff > 180) diff -= 360;
+	double move = 90.0 * t;
+	if (move >= fabs(diff)) {
+	    TurnCave(diff);
+	    m_SwitchingTo = 0;
+	} else if (diff < 0) {
+	    TurnCave(-move);
+	} else {
+	    TurnCave(move);
 	}
     }
 
     return true;
 }
 
-void GfxCore::OnToggleScalebar()
-{
-    m_Scalebar = !m_Scalebar;
-    ForceRefresh();
-}
-
-void GfxCore::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock != lock_POINT);
-    cmd.Check(m_Scalebar);
-}
-
-void GfxCore::OnToggleDepthbar()
-{
-    m_Depthbar = !m_Depthbar;
-    ForceRefresh();
-}
-
-void GfxCore::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && !(m_Lock && lock_Z));
-    cmd.Check(m_Depthbar);
-}
-
-void GfxCore::OnViewCompass()
-{
-    m_Compass = !m_Compass;
-    ForceRefresh();
-}
-
-void GfxCore::OnViewCompassUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_RotationOK);
-    cmd.Check(m_Compass);
-}
-
-void GfxCore::OnViewClino()
-{
-    m_Clino = !m_Clino;
-    ForceRefresh();
-}
-
-void GfxCore::OnViewClinoUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData != NULL && m_Lock == lock_NONE);
-    cmd.Check(m_Clino);
-}
-
-void GfxCore::OnShowSurface()
-{
-    m_Surface = !m_Surface;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowSurfaceDepth()
-{
-    m_SurfaceDepth = !m_SurfaceDepth;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowSurfaceDashed()
-{
-    m_SurfaceDashed = !m_SurfaceDashed;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowSurfaceUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData && m_SurfaceLegs);
-    cmd.Check(m_Surface);
-}
-
-void GfxCore::OnShowSurfaceDepthUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData && m_Surface);
-    cmd.Check(m_SurfaceDepth);
-}
-
-void GfxCore::OnShowSurfaceDashedUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData && m_SurfaceLegs && m_Surface);
-    cmd.Check(m_SurfaceDashed);
-}
-
-void GfxCore::OnShowEntrances()
-{
-    m_Entrances = !m_Entrances;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowEntrancesUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData && (m_Parent->GetNumEntrances() > 0));
-    cmd.Check(m_Entrances);
-}
-
-void GfxCore::OnShowFixedPts()
-{
-    m_FixedPts = !m_FixedPts;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowFixedPtsUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData && (m_Parent->GetNumFixedPts() > 0));
-    cmd.Check(m_FixedPts);
-}
-
-void GfxCore::OnShowExportedPts()
-{
-    m_ExportedPts = !m_ExportedPts;
-    ForceRefresh();
-}
-
-void GfxCore::OnShowExportedPtsUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData && (m_Parent->GetNumExportedPts() > 0));
-    cmd.Check(m_ExportedPts);
-}
-
-void GfxCore::OnViewGrid()
-{
-    m_Grid = !m_Grid;
-    ForceRefresh();
-}
-
-void GfxCore::OnViewGridUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData);
-    cmd.Check(m_Grid);
-}
-
-void GfxCore::OnIndicatorsUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData);
-}
-
-void GfxCore::OnToggleMetric()
-{
-    m_Metric = !m_Metric;
-    wxConfigBase::Get()->Write("metric", m_Metric);
-    wxConfigBase::Get()->Flush();
-    ForceRefresh();
-}
-
-void GfxCore::OnToggleMetricUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData);
-    cmd.Check(m_Metric);
-}
-
-void GfxCore::OnToggleDegrees()
-{
-    m_Degrees = !m_Degrees;
-    wxConfigBase::Get()->Write("degrees", m_Degrees);
-    wxConfigBase::Get()->Flush();
-    ForceRefresh();
-}
-
-void GfxCore::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_PlotData);
-    cmd.Check(m_Degrees);
-}
-
-void GfxCore::CentreOn(Double x, Double y, Double z)
-{
-    m_Params.translation.x = -x;
-    m_Params.translation.y = -y;
-    m_Params.translation.z = -z;
-    ForceRefresh();
-}
-
-void GfxCore::ForceRefresh()
-{
-    // Redraw the offscreen bitmap
-    m_RedrawOffscreen = true;
-    Refresh(false);
-}
-
 // How much to allow around the box - this is because of the ring shape
 // at one end of the line.
+static const int HIGHLIGHTED_PT_SIZE = 2; // FIXME: tie in to blob and ring size
 #define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
 void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 {
+    // Best of all might be to copy the window contents before we draw the
+    // line, then replace each time we redraw.
+
     // Calculate the minimum rectangle which includes the old and new
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
-    if (a.x != DBL_MAX) {
-	int x = (int)GridXToScreen(a);
-	int y = (int)GridYToScreen(a);
-	l = x - MARGIN;
-	r = x + MARGIN;
-	u = y + MARGIN;
-	d = y - MARGIN;
+    Double X, Y, Z;
+    if (a.IsValid()) {
+	if (!Transform(a, &X, &Y, &Z)) {
+	    printf("oops\n");
+	} else {
+	    int x = int(X);
+	    int y = m_YSize - 1 - int(Y);
+	    l = x - MARGIN;
+	    r = x + MARGIN;
+	    u = y + MARGIN;
+	    d = y - MARGIN;
+	}
     }
-    if (b.x != DBL_MAX) {
-	int x = (int)GridXToScreen(b);
-	int y = (int)GridYToScreen(b);
-	l = min(l, x - MARGIN);
-	r = max(r, x + MARGIN);
-	u = max(u, y + MARGIN);
-	d = min(d, y - MARGIN);
+    if (b.IsValid()) {
+	if (!Transform(b, &X, &Y, &Z)) {
+	    printf("oops\n");
+	} else {
+	    int x = int(X);
+	    int y = m_YSize - 1 - int(Y);
+	    l = min(l, x - MARGIN);
+	    r = max(r, x + MARGIN);
+	    u = max(u, y + MARGIN);
+	    d = min(d, y - MARGIN);
+	}
     }
-    if (c.x != DBL_MAX) {
-	int x = (int)GridXToScreen(c);
-	int y = (int)GridYToScreen(c);
-	l = min(l, x - MARGIN);
-	r = max(r, x + MARGIN);
-	u = max(u, y + MARGIN);
-	d = min(d, y - MARGIN);
+    if (c.IsValid()) {
+	if (!Transform(c, &X, &Y, &Z)) {
+	    printf("oops\n");
+	} else {
+	    int x = int(X);
+	    int y = m_YSize - 1 - int(Y);
+	    l = min(l, x - MARGIN);
+	    r = max(r, x + MARGIN);
+	    u = max(u, y + MARGIN);
+	    d = min(d, y - MARGIN);
+	}
     }
     const wxRect R(l, d, r - l, u - d);
     Refresh(false, &R);
@@ -2485,46 +1466,33 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 
 void GfxCore::SetHere()
 {
-    if (m_here.x == DBL_MAX) return;
+    if (!m_here.IsValid()) return;
     Point old = m_here;
-    m_here.x = DBL_MAX;
+    m_here.Invalidate();
     RefreshLine(old, m_there, m_here);
 }
 
-void GfxCore::SetHere(Double x, Double y, Double z)
+void GfxCore::SetHere(const Point &p)
 {
     Point old = m_here;
-    m_here.x = x;
-    m_here.y = y;
-    m_here.z = z;
+    m_here = p;
     RefreshLine(old, m_there, m_here);
+    m_here_is_temporary = false;
 }
 
 void GfxCore::SetThere()
 {
-    if (m_there.x == DBL_MAX) return;
+    if (!m_there.IsValid()) return;
     Point old = m_there;
-    m_there.x = DBL_MAX;
+    m_there.Invalidate();
     RefreshLine(m_here, old, m_there);
 }
 
-void GfxCore::SetThere(Double x, Double y, Double z)
+void GfxCore::SetThere(const Point &p)
 {
     Point old = m_there;
-    m_there.x = x;
-    m_there.y = y;
-    m_there.z = z;
+    m_there = p;
     RefreshLine(m_here, old, m_there);
-}
-
-void GfxCore::OnCancelDistLine()
-{
-    m_Parent->ClearTreeSelection();
-}
-
-void GfxCore::OnCancelDistLineUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_there.x != DBL_MAX);
 }
 
 void GfxCore::CreateHitTestGrid()
@@ -2538,7 +1506,7 @@ void GfxCore::CreateHitTestGrid()
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
     while (pos != end) {
-	LabelInfo *label = *pos++;
+	LabelInfo* label = *pos++;
 
 	if (!((m_Surface && label->IsSurface()) ||
 	      (m_Legs && label->IsUnderground()) ||
@@ -2549,14 +1517,16 @@ void GfxCore::CreateHitTestGrid()
 	}
 
 	// Calculate screen coordinates.
-	int cx = (int)GridXToScreen(label->GetX(), label->GetY(), label->GetZ());
+	Double cx, cy, cz;
+	Transform(*label, &cx, &cy, &cz);
 	if (cx < 0 || cx >= m_XSize) continue;
-	int cy = (int)GridYToScreen(label->GetX(), label->GetY(), label->GetZ());
 	if (cy < 0 || cy >= m_YSize) continue;
 
+	cy = m_YSize - cy;
+
 	// On-screen, so add to hit-test grid...
-	int grid_x = (cx * (HITTEST_SIZE - 1)) / m_XSize;
-	int grid_y = (cy * (HITTEST_SIZE - 1)) / m_YSize;
+	int grid_x = int((cx * (HITTEST_SIZE - 1)) / m_XSize);
+	int grid_y = int((cy * (HITTEST_SIZE - 1)) / m_YSize);
 
 	m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }
@@ -2564,133 +1534,1367 @@ void GfxCore::CreateHitTestGrid()
     m_HitTestGridValid = true;
 }
 
-void GfxCore::OnKeyPress(wxKeyEvent &e)
+//
+//  Methods for controlling the orientation of the survey
+//
+
+void GfxCore::TurnCave(Double angle)
 {
-    if (!m_PlotData) {
-	e.Skip();
+    // Turn the cave around its z-axis by a given angle.
+
+    m_PanAngle += angle;
+    if (m_PanAngle >= 360.0) {
+	m_PanAngle -= 360.0;
+    } else if (m_PanAngle < 0.0) {
+	m_PanAngle += 360.0;
+    }
+
+    m_HitTestGridValid = false;
+    if (m_here_is_temporary) SetHere();
+
+    SetRotation(m_PanAngle, m_TiltAngle);
+}
+
+void GfxCore::TurnCaveTo(Double angle)
+{
+    timer.Start(drawtime);
+    int new_switching_to = ((int)angle) / 90 + NORTH;
+    if (new_switching_to == m_SwitchingTo) {
+	// A second order to switch takes us there right away
+	TurnCave(angle - m_PanAngle);
+	m_SwitchingTo = 0;
+	ForceRefresh();
+    } else {
+	m_SwitchingTo = new_switching_to;
+    }
+}
+
+void GfxCore::TiltCave(Double tilt_angle)
+{
+    // Tilt the cave by a given angle.
+    if (m_TiltAngle + tilt_angle > 90.0) {
+	m_TiltAngle = 90.0;
+    } else if (m_TiltAngle + tilt_angle < -90.0) {
+	m_TiltAngle = -90.0;
+    } else {
+	m_TiltAngle += tilt_angle;
+    }
+
+    m_HitTestGridValid = false;
+    if (m_here_is_temporary) SetHere();
+
+    SetRotation(m_PanAngle, m_TiltAngle);
+}
+
+void GfxCore::TranslateCave(int dx, int dy)
+{
+    AddTranslationScreenCoordinates(dx, dy);
+    m_HitTestGridValid = false;
+
+    if (m_here_is_temporary) SetHere();
+
+    ForceRefresh();
+}
+
+void GfxCore::DragFinished()
+{
+    m_MouseOutsideCompass = m_MouseOutsideElev = false;
+    ForceRefresh();
+}
+
+void GfxCore::ClearCoords()
+{
+    m_Parent->ClearCoords();
+}
+
+void GfxCore::SetCoords(wxPoint point)
+{
+    // We can't work out 2D coordinates from a perspective view, and it
+    // doesn't really make sense to show coordinates while we're animating.
+    if (GetPerspective() || Animating()) return;
+
+    // Update the coordinate or altitude display, given the (x, y) position in
+    // window coordinates.  The relevant display is updated depending on
+    // whether we're in plan or elevation view.
+
+    Double cx, cy, cz;
+
+    SetDataTransform();
+    ReverseTransform(point.x, m_YSize - 1 - point.y, &cx, &cy, &cz);
+
+    if (ShowingPlan()) {
+	m_Parent->SetCoords(cx + m_Parent->GetOffset().GetX(),
+			    cy + m_Parent->GetOffset().GetY());
+    } else if (ShowingElevation()) {
+	m_Parent->SetAltitude(cz + m_Parent->GetOffset().GetZ());
+    } else {
+	m_Parent->ClearCoords();
+    }
+}
+
+int GfxCore::GetCompassXPosition() const
+{
+    // Return the x-coordinate of the centre of the compass in window
+    // coordinates.
+    return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE / 2;
+}
+
+int GfxCore::GetClinoXPosition() const
+{
+    // Return the x-coordinate of the centre of the compass in window
+    // coordinates.
+    return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE / 2;
+}
+
+int GfxCore::GetIndicatorYPosition() const
+{
+    // Return the y-coordinate of the centre of the indicators in window
+    // coordinates.
+    return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE / 2;
+}
+
+int GfxCore::GetIndicatorRadius() const
+{
+    // Return the radius of each indicator.
+    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2;
+}
+
+bool GfxCore::PointWithinCompass(wxPoint point) const
+{
+    // Determine whether a point (in window coordinates) lies within the
+    // compass.
+    if (!ShowingCompass()) return false;
+
+    glaCoord dx = point.x - GetCompassXPosition();
+    glaCoord dy = point.y - GetIndicatorYPosition();
+    glaCoord radius = GetIndicatorRadius();
+
+    return (dx * dx + dy * dy <= radius * radius);
+}
+
+bool GfxCore::PointWithinClino(wxPoint point) const
+{
+    // Determine whether a point (in window coordinates) lies within the clino.
+    if (!ShowingClino()) return false;
+
+    glaCoord dx = point.x - GetClinoXPosition();
+    glaCoord dy = point.y - GetIndicatorYPosition();
+    glaCoord radius = GetIndicatorRadius();
+
+    return (dx * dx + dy * dy <= radius * radius);
+}
+
+bool GfxCore::PointWithinScaleBar(wxPoint point) const
+{
+    // Determine whether a point (in window coordinates) lies within the scale
+    // bar.
+    if (!ShowingScaleBar()) return false;
+
+    return (point.x >= SCALE_BAR_OFFSET_X &&
+	    point.x <= SCALE_BAR_OFFSET_X + m_ScaleBarWidth &&
+	    point.y <= m_YSize - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
+	    point.y >= m_YSize - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
+}
+
+void GfxCore::SetCompassFromPoint(wxPoint point)
+{
+    // Given a point in window coordinates, set the heading of the survey.  If
+    // the point is outside the compass, it snaps to 45 degree intervals;
+    // otherwise it operates as normal.
+
+    wxCoord dx = point.x - GetCompassXPosition();
+    wxCoord dy = point.y - GetIndicatorYPosition();
+    wxCoord radius = GetIndicatorRadius();
+
+    double angle = deg(atan2(double(dx), double(dy))) - 180.0;
+    if (dx * dx + dy * dy <= radius * radius) {
+	TurnCave(angle - m_PanAngle);
+	m_MouseOutsideCompass = false;
+    } else {
+	TurnCave(int(angle / 45.0) * 45.0 - m_PanAngle);
+	m_MouseOutsideCompass = true;
+    }
+
+    ForceRefresh();
+}
+
+void GfxCore::SetClinoFromPoint(wxPoint point)
+{
+    // Given a point in window coordinates, set the elevation of the survey.
+    // If the point is outside the clino, it snaps to 90 degree intervals;
+    // otherwise it operates as normal.
+
+    glaCoord dx = point.x - GetClinoXPosition();
+    glaCoord dy = point.y - GetIndicatorYPosition();
+    glaCoord radius = GetIndicatorRadius();
+
+    if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
+	TiltCave(deg(atan2(double(dy), double(dx))) - m_TiltAngle);
+	m_MouseOutsideElev = false;
+    } else if (dy >= INDICATOR_MARGIN) {
+	TiltCave(90.0 - m_TiltAngle);
+	m_MouseOutsideElev = true;
+    } else if (dy <= -INDICATOR_MARGIN) {
+	TiltCave(-90.0 - m_TiltAngle);
+	m_MouseOutsideElev = true;
+    } else {
+	TiltCave(-m_TiltAngle);
+	m_MouseOutsideElev = true;
+    }
+
+    ForceRefresh();
+}
+
+void GfxCore::SetScaleBarFromOffset(wxCoord dx)
+{
+    // Set the scale of the survey, given an offset as to how much the mouse has
+    // been dragged over the scalebar since the last scale change.
+
+    SetScale((m_ScaleBarWidth + dx) * m_Scale / m_ScaleBarWidth);
+    ForceRefresh();
+}
+
+void GfxCore::RedrawIndicators()
+{
+    // Redraw the compass and clino indicators.
+
+    const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
+		     INDICATOR_GAP,
+		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
+		   INDICATOR_BOX_SIZE);
+
+    Refresh(false, &r);
+}
+
+void GfxCore::StartRotation()
+{
+    // Start the survey rotating.
+
+    m_Rotating = true;
+    timer.Start(drawtime);
+}
+
+void GfxCore::ToggleRotation()
+{
+    // Toggle the survey rotation on/off.
+
+    if (m_Rotating) {
+	StopRotation();
+    } else {
+	StartRotation();
+    }
+}
+
+void GfxCore::StopRotation()
+{
+    // Stop the survey rotating.
+
+    m_Rotating = false;
+    ForceRefresh();
+}
+
+bool GfxCore::IsExtendedElevation() const
+{
+    return m_Parent->IsExtendedElevation();
+}
+
+void GfxCore::ReverseRotation()
+{
+    // Reverse the direction of rotation.
+
+    m_RotationStep = -m_RotationStep;
+}
+
+void GfxCore::RotateSlower(bool accel)
+{
+    // Decrease the speed of rotation, optionally by an increased amount.
+
+    m_RotationStep /= accel ? 1.44 : 1.2;
+    if (m_RotationStep < 1.0) {
+	m_RotationStep = 1.0;
+    }
+}
+
+void GfxCore::RotateFaster(bool accel)
+{
+    // Increase the speed of rotation, optionally by an increased amount.
+
+    m_RotationStep *= accel ? 1.44 : 1.2;
+    if (m_RotationStep > 450.0) {
+	m_RotationStep = 450.0;
+    }
+}
+
+void GfxCore::SwitchToElevation()
+{
+    // Perform an animated switch to elevation view.
+
+    switch (m_SwitchingTo) {
+	case 0:
+	    timer.Start(drawtime);
+	    m_SwitchingTo = ELEVATION;
+	    break;
+
+	case PLAN:
+	    m_SwitchingTo = ELEVATION;
+	    break;
+
+	case ELEVATION:
+	    // a second order to switch takes us there right away
+	    TiltCave(-m_TiltAngle);
+	    m_SwitchingTo = 0;
+	    ForceRefresh();
+    }
+}
+
+void GfxCore::SwitchToPlan()
+{
+    // Perform an animated switch to plan view.
+
+    switch (m_SwitchingTo) {
+	case 0:
+	    timer.Start(drawtime);
+	    m_SwitchingTo = PLAN;
+	    break;
+
+	case ELEVATION:
+	    m_SwitchingTo = PLAN;
+	    break;
+
+	case PLAN:
+	    // A second order to switch takes us there right away
+	    TiltCave(90.0 - m_TiltAngle);
+	    m_SwitchingTo = 0;
+	    ForceRefresh();
+    }
+}
+
+void GfxCore::SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Double zmin, Double zmax)
+{
+
+    SetTranslation(-Vector3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2));
+    Double scale = HUGE_VAL;
+    const Vector3 ext = m_Parent->GetExtent();
+    if (xmax > xmin) {
+	Double s = ext.GetX() / (xmax - xmin);
+	if (s < scale) scale = s;
+    }
+    if (ymax > ymin) {
+	Double s = ext.GetY() / (ymax - ymin);
+	if (s < scale) scale = s;
+    }
+    if (!ShowingPlan() && zmax > zmin) {
+	Double s = ext.GetZ() / (zmax - zmin);
+	if (s < scale) scale = s;
+    }
+    if (scale != HUGE_VAL) SetScale(scale);
+    ForceRefresh();
+}
+
+bool GfxCore::CanRaiseViewpoint() const
+{
+    // Determine if the survey can be viewed from a higher angle of elevation.
+
+    return GetPerspective() ? (m_TiltAngle > -90.0) : (m_TiltAngle < 90.0);
+}
+
+bool GfxCore::CanLowerViewpoint() const
+{
+    // Determine if the survey can be viewed from a lower angle of elevation.
+
+    return GetPerspective() ? (m_TiltAngle < 90.0) : (m_TiltAngle > -90.0);
+}
+
+bool GfxCore::HasDepth() const
+{
+    return m_Parent->GetDepthExtent() == 0.0;
+}
+
+bool GfxCore::HasRangeOfDates() const
+{
+    return m_Parent->GetDateExtent() > 0;
+}
+
+bool GfxCore::HasErrorInformation() const
+{
+    return m_Parent->HasErrorInformation();
+}
+
+bool GfxCore::ShowingPlan() const
+{
+    // Determine if the survey is in plan view.
+
+    return (m_TiltAngle == 90.0);
+}
+
+bool GfxCore::ShowingElevation() const
+{
+    // Determine if the survey is in elevation view.
+
+    return (m_TiltAngle == 0.0);
+}
+
+bool GfxCore::ShowingMeasuringLine() const
+{
+    // Determine if the measuring line is being shown.
+
+    return (m_there.IsValid() && m_here.IsValid());
+}
+
+void GfxCore::ToggleFlag(bool* flag, int update)
+{
+    *flag = !*flag;
+    if (update == UPDATE_BLOBS) {
+	UpdateBlobs();
+    } else if (update == UPDATE_BLOBS_AND_CROSSES) {
+	UpdateBlobs();
+	InvalidateList(LIST_CROSSES);
+    }
+    ForceRefresh();
+}
+
+int GfxCore::GetNumEntrances() const
+{
+    return m_Parent->GetNumEntrances();
+}
+
+int GfxCore::GetNumFixedPts() const
+{
+    return m_Parent->GetNumFixedPts();
+}
+
+int GfxCore::GetNumExportedPts() const
+{
+    return m_Parent->GetNumExportedPts();
+}
+
+void GfxCore::ClearTreeSelection()
+{
+    m_Parent->ClearTreeSelection();
+}
+
+void GfxCore::CentreOn(const Point &p)
+{
+    SetTranslation(-p);
+    m_HitTestGridValid = false;
+
+    ForceRefresh();
+}
+
+void GfxCore::ForceRefresh()
+{
+    Refresh(false);
+}
+
+void GfxCore::GenerateList(unsigned int l)
+{
+    assert(m_HaveData);
+
+    switch (l) {
+	case LIST_COMPASS:
+	    DrawCompass();
+	    break;
+	case LIST_CLINO:
+	    DrawClino();
+	    break;
+	case LIST_CLINO_BACK:
+	    DrawClinoBack();
+	    break;
+	case LIST_DEPTHBAR:
+	    DrawDepthbar();
+	    break;
+	case LIST_DATEBAR:
+	    DrawDatebar();
+	    break;
+	case LIST_ERRORBAR:
+	    DrawErrorbar();
+	    break;
+	case LIST_UNDERGROUND_LEGS:
+	    GenerateDisplayList();
+	    break;
+	case LIST_TUBES:
+	    GenerateDisplayListTubes();
+	    break;
+	case LIST_SURFACE_LEGS:
+	    GenerateDisplayListSurface();
+	    break;
+	case LIST_BLOBS:
+	    GenerateBlobsDisplayList();
+	    break;
+	case LIST_CROSSES: {
+	    BeginCrosses();
+	    SetColour(col_LIGHT_GREY);
+	    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+	    while (pos != m_Parent->GetLabelsEnd()) {
+		const LabelInfo* label = *pos++;
+
+		if ((m_Surface && label->IsSurface()) ||
+		    (m_Legs && label->IsUnderground()) ||
+		    (!label->IsSurface() && !label->IsUnderground())) {
+		    // Check if this station should be displayed
+		    // (last case is for stns with no legs attached)
+		    DrawCross(label->GetX(), label->GetY(), label->GetZ());
+		}
+	    }
+	    EndCrosses();
+	    break;
+	}
+	case LIST_GRID:
+	    DrawGrid();
+	    break;
+	case LIST_SHADOW:
+	    GenerateDisplayListShadow();
+	    break;
+	default:
+	    assert(false);
+	    break;
+    }
+}
+
+void GfxCore::ToggleSmoothShading()
+{
+    GLACanvas::ToggleSmoothShading();
+    InvalidateList(LIST_TUBES);
+    ForceRefresh();
+}
+
+void GfxCore::GenerateDisplayList()
+{
+    // Generate the display list for the underground legs.
+    list<traverse>::const_iterator trav = m_Parent->traverses_begin();
+    list<traverse>::const_iterator tend = m_Parent->traverses_end();
+    while (trav != tend) {
+	(this->*AddPoly)(*trav);
+	++trav;
+    }
+}
+
+void GfxCore::GenerateDisplayListTubes()
+{
+    // Generate the display list for the tubes.
+    list<vector<XSect> >::const_iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect> >::const_iterator tend = m_Parent->tubes_end();
+    while (trav != tend) {
+	SkinPassage(*trav);
+	++trav;
+    }
+}
+
+void GfxCore::GenerateDisplayListSurface()
+{
+    // Generate the display list for the surface legs.
+    EnableDashedLines();
+    list<traverse>::const_iterator trav = m_Parent->surface_traverses_begin();
+    list<traverse>::const_iterator tend = m_Parent->surface_traverses_end();
+    while (trav != tend) {
+	if (m_ColourBy == COLOUR_BY_ERROR) {
+	    AddPolylineError(*trav);
+	} else {
+	    AddPolyline(*trav);
+	}
+	++trav;
+    }
+    DisableDashedLines();
+}
+
+void GfxCore::GenerateDisplayListShadow()
+{
+    SetColour(col_BLACK);
+    list<traverse>::const_iterator trav = m_Parent->traverses_begin();
+    list<traverse>::const_iterator tend = m_Parent->traverses_end();
+    while (trav != tend) {
+	AddPolylineShadow(*trav);
+	++trav;
+    }
+}
+
+// Plot blobs.
+void GfxCore::GenerateBlobsDisplayList()
+{
+    if (!(m_Entrances || m_FixedPts || m_ExportedPts ||
+	  m_Parent->GetNumHighlightedPts()))
+	return;
+
+    // Plot blobs.
+    gla_colour prev_col = col_BLACK; // not a colour used for blobs
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    BeginBlobs();
+    while (pos != m_Parent->GetLabelsEnd()) {
+	const LabelInfo* label = *pos++;
+
+	// When more than one flag is set on a point:
+	// search results take priority over entrance highlighting
+	// which takes priority over fixed point
+	// highlighting, which in turn takes priority over exported
+	// point highlighting.
+
+	if (!((m_Surface && label->IsSurface()) ||
+	      (m_Legs && label->IsUnderground()) ||
+	      (!label->IsSurface() && !label->IsUnderground()))) {
+	    // if this station isn't to be displayed, skip to the next
+	    // (last case is for stns with no legs attached)
+	    continue;
+	}
+
+	gla_colour col;
+
+	if (label->IsHighLighted()) {
+	    col = col_YELLOW;
+	} else if (m_Entrances && label->IsEntrance()) {
+	    col = col_GREEN;
+	} else if (m_FixedPts && label->IsFixedPt()) {
+	    col = col_RED;
+	} else if (m_ExportedPts && label->IsExportedPt()) {
+	    col = col_TURQUOISE;
+	} else {
+	    continue;
+	}
+
+	// Stations are sorted by blob type, so colour changes are infrequent.
+	if (col != prev_col) {
+	    SetColour(col);
+	    prev_col = col;
+	}
+	DrawBlob(label->GetX(), label->GetY(), label->GetZ());
+    }
+    EndBlobs();
+}
+
+void GfxCore::DrawIndicators()
+{
+    // Draw depthbar.
+    if (m_Depthbar) {
+       if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
+	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
+       } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateExtent()) {
+	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
+       } else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
+	   DrawList2D(LIST_ERRORBAR, m_XSize, m_YSize, 0);
+       }
+    }
+
+    // Draw compass or elevation/heading indicators.
+    if (m_Compass || m_Clino) {
+	if (!m_Parent->IsExtendedElevation()) Draw2dIndicators();
+    }
+
+    // Draw scalebar.
+    if (m_Scalebar) {
+	DrawScalebar();
+    }
+}
+
+void GfxCore::PlaceVertexWithColour(const Vector3 & v, Double factor)
+{
+    SetColour(GetSurfacePen(), factor); // FIXME : assumes surface pen is white!
+    PlaceVertex(v);
+}
+
+void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
+{
+    // Set the drawing colour based on the altitude.
+    Double z_ext = m_Parent->GetDepthExtent();
+    assert(z_ext > 0);
+
+    Double z = v.GetZ() - m_Parent->GetDepthMin();
+    // points arising from tubes may be slightly outside the limits...
+    if (z < 0) z = 0;
+    if (z > z_ext) z = z_ext;
+
+    Double how_far = z / z_ext;
+    assert(how_far >= 0.0);
+    assert(how_far <= 1.0);
+
+    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    GLAPen pen1 = GetPen(band);
+    if (band < GetNumDepthBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
+
+	Double interval = z_ext / (GetNumDepthBands() - 1);
+	Double into_band = z / interval - band;
+
+//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//	       z_offset, interval, band);
+	// FIXME: why do we need to clamp here?  Is it because the walls can
+	// extend further up/down than the centre-line?
+	if (into_band < 0.0) into_band = 0.0;
+	if (into_band > 1.0) into_band = 1.0;
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
+
+	pen1.Interpolate(pen2, into_band);
+    }
+    SetColour(pen1, factor);
+
+    PlaceVertex(v);
+}
+
+void GfxCore::SplitLineAcrossBands(int band, int band2,
+				   const Vector3 &p, const Vector3 &q,
+				   Double factor)
+{
+    const int step = (band < band2) ? 1 : -1;
+    for (int i = band; i != band2; i += step) {
+	const Double z = GetDepthBoundaryBetweenBands(i, i + step);
+
+	// Find the intersection point of the line p -> q
+	// with the plane parallel to the xy-plane with z-axis intersection z.
+	assert(q.GetZ() - p.GetZ() != 0.0);
+
+	const Double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
+//	assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
+
+	const Double x = p.GetX() + t * (q.GetX() - p.GetX());
+	const Double y = p.GetY() + t * (q.GetY() - p.GetY());
+
+	PlaceVertexWithDepthColour(Vector3(x, y, z), factor);
+    }
+}
+
+int GfxCore::GetDepthColour(Double z) const
+{
+    // Return the (0-based) depth colour band index for a z-coordinate.
+    Double z_ext = m_Parent->GetDepthExtent();
+    assert(z_ext > 0);
+    z -= m_Parent->GetDepthMin();
+    z += z_ext / 2;
+    return int(z / z_ext * (GetNumDepthBands() - 1));
+}
+
+Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
+{
+    // Return the z-coordinate of the depth colour boundary between
+    // two adjacent depth colour bands (specified by 0-based indices).
+
+    assert((a == b - 1) || (a == b + 1));
+    if (GetNumDepthBands() == 1) return 0;
+
+    int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
+    Double z_ext = m_Parent->GetDepthExtent();
+    return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2
+	+ m_Parent->GetDepthMin();
+}
+
+void GfxCore::AddPolyline(const traverse & centreline)
+{
+    BeginPolyline();
+    SetColour(GetSurfacePen());
+    vector<PointInfo>::const_iterator i = centreline.begin();
+    PlaceVertex(*i);
+    ++i;
+    while (i != centreline.end()) {
+	PlaceVertex(*i);
+	++i;
+    }
+    EndPolyline();
+}
+
+void GfxCore::AddPolylineShadow(const traverse & centreline)
+{
+    BeginPolyline();
+    const double z = -0.5 * m_Parent->GetZExtent();
+    vector<PointInfo>::const_iterator i = centreline.begin();
+    PlaceVertex(i->GetX(), i->GetY(), z);
+    ++i;
+    while (i != centreline.end()) {
+	PlaceVertex(i->GetX(), i->GetY(), z);
+	++i;
+    }
+    EndPolyline();
+}
+
+void GfxCore::AddPolylineDepth(const traverse & centreline)
+{
+    BeginPolyline();
+    vector<PointInfo>::const_iterator i, prev_i;
+    i = centreline.begin();
+    int band0 = GetDepthColour(i->GetZ());
+    PlaceVertexWithDepthColour(*i);
+    prev_i = i;
+    ++i;
+    while (i != centreline.end()) {
+	int band = GetDepthColour(i->GetZ());
+	if (band != band0) {
+	    SplitLineAcrossBands(band0, band, *prev_i, *i);
+	    band0 = band;
+	}
+	PlaceVertexWithDepthColour(*i);
+	prev_i = i;
+	++i;
+    }
+    EndPolyline();
+}
+
+void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
+			       const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginQuadrilaterals();
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
+    glTexCoord2i(0, 0);
+    PlaceVertexWithColour(a, factor);
+    glTexCoord2i(w, 0);
+    PlaceVertexWithColour(b, factor);
+    glTexCoord2i(w, h);
+    PlaceVertexWithColour(c, factor);
+    glTexCoord2i(0, h);
+    PlaceVertexWithColour(d, factor);
+    EndQuadrilaterals();
+}
+
+void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
+				    const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int a_band, b_band, c_band, d_band;
+    a_band = GetDepthColour(a.GetZ());
+    a_band = min(max(a_band, 0), GetNumDepthBands());
+    b_band = GetDepthColour(b.GetZ());
+    b_band = min(max(b_band, 0), GetNumDepthBands());
+    c_band = GetDepthColour(c.GetZ());
+    c_band = min(max(c_band, 0), GetNumDepthBands());
+    d_band = GetDepthColour(d.GetZ());
+    d_band = min(max(d_band, 0), GetNumDepthBands());
+    // All this splitting is incorrect - we need to make a separate polygon
+    // for each depth band...
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginPolygon();
+////    PlaceNormal(normal);
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
+    glTexCoord2i(0, 0);
+    PlaceVertexWithDepthColour(a, factor);
+    if (a_band != b_band) {
+	SplitLineAcrossBands(a_band, b_band, a, b, factor);
+    }
+    glTexCoord2i(w, 0);
+    PlaceVertexWithDepthColour(b, factor);
+    if (b_band != c_band) {
+	SplitLineAcrossBands(b_band, c_band, b, c, factor);
+    }
+    glTexCoord2i(w, h);
+    PlaceVertexWithDepthColour(c, factor);
+    if (c_band != d_band) {
+	SplitLineAcrossBands(c_band, d_band, c, d, factor);
+    }
+    glTexCoord2i(0, h);
+    PlaceVertexWithDepthColour(d, factor);
+    if (d_band != a_band) {
+	SplitLineAcrossBands(d_band, a_band, d, a, factor);
+    }
+    EndPolygon();
+}
+
+void GfxCore::SetColourFromDate(time_t date, Double factor)
+{
+    // Set the drawing colour based on a date.
+
+    if (date == 0) {
+	SetColour(GetSurfacePen(), factor);
 	return;
     }
 
-    m_RedrawOffscreen = Animate();
+    time_t date_ext = m_Parent->GetDateExtent();
+    assert(date_ext > 0);
+    time_t date_offset = date - m_Parent->GetDateMin();
 
-    switch (e.m_keyCode) {
-	case '/': case '?':
-	    if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
-		OnLowerViewpoint(e.m_shiftDown);
-	    break;
-	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
-	    if (m_TiltAngle < M_PI_2 && m_Lock == lock_NONE)
-		OnHigherViewpoint(e.m_shiftDown);
-	    break;
-	case 'C': case 'c':
-	    if (m_RotationOK && !m_Rotating)
-		OnStepOnceAnticlockwise(e.m_shiftDown);
-	    break;
-	case 'V': case 'v':
-	    if (m_RotationOK && !m_Rotating)
-		OnStepOnceClockwise(e.m_shiftDown);
-	    break;
-	case ']': case '}':
-	    if (m_Lock != lock_POINT)
-		OnZoomIn(e.m_shiftDown);
-	    break;
-	case '[': case '{':
-	    if (m_Lock != lock_POINT)
-		OnZoomOut(e.m_shiftDown);
-	    break;
-	case 'N': case 'n':
-	    if (!(m_Lock & lock_X))
-		OnMoveNorth();
-	    break;
-	case 'S': case 's':
-	    if (!(m_Lock & lock_X))
-		OnMoveSouth();
-	    break;
-	case 'E': case 'e':
-	    if (!(m_Lock & lock_Y))
-		OnMoveEast();
-	    break;
-	case 'W': case 'w':
-	    if (!(m_Lock & lock_Y))
-		OnMoveWest();
-	    break;
-	case 'Z': case 'z':
-	    if (m_RotationOK)
-		OnSpeedUp(e.m_shiftDown);
-	    break;
-	case 'X': case 'x':
-	    if (m_RotationOK)
-		OnSlowDown(e.m_shiftDown);
-	    break;
-	case 'R': case 'r':
-	    if (m_RotationOK)
-		OnReverseDirectionOfRotation();
-	    break;
-	case 'P': case 'p':
-	    if (m_Lock == lock_NONE && m_TiltAngle != M_PI_2)
-		OnPlan();
-	    break;
-	case 'L': case 'l':
-	    if (m_Lock == lock_NONE && m_TiltAngle != 0.0)
-		OnElevation();
-	    break;
-	case 'O': case 'o':
-	    OnDisplayOverlappingNames();
-	    break;
-	case WXK_DELETE:
-	    OnDefaults();
-	    break;
-	case WXK_RETURN:
-	    if (m_RotationOK && !m_Rotating)
-		OnStartRotation();
-	    break;
-	case WXK_SPACE:
-	    if (m_Rotating)
-		OnStopRotation();
-	    break;
-	case WXK_LEFT:
-	    if (e.m_controlDown) {
-		if (m_RotationOK && !m_Rotating)
-		    OnStepOnceAnticlockwise(e.m_shiftDown);
-	    } else {
-		OnShiftDisplayLeft(e.m_shiftDown);
-	    }
-	    break;
-	case WXK_RIGHT:
-	    if (e.m_controlDown) {
-		if (m_RotationOK && !m_Rotating)
-		    OnStepOnceClockwise(e.m_shiftDown);
-	    } else {
-		OnShiftDisplayRight(e.m_shiftDown);
-	    }
-	    break;
-	case WXK_UP:
-	    if (e.m_controlDown) {
-		if (m_TiltAngle < M_PI_2 && m_Lock == lock_NONE)
-		    OnHigherViewpoint(e.m_shiftDown);
-	    } else {
-		OnShiftDisplayUp(e.m_shiftDown);
-	    }
-	    break;
-	case WXK_DOWN:
-	    if (e.m_controlDown) {
-		if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
-		    OnLowerViewpoint(e.m_shiftDown);
-	    } else {
-		OnShiftDisplayDown(e.m_shiftDown);
-	    }
-	    break;
-	case WXK_ESCAPE:
-	    if (m_there.x != DBL_MAX)
-		OnCancelDistLine();
-	    break;
-	default:
-	    e.Skip();
+    Double how_far = (Double)date_offset / date_ext;
+    assert(how_far >= 0.0);
+    assert(how_far <= 1.0);
+
+    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    GLAPen pen1 = GetPen(band);
+    if (band < GetNumDepthBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
+
+	Double interval = date_ext / (GetNumDepthBands() - 1);
+	Double into_band = date_offset / interval - band;
+
+//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//	       z_offset, interval, band);
+	// FIXME: why do we need to clamp here?  Is it because the walls can
+	// extend further up/down than the centre-line?
+	if (into_band < 0.0) into_band = 0.0;
+	if (into_band > 1.0) into_band = 1.0;
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
+
+	pen1.Interpolate(pen2, into_band);
+    }
+    SetColour(pen1, factor);
+}
+
+void GfxCore::AddPolylineDate(const traverse & centreline)
+{
+    BeginPolyline();
+    vector<PointInfo>::const_iterator i, prev_i;
+    i = centreline.begin();
+    time_t date = i->GetDate();
+    SetColourFromDate(date, 1.0);
+    PlaceVertex(*i);
+    prev_i = i;
+    while (++i != centreline.end()) {
+	time_t newdate = i->GetDate();
+	if (newdate != date) {
+	    EndPolyline();
+	    BeginPolyline();
+	    date = newdate;
+	    SetColourFromDate(date, 1.0);
+	    PlaceVertex(*prev_i);
+	}
+	PlaceVertex(*i);
+	prev_i = i;
+    }
+    EndPolyline();
+}
+
+static time_t static_date_hack; // FIXME
+
+void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
+				   const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginPolygon();
+////    PlaceNormal(normal);
+    SetColourFromDate(static_date_hack, factor);
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
+    glTexCoord2i(0, 0);
+    PlaceVertex(a);
+    glTexCoord2i(w, 0);
+    PlaceVertex(b);
+    glTexCoord2i(w, h);
+    PlaceVertex(c);
+    glTexCoord2i(0, h);
+    PlaceVertex(d);
+    EndPolygon();
+}
+
+static double static_E_hack; // FIXME
+
+void GfxCore::SetColourFromError(double E, Double factor)
+{
+    // Set the drawing colour based on an error value.
+
+    if (E < 0) {
+	SetColour(GetSurfacePen(), factor);
+	return;
     }
 
-    // OnPaint clears m_RedrawOffscreen so it'll only still be set if we need
-    // to redraw
-    if (m_RedrawOffscreen) ForceRefresh();
+    Double how_far = E / MAX_ERROR;
+    assert(how_far >= 0.0);
+    if (how_far > 1.0) how_far = 1.0;
+
+    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    GLAPen pen1 = GetPen(band);
+    if (band < GetNumDepthBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
+
+	Double interval = MAX_ERROR / (GetNumDepthBands() - 1);
+	Double into_band = E / interval - band;
+
+//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
+//	       z_offset, interval, band);
+	// FIXME: why do we need to clamp here?  Is it because the walls can
+	// extend further up/down than the centre-line?
+	if (into_band < 0.0) into_band = 0.0;
+	if (into_band > 1.0) into_band = 1.0;
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
+
+	pen1.Interpolate(pen2, into_band);
+    }
+    SetColour(pen1, factor);
+}
+
+void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
+				    const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginPolygon();
+////    PlaceNormal(normal);
+    SetColourFromError(static_E_hack, factor);
+    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
+    glTexCoord2i(0, 0);
+    PlaceVertex(a);
+    glTexCoord2i(w, 0);
+    PlaceVertex(b);
+    glTexCoord2i(w, h);
+    PlaceVertex(c);
+    glTexCoord2i(0, h);
+    PlaceVertex(d);
+    EndPolygon();
+}
+
+void GfxCore::AddPolylineError(const traverse & centreline)
+{
+    BeginPolyline();
+    SetColourFromError(centreline.E, 1.0);
+    vector<PointInfo>::const_iterator i;
+    for(i = centreline.begin(); i != centreline.end(); ++i) {
+	PlaceVertex(*i);
+    }
+    EndPolyline();
+}
+
+void
+GfxCore::SkinPassage(const vector<XSect> & centreline)
+{
+    assert(centreline.size() > 1);
+    Vector3 U[4];
+    XSect prev_pt_v;
+    Vector3 last_right(1.0, 0.0, 0.0);
+
+//  FIXME: it's not simple to set the colour of a tube based on error...
+//    static_E_hack = something...
+    vector<XSect>::const_iterator i = centreline.begin();
+    vector<XSect>::size_type segment = 0;
+    while (i != centreline.end()) {
+	// get the coordinates of this vertex
+	const XSect & pt_v = *i++;
+
+	double z_pitch_adjust = 0.0;
+	bool cover_end = false;
+
+	Vector3 right, up;
+
+	const Vector3 up_v(0.0, 0.0, 1.0);
+
+	if (segment == 0) {
+	    assert(i != centreline.end());
+	    // first segment
+
+	    // get the coordinates of the next vertex
+	    const XSect & next_pt_v = *i;
+
+	    // calculate vector from this pt to the next one
+	    Vector3 leg_v = next_pt_v - pt_v;
+
+	    // obtain a vector in the LRUD plane
+	    right = leg_v * up_v;
+	    if (right.magnitude() == 0) {
+		right = last_right;
+		// Obtain a second vector in the LRUD plane,
+		// perpendicular to the first.
+		//up = right * leg_v;
+		up = up_v;
+	    } else {
+		last_right = right;
+		up = up_v;
+	    }
+
+	    cover_end = true;
+	    static_date_hack = next_pt_v.GetDate();
+	} else if (segment + 1 == centreline.size()) {
+	    // last segment
+
+	    // Calculate vector from the previous pt to this one.
+	    Vector3 leg_v = pt_v - prev_pt_v;
+
+	    // Obtain a horizontal vector in the LRUD plane.
+	    right = leg_v * up_v;
+	    if (right.magnitude() == 0) {
+		right = Vector3(last_right.GetX(), last_right.GetY(), 0.0);
+		// Obtain a second vector in the LRUD plane,
+		// perpendicular to the first.
+		//up = right * leg_v;
+		up = up_v;
+	    } else {
+		last_right = right;
+		up = up_v;
+	    }
+
+	    cover_end = true;
+	    static_date_hack = pt_v.GetDate();
+	} else {
+	    assert(i != centreline.end());
+	    // Intermediate segment.
+
+	    // Get the coordinates of the next vertex.
+	    const XSect & next_pt_v = *i;
+
+	    // Calculate vectors from this vertex to the
+	    // next vertex, and from the previous vertex to
+	    // this one.
+	    Vector3 leg1_v = pt_v - prev_pt_v;
+	    Vector3 leg2_v = next_pt_v - pt_v;
+
+	    // Obtain horizontal vectors perpendicular to
+	    // both legs, then normalise and average to get
+	    // a horizontal bisector.
+	    Vector3 r1 = leg1_v * up_v;
+	    Vector3 r2 = leg2_v * up_v;
+	    r1.normalise();
+	    r2.normalise();
+	    right = r1 + r2;
+	    if (right.magnitude() == 0) {
+		// This is the "mid-pitch" case...
+		right = last_right;
+	    }
+	    if (r1.magnitude() == 0) {
+		Vector3 n = leg1_v;
+		n.normalise();
+		z_pitch_adjust = n.GetZ();
+		//up = Vector3(0, 0, leg1_v.GetZ());
+		//up = right * up;
+		up = up_v;
+
+		// Rotate pitch section to minimise the
+		// "tortional stress" - FIXME: use
+		// triangles instead of rectangles?
+		int shift = 0;
+		Double maxdotp = 0;
+
+		// Scale to unit vectors in the LRUD plane.
+		right.normalise();
+		up.normalise();
+		Vector3 vec = up - right;
+		for (int orient = 0; orient <= 3; ++orient) {
+		    Vector3 tmp = U[orient] - prev_pt_v;
+		    tmp.normalise();
+		    Double dotp = dot(vec, tmp);
+		    if (dotp > maxdotp) {
+			maxdotp = dotp;
+			shift = orient;
+		    }
+		}
+		if (shift) {
+		    if (shift != 2) {
+			Vector3 temp(U[0]);
+			U[0] = U[shift];
+			U[shift] = U[2];
+			U[2] = U[shift ^ 2];
+			U[shift ^ 2] = temp;
+		    } else {
+			swap(U[0], U[2]);
+			swap(U[1], U[3]);
+		    }
+		}
+#if 0
+		// Check that the above code actually permuted
+		// the vertices correctly.
+		shift = 0;
+		maxdotp = 0;
+		for (int j = 0; j <= 3; ++j) {
+		    Vector3 tmp = U[j] - prev_pt_v;
+		    tmp.normalise();
+		    Double dotp = dot(vec, tmp);
+		    if (dotp > maxdotp) {
+			maxdotp = dotp + 1e-6; // Add small tolerance to stop 45 degree offset cases being flagged...
+			shift = j;
+		    }
+		}
+		if (shift) {
+		    printf("New shift = %d!\n", shift);
+		    shift = 0;
+		    maxdotp = 0;
+		    for (int j = 0; j <= 3; ++j) {
+			Vector3 tmp = U[j] - prev_pt_v;
+			tmp.normalise();
+			Double dotp = dot(vec, tmp);
+			printf("    %d : %.8f\n", j, dotp);
+		    }
+		}
+#endif
+	    } else if (r2.magnitude() == 0) {
+		Vector3 n = leg2_v;
+		n.normalise();
+		z_pitch_adjust = n.GetZ();
+		//up = Vector3(0, 0, leg2_v.GetZ());
+		//up = right * up;
+		up = up_v;
+	    } else {
+		up = up_v;
+	    }
+	    last_right = right;
+	    static_date_hack = pt_v.GetDate();
+	}
+
+	// Scale to unit vectors in the LRUD plane.
+	right.normalise();
+	up.normalise();
+
+	if (z_pitch_adjust != 0) up += Vector3(0, 0, fabs(z_pitch_adjust));
+
+	Double l = fabs(pt_v.GetL());
+	Double r = fabs(pt_v.GetR());
+	Double u = fabs(pt_v.GetU());
+	Double d = fabs(pt_v.GetD());
+
+	// Produce coordinates of the corners of the LRUD "plane".
+	Vector3 v[4];
+	v[0] = pt_v - right * l + up * u;
+	v[1] = pt_v + right * r + up * u;
+	v[2] = pt_v + right * r - up * d;
+	v[3] = pt_v - right * l - up * d;
+
+	if (segment > 0) {
+	    (this->*AddQuad)(v[0], v[1], U[1], U[0]);
+	    (this->*AddQuad)(v[2], v[3], U[3], U[2]);
+	    (this->*AddQuad)(v[1], v[2], U[2], U[1]);
+	    (this->*AddQuad)(v[3], v[0], U[0], U[3]);
+	}
+
+	if (cover_end) {
+	    (this->*AddQuad)(v[3], v[2], v[1], v[0]);
+	}
+
+	prev_pt_v = pt_v;
+	U[0] = v[0];
+	U[1] = v[1];
+	U[2] = v[2];
+	U[3] = v[3];
+
+	++segment;
+    }
+}
+
+void GfxCore::FullScreenMode()
+{
+    m_Parent->ViewFullScreen();
+}
+
+bool GfxCore::IsFullScreen() const
+{
+    return m_Parent->IsFullScreen();
+}
+
+void
+GfxCore::MoveViewer(double forward, double up, double right)
+{
+    double cT = cos(rad(m_TiltAngle));
+    double sT = sin(rad(m_TiltAngle));
+    double cP = cos(rad(m_PanAngle));
+    double sP = sin(rad(m_PanAngle));
+    Vector3 v_forward(cT * sP, cT * cP, -sT);
+    Vector3 v_up(-sT * sP, -sT * cP, -cT);
+    Vector3 v_right(-cP, sP, 0);
+    assert(fabs(dot(v_forward, v_up)) < 1e-6);
+    assert(fabs(dot(v_forward, v_right)) < 1e-6);
+    assert(fabs(dot(v_right, v_up)) < 1e-6);
+    Vector3 move = v_forward * forward + v_up * up + v_right * right;
+    AddTranslation(-move);
+    // Show current position.
+    m_Parent->SetCoords(m_Parent->GetOffset() - GetTranslation());
+    ForceRefresh();
+}
+
+PresentationMark GfxCore::GetView() const
+{
+    return PresentationMark(GetTranslation() + m_Parent->GetOffset(),
+			    m_PanAngle, m_TiltAngle, m_Scale);
+}
+
+void GfxCore::SetView(const PresentationMark & p)
+{
+    m_SwitchingTo = 0;
+    SetTranslation(p - m_Parent->GetOffset());
+    m_PanAngle = p.angle;
+    m_TiltAngle = p.tilt_angle;
+    SetRotation(m_PanAngle, m_TiltAngle);
+    SetScale(p.scale);
+    ForceRefresh();
+}
+
+void GfxCore::PlayPres(double speed, bool change_speed) {
+    if (!change_speed || presentation_mode == 0) {
+	if (speed == 0.0) {
+	    presentation_mode = 0;
+	    return;
+	}
+	presentation_mode = PLAYING;
+	next_mark = m_Parent->GetPresMark(MARK_FIRST);
+	SetView(next_mark);
+	next_mark_time = 0; // There already!
+	this_mark_total = 0;
+	pres_reverse = (speed < 0);
+    }
+
+    if (change_speed) pres_speed = speed;
+
+    if (speed != 0.0) {
+	bool new_pres_reverse = (speed < 0);
+	if (new_pres_reverse != pres_reverse) {
+	    pres_reverse = new_pres_reverse;
+	    if (pres_reverse) {
+		next_mark = m_Parent->GetPresMark(MARK_PREV);
+	    } else {
+		next_mark = m_Parent->GetPresMark(MARK_NEXT);
+	    }
+	    swap(this_mark_total, next_mark_time);
+	}
+    }
+}
+
+void GfxCore::SetColourBy(int colour_by) {
+    m_ColourBy = colour_by;
+    switch (colour_by) {
+	case COLOUR_BY_DEPTH:
+	    AddQuad = &GfxCore::AddQuadrilateralDepth;
+	    AddPoly = &GfxCore::AddPolylineDepth;
+	    break;
+	case COLOUR_BY_DATE:
+	    AddQuad = &GfxCore::AddQuadrilateralDate;
+	    AddPoly = &GfxCore::AddPolylineDate;
+	    break;
+	case COLOUR_BY_ERROR:
+	    AddQuad = &GfxCore::AddQuadrilateralError;
+	    AddPoly = &GfxCore::AddPolylineError;
+	    break;
+	default: // case COLOUR_BY_NONE:
+	    AddQuad = &GfxCore::AddQuadrilateral;
+	    AddPoly = &GfxCore::AddPolyline;
+	    break;
+    }
+
+    InvalidateList(LIST_UNDERGROUND_LEGS);
+    InvalidateList(LIST_SURFACE_LEGS);
+    InvalidateList(LIST_TUBES);
+
+    ForceRefresh();
+}
+
+bool GfxCore::ExportMovie(const wxString & fnm)
+{
+    int width;
+    int height;
+    GetSize(&width, &height);
+    // Round up to next multiple of 2 (required by ffmpeg).
+    width += (width & 1);
+    height += (height & 1);
+
+    mpeg = new MovieMaker();
+
+    // FIXME: This should really use fn_str() - currently we probably can't
+    // save to a Unicode path on wxmsw.
+    if (!mpeg->Open(fnm.char_str(), width, height)) {
+	// FIXME : sort out reporting actual errors from ffmpeg library
+	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
+	delete mpeg;
+	mpeg = 0;
+	return false;
+    }
+
+    PlayPres(1, false);
+    return true;
 }
 
 void
@@ -2699,14 +2903,100 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 {
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, datestamp,
-			deg(m_PanAngle), deg(m_TiltAngle),
-			m_Names, m_Crosses, m_Legs, m_Surface);
+			m_PanAngle, m_TiltAngle,
+			m_Names, m_Crosses, m_Legs, m_Surface,
+			true);
     p->Show(TRUE);
 }
 
-bool
+void
 GfxCore::OnExport(const wxString &filename, const wxString &title)
 {
-    return Export(filename, title, m_Parent,
-	   m_PanAngle, m_TiltAngle, m_Names, m_Crosses, m_Legs, m_Surface);
+    svxPrintDlg * p;
+    p = new svxPrintDlg(m_Parent, filename, title, wxString(),
+			m_PanAngle, m_TiltAngle,
+			m_Names, m_Crosses, m_Legs, m_Surface,
+			false);
+    p->Show(TRUE);
+}
+
+static wxCursor
+make_cursor(const unsigned char * bits, const unsigned char * mask,
+	    int hotx, int hoty)
+{
+#if defined __WXMSW__ || defined __WXMAC__
+    wxBitmap cursor_bitmap(reinterpret_cast<const char *>(bits), 32, 32);
+    wxBitmap mask_bitmap(reinterpret_cast<const char *>(mask), 32, 32);
+    cursor_bitmap.SetMask(new wxMask(mask_bitmap));
+    wxImage cursor_image = cursor_bitmap.ConvertToImage();
+    cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotx);
+    cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, hoty);
+    return wxCursor(cursor_image);
+#else
+    return wxCursor((const char *)bits, 32, 32, hotx, hoty,
+		    (const char *)mask, wxWHITE, wxBLACK);
+#endif
+}
+
+const
+#include "hand.xbm"
+const
+#include "handmask.xbm"
+
+const
+#include "brotate.xbm"
+const
+#include "brotatemask.xbm"
+
+const
+#include "vrotate.xbm"
+const
+#include "vrotatemask.xbm"
+
+const
+#include "rotate.xbm"
+const
+#include "rotatemask.xbm"
+
+const
+#include "rotatezoom.xbm"
+const
+#include "rotatezoommask.xbm"
+
+void
+GfxCore::SetCursor(GfxCore::cursor new_cursor)
+{
+    // Check if we're already showing that cursor.
+    if (current_cursor == new_cursor) return;
+
+    current_cursor = new_cursor;
+    switch (current_cursor) {
+	case GfxCore::CURSOR_DEFAULT:
+	    GLACanvas::SetCursor(wxNullCursor);
+	    break;
+	case GfxCore::CURSOR_POINTING_HAND:
+	    GLACanvas::SetCursor(wxCursor(wxCURSOR_HAND));
+	    break;
+	case GfxCore::CURSOR_DRAGGING_HAND:
+	    GLACanvas::SetCursor(make_cursor(hand_bits, handmask_bits, 12, 18));
+	    break;
+	case GfxCore::CURSOR_HORIZONTAL_RESIZE:
+	    GLACanvas::SetCursor(wxCursor(wxCURSOR_SIZEWE));
+	    break;
+	case GfxCore::CURSOR_ROTATE_HORIZONTALLY:
+	    GLACanvas::SetCursor(make_cursor(rotate_bits, rotatemask_bits, 15, 15));
+	    break;
+	case GfxCore::CURSOR_ROTATE_VERTICALLY:
+	    GLACanvas::SetCursor(make_cursor(vrotate_bits, vrotatemask_bits, 15, 15));
+	    break;
+	case GfxCore::CURSOR_ROTATE_EITHER_WAY:
+	    GLACanvas::SetCursor(make_cursor(brotate_bits, brotatemask_bits, 15, 15));
+	    break;
+	case GfxCore::CURSOR_ZOOM:
+	    GLACanvas::SetCursor(wxCursor(wxCURSOR_MAGNIFIER));
+	    break;
+	case GfxCore::CURSOR_ZOOM_ROTATE:
+	    GLACanvas::SetCursor(make_cursor(rotatezoom_bits, rotatezoommask_bits, 15, 15));
+	    break;
+    }
 }

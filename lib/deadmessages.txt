@@ -629,3 +629,193 @@ ca: 49 Sintaxi
 es: 49 Sintaxis
 it: 49 Sintassi
 sk: 49 Syntax
+#
+en:292 @Altitude Colouring on Surface Surveys
+en-us:292 @Altitude Coloring on Surface Surveys
+fr:292 Couleur par altit@ude pour les topos de surface
+de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
+pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
+ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
+es:292 Colores por @Altitud en topografia de superficie
+it:292 Rappresentazione delle @Quote mediante colori
+sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
+#
+en:293 @Dashed Surface Surveys
+fr:293 Topos de surface @Hachur&eacute;es
+de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
+de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
+pt:293 Topografias de Superf&iacute;cie @Tracejadas
+ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
+es:293 T@opografias de superficie con trazo discont&iacute;nuo
+it:293 Superficie topografica @Tratteggiata
+sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery
+#
+en:323 Recording Presentation
+fr:323 Enregistrement d'une pr&eacute;sentation
+de:323 Pr&auml;sentation wird aufgezeichnet
+# or, somewhat in radio broadcasting lingo,
+# de:323 Aufzeichnung l&auml;uft
+pt:323 Gravando Apresenta&ccedil;&atilde;o
+ca:323 Gravant Presentaci&oacute;
+es:323 Grabando Presentaci&oacute;n
+it:323 Registra Presentazione
+sk:323 Z&aacute;znam prezent&aacute;cie
+#en:324 Res@tart
+#fr:324 Red&eacute;@marrage
+#de:324 @Neustart
+#pt:324 Rei@niciar
+#ca:324 Re@iniciar
+#es:324 Rei@niciar
+#it:324 Ri@parte
+#sk:324 @Re&scaron;tart
+# here pt = pt-br ...
+en:311 @Create...
+fr:311 @Creation...
+de:311 Neue @Pr&auml;sentation...
+pt:311 @Criar...
+ca:311 @Crea...
+es:311 @Crea...
+it:311 @Crea...
+sk:311 @Vytvori&tcaron;...
+#
+en:312 @Go
+fr:312 @D&eacute;marrage
+de:312 @Vorf&uuml;hren
+pt:312 @Ir para
+ca:312 @Anar
+es:312 @Ir
+it:312 @Vai
+sk:312 @Go
+#
+en:313 @Record Position
+fr:313 @Sauvegarde de la position
+de:313 Position @aufzeichnen
+pt:313 G@ravar Posi&ccedil;&atilde;o
+ca:313 @Registra la posici&oacute;
+es:313 @Registra la posici&oacute;n
+it:313 @Registra la posizione
+sk:313 @Z&aacute;znam poz&iacute;cie
+#
+en:314 @Finish and Save
+fr:314 @Fin avec sauvegarde
+de:314 A@bschlie&szlig;en und abspeichern
+de-ch:314 A@bschliessen und abspeichern
+pt:314 @Finalizar e Salvar
+ca:314 @Finalitza i Guarda
+es:314 @Finaliza y Guarda
+it:314 @Finisci e Salva
+sk:314 @Ukon&ccaron;i&tcaron; a ulo&zcaron;i&tcaron;
+#
+en:315 @Erase Last Position
+fr:315 @Effacement de la derni&egrave;re position
+de:315 Letzte Position @l&ouml;schen
+pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
+ca:315 @Esborra la &uacute;ltima posici&oacute;
+es:315 @Borra la &uacute;ltima posici&oacute;n
+it:315 Cancella l'@Ultima posizione
+sk:315 V@ymaza&tcaron; posledn&uacute; polohu
+#
+en:316 Er@ase All Positions
+fr:316 Effacement de @toutes les positions
+de:316 Alle P@ositionen l&ouml;schen
+pt:316 Remover @Todas as Posi&ccedil;&otilde;es
+ca:316 Esborra totes les @posicions
+es:316 Borra @todas las posiciones
+it:316 Cancella @Tuttle le posizioni
+sk:316 Vym@aza&tcaron; v&scaron;etky poz&iacute;cie
+#
+en:318 Go @Back
+fr:318 @Retour
+de:318 @Zur&uuml;ck
+pt:318 @Voltar
+ca:318 @Torna enrrera
+es:318 @Vuelve atr&aacute;s
+it:318 Torna @Indietro
+sk:318 @Nasp&auml;&tcaron;
+# cf 162
+en: 58 "Plot what (n=station names, c=crosses, l=legs, s=surface) (default &quot;%s&quot;)&#10;: "
+fr: 58 "Que dessiner (n=noms de station, c=croix, l=segments, s=surface) (defaut &quot;%s&quot;)&#10;: "
+de: 58 "Was plotten? (n=Stationsnamen, c=Kreuze, l=Strecken, s=Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
+pt,pt-br: 58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
+ca: 58 "Que s'ha de plotejar? (n=noms d'estaci&oacute;, c=creus, l=tirades, s=superf&iacute;cie) (per defecte &quot;%s&quot;)&#10;: "
+es: 58 "Que hay que plotear? (n=nombres de estaci&oacute;n, c=cruces, l=tiradas, s=superf&iacute;cie) (por defecto &quot;%s&quot;)&#10;: "
+it: 58 "Disegna cosa (n=nomi delle stazioni, c=croci, l=battute, s=superficie) (default &quot;%s&quot;)&#10;: "
+sk: 58 "&Ccaron;o vykresli&tcaron;? (n=men&aacute; bodov, c=kr&iacute;&zcaron;iky, l=z&aacute;mery, s=povrch) (defaultne &quot;%s&quot;)&#10;: "
+ro: 58 "Ce se deseneaza? (n=numele punctelor de statie, c=intersectii, l=segmentele topografiei, s=suprafata) (default &quot;%s&quot;)&#10;: "
+#
+en: 80 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
+fr: 80 Echelle incorrecte `%s' (syntaxes correctes: `1:500', `500', ou `0.002')
+de: 80 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
+# (no de-de entry here!)
+de-ch: 80 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
+pt,pt-br: 80 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
+ca: 80 Escala err&ograve;nia `%s' (esperant per ex. `1:500', `500', o `0.002')
+es: 80 Escala err&oacute;nea `%s' (esperando por ej. `1:500', `500', o `0.002')
+it: 80 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
+sk: 80 Nespr&aacute;vne mer&iacute;tko `%s' (predpoklad&aacute; sa napr.: `1:500', `500', alebo `0.002')
+ro: 80 Scara gresita `%s' (asteptam de ex. `1:500', `500', or `0.002')
+#
+en: 81 Error initialising graphics card
+fr: 81 Erreur &agrave; l'initialisation de la carte graphique
+de: 81 Fehler bei der Initialisierung der Graphikkarte
+pt: 81 Erro inicializando placa de v&iacute;deo
+ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
+es: 81 Error al inicializar la placa gr&aacute;fica
+it: 81 Errore d'inizializzazione della scheda grafica
+sk: 81 Chyba pri inicializ&aacute;cii grafickej karty
+ro: 81 Eroare la initializarea placii video
+#
+en: 83 Scale to fit on 1 page
+fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
+# somewhat clumsily, but anything else would require a subordinate
+# clause and become much longer:
+de-ch: 83   Massstab f&uuml;r Zeichnung auf 1 Seite
+de: 83 Ma&szlig;stab f&uuml;r Zeichnung auf 1 Seite
+pt: 83 Escala para caber em uma p&aacute;gina
+ca: 83 Escala per a encaixar en 1 p&agrave;gina
+es: 83 Escala para encajar en 1 p&aacute;gina
+it: 83 Scala per rientrare in una pagina
+sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
+ro: 83 Redimensionata pentru a incapea pe 1 pagina
+#
+en: 86 No data in 3d Image file
+fr: 86 Pas de donn&eacute;es dans le fichier image 3d
+de: 86 Keine Daten in der 3D-Bilddatei
+pt: 86 N&atilde;o h&aacute; dados no arquivo de imagem 3d
+ca: 86 No hi ha dades al fitxer d'imatge 3d
+es: 86 No hay datos en el archivo de imagen 3d
+it: 86 Nessun dato nel file immagine 3d
+sk: 86 V 3D-obrazovom s&uacute;bore nie s&uacute; &uacute;daje
+ro: 86 Lipsesc datele din fisierul de imagine 3d
+#
+en: 87 Error writing printer output
+fr: 87 Erreur &agrave; l'&eacute;criture du fichier &agrave; imprimer
+# no we aren't printing yet, _because_ we couldn't even finish writing the
+# file that was to be printed
+# OL: not necessarily the case, as it might go wrong during printout
+# GN(3): ok reverting to previous version here
+de: 87 Fehler beim Schreiben oder Drucken der Ausgabedatei
+#germ: 87 Fehler beim Schreiben der Drucker-Ausgabedatei
+pt: 87 Erro ao imprimir
+ca: 87 Error a l'escriure la sortida a impresora
+es: 87 Error al escribir la salida a impresora
+it: 87 Errore nella scrittura del file per la stampa
+sk: 87 Chyba pri z&aacute;pise na tla&ccaron;iare&ncaron;
+ro: 87 Eroare in scrierea fisierului pentru imprimare
+#
+en:600 Don't understand command `%s' in config, line %i
+fr:600 Commande incomprise `%s', &agrave; la ligne %i de la configuration
+it:600 Non capisco il comando `%s' nella linea di configurazione %i
+#
+en:601 Unexpected content `%s' in config, line %i
+fr:601 Contenu inattendu `%s', &agrave; la ligne %i de la configuration
+it:601 Contenuto inatteso `%s' nella linea di configurazione %i
+#
+en:602 Command without station name in config, line %i
+fr:602 Commande sans nom de station dans la configuration &agrave; la ligne %i
+it:602 Comando senza il nome della stazione nella linea di configurazione %i
+#
+en:612 Error reading line %i from spec file
+fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
+it:612 Errore di lettura alla linea %i del file di specifiche
+#

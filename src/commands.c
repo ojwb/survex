@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
+#include <time.h>
 
 #include "cavern.h"
 #include "commands.h"
@@ -320,6 +321,7 @@ get_qlist(unsigned long mask_bad)
 	{"BACKCOMPASS",  Q_BACKBEARING },     /* alternative name */
 	{"BACKGRADIENT", Q_BACKGRADIENT },
 	{"BEARING",      Q_BEARING },
+	{"CEILING",      Q_UP },          /* alternative name */
 	{"CLINO",	 Q_GRADIENT },    /* alternative name */
 	{"COMPASS",      Q_BEARING },     /* alternative name */
 	{"COUNT",	 Q_COUNT },
@@ -327,17 +329,22 @@ get_qlist(unsigned long mask_bad)
 	{"DECLINATION",  Q_DECLINATION },
 	{"DEFAULT",      Q_DEFAULT }, /* not a real quantity... */
 	{"DEPTH",	 Q_DEPTH },
+	{"DOWN",         Q_DOWN },
 	{"DX",		 Q_DX },	  /* alternative name */
 	{"DY",		 Q_DY },	  /* alternative name */
 	{"DZ",		 Q_DZ },	  /* alternative name */
 	{"EASTING",	 Q_DX },
+	{"FLOOR",        Q_DOWN },        /* alternative name */
 	{"GRADIENT",     Q_GRADIENT },
+	{"LEFT",         Q_LEFT },
 	{"LENGTH",       Q_LENGTH },
 	{"LEVEL",	 Q_LEVEL},
 	{"NORTHING",     Q_DY },
 	{"PLUMB",	 Q_PLUMB},
 	{"POSITION",     Q_POS },
+	{"RIGHT",        Q_RIGHT },
 	{"TAPE",	 Q_LENGTH },      /* alternative name */
+	{"UP",           Q_UP },
 	{NULL,		 Q_NULL }
    };
    unsigned long qmask = 0;
@@ -461,7 +468,7 @@ check_reentry(prefix *tag)
 {
    /* Don't try to check "*prefix \" or "*begin \" */
    if (!tag->up) return;
-   if (tag->filename) {
+   if (TSTBIT(tag->sflags, SFLAGS_PREFIX_ENTERED)) {
       if (tag->line != file.line ||
 	  strcmp(tag->filename, file.filename) != 0) {
 	 const char *filename_store = file.filename;
@@ -481,6 +488,7 @@ check_reentry(prefix *tag)
 	 file.line = line_store;
       }
    } else {
+      tag->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
       tag->filename = file.filename;
       tag->line = file.line;
    }
@@ -503,16 +511,6 @@ cmd_prefix(void)
    tag = read_prefix_survey(fFalse, fTrue);
    pcs->Prefix = tag;
    check_reentry(tag);
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      limb = get_twig(tag);
-      if (limb->up->sourceval < 1) {
-	 osfree(limb->up->source);
-	 limb->up->sourceval = 1;
-	 limb->up->source = osstrdup(file.filename);
-      }
-   }
-#endif
 }
 #endif
 
@@ -534,17 +532,6 @@ cmd_begin(void)
       pcs->Prefix = tag;
       check_reentry(tag);
       f_export_ok = fTrue;
-
-#ifdef CHASM3DX
-      if (fUseNewFormat) {
-	 limb = get_twig(pcs->Prefix);
-	 if (limb->up->sourceval < 2) {
-	    osfree(limb->up->source);
-	    limb->up->sourceval = 2;
-	    limb->up->source = osstrdup(file.filename);
-	 }
-      }
-#endif
    }
 }
 
@@ -559,6 +546,10 @@ free_settings(settings *p) {
    if (!p->next || p->Translate != p->next->Translate)
       osfree(p->Translate - 1);
 
+   /* free meta is not used by parent, or in this block */
+   if (p->meta && p->meta != p->next->meta && p->meta->ref_count == 0)
+       osfree(p->meta);
+
    osfree(p);
 }
 
@@ -569,9 +560,6 @@ cmd_end(void)
    prefix *tag, *tagBegin;
 
    pcsParent = pcs->next;
-#ifdef CHASM3DX
-   if (fUseNewFormat) limb = get_twig(pcsParent->Prefix);
-#endif
 
    if (pcs->begin_lineno == 0) {
       if (pcsParent == NULL) {
@@ -688,19 +676,8 @@ cmd_fix(void)
 	 if (!fixed(stn)) {
 	    node *fixpt = osnew(node);
 	    prefix *name;
-#ifdef CHASM3DX
-	    if (fUseNewFormat) {
-	       name = osnew(prefix);
-	       name->pos = osnew(pos);
-	    } else {
-	       /* only allocate the part of the structures we need... */
-	       name = /*(prefix *)*/osmalloc(offsetof(prefix, twig_link));
-	       name->pos = (pos *)osmalloc(offsetof(pos, id));
-	    }
-#else
 	    name = osnew(prefix);
 	    name->pos = osnew(pos);
-#endif
 	    name->ident = NULL;
 	    name->shape = 0;
 	    fixpt->name = name;
@@ -741,16 +718,6 @@ cmd_fix(void)
       POS(stn, 1) = y;
       POS(stn, 2) = z;
       fix(stn);
-#ifdef CHASM3DX
-      if (fUseNewFormat) {
-	 fix_name->twig_link->from = fix_name; /* insert fixed point.. */
-	 fix_name->twig_link->to = NULL;
-#if 0
-	 osfree(fix_name->twig_link->down);
-	 fix_name->twig_link->down = NULL;
-#endif
-      }
-#endif
       return;
    }
 
@@ -818,9 +785,6 @@ cmd_equate(void)
 	 if (fOnlyOneStn) {
 	    compile_error_skip(/*Only one station in EQUATE command*/33);
 	 }
-#ifdef CHASM3DX
-	 if (fUseNewFormat) limb = get_twig(pcs->Prefix);
-#endif
 	 return;
       }
 
@@ -909,30 +873,36 @@ cmd_data(void)
 	{"BACKCOMPASS",  BackComp }, /* alternative name */
 	{"BACKGRADIENT", BackClino },
 	{"BEARING",      Comp },
+	{"CEILING",      Up }, /* alternative name */
 	{"CLINO",	 Clino }, /* alternative name */
 	{"COMPASS",      Comp }, /* alternative name */
 	{"COUNT",	 Count }, /* FrCount&ToCount in multiline */
 	{"DEPTH",	 Depth }, /* FrDepth&ToDepth in multiline */
 	{"DEPTHCHANGE",  DepthChange },
 	{"DIRECTION",    Dir },
+	{"DOWN",         Down },
 	{"DX",		 Dx },
 	{"DY",		 Dy },
 	{"DZ",		 Dz },
 	{"EASTING",      Dx },
+	{"FLOOR",        Down }, /* alternative name */
 	{"FROM",	 Fr },
 	{"FROMCOUNT",    FrCount },
 	{"FROMDEPTH",    FrDepth },
 	{"GRADIENT",     Clino },
 	{"IGNORE",       Ignore },
 	{"IGNOREALL",    IgnoreAll },
+	{"LEFT",         Left },
 	{"LENGTH",       Tape },
 	{"NEWLINE",      Newline },
 	{"NORTHING",     Dy },
+	{"RIGHT",        Right },
 	{"STATION",      Station }, /* Fr&To in multiline */
 	{"TAPE",	 Tape }, /* alternative name */
 	{"TO",		 To },
 	{"TOCOUNT",      ToCount },
 	{"TODEPTH",      ToDepth },
+	{"UP",           Up },
 	{NULL,		 End }
    };
 
@@ -946,11 +916,13 @@ cmd_data(void)
 #define MASK_DIVING MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
+#define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
 #define MASK_NOSURVEY MASK_stns
 
    /* readings which may be given for each style */
    static const unsigned long mask[] = {
-      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_NOSURVEY
+      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_PASSAGE,
+      MASK_NOSURVEY
    };
 
    /* readings which may be omitted for each style */
@@ -959,6 +931,7 @@ cmd_data(void)
       BIT(Dir),
       0,
       BIT(Dir),
+      0, /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
       0
    };
 
@@ -968,6 +941,7 @@ cmd_data(void)
       MASK_DIVING | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
    };
 #define STYLE_DEFAULT   -2
@@ -980,7 +954,7 @@ cmd_data(void)
 	{"DIVING",       STYLE_DIVING },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
-	{"PASSAGE",      STYLE_IGNORE },
+	{"PASSAGE",      STYLE_PASSAGE },
 	{"TOPOFIL",      STYLE_NORMAL },
 	{NULL,		 STYLE_UNKNOWN }
    };
@@ -1001,14 +975,6 @@ cmd_data(void)
 
    get_token();
    style = match_tok(styletab, TABSIZE(styletab));
-
-   if (style == STYLE_IGNORE) {
-      /* We don't understand PASSAGE style data, so just ignore the rest
-       * of this line and any data in this style. */
-      pcs->style = STYLE_IGNORE;
-      skipline();
-      return;
-   }
 
    if (style == STYLE_DEFAULT) {
       default_style(pcs);
@@ -1158,6 +1124,8 @@ cmd_data(void)
 	 new_order[k - 1] = Newline;
 	 new_order[k++] = End;
       }
+   } else if (style == STYLE_PASSAGE) {
+      /* Station doesn't mean "multiline" for STYLE_PASSAGE. */
    } else if (!TSTBIT(mUsed, Newline) && (m_multi & mUsed)) {
       /* This is for when they write
        * *data normal station tape compass clino
@@ -1174,10 +1142,12 @@ cmd_data(void)
 #endif
 
    /* Check the supplied readings form a sufficient set. */
-   if (mUsed & (BIT(Fr) | BIT(To)))
-      mUsed |= BIT(Station);
-   else if (TSTBIT(mUsed, Station))
-      mUsed |= BIT(Fr) | BIT(To);
+   if (style != STYLE_PASSAGE) {
+       if (mUsed & (BIT(Fr) | BIT(To)))
+	   mUsed |= BIT(Station);
+       else if (TSTBIT(mUsed, Station))
+	   mUsed |= BIT(Fr) | BIT(To);
+   }
 
    if (mUsed & (BIT(Comp) | BIT(BackComp)))
       mUsed |= BIT(Comp) | BIT(BackComp);
@@ -1223,6 +1193,14 @@ cmd_data(void)
    pcs->ordering = new_order;
 
    osfree(style_name);
+
+   if (style == STYLE_PASSAGE) {
+      lrudlist * new_psg = osnew(lrudlist);
+      new_psg->tube = NULL;
+      new_psg->next = model;
+      model = new_psg;
+      next_lrud = &(new_psg->tube);
+   }
 }
 
 static void
@@ -1360,9 +1338,6 @@ cmd_include(void)
 
 #ifndef NO_DEPRECATED
    root = root_store; /* and restore root */
-#endif
-#ifdef CHASM3DX
-   if (fUseNewFormat) limb = get_twig(root);
 #endif
    ch = ch_store;
 
@@ -1534,15 +1509,68 @@ cmd_require(void)
    while (isdigit(ch) || ch == '.') nextch();
 }
 
+/* allocate new meta_data if need be */
+void
+copy_on_write_meta(settings *s)
+{
+   if (!s->meta || s->meta->ref_count != 0) {
+       meta_data * meta_new = osnew(meta_data);
+       if (!s->meta) {
+	   meta_new->date1 = 0;
+	   meta_new->date2 = 0;
+       } else {
+	   *meta_new = *(s->meta);
+       }
+       meta_new->ref_count = 0;
+       s->meta = meta_new;
+   }
+}
+
 static void
 cmd_date(void)
 {
-   read_date();
-   skipblanks();
-   if (ch == '-') {
-      nextch();
-      read_date();
-   }
+    struct tm t;
+    int year, month, day;
+    time_t date1, date2;
+
+    memset(&t, 0, sizeof(t));
+    read_date(&year, &month, &day);
+    t.tm_year = year;
+    t.tm_mon = month ? month : 1;
+    t.tm_mday = day ? day : 1;
+
+    --t.tm_mon; /* Jan is 0 */
+    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
+    date1 = mktime(&t);
+    if (date1 == (time_t)-1) {
+	date1 = 0;
+    } else if (date1 > tmUserStart) {
+	compile_warning(/*Date is in the future!*/80);
+    }
+
+    skipblanks();
+    if (ch == '-') {
+	nextch();
+	memset(&t, 0, sizeof(t));
+	read_date(&year, &month, &day);
+    }
+    t.tm_year = year;
+    t.tm_mon = month ? month : 12;
+    if (day == 0) {
+	t.tm_mday = last_day(year, t.tm_mon);
+    } else {
+	t.tm_mday = day;
+    }
+    --t.tm_mon; /* Jan is 0 */
+    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
+    date2 = mktime(&t);
+    if (date2 == (time_t)-1) date2 = 0;
+    if (date2 < date1)
+	compile_error(/*End of date range is before the start*/81);
+
+    copy_on_write_meta(pcs);
+    pcs->meta->date1 = date1;
+    pcs->meta->date2 = date2;
 }
 
 typedef void (*cmd_fn)(void);

@@ -1,6 +1,6 @@
 /* network.c
  * Survex network reduction - find patterns and apply network reductions
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2002,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #if 0
@@ -34,10 +34,6 @@
 #include "netbits.h"
 #include "network.h"
 #include "out.h"
-
-#ifdef CHASM3DX
-#include <stddef.h> /* for offsetof */
-#endif
 
 /* type field isn't vital - join3 is unused except for deltastar, so
  * we can set its value to indicate which type this is:
@@ -473,19 +469,8 @@ remove_subnets(void)
 		    subss(&sum, &sum, &sumAZBZ);
 		    mulsc(&legCZ->v, &sum, 0.5);
 
-#ifdef CHASM3DX
-		    if (fUseNewFormat) {
-		       nameZ = osnew(prefix);
-		       nameZ->pos = osnew(pos);
-		    } else {
-		       /* only allocate the part of the structures we need... */
-		       nameZ = (prefix *)osmalloc(offsetof(prefix, twig_link));
-		       nameZ->pos = (pos *)osmalloc(offsetof(pos, id));
-		    }
-#else
 		    nameZ = osnew(prefix);
 		    nameZ->pos = osnew(pos);
-#endif
 		    nameZ->ident = NULL;
 		    nameZ->shape = 3;
 		    stnZ = osnew(node);

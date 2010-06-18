@@ -1,10 +1,7 @@
 #!/usr/bin/perl -w
-require 5.008;
-use bytes;
-use strict;
-
 my @msgs;
 my $exitcode = 0;
+use strict;
 while (<>) {
    while (m!/\*(.*?)\*/([0-9]+)\b!g) {
       if (defined $msgs[$2] && $msgs[$2] ne $1) {

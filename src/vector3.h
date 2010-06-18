@@ -1,10 +1,9 @@
-//
 //  vector3.h
 //
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
-//  Copyright (C) 2002-2004,2005 Olly Betts
+//  Copyright (C) 2002-2004,2005,2006 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,7 +17,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #ifndef Vector3_h
@@ -27,16 +26,16 @@
 #include <math.h>
 
 class Vector3 {
+protected:
     double x, y, z;
 
 public:
     Vector3() : x(0.0), y(0.0), z(0.0) { }
     Vector3(double a, double b, double c) : x(a), y(b), z(c) { }
-    ~Vector3() { }
 
-    double getX() const { return x; }
-    double getY() const { return y; }
-    double getZ() const { return z; }
+    double GetX() const { return x; }
+    double GetY() const { return y; }
+    double GetZ() const { return z; }
 
     double magnitude() const {
 	return sqrt(x*x + y*y + z*z);
@@ -44,8 +43,12 @@ public:
 
     void normalise();
 
-    void set(double a, double b, double c) {
+    void assign(double a, double b, double c) {
 	x = a; y = b; z = c;
+    }
+
+    void assign(const Vector3 &v) {
+	*this = v;
     }
 
     friend Vector3 operator-(const Vector3& o) {
@@ -53,6 +56,8 @@ public:
     }
     Vector3& operator*=(double);
     Vector3& operator/=(double);
+    Vector3& operator+=(const Vector3&);
+    Vector3& operator-=(const Vector3&);
     Vector3& operator=(const Vector3& o) {
 	x = o.x; y = o.y; z = o.z;
 	return *this;
@@ -65,7 +70,20 @@ public:
     friend Vector3 operator*(const Vector3&, const Vector3&); // cross product
     friend Vector3 operator+(const Vector3&, const Vector3&);
     friend Vector3 operator-(const Vector3&, const Vector3&);
+    friend bool operator==(const Vector3&, const Vector3&);
+    friend bool operator<(const Vector3&, const Vector3&);
     friend double dot(const Vector3&, const Vector3&);
 };
+
+inline bool operator==(const Vector3& a, const Vector3& b) {
+    return a.x == b.x && a.y == b.y && a.z == b.z;
+}
+
+// So we can use Vector3 as a key in a map...
+inline bool operator<(const Vector3& a, const Vector3& b) {
+    if (a.x != b.x) return a.x < b.x;
+    if (a.y != b.y) return a.y < b.y;
+    return a.z < b.z;
+}
 
 #endif

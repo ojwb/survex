@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005 Olly Betts
+# Copyright (C) 1999-2004,2005,2006 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
@@ -47,7 +47,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  tapelessthandepth longname chinabug chinabug2\
  multinormal multinormignall multidiving multicylpolar multicartesian\
  multinosurv multinormalbad multibug\
- cmd_title cmd_titlebad cmd_dummy cmd_infer\
+ cmd_title cmd_titlebad cmd_dummy cmd_infer cmd_date cmd_datebad cmd_datebad2\
  cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
  plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
  badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
@@ -55,7 +55,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
- surfequate passage"}}
+ surfequate passage hanging_lrud"}}
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -147,6 +147,9 @@ for file in $TESTS ; do
   cmd_titlebad) pos=fail ; error=4 ;;
   cmd_dummy) pos=no ; warn=0 ;;
   cmd_infer) pos=yes ; warn=0 ;;
+  cmd_date) pos=no ; warn=3 ;;
+  cmd_datebad) pos=fail ; error=36 ;;
+  cmd_datebad2) pos=fail ; error=20 ;;
   cartes) pos=yes ; warn=0 ;;
   diving) pos=yes ; warn=0 ;;
   cylpolar) pos=yes ; warn=0 ;;
@@ -189,6 +192,7 @@ for file in $TESTS ; do
   cmd_solve_hanging) pos=fail ;;
   cmd_solve_nothing*) pos=no; warn=0 ;;
   passage) pos=no; warn=0 ;;
+  hanging_lrud) pos=fail; error=1 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac

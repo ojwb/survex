@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -41,25 +41,8 @@
 #include "str.h"
 #include "validate.h"
 
-#if (OS==WIN32)
-#include <conio.h> /* for _kbhit() and _getch() */
-#endif
-
-#ifdef CHASM3DX
-# if OS != RISCOS
-/* include header for getcwd() */
-#  if OS == MSDOS && !defined(__DJGPP__)
-#   include <dir.h>
-#  elif OS == WIN32
-#   include <direct.h>
-#  else
-#   include <unistd.h>
-#  endif
-#endif
-
-#ifndef MAXPATHLEN
-#define MAXPATHLEN 1024
-#endif
+#if OS_WIN32
+# include <conio.h> /* for _kbhit() and _getch() */
 #endif
 
 /* For funcs which want to be immune from messing around with different
@@ -83,7 +66,7 @@ bool fPercent = fFalse;
 #endif
 bool fQuiet = fFalse; /* just show brief summary + errors */
 bool fMute = fFalse; /* just show errors */
-bool fSuppress = fFalse; /* only output 3d(3dx) file */
+bool fSuppress = fFalse; /* only output 3d file */
 static bool fLog = fFalse; /* stdout to .log file */
 static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */
 
@@ -101,6 +84,9 @@ bool fExplicitTitle = fFalse;
 char *fnm_output_base = NULL;
 int fnm_output_base_is_dir = 0;
 
+lrudlist * model = NULL;
+lrud ** next_lrud = NULL;
+
 static void do_stats(void);
 
 static const struct option long_opts[] = {
@@ -117,10 +103,7 @@ static const struct option long_opts[] = {
    {"no-auxiliary-files", no_argument, 0, 's'},
    {"warnings-are-errors", no_argument, 0, 'w'},
    {"log", no_argument, 0, 1},
-#ifdef CHASM3DX
-   {"chasm-format", no_argument, 0, 'x'},
-#endif
-#if (OS==WIN32)
+#if OS_WIN32
    {"pause", no_argument, 0, 2},
 #endif
    {"help", no_argument, 0, HLP_HELP},
@@ -128,11 +111,7 @@ static const struct option long_opts[] = {
    {0, 0, 0, 0}
 };
 
-#ifdef CHASM3DX
-#define short_opts "pxao:qswz:"
-#else
 #define short_opts "pao:qswz:"
-#endif
 
 /* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
@@ -143,9 +122,6 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(4),		"do not create .err file"},
    {HLP_ENCODELONG(5),		"turn warnings into errors"},
    {HLP_ENCODELONG(6),		"log output to .log file"},
-#ifdef CHASM3DX
-   {HLP_ENCODELONG(7),		"output data in chasm's 3dx format"},
-#endif
  /*{'z',			"set optimizations for network reduction"},*/
    {0, 0}
 };
@@ -158,7 +134,7 @@ delete_output_on_error(void)
       filename_delete_output();
 }
 
-#if (OS==WIN32)
+#if OS_WIN32
 static void
 pause_on_exit(void)
 {
@@ -167,12 +143,20 @@ pause_on_exit(void)
 }
 #endif
 
+time_t tmUserStart;
+
 extern CDECL int
 main(int argc, char **argv)
 {
    int d;
-   time_t tmUserStart = time(NULL);
-   clock_t tmCPUStart = clock();
+   clock_t tmCPUStart;
+
+   tmUserStart = time(NULL);
+   tmCPUStart = clock();
+
+   /* Always buffer by line for aven's benefit. */
+   setvbuf(stdout, NULL, _IOLBF, 0);
+
    init_screen();
 
    msg_init(argv);
@@ -180,6 +164,7 @@ main(int argc, char **argv)
    pcs = osnew(settings);
    pcs->next = NULL;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
+   pcs->meta = NULL;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);
@@ -233,12 +218,6 @@ main(int argc, char **argv)
 	 }
 	 break;
        }
-#ifdef CHASM3DX
-       case 'x': {
-	 fUseNewFormat = 1;
-	 break;
-       }
-#endif
        case 'q':
 	 if (fQuiet) fMute = 1;
 	 fQuiet = 1;
@@ -264,7 +243,7 @@ main(int argc, char **argv)
        case 1:
 	 fLog = fTrue;
 	 break;
-#if (OS==WIN32)
+#if OS_WIN32
        case 2:
 	 atexit(pause_on_exit);
 	 break;
@@ -329,22 +308,6 @@ main(int argc, char **argv)
 
       /* Select defaults settings */
       default_all(pcs);
-#ifdef CHASM3DX
-      /* we need to get the filename of the first one for our base_source */
-      /* and also run_file */
-      if (fUseNewFormat) {
-	 create_twig(root, fnm);
-	 rhizome = root->twig_link;
-	 limb = get_twig(root);
-	 firstfilename = osstrdup(fnm);
-	 startingdir = osmalloc(MAXPATHLEN);
-#if (OS==RISCOS)
-	 strcpy(startingdir, "@");
-#else
-	 getcwd(startingdir, MAXPATHLEN);
-#endif
-      }
-#endif
       data_file(NULL, fnm); /* first argument is current path */
 
       optind++;
@@ -355,23 +318,11 @@ main(int argc, char **argv)
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();
 
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* this actually does all the writing */
-      if (!cave_close(pimg)) {
-	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3DX);
-	 fatalerror(/*Error writing to file `%s'*/110, fnm);
-      }
-   } else {
-#endif
-      /* close .3d file */
-      if (!img_close(pimg)) {
-	 char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
-	 fatalerror(img_error(), fnm);
-      }
-#ifdef CHASM3DX
+   /* close .3d file */
+   if (!img_close(pimg)) {
+      char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
+      fatalerror(img_error(), fnm);
    }
-#endif
    if (fhErrStat) safe_fclose(fhErrStat);
 
    out_current_action(msg(/*Calculating statistics*/120));

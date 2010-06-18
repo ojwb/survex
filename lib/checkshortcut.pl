@@ -9,9 +9,11 @@ $srcdir .= '/' if $srcdir;
 
 open I, "<$srcdir../src/mainfrm.cc" or die $!;
 while (<I>) {
-    /(\w+)->Append\(.*\(\/\*.*?\*\/(\d+)/ && push @{$menu{$1}}, $2;
+    m!(\w+)->Append[A-Za-z]*\(.*\(/\*.*?\*/(\d+)! && push @{$menu{$1}}, $2;
 }
 close I;
+
+#for (sort keys %menu) { print "$_:".join("|", @{$menu{$_}})."\n" }
 
 my $exitcode = 0;
 for my $lang (@ARGV) {

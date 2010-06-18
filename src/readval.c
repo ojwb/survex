@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -131,16 +131,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
       if (ptr == NULL) {
 	 /* Special case first time around at each level */
 	 name = osrealloc(name, i);
-#ifdef CHASM3DX
-	 if (fUseNewFormat) {
-	    ptr = osnew(prefix);
-	 } else {
-	    /* only allocate the part of the structure we need... */
-	    ptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
-	 }
-#else
 	 ptr = osnew(prefix);
-#endif
 	 ptr->ident = name;
 	 name = NULL;
 	 ptr->right = ptr->down = NULL;
@@ -148,18 +139,14 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 ptr->shape = 0;
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
-	 ptr->filename = NULL;
+	 ptr->filename = file.filename;
+	 ptr->line = file.line;
 	 ptr->min_export = ptr->max_export = 0;
 	 ptr->sflags = BIT(SFLAGS_SURVEY);
 	 if (fSuspectTypo && !fImplicitPrefix)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
 	 fNew = fTrue;
-#ifdef CHASM3DX
-	 if (fUseNewFormat) {
-	    create_twig(ptr, file.filename);
-	 }
-#endif
       } else {
 	 /* Use caching to speed up adding an increasing sequence to a
 	  * large survey */
@@ -178,16 +165,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    /* ie we got to one that was higher, or the end */
 	    prefix *newptr;
 	    name = osrealloc(name, i);
-#ifdef CHASM3DX
-	    if (fUseNewFormat) {
-	       newptr = osnew(prefix);
-	    } else {
-	       /* only allocate the part of the structure we need... */
-	       newptr = (prefix *)osmalloc(offsetof(prefix, twig_link));
-	    }
-#else
 	    newptr = osnew(prefix);
-#endif
 	    newptr->ident = name;
 	    name = NULL;
 	    if (ptrPrev == NULL)
@@ -200,18 +178,14 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	    newptr->shape = 0;
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
-	    newptr->filename = NULL;
+	    newptr->filename = file.filename;
+	    newptr->line = file.line;
 	    newptr->min_export = newptr->max_export = 0;
 	    newptr->sflags = BIT(SFLAGS_SURVEY);
 	    if (fSuspectTypo && !fImplicitPrefix)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
 	    fNew = fTrue;
-#ifdef CHASM3DX
-	    if (fUseNewFormat) {
-	       create_twig(ptr, file.filename);
-	    }
-#endif
 	 }
 	 cached_survey = back_ptr;
 	 cached_station = ptr;
@@ -457,8 +431,17 @@ read_string(char **pstr, int *plen)
    nextch();
 }
 
+static int lastday[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+
+extern int
+last_day(int year, int month)
+{
+    SVX_ASSERT(month >= 1 && month <= 12);
+    return (month == 2 && is_leap_year(year)) ? 29 : lastday[month - 1];
+}
+
 extern void
-read_date(void)
+read_date(int *py, int *pm, int *pd)
 {
    int y = 0, m = 0, d = 0;
    filepos fp;
@@ -467,12 +450,32 @@ read_date(void)
 
    get_pos(&fp);
    y = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+   /* Two digit year is 19xx. */
+   if (y < 100) y += 1900;
+   if (y < 1970 || y > 2037) {
+      compile_error_skip(/*Invalid year (< 1970 or > 2037)*/58);
+      LONGJMP(file.jbSkipLine);
+      return; /* for brain-fried compilers */
+   }
    if (ch == '.') {
       nextch();
       m = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+      if (m < 1 || m > 12) {
+	 compile_error_skip(/*Invalid month*/86);
+	 LONGJMP(file.jbSkipLine);
+	 return; /* for brain-fried compilers */
+      }
       if (ch == '.') {
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+	 if (d < 1 || d > last_day(y, m)) {
+	    compile_error_skip(/*Invalid day of the month*/87);
+	    LONGJMP(file.jbSkipLine);
+	    return; /* for brain-fried compilers */
+	 }
       }
    }
+   if (py) *py = y;
+   if (pm) *pm = m;
+   if (pd) *pd = d;
 }

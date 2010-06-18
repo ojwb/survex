@@ -1,3 +1,101 @@
+survex (1.1.13-1) unstable; urgency=low
+
+  [Olly Betts]
+  * New upstream release.
+  * Drop "www." from Homepage, as that's canonical now.
+  * Use vim-addon-manager to manage the Survex vim syntax highlighting mode.
+  * debian/watch: Update to look on the right download page.
+  * debian/copyright: Update to list all copyright holders.
+
+ -- Olly Betts <olly@survex.com>  Wed, 16 Jun 2010 03:01:57 +0000
+
+survex (1.0.39.1-4) unstable; urgency=low
+
+  [Olly Betts]
+  * debian/control:
+    + Drop dependency on dpkg-dev entirely as it's build-essential.
+    + "wxWindows" -> "wxWidgets" in description.
+    + survex-svxedit: Move ${misc:Depends} from Recommends to Depends.
+  * debian/rules: "dh_clean -k" -> "dh_prep".
+
+ -- Olly Betts <olly@survex.com>  Sun, 16 May 2010 12:11:18 +0000
+
+survex (1.0.39.1-3) unstable; urgency=low
+
+  [Olly Betts]
+  * Add myself as co-maintainer with consent of maintainer.
+  * ACK NMU.  (Closes: #515392)
+    + debian/rules: Force $DISPLAY to be empty rather than disabling the
+      testsuite as the NMU did.
+  * Upgrade from debhelper compat level 4 to 7.
+  * debian/control:
+    + Add ${misc:Depends} for survex-svxedit.
+    + Standards-Version: 3.8.4.
+    + Remove version requirement from dpkg-dev build dependency as even etch
+      had a new enough version.
+  * Use latest config.sub and config.guess from autotools-dev.
+    (Closes: #567630)
+  * debian/rules:
+    + Support nocheck and parallel=<n> in DEB_BUILD_OPTIONS.
+    + Remove calls to dh_desktop (now deprecated and a no-op).
+  * debian/source/format: "3.0 (quilt)"
+  * debian/survex-aven.desktop,debian/survex-svxedit.desktop: Remove deprecated
+    "Encoding: UTF-8"; remove deprecated category "Application".
+
+ -- Olly Betts <olly@survex.com>  Sat, 15 May 2010 22:46:04 +0000
+
+survex (1.0.39.1-2.2) unstable; urgency=low
+
+  [Jari Aalto]
+  * Non-maintainer upload.
+  * debian/control
+    - (Build-Depends): update obsolete x-dev to x11proto-core-dev.
+      (important RC bug; Closes: #515392).
+  * debian/rules
+    - (build-stamp): Check that DISPLAY is set before running tests.
+
+ -- Jari Aalto <jari.aalto@cante.net>  Wed, 31 Mar 2010 07:16:32 +0300
+
+survex (1.0.39.1-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Fix FTBFS due to unquoted configure arguments.  (Closes: #476026)
+  * Change doc-base section to Science/Geoscience to fix a Lintian warning.
+
+ -- James Vega <jamessan@debian.org>  Wed, 30 Apr 2008 23:12:41 -0400
+
+survex (1.0.39.1-2) unstable; urgency=low
+
+  * Patch to use wx2.6 as 2.4 has been removed from Debian (closes: bug#462031)
+  * Add note that vim addons no longer automatically included (closes: bug#464822)
+  * Fix Lintian issues
+
+ -- wookey <wookey@survex.com>  Wed, 20 Feb 2008 03:30:25 +0000
+
+survex (1.0.39.1-1) unstable; urgency=low
+
+  * Upload with version number that sorts higher than the hppa binNMU,
+    to actually fix the uninstallable on hppa problem
+  * Add .desktop files: (closes: bug#403870)
+
+ -- Wookey <wookey@survex.com>  Thu, 28 Dec 2006 13:45:09 +0000
+
+survex (1.0.39-1) unstable; urgency=high
+
+  * "urgency=high" because survex-aven is currently uninstallable on hppa
+    after a binNMU (which is an RC bug).  The other changes are very safe too.
+  * debian/control: Make binNMU safe.
+  * debian/control: Lowercase first letter of description for survex package
+    as recommended by "best packaging practices".
+  * debian/copyright.in,debian/copyright: Fix failed automatic substitution
+    of copyright statements.
+  * debian/control: "Standards-Version: 3.7.2" - no changes required.
+  * debian/doc-base: Use valid "Apps/Science" section, not invalid "math";
+    Use document ID "survex-manual" rather than the overly generic "manual"
+    since the document ID is supposed to be unique.
+
+ -- Wookey <wookey@survex.com>  Sat, 16 Dec 2006 04:50:47 +0000
+
 survex (1.0.39) unstable; urgency=low
 
   * Updates to French translation from Michel Bovey.  Also updates to German,

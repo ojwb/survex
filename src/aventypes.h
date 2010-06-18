@@ -2,7 +2,7 @@
 //  aventypes.h
 //
 //  Copyright (C) 2001-2002 Mark R. Shinwell.
-//  Copyright (C) 2002, Olly Betts
+//  Copyright (C) 2002,2005 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,12 +16,18 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
 #ifndef aventypes_h
 #define aventypes_h
 
-typedef double Double;
+#ifdef __APPLE__
+#include <OpenGL/glu.h>
+#else
+#include <GL/glu.h>
+#endif
+
+typedef GLdouble Double;
 
 #endif

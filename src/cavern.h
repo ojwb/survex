@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,13 +15,11 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifndef CAVERN_H
 #define CAVERN_H
-
-#define CHASM3DX
 
 /* Using covariances increases the memory required somewhat - may be
  * desirable to disable this for small memory machines */
@@ -79,12 +77,14 @@ extern int fnm_output_base_is_dir;
 
 extern bool fExportUsed;
 
+extern time_t tmUserStart;
+
 /* Types */
 
 typedef enum {
    Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_POS,
    Q_BEARING, Q_BACKBEARING, Q_GRADIENT, Q_BACKGRADIENT, Q_DECLINATION,
-   Q_PLUMB, Q_LEVEL, Q_MAC
+   Q_PLUMB, Q_LEVEL, Q_LEFT, Q_RIGHT, Q_UP, Q_DOWN, Q_MAC
 } q_quantity;
 
 typedef enum {
@@ -132,7 +132,7 @@ typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED,
    /* These values don't need to match img.h, but mustn't clash. */
-   SFLAGS_SOLVED = 13, SFLAGS_SUSPECTTYPO = 14, SFLAGS_SURVEY = 15
+   SFLAGS_SOLVED = 12, SFLAGS_SUSPECTTYPO = 13, SFLAGS_SURVEY = 14, SFLAGS_PREFIX_ENTERED = 15
 } sflags;
 
 /* Mask to AND with to get bits to pass to img library. */
@@ -147,7 +147,7 @@ typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 :
 
 /* enumeration of field types */
 typedef enum {
-   End = 0, Tape, Comp, Clino, BackComp, BackClino,
+   End = 0, Tape, Comp, Clino, BackComp, BackClino, Left, Right, Up, Down,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount,
    /* Up to here are readings are allowed multiple values
     * and have slot in the value[] array in datain.c.
@@ -166,6 +166,7 @@ typedef enum {
     * bitmask for those readings used in commands.c.
     */
    CompassDATComp, CompassDATClino, CompassDATBackComp, CompassDATBackClino,
+   CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
    CompassDATFlags
 } reading;
 /* Tape Comp Clino BackComp BackClino FrDepth ToDepth Dx Dy Dz FrCount ToCount */
@@ -208,10 +209,13 @@ typedef struct Prefix {
     * also suspecttypo and survey */
    unsigned short sflags;
    short shape;
-#ifdef CHASM3DX
-   struct Twig *twig_link;
-#endif
 } prefix;
+
+/* survey metadata */
+typedef struct Meta_data {
+    size_t ref_count;
+    time_t date1, date2;
+} meta_data;
 
 /* stuff stored for both forward & reverse legs */
 typedef struct {
@@ -244,6 +248,7 @@ typedef struct Link {
    linkcommon l;
    delta d; /* Delta */
    svar v; /* Variances */
+   meta_data *meta;
 } linkfor;
 
 /* node - like a station, except several nodes are used to represent a
@@ -262,9 +267,6 @@ typedef struct Pos {
 #if EXPLICIT_FIXED_FLAG
    unsigned char fFixed; /* flag indicating if station is a fixed point */
 #endif
-#ifdef CHASM3DX
-   INT32_T id;
-#endif
 } pos;
 
 /*
@@ -278,11 +280,13 @@ typedef struct Inst {
 #define STYLE_DIVING     1
 #define STYLE_CARTESIAN  2
 #define STYLE_CYLPOLAR   3
-#define STYLE_NOSURVEY   4
-#define STYLE_IGNORE     5
+#define STYLE_PASSAGE    4
+#define STYLE_NOSURVEY   5
+#define STYLE_IGNORE     6
 
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {
+   struct Settings *next;
    unsigned int Truncate;
    bool f_clino_percent;
    bool f_backclino_percent;
@@ -299,7 +303,7 @@ typedef struct Settings {
    reading *ordering;
    int begin_lineno; /* 0 means no block started in this file */
    int flags;
-   struct Settings *next;
+   meta_data * meta;
 } settings;
 
 /* global variables */
@@ -323,7 +327,7 @@ extern real min[3], max[3];
 extern prefix *pfxHi[3], *pfxLo[3];
 extern bool fQuiet; /* just show brief summary + errors */
 extern bool fMute; /* just show errors */
-extern bool fSuppress; /* only output 3d(3dx) file */
+extern bool fSuppress; /* only output 3d file */
 
 /* macros */
 
@@ -375,13 +379,26 @@ extern bool fSuppress; /* only output 3d(3dx) file */
 typedef struct nosurveylink {
    node *fr, *to;
    int flags;
+   meta_data *meta;
    struct nosurveylink *next;
 } nosurveylink;
 
 extern nosurveylink *nosurveyhead;
 
-#ifdef CHASM3DX
-#include "new3dout.h"
-#endif
+typedef struct lrud {
+    struct lrud * next;
+    prefix *stn;
+    meta_data *meta;
+    real l, r, u, d;
+} lrud;
+
+typedef struct lrudlist {
+    lrud * tube;
+    struct lrudlist * next;
+} lrudlist;
+
+extern lrudlist * model;
+
+extern lrud ** next_lrud;
 
 #endif /* CAVERN_H */

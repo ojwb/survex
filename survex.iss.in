@@ -2,33 +2,70 @@
 [Setup]
 AppName=@PRETTYPACKAGE@
 AppVerName=@PRETTYPACKAGE@ @VERSION@
-DefaultDirName={pf}\@PRETTYPACKAGE@
+DefaultDirName={pf32}\@PRETTYPACKAGE@
 DefaultGroupName=@PRETTYPACKAGE@
 OutputBaseFilename=@PACKAGE@-win32-@VERSION@
+; FIXME translate this!
+;AppComments=Survex Cave Surveying Software
 AppPublisher=The Survex Project
 AppPublisherURL=http://www.survex.com/
 AppVersion=@VERSION@
+VersionInfoTextVersion=@VERSION@
+VersionInfoVersion=@VERSION@
 ChangesAssociations=yes
 LicenseFile=COPYING.txt
 Uninstallable=yes
-AppCopyright=@COPYRIGHT_MSG_ASCII@
-; WizardImageFile=survey.bmp
+AppCopyright=@COPYRIGHT_MSG@
+;WizardImageFile=survey.bmp
+;WizardSmallImageFile=??? (up to 55x58)
+LZMANumFastBytes=273
 SolidCompression=yes
 MinVersion=4,4
+; Only show the "choose language" dialog if there isn't an exact match for
+; the UI language the user has set.
 ShowLanguageDialog=auto
+;SetupIconFile=FIXME ; file in installation source directory
+;UninstallDisplayIcon=FIXME
+;AppReadmeFile=FIXME
+;AppSupportURL=FIXME
+;AppUpdatesURL=FIXME
+AppContact=olly@survex.com
+; Install file timestamps correctly!
+TimeStampsInUTC=yes
+; FIXME: check this...
+; PrivilegesRequired=lowest
+; SignedUninstaller ???
+; If upgrading, default to the language selected last time.
+UsePreviousLanguage=yes
+DisableWelcomePage=yes
 
 [Languages]
-Name: "en"; MessagesFile: "compiler:Default.isl"
+; Official translations:
+; Basque.isl
 Name: "ca"; MessagesFile: "compiler:Languages/Catalan.isl"
 Name: "cs"; MessagesFile: "compiler:Languages/Czech.isl"
-;Name: "nl"; MessagesFile: "compiler:Languages/Dutch.isl"
-Name: "fr"; MessagesFile: "compiler:Languages/French.isl"
+;Name: "da"; MessagesFile: "compiler:Languages/Danish.isl"
 Name: "de"; MessagesFile: "compiler:Languages/German.isl"
-;Name: "no"; MessagesFile: "compiler:Languages/Norwegian.isl"
+Name: "en"; MessagesFile: "compiler:Default.isl"
+; Unofficial:
+Name: "en_gb"; MessagesFile: "English_GB.isl"
+Name: "es"; MessagesFile: "compiler:Languages/Spanish.isl"
+Name: "fr"; MessagesFile: "compiler:Languages/French.isl"
+;Name: "fi"; MessagesFile: "compiler:Languages/Finnish.isl"
+;Name: "he"; MessagesFile: "compiler:Languages/Hebrew.isl"
+;Name: "hu"; MessagesFile: "compiler:Languages/Hungarian.isl"
+Name: "it"; MessagesFile: "compiler:Languages/Italian.isl"
+;Name: "ja"; MessagesFile: "compiler:Languages/Japanese.isl
+;Name: "nb"; MessagesFile: "compiler:Languages/Norwegian.isl"
+;Name: "nl"; MessagesFile: "compiler:Languages/Dutch.isl"
 ;Name: "pl"; MessagesFile: "compiler:Languages/Polish.isl"
-Name: "pt"; MessagesFile: "compiler:Languages/PortugueseStd.isl"
+Name: "pt"; MessagesFile: "compiler:Languages/Portuguese.isl"
+Name: "pt_br"; MessagesFile: "compiler:Languages/BrazilianPortuguese.isl"
+; Unofficial:
+Name: "ro"; MessagesFile: "Romanian-7-5.1.11.isl"
 ;Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
-;Name: "??"; MessagesFile: "compiler:Languages/Slovenian.isl"
+Name: "sk"; MessagesFile: "compiler:Languages/Slovak.isl"
+;Name: "sl"; MessagesFile: "compiler:Languages/Slovenian.isl"
 
 [Dirs]
 Name: "{app}\manual"
@@ -38,115 +75,118 @@ Name: "{app}\icons"
 Source: "*.exe"; DestDir: "{app}"
 ; mingwm10.dll only needed if we use threads
 ;Source: "*.dll"; DestDir: "{app}"
-Source: "*.bit"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.tcl"; DestDir: "{app}"
+Source: "*.txf"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\icons"
 Source: "*.ini"; DestDir: "{app}"
 Source: "*.msg"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
 Source: "manual\*.*"; DestDir: "{app}\manual"
-; NB keep these lines in step with Makefile.am
-Source: "cs\wxstd.mo"; DestDir: "{app}\cs"
-Source: "de\wxstd.mo"; DestDir: "{app}\de"
-Source: "es\wxstd.mo"; DestDir: "{app}\es"
-Source: "fr\wxstd.mo"; DestDir: "{app}\fr"
-Source: "it\wxstd.mo"; DestDir: "{app}\it"
+; Generate iss file for including the wxstd.mo files
+#include "i18nfiles.iss"
+
+; FIXME This should be translated (think there's a standard custommessage)
+;[Run]
+;Filename: "{app}\aven.exe"; Description: "Launch aven"; Flags: postinstall nowait skipifsilent unchecked
 
 [Icons]
 Name: "{group}\SvxEdit"; Filename: "{app}\editwrap.exe"; Comment: "Enter survey data"
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
-Name: "{group}\Uninstall Survex"; Filename: "{uninstallexe}"
+Name: "{group}\{cm:UninstallProgram,@PRETTYPACKAGE@}"; Filename: "{uninstallexe}"
 
 [Registry]
 ; Support for loading Compass Plot files
-Root: HKCU; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"
-Root: HKCU; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"
-Root: HKCU; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"
-Root: HKCU; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
-Root: HKCU; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
-; Support for loading CMAP XYZ files
-Root: HKCU; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"
-Root: HKCU; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"
-;Root: HKCU; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
-Root: HKCU; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
-;
-Root: HKCU; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey
-Root: HKCU; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey
-Root: HKCU; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue
-Root: HKCU; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-; and now the administrator versions - same as above but "HKCR" and "noerror":
+Root: HKCU; Subkey: "Software\Classes\.plt"; ValueType: string; ValueData: "CompassPlotFile"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.plf"; ValueType: string; ValueData: "CompassPlotFile"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+; Support for loading CMAP XYZ files; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+;Root: HKCU; Subkey: "Software\Classes\CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+;; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\.log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open"; ValueType: none; Flags: deletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process"; ValueType: none; Flags: deletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+
+; And now the administrator/power user versions - same as above but "HKCR" and
+; without the "Software\Classes\" prefix which is implicit above.
+
 ; Support for loading Compass Plot files
-Root: HKCR; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"; Flags: noerror
-Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"; Flags: noerror
-Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Flags: noerror
-Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: noerror
-Root: HKCR; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey noerror
-; Support for loading CMAP XYZ files
-Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Flags: noerror
-Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Flags: noerror
-;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Flags: noerror
-Root: HKCR; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey noerror
-;
-Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey
-Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey
-Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\printwin.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue noerror
-Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue noerror
+Root: HKCR; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+; Support for loading CMAP XYZ files; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+;; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn

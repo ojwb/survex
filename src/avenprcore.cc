@@ -1,6 +1,6 @@
-/* avenprcore.c
+/* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 /* FIXME provide more explanation when reporting errors in print.ini */
@@ -52,9 +52,9 @@
 layout::layout(wxPageSetupDialogData* data)
 	: Labels(false), Crosses(false), Shots(true), Surface(false),
 	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
-	  title(NULL), datestamp(NULL), Scale(0), rot(0), tilt(0),
+	  title(), datestamp(), Scale(0), rot(0), tilt(0),
 	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
-	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer(NULL)
+	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer()
 {
     // Create a temporary wxPrinterDC/wxPostScriptDC so we can get access to
     // the size of the printable area in mm to allow us to calculate how many
@@ -118,13 +118,6 @@ static void setting_bad_value(const char *v, const char *p)
 {
    fatalerror(/*Parameter `%s' has invalid value `%s' in printer configuration file*/82,
 	      v, p);
-}
-
-char *
-as_string(const char *v, char *p)
-{
-   if (!p) setting_missing(v);
-   return p;
 }
 
 int
@@ -212,95 +205,6 @@ as_colour(const char *v, char *p)
    if (val == 0xffffffff) setting_bad_value(v, p);
    osfree(p);
    return val;
-}
-
-int
-as_bool(const char *v, char *p)
-{
-   return as_int(v, p, 0, 1);
-}
-
-double
-as_double(const char *v, char *p, double min_val, double max_val)
-{
-   double val;
-   char *pEnd;
-   if (!p) setting_missing(v);
-   val = strtod(p, &pEnd);
-   if (pEnd == p || val < min_val || val > max_val)
-      setting_bad_value(v, p);
-   osfree(p);
-   return val;
-}
-
-/*
-Codes:
-\\ -> '\'
-\xXX -> char with hex value XX
-\0, \n, \r, \t -> nul (0), newline (10), return (13), tab (9)
-\[ -> Esc (27)
-\? -> delete (127)
-\A - \Z -> (1) to (26)
-*/
-
-/* Takes a string, converts escape sequences in situ, and returns length
- * of result (needed since converted string may contain '\0' */
-int
-as_escstring(const char *v, char *s)
-{
-   char *p, *q;
-   char c;
-   int pass;
-   static const char *escFr = "[nrt?0"; /* 0 is last so maps to the implicit \0 */
-   static const char *escTo = "\x1b\n\r\t\?";
-   bool fSyntax = fFalse;
-   if (!s) setting_missing(v);
-   for (pass = 0; pass <= 1; pass++) {
-      p = q = s;
-      while (*p) {
-	 c = *p++;
-	 if (c == '\\') {
-	    c = *p++;
-	    switch (c) {
-	     case '\\': /* literal "\" */
-	       break;
-	     case 'x': /* hex digits */
-	       if (isxdigit((unsigned char)*p) &&
-		   isxdigit((unsigned char)p[1])) {
-		  if (pass) c = (CHAR2HEX(*p) << 4) | CHAR2HEX(p[1]);
-		  p += 2;
-		  break;
-	       }
-	       /* \x not followed by 2 hex digits */
-	       /* !!! FALLS THROUGH !!! */
-	     case '\0': /* trailing \ is meaningless */
-	       fSyntax = 1;
-	       break;
-	     default:
-	       if (pass) {
-		  const char *t = strchr(escFr, c);
-		  if (t) {
-		     c = escTo[t - escFr];
-		     break;
-		  }
-		  /* \<capital letter> -> Ctrl-<letter> */
-		  if (isupper((unsigned char)c)) {
-		     c -= '@';
-		     break;
-		  }
-		  /* otherwise don't do anything to c (?) */
-		  break;
-	       }
-	    }
-	 }
-	 if (pass) *q++ = c;
-      }
-      if (fSyntax) {
-	 SVX_ASSERT(pass == 0);
-	 setting_bad_value(v, s);
-      }
-   }
-   return (q - s);
 }
 
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)

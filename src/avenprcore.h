@@ -15,13 +15,14 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifndef survex_included_avenprcore_h
 #define survex_included_avenprcore_h
 
 #include "img.h"
+#include <wx.h>
 
 extern bool fBlankPage;
 
@@ -58,8 +59,8 @@ public:
     bool Border;
     bool Cutlines;
     bool Raw;
-    char *title;
-    char *datestamp;
+    wxString title;
+    wxString datestamp;
     double Scale;
     int rot, tilt;
     enum {PLAN, ELEV, TILT, EXTELEV} view;
@@ -70,7 +71,7 @@ public:
     double PaperWidth, PaperDepth;
     int pagesX, pagesY, pages;
     double xOrg, yOrg;
-    const char* footer;
+    wxString footer;
 
     layout(wxPageSetupDialogData* data);
 #if 0

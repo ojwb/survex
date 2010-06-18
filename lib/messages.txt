@@ -545,6 +545,7 @@ es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
 sk: 38 Nedostato&ccaron;n&aacute; pam&auml;&tcaron; %.0s
 ro: 38 Memorie insuficienta %.0s
+#
 en: 39 Unknown instrument `%s'
 fr: 39 Instrument `%s' inconnu
 de: 39 Unbekanntes Instrument `%s'
@@ -658,7 +659,7 @@ es: 49 Utilizaci&oacute;n
 it: 49 Utilizzo
 sk: 49 Pou&zcaron;itie
 ro: 49 Folosire
-#
+# %s is a placeholder for the name of the station
 en: 50 Survey leg with same station (`%s') at both ends - typing error?
 en-us: 50 Survey shot with same station (`%s') at both ends - typing error?
 fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques (`%s') - erreur de frappe?
@@ -670,6 +671,7 @@ es: 50 Tirada con la misma estaci&oacute;n en ambas puntas (`%s') - error de tra
 it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione (`%s') - Errore di trascrizione?
 sk: 50 Z&aacute;mera s t&yacute;m ist&yacute;m bodom (`%s') na oboch koncoch - preklep?
 ro: 50 Masuratoare cu acelasi punct (`%s') la ambele capete - eroare de transcriere?
+#
 en: 51 Clino reading over 90 degrees (absolute value)
 en-us: 51 Clino over 90 degrees (absolute value)
 fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
@@ -754,16 +756,15 @@ es: 57 *EXPORT debe seguir inmediatamente a *BEGIN <TOPOGRAF&Iacute;A>'
 it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 sk: 57 *EXPORT mus&iacute; bezprostredne nasledova&tcaron; `*BEGIN <SURVEY>'
 ro: 57 *EXPORT trebuie sa urmeze dupa `*BEGIN <TOPOGRAFIE>'
-# cf 162
-en: 58 "Plot what (n=station names, c=crosses, l=legs, s=surface) (default &quot;%s&quot;)&#10;: "
-fr: 58 "Que dessiner (n=noms de station, c=croix, l=segments, s=surface) (defaut &quot;%s&quot;)&#10;: "
-de: 58 "Was plotten? (n=Stationsnamen, c=Kreuze, l=Strecken, s=Oberfl&auml;che) (Default &quot;%s&quot;)&#10;: "
-pt,pt-br: 58 "O qu&ecirc; plotar? (n=nomes de bases, c=marcas de bases, l=visadas, s=superf&iacute;cie) (default &quot;%s&quot;)&#10;:"
-ca: 58 "Que s'ha de plotejar? (n=noms d'estaci&oacute;, c=creus, l=tirades, s=superf&iacute;cie) (per defecte &quot;%s&quot;)&#10;: "
-es: 58 "Que hay que plotear? (n=nombres de estaci&oacute;n, c=cruces, l=tiradas, s=superf&iacute;cie) (por defecto &quot;%s&quot;)&#10;: "
-it: 58 "Disegna cosa (n=nomi delle stazioni, c=croci, l=battute, s=superficie) (default &quot;%s&quot;)&#10;: "
-sk: 58 "&Ccaron;o vykresli&tcaron;? (n=men&aacute; bodov, c=kr&iacute;&zcaron;iky, l=z&aacute;mery, s=povrch) (defaultne &quot;%s&quot;)&#10;: "
-ro: 58 "Ce se deseneaza? (n=numele punctelor de statie, c=intersectii, l=segmentele topografiei, s=suprafata) (default &quot;%s&quot;)&#10;: "
+# 58 different in 1.0
+en: 58 Invalid year (< 1970 or > 2037)
+fr: 58 Ann&eacute;e invalide (< 1970 ou > 2037)
+de: 58 Ung&uuml;ltiges Jahr (< 1970 oder > 2037)
+ca: 58 Any inv&agrave;lid (< 1970 &oacute; > 2037)
+es: 58 A&ntilde;o inv&aacute;lido (< 1970 &oacute; > 2037)
+it: 58 Anno non valido (<1970 o >2037)
+sk: 58 Neplatn&yacute; rok (< 1970 alebo > 2037)
+ro: 58 An gresit (< 1970 or > 2037)
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte
@@ -1004,28 +1005,25 @@ es: 79 Distancia ajustada negativa
 it: 79 Distanza corretta negativa
 sk: 79 Z&aacute;porn&aacute; nastaven&aacute; vzdialenos&tcaron;
 ro: 79 Distanta corectata negativ
+# different in 1.0
+en: 80 Date is in the future!
+fr: 80 La date est dans le futur!
+de: 80 Datum liegt in der Zukunft!
+ca: 80 La data &eacute;s en el futur!
+es: 80 La fecha es en el futuro!
+it: 80 La data &eacute; nel futuro!
+sk: 80 D&aacute;tum je v bud&uacute;cnosti!
+ro: 80 Data se gaseste in viitor!
+# different in 1.0
+en: 81 End of date range is before the start
+fr: 81 La date de fin est ant&eacute;rieure &agrave; celle de d&eacute;but
+de: 81 Das Enddatum ist fr&uuml;her als das Anfangsdatum
+ca: 81 La data final &eacute;s anterior a la inicial
+es: 81 La fecha final es anterior a la incial
+it: 81 La data finale &eacute; anteriore a quella finale
+sk: 81 Posledn&yacute; d&aacute;tum je pred prv&yacute;m
+ro: 81 Data finala este anterioara datei de inceput
 #
-en: 80 Bad scale `%s' (expecting e.g. `1:500', `500', or `0.002')
-fr: 80 Echelle incorrecte `%s' (syntaxes correctes: `1:500', `500', ou `0.002')
-de: 80 Ma&szlig;stab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
-# (no de-de entry here!)
-de-ch: 80 Massstab `%s' ist fehlerhaft (z.B. `1:500', `500' oder `0.002' erwartet)
-pt,pt-br: 80 Escala com problemas: `%s' (esperando algo como `1:500', `500' ou `0.002')
-ca: 80 Escala err&ograve;nia `%s' (esperant per ex. `1:500', `500', o `0.002')
-es: 80 Escala err&oacute;nea `%s' (esperando por ej. `1:500', `500', o `0.002')
-it: 80 Scala errata `%s' (valori di esempio `1:500', `500', or `0.002')
-sk: 80 Nespr&aacute;vne mer&iacute;tko `%s' (predpoklad&aacute; sa napr.: `1:500', `500', alebo `0.002')
-ro: 80 Scara gresita `%s' (asteptam de ex. `1:500', `500', or `0.002')
-#
-en: 81 Error initialising graphics card
-fr: 81 Erreur &agrave; l'initialisation de la carte graphique
-de: 81 Fehler bei der Initialisierung der Graphikkarte
-pt: 81 Erro inicializando placa de v&iacute;deo
-ca: 81 Error a l'inicialitzar la placa gr&agrave;fica
-es: 81 Error al inicializar la placa gr&aacute;fica
-it: 81 Errore d'inizializzazione della scheda grafica
-sk: 81 Chyba pri inicializ&aacute;cii grafickej karty
-ro: 81 Eroare la initializarea placii video
 en: 82 Parameter `%s' has invalid value `%s' in printer configuration file
 fr: 82 Le param&egrave;tre `%s' a une valeur incorrecte `%s' dans le fichier de configuration de l'imprimante
 de: 82 Parameter `%s' hat ung&uuml;ltigen Wert `%s' in der Druckerkonfigurationsdatei
@@ -1035,19 +1033,11 @@ es: 82 Par&aacute;metros `%s' tienen un valor incorrecto `%s' en el archivo de c
 it: 82 Parametro `%s' ha un valore `%s' non valido nel file di configurazione della stampante
 sk: 82 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne m&aacute; nespr&aacute;vnu hodnotu `%s'
 ro: 82 Parametrul `%s' are valoarea incorecta `%s' in fisierul de configurare a imprimantei
-#
-en: 83 Scale to fit on 1 page
-fr: 83 Mettre &agrave; l'&eacute;chelle pour tenir en 1 page
-# somewhat clumsily, but anything else would require a subordinate
-# clause and become much longer:
-de-ch: 83   Massstab f&uuml;r Zeichnung auf 1 Seite
-de: 83 Ma&szlig;stab f&uuml;r Zeichnung auf 1 Seite
-pt: 83 Escala para caber em uma p&aacute;gina
-ca: 83 Escala per a encaixar en 1 p&agrave;gina
-es: 83 Escala para encajar en 1 p&aacute;gina
-it: 83 Scala per rientrare in una pagina
-sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku
-ro: 83 Redimensionata pentru a incapea pe 1 pagina
+# e.g. the user specify a passage cross-section at station "entrance.27", but
+# there is no station "entrance.27" in the centre-line.
+en: 83 Cross section specified at non-existent station `%s'
+ca: 83 S'ha especificat una secci&oacute; transversal a l'estaci&oacute; inexistent `%s'
+es: 83 Se ha especificado una secci&oacute;n transversal en la estaci&oacute;n inexistente `%s'
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
 en: 84 CLINO and BACKCLINO readings must be of the same type
@@ -1070,30 +1060,25 @@ es: 85 Par&aacute;metros `%s' faltan en el archivo de configuraci&oacute;n de la
 it: 85 Il parametro `%s' manca nel file di configurazione della stampante
 sk: 85 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne ch&yacute;ba
 ro: 85 Parametrul `%s' lipseste din fisierul de configurare a imprimantei
+# 86, 87 different in 1.0
+en: 86 Invalid month
+fr: 86 Mois invalide
+de: 86 Ung&uuml;ltiger Monat
+ca: 86 Mes inv&agrave;lid
+es: 86 Mes inv&aacute;lido
+it: 86 Mese non valido
+sk: 86 Nespr&aacute;vny mesiac
+ro: 86 Luna incorecta
+# e.g. 31st of April, or 32nd of any month
+en: 87 Invalid day of the month
+fr: 87 Jour du mois invalide
+de: 87 Ung&uuml;ltiger Monatstag
+ca: 87 El dia del mes &eacute;s inv&agrave;lid
+es: 87 El dia del mes es inv&aacute;lido
+it: 87 Giorno del mese non valido
+sk: 87 Tento de&ncaron; v tomto mesiaci neexistuje
+ro: 87 Zi incorecta
 #
-en: 86 No data in 3d Image file
-fr: 86 Pas de donn&eacute;es dans le fichier image 3d
-de: 86 Keine Daten in der 3D-Bilddatei
-pt: 86 N&atilde;o h&aacute; dados no arquivo de imagem 3d
-ca: 86 No hi ha dades al fitxer d'imatge 3d
-es: 86 No hay datos en el archivo de imagen 3d
-it: 86 Nessun dato nel file immagine 3d
-sk: 86 V 3D-obrazovom s&uacute;bore nie s&uacute; &uacute;daje
-ro: 86 Lipsesc datele din fisierul de imagine 3d
-en: 87 Error writing printer output
-fr: 87 Erreur &agrave; l'&eacute;criture du fichier &agrave; imprimer
-# no we aren't printing yet, _because_ we couldn't even finish writing the
-# file that was to be printed
-# OL: not necessarily the case, as it might go wrong during printout
-# GN(3): ok reverting to previous version here
-de: 87 Fehler beim Schreiben oder Drucken der Ausgabedatei
-#germ: 87 Fehler beim Schreiben der Drucker-Ausgabedatei
-pt: 87 Erro ao imprimir
-ca: 87 Error a l'escriure la sortida a impresora
-es: 87 Error al escribir la salida a impresora
-it: 87 Errore nella scrittura del file per la stampa
-sk: 87 Chyba pri z&aacute;pise na tla&ccaron;iare&ncaron;
-ro: 87 Eroare in scrierea fisierului pentru imprimare
 en: 88 Error in format of font file `%s'
 fr: 88 Erreur dans le format du fichier de fontes `%s'
 de: 88 Formatfehler in der Zeichensatzdatei `%s'
@@ -1579,6 +1564,7 @@ it:132 Sviluppo spaziale = %7.2fm (%7.2fm corretto)
 #ital:132 Lunghezza totale dei tiri = %7.2fm (%7.2fm corretto)
 sk:132 Celkov&aacute; d&lacute;&zcaron;ka z&aacute;mer = %7.2fm (%7.2fm nastaven&eacute;)
 ro:132 Lungimea totala a masuratorilor topografiei = %7.2fm (%7.2fm ajustat)
+#
 en:133 Total plan length of survey legs = %7.2fm
 en-us:133 Total plan length of survey shots = %7.2fm
 fr:133 Longueur totale en projection horizontale = %7.2fm
@@ -1702,7 +1688,7 @@ es:144 Hecho.
 it:144 Fatto.
 sk:144 Hotovo.
 ro:144 Gata.
-# zh from wxWindows
+# zh from wxWidgets
 #zh:144 &#23436;&#25104;&#12290;
 en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
 en-us:145 "Original length%7.2fm (%3d shots), moved%7.2fm (%5.2fm/shot). "
@@ -2301,7 +2287,17 @@ sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 #  Messages for Aven
-# 1.1 only: 201
+# In the "File" menu (see 220 onwards)
+# TRANSLATE pt
+en:201 @Screenshot...
+fr:201 @Copie d'&eacute;cran...
+de:201 Bildschirm@abzug...
+ca:201 @Captura de pantalla...
+es:201 @Captura de pantalla...
+pt:201 S@creenshot...
+it:201 @Cattura schermo...
+sk:201 @Sn&iacute;mok obrazovky...
+ro:201 @Captura ecran...
 #
 en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier image 3d `%s'
@@ -2458,8 +2454,16 @@ es:215 A@yuda
 it:215 @Aiuto
 sk:215 @Help
 ro:215 @Ajutor
-#
-# 1.1 only: 216
+# c.f. 377
+en:216 @Presentation
+de:216 @Pr&auml;sentation
+fr:216 @Pr&eacute;sentation
+pt:216 A@presenta&ccedil;&atilde;o
+ca:216 @Presentaci&oacute;
+es:216 @Presentaci&oacute;n
+it:216 @Presentazione
+sk:216 Pre@zent&aacute;cia
+ro:216 @Prezentare
 # XXX 217 218
 #
 en:219 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.
@@ -2581,33 +2585,26 @@ es:229 Archivos de terreno
 it:229 File di modelli digitali del suolo
 sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
-#
-# The accelerators must be different within this group
-en:230 @Start Rotation
-fr:230 @D&eacute;marre la rotation
-de:230 @Rotation starten
-pt,pt-br:230 Iniciar @Rota&ccedil;&atilde;o
-ca:230 @Comen&ccedil;a la Rotaci&oacute;
-es:230 @Empieza la Rotaci&oacute;n
-it:230 @Avvia la rotazione
-sk:230 @Za&ccaron;a&tcaron; rot&aacute;ciu
-ro:230 @Porneste Rotatia
-#
-en:231 S@top Rotation##Space
-fr:231 @Arr&ecirc;te la rotation##Space
-de:231 Rotation an@halten##Space
-pt,pt-br:231 @Parar Rota&ccedil;&atilde;o##Space
-ca:231 @Atura la rotaci&oacute;##Space
-es:231 @Detiene la rotaci&oacute;n##Space
-it:231 @Ferma la rotazione##Space
-sk:231 @Ukon&ccaron;i&tcaron; rot&aacute;ciu##Space
-ro:231 @Opreste rotatia##Space
+# Used in the "Export" settings dialog
+# 230 Different in 1.0
+en:230 &amp;Export...
+# "Rotation" menu.  The accelerators must be different within this group.
+# 231 Different in 1.0
+# Tickable menu item which toggles auto rotation
+en:231 Au@to-Rotate##Space
+fr:231 Rotation @Automatique##Space
+de:231 Auto@matisch rotieren##Space
+ca:231 @Auto-Rotar##Space
+es:231 @Auto-Rotar##Space
+it:231 @Auto-Rotazione##Space
+sk:231 @Autorot&aacute;cia##Space
+ro:231 @Auto-rotatie##Space
 #
 en:232 Speed @Up
 fr:232 A@cc&eacute;l&egrave;re
 de:232 @Schneller
 pt,pt-br:232 @Aumentar Velocidade
-ca:232 Acce@lera la rotaci&oacute;
+ca:232 A@ccelera la rotaci&oacute;
 es:232 A@ccelera la rotaci&oacute;n
 it:232 A@ccelera la rotazione
 sk:232 Z@r&yacute;chli&tcaron; rot&aacute;ciu
@@ -2655,7 +2652,39 @@ es:236 Un paso en el senido @horario
 it:236 Un passo @Orario
 sk:236 Jeden krok po smere ot&aacute;&ccaron;a@nia hod&iacute;n
 ro:236 Un pas in sens o@rar
-# 1.1 only: 237 238 239
+# End of rotation menu.
+#
+# TRANSLATE pt
+en:237 @Perspective
+fr:237 Pe@rspective
+de:237 @Perspektive
+ca:237 Perspecti@va
+es:237 Perspecti@va
+pt:237 Pe@rspective
+it:237 Prospetti@va
+sk:237 Perspekt&iacute;v@a
+ro:237 Perspecti@va
+#
+en:238 Textured @Walls
+fr:238 Te@xture des parois
+de:238 @Wandtextur
+ca:238 Parets amb te@xtura
+es:238 Paredes con te@xtura
+it:238 Pareti con te@xture
+sk:238 @Texturovan&eacute; steny
+ro:238 Pereti cu te@xtura
+#
+# Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+# instead if it gives a better translation which most users will understand.
+en:239 Fade Distant Ob@jects
+en-us:239 @Fade Distant Objects
+fr:239 Rendre @floue les objets lointains
+de:239 D@unsteffekt
+ca:239 @Aten&uacute;a els objectes llunyans
+es:239 @Desvanece los objetos lejanos
+it:239 Sbiadisce g@li oggetti distanti
+sk:239 Hm@list&yacute; opar
+ro:239 @Obiecte indepartate neclare
 #
 # The accelerators must be different within this group
 # View *looking* North
@@ -2814,22 +2843,21 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-# TRANSLATE fr pt pt-br sk
+# TRANSLATE pt pt-br
 # "Restore Default Settings" -> "Restore Default View"
 en:254 Restore De@fault View
 en-us:254 Restore Defaul@t View
-# "la vues" seems grammatically incorrect - check...
-fr:254 @Restaurer la vues par d&eacute;faut
+fr:254 @Restaurer la vue par d&eacute;faut
 de:254 @Zur&uuml;ck zur voreingestellten Ansicht
 pt:254 @Usar valores pr&eacute;-definidos
 pt-br:254 @Restaurar padr&otilde;es
 ca:254 Restablei@x la vista per defecte
 es:254 Restaurar la @vista predeterminada
 it:254 Ripristina la @vista predefinita
-sk:254 Znov@u na v&yacute;chodzie hodnoty
+sk:254 @Obnovenie v&yacute;chodzieho poh&lcaron;adu
 ro:254 @Restabiliti setarile initiale
 # Used in print dialog to label the box around the tilt and pan angles
-# TRANSLATE pt pt-br sk check reused message makes sense
+# TRANSLATE pt pt-br check reused message makes sense
 # in this context
 # cf 213
 en:255 View
@@ -2851,9 +2879,10 @@ de:256 Elemente
 ca:256 Elements
 es:256 Elementos
 it:256 Elementi
+sk:256 Objekty
 ro:256 Elemente
 # cf 170
-# TRANSLATE pt pt-br sk check adapted message is ok
+# TRANSLATE pt pt-br check adapted message is ok
 en:257 %d pages (%dx%d)
 fr:257 %d pages (%dx%d)
 de:257 %d Seiten (%dx%d)
@@ -2866,7 +2895,7 @@ ro:257 %d pagini (%dx%d)
 # used in the scale drop down selector in the print dialog
 # the implicit meaning is "choose a suitable scale to fit the
 # plot on a single page", but we need something shorter
-# TRANSLATE pt sk check adapted translation
+# TRANSLATE pt check adapted translation
 en:258 One page
 fr:258 Une page
 de:258 Eine Seite
@@ -2877,7 +2906,7 @@ it:258 Una Pagina
 sk:258 Jednu Str&aacute;nku
 ro:258 O Pagina
 # cf 159
-# TRANSLATE pt pt-br sk check adapted message is ok
+# TRANSLATE pt pt-br check adapted message is ok
 en:259 Bearing
 fr:259 Azimut
 de:259 Richtung
@@ -2928,6 +2957,7 @@ de:263 Neigung
 ca:263 Angle d'inclinaci&oacute;
 es:263 Angulo de inclinaci&oacute;n
 it:263 Angolo di inclinazione
+sk:263 N&aacute;klon
 ro:263 Unghi de inclinatie
 # used in the print dialog - controls drawing lines around each page
 en:264 Page Borders
@@ -2936,6 +2966,7 @@ de:264 Seitenrahmen
 ca:264 Marcs de la p&agrave;gina
 es:264 Marcos de la p&aacute;gina
 it:264 Bordi pagina
+sk:264 R&aacute;m&ccaron;ek
 ro:264 Limite pagina
 # used in the print dialog - controls drawing the box at the lower left
 # with survey name, view angles, etc
@@ -2945,6 +2976,7 @@ de:265 Legende
 ca:265 Requadre d'informaci&oacute;
 es:265 Cajet&iacute;n de informaci&oacute;n
 it:265 Riquadro informazioni
+sk:265 Popiska
 ro:265 Caseta de informatii
 # will be used in the print dialog - check this to print blank pages
 # (otherwise they'll be skipped to save paper)
@@ -2954,6 +2986,7 @@ de:266 Leerseiten
 ca:266 P&agrave;gines en blanc
 es:266 P&aacute;ginas en blanco
 it:266 Pagine bianche
+sk:266 Pr&aacute;zdne str&aacute;nky
 ro:266 Document nou
 # XXX 267-269
 # The accelerators must be different within this group
@@ -3067,7 +3100,11 @@ it:281 @Cancella la linea di misura##Escape
 sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 ro:281 @Anulati linia de masura##Escape
 #ro: to find a better way to express that
-# XXX 282 283 284 285 286 287 288 289
+# XXX 282 283 284 285 286 287 288
+# TRANSLATE fr pt ca es it ro
+en:289 Colour by E@rror
+fr,pt,ca,es,it,ro:289 Colour b@y Error
+sk:289 Colour @by Error
 #
 # The accelerators must be different within this group
 # c.f. 205
@@ -3084,38 +3121,37 @@ ro:290 @Despre...
 #
 en:291 @Surface Survey Legs##Ctrl+F
 en-us:291 @Surface Shots##Ctrl+F
-fr:291 Segments de topo en Sur@face##Ctrl+F
+fr:291 Segments de topo en S@urface##Ctrl+F
 de-de,de-ch:291 Messz&uuml;ge Oberfl&auml;c@he##Ctrl+F
 de:    291 Me&szlig;z&uuml;ge Oberfl&auml;c@he##Ctrl+F
 pt,pt-br:291 Visadas de Super@f&iacute;cie##Ctrl+F
 ca:291 Tirades de topograf&iacute;a de super@f&iacute;cie##Ctrl+F
-es:291 Tiradas de topografia de super@ficie##Ctrl+F
+es:291 Tiradas de t@opografia de superficie##Ctrl+F
 it:291 Battute topografia di Super@ficie##Ctrl+F
 sk:291 Z&aacute;mery @na povrchu##Ctrl+F
 ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
 #
-en:292 @Altitude Colouring on Surface Surveys
-en-us:292 @Altitude Coloring on Surface Surveys
-fr:292 Couleur par altit@ude pour les topos de surface
-de:292 H&ouml;hen-F@arben auf Oberfl&auml;chendarstellungen
-pt:292 C@olorir Topos de Superf&iacute;cie por Eleva&ccedil;&atilde;o
-ca:292 Colors per @Altitud en topograf&iacute;a de superf&iacute;cie
-es:292 Colores por @Altitud en topografia de superficie
-it:292 Rappresentazione delle @Quote mediante colori
-sk:292 Fare@bnos&tcaron; pod&lcaron;a v&yacute;&scaron;ky pre povrchov&eacute; z&aacute;mery
-ro:292 Coloreaza in functie de @altitudine Topografia de Suprafata
+# NB 292 is a different message in 1.0!
+en:292 Colour by @Depth
+fr:292 Couleur par @profondeur
+de:292 Farbe je nach @Tiefe
+ca:292 Color per @Profunditat
+es:292 Colorear por @Profundidad
+it:292 Colori secondo @profondit&aacute;
+sk:292 Farba pod&lcaron;a @h&lacute;bky
+ro:292 Culori in functie de @adancime
 #
-en:293 @Dashed Surface Surveys
-fr:293 Topos de surface @Hachur&eacute;es
-de-de,de-ch:293 Gestrichelte @Oberfl&auml;chenmessz&uuml;ge
-de:          293 Gestrichelte @Oberfl&auml;chenme&szlig;z&uuml;ge
-pt:293 Topografias de Superf&iacute;cie @Tracejadas
-ca:293 T@opograf&iacute;a de superf&iacute;cie amb tra&ccedil; discontinuat
-es:293 T@opografias de superficie con trazo discont&iacute;nuo
-it:293 Superficie topografica @Tratteggiata
-sk:293 &Ccaron;i@arkovan&eacute; povrchov&eacute; z&aacute;mery
-ro:293 @Topografia de suprafata reprezentata prin linii punctate
+# NB 293 is a different message in 1.0!
+en:293 Colour by D@ate
+fr:293 Couleur par @date
+de:293 Farbe je nach @Datum
+ca:293 Color per @Data
+es:293 Colorear por @Fecha
+it:293 Coloure per @Data
+sk:293 Farna pod&lcaron;a @d&aacute;tumu
+ro:293 Culori in functie de @Data
 #
+# 294-296 c.f. 351-353
 en:294 Highlight @Entrances
 fr:294 Mise en valeur des @entr&eacute;es
 de:294 @Eing&auml;nge hervorheben
@@ -3139,10 +3175,10 @@ ro:295 Marcheaza Punctele @Fixe
 #
 en:296 Highlight E@xported Points
 fr:296 Mise de valeur des points exp@ort&eacute;s
-de:296 E@xportierte Punkte hervorheben
+de:296 Exp@ortierte Punkte hervorheben
 pt:296 Destacar Bases Ex@portadas
 ca:296 Marca els Punts Expo@rtats
-es:296 Marca los Puntos E@xportados
+es:296 M@arca los Puntos Exportados
 it:296 Marca i punti @Esportati
 sk:296 Zv&yacute;razni&tcaron; e@xportovan&eacute; body
 ro:296 Marcheaza Punctele @Exportate
@@ -3294,8 +3330,81 @@ es:310 %s: opci&oacute;n inv&aacute;lida -- %c&#10;
 it:310 %s: opzione non valida -- %c&#10;
 sk:310 %s: nespr&aacute;vna mo&zcaron;nos&tcaron; -- %c&#10;
 ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
+# "Presentation" menu: 311-317
+# c.f. 216, 377 which translate "Presentation"
+en:311 @New Presentation
+fr:311 @Nouvelle Pr&eacute;sentation
+de:311 @Neue Pr&auml;sentation
+ca:311 @Nova Presentaci&oacute;
+es:311 @Nueva Presentaci&oacute;n
+it:311 @Nuova PResentazione
+sk:311 @Nov&aacute; prezent&aacute;cia
+ro:311 Prezentare @noua
 #
-# Used in 1.1: 311-318
+en:312 @Open Presentation...
+fr:312 @Ouvrir une Pr&eacute;sentation...
+de:312 @Pr&auml;sentation &ouml;ffnen...
+pt:312 @Abrir Apresenta&ccedil;&atilde;o...
+ca:312 @Obrir Presentaci&oacute;...
+es:312 @Abrir Presentaci&oacute;n...
+it:312 @Apri Presentazione...
+sk:312 @Otvori&tcaron; prezent&aacute;ciu...
+ro:312 @Deschidere prezentare...
+#
+en:313 @Save Presentation
+fr:313 @Sauver la Pr&eacute;sentation
+de:313 Pr&auml;sentation @speichern
+ca:313 @Desa la Presentaci&oacute;
+es:313 @Guardar la Presentaci&oacute;
+it:313 @Salva Presentazione
+sk:313 @Ulo&zcaron; prezent&aacute;ciu
+ro:313 @Salvare Prezentare
+#
+en:314 Sa@ve Presentation As...
+fr:314 Sau@ver la Pr&eacute;sentation sous...
+de:314 Pr&auml;sentation speichern @als...
+ca:314 Desa la Presentaci&oacute; @Com...
+es:314 Guardar la Presentaci&oacute; @Como...
+it:314 Salva Presentazione @come...
+sk:314 Ulo&zcaron; prezent&aacute;ciu a@ko...
+ro:314 Salvare Prezentare @ca...
+# "Mark" as in "Mark this position"
+en:315 @Mark
+fr:315 @Marquer
+de:315 @Markieren
+ca:315 @Marca
+es:315 @Marca
+it:315 Se@gna
+sk:315 @Zv&yacute;razni
+ro:315 @Marcheaza
+# "Play" as in "Play back a recording"
+en:316 Pla@y
+fr:316 @Lecture
+de:316 Abspie@len
+ca:316 @Reprodueix
+es:316 @Reproduce
+it:316 @Visualizza
+sk:316 @Prehra&tcaron;
+ro:316 @Vizualizeaza
+#
+en:317 @Export as Movie...
+fr:317 @Exporter comme Animation...
+# "als Animation" could also be used here.
+de:317 @Exportieren als Film...
+ca:317 @Exporta com Animaci&oacute;...
+es:317 @Exporta como Animaci&oacute;n...
+it:317 @Esporta come Animazione...
+sk:317 @Vyexportuj ako film...
+ro:317 @Exporta ca Animatie...
+#
+en:318 @Bounding Box##Ctrl+B
+fr:318 @Bordures du cadre##Ctrl+B
+de:318 @Begrenzendes Rechteck##Ctrl+B
+ca:318 @L&iacute;mits del Quadre##Ctrl+B
+es:318 @Bordes del Cuadro##Ctrl+B
+it:318 B@ordo riquadro##Ctrl+B
+sk:318 @Ohrani&ccaron;enie##Ctrl+B
+ro:318 Cadr@u##Ctrl+B
 #
 en:319 Select an output filename
 fr:319 S&eacute;lection d'un nom de fichier de sortie
@@ -3309,7 +3418,44 @@ ro:319 Selectati un fisier pentru iesire
 #ro: still to check!
 #
 #
-# Used in 1.1: 320 321 322 323
+en:320 Aven presentations
+fr:320 Pr&eacute;sentations Aven
+de:320 Aven Pr&auml;sentationen
+pt:320 Apresenta&ccedil;&otilde;es Aven
+ca:320 Presentacions Aven
+es:320 Presentaciones Aven
+it:320 Presentazione Aven
+sk:320 Prezent&aacute;cie programu Aven
+ro:320 Prezentare Aven
+# title of the save screenshot dialog
+# c.f. 201
+en:321 Save Screenshot
+fr:321 Sauver la copie d'&eacute;cran
+de:321 Bildschirmabzug speichern
+ca:321 Desa la captura de pantalla
+es:321 Guardar la captura de pantalla
+it:321 Salva Schermo catturato
+sk:321 Ulo&zcaron;i&tcaron; otla&ccaron;ok obrazovky
+ro:321 Salvare captura de ecran
+#
+en:322 Select a presentation to open
+fr:322 Slectionner une pr&eacute;sentation &agrave; ouvrir
+de:322 Zu &ouml;ffnende Pr&auml;sentation ausw&auml;hlen
+pt:322 Escolha uma apresenta&ccedil;&atilde;o para abrir
+ca:322 Selecciona una presentaci&oacute; per obrir
+es:322 Selecciona una presentaci&oacute;n para abrir
+it:322 Seleziona una presentazione da aprire
+sk:322 Vybra&tcaron; prezent&aacute;ciu pre otvorenie
+ro:322 Deschidere prezentare
+# cf 88
+en:323 Error in format of presentation file `%s'
+fr:323 Erreur de formatage du fichier de pr&eacute;sentation `%s'
+de:323 Formatfehler in der Pr&auml;sentationsdatei `%s'
+ca:323 Error en el format del fitxer de presentaci&oacute; `%s'
+es:323 Error en el formato del archivo de presentaci&oacute;n `%s' 
+it:323 Errore nel formato del file di presentazione `%s'
+sk:323 Chyba vo form&aacute;te prezenta&ccaron;n&eacute;ho s&uacute;boru `%s'
+ro:323 Eroare in formatul fisierului prezentare `%s'
 # "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
 # be translated
 en:324 Compass PLT files
@@ -3318,6 +3464,7 @@ de:324 Compass PLT Datei
 ca:324 Fitxers Compass PLT
 es:324 Archivos Compass PLT
 it:324 File Compass PLT
+sk:324 S&uacute;bory Compass PLT
 ro:324 Fisier Compass PLT
 # "CMAP" is Bob Thrun's cave surveying package.
 en:325 CMAP XYZ files
@@ -3326,8 +3473,27 @@ de:325 CAMP XYZ Datei
 ca:325 Fitxers CMAP XYZ
 es:325 Archivos CMAP XYZ
 it:325 File CMAP XYZ
+sk:325 S&uacute;bory CMAP XYZ  
 ro:325 Fisier CMAP XYZ
-# Used in 1.1: 326 327
+# title of message box
+en:326 Modified Presentation
+fr:326 Pr&eacute;sentation modifi&eacute;e
+de:326 Modifizierte Pr&auml;sentation
+ca:326 Presentaci&oacute; Modificada
+es:326 Presentaci&oacute;n Modificada
+it:326 Presentazione Modificata
+sk:326 Upraven&aacute; prezent&aacute;cia
+ro:326 Prezentare Modificata
+# and the question in that box
+en:327 The current presentation has been modified.  Abandon unsaved changes?
+fr:327 La pr&eacute;sentation en cours a &eacute;t&eacute; modifi&eacute;e. Perte des changements non sauv&eacute;s?
+de:327 Die aktuelle Pr&auml;sentation wurde ver&auml;ndert. Abbrechen, ohne die &Auml;nderungen zu speichern?
+ca:327 La presentaci&oacute; actual ha estat modificada. Abandonar els canvis no desats?
+es:327 La presentaci&oacute;n actual ha sido modificada. Abandonar los cambios no guardados?
+it:327 La presentazione corrente &eacute; stata modificata. Abbandonare i cambiamenti non salvati?
+sk:327 Prezent&aacute;cia bola zmenen&aacute;. Nechcete rad&scaron;ej uo&zcaron;i&tcaron; zmeny?
+ro:327 Prezentarea curenta a fost modificata. Se abandoneaza schimbarile nesalvate?
+#
 en:328 No matches were found.
 fr:328 Recherche infructueuse.
 de:328 Kein Treffer gefunden.
@@ -3337,8 +3503,26 @@ es:328 B&uacute;squeda infroctuosa.
 it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
 ro:328 Nici un element nua fost gasit.
-#
-# allocated but unused in 1.1: 329 330
+# UNUSED
+en:329 Open @Terrain...
+fr:329 Ouverture d'un @Terrain...
+de:329 Gel&auml;nde@modell &ouml;ffnen...
+pt:329 Abrir @Terreno...
+ca:329 Obrir @Terreny...
+es:329 Abrir @Terreno...
+it:329 Apri Modello Digitale @Terrestre...
+sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu...
+ro:329 Deschidere @Model Teren...
+# UNUSED
+en:330 Solid Su@rface
+fr:330 Surface S@olide
+de:330 @Durchgezogene Oberfl&auml;che
+pt:330 Superf&iacute;cie S&oacute;@lida
+ca:330 Superf&iacute;cie S&ograve;li@da
+es:330 Superficie S&oacute;li@da
+it:330 Superficie S@olida
+sk:330 Neprie@h&lcaron;adn&yacute; povrch
+ro:330 Suprafata S@olida
 # number of stations found matching search
 en:331 %d found
 fr:331 %d trouv&eacute;e(s)
@@ -3413,20 +3597,20 @@ sk:337 @Postrann&yacute; panel
 ro:337 @Cadran lateral
 #ro: still to check
 # show coordinates (N = North or Northing, E = East or Easting)
-en:338 "  %d E, %d N"
-fr:338 "  %d E, %d N"
-#alternatively de:338 "  %d O, %d N", but H/R is consistent with headings in pos files
-de:338 "  %d H, %d R"
-pt:338 "  %d L, %d N"
-ca:338 "  %d E, %d N"
-es:338 "  %d E, %d N"
-it:338 "  %d E, %d N"
-sk:338 "  %d V, %d S"
-ro:338 "  %d E, %d N"
+en:338 "%.2f E, %.2f N"
+fr:338 "%.2f E, %.2f N"
+#alternatively de:338 "%.2f O, %.2f N", but H/R is consistent with headings in pos files
+de:338 "%.2f H, %.2f R"
+pt:338 "%.2f L, %.2f N"
+ca:338 "%.2f E, %.2f N"
+es:338 "%.2f E, %.2f N"
+it:338 "%.2f E, %.2f N"
+sk:338 "%.2f V, %.2f S"
+ro:338 "%.2f E, %.2f N"
 # Used in Aven:
 #  From <stationname>
-#  H: 123m V: 234m
-#  Dist: 456m  Brg: 200
+#  H: 123.45m V: 234.56m
+#  Dist: 456.78m  Brg: 200
 en:339 From %s
 fr:339 Depuis %s
 de:339 Von %s aus
@@ -3437,25 +3621,25 @@ it:339 Da %s
 sk:339 Od %s
 ro:339 De la %s
 #
-en:340 "  H %d%s, V %d%s"
-fr:340 "  H %d%s, V %d%s"
-de:340 "  H %d%s, V %d%s"
-pt:340 "  H %d%s, V %d%s"
-ca:340 "  H %d%s, V %d%s"
-es:340 "  H %d%s, V %d%s"
-it:340 "  O %d%s, V %d%s"
-sk:340 "  V %d%s, &Scaron; %d%s"
-ro:340 "  H %d%s, V %d%s"
+en:340 "H %.2f%s, V %.2f%s"
+fr:340 "H %.2f%s, V %.2f%s"
+de:340 "H %.2f%s, V %.2f%s"
+pt:340 "H %.2f%s, V %.2f%s"
+ca:340 "H %.2f%s, V %.2f%s"
+es:340 "H %.2f%s, V %.2f%s"
+it:340 "O %.2f%s, V %.2f%s"
+sk:340 "V %.2f%s, &Scaron; %.2f%s"
+ro:340 "H %.2f%s, V %.2f%s"
 #
-en:341 "  Dist %d%s, Brg %03d%s"
-fr:341 "  Dist %d%s, Azim %03d%s"
-de:341 "  Dist %d%s, Richt. %03d%s"
-pt:341 "  Dist %d%s, Azim %03d%s"
-ca:341 "  Dist %d%s, Azim %03d%s"
-es:341 "  Dist %d%s, Azim %03d%s"
-it:341 "  Dist %d%s, Azm. %03d%s"
-sk:341 "  Vzd %d%s, Azim %03d%s"
-ro:341 "  Dist %d%s, Azim %03d%s"
+en:341 "%s: %s, Dist %.2f%s, Brg %03d%s"
+fr:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+de:341 "%s: %s, Dist %.2f%s, Richt. %03d%s"
+pt:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+ca:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+es:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
+it:341 "%s: %s, Dist %.2f%s, Azm. %03d%s"
+sk:341 "%s: %s, Vzd %.2f%s, Azim %03d%s"
+ro:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
 # tickable menu item in View menu
 en:342 @Metric
 fr:342 @M&eacute;trique
@@ -3501,6 +3685,330 @@ it:345 g.cent.
 sk:345 gr&aacute;dy
 ro:345 gr.cent
 #ro: 345 grade centezimale
+#
+# Toggles drawing of 3D passages
+# TRANSLATE de
+en:346 Passage @Tubes##Ctrl+T
+fr:346 Galeries @Tubulaires##Ctrl+T
+de:346 Passage Tubes (@y)##Ctrl+T
+ca:346 Galeries Tu@bulars##Ctrl+T
+es:346 @Galerias Tubulares##Ctrl+T
+it:346 Passaggi come @Tubi##Ctrl+T
+sk:346 Chodby @r&uacute;rovit&eacute;##Ctrl+T
+ro:346 Pasaje @Tub##Ctrl+T
+#
+en:347 @Preferences...
+fr:347 @Pr&eacute;f&eacute;rences...
+de:347 @Einstellungen...
+ca:347 @Prefer&egrave;ncies...
+es:347 @Preferencias...
+it:347 @Preferenze...
+sk:347 @Predvo&lcaron;by...
+ro:347 @Preferinte...
+#
+en:348 Draw passage walls
+fr:348 D&eacute;ssiner les parois
+de:348 W&auml;nde einzeichnen
+ca:348 Dibuixa les parets
+es:348 Dibuja las paredes
+it:348 Disegna le pareti
+sk:348 Vykresli&tcaron; steny priestorov
+ro:348 Deseneaza peretii
+#
+en:349 Estimate LRUD readings based on heuristics
+fr:349 Estimation heuristique des dimensions de galerie
+de:349 LROU-Werte heuristisch sch&auml;tzen
+ca:349 Estimaci&oacute; heur&iacute;stica de les dades LRUD
+es:349 Estimaci&oacute;n heur&iacute;stica de los datos LRUD
+it:349 Stima lel letture DSSS con ragionamento euristico
+sk:349 Odhadnut&eacute; rozmery rezu na z&aacute;klade heuristiky
+ro:349 Estimeaza masuratorile SDSJ pe baze euristice 
+#
+en:350 Mark survey stations with crosses
+fr:350 Marquer les stations par une croix
+de-de,de-ch:350 Messpunkte durch Kreuze markieren
+de:    350 Me&szlig;punkte durch Kreuze markieren
+ca:350 Marcar les estacions topogr&agrave;fiques amb creus
+es:350 Marcar las estaciones topogr&aacute;ficas con cruces
+it:350 Segna le stazioni con croci
+sk:350 Vyzna&ccaron;i&tcaron; mera&ccaron;sk&eacute; body kr&iacute;&zcaron;ikmi
+ro:350 Marcheaza punctele de statie cu cruci
+#
+en:351 Highlight stations marked as entrances
+fr:351 Montrer les entr&eacute;es
+de:351 Punkte an den Eing&auml;ngen hervorheben
+ca:351 Ressaltar les estacions marcades com entrades
+es:351 Destacar las estaciones marcadas como entradas
+it:351 Evidenzia le stazioni segnate come ingressi
+sk:351 Zv&yacute;razni&tcaron; body ozna&ccaron;en&eacute; ako vchody
+ro:351 Evidentiaza punctele de statie selectate ca intrari
+#
+en:352 Highlight stations marked as fixed points
+fr:352 Montrer les points fixes
+de:352 Festpunkte hervorheben
+ca:352 Ressaltar les estacions marcades com punts fixes
+es:352 Destacar las estaciones marcadas como puntos fijos
+it:352 Evidenzia le stazioni segnate come punti fissi
+sk:352 Zv&yacute;razni&tcaron; body ozna&ccaron;en&eacute; ako fixn&eacute; body
+ro:352 Evidentiaza punctele de statie selectate ca puncte fixe
+#
+en:353 Highlight stations which are exported
+fr:353 Montrer les stations export&eacute;es
+de:353 Exportierte Punkte hervorheben
+ca:353 Ressaltar les estacions exportades
+es:353 Destacar las estaciones exportadas
+it:353 Evidenzia le stazioni che sono esportate
+sk:353 Zv&yacute;razni&tcaron; vyexportovan&eacute; body
+ro:353 Evidentiaza punctele de statie care sunt exportate
+#
+en:354 Mark survey stations with their names
+fr:354 Afficher les stations par leurs noms
+de-de,de-ch:354 Messpunkte mit ihren Namen beschriften
+de:354     Me&szlig;punkte mit ihren Namen beschriften
+ca:354 Marcar les estacions topogr&agrave;fiques amb els seus noms
+es:354 Marcar las estaciones topogr&aacute;ficas con sus nombres
+it:354 Segna le stazioni con i loro nomi
+sk:354 Doplni&tcaron; body ich n&aacute;zvami
+ro:354 Marcheaza punctele de statie cu numele lor
+#
+en:355 Allow names to overlap on the display (faster)
+fr:355 Permettre aux noms de se recouvrir (affichage plus rapide)
+de:355 &Uuml;berlappende Beschriftungen zulassen (schneller)
+ca:355 Permet que els noms es sobreposin (m&eacute;s r&agrave;pid)
+es:355 Permitir que los nombres se sobrepongan (m&aacute;s r&aacute;pido)
+it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
+sk:355 Povoli&tcaron; prekr&yacute;vanie n&aacute;zvov na obrazovke (r&yacute;chlej&scaron;ie)
+ro:355 Permite suprapunerea numelor (mai rapid)
+#
+#
+# TRANSLATE pt
+en:356 Full Screen @Mode##F11
+fr:356 @Mode Plein Ecran##F11
+de:356 @Vollbild-Modus##F11
+ca:356 @Mode Pantalla Sencera##F11
+es:356 @Modo Pantalla Completa##F11
+pt:356 Full S@creen Mode##F11
+it:356 @Modo schermo pieno##F11
+sk:356 @Celoobrazovkov&yacute; re&zcaron;im##F11
+ro:356 Afisare pe tot ecranu@l##F11
+#
+en:357 Display underground survey legs
+fr:357 Afficher les vis&eacute;es sous-terraines
+de:357 Strecken unter Grund anzeigen
+ca:357 Mostra les tirades subterr&agrave;nies
+es:357 Muestra las tiradas subterr&aacute;neas
+it:357 Mostra i tiri del rilievo sotteraneo
+sk:357 Zobrazi&tcaron; podzemn&eacute; z&aacute;mery
+ro:357 Afisare masuratori subterane
+#
+en:358 Display surface survey legs
+fr:358 Afficher les vis&eacute;es de surface
+de:358 Oberfl&auml;chenstrecken anzeigen
+ca:358 Mostra les tirades de superf&iacute:cie
+es:358 Muestra las tiradas de superficie
+it:358 Mostra i tiri del rilievo di superficie
+sk:358 Zobrazi&tcaron; povrchov&eacute; z&aacute;mery
+ro:358 Afisare masuratori de suprafata
+#
+en:359 Colour surface surveys by depth
+fr:359 Couleur de la topo de surface en fonction de l'altitude
+de:359 Oberfl&auml;chenvermessung nach H&ouml;he einf&auml;rben
+ca:359 Coloreja les tirades de superf&iacute:cie segons profunditat
+es:359 Colorea las tiradas de superficie seg&uacute;n profundidad
+it:359 Colora i rilievi superficiali per la profondit&aacute;
+sk:359 Zafarbi&tcaron; povrchov&eacute; z&aacute;mery pod&lcaron;a v&yacute;&scaron;ky
+ro:359 Colorare masuratori suprafata in functie de altitudine
+#
+en:360 Draw surface legs with dashed lines
+fr:360 Repr&eacute;senter les vis&eacute;es de surfaces par des pointill&eacute;s
+de:360 Oberfl&auml;chenstrecken gestrichelt zeichnen
+ca:360 Dibuixa les tirades de superf&iacute:cie amb l&iacute;nies puntejades
+es:360 Dibuja las tiradas de superficie con l&iacute;neas punteadas
+it:360 Disegna i tiri in superficie con linee tratteggiate
+sk:360 Zobrazi&tcaron; povrchov&eacute; z&aacute;mery &ccaron;iarkovano
+ro:360 Deseneaza masuratorile de suprafata cu linie intrerupta
+#
+en:361 Draw a grid
+fr:361 Afficher une grille
+de:361 Gitter einzeichnen
+ca:361 Dibuixa una quadr&iacute;cula
+es:361 Dibuja una cuadr&iacute;cula
+it:361 Disegna una griglia
+sk:361 Zobrazi&tcaron; sie&tcaron;
+ro:361 Afiseaza un grid
+#
+en:362 metric units
+fr:362 m&egrave;tres
+de:362 Meter
+ca:362 unitats en sistema m&egrave;tric
+es:362 unidades en sistema m&eacute;trico
+it:362 metri
+sk:362 metrick&yacute;ch jednotk&aacute;ch
+ro:362 Metri
+#
+en:363 imperial units
+fr:363 mesures anglaises
+de:363 englische Einheiten
+ca:363 unitats en sistema imperial
+es:363 unidades en sistema imperial
+it:363 unit&aacute; inglesi
+sk:363 anglosask&yacute;ch jednotk&aacute;ch
+ro:363 unitati masura englezesti
+# 364-365 c.f. 343-345
+en:364 degrees (&deg;)
+fr:364 degr&eacute;s (&deg;)
+de:364 Altgrad (&deg;)
+ca:364 graus (&deg;)
+es:364 grados (&deg;)
+it:364 gradi sessagesimali (&deg;)
+sk:364 stup&ncaron;och (&deg;)
+ro:364 grade sexagesimale (&deg;)
+#
+en:365 grads
+fr:365 grades
+de:365 Neugrad (gon)
+ca:365 graus centesimals
+es:365 grados centesimales
+it:365 gradi decimali
+sk:365 gr&aacute;doch
+ro:365 grade zecimale
+#
+en:366 Display measurements in
+fr:366 Afficher les distances en
+de:366 L&auml;ngen anzeigen in
+ca:366 Mostra les dist&agrave;ncies en
+es:366 Muestra las distancias en
+it:366 Mostra le distanze in
+sk:366 Zobrazi&tcaron; d&lacute;&zcaron;ky v 
+ro:366 Afisare distante in
+#
+en:367 Display angles in
+fr:367 Afficher les angles en
+de:367 Winkel anzeigen in
+ca:367 Mostra els angles en
+es:367 Muestra los &aacute;ngulos en
+it:367 Mostra gli angoli in
+sk:367 Zobrazi&tcaron; uhly v 
+ro:367 Afisare unghiuri in
+# reverses the sense of the mouse controls
+en:368 Reverse the sense of the controls
+fr:368 Inverser le sens des contr&ocirc;les
+ca:368 Inverteix el sentit dels controls
+es:368 Invierte el sentido de los controles
+it:368 Inverte il senso dei controlli
+sk:368 Obr&aacute;ti&tcaron; zmysel kontroly
+ro:368 Schimba sensul butoanelor de control
+# cf 277
+en:369 Display scale bar
+fr:369 Afficher l'&eacute;chelle
+de:369 Ma&szlig;stab anzeigen
+de-ch:369 Massstab anzeigen
+ca:369 Mostra l'escala gr&agrave;fica
+es:369 Muestra la escala gr&aacute;fica
+it:369 Mostra la scala
+sk:369 Zobrazi&tcaron; mierku
+ro:369 Afiseaza scara
+# cf 276
+en:370 Display depth bar
+fr:370 Afficher la barre de profondeur
+de:370 Tiefenskala anzeigen
+ca:370 Mostra l'escala de profunditat
+es:370 Muestra la escala de profundidad
+it:370 Mostra barra delle profondit&aacute;
+sk:370 Zobrazi&tcaron; h&lacute;bkov&uacute; &scaron;k&aacute;lu
+ro:370 Afiseaza scara de adancime
+# cf 274
+en:371 Display compass
+fr:371 Afficher la boussole
+de-de,de-ch:371 Kompass anzeigen
+de:         371 Kompa&szlig; anzeigen
+ca:371 Mostra la bru&iacute;xola
+es:371 Muestra la br&uacute;jula
+it:371 Mostra bussola
+sk:371 Zobrazi&tcaron; kompas
+ro:371 Afiseaza busola
+# cf 275
+en:372 Display clinometer
+fr:372 Afficher le clinom&egrave;tre
+de:372 Neigungsmesser anzeigen
+ca:372 Mostra el clin&ograve;metre
+es:372 Muestra el clin&oacute;metro
+it:372 Mostra clinometro
+sk:372 Zobrazi&tcaron; sklon
+ro:372 Afiseaza clinometrul
+# cf 337
+en:373 Display side panel
+fr:373 Afficher le panneau lat&eacute;ral
+de:373 Seitliches Kontrollfeld anzeigen
+ca:373 Mostra el panell lateral
+es:373 Muestra el panel lateral
+it:373 Mostra pannello laterale
+sk:373 Zobrazi&tcaron; bo&ccaron;n&yacute; panel
+ro:373 Afiseaza casuta laterala
+# cf 340, 341
+# TRANSLATE fr de pt it sk ro Check translation adapted from 340,341
+en:374 "%s: H %.2f%s, Brg %03d%s"
+fr:374 "%s: H %.2f%s, Azim %03d%s"
+de:374 "%s: H %.2f%s, Richt. %03d%s"
+pt:374 "%s: H %.2f%s, Azim %03d%s"
+ca:374 "%s: H %.2f%s, Azim %03d%s"
+es:374 "%s: H %.2f%s, Azim %03d%s"
+it:374 "%s: O %.2f%s, Azm. %03d%s"
+sk:374 "%s: V %.2f%s, Azim %03d%s"
+ro:374 "%s: H %.2f%s, Azim %03d%s"
+#
+# cf 340
+# TRANSLATE fr de pt it sk ro Check translation adapted from 340
+en:375 "%s: V %.2f%s"
+fr:375 "%s: V %.2f%s"
+de:375 "%s: V %.2f%s"
+pt:375 "%s: V %.2f%s"
+ca:375 "%s: V %.2f%s"
+es:375 "%s: V %.2f%s"
+it:375 "%s: V %.2f%s"
+sk:375 "%s: &Scaron; %.2f%s"
+ro:375 "%s: V %.2f%s"
+#
+# labels for tabbed side panel
+#
+# this is for the tab with the tree hierarchy of survey station names
+en:376 Surveys
+fr:376 Topographies
+de:376 Vermessung
+ca:376 Topografies
+es:376 Topograf&iacute;as
+it:376 Rilievi
+sk:376 Merania
+ro:376 Masuratori
+# c.f. 216
+en:377 Presentation
+fr:377 Pr&eacute;sentation
+de:377 Pr&auml;sentation
+ca:377 Presentaci&oacute;
+es:377 Presentaci&oacute;n
+it:377 Presentazione
+sk:377 Zobrazenie
+ro:377 Prezentare
+# cf 195
+en:378 Easting
+fr:378 Est
+de:378 Rechtswert
+pt:378 Leste
+ca:378 Est
+es:378 Este
+it:378 Est
+sk:378 v&yacute;chod
+ro:378 Est
+# cf 195
+en:379 Northing
+fr:379 Nord
+de:379 Hochwert
+pt:379 Norte
+ca:379 Nord
+es:379 Norte
+it:379 Nord
+sk:379 sever
+ro:379 Nord
 # cf 400
 en:380 @Print...##Ctrl+P
 fr:380 @Imprimer...##Ctrl+P
@@ -3514,9 +4022,9 @@ ro:380 @Imprimare...##Ctrl+P
 en:381 P@age Setup...
 fr:381 Configurer la @page...
 de:381 @Seite einrichten...
+pt:381 Pa@ge Setup...
 ca:381 Configuraci&oacute; de la @p&agrave;gina...
 es:381 Configuraci&oacute;n de la @p&aacute;gina...
-pt:381 Pa@ge Setup...
 it:381 @Imposta pagina...
 sk:381 @Nastaven&iacute; tisku...
 ro:381 Initializare @pagina...
@@ -3524,25 +4032,33 @@ ro:381 Initializare @pagina...
 en:382 @Export as...
 fr:382 @Exporter sous...
 de:382 @Exportieren als...
+ca:382 @Exporta com...
+es:382 @Exporta como...
 it:382 E@sporta come...
+sk:382 @Export ako...
 ro:382 @Exporta ca...
-# XXX 383 384 385 386 387 388 389
+# Title of the export dialog
+en:383 Export
+# XXX 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
 fr:390 Syst&egrave;me d'information:
 de:390 Systeminformation:
+ca:390 Informaci&oacute; del Sistema:
+es:390 Informaci&oacute;n del Sistema:
 it:390 Informazioni sul Sistema:
-ro:390 Informatii despre Sistem
+sk:390 Inform&aacute;cie o syst&eacute;me:
+ro:390 Informatii despre Sistem:
 # Title of the print preview dialog
-# TRANSLATE ca es sk pt-br check translations culled from elsewhere
+# TRANSLATE pt-br check translations culled from elsewhere
 en:398 Print Preview
 fr:398 Aper&ccedil;u avant impression
 de:398 Druckvorschau
 pt-br:398 Visualizar impress&atilde;o
-ca:398 Imprimeix previsualitzacii&oacute;
-es:398 Previsualizaci&oacute;n de la impresi&oacute;n
+ca:398 Vista pr&egrave;via de la impressi&oacute;
+es:398 Vista previa de la impressi&oacute;n
 it:398 Anteprima di stampa
-sk:398 Ni&aacute;hled tisku
+sk:398 N&aacute;h&lcaron;ad tla&ccaron;e
 ro:398 Vizualizare inaintea imprimarii
 # Title of the print dialog
 en:399 Print
@@ -3597,9 +4113,20 @@ ro:403 &amp;Portiuni de suprafata ale topografiei
 en:404 Invalid regular expression: %s
 fr:404 Expression r&eacute;guli&egrave;re invalide: %s
 de:404 Ung&uuml;ltiger regul&auml;rer Ausdruck: %s
+ca:404 Expressi&oacute; incorrecta: %s
+es:404 Expresi&oacute;n incorrecta: %s
 it:404 Espressione regolare non valida: %s
+sk:404 Nespr&aacute;vny v&yacute;raz: %s
 ro:404 Expresie regulara incorecta: %s
-#
+# %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
+# things in future).
+# TRANSLATE ca es sk (ca/es check addition of "de %s") (sk translate "of %s")
+en:405 This version of %s requires OpenGL to work, but it isn't available
+fr:405 Cette version de %s a besoin d'OpenGL pour fonctionner, mais il n'est pas disponible
+ca:405 Aquesta versi&oacute; de %s requereix OpenGL per funcionar, i no est&agrave; disponible
+es:405 Esta versi&oacute;n de %s requiere OpenGL para funcionar, y no est&aacute; disponible
+it:405 Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili
+sk:405 T&aacute;to verzia (of %s) vy&zcaron;aduje OpenGL. To v&scaron;ak nie je dostupn&eacute;.
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
 fr:500 D&eacute;placement de (%3.2f,%3.2f,%3.2f): %s
@@ -3636,69 +4163,107 @@ ro:502 Eliminat: %s
 # this station, but we didn't find it in the 3d file
 en:510 Failed to find station %s
 fr:510 La station %s n'a pas &eacute;t&eacute; trouv&eacute;e
+ca:510 L'estaci&oacute; %s no s'ha trobat
+es:510 La estaci&oacute;n %s no se ha encontrado
 it:510 La stazione %s non &eacute; stata trovata
+sk:510 Nepodarilo sa n&aacute;js&tcaron; bod %s
 ro:510 Nu s-a gasit punctul de statie %s
 # the user specified breaking a loop or changing extend direction at
 # this leg, but we didn't find it in the 3d file
 en:511 Failed to find leg %s -> %s
 fr:511 Vis&eacute;e %s -> %s non trouv&eacute;
+ca:511 No s'han trobat les tirades %s -> %s
+es:511 No se han encontrado las tiradas %s -> %s
 it:511 Tiro %s -> %s non trovato
+sk:511 Nepodarilo sa n&aacute;js&tcaron; z&aacute;meru %s -> %s
 ro:511 Nu s-a gasit masuratoarea %s -> %s
 # "extend" is starting to produce an extended elevation from station %s
 en:512 Starting from station %s
 fr:512 D&eacute;but &agrave; la station %s
+ca:512 Inici des de l'estaci&oacute; %s
+es:512 Inicio desde la estaci&oacute;n %s
 it:512 Inizio dalla stazione %s
+sk:512 Za&ccaron;a&tcaron; od bodu %s
 ro:512 Incepind cu punctul de statie %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
+#
 en:513 Extending to the left from station %s
-fr:513 Dessin vers la gauche en partant de la station %s
+fr:513 Extension vers la gauche en partant de la station %s
+ca:513 Extenent cap a l'esquerra des de l'estaci&oacute; %s
+es:513 Extendiendo hacia la izquierda desde la estaci&oacute;n %s
 it:513 Sviluppo verso sinistra a partire dalla stazione %s
+sk:513 Rozvinut&yacute; rez v&lcaron;avo od bodu %s
 ro:513 Extindere spre stanga incepind cu punctul de statie %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
+#
 en:514 Extending to the right from station %s
-fr:514 Dession vers la droite en partant de la station %s
+fr:514 Extension vers la droite en partant de la station %s
+ca:514 Extenent cap a la dreta des de l'estaci&oacute; %s
+es:514 Extendiendo hacia la derecha desde la estaci&oacute;n %s
 it:514 Sviluppo verso destra a partire dalla stazione %s
+sk:514 Rozvinut&yacute; rez vpravo od bodu %s 
 ro:514 Extindere spre dreapta incepind cu punctul de statie %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
+#
 en:515 Extending to the left from leg %s -> %s
-fr:515 Dessin vers la gauche en partant de la vis&eacute;e %s -> %s
+fr:515 Extension vers la gauche en partant de la vis&eacute;e %s -> %s
+ca:515 Extenent cap a l'esquerra des de la tirada %s -> %s
+es:515 Extendiendo hacia la izquierda desde la tirada %s -> %s
 it:515 Sviluppo verso sinistra a partire dal tiro %s -> %s
+sk:515 Rozvinut&yacute; rez v&lcaron;avo od z&aacute;mery %s -> %s
 ro:515 Extindere spre stanga incepind cu masuratoarea %s -> %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
+#
 en:516 Extending to the right from leg %s -> %s
-fr:516 Dessin vers la droite en partant de la vis&eacute;e %s -> %s
+fr:516 Extension vers la droite en partant de la vis&eacute;e %s -> %s
+ca:516 Extenent cap a la dreta des de la tirada %s -> %s
+es:516 Extendiendo hacia la derecha desde la tirada %s -> %s
 it:516 Sviluppo verso destra a partire dal tiro %s -> %s
+sk:516 Rozvinut&yacute; rez vpravo od z&aacute;mery %s -> %s 
 ro:516 Extindere spre drepta incepind cu masuratoarea %s -> %s
-# TRANSLATE fr (changed "survey" -> "survey loop")
+#
 en:517 Breaking survey loop at station %s
-fr:517 Arr&ecirc;t de la topo &agrave; la station %s
+fr:517 Coupure de la boucle &agrave; la station %s
+ca:517 Trencant el bucle a l'estaci&oacute; %s
+es:517 Rompiendo el bucle en la estaci&oacute;n %s
 it:517 Topografia interrotta alla stazione %s
+sk:517 Preru&scaron;en&yacute; okruh na bode %s
 ro:517 Topografia intrerupta incepind cu punctul de statie %s 
-# TRANSLATE fr (changed "survey" -> "survey loop")
+#
 en:518 Breaking survey loop at leg %s -> %s
-fr:518 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
+fr:518 Coupure de la boucle &agrave; la vis&eacute;e %s -> %s
+ca:518 Trencant el bucle a la tirada %s -> %s
+es:518 Rompiendo el bucle en la tirada %s -> %s
 it:518 Topografia interrotta al tiro %s -> %s
+sk:518 Preru&scaron;en&yacute; okruh v z&aacute;mere %s -> %s
 ro:518 Topografia intrerupta incepind cu masuratoarea %s -> %s
-# TRANSLATE fr plot -> extend
+#
 en:519 Swapping extend direction from station %s
-fr:519 Change la direction de dessin &agrave; partir de la station %s
+fr:519 Change la direction de la coupe d&eacute;velopp&eacute;e &agrave; partir de la station %s
+ca:519 Canviant la direcci&oacute; de l'al&ccedil;at ext&egrave;s des de l'estaci&oacute; %s
+es:519 Cambiando la direcci&oacute;n del alzado extendido desde la estaci&oacute;n %s
 it:519 Cambia lo sviluppo del disegno a partire dalla stazione %s
+sk:519 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od bodu %s
 ro:519 Schimbare directie desen incepind cu punctul de statie %s
-# TRANSLATE fr plot -> extend
+#
 en:520 Swapping extend direction from leg %s -> %s
-fr:520 Change la direction du dession &agrave; partion de la vis&eacute;e %s -> %s
+fr:520 Change la direction de la coupe d&eacute;velopp&eacute;e &agrave; partir de la vis&eacute;e %s -> %s
+ca:520 Canviant la direcci&oacute; de l'al&ccedil;at ext&egrave;s des de la tirada %s -> %s
+es:520 Cambiando la direcci&oacute;n del alzado extendido desde la tirada %s -> %s
 it:520 Cambia lo sviluppo del disegno a partire dal tiro %s -> %s
+sk:520 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od z&aacute;mery %s -> %s
 ro:520 Schimbare directie desen incepind cu masuratoarea %s -> %s
 #
 en:521 Applying specfile: `%s'
 fr:521 Application du fichier de sp&eacute;cification: `%s'
+ca:521 Aplicant fitxer d'especificacions: `%s'
+es:521 Aplicando fichero de especificaciones: `%s'
 it:521 Applicazione del file di specifiche: `%s'
+sk:521 Pou&zcaron;i&tcaron; nastavenie zo s&uacute;boru: `%s' 
 ro:521 Aplicare fisier de specificatii: `%s'
 # Used to tell the user that a file is being written - %s is the filename
-# TRANSLATE fr adapted message
 en:522 Writing %s...
-fr:522 &Eacute;criture %s...
+fr:522 &Eacute;criture de %s...
+ca:522 Escrivint %s...
+es:522 Escribiendo %s...
 it:522 Scrittura %s...
+sk:522 Zapisuje sa s&uacute;bor %s...
 ro:522 Scriere %s...
 #
 # "don't extract" messages - these are compiled into the programs

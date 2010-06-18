@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -458,6 +458,7 @@ main(int argc, char **argv)
    const char *survey = NULL;
    const char *specfile = NULL;
    img *pimg;
+   int have_xsect = 0;
 
    msg_init(argv);
 
@@ -518,14 +519,16 @@ main(int argc, char **argv)
       case img_BAD:
 	 (void)img_close(pimg);
 	 fatalerror(img_error(), fnm_in);
+	 break;
+      case img_XSECT:
+         have_xsect = 1;
+         break;
       }
    } while (result != img_STOP);
 
    desc = osmalloc(strlen(pimg->title) + 11 + 1);
    strcpy(desc, pimg->title);
    strcat(desc, " (extended)");
-
-   (void)img_close(pimg);
 
    if (specfile) {
       FILE *fs = NULL;
@@ -596,6 +599,21 @@ main(int argc, char **argv)
 
    /* Only does single connected component currently. */
    do_stn(start, 0.0, NULL, ERIGHT, 0);
+
+   if (have_xsect) {
+      img_rewind(pimg);
+      do {
+	 result = img_read_item(pimg, &pt);
+	 if (result == img_XSECT) {
+            pimg_out->u = pimg->u;
+	    pimg_out->d = pimg->d;
+            img_write_item(pimg_out, img_XSECT, pimg->flags, pimg->label, 0, 0, 0);
+	 }
+      } while (result != img_STOP);
+   }
+
+   (void)img_close(pimg);
+
    if (!img_close(pimg_out)) {
       (void)remove(fnm_out);
       fatalerror(img_error(), fnm_out);

@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002 Olly Betts
+/* Copyright (C) 2001,2002,2006 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -106,14 +106,33 @@ main(int argc, char **argv)
 	    printf("MOVE %f %f %f\n", pt.x, pt.y, pt.z);
 	    break;
 	  case img_LINE:
-	    printf("LINE %f %f %f [%s]\n", pt.x, pt.y, pt.z, pimg->label);
+	    printf("LINE %f %f %f [%s]", pt.x, pt.y, pt.z, pimg->label);
+	    if (pimg->flags & img_FLAG_SURFACE) printf(" SURFACE");
+	    if (pimg->flags & img_FLAG_DUPLICATE) printf(" DUPLICATE");
+	    if (pimg->flags & img_FLAG_SPLAY) printf(" SPLAY");
+	    printf("\n");
 	    break;
 	  case img_LABEL:
-	    printf("NODE %f %f %f [%s]\n", pt.x, pt.y, pt.z, pimg->label);
+	    printf("NODE %f %f %f [%s]", pt.x, pt.y, pt.z, pimg->label);
+	    if (pimg->flags & img_SFLAG_SURFACE) printf(" SURFACE");
+	    if (pimg->flags & img_SFLAG_UNDERGROUND) printf(" UNDERGROUND");
+	    if (pimg->flags & img_SFLAG_ENTRANCE) printf(" ENTRANCE");
+	    if (pimg->flags & img_SFLAG_EXPORTED) printf(" EXPORTED");
+	    if (pimg->flags & img_SFLAG_FIXED) printf(" FIXED");
+	    printf("\n");
+	    break;
+	  case img_XSECT:
+	    printf("XSECT %f %f %f %f [%s]\n",
+		   pimg->l, pimg->r, pimg->u, pimg->d, pimg->label);
+	    break;
+	  case img_XSECT_END:
+	    printf("XSECT_END\n");
 	    break;
 	  case img_BAD:
 	    img_close(pimg);
 	    fatalerror(img_error(), fnm);
+	  default:
+	    printf("CODE_0x%02x\n", code);
 	 }
       } while (code != img_STOP);
    } while (fRewind);

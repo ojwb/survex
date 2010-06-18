@@ -34,17 +34,38 @@ you watch, this is just your brain being confused, not a bug!
 <refsect2><Title>Mouse Control</Title>
 
 <Para>
-The best way to move the cave is with the mouse. If you hold down the
-right button then the cave is dragged when you move the mouse. If you
-hold down the left button, then the cave is rotated if you move left
-or right, and zoomed if you move up and down.
-If your mouse has a middle button then you can use it to tilt the cave.
+The best way to move the cave is with the mouse.  We suggest you
+try each of these out after reading this section to get a feel
+for how they work.
+</Para>
+
+<Para>
+If you hold down the right button then the cave is dragged when you move the
+mouse.
+</Para>
+
+<Para>
+If you hold down the left button, then the cave is rotated if you move
+left or right, and zoomed if you move up and down.
+If you hold down <keycap>Ctrl</keycap> while dragging with the left
+mouse button, then the cave rotates and tilts at the same time instead.
+</Para>
+
+<Para>
+If your mouse has a middle button then holding it down and moving the
+mouse up and down tilts the cave.  Moving the mouse left and right has
+no effect.
+</Para>
+
+<Para>
+And if you have a scrollwheel, this can be used to zoom in/out.
 </Para>
 
 <Para>
 By default the mouse moves the cave, but if you press <keycap/Ctrl-R/,
 then the mouse will move the viewpoint instead (i.e. everything will
-go in the opposite direction. This seems more natural to some people.
+go in the opposite direction). Apparently this feels more natural to some
+people.
 </Para>
 
 </refsect2>
@@ -58,15 +79,15 @@ automatically disabled on slow machines to avoid user frustration.
 </Para>
 
 <Para>
-Apostrophe <keycap/'/, and Slash <keycap>/</keycap> tilt up
+Comma <keycap/'/, and Slash <keycap>/</keycap> tilt up
 and down respectively. Tilt goes 180 degrees from plan view to a view
 from directly below (upside down plan).
 </Para>
 
 <Para>
-Enter starts the cave spinning, and <keycap/Space/ stops it. The
-speed of rotation for this, and tilt, is controlled by <keycap/Z/ and
-<keycap/X/.
+<keycap>Space</keycap> toggles automatic rotation about a vertical
+axis on and off.  The speed of rotation for this, and animated transitions
+between plan and elevation, is controlled by <keycap/Z/ and <keycap/X/.
 </Para>
 
 <Para>Crosses and/or labels can be displayed at survey stations.
@@ -86,8 +107,8 @@ displayed, or only non-overlapping ones.
 <para><keycap/Delete/ is useful if you get lost - it resets the scale,
 position, and rotation speed, so that the cave returns to the centre
 of the screen. There are also keyboard controls to use instead of the
-mouse<!-- - <keycap/Shift/ helps here as it accelerates all
-movements-->:
+mouse - <keycap/Shift/ helps here as it accelerates all
+movements:
 </para>
 
 <screen>
@@ -108,9 +129,11 @@ movements-->:
 <keycap/Ctrl-L/: Toggle display of survey legs
 <keycap/Ctrl-F/: Toggle display of surface legs
 <!--<keycap/Ctrl-A/: Toggle display of All/skeleton when moving-->
+<keycap/Ctrl-G/: Toggle display of grid
+<keycap/Ctrl-B/: Toggle display of bounding box
 <keycap/O/: Toggle display of non-overlapping/all names
 <keycap/Ctrl-R/: reverse sense of controls
-<!--<keycap/Shift/: accelerates all movement keys-->
+<keycap/Shift/: accelerates all movement keys
 </screen>
 
 <Para>A little experimentation should give a better understanding of how
@@ -121,6 +144,8 @@ this works.
 which varies in length as you zoom in or out.  
 In the lower right corner is a compass pointer showing which way
 is North, and a clino pointer showing the angle of tilt.
+And in the upper right is a depth bar showing the correspondence between
+colour and depth.
 </Para>
 
 </refsect2>

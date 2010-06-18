@@ -43,155 +43,52 @@ already covered).
 <P>You'll need automake 1.5 or later (earlier versions don't support
 per-executable CFLAGS; 1.6 has been tested and works, but wasn't a
 very stable release - automake 1.6.1 is a better bet)
-and autoconf 2.50 or later (autoconf 2.52 and 2.53 have
-both been used successfully).
+and autoconf 2.50 or later (autoconf 2.52, 2.53 and 2.64 have all
+been used successfully).
 
 <P>For building the documentation you'll need sgmltools 2 or later,
-docbook-to-man, and w3m.
+jadetex, docbook-to-man, and w3m.
 
 <H2>Building on Non-Unix Platforms</H2>
-
-<H3>DJGPP (MSDOS for 386 or better)</H3>
-
-<P>Currently I build this with a Linux hosted cross-compiler.  I built
-this myself mostly following instructions from:
-
-<P><A
-HREF="http://www.objsw.com/CrossGCC/">http://www.objsw.com/CrossGCC/</A>
-
-<P>I suggest using binutils-2.14 rather than binutils-2.9.1, and also newer
-version of the DJGPP crosscompiler kit (djcrx - use 204 which is in beta at
-the time of writing) and GCC.  Newer binutils versions include the patch they
-supply, so the instructions boil down to this sequence of commands:
-
-<pre>
-bash
-mkdir ~/djcross
-cd ~/djcross
-wget ftp://ftp.objsw.com/pub/crossgcc/build-djgpp.sh
-mkdir tars
-cd tars
-wget http://www.mirror.ac.uk/sites/ftp.delorie.com/pub/djgpp/current/v2/beta/djcrx204.zip
-wget http://www.mirror.ac.uk/sites/ftp.gnu.org/gnu/gcc/gcc-3.3.2.tar.gz
-wget http://www.mirror.ac.uk/sites/ftp.gnu.org/gnu/binutils/binutils-2.14.tar.gz
-cd ..
-patch -l build-djgpp.sh &lt;&lt;END
-24,26c24,26
-&lt; binfile=djcrx202.zip
-&lt; gcc=gcc-2.95.2
-&lt; binutils=binutils-2.9.1
----
-&gt; binfile=djcrx204.zip
-&gt; gcc=gcc-3.3.2
-&gt; binutils=binutils-2.14
-97c97
-&lt;       patch -p1 &lt;\$patches/\$binutilsdiff
----
-&gt;       #patch -p1 &lt;\$patches/\$binutilsdiff
-END
-sh build-djgpp.sh
-</pre>
-
-If the build of GCC fails, you may need to apply this patch:
-
-<pre>
---- gcc-3.3.2-orig/libiberty/getpwd.c	2001-10-07 22:53:31.000000000 +0100
-+++ gcc-3.3.2/libiberty/getpwd.c	2004-01-12 02:00:41.000000000 +0000
-@@ -50,2 +50,3 @@
- 
-+#undef MAXPATHLEN
- #ifdef MAXPATHLEN
-</pre>
-
-You may also need to configure and build GCC without support for C++ (the script
-downloaded configures all languages and builds C and C++).  Sorry if that's
-a bit vague - email Olly if you can't work out what to do.
-
-<P>Then you need to build and install the
-<A HREF="http://www.talula.demon.co.uk/allegro/">Allegro graphics library</A>:
-
-<P><A
-HREF="http://prdownloads.sourceforge.net/alleg/allegro-4.0.3.tar.gz"
->http://prdownloads.sourceforge.net/alleg/allegro-4.0.3.tar.gz</A>
-
-<P>And follow the instructions for building using a cross-compiler which
-you can in docs/build/djgpp.txt.  In 4.0.3 these boil down to:
-
-<pre>
-cd allegro-4.0.3
-./fix.sh djgpp --quick
-NATIVEPATH=$PATH
-export NATIVEPATH
-DJDIR=/usr/i386-pc-msdosdjgpp
-export DJDIR
-PATH=$DJDIR/bin:$PATH
-CROSSCOMPILE=1
-export CROSSCOMPILE
-make msg lib
-make install
-PATH=$NATIVEPATH
-</pre>
-
-<P>Building Survex under DOS in a native djgpp environment will require
-some tinkering.  Best bet is either to install bash and use the current
-configure script, or perhaps simpler to modify miniam.pl to generate a
-suitable makefile.  I'm happy to help if you want to try this, and
-I'll incorporate patches provided they're fairly clean.
 
 <H3>Mingw (Microsoft Windows)</H3>
 
 <P>Currently I build this with a Linux hosted cross-compiler.  I use
 the packaged cross-compiler in the debian testing/unstable distribution.
 You can probably install these on other distributions using alien to
-convert them to RPMs or similar.  Alternatively, before that
-I used to use pre-built binaries for gcc 2.95.2 obtained from:
-
-<P><A HREF="http://www.libsdl.org/extras/win32/cross/"
->http://www.libsdl.org/extras/win32/cross/</A>
+convert them to RPMs or similar.
 
 <P>Building on Windows in a native mingw environment will probably
 require tinkering.  Best bet is probably to install bash and use the
 current configure script.  I'm happy to help if you want to try this,
 and I'll incorporate patches provided they're fairly clean.
 
-<P>Building on Windows with MSVC/BorlandC/Watcom/... is likely to be more
-work, but could be a worthwhile project.  I'd suggest patching the
-perl script miniam.pl to generate a suitable makefile.  Again, send
-patches if you get this to work.
+<H2>Microsoft Windows Installer Builder</H2>
 
-<H3>MSDOS for 286 and earlier (BorlandC)</H3>
+<P>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
+build the MS Windows Installer.  Survex 1.1.3 was built using InnoSetup
+5.3.9 (non-unicode version, so that the installer works on older versions
+of Microsoft Windows).
 
-<P>Wookey currently builds this with a rather elderly BorlandC++ 3.1.
-BorlandC++ 5.5 can be downloaded for free, but it appears to only compile to
-32 bit code.  You can also download TurboC version 2, which might do the job
-(I've not tried).
+<P>Here are some random notes:
 
-<P>You can build a suitable source archive for this version using
-`make alien_src_zip' on the source distribution on a Unix box (you need to
-have run `./configure' first).  Then unzip the src&lt;version&gt;.zip file
-produced on the MSDOS machine and run <code>make.bat</code>.
+<H3>Translations</H3>
 
-<H3>RISC OS</H3>
+<P>In addition to the translations included with InnoSetup as standard, we also
+add these, which you can find in the <code>lib</code> subdirectory of Xapian's
+SVN tree:
 
-<P>We now build this with Acorn C V5.  It will probably still build with
-Acorn C V4.  You also need to get and install OSLib from:
+<UL>
+<LI>English_GB.isl (unofficial, done by Olly)
+<LI>Romanian-7-5.1.11.isl (unofficial, asked Cristian to check it over)
+</UL>
 
-<P><A HREF="http://www.arcade.demon.co.uk/oslib/homepage.html"
->http://www.arcade.demon.co.uk/oslib/homepage.html</A>
+<H3>survex.iss</H3>
 
-<P>You can build a suitable source archive for compiling the RISC OS version by
-running `make alien_src_zip' on the source distribution on a Unix box (you
-need to have run `./configure' first).  However for this you'll need a
-specially tweaked version of zip to create the zip file with the correct
-RISC OS file types. I can supply this on request.  You need to put it in the
-top level of the source tree and call it `zip-magic'.
-
-<P>You'll probably need to use Acorn's Make Utility (`amu') to build - the GNU
-make 1.02 port doesn't seem up to the job.
-
-<P>To build, create a fresh directory (or empty one) and unpack the contents of
-srcN_NN.zip into it (using !SparkFS or similar).  Then double-click on
-`!ObeyMe' in the unpacked directory to rename the source files into c and h
-subdirectories.  Then double-click on `!MakeMe' to build survex.
+<P>This file is generated by configure (from the template survex.iss.in).
+We could instead have a static survex.iss which uses #include to pull in
+a file with the Survex version info in, but the current method works well
+enough so we'll stick with it for now (I suspect #include was introduced since
+we started using InnoSetup).
 
 </BODY></HTML>

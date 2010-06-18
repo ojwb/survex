@@ -1,6 +1,6 @@
 /* readval.h
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2003,2005 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 extern int root_depr_count;
@@ -30,4 +30,12 @@ unsigned int read_uint(void);
 
 void read_string(char **pstr, int *plen);
 
-void read_date(void);
+void read_date(int *py, int *pm, int *pd);
+
+/* Correct for 1901-2099 and we currently only support the range 1970-2038. */
+/* FIXME: needs attention if we extend range to cover 1900 or 2100! */
+#define is_leap_year(Y) ((Y) % 4 == 0)
+
+/* Return last day for given month of given year.  Month 0 is assumed to
+ * be december! */
+int last_day(int year, int month);

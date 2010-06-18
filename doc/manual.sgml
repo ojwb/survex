@@ -5,10 +5,6 @@
  %entities;
  <!ENTITY % versionentity SYSTEM "version.ent">
  %versionentity;
- <!-- We need to use this instead of a literal backslash in SGML which
-      docbook-to-man processes, but by default it doesn't seem to be
-      defined by SGMLtools -->
- <!ENTITY bsol "\">
 ]>
 
 <!--
@@ -108,11 +104,11 @@ joining it, e.g. at a T-junction. And so on.
    </Author>
   </AuthorGroup>
   <copyright>
-   <year>1998-2002</year>
+   <year>1998-2010</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2006-02-05 00:10:41 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.117 2006-02-05 00:10:41 olly Exp $</ReleaseInfo>
+  <pubdate role="rcs">$Date: 2005-10-17 04:49:04 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.11 2005-10-17 04:49:04 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
@@ -133,10 +129,12 @@ manual.
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.
+Version 1.1
 currently runs on &unix;, Microsoft Windows 95/NT and
-successors, MacOS X, &msdos;, and Acorn &riscos; machines.
+successors, and Mac OS X.
 We're investigating support for various
 palmtop devices.
+Version 1.0 has fewer features, but also runs of &msdos; and &riscos; machines.
 </Para>
 
 <Para>We are well aware that not everyone has access to super hardware
@@ -166,7 +164,7 @@ the <Acronym/OFD/ survey, the
 <ulink url="http://www.hongmeigui.net/">Hong Meigui China
 expeditions</ulink>. <!-- FIXME more? --></Para>
 
-<Para>&survexsuite; is still actively being worked on.  Version 1.0 is
+<Para>&survexsuite; is still actively being worked on.  Version 1.0 was
 complete in some sense, but development continues - initially in reshaping
 Survex into a more integrated GUI package.</Para>
 
@@ -317,9 +315,8 @@ are using, so there is a separate section below for each platform.</Para>
 
 <Para>
 We supply pre-compiled versions for x86 &linux; machines in RPM format
-(suitable for Redhat, Mandrake, and some other distributions).
-Survex Debian packages are available from Debian mirror sites in
-the usual way.
+(suitable for Redhat, Mandrake, and some other distributions)
+and dpkg format (suitable for Debian and Debian-derived distributions).
 </Para>
 
 <Para>
@@ -329,9 +326,9 @@ If you don't have root access you will need to build from source
 </Para>
 
 <!-- FIXME Add Gnome file association note for Linux/Unix
-<Para>On Microsoft Windows and &riscos; &survexsuite; installs with
+<Para>On Microsoft Windows, &survexsuite; installs with
 suitable file associations so that you can drive it from the GUI.
-On &unix; and &msdos; you need to drive &survexsuite; from a command-line
+On &unix; you need to drive &survexsuite; from a command-line
 prompt (or set some a filemanager or graphics shell).
 </Para>
 -->
@@ -357,12 +354,10 @@ if you don't have root access on the machine you wish to install
 </Note>
 
 <Para>
-There's a GUI cave viewer called aven, which needs &wxwindows; to build,
-which in turn needs Gtk+ (or Motif or just X11, but we only regularly
-test with the Gtk+ version).
+There's a GUI cave viewer called aven, which needs &wxwidgets; to build,
+which in turn needs GTK+ (or Motif or just X11, but we only regularly
+test with the GTK+ version).
 </Para>
-
-<!-- FIXME: recommend printps on &UNIX; (or just &linux;)??? -->
 
 </Sect3>
 
@@ -378,9 +373,22 @@ can be set up for all users.
 </Para>
 
 <Para>
-This version includes a GUI cave survey viewer called aven, and a
-Survex printer driver (printwin) which uses the Windows printer
-system.
+The survey viewer that's part of &survexsuite; is called aven, and uses OpenGL
+for 3d rendering.
+OpenGL comes as standard as of Windows 98, and was included in the
+OSR2 update to Windows 95.  It's also possible that you've installed
+OpenGL with another application already (especially a 3D game like Quake).
+If you can view a survey in aven, all is well.  Otherwise you can
+<ulink url="http://support.microsoft.com/default.aspx?scid=kb;EN-US;q154877
+">download OpenGL drivers from Microsoft's website</ulink> (or here's
+a <ulink url="http://download.microsoft.com/download/win95upg/info/1/W95/EN-US/Opengl95.exe">direct link to the file you actually need</ulink>).
+</Para>
+
+<Para>
+If you find that 3D rendering is sometimes very slow (e.g. one user reported
+very slow performance when running full screen, while running in a window
+was fine) then try installing the OpenGL driver supplied by the manufacturer
+of your graphics card rather than the driver Microsoft supply.
 </Para>
 
 <Para>
@@ -402,10 +410,11 @@ Start menu containing the following items:
 Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
 Compass Plot files (<filename>.plt</filename> and <filename>.plf</filename>)
 (which Survex can read). <!-- FIXME XYZ -->
-Double-clicking on a &svx; file processes it to produce a &x3d; file.
-Double-clicking the &x3d; file views it in aven.
-You can also right click on these files to bring up a menu of other possible
-actions:
+Double-clicking on a &svx; file loads it for editing.  To process it to
+produce a &x3d; file, right click and choose "Process" from the menu.
+Double-clicking the resultant &x3d; file views it in aven.
+All the &survexsuite; file types can be right clicked on to give a menu of
+possible actions.  
 </Para>
 
 <VariableList>
@@ -497,49 +506,6 @@ actions:
 
 </Sect3>
 
-<Sect3><Title>MS Windows 3.1 and &msdos; (Intel 80386 or newer CPU)</Title>
-
-<Para>For MS Windows 3.1 we suggest using the &msdos; version.
-This version is compiled with the free DJGPP C compiler
-(<ulink url="&djgppwebsite;">&djgppwebsite;</ulink>) which uses &dpmi;
-to access memory above &msdos;'s 640k. Windows has &dpmi; services built in,
-as do QEMM and Novell DOS 7.
-For those situations where &dpmi; services aren't available, we
-include the free <filename>cwsdpmi.exe</filename>, which will be used
-automatically if it's needed.</Para>
-</Sect3>
-
-<Sect3><Title>&msdos; (Intel 80286 or earlier CPU)</Title>
-
-<Para>We also supply a version suitable for use on pre-386 machines. You
-might wonder why - the reason is that many surveying projects have little
-or no budget and can acquire such machines for free. This version is
-suitable for caves up to medium size - a few thousand stations - which
-typically equates to a few kilometres of survey.  A very loopy cave may
-need more memory.
-</Para>
-
-<Para>This version is built with <Application/Borland C/.
-A feature of this is that the best way to force a program to
-terminate is with <keycap/Ctrl-Break/. <keycap/Ctrl-C/ sometimes works,
-but is less reliable.</Para>
-
-</Sect3>
-
-<Sect3><Title>&riscos;</Title>
-
-<Para>
-&survexsuite; for &riscos; comes in a zip archive.  Installation is
-just a matter of opening the archive with
-<application>!SparkPlug</application>,
-<application>!SparkFS</application>, or
-similar and dragging the contents to where you want them installed.
-This version is known to work with RISC OS 3.1 or newer.  We are unable to test
-compatibility with earlier versions of RISC OS.
-</Para>
-
-</Sect3>
-
 </Sect2>
 
 <Sect2><Title>Configuration</Title>
@@ -551,11 +517,8 @@ language used for messages from Survex and most of the library calls
 it uses can be changed.  By default this is picked up from the
 language the operating system is set to use (from "Regional Settings"
 in Control Panel on Microsoft Windows, from the
-<systemitem>LANG</systemitem> environment variable on &unix;, from the
-value passed to <systemitem>COUNTRY</systemitem> in
-<filename>CONFIG.SYS</filename> on MSDOS (but this doesn't
-distinguish between the different languages used in a country in most
-cases), or from the configured Territory on &riscos;). If no setting
+<systemitem>LANG</systemitem> environment variable on &unix;
+If no setting
 is found, or &survexsuite; hasn't been translated into the
 requested language, UK English is used.</Para>
 
@@ -596,17 +559,11 @@ of the codes currently supported:</Para>
 messages in French (language code fr):</Para>
 
 <VariableList>
- <VarListEntry><Term>&msdos;</Term>
-   <ListItem><Para>Put <command>SET SURVEXLANG=fr</command> in your
-<filename>AUTOEXEC.BAT</filename> script.  You will need to restart
-&msdos; before it notices this setting - to set it for the current
-&msdos; session enter <command>SET SURVEXLANG=fr</command> at the MSDOS
-command prompt.</Para></ListItem>
- </VarListEntry>
  <VarListEntry><Term>Microsoft Windows</Term>
    <ListItem><Para>
-For MS Windows 95 and 98 (and probably ME), you'll need to add a line to
-<filename>AUTOEXEC.BAT</filename> as for MSDOS (see above).  You need to
+For MS Windows 95 and 98 (and probably ME), you'll need to add a line
+containing <command>SET SURVEXLANG=fr</command> to your
+<filename>AUTOEXEC.BAT</filename> script.  You need to
 reboot for the change to take effect.
 </Para>
 
@@ -625,17 +582,6 @@ Click OK and the new value should be effective immediately.
  <VarListEntry><Term>&unix; - sh/bash</Term>
    <ListItem><Para><userinput>SURVEXLANG=fr ; export SURVEXLANG</userinput></Para></ListItem>
  </VarListEntry>
- <VarListEntry><Term>&riscos;</Term>
-   <ListItem><Para>
-Hold down <keycap>Shift</keycap> and double-click on
-<filename>!Cavern</filename>, then hold down <keycap>Shift</keycap>
-again and double-click on <filename>!Boot</filename>.  Edit the line
-which says <SystemItem>Set SurvexLang en</SystemItem> and change the
-value to the code for the language you want from the table above.
-Save the file, and double-click on <filename>!Boot</filename>.
-This sets the language for all the &survexsuite; programs.
-   </Para></ListItem>
- </VarListEntry>
 </VariableList>
 
 <Para>If &survexsuite; isn't available in your language, you could
@@ -649,16 +595,10 @@ if you're interested.</Para>
 <Sect3><Title>Configuring the Printer Drivers</Title>
 
 <Para>
-On Microsoft Windows, we recommend you print using printwin which uses
-the built in drivers and so requires no separate configuration - if you
-can print from other programs, you can print from Survex.  The only
-thing you may want to configure is the colours used if you have a colour
-printer.
-</Para>
-
-<Para>
-The drivers used for other platforms may require a small amount of
-configuration, which is described in the following section.
+Printing is now built into aven.
+The print.ini configuration file still exists, but is only
+useful if you want to configure the colours used if you
+have a colour printer.
 </Para>
 
 <refentry id="print.ini">
@@ -675,27 +615,12 @@ configuration, which is described in the following section.
 
 type in .svx file
 
-run cavern
+run cavern (through aven)
 
-run aven/caverot
+run aven
 
-run printps/printwin/...
+how to print/export etc
 
--->
-
-<!-- FIXME:
-<ListItem><Para>aven: cave viewer for visualising &x3d; files (on
-&msdos; and &riscos; you get caverot instead).
-</Para></ListItem>
--->
-
-<!-- FIXME:
-<ListItem><Para>
-printdm, printpcl, printps, prnthpgl, printwin: print processed data
-to scale.  printwin is only available on Microsoft Windows and uses
-the Windows printer driver systems - this is the recommended way to
-print on Windows.
-</Para></ListItem>
 -->
 
 <!-- FIXME perhaps move this after data files section? -->
@@ -768,34 +693,6 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="aven">
 <?dbhtml filename="aven.htm">
 &man.aven;
-</refentry>
-<refentry id="caverot">
-<?dbhtml filename="caverot.htm">
-&man.caverot;
-</refentry>
-<refentry id="xcaverot">
-<?dbhtml filename="xcaverot.htm">
-&man.xcaverot;
-</refentry>
-<refentry id="printdm">
-<?dbhtml filename="printdm.htm">
-&man.printdm;
-</refentry>
-<refentry id="printhpgl">
-<?dbhtml filename="prhpgl.htm">
-&man.printhpgl;
-</refentry>
-<refentry id="printpcl">
-<?dbhtml filename="printpcl.htm">
-&man.printpcl;
-</refentry>
-<refentry id="printps">
-<?dbhtml filename="printps.htm">
-&man.printps;
-</refentry>
-<refentry id="printwin">
-<?dbhtml filename="printwin.htm">
-&man.printwin;
 </refentry>
 <refentry id="x3dtopos">
 <?dbhtml filename="3dtopos.htm">
@@ -1398,7 +1295,7 @@ stored in a way that can be automatically collated.
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>
-&lt;style&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY
+&lt;style&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY|PASSAGE
 </Para>
 
 <Para>
@@ -1578,11 +1475,33 @@ there is line of sight between the pairs of stations.
 </Para></listitem>
 </VarListEntry>
 
-<!-- FIXME: LRUD not yet implemented
+<VarListEntry><Term>PASSAGE</Term>
+<listitem><Para>
+This survey style defines a 3D "tube" modelling a passage in the cave.
+The tube uses the survey stations listed in the order listed.  It's
+permitted to use survey stations which aren't directly linked by
+the centre-line survey.  This can be useful - sometimes the centreline
+will step sideways or up/down to allow a better sight for the next
+leg and you can ignore the extra station.  You can also define tubes
+along unsurveyed passages, akin to "nosurvey" legs in the centreline
+data.</Para>
+
+<Para>This means that you need to split off side passages into seperate
+tubes, and hence separate sections of passage data, starting with
+a new *data command.</Para>
+
 <Para>
-(LRUD STATION [LEFT] [RIGHT] [UP] [DOWN])
+Simple example of how to use this data style (note the use of ignoreall
+to allow a free-form text description to be given):
+
+<programlisting>
+*data passage station left right up down ignoreall
+1  0.1 2.3 8.0 1.4  Sticking out point on left wall
+2  0.0 1.9 9.0 0.5  Point on left wall
+3  1.0 0.7 9.0 0.8  Highest point of boulder
+</programlisting>
 </Para>
--->
+</VarListEntry>
 </VariableList>
 
 <Para>
@@ -2148,8 +2067,8 @@ use the deprecated *prefix command.
 <Para>An included file which does not have a complete path
 is resolved relative to the directory which the parent file is in
 (just as relative HTML links do).  Cavern will try adding a &svx;
-extension, and will also try translating "\" to "/"
-(or other appropriate tricks on RISC OS).  And as a last
+extension, and will also try translating "\" to "/".
+And as a last
 resort, it will try a lower case version of the filename (so if you
 use Unix and someone sends you a DOS/Windows dataset with mismatched
 case, unzip it with "unzip -L" and unix cavern will process it).
@@ -3402,9 +3321,7 @@ Survex website for download links.
 <Sect2><Title>Overlay a grid</Title>
 
 <Para>Aven is able to display a grid, but this functionality isn't currently
-available in caverot,
-xcaverot,
-or the printer drivers.
+available in printouts.
 You can achieve a similar effect for now by creating a &svx; file
 where the survey legs form a grid.
 </Para>
@@ -3445,11 +3362,9 @@ you use
 </Para>
 
 <programlisting>
-*SET BLANK x09x20
 *SET DECIMAL ,</programlisting>
 
-<Para>to specify that ',' is no longer a blank character, and is now
-the decimal separator instead of '.'.
+<Para>to specify that ',' is now the decimal separator instead of '.'.
 </Para>
 
 <!-- FIXME
@@ -3569,13 +3484,22 @@ what you have to do:
 <Sect1><Title>Mailing List</Title>
 <?dbhtml filename="maillist.htm">
 
-<!-- FIXME: URL to list, contact wookey for paper -->
+<Para>The best way to contact the authors and other Survex users is the
+Survex mailing list - for details visit:
+<ulink url="http://survex.com/maillist.html">http://survex.com/maillist.html</ulink>
+</Para>
 
-<Para>We have both email and paper mailing lists for &survexsuite;, to
-keep users informed of new versions and so forth.  This is available free
-by e-mail, or by post for a small charge (to cover photocopying, disks,
-and postage). We recommend you register to receive automatic updates
-and other information.
+<Para>We'd be delighted to hear how you get on with &survexsuite; and
+welcome comments and suggestions for improvements.</Para>
+
+<Para>
+And we'd love you to contribute your skills to help make &survexsuite; even
+better.  Point out areas of the documentation which could be made clearer, or
+sections which are missing entirely.  Download test releases, try them out, and
+let us know if you find problems or have suggestions for improvements.
+If there's no translation to your language, you could provide one.
+Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
+plenty to do, so feel free to join in.
 </Para>
 
 </Sect1>
@@ -3590,83 +3514,12 @@ Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
-<Para>Aven is built on &wxwindows;, which means that can easily support
-Unix, Microsoft Windows, and MacOS X.  MacOS 9 support is possible, but
-requires somebody with MacOS 9 and a compiler to build it with.
-Support for &msdos; is possible if there's sufficient interest.
-Support for &riscos; is unlikely unless someone very enthusiastic steps
-forward to do the porting work.</Para>
+<Para>Aven is built on &wxwidgets;, which means that it can easily support
+Unix, Microsoft Windows, and Mac OS X.</Para>
 
 <Para>More information on our plans is on the <ulink
 url="&survexwebsite;">web site</ulink>.
 </Para>
-
-</Sect1>
-
-<Sect1><title>Contacting the authors</title>
-<?dbhtml filename="contact.htm">
-
-<Para>We'd be delighted to hear how you get on with &survexsuite; and
-welcome comments and suggestions for improvements.</Para>
-
-<Para>If you want the latest version and don't have net access, please
-enclose a suitably formatted floppy and an SAE.  These days, we'd probably
-struggle to cope with anything other than 3.5" floppies.  &msdos; format is
-easiest for us.  Alternatively, send a blank CDR and we can burn you a
-CD with all the versions on.</Para>
-
-<Address>
-Wookey
-<Street/734 Newmarket Rd/
-<City/Cambridge/
-<PostCode/CB5 8RS/
-<Country/UK/
-<Phone/Tel: 01223 504881 (home)/
-<Phone/Tel: 01223 811679 (work)/
-<Email/&wookeyemail;/
-</Address>
-
-<Para>or</Para>
-
-<Address>
-Olly Betts
-<Street/6 Ashcroft Court/
-<City/Cambridge/
-<PostCode/CB4 2SN/
-<Country/UK/
-<Phone/Tel: 01223 513644 (home and work)/
-<Email/&ollyemail;/
-</Address>
-
-<!-- FIXME: Mark too? -->
-
-<Para>Or if neither of these get any response try:</Para>
-
-<Address>
-Cambridge University Caving Club,
-c/o James Hickson,
-<Street>Pembroke College</Street>
-<City>Cambridge</City>
-<Country>UK</Country>
-</Address>
-
-<Sect2><title>Contributing</title>
-
-<!--FIXME rewrite and elaborate -->
-<Para>Monetary donations are welcome, but if you want a more personal way to
-say thankyou we'd love a copy of a survey you've produced using
-&survexsuite;.  Two copies would be best to save us arguing over who gets
-it.</Para>
-
-<Para>Or contribute your skills to help make &survexsuite; even better.
-Point out areas of the documentation which could be made clearer, or sections
-which are missing entirely.  Download test releases, try them out, and let
-us know if you find problems or have suggestions for improvements.
-If there's no translation to your language, you could provide one.
-Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
-plenty to do, so feel free to join in.
-</Para>
-</Sect2>
 
 </Sect1>
 

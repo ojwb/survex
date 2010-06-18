@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 #ifdef HAVE_CONFIG_H
@@ -24,6 +24,7 @@
 
 #include <limits.h>
 #include <stdarg.h>
+#include <time.h>
 
 #include "debug.h"
 #include "cavern.h"
@@ -66,6 +67,7 @@ static real variance[Fr - 1];
 /* style functions */
 static int data_normal(void);
 static int data_cartesian(void);
+static int data_passage(void);
 static int data_nosurvey(void);
 static int data_ignore(void);
 
@@ -101,7 +103,7 @@ error_list_parent_files(void)
       const char *m = msg(/*In file included from*/5);
       size_t len = strlen(m);
 
-      fprintf(STDERR, m);
+      fputs(m, STDERR);
       m = msg(/*from*/3);
 
       /* Suppress reporting of full include tree for further errors
@@ -283,6 +285,10 @@ read_reading(reading r, bool f_optional)
       case Dy: q = Q_DY; break;
       case Dz: q = Q_DZ; break;
       case FrCount: case ToCount: q = Q_COUNT; break;
+      case Left: q = Q_LEFT; break;
+      case Right: q = Q_RIGHT; break;
+      case Up: q = Q_UP; break;
+      case Down: q = Q_DOWN; break;
       default:
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
@@ -460,12 +466,12 @@ data_file(const char *pth, const char *fnm)
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 static reading compass_order[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
-	    Ignore, Ignore, Ignore, Ignore,
+	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 static reading compass_order_backsights[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
-	    Ignore, Ignore, Ignore, Ignore,
+	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
 	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
 	 };
@@ -487,8 +493,26 @@ data_file(const char *pth, const char *fnm)
 	 /* NB order is *month* *day* year */
 	 get_token();
 	 get_token();
-	 /* if (ch != ':') ... */
-	 nextch();
+	 if (ch == ':') {
+	     struct tm t;
+	     memset(&t, 0, sizeof(struct tm));
+
+	     copy_on_write_meta(pcs);
+
+	     nextch();
+	     /* struct tm month uses 0 for Jan */
+	     t.tm_mon = read_uint() - 1;
+	     t.tm_mday = read_uint();
+	     /* struct tm uses year - 1900 */
+	     t.tm_year = read_uint();
+	     /* Note: Larry says a 2 digit year is always 19XX */
+	     if (t.tm_year >= 100) t.tm_year -= 1900;
+
+	     pcs->meta->date1 = mktime(&t);
+	     pcs->meta->date2 = pcs->meta->date1;
+	 } else {
+	     pcs->meta->date1 = pcs->meta->date2 = 0;
+	 }
 	 skipline();
 	 process_eol();
 	 /* SURVEY TEAM: */
@@ -648,9 +672,6 @@ data_file(const char *pth, const char *fnm)
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
 	    volatile int r;
-#ifdef CHASM3DX
-	    twig *temp = limb;
-#endif
 	    f_export_ok = fFalse;
 	    switch (pcs->style) {
 	     case STYLE_NORMAL:
@@ -660,6 +681,9 @@ data_file(const char *pth, const char *fnm)
 	       break;
 	     case STYLE_CARTESIAN:
 	       r = data_cartesian();
+	       break;
+	     case STYLE_PASSAGE:
+	       r = data_passage();
 	       break;
 	     case STYLE_NOSURVEY:
 	       r = data_nosurvey();
@@ -672,14 +696,6 @@ data_file(const char *pth, const char *fnm)
 	       BUG("bad style");
 	    }
 	    /* style function returns 0 => error */
-#ifdef CHASM3DX
-	    if (!r && fUseNewFormat) {
-	       /* we have just created a very naughty twiglet, and it must be
-		* punished */
-	       osfree(limb);
-	       limb = temp;
-	    }
-#endif
 	 }
       }
    }
@@ -1067,26 +1083,6 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 		, cyz, czx, cxy
 #endif
 		);
-
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
    return 1;
 }
 
@@ -1188,26 +1184,6 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, cyz, czx
 #endif
 		);
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
@@ -1223,27 +1199,6 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 		, 0, 0, 0
 #endif
 		);
-
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
@@ -1380,26 +1335,6 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		, cxy, 0, 0
 #endif
 		);
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-
-      /* record pre-fettling deltas */
-      twiglet->delta[0] = dx;
-      twiglet->delta[1] = dy;
-      twiglet->delta[2] = dz;
-   }
-#endif
-
    return 1;
 }
 
@@ -1423,6 +1358,7 @@ data_normal(void)
    VAL(Comp) = VAL(BackComp) = HUGE_REAL;
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
+   VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = HUGE_REAL;
 
    fRev = fFalse;
    ctype = backctype = CTYPE_OMIT;
@@ -1555,6 +1491,14 @@ data_normal(void)
 	     backctype = CTYPE_READING;
 	  }
 	  break;
+       case CompassDATLeft: case CompassDATRight:
+       case CompassDATUp: case CompassDATDown: {
+	  /* FIXME: need to actually make use of these entries! */
+	  reading actual = Left + (*ordering - CompassDATLeft);
+	  read_reading(actual, fFalse);
+	  if (VAL(actual) < 0) VAL(actual) = HUGE_REAL;
+	  break;
+       }
        case CompassDATFlags:
 	  if (ch == '#') {
 	     nextch();
@@ -1730,28 +1674,66 @@ data_normal(void)
 }
 
 static int
+process_lrud(prefix *stn)
+{
+   SVX_ASSERT(next_lrud);
+   lrud * xsect = osnew(lrud);
+   xsect->stn = stn;
+   xsect->l = (VAL(Left) * pcs->units[Q_LEFT] - pcs->z[Q_LEFT]) * pcs->sc[Q_LEFT];
+   xsect->r = (VAL(Right) * pcs->units[Q_RIGHT] - pcs->z[Q_RIGHT]) * pcs->sc[Q_RIGHT];
+   xsect->u = (VAL(Up) * pcs->units[Q_UP] - pcs->z[Q_UP]) * pcs->sc[Q_UP];
+   xsect->d = (VAL(Down) * pcs->units[Q_DOWN] - pcs->z[Q_DOWN]) * pcs->sc[Q_DOWN];
+   xsect->meta = pcs->meta;
+   if (pcs->meta) ++pcs->meta->ref_count;
+   xsect->next = NULL;
+   *next_lrud = xsect;
+   next_lrud = &(xsect->next);
+
+   return 1;
+}
+
+static int
+data_passage(void)
+{
+   prefix *stn = NULL;
+   reading *ordering;
+
+   for (ordering = pcs->ordering ; ; ordering++) {
+      skipblanks();
+      switch (*ordering) {
+       case Station:
+	 stn = read_prefix_stn(fFalse, fFalse);
+	 break;
+       case Left: case Right: case Up: case Down:
+	 read_reading(*ordering, fTrue);
+         if (VAL(*ordering) == HUGE_REAL) {
+            if (!isOmit(ch)) {
+               compile_error_token(/*Expecting numeric field, found `%s'*/9);
+            }
+	    nextch();
+            VAL(*ordering) = -1;
+         }
+	 break;
+       case Ignore:
+	 skipword(); break;
+       case IgnoreAll:
+	 skipline();
+	 /* fall through */
+       case End: {
+	 int r = process_lrud(stn);
+	 process_eol();
+	 return r;
+       }
+       default: BUG("Unknown reading in ordering");
+      }
+   }
+}
+
+static int
 process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
 {
    nosurveylink *link;
    int shape;
-
-#ifdef CHASM3DX
-   if (fUseNewFormat) {
-      /* new twiglet and insert into twig tree */
-      twig *twiglet = osnew(twig);
-      twiglet->from = fr;
-      twiglet->to = to;
-      twiglet->down = twiglet->right = NULL;
-      twiglet->source = twiglet->drawings
-	= twiglet->date = twiglet->instruments = twiglet->tape = NULL;
-      twiglet->up = limb->up;
-      limb->right = twiglet;
-      limb = twiglet;
-      /* delta is only used to calculate error - pass zero and cope
-       * elsewhere */
-      twiglet->delta[0] = twiglet->delta[1] = twiglet->delta[2] = 0;
-   }
-#endif
 
    /* Suppress "unused fixed point" warnings for these stations
     * We do this if it's a 0 or 1 node - 1 node might be an sdfix
@@ -1771,6 +1753,8 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       link->to = StnFromPfx(to);
    }
    link->flags = pcs->flags;
+   link->meta = pcs->meta;
+   if (pcs->meta) ++pcs->meta->ref_count;
    link->next = nosurveyhead;
    nosurveyhead = link;
    return 1;

@@ -13,16 +13,18 @@ msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
  es.h fr.h it.h pt.h pt_BR.h sk.h ro.h zh.h
 
-EXTRA_DIST = bcra3.svx bcra5.svx messages.txt default.txt bold.txt print.ini\
- named-entities.txt makefont.pl makemsgs.pl checkshortcut.pl\
- $(msg_files) default.bit bold.bit $(hdr_files) survex.mime survex.keys.in\
+EXTRA_DIST = messages.txt\
+ named-entities.txt makemsgs.pl checkshortcut.pl\
+ $(hdr_files) survex.keys.in\
+ afm2txf.pl\
  INSTALL.OSX
 
-MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) default.bit bold.bit\
- *.todo
+MAINTAINERCLEANFILES = $(msg_files) $(hdr_files) *.todo aven.txf
 
-pkgdata_DATA = default.bit bold.bit print.ini bcra3.svx bcra5.svx\
- $(msg_files)
+dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) aven.txf
+
+appsdir = $(datadir)/applications
+dist_apps_DATA = survex-aven.desktop survex-svxedit.desktop
 
 BUILT_SOURCES = defaultlang.h
 
@@ -37,11 +39,9 @@ defaultlang.h:
 	-rm -f defaultlang.h
 	ln -s $(srcdir)/$(DEFAULTLANG).h defaultlang.h
 
-default.bit: default.txt makefont.pl
-	LANG=C perl makefont.pl default.txt default.bit
-
-bold.bit: bold.txt makefont.pl
-	LANG=C perl makefont.pl bold.txt bold.bit
-
 mimedir = $(datadir)/mime-info
-mime_DATA = survex.mime survex.keys
+dist_mime_DATA = survex.mime
+mime_DATA = survex.keys
+
+aven.txf:
+	$(srcdir)/afm2txf.pl -o aven.txf /usr/share/texmf-texlive/fonts/afm/urw/helvetic/uhvr8a.afm

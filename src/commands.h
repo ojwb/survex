@@ -1,6 +1,6 @@
 /* commands.h
  * Header file for code for directives
- * Copyright (C) 1994-2002 Olly Betts
+ * Copyright (C) 1994-2003 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 void handle_command(void);
@@ -24,6 +24,8 @@ void default_units(settings *s);
 void default_calib(settings *s);
 
 void free_settings(settings *p);
+
+void copy_on_write_meta(settings *s);
 
 extern char *buffer;
 void get_token(void);
