@@ -73,12 +73,12 @@ protected:
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf);
 	~svxPrintDlg();
-	void OnPrint(wxCommandEvent& event); 
+	void OnPrint(wxCommandEvent& event);
 	void OnPreview(wxCommandEvent& event);
 	void OnPlan(wxCommandEvent&);
 	void OnElevation(wxCommandEvent&);
-	void OnChangeSpin(wxSpinEvent& event); 
-	void OnChange(wxCommandEvent& event); 
+	void OnChangeSpin(wxSpinEvent& event);
+	void OnChange(wxCommandEvent& event);
 	void SomethingChanged();
  private:
 	DECLARE_EVENT_TABLE()
