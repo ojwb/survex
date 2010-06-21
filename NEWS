@@ -28,8 +28,9 @@ Changes in 1.0.40 (all backported from 1.1.13):
 * Ignore LANG if it starts with a digit to avoid problems with bogus value for
   LANG which AutoCAD installation seems to set on MS Windows.
 
-* aven: Remove a signal handler once it has fired to prevent endless (or
-  seemingly endless) cascades of error dialogs.
+* aven: Make the error dialog modal and remove a signal handler once it
+  has fired to prevent endless (or seemingly endless) cascades of error
+  dialogs.
 
 Changes in 1.0.39:
 

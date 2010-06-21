@@ -1,3 +1,7 @@
+Mon Jun 21 10:34:15 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS,src/aven.cc: Make error dialog modal (backport from 1.1.13).
+
 Mon Jun 21 10:14:38 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/: Update FSF address in (C) notices in source files.
