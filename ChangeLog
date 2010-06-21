@@ -1,3 +1,9 @@
+Mon Jun 21 08:32:08 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.1.13:
+	* NEWS,src/cad3d.c,src/export.cc: Fix export to SVG when a label
+	  contains a '%' character.
+
 Mon Jun 21 06:19:30 GMT 2010  Olly Betts <olly@survex.com>
 
 	* NEWS,buildmacosx.sh,configure.in,desc-aven.txt,doc/manual.sgml,

@@ -5,6 +5,8 @@ Changes in 1.0.40 (all backported from 1.1.13):
 * Recognise .3d file format version 6 so you can load .3d files processed by
   1.1.12 and later.
 
+* cad3d: Fix export to SVG when a label contains a '%' character.
+
 * (Unix version): Fix \ to appear correctly in 'man print.ini'.
 
 * Documentation: Tilt up in aven, xcaverot, and caverot is apostrophe, not
