@@ -364,7 +364,7 @@ esac])
 DOCS_OTHER="manual.rtf manual.txt manual.ps"
 AC_SUBST(DOCS_OTHER)
 
-HTMLFILES="AUTHORS.htm ChngeLog.htm GPL.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm 3dformat.htm"
+HTMLFILES="AUTHORS.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm 3dformat.htm"
 AC_SUBST(HTMLFILES)
 
 EXTRA_TEXT="AUTHORS COPYING NEWS TODO ChangeLog"

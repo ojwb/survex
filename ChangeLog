@@ -1,3 +1,13 @@
+Mon Jun 21 02:21:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.1.13:
+	* configure.in,doc/GPL.htm,doc/index.htm.in: Remove HTML version of GPL
+	  - just link to the FSF's page.
+	* configure.in,doc/Makefile.am,doc/cl2html.pl,doc/index.htm.in: Stop
+	  generating an HTML version of the ChangeLog - it's too low level to
+	  be of interest to non-developers, and developers can look at the
+	  source code.
+
 Thu Jun 17 17:09:21 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/3dformat.htm,doc/HACKING.htm,doc/manual.sgml: Sync relevant
