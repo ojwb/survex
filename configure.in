@@ -121,7 +121,7 @@ case $host_os in
 esac
 
 case $host in
-powerpc-*-darwin*) macosx=yes ;; # wxWindows uses this to detect MacOS X
+powerpc-*-darwin*) macosx=yes ;; # wxWidgets uses this to detect MacOS X
 *) macosx=no ;;
 esac
 
@@ -194,7 +194,7 @@ if test -n "$AVEN"; then
       fi
     fi
     if test -z "$WX_CONFIG" ; then
-      AC_MSG_RESULT([not building aven (wxWindows not found)])
+      AC_MSG_RESULT([not building aven (wxWidgets not found)])
       AVEN=
     fi
   fi
@@ -342,7 +342,7 @@ if test yes = "$GCC"; then
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
       -Wcast-align"
-    dnl -W causes problems with wxWindows
+    dnl -W causes problems with wxWidgets
     AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wshadow -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
   fi

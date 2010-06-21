@@ -1,5 +1,5 @@
 /* printwx.c */
-/* Device dependent part of Survex wxWindows driver */
+/* Device dependent part of Survex wxWidgets driver */
 /* Copyright (C) 1993-2003,2004,2005 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *

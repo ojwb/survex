@@ -7,15 +7,15 @@
 #
 #   ./buildmacosx.sh --install-wx
 #
-# This will automatically download and temporarily install wxWindows
+# This will automatically download and temporarily install wxWidgets
 # (this script is smart enough not to download or build it if it already
 # has).
 #
-# If you already have wxWindows installed permanently, use:
+# If you already have wxWidgets installed permanently, use:
 #
 #   ./buildmacosx.sh
 #
-# If wxWindows is installed somewhere such that wx-config isn't on your
+# If wxWidgets is installed somewhere such that wx-config isn't on your
 # PATH you need to indicate where wx-config is by running this script
 # something like this:
 #
@@ -46,7 +46,7 @@ if test -z "$WXCONFIG" ; then
   echo "WXCONFIG not set and wx-config not on your PATH"
   exit 1
 fi
-# Force static linking so the user doesn't need to install wxWindows.
+# Force static linking so the user doesn't need to install wxWidgets.
 WXCONFIG=$WXCONFIG' --static'
 export WXCONFIG
 rm -rf *.dmg Survex macosxtmp

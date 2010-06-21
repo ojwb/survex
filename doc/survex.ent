@@ -9,7 +9,7 @@
 <!ENTITY riscos "RISC OS">
 <!ENTITY survexsuite "<Application>Survex</Application>">
 <!ENTITY spud "<Application>Spud</Application>">
-<!ENTITY wxwindows "<Application>wxWindows</Application>">
+<!ENTITY wxwidgets "<Application>wxWidgets</Application>">
 <!ENTITY cucc "<Acronym/CUCC/">
 <!ENTITY arge "<Acronym/ARGE/">
 <!ENTITY dpmi "<Acronym/DPMI/">

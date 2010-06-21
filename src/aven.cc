@@ -84,7 +84,7 @@ bool Aven::OnInit()
 	loc->AddCatalogLookupPathPrefix(msg_cfgpth());
 	if (!loc->Init(lang, lang, lang, TRUE, TRUE)) {
 	    if (strcmp(lang, "sk") == 0) {
-	       // As of 2.2.9, wxWindows has cs but not sk - the two languages
+	       // As of 2.2.9, wxWidgets has cs but not sk - the two languages
 	       // are close, so this makes sense...
 	       loc->Init("cs", "cs", "cs", TRUE, TRUE);
 	    }

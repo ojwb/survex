@@ -1702,7 +1702,7 @@ es:144 Hecho.
 it:144 Fatto.
 sk:144 Hotovo.
 ro:144 Gata.
-# zh from wxWindows
+# zh from wxWidgets
 #zh:144 &#23436;&#25104;&#12290;
 en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
 en-us:145 "Original length%7.2fm (%3d shots), moved%7.2fm (%5.2fm/shot). "

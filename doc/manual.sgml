@@ -357,7 +357,7 @@ if you don't have root access on the machine you wish to install
 </Note>
 
 <Para>
-There's a GUI cave viewer called aven, which needs &wxwindows; to build,
+There's a GUI cave viewer called aven, which needs &wxwidgets; to build,
 which in turn needs Gtk+ (or Motif or just X11, but we only regularly
 test with the Gtk+ version).
 </Para>
@@ -3599,7 +3599,7 @@ Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
-<Para>Aven is built on &wxwindows;, which means that it can easily support
+<Para>Aven is built on &wxwidgets;, which means that it can easily support
 Unix, Microsoft Windows, and Mac OS X.</Para>
 
 <Para>More information on our plans is on the <ulink
