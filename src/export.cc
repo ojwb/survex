@@ -59,11 +59,23 @@
 #define POINTS_PER_INCH	72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
-#define SQRT_2          1.41421356237309504880168872420969
+#define SQRT_2		1.41421356237309504880168872420969
 
 #define LEGS 1
 #define STNS 4
 #define LABELS 8
+
+static const char *layer_names[] = {
+   NULL,
+   "Legs",	// LEGS
+   NULL,
+   NULL,
+   "Stations",	// STNS
+   NULL,
+   NULL,
+   NULL,
+   "Labels"	// LABELS
+};
 
 /* default to DXF */
 #define FMT_DEFAULT FMT_DXF
@@ -79,6 +91,7 @@ static double grid; /* grid spacing (or 0 for no grid) */
 static double scale = 500.0;
 static double factor;
 static const char *unit = "mm";
+const double SVG_MARGIN = 5.0; // In units of "unit".
 
 static const char *survey = NULL;
 
@@ -261,14 +274,6 @@ sketch_header(const char *)
 	   (max_x - min_x) * factor, (max_y - min_y) * factor);
 }
 
-static const char *layer_names[] = {
-   NULL,
-   "Legs",
-   "Stations",
-   NULL,
-   "Labels"
-};
-
 static void
 sketch_start_pass(int layer)
 {
@@ -392,8 +397,8 @@ find_name(const img_point *p)
    return "?";
 }
 
-static bool to_close = 0;
-static bool close_g = 0;
+static bool to_close = false;
+static bool close_g = false;
 
 static void
 svg_header(const char *)
@@ -402,14 +407,19 @@ svg_header(const char *)
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
    for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    fprintf(fh, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
-   fprintf(fh, "<svg width=\"%.3f%s\" height=\"%.3f%s\""
-               " viewBox=\"0 0 %0.3f %0.3f\">\n",
-           (max_x - min_x) * factor, unit, (max_y - min_y) * factor, unit,
-           (max_x - min_x) * factor, (max_y - min_y) * factor );
+   double width = (max_x - min_x) * factor + SVG_MARGIN * 2;
+   double height = (max_y - min_y) * factor + SVG_MARGIN * 2;
+   fprintf(fh, "<svg version=\"1.1\" baseProfile=\"full\"\n"
+	       "xmlns=\"http://www.w3.org/2000/svg\"\n"
+	       "xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n"
+	       "xmlns:ev=\"http://www.w3.org/2001/xml-events\"\n"
+	       "width=\"%.3f%s\" height=\"%.3f%s\"\n"
+	       "viewBox=\"0 0 %0.3f %0.3f\">\n",
+	   width, unit, height, unit, width, height);
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
-           min_x * -factor, max_y * factor);
-   to_close = 0;
-   close_g = 0;
+	   SVG_MARGIN - min_x * factor, SVG_MARGIN + max_y * factor);
+   to_close = false;
+   close_g = false;
 }
 
 static void
@@ -417,21 +427,21 @@ svg_start_pass(int layer)
 {
    if (to_close) {
       fprintf(fh, "\"/>\n");
-      to_close = 0;
+      to_close = false;
    }
    if (close_g) {
       fprintf(fh, "</g>\n");
    }
-   close_g = 1;
-
    fprintf(fh, "<g id=\"%s\"", layer_names[layer]);
    if (layer & LEGS)
-      fprintf(fh, " style=\"stroke:black;fill:none;stroke-width:0.4\"");
+      fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.4px\"");
    else if (layer & STNS)
-      fprintf(fh, " style=\"stroke:black;fill:none;stroke-width:0.05\"");
+      fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.05px\"");
    else if (layer & LABELS)
-      fprintf(fh, " style=\"font-size:%.3f\"", text_height);
+      fprintf(fh, " font-size=\"%.3fem\"", text_height);
    fprintf(fh, ">\n");
+
+   close_g = true;
 }
 
 static void
@@ -445,7 +455,7 @@ svg_line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMo
        fprintf(fh, "<path d=\"M%.3f %.3f", p1->x * factor, p1->y * -factor);
    }
    fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
-   to_close = 1;
+   to_close = true;
 }
 
 static void
@@ -453,7 +463,7 @@ svg_label(const img_point *p, const char *s, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
-           p->x * factor, p->y * -factor);
+	   p->x * factor, p->y * -factor);
    fputs(s, fh);
    fputs("</text>\n", fh);
    set_name(p, s);
@@ -464,7 +474,7 @@ svg_cross(const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
-           find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
+	   find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
 	   p->x * factor - MARKER_SIZE, p->y * -factor - MARKER_SIZE,
 	   p->x * factor + MARKER_SIZE, p->y * -factor + MARKER_SIZE,
@@ -477,13 +487,13 @@ svg_footer(void)
 {
    if (to_close) {
       fprintf(fh, "\"/>\n");
-      to_close = 0;
+      to_close = false;
    }
    if (close_g) {
       fprintf(fh, "</g>\n");
+      close_g = false;
    }
-   close_g = 1;
-   fprintf(fh, "</g>\n</svg>");
+   fprintf(fh, "</g>\n</svg>\n");
 }
 
 static void
@@ -494,9 +504,9 @@ plt_header(const char *title)
    for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X",
 	   (title && title[0]) ? title : "X");
 }
@@ -549,9 +559,9 @@ plt_footer(void)
 {
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "X %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
    putc('\x1a', fh);
 }
@@ -585,7 +595,7 @@ eps_header(const char *title)
        }
    }
    if (name) {
-      fprintf(fh, "%%%%For: %s\n", name.c_str());
+       fprintf(fh, "%%%%For: %s\n", name.c_str());
    }
 
    fprintf(fh, "%%%%BoundingBox: %d %d %d %d\n",
@@ -606,7 +616,7 @@ eps_header(const char *title)
 
    /* this code adapted from a2ps */
    fputs("%%BeginResource: encoding ISO88591Encoding\n"
-         "/ISO88591Encoding [\n", fh);
+	 "/ISO88591Encoding [\n", fh);
    fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
    fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
    fputs("/.notdef /.notdef /.notdef /.notdef\n", fh);
@@ -863,8 +873,8 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    img_point p, p1;
    double s = 0, c = 0;
    export_format format = FMT_DXF;
-   int *pass;
-   bool elevation = (tilt == 90.0);
+   const int *pass;
+   bool elevation = (tilt == 0.0);
    double elev_angle = pan;
 
    void (*header)(const char *);

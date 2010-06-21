@@ -32,6 +32,14 @@ Changes in 1.0.40 (all backported from 1.1.13):
   has fired to prevent endless (or seemingly endless) cascades of error
   dialogs.
 
+* aven: Improve SVG output compatibility.
+
+* aven: Put a 5mm border around exported SVG files to allow for station markers
+  and non-zero width lines.
+
+* aven: Fix crash when exporting as SVG or Sketch if labels or surface data
+  was turned on.
+
 Changes in 1.0.39:
 
 * (MS Windows version): aven: Fix cursor keys to pan survey.

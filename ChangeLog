@@ -1,3 +1,10 @@
+Mon Jun 21 11:33:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS,src/export.cc: aven: Improve SVG output compatibility.  Put a
+	  5mm border around exported SVG files to allow for station markers
+	  and non-zero width lines.  Fix crash when exporting as SVG or Sketch
+	  if labels or surface data was turned on.  Backports from 1.1.13.
+
 Mon Jun 21 10:41:07 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: wxWidgets now has a Slovak i18n, so remove fallback
