@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
 /*#define DEBUG 1*/
@@ -1116,7 +1116,11 @@ macosx_got_msg:
 
    if (!msg_lang || !*msg_lang) {
       msg_lang = getenv("LC_MESSAGES");
-      if (!msg_lang || !*msg_lang) msg_lang = getenv("LANG");
+      if (!msg_lang || !*msg_lang) {
+	 msg_lang = getenv("LANG");
+	 /* Something (AutoCAD?) on Microsoft Windows sets LANG to a number. */
+	 if (msg_lang && !isalpha(msg_lang[0])) msg_lang = NULL;
+      }
       if (!msg_lang || !*msg_lang) {
 #if (OS==WIN32)
 	 LCID locid;

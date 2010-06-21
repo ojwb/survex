@@ -25,6 +25,9 @@ Changes in 1.0.40 (all backported from 1.1.13):
 * (MS Windows version): aven: Include Catalan and Brazilian Portuguese
   translations of messages for wxWidgets (the GUI library we use).
 
+* Ignore LANG if it starts with a digit to avoid problems with bogus value for
+  LANG which AutoCAD installation seems to set on MS Windows.
+
 Changes in 1.0.39:
 
 * (MS Windows version): aven: Fix cursor keys to pan survey.
