@@ -1,3 +1,9 @@
+Mon Jun 21 17:07:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.1.13:
+	* lib/English_GB.isl,lib/Romanian-7-5.1.11.isl: Check in the unofficial
+	  i18n files for InnoSetup which we use.
+
 Mon Jun 21 16:45:07 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.1.13:
