@@ -1,3 +1,8 @@
+Mon Jun 21 10:41:07 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: wxWidgets now has a Slovak i18n, so remove fallback
+	  to Czech.
+
 Mon Jun 21 10:34:15 GMT 2010  Olly Betts <olly@survex.com>
 
 	* NEWS,src/aven.cc: Make error dialog modal (backport from 1.1.13).
