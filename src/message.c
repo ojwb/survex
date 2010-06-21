@@ -226,6 +226,10 @@ init_signals(void)
       return;
    }
 
+   /* Remove that signal handler to avoid the possibility of an infinite loop.
+    */
+   signal(sigReceived, SIG_DFL);
+
    switch (sigReceived) {
       case SIGABRT: en = /*Abnormal termination*/90; break;
       case SIGFPE:  en = /*Arithmetic error*/91; break;
