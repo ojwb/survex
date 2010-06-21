@@ -5,28 +5,8 @@ Changes in 1.0.40 (all backported from 1.1.13):
 * Recognise .3d file format version 6 so you can load .3d files processed by
   1.1.12 and later.
 
-* cad3d: Fix export to SVG when a label contains a '%' character.
-
-* (Unix version): Fix \ to appear correctly in 'man print.ini'.
-
 * Documentation: Tilt up in aven, xcaverot, and caverot is apostrophe, not
   comma!
-
-* (Microsoft Windows version): The installer is now created with a newer
-  version of InnoSetup, which gives a smaller download.
-
-* (MS Windows version): Fix installer to work on Windows 2000 or XP if
-  run by an unprivileged user.
-
-* (MS Windows version): Upgrade to the latest version of InnoSetup (the
-  installer builder we use) and include new installer translations for
-  UK English, Spanish, Brazilian Portuguese, Italian, Romanian, and Slovak.
-
-* (MS Windows version): aven: Include Catalan and Brazilian Portuguese
-  translations of messages for wxWidgets (the GUI library we use).
-
-* Ignore LANG if it starts with a digit to avoid problems with bogus value for
-  LANG which AutoCAD installation seems to set on MS Windows.
 
 * aven: Make the error dialog modal and remove a signal handler once it
   has fired to prevent endless (or seemingly endless) cascades of error
@@ -39,6 +19,26 @@ Changes in 1.0.40 (all backported from 1.1.13):
 
 * aven: Fix crash when exporting as SVG or Sketch if labels or surface data
   was turned on.
+
+* cad3d: Fix export to SVG when a label contains a '%' character.
+
+* (Unix version): Fix \ to appear correctly in 'man print.ini'.
+
+* Ignore LANG if it starts with a digit to avoid problems with bogus value for
+  LANG which AutoCAD installation seems to set on MS Windows.
+
+* (MS Windows version): The installer is now created with a newer
+  version of InnoSetup, which gives a smaller download.
+
+* (MS Windows version): Fix installer to work on Windows 2000 or XP if
+  run by an unprivileged user.
+
+* (MS Windows version): Upgrade to the latest version of InnoSetup (the
+  installer builder we use) and include new installer translations for
+  UK English, Spanish, Brazilian Portuguese, Italian, Romanian, and Slovak.
+
+* (MS Windows version): aven: Include Catalan and Brazilian Portuguese
+  translations of messages for wxWidgets (the GUI library we use).
 
 Changes in 1.0.39:
 

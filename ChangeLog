@@ -1,3 +1,7 @@
+Mon Jun 21 13:08:37 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in,make_release: Update for 1.0.40.
+
 Mon Jun 21 11:41:21 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/img.h: Fix (C) years.

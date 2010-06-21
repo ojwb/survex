@@ -1,8 +1,6 @@
 #! /bin/sh
 
-# Needed for wine to run on roadkill:
-LD_ASSUME_KERNEL=2.4.1
-export LD_ASSUME_KERNEL
+set -e
 
 # flags to consider:
 # CFLAGS="-O2 -fomit-frame-pointer"
@@ -12,176 +10,61 @@ if test x"$1" = x-t ; then
    rel=
    shift
 fi
-mk=${@-src rpm deb doc alien djgpp mingw}
+
 if test x"$rel" = xyes ; then
-   # Update debian changelog entry if necessary
-   # If it does get updated, then the next check will fail...
-   ./update-debcl.pl
-   # Check everything is checked into CVS
-   if ! cvs diff > /dev/null 2> /dev/null ; then
-      echo There are changes not checked into CVS - please rectify
-      exit 1
-   fi
-   # Update ChangeLog
-   CVS2CL=./cvs2cl.pl
-   if ! test -x $CVS2CL ; then
-      CVS2CL=../cvs2cl/cvs2cl.pl
-   fi
-   if ! test -x $CVS2CL ; then
-      echo cvs2cl.pl not found
-      exit 1
-   fi
-   TAG=`sed 's/^CHANGELOG_FROM_TAG=//p;d' configure.in`
-   # stderr | grep -v '^cvs server: warning: no revision .*/Attic/'
-   if ! cvs log -r$TAG:: 2> /dev/null|./fixchangelog.pl $TAG|$CVS2CL --stdin 2> /dev/null ; then
-      echo Failed to update ChangeLog from CVS
+   # Check everything is checked into SVN.
+   if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
+      echo There are changes not checked into SVN - please rectify
       exit 1
    fi
 fi
-if test -f Makefile ; then
-   if ! make distclean ; then
-      echo make distclean failed
-      exit 1
-   fi
-fi
+
+test ! -f Makefile || make distclean
+
 if test yes = "$rel" ; then
-   rm -f config.guess.new config.sub.new
-   # only check for new versions if the current ones are over a day old
-   perl -e '-M "config.guess" && -M "config.sub" && exit 1' ||\
-      wget ftp://ftp.gnu.org/gnu/config/config.guess -O config.guess.new &&\
-      wget ftp://ftp.gnu.org/gnu/config/config.sub -O config.sub.new &&\
-      chmod 755 config.guess.new config.sub.new &&\
-      mv config.guess.new config.guess && mv config.sub.new config.sub
+   cp -u /usr/share/misc/config.guess .
+   cp -u /usr/share/misc/config.sub .
 fi
+
 autoreconf --force -i
-export CC
-export CXX
-CC=gcc
-CXX=g++
-if ! ./configure ; then
-   echo configure failed
-   exit 1
-fi
+./configure CC=gcc CXX=g++
 if test yes = "$rel" ; then
-   if ! make dist ; then # distcheck fails extend.tst for some reason!
-      echo make distcheck failed
-      exit 1
-   fi
+   export CFLAGS
+   export CXXFLAGS
+   # tell the preproceesor to be C89 - this makes it reject // comments
+# FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
+# FIXME   CXXFLAGS="-Werror"
+   CFLAGS="-Wp,-std=c89"
+   CXXFLAGS=
+   make distcheck
+   CFLAGS=
+   CXXFLAGS=
 else
-   if ! make dist ; then
-      echo make dist failed
-      exit 1
-   fi
+   make dist
 fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<rpm\>' || test x"$mk" = xrpm ; then
-   if rpm --version > /dev/null 2> /dev/null ; then
-      if ! make rpm ; then
-         echo make rpm failed
-         exit 1
-       fi
-   else
-       echo rpm not installed - skipping rpm generation
-   fi
+
+make distclean
+
+test -n "$build_platform" || build_platform=`sh config.guess`
+SAVE_PATH=$PATH
+if test -d /usr/i586-mingw32msvc/bin ; then
+  # debian mingw32 package
+  PATH=/usr/i586-mingw32msvc/bin:$PATH
+  CC=/usr/bin/i586-mingw32msvc-gcc
+  CXX=/usr/bin/i586-mingw32msvc-g++
+else
+  # variant of debian mingw32 package?
+  PATH=/usr/i386-mingw32msvc/bin:$PATH
+  CC=/usr/bin/i386-mingw32msvc-gcc
+  CXX=/usr/bin/i386-mingw32msvc-g++
 fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<deb\>' || test x"$mk" = xdeb ; then
-   if ! make debian ; then
-      echo make debian failed
-      exit 1
-   fi
-fi
-if test x"$rel" = xyes && expr "$mk" : '.*\<doc\>' || test x"$mk" = xdoc ; then
-   if ! make dos_doc_exe ; then
-      echo make dos_doc_exe failed
-      exit 1
-   fi
-   if ! make riscos_doc_zip ; then
-      echo make riscos_doc_zip failed
-      exit 1
-   fi
-fi
-if expr "$mk" : '.*\<alien\>'; then
-   if ! make alien_src_zip ; then
-      echo make alien_src_zip failed
-      exit 1
-   fi
-fi
-if ! make distclean ; then
-   echo make distclean failed
-   exit 1
-fi
-unset CC
-unset CXX
-if expr "$mk" : '.*\<djgpp\>'; then
-   build_platform=`sh config.guess`
-   SAVE_PATH="$PATH"
-   # for building on mrs30
-   if test -d /opt/crosstools/i386-pc-msdosdjgpp ; then
-      PATH=/opt/crosstools/i386-pc-msdosdjgpp/bin:/opt/crosstools/bin:$PATH
-   fi
-   if ! ./configure --host=i386-pc-msdosdjgpp --build="$build_platform" --with-x=no --disable-aven LDFLAGS=-s STRIP=echo CAVEROT=caverot.exe CRLIB=-lalleg CROBJX=dosrot.o ; then
-      echo djgpp configure failed
-      exit 1
-   fi
-   if ! make ; then
-      echo djgpp make failed
-      exit 1
-   fi
-   if ! make djgpp_exe ; then
-      echo djgpp make djgpp_exe failed
-      exit 1
-   fi
-   if ! make distclean ; then
-      echo make distclean failed
-      exit 1
-   fi
-   PATH="$SAVE_PATH"
-fi
-if expr "$mk" : '.*\<mingw\>'; then
-   test -n "$build_platform" || build_platform=`sh config.guess`
-   SAVE_PATH="$PATH"
-   if test -d /usr/local/cross-tools/i386-mingw32msvc/bin ; then
-      # binaries from http://www.devolution.com/~slouken/SDL/Xmingw32/
-      PATH=/usr/local/cross-tools/bin:/usr/local/cross-tools/i386-mingw32msvc/bin:$PATH
-   else
-      if test -d /usr/i586-mingw32msvc/bin ; then
-         # debian mingw32 package
-	 PATH=/usr/i586-mingw32msvc/bin:$PATH
-	 CC=/usr/bin/i586-mingw32msvc-gcc
-	 export CC
-	 CXX=/usr/bin/i586-mingw32msvc-g++
-	 export CXX
-      else
-	 # variant of debian mingw32 package?
-	 PATH=/usr/i386-mingw32msvc/bin:$PATH
-	 CC=/usr/bin/i386-mingw32msvc-gcc
-	 export CC
-	 CXX=/usr/bin/i386-mingw32msvc-g++
-	 export CXX
-      fi
-   fi
-   wxc=wxmsw-2.5-config
-   for a in /usr/i586-mingw32msvc/bin/wx-config ; do
-      test -x "$a" && wxc="$a"
-   done
-   LDFLAGS=
-   CPPFLAGS=
-   if ! ./configure --host=mingw32 --build="$build_platform" --with-x=no CAVEROT= WXCONFIG="$wxc" LDFLAGS="-s $LDFLAGS" CPPFLAGS="$CPPFLAGS" ; then
-      echo mingw configure failed
-      exit 1
-   fi
-   if ! make ; then
-      echo mingw make failed
-      exit 1
-   fi
-   if ! make mingw_iss ; then
-      echo mingw make mingw_iss failed
-      exit 1
-   fi
-   if ! make distclean ; then
-      echo make distclean failed
-      exit 1
-   fi
-   PATH="$SAVE_PATH"
-   CC=
-   CXX=
-fi
+wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-ansi-release-static-2.8
+# -Werror here causes AC_CHECK_FUNCS to fail.
+CFLAGS=
+CXXFLAGS='-fno-strict-aliasing -Werror'
+./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s
+make CFLAGS=-Werror
+make mingw_iss
+PATH=$SAVE_PATH
+
+make distclean

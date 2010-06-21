@@ -7,18 +7,16 @@ dnl Need autoconf 2.50 or later for AC_ARG_VAR
 AC_PREREQ(2.50)
 AC_INIT(src/cavern.c)
 
-dnl next line is for make_release
-CHANGELOG_FROM_TAG=v1_0_38
-AM_INIT_AUTOMAKE(survex, 1.0.39)
+AM_INIT_AUTOMAKE(survex, 1.0.40)
 RELEASE=1
 
 AC_SUBST(RELEASE)
 AM_CONFIG_HEADER(config.h)
 
 dnl don't reformat the next line, miniam.pl pulls out the value
-COPYRIGHT_MSG="Copyright (C) 1990-2006 Olly Betts"
+COPYRIGHT_MSG="Copyright (C) 1990-2008,2010 Olly Betts"
 
-AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2002 Mark R. Shinwell"
+AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2003 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, ["$COPYRIGHT_MSG"], [Copyright Message])
 AC_DEFINE_UNQUOTED(AVEN_COPYRIGHT_MSG, ["$AVEN_COPYRIGHT_MSG"],
