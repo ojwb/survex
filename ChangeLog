@@ -1,3 +1,8 @@
+Thu Jul 01 12:20:58 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Clean up comments from over-enthusiastic search and
+	  replace which modified comments as well as code.
+
 Thu Jul 01 10:15:06 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.h: Work around Mac OS X polluting the global namespace

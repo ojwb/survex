@@ -104,12 +104,12 @@ Root: HKCU; Subkey: "Software\Classes\.plf"; ValueType: string; ValueData: "Comp
 Root: HKCU; Subkey: "Software\Classes\CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
-; Support for loading CMAP XYZ files; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+; Support for loading CMAP XYZ files
 Root: HKCU; Subkey: "Software\Classes\.xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 ;Root: HKCU; Subkey: "Software\Classes\CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
-;; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+;
 Root: HKCU; Subkey: "Software\Classes\.svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\.3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\.err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
@@ -152,12 +152,12 @@ Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"; Che
 Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
-; Support for loading CMAP XYZ files; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+; Support for loading CMAP XYZ files
 Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 ;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
-;; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+;
 Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
