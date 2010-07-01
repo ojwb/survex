@@ -1,3 +1,7 @@
+Thu Jul 01 10:10:45 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Remove FIXME which has already been resolved.
+
 Fri Jun 18 11:04:35 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: wxMotif apparently doesn't support wxGLCanvas, which
