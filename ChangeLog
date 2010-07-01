@@ -1,3 +1,8 @@
+Thu Jul 01 10:15:06 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: Work around Mac OS X polluting the global namespace
+	  with a "Point" class.
+
 Thu Jul 01 10:10:45 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Remove FIXME which has already been resolved.
