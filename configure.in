@@ -191,7 +191,11 @@ esac
 WX_LIBS=`$WX_CONFIG --libs "$wx_libs"`
 dnl Needed for nvidia drivers on linux (for some setups anyway).
 AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryVersion, [WX_LIBS="$WX_LIBS -lXxf86vm"], [], [$WX_LIBS])
+dnl SuSE Linux needs -lGLU explicitly, and we do use functions from it directly
+dnl so always link it.
+AC_CHECK_LIB([GLU], [gluProject], [WX_LIBS="$WX_LIBS -lGLU"], [], [$WX_LIBS])
 AC_SUBST(WX_LIBS)
+
 dnl Older wx-config didn't support --ldflags (2.6.3 doesn't) - error goes to
 dnl stderr, with nothing to stdout, so just ignore stderr.
 WX_LDFLAGS=`$WX_CONFIG --ldflags "$wx_libs" 2> /dev/null`
