@@ -1352,6 +1352,12 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     // Update window title.
     SetTitle(m_Title + " - "APP_NAME);
 
+    if (!m_FindBox->GetValue().empty()) {
+	// Highlight any stations matching the current search.
+	wxCommandEvent dummy;
+	OnFind(dummy);
+    }
+
     return true;
 }
 

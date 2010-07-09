@@ -1,3 +1,8 @@
+Fri Jul 09 14:31:39 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Highlight stations matching any current search when a
+	  file is loaded.  (ticket#9)
+
 Thu Jul 01 12:20:58 GMT 2010  Olly Betts <olly@survex.com>
 
 	* survex.iss.in: Clean up comments from over-enthusiastic search and
