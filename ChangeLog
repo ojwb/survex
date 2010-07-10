@@ -1,3 +1,14 @@
+Sat Jul 10 12:15:23 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Set the select timeout before calling wxYield()
+	  when waiting for output from cavern to 0.1s instead of 0.00001s to
+	  avoid yielding excessively on slower machines where this is likely
+	  to really slow things down.  Call Scroll() only once per line in
+	  the case where we are updating the scrollbar position.  Call
+	  Update() instead of wxYield() after each line, since that's enough
+	  to get the window updated.  Remove unused assignment "ch = left;"
+	  at end of loop.
+
 Fri Jul 09 14:42:47 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in: Link aven with -lGLU which SuSE Linux needs.

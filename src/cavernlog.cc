@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006 Olly Betts
+ * Copyright (C) 2005,2006,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,9 +215,10 @@ CavernLogWindow::process(const wxString &file)
 	FD_SET(cavern_fd, &rfds);
 	FD_ZERO(&efds);
 	FD_SET(cavern_fd, &efds);
+	// Set timeout to 0.1 seconds.
 	struct timeval timeout;
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 10;
+	timeout.tv_usec = 100000;
 	if (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
 	    wxYield();
 	    continue;
@@ -293,9 +294,6 @@ CavernLogWindow::process(const wxString &file)
 		cur += wxT("<br>\n");
 		AppendToPage(cur);
 
-		// Restore the scrollbar positions.
-		Scroll(scroll_x, scroll_y);
-
 		if (!link_count) {
 		    // Auto-scroll the window until we've reported a warning or
 		    // error.
@@ -306,10 +304,14 @@ CavernLogWindow::process(const wxString &file)
 		    y -= ys;
 		    int xu, yu;
 		    GetScrollPixelsPerUnit(&xu, &yu);
-		    Scroll(-1, y / yu);
+		    Scroll(scroll_x, y / yu);
+		} else {
+		    // Restore the scrollbar positions.
+		    Scroll(scroll_x, scroll_y);
 		}
+
 		cur.clear();
-		wxYield();
+		Update();
 		break;
 	    }
 	    case '<':
@@ -328,7 +330,6 @@ CavernLogWindow::process(const wxString &file)
 		    cur += (char)ch;
 		}
 	}
-	ch = left;
     }
     int retval = pclose(cavern_out);
     if (retval) {
