@@ -19,18 +19,18 @@
 # PATH you need to indicate where wx-config is by running this script
 # something like this:
 #
-#   env WXCONFIG=/path/to/wx-config ./buildmacosx.sh
+#   env WX_CONFIG=/path/to/wx-config ./buildmacosx.sh
 #
 # If using a pre-installed wxWidgets, note that it must satisfy the
 # following requirements:
 #   - It must be built with OpenGL support (--with-opengl).
 #   - It must be the Carbon version.
-#   - It must be a "non-unicode" build.
+#   - It probably should be a "Unicode" build (--enable-unicode).
 #
 
 set -e
 
-WXVERSION=2.7.0-1
+WXVERSION=2.8.11
 
 if test "x$1" = "x--install-wx" ; then
   if test -x WXINSTALL/bin/wx-config ; then
@@ -41,29 +41,26 @@ if test "x$1" = "x--install-wx" ; then
       curl -O ftp://ftp.wxwidgets.org/pub/$WXVERSION/wxWidgets-$WXVERSION.tar.bz2
     test -d wxWidgets-$WXVERSION || tar jxvf wxWidgets-$WXVERSION.tar.bz2
     test -d wxWidgets-$WXVERSION/build || mkdir wxWidgets-$WXVERSION/build
-    # wx's Carbon glcanvas is unsatisfactory, so for now we use our own.
-    cp src/carbon-glcanvas.cpp wxWidgets-$WXVERSION/src/mac/carbon/
     cd wxWidgets-$WXVERSION/build
-    ../configure --disable-shared --prefix="$prefix" --with-opengl
+    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode
     make -s
     make -s install
     cd ../..
   fi
-  WXCONFIG=`pwd`/WXINSTALL/bin/wx-config
+  WX_CONFIG=`pwd`/WXINSTALL/bin/wx-config
 fi
 
-test -n "$WXCONFIG" || WXCONFIG=`which wx-config`
-if test -z "$WXCONFIG" ; then
-  echo "WXCONFIG not set and wx-config not on your PATH"
+test -n "$WX_CONFIG" || WX_CONFIG=`which wx-config`
+if test -z "$WX_CONFIG" ; then
+  echo "WX_CONFIG not set and wx-config not on your PATH"
   exit 1
 fi
 # Force static linking so the user doesn't need to install wxWidgets.
-WXCONFIG=$WXCONFIG' --static'
-export WXCONFIG
+WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
 D=`pwd`/Survex
 T=`pwd`/macosxtmp
-./configure --prefix="$D" --bindir="$D" --mandir="$T"
+./configure --prefix="$D" --bindir="$D" --mandir="$T" WX_CONFIG="$WX_CONFIG"
 make
 make install
 #mv Survex/survex Survex/Survex

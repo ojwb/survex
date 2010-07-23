@@ -1,3 +1,9 @@
+Fri Jul 23 05:55:37 GMT 2010  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Update to use WX_CONFIG not WXCONFIG.  Update to
+	  use a Unicode build.  If building a private wx, use wx 2.8.11 not
+	  2.7.0-1 (and don't replace carbon-glcanvas.cpp with our own version).
+
 Sat Jul 10 12:15:23 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Set the select timeout before calling wxYield()
