@@ -23,6 +23,12 @@
 
 #include "avenprcore.h"
 
+// The Gnome print dialog provides its own preview.  I assume Mac OS X does
+// to (MarkS made that change).
+#if !defined __WXMAC__ && !defined wxUSE_LIBGNOMEPRINT
+# define AVEN_PRINT_PREVIEW
+#endif
+
 class MainFrm;
 class wxComboBox;
 class wxStaticText;
@@ -60,7 +66,9 @@ protected:
 		    bool printing);
 	void OnPrint(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
+#ifdef AVEN_PRINT_PREVIEW
 	void OnPreview(wxCommandEvent& event);
+#endif
 	void OnPlan(wxCommandEvent&);
 	void OnElevation(wxCommandEvent&);
 	void OnChangeSpin(wxSpinEvent& event);

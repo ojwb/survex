@@ -57,7 +57,9 @@ using namespace std;
 enum {
 	svx_PRINT = 1200,
 	svx_EXPORT,
+#ifdef AVEN_PRINT_PREVIEW
 	svx_PREVIEW,
+#endif
 	svx_SCALE,
 	svx_BEARING,
 	svx_TILT,
@@ -133,7 +135,9 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
     EVT_BUTTON(svx_EXPORT, svxPrintDlg::OnExport)
+#ifdef AVEN_PRINT_PREVIEW
     EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
+#endif
     EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
     EVT_CHECKBOX(svx_LEGS, svxPrintDlg::OnChange)
@@ -284,8 +288,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     but = new wxButton(this, wxID_CANCEL, wmsg(/*&Cancel*/402));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     if (printing) {
-#if !defined __WXMAC__ && !defined wxUSE_LIBGNOMEPRINT
-	// The Gnome print dialog provides its own preview.
+#ifdef AVEN_PRINT_PREVIEW
 	but = new wxButton(this, svx_PREVIEW, wmsg(/*Pre&view*/401));
 	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
 	but = new wxButton(this, svx_PRINT, wmsg(/*&Print*/400));
@@ -340,6 +343,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     Destroy();
 }
 
+#ifdef AVEN_PRINT_PREVIEW
 void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged();
@@ -383,6 +387,7 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
 
     frame->Show();
 }
+#endif
 
 void
 svxPrintDlg::OnPlan(wxCommandEvent&) {
@@ -965,11 +970,13 @@ bool
 svxPrintout::OnPrintPage(int pageNum) {
     GetPageSizePixels(&xpPageWidth, &ypPageDepth);
     pdc = GetDC();
+#ifdef AVEN_PRINT_PREVIEW
     if (IsPreview()) {
 	int dcx, dcy;
 	pdc->GetSize(&dcx, &dcy);
 	pdc->SetUserScale((double)dcx / xpPageWidth, (double)dcy / ypPageDepth);
     }
+#endif
 
     layout * l = m_layout;
     {
