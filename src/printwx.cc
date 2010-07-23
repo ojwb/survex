@@ -284,7 +284,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     but = new wxButton(this, wxID_CANCEL, wmsg(/*&Cancel*/402));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     if (printing) {
-#ifndef __WXMAC__
+#if !defined __WXMAC__ && !defined wxUSE_LIBGNOMEPRINT
+	// The Gnome print dialog provides its own preview.
 	but = new wxButton(this, svx_PREVIEW, wmsg(/*Pre&view*/401));
 	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
 	but = new wxButton(this, svx_PRINT, wmsg(/*&Print*/400));

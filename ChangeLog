@@ -1,3 +1,8 @@
+Fri Jul 23 12:15:31 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: The Gnome print dialog has its own preview window
+	  so suppress ours if using the Gnome one.
+
 Fri Jul 23 11:21:52 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in: Update the wx-config probing code - wxmac-config etc
