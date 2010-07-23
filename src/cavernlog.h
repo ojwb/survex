@@ -28,7 +28,11 @@ class CavernLogWindow : public wxHtmlWindow {
   public:
     CavernLogWindow(wxWindow * parent);
 
-    /// Returns -2 on failure to run cavern, -1 on error, or the number of warnings if no error.
+    /** Process survey data in file.
+     *
+     *  @return -2 on failure to run cavern, -1 on error from cavern, or the
+     *		number of warnings if no errors.
+     */
     int process(const wxString &file);
 
     virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
