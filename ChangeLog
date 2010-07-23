@@ -1,3 +1,8 @@
+Fri Jul 23 11:21:52 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: Update the wx-config probing code - wxmac-config etc
+	  aren't present with newer wxWidgets versions.
+
 Fri Jul 23 05:55:37 GMT 2010  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Update to use WX_CONFIG not WXCONFIG.  Update to

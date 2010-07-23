@@ -146,32 +146,25 @@ if test -n "$WX_CONFIG" ; then
   if (exec >&5 2>&5;$WX_CONFIG --libs --cflags --cxxflags "$wx_libs";exit $?) then
     :
   else
-    AC_MSG_ERROR(['$WX_CONFIG --libs --cflags --cxxflags "$wx_libs"' doesn't work, bailing out])
+    AC_MSG_ERROR(['$WX_CONFIG --libs --cflags --cxxflags "$wx_libs"' does not work, bailing out])
   fi
 else
   if test yes = "$macosx" ; then
-    dnl FIXME: Not sure if this is useful for newer wx...
-    AC_PATH_PROGS(WX_CONFIG, [wxmac-2.8-config wxmac-2.6-config wxmac-2.7-config wxmac-config])
     wxdef=__WXMAC__
   elif test yes = "$mswindows" ; then
-    dnl FIXME: Not sure if this is useful for newer wx...
-    AC_PATH_PROGS(WX_CONFIG, [wxmsw-2.8-config wxmac-2.6-config wxmac-2.7-config wxmac-config])
     wxdef=__WXMSW__
   else
     wxdef=__WXGTK__
   fi
-  if test -z "$WX_CONFIG" ; then
-    dnl See if wx-config exists and is for the correct version.
-    AC_PATH_PROGS(WX_CONFIG, [wx-config])
-    if test -n "$WX_CONFIG" ; then
-      if (exec >&5 2>&5;$WX_CONFIG --cflags "$wx_libs"|grep -e -D"$wxdef";exit $?) then
-	:
-      else
-	WX_CONFIG=
-      fi
+  dnl See if wx-config exists and is for the correct version.
+  AC_PATH_PROGS(WX_CONFIG, [wx-config])
+  if test -n "$WX_CONFIG" ; then
+    if (exec >&5 2>&5;$WX_CONFIG --cflags "$wx_libs"|grep -e -D"$wxdef";exit $?) then
+      :
+    else
+      AC_MSG_ERROR([wxWidgets not for the right toolkit.  Run ./configure WX_CONFIG=/path/to/wx-config])
     fi
-  fi
-  if test -z "$WX_CONFIG" ; then
+  else
     AC_MSG_ERROR([wxWidgets not found.  Run ./configure WX_CONFIG=/path/to/wx-config])
   fi
 fi
