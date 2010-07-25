@@ -966,9 +966,8 @@ MainFrm::ProcessSVXFile(const wxString & file)
     return result >= 0;
 }
 
-bool MainFrm::LoadData(const wxString& file_, wxString prefix)
+bool MainFrm::LoadData(const wxString& file, wxString prefix)
 {
-    wxString file(file_);
     // Load survey data from file, centre the dataset around the origin,
     // and prepare the data for drawing.
 
@@ -976,25 +975,8 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
     wxStopWatch timer;
     timer.Start();
 #endif
-    wxString filename_used;
 
-    // Check if this is an unprocessed survey data file.
-    if (file.length() > 4 && file[file.length() - 4] == '.') {
-	wxString ext = file.substr(file.length() - 3, 3);
-	if (strcasecmp(ext.char_str(), "svx") == 0 ||
-	    strcasecmp(ext.char_str(), "dat") == 0 ||
-	    strcasecmp(ext.char_str(), "mak") == 0) {
-	    if (!ProcessSVXFile(file)) return false;
-	    filename_used = file;
-	    char * base_fnm = base_from_fnm(file.char_str());
-	    char * fnm_3d = add_ext(base_fnm, "3d");
-	    file = wxString(fnm_3d, wxConvUTF8);
-	    osfree(fnm_3d);
-	    osfree(base_fnm);
-	}
-    }
-
-    // Load the survey data.
+    // Load the processed survey data.
     img* survey = img_open_survey(file.char_str(), prefix.char_str());
     if (!survey) {
 	wxString m = wxString::Format(wmsg(img_error()), file.c_str());
@@ -1002,11 +984,6 @@ bool MainFrm::LoadData(const wxString& file_, wxString prefix)
 	return false;
     }
 
-    if (!filename_used.empty()) {
-	m_File = filename_used;
-    } else {
-	m_File = wxString(survey->filename_opened, wxConvUTF8);
-    }
     m_IsExtendedElevation = survey->is_extended_elevation;
 
     m_Tree->DeleteAllItems();
@@ -1615,42 +1592,74 @@ void MainFrm::OnMRUFile(wxCommandEvent& event)
     if (!f.empty()) OpenFile(f);
 }
 
+void MainFrm::AddToFileHistory(const wxString & file)
+{
+    if (wxIsAbsolutePath(file)) {
+	m_history.AddFileToHistory(file);
+    } else {
+	wxString abs = wxGetCwd();
+	abs += wxCONFIG_PATH_SEPARATOR;
+	abs += file;
+	m_history.AddFileToHistory(abs);
+    }
+    wxConfigBase *b = wxConfigBase::Get();
+    m_history.Save(*b);
+    b->Flush();
+}
+
 void MainFrm::OpenFile(const wxString& file, wxString survey)
 {
     wxBusyCursor hourglass;
-    wxString old_file = m_File;
-    if (LoadData(file, survey)) {
-	if (wxIsAbsolutePath(m_File)) {
-	    m_history.AddFileToHistory(m_File);
-	} else {
-	    wxString abs = wxGetCwd();
-	    abs += wxCONFIG_PATH_SEPARATOR;
-	    abs += m_File;
-	    m_history.AddFileToHistory(abs);
+
+    // Check if this is an unprocessed survey data file.
+    if (file.length() > 4 && file[file.length() - 4] == '.') {
+	wxString ext(file, file.length() - 3, 3);
+	ext.MakeLower();
+	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak")) {
+	    if (!ProcessSVXFile(file)) {
+		// ProcessSVXFile() reports the error to the user.
+		return;
+	    }
+	    AddToFileHistory(file);
+	    wxString file3d(file, 0, file.length() - 3);
+	    file3d.append(wxT("3d"));
+	    if (!LoadData(file3d, survey))
+		return;
+	    InitialiseAfterLoad(file);
+	    return;
 	}
-	wxConfigBase *b = wxConfigBase::Get();
-	m_history.Save(*b);
-	b->Flush();
-
-	int x;
-	int y;
-	GetClientSize(&x, &y);
-	if (x < 600)
-	    x /= 3;
-	else if (x < 1000)
-	    x = 200;
-	else
-	    x /= 5;
-
-	m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
-	m_SashPosition = x; // Save width of panel.
-
-	m_Gfx->Initialise(old_file == m_File);
-	m_Notebook->Show(true);
-
-	m_Gfx->Show(true);
-	m_Gfx->SetFocus();
     }
+
+    if (!LoadData(file, survey))
+	return;
+    AddToFileHistory(file);
+    InitialiseAfterLoad(file);
+}
+
+void MainFrm::InitialiseAfterLoad(const wxString & file)
+{
+    int x;
+    int y;
+    GetClientSize(&x, &y);
+    if (x < 600)
+	x /= 3;
+    else if (x < 1000)
+	x = 200;
+    else
+	x /= 5;
+
+    m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
+    m_SashPosition = x; // Save width of panel.
+
+    bool same_file = (file == m_File);
+    if (!same_file)
+	m_File = file;
+
+    m_Gfx->Initialise(same_file);
+    m_Notebook->Show(true);
+
+    m_Gfx->Show(true);
+    m_Gfx->SetFocus();
 }
 
 //

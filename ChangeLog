@@ -1,3 +1,8 @@
+Sun Jul 25 15:32:42 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: Clean up code which sorts out loading
+	  a file (and processing it first if necessary).
+
 Sun Jul 25 07:20:05 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.h: Fix filename in comment at top.
