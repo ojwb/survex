@@ -102,11 +102,9 @@ html_escape(const wxString &str)
 }
 
 CavernLogWindow::CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) {
-    //GetParser()->SetInputEncoding(wxFONTENCODING_UTF8);
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
     SetFonts(wxString(), wxString(), sizes);
-    //GetParser()->SetInputEncoding(wxFONTENCODING_UTF8);
 }
 
 void
