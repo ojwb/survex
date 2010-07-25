@@ -1,3 +1,8 @@
+Sun Jul 25 07:17:20 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Don't double escape the contents of href and target
+	  in links in the log.
+
 Sun Jul 25 06:32:24 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Remove commented out calls to set the input

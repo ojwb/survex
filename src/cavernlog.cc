@@ -74,33 +74,6 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
     return s;
 }
 
-static wxString
-html_escape(const wxString &str)
-{
-    wxString res;
-    size_t p = 0;
-    while (p < str.size()) {
-	char ch = str[p++];
-	switch (ch) {
-	    case '<':
-		res += wxT("&lt;");
-		continue;
-	    case '>':
-		res += wxT("&gt;");
-		continue;
-	    case '&':
-		res += wxT("&amp;");
-		continue;
-	    case '"':
-		res += wxT("&quot;");
-		continue;
-	    default:
-		res += ch;
-	}
-    }
-    return res;
-}
-
 CavernLogWindow::CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) {
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
@@ -270,17 +243,17 @@ CavernLogWindow::process(const wxString &file)
 		    size_t colon2 = cur.find(':', colon + 1);
 		    if (colon2 != wxString::npos && colon2 != cur.size() - 1) {
 			wxString href = cur.substr(0, colon2);
-			while (++colon2 < cur.size()) {
-			    if (cur[colon2] != ' ') break;
+			size_t colon3 = colon2;
+			while (++colon3 < cur.size()) {
+			    if (cur[colon3] != ' ') break;
 			}
-			wxString title = cur.substr(colon2);
-			cur.insert(colon2, wxT("</a>"));
 			wxString tag = wxT("<a href=\"");
-			tag += html_escape(href);
+			tag.append(cur, 0, colon2);
 			tag += wxT("\" target=\"");
-			tag += html_escape(title);
+			tag.append(cur, colon3);
 			tag += wxT("\">");
 			cur.insert(0, tag);
+			cur.insert(colon3 + tag.size(), wxT("</a>"));
 			++link_count;
 		    }
 		}
@@ -321,6 +294,9 @@ CavernLogWindow::process(const wxString &file)
 	    case '&':
 		cur += wxT("&amp;");
 		break;
+	    case '"':
+		cur += wxT("&#22;");
+		continue;
 	    default:
 		if (ch >= 128) {
 		    cur += wxString::Format(wxT("&#%u;"), ch);
