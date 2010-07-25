@@ -1,3 +1,7 @@
+Sun Jul 25 07:20:05 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.h: Fix filename in comment at top.
+
 Sun Jul 25 07:17:20 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Don't double escape the contents of href and target

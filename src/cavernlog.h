@@ -1,4 +1,4 @@
-/* cavernlog.cc
+/* cavernlog.h
  * Run cavern inside an Aven window
  *
  * Copyright (C) 2005,2006 Olly Betts
