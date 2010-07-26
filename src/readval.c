@@ -195,7 +195,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    } while (isSep(ch));
    if (name) osfree(name);
 
-   /* don't warn about a station that is refered to twice */
+   /* don't warn about a station that is referred to twice */
    if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
 
    if (fNew) {
