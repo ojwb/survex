@@ -1,3 +1,8 @@
+Mon Jul 26 06:29:03 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/netskel.c: In "Unused fixed point" warning, give file and
+	  linenumber where the "*fix" occurred.
+
 Mon Jul 26 06:24:35 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Fix highlighting of links in CavernLog window to
