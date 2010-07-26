@@ -23,13 +23,7 @@
 #include "useful.h"
 #include "osdepend.h"
 
-#ifndef WORDS_BIGENDIAN
-
-/* used by macro versions of useful_get<nn> functions */
-int16_t useful_w16;
-int32_t useful_w32;
-
-#else
+#ifdef WORDS_BIGENDIAN
 
 extern void Far
 useful_put16(int16_t w, FILE *fh)

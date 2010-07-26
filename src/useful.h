@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2003,2004 Olly Betts
+ * Copyright (C) 1993-2003,2004,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,13 +117,20 @@
 #include "osdepend.h"
 
 #ifndef WORDS_BIGENDIAN
-extern int16_t useful_w16;
-extern int32_t useful_w32;
-
 # define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
 # define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)
-# define get16(FH) (fread(&useful_w16, 2, 1, (FH)), useful_w16)
-# define get32(FH) (fread(&useful_w32, 4, 1, (FH)), useful_w32)
+
+static inline int16_t get16(FILE *fh) {
+    int16_t w;
+    fread(&w, 2, 1, fh);
+    return w;
+}
+
+static inline int32_t get32(FILE *fh) {
+    int32_t w;
+    fread(&w, 4, 1, fh);
+    return w;
+}
 #else
 /* FIXME: why are these "Far"? */
 void Far useful_put16(int16_t, FILE *);
