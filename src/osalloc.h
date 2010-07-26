@@ -1,6 +1,6 @@
 /* osalloc.h
  * Function prototypes for OS dep. malloc etc - funcs in error.c
- * Copyright (C) 1996,1997,2001,2003,2004 Olly Betts
+ * Copyright (C) 1996,1997,2001,2003,2004,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,34 +33,26 @@ extern "C" {
 #include "osdepend.h"
 
 /* OSSIZE_T is to osmalloc, etc what size_t is to malloc, etc */
-#ifdef HAVE_FAR_POINTERS
-# include "alloc.h"
-# define osfree(p) farfree((p))
-# define xosmalloc(s) farmalloc((s))
-# define xosrealloc(p, s) farrealloc((p), (s))
-# define OSSIZE_T long
+#ifndef TOMBSTONES
+# define osfree(p) free((p))
+# define xosmalloc(s) malloc((s))
+# define xosrealloc(p, s) realloc((p), (s))
 #else
-# ifndef TOMBSTONES
-#  define osfree(p) free((p))
-#  define xosmalloc(s) malloc((s))
-#  define xosrealloc(p, s) realloc((p), (s))
-# else
 void osfree(void *p);
 /* ick: */
-#  define xosmalloc(s) osmalloc((s))
-#  define xosrealloc(p, s) osrealloc((p), (s))
-# endif
-# define OSSIZE_T size_t
+# define xosmalloc(s) osmalloc((s))
+# define xosrealloc(p, s) osrealloc((p), (s))
 #endif
+#define OSSIZE_T size_t
 
 /* NB No extra () around X as sizeof((char*)) doesn't work */
 #define ossizeof(X) ((OSSIZE_T)sizeof(X))
 /* Allocate like C++ new -- call osnew(<type>) eg. osnew(point) */
 #define osnew(T) (T*)osmalloc(ossizeof(T))
 
-void Far *osmalloc(OSSIZE_T);
-void Far *osrealloc(void *, OSSIZE_T);
-char Far *osstrdup(const char *str);
+void *osmalloc(OSSIZE_T);
+void *osrealloc(void *, OSSIZE_T);
+char *osstrdup(const char *str);
 
 #ifdef __cplusplus
 }

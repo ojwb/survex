@@ -25,14 +25,14 @@
 
 #ifdef WORDS_BIGENDIAN
 
-extern void Far
+extern void
 useful_put16(int16_t w, FILE *fh)
 {
    putc((char)(w), fh);
    putc((char)(w >> 8l), fh);
 }
 
-extern void Far
+extern void
 useful_put32(int32_t w, FILE *fh)
 {
    putc((char)(w), fh);
@@ -41,7 +41,7 @@ useful_put32(int32_t w, FILE *fh)
    putc((char)(w >> 24l), fh);
 }
 
-extern int16_t Far
+extern int16_t
 useful_get16(FILE *fh)
 {
    int16_t w;
@@ -50,7 +50,7 @@ useful_get16(FILE *fh)
    return w;
 }
 
-extern int32_t Far
+extern int32_t
 useful_get32(FILE *fh)
 {
    int32_t w;

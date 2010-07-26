@@ -132,11 +132,10 @@ static inline int32_t get32(FILE *fh) {
     return w;
 }
 #else
-/* FIXME: why are these "Far"? */
-void Far useful_put16(int16_t, FILE *);
-void Far useful_put32(int32_t, FILE *);
-int16_t Far useful_get16(FILE *);
-int32_t Far useful_get32(FILE *);
+void useful_put16(int16_t, FILE *);
+void useful_put32(int32_t, FILE *);
+int16_t useful_get16(FILE *);
+int32_t useful_get32(FILE *);
 
 # define put16(W, FH) useful_put16(W, FH)
 # define put32(W, FH) useful_put32(W, FH)

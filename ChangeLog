@@ -1,3 +1,8 @@
+Mon Jul 26 10:23:07 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Strip out "Far" and "Huge" which we no longer need now that
+	  DOS memory models are no longer relevant.
+
 Mon Jul 26 09:57:37 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in: No need for AC_PROG_MAKE_SET when using automake.

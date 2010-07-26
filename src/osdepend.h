@@ -1,6 +1,6 @@
 /* osdepend.h
  * Contains commonly required OS dependent bits
- * Copyright (C) 1993-2003,2004,2005 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,21 +54,6 @@
 # endif
 
 /***************************************************************************/
-
-/* Use "Far" rather than "FAR" to avoid colliding with windows headers
- * which may "#define FAR far" and "#define far" or something similar.
- *
- * Use "Huge" to avoid colliding with "HUGE" which is a pre-ANSI name for
- * "HUGE_VAL"
- */
-# ifdef HAVE_FAR_POINTERS
-#  define Far far
-#  define Huge huge
-# else
-/* just lose these on a sensible OS */
-#  define Far
-#  define Huge
-# endif /* !Huge */
 
 /* defaults for things that are the same for most OS */
 

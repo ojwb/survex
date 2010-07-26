@@ -1,6 +1,6 @@
 /* matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-2003 Olly Betts
+ * Copyright (C) 1993-2003,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,19 +45,19 @@
 #define DEBUG_MATRIX 0
 
 #if PRINT_MATRICES
-static void print_matrix(real Far *M, real *B, long n);
+static void print_matrix(real *M, real *B, long n);
 #endif
 
-static void choleski(real Far *M, real *B, long n);
+static void choleski(real *M, real *B, long n);
 
 #ifdef SOR
-static void sor(real Far *M, real *B, long n);
+static void sor(real *M, real *B, long n);
 #endif
 
 /* for M(row, col) col must be <= row, so Y <= X */
-# define M(X, Y) ((real Huge *)M)[((((OSSIZE_T)(X)) * ((X) + 1)) >> 1) + (Y)]
+# define M(X, Y) ((real *)M)[((((OSSIZE_T)(X)) * ((X) + 1)) >> 1) + (Y)]
 	      /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
-/*#define M_(X, Y) ((real Huge *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
+/*#define M_(X, Y) ((real *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
 
 static int find_stn_in_tab(node *stn);
 static int add_stn_to_tab(node *stn);
@@ -114,7 +114,7 @@ solve_matrix(node *list)
 static void
 build_matrix(node *list)
 {
-   real Far *M;
+   real *M;
    real *B;
    int dim;
 
@@ -379,7 +379,7 @@ add_stn_to_tab(node *stn)
 /* Note M must be symmetric positive definite */
 /* routine is entitled to scribble on M and B if it wishes */
 static void
-choleski(real Far *M, real *B, long n)
+choleski(real *M, real *B, long n)
 {
    int i, j, k;
 #ifndef NO_PERCENTAGE
@@ -456,7 +456,7 @@ choleski(real Far *M, real *B, long n)
 /* Solve MX=B for X by SOR of Gauss-Siedel */
 /* routine is entitled to scribble on M and B if it wishes */
 static void
-sor(real Far *M, real *B, long n)
+sor(real *M, real *B, long n)
 {
    real t, x, delta, threshold, t2;
    int row, col;
@@ -522,7 +522,7 @@ sor(real Far *M, real *B, long n)
 
 #if PRINT_MATRICES
 static void
-print_matrix(real Far *M, real *B, long n)
+print_matrix(real *M, real *B, long n)
 {
    long row, col;
    printf("Matrix, M and vector, B:\n");

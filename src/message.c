@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,10 +92,10 @@ static const char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
 /* malloc with error catching if it fails. Also allows us to write special
  * versions easily eg for MS Windows.
  */
-void Far *
+void *
 osmalloc(OSSIZE_T size)
 {
-   void Far *p;
+   void *p;
 #ifdef TOMBSTONES
    size += TOMBSTONE_SIZE * 2;
    p = malloc(size);
@@ -114,7 +114,7 @@ osmalloc(OSSIZE_T size)
 }
 
 /* realloc with error catching if it fails. */
-void Far *
+void *
 osrealloc(void *p, OSSIZE_T size)
 {
    /* some pre-ANSI realloc implementations don't cope with a NULL pointer */
@@ -152,7 +152,7 @@ osrealloc(void *p, OSSIZE_T size)
    return p;
 }
 
-char Far *
+char *
 osstrdup(const char *str)
 {
    char *p;
@@ -197,7 +197,7 @@ static int sigReceived;
 # define RETSIGTYPE void
 #endif
 
-static CDECL RETSIGTYPE Far
+static CDECL RETSIGTYPE
 report_sig(int sig)
 {
    sigReceived = sig;
