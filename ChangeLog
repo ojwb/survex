@@ -1,3 +1,11 @@
+Mon Jul 26 06:24:35 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix highlighting of links in CavernLog window to
+	  highlight just <file>:<line> (and not the ': ' after), and to make
+	  the title for the terminal the warning/error message.  Make the
+	  checking stricter by checking that the linenumber is a number, to
+	  avoid false positives.
+
 Mon Jul 26 04:48:12 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Revert this change, as it appears wxMotif does support wxGLCanvas:

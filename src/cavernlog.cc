@@ -246,27 +246,30 @@ CavernLogWindow::process(const wxString &file)
 		break;
 	    case '\n': {
 		if (cur.empty()) continue;
+#ifndef __WXMSW__
 		size_t colon = cur.find(':');
-#ifdef __WXMSW__
+#else
 		// If the path is "C:\path\to\file.svx" then don't split at the
 		// : after the drive letter!  FIXME: better to look for ": "?
-		if (colon == 1) colon = cur.find(':', 2);
+		size_t colon = cur.find(':', 2);
 #endif
-		if (colon != wxString::npos) {
-		    size_t colon2 = cur.find(':', colon + 1);
-		    if (colon2 != wxString::npos && colon2 != cur.size() - 1) {
-			wxString href = cur.substr(0, colon2);
-			size_t colon3 = colon2;
-			while (++colon3 < cur.size()) {
-			    if (cur[colon3] != ' ') break;
-			}
+		if (colon != wxString::npos && colon < cur.size() - 1) {
+		    ++colon;
+		    size_t i = colon;
+		    while (i < cur.size() - 1 &&
+			   cur[i] >= wxT('0') && cur[i] <= wxT('9')) {
+			++i;
+		    }
+		    if (i > colon && cur[i] == wxT(':') ) {
+			colon = i;
 			wxString tag = wxT("<a href=\"");
-			tag.append(cur, 0, colon2);
+			tag.append(cur, 0, colon);
+			while (cur[++i] == wxT(' ')) { }
 			tag += wxT("\" target=\"");
-			tag.append(cur, colon3);
+			tag.append(cur, i, wxString::npos);
 			tag += wxT("\">");
 			cur.insert(0, tag);
-			cur.insert(colon3 + tag.size(), wxT("</a>"));
+			cur.insert(colon + tag.size(), wxT("</a>"));
 			++link_count;
 		    }
 		}
