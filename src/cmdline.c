@@ -36,7 +36,7 @@
 #include "message.h"
 
 /* It might be useful to be able to disable all long options on small
- * platforms like pre-386 DOS and perhaps some PDAs...
+ * platforms like older PDAs.
  */
 #if 0
 # define getopt_long(ARGC, ARGV, STR, OPTS, PTR) getopt(ARGC, ARGV, STR)
