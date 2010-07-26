@@ -1,3 +1,9 @@
+Mon Jul 26 04:48:12 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Revert this change, as it appears wxMotif does support wxGLCanvas:
+	* doc/manual.sgml: wxMotif apparently doesn't support wxGLCanvas, which
+	  is required by Aven in 1.1.x, so remove mention of Motif from manual.
+
 Mon Jul 26 03:24:38 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/: Add "Rerun" and "OK" buttons to the CavernLog window (as
