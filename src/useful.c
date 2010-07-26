@@ -1,5 +1,5 @@
 /* useful.c
- * Copyright (C) 1993-2001,2003 Olly Betts
+ * Copyright (C) 1993-2001,2003,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,40 +28,6 @@
 /* used by macro versions of useful_get<nn> functions */
 int16_t useful_w16;
 int32_t useful_w32;
-
-#if 0 /* these functions aren't needed - macros do the job */
-/* the numbers in the file are little endian, so use fread/fwrite */
-extern void Far
-useful_put16(int16_t w, FILE *fh)
-{
-   fwrite(&w, 2, 1, fh);
-}
-
-#undef useful_put32
-extern void Far
-useful_put32(int32_t w, FILE *fh)
-{
-   fwrite(&w, 4, 1, fh);
-}
-
-#undef useful_get16
-extern int16_t Far
-useful_get16(FILE *fh)
-{
-   int16_t w;
-   fread(&w, 2, 1, fh);
-   return w;
-}
-
-#undef useful_put32
-extern int32_t Far
-useful_get32(FILE *fh)
-{
-   int32_t w;
-   fread(&w, 4, 1, fh);
-   return w;
-}
-#endif
 
 #else
 
