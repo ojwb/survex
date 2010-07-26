@@ -134,7 +134,7 @@ currently runs on &unix;, Microsoft Windows 95/NT and
 successors, and Mac OS X.
 We're investigating support for various
 palmtop devices.
-Version 1.0 has fewer features, but also runs of &msdos; and &riscos; machines.
+Version 1.0 has fewer features, but also runs on &msdos; and &riscos; machines.
 </Para>
 
 <Para>We are well aware that not everyone has access to super hardware
