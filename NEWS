@@ -1,3 +1,62 @@
+Changes in 1.1.14 (2010-07-26):
+
+* Restore compatibility with wxWidgets 2.6 (1.1.13 required wxWidgets 2.8).
+
+* aven:
+
+  + After processing survey data, if there were warnings or errors, add a
+    "Rerun" button to allow easy reprocessing after fixing problems.  If there
+    were only warnings, also add an "OK" button to allow moving on to viewing
+    the processed survey data (fixes ticket#13).
+
+  + Optimise updating of the cavern log window (hopefully fixes ticket#12).
+
+  + Fix links in cavern log window to link from exactly '<file>:<line>' (and
+    not the ': ' after), and to make the title for the terminal the
+    warning/error message.  Avoid false positives by checking that '<line>' is
+    a number.
+
+  + Don't double escape the contents of href and target in links in the cavern
+    log window.
+
+  + Improve handling of the splitter window, fixing behavioural glitches in
+    various cases.
+
+  + Highlight stations matching any current search when a file is loaded.
+    (ticket#9)
+
+  + (Mac version): Fix build issue due to Mac OS X polluting the global
+    namespace with its own "Point" class.
+
+  + (Unix version): The Gnome print dialog has its own preview window so
+    suppress ours if using the Gnome one.
+
+  + (Unix version): Link aven with -lGLU which SuSE Linux needs.
+
+  + (Microsoft Windows version): Fix handling of a double-click on the survey
+    tree when built with wxWidgets >= 2.8.11.
+
+* cavern: Report relevant file and line number for three warnings which didn't
+  give them before.
+
+* (Unix and Mac versions): configure: Update the wx-config probing code -
+  wxmac-config etc aren't present with newer wxWidgets versions so there's no
+  point looking for them now.
+
+* (Mac version): buildmacosx.sh: This script builds a diskimage with Survex in
+  for easy installation.  Update it to work with the latest Survex versions
+  (use WX_CONFIG not WXCONFIG; use a Unicode build of wxWidgets; if building a
+  private wxWidgets, use 2.8.11 not 2.7.0-1).
+
+* manual:
+
+  + Correctly capitalise "GTK".
+
+  + Note that on Linux we only regularly test builds with the GTK+ version
+    (change taken from 1.0).
+
+* Fixed the cad3d man page, which was an empty file in 1.1.13.
+
 Changes in 1.1.13 (2010-06-16):
 
 * Say "wxWidgets" instead of "wxWindows" consistently.

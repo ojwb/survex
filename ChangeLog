@@ -1,3 +1,7 @@
+Mon Jul 26 11:59:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.1.14.
+
 Mon Jul 26 11:53:01 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/messages.txt,src/: Remove things we no longer need now we've
