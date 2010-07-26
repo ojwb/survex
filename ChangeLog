@@ -1,3 +1,8 @@
+Mon Jul 26 07:44:26 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc: Fix double-click handling for survey tree on
+	  wxMSW >= 2.8.11.
+
 Mon Jul 26 07:25:59 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Stop passing wxNO_FULL_REPAINT_ON_RESIZE as it is 0

@@ -107,6 +107,8 @@ void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
 {
     if (m_Enabled) {
 	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), true);
+	// Need to skip to allow double-clicking to work on wxMSW >= 2.8.11.
+	e.Skip();
     }
 }
 
