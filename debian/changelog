@@ -1,10 +1,13 @@
-survex (1.1.13-2) UNRELEASED; urgency=low
+survex (1.1.14-1) unstable; urgency=low
 
   [Olly Betts]
+  * New upstream release.
+  * debian/control: "Standards-Version: 3.9.1" - no changes required.
+  * debian/watch: Update to look in the right place for 1.1.x.
   * debian/survex-aven.lintian-overrides: The warning for the misspelling of
     "reencode" is incorrect - it's a PostScript command in this context.
 
- -- Olly Betts <olly@survex.com>  Fri, 18 Jun 2010 13:19:22 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 26 Jul 2010 14:30:44 +0000
 
 survex (1.1.13-1) unstable; urgency=low
 

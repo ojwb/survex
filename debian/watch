@@ -1,7 +1,7 @@
 # watch control file
 # Run "uscan" to check for upstream updates and more.
-#
-# Need version 2 so directory can be a regexp
-version=2
+version=3
 # Site		Directory		Pattern			Version	Script
-http://survex.com/download.html?platform=unix	software/[\d\.]*/survex-([\d\.]*).tar.gz	debian	uupdate
+http://survex.com/software/([\d\.]*)/survex-([\d\.]*).tar.gz	debian	uupdate
+# For stable releases:
+# http://survex.com/download.html?platform=unix	software/[\d\.]*/survex-([\d\.]*).tar.gz	debian	uupdate

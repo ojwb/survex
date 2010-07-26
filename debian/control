@@ -3,7 +3,7 @@ Section: science
 Priority: extra
 Maintainer: Wookey <wookey@survex.com>
 Uploaders: Olly Betts <olly@survex.com>
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1
 Build-Depends: debhelper (>= 7), libx11-dev, libxext-dev, x11proto-core-dev,
     libwxgtk2.8-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev
 Homepage: http://survex.com/
