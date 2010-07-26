@@ -101,7 +101,8 @@ node_stat(prefix *p)
       cOrder[order]++;
 
       if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
-	 warning(/*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
+	 warning_in_file(p->filename, p->line,
+		 /*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
 
