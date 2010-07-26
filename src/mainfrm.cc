@@ -144,15 +144,15 @@ public:
     }
     PresentationMark GetMark() const {
 	double a, t, s, T;
-	Vector3 v(atof(easting->GetValue().char_str()),
-		  atof(northing->GetValue().char_str()),
-		  atof(altitude->GetValue().char_str()));
-	a = atof(angle->GetValue().char_str());
-	t = atof(tilt_angle->GetValue().char_str());
-	s = atof(scale->GetValue().char_str());
+	Vector3 v(atof(easting->GetValue().mb_str()),
+		  atof(northing->GetValue().mb_str()),
+		  atof(altitude->GetValue().mb_str()));
+	a = atof(angle->GetValue().mb_str());
+	t = atof(tilt_angle->GetValue().mb_str());
+	s = atof(scale->GetValue().mb_str());
 	wxString str = time->GetValue();
 	if (str[0u] == '*') str[0u] = '-';
-	T = atof(str.char_str());
+	T = atof(str.mb_str());
 	return PresentationMark(v, a, t, s, T);
     }
 
@@ -318,7 +318,7 @@ class AvenPresList : public wxListCtrl {
 
 	    // FIXME: This should really use fn_str() - currently we probably can't
 	    // save to a Unicode path on wxmsw.
-	    FILE * fh_pres = fopen(fnm.char_str(), "w");
+	    FILE * fh_pres = fopen(fnm.mb_str(), "w");
 	    if (!fh_pres) {
 		wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
 		return;
@@ -357,7 +357,7 @@ class AvenPresList : public wxListCtrl {
 	bool Load(const wxString &fnm) {
 	    // FIXME: This should really use fn_str() - currently we probably
 	    // can't save to a Unicode path on wxmsw.
-	    FILE * fh_pres = fopen(fnm.char_str(), "r");
+	    FILE * fh_pres = fopen(fnm.mb_str(), "r");
 	    if (!fh_pres) {
 		wxString m;
 		m.Printf(wmsg(/*Couldn't open file `%s'*/93), fnm.c_str());
@@ -960,7 +960,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 #endif
 
     // Load the processed survey data.
-    img* survey = img_open_survey(file.char_str(), prefix.char_str());
+    img* survey = img_open_survey(file.mb_str(), prefix.mb_str());
     if (!survey) {
 	wxString m = wxString::Format(wmsg(img_error()), file.c_str());
 	wxGetApp().ReportError(m);

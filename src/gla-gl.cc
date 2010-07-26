@@ -306,7 +306,7 @@ void GLACanvas::FirstShow()
     path += wxT("aven.txf");
     // FIXME: This should really use fn_str() - currently we probably can't
     // save to a Unicode path on wxmsw.
-    m_Font.load(path.char_str());
+    m_Font.load(path.mb_str());
 #endif
 
     // Check if we can use GL_POINTS to plot blobs at stations.

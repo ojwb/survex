@@ -1,3 +1,7 @@
+Mon Jul 26 07:21:35 GMT 2010  Olly Betts <olly@survex.com>
+
+	* INSTALL,src/: Restore compatibility with wxWidgets 2.6.
+
 Mon Jul 26 06:29:03 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/netskel.c: In "Unused fixed point" warning, give file and
