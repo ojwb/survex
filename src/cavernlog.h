@@ -1,7 +1,7 @@
 /* cavernlog.h
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006 Olly Betts
+ * Copyright (C) 2005,2006,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,15 @@
 #include "wx.h"
 #include <wx/html/htmlwin.h>
 
+class MainFrm;
+
 class CavernLogWindow : public wxHtmlWindow {
+    wxString filename;
+
+    MainFrm * mainfrm;
+
   public:
-    CavernLogWindow(wxWindow * parent);
+    CavernLogWindow(MainFrm * mainfrm_, wxWindow * parent);
 
     /** Process survey data in file.
      *
@@ -36,6 +42,12 @@ class CavernLogWindow : public wxHtmlWindow {
     int process(const wxString &file);
 
     virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
+
+    void OnRerun(wxCommandEvent &);
+
+    void OnOK(wxCommandEvent &);
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

@@ -949,23 +949,6 @@ void MainFrm::CreateSidePanel()
     m_Splitter->Initialize(m_Gfx);
 }
 
-bool
-MainFrm::ProcessSVXFile(const wxString & file)
-{
-    Show(true);
-    m_Splitter->Show(false);
-    CavernLogWindow * log = new CavernLogWindow(this);
-    m_Splitter->ReplaceWindow(m_Gfx, log);
-
-    int result = log->process(file);
-    if (result == 0) {
-	m_Splitter->ReplaceWindow(log, m_Gfx);
-	m_Splitter->Show();
-	log->Destroy();
-    }
-    return result >= 0;
-}
-
 bool MainFrm::LoadData(const wxString& file, wxString prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
@@ -1616,16 +1599,29 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 	wxString ext(file, file.length() - 3, 3);
 	ext.MakeLower();
 	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak")) {
-	    if (!ProcessSVXFile(file)) {
-		// ProcessSVXFile() reports the error to the user.
+	    CavernLogWindow * log = new CavernLogWindow(this, m_Splitter);
+	    wxWindow * win = m_Splitter->GetWindow1();
+	    m_Splitter->ReplaceWindow(win, log);
+	    if (m_Splitter->GetWindow2() == NULL) {
+		if (win != m_Gfx) win->Destroy();
+	    } else {
+		if (m_Splitter->IsSplit()) m_Splitter->Unsplit();
+	    }
+
+	    int result = log->process(file);
+	    if (result < 0) {
+		// Error running cavern or processing data.
 		return;
 	    }
+
 	    AddToFileHistory(file);
 	    wxString file3d(file, 0, file.length() - 3);
 	    file3d.append(wxT("3d"));
 	    if (!LoadData(file3d, survey))
 		return;
-	    InitialiseAfterLoad(file);
+	    if (result == 0) {
+		InitialiseAfterLoad(file);
+	    }
 	    return;
 	}
     }
@@ -1648,18 +1644,28 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
     else
 	x /= 5;
 
-    m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
-    m_SashPosition = x; // Save width of panel.
-
+    // Do this before we potentially delete the log window which may own the
+    // wxString which parameter file refers to!
     bool same_file = (file == m_File);
     if (!same_file)
 	m_File = file;
+
+    wxWindow * win = NULL;
+    if (m_Splitter->GetWindow2() == NULL) {
+	win = m_Splitter->GetWindow1();
+	if (win == m_Gfx) win = NULL;
+    }
+
+    m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
+    m_SashPosition = x; // Save width of panel.
 
     m_Gfx->Initialise(same_file);
     m_Notebook->Show(true);
 
     m_Gfx->Show(true);
     m_Gfx->SetFocus();
+
+    if (win) win->Destroy();
 }
 
 //

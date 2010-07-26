@@ -25,6 +25,7 @@
 #include "aven.h"
 #include "cavernlog.h"
 #include "filename.h"
+#include "mainfrm.h"
 #include "message.h"
 
 #include <errno.h>
@@ -37,6 +38,13 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
+
+enum { LOG_RERUN = 1234 };
+
+BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
+    EVT_BUTTON(LOG_RERUN, CavernLogWindow::OnRerun)
+    EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
+END_EVENT_TABLE()
 
 static wxString escape_for_shell(wxString s, bool protect_dash = false)
 {
@@ -74,7 +82,9 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
     return s;
 }
 
-CavernLogWindow::CavernLogWindow(wxWindow * parent) : wxHtmlWindow(parent) {
+CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, wxWindow * parent)
+    : wxHtmlWindow(parent), mainfrm(mainfrm_)
+{
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
     SetFonts(wxString(), wxString(), sizes);
@@ -140,6 +150,9 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 int
 CavernLogWindow::process(const wxString &file)
 {
+    SetFocus();
+    filename = file;
+
     char *cavern = use_path(msg_exepth(), "cavern");
 #ifdef __WXMSW__
     SetEnvironmentVariable(wxT("SURVEX_UTF8"), wxT("1"));
@@ -305,16 +318,37 @@ CavernLogWindow::process(const wxString &file)
 		}
 	}
     }
+
     int retval = pclose(cavern_out);
     if (retval) {
+	AppendToPage(wxT("<avenbutton default id=1234 name=\"Rerun\">"));
 	if (retval == -1) {
 	    wxString m = wxT("Problem running cavern: ");
 	    m += wxString(strerror(errno), wxConvUTF8);
 	    wxGetApp().ReportError(m);
 	    return -2;
 	}
-	wxGetApp().ReportError(wxT("Failed to process survey data - see log window for details"));
 	return -1;
     }
+    if (link_count) {
+	AppendToPage(wxT("<avenbutton id=1234 name=\"Rerun\">"));
+	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
+	Update();
+    }
     return link_count;
+}
+
+void
+CavernLogWindow::OnRerun(wxCommandEvent & e)
+{
+    SetPage(wxString());
+    if (process(filename) == 0) {
+	OnOK(e);
+    }
+}
+
+void
+CavernLogWindow::OnOK(wxCommandEvent &)
+{
+    mainfrm->InitialiseAfterLoad(filename);
 }

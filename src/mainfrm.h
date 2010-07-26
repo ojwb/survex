@@ -264,11 +264,12 @@ class MainFrm : public wxFrame {
     void UpdateStatusBar();
 
     void AddToFileHistory(const wxString & file);
-    void InitialiseAfterLoad(const wxString & file);
 
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
     ~MainFrm();
+
+    void InitialiseAfterLoad(const wxString & file);
 
     void OnMRUFile(wxCommandEvent& event);
     void OpenFile(const wxString& file, wxString survey = wxString());
