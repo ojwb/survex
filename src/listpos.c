@@ -82,7 +82,8 @@ node_stat(prefix *p)
 	      * a station, but only in a line of data which was rejected
 	      * because of an error.
 	      */
-	     warning(/*Station `%s' referred to by *entrance or *export but never used*/190,
+	     warning_in_file(p->filename, p->line,
+		     /*Station `%s' referred to by *entrance or *export but never used*/190,
 		     sprint_prefix(p));
 	 }
       }

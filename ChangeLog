@@ -1,3 +1,9 @@
+Mon Jul 26 08:29:41 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/listpos.c: In "Station X referred to by *entrance or *export but
+	  never used" warning, give file and linenumber where the *entrance or
+	  *export occurred.
+
 Mon Jul 26 07:44:26 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc: Fix double-click handling for survey tree on
