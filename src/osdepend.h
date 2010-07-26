@@ -17,8 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* Note to porters: defaults are at the end of the file. Check there first */
-
 #ifndef OSDEPEND_H  /* only include once */
 # define OSDEPEND_H
 
@@ -47,19 +45,11 @@
 /* #  define FNM_SEP_DRV  No equivalent under UNIX */
 #  define FNM_SEP_EXT '.'
 
-#  define NO_STDPRN
-
 # else
 #  error Do not know what to do for this operating system
 # endif
 
 /***************************************************************************/
-
-/* defaults for things that are the same for most OS */
-
-# ifndef init_screen
-#  define init_screen() /* ie do nothing special */
-# endif /* !init_screen */
 
 /* prototypes for functions in osdepend.c */
 bool fAbsoluteFnm(const char *fnm);

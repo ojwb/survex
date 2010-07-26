@@ -1,3 +1,8 @@
+Mon Jul 26 11:53:01 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt,src/: Remove things we no longer need now we've
+	  dropped support for RISC OS and DOS.
+
 Mon Jul 26 11:19:40 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cmdline.c: Remove reference to MSDOS.

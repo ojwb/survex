@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -46,11 +46,7 @@
 
 typedef double real; /* so we can change the precision used easily */
 #define HUGE_REAL HUGE_VAL
-/* RISC OS FP emulation is broken, and the reported epsilon value isn't
- * useful in practice, so we fake it in the makefile */
-#ifndef REAL_EPSILON
-# define REAL_EPSILON DBL_EPSILON
-#endif
+#define REAL_EPSILON DBL_EPSILON
 
 #if (!EXPLICIT_FIXED_FLAG)
 # define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */

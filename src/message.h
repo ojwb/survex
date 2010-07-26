@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2003,2005 Olly Betts
+ * Copyright (C) 1998-2003,2005,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,9 @@ extern "C" {
 #define CHARSET_USASCII     0
 #define CHARSET_ISO_8859_1  1
 #define CHARSET_DOSCP850    2
-//#define CHARSET_RISCOS31    3
 #define CHARSET_UTF8	    4
 #define CHARSET_WINCP1252   5
 #define CHARSET_ISO_8859_15 6
-//#define CHARSET_DOSCP437    7
 #define CHARSET_ISO_8859_2  8
 #define CHARSET_WINCP1250   9
 

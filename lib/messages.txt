@@ -1160,16 +1160,16 @@ sk: 95 &Dcaron;al&scaron;ie pou&zcaron;itia zamietnutej fukcie nebud&uacute; zaz
 # FIXME ro: pls give me a synonym for "deprecated"
 ro: 95 Folosirea ulterioara a acestei functionalitati ??? nu va fi semnalata
 #
-en: 96 Stack overflow
-fr: 96 D&eacute;bordement de pile
-de: 96 Stack-&Uuml;berlauf
-pt: 96 Estouro de pilha
-ca: 96 Desbordament de la pila
-es: 96 Desbordamiento de la pila
-it: 96 Stack troppo pieno
-sk: 96 Stack overflow
-#ro: here english is better than Romanian
-ro: 96 Stack overflow
+#en: 96 Stack overflow
+#fr: 96 D&eacute;bordement de pile
+#de: 96 Stack-&Uuml;berlauf
+#pt: 96 Estouro de pilha
+#ca: 96 Desbordament de la pila
+#es: 96 Desbordamiento de la pila
+#it: 96 Stack troppo pieno
+#sk: 96 Stack overflow
+##ro: here english is better than Romanian
+#ro: 96 Stack overflow
 en: 97 Unknown signal received
 fr: 97 Signal inconnu re&ccedil;u
 de: 97 Unbekanntes Signal erhalten

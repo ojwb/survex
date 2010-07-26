@@ -213,9 +213,6 @@ init_signals(void)
       signal(SIGFPE,  report_sig); /* arithmetic error eg /0 or overflow */
       signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
       signal(SIGSEGV, report_sig); /* illegal storage access eg access outside memory limits */
-# ifdef SIGSTAK /* only on RISC OS AFAIK */
-      signal(SIGSTAK, report_sig); /* stack overflow */
-# endif
       return;
    }
 
@@ -228,9 +225,6 @@ init_signals(void)
       case SIGFPE:  en = /*Arithmetic error*/91; break;
       case SIGILL:  en = /*Illegal instruction*/92; break;
       case SIGSEGV: en = /*Bad memory access*/94; break;
-# ifdef SIGSTAK
-      case SIGSTAK: en = /*Stack overflow*/96; break;
-# endif
       default:      en = /*Unknown signal received*/97; break;
    }
    fputsnl(msg(en), STDERR);
