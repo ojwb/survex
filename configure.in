@@ -227,29 +227,9 @@ choke me
 #endif
 ], , AC_DEFINE(CLOCKS_PER_SEC, 1000000, [For old systems which don't define it themselves]))
 
-dnl Look for a signed 32 bit integer type
-AC_MSG_CHECKING(for 32 bit integer type)
-AC_TRY_COMPILE(,[switch (0) { case (sizeof(int)==4): case 0: break; }],
-INT32_T=int,
-AC_TRY_COMPILE(,[switch (0) { case (sizeof(long)==4): case 0: break; }],
-INT32_T=long,
-AC_MSG_ERROR(not found)
-)
-)
-AC_MSG_RESULT($INT32_T)
-AC_DEFINE_UNQUOTED(INT32_T,$INT32_T,[signed 32 bit integer type])
-
-dnl Look for a signed 16 bit integer type
-AC_MSG_CHECKING(for 16 bit integer type)
-AC_TRY_COMPILE(,[switch (0) { case (sizeof(short)==2): case 0: break; }],
-INT16_T=short,
-AC_TRY_COMPILE(,[switch (0) { case (sizeof(int)==2): case 0: break; }],
-INT16_T=int,
-AC_MSG_ERROR(not found)
-)
-)
-AC_MSG_RESULT($INT16_T)
-AC_DEFINE_UNQUOTED(INT16_T,$INT16_T,[signed 16 bit integer type])
+dnl Check for 16-bit and 32-bit integer types.
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
 
 dnl Checks for library functions.
 AC_FUNC_STRFTIME

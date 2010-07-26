@@ -26,38 +26,38 @@
 #ifndef WORDS_BIGENDIAN
 
 /* used by macro versions of useful_get<nn> functions */
-INT16_T useful_w16;
-INT32_T useful_w32;
+int16_t useful_w16;
+int32_t useful_w32;
 
 #if 0 /* these functions aren't needed - macros do the job */
 /* the numbers in the file are little endian, so use fread/fwrite */
 extern void Far
-useful_put16(INT16_T w, FILE *fh)
+useful_put16(int16_t w, FILE *fh)
 {
    fwrite(&w, 2, 1, fh);
 }
 
 #undef useful_put32
 extern void Far
-useful_put32(INT32_T w, FILE *fh)
+useful_put32(int32_t w, FILE *fh)
 {
    fwrite(&w, 4, 1, fh);
 }
 
 #undef useful_get16
-extern INT16_T Far
+extern int16_t Far
 useful_get16(FILE *fh)
 {
-   INT16_T w;
+   int16_t w;
    fread(&w, 2, 1, fh);
    return w;
 }
 
 #undef useful_put32
-extern INT32_T Far
+extern int32_t Far
 useful_get32(FILE *fh)
 {
-   INT32_T w;
+   int32_t w;
    fread(&w, 4, 1, fh);
    return w;
 }
@@ -66,14 +66,14 @@ useful_get32(FILE *fh)
 #else
 
 extern void Far
-useful_put16(INT16_T w, FILE *fh)
+useful_put16(int16_t w, FILE *fh)
 {
    putc((char)(w), fh);
    putc((char)(w >> 8l), fh);
 }
 
 extern void Far
-useful_put32(INT32_T w, FILE *fh)
+useful_put32(int32_t w, FILE *fh)
 {
    putc((char)(w), fh);
    putc((char)(w >> 8l), fh);
@@ -81,23 +81,23 @@ useful_put32(INT32_T w, FILE *fh)
    putc((char)(w >> 24l), fh);
 }
 
-extern INT16_T Far
+extern int16_t Far
 useful_get16(FILE *fh)
 {
-   INT16_T w;
+   int16_t w;
    w = getc(fh);
-   w |= (INT16_T)(getc(fh) << 8l);
+   w |= (int16_t)(getc(fh) << 8l);
    return w;
 }
 
-extern INT32_T Far
+extern int32_t Far
 useful_get32(FILE *fh)
 {
-   INT32_T w;
+   int32_t w;
    w = getc(fh);
-   w |= (INT32_T)(getc(fh) << 8l);
-   w |= (INT32_T)(getc(fh) << 16l);
-   w |= (INT32_T)(getc(fh) << 24l);
+   w |= (int32_t)(getc(fh) << 8l);
+   w |= (int32_t)(getc(fh) << 16l);
+   w |= (int32_t)(getc(fh) << 24l);
    return w;
 }
 #endif

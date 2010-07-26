@@ -1,3 +1,8 @@
+Mon Jul 26 09:19:19 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/img.c,src/useful.c,src/useful.h: Use AC_TYPE_INT16_T
+	  and AC_TYPE_INT32_T instead of home-brew equivalents.
+
 Mon Jul 26 08:40:43 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/listpos.c: In "Station X referred to just once, with an explicit

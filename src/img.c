@@ -40,6 +40,7 @@
 # include "useful.h"
 # define TIMENA msg(/*Date and time not available.*/108)
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
+# define INT32_T int32_t
 #else
 # define INT32_T int
 # define TIMENA "Time not available."

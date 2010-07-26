@@ -23,6 +23,10 @@
 
 #include <config.h>
 
+#if HAVE_STDINT_H
+# include <stdint.h>
+#endif
+
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
@@ -113,19 +117,19 @@
 #include "osdepend.h"
 
 #ifndef WORDS_BIGENDIAN
-extern INT16_T useful_w16;
-extern INT32_T useful_w32;
+extern int16_t useful_w16;
+extern int32_t useful_w32;
 
-# define put16(W, FH) BLK(INT16_T w = (W); fwrite(&w, 2, 1, (FH));)
-# define put32(W, FH) BLK(INT32_T w = (W); fwrite(&w, 4, 1, (FH));)
+# define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
+# define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)
 # define get16(FH) (fread(&useful_w16, 2, 1, (FH)), useful_w16)
 # define get32(FH) (fread(&useful_w32, 4, 1, (FH)), useful_w32)
 #else
 /* FIXME: why are these "Far"? */
-void Far useful_put16(INT16_T, FILE *);
-void Far useful_put32(INT32_T, FILE *);
-INT16_T Far useful_get16(FILE *);
-INT32_T Far useful_get32(FILE *);
+void Far useful_put16(int16_t, FILE *);
+void Far useful_put32(int32_t, FILE *);
+int16_t Far useful_get16(FILE *);
+int32_t Far useful_get32(FILE *);
 
 # define put16(W, FH) useful_put16(W, FH)
 # define put32(W, FH) useful_put32(W, FH)
