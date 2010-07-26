@@ -1,3 +1,8 @@
+Mon Jul 26 07:25:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Stop passing wxNO_FULL_REPAINT_ON_RESIZE as it is 0
+	  on all versions of wxWidgets we support (i.e. 2.6 and later).
+
 Mon Jul 26 07:21:35 GMT 2010  Olly Betts <olly@survex.com>
 
 	* INSTALL,src/: Restore compatibility with wxWidgets 2.6.
