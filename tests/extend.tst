@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - extend tests
-# Copyright (C) 1999-2003 Olly Betts
+# Copyright (C) 1999-2003,2010 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${EXTEND="$testdir"/../src/extend}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-: ${TESTS=${*-"extend extend2names eswap"}} # also eswap-break
+: ${TESTS=${*:-"extend extend2names eswap"}} # also eswap-break
 # JPNP: eswap-break currently fails due to bug in diffpos
 
 for file in $TESTS ; do

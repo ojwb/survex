@@ -1,3 +1,9 @@
+Wed Jul 28 17:06:49 GMT 2010  Olly Betts <olly@survex.com>
+
+	* tests/: Most tests weren't actually running and testcases (looks like
+	  a sh portability issue).  Fixed, and fortunately all tests still
+	  pass.
+
 Mon Jul 26 12:30:43 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Fix typo "of" -> "on".

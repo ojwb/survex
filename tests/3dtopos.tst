@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - 3dtopos tests
-# Copyright (C) 1999-2003,2005 Olly Betts
+# Copyright (C) 1999-2003,2005,2010 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${DIFFPOS="$testdir"/../src/diffpos}
 : ${TDTOPOS="$testdir"/../src/3dtopos}
 
-: ${TESTS=${*-"pos.pos v0 v0b v1 v2 v3"}}
+: ${TESTS=${*:-"pos.pos v0 v0b v1 v2 v3"}}
 
 for file in $TESTS ; do
   echo $file
