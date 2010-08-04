@@ -43,7 +43,7 @@ class CavernLogWindow : public wxHtmlWindow {
 
     virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
 
-    void OnRerun(wxCommandEvent &);
+    void OnReprocess(wxCommandEvent &);
 
     void OnOK(wxCommandEvent &);
 

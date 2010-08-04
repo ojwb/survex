@@ -39,10 +39,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-enum { LOG_RERUN = 1234 };
+enum { LOG_REPROCESS = 1234 };
 
 BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
-    EVT_BUTTON(LOG_RERUN, CavernLogWindow::OnRerun)
+    EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
 END_EVENT_TABLE()
 
@@ -324,7 +324,7 @@ CavernLogWindow::process(const wxString &file)
 
     int retval = pclose(cavern_out);
     if (retval) {
-	AppendToPage(wxT("<avenbutton default id=1234 name=\"Rerun\">"));
+	AppendToPage(wxT("<avenbutton default id=1234 name=\"Reprocess\">"));
 	if (retval == -1) {
 	    wxString m = wxT("Problem running cavern: ");
 	    m += wxString(strerror(errno), wxConvUTF8);
@@ -334,7 +334,7 @@ CavernLogWindow::process(const wxString &file)
 	return -1;
     }
     if (link_count) {
-	AppendToPage(wxT("<avenbutton id=1234 name=\"Rerun\">"));
+	AppendToPage(wxT("<avenbutton id=1234 name=\"Reprocess\">"));
 	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
 	Update();
     }
@@ -342,7 +342,7 @@ CavernLogWindow::process(const wxString &file)
 }
 
 void
-CavernLogWindow::OnRerun(wxCommandEvent & e)
+CavernLogWindow::OnReprocess(wxCommandEvent & e)
 {
     SetPage(wxString());
     if (process(filename) == 0) {

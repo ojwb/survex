@@ -1,3 +1,8 @@
+Wed Aug 04 02:32:16 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc,src/cavernlog.h: "Rerun" -> "Reprocess" to follow
+	  terminology in manual, etc.  Fixes ticket#15.
+
 Wed Jul 28 17:06:49 GMT 2010  Olly Betts <olly@survex.com>
 
 	* tests/: Most tests weren't actually running and testcases (looks like
