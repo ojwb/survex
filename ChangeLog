@@ -1,3 +1,7 @@
+Wed Aug 04 03:27:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix cast in get16() to be to short not long.
+
 Wed Aug 04 02:32:16 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc,src/cavernlog.h: "Rerun" -> "Reprocess" to follow

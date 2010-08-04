@@ -91,7 +91,7 @@ static short
 get16(FILE *fh)
 {
    short w = getc(fh);
-   w |= (long)getc(fh) << 8l;
+   w |= (short)getc(fh) << 8l;
    return w;
 }
 
