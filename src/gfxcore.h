@@ -47,7 +47,7 @@ extern const int NUM_DEPTH_COLOURS;
 
 // Mac OS X headers pollute the global namespace with generic names like
 // "class Point", which clashes with our "class Point".  So for __WXMAC__
-// put our class in a namespace and pull it in from that with "using".
+// put our class in a namespace and define Point as a macro.
 #ifdef __WXMAC__
 namespace svx {
 #endif
@@ -66,7 +66,7 @@ class Point : public Vector3 {
 
 #ifdef __WXMAC__
 }
-using svx::Point;
+#define Point svx::Point
 #endif
 
 class XSect;

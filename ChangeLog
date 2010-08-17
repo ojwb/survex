@@ -1,3 +1,8 @@
+Tue Aug 17 01:43:24 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: "using svx::Point;" gives an error, so use a macro
+	  instead.
+
 Wed Aug 04 03:27:22 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/img.c: Fix cast in get16() to be to short not long.
