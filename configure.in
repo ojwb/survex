@@ -104,14 +104,11 @@ AC_C_INLINE
 AC_EXEEXT
 AC_OBJEXT
 
+mswindows=no
+macosx=no
 case $host_os in
+darwin*) macosx=yes ;;
 *mingw*|*cygwin*|windows*) mswindows=yes ;;
-*) mswindows=no ;;
-esac
-
-case $host in
-powerpc-*-darwin*) macosx=yes ;; # wxWidgets uses this to detect MacOS X
-*) macosx=no ;;
 esac
 
 AC_C_BIGENDIAN
@@ -359,7 +356,7 @@ fi
 AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.1
- doc/version.ent survex.spec src/svxedit lib/survex.keys
+ doc/version.ent survex.spec src/svxedit lib/survex.keys lib/Info.plist
  ])
 AC_OUTPUT
 dnl FIXME update msvc makefile for 1.1 branch

@@ -3,9 +3,11 @@
 # Note: this script requires MacOS X 10.2 or greater, and builds diskimages
 # which require MacOS X 10.1 or greater to install.
 #
+# Currently (at least is built on 10.6) 10.6 is required to run.
+#
 # Run from the unpacked survex-1.1.X directory like so:
 #
-#   ./buildmacosx.sh --install-wx
+#   ./buildmacosx.sh
 #
 # This will automatically download and temporarily install wxWidgets
 # (this script is smart enough not to download or build it if it already
@@ -13,7 +15,7 @@
 #
 # If you already have wxWidgets installed permanently, use:
 #
-#   ./buildmacosx.sh
+#   ./buildmacosx.sh --no-install-wx
 #
 # If wxWidgets is installed somewhere such that wx-config isn't on your
 # PATH you need to indicate where wx-config is by running this script
@@ -21,18 +23,22 @@
 #
 #   env WX_CONFIG=/path/to/wx-config ./buildmacosx.sh
 #
+# (If you set WX_CONFIG, there's no need to pass --no-install-wx).
+#
 # If using a pre-installed wxWidgets, note that it must satisfy the
 # following requirements:
 #   - It must be built with OpenGL support (--with-opengl).
 #   - It must be the Carbon version.
 #   - It probably should be a "Unicode" build (--enable-unicode).
-#
 
 set -e
 
 WXVERSION=2.8.11
 
-if test "x$1" = "x--install-wx" ; then
+# Fix to work for ppc too...
+#arch_flags='-arch i386 -arch ppc'
+arch_flags='-arch i386'
+if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
   else
@@ -42,7 +48,7 @@ if test "x$1" = "x--install-wx" ; then
     test -d wxWidgets-$WXVERSION || tar jxvf wxWidgets-$WXVERSION.tar.bz2
     test -d wxWidgets-$WXVERSION/build || mkdir wxWidgets-$WXVERSION/build
     cd wxWidgets-$WXVERSION/build
-    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode
+    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags"
     make -s
     make -s install
     cd ../..
@@ -60,14 +66,20 @@ WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
 D=`pwd`/Survex
 T=`pwd`/macosxtmp
-./configure --prefix="$D" --bindir="$D" --mandir="$T" WX_CONFIG="$WX_CONFIG"
+./configure --prefix="$D" --bindir="$D" --mandir="$T" WX_CONFIG="$WX_CONFIG" CC="gcc $arch_flags" CXX="g++ $arch_flags"
 make
 make install
 #mv Survex/survex Survex/Survex
 
 # Construct the Aven application bundle.
-cp -r lib/Aven.app Survex
+mkdir Survex/Aven.app
+mkdir Survex/Aven.app/Contents
+mkdir Survex/Aven.app/Contents/MacOS
+mkdir Survex/Aven.app/Contents/Resources
+cp lib/Info.plist Survex/Aven.app/Contents
+printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
 cp -r $D/share/survex/* Survex/Aven.app/Contents/Resources/
+# FIXME: Generate Survex/Aven.app/Resources/Aven.icns
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 rm -f Survex/share/survex/aven.txf
 rm -rf Survex/share/survex/icons
