@@ -31,13 +31,6 @@
 #  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
 
-#  ifdef __TURBOC__
-#   include <time.h>
-#   ifndef CLOCKS_PER_SEC
-#    define CLOCKS_PER_SEC CLK_TCK
-#   endif
-#  endif
-
 # elif OS_UNIX
 
 /* FNM_SEP_DRV and FNM_SEP_EXT needn't be defined */
