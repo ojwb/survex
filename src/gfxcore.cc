@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -30,6 +30,7 @@
 #include <float.h>
 
 #include "aven.h"
+#include "date.h"
 #include "gfxcore.h"
 #include "mainfrm.h"
 #include "message.h"
@@ -868,18 +869,13 @@ void GfxCore::DrawDatebar()
     }
 
     wxString* strs = new wxString[GetNumDepthBands()];
-    char buf[128];
     int band;
     for (band = 0; band < GetNumDepthBands(); band++) {
-	time_t date = m_Parent->GetDateMin() +
-		   time_t((double)m_Parent->GetDateExtent() * band / (GetNumDepthBands() - 1));
-	size_t res = strftime(buf, sizeof(buf), "%Y-%m-%d", gmtime(&date));
-	if (res == 0 || res == sizeof(buf)) {
-	    // Insert extra "" to avoid trigraphs issues.
-	    strs[band] = wxT("?""?""?""?-?""?-?""?");
-	} else {
-	    strs[band] = wxString::FromAscii(buf);
-	}
+	int y, m, d;
+	int days = m_Parent->GetDateMin();
+	days += m_Parent->GetDateExtent() * band / (GetNumDepthBands() - 1);
+	ymd_from_days_since_1900(days, &y, &m, &d);
+	strs[band] = wxString::Format(wxT("%04d-%02d-%02d"), y, m, d);
 
 	int x;
 	GetTextExtent(strs[band], &x, NULL);
@@ -2394,18 +2390,18 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     EndPolygon();
 }
 
-void GfxCore::SetColourFromDate(time_t date, Double factor)
+void GfxCore::SetColourFromDate(int date, Double factor)
 {
     // Set the drawing colour based on a date.
 
-    if (date == 0) {
+    if (date == -1) {
 	SetColour(GetSurfacePen(), factor);
 	return;
     }
 
-    time_t date_ext = m_Parent->GetDateExtent();
+    int date_ext = m_Parent->GetDateExtent();
     assert(date_ext > 0);
-    time_t date_offset = date - m_Parent->GetDateMin();
+    int date_offset = date - m_Parent->GetDateMin();
 
     Double how_far = (Double)date_offset / date_ext;
     assert(how_far >= 0.0);
@@ -2438,12 +2434,12 @@ void GfxCore::AddPolylineDate(const traverse & centreline)
     BeginPolyline();
     vector<PointInfo>::const_iterator i, prev_i;
     i = centreline.begin();
-    time_t date = i->GetDate();
+    int date = i->GetDate();
     SetColourFromDate(date, 1.0);
     PlaceVertex(*i);
     prev_i = i;
     while (++i != centreline.end()) {
-	time_t newdate = i->GetDate();
+	int newdate = i->GetDate();
 	if (newdate != date) {
 	    EndPolyline();
 	    BeginPolyline();
@@ -2457,7 +2453,7 @@ void GfxCore::AddPolylineDate(const traverse & centreline)
     EndPolyline();
 }
 
-static time_t static_date_hack; // FIXME
+static int static_date_hack; // FIXME
 
 void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
 				   const Vector3 &c, const Vector3 &d)

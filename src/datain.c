@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 
 #include <limits.h>
 #include <stdarg.h>
-#include <time.h>
 
 #include "debug.h"
 #include "cavern.h"
@@ -494,24 +493,21 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 get_token();
 	 if (ch == ':') {
-	     struct tm t;
-	     memset(&t, 0, sizeof(struct tm));
+	     int year, month, day;
 
 	     copy_on_write_meta(pcs);
 
 	     nextch();
-	     /* struct tm month uses 0 for Jan */
-	     t.tm_mon = read_uint() - 1;
-	     t.tm_mday = read_uint();
-	     /* struct tm uses year - 1900 */
-	     t.tm_year = read_uint();
-	     /* Note: Larry says a 2 digit year is always 19XX */
-	     if (t.tm_year >= 100) t.tm_year -= 1900;
 
-	     pcs->meta->date1 = mktime(&t);
-	     pcs->meta->date2 = pcs->meta->date1;
+	     month = read_uint();
+	     day = read_uint();
+	     year = read_uint();
+	     /* Note: Larry says a 2 digit year is always 19XX */
+	     if (year < 100) year += 1900;
+
+	     pcs->meta->days1 = pcs->meta->days2 = days_since_1900(year, month, day);
 	 } else {
-	     pcs->meta->date1 = pcs->meta->date2 = 0;
+	     pcs->meta->days1 = pcs->meta->days2 = -1;
 	 }
 	 skipline();
 	 process_eol();

@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -996,15 +996,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_DepthMin = DBL_MAX;
     Double depthmax = -DBL_MAX;
 
-    m_DateMin = (time_t)-1;
-    if (m_DateMin < 0) {
-	// Hmm, signed time_t!
-	// FIXME: find a cleaner way to do this...
-	time_t x = time_t(1) << (sizeof(time_t) * 8 - 2);
-	m_DateMin = x;
-	while ((x>>=1) != 0) m_DateMin |= x;
-    }
-    time_t datemax = 0;
+    m_DateMin = INT_MAX;
+    int datemax = 0;
     complete_dateinfo = true;
 
     traverses.clear();
@@ -1056,9 +1049,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		if (pt.z < zmin) zmin = pt.z;
 		if (pt.z > zmax) zmax = pt.z;
 
-		time_t date;
-		date = survey->date1 + (survey->date2 - survey->date1) / 2;
-		if (date) {
+		int date = survey->days1;
+		if (date != -1) {
+		    date += (survey->days2 - date) / 2;
 		    if (date < m_DateMin) m_DateMin = date;
 		    if (date > datemax) datemax = date;
 		} else {
@@ -1161,9 +1154,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    break;
 		}
 
-		time_t date;
-		date = survey->date1 + (survey->date2 - survey->date1) / 2;
-		if (date) {
+		int date = survey->days1;
+		if (date != -1) {
+		    date += (survey->days2 - date) / 2;
 		    if (date < m_DateMin) m_DateMin = date;
 		    if (date > datemax) datemax = date;
 		}
@@ -1277,7 +1270,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     m_Ext.assign(xmax - xmin, ymax - ymin, zmax - zmin);
 
-    if (datemax < m_DateMin) m_DateMin = 0;
+    if (datemax < m_DateMin) m_DateMin = datemax;
     m_DateExt = datemax - m_DateMin;
 
     // Sort the labels.

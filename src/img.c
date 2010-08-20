@@ -30,7 +30,13 @@
 
 #include "img.h"
 
-#define LATEST_IMG_VERSION 6
+#define LATEST_IMG_VERSION 7
+
+#ifndef IMG_API_VERSION
+# define IMG_API_VERSION 0
+#elif IMG_API_VERSION > 1
+# error IMG_API_VERSION > 1 too new
+#endif
 
 #ifdef IMG_HOSTED
 # include "debug.h"
@@ -125,6 +131,12 @@ baseleaf_from_fnm(const char *fnm)
    return q;
 }
 #endif
+
+static unsigned short
+getu16(FILE *fh)
+{
+   return (unsigned short)get16(fh);
+}
 
 #include <math.h>
 #ifdef HAVE_ROUND
@@ -313,8 +325,11 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->survey = NULL;
    pimg->survey_len = 0;
    pimg->separator = '.';
-   pimg->date1 = 0;
-   pimg->date2 = 0;
+#if IMG_API_VERSION == 0
+   pimg->date1 = pimg->date2 = 0;
+#else /* IMG_API_VERSION == 1 */
+   pimg->days1 = pimg->days2 = -1;
+#endif
    pimg->is_extended_elevation = 0;
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
@@ -695,11 +710,13 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->label_buf[0] = '\0';
    pimg->label_len = 0;
 
-   pimg->date1 = 0;
-   pimg->date2 = 0;
-
-   pimg->olddate1 = 0;
-   pimg->olddate2 = 0;
+#if IMG_API_VERSION == 0
+   pimg->date1 = pimg->date2 = 0;
+   pimg->olddate1 = pimg->olddate2 = 0;
+#else /* IMG_API_VERSION == 1 */
+   pimg->days1 = pimg->days2 = -1;
+   pimg->olddays1 = pimg->olddays2 = -1;
+#endif
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
@@ -882,12 +899,48 @@ img_read_item(img *pimg, img_point *p)
 	 if (opt >= 0x20) {
 	     switch (opt) {
 		 case 0x20: /* Single date */
-		     pimg->date1 = get32(pimg->fh);
-		     pimg->date2 = pimg->date1;
+		     if (pimg->version < 7) {
+			 int date1 = get32(pimg->fh);
+#if IMG_API_VERSION == 0
+			 pimg->date2 = pimg->date1 = date1;
+#else /* IMG_API_VERSION == 1 */
+			 if (date1 != 0) {
+			     pimg->days2 = pimg->days1 = (date1 / 86400) + 25567;
+			 } else {
+			     pimg->days2 = pimg->days1 = -1;
+			 }
+#endif
+		     } else {
+			 int days1 = (int)getu16(pimg->fh);
+#if IMG_API_VERSION == 0
+			 pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+			 pimg->days2 = pimg->days1 = days1;
+#endif
+		     }
 		     break;
-		 case 0x21: /* Date range */
-		     pimg->date1 = get32(pimg->fh);
-		     pimg->date2 = get32(pimg->fh);
+		 case 0x21: /* Date range (short for v7+) */
+		     if (pimg->version < 7) {
+			 INT32_T date1 = get32(pimg->fh);
+			 INT32_T date2 = get32(pimg->fh);
+#if IMG_API_VERSION == 0
+			 pimg->date1 = date1;
+			 pimg->date2 = date2;
+#else /* IMG_API_VERSION == 1 */
+			 pimg->days1 = (date1 / 86400) + 25567;
+			 pimg->days2 = (date2 / 86400) + 25567;
+#endif
+		     } else {
+			 int days1 = (int)getu16(pimg->fh);
+			 int days2 = days1 + getc(pimg->fh) + 1;
+#if IMG_API_VERSION == 0
+			 pimg->date1 = (pimg->days1 - 25567) * 86400;
+			 pimg->date2 = (pimg->days2 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+			 pimg->days1 = days1;
+			 pimg->days2 = days2;
+#endif
+		     }
 		     break;
 		 case 0x22: /* Error info */
 		     pimg->n_legs = get32(pimg->fh);
@@ -896,6 +949,30 @@ img_read_item(img *pimg, img_point *p)
 		     pimg->H = get32(pimg->fh) / 100.0;
 		     pimg->V = get32(pimg->fh) / 100.0;
 		     return img_ERROR_INFO;
+		 case 0x23: { /* v7+: Date range (long) */
+		     if (pimg->version < 7) {
+			 img_errno = IMG_BADFORMAT;
+			 return img_BAD;
+		     }
+		     int days1 = (int)getu16(pimg->fh);
+		     int days2 = (int)getu16(pimg->fh);
+#if IMG_API_VERSION == 0
+		     pimg->date1 = (days1 - 25567) * 86400;
+		     pimg->date2 = (days2 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		     pimg->days1 = days1;
+		     pimg->days2 = days2;
+#endif
+		     break;
+		 }
+		 case 0x24: { /* v7+: No date info */
+#if IMG_API_VERSION == 0
+		     pimg->date1 = pimg->date2 = 0;
+#else /* IMG_API_VERSION == 1 */
+		     pimg->days1 = pimg->days2 = -1;
+#endif
+		     break;
+		 }
 		 case 0x30: case 0x31: /* LRUD */
 		 case 0x32: case 0x33: /* Big LRUD! */
 		     if (read_v3label(pimg) == img_BAD) return img_BAD;
@@ -928,7 +1005,7 @@ img_read_item(img *pimg, img_point *p)
 			 pimg->flags &= ~0x01;
 		     }
 		     return img_XSECT;
-		 default: /* 0x23 - 0x2f and 0x34 - 0x3f are currently unallocated. */
+		 default: /* 0x25 - 0x2f and 0x34 - 0x3f are currently unallocated. */
 		     img_errno = IMG_BADFORMAT;
 		     return img_BAD;
 	     }
@@ -1635,20 +1712,85 @@ write_v3label(img *pimg, int opt, const char *s)
 static void
 img_write_item_date(img *pimg)
 {
-    if (pimg->date1 != pimg->olddate1 ||
-	    pimg->date2 != pimg->olddate2) {
-	/* Only write dates when they've changed. */
-	if (pimg->date1 == pimg->date2) {
+    int same, unset;
+    /* Only write dates when they've changed. */
+#if IMG_API_VERSION == 0
+    if (pimg->date1 == pimg->olddate1 && pimg->date2 == pimg->olddate2)
+	return;
+
+    same = (pimg->date1 == pimg->date2);
+    unset = (pimg->date1 == 0);
+#else /* IMG_API_VERSION == 1 */
+    if (pimg->days1 == pimg->olddays1 && pimg->days2 == pimg->olddays2)
+	return;
+
+    same = (pimg->days1 == pimg->days2);
+    unset = (pimg->days1 == -1);
+#endif
+
+    if (same) {
+	if (img_output_version < 7) {
 	    putc(0x20, pimg->fh);
+#if IMG_API_VERSION == 0
 	    put32(pimg->date1, pimg->fh);
+#else /* IMG_API_VERSION == 1 */
+	    put32((pimg->days1 - 25567) * 86400, pimg->fh);
+#endif
 	} else {
+	    if (unset) {
+		putc(0x24, pimg->fh);
+	    } else {
+		putc(0x20, pimg->fh);
+#if IMG_API_VERSION == 0
+		put16(pimg->date1 / 86400 + 25567, pimg->fh);
+#else /* IMG_API_VERSION == 1 */
+		put16(pimg->days1, pimg->fh);
+#endif
+	    }
+	}
+    } else {
+	if (img_output_version < 7) {
 	    putc(0x21, pimg->fh);
+#if IMG_API_VERSION == 0
 	    put32(pimg->date1, pimg->fh);
 	    put32(pimg->date2, pimg->fh);
+#else /* IMG_API_VERSION == 1 */
+	    put32((pimg->days1 - 25567) * 86400, pimg->fh);
+	    put32((pimg->days2 - 25567) * 86400, pimg->fh);
+#endif
+	} else {
+#if IMG_API_VERSION == 0
+	    int diff = (pimg->date2 - pimg->date1) / 86400;
+	    if (diff > 0 && diff <= 256) {
+		putc(0x21, pimg->fh);
+		put16(pimg->date1 / 86400 + 25567, pimg->fh);
+		putc(diff - 1, pimg->fh);
+	    } else {
+		putc(0x23, pimg->fh);
+		put16(pimg->date1 / 86400 + 25567, pimg->fh);
+		put16(pimg->date2 / 86400 + 25567, pimg->fh);
+	    }
+#else /* IMG_API_VERSION == 1 */
+	    int diff = pimg->days2 - pimg->days1;
+	    if (diff > 0 && diff <= 256) {
+		putc(0x21, pimg->fh);
+		put16(pimg->days1, pimg->fh);
+		putc(diff - 1, pimg->fh);
+	    } else {
+		putc(0x23, pimg->fh);
+		put16(pimg->days1, pimg->fh);
+		put16(pimg->days2, pimg->fh);
+	    }
+#endif
 	}
-	pimg->olddate1 = pimg->date1;
-	pimg->olddate2 = pimg->date2;
     }
+#if IMG_API_VERSION == 0
+    pimg->olddate1 = pimg->date1;
+    pimg->olddate2 = pimg->date2;
+#else /* IMG_API_VERSION == 1 */
+    pimg->olddays1 = pimg->days1;
+    pimg->olddays2 = pimg->days2;
+#endif
 }
 
 void

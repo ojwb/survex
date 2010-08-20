@@ -757,14 +757,14 @@ it: 57 *EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'
 sk: 57 *EXPORT mus&iacute; bezprostredne nasledova&tcaron; `*BEGIN <SURVEY>'
 ro: 57 *EXPORT trebuie sa urmeze dupa `*BEGIN <TOPOGRAFIE>'
 # 58 different in 1.0
-en: 58 Invalid year (< 1970 or > 2037)
-fr: 58 Ann&eacute;e invalide (< 1970 ou > 2037)
-de: 58 Ung&uuml;ltiges Jahr (< 1970 oder > 2037)
-ca: 58 Any inv&agrave;lid (< 1970 &oacute; > 2037)
-es: 58 A&ntilde;o inv&aacute;lido (< 1970 &oacute; > 2037)
-it: 58 Anno non valido (<1970 o >2037)
-sk: 58 Neplatn&yacute; rok (< 1970 alebo > 2037)
-ro: 58 An gresit (< 1970 or > 2037)
+en: 58 Invalid year (< 1900 or > 2078)
+fr: 58 Ann&eacute;e invalide (< 1900 ou > 2078)
+de: 58 Ung&uuml;ltiges Jahr (< 1900 oder > 2078)
+ca: 58 Any inv&agrave;lid (< 1900 &oacute; > 2078)
+es: 58 A&ntilde;o inv&aacute;lido (< 1900 &oacute; > 2078)
+it: 58 Anno non valido (<1900 o >2078)
+sk: 58 Neplatn&yacute; rok (< 1900 alebo > 2078)
+ro: 58 An gresit (< 1900 or > 2078)
 # Suspicious means something like 410 degrees or -20 degrees
 en: 59 Suspicious compass reading
 fr: 59 Lecture de compas suspecte

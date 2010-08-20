@@ -73,7 +73,7 @@ extern int fnm_output_base_is_dir;
 
 extern bool fExportUsed;
 
-extern time_t tmUserStart;
+extern int current_days_since_1900;
 
 /* Types */
 
@@ -210,7 +210,7 @@ typedef struct Prefix {
 /* survey metadata */
 typedef struct Meta_data {
     size_t ref_count;
-    time_t date1, date2;
+    int days1, days2;
 } meta_data;
 
 /* stuff stored for both forward & reverse legs */

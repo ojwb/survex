@@ -27,6 +27,7 @@
 #include "cavern.h"
 #include "cmdline.h"
 #include "commands.h"
+#include "date.h"
 #include "datain.h"
 #include "debug.h"
 #include "message.h"
@@ -143,16 +144,20 @@ pause_on_exit(void)
 }
 #endif
 
-time_t tmUserStart;
+int current_days_since_1900;
 
 extern CDECL int
 main(int argc, char **argv)
 {
    int d;
-   clock_t tmCPUStart;
-
-   tmUserStart = time(NULL);
-   tmCPUStart = clock();
+   time_t tmUserStart = time(NULL);
+   clock_t tmCPUStart = clock();
+   {
+       // FIXME: localtime?
+       struct tm * t = localtime(&tmUserStart);
+       int y = t->tm_year + 1900;
+       current_days_since_1900 = days_since_1900(y, t->tm_mon + 1, t->tm_mday);
+   }
 
    /* Always buffer by line for aven's benefit. */
    setvbuf(stdout, NULL, _IOLBF, 0);

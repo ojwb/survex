@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
+#include "date.h"
 #include "debug.h"
 #include "filename.h"
 #include "message.h"
@@ -431,15 +432,6 @@ read_string(char **pstr, int *plen)
    nextch();
 }
 
-static int lastday[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-extern int
-last_day(int year, int month)
-{
-    SVX_ASSERT(month >= 1 && month <= 12);
-    return (month == 2 && is_leap_year(year)) ? 29 : lastday[month - 1];
-}
-
 extern void
 read_date(int *py, int *pm, int *pd)
 {
@@ -452,8 +444,8 @@ read_date(int *py, int *pm, int *pd)
    y = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
    /* Two digit year is 19xx. */
    if (y < 100) y += 1900;
-   if (y < 1970 || y > 2037) {
-      compile_error_skip(/*Invalid year (< 1970 or > 2037)*/58);
+   if (y < 1900 || y > 2078) {
+      compile_error_skip(/*Invalid year (< 1900 or > 2078)*/58);
       LONGJMP(file.jbSkipLine);
       return; /* for brain-fried compilers */
    }

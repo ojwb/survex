@@ -1,3 +1,13 @@
+Fri Aug 20 12:26:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm,lib/messages.txt,src/,tests/: New v7 of .3d format
+	  which stores survey dates as number of days since Jan 1st 1900, so
+	  we now support dates from 1900-2078 (rather than 1970-2037) with a
+	  smaller file size.  The img API is now versioned - you can select
+	  the new "version 1" by compiling with -DIMG_API_VERSION=1, which
+	  gives the survey dates in days in days1 and days2 instead of as
+	  time_t values in date1 and date2.  Fixes ticket#14.
+
 Fri Aug 20 12:12:54 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Remove unused '#include <time.h>'.

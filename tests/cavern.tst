@@ -147,9 +147,9 @@ for file in $TESTS ; do
   cmd_titlebad) pos=fail ; error=4 ;;
   cmd_dummy) pos=no ; warn=0 ;;
   cmd_infer) pos=yes ; warn=0 ;;
-  cmd_date) pos=no ; warn=3 ;;
-  cmd_datebad) pos=fail ; error=36 ;;
-  cmd_datebad2) pos=fail ; error=20 ;;
+  cmd_date) pos=no ; warn=4 ;;
+  cmd_datebad) pos=fail ; error=37 ;;
+  cmd_datebad2) pos=fail ; error=21 ;;
   cartes) pos=yes ; warn=0 ;;
   diving) pos=yes ; warn=0 ;;
   cylpolar) pos=yes ; warn=0 ;;

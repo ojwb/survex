@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-noinst_HEADERS = cavern.h commands.h cmdline.h datain.h debug.h filelist.h\
- filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h message.h namecmp.h\
- netartic.h netbits.h netskel.h network.h osalloc.h osdepend.h ostypes.h out.h\
- readval.h str.h useful.h validate.h whichos.h\
+noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
+ filelist.h filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h\
+ message.h namecmp.h netartic.h netbits.h netskel.h network.h osalloc.h\
+ osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  fnt.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h cavernlog.h\
  aboutdlg.h aven.h avenpal.h gfxcore.h log.h mainfrm.h\
  vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
@@ -27,7 +27,7 @@ aven-gfxcore.o: gfxcore.cc
 
 LDADD = $(LIBOBJS)
 
-INCLUDES = -DIMG_HOSTED
+INCLUDES = -DIMG_HOSTED -DIMG_API_VERSION=1
 
 # dump3d is a test program
 EXTRA_PROGRAMS =\
@@ -39,11 +39,12 @@ bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
-cavern_SOURCES = cavern.c listpos.c commands.c datain.c netskel.c network.c \
- readval.c str.c matrix.c img.c netbits.c useful.c validate.c netartic.c \
+cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
+ network.c readval.c str.c matrix.c img.c netbits.c useful.c validate.c \
+ netartic.c \
  $(COMMONSRC)
 
-aven_SOURCES = aven.cc img.c message.c filename.c osdepend.c \
+aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
  guicontrol.cc gla-gl.cc fnt.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \

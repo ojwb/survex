@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,11 @@
 #include <assert.h>
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
-#include <time.h>
 
 #include "cavern.h"
 #include "commands.h"
 #include "datain.h"
+#include "date.h"
 #include "debug.h"
 #include "filename.h"
 #include "message.h"
@@ -1516,8 +1516,7 @@ copy_on_write_meta(settings *s)
    if (!s->meta || s->meta->ref_count != 0) {
        meta_data * meta_new = osnew(meta_data);
        if (!s->meta) {
-	   meta_new->date1 = 0;
-	   meta_new->date2 = 0;
+	   meta_new->days1 = meta_new->days2 = -1;
        } else {
 	   *meta_new = *(s->meta);
        }
@@ -1529,48 +1528,45 @@ copy_on_write_meta(settings *s)
 static void
 cmd_date(void)
 {
-    struct tm t;
     int year, month, day;
-    time_t date1, date2;
+    int days1, days2;
+    bool implicit_range = fFalse;
 
-    memset(&t, 0, sizeof(t));
     read_date(&year, &month, &day);
-    t.tm_year = year;
-    t.tm_mon = month ? month : 1;
-    t.tm_mday = day ? day : 1;
+    days1 = days_since_1900(year, month ? month : 1, day ? day : 1);
 
-    --t.tm_mon; /* Jan is 0 */
-    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
-    date1 = mktime(&t);
-    if (date1 == (time_t)-1) {
-	date1 = 0;
-    } else if (date1 > tmUserStart) {
+    if (days1 > current_days_since_1900) {
 	compile_warning(/*Date is in the future!*/80);
     }
 
     skipblanks();
     if (ch == '-') {
 	nextch();
-	memset(&t, 0, sizeof(t));
 	read_date(&year, &month, &day);
-    }
-    t.tm_year = year;
-    t.tm_mon = month ? month : 12;
-    if (day == 0) {
-	t.tm_mday = last_day(year, t.tm_mon);
     } else {
-	t.tm_mday = day;
+	if (month && day) {
+	    days2 = days1;
+	    goto read;
+	}
+	implicit_range = fTrue;
     }
-    --t.tm_mon; /* Jan is 0 */
-    if (t.tm_year >= 100) t.tm_year -= 1900; /* tm_year is years since 1900 */
-    date2 = mktime(&t);
-    if (date2 == (time_t)-1) date2 = 0;
-    if (date2 < date1)
-	compile_error(/*End of date range is before the start*/81);
 
+    if (month == 0) month = 12;
+    if (day == 0) day = last_day(year, month);
+    days2 = days_since_1900(year, month, day);
+
+    if (!implicit_range && days2 > current_days_since_1900) {
+	compile_warning(/*Date is in the future!*/80);
+    }
+
+    if (days2 < days1) {
+	compile_error(/*End of date range is before the start*/81);
+    }
+
+read:
     copy_on_write_meta(pcs);
-    pcs->meta->date1 = date1;
-    pcs->meta->date2 = date2;
+    pcs->meta->days1 = days1;
+    pcs->meta->days2 = days2;
 }
 
 typedef void (*cmd_fn)(void);

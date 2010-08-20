@@ -1,5 +1,6 @@
 ; invalid dates (leap year testing)
 *begin
+*date 1900.02.29
 *date 1975.01.32
 *date 1975.02.29
 *date 1975.03.32

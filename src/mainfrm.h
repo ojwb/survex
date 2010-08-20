@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@
 using namespace std;
 
 #include <math.h>
-#include <time.h>
 
 #define MARK_FIRST 1
 #define MARK_NEXT 2
@@ -136,14 +135,14 @@ enum {
 };
 
 class PointInfo : public Point {
-    time_t date;
+    int date;
 
 public:
-    PointInfo() : Point(), date(0) { }
-    PointInfo(const img_point & pt) : Point(pt), date(0) { }
-    PointInfo(const img_point & pt, time_t date_) : Point(pt), date(date_) { }
-    PointInfo(const Point & p, time_t date_) : Point(p), date(date_) { }
-    time_t GetDate() const { return date; }
+    PointInfo() : Point(), date(-1) { }
+    PointInfo(const img_point & pt) : Point(pt), date(-1) { }
+    PointInfo(const img_point & pt, int date_) : Point(pt), date(date_) { }
+    PointInfo(const Point & p, int date_) : Point(p), date(date_) { }
+    int GetDate() const { return date; }
 };
 
 class XSect : public PointInfo {
@@ -152,7 +151,7 @@ class XSect : public PointInfo {
 
 public:
     XSect() : PointInfo(), l(0), r(0), u(0), d(0) { }
-    XSect(const Point &p, time_t date_,
+    XSect(const Point &p, int date_,
 	  Double l_, Double r_, Double u_, Double d_)
 	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_) { }
     Double GetL() const { return l; }
@@ -214,7 +213,7 @@ class MainFrm : public wxFrame {
     list<LabelInfo*> m_Labels;
     Vector3 m_Ext;
     Double m_DepthMin, m_DepthExt;
-    time_t m_DateMin, m_DateExt;
+    int m_DateMin, m_DateExt;
     bool complete_dateinfo;
     GfxCore* m_Gfx;
     GUIControl* m_Control;
@@ -455,8 +454,8 @@ public:
     Double GetDepthMin() const { return m_DepthMin; }
 
     bool HasCompleteDateInfo() const { return complete_dateinfo; }
-    time_t GetDateExtent() const { return m_DateExt; }
-    time_t GetDateMin() const { return m_DateMin; }
+    int GetDateExtent() const { return m_DateExt; }
+    int GetDateMin() const { return m_DateMin; }
 
     void SelectTreeItem(LabelInfo* label);
     void ClearTreeSelection();
