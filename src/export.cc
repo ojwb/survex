@@ -37,6 +37,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
 # include <pwd.h>

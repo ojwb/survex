@@ -1,3 +1,7 @@
+Fri Aug 20 10:10:05 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Explicit #include <time.h> for strftime().
+
 Wed Aug 18 13:59:30 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/osdepend.h: Remove workaround for DOS Turbo C compiler.
