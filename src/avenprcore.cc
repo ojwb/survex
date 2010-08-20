@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,6 @@
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
-#include <time.h>
 #include <float.h>
 
 #include "mainfrm.h"
