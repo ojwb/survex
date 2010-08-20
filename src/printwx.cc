@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWidgets specific parts of Survex wxWidgets printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,6 @@ using namespace std;
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <time.h>
 #include <ctype.h>
 #include <float.h>
 #include <limits.h>

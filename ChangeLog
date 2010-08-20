@@ -1,3 +1,7 @@
+Fri Aug 20 12:12:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Remove unused '#include <time.h>'.
+
 Fri Aug 20 12:10:55 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc: Remove unused '#include <time.h>'.
