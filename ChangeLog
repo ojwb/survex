@@ -1,3 +1,12 @@
+Sat Aug 21 13:31:17 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Use GL_SMOOTH_POINT_SIZE_RANGE and
+	  GL_SMOOTH_POINT_SIZE_GRANULARITY instead of GL_POINT_SIZE_RANGE and
+	  GL_POINT_SIZE_GRANULARITY (unless they aren't defined) as the latter
+	  two are deprecated in OpenGL >= 1.2.  If GL_ALIASED_POINT_SIZE_RANGE
+	  is available (OpenGL >= 1.2 again) then report its value in the
+	  about box.
+
 Fri Aug 20 12:26:40 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/3dformat.htm,lib/messages.txt,src/,tests/: New v7 of .3d format

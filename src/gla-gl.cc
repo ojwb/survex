@@ -50,6 +50,20 @@
 #ifndef GL_COORD_REPLACE
 #define GL_COORD_REPLACE 0x8862
 #endif
+// GL_POINT_SIZE_RANGE is deprecated in OpenGL 1.2 and later, and replaced by
+// GL_SMOOTH_POINT_SIZE_RANGE.
+#ifndef GL_SMOOTH_POINT_SIZE_RANGE
+#define GL_SMOOTH_POINT_SIZE_RANGE GL_POINT_SIZE_RANGE
+#endif
+// GL_POINT_SIZE_GRANULARITY is deprecated in OpenGL 1.2 and later, and
+// replaced by GL_SMOOTH_POINT_SIZE_GRANULARITY.
+#ifndef GL_SMOOTH_POINT_SIZE_GRANULARITY
+#define GL_SMOOTH_POINT_SIZE_GRANULARITY GL_POINT_SIZE_GRANULARITY
+#endif
+// GL_ALIASED_POINT_SIZE_RANGE was added in OpenGL 1.2.
+#ifndef GL_ALIASED_POINT_SIZE_RANGE
+#define GL_ALIASED_POINT_SIZE_RANGE 0x846D
+#endif
 
 #ifndef USE_FNT
 // Some WIN32 stupidity which causes mingw to fail to link for some reason;
@@ -101,18 +115,23 @@ string GetGLSystemDescription()
     GLint max_viewport[2];
     glGetIntegerv(GL_MAX_VIEWPORT_DIMS, max_viewport);
     GLdouble point_size_range[2];
-    glGetDoublev(GL_POINT_SIZE_RANGE, point_size_range);
+    glGetDoublev(GL_SMOOTH_POINT_SIZE_RANGE, point_size_range);
     GLdouble point_size_granularity;
-    glGetDoublev(GL_POINT_SIZE_GRANULARITY, &point_size_granularity);
+    glGetDoublev(GL_SMOOTH_POINT_SIZE_GRANULARITY, &point_size_granularity);
     info += string_format("R%dG%dB%d\n"
 	     "Max Texture size: %dx%d\n"
 	     "Max Viewport size: %dx%d\n"
-	     "Point Size %.3f-%.3f (granularity %.3f)",
+	     "Smooth Point Size %.3f-%.3f (granularity %.3f)",
 	     (int)red, (int)green, (int)blue,
 	     (int)max_texture_size, (int)max_texture_size,
 	     (int)max_viewport[0], (int)max_viewport[1],
 	     point_size_range[0], point_size_range[1],
 	     point_size_granularity);
+    glGetDoublev(GL_ALIASED_POINT_SIZE_RANGE, point_size_range);
+    if (glGetError() != GL_INVALID_ENUM) {
+	info += string_format("\nAliased point size %.3f-%.3f",
+			      point_size_range[0], point_size_range[1]);
+    }
 
     const GLubyte* gl_extensions = glGetString(GL_EXTENSIONS);
     if (*gl_extensions) {
