@@ -258,6 +258,12 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     m_Fog = false;
     m_AntiAlias = false;
     list_flags = 0;
+
+#ifndef USE_FNT
+    int argc = 1;
+    char * argv[] = { (char*)"aven", NULL };
+    glutInit(&argc, argv);
+#endif
 }
 
 GLACanvas::~GLACanvas()
@@ -816,7 +822,9 @@ void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
 
-#ifdef FREEGLUT
+// glutBitmapString() useless for Unicode strings.
+//#ifdef FREEGLUT
+#if 0
     glutBitmapString(m_Font, (const unsigned char *)str.c_str());
     CHECK_GL_ERROR("DrawText", "glutBitmapString");
 #else
@@ -850,7 +858,8 @@ void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
     m_Font.getTextExtent(str.c_str(), x_ext, y_ext);
 #else
     if (x_ext) {
-#if 1
+// glutBitmapLength() useless for Unicode strings.
+#if 0
 	*x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
 	CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
 #else
