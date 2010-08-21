@@ -1,3 +1,8 @@
+Sat Aug 21 14:33:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix another use of GL_POINT_SIZE_RANGE to
+	  GL_SMOOTH_POINT_SIZE_RANGE.
+
 Sat Aug 21 14:30:56 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Fix non-USE_FNT case to work again (it's limited to

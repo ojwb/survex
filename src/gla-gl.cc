@@ -336,8 +336,8 @@ void GLACanvas::FirstShow()
 
     // Check if we can use GL_POINTS to plot blobs at stations.
     GLdouble point_size_range[2];
-    glGetDoublev(GL_POINT_SIZE_RANGE, point_size_range);
-    CHECK_GL_ERROR("FirstShow", "glGetDoublev GL_POINT_SIZE_RANGE");
+    glGetDoublev(GL_SMOOTH_POINT_SIZE_RANGE, point_size_range);
+    CHECK_GL_ERROR("FirstShow", "glGetDoublev GL_SMOOTH_POINT_SIZE_RANGE");
     glpoint_ok = (point_size_range[0] <= BLOB_DIAMETER &&
 		  point_size_range[1] >= BLOB_DIAMETER);
     if (glpoint_ok) {
