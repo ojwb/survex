@@ -84,7 +84,7 @@
 
 using namespace std;
 
-const double BLOB_DIAMETER = 5.0;
+const int BLOB_DIAMETER = 5;
 
 static bool opengl_initialised = false;
 
@@ -998,15 +998,18 @@ void GLACanvas::BeginBlobs()
 	SetIndicatorTransform();
 	glEnable(GL_DEPTH_TEST);
 	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_DEPTH_TEST");
+	glBegin(GL_LINES);
     }
 }
 
 void GLACanvas::EndBlobs()
 {
+    // Finish drawing of a set of blobs.
+    glEnd();
     if (glpoint_ok) {
-	// Finish drawing of a set of blobs.
-	glEnd();
-	CHECK_GL_ERROR("EndBlobs", "GL_POINTS");
+	CHECK_GL_ERROR("EndBlobs", "glEnd GL_POINTS");
+    } else {
+	CHECK_GL_ERROR("EndBlobs", "glEnd GL_LINES");
     }
     glPopAttrib();
     CHECK_GL_ERROR("EndBlobs", "glPopAttrib");
@@ -1027,14 +1030,19 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	// but we can save effort with a cheap check here.
 	if (Z <= 0) return;
 
-	// Draw an filled circle.
-	assert(m_Quadric);
-	glTranslated(X, Y, Z);
-	CHECK_GL_ERROR("DrawBlob", "glTranslated 1");
-	gluDisk(m_Quadric, 0, BLOB_DIAMETER * 0.5, 8, 1);
-	CHECK_GL_ERROR("DrawBlob", "gluDisk");
-	glTranslated(-X, -Y, -Z);
-	CHECK_GL_ERROR("DrawBlob", "glTranslated 2");
+	X -= BLOB_DIAMETER * 0.5;
+	Y -= BLOB_DIAMETER * 0.5;
+
+	PlaceVertex(X, Y + 1, Z);
+	PlaceVertex(X, Y + (BLOB_DIAMETER - 1), Z);
+
+	for (int i = 1; i < (BLOB_DIAMETER - 1); ++i) {
+	    PlaceVertex(X + i, Y, Z);
+	    PlaceVertex(X + i, Y + BLOB_DIAMETER, Z);
+	}
+
+	PlaceVertex(X + (BLOB_DIAMETER - 1), Y + 1, Z);
+	PlaceVertex(X + (BLOB_DIAMETER - 1), Y + (BLOB_DIAMETER - 1), Z);
     }
 #ifdef GLA_DEBUG
     m_Vertices++;
@@ -1047,14 +1055,19 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y)
 	// Draw a marker.
 	PlaceVertex(x, y, 0);
     } else {
-	// Draw an filled circle.
-	assert(m_Quadric);
-	glTranslated(x, y, 0);
-	CHECK_GL_ERROR("DrawBlob 2", "glTranslated 1");
-	gluDisk(m_Quadric, 0, BLOB_DIAMETER * 0.5, 8, 1);
-	CHECK_GL_ERROR("DrawBlob 2", "gluDisk");
-	glTranslated(-x, -y, 0);
-	CHECK_GL_ERROR("DrawBlob 2", "glTranslated 2");
+	x -= BLOB_DIAMETER * 0.5;
+	y -= BLOB_DIAMETER * 0.5;
+
+	PlaceVertex(x, y + 1, 0);
+	PlaceVertex(x, y + (BLOB_DIAMETER - 1), 0);
+
+	for (int i = 1; i < (BLOB_DIAMETER - 1); ++i) {
+	    PlaceVertex(x + i, y, 0);
+	    PlaceVertex(x + i, y + BLOB_DIAMETER, 0);
+	}
+
+	PlaceVertex(x + (BLOB_DIAMETER - 1), y + 1, 0);
+	PlaceVertex(x + (BLOB_DIAMETER - 1), y + (BLOB_DIAMETER - 1), 0);
     }
 #ifdef GLA_DEBUG
     m_Vertices++;
