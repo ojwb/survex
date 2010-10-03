@@ -401,16 +401,16 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	if (!Animating() && (m_here.IsValid() || m_there.IsValid())) {
 	    // Draw "here" and "there".
-	    Double hx, hy;
+	    double hx, hy;
 	    SetColour(HERE_COLOUR);
 	    if (m_here.IsValid()) {
-		Double dummy;
+		double dummy;
 		Transform(m_here, &hx, &hy, &dummy);
 		if (!m_here_is_temporary) DrawRing(hx, hy);
 	    }
 	    if (m_there.IsValid()) {
-		Double tx, ty;
-		Double dummy;
+		double tx, ty;
+		double dummy;
 		Transform(m_there, &tx, &ty, &dummy);
 		if (m_here.IsValid()) {
 		    BeginLines();
@@ -740,7 +740,7 @@ void GfxCore::NattyDrawNames()
 	    continue;
 	}
 
-	Double x, y, z;
+	double x, y, z;
 
 	Transform(**label, &x, &y, &z);
 	// Check if the label is behind us (in perspective view).
@@ -749,7 +749,7 @@ void GfxCore::NattyDrawNames()
 	// Apply a small shift so that translating the view doesn't make which
 	// labels are displayed change as the resulting twinkling effect is
 	// distracting.
-	Double tx, ty, tz;
+	double tx, ty, tz;
 	Transform(Vector3(), &tx, &ty, &tz);
 	tx -= floor(tx / quantise) * quantise;
 	ty -= floor(ty / quantise) * quantise;
@@ -796,7 +796,7 @@ void GfxCore::SimpleDrawNames()
 	    continue;
 	}
 
-	Double x, y, z;
+	double x, y, z;
 	Transform(**label, &x, &y, &z);
 
 	// Check if the label is behind us (in perspective view).
@@ -1132,7 +1132,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
     while (iter != m_PointGrid[square].end()) {
 	LabelInfo *pt = *iter++;
 
-	Double cx, cy, cz;
+	double cx, cy, cz;
 
 	Transform(*pt, &cx, &cy, &cz);
 
@@ -1166,7 +1166,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (centre) {
 	    ClearTreeSelection();
 	} else {
-	    Double x, y, z;
+	    double x, y, z;
 	    ReverseTransform(point.x, m_YSize - point.y, &x, &y, &z);
 	    SetHere(Point(Vector3(x, y, z)));
 	    m_here_is_temporary = true;
@@ -1419,7 +1419,7 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
     // Calculate the minimum rectangle which includes the old and new
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
-    Double X, Y, Z;
+    double X, Y, Z;
     if (a.IsValid()) {
 	if (!Transform(a, &X, &Y, &Z)) {
 	    printf("oops\n");
@@ -1513,7 +1513,7 @@ void GfxCore::CreateHitTestGrid()
 	}
 
 	// Calculate screen coordinates.
-	Double cx, cy, cz;
+	double cx, cy, cz;
 	Transform(*label, &cx, &cy, &cz);
 	if (cx < 0 || cx >= m_XSize) continue;
 	if (cy < 0 || cy >= m_YSize) continue;
@@ -1613,7 +1613,7 @@ void GfxCore::SetCoords(wxPoint point)
     // window coordinates.  The relevant display is updated depending on
     // whether we're in plan or elevation view.
 
-    Double cx, cy, cz;
+    double cx, cy, cz;
 
     SetDataTransform();
     ReverseTransform(point.x, m_YSize - 1 - point.y, &cx, &cy, &cz);

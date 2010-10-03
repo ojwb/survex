@@ -225,8 +225,8 @@ public:
     }
     void AddTranslationScreenCoordinates(int dx, int dy);
 
-    bool Transform(const Vector3 & v, Double* x_out, Double* y_out, Double* z_out) const;
-    void ReverseTransform(Double x, Double y, Double* x_out, Double* y_out, Double* z_out) const;
+    bool Transform(const Vector3 & v, double* x_out, double* y_out, double* z_out) const;
+    void ReverseTransform(Double x, Double y, double* x_out, double* y_out, double* z_out) const;
 
 #ifdef USE_FNT
     int GetFontSize() const { return m_Font.getFontSize(); }

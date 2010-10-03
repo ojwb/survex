@@ -443,8 +443,8 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     // Find out how far the translation takes us in data coordinates.
     SetDataTransform();
 
-    Double x0, y0, z0;
-    Double x, y, z;
+    double x0, y0, z0;
+    double x, y, z;
     gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport,
                  &x0, &y0, &z0);
     CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject");
@@ -461,7 +461,7 @@ void GLACanvas::SetVolumeDiameter(glaCoord diameter)
     // Set the size of the data drawing volume by giving the diameter of the
     // smallest sphere containing it.
 
-    m_VolumeDiameter = max(1.0, diameter);
+    m_VolumeDiameter = max(glaCoord(1.0), diameter);
 }
 
 void GLACanvas::StartDrawing()
@@ -595,13 +595,13 @@ void GLACanvas::SetDataTransform()
 
     if (!m_Perspective) {
 	// Adjust the translation so we don't change the Z position of the model
-	Double X, Y, Z;
+	double X, Y, Z;
 	gluProject(m_Translation.GetX(),
 		   m_Translation.GetY(),
 		   m_Translation.GetZ(),
 		   modelview_matrix, projection_matrix, viewport,
 		   &X, &Y, &Z);
-	Double Tx, Ty, Tz;
+	double Tx, Ty, Tz;
 	gluUnProject(X, Y, 0.5, modelview_matrix, projection_matrix, viewport,
 		     &Tx, &Ty, &Tz);
 	glTranslated(Tx, Ty, Tz);
@@ -1021,7 +1021,7 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 	// Draw a marker.
 	PlaceVertex(x, y, z);
     } else {
-	Double X, Y, Z;
+	double X, Y, Z;
 	if (!Transform(Vector3(x, y, z), &X, &Y, &Z)) {
 	    printf("bad transform\n");
 	    return;
@@ -1124,7 +1124,7 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
     if (glpoint_sprite) {
 	PlaceVertex(x, y, z);
     } else {
-	Double X, Y, Z;
+	double X, Y, Z;
 	if (!Transform(Vector3(x, y, z), &X, &Y, &Z)) {
 	    printf("bad transform\n");
 	    return;
@@ -1297,7 +1297,7 @@ void GLACanvas::DisableDashedLines()
 }
 
 bool GLACanvas::Transform(const Vector3 & v,
-                          Double* x_out, Double* y_out, Double* z_out) const
+			  double* x_out, double* y_out, double* z_out) const
 {
     // Convert from data coordinates to screen coordinates.
 
@@ -1308,7 +1308,7 @@ bool GLACanvas::Transform(const Vector3 & v,
 }
 
 void GLACanvas::ReverseTransform(Double x, Double y,
-                                 Double* x_out, Double* y_out, Double* z_out) const
+				 double* x_out, double* y_out, double* z_out) const
 {
     // Convert from screen coordinates to data coordinates.
 
