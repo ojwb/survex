@@ -1,3 +1,11 @@
+survex (1.1.14-2) unstable; urgency=low
+
+  [Olly Betts]
+  * debian/copyright: Use http://survex.com/ rather than http://www.survex.com/
+    - the former is the canonical name and www.survex.com just redirects.
+
+ -- Olly Betts <olly@survex.com>  Mon, 04 Oct 2010 11:04:59 +0000
+
 survex (1.1.14-1) unstable; urgency=low
 
   [Olly Betts]
