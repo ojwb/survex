@@ -8,7 +8,7 @@ OutputBaseFilename=@PACKAGE@-win32-@VERSION@
 ; FIXME translate this!
 ;AppComments=Survex Cave Surveying Software
 AppPublisher=The Survex Project
-AppPublisherURL=http://www.survex.com/
+AppPublisherURL=http://survex.com/
 AppVersion=@VERSION@
 VersionInfoTextVersion=@VERSION@
 VersionInfoVersion=@VERSION@
