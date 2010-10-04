@@ -304,10 +304,7 @@ class AvenPresList : public wxListCtrl {
 		wxString ext(wxT("*.fly"));
 #else
 		wxString ext = wmsg(/*Aven presentations*/320);
-		ext += wxT("|*.fly|");
-		ext += wmsg(/*All files*/208);
-		ext += wxT("|");
-		ext += wxFileSelectorDefaultWildcardStr;
+		ext += wxT("|*.fly");
 #endif
 		wxFileDialog dlg(this, wmsg(/*Select an output filename*/319),
 				 wxString(), fnm, ext,
