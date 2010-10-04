@@ -469,7 +469,7 @@ void GLACanvas::StartDrawing()
     // Prepare for a redraw operation.
 
     SetCurrent();
-    glDepthMask(true);
+    glDepthMask(GL_TRUE);
 }
 
 void GLACanvas::EnableSmoothPolygons(bool filled)
