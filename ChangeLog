@@ -1,3 +1,7 @@
+Mon Oct 04 11:18:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Add \n to commented out debug message.
+
 Mon Oct 04 09:58:17 GMT 2010  Olly Betts <olly@survex.com>
 
 	* doc/index.htm.in,doc/manual.sgml,doc/survex.ent,lib/print.ini,

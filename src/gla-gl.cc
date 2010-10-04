@@ -413,7 +413,7 @@ void GLACanvas::FirstShow()
 	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MIN_FILTER");
     }
     //if (glpoint_ok) printf("Using GL_POINTS for blobs\n");
-    //if (glpoint_sprite) printf("Using GL_POINT_SPRITE* for crosses");
+    //if (glpoint_sprite) printf("Using GL_POINT_SPRITE* for crosses\n");
 }
 
 void GLACanvas::Clear()
