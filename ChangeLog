@@ -1,3 +1,10 @@
+Mon Oct 04 09:58:17 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/index.htm.in,doc/manual.sgml,doc/survex.ent,lib/print.ini,
+	  src/printwx.cc,survex.iss.in: Use http://survex.com/ rather than
+	  http://www.survex.com/ - the former is the canonical name and
+	  www.survex.com just redirects.
+
 Mon Oct 04 09:46:24 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Don't offer "All files" wildcard in presentation save
