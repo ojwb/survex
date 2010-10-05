@@ -1,3 +1,9 @@
+Tue Oct 05 10:53:56 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Cache the best method for drawing blobs
+	  and crosses, and recheck automatically if the graphics hardware
+	  or drivers are changed or upgraded.
+
 Mon Oct 04 11:18:22 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Add \n to commented out debug message.

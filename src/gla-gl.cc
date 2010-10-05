@@ -242,7 +242,7 @@ const int GLACanvas::m_FontSize = 10;
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
-      m_Translation()
+      m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN)
 {
     // Constructor.
 
@@ -280,6 +280,29 @@ void GLACanvas::FirstShow()
 {
     SetCurrent();
     opengl_initialised = true;
+    bool save_hints = false;
+    wxString vendor((const char *)glGetString(GL_VENDOR), wxConvUTF8);
+    wxString renderer((const char *)glGetString(GL_RENDERER), wxConvUTF8);
+    wxConfigBase * cfg = wxConfigBase::Get();
+    {
+	wxString s;
+	if (cfg->Read(wxT("opengl_vendor"), &s, wxString()) && s == vendor &&
+	    cfg->Read(wxT("opengl_renderer"), &s, wxString()) && s == renderer) {
+	    // The vendor and renderer are the same as the values we have cached,
+	    // so use the hints we have cached.
+	    int v;
+	    if (cfg->Read(wxT("blob_method"), &v, 0) &&
+		(v == POINT || v == LINES)) {
+		// How to draw blobs.
+		blob_method = v;
+	    }
+	    if (cfg->Read(wxT("cross_method"), &v, 0) &&
+		(v == SPRITE || v == LINES)) {
+		// How to draw crosses.
+		cross_method = v;
+	    }
+	}
+    }
 
     // Clear any cached OpenGL lists.
     vector<GLAList>::iterator i;
@@ -334,13 +357,21 @@ void GLACanvas::FirstShow()
     m_Font.load(path.mb_str());
 #endif
 
-    // Check if we can use GL_POINTS to plot blobs at stations.
-    GLdouble point_size_range[2];
-    glGetDoublev(GL_SMOOTH_POINT_SIZE_RANGE, point_size_range);
-    CHECK_GL_ERROR("FirstShow", "glGetDoublev GL_SMOOTH_POINT_SIZE_RANGE");
-    glpoint_ok = (point_size_range[0] <= BLOB_DIAMETER &&
-		  point_size_range[1] >= BLOB_DIAMETER);
-    if (glpoint_ok) {
+    if (blob_method == UNKNOWN) {
+	// Check if we can use GL_POINTS to plot blobs at stations.
+	GLdouble point_size_range[2];
+	glGetDoublev(GL_SMOOTH_POINT_SIZE_RANGE, point_size_range);
+	CHECK_GL_ERROR("FirstShow", "glGetDoublev GL_SMOOTH_POINT_SIZE_RANGE");
+	if (point_size_range[0] <= BLOB_DIAMETER &&
+	    point_size_range[1] >= BLOB_DIAMETER) {
+	    blob_method = POINT;
+	} else {
+	    blob_method = LINES;
+	}
+	save_hints = true;
+    }
+
+    if (blob_method == POINT) {
 	glPointSize(BLOB_DIAMETER);
 	CHECK_GL_ERROR("FirstShow", "glPointSize");
     }
@@ -355,38 +386,44 @@ void GLACanvas::FirstShow()
     // The symbolic constants GL_POINT_SPRITE, GL_POINT_SPRITE_ARB, and
     // GL_POINT_SPRITE_NV all give the same number so it doesn't matter
     // which we use.
-    float maxSize = 0.0f;
-    glGetFloatv(GL_POINT_SIZE_MAX, &maxSize);
-    if (maxSize >= 8) {
-	glpoint_sprite = (atoi((const char *)glGetString(GL_VERSION)) >= 2);
-	if (!glpoint_sprite) {
-	    const char * p = (const char *)glGetString(GL_EXTENSIONS);
-	    while (true) {
-		size_t l = 0;
-		if (memcmp(p, "GL_ARB_point_sprite", 19) == 0) {
-		    l = 19;
-		} else if (memcmp(p, "GL_NV_point_sprite", 18) == 0) {
-		    l = 18;
-		}
-		if (l) {
-		    p += l;
-		    if (*p == '\0' || *p == ' ') {
-			glpoint_sprite = true;
-			break;
+    if (cross_method == UNKNOWN) {
+	bool glpoint_sprite = false;
+	float maxSize = 0.0f;
+	glGetFloatv(GL_POINT_SIZE_MAX, &maxSize);
+	if (maxSize >= 8) {
+	    glpoint_sprite = (atoi((const char *)glGetString(GL_VERSION)) >= 2);
+	    if (!glpoint_sprite) {
+		const char * p = (const char *)glGetString(GL_EXTENSIONS);
+		while (true) {
+		    size_t l = 0;
+		    if (memcmp(p, "GL_ARB_point_sprite", 19) == 0) {
+			l = 19;
+		    } else if (memcmp(p, "GL_NV_point_sprite", 18) == 0) {
+			l = 18;
 		    }
+		    if (l) {
+			p += l;
+			if (*p == '\0' || *p == ' ') {
+			    glpoint_sprite = true;
+			    break;
+			}
+		    }
+		    p = strchr(p + 1, ' ');
+		    if (!p) break;
+		    ++p;
 		}
-		p = strchr(p + 1, ' ');
-		if (!p) break;
-		++p;
 	    }
 	}
+	cross_method = glpoint_sprite ? SPRITE : LINES;
+	save_hints = true;
     }
 
-    if (glpoint_sprite) {
+    if (cross_method == SPRITE) {
 	glGenTextures(1, &m_CrossTexture);
 	CHECK_GL_ERROR("FirstShow", "glGenTextures");
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
 	CHECK_GL_ERROR("FirstShow", "glBindTexture");
+	// Cross image for drawing crosses using texture mapped point sprites.
 	const unsigned char crossteximage[128] = {
 	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,
 	      0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
@@ -412,8 +449,16 @@ void GLACanvas::FirstShow()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MIN_FILTER");
     }
-    //if (glpoint_ok) printf("Using GL_POINTS for blobs\n");
-    //if (glpoint_sprite) printf("Using GL_POINT_SPRITE* for crosses\n");
+
+    if (save_hints) {
+	cfg->Write(wxT("opengl_vendor"), vendor);
+	cfg->Write(wxT("opengl_renderer"), renderer);
+	cout << "blob_method = " << (char)blob_method;
+	cfg->Write(wxT("blob_method"), blob_method);
+	cout << "cross_method = " << (char)cross_method;
+	cfg->Write(wxT("cross_method"), cross_method);
+	cfg->Flush();
+    }
 }
 
 void GLACanvas::Clear()
@@ -983,8 +1028,8 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
 
 void GLACanvas::BeginBlobs()
 {
-    if (glpoint_ok) {
-	// Commence drawing of a set of blobs.
+    // Commence drawing of a set of blobs.
+    if (blob_method == POINT) {
 	glPushAttrib(GL_ENABLE_BIT);
 	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
 	glEnable(GL_ALPHA_TEST);
@@ -1006,7 +1051,7 @@ void GLACanvas::EndBlobs()
 {
     // Finish drawing of a set of blobs.
     glEnd();
-    if (glpoint_ok) {
+    if (blob_method == POINT) {
 	CHECK_GL_ERROR("EndBlobs", "glEnd GL_POINTS");
     } else {
 	CHECK_GL_ERROR("EndBlobs", "glEnd GL_LINES");
@@ -1017,7 +1062,7 @@ void GLACanvas::EndBlobs()
 
 void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 {
-    if (glpoint_ok) {
+    if (blob_method == POINT) {
 	// Draw a marker.
 	PlaceVertex(x, y, z);
     } else {
@@ -1051,7 +1096,7 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 
 void GLACanvas::DrawBlob(glaCoord x, glaCoord y)
 {
-    if (glpoint_ok) {
+    if (blob_method == POINT) {
 	// Draw a marker.
 	PlaceVertex(x, y, 0);
     } else {
@@ -1077,7 +1122,7 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y)
 void GLACanvas::BeginCrosses()
 {
     // Plot crosses.
-    if (glpoint_sprite) {
+    if (cross_method == SPRITE) {
 	glPushAttrib(GL_ENABLE_BIT|GL_POINT_BIT);
 	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
@@ -1110,7 +1155,7 @@ void GLACanvas::BeginCrosses()
 void GLACanvas::EndCrosses()
 {
     glEnd();
-    if (glpoint_sprite) {
+    if (cross_method == SPRITE) {
 	CHECK_GL_ERROR("EndCrosses", "glEnd GL_POINTS");
     } else {
 	CHECK_GL_ERROR("EndCrosses", "glEnd GL_LINES");
@@ -1121,7 +1166,7 @@ void GLACanvas::EndCrosses()
 
 void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 {
-    if (glpoint_sprite) {
+    if (cross_method == SPRITE) {
 	PlaceVertex(x, y, z);
     } else {
 	double X, Y, Z;

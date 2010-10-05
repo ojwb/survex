@@ -130,8 +130,9 @@ class GLACanvas : public wxGLCanvas {
     bool m_Perspective;
     bool m_Fog;
     bool m_AntiAlias;
-    bool glpoint_ok;
-    bool glpoint_sprite;
+    enum { UNKNOWN = 0, POINT = 'P', LINES = 'L', SPRITE = 'S' };
+    int blob_method;
+    int cross_method;
 
     vector<GLAList> drawing_lists;
     mutable unsigned int list_flags;
