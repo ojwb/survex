@@ -280,9 +280,9 @@ void GLACanvas::FirstShow()
 {
     SetCurrent();
     opengl_initialised = true;
-    bool save_hints = false;
-    wxString vendor((const char *)glGetString(GL_VENDOR), wxConvUTF8);
-    wxString renderer((const char *)glGetString(GL_RENDERER), wxConvUTF8);
+    save_hints = false;
+    vendor = wxString((const char *)glGetString(GL_VENDOR), wxConvUTF8);
+    renderer = wxString((const char *)glGetString(GL_RENDERER), wxConvUTF8);
     wxConfigBase * cfg = wxConfigBase::Get();
     {
 	wxString s;
@@ -425,14 +425,14 @@ void GLACanvas::FirstShow()
 	CHECK_GL_ERROR("FirstShow", "glBindTexture");
 	// Cross image for drawing crosses using texture mapped point sprites.
 	const unsigned char crossteximage[128] = {
-	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,
-	      0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
-	      0,  0,  0,  0,255,255,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
-	      0,  0,  0,  0,  0,  0,255,255,255,255,  0,  0,  0,  0,  0,  0,
-	      0,  0,  0,  0,  0,  0,255,255,255,255,  0,  0,  0,  0,  0,  0,
-	      0,  0,  0,  0,255,255,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
-	      0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
-	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255
+	      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
+	      0,  0,255,255,  0,  0,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
+	      0,  0,  0,  0,255,255,  0,  0,255,255,  0,  0,  0,  0,  0,  0,
+	      0,  0,  0,  0,  0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
+	      0,  0,  0,  0,255,255,  0,  0,255,255,  0,  0,  0,  0,  0,  0,
+	      0,  0,255,255,  0,  0,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
+	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0
 	};
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	CHECK_GL_ERROR("FirstShow", "glPixelStorei");
@@ -448,16 +448,6 @@ void GLACanvas::FirstShow()
 	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MAG_FILTER");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MIN_FILTER");
-    }
-
-    if (save_hints) {
-	cfg->Write(wxT("opengl_vendor"), vendor);
-	cfg->Write(wxT("opengl_renderer"), renderer);
-	cout << "blob_method = " << (char)blob_method;
-	cfg->Write(wxT("blob_method"), blob_method);
-	cout << "cross_method = " << (char)cross_method;
-	cfg->Write(wxT("cross_method"), cross_method);
-	cfg->Flush();
     }
 }
 
@@ -515,6 +505,70 @@ void GLACanvas::StartDrawing()
 
     SetCurrent();
     glDepthMask(GL_TRUE);
+
+    if (!save_hints) return;
+
+    // We want to check on the second redraw.
+    static int draw_count = 2;
+    if (--draw_count != 0) return;
+
+    if (cross_method != LINES) {
+	SetColour(col_WHITE);
+	Clear();
+	SetDataTransform();
+	BeginCrosses();
+	DrawCross(-m_Translation.GetX(), -m_Translation.GetY(), -m_Translation.GetZ());
+	EndCrosses();
+	static const unsigned char expected_cross[64 * 3] = {
+#define o 0,0,0
+#define I 255,255,255
+	    o, o, o, o, o, o, o, o,
+	    o, I, o, o, o, o, I, o,
+	    o, o, I, o, o, I, o, o,
+	    o, o, o, I, I, o, o, o,
+	    o, o, o, I, I, o, o, o,
+	    o, o, I, o, o, I, o, o,
+	    o, I, o, o, o, o, I, o,
+	    o, o, o, o, o, o, o, o
+	};
+	if (!CheckVisualFidelity(expected_cross)) {
+	    cross_method = LINES;
+	    save_hints = true;
+	}
+    }
+
+    if (blob_method != LINES) {
+	SetColour(col_WHITE);
+	Clear();
+	SetDataTransform();
+	BeginBlobs();
+	DrawBlob(-m_Translation.GetX(), -m_Translation.GetY(), -m_Translation.GetZ());
+	EndBlobs();
+	static const unsigned char expected_blob[64 * 3] = {
+#define o 0,0,0
+#define I 255,255,255
+	    o, o, o, o, o, o, o, o,
+	    o, o, o, o, o, o, o, o,
+	    o, o, I, I, I, o, o, o,
+	    o, I, I, I, I, I, o, o,
+	    o, I, I, I, I, I, o, o,
+	    o, I, I, I, I, I, o, o,
+	    o, o, I, I, I, o, o, o,
+	    o, o, o, o, o, o, o, o
+	};
+	if (!CheckVisualFidelity(expected_blob)) {
+	    blob_method = LINES;
+	    save_hints = true;
+	}
+    }
+
+    wxConfigBase * cfg = wxConfigBase::Get();
+    cfg->Write(wxT("opengl_vendor"), vendor);
+    cfg->Write(wxT("opengl_renderer"), renderer);
+    cfg->Write(wxT("blob_method"), blob_method);
+    cfg->Write(wxT("cross_method"), cross_method);
+    cfg->Flush();
+    save_hints = false;
 }
 
 void GLACanvas::EnableSmoothPolygons(bool filled)
@@ -1435,4 +1489,14 @@ bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
     // NB wxImage constructor calls free(pixels) for us.
     wxImage grab(width, height, pixels);
     return grab.SaveFile(fnm, type);
+}
+
+bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
+{
+    int width;
+    int height;
+    GetSize(&width, &height);
+    unsigned char pixels[3 * 8 * 8];
+    glReadPixels(width / 2 - 3, height / 2 - 4, 8, 8, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
+    return (memcmp(pixels, target, sizeof(pixels)) == 0);
 }

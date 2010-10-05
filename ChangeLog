@@ -1,3 +1,9 @@
+Tue Oct 05 12:48:19 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Check whether blobs and crosses actually
+	  render correctly as points/point sprites, and if they don't, fall
+	  back to drawing them with lines.
+
 Tue Oct 05 10:53:56 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc,src/gla.h: Cache the best method for drawing blobs

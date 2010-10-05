@@ -130,12 +130,17 @@ class GLACanvas : public wxGLCanvas {
     bool m_Perspective;
     bool m_Fog;
     bool m_AntiAlias;
+    bool save_hints;
     enum { UNKNOWN = 0, POINT = 'P', LINES = 'L', SPRITE = 'S' };
     int blob_method;
     int cross_method;
 
     vector<GLAList> drawing_lists;
     mutable unsigned int list_flags;
+
+    wxString vendor, renderer;
+
+    bool CheckVisualFidelity(const unsigned char * target) const;
 
 public:
     GLACanvas(wxWindow* parent, int id);
