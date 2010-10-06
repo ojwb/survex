@@ -16,6 +16,7 @@ hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
 EXTRA_DIST = messages.txt\
  named-entities.txt makemsgs.pl checkshortcut.pl\
  $(hdr_files) survex.keys.in\
+ lib/English_GB.isl lib/Romanian-7-5.1.11.isl\
  afm2txf.pl\
  INSTALL.OSX
 
