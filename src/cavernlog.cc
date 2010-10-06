@@ -117,31 +117,31 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 	size_t i = 0;
 	while ((i = cmd.find(wxT('$'), i)) != wxString::npos) {
 	    if (++i >= cmd.size()) break;
-		switch (cmd[i]) {
-		    case wxT('$'):
-			cmd.erase(i, 1);
-			break;
-		    case wxT('f'): {
-			wxString f = escape_for_shell(href.substr(0, colon), true);
-			cmd.replace(i - 1, 2, f);
-			i += f.size() - 1;
-			break;
-		    }
-		    case wxT('t'): {
-			wxString t = escape_for_shell(title);
-			cmd.replace(i - 1, 2, t);
-			i += t.size() - 1;
-			break;
-		    }
-		    case wxT('l'): {
-			wxString l = escape_for_shell(href.substr(colon + 1));
-			cmd.replace(i - 1, 2, l);
-			i += l.size() - 1;
-			break;
-		    }
-		    default:
-			++i;
+	    switch (cmd[i]) {
+		case wxT('$'):
+		    cmd.erase(i, 1);
+		    break;
+		case wxT('f'): {
+		    wxString f = escape_for_shell(href.substr(0, colon), true);
+		    cmd.replace(i - 1, 2, f);
+		    i += f.size() - 1;
+		    break;
 		}
+		case wxT('t'): {
+		    wxString t = escape_for_shell(title);
+		    cmd.replace(i - 1, 2, t);
+		    i += t.size() - 1;
+		    break;
+		}
+		case wxT('l'): {
+		    wxString l = escape_for_shell(href.substr(colon + 1));
+		    cmd.replace(i - 1, 2, l);
+		    i += l.size() - 1;
+		    break;
+		}
+		default:
+		    ++i;
+	    }
 	}
 #ifdef __WXMSW__
 	_wsystem(cmd.c_str());
