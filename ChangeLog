@@ -1,3 +1,8 @@
+Wed Oct 06 02:02:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Use _wpopen() and _wsystem() on Microsoft Windows
+	  so that paths with non-Latin1 characters in can be processed.
+
 Wed Oct 06 01:16:03 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Need to quote filenames with spaces in for
