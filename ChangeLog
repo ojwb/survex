@@ -1,3 +1,8 @@
+Wed Oct 06 01:16:03 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Need to quote filenames with spaces in for
+	  Microsoft Windows.
+
 Wed Oct 06 00:54:44 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Ship the extra .isl translation files for Innosetup.

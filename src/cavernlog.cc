@@ -56,6 +56,8 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 	    s.insert(p, wxT('\\'));
 	    ++p;
 	    needs_quotes = true;
+	} else if (s[p] == ' ') {
+	    needs_quotes = true;
 	}
 	++p;
     }
