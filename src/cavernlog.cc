@@ -146,7 +146,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 #ifdef __WXMSW__
 	_wsystem(cmd.c_str());
 #else
-	system(cmd.c_str());
+	system(cmd.mb_str());
 #endif
     }
 }
@@ -175,7 +175,7 @@ CavernLogWindow::process(const wxString &file)
 #ifdef __WXMSW__
     FILE * cavern_out = _wpopen(cmd.c_str(), L"r");
 #else
-    FILE * cavern_out = popen(cmd.c_str(), "r");
+    FILE * cavern_out = popen(cmd.mb_str(), "r");
 #endif
     if (!cavern_out) {
 	wxString m;
