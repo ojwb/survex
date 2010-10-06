@@ -1,3 +1,9 @@
+Wed Oct 06 02:25:31 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: Never set CFLAGS or CXXFLAGS in the environment.
+	  Build mingw version in an unpacked source tree from the release
+	  tarball.
+
 Wed Oct 06 02:09:33 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Fix code indentation.

@@ -2,9 +2,6 @@
 
 set -e
 
-# flags to consider:
-# CFLAGS="-O2 -fomit-frame-pointer"
-# CXXFLAGS="-O2 -fno-rtti -fomit-frame-pointer"
 rel=yes
 if test x"$1" = x-t ; then
    rel=
@@ -12,38 +9,35 @@ if test x"$1" = x-t ; then
 fi
 
 if test x"$rel" = xyes ; then
-   # Check everything is checked into SVN.
-   if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
-      echo There are changes not checked into SVN - please rectify
-      exit 1
-   fi
-fi
+  # Check everything is checked into SVN.
+  if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
+    echo 'There are changes not checked into SVN - please rectify'
+    echo 'If you just want to test, run with option -t'
+    exit 1
+  fi
 
-test ! -f Makefile || make distclean
-
-if test yes = "$rel" ; then
-   cp -u /usr/share/misc/config.guess .
-   cp -u /usr/share/misc/config.sub .
-fi
-
-autoreconf --force -i
-./configure CC=gcc CXX=g++
-if test yes = "$rel" ; then
-   export CFLAGS
-   export CXXFLAGS
-   # tell the preproceesor to be C89 - this makes it reject // comments
-# FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
-# FIXME   CXXFLAGS="-Werror"
-   CFLAGS="-Wp,-std=c89"
-   CXXFLAGS=
-   make distcheck
-   CFLAGS=
-   CXXFLAGS=
+  test ! -f Makefile || make distclean
+  cp -u /usr/share/misc/config.guess .
+  cp -u /usr/share/misc/config.sub .
+  autoreconf --force -i
+  ./configure CC=gcc CXX=g++
+  # Tell the preprocessor to be C89 - this makes it reject // comments
+  make distcheck CFLAGS="-Wp,-std=c89"
+  # FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
+  # FIXME   CXXFLAGS="-Werror"
 else
-   make dist
+  make dist
 fi
 
-make distclean
+# Perform mingw build on a clean unpacked source tree from the release tarball
+# so that (a) we don't need to "make distclean" on the source tree and (b) we
+# ensure that any files required to build the mingw version and installer
+# package are actually shipped in the source tarball.
+tarball=`ls -1t survex-*.tar.gz`
+tardir=`basename "$tarball" .tar.gz`
+rm -rf "$tardir"
+tar xf "$tarball"
+cd "$tardir"
 
 test -n "$build_platform" || build_platform=`sh config.guess`
 SAVE_PATH=$PATH
@@ -59,12 +53,16 @@ else
   CXX=/usr/bin/i386-mingw32msvc-g++
 fi
 wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8
-# -Werror here causes AC_CHECK_FUNCS to fail.
-CFLAGS=
-CXXFLAGS='-fno-strict-aliasing -Werror'
-./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" WX_CONFIG="$wxc" LDFLAGS=-s
+# Passing -Werror to configure causes AC_CHECK_FUNCS to fail, so pass it to
+# make instead.
+./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CXXFLAGS="-fno-strict-aliasing -Werror" WX_CONFIG="$wxc" LDFLAGS=-s
 make CFLAGS=-Werror
 make mingw_iss
 PATH=$SAVE_PATH
 
-make distclean
+mv survex-win32-*.exe ..
+cd ..
+
+if test x"$rel" = xyes ; then
+  rm -rf "$tardir"
+fi
