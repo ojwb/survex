@@ -39,6 +39,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef HAVE_GETC_UNLOCKED
+# define GETC(F) getc_unlocked(F)
+#else
+# define GETC(F) getc(F)
+#endif
+
 enum { LOG_REPROCESS = 1234 };
 
 BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
@@ -228,7 +234,7 @@ CavernLogWindow::process(const wxString &file)
 	}
 	int ch;
 	if (left == EOF) {
-	    ch = getc(cavern_out);
+	    ch = GETC(cavern_out);
 	    if (ch == EOF) break;
 	} else {
 	    ch = left;
@@ -237,7 +243,7 @@ CavernLogWindow::process(const wxString &file)
 	// Decode UTF-8 first to avoid security issues with <, >, &, etc
 	// encoded using multibyte encodings.
 	if (ch >= 0xc0 && ch < 0xf0) {
-	    int ch1 = getc(cavern_out);
+	    int ch1 = GETC(cavern_out);
 	    if ((ch1 & 0xc0) != 0x80) {
 		left = ch1;
 	    } else if (ch < 0xe0) {
@@ -245,7 +251,7 @@ CavernLogWindow::process(const wxString &file)
 		ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
 	    } else {
 		/* 3 byte sequence */
-		int ch2 = getc(cavern_out);
+		int ch2 = GETC(cavern_out);
 		if ((ch2 & 0xc0) != 0x80) {
 		    ungetc(ch2, cavern_out);
 		    left = ch1;

@@ -241,6 +241,9 @@ AC_CHECK_FUNCS(popen signal getpwuid round strcasecmp hypot lstat)
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)
 
+dnl Much faster than using getc(), at least on Linux.
+AC_CHECK_FUNCS([getc_unlocked])
+
 dnl try to find a case-insensitive compare
 
 strcasecmp=no

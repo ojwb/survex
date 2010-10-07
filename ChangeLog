@@ -1,3 +1,7 @@
+Thu Oct 07 12:52:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/cavernlog.cc: Use getc_unlocked() if available.
+
 Thu Oct 07 12:42:21 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Don't call Update() after every line, but only
