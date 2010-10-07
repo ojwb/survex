@@ -1,3 +1,9 @@
+Thu Oct 07 14:25:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Use _wfopen() on Microsoft Windows when loading and
+	  saving presentations so that paths with non-Latin1 characters in can
+	  be processed.
+
 Thu Oct 07 12:52:22 GMT 2010  Olly Betts <olly@survex.com>
 
 	* configure.in,src/cavernlog.cc: Use getc_unlocked() if available.
