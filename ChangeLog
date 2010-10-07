@@ -1,3 +1,9 @@
+Thu Oct 07 12:42:21 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Don't call Update() after every line, but only
+	  when we don't have data from cavern pending.  Hopefully addresses
+	  ticket#12.
+
 Wed Oct 06 02:25:31 GMT 2010  Olly Betts <olly@survex.com>
 
 	* make_release: Never set CFLAGS or CXXFLAGS in the environment.

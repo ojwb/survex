@@ -205,13 +205,22 @@ CavernLogWindow::process(const wxString &file)
 	FD_SET(cavern_fd, &rfds);
 	FD_ZERO(&efds);
 	FD_SET(cavern_fd, &efds);
-	// Set timeout to 0.1 seconds.
+	// Timeout instantly.
 	struct timeval timeout;
 	timeout.tv_sec = 0;
-	timeout.tv_usec = 100000;
+	timeout.tv_usec = 0;
 	if (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
-	    wxYield();
-	    continue;
+	    Update();
+	    FD_SET(cavern_fd, &rfds);
+	    FD_SET(cavern_fd, &efds);
+	    // Set timeout to 0.1 seconds.
+	    struct timeval timeout;
+	    timeout.tv_sec = 0;
+	    timeout.tv_usec = 100000;
+	    if (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
+		wxYield();
+		continue;
+	    }
 	}
 	if (!FD_ISSET(cavern_fd, &rfds)) {
 	    // Error, which pclose() should report.
@@ -304,7 +313,6 @@ CavernLogWindow::process(const wxString &file)
 		}
 
 		cur.clear();
-		Update();
 		break;
 	    }
 	    case '<':
