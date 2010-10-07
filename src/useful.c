@@ -23,6 +23,12 @@
 #include "useful.h"
 #include "osdepend.h"
 
+#ifdef HAVE_GETC_UNLOCKED
+# define GETC(F) getc_unlocked(F)
+#else
+# define GETC(F) getc(F)
+#endif
+
 #ifdef WORDS_BIGENDIAN
 
 extern void
@@ -45,8 +51,8 @@ extern int16_t
 useful_get16(FILE *fh)
 {
    int16_t w;
-   w = getc(fh);
-   w |= (int16_t)(getc(fh) << 8l);
+   w = GETC(fh);
+   w |= (int16_t)(GETC(fh) << 8l);
    return w;
 }
 
@@ -54,10 +60,10 @@ extern int32_t
 useful_get32(FILE *fh)
 {
    int32_t w;
-   w = getc(fh);
-   w |= (int32_t)(getc(fh) << 8l);
-   w |= (int32_t)(getc(fh) << 16l);
-   w |= (int32_t)(getc(fh) << 24l);
+   w = GETC(fh);
+   w |= (int32_t)(GETC(fh) << 8l);
+   w |= (int32_t)(GETC(fh) << 16l);
+   w |= (int32_t)(GETC(fh) << 24l);
    return w;
 }
 #endif

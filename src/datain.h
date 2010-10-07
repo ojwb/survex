@@ -39,7 +39,11 @@ extern int ch;
 extern parse file;
 extern bool f_export_ok;
 
-#define nextch() (ch = getc(file.fh))
+#ifdef HAVE_GETC_UNLOCKED
+# define nextch() (ch = getc_unlocked(file.fh))
+#else
+# define nextch() (ch = getc(file.fh))
+#endif
 
 typedef struct {
    long offset;

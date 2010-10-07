@@ -1,3 +1,7 @@
+Thu Oct 07 22:38:43 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/datain.h,src/useful.c: Use getc_unlocked() if available.
+
 Thu Oct 07 14:25:13 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Use _wfopen() on Microsoft Windows when loading and
