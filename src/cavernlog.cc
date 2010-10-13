@@ -237,7 +237,6 @@ CavernLogWindow::process(const wxString &file)
 	    FD_SET(cavern_fd, &rfds);
 	    FD_SET(cavern_fd, &efds);
 	    // Set timeout to 0.1 seconds.
-	    struct timeval timeout;
 	    timeout.tv_sec = 0;
 	    timeout.tv_usec = 100000;
 	    if (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
