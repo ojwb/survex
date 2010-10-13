@@ -1,3 +1,8 @@
+Wed Oct 13 15:39:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: -Dunix when running make distcheck with the
+	  preprocessor in C89 mode.
+
 Wed Oct 13 15:33:23 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavern.c: Fix C++ comment.

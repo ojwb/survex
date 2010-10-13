@@ -22,7 +22,7 @@ if test x"$rel" = xyes ; then
   autoreconf --force -i
   ./configure CC=gcc CXX=g++
   # Tell the preprocessor to be C89 - this makes it reject // comments
-  make distcheck CFLAGS="-Wp,-std=c89"
+  make distcheck CFLAGS="-Dunix -Wp,-std=c89"
   # FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
   # FIXME   CXXFLAGS="-Werror"
 else
