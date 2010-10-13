@@ -59,12 +59,15 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 #ifdef __WXMSW__
     bool needs_quotes = false;
     while (p < s.size()) {
-	if (s[p] == wxT('"')) {
-	    s.insert(p, wxT('\\'));
-	    ++p;
-	    needs_quotes = true;
-	} else if (s[p] == ' ') {
-	    needs_quotes = true;
+	wxChar ch = s[p];
+	if (ch < 127) {
+	    if (ch == wxT('"')) {
+		s.insert(p, wxT('\\'));
+		++p;
+		needs_quotes = true;
+	    } else if (strchr(" <>&|^", ch)) {
+		needs_quotes = true;
+	    }
 	}
 	++p;
     }
