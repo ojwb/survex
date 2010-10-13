@@ -1,3 +1,59 @@
+Changes in 1.1.15 (2010-10-13):
+
+* aven:
+
+  + In the cavern log window, change the "Rerun" button to "Reprocess" to
+    follow terminology in manual and elsewhere.  Fixes ticket#15.
+
+  + When displaying output from cavern, don't update the window after every
+    line, but only when we don't have data from cavern pending.  Hopefully
+    addresses ticket#12.
+
+  + If we aren't using GL_POINTS for blobs, draw them using a series of
+    abutting lines rather than with gluDisk which is faster and gives a
+    consistent shape.
+
+  + Check whether blobs and crosses actually render correctly as points/point
+    sprites, and if they don't, fall back to drawing them with lines.  The
+    best method is cached on disk, and rechecked automatically if the graphics
+    hardware is changed or the drivers upgraded.
+
+  + Fix non-USE_FNT case to work again (it's limited to ISO-8859-1 characters
+    though, so we still enable USE_FNT by default).
+
+  + Don't offer "All files" wildcard in presentation save dialog.
+
+  + (Microsoft Windows): Handle filenames with non-Latin1 characters in in
+    more places.
+
+  + (Microsoft Windows): Quote filenames with spaces and metacharacters in
+    when running cavern from aven.
+
+* New v7 of .3d format which stores survey dates as number of days since
+  January 1st 1900, so we now support dates from 1900-2078 (rather than
+  1970-2037) with a smaller file size.  The img API is now versioned - you
+  can select the new "version 1" by compiling with -DIMG_API_VERSION=1, which
+  gives the survey dates in days in days1 and days2 instead of as time_t
+  values in date1 and date2.  Fixes ticket#14.
+
+* Consistently use http://survex.com/ rather than http://www.survex.com/ - the
+  former has been the canonical name for some time, with www.survex.com just
+  redirecting to it.
+
+* (Unix version): Use unlocked file I/O if available, which can be much faster
+  in some cases (we don't need the locking as we don't do multithreaded file
+  I/O).
+
+* (Mac version): Fix compilation failure due to clash with Point in Mac OS X
+  headers.
+
+* (Mac version): buildmacosx.sh now works again.
+
+* Most tests weren't actually running any testcases (looks like a sh
+  portability issue).  This is now fixed, and fortunately all tests still pass.
+
+* Include the extra .isl translation files for Innosetup in the source archive.
+
 Changes in 1.1.14 (2010-07-26):
 
 * Restore compatibility with wxWidgets 2.6 (1.1.13 required wxWidgets 2.8).

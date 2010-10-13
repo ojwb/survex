@@ -7,7 +7,7 @@ dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
 AC_INIT(src/aven.cc)
 
-AM_INIT_AUTOMAKE(survex, 1.1.14)
+AM_INIT_AUTOMAKE(survex, 1.1.15)
 RELEASE=1
 
 AC_SUBST(RELEASE)
