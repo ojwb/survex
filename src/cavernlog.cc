@@ -175,21 +175,16 @@ CavernLogWindow::process(const wxString &file)
 
     wxString escaped_file = escape_for_shell(file, true);
 #ifdef __WXMSW__
-    wchar_t * argv0;
-    errno_t ret = _get_wpgmptr(&argv0);
-    if (ret) {
-	wxString m = wxT("Problem running cavern: ");
-	m += wxString(strerror(ret), wxConvUTF8);
-	wxGetApp().ReportError(m);
-	return -2;
-    }
-    wchar_t * slash = wcsrchr(argv0, L'\\');
     wxString cmd;
-    if (slash) {
-	cmd.assign(argv0, slash - argv0 + 1);
+    {
+	wchar_t * argv0 = _wpgmptr;
+	wchar_t * slash = wcsrchr(argv0, L'\\');
+	if (slash) {
+	    cmd.assign(argv0, slash - argv0 + 1);
+	}
     }
     cmd += L"cavern";
-    wxString cmd = escape_for_shell(cmd, false);
+    cmd = escape_for_shell(cmd, false);
 #else
     char *cavern = use_path(msg_exepth(), "cavern");
     wxString cmd = escape_for_shell(wxString(cavern, wxConvUTF8), false);
