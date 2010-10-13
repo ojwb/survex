@@ -153,7 +153,7 @@ main(int argc, char **argv)
    time_t tmUserStart = time(NULL);
    clock_t tmCPUStart = clock();
    {
-       // FIXME: localtime?
+       /* FIXME: localtime? */
        struct tm * t = localtime(&tmUserStart);
        int y = t->tm_year + 1900;
        current_days_since_1900 = days_since_1900(y, t->tm_mon + 1, t->tm_mday);
