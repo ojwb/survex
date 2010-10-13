@@ -40,12 +40,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-#ifdef HAVE_GETC_UNLOCKED
-# define GETC(F) getc_unlocked(F)
-#else
-# define GETC(F) getc(F)
-#endif
-
 enum { LOG_REPROCESS = 1234 };
 
 BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)

@@ -24,6 +24,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include "fnt.h"
 
 #include <stdio.h>
@@ -31,15 +35,15 @@
 static bool isSwapped = false;
 
 inline unsigned char fnt_readByte(FILE *fd) {
-    return (unsigned char)getc(fd);
+    return (unsigned char)GETC(fd);
 }
 
 inline unsigned short fnt_readShort(FILE *fd) {
     unsigned short x;
     if (isSwapped) {
-	x = getc(fd) | (getc(fd) << 8);
+	x = GETC(fd) | (GETC(fd) << 8);
     } else {
-	x = (getc(fd) << 8) | getc(fd);
+	x = (GETC(fd) << 8) | GETC(fd);
     }
     return x;
 }
@@ -47,9 +51,9 @@ inline unsigned short fnt_readShort(FILE *fd) {
 inline unsigned int fnt_readInt(FILE *fd) {
     unsigned int x;
     if (isSwapped) {
-	x = getc(fd) | (getc(fd) << 8) | (getc(fd) << 16) | (getc(fd) << 24);
+	x = GETC(fd) | (GETC(fd) << 8) | (GETC(fd) << 16) | (GETC(fd) << 24);
     } else {
-	x = (getc(fd) << 24) | (getc(fd) << 16) | (getc(fd) << 8) | getc(fd);
+	x = (GETC(fd) << 24) | (GETC(fd) << 16) | (GETC(fd) << 8) | GETC(fd);
     }
     return x;
 }

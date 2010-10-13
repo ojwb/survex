@@ -1,7 +1,7 @@
 /* datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1994-2002,2005 Olly Betts
+ * Copyright (C) 1994-2002,2005,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,7 @@ extern int ch;
 extern parse file;
 extern bool f_export_ok;
 
-#ifdef HAVE_GETC_UNLOCKED
-# define nextch() (ch = getc_unlocked(file.fh))
-#else
-# define nextch() (ch = getc(file.fh))
-#endif
+#define nextch() (ch = GETC(file.fh))
 
 typedef struct {
    long offset;

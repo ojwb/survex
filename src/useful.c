@@ -23,28 +23,22 @@
 #include "useful.h"
 #include "osdepend.h"
 
-#ifdef HAVE_GETC_UNLOCKED
-# define GETC(F) getc_unlocked(F)
-#else
-# define GETC(F) getc(F)
-#endif
-
 #ifdef WORDS_BIGENDIAN
 
 extern void
 useful_put16(int16_t w, FILE *fh)
 {
-   putc((char)(w), fh);
-   putc((char)(w >> 8l), fh);
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
 }
 
 extern void
 useful_put32(int32_t w, FILE *fh)
 {
-   putc((char)(w), fh);
-   putc((char)(w >> 8l), fh);
-   putc((char)(w >> 16l), fh);
-   putc((char)(w >> 24l), fh);
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
+   PUTC((char)(w >> 16l), fh);
+   PUTC((char)(w >> 24l), fh);
 }
 
 extern int16_t

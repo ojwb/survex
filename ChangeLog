@@ -1,3 +1,9 @@
+Wed Oct 13 15:00:51 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/: Define GETC() in config.h and use it everywhere.
+	  Similarly define PUTC() to use putc_unlocked() where available and
+	  use that everywhere too.
+
 Wed Oct 13 13:41:17 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Remove superfluous nested declaration.

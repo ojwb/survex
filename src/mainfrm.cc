@@ -326,21 +326,21 @@ class AvenPresList : public wxListCtrl {
 	    for (i = entries.begin(); i != entries.end(); ++i) {
 		const PresentationMark &p = *i;
 		write_double(p.GetX(), fh_pres);
-		putc(' ', fh_pres);
+		PUTC(' ', fh_pres);
 		write_double(p.GetY(), fh_pres);
-		putc(' ', fh_pres);
+		PUTC(' ', fh_pres);
 		write_double(p.GetZ(), fh_pres);
-		putc(' ', fh_pres);
+		PUTC(' ', fh_pres);
 		write_double(p.angle, fh_pres);
-		putc(' ', fh_pres);
+		PUTC(' ', fh_pres);
 		write_double(p.tilt_angle, fh_pres);
-		putc(' ', fh_pres);
+		PUTC(' ', fh_pres);
 		write_double(p.scale, fh_pres);
 		if (p.time != 0.0) {
-		    putc(' ', fh_pres);
+		    PUTC(' ', fh_pres);
 		    write_double(p.time, fh_pres);
 		}
-		putc('\n', fh_pres);
+		PUTC('\n', fh_pres);
 	    }
 	    fclose(fh_pres);
 	    filename = fnm;
@@ -371,7 +371,7 @@ class AvenPresList : public wxListCtrl {
 		char buf[4096];
 		size_t i = 0;
 		while (i < sizeof(buf) - 1) {
-		    int ch = getc(fh_pres);
+		    int ch = GETC(fh_pres);
 		    if (ch == EOF || ch == '\n' || ch == '\r') break;
 		    buf[i++] = ch;
 		}

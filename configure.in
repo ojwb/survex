@@ -11,7 +11,7 @@ AM_INIT_AUTOMAKE(survex, 1.1.14)
 RELEASE=1
 
 AC_SUBST(RELEASE)
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 COPYRIGHT_MSG="Copyright (C) 1990-2010 Olly Betts"
 AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2003,2005,2006 Mark R. Shinwell"
@@ -241,8 +241,8 @@ AC_CHECK_FUNCS(popen signal getpwuid round strcasecmp hypot lstat)
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)
 
-dnl Much faster than using getc(), at least on Linux.
-AC_CHECK_FUNCS([getc_unlocked])
+dnl Much faster than using getc()/putc(), at least on Linux.
+AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
 
 dnl try to find a case-insensitive compare
 
@@ -355,6 +355,23 @@ dnl can conflict with the DATADIR typedef in objidl.h
 if test no = "$mswindows"; then
   AC_DEFINE_DIR(DATADIR, datadir, [Location of platform independent support files])
 fi
+
+AH_BOTTOM(
+[/* Use getc_unlocked() and putc_unlocked() where available, since they are
+ * faster, and we don't multithread file accesses.
+ */
+
+#ifdef HAVE_GETC_UNLOCKED
+# define GETC(F) getc_unlocked(F)
+#else
+# define GETC(F) getc(F)
+#endif
+#ifdef HAVE_PUTC_UNLOCKED
+# define PUTC(C, F) putc_unlocked(C, F)
+#else
+# define PUTC(C, F) putc(C, F)
+#endif
+])
 
 AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile

@@ -64,6 +64,8 @@
 /* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
 /* path isn't used in img.c, but EXT is */
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) fopen(FNM,MODE)
+# define PUTC(C, FH) putc(C, fh)
+# define GETC(FH) getc(fh)
 # define fFalse 0
 # define fTrue 1
 # define bool int
@@ -71,41 +73,41 @@
  * if (s) fputsnl(s,fh); else exit(1);
  * to work as intended
  */
-# define fputsnl(S, FH) do {fputs((S), (FH)); putc('\n', (FH));} while(0)
+# define fputsnl(S, FH) do {fputs((S), (FH)); PUTC('\n', (FH));} while(0)
 # define SVX_ASSERT(X)
 
 static INT32_T
 get32(FILE *fh)
 {
-   INT32_T w = getc(fh);
-   w |= (INT32_T)getc(fh) << 8l;
-   w |= (INT32_T)getc(fh) << 16l;
-   w |= (INT32_T)getc(fh) << 24l;
+   INT32_T w = GETC(fh);
+   w |= (INT32_T)GETC(fh) << 8l;
+   w |= (INT32_T)GETC(fh) << 16l;
+   w |= (INT32_T)GETC(fh) << 24l;
    return w;
 }
 
 static void
 put32(long w, FILE *fh)
 {
-   putc((char)(w), fh);
-   putc((char)(w >> 8l), fh);
-   putc((char)(w >> 16l), fh);
-   putc((char)(w >> 24l), fh);
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
+   PUTC((char)(w >> 16l), fh);
+   PUTC((char)(w >> 24l), fh);
 }
 
 static short
 get16(FILE *fh)
 {
-   short w = getc(fh);
-   w |= (short)getc(fh) << 8l;
+   short w = GETC(fh);
+   w |= (short)GETC(fh) << 8l;
    return w;
 }
 
 static void
 put16(short w, FILE *fh)
 {
-   putc((char)(w), fh);
-   putc((char)(w >> 8l), fh);
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
 }
 
 static char *
@@ -218,7 +220,7 @@ getline_alloc(FILE *fh)
    char *buf = xosmalloc(len);
    if (!buf) return NULL;
 
-   ch = getc(fh);
+   ch = GETC(fh);
    while (ch != '\n' && ch != '\r' && ch != EOF) {
       buf[i++] = ch;
       if (i == len - 1) {
@@ -231,11 +233,11 @@ getline_alloc(FILE *fh)
 	 }
 	 buf = p;
       }
-      ch = getc(fh);
+      ch = GETC(fh);
    }
    if (ch == '\n' || ch == '\r') {
       int otherone = ch ^ ('\n' ^ '\r');
-      ch = getc(fh);
+      ch = GETC(fh);
       /* if it's not the other eol character, put it back */
       if (ch != otherone) ungetc(ch, fh);
    }
@@ -400,7 +402,7 @@ plt_file:
 	 goto error;
       }
       while (1) {
-	 ch = getc(pimg->fh);
+	 ch = GETC(pimg->fh);
 	 switch (ch) {
 	  case '\x1a':
 	    fseek(pimg->fh, -1, SEEK_CUR);
@@ -452,7 +454,7 @@ plt_file:
 	    break;
 	 }
 	 while (ch != '\n' && ch != '\r') {
-	    ch = getc(pimg->fh);
+	    ch = GETC(pimg->fh);
 	 }
       }
    }
@@ -553,18 +555,18 @@ xyz_file:
    }
 
    /* check file format version */
-   ch = getc(pimg->fh);
+   ch = GETC(pimg->fh);
    pimg->version = 0;
    if (tolower(ch) == 'b') {
       /* binary file iff B/b prefix */
       pimg->version = 1;
-      ch = getc(pimg->fh);
+      ch = GETC(pimg->fh);
    }
    if (ch != 'v') {
       img_errno = IMG_BADFORMAT;
       goto error;
    }
-   ch = getc(pimg->fh);
+   ch = GETC(pimg->fh);
    if (ch == '0') {
       if (fread(buf, 4, 1, pimg->fh) != 1 || memcmp(buf, ".01\n", 4) != 0) {
 	 img_errno = IMG_BADFORMAT;
@@ -572,7 +574,7 @@ xyz_file:
       }
       /* nothing special to do */
    } else if (pimg->version == 0) {
-      if (ch < '2' || ch > '0' + LATEST_IMG_VERSION || getc(pimg->fh) != '\n') {
+      if (ch < '2' || ch > '0' + LATEST_IMG_VERSION || GETC(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
@@ -795,7 +797,7 @@ static int
 read_v3label(img *pimg)
 {
    char *q;
-   long len = getc(pimg->fh);
+   long len = GETC(pimg->fh);
    if (len == EOF) {
       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
       return img_BAD;
@@ -859,7 +861,7 @@ img_read_item(img *pimg, img_point *p)
       }
       again3: /* label to goto if we get a prefix, date, or lrud */
       pimg->label = pimg->label_buf;
-      opt = getc(pimg->fh);
+      opt = GETC(pimg->fh);
       if (opt == EOF) {
 	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
@@ -932,7 +934,7 @@ img_read_item(img *pimg, img_point *p)
 #endif
 		     } else {
 			 int days1 = (int)getu16(pimg->fh);
-			 int days2 = days1 + getc(pimg->fh) + 1;
+			 int days2 = days1 + GETC(pimg->fh) + 1;
 #if IMG_API_VERSION == 0
 			 pimg->date1 = (pimg->days1 - 25567) * 86400;
 			 pimg->date2 = (pimg->days2 - 25567) * 86400;
@@ -1092,7 +1094,7 @@ img_read_item(img *pimg, img_point *p)
 	    opt = get32(pimg->fh);
 	 }
       } else {
-	 opt = getc(pimg->fh);
+	 opt = GETC(pimg->fh);
       }
 
       if (feof(pimg->fh)) {
@@ -1118,7 +1120,7 @@ img_read_item(img *pimg, img_point *p)
 	 char *q;
 	 int ch;
 	 result = img_LABEL;
-	 ch = getc(pimg->fh);
+	 ch = GETC(pimg->fh);
 	 if (ch == EOF) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
@@ -1150,7 +1152,7 @@ img_read_item(img *pimg, img_point *p)
 	 result = img_LABEL;
 
 	 if (opt == 7)
-	    pimg->flags = getc(pimg->fh);
+	    pimg->flags = GETC(pimg->fh);
 	 else
 	    pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
 
@@ -1290,8 +1292,8 @@ img_read_item_ascii(img *pimg, img_point *p)
 	    goto ascii_again;
 	 } else if (strcmp(cmd, "name") == 0) {
 	    size_t off = 0;
-	    int ch = getc(pimg->fh);
-	    if (ch == ' ') ch = getc(pimg->fh);
+	    int ch = GETC(pimg->fh);
+	    if (ch == ' ') ch = GETC(pimg->fh);
 	    while (ch != ' ') {
 	       if (ch == '\n' || ch == EOF) {
 		  img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
@@ -1304,7 +1306,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 		  }
 	       }
 	       pimg->label_buf[off++] = ch;
-	       ch = getc(pimg->fh);
+	       ch = GETC(pimg->fh);
 	    }
 	    pimg->label_buf[off] = '\0';
 
@@ -1352,7 +1354,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 	 pimg->pending = 1;
 	 /* ignore rest of line */
 	 do {
-	    ch = getc(pimg->fh);
+	    ch = GETC(pimg->fh);
 	 } while (ch != '\n' && ch != '\r' && ch != EOF);
       }
 
@@ -1403,7 +1405,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 	 char *line;
 	 char *q;
 	 size_t len = 0;
-	 int ch = getc(pimg->fh);
+	 int ch = GETC(pimg->fh);
 
 	 switch (ch) {
 	    case '\x1a': case EOF: /* Don't insist on ^Z at end of file */
@@ -1415,9 +1417,9 @@ img_read_item_ascii(img *pimg, img_point *p)
 skip_to_N:
 	       while (1) {
 		  do {
-		     ch = getc(pimg->fh);
+		     ch = GETC(pimg->fh);
 		  } while (ch != '\n' && ch != '\r' && ch != EOF);
-		  while (ch == '\n' || ch == '\r') ch = getc(pimg->fh);
+		  while (ch == '\n' || ch == '\r') ch = GETC(pimg->fh);
 		  if (ch == 'N') break;
 		  if (ch == '\x1a' || ch == EOF) return img_STOP;
 	       }
@@ -1454,7 +1456,7 @@ skip_to_N:
 		  if (pimg->survey) {
 		     fpos = ftell(pimg->fh) - 1;
 		     fseek(pimg->fh, pimg->start, SEEK_SET);
-		     ch = getc(pimg->fh);
+		     ch = GETC(pimg->fh);
 		     pimg->pending = 0;
 		  } else {
 		     /* If a file actually has a 'D' before any 'M', then
@@ -1666,11 +1668,11 @@ write_v3label(img *pimg, int opt, const char *s)
    SVX_ASSERT(len <= pimg->label_len);
    n = pimg->label_len - len;
    if (len == 0) {
-      if (pimg->label_len) putc(0, pimg->fh);
+      if (pimg->label_len) PUTC(0, pimg->fh);
    } else if (n <= 16) {
-      if (n) putc(n + 15, pimg->fh);
+      if (n) PUTC(n + 15, pimg->fh);
    } else if (dot == 0) {
-      if (pimg->label_len) putc(0, pimg->fh);
+      if (pimg->label_len) PUTC(0, pimg->fh);
       len = 0;
    } else {
       const char *p = pimg->label_buf + dot;
@@ -1679,23 +1681,23 @@ write_v3label(img *pimg, int opt, const char *s)
 	 if (*p++ == '.') n++;
       }
       if (n <= 14) {
-	 putc(n, pimg->fh);
+	 PUTC(n, pimg->fh);
 	 len = dot;
       } else {
-	 if (pimg->label_len) putc(0, pimg->fh);
+	 if (pimg->label_len) PUTC(0, pimg->fh);
 	 len = 0;
       }
    }
 
    n = strlen(s + len);
-   putc(opt, pimg->fh);
+   PUTC(opt, pimg->fh);
    if (n < 0xfe) {
-      putc(n, pimg->fh);
+      PUTC(n, pimg->fh);
    } else if (n < 0xffff + 0xfe) {
-      putc(0xfe, pimg->fh);
+      PUTC(0xfe, pimg->fh);
       put16((short)(n - 0xfe), pimg->fh);
    } else {
-      putc(0xff, pimg->fh);
+      PUTC(0xff, pimg->fh);
       put32(n, pimg->fh);
    }
    fwrite(s + len, n, 1, pimg->fh);
@@ -1730,7 +1732,7 @@ img_write_item_date(img *pimg)
 
     if (same) {
 	if (img_output_version < 7) {
-	    putc(0x20, pimg->fh);
+	    PUTC(0x20, pimg->fh);
 #if IMG_API_VERSION == 0
 	    put32(pimg->date1, pimg->fh);
 #else /* IMG_API_VERSION == 1 */
@@ -1738,9 +1740,9 @@ img_write_item_date(img *pimg)
 #endif
 	} else {
 	    if (unset) {
-		putc(0x24, pimg->fh);
+		PUTC(0x24, pimg->fh);
 	    } else {
-		putc(0x20, pimg->fh);
+		PUTC(0x20, pimg->fh);
 #if IMG_API_VERSION == 0
 		put16(pimg->date1 / 86400 + 25567, pimg->fh);
 #else /* IMG_API_VERSION == 1 */
@@ -1750,7 +1752,7 @@ img_write_item_date(img *pimg)
 	}
     } else {
 	if (img_output_version < 7) {
-	    putc(0x21, pimg->fh);
+	    PUTC(0x21, pimg->fh);
 #if IMG_API_VERSION == 0
 	    put32(pimg->date1, pimg->fh);
 	    put32(pimg->date2, pimg->fh);
@@ -1762,22 +1764,22 @@ img_write_item_date(img *pimg)
 #if IMG_API_VERSION == 0
 	    int diff = (pimg->date2 - pimg->date1) / 86400;
 	    if (diff > 0 && diff <= 256) {
-		putc(0x21, pimg->fh);
+		PUTC(0x21, pimg->fh);
 		put16(pimg->date1 / 86400 + 25567, pimg->fh);
-		putc(diff - 1, pimg->fh);
+		PUTC(diff - 1, pimg->fh);
 	    } else {
-		putc(0x23, pimg->fh);
+		PUTC(0x23, pimg->fh);
 		put16(pimg->date1 / 86400 + 25567, pimg->fh);
 		put16(pimg->date2 / 86400 + 25567, pimg->fh);
 	    }
 #else /* IMG_API_VERSION == 1 */
 	    int diff = pimg->days2 - pimg->days1;
 	    if (diff > 0 && diff <= 256) {
-		putc(0x21, pimg->fh);
+		PUTC(0x21, pimg->fh);
 		put16(pimg->days1, pimg->fh);
-		putc(diff - 1, pimg->fh);
+		PUTC(diff - 1, pimg->fh);
 	    } else {
-		putc(0x23, pimg->fh);
+		PUTC(0x23, pimg->fh);
 		put16(pimg->days1, pimg->fh);
 		put16(pimg->days2, pimg->fh);
 	    }
@@ -1849,7 +1851,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
        default: /* ignore for now */
 	 return;
       }
-      if (opt) putc(opt, pimg->fh);
+      if (opt) PUTC(opt, pimg->fh);
       /* Output in cm */
       put32((INT32_T)my_round(x * 100.0), pimg->fh);
       put32((INT32_T)my_round(y * 100.0), pimg->fh);
@@ -1872,12 +1874,12 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	    /* long label - not in early incarnations of v2 format, but few
 	     * 3d files will need these, so better not to force incompatibility
 	     * with a new version I think... */
-	    putc(7, pimg->fh);
-	    putc(flags, pimg->fh);
+	    PUTC(7, pimg->fh);
+	    PUTC(flags, pimg->fh);
 	    put32(len, pimg->fh);
 	    fputs(s, pimg->fh);
 	 } else {
-	    putc(0x40 | (flags & 0x3f), pimg->fh);
+	    PUTC(0x40 | (flags & 0x3f), pimg->fh);
 	    fputsnl(s, pimg->fh);
 	 }
 	 opt = 0;
@@ -1898,7 +1900,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
       if (pimg->version == 1) {
 	 put32(opt, pimg->fh);
       } else {
-	 if (opt) putc(opt, pimg->fh);
+	 if (opt) PUTC(opt, pimg->fh);
       }
       /* Output in cm */
       put32((INT32_T)my_round(x * 100.0), pimg->fh);
@@ -1918,7 +1920,7 @@ void
 img_write_errors(img *pimg, int n_legs, double length,
 		 double E, double H, double V)
 {
-    putc(0x22, pimg->fh);
+    PUTC(0x22, pimg->fh);
     put32(n_legs, pimg->fh);
     put32((INT32_T)my_round(length * 100.0), pimg->fh);
     put32((INT32_T)my_round(E * 100.0), pimg->fh);
@@ -1943,11 +1945,11 @@ img_close(img *pimg)
 	       put32((INT32_T)-1, pimg->fh);
 	       break;
 	     case 2:
-	       putc(0, pimg->fh);
+	       PUTC(0, pimg->fh);
 	       break;
 	     default:
-	       if (pimg->label_len) putc(0, pimg->fh);
-	       putc(0, pimg->fh);
+	       if (pimg->label_len) PUTC(0, pimg->fh);
+	       PUTC(0, pimg->fh);
 	       break;
 	    }
 	 }

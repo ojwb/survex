@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -343,8 +343,8 @@ Sketch::label(const img_point *p, const char *s, bool fSurface)
    fprintf(fh, "txt('");
    while (*s) {
       int ch = *s++;
-      if (ch == '\'' || ch == '\\') putc('\\', fh);
-      putc(ch, fh);
+      if (ch == '\'' || ch == '\\') PUTC('\\', fh);
+      PUTC(ch, fh);
    }
    fprintf(fh, "',(%.3f,%.3f))\n", p->x * factor, p->y * factor);
 }
@@ -627,7 +627,7 @@ PLT::footer(void)
 	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
 	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
-   putc('\x1a', fh);
+   PUTC('\x1a', fh);
 }
 
 class EPS : public ExportFilter {
@@ -888,16 +888,16 @@ void
 EPS::label(const img_point *p, const char *s, bool fSurface)
 {
    fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
-   putc('(', fh);
+   PUTC('(', fh);
    while (*s) {
        unsigned char ch = *s++;
        switch (ch) {
 	   case '(': case ')': case '\\': /* need to escape these characters */
-	       putc('\\', fh);
-	       putc(ch, fh);
+	       PUTC('\\', fh);
+	       PUTC(ch, fh);
 	       break;
 	   default:
-	       putc(ch, fh);
+	       PUTC(ch, fh);
 	       break;
        }
    }

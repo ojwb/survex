@@ -1,6 +1,6 @@
 /* ini.c
  * .ini file routines
- * Copyright (C) 1995-2001,2003 Olly Betts
+ * Copyright (C) 1995-2001,2003,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ ini_write(const char *section, const char *var, const char *value)
 
    static char *last_section = NULL;
    if (!last_section || strcasecmp(last_section, section) != 0) {
-      if (last_section) putc('\n', fh);
+      if (last_section) PUTC('\n', fh);
       fprintf(fh, "[%s]\n", section);
       last_section = section;
    }
