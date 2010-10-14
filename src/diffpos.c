@@ -1,6 +1,6 @@
 /* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
-/* Copyright (C) 1994,1996,1998-2003 Olly Betts
+/* Copyright (C) 1994,1996,1998-2003,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,34 +99,52 @@ static void
 tree_insert(const char *name, const img_point *pt)
 {
    int v = hash_string(name) & (TREE_SIZE - 1);
-   station *stn;
-
-   /* Catch duplicate labels - .3d files shouldn't have them, but some do
-    * due to a couple of bugs in some versions of Survex
-    */
-   for (stn = htab[v]; stn; stn = stn->next) {
-      if (strcmp(stn->name, name) == 0) return; /* found dup */
-   }
-
-   stn = osnew(station);
+   station * stn = osnew(station);
    stn->name = osstrdup(name);
    stn->pt = *pt;
    stn->next = htab[v];
    htab[v] = stn;
 }
 
+static int
+close_enough(const img_point * p1, const img_point * p2)
+{
+    return fabs(p1->x - p2->x) - threshold <= TOLERANCE &&
+	   fabs(p1->y - p2->y) - threshold <= TOLERANCE &&
+	   fabs(p1->z - p2->z) - threshold <= TOLERANCE;
+}
+
 static void
 tree_remove(const char *name, const img_point *pt)
 {
+   /* We need to handle duplicate labels - normal .3d files shouldn't have them
+    * (though some older ones do due to a couple of bugs in earlier versions of
+    * Survex) but extended .3d files repeat the label where a loop is broken,
+    * and data read from foreign formats might repeat labels.
+    */
    int v = hash_string(name) & (TREE_SIZE - 1);
    station **prev;
    station *p;
+   station **found = NULL;
+   bool was_close_enough = fFalse;
 
    for (prev = &htab[v]; *prev; prev = &((*prev)->next)) {
-      if (strcmp((*prev)->name, name) == 0) break;
+      if (strcmp((*prev)->name, name) == 0) {
+	 /* Handle stations with the same name.  Stations are inserted at the
+	  * start of the linked list, so pick the *last* matching station in
+	  * the list as then we match the first stations with the same name in
+	  * each file.
+	  */
+	 if (close_enough(pt, &((*prev)->pt))) {
+	    found = prev;
+	    was_close_enough = fTrue;
+	 } else if (!was_close_enough) {
+	    found = prev;
+	 }
+      }
    }
 
-   if (!*prev) {
+   if (!found) {
       added *add = osnew(added);
       add->name = osstrdup(name);
       add->next = added_list;
@@ -136,21 +154,19 @@ tree_remove(const char *name, const img_point *pt)
       return;
    }
 
-   if (fabs(pt->x - (*prev)->pt.x) - threshold > TOLERANCE ||
-       fabs(pt->y - (*prev)->pt.y) - threshold > TOLERANCE ||
-       fabs(pt->z - (*prev)->pt.z) - threshold > TOLERANCE) {
+   if (!was_close_enough) {
       printf(msg(/*Moved by (%3.2f,%3.2f,%3.2f): %s*/500),
-	     pt->x - (*prev)->pt.x,
-	     pt->y - (*prev)->pt.y,
-	     pt->z - (*prev)->pt.z,
+	     pt->x - (*found)->pt.x,
+	     pt->y - (*found)->pt.y,
+	     pt->z - (*found)->pt.z,
 	     name);
       putnl();
       fChanged = fTrue;
    }
 
-   osfree((*prev)->name);
-   p = *prev;
-   *prev = p->next;
+   osfree((*found)->name);
+   p = *found;
+   *found = p->next;
    osfree(p);
 }
 
