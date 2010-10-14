@@ -31,8 +31,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${EXTEND="$testdir"/../src/extend}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
-: ${TESTS=${*:-"extend extend2names eswap"}} # also eswap-break
-# JPNP: eswap-break currently fails due to bug in diffpos
+: ${TESTS=${*:-"extend extend2names eswap eswap-break"}}
 
 for file in $TESTS ; do
   echo $file
