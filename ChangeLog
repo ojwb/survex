@@ -1,3 +1,7 @@
+Fri Oct 15 05:48:09 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS: Final update fro 1.1.15.
+
 Fri Oct 15 05:20:40 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/editwrap.c: Convert to use wide-character Unicode.

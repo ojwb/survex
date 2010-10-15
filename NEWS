@@ -1,4 +1,4 @@
-Changes in 1.1.15 (2010-10-13):
+Changes in 1.1.15 (2010-10-15):
 
 * aven:
 
@@ -27,7 +27,14 @@ Changes in 1.1.15 (2010-10-13):
     more places.
 
   + (Microsoft Windows): Quote filenames with spaces and metacharacters in
-    when running cavern from aven.
+    when running cavern from aven.  Fixes ticket#11.
+
+* editwrap: (Microsoft Windows): Handle filenames with non-Latin1 characters.
+
+* diffpos: Handle files with duplicate labels in better - extend generates
+  duplicate labels when it breaks a loop.
+
+* Enable eswap-break testcase now that diffpos handles duplicate station names.
 
 * New v7 of .3d format which stores survey dates as number of days since
   January 1st 1900, so we now support dates from 1900-2078 (rather than
