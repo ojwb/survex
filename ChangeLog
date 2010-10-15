@@ -1,3 +1,7 @@
+Fri Oct 15 05:20:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/editwrap.c: Convert to use wide-character Unicode.
+
 Fri Oct 15 05:20:04 GMT 2010  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Fix to work on Microsoft Windows.
