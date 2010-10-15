@@ -56,7 +56,7 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 	wxChar ch = s[p];
 	if (ch < 127) {
 	    if (ch == wxT('"')) {
-		s.insert(p, wxT('\\'));
+		s.insert(p, 1, wxT('\\'));
 		++p;
 		needs_quotes = true;
 	    } else if (strchr(" <>&|^", ch)) {
@@ -66,7 +66,7 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 	++p;
     }
     if (needs_quotes) {
-	s.insert(0, wxT('"'));
+	s.insert(0u, 1, wxT('"'));
 	s += wxT('"');
     }
 #else
@@ -79,7 +79,7 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
     while (p < s.size()) {
 	// Exclude a few safe characters which are common in filenames
 	if (!isalnum(s[p]) && strchr("/._-", s[p]) == NULL) {
-	    s.insert(p, wxT('\\'));
+	    s.insert(p, 1, wxT('\\'));
 	    ++p;
 	}
 	++p;
@@ -171,10 +171,21 @@ CavernLogWindow::process(const wxString &file)
 #ifdef __WXMSW__
     wxString cmd;
     {
-	wchar_t * argv0 = _wpgmptr;
-	wchar_t * slash = wcsrchr(argv0, L'\\');
+	DWORD len = 256;
+	wchar_t *buf = NULL, *p;
+	while (1) {
+	    DWORD got;
+	    buf = (wchar_t*)osrealloc(buf, len * 2);
+	    got = GetModuleFileNameW(NULL, buf, len);
+	    if (got < len) break;
+	    len += len;
+	}
+	/* Strange Win32 nastiness - strip prefix "\\?\" if present */
+	if (wcsncmp(buf, L"\\\\?\\", 4) == 0) buf += 4;
+	p = wcsrchr(buf, L'\\');
+	wchar_t * slash = wcsrchr(buf, L'\\');
 	if (slash) {
-	    cmd.assign(argv0, slash - argv0 + 1);
+	    cmd.assign(buf, slash - buf + 1);
 	}
     }
     cmd += L"cavern";
