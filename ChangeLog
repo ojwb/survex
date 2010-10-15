@@ -1,3 +1,7 @@
+Fri Oct 15 06:57:46 GMT 2010  Olly Betts <olly@survex.com>
+
+	* tests/extend.tst: Fix to file .espec files when srcdir != builddir.
+
 Fri Oct 15 05:48:09 GMT 2010  Olly Betts <olly@survex.com>
 
 	* NEWS: Final update fro 1.1.15.

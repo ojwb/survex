@@ -36,7 +36,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 for file in $TESTS ; do
   echo $file
   EXTEND_ARGS=""
-  test -f "$file.espec" && EXTEND_ARGS="--specfile $file.espec"
+  test -f "$srcdir/$file.espec" && EXTEND_ARGS="--specfile $srcdir/$file.espec"
   rm -f tmp.*
   if test -n "$VERBOSE" ; then
     $CAVERN "$srcdir/$file.svx" --output=tmp || exit 1
