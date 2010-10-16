@@ -1,10 +1,11 @@
-survex (1.1.14-2) unstable; urgency=low
+survex (1.1.15-1) unstable; urgency=low
 
   [Olly Betts]
+  * New upstream release.
   * debian/copyright: Use http://survex.com/ rather than http://www.survex.com/
     - the former is the canonical name and www.survex.com just redirects.
 
- -- Olly Betts <olly@survex.com>  Mon, 04 Oct 2010 11:04:59 +0000
+ -- Olly Betts <olly@survex.com>  Sat, 16 Oct 2010 12:12:24 +0000
 
 survex (1.1.14-1) unstable; urgency=low
 
