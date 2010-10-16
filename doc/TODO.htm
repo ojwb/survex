@@ -11,14 +11,12 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 
 <ul>
 
-<li>Closing a running cavernlog window causes a crash.
-
 <li>Update translations.
 
 <li>After keyboard controlled movement, the measuring line/circle doesn't
 reappear until the mouse is moved (e.g. plan/elevation transition with P/L).
 
-<li>Save cavern log from aven.
+<li>Save cavern log from aven?
 
 <li>Sort out display of full unicode in OpenGL window (currently we only
 handle latin1 there, which is sufficient for all the current i18ns).
@@ -49,13 +47,6 @@ caverot but now seeing the mouse pointer makes people expect the default
 motions (for right button drag particularly).
 
 <li>Clean up export.cc and allow scale, line width, etc to be specified
-
-<li>Output from cavern doesn't appear in aven's window until run has finished
-if we start aven with a .svx file, but works fine if we load a .svx file
-into an already running aven...
-
-<li>Would cavern output be better inside the main aven frame rather than as a
-separate window?
 
 <li>LRUD in Aven Export
 
@@ -104,7 +95,7 @@ may be needed to get meaningful timing info.
 <H2>Probably post-1.2</H2>
 
 <ul>
-<li>Terrain data
+<li>Terrain data (patch from PhilU)
 
 <li>*fix with datums etc
 
@@ -303,17 +294,6 @@ Perhaps something smart where the first press is a fixed size, then after that
 it depends on the redraw?
 </ul>
 
-<H2>Printing</H2>
-
-<ul>
-
-<li>Check skip blank pages works (checked printps)...
-
-<li>printdm: put standard scaling in print.ini for canon bj
-(work out what's up with vertical size...)
-
-</ul>
-
 <H2>Documentation</H2>
 
 <ul>
@@ -430,18 +410,6 @@ bar.2 moved by (-0.02, -0.05, 0.03)
 </pre>
 
 <li>improve .plt export to include less crude survey structure.
-
-<li>MacOS X packaging - make Aven.app a bundle - structure like so:
-<pre>
-	Aven.app/
-		Contents/
-			MacOS/
-				Aven
-		Info.plist
-		Resources/
-</pre>
-
-And we need to set Aven.app's bundle bit.
 
 <li>look at solution by QR factorisation in matrix.c more
 

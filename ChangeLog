@@ -1,3 +1,7 @@
+Sat Oct 16 10:13:10 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Remove entries which have now been done.
+
 Fri Oct 15 06:57:46 GMT 2010  Olly Betts <olly@survex.com>
 
 	* tests/extend.tst: Fix to file .espec files when srcdir != builddir.
