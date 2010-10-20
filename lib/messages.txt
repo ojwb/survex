@@ -3095,6 +3095,7 @@ ro:281 @Anulati linia de masura##Escape
 # XXX 282 283 284 285 286 287 288
 # TRANSLATE fr pt ca es it ro
 en:289 Colour by E@rror
+en-us:289 Color by E@rror
 fr,pt,ca,es,it,ro:289 Colour b@y Error
 sk:289 Colour @by Error
 #
@@ -3125,6 +3126,7 @@ ro:291 Portiuni de @suprafata ale topografiei##Ctrl+F
 #
 ## NB 292 is a different message in 1.0!
 en:292 Colour by @Depth
+en-us:292 Color by @Depth
 fr:292 Couleur par @profondeur
 de:292 Farbe je nach @Tiefe
 ca:292 Color per @Profunditat
@@ -3135,6 +3137,7 @@ ro:292 Culori in functie de @adancime
 #
 ## NB 293 is a different message in 1.0!
 en:293 Colour by D@ate
+en-us:293 Color by D@ate
 fr:293 Couleur par @date
 de:293 Farbe je nach @Datum
 ca:293 Color per @Data
@@ -3802,6 +3805,7 @@ sk:358 Zobrazi&tcaron; povrchov&eacute; z&aacute;mery
 ro:358 Afisare masuratori de suprafata
 #
 en:359 Colour surface surveys by depth
+en-us:359 Color surface surveys by depth
 fr:359 Couleur de la topo de surface en fonction de l'altitude
 de:359 Oberfl&auml;chenvermessung nach H&ouml;he einf&auml;rben
 ca:359 Coloreja les tirades de superf&iacute:cie segons profunditat
