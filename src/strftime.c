@@ -25,6 +25,12 @@
  *
  * Fixed compiler warnings from GCC
  * Olly Betts 2005-01-12
+ *
+ * Fix memory leak if realloc() fails
+ * Olly Betts 2010-12-21
+ *
+ * Fix compilation error with GCC
+ * Olly Betts 2010-12-21
  */
 
 #include <stdio.h>
@@ -38,16 +44,14 @@
 
 extern void *malloc();
 extern void *realloc();
+extern void free();
 extern void tzset();
 extern char *strchr();
 extern char *getenv();
 static int weeknumber();
 #else
-extern void *malloc(unsigned count);
-extern void *realloc(void *ptr, unsigned count);
+#include <stdlib.h>
 extern void tzset(void);
-extern char *strchr(const char *str, int ch);
-extern char *getenv(const char *v);
 static int weeknumber(const struct tm *timeptr, int firstweekday);
 #endif
 
