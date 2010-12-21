@@ -172,11 +172,14 @@ strftime(char *s, size_t maxsize, const char *format, const struct tm *timeptr)
 	if (tz && savetz && (tz[0] != savetz[0] || strcmp(tz, savetz) != 0)) {
 		i = strlen(tz) + 1;
 		if (i > savetzlen) {
-			savetz = (char *) realloc(savetz, i);
-			if (savetz) {
+			char * newsavetz = (char *) realloc(savetz, i);
+			if (newsavetz) {
 				savetzlen = i;
-				strcpy(savetz, tz);
+				strcpy(newsavetz, tz);
+			} else {
+				free(savetz);
 			}
+			savetz = newsavetz;
 		} else
 			strcpy(savetz, tz);
 		tzset();
