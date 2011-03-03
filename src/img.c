@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005,2006,2010 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,8 +64,8 @@
 /* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
 /* path isn't used in img.c, but EXT is */
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) fopen(FNM,MODE)
-# define PUTC(C, FH) putc(C, fh)
-# define GETC(FH) getc(fh)
+# define PUTC(C, FH) putc(C, FH)
+# define GETC(FH) getc(FH)
 # define fFalse 0
 # define fTrue 1
 # define bool int

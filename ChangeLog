@@ -1,3 +1,7 @@
+Thu Mar 03 12:32:57 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix typo in code used when IMG_HOSTED isn't defined.
+
 Wed Oct 20 09:53:56 GMT 2010  Olly Betts <olly@survex.com>
 
 	* lib/messages.txt: "Colour" -> "Color" in en-us.
