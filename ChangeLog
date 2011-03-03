@@ -1,3 +1,7 @@
+Thu Mar 03 13:16:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix code typo for IMG_API_VERSION == 0 case.
+
 Thu Mar 03 12:32:57 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/img.c: Fix typo in code used when IMG_HOSTED isn't defined.

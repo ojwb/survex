@@ -936,8 +936,8 @@ img_read_item(img *pimg, img_point *p)
 			 int days1 = (int)getu16(pimg->fh);
 			 int days2 = days1 + GETC(pimg->fh) + 1;
 #if IMG_API_VERSION == 0
-			 pimg->date1 = (pimg->days1 - 25567) * 86400;
-			 pimg->date2 = (pimg->days2 - 25567) * 86400;
+			 pimg->date1 = (days1 - 25567) * 86400;
+			 pimg->date2 = (days2 - 25567) * 86400;
 #else /* IMG_API_VERSION == 1 */
 			 pimg->days1 = days1;
 			 pimg->days2 = days2;
