@@ -1,3 +1,8 @@
+Mon Mar 14 01:58:10 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in: Link with -lGL, if it exists to support linking with
+	  gold or GNU ld --as-needed (Debian bug #615781).
+
 Thu Mar 03 13:16:19 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/img.c: Fix code typo for IMG_API_VERSION == 0 case.
