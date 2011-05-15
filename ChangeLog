@@ -1,3 +1,7 @@
+Sun May 15 03:44:17 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/fixmsgs.pl: Update to fix UTF-8 rather than ISO8859-1.
+
 Sun May 15 03:43:46 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/named-entities.txt: Add hellip and rarr.

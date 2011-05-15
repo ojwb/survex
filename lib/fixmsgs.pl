@@ -1,12 +1,12 @@
 #!/usr/bin/perl -w
 require 5.008;
-use bytes;
+use open ':encoding(utf8)';
 use strict;
 
 use integer;
 
 my @ent = ();
-for (128..255) {
+for (128..65536) {
    $ent[$_] = "#$_";
 }
 
@@ -25,7 +25,7 @@ while (<>) {
    
    my ($pre, $msg) = /^([-\w,]+:\s*\d+\s+)(.*)/;
 
-   $msg =~ s/([\x80-\xff])/"&".$ent[ord($1)].";"/ge;
+   $msg =~ s/([\x{80}-\x{ffff}])/"&".$ent[ord($1)].";"/ge;
 
    $msg =~ s/'\%s'/`%s'/g;
    $msg =~ s/^([^`']* )\%s'/$1`%s'/;
