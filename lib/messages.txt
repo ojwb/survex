@@ -1037,6 +1037,7 @@ en: 83 Cross section specified at non-existent station `%s'
 fr: 83 Section sp&eacute;cifi&eacute; sur une station inexistante `%s'
 ca: 83 S'ha especificat una secci&oacute; transversal a l'estaci&oacute; inexistent `%s'
 es: 83 Se ha especificado una secci&oacute;n transversal en la estaci&oacute;n inexistente `%s'
+it: 83 Sezione trasversale specificata per una stazione non esistente: `%s'
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
 en: 84 CLINO and BACKCLINO readings must be of the same type
@@ -3107,12 +3108,13 @@ sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 #ro: to find a better way to express that
 ro:281 @Anulati linia de masura##Escape
 # XXX 282 283 284 285 286 287 288
-# TRANSLATE fr ca es it ro
+# TRANSLATE fr ca es ro
 en:289 Colour by E@rror
 en-us:289 Color by E@rror
 fr:289 Cou@leur par Erreur
 pt:289 Colorir de acordo com E@rros
-ca,es,it,ro:289 Colour b@y Error
+ca,es,ro:289 Colour b@y Error
+it:289 Colore di @Error
 sk:289 Colour @by Error
 #
 ## The accelerators must be different within this group
@@ -4004,7 +4006,7 @@ sk:374 "%s: V %.2f%s, Azim %03d%s"
 ro:374 "%s: H %.2f%s, Azim %03d%s"
 #
 # cf 340
-# TRANSLATE de it sk ro Check translation adapted from 340
+# TRANSLATE de sk ro Check translation adapted from 340
 # "V" is short for "Vertical"
 en:375 "%s: V %.2f%s"
 fr:375 "%s: V %.2f%s"
