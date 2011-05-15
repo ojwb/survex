@@ -3114,7 +3114,7 @@ ro:281 @Anulati linia de masura##Escape
 en:289 Colour by E@rror
 en-us:289 Color by E@rror
 fr:289 Cou@leur par Erreur
-de:289 Anhand Fehle@rn einfärben
+de:289 Anhand Fehle@rn einf&auml;rben
 pt:289 Colorir de acordo com E@rros
 es:289 Color por E@rror
 ca,ro:289 Colour b@y Error
@@ -4192,10 +4192,10 @@ ro:404 Expresie regulara incorecta: %s
 # TRANSLATE ca sk (ca check addition of "de %s") (sk translate "of %s")
 en:405 This version of %s requires OpenGL to work, but it isn't available.
 fr:405 Cette version de %s a besoin d'OpenGL pour fonctionner, mais il n'est pas disponible.
-de:405 Diese Version von %s benötigt zum Funktionieren OpenGL, was jedoch nicht verfügbar ist.
+de:405 Diese Version von %s ben&ouml;tigt zum Funktionieren OpenGL, was jedoch nicht verf&uuml;gbar ist.
 pt:405 Esta vers&atilde;o de %s necessita que o OpenGL funcione, mas n&atilde;o est&aacute;.
 ca:405 Aquesta versi&oacute; de %s requereix OpenGL per funcionar, i no est&agrave; disponible.
-es:405 Se requiere OpenGL para trabajar la versión de %s, pero no está disponible.
+es:405 Se requiere OpenGL para trabajar la versi&oacute;n de %s, pero no est&aacute; disponible.
 it:405 Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili.
 sk:405 T&aacute;to verzia (of %s) vy&zcaron;aduje OpenGL. To v&scaron;ak nie je dostupn&eacute;.
 # for diffpos:
