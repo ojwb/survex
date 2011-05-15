@@ -2675,7 +2675,7 @@ ro:237 Perspecti@va
 en:238 Textured @Walls
 fr:238 Te@xture des parois
 de:238 @Wandtextur
-pt:238 Parede @Texturizadas
+pt:238 Parede Texturi@zadas
 ca:238 Parets amb te@xtura
 es:238 Paredes con te@xtura
 it:238 Pareti con te@xture
@@ -3115,7 +3115,7 @@ en:289 Colour by E@rror
 en-us:289 Color by E@rror
 fr:289 Cou@leur par Erreur
 de:289 Anhand Fehle@rn einf&auml;rben
-pt:289 Colorir de acordo com E@rros
+pt:289 Colorir de acordo com Err@os
 es:289 Color por E@rror
 ca,ro:289 Colour b@y Error
 it:289 Colore di @Error
@@ -3195,10 +3195,10 @@ ro:295 Marcheaza Punctele @Fixe
 en:296 Highlight E@xported Points
 fr:296 Mise de valeur des points exp@ort&eacute;s
 de:296 Exp@ortierte Punkte hervorheben
-pt:296 Destacar Bases Ex@portadas
+pt:296 Destacar Bases Export@adas
 ca:296 Marca els Punts Expo@rtats
 es:296 M@arca los Puntos Exportados
-it:296 Marca i punti @Esportati
+it:296 Marca i p@unti Esportati
 sk:296 Zv&yacute;razni&tcaron; e@xportovan&eacute; body
 ro:296 Marcheaza Punctele @Exportate
 #
@@ -3207,7 +3207,7 @@ fr:297 @Grille##Ctrl+G
 de:297 @Gitter##Ctrl+G
 pt:297 @Grade##Ctrl+G
 ca:297 @Graella##Ctrl+G
-es:297 @Rejilla##Ctrl+G
+es:297 Re@jilla##Ctrl+G
 it:297 @Griglia##Ctrl+G
 sk:297 @Sie&tcaron;##Ctrl+G
 ##ro:297 @Gril&abreve;##Ctrl+G
@@ -3821,7 +3821,7 @@ ro:355 Permite suprapunerea numelor (mai rapid)
 en:356 Full Screen @Mode##F11
 fr:356 @Mode Plein Ecran##F11
 de:356 @Vollbild-Modus##F11
-pt:356 @Modo Ecr&atilde; Completo##F11
+pt:356 Modo Ecr&atilde; @Completo##F11
 ca:356 @Mode Pantalla Sencera##F11
 es:356 @Modo Pantalla Completa##F11
 it:356 @Modo schermo pieno##F11
@@ -4078,7 +4078,7 @@ ro:380 @Imprimare&hellip;##Ctrl+P
 en:381 P@age Setup&hellip;
 fr:381 Configurer la @page&hellip;
 de:381 @Seite einrichten&hellip;
-pt:381 Configura&ccedil;&atilde;o de P&aacute;gin@a&hellip;
+pt:381 Configura&ccedil;&atilde;o de @P&aacute;gina&hellip;
 ca:381 Configuraci&oacute; de la @p&agrave;gina&hellip;
 es:381 Configuraci&oacute;n de la @p&aacute;gina&hellip;
 it:381 @Imposta pagina&hellip;

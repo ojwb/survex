@@ -1,3 +1,8 @@
+Sun May 15 03:39:02 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fix clashing menu shortcuts from recent translation
+	  updates.
+
 Sun May 15 03:20:50 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/message.c: 0x2026 (&hellip;): Handle for WINCP1252, and
