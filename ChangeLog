@@ -1,3 +1,7 @@
+Sun May 15 01:53:22 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fold in pt updates from launchpad.
+
 Mon Mar 14 01:58:10 GMT 2011  Olly Betts <olly@survex.com>
 
 	* configure.in: Link with -lGL, if it exists to support linking with

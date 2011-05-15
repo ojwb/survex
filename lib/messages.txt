@@ -107,7 +107,7 @@ fr:  2 Une version %s ou sup&eacute;rieure de Survex est n&eacute;cessaire pour 
 # sounds more natural.  Feel free to write "h&ouml;her" instead of "neuer", but
 # I would advise against it.)
 de:  2 Survex Version %s oder neuer ist zum Verarbeiten dieser Daten erforderlich.
-pt:  2 Para processar estes dados &eacute; necess&acute;ria a vers&atilde;o %s (ou posterior) do Survex.
+pt:  2 Para processar estes dados &eacute; necess&aacute;ria a vers&atilde;o %s (ou posterior) do Survex.
 ca:  2 Per processar aquestes dades topogr&agrave;fiques es requereix la versi&oacute; %s de Survex (o superior).
 es:  2 Para procesar estos datos topogr&aacute;ficos se requiere la versi&oacute;n %s de Survex (o superior).
 it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o superiore.
@@ -168,18 +168,20 @@ es:  6 *prefix ya no se usa - utiliza *begin y *end en su lugar
 it:  6 *prefix &eacute sconsigliato - usare invece *begin e *end
 sk:  6 *prefix bol odmietnut&yacute; - pou&zcaron;ijte namiesto toho *begin a *end
 ro:  6 *prefix contine eroare - folositi in schimb *begin si *end
+#
 en:  7 Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)
 fr:  7 Caract&egrave;re `%c' interdit dans un nom de station (cf *SET NAMES pour modifier la liste des caract&egrave;res autoris&eacute;s)
 # de: shorter, but not as good:
 # Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen mit *SET NAMES definieren)
 de-de,de-ch:  7 Unerlaubtes Zeichen `%c' in Messpunktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
 de:           7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
-pt:  7 Caracter `%c' n&atilde;o permitido em nome de base (use *SET NAMES para configurar os cararcteres permitidos)
+pt:  7 Caractere `%c' n&atilde;o permitido em nome de base (use *SET NAMES para configurar os caracteres permitidos)
 ca:  7 Car&agrave;cter `%c' no perm&egrave;s al nom d'una estaci&oacute; (utilitza *SET NAMES per definir els car&agrave;cters permesos)
 es:  7 Car&aacute;cter `%c' no permitido en el nombre de una estaci&oacute;n (utiliza *SET NAMES para definir los caracteres permitidos)
 it:  7 Carattere `%c' non permesso nel nome di stazione (usare *SET NAMES per cambiare i caratteri permessi)
 sk:  7 Znak `%c' v mene bodu nie je povolen&yacute; (pou&zcaron;ijte *SET NAMES pre nastavenie povolen&yacute;ch znakov)
 ro:  7 Folosirea caracterului `%c' in numele statiei, nu este permisa (folositi *SET NAMES pentru a modifica lista de caractere)
+#
 en:  8 Field may not be omitted
 fr:  8 Champ non optionnel
 de:  8 Eintragung fehlt
@@ -193,7 +195,7 @@ ro:  8 Aceasta rubrica nu poate fi omisa
 en:  9 Expecting numeric field, found `%s'
 fr:  9 On attendait une valeur num&eacute;rique, on a trouv&eacute; `%s'
 de:  9 Zahl erwartet, `%s' gelesen
-pt,pt-br:  9 Esperando valor num&eacute;rico, encontrado `%s'
+pt,pt-br:  9 Esperava valor num&eacute;rico, encontrei `%s'
 ca:  9 S'espera un camp num&egrave;ric, trobat `%s'
 es:  9 Se espera un campo num&eacute;rico; encontrado `%s'
 it:  9 Questo campo &eacute; numerico, trovato `%s'
@@ -206,7 +208,7 @@ fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLO
 # equivalent, doesn't sound quite right here
 # NB there is no comma before "oder"
 de: 10 `%s' gelesen, `PRESERVE', `TOUPPER' oder `TOLOWER' erwartet
-pt: 10 Encontrado `%s' quando `PRESERVE', `TOUPPER' ou `TOLOWER' eram esperados
+pt: 10 Encontrei `%s' quando eram esperados `PRESERVE', `TOUPPER' ou `TOLOWER'
 ca: 10 Trobat `%s', esperant `PRESERVE', `TOUPPER', o `TOLOWER'
 es: 10 Encontrado `%s', esperando `PRESERVE', `TOUPPER', o `TOLOWER'
 it: 10 Trovato `%s', atteso `PRESERVE', `TOUPPER' o `TOLOWER'
@@ -239,7 +241,7 @@ de-de,de-ch: 13 Messpunkt `%s' mit sich selbst gleichgesetzt
 de:     13 Me&szlig;punkt `%s' mit sich selbst gleichgesetzt
 pt: 13 Base `%s' igualada a ela mesma
 ca: 13 Estaci&oacute; `%s' igualada a ella mateixa
-es: 13 Estacio&acute;n `%s' igualada a si misma
+es: 13 Estacio&oacute;n `%s' igualada a si misma
 it: 13 Stazione `%s' uguagliata a se stessa
 sk: 13 Bod `%s' je toto&zcaron;n&yacute; s&aacute;m so sebou
 ro: 13 Statia `%s' este egala cu ea insasi
@@ -300,7 +302,7 @@ en: 19 Too many errors - giving up
 fr: 19 Trop d'erreurs, j'abandonne
 #anthropomorphising version: de: 19 Zu viele Fehler - ich gebe auf
 de: 19 Abbruch wegen zu vieler Fehler
-pt: 19 Erros em excesso - desistindo
+pt: 19 Demasiados erros - desistindo
 ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
@@ -755,6 +757,7 @@ ro: 57 *EXPORT trebuie sa urmeze dupa `*BEGIN <TOPOGRAFIE>'
 en: 58 Invalid year (< 1900 or > 2078)
 fr: 58 Ann&eacute;e invalide (< 1900 ou > 2078)
 de: 58 Ung&uuml;ltiges Jahr (< 1900 oder > 2078)
+pt,pt-br: 58 Ano inv&aacute;lido (< 1900 or > 2078)
 ca: 58 Any inv&agrave;lid (< 1900 &oacute; > 2078)
 es: 58 A&ntilde;o inv&aacute;lido (< 1900 &oacute; > 2078)
 it: 58 Anno non valido (<1900 o >2078)
@@ -1000,6 +1003,7 @@ ro: 79 Distanta corectata negativ
 en: 80 Date is in the future!
 fr: 80 La date est dans le futur!
 de: 80 Datum liegt in der Zukunft!
+pt: 80 A data &eacute; no futuro!
 ca: 80 La data &eacute;s en el futur!
 es: 80 La fecha es en el futuro!
 it: 80 La data &eacute; nel futuro!
@@ -1009,6 +1013,7 @@ ro: 80 Data se gaseste in viitor!
 en: 81 End of date range is before the start
 fr: 81 La date de fin est ant&eacute;rieure &agrave; celle de d&eacute;but
 de: 81 Das Enddatum ist fr&uuml;her als das Anfangsdatum
+pt: 81 Data final do intervalo ocorre antes da data inicial
 ca: 81 La data final &eacute;s anterior a la inicial
 es: 81 La fecha final es anterior a la incial
 it: 81 La data finale &eacute; anteriore a quella finale
@@ -1026,7 +1031,9 @@ sk: 82 Parameter `%s' v konfigura&ccaron;nom s&uacute;bore tla&ccaron;iarne m&aa
 ro: 82 Parametrul `%s' are valoarea incorecta `%s' in fisierul de configurare a imprimantei
 # e.g. the user specifies a passage cross-section at station "entrance.27", but
 # there is no station "entrance.27" in the centre-line.
+# TRANSLATE fr check "Section" is suitable
 en: 83 Cross section specified at non-existent station `%s'
+fr: 83 Section sp&eacute;cifi&eacute; sur une station inexistante `%s'
 ca: 83 S'ha especificat una secci&oacute; transversal a l'estaci&oacute; inexistent `%s'
 es: 83 Se ha especificado una secci&oacute;n transversal en la estaci&oacute;n inexistente `%s'
 # In data with backsights, the user has tried to give a plumb for the
@@ -1055,6 +1062,7 @@ ro: 85 Parametrul `%s' lipseste din fisierul de configurare a imprimantei
 en: 86 Invalid month
 fr: 86 Mois invalide
 de: 86 Ung&uuml;ltiger Monat
+pt: 86 M&ecirc;s inv&aacute;lido
 ca: 86 Mes inv&agrave;lid
 es: 86 Mes inv&aacute;lido
 it: 86 Mese non valido
@@ -1065,6 +1073,7 @@ ro: 86 Luna incorecta
 en: 87 Invalid day of the month
 fr: 87 Jour du mois invalide
 de: 87 Ung&uuml;ltiger Monatstag
+pt: 87 Dia inv&aacute;lido
 ca: 87 El dia del mes &eacute;s inv&agrave;lid
 es: 87 El dia del mes es inv&aacute;lido
 it: 87 Giorno del mese non valido
@@ -1851,7 +1860,7 @@ ca:160 "Vista cap a: "
 es:160 "Vista hacia: "
 it:160 "Vista verso: "
 sk:160 "Poh&lcaron;ad smerom na: "
-ro:160 "Vizualizare in directia:"
+ro:160 "Vizualizare in directia: "
 #
 en:161 "Tilt (degrees): "
 fr:161 "Basculement (degr&eacute;s): "
@@ -1995,7 +2004,7 @@ ca:174 " unides per 1 tirada."
 es:174 " unidas por 1 tirada."
 it:174 " unite per una battuta."
 sk:174 " spojen&yacute;ch 1 z&aacute;merou."
-ro:174 " unite printr-o masuratoare. "
+ro:174 " unite printr-o masuratoare."
 en:175 " joined by %ld legs."
 en-us:175 " joined by %ld shots."
 fr:175 " connect&eacute;es par %ld vis&eacute;es."
@@ -2279,13 +2288,12 @@ ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 # In the "File" menu
 ## (see 220 onwards)
-# TRANSLATE pt
 en:201 @Screenshot...
 fr:201 @Copie d'&eacute;cran...
 de:201 Bildschirm@abzug...
 ca:201 @Captura de pantalla...
 es:201 @Captura de pantalla...
-pt:201 S@creenshot...
+pt:201 @Captura de Ecr&atilde;...
 it:201 @Cattura schermo...
 sk:201 @Sn&iacute;mok obrazovky...
 ro:201 @Captura ecran...
@@ -2480,8 +2488,6 @@ es:220 @Abrir...##Ctrl+O
 it:220 @Apri...##Ctrl+O
 sk:220 @Otvori&tcaron;...##Ctrl+O
 ro:220 @Deschide...##Ctrl+O
-# TRANSLATE pt
-# (English has changed from Exit to Quit)
 # cf 182
 en:221 @Quit##Ctrl+Q
 fr:221 @Quitter##Ctrl+Q
@@ -2581,12 +2587,16 @@ ro:229 Model digital al terenului
 # Used in the "Export" settings dialog
 # 230 Different in 1.0
 en:230 &amp;Export...
+fr:230 &amp;Exporter...
+pt,pt-br:230 &amp;Exportar...
+it:230 &amp;Esporta...
 # "Rotation" menu.  The accelerators must be different within this group.
 # 231 Different in 1.0
 # Tickable menu item which toggles auto rotation
 en:231 Au@to-Rotate##Space
 fr:231 Rotation @Automatique##Space
 de:231 Auto@matisch rotieren##Space
+pt:231 Au@to-Rodar##Space
 ca:231 @Auto-Rotar##Space
 es:231 @Auto-Rotar##Space
 it:231 @Auto-Rotazione##Space
@@ -2653,7 +2663,7 @@ fr:237 Pe@rspective
 de:237 @Perspektive
 ca:237 Perspecti@va
 es:237 Perspecti@va
-pt:237 Pe@rspective
+pt:237 Pe@rspectiva
 it:237 Prospetti@va
 sk:237 Perspekt&iacute;v@a
 ro:237 Perspecti@va
@@ -2661,6 +2671,7 @@ ro:237 Perspecti@va
 en:238 Textured @Walls
 fr:238 Te@xture des parois
 de:238 @Wandtextur
+pt:238 Parede @Texturizadas
 ca:238 Parets amb te@xtura
 es:238 Paredes con te@xtura
 it:238 Pareti con te@xture
@@ -2673,6 +2684,7 @@ en:239 Fade Distant Ob@jects
 en-us:239 @Fade Distant Objects
 fr:239 Rendre @floue les objets lointains
 de:239 D@unsteffekt
+pt:239 Dist&acirc;ncia de desvanecimento de Ob@jectos
 ca:239 @Aten&uacute;a els objectes llunyans
 es:239 @Desvanece los objetos lejanos
 it:239 Sbiadisce g@li oggetti distanti
@@ -2836,14 +2848,11 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-# TRANSLATE pt pt-br
-# Has been changed from "Restore Default Settings" -> "Restore Default View"
 en:254 Restore De@fault View
 en-us:254 Restore Defaul@t View
 fr:254 @Restaurer la vue par d&eacute;faut
 de:254 @Zur&uuml;ck zur voreingestellten Ansicht
-pt:254 @Usar valores pr&eacute;-definidos
-pt-br:254 @Restaurar padr&otilde;es
+pt:254 @Restaurar Vista Predefinida
 ca:254 Restablei@x la vista per defecte
 es:254 Restaurar la @vista predeterminada
 it:254 Ripristina la @vista predefinita
@@ -2868,13 +2877,13 @@ ro:255 Vizualizare
 en:256 Elements
 fr:256 El&eacute;ments
 de:256 Elemente
+pt:256 Elementos
 ca:256 Elements
 es:256 Elementos
 it:256 Elementi
 sk:256 Objekty
 ro:256 Elemente
 # cf 170
-# TRANSLATE pt pt-br check adapted message is ok
 en:257 %d pages (%dx%d)
 fr:257 %d pages (%dx%d)
 de:257 %d Seiten (%dx%d)
@@ -2887,22 +2896,20 @@ ro:257 %d pagini (%dx%d)
 # used in the scale drop down selector in the print dialog
 # the implicit meaning is "choose a suitable scale to fit the
 # plot on a single page", but we need something shorter
-# TRANSLATE pt check adapted translation
 en:258 One page
 fr:258 Une page
 de:258 Eine Seite
-pt:258 Uma P&aacute;gina
-ca:258 Una P&agrave;gina
-es:258 Una P&aacute;gina
-it:258 Una Pagina
-sk:258 Jednu Str&aacute;nku
-ro:258 O Pagina
+pt:258 Uma p&aacute;gina
+ca:258 Una p&agrave;gina
+es:258 Una p&aacute;gina
+it:258 Una pagina
+sk:258 Jednu str&aacute;nku
+ro:258 O pagina
 # cf 159
-# TRANSLATE pt pt-br check adapted message is ok
 en:259 Bearing
 fr:259 Azimut
 de:259 Richtung
-pt:259 Dire&ccedil;&atilde;o
+pt:259 Azimute
 ca:259 Azimut
 es:259 Azimut
 it:259 Azimut
@@ -2946,6 +2953,7 @@ ro:262 Portiuni subterane ale topografiei
 en:263 Tilt angle
 fr:263 Angle de basculement
 de:263 Neigung
+pt:263 Grau de inclina&ccedil;&atilde;o
 ca:263 Angle d'inclinaci&oacute;
 es:263 Angulo de inclinaci&oacute;n
 it:263 Angolo di inclinazione
@@ -2955,6 +2963,7 @@ ro:263 Unghi de inclinatie
 en:264 Page Borders
 fr:264 Bordures de page
 de:264 Seitenrahmen
+pt:264 Margens da P&aacute;gina
 ca:264 Marcs de la p&agrave;gina
 es:264 Marcos de la p&aacute;gina
 it:264 Bordi pagina
@@ -2965,6 +2974,7 @@ ro:264 Limite pagina
 en:265 Info Box
 fr:265 Panneau d'information
 de:265 Legende
+pt:265 Caixa de Informa&ccedil;&atilde;o
 ca:265 Requadre d'informaci&oacute;
 es:265 Cajet&iacute;n de informaci&oacute;n
 it:265 Riquadro informazioni
@@ -2975,6 +2985,7 @@ ro:265 Caseta de informatii
 en:266 Blank Pages
 fr:266 Pages blanches
 de:266 Leerseiten
+pt:266 P&aacute;ginas em branco
 ca:266 P&agrave;gines en blanc
 es:266 P&aacute;ginas en blanco
 it:266 Pagine bianche
@@ -3093,10 +3104,12 @@ sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 #ro: to find a better way to express that
 ro:281 @Anulati linia de masura##Escape
 # XXX 282 283 284 285 286 287 288
-# TRANSLATE fr pt ca es it ro
+# TRANSLATE fr ca es it ro
 en:289 Colour by E@rror
 en-us:289 Color by E@rror
-fr,pt,ca,es,it,ro:289 Colour b@y Error
+fr:289 Cou@leur par Erreur
+pt:289 Colorir de acordo com E@rros
+ca,es,it,ro:289 Colour b@y Error
 sk:289 Colour @by Error
 #
 ## The accelerators must be different within this group
@@ -3129,6 +3142,7 @@ en:292 Colour by @Depth
 en-us:292 Color by @Depth
 fr:292 Couleur par @profondeur
 de:292 Farbe je nach @Tiefe
+pt:292 Colorir de acordo com @Profundidade
 ca:292 Color per @Profunditat
 es:292 Colorear por @Profundidad
 it:292 Colori secondo @profondit&aacute;
@@ -3140,6 +3154,7 @@ en:293 Colour by D@ate
 en-us:293 Color by D@ate
 fr:293 Couleur par @date
 de:293 Farbe je nach @Datum
+pt:293 Colorir de acordo com @Data
 ca:293 Color per @Data
 es:293 Colorear por @Fecha
 it:293 Coloure per @Data
@@ -3191,7 +3206,7 @@ ro:297 @Grid##Ctrl+G
 #
 en:298 Smoot@hed Survey Legs
 en-us:298 Smoot@hed Survey Shots
-fr:298 @Lissage des segments topographiques
+fr:298 Lissage des segments topographi@ques
 de-de,de-ch:298 Gegl&auml;ttete @Messz&uuml;ge
 de:298          Gegl&auml;ttete @Me&szlig;z&uuml;ge
 pt:298 Visadas S@uavizadas
@@ -3240,7 +3255,7 @@ ca:302 %s: l'opci&oacute; `%c%s' no accepta arguments&#10;
 es:302 %s: la opci&oacute;n `%c%s' no permite argumento&#10;
 it:302 %s: l'opzione `%c%s' non permette un argomento&#10;
 sk:302 %s: mo&zcaron;nos&tcaron; `%c%s' neumo&zcaron;&ncaron;uje argument&#10;
-ro:302 %s: op&tcedil;iunea `%c%s' nu permite un argument&#10;"
+ro:302 %s: op&tcedil;iunea `%c%s' nu permite un argument&#10;
 #
 en:303 %s: option `--%s' doesn't allow an argument&#10;
 fr:303 %s: l'option `--%s' n'a pas d'argument&#10;
@@ -3251,7 +3266,7 @@ ca:303 %s: l'opci&oacute; `--%s' no accepta arguments&#10;
 es:303 %s: la opci&oacute;n `--%s' no permite argumento&#10;
 it:303 %s: l'opzione `--%s' non permette un argomento&#10;
 sk:303 %s: mo&zcaron;nos&tcaron; `--%s' neumo&zcaron;&ncaron;uje argument&#10;
-ro:303 %s: op&tcedil;iunea `--%s' nu permite un argument&#10;"
+ro:303 %s: op&tcedil;iunea `--%s' nu permite un argument&#10;
 #
 en:304 %s: option `-W %s' doesn't allow an argument&#10;
 fr:304 %s: l'option `-W %s' n'a pas d'argument&#10;
@@ -3262,7 +3277,7 @@ ca:304 %s: l'opci&oacute; `-W %s' no accepta arguments&#10;
 es:304 %s: la opci&oacute;n `-W %s' no permite argumento&#10;
 it:304 %s: l'opzione `-W %s' non permette un argomento&#10;
 sk:304 %s: mo&zcaron;nos&tcaron; `-W %s' neumo&zcaron;&ncaron;uje argument&#10;
-ro:304 %s: op&tcedil;iunea `-W %s' nu permite un argument&#10;"
+ro:304 %s: op&tcedil;iunea `-W %s' nu permite un argument&#10;
 #
 en:305 %s: option `%s' requires an argument&#10;
 fr:305 %s: l'option `%s' requiert un argument&#10;
@@ -3330,6 +3345,7 @@ ro:310 %s: op&tcedil;iune invalid&abreve; -- %c&#10;
 en:311 @New Presentation
 fr:311 @Nouvelle Pr&eacute;sentation
 de:311 @Neue Pr&auml;sentation
+pt:311 @Nova Apresenta&ccedil;&atilde;o
 ca:311 @Nova Presentaci&oacute;
 es:311 @Nueva Presentaci&oacute;n
 it:311 @Nuova PResentazione
@@ -3349,6 +3365,7 @@ ro:312 @Deschidere prezentare...
 en:313 @Save Presentation
 fr:313 @Sauver la Pr&eacute;sentation
 de:313 Pr&auml;sentation @speichern
+pt:313 Guardar Apre@senta&ccedil;&atilde;o
 ca:313 @Desa la Presentaci&oacute;
 es:313 @Guardar la Presentaci&oacute;
 it:313 @Salva Presentazione
@@ -3358,6 +3375,7 @@ ro:313 @Salvare Prezentare
 en:314 Sa@ve Presentation As...
 fr:314 Sau@ver la Pr&eacute;sentation sous...
 de:314 Pr&auml;sentation speichern @als...
+pt:314 @Guardar Apresenta&ccedil;&atilde;o como...
 ca:314 Desa la Presentaci&oacute; @Com...
 es:314 Guardar la Presentaci&oacute; @Como...
 it:314 Salva Presentazione @come...
@@ -3367,6 +3385,7 @@ ro:314 Salvare Prezentare @ca...
 en:315 @Mark
 fr:315 @Marquer
 de:315 @Markieren
+pt:315 @Marcar
 ca:315 @Marca
 es:315 @Marca
 it:315 Se@gna
@@ -3376,6 +3395,7 @@ ro:315 @Marcheaza
 en:316 Pla@y
 fr:316 @Lecture
 de:316 Abspie@len
+pt:316 Reprodu@zir
 ca:316 @Reprodueix
 es:316 @Reproduce
 it:316 @Visualizza
@@ -3386,6 +3406,7 @@ en:317 @Export as Movie...
 fr:317 @Exporter comme Animation...
 # de: "als Animation" could also be used here.
 de:317 @Exportieren als Film...
+pt:317 @Exportar como Filme...
 ca:317 @Exporta com Animaci&oacute;...
 es:317 @Exporta como Animaci&oacute;n...
 it:317 @Esporta come Animazione...
@@ -3395,6 +3416,7 @@ ro:317 @Exporta ca Animatie...
 en:318 @Bounding Box##Ctrl+B
 fr:318 @Bordures du cadre##Ctrl+B
 de:318 @Begrenzendes Rechteck##Ctrl+B
+pt:318 Caixa @Barreira##Ctrl+B
 ca:318 @L&iacute;mits del Quadre##Ctrl+B
 es:318 @Bordes del Cuadro##Ctrl+B
 it:318 B@ordo riquadro##Ctrl+B
@@ -3426,6 +3448,7 @@ ro:320 Prezentare Aven
 en:321 Save Screenshot
 fr:321 Sauver la copie d'&eacute;cran
 de:321 Bildschirmabzug speichern
+pt:321 Guardar a Captura de Ecr&atilde;
 ca:321 Desa la captura de pantalla
 es:321 Guardar la captura de pantalla
 it:321 Salva Schermo catturato
@@ -3445,8 +3468,9 @@ ro:322 Deschidere prezentare
 en:323 Error in format of presentation file `%s'
 fr:323 Erreur de formatage du fichier de pr&eacute;sentation `%s'
 de:323 Formatfehler in der Pr&auml;sentationsdatei `%s'
+pt:323 Erro no formato da apresenta&ccedil;&atilde;o `%s'
 ca:323 Error en el format del fitxer de presentaci&oacute; `%s'
-es:323 Error en el formato del archivo de presentaci&oacute;n `%s' 
+es:323 Error en el formato del archivo de presentaci&oacute;n `%s'
 it:323 Errore nel formato del file di presentazione `%s'
 sk:323 Chyba vo form&aacute;te prezenta&ccaron;n&eacute;ho s&uacute;boru `%s'
 ro:323 Eroare in formatul fisierului prezentare `%s'
@@ -3455,6 +3479,7 @@ ro:323 Eroare in formatul fisierului prezentare `%s'
 en:324 Compass PLT files
 fr:324 Fichier Compass PLT
 de:324 Compass PLT Datei
+pt:324 Ficheiro Compass PLT
 ca:324 Fitxers Compass PLT
 es:324 Archivos Compass PLT
 it:324 File Compass PLT
@@ -3464,15 +3489,17 @@ ro:324 Fisier Compass PLT
 en:325 CMAP XYZ files
 fr:325 Fichier CMAP XYZ
 de:325 CAMP XYZ Datei
+pt:325 Ficheiros CMAP XYZ
 ca:325 Fitxers CMAP XYZ
 es:325 Archivos CMAP XYZ
 it:325 File CMAP XYZ
-sk:325 S&uacute;bory CMAP XYZ  
+sk:325 S&uacute;bory CMAP XYZ
 ro:325 Fisier CMAP XYZ
 # title of message box
 en:326 Modified Presentation
 fr:326 Pr&eacute;sentation modifi&eacute;e
 de:326 Modifizierte Pr&auml;sentation
+pt:326 Apresenta&ccedil;&atilde;o Modificada
 ca:326 Presentaci&oacute; Modificada
 es:326 Presentaci&oacute;n Modificada
 it:326 Presentazione Modificata
@@ -3482,6 +3509,7 @@ ro:326 Prezentare Modificata
 en:327 The current presentation has been modified.  Abandon unsaved changes?
 fr:327 La pr&eacute;sentation en cours a &eacute;t&eacute; modifi&eacute;e. Perte des changements non sauv&eacute;s?
 de:327 Die aktuelle Pr&auml;sentation wurde ver&auml;ndert. Abbrechen, ohne die &Auml;nderungen zu speichern?
+pt:327 A apresenta&ccedil;&atilde;o actual foi modificada. Abandonar as altera&ccedil;&otilde;es n&atilde;o guardadas ?
 ca:327 La presentaci&oacute; actual ha estat modificada. Abandonar els canvis no desats?
 es:327 La presentaci&oacute;n actual ha sido modificada. Abandonar los cambios no guardados?
 it:327 La presentazione corrente &eacute; stata modificata. Abbandonare i cambiamenti non salvati?
@@ -3615,6 +3643,7 @@ it:339 Da %s
 sk:339 Od %s
 ro:339 De la %s
 #
+# "H" is short for "Horizontal", "V" for "Vertical"
 en:340 "H %.2f%s, V %.2f%s"
 fr:340 "H %.2f%s, V %.2f%s"
 de:340 "H %.2f%s, V %.2f%s"
@@ -3625,6 +3654,7 @@ it:340 "O %.2f%s, V %.2f%s"
 sk:340 "V %.2f%s, &Scaron; %.2f%s"
 ro:340 "H %.2f%s, V %.2f%s"
 #
+# "Dist" is short for "Distance", "Brg" for "Bearing" (as in Compass bearing)
 en:341 "%s: %s, Dist %.2f%s, Brg %03d%s"
 fr:341 "%s: %s, Dist %.2f%s, Azim %03d%s"
 de:341 "%s: %s, Dist %.2f%s, Richt. %03d%s"
@@ -3685,6 +3715,7 @@ ro:345 gr.cent
 en:346 Passage @Tubes##Ctrl+T
 fr:346 Galeries @Tubulaires##Ctrl+T
 de:346 Passage Tubes (@y)##Ctrl+T
+pt:346 @Tubos de Passagem##Ctrl+T
 ca:346 Galeries Tu@bulars##Ctrl+T
 es:346 @Galerias Tubulares##Ctrl+T
 it:346 Passaggi come @Tubi##Ctrl+T
@@ -3694,6 +3725,7 @@ ro:346 Pasaje @Tub##Ctrl+T
 en:347 @Preferences...
 fr:347 @Pr&eacute;f&eacute;rences...
 de:347 @Einstellungen...
+pt:347 @Prefer&ecirc;ncias...
 ca:347 @Prefer&egrave;ncies...
 es:347 @Preferencias...
 it:347 @Preferenze...
@@ -3703,6 +3735,7 @@ ro:347 @Preferinte...
 en:348 Draw passage walls
 fr:348 D&eacute;ssiner les parois
 de:348 W&auml;nde einzeichnen
+pt:348 Desenhar Paredes da Passagem
 ca:348 Dibuixa les parets
 es:348 Dibuja las paredes
 it:348 Disegna le pareti
@@ -3712,11 +3745,12 @@ ro:348 Deseneaza peretii
 en:349 Estimate LRUD readings based on heuristics
 fr:349 Estimation heuristique des dimensions de galerie
 de:349 LROU-Werte heuristisch sch&auml;tzen
+pt:349 Estimar leituras LRUD baseadas na heur&iacute;stica
 ca:349 Estimaci&oacute; heur&iacute;stica de les dades LRUD
 es:349 Estimaci&oacute;n heur&iacute;stica de los datos LRUD
 it:349 Stima lel letture DSSS con ragionamento euristico
 sk:349 Odhadnut&eacute; rozmery rezu na z&aacute;klade heuristiky
-ro:349 Estimeaza masuratorile SDSJ pe baze euristice 
+ro:349 Estimeaza masuratorile SDSJ pe baze euristice
 #
 en:350 Mark survey stations with crosses
 fr:350 Marquer les stations par une croix
@@ -3768,20 +3802,19 @@ ro:354 Marcheaza punctele de statie cu numele lor
 en:355 Allow names to overlap on the display (faster)
 fr:355 Permettre aux noms de se recouvrir (affichage plus rapide)
 de:355 &Uuml;berlappende Beschriftungen zulassen (schneller)
+pt:355 Permitir que os nomes se sobreponham na apresenta&ccedil;&atilde;o (mais r&aacute;pido)
 ca:355 Permet que els noms es sobreposin (m&eacute;s r&agrave;pid)
 es:355 Permitir que los nombres se sobrepongan (m&aacute;s r&aacute;pido)
-it:355 Permetti che i nomi si sovrappongano (pi&acute; veloce)
+it:355 Permetti che i nomi si sovrappongano (pi&uacute; veloce)
 sk:355 Povoli&tcaron; prekr&yacute;vanie n&aacute;zvov na obrazovke (r&yacute;chlej&scaron;ie)
 ro:355 Permite suprapunerea numelor (mai rapid)
 #
-#
-# TRANSLATE pt
 en:356 Full Screen @Mode##F11
 fr:356 @Mode Plein Ecran##F11
 de:356 @Vollbild-Modus##F11
+pt:356 @Modo Ecr&atilde; Completo##F11
 ca:356 @Mode Pantalla Sencera##F11
 es:356 @Modo Pantalla Completa##F11
-pt:356 Full S@creen Mode##F11
 it:356 @Modo schermo pieno##F11
 sk:356 @Celoobrazovkov&yacute; re&zcaron;im##F11
 ro:356 Afisare pe tot ecranu@l##F11
@@ -3826,6 +3859,8 @@ ro:360 Deseneaza masuratorile de suprafata cu linie intrerupta
 en:361 Draw a grid
 fr:361 Afficher une grille
 de:361 Gitter einzeichnen
+pt:361 Desenhar uma grelha
+pt-br:361 Desenhar um grade
 ca:361 Dibuixa una quadr&iacute;cula
 es:361 Dibuja una cuadr&iacute;cula
 it:361 Disegna una griglia
@@ -3835,6 +3870,7 @@ ro:361 Afiseaza un grid
 en:362 metric units
 fr:362 m&egrave;tres
 de:362 Meter
+pt,pt-br:362 unidades m&eacute;tricas
 ca:362 unitats en sistema m&egrave;tric
 es:362 unidades en sistema m&eacute;trico
 it:362 metri
@@ -3844,6 +3880,7 @@ ro:362 Metri
 en:363 imperial units
 fr:363 mesures anglaises
 de:363 englische Einheiten
+pt,pt-br:363 unidades imperiais
 ca:363 unitats en sistema imperial
 es:363 unidades en sistema imperial
 it:363 unit&aacute; inglesi
@@ -3853,6 +3890,7 @@ ro:363 unitati masura englezesti
 en:364 degrees (&deg;)
 fr:364 degr&eacute;s (&deg;)
 de:364 Altgrad (&deg;)
+pt,pt-br:364 graus (&deg;)
 ca:364 graus (&deg;)
 es:364 grados (&deg;)
 it:364 gradi sessagesimali (&deg;)
@@ -3862,6 +3900,7 @@ ro:364 grade sexagesimale (&deg;)
 en:365 grads
 fr:365 grades
 de:365 Neugrad (gon)
+pt:365 &acirc;ngulos
 ca:365 graus centesimals
 es:365 grados centesimales
 it:365 gradi decimali
@@ -3871,23 +3910,26 @@ ro:365 grade zecimale
 en:366 Display measurements in
 fr:366 Afficher les distances en
 de:366 L&auml;ngen anzeigen in
+pt:366 Apresentar medidas em
 ca:366 Mostra les dist&agrave;ncies en
 es:366 Muestra las distancias en
 it:366 Mostra le distanze in
-sk:366 Zobrazi&tcaron; d&lacute;&zcaron;ky v 
+sk:366 Zobrazi&tcaron; d&lacute;&zcaron;ky v
 ro:366 Afisare distante in
 #
 en:367 Display angles in
 fr:367 Afficher les angles en
 de:367 Winkel anzeigen in
+pt:367 Apresentar &acirc;ngulos em
 ca:367 Mostra els angles en
 es:367 Muestra los &aacute;ngulos en
 it:367 Mostra gli angoli in
-sk:367 Zobrazi&tcaron; uhly v 
+sk:367 Zobrazi&tcaron; uhly v
 ro:367 Afisare unghiuri in
 # reverses the sense of the mouse controls
 en:368 Reverse the sense of the controls
 fr:368 Inverser le sens des contr&ocirc;les
+pt:368 Inverter a direc&ccedil;&atilde;o dos controlos do rato
 ca:368 Inverteix el sentit dels controls
 es:368 Invierte el sentido de los controles
 it:368 Inverte il senso dei controlli
@@ -3898,6 +3940,7 @@ en:369 Display scale bar
 fr:369 Afficher l'&eacute;chelle
 de:369 Ma&szlig;stab anzeigen
 de-ch:369 Massstab anzeigen
+pt:369 Apresentar Barra de escala
 ca:369 Mostra l'escala gr&agrave;fica
 es:369 Muestra la escala gr&aacute;fica
 it:369 Mostra la scala
@@ -3907,6 +3950,7 @@ ro:369 Afiseaza scara
 en:370 Display depth bar
 fr:370 Afficher la barre de profondeur
 de:370 Tiefenskala anzeigen
+pt:370 Apresentar Barra de profundidade
 ca:370 Mostra l'escala de profunditat
 es:370 Muestra la escala de profundidad
 it:370 Mostra barra delle profondit&aacute;
@@ -3917,6 +3961,7 @@ en:371 Display compass
 fr:371 Afficher la boussole
 de-de,de-ch:371 Kompass anzeigen
 de:         371 Kompa&szlig; anzeigen
+pt:371 Apresentar b&uacute;ssola
 ca:371 Mostra la bru&iacute;xola
 es:371 Muestra la br&uacute;jula
 it:371 Mostra bussola
@@ -3926,6 +3971,7 @@ ro:371 Afiseaza busola
 en:372 Display clinometer
 fr:372 Afficher le clinom&egrave;tre
 de:372 Neigungsmesser anzeigen
+pt:372 Apresentar inclin&oacute;metro
 ca:372 Mostra el clin&ograve;metre
 es:372 Muestra el clin&oacute;metro
 it:372 Mostra clinometro
@@ -3935,13 +3981,15 @@ ro:372 Afiseaza clinometrul
 en:373 Display side panel
 fr:373 Afficher le panneau lat&eacute;ral
 de:373 Seitliches Kontrollfeld anzeigen
+pt:373 Apresentar painel lateral
 ca:373 Mostra el panell lateral
 es:373 Muestra el panel lateral
 it:373 Mostra pannello laterale
 sk:373 Zobrazi&tcaron; bo&ccaron;n&yacute; panel
 ro:373 Afiseaza casuta laterala
 # cf 340, 341
-# TRANSLATE fr de pt it sk ro Check translation adapted from 340,341
+# TRANSLATE de sk ro Check translation adapted from 340,341
+# "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
 en:374 "%s: H %.2f%s, Brg %03d%s"
 fr:374 "%s: H %.2f%s, Azim %03d%s"
 de:374 "%s: H %.2f%s, Richt. %03d%s"
@@ -3953,7 +4001,8 @@ sk:374 "%s: V %.2f%s, Azim %03d%s"
 ro:374 "%s: H %.2f%s, Azim %03d%s"
 #
 # cf 340
-# TRANSLATE fr de pt it sk ro Check translation adapted from 340
+# TRANSLATE de it sk ro Check translation adapted from 340
+# "V" is short for "Vertical"
 en:375 "%s: V %.2f%s"
 fr:375 "%s: V %.2f%s"
 de:375 "%s: V %.2f%s"
@@ -3979,6 +4028,7 @@ ro:376 Masuratori
 en:377 Presentation
 fr:377 Pr&eacute;sentation
 de:377 Pr&auml;sentation
+pt:377 Apresenta&ccedil;&atilde;o
 ca:377 Presentaci&oacute;
 es:377 Presentaci&oacute;n
 it:377 Presentazione
@@ -4008,16 +4058,17 @@ ro:379 Nord
 en:380 @Print...##Ctrl+P
 fr:380 @Imprimer...##Ctrl+P
 de:380 @Drucken...##Ctrl+P
+pt,pt-br:380 @Imprimir...##Ctrl+P
 ca:380 @Imprimir...##Ctrl+P
 es:380 @Imprimir...##Ctrl+P
 it:380 Stam@pa...##Ctrl+P
 sk:380 @Tla&ccaron;i&tcaron;...##Ctrl+P
 ro:380 @Imprimare...##Ctrl+P
-# TRANSLATE pt
+#
 en:381 P@age Setup...
 fr:381 Configurer la @page...
 de:381 @Seite einrichten...
-pt:381 Pa@ge Setup...
+pt:381 Configura&ccedil;&atilde;o de P&aacute;gin@a...
 ca:381 Configuraci&oacute; de la @p&agrave;gina...
 es:381 Configuraci&oacute;n de la @p&aacute;gina...
 it:381 @Imposta pagina...
@@ -4027,6 +4078,7 @@ ro:381 Initializare @pagina...
 en:382 @Export as...
 fr:382 @Exporter sous...
 de:382 @Exportieren als...
+pt:382 @Exportar como...
 ca:382 @Exporta com...
 es:382 @Exporta como...
 it:382 E@sporta come...
@@ -4034,11 +4086,15 @@ sk:382 @Export ako...
 ro:382 @Exporta ca...
 # Title of the export dialog
 en:383 Export
+fr:383 Exporter
+pt,pt-br:383 Exportar
+it:383 Esporta
 # XXX 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
 fr:390 Syst&egrave;me d'information:
 de:390 Systeminformation:
+pt:390 Informa&ccedil;&atilde;o sobre o Sistema:
 ca:390 Informaci&oacute; del Sistema:
 es:390 Informaci&oacute;n del Sistema:
 it:390 Informazioni sul Sistema:
@@ -4049,6 +4105,7 @@ ro:390 Informatii despre Sistem:
 en:398 Print Preview
 fr:398 Aper&ccedil;u avant impression
 de:398 Druckvorschau
+pt:398 Pr&eacute;-visualiza&ccedil;&atilde;o de Impress&atilde;o
 pt-br:398 Visualizar impress&atilde;o
 ca:398 Vista pr&egrave;via de la impressi&oacute;
 es:398 Vista previa de la impressi&oacute;n
@@ -4059,6 +4116,7 @@ ro:398 Vizualizare inaintea imprimarii
 en:399 Print
 fr:399 Imprimer
 de:399 Drucken
+pt,pt-br:399 Imprimir
 ca:399 Imprimir
 es:399 Imprimir
 it:399 Stampa
@@ -4068,6 +4126,7 @@ ro:399 Imprimare
 en:400 &amp;Print
 fr:400 &amp;Imprimer
 de:400 &amp;Drucken
+pt,pt-br:400 &amp;Imprimir
 ca:400 &amp;Imprimir
 es:400 &amp;Imprimir
 it:400 &amp;Stampa
@@ -4077,6 +4136,7 @@ ro:400 &amp;Imprimare
 en:401 Pre&amp;view
 fr:401 &amp;Pr&eacute;visualiser
 de:401 &amp;Vorschau
+pt:401 Pr&eacute;-&amp;visualiza&ccedil;&atilde;o
 ca:401 &amp;Previsualitza
 es:401 &amp;Previsualiza
 it:401 Ante&amp;prima di stampa
@@ -4087,6 +4147,7 @@ ro:401 &amp;Vizualizare pre-imprimare
 en:402 &amp;Cancel
 fr:402 &amp;Annuler
 de:402 &amp;Abbrechen
+pt:402 &amp;Cancelar
 ca:402 &amp;Anul&middot;la
 es:402 &amp;Anula
 it:402 &amp;Annulla
@@ -4108,6 +4169,7 @@ ro:403 &amp;Portiuni de suprafata ale topografiei
 en:404 Invalid regular expression: %s
 fr:404 Expression r&eacute;guli&egrave;re invalide: %s
 de:404 Ung&uuml;ltiger regul&auml;rer Ausdruck: %s
+pt:404 Express&atilde;o regular inv&aacute;lida: %s
 ca:404 Expressi&oacute; incorrecta: %s
 es:404 Expresi&oacute;n incorrecta: %s
 it:404 Espressione regolare non valida: %s
@@ -4116,11 +4178,12 @@ ro:404 Expresie regulara incorecta: %s
 # %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 # things in future).
 # TRANSLATE ca es sk (ca/es check addition of "de %s") (sk translate "of %s")
-en:405 This version of %s requires OpenGL to work, but it isn't available
-fr:405 Cette version de %s a besoin d'OpenGL pour fonctionner, mais il n'est pas disponible
-ca:405 Aquesta versi&oacute; de %s requereix OpenGL per funcionar, i no est&agrave; disponible
-es:405 Esta versi&oacute;n de %s requiere OpenGL para funcionar, y no est&aacute; disponible
-it:405 Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili
+en:405 This version of %s requires OpenGL to work, but it isn't available.
+fr:405 Cette version de %s a besoin d'OpenGL pour fonctionner, mais il n'est pas disponible.
+pt:405 Esta vers&atilde;o de %s necessita que o OpenGL funcione, mas n&atilde;o est&aacute;.
+ca:405 Aquesta versi&oacute; de %s requereix OpenGL per funcionar, i no est&agrave; disponible.
+es:405 Esta versi&oacute;n de %s requiere OpenGL para funcionar, y no est&aacute; disponible.
+it:405 Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili.
 sk:405 T&aacute;to verzia (of %s) vy&zcaron;aduje OpenGL. To v&scaron;ak nie je dostupn&eacute;.
 # for diffpos:
 en:500 Moved by (%3.2f,%3.2f,%3.2f): %s
@@ -4200,7 +4263,7 @@ fr:514 Extension vers la droite en partant de la station %s
 ca:514 Extenent cap a la dreta des de l'estaci&oacute; %s
 es:514 Extendiendo hacia la derecha desde la estaci&oacute;n %s
 it:514 Sviluppo verso destra a partire dalla stazione %s
-sk:514 Rozvinut&yacute; rez vpravo od bodu %s 
+sk:514 Rozvinut&yacute; rez vpravo od bodu %s
 ro:514 Extindere spre dreapta incepind cu punctul de statie %s
 #
 # for extend:
@@ -4218,7 +4281,7 @@ fr:516 Extension vers la droite en partant de la vis&eacute;e %s -> %s
 ca:516 Extenent cap a la dreta des de la tirada %s -> %s
 es:516 Extendiendo hacia la derecha desde la tirada %s -> %s
 it:516 Sviluppo verso destra a partire dal tiro %s -> %s
-sk:516 Rozvinut&yacute; rez vpravo od z&aacute;mery %s -> %s 
+sk:516 Rozvinut&yacute; rez vpravo od z&aacute;mery %s -> %s
 ro:516 Extindere spre drepta incepind cu masuratoarea %s -> %s
 #
 # for extend:
@@ -4228,7 +4291,7 @@ ca:517 Trencant el bucle a l'estaci&oacute; %s
 es:517 Rompiendo el bucle en la estaci&oacute;n %s
 it:517 Topografia interrotta alla stazione %s
 sk:517 Preru&scaron;en&yacute; okruh na bode %s
-ro:517 Topografia intrerupta incepind cu punctul de statie %s 
+ro:517 Topografia intrerupta incepind cu punctul de statie %s
 #
 # for extend:
 en:518 Breaking survey loop at leg %s -> %s
@@ -4260,15 +4323,17 @@ ro:520 Schimbare directie desen incepind cu masuratoarea %s -> %s
 # for extend:
 en:521 Applying specfile: `%s'
 fr:521 Application du fichier de sp&eacute;cification: `%s'
+pt:521 A aplicar ficheiro de especifica&ccedil;&otilde;es (specfile): `%s'
 ca:521 Aplicant fitxer d'especificacions: `%s'
 es:521 Aplicando fichero de especificaciones: `%s'
 it:521 Applicazione del file di specifiche: `%s'
-sk:521 Pou&zcaron;i&tcaron; nastavenie zo s&uacute;boru: `%s' 
+sk:521 Pou&zcaron;i&tcaron; nastavenie zo s&uacute;boru: `%s'
 ro:521 Aplicare fisier de specificatii: `%s'
 # for extend:
 # Used to tell the user that a file is being written - %s is the filename
 en:522 Writing %s...
 fr:522 &Eacute;criture de %s...
+pt:522 Escrevendo %s...
 ca:522 Escrivint %s...
 es:522 Escribiendo %s...
 it:522 Scrittura %s...
