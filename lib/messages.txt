@@ -1004,6 +1004,7 @@ en: 80 Date is in the future!
 fr: 80 La date est dans le futur!
 de: 80 Datum liegt in der Zukunft!
 pt: 80 A data &eacute; no futuro!
+pt-br: 80 Data est&aacute; no futuro!
 ca: 80 La data &eacute;s en el futur!
 es: 80 La fecha es en el futuro!
 it: 80 La data &eacute; nel futuro!
@@ -1062,7 +1063,7 @@ ro: 85 Parametrul `%s' lipseste din fisierul de configurare a imprimantei
 en: 86 Invalid month
 fr: 86 Mois invalide
 de: 86 Ung&uuml;ltiger Monat
-pt: 86 M&ecirc;s inv&aacute;lido
+pt,pt-br: 86 M&ecirc;s inv&aacute;lido
 ca: 86 Mes inv&agrave;lid
 es: 86 Mes inv&aacute;lido
 it: 86 Mese non valido
@@ -2954,6 +2955,7 @@ en:263 Tilt angle
 fr:263 Angle de basculement
 de:263 Neigung
 pt:263 Grau de inclina&ccedil;&atilde;o
+pt-br:263 &Acirc;ngulo de inclina&ccedil;&atilde;o
 ca:263 Angle d'inclinaci&oacute;
 es:263 Angulo de inclinaci&oacute;n
 it:263 Angolo di inclinazione
@@ -2964,6 +2966,7 @@ en:264 Page Borders
 fr:264 Bordures de page
 de:264 Seitenrahmen
 pt:264 Margens da P&aacute;gina
+pt-br:264 Bordas da P&aacute;gina
 ca:264 Marcs de la p&agrave;gina
 es:264 Marcos de la p&aacute;gina
 it:264 Bordi pagina
@@ -2985,7 +2988,7 @@ ro:265 Caseta de informatii
 en:266 Blank Pages
 fr:266 Pages blanches
 de:266 Leerseiten
-pt:266 P&aacute;ginas em branco
+pt,pt-br:266 P&aacute;ginas em branco
 ca:266 P&agrave;gines en blanc
 es:266 P&aacute;ginas en blanco
 it:266 Pagine bianche
@@ -3499,7 +3502,7 @@ ro:325 Fisier CMAP XYZ
 en:326 Modified Presentation
 fr:326 Pr&eacute;sentation modifi&eacute;e
 de:326 Modifizierte Pr&auml;sentation
-pt:326 Apresenta&ccedil;&atilde;o Modificada
+pt,pt-br:326 Apresenta&ccedil;&atilde;o Modificada
 ca:326 Presentaci&oacute; Modificada
 es:326 Presentaci&oacute;n Modificada
 it:326 Presentazione Modificata
