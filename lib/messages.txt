@@ -2591,6 +2591,7 @@ ro:229 Model digital al terenului
 en:230 &amp;Export...
 fr:230 &amp;Exporter...
 pt,pt-br:230 &amp;Exportar...
+es:230 &amp;Exportar...
 it:230 &amp;Esporta...
 # "Rotation" menu.  The accelerators must be different within this group.
 # 231 Different in 1.0
@@ -3108,12 +3109,13 @@ sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
 #ro: to find a better way to express that
 ro:281 @Anulati linia de masura##Escape
 # XXX 282 283 284 285 286 287 288
-# TRANSLATE fr ca es ro
+# TRANSLATE fr ca ro
 en:289 Colour by E@rror
 en-us:289 Color by E@rror
 fr:289 Cou@leur par Erreur
 pt:289 Colorir de acordo com E@rros
-ca,es,ro:289 Colour b@y Error
+es:289 Color por E@rror
+ca,ro:289 Colour b@y Error
 it:289 Colore di @Error
 sk:289 Colour @by Error
 #
@@ -4093,6 +4095,7 @@ ro:382 @Exporta ca...
 en:383 Export
 fr:383 Exporter
 pt,pt-br:383 Exportar
+es:383 Exportar
 it:383 Esporta
 # XXX 384 385 386 387 388 389
 # for about box:
@@ -4182,12 +4185,12 @@ sk:404 Nespr&aacute;vny v&yacute;raz: %s
 ro:404 Expresie regulara incorecta: %s
 # %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 # things in future).
-# TRANSLATE ca es sk (ca/es check addition of "de %s") (sk translate "of %s")
+# TRANSLATE ca sk (ca check addition of "de %s") (sk translate "of %s")
 en:405 This version of %s requires OpenGL to work, but it isn't available.
 fr:405 Cette version de %s a besoin d'OpenGL pour fonctionner, mais il n'est pas disponible.
 pt:405 Esta vers&atilde;o de %s necessita que o OpenGL funcione, mas n&atilde;o est&aacute;.
 ca:405 Aquesta versi&oacute; de %s requereix OpenGL per funcionar, i no est&agrave; disponible.
-es:405 Esta versi&oacute;n de %s requiere OpenGL para funcionar, y no est&aacute; disponible.
+es:405 Se requiere OpenGL para trabajar la versión de %s, pero no está disponible.
 it:405 Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili.
 sk:405 T&aacute;to verzia (of %s) vy&zcaron;aduje OpenGL. To v&scaron;ak nie je dostupn&eacute;.
 # for diffpos:
