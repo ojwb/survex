@@ -1259,25 +1259,25 @@ it:103 &Eacute; necessario calibrare la stampante - consultare il manuale per i 
 sk:103 Mus&iacute;te nakalibrova&tcaron; va&scaron;u tla&ccaron;iare&ncaron; - podrobnosti s&uacute; v manu&aacute;li
 ro:103 Este necesara reglarea imprimantei - consultati manualul pentru detalii
 #
-en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
-fr:104 `*data %s %c ...' est obsololete - utiliser plutot `*data %s ...'
-de:104 `*data %s %c ...' ist veraltet - stattdessen `*data %s ...' verwenden
-pt:104 `*data %s %c ...' obsoleto - use `*data %s ...' no lugar
-ca:104 `*data %s %c ...' obsolet - utilitza `*data %s ...' en el seu lloc
-es:104 `*data %s %c ...' obsoleto - usa `*data %s ...' en su lugar
-it:104 `*data %s %c ...' &eacute; una funzionalit&aacute; non pi&uacute; usata - usare `*data %s ...'
-sk:104 `*data %s %c ...' boly zamietnut&eacute; - pou&zcaron;ijte `*data %s ...' namiesto toho
-ro:104 `*data %s %c ...' nu este agreata - folositi `*data %s ...' in loc
+en:104 `*data %s %c &hellip;' is deprecated - use `*data %s &hellip;' instead
+fr:104 `*data %s %c &hellip;' est obsololete - utiliser plutot `*data %s &hellip;'
+de:104 `*data %s %c &hellip;' ist veraltet - stattdessen `*data %s &hellip;' verwenden
+pt:104 `*data %s %c &hellip;' obsoleto - use `*data %s &hellip;' no lugar
+ca:104 `*data %s %c &hellip;' obsolet - utilitza `*data %s &hellip;' en el seu lloc
+es:104 `*data %s %c &hellip;' obsoleto - usa `*data %s &hellip;' en su lugar
+it:104 `*data %s %c &hellip;' &eacute; una funzionalit&aacute; non pi&uacute; usata - usare `*data %s &hellip;'
+sk:104 `*data %s %c &hellip;' boly zamietnut&eacute; - pou&zcaron;ijte `*data %s &hellip;' namiesto toho
+ro:104 `*data %s %c &hellip;' nu este agreata - folositi `*data %s &hellip;' in loc
 #
-en:105 Reading in data - please wait...
-fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
-de:105 Daten werden eingelesen - bitte warten...
-pt:105 Lendo dados - por favor, aguarde...
-ca:105 Llegint dades, espereu si us plau...
-es:105 Leyendo datos, espere por favor...
-it:105 Sto leggendo i dati - attendere per favore...
-sk:105 Na&ccaron;&iacute;tam &uacute;daje - pros&iacute;m po&ccaron;kajte...
-ro:105 Se citesc datele - va rog asteptati...
+en:105 Reading in data - please wait&hellip;
+fr:105 Lecture de donn&eacute;es - attendez S.V.P. &hellip;
+de:105 Daten werden eingelesen - bitte warten&hellip;
+pt:105 Lendo dados - por favor, aguarde&hellip;
+ca:105 Llegint dades, espereu si us plau&hellip;
+es:105 Leyendo datos, espere por favor&hellip;
+it:105 Sto leggendo i dati - attendere per favore&hellip;
+sk:105 Na&ccaron;&iacute;tam &uacute;daje - pros&iacute;m po&ccaron;kajte&hellip;
+ro:105 Se citesc datele - va rog asteptati&hellip;
 # Probably not a .3D file.  caverot autoexec.bat would give this
 en:106 Bad 3d image file `%s'
 fr:106 Mauvais fichier image 3d `%s'
@@ -1909,15 +1909,15 @@ it:164 "Pagine da stampare:&#10;(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-
 sk:164 "Ktor&eacute; str&aacute;nky vytla&ccaron;i&tcaron;?&#10;(RETURN pre v&scaron;etky; 'n' pre jednu str&aacute;nku, 'm-n', 'm-', '-n' pre rozsah)&#10;: "
 ro:164 "Ce pagini imprim?&#10;(RETURN pentru toate; 'n' pentru o pagina, 'm-n', 'm-', '-n' pentru un interval)&#10;: "
 # e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
-en:165 Printing to `%s'...
-fr:165 Impression vers `%s'...
-de:165 Drucken nach `%s'...
-pt:165 Imprimindo em `%s'...
-ca:165 Imprimint a `%s'...
-es:165 Imprimiendo en `%s'...
-it:165 In stampa su `%s'...
-sk:165 Tla&ccaron;&iacute;m na/do `%s'...
-ro:165 Imprim la `%s'...
+en:165 Printing to `%s'&hellip;
+fr:165 Impression vers `%s'&hellip;
+de:165 Drucken nach `%s'&hellip;
+pt:165 Imprimindo em `%s'&hellip;
+ca:165 Imprimint a `%s'&hellip;
+es:165 Imprimiendo en `%s'&hellip;
+it:165 In stampa su `%s'&hellip;
+sk:165 Tla&ccaron;&iacute;m na/do `%s'&hellip;
+ro:165 Imprim la `%s'&hellip;
 #
 en:166 Page %d of %d
 fr:166 Page %d sur %d
@@ -2290,15 +2290,15 @@ ro:200 Factorul *UNITS trebie sa fie diferit de zero
 #
 # In the "File" menu
 ## (see 220 onwards)
-en:201 @Screenshot...
-fr:201 @Copie d'&eacute;cran...
-de:201 Bildschirm@abzug...
-ca:201 @Captura de pantalla...
-es:201 @Captura de pantalla...
-pt:201 @Captura de Ecr&atilde;...
-it:201 @Cattura schermo...
-sk:201 @Sn&iacute;mok obrazovky...
-ro:201 @Captura ecran...
+en:201 @Screenshot&hellip;
+fr:201 @Copie d'&eacute;cran&hellip;
+de:201 Bildschirm@abzug&hellip;
+ca:201 @Captura de pantalla&hellip;
+es:201 @Captura de pantalla&hellip;
+pt:201 @Captura de Ecr&atilde;&hellip;
+it:201 @Cattura schermo&hellip;
+sk:201 @Sn&iacute;mok obrazovky&hellip;
+ro:201 @Captura ecran&hellip;
 #
 en:202 No survey data in 3d file `%s'
 fr:202 Pas de donn&eacute;es topo dans le fichier image 3d `%s'
@@ -2481,15 +2481,15 @@ ro:219 Acest program este liber; &icirc;l pute&tcedil;i redistribui &scedil;i/sa
 #
 # "File" menu.  The accelerators must be different within this group.
 # c.f. 201, 380, 381.
-en:220 @Open...##Ctrl+O
-fr:220 @Ouvrir...##Ctrl+O
-de:220 &Ouml;@ffnen...##Ctrl+O
-pt:220 @Abrir...##Ctrl+O
-ca:220 @Obrir...##Ctrl+O
-es:220 @Abrir...##Ctrl+O
-it:220 @Apri...##Ctrl+O
-sk:220 @Otvori&tcaron;...##Ctrl+O
-ro:220 @Deschide...##Ctrl+O
+en:220 @Open&hellip;##Ctrl+O
+fr:220 @Ouvrir&hellip;##Ctrl+O
+de:220 &Ouml;@ffnen&hellip;##Ctrl+O
+pt:220 @Abrir&hellip;##Ctrl+O
+ca:220 @Obrir&hellip;##Ctrl+O
+es:220 @Abrir&hellip;##Ctrl+O
+it:220 @Apri&hellip;##Ctrl+O
+sk:220 @Otvori&tcaron;&hellip;##Ctrl+O
+ro:220 @Deschide&hellip;##Ctrl+O
 # cf 182
 en:221 @Quit##Ctrl+Q
 fr:221 @Quitter##Ctrl+Q
@@ -2588,12 +2588,12 @@ sk:229 S&uacute;bory s povrchom
 ro:229 Model digital al terenului
 # Used in the "Export" settings dialog
 # 230 Different in 1.0
-en:230 &amp;Export...
-de:230 &amp;Exportieren...
-fr:230 &amp;Exporter...
-pt,pt-br:230 &amp;Exportar...
-es:230 &amp;Exportar...
-it:230 &amp;Esporta...
+en:230 &amp;Export&hellip;
+de:230 &amp;Exportieren&hellip;
+fr:230 &amp;Exporter&hellip;
+pt,pt-br:230 &amp;Exportar&hellip;
+es:230 &amp;Exportar&hellip;
+it:230 &amp;Esporta&hellip;
 # "Rotation" menu.  The accelerators must be different within this group.
 # 231 Different in 1.0
 # Tickable menu item which toggles auto rotation
@@ -3123,16 +3123,16 @@ sk:289 Colour @by Error
 #
 ## The accelerators must be different within this group
 # c.f. 205
-en:290 @About...
-fr:290 @A propos...
-de:290 &Uuml;@ber...
-pt:290 @Acerca de...
-pt-br:290 @Sobre...
-ca:290 @A prop&ograve;sit de...
-es:290 @Acerca de...
-it:290 @Informazioni su...
-sk:290 @Inform&aacute;cie o...
-ro:290 @Despre...
+en:290 @About&hellip;
+fr:290 @A propos&hellip;
+de:290 &Uuml;@ber&hellip;
+pt:290 @Acerca de&hellip;
+pt-br:290 @Sobre&hellip;
+ca:290 @A prop&ograve;sit de&hellip;
+es:290 @Acerca de&hellip;
+it:290 @Informazioni su&hellip;
+sk:290 @Inform&aacute;cie o&hellip;
+ro:290 @Despre&hellip;
 #
 en:291 @Surface Survey Legs##Ctrl+F
 en-us:291 @Surface Shots##Ctrl+F
@@ -3361,15 +3361,15 @@ it:311 @Nuova PResentazione
 sk:311 @Nov&aacute; prezent&aacute;cia
 ro:311 Prezentare @noua
 #
-en:312 @Open Presentation...
-fr:312 @Ouvrir une Pr&eacute;sentation...
-de:312 @Pr&auml;sentation &ouml;ffnen...
-pt:312 @Abrir Apresenta&ccedil;&atilde;o...
-ca:312 @Obrir Presentaci&oacute;...
-es:312 @Abrir Presentaci&oacute;n...
-it:312 @Apri Presentazione...
-sk:312 @Otvori&tcaron; prezent&aacute;ciu...
-ro:312 @Deschidere prezentare...
+en:312 @Open Presentation&hellip;
+fr:312 @Ouvrir une Pr&eacute;sentation&hellip;
+de:312 @Pr&auml;sentation &ouml;ffnen&hellip;
+pt:312 @Abrir Apresenta&ccedil;&atilde;o&hellip;
+ca:312 @Obrir Presentaci&oacute;&hellip;
+es:312 @Abrir Presentaci&oacute;n&hellip;
+it:312 @Apri Presentazione&hellip;
+sk:312 @Otvori&tcaron; prezent&aacute;ciu&hellip;
+ro:312 @Deschidere prezentare&hellip;
 #
 en:313 @Save Presentation
 fr:313 @Sauver la Pr&eacute;sentation
@@ -3381,15 +3381,15 @@ it:313 @Salva Presentazione
 sk:313 @Ulo&zcaron; prezent&aacute;ciu
 ro:313 @Salvare Prezentare
 #
-en:314 Sa@ve Presentation As...
-fr:314 Sau@ver la Pr&eacute;sentation sous...
-de:314 Pr&auml;sentation speichern @als...
-pt:314 @Guardar Apresenta&ccedil;&atilde;o como...
-ca:314 Desa la Presentaci&oacute; @Com...
-es:314 Guardar la Presentaci&oacute; @Como...
-it:314 Salva Presentazione @come...
-sk:314 Ulo&zcaron; prezent&aacute;ciu a@ko...
-ro:314 Salvare Prezentare @ca...
+en:314 Sa@ve Presentation As&hellip;
+fr:314 Sau@ver la Pr&eacute;sentation sous&hellip;
+de:314 Pr&auml;sentation speichern @als&hellip;
+pt:314 @Guardar Apresenta&ccedil;&atilde;o como&hellip;
+ca:314 Desa la Presentaci&oacute; @Com&hellip;
+es:314 Guardar la Presentaci&oacute; @Como&hellip;
+it:314 Salva Presentazione @come&hellip;
+sk:314 Ulo&zcaron; prezent&aacute;ciu a@ko&hellip;
+ro:314 Salvare Prezentare @ca&hellip;
 # "Mark" as in "Mark this position"
 en:315 @Mark
 fr:315 @Marquer
@@ -3411,16 +3411,16 @@ it:316 @Visualizza
 sk:316 @Prehra&tcaron;
 ro:316 @Vizualizeaza
 #
-en:317 @Export as Movie...
-fr:317 @Exporter comme Animation...
+en:317 @Export as Movie&hellip;
+fr:317 @Exporter comme Animation&hellip;
 # de: "als Animation" could also be used here.
-de:317 @Exportieren als Film...
-pt:317 @Exportar como Filme...
-ca:317 @Exporta com Animaci&oacute;...
-es:317 @Exporta como Animaci&oacute;n...
-it:317 @Esporta come Animazione...
-sk:317 @Vyexportuj ako film...
-ro:317 @Exporta ca Animatie...
+de:317 @Exportieren als Film&hellip;
+pt:317 @Exportar como Filme&hellip;
+ca:317 @Exporta com Animaci&oacute;&hellip;
+es:317 @Exporta como Animaci&oacute;n&hellip;
+it:317 @Esporta come Animazione&hellip;
+sk:317 @Vyexportuj ako film&hellip;
+ro:317 @Exporta ca Animatie&hellip;
 #
 en:318 @Bounding Box##Ctrl+B
 fr:318 @Bordures du cadre##Ctrl+B
@@ -3535,15 +3535,15 @@ it:328 Nessun elemento trovato.
 sk:328 Ne&uacute;spe&scaron;n&eacute; h&lcaron;adanie.
 ro:328 Nici un element nua fost gasit.
 # UNUSED
-en:329 Open @Terrain...
-fr:329 Ouverture d'un @Terrain...
-de:329 Gel&auml;nde@modell &ouml;ffnen...
-pt:329 Abrir @Terreno...
-ca:329 Obrir @Terreny...
-es:329 Abrir @Terreno...
-it:329 Apri Modello Digitale @Terrestre...
-sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu...
-ro:329 Deschidere @Model Teren...
+en:329 Open @Terrain&hellip;
+fr:329 Ouverture d'un @Terrain&hellip;
+de:329 Gel&auml;nde@modell &ouml;ffnen&hellip;
+pt:329 Abrir @Terreno&hellip;
+ca:329 Obrir @Terreny&hellip;
+es:329 Abrir @Terreno&hellip;
+it:329 Apri Modello Digitale @Terrestre&hellip;
+sk:329 Otvori&tcaron; digit&aacute;lny model @ter&eacute;nu&hellip;
+ro:329 Deschidere @Model Teren&hellip;
 # UNUSED
 en:330 Solid Su@rface
 fr:330 Surface S@olide
@@ -3731,15 +3731,15 @@ it:346 Passaggi come @Tubi##Ctrl+T
 sk:346 Chodby @r&uacute;rovit&eacute;##Ctrl+T
 ro:346 Pasaje @Tub##Ctrl+T
 #
-en:347 @Preferences...
-fr:347 @Pr&eacute;f&eacute;rences...
-de:347 @Einstellungen...
-pt:347 @Prefer&ecirc;ncias...
-ca:347 @Prefer&egrave;ncies...
-es:347 @Preferencias...
-it:347 @Preferenze...
-sk:347 @Predvo&lcaron;by...
-ro:347 @Preferinte...
+en:347 @Preferences&hellip;
+fr:347 @Pr&eacute;f&eacute;rences&hellip;
+de:347 @Einstellungen&hellip;
+pt:347 @Prefer&ecirc;ncias&hellip;
+ca:347 @Prefer&egrave;ncies&hellip;
+es:347 @Preferencias&hellip;
+it:347 @Preferenze&hellip;
+sk:347 @Predvo&lcaron;by&hellip;
+ro:347 @Preferinte&hellip;
 #
 en:348 Draw passage walls
 fr:348 D&eacute;ssiner les parois
@@ -4065,35 +4065,35 @@ it:379 Nord
 sk:379 sever
 ro:379 Nord
 # cf 400
-en:380 @Print...##Ctrl+P
-fr:380 @Imprimer...##Ctrl+P
-de:380 @Drucken...##Ctrl+P
-pt,pt-br:380 @Imprimir...##Ctrl+P
-ca:380 @Imprimir...##Ctrl+P
-es:380 @Imprimir...##Ctrl+P
-it:380 Stam@pa...##Ctrl+P
-sk:380 @Tla&ccaron;i&tcaron;...##Ctrl+P
-ro:380 @Imprimare...##Ctrl+P
+en:380 @Print&hellip;##Ctrl+P
+fr:380 @Imprimer&hellip;##Ctrl+P
+de:380 @Drucken&hellip;##Ctrl+P
+pt,pt-br:380 @Imprimir&hellip;##Ctrl+P
+ca:380 @Imprimir&hellip;##Ctrl+P
+es:380 @Imprimir&hellip;##Ctrl+P
+it:380 Stam@pa&hellip;##Ctrl+P
+sk:380 @Tla&ccaron;i&tcaron;&hellip;##Ctrl+P
+ro:380 @Imprimare&hellip;##Ctrl+P
 #
-en:381 P@age Setup...
-fr:381 Configurer la @page...
-de:381 @Seite einrichten...
-pt:381 Configura&ccedil;&atilde;o de P&aacute;gin@a...
-ca:381 Configuraci&oacute; de la @p&agrave;gina...
-es:381 Configuraci&oacute;n de la @p&aacute;gina...
-it:381 @Imposta pagina...
-sk:381 @Nastaven&iacute; tisku...
-ro:381 Initializare @pagina...
+en:381 P@age Setup&hellip;
+fr:381 Configurer la @page&hellip;
+de:381 @Seite einrichten&hellip;
+pt:381 Configura&ccedil;&atilde;o de P&aacute;gin@a&hellip;
+ca:381 Configuraci&oacute; de la @p&agrave;gina&hellip;
+es:381 Configuraci&oacute;n de la @p&aacute;gina&hellip;
+it:381 @Imposta pagina&hellip;
+sk:381 @Nastaven&iacute; tisku&hellip;
+ro:381 Initializare @pagina&hellip;
 #
-en:382 @Export as...
-fr:382 @Exporter sous...
-de:382 @Exportieren als...
-pt:382 @Exportar como...
-ca:382 @Exporta com...
-es:382 @Exporta como...
-it:382 E@sporta come...
-sk:382 @Export ako...
-ro:382 @Exporta ca...
+en:382 @Export as&hellip;
+fr:382 @Exporter sous&hellip;
+de:382 @Exportieren als&hellip;
+pt:382 @Exportar como&hellip;
+ca:382 @Exporta com&hellip;
+es:382 @Exporta como&hellip;
+it:382 E@sporta come&hellip;
+sk:382 @Export ako&hellip;
+ro:382 @Exporta ca&hellip;
 # Title of the export dialog
 en:383 Export
 fr:383 Exporter
@@ -4245,14 +4245,14 @@ ro:510 Nu s-a gasit punctul de statie %s
 # for extend:
 # the user specified breaking a loop or changing extend direction at
 # this leg, but we didn't find it in the 3d file
-en:511 Failed to find leg %s -> %s
-fr:511 Vis&eacute;e %s -> %s non trouv&eacute;
-de:511 Messstrecke konnte nicht gefunden werden: %s -> %s
-ca:511 No s'han trobat les tirades %s -> %s
-es:511 No se han encontrado las tiradas %s -> %s
-it:511 Tiro %s -> %s non trovato
-sk:511 Nepodarilo sa n&aacute;js&tcaron; z&aacute;meru %s -> %s
-ro:511 Nu s-a gasit masuratoarea %s -> %s
+en:511 Failed to find leg %s &rarr; %s
+fr:511 Vis&eacute;e %s &rarr; %s non trouv&eacute;
+de:511 Messstrecke konnte nicht gefunden werden: %s &rarr; %s
+ca:511 No s'han trobat les tirades %s &rarr; %s
+es:511 No se han encontrado las tiradas %s &rarr; %s
+it:511 Tiro %s &rarr; %s non trovato
+sk:511 Nepodarilo sa n&aacute;js&tcaron; z&aacute;meru %s &rarr; %s
+ro:511 Nu s-a gasit masuratoarea %s &rarr; %s
 # for extend:
 # "extend" is starting to produce an extended elevation from station %s
 en:512 Starting from station %s
@@ -4285,24 +4285,24 @@ sk:514 Rozvinut&yacute; rez vpravo od bodu %s
 ro:514 Extindere spre dreapta incepind cu punctul de statie %s
 #
 # for extend:
-en:515 Extending to the left from leg %s -> %s
-fr:515 Extension vers la gauche en partant de la vis&eacute;e %s -> %s
-de:515 Von dieser Messstrecke aus nach links erweitern: %s -> %s
-ca:515 Extenent cap a l'esquerra des de la tirada %s -> %s
-es:515 Extendiendo hacia la izquierda desde la tirada %s -> %s
-it:515 Sviluppo verso sinistra a partire dal tiro %s -> %s
-sk:515 Rozvinut&yacute; rez v&lcaron;avo od z&aacute;mery %s -> %s
-ro:515 Extindere spre stanga incepind cu masuratoarea %s -> %s
+en:515 Extending to the left from leg %s &rarr; %s
+fr:515 Extension vers la gauche en partant de la vis&eacute;e %s &rarr; %s
+de:515 Von dieser Messstrecke aus nach links erweitern: %s &rarr; %s
+ca:515 Extenent cap a l'esquerra des de la tirada %s &rarr; %s
+es:515 Extendiendo hacia la izquierda desde la tirada %s &rarr; %s
+it:515 Sviluppo verso sinistra a partire dal tiro %s &rarr; %s
+sk:515 Rozvinut&yacute; rez v&lcaron;avo od z&aacute;mery %s &rarr; %s
+ro:515 Extindere spre stanga incepind cu masuratoarea %s &rarr; %s
 #
 # for extend:
-en:516 Extending to the right from leg %s -> %s
-fr:516 Extension vers la droite en partant de la vis&eacute;e %s -> %s
-de:516 Von dieser Messstrecke aus nach rechts erweitern: %s -> %s
-ca:516 Extenent cap a la dreta des de la tirada %s -> %s
-es:516 Extendiendo hacia la derecha desde la tirada %s -> %s
-it:516 Sviluppo verso destra a partire dal tiro %s -> %s
-sk:516 Rozvinut&yacute; rez vpravo od z&aacute;mery %s -> %s
-ro:516 Extindere spre drepta incepind cu masuratoarea %s -> %s
+en:516 Extending to the right from leg %s &rarr; %s
+fr:516 Extension vers la droite en partant de la vis&eacute;e %s &rarr; %s
+de:516 Von dieser Messstrecke aus nach rechts erweitern: %s &rarr; %s
+ca:516 Extenent cap a la dreta des de la tirada %s &rarr; %s
+es:516 Extendiendo hacia la derecha desde la tirada %s &rarr; %s
+it:516 Sviluppo verso destra a partire dal tiro %s &rarr; %s
+sk:516 Rozvinut&yacute; rez vpravo od z&aacute;mery %s &rarr; %s
+ro:516 Extindere spre drepta incepind cu masuratoarea %s &rarr; %s
 #
 # for extend:
 en:517 Breaking survey loop at station %s
@@ -4315,14 +4315,14 @@ sk:517 Preru&scaron;en&yacute; okruh na bode %s
 ro:517 Topografia intrerupta incepind cu punctul de statie %s
 #
 # for extend:
-en:518 Breaking survey loop at leg %s -> %s
-fr:518 Coupure de la boucle &agrave; la vis&eacute;e %s -> %s
-de:518 Messschleife wird an dieser Messstrecke unterbrochen: %s -> %s
-ca:518 Trencant el bucle a la tirada %s -> %s
-es:518 Rompiendo el bucle en la tirada %s -> %s
-it:518 Topografia interrotta al tiro %s -> %s
-sk:518 Preru&scaron;en&yacute; okruh v z&aacute;mere %s -> %s
-ro:518 Topografia intrerupta incepind cu masuratoarea %s -> %s
+en:518 Breaking survey loop at leg %s &rarr; %s
+fr:518 Coupure de la boucle &agrave; la vis&eacute;e %s &rarr; %s
+de:518 Messschleife wird an dieser Messstrecke unterbrochen: %s &rarr; %s
+ca:518 Trencant el bucle a la tirada %s &rarr; %s
+es:518 Rompiendo el bucle en la tirada %s &rarr; %s
+it:518 Topografia interrotta al tiro %s &rarr; %s
+sk:518 Preru&scaron;en&yacute; okruh v z&aacute;mere %s &rarr; %s
+ro:518 Topografia intrerupta incepind cu masuratoarea %s &rarr; %s
 #
 # for extend:
 en:519 Swapping extend direction from station %s
@@ -4334,13 +4334,13 @@ sk:519 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od bodu %s
 ro:519 Schimbare directie desen incepind cu punctul de statie %s
 #
 # for extend:
-en:520 Swapping extend direction from leg %s -> %s
-fr:520 Change la direction de la coupe d&eacute;velopp&eacute;e &agrave; partir de la vis&eacute;e %s -> %s
-ca:520 Canviant la direcci&oacute; de l'al&ccedil;at ext&egrave;s des de la tirada %s -> %s
-es:520 Cambiando la direcci&oacute;n del alzado extendido desde la tirada %s -> %s
-it:520 Cambia lo sviluppo del disegno a partire dal tiro %s -> %s
-sk:520 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od z&aacute;mery %s -> %s
-ro:520 Schimbare directie desen incepind cu masuratoarea %s -> %s
+en:520 Swapping extend direction from leg %s &rarr; %s
+fr:520 Change la direction de la coupe d&eacute;velopp&eacute;e &agrave; partir de la vis&eacute;e %s &rarr; %s
+ca:520 Canviant la direcci&oacute; de l'al&ccedil;at ext&egrave;s des de la tirada %s &rarr; %s
+es:520 Cambiando la direcci&oacute;n del alzado extendido desde la tirada %s &rarr; %s
+it:520 Cambia lo sviluppo del disegno a partire dal tiro %s &rarr; %s
+sk:520 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od z&aacute;mery %s &rarr; %s
+ro:520 Schimbare directie desen incepind cu masuratoarea %s &rarr; %s
 #
 # for extend:
 en:521 Applying specfile: `%s'
@@ -4353,15 +4353,15 @@ sk:521 Pou&zcaron;i&tcaron; nastavenie zo s&uacute;boru: `%s'
 ro:521 Aplicare fisier de specificatii: `%s'
 # for extend:
 # Used to tell the user that a file is being written - %s is the filename
-en:522 Writing %s...
-fr:522 &Eacute;criture de %s...
-de:522 %s wird geschrieben...
-pt:522 Escrevendo %s...
-ca:522 Escrivint %s...
-es:522 Escribiendo %s...
-it:522 Scrittura %s...
-sk:522 Zapisuje sa s&uacute;bor %s...
-ro:522 Scriere %s...
+en:522 Writing %s&hellip;
+fr:522 &Eacute;criture de %s&hellip;
+de:522 %s wird geschrieben&hellip;
+pt:522 Escrevendo %s&hellip;
+ca:522 Escrivint %s&hellip;
+es:522 Escribiendo %s&hellip;
+it:522 Scrittura %s&hellip;
+sk:522 Zapisuje sa s&uacute;bor %s&hellip;
+ro:522 Scriere %s&hellip;
 #
 ## "don't extract" messages - these are compiled into the programs
 #

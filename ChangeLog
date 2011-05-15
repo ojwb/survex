@@ -1,3 +1,12 @@
+Sun May 15 03:20:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/message.c: 0x2026 (&hellip;): Handle for WINCP1252, and
+	  transliterate to '...' for charsets which don't have it.  0x2192
+	  (&rarr;): Transliterate to '->' for charsets which don't have it.
+	  Handle &Scaron;, &scaron;, &Zcaron;, &zcaron; for WINCP1252.
+	* lib/messages.txt: Use '&rarr;' instead of '->' and '&hellip;' instead
+	  of '...'.
+
 Sun May 15 02:59:42 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/messages.txt: Fix literal accented characters.

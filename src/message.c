@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -553,8 +553,13 @@ add_unicode(int charset, unsigned char *p, int value)
    case CHARSET_WINCP1252:
       /* MS Windows extensions to ISO-8859-1 */
       switch (value) {
-       case 0x152: value = 0x8c; break; /* &OElig; */
-       case 0x153: value = 0x9c; break; /* &oelig; */
+       case 0x2026: value = 0x85; break; /* hellip */
+       case 0x160: value = 0x8a; break; /* Scaron */
+       case 0x152: value = 0x8c; break; /* OElig */
+       case 0x17d: value = 0x8e; break; /* Zcaron */
+       case 0x161: value = 0x9a; break; /* scaron */
+       case 0x153: value = 0x9c; break; /* oelig */
+       case 0x17e: value = 0x9e; break; /* zcaron */
 #if 0
       /* there are a few other obscure ones we don't currently need */
 #endif
@@ -703,6 +708,10 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = 'y'; return 1;
     case 382: /* &zcaron; */
       *p = 'z'; return 1;
+    case 0x2026: /* &hellip; */
+      *p = '.'; p[1] = '.'; p[2] = '.'; return 3;
+    case 0x2192: /* &rarr; */
+      *p = '-'; p[1] = '>'; return 2;
    }
 #ifdef DEBUG
    fprintf(stderr, "failed to transliterate\n");
