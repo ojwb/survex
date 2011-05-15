@@ -1,3 +1,22 @@
+Changes in 1.1.16 (2011-05-15):
+
+* Translation updates for German, Spanish, Italian, Portuguese, Brazilian
+  Portuguese, and US English.
+
+* Use horizontal ellipses character rather than '...' and right arrow character
+  rather than '->' where we these characters are available.
+
+* (Unix version): Link with -lGL, if it exists, to support linking with gold or
+  GNU ld --as-needed (Debian bug #615781).
+
+* img.c:
+
+  + Fix code typo for IMG_API_VERSION == 0 case.
+
+  + Fix code typo in code used when IMG_HOSTED isn't defined.
+
+* doc/TODO.htm: Remove entries which have now been done.
+
 Changes in 1.1.15 (2010-10-15):
 
 * aven:
