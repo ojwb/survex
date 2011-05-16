@@ -1,3 +1,7 @@
+Mon May 16 05:59:32 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Another pre-1.1.16 update.
+
 Mon May 16 05:54:30 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Makefile.am: Include all the available wxstd.mo files into the

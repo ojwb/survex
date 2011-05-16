@@ -1,4 +1,4 @@
-Changes in 1.1.16 (2011-05-15):
+Changes in 1.1.16 (2011-05-16):
 
 * Translation updates for German, Spanish, Italian, Portuguese, Brazilian
   Portuguese, and US English.
@@ -16,6 +16,11 @@ Changes in 1.1.16 (2011-05-15):
   + Fix code typo in code used when IMG_HOSTED isn't defined.
 
 * doc/TODO.htm: Remove entries which have now been done.
+
+* (Microsoft Windows version): aven: We now include all the available
+  translations for messages from wxWidgets, which means that standard widgets
+  will appear translated where available even if Survex messages aren't
+  translated.
 
 Changes in 1.1.15 (2010-10-15):
 
