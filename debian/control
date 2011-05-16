@@ -3,7 +3,7 @@ Section: science
 Priority: extra
 Maintainer: Wookey <wookey@survex.com>
 Uploaders: Olly Betts <olly@survex.com>
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7), libx11-dev, libxext-dev, x11proto-core-dev,
     libwxgtk2.8-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev
 Homepage: http://survex.com/
@@ -25,7 +25,10 @@ Architecture: any
 Depends: survex (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Description: sophisticated cave survey viewer for Survex
  An advanced cave survey data viewer for Survex, written using the wxWidgets
- library, and using OpenGL.
+ library, and using OpenGL for rendering.  Aven allows searching for stations,
+ highlighting categories of stations such entrances or fixed points, measuring
+ the distance between stations, showing passage walls, and supports
+ presentations (pre-recorded fly-throughs).
 
 Package: survex-svxedit
 Architecture: all
@@ -33,4 +36,5 @@ Depends: tk8.4|wish, bwidget, ${misc:Depends}
 Recommends: survex (>= ${source:Version})
 Description: survey data editor for Survex
  Experimental cave survey data entry editor for Survex.  Packaged separately
- as it requires Tcl to be installed, and a text editor may be used instead.
+ as it requires Tcl to be installed, and some users prefer to use a text
+ editor instead.

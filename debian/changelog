@@ -1,3 +1,15 @@
+survex (1.1.16-1) unstable; urgency=low
+
+  [Olly Betts]
+  * New upstream release.
+    + Explicitly links with -lGL, if it exists, to support linking with gold or
+      GNU ld --as-needed.  (Closes: #615781)
+  * debian/control:
+    + "Standards-Version: 3.9.2" - no changes required.
+    + Expand descriptions of survex-aven and survex-svxedit.
+
+ -- Olly Betts <olly@survex.com>  Mon, 16 May 2011 06:55:27 +0000
+
 survex (1.1.15-1) unstable; urgency=low
 
   [Olly Betts]
