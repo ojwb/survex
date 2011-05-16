@@ -58,10 +58,10 @@ mingw_iss : survex.iss
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp doc/manual/*.png iss_tmp/manual
 	cp $(extra_bin) iss_tmp
-	: # NB check for updates for each new wx version
-	for a in ca cs de es fr it pt pt_BR sk ; do\
+	for f in /usr/share/locale/*/LC_MESSAGES/wxstd.mo ; do \
+	 a=`echo "$$f"|sed 's!^/usr/share/locale/\([^/]*\).*!\1!'`; \
 	 mkdir iss_tmp/$$a;\
-	 cp /usr/share/locale/$$a/LC_MESSAGES/wxstd.mo iss_tmp/$$a;\
+	 cp "$$f" iss_tmp/$$a;\
 	 echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' >> iss_tmp/i18nfiles.iss;\
 	done
 	cp lib/*.isl iss_tmp

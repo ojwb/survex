@@ -1,3 +1,11 @@
+Mon May 16 05:54:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Makefile.am: Include all the available wxstd.mo files into the
+	  Microsoft Windows installer, rather than trying to just include those
+	  which we have translations for.  This avoids having to maintain a
+	  list of which to include, and gives users translations of wxWidgets
+	  messages even if they don't get Survex messages translated.
+
 Mon May 16 05:53:49 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Update version of InnoSetup used.  Note the packages
