@@ -68,11 +68,17 @@ and I'll incorporate patches provided they're fairly clean.
 <H2>Microsoft Windows Installer Builder</H2>
 
 <P>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
-build the MS Windows Installer.  Survex 1.1.3 was built using InnoSetup
-5.3.9 (non-unicode version, so that the installer works on older versions
+build the MS Windows Installer.  Survex 1.1.6 was built using InnoSetup
+5.4.2 (non-Unicode version, so that the installer works on older versions
 of Microsoft Windows).
 
 <P>Here are some random notes:
+
+<H3>Packages Needed</H3>
+
+<P>On Debian, you'll need to install these packages to build the installer:
+
+<P>apt-get install wine wx2.8-i18n
 
 <H3>Translations</H3>
 

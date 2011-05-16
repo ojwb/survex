@@ -1,3 +1,8 @@
+Mon May 16 05:53:49 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Update version of InnoSetup used.  Note the packages
+	  needed on Debian to build the Microsoft Windows installer.
+
 Mon May 16 05:22:03 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Note Debian packages to install for docs.
