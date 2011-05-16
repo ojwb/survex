@@ -1,6 +1,7 @@
 ; @configure_input@
 [Setup]
 AppName=@PRETTYPACKAGE@
+; AppVerName not required by InnoSetup >= 5.3.10
 AppVerName=@PRETTYPACKAGE@ @VERSION@
 DefaultDirName={pf32}\@PRETTYPACKAGE@
 DefaultGroupName=@PRETTYPACKAGE@

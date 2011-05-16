@@ -1,3 +1,8 @@
+Mon May 16 05:21:27 GMT 2011  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Add comment noting that AppVerName isn't required by
+	  newer InnoSetup.
+
 Sun May 15 04:11:34 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.1.16.
