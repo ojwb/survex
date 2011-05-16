@@ -43,11 +43,13 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     :
   else
     prefix=`pwd`/WXINSTALL
-    test -f wxWidgets-$WXVERSION.tar.bz2 || \
-      curl -O ftp://ftp.wxwidgets.org/pub/$WXVERSION/wxWidgets-$WXVERSION.tar.bz2
-    test -d wxWidgets-$WXVERSION || tar jxvf wxWidgets-$WXVERSION.tar.bz2
-    test -d wxWidgets-$WXVERSION/build || mkdir wxWidgets-$WXVERSION/build
-    cd wxWidgets-$WXVERSION/build
+    wxtarball=wxWidgets$WXVERSION.tar.bz2
+    test -f "$wxtarball" || \
+      curl -O "ftp://ftp.wxwidgets.org/pub/$WXVERSION/$wxtarball"
+    echo "+++ Extracting $wxtarball"
+    test -d "wxWidgets-$WXVERSION" || tar jxf "$wxtarball"
+    test -d "wxWidgets-$WXVERSION/build" || "mkdir wxWidgets-$WXVERSION/build"
+    cd "wxWidgets-$WXVERSION/build"
     ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags"
     make -s
     make -s install
@@ -78,7 +80,7 @@ mkdir Survex/Aven.app/Contents/MacOS
 mkdir Survex/Aven.app/Contents/Resources
 cp lib/Info.plist Survex/Aven.app/Contents
 printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
-cp -r $D/share/survex/* Survex/Aven.app/Contents/Resources/
+cp -r "$D"/share/survex/* Survex/Aven.app/Contents/Resources/
 # FIXME: Generate Survex/Aven.app/Resources/Aven.icns
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 rm -f Survex/share/survex/aven.txf
@@ -86,14 +88,14 @@ rm -rf Survex/share/survex/icons
 
 size=`du -s Survex|sed 's/[^0-9].*//'`
 # Allow 1000 extra sectors for various overheads (500 wasn't enough).
-sectors=`expr 1000 + $size`
+sectors=`expr 1000 + "$size"`
 # Partition needs to be at least 4M and sectors are 512 bytes.
-if test $sectors -lt 8192 ; then
+if test "$sectors" -lt 8192 ; then
   sectors=8192
 fi
 echo "Creating new blank image survex-macosx.dmg of $sectors sectors"
 # This creates the diskimage file and initialises it as an HFS+ volume.
-hdiutil create -sectors $sectors survex-macosx -layout NONE -fs HFS+ -volname Survex
+hdiutil create -sectors "$sectors" survex-macosx -layout NONE -fs HFS+ -volname Survex
 
 echo "Presenting image to the filesystems for mounting."
 # This will mount the image onto the Desktop.
@@ -103,10 +105,10 @@ echo "Mounted on device $dev, copying files into image."
 ditto -rsrcFork Survex /Volumes/Survex/Survex
 ditto lib/INSTALL.OSX /Volumes/Survex/INSTALL
 echo "Detaching image."
-hdiutil detach $dev
+hdiutil detach "$dev"
 
 version=`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.in`
-file=survex-macosx-`echo $version`.dmg
+file=survex-macosx-$version.dmg
 echo "Compressing image file survex-macosx.dmg to $file"
 # This needs MacOS X 10.1 or above for unpacking - change UDZO to UDCO to allow
 # the dmg to be unpacked on 10.0 as well:

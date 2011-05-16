@@ -1,3 +1,8 @@
+Mon May 16 22:18:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Extract tarball quietly, and just say we're doing
+	  it.  Add missing quoting to variable expansions.
+
 Mon May 16 05:59:32 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS: Another pre-1.1.16 update.
