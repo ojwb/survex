@@ -1,3 +1,11 @@
+Tue May 17 01:24:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt,src/cavern.c: Drop "non-fatal" from the report of
+	  how many errors there were at the end of the run - it just confuses
+	  users - we won't even get here if there's a fatal error!
+	* lib/messages.txt: Add missing translations of two "Export" variants
+	  for ca, sk, and ro.
+
 Tue May 17 01:03:06 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS: Fix typo.

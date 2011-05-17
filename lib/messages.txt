@@ -1350,16 +1350,17 @@ it:112 Non posso analizzare il file .err degli errori
 sk:112 Chyba pri anal&yacute;ze .err s&uacute;boru
 ro:112 Lectura fisierului .err nu a putut fi realizata
 # c.f. 16
-en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
-fr:113 Il y a %d avertissement(s) et %d erreur(s) non fatale(s) - aucun fichier n'a &eacute;t&eacute; produit
-# de: Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
-de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - keine Ausgabedatei erstellt.
-pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - nenhum arquivo de sa&iacute;da criado
-ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no s'han generat fitxers de sortida.
-es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no se generaron archivos de salida.
-it:113 Ci sono %d avvertimenti e %d errori non fatali - nessun file prodotto.
-sk:113 Vyskytlo sa %d varovan&iacute; a %d nekritick&yacute;ch ch&yacute;b - nebol vytvoren&yacute; v&yacute;stupn&yacute; s&uacute;bor.
-ro:113 Au fost %d avertisment(e) si %d eroare(erori) non-fatala(e) - nu s-a generat nici un fisier.
+# TRANSLATE fr de pt ca es it sk ro
+en:113 There were %d warning(s) and %d error(s) - no output files produced.
+fr:113 Il y a %d avertissement(s) et %d erreur(s) - aucun fichier n'a &eacute;t&eacute; produit
+# de: Es wurden %d Warnungen und %d Fehler registriert.
+de:113 Es gab %d Warnungen und %d Fehler - keine Ausgabedatei erstellt.
+pt:113 H&aacute; %d alerta(s) e %d erro(s) - nenhum arquivo de sa&iacute;da criado
+ca:113 Hi havia %d alerta(es) i %d error(s) - no s'han generat fitxers de sortida.
+es:113 Havia %d alerta(s) y %d error(es) - no se generaron archivos de salida.
+it:113 Ci sono %d avvertimenti e %d errori - nessun file prodotto.
+sk:113 Vyskytlo sa %d varovan&iacute; a %d ch&yacute;b - nebol vytvoren&yacute; v&yacute;stupn&yacute; s&uacute;bor.
+ro:113 Au fost %d avertisment(e) si %d eroare(erori) - nu s-a generat nici un fisier.
 #
 en:114 File `%s' has a newer format than this program can understand
 fr:114 Le fichier `%s' a un format plus r&eacute;cent que ce que ce
@@ -2592,8 +2593,11 @@ en:230 &amp;Export&hellip;
 de:230 &amp;Exportieren&hellip;
 fr:230 &amp;Exporter&hellip;
 pt,pt-br:230 &amp;Exportar&hellip;
+ca:230 &amp;Exporta&hellip;
 es:230 &amp;Exportar&hellip;
 it:230 &amp;Esporta&hellip;
+sk:230 &amp;Export&hellip;
+ro:230 &amp;Exporta&hellip;
 # "Rotation" menu.  The accelerators must be different within this group.
 # 231 Different in 1.0
 # Tickable menu item which toggles auto rotation
@@ -4099,8 +4103,11 @@ en:383 Export
 fr:383 Exporter
 de:383 Exportieren
 pt,pt-br:383 Exportar
+ca:383 Exporta
 es:383 Exportar
 it:383 Esporta
+sk:383 Export
+ro:383 Exporta
 # XXX 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
