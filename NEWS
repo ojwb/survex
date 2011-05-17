@@ -4,7 +4,7 @@ Changes in 1.1.16 (2011-05-16):
   Portuguese, and US English.
 
 * Use horizontal ellipses character rather than '...' and right arrow character
-  rather than '->' where we these characters are available.
+  rather than '->' where these characters are available.
 
 * (Unix version): Link with -lGL, if it exists, to support linking with gold or
   GNU ld --as-needed (Debian bug #615781).

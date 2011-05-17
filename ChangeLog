@@ -1,3 +1,7 @@
+Tue May 17 01:03:06 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Fix typo.
+
 Mon May 16 22:18:53 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Extract tarball quietly, and just say we're doing
