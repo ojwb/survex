@@ -1,3 +1,7 @@
+Wed May 18 05:50:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Print out the commands needed to tag the release.
+
 Tue May 17 01:24:59 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/messages.txt,src/cavern.c: Drop "non-fatal" from the report of
