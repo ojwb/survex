@@ -712,135 +712,135 @@ void MainFrm::CreateMenuBar()
     // Create the menus and the menu bar.
 
     wxMenu* filemenu = new wxMenu;
-    filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
+    filemenu->Append(menu_FILE_OPEN, wmsg(/*&Open...\tCtrl+O*/220));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
-    filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
+    filemenu->Append(menu_FILE_PRINT, wmsg(/*&Print...\tCtrl+P*/380));
+    filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup...*/381));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_SCREENSHOT, GetTabMsg(/*@Screenshot...*/201));
-    filemenu->Append(menu_FILE_EXPORT, GetTabMsg(/*@Export as...*/382));
+    filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot...*/201));
+    filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as...*/382));
 #ifndef __WXMAC__
     // On wxMac the "Quit" menu item will be moved elsewhere, so we suppress
     // this separator.
     filemenu->AppendSeparator();
 #endif
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
+    filemenu->Append(menu_FILE_QUIT, wmsg(/*&Quit\tCtrl+Q*/221));
 
     m_history.UseMenu(filemenu);
     m_history.Load(*wxConfigBase::Get());
 
     wxMenu* rotmenu = new wxMenu;
-    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, GetTabMsg(/*@Auto-Rotate##Space*/231));
+    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*&Auto-Rotate\tSpace*/231));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_SPEED_UP, GetTabMsg(/*Speed @Up*/232));
-    rotmenu->Append(menu_ROTATION_SLOW_DOWN, GetTabMsg(/*Slow @Down*/233));
+    rotmenu->Append(menu_ROTATION_SPEED_UP, wmsg(/*Speed &Up*/232));
+    rotmenu->Append(menu_ROTATION_SLOW_DOWN, wmsg(/*Slow &Down*/233));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_REVERSE, GetTabMsg(/*@Reverse Direction*/234));
+    rotmenu->Append(menu_ROTATION_REVERSE, wmsg(/*&Reverse Direction*/234));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_STEP_CCW, GetTabMsg(/*Step Once @Anticlockwise*/235));
-    rotmenu->Append(menu_ROTATION_STEP_CW, GetTabMsg(/*Step Once @Clockwise*/236));
+    rotmenu->Append(menu_ROTATION_STEP_CCW, wmsg(/*Step Once &Anticlockwise*/235));
+    rotmenu->Append(menu_ROTATION_STEP_CW, wmsg(/*Step Once &Clockwise*/236));
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, GetTabMsg(/*View @North*/240));
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, GetTabMsg(/*View @East*/241));
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, GetTabMsg(/*View @South*/242));
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, GetTabMsg(/*View @West*/243));
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North*/240));
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East*/241));
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, GetTabMsg(/*Shift Survey @Left*/244));
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, GetTabMsg(/*Shift Survey @Right*/245));
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, GetTabMsg(/*Shift Survey @Up*/246));
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, GetTabMsg(/*Shift Survey @Down*/247));
+    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, wmsg(/*Shift Survey &Left*/244));
+    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, wmsg(/*Shift Survey &Right*/245));
+    orientmenu->Append(menu_ORIENT_SHIFT_UP, wmsg(/*Shift Survey &Up*/246));
+    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, wmsg(/*Shift Survey &Down*/247));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_PLAN, GetTabMsg(/*@Plan View*/248));
-    orientmenu->Append(menu_ORIENT_ELEVATION, GetTabMsg(/*Ele@vation*/249));
+    orientmenu->Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
+    orientmenu->Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation*/249));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint*/250));
-    orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*L@ower Viewpoint*/251));
+    orientmenu->Append(menu_ORIENT_HIGHER_VP, wmsg(/*&Higher Viewpoint*/250));
+    orientmenu->Append(menu_ORIENT_LOWER_VP, wmsg(/*L&ower Viewpoint*/251));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
-    orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
+    orientmenu->Append(menu_ORIENT_ZOOM_IN, wmsg(/*&Zoom In\t]*/252));
+    orientmenu->Append(menu_ORIENT_ZOOM_OUT, wmsg(/*Zoo&m Out\t[*/253));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault View*/254));
+    orientmenu->Append(menu_ORIENT_DEFAULTS, wmsg(/*Restore De&fault View*/254));
 
     wxMenu* presmenu = new wxMenu;
-    presmenu->Append(menu_PRES_NEW, GetTabMsg(/*@New Presentation*/311));
-    presmenu->Append(menu_PRES_OPEN, GetTabMsg(/*@Open Presentation...*/312));
-    presmenu->Append(menu_PRES_SAVE, GetTabMsg(/*@Save Presentation*/313));
-    presmenu->Append(menu_PRES_SAVE_AS, GetTabMsg(/*Save Presentation @As...*/314));
+    presmenu->Append(menu_PRES_NEW, wmsg(/*&New Presentation*/311));
+    presmenu->Append(menu_PRES_OPEN, wmsg(/*&Open Presentation...*/312));
+    presmenu->Append(menu_PRES_SAVE, wmsg(/*&Save Presentation*/313));
+    presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Save Presentation &As...*/314));
     presmenu->AppendSeparator();
-    presmenu->Append(menu_PRES_MARK, GetTabMsg(/*@Mark*/315));
-    presmenu->Append(menu_PRES_PLAY, GetTabMsg(/*@Play*/316));
-    presmenu->Append(menu_PRES_EXPORT_MOVIE, GetTabMsg(/*@Export as Movie...*/317));
+    presmenu->Append(menu_PRES_MARK, wmsg(/*&Mark*/315));
+    presmenu->Append(menu_PRES_PLAY, wmsg(/*&Play*/316));
+    presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie...*/317));
 
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_NAMES, GetTabMsg(/*Station @Names##Ctrl+N*/270));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, GetTabMsg(/*Passage @Tubes*/346));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, GetTabMsg(/*@Crosses##Ctrl+X*/271));
-    viewmenu->AppendCheckItem(menu_VIEW_GRID, GetTabMsg(/*@Grid##Ctrl+G*/297));
-    viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, GetTabMsg(/*@Bounding Box##Ctrl+B*/318));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_NAMES, wmsg(/*Station &Names\tCtrl+N*/270));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, wmsg(/*Passage &Tubes*/346));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, wmsg(/*&Crosses\tCtrl+X*/271));
+    viewmenu->AppendCheckItem(menu_VIEW_GRID, wmsg(/*&Grid\tCtrl+G*/297));
+    viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, wmsg(/*&Bounding Box\tCtrl+B*/318));
     viewmenu->AppendSeparator();
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_LEGS, GetTabMsg(/*@Underground Survey Legs##Ctrl+L*/272));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, GetTabMsg(/*@Surface Survey Legs##Ctrl+F*/291));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_LEGS, wmsg(/*&Underground Survey Legs\tCtrl+L*/272));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
     viewmenu->AppendSeparator();
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, GetTabMsg(/*@Overlapping Names*/273));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, GetTabMsg(/*Colour by @Depth*/292));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, GetTabMsg(/*Colour by D@ate*/293));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, GetTabMsg(/*Colour by E@rror*/289));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
     viewmenu->AppendSeparator();
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, GetTabMsg(/*Highlight @Entrances*/294));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_FIXED_PTS, GetTabMsg(/*Highlight @Fixed Points*/295));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_EXPORTED_PTS, GetTabMsg(/*Highlight E@xported Points*/296));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, wmsg(/*Highlight &Entrances*/294));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_FIXED_PTS, wmsg(/*Highlight &Fixed Points*/295));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_EXPORTED_PTS, wmsg(/*Highlight E&xported Points*/296));
     viewmenu->AppendSeparator();
 #else
-    viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
+    viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, wmsg(/*&Cancel Measuring Line\tEscape*/281));
 #endif
-    viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, GetTabMsg(/*@Perspective*/237));
-// FIXME: enable this    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_SHADING, GetTabMsg(/*@Smooth Shading*/?!?);
-    viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, GetTabMsg(/*Textured @Walls*/238));
-    viewmenu->AppendCheckItem(menu_VIEW_FOG, GetTabMsg(/*Fade @Distant Objects*/239));
-    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, GetTabMsg(/*@Smoothed Survey Legs*/298));
+    viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, wmsg(/*&Perspective*/237));
+// FIXME: enable this    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_SHADING, wmsg(/*&Smooth Shading*/?!?);
+    viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, wmsg(/*Textured &Walls*/238));
+    viewmenu->AppendCheckItem(menu_VIEW_FOG, wmsg(/*Fade &Distant Objects*/239));
+    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, wmsg(/*&Smoothed Survey Legs*/298));
     viewmenu->AppendSeparator();
-    viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, GetTabMsg(/*@Full Screen Mode##F11*/356));
+    viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*&Full Screen Mode\tF11*/356));
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
-    viewmenu-> Append(menu_VIEW_PREFERENCES, GetTabMsg(/*@Preferences...*/347));
+    viewmenu-> Append(menu_VIEW_PREFERENCES, wmsg(/*&Preferences...*/347));
 #endif
 
 #ifndef PREFDLG
     wxMenu* ctlmenu = new wxMenu;
-    ctlmenu->AppendCheckItem(menu_CTL_REVERSE, GetTabMsg(/*@Reverse Sense##Ctrl+R*/280));
+    ctlmenu->AppendCheckItem(menu_CTL_REVERSE, wmsg(/*&Reverse Sense\tCtrl+R*/280));
     ctlmenu->AppendSeparator();
-    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, GetTabMsg(/*@Cancel Measuring Line##Escape*/281));
+    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, wmsg(/*&Cancel Measuring Line\tEscape*/281));
     ctlmenu->AppendSeparator();
     wxMenu* indmenu = new wxMenu;
-    indmenu->AppendCheckItem(menu_IND_COMPASS, GetTabMsg(/*@Compass*/274));
-    indmenu->AppendCheckItem(menu_IND_CLINO, GetTabMsg(/*C@linometer*/275));
-    indmenu->AppendCheckItem(menu_IND_DEPTH_BAR, GetTabMsg(/*@Depth Bar*/276));
-    indmenu->AppendCheckItem(menu_IND_SCALE_BAR, GetTabMsg(/*@Scale Bar*/277));
-    ctlmenu->Append(menu_CTL_INDICATORS, GetTabMsg(/*@Indicators*/299), indmenu);
-    ctlmenu->AppendCheckItem(menu_CTL_SIDE_PANEL, GetTabMsg(/*@Side Panel*/337));
+    indmenu->AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Compass*/274));
+    indmenu->AppendCheckItem(menu_IND_CLINO, wmsg(/*C&linometer*/275));
+    indmenu->AppendCheckItem(menu_IND_DEPTH_BAR, wmsg(/*&Depth Bar*/276));
+    indmenu->AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Scale Bar*/277));
+    ctlmenu->Append(menu_CTL_INDICATORS, wmsg(/*&Indicators*/299), indmenu);
+    ctlmenu->AppendCheckItem(menu_CTL_SIDE_PANEL, wmsg(/*&Side Panel*/337));
     ctlmenu->AppendSeparator();
-    ctlmenu->AppendCheckItem(menu_CTL_METRIC, GetTabMsg(/*@Metric*/342));
-    ctlmenu->AppendCheckItem(menu_CTL_DEGREES, GetTabMsg(/*@Degrees*/343));
+    ctlmenu->AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
+    ctlmenu->AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 #endif
 
     wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About...*/290));
+    helpmenu->Append(menu_HELP_ABOUT, wmsg(/*&About...*/290));
 
     wxMenuBar* menubar = new wxMenuBar();
-    menubar->Append(filemenu, GetTabMsg(/*@File*/210));
-    menubar->Append(rotmenu, GetTabMsg(/*@Rotation*/211));
-    menubar->Append(orientmenu, GetTabMsg(/*@Orientation*/212));
-    menubar->Append(viewmenu, GetTabMsg(/*@View*/213));
+    menubar->Append(filemenu, wmsg(/*&File*/210));
+    menubar->Append(rotmenu, wmsg(/*&Rotation*/211));
+    menubar->Append(orientmenu, wmsg(/*&Orientation*/212));
+    menubar->Append(viewmenu, wmsg(/*&View*/213));
 #ifndef PREFDLG
-    menubar->Append(ctlmenu, GetTabMsg(/*@Controls*/214));
+    menubar->Append(ctlmenu, wmsg(/*&Controls*/214));
 #endif
-    menubar->Append(presmenu, GetTabMsg(/*@Presentation*/216));
+    menubar->Append(presmenu, wmsg(/*&Presentation*/216));
 #ifndef __WXMAC__
     // On wxMac the "About" menu item will be moved elsewhere, so we suppress
     // this menu since it will then be empty.
-    menubar->Append(helpmenu, GetTabMsg(/*@Help*/215));
+    menubar->Append(helpmenu, wmsg(/*&Help*/215));
 #endif
     SetMenuBar(menubar);
 }

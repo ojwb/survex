@@ -1,0 +1,2061 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: survex-1.1.16\n"
+"Report-Msgid-Bugs-To: olly@survex.com\n"
+"POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
+"PO-Revision-Date: 2011-05-17 01:20:59 +1200\n"
+"Last-Translator: Olly Betts <olly@survex.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex was trying to
+#. allocate space for.
+#. sk: Alternatively "Nedostatočná kapacita pamäte"
+#: ../src/message.c:83
+#, c-format
+msgid "Out of memory (couldn't find %lu bytes)."
+msgstr "Memoria insufficiente (ci vorrebbero altri %lu bytes)."
+
+#. TRANSLATORS: de: Gerhard: (this replaces the idea of "greater" with "newer" because it
+#. sounds more natural.  Feel free to write "höher" instead of "neuer", but
+#. I would advise against it.)
+#: ../src/commands.c:1502
+#, c-format
+msgid "Survex version %s or greater required to process this survey data."
+msgstr "Questi dati di topografia possono essere trattati da Survex versione %s o superiore."
+
+#. TRANSLATORS: Used with message 5 like so:
+#. In file included from area.svx:12,
+#. from cave.svx:3:
+#. passage.svx:17: <some error or warning>
+#: ../src/datain.c:107
+msgid "from"
+msgstr "da"
+
+#. TRANSLATORS: Indicates a warning message e.g.:
+#. "spoon.svx:12: warning: *prefix is deprecated"
+#. fr: Francois had "Imprécision".  The official translation is
+#. "Avertissement", which Eric favours even if it sounds somewhat formal.
+#: ../src/aven.cc:351
+#: ../src/message.c:1181
+msgid "warning"
+msgstr "avvertimento"
+
+#. TRANSLATORS: de: we really want the filename/line number at the end (so error parsing
+#. editors can follow), so the natural translation:
+#. "In von %s:%d: aus eingelesener Datei"
+#. isn't ideal.  This is "clumsy but workable":
+#: ../src/datain.c:103
+msgid "In file included from"
+msgstr "Nel file inserito da"
+
+#: ../src/commands.c:507
+msgid "*prefix is deprecated - use *begin and *end instead"
+msgstr "*prefix é sconsigliato - usare invece *begin e *end"
+
+#. TRANSLATORS: de: shorter, but not as good:
+#. Unerlaubtes Zeichen `%c' in Meßpunktname (erlaubte Zeichen mit *SET NAMES definieren)
+#: ../src/readval.c:121
+#, c-format
+msgid "Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)"
+msgstr "Carattere `%c' non permesso nel nome di stazione (usare *SET NAMES per cambiare i caratteri permessi)"
+
+#: ../src/readval.c:319
+msgid "Field may not be omitted"
+msgstr "Questo campo non puó essere omesso"
+
+#: ../src/datain.c:1436
+#: ../src/datain.c:1447
+#: ../src/datain.c:1708
+#: ../src/readval.c:321
+#: ../src/readval.c:362
+#: ../src/readval.c:392
+#, c-format
+msgid "Expecting numeric field, found `%s'"
+msgstr "Questo campo é numerico, trovato `%s'"
+
+#. TRANSLATORS: de: Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
+#. equivalent, doesn't sound quite right here
+#. NB there is no comma before "oder"
+#: ../src/commands.c:1410
+#, c-format
+msgid "Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'"
+msgstr "Trovato `%s', atteso `PRESERVE', `TOUPPER' o `TOLOWER'"
+
+#: ../src/matrix.c:359
+#: ../src/message.c:233
+#: ../src/debug.h:45
+#: ../src/debug.h:47
+msgid "Bug in program detected! Please report this to the authors"
+msgstr "Individuato un errore nel programma! Per favore comunicatelo agli autori"
+
+#. TRANSLATORS: de: Gerhard says "Kommando" and "Befehl" are equally valid translations - use
+#. Befehl to be consistency.
+#: ../src/commands.c:1614
+#: ../src/extend.c:420
+#, c-format
+msgid "Unknown command `%s'"
+msgstr "Comando sconosciuto `%s'"
+
+#: ../src/netbits.c:407
+#, c-format
+msgid "Station `%s' equated to itself"
+msgstr "Stazione `%s' uguagliata a se stessa"
+
+#: ../src/datain.c:970
+msgid "Compass reading may not be omitted except on plumbed legs"
+msgstr "La lettura della bussola non puó essere omessa qui eccettto che nelle battute verticali"
+
+#: ../src/datain.c:236
+#: ../src/extend.c:425
+msgid "End of line not blank"
+msgstr "Fine della linea non vuota"
+
+#. TRANSLATORS: de: Es wurden %d Warnungen registriert.
+#: ../src/cavern.c:374
+#, c-format
+msgid "There were %d warning(s)."
+msgstr "Ci sono %d avvertimenti."
+
+#. TRANSLATORS: pipe here means a Unix pipe, which transfers data between two programs
+#. -- probably best not to translate it
+#: ../src/cavernlog.cc:210
+#, c-format
+msgid "Couldn't open pipe: `%s'"
+msgstr "Il piping non puó essere eseguito: `%s'"
+
+#: ../src/datain.c:80
+#: ../src/datain.c:88
+#: ../src/datain.c:95
+#: ../src/datain.c:723
+#: ../src/extend.c:544
+#: ../src/sorterr.c:75
+#: ../src/sorterr.c:92
+#: ../src/sorterr.c:234
+msgid "Error reading file"
+msgstr "Errore nella lettura del file"
+
+#. TRANSLATORS: anthropomorphising version: de: 19 Zu viele Fehler - ich gebe auf
+#: ../src/message.c:1196
+msgid "Too many errors - giving up"
+msgstr "Troppi errori - processo interrotto"
+
+#: ../src/commands.c:1291
+msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
+msgstr "*DEFAULT é sconsigliato - usare invece *CALIBRATE/DATA/SD/UNITS con argomento DEFAULT"
+
+#. TRANSLATORS: A "plumbed leg" is one measured using a plumbline (a weight on a string).
+#. So the problem here is that the leg is vertical, so a compass reading has
+#. no meaning!
+#: ../src/datain.c:943
+msgid "Compass reading given on plumbed leg"
+msgstr "Lettura della bussola in una battuta verticale"
+
+#: ../src/commands.c:569
+msgid "END with no matching BEGIN in this file"
+msgstr "C'é un END senza il corrispondente BEGIN in questo file"
+
+#: ../src/datain.c:710
+msgid "BEGIN with no matching END in this file"
+msgstr "C'é un BEGIN senza il corrispondente END in questo file"
+
+#: ../src/printwx.cc:1166
+#: ../src/datain.c:352
+#: ../src/img.c:176
+#, c-format
+msgid "Couldn't open data file `%s'"
+msgstr "Non riesco ad aprire il file dei dati `%s'"
+
+#. TRANSLATORS: Use of the ROOT character (which is "\" by default) is deprecated, so this error
+#. would be generated by:
+#. *equate \foo.7 1
+#: ../src/commands.c:416
+#: ../src/readval.c:62
+#: ../src/readval.c:66
+msgid "ROOT is deprecated"
+msgstr "ROOT é sconsigliato"
+
+#. TRANSLATORS: A station must be exported out of each level it is in, so this would give
+#. "Station `\outer.inner.1' not exported from survey `\outer')":
+#. *equate entrance outer.inner.1
+#. *begin outer
+#. *begin inner
+#. *export 1
+#. 1 2 1.23 045 -6
+#. *end inner
+#. *end outer
+#: ../src/commands.c:813
+#: ../src/listpos.c:130
+#: ../src/readval.c:240
+#, c-format
+msgid "Station `%s' not exported from survey `%s'"
+msgstr "La stazione `%s' non é stata esportata dal rilievo `%s'"
+
+#: ../src/readval.c:212
+#, c-format
+msgid "`%s' can't be both a station and a survey"
+msgstr "`%s' non può essere contemporaneamente una stazione e un rilievo"
+
+#: ../src/extend.c:247
+#: ../src/extend.c:262
+#: ../src/extend.c:302
+#: ../src/extend.c:342
+#: ../src/extend.c:382
+#: ../src/readval.c:118
+msgid "Expecting station name"
+msgstr "Manca il nome della stazione"
+
+#. TRANSLATORS: FIXME: perhaps use "survey" instead of "prefix level"?
+#. de: deprecated is a wonderful English word lacking a wonderful German
+#. equivalent....  errm and do we have a translation for "prefix level"
+#. yet?  (rummaging in old mail folders)  apparently not.  Ok.  Would
+#. "to introduce a prefix" be a rough equivalent for "to enter a prefix
+#. level"?
+#: ../src/commands.c:479
+msgid "Reentering an existing prefix level is deprecated"
+msgstr "Reimmettere un prefisso di livello giá esistente é sconsigliato"
+
+#: ../src/commands.c:486
+msgid "Originally entered here"
+msgstr "Giá utilizzato qui"
+
+#: ../src/commands.c:1439
+#, c-format
+msgid "Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'"
+msgstr "Trovato `%s', atteso `EQUATES', `EXPORTS' o `PLUMBS'"
+
+#: ../src/commands.c:1445
+#, c-format
+msgid "Found `%s', expecting `ON' or `OFF'"
+msgstr "Trovato `%s', atteso `ON' o `OFF'"
+
+#. TRANSLATORS: EQUATE is a command name, so shouldn't be translated.  I've attempted to
+#. update de, but my language skills aren't great...
+#: ../src/commands.c:786
+msgid "Only one station in EQUATE command"
+msgstr "Solo una stazione nel comando EQUATE"
+
+#: ../src/commands.c:372
+#, c-format
+msgid "Unknown quantity `%s'"
+msgstr "Quantitá `%s' sconosciuta"
+
+#: ../src/commands.c:298
+#, c-format
+msgid "Unknown units `%s'"
+msgstr "Unitá `%s' sconosciute"
+
+#. TRANSLATORS: Used when a BEGIN tag has no prefix, but the END tag has one, e.g.:
+#. *begin
+#. 1 2 10.00 178 -01
+#. *end entrance      <--[Message given here]
+#: ../src/commands.c:586
+msgid "Matching BEGIN tag has no prefix"
+msgstr "Il BEGIN corrispondente non ha prefisso"
+
+#. TRANSLATORS: Note: In English you talk about the *units* of a single measurement, but
+#. the correct term in other languages may be singular.
+#. de: This is assuming there is _no_ subsequent message naming the culprit
+#. quantity.  If there is, make it `die Größe', and append its
+#. name immediately.
+#: ../src/commands.c:307
+#, c-format
+msgid "Invalid units `%s' for quantity"
+msgstr "Unitá `%s' non valida per questa quantitá"
+
+#. TRANSLATORS: nasty hack - this message is for the .3d img code, and all errors there take
+#. a filename parameter - we don't really want it here, so lose it with "%.0s"
+#. (which should display 0 characters from the filename) FIXME: sort out this
+#: ../src/img.c:177
+msgid "Out of memory %.0s"
+msgstr "Memoria insufficiente %.0s"
+
+#: ../src/commands.c:366
+#, c-format
+msgid "Unknown instrument `%s'"
+msgstr "Strumento `%s' sconosciuto"
+
+#. TRANSLATORS: DECLINATION is a built-in keyword, so best not to translate
+#: ../src/commands.c:1267
+msgid "Scale factor must be 1.0 for DECLINATION"
+msgstr "Il fattore di scala per il comando DECLINATION deve essere 1.0"
+
+#: ../src/commands.c:1309
+#, c-format
+msgid "Unknown setting `%s'"
+msgstr "Parametro `%s' sconosciuto"
+
+#: ../src/commands.c:409
+#, c-format
+msgid "Unknown character class `%s'"
+msgstr "Carattere sconosciuto classe `%s'"
+
+#: ../src/extend.c:590
+#: ../src/netskel.c:89
+msgid "No survey data"
+msgstr "Mancano i dati topografici"
+
+#. TRANSLATORS: de: sounds ugly, but is correct, and I can't think of a replacement
+#: ../src/filename.c:52
+#: ../src/img.c:178
+#, c-format
+msgid "Filename `%s' refers to directory"
+msgstr "Il nome del file `%s' corrisponde ad una directory"
+
+#: ../src/netartic.c:374
+msgid "Survey not all connected to fixed stations"
+msgstr "La topografia non é completamente connessa alle stazioni fisse"
+
+#: ../src/commands.c:725
+#: ../src/datain.c:633
+msgid "Station already fixed or equated to a fixed point"
+msgstr "Stazione giá fissata o uguagliata ad un punto fisso"
+
+#: ../src/cavern.c:277
+#: ../src/filename.c:55
+#: ../src/img.c:179
+#, c-format
+msgid "Failed to open output file `%s'"
+msgstr "Non riesco ad aprire il file di uscita `%s'"
+
+#: ../src/commands.c:1364
+msgid "Standard deviation must be positive"
+msgstr "La deviazione standard deve essere positiva"
+
+#. TRANSLATORS: as in: Usage: cavern ...
+#: ../src/cmdline.c:147
+msgid "Usage"
+msgstr "Utilizzo"
+
+#. TRANSLATORS: %s is a placeholder for the name of the station
+#: ../src/netbits.c:335
+#, c-format
+msgid "Survey leg with same station (`%s') at both ends - typing error?"
+msgstr "Alle estremitá di una battuta c'é la stessa stazione (`%s') - Errore di trascrizione?"
+
+#. TRANSLATORS: de: `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
+#. when necessary to avoid confusion.  While surface surveyors here use
+#. these per default, cavers rarely do.
+#. pt: "graus" is correct here ("grad" would be "grados")
+#. ca: Eric queries if "graus" is correct here:
+#. es: Eric queries if "grados" is correct here:
+#. it: "gradi" is correct here (grads would be "gradi quattrocentesimali")
+#: ../src/datain.c:901
+#: ../src/datain.c:916
+msgid "Clino reading over 90 degrees (absolute value)"
+msgstr "Lettura del clinometro superiore a 90 gradi (valore assoluto)"
+
+#: ../src/netbits.c:422
+#, c-format
+msgid "Tried to equate two non-equal fixed stations: `%s' and `%s'"
+msgstr "Tentativo di uguagliare due stazioni fisse differenti: `%s' e `%s'"
+
+#. TRANSLATORS: "equal" as in: *fix a 1 2 3 / *fix b 1 2 3 / *equate a b
+#: ../src/netbits.c:428
+#, c-format
+msgid "Equating two equal fixed points: `%s' and `%s'"
+msgstr "Uguagliate due stazioni fisse identiche: `%s' e `%s'"
+
+#. TRANSLATORS: " *fix a " gives this message:
+#: ../src/commands.c:643
+msgid "FIX command with no coordinates - fixing at (0,0,0)"
+msgstr "Comando FIX senza coordinate - fissato a (0,0,0)"
+
+#. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
+#: ../src/commands.c:728
+#: ../src/datain.c:635
+msgid "Station already fixed at the same coordinates"
+msgstr "Stazione giá fissata alle stesse coordinate"
+
+#: ../src/commands.c:636
+msgid "More than one FIX command with no coordinates"
+msgstr "Piú di un comando FIX senza coordinate"
+
+#. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN <SURVEY>, so this
+#. would generate error 57:
+#. *begin fred
+#. 1 2 1.23 045 -6
+#. *export 2
+#. *end fred
+#: ../src/commands.c:1621
+msgid "*EXPORT must immediately follow `*BEGIN <SURVEY>'"
+msgstr "*EXPORT deve seguire `*BEGIN <TOPOGRAFIA>'"
+
+#: ../src/readval.c:448
+msgid "Invalid year (< 1900 or > 2078)"
+msgstr "Anno non valido (<1900 o >2078)"
+
+#. TRANSLATORS: Suspicious means something like 410 degrees or -20 degrees
+#: ../src/datain.c:818
+#: ../src/datain.c:827
+msgid "Suspicious compass reading"
+msgstr "Lettura della bussola sospetta"
+
+#: ../src/datain.c:1414
+msgid "Negative tape reading"
+msgstr "Distanza negativa"
+
+#: ../src/commands.c:638
+msgid "Same station fixed twice with no coordinates"
+msgstr "La stessa stazione é stata fissata due volte senza coordinate"
+
+#. TRANSLATORS: This means that the data fed in said this.
+#. It could be a gross error (e.g. the decimal point is missing from
+#. the depth gauge reading) or it could just be due to random error on
+#. a near vertical leg
+#. de: Note that a change in depth becomes a `change in height' in German
+#: ../src/datain.c:1117
+msgid "Tape reading is less than change in depth"
+msgstr "La distanza é minore del dislivello"
+
+#. TRANSLATORS: a data "style" is something like NORMAL, DIVING, etc.
+#. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
+#. neither style nor reading is a keyword in the program
+#. This error complains about a depth gauge reading in normal style, for example
+#: ../src/commands.c:1018
+#, c-format
+msgid "Reading `%s' not allowed in data style `%s'"
+msgstr "Dato `%s' non permesso nel tipo di dati `%s'"
+
+#. TRANSLATORS: i.e. not enough readings for the style.
+#: ../src/commands.c:1181
+#, c-format
+msgid "Too few readings for data style `%s'"
+msgstr "Mancano dati per il tipo di dati `%s'"
+
+#. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
+#. it: The meaning of scorretto is that the STYLE is written wrong but is similar
+#. to a known style.
+#. STYLE `%s' scorretto
+#: ../src/commands.c:985
+#, c-format
+msgid "Data style `%s' unknown"
+msgstr "Tipo di dati `%s' sconosciuto"
+
+#. TRANSLATORS: Exporting a station twice give error 66:
+#. *begin example
+#. *export 1
+#. *export 1
+#. 1 2 1.24 045 -6
+#. *end example
+#: ../src/commands.c:857
+#, c-format
+msgid "Station `%s' already exported"
+msgstr "Stazione `%s' giá esportata"
+
+#. TRANSLATORS: complains about a situation like trying to define two from stations per leg
+#. de: The reservations with respect to "quantity"  (a close equivalent
+#. to "Meßgröße")  apply to the German term as well --
+#. a from station of a leg isn't a "Meßgröße" either
+#. by any stretch of the imagination.
+#: ../src/commands.c:1036
+#, c-format
+msgid "Duplicate reading `%s'"
+msgstr "Dato duplicato `%s'"
+
+#: ../src/commands.c:754
+#, c-format
+msgid "FLAG `%s' unknown"
+msgstr "FLAG `%s' sconosciuto"
+
+#: ../src/readval.c:406
+msgid "Missing \""
+msgstr "Manca \""
+
+#. TRANSLATORS: ro: FIXME i didn't get the idea of this message. i did an "automatic" translation
+#: ../src/listpos.c:105
+#, c-format
+msgid "Station `%s' referred to just once, with an explicit prefix - typo?"
+msgstr "La statione `%s' é ha un unico riferimento, con un prefisso esplicito - errore di scrittura?"
+
+#: ../src/netartic.c:379
+msgid "The following survey stations are not attached to a fixed point:"
+msgstr "Le seguenti stazioni non sono connesse ad un punto fisso:"
+
+#: ../src/netskel.c:128
+#, c-format
+msgid "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
+msgstr "La topografia non ha punti fissi. Quindi %s é stata fissata a (0,0,0)"
+
+#. TRANSLATORS: fixed station that is not part of any traverse
+#: ../src/netskel.c:896
+#, c-format
+msgid "Unused fixed point `%s'"
+msgstr "Punto fisso non usato `%s'"
+
+#: ../src/matrix.c:123
+msgid "Network solved by reduction - no simultaneous equations to solve."
+msgstr "Rete risolta per riduzione - nessun sistema da risolvere."
+
+#: ../src/matrix.c:135
+#, c-format
+msgid "Solving %d simultaneous equations"
+msgstr "Sto risolvendo un sistema di %d equazioni"
+
+#. TRANSLATORS: %c is 'x', 'y' or 'z'
+#: ../src/matrix.c:150
+#, c-format
+msgid "Solving to find %c coordinates"
+msgstr "Sto risolvendo per trovare le coordinate %c"
+
+#. TRANSLATORS: de has the reverse singular/plural arrangement :)
+#. (i.e., singular has the final -n, plural doesn't)
+#: ../src/commands.c:1090
+#, c-format
+msgid "Reading `%s' duplicates previous reading(s)"
+msgstr "La lettura `%s' duplica precedenti letture"
+
+#: ../src/matrix.c:133
+msgid "Solving one equation"
+msgstr "Sto risolvendo una equazione"
+
+#: ../src/datain.c:889
+#: ../src/datain.c:1111
+#: ../src/datain.c:1300
+msgid "Negative adjusted tape reading"
+msgstr "Distanza corretta negativa"
+
+#: ../src/commands.c:1539
+#: ../src/commands.c:1559
+msgid "Date is in the future!"
+msgstr "La data é nel futuro!"
+
+#: ../src/commands.c:1563
+msgid "End of date range is before the start"
+msgstr "La data finale é anteriore a quella finale"
+
+#: ../src/avenprcore.cc:118
+#, c-format
+msgid "Parameter `%s' has invalid value `%s' in printer configuration file"
+msgstr "Parametro `%s' ha un valore `%s' non valido nel file di configurazione della stampante"
+
+#. TRANSLATORS: e.g. the user specifies a passage cross-section at station "entrance.27", but
+#. there is no station "entrance.27" in the centre-line.
+#: ../src/netskel.c:980
+#, c-format
+msgid "Cross section specified at non-existent station `%s'"
+msgstr "Sezione trasversale specificata per una stazione non esistente: `%s'"
+
+#. TRANSLATORS: In data with backsights, the user has tried to give a plumb for the
+#. foresight and a clino reading for the backsight, or something similar.
+#: ../src/datain.c:930
+#: ../src/datain.c:951
+msgid "CLINO and BACKCLINO readings must be of the same type"
+msgstr "Le letture CLINO e BACKCLINO devono essere dello stesso tipo"
+
+#: ../src/avenprcore.cc:113
+#, c-format
+msgid "Parameter `%s' missing in printer configuration file"
+msgstr "Il parametro `%s' manca nel file di configurazione della stampante"
+
+#: ../src/readval.c:456
+msgid "Invalid month"
+msgstr "Mese non valido"
+
+#. TRANSLATORS: e.g. 31st of April, or 32nd of any month
+#: ../src/readval.c:464
+msgid "Invalid day of the month"
+msgstr "Giorno del mese non valido"
+
+#, c-format
+msgid "Error in format of font file `%s'"
+msgstr "Errore nel formato del file dei caratteri `%s'"
+
+#: ../src/readval.c:116
+msgid "Expecting survey name"
+msgstr "Manca il nome del rilievo"
+
+#. TRANSLATORS: Program will exit shortly after printing this
+#: ../src/message.c:224
+msgid "Abnormal termination"
+msgstr "Terminazione anormale"
+
+#: ../src/message.c:225
+msgid "Arithmetic error"
+msgstr "Errore aritmetico"
+
+#. TRANSLATORS: Something is badly wrong -- the CPU tried to execute bad opcodes -- corrupted program?
+#: ../src/message.c:226
+msgid "Illegal instruction"
+msgstr "Istruzione illegale"
+
+#: ../src/mainfrm.cc:364
+#: ../src/extend.c:539
+#: ../src/sorterr.c:140
+#, c-format
+msgid "Couldn't open file `%s'"
+msgstr "Non riesco ad aprire il file `%s'"
+
+#: ../src/message.c:227
+msgid "Bad memory access"
+msgstr "Accesso alla memoria errato"
+
+#. TRANSLATORS: ro: FIXME pls give me a synonym for "deprecated"
+#: ../src/commands.c:418
+#: ../src/commands.c:481
+#: ../src/commands.c:509
+#: ../src/commands.c:999
+#: ../src/commands.c:1293
+#: ../src/readval.c:68
+msgid "Further uses of this deprecated feature will not be reported"
+msgstr "Usi futuri di questa funzionalitá non piú usata non verranno segnalati"
+
+#: ../src/message.c:228
+msgid "Unknown signal received"
+msgstr "Ricevuto segnale sconosciuto"
+
+#: ../src/datain.c:855
+#, c-format
+msgid "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
+msgstr "Le letture COMPASS e BACKCOMPASS differiscono di %s gradi"
+
+#: ../src/datain.c:999
+#, c-format
+msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
+msgstr "Le letture CLINO e BACKCLINO differiscono di %s gradi"
+
+#. TRANSLATORS: A computer mouse, not the rodent sort ;)
+#. Actually, mouse is somewhat imprecise as it could refer to a trackerball
+#. or joystick, but mouse is more compact than "pointing device" and usually
+#. correct.
+msgid "No mouse detected"
+msgstr "Non ho trovato il mouse"
+
+#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
+msgid "Plan, %05.1f up screen"
+msgstr "Pianta, %05.1f cima schermo"
+
+msgid "View towards %05.1f"
+msgstr "Vista in direzione %05.1f"
+
+#. TRANSLATORS: de: Or shorter, just have - `siehe Handbuch' for the second half.
+msgid "You need to calibrate your printer - see the manual for details."
+msgstr "É necessario calibrare la stampante - consultare il manuale per i dettagli"
+
+#: ../src/commands.c:996
+#, c-format
+msgid "`*data %s %c …' is deprecated - use `*data %s …' instead"
+msgstr "`*data %s %c …' é una funzionalitá non piú usata - usare `*data %s …'"
+
+#: ../src/extend.c:491
+msgid "Reading in data - please wait…"
+msgstr "Sto leggendo i dati - attendere per favore…"
+
+#. TRANSLATORS: Probably not a .3D file.  caverot autoexec.bat would give this
+#: ../src/3dtopos.c:154
+#: ../src/3dtopos.c:160
+#: ../src/cad3d.c:865
+#: ../src/cad3d.c:876
+#: ../src/img.c:180
+#, c-format
+msgid "Bad 3d image file `%s'"
+msgstr "File immagine 3d `%s' errato"
+
+#. TRANSLATORS: This is the date format string used to timestamp .3d files internally
+#. Probably best to keep it the same for all translations
+#: ../src/img.c:48
+#, c-format
+msgid "%a,%Y.%m.%d %H:%M:%S %Z"
+msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
+
+#. TRANSLATORS: put in .3d file if we can't read the date/time
+#: ../src/img.c:47
+msgid "Date and time not available."
+msgstr "Data e ora non disponibili."
+
+#: ../src/img.c:181
+#, c-format
+msgid "Error reading from file `%s'"
+msgstr "Errore nella lettura del file `%s'"
+
+#: ../src/gfxcore.cc:2886
+#: ../src/mainfrm.cc:322
+#: ../src/mainfrm.cc:1728
+#: ../src/mainfrm.cc:2179
+#: ../src/filename.c:79
+#: ../src/img.c:182
+#, c-format
+msgid "Error writing to file `%s'"
+msgstr "Errore nella scrittura del file `%s'"
+
+#: ../src/filename.c:82
+msgid "Error writing to file"
+msgstr "Errore nella scrittura del file"
+
+#: ../src/sorterr.c:76
+#: ../src/sorterr.c:93
+#: ../src/sorterr.c:164
+msgid "Couldn't parse .err file"
+msgstr "Non posso analizzare il file .err degli errori"
+
+#. TRANSLATORS: de: Es wurden %d Warnungen und %d Fehler registriert.
+#: ../src/cavern.c:369
+#, fuzzy, c-format
+msgid "There were %d warning(s) and %d error(s) - no output files produced."
+msgstr "Ci sono %d avvertimenti e %d errori - nessun file prodotto."
+
+#: ../src/img.c:183
+#, c-format
+msgid "File `%s' has a newer format than this program can understand"
+msgstr "Il file `%s' é ha un nuovo formato che questo programma non puó capire"
+
+#: ../src/printwx.cc:634
+msgid "North"
+msgstr "Nord"
+
+#. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
+#: ../src/printwx.cc:651
+msgid "Elevation on"
+msgstr "Profilo in direzione"
+
+#: ../src/printwx.cc:255
+#: ../src/printwx.cc:637
+msgid "Plan view"
+msgstr "Pianta"
+
+#: ../src/gfxcore.cc:713
+#: ../src/printwx.cc:257
+#: ../src/printwx.cc:660
+msgid "Elevation"
+msgstr "profilo"
+
+msgid "3d file"
+msgstr "File immagine 3d"
+
+#: ../src/cavern.c:331
+msgid "Calculating statistics"
+msgstr "Sto calcolando le statistiche"
+
+#: ../src/readval.c:420
+msgid "Expecting string field"
+msgstr "Questo é un campo di tipo stringa"
+
+#: ../src/cmdline.c:190
+msgid "too few arguments"
+msgstr "Numero di parametri insufficiente"
+
+#: ../src/cmdline.c:197
+msgid "too many arguments"
+msgstr "Troppi parametri"
+
+#: ../src/cmdline.c:156
+#: ../src/cmdline.c:159
+#: ../src/cmdline.c:163
+msgid "FILE"
+msgstr "FILE"
+
+#. TRANSLATORS: a trailing traverse is a dead end back to a junction
+#. fr: Eric has chosen the terminology used by toporobot: "sequence", though
+#. toporobot uses the term to mean something more specific.  Not really an issue
+#. since these messages really just give the end-user an indication that
+#. progress is being made.
+#: ../src/netskel.c:162
+msgid "Removing trailing traverses"
+msgstr "Sto rimuovendo le traverse terminali"
+
+#: ../src/netskel.c:216
+msgid "Concatenating traverses between nodes"
+msgstr "So connettendo le traverse fra i nodi"
+
+#: ../src/netskel.c:409
+msgid "Calculating traverses between nodes"
+msgstr "Sto calcolando le traverse fra i nodi"
+
+#: ../src/netskel.c:739
+msgid "Calculating trailing traverses"
+msgstr "Sto calcolando le traverse terminali"
+
+#: ../src/network.c:82
+msgid "Simplifying network"
+msgstr "Sto semplificando la rete"
+
+#: ../src/network.c:540
+msgid "Calculating network"
+msgstr "Sto calcolando la rete"
+
+#: ../src/datain.c:1404
+#, c-format
+msgid "Found `%s', expecting `F' or `B'"
+msgstr "Trovato `%s', atteso `F' o `B'"
+
+#: ../src/cavern.c:425
+msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
+msgstr "Sviluppo spaziale = %7.2fm (%7.2fm corretto)"
+
+#: ../src/cavern.c:428
+msgid "Total plan length of survey legs = %7.2fm"
+msgstr "Sviluppo planimetrico = %7.2fm"
+
+#: ../src/cavern.c:431
+msgid "Total vertical length of survey legs = %7.2fm"
+msgstr "Totale delle componenti verticali delle battute = %7.2fm"
+
+#. TRANSLATORS: numbers are altitudes of highest and lowest stations
+#: ../src/cavern.c:437
+msgid "Vertical range = %4.2fm (from "
+msgstr "Dislivello totale = %4.2fm (da "
+
+#. TRANSLATORS: for many translations, 196/197 will be the same as 136/137
+#: ../src/cavern.c:438
+msgid " at %4.2fm to "
+msgstr " a %4.2fm a "
+
+#: ../src/cavern.c:438
+msgid " at %4.2fm)"
+msgstr " a %4.2fm)"
+
+#. TRANSLATORS: de: There _is_ a technical term for this which I fail to remember at the moment.
+#: ../src/cavern.c:413
+msgid "There is 1 loop."
+msgstr "C'é una poligonale chiusa."
+
+#. TRANSLATORS: de: There _is_ a technical term for this which I fail to remember at the moment.
+#: ../src/cavern.c:415
+#, c-format
+msgid "There are %ld loops."
+msgstr "Ci sono %ld poligonali chiuse."
+
+#. TRANSLATORS: CPU isn't CPU in French
+#: ../src/cavern.c:353
+msgid "CPU time used %5.2fs"
+msgstr "Tempo CPU utilizzato %5.2fs"
+
+#: ../src/cavern.c:356
+msgid "Time used %5.2fs"
+msgstr "Tempo totale %5.2fs"
+
+#: ../src/cavern.c:358
+msgid "Time used unavailable"
+msgstr "Tempo totale non disponibile"
+
+#: ../src/cavern.c:361
+msgid "Time used %5.2fs (%5.2fs CPU time)"
+msgstr "Tempo totale %5.2fs (tempo CPU %5.2fs)"
+
+#: ../src/cavern.c:365
+msgid "Done."
+msgstr "Fatto."
+
+#: ../src/netskel.c:717
+msgid "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
+msgstr "Lunghezza originale%7.2fm (%3d battute), ridotta%7.2fm (%5.2fm/battuta). "
+
+#: ../src/netskel.c:720
+msgid "Error%7.2f%%"
+msgstr "Errore%7.2f%%"
+
+#. TRANSLATORS: Here N/A means "Not Applicable" -- it means the traverse has zero length, so
+#. error per metre is meaningless
+#. There should be 4 spaces between "Error" and "N/A" so that it lines up with
+#. the numbers in the message above.
+#: ../src/netskel.c:722
+msgid "Error    N/A"
+msgstr "Errore    N/A"
+
+#: ../src/cavern.c:439
+msgid "North-South range = %4.2fm (from "
+msgstr "Estensione Nord-Sud = %4.2fm (da "
+
+#: ../src/cavern.c:441
+msgid "East-West range = %4.2fm (from "
+msgstr "Estensione Est-Ovest = %4.2fm (da "
+
+#. TRANSLATORS: description of --help option
+#: ../src/cmdline.c:127
+msgid "display this help and exit"
+msgstr "mostra questo aiuto ed esce"
+
+#. TRANSLATORS: description of --verbose option
+#: ../src/cmdline.c:128
+msgid "output version information and exit"
+msgstr "Mostra informazioni sulla versione ed esce"
+
+#. TRANSLATORS: As in "printer driver"
+msgid "Driver"
+msgstr "Driver"
+
+#. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]...
+#: ../src/cmdline.c:148
+msgid "OPTION"
+msgstr "OPZIONI"
+
+#: ../src/printwx.cc:220
+#: ../src/printwx.cc:672
+#: ../src/printwx.cc:733
+msgid "Scale"
+msgstr "Scala"
+
+msgid "Continue"
+msgstr "Continua"
+
+msgid "Exiting."
+msgstr "Fine."
+
+#: ../src/cmdline.c:172
+#, c-format
+msgid "Try `%s --help' for more information.\n"
+msgstr "Usare `%s --help' per ulteriori informazioni.\n"
+
+msgid "Plan or Elevation"
+msgstr "Pianta o profilo"
+
+msgid "Bearing up page (degrees): "
+msgstr "Azimut della cima della pagina (gradi): "
+
+msgid "View towards: "
+msgstr "Vista verso: "
+
+#. TRANSLATORS: de: I would have written "Blickneigung" or something like that, but this
+#. would have made the sign convention even more counterintuitive.
+msgid "Tilt (degrees): "
+msgstr "Inclinazione (gradi): "
+
+#, c-format
+msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
+msgstr "Per favore, immettere la scala della carta = X:Y (default 1:%d)\n: "
+
+msgid "Using scale %.0f:%.0f"
+msgstr "Scala utilizzata %.0f:%.0f"
+
+msgid "Print which pages?\n(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)\n: "
+msgstr "Pagine da stampare:\n(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-', '-n' per un intervallo)\n: "
+
+#. TRANSLATORS: e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
+#, c-format
+msgid "Printing to `%s'…"
+msgstr "In stampa su `%s'…"
+
+#: ../src/avenprcore.cc:262
+#, c-format
+msgid "Page %d of %d"
+msgstr "Pagina %d di %d"
+
+#: ../src/avenprcore.cc:266
+#: ../src/printwx.cc:1172
+#, c-format
+msgid "Survey `%s'   Page %d (of %d)   Processed on %s"
+msgstr "Topografia `%s'   Pagina %d (di %d)   In corso su %s"
+
+#. TRANSLATORS: This is used on printouts of plan views, and gives the bearing up the page
+#. (so if North is across the page to the right, 270 is "Up page"
+#: ../src/printwx.cc:677
+msgid "Up page"
+msgstr "Alto della pagina"
+
+#. TRANSLATORS: This is used on printouts of elevations
+#. It gives the bearing we're looking in the direction of
+#: ../src/printwx.cc:677
+msgid "View"
+msgstr "Vista"
+
+#, c-format
+msgid "This will need %d pages (%dx%d)."
+msgstr "Saranno necessarie %d pagine (%dx%d)."
+
+msgid "This will need 1 page."
+msgstr "Sará necessaria una pagina."
+
+#: ../src/cavern.c:399
+msgid "Survey contains 1 survey station,"
+msgstr "La topografia contiene una stazione,"
+
+#: ../src/cavern.c:401
+#, c-format
+msgid "Survey contains %ld survey stations,"
+msgstr "La topografia contiene %ld stazioni,"
+
+#: ../src/cavern.c:405
+msgid " joined by 1 leg."
+msgstr " unite per una battuta."
+
+#: ../src/cavern.c:407
+#, c-format
+msgid " joined by %ld legs."
+msgstr " unite per %ld battute."
+
+#. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
+#: ../src/listpos.c:159
+msgid "node"
+msgstr "nodo"
+
+#. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
+#: ../src/listpos.c:159
+msgid "nodes"
+msgstr "nodi"
+
+#. TRANSLATORS: connected component in the graph theory sense
+#. It means there are %ld bits of survey with no connections between them
+#. This message is only used if there are more than 1
+#: ../src/cavern.c:421
+#, c-format
+msgid "Survey has %ld connected components."
+msgstr "La topografia contiene %ld componenti connesse."
+
+#, c-format
+msgid "Bad list of pages to print `%s'"
+msgstr "Lista di pagine da stampare `%s' errata"
+
+#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
+msgid "yes"
+msgstr "si"
+
+msgid "no"
+msgstr "no"
+
+#. TRANSLATORS: de: or `aufhören'.  These are parts of menus, right?  as in `yes,no,abort'?
+#. In fact, `verlassen' is only appropriate when you want to quit the whole
+#. program.  If you just want to abort an action, it ought to be `Abbruch'.
+#. Yes this is a noun not a verb, but that's what's commonly used.
+#. If this one is part of a (yes,no,quit) selection based on the first letter, it
+#. is better to use this message (even if it isn't usual):
+msgid "quit"
+msgstr "annulla"
+
+msgid "plan"
+msgstr "pianta"
+
+msgid "elevation"
+msgstr "profilo"
+
+#: ../src/cmdline.c:219
+#: ../src/cmdline.c:238
+#, c-format
+msgid "numeric argument `%s' out of range"
+msgstr "argomento numerico `%s' al di fuori dell'intervallo consentito"
+
+#: ../src/cmdline.c:221
+#, c-format
+msgid "argument `%s' not an integer"
+msgstr "L'argomento `%s' non é un intero"
+
+#: ../src/cmdline.c:240
+#, c-format
+msgid "argument `%s' not a number"
+msgstr "L'argomento `%s' non é un numero"
+
+#. TRANSLATORS: de: NB there is no comma before "oder"
+#: ../src/commands.c:768
+msgid "Expecting `DUPLICATE', `SPLAY', or `SURFACE'"
+msgstr "Atteso `DUPLICATE', `SPLAY' o `SURFACE'"
+
+#. TRANSLATORS: de: NB there is no comma before "oder"
+#: ../src/commands.c:770
+msgid "Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'"
+msgstr "Atteso `NOT', `DUPLICATE', `SPLAY' o `SURFACE'"
+
+#: ../src/listpos.c:86
+#, c-format
+msgid "Station `%s' referred to by *entrance or *export but never used"
+msgstr "Stazione `%s' referenziata da *entrance o *export ma mai usata"
+
+#: ../src/printwx.cc:665
+msgid "Extended elevation"
+msgstr "Profilo longitudinale"
+
+#: ../src/commands.c:567
+msgid "No matching BEGIN"
+msgstr "Manca il BEGIN corrispondente"
+
+#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it's
+#. given at all
+#: ../src/commands.c:589
+msgid "Prefix tag doesn't match BEGIN"
+msgstr "Il prefisso non corrisponde con il BEGIN"
+
+#: ../src/commands.c:593
+msgid "Closing prefix omitted from END"
+msgstr "Prefisso omesso in END"
+
+#. TRANSLATORS: heading line for .pos file
+#. please try to ensure the ','s (or at least the columns) are in the same place
+#: ../src/3dtopos.c:109
+msgid "( Easting, Northing, Altitude )"
+msgstr "( Est (X), Nord (Y), Quota  Z )"
+
+#: ../src/readval.c:444
+#: ../src/readval.c:454
+#: ../src/readval.c:462
+#, c-format
+msgid "Expecting date, found `%s'"
+msgstr "Attesa una data, trovato `%s'"
+
+msgid "Only load the sub-survey with prefix"
+msgstr "Carica un sotto-rilievo con prefisso"
+
+#. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
+#. your tape is marked in "0 feet" (but you might measure distance by counting
+#. knots on a diving line, and tie them every "2 feet").
+#: ../src/commands.c:1223
+msgid "*UNITS factor must be non-zero"
+msgstr "Il fattore *UNITS deve essere diverso da zero"
+
+#. TRANSLATORS: In the "File" menu
+#: ../src/mainfrm.cc:720
+msgid "&Screenshot…"
+msgstr "&Cattura schermo…"
+
+#: ../src/mainfrm.cc:1254
+#, c-format
+msgid "No survey data in 3d file `%s'"
+msgstr "Nel file 3D `%s' non ci sono dati di topografia"
+
+#: ../src/gfxcore.cc:671
+msgid "Facing"
+msgstr "Direzione"
+
+msgid "Close"
+msgstr "Chiudi"
+
+#. TRANSLATORS: for the title of the About box
+#: ../src/aboutdlg.cc:69
+#, c-format
+msgid "About %s"
+msgstr "Informazioni su %s"
+
+#. TRANSLATORS: Aven menu items.  An '@' goes before the letter of any accelerator key.
+#. The string "\t" separates the menu text and any accelerator key.
+#. File->Open dialog:
+#: ../src/mainfrm.cc:1701
+msgid "Select a 3d file to view"
+msgstr "Seleziona un file 3D da visualizzare"
+
+#: ../src/mainfrm.cc:1692
+msgid "Survex 3d files"
+msgstr "File Survex 3d"
+
+#: ../src/mainfrm.cc:1697
+#: ../src/mainfrm.cc:2096
+msgid "All files"
+msgstr "Tutti i file"
+
+#. TRANSLATORS: in the about box (summarising the purpose of aven)
+#: ../src/aboutdlg.cc:87
+msgid "Survey visualisation tool"
+msgstr "Strumento di visualizzazione rilievi"
+
+#. TRANSLATORS: Aven menu titles.  An '@' goes before the letter of any accelerator key.
+#. The accelerators must be different within this group
+#: ../src/mainfrm.cc:832
+msgid "&File"
+msgstr "&File"
+
+#: ../src/mainfrm.cc:833
+msgid "&Rotation"
+msgstr "&Rotazione"
+
+#: ../src/mainfrm.cc:834
+msgid "&Orientation"
+msgstr "&Orientazione"
+
+#: ../src/mainfrm.cc:835
+msgid "&View"
+msgstr "&Vista"
+
+#: ../src/mainfrm.cc:837
+msgid "&Controls"
+msgstr "&Controlli"
+
+#: ../src/mainfrm.cc:843
+msgid "&Help"
+msgstr "&Aiuto"
+
+#: ../src/mainfrm.cc:839
+msgid "&Presentation"
+msgstr "&Presentazione"
+
+#: ../src/aboutdlg.cc:98
+msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
+msgstr "Questo programma è software libero; è lecito redistribuirlo o modificarlo secondo i termini della Licenza Pubblica Generica GNU come è pubblicata dalla Free Software Foundation; o la versione 2 della licenza o (a propria scelta) una versione successiva."
+
+#. TRANSLATORS: "File" menu.  The accelerators must be different within this group.
+#. c.f. 201, 380, 381.
+#: ../src/mainfrm.cc:715
+msgid "&Open…\tCtrl+O"
+msgstr "&Apri…\tCtrl+O"
+
+#: ../src/mainfrm.cc:727
+msgid "&Quit\tCtrl+Q"
+msgstr "&Esci\tCtrl+Q"
+
+#. TRANSLATORS: error from "*data normal newline from to tape compass clino"
+#: ../src/commands.c:1079
+msgid "NEWLINE can't be the first reading"
+msgstr "NEWLINE non puó essere la prima lettura"
+
+#. TRANSLATORS: error from "*data normal from to tape compass clino newline"
+#: ../src/commands.c:1112
+msgid "NEWLINE can't be the last reading"
+msgstr "NEWLINE non puó essere l'ultima lettura"
+
+#. TRANSLATORS: error from "*data normal station tape compass clino"
+#. ro: this might do...
+#: ../src/commands.c:1134
+msgid "Interleaved readings, but no NEWLINE"
+msgstr "Letture su piú linee, ma nessuna NEWLINE"
+
+#. TRANSLATORS: caused by e.g. "*data diving station newline depth tape compass"
+#: ../src/commands.c:1026
+#, c-format
+msgid "Reading `%s' must occur before NEWLINE"
+msgstr "La lettura `%s' deve precedere NEWLINE"
+
+#. TRANSLATORS: e.g. "*data normal from to tape newline compass clino"
+#: ../src/commands.c:1073
+msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
+msgstr "NEWLINE puó essere preceduto solamente da STATION, DEPTH e COUNT"
+
+#: ../src/commands.c:1257
+msgid "Can't calibrate angular and length quantities together"
+msgstr "Le quantitá di lunghezza e angolari non possono essere calibrate insieme"
+
+#. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
+#. height values).
+msgid "Select a terrain file to view"
+msgstr "Seleziona un modello digitale del suolo da visualizzare"
+
+msgid "Terrain files"
+msgstr "File di modelli digitali del suolo"
+
+#. TRANSLATORS: Used in the "Export" settings dialog
+#: ../src/printwx.cc:298
+msgid "&Export…"
+msgstr "&Esporta…"
+
+#. TRANSLATORS: "Rotation" menu.  The accelerators must be different within this group.
+#. Tickable menu item which toggles auto rotation
+#: ../src/mainfrm.cc:733
+msgid "Au&to-Rotate\tSpace"
+msgstr "&Auto-Rotazione\tSpace"
+
+#: ../src/mainfrm.cc:735
+msgid "Speed &Up"
+msgstr "A&ccelera la rotazione"
+
+#: ../src/mainfrm.cc:736
+msgid "Slow &Down"
+msgstr "&Rallenta la rotazione"
+
+#: ../src/mainfrm.cc:738
+msgid "&Reverse Direction"
+msgstr "&Inverte la direzione"
+
+#: ../src/mainfrm.cc:740
+msgid "Step Once &Anticlockwise"
+msgstr "Un passo a&ntiorario"
+
+#. TRANSLATORS: ro: antiorar is somehow forced. a genuine translation would sound like
+#. ro: anticlockwise = in sens contrar acelor de ceasornic
+#: ../src/mainfrm.cc:741
+msgid "Step Once &Clockwise"
+msgstr "Un passo &Orario"
+
+#: ../src/mainfrm.cc:798
+msgid "&Perspective"
+msgstr "Prospetti&va"
+
+#: ../src/mainfrm.cc:800
+msgid "Textured &Walls"
+msgstr "Pareti con te&xture"
+
+#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+#. instead if it gives a better translation which most users will understand.
+#: ../src/mainfrm.cc:801
+msgid "Fade Distant Ob&jects"
+msgstr "Sbiadisce g&li oggetti distanti"
+
+#. TRANSLATORS: View *looking* North
+#: ../src/mainfrm.cc:744
+msgid "View &North"
+msgstr "Vista verso &Nord"
+
+#. TRANSLATORS: View *looking* East
+#: ../src/mainfrm.cc:745
+msgid "View &East"
+msgstr "Vista verso &Est"
+
+#. TRANSLATORS: View *looking* South
+#: ../src/mainfrm.cc:746
+msgid "View &South"
+msgstr "Vista verso &Sud"
+
+#. TRANSLATORS: View *looking* West
+#: ../src/mainfrm.cc:747
+msgid "View &West"
+msgstr "Vista verso &Ovest"
+
+#: ../src/mainfrm.cc:749
+msgid "Shift Survey &Left"
+msgstr "Sposta il rilievo a Sin&istra"
+
+#: ../src/mainfrm.cc:750
+msgid "Shift Survey &Right"
+msgstr "Sposta il rilievo a &Destra"
+
+#: ../src/mainfrm.cc:751
+msgid "Shift Survey &Up"
+msgstr "Sposta il rilievo verso l'&Alto"
+
+#: ../src/mainfrm.cc:752
+msgid "Shift Survey &Down"
+msgstr "Sposta il &rilievo verso il Basso"
+
+#: ../src/mainfrm.cc:754
+msgid "&Plan View"
+msgstr "&Pianta"
+
+#: ../src/mainfrm.cc:755
+msgid "Ele&vation"
+msgstr "Pro&filo"
+
+#: ../src/mainfrm.cc:757
+msgid "&Higher Viewpoint"
+msgstr "A&lza il punto di vista"
+
+#: ../src/mainfrm.cc:758
+msgid "L&ower Viewpoint"
+msgstr "A&bbassa il punto di vista"
+
+#. TRANSLATORS: fr: or "Agrandir"
+#. pt or "Ampliar"
+#. es or "Aumentar"
+#. it: or "Ingrandisci"
+#: ../src/mainfrm.cc:760
+msgid "&Zoom In\t]"
+msgstr "&Zoom avanti\t]"
+
+#. TRANSLATORS: fr: or "Réduire"
+#. pt or "Reduzir"
+#. it: or "Riduci"
+#: ../src/mainfrm.cc:761
+msgid "Zoo&m Out\t["
+msgstr "Zoo&m indietro\t["
+
+#: ../src/mainfrm.cc:763
+msgid "Restore De&fault View"
+msgstr "Ripristina la &vista predefinita"
+
+#. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
+#. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a
+#. good name for this but nothing better has yet come to mind!
+#: ../src/printwx.cc:215
+msgid "Elements"
+msgstr "Elementi"
+
+#: ../src/printwx.cc:234
+#: ../src/printwx.cc:421
+#, c-format
+msgid "%d pages (%dx%d)"
+msgstr "%d pagine (%dx%d)"
+
+#. TRANSLATORS: used in the scale drop down selector in the print dialog
+#. the implicit meaning is "choose a suitable scale to fit the
+#. plot on a single page", but we need something shorter
+#: ../src/printwx.cc:221
+#: ../src/printwx.cc:453
+msgid "One page"
+msgstr "Una pagina"
+
+#: ../src/printwx.cc:241
+msgid "Bearing"
+msgstr "Azimut"
+
+#: ../src/printwx.cc:271
+msgid "Station Names"
+msgstr "Nome di stazione"
+
+#: ../src/printwx.cc:269
+msgid "Crosses"
+msgstr "Croci"
+
+#. TRANSLATORS: de:262 Strecken
+#: ../src/printwx.cc:265
+msgid "Underground Survey Legs"
+msgstr "Battute del rilievo sotterraneo"
+
+#. TRANSLATORS: Used in the print dialog:
+#: ../src/printwx.cc:246
+msgid "Tilt angle"
+msgstr "Angolo di inclinazione"
+
+#. TRANSLATORS: used in the print dialog - controls drawing lines around each page
+#: ../src/printwx.cc:274
+msgid "Page Borders"
+msgstr "Bordi pagina"
+
+#. TRANSLATORS: used in the print dialog - controls drawing the box at the lower left
+#. with survey name, view angles, etc
+#: ../src/printwx.cc:278
+msgid "Info Box"
+msgstr "Riquadro informazioni"
+
+#. TRANSLATORS: will be used in the print dialog - check this to print blank pages
+#. (otherwise they'll be skipped to save paper)
+#: ../src/printwx.cc:276
+msgid "Blank Pages"
+msgstr "Pagine bianche"
+
+#: ../src/mainfrm.cc:777
+msgid "Station &Names\tCtrl+N"
+msgstr "&Nome di stazione\tCtrl+N"
+
+#: ../src/mainfrm.cc:779
+msgid "&Crosses\tCtrl+X"
+msgstr "&Croci\tCtrl+X"
+
+#: ../src/mainfrm.cc:783
+msgid "&Underground Survey Legs\tCtrl+L"
+msgstr "&Battute del rilievo sotterraneo\tCtrl+L"
+
+#: ../src/mainfrm.cc:786
+msgid "&Overlapping Names"
+msgstr "Nomi &Sovrapposti"
+
+#: ../src/mainfrm.cc:817
+msgid "&Compass"
+msgstr "&Bussola"
+
+#: ../src/mainfrm.cc:818
+msgid "C&linometer"
+msgstr "&Clinometro"
+
+#: ../src/mainfrm.cc:819
+msgid "&Depth Bar"
+msgstr "Barra di controllo della &Profonditá"
+
+#: ../src/mainfrm.cc:820
+msgid "&Scale Bar"
+msgstr "Barra di controllo della &Scala"
+
+#: ../src/mainfrm.cc:812
+msgid "&Reverse Sense\tCtrl+R"
+msgstr "&Inverte il senso\tCtrl+R"
+
+#. TRANSLATORS: sk: Netuším o čo ide
+#. ro: to find a better way to express that
+#: ../src/mainfrm.cc:796
+#: ../src/mainfrm.cc:814
+msgid "&Cancel Measuring Line\tEscape"
+msgstr "&Cancella la linea di misura\tEscape"
+
+#: ../src/mainfrm.cc:789
+msgid "Colour by E&rror"
+msgstr "Colore di &Error"
+
+#: ../src/mainfrm.cc:829
+msgid "&About…"
+msgstr "&Informazioni su…"
+
+#: ../src/mainfrm.cc:784
+msgid "&Surface Survey Legs\tCtrl+F"
+msgstr "Battute topografia di Super&ficie\tCtrl+F"
+
+#: ../src/mainfrm.cc:787
+msgid "Colour by &Depth"
+msgstr "Colori secondo &profonditá"
+
+#: ../src/mainfrm.cc:788
+msgid "Colour by D&ate"
+msgstr "Coloure per &Data"
+
+#: ../src/mainfrm.cc:791
+msgid "Highlight &Entrances"
+msgstr "Marca gli Ing&ressi"
+
+#: ../src/mainfrm.cc:792
+msgid "Highlight &Fixed Points"
+msgstr "Marca i Punti f&issi"
+
+#: ../src/mainfrm.cc:793
+msgid "Highlight E&xported Points"
+msgstr "Marca i p&unti Esportati"
+
+#: ../src/mainfrm.cc:780
+msgid "&Grid\tCtrl+G"
+msgstr "&Griglia\tCtrl+G"
+
+#: ../src/mainfrm.cc:802
+msgid "Smoot&hed Survey Legs"
+msgstr "Battute topografiche &ammorbidite"
+
+#: ../src/mainfrm.cc:821
+msgid "&Indicators"
+msgstr "I&ndicatori"
+
+#: ../src/z_getopt.c:695
+#: ../src/z_getopt.c:707
+#, c-format
+msgid "%s: option `%s' is ambiguous\n"
+msgstr "%s: l'opzione `%s' è ambigua\n"
+
+#: ../src/z_getopt.c:1023
+#: ../src/z_getopt.c:1034
+#, c-format
+msgid "%s: option `-W %s' is ambiguous\n"
+msgstr "%s: l'opzione `-W %s' è ambigua\n"
+
+#: ../src/z_getopt.c:751
+#: ../src/z_getopt.c:755
+#, c-format
+msgid "%s: option `%c%s' doesn't allow an argument\n"
+msgstr "%s: l'opzione `%c%s' non permette un argomento\n"
+
+#: ../src/z_getopt.c:740
+#: ../src/z_getopt.c:743
+#, c-format
+msgid "%s: option `--%s' doesn't allow an argument\n"
+msgstr "%s: l'opzione `--%s' non permette un argomento\n"
+
+#: ../src/z_getopt.c:1058
+#: ../src/z_getopt.c:1069
+#, c-format
+msgid "%s: option `-W %s' doesn't allow an argument\n"
+msgstr "%s: l'opzione `-W %s' non permette un argomento\n"
+
+#: ../src/z_getopt.c:790
+#: ../src/z_getopt.c:802
+#: ../src/z_getopt.c:1089
+#: ../src/z_getopt.c:1101
+#, c-format
+msgid "%s: option `%s' requires an argument\n"
+msgstr "%s: l'opzione `%s' richiede un argomento\n"
+
+#: ../src/z_getopt.c:960
+#: ../src/z_getopt.c:971
+#: ../src/z_getopt.c:1154
+#: ../src/z_getopt.c:1166
+#, c-format
+msgid "%s: option requires an argument -- %c\n"
+msgstr "%s: l'opzione richiede un argomento -- %c\n"
+
+#: ../src/z_getopt.c:840
+#: ../src/z_getopt.c:843
+#, c-format
+msgid "%s: unrecognized option `--%s'\n"
+msgstr "%s: opzione non riconosciuta `--%s'\n"
+
+#: ../src/z_getopt.c:851
+#: ../src/z_getopt.c:854
+#, c-format
+msgid "%s: unrecognized option `%c%s'\n"
+msgstr "%s: opzione non riconosciuta `%c%s'\n"
+
+#: ../src/z_getopt.c:901
+#: ../src/z_getopt.c:904
+#, c-format
+msgid "%s: illegal option -- %c\n"
+msgstr "%s: opzione illegale -- %c\n"
+
+#: ../src/z_getopt.c:910
+#: ../src/z_getopt.c:913
+#, c-format
+msgid "%s: invalid option -- %c\n"
+msgstr "%s: opzione non valida -- %c\n"
+
+#: ../src/mainfrm.cc:766
+msgid "&New Presentation"
+msgstr "&Nuova PResentazione"
+
+#: ../src/mainfrm.cc:767
+msgid "&Open Presentation…"
+msgstr "&Apri Presentazione…"
+
+#: ../src/mainfrm.cc:768
+msgid "&Save Presentation"
+msgstr "&Salva Presentazione"
+
+#: ../src/mainfrm.cc:769
+msgid "Sa&ve Presentation As…"
+msgstr "Salva Presentazione &come…"
+
+#. TRANSLATORS: "Mark" as in "Mark this position"
+#: ../src/mainfrm.cc:771
+msgid "&Mark"
+msgstr "Se&gna"
+
+#. TRANSLATORS: "Play" as in "Play back a recording"
+#: ../src/mainfrm.cc:772
+msgid "Pla&y"
+msgstr "&Visualizza"
+
+#. TRANSLATORS: de: "als Animation" could also be used here.
+#: ../src/mainfrm.cc:773
+msgid "&Export as Movie…"
+msgstr "&Esporta come Animazione…"
+
+#: ../src/mainfrm.cc:781
+msgid "&Bounding Box\tCtrl+B"
+msgstr "B&ordo riquadro\tCtrl+B"
+
+#. TRANSLATORS: TRANSLATE: ro
+#: ../src/mainfrm.cc:309
+msgid "Select an output filename"
+msgstr "Seleziona un file di uscita"
+
+#: ../src/mainfrm.cc:306
+#: ../src/mainfrm.cc:2095
+msgid "Aven presentations"
+msgstr "Presentazione Aven"
+
+#. TRANSLATORS: title of the save screenshot dialog
+#: ../src/mainfrm.cc:1714
+msgid "Save Screenshot"
+msgstr "Salva Schermo catturato"
+
+#: ../src/mainfrm.cc:2090
+#: ../src/mainfrm.cc:2093
+msgid "Select a presentation to open"
+msgstr "Seleziona una presentazione da aprire"
+
+#: ../src/mainfrm.cc:388
+#, c-format
+msgid "Error in format of presentation file `%s'"
+msgstr "Errore nel formato del file di presentazione `%s'"
+
+#. TRANSLATORS: "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
+#. be translated
+#: ../src/mainfrm.cc:1694
+msgid "Compass PLT files"
+msgstr "File Compass PLT"
+
+#. TRANSLATORS: "CMAP" is Bob Thrun's cave surveying package, so don't translate it.
+#: ../src/mainfrm.cc:1696
+msgid "CMAP XYZ files"
+msgstr "File CMAP XYZ"
+
+#. TRANSLATORS: title of message box
+#: ../src/mainfrm.cc:1770
+#: ../src/mainfrm.cc:2067
+#: ../src/mainfrm.cc:2084
+msgid "Modified Presentation"
+msgstr "Presentazione Modificata"
+
+#. TRANSLATORS: and the question in that box
+#: ../src/mainfrm.cc:1769
+#: ../src/mainfrm.cc:2066
+#: ../src/mainfrm.cc:2083
+msgid "The current presentation has been modified.  Abandon unsaved changes?"
+msgstr "La presentazione corrente é stata modificata. Abbandonare i cambiamenti non salvati?"
+
+#: ../src/mainfrm.cc:2372
+#: ../src/mainfrm.cc:2381
+msgid "No matches were found."
+msgstr "Nessun elemento trovato."
+
+#. TRANSLATORS: UNUSED
+msgid "Open &Terrain…"
+msgstr "Apri Modello Digitale &Terrestre…"
+
+#. TRANSLATORS: UNUSED
+msgid "Solid Su&rface"
+msgstr "Superficie S&olida"
+
+#. TRANSLATORS: number of stations found matching search
+#, c-format
+msgid "%d found"
+msgstr "%d trovate"
+
+#. TRANSLATORS: "Find stations" button label
+#: ../src/mainfrm.cc:894
+msgid "Find"
+msgstr "Trova"
+
+#. TRANSLATORS: "Hide stations" button label
+#: ../src/mainfrm.cc:896
+msgid "Hide"
+msgstr "Nascondi"
+
+#. TRANSLATORS: checkbox for regular expression search
+#: ../src/mainfrm.cc:914
+msgid "Regular expression"
+msgstr "Espressione regolare"
+
+#: ../src/mainfrm.cc:193
+#: ../src/mainfrm.cc:1843
+#: ../src/mainfrm.cc:1847
+#: ../src/mainfrm.cc:1912
+#: ../src/mainfrm.cc:1914
+#: ../src/mainfrm.cc:1957
+#: ../src/mainfrm.cc:1961
+msgid "Altitude"
+msgstr "Quota"
+
+#. TRANSLATORS: error if you try to drag multiple files to the aven window
+#: ../src/mainfrm.cc:654
+msgid "You may only view one 3d file at a time."
+msgstr "É possibile visualizzare solamente un file 3D alla volta."
+
+#: ../src/mainfrm.cc:822
+msgid "&Side Panel"
+msgstr "&Riquadro Laterale"
+
+#. TRANSLATORS: show coordinates (N = North or Northing, E = East or Easting)
+#. de: alternatively "%.2f O, %.2f N", but H/R is consistent with headings in pos files
+#: ../src/mainfrm.cc:1842
+#: ../src/mainfrm.cc:1845
+#: ../src/mainfrm.cc:1868
+#: ../src/mainfrm.cc:1870
+#: ../src/mainfrm.cc:1956
+#: ../src/mainfrm.cc:1959
+msgid "%.2f E, %.2f N"
+msgstr "%.2f E, %.2f N"
+
+#. TRANSLATORS: Used in Aven:
+#. From <stationname>
+#. H: 123.45m V: 234.56m
+#. Dist: 456.78m  Brg: 200
+#: ../src/mainfrm.cc:1885
+#: ../src/mainfrm.cc:1924
+#: ../src/mainfrm.cc:1980
+#, c-format
+msgid "From %s"
+msgstr "Da %s"
+
+#. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
+#: ../src/mainfrm.cc:1984
+#: ../src/mainfrm.cc:1987
+#, c-format
+msgid "H %.2f%s, V %.2f%s"
+msgstr "O %.2f%s, V %.2f%s"
+
+#. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as in Compass bearing)
+#: ../src/mainfrm.cc:2000
+#: ../src/mainfrm.cc:2004
+#, c-format
+msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
+msgstr "%s: %s, Dist %.2f%s, Azm. %03d%s"
+
+#. TRANSLATORS: tickable menu item in View menu
+#: ../src/mainfrm.cc:824
+msgid "&Metric"
+msgstr "&Metrico"
+
+#. TRANSLATORS: tickable menu item in View menu
+#: ../src/mainfrm.cc:825
+msgid "&Degrees"
+msgstr "&Gradi"
+
+#. TRANSLATORS: alternative angle units (400 grad = 360 degrees)
+#. try to make this as short as possible...
+#. ca:345 graus centesimals
+#. es:345 grados centesimales
+#. it:345 gradi centesimali
+#: ../src/mainfrm.cc:1892
+#: ../src/mainfrm.cc:1996
+msgid "grad"
+msgstr "g.cent."
+
+#. TRANSLATORS: Toggles drawing of 3D passages
+#: ../src/mainfrm.cc:778
+msgid "Passage &Tubes\tCtrl+T"
+msgstr "Passaggi come &Tubi\tCtrl+T"
+
+#: ../src/mainfrm.cc:807
+msgid "&Preferences…"
+msgstr "&Preferenze…"
+
+#: ../src/tubeprefs.cc:37
+msgid "Draw passage walls"
+msgstr "Disegna le pareti"
+
+#: ../src/tubeprefs.cc:39
+msgid "Estimate LRUD readings based on heuristics"
+msgstr "Stima lel letture DSSS con ragionamento euristico"
+
+#: ../src/stnprefs.cc:62
+msgid "Mark survey stations with crosses"
+msgstr "Segna le stazioni con croci"
+
+#: ../src/stnprefs.cc:63
+msgid "Highlight stations marked as entrances"
+msgstr "Evidenzia le stazioni segnate come ingressi"
+
+#: ../src/stnprefs.cc:65
+msgid "Highlight stations marked as fixed points"
+msgstr "Evidenzia le stazioni segnate come punti fissi"
+
+#: ../src/stnprefs.cc:66
+msgid "Highlight stations which are exported"
+msgstr "Evidenzia le stazioni che sono esportate"
+
+#: ../src/stnprefs.cc:67
+msgid "Mark survey stations with their names"
+msgstr "Segna le stazioni con i loro nomi"
+
+#: ../src/stnprefs.cc:69
+msgid "Allow names to overlap on the display (faster)"
+msgstr "Permetti che i nomi si sovrappongano (piú veloce)"
+
+#: ../src/mainfrm.cc:804
+msgid "Full Screen &Mode\tF11"
+msgstr "&Modo schermo pieno\tF11"
+
+#: ../src/legprefs.cc:39
+msgid "Display underground survey legs"
+msgstr "Mostra i tiri del rilievo sotteraneo"
+
+#: ../src/legprefs.cc:40
+msgid "Display surface survey legs"
+msgstr "Mostra i tiri del rilievo di superficie"
+
+msgid "Colour surface surveys by depth"
+msgstr "Colora i rilievi superficiali per la profonditá"
+
+msgid "Draw surface legs with dashed lines"
+msgstr "Disegna i tiri in superficie con linee tratteggiate"
+
+#: ../src/gridprefs.cc:36
+msgid "Draw a grid"
+msgstr "Disegna una griglia"
+
+#: ../src/unitsprefs.cc:44
+msgid "metric units"
+msgstr "metri"
+
+#: ../src/unitsprefs.cc:46
+msgid "imperial units"
+msgstr "unitá inglesi"
+
+#: ../src/unitsprefs.cc:47
+msgid "degrees (°)"
+msgstr "gradi sessagesimali (°)"
+
+#: ../src/unitsprefs.cc:49
+msgid "grads"
+msgstr "gradi decimali"
+
+#: ../src/unitsprefs.cc:53
+msgid "Display measurements in"
+msgstr "Mostra le distanze in"
+
+#: ../src/unitsprefs.cc:61
+msgid "Display angles in"
+msgstr "Mostra gli angoli in"
+
+#. TRANSLATORS: reverses the sense of the mouse controls
+#: ../src/ctlprefs.cc:38
+msgid "Reverse the sense of the controls"
+msgstr "Inverte il senso dei controlli"
+
+#: ../src/indicatorprefs.cc:39
+msgid "Display scale bar"
+msgstr "Mostra la scala"
+
+#: ../src/indicatorprefs.cc:40
+msgid "Display depth bar"
+msgstr "Mostra barra delle profonditá"
+
+#: ../src/indicatorprefs.cc:41
+msgid "Display compass"
+msgstr "Mostra bussola"
+
+#: ../src/indicatorprefs.cc:42
+msgid "Display clinometer"
+msgstr "Mostra clinometro"
+
+#: ../src/winprefs.cc:42
+msgid "Display side panel"
+msgstr "Mostra pannello laterale"
+
+#. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
+#: ../src/mainfrm.cc:1896
+#: ../src/mainfrm.cc:1899
+#, c-format
+msgid "%s: H %.2f%s, Brg %03d%s"
+msgstr "%s: O %.2f%s, Azm. %03d%s"
+
+#. TRANSLATORS: "V" is short for "Vertical"
+#: ../src/mainfrm.cc:1927
+#: ../src/mainfrm.cc:1930
+#, c-format
+msgid "%s: V %.2f%s"
+msgstr "%s: V %.2f%s"
+
+#. TRANSLATORS: labels for tabbed side panel
+#. this is for the tab with the tree hierarchy of survey station names
+#: ../src/mainfrm.cc:947
+msgid "Surveys"
+msgstr "Rilievi"
+
+#: ../src/mainfrm.cc:948
+msgid "Presentation"
+msgstr "Presentazione"
+
+#: ../src/mainfrm.cc:191
+msgid "Easting"
+msgstr "Est"
+
+#: ../src/mainfrm.cc:192
+msgid "Northing"
+msgstr "Nord"
+
+#: ../src/mainfrm.cc:717
+msgid "&Print…\tCtrl+P"
+msgstr "Stam&pa…\tCtrl+P"
+
+#: ../src/mainfrm.cc:718
+msgid "P&age Setup…"
+msgstr "&Imposta pagina…"
+
+#: ../src/mainfrm.cc:721
+msgid "&Export as…"
+msgstr "E&sporta come…"
+
+#. TRANSLATORS: Title of the export dialog
+#: ../src/printwx.cc:171
+msgid "Export"
+msgstr "Esporta"
+
+#. TRANSLATORS: for about box:
+#: ../src/aboutdlg.cc:134
+msgid "System Information:"
+msgstr "Informazioni sul Sistema:"
+
+#. TRANSLATORS: Title of the print preview dialog
+#: ../src/printwx.cc:355
+msgid "Print Preview"
+msgstr "Anteprima di stampa"
+
+#. TRANSLATORS: Title of the print dialog
+#: ../src/printwx.cc:171
+msgid "Print"
+msgstr "Stampa"
+
+#: ../src/printwx.cc:293
+#: ../src/printwx.cc:295
+msgid "&Print"
+msgstr "&Stampa"
+
+#: ../src/printwx.cc:291
+msgid "Pre&view"
+msgstr "Ante&prima di stampa"
+
+#: ../src/printwx.cc:287
+msgid "&Cancel"
+msgstr "&Annulla"
+
+#: ../src/printwx.cc:267
+msgid "Sur&face Survey Legs"
+msgstr "Battute topografia di Super&ficie"
+
+#. TRANSLATORS: "%s" is replaced by the invalid expression
+#, c-format
+msgid "Invalid regular expression: %s"
+msgstr "Espressione regolare non valida: %s"
+
+#. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
+#. things in future).
+#: ../src/aven.cc:207
+#, c-format
+msgid "This version of %s requires OpenGL to work, but it isn't available."
+msgstr "Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili."
+
+#. TRANSLATORS: for diffpos:
+#: ../src/diffpos.c:158
+#, c-format
+msgid "Moved by (%3.2f,%3.2f,%3.2f): %s"
+msgstr "Spostato da (%3.2f,%3.2f,%3.2f): %s"
+
+#. TRANSLATORS: for diffpos:
+#: ../src/diffpos.c:194
+#, c-format
+msgid "Added: %s"
+msgstr "Aggiunto: %s"
+
+#. TRANSLATORS: for diffpos:
+#: ../src/diffpos.c:216
+#, c-format
+msgid "Deleted: %s"
+msgstr "Rimosso: %s"
+
+#. TRANSLATORS: for extend:
+#. the user specified breaking a loop or changing extend direction at
+#. this station, but we didn't find it in the 3d file
+#: ../src/extend.c:258
+#: ../src/extend.c:275
+#: ../src/extend.c:315
+#: ../src/extend.c:355
+#: ../src/extend.c:395
+#, c-format
+msgid "Failed to find station %s"
+msgstr "La stazione %s non é stata trovata"
+
+#. TRANSLATORS: for extend:
+#. the user specified breaking a loop or changing extend direction at
+#. this leg, but we didn't find it in the 3d file
+#: ../src/extend.c:297
+#: ../src/extend.c:337
+#: ../src/extend.c:377
+#: ../src/extend.c:417
+#, c-format
+msgid "Failed to find leg %s → %s"
+msgstr "Tiro %s → %s non trovato"
+
+#. TRANSLATORS: for extend:
+#. "extend" is starting to produce an extended elevation from station %s
+#: ../src/extend.c:252
+#, c-format
+msgid "Starting from station %s"
+msgstr "Inizio dalla stazione %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:268
+#, c-format
+msgid "Extending to the left from station %s"
+msgstr "Sviluppo verso sinistra a partire dalla stazione %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:308
+#, c-format
+msgid "Extending to the right from station %s"
+msgstr "Sviluppo verso destra a partire dalla stazione %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:287
+#, c-format
+msgid "Extending to the left from leg %s → %s"
+msgstr "Sviluppo verso sinistra a partire dal tiro %s → %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:327
+#, c-format
+msgid "Extending to the right from leg %s → %s"
+msgstr "Sviluppo verso destra a partire dal tiro %s → %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:388
+#, c-format
+msgid "Breaking survey loop at station %s"
+msgstr "Topografia interrotta alla stazione %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:407
+#, c-format
+msgid "Breaking survey loop at leg %s → %s"
+msgstr "Topografia interrotta al tiro %s → %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:348
+#, c-format
+msgid "Swapping extend direction from station %s"
+msgstr "Cambia lo sviluppo del disegno a partire dalla stazione %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:367
+#, c-format
+msgid "Swapping extend direction from leg %s → %s"
+msgstr "Cambia lo sviluppo del disegno a partire dal tiro %s → %s"
+
+#. TRANSLATORS: for extend:
+#: ../src/extend.c:536
+#, c-format
+msgid "Applying specfile: `%s'"
+msgstr "Applicazione del file di specifiche: `%s'"
+
+#. TRANSLATORS: for extend:
+#. Used to tell the user that a file is being written - %s is the filename
+#: ../src/extend.c:596
+#, c-format
+msgid "Writing %s…"
+msgstr "Scrittura %s…"

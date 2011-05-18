@@ -7,14 +7,17 @@ check-local:
 
 SUBDIRS = icons
 
+po_files = ca.po de.po de_CH.po de_DE.po en_US.po\
+ es.po fr.po it.po pt.po pt_BR.po sk.po ro.po
+
 msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
- es.msg fr.msg it.msg pt.msg pt_BR.msg sk.msg ro.msg zh.msg
+ es.msg fr.msg it.msg pt.msg pt_BR.msg sk.msg ro.msg
 
 hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
- es.h fr.h it.h pt.h pt_BR.h sk.h ro.h zh.h
+ es.h fr.h it.h pt.h pt_BR.h sk.h ro.h
 
-EXTRA_DIST = messages.txt\
- named-entities.txt makemsgs.pl checkshortcut.pl\
+EXTRA_DIST = survex.pot $(po_files)\
+ named-entities.txt po-to-msg.pl checkshortcut.pl\
  $(hdr_files) survex.keys.in\
  English_GB.isl Romanian-7-5.1.11.isl\
  afm2txf.pl\
@@ -33,8 +36,12 @@ BUILT_SOURCES = defaultlang.h
 # removed by distclean
 DISTCLEANFILES = defaultlang.h
 
-$(msg_files) $(hdr_files): messages.txt makemsgs.pl
-	srcdir=$(srcdir) LANG=C perl $(srcdir)/makemsgs.pl $(srcdir)/messages.txt
+$(msg_files) $(hdr_files): survex.pot $(po_files) po-to-msg.pl
+	srcdir=$(srcdir) LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
+
+survex.pot: codes.po
+	perl -pe 's/^msgstr ".*/msgstr ""/' codes.po > survex.pot~
+	mv survex.pot~ survex.pot
 
 defaultlang.h:
 	-rm -f defaultlang.h

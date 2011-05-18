@@ -1,3 +1,9 @@
+Wed May 18 09:06:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/mainfrm.cc,src/mainfrm.h: We now use .po and .pot files as
+	  the master format for storing translations in (rather than
+	  messages.txt), and then translate these into Survex's .msg format.
+
 Wed May 18 08:37:01 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/messages.txt: Fix variant en-us message which ought not be

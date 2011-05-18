@@ -31,7 +31,7 @@ for my $lang (@ARGV) {
 	my %sc = ();
 	my $bad = 0;
 	for (@{$menu{$menu}}) {
-            my ($acc) = ($msg[$_] =~ /\@(.)/);
+            my ($acc) = ($msg[$_] =~ /\&(.)/);
 	    if (!defined $acc) {
 		print "Lang $lang : message $_ '$msg[$_]' has no shortcut\n";
 	    } else {

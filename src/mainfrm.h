@@ -252,10 +252,6 @@ class MainFrm : public wxFrame {
 //    void FixLRUD(traverse & centreline);
     void CentreDataset(const Vector3 & vmin);
 
-    wxString GetTabMsg(int key) {
-	wxString x(wmsg(key)); x.Replace(wxT("##"), wxT("\t")); x.Replace(wxT("@"), wxT("&")); return x;
-    }
-
     void CreateMenuBar();
     void CreateToolBar();
     void CreateSidePanel();
