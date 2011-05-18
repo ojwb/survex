@@ -670,7 +670,6 @@ sk: 50 Z&aacute;mera s t&yacute;m ist&yacute;m bodom (`%s') na oboch koncoch - p
 ro: 50 Masuratoare cu acelasi punct (`%s') la ambele capete - eroare de transcriere?
 #
 en: 51 Clino reading over 90 degrees (absolute value)
-en-us: 51 Clino over 90 degrees (absolute value)
 fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
 # de: `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
 # when necessary to avoid confusion.  While surface surveyors here use
