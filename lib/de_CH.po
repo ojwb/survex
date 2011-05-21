@@ -12,7 +12,6 @@ msgstr ""
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex was trying to
 #. allocate space for.
-#. sk: Alternatively "Nedostatočná kapacita pamäte"
 #: ../src/message.c:83
 #, c-format
 msgid "Out of memory (couldn't find %lu bytes)."
@@ -36,8 +35,6 @@ msgstr "von"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#. fr: Francois had "Imprécision".  The official translation is
-#. "Avertissement", which Eric favours even if it sounds somewhat formal.
 #: ../src/aven.cc:351
 #: ../src/message.c:1181
 msgid "warning"
@@ -338,10 +335,6 @@ msgstr "Messstrecke von einem Punkt (`%s') zu sich selbst - Tippfehler?"
 #. TRANSLATORS: de: `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
 #. when necessary to avoid confusion.  While surface surveyors here use
 #. these per default, cavers rarely do.
-#. pt: "graus" is correct here ("grad" would be "grados")
-#. ca: Eric queries if "graus" is correct here:
-#. es: Eric queries if "grados" is correct here:
-#. it: "gradi" is correct here (grads would be "gradi quattrocentesimali")
 #: ../src/datain.c:901
 #: ../src/datain.c:916
 msgid "Clino reading over 90 degrees (absolute value)"
@@ -426,9 +419,6 @@ msgid "Too few readings for data style `%s'"
 msgstr "Zu wenige Messwerte für Datenformat `%s'"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#. it: The meaning of scorretto is that the STYLE is written wrong but is similar
-#. to a known style.
-#. STYLE `%s' scorretto
 #: ../src/commands.c:985
 #, c-format
 msgid "Data style `%s' unknown"
@@ -464,7 +454,6 @@ msgstr "FLAG `%s' unbekannt"
 msgid "Missing \""
 msgstr "\" fehlt"
 
-#. TRANSLATORS: ro: FIXME i didn't get the idea of this message. i did an "automatic" translation
 #: ../src/listpos.c:105
 #, c-format
 msgid "Station `%s' referred to just once, with an explicit prefix - typo?"
@@ -479,7 +468,7 @@ msgstr "Die folgenden Vermessungspunkte haben keine festen Koordinaten:"
 msgid "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
 msgstr "Vermessung hat keine Festpunkte. %s wurde als Nullpunkt (0,0,0) gewählt"
 
-#. TRANSLATORS: fixed station that is not part of any traverse
+#. TRANSLATORS: fixed station that is not part of any survey
 #: ../src/netskel.c:896
 #, c-format
 msgid "Unused fixed point `%s'"
@@ -592,7 +581,6 @@ msgstr "Konnte Datei `%s' nicht öffnen"
 msgid "Bad memory access"
 msgstr "Fehler beim Speicherzugriff"
 
-#. TRANSLATORS: ro: FIXME pls give me a synonym for "deprecated"
 #: ../src/commands.c:418
 #: ../src/commands.c:481
 #: ../src/commands.c:509
@@ -747,10 +735,6 @@ msgid "FILE"
 msgstr "DATEI"
 
 #. TRANSLATORS: a trailing traverse is a dead end back to a junction
-#. fr: Eric has chosen the terminology used by toporobot: "sequence", though
-#. toporobot uses the term to mean something more specific.  Not really an issue
-#. since these messages really just give the end-user an indication that
-#. progress is being made.
 #: ../src/netskel.c:162
 msgid "Removing trailing traverses"
 msgstr "Einseitig angeschlossene Messzüge werden entfernt"
@@ -1114,7 +1098,7 @@ msgstr "Schliessen"
 msgid "About %s"
 msgstr "Über %s"
 
-#. TRANSLATORS: Aven menu items.  An '@' goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
 #. The string "\t" separates the menu text and any accelerator key.
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1701
@@ -1135,7 +1119,7 @@ msgstr "Alle Dateien"
 msgid "Survey visualisation tool"
 msgstr "Visualisierungsprogramm für Vermessungsdaten"
 
-#. TRANSLATORS: Aven menu titles.  An '@' goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu titles.  An '&' goes before the letter of any accelerator key.
 #. The accelerators must be different within this group
 #: ../src/mainfrm.cc:832
 msgid "&File"
@@ -1190,7 +1174,6 @@ msgid "NEWLINE can't be the last reading"
 msgstr "NEWLINE kann nicht der letzte Eintrag sein"
 
 #. TRANSLATORS: error from "*data normal station tape compass clino"
-#. ro: this might do...
 #: ../src/commands.c:1134
 msgid "Interleaved readings, but no NEWLINE"
 msgstr "Abwechselnde Einträge, aber kein NEWLINE"
@@ -1245,8 +1228,6 @@ msgstr "&Andere Richtung"
 msgid "Step Once &Anticlockwise"
 msgstr "Schritt im &Gegenuhrzeigersinn"
 
-#. TRANSLATORS: ro: antiorar is somehow forced. a genuine translation would sound like
-#. ro: anticlockwise = in sens contrar acelor de ceasornic
 #: ../src/mainfrm.cc:741
 msgid "Step Once &Clockwise"
 msgstr "Schritt im &Uhrzeigersinn"
@@ -1317,17 +1298,10 @@ msgstr "&Höherer Standort"
 msgid "L&ower Viewpoint"
 msgstr "Nie&drigerer Standort"
 
-#. TRANSLATORS: fr: or "Agrandir"
-#. pt or "Ampliar"
-#. es or "Aumentar"
-#. it: or "Ingrandisci"
 #: ../src/mainfrm.cc:760
 msgid "&Zoom In\t]"
 msgstr "&Vergrössern\t]"
 
-#. TRANSLATORS: fr: or "Réduire"
-#. pt or "Reduzir"
-#. it: or "Riduci"
 #: ../src/mainfrm.cc:761
 msgid "Zoo&m Out\t["
 msgstr "Ver&kleinern\t["
@@ -1369,7 +1343,6 @@ msgstr "Messpunktnamen"
 msgid "Crosses"
 msgstr "Kreuze"
 
-#. TRANSLATORS: de:262 Strecken
 #: ../src/printwx.cc:265
 msgid "Underground Survey Legs"
 msgstr "Strecken unter Grund"
@@ -1432,8 +1405,6 @@ msgstr "&Massstab"
 msgid "&Reverse Sense\tCtrl+R"
 msgstr "Richtung &umkehren\tCtrl+R"
 
-#. TRANSLATORS: sk: Netuším o čo ide
-#. ro: to find a better way to express that
 #: ../src/mainfrm.cc:796
 #: ../src/mainfrm.cc:814
 msgid "&Cancel Measuring Line\tEscape"
@@ -1738,9 +1709,6 @@ msgstr "&Grad"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees)
 #. try to make this as short as possible...
-#. ca:345 graus centesimals
-#. es:345 grados centesimales
-#. it:345 gradi centesimali
 #: ../src/mainfrm.cc:1892
 #: ../src/mainfrm.cc:1996
 msgid "grad"
