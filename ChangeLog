@@ -1,3 +1,7 @@
+Sat May 21 22:05:04 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Fold in addition of accent from launchpad.
+
 Sat May 21 22:04:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/: Remove comments which are only relevant for other languages

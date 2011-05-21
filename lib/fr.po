@@ -1387,7 +1387,7 @@ msgstr "&Annule la Ligne de Mesure\tEscape"
 
 #: ../src/mainfrm.cc:789
 msgid "Colour by E&rror"
-msgstr "Cou&leur par Erreur"
+msgstr "Cou&leur par Érreur"
 
 #: ../src/mainfrm.cc:829
 msgid "&About…"
