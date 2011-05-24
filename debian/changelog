@@ -1,11 +1,14 @@
 survex (1.1.16-2) UNRELEASED; urgency=low
 
   [Olly Betts]
+  * I'm now the maintainer, Wookey comaintainer, to reflect my doing most of
+    the packaging work recently (changed with Wookey's agreement).  Also
+    use Wookey's debian.org address to match his other packages.
   * debian/survex-aven.lintian-overrides: Lintian has dropped "./" from the
     path of the binary, so update override to match.
   * debian/survex.install: Update for move of survex man page to section 7.
 
- -- Olly Betts <olly@survex.com>  Tue, 24 May 2011 05:24:26 +0000
+ -- Olly Betts <olly@survex.com>  Tue, 24 May 2011 12:14:54 +0000
 
 survex (1.1.16-1) unstable; urgency=low
 

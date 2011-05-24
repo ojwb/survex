@@ -1,8 +1,8 @@
 Source: survex
 Section: science
 Priority: extra
-Maintainer: Wookey <wookey@survex.com>
-Uploaders: Olly Betts <olly@survex.com>
+Maintainer: Olly Betts <olly@survex.com>
+Uploaders: Wookey <wookey@debian.org>
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 7), libx11-dev, libxext-dev, x11proto-core-dev,
     libwxgtk2.8-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev
