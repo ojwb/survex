@@ -1,3 +1,11 @@
+survex (1.1.16-2) UNRELEASED; urgency=low
+
+  [Olly Betts]
+  * debian/survex-aven.lintian-overrides: Lintian has dropped "./" from the
+    path of the binary, so update override to match.
+
+ -- Olly Betts <olly@survex.com>  Tue, 24 May 2011 05:11:15 +0000
+
 survex (1.1.16-1) unstable; urgency=low
 
   [Olly Betts]
