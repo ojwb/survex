@@ -1,3 +1,8 @@
+Tue May 24 05:21:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,doc/Makefile.am,doc/survex.1.in: Move survex man page to
+	  section 7 (since it isn't documenting an actual command).
+
 Tue May 24 05:17:53 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/Makefile.am: Write generated man page to a temporary file, then

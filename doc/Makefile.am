@@ -16,7 +16,7 @@ manual_alt = manual.txt manual.pdf
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
 EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
- survex.1.in index.htm.in\
+ survex.7.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
@@ -35,7 +35,7 @@ MAINTAINERCLEANFILES = $(manual_alt) $(other_mans) NEWS.htm OLDNEWS.htm
 
 pkgdoc_DATA = @HTMLFILES@ $(manual_alt)
 
-man_MANS = survex.1 $(other_mans)
+man_MANS = survex.7 $(other_mans)
 
 aven.1: $(srcdir)/aven.sgml $(srcdir)/man_aven.sgml $(srcdir)/survex.ent
 	$(DOCBOOK_TO_MAN) $(srcdir)/man_aven.sgml > aven.tmp
