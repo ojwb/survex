@@ -1,3 +1,9 @@
+Thu May 26 12:28:11 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Remove the unused preferences dialog code - we can easily
+	  fish it back out of SVN should we want it later, so no point
+	  having it sitting there making every checkout bigger.
+
 Tue May 24 05:21:52 GMT 2011  Olly Betts <olly@survex.com>
 
 	* configure.in,doc/Makefile.am,doc/survex.1.in: Move survex man page to
