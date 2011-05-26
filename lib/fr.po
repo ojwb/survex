@@ -1873,8 +1873,8 @@ msgstr "Imprimer"
 
 #: ../src/printwx.cc:293
 #: ../src/printwx.cc:295
-msgid "&Print"
-msgstr "&Imprimer"
+msgid "&Print…"
+msgstr "&Imprimer…"
 
 #: ../src/printwx.cc:291
 msgid "Pre&view"

@@ -1866,8 +1866,8 @@ msgstr "Tlačiť"
 
 #: ../src/printwx.cc:293
 #: ../src/printwx.cc:295
-msgid "&Print"
-msgstr "&Tlačiť"
+msgid "&Print…"
+msgstr "&Tlačiť…"
 
 #: ../src/printwx.cc:291
 msgid "Pre&view"

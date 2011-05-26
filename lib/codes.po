@@ -1867,14 +1867,12 @@ msgstr "398"
 msgid "Print"
 msgstr "399"
 
-#: ../src/printwx.cc:293
-#: ../src/printwx.cc:295
-msgid "&Print"
+#: ../src/printwx.cc:291
+msgid "&Print…"
 msgstr "400"
 
-#: ../src/printwx.cc:291
-msgid "Pre&view"
-msgstr "401"
+#~ msgid "Pre&view"
+#~ msgstr "401"
 
 #~ msgid "&Cancel"
 #~ msgstr "402"

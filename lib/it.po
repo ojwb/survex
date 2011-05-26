@@ -1871,8 +1871,8 @@ msgstr "Stampa"
 
 #: ../src/printwx.cc:293
 #: ../src/printwx.cc:295
-msgid "&Print"
-msgstr "&Stampa"
+msgid "&Print…"
+msgstr "&Stampa…"
 
 #: ../src/printwx.cc:291
 msgid "Pre&view"

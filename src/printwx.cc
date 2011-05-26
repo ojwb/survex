@@ -54,11 +54,7 @@ using namespace std;
 #include "printwx.h"
 
 enum {
-	svx_PRINT = 1200,
-	svx_EXPORT,
-#ifdef AVEN_PRINT_PREVIEW
-	svx_PREVIEW,
-#endif
+	svx_EXPORT = 1200,
 	svx_SCALE,
 	svx_BEARING,
 	svx_TILT,
@@ -132,10 +128,10 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
     EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
-    EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
+    EVT_BUTTON(wxID_PRINT, svxPrintDlg::OnPrint)
     EVT_BUTTON(svx_EXPORT, svxPrintDlg::OnExport)
 #ifdef AVEN_PRINT_PREVIEW
-    EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
+    EVT_BUTTON(wxID_PREVIEW, svxPrintDlg::OnPreview)
 #endif
     EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
@@ -288,11 +284,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     if (printing) {
 #ifdef AVEN_PRINT_PREVIEW
-	but = new wxButton(this, svx_PREVIEW, wmsg(/*Pre&view*/401));
+	but = new wxButton(this, wxID_PREVIEW);
 	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
-	but = new wxButton(this, svx_PRINT, wmsg(/*&Print*/400));
+	but = new wxButton(this, wxID_PRINT);
 #else
-	but = new wxButton(this, svx_PRINT, wmsg(/*&Print*/400) + wxT("..."));
+	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print...*/400));
 #endif
     } else {
 	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export...*/230));
