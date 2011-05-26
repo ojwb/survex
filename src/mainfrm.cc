@@ -448,17 +448,17 @@ END_EVENT_TABLE()
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT(textctrl_FIND, MainFrm::OnFind)
     EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnGotoFound)
-    EVT_MENU(button_FIND, MainFrm::OnGotoFound)
+    EVT_MENU(wxID_FIND, MainFrm::OnGotoFound)
     EVT_MENU(button_HIDE, MainFrm::OnHide)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
 
-    EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
-    EVT_MENU(menu_FILE_PRINT, MainFrm::OnPrint)
+    EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
+    EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
     EVT_MENU(menu_FILE_SCREENSHOT, MainFrm::OnScreenshot)
-//    EVT_MENU(menu_FILE_PREFERENCES, MainFrm::OnFilePreferences)
+//    EVT_MENU(wxID_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_EXPORT, MainFrm::OnExport)
-    EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
+    EVT_MENU(wxID_EXIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
     EVT_MENU(menu_PRES_NEW, MainFrm::OnPresNew)
@@ -473,7 +473,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_PRES_FF, MainFrm::OnPresFF)
     EVT_MENU(menu_PRES_FFF, MainFrm::OnPresFFF)
     EVT_MENU(menu_PRES_PAUSE, MainFrm::OnPresPause)
-    EVT_MENU(menu_PRES_STOP, MainFrm::OnPresStop)
+    EVT_MENU(wxID_STOP, MainFrm::OnPresStop)
     EVT_MENU(menu_PRES_EXPORT_MOVIE, MainFrm::OnPresExportMovie)
 
     EVT_UPDATE_UI(menu_PRES_NEW, MainFrm::OnPresNewUpdate)
@@ -488,7 +488,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_PRES_FF, MainFrm::OnPresFFUpdate)
     EVT_UPDATE_UI(menu_PRES_FFF, MainFrm::OnPresFFFUpdate)
     EVT_UPDATE_UI(menu_PRES_PAUSE, MainFrm::OnPresPauseUpdate)
-    EVT_UPDATE_UI(menu_PRES_STOP, MainFrm::OnPresStopUpdate)
+    EVT_UPDATE_UI(wxID_STOP, MainFrm::OnPresStopUpdate)
     EVT_UPDATE_UI(menu_PRES_EXPORT_MOVIE, MainFrm::OnPresExportMovieUpdate)
 
     EVT_CLOSE(MainFrm::OnClose)
@@ -512,8 +512,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_ORIENT_ELEVATION, MainFrm::OnElevation)
     EVT_MENU(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpoint)
     EVT_MENU(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpoint)
-    EVT_MENU(menu_ORIENT_ZOOM_IN, MainFrm::OnZoomIn)
-    EVT_MENU(menu_ORIENT_ZOOM_OUT, MainFrm::OnZoomOut)
+    EVT_MENU(wxID_ZOOM_IN, MainFrm::OnZoomIn)
+    EVT_MENU(wxID_ZOOM_OUT, MainFrm::OnZoomOut)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
@@ -544,9 +544,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_CTL_DEGREES, MainFrm::OnToggleDegrees)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
-    EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
+    EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
 
-    EVT_UPDATE_UI(menu_FILE_PRINT, MainFrm::OnPrintUpdate)
+    EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
@@ -567,8 +567,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_ORIENT_ELEVATION, MainFrm::OnElevationUpdate)
     EVT_UPDATE_UI(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpointUpdate)
     EVT_UPDATE_UI(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpointUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_ZOOM_IN, MainFrm::OnZoomInUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
+    EVT_UPDATE_UI(wxID_ZOOM_IN, MainFrm::OnZoomInUpdate)
+    EVT_UPDATE_UI(wxID_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
@@ -712,9 +712,11 @@ void MainFrm::CreateMenuBar()
     // Create the menus and the menu bar.
 
     wxMenu* filemenu = new wxMenu;
-    filemenu->Append(menu_FILE_OPEN, wmsg(/*&Open...\tCtrl+O*/220));
+    // wxID_OPEN stock label lacks the ellipses
+    filemenu->Append(wxID_OPEN, wmsg(/*&Open...\tCtrl+O*/220));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_PRINT, wmsg(/*&Print...\tCtrl+P*/380));
+    // wxID_PRINT stock label lacks the ellipses
+    filemenu->Append(wxID_PRINT, wmsg(/*&Print...\tCtrl+P*/380));
     filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup...*/381));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot...*/201));
@@ -724,7 +726,7 @@ void MainFrm::CreateMenuBar()
     // this separator.
     filemenu->AppendSeparator();
 #endif
-    filemenu->Append(menu_FILE_QUIT, wmsg(/*&Quit\tCtrl+Q*/221));
+    filemenu->Append(wxID_EXIT);
 
     m_history.UseMenu(filemenu);
     m_history.Load(*wxConfigBase::Get());
@@ -757,8 +759,9 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_HIGHER_VP, wmsg(/*&Higher Viewpoint*/250));
     orientmenu->Append(menu_ORIENT_LOWER_VP, wmsg(/*L&ower Viewpoint*/251));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_ZOOM_IN, wmsg(/*&Zoom In\t]*/252));
-    orientmenu->Append(menu_ORIENT_ZOOM_OUT, wmsg(/*Zoo&m Out\t[*/253));
+    // Default labels for wxID_ZOOM_IN and wxID_ZOOM_OUT don't have accels.
+    orientmenu->Append(wxID_ZOOM_IN, wmsg(/*&Zoom In\t]*/252));
+    orientmenu->Append(wxID_ZOOM_OUT, wmsg(/*Zoo&m Out\t[*/253));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_DEFAULTS, wmsg(/*Restore De&fault View*/254));
 
@@ -804,7 +807,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*&Full Screen Mode\tF11*/356));
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
-    viewmenu-> Append(menu_VIEW_PREFERENCES, wmsg(/*&Preferences...*/347));
+    viewmenu-> Append(wxID_PREFERENCES, wmsg(/*&Preferences...*/347));
 #endif
 
 #ifndef PREFDLG
@@ -826,7 +829,7 @@ void MainFrm::CreateMenuBar()
 #endif
 
     wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(menu_HELP_ABOUT, wmsg(/*&About...*/290));
+    helpmenu->Append(wxID_ABOUT);
 
     wxMenuBar* menubar = new wxMenuBar();
     menubar->Append(filemenu, wmsg(/*&File*/210));
@@ -859,7 +862,7 @@ void MainFrm::CreateToolBar()
 #endif
 
     // FIXME: TRANSLATE tooltips
-    toolbar->AddTool(menu_FILE_OPEN, wxT("Open"), TOOLBAR_BITMAP("open"), wxT("Open a 3D file for viewing"));
+    toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOLBAR_BITMAP("open"), wxT("Open a 3D file for viewing"));
     toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOLBAR_BITMAP("open-pres"), wxT("Open a presentation"));
     toolbar->AddSeparator();
     toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), TOOLBAR_BITMAP("rotation"), wxNullBitmap, wxT("Toggle rotation"));
@@ -884,13 +887,13 @@ void MainFrm::CreateToolBar()
     toolbar->AddCheckTool(menu_PRES_PLAY, wxT("Go"), TOOLBAR_BITMAP("pres-go"), wxNullBitmap, wxT("Play"));
     toolbar->AddCheckTool(menu_PRES_FF, wxT("FF"), TOOLBAR_BITMAP("pres-ff"), wxNullBitmap, wxT("Fast Forward"));
     toolbar->AddCheckTool(menu_PRES_FFF, wxT("Very FF"), TOOLBAR_BITMAP("pres-fff"), wxNullBitmap, wxT("Very Fast Forward"));
-    toolbar->AddTool(menu_PRES_STOP, wxT("Stop"), TOOLBAR_BITMAP("pres-stop"), wxT("Stop"));
+    toolbar->AddTool(wxID_STOP, wxT("Stop"), TOOLBAR_BITMAP("pres-stop"), wxT("Stop"));
 
     toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, wxString(), wxDefaultPosition,
 			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
-    toolbar->AddTool(button_FIND, TOOLBAR_BITMAP("find"),
+    toolbar->AddTool(wxID_FIND, TOOLBAR_BITMAP("find"),
 		     wmsg(/*Find*/332)/*"Search for station name"*/);
     toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults"),
 		     wmsg(/*Hide*/333)/*"Hide search results"*/);

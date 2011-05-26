@@ -111,11 +111,6 @@ static char ** real_argv;
 int main(int argc, char **argv) 
 {
 #ifdef __WXMAC__
-    // Tell wxMac which the About and Quit menu items are so they can be put
-    // where MacOS users expect them to be.
-    wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
-    wxApp::s_macExitMenuItemId = menu_FILE_QUIT;
-
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
     // wx ignores for us, but in wxApp::Initialize() which hasn't been
     // called yet.  So we need to remove it ourselves.

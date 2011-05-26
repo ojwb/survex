@@ -52,12 +52,9 @@ using namespace std;
 #define MARK_PREV 3
 
 enum {
-    menu_FILE_OPEN = 1000,
-    menu_FILE_PRINT,
-    menu_FILE_PAGE_SETUP,
+    menu_FILE_PAGE_SETUP = 1000,
     menu_FILE_SCREENSHOT,
     menu_FILE_EXPORT,
-    menu_FILE_QUIT,
     menu_PRES_NEW,
     menu_PRES_OPEN,
     menu_PRES_SAVE,
@@ -71,7 +68,6 @@ enum {
     menu_PRES_FF,
     menu_PRES_FFF,
     menu_PRES_PAUSE,
-    menu_PRES_STOP,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
     menu_ROTATION_TOGGLE,
@@ -92,8 +88,6 @@ enum {
     menu_ORIENT_ELEVATION,
     menu_ORIENT_HIGHER_VP,
     menu_ORIENT_LOWER_VP,
-    menu_ORIENT_ZOOM_IN,
-    menu_ORIENT_ZOOM_OUT,
     menu_ORIENT_DEFAULTS,
     menu_VIEW_SHOW_LEGS,
     menu_VIEW_SHOW_CROSSES,
@@ -113,7 +107,6 @@ enum {
     menu_VIEW_FOG,
     menu_VIEW_SMOOTH_LINES,
     menu_VIEW_FULLSCREEN,
-    menu_VIEW_PREFERENCES,
     menu_VIEW_COLOUR_BY_DEPTH,
     menu_VIEW_COLOUR_BY_DATE,
     menu_VIEW_COLOUR_BY_ERROR,
@@ -127,9 +120,7 @@ enum {
     menu_CTL_DEGREES,
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
-    menu_HELP_ABOUT,
     textctrl_FIND,
-    button_FIND,
     button_HIDE,
     listctrl_PRES
 };

@@ -1130,9 +1130,8 @@ msgstr "219"
 msgid "&Open…\tCtrl+O"
 msgstr "220"
 
-#: ../src/mainfrm.cc:727
-msgid "&Quit\tCtrl+Q"
-msgstr "221"
+#~ msgid "&Quit\tCtrl+Q"
+#~ msgstr "221"
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
@@ -1385,9 +1384,8 @@ msgstr "281"
 msgid "Colour by E&rror"
 msgstr "289"
 
-#: ../src/mainfrm.cc:829
-msgid "&About…"
-msgstr "290"
+#~ msgid "&About…"
+#~ msgstr "290"
 
 #: ../src/mainfrm.cc:784
 msgid "&Surface Survey Legs\tCtrl+F"
@@ -1691,8 +1689,8 @@ msgid "Passage &Tubes\tCtrl+T"
 msgstr "346"
 
 #: ../src/mainfrm.cc:807
-msgid "&Preferences…"
-msgstr "347"
+#~ msgid "&Preferences…"
+#~ msgstr "347"
 
 #: ../src/tubeprefs.cc:37
 #~ msgid "Draw passage walls"

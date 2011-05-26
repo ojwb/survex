@@ -1,3 +1,8 @@
+Thu May 26 16:09:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/aven.cc,src/mainfrm.cc,src/mainfrm.h: Use more stock
+	  IDs.
+
 Thu May 26 14:52:00 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/,src/printwx.cc: Use stock wx button IDs wxID_PRINT and
