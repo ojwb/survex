@@ -1,3 +1,7 @@
+Thu May 26 14:47:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po: Mark unused messages by commenting out with '#~'.
+
 Thu May 26 14:34:29 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.h: Fix comment typo.
