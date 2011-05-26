@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWidgets specific parts of Survex wxWidgets printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -284,7 +284,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxButton * but;
-    but = new wxButton(this, wxID_CANCEL, wmsg(/*&Cancel*/402));
+    but = new wxButton(this, wxID_CANCEL);
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     if (printing) {
 #ifdef AVEN_PRINT_PREVIEW

@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -129,9 +129,9 @@ public:
 	vert->Add(r5, 0, wxALL, 8);
 
 	wxBoxSizer * buttons = new wxBoxSizer(wxHORIZONTAL);
-	wxButton* cancel = new wxButton(this, wxID_CANCEL, wxT("Cancel"));
+	wxButton* cancel = new wxButton(this, wxID_CANCEL);
 	buttons->Add(cancel, 0, wxALL, 8);
-	wxButton* ok = new wxButton(this, wxID_OK, wxT("OK"));
+	wxButton* ok = new wxButton(this, wxID_OK);
 	ok->SetDefault();
 	buttons->Add(ok, 0, wxALL, 8);
 	vert->Add(buttons, 0, wxALL|wxALIGN_RIGHT);

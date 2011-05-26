@@ -1,3 +1,9 @@
+Thu May 26 12:47:44 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/printwx.cc: When using a standard wxID_xxx id with
+	  wxButton, use the implicit default label, as the wx documentation
+	  recommends.
+
 Thu May 26 12:28:11 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/: Remove the unused preferences dialog code - we can easily
