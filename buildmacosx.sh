@@ -3,7 +3,7 @@
 # Note: this script requires MacOS X 10.2 or greater, and builds diskimages
 # which require MacOS X 10.1 or greater to install.
 #
-# Currently (at least is built on 10.6) 10.6 is required to run.
+# Currently (at least if built on 10.6) 10.6 is required to run.
 #
 # Run from the unpacked survex-1.1.X directory like so:
 #
