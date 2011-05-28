@@ -35,9 +35,9 @@ set -e
 
 WXVERSION=2.8.11
 
-# Fix to work for ppc too...
-#arch_flags='-arch i386 -arch ppc'
-arch_flags='-arch i386'
+# To build for older machines with a ppc CPU, you want -arch ppc instead in
+# arch_flags (might also work as well with some OS X versions).
+arch_flags='-arch i386 -arch x86_64'
 if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :

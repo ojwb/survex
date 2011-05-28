@@ -1,3 +1,7 @@
+Sat May 28 12:39:11 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Build for x86_64 as well as i386.
+
 Sat May 28 06:14:09 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Fix comment typo.
