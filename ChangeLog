@@ -1,3 +1,8 @@
+Sat May 28 06:08:10 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Don't assume the volume gets mounted on
+	  /Volumes/Survex as it won't be if that mount point is already in use.
+
 Thu May 26 16:09:05 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/aven.cc,src/mainfrm.cc,src/mainfrm.h: Use more stock

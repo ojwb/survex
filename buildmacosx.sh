@@ -99,11 +99,22 @@ hdiutil create -sectors "$sectors" survex-macosx -layout NONE -fs HFS+ -volname 
 
 echo "Presenting image to the filesystems for mounting."
 # This will mount the image onto the Desktop.
-# Get the name of the device we mounted it on...
-dev=`hdid survex-macosx.dmg|tail -1|sed 's!/dev/\([!-~]*\).*!\1!;'`
-echo "Mounted on device $dev, copying files into image."
-ditto -rsrcFork Survex /Volumes/Survex/Survex
-ditto lib/INSTALL.OSX /Volumes/Survex/INSTALL
+# Get the name of the device it is mounted on and the mount point.
+
+# man hdiutil says:
+# "The output of [hdiutil] attach has been stable since OS X 10.0 (though it
+# was called hdid(8) then) and is intended to be program-readable.  It consists
+# of the /dev node, a tab, a content hint (if applicable), another tab, and a
+# mount point (if any filesystems were mounted)."
+hdid_output=`hdid survex-macosx.dmg|tail -1`
+echo "Last line of hdid output was: $hdid_output"
+dev=`echo "$hdid_output"|sed 's!/dev/\([^	]*\).*!\1!'`
+mount_point=`echo "$hdid_output"|sed 's!.*	!!'`
+
+echo "Device $dev mounted on $mount_point, copying files into image."
+ditto -rsrcFork Survex "$mount_point/Survex"
+ditto lib/INSTALL.OSX "$mount_point/INSTALL"
+
 echo "Detaching image."
 hdiutil detach "$dev"
 
