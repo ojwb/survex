@@ -43,7 +43,7 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     :
   else
     prefix=`pwd`/WXINSTALL
-    wxtarball=wxWidgets$WXVERSION.tar.bz2
+    wxtarball=wxWidgets-$WXVERSION.tar.bz2
     test -f "$wxtarball" || \
       curl -O "ftp://ftp.wxwidgets.org/pub/$WXVERSION/$wxtarball"
     echo "+++ Extracting $wxtarball"
