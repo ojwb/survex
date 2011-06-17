@@ -267,14 +267,16 @@ void MovieMaker::AddFrame()
     }
 
     int len = 3 * c->width;
-    const int h = c->height;
-    // Flip image vertically
-    unsigned char * src = pixels + h * len;
-    unsigned char * dest = src - len;
-    for (int y = 0; y < h; ++y) {
-	memcpy(dest, src, len);
-	src += len;
-	dest -= len;
+    {
+	// Flip image vertically
+	int h = c->height;
+	unsigned char * src = pixels + h * len;
+	unsigned char * dest = src - len;
+	while (h--) {
+	    memcpy(dest, src, len);
+	    src += len;
+	    dest -= len;
+	}
     }
     sws_scale(sws_ctx, &pixels, &len, 0, c->height, frame->data, frame->linesize);
 

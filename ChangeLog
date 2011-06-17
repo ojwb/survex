@@ -1,3 +1,7 @@
+Fri Jun 17 06:32:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Simplify the loop to flip the image vertically.
+
 Fri Jun 17 06:17:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* configure.in,src/moviemaker.cc,src/moviemaker.h: Use libswscale to
