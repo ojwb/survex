@@ -31,7 +31,7 @@ class MovieMaker {
     int out_size;
     AVFrame *frame;
     unsigned char *outbuf;
-    AVPicture *in;
+    unsigned char *in;
     AVPicture *out;
     unsigned char *pixels;
  

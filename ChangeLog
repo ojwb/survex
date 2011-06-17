@@ -1,3 +1,10 @@
+Fri Jun 17 04:30:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,src/moviemaker.cc,src/moviemaker.h: Mostly update movie
+	  making code to work with current FFmpeg.  Still TODO: convert call
+	  to img_convert() to use sws_scale() - currently you just get an all
+	  green movie!
+
 Mon May 30 07:40:12 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Fix URL for downloading wxWidgets tarball.
