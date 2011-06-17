@@ -1,3 +1,8 @@
+Fri Jun 17 06:16:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: No need to specify true to PlayPres - that's the
+	  default.
+
 Fri Jun 17 06:15:34 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Set the play speed to "x1" during video recording.

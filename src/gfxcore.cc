@@ -2889,7 +2889,7 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 	return false;
     }
 
-    PlayPres(1, true);
+    PlayPres(1);
     return true;
 }
 
