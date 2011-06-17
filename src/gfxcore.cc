@@ -151,7 +151,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     presentation_mode(0),
     pres_reverse(false),
     pres_speed(0.0),
-    mpeg(NULL),
+    movie(NULL),
     current_cursor(GfxCore::CURSOR_DEFAULT)
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
@@ -1276,11 +1276,11 @@ bool GfxCore::Animate()
 
     static double last_t = 0;
     double t;
-    if (mpeg) {
+    if (movie) {
 	// FIXME: this glReadPixels call should be in gla-gl.cc
-	glReadPixels(0, 0, mpeg->GetWidth(), mpeg->GetHeight(), GL_RGB,
-		     GL_UNSIGNED_BYTE, (GLvoid *)mpeg->GetBuffer());
-	mpeg->AddFrame();
+	glReadPixels(0, 0, movie->GetWidth(), movie->GetHeight(), GL_RGB,
+		     GL_UNSIGNED_BYTE, (GLvoid *)movie->GetBuffer());
+	movie->AddFrame();
 	t = 1.0 / 25.0; // 25 frames per second
     } else {
 	t = timer.Time() * 1.0e-3;
@@ -1305,9 +1305,9 @@ bool GfxCore::Animate()
 	    if (!next_mark.is_valid()) {
 		SetView(prev_mark);
 		presentation_mode = 0;
-		if (mpeg) {
-		    delete mpeg;
-		    mpeg = 0;
+		if (movie) {
+		    delete movie;
+		    movie = 0;
 		}
 		break;
 	    }
@@ -2877,15 +2877,15 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     width += (width & 1);
     height += (height & 1);
 
-    mpeg = new MovieMaker();
+    movie = new MovieMaker();
 
     // FIXME: This should really use fn_str() - currently we probably can't
     // save to a Unicode path on wxmsw.
-    if (!mpeg->Open(fnm.mb_str(), width, height)) {
+    if (!movie->Open(fnm.mb_str(), width, height)) {
 	// FIXME : sort out reporting actual errors from ffmpeg library
 	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
-	delete mpeg;
-	mpeg = 0;
+	delete movie;
+	movie = 0;
 	return false;
     }
 

@@ -190,7 +190,7 @@ private:
     double next_mark_time;
     double this_mark_total;
 
-    MovieMaker * mpeg;
+    MovieMaker * movie;
 
     cursor current_cursor;
 
