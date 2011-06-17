@@ -1,3 +1,8 @@
+Fri Jun 17 06:33:38 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Eliminate use of deprecated function
+	  av_alloc_format_context().
+
 Fri Jun 17 06:32:50 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Simplify the loop to flip the image vertically.
