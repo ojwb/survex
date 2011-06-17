@@ -24,6 +24,7 @@ struct AVFormatContext;
 struct AVStream;
 struct AVFrame;
 struct AVPicture;
+struct SwsContext;
 
 class MovieMaker {
     AVFormatContext *oc;
@@ -31,9 +32,9 @@ class MovieMaker {
     int out_size;
     AVFrame *frame;
     unsigned char *outbuf;
-    unsigned char *in;
     AVPicture *out;
     unsigned char *pixels;
+    SwsContext *sws_ctx;
  
 public:
     MovieMaker();

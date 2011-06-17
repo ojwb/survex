@@ -1,3 +1,9 @@
+Fri Jun 17 06:17:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,src/moviemaker.cc,src/moviemaker.h: Use libswscale to
+	  convert images to add to the video.  Movie export now working
+	  again!
+
 Fri Jun 17 06:16:46 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: No need to specify true to PlayPres - that's the

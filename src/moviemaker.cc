@@ -61,6 +61,7 @@
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
 extern "C" {
 #include "libavformat/avformat.h"
+#include "libswscale/swscale.h"
 }
 #ifndef AV_PKT_FLAG_KEY
 # define AV_PKT_FLAG_KEY PKT_FLAG_KEY
@@ -74,7 +75,7 @@ extern "C" {
 const int OUTBUF_SIZE = 200000;
 
 MovieMaker::MovieMaker()
-    : oc(0), st(0), frame(0), outbuf(0), in(0), out(0), pixels(0)
+    : oc(0), st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0)
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     static bool initialised_ffmpeg = false;
@@ -184,15 +185,14 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	return false;
     }
     int size = avpicture_get_size(c->pix_fmt, width, height);
-    in = (unsigned char*)av_malloc(size);
-    if (!in) {
+    uint8_t * picture_buf = (uint8_t*)av_malloc(size);
+    if (!picture_buf) {
 	av_free(frame);
 	// FIXME : out of memory
 	return false;
     }
-    avpicture_fill((AVPicture *)frame, in, c->pix_fmt, width, height);
+    avpicture_fill((AVPicture *)frame, picture_buf, c->pix_fmt, width, height);
 
-    out = NULL;
     if (c->pix_fmt != PIX_FMT_YUV420P) {
 	// FIXME need to allocate another frame for this case if we stop
 	// hardcoding PIX_FMT_YUV420P.
@@ -215,6 +215,16 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	// FIXME : return value is an AVERROR_* value.
 	return false;
     }
+
+    av_free(sws_ctx);
+    sws_ctx = sws_getContext(width, height, PIX_FMT_RGB24,
+			     width, height, c->pix_fmt, SWS_BICUBIC,
+			     NULL, NULL, NULL);
+    if (sws_ctx == NULL) {
+	fprintf(stderr, "Cannot initialize the conversion context!\n");
+	return false;
+    }
+
     return true;
 #else
     return false;
@@ -222,7 +232,8 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 }
 
 unsigned char * MovieMaker::GetBuffer() const {
-    return pixels;
+    AVCodecContext * c = st->codec;
+    return pixels + c->height * c->width * 3;
 }
 
 int MovieMaker::GetWidth() const {
@@ -255,15 +266,18 @@ void MovieMaker::AddFrame()
 	abort();
     }
 
-    const int len = 3 * c->width;
+    int len = 3 * c->width;
     const int h = c->height;
     // Flip image vertically
+    unsigned char * src = pixels + h * len;
+    unsigned char * dest = src - len;
     for (int y = 0; y < h; ++y) {
-	memcpy(pixels + (2 * h - y - 1) * len, pixels + y * len, len);
+	memcpy(dest, src, len);
+	src += len;
+	dest -= len;
     }
+    sws_scale(sws_ctx, &pixels, &len, 0, c->height, frame->data, frame->linesize);
 
-    // FIXME: Need to convert this to use sws_scale() instead of img_convert().
-    //img_convert(out, PIX_FMT_YUV420P, in, PIX_FMT_RGB24, c->width, c->height);
     if (oc->oformat->flags & AVFMT_RAWPICTURE) {
 	abort();
     }
@@ -335,8 +349,7 @@ MovieMaker::~MovieMaker()
     }
     free(outbuf);
     free(pixels);
-    free(in);
-    free(out);
+    av_free(sws_ctx);
 
     if (oc) {
 	// Free the streams.

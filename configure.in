@@ -202,8 +202,12 @@ dnl Check for ffmpeg
 MOVIE_LIBS=
 AC_CHECK_LIB(avcodec, avcodec_init,
   [AC_CHECK_LIB(avformat, av_register_all,
-    [AC_CHECK_HEADERS([libavformat/avformat.h],
-      [MOVIE_LIBS="-lavformat -lavcodec"])], [], [-lavcodec $WX_LIBS])])
+    [AC_CHECK_LIB(swscale, sws_scale,
+      [AC_CHECK_HEADERS([libavformat/avformat.h],
+	[MOVIE_LIBS="-lswscale -lavformat -lavcodec"])],
+      [], [-lavformat -lavcodec $WX_LIBS])],
+    [], [-lavcodec $WX_LIBS])
+])
 AC_SUBST(MOVIE_LIBS)
 
 AC_LANG_C
