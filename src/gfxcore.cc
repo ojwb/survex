@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -2882,8 +2882,7 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     // FIXME: This should really use fn_str() - currently we probably can't
     // save to a Unicode path on wxmsw.
     if (!movie->Open(fnm.mb_str(), width, height)) {
-	// FIXME : sort out reporting actual errors from ffmpeg library
-	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
+	wxGetApp().ReportError(wxString(movie->get_error_string(), wxConvUTF8));
 	delete movie;
 	movie = 0;
 	return false;

@@ -2178,9 +2178,8 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
 		     wxT("MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
-	if (!m_Gfx->ExportMovie(dlg.GetPath())) {
-	    wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
-	}
+	// Error is reported by GfxCore.
+	(void)m_Gfx->ExportMovie(dlg.GetPath());
     }
 }
 

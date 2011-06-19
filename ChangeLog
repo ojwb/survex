@@ -1,3 +1,7 @@
+Sun Jun 19 11:19:51 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Try to report errors from generating movie more helpfully.
+
 Fri Jun 17 06:33:38 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Eliminate use of deprecated function

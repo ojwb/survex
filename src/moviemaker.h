@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2010 Olly Betts
+//  Copyright (C) 2004,2010,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ class MovieMaker {
     AVPicture *out;
     unsigned char *pixels;
     SwsContext *sws_ctx;
+    int averrno;
  
 public:
     MovieMaker();
@@ -44,4 +45,5 @@ public:
     int GetHeight() const;
     void AddFrame();
     ~MovieMaker();
+    const char * get_error_string() const;
 };

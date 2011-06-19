@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004 Olly Betts
+//  Copyright (C) 2004,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -68,10 +68,17 @@ extern "C" {
 #endif
 #endif
 
+enum {
+    MOVIE_NO_SUITABLE_FORMAT = 1,
+    MOVIE_AUDIO_ONLY,
+    MOVIE_FILENAME_TOO_LONG,
+    MOVIE_NOT_ENABLED
+};
+
 const int OUTBUF_SIZE = 200000;
 
 MovieMaker::MovieMaker()
-    : oc(0), st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0)
+    : oc(0), st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0), averrno(0)
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     static bool initialised_ffmpeg = false;
@@ -93,24 +100,24 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	// to MPEG.
 	fmt = guess_format("mpeg", NULL, NULL);
 	if (!fmt) {
-	    // FIXME : error finding a format...
+	    averrno = MOVIE_NO_SUITABLE_FORMAT;
 	    return false;
 	}
     }
     if (fmt->video_codec == CODEC_ID_NONE) {
-	// FIXME : The user asked for a format which is audio-only!
+	averrno = MOVIE_AUDIO_ONLY;
 	return false;
     }
 
     // Allocate the output media context.
     oc = avformat_alloc_context();
     if (!oc) {
-	// FIXME : out of memory
+	averrno = AVERROR_NOMEM;
 	return false;
     }
     oc->oformat = fmt;
     if (strlen(fnm) >= sizeof(oc->filename)) {
-	// FIXME : filename too long
+	averrno = MOVIE_FILENAME_TOO_LONG;
 	return false;
     }
     strcpy(oc->filename, fnm);
@@ -118,8 +125,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     // Add the video stream using the default format codec.
     st = av_new_stream(oc, 0);
     if (!st) {
-	// FIXME : possible errors are "too many streams" (can't be - we only
-	// ask for one) and "out of memory"
+	averrno = AVERROR_NOMEM;
 	return false;
     }
 
@@ -144,9 +150,9 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	c->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
     // Set the output parameters (must be done even if no parameters).
-    if (av_set_parameters(oc, NULL) < 0) {
-	// FIXME : return value is an AVERROR_* value - probably
-	// AVERROR_NOMEM or AVERROR_UNKNOWN.
+    int retval = av_set_parameters(oc, NULL);
+    if (retval < 0) {
+	averrno = retval;
 	return false;
     }
 
@@ -159,9 +165,10 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	// FIXME : Erm - internal ffmpeg library problem?
 	return false;
     }
-    if (avcodec_open(c, codec) < 0) {
-	// FIXME : return value is an AVERROR_* value - probably
-	// AVERROR_NOMEM or AVERROR_UNKNOWN.
+
+    retval = avcodec_open(c, codec);
+    if (retval < 0) {
+	averrno = retval;
 	return false;
     }
 
@@ -170,21 +177,21 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     } else {
 	outbuf = (unsigned char *)malloc(OUTBUF_SIZE);
 	if (!outbuf) {
-	    // FIXME : out of memory
+	    averrno = AVERROR_NOMEM;
 	    return false;
 	}
     }
 
     frame = avcodec_alloc_frame();
     if (!frame) {
-	// FIXME : out of memory
+	averrno = AVERROR_NOMEM;
 	return false;
     }
     int size = avpicture_get_size(c->pix_fmt, width, height);
     uint8_t * picture_buf = (uint8_t*)av_malloc(size);
     if (!picture_buf) {
 	av_free(frame);
-	// FIXME : out of memory
+	averrno = AVERROR_NOMEM;
 	return false;
     }
     avpicture_fill((AVPicture *)frame, picture_buf, c->pix_fmt, width, height);
@@ -197,18 +204,20 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 
     pixels = (unsigned char *)malloc(width * height * 6);
     if (!pixels) {
-	// FIXME : out of memory
+	averrno = AVERROR_NOMEM;
 	return false;
     }
 
-    if (url_fopen(&oc->pb, fnm, URL_WRONLY) < 0) {
-	// FIXME : return value is -E* (e.g. -EIO).
+    retval = url_fopen(&oc->pb, fnm, URL_WRONLY);
+    if (retval < 0) {
+	averrno = retval;
 	return false;
     }
 
     // Write the stream header, if any.
-    if (av_write_header(oc) < 0) {
-	// FIXME : return value is an AVERROR_* value.
+    retval = av_write_header(oc);
+    if (retval < 0) {
+	averrno = retval;
 	return false;
     }
 
@@ -221,8 +230,10 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	return false;
     }
 
+    averrno = 0;
     return true;
 #else
+    averrno = MOVIE_NOT_ENABLED;
     return false;
 #endif
 }
@@ -308,7 +319,7 @@ void MovieMaker::AddFrame()
 MovieMaker::~MovieMaker()
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
-    if (st) {
+    if (st && averrno == 0) {
 	// No more frames to compress.  The codec may have a few frames
 	// buffered if we're using B frames, so write those too.
 	AVCodecContext * c = st->codec;
@@ -336,9 +347,11 @@ MovieMaker::~MovieMaker()
 	}
 
 	av_write_trailer(oc);
+    }
 
+    if (st) {
 	// Close codec.
-	avcodec_close(c);
+	avcodec_close(st->codec);
     }
 
     if (frame) {
@@ -365,4 +378,41 @@ MovieMaker::~MovieMaker()
 	av_free(oc);
     }
 #endif
+}
+
+const char *
+MovieMaker::get_error_string() const
+{
+    switch (averrno) {
+	case AVERROR_IO:
+	    return "I/O error";
+	case AVERROR_NUMEXPECTED:
+	    return "Number syntax expected in filename";
+	case AVERROR_INVALIDDATA:
+	    /* same as AVERROR_UNKNOWN: return "unknown error"; */
+	    return "invalid data found";
+	case AVERROR_NOMEM:
+	    return "not enough memory";
+	case AVERROR_NOFMT:
+	    return "unknown format";
+	case AVERROR_NOTSUPP:
+	    return "Operation not supported";
+	case AVERROR_NOENT:
+	    return "No such file or directory";
+	case AVERROR_EOF:
+	    return "End of file";
+	case AVERROR_PATCHWELCOME:
+	    return "Not implemented in FFmpeg";
+	case 0:
+	    return "No error";
+	case MOVIE_NO_SUITABLE_FORMAT:
+	    return "Couldn't find a suitable output format";
+	case MOVIE_AUDIO_ONLY:
+	    return "Audio-only format specified";
+	case MOVIE_FILENAME_TOO_LONG:
+	    return "Filename too long";
+	case MOVIE_NOT_ENABLED:
+	    return "Movie export support not included";
+    }
+    return "Unknown error";
 }
