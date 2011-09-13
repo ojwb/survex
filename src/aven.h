@@ -79,6 +79,8 @@ const wxString & wmsg_cfgpth();
 
 class MainFrm;
 
+extern bool double_buffered;
+
 class Aven : public wxGLApp {
     MainFrm * m_Frame;
     // This must be a pointer, otherwise it gets initialised too early and

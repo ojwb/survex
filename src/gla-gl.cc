@@ -104,7 +104,7 @@ string GetGLSystemDescription()
     info += (const char*)glGetString(GL_VENDOR);
     info += '\n';
     info += (const char*)glGetString(GL_RENDERER);
-    info += '\n';
+    info += string_format("\nGLX %0.1f\n", wxGLCanvas::GetGLXVersion() * 0.1);
 
     GLint red, green, blue;
     glGetIntegerv(GL_RED_BITS, &red);
@@ -132,6 +132,12 @@ string GetGLSystemDescription()
 	info += string_format("\nAliased point size %.3f-%.3f",
 			      point_size_range[0], point_size_range[1]);
     }
+
+    info += "\nDouble buffered: ";
+    if (double_buffered)
+	info += "true";
+    else
+	info += "false";
 
     const GLubyte* gl_extensions = glGetString(GL_EXTENSIONS);
     if (*gl_extensions) {
@@ -794,9 +800,12 @@ void GLACanvas::FinishDrawing()
 {
     // Complete a redraw operation.
 
-//    glFlush();
-//    CHECK_GL_ERROR("FinishDrawing", "glFlush");
-    SwapBuffers();
+    if (double_buffered) {
+	SwapBuffers();
+    } else {
+	glFlush();
+	CHECK_GL_ERROR("FinishDrawing", "glFlush");
+    }
 }
 
 void GLACanvas::DrawList(unsigned int l)

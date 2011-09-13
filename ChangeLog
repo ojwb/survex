@@ -1,3 +1,10 @@
+Tue Sep 13 11:32:18 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.cc,src/aven.h,src/gla-gl.cc: Explicitly request
+	  double-buffering, which seems to be needed for systems with GLX >=
+	  1.3.  Report GLX version and whether double-buffering is in use in
+	  the about dialog.
+
 Sun Jun 19 11:19:51 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/: Try to report errors from generating movie more helpfully.
