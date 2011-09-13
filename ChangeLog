@@ -1,3 +1,7 @@
+Tue Sep 13 22:05:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Use wx 2.8.12.
+
 Tue Sep 13 11:32:18 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aven.cc,src/aven.h,src/gla-gl.cc: Explicitly request

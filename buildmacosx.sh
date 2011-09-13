@@ -33,7 +33,7 @@
 
 set -e
 
-WXVERSION=2.8.11
+WXVERSION=2.8.12
 
 # To build for older machines with a ppc CPU, you want -arch ppc instead in
 # arch_flags (might also work as well with some OS X versions).
