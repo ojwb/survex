@@ -1,3 +1,7 @@
+Wed Sep 14 00:33:16 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/es.po: Update from launchpad.
+
 Tue Sep 13 22:05:59 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Use wx 2.8.12.
