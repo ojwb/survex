@@ -1449,7 +1449,9 @@ void MainFrm::FillTree()
 		// are the same.
 		// Note that we require a match of a whole number of parts
 		// between dots!
-		for (size_t i = 0; prefix[i] == current_prefix[i]; ++i) {
+		size_t n = min(prefix.length(), current_prefix.length());
+		size_t i;
+		for (i = 0; i < n && prefix[i] == current_prefix[i]; ++i) {
 		    if (prefix[i] == separator) count = i + 1;
 		}
 	    } else {
