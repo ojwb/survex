@@ -151,7 +151,7 @@ public:
 	t = atof(tilt_angle->GetValue().mb_str());
 	s = atof(scale->GetValue().mb_str());
 	wxString str = time->GetValue();
-	if (str[0u] == '*') str[0u] = '-';
+	if (!str.empty() && str[0u] == '*') str[0u] = '-';
 	T = atof(str.mb_str());
 	return PresentationMark(v, a, t, s, T);
     }
