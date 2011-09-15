@@ -1,3 +1,7 @@
+Thu Sep 15 02:11:28 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Distribute codes.po.
+
 Thu Sep 15 02:08:35 GMT 2011  Olly Betts <olly@survex.com>
 
 	* configure.in,survex.spec.in: Default to installing docs into

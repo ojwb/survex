@@ -16,7 +16,7 @@ msg_files = ca.msg de.msg de_CH.msg de_DE.msg en.msg en_US.msg\
 hdr_files = ca.h de.h de_CH.h de_DE.h en.h en_US.h\
  es.h fr.h it.h pt.h pt_BR.h sk.h ro.h
 
-EXTRA_DIST = survex.pot $(po_files)\
+EXTRA_DIST = survex.pot $(po_files) codes.po\
  named-entities.txt po-to-msg.pl checkshortcut.pl\
  $(hdr_files) survex.keys.in\
  English_GB.isl Romanian-7-5.1.11.isl\
