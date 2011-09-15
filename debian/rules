@@ -1,7 +1,4 @@
 #!/usr/bin/make -f
 
-# Ensure DISPLAY is empty in case the testsuite is run.
-export DISPLAY=
-
 %:
 	dh $@
