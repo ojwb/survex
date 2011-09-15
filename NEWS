@@ -1,3 +1,59 @@
+  3631       olly Thu Sep 15 02:11:28 GMT 2011  Olly Betts <olly@survex.com>
+
+  3600       olly Tue May 24 05:17:53 GMT 2011  Olly Betts <olly@survex.com>
+	* doc/Makefile.am: Write generated man page to a temporary file, then
+	  atomically rename, to avoid leaving an empty or partial man page
+	  behind if docbook-to-man dies (I managed to ship an empty cad3d.1 in
+	  1.1.16).
+
+  3608       olly Thu May 26 14:47:52 GMT 2011  Olly Betts <olly@survex.com>
+	* lib/codes.po: Mark unused messages by commenting out with '#~'.
+  3597       olly Sat May 21 22:04:31 GMT 2011  Olly Betts <olly@survex.com>
+	* lib/: Remove comments which are only relevant for other languages
+	  from .po files.  Add more clarifying comments.
+
+  3595       olly Wed May 18 09:06:19 GMT 2011  Olly Betts <olly@survex.com>
+	* lib/,src/mainfrm.cc,src/mainfrm.h: We now use .po and .pot files as
+	  the master format for storing translations in (rather than
+	  messages.txt), and then translate these into Survex's .msg format.
+
+Changes in 1.1.17 (2011-09-15):
+
+* Translation updates for Catalan, French, Romanian, Spanish, Slovak, and US
+  English.
+
+* (Unix version): Move survex man page to section 7 (since it isn't documenting
+  an actual command).
+
+* (Unix version): Default to installing docs into /usr/share/doc/survex rather
+  than /usr/doc/survex.
+
+* aven:
+
+  + Explicitly request double-buffering, which seems to be needed for systems
+    with GLX >= 1.3.
+
+  + Fix crash while trying to load certain .3d files.
+
+  + Movie export code updated to work with more recent versions of FFmpeg.
+
+  + Reporting of errors during movie export improved.
+
+  + Force playback speed to "x1" during movie export.
+
+  + Use stock IDs for buttons where appropriate - such buttons may now be
+    rendered with icons on some platforms.
+
+* cavern:
+
+  + Drop "non-fatal" from the report of how many errors there were at the end
+    of the run - it just confuses users - we won't even get here if there's a
+    fatal error!
+
+* (Mac OS X version): Fix buildmacosx.sh script to check where the temporary
+  volume actually gets mounted.  Build for x86_64 as well as i386.  Fix URL
+  for downloading wxWidgets, and use wxWidgets 2.8.12 by default.
+
 Changes in 1.1.16 (2011-05-16):
 
 * Translation updates for German, Spanish, Italian, Portuguese, Brazilian
