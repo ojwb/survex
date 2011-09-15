@@ -86,10 +86,8 @@ static int getopt_first_response = 0;
 #ifdef __WXMSW__
 bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
-    // Call msg_init() and start processing the command line first so that
-    // we can respond to --help and --version even without an X display.
-    // However, wxWidgets passes us wxChars, which may be wide characters
-    // and cmdline wants UTF-8 so we need to convert.
+    // wxWidgets passes us wxChars, which may be wide characters but cmdline
+    // wants UTF-8 so we need to convert.
     char *utf8_argv[my_argc + 1];
     for (int i = 0; i < my_argc; ++i){
 	utf8_argv[i] = strdup(wxString(my_argv[i]).mb_str());
@@ -98,7 +96,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 
     msg_init(utf8_argv);
     select_charset(CHARSET_UTF8);
-    /* Want --version and a decent --help output, which cmdline does for us.
+    /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
     cmdline_set_syntax_message("[3d file]", NULL);
@@ -125,7 +123,7 @@ int main(int argc, char **argv)
     // we can respond to --help and --version even without an X display.
     msg_init(argv);
     select_charset(CHARSET_UTF8);
-    /* Want --version and a decent --help output, which cmdline does for us.
+    /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
     cmdline_set_syntax_message("[3d file]", NULL);

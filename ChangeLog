@@ -1,3 +1,7 @@
+Thu Sep 15 03:58:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Comment improvements.
+
 Thu Sep 15 03:51:27 GMT 2011  Olly Betts <olly@survex.com>
 
 	* tests/smoke.tst: aven no longer requires an X display for --help or
