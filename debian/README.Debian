@@ -29,7 +29,7 @@ Vim Support
 -----------
 
 The survex package include vim syntax highlighting for Survex data files,
-but it is not enable per default. If you want to enable it for your user
+but it is not enabled per default. If you want to enable it for your user
 account just execute:
 
     vim-addons install survex

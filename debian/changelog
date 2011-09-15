@@ -8,8 +8,9 @@ survex (1.1.16-2) UNRELEASED; urgency=low
     path of the binary, so update override to match.
   * debian/survex.install: Update for move of survex man page to section 7.
   * Add build-deps for movie export support.
+  * README.Debian: Fix typo spotted by lintian.
 
- -- Olly Betts <olly@survex.com>  Wed, 14 Sep 2011 00:30:17 +0000
+ -- Olly Betts <olly@survex.com>  Thu, 15 Sep 2011 00:59:16 +0000
 
 survex (1.1.16-1) unstable; urgency=low
 
