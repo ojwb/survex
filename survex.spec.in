@@ -42,7 +42,7 @@ make -C vim vimdir=/usr/share/vim install DESTDIR="%{buildroot}"
 mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
 # Move docs back into build tree to keep rpmbuild happy by letting
 # it do the installing.
-mv "%{buildroot}"/usr/doc/@PACKAGE@ ./built-docs
+mv "%{buildroot}"/usr/share/doc/@PACKAGE@ ./built-docs
 
 %clean
 [ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
