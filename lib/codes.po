@@ -521,8 +521,8 @@ msgid "Invalid day of the month"
 msgstr "87"
 
 #, c-format
-#~ msgid "Error in format of font file `%s'"
-#~ msgstr "88"
+msgid "3d file format versions %d to %d supported"
+msgstr "88"
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"

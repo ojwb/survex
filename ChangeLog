@@ -1,3 +1,8 @@
+Fri Sep 16 12:55:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/cavern.c: Add --3d-version option to allow the user
+	  to specify the version of the 3d format to output.  (ticket#21)
+
 Fri Sep 16 12:52:55 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/img.c,src/img.h: Make the highest and lowest valid values for

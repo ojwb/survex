@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #endif
 
 #include <limits.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "cavern.h"
@@ -104,6 +105,7 @@ static const struct option long_opts[] = {
    {"no-auxiliary-files", no_argument, 0, 's'},
    {"warnings-are-errors", no_argument, 0, 'w'},
    {"log", no_argument, 0, 1},
+   {"3d-version", required_argument, 0, 'v'},
 #if OS_WIN32
    {"pause", no_argument, 0, 2},
 #endif
@@ -112,7 +114,7 @@ static const struct option long_opts[] = {
    {0, 0, 0, 0}
 };
 
-#define short_opts "pao:qswz:"
+#define short_opts "pao:qsv:wz:"
 
 /* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
@@ -123,6 +125,7 @@ static struct help_msg help[] = {
    {HLP_ENCODELONG(4),		"do not create .err file"},
    {HLP_ENCODELONG(5),		"turn warnings into errors"},
    {HLP_ENCODELONG(6),		"log output to .log file"},
+   {HLP_ENCODELONG(7),		"specify the 3d file format version to output"},
  /*{'z',			"set optimizations for network reduction"},*/
    {0, 0}
 };
@@ -228,6 +231,14 @@ main(int argc, char **argv)
        case 's':
 	 fSuppress = 1;
 	 break;
+       case 'v': {
+	 int v = atoi(optarg);
+	 if (v < IMG_VERSION_MIN || v > IMG_VERSION_MAX)
+	    fatalerror(/*3d file format versions %d to %d supported*/88,
+		       IMG_VERSION_MIN, IMG_VERSION_MAX);
+	 img_output_version = v;
+	 break;
+       }
        case 'w':
 	 f_warnings_are_errors = 1;
 	 break;
