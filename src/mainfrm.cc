@@ -250,7 +250,7 @@ class AvenPresList : public wxListCtrl {
 	void OnChar(wxKeyEvent& event) {
 	    switch (event.GetKeyCode()) {
 		case WXK_INSERT:
-		    if (event.m_controlDown) {
+		    if (event.GetModifiers() == wxMOD_CONTROL) {
 			if (current_item != -1 &&
 			    size_t(current_item) < entries.size()) {
 			    AddMark(current_item, entries[current_item]);

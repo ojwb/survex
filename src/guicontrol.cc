@@ -1023,28 +1023,28 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
     // on windows?)  FIXME : check!
     //bool refresh = m_View->Animate();
 
-    switch (e.m_keyCode) {
+    switch (e.GetKeyCode()) {
 	case '/': case '?':
 	    if (m_View->CanLowerViewpoint() && !m_View->IsExtendedElevation())
-		OnLowerViewpoint(e.m_shiftDown);
+		OnLowerViewpoint(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
 	    if (m_View->CanRaiseViewpoint() && !m_View->IsExtendedElevation())
-		OnHigherViewpoint(e.m_shiftDown);
+		OnHigherViewpoint(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'C': case 'c':
 	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
-		OnStepOnceAnticlockwise(e.m_shiftDown);
+		OnStepOnceAnticlockwise(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'V': case 'v':
 	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
-		OnStepOnceClockwise(e.m_shiftDown);
+		OnStepOnceClockwise(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case ']': case '}':
-	    OnZoomIn(e.m_shiftDown);
+	    OnZoomIn(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case '[': case '{':
-	    OnZoomOut(e.m_shiftDown);
+	    OnZoomOut(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'N': case 'n':
 	    OnMoveNorth();
@@ -1062,11 +1062,11 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case 'Z': case 'z':
 	    if (!m_View->IsExtendedElevation())
-		OnSpeedUp(e.m_shiftDown);
+		OnSpeedUp(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'X': case 'x':
 	    if (!m_View->IsExtendedElevation())
-		OnSlowDown(e.m_shiftDown);
+		OnSlowDown(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'R': case 'r':
 	    if (!m_View->IsExtendedElevation())
@@ -1096,35 +1096,35 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 		OnToggleRotation();
 	    break;
 	case WXK_LEFT:
-	    if (e.m_controlDown) {
+	    if ((e.GetModifiers() &~ wxMOD_SHIFT) == wxMOD_CONTROL) {
 		if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
-		    OnStepOnceAnticlockwise(e.m_shiftDown);
+		    OnStepOnceAnticlockwise(e.GetModifiers() == wxMOD_SHIFT);
 	    } else {
-		OnShiftDisplayLeft(e.m_shiftDown);
+		OnShiftDisplayLeft(e.GetModifiers() == wxMOD_SHIFT);
 	    }
 	    break;
 	case WXK_RIGHT:
-	    if (e.m_controlDown) {
+	    if ((e.GetModifiers() &~ wxMOD_SHIFT) == wxMOD_CONTROL) {
 		if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
-		    OnStepOnceClockwise(e.m_shiftDown);
+		    OnStepOnceClockwise(e.GetModifiers() == wxMOD_SHIFT);
 	    } else {
-		OnShiftDisplayRight(e.m_shiftDown);
+		OnShiftDisplayRight(e.GetModifiers() == wxMOD_SHIFT);
 	    }
 	    break;
 	case WXK_UP:
-	    if (e.m_controlDown) {
+	    if ((e.GetModifiers() &~ wxMOD_SHIFT) == wxMOD_CONTROL) {
 		if (m_View->CanRaiseViewpoint() && !m_View->IsExtendedElevation())
-		    OnHigherViewpoint(e.m_shiftDown);
+		    OnHigherViewpoint(e.GetModifiers() == wxMOD_SHIFT);
 	    } else {
-		OnShiftDisplayUp(e.m_shiftDown);
+		OnShiftDisplayUp(e.GetModifiers() == wxMOD_SHIFT);
 	    }
 	    break;
 	case WXK_DOWN:
-	    if (e.m_controlDown) {
+	    if ((e.GetModifiers() &~ wxMOD_SHIFT) == wxMOD_CONTROL) {
 		if (m_View->CanLowerViewpoint() && !m_View->IsExtendedElevation())
-		    OnLowerViewpoint(e.m_shiftDown);
+		    OnLowerViewpoint(e.GetModifiers() == wxMOD_SHIFT);
 	    } else {
-		OnShiftDisplayDown(e.m_shiftDown);
+		OnShiftDisplayDown(e.GetModifiers() == wxMOD_SHIFT);
 	    }
 	    break;
 	case WXK_ESCAPE:

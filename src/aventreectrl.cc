@@ -145,7 +145,7 @@ void AvenTreeCtrl::DeleteAllItems()
 
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 {
-    switch (e.m_keyCode) {
+    switch (e.GetKeyCode()) {
 	case WXK_ESCAPE:
 	    m_Parent->ClearTreeSelection();
 	    break;
