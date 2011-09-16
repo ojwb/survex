@@ -1,3 +1,9 @@
+Fri Sep 16 14:22:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/aven.png,lib/icons/aven.svg: Add
+	  new version of aven icon, redrawn in SVG so it displays nicely at
+	  larger sizes.
+
 Fri Sep 16 12:55:05 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/cavern.c: Add --3d-version option to allow the user

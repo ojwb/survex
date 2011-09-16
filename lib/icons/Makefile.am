@@ -18,7 +18,7 @@ dist_icon_DATA = elevation.png open.png crosses.png entrances.png plan.png\
 #	pres-record.png pres-finish.png
 
 pixmapsdir = $(datadir)/pixmaps
-pixmaps_DATA = aven.png svxedit.png
+dist_pixmaps_DATA = aven.png aven.svg svxedit.png
 
 SUFFIXES = .ico .png
 
@@ -26,4 +26,4 @@ SUFFIXES = .ico .png
 	$(SHELL) $(srcdir)/png2winicon $< $@
 
 EXTRA_DIST = 3d.ico err.ico plt.ico pos.ico svx.ico\
- aven.ico svxedit.png svxedit.ico png2winicon
+ aven.ico svxedit.ico png2winicon
