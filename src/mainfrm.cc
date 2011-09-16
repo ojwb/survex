@@ -1825,11 +1825,8 @@ void MainFrm::UpdateStatusBar()
 void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
-    if (!dist_text.empty()) {
-	dist_text = wxString();
-	UpdateStatusBar();
-    }
     m_Gfx->SetThere();
+    ShowInfo(NULL);
 }
 
 void MainFrm::ClearCoords()

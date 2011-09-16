@@ -1,3 +1,9 @@
+Fri Sep 16 02:05:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.cc: Don't redraw the survey
+	  on every mouse movement in the survey pane unless the measuring line
+	  is (or just was) active.  (ticket #17)
+
 Thu Sep 15 03:58:59 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Comment improvements.

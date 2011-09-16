@@ -452,6 +452,7 @@ public:
 		 const wxString &datestamp);
     void OnExport(const wxString &filename, const wxString &title);
     void SetCursor(GfxCore::cursor new_cursor);
+    bool MeasuringLineActive() const;
 
 private:
     DECLARE_EVENT_TABLE()

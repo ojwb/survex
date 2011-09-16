@@ -399,7 +399,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    }
 	}
 
-	if (!Animating() && (m_here.IsValid() || m_there.IsValid())) {
+	if (MeasuringLineActive()) {
 	    // Draw "here" and "there".
 	    double hx, hy;
 	    SetColour(HERE_COLOUR);
@@ -1152,8 +1152,8 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (ds == 0) break;
     }
 
-    m_Parent->ShowInfo(best);
     if (best) {
+	m_Parent->ShowInfo(best);
 	if (centre) {
 	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
@@ -1166,6 +1166,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (centre) {
 	    ClearTreeSelection();
 	} else {
+	    m_Parent->ShowInfo(best);
 	    double x, y, z;
 	    ReverseTransform(point.x, m_YSize - point.y, &x, &y, &z);
 	    SetHere(Point(Vector3(x, y, z)));
@@ -1463,16 +1464,20 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 void GfxCore::SetHere()
 {
     if (!m_here.IsValid()) return;
+    bool line_active = MeasuringLineActive();
     Point old = m_here;
     m_here.Invalidate();
-    RefreshLine(old, m_there, m_here);
+    if (line_active || MeasuringLineActive())
+	RefreshLine(old, m_there, m_here);
 }
 
 void GfxCore::SetHere(const Point &p)
 {
+    bool line_active = MeasuringLineActive();
     Point old = m_here;
     m_here = p;
-    RefreshLine(old, m_there, m_here);
+    if (line_active || MeasuringLineActive())
+	RefreshLine(old, m_there, m_here);
     m_here_is_temporary = false;
 }
 
@@ -2994,4 +2999,10 @@ GfxCore::SetCursor(GfxCore::cursor new_cursor)
 	    GLACanvas::SetCursor(make_cursor(rotatezoom_bits, rotatezoommask_bits, 15, 15));
 	    break;
     }
+}
+
+bool GfxCore::MeasuringLineActive() const
+{
+    if (Animating()) return false;
+    return (m_here.IsValid() && !m_here_is_temporary) || m_there.IsValid();
 }
