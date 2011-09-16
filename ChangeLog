@@ -1,3 +1,7 @@
+Fri Sep 16 14:26:43 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.2.0.
+
 Fri Sep 16 14:22:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am,lib/icons/aven.png,lib/icons/aven.svg: Add
