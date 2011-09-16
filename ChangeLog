@@ -1,3 +1,8 @@
+Fri Sep 16 03:16:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: If a label isn't valid UTF-8, treat it as CP1252 (the
+	  Microsoft superset of ISO8859-1).
+
 Fri Sep 16 03:00:51 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Remove special handling for toggling "full screen"

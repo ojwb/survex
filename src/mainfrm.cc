@@ -1123,7 +1123,15 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		if (flags & img_SFLAG_ENTRANCE) {
 		    flags ^= (img_SFLAG_ENTRANCE | LFLAG_ENTRANCE);
 		}
-		LabelInfo* label = new LabelInfo(pt, wxString(survey->label, wxConvUTF8), flags);
+		wxString s(survey->label, wxConvUTF8);
+		if (s.empty()) {
+		    // If label isn't valid UTF-8 then this conversion will
+		    // give an empty string.  In this case, assume that the label
+		    // is CP1252 (the Microsoft superset of ISO8859-1).
+		    static wxCSConv ConvCP1252(wxFONTENCODING_CP1252);
+		    s = wxString(survey->label, ConvCP1252);
+		}
+		LabelInfo* label = new LabelInfo(pt, s, flags);
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;
 		}
