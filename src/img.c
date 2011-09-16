@@ -30,8 +30,6 @@
 
 #include "img.h"
 
-#define LATEST_IMG_VERSION 7
-
 #ifndef IMG_API_VERSION
 # define IMG_API_VERSION 0
 #elif IMG_API_VERSION > 1
@@ -168,7 +166,7 @@ int my_strcasecmp(const char *s1, const char *s2) {
 }
 #endif
 
-unsigned int img_output_version = LATEST_IMG_VERSION;
+unsigned int img_output_version = IMG_VERSION_MAX;
 
 #ifdef IMG_HOSTED
 static enum {
@@ -574,7 +572,7 @@ xyz_file:
       }
       /* nothing special to do */
    } else if (pimg->version == 0) {
-      if (ch < '2' || ch > '0' + LATEST_IMG_VERSION || GETC(pimg->fh) != '\n') {
+      if (ch < '2' || ch > '0' + IMG_VERSION_MAX || GETC(pimg->fh) != '\n') {
 	 img_errno = IMG_TOONEW;
 	 goto error;
       }
@@ -683,7 +681,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       pimg->version = 1;
       fputs("Bv0.01\n", pimg->fh); /* binary file format version number */
    } else {
-      pimg->version = (img_output_version > LATEST_IMG_VERSION) ? LATEST_IMG_VERSION : img_output_version;
+      pimg->version = (img_output_version > IMG_VERSION_MAX) ? IMG_VERSION_MAX : img_output_version;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
    fputsnl(title_buf, pimg->fh);

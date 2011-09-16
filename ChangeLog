@@ -1,3 +1,9 @@
+Fri Sep 16 12:52:55 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/img.h: Make the highest and lowest valid values for
+	  img_output_version available in img.h as IMG_VERSION_MIN and
+	  IMG_VERSION_MAX.
+
 Fri Sep 16 05:49:12 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc,src/guicontrol.cc,src/mainfrm.cc: Don't use

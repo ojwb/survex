@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,6 +133,12 @@ typedef struct {
 
 /* Which version of the file format to output (defaults to newest) */
 extern unsigned int img_output_version;
+
+/* Minimum supported value for img_output_version: */
+#define IMG_VERSION_MIN 1
+
+/* Maximum supported value for img_output_version: */
+#define IMG_VERSION_MAX 7
 
 /* Open a .3d file for reading
  * fnm is the filename
