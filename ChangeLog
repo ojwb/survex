@@ -1,3 +1,8 @@
+Fri Sep 16 03:36:54 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/map.png: Remove scan of map which isn't used and we probably
+	  don't have rights to redistribute.
+
 Fri Sep 16 03:16:01 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: If a label isn't valid UTF-8, treat it as CP1252 (the
