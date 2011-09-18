@@ -12,8 +12,8 @@ SUBDIRS = . lib src doc tests
 # want to distribute the files there.
 DIST_SUBDIRS = $(SUBDIRS) vim
 
-EXTRA_DIST = $(GNU_FILES) TODO survex.iss.in OLDNEWS\
- desc.txt desc-aven.txt survex.spec.in survex.spec\
+EXTRA_DIST = $(GNU_FILES) TODO OLDNEWS\
+ desc.txt desc-aven.txt survex.spec\
  buildmacosx.sh
 
 extra_bin = lib/*.msg\

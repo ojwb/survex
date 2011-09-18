@@ -16,14 +16,13 @@ manual_alt = manual.txt manual.pdf
 # won't be able to "make dist", which is arguably a good thing - we don't
 # want tarballs accidentally lacking the documentation.
 EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
- survex.7.in index.htm.in\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml\
  man_print.ini.sgml man_svxedit.sgml news2html.pl\
- version.ent version.ent.in
+ version.ent
 
 NEWS.htm: ../NEWS news2html.pl
 	./news2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../NEWS > NEWS.htm
