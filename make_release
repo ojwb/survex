@@ -22,7 +22,7 @@ if test x"$rel" = xyes ; then
   autoreconf --force -i
   ./configure CC=gcc CXX=g++
   make distcheck
-  # FIXME: setting c90 doesn't define unix and suppresses getc_unlocked().
+  # FIXME: setting c89 doesn't define unix and suppresses getc_unlocked().
   # Tell the preprocessor to be C89 - this makes it reject // comments
   # FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
   # FIXME   CXXFLAGS="-Werror"

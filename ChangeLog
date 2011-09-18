@@ -1,3 +1,7 @@
+Sun Sep 18 02:51:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Fix comment typo.
+
 Sun Sep 18 02:50:30 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Update in preparation for releasing 1.2.
