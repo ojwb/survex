@@ -1,3 +1,9 @@
+Sun Sep 18 01:59:49 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: survex.keys.in will get shipped because it is
+	  used by AC_CONFIG_FILES so there's no need to list it explicitly
+	  in EXTRA_DIST.
+
 Sun Sep 18 01:56:18 GMT 2011  Olly Betts <olly@survex.com>
 
 	* configure.in,lib/Makefile.am,lib/po-to-msg.pl: Fix .msg file
