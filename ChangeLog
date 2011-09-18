@@ -1,3 +1,7 @@
+Sun Sep 18 02:50:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Update in preparation for releasing 1.2.
+
 Sun Sep 18 02:49:53 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Only try to read the GLX version on platforms which
