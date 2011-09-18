@@ -104,7 +104,9 @@ string GetGLSystemDescription()
     info += (const char*)glGetString(GL_VENDOR);
     info += '\n';
     info += (const char*)glGetString(GL_RENDERER);
+#if defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__
     info += string_format("\nGLX %0.1f\n", wxGLCanvas::GetGLXVersion() * 0.1);
+#endif
 
     GLint red, green, blue;
     glGetIntegerv(GL_RED_BITS, &red);
