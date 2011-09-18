@@ -1,3 +1,13 @@
+Sun Sep 18 01:56:18 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,lib/Makefile.am,lib/po-to-msg.pl: Fix .msg file
+	  generation to work when srcdir != builddir.  Drop the "dontextract"
+	  mechanism which automatically generates headers to allows building a
+	  version with translations for the messages for errors in loading the
+	  messages file, as it doesn't seem worth the effort to get it working
+	  again.  It's easy to write such a header by hand if you really want
+	  to do this.
+
 Fri Sep 16 14:26:43 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.0.

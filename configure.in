@@ -1,7 +1,5 @@
 dnl Process this file with autoconf to produce a configure script
 
-dnl CFLAGS=-DDEFAULTLANG=fr to build with French as the default language.
-
 dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
 dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
@@ -61,19 +59,6 @@ PKGDOCDIR_EXPANDED=`(
 )`
 AC_SUBST(PKGDOCDIR)
 AC_SUBST(PKGDOCDIR_EXPANDED)
-
-DEFAULTLANG=en
-AC_ARG_ENABLE(defaultlang,
-[  --enable-defaultlang=LANG Set the default language for messages to LANG],
-[case $enableval in
- yes|no) # until we support Norwegian...
-  AC_MSG_ERROR([configure: Syntax: configure --enable-defaultlang=LANGUAGE]) ;;
-esac
-DEFAULTLANG="$enableval"
-AC_DEFINE_UNQUOTED(DEFAULTLANG, [$enableval], [Default language for messages])
-]
-)
-AC_SUBST(DEFAULTLANG)
 
 AC_ARG_ENABLE(testprogs,
 [  --enable-testprogs Enable building of various test harness programs],

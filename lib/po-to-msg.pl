@@ -6,14 +6,14 @@ use Locale::PO;
 
 use integer;
 
-# messages >= this value are written to a header file
-my $dontextract_threshold = 1000;
-
 # Magic identifier (12 bytes)
 my $magic = "Svx\nMsg\r\n\xfe\xff\0";
 # Designed to be corrupted by ASCII ftp, top bit stripping (or
 # being used for parity).  Contains a zero byte so more likely
 # to be flagged as data (e.g. by perl's "-B" test).
+
+my $srcdir = $0;
+$srcdir =~ s!/[^/]+$!!;
 
 my $major = 0;
 my $minor = 8;
@@ -30,11 +30,10 @@ my $minor = 8;
 
 my %msgs = ();
 ${$msgs{'en'}}[0] = '©';
-my %dontextract = ();
 
 # my %uses = ();
 
-my $num_list = Locale::PO->load_file_asarray("codes.po");
+my $num_list = Locale::PO->load_file_asarray("$srcdir/codes.po");
 my $curmsg = -1;
 foreach my $po_entry (@{$num_list}) {
     my $msgno = $po_entry->dequote($po_entry->msgstr);
@@ -44,23 +43,17 @@ foreach my $po_entry (@{$num_list}) {
     }
     my $key = $po_entry->msgid;
     my $msg = c_unescape($po_entry->dequote($key));
-    if ($msgno >= $dontextract_threshold) {
-	if (${$dontextract{'en'}}[$msgno - $dontextract_threshold]) {
-	    print STDERR "Warning: already had message $msgno for language 'en'\n";
-	}
-	${$dontextract{'en'}}[$msgno - $dontextract_threshold] = $msg;
-    } else {
-	if (${$msgs{'en'}}[$msgno]) {
-	    print STDERR "Warning: already had message $msgno for language 'en'\n";
-	}
-	${$msgs{'en'}}[$msgno] = $msg;
+    if (${$msgs{'en'}}[$msgno]) {
+	print STDERR "Warning: already had message $msgno for language 'en'\n";
     }
+    ${$msgs{'en'}}[$msgno] = $msg;
 }
 
-for my $language (@ARGV) {
+for my $po_file (@ARGV) {
+    my $language = $po_file;
     $language =~ s/\.po$//;
 
-    my $po_hash = Locale::PO->load_file_ashash("$language.po");
+    my $po_hash = Locale::PO->load_file_ashash("$srcdir/$po_file");
 
     foreach my $po_entry (@{$num_list}) {
 	my $msgno = $po_entry->dequote($po_entry->msgstr);
@@ -70,22 +63,15 @@ for my $language (@ARGV) {
 	if (defined $ent) {
 	    my $msg = c_unescape($po_entry->dequote($ent->msgstr));
 	    next if $msg eq '';
-	    if ($msgno >= $dontextract_threshold) {
-		if (${$dontextract{$language}}[$msgno - $dontextract_threshold]) {
-		    print STDERR "Warning: already had message $msgno for language $language\n";
-		}
-		${$dontextract{$language}}[$msgno - $dontextract_threshold] = $msg;
-	    } else {
-		if (${$msgs{$language}}[$msgno]) {
-		    print STDERR "Warning: already had message $msgno for language $language\n";
-		}
-		${$msgs{$language}}[$msgno] = $msg;
+	    if (${$msgs{$language}}[$msgno]) {
+		print STDERR "Warning: already had message $msgno for language $language\n";
 	    }
+	    ${$msgs{$language}}[$msgno] = $msg;
 	}
     }
 
 #       local $_;
-#       open FINDUSES, "grep -no '*/$msgno\\>' ../src/*.cc ../src/*.c ../src/*.h|" or die $!;
+#       open FINDUSES, "grep -no '*/$msgno\\>' \Q$srcdir\E/../src/*.cc \Q$srcdir\E../src/*.c \Q$srcdir\E/../src/*.h|" or die $!;
 #       while (<FINDUSES>) {
 #	   push @{$uses{$msgno}}, $1 if /^([^:]*:\d+):/;
 #       }
@@ -160,69 +146,6 @@ foreach $lang (@langs) {
        }
        print STDERR "\n";
    }
-}
-
-my $num_dontextract = -1;
-foreach $lang (@langs) {
-   my $aref = $dontextract{$lang};
-   if (defined(@$aref)) {
-       $num_dontextract = scalar @$aref if scalar @$aref > $num_dontextract;
-   }
-}
-
-if (0) { # disable for now until this is sorted in the po based framework
-foreach $lang (@langs) {
-   my $fnm = $lang;
-   $fnm =~ s/(_.*)$/\U$1/;
-   open OUT, ">$fnm.h" or die $!;
-   print OUT "#define N_DONTEXTRACTMSGS ", $num_dontextract, "\n";
-   print OUT "static unsigned char dontextractmsgs[] =";
-
-   my $missing = 0;
-   for my $n (0 .. $num_dontextract - 1) {
-      print OUT "\n";
-
-      my $aref = $dontextract{$lang};
-
-      my $parentaref;
-      my $mainlang = $lang;
-      $parentaref = $dontextract{$mainlang} if $mainlang =~ s/_.*$//;
-
-      my $msg = $$aref[$n];
-      if (!defined $msg) {
-	 $msg = $$parentaref[$n] if defined $parentaref;
-	 if (!defined $msg) {
-	    $msg = ${$dontextract{'en'}}[$n];
-	    # don't report if we have a parent (as the omission will be reported there)
-	    if (defined $msg && $msg ne '' && !defined $parentaref) {
-	       ++$missing;
-	    } else {
-	       $msg = '';
-	    }
-	 }
-      } else {
-	 if ($lang ne 'en') {
-	     sanity_check("Message $n in language $lang", $msg, $$aref[$n]);
-	 }
-      }
-      $msg =~ s/\\/\\\\/g;
-      $msg =~ s/"/\\"/g;
-      $msg =~ s/\t/\\t/g;
-      $msg =~ s/\n/\\n/g;
-      $msg =~ s/\r/\\r/g;
-      if ($msg =~ /^ / || $msg =~ / $/) {
-	 $msg =~ s/\\"/\\\\\\"/g;
-	 $msg = '\\"'.$msg.'\\"';
-      }
-      print OUT "   /*", $dontextract_threshold + $n, "*/ \"$msg\\0\"";
-   }
-   print OUT ";\n";
-   close OUT or die $!;
-
-   if ($missing) {
-       print STDERR "Warning: $lang: $missing missing \"don't extract\" message(s)\n";
-   }
-}
 }
 
 sub sanity_check {
