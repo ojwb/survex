@@ -1,3 +1,8 @@
+Sun Sep 18 12:24:41 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: No need to force disabling of libavcodec for mingw - it
+	  gets automatically disable if not present.
+
 Sun Sep 18 12:23:39 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Fix disabling of libavcodec-using code when
