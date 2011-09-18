@@ -239,8 +239,12 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 }
 
 unsigned char * MovieMaker::GetBuffer() const {
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     AVCodecContext * c = st->codec;
     return pixels + c->height * c->width * 3;
+#else
+    return NULL;
+#endif
 }
 
 int MovieMaker::GetWidth() const {
@@ -383,6 +387,7 @@ MovieMaker::~MovieMaker()
 const char *
 MovieMaker::get_error_string() const
 {
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     switch (averrno) {
 	case AVERROR_IO:
 	    return "I/O error";
@@ -415,4 +420,7 @@ MovieMaker::get_error_string() const
 	    return "Movie export support not included";
     }
     return "Unknown error";
+#else
+    return "Movie generation support code not present";
+#endif
 }
