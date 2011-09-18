@@ -1,4 +1,4 @@
-Changes in 1.2.0 (2011-09-16):
+Changes in 1.2.0 (2011-09-18):
 
 * Translation updates for Catalan, French, Romanian, Spanish, Slovak, and US
   English.
@@ -33,6 +33,8 @@ Changes in 1.2.0 (2011-09-16):
   + Fix crash while trying to load certain .3d files.
 
   + Movie export code updated to work with more recent versions of FFmpeg.
+    Currently this is disabled in Microsoft Windows builds, pending getting the
+    required libraries set up for building releases.
 
   + Reporting of errors during movie export improved.
 
