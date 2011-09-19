@@ -1,3 +1,7 @@
+Mon Sep 19 23:15:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Use FNT_MAXCHAR instead of literal 256.
+
 Mon Sep 19 21:58:50 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Revert CPP=cpp change - it's not required.  Revert to

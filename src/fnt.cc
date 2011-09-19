@@ -3,7 +3,7 @@
 //
 //  Draw text using texture mapped fonts.
 //
-//  Copyright (C) 2003,2004,2006,2010 Olly Betts
+//  Copyright (C) 2003,2004,2006,2010,2011 Olly Betts
 //
 //     Based on code from PLIB - http://plib.sourceforge.net
 //     Copyright (C) 1998,2002  Steve Baker
@@ -95,7 +95,7 @@ fntTexFont::load(const char *fname)
     fnt_size += fnt_size >> 2;
     /* int unknown = */ fnt_readInt(fd);
     int num_glyphs  = fnt_readInt(fd);
-    list_base = glGenLists(256 - 32) - 32;
+    list_base = glGenLists(FNT_MAXCHAR - 32) - 32;
 
     int i, j;
 
