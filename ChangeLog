@@ -1,3 +1,12 @@
+Mon Sep 19 11:52:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Add comment noting that Xcode is probably required.
+	  Since wxWidgets only supports building for a single arch at a time,
+	  build for i386 by default, which should also work on x86_64.  Pass
+	  CPP=cpp to wxWidgets configure (not certain if this is actually
+	  needed, or was something tried on the way to discovering that only
+	  one -arch option can be passed).
+
 Sun Sep 18 12:24:41 GMT 2011  Olly Betts <olly@survex.com>
 
 	* make_release: No need to force disabling of libavcodec for mingw - it

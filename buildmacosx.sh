@@ -5,6 +5,9 @@
 #
 # Currently (at least if built on 10.6) 10.6 is required to run.
 #
+# You probably need to have Xcode installed - you can download this for free
+# from Apple: http://developer.apple.com/xcode/
+#
 # Run from the unpacked survex-1.1.X directory like so:
 #
 #   ./buildmacosx.sh
@@ -35,9 +38,16 @@ set -e
 
 WXVERSION=2.8.12
 
-# To build for older machines with a ppc CPU, you want -arch ppc instead in
-# arch_flags (might also work as well with some OS X versions).
-arch_flags='-arch i386 -arch x86_64'
+# Sadly, you can only specify one arch via -arch at a time (a restriction of
+# the wxWidgets build system).
+#
+# Using -arch i386 produces a build which will also work on 64-bit Intel Macs.
+# If you want a build which *only* works on 64 bit Intel Macs, then use
+# arch_flags='-arch x86_64' instead.
+#
+# To build for older machines with a ppc CPU, you want arch_flags='-arch ppc'
+# instead.
+arch_flags='-arch i386'
 if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
@@ -50,7 +60,7 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     test -d "wxWidgets-$WXVERSION" || tar jxf "$wxtarball"
     test -d "wxWidgets-$WXVERSION/build" || "mkdir wxWidgets-$WXVERSION/build"
     cd "wxWidgets-$WXVERSION/build"
-    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags"
+    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags" CPP=cpp
     make -s
     make -s install
     cd ../..
