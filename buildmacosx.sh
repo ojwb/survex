@@ -36,7 +36,11 @@
 
 set -e
 
-WXVERSION=2.8.12
+# 2.8.12 doesn't work:
+# /bin/sh: line 0: cd: ../build/bakefiles/wxpresets/presets: No such file or directory
+# cp: wx.bkl: No such file or directory
+# [...]
+WXVERSION=2.8.11
 
 # Sadly, you can only specify one arch via -arch at a time (a restriction of
 # the wxWidgets build system).
@@ -60,7 +64,7 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     test -d "wxWidgets-$WXVERSION" || tar jxf "$wxtarball"
     test -d "wxWidgets-$WXVERSION/build" || "mkdir wxWidgets-$WXVERSION/build"
     cd "wxWidgets-$WXVERSION/build"
-    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags" CPP=cpp
+    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags"
     make -s
     make -s install
     cd ../..
@@ -116,10 +120,12 @@ echo "Presenting image to the filesystems for mounting."
 # was called hdid(8) then) and is intended to be program-readable.  It consists
 # of the /dev node, a tab, a content hint (if applicable), another tab, and a
 # mount point (if any filesystems were mounted)."
+#
+# In reality, it seems there are also some spaces before each tab character.
 hdid_output=`hdid survex-macosx.dmg|tail -1`
 echo "Last line of hdid output was: $hdid_output"
-dev=`echo "$hdid_output"|sed 's!/dev/\([^	]*\).*!\1!'`
-mount_point=`echo "$hdid_output"|sed 's!.*	!!'`
+dev=`echo "$hdid_output"|sed 's!/dev/\([^	 ]*\).*!\1!'`
+mount_point=`echo "$hdid_output"|sed 's!.*[	 ]!!'`
 
 echo "Device $dev mounted on $mount_point, copying files into image."
 ditto -rsrcFork Survex "$mount_point/Survex"

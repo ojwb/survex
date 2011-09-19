@@ -1,3 +1,10 @@
+Mon Sep 19 21:58:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Revert CPP=cpp change - it's not required.  Revert to
+	  using wx 2.8.11 and 2.8.12 seems to fail to build.  Output of hdid
+	  can contain spaces as well as tabs (man page only documents tabs) so
+	  update regexps to take this into account.
+
 Mon Sep 19 11:52:50 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Add comment noting that Xcode is probably required.
