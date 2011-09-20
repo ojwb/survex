@@ -6,8 +6,8 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
 
-EXTRA_DIST = $(GNU_FILES) TODO survex.iss.in OLDNEWS\
- desc.txt desc-aven.txt survex.spec.in survex.spec\
+EXTRA_DIST = $(GNU_FILES) TODO OLDNEWS\
+ desc.txt desc-aven.txt survex.spec\
  desc-svxedit.txt alien.pl\
  buildmacosx.sh vim/syntax/survex.vim vim/ftdetect/survex.vim
 
