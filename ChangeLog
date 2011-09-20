@@ -1,3 +1,11 @@
+Tue Sep 20 00:09:42 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Fix to correctly handle non-ASCII glyphs by using
+	  glyphshow in the generated PostScript code rather than relying on the
+	  numeric encoding order of the font to match Unicode (which doesn't
+	  generally seem to be the case).  Tweak to process files without
+	  slurping them all into memory where that's easy to do.
+
 Mon Sep 19 23:15:46 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/fnt.cc: Use FNT_MAXCHAR instead of literal 256.
