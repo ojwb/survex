@@ -23,7 +23,7 @@
 #define SVX_CVROTIMG_H_INCLUDED
 
 /* data type used after data is read in */
-typedef INT32_T coord;
+typedef int32_t coord;
 
 /* Data structures */
 typedef struct {

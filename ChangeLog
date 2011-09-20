@@ -1,3 +1,13 @@
+Tue Sep 20 13:08:15 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* configure.in,src/img.c,src/useful.c,src/useful.h: Use AC_TYPE_INT16_T
+	  and AC_TYPE_INT32_T instead of home-brew equivalents.
+	* configure.in,src/useful.h: On little-endian architectures, make
+	  get16() and get32() inline functions, rather than macros which use 
+	  a global variable.
+	* src/useful.c: Remove commented out code.
+
 Tue Sep 20 12:58:30 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:

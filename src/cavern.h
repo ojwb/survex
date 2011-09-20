@@ -263,7 +263,7 @@ typedef struct Pos {
    unsigned char fFixed; /* flag indicating if station is a fixed point */
 #endif
 #ifdef CHASM3DX
-   INT32_T id;
+   int32_t id;
 #endif
 } pos;
 

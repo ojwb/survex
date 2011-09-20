@@ -1,5 +1,5 @@
 /* useful.c
- * Copyright (C) 1993-2001,2003 Olly Betts
+ * Copyright (C) 1993-2001,2003,2010 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,57 +23,17 @@
 #include "useful.h"
 #include "osdepend.h"
 
-#ifndef WORDS_BIGENDIAN
-
-/* used by macro versions of useful_get<nn> functions */
-INT16_T useful_w16;
-INT32_T useful_w32;
-
-#if 0 /* these functions aren't needed - macros do the job */
-/* the numbers in the file are little endian, so use fread/fwrite */
-extern void Far
-useful_put16(INT16_T w, FILE *fh)
-{
-   fwrite(&w, 2, 1, fh);
-}
-
-#undef useful_put32
-extern void Far
-useful_put32(INT32_T w, FILE *fh)
-{
-   fwrite(&w, 4, 1, fh);
-}
-
-#undef useful_get16
-extern INT16_T Far
-useful_get16(FILE *fh)
-{
-   INT16_T w;
-   fread(&w, 2, 1, fh);
-   return w;
-}
-
-#undef useful_put32
-extern INT32_T Far
-useful_get32(FILE *fh)
-{
-   INT32_T w;
-   fread(&w, 4, 1, fh);
-   return w;
-}
-#endif
-
-#else
+#ifdef WORDS_BIGENDIAN
 
 extern void Far
-useful_put16(INT16_T w, FILE *fh)
+useful_put16(int16_t w, FILE *fh)
 {
    PUTC((char)(w), fh);
    PUTC((char)(w >> 8l), fh);
 }
 
 extern void Far
-useful_put32(INT32_T w, FILE *fh)
+useful_put32(int32_t w, FILE *fh)
 {
    PUTC((char)(w), fh);
    PUTC((char)(w >> 8l), fh);
@@ -81,23 +41,23 @@ useful_put32(INT32_T w, FILE *fh)
    PUTC((char)(w >> 24l), fh);
 }
 
-extern INT16_T Far
+extern int16_t Far
 useful_get16(FILE *fh)
 {
-   INT16_T w;
+   int16_t w;
    w = GETC(fh);
-   w |= (INT16_T)(GETC(fh) << 8l);
+   w |= (int16_t)(GETC(fh) << 8l);
    return w;
 }
 
-extern INT32_T Far
+extern int32_t Far
 useful_get32(FILE *fh)
 {
-   INT32_T w;
+   int32_t w;
    w = GETC(fh);
-   w |= (INT32_T)(GETC(fh) << 8l);
-   w |= (INT32_T)(GETC(fh) << 16l);
-   w |= (INT32_T)(GETC(fh) << 24l);
+   w |= (int32_t)(GETC(fh) << 8l);
+   w |= (int32_t)(GETC(fh) << 16l);
+   w |= (int32_t)(GETC(fh) << 24l);
    return w;
 }
 #endif

@@ -52,7 +52,7 @@ fputcs(const char *s, FILE *fh)
     * followed by a 32 bit length value */
    if (len == 0 || len > 255) {
       if (PUTC(0, fh) == EOF) return EOF;
-      put32((INT32_T)len, fh);
+      put32((int32_t)len, fh);
       if (ferror(fh)) return EOF;
    } else {
       if (PUTC((unsigned char)len, fh) == EOF) return EOF;
@@ -105,29 +105,29 @@ cave_write_pos(img * p_img, pos *pid, prefix *pre)
    if (pid->id == 0) {
       const char *tag;
       unsigned int len;
-      pid->id = (INT32_T)statcount;
+      pid->id = (int32_t)statcount;
       tag = pre->ident;
       len = cslen(tag) + 12 + 4;
       /* storage station name, 12 for data, 4 for id */
       PUTC(STATION_3D, p_img->fh);
       if (len == 0 || len > 255) {
 	 if (PUTC(0, p_img->fh) == EOF) return EOF;
-	 put32((INT32_T)len, p_img->fh);
+	 put32((int32_t)len, p_img->fh);
 	 if (ferror(p_img->fh)) return EOF;
       } else {
 	 if (PUTC((unsigned char)len, p_img->fh) == EOF) return EOF;
       }
-      put32((INT32_T)statcount, p_img->fh); /* station ID */
-      put32((INT32_T)(pid->p[0] * 100.0), p_img->fh); /* X in cm */
-      put32((INT32_T)(pid->p[1] * 100.0), p_img->fh); /* Y */
-      put32((INT32_T)(pid->p[2] * 100.0), p_img->fh); /* Z */
+      put32((int32_t)statcount, p_img->fh); /* station ID */
+      put32((int32_t)(pid->p[0] * 100.0), p_img->fh); /* X in cm */
+      put32((int32_t)(pid->p[1] * 100.0), p_img->fh); /* Y */
+      put32((int32_t)(pid->p[2] * 100.0), p_img->fh); /* Z */
       fputcs(tag, p_img->fh);
       statcount++;
    } else {
       /* we've already put this in the file, so just a link is needed */
       PUTC(STATLINK_3D, p_img->fh);
       PUTC(0x04, p_img->fh);
-      put32((INT32_T)pid->id, p_img->fh);
+      put32((int32_t)pid->id, p_img->fh);
    }
    return 0;
 }
@@ -226,9 +226,9 @@ save3d(img *p_img, twig *sticky)
 	  err = 10000.0 * offset / length;
 	}
 	PUTC(LEG_3D, p_img->fh);
-	put16((INT16_T)0x02, p_img->fh);
+	put16((int16_t)0x02, p_img->fh);
 	PUTC(0x04, p_img->fh);
-	put32((INT32_T)err, p_img->fh); /* output error in %*100 */
+	put32((int32_t)err, p_img->fh); /* output error in %*100 */
 	cave_write_pos(p_img, twiglet->from->pos, twiglet->from);
 	cave_write_pos(p_img, twiglet->to->pos, twiglet->to);
       }
@@ -323,7 +323,7 @@ cave_close(img *p_img)
       PUTC(END_3D, p_img->fh);
       /* and finally write how many stations there are */
       fseek(p_img->fh, 7L, SEEK_SET);
-      put32((INT32_T)statcount, p_img->fh);
+      put32((int32_t)statcount, p_img->fh);
       if (ferror(p_img->fh)) result = 0;
       if (fclose(p_img->fh) == EOF) result = 0;
    }
