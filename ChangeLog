@@ -1,3 +1,11 @@
+Tue Sep 20 12:37:25 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* Makefile.am: I can't persuade rpmbuild to work sanely,
+	  and people can just as easily build binary RPMs from the source
+	  tarball as from the srpm, so just remove the rpm target from the
+	  makefile - it's less to have to maintain too.
+
 Tue Sep 20 12:32:47 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport changes from 1.2.0:

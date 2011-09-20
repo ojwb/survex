@@ -34,22 +34,6 @@ HACKING: doc/HACKING.htm
 TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
 
-rpm : dist
-	: # spec file is produced using AC_OUTPUT
-	echo %_topdir `pwd` > rpmmacros
-	echo %_rpmdir `pwd` >> rpmmacros
-	echo %_sourcedir `pwd` >> rpmmacros
-	echo %_specdir `pwd` >> rpmmacros
-	echo %_srcrpmdir `pwd` >> rpmmacros
-	echo %_rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm >> rpmmacros
-	: #
-	echo macrofiles : `rpm --showrc | sed 's/^macrofiles\> *: //p;d'`:`pwd`/rpmmacros > rpmrc
-	: #
-	rm -rf BUILD
-	mkdir BUILD
-	: #
-	rpmbuild -bs --clean --rcfile /usr/lib/rpm/rpmrc:`pwd`/rpmrc survex.spec
-
 debian : dist
 	: # overkill maybe - we could probably just use this tree
 	: # but then the .deb-s go in the parent directory, plus we get
