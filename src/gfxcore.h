@@ -61,6 +61,13 @@ enum AvenColour {
     col_LAST // must be the last entry here
 };
 
+// Mac OS X headers pollute the global namespace with generic names like
+// "class Point", which clashes with our "class Point".  So for __WXMAC__
+// put our class in a namespace and define Point as a macro.
+#ifdef __WXMAC__
+namespace svx {
+#endif
+
 class Point {
     friend class GfxCore;
     Double x, y, z;
@@ -68,6 +75,11 @@ public:
     Point() {}
     Point(Double x_, Double y_, Double z_) : x(x_), y(y_), z(z_) {}
 };
+
+#ifdef __WXMAC__
+}
+#define Point svx::Point
+#endif
 
 class LabelInfo;
 

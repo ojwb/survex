@@ -1,3 +1,9 @@
+Tue Sep 20 12:18:26 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/gfxcore.h: Work around Mac OS X polluting the global namespace
+	  with a "Point" class.
+
 Tue Sep 20 12:14:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
