@@ -3,7 +3,7 @@
 # Note: this script requires MacOS X 10.2 or greater, and builds diskimages
 # which require MacOS X 10.1 or greater to install.
 #
-# Currently (at least if built on 10.6) 10.6 is required to run.
+# Currently (at least if built on 10.6) at least 10.6 is required to run.
 #
 # You probably need to have Xcode installed - you can download this for free
 # from Apple: http://developer.apple.com/xcode/
