@@ -1,0 +1,27 @@
+<!ENTITY ollyemail "olly@survex.com">
+<!ENTITY wookeyemail "wookey@survex.com">
+<!ENTITY survexwebsite "http://survex.com/">
+<!ENTITY unix "UNIX">
+<!ENTITY linux "Linux">
+<!ENTITY msdos "DOS">
+<!ENTITY riscos "RISC OS">
+<!ENTITY survexsuite "<Application>Survex</Application>">
+<!ENTITY spud "<Application>Spud</Application>">
+<!ENTITY wxwidgets "<Application>wxWidgets</Application>">
+<!ENTITY cucc "<Acronym/CUCC/">
+<!ENTITY arge "<Acronym/ARGE/">
+<!ENTITY dpmi "<Acronym/DPMI/">
+<!ENTITY svx "<filename>.svx</filename>">
+<!ENTITY x3d "<filename>.3d</filename>">
+<!ENTITY err "<filename>.err</filename>">
+<!ENTITY pos "<filename>.pos</filename>">
+
+<!entity man.aven SYSTEM "aven.sgml">
+<!entity man.3dtopos SYSTEM "3dtopos.sgml">
+<!entity man.cad3d SYSTEM "cad3d.sgml">
+<!entity man.cavern SYSTEM "cavern.sgml">
+<!entity man.diffpos SYSTEM "diffpos.sgml">
+<!entity man.extend SYSTEM "extend.sgml">
+<!entity man.sorterr SYSTEM "sorterr.sgml">
+<!entity man.svxedit SYSTEM "svxedit.sgml">
+<!entity man.print.ini SYSTEM "print.ini.sgml">

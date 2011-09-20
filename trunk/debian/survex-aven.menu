@@ -1,0 +1,2 @@
+?package(survex-aven):needs="X11" section="Applications/Science/Geoscience" \
+ title="Aven" command="/usr/bin/aven"

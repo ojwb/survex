@@ -1,0 +1,17 @@
+; BCRA Grade 5 specification file
+
+; tape error
+; 95.44% of readings are within 0.1m (2 S.D.)
+*sd length    0.05 metres
+
+; compass error
+; 95.44% of readings are within 1 degree (2 S.D.)
+*sd bearing backbearing   0.5 degrees
+
+; clino error
+; 95.44% of readings are within 1 degree (2 S.D.)
+*sd gradient backgradient 0.5 degrees
+
+; station position error
+; 95.44% of positions are within 0.1m (2 S.D.)
+*sd position  0.05 metres

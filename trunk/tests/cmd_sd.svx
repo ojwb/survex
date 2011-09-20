@@ -1,0 +1,27 @@
+*fix 1 reference 0 0 0 ; so there's some survey data
+
+*sd tape 0.15 metres
+*sd tape 0.05 meters
+*sd tape .2 metric
+*sd tape 0.9 feet
+*sd tape 1. yards
+
+*sd counter 0.15 metres
+*sd depth 0.15 metres
+*sd tape counter 0.05 meters
+*sd tape counter depth 0.05 meters
+
+*sd compass 10 degrees
+*sd clino 1 grads
+*sd compass clino 5 degs
+*sd clino compass 3 mils
+;*sd clino declination compass 3 mils
+;*sd declination 3 minutes
+
+*sd dx 2 feet
+*sd dy 2 feet
+*sd dz 2 feet
+*sd dx dy 2 feet
+*sd dy dz 2 feet
+*sd dx dz 2 feet
+*sd dx dy dz 2 feet

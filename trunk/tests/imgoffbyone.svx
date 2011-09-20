@@ -1,0 +1,58 @@
+*fix P.BPG.A.1 0 0 0
+*BEGIN P
+*Begin BPG
+*Equate A.1 S.1
+*begin S
+17 1 1 0 0
+*END S
+*Equate U.1 A.1
+*begin  U
+1 23L 1 0 0
+*END U
+*begin X
+A V 1 0 0
+*END X
+*Equate X.V S.17
+*begin CollinsCrawl1
+A J 1 0 0
+*End CollinsCrawl1
+*Equate CollinsCrawl1.J X.A
+*begin G
+1 8 1 0 0
+*END G
+*Equate CollinsCrawl1.A G.8
+*begin M
+0 23 1 0 0
+*END M
+*Equate M.0 G.1
+*Equate M.23 U.23L
+*begin Y
+16 48 1 0 0
+*END Y
+*begin W
+0 105 1 0 0
+*END W
+*Equate W.105 Y.48
+*Equate W.0 G.8
+*END BPG
+*BEGIN M
+*begin D
+0 47 1 0 0
+*END D
+*begin H
+0 12 1 0 0
+*END H
+*EQUATE H.0 D.47
+*BEGIN Maze
+1 3 1 0 0
+3 1 1 0 0
+1 3 1 0 0
+*END Maze
+*EQUATE maze.3 E.11
+*begin E
+11 17 1 0 0
+*END E
+*EQUATE E.17 H.12
+*END M
+*EQUATE BPG.Y.16 M.D.0
+*END P

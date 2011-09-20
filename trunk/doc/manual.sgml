@@ -1,0 +1,3526 @@
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+ <!-- Define a parameter entity to pull in the standard entities -->
+ <!ENTITY % entities SYSTEM "survex.ent">
+ <!-- Now use the parameter entity -->
+ %entities;
+ <!ENTITY % versionentity SYSTEM "version.ent">
+ %versionentity;
+]>
+
+<!--
+FIXME:
+
+3dfile title:
+defaults to a list of the leafnames of the &svx; files specified on the
+command line (with any paths and extensions removed).
+.
+e.g.: cavern entrance.svx \data\2ndpart.svx
+.
+would give a surveytitle of 'entrance 2ndpart'.
+.
+but this may change...
+
+FIXME todo:
+mark-up of Windows Windows NT etc?
+section on "design philosophy"
+
+level sump fudge:
+
+*begin
+*data cartesian from to dx dy dz
+*sd dx dy 100 metres
+*sd dz 0.001 metres
+; upstream - downstream
+nuiping.gowiththeflow.129 dachao.upstream.105 0 0 0 ; last number is drop in height across the sump
+*end
+
+``Quick start'' section
+
+- install (by OS): unpacking, configuration (language, where support files live)
+
+- lead people through entering and processing
+a sample survey.  Take examples from surveying books and real surveys.
+
+
+<Para>The other really important commands apart from *BEGIN, *END, and
+*INCLUDE are *EQUATE and *FIX.
+</Para>
+
+<Para>*EQUATE is used to join surveys together, e.g.
+</Para>
+
+<programlisting>*equate entrance.6 adrian.1</programlisting>
+
+<Para>
+indicates that station 6 of the entrance survey was used as
+the station 1 of the Adrian's Route survey.
+</Para>
+
+<Para>*FIX is for fixing control points - for example:
+</Para>
+
+<programlisting>
+*fix 161.entrance.1    0  0  1780</programlisting>
+
+<Para>fixes the 1st point of the 'entrance' survey at the coordinates
+0 (east-west), 0 (north-south), 1780 (altitude).
+</Para>
+
+
+<term>node</term>
+<listitem><para>when talking about the survey network, we talk about an
+<emphasis>n</emphasis>-node to describe the number of connections to
+a station.  So a 1-node is a station with only 1 leg to or from it
+- i.e. The end of a passage or survey. A
+2-node is a typical station along a passage with a survey leg coming
+into it, and one going out.  A 3-node is a station with three legs
+joining it, e.g. at a T-junction. And so on.
+</para>
+
+-->
+
+<article Status="draft" id=index>
+ <articleinfo>
+  <Title>&survexsuite; &version; Manual</Title>
+  <AuthorGroup>
+   <Author>
+    <FirstName/Olly/
+    <SurName/Betts/
+    <AuthorBlurb><Para>
+      Olly Betts wrote most of &survexsuite;.
+    </Para></AuthorBlurb>
+    <Affiliation>
+     <Address><Email>&ollyemail;</Email></Address>
+    </Affiliation>
+   </Author>
+   <Author>
+    <SurName/Wookey/
+    <AuthorBlurb><Para>
+      Wookey is a small furry creature.
+    </Para></AuthorBlurb>
+    <Affiliation>
+     <Address><Email>&wookeyemail;</Email></Address>
+    </Affiliation>
+   </Author>
+  </AuthorGroup>
+  <copyright>
+   <year>1998-2010</year>
+   <holder role="mailto:&ollyemail;">Olly Betts</holder>
+  </copyright>
+  <pubdate role="rcs">$Date: 2005-10-17 04:49:04 $</pubdate>
+  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.11 2005-10-17 04:49:04 olly Exp $</ReleaseInfo>
+  <Abstract>
+   <Para>
+    This is the manual for &survexsuite; - an open-source software package for
+    cave surveyors.
+   </Para>
+  </Abstract>
+ </articleinfo>
+
+<Sect1><Title>Introduction</Title>
+<?dbhtml filename="intro.htm">
+
+<Para>
+This section describes what &survexsuite; is, and outlines the scope of this
+manual.
+</Para>
+
+<Sect2><Title>About &survexsuite;</Title>
+
+<Para>&survexsuite; is a multi-platform open-source cave surveying
+package.
+Version 1.1
+currently runs on &unix;, Microsoft Windows 95/NT and
+successors, and Mac OS X.
+We're investigating support for various
+palmtop devices.
+Version 1.0 has fewer features, but also runs on &msdos; and &riscos; machines.
+</Para>
+
+<Para>We are well aware that not everyone has access to super hardware
+- often surveying projects are run on little or no budget and any
+computers used are donated.  We aim to ensure that &survexsuite; is
+feasible to use on low-spec machines.  Obviously it won't be as
+responsive, but we intend it to be usable.
+Please help us to achieve this by giving us some feedback
+if you use &survexsuite; on a slow machine.</Para>
+
+<Para>&survexsuite; is capable of processing extremely complex caves very
+quickly and has a very effective, real-time cave viewer which allows
+you to rotate, zoom, and pan the cave using mouse or keyboard. We have
+tested it extensively using &cucc; and &arge;'s surveys of the caves
+under the Loser Plateau in Austria (over 11,500 survey legs, and over
+66km of underground survey data). This can all be processed in a few
+seconds on a low-end <hardware>Pentium</hardware> machine.
+Survex is also used by many other survey projects around the world,
+including the 
+<ulink url="http://www.oucc.org.uk/draenen/draenenmain.htm"
+>Ogof Draenen</ulink> survey, the 
+<ulink url="http://www.easegill.org.uk/">Easegill</ulink> resurvey project,
+the <Acronym/OFD/ survey, the 
+<!-- url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm" -->
+<ulink url="http://www.oucc.org.uk/reports/surveys/surveys.htm"
+><Acronym/OUCC/ Picos expeditions</ulink>, and the 
+<ulink url="http://www.hongmeigui.net/">Hong Meigui China
+expeditions</ulink>. <!-- FIXME more? --></Para>
+
+<Para>&survexsuite; is still actively being worked on.  Version 1.0 was
+complete in some sense, but development continues - initially in reshaping
+Survex into a more integrated GUI package.</Para>
+
+<Para>We encourage feedback from users on important features or problems,
+which will help to direct future development. Contact addresses are at the
+end of this manual.</Para>
+
+</Sect2>
+
+<!--
+<Para>Because &survexsuite; is still being actively developed, this document
+has an unfortunate tendency to lag slightly behind the capabilities of the
+software. The latest version is now available on the web at <ulink
+url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
+</Para>
+-->
+
+<!--
+<Sect2><Title>Other Documentation</Title>
+
+<variablelist>
+<varlistentry>
+<term>NEWS or NEWS.txt</term>
+<listitem><Para>a list of changes of interest to
+&survexsuite; users, broken down by version number.  Consult this file
+when upgrading to find out what has changed since the version you were
+using previously.
+</Para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>ChangeLog or CHANGES.txt</term>
+<listitem><Para>a much more detailed list of changes, aimed at developers
+rather than end users.
+</Para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>BUGS or BUGS.txt</term>
+<listitem><Para>a list of known bugs.
+</Para></listitem>
+</varlistentry>
+
+<varlistentry>
+<term>TODO or TODO.txt</term>
+<listitem><Para>planned changes and enhancements.
+</Para></listitem>
+</varlistentry>
+
+FIXME: merge INSTALL* into here, then process separately and textify
+to produce INSTALL*
+
+<varlistentry>
+<term>INSTALL or INSTALL.txt</term>
+<listitem><Para>instructions for installing &survexsuite;.  The
+Microsoft Windows version comes packaged up with an installation wizard,
+so this file doesn't exist there (you just run the package and follow
+the on-screen instructions).
+</Para></listitem>
+</varlistentry>
+</variablelist>
+
+</Sect2>
+-->
+
+<Sect2><Title>About this Manual</Title>
+
+<Para>
+If there's a part of this manual you find hard to understand, please do
+let us know.  We already know Survex well, so it can be hard for us
+to spot areas where the manual doesn't given enough information, or
+doesn't explain things clearly enough to follow when you don't know what's
+going on.  It's helpful is you can suggest a better wording, but don't worry
+if you can't, just explain the problem as precisely as you can.
+</Para>
+
+<Para>
+The master version of this manual is an <acronym>SGML</acronym>
+document written using the <ulink url="http://www.docbook.org/">docbook
+<acronym>DTD</acronym></ulink>,
+and automatically converted to a number of other formats.  If
+you are going to send us <emphasis>major</emphasis> changes, it's much easier
+to include them if you work from this master.  You can get it
+from the source archive (docs/manual.sgml) or from <ulink
+url="http://survex.com/docs.html">the Survex website</ulink>.
+</Para>
+
+<Sect3><Title>Terminology</Title>
+
+<Para>Throughout this document we use British terminology for
+surveying.</Para>
+
+<variablelist>
+<varlistentry>
+<term>station</term>
+<listitem><para>a point in the cave that you survey from and/or to
+</para></listitem></varlistentry>
+
+<varlistentry>
+<term>leg</term>
+<listitem><para>a line joining two stations
+</para></listitem></varlistentry>
+
+<varlistentry>
+<term>survey</term>
+<listitem><para>a group of legs surveyed on the same trip
+</para></listitem></varlistentry>
+
+</variablelist>
+
+</Sect3>
+
+</Sect2>
+
+<!-- FIXME: Further sources of info: website, mailing lists, other docs -->
+
+</Sect1>
+
+<Sect1><Title>Getting Started</Title>
+<?dbhtml filename="getstart.htm">
+
+<Para>This section covers how to obtain the software, and how to unpack and
+install it, and how to configure it.</Para>
+
+<Sect2><Title>Obtaining &survexsuite;</Title>
+
+<Para>The latest version is available from the &survexsuite; website:
+<ulink url="&survexwebsite;">&survexwebsite;</ulink>. If you do not
+have internet access or would prefer to get a copy by post, we are
+also happy to send out up-to-date copies on a floppy on receipt of
+a stamped, self-addressed envelope. See the end of this
+document for addresses.</Para>
+
+<Para>
+There's also a CD containing versions of &survexsuite; for every supported
+platform.  You can download an image for this from the website, or we'll
+send you a copy on a CD-R if you send us money to cover the costs.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Installing &survexsuite;</Title>
+
+<Para>The details of installation depend greatly on what platform you
+are using, so there is a separate section below for each platform.</Para>
+
+<Sect3><Title>&linux;</Title>
+
+<Para>
+We supply pre-compiled versions for x86 &linux; machines in RPM format
+(suitable for Redhat, Mandrake, and some other distributions)
+and dpkg format (suitable for Debian and Debian-derived distributions).
+</Para>
+
+<Para>
+You'll need root access to install these prebuilt packages.
+If you don't have root access you will need to build from source
+(see the next section).
+</Para>
+
+<!-- FIXME Add Gnome file association note for Linux/Unix
+<Para>On Microsoft Windows, &survexsuite; installs with
+suitable file associations so that you can drive it from the GUI.
+On &unix; you need to drive &survexsuite; from a command-line
+prompt (or set some a filemanager or graphics shell).
+</Para>
+-->
+
+<Sect3><Title>Other versions of &unix;</Title>
+
+<Para>For other &unix; versions you'll need to get the source code
+and compile it on your system.  &survexsuite; uses GNU automake
+and autoconf to streamline the compile process, so all you need to do
+is unpack the sources, then simply type <userinput>./configure</userinput>
+followed by <userinput>make</userinput> to build the programs and then
+<userinput>make install</userinput> to install them.</Para>
+
+<Note>
+<Para>
+If you're building to install in your home directory (for example
+if you don't have root access on the machine you wish to install
+&survexsuite; on) configure and build with
+<userinput>./configure --prefix=/home/olly/survex</userinput> then
+<userinput>make</userinput> to build and
+<userinput>make install</userinput> to install.
+</Para>
+</Note>
+
+<Para>
+There's a GUI cave viewer called aven, which needs &wxwidgets; to build,
+which in turn needs GTK+ (or Motif or just X11, but we only regularly
+test with the GTK+ version).
+</Para>
+
+</Sect3>
+
+<Sect3><Title>Microsoft Windows 95/NT and successors</Title>
+
+<Para>
+This version comes packaged with an installation wizard.  Just
+run the downloaded package and it will lead you through the
+installation process.  If installing on MS Windows NT, 2000, or XP
+we recommend you run the installer as administrator (or as a
+user with administrator rights) so that the file associations
+can be set up for all users.
+</Para>
+
+<Para>
+The survey viewer that's part of &survexsuite; is called aven, and uses OpenGL
+for 3d rendering.
+OpenGL comes as standard as of Windows 98, and was included in the
+OSR2 update to Windows 95.  It's also possible that you've installed
+OpenGL with another application already (especially a 3D game like Quake).
+If you can view a survey in aven, all is well.  Otherwise you can
+<ulink url="http://support.microsoft.com/default.aspx?scid=kb;EN-US;q154877
+">download OpenGL drivers from Microsoft's website</ulink> (or here's
+a <ulink url="http://download.microsoft.com/download/win95upg/info/1/W95/EN-US/Opengl95.exe">direct link to the file you actually need</ulink>).
+</Para>
+
+<Para>
+If you find that 3D rendering is sometimes very slow (e.g. one user reported
+very slow performance when running full screen, while running in a window
+was fine) then try installing the OpenGL driver supplied by the manufacturer
+of your graphics card rather than the driver Microsoft supply.
+</Para>
+
+<Para>
+The installer creates a Survex group in the Programs sub-menu of the
+Start menu containing the following items:
+</Para>
+
+<ItemizedList>
+
+<ListItem><Para>Aven</Para></ListItem>
+
+<ListItem><Para>Documentation</Para></ListItem>
+
+<ListItem><Para>Uninstall Survex</Para></ListItem>
+
+</ItemizedList>
+
+<Para>
+Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
+Compass Plot files (<filename>.plt</filename> and <filename>.plf</filename>)
+(which Survex can read). <!-- FIXME XYZ -->
+Double-clicking on a &svx; file loads it for editing.  To process it to
+produce a &x3d; file, right click and choose "Process" from the menu.
+Double-clicking the resultant &x3d; file views it in aven.
+All the &survexsuite; file types can be right clicked on to give a menu of
+possible actions.  
+</Para>
+
+<VariableList>
+<VarListEntry><Term>&svx;</Term>
+<ListItem>
+  <VariableList>
+  <VarListEntry><Term>Open</Term>
+  <ListItem><Para>
+  Load file into SvxEdit
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Process</Term>
+  <ListItem><Para>
+  Process file with cavern to produce &x3d; file (and &err; file)
+  </Para></ListItem>
+  </VarListEntry>
+  </VariableList>
+</ListItem>
+</VarListEntry>
+    
+<VarListEntry><Term>&x3d;</Term>
+<ListItem>
+  <VariableList>
+  <VarListEntry><Term>Open</Term>
+  <ListItem><Para>
+  Load file into Aven
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Print</Term>
+  <ListItem><Para>
+  Send to the printer
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Extend</Term>
+  <ListItem><Para>
+  Produce extended elevation
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Convert to DXF</Term>
+  <ListItem><Para>
+  Convert to a DXF file (suitable for importing into many CAD packages)
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Convert for hand plotting</Term>
+  <ListItem><Para>
+  Produce a &pos; file listing all the stations and their coordinates
+  </Para></ListItem>
+  </VarListEntry>
+  </VariableList>
+</ListItem>
+
+<VarListEntry><Term>&err;</Term>
+<ListItem>
+  <VariableList>
+  <VarListEntry><Term>Open</Term>
+  <ListItem><Para>
+  Load file into Notepad
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Horizontal Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the horizontal error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Vertical Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the vertical error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Percentage Error</Term>
+  <ListItem><Para>
+  Sort &err; file by the percentage error in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  <VarListEntry><Term>Sort by Error per Leg</Term>
+  <ListItem><Para>
+  Sort &err; file by the error per leg in each traverse
+  </Para></ListItem>
+  </VarListEntry>
+  </VariableList>
+</ListItem>
+</VarListEntry>
+</VariableList>
+
+</Sect3>
+
+</Sect2>
+
+<Sect2><Title>Configuration</Title>
+
+<Sect3><Title>Selecting Your Preferred Language</Title>
+
+<Para>Survex has extensive internationalisation capabilities.  The
+language used for messages from Survex and most of the library calls
+it uses can be changed.  By default this is picked up from the
+language the operating system is set to use (from "Regional Settings"
+in Control Panel on Microsoft Windows, from the
+<systemitem>LANG</systemitem> environment variable on &unix;
+If no setting
+is found, or &survexsuite; hasn't been translated into the
+requested language, UK English is used.</Para>
+
+<Para>
+However you may want to override the language manually -
+for example if Survex isn't available in your native language
+you'll want to choose the supported language you understand best.
+</Para>
+
+<Para>
+To do this, you set the
+<systemitem>SURVEXLANG</systemitem> environment variable.  Here's a list
+of the codes currently supported:</Para>
+
+<informaltable frame="all">
+<tgroup cols="2">
+<thead>
+<row><entry/Code/<entry/Language/</row>
+</thead>
+<tbody>
+<row><entry/en/<entry/International English/</row>
+<row><entry/en_US/<entry/US English/</row>
+<row><entry/ca/<entry/Catalan/</row>
+<row><entry/de/<entry/German/</row>
+<row><entry/de_CH/<entry/Swiss German/</row>
+<row><entry/de_DE/<entry/German German/</row>
+<row><entry/es/<entry/Spanish/</row>
+<row><entry/fr/<entry/French/</row>
+<row><entry/it/<entry/Italian/</row>
+<row><entry/pt/<entry/Portuguese/</row>
+<row><entry/pt_BR/<entry/Brazillian Portuguese/</row>
+<row><entry/sk/<entry/Slovak/</row>
+</tbody>
+</tgroup>
+</informaltable>
+
+<Para>Here are examples of how to set this environment variable to give
+messages in French (language code fr):</Para>
+
+<VariableList>
+ <VarListEntry><Term>Microsoft Windows</Term>
+   <ListItem><Para>
+For MS Windows 95 and 98 (and probably ME), you'll need to add a line
+containing <command>SET SURVEXLANG=fr</command> to your
+<filename>AUTOEXEC.BAT</filename> script.  You need to
+reboot for the change to take effect.
+</Para>
+
+<Para>For MS Windows NT4, 2000, and XP, you should proceed as follows
+(this description is written from MS Windows 2000 - it should be similar on
+NT4 and XP): Open the Start Menu, navigate to the Settings sub-menu, and
+open Control Panel.  Open System (picture of a computer) and click on the
+Advanced tab.  Choose `Environmental Variables', and create a new one: name
+<systemitem>SURVEXLANG</systemitem>, value <systemitem>fr</systemitem>.
+Click OK and the new value should be effective immediately.
+   </Para></ListItem>
+ </VarListEntry>
+ <VarListEntry><Term>&unix; - csh/tcsh</Term>
+   <ListItem><Para><userinput>setenv SURVEXLANG fr</userinput></Para></ListItem>
+ </VarListEntry>
+ <VarListEntry><Term>&unix; - sh/bash</Term>
+   <ListItem><Para><userinput>SURVEXLANG=fr ; export SURVEXLANG</userinput></Para></ListItem>
+ </VarListEntry>
+</VariableList>
+
+<Para>If &survexsuite; isn't available in your language, you could
+help out by providing a translation.  The initial translation is
+likely to be about a day's work; after that translations for
+new or changed messages are occasionally required.  Contact us for details
+if you're interested.</Para>
+
+</Sect3>
+
+<Sect3><Title>Configuring the Printer Drivers</Title>
+
+<Para>
+Printing is now built into aven.
+The print.ini configuration file still exists, but is only
+useful if you want to configure the colours used if you
+have a colour printer.
+</Para>
+
+<refentry id="print.ini">
+&man.print.ini;
+</refentry>
+
+</Sect3>
+
+</Sect2>
+
+</Sect1>
+
+<!-- FIXME
+
+type in .svx file
+
+run cavern (through aven)
+
+run aven
+
+how to print/export etc
+
+-->
+
+<!-- FIXME perhaps move this after data files section? -->
+<Sect1><Title>Survex Programs</Title>
+<?dbhtml filename="cmdline.htm">
+
+<Sect2><Title>Standard Options</Title>
+
+<Para>All &survexsuite; programs respond to the following command line options:
+</Para>
+
+<VariableList>
+
+<VarListEntry><Term>--help</Term><listitem><Para>
+display option summary and exit
+</Para></listitem></VarListEntry>
+
+<VarListEntry><Term>--version</Term><listitem><Para>
+output version information and exit
+</Para></listitem></VarListEntry>
+
+</VariableList>
+
+</Sect2>
+
+<Sect2><Title>Short and Long Options</Title>
+
+<Para>
+Options have two forms: short (a dash followed by a single letter e.g.
+<command/cavern -p/) and long (two dashes followed by one or more words e.g.
+<command/cavern --percentage/).  The long form is generally easier to
+remember, while the short form is quicker to type.  Options are often
+available in both forms.
+</Para>
+
+<Note><Para>Command line options are case sensitive, so "-B" and "-b"
+are different (this didn't used to be the case before Survex 0.90).  Case
+sensitivity doubles the number of available short options (and is also the
+norm on &unix;).
+</Para></Note>
+</Sect2>
+
+<Sect2><Title>Filenames on the Command Line</Title>
+
+<Para>Filenames with spaces can be processed (provided your operating system
+supports them - &unix; does, and so do recent versions of Microsoft
+Windows).  You need to enclose the filename in quotes like so:
+<userinput>cavern "Spider Cave"</userinput>
+</Para>
+
+<Para>A file specified on the command line of any of the &survexsuite; suite
+of programs will be looked for as specified.  If it is not found, then the
+file is looked for with the appropriate extension appended.  So
+<userinput>cavern survey</userinput> will look first for
+<filename>survey</filename>, then for <filename>survey.svx</filename>.
+</Para>
+
+</Sect2>
+
+<Sect2><title>Command Reference</title>
+
+<refentry id="cavern">
+<?dbhtml filename="cavern.htm">
+&man.cavern;
+</refentry>
+<refentry id="svxedit">
+<?dbhtml filename="svxedit.htm">
+&man.svxedit;
+</refentry>
+<refentry id="aven">
+<?dbhtml filename="aven.htm">
+&man.aven;
+</refentry>
+<refentry id="x3dtopos">
+<?dbhtml filename="3dtopos.htm">
+&man.3dtopos;
+</refentry>
+<refentry id="cad3d">
+<?dbhtml filename="cad3d.htm">
+&man.cad3d;
+</refentry>
+<refentry id="diffpos">
+<?dbhtml filename="diffpos.htm">
+&man.diffpos;
+</refentry>
+<refentry id="extend">
+<?dbhtml filename="extend.htm">
+&man.extend;
+</refentry>
+<refentry id="sorterr">
+<?dbhtml filename="sorterr.htm">
+&man.sorterr;
+</refentry>
+
+</Sect2>
+
+</Sect1>
+
+<Sect1><Title>&survexsuite; data files</Title>
+<?dbhtml filename="datafile.htm">
+
+<Para>Survey data is entered in the form of text files. You can use any
+text editor you like for this, so long as it has the capability of
+writing a plain ASCII text file. The data format is very flexible;
+unlike some other cave surveying software, Survex does not require
+survey legs to be rearranged to suit the computer, and the ordering 
+of instrument readings on each line is fully specifiable.  So you can enter
+your data much as it appears on the survey notes, which is important
+in reducing the opportunities for transcription errors.
+</Para>
+
+<Para>
+Also all the special characters are user-definable - for example,
+the separators can be spaces and tabs, or commas (e.g. when exporting from a
+spreadsheet), etc; the decimal point can be a slash (for clarity), a comma
+(as used in continental Europe), or anything else you care to choose.
+This flexibility
+means that it should be possible to read in data from almost any sort of
+survey data file without much work.
+</Para>
+
+<Para>&survexsuite; places no restrictions on you in terms of the ordering
+of survey legs. You can enter or process data in any order and &survexsuite; will
+read it all in before determining how it is connected. You can also use the
+hierarchical naming so that you do not need to worry about using the same
+station name twice.
+</Para>
+
+<!-- FIXME don't encourage separate processing -->
+<Para>The usual arrangement is to have one file which lists all the others
+that are included (e.g., <filename/161.svx/). Then
+<command/cavern 161/ will process all your data. To just process a
+section use the filename for that section, e.g. <command/cavern dtime/
+will process the dreamtime file/section of Kaninchenh&ouml;hle.  To
+help you out, if all legs in a survey are connected to one another
+but the survey has no fixed points, cavern
+will 'invent' a fixed point and print a warning message to this
+effect.
+</Para>
+
+<Para>
+It is up to you what data you put in which files.  You
+can have one file per trip, or per area of the cave, or just one
+file for the whole cave if you like.
+On a large survey project it makes sense to group related surveys in the
+same file or directory.
+</Para>
+<!-- FIXME: wook sez:
+
+ Point out in documentation that file structure and survey structure don't
+ have to be the same.  And in particular that folder/directory names can be
+ different.
+
+Which is partly covered above, though the last bit isn't... 
+-->
+
+<!-- FIXME "Anatomy of a Survey" section -->
+<Sect2><Title>Readings</Title>
+
+<Para>Blank lines (i.e. lines consisting solely of BLANK characters)
+are ignored. The last line in the file need not be terminated by
+an end of line character. All fields on a line must be separated
+by at least one BLANK character. An OMIT character
+(default '-') indicates that a field is unused. If the field is
+not optional, then an error is given.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Survey Station Names</Title>
+
+<Para>&survexsuite; has a powerful system for naming stations.  It
+uses a hierarchy of survey names, similar to the nested folders
+your computer stores files in.
+So point 6 in the entrance survey of Kaninchenh&ouml;hle
+(cave number 161) is referred to as: 161.entrance.6
+</Para>
+
+<Para>This seems a natural way to refer to station names.  It also
+means that it is very easy to include more levels, for example if you
+want to plot all the caves in the area you just list them all in
+another file, specifying a new prefix.  So to group 3 nearby caves
+on the Loser Plateau you would use a file like
+this:
+</Para>
+
+<programlisting>
+*begin Loser
+*include 161
+*include 2YrGest
+*include 145
+*end Loser</programlisting>
+
+<Para>
+The entrance series point mentioned above would now be referred
+to as: Loser.161.entrance.6
+</Para>
+
+<!--
+<Para>This may seem a tad complex but is really very natural once you
+get the hang of it.
+</Para>
+-->
+<Para>You do not have to use this system at all, and can just give all
+stations unique identifiers if you like:
+</Para>
+
+<Para>1, 2, 3, 4, 5, ... 1381, 1382
+</Para>
+
+<Para>or
+</Para>
+
+<Para>AA06, AA07, P34, ZZ6, etc.
+</Para>
+
+<!-- FIXME:
+<Para>However you'll loose the ability to handle subsurveys if you do.
+</Para>
+-->
+
+<Para>Station and survey names may contain any alphanumeric characters and
+additionally any characters in NAMES (default `_' and `-'). Alphabetic
+characters may be forced to upper or lower case by using the *case
+command. Station names may be any length - if you want to only treat
+the first few characters as significant you can get cavern to truncate
+the names using the *truncate command.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Numeric fields</Title>
+
+<Para>[&lt;MINUS&gt;|&lt;PLUS&gt;] &lt;integer part&gt; [ &lt;DECIMAL&gt;
+[ &lt;decimal fraction&gt; ] ]
+</Para>
+
+<Para>
+or [&lt;MINUS&gt;|&lt;PLUS&gt;] &lt;DECIMAL&gt; &lt;dec fraction&gt;
+</Para>
+
+<Para><!-- FIXME: put informal description first -->
+i.e. optional PLUS or MINUS sign in front, with
+optional DECIMAL character (default '.'), which may be
+embedded, leading or trailing. No spaces are allowed between the
+various elements.
+</Para>
+
+<Para>
+All of these are valid examples: +47, 23, -22, +4.5, 1.3, -0.7, +.15, .4,
+-.05
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Accuracy</Title>
+
+<Para>Accuracy assessments may be provided or defaulted for any survey
+leg. These determine the distribution of loop closure errors over the
+legs in the loop. See *SD for more information.
+</Para>
+
+</Sect2>
+
+<!--
+<Sect2><Title>Survey Coordinate Range</Title>
+
+<Para>
+If we store distances to nearest 10um (0.01mm) in 4 bytes, this
+gives a range of ~20 km. This method is currently not used, but
+has several advantages (data storage space [double uses 8 bytes
+- with my C compiler], speed (unless your FP chip works in parallel
+with your CPU [e.g. the new Acorn FPU for the ARM], and numerical
+accuracy [compared to using floats at least]) and so may be adopted
+in future). Nearest 0.1mm gives -200 km, which is enough for most
+people, but may mean rounding errors become significant. 
+</Para>
+
+<Para>
+I will have to do some sums...
+</Para>
+
+</Sect2>
+
+-->
+
+<Sect2><Title>Cavern Commands</Title>
+
+<Para>Commands in &svx; files are introduced by an asterisk
+(by default - this can be changed using the <command/set/ command).
+</Para>
+
+<Para>The commands are documented in a common format:
+</Para>
+
+<!-- FIXME: make this a RefGroup (or whatever that's called) of RefEntry-s? -->
+<itemizedlist>
+<listitem><para>Command Name</para></listitem>
+<listitem><para>Syntax</para></listitem>
+<listitem><para>Example</para></listitem>
+<listitem><para>Validity</para></listitem>
+<!-- FIXME
+anywhere, in a block, at start of a block, after a begin (for *end)
+-->
+<listitem><para>Description</para></listitem>
+<listitem><para>Caveats</para></listitem>
+<listitem><para>See Also</para></listitem>
+<!-- FIXME
+"Usefulness" - or status maybe?
+deprecated, esoteric (*set), useful, vital
+-->
+</itemizedlist>
+
+<Sect3><Title>BEGIN</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*begin [&lt;survey&gt;]</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*begin littlebit
+1 2 10.23 106 -02
+2 3  1.56 092 +10
+*end littlebit</programlisting>
+
+<programlisting>
+; length of leg across shaft estimated
+*begin
+*sd tape 2 metres
+9 10 6.   031 -07
+*end</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*begin stores the current values of the current settings
+such as instrument calibration, data format, and so on.
+These stored values are restored after the corresponding *end.
+If a survey name is given, this is used inside the *begin/*end block,
+and the corresponding *end should have the same survey name.
+*begin/*end blocks may be nested to indefinite depth.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>CALIBRATE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem>
+<Para>*calibrate &lt;quantity list&gt; &lt;zero error&gt; [&lt;scale&gt;]
+</Para>
+<Para>*calibrate default
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*calibrate tape +0.3
+</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem>
+
+<Para>
+*calibrate is used to specify instrument calibrations.
+</Para>
+
+<Para>
+&lt;quantity&gt; is one of TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|X|Y|Z
+</Para>
+
+<Para>
+Several quantities can be given in &lt;quantity list&gt;
+</Para>
+
+<Para>
+Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
+</Para>
+
+<Para>
+You need to be careful about the sign of the ZeroError. The value of
+ZeroError is what the the instrument would read when measuring a
+reading which should be zero.  So for example, if your tape measure
+has the end missing, and you are using the 30cm mark to take all
+measurements from, then a zero distance would be measured as 30cm and
+you would correct this with:
+</Para>
+
+<programlisting>*CALIBRATE tape +0.3</programlisting>
+
+<Para>If you tape was too long, starting at -20cm (it does happen!)
+then you can correct it with:
+</Para>
+
+<programlisting>*CALIBRATE tape -0.2</programlisting>
+
+<Para>Note: ZeroError is irrelevant for Topofil counters and depth
+gauges since pairs of readings are subtracted.
+</Para>
+
+<Para>
+The magnetic deviation varies from year to year and it is often
+desirable to keep the compass zero error and the magnetic deviation
+separate. cavern calculates the true bearing as follows:
+</Para>
+
+<Para>
+(magnetic bearing) = ((reading)-(compass zero err)) * (compass
+scale factor)
+</Para>
+
+<Para>
+(true bearing) = ((bearing)-(declination zero err))
+</Para>
+
+<Para>
+The scale factor for DECLINATION must be 1.0, otherwise an error
+is given. <!-- FIXME: practical example for declination -->
+</Para>
+
+<Para>
+The default is all quantities calibrated to scale factor 1.0,
+zero error 0.0
+</Para>
+
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*units</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>CASE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><para>*case preserve|toupper|tolower</para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*begin bobsbit
+; Bob insists on using case sensitive station names
+*case preserve
+1 2   10.23 106 -02
+2 2a   1.56 092 +10
+2 2A   3.12 034 +02
+2 3    8.64 239 -01
+*end bobsbit</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*case determines how the case of letters in survey names is
+handled.  By default all names are forced to lower case (which gives a case
+insensitive match, but you can tell cavern to force to upper case, or leave
+the case as is (in which case '2a' and '2A' will be regarded as different).
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!-- <VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+<!-- FIXME - work this text in here or elsewhere
+
+What I mean (though failed to express very well) is that a dataset without
+this information isn't the same dataset (in general anyway).  For example:
+
+A1 a2 10.32 140 -05
+a2 a3  4.91 041 -01
+a1 a3  7.01 206  02
+
+is either a traverse of 3 legs or a (probably badly misclosed) loop.  If
+these names are on the original survey notes, the surveyors ought to say
+whether "A1" is the same as "a1" (although the usual case for using this
+feature is probably for importing data from elsewhere).  Similarly for
+truncation.  Whether a clino of +/-90 degrees (or +/-100 grad, etc) is
+interpreted as a plumb is something that should have been noted in the cave
+(unless it's implicit because it's standard practice for a survey project).
+
+It's a similar issue to calibration data in many ways.  You can argue it's
+not part of "the survey", but without it the survey won't be the same shape,
+and it's not useful to process the same survey with different settings for
+compass calibration or name case sensitivity.
+
+>Clearly that is unhelpfully strict, but it is
+>important to be semantically clear about what is 'data' and what is 'commands
+>or meta-data' which describe what to do with/how to interpret that data.
+
+Think of the lines starting with a "*" as "command or meta-data".
+
+>The most-correct solution to this is (I believe) Martin Heller's idea about
+>including 'rules' in the datastream, but that's too big a subject for right
+>now.
+>
+>The reason '-C' was made into a command-line option, was that it made very
+>little sense to change it part way though a dataset. What exactly happens if
+>you suddenly tell cavern to become case-sensitive halfway through a run?
+
+-C has always had 3 settings - "leave case alone", "force to lower", and
+"force to upper".  It doesn't really mean "case sensitivity" but rather
+something like "case processing".  So you can usefully change it during a
+run.  So if my dataset treats "NoTableChamber" (so named because it was
+lacking in furniture) as different from "NotableChamber" (which was notable
+for other reasons) I can process it with a dataset from someone else which
+needs to be treated as case insensitive like so:
+
+*begin my_cave
+*include my_dataset
+*end my_cave
+
+*equate my_cave.NoTableChamber.14 your_cave.linkpassage.13
+
+*begin your_cave
+*case tolower
+*include your_dataset
+*end your_cave
+
+You may be thinking of -U<n>, which used to mean "only compare the first n
+characters of station names", but that doesn't allow arbitrary datasets to
+be processed together.
+
+So we changed it to mean "truncate station names to n characters", and
+allowed it to be changed at any point, rather than being set once for the
+whole run.
+
+-->
+
+</Sect3>
+
+<Sect3><Title>COPYRIGHT</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*copyright &lt;date&gt; &lt;text&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*begin littlebit
+*copyright 1983 CUCC
+1 2 10.23 106 -02
+2 3  1.56 092 +10
+*end littlebit</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*copyright allow the copyright information to be
+stored in a way that can be automatically collated.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>DATA</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*data &lt;style&gt; &lt;ordering&gt;</Para></listitem>
+<!-- BACKCOMPASS BACKCLINO -->
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*data normal from to compass tape clino</programlisting>
+</Para>
+
+<Para>
+<programlisting>
+*data normal station ignoreall newline compass tape clino</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+&lt;style&gt; = DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY|PASSAGE
+</Para>
+
+<Para>
+&lt;ordering&gt; = ordered list of instruments - which are valid depends on the
+style.
+</Para>
+
+<Para>
+In Survex 1.0.2 and later, TOPOFIL is simply a synonym for NORMAL, left in to
+allow older data to be processed without modification.  Use the name NORMAL
+by preference.
+</Para>
+
+<Para>
+There are two variants of each style - interleaved and non-interleaved.
+Non-interleaved is "one line per leg", interleaved has a line for the data
+shared between two legs (e.g. STATION=FROM/TO, DEPTH=FROMDEPTH/TODEPTH,
+COUNT=FROMCOUNT/TOCOUNT).  Note that not all interleavable readings have to
+be interleaved - for example:
+
+<programlisting>
+*data diving station newline fromdepth compass tape todepth</programlisting>
+
+In addition, interleaved data can have a DIRECTION reading, which can be "F"
+for a foresight or "B" for a backsight.
+</Para>
+
+<Para>
+In NORMAL, DIVING, and CYLPOLAR data styles, TAPE may be replaced by
+FROMCOUNT/TOCOUNT (or COUNT in interleaved data) to allow processing of surveys
+performed with a Topofil instead of a tape.
+</Para>
+
+<VariableList>
+
+<VarListEntry><Term>DEFAULT</Term>
+<listitem><Para>Select the default data style and ordering (NORMAL style, ordering: from to tape compass clino).</Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>NORMAL</Term>
+<listitem><Para>The usual tape/compass/clino centreline survey.
+For non-interleaved data the allowed readings are:
+FROM TO TAPE COMPASS CLINO BACKCOMPASS BACKCLINO;
+for interleaved data the allowed readings are:
+STATION DIRECTION TAPE COMPASS CLINO BACKCOMPASS BACKCLINO.
+The CLINO/BACKCLINO reading is not required - if it's not given, the vertical
+standard deviation is taken to be proportional to the tape measurement.
+Alternatively, individual clino readings can be given as OMIT (default "-")
+which allows for data where only some clino readings are missing.
+E.g.:
+
+<programlisting>
+*data normal from to compass clino tape
+1 2 172 -03 12.61</programlisting>
+
+<programlisting>
+*data normal station newline direction tape compass clino
+1
+ F 12.61 172 -03
+2</programlisting>
+
+<programlisting>
+*data normal from to compass clino fromcount tocount
+1 2 172 -03 11532 11873</programlisting>
+
+<programlisting>
+*data normal station count newline direction compass clino
+1 11532
+ F 172 -03
+2 11873</programlisting>
+ 
+</Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>DIVING</Term>
+<listitem><Para>
+An underwater survey where the vertical information is from a diver's depth
+gauge.  This style can also be also used for an above water where the alititude
+is measured with an altimeter.  DEPTH is defined as the altitude (Z) so
+increases upwards by default.  So for a diver's depth guage, you'll need to
+use *CALIBRATE with a negative scale factor (e.g. *calibrate depth 0 -1).
+</Para>
+
+<Para>For non-interleaved data the allowed readings are:
+FROM TO TAPE COMPASS BACKCOMPASS FROMDEPTH TODEPTH DEPTHCHANGE (the vertical
+can be given as readings at each station, (FROMDEPTH/TODEPTH) or as a change
+along the leg (DEPTHCHANGE)).</Para>
+
+<Para>For interleaved data the allowed readings are:
+STATION DIRECTION TAPE COMPASS BACKCOMPASS DEPTH DEPTHCHANGE.
+(the vertical change can be given as a reading at the station (DEPTH) or as a change along the leg (DEPTHCHANGE)).
+
+<programlisting>
+*data diving from to tape compass fromdepth todepth
+1 2 14.7 250 -20.7 -22.4</programlisting>
+
+<programlisting>
+*data diving station depth newline tape compass
+1 -20.7
+ 14.7 250
+2 -22.4</programlisting>
+
+<programlisting>
+*data diving from to tape compass depthchange
+1 2 14.7 250 -1.7</programlisting>
+</Para>
+</listitem>
+</VarListEntry>
+
+<VarListEntry><Term>CARTESIAN</Term>
+<listitem><Para>
+Cartesian data style allows you to specify the (x,y,z) changes between
+stations.  It's useful for digitising surveys where the original survey
+data has been lost and all that's available is a drawn up version.
+
+<programlisting>
+*data cartesian from to northing easting altitude
+1 2 16.1 20.4 8.7</programlisting>
+
+<programlisting>
+*data cartesian station newline northing easting altitude
+1
+ 16.1 20.4 8.7
+2</programlisting>
+
+<!--FIXME: dx dy dz-->
+</Para>
+
+<Note><Para>
+Cartesian data are relative to <emphasis>true</emphasis> North not
+<emphasis>magnetic</emphasis> North (i.e. they are unaffected by
+<command>*calibrate declination</command>).
+</Para></Note>
+</VarListEntry>
+
+<VarListEntry><Term>CYLPOLAR</Term>
+<listitem><Para>
+A CYLPOLAR style survey is very similar to a diving survey, except that the tape
+is always measured horizontally rather than along the slope of the leg.
+
+<programlisting>
+*data cypolar from to tape compass fromdepth todepth
+1 2 9.45 311 -13.3 -19.0</programlisting>
+
+<programlisting>
+*data cylpolar station depth newline tape compass
+1 -13.3
+ 9.45 311
+2 -19.0</programlisting>
+
+<programlisting>
+*data cylpolar from to tape compass depthchange
+1 2 9.45 311 -5.7</programlisting>
+</Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>NOSURVEY</Term>
+<listitem><Para>
+A NOSURVEY survey doesn't have any measurements - it merely indicates that
+there is line of sight between the pairs of stations.
+
+<programlisting>
+*data nosurvey from to
+1 7
+5 7
+9 11</programlisting>
+
+<programlisting>
+*data nosurvey station
+1
+7
+5
+
+*data nosurvey station
+9
+11</programlisting>
+</Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>PASSAGE</Term>
+<listitem><Para>
+This survey style defines a 3D "tube" modelling a passage in the cave.
+The tube uses the survey stations listed in the order listed.  It's
+permitted to use survey stations which aren't directly linked by
+the centre-line survey.  This can be useful - sometimes the centreline
+will step sideways or up/down to allow a better sight for the next
+leg and you can ignore the extra station.  You can also define tubes
+along unsurveyed passages, akin to "nosurvey" legs in the centreline
+data.</Para>
+
+<Para>This means that you need to split off side passages into seperate
+tubes, and hence separate sections of passage data, starting with
+a new *data command.</Para>
+
+<Para>
+Simple example of how to use this data style (note the use of ignoreall
+to allow a free-form text description to be given):
+
+<programlisting>
+*data passage station left right up down ignoreall
+1  0.1 2.3 8.0 1.4  Sticking out point on left wall
+2  0.0 1.9 9.0 0.5  Point on left wall
+3  1.0 0.7 9.0 0.8  Highest point of boulder
+</programlisting>
+</Para>
+</VarListEntry>
+</VariableList>
+
+<Para>
+IGNORE skips a field (it may be used any number of times),
+and IGNOREALL may be used last to ignore the rest of the data line.
+</Para>
+
+<Para>
+LENGTH is a synonym for TAPE; BEARING for COMPASS; GRADIENT for CLINO; COUNT for COUNTER.<!--FIXME : others?-->
+</Para>
+
+<Para>
+The units of each quantity may be set with the UNITS command.
+</Para>
+
+<!-- FIXME: plumbed diving legs -->
+
+<!--FIXME:
+<Para>
+Uses for CYLPOLAR:
+Perhaps a Grade 3 survey, or when surveying with a level and stick (?)
+[note - UBSS use it for the old County Clare data]
+</Para>
+-->
+
+</listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>DATE</Title>
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*date &lt;year&gt;[.&lt;month&gt;[.&lt;day&gt;]][-&lt;year&gt;[.&lt;month&gt;[.&lt;day&gt;]]]</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*date 2001</programlisting>
+
+<programlisting>
+*date 2000.10</programlisting>
+
+<programlisting>
+*date 1987.07.27</programlisting>
+
+<programlisting>
+*date 1985.08.12-1985.08.13</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*date specifies the date that the survey was done.  A range of dates
+can be specified (useful for overnight or multi-day surveying trips).
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *instrument, *team</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>DEFAULT</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*default &lt;settings list&gt;|all</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+The valid settings are CALIBRATE, DATA, and UNITS.
+</Para>
+
+<Para>
+*default restores defaults for given settings.  This command is deprecated -
+you should instead use: *calibrate default, *data default, *units default.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*calibrate, *data, *units</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>END</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*end [&lt;survey&gt;]</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid for closing a block started by *begin in the same file.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+Closes a block started by *begin.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>ENTRANCE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*entrance &lt;station&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*entrance P163</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*entrance sets the <emphasis>entrance</emphasis> flag for a station.
+This information is used by aven to allow entrances to be highlighted.
+</Para>
+
+<!-- FIXME:
+(could be inferred from surface/ug join, but better to specify because
+of caves with no surf svy (or no underground survey) 
+and also situations in which multiple surveys leave through an entrance)
+-->
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!-- <VarListEntry><Term>See Also</Term>
+
+<listitem><Para></Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>EQUATE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*equate &lt;station&gt; &lt;station&gt;...</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*equate chosspot.1 triassic.27</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*equate specifies that the station names in the list refer to the
+same physical survey station. An error is given if there is only one station
+listed.
+</Para>
+
+<!-- FIXME:
+<Para>
+I think this is preferable to using:
+</Para>
+
+<programlisting> a b 0.00   0   0</programlisting>
+
+<Para>
+as EQUATE does not add in an extra position error. It is also clearer than
+substituting in the original name wherever passages are linked. If you
+disagree, you can always use one of the other methods!
+</Para>
+-->
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*infer equates</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>EXPORT</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*export &lt;station&gt;...</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<!-- FIXME better example -->
+<listitem>
+<Para>
+<programlisting>
+*export 1 6 17</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*export marks the stations named as referable to from the enclosing
+survey.  To be able to refer to a station from a survey several levels
+above, it must be exported from each enclosing survey.
+</Para>
+
+<!-- FIXME:
+<Para>
+I think this is preferable to using:
+</Para>
+
+<programlisting> a b 0.00   0   0</programlisting>
+
+<Para>
+as EQUATE does not add in an extra position error. It is also clearer than
+substituting in the original name wherever passages are linked. If you
+disagree, you can always use one of the other methods!
+</Para>
+-->
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *infer exports</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>FIX</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*fix &lt;station&gt; [reference]
+ [ &lt;x&gt; &lt;y&gt; &lt;z&gt;
+   [ &lt;x std err&gt; &lt;y std err&gt; &lt;z std err&gt;
+     [ &lt;cov(x,y)&gt; &lt;cov(y,z)&gt; &lt;cov(z,x)&gt; ] ] ]
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*fix entrance.0 32768 86723 1760</programlisting>
+
+<programlisting>
+*fix KT114_96 reference 36670.37 83317.43 1903.97</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem>
+<Para>
+*fix fixes the position of &lt;station&gt; at the given coordinates.
+If the position is omitted it defaults to (0,0,0). <!-- which allows
+sub-sections of a large survey to be easily processed separately.
+ FIXME - don't want to encourage people to do this really -->
+The standard errors default to zero (fix station exactly). cavern will
+give an error if you attempt to fix the same survey station twice
+at different coordinates, or a warning if you fix it twice with matching
+coordinates.
+</Para>
+
+<Para>
+You can also specify just one standard error (in which case it is assumed
+equal in X, Y, and Z) or two (in which case the first is taken as the
+standard error in X and Y, and the second as the standard error in Z).
+</Para>
+
+<Para>
+If you have covariances for the fix, you can also specify these - the
+order is cov(x,y) cov(y,z) cov(z,x). 
+</Para>
+
+<Para>
+You can fix as many stations as you like - just use a *fix command for each
+one.  Cavern will check that all stations are connected to
+at least one fixed point so that co-ordinates can be calculated for all
+stations.
+</Para>
+
+<Para>
+By default cavern will warn about stations which have been FIX-ed but
+not used otherwise.  This is unhelpful if you want to include a
+standard file of benchmarks, some of which won't be used.
+In this sort of situation, specify "REFERENCE" after the station name
+in the FIX command to suppress this warning for a particular station.
+</Para>
+
+<Note><Para>
+X is Easting, Y is Northing, and Z is altitude.  This convention was chosen
+since on a map, the horizontal (X) axis is usually East, and the vertical
+axis (Y) North.  The choice of altitude (rather than depth) for Z is taken
+from surface maps, and makes for less confusion when dealing with cave
+systems with more than one entrance.  It also gives a right-handed
+set of axes.
+</Para></Note>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!-- <VarListEntry><Term>See Also</Term>
+
+<listitem><Para></Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<!--
+<Sect3><Title></Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Caveats </Term> </VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para></Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+-->
+
+<Sect3><Title>FLAGS</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*flags &lt;flags&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*flags duplicate not surface</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*flags updates the current flag settings.
+Flags not mentioned retain their previous state.  Valid flags
+are DUPLICATE, SPLAY, and SURFACE, and a flag may be preceded with NOT to
+turn it off.
+</Para>
+
+<Para>
+Survey legs marked SURFACE are hidden from plots by default, and not
+included in cave survey length calculations.  Survey legs marked as
+DUPLICATE or SPLAY are also not included in cave survey length
+calculations; legs marked SPLAY are ignored by the extend program.
+DUPLICATE is intended for the case when if you have two different
+surveys along the same section of passage (for example to tie two
+surveys into a permanent survey station); SPLAY is intended for 
+cases such as radial legs in a large chamber.
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>INCLUDE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*include &lt;filename&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*include mission</programlisting>
+
+<programlisting>
+*include "the pits"</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*include processes &lt;filename&gt; as if it were inserted at this
+place in the current file. (i.e. The current settings are carried
+into &lt;filename&gt;, and any alterations to settings in &lt;filename&gt;
+will be carried back again).  There's one exception to this (for
+obscure historical reasons) which is that the survey prefix is
+restored upon return to the original file.  Since *begin and *end
+nesting cannot cross files, this can only make a difference if you
+use the deprecated *prefix command.
+</Para>
+
+<Para>If &lt;filename&gt; contains spaces, it must be enclosed in quotes.
+</Para>
+
+<Para>An included file which does not have a complete path
+is resolved relative to the directory which the parent file is in
+(just as relative HTML links do).  Cavern will try adding a &svx;
+extension, and will also try translating "\" to "/".
+And as a last
+resort, it will try a lower case version of the filename (so if you
+use Unix and someone sends you a DOS/Windows dataset with mismatched
+case, unzip it with "unzip -L" and unix cavern will process it).
+</Para>
+
+<Para>
+The depth to which you can nest
+include files may be limited by the operating system
+you use.  Usually the limit is fairly high (>30), but if you want to be able to
+process your dataset with &survexsuite; on any supported platform, it
+would be prudent not to go overboard with nested include files.
+</Para>
+</listitem>
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>INFER</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem>
+<Para>*infer plumbs on|off</Para>
+
+<Para>*infer equates on|off</Para>
+
+<Para>*infer exports on|off</Para>
+</listitem>
+
+</VarListEntry>
+
+<!--
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+</programlisting>
+
+</listitem>
+
+</VarListEntry>
+-->
+
+<VarListEntry><Term>Description</Term>
+
+<listitem>
+<Para>"*infer plumbs on" tells cavern to interpret gradients of +/- 90
+degrees as UP/DOWN (so it
+will not apply the clino correction to them). This is useful when
+the data has not been converted to have UP and DOWN in it.
+</Para>
+
+<para>"*infer equates on" tells cavern to interpret a leg with
+a tape reading of zero as a *equate.  this prevents tape corrections
+being applied to them.
+</para>
+
+<para>"*infer exports on" is necessary when you have a dataset which is
+partly annotated with *export.  It tells cavern not to complain about
+missing *export commands in part of the dataset.  Also stations which
+were used to join surveys are marked as exported in the 3d file.
+</para>
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!--
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>INSTRUMENT</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*instrument &lt;instrument&gt; &lt;identifier&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*instrument compass "CUCC 2"
+*instrument clino "CUCC 2"
+*instrument tape "CUCC Fisco Ranger open reel"</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*instrument specifies the particular instruments used to perform a
+survey.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *date, *team</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>PREFIX</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*prefix &lt;survey&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*prefix flapjack</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*prefix sets the current survey.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Caveats </Term>
+
+<listitem><Para>*prefix is deprecated - you should use *begin and *end
+instead.</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *end</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>REQUIRE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*require &lt;version&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*require 0.98</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*require checks that the version of cavern in use is at least
+&lt;version&gt; and stops with an error if not.
+So if your dataset requires a feature
+introduced in a particular version, you can add a *require command and
+users will know what version they need to upgrade to, rather than
+getting an error message and having to guess what the real problem is.
+</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>SD</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*sd &lt;quantity list&gt; &lt;standard deviation&gt;
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*sd tape 0.15 metres</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*sd sets the standard deviation of a measurement.
+</Para>
+
+<Para>
+&lt;quantity&gt; is one of
+TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|DX|DY|DZ <!-- FIXME:
+check this list -->
+</Para>
+
+<Para>
+&lt;standard deviation&gt; must include units and thus is typically
+"0.05 metres", or "0.02 degrees". See *units below for full list
+of valid units.
+</Para>
+
+<!-- FIXME mention central limit theorem -->
+<Para>
+To utilise this command fully you need to understand what a
+<emphasis>standard deviation</emphasis> is.
+It gives a value to the 'spread' of the errors
+in a measurement. Assuming that these are normally distributed
+we can say that 95.44% of the actual lengths will fall within two
+standard deviations of the measured length. i.e. a tape SD of
+0.25 metres means that the actual length of a tape measurement
+is within + or - 0.5 metres of the recorded value 95.44% of the time.
+So if the measurement is 7.34m then the actual length is very
+likely to be between 6.84m and 7.84m. This example corresponds
+to BCRA grade 3. Note that this is just one interpretation of
+the BCRA standard, taking the permitted error values as 2SD 95.44%
+confidence limits. If you want to take the readings as being some
+other limit (e.g. 1SD = 68.26%) then you will need to change the BCRA3
+and BCRA5 files accordingly. This issue is explored in more
+detail in various surveying articles.
+<!--
+2.565 sd 99%
+2.5   sd 98.76%
+2     sd 95.44%
+1     sd 68.26%
+.97   sd 66.67%
+1.15  sd 75%
+-->
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*units</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>SET</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*set &lt;item&gt; &lt;character list&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*set blank x09x20
+*set decimal ,</programlisting>
+
+Note that you need to eliminate comma from being a blank before setting it as
+a decimal - otherwise the comma in "*set decimal ," is parsed as a blank, and
+you set decimal to not have any characters representing it.
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*set sets the specified &lt;item&gt; to the character or characters
+given in &lt;character list&gt;. The example sets the decimal
+separator to be a comma.
+</Para>
+
+<Para>
+xAB means the character with hex value AB. Eg x20 is a space.
+</Para>
+
+<Para>
+The complete list of items that can be set, the defaults (in
+brackets), and the meaning of the item, is:
+</Para>
+
+<ItemizedList>
+
+<ListItem><Para>
+BLANK (x09x20,) Separates fields
+</Para></ListItem>
+
+<ListItem><Para>
+COMMENT (;) Introduces comments
+</Para></ListItem>
+
+<ListItem><Para>
+DECIMAL (.) Decimal point character 
+</Para></ListItem>
+
+<ListItem><Para>
+EOL (x0Ax0D) End of line character
+</Para></ListItem>
+
+<ListItem><Para>
+KEYWORD (*) Introduces keywords
+</Para></ListItem>
+
+<ListItem><Para>
+MINUS (-) Indicates negative number
+</Para></ListItem>
+
+<ListItem><Para>
+NAMES (_-) Non-alphanumeric chars permitted in station
+names (letters and numbers are always permitted).
+</Para></ListItem>
+
+<ListItem><Para>
+OMIT (-) Contents of field omitted (e.g. in plumbed legs)
+</Para></ListItem>
+
+<ListItem><Para>
+PLUS (+) Indicates positive number 
+</Para></ListItem>
+
+<ListItem><Para>
+ROOT (\) Prefix in force at start of current file (use of ROOT is deprecated)
+</Para></ListItem>
+
+<ListItem><Para>
+SEPARATOR (.) Level separator in prefix hierarchy
+</Para></ListItem>
+
+<!-- FIXME OPEN ({) and CLOSE (}) -->
+</ItemizedList>
+
+<Para>
+The special characters may not be alphanumeric.
+</Para>
+
+</listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>SOLVE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*solve</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*include 1997data
+*solve
+*include 1998data
+</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+Distributes misclosures around any loops in the survey and fixes
+the positions of all existing stations.  This command is intended
+for situations where you have some new surveys adding extensions
+to an already drawn-up survey which you wish to avoid completely
+redrawing. You can read in the old data, use *SOLVE to fix it, and then
+read in the new data.  Then old stations will be in the same
+positions as they are in the existing drawn up survey, even if new loops
+have been formed by the extensions.
+</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>TEAM</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*team &lt;person&gt; &lt;role&gt;...</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*team "Nick Proctor" compass clino tape
+*team "Anthony Day" notes pictures tape
+</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+<!-- FIXME valid roles are? -->
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*team specifies the people involved in a survey and what role they
+filled during that trip.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *date, *instrument</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>TITLE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*title &lt;title&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+*title Dreamtime</programlisting>
+
+<programlisting>
+*title "Mission Impossible"</programlisting>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*title allows you to set the descriptive title for a survey.
+If the title contains spaces, you need to enclose it in quotes ("").
+If there is no *title command, the title defaults to the survey name
+given in the *begin command.
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!--
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>TRUNCATE</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*truncate &lt;length&gt;|off</Para></listitem>
+
+</VarListEntry>
+
+<!-- FIXME:
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<programlisting>
+</programlisting>
+
+</listitem>
+
+</VarListEntry>
+-->
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>Station names may be of any length in &survexsuite;, but some
+other (mostly older) cave surveying software only regard the first few
+characters of a name as significant (e.g. "entran" and "entrance"
+might be treated as the same).  To facilitate using data imported from
+such a package &survexsuite; allows you to truncate names to whatever
+length you want (but by default truncation is off).
+</Para>
+
+<Para>Figures for the number of characters which are significant in various
+software packages: Compass currently has a limit of 12,
+CMAP has a limit of 6,
+<!-- FIXME any limits for other software, winkarst for example? -->
+Surveyor87/8 used 8.
+&survexsuite; itself used 8 per prefix
+level up to version 0.41, and 12 per prefix level up to 0.73 (more recent
+versions removed this rather archaic restriction).
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<!--
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*end, *prefix</Para></listitem>
+
+</VarListEntry>
+-->
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>UNITS</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>
+*units &lt;quantity list&gt; [&lt;factor&gt;] &lt;unit&gt;
+</Para>
+<Para>
+*units default
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*units tape metres</programlisting>
+
+<programlisting>
+*units compass backcompass clino backclino grads</programlisting>
+
+<programlisting>
+*units dx dy dz 1000 metres ; data given as kilometres</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+&lt;quantity&gt; is one of
+TAPE|LENGTH|COMPASS|BEARING|CLINO|GRADIENT|COUNTER|DEPTH|DECLINATION|X|Y|Z
+</Para>
+
+<Para>Changes current units of all the quantities listed to [&lt;factor&gt;]
+&lt;unit&gt;. Note that quantities can be expressed either as
+the instrument (e.g. COMPASS) or the measurement (e.g. BEARING).
+</Para>
+
+<Para>&lt;factor&gt; allows you to easy specify situations such as measuring
+distance with a diving line knotted every 10cm (*units distance 0.1 metres).
+If &lt;factor&gt; is omitted it defaults to 1.0.  If specified, it must be
+non-zero.
+</Para>
+
+<Para>Valid units for listed quantities are:
+</Para>
+
+<!-- FIXME: are these correct?
+  and dx,dy,dz -> easting/northing/altitude in preference -->
+<Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ <!-- FIXME: , X,Y,Z,-->
+in YARDS|FEET|METRIC|METRES|METERS
+</Para>
+
+<Para>CLINO, BACKCLINO, GRADIENT, BACKGRADIENT
+in DEG|DEGREES|GRADS|MILS|PERCENT|PERCENTAGE
+</Para>
+
+<Para>COMPASS, BACKCOMPASS, BEARING, BACKBEARING, DECLINATION
+in DEG|DEGREES|GRADS|MILS|MINUTES
+</Para>
+
+<Para>(360 degrees = 400 grads (also known as Mils))
+</Para>
+
+<Para>Defaults are: Metres, Degrees, Degrees respectively.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*calibrate</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+</Sect2>
+
+</Sect1>
+
+<!-- FIXME rename to "Cookbook"? -->
+<Sect1><Title>Contents of &svx; files: How do I?</Title>
+<?dbhtml filename="svxhowto.htm">
+
+<Para>
+Here is some example &survexsuite; data (a very small cave numbered 1623/163):
+</Para>
+
+<programlisting>
+2 1 26.60 222  17.5
+2 3 10.85 014   7
+2 4  7.89 254 -11
+4 5  2.98  - DOWN
+5 6  9.29 271 -28.5</programlisting>
+
+<Para>
+You can vary the data ordering.  The default is:
+</Para>
+
+<Para>
+from-station to-station tape compass clino
+</Para>
+
+<Para>
+This data demonstrates a number of useful features of &survexsuite;:
+</Para>
+
+<Para>
+Legs can be measured either way round, which allows the use of
+techniques like "leap-frogging" (which is where legs
+alternate forwards and backwards).
+</Para>
+
+<Para>
+Also notice that there is a spur in the survey (2 to 3).  You
+do not need to specify this specially.
+</Para>
+
+<Para>
+&survexsuite; places few restrictions on station naming (see "Survey
+Station Names" in the previous section), so you can number the stations
+as they were in the original survey notes.  Although not apparent from
+this example, there is no requirement for each leg to connect to an
+existing station.  &survexsuite; can accept data in any order, and will
+check for connectedness once all the data has been read in.
+</Para>
+
+<Para>
+Each survey is also likely to have other information associated
+with it, such as instrument calibrations, etc.  This has been
+omitted from this example to keep things simple.
+</Para>
+
+<Para>
+Most caves will take more than just one survey trip to map.  Commonly
+the numbering in each survey will begin at 1, so we need to be
+able to tell apart stations with the same number in different
+surveys.
+</Para>
+
+<Para>
+To accomplish this, &survexsuite; has a very flexible system of hierarchical
+prefixes.  All you need do is give each survey a unique name or
+number, and enter the data like so:
+</Para>
+
+<programlisting>
+*begin 163
+*export 1
+2 1 26.60 222  17.5
+2 3 10.85 014   7
+2 4  7.89 254 -11
+4 5  2.98  - DOWN
+5 6  9.29 271 -28.5
+*end 163</programlisting>
+
+<Para>&survexsuite; will name the stations by attaching the current prefix.
+In this case, the stations will be named 163.1, 163.2, etc.
+</Para>
+
+<Para>We have a convention with the CUCC Austria data that the entrance survey
+station of a cave is named P&lt;cave number&gt;, P163 in this case. We
+can accomplish this like so:
+</Para>
+
+<programlisting>
+*equate P163 163.1
+*entrance P163
+*begin 163
+*export 1
+2 1 26.60 222  17.5
+2 3 10.85 014   7
+2 4  7.89 254 -11
+4 5  2.98  - DOWN
+5 6  9.29 271 -28.5
+*end 163</programlisting>
+
+<Sect2><Title>Specify surface survey data</Title>
+
+<Para>
+Say you have 2 underground surveys and 2 surface ones with 2 fixed reference
+points.  You want to mark the surface surveys so that their length isn't
+included in length statistics, and so that Aven knows to display them
+differently.  To do this you mark surface data with the "surface" flag
+- this is set with "*flags surface" like so:
+<Para>
+
+<programlisting>
+; fixed reference points
+*fix fix_a 12345 56789 1234
+*fix fix_b 23456 67890 1111                                                     
+                                                                                
+; surface data (enclosed in *begin ... *end to stop the *flags command
+; from "leaking" out)
+*begin
+*flags surface
+*include surface1
+*include surface2
+*end                                                                            
+                                                                                
+; underground data
+*include cave1
+*include cave2</programlisting>
+
+<Para>
+You might also have a survey which starts on the surface and heads into a
+cave.  This can be easily handled too - here's an example which goes in
+one entrance, through the cave, and out of another entrance:
+</Para>
+
+<programlisting>
+*begin BtoC
+*title "161b to 161c"
+*date 1990.08.06 ; trip 1990-161c-3 in 1990 logbook
+
+*begin
+*flags surface
+02    01      3.09   249    -08.5
+02    03      4.13   252.5  -26
+*end
+
+04    03      6.00   020    +37
+04    05      3.07   329    -31
+06    05      2.67   203    -40.5
+06    07      2.20   014    +04
+07    08      2.98   032    +04
+08    09      2.73   063.5  +21
+09    10     12.35   059    +15
+
+*begin
+*flags surface
+11    10      4.20   221.5  -11.5
+11    12      5.05   215    +03.5
+11    13      6.14   205    +12.5
+13    14     15.40   221    -14
+*end
+
+*end BtoC</programlisting>
+
+<Para>
+Note that to avoid needless complication, Survex regards each leg as
+being either "surface" or "not surface" - if a leg spans the boundary you'll
+have to call it one or the other.  It's good surveying practice to
+deliberately put a station at the surface/underground interface
+(typically the highest closed contour or drip line) so this generally
+isn't an onerous restriction.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Specify the ordering and type of data</Title>
+
+<Para>The *DATA command is used to specify the data style, and the
+order in which the readings are given.</Para>
+
+</Sect2>
+
+<Sect2><Title>Deal with Plumbs or Legs Across Static Water</Title>
+
+<!-- FIXME
+<Para>
+They can be given
+as +90, or -90, but as they are not usually measured with the
+clino, but with a plumb of some sort, then it is useful to distinguish
+them in this way so that any clino adjustment is not applied to
+these values.
+</Para>
+
+FIXME: paste in section from mail to list
+
+<Para>
+Note that a similar effect can be achieved by using the "*infer plumbs" command
+to stop clino corrections being applied to -90 and +90 clino readings.
+</Para>
+-->
+
+<Para>
+Plumbed legs should be given using 'UP' or 'DOWN' in place of the
+clino reading and a dash (or a different specified 'OMIT' character)
+in place of the compass reading.  This distinguishes
+them from legs measured with a compass and clino.  Here's an example:
+</Para>
+
+<programlisting>
+1 2 21.54 - UP
+3 2 7.36 017 +17
+3 4 1.62 091 +08
+5 4 10.38 - DOWN</programlisting>
+
+<Para>
+U/D or +V/-V may be used instead of UP/DOWN; the check is not case
+sensitive.
+</Para>
+
+<Para>
+Legs surveyed across the surface of a static body of water where no
+clino reading is taken (since the surface of the water can be assumed
+to be flat) can be indicated by using LEVEL in place of a clino reading.
+This prevents the clino correction being applied.  Here's an example:
+</Para>
+
+<programlisting>
+1 2 11.37 190 -12
+3 2  7.36 017 LEVEL
+3 4  1.62 091 LEVEL</programlisting>
+
+</Sect2>
+
+<Sect2><Title>Specify a BCRA grade</Title>
+
+<Para>The *SD command can be used to specify the standard deviations of the
+various measurements (tape, compass, clino, etc).  Examples files are
+supplied which define BCRA Grade 3 and BCRA Grade 5 using a number of *sd
+commands. You can use these by simply including them at the relevant point,
+as follows:
+</Para>
+
+<programlisting>
+*begin somewhere
+; This survey is only grade 3
+*include grade3
+2 1 26.60 222  17.5
+2 3 10.85 014   7
+; etc
+*end somewhere</programlisting>
+
+<Para>The default values for the standard deviations are those for
+BCRA grade 5. Note that it is good practice to keep the *include
+Grade3 within *Begin and *End commands otherwise it will apply
+to following survey data, which may not be what you intended.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Specify different accuracy for a leg</Title>
+
+<Para>For example, suppose the tape on the plumbed leg in this survey
+is suspected of being less accurate than the rest of the survey because
+the length was obtained by measuring the length of the rope used to rig
+the pitch.  We can set a higher sd for this one measurement and use a
+*begin/*end block to make sure this setting only applies to the one
+leg:
+</Para>
+
+<programlisting>
+2 1 26.60 222  17.5
+2 3 10.85 014   7
+2 4  7.89 254 -11
+*begin
+; tape measurement was taken from the rope length
+*sd tape 0.5 metres
+4 5  34.50 - DOWN
+*end
+5 6  9.29 271 -28.5</programlisting>
+
+<!-- FIXME also *calibrate and *instrument? Except rope is measure with the
+tape... -->
+</Sect2>
+
+<Sect2><Title>Enter Radiolocation Data</Title>
+
+<!-- FIXME comments from David Gibson here -->
+<Para>This is done by using the *SD command to specify the appropriate
+errors for the radiolocation `survey leg' so that the loop closure
+algorithm knows how to distribute errors if it forms part of a loop.
+</Para>
+
+<Para>The best approach for a radiolocation where the underground station
+is vertically below the surface station is to represent it as a
+plumbed leg, giving suitable SDs for the length and plumb angle. The
+horizontal positioning of this is generally quite accurate, but the
+vertical positioning may be much less well known. E.g: we have a
+radiolocation of about 50m depth +/- 20m and horizontal accuracy of
++/- 8m. Over 50m the +/-8m is equivalent to an angle of 9 degrees, so
+that is the expected plumb error. 20m is the expected error in the
+length. To get the equivalent SD we assume that 99.74% of readings will
+be within 3 standard deviations of the error value. Thus we divide the
+expected errors by 3 to get the SD we should specify:
+</Para> <!-- 3 SD? or same as BCRA3.SVX, etc -->
+
+<programlisting>
+*begin
+*sd length 6.67 metres
+*sd plumb 3 degrees
+surface underground 50 - down
+*end</programlisting>
+
+<Para>
+We wrap the radiolocation leg in a *begin/*end block to make
+sure that the special *sd settings only apply to this one leg.
+</Para>
+
+<Para>For more information on the expected errors from radiolocations
+see Compass Points Issue 10, available online at
+<ulink url="http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm">http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm</ulink>
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Enter Diving Data</Title>
+
+<Para>Surveys made underwater using a diver's depth gauge can be
+processed - use the *Data command to specify that the following data
+is of this type.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Enter Theodolite data</Title>
+
+<Para>
+Theodolite data with turned angles is not yet explicitly catered
+for, so for now you will need to convert it into equivalent legs in
+another style - normal or cylpolar are likely to be the best choices.
+</Para>
+
+<Para>
+If there is no vertical info in your theodolite data then you should
+use the cylpolar style and use *sd command to specify very low
+accuracy (high SD) in the depth so that the points will move in the
+vertical plane as required if the end points are fixed or the survey
+is part of a loop.
+</Para>
+
+</Sect2>
+
+</Sect1>
+
+<Sect1><Title>General: How do I?</Title>
+<?dbhtml filename="genhowto.htm">
+
+<Sect2><Title>Create a new survey</Title>
+
+<Para>You simply create a text file containing the relevant survey data,
+using a text editor, and save it with a suitable name with a &svx;
+extension. The
+easiest way is to look at some of the example data and use that
+as a template. Nearly all surveys will need a bit of basic info
+as well as the survey data itself: e.g. the date (*date), comments
+about where, what cave, a name for the survey (using *begin and *end),
+instrument error corrections etc. Here is a typical survey file:
+</Para>
+
+<Para>All the lines starting with ';' are comments, which are ignored
+by &survexsuite;. You can also see the use of 'DOWN' for plumbs, and
+*calibrate tape for dealing with a tape length error (in this case
+the end of the tape had fallen off so measurements were made from the
+20cm point).</Para>
+
+<programlisting>
+*equate chaos.1 triassic.pt3.8
+*equate chaos.2 triassic.pt3.9
+
+*begin chaos
+*title "Bottomless Pit of Eternal Chaos to Redemption pitch"
+*date 1996.07.11
+*team "Nick Proctor" compass clino tape
+*team "Anthony Day" notes pictures tape
+*instrument compass "CUCC 2"
+*instrument clino "CUCC 2"
+;Calibration: Cairn-Rock 071 072 071,  -22 -22 -22
+;       Rock-Cairn 252 251 252,  +21 +21 +21
+;Calibration at 161d entrance from cairn nr entrance to
+;prominent rock edge lower down. This is different from
+;calibration used for thighs survey of 5 July 1996
+
+*export 1 2
+
+;Tape is 20cm too short
+*calibrate tape +0.2
+
+1 2 9.48 208 +08
+2 3 9.30 179 -23
+3 4 2.17 057 +09
+5 4 10.13 263 +78
+5 6 2.10 171 -73
+7 6 7.93 291 +75
+*begin
+*calibrate tape 0
+8 7 35.64 262 +86 ;true length measured for this leg
+*end
+8 9 24.90 - DOWN
+10 9 8.61 031 -43
+10 11 2.53 008 -34
+11 12 2.70 286 -20
+13 12 5.36 135 +23
+14 13 1.52 119 -12
+15 14 2.00 036 +13
+16 15 2.10 103 +12
+17 16 1.40 068 -07
+17 18 1.53 285 -42
+19 18 5.20 057 -36
+19 20 2.41 161 -67
+20 21 27.47 - DOWN
+21 22 9.30 192 -29
+*end chaos</programlisting>
+
+</Sect2>
+
+<Sect2><Title>Join surveys together</Title>
+
+<Para>Once you have more than one survey you need to specify how they
+link together. To do this use *export to make the stations to be
+joined accessible in the enclosing survey, then *equate in the
+enclosing survey to join them together.
+<!-- FIXME example -->
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Organise my surveys</Title>
+
+<Para>This is actually a large subject. There are many ways you can
+organise your data using &survexsuite;. Take a look at the example dataset
+for some ideas of ways to go about it.
+</Para>
+
+<Sect3><Title>Fixed Points (Control Points)</Title>
+
+<Para>The *fix command is used to specify fixed points (also know as control
+points).  See the description of this command in the "Cavern Commands"
+section of this manual.
+</Para>
+
+</Sect3>
+
+<Sect3><Title>More than one survey per trip</Title>
+
+<Para>Suppose you have two separate bits of surveying which were done on the
+same trip.  So the calibration details, etc. are the same for both.  But you
+want to give a different survey name to the two sections.  This is easily
+achieved like so:
+</Para>
+
+<programlisting>
+*begin
+*calibrate compass 1.0
+*calibrate clino 0.5
+*begin altroute
+; first survey
+*end altroute
+*begin faraway
+; second survey
+*end faraway
+*end</programlisting>
+
+</Sect3>
+
+</Sect2>
+
+<Sect2><Title>Add surface topology</Title>
+
+<!-- FIXME put DEM support in aven -->
+<Para>We intend to allow import of terrain data in DEM format, and also any
+other formats in common use.  But at present the simplest approach is to
+generate a &svx; file with the surface mesh in and display it with the
+survey data.
+</Para>
+
+<Para>
+It is possible to generate
+a mesh or contours overlaying your area by various means.  In the USA,
+usable resolution data can be obtained for free.  In other countries,
+it's harder to come by.  Reading heights from the
+contours on a map is one approach.  It's laborious, but feasible for
+a small area.
+</Para>
+
+<Para>
+Details of several methods are given in the BCRA Cave Surveying
+Group magazine Compass Points issue 11, available online at
+<ulink url="http://www.chaos.org.uk/survex/cp/CP11/CPoint11.htm#Art_5">http://www.chaos.org.uk/survex/cp/CP11/CPoint11.htm#Art_5</ulink>
+</Para>
+
+<Para>If you're using another program to generate a &svx; file for the surface
+mesh, it's best to use the NOSURVEY data style.
+Simply fix all the grid intersections at the correct
+coordinates and height, and put legs between them using the NOSURVEY style.
+Here's a grid of 4 squares and 9 intersections:
+</Para>
+
+<programlisting>
+*fix 00 000 000 1070
+*fix 01 000 100 1089
+*fix 02 000 200 1093
+
+*fix 10 100 000 1062
+*fix 11 100 100 1080
+*fix 12 100 200 1089
+
+*fix 20 200 000 1050
+*fix 21 200 100 1065
+*fix 22 200 200 1077
+
+*data nosurvey station
+
+00
+01
+02
+
+10
+11
+12
+
+20
+21
+22
+
+00
+10
+20
+
+01
+11
+21
+
+02
+12
+22</programlisting>
+
+<Para>
+This is far simpler than trying to create fake tape/compass/clino legs of
+the right length for each line in the mesh.  It's also very fast to process
+with cavern.
+</Para>
+
+<Para>SpeleoGen can also help with this process if you want
+final output in DXF form.  See the 'Related Tools' section of the
+Survex website for download links.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Overlay a grid</Title>
+
+<Para>Aven is able to display a grid, but this functionality isn't currently
+available in printouts.
+You can achieve a similar effect for now by creating a &svx; file
+where the survey legs form a grid.
+</Para>
+
+</Sect2>
+
+<Sect2><Title>Import data from other programs</Title>
+
+<Para>&survexsuite; supports a number of features to help with importing
+existing data. You can specify the ordering of items on a line using *Data
+(see &survexsuite; Keywords above), and you can specify the characters used
+to mean different things using *Set (see &survexsuite; Keywords above).
+</Para>
+
+<Para>The Ignore and Ignoreall options to the *Data command are often
+particularly useful, e.g. if you have a dataset with LRUD info or comments
+on the ends of lines.
+</Para>
+
+<Sect3><Title>Changing Meanings of Characters</Title>
+
+<Para>e.g. if you have some data with station names containing the 
+characters '?' and '+' (which are not permitted in a name by default)
+then the command:
+</Para>
+
+<programlisting>
+*SET NAMES ?+</programlisting>
+
+<Para>
+specifies that question marks and plus signs are permitted in station names.
+A-Z, a-z, and 0-9 are always permitted. '_' and '-' are also permitted by
+default, but aren't in this example.
+</Para>
+
+<Para>If your data uses a comma ',' instead of a decimal point, then
+you use
+</Para>
+
+<programlisting>
+*SET DECIMAL ,</programlisting>
+
+<Para>to specify that ',' is now the decimal separator instead of '.'.
+</Para>
+
+<!-- FIXME
+<Para>Note that there are plenty of ways you can use this facility to
+completely confuse the software, as it may not be able to work out what is
+going on, or it may simply be ambiguous. It can cope with some ambiguity (e.g.
+the '-' character is used both for 'MINUS' and for 'OMIT'), but there are
+limits. If you have a dataset that you can not make &survexsuite;
+understand, then send it to us, and we will see what can be done.
+</Para>
+-->
+
+</Sect3>
+
+<!--
+ Nobody seems to have the CfH convertor...
+ but it's probably no longer useful anyway
+
+<Sect3><Title>Other Converters</Title>
+
+<Para>We have an Excel 5 macro for converting The Lotus 123 spreadsheets
+used by the German survey software Cad F&uuml;r H&ouml;hlen into
+&survexsuite; data files. Other converters may also come to be available.
+These will normally be available via the
+<ulink url="&survexwebsite;">&survexsuite; Web pages</ulink>.
+</Para>
+
+</Sect3>
+-->
+
+</Sect2>
+
+<Sect2><Title>Export data from &survexsuite;</Title>
+
+<Para>See Rosetta Stal in the Related Tools section of the Survex web
+site.  This is a utility written by Taco van Ieperen and Gary Petrie.
+Note though that this only supports a subset of the svx format,
+and only work on Microsoft Windows.  The Survex support is limited
+and doesn't understand the more recently added commands.</Para>
+
+</Sect2>
+
+<Sect2><Title>See errors and warnings that have gone off the screen</Title>
+
+<Para>When you run &survexsuite; it will process the specified survey data
+files in order, reporting any warnings and errors.  If there are no
+errors, the output files are written and various statistics about the
+survey are displayed. If there are a lot of warnings or errors, they can
+scroll off the screen and it's not always possible to scroll back to
+read them.
+</Para>
+
+<Para>The easiest way to see all the text is to use <command>cavern
+--log</command> to redirect output to a <filename>.log</filename> file,
+which you can then inspect with a text editor.
+</Para>
+
+<!-- <command/cavern cavename &gt; tmpfile/ -->
+
+</Sect2>
+
+<Sect2><Title>Create an Extended Elevation</Title>
+
+<Para>Use the Extend program. This takes &x3d; files and
+'flattens' them.  See 'Extend' for details.
+</Para>
+
+</Sect2>
+
+</Sect1>
+
+<!--
+<Sect1><Title>Appendices</Title>
+<?dbhtml filename="appendix.htm">
+
+<Para>Files provided
+</Para>
+
+<Para>Command specification
+</Para>
+
+</Sect1>
+-->
+<Sect1><Title>Working with Larry Fish's Compass</Title>
+<?dbhtml filename="compass.htm">
+
+<Para>
+Survex can read Compass survey data - both raw data (.DAT and .MAK
+files) and processed survey data (.PLT and .PLF files).  You can even
+use <command>*include compassfile.dat</command> in a &svx; file and
+it'll work!
+</Para>
+
+<Para>
+One point to note (this tripped us up!): station names in DAT files are
+case sensitive and so Survex reads DAT files with the equivalent of
+<command>*case preserve</command>.  The default in SVX files is
+<command>*case lower</command>.  So this won't work:
+
+<programlisting>
+*fix CE1 0 0 0
+*include datfilewhichusesCE1.dat</programlisting>
+
+Because the CE1 in the *fix is actually interpreted as ce1.  This is
+what you have to do:
+
+<programlisting>
+*begin
+*case preserve
+*fix CE1 0 0 0
+*include datfilewhichusesCE1.dat
+*end</programlisting>
+</Para>
+
+</Sect1>
+
+<Sect1><Title>Mailing List</Title>
+<?dbhtml filename="maillist.htm">
+
+<Para>The best way to contact the authors and other Survex users is the
+Survex mailing list - for details visit:
+<ulink url="http://survex.com/maillist.html">http://survex.com/maillist.html</ulink>
+</Para>
+
+<Para>We'd be delighted to hear how you get on with &survexsuite; and
+welcome comments and suggestions for improvements.</Para>
+
+<Para>
+And we'd love you to contribute your skills to help make &survexsuite; even
+better.  Point out areas of the documentation which could be made clearer, or
+sections which are missing entirely.  Download test releases, try them out, and
+let us know if you find problems or have suggestions for improvements.
+If there's no translation to your language, you could provide one.
+Or if your a developer, <emphasis>"Say it with code"</emphasis>.  There's
+plenty to do, so feel free to join in.
+</Para>
+
+</Sect1>
+
+<Sect1><Title>Future Developments</Title>
+<?dbhtml filename="future.htm">
+
+<Para>
+Now that &survexsuite; has reached version 1.0, we are continuing progress
+towards version 2, in a series of steps, evolving out of 
+Survex 1.0.  The GUI framework is being based on aven, with
+the printer drivers and other utility programs being pulled in
+and integrated into the menus.</Para>
+
+<Para>Aven is built on &wxwidgets;, which means that it can easily support
+Unix, Microsoft Windows, and Mac OS X.</Para>
+
+<Para>More information on our plans is on the <ulink
+url="&survexwebsite;">web site</ulink>.
+</Para>
+
+</Sect1>
+
+</article>

@@ -1,0 +1,15 @@
+*fix 1 0 0 0
+*data cylpolar station depth newline tape compass
+1 0.0
+  1.00 000
+2 1.0 ; test
+  1.00 090 ; test
+3 0.0
+
+3 1.0
+  1.00 180
+  ; testing
+4 1.0
+  ; testing
+  1.00 270
+5 1.0

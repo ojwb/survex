@@ -1,0 +1,14 @@
+*fix 1 reference 0 0 0
+; these weren't caught until 0.99
+*units default tape metres
+*units default compass degrees
+*sd angleoutput 1 degrees
+*sd lengthoutput 0.1 metres
+*sd declination 1 degrees
+; these were caught with a poor message
+*calibrate default compass 0
+*calibrate position 0
+*calibrate lengthoutput 0
+*calibrate angleoutput 0
+*calibrate plumb 0
+*calibrate level 0

@@ -1,0 +1,74 @@
+#! /bin/sh
+
+set -e
+
+rel=yes
+if test x"$1" = x-t ; then
+   rel=
+   shift
+fi
+
+if test x"$rel" = xyes ; then
+  # Check everything is checked into SVN.
+  if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
+    echo 'There are changes not checked into SVN - please rectify'
+    echo 'If you just want to test, run with option -t'
+    exit 1
+  fi
+
+  test ! -f Makefile || make distclean
+  cp -u /usr/share/misc/config.guess .
+  cp -u /usr/share/misc/config.sub .
+  autoreconf --force -i
+  ./configure CC=gcc CXX=g++
+  make distcheck
+  # FIXME: setting c89 doesn't define unix and suppresses getc_unlocked().
+  # Tell the preprocessor to be C89 - this makes it reject // comments
+  # FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
+  # FIXME   CXXFLAGS="-Werror"
+else
+  make dist
+fi
+
+# Perform mingw build on a clean unpacked source tree from the release tarball
+# so that (a) we don't need to "make distclean" on the source tree and (b) we
+# ensure that any files required to build the mingw version and installer
+# package are actually shipped in the source tarball.
+tarball=`ls -1t survex-*.tar.gz`
+tardir=`basename "$tarball" .tar.gz`
+rm -rf "$tardir"
+tar xf "$tarball"
+cd "$tardir"
+
+test -n "$build_platform" || build_platform=`sh config.guess`
+SAVE_PATH=$PATH
+if test -d /usr/i586-mingw32msvc/bin ; then
+  # debian mingw32 package
+  PATH=/usr/i586-mingw32msvc/bin:$PATH
+  CC=/usr/bin/i586-mingw32msvc-gcc
+  CXX=/usr/bin/i586-mingw32msvc-g++
+else
+  # variant of debian mingw32 package?
+  PATH=/usr/i386-mingw32msvc/bin:$PATH
+  CC=/usr/bin/i386-mingw32msvc-gcc
+  CXX=/usr/bin/i386-mingw32msvc-g++
+fi
+wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8
+# Passing -Werror to configure causes AC_CHECK_FUNCS to fail, so pass it to
+# make instead.
+./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CXXFLAGS="-fno-strict-aliasing -Werror" WX_CONFIG="$wxc" LDFLAGS=-s
+make CFLAGS=-Werror
+make mingw_iss
+PATH=$SAVE_PATH
+
+mv survex-win32-*.exe ..
+cd ..
+
+if test x"$rel" = xyes ; then
+  rm -rf "$tardir"
+fi
+
+VERSION=`sed 's/^VERSION *= *//p;d' Makefile`
+REPO_ROOT=`svn info|sed 's/^Repository Root: //p;d'`
+echo "To tag this release, run:"
+echo svn cp -m"'Tagging $VERSION'" "$REPO_ROOT/trunk" "$REPO_ROOT/tags/$VERSION"

@@ -1,0 +1,5 @@
+W X 1 0 0
+X Y 1 0 0
+*equate X A
+*equate B X
+*equate C X

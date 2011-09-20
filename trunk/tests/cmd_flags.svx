@@ -1,0 +1,13 @@
+*fix 1 reference 0 0 0
+*flags duplicate splay surface
+*flags duplicate
+*flags splay
+*flags surface
+*flags not duplicate
+*flags not splay
+*flags not surface
+*flags not duplicate splay
+*flags surface not splay
+*flags not duplicate not surface not splay
+*flags duplicate not surface not splay
+*flags not duplicate surface not splay

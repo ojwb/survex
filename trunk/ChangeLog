@@ -1,0 +1,1387 @@
+Tue Sep 20 00:15:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Perhaps the final update for 1.2.0.
+
+Tue Sep 20 00:09:42 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Fix to correctly handle non-ASCII glyphs by using
+	  glyphshow in the generated PostScript code rather than relying on the
+	  numeric encoding order of the font to match Unicode (which doesn't
+	  generally seem to be the case).  Tweak to process files without
+	  slurping them all into memory where that's easy to do.
+
+Mon Sep 19 23:15:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Use FNT_MAXCHAR instead of literal 256.
+
+Mon Sep 19 21:58:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Revert CPP=cpp change - it's not required.  Revert to
+	  using wx 2.8.11 and 2.8.12 seems to fail to build.  Output of hdid
+	  can contain spaces as well as tabs (man page only documents tabs) so
+	  update regexps to take this into account.
+
+Mon Sep 19 11:52:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Add comment noting that Xcode is probably required.
+	  Since wxWidgets only supports building for a single arch at a time,
+	  build for i386 by default, which should also work on x86_64.  Pass
+	  CPP=cpp to wxWidgets configure (not certain if this is actually
+	  needed, or was something tried on the way to discovering that only
+	  one -arch option can be passed).
+
+Sun Sep 18 12:24:41 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: No need to force disabling of libavcodec for mingw - it
+	  gets automatically disable if not present.
+
+Sun Sep 18 12:23:39 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Fix disabling of libavcodec-using code when
+	  libavcodec isn't present.
+
+Sun Sep 18 11:50:06 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Update 1.2.0 release date.
+
+Sun Sep 18 11:49:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Disable use of libavcodec for mingw for now.
+
+Sun Sep 18 02:51:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Fix comment typo.
+
+Sun Sep 18 02:50:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Update in preparation for releasing 1.2.
+
+Sun Sep 18 02:49:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Only try to read the GLX version on platforms which
+	  use GLX.
+
+Sun Sep 18 02:03:13 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Makefile.am,doc/Makefile.am: Don't list other .in files explicitly in
+	  EXTRA_DIST.
+
+Sun Sep 18 01:59:49 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: survex.keys.in will get shipped because it is
+	  used by AC_CONFIG_FILES so there's no need to list it explicitly
+	  in EXTRA_DIST.
+
+Sun Sep 18 01:56:18 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,lib/Makefile.am,lib/po-to-msg.pl: Fix .msg file
+	  generation to work when srcdir != builddir.  Drop the "dontextract"
+	  mechanism which automatically generates headers to allows building a
+	  version with translations for the messages for errors in loading the
+	  messages file, as it doesn't seem worth the effort to get it working
+	  again.  It's easy to write such a header by hand if you really want
+	  to do this.
+
+Fri Sep 16 14:26:43 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.2.0.
+
+Fri Sep 16 14:22:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/aven.png,lib/icons/aven.svg: Add
+	  new version of aven icon, redrawn in SVG so it displays nicely at
+	  larger sizes.
+
+Fri Sep 16 12:55:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/cavern.c: Add --3d-version option to allow the user
+	  to specify the version of the 3d format to output.  (ticket#21)
+
+Fri Sep 16 12:52:55 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/img.h: Make the highest and lowest valid values for
+	  img_output_version available in img.h as IMG_VERSION_MIN and
+	  IMG_VERSION_MAX.
+
+Fri Sep 16 05:49:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc,src/guicontrol.cc,src/mainfrm.cc: Don't use
+	  deprecated members or methods of wxKeyEvent.
+
+Fri Sep 16 03:36:54 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/map.png: Remove scan of map which isn't used and we probably
+	  don't have rights to redistribute.
+
+Fri Sep 16 03:16:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: If a label isn't valid UTF-8, treat it as CP1252 (the
+	  Microsoft superset of ISO8859-1).
+
+Fri Sep 16 03:00:51 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Remove special handling for toggling "full screen"
+	  on wxGTK as it's no longer required with modern versions.
+
+Fri Sep 16 02:05:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.cc: Don't redraw the survey
+	  on every mouse movement in the survey pane unless the measuring line
+	  is (or just was) active.  (ticket #17)
+
+Thu Sep 15 03:58:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Comment improvements.
+
+Thu Sep 15 03:51:27 GMT 2011  Olly Betts <olly@survex.com>
+
+	* tests/smoke.tst: aven no longer requires an X display for --help or
+	  --version, so replace skip of this check with a check that this
+	  remains the case.
+
+Thu Sep 15 02:27:57 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
+Thu Sep 15 02:11:28 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Distribute codes.po.
+
+Thu Sep 15 02:08:35 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,survex.spec.in: Default to installing docs into
+	  /usr/share/doc/survex rather than /usr/doc/survex.
+
+Wed Sep 14 01:57:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix another potential read beyond the end of a
+	  string.
+
+Wed Sep 14 01:35:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix potential reading off end of string - fix from
+	  Stuart Bennett.
+
+Wed Sep 14 00:33:16 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/es.po: Update from launchpad.
+
+Tue Sep 13 22:05:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Use wx 2.8.12.
+
+Tue Sep 13 11:32:18 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.cc,src/aven.h,src/gla-gl.cc: Explicitly request
+	  double-buffering, which seems to be needed for systems with GLX >=
+	  1.3.  Report GLX version and whether double-buffering is in use in
+	  the about dialog.
+
+Sun Jun 19 11:19:51 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Try to report errors from generating movie more helpfully.
+
+Fri Jun 17 06:33:38 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Eliminate use of deprecated function
+	  av_alloc_format_context().
+
+Fri Jun 17 06:32:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Simplify the loop to flip the image vertically.
+
+Fri Jun 17 06:17:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,src/moviemaker.cc,src/moviemaker.h: Use libswscale to
+	  convert images to add to the video.  Movie export now working
+	  again!
+
+Fri Jun 17 06:16:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: No need to specify true to PlayPres - that's the
+	  default.
+
+Fri Jun 17 06:15:34 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Set the play speed to "x1" during video recording.
+
+Fri Jun 17 05:43:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Rename 'mpeg' member to 'movie'.
+
+Fri Jun 17 04:30:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,src/moviemaker.cc,src/moviemaker.h: Mostly update movie
+	  making code to work with current FFmpeg.  Still TODO: convert call
+	  to img_convert() to use sws_scale() - currently you just get an all
+	  green movie!
+
+Mon May 30 07:40:12 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Fix URL for downloading wxWidgets tarball.
+
+Sat May 28 12:39:11 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Build for x86_64 as well as i386.
+
+Sat May 28 06:14:09 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Fix comment typo.
+
+Sat May 28 06:08:10 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Don't assume the volume gets mounted on
+	  /Volumes/Survex as it won't be if that mount point is already in use.
+
+Thu May 26 16:09:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/aven.cc,src/mainfrm.cc,src/mainfrm.h: Use more stock
+	  IDs.
+
+Thu May 26 14:52:00 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/printwx.cc: Use stock wx button IDs wxID_PRINT and
+	  wxID_PREVIEW where appropriate.
+
+Thu May 26 14:47:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po: Mark unused messages by commenting out with '#~'.
+
+Thu May 26 14:34:29 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.h: Fix comment typo.
+
+Thu May 26 12:47:44 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/printwx.cc: When using a standard wxID_xxx id with
+	  wxButton, use the implicit default label, as the wx documentation
+	  recommends.
+
+Thu May 26 12:28:11 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Remove the unused preferences dialog code - we can easily
+	  fish it back out of SVN should we want it later, so no point
+	  having it sitting there making every checkout bigger.
+
+Tue May 24 05:21:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,doc/Makefile.am,doc/survex.1.in: Move survex man page to
+	  section 7 (since it isn't documenting an actual command).
+
+Tue May 24 05:17:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/Makefile.am: Write generated man page to a temporary file, then
+	  atomically rename, to avoid leaving an empty or partial man page
+	  behind if docbook-to-man dies (I managed to ship an empty cad3d.1 in
+	  1.1.16).
+
+Sat May 21 22:05:04 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Fold in addition of accent from launchpad.
+
+Sat May 21 22:04:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/: Remove comments which are only relevant for other languages
+	  from .po files.  Add more clarifying comments.
+
+Thu May 19 05:23:03 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Remove as no longer used.
+
+Wed May 18 09:06:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/mainfrm.cc,src/mainfrm.h: We now use .po and .pot files as
+	  the master format for storing translations in (rather than
+	  messages.txt), and then translate these into Survex's .msg format.
+
+Wed May 18 08:37:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fix variant en-us message which ought not be
+	  different.
+
+Wed May 18 05:50:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Print out the commands needed to tag the release.
+
+Tue May 17 01:24:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt,src/cavern.c: Drop "non-fatal" from the report of
+	  how many errors there were at the end of the run - it just confuses
+	  users - we won't even get here if there's a fatal error!
+	* lib/messages.txt: Add missing translations of two "Export" variants
+	  for ca, sk, and ro.
+
+Tue May 17 01:03:06 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Fix typo.
+
+Mon May 16 22:18:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Extract tarball quietly, and just say we're doing
+	  it.  Add missing quoting to variable expansions.
+
+Mon May 16 05:59:32 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Another pre-1.1.16 update.
+
+Mon May 16 05:54:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Makefile.am: Include all the available wxstd.mo files into the
+	  Microsoft Windows installer, rather than trying to just include those
+	  which we have translations for.  This avoids having to maintain a
+	  list of which to include, and gives users translations of wxWidgets
+	  messages even if they don't get Survex messages translated.
+
+Mon May 16 05:53:49 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Update version of InnoSetup used.  Note the packages
+	  needed on Debian to build the Microsoft Windows installer.
+
+Mon May 16 05:22:03 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Note Debian packages to install for docs.
+
+Mon May 16 05:21:27 GMT 2011  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Add comment noting that AppVerName isn't required by
+	  newer InnoSetup.
+
+Sun May 15 04:11:34 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.1.16.
+
+Sun May 15 03:44:17 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/fixmsgs.pl: Update to fix UTF-8 rather than ISO8859-1.
+
+Sun May 15 03:43:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/named-entities.txt: Add hellip and rarr.
+
+Sun May 15 03:39:02 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fix clashing menu shortcuts from recent translation
+	  updates.
+
+Sun May 15 03:20:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/message.c: 0x2026 (&hellip;): Handle for WINCP1252, and
+	  transliterate to '...' for charsets which don't have it.  0x2192
+	  (&rarr;): Transliterate to '->' for charsets which don't have it.
+	  Handle &Scaron;, &scaron;, &Zcaron;, &zcaron; for WINCP1252.
+	* lib/messages.txt: Use '&rarr;' instead of '->' and '&hellip;' instead
+	  of '...'.
+
+Sun May 15 02:59:42 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fix literal accented characters.
+
+Sun May 15 02:55:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fold in de updates from launchpad.
+
+Sun May 15 02:36:02 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fold in es updates from launchpad.
+
+Sun May 15 02:19:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fold in it updates from launchpad.
+
+Sun May 15 02:00:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fold in pt-br updates from launchpad.
+
+Sun May 15 01:53:22 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Fold in pt updates from launchpad.
+
+Mon Mar 14 01:58:10 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in: Link with -lGL, if it exists to support linking with
+	  gold or GNU ld --as-needed (Debian bug #615781).
+
+Thu Mar 03 13:16:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix code typo for IMG_API_VERSION == 0 case.
+
+Thu Mar 03 12:32:57 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix typo in code used when IMG_HOSTED isn't defined.
+
+Wed Oct 20 09:53:56 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: "Colour" -> "Color" in en-us.
+
+Sun Oct 17 14:10:21 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt: Assorted comment improvements and tweaks.
+
+Sat Oct 16 11:12:42 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.h: Remove unused <stdio.h>.  Shouldn't include
+	  <config.h> in headers, only sources.
+
+Sat Oct 16 10:13:10 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Remove entries which have now been done.
+
+Fri Oct 15 06:57:46 GMT 2010  Olly Betts <olly@survex.com>
+
+	* tests/extend.tst: Fix to file .espec files when srcdir != builddir.
+
+Fri Oct 15 05:48:09 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS: Final update fro 1.1.15.
+
+Fri Oct 15 05:20:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/editwrap.c: Convert to use wide-character Unicode.
+
+Fri Oct 15 05:20:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix to work on Microsoft Windows.
+
+Thu Oct 14 22:50:09 GMT 2010  Olly Betts <olly@survex.com>
+
+	* tests/extend.tst: Enable eswap-break testcase now that diffpos is
+	  fixed.
+
+Thu Oct 14 22:48:06 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/diffpos.c: Handle files with duplicate labels in better - extend
+	  generates duplicate labels when it breaks a loop.
+
+Wed Oct 13 15:39:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: -Dunix when running make distcheck with the
+	  preprocessor in C89 mode.
+
+Wed Oct 13 15:33:23 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavern.c: Fix C++ comment.
+
+Wed Oct 13 15:07:31 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: 1.1.15.
+
+Wed Oct 13 15:00:51 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/: Define GETC() in config.h and use it everywhere.
+	  Similarly define PUTC() to use putc_unlocked() where available and
+	  use that everywhere too.
+
+Wed Oct 13 13:41:17 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Remove superfluous nested declaration.
+
+Wed Oct 13 11:19:29 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: mingw doesn't have _get_wpgmptr() so use the
+	  deprecated _wpgmptr instead.  mingw doesn't have errno_t so use int
+	  instead.
+
+Wed Oct 13 10:49:18 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: (Microsoft Windows) Quote for any meta characters,
+	  not just space.
+
+Wed Oct 13 10:27:38 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: (Microsoft Windows) Use _get_wpgmptr() to get wide
+	  path to aven rather for running cavern.
+
+Thu Oct 07 22:38:43 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/datain.h,src/useful.c: Use getc_unlocked() if available.
+
+Thu Oct 07 14:25:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Use _wfopen() on Microsoft Windows when loading and
+	  saving presentations so that paths with non-Latin1 characters in can
+	  be processed.
+
+Thu Oct 07 12:52:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/cavernlog.cc: Use getc_unlocked() if available.
+
+Thu Oct 07 12:42:21 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Don't call Update() after every line, but only
+	  when we don't have data from cavern pending.  Hopefully addresses
+	  ticket#12.
+
+Wed Oct 06 02:25:31 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: Never set CFLAGS or CXXFLAGS in the environment.
+	  Build mingw version in an unpacked source tree from the release
+	  tarball.
+
+Wed Oct 06 02:09:33 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix code indentation.
+
+Wed Oct 06 02:08:38 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Revert to using mb_str() for popen() and system()
+	  on Unix.
+
+Wed Oct 06 02:02:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Use _wpopen() and _wsystem() on Microsoft Windows
+	  so that paths with non-Latin1 characters in can be processed.
+
+Wed Oct 06 01:16:03 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Need to quote filenames with spaces in for
+	  Microsoft Windows.
+
+Wed Oct 06 00:54:44 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Ship the extra .isl translation files for Innosetup.
+
+Wed Oct 06 00:49:18 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Add missing include of date.h.
+
+Wed Oct 06 00:48:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/date.c,src/date.h: Add files for date handling.
+
+Tue Oct 05 12:48:19 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Check whether blobs and crosses actually
+	  render correctly as points/point sprites, and if they don't, fall
+	  back to drawing them with lines.
+
+Tue Oct 05 10:53:56 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Cache the best method for drawing blobs
+	  and crosses, and recheck automatically if the graphics hardware
+	  or drivers are changed or upgraded.
+
+Mon Oct 04 11:18:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Add \n to commented out debug message.
+
+Mon Oct 04 09:58:17 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/index.htm.in,doc/manual.sgml,doc/survex.ent,lib/print.ini,
+	  src/printwx.cc,survex.iss.in: Use http://survex.com/ rather than
+	  http://www.survex.com/ - the former is the canonical name and
+	  www.survex.com just redirects.
+
+Mon Oct 04 09:46:24 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Don't offer "All files" wildcard in presentation save
+	  dialog.
+
+Mon Oct 04 08:19:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Pass GL_TRUE to OpenGL functions, rather than true.
+
+Sun Oct 03 06:46:03 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Use double instead of Double
+	  in cases where the value isn't being passed to OpenGL.
+
+Sun Aug 22 13:30:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: If we aren't using GL_POINTS for blobs, draw them
+	  using a series of abutting lines rather than with gluDisk which
+	  is faster and gives a consistent shape.
+
+Sat Aug 21 14:33:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix another use of GL_POINT_SIZE_RANGE to
+	  GL_SMOOTH_POINT_SIZE_RANGE.
+
+Sat Aug 21 14:30:56 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix non-USE_FNT case to work again (it's limited to
+	  ISO-8859-1 characters though).
+
+Sat Aug 21 13:31:17 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Use GL_SMOOTH_POINT_SIZE_RANGE and
+	  GL_SMOOTH_POINT_SIZE_GRANULARITY instead of GL_POINT_SIZE_RANGE and
+	  GL_POINT_SIZE_GRANULARITY (unless they aren't defined) as the latter
+	  two are deprecated in OpenGL >= 1.2.  If GL_ALIASED_POINT_SIZE_RANGE
+	  is available (OpenGL >= 1.2 again) then report its value in the
+	  about box.
+
+Fri Aug 20 12:26:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm,lib/messages.txt,src/,tests/: New v7 of .3d format
+	  which stores survey dates as number of days since Jan 1st 1900, so
+	  we now support dates from 1900-2078 (rather than 1970-2037) with a
+	  smaller file size.  The img API is now versioned - you can select
+	  the new "version 1" by compiling with -DIMG_API_VERSION=1, which
+	  gives the survey dates in days in days1 and days2 instead of as
+	  time_t values in date1 and date2.  Fixes ticket#14.
+
+Fri Aug 20 12:12:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Remove unused '#include <time.h>'.
+
+Fri Aug 20 12:10:55 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc: Remove unused '#include <time.h>'.
+
+Fri Aug 20 10:10:05 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Explicit #include <time.h> for strftime().
+
+Wed Aug 18 13:59:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/osdepend.h: Remove workaround for DOS Turbo C compiler.
+
+Wed Aug 18 02:03:39 GMT 2010  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,configure.in,lib/Info.plist.in: Make buildmacosx.sh
+	  work.
+
+Tue Aug 17 01:43:24 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: "using svx::Point;" gives an error, so use a macro
+	  instead.
+
+Wed Aug 04 03:27:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix cast in get16() to be to short not long.
+
+Wed Aug 04 02:32:16 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc,src/cavernlog.h: "Rerun" -> "Reprocess" to follow
+	  terminology in manual, etc.  Fixes ticket#15.
+
+Wed Jul 28 17:06:49 GMT 2010  Olly Betts <olly@survex.com>
+
+	* tests/: Most tests weren't actually running and testcases (looks like
+	  a sh portability issue).  Fixed, and fortunately all tests still
+	  pass.
+
+Mon Jul 26 12:30:43 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Fix typo "of" -> "on".
+
+Mon Jul 26 11:59:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.1.14.
+
+Mon Jul 26 11:53:01 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/messages.txt,src/: Remove things we no longer need now we've
+	  dropped support for RISC OS and DOS.
+
+Mon Jul 26 11:19:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cmdline.c: Remove reference to MSDOS.
+
+Mon Jul 26 10:23:07 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Strip out "Far" and "Huge" which we no longer need now that
+	  DOS memory models are no longer relevant.
+
+Mon Jul 26 09:57:37 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: No need for AC_PROG_MAKE_SET when using automake.
+
+Mon Jul 26 09:48:10 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/useful.h: On little-endian architectures, make
+	  get16() and get32() inline functions, rather than macros which use 
+	  a global variable.
+
+Mon Jul 26 09:31:14 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/useful.c: Remove commented out code.
+
+Mon Jul 26 09:19:19 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,src/img.c,src/useful.c,src/useful.h: Use AC_TYPE_INT16_T
+	  and AC_TYPE_INT32_T instead of home-brew equivalents.
+
+Mon Jul 26 08:40:43 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/listpos.c: In "Station X referred to just once, with an explicit
+	  prefix - typo?" warning, give file and linenumber where the *equate
+	  occurred.
+
+Mon Jul 26 08:37:46 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/readval.c: Fix comment typo.
+
+Mon Jul 26 08:29:41 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/listpos.c: In "Station X referred to by *entrance or *export but
+	  never used" warning, give file and linenumber where the *entrance or
+	  *export occurred.
+
+Mon Jul 26 07:44:26 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc: Fix double-click handling for survey tree on
+	  wxMSW >= 2.8.11.
+
+Mon Jul 26 07:25:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Stop passing wxNO_FULL_REPAINT_ON_RESIZE as it is 0
+	  on all versions of wxWidgets we support (i.e. 2.6 and later).
+
+Mon Jul 26 07:21:35 GMT 2010  Olly Betts <olly@survex.com>
+
+	* INSTALL,src/: Restore compatibility with wxWidgets 2.6.
+
+Mon Jul 26 06:29:03 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/netskel.c: In "Unused fixed point" warning, give file and
+	  linenumber where the "*fix" occurred.
+
+Mon Jul 26 06:24:35 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix highlighting of links in CavernLog window to
+	  highlight just <file>:<line> (and not the ': ' after), and to make
+	  the title for the terminal the warning/error message.  Make the
+	  checking stricter by checking that the linenumber is a number, to
+	  avoid false positives.
+
+Mon Jul 26 04:48:12 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Revert this change, as it appears wxMotif does support wxGLCanvas:
+	* doc/manual.sgml: wxMotif apparently doesn't support wxGLCanvas, which
+	  is required by Aven in 1.1.x, so remove mention of Motif from manual.
+
+Mon Jul 26 03:24:38 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Add "Rerun" and "OK" buttons to the CavernLog window (as
+	  appropriate).  (Addition of "OK" button fixes ticket#13).  Fix up
+	  handling of splitter window to fix poor handling of various cases.
+
+Sun Jul 25 15:32:42 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: Clean up code which sorts out loading
+	  a file (and processing it first if necessary).
+
+Sun Jul 25 07:20:05 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.h: Fix filename in comment at top.
+
+Sun Jul 25 07:17:20 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Don't double escape the contents of href and target
+	  in links in the log.
+
+Sun Jul 25 06:32:24 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Remove commented out calls to set the input
+	  encoding of the HTML parser - we now always escape non-ASCII
+	  characters as HTML entities.
+
+Fri Jul 23 14:15:25 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.h: Improve doc comment for process() method.
+
+Fri Jul 23 12:38:43 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc,src/printwx.h: Don't compile in the preview code when
+	  we disable the preview feature.
+
+Fri Jul 23 12:15:31 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: The Gnome print dialog has its own preview window
+	  so suppress ours if using the Gnome one.
+
+Fri Jul 23 11:21:52 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: Update the wx-config probing code - wxmac-config etc
+	  aren't present with newer wxWidgets versions.
+
+Fri Jul 23 05:55:37 GMT 2010  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Update to use WX_CONFIG not WXCONFIG.  Update to
+	  use a Unicode build.  If building a private wx, use wx 2.8.11 not
+	  2.7.0-1 (and don't replace carbon-glcanvas.cpp with our own version).
+
+Sat Jul 10 12:15:23 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Set the select timeout before calling wxYield()
+	  when waiting for output from cavern to 0.1s instead of 0.00001s to
+	  avoid yielding excessively on slower machines where this is likely
+	  to really slow things down.  Call Scroll() only once per line in
+	  the case where we are updating the scrollbar position.  Call
+	  Update() instead of wxYield() after each line, since that's enough
+	  to get the window updated.  Remove unused assignment "ch = left;"
+	  at end of loop.
+
+Fri Jul 09 14:42:47 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: Link aven with -lGLU which SuSE Linux needs.
+
+Fri Jul 09 14:31:39 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Highlight stations matching any current search when a
+	  file is loaded.  (ticket#9)
+
+Thu Jul 01 12:20:58 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Clean up comments from over-enthusiastic search and
+	  replace which modified comments as well as code.
+
+Thu Jul 01 10:15:06 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: Work around Mac OS X polluting the global namespace
+	  with a "Point" class.
+
+Thu Jul 01 10:10:45 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Remove FIXME which has already been resolved.
+
+Fri Jun 18 11:04:35 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: wxMotif apparently doesn't support wxGLCanvas, which
+	  is required by Aven in 1.1.x, so remove mention of Motif from manual.
+
+Fri Jun 18 03:03:55 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,src/aventreectrl.cc,src/gfxcore.cc,src/mainfrm.h:
+	  Correctly capitalise "GTK".
+
+Fri Jun 18 02:58:06 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Note that on Linux we only regularly test builds
+	  with the GTK+ version (change taken from 1.0).
+
+Wed Jun 16 04:44:26 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/Makefile.am: Use stampfile to stop unwanted rebuilds of the HTML
+	  version of the manual.
+
+Wed Jun 16 02:59:48 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: Only ask for core, gl, and html wx libs to avoid
+	  linking to a load of others we don't use.
+
+Tue Jun 15 17:01:41 GMT 2010  Olly Betts <olly@survex.com>
+
+	* INSTALL: Update.
+
+Tue Jun 15 16:53:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Fix to work with wxWidgets 2.6 too.
+
+Tue Jun 15 15:38:49 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/survex-aven.desktop,lib/survex-svxedit.desktop: Merge in .desktop
+	  file updates from 1.0.39.1-4 Debian package.
+
+Tue Jun 15 14:40:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/Makefile.am: Fix lingering references to @DOCS_OTHER@.
+
+Tue Jun 15 14:32:55 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
+Tue Jun 15 14:09:29 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,configure.in,doc/Makefile.am,make_release: Scrap the
+	  "alternative manual formats" zip file - people will generally just
+	  want one of them, so downloading several together isn't very useful.
+	  Replace PostScript version of manual with a PDF version (more
+	  compact and more people will have software to read PDF).  Don't
+	  generate RTF format by default as PDF is more useful if you want
+	  a formatted version to print.
+
+Tue Jun 15 13:36:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Merge the "Contributing" section into the "Mailing
+	  List" section.
+
+Tue Jun 15 12:57:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,make_release: Just produce a zip file with the
+	  alternative manual formats - a self-extracting .exe is harder to
+	  use on other platforms, and most people have a zip file extractor
+	  installed.
+
+Tue Jun 15 12:36:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Update survex.com URLs to drop "www.".  Update
+	  wxGTK dependency to >= 2.6.0.  Reenable "BuildRequires:" as
+	  the issue with building the package on Debian is no longer
+	  relevant.
+
+Tue Jun 15 12:35:19 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Update (C) years.  "MacOS X" -> "Mac OS X".
+
+Tue Jun 15 12:13:42 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Remove out of date postal addresses - we can
+	  probably safely assume people have email these days.  Direct
+	  people to the mailing list since they are likely to get a
+	  quicker response rather than mailing individuals.  Remove
+	  mention of a paper mailing list.  Remove mention of sending
+	  us a floppy (!) or blank CDR to get a version as I can't recall
+	  the last time I gave someone a copy on physical media.
+
+Tue Jun 15 11:22:56 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,make_release: I can't persuade rpmbuild to work sanely,
+	  and people can just as easily build binary RPMs from the source
+	  tarball as from the srpm, so just remove the rpm target from the
+	  makefile and code which uses it from make_release - it's less to
+	  have to maintain too.
+
+Tue Jun 15 10:59:12 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: Use "set -e" rather than checking the exit codes of
+	  commands.  -t no longer disables targets - set mk to do that.
+
+Tue Jun 15 09:41:11 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release: Fix defaulting of list of things to do.
+
+Tue Jun 15 09:12:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gdtconvert: Add "Generated" comment to output file.
+
+Tue Jun 15 09:10:02 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gdtconvert: Add GPL license boilerplate.
+
+Tue Jun 15 08:53:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gettexttomsg.pl,src/wx.h: Add GPL boilerplate to files which were
+	  missing it.
+
+Tue Jun 15 08:46:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Update FSF address in licence notices.
+
+Tue Jun 15 08:06:09 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Allow "Toggle Fullscreen" to work even if no
+	  survey is loaded now that we persist the window size between
+	  invocations.
+
+Tue Jun 15 08:03:53 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Use GL_BLEND rather than GL_ALPHA to work better with
+	  anti-aliased TXF files.
+
+Tue Jun 15 07:59:09 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Use font size from txf file rather than trying to
+	  calculate it from the texture fragment sizes.
+
+Tue Jun 15 07:48:13 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/TexFont.h,lib/gentexfont.c: Generate aven.txf with
+	  afm2txf.pl instead of gentexfont because gentexfont's licence doesn't
+	  allow distribution of modified versions.
+
+Tue Jun 15 07:43:48 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Add support for -o option to specify output .txf
+	  file.
+
+Tue Jun 15 07:10:16 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Sanitise $FONT to ensure it doesn't contain a '/'.
+	  Remove the temporary .ppm file at the end.
+
+Tue Jun 15 06:13:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Fix alignment of characters, backported from PLIB
+	  SVN.
+
+Tue Jun 15 05:05:05 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Quote $FONT when passing to external commands.
+
+Tue Jun 15 04:24:33 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Change character 96 from "grave" to "quoteleft".
+
+Tue Jun 15 04:22:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Extend to cover ISO-8859-1, not just ASCII.
+
+Tue Jun 15 04:08:34 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Clean up trailing whitespace.
+
+Tue Jun 15 04:02:40 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Add GPL script for creating txf files.
+
+Mon Jun 14 06:33:11 GMT 2010  Olly Betts <olly@survex.com>
+
+	* lib/splash.png: Remove now unused graphical splash screen (it has
+	  hardcoded (C) details, which wasn't a good approach).
+
+Mon Jun 14 05:20:44 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Handle the left bearing and character width correctly.
+
+Mon Jun 14 04:44:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Change back to not using GL_COLOR_INDEX, but with still
+	  being able to set the font texture from a byte array.
+
+Mon Jun 14 04:23:22 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.h,src/gla-gl.cc: Pass the length of the string to
+	  fntTexFont::puts() rather than recalculating it inside the
+	  method.
+
+Sun Jun 13 12:57:08 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix switching to and from the CavernLogWindow pane
+	  to use wxSplitterWindow::ReplaceWindow() which fixes various issues
+	  with sizing and resizing of the panes.
+
+Sun Jun 13 12:23:23 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/: Add wmsg_cfgpth() which caches the result of msg_cfgpth() as
+	  a wxString.
+
+Sun Jun 13 06:57:07 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc,src/gla-gl.cc,src/mainfrm.cc: wxString::fn_str() on
+	  wxmsw returns a wide string, which doesn't work with fopen(), etc, so
+	  call char_str() instead for now.
+
+Sun Jun 13 05:41:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Use wxString::FromAscii() for the units on the scale
+	  bar which we know to be ASCII.  No need to use msgPerm() for a
+	  message we assign to a wxString.
+
+Sun Jun 13 04:44:30 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/printwx.cc: Use wxFileName::SplitPath() instead of
+	  baseleaf_from_fnm().
+
+Sun Jun 13 00:57:11 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/export.cc,src/gfxcore.cc: wxString::fn_str() on wxmsw returns
+	  a wide string, which doesn't work with fopen(), etc, so call
+	  char_str() instead for now.
+
+Sat Jun 12 15:07:54 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: We can rely on our message catalog being UTF-8 so use
+	  wxString::FromUTF8() instead of wxConvUTF8.
+
+Sat Jun 12 14:26:32 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Use wxString::FromAscii() to convert date to
+	  wxString.
+
+Sun Jun 06 09:36:06 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Use wx-config's --rescomp option to get the command
+	  and options needed to turn .rc files into object files.
+
+Fri Jun 04 15:32:27 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Specify "LZMANumFastBytes=273" which shaves a small
+	  amount of the installer size.  Specify "DisableWelcomePage=yes"
+	  which is apparently in line with what other modern installers do.
+
+Fri Jun 04 14:32:04 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,make_release,make_release.in: We no longer need VERSION
+	  in make_release, so no need to generate it from configure.
+
+Fri Jun 04 14:00:58 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,xvfb-run: We no longer need an X display to run ISCC
+	  under Wine, so just run wine directly and removed version of
+	  Debian's xvfb-run script.
+	* make_release.in: Pass variables to configure on the command line
+	  rather than in the enviornment.  Running "make distcheck" no longer
+	  fails extend.tst, so remove comment about that.  Use case rather
+	  than expr to check what we've been asked to build.  Update to use
+	  unicode wx-config script for wxmsw.  The wxmsw build spews warnings
+	  about aliasing issues, so turn on -fno-strict-aliasing to avoid any
+	  potential bugs from that.  Enable -Werror for the wxmsw build.
+	* Makefile.am: Update list of wxstd.mo files we package for wxmsw
+	  (add pt and sk) and where we copy them from.  Copy the unofficial
+	  InnoSetup i18n files (.isl) from lib.
+
+Fri Jun 04 13:40:35 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Update InnoSetup info.
+
+Fri Jun 04 13:07:01 GMT 2010  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Update for InnoSetup 5.3.9.
+	* lib/English_GB.isl,lib/Romanian-7-5.1.11.isl: Check in the unofficial
+	  i18n files for InnoSetup which we use.
+
+Fri Jun 04 13:05:18 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Update path to wx RC file.
+
+Fri Jun 04 12:44:39 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Explicitly construct temporary wxString() which
+	  is needed to avoid overload ambiguity under __WXMSW__.
+
+Fri Jun 04 12:41:59 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Add missing wxT() to string and character
+	  constants only used in __WXMSW__ build.
+
+Fri Jun 04 12:19:18 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: wxWidgets now has a Slovak translation, so remove the
+	  kludge to substitute Czech if Slovak isn't found.
+
+Fri Jun 04 05:08:14 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Fix character constant to be a string constant when
+	  building under WXMSW.
+
+Thu Jun 03 13:53:57 GMT 2010  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog for 1.1.13.
+
+Thu Jun 03 12:25:14 GMT 2010  Olly Betts <olly@survex.com>
+
+	* Makefile.am,configure.in,debian/Makefile.am,debian/changelog: Remove
+	  .deb building machinery from upstream Makefile.
+
+Thu Jun 03 12:14:16 GMT 2010  Olly Betts <olly@survex.com>
+
+	* make_release.in: Remove ancient workaround for getting wine to work.
+	  Remove .deb building machinery.  Reenable distcheck to see if the
+	  problem with extend.tst has gone away.  Update mingw cross-building
+	  machinery.
+
+Wed Jun 02 13:30:28 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,doc/GPL.htm,doc/index.htm.in: Remove HTML version of GPL
+	  - just link to the FSF's page.
+
+Wed Jun 02 13:26:55 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,make_release,make_release.in,update-debcl.pl: Use dch to
+	  update debian/changelog.
+
+Wed Jun 02 12:59:33 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in,doc/Makefile.am,doc/cl2html.pl,doc/index.htm.in: Stop
+	  generating an HTML version of the ChangeLog - it's too low level to
+	  be of interest to non-developers, and developers can look at the
+	  source code.
+
+Wed Jun 02 09:38:25 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Whitespace tweaks.
+
+Wed Jun 02 09:28:37 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc,src/aboutdlg.h: Use standard button for "Copy" in
+	  About dialog.  Change "OK" button to "Close" since nothing is being
+	  confirmed by clicking it.  Call "Flush()" in wxTheClipboard to try
+	  to make the copied text persist after aven is closed, though this
+	  seems to currently do nothing on wxGTK at least.
+
+Tue May 18 12:59:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Note jadetex needed.
+	  Note autoconf 2.64 works well.
+
+Tue May 18 02:06:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Remove now superfluous ().
+
+Mon May 17 14:33:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* debian/Makefile.am: Update EXTRA_DIST
+
+Mon May 17 05:38:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix small memory leak
+
+Mon May 17 05:33:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/img.c: Don't leak filename_opened member.
+
+Mon May 17 05:13:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Initialise all GfxCore's member variables so we
+	  don't use them uninitialised.
+
+Mon May 17 05:11:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: Declare constants with enum rather than #define so
+	  they automatically get allocated unique values, and so they show up
+	  in the debugger.
+
+Mon May 17 02:39:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Make the map array static const
+
+Mon May 17 02:30:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Set the font texture with GL_COLOR_INDEX so we can
+	  use a "byte format" font file without any translation, while a
+	  "bitmap format" font file needs a temporary array half the size.
+
+Mon May 17 00:56:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Initialise 3 flags when we load a survey to avoid
+	  using them potentially uninitialised.
+
+Sun May 16 14:39:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix cavern log window to behave if passed a .svx
+	  file on the command line.
+
+Sun May 16 14:27:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: Update copyright years.
+
+Sun May 16 14:23:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in, src/aboutdlg.cc, src/aboutdlg.h, src/aven.cc,
+	  src/aven.h, src/avenprcore.cc, src/avenprcore.h,
+	  src/cavernlog.cc, src/cavernlog.h, src/export.cc, src/fnt.h,
+	  src/gfxcore.cc, src/gla-gl.cc, src/gla.h, src/guicontrol.cc,
+	  src/log.cc, src/mainfrm.cc, src/mainfrm.h, src/namecmp.h,
+	  src/printwx.cc, src/printwx.h:
+	  + Fix to build with a "unicode" build of wx.
+	  + Add "Copy" button to the About dialog to copy the system info
+	    to the clipboard.
+	  + List OpenGL extensions last, since there are usually lots of
+	    them with a modern gfx card.
+	  + When processing survey data, auto-scroll the log window until
+	    we've reported a warning or error.
+	  + Put the survey data log window in a splitter in the standard
+	    frame rather than having a separate frame for it.
+
+Sat Apr 17 12:13:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Add case for "GTK+ >= 2.6".
+
+Sat Apr 17 12:12:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Build string using preprocessor string
+	  concatenation rather than runtime appending, where possible.
+
+Sat Apr 17 12:00:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Update (C) date.
+
+Sat Apr 17 11:59:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc, src/aboutdlg.h: Use a wxTimer instead of idle
+	  events to avoid spinning on the CPU.
+
+Sat Apr 17 11:41:00 GMT 2010  Olly Betts <olly@survex.com>
+
+	* configure.in: New preferred env var for wx-config script is
+	  WX_CONFIG.  WXCONFIG still supported for compatibility.
+
+Tue Jul 28 08:16:00 GMT 2009  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: The presentation filename now defaults to using
+	  the basename of the currently loaded dataset, but we always prompt
+	  before we first save with such a name.
+
+Tue Jul 28 04:37:00 GMT 2009  Olly Betts <olly@survex.com>
+
+	* configure.in: Add comment to explain why we call wx-config twice.
+
+Tue Jul 28 04:36:00 GMT 2009  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Use fputs(m, f) instead of fprintf(f, m) in case m
+	  contains '%' (m comes from the messages file, so this isn't
+	  exploitable by sending someone a "bad" .svx or .3d file).
+
+Mon Jul 27 03:29:00 GMT 2009  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix to open rather than save when doing "open
+	  presentation" with wxmotif.
+
+Thu Mar 05 01:45:00 GMT 2009  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm: Document that this is version 6 and when we
+	  started to use it.
+
+Mon Dec 15 10:34:00 GMT 2008  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: When saving a screenshot, perform the vertical
+	  flip of the image data in-place rather than using wxImage::Mirror()
+	  which creates a whole new wxImage object.
+
+Fri Dec 12 11:12:00 GMT 2008  Olly Betts <olly@survex.com>
+
+	* src/cad3d.c, src/export.cc: Fix export to SVG when a label
+	  contains a '%' character.
+
+Fri Dec 12 06:30:00 GMT 2008  Olly Betts <olly@survex.com>
+
+	* configure.in: Add AM_PROG_CC_C_O which newer autoreconf warns is
+	  needed.
+
+Fri Dec 12 06:28:00 GMT 2008  Olly Betts <olly@survex.com>
+
+	* configure.in: Remove AC_SUBST of CRLIB and CROBJX which are no
+	  longer set or used.
+
+Fri Dec 12 06:03:00 GMT 2008  Olly Betts <olly@survex.com>
+
+	* NEWS, buildmacosx.sh, configure.in, desc-aven.txt, doc/TODO.htm,
+	  doc/manual.sgml, doc/survex.ent, lib/messages.txt,
+	  src/aboutdlg.cc, src/aven.cc, src/aven.h, src/gfxcore.cc,
+	  src/mainfrm.cc, src/printwx.cc, src/printwx.h, src/wx.h: Say
+	  "wxWidgets" instead of "wxWindows" consistently.
+	  Require wxWidgets 2.6.0 or newer - 2.4 is really old now.
+
+Mon Mar 31 01:53:00 GMT 2008  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm: Update for v6 format from Mike McCombe
+
+Fri Sep 07 18:29:00 GMT 2007  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Calling glGetError() resets the error state, so we
+	  need to store the value in a variable rather than calling it twice!
+
+Fri Sep 07 13:54:00 GMT 2007  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Add missing CHECK_GL_ERROR() calls and correct
+	  some which had the wrong descriptions.
+	  Use GL_POINT_SPRITE and GL_COORD_REPLACE instead of
+	  GL_POINT_SPRITE_ARB and GL_COORD_REPLACE_ARB.  They have the same
+	  numeric values, so the shorter (now official) names are better.
+
+Fri Sep 07 13:31:00 GMT 2007  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am, src/gfxcore.cc, src/gfxcore.h, src/gla-gl.cc,
+	  src/gla.h, src/matrix4.cc, src/matrix4.h, src/quaternion.cc,
+	  src/quaternion.h: Just set the pan and tilt directly as OpenGL
+	  rotations rather than messing around setting up and then decoding a
+	  quaternion.  This fixes some glitches when tilting while looking
+	  east, and eliminates 2 source files and 2 headers!
+
+Sat Feb 10 13:56:00 GMT 2007  Olly Betts <olly@survex.com>
+
+	* NEWS, configure.in, src/aven.cc, src/wx.h:
+	  (Unix version): aven: Fix display of degree symbol in status bar and
+	  messages with accented characters in.
+	  (Mac OS X version): Require at least wxWidgets 2.5.1.
+
+Sat Feb 10 13:46:00 GMT 2007  Olly Betts <olly@survex.com>
+
+	* src/message.c: Test S_ISREG since that's what we use here
+
+Sat Feb 10 13:37:00 GMT 2007  Olly Betts <olly@survex.com>
+
+	* src/message.c: Always use utf-8 for aven on unix
+

@@ -1,0 +1,66 @@
+<refmeta>
+<refentrytitle>print.ini</refentrytitle>
+<manvolnum>5</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>print.ini</refname>
+<refpurpose>survex printer settings
+</refpurpose>
+</refnamediv>
+
+<refsect1><title>Description</title>
+
+<Para>
+The print.ini file contains printer descriptions for
+the Survex printer drivers.
+</Para>
+
+<refsect2><title>File Format</title>
+
+<Para>The format of the <filename>print.ini</filename> file
+is similar to the <filename>.ini</filename> files used on Microsoft Windows.
+The file is divided into sections, each section corresponding to a separate
+printer description.  A section starts with a section name
+in square brackets, e.g. aven's built-in printer support uses the
+aven section:
+</Para>
+
+<screen>[aven]</screen>
+
+<Para>followed by some options of the form
+&lt;option&gt;=&lt;setting&gt;, e.g.:</Para>
+
+<screen>font_size_labels=6</screen>
+
+<Para>In the supplied <filename>print.ini</filename> each option is preceded by
+a comment (indicated by a semicolon ';') briefly explaining the option.
+</Para>
+
+</refsect2>
+</refsect1>
+
+<refsect1><Title>Customising Printer Settings</Title>
+
+<Para>
+If you wish to change the size of the font used for labels or the colours
+used you need to override some of the setting in print.ini.
+</Para>
+
+<Para>You shouldn't modify the master print.ini (located in /usr/share/survex
+on Unix, or in the same directory as the Survex program files on other
+systems), or your changes will be overwritten by upgrades.  Instead create:
+</Para>
+
+<ItemizedList>
+<ListItem><Para>/etc/survex/print.ini (Unix - system-wide settings)</Para></ListItem>
+<ListItem><Para>~/.survex/print.ini (Unix - per user settings)</Para></ListItem>
+<ListItem><Para>myprint.ini in the directory where Survex is installed (other platforms)</Para></ListItem>
+</ItemizedList>
+
+<Para>
+If one of these files contains a setting then aven will use it instead of the
+setting in the master print.ini.  Any settings not specified will still fall
+back to the values in print.ini.
+</Para>
+</refsect1>

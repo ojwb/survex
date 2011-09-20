@@ -1,0 +1,2267 @@
+Changes in 1.0.32:
+
+* aven: Fixed font sizes in "Print Preview" and printouts.
+
+* aven: In the print setup dialog, replaced "Orientation" radio buttons with
+  "Plan" and "Elevation" buttons.
+
+* aven: Fixed info box on printouts of elevations, tilted views, and
+  extend elevations.
+
+* aven: Added "fit on one page" option, and make it the default.
+
+* aven: Reorder "Cancel", "Preview", "Print" buttons and make "Print" the
+  default button.
+
+* aven: Read settings back from the print dialog when the "Print" button is
+  pressed (was only done for "Preview" previously).
+
+* aven: Sorted out the initial size of the "Print Preview" window.
+
+* aven: Fixed the window manager's close button on the "Print Preview" window
+  - previously this was being ignored.
+
+* aven: Sorted out initial survey scaling when loading a survey at startup.
+
+* aven: Fixed the measuring line to work better when the survey tree is
+  manipulated with keys.  Tweaked redrawing of the measuring line to be a
+  smidgen more efficient.  Fixed the blob and ring size which were one
+  pixel too small on Windows.
+
+* aven: Added "System Information:" section to the "About" dialog to hold
+  information useful when reporting bugs.  Currently it contains the wxWindows
+  version, OS version, and colour depth information.
+
+* aven: Changed the "About" dialog's "Close" button to be "OK" for consistency
+  with pretty much every other application.
+
+* aven: Added "File->Export as..." which integrates cad3d's functionality
+  within aven.
+
+* aven: Updated a few icons.
+
+* cad3d: Added SVG export support from John Pybus
+
+* (Unix version): Fixed to allow compilation with GCC 3.4
+
+* (MS Windows version): Upgrade to using innosetup 4 for the installer
+  (we were using innosetup 2).  This results in a much smaller download
+  and the installer now translates itself into the currently set language.
+  The installer will no longer work on Windows NT 3.51, but I seriously
+  doubt anyone is still using that...
+
+* Updates to German translation.
+
+Changes in 1.0.31:
+
+* (MS Windows version): Fixed problems with the new printing code by building
+  with a newer version of wxWindows (2.5.2 instead of 2.4.1).
+
+* aven: Fixed grid menu item so that it always correctly reflects whether the
+  grid is enabled or not.
+
+* aven: Minor improvements to appearance of a few toolbar icons.
+
+* Updates to Catalan, French, Italian, Romanian, Slovak, and Spanish
+  translations.
+
+* cavern: Fixed Romanian message which was appearing in English .err files.
+
+Changes in 1.0.30:
+
+* aven: Added printing directly from Aven!
+
+* aven: Fixed memory leak when showing the "About" dialog.
+
+* (MacOS X version): Now installable from a disk image package.
+
+* cavern: Equates are no longer considered when deciding which stations are
+  flagged as surface and underground.
+
+* Romanian translation mostly completed.
+
+* (Unix version): Debian: Minor packaging tweaks.
+
+Changes in 1.0.29:
+
+* cad3d: Fixed problem with DXF files which stopped them loading with some
+  drawing packages (introduced in 1.0.27).
+
+* aven: Changed File->Exit to File->Quit.
+
+* Removed some unused messages from the message files.
+
+* (Unix version): Fixed SRPMs to build on RedHat 9 and Fedora Core 1 (patch
+  from John Pybus).
+
+* Romanian translation started.
+
+* (Unix version): Debian: Fixed new lintian warnings about missing quotes in
+  menu files.
+
+Changes in 1.0.28:
+
+* Fixed 3d file reading code to fix incorrect unpacking of compressed station
+  names in a rare case.  Also checked other rare cases work correctly.
+
+Changes in 1.0.27:
+
+* cad3d: DXF output now puts surface legs, stations, and labels in separate
+  layers.
+
+* (Unix version): distribute desc-svxedit.txt.
+
+Changes in 1.0.26:
+
+* cavern: Fixed interleaved topofil data style - the length was always being
+  calculated as zero.
+
+* (Unix version): aven: "All Files" now shows files without extensions too.
+
+* aven: added Ctrl+Q as shortcut for File->Exit.
+
+* aven: depth colouring now uses a proper colour gradient.
+
+* (MacOS X version): aven: the keyboard and mouse now work!  It turns out that
+  we must apply resources *after* installing.
+
+* (MacOS X version): aven: now works when run from the MacOS X Finder.
+
+* (MacOS X version): look for message files and other resources relative to the
+  binaries so that the user can install Survex from a disk image in the location
+  of their choice.
+
+* (MacOS X version): fixed not to try to build aven if wxWindows isn't
+  installed.
+
+* cad3d: fixed -e and -r options to not crash (the long versions have always
+  worked).
+
+* extend: fixed to initialise an internal structure - failing to do so was
+  probably causing crashes on some platforms.
+
+* Fixed standard graphics for "Note", "Warning", etc in the PostScript manual.
+
+* Documentation updated.
+
+* (Unix version): fixed svxedit man page which previously contained xcaverot
+  documentation!
+
+* test suite: check that cavern doesn't report "nan" or "NaN" for any values.
+
+* (Unix version): fixed configure --enable-defaultlang=XX to work.
+
+* (Unix version): fixed configure code to turn on lots of GCC warnings and fixed
+  most of them.
+
+* (MS Windows version): assorted tweaks to allow building with MS Visual C/C++.
+
+Changes in 1.0.25:
+
+* (MacOS X version): hopefully fixed building of aven.
+
+* (Unix version): updated config.guess and config.sub so should build out of
+  the box on more Unix platforms.
+
+* (Unix version): Debian: added missing Build-Depends on xlibs-dev.
+
+* (Unix version): RPMs: give up supplying binary RPMs due to apparently
+  insurmountable technical problems.
+
+Changes in 1.0.24:
+
+* cavern: fixed LEVEL (broken since around 1.0.8) and added test case.
+
+* cavern: corrected handling of declination in Compass DAT files and added test
+  case; also added tests for other aspects of Compass DAT file reading.
+
+* printps/printpcl: fixed blank page detection in some obscure cases.
+
+* Documentation: started manual section on working with Compass data files.
+
+* (Unix version): fixed compilation problems with aven and getopt.h on MacOS X
+  (and probably some other Unix versions).
+
+* (Unix version): Debian package now Build-Depends on gcc-3.2 and g++-3.2.
+
+Changes in 1.0.23:
+
+* Documentation: include 3d v3 file format description on MS Windows, MS DOS,
+  and RISC OS too; include PNG graphics for manual on MS Windows; minor updates
+  to manual.
+
+* Prefer wxWindows 2.4 if it's available.
+
+* (MacOS X version): detect MacOS X and look for MacOS X build of wxWindows;
+  automatically add resource fork to aven binary.
+
+* Disabled experimental support for Chinese (LANG=zh) - it isn't currently
+  working and makes the printer drivers unusable on Chinese versions of MS
+  Windows.
+
+* (Unix version): tweaked debian packaging.
+
+* cavern: Handling of "*:" at start of file wasn't fully fixed in 1.0.19.
+
+Changes in 1.0.22:
+
+* aven: Fixed handling of extended elevations (and other flat surveys) -
+  they are meant to be "locked flat" but this wasn't fully working before.
+
+* Documentation: 3d v3 file format description: fixed error in description of
+  codes 0x01-0x0e; include it in binary packages (not only with the source
+  code).
+
+Changes in 1.0.21:
+
+* cavern: when reading Compass DAT files, we now processes compass and clino
+  backsights, and recognise the "X" flag which indicates a leg should be
+  entirely ignored.  And we now report correct line number with errors in
+  Compass .MAK files.
+
+* cavern: if "*infer plumbs on", don't infer a plumb if the clino is
+  +/- 90 degrees, but the backclino isn't (and vice versa).
+
+* cavern: fixed 3dx output so it actually works with Chasm once more.
+
+* cavern: don't allocate extra space needed for producing 3dx output for
+  Chasm unless we're actually producing that output - saves about 8 bytes
+  per station.
+
+* cavern: removed slightly too keen sanity check which could misfire in very
+  unusual circumstances.
+
+* (MS Windows version): all .ico files except 3d.ico have been missing since
+  1.0.17 (or maybe 1.0.16) - fixed.  You wouldn't notice this if you installed
+  over an previous version.
+
+Changes in 1.0.20:
+
+* aven: update display when "Metric" or "Degrees" is toggled.
+
+* cavern: fixed handling of compass and clino corrections in Compass survey
+  data - these were interpreted as radians rather than degrees so the
+  correction was about 57 times too large!)
+
+* Improved handling of Compass PLT files - if the survey name is empty, don't
+  insert a survey separator character.
+
+* Documentation: fixed incorrect markup which resulted in a bogus footnote.
+
+Changes in 1.0.19:
+
+* cavern: you can now process Compass format survey data (.DAT and .MAK files) -
+  these can even be linked into a Survex dataset with "*include fulford.dat" or
+  "*include lech.mak" to allow processing of mixed datasets.
+
+* cavern: major speedup (up to 60%) when reading in survey data containing
+  a lot of stations in the same survey hierarchy level (which is how Compass
+  files are handled).
+
+* cavern: don't warn about a compass reading on a plumbed leg if the
+  plumb was inferred and the compass reading is zero.
+
+* cavern: reduced memory usage in code which reads a survey station name.
+
+* cavern: reported CPU time would go negative if cavern ran for more than
+  about 36 minutes (highly unlikely but not impossible on a slow machine
+  with a large, highly interconnect survey) - fixed.
+
+* cavern: avoid unnecessary work when --percentage isn't specified.
+
+* cavern: Writing "*:" at the start of a .svx file would crash cavern - fixed
+  and added test case.  This is an error anyway, but it shouldn't cause a
+  crash.
+
+* Don't distribute unused toolbar icons.
+
+* Documentation: minor updates.
+
+Changes in 1.0.18:
+
+* (Unix version): Fixed "Process" action on .svx files.
+
+* (Unix version): File associations: if svxedit isn't installed, run gnome-edit
+  instead.
+
+* (Unix version): In Debian packages, now include file associations and file
+  icons in the survex package rather than survex-aven.
+
+* (Unix version): File associations were missing from RPM packages; moved
+  aven and svxedit man pages to their respective subpackages; moved aven icons
+  to the aven subpackage.
+
+* Documentation: added details of the 3d file format (version 3).
+
+* Updated TODO list.
+
+Changes in 1.0.17:
+
+* (MS Windows version): Fixed "Open in SvxEdit" to work (and if tcl isn't
+  install this action now falls back to using notepad).  SvxEdit now has
+  its own icon.
+
+* (Unix version): Install mime types, icons, and file associations for Gnome.
+  Note: at present GMC doesn't seem to notice new files being created (e.g.
+  Process on a .svx file creates .3d and .err files) - you have to manually
+  refresh the view.
+
+* Minor update to manual.
+
+Changes in 1.0.16:
+
+* (MS Windows version): Really fixed bug introduced in 1.0.14 which often stops
+  programs from finding the message files.
+
+* (MS Windows version): Remove any existing "Open" file association for .svx
+  files.
+
+Changes in 1.0.15:
+
+* (MS Windows version): Fixed bug introduced in 1.0.14 which often stops
+  programs from finding the message files.
+
+* (MS Windows version): "Open in Notepad" is now the double-click action
+  for .svx files once again, "Open in SvxEdit" is an action in the menu
+  obtained with the right mouse button.
+
+Changes in 1.0.14:
+
+* svxedit: This is a Survex data entry editor from the therion team.  It needs
+  tcl and wish installed - for MS Windows an installer is available for free
+  from Activeware.
+
+* Improved handling of Compass PLT files and CMAP xyz files - no longer change
+  dots to spaces in survey and station names - instead use a space as the
+  separator between survey name and station name.
+
+* aven: when picking non-overlapping labels, show a slight preference to shorter
+  labels with the aim of displaying more labels.
+
+* aven: fixed hard to notice problem which could cause the cave to appear
+  tilted sideways after a lot of manipulation.
+
+* cavern: Modest speed improvement (0.5% for sample dataset).
+
+* cavern: fixed a rarely sighted bug which caused erroneous error about some
+  stations not being attached to a fixed point.
+
+* cavern: fixed clino readings and DIRECTION to work in interleaved data.
+
+* cavern: improved error reporting when an invalid value is given for a
+  DIRECTION reading.
+
+* cavern: fixed "singular matrix" error when very low SDs were specified.
+
+* print*: if the --raw is used, the survey can now use the space this would
+  have taken up.
+
+* Reading of ASCII 3d files now copes with MSDOS/MS Windows line endings
+  once again.  Added regression test for this.
+
+* (MS Windows version): Programs run from the command line now find message
+  files without SURVEXHOME needing to be set.
+
+* Updated documentation.
+
+Changes in 1.0.13:
+
+* aven: Fixed bug which caused the occasional spurious leg to be shown
+  connecting arbitrary stations.
+
+* extend: try to extend along a survey, and make breaks where other surveys
+  join.
+
+* cavern: Number reading code reworked to allow repeat readings to be
+  supported, but the actual repeat reading code is currently disabled,
+  and everything should work exactly as before.
+
+* Experimental support for Chinese (LANG=zh) - only a few messages are
+  currently translated.
+
+Changes in 1.0.12:
+
+* diffpos: fixed to work on 64bit architectures.
+
+* sorterr: fixed to work with more than 1024 traverses.
+
+* Fixed handling of iso-8859-2 character set and MS Windows code page 1250
+  (both cover Eastern European languages).
+
+* (MS Windows version): install file associations for Compass .plt and .plf
+  files and for CMAP .xyz files.  Also install the file icon for .plt and
+  .plf files in case Compass isn't installed (thanks to Larry Fish for
+  permission to include the icon).
+
+* (Unix version): running an installed program with an explicit path works
+  again.
+
+* (Unix version): xcaverot: automatically switch on PDA mode if the screen is
+  less than 640 pixels wide or less than 480 pixels high.
+
+* (Unix version): minor portability improvements.
+
+* Updates to Portuguese translation - all translations are now up-to-date.
+
+Changes in 1.0.11:
+
+* aven: improvements in 1.0.10 to the file type selector only work properly
+  on MS Windows, and with wxGtk >= 2.3 on Unix (the latest stable release is
+  2.2.9 where this doesn't work).  Fixed to work as well as possible on 2.2.9,
+  and as intended on 2.3.
+
+* aven: fixed so that loading PLT files works regardless of the current locale
+  (previously it would fail for locales where the decimal character wasn't
+  '.').
+
+* aven: key actions during autorotation no longer temporarily pause
+  autorotation.
+
+* aven: switching to plan or elevation while rotating is now smooth.
+
+* aven: removed undocumented and confusing "free rotation mode".
+
+* (MS Windows version): aven: focus now set correctly after loading a file by
+  double-clicking or from the command line.
+
+* cad3d: write dummy passage dimensions to .plt files to avoid Compass bug.
+
+* printwin/printps: now support coloured printouts.
+
+* print*: fixed to work correctly with PLT files.
+
+* extend: fixed to work correctly with PLT files.
+
+* Updates to Italian translation.
+
+* Minor documentation updates.
+
+Changes in 1.0.10:
+
+* (MS Windows version): aven: fixed assert failure upon turning on station
+  names.
+
+* aven: only add a file to the list of recently used files if it was opened
+  successfully.
+
+* aven: recognise ".plf" as a Compass PLT file too; and on Unix list "*.PLT",
+  "*.PLF", "*.XYZ", and "*.3D" as well as the lowercase versions to help people
+  who transfer files from MSDOS/MS Windows.
+
+* cavern: fixed bogus warning triggered by "*begin abc.def" (I'm not sure
+  that this should be valid, but the warning given wasn't appropriate).
+
+* Fixed scaling problem when reading PLT file (feet->metres conversion
+  factor was being applied backwards!)
+
+* Fixed potential problem when reading or writing a 3d file which couldn't
+  be opened.
+
+* Translate dots to spaces in survey names in Compass PLT files.
+
+* Better handling of PLT files which have a D command before any M command.
+
+* Updates to German and Italian translations.
+
+Changes in 1.0.9:
+
+* aven: Fixed jerky start when auto-rotation begins.
+
+* cavern: Fixed Direction reading - bug previously made it unusable.
+
+* (MS Windows version): cad3d: fixed broken PLT output (had a double CR at the
+  end of each line).
+
+* (Unix version): RPMs now have the docs in /usr/share/doc and the man pages
+  in /usr/share/man to conform with the FHS (and where RedHat packages put
+  them).
+
+* Updates to French, Spanish, Catalan, and Slovak translations.
+
+Changes in 1.0.8:
+
+* Slovak translation added; updated German, Catalan, and Spanish translations.
+
+* aven: reduced memory usage by around 25% and increased speed and
+  responsiveness.
+
+* aven: rate of rotation and switching between plan and elevation now adjusted
+  to the speed of redraw, so aven behaves in a similar way independent of the
+  speed of the computer or size of the survey.
+
+* aven: provide list of most recently loaded files (preserved between runs of
+  the program).
+
+* aven: settings for "Metric" and "Degrees" are preserved between runs.
+
+* aven: moved some menu items from "View" to "Controls" as they probably
+  belong there and the "View" menu was getting out of hand.
+
+* aven: cursor keys now translate cave in the same way the mouse does (i.e. now
+  work as in caverot and xcaverot).
+
+* aven: eliminated the "twinkling label" effect when dragging the cave with the
+  right mouse button.
+
+* aven: the measuring line moves much more smoothly now: the mouse cursor now
+  snaps to the nearest station, rather than just a near station; and when the
+  line moves, we now only redraw the affected area of the window.
+
+* aven: resolved annoying limit on zooming in on large surveys.  This was a
+  crude way of preventing random lines due to overflow in the windowing system.
+  Aven now clips lines itself at high zoom levels, and limits zoom in to
+  approximately 1mm/pixel.
+
+* aven: zoom in/out with keyboard wasn't subject to any limits - now restricted
+  to sane values as with zoom in/out with the mouse.
+
+* print*: added --raw switch to turn of info box, scale bar, and page footer.
+  This can be useful if you want to import the output into another application.
+
+* print*: improved output when --no-border is used.
+
+* printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
+  to choose between alternative fonts.  Current we supply "default" and "bold".
+
+* printps/printhpgl: Fixed --skip-blanks which would incorrectly skip non-blank
+  pages on rare occasions.
+
+* cavern: added support for BackCompass and BackClino.
+
+* cavern: implemented "*units clino percent".
+
+* cavern: added "*infer exports on".  Any stations seen while this is on will
+  have the necessary *export-s inferred when accessed from outside their
+  own survey.  This allows linking a survey which uses *export to one which
+  doesn't.  It's also useful for a maze cave where so many stations can
+  be linked to that listing them explicitly isn't desirable.
+
+* cavern: N-S, E-W, and vertical ranges now only count stations which are in
+  underground surveys.
+
+* cavern: *infer plumbs wasn't inferring -90 to be DOWN - fixed.
+
+* cavern: *infer was giving an internal error if the argument was unknown -
+  now it gives the correct error message.
+
+* cavern: fixed handling of omitted clino readings when OMIT is *set to be
+  different from MINUS and PLUS (new test omitclino).
+
+* cavern: fixed a bogus warning for any station which was only used in a line
+  of data which was rejected because of an error.
+
+* cavern: added error if the *units factor is zero (e.g. "*units tape 0 feet").
+
+* cavern: removed the ill-thought-out and never implemented LENGTHOUTPUT
+  and ANGLEOUTPUT quantities.
+
+* cavern: resolved mismatch between bcra5.svx and the default SDs, and the
+  odd values in bcra3.svx.  We are now interpreting the BCRA limits as 2
+  standard deviations (previously bcra5.svx used 3 sds, bcra3 used 3.33 sds for
+  tape and position, and .75 sds for compass and clino, and cavern used 1 sd
+  by default).
+
+* ChangeLog now only includes entries since the previous release (the full file
+  is 220K or so, and of interest to very few people).  MSDOS and MS Windows
+  versions now comfortably fit on a 1.44M floppy once again.
+
+* Test suite now checks that all programs will run successfully with "--help"
+  and with "--version".  This should avoid problems such as that which broke
+  the printer drivers in 1.0.4-1.0.6.
+
+* (Unix version): uninstalled binaries now use the path they are run with to
+  find support files, which means SURVEXHOME is no longer required, and has
+  been removed.
+
+Changes in 1.0.7:
+
+* print*: halted with a failed assertion in 1.0.4-1.0.6.
+
+Changes in 1.0.6:
+
+* aven: "Reverse Controls" now works as in xcaverot and caverot.
+
+* aven: free rotation mode (engage by pressing control while left dragging,
+  exit with Delete) improved.
+
+* aven: using File->Open when a file was already loaded caused a crash
+  if a station was "grey highlighted" in the survey tree - fixed.
+
+* aven: added hourglass for "find" operation.
+
+* aven: reenabled loading of files by drag-and-drop (accidentally disabled
+  in 1.0.4 and 1.0.5).
+
+* aven: improved handling of flat surveys (e.g. output of extend, surveys
+  with no clino information).
+
+* aven: surveys with stations but no legs no longer cause the labels and
+  crosses buttons to behave oddly.
+
+* aven: removed quite a bit of unused and superfluous code.
+
+* Spell-checked documentation.
+
+Changes in 1.0.5:
+
+* Fixed bug in img_open_survey() which could cause a crash if you tried to
+  open an unrecognised file (i.e. not .3d, .pos, .plt, or .xyz format).
+
+* North and East were the wrong way round when reading in .plt files.
+
+* cad3d: Improved .plt file output a little - there's probably enough file
+  structure for Compass to read them now.
+
+* Documentation updates.
+
+Changes in 1.0.4:
+
+* extend: previously only kept one name for an equated group of stations in the
+  extended .3d file; now keeps all the names.
+
+* cad3d: if an output filename is given, use its extension to pick the default
+  output format.
+
+* aven: movement with keyboard is now accelerated by Shift as in caverot.
+
+* print*: --no-borders fixed to work as documented; --no-cutlines added to
+  turn off the dashed lines where pages join on multi-page printouts.
+
+* aven: tracked down two uninitialised variables which seems to fix the
+  failure to load a survey on startup which some people have been experiencing
+  on Microsoft Windows.
+
+* aven: code cleaned up - should improve performance a little.
+
+* img routines: img_rewind() now returns a value indicating success/failure.
+
+* Improvements to .plt file reading, notably that distances in the file are
+  now interpreted as being in feet rather than metres.  Also .plt files should
+  now be recognised even with a different extension, and we cope with an odd
+  special case better.
+
+* Added support for reading CMAP XYZ files.  There are two variants of these
+  - the "shot" format is fully implemented, the "station" format currently
+  just reads the station names and positions - the legs are ignored (sadly
+  the sample files I have do not match the format specification).
+
+* (MacOS X version): aven: aven now builds on MacOS X - we just need to sort
+  out packaging now...
+
+* (MSDOS version): upgraded graphics library used to Allegro 4.0.1.
+
+* Documentation updates.
+
+Changes in 1.0.3:
+
+* aven: you can now select distances to be displayed in feet (or miles when
+  you zoom right out) instead of metres, and angles to be in grads instead
+  of degrees.
+
+* aven: show altitude of mouse pointer when in elevation view.
+
+* cad3d: fixed bug which caused --plt to crash on some platforms.
+
+* print*: added "Printing to `XXX'..." message to say where output is being
+  written.
+
+* Updated French translation; minor updates to other translations (mostly
+  sorting out clashing menu shortcuts in aven).
+
+* (Unix version): assorted portability tweaks.
+
+Changes in 1.0.2:
+
+* printdm/printpcl/printwin: take notice of font_size_labels setting in
+  print.ini etc.
+
+* cavern: Topofil can now be used with DIVING and CYLPOLAR styles; TOPOFIL
+  style is now synonymous with NORMAL.
+
+* cavern: *INFER EQUATES and *DATA TOPOFIL now work together correctly.
+
+* cavern: *FIX with 3 standard deviations but no covariances now works.
+
+* (MacOS X version): command line programs now build.  We're working on Aven.
+
+* Updates to the Catalan and Spanish translations.
+
+* xcaverot: documented environmental variables XCAVEROT_INDICATOR_RADIUS and
+  XCAVEROT_FONTNAME.
+
+* cad3d: added --plt option to produce crude approximation to Compass .plt
+  files - should be good enough for reading into Carto.
+
+* img library enhanced to allow Compass .plt files to be read as if they were
+  .3d files.
+
+Changes in 1.0.1:
+
+* (MS Windows version): printwin: fixed sizes of cross and page alignment
+  ticks.
+
+* Updates to the Portuguese and Italian translations.
+
+Changes in 1.0.0:
+
+* Fixed --survey option supported by many programs which was broken in 0.99.
+
+* aven: altered colours of "fixed points" and "entrances" buttons to match
+  the coloured blobs used to indicate them.
+
+* (MS Windows version): aven: changed current point highlighting in the
+  survey tree to use a light grey background rather than bold (bold causes
+  the text to "wriggle" as the highlight runs up or down).
+
+* (MS Windows version): file icons now have transparent backgrounds.
+
+* survex: removed conversion wrapper - you should use "cavern file.svx"
+  instead of "survex file.svx".
+
+* (Unix version): GCC 2.95 sometimes fails with an internal error when trying
+  to compile gfxcore.cc - if it does, the Makefile will now try recompiling
+  with a lower optimisation level.
+
+* (Unix version): when doing an "in directory" build from source, the HTML
+  manual is now installed in its own subdirectory as when doing a non
+  "in directory" build.
+
+* German translation now completely up-to-date.
+
+Changes in 0.99:
+
+* Fixed bug in .3d file reading code which would incorrectly reconstruct
+  the survey hierarchy in rare cases.
+
+* (MS Windows version): aven: fixed redraw problem for "N found".
+
+* (MS Windows version): minor tweaks to .err, .pos, and .svx file icons.
+
+* (Unix version): aven: Highlight of current station restores old background
+  colour correctly rather than assuming it's white.
+
+* aven: Resolved a number of menu shortcut clashes.
+
+* (RISC OS version): fixed automatic detection of language.
+
+* cavern: improved error reporting from *data; better handling of some
+  incorrect usages of *sd and *units.
+
+* Italian translation updated.
+
+Changes in 0.99-prerelease9:
+
+* aven: Side Panel can now be dragged or toggled shut and then reopened
+  again; double-clicking on the divider now maximises the survey window rather
+  than the side panel.
+
+* aven: .3d files can now be loaded using "drag and drop" from MS Windows
+  Explorer, and X filemanagers which support XDND (e.g. Konqueror).
+
+* aven: fixed problems with selection handling in survey tree.
+
+* aven: Escape cancels distance measuring line; suppress distance measuring
+  line during auto-rotation and animated tilting.
+
+* aven: entrance blobs now green to distinguish them from stations matching
+  search.
+
+* aven: problems with dragging scalebar fixed.
+
+* (MS Windows version): aven: Loading file on start-up now works!
+
+* (MS Windows version): aven: Delete now works in the search box.
+
+* (Unix version): aven: Highlight current station in tree with grey background
+  (don't seem to be able to use bold like we do on MS Windows).
+
+* cavern: Fixed handling of interleaved nosurvey data.
+
+* cavern: Diving and cylpolar styles now take DEPTHCHANGE where they used to
+  take DZ.
+
+* (MS Windows version): Installer now uses a different compression
+  method (bzip2) which reduces the download size by about 5% (and 
+  should help keep the installer small enough to fit on a 1.44M floppy).
+  Bzip2 is a little slower to uncompress, but not appreciably so on the
+  machines I've checked it on.
+
+* (MS Windows version): Should now install without errors for a
+  non-admin user on MS Windows NT/2000/XP.
+
+* (MS Windows version): Installer should now allow installation on NT 3.51.
+
+* Updated manual (notably added documentation for interleaved data styles).
+
+* German and Brazillian Portuguese translations updated.
+
+Changes in 0.99-prerelease8:
+
+* aven: Ctrl + Arrow keys is now the preferred way to rotate and tilt
+  (easier to remember than "C"/"V" and "'"/"/").
+
+* aven: survey pane now gets initial focus so you no longer have to
+  click on it before key presses are recognised.
+
+* (MS Windows version): aven: fixed problems with some keys being
+  impossible to enter in search box, or not being recognised in survey
+  pane.
+
+* (MS Windows version): aven: wxWindows messages files were missing.  We
+  now include them for languages which Survex also supports.
+
+* (MSDOS version): caverot: Shift and/or Ctrl + Arrow keys now works.
+
+* aven: Close button in About box is now always right in the bottom right
+  corner.
+
+* Display copyright symbol rather than (C) where the current character set
+  allows it.
+
+* (MSDOS version): caverot: default to 320x200 when running under
+  Microsoft Windows 2000 and XP as we already do on NT.
+
+* (MSDOS version): fixed problem when running on DOS outside MS Windows.
+
+* (MSDOS version): detect current codepage rather than assuming it's 850.
+  We now support codepages 437 and 850 (the common ones) - for other
+  codepages we fall back to using 7-bit ASCII.
+
+* (Unix version): aven: now compiles cleanly with GCC3.0.
+
+Changes in 0.99-prerelease7:
+
+* (MS Windows version): aven was missing from 0.99-prerelease6
+  (if you installed over an old version you'd have kept the old aven).
+
+* caverot/xcaverot: Ctrl + Arrow keys is now the preferred way to
+  rotate and tilt (easier to remember than "C"/"V" and "'"/"/").
+
+* xcaverot: Shift-ed movement keys now work faster as in caverot.
+
+* cavern: fixed *calibrate depth/todepth/fromdepth/dz and *units dz to
+  work in data styles diving and cylpolar.
+
+* cavern: fixed handling of malformed *data commands.
+
+* Various documentation clarifications.
+
+Changes in 0.99-prerelease6:
+
+* aven: fixed bogus lines caused by coordinate wrap-around; fixed
+  problem in repeated zoom with [ or ]; tweaked layout and auto-sizing
+  of left panel; station search now case insensitive; regexp search
+  enabled; suppressed message box when wxWindows doesn't support the
+  language Survex is set to use; fixed obscure crash in search
+  highlighting; added "rubber band" between measured stations;
+  Improved choice of menu short-cuts in translations.
+
+* (MS Windows version): don't include plain text versions of docs; fixed
+  default action for 3d files to be "Open".
+
+* (MSDOS version): include text docs.
+
+* cavern: more intelligent and less verbose reporting of errors in nested
+  included files (inspired by GCC 3.0).
+
+* cavern: improved reporting of syntax errors in survey data.
+
+* print*: improved reporting of invalid scales; interpret a single
+  number less than one as the scale in the obvious way (so "0.001"
+  means "1:1000").
+
+* print*: "--crosses" no longer prevents "--station-names" from working.
+
+* print*: if running interactively, prompt for what elements to plot
+  when run so MS Windows users don't have to resort to the command line.
+
+* Improved documentation for print.ini; Other minor documentation updates.
+
+* (Unix version) configure auto-probe for wxWindows updated to cope
+  with wxWindows version 2.2.8 (still works with older versions too).
+
+* Diving and cylpolar styles now accept dz (change in depth) rather than
+  requiring absolute depths and taking the difference.
+
+Changes in 0.99-prerelease5:
+
+* aven: improved initial sizing of window; "Toggle rotation" toolbar
+  icon now works; handle files with only stations better; presentation
+  code disabled for 1.0; releasing mouse over menubar now ends drag;
+  don't highlight hidden stations; accelerator problems fixed; find now
+  works.
+
+* (MS Windows version) aven: fixed crash on File/Open when a file was
+  already loaded.
+
+* cavern: After *solve, reused points are no longer written to the .3d
+  file a second time.
+
+* cavern: Warn that the undocumented extra "omit" allowed by *data is
+  deprecated.
+
+* cavern: Give error if standard deviation argument to *sd isn't
+  positive.
+
+* Consistent capitalisation of --help option descriptions.
+
+Changes in 0.99-prerelease4:
+
+* Minor improvements to manual and Unix man pages.
+
+* printps/printhpgl/printwin: --skip-blanks fixed.
+
+* printhpgl: fixed paper size for A1 landscape (was actually A2
+  portrait!)
+
+* (MSDOS version): graphics in HTML manual were corrupted (by being
+  packed as text).
+
+* (RISC OS version): graphics were missing from HTML manual.
+
+* (RISC OS version and 286 DOS version): fixed programs to report
+  themselves as part of "Survex" rather than "@PRETTYPACKAGE@".
+
+* (MSDOS version): pick a default language for messages by looking at the
+  currently set country.
+
+* (Unix version): Improved test for whether build needs librx - before
+  it was used if it was present, even if it wasn't needed.
+
+* (Unix version): Assorted minor debian tweaks.
+
+Changes in 0.99-prerelease3:
+
+* Documentation rearranged.  Some sections which covered the same
+  ground have been merged, and the documentation for each program is
+  now available as a man page under Unix.
+
+* (Unix version): Fixed problem with incomplete versions being
+  specified in debian package dependencies.
+
+* (Unix version): Fixed problems with not having librx on Linux (it's
+  now built into libc).
+
+Changes in 0.99-prerelease2:
+
+* aven: fixed bug which caused occasional crash during mouse movement;
+  station identifying didn't work after a resize until the survey was
+  moved.
+
+* Asking for messages in language en_GB now tries language en as it
+  was meant to.
+
+* printps/printhpgl/printwin: fixed typo which made --skip-blanks get
+  it wrong in some rare cases.
+
+* (Unix version): Added man pages for 3dtopos and sorterr.
+
+* (Unix version): More minor tweaks to debian packages.
+
+* Include images with HTML documentation; other minor documentation
+  changes.
+
+Changes in 0.99-prerelease1:
+
+* Major clean-up of Survex Manual; renamed from "svxdocs" to "manual".
+
+* Text documentation converted to HTML; BUGS and TODO merged, ZOMBIES
+  removed.
+
+* Include HTML documentation overview page and manual in all versions
+  (was only included in MS Windows before).
+
+* aven: added new functionality: toolbar, side panel with survey tree,
+  find station, measure distance between two stations, click on
+  station to centre.
+
+* aven: can now create presentations consisting of a set of views with
+  movements between them.  Useful for using aven as a "slide show" in
+  a conference talk.
+
+* aven: handles loading file from command line better.
+
+* cavern: added error checks for "*flags" (with no arguments) and
+  "*flags not".
+
+* cavern: you can now specify optional covariances to *FIX.
+
+* cavern: parser fixed to recover from errors as intended in a few
+  situations where it was failing to.
+
+* cavern: implemented covariances for diving data.
+
+* cavern: added "cylpolar" data style - similar to diving, except the
+  tape is measured horizontally rather than along the slope of the leg.
+
+* cavern: complain about *export-ing or *entrance-ing a station which
+  is never used.
+
+* cavern: complain about *export after a *begin without an argument.
+
+* cavern: use *title only if at top of survey tree, else generate
+  title from filename(s).
+
+* cavern: removed dummy *lrud command which was added for tunnel but
+  isn't used by tunnel.
+
+* cavern: round coordinates to nearest cm when writing .3d file.
+
+* cavern: fixed reporting of node stats for stations fixed with error
+  estimates.
+
+* cavern: no longer generate a .inf file - the .log file generated by
+  the --log option makes the .inf file obsolete.
+
+* cavern: only apply special pathname handling to filenames in
+  *include, not those on the command line.
+
+* cavern: *date now checks its argument.  It expects an ISO format date
+  (e.g. 2001.09.13) or range (e.g. 2001.09.12-2001.09.13).  For cases
+  where the exact date isn't know, the day and month can be omitted -
+  e.g. 2001.09 and 2001 are also valid.
+
+* cavern: --new-format renamed to --chasm-format.
+
+* print*: If restricting to a subsurvey, use that survey name for the
+  title of the printout.
+
+* print*: Detect .3d files produced by extend and handle them more
+  appropriately (don't ask for view or bearing, and modify info box
+  on printout).
+
+* print*: --skip-blanks now works on printwin/printpcl/printps;
+  --skip-blanks now forces --no-border.
+
+* printps: thinner lines by default (0.1 points rather than 0.5).
+
+* printdm: added --calibrate option to print calibration page; if
+  there's no calibration in the .ini file, refuse to print (apart
+  from calibration pages) rather than printing to the wrong scale.
+
+* printwin: removed --output option - there is no output file.
+
+* extend: wasn't picking start station as documented - fixed and
+  also enhanced to try to find an entrance with legs first.
+
+* survex: conversion wrapper doesn't use --output unless it is actually
+  needed, and displays corresponding cavern command line, and (if
+  appropriate) file.
+
+* cad3d: added --reduction option (from Leandro) which allows sketch
+  output to be scaled down (default scale is 1:500); grid in sketch
+  file is now visible by default; default output now goes in the
+  current directory. 
+
+* cad3d/3dtopos/sorterr: delete output file if there's an error
+  writing to it.
+
+* 3dtopos: minor improvements to sort order.
+
+* hto2svx, svx2hto: Removed HTO support - Survex appears to be the
+  only released software to ever have provided support, and an
+  exchange format that nobody else supports is useless.
+
+* xcaverot: report more detailed error when .3d file can't be loaded.
+
+* `program --version' now works even if message file can't be found.
+
+* (Unix version): Fixed attempt to load messages from
+  "DEFAULTLANG.msg" if both SURVEXLANG and LANG were unset.
+
+* Much more rigorous checking for operating system errors when reading
+  and writing files.
+
+* (RISC OS version): query Territory module to find currently selected
+  language, and use that for messages.
+
+* (UNIX version): man pages now have "Survex <version number>" on them;
+  fixed minor flaws in man pages.
+
+* Distinguish between a "bad" .3d file and one which has a newer
+  revision of the format than we understand.
+
+* img library can now read .pos files as if they were .3d files with
+  just stations in, so all programs which can read .3d files can also
+  now read .pos files.
+
+* Expanded testsuite further.
+
+* French, Brazillian Portuguese, and German translations brought
+  almost completely up-to-date.
+
+* (Unix version): Lots of little improvements to debian packages
+  (mostly from Wookey).
+
+Changes in 0.98:
+
+* (MS Windows version): New icons for .svx, .pos, and .err files.
+  Tweaked .3d icon to work better in 256 colour modes.
+
+* Added tests for `*infer plumbs' and `*infer equates'.
+
+Changes in 0.98-prerelease6:
+
+* printwin: fixed new bug introduced in 0.98-prerelease4 which caused
+  an internal error.
+
+* printwin: exit cleanly if no printer drivers are installed.
+
+* aven: surface surveys weren't being drawn when viewing from above
+  (bug introduced in recent version).
+
+* aven/caverot/xcaverot/print*/cadgen/extend/diffpos/3dtopos: --survey
+  command line option once more trims specified prefix from station
+  names like it did in xcaverot/caverot in 0.98-prerelease4.
+
+* sorterr: Added --replace option to sort the .err file and replace
+  the original with the sorted version (for use by MS Windows file
+  associations); cope with empty .err file.
+
+* cavern: Added --log option to send output to a .log file.
+
+* cavern: --quiet no longer suppresses node statistics.
+
+* extend: give up if the .3d file is truncated or corrupted part way
+  through.
+
+* (MS Windows version): sorterr.exe and 3dtopos.exe were missing;
+  improvements to documentation; assorted fixes and improvements to
+  file associations.
+
+* print*: reduced memory usage.
+
+* Fixed dropping of first character of survey station names when
+  reading old .3d files.
+
+* (MS Windows version): aven.exe wasn't rebuilt for 0.98-prerelease -
+  fixed the dodgy script.
+
+Changes in 0.98-prerelease5:
+
+* aven/print*/cadgen/extend/diffpos/3dtopos: Added --survey command
+  line option to restrict the operation of the command to a sub-survey
+  in the .3d file.
+
+* aven: initial scaling now ignores unused fixed points (unless there
+  are no legs at all), and scales survey so it fits inside window.
+
+* aven: can now load a survey with no legs, only stations.
+
+* aven: --version now works, and --help produces more helpful output.
+
+* cavern: fixed bug with eating first character of line after
+  interleaved data; corrected line numbers in some situations
+  involving interleaved data.
+
+* cavern: fixed problem with points fixed with errors.
+
+* cavern: *title without quotes now stops at a comment; *title with no
+  argument no longer allowed - use `*title ""' if you really mean to
+  set an empty title.
+
+* Minor documentation updates.
+
+* 3dtopos: Fixed bug which resulted in station names and coordinates
+  getting mismatched; output now defaults to current directory.
+
+Changes in 0.98-prerelease4:
+
+* diffpos: list added and deleted stations in sorted order; better
+  error reporting.
+
+* 3dtopos: removed hardcoded limit on number of stations (was 100000);
+  better error reporting.
+
+* Further tweaks to charset handling - look at LC_* as well as LANG;
+  Check GUI codepage under MS Windows.
+
+* cavern: Allow *copyright/*date/*instrument/*team/*title between
+  *begin and *export.
+
+* cavern: Fixed typo which prevented *instrument from being recognised
+  as a valid command.
+
+* cavern: removed option to produce ascii .3d files.
+
+* cavern: on error, remove any existing .inf file for consistency with
+  .3d and .err files.
+
+* cavern: interleaved nosurvey data style now works; nosurvey legs now
+  count as a "use" of a fixed point.
+
+* cavern: give at most 5 warnings about use of any particular
+  deprecated feature.  Otherwise processing an old dataset just gives
+  an avalanche of warnings which buries any other warnings or errors.
+
+* cavern: implemented `*infer equates'.
+
+* aven: if a .3d file is truncated or corrupted part way through, aven
+  would previously load part of it without complaint.  Fixed to
+  complain and not load anything.
+
+* printwin: fixed problem where it hung when waiting for input.
+
+* print*: Added --output command line option to override the output
+  setting in the .ini file (ignored by printwin).
+
+* .3d files now store prefixes for legs (the prefix is taken from the
+  "from" station of the leg);  Station names and leg prefixes in .3d
+  files are now stored compressed.  Despite now storing prefixes for
+  legs, .3d files are now typically 25%-33% smaller than before.
+
+* xcaverot/caverot: Added --survey command line option which restricts
+  the view to a sub-survey in the .3d file.  e.g.:
+  "caverot --survey 161.dream all.3d"
+
+* (MS Windows version): added explorer bindings for sorterr.
+
+* cavern/xcaverot/sorterr: fixed --help output to include long options.
+
+* Minor documentation updates.
+
+Changes in 0.98-prerelease3:
+
+* cavern/3dtopos: cavern no longer produces .pos files - they're
+  mostly useful for hand plotting and are larger than the
+  corresponding .3d files so most of the time they slow processing and
+  then clutter up the disk.  A new utility 3dtopos produces a .pos
+  file from a .3d file, and has the added benefit that it sorts names
+  with numbers in numerically (i.e. 2 before 10).
+
+* diffpos: the arguments can now be .pos or .3d files, or one of each.
+
+* cavern: improved parsing of unquoted *include/*title strings - used
+  to end at the first literal space; now they end at the first BLANK
+  character (space, tab, and comma by default).  So the odd case of an
+  unquoted string with commas or tabs will require quotes to be added.
+
+* All versions have been missing RTF, text, and PostScript versions of
+  the documentation in the previous 2 prereleases.
+
+* cavern: Fixed articulation code wasn't quite.
+
+* cavern: an empty label was being added to the .3d file for a station
+  fixed with standard deviations.  Such labels are also now ignored by
+  img on read-in.
+
+Changes in 0.98-prerelease2:
+
+* (MS Windows version): Fixed "Open" on a .3d file to open in aven
+  rather than converting to a DXF.  "Convert to DXF" now appears as a
+  separate menu item.
+
+* cavern: Fixed bogus errors about matrix not being positive definite.
+
+* cavern: Fixed bug in articulation point code which could result in
+  a traverse "exploding" in certain situations (introduced in 0.95).
+
+* cavern: Check for chunks of survey not connected to a fixed point is
+  now done earlier on (which simplifies quite a bit of the network
+  code).
+
+* xcaverot: Disabled "legs" and "surface" buttons in --pda mode - they
+  make the button bar too wide.
+
+Changes in 0.98-prerelease1:
+
+* Covariance matrices are symmetric - now only store 6 of the 9 entries.
+  Typically uses 10% less memory and is 15% faster.
+
+* caverot: adjust to speed of machine/size of survey on initial draw,
+  rather than on first action from user.
+
+* (MS Windows version): now handle oe-ligatures.
+
+* (Unix version): discover character set by looking at $LANG.
+
+* (MS Windows version): discover character set from Windows.
+
+* Transliterate accented characters that can't be represented in the
+  current character set.
+
+* Added support for Latin9 (iso-8859-15) character set.
+
+* printps/printpcl/printwin: Improved handling of accents on printouts.
+
+* aven: added optional grid; dashed surface survey now the default;
+  Indicators moved to submenu of View menu.
+
+* aven: reporting errors in a message box wasn't working (wxWindows
+  bug).
+
+* cavern: fixed *entrance - it was trying to insist its argument was a
+  survey, not a station.
+
+* cavern: a leg with the same station at both ends now causes an error
+  rather than just a warning.
+
+* cavern: added station name to "station equated to itself" message.
+
+* cavern: allow interleaved data formats.
+
+* sorterr: new utility for sorting .err files by various criteria.
+
+* xcaverot: buttons now size to widest label; added --pda switch to
+  turn off less useful buttons for use on small screens (such as the
+  ipaq PDA).
+
+Changes in 0.97:
+
+* Unchanged from 0.97-prerelease7.
+
+Changes in 0.97-prerelease7:
+
+* Messages relating to command line options are now translatable.
+
+* (MSDOS versions): now supply self-extracting zip archives.
+
+* (MS Windows version): after running cavern, wait for a key press
+  before closing the window.
+
+* cavern: Very quiet mode (-qq) now produces absolutely no output if
+  there are no errors or warnings.
+
+Changes in 0.97-prerelease6:
+
+* (MS Windows version): aven: if there are problems opening the
+  message file, report them in a message box rather than printing text
+  which the user will never see.
+
+* cavern: invalid data lines weren't being counted, so you'd get
+  incorrect line numbers reported for further errors and warnings.
+
+* cavern: Added a SPLAY flag for indicating splay shots in chambers
+  and large passages.
+
+* extend: ignore surface legs and splay legs; preserve duplicate flag
+  on extended legs.
+
+* print*: if surface data isn't being plotted, ignore surface survey
+  stations too, and select page layout based on underground data only.
+
+* (MS Windows version): get default language from Windows.
+
+* cavern: added *entrance command for indicating cave entrances.
+
+* Added "surface", "underground", "exported", "fixed", and "entrance"
+  station flags to 3d format.
+
+* (DOS version): caverot: fixed bug Brian Clipstone reported where
+  caverot would lock up when trying to plot a label off-screen.
+
+* xcaverot/caverot: tweaked sense of a few controls to be consistent
+  with each other and with aven.
+
+* Strip leading '\' from station names read from old .3d files.
+
+* cavern: Better reporting of error stats involving a station fixed
+  with errors.
+
+* aven: allow highlighting of fixed, exported, and entrance stations.
+
+Changes in 0.97-prerelease5:
+
+* survex: conversion wrapper now only creates __svxtmp.svx file if it
+  has to - simple cases (such as "survex example.svx") don't need one;
+  also always print warning that user should be using cavern instead.
+
+* Minor updates to documentation.
+
+* Survey stations names are no longer displayed with a leading '\' -
+  this doesn't make sense now that root is deprecated, and didn't make
+  much sense before to be honest.
+
+* cavern: *fix with two standard deviations (horizontal and vertical)
+  was being rejected - fixed.
+
+* cavern: Fixed bug with station "\" appearing in the .err file for
+  a station fixed with error estimates.
+
+* (non-Unix versions): remove path and extension and lower-case program
+  name for use in error reporting.
+
+* (MS Windows version): added documentation overview page to HTML
+  help.
+
+* Removed 255 character limit on station names in .3d and .3dx files.
+
+* caverot: overlapping label code wasn't allowing enough for vertical
+  overlap.
+
+* cavern: after a bad *data command, ignore survey data until the next
+  valid *data command.
+
+* printdm/printpcl: exit cleanly if bitmap font file is missing.
+
+* cavern: give a more helpful error on empty "*export" or "*prefix".
+
+* xcaverot: Fixed display of surface legs and related minor issues.
+
+* print*: Fixed handling of surface legs; `-S' now recognised as a
+  short-form for `--surface'.
+
+* Added test of *solve command.
+
+* cavern: Added commands *date, *team, *instrument, *copyright -
+  currently these are ignored, but they provide a place to put data
+  when importing/exporting, and will be processed in future versions.
+
+* (MS Windows version): aven updated to same codebase as Unix version.
+
+Changes in 0.97-prerelease4:
+
+* Updated Portuguese and German translations.
+
+* aven: Accents now work in display; suppress "wxstd" warning box for
+  English; speed improvements; redesign of indicators; rescale by
+  dragging scalebar; allow surface legs to be hidden (they are by
+  default); now defaults to plan view; depth bar labelling improved;
+  added caverot-like handling of flat surveys (so output from extend
+  is locked flat).
+
+* cavern: Complain if the same name is used for a survey and a station.
+
+* cavern: Added --warnings-are-errors command line option.
+
+* caverot/xcaverot: Middle button now tilts cave by dragging rather
+  than toggling plan/elevation.
+
+* caverot: continue setup in background while help page is displayed;
+  "R" (Reverse Rotation) now only affects the auto-rotation - it used
+  to affect "C", "V", "/", and "'".
+
+* cavern: unused fix point warnings now work for stations fixed with
+  error estimates; added test cases for this.
+
+* testsuite: Enhanced many existing tests to check for warnings.
+
+* Fixed to build on Solaris with Sun's compiler.
+
+* Minor corrections to documentation and man pages.
+
+* cavern: report *export errors at the file and line where the *begin
+  for the survey involved was as that's much more useful.
+
+* cavern: allow "-" in station names by default.
+
+Changes in 0.97-prerelease3:
+
+* (Unix version): aven: Internationalised; Fixed serious drawing bug
+  causing incorrect rendering and segfaults; Scale bar now draggable;
+  Depth bar tidied up; Orientation menu changes; Menu accelerators
+  fixed; Status bar disabled (various continuing problems and it
+  doesn't really convey much useful info anyway); About box fixes;
+  Fixed crashes on mouse actions when no survey loaded; Improved
+  labelling of scale bar and indicators.
+
+* Created Swiss German and "German German" sub-versions of German
+  translation.
+
+* (DOS version): caverot: fixed slight underallocation of memory which
+  probably caused the bug Brian Clipstone reported.
+
+* cavern: Improved reporting of missing *export-s; added 2 more
+  *export tests.
+
+* No longer trap SIGINT (Ctrl-C) or SIGTERM (Ctrl-\ on Unix) as we
+  can't do anything useful.
+
+* Removed support for really old language names ("fren", "germ",
+  "ital", etc) - use "fr", "de", "it", etc instead.
+
+* (RISC OS version): support a few extra accents in messages.
+
+* "Syntax" in command-line help messages now translated.
+
+Changes in 0.97-prerelease2:
+
+* cad3d: Fixed output from `--help'; -e, -D, -S short options now work;
+  fixed infinite loop bug.
+
+* (Unix version): aven: leaving "about" box no longer causes segfault;
+  toggle status bar now works; N/S/E/W selects view rather than moving
+  cave; window close now works; now have ticks on appropriate menu
+  items; fixed problems with rendering (some legs missing!); 3d file
+  specified on command line now loaded; fixed occasional hangs; fixed
+  terrible slowness during rotation; implemented indicators; various
+  other bugs fixed.
+
+* Updated translations: pt de it (and fr partially)
+
+* Added tests for most commands and various other cases.
+
+* cavern: fixed *case (correct args are PRESERVE/TOUPPER/TOLOWER) and
+  upper/lower were swapped.
+
+* Documentation brought more up-to-date.
+
+* caverot/xcaverot: fix missing end of list marker for surface data
+  which typically resulted in a few extra bogus surface legs appearing.
+
+* printer drivers: fixed .ini file reading routine (bug introduced in
+  0.97-prerelease 1).
+
+* printps: postscript file meta information now includes the date of
+  creation, and also the name of the user running printps (Unix only).
+
+* printer drivers: improved reporting of problems with print.ini files.
+
+* (MSDOS version): fallback DPMI provider and floating point emulator
+  were missing in 0.97-prerelease1.
+
+* Better internationalisation - select localised system messages using
+  setlocale().
+
+Changes in 0.97-prerelease1:
+
+* extend: fixed bug which resulted in bogus output (added regression test);
+  produce binary rather than ASCII .3d output.
+
+* cavern: don't report error stats for articulating traverses.
+
+* (UNIX version): `make uninstall' now removes the HTML documentation.
+
+* (UNIX version): printer drivers: Look for /etc/survex/print.ini rather
+  than <prefix>/share/survex/myprint.ini
+
+* cavern: added warning that use of ROOT character ('\' by default) is
+  deprecated; updated documentation to mention this.
+
+* cavern: added *export command to allow scope of station names to be
+  limited.  If *export is never used, behaviour is as before.
+
+* cavern: added *flags command to allow surface surveys and duplicate
+  surveys (to be ignored when calculating the total survey length) to be
+  indicated.
+
+* new version of 3d file format which can store flags and is slightly more
+  compact.  NB New programs can load old .3d files, but old programs can't
+  load new .3d files.
+
+* caverot/xcaverot: allow surface legs to be hidden (they are by default)
+
+* cavern: compass can be omitted on legs in diving data to indicate a plumbed
+  leg.  In this case the tape and depth gauge readings are combined to give
+  the length of the leg.
+
+* cavern: *begin/*prefix reentry warning now gives the original location as
+  a separate warning so smart editors will allow you to click on it to jump
+  to that file and line.
+
+* printer drivers: put "http://www.survex.com/" on printouts in case someone
+  who gets a printout wants to know more about Survex.
+
+* cavern: added easting, northing, altitude added as prefered aliases for
+  dx, dy, dz.
+
+* cavern: bug fix: "*prefix \" or "*begin \" would cause an internal error.
+
+* xcaverot: "load" button now works; bearing always shown in range 0-360;
+  / and ' now tilt cave; `u' and `d' now switch to view from above/below;
+  shift-ed keys now work; `o' now turns off non-overlapping labels;
+  `ctrl-L' toggles display of survey legs.
+
+* caverot: n/s/e/w/u/d now work as in xcaverot - the previous functions they
+  had weren't actually useful; if memory is really tight, disable
+  non-overlapping labels rather than dying with an error.
+
+* prefer balanced quotes (`...') to unbalanced ('...') in messages.
+
+* cavern: file reading errors now treated as fatal; unattached survey error
+  now fatal.
+
+* survex: syntax errors in command line arguments now fatal.
+
+* cavern: if there are errors, don't produce output files.
+
+* cavern: bug fix: trying to report certain errors in really long lines could
+  cause an internal error.
+
+* 3dtodxf: renamed to cad3d since it can now produce DXF or sketch format.
+
+* aven: rewritten to use wxwindows (under Unix only so far).
+
+* printwin: new native Microsoft Windows printer driver.
+
+* (MS Windows version): new installation wizard.
+
+* Use double precision floating point to pass numbers to/from .3d file
+  reading routines to avoid rounding problems.
+
+* cavern: change of terminology - use "reading" instead of "datum",
+  since datum more usually means a map datum in surveying.
+
+Changes in 0.96:
+
+* (MSDOS and MS Windows versions): fixed bug in message file handling
+  introduced in 0.96-prerelease 1 - symptoms: messages incorrectly looked
+  for in current directory, or just printing "???" and exiting.
+
+* cavern: attempting to *include a non-existent file used to complain:
+  "In file included from example.svx:31:" / "cavern: Couldn't open data file
+  'bad.svx'" - now complain "example.svx:31: Couldn't open data file
+  'bad.svx'".
+
+* xcaverot: cursor keys now move the 3D centre of rotation rather than just
+  the position of the survey in the window.
+
+Changes in 0.96-prerelease4:
+
+* cavern (RISC OS version): "is this a directory" test would never say
+  "yes".
+
+* caverot: (MSDOS version) cursor keys and delete had stopped working (due
+  to changes in allegro graphics library) - fixed.
+
+* xcaverot: Zoom in and out with keyboard now behaves exactly like clicking
+  on buttons; Removed unused "select" button; Fixed significant memory leak.
+
+* aven: (MS Windows version) Mark Shinwell has written a Microsoft Windows
+  version of aven, which is better in almost every way than the directx
+  version of caverot (and we're working to fix the few shortfalls), so we've
+  shelved directx caverot and are now including aven instead with the MS
+  Windows version.
+
+Changes in 0.96-prerelease3:
+
+* caverot: DirectX version for Microsoft Windows.
+
+* caverot: (MSDOS version) 640x480 doesn't work under NT either, but 320x200
+  does so default to that instead.
+
+* caverot: --mode-picker option now listed by --help.
+
+Changes in 0.96-prerelease2:
+
+* caverot: (MSDOS version) --mode-picker now recognised anywhere on command
+  line (had to be last previously).
+
+* caverot: (MSDOS version) messages from Allegro library now
+  internationalised.
+
+* caverot: (MSDOS version) don't try to get 800x600 if running under NT -
+  try 640x480 instead.
+
+Changes in 0.96-prerelease1:
+
+* xcaverot: Improved responsiveness; can now load multiple .3d files from
+  command line; set defaults (press DELETE) now defaults scale that which
+  fits the whole survey on the screen.
+
+* cavern: Fixed bug in DOS and Windows versions with handling of paths
+  containing a mixture of "/" and "\".
+
+* 3dtodxf: added "--grid" option (supplied by Leandro); output file now
+  defaults to same name as input file but with a ".dxf" extension.
+
+* caverot: now get accents with MSDOS version.
+
+* cavern: applied patch from Leandro to fix problem with diving and topofil
+  styles.
+
+* 3dtodxf: can now produce an elevation view with --elevation=ANGLE option.
+
+Changes in 0.95:
+
+* Put aven in a separate RPM package since it depends on a stack of
+  libraries which not everyone will want to have to install.
+
+Changes in 0.95-prerelease7:
+
+* Disabled experimental gross-error detection code.
+
+* Now build RPMs (for RedHat Linux - may also work with Mandrake and some
+  others).
+
+Changes in 0.95-prerelease6:
+
+* Updated all translations.
+
+* Fixed another logic error in "only mentioned once in *equate with explicit
+  prefix" check.
+
+* Minor fixes to get MSDOS (djgpp) and MS Windows (mingw) builds working.
+
+Changes in 0.95-prerelease5:
+
+* If no stations are fixed, the first station mentioned is supposed to be.
+  But on some platforms (e.g. x86 Linux) the second station was being used
+  instead (regression test firststn).
+
+Changes in 0.95-prerelease4:
+
+* Fixed typo which prevented documentation from installing.
+
+* Fixed logic error in "only mentioned once in *equate with explicit prefix"
+  check.
+
+Changes in 0.95-prerelease3:
+
+* aven: updated to compile with new cvrotimg.
+
+* More fixes for compilation problems on non-Linux UNIX platforms.
+
+Changes in 0.95-prerelease2:
+
+* Minor tweaks to some messages.
+
+* 3dtodxf: Fixed calculation of bounding box if all coordinates are negative
+  in one or more axes.
+
+* Added Wookey's man pages - these just list the command line options and
+  point to the HTML documentation.
+
+* Fixes for compilation problems on non-Linux UNIX platforms.
+
+Changes in 0.95-prerelease1:
+
+* cavern: *fix with error values (one for same all round, two for horizontal
+  and vertical, three for x, y, z)
+
+* Fixed RISC OS not treating "foo." as a directory
+
+* Improved behaviour when sgmltools not installed
+
+* cavern: Merged patches for generating .3dx files for chasm
+
+* Miscellaneous code tidying
+
+* Moved unresolvable issues from BUGS to ZOMBIES
+
+* cavern: Fixed articulation code bug (handling of some cases of components
+  with multiple fixed points); added regression test
+
+* cavern: "*begin" / "*end foo" now gives more explicit error
+
+* cavern: More work on gross error detection
+
+* xcaverot: you can now set environmental variables XCAVEROT_FONTNAME,
+  XCAVEROT_INDICATOR_RADIUS
+
+* extend: now starts from highest station with only one leg.  If no such
+  station exists then revert to the previous behaviour of starting from
+  the highest station (but complain if we have no legs at all).
+
+* cavern: line numbers now correct for .svx files with Mac style lineends
+
+* cavern: improved error reporting in several cases
+
+* caverot: on RISC OS now fall back to using 2 or even just one screen
+  bank if we can't find a mode where we can create 3 banks
+
+* cavern: added data styles "TOPOFIL" (like tape/compass/clino but with a
+  counter instead of the tape), "CARTESIAN" (dx, dy, dz), and "NOSURVEY"
+  (for unsurveyed connections between surveys)
+
+* cavern: can now suppress "unused fixed point" error on a station by
+  station basis by using: "*fix <station> reference <coords>"
+
+* cavern: new command "*require <version>" to allow survey data to specify
+  the minimum survex version required to process it
+
+* print*: now search multiple print.ini files so you can override settings
+  in the shipped file rather than having to modify it.  Search order is:
+  ~/.survex/print.ini (unix only), <prefix>/share/survex/myprint.ini,
+  <prefix>/share/survex/print.ini
+
+* Changed xcaverot rotation/zoom to be the same way round as caverot
+
+* diffpos, extend, xcaverot, caverot: Now use cmdline library to parse
+  command line arguments and so support --help, --version, etc.
+
+* hto2svx, svx2hto, and survex wrapper now all support --help and --version
+
+* `configure --disable-aven' now disables building of aven
+
+* caverot: on RISC OS fall back to using 2 or just 1 screen bank if there's
+  not enough video memory allocated for 3.
+
+* Documentation brought more up to date.
+
+* If a station is only referenced once, and that reference is in a *equate
+  and with an explicit prefix (e.g. "*equate 1 possibletypo.6"), a warning
+  is issued.
+
+Changes in 0.94-prerelease2:
+
+* Added test for "cavern would segfault in articulate() on second *solve"
+  (bug3.svx)
+
+Changes in 0.94-prerelease1:
+
+* cavern: Fix for bug reported by Leandro - cavern would segfault in
+  articulate() on second *solve
+
+* xcaverot: Applied patches from Leandro: fix menu buttons, keyboard
+  shortcuts, colour of station markers, scalebar length and text display,
+  mouse right-button "cave drag", centre-button "plan/elevation switch",
+  zoom in/out menu button
+
+* cavern: Fixed "matrix wouldn't invert" problem with certain datasets;
+  added regression test (bug2)
+
+* Check for sgmltools v3 (sgmltools-lite) as well as v2
+
+* BorlandC and RISC OS config files are now regenerated when version number
+  is updated
+
+Changes in 0.93:
+
+* Quick fix for problem with finding articulation points in particularly
+  contorted components with 2 or more fixed points - for now each component
+  is solved separately, but they aren't split at articulation points
+
+* Turned off some debug code left active by mistake
+
+* Test suite was missing a file
+
+Changes in 0.92:
+
+* 3dtodxf's DXF output can be opened by AutoCAD 13, 14 and 2000, as
+  well as ArcView 3.x. Adobe Illustrator 8.0, and CorelDraw 8.
+  [checked by Mike Yocum]
+
+* HTML documentation now has meaningful filenames (no more "x532.htm")
+
+* RISC OS documentation zip file now has correct filetype for
+  Postscript version of docs
+
+* RISC OS binary distribution now includes !CLIcon GUI front end
+
+* Changed naming scheme for .zip archives to be more consistent
+
+* Added OLDNEWS with details of user-visible changes in much older
+  versions
+
+Changes in 0.92-prerelease6:
+
+* Windows and MSDOS builds were missing 3dtodxf.exe
+
+* Updated French, German, Portuguese, and Italian translations
+
+* Windows archive for pre5 contained Linux binaries! (except caverot)
+
+Changes in 0.92-prerelease5:
+
+* printps: now allow separate font sizes (and fonts) for station
+  labels and other text
+
+* print*/print.ini: allow different outputs to be specified for each
+  operating system with sensible defaults in print.ini
+
+* print.ini: major overhaul of layout to improve readability
+
+* Another regression test case added
+
+* HACKING: new file containing nuggets of wisdom for developers
+
+* Added default s.d. for level legs
+
+* Fixed network reduction bug (undoing network simplifications didn't
+  always restore removed stations to the station list)
+
+* Catch *begin with no matching *end
+
+* Catch *begin and matching *end in different files
+
+* Updated Portuguese, French, and German translations [Leandro/Eric/Gerhard]
+
+* Wrong warning was being given for `*equate 1 1'
+
+* xcaverot: fixed "step" button and keys
+
+* caverot: reduced exe size down to slightly more than 0.91 (allegro issue)
+
+Changes in 0.92-prerelease4:
+
+* cavern: "*infer" wasn't working due to internal token value mismatch
+
+* Short usage information now directs user to "--help"
+
+* print.ini: Tidied up comments about font size and line width for
+  printps
+
+* printps: Line width now set correctly for all pages with ghostview
+
+* cavern: Fixed problem with highly *equate-d nodes (introduced in
+  0.92-pre1)
+
+* aven: Fixed redraw errors; enabled splash screen [mark]
+
+* cavern: Fixed deltastar network transformation to handle covariances
+
+* More test cases added to catch any regressions of recent bug fixes
+
+* Include alien.pl in distribution (helper script for compiling with
+  BorlandC and on RISC OS)
+
+* cavern: tests for zero now use epsilon related tests, apart for on
+  RISC OS where the FP emulation appears to cut corners and give
+  slightly incorrect answers.
+
+* Now include Postscript version of documentation
+
+* HTML documentation now uses ".htm" extension instead of ".html" to
+  placate crap unzip programs which can't handle anything over 8.3
+
+* NEWS now describes user-visible changes; ChangeLog is now
+  autogenerated from the CVS commit messages
+
+Changes in 0.92-prerelease3:
+
+* xcaverot: Switching between plan and elevation now smoother
+
+* xcaverot: Fixed poor handling of keypresses when rotating
+
+* xcaverot: Reenabled buttons and made plan/elev button work properly
+
+* aven: New experimental gtk-based xcaverot replacement
+
+Changes in 0.92-prerelease2:
+
+* Can now just run individual tests from test suite
+
+* cavern: Turned off stray debugging output in matrix.c
+
+* Improved various bits of debug code
+
+* cavern: Fixed minor problems when compiling with NO_COVARIANCES
+
+* In test suite, cavern failing now causes test to fail immediately
+
+* Include riscos/config.h.in and borlandc/config.h.in in distribution
+
+* cavern: Fixed bug when finding articulation points in a component
+  with more than one fixed point
+
+Changes in 0.92-prerelease1:
+
+* caverot: Help screen incorrectly documented tilt as '/' and ':' -
+  actually it's on '/' and ''' (single quote)
+
+* caverot: Previously assumed shift-singlequote is '@' which is true
+  on UK keyboards but not on US keyboards.  Quick fix: check both '@'
+  and '"' for now.
+
+* "printps -b" now reports "option requires an argument" (used to segfault)
+
+* Updated printer driver command line options in manual
+
+* caverot: Fixed shift key to accelerate movements in allegro version
+
+* cavern: Disabled articulation point code (for now - there's a bug)
+
+* cavern: If a datafile isn't found, now try a lowercase version
+  before giving up (so on Unix you can now process a DOS dataset by
+  unpacking with "unzip -L" to force filenames of unpacked files to
+  lower case)
+
+* diffpos: Fixed a couple of bugs; also now exits with status 1 if
+  differences were reported
+
+* Added some tests for cavern and diffpos - more to follow
+
+* cavern: Covariance code now working and enabled by default
+
+* cavern: When equating two existing stations we need to replace the
+  pos of one with the pos of the other.  We used to look down the
+  whole station list, now we just look at neighbouring nodes
+  (noticeable time saving for large networks with many equates)
+
+* cavern: Renamed truncate function in commands.c to avoid clash with
+  library truncate function on FreeBSD
+
+* cavern: Warn that *prefix and *default are deprecated
+
+* Fixed obscure problems when configure is rerun with a different prefix
+
+* If the environmental variable SURVEXLANG isn't set, LANG is now
+  check before resorting to the default.  LANG is a standard way to
+  specify the language for GNU applications - SURVEXLANG is still
+  useful as a way to specify an alternate language if Survex doesn't
+  support your prefered language.
+
+* Cured superfluous copy of svxdocs in doc/svxdocs in source distribution
+
+* RISC OS and BorlandC builds now track copyright message and version
+  number automatically
+
+* If LANG is set to "en_US", treat it as if it were "en-us"
+
+* xcaverot: Merged in changes from John Pybus and Mark Shinwell
+
+* cavern: *solve followed by some entirely unconnected survey now
+  caught cleanly (used to hit an assert)
+
+* cavern: Corrected component and loop counts when there's hanging
+  survey around
+
+Changes in 0.91:
+
+* Fixed problem with message files with accented characters
+
+* Fixed RISC OS specific problem if SURVEXLANG was set
+
+* xcaverot: Fixed to centre and scale cave on startup
+
+* Removed superfluous containing directory for RISC OS documentation
+
+Changes in 0.90:
+
+* caverot: MSDOS Allegro mode-picker now reappears if an invalid mode
+  is chosen (caverot used to unhelpfully exit in this case).
+
+* caverot: Fixed cursor keys and delete in MSDOS Allegro version
+
+* fixed problem with US English messages
+
+* text files in DOS/Win32 zips now have ".txt" extension and DOS
+  end-of-lines
+
+* 3dtodxf: Leandro Dybal Bertoni has made major improvements to
+  DXF output
+
+* caverot: Right and Middle mouse button functions were swapped under
+  RISC OS
+
+* caverot: BorlandC (pre-386) version wasn't erasing screen between redraws
+
+* HTML version of documentation now has a hyperlinked table of
+  contents
+
+Changes in 0.90 beta3:
+
+* cavern: output files now go in current directory rather than the
+  same directory where the first .svx file is found.  You can set a
+  different directory using the "--output" command line option, which
+  can point to a directory or a file.
+
+* cavern: "*truncate off" rather than "*truncate 0"
+
+* survex: added wrapper to convert survex invocation into cavern invocation
+
+* hto filters moved into separate subdirectory of source distribution
+
+* cavern: fixed bug which included stations with 4 or more connections
+  in the .3d file several times
+
+* added "miniam.pl" which generates makefiles for BorlandC and RISC OS
+
+* printdm/printpcl: weren't showing text - problem with new format
+  font file
+
+* check for old SURVEXLANG codes (engi, fren, germ, ...) now case
+  insensitive
+
+Changes in 0.90 beta2:
+
+* xcaverot: Fixed to handle > 2048 stations/legs
+
+* Spanish and Catalan translations updated (only French left to do)
+
+Changes in 0.90 beta1:
+
+* German, Italian, and Portuguese translations updated
+
+* Linux binaries now supplied (x86 RPM)
+
+* Documentation brought largely up to date
+
+Changes in 0.90 alpha5:
+
+* cavern: comment parsing fix
+
+* cavern: network reduction bug fixed
+
+* new messages extracted for translation
+
+* printps: much smaller postscript output
+
+* printps: real circles in postscript output
+
+* nicer infobox on printouts
+
+* caverot: help page improved
+
+* scale units on printout bug fixed
+
+Changes in 0.90 alpha4:
+
+* printps: made postscript bounding box slightly larger
+
+* printps: tweaked postscript output to reduce size (5% smaller for
+  Kaninchenhoehle)
+
+Changes in 0.90 alpha3:
+
+* fixed bogus "Error writing printer output" message from printer drivers
+
+* minor cosmetic fixes to printer drivers
+
+* printps: added postscript bounding box
+
+* printps: fixed extra "%"s in postscript output
+
+* cavern: removed stray debug messages added in 0.90 alpha2
+
+Changes in 0.90 alpha2:
+
+* cavern: fixed memory allocation bug (affected *include and *title)
+
+Changes in 0.90 alpha1:
+
+* cavern: Halt after 50 errors to save swamping user
+
+* now use GNU getopt to parse command line options
+
+* cavern: -f and @ removed
+
+* cavern: -n, -t and -u replaced by *-commands
+
+* source code tidied up considerably
+
+* new format message files - now internally use unicode (in UTF-8) and
+  should be faster and smaller
+
+* new format font file for printdm/printpcl (faster and smaller)
+
+* cavern: GCC format error/warning messages to allow clicking on
+  messages to jump to the problem line in editors which support it
+  (e.g. GNU emacs and jed)
+
+* Now uses GNU automake under Unix which makes my life a lot easier and also
+  provides "make install"
+
+* xcaverot: now checks for failing to open the X display
+
+Changes in 0.81:
+
+* survex: Network reduction bug fixed (fix carried back from 0.90 development)
+
+Changes in 0.80:
+
+* Added ChangeLog
+
+* DOS binary distribution now includes files: BUGS NEWS TODO ChangeLog
+
+* Cross-compiler build for DOS now has debugging information stripped
+  from .exe files once more, so they are rather smaller
+
+* Sources now include configure.in for those wanting to do major development
+  work
+
+* Unix versions now build use GNU autoconf - to build just unpack, run
+  "./configure" then "make"
+
+* Messages file now represents accents like in HTML (e.g. &eacute;
+  for é)
+
+* caverot: fixed up standard DOS (allegro) version to work much
+  better.  In particular, it will now try to choose a video mode for
+  itself (use --mode-picker at the end of the command line to get the
+  mode picker), and keyboard and mouse initialisation problems are
+  cured
+
+* survex: You can now use DOS or UNIX style filenames (/ or \ for
+  directory separator) on any platform and they will be translated to
+  the native format for your OS.  This makes datasets much more
+  portable.
+
+* survex: "Unique" option changed to "Truncate" and now truncates
+  names if set
+
+* Removed artificial limit on survey station name length (was 12
+  characters per prefix component)
+
+* Many other minor changes
+
+Changes in 0.72:
+
+* Expiry timeout removed from all programs
+
+Changes in 0.71:
+
+* printdm: Native Printer support for Cannon BJ printers.
+
+* caverot: DJGPP version for use of more than 640K
+
+* xcaverot: Updated to have most of the features of Caverot (non-overlapping
+  labels, scale bar & tilt/direction indicators)
+
+Changes in 0.70:
+
+* Language support for Catalan, Spanish, and Italian added
+
+* caverot: tilt indicator added
+
+* caverot: constant speed rotation (e.g. for small caves on fast computers)
+
+* caverot: Smooth plan <-> elevation transitions on faster machines
+
+* caverot: Two files can be read in and displayed in different colour
+  (eg cave and surface data)
+
+* caverot: Extended memory version so big datasets can be displayed on
+  DOS version
+
+* Printer Drivers: INI file used instead of multiple configuration files.
+
+* Printer Drivers: Defaults set-able for all print settings
+
+* Printer Drivers: Option to print tilted plots
+
+* printhpgl: now has origin in centre of page option (and is default)
+
+* printdm/printpcl: Printer font made ISO-8859-1 compatible
+
+* Printer Drivers: Dotted borders to facilitate cutting to size with scissors
+
+* Printer Drivers: Scale bar length limited to save time on large plots
+
+* survex: If adjusted tape is negative then warning generated
+
+* survex: User-definable characters for input (e.g. for odd characters
+  in imported station names)
+
+Changes in 0.62:
+
+* printdm: bug-fix: a graphics postfix setting had been added to
+  dm.cfg, but if this was not used then printing would go wrong
+
+* printpcl: added an option for printers that do not understand the
+  PCL Vertical Tab command - see PCL.cfg
+
+Changes in 0.61:
+
+* Includes a new version of caverot that arranges the labels so that
+  they don't overlap.
+
+Changes in 0.60:
+
+* French and German translations greatly improved
+
+* survex: Survey grades now supported
+
+* survex: *calibrate, *data, and *units enhanced in a backwards
+  compatible way
+
+* survex: survey network is now split at articulation points
+  (faster/less memory)
+
+* survex: Omitted clino readings give a vertical sd of tape/sqrt(10)
+
+* survex: filenames with spaces are now supported - just put them in
+  quotes ("")
+
+* diffpos/3dtodxf: improved and made more robust
+
+* caverot: "sliding point" code improved to work even in really
+  extreme cases
+
+* caverot: added a "compass"
+
+* caverot: memory usage improved, so it now copes with larger files
+
+* And a host of more minor improvements and bug-fixes
+

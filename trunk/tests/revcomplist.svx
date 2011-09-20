@@ -1,0 +1,18 @@
+; check that we cope with a fixed point cut line between two
+; articulations
+*fix A 0 0 0
+*fix B 2 2 2
+*fix C reference 1 1 1
+*equate D B
+D F 1.00 000 0
+F G 1.00 000 0
+G F 1.00 000 0
+B H 1.00 000 0
+H I 1.00 000 0
+H I 1.00 000 0
+H I 1.00 000 0
+I K 1.00 000 0
+*equate E A
+L E 1.00 000 0
+K L 1.00 000 0
+K L 1.00 000 0

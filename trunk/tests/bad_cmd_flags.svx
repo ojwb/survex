@@ -1,0 +1,20 @@
+*fix 1 reference 0 0 0
+*flags
+*flags; comment
+*flags ; comment
+*flags rubbish
+*flags not rubbish
+*flags not not
+*flags not
+*flags not; comment
+*flags not ; comment
+*flags splay rubbish
+*flags splay not rubbish
+*flags splay not not
+*flags splay not
+*flags rubbish splay
+*flags not rubbish splay
+*flags not not splay
+*flags splay rubbish surface
+*flags splay not rubbish surface
+*flags splay not not surface

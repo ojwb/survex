@@ -1,0 +1,7 @@
+*equate entrance outer.inner.1
+*begin outer
+*begin inner
+*export 1
+1 2 1.23 045 -6
+*end inner
+*end outer

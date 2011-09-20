@@ -1,0 +1,12 @@
+*fix 1 0 0 0
+*begin ; also check begin/end preserves original truncate setting
+*Truncate 2
+1 20 1 0 0
+20 300 1 0 0
+301 40asdhjhsjdasd 1 0 0
+*TRUNCATE Off
+30 longername 1 0 0
+*truncate 3
+1 301 1 0 0
+*end
+301 veryveryveryveryveryveryveryveryveryveryverylongname 1 0 0

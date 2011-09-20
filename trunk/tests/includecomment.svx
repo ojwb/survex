@@ -1,0 +1,3 @@
+; a trailing comment like this causes an error in one of the 0.96 prereleases
+*include singlefix.svx   ; hello
+1 2 1 0 0

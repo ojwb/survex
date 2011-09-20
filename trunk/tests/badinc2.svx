@@ -1,0 +1,2 @@
+; include of a file which includes a nonexistent file
+*include badinc

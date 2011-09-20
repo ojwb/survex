@@ -1,0 +1,32 @@
+*fix 1 reference 0 0 0
+*begin
+*set blank ^
+*fix^1 reference^0^0^0 ; error
+*end
+*begin
+*set comment %"
+" a comment
+% another comment
+; comment ; error
+*set keyword ;
+*end ; error
+;end
+*begin
+*set blank +
+*set+decimal+,/
+*set+plus
+*set+NAMES+()
+*fix+(2)+reference+1.0+2/0+3 ; error
+*set+blank+&
+*fix&3&reference&+1.0&2&3 ; error
+*end
+*begin
+*set omit _
+*set names
+*set separator -
+*equate foo.1 1 ; error
+*begin bar
+*export 1
+1 2 100 - down ; error
+*end bar
+*end

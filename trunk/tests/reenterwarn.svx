@@ -1,0 +1,6 @@
+*begin 1
+*end 1
+*begin 1
+*end 1
+*fix A 0 0 0
+A B 1 0 0
