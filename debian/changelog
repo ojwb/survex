@@ -1,3 +1,9 @@
+survex (1.0.40) UNRELEASED; urgency=low
+
+  * debian/survex.install: Update for move of survex man page to section 7.
+ 
+ -- Olly Betts <olly@survex.com>  Tue, 24 May 2011 05:24:26 +0000
+
 survex (1.0.39) unstable; urgency=low
 
   * Updates to French translation from Michel Bovey.  Also updates to German,

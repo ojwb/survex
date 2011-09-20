@@ -32,7 +32,7 @@ debian/tmp/usr/share/man/man1/printhpgl.1
 debian/tmp/usr/share/man/man1/printpcl.1
 debian/tmp/usr/share/man/man1/printps.1
 debian/tmp/usr/share/man/man1/sorterr.1
-debian/tmp/usr/share/man/man1/survex.1
 debian/tmp/usr/share/man/man1/xcaverot.1
 debian/tmp/usr/share/man/man5/print.ini.5
+debian/tmp/usr/share/man/man7/survex.7
 debian/tmp/usr/share/doc/survex
