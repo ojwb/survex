@@ -106,6 +106,8 @@ else
   am__fastdepCXX_FALSE=
 fi
 
+AM_PROG_CC_C_O
+
 AC_LANG_C
 
 AC_PROG_MAKE_SET
