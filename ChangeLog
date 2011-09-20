@@ -1,3 +1,8 @@
+Tue Sep 20 06:43:56 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.c: Only define INT32_T if it isn't already defined (it will
+	  be for 1.0.x).
+
 Tue Sep 20 06:43:23 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/cavern.c: Remove unused function left over from recent change to
