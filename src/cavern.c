@@ -422,7 +422,7 @@ main(int argc, char **argv)
    }
    if (msg_warnings || msg_errors) {
       if (msg_errors || (f_warnings_are_errors && msg_warnings)) {
-	 printf(msg(/*There were %d warning(s) and %d non-fatal error(s) - no output files produced.*/113),
+	 printf(msg(/*There were %d warning(s) and %d error(s) - no output files produced.*/113),
 		msg_warnings, msg_errors);
 	 putnl();
 	 return EXIT_FAILURE;

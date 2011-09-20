@@ -1,3 +1,9 @@
+Tue Sep 20 10:48:35 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/cavern.c: Drop "non-fatal" from the report of how many errors
+	  there were at the end of the run - it just confuses users - we won't
+	  even get here if there's a fatal error!
+
 Tue Sep 20 10:44:51 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport changes from 1.2.0:
