@@ -1,3 +1,7 @@
+Tue Sep 20 11:31:03 GMT 2011  Olly Betts <olly@survex.com>
+
+	* tests/: Update FSF address.
+
 Tue Sep 20 11:28:50 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/print.ini: Update reference to Survex 1.1; update FSF address.
