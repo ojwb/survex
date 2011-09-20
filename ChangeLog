@@ -1,3 +1,7 @@
+Tue Sep 20 12:27:41 GMT 2011  Olly Betts <olly@survex.com>
+
+	* xvfb-run: Remove script which is no longer used.
+
 Tue Sep 20 12:18:26 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
