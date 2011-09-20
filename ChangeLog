@@ -1,3 +1,9 @@
+Tue Sep 20 06:48:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/cavern.c: Add --3d-version option to allow the user
+	  to specify the version of the 3d format to output.  (ticket#21)
+
 Tue Sep 20 06:44:32 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.1:
