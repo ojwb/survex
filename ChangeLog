@@ -1,3 +1,8 @@
+Tue Sep 20 12:58:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* configure.in: No need for AC_PROG_MAKE_SET when using automake.
+
 Tue Sep 20 12:56:04 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
