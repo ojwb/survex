@@ -75,7 +75,6 @@ svxedit.ico: ../lib/icons/svxedit.ico
 
 editwrap_LDADD = svxeditrc.o
 
-# FIXME: use path on WXCONFIG to get --include-dir?
 avenrc.o: $(srcdir)/aven.rc aven.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` -o "$$pwd/avenrc.o" aven.rc
 

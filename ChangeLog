@@ -1,3 +1,8 @@
+Tue Sep 20 13:29:11 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/Makefile.am: Remove FIXME which has already been resolved.
+
 Tue Sep 20 13:27:15 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
