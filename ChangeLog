@@ -1,3 +1,8 @@
+Tue Sep 20 13:12:26 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/readval.c: Fix comment typo.
+
 Tue Sep 20 13:11:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
