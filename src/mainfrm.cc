@@ -91,14 +91,14 @@ BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
-    EVT_BUTTON(button_FIND, MainFrm::OnFind)
+    EVT_BUTTON(wxID_FIND, MainFrm::OnFind)
     EVT_BUTTON(button_HIDE, MainFrm::OnHide)
 
-    EVT_MENU(menu_FILE_OPEN, MainFrm::OnOpen)
-    EVT_MENU(menu_FILE_PRINT, MainFrm::OnPrint)
+    EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
+    EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
     EVT_MENU(menu_FILE_EXPORT, MainFrm::OnExport)
-    EVT_MENU(menu_FILE_QUIT, MainFrm::OnQuit)
+    EVT_MENU(wxID_EXIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
     EVT_CLOSE(MainFrm::OnClose)
@@ -124,8 +124,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_ORIENT_ELEVATION, MainFrm::OnElevation)
     EVT_MENU(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpoint)
     EVT_MENU(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpoint)
-    EVT_MENU(menu_ORIENT_ZOOM_IN, MainFrm::OnZoomIn)
-    EVT_MENU(menu_ORIENT_ZOOM_OUT, MainFrm::OnZoomOut)
+    EVT_MENU(wxID_ZOOM_IN, MainFrm::OnZoomIn)
+    EVT_MENU(wxID_ZOOM_OUT, MainFrm::OnZoomOut)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
@@ -147,9 +147,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_DEGREES, MainFrm::OnToggleDegrees)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
-    EVT_MENU(menu_HELP_ABOUT, MainFrm::OnAbout)
+    EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
 
-    EVT_UPDATE_UI(menu_FILE_PRINT, MainFrm::OnPrintUpdate)
+    EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
     EVT_UPDATE_UI(menu_ROTATION_START, MainFrm::OnStartRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
@@ -171,8 +171,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_ORIENT_ELEVATION, MainFrm::OnElevationUpdate)
     EVT_UPDATE_UI(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpointUpdate)
     EVT_UPDATE_UI(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpointUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_ZOOM_IN, MainFrm::OnZoomInUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
+    EVT_UPDATE_UI(wxID_ZOOM_IN, MainFrm::OnZoomInUpdate)
+    EVT_UPDATE_UI(wxID_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
@@ -314,14 +314,16 @@ void MainFrm::CreateMenuBar()
     // Create the menus and the menu bar.
 
     wxMenu* filemenu = new wxMenu;
-    filemenu->Append(menu_FILE_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
+    // wxID_OPEN stock label lacks the ellipses
+    filemenu->Append(wxID_OPEN, GetTabMsg(/*@Open...##Ctrl+O*/220));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
+    // wxID_PRINT stock label lacks the ellipses
+    filemenu->Append(wxID_PRINT, GetTabMsg(/*@Print...##Ctrl+P*/380));
     filemenu->Append(menu_FILE_PAGE_SETUP, GetTabMsg(/*P@age Setup...*/381));
     filemenu->AppendSeparator();
     filemenu->Append(menu_FILE_EXPORT, GetTabMsg(/*@Export as...*/382));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_QUIT, GetTabMsg(/*@Quit##Ctrl+Q*/221));
+    filemenu->Append(wxID_EXIT);
 
     m_history.UseMenu(filemenu);
     m_history.Load(*wxConfigBase::Get());
@@ -355,8 +357,9 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_HIGHER_VP, GetTabMsg(/*@Higher Viewpoint*/250));
     orientmenu->Append(menu_ORIENT_LOWER_VP, GetTabMsg(/*L@ower Viewpoint*/251));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
-    orientmenu->Append(menu_ORIENT_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
+    // Default labels for wxID_ZOOM_IN and wxID_ZOOM_OUT don't have accels.
+    orientmenu->Append(wxID_ZOOM_IN, GetTabMsg(/*@Zoom In##]*/252));
+    orientmenu->Append(wxID_ZOOM_OUT, GetTabMsg(/*Zoo@m Out##[*/253));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_DEFAULTS, GetTabMsg(/*Restore De@fault Settings*/254));
 
@@ -394,7 +397,7 @@ void MainFrm::CreateMenuBar()
     ctlmenu->Append(menu_VIEW_DEGREES, GetTabMsg(/*@Degrees*/343), "", true);
 
     wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(menu_HELP_ABOUT, GetTabMsg(/*@About...*/290));
+    helpmenu->Append(wxID_ABOUT);
 
     wxMenuBar* menubar = new wxMenuBar(wxMB_DOCKABLE);
     menubar->Append(filemenu, GetTabMsg(/*@File*/210));
@@ -419,7 +422,7 @@ void MainFrm::CreateToolBar()
     toolbar->SetMargins(5, 5);
 #endif
 
-    toolbar->AddTool(menu_FILE_OPEN, TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
+    toolbar->AddTool(wxID_OPEN, TOOLBAR_BITMAP("open"), "Open a 3D file for viewing");
     toolbar->AddSeparator();
     toolbar->AddTool(menu_ROTATION_TOGGLE, TOOLBAR_BITMAP("rotation"),
 		     wxNullBitmap, true, -1, -1, NULL, "Toggle rotation");
@@ -460,7 +463,7 @@ void MainFrm::CreateSidePanel()
 
     m_FindBox = new wxTextCtrl(find_panel, -1, "");
     wxButton *find_button, *hide_button;
-    find_button = new wxButton(find_panel, button_FIND, msg(/*Find*/332));
+    find_button = new wxButton(find_panel, wxID_FIND, msg(/*Find*/332));
     find_button->SetDefault();
     // SetDefaultItem() was moved from wxPanel to wxTopLevelWindow in wx2.8.
     // No idea how to work around that, but it doesn't seem to be needed with

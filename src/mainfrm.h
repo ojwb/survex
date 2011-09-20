@@ -42,11 +42,8 @@ using namespace std;
 extern const int NUM_DEPTH_COLOURS;
 
 enum {
-    menu_FILE_OPEN = 1000,
-    menu_FILE_PRINT,
-    menu_FILE_PAGE_SETUP,
+    menu_FILE_PAGE_SETUP = 1000,
     menu_FILE_EXPORT,
-    menu_FILE_QUIT,
     menu_ROTATION_START,
     menu_ROTATION_STOP,
     menu_ROTATION_TOGGLE,
@@ -67,8 +64,6 @@ enum {
     menu_ORIENT_ELEVATION,
     menu_ORIENT_HIGHER_VP,
     menu_ORIENT_LOWER_VP,
-    menu_ORIENT_ZOOM_IN,
-    menu_ORIENT_ZOOM_OUT,
     menu_ORIENT_DEFAULTS,
     menu_VIEW_SHOW_LEGS,
     menu_VIEW_SHOW_CROSSES,
@@ -92,8 +87,6 @@ enum {
     menu_VIEW_DEGREES,
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
-    menu_HELP_ABOUT,
-    button_FIND,
     button_HIDE
 };
 

@@ -1,3 +1,10 @@
+Tue Sep 20 07:41:25 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* src/printwx.cc: Use stock wx button IDs wxID_PRINT and
+	  wxID_PREVIEW where appropriate.
+	* src/aven.cc,src/mainfrm.cc,src/mainfrm.h: Use more stock IDs.
+
 Tue Sep 20 07:19:46 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:

@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -57,9 +57,6 @@ Aven::~Aven()
 bool Aven::OnInit()
 {
 #ifdef __WXMAC__
-    // Tell wxMac which the About menu item is so it can be put where MacOS
-    // users expect it to be.
-    wxApp::s_macAboutMenuItemId = menu_HELP_ABOUT;
     // wxMac is supposed to remove this magic command line option (which
     // Finder passes), but the code in 2.4.2 is bogus.  It just decrements
     // argc rather than copying argv down.  But luckily it also fails to

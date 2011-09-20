@@ -105,8 +105,8 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
     EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
-    EVT_BUTTON(svx_PRINT, svxPrintDlg::OnPrint)
-    EVT_BUTTON(svx_PREVIEW, svxPrintDlg::OnPreview)
+    EVT_BUTTON(wxID_PRINT, svxPrintDlg::OnPrint)
+    EVT_BUTTON(wxID_PREVIEW, svxPrintDlg::OnPreview)
     EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
 END_EVENT_TABLE()
@@ -240,9 +240,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL, msg(/*&Cancel*/402));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
-    but = new wxButton(this, svx_PREVIEW, msg(/*Pre&view*/401));
+    but = new wxButton(this, wxID_PREVIEW, msg(/*Pre&view*/401));
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
-    but = new wxButton(this, svx_PRINT, msg(/*&Print*/400));
+    but = new wxButton(this, wxID_PRINT, msg(/*&Print*/400));
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
