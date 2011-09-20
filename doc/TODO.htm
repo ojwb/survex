@@ -52,15 +52,7 @@ not to?  It depends on whether we expect people to hold down keys or not...
 Perhaps something smart where the first press is a fixed size, then after that
 it depends on the redraw?
 
-<li>aven for MSDOS?
-
-<li>max (or fullscreen) on startup option.  Or just remember last window size?
-
 <li>dot (or some mark) for a fixed point not otherwise used
-
-<li>distances to nearest cm, not m (inch or 0.1ft, not ft)
-
-<li>give coords of nearest point _instead_ of mouse (x,y)/alt, not as well?
 
 <li>Z/X a bit "exponential"
 
@@ -80,8 +72,6 @@ http://www.srcf.ucam.org/~dl267/snapshot1.png for an example.
 
 <li>aven: Finish adding calls to msg() so messages can be translated.
 
-<li>aven: tilt and rot should be floating point values, not integers...
-
 <li>aven: Implement "print clipped to what's in the window".
 
 <li>aven: the preview window should display all the pages in one window,
@@ -96,9 +86,6 @@ http://www.srcf.ucam.org/~dl267/snapshot1.png for an example.
     moved to the least awkward positions...
 
 <li>Check skip blank pages works (checked printps)...
-
-<li>printdm: put standard scaling in print.ini for canon bj
-(work out what's up with vertical size...)
 
 <li>
 On Windows, if the default printer is on another machine which
@@ -151,9 +138,7 @@ and then the prefix of a leg == prefix of each end...?
 
 <ul>
 
-<li>extract help screen from caverot.c for translation
-
-<li>quotes in messages - translate too? e.g. `XXX' to « XXX ».  Eric
+<li>quotes in messages - translate too? e.g. `XXX' to &laquo; XXX &raquo;.  Eric
 suggests not in French.
 
 <li>extract --help messages for translation.
@@ -184,7 +169,7 @@ selectable
 
 <ul>
 
-<li>resolve entries in TODO; resolve FIXMEs in code
+<li>resolve FIXMEs in code
 
 <li>Default variance for topofil counter? (currently same as that of tape)
 
@@ -193,10 +178,6 @@ identified?  Beware of issues like those that revcomplist test checks.
 
 <li>Don't split other traverses at articulating traverses when reporting error
 stats.
-
-<li>caverot: on RISC OS now fall back to using 2 or even just one screen
-bank if we can't find a mode where we can create 3 banks [FIXME: need
-to test this works]
 
 <li>flag nosurvey legs in .3d file
 
@@ -230,25 +211,10 @@ bar.2 moved by (-0.02, -0.05, 0.03)
 
 <li>improve .plt export to include less crude survey structure.
 
-<li>MacOS X packaging - make Aven.app a bundle - structure like so:
-<pre>
-	Aven.app/
-		Contents/
-			MacOS/
-				Aven
-		Info.plist
-		Resources/
-</pre>
-
-And we need to set Aven.app's bundle bit.
-
 <li>look at solution by QR factorisation in matrix.c more
 
 <li>consider disabling the more expensive asserts - turning them all off
 speeds up cavern by about 10%.
-
-<li>InnoSetup: UninstallDisplayIcon = {app}\foo.ico (or .exe) | in [Files] ... ; Flags: isreadme | {userdesktop} to add icons | -mail | do we remove file
- associations on uninstall?
 </ul>
 
 </BODY></HTML>
