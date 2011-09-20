@@ -1,3 +1,11 @@
+Tue Sep 20 07:11:37 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* tests/: Most tests weren't actually running and testcases (looks like
+	  a sh portability issue).  Fixed, and fortunately all tests still
+	  pass.
+	* tests/extend.tst: Fix to file .espec files when srcdir != builddir.
+
 Tue Sep 20 06:59:39 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:

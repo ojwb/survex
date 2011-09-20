@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005 Olly Betts
+# Copyright (C) 1999-2004,2005,2010 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
@@ -31,7 +31,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${DIFFPOS="$testdir"/../src/diffpos}
 : ${CAD3D="$testdir"/../src/cad3d}
 
-: ${TESTS=${*-"singlefix singlereffix oneleg midpoint noose cross firststn\
+: ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
  lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
  cmd_entrance cmd_sd cmd_sd_bad cmd_fix_bad cmd_set cmd_set_bad\
