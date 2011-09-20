@@ -1,3 +1,8 @@
+Tue Sep 20 06:08:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* buildmacosx.sh: Sync useful changes from 1.2.0.
+
 Mon Jun 21 17:07:13 GMT 2010  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.1.13:
