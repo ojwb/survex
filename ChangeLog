@@ -1,3 +1,13 @@
+Tue Sep 20 12:39:41 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* src/listpos.c: In "Station X referred to by *entrance or *export but
+	  never used" warning, give file and linenumber where the *entrance or
+	  *export occurred.
+	* src/listpos.c: In "Station X referred to just once, with an explicit
+	  prefix - typo?" warning, give file and linenumber where the *equate
+	  occurred.
+
 Tue Sep 20 12:37:25 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
