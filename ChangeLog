@@ -1,3 +1,7 @@
+Tue Sep 20 13:21:18 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc: Correctly capitalise "GTK".
+
 Tue Sep 20 13:12:26 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
