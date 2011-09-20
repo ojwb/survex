@@ -924,8 +924,8 @@ replace_trailing_travs(void)
 	 if (d == 0 ||
 	     (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident)) {
 	    /* Unused fixed points without and with error estimates */
-	    warning(/*Unused fixed point `%s'*/73,
-		    sprint_prefix(stn1->name));
+	    warning_in_file(stn1->name->filename, stn1->name->line,
+		    /*Unused fixed point `%s'*/73, sprint_prefix(stn1->name));
 	 }
       }
 

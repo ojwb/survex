@@ -1,3 +1,9 @@
+Tue Sep 20 13:11:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/netskel.c: In "Unused fixed point" warning, give file and
+	  linenumber where the "*fix" occurred.
+
 Tue Sep 20 13:08:15 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport changes from 1.2.0:
