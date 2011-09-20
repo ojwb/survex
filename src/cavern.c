@@ -401,15 +401,6 @@ do_range(int d, int msgno)
 }
 
 static void
-svx_fprintf(FILE *f, const char * fmt, ...)
-{
-    va_list ap;
-    va_start(ap, fmt);
-    svx_vfprintf(f, fmt, ap);
-    va_end(ap);
-}
-
-static void
 do_stats(void)
 {
    long cLoops = cComponents + cLegs - cStns;

@@ -1,3 +1,8 @@
+Tue Sep 20 06:43:23 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/cavern.c: Remove unused function left over from recent change to
+	  how coordinate ranges get reported.
+
 Tue Sep 20 06:42:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* make_release: Use the URL field from svn info in the command we give
