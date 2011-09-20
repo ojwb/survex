@@ -1,3 +1,10 @@
+Tue Sep 20 08:04:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/printwx.cc: When using a standard wxID_xxx id with
+	  wxButton, use the implicit default label, as the wx documentation
+	  recommends.
+
 Tue Sep 20 07:59:41 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
