@@ -251,7 +251,7 @@ and automatically converted to a number of other formats.  If
 you are going to send us <emphasis>major</emphasis> changes, it's much easier
 to include them if you work from this master.  You can get it
 from the source archive (docs/manual.sgml) or from <ulink
-url="http://www.survex.com/docs.html">the Survex website</ulink>.
+url="http://survex.com/docs.html">the Survex website</ulink>.
 </Para>
 
 <Sect3><Title>Terminology</Title>

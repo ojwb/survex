@@ -8,7 +8,7 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 </HEAD><BODY BGCOLOR=white TEXT=black>
 
 Access to mailing lists and downloads are available at the <A
-HREF="http://www.survex.com/">Survex web site</A>.
+HREF="http://survex.com/">Survex web site</A>.
 
 <H1>@PRETTYPACKAGE@ @VERSION@ Documentation</H1>
 

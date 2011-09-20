@@ -1,3 +1,12 @@
+Tue Sep 20 11:36:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* doc/index.htm.in,doc/manual.sgml,doc/survex.ent,lib/print.ini,
+	  src/printwx.cc,survex.iss.in: Use http://survex.com/ rather than
+	  http://www.survex.com/ - the former is the canonical name and
+	  www.survex.com just redirects.
+	* COPYING,lib/print.ini,src/riscos/armrot.s,tests/: Update FSF address.
+
 Tue Sep 20 11:33:03 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
