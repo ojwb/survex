@@ -251,7 +251,7 @@ main(int argc, char **argv)
        case 'v': {
 	 int v = atoi(optarg);
 	 if (v < IMG_VERSION_MIN || v > IMG_VERSION_MAX)
-	    fatalerror(/*3d file format versions %d to %d supported*/88,
+	    fatalerror(/*3d file format versions %d to %d supported*/216,
 		       IMG_VERSION_MIN, IMG_VERSION_MAX);
 	 img_output_version = v;
 	 break;
