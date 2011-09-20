@@ -1,3 +1,8 @@
+Tue Sep 20 03:41:58 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.h: Declare border as "struct border" rather than as a
+	  typedef to avoid a -Wshadow warning.
+
 Tue Sep 20 00:15:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS: Perhaps the final update for 1.2.0.
