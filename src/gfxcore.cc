@@ -2583,30 +2583,30 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 
     m_RedrawOffscreen = Animate();
 
-    switch (e.m_keyCode) {
+    switch (e.GetKeyCode()) {
 	case '/': case '?':
 	    if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
-		OnLowerViewpoint(e.m_shiftDown);
+		OnLowerViewpoint(e.ShiftDown());
 	    break;
 	case '\'': case '@': case '"': // both shifted forms - US and UK kbd
 	    if (m_TiltAngle < M_PI_2 && m_Lock == lock_NONE)
-		OnHigherViewpoint(e.m_shiftDown);
+		OnHigherViewpoint(e.ShiftDown());
 	    break;
 	case 'C': case 'c':
 	    if (m_RotationOK && !m_Rotating)
-		OnStepOnceAnticlockwise(e.m_shiftDown);
+		OnStepOnceAnticlockwise(e.ShiftDown());
 	    break;
 	case 'V': case 'v':
 	    if (m_RotationOK && !m_Rotating)
-		OnStepOnceClockwise(e.m_shiftDown);
+		OnStepOnceClockwise(e.ShiftDown());
 	    break;
 	case ']': case '}':
 	    if (m_Lock != lock_POINT)
-		OnZoomIn(e.m_shiftDown);
+		OnZoomIn(e.ShiftDown());
 	    break;
 	case '[': case '{':
 	    if (m_Lock != lock_POINT)
-		OnZoomOut(e.m_shiftDown);
+		OnZoomOut(e.ShiftDown());
 	    break;
 	case 'N': case 'n':
 	    if (!(m_Lock & lock_X))
@@ -2626,11 +2626,11 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case 'Z': case 'z':
 	    if (m_RotationOK)
-		OnSpeedUp(e.m_shiftDown);
+		OnSpeedUp(e.ShiftDown());
 	    break;
 	case 'X': case 'x':
 	    if (m_RotationOK)
-		OnSlowDown(e.m_shiftDown);
+		OnSlowDown(e.ShiftDown());
 	    break;
 	case 'R': case 'r':
 	    if (m_RotationOK)
@@ -2659,35 +2659,35 @@ void GfxCore::OnKeyPress(wxKeyEvent &e)
 		OnStopRotation();
 	    break;
 	case WXK_LEFT:
-	    if (e.m_controlDown) {
+	    if (e.ControlDown()) {
 		if (m_RotationOK && !m_Rotating)
-		    OnStepOnceAnticlockwise(e.m_shiftDown);
+		    OnStepOnceAnticlockwise(e.ShiftDown());
 	    } else {
-		OnShiftDisplayLeft(e.m_shiftDown);
+		OnShiftDisplayLeft(e.ShiftDown());
 	    }
 	    break;
 	case WXK_RIGHT:
-	    if (e.m_controlDown) {
+	    if (e.ControlDown()) {
 		if (m_RotationOK && !m_Rotating)
-		    OnStepOnceClockwise(e.m_shiftDown);
+		    OnStepOnceClockwise(e.ShiftDown());
 	    } else {
-		OnShiftDisplayRight(e.m_shiftDown);
+		OnShiftDisplayRight(e.ShiftDown());
 	    }
 	    break;
 	case WXK_UP:
-	    if (e.m_controlDown) {
+	    if (e.ControlDown()) {
 		if (m_TiltAngle < M_PI_2 && m_Lock == lock_NONE)
-		    OnHigherViewpoint(e.m_shiftDown);
+		    OnHigherViewpoint(e.ShiftDown());
 	    } else {
-		OnShiftDisplayUp(e.m_shiftDown);
+		OnShiftDisplayUp(e.ShiftDown());
 	    }
 	    break;
 	case WXK_DOWN:
-	    if (e.m_controlDown) {
+	    if (e.ControlDown()) {
 		if (m_TiltAngle > -M_PI_2 && m_Lock == lock_NONE)
-		    OnLowerViewpoint(e.m_shiftDown);
+		    OnLowerViewpoint(e.ShiftDown());
 	    } else {
-		OnShiftDisplayDown(e.m_shiftDown);
+		OnShiftDisplayDown(e.ShiftDown());
 	    }
 	    break;
 	case WXK_ESCAPE:
