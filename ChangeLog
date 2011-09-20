@@ -1,3 +1,11 @@
+Tue Sep 20 11:56:04 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* src/diffpos.c: Handle files with duplicate labels in better - extend
+	  generates duplicate labels when it breaks a loop.
+	* tests/extend.tst: Enable eswap-break testcase now that diffpos is
+	  fixed.
+
 Tue Sep 20 11:36:30 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport changes from 1.2.0:
