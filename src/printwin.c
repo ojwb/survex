@@ -430,7 +430,7 @@ win_Init(FILE **fh_list, const char *pth, const char *out_fnm,
    scX = *pscX = xpPageWidth / PaperWidth;
    scY = *pscY = ypPageDepth / PaperDepth;
    xpPageWidth--;
-   // Allow for the page footer.
+   /* Allow for the page footer. */
    ypPageDepth -= (int)(10 * *pscY);
    PaperDepth -= 10.0;
    DeleteDC(psd.hDC);
