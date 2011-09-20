@@ -1,3 +1,9 @@
+Tue Sep 20 06:52:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from trunk:
+	* lib/map.png: Remove scan of map which isn't used and we probably
+	  don't have rights to redistribute.
+
 Tue Sep 20 06:48:01 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
