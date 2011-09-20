@@ -1,3 +1,8 @@
+Tue Sep 20 12:00:43 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* lib/Makefile.am: Ship the extra .isl translation files for Innosetup.
+
 Tue Sep 20 11:56:04 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport changes from 1.2.0:
