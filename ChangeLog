@@ -1,3 +1,15 @@
+Tue Sep 20 10:44:51 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport changes from 1.2.0:
+	* src/message.c: 0x2026 (&hellip;): Handle for WINCP1252, and
+	  transliterate to '...' for charsets which don't have it.  0x2192
+	  (&rarr;): Transliterate to '->' for charsets which don't have it.
+	  Handle &Scaron;, &scaron;, &Zcaron;, &zcaron; for WINCP1252.
+	* lib/messages.txt: Use '&rarr;' instead of '->' and '&hellip;' instead
+	  of '...'.
+	* lib/named-entities.txt: Add hellip and rarr.
+	* lib/messages.txt: Sync common messages with 1.2.0.
+
 Tue Sep 20 08:20:36 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/messages.txt,src/cavern.c: Fix up backport for new cavern -v

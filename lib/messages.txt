@@ -92,24 +92,22 @@ ro:  0 &copy;
 # "%lu" is a placeholder for the number of bytes which Survex was trying to
 # allocate space for.
 en:  1 Out of memory (couldn't find %lu bytes).
-# octets -- slightly bad notation since (being pedantic) bytes don't necessarily
-# have 8 bits, but it's the common expression.
 fr:  1 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
 de:  1 Zuwenig Speicherplatz (konnte %lu Bytes nicht finden).
 pt:  1 Mem&oacute;ria insuficiente (s&atilde;o necesss&aacute;rios mais %lu bytes).
 ca:  1 Mem&ograve;ria insuficient (es necessiten %lu bytes m&eacute;s).
 es:  1 Memoria insuficiente (se necesitan %lu bytes de m&aacute;s).
 it:  1 Memoria insufficiente (ci vorrebbero altri %lu bytes).
-#sk:  1 Nedostato&ccaron;n&aacute; kapacita pam&auml;te
+# sk: Alternatively "Nedostato&ccaron;n&aacute; kapacita pam&auml;te"
 sk:  1 Nedostatok pam&auml;te (ch&yacute;ba %lu bytov).
 ro:  1 Memorie insuficienta (nu am putut gasi %lu bytes)
 en:  2 Survex version %s or greater required to process this survey data.
 fr:  2 Une version %s ou sup&eacute;rieure de Survex est n&eacute;cessaire pour traiter ces donn&eacute;es.
-# Gerhard: (this replaces the idea of "greater" with "newer" because it sounds
-# more natural.  Feel free to write "h&ouml;her" instead of "neuer",
-# but I would advise against it.)
+# de: Gerhard: (this replaces the idea of "greater" with "newer" because it
+# sounds more natural.  Feel free to write "h&ouml;her" instead of "neuer", but
+# I would advise against it.)
 de:  2 Survex Version %s oder neuer ist zum Verarbeiten dieser Daten erforderlich.
-pt:  2 Para processar estes dados &eacute; necess&acute;ria a vers&atilde;o %s (ou posterior) do Survex.
+pt:  2 Para processar estes dados &eacute; necess&aacute;ria a vers&atilde;o %s (ou posterior) do Survex.
 ca:  2 Per processar aquestes dades topogr&agrave;fiques es requereix la versi&oacute; %s de Survex (o superior).
 es:  2 Para procesar estos datos topogr&aacute;ficos se requiere la versi&oacute;n %s de Survex (o superior).
 it:  2 Questi dati di topografia possono essere trattati da Survex versione %s o superiore.
@@ -143,14 +141,14 @@ es:  4 alerta
 it:  4 avvertimento
 sk:  4 varovanie
 ro:  4 avertisment
-#zh:  4 &#35686;&#21578;
-# FIXME: kludge to get a zh.msg file generated
+##zh:  4 &#35686;&#21578;
+## FIXME: kludge to get a zh.msg file generated
 zh:  4 warning
 #
 en:  5 In file included from
 fr:  5 Dans le fichier inclus depuis
-# we really want the filename/line number at the end (so error parsing editors
-# can follow), so the natural translation:
+# de: we really want the filename/line number at the end (so error parsing
+# editors can follow), so the natural translation:
 #"In von %s:%d: aus eingelesener Datei"
 # isn't ideal.  This is "clumsy but workable":
 de:  5 In eingelesener Datei ausgehend von
@@ -170,19 +168,20 @@ es:  6 *prefix ya no se usa - utiliza *begin y *end en su lugar
 it:  6 *prefix &eacute sconsigliato - usare invece *begin e *end
 sk:  6 *prefix bol odmietnut&yacute; - pou&zcaron;ijte namiesto toho *begin a *end
 ro:  6 *prefix contine eroare - folositi in schimb *begin si *end
+#
 en:  7 Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)
 fr:  7 Caract&egrave;re `%c' interdit dans un nom de station (cf *SET NAMES pour modifier la liste des caract&egrave;res autoris&eacute;s)
-# shorter, but not as good:
-#de:  7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen mit
-#*SET NAMES definieren)
+# de: shorter, but not as good:
+# Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen mit *SET NAMES definieren)
 de-de,de-ch:  7 Unerlaubtes Zeichen `%c' in Messpunktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
 de:           7 Unerlaubtes Zeichen `%c' in Me&szlig;punktname (erlaubte Zeichen k&ouml;nnen mit *SET NAMES definiert werden)
-pt:  7 Caracter `%c' n&atilde;o permitido em nome de base (use *SET NAMES para configurar os cararcteres permitidos)
+pt:  7 Caractere `%c' n&atilde;o permitido em nome de base (use *SET NAMES para configurar os caracteres permitidos)
 ca:  7 Car&agrave;cter `%c' no perm&egrave;s al nom d'una estaci&oacute; (utilitza *SET NAMES per definir els car&agrave;cters permesos)
 es:  7 Car&aacute;cter `%c' no permitido en el nombre de una estaci&oacute;n (utiliza *SET NAMES para definir los caracteres permitidos)
 it:  7 Carattere `%c' non permesso nel nome di stazione (usare *SET NAMES per cambiare i caratteri permessi)
 sk:  7 Znak `%c' v mene bodu nie je povolen&yacute; (pou&zcaron;ijte *SET NAMES pre nastavenie povolen&yacute;ch znakov)
 ro:  7 Folosirea caracterului `%c' in numele statiei, nu este permisa (folositi *SET NAMES pentru a modifica lista de caractere)
+#
 en:  8 Field may not be omitted
 fr:  8 Champ non optionnel
 de:  8 Eintragung fehlt
@@ -196,20 +195,20 @@ ro:  8 Aceasta rubrica nu poate fi omisa
 en:  9 Expecting numeric field, found `%s'
 fr:  9 On attendait une valeur num&eacute;rique, on a trouv&eacute; `%s'
 de:  9 Zahl erwartet, `%s' gelesen
-pt,pt-br:  9 Esperando valor num&eacute;rico, encontrado `%s'
+pt,pt-br:  9 Esperava valor num&eacute;rico, encontrei `%s'
 ca:  9 S'espera un camp num&egrave;ric, trobat `%s'
 es:  9 Se espera un campo num&eacute;rico; encontrado `%s'
 it:  9 Questo campo &eacute; numerico, trovato `%s'
 sk:  9 predpoklad&aacute; sa numerick&eacute; pole, zisten&eacute; `%s'
 ro:  9 Se asteapta camp numeric, s-a gasit `%s'
-# 10 c.f. 31, 32, 131
+## 10 c.f. 31, 32, 131
 en: 10 Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'
 fr: 10 Vous avez &eacute;crit `%s'; on attendait `PRESERVE', `TOUPPER', ou `TOLOWER'
-# Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
+# de: Gerhard: "`%s' gelesen" means "have read `%s'" - "gefunden", the literal
 # equivalent, doesn't sound quite right here
 # NB there is no comma before "oder"
 de: 10 `%s' gelesen, `PRESERVE', `TOUPPER' oder `TOLOWER' erwartet
-pt: 10 Encontrado `%s' quando `PRESERVE', `TOUPPER' ou `TOLOWER' eram esperados
+pt: 10 Encontrei `%s' quando eram esperados `PRESERVE', `TOUPPER' ou `TOLOWER'
 ca: 10 Trobat `%s', esperant `PRESERVE', `TOUPPER', o `TOLOWER'
 es: 10 Encontrado `%s', esperando `PRESERVE', `TOUPPER', o `TOLOWER'
 it: 10 Trovato `%s', atteso `PRESERVE', `TOUPPER' o `TOLOWER'
@@ -226,7 +225,7 @@ sk: 11 Zisten&aacute; chyba programu! Pros&iacute;me, dajte to na vedomie autoro
 ro: 11 Eroare de program! Va rugam anuntati autorii
 en: 12 Unknown command `%s'
 fr: 12 Commande inconnue `%s'
-# Gerhard says "Kommando" and "Befehl" are equally valid translations - use
+# de: Gerhard says "Kommando" and "Befehl" are equally valid translations - use
 # Befehl to be consistency.
 de: 12 Unbekanntes Befehl `%s'
 pt: 12 Comando desconhecido `%s'
@@ -235,18 +234,18 @@ es: 12 Comando desconocido `%s'
 it: 12 Comando sconosciuto `%s'
 sk: 12 Nezn&aacute;my pr&iacute;kaz `%s'
 ro: 12 Comanda necunoscuta `%s'
-# ro: 12 Comand&abreve; necunoscut&abreve; `%s'
+## ro: 12 Comand&abreve; necunoscut&abreve; `%s'
 en: 13 Station `%s' equated to itself
 fr: 13 Station `%s' ne doit pas &ecirc;tre d&eacute;clar&eacute;e "&eacute;gale" &agrave elle-m&ecirc;me
 de-de,de-ch: 13 Messpunkt `%s' mit sich selbst gleichgesetzt
 de:     13 Me&szlig;punkt `%s' mit sich selbst gleichgesetzt
 pt: 13 Base `%s' igualada a ela mesma
 ca: 13 Estaci&oacute; `%s' igualada a ella mateixa
-es: 13 Estacio&acute;n `%s' igualada a si misma
+es: 13 Estacio&oacute;n `%s' igualada a si misma
 it: 13 Stazione `%s' uguagliata a se stessa
 sk: 13 Bod `%s' je toto&zcaron;n&yacute; s&aacute;m so sebou
 ro: 13 Statia `%s' este egala cu ea insasi
-# c.f. 21 and 59
+## c.f. 21 and 59
 en: 14 Compass reading may not be omitted except on plumbed legs
 fr: 14 La valeur de l'azimut ne peut &ecirc;tre omise, sauf sur les vis&eacute;es verticales
 de-de,de-ch: 14 Kompassablesung darf nur bei Lotstrecken weggelassen werden
@@ -267,11 +266,11 @@ es: 15 Fin de l&iacute;nea no vacio
 it: 15 Fine della linea non vuota
 sk: 15 Koniec riadku obsahuje nepatri&ccaron;n&yacute; znak
 ro: 15 Sfarsitul liniei nu este gol
-# c.f. 113
+## c.f. 113
 en: 16 There were %d warning(s).
 fr: 16 Il y a %d avertissement(s).
+# de: Es wurden %d Warnungen registriert.
 de: 16 Es gab %d Warnungen.
-#Es wurden %d Warnungen registriert.
 pt: 16 H&aacute; %d alerta(s).
 ca: 16 Hi havia %d alerta(es).
 es: 16 Havia %d alerta(s).
@@ -303,13 +302,12 @@ en: 19 Too many errors - giving up
 fr: 19 Trop d'erreurs, j'abandonne
 #anthropomorphising version: de: 19 Zu viele Fehler - ich gebe auf
 de: 19 Abbruch wegen zu vieler Fehler
-#pt: 19 Erros em excesso - desistindo!
-pt: 19 Erros em excesso - desistindo
+pt: 19 Demasiados erros - desistindo
 ca: 19 Massa errors - proc&eacute;s abandonat
 es: 19 Demasiados errores - proceso abandonado
 it: 19 Troppi errori - processo interrotto
 sk: 19 Pr&iacute;li&scaron; mnoho ch&yacute;b, koniec
-#ro: 19 Prea multe erori - am renun&tcedil;at
+##ro: 19 Prea multe erori - am renun&tcedil;at
 ro: 19 Prea multe erori - proces intrerupt
 en: 20 *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
 fr: 20 *DEFAULT n'est plus utilis&eacute; - employer *CALIBRATE/DATA/SD/UNITS avec argument DEFAULT &agrave; la place
@@ -334,7 +332,7 @@ es: 21 Lectura de br&uacute;jula en una tirada vertical
 it: 21 Lettura della bussola in una battuta verticale
 sk: 21 Pri vertik&aacute;lnej z&aacute;mere bol zadan&yacute; azimut
 ro: 21 Citire a busolei la o masuratoare verticala
-# c.f. 192
+## c.f. 192
 en: 22 END with no matching BEGIN in this file
 fr: 22 END sans BEGIN correspondant dans ce fichier
 de: 22 END ohne entsprechendes BEGIN in dieser Datei
@@ -362,8 +360,8 @@ es: 24 No se pudo abrir el archivo de datos `%s'
 it: 24 Non riesco ad aprire il file dei dati `%s'
 sk: 24 Nie je mo&zcaron;n&eacute; otvori&tcaron; datov&yacute; s&uacute;bor `%s'
 ro: 24 Nu am reusit deschiderea fisierului de date `%s'
-#Use of the ROOT character (which is "\" by default) is deprecated, so error
-#25 would be generated by:
+#Use of the ROOT character (which is "\" by default) is deprecated, so this error
+#would be generated by:
 # *equate \foo.7 1
 en: 25 ROOT is deprecated
 fr: 25 ROOT n'est plus utilis&eacute;
@@ -392,7 +390,7 @@ ca: 26 L'estaci&oacute; `%s' no ha estat exportada des de la topografia `%s'
 es: 26 La estaci&oacute; `%s' no ha sido exportada desde la topograf&iacute;a `%s'
 it: 26 La stazione `%s' non &eacute; stata esportata dal rilievo `%s'
 sk: 26 Bod `%s' nebol exportovan&yacute; z merania (survey) `%s'
-#sk: nie som si tym velmi isty - zkontrolovat
+##sk: nie som si tym velmi isty - zkontrolovat
 ro: 26 Punctul de statie `%s' nu a fost exportat din masuratoarea `%s'
 #
 en: 27 `%s' can't be both a station and a survey
@@ -405,7 +403,7 @@ es: 27 `%s' no puede ser a la vez una estaci&oacute;n y una topograf&iacute;a
 it: 27 `%s' non pu&ograve; essere contemporaneamente una stazione e un rilievo
 sk: 27 `%s' nem&ocirc;&zcaron;e by&tcaron; s&uacute;&ccaron;asne bodom i meran&iacute;m (survey)
 ro: 27 `%s' nu poate fi acelasi timp punct de statie si denumire de masuratoare
-# c.f. 89
+## c.f. 89
 en: 28 Expecting station name
 fr: 28 On attendait un nom de station
 de-de,de-ch: 28 Messpunktname erwartet
@@ -418,9 +416,9 @@ sk: 28 Predpoklad&aacute; sa meno bodu
 ro: 28 Lipseste numele punctului de statie
 # FIXME: perhaps use "survey" instead of "prefix level"?
 en: 29 Reentering an existing prefix level is deprecated
-#fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute;
+##fr: 29 R&eacute;-entrer dans un niveau de pr&eacute;fixe d&eacute;j&agrave; utilis&eacute; n'est pas autoris&eacute;
 fr: 29 R&eacute;-utiliser un m&ecirc;me pr&eacute;fixe n'est pas recommand&eacute;
-# deprecated is a wonderful English word lacking a wonderful German
+# de: deprecated is a wonderful English word lacking a wonderful German
 # equivalent....  errm and do we have a translation for "prefix level"
 # yet?  (rummaging in old mail folders)  apparently not.  Ok.  Would
 # "to introduce a prefix" be a rough equivalent for "to enter a prefix
@@ -431,9 +429,9 @@ ca: 29 Reentrar en un nivell de prefix existent ja no s'utilitza
 es: 29 Reentrar en un nivel de prefijo existente yo no se usa
 it: 29 Reimmettere un prefisso di livello gi&aacute; esistente &eacute; sconsigliato
 sk: 29 Opakovan&eacute; vlo&zcaron;enie existuj&uacute;cej &uacute;rovne prefixu nie je povolen&eacute;
-#sk: tak toto skutocne neviem - overit
+##sk: tak toto skutocne neviem - overit
 ro: 29 Reintroducerea unui prefix deja existent nu este recomandata
-#ro: i am quite confused about this explanation (in all languages)
+##ro: i am quite confused about this explanation (in all languages)
 #
 en: 30 Originally entered here
 fr: 30 Pr&eacute;fixe utilis&eacute; une premi&eacute;re fois ici
@@ -443,9 +441,9 @@ ca: 30 Originalment entrat aqui
 es: 30 Originalmente entrado aqui
 it: 30 Gi&aacute; utilizzato qui
 sk: 30 P&ocirc;vodne vlo&zcaron;en&eacute; sem
-#sk: tak toto skutocne neviem - overit
+##sk: tak toto skutocne neviem - overit
 ro: 30 Introdus aici in original
-# 31 c.f. 10, 32, 131
+## 31 c.f. 10, 32, 131
 en: 31 Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'
 fr: 31 Vous avez &eacute;crit `%s'; on attendait `EQUATES', `EXPORTS', ou `PLUMBS'
 de: 31 `%s' gelesen, `EQUATES', `EXPORTS' oder `PLUMBS' erwartet
@@ -455,7 +453,7 @@ es: 31 Encontrado `%s', esperando `EQUATES', `EXPORTS', o `PLUMBS'
 it: 31 Trovato `%s', atteso `EQUATES', `EXPORTS' o `PLUMBS'
 sk: 31 Zisten&eacute; `%s', predpokladan&eacute; `EQUATES', `EXPORTS' alebo `PLUMBS'
 ro: 31 S-a gasit `%s' in loc de `EQUATES', `EXPORTS', sau `PLUMBS'
-# 32 c.f. 10, 31, 131
+## 32 c.f. 10, 31, 131
 en: 32 Found `%s', expecting `ON' or `OFF'
 fr: 32 Vous avez &eacute;crit `%s'; on attendait `ON' ou `OFF'
 de: 32 `%s' gelesen, `ON' oder `OFF' erwartet
@@ -470,16 +468,16 @@ ro: 32 S-a gasit `%s' in loc de `ON' sau `OFF'
 # update de, but my language skills aren't great...
 en: 33 Only one station in EQUATE command
 fr: 33 Une seule station dans une commande EQUATE
-# was fr: 33 Une seule station dans une liste d'&eacute;quivalences
+## was fr: 33 Une seule station dans une liste d'&eacute;quivalences
 de-de,de-ch: 33 Nur ein Messpunkt im EQUATE-Befehl angegeben
 de:          33 Nur ein Me&szlig;punkt im EQUATE-Befehl angegeben
-#germ: 33 Nur ein Me&szlig;punkt in EQUATE Liste
+##germ: 33 Nur ein Me&szlig;punkt in EQUATE Liste
 pt: 33 Somente uma base na lista de equival&ecirc;ncia
 ca: 33 Sols una estaci&oacute; a la ordre EQUATE
 es: 33 Solo una estaci&oacute;n en la orden EQUATE
 it: 33 Solo una stazione nel comando EQUATE
 sk: 33 V zozname EQUATE zisten&yacute; iba jeden bod
-#sk: tak toto skutocne neviem - overit
+##sk: tak toto skutocne neviem - overit
 ro: 33 Doar un punct de statie in comanda EQUATE
 #
 en: 34 Unknown quantity `%s'
@@ -491,12 +489,12 @@ ca: 34 Quantitat `%s' desconeguda
 es: 34 Cantidad `%s' desconocida
 it: 34 Quantit&aacute; `%s' sconosciuta
 sk: 34 Nezn&aacute;ma hodnota `%s'
-#sk: tak toto skutocne neviem - overit - prelozene podla slovnika
+##sk: tak toto skutocne neviem - overit - prelozene podla slovnika
 ro: 34 Cantitate necunoscuta `%s'
 #
 en: 35 Unknown units `%s'
 fr: 35 Unit&eacute; `%s' inconnue
-#germ: 35 Unbekannte Einheiten `%s'
+##germ: 35 Unbekannte Einheiten `%s'
 de: 35 Unbekannte Einheit(en) `%s'
 pt: 35 Unidade `%s' desconhecida
 ca: 35 Unitats `%s' desconegudes
@@ -504,7 +502,7 @@ es: 35 Unidades `%s' desconocidas
 it: 35 Unit&aacute; `%s' sconosciute
 sk: 35 Nezn&aacute;ma jednotka `%s'
 ro: 35 Unitati necunoscute `%s'
-# 36 is used when a BEGIN tag has no prefix, but the END tag has one, e.g.:
+# Used when a BEGIN tag has no prefix, but the END tag has one, e.g.:
 #
 # *begin
 # 1 2 10.00 178 -01
@@ -522,7 +520,7 @@ ro: 36 BEGIN nu are nici un prefix corespondent
 # the correct term in other languages may be singular.
 en: 37 Invalid units `%s' for quantity
 fr: 37 Unit&eacute; `%s' incorrecte pour une quantit&eacute;
-# GN: This is assuming there is _no_ subsequent message naming the culprit
+# de: This is assuming there is _no_ subsequent message naming the culprit
 # quantity.  If there is, make it `die Gr&ouml;&szlig;e', and append its
 # name immediately.
 de:    37 Unpassende Einheit `%s' f&uuml;r diese Gr&ouml;&szlig;e
@@ -545,6 +543,7 @@ es: 38 Mem&oacute;ria insuficiente %.0s
 it: 38 Memoria insufficiente %.0s
 sk: 38 Nedostato&ccaron;n&aacute; pam&auml;&tcaron; %.0s
 ro: 38 Memorie insuficienta %.0s
+#
 en: 39 Unknown instrument `%s'
 fr: 39 Instrument `%s' inconnu
 de: 39 Unbekanntes Instrument `%s'
@@ -557,7 +556,6 @@ ro: 39 Instrument necunoscut `%s'
 # DECLINATION is a built-in keyword, so best not to translate
 en: 40 Scale factor must be 1.0 for DECLINATION
 fr: 40 Le facteur d'&eacute;chelle doit &ecirc;tre &eacute;gal &agrave; 1.0 pour DECLINATION
-# GN(3): improved word ordering
 de-de,de-ch: 40 Skalenfaktor f&uuml;r die DECLINATION muss 1.0 sein
 de:          40 Skalenfaktor f&uuml;r die DECLINATION mu&szlig; 1.0 sein
 pt: 40 Fator de escala tem que ser 1.0 para comando DECLINATION
@@ -568,7 +566,7 @@ sk: 40 Prepo&ccaron;&iacute;tac&iacute; faktor pre DECLINATION mus&iacute; by&tc
 ro: 40 Raportul scarii trebuie sa fie 1.0 pentru DECLINATION
 en: 41 Unknown setting `%s'
 fr: 41 Param&egrave;tres `%s' inconnus
-#germ: 41 Unbekannter Parameter `%s'
+##germ: 41 Unbekannter Parameter `%s'
 de: 41 Unbekannte (ung&uuml;ltige) Einstellung `%s'
 pt: 41 Configura&ccedil;&atilde;o `%s' desconhecida
 ca: 41 Configuraci&oacute; `%s' desconeguda
@@ -584,7 +582,7 @@ ca: 42 Classe de car&agrave;cter desconeguda `%s'
 es: 42 Clase de car&aacute;cter desconocida `%s'
 it: 42 Carattere sconosciuto classe `%s'
 sk: 42 Nezn&aacute;ma trieda charakteru `%s'
-#sk: tak toto skutocne neviem - overit - prelozene podla slovnika
+##sk: tak toto skutocne neviem - overit - prelozene podla slovnika
 ro: 42 Clasa de caractere necunoscuta `%s'
 #
 en: 43 No survey data
@@ -599,14 +597,14 @@ ro: 43 Lipsesc masuratorile topografice
 #
 en: 44 Filename `%s' refers to directory
 fr: 44 Nom de fichier `%s' relatif &agrave; un r&eacute;pertoire
-# sounds ugly, but is correct, and I can't think of a replacement
+# de: sounds ugly, but is correct, and I can't think of a replacement
 de: 44 Dateiname `%s' bezeichnet ein Verzeichnis
 pt: 44 Nome de arquivo `%s' referencia diret&oacute;rio ao inv&eacute;s de arquivo
 ca: 44 Nom de fitxer `%s' referit a un directori
 es: 44 Nombre de archivo `%s' referido a un directorio
 it: 44 Il nome del file `%s' corrisponde ad una directory
 sk: 44 Meno s&uacute;boru `%s' odpoved&aacute; adres&aacute;ru
-#ro: 44 Fi&scedil;ierul `%s' este un director
+##ro: 44 Fi&scedil;ierul `%s' este un director
 ro: 44 Fisierul `%s' este un director
 #
 en: 45 Survey not all connected to fixed stations
@@ -658,7 +656,7 @@ es: 49 Utilizaci&oacute;n
 it: 49 Utilizzo
 sk: 49 Pou&zcaron;itie
 ro: 49 Folosire
-#
+# %s is a placeholder for the name of the station
 en: 50 Survey leg with same station (`%s') at both ends - typing error?
 en-us: 50 Survey shot with same station (`%s') at both ends - typing error?
 fr: 50 Vis&eacute;e avec 2 extr&eacute;mit&eacute;s identiques (`%s') - erreur de frappe?
@@ -670,21 +668,21 @@ es: 50 Tirada con la misma estaci&oacute;n en ambas puntas (`%s') - error de tra
 it: 50 Alle estremit&aacute; di una battuta c'&eacute; la stessa stazione (`%s') - Errore di trascrizione?
 sk: 50 Z&aacute;mera s t&yacute;m ist&yacute;m bodom (`%s') na oboch koncoch - preklep?
 ro: 50 Masuratoare cu acelasi punct (`%s') la ambele capete - eroare de transcriere?
+#
 en: 51 Clino reading over 90 degrees (absolute value)
-en-us: 51 Clino over 90 degrees (absolute value)
 fr: 51 Lecture de clino sup&eacute;rieure &agrave; 90 degr&eacute;s (en value absolue)
-# GN (2): `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
+# de: `Grad' *is* `degree'.  The decimal grades are called `Neugrad'
 # when necessary to avoid confusion.  While surface surveyors here use
 # these per default, cavers rarely do.
-#germ: 51 Streckenneigung &uuml;bertrifft 90 Grad (Absolutwert)
+##germ: 51 Streckenneigung &uuml;bertrifft 90 Grad (Absolutwert)
 de: 51 Neigungseintrag &uuml;bertrifft 90 Grad (Absolutwert)
-# "graus" is correct here ("grad" would be "grados")
+# pt: "graus" is correct here ("grad" would be "grados")
 pt: 51 Inclina&ccedil;&atilde;o maior que 90 graus em valor absoluto
-# Eric queries if "graus" is correct here:
+# ca: Eric queries if "graus" is correct here:
 ca: 51 Lectura del clino superior a 90 graus (valor absolut)
-# Eric queries if "grados" is correct here:
+# es: Eric queries if "grados" is correct here:
 es: 51 Lectura del clino superior a 90 grados (valor absoluto)
-# "gradi" is correct here (grads would be "gradi quattrocentesimali")
+# it: "gradi" is correct here (grads would be "gradi quattrocentesimali")
 it: 51 Lettura del clinometro superiore a 90 gradi (valore assoluto)
 sk: 51 Absol&uacute;tna hodnota sklonu v&auml;&ccaron;&scaron;ia ako 90 stup&ncaron;ov
 ro: 51 Valoare a clinometrului peste 90 grade (valoare absoluta)
@@ -720,7 +718,7 @@ ro: 54 Comanda FIX fara coordonate - se atribuie (0,0,0)
 # *fix a 1 2 3 / *fix a 1 2 3
 en: 55 Station already fixed at the same coordinates
 fr: 55 Station d&eacute;j&agrave; fix&eacute;e aux m&ecirc;me coordonn&eacute;es
-#germ: 55 Me&szlig;punkt schon auf diese Koordinaten festgelegt
+##germ: 55 Me&szlig;punkt schon auf diese Koordinaten festgelegt
 de-de,de-ch: 55 Messpunkt schon auf die gleichen Koordinaten festgelegt
 de:     55 Me&szlig;punkt schon auf die gleichen Koordinaten festgelegt
 pt: 55 Base j&aacute; posicionada nessas coordenadas
@@ -738,7 +736,7 @@ es: 56 M&aacute;s de un comando FIX sin coordenadas
 it: 56 Pi&uacute; di un comando FIX senza coordinate
 sk: 56 Viac ako jeden pr&iacute;kaz FIX bez s&uacute;radn&iacute;c
 ro: 56 Mai mult de o comanda FIX fara coordonate
-#The new command *EXPORT is only valid just after *BEGIN <SURVEY>, so this
+#The *EXPORT command is only valid just after *BEGIN <SURVEY>, so this
 #would generate error 57:
 # *begin fred
 # 1 2 1.23 045 -6
@@ -777,7 +775,7 @@ sk: 59 Podozriv&eacute; &ccaron;&iacute;tanie kompasu
 ro: 59 Azimut suspect
 en: 60 Negative tape reading
 fr: 60 Lecture de longueur n&eacute;gative
-#germ: 60 Negative Streckenl&auml;nge
+##germ: 60 Negative Streckenl&auml;nge
 de: 60 Negativer L&auml;ngeneintrag
 pt: 60 Dist&acirc;ncia negativa
 ca: 60 Lectura de longitut negativa
@@ -794,15 +792,15 @@ es: 61 La misma estaci&oacute;n se fij&oacute; dos veces sin coordenadas
 it: 61 La stessa stazione &eacute; stata fissata due volte senza coordinate
 sk: 61 Niektor&yacute; z bodov bol fixovan&yacute; dvakr&aacute;t bez s&uacute;radn&iacute;c
 ro: 61 Acelasi punct de statie fixat de doua ori fara coordonate
-# cf 162
-# 62 means that the data fed in said this.
+## cf 162
+# This means that the data fed in said this.
 # It could be a gross error (e.g. the decimal point is missing from
 # the depth gauge reading) or it could just be due to random error on
 # a near vertical leg
 en: 62 Tape reading is less than change in depth
 fr: 62 Lecture de longeur inf&eacute;rieure &agrave; la diff&eacute;rence de profondeur
-# GN (2): Note that a change in depth becomes a `change in height' in German
-#germ: 62 Streckenl&auml;nge ist kleiner als H&ouml;henunterschied
+# de: Note that a change in depth becomes a `change in height' in German
+##germ: 62 Streckenl&auml;nge ist kleiner als H&ouml;henunterschied
 de: 62 L&auml;ngeneintrag ist kleiner als H&ouml;henunterschied
 pt: 62 Dist&acirc;ncia menor que mudan&ccedil;a de profundidade
 ca: 62 Lectura de longitut inferior a la difer&egrave;ncia de profunditats
@@ -813,8 +811,7 @@ ro: 62 Distanta este mai mica decat difeneta de nivel
 # a data "style" is something like NORMAL, DIVING, etc.
 # a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
 # neither style nor reading is a keyword in the program
-# 63 complains about a depth gauge reading in normal style, for example
-# GN(3): Ahhhh.  Got it.  Well, it fits already as it is now. :-)
+# This error complains about a depth gauge reading in normal style, for example
 en: 63 Reading `%s' not allowed in data style `%s'
 fr: 63 Donn&eacute;e `%s' incorrecte pour le style de donn&eacute;es `%s'
 de-de:   63 Messgr&ouml;&szlig;e `%s' ist bei Datenformat `%s' nicht erlaubt
@@ -837,9 +834,8 @@ es: 64 Faltan campos para el estilo de datos `%s'
 it: 64 Mancano dati per il tipo di dati `%s'
 sk: 64 Pr&iacute;li&scaron; m&aacute;lo &uacute;dajov pre typ d&aacute;t `%s'
 ro: 64 Lipsesc date pentru campul de date `%s'
-#ital: 64 Troppo pochi dati
+##ital: 64 Troppo pochi dati
 # e.g. trying to refer to an invalid FNORD data style
-# GN(3): ie unknown STYLE?  ok, rephrasing.
 en: 65 Data style `%s' unknown
 fr: 65 Style de donn&eacute;es `%s' inconnu
 de: 65 Datenformat `%s' unbekannt
@@ -847,9 +843,9 @@ pt: 65 Tipo de visada `%s' desconhecido
 ca: 65 Estil de dades `%s' desconegut
 es: 65 Estilo de datos `%s' desconocido
 it: 65 Tipo di dati `%s' sconosciuto
-# The meaning of scorretto is that the STYLE is written wrong but is similar
+# it: The meaning of scorretto is that the STYLE is written wrong but is similar
 # to a known style.
-#it: 65 STYLE `%s' scorretto
+# STYLE `%s' scorretto
 sk: 65 Nezn&aacute;my typ d&aacute;t `%s'
 ro: 65 Tipul de date `%s' necunoscut
 #Exporting a station twice give error 66:
@@ -871,7 +867,7 @@ ro: 66 Punctul de statie `%s' este deja exportat
 # complains about a situation like trying to define two from stations per leg
 en: 67 Duplicate reading `%s'
 fr: 67 Donn&eacute;e dupliqu&eacute;e `%s'
-# The reservations with respect to "quantity"  (a close equivalent
+# de: The reservations with respect to "quantity"  (a close equivalent
 # to "Me&szlig;gr&ouml;&szlig;e")  apply to the German term as well --
 # a from station of a leg isn't a "Me&szlig;gr&ouml;&szlig;e" either
 # by any stretch of the imagination.
@@ -901,9 +897,9 @@ ca: 69 Manca &quot;
 es: 69 Falta &quot;
 it: 69 Manca &quot;
 sk: 69 Ch&yacute;ba &quot;
-#ro: 69 Lipse&scedil;te &quot;
+##ro: 69 Lipse&scedil;te &quot;
 ro: 69 Lipseste &quot;
-#
+# TRANSLATE ro
 en: 70 Station `%s' referred to just once, with an explicit prefix - typo?
 fr: 70 La station `%s' n'est mentionn&eacute;e qu'une fois, avec un pr&eacute;fixe explicite - typo?
 de-de,de-ch: 70 Messpunkt `%s' nur einmal erw&auml;hnt, mit explizitem Pr&auml;fix - Tippfehler?
@@ -913,7 +909,7 @@ ca: 70 L'estaci&oacute; `%s' sols s'ha utilitzat una vegada, amb un prefix expl&
 es: 70 La estacio&oacute;n `%s' solo ha sido usada una vez, con un prefijo expl&iacute;cito - error tipogr&aacute;fico?
 it: 70 La statione `%s' &eacute; ha un unico riferimento, con un prefisso esplicito - errore di scrittura?
 sk: 70 Bod `%s' pou&zcaron;it&yacute; iba raz s explicitn&yacute;m prefixom - preklep?
-#FIXME ro: i didn't get the idea of this message. i did an "automatic" translation
+#ro: FIXME i didn't get the idea of this message. i did an "automatic" translation
 ro: 70 Punctul de statie `%s' are o referinta unica, cu un prefix explicit - eroare de scriere?
 en: 71 The following survey stations are not attached to a fixed point:
 fr: 71 Les stations topo suivantes ne sont pas attach&eacute;s &agrave; des points fixes:
@@ -962,8 +958,6 @@ it: 75 Sto risolvendo un sistema di %d equazioni
 sk: 75 Rie&scaron;i sa %d simult&aacute;nnych rovn&iacute;c
 ro: 75 Rezolv %d ecuatii simultane
 # %c is 'x', 'y' or 'z'
-# GN(3): ah, this changes something.  I'm also reverting to present tense,
-# to maintain the distinction made in the English versions eg as opposed to 74.
 en: 76 Solving to find %c coordinates
 fr: 76 R&eacute;soud pour trouver %c coordonn&eacute;es
 de: 76 Aufl&ouml;sen nach den %c-Koordinaten
@@ -1051,7 +1045,7 @@ ro: 83 Redimensionata pentru a incapea pe 1 pagina
 # In data with backsights, the user has tried to give a plumb for the
 # foresight and a clino reading for the backsight, or something similar.
 en: 84 CLINO and BACKCLINO readings must be of the same type
-#fr: 84 Les mesures de Clino et ClinoInverse doivent &ecirc;tre du m&ecirc;me type
+##fr: 84 Les mesures de Clino et ClinoInverse doivent &ecirc;tre du m&ecirc;me type
 fr: 84 Les mesures de CLINO et BACKCLINO doivent &ecirc;tre du m&ecirc;me type
 de: 84 CLINO- und BACKCLINO-Eintrag m&uuml;ssen den gleichen Typ haben
 pt: 84 Valores de CLINO e BACKCLINO t&ecirc;m que ser do mesmo tipo
@@ -1135,7 +1129,6 @@ ro: 91 Eroare aritmetica
 # Something is badly wrong -- the CPU tried to execute bad opcodes -- corrupted program?
 en: 92 Illegal instruction
 fr: 92 Instruction ill&eacute;gale
-#germ: 92 Illegale Instruktion
 de: 92 Illegaler CPU-Befehlscode
 pt: 92 Instru&ccedil;&atilde;o ilegal
 ca: 92 Instrucci&oacute; il.legal
@@ -1151,7 +1144,7 @@ ca: 93 No s'ha pogut obrir el fitxer `%s'
 es: 93 No se pudo abrir el archivo `%s'
 it: 93 Non riesco ad aprire il file `%s'
 sk: 93 Nie je mo&zcaron;n&eacute; otvori&tcaron; s&uacute;bor `%s'
-#ro: 93 Nu am putut deschide fi&scedil;ierul `%s'
+## ro: Nu am putut deschide fi&scedil;ierul `%s'
 ro: 93 Nu am putut deschide fisierul `%s'
 #
 en: 94 Bad memory access
@@ -1163,7 +1156,7 @@ es: 94 Acceso a memoria err&oacute;neo
 it: 94 Accesso alla memoria errato
 sk: 94 Chyba pr&iacute;stupu do pam&auml;te
 ro: 94 Acces la memorie eronat
-#
+# TRANSLATE ro
 en: 95 Further uses of this deprecated feature will not be reported
 fr: 95 Cette functionnalit&eacute; n'est plus utilis&eacute;e; les usages ult&eacute;rieurs ne seront pas signal&eacute;s.
 de: 95 Weitere Vorkommen dieser veralteten Funktionalit&auml;t werden nicht gemeldet werden
@@ -1172,7 +1165,7 @@ ca: 95 Utilitzacions futures d'aquesta funci&oacute; obsoleta no seran informats
 es: 95 Usos futuros de &eacute;sta funci&oacute;n obsoleta no ser&aacute;n informados
 it: 95 Usi futuri di questa funzionalit&aacute; non pi&uacute; usata non verranno segnalati
 sk: 95 &Dcaron;al&scaron;ie pou&zcaron;itia zamietnutej fukcie nebud&uacute; zaznamenan&eacute;
-# FIXME ro: pls give me a synonym for "deprecated"
+# ro: FIXME pls give me a synonym for "deprecated"
 ro: 95 Folosirea ulterioara a acestei functionalitati ??? nu va fi semnalata
 #
 en: 96 Stack overflow
@@ -1196,7 +1189,7 @@ sk: 97 Bol obdr&zcaron;an&yacute; nezn&aacute;my sign&aacute;l
 ro: 97 Semnal necunoscut receptionat
 #
 en: 98 COMPASS reading and BACKCOMPASS reading disagree by %s degrees
-#fr: 98 Les mesures de Compas et CompasInverse diff&egrave;rent de %s degr&eacute;s
+##fr: 98 Les mesures de Compas et CompasInverse diff&egrave;rent de %s degr&eacute;s
 fr: 98 Les mesures de COMPASS et BACKCOMPASS diff&egrave;rent de %s degr&eacute;s
 de: 98 COMPASS- und BACKCOMPASS-Eintrag differieren um %s Grad
 pt: 98 &Acirc;ngulos de COMPASS e BACKCOMPASS diferem em %s graus
@@ -1207,7 +1200,7 @@ sk: 98 &Ccaron;&iacute;tanie COMPASS a BACKCOMPASS sa l&iacute;&scaron;i o %s st
 ro: 98 Lectura COMPASS si BACKCOMPASS nu concorda cu %s grade
 #
 en: 99 CLINO reading and BACKCLINO reading disagree by %s degrees
-#fr: 99 Les mesures de Clino et ClinoInverse diff&egrave;rent de %s degr&eacute;s
+##fr: 99 Les mesures de Clino et ClinoInverse diff&egrave;rent de %s degr&eacute;s
 fr: 99 Les mesures de CLINO et BACKCLINO diff&egrave;rent de %s degr&eacute;s
 de: 99 CLINO- und BACKCLINO-Eintrag differieren um %s Grad
 pt: 99 &Acirc;ngulos de CLINO e BACKCLINO diferem em %s graus
@@ -1225,19 +1218,20 @@ en:100 No mouse detected
 fr:100 Souris non detect&eacute;e
 de:100 Keine Maus angeschlossen
 pt:100 Nenhum mouse detectado
-#cata:100 No s'ha detectat cap mouse
-#span:100 No se detect&oacute; ning&uacute;n mouse
-#cata:100 No s'ha detectat cap dispositiu senyalador
-#span:100 No se detect&oacute; ning&uacute;n dispositivo se&ntilde;alador
+##cata:100 No s'ha detectat cap mouse
+##span:100 No se detect&oacute; ning&uacute;n mouse
+##cata:100 No s'ha detectat cap dispositiu senyalador
+##span:100 No se detect&oacute; ning&uacute;n dispositivo se&ntilde;alador
 ca:100 No s'ha detectat cap ratol&iacute;
 es:100 No se detect&oacute; ning&uacute;n rat&oacute;n
 it:100 Non ho trovato il mouse
 sk:100 Nebola detekovan&aacute; my&scaron;
 ro:100 Nu s-a gasit nici un mouse
-# Cf no. 159 below (%05.1f will be replaced by something like "123.4")
+# cf 159
+# %05.1f will be replaced by something like "123.4"
 en:101 Plan, %05.1f up screen
 fr:101 Plan, %05.1f en haut de l'&eacute;cran
-#germ:101 Plan, oben auf dem Bildschirm = Richtung %05.1f
+##germ:101 Plan, oben auf dem Bildschirm = Richtung %05.1f
 de:101 Grundri&szlig;, oben auf dem Bildschirm = Richtung %05.1f
 de-ch:  101 Grundriss, oben auf dem Bildschirm = Richtung %05.1f
 pt:101 Planta, %05.1f no topo da tela
@@ -1246,11 +1240,10 @@ es:101 Planta, %05.1f arriba la pantalla
 it:101 Pianta, %05.1f cima schermo
 sk:101 P&ocirc;dorys,%05.1f na obrazovke
 ro:101 Plan, %05.1f daca se afla in partea de sus a ecranului
-# cf 116 below -- this is used by caverot, 116 by printer drivers
-# also this means looking in the direction, 116 gives a plane
+## cf 116 below -- this is used by caverot, 116 by printer drivers
+## also this means looking in the direction, 116 gives a plane
 en:102 View towards %05.1f
 fr:102 Vue en direction de %05.1f
-#germ:102 Blick in Richtung %05.1f
 de:102 Aufri&szlig;, Blick in Richtung %05.1f
 de-ch:102   Aufriss, Blick in Richtung %05.1f
 pt:102 Olhando em dire&ccedil;&atilde;o a %05.1f
@@ -1262,7 +1255,7 @@ ro:102 Vizualizare in directia %05.1f
 #
 en:103 You need to calibrate your printer - see the manual for details.
 fr:103 Il vous faut calibrer votre imprimante - voir le manuel pour plus de d&eacute;tails.
-# Or shorter, just have - `siehe Handbuch' for the second half.
+# de: Or shorter, just have - `siehe Handbuch' for the second half.
 de-de,de-ch:103 Drucker muss kalibriert werden - n&auml;her beschrieben im Handbuch.
 de:         103 Drucker mu&szlig; kalibriert werden - n&auml;her beschrieben im Handbuch.
 pt:103 &Eacute; necess&aacute;rio calibrar a impressora - veja como no manual da mesma.
@@ -1272,25 +1265,25 @@ it:103 &Eacute; necessario calibrare la stampante - consultare il manuale per i 
 sk:103 Mus&iacute;te nakalibrova&tcaron; va&scaron;u tla&ccaron;iare&ncaron; - podrobnosti s&uacute; v manu&aacute;li
 ro:103 Este necesara reglarea imprimantei - consultati manualul pentru detalii
 #
-en:104 `*data %s %c ...' is deprecated - use `*data %s ...' instead
-fr:104 `*data %s %c ...' est obsololete - utiliser plutot `*data %s ...'
-de:104 `*data %s %c ...' ist veraltet - stattdessen `*data %s ...' verwenden
-pt:104 `*data %s %c ...' obsoleto - use `*data %s ...' no lugar
-ca:104 `*data %s %c ...' obsolet - utilitza `*data %s ...' en el seu lloc
-es:104 `*data %s %c ...' obsoleto - usa `*data %s ...' en su lugar
-it:104 `*data %s %c ...' &eacute; una funzionalit&aacute; non pi&uacute; usata - usare `*data %s ...'
-sk:104 `*data %s %c ...' boly zamietnut&eacute; - pou&zcaron;ijte `*data %s ...' namiesto toho
-ro:104 `*data %s %c ...' nu este agreata - folositi `*data %s ...' in loc
+en:104 `*data %s %c &hellip;' is deprecated - use `*data %s &hellip;' instead
+fr:104 `*data %s %c &hellip;' est obsololete - utiliser plutot `*data %s &hellip;'
+de:104 `*data %s %c &hellip;' ist veraltet - stattdessen `*data %s &hellip;' verwenden
+pt:104 `*data %s %c &hellip;' obsoleto - use `*data %s &hellip;' no lugar
+ca:104 `*data %s %c &hellip;' obsolet - utilitza `*data %s &hellip;' en el seu lloc
+es:104 `*data %s %c &hellip;' obsoleto - usa `*data %s &hellip;' en su lugar
+it:104 `*data %s %c &hellip;' &eacute; una funzionalit&aacute; non pi&uacute; usata - usare `*data %s &hellip;'
+sk:104 `*data %s %c &hellip;' boly zamietnut&eacute; - pou&zcaron;ijte `*data %s &hellip;' namiesto toho
+ro:104 `*data %s %c &hellip;' nu este agreata - folositi `*data %s &hellip;' in loc
 #
-en:105 Reading in data - please wait...
-fr:105 Lecture de donn&eacute;es - attendez S.V.P. ...
-de:105 Daten werden eingelesen - bitte warten...
-pt:105 Lendo dados - por favor, aguarde...
-ca:105 Llegint dades, espereu si us plau...
-es:105 Leyendo datos, espere por favor...
-it:105 Sto leggendo i dati - attendere per favore...
-sk:105 Na&ccaron;&iacute;tam &uacute;daje - pros&iacute;m po&ccaron;kajte...
-ro:105 Se citesc datele - va rog asteptati...
+en:105 Reading in data - please wait&hellip;
+fr:105 Lecture de donn&eacute;es - attendez S.V.P. &hellip;
+de:105 Daten werden eingelesen - bitte warten&hellip;
+pt:105 Lendo dados - por favor, aguarde&hellip;
+ca:105 Llegint dades, espereu si us plau&hellip;
+es:105 Leyendo datos, espere por favor&hellip;
+it:105 Sto leggendo i dati - attendere per favore&hellip;
+sk:105 Na&ccaron;&iacute;tam &uacute;daje - pros&iacute;m po&ccaron;kajte&hellip;
+ro:105 Se citesc datele - va rog asteptati&hellip;
 # Probably not a .3D file.  caverot autoexec.bat would give this
 en:106 Bad 3d image file `%s'
 fr:106 Mauvais fichier image 3d `%s'
@@ -1322,7 +1315,7 @@ es:108 Fecha y hora no disponibles.
 it:108 Data e ora non disponibili.
 sk:108 D&aacute;tum a &ccaron;as nie s&uacute; dostupn&eacute;
 ro:108 Data si ora nu sunt disponibile.
-#ital:108 Data e ora mancanti.
+##ital:108 Data e ora mancanti.
 en:109 Error reading from file `%s'
 fr:109 Erreur &agrave; la lecture du fichier `%s'
 de:109 Fehler beim Lesen der Datei `%s'
@@ -1363,16 +1356,17 @@ it:112 Non posso analizzare il file .err degli errori
 sk:112 Chyba pri anal&yacute;ze .err s&uacute;boru
 ro:112 Lectura fisierului .err nu a putut fi realizata
 # c.f. 16
-en:113 There were %d warning(s) and %d non-fatal error(s) - no output files produced.
-fr:113 Il y a %d avertissement(s) et %d erreur(s) non fatale(s) - aucun fichier n'a &eacute;t&eacute; produit
-de:113 Es gab %d Warnungen und %d nicht-fatale Fehler - keine Ausgabedatei erstellt.
-#Es wurden %d Warnungen und %d nicht-fatale Fehler registriert.
-pt:113 H&aacute; %d alerta(s) e %d n&atilde;o-fatal(is) erro(s) - nenhum arquivo de sa&iacute;da criado
-ca:113 Hi havia %d alerta(es) i %d error(s) no fatal(s) - no s'han generat fitxers de sortida.
-es:113 Havia %d alerta(s) y %d error(es) no fatal(es) - no se generaron archivos de salida.
-it:113 Ci sono %d avvertimenti e %d errori non fatali - nessun file prodotto.
-sk:113 Vyskytlo sa %d varovan&iacute; a %d nekritick&yacute;ch ch&yacute;b - nebol vytvoren&yacute; v&yacute;stupn&yacute; s&uacute;bor.
-ro:113 Au fost %d avertisment(e) si %d eroare(erori) non-fatala(e) - nu s-a generat nici un fisier.
+# TRANSLATE fr de pt ca es it sk ro
+en:113 There were %d warning(s) and %d error(s) - no output files produced.
+fr:113 Il y a %d avertissement(s) et %d erreur(s) - aucun fichier n'a &eacute;t&eacute; produit
+# de: Es wurden %d Warnungen und %d Fehler registriert.
+de:113 Es gab %d Warnungen und %d Fehler - keine Ausgabedatei erstellt.
+pt:113 H&aacute; %d alerta(s) e %d erro(s) - nenhum arquivo de sa&iacute;da criado
+ca:113 Hi havia %d alerta(es) i %d error(s) - no s'han generat fitxers de sortida.
+es:113 Havia %d alerta(s) y %d error(es) - no se generaron archivos de salida.
+it:113 Ci sono %d avvertimenti e %d errori - nessun file prodotto.
+sk:113 Vyskytlo sa %d varovan&iacute; a %d ch&yacute;b - nebol vytvoren&yacute; v&yacute;stupn&yacute; s&uacute;bor.
+ro:113 Au fost %d avertisment(e) si %d eroare(erori) - nu s-a generat nici un fisier.
 #
 en:114 File `%s' has a newer format than this program can understand
 fr:114 Le fichier `%s' a un format plus r&eacute;cent que ce que ce
@@ -1403,12 +1397,12 @@ pt:116 Perfil em
 ca:116 Al&ccedil;at en
 es:116 Alzado en
 it:116 Profilo in direzione
-#ital:116 Profilo su
+##ital:116 Profilo su
 sk:116 Profil v smere
 ro:116 Profil in directia
 en:117 Plan view
 fr:117 Vue en plan
-#germ:117 Plan
+##germ:117 Plan
 de:117    Grundri&szlig;
 de-ch:117 Grundriss
 pt:117 Planta
@@ -1488,7 +1482,7 @@ ca:124 FITXER
 es:124 ARCHIVO
 it:124 FILE
 sk:124 S&Uacute;BOR
-#ro:124 FI&Scedil;IER
+##ro: FI&Scedil;IER
 ro:124 FISIER
 # a trailing traverse is a dead end back to a junction
 #
@@ -1498,14 +1492,14 @@ ro:124 FISIER
 # progress is being made.
 en:125 Removing trailing traverses
 fr:125 Enl&egrave;ve les s&eacute;quences terminales
-#germ:125 Entferne Blindg&auml;nge
+##germ:125 Entferne Blindg&auml;nge
 de-de,de-ch:125 Einseitig angeschlossene Messz&uuml;ge werden entfernt
 de:125     Einseitig angeschlossene Me&szlig;z&uuml;ge werden entfernt
 pt:125 Removendo seq&uuml;&ecirc;ncias de ponta
 ca:125 Esborrant les seq&uuml;&egrave;ncies terminals
 es:125 Borrando las secuencias terminales
 it:125 Sto rimuovendo le traverse terminali
-#ital:125 Sto rimuovendo i rami morti
+##ital:125 Sto rimuovendo i rami morti
 sk:125 Odstr&aacute;nenie slep&yacute;ch odbo&ccaron;iek
 ro:125 Elimin traversele terminale
 en:126 Concatenating traverses between nodes
@@ -1556,7 +1550,7 @@ es:130 Calculando la red
 it:130 Sto calcolando la rete
 sk:130 V&yacute;po&ccaron;et siete
 ro:130 Calculez reteaua
-# 131 c.f. 10, 31, 32
+## 131 c.f. 10, 31, 32
 en:131 Found `%s', expecting `F' or `B'
 fr:131 Vous avez &eacute;crit `%s'; on attendait `F' ou `B'
 de:131 `%s' gelesen, `F' oder `B' erwartet
@@ -1576,9 +1570,10 @@ pt:132 Desenvolvimento linear das visadas = %7.2fm (%7.2fm corrigidos)
 ca:132 Longitut total de les tirades de topograf&iacute;a = %7.2fm (%7.2fm corregit)
 es:132 Longitud total de las tiradas de topografia = %7.2fm (%7.2fm corregido)
 it:132 Sviluppo spaziale = %7.2fm (%7.2fm corretto)
-#ital:132 Lunghezza totale dei tiri = %7.2fm (%7.2fm corretto)
+##ital:132 Lunghezza totale dei tiri = %7.2fm (%7.2fm corretto)
 sk:132 Celkov&aacute; d&lacute;&zcaron;ka z&aacute;mer = %7.2fm (%7.2fm nastaven&eacute;)
 ro:132 Lungimea totala a masuratorilor topografiei = %7.2fm (%7.2fm ajustat)
+#
 en:133 Total plan length of survey legs = %7.2fm
 en-us:133 Total plan length of survey shots = %7.2fm
 fr:133 Longueur totale en projection horizontale = %7.2fm
@@ -1589,7 +1584,7 @@ ca:133 Longitut total en projecci&oacute; horitzontal = %7.2fm
 es:133 Longitud total en proyecci&oacute;n horizontal = %7.2fm
 it:133 Sviluppo planimetrico = %7.2fm
 sk:133 Celkov&aacute; p&ocirc;dorysn&aacute; d&lacute;&zcaron;ka z&aacute;mer %7.2fm
-#ital:133 Lunghezza totale in pianta = %7.2fm
+##ital:133 Lunghezza totale in pianta = %7.2fm
 ro:133 Lungimea totala in plan a masuratorilor topografiei = %7.2fm
 en:134 Total vertical length of survey legs = %7.2fm
 en-us:134 Total vertical length of survey shots = %7.2fm
@@ -1602,13 +1597,11 @@ es:134 Longitud vertical total de las tiradas de topografia = %7.2fm
 it:134 Totale delle componenti verticali delle battute = %7.2fm
 sk:134 Celkov&aacute; vertik&aacute;lna d&lacute;&zcaron;ka z&aacute;mer %7.2fm
 ro:134 Lungimea totala verticala a masuratorilor topografiei = %7.2fm
-# <135> <station name> <136> <station name> <137>
+## <135> <station name> <136> <station name> <137>
 # numbers are altitudes of highest and lowest stations
-# GN(3): ok adapting the preposition to context
-# OOOOPS, cf 148/149 below!
 en:135 "Vertical range = %4.2fm (from "
 fr:135 "Interval vertical = %4.2fm (de "
-#germ:135 "H"ohenerstreckung = %4.2fm (von "
+##germ:135 "H"ohenerstreckung = %4.2fm (von "
 de:135 "Vertikale Erstreckung = %4.2fm (von "
 pt:135 "Desn&iacute;vel = %4.2fm (de "
 ca:135 "Desnivell total = %4.2fm (des de "
@@ -1619,7 +1612,7 @@ ro:135 "Interval vertical = %4.2fm (de la "
 # for many translations, 196/197 will be the same as 136/137
 en:136 " at %4.2fm to "
 fr:136 " &agrave; %4.2fm jusqu'&agrave; "
-#germ:136 " bei %4.2fm bis "
+##germ:136 " bei %4.2fm bis "
 de:136 " auf %4.2fm bis "
 pt:136 " a %4.2fm a "
 ca:136 " a %4.2fm a "
@@ -1629,7 +1622,7 @@ sk:136 " v %4.2fm do "
 ro:136 " la %4.2fm de la "
 en:137 " at %4.2fm)"
 fr:137 " &agrave; %4.2fm)"
-#germ:137 " bei %4.2fm)"
+##germ:137 " bei %4.2fm)"
 de:137 " auf %4.2fm)"
 pt:137 " a %4.2fm)"
 ca:137 " a %4.2fm)"
@@ -1639,7 +1632,7 @@ sk:137 " v %4.2fm)"
 ro:137 " la %4.2fm)"
 en:138 There is 1 loop.
 fr:138 Il y a 1 bouclage.
-# GN(2): There _is_ a technical term for this which I fail to remember at the moment. (139 too)
+# de: There _is_ a technical term for this which I fail to remember at the moment.
 de:138 Es gibt eine Ringverbindung.
 pt:138 H&aacute; 1 loop.
 ca:138 Hi ha 1 bucle.
@@ -1649,6 +1642,7 @@ sk:138 Jeden uzavret&yacute; polyg&oacute;n.
 ro:138 Este 1 inchidere.
 en:139 There are %ld loops.
 fr:139 Il y a %ld bouclages.
+# de: There _is_ a technical term for this which I fail to remember at the moment.
 de:139 Es gibt %ld Ringverbindungen.
 pt:139 H&aacute; %ld loops.
 ca:139 Hi ha %ld bucles.
@@ -1702,8 +1696,8 @@ es:144 Hecho.
 it:144 Fatto.
 sk:144 Hotovo.
 ro:144 Gata.
-# zh from wxWidgets
-#zh:144 &#23436;&#25104;&#12290;
+## zh from wxWidgets
+##zh:144 &#23436;&#25104;&#12290;
 en:145 "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
 en-us:145 "Original length%7.2fm (%3d shots), moved%7.2fm (%5.2fm/shot). "
 fr:145 "Longueur originale%7.2fm (%3d vis&eacute;es), r&eacute;duit &agrave;%7.2fm (%5.2fm/vis&eacute;es). "
@@ -1724,10 +1718,10 @@ es:146 Error%7.2f%%
 it:146 Errore%7.2f%%
 sk:146 Chyba%7.2f%%
 ro:146 Eroare%7.2f%%
-# Here N/A means "Not Applicable" -- it means the traverse has zero length, so error per metre
-# is meaningless
-# There should be 4 spaces between "Error" and "N/A" so that it lines up with the numbers in
-# the message above.
+# Here N/A means "Not Applicable" -- it means the traverse has zero length, so
+# error per metre is meaningless
+# There should be 4 spaces between "Error" and "N/A" so that it lines up with
+# the numbers in the message above.
 en:147 Error    N/A
 fr:147 Erreur    N/A
 de:147 Fehler   belanglos
@@ -1737,8 +1731,8 @@ es:147 Error    N/A
 it:147 Errore    N/A
 sk:147 Chyba (nem&aacute; zmysel)
 ro:147 Eroare    N/A
-# <148> <station name> <196> <station name> <197>
-# similar to <135> <station name> <136> <station name> <137>
+## <148> <station name> <196> <station name> <197>
+## similar to <135> <station name> <136> <station name> <137>
 en:148 "North-South range = %4.2fm (from "
 fr:148 "Interval Nord-Sud = %4.2fm (de "
 de:148 "Nord-S&uuml;d-Erstreckung = %4.2fm (von "
@@ -1748,7 +1742,7 @@ es:148 "Extensi&oacute;n Norte-Sur = %4.2fm (desde "
 it:148 "Estensione Nord-Sud = %4.2fm (da "
 sk:148 "Rozsah sever-juh = %4.2fm (od "
 ro:148 "Extindere Nord-Sud = %4.2fm (de la "
-# <149> <station name> <196> <station name> <197>
+## <149> <station name> <196> <station name> <197>
 en:149 "East-West range = %4.2fm (from "
 fr:149 "Interval Est-Ouest = %4.2fm (de "
 de:149 "Ost-West-Erstreckung = %4.2fm (von "
@@ -1840,14 +1834,14 @@ pt-br:157 Tente `%s --help' para maiores informa&ccedil;&otilde;es.&#10;
 ca:157 Prova `%s --help' per a m&eacute;s informaci&oacute;.&#10;
 es:157 Prueba `%s --help' para m&aacute;s informaci&oacute;n.&#10;
 it:157 Usare `%s --help' per ulteriori informazioni.&#10;
-#or it:157 Usare `%s --aiuto' per ulteriori informazioni.&#10;
+##or it:157 Usare `%s --aiuto' per ulteriori informazioni.&#10;
 sk:157 Sk&uacute;ste `%s --help' aby sa zobrazilo viac inform&aacute;ci&iacute;.&#10;
 ro:157 &Icirc;ncerca&tcedil;i `%s --help' pentru informacl&tcedil;ii suplimentare.&#10;
 #
 en:158 Plan or Elevation
 en-us:158 Plan or Elevation (profile)
 fr:158 Plan ou Elevation
-#germ:158 Plan oder Aufri&szlig;
+##germ:158 Plan oder Aufri&szlig;
 de:158 Grundri&szlig; oder Aufri&szlig;
 de-ch:158 Grundriss oder Aufriss
 pt:158 Planta or Eleva&ccedil;&atilde;o
@@ -1875,11 +1869,11 @@ ca:160 "Vista cap a: "
 es:160 "Vista hacia: "
 it:160 "Vista verso: "
 sk:160 "Poh&lcaron;ad smerom na: "
-ro:160 "Vizualizare in directia:"
+ro:160 "Vizualizare in directia: "
 #
 en:161 "Tilt (degrees): "
 fr:161 "Basculement (degr&eacute;s): "
-# I would have written "Blickneigung" or something like that, but this
+# de: I would have written "Blickneigung" or something like that, but this
 # would have made the sign convention even more counterintuitive.
 de:161 "Neigung (Grad): "
 pt:161 "Inclina&ccedil;&atilde;o (graus): "
@@ -1913,7 +1907,7 @@ ro:163 Scara folosita %.0f:%.0f
 #
 en:164 "Print which pages?&#10;(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)&#10;: "
 fr:164 "Imprimer quelles pages?&#10;(RETURN pour toutes; n pour 1 page; 'm-n', 'm-', '-n' pour une s&eacute;lection)&#10;: "
-#germ:164 "Drucke welche Seiten?&#10;(RETURN f&uuml;r alle; 'n' f&uuml;r eine Seite, 'm-n', 'm-', '-n' f&uuml;r entsprechende Abschnitte)&#10;: "
+##germ:164 "Drucke welche Seiten?&#10;(RETURN f&uuml;r alle; 'n' f&uuml;r eine Seite, 'm-n', 'm-', '-n' f&uuml;r entsprechende Abschnitte)&#10;: "
 de:164 "Welche Seite(n) drucken?&#10;(RETURN f&uuml;r alle; 'n' f&uuml;r eine Seite, 'm-n', 'm-', '-n' f&uuml;r entsprechende Abschnitte)&#10;: "
 pt:164 "P&aacute;ginas a imprimir:&#10;(RETURN para todas; 'n' para uma, 'm-n', 'm-', '-n' para um intervalo)&#10;: "
 ca:164 "P&agrave;gines a imprimir:&#10;(RETURN per a totes; 'n' per una, 'm-n', 'm-', '-n' per intervals)&#10;: "
@@ -1922,15 +1916,15 @@ it:164 "Pagine da stampare:&#10;(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-
 sk:164 "Ktor&eacute; str&aacute;nky vytla&ccaron;i&tcaron;?&#10;(RETURN pre v&scaron;etky; 'n' pre jednu str&aacute;nku, 'm-n', 'm-', '-n' pre rozsah)&#10;: "
 ro:164 "Ce pagini imprim?&#10;(RETURN pentru toate; 'n' pentru o pagina, 'm-n', 'm-', '-n' pentru un interval)&#10;: "
 # e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
-en:165 Printing to `%s'...
-fr:165 Impression vers `%s'...
-de:165 Drucken nach `%s'...
-pt:165 Imprimindo em `%s'...
-ca:165 Imprimint a `%s'...
-es:165 Imprimiendo en `%s'...
-it:165 In stampa su `%s'...
-sk:165 Tla&ccaron;&iacute;m na/do `%s'...
-ro:165 Imprim la `%s'...
+en:165 Printing to `%s'&hellip;
+fr:165 Impression vers `%s'&hellip;
+de:165 Drucken nach `%s'&hellip;
+pt:165 Imprimindo em `%s'&hellip;
+ca:165 Imprimint a `%s'&hellip;
+es:165 Imprimiendo en `%s'&hellip;
+it:165 In stampa su `%s'&hellip;
+sk:165 Tla&ccaron;&iacute;m na/do `%s'&hellip;
+ro:165 Imprim la `%s'&hellip;
 #
 en:166 Page %d of %d
 fr:166 Page %d sur %d
@@ -1941,7 +1935,7 @@ es:166 P&aacute;gina %d de %d
 it:166 Pagina %d di %d
 sk:166 Str&aacute;nka  %d z %d
 ro:166 Pagina %d din %d
-#zh:166 &#39029; %d / %d
+##zh:166 &#39029; %d / %d
 en:167 Survey `%s'   Page %d (of %d)   Processed on %s
 fr:167 Topo `%s'   Page %d (sur %d)   En cours sur %s
 de:167 Vermessung `%s'   Seite %d (von %d)   Berechnung von Seite %s
@@ -2019,7 +2013,7 @@ ca:174 " unides per 1 tirada."
 es:174 " unidas por 1 tirada."
 it:174 " unite per una battuta."
 sk:174 " spojen&yacute;ch 1 z&aacute;merou."
-ro:174 " unite printr-o masuratoare. "
+ro:174 " unite printr-o masuratoare."
 en:175 " joined by %ld legs."
 en-us:175 " joined by %ld shots."
 fr:175 " connect&eacute;es par %ld vis&eacute;es."
@@ -2083,7 +2077,7 @@ es:180 si
 it:180 si
 sk:180 &aacute;no
 ro:180 da
-#zh:180 &#26159;
+##zh:180 &#26159;
 en:181 no
 fr:181 non
 de:181 nein
@@ -2093,16 +2087,16 @@ es:181 no
 it:181 no
 sk:181 nie
 ro:181 nu
-#zh:181 &#21542;
+##zh:181 &#21542;
 # cf 221
 en:182 quit
 fr:182 sortir
-de:182 verlassen
-# or `aufh&ouml;ren'.  These are parts of menus, right?  as in `yes,no,abort'?
+# de: or `aufh&ouml;ren'.  These are parts of menus, right?  as in `yes,no,abort'?
 # In fact, `verlassen' is only appropriate when you want to quit the whole
 # program.  If you just want to abort an action, it ought to be `Abbruch'.
 # Yes this is a noun not a verb, but that's what's commonly used.
-#port:182 sair
+de:182 verlassen
+##port:182 sair
 #If this one is part of a (yes,no,quit) selection based on the first letter, it
 #is better to use this message (even if it isn't usual):
 pt:182 abortar
@@ -2110,11 +2104,11 @@ ca:182 abortar
 es:182 abortar
 it:182 annulla
 sk:182 zru&scaron;i&tcaron;
-#ro:182 termin&abreve;
+##ro:182 termin&abreve;
 ro:182 anuleaza
 en:183 plan
 fr:183 plan
-#germ:183 Plan
+##germ:183 Plan
 de:183    Grundri&szlig;
 de-ch:183 Grundriss
 pt:183 planta
@@ -2166,7 +2160,7 @@ sk:187 argument `%s' nie je &ccaron;&iacute;slo
 ro:187 argumentul `%s' nu este un numar
 en:188 Expecting `DUPLICATE', `SPLAY', or `SURFACE'
 fr:188 On attendait `DUPLICATE', `SPLAY', ou `SURFACE'
-# NB there is no comma before "oder"
+# de: NB there is no comma before "oder"
 de:188 `DUPLICATE', `SPLAY' oder `SURFACE' erwartet
 pt:188 `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
 ca:188 Esperant `DUPLICATE', `SPLAY', o `SURFACE'
@@ -2176,7 +2170,7 @@ sk:188 predpoklad&aacute; sa `DUPLICATE', `SPLAY', alebo `SURFACE'
 ro:188 Astept `DUPLICATE', `SPLAY', sau `SURFACE'
 en:189 Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'
 fr:189 On attendait `NOT', `DUPLICATE', `SPLAY', ou `SURFACE'
-# NB there is no comma before "oder"
+# de: NB there is no comma before "oder"
 de:189 `NOT', `DUPLICATE', `SPLAY' oder `SURFACE' erwartet
 pt:189 `NOT', `DUPLICATE', `SPLAY' ou `SURFACE' eram esperados
 ca:189 Esperant `NOT', `DUPLICATE', `SPLAY', o `SURFACE'
@@ -2247,7 +2241,7 @@ es:195 ( Este X , Norte Y , Altitud Z)
 it:195 ( Est (X), Nord (Y), Quota  Z )
 sk:195 ( v&yacute;chod,  sever,    v&yacute;&scaron;ka    )
 ro:195 ( Est (X), Nord (Y), Altitudine Z )
-# for many translations, 196/197 will be the same as 136/137
+## for many translations, 196/197 will be the same as 136/137
 en:196 " at %4.2fm to "
 fr:196 " &agrave; %4.2fm jusqu'&agrave; "
 de:196 " bei %4.2fm bis "
@@ -2299,8 +2293,8 @@ es:200 El factor de *UNITS debe de ser diferente de cero
 it:200 Il fattore *UNITS deve essere diverso da zero
 sk:200 *UNITS faktor mus&iacute; by&tcaron; nenulov&yacute;
 ro:200 Factorul *UNITS trebie sa fie diferit de zero
+###  Messages for Aven
 #
-#  Messages for Aven
 # 1.1 only: 201
 #
 en:202 No survey data in 3d file `%s'
@@ -2333,9 +2327,10 @@ es:204 Cerrar
 it:204 Chiudi
 sk:204 Zavrie&tcaron;
 ro:204 &Icirc;nchide
-#zh:204 &#20851;&#38381;
+##zh:204 &#20851;&#38381;
 #
-# for the title of the About box (c.f. 290)
+# for the title of the About box
+# c.f. 290
 en:205 About %s
 fr:205 A propos %s
 de:205 &Uuml;ber %s
@@ -2475,30 +2470,30 @@ sk:219 Tento program je voln&yacute; software; m&uring;&zcaron;ete jej &scaron;&
 ro:219 Acest program este liber; &icirc;l pute&tcedil;i redistribui &scedil;i/sau modifica &icirc;n conformitate cu termenii Licen&tcedil;ei Publice Generale GNU a&scedil;a cum este publicat&abreve; de Free Software Foundation; fie versiunea 2 Licen&tcedil;ei, fie (la latitudinea dumneavoastr&abreve;) orice versiune ulterioar&abreve;.
 #
 # "File" menu.  The accelerators must be different within this group.
-# see also 201, 380, 381.
-en:220 @Open...##Ctrl+O
-fr:220 @Ouvrir...##Ctrl+O
-de:220 &Ouml;@ffnen...##Ctrl+O
-pt:220 @Abrir...##Ctrl+O
-ca:220 @Obrir...##Ctrl+O
-es:220 @Abrir...##Ctrl+O
-it:220 @Apri...##Ctrl+O
-sk:220 @Otvori&tcaron;...##Ctrl+O
-ro:220 @Deschide...##Ctrl+O
-# TRANSLATE pt (english changed from Exit to Quit)
+# c.f. 201, 380, 381.
+en:220 @Open&hellip;##Ctrl+O
+fr:220 @Ouvrir&hellip;##Ctrl+O
+de:220 &Ouml;@ffnen&hellip;##Ctrl+O
+pt:220 @Abrir&hellip;##Ctrl+O
+ca:220 @Obrir&hellip;##Ctrl+O
+es:220 @Abrir&hellip;##Ctrl+O
+it:220 @Apri&hellip;##Ctrl+O
+sk:220 @Otvori&tcaron;&hellip;##Ctrl+O
+ro:220 @Deschide&hellip;##Ctrl+O
 # cf 182
-en:221 @Quit##Ctrl+Q
-fr:221 @Quitter##Ctrl+Q
-de:221 @Beenden##Ctrl+Q
-pt:221 @Sair##Ctrl+Q
-ca:221 @Sortir##Ctrl+Q
-es:221 @Salir##Ctrl+Q
-it:221 @Esci##Ctrl+Q
-sk:221 E@xit##Ctrl+Q
-ro:221 @Termin&abreve;##Ctrl+Q
-# End of "File" menu.
+# no longer used
+#en:221 @Quit##Ctrl+Q
+#fr:221 @Quitter##Ctrl+Q
+#de:221 @Beenden##Ctrl+Q
+#pt:221 @Sair##Ctrl+Q
+#ca:221 @Sortir##Ctrl+Q
+#es:221 @Salir##Ctrl+Q
+#it:221 @Esci##Ctrl+Q
+#sk:221 E@xit##Ctrl+Q
+#ro:221 @Termin&abreve;##Ctrl+Q
+## End of "File" menu.
 #
-# back to cavern
+## back to cavern
 # error from "*data normal newline from to tape compass clino"
 en:222 NEWLINE can't be the first reading
 fr:222 NEWLINE ne peut pas &ecirc;tre la premi&egrave;re valeur
@@ -2627,7 +2622,7 @@ ro:233 @Incetineste rotatia
 en:234 @Reverse Direction
 fr:234 Direction @Inverse
 de:234 @Andere Richtung
-#pt-br:234 @Reverter Sentido
+##pt-br:234 @Reverter Sentido
 pt,pt-br:234 @Inverter Sentido
 ca:234 @Inverteix el sentit
 es:234 @Invierte el sentido
@@ -2815,23 +2810,18 @@ it:253 Zoo@m indietro##[
 sk:253 Zmen&scaron;i@t##[
 ro:253 Mi@c&scedil;orare##[
 #
-# TRANSLATE fr pt pt-br sk
-# "Restore Default Settings" -> "Restore Default View"
 en:254 Restore De@fault View
 en-us:254 Restore Defaul@t View
-# "la vues" seems grammatically incorrect - check...
-fr:254 @Restaurer la vues par d&eacute;faut
+fr:254 @Restaurer la vue par d&eacute;faut
 de:254 @Zur&uuml;ck zur voreingestellten Ansicht
-pt:254 @Usar valores pr&eacute;-definidos
-pt-br:254 @Restaurar padr&otilde;es
+pt:254 @Restaurar Vista Predefinida
 ca:254 Restablei@x la vista per defecte
 es:254 Restaurar la @vista predeterminada
 it:254 Ripristina la @vista predefinita
-sk:254 Znov@u na v&yacute;chodzie hodnoty
+sk:254 @Obnovenie v&yacute;chodzieho poh&lcaron;adu
 ro:254 @Restabiliti setarile initiale
 # Used in print dialog to label the box around the tilt and pan angles
-# TRANSLATE pt pt-br sk check reused message makes sense
-# in this context
+# TRANSLATE pt pt-br check reused message makes sense in this context
 # cf 213
 en:255 View
 fr:255 Vue
@@ -2849,12 +2839,13 @@ ro:255 Vizualizare
 en:256 Elements
 fr:256 El&eacute;ments
 de:256 Elemente
+pt:256 Elementos
 ca:256 Elements
 es:256 Elementos
 it:256 Elementi
+sk:256 Objekty
 ro:256 Elemente
 # cf 170
-# TRANSLATE pt pt-br sk check adapted message is ok
 en:257 %d pages (%dx%d)
 fr:257 %d pages (%dx%d)
 de:257 %d Seiten (%dx%d)
@@ -2871,18 +2862,17 @@ ro:257 %d pagini (%dx%d)
 en:258 One page
 fr:258 Une page
 de:258 Eine Seite
-pt:258 Uma P&aacute;gina
-ca:258 Una P&agrave;gina
-es:258 Una P&aacute;gina
-it:258 Una Pagina
-sk:258 Jednu Str&aacute;nku
-ro:258 O Pagina
+pt:258 Uma p&aacute;gina
+ca:258 Una p&agrave;gina
+es:258 Una p&aacute;gina
+it:258 Una pagina
+sk:258 Jednu str&aacute;nku
+ro:258 O pagina
 # cf 159
-# TRANSLATE pt pt-br sk check adapted message is ok
 en:259 Bearing
 fr:259 Azimut
 de:259 Richtung
-pt:259 Dire&ccedil;&atilde;o
+pt:259 Azimute
 ca:259 Azimut
 es:259 Azimut
 it:259 Azimut
@@ -2926,38 +2916,48 @@ ro:262 Portiuni subterane ale topografiei
 en:263 Tilt angle
 fr:263 Angle de basculement
 de:263 Neigung
+pt:263 Grau de inclina&ccedil;&atilde;o
+pt-br:263 &Acirc;ngulo de inclina&ccedil;&atilde;o
 ca:263 Angle d'inclinaci&oacute;
 es:263 Angulo de inclinaci&oacute;n
 it:263 Angolo di inclinazione
+sk:263 N&aacute;klon
 ro:263 Unghi de inclinatie
 # used in the print dialog - controls drawing lines around each page
 en:264 Page Borders
 fr:264 Bordures de page
 de:264 Seitenrahmen
+pt:264 Margens da P&aacute;gina
+pt-br:264 Bordas da P&aacute;gina
 ca:264 Marcs de la p&agrave;gina
 es:264 Marcos de la p&aacute;gina
 it:264 Bordi pagina
+sk:264 R&aacute;m&ccaron;ek
 ro:264 Limite pagina
 # used in the print dialog - controls drawing the box at the lower left
 # with survey name, view angles, etc
 en:265 Info Box
 fr:265 Panneau d'information
 de:265 Legende
+pt:265 Caixa de Informa&ccedil;&atilde;o
 ca:265 Requadre d'informaci&oacute;
 es:265 Cajet&iacute;n de informaci&oacute;n
 it:265 Riquadro informazioni
+sk:265 Popiska
 ro:265 Caseta de informatii
 # will be used in the print dialog - check this to print blank pages
 # (otherwise they'll be skipped to save paper)
 en:266 Blank Pages
 fr:266 Pages blanches
 de:266 Leerseiten
+pt,pt-br:266 P&aacute;ginas em branco
 ca:266 P&agrave;gines en blanc
 es:266 P&aacute;ginas en blanco
 it:266 Pagine bianche
+sk:266 Pr&aacute;zdne str&aacute;nky
 ro:266 Document nou
 # XXX 267-269
-# The accelerators must be different within this group
+## The accelerators must be different within this group
 en:270 Station @Names##Ctrl+N
 fr:270 @Noms de station##Ctrl+N
 de:270     Me&szlig;punkt@namen##Ctrl+N
@@ -2977,14 +2977,14 @@ ca:271 @Creus##Ctrl+X
 es:271 @Cruces##Ctrl+X
 it:271 @Croci##Ctrl+X
 sk:271 @Kr&iacute;&zcaron;iky##Ctrl+X
-#"Rezy" means cross sections, not crosses
-#sk:271 @Rezy##Ctrl+X
+##"Rezy" means cross sections, not crosses
+##sk:271 @Rezy##Ctrl+X
 ro:271 @Cruci##Ctrl+X
 #
 en:272 @Underground Survey Legs##Ctrl+L
 en-us:272 @Underground Shots##Ctrl+L
 fr:272 @Vis&eacute;es sous terre##Ctrl+L
-#de:272 @Strecken##Ctrl+L
+##de:272 @Strecken##Ctrl+L
 de:272 @Strecken unter Grund##Ctrl+L
 pt:272 @Visadas Subterr&acirc;neas##Ctrl+L
 ca:272 @Tirades Subterr&agrave;nies##Ctrl+L
@@ -3045,7 +3045,7 @@ it:277 Barra di controllo della @Scala
 sk:277 @Mer&iacute;tko
 ro:277 Bara de control a @scarii
 #
-# The accelerators must be different within this group
+## The accelerators must be different within this group
 en:280 @Reverse Sense##Ctrl+R
 fr:280 Sens @Inverse##Ctrl+R
 de:280 Richtung @umkehren##Ctrl+R
@@ -3066,22 +3066,23 @@ es:281 @Cancela la linea de medida##Escape
 it:281 @Cancella la linea di misura##Escape
 #sk: Netu&scaron;&iacute;m o &ccaron;o ide
 sk:281 @Zru&scaron;it l&iacute;niu merani&acute;##Escape
-ro:281 @Anulati linia de masura##Escape
 #ro: to find a better way to express that
+ro:281 @Anulati linia de masura##Escape
 # XXX 282 283 284 285 286 287 288 289
 #
-# The accelerators must be different within this group
+## The accelerators must be different within this group
 # c.f. 205
-en:290 @About...
-fr:290 @A propos...
-de:290 &Uuml;@ber...
-pt:290 @Acerca de...
-pt-br:290 @Sobre...
-ca:290 @A prop&ograve;sit de...
-es:290 @Acerca de...
-it:290 @Informazioni su...
-sk:290 @Inform&aacute;cie o...
-ro:290 @Despre...
+# no longer used
+#en:290 @About&hellip;
+#fr:290 @A propos&hellip;
+#de:290 &Uuml;@ber&hellip;
+#pt:290 @Acerca de&hellip;
+#pt-br:290 @Sobre&hellip;
+#ca:290 @A prop&ograve;sit de&hellip;
+#es:290 @Acerca de&hellip;
+#it:290 @Informazioni su&hellip;
+#sk:290 @Inform&aacute;cie o&hellip;
+#ro:290 @Despre&hellip;
 #
 en:291 @Surface Survey Legs##Ctrl+F
 en-us:291 @Surface Shots##Ctrl+F
@@ -3156,7 +3157,7 @@ ca:297 @Graella##Ctrl+G
 es:297 @Rejilla##Ctrl+G
 it:297 @Griglia##Ctrl+G
 sk:297 @Sie&tcaron;##Ctrl+G
-#ro:297 @Gril&abreve;##Ctrl+G
+##ro:297 @Gril&abreve;##Ctrl+G
 ro:297 @Grid##Ctrl+G
 #
 en:298 Smoot@hed Survey Legs
@@ -3210,7 +3211,7 @@ ca:302 %s: l'opci&oacute; `%c%s' no accepta arguments&#10;
 es:302 %s: la opci&oacute;n `%c%s' no permite argumento&#10;
 it:302 %s: l'opzione `%c%s' non permette un argomento&#10;
 sk:302 %s: mo&zcaron;nos&tcaron; `%c%s' neumo&zcaron;&ncaron;uje argument&#10;
-ro:302 %s: op&tcedil;iunea `%c%s' nu permite un argument&#10;"
+ro:302 %s: op&tcedil;iunea `%c%s' nu permite un argument&#10;
 #
 en:303 %s: option `--%s' doesn't allow an argument&#10;
 fr:303 %s: l'option `--%s' n'a pas d'argument&#10;
@@ -3221,7 +3222,7 @@ ca:303 %s: l'opci&oacute; `--%s' no accepta arguments&#10;
 es:303 %s: la opci&oacute;n `--%s' no permite argumento&#10;
 it:303 %s: l'opzione `--%s' non permette un argomento&#10;
 sk:303 %s: mo&zcaron;nos&tcaron; `--%s' neumo&zcaron;&ncaron;uje argument&#10;
-ro:303 %s: op&tcedil;iunea `--%s' nu permite un argument&#10;"
+ro:303 %s: op&tcedil;iunea `--%s' nu permite un argument&#10;
 #
 en:304 %s: option `-W %s' doesn't allow an argument&#10;
 fr:304 %s: l'option `-W %s' n'a pas d'argument&#10;
@@ -3232,7 +3233,7 @@ ca:304 %s: l'opci&oacute; `-W %s' no accepta arguments&#10;
 es:304 %s: la opci&oacute;n `-W %s' no permite argumento&#10;
 it:304 %s: l'opzione `-W %s' non permette un argomento&#10;
 sk:304 %s: mo&zcaron;nos&tcaron; `-W %s' neumo&zcaron;&ncaron;uje argument&#10;
-ro:304 %s: op&tcedil;iunea `-W %s' nu permite un argument&#10;"
+ro:304 %s: op&tcedil;iunea `-W %s' nu permite un argument&#10;
 #
 en:305 %s: option `%s' requires an argument&#10;
 fr:305 %s: l'option `%s' requiert un argument&#10;
@@ -3316,17 +3317,21 @@ ro:319 Selectati un fisier pentru iesire
 en:324 Compass PLT files
 fr:324 Fichier Compass PLT
 de:324 Compass PLT Datei
+pt:324 Ficheiro Compass PLT
 ca:324 Fitxers Compass PLT
 es:324 Archivos Compass PLT
 it:324 File Compass PLT
+sk:324 S&uacute;bory Compass PLT
 ro:324 Fisier Compass PLT
 # "CMAP" is Bob Thrun's cave surveying package.
 en:325 CMAP XYZ files
 fr:325 Fichier CMAP XYZ
 de:325 CAMP XYZ Datei
+pt:325 Ficheiros CMAP XYZ
 ca:325 Fitxers CMAP XYZ
 es:325 Archivos CMAP XYZ
 it:325 File CMAP XYZ
+sk:325 S&uacute;bory CMAP XYZ
 ro:325 Fisier CMAP XYZ
 # Used in 1.1: 326 327
 en:328 No matches were found.
@@ -3360,7 +3365,7 @@ es:332 Encuentra
 it:332 Trova
 sk:332 H&lcaron;ada&tcaron;
 ro:332 G&abreve;se&scedil;te
-#zh:332 &#26597;&#25214;
+##zh:332 &#26597;&#25214;
 # "Hide stations" button label
 en:333 Hide
 fr:333 Masquer
@@ -3371,14 +3376,14 @@ es:333 Oculta
 it:333 Nascondi
 sk:333 Schova&tcaron;
 ro:333 Ascunde
-#zh:333 &#38544;&#34255;
+##zh:333 &#38544;&#34255;
 # checkbox for regular expression search
 en:334 Regular expression
 fr:334 Expression r&eacute;guli&egrave;re
 de:334 Regul&auml;rer Ausdruck
 pt,pt-br:334 Express&atilde;o regular
 ca:334 Expressi&oacute; regular
-es:334 Expressi&oacute;n regular
+es:334 Expresi&oacute;n regular
 it:334 Espressione regolare
 sk:334 Regular expression
 ro:334 Expresie normala
@@ -3403,6 +3408,7 @@ it:336 &Eacute; possibile visualizzare solamente un file 3D alla volta.
 sk:336 M&ocirc;&zcaron;ete prehliada&tcaron; iba jeden 3D s&uacute;bor
 ro:336 Puteti vizualiza doar un fisier 3d odata
 # cf 373
+# TRANSLATE ro
 en:337 @Side Panel
 fr:337 @Vue lat&eacute;rale
 de:337 @Seitliches Kontrollfeld
@@ -3412,11 +3418,10 @@ es:337 @Panel Lateral
 it:337 @Riquadro Laterale
 sk:337 @Postrann&yacute; panel
 ro:337 @Cadran lateral
-#ro: still to check
 # show coordinates (N = North or Northing, E = East or Easting)
 en:338 "  %d E, %d N"
 fr:338 "  %d E, %d N"
-#alternatively de:338 "  %d O, %d N", but H/R is consistent with headings in pos files
+# de: alternatively "  %d O, %d N", but H/R is consistent with headings in pos files
 de:338 "  %d H, %d R"
 pt:338 "  %d L, %d N"
 ca:338 "  %d E, %d N"
@@ -3438,6 +3443,7 @@ it:339 Da %s
 sk:339 Od %s
 ro:339 De la %s
 #
+# "H" is short for "Horizontal", "V" for "Vertical"
 en:340 "  H %d%s, V %d%s"
 fr:340 "  H %d%s, V %d%s"
 de:340 "  H %d%s, V %d%s"
@@ -3448,6 +3454,7 @@ it:340 "  O %d%s, V %d%s"
 sk:340 "  V %d%s, &Scaron; %d%s"
 ro:340 "  H %d%s, V %d%s"
 #
+# "Dist" is short for "Distance", "Brg" for "Bearing" (as in Compass bearing)
 en:341 "  Dist %d%s, Brg %03d%s"
 fr:341 "  Dist %d%s, Azim %03d%s"
 de:341 "  Dist %d%s, Richt. %03d%s"
@@ -3501,54 +3508,65 @@ es:345 g.cent
 it:345 g.cent.
 sk:345 gr&aacute;dy
 ro:345 gr.cent
-#ro: 345 grade centezimale
+##ro: 345 grade centezimale
 # cf 400
-en:380 @Print...##Ctrl+P
-fr:380 @Imprimer...##Ctrl+P
-de:380 @Drucken...##Ctrl+P
-ca:380 @Imprimir...##Ctrl+P
-es:380 @Imprimir...##Ctrl+P
-it:380 Stam@pa...##Ctrl+P
-sk:380 @Tla&ccaron;i&tcaron;...##Ctrl+P
-ro:380 @Imprimare...##Ctrl+P
-# TRANSLATE pt
-en:381 P@age Setup...
-fr:381 Configurer la @page...
-de:381 @Seite einrichten...
-ca:381 Configuraci&oacute; de la @p&agrave;gina...
-es:381 Configuraci&oacute;n de la @p&aacute;gina...
-pt:381 Pa@ge Setup...
-it:381 @Imposta pagina...
-sk:381 @Nastaven&iacute; tisku...
-ro:381 Initializare @pagina...
+en:380 @Print&hellip;##Ctrl+P
+fr:380 @Imprimer&hellip;##Ctrl+P
+de:380 @Drucken&hellip;##Ctrl+P
+pt,pt-br:380 @Imprimir&hellip;##Ctrl+P
+ca:380 @Imprimir&hellip;##Ctrl+P
+es:380 @Imprimir&hellip;##Ctrl+P
+it:380 Stam@pa&hellip;##Ctrl+P
+sk:380 @Tla&ccaron;i&tcaron;&hellip;##Ctrl+P
+ro:380 @Imprimare&hellip;##Ctrl+P
 #
-en:382 @Export as...
-fr:382 @Exporter sous...
-de:382 @Exportieren als...
-it:382 E@sporta come...
-ro:382 @Exporta ca...
+en:381 P@age Setup&hellip;
+fr:381 Configurer la @page&hellip;
+de:381 @Seite einrichten&hellip;
+pt:381 Configura&ccedil;&atilde;o de @P&aacute;gina&hellip;
+ca:381 Configuraci&oacute; de la @p&agrave;gina&hellip;
+es:381 Configuraci&oacute;n de la @p&aacute;gina&hellip;
+it:381 @Imposta pagina&hellip;
+sk:381 @Nastaven&iacute; tisku&hellip;
+ro:381 Initializare @pagina&hellip;
+#
+en:382 @Export as&hellip;
+fr:382 @Exporter sous&hellip;
+de:382 @Exportieren als&hellip;
+pt:382 @Exportar como&hellip;
+ca:382 @Exporta com&hellip;
+es:382 @Exporta como&hellip;
+it:382 E@sporta come&hellip;
+sk:382 @Export ako&hellip;
+ro:382 @Exporta ca&hellip;
 # XXX 383 384 385 386 387 388 389
 # for about box:
 en:390 System Information:
 fr:390 Syst&egrave;me d'information:
 de:390 Systeminformation:
+pt:390 Informa&ccedil;&atilde;o sobre o Sistema:
+ca:390 Informaci&oacute; del Sistema:
+es:390 Informaci&oacute;n del Sistema:
 it:390 Informazioni sul Sistema:
-ro:390 Informatii despre Sistem
+sk:390 Inform&aacute;cie o syst&eacute;me:
+ro:390 Informatii despre Sistem:
 # Title of the print preview dialog
-# TRANSLATE ca es sk pt-br check translations culled from elsewhere
+# TRANSLATE pt-br check translations culled from elsewhere
 en:398 Print Preview
 fr:398 Aper&ccedil;u avant impression
 de:398 Druckvorschau
+pt:398 Pr&eacute;-visualiza&ccedil;&atilde;o de Impress&atilde;o
 pt-br:398 Visualizar impress&atilde;o
-ca:398 Imprimeix previsualitzacii&oacute;
-es:398 Previsualizaci&oacute;n de la impresi&oacute;n
+ca:398 Vista pr&egrave;via de la impressi&oacute;
+es:398 Vista previa de la impressi&oacute;n
 it:398 Anteprima di stampa
-sk:398 Ni&aacute;hled tisku
+sk:398 N&aacute;h&lcaron;ad tla&ccaron;e
 ro:398 Vizualizare inaintea imprimarii
 # Title of the print dialog
 en:399 Print
 fr:399 Imprimer
 de:399 Drucken
+pt,pt-br:399 Imprimir
 ca:399 Imprimir
 es:399 Imprimir
 it:399 Stampa
@@ -3558,6 +3576,7 @@ ro:399 Imprimare
 en:400 &amp;Print
 fr:400 &amp;Imprimer
 de:400 &amp;Drucken
+pt,pt-br:400 &amp;Imprimir
 ca:400 &amp;Imprimir
 es:400 &amp;Imprimir
 it:400 &amp;Stampa
@@ -3567,16 +3586,18 @@ ro:400 &amp;Imprimare
 en:401 Pre&amp;view
 fr:401 &amp;Pr&eacute;visualiser
 de:401 &amp;Vorschau
+pt:401 Pr&eacute;-&amp;visualiza&ccedil;&atilde;o
 ca:401 &amp;Previsualitza
 es:401 &amp;Previsualiza
 it:401 Ante&amp;prima di stampa
 sk:401 &amp;N&aacute;h&lcaron;ad
 ro:401 &amp;Vizualizare pre-imprimare
-#ro:401 Vizualizare inaintea imprimarii
+##ro:401 Vizualizare inaintea imprimarii
 #
 en:402 &amp;Cancel
 fr:402 &amp;Annuler
 de:402 &amp;Abbrechen
+pt:402 &amp;Cancelar
 ca:402 &amp;Anul&middot;la
 es:402 &amp;Anula
 it:402 &amp;Annulla
@@ -3598,7 +3619,11 @@ ro:403 &amp;Portiuni de suprafata ale topografiei
 en:404 Invalid regular expression: %s
 fr:404 Expression r&eacute;guli&egrave;re invalide: %s
 de:404 Ung&uuml;ltiger regul&auml;rer Ausdruck: %s
+pt:404 Express&atilde;o regular inv&aacute;lida: %s
+ca:404 Expressi&oacute; incorrecta: %s
+es:404 Expresi&oacute;n incorrecta: %s
 it:404 Espressione regolare non valida: %s
+sk:404 Nespr&aacute;vny v&yacute;raz: %s
 ro:404 Expresie regulara incorecta: %s
 #
 # for diffpos:
@@ -3612,6 +3637,7 @@ it:500 Spostato da (%3.2f,%3.2f,%3.2f): %s
 sk:500 Posun (%3.2f,%3.2f,%3.2f): %s
 ro:500 Mutat cu (%3.2f,%3.2f,%3.2f): %s
 #
+# for diffpos:
 en:501 Added: %s
 fr:501 Ajout de: %s
 de:501 Hinzugef&uuml;gt: %s
@@ -3622,6 +3648,7 @@ it:501 Aggiunto: %s
 sk:501 Pridan&eacute;: %s
 ro:501 Adaugat: %s
 #
+# for diffpos:
 en:502 Deleted: %s
 fr:502 Effac&eacute;: %s
 de:502 Entfernt: %s
@@ -3637,72 +3664,134 @@ ro:502 Eliminat: %s
 # this station, but we didn't find it in the 3d file
 en:510 Failed to find station %s
 fr:510 La station %s n'a pas &eacute;t&eacute; trouv&eacute;e
+de:510 Messpunkt konnte nicht gefunden werden: %s
+ca:510 L'estaci&oacute; %s no s'ha trobat
+es:510 La estaci&oacute;n %s no se ha encontrado
 it:510 La stazione %s non &eacute; stata trovata
+sk:510 Nepodarilo sa n&aacute;js&tcaron; bod %s
 ro:510 Nu s-a gasit punctul de statie %s
+# for extend:
 # the user specified breaking a loop or changing extend direction at
 # this leg, but we didn't find it in the 3d file
-en:511 Failed to find leg %s -> %s
-fr:511 Vis&eacute;e %s -> %s non trouv&eacute;
-it:511 Tiro %s -> %s non trovato
-ro:511 Nu s-a gasit masuratoarea %s -> %s
+en:511 Failed to find leg %s &rarr; %s
+fr:511 Vis&eacute;e %s &rarr; %s non trouv&eacute;
+de:511 Messstrecke konnte nicht gefunden werden: %s &rarr; %s
+ca:511 No s'han trobat les tirades %s &rarr; %s
+es:511 No se han encontrado las tiradas %s &rarr; %s
+it:511 Tiro %s &rarr; %s non trovato
+sk:511 Nepodarilo sa n&aacute;js&tcaron; z&aacute;meru %s &rarr; %s
+ro:511 Nu s-a gasit masuratoarea %s &rarr; %s
+# for extend:
 # "extend" is starting to produce an extended elevation from station %s
 en:512 Starting from station %s
 fr:512 D&eacute;but &agrave; la station %s
+de:512 Bei diesem Messpunkt wird begonnen: %s
+ca:512 Inici des de l'estaci&oacute; %s
+es:512 Inicio desde la estaci&oacute;n %s
 it:512 Inizio dalla stazione %s
+sk:512 Za&ccaron;a&tcaron; od bodu %s
 ro:512 Incepind cu punctul de statie %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
-en:513 Extending to the left from station %s
-fr:513 Dessin vers la gauche en partant de la station %s
-it:513 Sviluppo verso sinistra a partire dalla stazione %s
-ro:513 Extindere spre stanga incepind cu punctul de statie %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
-en:514 Extending to the right from station %s
-fr:514 Dession vers la droite en partant de la station %s
-it:514 Sviluppo verso destra a partire dalla stazione %s
-ro:514 Extindere spre dreapta incepind cu punctul de statie %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
-en:515 Extending to the left from leg %s -> %s
-fr:515 Dessin vers la gauche en partant de la vis&eacute;e %s -> %s
-it:515 Sviluppo verso sinistra a partire dal tiro %s -> %s
-ro:515 Extindere spre stanga incepind cu masuratoarea %s -> %s
-# TRANSLATE fr (changed from "Plotting" to "Extending")
-en:516 Extending to the right from leg %s -> %s
-fr:516 Dessin vers la droite en partant de la vis&eacute;e %s -> %s
-it:516 Sviluppo verso destra a partire dal tiro %s -> %s
-ro:516 Extindere spre drepta incepind cu masuratoarea %s -> %s
-# TRANSLATE fr (changed "survey" -> "survey loop")
-en:517 Breaking survey loop at station %s
-fr:517 Arr&ecirc;t de la topo &agrave; la station %s
-it:517 Topografia interrotta alla stazione %s
-ro:517 Topografia intrerupta incepind cu punctul de statie %s 
-# TRANSLATE fr (changed "survey" -> "survey loop")
-en:518 Breaking survey loop at leg %s -> %s
-fr:518 Arr&ecirc;t de la topo &agrave; la vis&eacute;e %s -> %s
-it:518 Topografia interrotta al tiro %s -> %s
-ro:518 Topografia intrerupta incepind cu masuratoarea %s -> %s
-# TRANSLATE fr plot -> extend
-en:519 Swapping extend direction from station %s
-fr:519 Change la direction de dessin &agrave; partir de la station %s
-it:519 Cambia lo sviluppo del disegno a partire dalla stazione %s
-ro:519 Schimbare directie desen incepind cu punctul de statie %s
-# TRANSLATE fr plot -> extend
-en:520 Swapping extend direction from leg %s -> %s
-fr:520 Change la direction du dession &agrave; partion de la vis&eacute;e %s -> %s
-it:520 Cambia lo sviluppo del disegno a partire dal tiro %s -> %s
-ro:520 Schimbare directie desen incepind cu masuratoarea %s -> %s
 #
+# for extend:
+en:513 Extending to the left from station %s
+fr:513 Extension vers la gauche en partant de la station %s
+de:513 Von diesem Messpunkt aus nach links erweitern: %s
+ca:513 Extenent cap a l'esquerra des de l'estaci&oacute; %s
+es:513 Extendiendo hacia la izquierda desde la estaci&oacute;n %s
+it:513 Sviluppo verso sinistra a partire dalla stazione %s
+sk:513 Rozvinut&yacute; rez v&lcaron;avo od bodu %s
+ro:513 Extindere spre stanga incepind cu punctul de statie %s
+#
+# for extend:
+en:514 Extending to the right from station %s
+fr:514 Extension vers la droite en partant de la station %s
+de:514 Von diesem Messpunkt aus nach rechts erweitern: %s
+ca:514 Extenent cap a la dreta des de l'estaci&oacute; %s
+es:514 Extendiendo hacia la derecha desde la estaci&oacute;n %s
+it:514 Sviluppo verso destra a partire dalla stazione %s
+sk:514 Rozvinut&yacute; rez vpravo od bodu %s
+ro:514 Extindere spre dreapta incepind cu punctul de statie %s
+#
+# for extend:
+en:515 Extending to the left from leg %s &rarr; %s
+fr:515 Extension vers la gauche en partant de la vis&eacute;e %s &rarr; %s
+de:515 Von dieser Messstrecke aus nach links erweitern: %s &rarr; %s
+ca:515 Extenent cap a l'esquerra des de la tirada %s &rarr; %s
+es:515 Extendiendo hacia la izquierda desde la tirada %s &rarr; %s
+it:515 Sviluppo verso sinistra a partire dal tiro %s &rarr; %s
+sk:515 Rozvinut&yacute; rez v&lcaron;avo od z&aacute;mery %s &rarr; %s
+ro:515 Extindere spre stanga incepind cu masuratoarea %s &rarr; %s
+#
+# for extend:
+en:516 Extending to the right from leg %s &rarr; %s
+fr:516 Extension vers la droite en partant de la vis&eacute;e %s &rarr; %s
+de:516 Von dieser Messstrecke aus nach rechts erweitern: %s &rarr; %s
+ca:516 Extenent cap a la dreta des de la tirada %s &rarr; %s
+es:516 Extendiendo hacia la derecha desde la tirada %s &rarr; %s
+it:516 Sviluppo verso destra a partire dal tiro %s &rarr; %s
+sk:516 Rozvinut&yacute; rez vpravo od z&aacute;mery %s &rarr; %s
+ro:516 Extindere spre drepta incepind cu masuratoarea %s &rarr; %s
+#
+# for extend:
+en:517 Breaking survey loop at station %s
+fr:517 Coupure de la boucle &agrave; la station %s
+de:517 Messschleife wird an diesem Messpunkt unterbrochen: %s
+ca:517 Trencant el bucle a l'estaci&oacute; %s
+es:517 Rompiendo el bucle en la estaci&oacute;n %s
+it:517 Topografia interrotta alla stazione %s
+sk:517 Preru&scaron;en&yacute; okruh na bode %s
+ro:517 Topografia intrerupta incepind cu punctul de statie %s
+#
+# for extend:
+en:518 Breaking survey loop at leg %s &rarr; %s
+fr:518 Coupure de la boucle &agrave; la vis&eacute;e %s &rarr; %s
+de:518 Messschleife wird an dieser Messstrecke unterbrochen: %s &rarr; %s
+ca:518 Trencant el bucle a la tirada %s &rarr; %s
+es:518 Rompiendo el bucle en la tirada %s &rarr; %s
+it:518 Topografia interrotta al tiro %s &rarr; %s
+sk:518 Preru&scaron;en&yacute; okruh v z&aacute;mere %s &rarr; %s
+ro:518 Topografia intrerupta incepind cu masuratoarea %s &rarr; %s
+#
+# for extend:
+en:519 Swapping extend direction from station %s
+fr:519 Change la direction de la coupe d&eacute;velopp&eacute;e &agrave; partir de la station %s
+ca:519 Canviant la direcci&oacute; de l'al&ccedil;at ext&egrave;s des de l'estaci&oacute; %s
+es:519 Cambiando la direcci&oacute;n del alzado extendido desde la estaci&oacute;n %s
+it:519 Cambia lo sviluppo del disegno a partire dalla stazione %s
+sk:519 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od bodu %s
+ro:519 Schimbare directie desen incepind cu punctul de statie %s
+#
+# for extend:
+en:520 Swapping extend direction from leg %s &rarr; %s
+fr:520 Change la direction de la coupe d&eacute;velopp&eacute;e &agrave; partir de la vis&eacute;e %s &rarr; %s
+ca:520 Canviant la direcci&oacute; de l'al&ccedil;at ext&egrave;s des de la tirada %s &rarr; %s
+es:520 Cambiando la direcci&oacute;n del alzado extendido desde la tirada %s &rarr; %s
+it:520 Cambia lo sviluppo del disegno a partire dal tiro %s &rarr; %s
+sk:520 Zrkadlov&yacute; smer rozvinut&eacute;ho rezu od z&aacute;mery %s &rarr; %s
+ro:520 Schimbare directie desen incepind cu masuratoarea %s &rarr; %s
+#
+# for extend:
 en:521 Applying specfile: `%s'
 fr:521 Application du fichier de sp&eacute;cification: `%s'
+pt:521 A aplicar ficheiro de especifica&ccedil;&otilde;es (specfile): `%s'
+ca:521 Aplicant fitxer d'especificacions: `%s'
+es:521 Aplicando fichero de especificaciones: `%s'
 it:521 Applicazione del file di specifiche: `%s'
+sk:521 Pou&zcaron;i&tcaron; nastavenie zo s&uacute;boru: `%s'
 ro:521 Aplicare fisier de specificatii: `%s'
+# for extend:
 # Used to tell the user that a file is being written - %s is the filename
-# TRANSLATE fr adapted message
-en:522 Writing %s...
-fr:522 &Eacute;criture %s...
-it:522 Scrittura %s...
-ro:522 Scriere %s...
+en:522 Writing %s&hellip;
+fr:522 &Eacute;criture de %s&hellip;
+de:522 %s wird geschrieben&hellip;
+pt:522 Escrevendo %s&hellip;
+ca:522 Escrivint %s&hellip;
+es:522 Escribiendo %s&hellip;
+it:522 Scrittura %s&hellip;
+sk:522 Zapisuje sa s&uacute;bor %s&hellip;
+ro:522 Scriere %s&hellip;
 #
-# "don't extract" messages - these are compiled into the programs
+## "don't extract" messages - these are compiled into the programs
 #
 en:1000 Can't open message file `%s' using path `%s'
 fr:1000 Impossible d'ouvrir le fichier `%s' en utilisant le chemin `%s'
@@ -3743,7 +3832,7 @@ es:1003 Archivo de mensajes truncado?
 it:1003 File dei messaggi troncato?
 sk:1003 S&uacute;bor spr&aacute;v nekompletn&yacute;?
 ro:1003 Fisier de mesaje incomplet
-# same as message 1
+## same as message 1
 en:1004 Out of memory (couldn't find %lu bytes).
 fr:1004 Plus de m&eacute;moire (%lu octets n&eacute;cessaires, non disponibles).
 de:1004 Zuwenig Speicherplatz (konnte %lu Bytes nicht finden).
