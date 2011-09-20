@@ -60,12 +60,24 @@
 
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
 extern "C" {
-#include "libavformat/avformat.h"
-#include "libswscale/swscale.h"
+# include "libavformat/avformat.h"
+# include "libswscale/swscale.h"
 }
-#ifndef AV_PKT_FLAG_KEY
-# define AV_PKT_FLAG_KEY PKT_FLAG_KEY
-#endif
+# ifndef AV_PKT_FLAG_KEY
+#  define AV_PKT_FLAG_KEY PKT_FLAG_KEY
+# endif
+# ifndef HAVE_AV_GUESS_FORMAT
+#  define av_guess_format guess_format
+# endif
+# ifndef HAVE_AVIO_OPEN
+#  define avio_open url_fopen
+# endif
+# ifndef HAVE_AVIO_CLOSE
+#  define avio_close url_fclose
+# endif
+# if !HAVE_DECL_AVMEDIA_TYPE_VIDEO
+#  define AVMEDIA_TYPE_VIDEO CODEC_TYPE_VIDEO
+# endif
 #endif
 
 enum {
@@ -94,11 +106,11 @@ MovieMaker::MovieMaker()
 bool MovieMaker::Open(const char *fnm, int width, int height)
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
-    AVOutputFormat * fmt = guess_format(NULL, fnm, NULL);
+    AVOutputFormat * fmt = av_guess_format(NULL, fnm, NULL);
     if (!fmt) {
 	// We couldn't deduce the output format from file extension so default
 	// to MPEG.
-	fmt = guess_format("mpeg", NULL, NULL);
+	fmt = av_guess_format("mpeg", NULL, NULL);
 	if (!fmt) {
 	    averrno = MOVIE_NO_SUITABLE_FORMAT;
 	    return false;
@@ -132,7 +144,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     // Initialise the code.
     AVCodecContext *c = st->codec;
     c->codec_id = fmt->video_codec;
-    c->codec_type = CODEC_TYPE_VIDEO;
+    c->codec_type = AVMEDIA_TYPE_VIDEO;
 
     // Set sample parameters.
     c->bit_rate = 400000;
@@ -149,12 +161,15 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     if (oc->oformat->flags & AVFMT_GLOBALHEADER)
 	c->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
+    int retval;
+#ifndef HAVE_AVFORMAT_WRITE_HEADER
     // Set the output parameters (must be done even if no parameters).
-    int retval = av_set_parameters(oc, NULL);
+    retval = av_set_parameters(oc, NULL);
     if (retval < 0) {
 	averrno = retval;
 	return false;
     }
+#endif
 
     // Show the format we've ended up with (for debug purposes).
     // dump_format(oc, 0, fnm, 1);
@@ -208,14 +223,18 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	return false;
     }
 
-    retval = url_fopen(&oc->pb, fnm, URL_WRONLY);
+    retval = avio_open(&oc->pb, fnm, URL_WRONLY);
     if (retval < 0) {
 	averrno = retval;
 	return false;
     }
 
     // Write the stream header, if any.
+#ifdef HAVE_AVFORMAT_WRITE_HEADER
+    retval = avformat_write_header(oc, NULL);
+#else
     retval = av_write_header(oc);
+#endif
     if (retval < 0) {
 	averrno = retval;
 	return false;
@@ -375,7 +394,7 @@ MovieMaker::~MovieMaker()
 
 	if (!(oc->oformat->flags & AVFMT_NOFILE)) {
 	    // Close the output file.
-	    url_fclose(oc->pb);
+	    avio_close(oc->pb);
 	}
 
 	// Free the stream.

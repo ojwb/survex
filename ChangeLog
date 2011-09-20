@@ -1,3 +1,8 @@
+Tue Sep 20 04:30:14 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in,src/moviemaker.cc: Fix to build with FFmpeg library
+	  versions in Debian unstable, as well as those in Debian stable.
+
 Tue Sep 20 03:51:40 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Updates towards compatibility with newer FFmpeg

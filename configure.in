@@ -188,8 +188,15 @@ MOVIE_LIBS=
 AC_CHECK_LIB(avcodec, avcodec_init,
   [AC_CHECK_LIB(avformat, av_register_all,
     [AC_CHECK_LIB(swscale, sws_scale,
-      [AC_CHECK_HEADERS([libavformat/avformat.h],
-	[MOVIE_LIBS="-lswscale -lavformat -lavcodec"])],
+      [AC_CHECK_LIB(avutil, av_malloc,
+	[AC_CHECK_HEADERS([libavformat/avformat.h],
+	  [MOVIE_LIBS="-lswscale -lavformat -lavcodec -lavutil"
+	  save_LIBS=$LIBS
+	  LIBS="$LIBS $MOVIE_LIBS"
+	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header])
+	  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
+	  LIBS=$save_LIBS])],
+        [], [-lavformat -lavcodec -lswscale $WX_LIBS])],
       [], [-lavformat -lavcodec $WX_LIBS])],
     [], [-lavcodec $WX_LIBS])
 ])
