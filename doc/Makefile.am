@@ -40,49 +40,64 @@ pkgdoc_DATA = @HTMLFILES@ @DOCS_OTHER@
 man_MANS = survex.7 $(other_mans)
 
 aven.1: $(srcdir)/aven.sgml $(srcdir)/man_aven.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_aven.sgml > aven.1
+	docbook-to-man $(srcdir)/man_aven.sgml > aven.tmp
+	mv aven.tmp aven.1
 
 cad3d.1: $(srcdir)/cad3d.sgml $(srcdir)/man_cad3d.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_cad3d.sgml > cad3d.1
+	docbook-to-man $(srcdir)/man_cad3d.sgml > cad3d.tmp
+	mv cad3d.tmp cad3d.1
 
 cavern.1: $(srcdir)/cavern.sgml $(srcdir)/man_cavern.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_cavern.sgml > cavern.1
+	docbook-to-man $(srcdir)/man_cavern.sgml > cavern.tmp
+	mv cavern.tmp cavern.1
 
 caverot.1: $(srcdir)/caverot.sgml $(srcdir)/man_caverot.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_caverot.sgml > caverot.1
+	docbook-to-man $(srcdir)/man_caverot.sgml > caverot.tmp
+	mv caverot.tmp caverot.1
 
 diffpos.1: $(srcdir)/diffpos.sgml $(srcdir)/man_diffpos.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_diffpos.sgml > diffpos.1
+	docbook-to-man $(srcdir)/man_diffpos.sgml > diffpos.tmp
+	mv diffpos.tmp diffpos.1
 
 extend.1: $(srcdir)/extend.sgml $(srcdir)/man_extend.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_extend.sgml > extend.1
+	docbook-to-man $(srcdir)/man_extend.sgml > extend.tmp
+	mv extend.tmp extend.1
 
 printdm.1: $(srcdir)/printdm.sgml $(srcdir)/man_printdm.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printdm.sgml > printdm.1
+	docbook-to-man $(srcdir)/man_printdm.sgml > printdm.tmp
+	mv printdm.tmp printdm.1
 
 printhpgl.1: $(srcdir)/printhpgl.sgml $(srcdir)/man_printhpgl.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printhpgl.sgml > printhpgl.1
+	docbook-to-man $(srcdir)/man_printhpgl.sgml > printhpgl.tmp
+	mv printhpgl.tmp printhpgl.1
 
 printpcl.1: $(srcdir)/printpcl.sgml $(srcdir)/man_printpcl.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printpcl.sgml > printpcl.1
+	docbook-to-man $(srcdir)/man_printpcl.sgml > printpcl.tmp
+	mv printpcl.tmp printpcl.1
 
 printps.1: $(srcdir)/printps.sgml $(srcdir)/man_printps.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_printps.sgml > printps.1
+	docbook-to-man $(srcdir)/man_printps.sgml > printps.tmp
+	mv printps.tmp printps.1
 
 sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_sorterr.sgml > sorterr.1
+	docbook-to-man $(srcdir)/man_sorterr.sgml > sorterr.tmp
+	mv sorterr.tmp sorterr.1
 
 3dtopos.1: $(srcdir)/3dtopos.sgml $(srcdir)/man_3dtopos.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_3dtopos.sgml > 3dtopos.1
+	docbook-to-man $(srcdir)/man_3dtopos.sgml > 3dtopos.tmp
+	mv 3dtopos.tmp 3dtopos.1
 
 xcaverot.1: $(srcdir)/xcaverot.sgml $(srcdir)/man_xcaverot.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_xcaverot.sgml > xcaverot.1
+	docbook-to-man $(srcdir)/man_xcaverot.sgml > xcaverot.tmp
+	mv xcaverot.tmp xcaverot.1
 
 svxedit.1: $(srcdir)/svxedit.sgml $(srcdir)/man_svxedit.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_svxedit.sgml > svxedit.1
+	docbook-to-man $(srcdir)/man_svxedit.sgml > svxedit.tmp
+	mv svxedit.tmp svxedit.1
 
 print.ini.5: $(srcdir)/print.ini.sgml $(srcdir)/man_print.ini.sgml $(srcdir)/survex.ent
-	docbook-to-man $(srcdir)/man_print.ini.sgml > print.ini.5
+	docbook-to-man $(srcdir)/man_print.ini.sgml > print.ini.tmp
+	mv print.ini.tmp print.ini.5
 
 install-data-local: manual
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual
