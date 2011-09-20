@@ -1,4 +1,4 @@
-Changes in 1.2.0 (2011-09-18):
+Changes in 1.2.0 (2011-09-20):
 
 * Translation updates for Catalan, French, Romanian, Spanish, Slovak, and US
   English.
@@ -23,6 +23,8 @@ Changes in 1.2.0 (2011-09-18):
   than /usr/doc/survex.
 
 * aven:
+
+  + Fix handling of accented characters in the survey pane.
 
   + Aven icon redrawn in SVG format - it's now a vector image which looks
     nicer at larger sizes.
@@ -67,8 +69,7 @@ Changes in 1.2.0 (2011-09-18):
     in img.h as IMG_VERSION_MIN and IMG_VERSION_MAX.
 
 * (Mac OS X version): Fix buildmacosx.sh script to check where the temporary
-  volume actually gets mounted.  Build for x86_64 as well as i386.  Fix URL
-  for downloading wxWidgets, and use wxWidgets 2.8.12 by default.
+  volume actually gets mounted.  Fix URL for downloading wxWidgets.
 
 Changes in 1.1.16 (2011-05-16):
 

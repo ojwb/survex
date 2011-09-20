@@ -1,3 +1,7 @@
+Tue Sep 20 00:15:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Perhaps the final update for 1.2.0.
+
 Tue Sep 20 00:09:42 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Fix to correctly handle non-ASCII glyphs by using
