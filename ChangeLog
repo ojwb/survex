@@ -1,3 +1,7 @@
+Tue Sep 20 12:46:58 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Sync appropriate changes from trunk.
+
 Tue Sep 20 12:39:41 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport changes from 1.2.0:
