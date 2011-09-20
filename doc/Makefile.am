@@ -37,7 +37,7 @@ MAINTAINERCLEANFILES = @DOCS_OTHER@ $(other_mans)\
 
 pkgdoc_DATA = @HTMLFILES@ @DOCS_OTHER@
 
-man_MANS = survex.1 $(other_mans)
+man_MANS = survex.7 $(other_mans)
 
 aven.1: $(srcdir)/aven.sgml $(srcdir)/man_aven.sgml $(srcdir)/survex.ent
 	docbook-to-man $(srcdir)/man_aven.sgml > aven.1

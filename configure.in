@@ -404,6 +404,6 @@ AH_BOTTOM(
 ])
 
 AC_OUTPUT(Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
- tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.1
+ tests/Makefile debian/Makefile survex.iss doc/index.htm doc/survex.7
  src/borlandc/config.h src/riscos/config.h src/msvc/config.h
  doc/version.ent debian/copyright survex.spec src/svxedit lib/survex.keys)
