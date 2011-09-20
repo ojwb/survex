@@ -1,3 +1,9 @@
+Tue Sep 20 06:44:32 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.1:
+	* src/img.c: Only define INT32_T if it isn't already defined (it will
+	  be for 1.0.x).
+
 Tue Sep 20 06:36:54 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
