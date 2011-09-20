@@ -112,7 +112,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     // Allocate the output media context.
     oc = avformat_alloc_context();
     if (!oc) {
-	averrno = AVERROR_NOMEM;
+	averrno = AVERROR(ENOMEM);
 	return false;
     }
     oc->oformat = fmt;
@@ -125,7 +125,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     // Add the video stream using the default format codec.
     st = av_new_stream(oc, 0);
     if (!st) {
-	averrno = AVERROR_NOMEM;
+	averrno = AVERROR(ENOMEM);
 	return false;
     }
 
@@ -177,21 +177,21 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     } else {
 	outbuf = (unsigned char *)malloc(OUTBUF_SIZE);
 	if (!outbuf) {
-	    averrno = AVERROR_NOMEM;
+	    averrno = AVERROR(ENOMEM);
 	    return false;
 	}
     }
 
     frame = avcodec_alloc_frame();
     if (!frame) {
-	averrno = AVERROR_NOMEM;
+	averrno = AVERROR(ENOMEM);
 	return false;
     }
     int size = avpicture_get_size(c->pix_fmt, width, height);
     uint8_t * picture_buf = (uint8_t*)av_malloc(size);
     if (!picture_buf) {
 	av_free(frame);
-	averrno = AVERROR_NOMEM;
+	averrno = AVERROR(ENOMEM);
 	return false;
     }
     avpicture_fill((AVPicture *)frame, picture_buf, c->pix_fmt, width, height);
@@ -204,7 +204,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 
     pixels = (unsigned char *)malloc(width * height * 6);
     if (!pixels) {
-	averrno = AVERROR_NOMEM;
+	averrno = AVERROR(ENOMEM);
 	return false;
     }
 
@@ -304,7 +304,7 @@ void MovieMaker::AddFrame()
 	AVPacket pkt;
 	av_init_packet(&pkt);
 
-	if (c->coded_frame->pts != AV_NOPTS_VALUE)
+	if (c->coded_frame->pts != (int64_t)AV_NOPTS_VALUE)
 	    pkt.pts = av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
 	if (c->coded_frame->key_frame)
 	    pkt.flags |= AV_PKT_FLAG_KEY;
@@ -335,7 +335,7 @@ MovieMaker::~MovieMaker()
 		AVPacket pkt;
 		av_init_packet(&pkt);
 
-		if (c->coded_frame->pts != AV_NOPTS_VALUE)
+		if (c->coded_frame->pts != (int64_t)AV_NOPTS_VALUE)
 		    pkt.pts = av_rescale_q(c->coded_frame->pts, c->time_base, st->time_base);
 		if (c->coded_frame->key_frame)
 		    pkt.flags |= AV_PKT_FLAG_KEY;
@@ -389,20 +389,20 @@ MovieMaker::get_error_string() const
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     switch (averrno) {
-	case AVERROR_IO:
+	case AVERROR(EIO):
 	    return "I/O error";
-	case AVERROR_NUMEXPECTED:
+	case AVERROR(EDOM):
 	    return "Number syntax expected in filename";
 	case AVERROR_INVALIDDATA:
 	    /* same as AVERROR_UNKNOWN: return "unknown error"; */
 	    return "invalid data found";
-	case AVERROR_NOMEM:
+	case AVERROR(ENOMEM):
 	    return "not enough memory";
-	case AVERROR_NOFMT:
+	case AVERROR(EILSEQ):
 	    return "unknown format";
-	case AVERROR_NOTSUPP:
+	case AVERROR(ENOSYS):
 	    return "Operation not supported";
-	case AVERROR_NOENT:
+	case AVERROR(ENOENT):
 	    return "No such file or directory";
 	case AVERROR_EOF:
 	    return "End of file";

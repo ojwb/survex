@@ -1,3 +1,8 @@
+Tue Sep 20 03:51:40 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Updates towards compatibility with newer FFmpeg
+	  libraries without breaking build with those in Debian stable.
+
 Tue Sep 20 03:41:58 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.h: Declare border as "struct border" rather than as a
