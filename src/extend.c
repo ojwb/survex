@@ -178,7 +178,7 @@ getline_alloc(FILE *fh, size_t ilen)
    char *buf = xosmalloc(len);
    if (!buf) return NULL;
 
-   ch = getc(fh);
+   ch = GETC(fh);
    while (ch != '\n' && ch != '\r' && ch != EOF) {
       buf[i++] = ch;
       if (i == len - 1) {
@@ -191,11 +191,11 @@ getline_alloc(FILE *fh, size_t ilen)
 	 }
 	 buf = p;
       }
-      ch = getc(fh);
+      ch = GETC(fh);
    }
    if (ch == '\n' || ch == '\r') {
       int otherone = ch ^ ('\n' ^ '\r');
-      ch = getc(fh);
+      ch = GETC(fh);
       /* if it's not the other eol character, put it back */
       if (ch != otherone) ungetc(ch, fh);
    }

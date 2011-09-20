@@ -94,9 +94,9 @@
 #include "ostypes.h"
 
 #define putnl() putchar('\n')    /* print a newline char */
-#define fputnl(FH) putc('\n', (FH)) /* print a newline char to a file */
+#define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */
 /* print a line followed by a newline char to a file */
-#define fputsnl(SZ, FH) BLK(fputs((SZ), (FH)); putc('\n', (FH));)
+#define fputsnl(SZ, FH) BLK(fputs((SZ), (FH)); PUTC('\n', (FH));)
 #define sqrd(X) ((X) * (X))        /* macro to square things */
 
 /* 2D Euclidean distance */

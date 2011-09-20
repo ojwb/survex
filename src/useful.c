@@ -68,25 +68,25 @@ useful_get32(FILE *fh)
 extern void Far
 useful_put16(INT16_T w, FILE *fh)
 {
-   putc((char)(w), fh);
-   putc((char)(w >> 8l), fh);
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
 }
 
 extern void Far
 useful_put32(INT32_T w, FILE *fh)
 {
-   putc((char)(w), fh);
-   putc((char)(w >> 8l), fh);
-   putc((char)(w >> 16l), fh);
-   putc((char)(w >> 24l), fh);
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
+   PUTC((char)(w >> 16l), fh);
+   PUTC((char)(w >> 24l), fh);
 }
 
 extern INT16_T Far
 useful_get16(FILE *fh)
 {
    INT16_T w;
-   w = getc(fh);
-   w |= (INT16_T)(getc(fh) << 8l);
+   w = GETC(fh);
+   w |= (INT16_T)(GETC(fh) << 8l);
    return w;
 }
 
@@ -94,10 +94,10 @@ extern INT32_T Far
 useful_get32(FILE *fh)
 {
    INT32_T w;
-   w = getc(fh);
-   w |= (INT32_T)(getc(fh) << 8l);
-   w |= (INT32_T)(getc(fh) << 16l);
-   w |= (INT32_T)(getc(fh) << 24l);
+   w = GETC(fh);
+   w |= (INT32_T)(GETC(fh) << 8l);
+   w |= (INT32_T)(GETC(fh) << 16l);
+   w |= (INT32_T)(GETC(fh) << 24l);
    return w;
 }
 #endif

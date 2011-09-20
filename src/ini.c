@@ -66,7 +66,7 @@ ini_write(const char *section, const char *var, const char *value)
 
    static char *last_section = NULL;
    if (!last_section || strcasecmp(last_section, section) != 0) {
-      if (last_section) putc('\n', fh);
+      if (last_section) PUTC('\n', fh);
       fprintf(fh, "[%s]\n", section);
       last_section = section;
    }

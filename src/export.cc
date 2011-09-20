@@ -303,8 +303,8 @@ sketch_label(const img_point *p, const char *s, bool fSurface)
    fprintf(fh, "txt('");
    while (*s) {
       int ch = *s++;
-      if (ch == '\'' || ch == '\\') putc('\\', fh);
-      putc(ch, fh);
+      if (ch == '\'' || ch == '\\') PUTC('\\', fh);
+      PUTC(ch, fh);
    }
    fprintf(fh, "',(%.3f,%.3f))\n", p->x * factor, p->y * factor);
 }
@@ -564,7 +564,7 @@ plt_footer(void)
 	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
 	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
-   putc('\x1a', fh);
+   PUTC('\x1a', fh);
 }
 
 static void
@@ -821,16 +821,16 @@ static void
 eps_label(const img_point *p, const char *s, bool fSurface)
 {
    fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
-   putc('(', fh);
+   PUTC('(', fh);
    while (*s) {
        unsigned char ch = *s++;
        switch (ch) {
 	   case '(': case ')': case '\\': /* need to escape these characters */
-	       putc('\\', fh);
-	       putc(ch, fh);
+	       PUTC('\\', fh);
+	       PUTC(ch, fh);
 	       break;
 	   default:
-	       putc(ch, fh);
+	       PUTC(ch, fh);
 	       break;
        }
    }

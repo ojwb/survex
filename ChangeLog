@@ -1,3 +1,8 @@
+Tue Sep 20 12:14:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* src/: Use GETC() and PUTC() everywhere.
+
 Tue Sep 20 12:07:25 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:

@@ -51,11 +51,11 @@ fputcs(const char *s, FILE *fh)
    /* if the label is empty or > 255 chars. store 0 in the length byte
     * followed by a 32 bit length value */
    if (len == 0 || len > 255) {
-      if (putc(0, fh) == EOF) return EOF;
+      if (PUTC(0, fh) == EOF) return EOF;
       put32((INT32_T)len, fh);
       if (ferror(fh)) return EOF;
    } else {
-      if (putc((unsigned char)len, fh) == EOF) return EOF;
+      if (PUTC((unsigned char)len, fh) == EOF) return EOF;
    }
    return fputs(s, fh);
 }
@@ -95,7 +95,7 @@ scount(twig *twiglet)
 static void
 cave_write_title(const char *title, img *p_img)
 {
-   putc(TITLE_3D, p_img->fh);
+   PUTC(TITLE_3D, p_img->fh);
    fputcs(title, p_img->fh);
 }
 
@@ -109,13 +109,13 @@ cave_write_pos(img * p_img, pos *pid, prefix *pre)
       tag = pre->ident;
       len = cslen(tag) + 12 + 4;
       /* storage station name, 12 for data, 4 for id */
-      putc(STATION_3D, p_img->fh);
+      PUTC(STATION_3D, p_img->fh);
       if (len == 0 || len > 255) {
-	 if (putc(0, p_img->fh) == EOF) return EOF;
+	 if (PUTC(0, p_img->fh) == EOF) return EOF;
 	 put32((INT32_T)len, p_img->fh);
 	 if (ferror(p_img->fh)) return EOF;
       } else {
-	 if (putc((unsigned char)len, p_img->fh) == EOF) return EOF;
+	 if (PUTC((unsigned char)len, p_img->fh) == EOF) return EOF;
       }
       put32((INT32_T)statcount, p_img->fh); /* station ID */
       put32((INT32_T)(pid->p[0] * 100.0), p_img->fh); /* X in cm */
@@ -125,8 +125,8 @@ cave_write_pos(img * p_img, pos *pid, prefix *pre)
       statcount++;
    } else {
       /* we've already put this in the file, so just a link is needed */
-      putc(STATLINK_3D, p_img->fh);
-      putc(0x04, p_img->fh);
+      PUTC(STATLINK_3D, p_img->fh);
+      PUTC(0x04, p_img->fh);
       put32((INT32_T)pid->id, p_img->fh);
    }
    return 0;
@@ -154,8 +154,8 @@ cave_open_write(const char *fnm, const char *title)
       return NULL;
    }
    fputs("SVX3d", p_img->fh);
-   putc(0x00, p_img->fh); /* Major version 0 */
-   putc(0x0A, p_img->fh); /* Minor version 10*/
+   PUTC(0x00, p_img->fh); /* Major version 0 */
+   PUTC(0x0A, p_img->fh); /* Minor version 10*/
    put32(0, p_img->fh); /* dummy number for num of stations: fill later */
    cave_write_title(title, p_img);
    return p_img;
@@ -185,7 +185,7 @@ cave_write_source(img * p_img, const char *source)
   } else {
     source = source + strlen(basesource);
   }
-  putc(SOURCE_3D, p_img->fh);
+  PUTC(SOURCE_3D, p_img->fh);
   fputcs(source, p_img->fh);
   osfree(allocated_source);
 }
@@ -225,16 +225,16 @@ save3d(img *p_img, twig *sticky)
 	} else {
 	  err = 10000.0 * offset / length;
 	}
-	putc(LEG_3D, p_img->fh);
+	PUTC(LEG_3D, p_img->fh);
 	put16((INT16_T)0x02, p_img->fh);
-	putc(0x04, p_img->fh);
+	PUTC(0x04, p_img->fh);
 	put32((INT32_T)err, p_img->fh); /* output error in %*100 */
 	cave_write_pos(p_img, twiglet->from->pos, twiglet->from);
 	cave_write_pos(p_img, twiglet->to->pos, twiglet->to);
       }
     } else {
       if (twiglet->count) {
-	putc(BRANCH_3D, p_img->fh);
+	PUTC(BRANCH_3D, p_img->fh);
 	/* number of records  - legs + values */
 	stubcount = 0;
 	if (twiglet->source) stubcount++;
@@ -251,27 +251,27 @@ save3d(img *p_img, twig *sticky)
 	}
 	ltag = cslen(twiglet->to->ident);
 	if (ltag <= 255) {
-	  putc((unsigned char)ltag, p_img->fh);
+	  PUTC((unsigned char)ltag, p_img->fh);
 	} else {
-	  putc(0, p_img->fh);
+	  PUTC(0, p_img->fh);
 	  put32(ltag, p_img->fh);
 	}
 	fputcs(twiglet->to->ident, p_img->fh);
 	if (twiglet->source) cave_write_source(p_img, twiglet->source);
 	if (twiglet->date) {
-	  putc(DATE_3D, p_img->fh);
+	  PUTC(DATE_3D, p_img->fh);
 	  fputcs(twiglet->date, p_img->fh);
 	}
 	if (twiglet->drawings) {
-	  putc(DRAWINGS_3D, p_img->fh);
+	  PUTC(DRAWINGS_3D, p_img->fh);
 	  fputcs(twiglet->drawings, p_img->fh);
 	}
 	if (twiglet->instruments) {
-	  putc(INSTRUMENTS_3D, p_img->fh);
+	  PUTC(INSTRUMENTS_3D, p_img->fh);
 	  fputcs(twiglet->instruments, p_img->fh);
 	}
 	if (twiglet->tape) {
-	  putc(TAPE_3D, p_img->fh);
+	  PUTC(TAPE_3D, p_img->fh);
 	  fputcs(twiglet->tape, p_img->fh);
 	}
 	save3d(p_img, twiglet->down);
@@ -299,12 +299,12 @@ cave_write_base_source(img *p_img)
   realpath(temp, basesource);
 #endif
 
-  putc(BASE_SOURCE_3D, p_img->fh);
+  PUTC(BASE_SOURCE_3D, p_img->fh);
   fputcs(basesource, p_img->fh);
 
   /* get the actual file name */
   temp = leaf_from_fnm(firstfilename);
-  putc(BASE_FILE_3D, p_img->fh);
+  PUTC(BASE_FILE_3D, p_img->fh);
   fputcs(temp, p_img->fh);
   osfree(temp);
 }
@@ -320,7 +320,7 @@ cave_close(img *p_img)
    save3d(p_img, twiglet);
    if (p_img->fh) {
       /* Write end of data marker */
-      putc(END_3D, p_img->fh);
+      PUTC(END_3D, p_img->fh);
       /* and finally write how many stations there are */
       fseek(p_img->fh, 7L, SEEK_SET);
       put32((INT32_T)statcount, p_img->fh);

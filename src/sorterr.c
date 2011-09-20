@@ -67,7 +67,7 @@ skipline(const char *fnm, FILE *fh)
 {
    int ch;
    do {
-      ch = getc(fh);
+      ch = GETC(fh);
    } while (ch != '\n' && ch != EOF);
 
    if (ch == EOF) {
@@ -82,10 +82,10 @@ printline(const char *fnm, FILE *fh, FILE *fh_out)
 {
    int ch;
    do {
-      ch = getc(fh);
-      if (ch != EOF && ch != '\r' && ch != '\n') putc(ch, fh_out);
+      ch = GETC(fh);
+      if (ch != EOF && ch != '\r' && ch != '\n') PUTC(ch, fh_out);
    } while (ch != '\n' && ch != EOF);
-   putc('\n', fh_out);
+   PUTC('\n', fh_out);
 
    if (ch == EOF) {
       if (ferror(fh))
@@ -153,7 +153,7 @@ main(int argc, char **argv)
 	 blk = osrealloc(blk, len * ossizeof(trav));
       }
       blk[next].fpos = ftell(fh);
-      ch = getc(fh);
+      ch = GETC(fh);
       if (ch == EOF) break;
       skipline(fnm, fh);
       switch (sortby) {
@@ -170,7 +170,7 @@ main(int argc, char **argv)
 	 skipline(fnm, fh);
 	 skipline(fnm, fh);
 	 do {
-	    ch = getc(fh);
+	    ch = GETC(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != sortby);
 	 if (fscanf(fh, ":%lf", &blk[next].err) != 1) goto baderrfile;
@@ -178,15 +178,15 @@ main(int argc, char **argv)
 	 break;
        case 'P':
 	 do {
-	    ch = getc(fh);
+	    ch = GETC(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != ')');
 	 do {
-	    ch = getc(fh);
+	    ch = GETC(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != ')');
 	 do {
-	    ch = getc(fh);
+	    ch = GETC(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (!isdigit(ch));
 	 ungetc(ch, fh);
@@ -197,11 +197,11 @@ main(int argc, char **argv)
 	 break;
        case 'L':
 	 do {
-	    ch = getc(fh);
+	    ch = GETC(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != ')');
 	 do {
-	    ch = getc(fh);
+	    ch = GETC(fh);
 	    if (ch == '\n' || ch == EOF) goto baderrfile;
 	 } while (ch != '(');
 	 if (fscanf(fh, "%lf", &blk[next].err) != 1) goto baderrfile;
@@ -237,7 +237,7 @@ main(int argc, char **argv)
       printline(fnm, fh, fh_out);
       printline(fnm, fh, fh_out);
       printline(fnm, fh, fh_out);
-      putc('\n', fh_out);
+      PUTC('\n', fh_out);
       if (howmany && --howmany == 0) break;
    } while (next);
    fclose(fh);
