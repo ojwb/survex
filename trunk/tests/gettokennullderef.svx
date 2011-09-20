@@ -1,2 +1,0 @@
-*:
-; the above line would cause a segfault prior to 1.0.19!

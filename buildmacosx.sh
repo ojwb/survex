@@ -5,6 +5,9 @@
 #
 # Currently (at least if built on 10.6) 10.6 is required to run.
 #
+# You probably need to have Xcode installed - you can download this for free
+# from Apple: http://developer.apple.com/xcode/
+#
 # Run from the unpacked survex-1.1.X directory like so:
 #
 #   ./buildmacosx.sh
@@ -33,11 +36,22 @@
 
 set -e
 
-WXVERSION=2.8.12
+# 2.8.12 doesn't work:
+# /bin/sh: line 0: cd: ../build/bakefiles/wxpresets/presets: No such file or directory
+# cp: wx.bkl: No such file or directory
+# [...]
+WXVERSION=2.8.11
 
-# To build for older machines with a ppc CPU, you want -arch ppc instead in
-# arch_flags (might also work as well with some OS X versions).
-arch_flags='-arch i386 -arch x86_64'
+# Sadly, you can only specify one arch via -arch at a time (a restriction of
+# the wxWidgets build system).
+#
+# Using -arch i386 produces a build which will also work on 64-bit Intel Macs.
+# If you want a build which *only* works on 64 bit Intel Macs, then use
+# arch_flags='-arch x86_64' instead.
+#
+# To build for older machines with a ppc CPU, you want arch_flags='-arch ppc'
+# instead.
+arch_flags='-arch i386'
 if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
@@ -106,10 +120,12 @@ echo "Presenting image to the filesystems for mounting."
 # was called hdid(8) then) and is intended to be program-readable.  It consists
 # of the /dev node, a tab, a content hint (if applicable), another tab, and a
 # mount point (if any filesystems were mounted)."
+#
+# In reality, it seems there are also some spaces before each tab character.
 hdid_output=`hdid survex-macosx.dmg|tail -1`
 echo "Last line of hdid output was: $hdid_output"
-dev=`echo "$hdid_output"|sed 's!/dev/\([^	]*\).*!\1!'`
-mount_point=`echo "$hdid_output"|sed 's!.*	!!'`
+dev=`echo "$hdid_output"|sed 's!/dev/\([^	 ]*\).*!\1!'`
+mount_point=`echo "$hdid_output"|sed 's!.*[	 ]!!'`
 
 echo "Device $dev mounted on $mount_point, copying files into image."
 ditto -rsrcFork Survex "$mount_point/Survex"

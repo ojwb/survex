@@ -1,9 +1,0 @@
-*fix 1 0 0 0
-*fix 2 1 0 0
-*fix 3 0 1 0 1 1 1
-*fix 4 0 0 1 1 1 1
-*data nosurvey from to
-1 2
-2 3
-*data nosurvey to from
-4 3

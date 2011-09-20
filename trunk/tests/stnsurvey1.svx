@@ -1,3 +1,0 @@
-*begin A
-*end A
-*fix A 0 0 0

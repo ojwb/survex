@@ -1,3 +1,35 @@
+Tue Sep 20 00:15:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Perhaps the final update for 1.2.0.
+
+Tue Sep 20 00:09:42 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Fix to correctly handle non-ASCII glyphs by using
+	  glyphshow in the generated PostScript code rather than relying on the
+	  numeric encoding order of the font to match Unicode (which doesn't
+	  generally seem to be the case).  Tweak to process files without
+	  slurping them all into memory where that's easy to do.
+
+Mon Sep 19 23:15:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/fnt.cc: Use FNT_MAXCHAR instead of literal 256.
+
+Mon Sep 19 21:58:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Revert CPP=cpp change - it's not required.  Revert to
+	  using wx 2.8.11 and 2.8.12 seems to fail to build.  Output of hdid
+	  can contain spaces as well as tabs (man page only documents tabs) so
+	  update regexps to take this into account.
+
+Mon Sep 19 11:52:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Add comment noting that Xcode is probably required.
+	  Since wxWidgets only supports building for a single arch at a time,
+	  build for i386 by default, which should also work on x86_64.  Pass
+	  CPP=cpp to wxWidgets configure (not certain if this is actually
+	  needed, or was something tried on the way to discovering that only
+	  one -arch option can be passed).
+
 Sun Sep 18 12:24:41 GMT 2011  Olly Betts <olly@survex.com>
 
 	* make_release: No need to force disabling of libavcodec for mingw - it

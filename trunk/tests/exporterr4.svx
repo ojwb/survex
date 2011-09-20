@@ -1,4 +1,0 @@
-*begin fred
-1 2 1.23 045 -6
-*export 2
-*end fred

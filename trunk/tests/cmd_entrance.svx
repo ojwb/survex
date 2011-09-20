@@ -1,5 +1,0 @@
-*equate P007 007.1
-*entrance P007
-*begin 007
-1 2 1.00 090 0
-*end 007

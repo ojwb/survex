@@ -1,3 +1,0 @@
-*calibrate tape 5.0
-*fix 1 0 0 0
-1 2 10.00 000 00

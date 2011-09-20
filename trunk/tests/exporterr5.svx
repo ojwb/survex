@@ -1,5 +1,0 @@
-*begin example
-*export 1
-*export 1
-1 2 1.24 045 -6
-*end example

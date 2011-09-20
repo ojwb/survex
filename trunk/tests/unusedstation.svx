@@ -1,5 +1,0 @@
-*fix 1 reference 0 0 0
-*entrance 2
-*begin a
-*export 3
-*end a

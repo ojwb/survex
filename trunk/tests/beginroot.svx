@@ -1,6 +1,0 @@
-; *prefix \ or *begin \ would cause 0.96 to dump core
-; though oddly it works for me with 0.96 when run from the test script...
-*prefix \
-*begin \
-*fix 1 0 0 0
-*end \

@@ -1,4 +1,0 @@
-; bug fixed in 1.0.2 - if no covariances, cov(x,y) was infinity
-*fix 1 0 0 0 1 1 1
-*fix 2 1 1 0
-1 2 1 000 0

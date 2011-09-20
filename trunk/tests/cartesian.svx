@@ -1,6 +1,0 @@
-*fix A  0.0  2.0  0.0
-*fix B  0.0 -2.0  0.0
-*sd tape dx dy dz 1.0 metres
-1 A 1.00 000 00
-*data cartesian from to dx dy dz
-1 B 0.0 -1.0 0.0

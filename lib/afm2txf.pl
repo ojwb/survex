@@ -13,7 +13,7 @@
 #       0.1 (06/28/2002): Initial version
 #
 # Copyright (C) 2002 Andrew James Ross
-# Copyright (C) 2010 Olly Betts
+# Copyright (C) 2010,2011 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -116,11 +116,12 @@ my %positions = ();
 #
 print STDERR "Reading font metrics...\n";
 my $FONT;
-my @lines = `cat $METRICS`
-    or die "Couldn't read metrics";
-foreach my $m (grep {/^(C|FontName) /} @lines) {
+open METRICS, '<', $METRICS or die $!;
+my $m;
+while (defined($m = <METRICS>)) {
+    if ($m =~ /^FontName (\S*)/) { $FONT = $1; next; }
+    next unless $m =~ /^C /;
     chomp $m;
-    if($m =~ /^FontName ([^\s]*)/) { $FONT = $1; next; }
 
     die "No name: $m" if $m !~ /N\s+([^\s]+)\s+;/;
     my $name = $1;
@@ -139,6 +140,7 @@ foreach my $m (grep {/^(C|FontName) /} @lines) {
 
     $metrics{$name} = [$nomwid, $x, $y, $w, $h];
 }
+close METRICS;
 
 die "No FontName found in metrics" if not defined $FONT;
 
@@ -179,7 +181,9 @@ print STDERR "Rendering Postscript...\n";
 my $res = $TEXSIZ * $DOWNSAMPLE;
 my $pid = open PS, "|gs -r$res -g${res}x${res} -sDEVICE=ppm -sOutputFile=\Q$FONT\E.ppm > /dev/null";
 die "Couldn't spawn ghostscript interpreter" if !defined $pid;
-print PS join("\n", @$PS), "\n";
+foreach (@$PS) {
+    print PS "$_\n";
+}
 close PS;
 waitpid($pid, 0);
 
@@ -242,21 +246,15 @@ foreach my $c (@chars) {
 # won't generate pgm's) and write to the end of the .txf.  Remember to
 # swap the order of the rows; OpenGL textures are bottom-up.
 open PPM, "$FONT.ppm" or die;
-seek PPM, -3*$TEXSIZ*$TEXSIZ, 2 or die;
-my @rows = ();
 my $pixel;
-for(my $r=0; $r<$TEXSIZ; $r++) {
-    my @row = ();
-    for(my $c=0; $c<$TEXSIZ; $c++) {
+foreach my $r (1 .. $TEXSIZ) {
+    seek PPM, -3*$r*$TEXSIZ, 2 or die;
+    foreach (1 .. $TEXSIZ) {
 	read PPM, $pixel, 3 or die;
-	push @row, substr($pixel, 0, 1);
+	print TXF substr($pixel, 0, 1);
     }
-    push @rows, \@row;
 }
 close PPM;
-for(my $r=(@rows - 1); $r>=0; $r--) {
-    print TXF join('', @{$rows[$r]});
-}
 close TXF;
 
 # Clean up
@@ -299,8 +297,6 @@ sub genPostscript {
 	my $m = $metrics{$c};
 	next if !defined $m;
 
-	my $id = sprintf "%2.2x", $CHARS{$c};
-
 	# No space?
 	my $w = $m->[3]*$LINEHGT;
 	if($x + $w + $PADDING/$TEXSIZ > 1) {
@@ -316,7 +312,7 @@ sub genPostscript {
 	my $vy = $y + $m->[2]*$LINEHGT;
 
 	push @PS, "$vx $vy moveto";
-	push @PS, "<$id> show";
+	push @PS, "/$c glyphshow";
 
 	# Next box...
 	$x += $w + 2*$PADDING/$TEXSIZ;

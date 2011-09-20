@@ -1,5 +1,0 @@
-; In 1.0.7 and earlier, this gave a bogus warning about station 3 being
-; *export-ed or *entrance-d, but not used.
-*fix 1 0 0 0
-1 2 1.00 0 0
-2 3 1.00 - 0

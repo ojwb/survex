@@ -1,3 +1,0 @@
-*fix 1 reference 0 0 0
-*data normal newline from to tape compass clino
-*data normal station tape compass clino newline

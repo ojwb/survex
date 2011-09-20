@@ -1,2 +1,0 @@
-*begin
-*include end_no_begin.svx

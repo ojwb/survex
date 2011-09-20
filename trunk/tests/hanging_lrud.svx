@@ -1,7 +1,0 @@
-*begin test
-*data normal from to tape compass clino
-1       2       1.00    30      -5
-
-*data passage station left right up down
-foo     0       0.5     0.25    0.25
-*end test

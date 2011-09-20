@@ -1,9 +1,0 @@
-*fix 1 reference 0 0 0 ; so there's some survey data
-
-*sd tape metres
-*sd tape 0.05 furlongs
-*sd tape 0.05 furlongs per fortnight
-*sd tripe 0.9 feet
-*sd tape tripe 0.9 feet
-*sd tape compass 0.4 meters
-*sd 0.9 feet

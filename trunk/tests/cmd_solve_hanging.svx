@@ -1,8 +1,0 @@
-; Regression test distilled from example from Carlos Grohmann
-*begin A
-1	2	1.23 123 12
-*end A
-*solve
-*begin B
-3	4	2.34 234 23
-*end B

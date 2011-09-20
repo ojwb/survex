@@ -1,3 +1,0 @@
-*fix 1 0 0 0
-*data normal from to tape compass backcompass clino backclino
-1 2 10.00 001 179 01 -01

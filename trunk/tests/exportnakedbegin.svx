@@ -1,6 +1,0 @@
-*begin 1
-1 2 1 0 0
-*begin
-*export 3
-*end
-*end 1

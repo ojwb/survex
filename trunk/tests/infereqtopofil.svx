@@ -1,5 +1,0 @@
-*infer equates on
-*fix 1 0 0 0
-*data topofil from to fromcount tocount compass clino
-*calibrate count 0 0.1
-1 2 0 10 0 0
