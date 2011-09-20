@@ -87,7 +87,7 @@ bool Aven::OnInit()
     wxString survey;
     bool print_and_exit = false;
 
-    /* Want --version and a decent --help output, which cmdline does for us.
+    /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
     static const struct option long_opts[] = {
