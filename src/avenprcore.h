@@ -25,9 +25,9 @@
 
 extern bool fBlankPage;
 
-typedef struct {
+struct border {
    long x_min, y_min, x_max, y_max;
-} border;
+};
 
 #define PR_FONT_DEFAULT	0
 #define PR_FONT_LABELS	1
