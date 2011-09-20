@@ -753,17 +753,18 @@ msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "134"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:438
-msgid "Vertical range = %4.2fm (from "
+#: ../src/cavern.c:457
+msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "135"
 
-#. TRANSLATORS: for many translations, 196/197 will be the same as 136/137
-#: ../src/cavern.c:439
-msgid " at %4.2fm to "
+#. TRANSLATORS: c.f. previous message
+#: ../src/cavern.c:458
+msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "136"
 
-#: ../src/cavern.c:439
-msgid " at %4.2fm)"
+#. TRANSLATORS: c.f. previous two messages
+#: ../src/cavern.c:459
+msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "137"
 
 #: ../src/cavern.c:414
@@ -811,13 +812,11 @@ msgstr "146"
 msgid "Error    N/A"
 msgstr "147"
 
-#: ../src/cavern.c:440
-msgid "North-South range = %4.2fm (from "
-msgstr "148"
+#~ msgid "North-South range = %4.2fm (from "
+#~ msgstr "148"
 
-#: ../src/cavern.c:442
-msgid "East-West range = %4.2fm (from "
-msgstr "149"
+#~ msgid "East-West range = %4.2fm (from "
+#~ msgstr "149"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:127
@@ -1028,6 +1027,12 @@ msgstr "194"
 #: ../src/3dtopos.c:109
 msgid "( Easting, Northing, Altitude )"
 msgstr "195"
+
+#~ msgid "unused"
+#~ msgstr "196"
+
+#~ msgid "unused"
+#~ msgstr "197"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454

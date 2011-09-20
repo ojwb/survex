@@ -777,18 +777,19 @@ msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "Gesamte Vertikallänge der Messstrecken = %7.2fm"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:437
-msgid "Vertical range = %4.2fm (from "
-msgstr "Vertikale Erstreckung = %4.2fm (von "
+#: ../src/cavern.c:457
+msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgstr "Vertikale Erstreckung = %4.2fm (von %s auf %4.2fm bis %s auf %4.2fm)"
 
-#. TRANSLATORS: for many translations, 196/197 will be the same as 136/137
-#: ../src/cavern.c:438
-msgid " at %4.2fm to "
-msgstr " auf %4.2fm bis "
+#. TRANSLATORS: c.f. previous message
+#: ../src/cavern.c:458
+msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgstr "Nord-Süd-Erstreckung = %4.2fm (von %s bei %4.2fm bis %s bei %4.2fm)"
 
-#: ../src/cavern.c:438
-msgid " at %4.2fm)"
-msgstr " auf %4.2fm)"
+#. TRANSLATORS: c.f. previous two messages
+#: ../src/cavern.c:459
+msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgstr "Ost-West-Erstreckung = %4.2fm (von %s bei %4.2fm bis %s bei %4.2fm)"
 
 #. TRANSLATORS: de: There _is_ a technical term for this which I fail to remember at the moment.
 #: ../src/cavern.c:413
@@ -837,14 +838,6 @@ msgstr "Fehler%7.2f%%"
 #: ../src/netskel.c:722
 msgid "Error    N/A"
 msgstr "Fehler   belanglos"
-
-#: ../src/cavern.c:439
-msgid "North-South range = %4.2fm (from "
-msgstr "Nord-Süd-Erstreckung = %4.2fm (von "
-
-#: ../src/cavern.c:441
-msgid "East-West range = %4.2fm (from "
-msgstr "Ost-West-Erstreckung = %4.2fm (von "
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:127

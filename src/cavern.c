@@ -389,14 +389,24 @@ main(int argc, char **argv)
 }
 
 static void
-do_range(int d, int msg1, int msg2, int msg3)
+do_range(int d, int msgno)
 {
-   printf(msg(msg1), max[d] - min[d]);
-   fprint_prefix(stdout, pfxHi[d]);
-   printf(msg(msg2), max[d]);
-   fprint_prefix(stdout, pfxLo[d]);
-   printf(msg(msg3), min[d]);
+   // sprint_prefix uses a single buffer, so to report two stations in one
+   // message we need to make a temporary copy of the string for one of them.
+   char * pfx_hi = osstrdup(sprint_prefix(pfxHi[d]));
+   char * pfx_lo = sprint_prefix(pfxLo[d]);
+   printf(msg(msgno), max[d] - min[d], pfx_hi, max[d], pfx_lo, min[d]);
+   osfree(pfx_hi);
    putnl();
+}
+
+static void
+svx_fprintf(FILE *f, const char * fmt, ...)
+{
+    va_list ap;
+    va_start(ap, fmt);
+    svx_vfprintf(f, fmt, ap);
+    va_end(ap);
 }
 
 static void
@@ -445,12 +455,9 @@ do_stats(void)
 
    /* If there's no underground survey, we've no ranges */
    if (pfxHi[0]) {
-      do_range(2, /*Vertical range = %4.2fm (from */135,
-	       /* at %4.2fm to */136, /* at %4.2fm)*/137);
-      do_range(1, /*North-South range = %4.2fm (from */148,
-	       /* at %4.2fm to */196, /* at %4.2fm)*/197);
-      do_range(0, /*East-West range = %4.2fm (from */149,
-	       /* at %4.2fm to */196, /* at %4.2fm)*/197);
+      do_range(2, /*Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/135);
+      do_range(1, /*North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/136);
+      do_range(0, /*East-West range = %4.2fm from %s at %4.2fm to %s at %4.2fm)*/137);
    }
 
    print_node_stats();

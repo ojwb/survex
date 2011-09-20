@@ -748,18 +748,19 @@ msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "Longitud vertical total de las tiradas de topografia = %7.2fm"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:437
-msgid "Vertical range = %4.2fm (from "
-msgstr "Desnivel total = %4.2fm (desde "
+#: ../src/cavern.c:457
+msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgstr "Desnivel total = %4.2fm (desde %s en %4.2fm a %s en %4.2fm)"
 
-#. TRANSLATORS: for many translations, 196/197 will be the same as 136/137
-#: ../src/cavern.c:438
-msgid " at %4.2fm to "
-msgstr " en %4.2fm a "
+#. TRANSLATORS: c.f. previous message
+#: ../src/cavern.c:458
+msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgstr "Extensión Norte-Sur = %4.2fm (desde %s en %4.2fm a %s en %4.2fm)"
 
-#: ../src/cavern.c:438
-msgid " at %4.2fm)"
-msgstr " en %4.2fm)"
+#. TRANSLATORS: c.f. previous two messages
+#: ../src/cavern.c:459
+msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgstr "Extensión Este-Oeste = %4.2fm (desde %s en %4.2fm a %s en %4.2fm)"
 
 #: ../src/cavern.c:413
 msgid "There is 1 loop."
@@ -805,14 +806,6 @@ msgstr "Error%7.2f%%"
 #: ../src/netskel.c:722
 msgid "Error    N/A"
 msgstr "Error    N/A"
-
-#: ../src/cavern.c:439
-msgid "North-South range = %4.2fm (from "
-msgstr "Extensión Norte-Sur = %4.2fm (desde "
-
-#: ../src/cavern.c:441
-msgid "East-West range = %4.2fm (from "
-msgstr "Extensión Este-Oeste = %4.2fm (desde "
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:127
