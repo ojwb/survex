@@ -1,3 +1,8 @@
+Tue Sep 20 06:42:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Use the URL field from svn info in the command we give
+	  to take this release rather than hard-coding the URL for trunk.
+
 Tue Sep 20 05:43:11 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Building on 10.6 should work on 10.7, so update
