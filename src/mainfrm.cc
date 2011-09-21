@@ -762,7 +762,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 #endif
 
     // Update window title.
-    SetTitle(wxString(APP_NAME" - [") + m_File + wxString("]"));
+    SetTitle(m_Title + " - "APP_NAME);
 
     if (!m_FindBox->GetValue().empty()) {
 	// Highlight any stations matching the current search.

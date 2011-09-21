@@ -1,3 +1,8 @@
+Wed Sep 21 00:55:44 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Sync change to show survey title as window title
+	  from trunk.
+
 Wed Sep 21 00:51:51 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
