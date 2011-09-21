@@ -121,9 +121,11 @@ maintainer-clean-local:
 # manual, etc depend on configure.in so they get rebuilt when the
 # version number is bumped
 
-manual: $(manual_sources) custom.dsl survex.ent ../configure.in
+manual: manual/stampfile
+manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.in
 	@sgmltools@ --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
 	cp caution.png note.png manual
+	touch manual/stampfile
 
 # this rule is not used by the build system - it's for "manual" use (ho ho)
 manual.html: $(manual_sources) custom.dsl survex.ent ../configure.in

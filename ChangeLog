@@ -1,3 +1,9 @@
+Wed Sep 21 00:03:36 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* doc/Makefile.am: Use stampfile to stop unwanted rebuilds of the HTML
+	  version of the manual.
+
 Wed Sep 21 00:01:44 GMT 2011  Olly Betts <olly@survex.com>
 
 	* configure.in: Sync some cosmetic changes from trunk.
