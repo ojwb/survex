@@ -1,28 +1,95 @@
-Changes in 1.0.40 (all backported from 1.1.13):
+Changes in 1.0.40 (2011-09-21):
+
+(Almost all backported from 1.1.13-1.2.0)
+
+* Translation updates for most languages.
 
 * Say "wxWidgets" instead of "wxWindows" consistently.
 
-* Recognise .3d file format version 6 so you can load .3d files processed by
-  1.1.12 and later.
+* Recognise .3d file format versions 6 and 7 so you can load .3d files
+  processed by 1.1.12 and later.
 
-* Documentation: Tilt up in aven, xcaverot, and caverot is apostrophe, not
-  comma!
+* Documentation:
 
-* aven: Make the error dialog modal and remove a signal handler once it
-  has fired to prevent endless (or seemingly endless) cascades of error
-  dialogs.
+  + 3dformat.htm: Update for v6 format (thanks to Mike McCombe) and v7 format.
 
-* aven: Improve SVG output compatibility.
+  + Tilt up in aven, xcaverot, and caverot is apostrophe, not comma!
 
-* aven: Put a 5mm border around exported SVG files to allow for station markers
-  and non-zero width lines.
+  + Correctly capitalise "GTK".
 
-* aven: Fix crash when exporting as SVG or Sketch if labels or surface data
-  was turned on.
+  + Update INSTALL.
+
+  + doc/TODO.htm: Remove entries which have now been done.
+
+  + (Unix version): Move survex man page to section 7 (since it isn't
+    documenting an actual command).
+
+  + (Unix version): Default to installing docs into /usr/share/doc/survex
+    rather than /usr/doc/survex.
+
+  + (Unix version): Write each generated man page to a temporary file, then
+    atomically rename, to avoid leaving an empty or partial man page behind if
+    docbook-to-man dies (1.1.16 had an empty cad3d.1, and we want to avoid a
+    recurrence of that).
+
+  + (Unix version): Fix \ to appear correctly in 'man print.ini'.
+
+* aven:
+
+  + Highlight stations matching any current search when a file is loaded.
+    (ticket#9)
+
+  + Make the error dialog modal and remove a signal handler once it has fired
+    to prevent endless (or seemingly endless) cascades of error dialogs.
+
+  + Use the title from the 3d (or plt, etc) file for the window title
+    rather than the filename.
+
+  + Improve SVG output compatibility.
+
+  + Put a 5mm border around exported SVG files to allow for station markers and
+    non-zero width lines.
+
+  + Fix crash when exporting as SVG or Sketch if labels or surface data was
+    turned on.
+
+  + Use stock IDs for buttons where appropriate - such buttons may now be
+    rendered with icons on some platforms.
+
+  + Fix crash while trying to load certain .3d files.
+
+* cavern:
+
+  + Report relevant file and line number for three warnings which didn't give
+    them before.
+
+  + Drop "non-fatal" from the report of how many errors there were at the end
+    of the run - it just confuses users - we won't even get here if there's a
+    fatal error!
+
+  + Add --3d-version option to allow the user to specify the version of the 3d
+    format to output.  (ticket#21)
 
 * cad3d: Fix export to SVG when a label contains a '%' character.
 
-* (Unix version): Fix \ to appear correctly in 'man print.ini'.
+* diffpos: Handle files with duplicate labels in better - extend generates
+  duplicate labels when it breaks a loop.
+
+* Enable eswap-break testcase now that diffpos handles duplicate station names.
+
+* Most tests weren't actually running any testcases (looks like a sh
+  portability issue).  This is now fixed, and fortunately all tests still pass.
+
+* Consistently use http://survex.com/ rather than http://www.survex.com/ - the
+  former has been the canonical name for some time, with www.survex.com just
+  redirecting to it.
+
+* Use horizontal ellipses character rather than '...' and right arrow character
+  rather than '->' where these characters are available.
+
+* (Unix version): Use unlocked file I/O if available, which can be much faster
+  in some cases (we don't need the locking as we don't do multithreaded file
+  I/O).
 
 * Ignore LANG if it starts with a digit to avoid problems with bogus value for
   LANG which AutoCAD installation seems to set on MS Windows.
@@ -34,11 +101,19 @@ Changes in 1.0.40 (all backported from 1.1.13):
   run by an unprivileged user.
 
 * (MS Windows version): Upgrade to the latest version of InnoSetup (the
-  installer builder we use) and include new installer translations for
-  UK English, Spanish, Brazilian Portuguese, Italian, Romanian, and Slovak.
+  installer builder we use) and include installer translations for all
+  languages which InnoSetup officially supports, plus UK English and Romanian.
 
-* (MS Windows version): aven: Include Catalan and Brazilian Portuguese
-  translations of messages for wxWidgets (the GUI library we use).
+* (MS Windows version): aven: Include all supported translations of messages
+  for wxWidgets (the GUI library we use).
+
+* (Mac OS X version): Backport buildmacosx.sh improvements from 1.2.0.
+
+* (Mac OS X version): Fix compilation failure due to clash with Point in Mac OS
+  X headers.
+
+* (Linux version): Source RPM package dropped as you can just build an RPM
+  package from the source tarball.
 
 Changes in 1.0.39:
 
@@ -373,7 +448,7 @@ Changes in 1.0.25:
 
 * (Unix version): RPMs: give up supplying binary RPMs due to apparently
   insurmountable technical problems.
-  
+
 Changes in 1.0.24:
 
 * cavern: fixed LEVEL (broken since around 1.0.8) and added test case.
@@ -723,7 +798,7 @@ Changes in 1.0.8:
 
 * print*: added --raw switch to turn of info box, scale bar, and page footer.
   This can be useful if you want to import the output into another application.
-  
+
 * print*: improved output when --no-border is used.
 
 * printpcl/printdm: Added new .ini setting "font_bitmap" which allows the user
