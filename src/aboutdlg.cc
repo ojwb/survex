@@ -160,8 +160,8 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
 	wxT("\n");
 #endif
     int bpp = wxDisplayDepth();
-    info += wxString::Format(wxT("Display Depth: %d bpp"), bpp);
-    if (wxColourDisplay()) info += wxT(" (colour)");
+    info += wxString::Format(wmsg(/*Display Depth: %d bpp*/196), bpp);
+    if (wxColourDisplay()) info += wmsg(/* (colour)*/197);
     info += wxT('\n');
     info += wxString(GetGLSystemDescription().c_str(), wxConvUTF8);
 

@@ -1017,6 +1017,14 @@ msgstr "Closing prefix omitted from END"
 msgid "( Easting, Northing, Altitude )"
 msgstr "( Easting, Northing, Altitude )"
 
+#. TRANSLATORS: bpp is "Bits Per Pixel"
+msgid "Display Depth: %d bpp"
+msgstr "Display Depth: %d bpp"
+
+#. TRANSLATORS: appended to previous message if the display is colour
+msgid " (colour)"
+msgstr " (color)"
+
 #: ../src/readval.c:444
 #: ../src/readval.c:454
 #: ../src/readval.c:462

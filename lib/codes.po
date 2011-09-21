@@ -1028,11 +1028,13 @@ msgstr "194"
 msgid "( Easting, Northing, Altitude )"
 msgstr "195"
 
-#~ msgid "unused"
-#~ msgstr "196"
+#. TRANSLATORS: bpp is "Bits Per Pixel"
+msgid "Display Depth: %d bpp"
+msgstr "196"
 
-#~ msgid "unused"
-#~ msgstr "197"
+#. TRANSLATORS: appended to previous message if the display is colour
+msgid " (colour)"
+msgstr "197"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454

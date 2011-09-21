@@ -1,3 +1,8 @@
+Wed Sep 21 02:28:21 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,lib/en_US.po,src/aboutdlg.cc: Make all strings in
+	  src/aboutdlg.cc translatable.
+
 Wed Sep 21 01:56:15 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Tweak text about Debian packages.
