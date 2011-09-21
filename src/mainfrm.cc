@@ -1285,20 +1285,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     if (datemax < m_DateMin) m_DateMin = datemax;
     m_DateExt = datemax - m_DateMin;
 
-    // Sort the labels.
-    m_Labels.sort(LabelCmp(separator));
-
-    // Fill the tree of stations and prefixes.
-    FillTree();
-
-    // Sort labels so that entrances are displayed in preference,
-    // then fixed points, then exported points, then other points.
-    //
-    // Also sort by leaf name so that we'll tend to choose labels
-    // from different surveys, rather than labels from surveys which
-    // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp(separator));
-
     // Centre the dataset around the origin.
     CentreDataset(Vector3(xmin, ymin, zmin));
 
@@ -1316,12 +1302,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Update window title.
     SetTitle(m_Title + " - "APP_NAME);
-
-    if (!m_FindBox->GetValue().empty()) {
-	// Highlight any stations matching the current search.
-	wxCommandEvent dummy;
-	OnFind(dummy);
-    }
 
     return true;
 }
@@ -1656,6 +1636,26 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
     bool same_file = (file == m_File);
     if (!same_file)
 	m_File = file;
+
+    // Sort the labels ready for filling the tree.
+    m_Labels.sort(LabelCmp(separator));
+
+    // Fill the tree of stations and prefixes.
+    FillTree();
+
+    // Sort labels so that entrances are displayed in preference,
+    // then fixed points, then exported points, then other points.
+    //
+    // Also sort by leaf name so that we'll tend to choose labels
+    // from different surveys, rather than labels from surveys which
+    // are earlier in the list.
+    m_Labels.sort(LabelPlotCmp(separator));
+
+    if (!m_FindBox->GetValue().empty()) {
+	// Highlight any stations matching the current search.
+	wxCommandEvent dummy;
+	OnFind(dummy);
+    }
 
     wxWindow * win = NULL;
     if (m_Splitter->GetWindow2() == NULL) {
