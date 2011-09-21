@@ -1,3 +1,7 @@
+Wed Sep 21 01:56:15 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Tweak text about Debian packages.
+
 Tue Sep 20 11:31:03 GMT 2011  Olly Betts <olly@survex.com>
 
 	* tests/: Update FSF address.

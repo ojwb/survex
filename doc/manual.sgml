@@ -315,8 +315,9 @@ are using, so there is a separate section below for each platform.</Para>
 
 <Para>
 We supply pre-compiled versions for x86 &linux; machines in RPM format
-(suitable for Redhat, Mandrake, and some other distributions)
-and dpkg format (suitable for Debian and Debian-derived distributions).
+(suitable for Redhat, Mandrake, and some other distributions).
+Survex Debian packages are available from Debian mirror sites in
+the usual way.
 </Para>
 
 <Para>
