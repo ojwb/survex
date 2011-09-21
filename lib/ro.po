@@ -1028,8 +1028,11 @@ msgstr "( Est (X), Nord (Y), Altitudine Z )"
 msgid "Expecting date, found `%s'"
 msgstr "Date asteptate, `%s' gasit"
 
-msgid "Only load the sub-survey with prefix"
-msgstr "Incarcati doar sub-topografia cu prefixul"
+#. TRANSLATORS: --help output for --survey option
+#. "this" has been added to English translation
+#, fuzzy
+msgid "only load the sub-survey with this prefix"
+msgstr "incarcati doar sub-topografia cu prefixul"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting

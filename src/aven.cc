@@ -57,10 +57,10 @@ static const struct option long_opts[] = {
 #define short_opts "s:p"
 
 static struct help_msg help[] = {
-    /*			     <-- */
-    {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
-    {HLP_ENCODELONG(1),          "print and exit (requires a 3d file)"},
-    {0, 0}
+    /*				<-- */
+    {HLP_ENCODELONG(0),       /*only load the sub-survey with this prefix*/199, 0},
+    {HLP_ENCODELONG(1),       /*print and exit (requires a 3d file)*/119, 0},
+    {0, 0, 0}
 };
 
 #ifdef __WXMSW__

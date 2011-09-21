@@ -1,6 +1,6 @@
 /* 3dtopos.c */
 /* Produce a .pos file from a .3d file */
-/* Copyright (C) 2001,2002 Olly Betts
+/* Copyright (C) 2001,2002,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,9 +46,9 @@ static const struct option long_opts[] = {
 #define short_opts "s:"
 
 static struct help_msg help[] = {
-/*				<-- */
-   {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
-   {0, 0}
+   /*				<-- */
+   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
+   {0, 0, 0}
 };
 
 typedef struct {

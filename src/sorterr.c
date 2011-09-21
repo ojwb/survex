@@ -1,6 +1,6 @@
 /* sorterr.c */
 /* Sort a survex .err file */
-/* Copyright (C) 2001,2002,2005,2010 Olly Betts
+/* Copyright (C) 2001,2002,2005,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,12 +49,12 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "Sort by horizontal error factor"},
-   {HLP_ENCODELONG(1),          "Sort by vertical error factor"},
-   {HLP_ENCODELONG(2),          "Sort by percentage error"},
-   {HLP_ENCODELONG(3),          "Sort by error per leg"},
-   {HLP_ENCODELONG(4),          "Replace .err file with resorted version"},
-   {0, 0}
+   {HLP_ENCODELONG(0),        /*sort by horizontal error factor*/179, 0},
+   {HLP_ENCODELONG(1),        /*sort by vertical error factor*/180, 0},
+   {HLP_ENCODELONG(2),        /*sort by percentage error*/181, 0},
+   {HLP_ENCODELONG(3),        /*sort by error per leg*/182, 0},
+   {HLP_ENCODELONG(4),        /*replace .err file with resorted version*/183, 0},
+   {0, 0, 0}
 };
 
 typedef struct {

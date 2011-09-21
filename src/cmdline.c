@@ -1,6 +1,6 @@
 /* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001,2003,2004 Olly Betts
+ * Copyright (C) 1998-2001,2003,2004,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include "getopt.h"
 
 #include "cmdline.h"
+#include "debug.h"
 #include "filename.h"
 
 #include "message.h"
@@ -121,11 +122,20 @@ cmdline_help(void)
 	 fputs(newline_tabs + 1, stdout);
       }
 
-      puts(help->msg);
+      if (help->arg) {
+	  SVX_ASSERT(strstr(msg(help->msg_no), "%s") != NULL);
+	  printf(msg(help->msg_no), help->arg);
+	  putnl();
+      } else {
+	  SVX_ASSERT(strstr(msg(help->msg_no), "%s") == NULL);
+	  puts(msg(help->msg_no));
+      }
       help++;
    }
-   printf("      --help\t\t\t%s\n", msg(/*display this help and exit*/150));
-   printf("      --version\t\t\t%s\n", msg(/*output version information and exit*/151));
+   fputs("      --help\t\t\t", stdout);
+   puts(msg(/*display this help and exit*/150));
+   fputs("      --version\t\t\t", stdout);
+   puts(msg(/*output version information and exit*/151));
 
    if (extra_msg) {
       putnl();

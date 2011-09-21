@@ -1,6 +1,6 @@
 /* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
-/* Copyright (C) 1994,1996,1998-2003,2010 Olly Betts
+/* Copyright (C) 1994,1996,1998-2003,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,8 +54,8 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
-   {0, 0}
+   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
+   {0, 0, 0}
 };
 
 /* We use a hashtable with linked list buckets - this is how many hash table

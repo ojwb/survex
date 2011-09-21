@@ -1024,8 +1024,11 @@ msgstr "( Este X , Norte Y , Altitud Z)"
 msgid "Expecting date, found `%s'"
 msgstr "Esperando dato, encontrado `%s'"
 
-msgid "Only load the sub-survey with prefix"
-msgstr "Solo carga la sub-topografía con prefijo"
+#. TRANSLATORS: --help output for --survey option
+#. "this" has been added to English translation
+#, fuzzy
+msgid "only load the sub-survey with this prefix"
+msgstr "solo carga la sub-topografía con prefijo"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting

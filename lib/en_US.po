@@ -1032,8 +1032,10 @@ msgstr " (color)"
 msgid "Expecting date, found `%s'"
 msgstr "Expecting date, found `%s'"
 
-msgid "Only load the sub-survey with prefix"
-msgstr "Only load the sub-survey with prefix"
+#. TRANSLATORS: --help output for --survey option
+#. "this" has been added to English translation
+msgid "only load the sub-survey with this prefix"
+msgstr "only load the sub-survey with this prefix"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting

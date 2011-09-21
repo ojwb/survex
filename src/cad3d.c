@@ -619,20 +619,21 @@ main(int argc, char **argv)
 
    /* TRANSLATE */
    static struct help_msg help[] = {
-	{HLP_ENCODELONG(0), "only load the sub-survey with this prefix"},
-	{HLP_ENCODELONG(1), "do not generate station markers"},
-	{HLP_ENCODELONG(2), "do not generate station labels"},
-	{HLP_ENCODELONG(3), "do not generate the survey legs"},
-	{HLP_ENCODELONG(4), "generate grid (default "STRING(GRID_SPACING)"m)"},
-	{HLP_ENCODELONG(5), "station labels text height (default "STRING(TEXT_HEIGHT)")"},
-	{HLP_ENCODELONG(6), "station marker size (default "STRING(MARKER_SIZE)")"},
-	{HLP_ENCODELONG(7), "produce an elevation view"},
-	{HLP_ENCODELONG(8), "factor to scale down by (default 500)"},
-	{HLP_ENCODELONG(9), "produce DXF output"},
-	{HLP_ENCODELONG(10), "produce Sketch output"},
-	{HLP_ENCODELONG(11), "produce Compass PLT output for Carto"},
-        {HLP_ENCODELONG(12), "produce SVG output"},
-	{0,0}
+	/*			<-- */
+	{HLP_ENCODELONG(0),   /*only load the sub-survey with this prefix*/199, 0},
+	{HLP_ENCODELONG(1),   /*do not generate station markers*/100, 0},
+	{HLP_ENCODELONG(2),   /*do not generate station labels*/101, 0},
+	{HLP_ENCODELONG(3),   /*do not generate the survey legs*/102, 0},
+	{HLP_ENCODELONG(4),   /*generate grid (default %sm)*/148, STRING(GRID_SPACING)},
+	{HLP_ENCODELONG(5),   /*station labels text height (default %s)*/149, STRING(TEXT_HEIGHT)},
+	{HLP_ENCODELONG(6),   /*station marker size (default %s)*/152, STRING(MARKER_SIZE)},
+	{HLP_ENCODELONG(7),   /*produce an elevation view*/103, 0},
+	{HLP_ENCODELONG(8),   /*factor to scale down by (default %s)*/155, "500"},
+	{HLP_ENCODELONG(9),   /*produce DXF output*/156, 0},
+	{HLP_ENCODELONG(10),  /*produce Sketch output*/158, 0},
+	{HLP_ENCODELONG(11),  /*produce Compass PLT output for Carto*/159, 0},
+	{HLP_ENCODELONG(12),  /*produce SVG output*/160, 0},
+	{0, 0, 0}
    };
 
    msg_init(argv);

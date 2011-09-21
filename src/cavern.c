@@ -119,15 +119,15 @@ static const struct option long_opts[] = {
 /* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),		"display percentage progress"},
-   {HLP_ENCODELONG(2),		"set location for output files"},
-   {HLP_ENCODELONG(3),		"only show brief summary (-qq for errors only)"},
-   {HLP_ENCODELONG(4),		"do not create .err file"},
-   {HLP_ENCODELONG(5),		"turn warnings into errors"},
-   {HLP_ENCODELONG(6),		"log output to .log file"},
-   {HLP_ENCODELONG(7),		"specify the 3d file format version to output"},
+   {HLP_ENCODELONG(0),	      /*display percentage progress*/161, 0},
+   {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0},
+   {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0},
+   {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0},
+   {HLP_ENCODELONG(5),	      /*turn warnings into errors*/165, 0},
+   {HLP_ENCODELONG(6),	      /*log output to .log file*/170, 0},
+   {HLP_ENCODELONG(7),	      /*specify the 3d file format version to output*/171, 0},
  /*{'z',			"set optimizations for network reduction"},*/
-   {0, 0}
+   {0, 0, 0}
 };
 
 /* atexit functions */

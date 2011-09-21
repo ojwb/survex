@@ -1,3 +1,8 @@
+Wed Sep 21 04:07:29 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Extract all the help strings in --help output and make
+	  them available for translation.
+
 Wed Sep 21 04:04:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Check there are no duplicate message codes in
