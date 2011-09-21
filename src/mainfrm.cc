@@ -117,14 +117,14 @@ public:
 	wxBoxSizer * r4 = new wxBoxSizer(wxHORIZONTAL);
 	r4->Add(new wxStaticText(this, 616, wmsg(/*Scale*/154) + wxT(": ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r4->Add(scale);
-	r4->Add(new wxStaticText(this, 617, wxT(" (unused in perspective view)")),
+	r4->Add(new wxStaticText(this, 617, wmsg(/* (unused in perspective view)*/278)),
 		0, wxALIGN_CENTRE_VERTICAL);
 	vert->Add(r4, 0, wxALL, 8);
 
 	wxBoxSizer * r5 = new wxBoxSizer(wxHORIZONTAL);
-	r5->Add(new wxStaticText(this, 616, wxT("Time: ")), 0, wxALIGN_CENTRE_VERTICAL);
+	r5->Add(new wxStaticText(this, 616, wmsg(/*Time: */279)), 0, wxALIGN_CENTRE_VERTICAL);
 	r5->Add(time);
-	r5->Add(new wxStaticText(this, 617, wxT(" secs (0 = auto; *6 = 6 times auto)")),
+	r5->Add(new wxStaticText(this, 617, wmsg(/* secs (0 = auto; *6 = 6 times auto)*/282)),
 		0, wxALIGN_CENTRE_VERTICAL);
 	vert->Add(r5, 0, wxALL, 8);
 
@@ -2377,9 +2377,9 @@ void MainFrm::OnFind(wxCommandEvent&)
     m_Gfx->ForceRefresh();
 
     if (!m_NumHighlighted) {
-        GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*No matches were found.*/328));
+	GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*No matches were found.*/328));
     } else {
-        GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format(wxT("Unhilight %d found stations"), m_NumHighlighted));
+	GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format(wmsg(/*Hide %d found stations*/334).c_str(), m_NumHighlighted));
     }
 }
 
@@ -2418,6 +2418,7 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
 void MainFrm::OnHide(wxCommandEvent&)
 {
     m_FindBox->SetValue(wxString());
+    GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*Hide*/333));
 }
 
 void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)

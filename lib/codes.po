@@ -1780,20 +1780,24 @@ msgstr "328"
 #~ msgid "%d found"
 #~ msgstr ""
 
-#. TRANSLATORS: "Find stations" button label
+#. TRANSLATORS: "Find stations" button tooltip
 #: ../src/mainfrm.cc:894
 msgid "Find"
 msgstr "332"
 
-#. TRANSLATORS: "Hide stations" button label
+#. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:896
 msgid "Hide"
 msgstr "333"
 
-#. TRANSLATORS: checkbox for regular expression search
-#: ../src/mainfrm.cc:914
-msgid "Regular expression"
+#. TRANSLATORS: "Hide stations" button tooltip when stations are found
+#, c-format
+msgid "Hide %d found stations"
 msgstr "334"
+
+#. TRANSLATORS: checkbox for regular expression search
+msgid "Regular expression"
+msgstr ""
 
 #: ../src/mainfrm.cc:193
 #: ../src/mainfrm.cc:1843
@@ -2077,6 +2081,18 @@ msgstr "403"
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
 msgid "Edit Waypoint"
 msgstr "404"
+
+#. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
+msgid " (unused in perspective view)"
+msgstr "278"
+
+#. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
+msgid "Time: "
+msgstr "279"
+
+#. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
+msgid " secs (0 = auto; *6 = 6 times auto)"
+msgstr "282"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
