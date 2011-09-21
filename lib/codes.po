@@ -549,6 +549,11 @@ msgstr "92"
 msgid "Couldn't open file `%s'"
 msgstr "93"
 
+#: ../src/printwx.cc:335
+#, c-format
+msgid "Couldn't write file `%s'"
+msgstr "402"
+
 #: ../src/message.c:227
 msgid "Bad memory access"
 msgstr "94"
@@ -1192,11 +1197,9 @@ msgstr "203"
 msgid "About %s"
 msgstr "205"
 
-#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
-#. The string "\t" separates the menu text and any accelerator key.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1701
-msgid "Select a 3d file to view"
+#: ../src/mainfrm.cc:1714
+msgid "Select a survey file to view"
 msgstr "206"
 
 #: ../src/mainfrm.cc:1692
@@ -1207,6 +1210,22 @@ msgstr "207"
 #: ../src/mainfrm.cc:2096
 msgid "All files"
 msgstr "208"
+
+#: ../src/mainfrm.cc:1704
+msgid "All survey files"
+msgstr "229"
+
+#: ../src/mainfrm.cc:1706
+msgid "Survex svx files"
+msgstr "329"
+
+#: ../src/mainfrm.cc:1708
+msgid "Compass DAT and MAK files"
+msgstr "330"
+
+#: ../src/printwx.cc:328
+msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
+msgstr "96"
 
 #. TRANSLATORS: in the about box (summarising the purpose of aven)
 #: ../src/aboutdlg.cc:87
@@ -1247,6 +1266,8 @@ msgstr "216"
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
 msgstr "219"
 
+#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
+#. The string "\t" separates the menu text and any accelerator key.
 #. TRANSLATORS: "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:715
@@ -1299,10 +1320,14 @@ msgstr "227"
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
 #~ msgid "Select a terrain file to view"
-#~ msgstr "228"
+#~ msgstr ""
 
 #~ msgid "Terrain files"
-#~ msgstr "229"
+#~ msgstr ""
+
+#. TRANSLATORS: %s will be replaced by the application name ("Aven" currently)
+msgid "%s Error Log"
+msgstr "228"
 
 #. TRANSLATORS: Used in the "Export" settings dialog
 #: ../src/printwx.cc:298
@@ -1657,6 +1682,10 @@ msgstr "316"
 msgid "&Export as Movie…"
 msgstr "317"
 
+#: ../src/mainfrm.cc:2182
+msgid "Export Movie"
+msgstr "331"
+
 #: ../src/mainfrm.cc:781
 msgid "&Bounding Box\tCtrl+B"
 msgstr "318"
@@ -1716,18 +1745,16 @@ msgstr "327"
 msgid "No matches were found."
 msgstr "328"
 
-#. TRANSLATORS: UNUSED
 #~ msgid "Open &Terrain…"
-#~ msgstr "329"
+#~ msgstr ""
 
-#. TRANSLATORS: UNUSED
 #~ msgid "Solid Su&rface"
-#~ msgstr "330"
+#~ msgstr ""
 
 #. TRANSLATORS: number of stations found matching search
 #, c-format
 #~ msgid "%d found"
-#~ msgstr "331"
+#~ msgstr ""
 
 #. TRANSLATORS: "Find stations" button label
 #: ../src/mainfrm.cc:894
@@ -1979,6 +2006,11 @@ msgstr "381"
 msgid "&Export as…"
 msgstr "382"
 
+#. TRANSLATORS: Title of file dialog to choose name and type of exported file.
+#: ../src/mainfrm.cc:721
+msgid "Export as:"
+msgstr "401"
+
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:171
 msgid "Export"
@@ -2004,10 +2036,10 @@ msgid "&Print…"
 msgstr "400"
 
 #~ msgid "Pre&view"
-#~ msgstr "401"
+#~ msgstr ""
 
 #~ msgid "&Cancel"
-#~ msgstr "402"
+#~ msgstr ""
 
 #: ../src/printwx.cc:267
 msgid "Sur&face Survey Legs"

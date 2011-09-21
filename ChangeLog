@@ -1,3 +1,8 @@
+Wed Sep 21 11:25:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/log.cc,src/mainfrm.cc,src/printwx.cc: Make more
+	  messages translatable.
+
 Wed Sep 21 07:30:28 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/dump3d.c,src/gfxcore.cc,src/mainfrm.cc: Make more

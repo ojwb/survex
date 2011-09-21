@@ -1,6 +1,6 @@
 //  log.cc - Error log window for Aven.
 //
-//  Copyright (C) 2006 Olly Betts
+//  Copyright (C) 2006,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
 #include "log.h"
 #include "gla.h"
 
-//#include "message.h"
-
-// FIXME: Make window title available for translation.
 MyLogWindow::MyLogWindow()
-    : wxLogWindow(NULL,APP_NAME wxT(" Error Log"), false, false), first(true)
+    : wxLogWindow(NULL,
+		  wxString::Format(wmsg(/*%s Error Log*/228), APP_NAME).c_str(),
+		  false, false),
+      first(true)
 {
 }
 

@@ -1701,17 +1701,16 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
 		     "|%s|*.xyz"CASE("*.XYZ")
 		     "|%s|%s"),
-		     wxT("All survey files"),
+		     wmsg(/*All survey files*/229).c_str(),
 		     wmsg(/*Survex 3d files*/207).c_str(),
-		     wxT("Survex svx files"),
+		     wmsg(/*Survex svx files*/329).c_str(),
 		     wmsg(/*Compass PLT files*/324).c_str(),
-		     wxT("Compass DAT and MAK files"),
+		     wmsg(/*Compass DAT and MAK files*/330).c_str(),
 		     wmsg(/*CMAP XYZ files*/325).c_str(),
 		     wmsg(/*All files*/208).c_str(),
 		     wxFileSelectorDefaultWildcardStr);
 #endif
-    // FIXME: drop "3d" from this message?
-    wxFileDialog dlg(this, wmsg(/*Select a 3d file to view*/206),
+    wxFileDialog dlg(this, wmsg(/*Select a survey file to view*/206),
 		     wxString(), wxString(),
 		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
     if (dlg.ShowModal() == wxID_OK) {
@@ -2180,7 +2179,7 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
     // default might make more sense?
     wxString baseleaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
-    wxFileDialog dlg(this, wxT("Export Movie"), wxString(),
+    wxFileDialog dlg(this, wmsg(/*Export Movie*/331), wxString(),
 		     baseleaf + wxT(".mpg"),
 		     wxT("MPEG|*.mpg|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);

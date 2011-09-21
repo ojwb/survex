@@ -324,15 +324,17 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     UIToLayout();
     wxString baseleaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
-    wxFileDialog dlg(this, wxT("Export as:"), wxString(), baseleaf,
-		     wxT("DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"),
+    wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), baseleaf,
+		     wmsg(/*DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl*/96),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
 		    m_layout.rot, m_layout.tilt,
 		    m_layout.Labels, m_layout.Crosses,
 		    m_layout.Shots, m_layout.Surface)) {
-	    wxGetApp().ReportError(wxString::Format(wxT("Couldn't write file `%s'"), m_File.c_str()));
+	    wxString m = wxString::Format(wmsg(/*Couldn't write file `%s'*/402).c_str(),
+					  m_File.c_str());
+	    wxGetApp().ReportError(m);
 	}
     }
     Destroy();
