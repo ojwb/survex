@@ -82,7 +82,7 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
-   cmdline_set_syntax_message("3D_FILE [POS_FILE]", NULL); /* TRANSLATE */
+   cmdline_set_syntax_message(/*3D_FILE [POS_FILE]*/217, 0, NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
       int opt = cmdline_getopt();

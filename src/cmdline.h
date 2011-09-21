@@ -59,9 +59,10 @@ void cmdline_init(int argc_, char *const *argv_, const char *shortopts_,
 		  const struct option *longopts_, int *longind_,
 		  const struct help_msg *help_,
 		  int min_args_, int max_args_);
-/* if args not NULL, use instead of auto-generated FILE args */
-/* if extra not NULL, display as extra blurb at end */
-void cmdline_set_syntax_message(const char *args, const char *extra);
+/* if args not 0, use instead of auto-generated FILE args */
+/* if extra not 0, display as extra blurb at end */
+/* if arg not NULL, extra must be a printf format with one %s */
+void cmdline_set_syntax_message(int msg_args, int msg_extra, const char * arg);
 int cmdline_getopt(void);
 void cmdline_help(void);
 void cmdline_version(void);

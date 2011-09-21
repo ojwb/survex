@@ -99,7 +99,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
-    cmdline_set_syntax_message("[3d file]", NULL);
+    cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
     cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
@@ -126,7 +126,7 @@ int main(int argc, char **argv)
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
-    cmdline_set_syntax_message("[3d file]", NULL);
+    cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
     cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
 

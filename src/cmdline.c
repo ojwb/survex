@@ -76,7 +76,8 @@ static const struct option *longopts;
 static int *longind;
 static const struct help_msg *help;
 static int min_args, max_args;
-static const char *args_msg = NULL, *extra_msg = NULL;
+static int msg_args, msg_extra;
+static const char * msg_extra_arg;
 
 void
 cmdline_help(void)
@@ -137,9 +138,16 @@ cmdline_help(void)
    fputs("      --version\t\t\t", stdout);
    puts(msg(/*output version information and exit*/151));
 
-   if (extra_msg) {
+   if (msg_extra) {
       putnl();
-      puts(extra_msg);
+      if (msg_extra_arg) {
+	  SVX_ASSERT(strstr(msg(msg_extra), "%s") != NULL);
+	  printf(msg(msg_extra), msg_extra_arg);
+	  putnl();
+      } else {
+	  SVX_ASSERT(strstr(msg(msg_extra), "%s") == NULL);
+	  puts(msg(msg_extra));
+      }
    }
 
    exit(0);
@@ -156,9 +164,9 @@ cmdline_syntax(void)
 {
    printf("\n%s: %s", msg(/*Syntax*/49), msg_appname());
    if (help->opt) printf(" [%s]...", msg(/*OPTION*/153));
-   if (args_msg) {
+   if (msg_args) {
       putchar(' ');
-      puts(args_msg);
+      puts(msg(msg_args));
       return;
    }
    if (min_args) {
@@ -209,10 +217,11 @@ cmdline_too_many_args(void)
 }
 
 void
-cmdline_set_syntax_message(const char *args, const char *extra)
+cmdline_set_syntax_message(int msg_args_, int msg_extra_, const char * arg)
 {
-   args_msg = args;
-   extra_msg = extra;
+   msg_args = msg_args_;
+   msg_extra = msg_extra_;
+   msg_extra_arg = arg;
 }
 
 int

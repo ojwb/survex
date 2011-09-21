@@ -258,11 +258,9 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
-   cmdline_set_syntax_message("FILE1 FILE2 [THRESHOLD]",
-			      "FILE1 and FILE2 can be .pos or .3d files\n"
-			      "THRESHOLD is the max. ignorable change along "
-			      "any axis in metres (default "
-			      STRING(DFLT_MAX_THRESHOLD)")");
+   cmdline_set_syntax_message(/*FILE1 FILE2 [THRESHOLD]*/218,
+			      /*FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)*/255,
+			      STRING(DFLT_MAX_THRESHOLD));
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 3);
    while (1) {
       int opt = cmdline_getopt();
