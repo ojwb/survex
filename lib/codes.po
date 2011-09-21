@@ -1024,7 +1024,12 @@ msgstr "178"
 
 #. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
 #~ msgid "elevation"
-#~ msgstr "184"
+#~ msgstr ""
+
+#. TRANSLATORS: Label for button in aven's cavern log window which causes the
+#. survey data to be reprocessed.
+msgid "Reprocess"
+msgstr "184"
 
 #: ../src/cmdline.c:219
 #: ../src/cmdline.c:238

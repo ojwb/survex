@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010 Olly Betts
+ * Copyright (C) 2005,2006,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -365,7 +365,8 @@ CavernLogWindow::process(const wxString &file)
 
     int retval = pclose(cavern_out);
     if (retval) {
-	AppendToPage(wxT("<avenbutton default id=1234 name=\"Reprocess\">"));
+	AppendToPage(wxString::Format(wxT("<avenbutton default id=1234 name=\"%s\">"),
+				      wmsg(/*Reprocess*/184).c_str()));
 	if (retval == -1) {
 	    wxString m = wxT("Problem running cavern: ");
 	    m += wxString(strerror(errno), wxConvUTF8);
@@ -375,7 +376,8 @@ CavernLogWindow::process(const wxString &file)
 	return -1;
     }
     if (link_count) {
-	AppendToPage(wxT("<avenbutton id=1234 name=\"Reprocess\">"));
+	AppendToPage(wxString::Format(wxT("<avenbutton id=1234 name=\"%s\">"),
+				      wmsg(/*Reprocess*/184).c_str()));
 	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
 	Update();
     }

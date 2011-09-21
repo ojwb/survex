@@ -1,3 +1,8 @@
+Wed Sep 21 04:20:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/cavernlog.cc: Allow the "Reprocess" button label in
+	  aven's cavern log window to be translated.
+
 Wed Sep 21 04:07:29 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Extract all the help strings in --help output and make
