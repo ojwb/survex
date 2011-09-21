@@ -1,3 +1,8 @@
+Wed Sep 21 00:20:26 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Make wx version and toolkit info a single string at
+	  compile time, like we do on trunk.
+
 Wed Sep 21 00:15:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
