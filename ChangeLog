@@ -1,3 +1,9 @@
+Wed Sep 21 00:11:57 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* configure.in: Only ask for core wx lib to avoid linking to a load of
+	  others we don't use.
+
 Wed Sep 21 00:07:52 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/Makefile.am: Factor out DOCBOOK_TO_MAN and SGMLTOOLS to reduce
