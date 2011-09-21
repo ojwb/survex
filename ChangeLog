@@ -1,3 +1,7 @@
+Wed Sep 21 14:37:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Fix typo (doubled ").
+
 Wed Sep 21 14:37:14 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Check format of .po files with msgfmt -c

@@ -1152,7 +1152,7 @@ msgstr "sort by percentage error"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
 msgid "sort by error per leg"
-msgstr "sort by error per shot""
+msgstr "sort by error per shot"
 
 #. TRANSLATORS: --help output for sorterr --replace option
 msgid "replace .err file with resorted version"
