@@ -1278,9 +1278,7 @@ bool GfxCore::Animate()
     static double last_t = 0;
     double t;
     if (movie) {
-	// FIXME: this glReadPixels call should be in gla-gl.cc
-	glReadPixels(0, 0, movie->GetWidth(), movie->GetHeight(), GL_RGB,
-		     GL_UNSIGNED_BYTE, (GLvoid *)movie->GetBuffer());
+	ReadPixels(movie->GetWidth(), movie->GetHeight(), movie->GetBuffer());
 	movie->AddFrame();
 	t = 1.0 / 25.0; // 25 frames per second
     } else {

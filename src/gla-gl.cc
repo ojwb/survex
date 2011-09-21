@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1510,4 +1510,9 @@ bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
     unsigned char pixels[3 * 8 * 8];
     glReadPixels(width / 2 - 3, height / 2 - 4, 8, 8, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
     return (memcmp(pixels, target, sizeof(pixels)) == 0);
+}
+
+void GLACanvas::ReadPixels(int width, int height, unsigned char * buf) const
+{
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)buf);
 }

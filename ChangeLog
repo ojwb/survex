@@ -1,3 +1,8 @@
+Wed Sep 21 02:29:21 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Eliminate glReadPixels() call
+	  from src/gfxcore.cc.
+
 Wed Sep 21 02:28:21 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,lib/en_US.po,src/aboutdlg.cc: Make all strings in

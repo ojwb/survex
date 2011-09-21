@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006,2007 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -258,4 +258,6 @@ public:
     bool GetAntiAlias() const { return m_AntiAlias; }
 
     bool SaveScreenshot(const wxString & fnm, int type) const;
+
+    void ReadPixels(int width, int height, unsigned char * buf) const;
 };
