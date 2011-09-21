@@ -2,11 +2,12 @@
 
 # Makefile for survex support files
 
-check-local:
+check-local: survex.pot
 	srcdir=$(srcdir) LANG=C perl $(srcdir)/checkshortcut.pl $(msg_files)
 	if grep ^msgstr $(srcdir)/codes.po|sort|uniq -c|grep -v '^ *1 '; then\
 	    echo 'Duplicate message code(s) in codes.po'; exit 1;\
 	fi
+	for po in $(po_files) ; do msgfmt -c --check-accelerators "$$po" || exit 1; done
 
 SUBDIRS = icons
 
