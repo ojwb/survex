@@ -865,7 +865,7 @@ void GfxCore::DrawDatebar()
 
     int size = 0;
     if (!m_Parent->HasCompleteDateInfo()) {
-	GetTextExtent(wxT("No info"), &size, NULL);
+	GetTextExtent(wmsg(/*Undated*/221), &size, NULL);
     }
 
     wxString* strs = new wxString[GetNumDepthBands()];
@@ -913,7 +913,7 @@ void GfxCore::DrawDatebar()
 
     if (!m_Parent->HasCompleteDateInfo()) {
 	y += DEPTH_BAR_MARGIN;
-	DrawIndicatorText(left, y, wxT("No info"));
+	DrawIndicatorText(left, y, wmsg(/*Undated*/221));
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
 
@@ -928,12 +928,12 @@ void GfxCore::DrawDatebar()
 void GfxCore::DrawErrorbar()
 {
     int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
-    // Always show the "Not a loop" legend for now (FIXME).
+    // Always show the "Not in loop" legend for now (FIXME).
     total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
     const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
 
     int size = 0;
-    GetTextExtent(wxT("Not a loop"), &size, NULL);
+    GetTextExtent(wmsg(/*Not in loop*/290), &size, NULL);
 
     wxString* strs = new wxString[GetNumDepthBands()];
     int band;
@@ -974,7 +974,7 @@ void GfxCore::DrawErrorbar()
     SetColour(TEXT_COLOUR);
 
     y += DEPTH_BAR_MARGIN;
-    DrawIndicatorText(left, y, wxT("Not in loop"));
+    DrawIndicatorText(left, y, wmsg(/*Not in loop*/290));
     y += DEPTH_BAR_BLOCK_HEIGHT;
 
     for (band = 0; band < GetNumDepthBands(); band++) {

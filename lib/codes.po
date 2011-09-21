@@ -694,6 +694,7 @@ msgstr "117"
 #: ../src/gfxcore.cc:713
 #: ../src/printwx.cc:257
 #: ../src/printwx.cc:660
+#: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr "118"
 
@@ -891,6 +892,7 @@ msgstr "153"
 #: ../src/printwx.cc:220
 #: ../src/printwx.cc:672
 #: ../src/printwx.cc:733
+#: ../src/mainfrm.cc:118
 msgid "Scale"
 msgstr "154"
 
@@ -1156,6 +1158,10 @@ msgstr "182"
 msgid "replace .err file with resorted version"
 msgstr "183"
 
+#. TRANSLATORS: --help output for dump3d --rewind option
+msgid "rewind file and read it a second time"
+msgstr "204"
+
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
 #. knots on a diving line, and tie them every "2 feet").
@@ -1178,7 +1184,7 @@ msgid "Facing"
 msgstr "203"
 
 #~ msgid "Close"
-#~ msgstr "204"
+#~ msgstr ""
 
 #. TRANSLATORS: for the title of the About box
 #: ../src/aboutdlg.cc:69
@@ -1248,7 +1254,17 @@ msgid "&Open…\tCtrl+O"
 msgstr "220"
 
 #~ msgid "&Quit\tCtrl+Q"
-#~ msgstr "221"
+#~ msgstr ""
+
+#. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
+#. surveys without date information.
+msgid "Undated"
+msgstr "221"
+
+#. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
+#. which aren't part of a loop and so have no error information.
+msgid "Not in loop"
+msgstr "290"
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
@@ -1419,6 +1435,7 @@ msgid "One page"
 msgstr "258"
 
 #: ../src/printwx.cc:241
+#: ../src/mainfrm.cc:110
 msgid "Bearing"
 msgstr "259"
 
@@ -1502,7 +1519,7 @@ msgid "Colour by E&rror"
 msgstr "289"
 
 #~ msgid "&About…"
-#~ msgstr "290"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:784
 msgid "&Surface Survey Legs\tCtrl+F"
@@ -1999,7 +2016,11 @@ msgstr "403"
 #. TRANSLATORS: "%s" is replaced by the invalid expression
 #, c-format
 #~ msgid "Invalid regular expression: %s"
-#~ msgstr "404"
+#~ msgstr ""
+
+#. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
+msgid "Edit Waypoint"
+msgstr "404"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).

@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002,2006 Olly Betts
+/* Copyright (C) 2001,2002,2006,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,9 +44,9 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),          "only load the sub-survey with this prefix"},
-   {HLP_ENCODELONG(1),          "rewind file and read it a second time"},
-   {0, 0}
+   {HLP_ENCODELONG(0),	      /*only load the sub-survey with this prefix*/199, 0},
+   {HLP_ENCODELONG(1),	      /*rewind file and read it a second time*/204, 0},
+   {0, 0, 0}
 };
 
 int

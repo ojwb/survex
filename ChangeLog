@@ -1,3 +1,9 @@
+Wed Sep 21 07:30:28 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/dump3d.c,src/gfxcore.cc,src/mainfrm.cc: Make more
+	  messages translatable.  In the colour key for "colour by date",
+	  change "No info" to "Undated".
+
 Wed Sep 21 04:20:52 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/cavernlog.cc: Allow the "Reprocess" button label in

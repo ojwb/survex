@@ -80,7 +80,7 @@ class EditMarkDlg : public wxDialog {
     wxTextCtrl * angle, * tilt_angle, * scale, * time;
 public:
     EditMarkDlg(wxWindow* parent, const PresentationMark & p)
-	: wxDialog(parent, 500, wxString(wxT("Edit Waypoint")))
+	: wxDialog(parent, 500, wmsg(/*Edit Waypoint*/404))
     {
 	easting = new wxTextCtrl(this, 601, wxString::Format(wxT("%.3f"), p.GetX()));
 	northing = new wxTextCtrl(this, 602, wxString::Format(wxT("%.3f"), p.GetY()));
@@ -107,15 +107,15 @@ public:
 	wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 	vert->Add(coords, 0, wxALL, 8);
 	wxBoxSizer * r2 = new wxBoxSizer(wxHORIZONTAL);
-	r2->Add(new wxStaticText(this, 614, wxT("Bearing: ")), 0, wxALIGN_CENTRE_VERTICAL);
+	r2->Add(new wxStaticText(this, 614, wmsg(/*Bearing*/259) + wxT(": ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r2->Add(angle);
 	vert->Add(r2, 0, wxALL, 8);
 	wxBoxSizer * r3 = new wxBoxSizer(wxHORIZONTAL);
-	r3->Add(new wxStaticText(this, 615, wxT("Elevation: ")), 0, wxALIGN_CENTRE_VERTICAL);
+	r3->Add(new wxStaticText(this, 615, wmsg(/*Elevation*/118) + wxT(": ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r3->Add(tilt_angle);
 	vert->Add(r3, 0, wxALL, 8);
 	wxBoxSizer * r4 = new wxBoxSizer(wxHORIZONTAL);
-	r4->Add(new wxStaticText(this, 616, wxT("Scale: ")), 0, wxALIGN_CENTRE_VERTICAL);
+	r4->Add(new wxStaticText(this, 616, wmsg(/*Scale*/154) + wxT(": ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r4->Add(scale);
 	r4->Add(new wxStaticText(this, 617, wxT(" (unused in perspective view)")),
 		0, wxALIGN_CENTRE_VERTICAL);
