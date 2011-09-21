@@ -1,3 +1,8 @@
+Wed Sep 21 04:04:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Check there are no duplicate message codes in
+	  codes.po as part of "make check".
+
 Wed Sep 21 02:29:21 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Eliminate glReadPixels() call

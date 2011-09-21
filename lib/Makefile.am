@@ -4,6 +4,9 @@
 
 check-local:
 	srcdir=$(srcdir) LANG=C perl $(srcdir)/checkshortcut.pl $(msg_files)
+	if grep ^msgstr $(srcdir)/codes.po|sort|uniq -c|grep -v '^ *1 '; then\
+	    echo 'Duplicate message code(s) in codes.po'; exit 1;\
+	fi
 
 SUBDIRS = icons
 
