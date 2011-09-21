@@ -166,10 +166,9 @@ if test -n "$AVEN"; then
     if (exec >&5 2>&5;$WX_CONFIG --libs --cflags --cxxflags;exit $?) then
       :
     else
-      AC_MSG_ERROR(['$WX_CONFIG --libs --cflags --cxxflags' doesn't work, bailing out])
+      AC_MSG_ERROR(['$WX_CONFIG --libs --cflags --cxxflags' does not work, bailing out])
     fi
   else
-    # prefer wx2.6 or wx2.8 - a few things work better with it than with wx2.4.
     if test yes = "$macosx" ; then
       AC_PATH_PROGS(WX_CONFIG, [wxmac-2.8-config wxmac-2.6-config wxmac-2.4-config wxmac-config])
       wxdef=__WXMAC__
@@ -181,7 +180,7 @@ if test -n "$AVEN"; then
       wxdef=__WXGTK__
     fi
     if test -z "$WX_CONFIG" ; then
-      dnl see if wx-config exists and is for the correct version
+      dnl See if wx-config exists and is for the correct version.
       AC_PATH_PROGS(WX_CONFIG, [wx-config])
       if test -n "$WX_CONFIG" ; then
 	if (exec >&5 2>&5;$WX_CONFIG --cflags|grep -e -D"$wxdef";exit $?) then

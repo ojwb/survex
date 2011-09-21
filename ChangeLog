@@ -1,3 +1,7 @@
+Wed Sep 21 00:01:44 GMT 2011  Olly Betts <olly@survex.com>
+
+	* configure.in: Sync some cosmetic changes from trunk.
+
 Tue Sep 20 13:29:11 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
