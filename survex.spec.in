@@ -6,11 +6,10 @@ Version: @VERSION@
 Release: @RELEASE@
 License: GPL
 Group: Applications/Misc
-Source: http://www.survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
-URL: http://www.survex.com/
+Source: http://survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
+URL: http://survex.com/
 Packager: Olly Betts <olly@survex.com>
-#Can't build with rpm on debian with this next line uncommented:
-#BuildRequires: wxGTK-devel >= 2.4.0
+BuildRequires: wxGTK-devel >= 2.6.0
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
@@ -19,7 +18,7 @@ BuildRoot: %{_tmppath}/%{name}-buildroot
 %package aven
 Summary: Aven viewer for Survex
 Group: Applications/Misc
-Requires: survex = @VERSION@, wxGTK >= 2.4.0
+Requires: survex = @VERSION@, wxGTK >= 2.6.0
 
 %description aven
 @AVENDESC@
@@ -45,6 +44,7 @@ make
 [ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 mkdir -p "%{buildroot}"
 make install-strip DESTDIR="%{buildroot}"
+make -C vim vimdir=/usr/share/vim install DESTDIR="%{buildroot}"
 # Rearrange to conform to the FHS.
 mv "%{buildroot}"/usr/man "%{buildroot}"/usr/share/man
 # Move docs back into build tree to keep rpmbuild happy by letting

@@ -1,3 +1,13 @@
+Wed Sep 21 00:15:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Backport change from 1.2.0:
+	* survex.spec.in: Update survex.com URLs to drop "www.".  Update
+	  wxGTK dependency to >= 2.6.0.  Reenable "BuildRequires:" as
+	  the issue with building the package on Debian is no longer
+	  relevant.  2.6.0 may not actually be required for Survex 1.0.x, but
+	  we've not tested with 2.4 in ages, and it's unlikely to still be in
+	  use.
+
 Wed Sep 21 00:11:57 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
