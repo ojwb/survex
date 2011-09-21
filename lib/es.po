@@ -198,12 +198,12 @@ msgstr "Reentrar en un nivel de prefijo existente yo no se usa"
 msgid "Originally entered here"
 msgstr "Originalmente entrado aqui"
 
-#: ../src/commands.c:1439
+#: ../src/commands.c:1442
 #, c-format
 msgid "Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'"
 msgstr "Encontrado `%s', esperando `EQUATES', `EXPORTS', o `PLUMBS'"
 
-#: ../src/commands.c:1445
+#: ../src/commands.c:1448
 #, c-format
 msgid "Found `%s', expecting `ON' or `OFF'"
 msgstr "Encontrado `%s', esperando `ON' o `OFF'"
@@ -285,14 +285,14 @@ msgstr "La topografia no está completamente conectada a estaciones fijas"
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Estación ya fijada o igualada a un punto fijado"
 
-#: ../src/cavern.c:277
+#: ../src/cavern.c:278
 #: ../src/filename.c:55
 #: ../src/img.c:179
 #, c-format
 msgid "Failed to open output file `%s'"
 msgstr "No se pudo abrir el archivo de salida `%s'"
 
-#: ../src/commands.c:1364
+#: ../src/commands.c:1367
 msgid "Standard deviation must be positive"
 msgstr "La desviación estándard tiene que ser positiva"
 
@@ -346,7 +346,7 @@ msgstr "Más de un comando FIX sin coordenadas"
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:1621
+#: ../src/commands.c:1627
 msgid "*EXPORT must immediately follow `*BEGIN <SURVEY>'"
 msgstr "*EXPORT debe seguir inmediatamente a *BEGIN <TOPOGRAFÍA>'"
 
@@ -475,12 +475,12 @@ msgstr "Resolviendo una ecuación"
 msgid "Negative adjusted tape reading"
 msgstr "Distancia ajustada negativa"
 
-#: ../src/commands.c:1539
-#: ../src/commands.c:1559
+#: ../src/commands.c:1545
+#: ../src/commands.c:1565
 msgid "Date is in the future!"
 msgstr "La fecha es en el futuro!"
 
-#: ../src/commands.c:1563
+#: ../src/commands.c:1569
 msgid "End of date range is before the start"
 msgstr "La fecha final es anterior a la incial"
 
@@ -518,8 +518,12 @@ msgid "Invalid day of the month"
 msgstr "El dia del mes es inválido"
 
 #, c-format
-msgid "Error in format of font file `%s'"
-msgstr "Error en el formato del archivo de fuentes `%s'"
+msgid "3d file format versions %d to %d supported"
+msgstr ""
+
+#, c-format
+#~ msgid "Error in format of font file `%s'"
+#~ msgstr "Error en el formato del archivo de fuentes `%s'"
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"
@@ -545,6 +549,11 @@ msgstr "Instrucción ilegal"
 #, c-format
 msgid "Couldn't open file `%s'"
 msgstr "No se pudo abrir el archivo `%s'"
+
+#: ../src/printwx.cc:335
+#, c-format
+msgid "Couldn't write file `%s'"
+msgstr ""
 
 #: ../src/message.c:227
 msgid "Bad memory access"
@@ -577,22 +586,35 @@ msgstr "Las lecturas de COMPASS y BACKCOMPASS difieren de %s grados"
 msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
 msgstr "Las lecturas de CLINO y BACKCLINO difieren de %s grados"
 
+msgid "do not generate station markers"
+msgstr ""
+
+msgid "do not generate station labels"
+msgstr ""
+
+msgid "do not generate survey legs"
+msgstr ""
+
+msgid "produce an elevation view"
+msgstr ""
+
 #. TRANSLATORS: A computer mouse, not the rodent sort ;)
 #. Actually, mouse is somewhat imprecise as it could refer to a trackerball
 #. or joystick, but mouse is more compact than "pointing device" and usually
 #. correct.
-msgid "No mouse detected"
-msgstr "No se detectó ningún ratón"
+#~ msgid "No mouse detected"
+#~ msgstr "No se detectó ningún ratón"
 
 #. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-msgid "Plan, %05.1f up screen"
-msgstr "Planta, %05.1f arriba la pantalla"
+#~ msgid "Plan, %05.1f up screen"
+#~ msgstr "Planta, %05.1f arriba la pantalla"
 
-msgid "View towards %05.1f"
-msgstr "Vista en dirección %05.1f"
+#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
+#~ msgid "View towards %05.1f"
+#~ msgstr "Vista en dirección %05.1f"
 
-msgid "You need to calibrate your printer - see the manual for details."
-msgstr "Es necesario calibrar la impresora - ver el manual para detalles."
+#~ msgid "You need to calibrate your printer - see the manual for details."
+#~ msgstr "Es necesario calibrar la impresora - ver el manual para detalles."
 
 #: ../src/commands.c:996
 #, c-format
@@ -603,7 +625,8 @@ msgstr "`*data %s %c …' obsoleto - usa `*data %s …' en su lugar"
 msgid "Reading in data - please wait…"
 msgstr "Leyendo datos, espere por favor…"
 
-#. TRANSLATORS: Probably not a .3D file.  caverot autoexec.bat would give this
+#. TRANSLATORS: Perhaps the user tried to load a different type of file as a
+#. Survex .3d file, or the .3d file was corrupted.
 #: ../src/3dtopos.c:154
 #: ../src/3dtopos.c:160
 #: ../src/cad3d.c:865
@@ -650,7 +673,7 @@ msgstr "Error escribiendo en archivo"
 msgid "Couldn't parse .err file"
 msgstr "No se ha podido analizar el archivo de errores .err"
 
-#: ../src/cavern.c:369
+#: ../src/cavern.c:370
 #, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Havia %d alerta(s) y %d error(es) - no se generaron archivos de salida."
@@ -677,13 +700,14 @@ msgstr "Planta"
 #: ../src/gfxcore.cc:713
 #: ../src/printwx.cc:257
 #: ../src/printwx.cc:660
+#: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr "Alzado"
 
 msgid "3d file"
 msgstr "Archivo de imagen 3d"
 
-#: ../src/cavern.c:331
+#: ../src/cavern.c:332
 msgid "Calculating statistics"
 msgstr "Calculando estadísticas"
 
@@ -735,67 +759,78 @@ msgstr "Calculando la red"
 msgid "Found `%s', expecting `F' or `B'"
 msgstr "Encontrado `%s', esperando `F' o `B'"
 
-#: ../src/cavern.c:425
+#: ../src/cavern.c:426
+#, c-format
 msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
 msgstr "Longitud total de las tiradas de topografia = %7.2fm (%7.2fm corregido)"
 
-#: ../src/cavern.c:428
+#: ../src/cavern.c:429
+#, c-format
 msgid "Total plan length of survey legs = %7.2fm"
 msgstr "Longitud total en proyección horizontal = %7.2fm"
 
-#: ../src/cavern.c:431
+#: ../src/cavern.c:432
+#, c-format
 msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "Longitud vertical total de las tiradas de topografia = %7.2fm"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
 #: ../src/cavern.c:457
+#, c-format
 msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Desnivel total = %4.2fm (desde %s en %4.2fm a %s en %4.2fm)"
 
 #. TRANSLATORS: c.f. previous message
 #: ../src/cavern.c:458
+#, c-format
 msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Extensión Norte-Sur = %4.2fm (desde %s en %4.2fm a %s en %4.2fm)"
 
 #. TRANSLATORS: c.f. previous two messages
 #: ../src/cavern.c:459
+#, c-format
 msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Extensión Este-Oeste = %4.2fm (desde %s en %4.2fm a %s en %4.2fm)"
 
-#: ../src/cavern.c:413
+#: ../src/cavern.c:414
 msgid "There is 1 loop."
 msgstr "Hay 1 bucle."
 
-#: ../src/cavern.c:415
+#: ../src/cavern.c:416
 #, c-format
 msgid "There are %ld loops."
 msgstr "Hay %ld bucles."
 
-#: ../src/cavern.c:353
+#: ../src/cavern.c:354
+#, c-format
 msgid "CPU time used %5.2fs"
 msgstr "Tiempo de CPU utilizado %5.2fs"
 
-#: ../src/cavern.c:356
+#: ../src/cavern.c:357
+#, c-format
 msgid "Time used %5.2fs"
 msgstr "Tiempo utilizado %5.2fs"
 
-#: ../src/cavern.c:358
+#: ../src/cavern.c:359
 msgid "Time used unavailable"
 msgstr "Tiempo utilizado no disponible"
 
-#: ../src/cavern.c:361
+#: ../src/cavern.c:362
+#, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Tiempo utilizado %5.2fs (%5.2fs tiempo CPU)"
 
-#: ../src/cavern.c:365
+#: ../src/cavern.c:366
 msgid "Done."
 msgstr "Hecho."
 
 #: ../src/netskel.c:717
+#, c-format
 msgid "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
 msgstr "Longitud original%7.2fm (%3d tiradas), reducidos %7.2fm (%5.2fm/tirada). "
 
 #: ../src/netskel.c:720
+#, c-format
 msgid "Error%7.2f%%"
 msgstr "Error%7.2f%%"
 
@@ -806,6 +841,34 @@ msgstr "Error%7.2f%%"
 #: ../src/netskel.c:722
 msgid "Error    N/A"
 msgstr "Error    N/A"
+
+#, c-format
+msgid "generate grid (default %sm)"
+msgstr ""
+
+#, c-format
+msgid "station labels text height (default %s)"
+msgstr ""
+
+#, c-format
+msgid "station marker size (default %s)"
+msgstr ""
+
+#, c-format
+msgid "factor to scale down by (default %s)"
+msgstr ""
+
+msgid "produce DXF output"
+msgstr ""
+
+msgid "produce Sketch output"
+msgstr ""
+
+msgid "produce Compass PLT output for Carto"
+msgstr ""
+
+msgid "produce SVG output"
+msgstr ""
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:127
@@ -818,8 +881,8 @@ msgid "output version information and exit"
 msgstr "muestra información de la versión y sale"
 
 #. TRANSLATORS: As in "printer driver"
-msgid "Driver"
-msgstr "Driver"
+#~ msgid "Driver"
+#~ msgstr "Driver"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]...
 #: ../src/cmdline.c:148
@@ -829,50 +892,51 @@ msgstr "OPCIÓN"
 #: ../src/printwx.cc:220
 #: ../src/printwx.cc:672
 #: ../src/printwx.cc:733
+#: ../src/mainfrm.cc:118
 msgid "Scale"
 msgstr "Escala"
 
-msgid "Continue"
-msgstr "Continua"
+#~ msgid "Continue"
+#~ msgstr "Continua"
 
-msgid "Exiting."
-msgstr "Saliendo."
+#~ msgid "Exiting."
+#~ msgstr "Saliendo."
 
 #: ../src/cmdline.c:172
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Prueba `%s --help' para más información.\n"
 
-msgid "Plan or Elevation"
-msgstr "Planta o Alzado"
+#~ msgid "Plan or Elevation"
+#~ msgstr "Planta o Alzado"
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
-msgid "Bearing up page (degrees): "
-msgstr "Azimut de la pagina arriba (grados): "
+#~ msgid "Bearing up page (degrees): "
+#~ msgstr "Azimut de la pagina arriba (grados): "
 
-msgid "View towards: "
-msgstr "Vista hacia: "
+#~ msgid "View towards: "
+#~ msgstr "Vista hacia: "
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
-msgid "Tilt (degrees): "
-msgstr "Inclinación (grados): "
+#~ msgid "Tilt (degrees): "
+#~ msgstr "Inclinación (grados): "
 
 #, c-format
-msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
-msgstr "Por favor, entrar la escala del mapa = X:Y (por defecto 1:%d)\n: "
+#~ msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
+#~ msgstr "Por favor, entrar la escala del mapa = X:Y (por defecto 1:%d)\n: "
 
-msgid "Using scale %.0f:%.0f"
-msgstr "Utilizando la escala %.0f:%.0f"
+#~ msgid "Using scale %.0f:%.0f"
+#~ msgstr "Utilizando la escala %.0f:%.0f"
 
-msgid "Print which pages?\n(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)\n: "
-msgstr "Páginas a imprimir:\n(RETURN para todas; 'n' para uma, 'm-n', 'm-', '-n' para un intervalo)\n: "
+#~ msgid "Print which pages?\n(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)\n: "
+#~ msgstr "Páginas a imprimir:\n(RETURN para todas; 'n' para uma, 'm-n', 'm-', '-n' para un intervalo)\n: "
 
 #. TRANSLATORS: e.g. "Printing to `somefile.ps'..." / "Printing to `Laserjet4 on amachine...'
 #, c-format
-msgid "Printing to `%s'…"
-msgstr "Imprimiendo en `%s'…"
+#~ msgid "Printing to `%s'…"
+#~ msgstr "Imprimiendo en `%s'…"
 
 #: ../src/avenprcore.cc:262
 #, c-format
@@ -898,26 +962,26 @@ msgid "View"
 msgstr "Vista"
 
 #, c-format
-msgid "This will need %d pages (%dx%d)."
-msgstr "Serán necesarias %d páginas (%dx%d)."
+#~ msgid "This will need %d pages (%dx%d)."
+#~ msgstr "Serán necesarias %d páginas (%dx%d)."
 
-msgid "This will need 1 page."
-msgstr "Será necesaria 1 página."
+#~ msgid "This will need 1 page."
+#~ msgstr "Será necesaria 1 página."
 
-#: ../src/cavern.c:399
+#: ../src/cavern.c:400
 msgid "Survey contains 1 survey station,"
 msgstr "La topografia contiene 1 estación,"
 
-#: ../src/cavern.c:401
+#: ../src/cavern.c:402
 #, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "La topografia contiene %ld estaciones,"
 
-#: ../src/cavern.c:405
+#: ../src/cavern.c:406
 msgid " joined by 1 leg."
 msgstr " unidas por 1 tirada."
 
-#: ../src/cavern.c:407
+#: ../src/cavern.c:408
 #, c-format
 msgid " joined by %ld legs."
 msgstr " unidas por %ld tiradas."
@@ -935,34 +999,39 @@ msgstr "nodos"
 #. TRANSLATORS: connected component in the graph theory sense
 #. It means there are %ld bits of survey with no connections between them
 #. This message is only used if there are more than 1
-#: ../src/cavern.c:421
+#: ../src/cavern.c:422
 #, c-format
 msgid "Survey has %ld connected components."
 msgstr "La topografia contiene %ld componentes conectados."
 
 #, c-format
-msgid "Bad list of pages to print `%s'"
-msgstr "Lista de páginas a imprimir errónea: `%s'"
+#~ msgid "Bad list of pages to print `%s'"
+#~ msgstr "Lista de páginas a imprimir errónea: `%s'"
 
 #. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-msgid "yes"
-msgstr "si"
+#~ msgid "yes"
+#~ msgstr "si"
 
 #. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-msgid "no"
-msgstr "no"
+#~ msgid "no"
+#~ msgstr "no"
 
 #. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-msgid "quit"
-msgstr "abortar"
+#~ msgid "quit"
+#~ msgstr "abortar"
 
 #. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
-msgid "plan"
-msgstr "planta"
+#~ msgid "plan"
+#~ msgstr "planta"
 
 #. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
-msgid "elevation"
-msgstr "alzado"
+#~ msgid "elevation"
+#~ msgstr "alzado"
+
+#. TRANSLATORS: Label for button in aven's cavern log window which causes the
+#. survey data to be reprocessed.
+msgid "Reprocess"
+msgstr ""
 
 #: ../src/cmdline.c:219
 #: ../src/cmdline.c:238
@@ -1017,6 +1086,14 @@ msgstr "Prefijo omitido en END"
 msgid "( Easting, Northing, Altitude )"
 msgstr "( Este X , Norte Y , Altitud Z)"
 
+#. TRANSLATORS: bpp is "Bits Per Pixel"
+msgid "Display Depth: %d bpp"
+msgstr ""
+
+#. TRANSLATORS: appended to previous message if the display is colour
+msgid " (colour)"
+msgstr ""
+
 #: ../src/readval.c:444
 #: ../src/readval.c:454
 #: ../src/readval.c:462
@@ -1026,9 +1103,64 @@ msgstr "Esperando dato, encontrado `%s'"
 
 #. TRANSLATORS: --help output for --survey option
 #. "this" has been added to English translation
-#, fuzzy
 msgid "only load the sub-survey with this prefix"
 msgstr "solo carga la sub-topografía con prefijo"
+
+#. TRANSLATORS: --help output for aven --print option
+msgid "print and exit (requires a 3d file)"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --percentage option
+msgid "display percentage progress"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --output option
+msgid "set location for output files"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --quiet option
+msgid "only show brief summary (-qq for errors only)"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --no-auxiliary-files option
+msgid "do not create .err file"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --warnings-are-errors option
+msgid "turn warnings into errors"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --log option
+msgid "log output to .log file"
+msgstr ""
+
+#. TRANSLATORS: --help output for cavern --3d-version option
+msgid "specify the 3d file format version to output"
+msgstr ""
+
+#. TRANSLATORS: --help output for sorterr --horizontal option
+msgid "sort by horizontal error factor"
+msgstr ""
+
+#. TRANSLATORS: --help output for sorterr --vertical option
+msgid "sort by vertical error factor"
+msgstr ""
+
+#. TRANSLATORS: --help output for sorterr --percentage option
+msgid "sort by percentage error"
+msgstr ""
+
+#. TRANSLATORS: --help output for sorterr --per-leg option
+msgid "sort by error per leg"
+msgstr ""
+
+#. TRANSLATORS: --help output for sorterr --replace option
+msgid "replace .err file with resorted version"
+msgstr ""
+
+#. TRANSLATORS: --help output for dump3d --rewind option
+msgid "rewind file and read it a second time"
+msgstr ""
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
@@ -1051,8 +1183,8 @@ msgstr "No hay datos topográficos en el archivo 3d `%s'"
 msgid "Facing"
 msgstr "Dirección"
 
-msgid "Close"
-msgstr "Cerrar"
+#~ msgid "Close"
+#~ msgstr "Cerrar"
 
 #. TRANSLATORS: for the title of the About box
 #: ../src/aboutdlg.cc:69
@@ -1060,11 +1192,10 @@ msgstr "Cerrar"
 msgid "About %s"
 msgstr "Acerca de %s"
 
-#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
-#. The string "\t" separates the menu text and any accelerator key.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1701
-msgid "Select a 3d file to view"
+#: ../src/mainfrm.cc:1714
+#, fuzzy
+msgid "Select a survey file to view"
 msgstr "Selecciona un archivo 3d para visualizar"
 
 #: ../src/mainfrm.cc:1692
@@ -1075,6 +1206,22 @@ msgstr "Archivos Survex 3d"
 #: ../src/mainfrm.cc:2096
 msgid "All files"
 msgstr "Todos los archivos"
+
+#: ../src/mainfrm.cc:1704
+msgid "All survey files"
+msgstr ""
+
+#: ../src/mainfrm.cc:1706
+msgid "Survex svx files"
+msgstr ""
+
+#: ../src/mainfrm.cc:1708
+msgid "Compass DAT and MAK files"
+msgstr ""
+
+#: ../src/printwx.cc:328
+msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
+msgstr ""
 
 #. TRANSLATORS: in the about box (summarising the purpose of aven)
 #: ../src/aboutdlg.cc:87
@@ -1115,15 +1262,50 @@ msgstr "&Presentación"
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
 msgstr "Este programa es software libre. Puede redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General de GNU según es publicada por la Free Software Foundation, bien de la versió 2 de dicha Licencia o bien (según su elección) de cualquier versión posterior."
 
+#. TRANSLATORS: Part of 3dtopos --help
+msgid "3D_FILE [POS_FILE]"
+msgstr ""
+
+#. TRANSLATORS: Part of diffpos --help
+msgid "FILE1 FILE2 [THRESHOLD]"
+msgstr ""
+
+#. TRANSLATORS: Part of diffpos --help
+msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
+msgstr ""
+
+#. TRANSLATORS: Part of extend --help
+msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
+msgstr ""
+
+#. TRANSLATORS: Part of sorterr --help
+msgid "ERR_FILE [HOW MANY]"
+msgstr ""
+
+#. TRANSLATORS: Part of aven --help
+msgid "[SURVEY_FILE]"
+msgstr ""
+
+#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
+#. The string "\t" separates the menu text and any accelerator key.
 #. TRANSLATORS: "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:715
 msgid "&Open…\tCtrl+O"
 msgstr "&Abrir…\tCtrl+O"
 
-#: ../src/mainfrm.cc:727
-msgid "&Quit\tCtrl+Q"
-msgstr "&Salir\tCtrl+Q"
+#~ msgid "&Quit\tCtrl+Q"
+#~ msgstr "&Salir\tCtrl+Q"
+
+#. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
+#. surveys without date information.
+msgid "Undated"
+msgstr ""
+
+#. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
+#. which aren't part of a loop and so have no error information.
+msgid "Not in loop"
+msgstr ""
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
@@ -1157,11 +1339,15 @@ msgstr "No se pueden calibrar cantidades angulares y de longitud juntas"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
-msgid "Select a terrain file to view"
-msgstr "Selecciona un archivo de terreno para ver"
+#~ msgid "Select a terrain file to view"
+#~ msgstr "Selecciona un archivo de terreno para ver"
 
-msgid "Terrain files"
-msgstr "Archivos de terreno"
+#~ msgid "Terrain files"
+#~ msgstr "Archivos de terreno"
+
+#. TRANSLATORS: %s will be replaced by the application name ("Aven" currently)
+msgid "%s Error Log"
+msgstr ""
 
 #. TRANSLATORS: Used in the "Export" settings dialog
 #: ../src/printwx.cc:298
@@ -1295,6 +1481,7 @@ msgid "One page"
 msgstr "Una página"
 
 #: ../src/printwx.cc:241
+#: ../src/mainfrm.cc:110
 msgid "Bearing"
 msgstr "Azimut"
 
@@ -1377,9 +1564,8 @@ msgstr "&Cancela la linea de medida\tEscape"
 msgid "Colour by E&rror"
 msgstr "Color por E&rror"
 
-#: ../src/mainfrm.cc:829
-msgid "&About…"
-msgstr "&Acerca de…"
+#~ msgid "&About…"
+#~ msgstr "&Acerca de…"
 
 #: ../src/mainfrm.cc:784
 msgid "&Surface Survey Legs\tCtrl+F"
@@ -1517,6 +1703,10 @@ msgstr "&Reproduce"
 msgid "&Export as Movie…"
 msgstr "&Exporta como Animación…"
 
+#: ../src/mainfrm.cc:2182
+msgid "Export Movie"
+msgstr ""
+
 #: ../src/mainfrm.cc:781
 msgid "&Bounding Box\tCtrl+B"
 msgstr "&Bordes del Cuadro\tCtrl+B"
@@ -1576,18 +1766,16 @@ msgstr "La presentación actual ha sido modificada. Abandonar los cambios no gua
 msgid "No matches were found."
 msgstr "Búsqueda infroctuosa."
 
-#. TRANSLATORS: UNUSED
-msgid "Open &Terrain…"
-msgstr "Abrir &Terreno…"
+#~ msgid "Open &Terrain…"
+#~ msgstr "Abrir &Terreno…"
 
-#. TRANSLATORS: UNUSED
-msgid "Solid Su&rface"
-msgstr "Superficie Sóli&da"
+#~ msgid "Solid Su&rface"
+#~ msgstr "Superficie Sóli&da"
 
 #. TRANSLATORS: number of stations found matching search
 #, c-format
-msgid "%d found"
-msgstr "%d encontradas"
+#~ msgid "%d found"
+#~ msgstr "%d encontradas"
 
 #. TRANSLATORS: "Find stations" button label
 #: ../src/mainfrm.cc:894
@@ -1599,10 +1787,14 @@ msgstr "Encuentra"
 msgid "Hide"
 msgstr "Oculta"
 
+#. TRANSLATORS: "Hide stations" button tooltip when stations are found
+#, c-format
+msgid "Hide %d found stations"
+msgstr ""
+
 #. TRANSLATORS: checkbox for regular expression search
-#: ../src/mainfrm.cc:914
-msgid "Regular expression"
-msgstr "Expresión regular"
+#~ msgid "Regular expression"
+#~ msgstr "Expresión regular"
 
 #: ../src/mainfrm.cc:193
 #: ../src/mainfrm.cc:1843
@@ -1684,117 +1876,117 @@ msgid "Passage &Tubes\tCtrl+T"
 msgstr "&Galerias Tubulares\tCtrl+T"
 
 #: ../src/mainfrm.cc:807
-msgid "&Preferences…"
-msgstr "&Preferencias…"
+#~ msgid "&Preferences…"
+#~ msgstr "&Preferencias…"
 
 #: ../src/tubeprefs.cc:37
-msgid "Draw passage walls"
-msgstr "Dibuja las paredes"
+#~ msgid "Draw passage walls"
+#~ msgstr "Dibuja las paredes"
 
 #: ../src/tubeprefs.cc:39
-msgid "Estimate LRUD readings based on heuristics"
-msgstr "Estimación heurística de los datos LRUD"
+#~ msgid "Estimate LRUD readings based on heuristics"
+#~ msgstr "Estimación heurística de los datos LRUD"
 
 #: ../src/stnprefs.cc:62
-msgid "Mark survey stations with crosses"
-msgstr "Marcar las estaciones topográficas con cruces"
+#~ msgid "Mark survey stations with crosses"
+#~ msgstr "Marcar las estaciones topográficas con cruces"
 
 #: ../src/stnprefs.cc:63
-msgid "Highlight stations marked as entrances"
-msgstr "Destacar las estaciones marcadas como entradas"
+#~ msgid "Highlight stations marked as entrances"
+#~ msgstr "Destacar las estaciones marcadas como entradas"
 
 #: ../src/stnprefs.cc:65
-msgid "Highlight stations marked as fixed points"
-msgstr "Destacar las estaciones marcadas como puntos fijos"
+#~ msgid "Highlight stations marked as fixed points"
+#~ msgstr "Destacar las estaciones marcadas como puntos fijos"
 
 #: ../src/stnprefs.cc:66
-msgid "Highlight stations which are exported"
-msgstr "Destacar las estaciones exportadas"
+#~ msgid "Highlight stations which are exported"
+#~ msgstr "Destacar las estaciones exportadas"
 
 #: ../src/stnprefs.cc:67
-msgid "Mark survey stations with their names"
-msgstr "Marcar las estaciones topográficas con sus nombres"
+#~ msgid "Mark survey stations with their names"
+#~ msgstr "Marcar las estaciones topográficas con sus nombres"
 
 #: ../src/stnprefs.cc:69
-msgid "Allow names to overlap on the display (faster)"
-msgstr "Permitir que los nombres se sobrepongan (más rápido)"
+#~ msgid "Allow names to overlap on the display (faster)"
+#~ msgstr "Permitir que los nombres se sobrepongan (más rápido)"
 
 #: ../src/mainfrm.cc:804
 msgid "Full Screen &Mode\tF11"
 msgstr "&Modo Pantalla Completa\tF11"
 
 #: ../src/legprefs.cc:39
-msgid "Display underground survey legs"
-msgstr "Muestra las tiradas subterráneas"
+#~ msgid "Display underground survey legs"
+#~ msgstr "Muestra las tiradas subterráneas"
 
 #: ../src/legprefs.cc:40
-msgid "Display surface survey legs"
-msgstr "Muestra las tiradas de superficie"
+#~ msgid "Display surface survey legs"
+#~ msgstr "Muestra las tiradas de superficie"
 
-msgid "Colour surface surveys by depth"
-msgstr "Colorea las tiradas de superficie según profundidad"
+#~ msgid "Colour surface surveys by depth"
+#~ msgstr "Colorea las tiradas de superficie según profundidad"
 
-msgid "Draw surface legs with dashed lines"
-msgstr "Dibuja las tiradas de superficie con líneas punteadas"
+#~ msgid "Draw surface legs with dashed lines"
+#~ msgstr "Dibuja las tiradas de superficie con líneas punteadas"
 
 #: ../src/gridprefs.cc:36
-msgid "Draw a grid"
-msgstr "Dibuja una cuadrícula"
+#~ msgid "Draw a grid"
+#~ msgstr "Dibuja una cuadrícula"
 
 #: ../src/unitsprefs.cc:44
-msgid "metric units"
-msgstr "unidades en sistema métrico"
+#~ msgid "metric units"
+#~ msgstr "unidades en sistema métrico"
 
 #. TRANSLATORS: Miles, Feet, Inches, etc.  What they call "English units" in
 #. the USA (rather confusingly now that England has largely gone metric!)
 #: ../src/unitsprefs.cc:46
-msgid "imperial units"
-msgstr "unidades en sistema imperial"
+#~ msgid "imperial units"
+#~ msgstr "unidades en sistema imperial"
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #: ../src/unitsprefs.cc:47
-msgid "degrees (°)"
-msgstr "grados (°)"
+#~ msgid "degrees (°)"
+#~ msgstr "grados (°)"
 
 #. TRANSLATORS: Grads are the angular measurement where there are 400 in a
 #. full circle.
 #: ../src/unitsprefs.cc:49
-msgid "grads"
-msgstr "grados centesimales"
+#~ msgid "grads"
+#~ msgstr "grados centesimales"
 
 #: ../src/unitsprefs.cc:53
-msgid "Display measurements in"
-msgstr "Muestra las distancias en"
+#~ msgid "Display measurements in"
+#~ msgstr "Muestra las distancias en"
 
 #: ../src/unitsprefs.cc:61
-msgid "Display angles in"
-msgstr "Muestra los ángulos en"
+#~ msgid "Display angles in"
+#~ msgstr "Muestra los ángulos en"
 
 #. TRANSLATORS: reverses the sense of the mouse controls
 #: ../src/ctlprefs.cc:38
-msgid "Reverse the sense of the controls"
-msgstr "Invierte el sentido de los controles"
+#~ msgid "Reverse the sense of the controls"
+#~ msgstr "Invierte el sentido de los controles"
 
 #: ../src/indicatorprefs.cc:39
-msgid "Display scale bar"
-msgstr "Muestra la escala gráfica"
+#~ msgid "Display scale bar"
+#~ msgstr "Muestra la escala gráfica"
 
 #: ../src/indicatorprefs.cc:40
-msgid "Display depth bar"
-msgstr "Muestra la escala de profundidad"
+#~ msgid "Display depth bar"
+#~ msgstr "Muestra la escala de profundidad"
 
 #: ../src/indicatorprefs.cc:41
-msgid "Display compass"
-msgstr "Muestra la brújula"
+#~ msgid "Display compass"
+#~ msgstr "Muestra la brújula"
 
 #: ../src/indicatorprefs.cc:42
-msgid "Display clinometer"
-msgstr "Muestra el clinómetro"
+#~ msgid "Display clinometer"
+#~ msgstr "Muestra el clinómetro"
 
 #: ../src/winprefs.cc:42
-msgid "Display side panel"
-msgstr "Muestra el panel lateral"
+#~ msgid "Display side panel"
+#~ msgstr "Muestra el panel lateral"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
 #: ../src/mainfrm.cc:1896
@@ -1840,6 +2032,11 @@ msgstr "Configuración de la &página…"
 msgid "&Export as…"
 msgstr "&Exporta como…"
 
+#. TRANSLATORS: Title of file dialog to choose name and type of exported file.
+#: ../src/mainfrm.cc:721
+msgid "Export as:"
+msgstr ""
+
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:171
 msgid "Export"
@@ -1860,18 +2057,15 @@ msgstr "Vista previa de la impressión"
 msgid "Print"
 msgstr "Imprimir"
 
-#: ../src/printwx.cc:293
-#: ../src/printwx.cc:295
+#: ../src/printwx.cc:291
 msgid "&Print…"
 msgstr "&Imprimir…"
 
-#: ../src/printwx.cc:291
-msgid "Pre&view"
-msgstr "&Previsualiza"
+#~ msgid "Pre&view"
+#~ msgstr "&Previsualiza"
 
-#: ../src/printwx.cc:287
-msgid "&Cancel"
-msgstr "&Anula"
+#~ msgid "&Cancel"
+#~ msgstr "&Anula"
 
 #: ../src/printwx.cc:267
 msgid "Sur&face Survey Legs"
@@ -1879,8 +2073,24 @@ msgstr "Tiradas de topografia de super&ficie"
 
 #. TRANSLATORS: "%s" is replaced by the invalid expression
 #, c-format
-msgid "Invalid regular expression: %s"
-msgstr "Expresión incorrecta: %s"
+#~ msgid "Invalid regular expression: %s"
+#~ msgstr "Expresión incorrecta: %s"
+
+#. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
+msgid "Edit Waypoint"
+msgstr ""
+
+#. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
+msgid " (unused in perspective view)"
+msgstr ""
+
+#. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
+msgid "Time: "
+msgstr ""
+
+#. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
+msgid " secs (0 = auto; *6 = 6 times auto)"
+msgstr ""
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
