@@ -1,3 +1,8 @@
+Wed Sep 21 00:07:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/Makefile.am: Factor out DOCBOOK_TO_MAN and SGMLTOOLS to reduce
+	  differences with trunk.
+
 Wed Sep 21 00:03:36 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Backport change from 1.2.0:
