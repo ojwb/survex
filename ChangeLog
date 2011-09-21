@@ -1,3 +1,7 @@
+Wed Sep 21 13:49:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Update en_US translation.
+
 Wed Sep 21 13:47:36 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/cad3d.c: Tweak wording of a message.  Remove
