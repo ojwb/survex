@@ -1,3 +1,10 @@
+Wed Sep 21 13:47:36 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/cad3d.c: Tweak wording of a message.  Remove
+	  "unused" messages which have actually just been adapted slightly,
+	  add back a removed unused message, and mark an unused message as
+	  unused.
+`
 Wed Sep 21 13:20:58 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/mainfrm.cc: Make more messages translatable.

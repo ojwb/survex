@@ -524,6 +524,10 @@ msgstr "87"
 msgid "3d file format versions %d to %d supported"
 msgstr "88"
 
+#, c-format
+#~ msgid "Error in format of font file `%s'"
+#~ msgstr ""
+
 #: ../src/readval.c:116
 msgid "Expecting survey name"
 msgstr "89"
@@ -591,7 +595,7 @@ msgstr "100"
 msgid "do not generate station labels"
 msgstr "101"
 
-msgid "do not generate the survey legs"
+msgid "do not generate survey legs"
 msgstr "102"
 
 msgid "produce an elevation view"
@@ -868,12 +872,6 @@ msgstr "159"
 
 msgid "produce SVG output"
 msgstr "160"
-
-#~ msgid "North-South range = %4.2fm (from "
-#~ msgstr ""
-
-#~ msgid "East-West range = %4.2fm (from "
-#~ msgstr ""
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:127
@@ -1796,8 +1794,8 @@ msgid "Hide %d found stations"
 msgstr "334"
 
 #. TRANSLATORS: checkbox for regular expression search
-msgid "Regular expression"
-msgstr ""
+#~ msgid "Regular expression"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:193
 #: ../src/mainfrm.cc:1843

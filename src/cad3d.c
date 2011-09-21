@@ -623,7 +623,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(0),   /*only load the sub-survey with this prefix*/199, 0},
 	{HLP_ENCODELONG(1),   /*do not generate station markers*/100, 0},
 	{HLP_ENCODELONG(2),   /*do not generate station labels*/101, 0},
-	{HLP_ENCODELONG(3),   /*do not generate the survey legs*/102, 0},
+	{HLP_ENCODELONG(3),   /*do not generate survey legs*/102, 0},
 	{HLP_ENCODELONG(4),   /*generate grid (default %sm)*/148, STRING(GRID_SPACING)},
 	{HLP_ENCODELONG(5),   /*station labels text height (default %s)*/149, STRING(TEXT_HEIGHT)},
 	{HLP_ENCODELONG(6),   /*station marker size (default %s)*/152, STRING(MARKER_SIZE)},
