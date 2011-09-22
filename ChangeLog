@@ -1,3 +1,7 @@
+Thu Sep 22 07:12:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po: Improvements to "TRANSLATORS" comments.
+
 Thu Sep 22 02:47:33 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Add check that numeric codes haven't escaped into
