@@ -1,3 +1,9 @@
+Thu Sep 22 13:51:55 GMT 2011  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Man pages are no longer installed in /usr/man so
+	  no need to move them from there.  Package aven.svg.  Package
+	  files for vim support.  (Fixes from James Begley)
+
 Thu Sep 22 12:45:58 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/: Updates from launchpad.
