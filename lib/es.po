@@ -1306,7 +1306,7 @@ msgstr "&Abrir…\tCtrl+O"
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
 msgid "Undated"
-msgstr ""
+msgstr "Sin fecha"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren't part of a loop and so have no error information.
@@ -2084,7 +2084,7 @@ msgstr "Tiradas de topografia de super&ficie"
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
 msgid "Edit Waypoint"
-msgstr ""
+msgstr "Editar waypoint"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
 msgid " (unused in perspective view)"
@@ -2092,7 +2092,7 @@ msgstr ""
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
 msgid "Time: "
-msgstr ""
+msgstr "Tiempo: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
 msgid " secs (0 = auto; *6 = 6 times auto)"
