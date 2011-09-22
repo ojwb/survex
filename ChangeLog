@@ -1,3 +1,8 @@
+Thu Sep 22 23:56:06 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Add missing newline to OpenGL info when GLX info isn't
+	  reported.
+
 Thu Sep 22 13:51:55 GMT 2011  Olly Betts <olly@survex.com>
 
 	* survex.spec.in: Man pages are no longer installed in /usr/man so
