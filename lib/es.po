@@ -46,6 +46,7 @@ msgstr "En el archivo incluido desde"
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix ya no se usa - utiliza *begin y *end en su lugar"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:121
 #, c-format
 msgid "Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)"
@@ -83,11 +84,13 @@ msgstr "Error detectado en el programa! Por favor comunícalo a los autores"
 msgid "Unknown command `%s'"
 msgstr "Comando desconocido `%s'"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:407
 #, c-format
 msgid "Station `%s' equated to itself"
 msgstr "Estación `%s' igualada a si misma"
 
+#. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between survey stations.
 #: ../src/datain.c:970
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "La lectura de la brújula no se puede omitir excepto en tiradas a plomo"
@@ -397,7 +400,9 @@ msgstr "Faltan campos para el estilo de datos `%s'"
 msgid "Data style `%s' unknown"
 msgstr "Estilo de datos `%s' desconocido"
 
-#. TRANSLATORS: Exporting a station twice give error 66:
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
+#.
+#. Exporting a station twice give error 66:
 #. *begin example
 #. *export 1
 #. *export 1
@@ -423,21 +428,24 @@ msgstr "FLAG `%s' desconocido"
 msgid "Missing \""
 msgstr "Falta \""
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:105
 #, c-format
 msgid "Station `%s' referred to just once, with an explicit prefix - typo?"
 msgstr "La estacioón `%s' solo ha sido usada una vez, con un prefijo explícito - error tipográfico?"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netartic.c:379
 msgid "The following survey stations are not attached to a fixed point:"
 msgstr "Las siguientes estaciones no están conectadas a un punto fijo:"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netskel.c:128
 #, c-format
 msgid "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
 msgstr "La topografia no tiene puntos fijados. De todos modos he fijado %s en (0,0,0)"
 
-#. TRANSLATORS: fixed station that is not part of any survey
+#. TRANSLATORS: fixed survey station that is not part of any survey
 #: ../src/netskel.c:896
 #, c-format
 msgid "Unused fixed point `%s'"
@@ -458,8 +466,6 @@ msgstr "Resolviendo un sistema de %d ecuaciones"
 msgid "Solving to find %c coordinates"
 msgstr "Resolviendo para encontrar coordenadas %c"
 
-#. TRANSLATORS: de has the reverse singular/plural arrangement :)
-#. (i.e., singular has the final -n, plural doesn't)
 #: ../src/commands.c:1090
 #, c-format
 msgid "Reading `%s' duplicates previous reading(s)"
@@ -704,8 +710,8 @@ msgstr "Planta"
 msgid "Elevation"
 msgstr "Alzado"
 
-msgid "3d file"
-msgstr "Archivo de imagen 3d"
+#~ msgid "3d file"
+#~ msgstr ""
 
 #: ../src/cavern.c:332
 msgid "Calculating statistics"
@@ -1777,12 +1783,12 @@ msgstr "Búsqueda infroctuosa."
 #~ msgid "%d found"
 #~ msgstr "%d encontradas"
 
-#. TRANSLATORS: "Find stations" button label
+#. TRANSLATORS: "Find stations" button tooltip
 #: ../src/mainfrm.cc:894
 msgid "Find"
 msgstr "Encuentra"
 
-#. TRANSLATORS: "Hide stations" button label
+#. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:896
 msgid "Hide"
 msgstr "Oculta"

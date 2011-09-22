@@ -46,6 +46,7 @@ msgstr "In file included from"
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix is deprecated - use *begin and *end instead"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:121
 #, c-format
 msgid "Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)"
@@ -83,11 +84,13 @@ msgstr "Bug in program detected! Please report this to the authors"
 msgid "Unknown command `%s'"
 msgstr "Unknown command `%s'"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:407
 #, c-format
 msgid "Station `%s' equated to itself"
 msgstr "Station `%s' equated to itself"
 
+#. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between survey stations.
 #: ../src/datain.c:970
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Compass reading may not be omitted except on plumbed shots"
@@ -397,7 +400,9 @@ msgstr "Too few readings for data style `%s'"
 msgid "Data style `%s' unknown"
 msgstr "Data style `%s' unknown"
 
-#. TRANSLATORS: Exporting a station twice give error 66:
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
+#.
+#. Exporting a station twice give error 66:
 #. *begin example
 #. *export 1
 #. *export 1
@@ -423,21 +428,24 @@ msgstr "FLAG `%s' unknown"
 msgid "Missing \""
 msgstr "Missing \""
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:105
 #, c-format
 msgid "Station `%s' referred to just once, with an explicit prefix - typo?"
 msgstr "Station `%s' referred to just once, with an explicit prefix - typo?"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netartic.c:379
 msgid "The following survey stations are not attached to a fixed point:"
 msgstr "The following survey stations are not attached to a fixed point:"
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netskel.c:128
 #, c-format
 msgid "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
 msgstr "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
 
-#. TRANSLATORS: fixed station that is not part of any survey
+#. TRANSLATORS: fixed survey station that is not part of any survey
 #: ../src/netskel.c:896
 #, c-format
 msgid "Unused fixed point `%s'"
@@ -458,8 +466,6 @@ msgstr "Solving %d simultaneous equations"
 msgid "Solving to find %c coordinates"
 msgstr "Solving to find %c coordinates"
 
-#. TRANSLATORS: de has the reverse singular/plural arrangement :)
-#. (i.e., singular has the final -n, plural doesn't)
 #: ../src/commands.c:1090
 #, c-format
 msgid "Reading `%s' duplicates previous reading(s)"
@@ -522,8 +528,8 @@ msgid "3d file format versions %d to %d supported"
 msgstr "3d file format versions %d to %d supported"
 
 #, c-format
-msgid "Error in format of font file `%s'"
-msgstr "Error in format of font file `%s'"
+#~ msgid "Error in format of font file `%s'"
+#~ msgstr ""
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"
