@@ -92,7 +92,6 @@ fntTexFont::load(const char *fname)
     int tex_width   = fnt_readInt(fd);
     int tex_height  = fnt_readInt(fd);
     fnt_size = fnt_readInt(fd);
-    fnt_size += fnt_size >> 2;
     /* int unknown = */ fnt_readInt(fd);
     int num_glyphs  = fnt_readInt(fd);
     list_base = glGenLists(FNT_MAXCHAR - 32) - 32;
