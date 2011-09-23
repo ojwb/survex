@@ -1866,6 +1866,22 @@ msgstr "&Metric"
 msgid "&Degrees"
 msgstr "&Degrees"
 
+#: ../src/guicontrol.cc:3020
+msgid "&Hide Compass"
+msgstr "&Hide Compass"
+
+#: ../src/guicontrol.cc:3030
+msgid "&Hide Clino"
+msgstr "&Hide Clino"
+
+#: ../src/guicontrol.cc:3040
+msgid "&Hide scale bar"
+msgstr "&Hide scale bar"
+
+#: ../src/guicontrol.cc:3050
+msgid "&Hide colour key"
+msgstr "&Hide color key"
+
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
 #: ../src/mainfrm.cc:1892

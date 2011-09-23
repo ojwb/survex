@@ -1,3 +1,7 @@
+Fri Sep 23 12:44:18 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Update for new messages.
+
 Fri Sep 23 12:41:16 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Expand context menu for compass to include "View
