@@ -1001,7 +1001,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     Double depthmax = -DBL_MAX;
 
     m_DateMin = INT_MAX;
-    int datemax = 0;
+    int datemax = -1;
     complete_dateinfo = true;
 
     traverses.clear();

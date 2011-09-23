@@ -77,7 +77,7 @@ static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 static const int DEPTH_BAR_OFFSET_X = 16;
 static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
 static const int DEPTH_BAR_BLOCK_WIDTH = 20;
-static const int DEPTH_BAR_BLOCK_HEIGHT = 15;
+static const int DEPTH_BAR_BLOCK_HEIGHT = 16;
 static const int DEPTH_BAR_MARGIN = 6;
 static const int DEPTH_BAR_OFFSET_Y = 16 + DEPTH_BAR_MARGIN;
 static const int TICK_LENGTH = 4;
@@ -224,7 +224,7 @@ void GfxCore::Initialise(bool same_file)
 	    }
 	    break;
 	case COLOUR_BY_DATE:
-	    if (!HasRangeOfDates()) {
+	    if (m_Parent->GetDateMin() < 0) {
 		SetColourBy(COLOUR_BY_NONE);
 	    }
 	    break;
@@ -817,7 +817,7 @@ void GfxCore::DrawDepthbar()
 
     wxString* strs = new wxString[GetNumDepthBands()];
     int band;
-    for (band = 0; band < GetNumDepthBands(); band++) {
+    for (band = 0; band < GetNumDepthBands(); ++band) {
 	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
 		   m_Parent->GetDepthExtent() * band / (GetNumDepthBands() - 1);
 	strs[band] = FormatLength(z, false);
@@ -838,7 +838,7 @@ void GfxCore::DrawDepthbar()
 		  total_block_height + DEPTH_BAR_MARGIN*4);
 
     int y = top;
-    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+    for (band = 0; band < GetNumDepthBands() - 1; ++band) {
 	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
 			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
@@ -848,7 +848,7 @@ void GfxCore::DrawDepthbar()
     left += DEPTH_BAR_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
-    for (band = 0; band < GetNumDepthBands(); band++) {
+    for (band = 0; band < GetNumDepthBands(); ++band) {
 	DrawIndicatorText(left, y, strs[band]);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -858,9 +858,17 @@ void GfxCore::DrawDepthbar()
 
 void GfxCore::DrawDatebar()
 {
-    int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    int total_block_height;
+    int num_bands;
+    if (m_Parent->GetDateExtent() == 0) {
+	num_bands = 1;
+	total_block_height = DEPTH_BAR_BLOCK_HEIGHT;
+    } else {
+	num_bands = GetNumDepthBands();
+	total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (num_bands - 1);
+    }
     if (!m_Parent->HasCompleteDateInfo())
-	total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+	total_block_height += DEPTH_BAR_BLOCK_HEIGHT * 2;
     const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
 
     int size = 0;
@@ -868,14 +876,15 @@ void GfxCore::DrawDatebar()
 	GetTextExtent(wmsg(/*Undated*/221), &size, NULL);
     }
 
-    wxString* strs = new wxString[GetNumDepthBands()];
+    wxString* strs = new wxString[num_bands];
     int band;
-    for (band = 0; band < GetNumDepthBands(); band++) {
+    for (band = 0; band < num_bands; ++band) {
 	int y, m, d;
 	int days = m_Parent->GetDateMin();
-	days += m_Parent->GetDateExtent() * band / (GetNumDepthBands() - 1);
+	if (band)
+	    days += m_Parent->GetDateExtent() * band / (num_bands - 1);
 	ymd_from_days_since_1900(days, &y, &m, &d);
-	strs[band] = wxString::Format(wxT("%04d-%02d-%02d"), y, m, d);
+	strs[band].Printf(wxT("%04d-%02d-%02d"), y, m, d);
 
 	int x;
 	GetTextExtent(strs[band], &x, NULL);
@@ -896,14 +905,19 @@ void GfxCore::DrawDatebar()
 
     if (!m_Parent->HasCompleteDateInfo()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-		DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	y += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	y += DEPTH_BAR_BLOCK_HEIGHT * 2;
     }
 
-    for (band = 0; band < GetNumDepthBands() - 1; band++) {
-	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+    if (num_bands == 1) {
+	DrawShadedRectangle(GetPen(0), GetPen(0), left, y,
 			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+    } else {
+	for (band = 0; band < num_bands - 1; ++band) {
+	    DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
+				DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+	    y += DEPTH_BAR_BLOCK_HEIGHT;
+	}
     }
 
     y = top - GetFontSize() / 2;
@@ -912,14 +926,19 @@ void GfxCore::DrawDatebar()
     SetColour(TEXT_COLOUR);
 
     if (!m_Parent->HasCompleteDateInfo()) {
-	y += DEPTH_BAR_MARGIN;
+	y += DEPTH_BAR_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, wmsg(/*Undated*/221));
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+	y += DEPTH_BAR_BLOCK_HEIGHT * 2 - DEPTH_BAR_BLOCK_HEIGHT / 2;
     }
 
-    for (band = 0; band < GetNumDepthBands(); band++) {
-	DrawIndicatorText(left, y, strs[band]);
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+    if (num_bands == 1) {
+	y += DEPTH_BAR_BLOCK_HEIGHT / 2;
+	DrawIndicatorText(left, y, strs[0]);
+    } else {
+	for (band = 0; band < num_bands; ++band) {
+	    DrawIndicatorText(left, y, strs[band]);
+	    y += DEPTH_BAR_BLOCK_HEIGHT;
+	}
     }
 
     delete[] strs;
@@ -929,7 +948,7 @@ void GfxCore::DrawErrorbar()
 {
     int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
     // Always show the "Not in loop" legend for now (FIXME).
-    total_block_height += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+    total_block_height += DEPTH_BAR_BLOCK_HEIGHT * 2;
     const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
 
     int size = 0;
@@ -937,7 +956,7 @@ void GfxCore::DrawErrorbar()
 
     wxString* strs = new wxString[GetNumDepthBands()];
     int band;
-    for (band = 0; band < GetNumDepthBands(); band++) {
+    for (band = 0; band < GetNumDepthBands(); ++band) {
 	double E = MAX_ERROR * band / (GetNumDepthBands() - 1);
 	strs[band].Printf(wxT("%.2f"), E);
 
@@ -960,9 +979,9 @@ void GfxCore::DrawErrorbar()
 
     DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
 	    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-    y += DEPTH_BAR_BLOCK_HEIGHT + DEPTH_BAR_MARGIN;
+    y += DEPTH_BAR_BLOCK_HEIGHT * 2;
 
-    for (band = 0; band < GetNumDepthBands() - 1; band++) {
+    for (band = 0; band < GetNumDepthBands() - 1; ++band) {
 	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
 			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
@@ -973,11 +992,11 @@ void GfxCore::DrawErrorbar()
 
     SetColour(TEXT_COLOUR);
 
-    y += DEPTH_BAR_MARGIN;
+    y += DEPTH_BAR_BLOCK_HEIGHT / 2;
     DrawIndicatorText(left, y, wmsg(/*Not in loop*/290));
-    y += DEPTH_BAR_BLOCK_HEIGHT;
+    y += DEPTH_BAR_BLOCK_HEIGHT * 2 - DEPTH_BAR_BLOCK_HEIGHT / 2;
 
-    for (band = 0; band < GetNumDepthBands(); band++) {
+    for (band = 0; band < GetNumDepthBands(); ++band) {
 	DrawIndicatorText(left, y, strs[band]);
 	y += DEPTH_BAR_BLOCK_HEIGHT;
     }
@@ -1912,7 +1931,9 @@ bool GfxCore::HasDepth() const
 
 bool GfxCore::HasRangeOfDates() const
 {
-    return m_Parent->GetDateExtent() > 0;
+    // Either it has several dates, or else it has a single date and undated.
+    return m_Parent->GetDateExtent() > 0 ||
+	   (!m_Parent->HasCompleteDateInfo() && m_Parent->GetDateMin() >= 0);
 }
 
 bool GfxCore::HasErrorInformation() const
@@ -2166,7 +2187,7 @@ void GfxCore::DrawIndicators()
     if (m_Depthbar) {
        if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
 	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
-       } else if (m_ColourBy == COLOUR_BY_DATE && HasRangeOfDates()) {
+       } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateMin() >= 0) {
 	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
        } else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
 	   DrawList2D(LIST_ERRORBAR, m_XSize, m_YSize, 0);
@@ -2398,14 +2419,19 @@ void GfxCore::SetColourFromDate(int date, Double factor)
     // Set the drawing colour based on a date.
 
     if (date == -1) {
+	// Undated.
 	SetColour(GetSurfacePen(), factor);
 	return;
     }
 
-    int date_ext = m_Parent->GetDateExtent();
-    assert(date_ext > 0);
     int date_offset = date - m_Parent->GetDateMin();
+    if (date_offset == 0) {
+	// Earliest date - handle as a special case for the single date case.
+	SetColour(GetPen(0), factor);
+	return;
+    }
 
+    int date_ext = m_Parent->GetDateExtent();
     Double how_far = (Double)date_offset / date_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
