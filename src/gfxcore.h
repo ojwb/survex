@@ -454,6 +454,8 @@ public:
     void SetCursor(GfxCore::cursor new_cursor);
     bool MeasuringLineActive() const;
 
+    bool HandleRClick(wxPoint point);
+
 private:
     DECLARE_EVENT_TABLE()
 };

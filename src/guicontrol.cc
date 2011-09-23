@@ -400,6 +400,9 @@ void GUIControl::OnMButtonUp(wxMouseEvent&)
 void GUIControl::OnRButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
+	if (m_View->HandleRClick(event.GetPosition()))
+	    return;
+
 	m_DragStart = event.GetPosition();
 
 	dragging = RIGHT_DRAG;

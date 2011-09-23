@@ -3004,3 +3004,49 @@ bool GfxCore::MeasuringLineActive() const
     if (Animating()) return false;
     return (m_here.IsValid() && !m_here_is_temporary) || m_there.IsValid();
 }
+
+bool GfxCore::HandleRClick(wxPoint point)
+{
+    if (PointWithinCompass(point)) {
+	// Pop up menu.
+	wxMenu menu;
+	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/344));
+	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	PopupMenu(&menu);
+	return true;
+    }
+
+    if (PointWithinClino(point)) {
+	// Pop up menu.
+	wxMenu menu;
+	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));
+	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	PopupMenu(&menu);
+	return true;
+    }
+
+    if (PointWithinScaleBar(point)) {
+	// Pop up menu.
+	wxMenu menu;
+	menu.AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Hide scale bar*/385));
+	menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	PopupMenu(&menu);
+	return true;
+    }
+
+#if 0 // FIXME: Don't yet have PointWithinColourKey() method.
+    if (PointWithinColourKey(point)) {
+	// Pop up menu.
+	wxMenu menu;
+	menu.AppendCheckItem(menu_IND_DEPTH_BAR, wmsg(/*&Hide colour key*/386));
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::OnToggleMetric, NULL, m_Parent);
+	PopupMenu(&menu);
+	return true;
+    }
+#endif
+
+    return false;
+}

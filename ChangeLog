@@ -1,3 +1,8 @@
+Fri Sep 23 12:16:36 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/gfxcore.cc,src/gfxcore.h,src/guicontrol.cc: Add
+	  pop-up menus for right clicks on scale bar, compass, and clino.
+
 Fri Sep 23 11:17:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Use HasRangeOfDates() consistently.
