@@ -480,7 +480,7 @@ void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnColourByDateUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasRangeOfDates());
+    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasDateInformation());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_DATE);
 }
 

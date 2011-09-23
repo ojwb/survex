@@ -344,8 +344,8 @@ public:
     bool IsRotating() const { return m_Rotating; }
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
     bool HasDepth() const;
-    bool HasRangeOfDates() const;
     bool HasErrorInformation() const;
+    bool HasDateInformation() const;
 
     double GetScale() const { return m_Scale; }
     void SetScale(Double scale);

@@ -224,7 +224,7 @@ void GfxCore::Initialise(bool same_file)
 	    }
 	    break;
 	case COLOUR_BY_DATE:
-	    if (m_Parent->GetDateMin() < 0) {
+	    if (!HasDateInformation()) {
 		SetColourBy(COLOUR_BY_NONE);
 	    }
 	    break;
@@ -1929,16 +1929,14 @@ bool GfxCore::HasDepth() const
     return m_Parent->GetDepthExtent() == 0.0;
 }
 
-bool GfxCore::HasRangeOfDates() const
-{
-    // Either it has several dates, or else it has a single date and undated.
-    return m_Parent->GetDateExtent() > 0 ||
-	   (!m_Parent->HasCompleteDateInfo() && m_Parent->GetDateMin() >= 0);
-}
-
 bool GfxCore::HasErrorInformation() const
 {
     return m_Parent->HasErrorInformation();
+}
+
+bool GfxCore::HasDateInformation() const
+{
+    return m_Parent->GetDateMin() >= 0;
 }
 
 bool GfxCore::ShowingPlan() const
@@ -2187,7 +2185,7 @@ void GfxCore::DrawIndicators()
     if (m_Depthbar) {
        if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
 	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
-       } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateMin() >= 0) {
+       } else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
 	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
        } else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
 	   DrawList2D(LIST_ERRORBAR, m_XSize, m_YSize, 0);
