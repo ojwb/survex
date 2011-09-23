@@ -1,3 +1,9 @@
+Fri Sep 23 12:41:16 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Expand context menu for compass to include "View
+	  North", etc;  Similarly add "Plan" and "Elevation" to clino context
+	  menu.
+
 Fri Sep 23 12:25:10 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Use += to make code clearer.

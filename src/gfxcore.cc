@@ -3010,6 +3010,11 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinCompass(point)) {
 	// Pop up menu.
 	wxMenu menu;
+	menu.Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North*/240));
+	menu.Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East*/241));
+	menu.Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
+	menu.Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
+	menu.AppendSeparator();
 	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/344));
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
@@ -3020,6 +3025,9 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinClino(point)) {
 	// Pop up menu.
 	wxMenu menu;
+	menu.Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
+	menu.Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation*/249));
+	menu.AppendSeparator();
 	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
