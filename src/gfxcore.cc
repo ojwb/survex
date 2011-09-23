@@ -224,7 +224,7 @@ void GfxCore::Initialise(bool same_file)
 	    }
 	    break;
 	case COLOUR_BY_DATE:
-	    if (m_Parent->GetDateExtent() == 0) {
+	    if (!HasRangeOfDates()) {
 		SetColourBy(COLOUR_BY_NONE);
 	    }
 	    break;
@@ -2166,7 +2166,7 @@ void GfxCore::DrawIndicators()
     if (m_Depthbar) {
        if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
 	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
-       } else if (m_ColourBy == COLOUR_BY_DATE && m_Parent->GetDateExtent()) {
+       } else if (m_ColourBy == COLOUR_BY_DATE && HasRangeOfDates()) {
 	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
        } else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
 	   DrawList2D(LIST_ERRORBAR, m_XSize, m_YSize, 0);

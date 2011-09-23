@@ -1,3 +1,7 @@
+Fri Sep 23 11:17:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Use HasRangeOfDates() consistently.
+
 Thu Sep 22 23:56:06 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Add missing newline to OpenGL info when GLX info isn't
