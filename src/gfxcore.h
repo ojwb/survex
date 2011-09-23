@@ -43,8 +43,6 @@ using namespace std;
 class MainFrm;
 class traverse;
 
-extern const int NUM_DEPTH_COLOURS;
-
 // Mac OS X headers pollute the global namespace with generic names like
 // "class Point", which clashes with our "class Point".  So for __WXMAC__
 // put our class in a namespace and define Point as a macro.
@@ -122,6 +120,8 @@ class GfxCore : public GLACanvas {
 	LIST_SHADOW
     } drawing_list;
 
+    static const int NUM_COLOUR_BANDS = 13;
+
 public:
     typedef enum {
 	CURSOR_DEFAULT,
@@ -149,7 +149,7 @@ private:
     bool m_Legs;
     bool m_Names;
     bool m_Scalebar;
-    bool m_Depthbar;
+    bool m_ColourKey;
     bool m_OverlappingNames;
     bool m_Compass;
     bool m_Clino;
@@ -246,13 +246,13 @@ private:
     void ToggleFlag(bool* flag, int update = UPDATE_NONE);
 
     GLAPen& GetPen(int band) const {
-	assert(band >= 0 && band < NUM_DEPTH_COLOURS);
+	assert(band >= 0 && band < NUM_COLOUR_BANDS);
 	return m_Pens[band];
     }
 
-    GLAPen& GetSurfacePen() const { return m_Pens[NUM_DEPTH_COLOURS]; }
+    GLAPen& GetSurfacePen() const { return m_Pens[NUM_COLOUR_BANDS]; }
 
-    int GetNumDepthBands() const { return NUM_DEPTH_COLOURS; }
+    int GetNumColourBands() const { return NUM_COLOUR_BANDS; }
 
     void DrawShadowedBoundingBox();
     void DrawBoundingBox();
@@ -364,7 +364,7 @@ public:
     bool ShowingUndergroundLegs() const { return m_Legs; }
     bool ShowingSurfaceLegs() const { return m_Surface; }
 
-    bool ShowingDepthBar() const { return m_Depthbar; }
+    bool ShowingColourKey() const { return m_ColourKey; }
     bool ShowingScaleBar() const { return m_Scalebar; }
 
     bool ShowingEntrances() const { return m_Entrances; }
@@ -391,7 +391,7 @@ public:
     void ToggleCrosses() { ToggleFlag(&m_Crosses); }
     void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
-    void ToggleDepthBar() { ToggleFlag(&m_Depthbar); }
+    void ToggleColourKey() { ToggleFlag(&m_ColourKey); }
     void ToggleMetric() { ToggleFlag(&m_Metric); InvalidateList(LIST_DEPTHBAR); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }

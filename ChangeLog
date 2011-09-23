@@ -1,3 +1,9 @@
+Fri Sep 23 15:38:36 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/aven.sgml,lib/codes.po,src/: Rename the "depth bar" to "colour
+	  key", which better describes it now that it might show dates or
+	  errors.
+
 Fri Sep 23 15:19:33 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h,src/guicontrol.cc: Fix the conditions

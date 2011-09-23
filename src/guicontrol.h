@@ -92,7 +92,7 @@ public:
     void OnZoomIn(bool accel = false);
     void OnZoomOut(bool accel = false);
     void OnToggleScalebar();
-    void OnToggleDepthbar();
+    void OnToggleColourKey();
     void OnViewCompass();
     void OnViewClino();
     void OnViewGrid();
@@ -142,7 +142,7 @@ public:
     void OnZoomInUpdate(wxUpdateUIEvent&);
     void OnZoomOutUpdate(wxUpdateUIEvent&);
     void OnToggleScalebarUpdate(wxUpdateUIEvent&);
-    void OnToggleDepthbarUpdate(wxUpdateUIEvent&);
+    void OnToggleColourKeyUpdate(wxUpdateUIEvent&);
     void OnViewCompassUpdate(wxUpdateUIEvent&);
     void OnViewClinoUpdate(wxUpdateUIEvent&);
     void OnViewGridUpdate(wxUpdateUIEvent&);

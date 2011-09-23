@@ -537,7 +537,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
     EVT_MENU(menu_IND_COMPASS, MainFrm::OnViewCompass)
     EVT_MENU(menu_IND_CLINO, MainFrm::OnViewClino)
-    EVT_MENU(menu_IND_DEPTH_BAR, MainFrm::OnToggleDepthbar)
+    EVT_MENU(menu_IND_COLOUR_KEY, MainFrm::OnToggleColourKey)
     EVT_MENU(menu_IND_SCALE_BAR, MainFrm::OnToggleScalebar)
     EVT_MENU(menu_CTL_SIDE_PANEL, MainFrm::OnViewSidePanel)
     EVT_MENU(menu_CTL_METRIC, MainFrm::OnToggleMetric)
@@ -592,7 +592,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
     EVT_UPDATE_UI(menu_IND_COMPASS, MainFrm::OnViewCompassUpdate)
     EVT_UPDATE_UI(menu_IND_CLINO, MainFrm::OnViewClinoUpdate)
-    EVT_UPDATE_UI(menu_IND_DEPTH_BAR, MainFrm::OnToggleDepthbarUpdate)
+    EVT_UPDATE_UI(menu_IND_COLOUR_KEY, MainFrm::OnToggleColourKeyUpdate)
     EVT_UPDATE_UI(menu_IND_SCALE_BAR, MainFrm::OnToggleScalebarUpdate)
     EVT_UPDATE_UI(menu_CTL_INDICATORS, MainFrm::OnIndicatorsUpdate)
     EVT_UPDATE_UI(menu_CTL_SIDE_PANEL, MainFrm::OnViewSidePanelUpdate)
@@ -819,7 +819,7 @@ void MainFrm::CreateMenuBar()
     wxMenu* indmenu = new wxMenu;
     indmenu->AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Compass*/274));
     indmenu->AppendCheckItem(menu_IND_CLINO, wmsg(/*C&linometer*/275));
-    indmenu->AppendCheckItem(menu_IND_DEPTH_BAR, wmsg(/*&Depth Bar*/276));
+    indmenu->AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*Colour &Key*/276));
     indmenu->AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Scale Bar*/277));
     ctlmenu->Append(menu_CTL_INDICATORS, wmsg(/*&Indicators*/299), indmenu);
     ctlmenu->AppendCheckItem(menu_CTL_SIDE_PANEL, wmsg(/*&Side Panel*/337));

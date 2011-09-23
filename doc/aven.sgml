@@ -144,8 +144,8 @@ this works.
 which varies in length as you zoom in or out.  
 In the lower right corner is a compass pointer showing which way
 is North, and a clino pointer showing the angle of tilt.
-And in the upper right is a depth bar showing the correspondence between
-colour and depth.
+And in the upper right is a colour key showing the correspondence between
+colour and depth (by default - you can also colour by date or by error).
 </Para>
 
 </refsect2>

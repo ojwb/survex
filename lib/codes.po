@@ -1550,8 +1550,11 @@ msgstr "274"
 msgid "C&linometer"
 msgstr "275"
 
+#~ msgid "&Depth Bar"
+#~ msgstr ""
+
 #: ../src/mainfrm.cc:819
-msgid "&Depth Bar"
+msgid "Colour &Key"
 msgstr "276"
 
 #: ../src/mainfrm.cc:820

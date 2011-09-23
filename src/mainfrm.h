@@ -112,7 +112,7 @@ enum {
     menu_VIEW_COLOUR_BY_ERROR,
     menu_IND_COMPASS,
     menu_IND_CLINO,
-    menu_IND_DEPTH_BAR,
+    menu_IND_COLOUR_KEY,
     menu_IND_SCALE_BAR,
     menu_CTL_INDICATORS,
     menu_CTL_SIDE_PANEL,
@@ -354,7 +354,7 @@ public:
     void OnZoomInUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnZoomInUpdate(event); }
     void OnZoomOutUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnZoomOutUpdate(event); }
     void OnToggleScalebarUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleScalebarUpdate(event); }
-    void OnToggleDepthbarUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleDepthbarUpdate(event); }
+    void OnToggleColourKeyUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleColourKeyUpdate(event); }
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewCompassUpdate(event); }
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
     void OnViewBoundingBoxUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewBoundingBoxUpdate(event); }
@@ -402,7 +402,7 @@ public:
     void OnZoomIn(wxCommandEvent&) { if (m_Control) m_Control->OnZoomIn(); }
     void OnZoomOut(wxCommandEvent&) { if (m_Control) m_Control->OnZoomOut(); }
     void OnToggleScalebar(wxCommandEvent&) { if (m_Control) m_Control->OnToggleScalebar(); }
-    void OnToggleDepthbar(wxCommandEvent&) { if (m_Control) m_Control->OnToggleDepthbar(); }
+    void OnToggleColourKey(wxCommandEvent&) { if (m_Control) m_Control->OnToggleColourKey(); }
     void OnViewCompass(wxCommandEvent&) { if (m_Control) m_Control->OnViewCompass(); }
     void OnViewClino(wxCommandEvent&) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }

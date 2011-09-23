@@ -811,15 +811,15 @@ void GUIControl::OnToggleScalebarUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->ShowingScaleBar());
 }
 
-void GUIControl::OnToggleDepthbar() /* FIXME naming */
+void GUIControl::OnToggleColourKey()
 {
-    m_View->ToggleDepthBar();
+    m_View->ToggleColourKey();
 }
 
-void GUIControl::OnToggleDepthbarUpdate(wxUpdateUIEvent& cmd)
+void GUIControl::OnToggleColourKeyUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->ColouringBy() == COLOUR_BY_DEPTH);
-    cmd.Check(m_View->ShowingDepthBar());
+    cmd.Enable(m_View->HasData() && m_View->ColouringBy() != COLOUR_BY_NONE);
+    cmd.Check(m_View->ShowingColourKey());
 }
 
 void GUIControl::OnViewCompass()

@@ -60,8 +60,6 @@
 // labels.
 const unsigned int QUANTISE_FACTOR = 2;
 
-const int NUM_DEPTH_COLOURS = 13;
-
 #include "avenpal.h"
 
 static const int COMPASS_OFFSET_X = 60;
@@ -74,12 +72,12 @@ static const int INDICATOR_OFFSET_Y = 15;
 static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
-static const int DEPTH_BAR_OFFSET_X = 16;
-static const int DEPTH_BAR_EXTRA_LEFT_MARGIN = 2;
-static const int DEPTH_BAR_BLOCK_WIDTH = 20;
-static const int DEPTH_BAR_BLOCK_HEIGHT = 16;
-static const int DEPTH_BAR_MARGIN = 6;
-static const int DEPTH_BAR_OFFSET_Y = 16 + DEPTH_BAR_MARGIN;
+static const int COLOUR_KEY_OFFSET_X = 16;
+static const int COLOUR_KEY_EXTRA_LEFT_MARGIN = 2;
+static const int COLOUR_KEY_BLOCK_WIDTH = 20;
+static const int COLOUR_KEY_BLOCK_HEIGHT = 16;
+static const int COLOUR_KEY_MARGIN = 6;
+static const int COLOUR_KEY_OFFSET_Y = 16 + COLOUR_KEY_MARGIN;
 static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
@@ -127,7 +125,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Legs(true),
     m_Names(false),
     m_Scalebar(true),
-    m_Depthbar(true),
+    m_ColourKey(true),
     m_OverlappingNames(false),
     m_Compass(true),
     m_Clino(true),
@@ -164,8 +162,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
 
-    m_Pens = new GLAPen[NUM_DEPTH_COLOURS + 1];
-    for (int pen = 0; pen < NUM_DEPTH_COLOURS + 1; ++pen) {
+    m_Pens = new GLAPen[NUM_COLOUR_BANDS + 1];
+    for (int pen = 0; pen < NUM_COLOUR_BANDS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen] / 255.0,
 			      GREENS[pen] / 255.0,
 			      BLUES[pen] / 255.0);
@@ -811,15 +809,15 @@ void GfxCore::SimpleDrawNames()
 void GfxCore::DrawDepthbar()
 {
     const int total_block_height =
-	DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
-    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+	COLOUR_KEY_BLOCK_HEIGHT * (GetNumColourBands() - 1);
+    const int top = -(total_block_height + COLOUR_KEY_OFFSET_Y);
     int size = 0;
 
-    wxString* strs = new wxString[GetNumDepthBands()];
+    wxString* strs = new wxString[GetNumColourBands()];
     int band;
-    for (band = 0; band < GetNumDepthBands(); ++band) {
+    for (band = 0; band < GetNumColourBands(); ++band) {
 	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
-		   m_Parent->GetDepthExtent() * band / (GetNumDepthBands() - 1);
+		   m_Parent->GetDepthExtent() * band / (GetNumColourBands() - 1);
 	strs[band] = FormatLength(z, false);
 
 	int x;
@@ -827,30 +825,30 @@ void GfxCore::DrawDepthbar()
 	if (x > size) size = x;
     }
 
-    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
-		- DEPTH_BAR_MARGIN - size;
+    int left = -COLOUR_KEY_OFFSET_X - COLOUR_KEY_BLOCK_WIDTH
+		- COLOUR_KEY_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
-		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  top - DEPTH_BAR_MARGIN * 2,
-		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
-		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  total_block_height + DEPTH_BAR_MARGIN*4);
+		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
+		  top - COLOUR_KEY_MARGIN * 2,
+		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
+		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
+		  total_block_height + COLOUR_KEY_MARGIN*4);
 
     int y = top;
-    for (band = 0; band < GetNumDepthBands() - 1; ++band) {
+    for (band = 0; band < GetNumColourBands() - 1; ++band) {
 	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+	y += COLOUR_KEY_BLOCK_HEIGHT;
     }
 
     y = top - GetFontSize() / 2;
-    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+    left += COLOUR_KEY_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
-    for (band = 0; band < GetNumDepthBands(); ++band) {
+    for (band = 0; band < GetNumColourBands(); ++band) {
 	DrawIndicatorText(left, y, strs[band]);
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+	y += COLOUR_KEY_BLOCK_HEIGHT;
     }
 
     delete[] strs;
@@ -862,14 +860,14 @@ void GfxCore::DrawDatebar()
     int num_bands;
     if (m_Parent->GetDateExtent() == 0) {
 	num_bands = 1;
-	total_block_height = DEPTH_BAR_BLOCK_HEIGHT;
+	total_block_height = COLOUR_KEY_BLOCK_HEIGHT;
     } else {
-	num_bands = GetNumDepthBands();
-	total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (num_bands - 1);
+	num_bands = GetNumColourBands();
+	total_block_height = COLOUR_KEY_BLOCK_HEIGHT * (num_bands - 1);
     }
     if (!m_Parent->HasCompleteDateInfo())
-	total_block_height += DEPTH_BAR_BLOCK_HEIGHT * 2;
-    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+	total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
+    const int top = -(total_block_height + COLOUR_KEY_OFFSET_Y);
 
     int size = 0;
     if (!m_Parent->HasCompleteDateInfo()) {
@@ -891,53 +889,53 @@ void GfxCore::DrawDatebar()
 	if (x > size) size = x;
     }
 
-    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
-		- DEPTH_BAR_MARGIN - size;
+    int left = -COLOUR_KEY_OFFSET_X - COLOUR_KEY_BLOCK_WIDTH
+		- COLOUR_KEY_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
-		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  top - DEPTH_BAR_MARGIN * 2,
-		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
-		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  total_block_height + DEPTH_BAR_MARGIN*4);
+		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
+		  top - COLOUR_KEY_MARGIN * 2,
+		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
+		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
+		  total_block_height + COLOUR_KEY_MARGIN*4);
 
     int y = top;
 
     if (!m_Parent->HasCompleteDateInfo()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	y += DEPTH_BAR_BLOCK_HEIGHT * 2;
+			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+	y += COLOUR_KEY_BLOCK_HEIGHT * 2;
     }
 
     if (num_bands == 1) {
 	DrawShadedRectangle(GetPen(0), GetPen(0), left, y,
-			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
+			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
     } else {
 	for (band = 0; band < num_bands - 1; ++band) {
 	    DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-				DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	    y += DEPTH_BAR_BLOCK_HEIGHT;
+				COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+	    y += COLOUR_KEY_BLOCK_HEIGHT;
 	}
     }
 
     y = top - GetFontSize() / 2;
-    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+    left += COLOUR_KEY_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
 
     if (!m_Parent->HasCompleteDateInfo()) {
-	y += DEPTH_BAR_BLOCK_HEIGHT / 2;
+	y += COLOUR_KEY_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, wmsg(/*Undated*/221));
-	y += DEPTH_BAR_BLOCK_HEIGHT * 2 - DEPTH_BAR_BLOCK_HEIGHT / 2;
+	y += COLOUR_KEY_BLOCK_HEIGHT * 2 - COLOUR_KEY_BLOCK_HEIGHT / 2;
     }
 
     if (num_bands == 1) {
-	y += DEPTH_BAR_BLOCK_HEIGHT / 2;
+	y += COLOUR_KEY_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, strs[0]);
     } else {
 	for (band = 0; band < num_bands; ++band) {
 	    DrawIndicatorText(left, y, strs[band]);
-	    y += DEPTH_BAR_BLOCK_HEIGHT;
+	    y += COLOUR_KEY_BLOCK_HEIGHT;
 	}
     }
 
@@ -946,18 +944,18 @@ void GfxCore::DrawDatebar()
 
 void GfxCore::DrawErrorbar()
 {
-    int total_block_height = DEPTH_BAR_BLOCK_HEIGHT * (GetNumDepthBands() - 1);
+    int total_block_height = COLOUR_KEY_BLOCK_HEIGHT * (GetNumColourBands() - 1);
     // Always show the "Not in loop" legend for now (FIXME).
-    total_block_height += DEPTH_BAR_BLOCK_HEIGHT * 2;
-    const int top = -(total_block_height + DEPTH_BAR_OFFSET_Y);
+    total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
+    const int top = -(total_block_height + COLOUR_KEY_OFFSET_Y);
 
     int size = 0;
     GetTextExtent(wmsg(/*Not in loop*/290), &size, NULL);
 
-    wxString* strs = new wxString[GetNumDepthBands()];
+    wxString* strs = new wxString[GetNumColourBands()];
     int band;
-    for (band = 0; band < GetNumDepthBands(); ++band) {
-	double E = MAX_ERROR * band / (GetNumDepthBands() - 1);
+    for (band = 0; band < GetNumColourBands(); ++band) {
+	double E = MAX_ERROR * band / (GetNumColourBands() - 1);
 	strs[band].Printf(wxT("%.2f"), E);
 
 	int x;
@@ -965,40 +963,40 @@ void GfxCore::DrawErrorbar()
 	if (x > size) size = x;
     }
 
-    int left = -DEPTH_BAR_OFFSET_X - DEPTH_BAR_BLOCK_WIDTH
-		- DEPTH_BAR_MARGIN - size;
+    int left = -COLOUR_KEY_OFFSET_X - COLOUR_KEY_BLOCK_WIDTH
+		- COLOUR_KEY_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
-		  left - DEPTH_BAR_MARGIN - DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  top - DEPTH_BAR_MARGIN * 2,
-		  DEPTH_BAR_BLOCK_WIDTH + size + DEPTH_BAR_MARGIN * 3 +
-		      DEPTH_BAR_EXTRA_LEFT_MARGIN,
-		  total_block_height + DEPTH_BAR_MARGIN*4);
+		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
+		  top - COLOUR_KEY_MARGIN * 2,
+		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
+		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
+		  total_block_height + COLOUR_KEY_MARGIN*4);
 
     int y = top;
 
     DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-	    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-    y += DEPTH_BAR_BLOCK_HEIGHT * 2;
+	    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+    y += COLOUR_KEY_BLOCK_HEIGHT * 2;
 
-    for (band = 0; band < GetNumDepthBands() - 1; ++band) {
+    for (band = 0; band < GetNumColourBands() - 1; ++band) {
 	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-			    DEPTH_BAR_BLOCK_WIDTH, DEPTH_BAR_BLOCK_HEIGHT);
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+	y += COLOUR_KEY_BLOCK_HEIGHT;
     }
 
     y = top - GetFontSize() / 2;
-    left += DEPTH_BAR_BLOCK_WIDTH + 5;
+    left += COLOUR_KEY_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
 
-    y += DEPTH_BAR_BLOCK_HEIGHT / 2;
+    y += COLOUR_KEY_BLOCK_HEIGHT / 2;
     DrawIndicatorText(left, y, wmsg(/*Not in loop*/290));
-    y += DEPTH_BAR_BLOCK_HEIGHT * 2 - DEPTH_BAR_BLOCK_HEIGHT / 2;
+    y += COLOUR_KEY_BLOCK_HEIGHT * 2 - COLOUR_KEY_BLOCK_HEIGHT / 2;
 
-    for (band = 0; band < GetNumDepthBands(); ++band) {
+    for (band = 0; band < GetNumColourBands(); ++band) {
 	DrawIndicatorText(left, y, strs[band]);
-	y += DEPTH_BAR_BLOCK_HEIGHT;
+	y += COLOUR_KEY_BLOCK_HEIGHT;
     }
 
     delete[] strs;
@@ -2181,8 +2179,8 @@ void GfxCore::GenerateBlobsDisplayList()
 
 void GfxCore::DrawIndicators()
 {
-    // Draw depthbar.
-    if (m_Depthbar) {
+    // Draw colour key.
+    if (m_ColourKey) {
        if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
 	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
        } else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
@@ -2224,12 +2222,12 @@ void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
 
-    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    int band = int(floor(how_far * (GetNumColourBands() - 1)));
     GLAPen pen1 = GetPen(band);
-    if (band < GetNumDepthBands() - 1) {
+    if (band < GetNumColourBands() - 1) {
 	const GLAPen& pen2 = GetPen(band + 1);
 
-	Double interval = z_ext / (GetNumDepthBands() - 1);
+	Double interval = z_ext / (GetNumColourBands() - 1);
 	Double into_band = z / interval - band;
 
 //	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
@@ -2277,7 +2275,7 @@ int GfxCore::GetDepthColour(Double z) const
     assert(z_ext > 0);
     z -= m_Parent->GetDepthMin();
     z += z_ext / 2;
-    return int(z / z_ext * (GetNumDepthBands() - 1));
+    return int(z / z_ext * (GetNumColourBands() - 1));
 }
 
 Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
@@ -2286,11 +2284,11 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     // two adjacent depth colour bands (specified by 0-based indices).
 
     assert((a == b - 1) || (a == b + 1));
-    if (GetNumDepthBands() == 1) return 0;
+    if (GetNumColourBands() == 1) return 0;
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
     Double z_ext = m_Parent->GetDepthExtent();
-    return (z_ext * band / (GetNumDepthBands() - 1)) - z_ext / 2
+    return (z_ext * band / (GetNumColourBands() - 1)) - z_ext / 2
 	+ m_Parent->GetDepthMin();
 }
 
@@ -2374,13 +2372,13 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     Double factor = dot(normal, light) * .3 + .7;
     int a_band, b_band, c_band, d_band;
     a_band = GetDepthColour(a.GetZ());
-    a_band = min(max(a_band, 0), GetNumDepthBands());
+    a_band = min(max(a_band, 0), GetNumColourBands());
     b_band = GetDepthColour(b.GetZ());
-    b_band = min(max(b_band, 0), GetNumDepthBands());
+    b_band = min(max(b_band, 0), GetNumColourBands());
     c_band = GetDepthColour(c.GetZ());
-    c_band = min(max(c_band, 0), GetNumDepthBands());
+    c_band = min(max(c_band, 0), GetNumColourBands());
     d_band = GetDepthColour(d.GetZ());
-    d_band = min(max(d_band, 0), GetNumDepthBands());
+    d_band = min(max(d_band, 0), GetNumColourBands());
     // All this splitting is incorrect - we need to make a separate polygon
     // for each depth band...
     int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
@@ -2434,12 +2432,12 @@ void GfxCore::SetColourFromDate(int date, Double factor)
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
 
-    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    int band = int(floor(how_far * (GetNumColourBands() - 1)));
     GLAPen pen1 = GetPen(band);
-    if (band < GetNumDepthBands() - 1) {
+    if (band < GetNumColourBands() - 1) {
 	const GLAPen& pen2 = GetPen(band + 1);
 
-	Double interval = date_ext / (GetNumDepthBands() - 1);
+	Double interval = date_ext / (GetNumColourBands() - 1);
 	Double into_band = date_offset / interval - band;
 
 //	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
@@ -2521,12 +2519,12 @@ void GfxCore::SetColourFromError(double E, Double factor)
     assert(how_far >= 0.0);
     if (how_far > 1.0) how_far = 1.0;
 
-    int band = int(floor(how_far * (GetNumDepthBands() - 1)));
+    int band = int(floor(how_far * (GetNumColourBands() - 1)));
     GLAPen pen1 = GetPen(band);
-    if (band < GetNumDepthBands() - 1) {
+    if (band < GetNumColourBands() - 1) {
 	const GLAPen& pen2 = GetPen(band + 1);
 
-	Double interval = MAX_ERROR / (GetNumDepthBands() - 1);
+	Double interval = MAX_ERROR / (GetNumColourBands() - 1);
 	Double into_band = E / interval - band;
 
 //	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
@@ -3073,7 +3071,7 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinColourKey(point)) {
 	// Pop up menu.
 	wxMenu menu;
-	menu.AppendCheckItem(menu_IND_DEPTH_BAR, wmsg(/*&Hide colour key*/386));
+	menu.AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*&Hide colour key*/386));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::OnToggleMetric, NULL, m_Parent);
 	PopupMenu(&menu);
 	return true;
