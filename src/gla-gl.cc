@@ -200,9 +200,9 @@ double GLAPen::GetBlue() const
 
 void GLAPen::Interpolate(const GLAPen& pen, double how_far)
 {
-    components[0] = how_far * (pen.GetRed() - components[0]) + components[0];
-    components[1] = how_far * (pen.GetGreen() - components[1]) + components[1];
-    components[2] = how_far * (pen.GetBlue() - components[2]) + components[2];
+    components[0] += how_far * (pen.GetRed() - components[0]);
+    components[1] += how_far * (pen.GetGreen() - components[1]);
+    components[2] += how_far * (pen.GetBlue() - components[2]);
 }
 
 struct ColourTriple {
