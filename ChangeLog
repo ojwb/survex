@@ -1,3 +1,7 @@
+Sat Sep 24 10:18:22 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Remove empty destructors.
+
 Sat Sep 24 06:43:33 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm,src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Eliminate the

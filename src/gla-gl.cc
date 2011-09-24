@@ -172,10 +172,6 @@ GLAPen::GLAPen()
     components[0] = components[1] = components[2] = 0.0;
 }
 
-GLAPen::~GLAPen()
-{
-}
-
 void GLAPen::SetColour(double red, double green, double blue)
 {
     components[0] = red;

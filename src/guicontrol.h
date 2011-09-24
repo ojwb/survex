@@ -56,7 +56,6 @@ class GUIControl {
 
 public:
     GUIControl();
-    ~GUIControl();
 
     void SetView(GfxCore* view);
 

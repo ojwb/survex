@@ -72,7 +72,6 @@ class GLAPen {
 
 public:
     GLAPen();
-    ~GLAPen();
 
     void SetColour(double red, double green, double blue); // arguments in range 0 to 1.0
     void Interpolate(const GLAPen&, double how_far);

@@ -41,11 +41,6 @@ GUIControl::GUIControl()
     m_LastDrag = drag_NONE;
 }
 
-GUIControl::~GUIControl()
-{
-    // no action
-}
-
 void GUIControl::SetView(GfxCore* view)
 {
     m_View = view;

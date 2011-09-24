@@ -703,10 +703,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 #endif
 }
 
-MainFrm::~MainFrm()
-{
-}
-
 void MainFrm::CreateMenuBar()
 {
     // Create the menus and the menu bar.

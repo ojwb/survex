@@ -253,7 +253,6 @@ class MainFrm : public wxFrame {
 
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
-    ~MainFrm();
 
     void InitialiseAfterLoad(const wxString & file);
 
