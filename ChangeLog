@@ -1,3 +1,7 @@
+Sat Sep 24 12:45:04 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Update (--help messages can now be translated).
+
 Sat Sep 24 12:21:45 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Note oddity with FullScreen and side panel.
