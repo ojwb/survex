@@ -1172,12 +1172,12 @@ svxPrintout::OnBeginPrinting() {
 
 void
 svxPrintout::OnEndPrinting() {
-    delete(font_labels);
-    delete(font_default);
-    delete(pen_frame);
-    delete(pen_leg);
-    delete(pen_surface_leg);
-    delete(pen_cross);
+    delete font_labels;
+    delete font_default;
+    delete pen_frame;
+    delete pen_leg;
+    delete pen_surface_leg;
+    delete pen_cross;
 }
 
 
