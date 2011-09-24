@@ -274,8 +274,8 @@ void GfxCore::SetScale(Double scale)
 
     if (scale < 0.05) {
 	scale = 0.05;
-    } else {
-	if (scale > 1000.0) scale = 1000.0;
+    } else if (scale > 6144.0) {
+	scale = 6144.0;
     }
 
     m_Scale = scale;
@@ -1068,20 +1068,30 @@ void GfxCore::DrawScalebar()
     // screen.
     Double across_screen = SurveyUnitsAcrossViewport();
 
+    double f = double(GetClinoXPosition() - INDICATOR_BOX_SIZE / 2 - SCALE_BAR_OFFSET_X) / m_XSize;
+    if (f > 0.75) {
+	f = 0.75;
+    } else if (f < 0.5) {
+	// Stop it getting squeezed to nothing.
+	// FIXME: In this case we should probably move the compass and clino up
+	// to make room rather than letting stuff overlap.
+	f = 0.5;
+    }
+
     // Convert to imperial measurements if required.
     Double multiplier = 1.0;
     if (!m_Metric) {
 	across_screen /= METRES_PER_FOOT;
 	multiplier = METRES_PER_FOOT;
-	if (across_screen >= 5280.0 / 0.75) {
+	if (across_screen >= 5280.0 / f) {
 	    across_screen /= 5280.0;
 	    multiplier *= 5280.0;
 	}
     }
 
     // Calculate the length of the scale bar.
-    Double size_snap = pow(10.0, floor(log10(0.65 * across_screen)));
-    Double t = across_screen * 0.65 / size_snap;
+    Double size_snap = pow(10.0, floor(log10(f * across_screen)));
+    Double t = across_screen * f / size_snap;
     if (t >= 5.0) {
 	size_snap *= 5.0;
     } else if (t >= 2.0) {
