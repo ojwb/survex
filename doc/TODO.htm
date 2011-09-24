@@ -35,9 +35,6 @@ the comments here suggest that perhaps it's not ideal (and wx still uses
 GetUserDefaultLCID() too):
 <a href="http://blogs.msdn.com/michkap/archive/2006/05/22/604509.aspx">http://blogs.msdn.com/michkap/archive/2006/05/22/604509.aspx</a>
 
-<li>If some surveys have no date info and all others have the same date we
-currently turn off date colouring, which isn't ideal...
-
 <li>Lots of aven things need documenting.
 
 <li>Does anyone use Controls-&gt;"Reverse Sense"?  It made some sense with
@@ -77,15 +74,15 @@ may be needed to get meaningful timing info.
 
   <li>store "file processed on" date as a time_t rather than a string?
 
-  <li>store survey error values for each leg
-
   <li>store equated stations in some way
 
   <li>store legs by end stations rather than repeating coordinates over and
   over?
 </ul>
 
-<li>Add "colour by survey".
+<li>Add "colour by survey" - colour by cave (and more generally by sub-prefix):
+maybe "aven --survey 161 --colour-by-sub-prefix all.3d" would result in
+lhroute, rhroute, adrian, etc all getting different colours...
 
 <li>Implement "Skip blank pages" in aven printing
 
@@ -105,8 +102,6 @@ may be needed to get meaningful timing info.
 (e.g. try Ctrl+O while in full screen mode).  I've added a tweak to drop out
 of it before showing dialog and return after, but this isn't ideal.
 It would be best of all if wx got this right...
-
-<li>Right-click menus for indicators?
 
 <li>Optional lazy label redraw during drags?  Or turn on at some redraw time
 threshold...
@@ -233,10 +228,6 @@ fixed points)?
 
 <li>clipping - want to select a clip sphere (or maybe cube) centred on
 centre on rotation I think.
-
-<li>colour by cave (and more generally by sub-prefix):
-maybe "aven --survey 161 --colour-by-sub-prefix all.3d" would result in
-lhroute, rhroute, adrian, etc all getting different colours...
 
 <li>Some way to display all the names of an equated station (e.g. in pop-up
 window or the info panel).
