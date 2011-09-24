@@ -2201,19 +2201,19 @@ void GfxCore::DrawIndicators()
     }
 }
 
-void GfxCore::PlaceVertexWithColour(const Vector3 & v, Double factor)
+void GfxCore::PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
+				    Double factor)
 {
     SetColour(GetSurfacePen(), factor); // FIXME : assumes surface pen is white!
-    PlaceVertex(v);
+    PlaceVertex(v, tex_x, tex_y);
 }
 
-void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
-{
+void GfxCore::SetDepthColour(Double z, Double factor) {
     // Set the drawing colour based on the altitude.
     Double z_ext = m_Parent->GetDepthExtent();
     assert(z_ext > 0);
 
-    Double z = v.GetZ() - m_Parent->GetDepthMin();
+    z -= m_Parent->GetDepthMin();
     // points arising from tubes may be slightly outside the limits...
     if (z < 0) z = 0;
     if (z > z_ext) z = z_ext;
@@ -2242,8 +2242,20 @@ void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
 	pen1.Interpolate(pen2, into_band);
     }
     SetColour(pen1, factor);
+}
 
+void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
+{
+    SetDepthColour(v.GetZ(), factor);
     PlaceVertex(v);
+}
+
+void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v,
+					 GLint tex_x, GLint tex_y,
+					 Double factor)
+{
+    SetDepthColour(v.GetZ(), factor);
+    PlaceVertex(v, tex_x, tex_y);
 }
 
 void GfxCore::SplitLineAcrossBands(int band, int band2,
@@ -2348,19 +2360,14 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    GLint w = GLint(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    GLint h = GLint(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
-    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
-    glTexCoord2i(0, 0);
-    PlaceVertexWithColour(a, factor);
-    glTexCoord2i(w, 0);
-    PlaceVertexWithColour(b, factor);
-    glTexCoord2i(w, h);
-    PlaceVertexWithColour(c, factor);
-    glTexCoord2i(0, h);
-    PlaceVertexWithColour(d, factor);
+    PlaceVertexWithColour(a, 0, 0, factor);
+    PlaceVertexWithColour(b, w, 0, factor);
+    PlaceVertexWithColour(c, w, h, factor);
+    PlaceVertexWithColour(d, 0, h, factor);
     EndQuadrilaterals();
 }
 
@@ -2381,29 +2388,23 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     d_band = min(max(d_band, 0), GetNumColourBands());
     // All this splitting is incorrect - we need to make a separate polygon
     // for each depth band...
-    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
-    // FIXME: should plot triangles instead to avoid rendering glitches.
+    GLint w = GLint(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    GLint h = GLint(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     BeginPolygon();
 ////    PlaceNormal(normal);
-    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
-    glTexCoord2i(0, 0);
-    PlaceVertexWithDepthColour(a, factor);
+    PlaceVertexWithDepthColour(a, 0, 0, factor);
     if (a_band != b_band) {
 	SplitLineAcrossBands(a_band, b_band, a, b, factor);
     }
-    glTexCoord2i(w, 0);
-    PlaceVertexWithDepthColour(b, factor);
+    PlaceVertexWithDepthColour(b, w, 0, factor);
     if (b_band != c_band) {
 	SplitLineAcrossBands(b_band, c_band, b, c, factor);
     }
-    glTexCoord2i(w, h);
-    PlaceVertexWithDepthColour(c, factor);
+    PlaceVertexWithDepthColour(c, w, h, factor);
     if (c_band != d_band) {
 	SplitLineAcrossBands(c_band, d_band, c, d, factor);
     }
-    glTexCoord2i(0, h);
-    PlaceVertexWithDepthColour(d, factor);
+    PlaceVertexWithDepthColour(d, 0, h, factor);
     if (d_band != a_band) {
 	SplitLineAcrossBands(d_band, a_band, d, a, factor);
     }
@@ -2489,19 +2490,14 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
     int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     // FIXME: should plot triangles instead to avoid rendering glitches.
-    BeginPolygon();
+    BeginQuadrilaterals();
 ////    PlaceNormal(normal);
     SetColourFromDate(static_date_hack, factor);
-    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
-    glTexCoord2i(0, 0);
-    PlaceVertex(a);
-    glTexCoord2i(w, 0);
-    PlaceVertex(b);
-    glTexCoord2i(w, h);
-    PlaceVertex(c);
-    glTexCoord2i(0, h);
-    PlaceVertex(d);
-    EndPolygon();
+    PlaceVertex(a, 0, 0);
+    PlaceVertex(b, w, 0);
+    PlaceVertex(c, w, h);
+    PlaceVertex(d, 0, h);
+    EndQuadrilaterals();
 }
 
 static double static_E_hack; // FIXME
@@ -2550,19 +2546,14 @@ void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
     int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
     int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
     // FIXME: should plot triangles instead to avoid rendering glitches.
-    BeginPolygon();
+    BeginQuadrilaterals();
 ////    PlaceNormal(normal);
     SetColourFromError(static_E_hack, factor);
-    // FIXME: these glTexCoord2i calls should be in gla-gl.cc
-    glTexCoord2i(0, 0);
-    PlaceVertex(a);
-    glTexCoord2i(w, 0);
-    PlaceVertex(b);
-    glTexCoord2i(w, h);
-    PlaceVertex(c);
-    glTexCoord2i(0, h);
-    PlaceVertex(d);
-    EndPolygon();
+    PlaceVertex(a, 0, 0);
+    PlaceVertex(b, w, 0);
+    PlaceVertex(c, w, h);
+    PlaceVertex(d, 0, h);
+    EndQuadrilaterals();
 }
 
 void GfxCore::AddPolylineError(const traverse & centreline)

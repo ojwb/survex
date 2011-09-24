@@ -201,10 +201,14 @@ public:
     void DrawCross(glaCoord x, glaCoord y, glaCoord z);
     void DrawRing(glaCoord x, glaCoord y);
 
+    void PlaceVertex(const Vector3 & v, GLint tex_x, GLint tex_y) {
+	PlaceVertex(v.GetX(), v.GetY(), v.GetZ(), tex_x, tex_y);
+    }
     void PlaceVertex(const Vector3 & v) {
 	PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
     }
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
+    void PlaceVertex(glaCoord x, glaCoord y, glaCoord z, GLint tex_x, GLint tex_y);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
 
     void PlaceNormal(const Vector3 &v);

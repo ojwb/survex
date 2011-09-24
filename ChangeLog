@@ -1,3 +1,9 @@
+Sat Sep 24 06:08:13 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Move glTexCoord2i() calls out of gfxcore.cc and into gla-gl.cc.
+	  Use BeginQuadrilaterals() rather than BeginPolygon() when the shape
+	  will definitely have 4 sides.
+	  
 Sat Sep 24 02:09:48 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.h,src/guicontrol.cc: Disable "View North" when we're
