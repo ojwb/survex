@@ -1086,7 +1086,8 @@ void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
     glVertex3d(x, y, z);
 }
 
-void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z, GLint tex_x, GLint tex_y)
+void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z,
+			    glaTexCoord tex_x, glaTexCoord tex_y)
 {
     // Place a vertex for the current object being drawn.
 

@@ -2201,7 +2201,8 @@ void GfxCore::DrawIndicators()
     }
 }
 
-void GfxCore::PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
+void GfxCore::PlaceVertexWithColour(const Vector3 & v,
+				    glaTexCoord tex_x, glaTexCoord tex_y,
 				    Double factor)
 {
     SetColour(GetSurfacePen(), factor); // FIXME : assumes surface pen is white!
@@ -2251,7 +2252,7 @@ void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
 }
 
 void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v,
-					 GLint tex_x, GLint tex_y,
+					 glaTexCoord tex_x, glaTexCoord tex_y,
 					 Double factor)
 {
     SetDepthColour(v.GetZ(), factor);
@@ -2360,8 +2361,8 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    GLint w = GLint(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    GLint h = GLint(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
+    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
     PlaceVertexWithColour(a, 0, 0, factor);
@@ -2388,8 +2389,8 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     d_band = min(max(d_band, 0), GetNumColourBands());
     // All this splitting is incorrect - we need to make a separate polygon
     // for each depth band...
-    GLint w = GLint(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    GLint h = GLint(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
+    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
     BeginPolygon();
 ////    PlaceNormal(normal);
     PlaceVertexWithDepthColour(a, 0, 0, factor);

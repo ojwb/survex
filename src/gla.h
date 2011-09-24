@@ -45,6 +45,8 @@ string GetGLSystemDescription();
 
 typedef Double glaCoord;
 
+typedef GLint glaTexCoord;
+
 // Colours for drawing.  Don't reorder these!
 enum gla_colour {
     col_BLACK = 0,
@@ -201,14 +203,15 @@ public:
     void DrawCross(glaCoord x, glaCoord y, glaCoord z);
     void DrawRing(glaCoord x, glaCoord y);
 
-    void PlaceVertex(const Vector3 & v, GLint tex_x, GLint tex_y) {
+    void PlaceVertex(const Vector3 & v, glaTexCoord tex_x, glaTexCoord tex_y) {
 	PlaceVertex(v.GetX(), v.GetY(), v.GetZ(), tex_x, tex_y);
     }
     void PlaceVertex(const Vector3 & v) {
 	PlaceVertex(v.GetX(), v.GetY(), v.GetZ());
     }
     void PlaceVertex(glaCoord x, glaCoord y, glaCoord z);
-    void PlaceVertex(glaCoord x, glaCoord y, glaCoord z, GLint tex_x, GLint tex_y);
+    void PlaceVertex(glaCoord x, glaCoord y, glaCoord z,
+		     glaTexCoord tex_x, glaTexCoord tex_y);
     void PlaceIndicatorVertex(glaCoord x, glaCoord y);
 
     void PlaceNormal(const Vector3 &v);

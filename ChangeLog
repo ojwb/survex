@@ -1,3 +1,8 @@
+Sat Sep 24 06:32:02 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: New type GLATexCoord to avoid
+	  using GLint outside of the OpenGL-specific code.
+
 Sat Sep 24 06:08:13 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/: Move glTexCoord2i() calls out of gfxcore.cc and into gla-gl.cc.
