@@ -1,3 +1,8 @@
+Sat Sep 24 06:43:33 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm,src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Eliminate the
+	  last few OpenGL calls from gfxcore.cc.
+
 Sat Sep 24 06:32:02 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: New type GLATexCoord to avoid

@@ -267,4 +267,6 @@ public:
     bool SaveScreenshot(const wxString & fnm, int type) const;
 
     void ReadPixels(int width, int height, unsigned char * buf) const;
+
+    void PolygonOffset(bool on) const;
 };

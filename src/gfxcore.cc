@@ -480,10 +480,7 @@ void GfxCore::DrawShadowedBoundingBox()
 
     DrawBoundingBox();
 
-    // FIXME: these gl* calls should be in gla-gl.cc
-    glPolygonOffset(1.0, 1.0);
-    glEnable(GL_POLYGON_OFFSET_FILL);
-
+    PolygonOffset(true);
     SetColour(col_DARK_GREY);
     BeginQuadrilaterals();
     PlaceVertex(-v.GetX(), -v.GetY(), -v.GetZ());
@@ -491,8 +488,7 @@ void GfxCore::DrawShadowedBoundingBox()
     PlaceVertex(v.GetX(), v.GetY(), -v.GetZ());
     PlaceVertex(v.GetX(), -v.GetY(), -v.GetZ());
     EndQuadrilaterals();
-
-    glDisable(GL_POLYGON_OFFSET_FILL);
+    PolygonOffset(false);
 
     DrawList(LIST_SHADOW);
 }

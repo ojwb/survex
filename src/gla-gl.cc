@@ -1530,3 +1530,13 @@ void GLACanvas::ReadPixels(int width, int height, unsigned char * buf) const
 {
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)buf);
 }
+
+void GLACanvas::PolygonOffset(bool on) const
+{
+    if (on) {
+	glPolygonOffset(1.0, 1.0);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+    } else {
+	glDisable(GL_POLYGON_OFFSET_FILL);
+    }
+}
