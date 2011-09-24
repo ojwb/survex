@@ -1,3 +1,8 @@
+Sat Sep 24 02:09:48 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h,src/guicontrol.cc: Disable "View North" when we're
+	  already viewing North, and similarly for other compass points.
+
 Sat Sep 24 01:57:06 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Update.

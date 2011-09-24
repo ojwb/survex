@@ -333,6 +333,7 @@ public:
 
     void SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Double zmin, Double zmax);
 
+    double GetCompassValue() const { return m_PanAngle; }
     bool ShowingPlan() const;
     bool ShowingElevation() const;
     bool ShowingMeasuringLine() const;

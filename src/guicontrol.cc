@@ -531,7 +531,7 @@ void GUIControl::OnMoveEast()
 
 void GUIControl::OnMoveEastUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && m_View->GetCompassValue() != 90.0);
 }
 
 void GUIControl::OnMoveNorth()
@@ -542,7 +542,7 @@ void GUIControl::OnMoveNorth()
 
 void GUIControl::OnMoveNorthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData());
+    cmd.Enable(m_View->HasData() && m_View->GetCompassValue() != 0.0);
 }
 
 void GUIControl::OnMoveSouth()
@@ -553,7 +553,7 @@ void GUIControl::OnMoveSouth()
 
 void GUIControl::OnMoveSouthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData());
+    cmd.Enable(m_View->HasData() && m_View->GetCompassValue() != 180.0);
 }
 
 void GUIControl::OnMoveWest()
@@ -564,7 +564,7 @@ void GUIControl::OnMoveWest()
 
 void GUIControl::OnMoveWestUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && m_View->GetCompassValue() != 270.0);
 }
 
 void GUIControl::OnToggleRotation()
