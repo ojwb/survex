@@ -181,11 +181,8 @@ GfxCore::~GfxCore()
 void GfxCore::TryToFreeArrays()
 {
     // Free up any memory allocated for arrays.
-
-    if (m_LabelGrid) {
-	delete[] m_LabelGrid;
-	m_LabelGrid = NULL;
-    }
+    delete[] m_LabelGrid;
+    m_LabelGrid = NULL;
 }
 
 //
@@ -1213,10 +1210,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
     m_YSize = size.GetHeight();
 
     if (m_DoneFirstShow) {
-	if (m_LabelGrid) {
-	    delete[] m_LabelGrid;
-	    m_LabelGrid = NULL;
-	}
+	TryToFreeArrays();
 
 	m_HitTestGridValid = false;
 
@@ -1317,10 +1311,8 @@ bool GfxCore::Animate()
 	    if (!next_mark.is_valid()) {
 		SetView(prev_mark);
 		presentation_mode = 0;
-		if (movie) {
-		    delete movie;
-		    movie = 0;
-		}
+		delete movie;
+		movie = NULL;
 		break;
 	    }
 
@@ -2897,7 +2889,7 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     if (!movie->Open(fnm.mb_str(), width, height)) {
 	wxGetApp().ReportError(wxString(movie->get_error_string(), wxConvUTF8));
 	delete movie;
-	movie = 0;
+	movie = NULL;
 	return false;
     }
 

@@ -78,7 +78,7 @@ Aven::Aven() :
 
 Aven::~Aven()
 {
-    if (m_pageSetupData) delete m_pageSetupData;
+    delete m_pageSetupData;
 }
 
 static int getopt_first_response = 0;
