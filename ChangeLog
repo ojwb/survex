@@ -1,3 +1,7 @@
+Sat Sep 24 12:21:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Note oddity with FullScreen and side panel.
+
 Sat Sep 24 12:14:52 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.h: We don't need the "un-fullscreen to show dialog" hack
