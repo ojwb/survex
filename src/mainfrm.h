@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -523,10 +523,14 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-// wxGTK loses the dialog under the always-on-top, maximised window.
-// By creating this object on the stack, you can get the dialog on top...
+// Older wxGTK loses pop-up dialogs under the always-on-top, maximised window.
+// Not sure when this got fixed, but wx 2.8.10 definitely works properly on
+// Debian squeeze.
+//
+// To work around this issue, create this object on the stack, and it will
+// temporarily un-fullscreen the window while the dialog as a workaround.
 class AvenAllowOnTop {
-#ifndef _WIN32
+#if defined __WXGTK__ && !wxCHECK_VERSION(2,8,10)
 	MainFrm * mainfrm;
     public:
 	AvenAllowOnTop(MainFrm * mainfrm_) {

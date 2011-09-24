@@ -1,3 +1,10 @@
+Sat Sep 24 12:14:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.h: We don't need the "un-fullscreen to show dialog" hack
+	  with recent wxGTK.  Also, there's no reason to think we need it for
+	  other platforms (it was enabled everywhere except Microsoft Windows
+	  before).
+
 Sat Sep 24 10:42:29 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: "delete foo;" not "delete(foo);"
