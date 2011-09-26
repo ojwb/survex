@@ -865,7 +865,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
     }
 }
 
-void GfxCore::DrawDepthbar()
+void GfxCore::DrawDepthKey()
 {
     for (int band = 0; band < GetNumColourBands(); ++band) {
 	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
@@ -876,7 +876,7 @@ void GfxCore::DrawDepthbar()
     DrawColourKey(GetNumColourBands(), wxString());
 }
 
-void GfxCore::DrawDatebar()
+void GfxCore::DrawDateKey()
 {
     int num_bands;
     if (m_Parent->GetDateExtent() == 0) {
@@ -900,7 +900,7 @@ void GfxCore::DrawDatebar()
     DrawColourKey(num_bands, other);
 }
 
-void GfxCore::DrawErrorbar()
+void GfxCore::DrawErrorKey()
 {
     for (int band = 0; band < GetNumColourBands(); ++band) {
 	double E = MAX_ERROR * band / (GetNumColourBands() - 1);
@@ -1931,14 +1931,14 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_CLINO_BACK:
 	    DrawClinoBack();
 	    break;
-	case LIST_DEPTHBAR:
-	    DrawDepthbar();
+	case LIST_DEPTH_KEY:
+	    DrawDepthKey();
 	    break;
-	case LIST_DATEBAR:
-	    DrawDatebar();
+	case LIST_DATE_KEY:
+	    DrawDateKey();
 	    break;
-	case LIST_ERRORBAR:
-	    DrawErrorbar();
+	case LIST_ERROR_KEY:
+	    DrawErrorKey();
 	    break;
 	case LIST_UNDERGROUND_LEGS:
 	    GenerateDisplayList();
@@ -2096,13 +2096,13 @@ void GfxCore::DrawIndicators()
     // Draw colour key.
     if (m_ColourKey) {
 	if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
-	    DrawList2D(LIST_DEPTHBAR, m_XSize - COLOUR_KEY_OFFSET_X,
+	    DrawList2D(LIST_DEPTH_KEY, m_XSize - COLOUR_KEY_OFFSET_X,
 		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
-	    DrawList2D(LIST_DATEBAR, m_XSize - COLOUR_KEY_OFFSET_X,
+	    DrawList2D(LIST_DATE_KEY, m_XSize - COLOUR_KEY_OFFSET_X,
 		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
-	    DrawList2D(LIST_ERRORBAR, m_XSize - COLOUR_KEY_OFFSET_X,
+	    DrawList2D(LIST_ERROR_KEY, m_XSize - COLOUR_KEY_OFFSET_X,
 		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
 	}
     }

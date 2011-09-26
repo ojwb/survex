@@ -108,9 +108,9 @@ class GfxCore : public GLACanvas {
 	LIST_COMPASS,
 	LIST_CLINO,
 	LIST_CLINO_BACK,
-	LIST_DEPTHBAR,
-	LIST_DATEBAR,
-	LIST_ERRORBAR,
+	LIST_DEPTH_KEY,
+	LIST_DATE_KEY,
+	LIST_ERROR_KEY,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
@@ -228,9 +228,9 @@ private:
 
     void DrawScalebar();
     void DrawColourKey(int num_bands, const wxString & other);
-    void DrawDepthbar();
-    void DrawDatebar();
-    void DrawErrorbar();
+    void DrawDepthKey();
+    void DrawDateKey();
+    void DrawErrorKey();
     void DrawCompass();
     void DrawClino();
     void DrawClinoBack();
@@ -401,7 +401,7 @@ public:
     void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleColourKey() { ToggleFlag(&m_ColourKey); }
-    void ToggleMetric() { ToggleFlag(&m_Metric); InvalidateList(LIST_DEPTHBAR); }
+    void ToggleMetric() { ToggleFlag(&m_Metric); InvalidateList(LIST_DEPTH_KEY); }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
