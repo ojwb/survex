@@ -160,8 +160,8 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 			Expand(id);
 		    }
 		} else {
-		    // FIXME if on a station, show information on that station
-		    // or something?
+		    // If on a station, centre on it.
+		    m_Parent->TreeItemSelected(GetItemData(id), true);
 		}
 	    }
 	    break;
