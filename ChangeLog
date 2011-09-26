@@ -1,3 +1,9 @@
+Mon Sep 26 11:35:29 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Push survey pane size tracking down into GLACanvas, and
+	  automatically track which lists should be invalidated on a
+	  changes in the width or the height of the pane.
+
 Mon Sep 26 10:44:22 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc,src/gla.h: Move GLAList flags out of the header as they

@@ -130,8 +130,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Compass(true),
     m_Clino(true),
     m_Tubes(false),
-    m_XSize(0),
-    m_YSize(0),
     m_ColourBy(COLOUR_BY_DEPTH),
     m_HaveData(false),
     m_MouseOutsideCompass(false),
@@ -256,9 +254,6 @@ void GfxCore::FirstShow()
     SetVolumeDiameter(sqrt(sqrd(m_Parent->GetXExtent()) +
 			   sqrd(m_Parent->GetYExtent()) +
 			   sqrd(m_Parent->GetZExtent())));
-
-    // Update our record of the client area size and centre.
-    GetClientSize(&m_XSize, &m_YSize);
 
     m_DoneFirstShow = true;
 }
@@ -713,8 +708,8 @@ void GfxCore::NattyDrawNames()
     // Draw station names, without overlapping.
 
     const unsigned int quantise(GetFontSize() / QUANTISE_FACTOR);
-    const unsigned int quantised_x = m_XSize / quantise;
-    const unsigned int quantised_y = m_YSize / quantise;
+    const unsigned int quantised_x = GetXSize() / quantise;
+    const unsigned int quantised_y = GetYSize() / quantise;
     const size_t buffer_size = quantised_x * quantised_y;
 
     if (!m_LabelGrid) m_LabelGrid = new char[buffer_size];
@@ -984,7 +979,7 @@ void GfxCore::DrawScaleBar()
     // screen.
     Double across_screen = SurveyUnitsAcrossViewport();
 
-    double f = double(GetClinoXPosition() - INDICATOR_BOX_SIZE / 2 - SCALE_BAR_OFFSET_X) / m_XSize;
+    double f = double(GetClinoXPosition() - INDICATOR_BOX_SIZE / 2 - SCALE_BAR_OFFSET_X) / GetXSize();
     if (f > 0.75) {
 	f = 0.75;
     } else if (f < 0.5) {
@@ -1017,7 +1012,7 @@ void GfxCore::DrawScaleBar()
     if (!m_Metric) size_snap *= multiplier;
 
     // Actual size of the thing in pixels:
-    int size = int((size_snap / SurveyUnitsAcrossViewport()) * m_XSize);
+    int size = int((size_snap / SurveyUnitsAcrossViewport()) * GetXSize());
     m_ScaleBarWidth = size;
 
     // Draw it...
@@ -1048,8 +1043,8 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 {
     if (Animating()) return false;
 
-    if (point.x < 0 || point.x >= m_XSize ||
-	point.y < 0 || point.y >= m_YSize) {
+    if (point.x < 0 || point.x >= GetXSize() ||
+	point.y < 0 || point.y >= GetYSize()) {
 	return false;
     }
 
@@ -1057,8 +1052,8 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 
     if (!m_HitTestGridValid) CreateHitTestGrid();
 
-    int grid_x = (point.x * (HITTEST_SIZE - 1)) / m_XSize;
-    int grid_y = (point.y * (HITTEST_SIZE - 1)) / m_YSize;
+    int grid_x = (point.x * (HITTEST_SIZE - 1)) / GetXSize();
+    int grid_y = (point.y * (HITTEST_SIZE - 1)) / GetYSize();
 
     LabelInfo *best = NULL;
     int dist_sqrd = 25;
@@ -1072,7 +1067,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 
 	Transform(*pt, &cx, &cy, &cz);
 
-	cy = m_YSize - cy;
+	cy = GetYSize() - cy;
 
 	int dx = point.x - int(cx);
 	int ds = dx * dx;
@@ -1093,7 +1088,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (centre) {
 	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
-	    WarpPointer(m_XSize / 2, m_YSize / 2);
+	    WarpPointer(GetXSize() / 2, GetYSize() / 2);
 	    SetThere(*best);
 	    m_Parent->SelectTreeItem(best);
 	}
@@ -1104,7 +1099,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	} else {
 	    m_Parent->ShowInfo(best);
 	    double x, y, z;
-	    ReverseTransform(point.x, m_YSize - point.y, &x, &y, &z);
+	    ReverseTransform(point.x, GetYSize() - point.y, &x, &y, &z);
 	    SetHere(Point(Vector3(x, y, z)));
 	    m_here_is_temporary = true;
 	}
@@ -1116,8 +1111,6 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 void GfxCore::OnSize(wxSizeEvent& event)
 {
     // Handle a change in window size.
-    InvalidateList(LIST_SCALE_BAR);
-
     wxSize size = event.GetSize();
 
     if (size.GetWidth() <= 0 || size.GetHeight() <= 0) {
@@ -1131,10 +1124,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	return;
     }
 
-    wxGLCanvas::OnSize(event);
-
-    m_XSize = size.GetWidth();
-    m_YSize = size.GetHeight();
+    GLACanvas::OnSize(event);
 
     if (m_DoneFirstShow) {
 	TryToFreeArrays();
@@ -1356,7 +1346,7 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
-	    int y = m_YSize - 1 - int(Y);
+	    int y = GetYSize() - 1 - int(Y);
 	    l = x - MARGIN;
 	    r = x + MARGIN;
 	    u = y + MARGIN;
@@ -1368,7 +1358,7 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
-	    int y = m_YSize - 1 - int(Y);
+	    int y = GetYSize() - 1 - int(Y);
 	    l = min(l, x - MARGIN);
 	    r = max(r, x + MARGIN);
 	    u = max(u, y + MARGIN);
@@ -1380,7 +1370,7 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
-	    int y = m_YSize - 1 - int(Y);
+	    int y = GetYSize() - 1 - int(Y);
 	    l = min(l, x - MARGIN);
 	    r = max(r, x + MARGIN);
 	    u = max(u, y + MARGIN);
@@ -1450,14 +1440,14 @@ void GfxCore::CreateHitTestGrid()
 	// Calculate screen coordinates.
 	double cx, cy, cz;
 	Transform(*label, &cx, &cy, &cz);
-	if (cx < 0 || cx >= m_XSize) continue;
-	if (cy < 0 || cy >= m_YSize) continue;
+	if (cx < 0 || cx >= GetXSize()) continue;
+	if (cy < 0 || cy >= GetYSize()) continue;
 
-	cy = m_YSize - cy;
+	cy = GetYSize() - cy;
 
 	// On-screen, so add to hit-test grid...
-	int grid_x = int((cx * (HITTEST_SIZE - 1)) / m_XSize);
-	int grid_y = int((cy * (HITTEST_SIZE - 1)) / m_YSize);
+	int grid_x = int((cx * (HITTEST_SIZE - 1)) / GetXSize());
+	int grid_y = int((cy * (HITTEST_SIZE - 1)) / GetYSize());
 
 	m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }
@@ -1551,7 +1541,7 @@ void GfxCore::SetCoords(wxPoint point)
     double cx, cy, cz;
 
     SetDataTransform();
-    ReverseTransform(point.x, m_YSize - 1 - point.y, &cx, &cy, &cz);
+    ReverseTransform(point.x, GetYSize() - 1 - point.y, &cx, &cy, &cz);
 
     if (ShowingPlan()) {
 	m_Parent->SetCoords(cx + m_Parent->GetOffset().GetX(),
@@ -1567,21 +1557,21 @@ int GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
     // coordinates.
-    return m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE / 2;
+    return GetXSize() - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE / 2;
 }
 
 int GfxCore::GetClinoXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
     // coordinates.
-    return m_XSize - GetClinoOffset() - INDICATOR_BOX_SIZE / 2;
+    return GetXSize() - GetClinoOffset() - INDICATOR_BOX_SIZE / 2;
 }
 
 int GfxCore::GetIndicatorYPosition() const
 {
     // Return the y-coordinate of the centre of the indicators in window
     // coordinates.
-    return m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE / 2;
+    return GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE / 2;
 }
 
 int GfxCore::GetIndicatorRadius() const
@@ -1623,8 +1613,8 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
 
     return (point.x >= SCALE_BAR_OFFSET_X &&
 	    point.x <= SCALE_BAR_OFFSET_X + m_ScaleBarWidth &&
-	    point.y <= m_YSize - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
-	    point.y >= m_YSize - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
+	    point.y <= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
+	    point.y >= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
@@ -1689,9 +1679,9 @@ void GfxCore::RedrawIndicators()
 {
     // Redraw the compass and clino indicators.
 
-    const wxRect r(m_XSize - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
+    const wxRect r(GetXSize() - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
 		     INDICATOR_GAP,
-		   m_YSize - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+		   GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
 		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
 		   INDICATOR_BOX_SIZE);
 
@@ -2100,14 +2090,14 @@ void GfxCore::DrawIndicators()
     // Draw colour key.
     if (m_ColourKey) {
 	if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
-	    DrawList2D(LIST_DEPTH_KEY, m_XSize - COLOUR_KEY_OFFSET_X,
-		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
+	    DrawList2D(LIST_DEPTH_KEY, GetXSize() - COLOUR_KEY_OFFSET_X,
+		       GetYSize() - COLOUR_KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
-	    DrawList2D(LIST_DATE_KEY, m_XSize - COLOUR_KEY_OFFSET_X,
-		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
+	    DrawList2D(LIST_DATE_KEY, GetXSize() - COLOUR_KEY_OFFSET_X,
+		       GetYSize() - COLOUR_KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
-	    DrawList2D(LIST_ERROR_KEY, m_XSize - COLOUR_KEY_OFFSET_X,
-		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
+	    DrawList2D(LIST_ERROR_KEY, GetXSize() - COLOUR_KEY_OFFSET_X,
+		       GetYSize() - COLOUR_KEY_OFFSET_Y, 0);
 	}
     }
 

@@ -155,8 +155,6 @@ private:
     bool m_Compass;
     bool m_Clino;
     bool m_Tubes;
-    int m_XSize;
-    int m_YSize;
     int m_ColourBy;
 
     bool m_HaveData;

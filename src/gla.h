@@ -133,7 +133,17 @@ class GLACanvas : public wxGLCanvas {
     int blob_method;
     int cross_method;
 
+    int x_size;
+    int y_size;
+
     vector<GLAList> drawing_lists;
+
+    enum {
+	INVALIDATE_ON_SCALE = 1,
+	INVALIDATE_ON_X_RESIZE = 2,
+	INVALIDATE_ON_Y_RESIZE = 4,
+	NEVER_CACHE = 8
+    };
     mutable unsigned int list_flags;
 
     wxString vendor, renderer;
@@ -265,4 +275,9 @@ public:
     void ReadPixels(int width, int height, unsigned char * buf) const;
 
     void PolygonOffset(bool on) const;
+
+    int GetXSize() const { list_flags |= INVALIDATE_ON_X_RESIZE; return x_size; }
+    int GetYSize() const { list_flags |= INVALIDATE_ON_Y_RESIZE; return y_size; }
+
+    void OnSize(wxSizeEvent & event);
 };

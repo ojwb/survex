@@ -86,10 +86,6 @@ using namespace std;
 
 const int BLOB_DIAMETER = 5;
 
-// Flags for GLAList.
-const unsigned int INVALIDATE_ON_SCALE = 1;
-const unsigned int NEVER_CACHE = 2;
-
 static bool opengl_initialised = false;
 
 string GetGLSystemDescription()
@@ -252,7 +248,8 @@ const int GLACanvas::m_FontSize = 10;
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
-      m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN)
+      m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
+      x_size(0), y_size(0)
 {
     // Constructor.
 
@@ -288,6 +285,9 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
+    // Update our record of the client area size and centre.
+    GetClientSize(&x_size, &y_size);
+
     SetCurrent();
     opengl_initialised = true;
     save_hints = false;
@@ -479,6 +479,27 @@ void GLACanvas::SetScale(Double scale)
 
 	m_Scale = scale;
     }
+}
+
+void GLACanvas::OnSize(wxSizeEvent & event)
+{
+    wxSize size = event.GetSize();
+
+    unsigned int mask = 0;
+    if (size.GetWidth() != x_size) mask |= INVALIDATE_ON_X_RESIZE;
+    if (size.GetHeight() != y_size) mask |= INVALIDATE_ON_Y_RESIZE;
+    if (mask) {
+	vector<GLAList>::iterator i;
+	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
+	    if (*i && i->test_flag(mask)) i->InvalidateList();
+	}
+
+	x_size = size.GetWidth();
+	y_size = size.GetHeight();
+    }
+
+    // This apparently is (or at least was) needed for Mac OS X.
+    wxGLCanvas::OnSize(event);
 }
 
 void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
