@@ -818,8 +818,7 @@ void GfxCore::DrawDepthbar()
 	if (x > size) size = x;
     }
 
-    int left = -COLOUR_KEY_OFFSET_X - COLOUR_KEY_BLOCK_WIDTH
-		- COLOUR_KEY_MARGIN - size;
+    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
 		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
@@ -882,8 +881,7 @@ void GfxCore::DrawDatebar()
 	if (x > size) size = x;
     }
 
-    int left = -COLOUR_KEY_OFFSET_X - COLOUR_KEY_BLOCK_WIDTH
-		- COLOUR_KEY_MARGIN - size;
+    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
 		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
@@ -956,8 +954,7 @@ void GfxCore::DrawErrorbar()
 	if (x > size) size = x;
     }
 
-    int left = -COLOUR_KEY_OFFSET_X - COLOUR_KEY_BLOCK_WIDTH
-		- COLOUR_KEY_MARGIN - size;
+    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
 
     DrawRectangle(col_BLACK, col_DARK_GREY,
 		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
@@ -2179,13 +2176,13 @@ void GfxCore::DrawIndicators()
 {
     // Draw colour key.
     if (m_ColourKey) {
-       if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
-	   DrawList2D(LIST_DEPTHBAR, m_XSize, m_YSize, 0);
-       } else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
-	   DrawList2D(LIST_DATEBAR, m_XSize, m_YSize, 0);
-       } else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
-	   DrawList2D(LIST_ERRORBAR, m_XSize, m_YSize, 0);
-       }
+	if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
+	    DrawList2D(LIST_DEPTHBAR, m_XSize - COLOUR_KEY_OFFSET_X, m_YSize, 0);
+	} else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
+	    DrawList2D(LIST_DATEBAR, m_XSize - COLOUR_KEY_OFFSET_X, m_YSize, 0);
+	} else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
+	    DrawList2D(LIST_ERRORBAR, m_XSize - COLOUR_KEY_OFFSET_X, m_YSize, 0);
+	}
     }
 
     // Draw compass or elevation/heading indicators.
