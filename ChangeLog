@@ -1,3 +1,7 @@
+Mon Sep 26 11:58:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc: Improve comment about WXK_PRIOR and WXK_NEXT.
+
 Mon Sep 26 11:51:01 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc: Pressing "Enter" on a station in the tree

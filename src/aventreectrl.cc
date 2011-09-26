@@ -168,11 +168,12 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 	}
 	case WXK_LEFT: case WXK_RIGHT: case WXK_UP: case WXK_DOWN:
 	case WXK_HOME: case WXK_END: case WXK_PAGEUP: case WXK_PAGEDOWN:
-	// On wx 2.6 and earlier, PRIOR/NEXT seem to actually be
-	// PAGEUP/PAGEDOWN (on wxGTK at least).  In wx 2.7 and later
-	// they're just compatibility aliases, so either they have the
-	// same value or aren't defined - either way the code won't
-	// compile.
+	// With wxWidgets 2.6 and earlier, WXK_PRIOR/WXK_NEXT seem to actually
+	// be sent when the user presses Page Up/Page Down (on wxGTK at least).
+	// In wxWidgets 2.7 and later they're just compatibility aliases, and
+	// either they have the same values as WXK_PAGEDOWN/WXK_PAGEUP or
+	// aren't defined - either way the code won't compile unless we disable
+	// the cases for them.
 #if !wxCHECK_VERSION(2,7,0)
 	case WXK_PRIOR: case WXK_NEXT:
 #endif
