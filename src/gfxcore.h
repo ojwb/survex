@@ -194,6 +194,9 @@ private:
 
     cursor current_cursor;
 
+    // The legends for each entry in the colour key.
+    wxString key_legends[NUM_COLOUR_BANDS];
+
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
 			       Double factor);
@@ -224,6 +227,7 @@ private:
     void FirstShow();
 
     void DrawScalebar();
+    void DrawColourKey(int num_bands, const wxString & other);
     void DrawDepthbar();
     void DrawDatebar();
     void DrawErrorbar();

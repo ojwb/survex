@@ -1,3 +1,8 @@
+Mon Sep 26 09:34:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Factor out the code to draw the colour
+	  key into DrawColourKey().
+
 Mon Sep 26 04:23:10 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Apply COLOUR_KEY_OFFSET_Y by moving the point where

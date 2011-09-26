@@ -799,85 +799,20 @@ void GfxCore::SimpleDrawNames()
     }
 }
 
-void GfxCore::DrawDepthbar()
+void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 {
-    const int total_block_height =
-	COLOUR_KEY_BLOCK_HEIGHT * (GetNumColourBands() - 1);
-    const int top = -(total_block_height + COLOUR_KEY_MARGIN);
-    int size = 0;
+    int total_block_height =
+	COLOUR_KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
+    if (!other.empty()) total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
 
-    wxString* strs = new wxString[GetNumColourBands()];
-    int band;
-    for (band = 0; band < GetNumColourBands(); ++band) {
-	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
-		   m_Parent->GetDepthExtent() * band / (GetNumColourBands() - 1);
-	strs[band] = FormatLength(z, false);
-
-	int x;
-	GetTextExtent(strs[band], &x, NULL);
-	if (x > size) size = x;
-    }
-
-    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
-
-    DrawRectangle(col_BLACK, col_DARK_GREY,
-		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
-		  top - COLOUR_KEY_MARGIN * 2,
-		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
-		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
-		  total_block_height + COLOUR_KEY_MARGIN*4);
-
-    int y = top;
-    for (band = 0; band < GetNumColourBands() - 1; ++band) {
-	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
-	y += COLOUR_KEY_BLOCK_HEIGHT;
-    }
-
-    y = top - GetFontSize() / 2;
-    left += COLOUR_KEY_BLOCK_WIDTH + 5;
-
-    SetColour(TEXT_COLOUR);
-    for (band = 0; band < GetNumColourBands(); ++band) {
-	DrawIndicatorText(left, y, strs[band]);
-	y += COLOUR_KEY_BLOCK_HEIGHT;
-    }
-
-    delete[] strs;
-}
-
-void GfxCore::DrawDatebar()
-{
-    int total_block_height;
-    int num_bands;
-    if (m_Parent->GetDateExtent() == 0) {
-	num_bands = 1;
-	total_block_height = COLOUR_KEY_BLOCK_HEIGHT;
-    } else {
-	num_bands = GetNumColourBands();
-	total_block_height = COLOUR_KEY_BLOCK_HEIGHT * (num_bands - 1);
-    }
-    if (!m_Parent->HasCompleteDateInfo())
-	total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
     const int top = -(total_block_height + COLOUR_KEY_MARGIN);
 
     int size = 0;
-    if (!m_Parent->HasCompleteDateInfo()) {
-	GetTextExtent(wmsg(/*Undated*/221), &size, NULL);
-    }
-
-    wxString* strs = new wxString[num_bands];
+    if (!other.empty()) GetTextExtent(other, &size, NULL);
     int band;
     for (band = 0; band < num_bands; ++band) {
-	int y, m, d;
-	int days = m_Parent->GetDateMin();
-	if (band)
-	    days += m_Parent->GetDateExtent() * band / (num_bands - 1);
-	ymd_from_days_since_1900(days, &y, &m, &d);
-	strs[band].Printf(wxT("%04d-%02d-%02d"), y, m, d);
-
 	int x;
-	GetTextExtent(strs[band], &x, NULL);
+	GetTextExtent(key_legends[band], &x, NULL);
 	if (x > size) size = x;
     }
 
@@ -892,9 +827,9 @@ void GfxCore::DrawDatebar()
 
     int y = top;
 
-    if (!m_Parent->HasCompleteDateInfo()) {
+    if (!other.empty()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+		COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
 	y += COLOUR_KEY_BLOCK_HEIGHT * 2;
     }
 
@@ -913,83 +848,67 @@ void GfxCore::DrawDatebar()
     left += COLOUR_KEY_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
-
-    if (!m_Parent->HasCompleteDateInfo()) {
+    if (!other.empty()) {
 	y += COLOUR_KEY_BLOCK_HEIGHT / 2;
-	DrawIndicatorText(left, y, wmsg(/*Undated*/221));
+	DrawIndicatorText(left, y, other);
 	y += COLOUR_KEY_BLOCK_HEIGHT * 2 - COLOUR_KEY_BLOCK_HEIGHT / 2;
     }
 
     if (num_bands == 1) {
 	y += COLOUR_KEY_BLOCK_HEIGHT / 2;
-	DrawIndicatorText(left, y, strs[0]);
+	DrawIndicatorText(left, y, key_legends[0]);
     } else {
-	for (band = 0; band < num_bands; ++band) {
-	    DrawIndicatorText(left, y, strs[band]);
+	for (band = 0; band < GetNumColourBands(); ++band) {
+	    DrawIndicatorText(left, y, key_legends[band]);
 	    y += COLOUR_KEY_BLOCK_HEIGHT;
 	}
     }
+}
 
-    delete[] strs;
+void GfxCore::DrawDepthbar()
+{
+    for (int band = 0; band < GetNumColourBands(); ++band) {
+	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
+		   m_Parent->GetDepthExtent() * band / (GetNumColourBands() - 1);
+	key_legends[band] = FormatLength(z, false);
+    }
+
+    DrawColourKey(GetNumColourBands(), wxString());
+}
+
+void GfxCore::DrawDatebar()
+{
+    int num_bands;
+    if (m_Parent->GetDateExtent() == 0) {
+	num_bands = 1;
+    } else {
+	num_bands = GetNumColourBands();
+    }
+    for (int band = 0; band < num_bands; ++band) {
+	int y, m, d;
+	int days = m_Parent->GetDateMin();
+	if (band)
+	    days += m_Parent->GetDateExtent() * band / (num_bands - 1);
+	ymd_from_days_since_1900(days, &y, &m, &d);
+	key_legends[band].Printf(wxT("%04d-%02d-%02d"), y, m, d);
+    }
+    wxString other;
+    if (!m_Parent->HasCompleteDateInfo()) {
+	other = wmsg(/*Undated*/221);
+    }
+
+    DrawColourKey(num_bands, other);
 }
 
 void GfxCore::DrawErrorbar()
 {
-    int total_block_height = COLOUR_KEY_BLOCK_HEIGHT * (GetNumColourBands() - 1);
-    // Always show the "Not in loop" legend for now (FIXME).
-    total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
-    const int top = -(total_block_height + COLOUR_KEY_MARGIN);
-
-    int size = 0;
-    GetTextExtent(wmsg(/*Not in loop*/290), &size, NULL);
-
-    wxString* strs = new wxString[GetNumColourBands()];
-    int band;
-    for (band = 0; band < GetNumColourBands(); ++band) {
+    for (int band = 0; band < GetNumColourBands(); ++band) {
 	double E = MAX_ERROR * band / (GetNumColourBands() - 1);
-	strs[band].Printf(wxT("%.2f"), E);
-
-	int x;
-	GetTextExtent(strs[band], &x, NULL);
-	if (x > size) size = x;
+	key_legends[band].Printf(wxT("%.2f"), E);
     }
 
-    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
-
-    DrawRectangle(col_BLACK, col_DARK_GREY,
-		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
-		  top - COLOUR_KEY_MARGIN * 2,
-		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
-		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
-		  total_block_height + COLOUR_KEY_MARGIN*4);
-
-    int y = top;
-
-    DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-	    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
-    y += COLOUR_KEY_BLOCK_HEIGHT * 2;
-
-    for (band = 0; band < GetNumColourBands() - 1; ++band) {
-	DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
-	y += COLOUR_KEY_BLOCK_HEIGHT;
-    }
-
-    y = top - GetFontSize() / 2;
-    left += COLOUR_KEY_BLOCK_WIDTH + 5;
-
-    SetColour(TEXT_COLOUR);
-
-    y += COLOUR_KEY_BLOCK_HEIGHT / 2;
-    DrawIndicatorText(left, y, wmsg(/*Not in loop*/290));
-    y += COLOUR_KEY_BLOCK_HEIGHT * 2 - COLOUR_KEY_BLOCK_HEIGHT / 2;
-
-    for (band = 0; band < GetNumColourBands(); ++band) {
-	DrawIndicatorText(left, y, strs[band]);
-	y += COLOUR_KEY_BLOCK_HEIGHT;
-    }
-
-    delete[] strs;
+    // Always show the "Not in loop" legend for now (FIXME).
+    DrawColourKey(GetNumColourBands(), wmsg(/*Not in loop*/290));
 }
 
 wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
