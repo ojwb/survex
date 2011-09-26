@@ -1,3 +1,9 @@
+Mon Sep 26 10:42:50 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Cache the scale bar in a GLAList since
+	  it often gets redrawn exactly the same - for example, when rotating,
+	  panning, etc.
+
 Mon Sep 26 09:40:32 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: More "colour key" related internal

@@ -108,6 +108,7 @@ class GfxCore : public GLACanvas {
 	LIST_COMPASS,
 	LIST_CLINO,
 	LIST_CLINO_BACK,
+	LIST_SCALE_BAR,
 	LIST_DEPTH_KEY,
 	LIST_DATE_KEY,
 	LIST_ERROR_KEY,
@@ -226,7 +227,7 @@ private:
     void TryToFreeArrays();
     void FirstShow();
 
-    void DrawScalebar();
+    void DrawScaleBar();
     void DrawColourKey(int num_bands, const wxString & other);
     void DrawDepthKey();
     void DrawDateKey();
@@ -390,8 +391,14 @@ public:
     void ToggleSurfaceLegs() {
 	ToggleFlag(&m_Surface, UPDATE_BLOBS_AND_CROSSES);
     }
-    void ToggleCompass() { ToggleFlag(&m_Compass); }
-    void ToggleClino() { ToggleFlag(&m_Clino); }
+    void ToggleCompass() {
+	ToggleFlag(&m_Compass);
+	InvalidateList(LIST_SCALE_BAR);
+    }
+    void ToggleClino() {
+	ToggleFlag(&m_Clino);
+	InvalidateList(LIST_SCALE_BAR);
+    }
     void ToggleScaleBar() { ToggleFlag(&m_Scalebar); }
     void ToggleEntrances() { ToggleFlag(&m_Entrances, UPDATE_BLOBS); }
     void ToggleFixedPts() { ToggleFlag(&m_FixedPts, UPDATE_BLOBS); }
@@ -401,7 +408,11 @@ public:
     void ToggleStationNames() { ToggleFlag(&m_Names); }
     void ToggleOverlappingNames() { ToggleFlag(&m_OverlappingNames); }
     void ToggleColourKey() { ToggleFlag(&m_ColourKey); }
-    void ToggleMetric() { ToggleFlag(&m_Metric); InvalidateList(LIST_DEPTH_KEY); }
+    void ToggleMetric() {
+	ToggleFlag(&m_Metric);
+	InvalidateList(LIST_DEPTH_KEY);
+	InvalidateList(LIST_SCALE_BAR);
+    }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }

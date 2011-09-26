@@ -975,7 +975,7 @@ wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
     return negative ? wxString(wxT("-")) + str : str;
 }
 
-void GfxCore::DrawScalebar()
+void GfxCore::DrawScaleBar()
 {
     // Draw the scalebar.
     if (GetPerspective()) return;
@@ -1116,6 +1116,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 void GfxCore::OnSize(wxSizeEvent& event)
 {
     // Handle a change in window size.
+    InvalidateList(LIST_SCALE_BAR);
 
     wxSize size = event.GetSize();
 
@@ -1931,6 +1932,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_CLINO_BACK:
 	    DrawClinoBack();
 	    break;
+	case LIST_SCALE_BAR:
+	    DrawScaleBar();
+	    break;
 	case LIST_DEPTH_KEY:
 	    DrawDepthKey();
 	    break;
@@ -2114,7 +2118,7 @@ void GfxCore::DrawIndicators()
 
     // Draw scalebar.
     if (m_Scalebar) {
-	DrawScalebar();
+	DrawList2D(LIST_SCALE_BAR, 0, 0, 0);
     }
 }
 
