@@ -1,3 +1,8 @@
+Mon Sep 26 12:25:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/export.cc: PLT file output now handles spaces and control
+	  characters in station names by escaping them with '%' as in URLs.
+
 Mon Sep 26 11:58:05 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc: Improve comment about WXK_PRIOR and WXK_NEXT.

@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -557,6 +557,10 @@ SVG::footer()
 }
 
 class PLT : public ExportFilter {
+    string escaped;
+
+    const char * find_name_plt(const img_point *p);
+
   public:
     PLT() { }
     const int * passes() const;
@@ -597,24 +601,46 @@ PLT::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
        fprintf(fh, "M %.3f %.3f %.3f ",
 	       p1->y / METRES_PER_FOOT, p1->x / METRES_PER_FOOT, p1->z / METRES_PER_FOOT);
        /* dummy passage dimensions are required to avoid compass bug */
-       fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name(p1));
+       fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name_plt(p1));
    }
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "D %.3f %.3f %.3f ",
 	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
    /* dummy passage dimensions are required to avoid compass bug */
-   fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name(p));
+   fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name_plt(p));
+}
+
+const char *
+PLT::find_name_plt(const img_point *p)
+{
+    const char * s = find_name(p);
+    escaped.resize(0);
+
+    // PLT format can't handle spaces or control characters, so escape them
+    // like in URLs (an arbitrary choice of escaping, but at least a familiar
+    // one and % isn't likely to occur in station names).
+    const char * q;
+    for (q = s; *q; ++q) {
+	unsigned char ch = *q;
+	if (ch <= ' ' || ch == '%') {
+	    escaped.append(s, q - s);
+	    escaped += '%';
+	    escaped += "0123456789abcdef"[ch >> 4];
+	    escaped += "0123456789abcdef"[ch & 0x0f];
+	    s = q + 1;
+	}
+    }
+    if (!escaped.empty()) {
+	escaped.append(s, q - s);
+	return escaped.c_str();
+    }
+    return s;
 }
 
 void
 PLT::label(const img_point *p, const char *s, bool fSurface)
 {
    fSurface = fSurface; /* unused */
-   /* FIXME: also ctrl characters - ought to remap them, not give up */
-   if (strchr(s, ' ')) {
-      fprintf(stderr, "PLT format can't cope with spaces in station names\n");
-      exit(1);
-   }
    set_name(p, s);
 }
 
