@@ -1,3 +1,9 @@
+Mon Sep 26 04:23:10 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Apply COLOUR_KEY_OFFSET_Y by moving the point where
+	  we plot the key rather than including it in the calculations of the
+	  key's coordinates.
+
 Mon Sep 26 04:17:16 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Apply COLOUR_KEY_OFFSET_X by moving the point where

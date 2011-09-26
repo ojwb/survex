@@ -73,11 +73,11 @@ static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int COLOUR_KEY_OFFSET_X = 16;
+static const int COLOUR_KEY_OFFSET_Y = 16;
 static const int COLOUR_KEY_EXTRA_LEFT_MARGIN = 2;
 static const int COLOUR_KEY_BLOCK_WIDTH = 20;
 static const int COLOUR_KEY_BLOCK_HEIGHT = 16;
 static const int COLOUR_KEY_MARGIN = 6;
-static const int COLOUR_KEY_OFFSET_Y = 16 + COLOUR_KEY_MARGIN;
 static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
@@ -803,7 +803,7 @@ void GfxCore::DrawDepthbar()
 {
     const int total_block_height =
 	COLOUR_KEY_BLOCK_HEIGHT * (GetNumColourBands() - 1);
-    const int top = -(total_block_height + COLOUR_KEY_OFFSET_Y);
+    const int top = -(total_block_height + COLOUR_KEY_MARGIN);
     int size = 0;
 
     wxString* strs = new wxString[GetNumColourBands()];
@@ -859,7 +859,7 @@ void GfxCore::DrawDatebar()
     }
     if (!m_Parent->HasCompleteDateInfo())
 	total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
-    const int top = -(total_block_height + COLOUR_KEY_OFFSET_Y);
+    const int top = -(total_block_height + COLOUR_KEY_MARGIN);
 
     int size = 0;
     if (!m_Parent->HasCompleteDateInfo()) {
@@ -938,7 +938,7 @@ void GfxCore::DrawErrorbar()
     int total_block_height = COLOUR_KEY_BLOCK_HEIGHT * (GetNumColourBands() - 1);
     // Always show the "Not in loop" legend for now (FIXME).
     total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
-    const int top = -(total_block_height + COLOUR_KEY_OFFSET_Y);
+    const int top = -(total_block_height + COLOUR_KEY_MARGIN);
 
     int size = 0;
     GetTextExtent(wmsg(/*Not in loop*/290), &size, NULL);
@@ -2177,11 +2177,14 @@ void GfxCore::DrawIndicators()
     // Draw colour key.
     if (m_ColourKey) {
 	if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
-	    DrawList2D(LIST_DEPTHBAR, m_XSize - COLOUR_KEY_OFFSET_X, m_YSize, 0);
+	    DrawList2D(LIST_DEPTHBAR, m_XSize - COLOUR_KEY_OFFSET_X,
+		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
-	    DrawList2D(LIST_DATEBAR, m_XSize - COLOUR_KEY_OFFSET_X, m_YSize, 0);
+	    DrawList2D(LIST_DATEBAR, m_XSize - COLOUR_KEY_OFFSET_X,
+		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
-	    DrawList2D(LIST_ERRORBAR, m_XSize - COLOUR_KEY_OFFSET_X, m_YSize, 0);
+	    DrawList2D(LIST_ERRORBAR, m_XSize - COLOUR_KEY_OFFSET_X,
+		       m_YSize - COLOUR_KEY_OFFSET_Y, 0);
 	}
     }
 
