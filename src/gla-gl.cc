@@ -86,6 +86,10 @@ using namespace std;
 
 const int BLOB_DIAMETER = 5;
 
+// Flags for GLAList.
+const unsigned int INVALIDATE_ON_SCALE = 1;
+const unsigned int NEVER_CACHE = 2;
+
 static bool opengl_initialised = false;
 
 string GetGLSystemDescription()

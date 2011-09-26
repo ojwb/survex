@@ -81,9 +81,6 @@ public:
     double GetBlue() const;
 };
 
-const unsigned int INVALIDATE_ON_SCALE = 1;
-const unsigned int NEVER_CACHE = 2;
-
 class GLAList {
     GLuint gl_list;
     unsigned int flags;

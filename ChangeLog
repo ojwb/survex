@@ -1,3 +1,8 @@
+Mon Sep 26 10:44:22 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Move GLAList flags out of the header as they
+	  are internal details.
+
 Mon Sep 26 10:42:50 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Cache the scale bar in a GLAList since
