@@ -1,3 +1,11 @@
+Mon Sep 26 11:42:17 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h,src/guicontrol.cc: Pressing "F5" forces all GLAList
+	  objects to be invalidated and then forces a refresh of the display.
+	  This is intended as a debugging aid - if pressing F5 changes the
+	  display at all then there's a missing case where a list should
+	  have been invalidated.
+
 Mon Sep 26 11:35:29 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/: Push survey pane size tracking down into GLACanvas, and

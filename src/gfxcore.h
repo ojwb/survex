@@ -118,7 +118,8 @@ class GfxCore : public GLACanvas {
 	LIST_BLOBS,
 	LIST_CROSSES,
 	LIST_GRID,
-	LIST_SHADOW
+	LIST_SHADOW,
+	LIST_LIMIT_ // Leave this last.
     } drawing_list;
 
     static const int NUM_COLOUR_BANDS = 13;
@@ -474,6 +475,11 @@ public:
 
     bool HandleRClick(wxPoint point);
 
+    void InvalidateAllLists() {
+	for (int i = 0; i < LIST_LIMIT_; ++i) {
+	    InvalidateList(i);
+	}
+    }
 private:
     DECLARE_EVENT_TABLE()
 };
