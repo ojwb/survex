@@ -231,7 +231,7 @@ foreach my $c (@chars) {
     # happen due to thick lines in the font path, or be an artifact of
     # the downsampling.
     my ($w, $h, $xoff, $yoff, $x, $y);
-    if ($name eq 'space') {
+    if ($m->[3] == 0 && $m->[4] == 0) {
 	$w = $h = $xoff = $yoff = $x = $y = 0;
     } else {
 	$w = round($m->[3] * $LINEHGT * $TEXSIZ + 2*$PADDING);

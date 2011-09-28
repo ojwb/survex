@@ -1,3 +1,9 @@
+Wed Sep 28 14:00:14 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Rather than special-casing the character with
+	  PostScript name 'space', just omit characters with zero width and
+	  height from the texture.
+
 Wed Sep 28 12:41:42 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Put the digits first in the font texture to help
