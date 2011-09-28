@@ -132,7 +132,7 @@ int main(int argc, char **argv)
 
     real_argv = argv;
 
-#ifdef wxUSE_UNICODE
+#if wxUSE_UNICODE
     wxWCharBuffer buf(wxConvFileName->cMB2WX(argv[0]));
     wxChar * wargv[2];
     if (buf) {
