@@ -1,3 +1,10 @@
+Wed Sep 28 12:41:42 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Put the digits first in the font texture to help
+	  ensure they are all on the same line and will exactly align
+	  vertically when rendered - a slight discrepancy here is particularly
+	  visible in the colour key legends and compass bearing.
+
 Wed Sep 28 12:30:03 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Regenerate aven.txf if the script which generates it

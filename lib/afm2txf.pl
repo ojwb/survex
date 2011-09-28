@@ -274,6 +274,21 @@ unlink("$FONT.ppm");
 ########################################################################
 ########################################################################
 
+# Put the digits first to help ensure they are all on the same line in the
+# texture and will exactly align vertically when rendered - a slight
+# discrepancy here is particularly visible in the colour key legends and
+# compass bearing.
+sub render_order {
+    my $a = $CHARS{$a};
+    my $b = $CHARS{$b};
+    my $a_dig = chr($a) =~ /\d/;
+    my $b_dig = chr($b) =~ /\d/;
+    if ($a_dig ^ $b_dig) {
+	return $a_dig ? -1 : 1;
+    }
+    return $a <=> $b;
+}
+
 sub genPostscript {
     my $rows = shift;
     my $rowhgt = 1/$rows;
@@ -302,7 +317,7 @@ sub genPostscript {
 
     my $x = $PADDING/$TEXSIZ;
     my $y = 1 - $rowhgt + $PADDING/$TEXSIZ;
-    my @chars = sort { $CHARS{$a} <=> $CHARS{$b} } (keys %CHARS);
+    my @chars = sort render_order (keys %CHARS);
     foreach my $c (@chars) {
 	next if $c eq 'space';
 	my $m = $metrics{$c};
