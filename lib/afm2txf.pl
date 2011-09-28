@@ -209,7 +209,10 @@ foreach my $c (keys %metrics) {
     delete $metrics{$c} if !defined $CHARS{$c};
 }
 
-sub round { sprintf "%.0f", $_[0] }
+#sub round { $_[0] > 0 ? int($_[0] + 0.5) : int($_[0] - 0.5) }
+# Bias rounding of positives numbers to be upwards for better spacing.
+# FIXME: sort out the spacing properly - this is just a kludge.
+sub round { $_[0] > 0 ? int($_[0] + 0.9) : int($_[0] - 0.5) }
 $output = "$FONT.txf" unless defined $output;
 open TXF, '>', $output or die;
 print TXF pack "V", 0x667874ff;

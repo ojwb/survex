@@ -1,3 +1,10 @@
+Wed Sep 28 14:47:15 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Add a kludge to prefer to round values up when
+	  generating the .txf file which empirically results in better
+	  horizontal spacing (this should be fixed properly, but this is
+	  at least an easy improvement for now).
+
 Wed Sep 28 14:00:14 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Rather than special-casing the character with
