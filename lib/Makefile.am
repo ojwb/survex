@@ -43,5 +43,5 @@ mimedir = $(datadir)/mime-info
 dist_mime_DATA = survex.mime
 mime_DATA = survex.keys
 
-aven.txf:
+aven.txf: $(srcdir)/afm2txf.pl
 	$(srcdir)/afm2txf.pl -o aven.txf /usr/share/texmf-texlive/fonts/afm/urw/helvetic/uhvr8a.afm

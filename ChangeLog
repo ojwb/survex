@@ -1,3 +1,8 @@
+Wed Sep 28 12:30:03 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Regenerate aven.txf if the script which generates it
+	  has been modified.
+
 Wed Sep 28 11:15:08 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Fix handling of PostScript character names which are
