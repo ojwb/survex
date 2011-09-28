@@ -1,3 +1,14 @@
+Wed Sep 28 11:15:08 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/afm2txf.pl: Fix handling of PostScript character names which are
+	  used by more than one Unicode value ("space" and "hyphen" are the
+	  current examples).  This fixes the colour key for date to have dashes
+	  in the dates.  Fix not to bother writing empty space into the texture
+	  map for spaces - just set width and height to 0 and skip to the
+	  width.
+	* src/fnt.cc: Remove special case kludge for if space isn't defined,
+	  which is no longer needed thanks to the above fix.
+
 Wed Sep 28 10:19:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/,src/printwx.cc: Fix mixed up messages - the print dialog now

@@ -212,13 +212,6 @@ fntTexFont::load(const char *fname)
 	glEndList();
     }
 
-    if (widths[(int)' '] == -1) {
-	glNewList(list_base + ' ', GL_COMPILE);
-	widths[(int)' '] = widths[(int)'n'];
-	glTranslated(widths[(int)' '], 0, 0);
-	glEndList();
-    }
-
     fclose(fd);
     return true;
 }
