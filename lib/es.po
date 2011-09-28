@@ -611,14 +611,6 @@ msgstr ""
 #~ msgid "No mouse detected"
 #~ msgstr "No se detectó ningún ratón"
 
-#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-#~ msgid "Plan, %05.1f up screen"
-#~ msgstr "Planta, %05.1f arriba la pantalla"
-
-#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-#~ msgid "View towards %05.1f"
-#~ msgstr "Vista en dirección %05.1f"
-
 #~ msgid "You need to calibrate your printer - see the manual for details."
 #~ msgstr "Es necesario calibrar la impresora - ver el manual para detalles."
 
@@ -921,9 +913,6 @@ msgstr "Prueba `%s --help' para más información.\n"
 #~ msgid "Bearing up page (degrees): "
 #~ msgstr "Azimut de la pagina arriba (grados): "
 
-#~ msgid "View towards: "
-#~ msgstr "Vista hacia: "
-
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #~ msgid "Tilt (degrees): "
@@ -955,17 +944,23 @@ msgstr "Página %d de %d"
 msgid "Survey `%s'   Page %d (of %d)   Processed on %s"
 msgstr "Topo `%s'   Página %d (de %d)   Procesada en %s"
 
-#. TRANSLATORS: This is used on printouts of plan views, and gives the bearing up the page
-#. (so if North is across the page to the right, 270 is "Up page"
-#: ../src/printwx.cc:677
-msgid "Up page"
-msgstr "Arriba la pagina"
+#. TRANSLATORS: %s will be replaced by something like "123.4"
+#~ msgid "Plan, %s up screen"
+#~ msgstr "Planta, %s arriba la pantalla"
 
-#. TRANSLATORS: This is used on printouts of elevations
-#. It gives the bearing we're looking in the direction of
+#~ msgid "View towards: "
+#~ msgstr "Vista hacia: "
+
+#. TRANSLATORS: This is used on printouts of plans, with %s replaced by
+#. something like "123°".  The bearing is up the page.
 #: ../src/printwx.cc:677
-msgid "View"
-msgstr "Vista"
+msgid "%s up page"
+msgstr "%s arriba la pagina"
+
+#. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
+#. something like "123°".  The bearing is the direction we're looking.
+msgid "View towards %s"
+msgstr "Vista en dirección %s"
 
 #, c-format
 #~ msgid "This will need %d pages (%dx%d)."
@@ -1465,6 +1460,13 @@ msgstr "&Reducir\t["
 msgid "Restore De&fault View"
 msgstr "Restaurar la &vista predeterminada"
 
+#. TRANSLATORS: Used as a label for the surrounding box for the "Bearing" and
+#. "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in the
+#. "what to print" dialog.
+#: ../src/printwx.cc:210
+msgid "View"
+msgstr "Vista"
+
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
 #. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a
 #. good name for this but nothing better has yet come to mind!
@@ -1549,9 +1551,12 @@ msgstr "&Brújula"
 msgid "C&linometer"
 msgstr "&Clino"
 
+#~ msgid "&Depth Bar"
+#~ msgstr "Barra de &Profundidad"
+
 #: ../src/mainfrm.cc:819
-msgid "&Depth Bar"
-msgstr "Barra de &Profundidad"
+msgid "Colour &Key"
+msgstr ""
 
 #: ../src/mainfrm.cc:820
 msgid "&Scale Bar"

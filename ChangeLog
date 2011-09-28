@@ -1,3 +1,10 @@
+Wed Sep 28 10:19:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/printwx.cc: Fix mixed up messages - the print dialog now
+	  says "View" on the left subgroup of controls. Improve the display of
+	  the bearing on printouts.  Add message for "Colour &Key" to
+	  translations.
+
 Wed Sep 28 02:02:09 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Fix #ifdef to #if in previous change.

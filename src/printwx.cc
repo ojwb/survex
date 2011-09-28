@@ -207,7 +207,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/255)), wxVERTICAL);
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
@@ -552,7 +552,7 @@ svxPrintDlg::RecalcBounds()
     }
 }
 
-#define DEG "\xB0" /* degree symbol in iso-8859-1 */
+#define DEG "\xB0" /* Degree symbol in ISO-8859-1 */
 
 static int xpPageWidth, ypPageDepth;
 static long MarginLeft, MarginRight, MarginTop, MarginBottom;
@@ -671,9 +671,14 @@ svxPrintout::draw_info_box()
 				l->Scale));
 
    if (l->view != layout::EXTELEV) {
+      wxString angle;
+      angle.Printf(wxT("%03d"), l->rot);
+      angle += wxChar(0xB0); // Degree symbol.
       wxString s;
-      s = wmsg(l->view == layout::PLAN ? /*Up page*/168 : /*View*/169);
-      s.Append(wxString::Format(wxT(" %03d"DEG), l->rot));
+      s = wmsg(l->view == layout::PLAN ? /*%s up page*/168 : /*View towards %s*/169);
+      // wxString::Format() and Printf() are buggy and don't work for us here
+      // so we use Replace() instead.
+      s.Replace(wxT("%s"), angle.c_str());
       MOVEMM(5, 3); WriteString(s);
    }
 

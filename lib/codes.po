@@ -614,14 +614,6 @@ msgstr "103"
 #~ msgid "No mouse detected"
 #~ msgstr ""
 
-#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-#~ msgid "Plan, %05.1f up screen"
-#~ msgstr ""
-
-#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-#~ msgid "View towards %05.1f"
-#~ msgstr ""
-
 #~ msgid "You need to calibrate your printer - see the manual for details."
 #~ msgstr ""
 
@@ -924,9 +916,6 @@ msgstr "157"
 #~ msgid "Bearing up page (degrees): "
 #~ msgstr ""
 
-#~ msgid "View towards: "
-#~ msgstr ""
-
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #~ msgid "Tilt (degrees): "
@@ -958,16 +947,23 @@ msgstr "166"
 msgid "Survey `%s'   Page %d (of %d)   Processed on %s"
 msgstr "167"
 
-#. TRANSLATORS: This is used on printouts of plan views, and gives the bearing up the page
-#. (so if North is across the page to the right, 270 is "Up page"
+#. TRANSLATORS: %s will be replaced by something like "123°"
+#~ msgid "Plan, %s up screen"
+#~ msgstr ""
+
+#~ msgid "View towards: "
+#~ msgstr ""
+
+#. TRANSLATORS: This is used on printouts of plans, with %s replaced by
+#. something like "123°".  The bearing is up the page.
 #: ../src/printwx.cc:677
-msgid "Up page"
+msgid "%s up page"
 msgstr "168"
 
-#. TRANSLATORS: This is used on printouts of elevations
-#. It gives the bearing we're looking in the direction of
+#. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
+#. something like "123°".  The bearing is the direction we're looking.
 #: ../src/printwx.cc:677
-msgid "View"
+msgid "View towards %s"
 msgstr "169"
 
 #, c-format
@@ -1465,6 +1461,13 @@ msgstr "253"
 #: ../src/mainfrm.cc:763
 msgid "Restore De&fault View"
 msgstr "254"
+
+#. TRANSLATORS: Used as a label for the surrounding box for the "Bearing" and
+#. "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in the
+#. "what to print" dialog.
+#: ../src/printwx.cc:210
+msgid "View"
+msgstr "283"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
 #. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a

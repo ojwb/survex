@@ -612,14 +612,6 @@ msgstr ""
 #~ msgid "No mouse detected"
 #~ msgstr "Nebola detekovaná myš"
 
-#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-#~ msgid "Plan, %05.1f up screen"
-#~ msgstr "Pôdorys,%05.1f na obrazovke"
-
-#. TRANSLATORS: %05.1f will be replaced by something like "123.4"
-#~ msgid "View towards %05.1f"
-#~ msgstr "Pohľad na %05.1f"
-
 #~ msgid "You need to calibrate your printer - see the manual for details."
 #~ msgstr "Musíte nakalibrovať vašu tlačiareň - podrobnosti sú v manuáli"
 
@@ -922,9 +914,6 @@ msgstr "Skúste `%s --help' aby sa zobrazilo viac informácií.\n"
 #~ msgid "Bearing up page (degrees): "
 #~ msgstr "Azimut stránky (v stupňoch): "
 
-#~ msgid "View towards: "
-#~ msgstr "Pohľad smerom na: "
-
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #~ msgid "Tilt (degrees): "
@@ -956,17 +945,24 @@ msgstr "Stránka  %d z %d"
 msgid "Survey `%s'   Page %d (of %d)   Processed on %s"
 msgstr "Meranie (survey) `%s'   Stránka %d (z %d)   Zpracované od stránky %s"
 
-#. TRANSLATORS: This is used on printouts of plan views, and gives the bearing up the page
-#. (so if North is across the page to the right, 270 is "Up page"
-#: ../src/printwx.cc:677
-msgid "Up page"
-msgstr "Vrch stránky"
+#. TRANSLATORS: %s will be replaced by something like "123.4"
+#~ msgid "Plan, %s up screen"
+#~ msgstr "Pôdorys, %s na obrazovke"
 
-#. TRANSLATORS: This is used on printouts of elevations
-#. It gives the bearing we're looking in the direction of
+#~ msgid "View towards: "
+#~ msgstr "Pohľad smerom na: "
+
+#. TRANSLATORS: This is used on printouts of plans, with %s replaced by
+#. something like "123°".  The bearing is up the page.
 #: ../src/printwx.cc:677
-msgid "View"
-msgstr "Pohľad na"
+#, fuzzy
+msgid "%s up page"
+msgstr "%s vrch stránky"
+
+#. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
+#. something like "123°".  The bearing is the direction we're looking.
+msgid "View towards %s"
+msgstr "Pohľad na %s"
 
 #, c-format
 #~ msgid "This will need %d pages (%dx%d)."
@@ -1465,6 +1461,13 @@ msgstr "Zmenši&t\t["
 msgid "Restore De&fault View"
 msgstr "&Obnovenie východzieho pohľadu"
 
+#. TRANSLATORS: Used as a label for the surrounding box for the "Bearing" and
+#. "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in the
+#. "what to print" dialog.
+#: ../src/printwx.cc:210
+msgid "View"
+msgstr "Pohľad na"
+
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
 #. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a
 #. good name for this but nothing better has yet come to mind!
@@ -1549,9 +1552,12 @@ msgstr "&Kompas"
 msgid "C&linometer"
 msgstr "&Sklonomer"
 
+#~ msgid "&Depth Bar"
+#~ msgstr "&Hļbkové merítko"
+
 #: ../src/mainfrm.cc:819
-msgid "&Depth Bar"
-msgstr "&Hļbkové merítko"
+msgid "Colour &Key"
+msgstr ""
 
 #: ../src/mainfrm.cc:820
 msgid "&Scale Bar"
