@@ -132,6 +132,7 @@ int main(int argc, char **argv)
 
     real_argv = argv;
 
+#ifdef wxUSE_UNICODE
     wxWCharBuffer buf(wxConvFileName->cMB2WX(argv[0]));
     wxChar * wargv[2];
     if (buf) {
@@ -143,6 +144,10 @@ int main(int argc, char **argv)
     wargv[1] = NULL;
     int wargc = 1;
     return wxEntry(wargc, wargv);
+#else
+    char dummy_argv[2] = { argv[0], NULL };
+    return wxEntry(1, dummy_argv);
+#endif
 }
 #endif
 

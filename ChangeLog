@@ -1,3 +1,7 @@
+Wed Sep 28 01:09:09 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Fix for non-Unicode build.
+
 Mon Sep 26 12:25:59 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/export.cc: PLT file output now handles spaces and control
