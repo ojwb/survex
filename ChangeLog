@@ -1,3 +1,7 @@
+Thu Sep 29 12:20:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Rename COLOUR_KEY_* constants to KEY_*.
+
 Thu Sep 29 10:16:30 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Make COLOUR_KEY_OFFSET_X and COLOUR_KEY_OFFSET_Y the

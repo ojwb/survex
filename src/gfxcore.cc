@@ -72,12 +72,12 @@ static const int INDICATOR_OFFSET_Y = 15;
 static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
-static const int COLOUR_KEY_OFFSET_X = 10;
-static const int COLOUR_KEY_OFFSET_Y = 10;
-static const int COLOUR_KEY_EXTRA_LEFT_MARGIN = 2;
-static const int COLOUR_KEY_BLOCK_WIDTH = 20;
-static const int COLOUR_KEY_BLOCK_HEIGHT = 16;
-static const int COLOUR_KEY_MARGIN = 6;
+static const int KEY_OFFSET_X = 10;
+static const int KEY_OFFSET_Y = 10;
+static const int KEY_EXTRA_LEFT_MARGIN = 2;
+static const int KEY_BLOCK_WIDTH = 20;
+static const int KEY_BLOCK_HEIGHT = 16;
+static const int KEY_MARGIN = 6;
 static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
@@ -797,10 +797,10 @@ void GfxCore::SimpleDrawNames()
 void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 {
     int total_block_height =
-	COLOUR_KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
-    if (!other.empty()) total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
+	KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
+    if (!other.empty()) total_block_height += KEY_BLOCK_HEIGHT * 2;
 
-    const int bottom = -(total_block_height + COLOUR_KEY_MARGIN * 2);
+    const int bottom = -(total_block_height + KEY_MARGIN * 2);
 
     int size = 0;
     if (!other.empty()) GetTextExtent(other, &size, NULL);
@@ -811,52 +811,52 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	if (x > size) size = x;
     }
 
-    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN * 2 - size;
+    int left = -KEY_BLOCK_WIDTH - KEY_MARGIN * 2 - size;
 
-    key_lowerleft.x = left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN;
-    key_lowerleft.y = bottom - COLOUR_KEY_MARGIN * 2;
+    key_lowerleft.x = left - KEY_MARGIN - KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft.y = bottom - KEY_MARGIN * 2;
     DrawRectangle(col_BLACK, col_DARK_GREY,
 		  key_lowerleft.x, key_lowerleft.y,
-		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
-		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
-		  total_block_height + COLOUR_KEY_MARGIN*4);
+		  KEY_BLOCK_WIDTH + size + KEY_MARGIN * 3 +
+		      KEY_EXTRA_LEFT_MARGIN,
+		  total_block_height + KEY_MARGIN*4);
 
     int y = bottom;
 
     if (!other.empty()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-		COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
-	y += COLOUR_KEY_BLOCK_HEIGHT * 2;
+		KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
+	y += KEY_BLOCK_HEIGHT * 2;
     }
 
     if (num_bands == 1) {
 	DrawShadedRectangle(GetPen(0), GetPen(0), left, y,
-			    COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
+			    KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
     } else {
 	for (band = 0; band < num_bands - 1; ++band) {
 	    DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-				COLOUR_KEY_BLOCK_WIDTH, COLOUR_KEY_BLOCK_HEIGHT);
-	    y += COLOUR_KEY_BLOCK_HEIGHT;
+				KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
+	    y += KEY_BLOCK_HEIGHT;
 	}
     }
 
     y = bottom - GetFontSize() / 2;
-    left += COLOUR_KEY_BLOCK_WIDTH + 5;
+    left += KEY_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
     if (!other.empty()) {
-	y += COLOUR_KEY_BLOCK_HEIGHT / 2;
+	y += KEY_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, other);
-	y += COLOUR_KEY_BLOCK_HEIGHT * 2 - COLOUR_KEY_BLOCK_HEIGHT / 2;
+	y += KEY_BLOCK_HEIGHT * 2 - KEY_BLOCK_HEIGHT / 2;
     }
 
     if (num_bands == 1) {
-	y += COLOUR_KEY_BLOCK_HEIGHT / 2;
+	y += KEY_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, key_legends[0]);
     } else {
 	for (band = 0; band < GetNumColourBands(); ++band) {
 	    DrawIndicatorText(left, y, key_legends[band]);
-	    y += COLOUR_KEY_BLOCK_HEIGHT;
+	    y += KEY_BLOCK_HEIGHT;
 	}
     }
 }
@@ -1621,8 +1621,8 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
 bool GfxCore::PointWithinColourKey(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the key.
-    point.x -= GetXSize() - COLOUR_KEY_OFFSET_X;
-    point.y = COLOUR_KEY_OFFSET_Y - point.y;
+    point.x -= GetXSize() - KEY_OFFSET_X;
+    point.y = KEY_OFFSET_Y - point.y;
     return (point.x >= key_lowerleft.x && point.x <= 0 &&
 	    point.y >= key_lowerleft.y && point.y <= 0);
 }
@@ -2100,14 +2100,14 @@ void GfxCore::DrawIndicators()
     // Draw colour key.
     if (m_ColourKey) {
 	if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
-	    DrawList2D(LIST_DEPTH_KEY, GetXSize() - COLOUR_KEY_OFFSET_X,
-		       GetYSize() - COLOUR_KEY_OFFSET_Y, 0);
+	    DrawList2D(LIST_DEPTH_KEY, GetXSize() - KEY_OFFSET_X,
+		       GetYSize() - KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
-	    DrawList2D(LIST_DATE_KEY, GetXSize() - COLOUR_KEY_OFFSET_X,
-		       GetYSize() - COLOUR_KEY_OFFSET_Y, 0);
+	    DrawList2D(LIST_DATE_KEY, GetXSize() - KEY_OFFSET_X,
+		       GetYSize() - KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
-	    DrawList2D(LIST_ERROR_KEY, GetXSize() - COLOUR_KEY_OFFSET_X,
-		       GetYSize() - COLOUR_KEY_OFFSET_Y, 0);
+	    DrawList2D(LIST_ERROR_KEY, GetXSize() - KEY_OFFSET_X,
+		       GetYSize() - KEY_OFFSET_Y, 0);
 	}
     }
 
