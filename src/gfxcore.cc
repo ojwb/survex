@@ -77,7 +77,6 @@ static const int KEY_OFFSET_Y = 10;
 static const int KEY_EXTRA_LEFT_MARGIN = 2;
 static const int KEY_BLOCK_WIDTH = 20;
 static const int KEY_BLOCK_HEIGHT = 16;
-static const int KEY_MARGIN = 6;
 static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
 static const int SCALE_BAR_OFFSET_Y = 12;
@@ -782,7 +781,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
     if (!other.empty()) total_block_height += KEY_BLOCK_HEIGHT * 2;
 
-    const int bottom = -(total_block_height + KEY_MARGIN * 2);
+    const int bottom = -total_block_height;
 
     int size = 0;
     if (!other.empty()) GetTextExtent(other, &size, NULL);
@@ -793,10 +792,10 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	if (x > size) size = x;
     }
 
-    int left = -KEY_BLOCK_WIDTH - KEY_MARGIN * 2 - size;
+    int left = -KEY_BLOCK_WIDTH - size;
 
-    key_lowerleft.x = left - KEY_MARGIN - KEY_EXTRA_LEFT_MARGIN;
-    key_lowerleft.y = bottom - KEY_MARGIN * 2;
+    key_lowerleft.x = left - KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft.y = bottom;
 
     int y = bottom;
 

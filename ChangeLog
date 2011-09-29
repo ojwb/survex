@@ -1,3 +1,8 @@
+Thu Sep 29 20:57:41 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Now that we don't have the key background, just
+	  remove KEY_MARGIN entirely.
+
 Thu Sep 29 20:37:09 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Remove the dark grey background from the colour key
