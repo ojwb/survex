@@ -1,3 +1,8 @@
+Thu Sep 29 21:56:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla.h: Fix zoom in limit to be the same distance
+	  regardless of the extent of the survey.
+
 Thu Sep 29 20:57:41 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Now that we don't have the key background, just

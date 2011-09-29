@@ -280,4 +280,6 @@ public:
     int GetYSize() const { list_flags |= INVALIDATE_ON_Y_RESIZE; return y_size; }
 
     void OnSize(wxSizeEvent & event);
+
+    glaCoord GetVolumeDiameter() const { return m_VolumeDiameter; }
 };

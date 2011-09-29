@@ -245,13 +245,10 @@ void GfxCore::FirstShow()
 
 void GfxCore::SetScale(Double scale)
 {
-    // Fill the plot data arrays with screen coordinates, scaling the survey
-    // to a particular absolute scale.
-
     if (scale < 0.05) {
 	scale = 0.05;
-    } else if (scale > 6144.0) {
-	scale = 6144.0;
+    } else if (scale > GetVolumeDiameter()) {
+	scale = GetVolumeDiameter();
     }
 
     m_Scale = scale;
