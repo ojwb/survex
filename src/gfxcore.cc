@@ -210,24 +210,6 @@ void GfxCore::Initialise(bool same_file)
 	SetScale(1.0);
     }
 
-    switch (m_ColourBy) {
-	case COLOUR_BY_DEPTH:
-	    if (m_Parent->GetDepthExtent() == 0.0) {
-		SetColourBy(COLOUR_BY_NONE);
-	    }
-	    break;
-	case COLOUR_BY_DATE:
-	    if (!HasDateInformation()) {
-		SetColourBy(COLOUR_BY_NONE);
-	    }
-	    break;
-	case COLOUR_BY_ERROR:
-	    if (!m_Parent->HasErrorInformation()) {
-		SetColourBy(COLOUR_BY_NONE);
-	    }
-	    break;
-    }
-
     m_HaveData = true;
 
     ForceRefresh();

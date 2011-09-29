@@ -1,3 +1,11 @@
+Thu Sep 29 12:22:34 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Upon loading a survey which lacks the information for
+	  the current "Colour by" mode, don't change to "Colour by none" - we
+	  already do no colouring and hide the key when there's nothing to
+	  colour by, and it's annoying to have the actual mode changed if you
+	  then load a survey which does have the information to colour by.
+
 Thu Sep 29 12:20:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Rename COLOUR_KEY_* constants to KEY_*.
