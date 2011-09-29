@@ -2125,13 +2125,18 @@ void GfxCore::PlaceVertexWithColour(const Vector3 & v,
 void GfxCore::SetDepthColour(Double z, Double factor) {
     // Set the drawing colour based on the altitude.
     Double z_ext = m_Parent->GetDepthExtent();
-    assert(z_ext > 0);
 
     z -= m_Parent->GetDepthMin();
     // points arising from tubes may be slightly outside the limits...
     if (z < 0) z = 0;
     if (z > z_ext) z = z_ext;
 
+    if (z == 0) {
+	SetColour(GetPen(0), factor);
+	return;
+    }
+
+    assert(z_ext > 0.0);
     Double how_far = z / z_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
@@ -2198,9 +2203,11 @@ int GfxCore::GetDepthColour(Double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
     Double z_ext = m_Parent->GetDepthExtent();
-    assert(z_ext > 0);
     z -= m_Parent->GetDepthMin();
-    z += z_ext / 2;
+    if (z == 0) return 0;
+    assert(z_ext > 0.0);
+    assert(z >= 0.0);
+    assert(z <= z_ext);
     return int(z / z_ext * (GetNumColourBands() - 1));
 }
 
@@ -2214,8 +2221,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
     Double z_ext = m_Parent->GetDepthExtent();
-    return (z_ext * band / (GetNumColourBands() - 1)) - z_ext / 2
-	+ m_Parent->GetDepthMin();
+    return (z_ext * band / (GetNumColourBands() - 1)) + m_Parent->GetDepthMin();
 }
 
 void GfxCore::AddPolyline(const traverse & centreline)

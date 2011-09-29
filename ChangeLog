@@ -1,3 +1,9 @@
+Thu Sep 29 22:33:06 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Don't segfault on a flat survey.  Fix incorrect
+	  addition and corresponding subtraction of GetDepthExtent() when
+	  calculating splits over depth band boundaries.
+
 Thu Sep 29 21:56:19 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla.h: Fix zoom in limit to be the same distance
