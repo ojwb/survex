@@ -1,3 +1,8 @@
+Thu Sep 29 10:16:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Make COLOUR_KEY_OFFSET_X and COLOUR_KEY_OFFSET_Y the
+	  actual offsets, rather than taking COLOUR_KEY_MARGIN off them.
+
 Thu Sep 29 05:08:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Fix tooltip for open to say "survey file" not "3D

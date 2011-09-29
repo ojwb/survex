@@ -72,8 +72,8 @@ static const int INDICATOR_OFFSET_Y = 15;
 static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
 static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
 				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
-static const int COLOUR_KEY_OFFSET_X = 16;
-static const int COLOUR_KEY_OFFSET_Y = 16;
+static const int COLOUR_KEY_OFFSET_X = 10;
+static const int COLOUR_KEY_OFFSET_Y = 10;
 static const int COLOUR_KEY_EXTRA_LEFT_MARGIN = 2;
 static const int COLOUR_KEY_BLOCK_WIDTH = 20;
 static const int COLOUR_KEY_BLOCK_HEIGHT = 16;
@@ -800,7 +800,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	COLOUR_KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
     if (!other.empty()) total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
 
-    const int bottom = -(total_block_height + COLOUR_KEY_MARGIN);
+    const int bottom = -(total_block_height + COLOUR_KEY_MARGIN * 2);
 
     int size = 0;
     if (!other.empty()) GetTextExtent(other, &size, NULL);
@@ -811,7 +811,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	if (x > size) size = x;
     }
 
-    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
+    int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN * 2 - size;
 
     key_lowerleft.x = left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN;
     key_lowerleft.y = bottom - COLOUR_KEY_MARGIN * 2;
@@ -1623,8 +1623,8 @@ bool GfxCore::PointWithinColourKey(wxPoint point) const
     // Determine whether a point (in window coordinates) lies within the key.
     point.x -= GetXSize() - COLOUR_KEY_OFFSET_X;
     point.y = COLOUR_KEY_OFFSET_Y - point.y;
-    return (point.x >= key_lowerleft.x && point.x <= COLOUR_KEY_MARGIN &&
-	    point.y >= key_lowerleft.y && point.y <= COLOUR_KEY_MARGIN);
+    return (point.x >= key_lowerleft.x && point.x <= 0 &&
+	    point.y >= key_lowerleft.y && point.y <= 0);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
