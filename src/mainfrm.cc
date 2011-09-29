@@ -858,7 +858,7 @@ void MainFrm::CreateToolBar()
 #endif
 
     // FIXME: TRANSLATE tooltips
-    toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOLBAR_BITMAP("open"), wxT("Open a 3D file for viewing"));
+    toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOLBAR_BITMAP("open"), wxT("Open a survey file for viewing"));
     toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOLBAR_BITMAP("open-pres"), wxT("Open a presentation"));
     toolbar->AddSeparator();
     toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), TOOLBAR_BITMAP("rotation"), wxNullBitmap, wxT("Toggle rotation"));
