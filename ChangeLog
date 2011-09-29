@@ -1,3 +1,8 @@
+Thu Sep 29 05:03:37 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.cc: Add right click menu to
+	  the colour key too.
+
 Wed Sep 28 14:47:15 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/afm2txf.pl: Add a kludge to prefer to round values up when

@@ -1126,6 +1126,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    // is CP1252 (the Microsoft superset of ISO8859-1).
 		    static wxCSConv ConvCP1252(wxFONTENCODING_CP1252);
 		    s = wxString(survey->label, ConvCP1252);
+		    if (s.empty()) {
+			printf("[%s] -> nothing!\n", survey->label);
+		    }
 		}
 		LabelInfo* label = new LabelInfo(pt, s, flags);
 		if (label->IsEntrance()) {

@@ -800,7 +800,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	COLOUR_KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
     if (!other.empty()) total_block_height += COLOUR_KEY_BLOCK_HEIGHT * 2;
 
-    const int top = -(total_block_height + COLOUR_KEY_MARGIN);
+    const int bottom = -(total_block_height + COLOUR_KEY_MARGIN);
 
     int size = 0;
     if (!other.empty()) GetTextExtent(other, &size, NULL);
@@ -813,14 +813,15 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 
     int left = -COLOUR_KEY_BLOCK_WIDTH - COLOUR_KEY_MARGIN - size;
 
+    key_lowerleft.x = left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft.y = bottom - COLOUR_KEY_MARGIN * 2;
     DrawRectangle(col_BLACK, col_DARK_GREY,
-		  left - COLOUR_KEY_MARGIN - COLOUR_KEY_EXTRA_LEFT_MARGIN,
-		  top - COLOUR_KEY_MARGIN * 2,
+		  key_lowerleft.x, key_lowerleft.y,
 		  COLOUR_KEY_BLOCK_WIDTH + size + COLOUR_KEY_MARGIN * 3 +
 		      COLOUR_KEY_EXTRA_LEFT_MARGIN,
 		  total_block_height + COLOUR_KEY_MARGIN*4);
 
-    int y = top;
+    int y = bottom;
 
     if (!other.empty()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
@@ -839,7 +840,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	}
     }
 
-    y = top - GetFontSize() / 2;
+    y = bottom - GetFontSize() / 2;
     left += COLOUR_KEY_BLOCK_WIDTH + 5;
 
     SetColour(TEXT_COLOUR);
@@ -1615,6 +1616,15 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
 	    point.x <= SCALE_BAR_OFFSET_X + m_ScaleBarWidth &&
 	    point.y <= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
 	    point.y >= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
+}
+
+bool GfxCore::PointWithinColourKey(wxPoint point) const
+{
+    // Determine whether a point (in window coordinates) lies within the key.
+    point.x -= GetXSize() - COLOUR_KEY_OFFSET_X;
+    point.y = COLOUR_KEY_OFFSET_Y - point.y;
+    return (point.x >= key_lowerleft.x && point.x <= COLOUR_KEY_MARGIN &&
+	    point.y >= key_lowerleft.y && point.y <= COLOUR_KEY_MARGIN);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
@@ -2970,16 +2980,20 @@ bool GfxCore::HandleRClick(wxPoint point)
 	return true;
     }
 
-#if 0 // FIXME: Don't yet have PointWithinColourKey() method.
     if (PointWithinColourKey(point)) {
 	// Pop up menu.
 	wxMenu menu;
+	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
+	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
+	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
+	menu.AppendSeparator();
 	menu.AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*&Hide colour key*/386));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::OnToggleMetric, NULL, m_Parent);
+	if (m_ColourBy == COLOUR_BY_DEPTH)
+	    menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
 	PopupMenu(&menu);
 	return true;
     }
-#endif
 
     return false;
 }

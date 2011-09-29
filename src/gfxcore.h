@@ -197,6 +197,8 @@ private:
     // The legends for each entry in the colour key.
     wxString key_legends[NUM_COLOUR_BANDS];
 
+    wxPoint key_lowerleft;
+
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
 			       Double factor);
@@ -321,6 +323,7 @@ public:
     bool PointWithinCompass(wxPoint point) const;
     bool PointWithinClino(wxPoint point) const;
     bool PointWithinScaleBar(wxPoint point) const;
+    bool PointWithinColourKey(wxPoint point) const;
 
     void SetCompassFromPoint(wxPoint point);
     void SetClinoFromPoint(wxPoint point);
