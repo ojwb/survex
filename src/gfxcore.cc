@@ -797,23 +797,28 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 
     key_lowerleft.x = left - KEY_MARGIN - KEY_EXTRA_LEFT_MARGIN;
     key_lowerleft.y = bottom - KEY_MARGIN * 2;
-    DrawRectangle(col_BLACK, col_DARK_GREY,
-		  key_lowerleft.x, key_lowerleft.y,
-		  KEY_BLOCK_WIDTH + size + KEY_MARGIN * 3 +
-		      KEY_EXTRA_LEFT_MARGIN,
-		  total_block_height + KEY_MARGIN*4);
 
     int y = bottom;
 
     if (!other.empty()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
 		KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
+	SetColour(col_BLACK);
+	BeginPolyline();
+	PlaceIndicatorVertex(left, y);
+	PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, y);
+	PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, y + KEY_BLOCK_HEIGHT);
+	PlaceIndicatorVertex(left, y + KEY_BLOCK_HEIGHT);
+	PlaceIndicatorVertex(left, y);
+	EndPolyline();
 	y += KEY_BLOCK_HEIGHT * 2;
     }
 
+    int start = y;
     if (num_bands == 1) {
 	DrawShadedRectangle(GetPen(0), GetPen(0), left, y,
 			    KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
+	y += KEY_BLOCK_HEIGHT;
     } else {
 	for (band = 0; band < num_bands - 1; ++band) {
 	    DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
@@ -821,6 +826,15 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	    y += KEY_BLOCK_HEIGHT;
 	}
     }
+
+    SetColour(col_BLACK);
+    BeginPolyline();
+    PlaceIndicatorVertex(left, y);
+    PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, y);
+    PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, start);
+    PlaceIndicatorVertex(left, start);
+    PlaceIndicatorVertex(left, y);
+    EndPolyline();
 
     y = bottom - GetFontSize() / 2;
     left += KEY_BLOCK_WIDTH + 5;

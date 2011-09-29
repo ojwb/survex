@@ -1,3 +1,11 @@
+Thu Sep 29 20:37:09 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Remove the dark grey background from the colour key
+	  and just put a single pixel black border around the colours.  This
+	  is more in keeping with the other controls, and means the colours
+	  are now on a black background so more visually similar to the survey
+	  legs.
+
 Thu Sep 29 13:02:22 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Fall back to ISO8859-1 if CP1252 fails to convert the
