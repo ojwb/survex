@@ -1122,12 +1122,15 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		wxString s(survey->label, wxConvUTF8);
 		if (s.empty()) {
 		    // If label isn't valid UTF-8 then this conversion will
-		    // give an empty string.  In this case, assume that the label
-		    // is CP1252 (the Microsoft superset of ISO8859-1).
+		    // give an empty string.  In this case, assume that the
+		    // label is CP1252 (the Microsoft superset of ISO8859-1).
 		    static wxCSConv ConvCP1252(wxFONTENCODING_CP1252);
 		    s = wxString(survey->label, ConvCP1252);
 		    if (s.empty()) {
-			printf("[%s] -> nothing!\n", survey->label);
+			// Or if that doesn't work (ConvCP1252 doesn't like
+			// strings with some bytes in) let's just go for
+			// ISO8859-1.
+			s = wxString(survey->label, wxConvISO8859_1);
 		    }
 		}
 		LabelInfo* label = new LabelInfo(pt, s, flags);

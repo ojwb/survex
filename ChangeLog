@@ -1,3 +1,8 @@
+Thu Sep 29 13:02:22 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fall back to ISO8859-1 if CP1252 fails to convert the
+	  string.
+
 Thu Sep 29 12:22:34 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Upon loading a survey which lacks the information for
