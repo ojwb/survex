@@ -2860,7 +2860,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface,
 			true);
-    p->Show(TRUE);
+    p->Show(true);
 }
 
 void
@@ -2871,7 +2871,7 @@ GfxCore::OnExport(const wxString &filename, const wxString &title)
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface,
 			false);
-    p->Show(TRUE);
+    p->Show(true);
 }
 
 static wxCursor

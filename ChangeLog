@@ -1,3 +1,9 @@
+Fri Sep 30 13:40:29 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.cc,src/gfxcore.cc,src/mainfrm.cc: Use standard C++ true and
+	  false instead of wx aliases TRUE and FALSE (which even wx seems to
+	  have shifted away from using now).
+
 Fri Sep 30 13:33:37 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Tweak exact positioning of text to look nicer.

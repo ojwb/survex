@@ -652,11 +652,11 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 
     if (filenames.GetCount() != 1) {
 	wxGetApp().ReportError(wmsg(/*You may only view one 3d file at a time.*/336));
-	return FALSE;
+	return false;
     }
 
     m_Parent->OpenFile(filenames[0]);
-    return TRUE;
+    return true;
 }
 #endif
 
