@@ -469,19 +469,19 @@ void GUIControl::OnColourByError()
 
 void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !m_View->HasDepth());
+    cmd.Enable(m_View->HasData());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_DEPTH);
 }
 
 void GUIControl::OnColourByDateUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasDateInformation());
+    cmd.Enable(m_View->HasData());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_DATE);
 }
 
 void GUIControl::OnColourByErrorUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && m_View->HasUndergroundLegs() && m_View->HasErrorInformation());
+    cmd.Enable(m_View->HasData());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_ERROR);
 }
 

@@ -1,3 +1,9 @@
+Fri Sep 30 03:31:00 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Don't disable a colour by option unless there's
+	  no survey loaded.  It feels inconsistent now we are showing a key
+	  even when there's no "interesting" data.
+
 Fri Sep 30 03:28:59 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: The different colour keys get cached
