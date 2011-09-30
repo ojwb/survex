@@ -1,3 +1,9 @@
+Fri Sep 30 23:49:24 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc:svxPrintout::ShowPage() is an empty method, so just
+	  remove it and all the code to calculate values to pass to it and
+	  then call it.  This is just a left-over from the 1.0 printing code.
+
 Fri Sep 30 13:40:29 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aven.cc,src/gfxcore.cc,src/mainfrm.cc: Use standard C++ true and

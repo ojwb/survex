@@ -108,7 +108,6 @@ class svxPrintout : public wxPrintout {
     int Charset(void);
     int Pre();
     void NewPage(int pg, int pagesX, int pagesY);
-    void ShowPage(const char *szPageDetails);
     void PlotLR(const vector<XSect> & centreline);
     void PlotUD(const vector<XSect> & centreline);
     char * Init(FILE **fh_list, bool fCalibrate);
@@ -1100,16 +1099,6 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (!l->Raw) {
-	char szTmp[256];
-	SetColour(PR_COLOUR_TEXT);
-	sprintf(szTmp,(const char*) l->footer.mb_str(), (const char*)l->title.mb_str(), pageNum, l->pagesX * l->pagesY,
-		(const char*)l->datestamp.mb_str());
-	ShowPage(szTmp);
-    } else {
-	ShowPage("");
-    }
-
     return true;
 }
 
@@ -1436,11 +1425,6 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     pdc->DestroyClippingRegion();
     pdc->SetClippingRegion(x_offset, y_offset,xpPageWidth+1, ypPageDepth+1);
     drawticks(clip, (int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
-}
-
-void
-svxPrintout::ShowPage(const char *szPageDetails)
-{
 }
 
 void
