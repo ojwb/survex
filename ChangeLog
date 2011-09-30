@@ -1,3 +1,10 @@
+Fri Sep 30 03:28:59 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: The different colour keys get cached
+	  so switching back to one that's already been shown for the current
+	  survey doesn't redraw it and key_lowerleft wasn't getting updated.
+	  We now track key_lowerleft for each key type separately.
+
 Fri Sep 30 02:48:00 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: If "Colour by X" is selected, always show the colour

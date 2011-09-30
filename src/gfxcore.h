@@ -91,7 +91,8 @@ enum {
     COLOUR_BY_NONE,
     COLOUR_BY_DEPTH,
     COLOUR_BY_DATE,
-    COLOUR_BY_ERROR
+    COLOUR_BY_ERROR,
+    COLOUR_BY_LIMIT_ // Leave this last.
 };
 
 enum {
@@ -197,7 +198,7 @@ private:
     // The legends for each entry in the colour key.
     wxString key_legends[NUM_COLOUR_BANDS];
 
-    wxPoint key_lowerleft;
+    wxPoint key_lowerleft[COLOUR_BY_LIMIT_];
 
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,

@@ -791,8 +791,8 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 
     int left = -KEY_BLOCK_WIDTH - size;
 
-    key_lowerleft.x = left - KEY_EXTRA_LEFT_MARGIN;
-    key_lowerleft.y = bottom;
+    key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft[m_ColourBy].y = bottom;
 
     int y = bottom;
 
@@ -1638,8 +1638,8 @@ bool GfxCore::PointWithinColourKey(wxPoint point) const
     // Determine whether a point (in window coordinates) lies within the key.
     point.x -= GetXSize() - KEY_OFFSET_X;
     point.y = KEY_OFFSET_Y - point.y;
-    return (point.x >= key_lowerleft.x && point.x <= 0 &&
-	    point.y >= key_lowerleft.y && point.y <= 0);
+    return (point.x >= key_lowerleft[m_ColourBy].x && point.x <= 0 &&
+	    point.y >= key_lowerleft[m_ColourBy].y && point.y <= 0);
 }
 
 void GfxCore::SetCompassFromPoint(wxPoint point)
