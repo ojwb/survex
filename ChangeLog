@@ -1,3 +1,9 @@
+Fri Sep 30 02:48:00 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: If "Colour by X" is selected, always show the colour
+	  key, even if it only contains one colour, or just the entry for
+	  white.
+
 Thu Sep 29 22:33:06 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Don't segfault on a flat survey.  Fix incorrect

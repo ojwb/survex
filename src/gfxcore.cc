@@ -846,7 +846,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 	y += KEY_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, key_legends[0]);
     } else {
-	for (band = 0; band < GetNumColourBands(); ++band) {
+	for (band = 0; band < num_bands; ++band) {
 	    DrawIndicatorText(left, y, key_legends[band]);
 	    y += KEY_BLOCK_HEIGHT;
 	}
@@ -855,31 +855,46 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 
 void GfxCore::DrawDepthKey()
 {
+    Double z_ext = m_Parent->GetDepthExtent();
+    int num_bands;
+    if (z_ext == 0) {
+	num_bands = 1;
+    } else {
+	num_bands = GetNumColourBands();
+    }
+
     for (int band = 0; band < GetNumColourBands(); ++band) {
-	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ() +
-		   m_Parent->GetDepthExtent() * band / (GetNumColourBands() - 1);
+	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
+	if (band)
+	    z += z_ext * band / (num_bands - 1);
 	key_legends[band] = FormatLength(z, false);
     }
 
-    DrawColourKey(GetNumColourBands(), wxString());
+    DrawColourKey(num_bands, wxString());
 }
 
 void GfxCore::DrawDateKey()
 {
     int num_bands;
-    if (m_Parent->GetDateExtent() == 0) {
-	num_bands = 1;
+    if (!HasDateInformation()) {
+	num_bands = 0;
     } else {
-	num_bands = GetNumColourBands();
+	int date_ext = m_Parent->GetDateExtent();
+	if (date_ext == 0) {
+	    num_bands = 1;
+	} else {
+	    num_bands = GetNumColourBands();
+	}
+	for (int band = 0; band < num_bands; ++band) {
+	    int y, m, d;
+	    int days = m_Parent->GetDateMin();
+	    if (band)
+		days += date_ext * band / (num_bands - 1);
+	    ymd_from_days_since_1900(days, &y, &m, &d);
+	    key_legends[band].Printf(wxT("%04d-%02d-%02d"), y, m, d);
+	}
     }
-    for (int band = 0; band < num_bands; ++band) {
-	int y, m, d;
-	int days = m_Parent->GetDateMin();
-	if (band)
-	    days += m_Parent->GetDateExtent() * band / (num_bands - 1);
-	ymd_from_days_since_1900(days, &y, &m, &d);
-	key_legends[band].Printf(wxT("%04d-%02d-%02d"), y, m, d);
-    }
+
     wxString other;
     if (!m_Parent->HasCompleteDateInfo()) {
 	other = wmsg(/*Undated*/221);
@@ -890,13 +905,21 @@ void GfxCore::DrawDateKey()
 
 void GfxCore::DrawErrorKey()
 {
-    for (int band = 0; band < GetNumColourBands(); ++band) {
-	double E = MAX_ERROR * band / (GetNumColourBands() - 1);
-	key_legends[band].Printf(wxT("%.2f"), E);
+    int num_bands;
+    if (HasErrorInformation()) {
+	// Use fixed colours for each error factor so it's directly visually
+	// comparable between surveys.
+	num_bands = GetNumColourBands();
+	for (int band = 0; band < num_bands; ++band) {
+	    double E = MAX_ERROR * band / (num_bands - 1);
+	    key_legends[band].Printf(wxT("%.2f"), E);
+	}
+    } else {
+	num_bands = 0;
     }
 
     // Always show the "Not in loop" legend for now (FIXME).
-    DrawColourKey(GetNumColourBands(), wmsg(/*Not in loop*/290));
+    DrawColourKey(num_bands, wmsg(/*Not in loop*/290));
 }
 
 wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
@@ -2091,13 +2114,13 @@ void GfxCore::DrawIndicators()
 {
     // Draw colour key.
     if (m_ColourKey) {
-	if (m_ColourBy == COLOUR_BY_DEPTH && m_Parent->GetDepthExtent() != 0.0) {
+	if (m_ColourBy == COLOUR_BY_DEPTH) {
 	    DrawList2D(LIST_DEPTH_KEY, GetXSize() - KEY_OFFSET_X,
 		       GetYSize() - KEY_OFFSET_Y, 0);
-	} else if (m_ColourBy == COLOUR_BY_DATE && HasDateInformation()) {
+	} else if (m_ColourBy == COLOUR_BY_DATE) {
 	    DrawList2D(LIST_DATE_KEY, GetXSize() - KEY_OFFSET_X,
 		       GetYSize() - KEY_OFFSET_Y, 0);
-	} else if (m_ColourBy == COLOUR_BY_ERROR && m_Parent->HasErrorInformation()) {
+	} else if (m_ColourBy == COLOUR_BY_ERROR) {
 	    DrawList2D(LIST_ERROR_KEY, GetXSize() - KEY_OFFSET_X,
 		       GetYSize() - KEY_OFFSET_Y, 0);
 	}
