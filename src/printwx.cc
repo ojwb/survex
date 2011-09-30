@@ -628,10 +628,10 @@ svxPrintout::draw_info_box()
       DrawTo(bx, by);
 
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(62, 36);
+      MOVEMM(61, 34);
       WriteString(wmsg(/*North*/115));
 
-      MOVEMM(5, 23);
+      MOVEMM(2, 22);
       WriteString(wmsg(/*Plan view*/117));
       break;
     }
@@ -654,19 +654,19 @@ svxPrintout::draw_info_box()
       MOVEMM(85, 20);
       WriteString(wxString::Format(wxT("%03d"DEG),
 				   (l->rot + 90) % 360 ));
-      MOVEMM(5, 23);
+      MOVEMM(2, 22);
       WriteString(wmsg(/*Elevation*/118));
       break;
     case layout::EXTELEV:
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(5, 13);
+      MOVEMM(2, 12);
       WriteString(wmsg(/*Extended elevation*/191));
       break;
    }
 
-   MOVEMM(5, boxheight - 7); WriteString(l->title);
+   MOVEMM(2, boxheight - 8); WriteString(l->title);
 
-   MOVEMM(5, boxheight - 27); 
+   MOVEMM(2, boxheight - 28);
    WriteString(wxString::Format(wmsg(/*Scale*/154) + wxT(" 1:%.0f"),
 				l->Scale));
 
@@ -679,7 +679,7 @@ svxPrintout::draw_info_box()
       // wxString::Format() and Printf() are buggy and don't work for us here
       // so we use Replace() instead.
       s.Replace(wxT("%s"), angle.c_str());
-      MOVEMM(5, 3); WriteString(s);
+      MOVEMM(2, 2); WriteString(s);
    }
 
    /* This used to be a copyright line, but it was occasionally
