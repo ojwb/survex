@@ -1,3 +1,13 @@
+Fri Sep 30 03:49:16 GMT 2011  Olly Betts <olly@survex.com>
+
+	* INSTALL: Mention building wxWidgets with --enable-unicode.  Mention
+	  using sudo for the install.  Capitalise Survex when talking about
+	  the package.
+	+ doc/manual.sgml: Replace building from source instructions with a
+	  pointer to the clearer instructions in INSTALL.  Make it clear that
+	  installing with administrator rights applies to NT, 2000, XP *or
+	  newer*.
+
 Fri Sep 30 03:31:00 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: Don't disable a colour by option unless there's

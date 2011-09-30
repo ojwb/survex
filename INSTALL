@@ -15,11 +15,11 @@ need both to build Survex).
 
 Otherwise download the source code from http://www.wxwidgets.org/ and
 follow their build instructions.  IMPORTANT: You must enable OpenGL
-support by adding --with-opengl to the configure command line.
+support by adding --with-opengl to the configure command line, and
+you probably want to use --enable-unicode too.
 
-You'll also need a working C and C++ compiler, and also the X and
-OpenGL development libraries if these aren't pulled in by installing
-wxWidgets.
+You'll also need a working C and C++ compiler, and also the OpenGL development
+libraries if these aren't pulled in by installing wxWidgets.
 
 Then at a shell prompt, enter the following commands:
 
@@ -27,9 +27,13 @@ Then at a shell prompt, enter the following commands:
 make
 make install
 
-By default 'make install' will try to install survex under /usr/local,
-which means you'll need to be root for the 'make install' stage.  You
-can tell configure to install survex elsewhere (e.g. under your home
+By default 'make install' will try to install Survex under /usr/local,
+which means you'll probably need to become root for the 'make install' stage.
+If you use sudo to manage root access, then:
+
+sudo make install
+
+You can tell configure to install Survex elsewhere (e.g. under your home
 directory) like so:
 
 ./configure --prefix=/home/olly/survex

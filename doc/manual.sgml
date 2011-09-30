@@ -337,27 +337,9 @@ prompt (or set some a filemanager or graphics shell).
 <Sect3><Title>Other versions of &unix;</Title>
 
 <Para>For other &unix; versions you'll need to get the source code
-and compile it on your system.  &survexsuite; uses GNU automake
-and autoconf to streamline the compile process, so all you need to do
-is unpack the sources, then simply type <userinput>./configure</userinput>
-followed by <userinput>make</userinput> to build the programs and then
-<userinput>make install</userinput> to install them.</Para>
-
-<Note>
-<Para>
-If you're building to install in your home directory (for example
-if you don't have root access on the machine you wish to install
-&survexsuite; on) configure and build with
-<userinput>./configure --prefix=/home/olly/survex</userinput> then
-<userinput>make</userinput> to build and
-<userinput>make install</userinput> to install.
-</Para>
-</Note>
-
-<Para>
-There's a GUI cave viewer called aven, which needs &wxwidgets; to build,
-which in turn needs GTK+ (or Motif or just X11, but we only regularly
-test with the GTK+ version).
+and compile it on your system.  Unpack the sources and read
+the file called INSTALL in the top level for details about building
+from source.
 </Para>
 
 </Sect3>
@@ -367,7 +349,7 @@ test with the GTK+ version).
 <Para>
 This version comes packaged with an installation wizard.  Just
 run the downloaded package and it will lead you through the
-installation process.  If installing on MS Windows NT, 2000, or XP
+installation process.  If installing on MS Windows NT, 2000, XP, or newer
 we recommend you run the installer as administrator (or as a
 user with administrator rights) so that the file associations
 can be set up for all users.
