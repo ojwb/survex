@@ -38,7 +38,6 @@ class wxSpinEvent;
 
 // This dialog is also use for Export as well as Print.
 class svxPrintDlg : public wxDialog {
-protected:
 	layout m_layout;
 	wxComboBox* m_scale;
 	wxStaticText* m_printSize;

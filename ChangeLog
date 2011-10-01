@@ -1,3 +1,8 @@
+Sat Oct 01 12:11:37 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.h: svxPrintDlg members don't need to be protected, so
+	  make the private.
+
 Sat Oct 01 11:28:34 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc,src/printwx.h: When in plan view disable the "Plan"
