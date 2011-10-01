@@ -1,3 +1,8 @@
+Sat Oct 01 11:28:34 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc,src/printwx.h: When in plan view disable the "Plan"
+	  button, and similarly for the "Elevation" button.
+
 Sat Oct 01 11:20:03 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Remove more unused methods and members.

@@ -70,6 +70,8 @@ protected:
 #endif
 	void OnPlan(wxCommandEvent&);
 	void OnElevation(wxCommandEvent&);
+	void OnPlanUpdate(wxUpdateUIEvent& e);
+	void OnElevationUpdate(wxUpdateUIEvent& e);
 	void OnChangeSpin(wxSpinEvent& event);
 	void OnChange(wxCommandEvent& event);
 	void SomethingChanged();

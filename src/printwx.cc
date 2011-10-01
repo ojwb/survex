@@ -129,6 +129,8 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
 #endif
     EVT_BUTTON(svx_PLAN, svxPrintDlg::OnPlan)
     EVT_BUTTON(svx_ELEV, svxPrintDlg::OnElevation)
+    EVT_UPDATE_UI(svx_PLAN, svxPrintDlg::OnPlanUpdate)
+    EVT_UPDATE_UI(svx_ELEV, svxPrintDlg::OnElevationUpdate)
     EVT_CHECKBOX(svx_LEGS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_STATIONS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_NAMES, svxPrintDlg::OnChange)
@@ -392,6 +394,16 @@ svxPrintDlg::OnElevation(wxCommandEvent&) {
 }
 
 void
+svxPrintDlg::OnPlanUpdate(wxUpdateUIEvent& e) {
+    e.Enable(m_tilt->GetValue() != 90);
+}
+
+void
+svxPrintDlg::OnElevationUpdate(wxUpdateUIEvent& e) {
+    e.Enable(m_tilt->GetValue() != 0);
+}
+
+void
 svxPrintDlg::OnChangeSpin(wxSpinEvent&e) {
     SomethingChanged();
 }
@@ -424,13 +436,6 @@ svxPrintDlg::LayoutToUI(){
     m_surface->SetValue(m_layout.Surface);
     if (m_layout.view != layout::EXTELEV) {
 	m_tilt->SetValue(m_layout.tilt);
-	// FIXME: enable both buttons
-	if (m_layout.tilt > 89) {
-	    // FIXME: disable Plan button
-	} else if (m_layout.tilt == 0) {
-	    // FIXME: disable Elevation button
-	}
-
 	m_bearing->SetValue(m_layout.rot);
     }
 
