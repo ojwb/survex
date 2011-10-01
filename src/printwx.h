@@ -42,7 +42,6 @@ protected:
 	layout m_layout;
 	wxComboBox* m_scale;
 	wxStaticText* m_printSize;
-	wxStaticText* m_tilttext;
 	wxSpinCtrl* m_bearing;
 	wxSpinCtrl* m_tilt;
 	wxCheckBox* m_legs;

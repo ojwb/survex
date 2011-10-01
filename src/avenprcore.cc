@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006,2010 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010,2011 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -260,12 +260,10 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
 
     /* note down so we can switch to printer charset */
     msg166 = msgPerm(/*Page %d of %d*/166);
-    select_charset(Charset());
+    old_charset = select_charset(CHARSET_ISO_8859_1);
 
-    /* used in printer's native charset in footer */
     l->footer = msgPerm(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167);
 
-    old_charset = select_charset(CHARSET_ISO_8859_1);
     cPagesPrinted = 0;
     page = state = 0;
     p = l->szPages;

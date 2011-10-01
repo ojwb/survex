@@ -105,7 +105,6 @@ class svxPrintout : public wxPrintout {
     void WriteString(const wxString & s);
     void DrawEllipse(long x, long y, long r, long R);
     void SolidRectangle(long x, long y, long w, long h);
-    int Charset(void);
     int Pre();
     void NewPage(int pg, int pagesX, int pagesY);
     void PlotLR(const vector<XSect> & centreline);
@@ -169,7 +168,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 {
     m_scale = NULL;
     m_printSize = NULL;
-    m_tilttext = NULL;
     m_bearing = NULL;
     m_tilt = NULL;
     m_legs = NULL;
@@ -1374,12 +1372,6 @@ svxPrintout::SolidRectangle(long x, long y, long w, long h)
     long Y = y_offset + clip.y_max - y;
     pdc->SetBrush(*wxBLACK_BRUSH);
     pdc->DrawRectangle(X, Y - h, w, h);
-}
-
-int
-svxPrintout::Charset(void)
-{
-   return CHARSET_ISO_8859_1;
 }
 
 int

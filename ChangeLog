@@ -1,3 +1,8 @@
+Sat Oct 01 10:48:24 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc,src/printwx.cc,src/printwx.h: Eliminate some unused
+	  methods and member variables.
+
 Sat Oct 01 00:33:24 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Move the footer to start at the left side of the
