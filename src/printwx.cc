@@ -72,9 +72,9 @@ enum {
 class svxPrintout : public wxPrintout {
     MainFrm *mainfrm;
     layout *m_layout;
-    wxString m_title;
     wxPageSetupDialogData* m_data;
     wxDC* pdc;
+    // Currently unused, but "skip blank pages" would use it.
     static const int cur_pass = 0;
 
     wxPen *pen_frame, *pen_cross, *pen_surface_leg, *pen_leg;
@@ -113,10 +113,6 @@ class svxPrintout : public wxPrintout {
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupDialogData *data, const wxString & title);
     bool OnPrintPage(int pageNum);
-    void GetPageInfo(int *minPage, int *maxPage,
-		     int *pageFrom, int *pageTo);
-    wxString GetTitle();
-    bool HasPage(int pageNum);
     void OnBeginPrinting();
     void OnEndPrinting();
 };
@@ -568,7 +564,6 @@ svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
 {
     mainfrm = mainfrm_;
     m_layout = l;
-    m_title = title;
     m_data = data;
 }
 
@@ -1098,24 +1093,6 @@ svxPrintout::OnPrintPage(int pageNum) {
     }
 
     return true;
-}
-
-void
-svxPrintout::GetPageInfo(int *minPage, int *maxPage,
-			 int *pageFrom, int *pageTo)
-{
-    *minPage = *pageFrom = 1;
-    *maxPage = *pageTo = m_layout->pages;
-}
-
-wxString
-svxPrintout::GetTitle() {
-    return m_title;
-}
-
-bool
-svxPrintout::HasPage(int pageNum) {
-    return (pageNum <= m_layout->pages);
 }
 
 void
