@@ -1413,15 +1413,14 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 
     //we have to write the footer here. PostScript is being weird. Really weird.
     pdc->SetFont(*font_labels);
-    MoveTo((long)(6 * m_layout->scX) + clip.x_min,
-	   clip.y_min - (long)(7 * m_layout->scY));
-    wxString szFooter;
-    szFooter.Printf(m_layout->footer, 
-		    m_layout->title.c_str(), 
-		    pg,
-		    m_layout->pagesX * m_layout->pagesY,
-		    m_layout->datestamp.c_str());
-    WriteString(szFooter);
+    MoveTo(clip.x_min, clip.y_min - (long)(7 * m_layout->scY));
+    wxString footer;
+    footer.Printf(m_layout->footer,
+		  m_layout->title.c_str(),
+		  pg,
+		  m_layout->pagesX * m_layout->pagesY,
+		  m_layout->datestamp.c_str());
+    WriteString(footer);
     pdc->DestroyClippingRegion();
     pdc->SetClippingRegion(x_offset, y_offset,xpPageWidth+1, ypPageDepth+1);
     drawticks(clip, (int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
