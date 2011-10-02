@@ -1,3 +1,12 @@
+Sun Oct 02 10:00:08 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,lib/en_US.po,src/printwx.cc: On printouts, combine the
+	  "Plan View"/"Elevation" info box field with the field which gives
+	  the bearing and reduce the height on the info box by the removed
+	  field, so it's now 3cm for plans and elevations, as for extended
+	  elevations.  Report the tilt angle for tilted elevations which it
+	  seems has been missing for ages (it's not in recent 1.0.x either).
+
 Sat Oct 01 12:28:35 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix commented message in source.

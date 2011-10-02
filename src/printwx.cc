@@ -576,17 +576,17 @@ void
 svxPrintout::draw_info_box()
 {
    layout *l = m_layout;
-   int boxwidth = 60;
+   int boxwidth = 70;
    int boxheight = 30;
 
    SetColour(PR_COLOUR_FRAME);
 
+   int div = boxwidth;
    if (l->view != layout::EXTELEV) {
-      boxwidth = 100;
-      boxheight = 40;
-      MOVEMM(60,40);
-      DRAWMM(60, 0);
-      MOVEMM(0, 30); DRAWMM(60, 30);
+      boxwidth += boxheight;
+      MOVEMM(div, boxheight);
+      DRAWMM(div, 0);
+      MOVEMM(0, 30); DRAWMM(div, 30);
    }
 
    MOVEMM(0, boxheight);
@@ -597,25 +597,27 @@ svxPrintout::draw_info_box()
       DRAWMM(0, boxheight);
    }
 
-   MOVEMM(0, 20); DRAWMM(60, 20);
-   MOVEMM(0, 10); DRAWMM(60, 10);
+   MOVEMM(0, 20); DRAWMM(div, 20);
+   MOVEMM(0, 10); DRAWMM(div, 10);
 
    switch (l->view) {
     case layout::PLAN: {
       long ax, ay, bx, by, cx, cy, dx, dy;
 
-#define RADIUS 16.0
-      DrawEllipse((long)(80.0 * l->scX), (long)(20.0 * l->scY),
-		  (long)(RADIUS * l->scX), (long)(RADIUS * l->scY));
+      long xc = boxwidth - boxheight / 2;
+      long yc = boxheight / 2;
+      const double RADIUS = boxheight * 0.4;
+      DrawEllipse(long(xc * l->scX), long(yc * l->scY),
+		  long(RADIUS * l->scX), long(RADIUS * l->scY));
 
-      ax = (long)((80 - 15 * sin(rad(000.0 + l->rot))) * l->scX);
-      ay = (long)((20 + 15 * cos(rad(000.0 + l->rot))) * l->scY);
-      bx = (long)((80 -  7 * sin(rad(180.0 + l->rot))) * l->scX);
-      by = (long)((20 +  7 * cos(rad(180.0 + l->rot))) * l->scY);
-      cx = (long)((80 - 15 * sin(rad(160.0 + l->rot))) * l->scX);
-      cy = (long)((20 + 15 * cos(rad(160.0 + l->rot))) * l->scY);
-      dx = (long)((80 - 15 * sin(rad(200.0 + l->rot))) * l->scX);
-      dy = (long)((20 + 15 * cos(rad(200.0 + l->rot))) * l->scY);
+      ax = (long)((xc - (RADIUS - 1) * sin(rad(000.0 + l->rot))) * l->scX);
+      ay = (long)((yc + (RADIUS - 1) * cos(rad(000.0 + l->rot))) * l->scY);
+      bx = (long)((xc - RADIUS * 0.5 * sin(rad(180.0 + l->rot))) * l->scX);
+      by = (long)((yc + RADIUS * 0.5 * cos(rad(180.0 + l->rot))) * l->scY);
+      cx = (long)((xc - (RADIUS - 1) * sin(rad(160.0 + l->rot))) * l->scX);
+      cy = (long)((yc + (RADIUS - 1) * cos(rad(160.0 + l->rot))) * l->scY);
+      dx = (long)((xc - (RADIUS - 1) * sin(rad(200.0 + l->rot))) * l->scX);
+      dy = (long)((yc + (RADIUS - 1) * cos(rad(200.0 + l->rot))) * l->scY);
 
       MoveTo(ax, ay);
       DrawTo(bx, by);
@@ -625,35 +627,55 @@ svxPrintout::draw_info_box()
       DrawTo(bx, by);
 
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(61, 34);
+      MOVEMM(div, boxheight - 5);
       WriteString(wmsg(/*North*/115));
 
-      MOVEMM(2, 22);
-      WriteString(wmsg(/*Plan view*/117));
+      wxString angle;
+      angle.Printf(wxT("%03d"), l->rot);
+      angle += wxChar(0xB0); // Degree symbol.
+      wxString s;
+      s.Printf(wmsg(/*Plan view, %s up page*/168), angle.c_str());
+      MOVEMM(2, 12); WriteString(s);
       break;
     }
-    case layout::ELEV: case layout::TILT:
-      MOVEMM(65, 15); DRAWMM(70, 12); DRAWMM(68, 15); DRAWMM(70, 18);
+    case layout::ELEV: case layout::TILT: {
+      const int L = div + 2;
+      const int R = boxwidth - 2;
+      const int H = boxheight / 2 - 5;
+      MOVEMM(L, H); DRAWMM(L + 5, H - 3); DRAWMM(L + 3, H); DRAWMM(L + 5, H + 3);
 
-      DRAWMM(65, 15); DRAWMM(95, 15);
+      DRAWMM(L, H); DRAWMM(R, H);
 
-      DRAWMM(90, 18); DRAWMM(92, 15); DRAWMM(90, 12); DRAWMM(95, 15);
+      DRAWMM(R - 5, H + 3); DRAWMM(R - 3, H); DRAWMM(R - 5, H - 3); DRAWMM(R, H);
 
-      MOVEMM(80, 13); DRAWMM(80, 17);
+      MOVEMM((L + R) / 2, H - 2); DRAWMM((L + R) / 2, H + 2);
 
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(62, 33);
+      MOVEMM(div, boxheight - 5);
       WriteString(wmsg(/*Elevation on*/116));
       
-      MOVEMM(65, 20); 
+      MOVEMM(L, boxheight / 2);
       WriteString(wxString::Format(wxT("%03d"DEG),
 				   (l->rot + 270) % 360 ));
-      MOVEMM(85, 20);
+      MOVEMM(R - 10, boxheight / 2);
       WriteString(wxString::Format(wxT("%03d"DEG),
 				   (l->rot + 90) % 360 ));
-      MOVEMM(2, 22);
-      WriteString(wmsg(/*Elevation*/118));
+
+      wxString angle;
+      angle.Printf(wxT("%03d"), l->rot);
+      angle += wxChar(0xB0); // Degree symbol.
+      wxString s;
+      if (l->view == layout::ELEV) {
+	  s.Printf(wmsg(/*Elevation facing %s*/169), angle.c_str());
+      } else {
+	  wxString a2;
+	  a2.Printf(wxT("%d"), l->tilt);
+	  a2 += wxChar(0xB0); // Degree symbol.
+	  s.Printf(wmsg(/*Elevation facing %s, tilted %s*/284), angle.c_str(), a2.c_str());
+      }
+      MOVEMM(2, 12); WriteString(s);
       break;
+    }
     case layout::EXTELEV:
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(2, 12);
@@ -663,21 +685,10 @@ svxPrintout::draw_info_box()
 
    MOVEMM(2, boxheight - 8); WriteString(l->title);
 
-   MOVEMM(2, boxheight - 28);
+   MOVEMM(2, 2);
+   // FIXME: "Original Scale" better?
    WriteString(wxString::Format(wmsg(/*Scale*/154) + wxT(" 1:%.0f"),
 				l->Scale));
-
-   if (l->view != layout::EXTELEV) {
-      wxString angle;
-      angle.Printf(wxT("%03d"), l->rot);
-      angle += wxChar(0xB0); // Degree symbol.
-      wxString s;
-      s = wmsg(l->view == layout::PLAN ? /*%s up page*/168 : /*View towards %s*/169);
-      // wxString::Format() and Printf() are buggy and don't work for us here
-      // so we use Replace() instead.
-      s.Replace(wxT("%s"), angle.c_str());
-      MOVEMM(2, 2); WriteString(s);
-   }
 
    /* This used to be a copyright line, but it was occasionally
     * mis-interpreted as us claiming copyright on the survey, so let's

@@ -954,14 +954,26 @@ msgstr "Survey `%s'   Page %d (of %d)   Processed on %s"
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
 #: ../src/printwx.cc:677
-msgid "%s up page"
-msgstr "%s up page"
+msgid "Plan view, %s up page"
+msgstr "Plan view, %s up page"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
 #. something like "123°".  The bearing is the direction we're looking.
-#: ../src/printwx.cc:677
-msgid "View towards %s"
-msgstr "View towards %s"
+#: ../src/printwx.cc:670
+msgid "Elevation facing %s"
+msgstr "Profile facing %s"
+
+#. TRANSLATORS: This is used on printouts of tilted elevations, with the first
+#. %s replaced by something like "123°", and the second by something like "-45°".
+#. The bearing is the direction we're looking.
+#: ../src/printwx.cc:675
+msgid "Profile facing %s, tilted %s"
+msgstr "284"
+
+#. TRANSLATORS: This is used on printouts of extended elevations.
+#: ../src/printwx.cc:665
+msgid "Extended elevation"
+msgstr "Extended elevation"
 
 #, c-format
 #~ msgid "This will need %d pages (%dx%d)."
@@ -1063,10 +1075,6 @@ msgstr "Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'"
 #, c-format
 msgid "Station `%s' referred to by *entrance or *export but never used"
 msgstr "Station `%s' referred to by *entrance or *export but never used"
-
-#: ../src/printwx.cc:665
-msgid "Extended elevation"
-msgstr "Extended elevation"
 
 #: ../src/commands.c:567
 msgid "No matching BEGIN"

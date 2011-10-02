@@ -957,14 +957,26 @@ msgstr "167"
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
 #: ../src/printwx.cc:677
-msgid "%s up page"
+msgid "Plan view, %s up page"
 msgstr "168"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
 #. something like "123°".  The bearing is the direction we're looking.
-#: ../src/printwx.cc:677
-msgid "View towards %s"
+#: ../src/printwx.cc:670
+msgid "Elevation facing %s"
 msgstr "169"
+
+#. TRANSLATORS: This is used on printouts of tilted elevations, with the first
+#. %s replaced by something like "123°", and the second by something like "-45°".
+#. The bearing is the direction we're looking.
+#: ../src/printwx.cc:675
+msgid "Elevation facing %s, tilted %s"
+msgstr "284"
+
+#. TRANSLATORS: This is used on printouts of extended elevations.
+#: ../src/printwx.cc:665
+msgid "Extended elevation"
+msgstr "191"
 
 #, c-format
 #~ msgid "This will need %d pages (%dx%d)."
@@ -1066,10 +1078,6 @@ msgstr "189"
 #, c-format
 msgid "Station `%s' referred to by *entrance or *export but never used"
 msgstr "190"
-
-#: ../src/printwx.cc:665
-msgid "Extended elevation"
-msgstr "191"
 
 #: ../src/commands.c:567
 msgid "No matching BEGIN"
