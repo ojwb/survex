@@ -727,14 +727,15 @@ msgstr "Norden"
 msgid "Elevation on"
 msgstr "Aufriß auf die Ebene"
 
-#: ../src/printwx.cc:255
-#: ../src/printwx.cc:637
-msgid "Plan view"
-msgstr "Grundriß"
+#: ../src/printwx.cc:244
+msgid "P&lan view"
+msgstr "&Grundriß"
+
+#: ../src/printwx.cc:246
+msgid "&Elevation"
+msgstr "&Aufriß"
 
 #: ../src/gfxcore.cc:713
-#: ../src/printwx.cc:257
-#: ../src/printwx.cc:660
 #: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr "Aufriß"

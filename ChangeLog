@@ -1,3 +1,8 @@
+Sun Oct 02 20:25:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/printwx.cc: Add mnemonics to the "Plan" and "Elevation"
+	  buttons in the print dialog.
+
 Sun Oct 02 12:17:34 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: Try processing F11 explicitly for __WXMAC__ to

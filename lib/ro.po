@@ -693,14 +693,15 @@ msgstr "Nord"
 msgid "Elevation on"
 msgstr "Profil in directia"
 
-#: ../src/printwx.cc:255
-#: ../src/printwx.cc:637
-msgid "Plan view"
-msgstr "Plan"
+#: ../src/printwx.cc:244
+msgid "P&lan view"
+msgstr "&Plan"
+
+#: ../src/printwx.cc:246
+msgid "&Elevation"
+msgstr "P&rofil"
 
 #: ../src/gfxcore.cc:713
-#: ../src/printwx.cc:257
-#: ../src/printwx.cc:660
 #: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr "Profil"
