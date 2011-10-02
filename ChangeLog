@@ -1,3 +1,8 @@
+Sun Oct 02 12:17:34 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Try processing F11 explicitly for __WXMAC__ to
+	  avoiding getting stuck in full screen mode forever.
+
 Sun Oct 02 12:01:25 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/: Make the sign of the tilt angle for printouts consistent with
