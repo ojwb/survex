@@ -179,18 +179,16 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_layout.Shots = legs;
     m_layout.Surface = surf;
     m_layout.datestamp = datestamp;
-    m_layout.rot = int(angle + .001);
+    m_layout.rot = int(angle);
     m_layout.title = title;
     if (mainfrm->IsExtendedElevation()) {
 	m_layout.view = layout::EXTELEV;
 	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
 	m_layout.tilt = 0;
     } else {
-	// FIXME rot and tilt shouldn't be integers, but for now add a small
-	// fraction before forcing to int as otherwise plan view ends up being
-	// 89 degrees!
-	m_layout.tilt = int(tilt_angle + .001);
-	if (m_layout.tilt == 90) {
+	// FIXME rot and tilt shouldn't be integers.
+	m_layout.tilt = int(tilt_angle);
+	if (m_layout.tilt == -90) {
 	    m_layout.view = layout::PLAN;
 	} else if (m_layout.tilt == 0) {
 	    m_layout.view = layout::ELEV;
@@ -383,7 +381,7 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
 
 void
 svxPrintDlg::OnPlan(wxCommandEvent&) {
-    m_tilt->SetValue(90);
+    m_tilt->SetValue(-90);
     SomethingChanged();
 }
 
@@ -395,7 +393,7 @@ svxPrintDlg::OnElevation(wxCommandEvent&) {
 
 void
 svxPrintDlg::OnPlanUpdate(wxUpdateUIEvent& e) {
-    e.Enable(m_tilt->GetValue() != 90);
+    e.Enable(m_tilt->GetValue() != -90);
 }
 
 void
@@ -464,7 +462,7 @@ svxPrintDlg::UIToLayout(){
 
     if (m_layout.view != layout::EXTELEV) {
 	m_layout.tilt = m_tilt->GetValue();
-	if (m_layout.tilt == 90) {
+	if (m_layout.tilt == -90) {
 	    m_layout.view = layout::PLAN;
 	} else if (m_layout.tilt == 0) {
 	    m_layout.view = layout::ELEV;
@@ -506,7 +504,7 @@ svxPrintDlg::RecalcBounds()
 		double X = x * COS - y * SIN;
 		if (X > m_layout.xMax) m_layout.xMax = X;
 		if (X < m_layout.xMin) m_layout.xMin = X;
-		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		double Y = z * COST - (x * SIN + y * COS) * SINT;
 		if (Y > m_layout.yMax) m_layout.yMax = Y;
 		if (Y < m_layout.yMin) m_layout.yMin = Y;
 	    }
@@ -525,7 +523,7 @@ svxPrintDlg::RecalcBounds()
 		double X = x * COS - y * SIN;
 		if (X > m_layout.xMax) m_layout.xMax = X;
 		if (X < m_layout.xMin) m_layout.xMin = X;
-		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		double Y = z * COST - (x * SIN + y * COS) * SINT;
 		if (Y > m_layout.yMax) m_layout.yMax = Y;
 		if (Y < m_layout.yMin) m_layout.yMin = Y;
 	    }
@@ -541,7 +539,7 @@ svxPrintDlg::RecalcBounds()
 		double X = x * COS - y * SIN;
 		if (X > m_layout.xMax) m_layout.xMax = X;
 		if (X < m_layout.xMin) m_layout.xMin = X;
-		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		double Y = z * COST - (x * SIN + y * COS) * SINT;
 		if (Y > m_layout.yMax) m_layout.yMax = Y;
 		if (Y < m_layout.yMin) m_layout.yMin = Y;
 	    }
@@ -1036,7 +1034,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 		double y = pos->GetY();
 		double z = pos->GetZ();
 		double X = x * COS - y * SIN;
-		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		double Y = z * COST - (x * SIN + y * COS) * SINT;
 		long px = (long)((X * Sc + l->xOrg) * l->scX);
 		long py = (long)((Y * Sc + l->yOrg) * l->scY);
 		if (pos == trav->begin()) {
@@ -1090,7 +1088,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	    double pz = (*label)->GetZ();
 	    if (l->Surface || (*label)->IsUnderground()) {
 		double X = px * COS - py * SIN;
-		double Y = (px * SIN + py * COS) * SINT + pz * COST;
+		double Y = pz * COST - (px * SIN + py * COS) * SINT;
 		long xnew, ynew;
 		xnew = (long)((X * Sc + l->xOrg) * l->scX);
 		ynew = (long)((Y * Sc + l->yOrg) * l->scY);

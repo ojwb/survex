@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006,2011 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ void GUIControl::HandleTilt(wxPoint point)
 
     if (m_ReverseControls != m_View->GetPerspective()) dy = -dy;
 
-    m_View->TiltCave(Double(-dy) * 0.36);
+    m_View->TiltCave(Double(dy) * 0.36);
 
     m_DragStart = point;
 
@@ -182,7 +182,7 @@ void GUIControl::HandleTiltRotate(wxPoint point)
     // left/right => rotate, up/down => tilt.
     // Make tilt less sensitive than rotate as that feels better.
     m_View->TurnCave(Double(dx) * -0.36);
-    m_View->TiltCave(Double(dy) * -0.18);
+    m_View->TiltCave(Double(dy) * 0.18);
 
     m_View->ForceRefresh();
 
@@ -670,9 +670,9 @@ void GUIControl::OnHigherViewpoint(bool accel)
 {
     // Raise the viewpoint.
     if (m_View->GetPerspective()) {
-	m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
-    } else {
 	m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
+    } else {
+	m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
     }
     m_View->ForceRefresh();
 }
@@ -686,9 +686,9 @@ void GUIControl::OnLowerViewpoint(bool accel)
 {
     // Lower the viewpoint.
     if (m_View->GetPerspective()) {
-	m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
-    } else {
 	m_View->TiltCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
+    } else {
+	m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
     }
     m_View->ForceRefresh();
 }

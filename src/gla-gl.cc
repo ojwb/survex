@@ -700,7 +700,7 @@ void GLACanvas::SetDataTransform()
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
-    glRotated(m_Tilt, 1.0, 0.0, 0.0);
+    glRotated(-m_Tilt, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     glRotated(m_Pan, 0.0, 0.0, 1.0);
     CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");

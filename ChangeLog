@@ -1,3 +1,8 @@
+Sun Oct 02 12:01:25 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/: Make the sign of the tilt angle for printouts consistent with
+	  the sign in the UI.
+
 Sun Oct 02 10:00:08 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,lib/en_US.po,src/printwx.cc: On printouts, combine the

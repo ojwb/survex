@@ -609,7 +609,7 @@ void GfxCore::Draw2dIndicators()
 	// clino, we snap to 90 degree multiples, and the ticks go white.
 	SetColour(m_MouseOutsideElev ? col_WHITE : col_LIGHT_GREY_2);
 	DrawList2D(LIST_CLINO_BACK, elev_centre_x, centre_y, 0);
-	DrawList2D(LIST_CLINO, elev_centre_x, centre_y, 90 + m_TiltAngle);
+	DrawList2D(LIST_CLINO, elev_centre_x, centre_y, 90 - m_TiltAngle);
     }
 
     SetColour(TEXT_COLOUR);
@@ -648,11 +648,11 @@ void GfxCore::Draw2dIndicators()
 		GetTextExtent(wxT("00"), &zero_zero_width, NULL);
 	    }
 	    width = zero_zero_width;
-	    angle = int(-m_TiltAngle);
+	    angle = int(m_TiltAngle);
 	    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("00");
 	} else {
 	    width = triple_zero_width;
-	    angle = int(-m_TiltAngle * 200.0 / 180.0);
+	    angle = int(m_TiltAngle * 200.0 / 180.0);
 	    str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
 	}
 
@@ -1172,7 +1172,7 @@ void GfxCore::DefaultParameters()
     if (m_Parent->IsExtendedElevation()) {
 	m_TiltAngle = 0.0;
     } else {
-	m_TiltAngle = 90.0;
+	m_TiltAngle = -90.0;
     }
 
     SetRotation(m_PanAngle, m_TiltAngle);
@@ -1311,8 +1311,8 @@ bool GfxCore::Animate()
 
     if (m_SwitchingTo == PLAN) {
 	// When switching to plan view...
-	TiltCave(90.0 * t);
-	if (m_TiltAngle == 90.0) {
+	TiltCave(-90.0 * t);
+	if (m_TiltAngle == -90.0) {
 	    m_SwitchingTo = 0;
 	}
     } else if (m_SwitchingTo == ELEVATION) {
@@ -1320,10 +1320,10 @@ bool GfxCore::Animate()
 	if (fabs(m_TiltAngle) < 90.0 * t) {
 	    m_SwitchingTo = 0;
 	    TiltCave(-m_TiltAngle);
-	} else if (m_TiltAngle < 0.0) {
-	    TiltCave(90.0 * t);
-	} else {
+	} else if (m_TiltAngle > 0.0) {
 	    TiltCave(-90.0 * t);
+	} else {
+	    TiltCave(90.0 * t);
 	}
     } else if (m_SwitchingTo) {
 	int angle = (m_SwitchingTo - NORTH) * 90;
@@ -1675,13 +1675,13 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     glaCoord radius = GetIndicatorRadius();
 
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
-	TiltCave(deg(atan2(double(dy), double(dx))) - m_TiltAngle);
+	TiltCave(-deg(atan2(double(dy), double(dx))) - m_TiltAngle);
 	m_MouseOutsideElev = false;
     } else if (dy >= INDICATOR_MARGIN) {
-	TiltCave(90.0 - m_TiltAngle);
+	TiltCave(-90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
     } else if (dy <= -INDICATOR_MARGIN) {
-	TiltCave(-90.0 - m_TiltAngle);
+	TiltCave(90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
     } else {
 	TiltCave(-m_TiltAngle);
@@ -1810,7 +1810,7 @@ void GfxCore::SwitchToPlan()
 
 	case PLAN:
 	    // A second order to switch takes us there right away
-	    TiltCave(90.0 - m_TiltAngle);
+	    TiltCave(-90.0 - m_TiltAngle);
 	    m_SwitchingTo = 0;
 	    ForceRefresh();
     }
@@ -1842,14 +1842,14 @@ bool GfxCore::CanRaiseViewpoint() const
 {
     // Determine if the survey can be viewed from a higher angle of elevation.
 
-    return GetPerspective() ? (m_TiltAngle > -90.0) : (m_TiltAngle < 90.0);
+    return GetPerspective() ? (m_TiltAngle < 90.0) : (m_TiltAngle > -90.0);
 }
 
 bool GfxCore::CanLowerViewpoint() const
 {
     // Determine if the survey can be viewed from a lower angle of elevation.
 
-    return GetPerspective() ? (m_TiltAngle < 90.0) : (m_TiltAngle > -90.0);
+    return GetPerspective() ? (m_TiltAngle > -90.0) : (m_TiltAngle < 90.0);
 }
 
 bool GfxCore::HasDepth() const
@@ -1871,7 +1871,7 @@ bool GfxCore::ShowingPlan() const
 {
     // Determine if the survey is in plan view.
 
-    return (m_TiltAngle == 90.0);
+    return (m_TiltAngle == -90.0);
 }
 
 bool GfxCore::ShowingElevation() const
@@ -2739,8 +2739,8 @@ GfxCore::MoveViewer(double forward, double up, double right)
     double sT = sin(rad(m_TiltAngle));
     double cP = cos(rad(m_PanAngle));
     double sP = sin(rad(m_PanAngle));
-    Vector3 v_forward(cT * sP, cT * cP, -sT);
-    Vector3 v_up(-sT * sP, -sT * cP, -cT);
+    Vector3 v_forward(cT * sP, cT * cP, sT);
+    Vector3 v_up(sT * sP, sT * cP, -cT);
     Vector3 v_right(-cP, sP, 0);
     assert(fabs(dot(v_forward, v_up)) < 1e-6);
     assert(fabs(dot(v_forward, v_right)) < 1e-6);
@@ -2755,7 +2755,7 @@ GfxCore::MoveViewer(double forward, double up, double right)
 PresentationMark GfxCore::GetView() const
 {
     return PresentationMark(GetTranslation() + m_Parent->GetOffset(),
-			    m_PanAngle, m_TiltAngle, m_Scale);
+			    m_PanAngle, -m_TiltAngle, m_Scale);
 }
 
 void GfxCore::SetView(const PresentationMark & p)
@@ -2763,7 +2763,7 @@ void GfxCore::SetView(const PresentationMark & p)
     m_SwitchingTo = 0;
     SetTranslation(p - m_Parent->GetOffset());
     m_PanAngle = p.angle;
-    m_TiltAngle = p.tilt_angle;
+    m_TiltAngle = -p.tilt_angle; // FIXME: nasty reversed sense (and above)
     SetRotation(m_PanAngle, m_TiltAngle);
     SetScale(p.scale);
     ForceRefresh();
