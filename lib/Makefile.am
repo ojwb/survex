@@ -7,8 +7,8 @@ check-local: survex.pot
 	if grep ^msgstr $(srcdir)/codes.po|sort|uniq -c|grep -v '^ *1 '; then\
 	    echo 'Duplicate message code(s) in codes.po'; exit 1;\
 	fi
-	for po in $(po_files) ; do msgfmt -c --check-accelerators "$$po" || exit 1; done
-	if grep 'msgstr "[0-9][0-9]*"' $(po_files); then\
+	for po in $(po_files) ; do msgfmt -c --check-accelerators "$(srcdir)/$$po" || exit 1; done
+	if cd "$(srcdir)" && grep 'msgstr "[0-9][0-9]*"' $(po_files); then\
 	    echo '.po file with numeric code'; exit 1;\
 	fi
 
