@@ -1,3 +1,7 @@
+Mon Oct 03 00:50:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Sun Oct 02 20:25:01 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/,src/printwx.cc: Add mnemonics to the "Plan" and "Elevation"

@@ -1,3 +1,134 @@
+  3825       olly Sun Oct 02 20:25:01 GMT 2011  Olly Betts <olly@survex.com>
+
+Changes in 1.2.1 (2011-10-03):
+
+* Translation updates for US English.
+
+* aven:
+
+  + Rename the "depth bar" to "colour key" in documentation, menus, etc since
+    it now shows colours for dates and errors as well as depths.
+
+  + In the colour key for "colour by date", change "No info" to "Undated".
+
+  + Remove the dark grey background from the colour key and just put a single
+    pixel black border around the colours.  This is more in keeping with the
+    other controls, and means the colours are now on a black background so more
+    visually similar to the survey legs.
+
+  + Move the colour key's "Undated"/"Not in loop" entry down a little to
+    improve the appearance.  Make each section a pixel taller.
+
+  + If "Colour by X" is selected, always show the colour key, even if it only
+    contains one colour, or just the entry for white.
+
+  + The scale bar, compass, clino, and colour key now all have right click
+    menus which allow related actions to be performed.
+
+  + Improve the font used on the survey pane - it now contains the '-'
+    character (so the clino now shows negative angles as negative, and dates
+    in the colour key are now hyphenated).  Also the spacing and alignment
+    are a little better, though still not perfect.
+
+  + PLT file export now handles spaces and control characters in station names
+    by escaping them with '%' as in URLs.
+
+  + Pressing "Enter" on a station in the tree control now centres the view on
+    that station.
+
+  + The scale bar is now cached in an OpenGL display list since it often gets
+    redrawn exactly the same - for example, when rotating, panning, etc.
+
+  + Pressing "F5" forces all cached OpenGL drawing lists to be invalidated and
+    then forces a refresh of the survey pane.  This is intended as a debugging
+    aid - if pressing F5 changes the display at all then there's a missing case
+    where a list should have been invalidated, which is a bug.  So please
+    report such cases.
+
+  + We now track which OpenGL display lists need to be invalidated on window
+    resize automatically.
+
+  + Increase scale bar maximum width from 65% of the window width to 75% as it
+    was in 1.0.x (except that if that would overlap the clino we now reduce
+    that proportion down until it reaches 50%).  Make the limit of zooming in
+    the same as in 1.0.x.  (ticket#23)
+
+  + Fix incorrect calculation of depth colouring for survey legs which straddle
+    a depth band boundary.
+
+  + (Linux version): Previously wxGTK did handle showing a dialog well if the
+    application was fullscreen (the dialog got opened under the main window!)
+    To work around this, aven would pop out of full screen mode temporarily
+    when showing a dialog.  This works properly with recent wxGTK, so disable
+    our workaround with versions we know work.  Also, apply the workaround
+    only for wxGTK, not everywhere except on Microsoft Windows as there's no
+    reason to think we need it for other platforms.
+
+  + Grey out the "View North" action when we're already viewing North, and
+    similarly for other compass points.
+
+  + Allow "colour by date" to be selected if there are any surveys with date
+    information (previously we checked there was a range of dates).
+
+  + (Mac OS X and Microsoft Windows versions): Fix missing newline to OpenGL
+    info in the "About" dialog.
+
+  + Fix to set the correct filename on the root of the survey tree - previously
+    the filename of the previous file loaded was used!
+
+  + The movie export code now works with newer versions of the FFmpeg libraries
+    as well as still working with older versions.
+
+  + Fix mixed up messages - the print dialog now says "View" on the left
+    subgroup of controls rather than some unrelated message.
+
+  + On printouts, combine the "Plan View"/"Elevation" info box field with the
+    field which gives the bearing and reduce the height on the info box by the
+    removed field, so it's now 3cm for plans and elevations, as for extended
+    elevations.  Report the tilt angle for tilted elevations which it seems has
+    been missing for ages (it's not in recent 1.0.x either).
+
+  + Tweak the exact positioning of informational text on printouts to look
+    nicer and make better use of the available space.
+
+  + Add keyboard mnemonics to the "Plan" and "Elevation" buttons in the print
+    dialog.
+
+  + Make the sign of the tilt angle for printouts consistent with the sign
+    shown by the "clino" in the survey pane.
+
+  + In the "Print" dialog, when in plan view disable the "Plan view" button,
+    and similarly for the "Elevation" button.
+
+  + If a label isn't valid UTF-8 or CP1252, fall back to ISO8859-1.
+
+  + (Mac OS X version): F11 puts aven into full screen mode, but apparently
+    you can't get out again easily, so add code to explicitly check for F11
+    being pressed and toggle full screen.
+
+* (Linux version): Fix the RPM .spec file for where man pages now get installed
+  and package aven.svg and the vim support files.  (Fixes from James Begley)
+
+* "make check" now performs several checks on the translation files.
+
+* More messages are now available to be translated.
+
+* cavern: Fix reporting of ranges of survey coordinates, which was broken by
+  the message handling changes in 1.2.0.
+
+* Fix warning when compiling with GCC.
+
+* INSTALL: Mention building wxWidgets with --enable-unicode.  Mention using
+  sudo for installing on Unix.
+
+* In the manual, replace the instructions for building from source with a
+  pointer to the clearer instructions in INSTALL.
+
+* In the manual, make it clear that installing with administrator rights
+  also applies to newer platforms than XP.
+
+* doc/TODO.htm: Update.
+
 Changes in 1.2.0 (2011-09-20):
 
 * Translation updates for Catalan, French, Romanian, Spanish, Slovak, and US
