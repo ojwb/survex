@@ -968,8 +968,8 @@ msgstr "Profile facing %s"
 #. %s replaced by something like "123°", and the second by something like "-45°".
 #. The bearing is the direction we're looking.
 #: ../src/printwx.cc:675
-msgid "Profile facing %s, tilted %s"
-msgstr "284"
+msgid "Elevation facing %s, tilted %s"
+msgstr "Profile facing %s, tilted %s"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printwx.cc:665
