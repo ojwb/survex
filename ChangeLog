@@ -1,3 +1,7 @@
+Mon Oct 03 02:12:23 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po,lib/sk.po: Fix classes menu accelerators.
+
 Mon Oct 03 02:00:38 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Fix problem with translation of new message.
