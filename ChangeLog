@@ -1,3 +1,7 @@
+Mon Oct 03 02:40:56 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Fix check of .po files not to create messages.mo.
+
 Mon Oct 03 02:22:55 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Fix new translation checking rules to work in a
