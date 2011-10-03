@@ -1,3 +1,9 @@
+Mon Oct 03 23:42:00 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Add back svxPrintout methods GetPageInfo() and
+	  HasPage() which are actually virtual methods called by the parent
+	  class.
+
 Mon Oct 03 02:40:56 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Fix check of .po files not to create messages.mo.

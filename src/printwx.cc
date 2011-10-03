@@ -113,6 +113,9 @@ class svxPrintout : public wxPrintout {
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupDialogData *data, const wxString & title);
     bool OnPrintPage(int pageNum);
+    void GetPageInfo(int *minPage, int *maxPage,
+		     int *pageFrom, int *pageTo);
+    bool HasPage(int pageNum);
     void OnBeginPrinting();
     void OnEndPrinting();
 };
@@ -1107,6 +1110,19 @@ svxPrintout::OnPrintPage(int pageNum) {
     }
 
     return true;
+}
+
+void
+svxPrintout::GetPageInfo(int *minPage, int *maxPage,
+			 int *pageFrom, int *pageTo)
+{
+    *minPage = *pageFrom = 1;
+    *maxPage = *pageTo = m_layout->pages;
+}
+
+bool
+svxPrintout::HasPage(int pageNum) {
+    return (pageNum <= m_layout->pages);
 }
 
 void
