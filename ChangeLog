@@ -1,3 +1,8 @@
+Tue Oct 04 04:49:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Use degree sign from message file rather than a
+	  literal one.
+
 Tue Oct 04 04:08:57 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/message.c: If degree sign isn't available, transliterate it to

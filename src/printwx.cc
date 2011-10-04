@@ -551,8 +551,6 @@ svxPrintDlg::RecalcBounds()
     }
 }
 
-#define DEG "\xB0" /* Degree symbol in ISO-8859-1 */
-
 static int xpPageWidth, ypPageDepth;
 static long MarginLeft, MarginRight, MarginTop, MarginBottom;
 static long x_offset, y_offset;
@@ -633,7 +631,7 @@ svxPrintout::draw_info_box()
 
       wxString angle;
       angle.Printf(wxT("%03d"), l->rot);
-      angle += wxChar(0xB0); // Degree symbol.
+      angle += wmsg(/*°*/344);
       wxString s;
       s.Printf(wmsg(/*Plan view, %s up page*/168), angle.c_str());
       MOVEMM(2, 12); WriteString(s);
@@ -656,22 +654,22 @@ svxPrintout::draw_info_box()
       WriteString(wmsg(/*Elevation on*/116));
       
       MOVEMM(L, boxheight / 2);
-      WriteString(wxString::Format(wxT("%03d"DEG),
-				   (l->rot + 270) % 360 ));
+      WriteString(wxString::Format(wxT("%03d%s"),
+				   (l->rot + 270) % 360, wmsg(/*°*/344)));
       MOVEMM(R - 10, boxheight / 2);
-      WriteString(wxString::Format(wxT("%03d"DEG),
-				   (l->rot + 90) % 360 ));
+      WriteString(wxString::Format(wxT("%03d%s"),
+				   (l->rot + 90) % 360, wmsg(/*°*/344)));
 
       wxString angle;
       angle.Printf(wxT("%03d"), l->rot);
-      angle += wxChar(0xB0); // Degree symbol.
+      angle += wmsg(/*°*/344);
       wxString s;
       if (l->view == layout::ELEV) {
 	  s.Printf(wmsg(/*Elevation facing %s*/169), angle.c_str());
       } else {
 	  wxString a2;
 	  a2.Printf(wxT("%d"), l->tilt);
-	  a2 += wxChar(0xB0); // Degree symbol.
+	  a2 += wmsg(/*°*/344);
 	  s.Printf(wmsg(/*Elevation facing %s, tilted %s*/284), angle.c_str(), a2.c_str());
       }
       MOVEMM(2, 12); WriteString(s);
