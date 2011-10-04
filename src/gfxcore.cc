@@ -2971,7 +2971,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
 	menu.Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
 	menu.AppendSeparator();
-	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/344));
+	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/387));
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
 	PopupMenu(&menu);

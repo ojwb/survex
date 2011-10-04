@@ -1,3 +1,12 @@
+Tue Oct 04 03:59:29 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/codes.po,src/gfxcore.cc,src/mainfrm.cc: Fix message code 344
+	  which should have been a degree sign but got lost in the format
+	  change for 1.2.0 and then got reassigned in 1.2.1.  Externally, this
+	  means that bearing in the status bar now have a degree sign after
+	  them if they are in degrees rather than nothing (1.2.0) or "&Hide
+	  Compass" (1.2.1).
+
 Tue Oct 04 02:55:11 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.1.

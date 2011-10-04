@@ -1897,7 +1897,7 @@ void MainFrm::SetCoords(Double x, Double y)
 
 	wxString brg_unit;
 	if (m_Gfx->GetDegrees()) {
-	    brg_unit = wmsg(/*&deg;*/344);
+	    brg_unit = wmsg(/*°*/344);
 	} else {
 	    brg *= 400.0 / 360.0;
 	    brg_unit = wmsg(/*grad*/345);
@@ -2001,7 +2001,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	}
 	wxString brg_unit;
 	if (m_Gfx->GetDegrees()) {
-	    brg_unit = wmsg(/*&deg;*/344);
+	    brg_unit = wmsg(/*°*/344);
 	} else {
 	    brg *= 400.0 / 360.0;
 	    brg_unit = wmsg(/*grad*/345);
