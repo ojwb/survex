@@ -1,6 +1,4 @@
-  3825       olly Sun Oct 02 20:25:01 GMT 2011  Olly Betts <olly@survex.com>
-
-Changes in 1.2.1 (2011-10-03):
+Changes in 1.2.1 (2011-10-04):
 
 * Translation updates for US English.
 
@@ -19,11 +17,16 @@ Changes in 1.2.1 (2011-10-03):
   + Move the colour key's "Undated"/"Not in loop" entry down a little to
     improve the appearance.  Make each section a pixel taller.
 
-  + If "Colour by X" is selected, always show the colour key, even if it only
-    contains one colour, or just the entry for white.
+  + Allow "Colour by X" to be selected even if there's no data for X or only a
+    single value of X used (the colour key is much smaller in these cases, and
+    does still provide some useful information).
+
+  + Fix incorrect calculation of depth colouring for survey legs which straddle
+    a depth band boundary.
 
   + The scale bar, compass, clino, and colour key now all have right click
-    menus which allow related actions to be performed.
+    menus which allow related actions to be performed (especially handy in
+    full-screen mode).
 
   + Improve the font used on the survey pane - it now contains the '-'
     character (so the clino now shows negative angles as negative, and dates
@@ -42,33 +45,27 @@ Changes in 1.2.1 (2011-10-03):
   + Pressing "F5" forces all cached OpenGL drawing lists to be invalidated and
     then forces a refresh of the survey pane.  This is intended as a debugging
     aid - if pressing F5 changes the display at all then there's a missing case
-    where a list should have been invalidated, which is a bug.  So please
-    report such cases.
+    where a list should have been invalidated (please report if you find such
+    a case as it is a bug).
 
-  + We now track which OpenGL display lists need to be invalidated on window
-    resize automatically.
+  + We now automatically track which OpenGL display lists need to be
+    invalidated on window width or height changes.
 
   + Increase scale bar maximum width from 65% of the window width to 75% as it
     was in 1.0.x (except that if that would overlap the clino we now reduce
     that proportion down until it reaches 50%).  Make the limit of zooming in
     the same as in 1.0.x.  (ticket#23)
 
-  + Fix incorrect calculation of depth colouring for survey legs which straddle
-    a depth band boundary.
-
-  + (Linux version): Previously wxGTK did handle showing a dialog well if the
-    application was fullscreen (the dialog got opened under the main window!)
-    To work around this, aven would pop out of full screen mode temporarily
-    when showing a dialog.  This works properly with recent wxGTK, so disable
-    our workaround with versions we know work.  Also, apply the workaround
-    only for wxGTK, not everywhere except on Microsoft Windows as there's no
-    reason to think we need it for other platforms.
+  + (Linux version): Previously wxGTK didn't really handle showing a dialog if
+    the application was fullscreen (the dialog got opened under the main
+    window!)  To work around this, aven would switch out of full screen mode
+    temporarily while showing a dialog.  This case works properly with recent
+    wxGTK, so disable our workaround with versions we know work.  Also, apply
+    the workaround only for wxGTK, not everywhere except on Microsoft Windows
+    as there's no reason to think we need it for other platforms.
 
   + Grey out the "View North" action when we're already viewing North, and
     similarly for other compass points.
-
-  + Allow "colour by date" to be selected if there are any surveys with date
-    information (previously we checked there was a range of dates).
 
   + (Mac OS X and Microsoft Windows versions): Fix missing newline to OpenGL
     info in the "About" dialog.
@@ -99,6 +96,8 @@ Changes in 1.2.1 (2011-10-03):
 
   + In the "Print" dialog, when in plan view disable the "Plan view" button,
     and similarly for the "Elevation" button.
+
+  + (Microsoft Windows version): Sort out appearance of custom cursors.
 
   + If a label isn't valid UTF-8 or CP1252, fall back to ISO8859-1.
 
