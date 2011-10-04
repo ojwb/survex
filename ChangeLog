@@ -1,3 +1,8 @@
+Tue Oct 04 04:08:57 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/message.c: If degree sign isn't available, transliterate it to
+	  'dg' rather than skipping it.
+
 Tue Oct 04 03:59:29 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po,src/gfxcore.cc,src/mainfrm.cc: Fix message code 344

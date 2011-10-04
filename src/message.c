@@ -615,6 +615,8 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = '!'; return 1;
     case 171 /* « */:
       p[1] = *p = '<'; return 2;
+    case 176 /* ° */:
+      *p = 'd'; p[1] = 'g'; return 2;
     case 187 /* » */:
       p[1] = *p = '>'; return 2;
     case 191 /* ¿ */:
