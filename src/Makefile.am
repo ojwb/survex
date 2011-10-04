@@ -48,7 +48,7 @@ aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
  guicontrol.cc gla-gl.cc fnt.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
- brotatemask.xbm brotate.xbm hand_mask.xbm handmask.xbm hand.xbm \
+ brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
  avenprcore.cc printwx.cc ini.c hash.c \
