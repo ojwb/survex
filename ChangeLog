@@ -1,3 +1,8 @@
+Wed Oct 05 08:19:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix not to pass wxString through varargs (issue
+	  introduced in the previous commit).
+
 Tue Oct 04 04:49:19 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Use degree sign from message file rather than a

@@ -655,10 +655,12 @@ svxPrintout::draw_info_box()
       
       MOVEMM(L, boxheight / 2);
       WriteString(wxString::Format(wxT("%03d%s"),
-				   (l->rot + 270) % 360, wmsg(/*°*/344)));
+				   (l->rot + 270) % 360,
+				   wmsg(/*°*/344).c_str()));
       MOVEMM(R - 10, boxheight / 2);
       WriteString(wxString::Format(wxT("%03d%s"),
-				   (l->rot + 90) % 360, wmsg(/*°*/344)));
+				   (l->rot + 90) % 360,
+				   wmsg(/*°*/344).c_str()));
 
       wxString angle;
       angle.Printf(wxT("%03d"), l->rot);
