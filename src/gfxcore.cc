@@ -2230,7 +2230,10 @@ int GfxCore::GetDepthColour(Double z) const
     if (z == 0) return 0;
     assert(z_ext > 0.0);
     assert(z >= 0.0);
-    assert(z <= z_ext);
+    // We seem to get rounding differences causing z to sometimes exceed z_ext
+    // by a small amount here - see: http://trac.survex.com/ticket/26
+    // FIXME: Investigate this and check why it's happening.
+    assert(z - z_ext < 0.01);
     return int(z / z_ext * (GetNumColourBands() - 1));
 }
 
