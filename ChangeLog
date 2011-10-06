@@ -1,3 +1,7 @@
+Thu Oct 06 04:13:24 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gettexttomsg.pl: Update for the message.txt -> codes.po change.
+
 Thu Oct 06 03:01:45 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Passage tubes can stick out above the highest survey
