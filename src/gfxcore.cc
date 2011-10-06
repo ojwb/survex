@@ -2227,9 +2227,11 @@ int GfxCore::GetDepthColour(Double z) const
     // Return the (0-based) depth colour band index for a z-coordinate.
     Double z_ext = m_Parent->GetDepthExtent();
     z -= m_Parent->GetDepthMin();
-    if (z == 0) return 0;
+    // We seem to get rounding differences causing z to sometimes be slightly
+    // less than GetDepthMin() here - see: http://trac.survex.com/ticket/29
+    // FIXME: Investigate this and check why it's happening.
+    if (z <= 0) return 0;
     assert(z_ext > 0.0);
-    assert(z >= 0.0);
     // We seem to get rounding differences causing z to sometimes exceed z_ext
     // by a small amount here - see: http://trac.survex.com/ticket/26
     // FIXME: Investigate this and check why it's happening.
