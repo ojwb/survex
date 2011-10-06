@@ -15,6 +15,9 @@ Changes in 1.2.2 (2011-10-06):
   + Fix assertion failure when turning on 3D passages if they stick out higher
     or lower than any station.  (ticket#29)
 
+  + Fix grid not to disappear when blobs are turned on and blobs are drawn
+    using lines.
+
   + If a degree sign isn't available in the character set in use, transliterate
     it to 'dg' rather than skipping it.
 

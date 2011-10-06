@@ -1,3 +1,7 @@
+Thu Oct 06 13:23:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Another update for 1.2.2.
+
 Thu Oct 06 13:21:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Fix grid not to disappear when blobs are turned on
