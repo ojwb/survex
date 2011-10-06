@@ -2228,14 +2228,14 @@ int GfxCore::GetDepthColour(Double z) const
     Double z_ext = m_Parent->GetDepthExtent();
     z -= m_Parent->GetDepthMin();
     // We seem to get rounding differences causing z to sometimes be slightly
-    // less than GetDepthMin() here - see: http://trac.survex.com/ticket/29
-    // FIXME: Investigate this and check why it's happening.
+    // less than GetDepthMin() here, and it can certainly be true for passage
+    // tubes, so just clamp the value to 0.
     if (z <= 0) return 0;
     assert(z_ext > 0.0);
     // We seem to get rounding differences causing z to sometimes exceed z_ext
-    // by a small amount here - see: http://trac.survex.com/ticket/26
-    // FIXME: Investigate this and check why it's happening.
-    assert(z - z_ext < 0.01);
+    // by a small amount here (see: http://trac.survex.com/ticket/26) and it
+    // can certainly be true for passage tubes, so just clamp the value.
+    if (z >= z_ext) return GetNumColourBands() - 1;
     return int(z / z_ext * (GetNumColourBands() - 1));
 }
 

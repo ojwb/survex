@@ -1,3 +1,9 @@
+Thu Oct 06 03:01:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Passage tubes can stick out above the highest survey
+	  station or below the lowest, so clamp the value used to calculate
+	  the colour in these cases, like we already do elsewhere.
+
 Thu Oct 06 02:52:13 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Avoid a different assertion failure due to rounding
