@@ -420,6 +420,14 @@ svxPrintDlg::SomethingChanged() {
     if (!m_printSize) return;
     // Update the bounding box.
     RecalcBounds();
+
+    if (m_scale) {
+	(m_scale->GetValue()).ToDouble(&(m_layout.Scale));
+	if (m_layout.Scale == 0.0) {
+	    m_layout.pick_scale(1, 1);
+	}
+    }
+
     if (m_layout.xMax >= m_layout.xMin) {
 	m_layout.pages_required();
 	m_printSize->SetLabel(wxString::Format(wmsg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
@@ -473,13 +481,6 @@ svxPrintDlg::UIToLayout(){
 	    m_layout.view = layout::TILT;
 	}
 	m_layout.rot = m_bearing->GetValue();
-    }
-
-    if (m_scale) {
-	(m_scale->GetValue()).ToDouble(&(m_layout.Scale));
-	if (m_layout.Scale == 0.0) {
-	    m_layout.pick_scale(1, 1);
-	}
     }
 }
 

@@ -1,3 +1,10 @@
+Thu Oct 06 12:11:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix to calculate the scale required for "One page"
+	  right before we calculate how many pages are required, so we don't
+	  end up something other than 1x1 being shown when the user changes
+	  settings.
+
 Thu Oct 06 12:07:10 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc: The info box is now always 30mm high (if present)
