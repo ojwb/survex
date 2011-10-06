@@ -1,3 +1,8 @@
+Thu Oct 06 02:49:03 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/glbitmapfont.cc,src/glbitmapfont.h: Actually add the new
+	  glBitmap-based font code.
+
 Thu Oct 06 02:36:47 GMT 2011  Olly Betts <olly@survex.com>
 
 	* survex.iss.in: Update for font changes.
