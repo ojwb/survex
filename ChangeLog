@@ -1,3 +1,9 @@
+Thu Oct 06 12:07:10 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc: The info box is now always 30mm high (if present)
+	  so update the code which picks a scale and which decides how many
+	  pages are required to use this height.
+
 Thu Oct 06 11:34:51 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.h: SomethingChanged() method doesn't need to be public,

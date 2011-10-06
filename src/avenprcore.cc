@@ -79,7 +79,7 @@ layout::pages_required() {
     double paper_centre_x, paper_centre_y;
 
     double allow = 21.0;
-    if (!Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
+    if (!Raw) allow += 30.0;
     double Sc = 1000 / Scale;
     image_dx = (xMax - xMin) * Sc;
     if (PaperWidth > 0.0) {
@@ -224,7 +224,7 @@ layout::pick_scale(int x, int y)
       Sc_x = (x * PaperWidth - 19.0) / (xMax - xMin);
    if (PaperDepth > 0.0 && yMax > yMin) {
       double allow = 21.0;
-      if (!Raw) allow += (view == EXTELEV ? 30.0 : 40.0);
+      if (!Raw) allow += 30.0;
       Sc_y = (y * PaperDepth - allow) / (yMax - yMin);
    }
 
