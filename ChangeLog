@@ -1,3 +1,7 @@
+Thu Oct 06 02:36:47 GMT 2011  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Update for font changes.
+
 Thu Oct 06 02:35:41 GMT 2011  Olly Betts <olly@survex.com>
 
 	* Makefile.am,buildmacosx.sh,lib/Makefile.am,lib/afm2txf.pl,
