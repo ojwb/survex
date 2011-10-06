@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWidgets driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004,2005,2006 Olly Betts
+ * Copyright (C) 2004,2005,2006,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ class svxPrintDlg : public wxDialog {
 	void LayoutToUI();
 	void UIToLayout();
 	void RecalcBounds();
+	void SomethingChanged();
  public:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
 		    const wxString & title, const wxString & datestamp,
@@ -73,7 +74,6 @@ class svxPrintDlg : public wxDialog {
 	void OnElevationUpdate(wxUpdateUIEvent& e);
 	void OnChangeSpin(wxSpinEvent& event);
 	void OnChange(wxCommandEvent& event);
-	void SomethingChanged();
  private:
 	DECLARE_EVENT_TABLE()
 };

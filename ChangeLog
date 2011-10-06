@@ -1,3 +1,8 @@
+Thu Oct 06 11:34:51 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.h: SomethingChanged() method doesn't need to be public,
+	  so make it private.
+
 Thu Oct 06 04:13:24 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gettexttomsg.pl: Update for the message.txt -> codes.po change.
