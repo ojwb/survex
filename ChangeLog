@@ -1,3 +1,7 @@
+Thu Oct 06 13:17:19 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.2.2.
+
 Thu Oct 06 12:11:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix to calculate the scale required for "One page"

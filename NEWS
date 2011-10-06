@@ -1,3 +1,36 @@
+Changes in 1.2.2 (2011-10-06):
+
+* aven:
+
+  + Replace the textured-mapped font drawing with an approach based on
+    glBitmap.  This doesn't suffer from the character alignment issues which
+    the textured-mapped fonts had, and is actually significantly faster on some
+    machines.  The current font used is (mostly) fixed-width, but this isn't an
+    inherent limitation - it was just the easiest font data to convert to a
+    usable format.
+
+  + Fix assertion failure due to rounding differences on loading certain .3d
+    files.  (ticket#26)
+
+  + Fix assertion failure when turning on 3D passages if they stick out higher
+    or lower than any station.  (ticket#29)
+
+  + If a degree sign isn't available in the character set in use, transliterate
+    it to 'dg' rather than skipping it.
+
+  + Fix message which should have been a degree sign but got lost in the format
+    change for 1.2.0 and then got reassigned in 1.2.1.  Externally, this means
+    that bearings in the status bar now have a degree sign after them if they
+    are in degrees rather than nothing (1.2.0) or "&Hide Compass" (1.2.1).
+
+  + Fix print dialog to calculate the scale required for "One page" right
+    before it calculates how many pages are required, so we don't end up
+    something other than 1x1 being shown when the user changes settings.
+
+  + Update the calculations for picking a scale and for deciding how many
+    pages are needed to take into account the change in info box height made
+    in 1.2.1.
+
 Changes in 1.2.1 (2011-10-04):
 
 * Translation updates for US English.
