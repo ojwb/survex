@@ -340,8 +340,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(LIST_SURFACE_LEGS);
 	}
 
-	DrawList(LIST_BLOBS);
-
 	if (m_BoundingBox) {
 	    DrawShadowedBoundingBox();
 	}
@@ -349,6 +347,8 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    // Draw the grid.
 	    DrawList(LIST_GRID);
 	}
+
+	DrawList(LIST_BLOBS);
 
 	if (m_Crosses) {
 	    DrawList(LIST_CROSSES);

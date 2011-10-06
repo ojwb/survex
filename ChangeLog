@@ -1,3 +1,8 @@
+Thu Oct 06 13:21:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Fix grid not to disappear when blobs are turned on
+	  if blobs are drawn using lines.
+
 Thu Oct 06 13:17:19 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.2.
