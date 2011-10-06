@@ -24,12 +24,12 @@ msg_files = $(po_files:.po=.msg) en.msg
 EXTRA_DIST = survex.pot $(po_files) codes.po\
  named-entities.txt po-to-msg.pl checkshortcut.pl\
  English_GB.isl Romanian-7-5.1.11.isl\
- afm2txf.pl\
+ make-pixel-font\
  INSTALL.OSX
 
-MAINTAINERCLEANFILES = $(msg_files) *.todo aven.txf
+MAINTAINERCLEANFILES = $(msg_files) *.todo unifont.pixelfont
 
-dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) aven.txf
+dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 
 appsdir = $(datadir)/applications
 dist_apps_DATA = survex-aven.desktop survex-svxedit.desktop
@@ -45,5 +45,5 @@ mimedir = $(datadir)/mime-info
 dist_mime_DATA = survex.mime
 mime_DATA = survex.keys
 
-aven.txf: $(srcdir)/afm2txf.pl
-	$(srcdir)/afm2txf.pl -o aven.txf /usr/share/texmf-texlive/fonts/afm/urw/helvetic/uhvr8a.afm
+unifont.pixelfont: $(srcdir)/make-pixel-font
+	$(srcdir)/make-pixel-font

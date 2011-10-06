@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+use warnings;
+use strict;
+
+my %bitno = (0 => 0);
+for (0 .. 31) {
+    $bitno{1 << $_} = $_;
+}
+
+my $last_ch = -1;
+open U, '<', '/usr/share/unifont/unifont.hex' or die $!;
+open O, '>', 'unifont.pixelfont' or die $!;
+while (<U>) {
+    my ($ch, $hex) = /^([[:xdigit:]]+):([[:xdigit:]]+)$/;
+    if (!defined $ch) {
+	print "Bad line: $_";
+	next;
+    }
+    $ch = hex($ch);
+#    print "$ch:\n";
+
+    while (++$last_ch < $ch) {
+	# print "Missing entry for ".($last_ch - 1 )."\n";
+	print O pack 'C', 0x00;
+    }
+
+    # $len is 0, 2 or 4
+    my $len = length($hex) / 16;
+    my $packcode;
+    if ($len == 4) {
+	$packcode = 'S';
+    } elsif ($len == 2) {
+	$packcode = 'C';
+    } elsif ($len == 0) {
+	$packcode = '';
+    } else {
+	die "No handling for len = $len\n";
+    }
+    my $data = '';
+    my $start;
+    my $n = 0;
+    if ($len) {
+	for (0 .. 15) {
+	    my $c = substr($hex, (15 - $_) * $len, $len);
+	    my $row = hex($c);
+	    if (!defined $start) {
+		# Skip blank rows at the bottom.
+		next unless $row;
+		$start = $_;
+	    }
+	    $n = $_ if $row;
+	    $data .= pack $packcode, $row;
+
+#	my $b = sprintf $fmt, $row;
+#	$b =~ y/01/ @/;
+#	print "\t$b\n";
+	}
+    }
+
+    if (!defined $start) {
+	# No set pixels.
+	print O pack 'C', 0x00;
+	die "not really empty!" unless $hex =~ /^0*$/;
+    } else {
+	die "really empty!" if $hex =~ /^0*$/;
+	$n = $n + 1 - $start;
+	print O pack 'C', $len / 2;
+	print O pack 'C', ($start << 4) | ($n - 1);
+	die "too little data (".length($data)." < ".$n."*".($len/2).")" if length($data) < $n * $len/2;
+	print O substr($data, 0, $n * $len / 2);
+    }
+}
+close O or die $!;

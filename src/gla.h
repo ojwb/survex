@@ -21,9 +21,6 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-// Use texture mapped fonts (lots faster, at least with hardware 3d)
-#define USE_FNT
-
 #include <string>
 #include <vector>
 
@@ -33,9 +30,7 @@ using namespace std;
 #include "aventypes.h"
 #include "vector3.h"
 
-#ifdef USE_FNT
-#include "fnt.h"
-#endif
+#include "glbitmapfont.h"
 
 class GfxCore;
 
@@ -111,12 +106,7 @@ class GLACanvas : public wxGLCanvas {
     Double m_Scale;
     Vector3 m_Translation;
 
-#ifdef USE_FNT
-    fntTexFont m_Font;
-#else
-    static void * const m_Font;
-    static const int m_FontSize;
-#endif
+    BitmapFont m_Font;
 
     GLUquadric* m_Quadric;
 
@@ -247,11 +237,7 @@ public:
     bool Transform(const Vector3 & v, double* x_out, double* y_out, double* z_out) const;
     void ReverseTransform(Double x, Double y, double* x_out, double* y_out, double* z_out) const;
 
-#ifdef USE_FNT
-    int GetFontSize() const { return m_Font.getFontSize(); }
-#else
-    int GetFontSize() const { return m_FontSize; }
-#endif
+    int GetFontSize() const { return m_Font.get_font_size(); }
 
     void ToggleSmoothShading();
     bool GetSmoothShading() const { return m_SmoothShading; }

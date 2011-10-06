@@ -4,8 +4,8 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  filelist.h filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h\
  message.h namecmp.h netartic.h netbits.h netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
- fnt.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h cavernlog.h\
- aboutdlg.h aven.h avenpal.h gfxcore.h log.h mainfrm.h\
+ glbitmapfont.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h\
+ cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h log.h mainfrm.h\
  vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
 
 # GCC 2.95 frequently dies on gfxcore.cc with an internal error, so if the
@@ -47,8 +47,8 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
 aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
  useful.c cmdline.c z_getopt.c getopt1.c namecmp.c aventreectrl.cc export.cc \
- guicontrol.cc gla-gl.cc fnt.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
- brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
+ guicontrol.cc gla-gl.cc glbitmapfont.cc log.cc moviemaker.cc hpgl.cc \
+ cavernlog.cc brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
  avenprcore.cc printwx.cc ini.c hash.c \

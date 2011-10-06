@@ -17,7 +17,7 @@ EXTRA_DIST = $(GNU_FILES) TODO OLDNEWS\
  buildmacosx.sh
 
 extra_bin = lib/*.msg\
- lib/aven.txf
+ lib/unifont.pixelfont
 extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 

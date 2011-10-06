@@ -1,3 +1,14 @@
+Thu Oct 06 02:35:41 GMT 2011  Olly Betts <olly@survex.com>
+
+	* Makefile.am,buildmacosx.sh,lib/Makefile.am,lib/afm2txf.pl,
+	  lib/make-pixel-font,src/: Replace the textured-mapped font drawing
+	  with an approach based on glBitmap.  This doesn't suffer from the
+	  character alignment issues which the textured-mapped fonts had,
+	  and is actually significantly faster on some machines.  The current
+	  font used is (mostly) fixed-width, but this isn't an inherent
+	  limitation - it was just the easiest font data to convert to a
+	  usable format.
+
 Wed Oct 05 13:49:15 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Avoid assertion failure due to rounding differences.

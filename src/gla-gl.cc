@@ -65,23 +65,6 @@
 #define GL_ALIASED_POINT_SIZE_RANGE 0x846D
 #endif
 
-#ifndef USE_FNT
-// Some WIN32 stupidity which causes mingw to fail to link for some reason;
-// doing this probably means we can't safely use atexit() - see the comments in
-// glut.h if you can take the full horror...
-#define GLUT_DISABLE_ATEXIT_HACK
-// For glutBitmapLength()
-#define GLUT_API_VERSION 4
-#ifdef __APPLE__
-#include <OpenGL/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-#ifdef FREEGLUT
-#include <GL/freeglut_ext.h>
-#endif
-#endif
-
 using namespace std;
 
 const int BLOB_DIAMETER = 5;
@@ -240,11 +223,6 @@ void GLAList::InvalidateList() {
 //  GLACanvas
 //
 
-#ifndef USE_FNT
-void* const GLACanvas::m_Font = GLUT_BITMAP_HELVETICA_10;
-const int GLACanvas::m_FontSize = 10;
-#endif
-
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
@@ -265,12 +243,6 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     m_Fog = false;
     m_AntiAlias = false;
     list_flags = 0;
-
-#ifndef USE_FNT
-    int argc = 1;
-    char * argv[] = { (char*)"aven", NULL };
-    glutInit(&argc, argv);
-#endif
 }
 
 GLACanvas::~GLACanvas()
@@ -357,15 +329,15 @@ void GLACanvas::FirstShow()
     glPixelStorei(GL_PACK_ALIGNMENT, 1); // For screengrabs and movies.
     CHECK_GL_ERROR("FirstShow", "glPixelStorei GL_PACK_ALIGNMENT");
 
-#ifdef USE_FNT
     // Load font
     wxString path = wmsg_cfgpth();
     path += wxCONFIG_PATH_SEPARATOR;
-    path += wxT("aven.txf");
-    // FIXME: This should really use fn_str() - currently we probably can't
-    // save to a Unicode path on wxmsw.
-    m_Font.load(path.mb_str());
-#endif
+    path += wxT("unifont.pixelfont");
+    if (!m_Font.load(path)) {
+	// FIXME: do something better.
+	fprintf(stderr, "Couldn't load font.\n");
+	exit(1);
+    }
 
     if (blob_method == UNKNOWN) {
 	// Check if we can use GL_POINTS to plot blobs at stations.
@@ -945,66 +917,21 @@ void GLACanvas::SetColour(gla_colour colour)
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
 {
     // Draw a text string on the current buffer in the current font.
-#ifdef USE_FNT
-    GLdouble X, Y, Z;
-    if (!gluProject(x, y, z, modelview_matrix, projection_matrix, viewport,
-		    &X, &Y, &Z)) return;
-    // Only draw text which is in front of the viewer.
-    if (Z > 0) DrawIndicatorText((int)X, (int)Y, str);
-#else
     glRasterPos3d(x, y, z);
     CHECK_GL_ERROR("DrawText", "glRasterPos3d");
-
-// glutBitmapString() useless for Unicode strings.
-//#ifdef FREEGLUT
-#if 0
-    glutBitmapString(m_Font, (const unsigned char *)str.c_str());
-    CHECK_GL_ERROR("DrawText", "glutBitmapString");
-#else
-    for (size_t pos = 0; pos < str.length(); pos++) {
-        glutBitmapCharacter(m_Font, int((unsigned char)str[pos]));
-        CHECK_GL_ERROR("DrawText", "glutBitmapCharacter");
-    }
-#endif
-#endif
+    m_Font.write_string(str.data(), str.size());
 }
 
 void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
 {
-#ifdef USE_FNT
-    glPushAttrib(GL_ENABLE_BIT);
-    glDisable(GL_ALPHA_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_TEXTURE_2D);
-    glDisable(GL_DEPTH_TEST);
-    m_Font.puts(x, y, str.data(), str.size());
-    glPopAttrib();
-#else
-    DrawText(x, y, 0.0, str);
-#endif
+    glRasterPos2d(x, y);
+    CHECK_GL_ERROR("DrawIndicatorText", "glRasterPos2d");
+    m_Font.write_string(str.data(), str.size());
 }
 
 void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
 {
-#ifdef USE_FNT
-    m_Font.getTextExtent(str.c_str(), x_ext, y_ext);
-#else
-    if (x_ext) {
-// glutBitmapLength() useless for Unicode strings.
-#if 0
-	*x_ext = glutBitmapLength(m_Font, (const unsigned char *)str.c_str());
-	CHECK_GL_ERROR("GetTextExtent", "glutBitmapLength");
-#else
-	*x_ext = 0;
-	for (size_t pos = 0; pos < str.length(); pos++) {
-	    x_ext += glutBitmapWidth(m_Font, int((unsigned char)str[pos]));
-	    CHECK_GL_ERROR("GetTextExtent", "glutBitmapWidth");
-	}
-#endif
-    }
-    if (y_ext) *y_ext = m_FontSize + 2;
-#endif
+    m_Font.get_text_extent(str.data(), str.size(), x_ext, y_ext);
 }
 
 void GLACanvas::BeginQuadrilaterals()
