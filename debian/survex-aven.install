@@ -1,6 +1,6 @@
 debian/tmp/usr/bin/aven
 debian/tmp/usr/share/man/man1/aven.1
-debian/tmp/usr/share/survex/aven.txf
+debian/tmp/usr/share/survex/unifont.pixelfont
 debian/tmp/usr/share/survex/icons/????*.png
 debian/tmp/usr/share/survex/icons/*.jpg
 debian/tmp/usr/share/pixmaps/aven.*

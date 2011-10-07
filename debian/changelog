@@ -1,4 +1,4 @@
-survex (1.2.0-1) UNRELEASED; urgency=low
+survex (1.2.2-1) unstable; urgency=low
 
   [Olly Betts]
   * New upstream release.
@@ -12,8 +12,9 @@ survex (1.2.0-1) UNRELEASED; urgency=low
   * debian/survex.install: Update for move of survex man page to section 7.
   * Add build-deps for movie export support.
   * README.Debian: Fix typo spotted by lintian.
+  * debian/copyright: Update.
 
- -- Olly Betts <olly@survex.com>  Fri, 16 Sep 2011 14:27:24 +0000
+ -- Olly Betts <olly@survex.com>  Fri, 07 Oct 2011 00:59:27 +0000
 
 survex (1.1.16-1) unstable; urgency=low
 
