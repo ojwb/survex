@@ -42,10 +42,11 @@
 bool
 BitmapFont::load(const wxString & font_file)
 {
+    if (fh) fclose(fh);
 #ifdef __WXMSW__
-    FILE * fh = _wfopen(font_file.fn_str(), L"rb");
+    fh = _wfopen(font_file.fn_str(), L"rb");
 #else
-    FILE * fh = fopen(font_file.mb_str(), "rb");
+    fh = fopen(font_file.mb_str(), "rb");
 #endif
 
     if (!fh) {
@@ -83,7 +84,6 @@ BitmapFont::load(const wxString & font_file)
 	glEndList();
 	CHECK_GL_ERROR("BitmapFont::load", "glEndList");
     }
-    fclose(fh);
 
     return true;
 }
@@ -102,8 +102,62 @@ inline void call_lists(GLsizei n, const GLvoid * lists)
 }
 
 void
+BitmapFont::write_glyph(wxChar ch) const
+{
+    if (ch >= 0x10000) return;
+    if (!extra_chars) {
+	long here = ftell(fh);
+	fseek(fh, 0, SEEK_END);
+	long data_len = ftell(fh) - here;
+	unsigned char * data = new unsigned char [data_len];
+	fseek(fh, here, SEEK_SET);
+	if (fread(data, data_len, 1, fh) != 1) {
+	    delete data;
+	    return;
+	}
+	extra_chars = new unsigned char * [0x10000 - BITMAPFONT_MAX_CHAR];
+
+	for (int i = 0; i < 0x10000 - BITMAPFONT_MAX_CHAR; ++i) {
+	    if (data_len <= 0) {
+		extra_chars[i] = NULL;
+		continue;
+	    }
+	    extra_chars[i] = data;
+	    unsigned int byte_width = *data++;
+
+	    if (byte_width) {
+		unsigned int start_and_n = *data;
+		int n = (start_and_n & 15) + 1;
+		data += n * byte_width + 1;
+		data_len -= n * byte_width + 1;
+	    }
+	}
+	fclose(fh);
+	fh = NULL;
+    }
+
+    const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
+    unsigned int byte_width = p ? *p++ : 0;
+
+    int start = 0;
+    int n = 0;
+    int width = 8;
+    if (byte_width) {
+	unsigned int start_and_n = *p++;
+	start = start_and_n >> 4;
+	n = (start_and_n & 15) + 1;
+	width = byte_width * 8;
+    }
+
+    // Even if there's nothing to display, we want to advance the
+    // raster position.
+    glBitmap(8 * byte_width, n, 0, -start, width, 0, p);
+}
+
+void
 BitmapFont::write_string(const wxChar *s, size_t len) const
 {
+    if (!gllist_base) return;
     glListBase(gllist_base);
     // Each test is a compile-time constant, so this should get collapsed by
     // the compiler.
@@ -119,7 +173,7 @@ BitmapFont::write_string(const wxChar *s, size_t len) const
 	    s += n;
 	    len -= n;
 	    while (len && s[n] >= BITMAPFONT_MAX_CHAR) {
-		// FIXME: plot character s[n]
+		write_glyph(s[n]);
 		++s;
 		--len;
 	    }

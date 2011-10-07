@@ -1,3 +1,10 @@
+Fri Oct 07 07:20:55 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/glbitmapfont.cc,src/glbitmapfont.h: Support plotting Unicode
+	  character points > 256 on the survey pane by lazily loading the
+	  data for them from the font file and plotting them with a direct
+	  call to glBitmap() rather than using a display list.
+
 Fri Oct 07 04:09:58 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/make-pixel-font: Fix .pixelfont file to correctly handle

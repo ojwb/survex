@@ -33,26 +33,36 @@
 
 class BitmapFont {
     enum {
-	// The largest character to handle.
+	// The highest character point to generate an OpenGL list for.
 	//
-	// FIXME: We can't generate a GL list for every Unicode character, but
-	// we could special case the first 256 (and perhaps even store strings
-	// with only those as ISO8859-1), and use glBitmap directly to draw
-	// other characters.
+	// We can't generate a GL list for every Unicode character, so we
+	// generate them for the first BITMAPFONT_MAX_CHAR characters and then
+	// use glBitmap directly to draw other characters if they are needed.
+	//
+	// FIXME: We could perhaps even store strings consisting of only the
+	// first 256 points as ISO8859-1.
 	BITMAPFONT_MAX_CHAR = 256
     };
 
     int gllist_base;
 
-    int char_width[BITMAPFONT_MAX_CHAR];
+    mutable unsigned char ** extra_chars;
+
+    mutable FILE * fh;
+
+    unsigned char char_width[BITMAPFONT_MAX_CHAR];
+
+    void write_glyph(wxChar ch) const;
 
   public:
 
-    BitmapFont() : gllist_base(0) { }
+    BitmapFont() : gllist_base(0), extra_chars(0), fh(0) { }
 
     ~BitmapFont() {
 	if (gllist_base)
 	    glDeleteLists(gllist_base, BITMAPFONT_MAX_CHAR);
+	if (fh)
+	    fclose(fh);
     }
 
     bool load(const wxString & font_file);
