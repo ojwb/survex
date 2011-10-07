@@ -1,3 +1,8 @@
+Fri Oct 07 04:09:58 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/make-pixel-font: Fix .pixelfont file to correctly handle
+	  characters wider than 8 pixels when run on a little-endian platform.
+
 Thu Oct 06 13:23:05 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS: Another update for 1.2.2.

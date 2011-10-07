@@ -28,7 +28,7 @@ while (<U>) {
     my $len = length($hex) / 16;
     my $packcode;
     if ($len == 4) {
-	$packcode = 'S';
+	$packcode = 'n';
     } elsif ($len == 2) {
 	$packcode = 'C';
     } elsif ($len == 0) {
