@@ -1,3 +1,9 @@
+Wed Oct 12 03:45:13 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Report the version of the library we're actually
+	  running with if built against wx >= 2.9.2.  Make it clear that the
+	  the version reported is the version built with for wx < 2.9.2.
+
 Wed Oct 12 03:06:05 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/make-pixel-font,src/glbitmapfont.cc,src/glbitmapfont.h: Space the
