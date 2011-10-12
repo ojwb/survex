@@ -64,6 +64,8 @@ BitmapFont::load(const wxString & font_file)
 	CHECK_GL_ERROR("BitmapFont::load", "glNewList");
 
 	unsigned int byte_width = GETC(fh);
+	char_width[ch] = (byte_width & 0x0f) + 2;
+	byte_width >>= 6;
 
 	int start = 0;
 	int n = 0;
@@ -72,9 +74,6 @@ BitmapFont::load(const wxString & font_file)
 	    start = start_and_n >> 4;
 	    n = (start_and_n & 15) + 1;
 	    fread(buf, n * byte_width, 1, fh);
-	    char_width[ch] = byte_width * 8;
-	} else {
-	    char_width[ch] = 8;
 	}
 
 	// Even if there's nothing to display, we want to advance the
@@ -124,6 +123,7 @@ BitmapFont::write_glyph(wxChar ch) const
 	    }
 	    extra_chars[i] = data;
 	    unsigned int byte_width = *data++;
+	    byte_width >>= 6;
 
 	    if (byte_width) {
 		unsigned int start_and_n = *data;
@@ -136,17 +136,22 @@ BitmapFont::write_glyph(wxChar ch) const
 	fh = NULL;
     }
 
-    const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
-    unsigned int byte_width = p ? *p++ : 0;
-
+    unsigned int byte_width = 0;
     int start = 0;
     int n = 0;
     int width = 8;
-    if (byte_width) {
-	unsigned int start_and_n = *p++;
-	start = start_and_n >> 4;
-	n = (start_and_n & 15) + 1;
-	width = byte_width * 8;
+
+    const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
+    if (p) {
+	byte_width = *p++;
+	width = (byte_width & 0x0f) + 2;
+	byte_width >>= 6;
+
+	if (byte_width) {
+	    unsigned int start_and_n = *p++;
+	    start = start_and_n >> 4;
+	    n = (start_and_n & 15) + 1;
+	}
     }
 
     // Even if there's nothing to display, we want to advance the

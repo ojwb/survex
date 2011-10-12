@@ -39,32 +39,50 @@ while (<U>) {
     my $data = '';
     my $start;
     my $n = 0;
+    my $pixels_set = 0;
+    my $width = $len * 4;
     if ($len) {
+	my @data = ();
 	for (0 .. 15) {
 	    my $c = substr($hex, (15 - $_) * $len, $len);
 	    my $row = hex($c);
+	    $pixels_set |= $row;
 	    if (!defined $start) {
 		# Skip blank rows at the bottom.
 		next unless $row;
 		$start = $_;
 	    }
 	    $n = $_ if $row;
-	    $data .= pack $packcode, $row;
+	    push @data, $row;
 
 #	my $b = sprintf $fmt, $row;
 #	$b =~ y/01/ @/;
 #	print "\t$b\n";
 	}
+
+	my $left_gap = 0;
+	my $lsb_used = $pixels_set & -$pixels_set;
+	my $msb_used = 1 << ($len * 4 - 1);
+	while ($msb_used > $pixels_set) {
+	    $msb_used >>= 1;
+	    ++$left_gap;
+	}
+	$data = join '', map {pack($packcode, $_ << $left_gap)} @data;
+	my $right_gap = $bitno{$lsb_used} + $left_gap;
+	$right_gap = 0 if ($left_gap == 16);
+	$width -= $right_gap;
+    } else {
+	$width -= 2;
     }
 
     if (!defined $start) {
 	# No set pixels.
-	print O pack 'C', 0x00;
+	print O pack 'C', ($len * 4 - 4);
 	die "not really empty!" unless $hex =~ /^0*$/;
     } else {
 	die "really empty!" if $hex =~ /^0*$/;
 	$n = $n + 1 - $start;
-	print O pack 'C', $len / 2;
+	print O pack 'C', (($len / 2) << 6) | $width;
 	print O pack 'C', ($start << 4) | ($n - 1);
 	die "too little data (".length($data)." < ".$n."*".($len/2).")" if length($data) < $n * $len/2;
 	print O substr($data, 0, $n * $len / 2);

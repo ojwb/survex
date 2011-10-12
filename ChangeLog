@@ -1,3 +1,10 @@
+Wed Oct 12 03:06:05 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/make-pixel-font,src/glbitmapfont.cc,src/glbitmapfont.h: Space the
+	  glyphs to leave a one pixel gap either side of each one (so two
+	  between adjacent glyphs).  Mostly this reduces the horizontal width,
+	  but it adds a pixel for characters like "m" and two in a few cases.
+
 Fri Oct 07 07:20:55 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/glbitmapfont.cc,src/glbitmapfont.h: Support plotting Unicode

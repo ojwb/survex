@@ -77,6 +77,8 @@ class BitmapFont {
 		wxChar ch = *s++;
 		if (ch < BITMAPFONT_MAX_CHAR)
 		    total_width += char_width[ch];
+		else
+		    total_width += 16; // FIXME: look up the width...
 	    }
 	    *width = total_width;
 	}
