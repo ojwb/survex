@@ -1,3 +1,8 @@
+Wed Oct 19 13:04:25 GMT 2011  Olly Betts <olly@survex.com>
+
+	* tests/diving.pos,tests/diving.svx: Add testcase for diving data
+	  with topofil-style distance.
+
 Wed Oct 12 03:45:13 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aboutdlg.cc: Report the version of the library we're actually
