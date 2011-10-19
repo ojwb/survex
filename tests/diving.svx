@@ -14,3 +14,9 @@
 *data diving from fromcount fromdepth compass to tocount todepth
 ; 3:4:5 triangle...
 7	123	5.0	270	8	128	2.0
+
+*data diving station count depth newline compass
+; 5:12:13 triangle...
+8	128	2.0
+			000
+9	141	-3.0
