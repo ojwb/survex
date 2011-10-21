@@ -1,3 +1,8 @@
+Fri Oct 21 23:47:16 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix openiof .svx file when user clicks on cavern
+	  warning or error.
+
 Fri Oct 21 23:43:21 GMT 2011  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Include a hardlinked cavern alongside aven in

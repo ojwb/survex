@@ -105,6 +105,8 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     if (colon != wxString::npos) {
 #ifdef __WXMSW__
 	wxString cmd = wxT("notepad $f");
+#elif defined __WXMAC__
+	wxString cmd = wxT("open -t $f");
 #else
 	wxString cmd = wxT("x-terminal-emulator -title $t -e vim -c $l $f");
 	// wxString cmd = "x-terminal-emulator -title $t -e emacs +$l $f";
