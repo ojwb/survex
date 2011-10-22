@@ -23,8 +23,7 @@
 
 #include "avenprcore.h"
 
-// The Gnome print dialog provides its own preview.  I assume Mac OS X does
-// too (MarkS made that change).
+// The Gnome print dialog provides its own preview, as does Mac OS X.
 #if !defined __WXMAC__ && !defined wxUSE_LIBGNOMEPRINT
 # define AVEN_PRINT_PREVIEW
 #endif
