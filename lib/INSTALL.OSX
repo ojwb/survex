@@ -1,14 +1,12 @@
 Installing Survex on MacOS X
 ============================
 
-Next to the INSTALL file that you are currently reading is the
-Survex directory.  To install, just drag this directory to your
-Applications folder.  You will need to be logged in at an
-Administrator level to do this.
+Next to the INSTALL file that you are currently reading is the Survex
+directory.  To install, just drag this directory to your Applications folder.
+You will need to be logged in at an Administrator level to do this.
 
-At present, you'll need to use the command line (via Terminal.app)
-to process survey data.  Once it is processed, you can view it from
-the desktop using Aven.
+Since version 1.2.3, you can process .svx files by simply opening them with
+aven.
 
 Known shortcomings in the MacOS version of Aven
 ===============================================

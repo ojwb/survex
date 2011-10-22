@@ -1,3 +1,7 @@
+Sat Oct 22 17:36:01 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX: Processing .svx files from aven now works.
+
 Sat Oct 22 07:27:43 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.h: Update comment - Mac OS X does indeed provide its own
