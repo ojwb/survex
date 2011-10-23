@@ -25,10 +25,8 @@
 	<key>NSAppleScriptEnabled</key>
 	<false/>
 	<key>NSHumanReadableCopyright</key>
-	<string>
-Licensed under the GNU General Public License version 2 or later.
+	<string>Licensed under the GNU General Public License version 2 or later.
 @COPYRIGHT_MSG@
-@AVEN_COPYRIGHT_MSG@
-	</string>
+@AVEN_COPYRIGHT_MSG@</string>
 </dict>
 </plist>
