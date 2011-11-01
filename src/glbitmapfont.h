@@ -74,7 +74,7 @@ class BitmapFont {
 	if (width) {
 	    int total_width = 0;
 	    while (len--) {
-		wxChar ch = *s++;
+		int ch = *s++;
 		if (ch < BITMAPFONT_MAX_CHAR)
 		    total_width += char_width[ch];
 		else
