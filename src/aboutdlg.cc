@@ -137,9 +137,10 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     info = wxGetOsDescription();
 #if wxCHECK_VERSION(2,9,2)
     info += wxT("\n");
-    info += wxGetLibraryVersionInfo();
-    if (wxGetLibraryVersionInfo() != wxVERSION_STRING)
-	info += wxT(" (built with ") wxVERSION_STRING wxT(")";
+    wxString version = wxGetLibraryVersionInfo().GetVersionString();
+    info += version;
+    if (version != wxVERSION_STRING)
+	info += wxT(" (built with ") wxVERSION_STRING wxT(")");
     info +=
 #else
     info += wxT("\nBuilt with ") wxVERSION_STRING
