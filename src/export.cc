@@ -996,7 +996,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
       for (i = 0; i < FMT_ENDMARKER; ++i) {
 	 size_t l = strlen(extensions[i]);
 	 if (len > l + 1 && fnm_out[len - l - 1] == FNM_SEP_EXT &&
-	     strcasecmp(fnm_out.mb_str() + len - l, extensions[i]) == 0) {
+	     strcasecmp((const char *)fnm_out.mb_str() + len - l, extensions[i]) == 0) {
 	    format = export_format(i);
 	    break;
 	 }
