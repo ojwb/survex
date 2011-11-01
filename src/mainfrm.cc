@@ -1496,7 +1496,7 @@ void MainFrm::FillTree()
 	// Set the colour for an item in the survey tree.
 	if (label->IsEntrance()) {
 	    // Entrances are green (like entrance blobs).
-	    m_Tree->SetItemTextColour(id, wxColour(0, 255, 0));
+	    m_Tree->SetItemTextColour(id, wxColour(0, 255, 40));
 	} else if (label->IsSurface()) {
 	    // Surface stations are dark green.
 	    m_Tree->SetItemTextColour(id, wxColour(49, 158, 79));

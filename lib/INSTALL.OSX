@@ -12,7 +12,6 @@ Known shortcomings in the MacOS version of Aven
 ===============================================
 
 - About dialog doesn't show.
-- Green colour in the tree view is too light.
 - Not always as responsive as under X Windows.
 - Spurious menu bar items appear whilst application is launching.
 - Spurious Help menu sometimes appears.
