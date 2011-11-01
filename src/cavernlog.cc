@@ -123,7 +123,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 	size_t i = 0;
 	while ((i = cmd.find(wxT('$'), i)) != wxString::npos) {
 	    if (++i >= cmd.size()) break;
-	    switch (cmd[i]) {
+	    switch ((int)cmd[i]) {
 		case wxT('$'):
 		    cmd.erase(i, 1);
 		    break;
