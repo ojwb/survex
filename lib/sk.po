@@ -905,7 +905,7 @@ msgstr "Merítko"
 #: ../src/cmdline.c:172
 #, c-format
 msgid "Try `%s --help' for more information.\n"
-msgstr "Skúste `%s --help' aby sa zobrazilo viac informácií.\n"
+msgstr "Viac informácií získate príkazom `%s --help'.\n"
 
 #~ msgid "Plan or Elevation"
 #~ msgstr "Pôdorys alebo profil"
