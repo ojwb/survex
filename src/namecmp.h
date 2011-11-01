@@ -29,6 +29,8 @@ extern int name_cmp(const char *a, const char *b, int separator);
 };
 
 inline int name_cmp(const wxString &a, const wxString &b, int separator) {
-    return name_cmp(a.mb_str(), b.mb_str(), separator);
+    const char * p_a = a.mb_str();
+    const char * p_b = b.mb_str();
+    return name_cmp(p_a, p_b, separator);
 }
 #endif
