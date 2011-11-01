@@ -1,3 +1,7 @@
+Tue Nov 01 18:04:47 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix warning when building with wx2.9.2.
+
 Tue Nov 01 12:32:30 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix Y coordinates of surface surveys on printouts.

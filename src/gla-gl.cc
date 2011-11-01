@@ -139,11 +139,12 @@ string GetGLSystemDescription()
 //             BeginLines()/EndLines() block etc.)
 #define CHECK_GL_ERROR(M, F) do { \
     GLenum error_code_ = glGetError(); \
-    if (error_code_ != GL_NO_ERROR) \
+    if (error_code_ != GL_NO_ERROR) { \
 	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
 		   "(call "F" in method "M")"), \
 		   wxString((const char *)gluErrorString(error_code_), \
 			    wxConvUTF8).c_str()); \
+    } \
 } while (0)
 
 //
