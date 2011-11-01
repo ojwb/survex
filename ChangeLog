@@ -1,3 +1,8 @@
+Tue Nov 01 18:11:55 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/aven.h: Need to forward declare class wxPageSetupDialogData for
+	  wx 2.9.2.
+
 Tue Nov 01 18:11:22 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/glbitmapfont.h: Fix to build with wx 2.9.2.

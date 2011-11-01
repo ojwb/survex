@@ -81,6 +81,8 @@ class MainFrm;
 
 extern bool double_buffered;
 
+class wxPageSetupDialogData;
+
 class Aven : public wxGLApp {
     MainFrm * m_Frame;
     // This must be a pointer, otherwise it gets initialised too early and
