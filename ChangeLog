@@ -1,3 +1,7 @@
+Tue Nov 01 18:32:24 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/log.cc,src/log.h: Fix to build with wx 2.9.2.
+
 Tue Nov 01 18:15:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/export.cc: Fix to build with wx 2.9.2.
