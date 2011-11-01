@@ -2978,7 +2978,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendSeparator();
 	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/387));
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
 	return true;
     }
@@ -2991,7 +2991,8 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendSeparator();
 	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
+	PopupMenu(&menu);
 	PopupMenu(&menu);
 	return true;
     }
@@ -3001,7 +3002,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	wxMenu menu;
 	menu.AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Hide scale bar*/385));
 	menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
 	return true;
     }
@@ -3016,7 +3017,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*&Hide colour key*/386));
 	if (m_ColourBy == COLOUR_BY_DEPTH)
 	    menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&MainFrm::ProcessEvent, NULL, m_Parent);
+	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
 	return true;
     }

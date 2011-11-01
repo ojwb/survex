@@ -1,3 +1,10 @@
+Tue Nov 01 18:12:42 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Fix how we pass on events from right-click menus of
+	  indicators.  The previous code seemed to work, but wasn't correct
+	  as highlighted by trying to build it with 2.9.2 which now refuses
+	  to build to avoid people getting this wrong.
+
 Tue Nov 01 18:11:55 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/aven.h: Need to forward declare class wxPageSetupDialogData for
