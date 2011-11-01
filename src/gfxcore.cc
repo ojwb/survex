@@ -303,8 +303,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
     // Get a graphics context.
     wxPaintDC dc(this);
 
-    assert(GetContext());
-
     if (m_HaveData) {
 	// Make sure we're initialised.
 	bool first_time = !m_DoneFirstShow;
