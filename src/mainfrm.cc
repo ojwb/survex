@@ -603,18 +603,18 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 END_EVENT_TABLE()
 
 class LabelCmp : public greater<const LabelInfo*> {
-    int separator;
+    wxChar separator;
 public:
-    LabelCmp(int separator_) : separator(separator_) {}
+    LabelCmp(wxChar separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
 	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
     }
 };
 
 class LabelPlotCmp : public greater<const LabelInfo*> {
-    int separator;
+    wxChar separator;
 public:
-    LabelPlotCmp(int separator_) : separator(separator_) {}
+    LabelPlotCmp(wxChar separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
 	int n = pt1->get_flags() - pt2->get_flags();
 	if (n) return n > 0;

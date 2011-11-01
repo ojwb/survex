@@ -223,7 +223,7 @@ class MainFrm : public wxFrame {
     AvenPresList* m_PresList;
     wxString m_File;
     wxString m_Title, m_DateStamp;
-    int separator; // character separating survey levels (often '.')
+    wxChar separator; // character separating survey levels (often '.')
 #ifdef PREFDLG
     PrefsDlg* m_PrefsDlg;
 #endif
