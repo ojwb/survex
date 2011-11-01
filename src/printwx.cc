@@ -1071,7 +1071,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 		double y = pos->GetY();
 		double z = pos->GetZ();
 		double X = x * COS - y * SIN;
-		double Y = (x * SIN + y * COS) * SINT + z * COST;
+		double Y = z * COST - (x * SIN + y * COS) * SINT;
 		long px = (long)((X * Sc + l->xOrg) * l->scX);
 		long py = (long)((Y * Sc + l->yOrg) * l->scY);
 		if (pos == trav->begin()) {

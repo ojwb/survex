@@ -1,3 +1,8 @@
+Tue Nov 01 12:32:30 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix Y coordinates of surface surveys on printouts.
+	  (Closes #32)
+
 Sun Oct 23 06:20:14 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Info.plist.in: Remove spurious blank lines from licence text
