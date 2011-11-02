@@ -1,3 +1,7 @@
+Wed Nov 02 15:38:54 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX: Update to reflect current status.
+
 Wed Nov 02 15:37:58 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Remove duplicate call to PopupMenu().
