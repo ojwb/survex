@@ -824,9 +824,6 @@ void MainFrm::CreateMenuBar()
     ctlmenu->AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 #endif
 
-    wxMenu* helpmenu = new wxMenu;
-    helpmenu->Append(wxID_ABOUT);
-
     wxMenuBar* menubar = new wxMenuBar();
     menubar->Append(filemenu, wmsg(/*&File*/210));
     menubar->Append(rotmenu, wmsg(/*&Rotation*/211));
@@ -839,6 +836,9 @@ void MainFrm::CreateMenuBar()
 #ifndef __WXMAC__
     // On wxMac the "About" menu item will be moved elsewhere, so we suppress
     // this menu since it will then be empty.
+    wxMenu* helpmenu = new wxMenu;
+    helpmenu->Append(wxID_ABOUT);
+
     menubar->Append(helpmenu, wmsg(/*&Help*/215));
 #endif
     SetMenuBar(menubar);

@@ -1,3 +1,7 @@
+Wed Nov 02 15:40:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Don't create the help menu at all on OS X.
+
 Wed Nov 02 15:38:54 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX: Update to reflect current status.
