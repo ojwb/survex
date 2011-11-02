@@ -2991,7 +2991,6 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
-	PopupMenu(&menu);
 	return true;
     }
 

@@ -1,3 +1,7 @@
+Wed Nov 02 15:37:58 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Remove duplicate call to PopupMenu().
+
 Tue Nov 01 23:24:23 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/namecmp.h: Fix to build with wx 2.9.2.
