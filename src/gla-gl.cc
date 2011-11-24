@@ -1493,6 +1493,21 @@ bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
 	glReadBuffer(GL_FRONT);
 	CHECK_GL_ERROR("FirstShow", "glReadBuffer");
     }
+#if 0
+    // Show what got drawn and what was expected for debugging.
+    for (int y = 0; y < 8; ++y) {
+	for (int x = 0; x < 8; ++x) {
+	    int o = (y * 8 + x) * 3;
+	    printf("%c", pixels[o] ? 'X' : '.');
+	}
+	printf(" ");
+	for (int x = 0; x < 8; ++x) {
+	    int o = (y * 8 + x) * 3;
+	    printf("%c", target[o] ? 'X' : '.');
+	}
+	printf("\n");
+    }
+#endif
     return (memcmp(pixels, target, sizeof(pixels)) == 0);
 }
 
