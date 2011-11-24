@@ -1,3 +1,7 @@
+Thu Nov 24 12:02:22 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Add CHECK_GL_ERROR for glReadPixels calls.
+
 Thu Nov 24 11:59:23 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Undefine o and I after we're done with them.

@@ -1453,6 +1453,7 @@ bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
     unsigned char *pixels = (unsigned char *)malloc(3 * width * (height + 1));
     if (!pixels) return false;
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
+    CHECK_GL_ERROR("SaveScreenshot", "glReadPixels");
     unsigned char * tmp_row = pixels + 3 * width * height;
     // We need to flip the image vertically - this approach should be more
     // efficient than using wxImage::Mirror(false) as that creates a new
@@ -1476,11 +1477,13 @@ bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
     GetSize(&width, &height);
     unsigned char pixels[3 * 8 * 8];
     glReadPixels(width / 2 - 3, height / 2 - 4, 8, 8, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
+    CHECK_GL_ERROR("CheckVisualFidelity", "glReadPixels");
     return (memcmp(pixels, target, sizeof(pixels)) == 0);
 }
 
 void GLACanvas::ReadPixels(int width, int height, unsigned char * buf) const
 {
+    CHECK_GL_ERROR("ReadPixels", "glReadPixels");
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)buf);
 }
 
