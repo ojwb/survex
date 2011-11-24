@@ -527,13 +527,13 @@ void GLACanvas::StartDrawing()
 #define o 0,0,0
 #define I 255,255,255
 	    o, o, o, o, o, o, o, o,
-	    o, I, o, o, o, o, I, o,
-	    o, o, I, o, o, I, o, o,
-	    o, o, o, I, I, o, o, o,
-	    o, o, o, I, I, o, o, o,
-	    o, o, I, o, o, I, o, o,
-	    o, I, o, o, o, o, I, o,
-	    o, o, o, o, o, o, o, o
+	    I, o, o, o, o, o, I, o,
+	    o, I, o, o, o, I, o, o,
+	    o, o, I, o, I, o, o, o,
+	    o, o, o, I, o, o, o, o,
+	    o, o, I, o, I, o, o, o,
+	    o, I, o, o, o, I, o, o,
+	    I, o, o, o, o, o, I, o
 	};
 	if (!CheckVisualFidelity(expected_cross)) {
 	    cross_method = LINES;

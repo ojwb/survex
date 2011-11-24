@@ -1,3 +1,8 @@
+Thu Nov 24 11:56:57 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix expected cross shape so don't always reject using 
+	  texture mapping to draw crosses.
+
 Wed Nov 02 15:40:45 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Don't create the help menu at all on OS X.
