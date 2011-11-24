@@ -534,6 +534,8 @@ void GLACanvas::StartDrawing()
 	    o, o, I, o, I, o, o, o,
 	    o, I, o, o, o, I, o, o,
 	    I, o, o, o, o, o, I, o
+#undef o
+#undef I
 	};
 	if (!CheckVisualFidelity(expected_cross)) {
 	    cross_method = LINES;
@@ -559,6 +561,8 @@ void GLACanvas::StartDrawing()
 	    o, I, I, I, I, I, o, o,
 	    o, o, I, I, I, o, o, o,
 	    o, o, o, o, o, o, o, o
+#undef o
+#undef I
 	};
 	if (!CheckVisualFidelity(expected_blob)) {
 	    blob_method = LINES;
