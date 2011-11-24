@@ -229,8 +229,6 @@ void GfxCore::FirstShow()
 	label->set_width(unsigned(ext_x) / quantise + 1);
     }
 
-    SetBackgroundColour(0.0, 0.0, 0.0);
-
     // Set diameter of the viewing volume.
     SetVolumeDiameter(sqrt(sqrd(m_Parent->GetXExtent()) +
 			   sqrd(m_Parent->GetYExtent()) +

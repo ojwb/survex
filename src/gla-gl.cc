@@ -244,6 +244,9 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     m_Fog = false;
     m_AntiAlias = false;
     list_flags = 0;
+    // Set the background colour of the canvas to black.
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    CHECK_GL_ERROR("GLACanvas", "glClearColor");
 }
 
 GLACanvas::~GLACanvas()
@@ -897,14 +900,6 @@ void GLACanvas::InvalidateList(unsigned int l)
 	// Delete any existing OpenGL list.
 	drawing_lists[l].InvalidateList();
     }
-}
-
-void GLACanvas::SetBackgroundColour(float red, float green, float blue)
-{
-    // Set the background colour of the canvas.
-
-    glClearColor(red, green, blue, 1.0);
-    CHECK_GL_ERROR("SetBackgroundColour", "glClearColor");
 }
 
 void GLACanvas::SetColour(const GLAPen& pen, double rgb_scale)

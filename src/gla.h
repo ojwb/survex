@@ -159,7 +159,6 @@ public:
     void InvalidateList(unsigned int l);
     virtual void GenerateList(unsigned int l) = 0;
 
-    void SetBackgroundColour(float red, float green, float blue);
     void SetColour(const GLAPen& pen, double rgb_scale);
     void SetColour(const GLAPen& pen);
     void SetColour(gla_colour colour);

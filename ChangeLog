@@ -1,3 +1,9 @@
+Thu Nov 24 12:59:24 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Remove
+	  GLACanvas::SetBackgroundColour() since we only ever set it to black
+	  and opaque.
+
 Thu Nov 24 12:28:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Add note to pick the fastest method for crosses/blobs
