@@ -1,3 +1,8 @@
+Thu Nov 24 12:28:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Add note to pick the fastest method for crosses/blobs
+	  if multiple ones pass the visual fidelity check.
+
 Thu Nov 24 12:27:33 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Add disabled code to show the visual fidelity check on
