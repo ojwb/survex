@@ -310,6 +310,13 @@ void GLACanvas::FirstShow()
     //glAlphaFunc(GL_GREATER, 0.5f);
     //CHECK_GL_ERROR("FirstShow", "glAlphaFunc");
 
+    // We want glReadPixels() to read from the front buffer (which is the
+    // default for single-buffered displays).
+    if (double_buffered) {
+	glReadBuffer(GL_FRONT);
+	CHECK_GL_ERROR("FirstShow", "glReadBuffer");
+    }
+
     // Grey fog effect.
     GLfloat fogcolour[4] = { 0.5, 0.5, 0.5, 1.0 };
     glFogfv(GL_FOG_COLOR, fogcolour);
@@ -1476,8 +1483,16 @@ bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
     int height;
     GetSize(&width, &height);
     unsigned char pixels[3 * 8 * 8];
+    if (double_buffered) {
+	glReadBuffer(GL_BACK);
+	CHECK_GL_ERROR("FirstShow", "glReadBuffer");
+    }
     glReadPixels(width / 2 - 3, height / 2 - 4, 8, 8, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
     CHECK_GL_ERROR("CheckVisualFidelity", "glReadPixels");
+    if (double_buffered) {
+	glReadBuffer(GL_FRONT);
+	CHECK_GL_ERROR("FirstShow", "glReadBuffer");
+    }
     return (memcmp(pixels, target, sizeof(pixels)) == 0);
 }
 
