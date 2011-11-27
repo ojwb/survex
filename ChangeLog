@@ -1,3 +1,8 @@
+Sun Nov 27 12:30:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/tr.c,src/tr.h: Committing original versions of tr tiled
+	  rendering code.
+
 Thu Nov 24 12:59:24 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Remove
