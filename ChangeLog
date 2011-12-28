@@ -1,3 +1,7 @@
+Wed Dec 28 11:45:40 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Merge in updated translations from launchpad.
+
 Sun Nov 27 12:30:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/tr.c,src/tr.h: Committing original versions of tr tiled

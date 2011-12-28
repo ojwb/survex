@@ -525,11 +525,11 @@ msgstr "Jour du mois invalide"
 
 #, c-format
 msgid "3d file format versions %d to %d supported"
-msgstr ""
+msgstr "Les fichiers au format 3d sont supportés des versions %d à %d"
 
 #, c-format
 #~ msgid "Error in format of font file `%s'"
-#~ msgstr ""
+#~ msgstr "Erreur dans le format du fichier de fontes `%s'"
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"
@@ -559,7 +559,7 @@ msgstr "Ne peut pas ouvrir le fichier `%s'"
 #: ../src/printwx.cc:335
 #, c-format
 msgid "Couldn't write file `%s'"
-msgstr ""
+msgstr "N'avons pas pu écrire le fichier `%s'"
 
 #: ../src/message.c:227
 msgid "Bad memory access"
@@ -593,7 +593,7 @@ msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
 msgstr "Les mesures de CLINO et BACKCLINO diffèrent de %s degrés"
 
 msgid "do not generate station markers"
-msgstr ""
+msgstr "Ne pas générer de marqueurs station"
 
 msgid "do not generate station labels"
 msgstr ""
@@ -602,7 +602,7 @@ msgid "do not generate survey legs"
 msgstr ""
 
 msgid "produce an elevation view"
-msgstr ""
+msgstr "Produire une vue en élévation"
 
 #. TRANSLATORS: A computer mouse, not the rodent sort ;)
 #. Actually, mouse is somewhat imprecise as it could refer to a trackerball
@@ -848,7 +848,7 @@ msgstr "Erreur    N/A"
 
 #, c-format
 msgid "generate grid (default %sm)"
-msgstr ""
+msgstr "générer une grille (%sm par défaut)"
 
 #, c-format
 msgid "station labels text height (default %s)"
@@ -863,16 +863,16 @@ msgid "factor to scale down by (default %s)"
 msgstr ""
 
 msgid "produce DXF output"
-msgstr ""
+msgstr "Produire une sortie DXF"
 
 msgid "produce Sketch output"
-msgstr ""
+msgstr "Produire une sortie Sketch"
 
 msgid "produce Compass PLT output for Carto"
-msgstr ""
+msgstr "Produire une sortie PLT Compass pour Carto"
 
 msgid "produce SVG output"
-msgstr ""
+msgstr "Produire une sortie SVG"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:127
@@ -1038,7 +1038,7 @@ msgstr "La topo contient %ld composants connectés."
 #. TRANSLATORS: Label for button in aven's cavern log window which causes the
 #. survey data to be reprocessed.
 msgid "Reprocess"
-msgstr ""
+msgstr "Recalculer"
 
 #: ../src/cmdline.c:219
 #: ../src/cmdline.c:238
@@ -1095,7 +1095,7 @@ msgstr "( X (Est), Y (Nord), Altitude )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "Profondeur d'affichage: %d bpp"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 msgid " (colour)"
@@ -1115,47 +1115,47 @@ msgstr "ne charge que la partie de topo avec le prefixe"
 
 #. TRANSLATORS: --help output for aven --print option
 msgid "print and exit (requires a 3d file)"
-msgstr ""
+msgstr "Imprimer et quitter (nécessite un fichier 3d)"
 
 #. TRANSLATORS: --help output for cavern --percentage option
 msgid "display percentage progress"
-msgstr ""
+msgstr "Afficher le pourcentage de progression"
 
 #. TRANSLATORS: --help output for cavern --output option
 msgid "set location for output files"
-msgstr ""
+msgstr "Définir l'endroit pour les fichiers sortis"
 
 #. TRANSLATORS: --help output for cavern --quiet option
 msgid "only show brief summary (-qq for errors only)"
-msgstr ""
+msgstr "Monter seulement un bref résumé (-qq pour les erreurs seulement)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 msgid "do not create .err file"
-msgstr ""
+msgstr "Ne pas créer de fichier .err"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
 msgid "turn warnings into errors"
-msgstr ""
+msgstr "changer les avertissements en erreurs"
 
 #. TRANSLATORS: --help output for cavern --log option
 msgid "log output to .log file"
-msgstr ""
+msgstr "enregistrer la sortie dans un fichier .log"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
 msgid "specify the 3d file format version to output"
-msgstr ""
+msgstr "spécifier la version du format de fichier 3d en sortie"
 
 #. TRANSLATORS: --help output for sorterr --horizontal option
 msgid "sort by horizontal error factor"
-msgstr ""
+msgstr "trier par facteur d'erreur horizontal"
 
 #. TRANSLATORS: --help output for sorterr --vertical option
 msgid "sort by vertical error factor"
-msgstr ""
+msgstr "trier par facteur d'erreur vertical"
 
 #. TRANSLATORS: --help output for sorterr --percentage option
 msgid "sort by percentage error"
-msgstr ""
+msgstr "trier par pourcentage d'erreur"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
 msgid "sort by error per leg"
@@ -1163,11 +1163,11 @@ msgstr ""
 
 #. TRANSLATORS: --help output for sorterr --replace option
 msgid "replace .err file with resorted version"
-msgstr ""
+msgstr "remplacer le fichier .err par la version assortie"
 
 #. TRANSLATORS: --help output for dump3d --rewind option
 msgid "rewind file and read it a second time"
-msgstr ""
+msgstr "rembobiner le fichier et le lire une seconde fois"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
@@ -1201,9 +1201,8 @@ msgstr "A propos %s"
 
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1714
-#, fuzzy
 msgid "Select a survey file to view"
-msgstr "Sélectionner un fichier image 3d à visualiser"
+msgstr "Selectionner un fichier d'étude à afficher"
 
 #: ../src/mainfrm.cc:1692
 msgid "Survex 3d files"
@@ -1216,7 +1215,7 @@ msgstr "Tous les fichiers"
 
 #: ../src/mainfrm.cc:1704
 msgid "All survey files"
-msgstr ""
+msgstr "Tous les fichiers d'étude"
 
 #: ../src/mainfrm.cc:1706
 msgid "Survex svx files"
@@ -1224,7 +1223,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:1708
 msgid "Compass DAT and MAK files"
-msgstr ""
+msgstr "Fichiers MAK et DAT Compass"
 
 #: ../src/printwx.cc:328
 msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
@@ -1271,11 +1270,11 @@ msgstr "Ce programme est un logiciel libre; vous pouvez le redistribuer et/ou le
 
 #. TRANSLATORS: Part of 3dtopos --help
 msgid "3D_FILE [POS_FILE]"
-msgstr ""
+msgstr "FICHIER_3D [POS_FICHIER]"
 
 #. TRANSLATORS: Part of diffpos --help
 msgid "FILE1 FILE2 [THRESHOLD]"
-msgstr ""
+msgstr "FICHIER1 FICHIER2 [SEUIL]"
 
 #. TRANSLATORS: Part of diffpos --help
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
@@ -1307,12 +1306,12 @@ msgstr "&Ouvrir…\tCtrl+O"
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
 msgid "Undated"
-msgstr "Non dateé"
+msgstr "Non datée"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren't part of a loop and so have no error information.
 msgid "Not in loop"
-msgstr ""
+msgstr "Pas dans la boucle"
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
@@ -1354,7 +1353,7 @@ msgstr "On ne peut pas calibrer les angles et les longueurs en même temps"
 
 #. TRANSLATORS: %s will be replaced by the application name ("Aven" currently)
 msgid "%s Error Log"
-msgstr ""
+msgstr "Journal d'erreur de %s"
 
 #. TRANSLATORS: Used in the "Export" settings dialog
 #: ../src/printwx.cc:298
@@ -1721,7 +1720,7 @@ msgstr "&Exporter comme Animation…"
 
 #: ../src/mainfrm.cc:2182
 msgid "Export Movie"
-msgstr ""
+msgstr "Exporter Film"
 
 #: ../src/mainfrm.cc:781
 msgid "&Bounding Box\tCtrl+B"
@@ -1806,7 +1805,7 @@ msgstr "Masquer"
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
 #, c-format
 msgid "Hide %d found stations"
-msgstr ""
+msgstr "Cacher %d stations trouvées"
 
 #. TRANSLATORS: checkbox for regular expression search
 #~ msgid "Regular expression"
@@ -2050,7 +2049,7 @@ msgstr "&Exporter sous…"
 #. TRANSLATORS: Title of file dialog to choose name and type of exported file.
 #: ../src/mainfrm.cc:721
 msgid "Export as:"
-msgstr ""
+msgstr "Exporter en tant que:"
 
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:171
@@ -2105,7 +2104,7 @@ msgstr "Temps: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
 msgid " secs (0 = auto; *6 = 6 times auto)"
-msgstr ""
+msgstr " secs (0 = auto; *6 = 6 fois auto)"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
