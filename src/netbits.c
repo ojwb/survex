@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2003,2006 Olly Betts
+ * Copyright (C) 1992-2003,2006,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -241,7 +241,7 @@ copy_link(linkfor *leg)
    return legOut;
 }
 
-/* Adds to the forward leg `leg', the data in leg2, or the reversed data
+/* Adds to the forward leg “leg”, the data in leg2, or the reversed data
  * in the reverse of leg2, if leg2 doesn't hold data
  */
 linkfor *
@@ -332,7 +332,7 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 {
    node *to, *fr;
    if (to_name == fr_name) {
-      compile_error(/*Survey leg with same station (`%s') at both ends - typing error?*/50,
+      compile_error(/*Survey leg with same station (“%s”) at both ends - typing error?*/50,
 		    sprint_prefix(to_name));
       return;
    }
@@ -404,7 +404,7 @@ process_equate(prefix *name1, prefix *name2)
    node *stn1, *stn2;
    if (name1 == name2) {
       /* catch something like *equate "fred fred" */
-      compile_warning(/*Station `%s' equated to itself*/13,
+      compile_warning(/*Station “%s” equated to itself*/13,
 		      sprint_prefix(name1));
       return;
    }
@@ -419,13 +419,13 @@ process_equate(prefix *name1, prefix *name2)
 	    int d;
 	    for (d = 2; d >= 0; d--) {
 	       if (name1->pos->p[d] != name2->pos->p[d]) {
-		  compile_error(/*Tried to equate two non-equal fixed stations: `%s' and `%s'*/52,
+		  compile_error(/*Tried to equate two non-equal fixed stations: “%s” and “%s”*/52,
 				s, sprint_prefix(name2));
 		  osfree(s);
 		  return;
 	       }
 	    }
-	    compile_warning(/*Equating two equal fixed points: `%s' and `%s'*/53,
+	    compile_warning(/*Equating two equal fixed points: “%s” and “%s”*/53,
 			    s, sprint_prefix(name2));
 	    osfree(s);
 	 }

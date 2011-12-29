@@ -151,13 +151,13 @@ main(int argc, char **argv)
 	 /* FALLTHRU */
        case img_BAD:
 	 img_close(pimg);
-	 fatalerror(/*Bad 3d image file `%s'*/106, fnm);
+	 fatalerror(/*Bad 3d image file “%s”*/106, fnm);
       }
    } while (result != img_STOP);
 
    if (c_stns != c_labels || p != p_end) {
       img_close(pimg);
-      fatalerror(/*Bad 3d image file `%s'*/106, fnm);
+      fatalerror(/*Bad 3d image file “%s”*/106, fnm);
    }
 
    img_close(pimg);

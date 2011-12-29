@@ -162,7 +162,7 @@ ini_read(FILE **fh_list, const char *section, const char **vars)
 		  hash_tab[c] = -1;
 	       } else {
 #ifdef REPORT_COLLISION
-		  printf("`%s' and `%s' both hash to %d!\n",var,vars[c],hash);
+		  printf("“%s” and “%s” both hash to %d!\n",var,vars[c],hash);
 #endif
 	       }
 	    }

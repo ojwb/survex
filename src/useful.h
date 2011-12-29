@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2003,2004,2010 Olly Betts
+ * Copyright (C) 1993-2003,2004,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include "osalloc.h"
 
 /* Macro to allow easy building of macros contain multiple statements, such
- * that the likes of `if (x == y) macro1(x); else x = 2;' works properly  */
+ * that the likes of “if (x == y) macro1(x); else x = 2;” works properly  */
 #define BLK(X) do {X} while(0)
 
 /* Macro to do nothing, but avoid compiler warnings about empty if bodies &c */

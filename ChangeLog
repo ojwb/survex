@@ -1,3 +1,8 @@
+Thu Dec 29 03:37:04 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Use curly double quotes instead of "`" and "'" to
+	  quote literals and filenames in messages.
+
 Thu Dec 29 03:21:49 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/message.c: Transliterate curly double quotes to ASCII straight

@@ -173,14 +173,14 @@ unsigned int img_output_version = IMG_VERSION_MAX;
 #ifdef IMG_HOSTED
 static enum {
    IMG_NONE = 0,
-   IMG_FILENOTFOUND = /*Couldn't open data file `%s'*/24,
+   IMG_FILENOTFOUND = /*Couldn't open data file “%s”*/24,
    IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
-   IMG_DIRECTORY    = /*Filename `%s' refers to directory*/44,
-   IMG_CANTOPENOUT  = /*Failed to open output file `%s'*/47,
-   IMG_BADFORMAT    = /*Bad 3d image file `%s'*/106,
-   IMG_READERROR    = /*Error reading from file `%s'*/109,
-   IMG_WRITEERROR   = /*Error writing to file `%s'*/110,
-   IMG_TOONEW       = /*File `%s' has a newer format than this program can understand*/114
+   IMG_DIRECTORY    = /*Filename “%s” refers to directory*/44,
+   IMG_CANTOPENOUT  = /*Failed to open output file “%s”*/47,
+   IMG_BADFORMAT    = /*Bad 3d image file “%s”*/106,
+   IMG_READERROR    = /*Error reading from file “%s”*/109,
+   IMG_WRITEERROR   = /*Error writing to file “%s”*/110,
+   IMG_TOONEW       = /*File “%s” has a newer format than this program can understand*/114
 } img_errno = IMG_NONE;
 #else
 static img_errcode img_errno = IMG_NONE;

@@ -187,7 +187,7 @@ static void
 syntax_and_help_pointer(void)
 {
    cmdline_syntax();
-   fprintf(stderr, msg(/*Try `%s --help' for more information.&#10;*/157),
+   fprintf(stderr, msg(/*Try “%s --help” for more information.&#10;*/157),
 	   msg_appname());
    exit(1);
 }
@@ -235,9 +235,9 @@ cmdline_int_arg(void)
    result = strtol(optarg, &endptr, 10);
 
    if (errno == ERANGE || result > INT_MAX || result < INT_MIN) {
-      moan_and_die(/*numeric argument `%s' out of range*/185);
+      moan_and_die(/*numeric argument “%s” out of range*/185);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      moan_and_die(/*argument `%s' not an integer*/186);
+      moan_and_die(/*argument “%s” not an integer*/186);
    }
 
    return (int)result;
@@ -254,9 +254,9 @@ cmdline_double_arg(void)
    result = strtod(optarg, &endptr);
 
    if (errno == ERANGE) {
-      moan_and_die(/*numeric argument `%s' out of range*/185);
+      moan_and_die(/*numeric argument “%s” out of range*/185);
    } else if (*optarg == '\0' || *endptr != '\0') {
-      moan_and_die(/*argument `%s' not a number*/187);
+      moan_and_die(/*argument “%s” not a number*/187);
    }
 
    return result;

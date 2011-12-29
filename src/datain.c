@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -349,7 +349,7 @@ data_file(const char *pth, const char *fnm)
       }
 
       if (fh == NULL) {
-	 compile_error(/*Couldn't open data file `%s'*/24, fnm);
+	 compile_error(/*Couldn't open data file “%s”*/24, fnm);
 	 return;
       }
 
@@ -1401,7 +1401,7 @@ data_normal(void)
 	     fRev = fTrue;
 	     break;
 	   default:
-	     compile_error_skip(/*Found `%s', expecting `F' or `B'*/131,
+	     compile_error_skip(/*Found “%s”, expecting “F” or “B”*/131,
 				buffer);
 	     process_eol();
 	     return 0;
@@ -1433,7 +1433,7 @@ data_normal(void)
 	  if (VAL(Clino) == HUGE_REAL) {
 	     VAL(Clino) = handle_plumb(&ctype);
 	     if (VAL(Clino) != HUGE_REAL) break;
-	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
 	     process_eol();
 	     return 0;
 	  }
@@ -1444,7 +1444,7 @@ data_normal(void)
 	  if (VAL(BackClino) == HUGE_REAL) {
 	     VAL(BackClino) = handle_plumb(&backctype);
 	     if (VAL(BackClino) != HUGE_REAL) break;
-	     compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
 	     process_eol();
 	     return 0;
 	  }
@@ -1705,7 +1705,7 @@ data_passage(void)
 	 read_reading(*ordering, fTrue);
          if (VAL(*ordering) == HUGE_REAL) {
             if (!isOmit(ch)) {
-               compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	       compile_error_token(/*Expecting numeric field, found “%s”*/9);
             }
 	    nextch();
             VAL(*ordering) = -1;

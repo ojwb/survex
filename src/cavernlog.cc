@@ -209,7 +209,7 @@ CavernLogWindow::process(const wxString &file)
 #endif
     if (!cavern_out) {
 	wxString m;
-	m.Printf(wmsg(/*Couldn't open pipe: `%s'*/17), cmd.c_str());
+	m.Printf(wmsg(/*Couldn't open pipe: “%s”*/17), cmd.c_str());
 	m += wxT(" (");
 	m += wxString(strerror(errno), wxConvUTF8);
 	m += wxT(')');

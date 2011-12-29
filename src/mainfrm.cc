@@ -319,7 +319,7 @@ class AvenPresList : public wxListCtrl {
 	    FILE * fh_pres = fopen(fnm.mb_str(), "w");
 #endif
 	    if (!fh_pres) {
-		wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), fnm.c_str()));
+		wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), fnm.c_str()));
 		return;
 	    }
 	    vector<PresentationMark>::const_iterator i;
@@ -361,7 +361,7 @@ class AvenPresList : public wxListCtrl {
 #endif
 	    if (!fh_pres) {
 		wxString m;
-		m.Printf(wmsg(/*Couldn't open file `%s'*/93), fnm.c_str());
+		m.Printf(wmsg(/*Couldn't open file “%s”*/93), fnm.c_str());
 		wxGetApp().ReportError(m);
 		return false;
 	    }
@@ -385,7 +385,7 @@ class AvenPresList : public wxListCtrl {
 			c = sscanf(buf, "%lf %lf %lf %lf %lf %lf %lf", &x, &y, &z, &a, &t, &s, &T);
 			if (c < 6) {
 			    DeleteAllItems();
-			    wxGetApp().ReportError(wxString::Format(wmsg(/*Error in format of presentation file `%s'*/323), fnm.c_str()));
+			    wxGetApp().ReportError(wxString::Format(wmsg(/*Error in format of presentation file “%s”*/323), fnm.c_str()));
 			    return false;
 			}
 		    }
@@ -1264,7 +1264,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     // Check we've actually loaded some legs or stations!
     if (!m_HasUndergroundLegs && !m_HasSurfaceLegs && m_Labels.empty()) {
-	wxString m = wxString::Format(wmsg(/*No survey data in 3d file `%s'*/202), file.c_str());
+	wxString m = wxString::Format(wmsg(/*No survey data in 3d file “%s”*/202), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
     }
@@ -1739,7 +1739,7 @@ void MainFrm::OnScreenshot(wxCommandEvent&)
 	    png_handled = true;
 	}
 	if (!m_Gfx->SaveScreenshot(dlg.GetPath(), wxBITMAP_TYPE_PNG)) {
-	    wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file `%s'*/110), dlg.GetPath().c_str()));
+	    wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), dlg.GetPath().c_str()));
 	}
     }
 }

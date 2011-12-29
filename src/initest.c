@@ -1,4 +1,4 @@
-/* Copyright (C) Olly Betts 1999
+/* Copyright (C) Olly Betts 1999,2011
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ int main( int argc, char ** argv ) {
 
    argv++;
    while (*argv) {
-      printf("`%s' `%s'\n",*argv++,*x?*x:"NULL");
+      printf("“%s” “%s”\n",*argv++,*x?*x:"NULL");
       x++;
    }
    return 0;

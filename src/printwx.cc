@@ -328,7 +328,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		    m_layout.rot, m_layout.tilt,
 		    m_layout.Labels, m_layout.Crosses,
 		    m_layout.Shots, m_layout.Surface)) {
-	    wxString m = wxString::Format(wmsg(/*Couldn't write file `%s'*/402).c_str(),
+	    wxString m = wxString::Format(wmsg(/*Couldn't write file “%s”*/402).c_str(),
 					  m_File.c_str());
 	    wxGetApp().ReportError(m);
 	}
@@ -1161,13 +1161,13 @@ svxPrintout::OnBeginPrinting() {
 #endif
     print_ini = add_ext("print", EXT_INI);
     fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
-    if (!fh) fatalerror(/*Couldn't open data file `%s'*/24, print_ini);
+    if (!fh) fatalerror(/*Couldn't open data file “%s”*/24, print_ini);
     *pfh++ = fh;
     *pfh = NULL;
     Init(pfh, false);
     for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
     Pre();
-    m_layout->footer = wmsg(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167);
+    m_layout->footer = wmsg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
 }
 
 void

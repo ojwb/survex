@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 		  compile_error_skip(/*Expecting station name*/28);
 	       }
 	    } else {
-	       compile_error_skip(/*Character `%c' not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	       compile_error_skip(/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
 	    LONGJMP(file.jbSkipLine);
 	 }
@@ -209,7 +209,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    } else {
       /* check that the same name isn't being used for a survey and station */
       if (fSurvey ^ TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
-	 compile_error(/*`%s' can't be both a station and a survey*/27,
+	 compile_error(/*“%s” can't be both a station and a survey*/27,
 		       sprint_prefix(ptr));
       }
       if (!fSurvey && TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
@@ -237,7 +237,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 file.filename = survey->filename;
 	 file.line = survey->line;
       }
-      compile_error(/*Station `%s' not exported from survey `%s'*/26,
+      compile_error(/*Station “%s” not exported from survey “%s”*/26,
 		    sprint_prefix(ptr), s);
       if (survey->filename) {
 	 file.filename = filename_store;
@@ -318,7 +318,7 @@ read_number(bool f_optional)
    if (isOmit(ch_old)) {
       compile_error(/*Field may not be omitted*/8);
    } else {
-      compile_error_token(/*Expecting numeric field, found `%s'*/9);
+      compile_error_token(/*Expecting numeric field, found “%s”*/9);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
@@ -359,7 +359,7 @@ read_numeric_or_omit(int *p_n_readings)
    real v = read_numeric(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
-	 compile_error_token(/*Expecting numeric field, found `%s'*/9);
+	 compile_error_token(/*Expecting numeric field, found “%s”*/9);
 	 LONGJMP(file.jbSkipLine);
 	 return 0.0; /* for brain-fried compilers */
       }
@@ -389,7 +389,7 @@ extern unsigned int
 read_uint(void)
 {
    skipblanks();
-   return read_uint_internal(/*Expecting numeric field, found `%s'*/9, NULL);
+   return read_uint_internal(/*Expecting numeric field, found “%s”*/9, NULL);
 }
 
 extern void
@@ -441,7 +441,7 @@ read_date(int *py, int *pm, int *pd)
    skipblanks();
 
    get_pos(&fp);
-   y = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+   y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
    /* Two digit year is 19xx. */
    if (y < 100) y += 1900;
    if (y < 1900 || y > 2078) {
@@ -451,7 +451,7 @@ read_date(int *py, int *pm, int *pd)
    }
    if (ch == '.') {
       nextch();
-      m = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+      m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
       if (m < 1 || m > 12) {
 	 compile_error_skip(/*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
@@ -459,7 +459,7 @@ read_date(int *py, int *pm, int *pd)
       }
       if (ch == '.') {
 	 nextch();
-	 d = read_uint_internal(/*Expecting date, found `%s'*/198, &fp);
+	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
 	 if (d < 1 || d > last_day(y, m)) {
 	    compile_error_skip(/*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);

@@ -417,7 +417,7 @@ parseconfigline(const char *fnm, char *ln)
 	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
       }
    } else {
-      fatalerror_in_file(fnm, lineno, /*Unknown command `%s'*/12, ln);
+      fatalerror_in_file(fnm, lineno, /*Unknown command “%s”*/12, ln);
    }
  loopend:
    ln = delimword(lc, &lc);
@@ -532,7 +532,7 @@ main(int argc, char **argv)
    if (specfile) {
       FILE *fs = NULL;
       char *fnm_used;
-      printf(msg(/*Applying specfile: `%s'*/521), specfile);
+      printf(msg(/*Applying specfile: “%s”*/521), specfile);
       putnl();
       fs = fopenWithPthAndExt("", specfile, NULL, "r", &fnm_used);
       if (fs == NULL) fatalerror(/*Unable to open file*/93, specfile);

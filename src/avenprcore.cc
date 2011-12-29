@@ -110,12 +110,12 @@ layout::pages_required() {
 
 static void setting_missing(const char *v)
 {
-   fatalerror(/*Parameter `%s' missing in printer configuration file*/85, v);
+   fatalerror(/*Parameter “%s” missing in printer configuration file*/85, v);
 }
 
 static void setting_bad_value(const char *v, const char *p)
 {
-   fatalerror(/*Parameter `%s' has invalid value `%s' in printer configuration file*/82,
+   fatalerror(/*Parameter “%s” has invalid value “%s” in printer configuration file*/82,
 	      v, p);
 }
 
@@ -262,7 +262,7 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
     msg166 = msgPerm(/*Page %d of %d*/166);
     old_charset = select_charset(CHARSET_ISO_8859_1);
 
-    l->footer = msgPerm(/*Survey `%s'   Page %d (of %d)   Processed on %s*/167);
+    l->footer = msgPerm(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
 
     cPagesPrinted = 0;
     page = state = 0;

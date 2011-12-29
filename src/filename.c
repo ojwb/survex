@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2003,2004,2005,2010
+ * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,10 +49,10 @@ safe_fopen(const char *fnm, const char *mode)
    FILE *f;
    SVX_ASSERT(mode[0] == 'w'); /* only expect to be used for writing */
    if (fDirectory(fnm))
-      fatalerror(/*Filename `%s' refers to directory*/44, fnm);
+      fatalerror(/*Filename “%s” refers to directory*/44, fnm);
 
    f = fopen(fnm, mode);
-   if (!f) fatalerror(/*Failed to open output file `%s'*/47, fnm);
+   if (!f) fatalerror(/*Failed to open output file “%s”*/47, fnm);
 
    filename_register_output_with_fh(fnm, f);
    return f;
@@ -76,7 +76,7 @@ safe_fclose(FILE *f)
 	 p->fnm = NULL;
 	 p->fh = NULL;
 	 (void)remove(fnm);
-	 fatalerror(/*Error writing to file `%s'*/110, fnm);
+	 fatalerror(/*Error writing to file “%s”*/110, fnm);
       }
       /* FIXME: this case should never happen... */
       fatalerror(/*Error writing to file*/111);

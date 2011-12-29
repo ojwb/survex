@@ -3,7 +3,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2004,2008,2010 Olly Betts
+/* Copyright (C) 1994-2004,2008,2010,2011 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -678,13 +678,13 @@ main(int argc, char **argv)
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
 #ifdef DEBUG_CAD3D
-	 printf("Text Height: `%s' input, converted to %6.2f\n", optarg, text_height);
+	 printf("Text Height: “%s” input, converted to %6.2f\n", optarg, text_height);
 #endif
 	 break;
        case 'm': /* Marker size */
 	 marker_size = cmdline_double_arg();
 #ifdef DEBUG_CAD3D
-	 printf("Marker Size: `%s', converted to %6.2f\n", optarg, marker_size);
+	 printf("Marker Size: “%s”, converted to %6.2f\n", optarg, marker_size);
 #endif
 	 break;
        case 'D':
@@ -863,7 +863,7 @@ main(int argc, char **argv)
 	    switch (item) {
 	     case img_BAD:
 	       img_close(pimg);
-	       fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
+	       fatalerror(/*Bad 3d image file “%s”*/106, fnm_3d);
 	       break;
 	     case img_LINE:
 #ifdef DEBUG_CAD3D
@@ -874,7 +874,7 @@ main(int argc, char **argv)
 		  printf("Something is wrong -- img_LINE before any img_MOVE!\n");
 #endif
 		  img_close(pimg);
-		  fatalerror(/*Bad 3d image file `%s'*/106, fnm_3d);
+		  fatalerror(/*Bad 3d image file “%s”*/106, fnm_3d);
 	       }
 	       if ((*pass & LEGS) && legs)
 		  line(&p1, &p, pimg->flags & img_FLAG_SURFACE);
@@ -890,7 +890,7 @@ main(int argc, char **argv)
 	       break;
 	     case img_LABEL:
 #ifdef DEBUG_CAD3D
-	       printf("label `%s' at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
+	       printf("label “%s” at %9.2f %9.2f %9.2f\n",pimg->label,x,y,z);
 #endif
 	       /* Use !UNDERGROUND as the criterion - we want stations where
 		* a surface and underground survey meet to be in the

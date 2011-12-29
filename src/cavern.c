@@ -285,7 +285,7 @@ main(int argc, char **argv)
       }
 
       if (!freopen(fnm, "w", stdout))
-	 fatalerror(/*Failed to open output file `%s'*/47, fnm);
+	 fatalerror(/*Failed to open output file “%s”*/47, fnm);
 
       osfree(fnm);
    }

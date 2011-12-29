@@ -606,7 +606,7 @@ add_unicode(int charset, unsigned char *p, int value)
    }
    /* Transliterate characters we can't represent */
 #ifdef DEBUG
-   fprintf(stderr, "transliterate `%c' 0x%x\n", value, value);
+   fprintf(stderr, "transliterate “%c” 0x%x\n", value, value);
 #endif
    switch (value) {
     case 160:
@@ -803,8 +803,8 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
 #else
 #define N_DONTEXTRACTMSGS 5
 static unsigned char dontextractmsgs[] =
-   "Can't open message file `%s' using path `%s'\0"/*1000*/
-   "Problem with message file `%s'\0"/*1001*/
+   "Can't open message file “%s” using path “%s”\0"/*1000*/
+   "Problem with message file “%s”\0"/*1001*/
    "I don't understand this message file version\0"/*1002*/
    "Message file truncated?\0"/*1003*/
    "Out of memory (couldn't find %lu bytes).\0"/*1004*/;
@@ -847,13 +847,13 @@ parse_msg_file(int charset_code)
    }
 
    if (!fh) {
-      fatalerror(/*Can't open message file `%s' using path `%s'*/1000,
+      fatalerror(/*Can't open message file “%s” using path “%s”*/1000,
 		 fnm, pth_cfg_files);
    }
 
    if (fread(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
-      fatalerror(/*Problem with message file `%s'*/1001, fnm);
+      fatalerror(/*Problem with message file “%s”*/1001, fnm);
    }
 
    if (header[12] != 0)
@@ -871,7 +871,7 @@ parse_msg_file(int charset_code)
    fclose(fh);
 
 #ifdef DEBUG
-   fprintf(stderr, "fnm = `%s', n = %d, len = %d\n", fnm, n, len);
+   fprintf(stderr, "fnm = “%s”, n = %d, len = %d\n", fnm, n, len);
 #endif
    osfree(fnm);
 

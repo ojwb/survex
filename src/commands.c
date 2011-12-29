@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ get_token(void)
       ucbuffer[i] = toupper(buffer[i]);
    } while (buffer[i]);
 #if 0
-   printf("get_token() got `%s'\n", buffer);
+   printf("get_token() got “%s”\n", buffer);
 #endif
 }
 
@@ -295,7 +295,7 @@ get_units(unsigned long qmask, bool percent_ok)
    get_token();
    units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      compile_error_skip(/*Unknown units `%s'*/35, buffer);
+      compile_error_skip(/*Unknown units “%s”*/35, buffer);
       return UNITS_NULL;
    }
    if (units == UNITS_PERCENT && percent_ok &&
@@ -304,7 +304,7 @@ get_units(unsigned long qmask, bool percent_ok)
    }
    if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
        ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
-      compile_error_skip(/*Invalid units `%s' for quantity*/37, buffer);
+      compile_error_skip(/*Invalid units “%s” for quantity*/37, buffer);
       return UNITS_NULL;
    }
    return units;
@@ -363,13 +363,13 @@ get_qlist(unsigned long mask_bad)
       qmask |= BIT(tok);
       if (qmask != BIT(Q_DEFAULT) && (qmask & mask_bad)) {
 	 if (qmask & mask_bad & BIT(Q_DEFAULT)) strcpy(buffer, default_buf);
-	 compile_error_skip(/*Unknown instrument `%s'*/39, buffer);
+	 compile_error_skip(/*Unknown instrument “%s”*/39, buffer);
 	 return 0;
       }
    }
 
    if (qmask == 0) {
-      compile_error_skip(/*Unknown quantity `%s'*/34, buffer);
+      compile_error_skip(/*Unknown quantity “%s”*/34, buffer);
    } else {
       set_pos(&fp);
    }
@@ -406,7 +406,7 @@ cmd_set(void)
    mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
-      compile_error_skip(/*Unknown character class `%s'*/42, buffer);
+      compile_error_skip(/*Unknown character class “%s”*/42, buffer);
       return;
    }
 
@@ -751,8 +751,8 @@ cmd_flags(void)
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
-	 compile_error(/*FLAG `%s' unknown*/68, buffer);
-	 /* Recover from `*FLAGS NOT BOGUS SURFACE' by ignoring "NOT BOGUS" */
+	 compile_error(/*FLAG “%s” unknown*/68, buffer);
+	 /* Recover from “*FLAGS NOT BOGUS SURFACE” by ignoring "NOT BOGUS" */
 	 fNot = fFalse;
       } else if (flag == FLAGS_NOT) {
 	 fNot = fTrue;
@@ -765,9 +765,9 @@ cmd_flags(void)
    }
 
    if (fNot) {
-      compile_error(/*Expecting `DUPLICATE', `SPLAY', or `SURFACE'*/188);
+      compile_error(/*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
    } else if (fEmpty) {
-      compile_error(/*Expecting `NOT', `DUPLICATE', `SPLAY', or `SURFACE'*/189);
+      compile_error(/*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
    }
 }
 
@@ -810,7 +810,7 @@ report_missing_export(prefix *pfx, int depth)
       file.filename = survey->filename;
       file.line = survey->line;
    }
-   compile_error(/*Station `%s' not exported from survey `%s'*/26,
+   compile_error(/*Station “%s” not exported from survey “%s”*/26,
 		 sprint_prefix(pfx), s);
    if (survey->filename) {
       file.filename = filename_store;
@@ -854,7 +854,7 @@ cmd_export(void)
 	 if (pfx->min_export - 1 > depth) {
 	    report_missing_export(pfx, depth);
 	 } else if (pfx->min_export - 1 < depth) {
-	    compile_error(/*Station `%s' already exported*/66,
+	    compile_error(/*Station “%s” already exported*/66,
 			  sprint_prefix(pfx));
 	 }
 	 pfx->min_export = depth;
@@ -982,7 +982,7 @@ cmd_data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
-      compile_error_skip(/*Data style `%s' unknown*/65, buffer);
+      compile_error_skip(/*Data style “%s” unknown*/65, buffer);
       return;
    }
 
@@ -993,7 +993,7 @@ cmd_data(void)
    if (isOmit(ch)) {
       static int data_depr_count = 0;
       if (data_depr_count < 5) {
-	 compile_warning(/*`*data %s %c ...' is deprecated - use `*data %s ...' instead*/104,
+	 compile_warning(/*“*data %s %c ...” is deprecated - use “*data %s ...” instead*/104,
 			 buffer, ch, buffer);
 	 if (++data_depr_count == 5)
 	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
@@ -1015,7 +1015,7 @@ cmd_data(void)
       }
       /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(mask_all[style], d)) {
-	 compile_error_skip(/*Reading `%s' not allowed in data style `%s'*/63,
+	 compile_error_skip(/*Reading “%s” not allowed in data style “%s”*/63,
 		       buffer, style_name);
 	 osfree(style_name);
 	 osfree(new_order);
@@ -1023,7 +1023,7 @@ cmd_data(void)
       }
       if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
 	 /* e.g. "*data diving station newline tape depth compass" */
-	 compile_error_skip(/*Reading `%s' must occur before NEWLINE*/225, buffer);
+	 compile_error_skip(/*Reading “%s” must occur before NEWLINE*/225, buffer);
 	 osfree(style_name);
 	 osfree(new_order);
 	 return;
@@ -1033,7 +1033,7 @@ cmd_data(void)
        */
       if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll)) & BIT(d))) {
 	 if (TSTBIT(mUsed, d)) {
-	    compile_error_skip(/*Duplicate reading `%s'*/67, buffer);
+	    compile_error_skip(/*Duplicate reading “%s”*/67, buffer);
 	    osfree(style_name);
 	    osfree(new_order);
 	    return;
@@ -1087,7 +1087,7 @@ cmd_data(void)
 	    }
 	    if (fBad) {
 	       /* Not entirely happy with phrasing this... */
-	       compile_error_skip(/*Reading `%s' duplicates previous reading(s)*/77,
+	       compile_error_skip(/*Reading “%s” duplicates previous reading(s)*/77,
 			     buffer);
 	       osfree(style_name);
 	       osfree(new_order);
@@ -1178,7 +1178,7 @@ cmd_data(void)
       /* Test should only fail with too few bits set, not too many */
       SVX_ASSERT((((mUsed &~ BIT(Newline)) | mask_optional[style])
 	      &~ mask[style]) == 0);
-      compile_error_skip(/*Too few readings for data style `%s'*/64, style_name);
+      compile_error_skip(/*Too few readings for data style “%s”*/64, style_name);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1306,7 +1306,7 @@ cmd_default(void)
       default_units(pcs);
       break;
     default:
-      compile_error_skip(/*Unknown setting `%s'*/41, buffer);
+      compile_error_skip(/*Unknown setting “%s”*/41, buffer);
    }
 }
 #endif
@@ -1407,7 +1407,7 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_error_skip(/*Found `%s', expecting `PRESERVE', `TOUPPER', or `TOLOWER'*/10,
+      compile_error_skip(/*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10,
 		    buffer);
    }
 }
@@ -1436,13 +1436,13 @@ cmd_infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == INFER_NULL) {
-      compile_error_skip(/*Found `%s', expecting `EQUATES', `EXPORTS', or `PLUMBS'*/31, buffer);
+      compile_error_skip(/*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, buffer);
       return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_error_skip(/*Found `%s', expecting `ON' or `OFF'*/32, buffer);
+      compile_error_skip(/*Found “%s”, expecting “ON” or “OFF”*/32, buffer);
       return;
    }
 
@@ -1611,14 +1611,14 @@ handle_command(void)
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
-      compile_error_skip(/*Unknown command `%s'*/12, buffer);
+      compile_error_skip(/*Unknown command “%s”*/12, buffer);
       return;
    }
 
    switch (cmdtok) {
     case CMD_EXPORT:
       if (!f_export_ok)
-	 compile_error(/**EXPORT must immediately follow `*BEGIN <SURVEY>'*/57);
+	 compile_error(/**EXPORT must immediately follow “*BEGIN <SURVEY>”*/57);
       break;
     case CMD_COPYRIGHT:
     case CMD_DATE:

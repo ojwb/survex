@@ -69,11 +69,18 @@ sub replacement {
     if (exists $revmsgs{$msg}) {
 	$msgno = $revmsgs{$msg};
     } else {
-	if (!$die) {
-	    print STDERR "Message(s) not found in message file:\n";
-	    $die = 1;
+	my $tmp = $msg;
+	$tmp =~ s/`(.*?)'/\x{201c}$1\x{201d}/g;
+	if (exists $revmsgs{$tmp}) {
+	    $msg = $tmp;
+	    $msgno = $revmsgs{$msg};
+	} else {
+	    if (!$die) {
+		print STDERR "Message(s) not found in message file:\n";
+		$die = 1;
+	    }
+	    print STDERR "'$msg'\n";
 	}
-	print STDERR "'$msg'\n";
     }
     return "msg(/*$msg*/$msgno)";
 }

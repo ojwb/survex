@@ -1,6 +1,6 @@
 /* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2002 Olly Betts
+ * Copyright (C) 1991-2002,2011 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ node_stat(prefix *p)
 	      * because of an error.
 	      */
 	     warning_in_file(p->filename, p->line,
-		     /*Station `%s' referred to by *entrance or *export but never used*/190,
+		     /*Station “%s” referred to by *entrance or *export but never used*/190,
 		     sprint_prefix(p));
 	 }
       }
@@ -102,7 +102,7 @@ node_stat(prefix *p)
 
       if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
 	 warning_in_file(p->filename, p->line,
-		 /*Station `%s' referred to just once, with an explicit prefix - typo?*/70,
+		 /*Station “%s” referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
       }
 
@@ -127,7 +127,7 @@ node_stat(prefix *p)
 
 	    file.filename = where->filename;
 	    file.line = where->line;
-	    compile_error(/*Station `%s' not exported from survey `%s'*/26,
+	    compile_error(/*Station “%s” not exported from survey “%s”*/26,
 			  sprint_prefix(p), s);
 	    file.filename = filename_store;
 	    file.line = line_store;
