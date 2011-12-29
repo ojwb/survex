@@ -611,44 +611,44 @@ add_unicode(int charset, unsigned char *p, int value)
    switch (value) {
     case 160:
       *p = ' '; return 1;
-    case 161 /* ¡ */:
+    case 161 /* Â¡ */:
       *p = '!'; return 1;
-    case 171 /* « */:
+    case 171 /* Â« */:
       p[1] = *p = '<'; return 2;
-    case 176 /* ° */:
+    case 176 /* Â° */:
       *p = 'd'; p[1] = 'g'; return 2;
-    case 187 /* » */:
+    case 187 /* Â» */:
       p[1] = *p = '>'; return 2;
-    case 191 /* ¿ */:
+    case 191 /* Â¿ */:
       *p = '?'; return 1;
-    case 192 /* À */: case 193 /* Á */: case 194 /* Â */: case 195 /* Ã */:
+    case 192 /* Ã€ */: case 193 /* Ã */: case 194 /* Ã‚ */: case 195 /* Ãƒ */:
       *p = 'A'; return 1;
-    case 197 /* Å */:
+    case 197 /* Ã… */:
       p[1] = *p = 'A'; return 2;
-    case 196 /* Ä */: /* &Auml; */
+    case 196 /* Ã„ */: /* &Auml; */
       *p = 'A';
       if (!umlaut_to_e()) return 1;
       p[1] = 'E'; return 2;
-    case 198 /* Æ */:
+    case 198 /* Ã† */:
       *p = 'A'; p[1] = 'E'; return 2;
-    case 199 /* Ç */: case 268: /* &Ccaron; */
+    case 199 /* Ã‡ */: case 268: /* &Ccaron; */
       *p = 'C'; return 1;
     case 270: /* &Dcaron; */
       *p = 'D'; return 1;
-    case 200 /* È */: case 201 /* É */: case 202 /* Ê */: case 203 /* Ë */:
+    case 200 /* Ãˆ */: case 201 /* Ã‰ */: case 202 /* ÃŠ */: case 203 /* Ã‹ */:
       *p = 'E'; return 1;
-    case 204 /* Ì */: case 205 /* Í */: case 206 /* Î */: case 207 /* Ï */:
+    case 204 /* ÃŒ */: case 205 /* Ã */: case 206 /* Ã */: case 207 /* Ã */:
       *p = 'I'; return 1;
-    case 208 /* Ğ */: case 222 /* Ş */:
+    case 208 /* Ã */: case 222 /* Ã */:
       *p = 'T'; p[1] = 'H'; return 2;
     case 315: /* &Lacute; */
     case 317: /* &Lcaron; */
       *p = 'L'; return 1;
-    case 209 /* Ñ */:
+    case 209 /* Ã‘ */:
       *p = 'N'; return 1;
-    case 210 /* Ò */: case 211 /* Ó */: case 212 /* Ô */: case 213 /* Õ */:
+    case 210 /* Ã’ */: case 211 /* Ã“ */: case 212 /* Ã” */: case 213 /* Ã• */:
       *p = 'O'; return 1;
-    case 214 /* Ö */: /* &Ouml; */ case 0x152: /* &OElig; */
+    case 214 /* Ã– */: /* &Ouml; */ case 0x152: /* &OElig; */
       *p = 'O'; p[1] = 'E'; return 2;
     case 352: /* &Scaron; */
     case 0x15e: /* &Scedil; */
@@ -656,36 +656,36 @@ add_unicode(int charset, unsigned char *p, int value)
     case 0x162: /* &Tcedil; */
     case 0x164: /* &Tcaron; */
       *p = 'T'; return 1;
-    case 217 /* Ù */: case 218 /* Ú */: case 219 /* Û */:
+    case 217 /* Ã™ */: case 218 /* Ãš */: case 219 /* Ã› */:
       *p = 'U'; return 1;
-    case 220 /* Ü */: /* &Uuml; */
+    case 220 /* Ãœ */: /* &Uuml; */
       *p = 'U'; p[1] = 'E'; return 2;
-    case 221 /* İ */:
+    case 221 /* Ã */:
       *p = 'Y'; return 1;
     case 381: /* &Zcaron; */
       *p = 'Z'; return 1;
-    case 223 /* ß */:
+    case 223 /* ÃŸ */:
       p[1] = *p = 's'; return 2;
-    case 224 /* à */: case 225 /* á */: case 226 /* â */: case 227 /* ã */:
+    case 224 /* Ã  */: case 225 /* Ã¡ */: case 226 /* Ã¢ */: case 227 /* Ã£ */:
     case 259: /* &abreve; */
       *p = 'a'; return 1;
-    case 228 /* ä */: /* &auml; */ case 230 /* æ */:
+    case 228 /* Ã¤ */: /* &auml; */ case 230 /* Ã¦ */:
       *p = 'a'; p[1] = 'e'; return 2;
-    case 229 /* å */:
+    case 229 /* Ã¥ */:
       p[1] = *p = 'a'; return 2;
-    case 231 /* ç */: case 269 /* &ccaron; */:
+    case 231 /* Ã§ */: case 269 /* &ccaron; */:
       *p = 'c'; return 1;
     case 271: /* &dcaron; */
       *p = 'd'; return 1;
-    case 232 /* è */: case 233 /* é */: case 234 /* ê */: case 235 /* ë */:
+    case 232 /* Ã¨ */: case 233 /* Ã© */: case 234 /* Ãª */: case 235 /* Ã« */:
     case 283 /* &ecaron; */:
       *p = 'e'; return 1;
-    case 236 /* ì */: case 237 /* í */: case 238 /* î */: case 239 /* ï */:
+    case 236 /* Ã¬ */: case 237 /* Ã­ */: case 238 /* Ã® */: case 239 /* Ã¯ */:
       *p = 'i'; return 1;
     case 316 /* &lacute; */:
     case 318 /* &lcaron; */:
       *p = 'l'; return 1;
-    case 241 /* ñ */: case 328 /* &ncaron; */:
+    case 241 /* Ã± */: case 328 /* &ncaron; */:
       *p = 'n'; return 1;
     case 345: /* &rcaron; */
       *p = 'r'; return 1;
@@ -695,18 +695,18 @@ add_unicode(int charset, unsigned char *p, int value)
     case 357: /* &tcaron; */
     case 0x163: /* &tcedil; */
       *p = 't'; return 1;
-    case 240 /* ğ */: case 254 /* ş */:
+    case 240 /* Ã° */: case 254 /* Ã¾ */:
       *p = 't'; p[1] = 'h'; return 2;
-    case 242 /* ò */: case 243 /* ó */: case 244 /* ô */: case 245 /* õ */:
+    case 242 /* Ã² */: case 243 /* Ã³ */: case 244 /* Ã´ */: case 245 /* Ãµ */:
       *p = 'o'; return 1;
-    case 246 /* ö */: /* &ouml; */ case 0x153: /* &oelig; */
+    case 246 /* Ã¶ */: /* &ouml; */ case 0x153: /* &oelig; */
       *p = 'o'; p[1] = 'e'; return 2;
-    case 249 /* ù */: case 250 /* ú */: case 251 /* û */:
+    case 249 /* Ã¹ */: case 250 /* Ãº */: case 251 /* Ã» */:
     case 367 /* &uring; */:
       *p = 'u'; return 1;
-    case 252 /* ü */: /* &uuml; */
+    case 252 /* Ã¼ */: /* &uuml; */
       *p = 'u'; p[1] = 'e'; return 2;
-    case 253 /* ı */: case 255 /* ÿ */:
+    case 253 /* Ã½ */: case 255 /* Ã¿ */:
       *p = 'y'; return 1;
     case 382: /* &zcaron; */
       *p = 'z'; return 1;
@@ -782,8 +782,8 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
 	    *to++ = (char)ch;
 	 } else {
 	    /* We assume an N byte UTF-8 code never transliterates to more
-	     * than N characters (so we can't transliterate © to (C) or
-	     * ® to (R) for example) */
+	     * than N characters (so we can't transliterate Â© to (C) or
+	     * Â® to (R) for example) */
 	    to += add_unicode(charset_code, to, ch);
 	 }
       }

@@ -1,3 +1,7 @@
+Thu Dec 29 03:14:52 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/message.c: Convert source code to UTF-8.
+
 Thu Dec 29 00:52:44 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Fix typo in CHECK_GL_ERROR() change in previous
