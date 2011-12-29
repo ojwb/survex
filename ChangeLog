@@ -1,3 +1,8 @@
+Thu Dec 29 00:49:31 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: We already keep track of the GL canvas size in x_size
+	  and y_size so use those rather than re-requesting them.
+
 Wed Dec 28 11:45:40 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/fr.po: Merge in updated translations from launchpad.

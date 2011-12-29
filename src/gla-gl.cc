@@ -263,6 +263,8 @@ void GLACanvas::FirstShow()
 {
     // Update our record of the client area size and centre.
     GetClientSize(&x_size, &y_size);
+    if (x_size < 1) x_size = 1;
+    if (y_size < 1) y_size = 1;
 
     SetCurrent();
     opengl_initialised = true;
@@ -477,12 +479,20 @@ void GLACanvas::OnSize(wxSizeEvent & event)
 	    if (*i && i->test_flag(mask)) i->InvalidateList();
 	}
 
+	// The width and height go to zero when the panel is dragged right
+	// across so we clamp them to be at least 1 to avoid problems.
 	x_size = size.GetWidth();
 	y_size = size.GetHeight();
+	if (x_size < 1) x_size = 1;
+	if (y_size < 1) y_size = 1;
     }
 
     // This apparently is (or at least was) needed for Mac OS X.
     wxGLCanvas::OnSize(event);
+
+    // Set viewport.
+    glViewport(0, 0, x_size, y_size);
+    CHECK_GL_ERROR("SetDataTransform", "OnSize");
 }
 
 void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
@@ -637,24 +647,13 @@ void GLACanvas::PlaceNormal(const Vector3 &v)
 
 void GLACanvas::SetDataTransform()
 {
-    // Set viewport.  The width and height go to zero when the panel is dragged
-    // right across so we clamp them to be at least 1 to avoid errors from the
-    // opengl calls below.
-    int window_width;
-    int window_height;
-    GetSize(&window_width, &window_height);
-    if (window_height < 1) window_height = 1;
-    if (window_width < 1) window_width = 1;
-    double aspect = double(window_height) / double(window_width);
-
-    glViewport(0, 0, window_width, window_height);
-    CHECK_GL_ERROR("SetDataTransform", "glViewport");
-
     // Set projection.
     glMatrixMode(GL_PROJECTION);
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
+
+    double aspect = double(y_size) / double(x_size);
 
     Double near_plane = 1.0;
     if (m_Perspective) {
@@ -767,9 +766,6 @@ void GLACanvas::SetIndicatorTransform()
     list_flags |= NEVER_CACHE;
 
     // Set the modelview transform and projection for drawing indicators.
-    wxSize size = GetSize();
-    int window_width = max(size.GetWidth(), 1);
-    int window_height = max(size.GetHeight(), 1);
 
     glDisable(GL_DEPTH_TEST);
     CHECK_GL_ERROR("SetIndicatorTransform", "glDisable GL_DEPTH_TEST");
@@ -781,7 +777,7 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity (2)");
-    gluOrtho2D(0, window_width, 0, window_height);
+    gluOrtho2D(0, x_size, 0, y_size);
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 
     // No modelview transform.
@@ -1449,9 +1445,8 @@ void GLACanvas::ToggleTextured()
 
 bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
 {
-    int width;
-    int height;
-    GetSize(&width, &height);
+    const int width = x_size;
+    const int height = y_size;
     unsigned char *pixels = (unsigned char *)malloc(3 * width * (height + 1));
     if (!pixels) return false;
     glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
@@ -1474,15 +1469,13 @@ bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
 
 bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
 {
-    int width;
-    int height;
-    GetSize(&width, &height);
     unsigned char pixels[3 * 8 * 8];
     if (double_buffered) {
 	glReadBuffer(GL_BACK);
 	CHECK_GL_ERROR("FirstShow", "glReadBuffer");
     }
-    glReadPixels(width / 2 - 3, height / 2 - 4, 8, 8, GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
+    glReadPixels(x_size / 2 - 3, y_size / 2 - 4, 8, 8,
+		 GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
     CHECK_GL_ERROR("CheckVisualFidelity", "glReadPixels");
     if (double_buffered) {
 	glReadBuffer(GL_FRONT);
