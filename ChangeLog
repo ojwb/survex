@@ -1,3 +1,9 @@
+Thu Dec 29 03:21:49 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/message.c: Transliterate curly double quotes to ASCII straight
+	  double quotes if we can't represent them in the current character
+	  set.
+
 Thu Dec 29 03:14:52 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/message.c: Convert source code to UTF-8.
