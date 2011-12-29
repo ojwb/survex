@@ -492,7 +492,7 @@ void GLACanvas::OnSize(wxSizeEvent & event)
 
     // Set viewport.
     glViewport(0, 0, x_size, y_size);
-    CHECK_GL_ERROR("SetDataTransform", "OnSize");
+    CHECK_GL_ERROR("OnSize", "glViewport");
 }
 
 void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)

@@ -1,3 +1,8 @@
+Thu Dec 29 00:52:44 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix typo in CHECK_GL_ERROR() change in previous
+	  commit.
+
 Thu Dec 29 00:49:31 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: We already keep track of the GL canvas size in x_size
