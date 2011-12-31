@@ -210,7 +210,7 @@ bool Aven::OnInit()
 	int wx_gl_attribs_no_db[] = { WX_GL_RGBA, 0 };
 	if (!InitGLVisual(wx_gl_attribs_no_db)) {
 	    wxString m;
-	    m.Printf(wmsg(/*This version of %s requires OpenGL to work, but it isn't available*/405), APP_NAME);
+	    m.Printf(wmsg(/*This version of %s requires OpenGL to work, but it isn’t available.*/405), APP_NAME);
 	    wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
 	    exit(1);
 	}

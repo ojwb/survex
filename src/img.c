@@ -173,7 +173,7 @@ unsigned int img_output_version = IMG_VERSION_MAX;
 #ifdef IMG_HOSTED
 static enum {
    IMG_NONE = 0,
-   IMG_FILENOTFOUND = /*Couldn't open data file “%s”*/24,
+   IMG_FILENOTFOUND = /*Couldn’t open data file “%s”*/24,
    IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
    IMG_DIRECTORY    = /*Filename “%s” refers to directory*/44,
    IMG_CANTOPENOUT  = /*Failed to open output file “%s”*/47,

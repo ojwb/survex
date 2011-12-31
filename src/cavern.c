@@ -301,7 +301,7 @@ main(int argc, char **argv)
 	      break;
 	  }
 	  fwrite(q, 1, p - q, stdout);
-	  fputs(msg(/*&copy;*/0), stdout);
+	  fputs(msg(/*©*/0), stdout);
 	  p += 3;
       }
    }
@@ -448,7 +448,7 @@ do_stats(void)
    if (pfxHi[0]) {
       do_range(2, /*Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/135);
       do_range(1, /*North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/136);
-      do_range(0, /*East-West range = %4.2fm from %s at %4.2fm to %s at %4.2fm)*/137);
+      do_range(0, /*East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/137);
    }
 
    print_node_stats();

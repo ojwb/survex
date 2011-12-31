@@ -586,7 +586,7 @@ cmd_end(void)
 	    compile_error_skip(/*Matching BEGIN tag has no prefix*/36);
 	 } else {
 	    /* tag mismatch */
-	    compile_error_skip(/*Prefix tag doesn't match BEGIN*/193);
+	    compile_error_skip(/*Prefix tag doesn’t match BEGIN*/193);
 	 }
       } else {
 	 /* close tag omitted; open tag given */
@@ -993,7 +993,7 @@ cmd_data(void)
    if (isOmit(ch)) {
       static int data_depr_count = 0;
       if (data_depr_count < 5) {
-	 compile_warning(/*“*data %s %c ...” is deprecated - use “*data %s ...” instead*/104,
+	 compile_warning(/*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
 			 buffer, ch, buffer);
 	 if (++data_depr_count == 5)
 	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
@@ -1076,7 +1076,7 @@ cmd_data(void)
 		  return;
 	       }
 	       if (k == 0) {
-		  compile_error_skip(/*NEWLINE can't be the first reading*/222);
+		  compile_error_skip(/*NEWLINE can’t be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1109,7 +1109,7 @@ cmd_data(void)
    } while (d != End);
 
    if (k >= 2 && new_order[k - 2] == Newline) {
-      compile_error_skip(/*NEWLINE can't be the last reading*/223);
+      compile_error_skip(/*NEWLINE can’t be the last reading*/223);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1254,7 +1254,7 @@ cmd_calibrate(void)
    }
 
    if (((qmask & LEN_QMASK)) && ((qmask & ANG_QMASK))) {
-      compile_error_skip(/*Can't calibrate angular and length quantities together*/227);
+      compile_error_skip(/*Can’t calibrate angular and length quantities together*/227);
       return;
    }
 

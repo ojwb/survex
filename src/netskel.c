@@ -125,7 +125,7 @@ solve_network(void /*node *stnlist*/)
       SVX_ASSERT2(nosurveyhead || stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
       SVX_ASSERT2(stnFirst, "no stations left in net!");
       stn = stnFirst;
-      printf(msg(/*Survey has no fixed points. Therefore I've fixed %s at (0,0,0)*/72),
+      printf(msg(/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72),
 	     sprint_prefix(stn->name));
       putnl();
       POS(stn,0) = (real)0.0;

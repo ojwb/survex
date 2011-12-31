@@ -70,7 +70,8 @@ sub replacement {
 	$msgno = $revmsgs{$msg};
     } else {
 	my $tmp = $msg;
-	$tmp =~ s/`(.*?)'/\x{201c}$1\x{201d}/g;
+	$tmp =~ s/`(.*?)'/“$1”/g;
+	$tmp =~ s/(\w)'(\w)/$1’$2/g;
 	if (exists $revmsgs{$tmp}) {
 	    $msg = $tmp;
 	    $msgno = $revmsgs{$msg};

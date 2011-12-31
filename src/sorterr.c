@@ -73,7 +73,7 @@ skipline(const char *fnm, FILE *fh)
    if (ch == EOF) {
       if (ferror(fh))
 	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
-      fatalerror_in_file(fnm, 0, /*Couldn't parse .err file*/112);
+      fatalerror_in_file(fnm, 0, /*Couldn’t parse .err file*/112);
    }
 }
 
@@ -90,7 +90,7 @@ printline(const char *fnm, FILE *fh, FILE *fh_out)
    if (ch == EOF) {
       if (ferror(fh))
 	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
-      fatalerror_in_file(fnm, 0, /*Couldn't parse .err file*/112);
+      fatalerror_in_file(fnm, 0, /*Couldn’t parse .err file*/112);
    }
 }
 
@@ -137,7 +137,7 @@ main(int argc, char **argv)
    if (argv[optind]) howmany = atoi(argv[optind]);
 
    fh = fopen(fnm, "rb");
-   if (!fh) fatalerror(/*Couldn't open file “%s”*/93, fnm);
+   if (!fh) fatalerror(/*Couldn’t open file “%s”*/93, fnm);
 
    /* 4 line paragraphs, separated by blank lines...
     * 041.verhall.12 - 041.verhall.13

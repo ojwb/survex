@@ -14,7 +14,7 @@ msgstr ""
 #. allocate space for.
 #: ../src/message.c:83
 #, c-format
-msgid "Out of memory (couldn't find %lu bytes)."
+msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Memoria insufficiente (ci vorrebbero altri %lu bytes)."
 
 #: ../src/commands.c:1512
@@ -109,7 +109,7 @@ msgstr "Ci sono %d avvertimenti."
 #. Possibly better not to translate it.
 #: ../src/cavernlog.cc:210
 #, c-format
-msgid "Couldn't open pipe: “%s”"
+msgid "Couldn’t open pipe: “%s”"
 msgstr "Il piping non puó essere eseguito: “%s”"
 
 #: ../src/datain.c:80
@@ -140,17 +140,17 @@ msgstr "Lettura della bussola in una battuta verticale"
 
 #: ../src/commands.c:569
 msgid "END with no matching BEGIN in this file"
-msgstr "C'é un END senza il corrispondente BEGIN in questo file"
+msgstr "C’é un END senza il corrispondente BEGIN in questo file"
 
 #: ../src/datain.c:710
 msgid "BEGIN with no matching END in this file"
-msgstr "C'é un BEGIN senza il corrispondente END in questo file"
+msgstr "C’é un BEGIN senza il corrispondente END in questo file"
 
 #: ../src/printwx.cc:1166
 #: ../src/datain.c:352
 #: ../src/img.c:176
 #, c-format
-msgid "Couldn't open data file “%s”"
+msgid "Couldn’t open data file “%s”"
 msgstr "Non riesco ad aprire il file dei dati “%s”"
 
 #. TRANSLATORS: Use of the ROOT character (which is "\" by default) is deprecated, so this error
@@ -180,7 +180,7 @@ msgstr "La stazione “%s” non é stata esportata dal rilievo “%s”"
 
 #: ../src/readval.c:212
 #, c-format
-msgid "“%s” can't be both a station and a survey"
+msgid "“%s” can’t be both a station and a survey"
 msgstr "“%s” non può essere contemporaneamente una stazione e un rilievo"
 
 #: ../src/extend.c:247
@@ -211,7 +211,7 @@ msgstr "Trovato “%s”, atteso “EQUATES”, “EXPORTS” o “PLUMBS”"
 msgid "Found “%s”, expecting “ON” or “OFF”"
 msgstr "Trovato “%s”, atteso “ON” o “OFF”"
 
-#. TRANSLATORS: EQUATE is a command name, so shouldn't be translated.
+#. TRANSLATORS: EQUATE is a command name, so shouldn’t be translated.
 #: ../src/commands.c:786
 msgid "Only one station in EQUATE command"
 msgstr "Solo una stazione nel comando EQUATE"
@@ -242,7 +242,7 @@ msgid "Invalid units “%s” for quantity"
 msgstr "Unitá “%s” non valida per questa quantitá"
 
 #. TRANSLATORS: nasty hack - this message is for the .3d img code, and all errors there take
-#. a filename parameter - we don't really want it here, so lose it with "%.0s"
+#. a filename parameter - we don’t really want it here, so lose it with "%.0s"
 #. (which should display 0 characters from the filename) FIXME: sort out this
 #: ../src/img.c:177
 msgid "Out of memory %.0s"
@@ -308,7 +308,7 @@ msgstr "Utilizzo"
 #: ../src/netbits.c:335
 #, c-format
 msgid "Survey leg with same station (“%s”) at both ends - typing error?"
-msgstr "Alle estremitá di una battuta c'é la stessa stazione (“%s”) - Errore di trascrizione?"
+msgstr "Alle estremitá di una battuta c’é la stessa stazione (“%s”) - Errore di trascrizione?"
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
@@ -444,7 +444,7 @@ msgstr "Le seguenti stazioni non sono connesse ad un punto fisso:"
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netskel.c:128
 #, c-format
-msgid "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
+msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
 msgstr "La topografia non ha punti fissi. Quindi %s é stata fissata a (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
@@ -462,7 +462,7 @@ msgstr "Rete risolta per riduzione - nessun sistema da risolvere."
 msgid "Solving %d simultaneous equations"
 msgstr "Sto risolvendo un sistema di %d equazioni"
 
-#. TRANSLATORS: %c is 'x', 'y' or 'z'
+#. TRANSLATORS: %c is “x”, “y” or “z”
 #: ../src/matrix.c:150
 #, c-format
 msgid "Solving to find %c coordinates"
@@ -555,12 +555,12 @@ msgstr "Istruzione illegale"
 #: ../src/extend.c:539
 #: ../src/sorterr.c:140
 #, c-format
-msgid "Couldn't open file “%s”"
+msgid "Couldn’t open file “%s”"
 msgstr "Non riesco ad aprire il file “%s”"
 
 #: ../src/printwx.cc:335
 #, c-format
-msgid "Couldn't write file “%s”"
+msgid "Couldn’t write file “%s”"
 msgstr ""
 
 #: ../src/message.c:227
@@ -643,7 +643,7 @@ msgstr "File immagine 3d “%s” errato"
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
-#. TRANSLATORS: put in .3d file if we can't read the date/time
+#. TRANSLATORS: put in .3d file if we can’t read the date/time
 #: ../src/img.c:47
 msgid "Date and time not available."
 msgstr "Data e ora non disponibili."
@@ -670,7 +670,7 @@ msgstr "Errore nella scrittura del file"
 #: ../src/sorterr.c:76
 #: ../src/sorterr.c:93
 #: ../src/sorterr.c:164
-msgid "Couldn't parse .err file"
+msgid "Couldn’t parse .err file"
 msgstr "Non posso analizzare il file .err degli errori"
 
 #: ../src/cavern.c:370
@@ -795,7 +795,7 @@ msgstr "Estensione Est-Ovest = %4.2fm (da %s a %4.2fm a %s a %4.2fm)"
 
 #: ../src/cavern.c:414
 msgid "There is 1 loop."
-msgstr "C'é una poligonale chiusa."
+msgstr "C’é una poligonale chiusa."
 
 #: ../src/cavern.c:416
 #, c-format
@@ -928,8 +928,8 @@ msgstr "Usare “%s --help” per ulteriori informazioni.\n"
 #~ msgid "Using scale %.0f:%.0f"
 #~ msgstr "Scala utilizzata %.0f:%.0f"
 
-#~ msgid "Print which pages?\n(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)\n: "
-#~ msgstr "Pagine da stampare:\n(RETURN per tuttr; 'n' per una pagina 'm-n', 'm-', '-n' per un intervallo)\n: "
+#~ msgid "Print which pages?\n(RETURN for all; “n” for one page, “m-n”, “m-”, “-n” for a range)\n: "
+#~ msgstr "Pagine da stampare:\n(RETURN per tuttr; “n” per una pagina “m-n”, “m-”, “-n” per un intervallo)\n: "
 
 #. TRANSLATORS: e.g. "Printing to “somefile.ps”..." / "Printing to “Laserjet4 on amachine...”
 #, c-format
@@ -962,7 +962,7 @@ msgid "%s up page"
 msgstr "%s alto della pagina"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
-#. something like "123°".  The bearing is the direction we're looking.
+#. something like "123°".  The bearing is the direction we’re looking.
 msgid "View towards %s"
 msgstr "Vista in direzione %s"
 
@@ -1033,7 +1033,7 @@ msgstr "La topografia contiene %ld componenti connesse."
 #~ msgid "elevation"
 #~ msgstr "profilo"
 
-#. TRANSLATORS: Label for button in aven's cavern log window which causes the
+#. TRANSLATORS: Label for button in aven’s cavern log window which causes the
 #. survey data to be reprocessed.
 msgid "Reprocess"
 msgstr ""
@@ -1042,17 +1042,17 @@ msgstr ""
 #: ../src/cmdline.c:238
 #, c-format
 msgid "numeric argument “%s” out of range"
-msgstr "argomento numerico “%s” al di fuori dell'intervallo consentito"
+msgstr "argomento numerico “%s” al di fuori dell’intervallo consentito"
 
 #: ../src/cmdline.c:221
 #, c-format
 msgid "argument “%s” not an integer"
-msgstr "L'argomento “%s” non é un intero"
+msgstr "L’argomento “%s” non é un intero"
 
 #: ../src/cmdline.c:240
 #, c-format
 msgid "argument “%s” not a number"
-msgstr "L'argomento “%s” non é un numero"
+msgstr "L’argomento “%s” non é un numero"
 
 #: ../src/commands.c:768
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
@@ -1075,10 +1075,10 @@ msgstr "Profilo longitudinale"
 msgid "No matching BEGIN"
 msgstr "Manca il BEGIN corrispondente"
 
-#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it's
+#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it’s
 #. given at all
 #: ../src/commands.c:589
-msgid "Prefix tag doesn't match BEGIN"
+msgid "Prefix tag doesn’t match BEGIN"
 msgstr "Il prefisso non corrisponde con il BEGIN"
 
 #: ../src/commands.c:593
@@ -1086,7 +1086,7 @@ msgid "Closing prefix omitted from END"
 msgstr "Prefisso omesso in END"
 
 #. TRANSLATORS: heading line for .pos file
-#. please try to ensure the ','s (or at least the columns) are in the same place
+#. please try to ensure the “,”s (or at least the columns) are in the same place
 #: ../src/3dtopos.c:109
 msgid "( Easting, Northing, Altitude )"
 msgstr "( Est (X), Nord (Y), Quota  Z )"
@@ -1167,7 +1167,7 @@ msgstr ""
 msgid "rewind file and read it a second time"
 msgstr ""
 
-#. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
+#. TRANSLATORS: error message given by "*units tape 0 feet" - it’s meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
 #. knots on a diving line, and tie them every "2 feet").
 #: ../src/commands.c:1223
@@ -1233,7 +1233,7 @@ msgstr ""
 msgid "Survey visualisation tool"
 msgstr "Strumento di visualizzazione rilievi"
 
-#. TRANSLATORS: Aven menu titles.  An '&' goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any accelerator key.
 #. The accelerators must be different within this group
 #: ../src/mainfrm.cc:832
 msgid "&File"
@@ -1291,7 +1291,7 @@ msgstr ""
 msgid "[SURVEY_FILE]"
 msgstr ""
 
-#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any accelerator key.
 #. The string "\t" separates the menu text and any accelerator key.
 #. TRANSLATORS: "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
@@ -1308,19 +1308,19 @@ msgid "Undated"
 msgstr "Senza data"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
-#. which aren't part of a loop and so have no error information.
+#. which aren’t part of a loop and so have no error information.
 msgid "Not in loop"
 msgstr ""
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
-msgid "NEWLINE can't be the first reading"
+msgid "NEWLINE can’t be the first reading"
 msgstr "NEWLINE non puó essere la prima lettura"
 
 #. TRANSLATORS: error from "*data normal from to tape compass clino newline"
 #: ../src/commands.c:1112
-msgid "NEWLINE can't be the last reading"
-msgstr "NEWLINE non puó essere l'ultima lettura"
+msgid "NEWLINE can’t be the last reading"
+msgstr "NEWLINE non puó essere l’ultima lettura"
 
 #. TRANSLATORS: error from "*data normal station tape compass clino"
 #: ../src/commands.c:1134
@@ -1339,7 +1339,7 @@ msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr "NEWLINE puó essere preceduto solamente da STATION, DEPTH e COUNT"
 
 #: ../src/commands.c:1257
-msgid "Can't calibrate angular and length quantities together"
+msgid "Can’t calibrate angular and length quantities together"
 msgstr "Le quantitá di lunghezza e angolari non possono essere calibrate insieme"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
@@ -1429,7 +1429,7 @@ msgstr "Sposta il rilievo a &Destra"
 
 #: ../src/mainfrm.cc:751
 msgid "Shift Survey &Up"
-msgstr "Sposta il rilievo verso l'&Alto"
+msgstr "Sposta il rilievo verso l’&Alto"
 
 #: ../src/mainfrm.cc:752
 msgid "Shift Survey &Down"
@@ -1473,7 +1473,7 @@ msgid "View"
 msgstr "Vista"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
-#. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a
+#. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn’t a
 #. good name for this but nothing better has yet come to mind!
 #: ../src/printwx.cc:215
 msgid "Elements"
@@ -1527,7 +1527,7 @@ msgid "Info Box"
 msgstr "Riquadro informazioni"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages
-#. (otherwise they'll be skipped to save paper)
+#. (otherwise they’ll be skipped to save paper)
 #: ../src/printwx.cc:276
 msgid "Blank Pages"
 msgstr "Pagine bianche"
@@ -1623,31 +1623,31 @@ msgstr "I&ndicatori"
 #: ../src/z_getopt.c:707
 #, c-format
 msgid "%s: option “%s” is ambiguous\n"
-msgstr "%s: l'opzione “%s” è ambigua\n"
+msgstr "%s: l’opzione “%s” è ambigua\n"
 
 #: ../src/z_getopt.c:1023
 #: ../src/z_getopt.c:1034
 #, c-format
 msgid "%s: option “-W %s” is ambiguous\n"
-msgstr "%s: l'opzione “-W %s” è ambigua\n"
+msgstr "%s: l’opzione “-W %s” è ambigua\n"
 
 #: ../src/z_getopt.c:751
 #: ../src/z_getopt.c:755
 #, c-format
-msgid "%s: option “%c%s” doesn't allow an argument\n"
-msgstr "%s: l'opzione “%c%s” non permette un argomento\n"
+msgid "%s: option “%c%s” doesn’t allow an argument\n"
+msgstr "%s: l’opzione “%c%s” non permette un argomento\n"
 
 #: ../src/z_getopt.c:740
 #: ../src/z_getopt.c:743
 #, c-format
-msgid "%s: option “--%s” doesn't allow an argument\n"
-msgstr "%s: l'opzione “--%s” non permette un argomento\n"
+msgid "%s: option “--%s” doesn’t allow an argument\n"
+msgstr "%s: l’opzione “--%s” non permette un argomento\n"
 
 #: ../src/z_getopt.c:1058
 #: ../src/z_getopt.c:1069
 #, c-format
-msgid "%s: option “-W %s” doesn't allow an argument\n"
-msgstr "%s: l'opzione “-W %s” non permette un argomento\n"
+msgid "%s: option “-W %s” doesn’t allow an argument\n"
+msgstr "%s: l’opzione “-W %s” non permette un argomento\n"
 
 #: ../src/z_getopt.c:790
 #: ../src/z_getopt.c:802
@@ -1655,7 +1655,7 @@ msgstr "%s: l'opzione “-W %s” non permette un argomento\n"
 #: ../src/z_getopt.c:1101
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
-msgstr "%s: l'opzione “%s” richiede un argomento\n"
+msgstr "%s: l’opzione “%s” richiede un argomento\n"
 
 #: ../src/z_getopt.c:960
 #: ../src/z_getopt.c:971
@@ -1663,7 +1663,7 @@ msgstr "%s: l'opzione “%s” richiede un argomento\n"
 #: ../src/z_getopt.c:1166
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr "%s: l'opzione richiede un argomento -- %c\n"
+msgstr "%s: l’opzione richiede un argomento -- %c\n"
 
 #: ../src/z_getopt.c:840
 #: ../src/z_getopt.c:843
@@ -1752,13 +1752,13 @@ msgstr "Seleziona una presentazione da aprire"
 msgid "Error in format of presentation file “%s”"
 msgstr "Errore nel formato del file di presentazione “%s”"
 
-#. TRANSLATORS: "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave surveying package, so probably shouldn’t
 #. be translated
 #: ../src/mainfrm.cc:1694
 msgid "Compass PLT files"
 msgstr "File Compass PLT"
 
-#. TRANSLATORS: "CMAP" is Bob Thrun's cave surveying package, so don't translate it.
+#. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying package, so don’t translate it.
 #: ../src/mainfrm.cc:1696
 msgid "CMAP XYZ files"
 msgstr "File CMAP XYZ"
@@ -2112,7 +2112,7 @@ msgstr ""
 #. things in future).
 #: ../src/aven.cc:207
 #, c-format
-msgid "This version of %s requires OpenGL to work, but it isn't available."
+msgid "This version of %s requires OpenGL to work, but it isn’t available."
 msgstr "Questa versione di %s richiede le librerie OpenGL, ma non sono disponibili."
 
 #. TRANSLATORS: for diffpos:
@@ -2135,7 +2135,7 @@ msgstr "Rimosso: %s"
 
 #. TRANSLATORS: for extend:
 #. the user specified breaking a loop or changing extend direction at
-#. this station, but we didn't find it in the 3d file
+#. this station, but we didn’t find it in the 3d file
 #: ../src/extend.c:258
 #: ../src/extend.c:275
 #: ../src/extend.c:315
@@ -2147,7 +2147,7 @@ msgstr "La stazione %s non é stata trovata"
 
 #. TRANSLATORS: for extend:
 #. the user specified breaking a loop or changing extend direction at
-#. this leg, but we didn't find it in the 3d file
+#. this leg, but we didn’t find it in the 3d file
 #: ../src/extend.c:297
 #: ../src/extend.c:337
 #: ../src/extend.c:377

@@ -162,7 +162,7 @@ cmdline_version(void)
 void
 cmdline_syntax(void)
 {
-   printf("\n%s: %s", msg(/*Syntax*/49), msg_appname());
+   printf("\n%s: %s", msg(/*Usage*/49), msg_appname());
    if (help->opt) printf(" [%s]...", msg(/*OPTION*/153));
    if (msg_args) {
       putchar(' ');
@@ -187,7 +187,7 @@ static void
 syntax_and_help_pointer(void)
 {
    cmdline_syntax();
-   fprintf(stderr, msg(/*Try “%s --help” for more information.&#10;*/157),
+   fprintf(stderr, msg(/*Try “%s --help” for more information.\n*/157),
 	   msg_appname());
    exit(1);
 }

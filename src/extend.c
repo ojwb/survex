@@ -284,7 +284,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Extending to the left from leg %s -> %s*/515), s->label, t->label);
+			   printf(msg(/*Extending to the left from leg %s → %s*/515), s->label, t->label);
 			   putnl();
 			   l->dir = ELEFT;
 			   goto loopend;
@@ -294,7 +294,7 @@ parseconfigline(const char *fnm, char *ln)
 	       }
 	    }
 	 }
-	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s → %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*eright")==0) {
       char *ll = delimword(lc, &lc);
@@ -324,7 +324,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Extending to the right from leg %s -> %s*/516), s->label, t->label);
+			   printf(msg(/*Extending to the right from leg %s → %s*/516), s->label, t->label);
 			   putnl();
 			   l->dir=ERIGHT;
 			   goto loopend;
@@ -334,7 +334,7 @@ parseconfigline(const char *fnm, char *ln)
 	       }
 	    }
 	 }
-	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s → %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*eswap")==0) {
       char *ll = delimword(lc, &lc);
@@ -364,7 +364,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Swapping extend direction from leg %s -> %s*/520), s->label, t->label);
+			   printf(msg(/*Swapping extend direction from leg %s → %s*/520), s->label, t->label);
 			   putnl();
 			   l->dir = ESWAP;
 			   goto loopend;
@@ -374,7 +374,7 @@ parseconfigline(const char *fnm, char *ln)
 	       }
 	    }
 	 }
-	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s → %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*break")==0) {
       char *ll = delimword(lc, &lc);
@@ -404,7 +404,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
-			   printf(msg(/*Breaking survey loop at leg %s -> %s*/518), s->label, t->label);
+			   printf(msg(/*Breaking survey loop at leg %s → %s*/518), s->label, t->label);
 			   putnl();
 			   l->broken = (b ? BREAK_TO : BREAK_FR);
 			   goto loopend;
@@ -414,7 +414,7 @@ parseconfigline(const char *fnm, char *ln)
 	       }
 	    }
 	 }
-	 warning_in_file(fnm, lineno, /*Failed to find leg %s -> %s*/511, ll, ln);
+	 warning_in_file(fnm, lineno, /*Failed to find leg %s → %s*/511, ll, ln);
       }
    } else {
       fatalerror_in_file(fnm, lineno, /*Unknown command “%s”*/12, ln);
@@ -487,7 +487,7 @@ main(int argc, char **argv)
    if (pimg == NULL) fatalerror(img_error(), fnm_in);
 
    putnl();
-   puts(msg(/*Reading in data - please wait...*/105));
+   puts(msg(/*Reading in data - please wait…*/105));
 
    htab = osmalloc(ossizeof(pfx*) * HTAB_SIZE);
    {
@@ -535,7 +535,7 @@ main(int argc, char **argv)
       printf(msg(/*Applying specfile: “%s”*/521), specfile);
       putnl();
       fs = fopenWithPthAndExt("", specfile, NULL, "r", &fnm_used);
-      if (fs == NULL) fatalerror(/*Unable to open file*/93, specfile);
+      if (fs == NULL) fatalerror(/*Couldn’t open file “%s”*/93, specfile);
       while (!feof(fs)) {
 	 char *lbuf = getline_alloc(fs, 32);
 	 lineno++;
@@ -592,7 +592,7 @@ main(int argc, char **argv)
       }
    }
 
-   printf(msg(/*Writing %s...*/522), fnm_out);
+   printf(msg(/*Writing %s…*/522), fnm_out);
    putnl();
    pimg_out = img_open_write(fnm_out, desc, fTrue);
 

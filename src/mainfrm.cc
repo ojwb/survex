@@ -361,7 +361,7 @@ class AvenPresList : public wxListCtrl {
 #endif
 	    if (!fh_pres) {
 		wxString m;
-		m.Printf(wmsg(/*Couldn't open file “%s”*/93), fnm.c_str());
+		m.Printf(wmsg(/*Couldn’t open file “%s”*/93), fnm.c_str());
 		wxGetApp().ReportError(m);
 		return false;
 	    }
@@ -709,14 +709,14 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     // wxID_OPEN stock label lacks the ellipses
-    filemenu->Append(wxID_OPEN, wmsg(/*&Open...\tCtrl+O*/220));
+    filemenu->Append(wxID_OPEN, wmsg(/*&Open…\tCtrl+O*/220));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
-    filemenu->Append(wxID_PRINT, wmsg(/*&Print...\tCtrl+P*/380));
-    filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup...*/381));
+    filemenu->Append(wxID_PRINT, wmsg(/*&Print…\tCtrl+P*/380));
+    filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup…*/381));
     filemenu->AppendSeparator();
-    filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot...*/201));
-    filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as...*/382));
+    filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot…*/201));
+    filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as…*/382));
 #ifndef __WXMAC__
     // On wxMac the "Quit" menu item will be moved elsewhere, so we suppress
     // this separator.
@@ -728,7 +728,7 @@ void MainFrm::CreateMenuBar()
     m_history.Load(*wxConfigBase::Get());
 
     wxMenu* rotmenu = new wxMenu;
-    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*&Auto-Rotate\tSpace*/231));
+    rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*Au&to-Rotate\tSpace*/231));
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_SPEED_UP, wmsg(/*Speed &Up*/232));
     rotmenu->Append(menu_ROTATION_SLOW_DOWN, wmsg(/*Slow &Down*/233));
@@ -763,18 +763,18 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_NEW, wmsg(/*&New Presentation*/311));
-    presmenu->Append(menu_PRES_OPEN, wmsg(/*&Open Presentation...*/312));
+    presmenu->Append(menu_PRES_OPEN, wmsg(/*&Open Presentation…*/312));
     presmenu->Append(menu_PRES_SAVE, wmsg(/*&Save Presentation*/313));
-    presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Save Presentation &As...*/314));
+    presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Sa&ve Presentation As…*/314));
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_MARK, wmsg(/*&Mark*/315));
-    presmenu->Append(menu_PRES_PLAY, wmsg(/*&Play*/316));
-    presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie...*/317));
+    presmenu->Append(menu_PRES_PLAY, wmsg(/*Pla&y*/316));
+    presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie…*/317));
 
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_NAMES, wmsg(/*Station &Names\tCtrl+N*/270));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, wmsg(/*Passage &Tubes*/346));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, wmsg(/*Passage &Tubes\tCtrl+T*/346));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, wmsg(/*&Crosses\tCtrl+X*/271));
     viewmenu->AppendCheckItem(menu_VIEW_GRID, wmsg(/*&Grid\tCtrl+G*/297));
     viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, wmsg(/*&Bounding Box\tCtrl+B*/318));
@@ -797,13 +797,13 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, wmsg(/*&Perspective*/237));
 // FIXME: enable this    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_SHADING, wmsg(/*&Smooth Shading*/?!?);
     viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, wmsg(/*Textured &Walls*/238));
-    viewmenu->AppendCheckItem(menu_VIEW_FOG, wmsg(/*Fade &Distant Objects*/239));
+    viewmenu->AppendCheckItem(menu_VIEW_FOG, wmsg(/*Fade Distant Ob&jects*/239));
     viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, wmsg(/*&Smoothed Survey Legs*/298));
     viewmenu->AppendSeparator();
-    viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*&Full Screen Mode\tF11*/356));
+    viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*Full Screen &Mode\tF11*/356));
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
-    viewmenu-> Append(wxID_PREFERENCES, wmsg(/*&Preferences...*/347));
+    viewmenu-> Append(wxID_PREFERENCES, wmsg(/*&Preferences…*/347));
 #endif
 
 #ifndef PREFDLG
@@ -910,7 +910,7 @@ void MainFrm::CreateSidePanel()
     m_Tree = new AvenTreeCtrl(this, panel);
 
 //    m_RegexpCheckBox = new wxCheckBox(find_panel, -1,
-//				      msg(/*Regular expression*/334));
+//				      msg(/*Regular expression*/));
 
     wxBoxSizer *panel_sizer = new wxBoxSizer(wxVERTICAL);
     panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);

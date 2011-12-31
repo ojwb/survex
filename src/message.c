@@ -80,7 +80,7 @@ static const char *exe_pth = "";
 static void
 outofmem(OSSIZE_T size)
 {
-   fatalerror(/*Out of memory (couldn't find %lu bytes).*/1,
+   fatalerror(/*Out of memory (couldn’t find %lu bytes).*/1,
 	      (unsigned long)size);
 }
 

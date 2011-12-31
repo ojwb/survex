@@ -1,3 +1,14 @@
+Sat Dec 31 05:44:47 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Use curly apostrophe instead of "'" in messages.  Correct
+	  messages in source code which didn't match those in the message file
+	  (no visible effects to end-users).
+	* lib/codes.po: Update file:lineno locations where messages are used.
+	* lib/po-to-msg.pl: Warn about different numbers of opening or
+	  closing curly double quotes in message vs translation.
+	* lib/ca.po,lib/es.po: Fix minor typo in one message caught by this
+	  new warning.
+
 Sat Dec 31 05:23:46 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog.

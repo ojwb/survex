@@ -256,7 +256,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     m_legs = new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262));
     v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
-    m_surface = new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&amp;face Survey Legs*/403));
+    m_surface = new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403));
     v3->Add(m_surface, 0, wxALIGN_LEFT|wxALL, 2);
     m_stations = new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261));
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
@@ -284,10 +284,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
 	but = new wxButton(this, wxID_PRINT);
 #else
-	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print...*/400));
+	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print…*/400));
 #endif
     } else {
-	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export...*/230));
+	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export…*/230));
     }
     but->SetDefault();
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
@@ -328,7 +328,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		    m_layout.rot, m_layout.tilt,
 		    m_layout.Labels, m_layout.Crosses,
 		    m_layout.Shots, m_layout.Surface)) {
-	    wxString m = wxString::Format(wmsg(/*Couldn't write file “%s”*/402).c_str(),
+	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					  m_File.c_str());
 	    wxGetApp().ReportError(m);
 	}
@@ -1161,7 +1161,7 @@ svxPrintout::OnBeginPrinting() {
 #endif
     print_ini = add_ext("print", EXT_INI);
     fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
-    if (!fh) fatalerror(/*Couldn't open data file “%s”*/24, print_ini);
+    if (!fh) fatalerror(/*Couldn’t open data file “%s”*/24, print_ini);
     *pfh++ = fh;
     *pfh = NULL;
     Init(pfh, false);

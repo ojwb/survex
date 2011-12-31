@@ -349,7 +349,7 @@ data_file(const char *pth, const char *fnm)
       }
 
       if (fh == NULL) {
-	 compile_error(/*Couldn't open data file “%s”*/24, fnm);
+	 compile_error(/*Couldn’t open data file “%s”*/24, fnm);
 	 return;
       }
 
@@ -852,7 +852,7 @@ handle_compass(real *p_var)
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
 	 if (sqrd(diff / 2.0) > compvar + VAR(Q_BACKBEARING)) {
 	    /* fore and back readings differ by more than 2 sds */
-	    warn_readings_differ(/*Compass reading and back compass reading disagree by %s degrees*/98, diff);
+	    warn_readings_differ(/*COMPASS reading and BACKCOMPASS reading disagree by %s degrees*/98, diff);
 	 }
 	 comp = (comp / compvar + backcomp / VAR(BackComp));
 	 compvar = (compvar + VAR(BackComp)) / 4;
@@ -927,7 +927,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    }
 
    if (ctype != CTYPE_OMIT && backctype != CTYPE_OMIT && ctype != backctype) {
-      compile_error_skip(/*Clino and BackClino readings must be of the same type*/84);
+      compile_error_skip(/*CLINO and BACKCLINO readings must be of the same type*/84);
       return 0;
    }
 
@@ -948,7 +948,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       if (ctype != CTYPE_OMIT) {
 	 if (backctype != CTYPE_OMIT && (clin > 0) == (backclin > 0)) {
 	    /* We've got two UPs or two DOWNs - FIXME: not ideal message */
-	    compile_error_skip(/*Clino and BackClino readings must be of the same type*/84);
+	    compile_error_skip(/*CLINO and BACKCLINO readings must be of the same type*/84);
 	    return 0;
 	 }
 	 dz = (clin > (real)0.0) ? tape : -tape;
@@ -996,7 +996,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    if (ctype == CTYPE_READING) {
 	       if (sqrd((clin + backclin) / 3.0) > var_clin + VAR(BackClino)) {
 		  /* fore and back readings differ by more than 3 sds */
-		  warn_readings_differ(/*Clino reading and back clino reading disagree by %s degrees*/99, clin + backclin);
+		  warn_readings_differ(/*CLINO reading and BACKCLINO reading disagree by %s degrees*/99, clin + backclin);
 	       }
 	       clin = (clin / var_clin - backclin / VAR(BackClino));
 	       var_clin = (var_clin + VAR(BackClino)) / 4;

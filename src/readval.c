@@ -209,7 +209,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    } else {
       /* check that the same name isn't being used for a survey and station */
       if (fSurvey ^ TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
-	 compile_error(/*“%s” can't be both a station and a survey*/27,
+	 compile_error(/*“%s” can’t be both a station and a survey*/27,
 		       sprint_prefix(ptr));
       }
       if (!fSurvey && TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
@@ -403,7 +403,7 @@ read_string(char **pstr, int *plen)
       nextch();
       while (1) {
 	 if (isEol(ch)) {
-	    compile_error_skip(/*Missing &quot;*/69);
+	    compile_error_skip(/*Missing \"*/69);
 	    return;
 	 }
 

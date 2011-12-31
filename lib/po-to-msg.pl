@@ -188,6 +188,16 @@ sub sanity_check {
        print STDERR "Warning: $where is missing menu shortcut\n";
    }
 
+   # Check for missing (or added) double quotes (“ and ”)
+   if (scalar($msg =~ s/“/$&/g) != scalar($orig =~ s/“/$&/g)) {
+       print STDERR "Warning: $where has different numbers of “\n";
+       print STDERR "$orig\n$msg\n\n";
+   }
+   if (scalar($msg =~ s/”/$&/g) != scalar($orig =~ s/”/$&/g)) {
+       print STDERR "Warning: $where has different numbers of ”\n";
+       print STDERR "$orig\n$msg\n\n";
+   }
+
    # Check for missing (or added) menu accelerator "##"
    if ($msg =~ /\#\#/ && $orig !~ /\#\#/) {
        print STDERR "Warning: $where has menu accelerator but original doesn't\n";

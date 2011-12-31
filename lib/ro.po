@@ -14,7 +14,7 @@ msgstr ""
 #. allocate space for.
 #: ../src/message.c:83
 #, c-format
-msgid "Out of memory (couldn't find %lu bytes)."
+msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Memorie insuficienta (nu am putut gasi %lu bytes)"
 
 #: ../src/commands.c:1512
@@ -109,7 +109,7 @@ msgstr "Au fost %d avertismente."
 #. Possibly better not to translate it.
 #: ../src/cavernlog.cc:210
 #, c-format
-msgid "Couldn't open pipe: “%s”"
+msgid "Couldn’t open pipe: “%s”"
 msgstr "Nu s-a putut deschide “pipe”: “%s”"
 
 #: ../src/datain.c:80
@@ -150,7 +150,7 @@ msgstr "BEGIN nu are un corespondent END in acest fisier"
 #: ../src/datain.c:352
 #: ../src/img.c:176
 #, c-format
-msgid "Couldn't open data file “%s”"
+msgid "Couldn’t open data file “%s”"
 msgstr "Nu am reusit deschiderea fisierului de date “%s”"
 
 #. TRANSLATORS: Use of the ROOT character (which is "\" by default) is deprecated, so this error
@@ -180,7 +180,7 @@ msgstr "Punctul de statie “%s” nu a fost exportat din masuratoarea “%s”"
 
 #: ../src/readval.c:212
 #, c-format
-msgid "“%s” can't be both a station and a survey"
+msgid "“%s” can’t be both a station and a survey"
 msgstr "“%s” nu poate fi acelasi timp punct de statie si denumire de masuratoare"
 
 #: ../src/extend.c:247
@@ -211,7 +211,7 @@ msgstr "S-a gasit “%s” in loc de “EQUATES”, “EXPORTS”, sau “PLUMBS
 msgid "Found “%s”, expecting “ON” or “OFF”"
 msgstr "S-a gasit “%s” in loc de “ON” sau “OFF”"
 
-#. TRANSLATORS: EQUATE is a command name, so shouldn't be translated.
+#. TRANSLATORS: EQUATE is a command name, so shouldn’t be translated.
 #: ../src/commands.c:786
 msgid "Only one station in EQUATE command"
 msgstr "Doar un punct de statie in comanda EQUATE"
@@ -242,7 +242,7 @@ msgid "Invalid units “%s” for quantity"
 msgstr "Unitate incorecta “%s” pentru cantitate"
 
 #. TRANSLATORS: nasty hack - this message is for the .3d img code, and all errors there take
-#. a filename parameter - we don't really want it here, so lose it with "%.0s"
+#. a filename parameter - we don’t really want it here, so lose it with "%.0s"
 #. (which should display 0 characters from the filename) FIXME: sort out this
 #: ../src/img.c:177
 msgid "Out of memory %.0s"
@@ -429,7 +429,7 @@ msgid "Missing \""
 msgstr "Lipseste \""
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#. ro: FIXME i didn't get the idea of this message. i did an "automatic" translation
+#. ro: FIXME i didn’t get the idea of this message. i did an "automatic" translation
 #: ../src/listpos.c:105
 #, fuzzy, c-format
 msgid "Station “%s” referred to just once, with an explicit prefix - typo?"
@@ -443,7 +443,7 @@ msgstr "Urmatoarele puncte de statie nu sunt atasate unui punct fixat"
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netskel.c:128
 #, c-format
-msgid "Survey has no fixed points. Therefore I've fixed %s at (0,0,0)"
+msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
 msgstr "Topografia nu contine puncte fixate. Am fixat %s ca (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
@@ -461,7 +461,7 @@ msgstr "Retea rezolvata prin reducere - nici un sistem de ecuatii de rezolvat."
 msgid "Solving %d simultaneous equations"
 msgstr "Rezolv %d ecuatii simultane"
 
-#. TRANSLATORS: %c is 'x', 'y' or 'z'
+#. TRANSLATORS: %c is “x”, “y” or “z”
 #: ../src/matrix.c:150
 #, c-format
 msgid "Solving to find %c coordinates"
@@ -554,12 +554,12 @@ msgstr "Instructiune ilegala"
 #: ../src/extend.c:539
 #: ../src/sorterr.c:140
 #, c-format
-msgid "Couldn't open file “%s”"
+msgid "Couldn’t open file “%s”"
 msgstr "Nu am putut deschide fisierul “%s”"
 
 #: ../src/printwx.cc:335
 #, c-format
-msgid "Couldn't write file “%s”"
+msgid "Couldn’t write file “%s”"
 msgstr ""
 
 #: ../src/message.c:227
@@ -644,7 +644,7 @@ msgstr "Fisier imagine 3d “%s” gresit"
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
-#. TRANSLATORS: put in .3d file if we can't read the date/time
+#. TRANSLATORS: put in .3d file if we can’t read the date/time
 #: ../src/img.c:47
 msgid "Date and time not available."
 msgstr "Data si ora nu sunt disponibile."
@@ -671,7 +671,7 @@ msgstr "Eroare in scrierea fisierului"
 #: ../src/sorterr.c:76
 #: ../src/sorterr.c:93
 #: ../src/sorterr.c:164
-msgid "Couldn't parse .err file"
+msgid "Couldn’t parse .err file"
 msgstr "Lectura fisierului .err nu a putut fi realizata"
 
 #: ../src/cavern.c:370
@@ -929,8 +929,8 @@ msgstr "Încercaţi “%s --help” pentru informaclţii suplimentare.\n"
 #~ msgid "Using scale %.0f:%.0f"
 #~ msgstr "Scara folosita %.0f:%.0f"
 
-#~ msgid "Print which pages?\n(RETURN for all; 'n' for one page, 'm-n', 'm-', '-n' for a range)\n: "
-#~ msgstr "Ce pagini imprim?\n(RETURN pentru toate; 'n' pentru o pagina, 'm-n', 'm-', '-n' pentru un interval)\n: "
+#~ msgid "Print which pages?\n(RETURN for all; “n” for one page, “m-n”, “m-”, “-n” for a range)\n: "
+#~ msgstr "Ce pagini imprim?\n(RETURN pentru toate; “n” pentru o pagina, “m-n”, “m-”, “-n” pentru un interval)\n: "
 
 #. TRANSLATORS: e.g. "Printing to “somefile.ps”..." / "Printing to “Laserjet4 on amachine...”
 #, c-format
@@ -963,7 +963,7 @@ msgid "%s up page"
 msgstr "%s in susul paginii"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
-#. something like "123°".  The bearing is the direction we're looking.
+#. something like "123°".  The bearing is the direction we’re looking.
 msgid "View towards %s"
 msgstr "Vizualizare in directia %s"
 
@@ -1034,7 +1034,7 @@ msgstr "Topografia contine %ld componente conexe."
 #~ msgid "elevation"
 #~ msgstr "profil"
 
-#. TRANSLATORS: Label for button in aven's cavern log window which causes the
+#. TRANSLATORS: Label for button in aven’s cavern log window which causes the
 #. survey data to be reprocessed.
 msgid "Reprocess"
 msgstr ""
@@ -1076,10 +1076,10 @@ msgstr "Profil longitudinal"
 msgid "No matching BEGIN"
 msgstr "Lipseste BEGIN corespunzator"
 
-#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it's
+#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it’s
 #. given at all
 #: ../src/commands.c:589
-msgid "Prefix tag doesn't match BEGIN"
+msgid "Prefix tag doesn’t match BEGIN"
 msgstr "Prefixul nu corespunde cu cel al lui BEGIN"
 
 #: ../src/commands.c:593
@@ -1087,7 +1087,7 @@ msgid "Closing prefix omitted from END"
 msgstr "Prefixul de incheiere omis in END"
 
 #. TRANSLATORS: heading line for .pos file
-#. please try to ensure the ','s (or at least the columns) are in the same place
+#. please try to ensure the “,”s (or at least the columns) are in the same place
 #: ../src/3dtopos.c:109
 msgid "( Easting, Northing, Altitude )"
 msgstr "( Est (X), Nord (Y), Altitudine Z )"
@@ -1168,7 +1168,7 @@ msgstr ""
 msgid "rewind file and read it a second time"
 msgstr ""
 
-#. TRANSLATORS: error message given by "*units tape 0 feet" - it's meaningless to say
+#. TRANSLATORS: error message given by "*units tape 0 feet" - it’s meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
 #. knots on a diving line, and tie them every "2 feet").
 #: ../src/commands.c:1223
@@ -1234,7 +1234,7 @@ msgstr ""
 msgid "Survey visualisation tool"
 msgstr "Utilitar pentru vizualizarea topografiei"
 
-#. TRANSLATORS: Aven menu titles.  An '&' goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any accelerator key.
 #. The accelerators must be different within this group
 #: ../src/mainfrm.cc:832
 msgid "&File"
@@ -1292,7 +1292,7 @@ msgstr ""
 msgid "[SURVEY_FILE]"
 msgstr ""
 
-#. TRANSLATORS: Aven menu items.  An '&' goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any accelerator key.
 #. The string "\t" separates the menu text and any accelerator key.
 #. TRANSLATORS: "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
@@ -1309,18 +1309,18 @@ msgid "Undated"
 msgstr "Fără dată"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
-#. which aren't part of a loop and so have no error information.
+#. which aren’t part of a loop and so have no error information.
 msgid "Not in loop"
 msgstr ""
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
-msgid "NEWLINE can't be the first reading"
+msgid "NEWLINE can’t be the first reading"
 msgstr "NEWLINE nu poate fi prima lectura"
 
 #. TRANSLATORS: error from "*data normal from to tape compass clino newline"
 #: ../src/commands.c:1112
-msgid "NEWLINE can't be the last reading"
+msgid "NEWLINE can’t be the last reading"
 msgstr "NEWLINE nu poate fi ultima lectura"
 
 #. TRANSLATORS: error from "*data normal station tape compass clino"
@@ -1341,7 +1341,7 @@ msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr "en:226 NEWLINE poate fi precedat doar de STATION, DEPTH, si COUNT"
 
 #: ../src/commands.c:1257
-msgid "Can't calibrate angular and length quantities together"
+msgid "Can’t calibrate angular and length quantities together"
 msgstr "Nu pot calibra unghiurile verticale si lungimile in acelasi timp"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
@@ -1475,7 +1475,7 @@ msgid "View"
 msgstr "Vizualizare"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
-#. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn't a
+#. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn’t a
 #. good name for this but nothing better has yet come to mind!
 #: ../src/printwx.cc:215
 msgid "Elements"
@@ -1529,7 +1529,7 @@ msgid "Info Box"
 msgstr "Caseta de informatii"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages
-#. (otherwise they'll be skipped to save paper)
+#. (otherwise they’ll be skipped to save paper)
 #: ../src/printwx.cc:276
 msgid "Blank Pages"
 msgstr "Document nou"
@@ -1640,19 +1640,19 @@ msgstr "%s: opţiunea “-W %s” este ambiguă\n"
 #: ../src/z_getopt.c:751
 #: ../src/z_getopt.c:755
 #, c-format
-msgid "%s: option “%c%s” doesn't allow an argument\n"
+msgid "%s: option “%c%s” doesn’t allow an argument\n"
 msgstr "%s: opţiunea “%c%s” nu permite un argument\n"
 
 #: ../src/z_getopt.c:740
 #: ../src/z_getopt.c:743
 #, c-format
-msgid "%s: option “--%s” doesn't allow an argument\n"
+msgid "%s: option “--%s” doesn’t allow an argument\n"
 msgstr "%s: opţiunea “--%s” nu permite un argument\n"
 
 #: ../src/z_getopt.c:1058
 #: ../src/z_getopt.c:1069
 #, c-format
-msgid "%s: option “-W %s” doesn't allow an argument\n"
+msgid "%s: option “-W %s” doesn’t allow an argument\n"
 msgstr "%s: opţiunea “-W %s” nu permite un argument\n"
 
 #: ../src/z_getopt.c:790
@@ -1758,13 +1758,13 @@ msgstr "Deschidere prezentare"
 msgid "Error in format of presentation file “%s”"
 msgstr "Eroare in formatul fisierului prezentare “%s”"
 
-#. TRANSLATORS: "Compass" as in Larry Fish's cave surveying package, so probably shouldn't
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave surveying package, so probably shouldn’t
 #. be translated
 #: ../src/mainfrm.cc:1694
 msgid "Compass PLT files"
 msgstr "Fisier Compass PLT"
 
-#. TRANSLATORS: "CMAP" is Bob Thrun's cave surveying package, so don't translate it.
+#. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying package, so don’t translate it.
 #: ../src/mainfrm.cc:1696
 msgid "CMAP XYZ files"
 msgstr "Fisier CMAP XYZ"
@@ -2117,7 +2117,7 @@ msgstr ""
 #. things in future).
 #: ../src/aven.cc:207
 #, c-format
-msgid "This version of %s requires OpenGL to work, but it isn't available."
+msgid "This version of %s requires OpenGL to work, but it isn’t available."
 msgstr ""
 
 #. TRANSLATORS: for diffpos:
@@ -2140,7 +2140,7 @@ msgstr "Eliminat: %s"
 
 #. TRANSLATORS: for extend:
 #. the user specified breaking a loop or changing extend direction at
-#. this station, but we didn't find it in the 3d file
+#. this station, but we didn’t find it in the 3d file
 #: ../src/extend.c:258
 #: ../src/extend.c:275
 #: ../src/extend.c:315
@@ -2152,7 +2152,7 @@ msgstr "Nu s-a gasit punctul de statie %s"
 
 #. TRANSLATORS: for extend:
 #. the user specified breaking a loop or changing extend direction at
-#. this leg, but we didn't find it in the 3d file
+#. this leg, but we didn’t find it in the 3d file
 #: ../src/extend.c:297
 #: ../src/extend.c:337
 #: ../src/extend.c:377
