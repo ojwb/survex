@@ -1,3 +1,7 @@
+Sat Dec 31 13:13:55 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: More translation updates from launchpad.
+
 Sat Dec 31 12:51:53 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/ca.po,lib/sk.po: Fix unattached acute accents.

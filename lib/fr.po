@@ -595,11 +595,12 @@ msgstr "Les mesures de CLINO et BACKCLINO diffèrent de %s degrés"
 msgid "do not generate station markers"
 msgstr "Ne pas générer de marqueurs station"
 
+#. Not sure if "d'étiquettes station" is a good translation.
 msgid "do not generate station labels"
-msgstr ""
+msgstr "Ne pas générer d'étiquettes station"
 
 msgid "do not generate survey legs"
-msgstr ""
+msgstr "Ne pas générer de visées"
 
 msgid "produce an elevation view"
 msgstr "Produire une vue en élévation"
@@ -852,15 +853,15 @@ msgstr "générer une grille (%sm par défaut)"
 
 #, c-format
 msgid "station labels text height (default %s)"
-msgstr ""
+msgstr "hauteur du texte dans les étiquettes station (%s par défaut)"
 
 #, c-format
 msgid "station marker size (default %s)"
-msgstr ""
+msgstr "taille des marqueurs station (%s par défaut)"
 
 #, c-format
 msgid "factor to scale down by (default %s)"
-msgstr ""
+msgstr "factor to scale down by (default %s)"
 
 msgid "produce DXF output"
 msgstr "Produire une sortie DXF"
@@ -1159,7 +1160,7 @@ msgstr "trier par pourcentage d’erreur"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
 msgid "sort by error per leg"
-msgstr ""
+msgstr "trier par erreur par visée"
 
 #. TRANSLATORS: --help output for sorterr --replace option
 msgid "replace .err file with resorted version"
@@ -1219,7 +1220,7 @@ msgstr "Tous les fichiers d’étude"
 
 #: ../src/mainfrm.cc:1706
 msgid "Survex svx files"
-msgstr ""
+msgstr "Fichiers svx Survex"
 
 #: ../src/mainfrm.cc:1708
 msgid "Compass DAT and MAK files"
@@ -1227,7 +1228,7 @@ msgstr "Fichiers MAK et DAT Compass"
 
 #: ../src/printwx.cc:328
 msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
-msgstr ""
+msgstr "fichiers DXF|*.dxf|fichiers SVG|*.svg|fichiers Sketch|*.sk|fichiers EPS|*.eps|fichiers PLT Compass à utiliser avec Carto|*.plt|HPGL pour traceurs|*.hpgl"
 
 #. TRANSLATORS: in the about box (summarising the purpose of aven)
 #: ../src/aboutdlg.cc:87
@@ -1278,7 +1279,7 @@ msgstr "FICHIER1 FICHIER2 [SEUIL]"
 
 #. TRANSLATORS: Part of diffpos --help
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
-msgstr ""
+msgstr "Les fichiers FICHIER1 et FICHIER2 peuvent êtres des fichiers .pos ou .3d\nLe SEUIL est le changement maxi. ignorable le long de n'importe quel axe en mètres (%s par défaut)"
 
 #. TRANSLATORS: Part of extend --help
 msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
