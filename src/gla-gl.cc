@@ -138,6 +138,9 @@ string GetGLSystemDescription()
 //            (thus it must not be called from BeginLines(), etc., or within a
 //             BeginLines()/EndLines() block etc.)
 #define CHECK_GL_ERROR(M, F) do { \
+    if (!opengl_initialised) { \
+	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL not initialised before (call "F" in method "M")")); \
+    } \
     GLenum error_code_ = glGetError(); \
     if (error_code_ != GL_NO_ERROR) { \
 	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
@@ -244,9 +247,6 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     m_Fog = false;
     m_AntiAlias = false;
     list_flags = 0;
-    // Set the background colour of the canvas to black.
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    CHECK_GL_ERROR("GLACanvas", "glClearColor");
 }
 
 GLACanvas::~GLACanvas()
@@ -268,6 +268,15 @@ void GLACanvas::FirstShow()
 
     SetCurrent();
     opengl_initialised = true;
+
+    // Set the background colour of the canvas to black.
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    CHECK_GL_ERROR("FirstShow", "glClearColor");
+
+    // Set viewport.
+    glViewport(0, 0, x_size, y_size);
+    CHECK_GL_ERROR("FirstShow", "glViewport");
+
     save_hints = false;
     vendor = wxString((const char *)glGetString(GL_VENDOR), wxConvUTF8);
     renderer = wxString((const char *)glGetString(GL_RENDERER), wxConvUTF8);
@@ -489,6 +498,8 @@ void GLACanvas::OnSize(wxSizeEvent & event)
 
     // This apparently is (or at least was) needed for Mac OS X.
     wxGLCanvas::OnSize(event);
+
+    if (!opengl_initialised) return;
 
     // Set viewport.
     glViewport(0, 0, x_size, y_size);

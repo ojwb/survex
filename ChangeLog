@@ -1,3 +1,10 @@
+Sat Dec 31 22:40:07 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Fix not to make OpenGL calls before we've initialised
+	  OpenGL, as this can cause segmentation faults (e.g. on Fedora 16).
+	  Extend CHECK_GL_ERROR() to check that we don't make such calls in
+	  future.
+
 Sat Dec 31 22:37:47 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/es.po: Fix "Last-Translator:" header and merge in translation
