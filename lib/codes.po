@@ -36,7 +36,7 @@ msgstr "3"
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:359
-#: ../src/message.c:1185
+#: ../src/message.c:1187
 msgid "warning"
 msgstr "4"
 
@@ -74,10 +74,10 @@ msgstr "9"
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
 msgstr "10"
 
-#: ../src/matrix.c:359
-#: ../src/message.c:233
 #: ../src/debug.h:45
 #: ../src/debug.h:47
+#: ../src/matrix.c:359
+#: ../src/message.c:233
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "11"
 
@@ -126,7 +126,7 @@ msgstr "17"
 msgid "Error reading file"
 msgstr "18"
 
-#: ../src/message.c:1200
+#: ../src/message.c:1202
 msgid "Too many errors - giving up"
 msgstr "19"
 
@@ -149,9 +149,9 @@ msgstr "22"
 msgid "BEGIN with no matching END in this file"
 msgstr "23"
 
-#: ../src/printwx.cc:1164
 #: ../src/datain.c:352
 #: ../src/img.c:176
+#: ../src/printwx.cc:1164
 #, c-format
 msgid "Couldn’t open data file “%s”"
 msgstr "24"
@@ -553,8 +553,8 @@ msgstr "91"
 msgid "Illegal instruction"
 msgstr "92"
 
-#: ../src/mainfrm.cc:364
 #: ../src/extend.c:538
+#: ../src/mainfrm.cc:364
 #: ../src/sorterr.c:140
 #, c-format
 msgid "Couldn’t open file “%s”"
@@ -659,10 +659,10 @@ msgstr "108"
 msgid "Error reading from file “%s”"
 msgstr "109"
 
-#: ../src/mainfrm.cc:322
-#: ../src/mainfrm.cc:1742
 #: ../src/filename.c:79
 #: ../src/img.c:182
+#: ../src/mainfrm.cc:322
+#: ../src/mainfrm.cc:1742
 #, c-format
 msgid "Error writing to file “%s”"
 msgstr "110"
@@ -960,6 +960,7 @@ msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
 msgstr "167"
 
 #. TRANSLATORS: %s will be replaced by something like "123°"
+#, c-format
 #~ msgid "Plan, %s up screen"
 #~ msgstr ""
 
@@ -1136,8 +1137,8 @@ msgstr "198"
 
 #. TRANSLATORS: --help output for --survey option
 #. "this" has been added to English translation
-#: ../src/aven.cc:61
 #: ../src/3dtopos.c:50
+#: ../src/aven.cc:61
 #: ../src/cad3d.c:623
 #: ../src/diffpos.c:57
 #: ../src/dump3d.c:47
@@ -1993,35 +1994,27 @@ msgstr "346"
 #~ msgid "&Preferences…"
 #~ msgstr "347"
 
-#: ../src/tubeprefs.cc:37
 #~ msgid "Draw passage walls"
 #~ msgstr "348"
 
-#: ../src/tubeprefs.cc:39
 #~ msgid "Estimate LRUD readings based on heuristics"
 #~ msgstr "349"
 
-#: ../src/stnprefs.cc:62
 #~ msgid "Mark survey stations with crosses"
 #~ msgstr "350"
 
-#: ../src/stnprefs.cc:63
 #~ msgid "Highlight stations marked as entrances"
 #~ msgstr "351"
 
-#: ../src/stnprefs.cc:65
 #~ msgid "Highlight stations marked as fixed points"
 #~ msgstr "352"
 
-#: ../src/stnprefs.cc:66
 #~ msgid "Highlight stations which are exported"
 #~ msgstr "353"
 
-#: ../src/stnprefs.cc:67
 #~ msgid "Mark survey stations with their names"
 #~ msgstr "354"
 
-#: ../src/stnprefs.cc:69
 #~ msgid "Allow names to overlap on the display (faster)"
 #~ msgstr "355"
 
@@ -2029,11 +2022,9 @@ msgstr "346"
 msgid "Full Screen &Mode\tF11"
 msgstr "356"
 
-#: ../src/legprefs.cc:39
 #~ msgid "Display underground survey legs"
 #~ msgstr "357"
 
-#: ../src/legprefs.cc:40
 #~ msgid "Display surface survey legs"
 #~ msgstr "358"
 
@@ -2043,62 +2034,49 @@ msgstr "356"
 #~ msgid "Draw surface legs with dashed lines"
 #~ msgstr "360"
 
-#: ../src/gridprefs.cc:36
 #~ msgid "Draw a grid"
 #~ msgstr "361"
 
-#: ../src/unitsprefs.cc:44
 #~ msgid "metric units"
 #~ msgstr "362"
 
 #. TRANSLATORS: Miles, Feet, Inches, etc.  What they call "English units" in
 #. the USA (rather confusingly now that England has largely gone metric!)
-#: ../src/unitsprefs.cc:46
 #~ msgid "imperial units"
 #~ msgstr "363"
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
-#: ../src/unitsprefs.cc:47
 #~ msgid "degrees (°)"
 #~ msgstr "364"
 
 #. TRANSLATORS: Grads are the angular measurement where there are 400 in a
 #. full circle.
-#: ../src/unitsprefs.cc:49
 #~ msgid "grads"
 #~ msgstr "365"
 
-#: ../src/unitsprefs.cc:53
 #~ msgid "Display measurements in"
 #~ msgstr "366"
 
-#: ../src/unitsprefs.cc:61
 #~ msgid "Display angles in"
 #~ msgstr "367"
 
 #. TRANSLATORS: reverses the sense of the mouse controls
-#: ../src/ctlprefs.cc:38
 #~ msgid "Reverse the sense of the controls"
 #~ msgstr "368"
 
-#: ../src/indicatorprefs.cc:39
 #~ msgid "Display scale bar"
 #~ msgstr "369"
 
-#: ../src/indicatorprefs.cc:40
 #~ msgid "Display depth bar"
 #~ msgstr "370"
 
-#: ../src/indicatorprefs.cc:41
 #~ msgid "Display compass"
 #~ msgstr "371"
 
-#: ../src/indicatorprefs.cc:42
 #~ msgid "Display clinometer"
 #~ msgstr "372"
 
-#: ../src/winprefs.cc:42
 #~ msgid "Display side panel"
 #~ msgstr "373"
 
