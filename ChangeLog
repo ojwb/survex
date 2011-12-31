@@ -1,3 +1,8 @@
+Sat Dec 31 08:12:23 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Removed unused remains of check that messages are
+	  in numerically ascending order, which we no longer want to enforce.
+
 Sat Dec 31 07:48:20 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/sorterr.c: Fix a message in the source code which I missed in

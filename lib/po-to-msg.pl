@@ -34,13 +34,9 @@ ${$msgs{'en'}}[0] = '©';
 # my %uses = ();
 
 my $num_list = Locale::PO->load_file_asarray("$srcdir/codes.po");
-my $curmsg = -1;
 foreach my $po_entry (@{$num_list}) {
     my $msgno = $po_entry->dequote($po_entry->msgstr);
     next if $msgno !~ /^\d+$/;
-    if ($msgno < $curmsg) {
-	print STDERR "Warning: message number jumps back from $curmsg to $msgno\n";
-    }
     my $key = $po_entry->msgid;
     my $msg = c_unescape($po_entry->dequote($key));
     if (${$msgs{'en'}}[$msgno]) {
