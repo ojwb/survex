@@ -47,3 +47,9 @@ mime_DATA = survex.keys
 
 unifont.pixelfont: $(srcdir)/make-pixel-font
 	$(srcdir)/make-pixel-font
+
+launchpad-tarball: check-local
+	tar zcf survex-trans.tar.gz survex.pot \
+	    `for f in $(po_files); do test -h "$$f" || echo "$$f" ; done`
+
+.PHONY: launchpad-tarball
