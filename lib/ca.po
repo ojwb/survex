@@ -297,7 +297,7 @@ msgstr "No s’ha pogut obrir el fitxer de sortida “%s”"
 
 #: ../src/commands.c:1367
 msgid "Standard deviation must be positive"
-msgstr "La desviació estàndard ha d’e´sser positiva"
+msgstr "La desviació estàndard ha d’ésser positiva"
 
 #. TRANSLATORS: as in: Usage: cavern ...
 #: ../src/cmdline.c:147

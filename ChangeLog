@@ -1,3 +1,7 @@
+Sat Dec 31 12:51:53 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/ca.po,lib/sk.po: Fix unattached acute accents.
+
 Sat Dec 31 12:45:36 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/: Update Project-Id-Version in .po files to match that in

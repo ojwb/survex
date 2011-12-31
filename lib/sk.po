@@ -1573,7 +1573,7 @@ msgstr "Obrátený sme&r\tCtrl+R"
 #: ../src/mainfrm.cc:796
 #: ../src/mainfrm.cc:814
 msgid "&Cancel Measuring Line\tEscape"
-msgstr "&Zrušit líniu merani´\tEscape"
+msgstr "&Zrušit líniu meraní\tEscape"
 
 #: ../src/mainfrm.cc:789
 msgid "Colour by E&rror"
