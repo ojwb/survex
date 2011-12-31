@@ -35,6 +35,11 @@ Changes in 1.2.3 (2011-12-31):
   + Fix expected cross shape so don't always reject using texture mapping to
     draw crosses.
 
+  + As we read a survey file, eliminate tubes consisting of zero XSECTs as well
+    as those consisting of just one.  Previously we would trip over the empty
+    tube later.  Such tubes can for example be created by extend if a splay shot
+    is the start or end of a tube.
+
   + Make the green colour used for entrances in the survey tree the same
     (slightly darker than before) green used for the entrance blobs.
 
@@ -42,13 +47,22 @@ Changes in 1.2.3 (2011-12-31):
     against wx >= 2.9.2.  Make it clear that the version reported is the
     version *built* with for wx < 2.9.2.
 
+* extend:
+
+  + Copy the end markers for passage tubes.
+
+  + Preserve left and right data for tubes (previously they were set to -1.0
+    which means "no info").
+
+* img library: Fix incorrect comment in img.h which claimed that img_XFLAG_END
+  was no longer used - it certainly is!
+
 * Use curly double quotes instead of "`" and "'" to quote filenames, etc in
-  messages.
+  messages, and curly single right quote instead of straight ASCII apostrophe.
+  Fall back to using straight ASCII versions if we can't represent them in the
+  current character set.
 
-* Transliterate curly double quotes to ASCII straight double quotes if we can't
-  represent them in the current character set.
-
-* Translation updates for French and Slovak.
+* Translation updates for Catalan, French, Slovak and Spanish.
 
 * Test suite:
 
