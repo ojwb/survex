@@ -1,3 +1,8 @@
+Sat Dec 31 10:58:34 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: As we build the data structure, eliminate tubes
+	  consisting of zero XSECTs as well as those consisting of just one.
+
 Sat Dec 31 10:36:24 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/img.h: Fix incorrect comment which claimed that img_XFLAG_END

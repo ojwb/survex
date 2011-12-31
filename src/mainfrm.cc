@@ -1162,7 +1162,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		if (i == m_Labels.end()) {
 		    // Unattached cross-section - ignore for now.
 		    printf("unattached cross-section\n");
-		    if (current_tube->size() == 1)
+		    if (current_tube->size() <= 1)
 			tubes.resize(tubes.size() - 1);
 		    current_tube = NULL;
 		    break;
@@ -1184,7 +1184,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		// If there's only one cross-section in the tube, just
 		// discard it for now.  FIXME: we should handle this
 		// when we come to skinning the tubes.
-		if (current_tube && current_tube->size() == 1)
+		if (current_tube && current_tube->size() <= 1)
 		    tubes.resize(tubes.size() - 1);
 		current_tube = NULL;
 		break;
@@ -1254,7 +1254,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // If there's only one cross-section in the tube, just
     // discard it for now.  FIXME: we should handle this
     // when we come to skinning the tubes.
-    if (current_tube && current_tube->size() == 1)
+    if (current_tube && current_tube->size() <= 1)
 	tubes.resize(tubes.size() - 1);
 
     separator = survey->separator;
