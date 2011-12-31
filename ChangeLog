@@ -1,3 +1,10 @@
+Sat Dec 31 10:36:24 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/img.h: Fix incorrect comment which claimed that img_XFLAG_END
+	  was no longer used.
+	* src/img.c: Use img_XFLAG_END constant rather than assuming it is
+	  1.
+
 Sat Dec 31 10:32:44 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/extend.c: Copy the end markers for passage tubes, and preserve

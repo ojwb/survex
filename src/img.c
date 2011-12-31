@@ -1821,7 +1821,7 @@ img_write_item(img *pimg, int code, int flags, const char *s,
 	 if (u < 0) u = -1;
 	 if (d < 0) d = -1;
 	 max_dim = max(max(l, r), max(u, d));
-	 flags &= 1;
+	 flags = (flags & img_XFLAG_END) ? 1 : 0;
 	 if (max_dim >= 32768) flags |= 2;
 	 write_v3label(pimg, 0x30 | flags, s);
 	 if (flags & 2) {

@@ -66,7 +66,9 @@ extern "C" {
 # define img_SFLAG_EXPORTED    0x08
 # define img_SFLAG_FIXED       0x10
 
-/* No longer used: */
+/* When writing img_XSECT, img_XFLAG_END in pimg->flags means this is the last
+ * img_XSECT in this tube:
+ */
 # define img_XFLAG_END      0x01
 
 /* 3D coordinates (in metres) */
