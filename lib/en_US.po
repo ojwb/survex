@@ -17,7 +17,7 @@ msgstr ""
 msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Out of memory (couldn’t find %lu bytes)."
 
-#: ../src/commands.c:1512
+#: ../src/commands.c:1502
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Survex version %s or greater required to process this survey data."
@@ -32,8 +32,7 @@ msgstr "from"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#: ../src/aven.cc:351
-#: ../src/message.c:1181
+#: ../src/aven.cc:359 ../src/message.c:1187
 msgid "warning"
 msgstr "warning"
 
