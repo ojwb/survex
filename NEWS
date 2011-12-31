@@ -1,3 +1,61 @@
+Changes in 1.2.3 (2011-12-31):
+
+* Fix to build with wxWidgets 2.9.2.
+
+* (Mac OS X version):
+
+  + Processing .svx files from aven now works.
+
+  + Remove spurious blank lines from the licence text in "Get Info".
+
+  + Don't create the help menu at all, as it is empty (because the "About"
+    entry goes elsewhere) and sometimes seems to appear in the UI.
+
+  + INSTALL.OSX: Update to reflect current status.
+
+* aven:
+
+  + Fix Y coordinates of surface surveys on printouts.  (Closes #32)
+
+  + Improvements to text plotted on the survey pane:
+
+    - Support plotting Unicode character points > 256 by lazily loading the
+      data for them from the font file and plotting them with a direct call to
+      glBitmap(), which is slower but doesn't require a display list per
+      character.
+
+    - Adjust the spacing from fixed width to putting a one pixel gap either
+      side of each one character (so two between adjacent glyphs).  Mostly this
+      reduces the horizontal width, but it adds a pixel for characters like "m"
+      and two in a few cases.
+
+    - Fix .pixelfont file generation to correctly handle characters wider than
+      8 pixels.
+
+  + Fix expected cross shape so don't always reject using texture mapping to
+    draw crosses.
+
+  + Make the green colour used for entrances in the survey tree the same
+    (slightly darker than before) green used for the entrance blobs.
+
+  + Report the version of the library we're actually running with if built
+    against wx >= 2.9.2.  Make it clear that the version reported is the
+    version *built* with for wx < 2.9.2.
+
+* Use curly double quotes instead of "`" and "'" to quote filenames, etc in
+  messages.
+
+* Transliterate curly double quotes to ASCII straight double quotes if we can't
+  represent them in the current character set.
+
+* Translation updates for French and Slovak.
+
+* Test suite:
+
+  + Add test coverage for interleaved diving data.
+
+  + Add testcase for diving data with topofil-style distance.
+
 Changes in 1.2.2 (2011-10-06):
 
 * aven:

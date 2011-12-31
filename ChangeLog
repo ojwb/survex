@@ -1,3 +1,7 @@
+Sat Dec 31 05:23:46 GMT 2011  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Thu Dec 29 03:37:04 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Use curly double quotes instead of "`" and "'" to
