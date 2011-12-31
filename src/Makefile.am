@@ -108,6 +108,22 @@ cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
 #imgalone.o: img.c
 #        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
 
+all_sources = \
+	$(noinst_HEADERS) \
+	$(COMMONSRC) \
+	$(cavern_SOURCES) \
+	$(aven_SOURCES) \
+	$(dump3d_SOURCES) \
+	$(editwrap_SOURCES) \
+	$(diffpos_SOURCES) \
+	$(sorterr_SOURCES) \
+	$(3dtopos_SOURCES) \
+	$(extend_SOURCES) \
+	$(cad3d_SOURCES)
+
+../lib/newcodes.po: $(all_sources) ../lib/extract-msgs.pl
+	cd $(srcdir)/../lib && ./extract-msgs.pl -v'$(VERSION)' `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > newcodes.po
+
 EXTRA_DIST = \
  aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
 

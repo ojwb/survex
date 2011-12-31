@@ -1,3 +1,11 @@
+Sat Dec 31 08:17:08 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/extract-msgs.pl: New script to allow developers to update
+	  codes.po from source code.
+	* lib/Makefile.am: Ship it.
+	* src/Makefile.am: Add rule to run it on all used sources and generate
+	  newcodes.po which can then be compared with current version.
+
 Sat Dec 31 08:14:06 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/codes.po: Update source locations, add a missing c-format marker.

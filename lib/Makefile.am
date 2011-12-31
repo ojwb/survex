@@ -22,7 +22,7 @@ po_files = ca.po de.po de_CH.po de_DE.po en_US.po\
 msg_files = $(po_files:.po=.msg) en.msg
 
 EXTRA_DIST = survex.pot $(po_files) codes.po\
- named-entities.txt po-to-msg.pl checkshortcut.pl\
+ named-entities.txt po-to-msg.pl checkshortcut.pl extract-msgs.pl\
  English_GB.isl Romanian-7-5.1.11.isl\
  make-pixel-font\
  INSTALL.OSX
