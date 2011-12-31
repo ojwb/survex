@@ -161,7 +161,7 @@ main(int argc, char **argv)
 	 skipline(fnm, fh);
 	 if (fscanf(fh, "%lf", &blk[next].err) != 1) {
 	    baderrfile:
-	    fatalerror_in_file(fnm, 0, /*Couldn't parse .err file*/112);
+	    fatalerror_in_file(fnm, 0, /*Couldn’t parse .err file*/112);
 	 }
 	 skipline(fnm, fh);
 	 skipline(fnm, fh);
