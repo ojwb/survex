@@ -601,12 +601,28 @@ main(int argc, char **argv)
 
    if (have_xsect) {
       img_rewind(pimg);
+      /* Read ahead on pimg before writing pimg_out so we find out if an
+       * img_XSECT_END comes next. */
+      char * label = NULL;
+      int flags = 0;
       do {
 	 result = img_read_item(pimg, &pt);
+	 if (result == img_XSECT || result == img_XSECT_END) {
+	    if (label) {
+	       if (result == img_XSECT_END)
+		  flags |= img_XFLAG_END;
+	       img_write_item(pimg_out, img_XSECT, flags, label, 0, 0, 0);
+	       osfree(label);
+	       label = NULL;
+	    }
+	 }
 	 if (result == img_XSECT) {
-            pimg_out->u = pimg->u;
+	    label = osstrdup(pimg->label);
+	    flags = pimg->flags;
+	    pimg_out->l = pimg->l;
+	    pimg_out->r = pimg->r;
+	    pimg_out->u = pimg->u;
 	    pimg_out->d = pimg->d;
-            img_write_item(pimg_out, img_XSECT, pimg->flags, pimg->label, 0, 0, 0);
 	 }
       } while (result != img_STOP);
    }

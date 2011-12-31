@@ -1,3 +1,9 @@
+Sat Dec 31 10:32:44 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/extend.c: Copy the end markers for passage tubes, and preserve
+	  left and right data for tubes (previously they were set to -1.0
+	  which means "no info").
+
 Sat Dec 31 08:17:08 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/extract-msgs.pl: New script to allow developers to update
