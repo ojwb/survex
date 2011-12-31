@@ -1,3 +1,8 @@
+Sat Dec 31 22:37:47 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/es.po: Fix "Last-Translator:" header and merge in translation
+	  of a message which is not currently used.
+
 Sat Dec 31 15:04:23 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/: Merge remaining .po files.
