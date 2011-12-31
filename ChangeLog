@@ -1,3 +1,7 @@
+Sat Dec 31 14:46:20 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/: Merge more .po files.
+
 Sat Dec 31 14:24:25 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/ca.po,lib/de_CH.po,lib/en_US.po: Merge template changes into .po
