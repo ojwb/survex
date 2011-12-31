@@ -1,3 +1,8 @@
+Sat Dec 31 08:13:26 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix a message in the source code which I missed in
+	  the previous batch.
+
 Sat Dec 31 08:12:23 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/po-to-msg.pl: Removed unused remains of check that messages are

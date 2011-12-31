@@ -798,7 +798,7 @@ void MainFrm::CreateMenuBar()
 // FIXME: enable this    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_SHADING, wmsg(/*&Smooth Shading*/?!?);
     viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, wmsg(/*Textured &Walls*/238));
     viewmenu->AppendCheckItem(menu_VIEW_FOG, wmsg(/*Fade Distant Ob&jects*/239));
-    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, wmsg(/*&Smoothed Survey Legs*/298));
+    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, wmsg(/*Smoot&hed Survey Legs*/298));
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*Full Screen &Mode\tF11*/356));
 #ifdef PREFDLG
