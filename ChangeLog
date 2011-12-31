@@ -1,3 +1,8 @@
+Sat Dec 31 12:45:36 GMT 2011  Olly Betts <olly@survex.com>
+
+	* lib/: Update Project-Id-Version in .po files to match that in
+	  survex.pot.
+
 Sat Dec 31 12:43:52 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Add launchpad-tarball target to make a tarball
