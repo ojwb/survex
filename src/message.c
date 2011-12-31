@@ -710,6 +710,8 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = 'y'; return 1;
     case 382: /* &zcaron; */
       *p = 'z'; return 1;
+    case 0x2019: /* &lsquo; */
+      *p = '\''; return 1;
     case 0x201c: /* &ldquo; */ case 0x201d: /* &rdquo; */
       *p = '"'; return 1;
     case 0x2026: /* &hellip; */

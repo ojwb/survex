@@ -1,3 +1,8 @@
+Sat Dec 31 05:54:45 GMT 2011  Olly Betts <olly@survex.com>
+
+	* src/message.c: Transliterate curly right single quote to ASCII
+	  apostrophe if we can't represent it in the current character set.
+
 Sat Dec 31 05:44:47 GMT 2011  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Use curly apostrophe instead of "'" in messages.  Correct
