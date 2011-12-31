@@ -138,7 +138,7 @@ msgstr "Konnte “Pipe” nicht öffnen: “%s”"
 msgid "Error reading file"
 msgstr "Fehler beim Einlesen der Datei"
 
-#. TRANSLATORS: anthropomorphising version: de: 19 Zu viele Fehler - ich gebe auf
+#. TRANSLATORS: de: anthropomorphising version: "Zu viele Fehler - ich gebe auf"
 #: ../src/message.c:1202
 msgid "Too many errors - giving up"
 msgstr "Abbruch wegen zu vieler Fehler"
