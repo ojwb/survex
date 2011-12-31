@@ -1,3 +1,10 @@
+Sat Dec 31 12:23:39 GMT 2011  Olly Betts <olly@survex.com>
+
+	* make_release: Echo the commands to copy the new release to the web
+	  server at the end.
+	* copy-prerelease,copy-release: Remove old scripts which are no longer
+	  useful.
+
 Sat Dec 31 11:13:11 GMT 2011  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.3.
