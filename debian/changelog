@@ -1,3 +1,10 @@
+survex (1.2.4-1) unstable; urgency=low
+
+  * New upstream release.
+  * New patch survex-manpage-section.patch to fix section mismatch.
+
+ -- Olly Betts <olly@survex.com>  Sun, 01 Jan 2012 04:37:03 +0000
+
 survex (1.2.2-1) unstable; urgency=low
 
   [Olly Betts]
