@@ -1,3 +1,7 @@
+Sun Jan 01 02:56:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.in: Update for 1.2.4.
+
 Sun Jan 01 02:53:03 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Update copyright years.

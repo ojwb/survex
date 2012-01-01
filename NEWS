@@ -1,3 +1,23 @@
+Changes in 1.2.4 (2012-01-01):
+
+* aven:
+
+  + A change in 1.2.3 meant that aven tried to use OpenGL before it was
+    initialised, which doesn't cause problems in some machines, but causes aven
+    to abort on others.  This is now fixed, and there's a check in place to
+    help avoid similar issues in future. (ticket#34)
+
+  + Always use metres or feet for the depth colour key, and chose a consistent
+    precision by looking at the depth range. (ticket#30)
+
+  + Show the depth units below the colour bar rather than after every value.
+
+  + When zooming way in, stay in metres rather than switching to cm.
+
+  + On the scale bar, say “1 mile” rather than “1 miles”.
+
+* Translation updates for Catalan, French and Slovak.
+
 Changes in 1.2.3 (2011-12-31):
 
 * Fix to build with wxWidgets 2.9.2.
