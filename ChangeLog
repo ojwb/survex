@@ -1,3 +1,7 @@
+Sun Jan 01 10:48:01 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/it.po: Add "translation" for degree symbol.
+
 Sun Jan 01 10:33:55 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Merge template changes into en_US.po (no user-visible

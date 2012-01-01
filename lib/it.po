@@ -1980,7 +1980,7 @@ msgstr ""
 #: ../src/printwx.cc:668
 #: ../src/printwx.cc:675
 msgid "°"
-msgstr ""
+msgstr "°"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
