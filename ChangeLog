@@ -1,3 +1,8 @@
+Sun Jan 01 04:45:03 GMT 2012  Olly Betts <olly@survex.com>
+
+	* make_release: Fix typo in filename to copy to webserver.  Show the
+	  SHA1 checksums for the uploaded files.
+
 Sun Jan 01 02:56:04 GMT 2012  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.4.
