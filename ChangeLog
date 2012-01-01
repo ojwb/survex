@@ -1,3 +1,8 @@
+Sun Jan 01 10:33:55 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Merge template changes into en_US.po (no user-visible
+	  changes).
+
 Sun Jan 01 04:45:03 GMT 2012  Olly Betts <olly@survex.com>
 
 	* make_release: Fix typo in filename to copy to webserver.  Show the
