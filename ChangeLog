@@ -1,3 +1,7 @@
+Sun Jan 01 02:53:03 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Update copyright years.
+
 Sun Jan 01 02:32:59 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Improve labelling of depth colour key
