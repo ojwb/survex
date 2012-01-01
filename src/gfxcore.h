@@ -213,7 +213,6 @@ private:
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
     void DrawArrow(gla_colour col1, gla_colour col2);
-    wxString FormatLength(Double, bool scalebar = true);
 
     void SkinPassage(const vector<XSect> & centreline);
 
@@ -230,7 +229,7 @@ private:
     void FirstShow();
 
     void DrawScaleBar();
-    void DrawColourKey(int num_bands, const wxString & other);
+    void DrawColourKey(int num_bands, const wxString & other, const wxString & units);
     void DrawDepthKey();
     void DrawDateKey();
     void DrawErrorKey();

@@ -768,11 +768,12 @@ void GfxCore::SimpleDrawNames()
     }
 }
 
-void GfxCore::DrawColourKey(int num_bands, const wxString & other)
+void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxString & units)
 {
     int total_block_height =
 	KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
     if (!other.empty()) total_block_height += KEY_BLOCK_HEIGHT * 2;
+    if (!units.empty()) total_block_height += KEY_BLOCK_HEIGHT;
 
     const int bottom = -total_block_height;
 
@@ -791,6 +792,7 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
     key_lowerleft[m_ColourBy].y = bottom;
 
     int y = bottom;
+    if (!units.empty()) y += KEY_BLOCK_HEIGHT;
 
     if (!other.empty()) {
 	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
@@ -828,10 +830,17 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
     PlaceIndicatorVertex(left, y);
     EndPolyline();
 
-    y = bottom - GetFontSize() / 2;
+    SetColour(TEXT_COLOUR);
+
+    y = bottom;
+    if (!units.empty()) {
+	GetTextExtent(units, &size, NULL);
+	DrawIndicatorText(left + (KEY_BLOCK_WIDTH - size) / 2, y, units);
+	y += KEY_BLOCK_HEIGHT;
+    }
+    y -= GetFontSize() / 2;
     left += KEY_BLOCK_WIDTH + 5;
 
-    SetColour(TEXT_COLOUR);
     if (!other.empty()) {
 	y += KEY_BLOCK_HEIGHT / 2;
 	DrawIndicatorText(left, y, other);
@@ -852,21 +861,28 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 void GfxCore::DrawDepthKey()
 {
     Double z_ext = m_Parent->GetDepthExtent();
-    int num_bands;
-    if (z_ext == 0) {
-	num_bands = 1;
-    } else {
+    int num_bands = 1;
+    int sf = 0;
+    if (z_ext > 0.0) {
 	num_bands = GetNumColourBands();
+	Double z_range = z_ext;
+	if (!m_Metric) z_range /= METRES_PER_FOOT;
+	sf = max(0, 1 - (int)floor(log10(z_range)));
     }
 
-    for (int band = 0; band < GetNumColourBands(); ++band) {
-	Double z = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
+    Double z_min = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
+    for (int band = 0; band < num_bands; ++band) {
+	Double z = z_min;
 	if (band)
 	    z += z_ext * band / (num_bands - 1);
-	key_legends[band] = FormatLength(z, false);
+
+	if (!m_Metric)
+	    z /= METRES_PER_FOOT;
+
+	key_legends[band].Printf(wxT("%.*f"), sf, z);
     }
 
-    DrawColourKey(num_bands, wxString());
+    DrawColourKey(num_bands, wxString(), m_Metric ? wxT("m") : wxT("ft"));
 }
 
 void GfxCore::DrawDateKey()
@@ -896,7 +912,7 @@ void GfxCore::DrawDateKey()
 	other = wmsg(/*Undated*/221);
     }
 
-    DrawColourKey(num_bands, other);
+    DrawColourKey(num_bands, other, wxString());
 }
 
 void GfxCore::DrawErrorKey()
@@ -915,71 +931,7 @@ void GfxCore::DrawErrorKey()
     }
 
     // Always show the "Not in loop" legend for now (FIXME).
-    DrawColourKey(num_bands, wmsg(/*Not in loop*/290));
-}
-
-wxString GfxCore::FormatLength(Double size_snap, bool scalebar)
-{
-    wxString str;
-    bool negative = (size_snap < 0.0);
-
-    if (negative) {
-	size_snap = -size_snap;
-    }
-
-    if (size_snap == 0.0) {
-	str = wxT("0");
-    } else if (m_Metric) {
-#ifdef SILLY_UNITS
-	if (size_snap < 1e-12) {
-	    str.Printf(wxT("%.3gpm"), size_snap * 1e12);
-	} else if (size_snap < 1e-9) {
-	    str.Printf(wxT("%.fpm"), size_snap * 1e12);
-	} else if (size_snap < 1e-6) {
-	    str.Printf(wxT("%.fnm"), size_snap * 1e9);
-	} else if (size_snap < 1e-3) {
-	    str.Printf(wxT("%.fum"), size_snap * 1e6);
-#else
-	if (size_snap < 1e-3) {
-	    str.Printf(wxT("%.3gmm"), size_snap * 1e3);
-#endif
-	} else if (size_snap < 1e-2) {
-	    str.Printf(wxT("%.fmm"), size_snap * 1e3);
-	} else if (size_snap < 1.0) {
-	    str.Printf(wxT("%.fcm"), size_snap * 100.0);
-	} else if (size_snap < 1e3) {
-	    str.Printf(wxT("%.fm"), size_snap);
-#ifdef SILLY_UNITS
-	} else if (size_snap < 1e6) {
-	    str.Printf(wxT("%.fkm"), size_snap * 1e-3);
-	} else if (size_snap < 1e9) {
-	    str.Printf(wxT("%.fMm"), size_snap * 1e-6);
-	} else {
-	    str.Printf(wxT("%.fGm"), size_snap * 1e-9);
-#else
-	} else {
-	    str.Printf(scalebar ? wxT("%.fkm") : wxT("%.2fkm"), size_snap * 1e-3);
-#endif
-	}
-    } else {
-	size_snap /= METRES_PER_FOOT;
-	if (scalebar) {
-	    Double inches = size_snap * 12;
-	    if (inches < 1.0) {
-		str.Printf(wxT("%.3gin"), inches);
-	    } else if (size_snap < 1.0) {
-		str.Printf(wxT("%.fin"), inches);
-	    } else if (size_snap < 5279.5) {
-		str.Printf(wxT("%.fft"), size_snap);
-	    } else {
-		str.Printf(wxT("%.f miles"), size_snap / 5280.0);
-	    }
-	} else {
-	    str.Printf(wxT("%.fft"), size_snap);
-	}
-    }
-
-    return negative ? wxString(wxT("-")) + str : str;
+    DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
 }
 
 void GfxCore::DrawScaleBar()
@@ -1041,7 +993,35 @@ void GfxCore::DrawScaleBar()
     }
 
     // Add labels.
-    wxString str = FormatLength(size_snap);
+    wxString str;
+    if (m_Metric) {
+	if (size_snap >= 1e3) {
+	    str.Printf(wxT("%.fkm"), size_snap * 1e-3);
+	} else if (size_snap >= 1.0) {
+	    str.Printf(wxT("%.fm"), size_snap);
+	} else {
+	    int sf = -(int)floor(log10(size_snap));
+	    str.Printf(wxT("%.*fm"), sf, size_snap);
+	}
+    } else {
+	size_snap /= METRES_PER_FOOT;
+	Double miles = size_snap / 5280.0;
+	if (miles >= 2.0) {
+	    str.Printf(wxT("%.f miles"), miles);
+	} else if (miles >= 1.0) {
+	    str.Printf(wxT("%.f mile"), miles);
+	} else if (size_snap >= 1.0) {
+	    str.Printf(wxT("%.fft"), size_snap);
+	} else {
+	    Double inches = size_snap * 12;
+	    if (inches >= 1.0) {
+		str.Printf(wxT("%.fin"), inches);
+	    } else {
+		int sf = -(int)floor(log10(inches));
+		str.Printf(wxT("%.*fin"), sf, inches);
+	    }
+	}
+    }
 
     int text_width, text_height;
     GetTextExtent(str, &text_width, &text_height);

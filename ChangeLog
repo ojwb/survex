@@ -1,3 +1,13 @@
+Sun Jan 01 02:32:59 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Improve labelling of depth colour key
+	  to avoid sub-picometre precision on near-zero values (ticket#30).
+	  We now always use metres or feet for the depth with a consistent
+	  precision chosen from the depth range, and show the units below
+	  the colour bar rather than after every value.
+	* src/gfxcore.cc,src/gfxcore.h: When zooming way in, stay in metres
+	  rather than switching to cm.  Say “1 mile” rather than “1 miles”.
+
 Sat Dec 31 22:40:07 GMT 2011  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Fix not to make OpenGL calls before we've initialised
