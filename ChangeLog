@@ -1,3 +1,9 @@
+Sun Jan 01 13:29:03 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Put translation files in a sub-directory in the
+	  tarball, and print the path to it so it can be cut-and-pasted to
+	  upload to launchpad.
+
 Sun Jan 01 10:48:01 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/it.po: Add "translation" for degree symbol.
