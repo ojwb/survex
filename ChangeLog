@@ -1,3 +1,8 @@
+Mon Jan 02 12:52:47 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/message.c: Improve handling of messages before the message
+	  subsystem is fully initialised.
+
 Mon Jan 02 12:37:18 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am,src/mainfrm.cc,src/namecmp.h: Add a version of the

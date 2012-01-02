@@ -905,9 +905,6 @@ msg_init(char * const *argv)
    char *p;
    SVX_ASSERT(argv);
 
-#ifdef HAVE_SIGNAL
-   init_signals();
-#endif
    /* Point to argv[0] itself so we report a more helpful error if the
     * code to work out the clean appname generates a signal */
    appname_copy = argv[0];
@@ -1124,6 +1121,12 @@ macosx_got_msg:
 #endif
 
    select_charset(def_charset);
+
+#ifdef HAVE_SIGNAL
+   /* Initialise signal handlers only after the messages have been as we need
+    * the messages to usefully handle the signals. */
+   init_signals();
+#endif
 }
 
 /* Message may be overwritten by next call
@@ -1133,12 +1136,11 @@ msg(int en)
 {
    /* NB can't use SVX_ASSERT here! */
    static char badbuf[256];
-   if (en >= 1000 && en < 1000 + N_DONTEXTRACTMSGS)
+   if (dontextract && en >= 1000 && en < 1000 + N_DONTEXTRACTMSGS)
       return dontextract[en - 1000];
    if (!msg_array) {
       if (en != 1)  {
-	 sprintf(badbuf, "Message %d requested before msg_array initialised\n",
-		 en);
+	 sprintf(badbuf, "Message %d requested before fully initialised\n", en);
 	 return badbuf;
       }
       /* this should be the only other message which can be requested before
