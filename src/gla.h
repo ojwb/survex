@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006,2007,2011 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -83,16 +83,20 @@ class GLAList {
     GLAList() : gl_list(0), flags(0) { }
     GLAList(GLuint gl_list_, unsigned int flags_)
 	: gl_list(gl_list_), flags(flags_) { }
-    bool test_flag(unsigned int mask) const { return flags & mask; }
     operator bool() { return gl_list != 0; }
     bool need_to_generate();
     void finalise(unsigned int list_flags);
     bool DrawList() const;
-    void InvalidateList();
+    void invalidate_if(unsigned int mask) {
+	// If flags == NEVER_CACHE, the list won't be invalidated (unless
+	// mask is 0, which isn't a normal thing to pass).
+	if (flags & mask)
+	    flags = 0;
+    }
 };
 
 class GLACanvas : public wxGLCanvas {
-    friend class GLAList; // For CACHED flag value.
+    friend class GLAList; // For flag values.
 
 #ifdef GLA_DEBUG
     int m_Vertices;
@@ -161,7 +165,13 @@ public:
 
     void DrawList(unsigned int l);
     void DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation);
-    void InvalidateList(unsigned int l);
+    void InvalidateList(unsigned int l) {
+	if (l < drawing_lists.size()) {
+	    // Invalidate any existing cached list.
+	    drawing_lists[l].invalidate_if(CACHED);
+	}
+    }
+
     virtual void GenerateList(unsigned int l) = 0;
 
     void SetColour(const GLAPen& pen, double rgb_scale);

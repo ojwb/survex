@@ -225,7 +225,9 @@ bool GLAList::need_to_generate() {
 #endif
 	if (gl_list == 0) {
 	    // If we can't create a list for any reason, fall back to just
-	    // drawing directly.
+	    // drawing directly, and flag the list as NEVER_CACHE as there's
+	    // unlikely to be much point calling glGenLists() again.
+	    flags = GLACanvas::NEVER_CACHE;
 	    return false;
 	}
 
@@ -263,11 +265,6 @@ bool GLAList::DrawList() const {
     glCallList(gl_list);
     CHECK_GL_ERROR("GLAList::DrawList", "glCallList");
     return true;
-}
-
-void GLAList::InvalidateList() {
-    // And flag this list as requiring generation before use.
-    flags &= ~GLACanvas::CACHED;
 }
 
 //
@@ -508,7 +505,7 @@ void GLACanvas::SetScale(Double scale)
     if (scale != m_Scale) {
 	vector<GLAList>::iterator i;
 	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	    if (*i && i->test_flag(INVALIDATE_ON_SCALE)) i->InvalidateList();
+	    i->invalidate_if(INVALIDATE_ON_SCALE);
 	}
 
 	m_Scale = scale;
@@ -525,7 +522,7 @@ void GLACanvas::OnSize(wxSizeEvent & event)
     if (mask) {
 	vector<GLAList>::iterator i;
 	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	    if (*i && i->test_flag(mask)) i->InvalidateList();
+	    i->invalidate_if(mask);
 	}
 
 	// The width and height go to zero when the panel is dragged right
@@ -915,14 +912,6 @@ void GLACanvas::DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotati
     CHECK_GL_ERROR("DrawList2D", "glMatrixMode 2");
     glPopMatrix();
     CHECK_GL_ERROR("DrawList2D", "glPopMatrix");
-}
-
-void GLACanvas::InvalidateList(unsigned int l)
-{
-    if (l < drawing_lists.size() && drawing_lists[l]) {
-	// Delete any existing OpenGL list.
-	drawing_lists[l].InvalidateList();
-    }
 }
 
 void GLACanvas::SetColour(const GLAPen& pen, double rgb_scale)

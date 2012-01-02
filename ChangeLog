@@ -1,3 +1,10 @@
+Mon Jan 02 12:12:35 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: If glGenLists() fails, flag the list as NEVER_CACHE
+	  as there's unlikely to be much point calling glGenLists() again.
+	* src/gla-gl.cc,src/gla.h: Replace GLAList methods test_flag() and
+	  InvalidateList() with an invalidate_if() method.
+
 Mon Jan 02 11:54:38 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc: No need to invalidate the display lists
