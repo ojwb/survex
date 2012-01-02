@@ -85,11 +85,15 @@ class GLAList {
 	: gl_list(gl_list_), flags(flags_) { }
     bool test_flag(unsigned int mask) const { return flags & mask; }
     operator bool() { return gl_list != 0; }
-    void DrawList() const;
+    bool need_to_generate();
+    void finalise(unsigned int list_flags);
+    bool DrawList() const;
     void InvalidateList();
 };
 
 class GLACanvas : public wxGLCanvas {
+    friend class GLAList; // For CACHED flag value.
+
 #ifdef GLA_DEBUG
     int m_Vertices;
 #endif
@@ -132,7 +136,8 @@ class GLACanvas : public wxGLCanvas {
 	INVALIDATE_ON_SCALE = 1,
 	INVALIDATE_ON_X_RESIZE = 2,
 	INVALIDATE_ON_Y_RESIZE = 4,
-	NEVER_CACHE = 8
+	NEVER_CACHE = 8,
+	CACHED = 16
     };
     mutable unsigned int list_flags;
 

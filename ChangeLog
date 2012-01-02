@@ -1,3 +1,11 @@
+Mon Jan 02 11:17:51 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Rework list caching code to not call
+	  glDeleteLists() and glGenLists() when a list is invalidated, as that
+	  results in a fresh list number being allocated (at least with the
+	  OpenGL implementation I'm using) which would eventually result in
+	  aven hitting an assertion which is there to catch if we leak lists.
+
 Sun Jan 01 13:29:03 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Put translation files in a sub-directory in the

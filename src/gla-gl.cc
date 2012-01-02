@@ -210,17 +210,64 @@ const ColourTriple COLOURS[] = {
     { 40, 40, 255 },   // blue
 };
 
-void GLAList::DrawList() const {
+bool GLAList::need_to_generate() {
+    // Bail out if the list is already cached, or can't usefully be cached.
+    if (flags & (GLACanvas::CACHED|GLACanvas::NEVER_CACHE))
+	return false;
+
+    // Create a new OpenGL list to hold this sequence of drawing
+    // operations.
+    if (gl_list == 0) {
+	gl_list = glGenLists(1);
+	CHECK_GL_ERROR("GLAList::need_to_generate", "glGenLists");
+#ifdef GLA_DEBUG
+	printf("glGenLists(1) returned %u\n", (unsigned)gl_list);
+#endif
+	if (gl_list == 0) {
+	    // If we can't create a list for any reason, fall back to just
+	    // drawing directly.
+	    return false;
+	}
+
+	// We should have 256 lists for font drawing and a dozen or so for 2D
+	// and 3D lists.  So something is amiss if we've generated 1000 lists,
+	// probably a infinite loop in the lazy list mechanism.
+	assert(gl_list < 1000);
+    }
+    // http://www.opengl.org/resources/faq/technical/displaylist.htm advises:
+    //
+    // "Stay away from GL_COMPILE_AND_EXECUTE mode. Instead, create the
+    // list using GL_COMPILE mode, then execute it with glCallList()."
+    glNewList(gl_list, GL_COMPILE);
+    CHECK_GL_ERROR("GLAList::need_to_generate", "glNewList");
+    return true;
+}
+
+void GLAList::finalise(unsigned int list_flags)
+{
+    glEndList();
+    CHECK_GL_ERROR("GLAList::finalise", "glEndList");
+    if (list_flags & GLACanvas::NEVER_CACHE) {
+	glDeleteLists(gl_list, 1);
+	CHECK_GL_ERROR("GLAList::finalise", "glDeleteLists");
+	gl_list = 0;
+	flags = GLACanvas::NEVER_CACHE;
+    } else {
+	flags = list_flags | GLACanvas::CACHED;
+    }
+}
+
+bool GLAList::DrawList() const {
+    if ((flags & GLACanvas::CACHED) == 0)
+	return false;
     glCallList(gl_list);
     CHECK_GL_ERROR("GLAList::DrawList", "glCallList");
+    return true;
 }
 
 void GLAList::InvalidateList() {
-    glDeleteLists(gl_list, 1);
-    CHECK_GL_ERROR("GLAList::InvalidateList", "glDeleteLists");
-
     // And flag this list as requiring generation before use.
-    gl_list = 0;
+    flags &= ~GLACanvas::CACHED;
 }
 
 //
@@ -306,7 +353,6 @@ void GLACanvas::FirstShow()
     for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
 	if (*i) i->InvalidateList();
     }
-    drawing_lists.resize(0);
 
     if (m_Quadric) return;
     // One time initialisation follows.
@@ -835,50 +881,26 @@ void GLACanvas::DrawList(unsigned int l)
 
     // We generate the OpenGL lists lazily to minimise delays on startup.
     // So check if we need to generate the OpenGL list now.
-    if (!drawing_lists[l] && !drawing_lists[l].test_flag(NEVER_CACHE)) {
-	// Create a new OpenGL list to hold this sequence of drawing
-	// operations.
-	GLuint list = glGenLists(1);
-#ifdef GLA_DEBUG
-	printf("new list #%d: %d... ", l, list);
-	m_Vertices = 0;
-#endif
-	CHECK_GL_ERROR("DrawList", "glGenLists");
-	if (list == 0) {
-	    // If we can't create a list, fall back to just drawing directly.
-	    GenerateList(l);
-	    return;
-	}
-
-	// We should have 256 lists for font drawing and a dozen or so for 2D
-	// and 3D lists.  So something is amiss if we've generated 1000 lists,
-	// probably a infinite loop in the lazy list mechanism.
-	assert(list < 1000);
-
-	// http://www.opengl.org/resources/faq/technical/displaylist.htm
-	// advises:
-	// "Stay away from GL_COMPILE_AND_EXECUTE mode. Instead, create the
-	// list using GL_COMPILE mode, then execute it with glCallList()."
-	glNewList(list, GL_COMPILE);
-	CHECK_GL_ERROR("DrawList", "glNewList");
+    if (drawing_lists[l].need_to_generate()) {
 	// Clear list_flags so that we can note what conditions to invalidate
 	// the cached OpenGL list on.
 	list_flags = 0;
+
+#ifdef GLA_DEBUG
+	printf("generating list #%u... ", l);
+	m_Vertices = 0;
+#endif
 	GenerateList(l);
-	glEndList();
-	CHECK_GL_ERROR("DrawList", "glEndList");
 #ifdef GLA_DEBUG
 	printf("done (%d vertices)\n", m_Vertices);
 #endif
-	drawing_lists[l] = GLAList(list, list_flags);
+	drawing_lists[l].finalise(list_flags);
     }
 
-    if (drawing_lists[l].test_flag(NEVER_CACHE)) {
-	// That list can't be cached.
+    if (!drawing_lists[l].DrawList()) {
+	// That list isn't cached (which means it probably can't usefully be
+	// cached).
 	GenerateList(l);
-    } else {
-	// Perform the operations specified by the OpenGL display list.
-	drawing_lists[l].DrawList();
     }
 }
 
