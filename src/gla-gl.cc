@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -346,12 +346,6 @@ void GLACanvas::FirstShow()
 		cross_method = v;
 	    }
 	}
-    }
-
-    // Clear any cached OpenGL lists.
-    vector<GLAList>::iterator i;
-    for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	if (*i) i->InvalidateList();
     }
 
     if (m_Quadric) return;

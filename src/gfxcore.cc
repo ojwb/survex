@@ -211,6 +211,19 @@ void GfxCore::Initialise(bool same_file)
 
     m_HaveData = true;
 
+    // Clear any cached OpenGL lists which depend on the data.
+    InvalidateList(LIST_SCALE_BAR);
+    InvalidateList(LIST_DEPTH_KEY);
+    InvalidateList(LIST_DATE_KEY);
+    InvalidateList(LIST_ERROR_KEY);
+    InvalidateList(LIST_UNDERGROUND_LEGS);
+    InvalidateList(LIST_TUBES);
+    InvalidateList(LIST_SURFACE_LEGS);
+    InvalidateList(LIST_BLOBS);
+    InvalidateList(LIST_CROSSES);
+    InvalidateList(LIST_GRID);
+    InvalidateList(LIST_SHADOW);
+
     ForceRefresh();
 }
 
