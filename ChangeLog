@@ -1,3 +1,8 @@
+Mon Jan 02 13:10:42 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Draw measuring line above indicators rather than
+	  underneath them.
+
 Mon Jan 02 12:52:47 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/message.c: Improve handling of messages before the message

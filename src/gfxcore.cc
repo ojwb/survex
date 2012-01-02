@@ -376,6 +376,16 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    }
 	}
 
+	// Draw indicators.
+	//
+	// There's no advantage in generating an OpenGL list for the
+	// indicators since they change with almost every redraw (and
+	// sometimes several times between redraws).  This way we avoid
+	// the need to track when to update the indicator OpenGL list,
+	// and also avoid indicator update bugs when we don't quite get this
+	// right...
+	DrawIndicators();
+
 	if (MeasuringLineActive()) {
 	    // Draw "here" and "there".
 	    double hx, hy;
@@ -400,16 +410,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		EndBlobs();
 	    }
 	}
-
-	// Draw indicators.
-	//
-	// There's no advantage in generating an OpenGL list for the
-	// indicators since they change with almost every redraw (and
-	// sometimes several times between redraws).  This way we avoid
-	// the need to track when to update the indicator OpenGL list,
-	// and also avoid indicator update bugs when we don't quite get this
-	// right...
-	DrawIndicators();
 
 	FinishDrawing();
 
