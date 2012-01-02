@@ -1,6 +1,6 @@
 /* namecmp.h */
 /* Ordering function for station names */
-/* Copyright (C) 2001,2002,2008 Olly Betts
+/* Copyright (C) 2001,2002,2008,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,6 @@
  */
 
 #ifdef __cplusplus
-#include "wx.h"
-
 extern "C" {
 #endif
 
@@ -27,10 +25,4 @@ extern int name_cmp(const char *a, const char *b, int separator);
 
 #ifdef __cplusplus
 };
-
-inline int name_cmp(const wxString &a, const wxString &b, int separator) {
-    const char * p_a = a.mb_str();
-    const char * p_b = b.mb_str();
-    return name_cmp(p_a, p_b, separator);
-}
 #endif

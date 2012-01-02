@@ -1,3 +1,11 @@
+Mon Jan 02 12:37:18 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am,src/mainfrm.cc,src/namecmp.h: Add a version of the
+	  station name comparing algorithm which works with the Unicode strings
+	  directly, which fixes the issue with random ordering of the prefix
+	  tree control in aven due to the converted strings we were comparing 
+	  getting invalidated before we actually compared them.
+
 Mon Jan 02 12:12:35 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: If glGenLists() fails, flag the list as NEVER_CACHE
