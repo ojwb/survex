@@ -1,3 +1,26 @@
+Changes in 1.2.5 (2012-01-03):
+
+* aven:
+
+  + The survey tree in the left panel is now in sorted order once more.
+
+  + No longer fails with an assertion if used for a long time (we were leaking
+    an OpenGL list each time one had to be regenerated).
+
+  + Now builds with newer FFmpeg library.
+
+  + Draw measuring line in front of the indicators rather than behind them.
+
+  + Loading a new file (or reloading the current one) no longer invalidates
+    the OpenGL lists for the compass and clino, so will be a fraction faster.
+
+* Improve handling of attempts to look up translated messages before the
+  message subsystem is fully initialised (which only happens if there's an
+  error early on).
+
+* Improve the survex(7) man page text, and fix it to be marked as section 7 in
+  the man page source as well as in the filename.
+
 Changes in 1.2.4 (2012-01-01):
 
 * aven:
