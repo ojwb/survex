@@ -1,3 +1,7 @@
+Tue Jan 03 13:21:09 GMT 2012  Olly Betts <olly@survex.com>
+
+	* make_release: Need to set VERSION before we first use it!
+
 Tue Jan 03 12:39:38 GMT 2012  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.5.
