@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2011 Olly Betts
+//  Copyright (C) 2004,2011,2012 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -60,8 +60,9 @@
 
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
 extern "C" {
-# include "libavformat/avformat.h"
-# include "libswscale/swscale.h"
+# include <libavformat/avformat.h>
+# include <libavutil/avutil.h>
+# include <libswscale/swscale.h>
 }
 # ifndef AV_PKT_FLAG_KEY
 #  define AV_PKT_FLAG_KEY PKT_FLAG_KEY
@@ -74,6 +75,14 @@ extern "C" {
 # endif
 # ifndef HAVE_AVIO_CLOSE
 #  define avio_close url_fclose
+# endif
+# ifndef HAVE_AVCODEC_OPEN2
+// We always pass NULL for OPTS below.
+#  define avcodec_open2(CTX, CODEC, OPTS) avcodec_open(CTX, CODEC)
+# endif
+# ifndef HAVE_AVFORMAT_NEW_STREAM
+// We always pass NULL for CODEC below.
+#  define avformat_new_stream(S, CODEC) av_new_stream(S, 0)
 # endif
 # if !HAVE_DECL_AVMEDIA_TYPE_VIDEO
 #  define AVMEDIA_TYPE_VIDEO CODEC_TYPE_VIDEO
@@ -135,7 +144,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     strcpy(oc->filename, fnm);
 
     // Add the video stream using the default format codec.
-    st = av_new_stream(oc, 0);
+    st = avformat_new_stream(oc, NULL);
     if (!st) {
 	averrno = AVERROR(ENOMEM);
 	return false;
@@ -181,7 +190,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	return false;
     }
 
-    retval = avcodec_open(c, codec);
+    retval = avcodec_open2(c, codec, NULL);
     if (retval < 0) {
 	averrno = retval;
 	return false;

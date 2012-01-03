@@ -193,7 +193,7 @@ AC_CHECK_LIB(avcodec, avcodec_init,
 	  [MOVIE_LIBS="-lswscale -lavformat -lavcodec -lavutil"
 	  save_LIBS=$LIBS
 	  LIBS="$LIBS $MOVIE_LIBS"
-	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header])
+	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_open2 avformat_new_stream])
 	  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
 	  LIBS=$save_LIBS])],
         [], [-lavformat -lavcodec -lswscale $WX_LIBS])],
