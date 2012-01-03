@@ -3,7 +3,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SURVEX 7 "2002-04-01" "@PRETTYPACKAGE@ @VERSION@"
+.TH SURVEX 7 "2012-01-03" "@PRETTYPACKAGE@ @VERSION@"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -21,18 +21,15 @@ survex \- cave survey software
 
 .SH DESCRIPTION
 
-\fBSurvex\fP is a suite of programs for processing, displaying, and printing
+\fBSurvex\fP is a suite of programs for processing, viewing, and printing
 cave survey data.
 
 .PP
 The individual programs each have a man page, and there's also a
-comprehensive manual, available in html, postscript, plain text, and
-rtf formats.  The manual is located in \fI@PKGDOCDIR_EXPANDED@\fP and
-can also be found online at \fIhttp://www.survex.com/docs.html\fP
+comprehensive manual, available in HTML, PDF, and plain text formats.
+The manual is located in \fI@PKGDOCDIR_EXPANDED@\fP and can also be found
+online at \fIhttp://survex.com/docs.html\fP
 
-.\" TeX users may be more comfortable with the \fB<whatever>\fP and
-.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
-.\" respectively.
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long
 options starting with two dashes (`--').  All commands support the options
@@ -52,7 +49,8 @@ Output version information and exit.
 \fBcavern\fP\fB(1)\fP, 
 \fBdiffpos\fP\fB(1)\fP, 
 \fBextend\fP\fB(1)\fP, 
-\fBsorterr\fP\fB(1)\fP.
+\fBsorterr\fP\fB(1)\fP,
+\fBprint.ini\fP\fB(5)\fP.
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and
 Olly Betts <olly@survex.com>

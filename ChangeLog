@@ -1,3 +1,7 @@
+Tue Jan 03 12:11:14 GMT 2012  Olly Betts <olly@survex.com>
+
+	* doc/survex.7.in: Make a few minor improvements to the text.
+
 Tue Jan 03 12:07:31 GMT 2012  Olly Betts <olly@survex.com>
 
 	* doc/survex.7.in: Update section in .TH macro to 7 too.
