@@ -61,7 +61,7 @@
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
 extern "C" {
 # include <libavformat/avformat.h>
-# include <libavutil/avutil.h>
+# include <libavutil/mathematics.h>
 # include <libswscale/swscale.h>
 }
 # ifndef AV_PKT_FLAG_KEY

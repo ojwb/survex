@@ -1,3 +1,7 @@
+Tue Jan 03 12:04:54 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Further fix.
+
 Tue Jan 03 11:05:11 GMT 2012  Olly Betts <olly@survex.com>
 
 	* configure.in,src/moviemaker.cc: Fix to work with newer ffmpeg.
