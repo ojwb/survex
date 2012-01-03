@@ -1,3 +1,11 @@
+survex (1.2.5-1) unstable; urgency=low
+
+  * New upstream release.
+    + Work with newer FFmpeg. (Closes: #654223)
+    + Incorporates survex-manpage-section.patch, so drop patch.
+
+ -- Olly Betts <olly@survex.com>  Tue, 03 Jan 2012 13:12:15 +0000
+
 survex (1.2.4-1) unstable; urgency=low
 
   * New upstream release.
