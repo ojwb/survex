@@ -1,3 +1,7 @@
+Tue Jan 03 12:07:31 GMT 2012  Olly Betts <olly@survex.com>
+
+	* doc/survex.7.in: Update section in .TH macro to 7 too.
+
 Tue Jan 03 12:04:54 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Further fix.
