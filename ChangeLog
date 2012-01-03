@@ -1,3 +1,9 @@
+Tue Jan 03 23:54:26 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Incorporate a translation from launchpad I'd previously
+	  copied the English version of by mistake.  Attempt to correct
+	  mistranslation of "survey file".
+
 Tue Jan 03 13:21:09 GMT 2012  Olly Betts <olly@survex.com>
 
 	* make_release: Need to set VERSION before we first use it!

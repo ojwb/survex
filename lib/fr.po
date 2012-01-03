@@ -868,7 +868,7 @@ msgstr "taille des marqueurs station (%s par défaut)"
 #: ../src/cad3d.c:631
 #, c-format
 msgid "factor to scale down by (default %s)"
-msgstr "factor to scale down by (default %s)"
+msgstr "Facteur de réduction (%s par défaut)"
 
 #: ../src/cad3d.c:632
 msgid "produce DXF output"
@@ -1249,10 +1249,15 @@ msgstr "Direction"
 msgid "About %s"
 msgstr "A propos %s"
 
+#. TRANSLATORS Survey here is a mapping survey, not one asking people
+#. questions, so "fichiers d’étude" seems unlikely to be right.  The word
+#. used by French cave surveyors for "survey" is "topo".
+#.
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1715
+#, fuzzy
 msgid "Select a survey file to view"
-msgstr "Selectionner un fichier d’étude à afficher"
+msgstr "Selectionner un fichier de topo à afficher"
 
 #: ../src/mainfrm.cc:1707
 msgid "Survex 3d files"
@@ -1263,9 +1268,13 @@ msgstr "Fichiers de données Survex 3d"
 msgid "All files"
 msgstr "Tous les fichiers"
 
+#. TRANSLATORS Survey here is a mapping survey, not one asking people
+#. questions, so "fichiers d’étude" seems unlikely to be right.  The word
+#. used by French cave surveyors for "survey" is "topo".
 #: ../src/mainfrm.cc:1706
+#, fuzzy
 msgid "All survey files"
-msgstr "Tous les fichiers d’étude"
+msgstr "Tous les fichiers de topo"
 
 #: ../src/mainfrm.cc:1708
 msgid "Survex svx files"
