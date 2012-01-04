@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002,2006,2011 Olly Betts
+/* Copyright (C) 2001,2002,2006,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,6 +127,10 @@ main(int argc, char **argv)
 	    break;
 	  case img_XSECT_END:
 	    printf("XSECT_END\n");
+	    break;
+	  case img_ERROR_INFO:
+	    printf("ERROR_INFO #legs %d, len %.2fm, E %.2f H %.2f V %.2f\n",
+		   pimg->n_legs, pimg->length, pimg->E, pimg->H, pimg->V);
 	    break;
 	  case img_BAD:
 	    img_close(pimg);

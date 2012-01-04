@@ -1,3 +1,7 @@
+Wed Jan 04 03:41:40 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c: Add support for showing img_ERROR_INFO items.
+
 Tue Jan 03 23:54:26 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/fr.po: Incorporate a translation from launchpad I'd previously
