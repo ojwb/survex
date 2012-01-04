@@ -49,7 +49,7 @@ unifont.pixelfont: $(srcdir)/make-pixel-font
 	$(srcdir)/make-pixel-font
 
 launchpad-tarball: check-local
-	tar --transform 's!^!survex/!' -zcf survex-trans.tar.gz survex.pot \
+	tar --transform 's!^!survex-trans/!' -zcf survex-trans.tar.gz survex.pot \
 	    `for f in $(po_files); do test -h "$$f" || echo "$$f" ; done`
 	echo "$(PWD)/survex-trans.tar.gz"
 
