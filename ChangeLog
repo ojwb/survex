@@ -1,3 +1,7 @@
+Fri Jan 06 11:47:59 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Touch all the .po files.
+
 Fri Jan 06 11:47:10 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/touch-po.pl: New script to "touch" a .po file by updating
