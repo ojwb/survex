@@ -9,9 +9,9 @@ if test x"$1" = x-t ; then
 fi
 
 if test x"$rel" = xyes ; then
-  # Check everything is checked into SVN.
-  if svn st | grep -v '^?' | grep . > /dev/null 2> /dev/null ; then
-    echo 'There are changes not checked into SVN - please rectify'
+  # Check there are no uncommitted changes.
+  if git commit -a --dry-run >/dev/null 2>/dev/null ; then
+    echo 'There are uncommitted changes - please rectify'
     echo 'If you just want to test, run with option -t'
     exit 1
   fi
@@ -74,10 +74,8 @@ echo "SHA1 checksums:"
 sha1sum $FILES
 echo
 
-URL=`svn info|sed 's/^URL: //p;d'`
-REPO_ROOT=`svn info|sed 's/^Repository Root: //p;d'`
 echo "To tag this release and upload it to the webserver, run:"
-echo svn cp -m"'Tagging $VERSION'" "$URL" "$REPO_ROOT/tags/$VERSION"
+echo git tag -m"'Tagging $VERSION'" "$VERSION"
 
 HOST=atreus.tartarus.org
 echo ssh "$HOST" mkdir /srv/www/survex.com/software/"$VERSION"

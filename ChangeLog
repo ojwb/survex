@@ -1,3 +1,7 @@
+Fri Jan 06 11:25:23 GMT 2012  Olly Betts <olly@survex.com>
+
+	* make_release: Update to use git rather than SVN.
+
 Fri Jan 06 11:19:37 GMT 2012  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Update mention of "SVN tree" to "source tree" as the
