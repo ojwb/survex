@@ -33,7 +33,7 @@ ${$msgs{'en'}}[0] = '©';
 
 # my %uses = ();
 
-my $num_list = Locale::PO->load_file_asarray("$srcdir/codes.po");
+my $num_list = Locale::PO->load_file_asarray("$srcdir/po_codes");
 foreach my $po_entry (@{$num_list}) {
     my $msgno = $po_entry->dequote($po_entry->msgstr);
     next if $msgno !~ /^\d+$/;

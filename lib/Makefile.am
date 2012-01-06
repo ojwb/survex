@@ -4,8 +4,8 @@
 
 check-local: survex.pot
 	srcdir=$(srcdir) LANG=C perl $(srcdir)/checkshortcut.pl $(msg_files)
-	if grep ^msgstr $(srcdir)/codes.po|sort|uniq -c|grep -v '^ *1 '; then\
-	    echo 'Duplicate message code(s) in codes.po'; exit 1;\
+	if grep ^msgstr $(srcdir)/po_codes|sort|uniq -c|grep -v '^ *1 '; then\
+	    echo 'Duplicate message code(s) in po_codes'; exit 1;\
 	fi
 	for po in $(po_files) ; do\
 	    msgfmt -c --check-accelerators -o /dev/null "$(srcdir)/$$po" || exit 1;\
@@ -21,7 +21,7 @@ po_files = ca.po de.po de_CH.po de_DE.po en_US.po\
 
 msg_files = $(po_files:.po=.msg) en.msg
 
-EXTRA_DIST = survex.pot $(po_files) codes.po\
+EXTRA_DIST = survex.pot $(po_files) po_codes\
  named-entities.txt po-to-msg.pl checkshortcut.pl extract-msgs.pl\
  English_GB.isl Romanian-7-5.1.11.isl\
  make-pixel-font\
@@ -37,8 +37,8 @@ dist_apps_DATA = survex-aven.desktop survex-svxedit.desktop
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
 
-survex.pot: codes.po
-	perl -pe 's/^msgstr ".*/msgstr ""/' codes.po > survex.pot~
+survex.pot: po_codes
+	perl -pe 's/^msgstr ".*/msgstr ""/' po_codes > survex.pot~
 	mv survex.pot~ survex.pot
 
 mimedir = $(datadir)/mime-info

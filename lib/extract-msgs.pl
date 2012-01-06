@@ -51,7 +51,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\\n"
 END
 
-my $num_list = Locale::PO->load_file_asarray("codes.po");
+my $num_list = Locale::PO->load_file_asarray("po_codes");
 my $first = 1;
 foreach my $po_entry (@{$num_list}) {
     my $msgno = $po_entry->dequote($po_entry->msgstr);
@@ -64,7 +64,7 @@ foreach my $po_entry (@{$num_list}) {
 	$msg = $msgs{$msgno};
 	delete $msgs{$msgno};
     } else {
-	print STDERR "Message number $msgno is in codes.po but not found in source - preserving\n" unless $po_entry->obsolete;
+	print STDERR "Message number $msgno is in po_codes but not found in source - preserving\n" unless $po_entry->obsolete;
 	$msg = $po_entry->dequote($po_entry->msgid);
     }
     if (defined $po_entry->automatic) {

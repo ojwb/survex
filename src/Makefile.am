@@ -122,8 +122,8 @@ all_sources = \
 	$(extend_SOURCES) \
 	$(cad3d_SOURCES)
 
-../lib/newcodes.po: $(all_sources) ../lib/extract-msgs.pl
-	cd $(srcdir)/../lib && ./extract-msgs.pl -v'$(VERSION)' `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > newcodes.po
+../lib/po_codes.new: $(all_sources) ../lib/extract-msgs.pl
+	cd $(srcdir)/../lib && ./extract-msgs.pl -v'$(VERSION)' `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > po_codes.new
 
 EXTRA_DIST = \
  aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov

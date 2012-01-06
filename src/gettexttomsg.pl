@@ -2,7 +2,7 @@
 
 #  gettexttomsg.pl
 #
-#  Copyright (C) 2001,2002,2005,2011 Olly Betts
+#  Copyright (C) 2001,2002,2005,2011,2012 Olly Betts
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ use strict;
 my %revmsgs = ();
 
 my $msgid;
-open MSG, "../lib/codes.po" or die $!;
+open MSG, "../lib/po_codes" or die $!;
 while (<MSG>) {
     next if /^\s*#/; # skip comments
    
