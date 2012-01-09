@@ -145,8 +145,9 @@ int main(int argc, char **argv)
     int wargc = 1;
     return wxEntry(wargc, wargv);
 #else
-    char dummy_argv[2] = { argv[0], NULL };
-    return wxEntry(1, dummy_argv);
+    char *dummy_argv[2] = { argv[0], NULL };
+    int dummy_argc = 1;
+    return wxEntry(dummy_argc, dummy_argv);
 #endif
 }
 #endif
