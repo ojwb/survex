@@ -1,3 +1,7 @@
+Tue Jan 10 12:56:33 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po_codes: Update locations.
+
 Tue Jan 10 12:55:25 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: When generating survex.pot from po_codes, drop the
