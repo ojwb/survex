@@ -38,7 +38,7 @@ $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
 
 survex.pot: po_codes
-	perl -pe 's/^msgstr ".*/msgstr ""/' po_codes > survex.pot~
+	perl -pe 's/^(#~ )?(msgstr ").*/$$1$$2"/' po_codes > survex.pot~
 	mv survex.pot~ survex.pot
 
 mimedir = $(datadir)/mime-info
