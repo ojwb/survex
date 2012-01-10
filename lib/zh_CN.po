@@ -1989,93 +1989,93 @@ msgstr ""
 
 #: ../src/mainfrm.cc:806
 #~ msgid "&Preferences…"
-#~ msgstr "347"
+#~ msgstr ""
 
 #~ msgid "Draw passage walls"
-#~ msgstr "348"
+#~ msgstr ""
 
 #~ msgid "Estimate LRUD readings based on heuristics"
-#~ msgstr "349"
+#~ msgstr ""
 
 #~ msgid "Mark survey stations with crosses"
-#~ msgstr "350"
+#~ msgstr ""
 
 #~ msgid "Highlight stations marked as entrances"
-#~ msgstr "351"
+#~ msgstr ""
 
 #~ msgid "Highlight stations marked as fixed points"
-#~ msgstr "352"
+#~ msgstr ""
 
 #~ msgid "Highlight stations which are exported"
-#~ msgstr "353"
+#~ msgstr ""
 
 #~ msgid "Mark survey stations with their names"
-#~ msgstr "354"
+#~ msgstr ""
 
 #~ msgid "Allow names to overlap on the display (faster)"
-#~ msgstr "355"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:803
 msgid "Full Screen &Mode\tF11"
 msgstr ""
 
 #~ msgid "Display underground survey legs"
-#~ msgstr "357"
+#~ msgstr ""
 
 #~ msgid "Display surface survey legs"
-#~ msgstr "358"
+#~ msgstr ""
 
 #~ msgid "Colour surface surveys by depth"
-#~ msgstr "359"
+#~ msgstr ""
 
 #~ msgid "Draw surface legs with dashed lines"
-#~ msgstr "360"
+#~ msgstr ""
 
 #~ msgid "Draw a grid"
-#~ msgstr "361"
+#~ msgstr ""
 
 #~ msgid "metric units"
-#~ msgstr "362"
+#~ msgstr ""
 
 #. TRANSLATORS: Miles, Feet, Inches, etc.  What they call "English units" in
 #. the USA (rather confusingly now that England has largely gone metric!)
 #~ msgid "imperial units"
-#~ msgstr "363"
+#~ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #~ msgid "degrees (°)"
-#~ msgstr "364"
+#~ msgstr ""
 
 #. TRANSLATORS: Grads are the angular measurement where there are 400 in a
 #. full circle.
 #~ msgid "grads"
-#~ msgstr "365"
+#~ msgstr ""
 
 #~ msgid "Display measurements in"
-#~ msgstr "366"
+#~ msgstr ""
 
 #~ msgid "Display angles in"
-#~ msgstr "367"
+#~ msgstr ""
 
 #. TRANSLATORS: reverses the sense of the mouse controls
 #~ msgid "Reverse the sense of the controls"
-#~ msgstr "368"
+#~ msgstr ""
 
 #~ msgid "Display scale bar"
-#~ msgstr "369"
+#~ msgstr ""
 
 #~ msgid "Display depth bar"
-#~ msgstr "370"
+#~ msgstr ""
 
 #~ msgid "Display compass"
-#~ msgstr "371"
+#~ msgstr ""
 
 #~ msgid "Display clinometer"
-#~ msgstr "372"
+#~ msgstr ""
 
 #~ msgid "Display side panel"
-#~ msgstr "373"
+#~ msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
 #: ../src/mainfrm.cc:1907

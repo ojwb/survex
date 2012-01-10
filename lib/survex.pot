@@ -36,7 +36,7 @@ msgstr ""
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:359
-#: ../src/message.c:1187
+#: ../src/message.c:1189
 msgid "warning"
 msgstr ""
 
@@ -126,7 +126,7 @@ msgstr ""
 msgid "Error reading file"
 msgstr ""
 
-#: ../src/message.c:1202
+#: ../src/message.c:1204
 msgid "Too many errors - giving up"
 msgstr ""
 
@@ -704,7 +704,7 @@ msgstr ""
 msgid "&Elevation"
 msgstr ""
 
-#: ../src/gfxcore.cc:673
+#: ../src/gfxcore.cc:686
 #: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr ""
@@ -1233,7 +1233,7 @@ msgstr ""
 msgid "No survey data in 3d file “%s”"
 msgstr ""
 
-#: ../src/gfxcore.cc:631
+#: ../src/gfxcore.cc:644
 msgid "Facing"
 msgstr ""
 
@@ -1360,13 +1360,13 @@ msgstr ""
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
-#: ../src/gfxcore.cc:896
+#: ../src/gfxcore.cc:925
 msgid "Undated"
 msgstr ""
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
-#: ../src/gfxcore.cc:918
+#: ../src/gfxcore.cc:947
 msgid "Not in loop"
 msgstr ""
 
@@ -1460,25 +1460,25 @@ msgid "Fade Distant Ob&jects"
 msgstr ""
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:2970
+#: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
 msgid "View &North"
 msgstr ""
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:2971
+#: ../src/gfxcore.cc:2964
 #: ../src/mainfrm.cc:743
 msgid "View &East"
 msgstr ""
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:2972
+#: ../src/gfxcore.cc:2965
 #: ../src/mainfrm.cc:744
 msgid "View &South"
 msgstr ""
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:2973
+#: ../src/gfxcore.cc:2966
 #: ../src/mainfrm.cc:745
 msgid "View &West"
 msgstr ""
@@ -1499,12 +1499,12 @@ msgstr ""
 msgid "Shift Survey &Down"
 msgstr ""
 
-#: ../src/gfxcore.cc:2985
+#: ../src/gfxcore.cc:2978
 #: ../src/mainfrm.cc:752
 msgid "&Plan View"
 msgstr ""
 
-#: ../src/gfxcore.cc:2986
+#: ../src/gfxcore.cc:2979
 #: ../src/mainfrm.cc:753
 msgid "Ele&vation"
 msgstr ""
@@ -1640,7 +1640,7 @@ msgstr ""
 msgid "&Cancel Measuring Line\tEscape"
 msgstr ""
 
-#: ../src/gfxcore.cc:3010
+#: ../src/gfxcore.cc:3003
 #: ../src/mainfrm.cc:788
 msgid "Colour by E&rror"
 msgstr ""
@@ -1652,12 +1652,12 @@ msgstr ""
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr ""
 
-#: ../src/gfxcore.cc:3008
+#: ../src/gfxcore.cc:3001
 #: ../src/mainfrm.cc:786
 msgid "Colour by &Depth"
 msgstr ""
 
-#: ../src/gfxcore.cc:3009
+#: ../src/gfxcore.cc:3002
 #: ../src/mainfrm.cc:787
 msgid "Colour by D&ate"
 msgstr ""
@@ -1936,8 +1936,8 @@ msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:2999
-#: ../src/gfxcore.cc:3014
+#: ../src/gfxcore.cc:2992
+#: ../src/gfxcore.cc:3007
 #: ../src/mainfrm.cc:823
 msgid "&Metric"
 msgstr ""
@@ -1945,25 +1945,25 @@ msgstr ""
 #. TRANSLATORS: tickable menu item in View menu.
 #. Degrees are the angular measurement where there are 360 in a
 #. full circle.
-#: ../src/gfxcore.cc:2976
-#: ../src/gfxcore.cc:2989
+#: ../src/gfxcore.cc:2969
+#: ../src/gfxcore.cc:2982
 #: ../src/mainfrm.cc:824
 msgid "&Degrees"
 msgstr ""
 
-#: ../src/gfxcore.cc:2975
+#: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
-#: ../src/gfxcore.cc:2988
+#: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
-#: ../src/gfxcore.cc:2998
+#: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
-#: ../src/gfxcore.cc:3012
+#: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
 
@@ -1992,93 +1992,93 @@ msgstr ""
 
 #: ../src/mainfrm.cc:806
 #~ msgid "&Preferences…"
-#~ msgstr "347"
+#~ msgstr ""
 
 #~ msgid "Draw passage walls"
-#~ msgstr "348"
+#~ msgstr ""
 
 #~ msgid "Estimate LRUD readings based on heuristics"
-#~ msgstr "349"
+#~ msgstr ""
 
 #~ msgid "Mark survey stations with crosses"
-#~ msgstr "350"
+#~ msgstr ""
 
 #~ msgid "Highlight stations marked as entrances"
-#~ msgstr "351"
+#~ msgstr ""
 
 #~ msgid "Highlight stations marked as fixed points"
-#~ msgstr "352"
+#~ msgstr ""
 
 #~ msgid "Highlight stations which are exported"
-#~ msgstr "353"
+#~ msgstr ""
 
 #~ msgid "Mark survey stations with their names"
-#~ msgstr "354"
+#~ msgstr ""
 
 #~ msgid "Allow names to overlap on the display (faster)"
-#~ msgstr "355"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:803
 msgid "Full Screen &Mode\tF11"
 msgstr ""
 
 #~ msgid "Display underground survey legs"
-#~ msgstr "357"
+#~ msgstr ""
 
 #~ msgid "Display surface survey legs"
-#~ msgstr "358"
+#~ msgstr ""
 
 #~ msgid "Colour surface surveys by depth"
-#~ msgstr "359"
+#~ msgstr ""
 
 #~ msgid "Draw surface legs with dashed lines"
-#~ msgstr "360"
+#~ msgstr ""
 
 #~ msgid "Draw a grid"
-#~ msgstr "361"
+#~ msgstr ""
 
 #~ msgid "metric units"
-#~ msgstr "362"
+#~ msgstr ""
 
 #. TRANSLATORS: Miles, Feet, Inches, etc.  What they call "English units" in
 #. the USA (rather confusingly now that England has largely gone metric!)
 #~ msgid "imperial units"
-#~ msgstr "363"
+#~ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #~ msgid "degrees (°)"
-#~ msgstr "364"
+#~ msgstr ""
 
 #. TRANSLATORS: Grads are the angular measurement where there are 400 in a
 #. full circle.
 #~ msgid "grads"
-#~ msgstr "365"
+#~ msgstr ""
 
 #~ msgid "Display measurements in"
-#~ msgstr "366"
+#~ msgstr ""
 
 #~ msgid "Display angles in"
-#~ msgstr "367"
+#~ msgstr ""
 
 #. TRANSLATORS: reverses the sense of the mouse controls
 #~ msgid "Reverse the sense of the controls"
-#~ msgstr "368"
+#~ msgstr ""
 
 #~ msgid "Display scale bar"
-#~ msgstr "369"
+#~ msgstr ""
 
 #~ msgid "Display depth bar"
-#~ msgstr "370"
+#~ msgstr ""
 
 #~ msgid "Display compass"
-#~ msgstr "371"
+#~ msgstr ""
 
 #~ msgid "Display clinometer"
-#~ msgstr "372"
+#~ msgstr ""
 
 #~ msgid "Display side panel"
-#~ msgstr "373"
+#~ msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
 #: ../src/mainfrm.cc:1907
