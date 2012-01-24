@@ -59,7 +59,7 @@ bool readSurvey(const char *filename, vector<Point> & points)
 	if (result == img_LABEL) {
 	    if (survey->flags & img_SFLAG_ENTRANCE) {
 		Point newPt;
-		newPt.label = string(survey->label);
+		newPt.label.assign(survey->label);
 		newPt.x = pt.x;
 		newPt.y = pt.y;
 		newPt.z = pt.z;
