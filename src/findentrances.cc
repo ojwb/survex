@@ -128,13 +128,20 @@ int main(int argc, char **argv)
 {
     msg_init(argv);
 
-    const char *datum_string;
+    const char *datum_string = NULL;
     cmdline_init(argc, argv, short_opts, long_opts, NULL, NULL, 1, 1);
     while (1) {
 	int opt = cmdline_getopt();
 	if (opt == EOF) break;
 	else if (opt == 'd') datum_string = optarg;
     }
+
+    if (!datum_string) {
+	std::cerr << argv[0] << ": -d DATUM_STRING is required" << std::endl;
+	cmdline_syntax();
+	exit(1);
+    }
+
     const char *survey_filename = argv[optind];
 
     std::vector<Point> points;
