@@ -116,7 +116,6 @@ static const struct option long_opts[] = {
 
 #define short_opts "pao:qsv:wz:"
 
-/* TRANSLATE extract help messages to message file */
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),	      /*display percentage progress*/161, 0},
