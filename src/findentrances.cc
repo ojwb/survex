@@ -36,12 +36,14 @@
 #include "cmdline.h"
 #include "img.h"
 
+using namespace std;
+
 struct Point {
-    std::string label;
+    string label;
     double x, y, z;
 };
 
-bool readSurvey(const char *filename, std::vector<Point> & points)
+bool readSurvey(const char *filename, vector<Point> & points)
 {
     img *survey = img_open_survey(filename, NULL);
     if (!survey) {
@@ -57,7 +59,7 @@ bool readSurvey(const char *filename, std::vector<Point> & points)
 	if (result == img_LABEL) {
 	    if (survey->flags & img_SFLAG_ENTRANCE) {
 		Point newPt;
-		newPt.label = std::string(survey->label);
+		newPt.label = string(survey->label);
 		newPt.x = pt.x;
 		newPt.y = pt.y;
 		newPt.z = pt.z;
@@ -74,7 +76,7 @@ bool readSurvey(const char *filename, std::vector<Point> & points)
     return true;
 }
 
-bool convertCoordinates(std::vector<Point> & points, const char *inputDatum, const char *outputDatum)
+bool convertCoordinates(vector<Point> & points, const char *inputDatum, const char *outputDatum)
 {
     projPJ pj_input, pj_output;
     if (!(pj_input = pj_init_plus(inputDatum))) {
@@ -98,13 +100,13 @@ struct SortPointsByLabel {
     { return a.label < b.label; }
 } SortPointsByLabel;
 
-bool sortPoints(std::vector<Point> & points)
+bool sortPoints(vector<Point> & points)
 {
-    std::sort(points.begin(), points.end(), SortPointsByLabel);
+    sort(points.begin(), points.end(), SortPointsByLabel);
     return true;
 }
 
-bool writeGPX(const std::vector<Point> & points, FILE *file)
+bool writeGPX(const vector<Point> & points, FILE *file)
 {
     fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<gpx version=\"1.0\" creator=\"survex - findentrances\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\r\n");
     for (size_t i=0; i<points.size(); ++i) {
@@ -137,14 +139,14 @@ int main(int argc, char **argv)
     }
 
     if (!datum_string) {
-	std::cerr << argv[0] << ": -d DATUM_STRING is required" << std::endl;
+	cerr << argv[0] << ": -d DATUM_STRING is required" << endl;
 	cmdline_syntax();
 	exit(1);
     }
 
     const char *survey_filename = argv[optind];
 
-    std::vector<Point> points;
+    vector<Point> points;
     if (!readSurvey(survey_filename, points)) return -1;
     if (!convertCoordinates(points, datum_string, "+proj=longlat +ellps=WGS84 +datum=WGS84")) return -1;
     if (!sortPoints(points)) return -1;
