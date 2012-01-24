@@ -1,3 +1,8 @@
+Tue Jan 24 10:42:41 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: Add GPL licence boilerplate (Olaf OKed this in
+	  <20120111115239.1b162450@ghost>).
+
 Tue Jan 24 04:53:30 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am,src/findentrances.cc: Build findentrances in the
