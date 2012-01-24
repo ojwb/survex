@@ -1,3 +1,7 @@
+Tue Jan 24 04:12:19 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: Add findentrances utility from Olaf.
+
 Tue Jan 10 12:57:08 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,lib/zh_CN.po: Update.
