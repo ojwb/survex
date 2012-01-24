@@ -6,9 +6,6 @@
  * for use in your favourite GPS software. Everything else is kept as simple
  * and minimalistic as possible.
  *
- * Compile with:
- * g++ findentrances.cc useful.o img.o cmdline.o message.o filename.o osdepend.o z_getopt.o getopt1.o -lproj -o findentrances
- *
  * Usage:
  *   findentrances -d <+proj +datum +string> <input.3d>
  *

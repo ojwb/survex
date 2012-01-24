@@ -35,7 +35,7 @@ EXTRA_PROGRAMS =\
 	aven dump3d editwrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cavern diffpos extend cad3d sorterr \
- 3dtopos aven $(WINPROGS) $(TESTPROGS)
+ 3dtopos findentrances aven $(WINPROGS) $(TESTPROGS)
 bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
@@ -56,6 +56,9 @@ aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
  buttontaghandler.cc
 
 dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
+
+findentrances_SOURCES = findentrances.cc img.c useful.c $(COMMONSRC)
+findentrances_LDADD = -lproj
 
 editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows

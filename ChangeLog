@@ -1,3 +1,8 @@
+Tue Jan 24 04:53:30 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am,src/findentrances.cc: Build findentrances in the
+	  buildsystem.
+
 Tue Jan 24 04:41:03 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/findentrances.cc: Update examples of usage to reflect "-s"
