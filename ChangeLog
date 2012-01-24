@@ -1,3 +1,7 @@
+Tue Jan 24 10:56:14 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: Add commenting noting precision of lat and lon.
+
 Tue Jan 24 10:55:19 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/findentrances.cc: Don't include carriage returns in .gpx output.

@@ -128,6 +128,7 @@ bool writeGPX(const vector<Point> & points, FILE *file)
     fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gpx version=\"1.0\" creator=\"survex - findentrances\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
     for (size_t i=0; i<points.size(); ++i) {
 	const Point & pt = points[i];
+	// %.8f is at worst just over 1mm.
 	fprintf(file, "<wpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele><name>%s</name></wpt>\n", pt.x*180.0/M_PI, pt.y*180.0/M_PI, pt.z, pt.label.c_str());
     }
 
