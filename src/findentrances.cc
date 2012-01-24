@@ -10,16 +10,16 @@
  * g++ findentrances.cc useful.o img.o cmdline.o message.o filename.o osdepend.o z_getopt.o getopt1.o -lproj -o findentrances
  *
  * Usage:
- *   findentrances -s <input.3d> -d <+proj +datum +string>
+ *   findentrances -d <+proj +datum +string> <input.3d>
  *
  * Example for data given in BMN M31 (Totes Gebirge, Austria):
- *   findentrances -s cucc_austria.3d -d '+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232' > ent.gpx
+ *   findentrances -d '+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232' cucc_austria.3d > ent.gpx
  *
  * Example for data given in british grid SD (Yorkshire):
- *   findentrances -s yorkshire/all.3d -d '+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=100000 +y_0=-500000 +ellps=airy +towgs84=375,-111,431,0,0,0,0' > ent.gpx
+ *   findentrances -d '+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=100000 +y_0=-500000 +ellps=airy +towgs84=375,-111,431,0,0,0,0' yorkshire/all.3d > ent.gpx
  *
  * Example for data given as proper british grid reference:
- *   findentrances -s all.3d -d '+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=375,-111,431,0,0,0,0' > ent.gpx
+ *   findentrances -d '+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=375,-111,431,0,0,0,0' all.3d > ent.gpx
  *
  */
 
