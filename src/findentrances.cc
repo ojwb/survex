@@ -37,114 +37,114 @@
 #include "img.h"
 
 struct Point {
-	std::string label;
-	double x, y, z;
+    std::string label;
+    double x, y, z;
 };
 
 bool readSurvey(const char *filename, std::vector<Point> & points)
 {
-	img *survey = img_open_survey(filename, NULL);
-	if (!survey) {
-		fprintf(stderr, "failed to open survey '%s'\n", filename);
-		return false;
+    img *survey = img_open_survey(filename, NULL);
+    if (!survey) {
+	fprintf(stderr, "failed to open survey '%s'\n", filename);
+	return false;
+    }
+
+    int result;
+    do {
+	img_point pt;
+	result = img_read_item(survey, &pt);
+
+	if (result == img_LABEL) {
+	    if (survey->flags & img_SFLAG_ENTRANCE) {
+		Point newPt;
+		newPt.label = std::string(survey->label);
+		newPt.x = pt.x;
+		newPt.y = pt.y;
+		newPt.z = pt.z;
+		points.push_back(newPt);
+	    }
+	} else if (result == img_BAD) {
+	    fprintf(stderr, "error while reading file\n");
+	    return false;
 	}
+    } while (result != img_STOP);
 
-	int result;
-	do {
-		img_point pt;
-		result = img_read_item(survey, &pt);
+    img_close(survey);
 
-		if (result == img_LABEL) {
-			if (survey->flags & img_SFLAG_ENTRANCE) {
-				Point newPt;
-				newPt.label = std::string(survey->label);
-				newPt.x = pt.x;
-				newPt.y = pt.y;
-				newPt.z = pt.z;
-				points.push_back(newPt);
-			}
-		} else if (result == img_BAD) {
-			fprintf(stderr, "error while reading file\n");
-			return false;
-		}
-	} while (result != img_STOP);
-
-	img_close(survey);
-
-	return true;
+    return true;
 }
 
 bool convertCoordinates(std::vector<Point> & points, const char *inputDatum, const char *outputDatum)
 {
-	projPJ pj_input, pj_output;
-	if (!(pj_input = pj_init_plus(inputDatum))) {
-		fprintf(stderr, "failed to initialise input coordinate system '%s'\n", inputDatum);
-		return false;
-	}
-	if (!(pj_output = pj_init_plus(outputDatum))) {
-		fprintf(stderr, "failed to initialise output coordinate system '%s'\n", outputDatum);
-		return false;
-	}
-	
-	for (size_t i=0; i<points.size(); ++i) {
-		pj_transform(pj_input, pj_output, 1, 1, &(points[i].x), &(points[i].y), &(points[i].z));
-	}
+    projPJ pj_input, pj_output;
+    if (!(pj_input = pj_init_plus(inputDatum))) {
+	fprintf(stderr, "failed to initialise input coordinate system '%s'\n", inputDatum);
+	return false;
+    }
+    if (!(pj_output = pj_init_plus(outputDatum))) {
+	fprintf(stderr, "failed to initialise output coordinate system '%s'\n", outputDatum);
+	return false;
+    }
 
-	return true;
+    for (size_t i=0; i<points.size(); ++i) {
+	pj_transform(pj_input, pj_output, 1, 1, &(points[i].x), &(points[i].y), &(points[i].z));
+    }
+
+    return true;
 }
 
 struct SortPointsByLabel {
-	bool operator()(const Point & a, const Point & b)
-	{ return a.label < b.label; }
+    bool operator()(const Point & a, const Point & b)
+    { return a.label < b.label; }
 } SortPointsByLabel;
 
 bool sortPoints(std::vector<Point> & points)
 {
-	std::sort(points.begin(), points.end(), SortPointsByLabel);
-	return true;
+    std::sort(points.begin(), points.end(), SortPointsByLabel);
+    return true;
 }
 
 bool writeGPX(const std::vector<Point> & points, FILE *file)
 {
-	fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<gpx version=\"1.0\" creator=\"survex - findentrances\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\r\n");
-	for (size_t i=0; i<points.size(); ++i) {
-		const Point & pt = points[i];
-		fprintf(file, "<wpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele><name>%s</name></wpt>\r\n", pt.x*180.0/M_PI, pt.y*180.0/M_PI, pt.z, pt.label.c_str());
-	}
+    fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<gpx version=\"1.0\" creator=\"survex - findentrances\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\r\n");
+    for (size_t i=0; i<points.size(); ++i) {
+	const Point & pt = points[i];
+	fprintf(file, "<wpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele><name>%s</name></wpt>\r\n", pt.x*180.0/M_PI, pt.y*180.0/M_PI, pt.z, pt.label.c_str());
+    }
 
-	fprintf(file, "</gpx>\r\n");
-	return true;
+    fprintf(file, "</gpx>\r\n");
+    return true;
 }
 
 
 static const struct option long_opts[] = {
-	{"survey", required_argument, 0, 's'},
-	{"datum", required_argument, 0, 'd'},
-	{0, 0, 0, 0}
+    {"survey", required_argument, 0, 's'},
+    {"datum", required_argument, 0, 'd'},
+    {0, 0, 0, 0}
 };
 
 static const char *short_opts = "s:d:";
 
 int main(int argc, char **argv)
 {
-	msg_init(argv);
+    msg_init(argv);
 
-	const char *survey_filename;
-	const char *datum_string;
-	cmdline_init(argc, argv, short_opts, long_opts, NULL, NULL, 0,0);
-	while (1) {
-		int opt = cmdline_getopt();
-		if (opt == EOF) break;
-		else if (opt == 's') survey_filename = optarg;
-		else if (opt == 'd') datum_string = optarg;
-	}
+    const char *survey_filename;
+    const char *datum_string;
+    cmdline_init(argc, argv, short_opts, long_opts, NULL, NULL, 0,0);
+    while (1) {
+	int opt = cmdline_getopt();
+	if (opt == EOF) break;
+	else if (opt == 's') survey_filename = optarg;
+	else if (opt == 'd') datum_string = optarg;
+    }
 
-	std::vector<Point> points;
-	if (!readSurvey(survey_filename, points)) return -1;
-	if (!convertCoordinates(points, datum_string, "+proj=longlat +ellps=WGS84 +datum=WGS84")) return -1;
-	if (!sortPoints(points)) return -1;
-	if (!writeGPX(points, stdout)) return -1;
+    std::vector<Point> points;
+    if (!readSurvey(survey_filename, points)) return -1;
+    if (!convertCoordinates(points, datum_string, "+proj=longlat +ellps=WGS84 +datum=WGS84")) return -1;
+    if (!sortPoints(points)) return -1;
+    if (!writeGPX(points, stdout)) return -1;
 
-	return 0;
+    return 0;
 }
 

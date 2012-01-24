@@ -1,3 +1,7 @@
+Tue Jan 24 04:18:41 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: Reindent with 4 space indent, tab width 8.
+
 Tue Jan 24 04:12:19 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/findentrances.cc: Add findentrances utility from Olaf.
