@@ -118,26 +118,24 @@ bool writeGPX(const std::vector<Point> & points, FILE *file)
 
 
 static const struct option long_opts[] = {
-    {"survey", required_argument, 0, 's'},
     {"datum", required_argument, 0, 'd'},
     {0, 0, 0, 0}
 };
 
-static const char *short_opts = "s:d:";
+static const char *short_opts = "d:";
 
 int main(int argc, char **argv)
 {
     msg_init(argv);
 
-    const char *survey_filename;
     const char *datum_string;
-    cmdline_init(argc, argv, short_opts, long_opts, NULL, NULL, 0,0);
+    cmdline_init(argc, argv, short_opts, long_opts, NULL, NULL, 1, 1);
     while (1) {
 	int opt = cmdline_getopt();
 	if (opt == EOF) break;
-	else if (opt == 's') survey_filename = optarg;
 	else if (opt == 'd') datum_string = optarg;
     }
+    const char *survey_filename = argv[optind];
 
     std::vector<Point> points;
     if (!readSurvey(survey_filename, points)) return -1;

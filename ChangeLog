@@ -1,3 +1,10 @@
+Tue Jan 24 04:19:29 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: Other survex tools use -s for "limit operation
+	  to this survey prefix" and just take the .3d file to operate on as
+	  a command line argument, so for consistency just take the .3d file
+	  as a command line argument here too.
+
 Tue Jan 24 04:18:41 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/findentrances.cc: Reindent with 4 space indent, tab width 8.
