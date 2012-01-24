@@ -1,3 +1,7 @@
+Tue Jan 24 04:35:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: Support --help and --version options.
+
 Tue Jan 24 04:27:15 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/findentrances.cc: "using namespace std;"

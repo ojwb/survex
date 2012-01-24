@@ -121,6 +121,8 @@ bool writeGPX(const vector<Point> & points, FILE *file)
 
 static const struct option long_opts[] = {
     {"datum", required_argument, 0, 'd'},
+    {"help", no_argument, 0, HLP_HELP},
+    {"version", no_argument, 0, HLP_VERSION},
     {0, 0, 0, 0}
 };
 
