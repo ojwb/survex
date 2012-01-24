@@ -1,6 +1,6 @@
 /* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001,2003,2004,2011 Olly Betts
+ * Copyright (C) 1998-2001,2003,2004,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ static const char * msg_extra_arg;
 void
 cmdline_help(void)
 {
-   while (help->opt) {
+   while (help && help->opt) {
       const char *longopt = 0;
       int opt = help->opt;
       const struct option *o = 0;
@@ -163,7 +163,7 @@ void
 cmdline_syntax(void)
 {
    printf("\n%s: %s", msg(/*Usage*/49), msg_appname());
-   if (help->opt) printf(" [%s]...", msg(/*OPTION*/153));
+   if (help && help->opt) printf(" [%s]...", msg(/*OPTION*/153));
    if (msg_args) {
       putchar(' ');
       puts(msg(msg_args));

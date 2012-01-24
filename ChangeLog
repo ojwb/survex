@@ -1,3 +1,7 @@
+Tue Jan 24 04:35:25 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/cmdline.c: Allow help argument to cmdline_init() to be NULL.
+
 Tue Jan 24 04:35:04 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/findentrances.cc: Support --help and --version options.
