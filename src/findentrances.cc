@@ -43,7 +43,6 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include <iostream>
 #include <algorithm>
 #include <math.h>
 
@@ -55,17 +54,19 @@
 
 using namespace std;
 
+#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
+
 struct Point {
     string label;
     double x, y, z;
 };
 
-bool readSurvey(const char *filename, vector<Point> & points)
+static void
+read_survey(const char *filename, vector<Point> & points)
 {
     img *survey = img_open_survey(filename, NULL);
     if (!survey) {
-	fprintf(stderr, "failed to open survey '%s'\n", filename);
-	return false;
+	fatalerror(img_error(), filename);
     }
 
     int result;
@@ -83,33 +84,28 @@ bool readSurvey(const char *filename, vector<Point> & points)
 		points.push_back(newPt);
 	    }
 	} else if (result == img_BAD) {
-	    fprintf(stderr, "error while reading file\n");
-	    return false;
+	    img_close(survey);
+	    fatalerror(img_error(), filename);
 	}
     } while (result != img_STOP);
 
     img_close(survey);
-
-    return true;
 }
 
-bool convertCoordinates(vector<Point> & points, const char *inputDatum, const char *outputDatum)
+static void
+convert_coordinates(vector<Point> & points, const char *inputDatum, const char *outputDatum)
 {
     projPJ pj_input, pj_output;
     if (!(pj_input = pj_init_plus(inputDatum))) {
-	fprintf(stderr, "failed to initialise input coordinate system '%s'\n", inputDatum);
-	return false;
+	fatalerror(/*Failed to initialise input coordinate system “%s”*/287, inputDatum);
     }
     if (!(pj_output = pj_init_plus(outputDatum))) {
-	fprintf(stderr, "failed to initialise output coordinate system '%s'\n", outputDatum);
-	return false;
+	fatalerror(/*Failed to initialise output coordinate system “%s”*/288, outputDatum);
     }
 
     for (size_t i=0; i<points.size(); ++i) {
 	pj_transform(pj_input, pj_output, 1, 1, &(points[i].x), &(points[i].y), &(points[i].z));
     }
-
-    return true;
 }
 
 struct SortPointsByLabel {
@@ -117,13 +113,14 @@ struct SortPointsByLabel {
     { return a.label < b.label; }
 } SortPointsByLabel;
 
-bool sortPoints(vector<Point> & points)
+static void
+sort_points(vector<Point> & points)
 {
     sort(points.begin(), points.end(), SortPointsByLabel);
-    return true;
 }
 
-bool writeGPX(const vector<Point> & points, FILE *file)
+static void
+write_gpx(const vector<Point> & points, FILE *file)
 {
     fprintf(file, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<gpx version=\"1.0\" creator=\"survex - findentrances\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
     for (size_t i=0; i<points.size(); ++i) {
@@ -133,9 +130,7 @@ bool writeGPX(const vector<Point> & points, FILE *file)
     }
 
     fprintf(file, "</gpx>\n");
-    return true;
 }
-
 
 static const struct option long_opts[] = {
     {"datum", required_argument, 0, 'd'},
@@ -146,12 +141,19 @@ static const struct option long_opts[] = {
 
 static const char *short_opts = "d:";
 
+static struct help_msg help[] = {
+/*				<-- */
+   {HLP_ENCODELONG(0),        /*input datum as string to pass to PROJ*/389, 0},
+   {0, 0, 0}
+};
+
 int main(int argc, char **argv)
 {
     msg_init(argv);
 
     const char *datum_string = NULL;
-    cmdline_init(argc, argv, short_opts, long_opts, NULL, NULL, 1, 1);
+    cmdline_set_syntax_message(/*-d PROJ_DATUM 3D_FILE*/388, 0, NULL);
+    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 1);
     while (1) {
 	int opt = cmdline_getopt();
 	if (opt == EOF) break;
@@ -159,7 +161,6 @@ int main(int argc, char **argv)
     }
 
     if (!datum_string) {
-	cerr << argv[0] << ": -d DATUM_STRING is required" << endl;
 	cmdline_syntax();
 	exit(1);
     }
@@ -167,11 +168,8 @@ int main(int argc, char **argv)
     const char *survey_filename = argv[optind];
 
     vector<Point> points;
-    if (!readSurvey(survey_filename, points)) return -1;
-    if (!convertCoordinates(points, datum_string, "+proj=longlat +ellps=WGS84 +datum=WGS84")) return -1;
-    if (!sortPoints(points)) return -1;
-    if (!writeGPX(points, stdout)) return -1;
-
-    return 0;
+    read_survey(survey_filename, points);
+    convert_coordinates(points, datum_string, WGS84_DATUM_STRING);
+    sort_points(points);
+    write_gpx(points, stdout);
 }
-
