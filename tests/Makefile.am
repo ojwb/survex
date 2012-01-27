@@ -80,4 +80,5 @@ nosurveyhanging.svx cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
 cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\
 cmd_date.svx cmd_datebad.svx cmd_datebad2.svx\
 eswap.svx eswap.espec eswapx.3d\
-eswap-break.svx eswap-break.espec eswap-breakx.3d
+eswap-break.svx eswap-break.espec eswap-breakx.3d\
+equatenosuchstn.out  equatenosuchstn.svx

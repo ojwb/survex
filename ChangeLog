@@ -1,3 +1,9 @@
+Fri Jan 27 11:03:28 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po_codes,lib/survex.pot,src/listpos.c,tests/: If we have a
+	  reference to a station in a non-existent survey, give a helpful error
+	  rather than saying the station hasn't been exported from the survey.
+
 Tue Jan 24 23:03:10 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/cavern.c: Remove TRANSLATE comment which has already been

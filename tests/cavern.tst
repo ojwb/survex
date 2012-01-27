@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005,2006,2010 Olly Betts
+# Copyright (C) 1999-2004,2005,2006,2010,2012 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,7 +55,12 @@ test -x "$testdir"/../src/cavern || testdir=.
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
- surfequate passage hanging_lrud"}}
+ surfequate passage hanging_lrud equatenosuchstn"}}
+
+LC_ALL=C
+export LC_ALL
+unset SURVEXLANG
+export SURVEXLANG
 
 for file in $TESTS ; do
   # how many warnings to expect
@@ -193,6 +198,7 @@ for file in $TESTS ; do
   cmd_solve_nothing*) pos=no; warn=0 ;;
   passage) pos=no; warn=0 ;;
   hanging_lrud) pos=fail; error=1 ;;
+  equatenosuchstn) pos=fail; error=1 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac
@@ -258,6 +264,15 @@ for file in $TESTS ; do
     *)
       echo "Bad value for pos: '$pos'" ; exit 1 ;;
     esac
+
+    if test -f "$file.out" ; then
+      # Check output is as expected.
+      if test -n "$VERBOSE" ; then
+	diff tmp.out "$file.out" || exit 1
+      else
+	diff tmp.out "$file.out" > /dev/null || exit 1
+      fi
+    fi
     rm -f tmp.*
   fi
 done

@@ -181,6 +181,13 @@ msgstr ""
 msgid "Station “%s” not exported from survey “%s”"
 msgstr ""
 
+#. TRANSLATORS: This error occurs if there's an attempt to export a station
+#. from a survey which doesn't actually exist.
+#: ../src/listpos.c:134
+#, c-format
+msgid "Reference to station “%s” from non-existent survey “%s”"
+msgstr ""
+
 #: ../src/readval.c:212
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
