@@ -46,7 +46,7 @@ mingw_iss : survex.iss
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	for f in $(base_progs) aven editwrap ; do cp src/$$f.exe iss_tmp ; done
-	cp lib/icons/*.ico lib/icons/*.png iss_tmp
+	cp lib/icons/*.ico lib/icons/*.png lib/icons/*.jpg iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
 	: # but we do want aven.png for the About dialog

@@ -1,3 +1,8 @@
+Thu Feb 16 01:36:54 GMT 2012  Olly Betts <olly@survex.com>
+
+	* Makefile.am,survex.iss.in: Include JPG images in Innosetup installer.
+	  (ticket#35)
+
 Fri Jan 27 13:30:54 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po_codes,lib/survex.pot,src/Makefile.am,src/findentrances.cc:
