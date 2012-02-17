@@ -1,3 +1,7 @@
+Fri Feb 17 03:49:59 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/message.c: Fix so that cavern run by aven finds its messages.
+
 Thu Feb 16 01:36:54 GMT 2012  Olly Betts <olly@survex.com>
 
 	* Makefile.am,survex.iss.in: Include JPG images in Innosetup installer.

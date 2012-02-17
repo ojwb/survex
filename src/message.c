@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -953,6 +953,15 @@ msg_init(char * const *argv)
 	 p = use_path(pth, "share/survex/en.msg");
 	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "share/survex");
+	    goto macosx_got_msg;
+	 }
+	 osfree(p);
+	 /* The cavern which aven runs is a hardlinked copy alongside
+	  * the aven binary.
+	  */
+	 p = use_path(pth, "../Resources/en.msg");
+	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
+	    pth_cfg_files = use_path(pth, "../Resources");
 	    goto macosx_got_msg;
 	 }
 	 osfree(p);
