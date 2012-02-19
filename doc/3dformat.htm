@@ -48,8 +48,8 @@ using this document, but that doesn't mean it can't be improved.
 (decimal 10, hex x0a). [Note: v0.01 files can have a carriage return
 before this and other linefeeds - this is a file format error in any
 other format version].
-<li>File format version: "v3", "v4", etc followed by a linefeed.
-If the format gets to version 10, that would be "v10".
+<li>File format version: "v3", "v4", "v5", "v6", "v7" followed by a linefeed.
+Any future versions will be "v8", "v9", "v10", "v11", etc.
 Older format versions aren't described here, but had version strings
 "v0.01", "Bv0.01", "bv0.01", and "v2").
 <li> Survey title: A string followed by a linefeed.  There's no length limit on this string.
@@ -122,8 +122,8 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">DATE (old version)</td>
     <td class="data">&lt;date&gt;</td>
     <td colspan="2">
-    Set survey date of legs (date is 4 byte little endian unsigned integer
-    counting seconds since 1970) </td>
+    Set survey date of legs: date is 4 byte little-endian unsigned integer
+    counting seconds since 1970.</td>
     <td class="version">&ge;4 and &le;6</td>
 </tr>
 <tr>
@@ -131,9 +131,9 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">DATE</td>
     <td class="data">&lt;date&gt;</td>
     <td colspan="2">
-    Set survey date of legs (date is
-    2 byte unsigned integer counting days since the
-    start of 1900)</td>
+    Set survey date of legs: date is a 2 byte little-endian unsigned integer
+    counting days from the
+    start of 1900.</td>
     <td class="version">&ge;7</td>
 </tr>
 <tr>
@@ -141,8 +141,8 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">DATE (old version)</td>
     <td class="data">&lt;date1&gt;&lt;date2&gt;</td>
     <td colspan="2">
-    Set survey date of legs to a range (date1, date2 are 4 byte little
-    endian unsigned integer counting seconds since 1970) </td>
+    Set survey date of legs to a range: date1, date2 are 4 byte little-endian
+    unsigned integer counting seconds since 1970.</td>
     <td class="version">&ge;4 and &le;6</td>
 </tr>
 <tr>
@@ -150,9 +150,9 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">DATE</td>
     <td class="data">&lt;date1&gt;&lt;datespan&gt;</td>
     <td colspan="2">
-    Set survey date of legs to a range (date1 is a
-    2 byte unsigned integer counting days since the
-    start of 1900, datespan is an unsigned byte storing date2-date1-1)</td>
+    Set survey date of legs to a range: date1 is a
+    2 byte little-endian unsigned integer counting days since the start of
+    1900, and datespan is an unsigned byte counting days from date1.</td>
     <td class="version">&ge;7</td>
 </tr>
 <tr>
@@ -160,9 +160,10 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">ERROR</td>
     <td class="data">&lt;legs&gt;&lt;length&gt;&lt;E&gt;&lt;H&gt;&lt;V&gt;</td>
     <td colspan="2">
-    Error information for the current traverse.  &lt;legs&gt; is the number of legs. &lt;length&gt; is the total length of the
-    traverse in cm (0.01m). E, H and V are the error and thehorizontal and vertical components in cm. (All values are 4 byte little
-    endian signed integers) </td>
+    Error information for the current traverse.  &lt;legs&gt; is the number of
+    legs. &lt;length&gt; is the total length of the
+    traverse in cm (0.01m). E, H and V are the error and the horizontal and
+    vertical components in cm. (All values are 4 byte little-endian signed integers) </td>
     <td class="version">&ge;6</td>
 </tr>
 <tr>
@@ -170,9 +171,9 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">DATE</td>
     <td class="data">&lt;date1&gt;&lt;date2&gt;</td>
     <td colspan="2">
-    Set survey date of legs to a range (date1, date2 are
-    2 byte unsigned integers counting days since the
-    start of 1900)</td>
+    Set survey date of legs to a range: date1, date2 are
+    2 byte little-endian unsigned integers counting days since the
+    start of 1900.</td>
     <td class="version">&ge;7</td>
 </tr>
 <tr>
@@ -180,7 +181,7 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type">DATE</td>
     <td class="data">&nbsp;</td>
     <td colspan="2">
-    Seet survey date to "no date information"</td>
+    No survey date information was specified.</td>
     <td class="version">&ge;7</td>
 </tr>
 <tr class="reserved">
@@ -354,5 +355,5 @@ number of different &lt;LABEL&gt; items).</li>
 referenced (e.g. in &lt;XSECT&gt; items)</li>
 </ul>
 
-<P>Authors: Olly Betts and Mike McCombe, last updated: 2010-08-18</P>
+<P>Authors: Olly Betts and Mike McCombe, last updated: 2012-02-17</P>
 </BODY></HTML>
