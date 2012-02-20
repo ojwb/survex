@@ -1,3 +1,28 @@
+Changes in 1.2.6 (2012-02-20):
+
+* (Mac OS X version): Fix so that cavern finds its messages when run by aven.
+
+* (Microsoft Windows version): Include JPEG images for aven in the installer
+  package (ticket#35).
+
+* cavern: If we have a reference to a station in a non-existent survey, give a
+  helpful error rather than saying the station hasn't been exported from the
+  survey.  (Bug reported by Martin Green via email)
+
+* aven: Fix to build with a non-Unicode wxWidgets library.  Patch from Olaf
+  Kahler.
+
+* findentrances: Add findentrances utility from Olaf Kahler which produces a
+  .gpx file with waypoints for entrances.
+
+* dump3d: Add support for showing img_ERROR_INFO items.
+
+* doc/3dformat.htm: Merge in some improvements from Mike McCombe.
+
+* Incorporate a French translation from launchpad I'd previously copied the
+  English version of by mistake.  Attempt to correct mistranslation of "survey
+  file".
+
 Changes in 1.2.5 (2012-01-03):
 
 * aven:
