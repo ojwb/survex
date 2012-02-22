@@ -35,10 +35,10 @@
 #include "message.h"
 #include "useful.h"
 
-#ifdef __APPLE__
+#ifdef HAVE_GL_GLEXT_H
+# include <GL/glext.h>
+#elif defined HAVE_OPENGL_GLEXT_H
 #include <OpenGL/glext.h>
-#else
-#include <GL/glext.h>
 #endif
 
 #ifndef GL_POINT_SIZE_MAX

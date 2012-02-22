@@ -1,3 +1,8 @@
+Wed Feb 22 23:39:25 GMT 2012  Olly Betts <olly@survex.com>
+
+	* configure.in,src/gla-gl.cc: The Debian mingw-w64 packages lack
+	  GL/glext.h so test for it in configure.
+
 Wed Feb 22 23:29:29 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Remove variable which is only assigned to and
