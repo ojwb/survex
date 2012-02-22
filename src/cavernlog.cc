@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2011 Olly Betts
+ * Copyright (C) 2005,2006,2010,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ CavernLogWindow::process(const wxString &file)
     wxString cmd;
     {
 	DWORD len = 256;
-	wchar_t *buf = NULL, *p;
+	wchar_t *buf = NULL;
 	while (1) {
 	    DWORD got;
 	    buf = (wchar_t*)osrealloc(buf, len * 2);
@@ -184,7 +184,6 @@ CavernLogWindow::process(const wxString &file)
 	}
 	/* Strange Win32 nastiness - strip prefix "\\?\" if present */
 	if (wcsncmp(buf, L"\\\\?\\", 4) == 0) buf += 4;
-	p = wcsrchr(buf, L'\\');
 	wchar_t * slash = wcsrchr(buf, L'\\');
 	if (slash) {
 	    cmd.assign(buf, slash - buf + 1);
