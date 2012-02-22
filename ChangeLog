@@ -1,3 +1,8 @@
+Wed Feb 22 11:35:40 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Remove return type from data_normal() etc as we never
+	  use it.
+
 Wed Feb 22 05:11:53 GMT 2012  Olly Betts <olly@survex.com>
 
 	* make_release: Update to work with Debian mingw-w64 packages.

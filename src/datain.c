@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -65,11 +65,11 @@ static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
 
 /* style functions */
-static int data_normal(void);
-static int data_cartesian(void);
-static int data_passage(void);
-static int data_nosurvey(void);
-static int data_ignore(void);
+static void data_normal(void);
+static void data_cartesian(void);
+static void data_passage(void);
+static void data_nosurvey(void);
+static void data_ignore(void);
 
 void
 get_pos(filepos *fp)
@@ -569,7 +569,7 @@ data_file(const char *pth, const char *fnm)
 	       process_eol();
 	       break;
 	    }
-	    (void)data_normal();
+	    data_normal();
 	 }
       }
       {
@@ -668,31 +668,28 @@ data_file(const char *pth, const char *fnm)
    } else {
       while (!feof(file.fh) && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
-	    volatile int r;
 	    f_export_ok = fFalse;
 	    switch (pcs->style) {
 	     case STYLE_NORMAL:
 	     case STYLE_DIVING:
 	     case STYLE_CYLPOLAR:
-	       r = data_normal();
+	       data_normal();
 	       break;
 	     case STYLE_CARTESIAN:
-	       r = data_cartesian();
+	       data_cartesian();
 	       break;
 	     case STYLE_PASSAGE:
-	       r = data_passage();
+	       data_passage();
 	       break;
 	     case STYLE_NOSURVEY:
-	       r = data_nosurvey();
+	       data_nosurvey();
 	       break;
 	     case STYLE_IGNORE:
-	       r = data_ignore();
+	       data_ignore();
 	       break;
 	     default:
-	       r = 0; /* avoid warning */
 	       BUG("bad style");
 	    }
-	    /* style function returns 0 => error */
 	 }
       }
    }
@@ -1199,7 +1196,7 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
-static int
+static void
 data_cartesian(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1238,9 +1235,8 @@ data_cartesian(void)
 	 /* fall through */
        case Newline:
 	 if (fr != NULL) {
-	    int r;
-	    r = process_cartesian(fr, to, first_stn == To);
-	    if (!r) skipline();
+	    if (!process_cartesian(fr, to, first_stn == To))
+	       skipline();
 	 }
 	 fMulti = fTrue;
 	 while (1) {
@@ -1249,7 +1245,7 @@ data_cartesian(void)
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
 	       push_back(ch);
-	       return 1;
+	       return;
 	    }
 	 }
 	 break;
@@ -1258,9 +1254,9 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	    int r = process_cartesian(fr, to, first_stn == To);
+	    process_cartesian(fr, to, first_stn == To);
 	    process_eol();
-	    return r;
+	    return;
 	 }
 	 do {
 	    process_eol();
@@ -1337,7 +1333,7 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
 /* Process tape/compass/clino, diving, and cylpolar styles of survey data
  * Also handles topofil (fromcount/tocount or count) in place of tape */
-static int
+static void
 data_normal(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1404,7 +1400,7 @@ data_normal(void)
 	     compile_error_skip(/*Found “%s”, expecting “F” or “B”*/131,
 				buffer);
 	     process_eol();
-	     return 0;
+	     return;
 	  }
 	  break;
        }
@@ -1435,7 +1431,7 @@ data_normal(void)
 	     if (VAL(Clino) != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
 	     process_eol();
-	     return 0;
+	     return;
 	  }
 	  ctype = CTYPE_READING;
 	  break;
@@ -1446,7 +1442,7 @@ data_normal(void)
 	     if (VAL(BackClino) != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
 	     process_eol();
-	     return 0;
+	     return;
 	  }
 	  backctype = CTYPE_READING;
 	  break;
@@ -1601,7 +1597,7 @@ data_normal(void)
 	      if (isData(ch)) break;
 	      if (!isComm(ch)) {
 		 push_back(ch);
-		 return 1;
+		 return;
 	      }
 	  }
 	  break;
@@ -1610,11 +1606,10 @@ data_normal(void)
 	  /* fall through */
        case End:
 	  if (!fMulti) {
-	     int r;
 	     /* Compass ignore flag is 'X' */
 	     if ((compass_dat_flags & BIT('X' - 'A'))) {
 		process_eol();
-		return 1;
+		return;
 	     }
 	     if (fRev) {
 		prefix *t = fr;
@@ -1629,7 +1624,7 @@ data_normal(void)
 		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		process_eol();
-		return 1;
+		return;
 	     }
 	     if (fTopofil) {
 		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
@@ -1640,24 +1635,23 @@ data_normal(void)
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
-		r = process_normal(fr, to, (first_stn == To) ^ fRev,
-				   ctype, backctype);
+		process_normal(fr, to, (first_stn == To) ^ fRev,
+			       ctype, backctype);
 		break;
 	      case STYLE_DIVING:
-		r = process_diving(fr, to, (first_stn == To) ^ fRev,
-				   fDepthChange);
+		process_diving(fr, to, (first_stn == To) ^ fRev,
+			       fDepthChange);
 		break;
 	      case STYLE_CYLPOLAR:
-		r = process_cylpolar(fr, to, (first_stn == To) ^ fRev,
-				     fDepthChange);
+		process_cylpolar(fr, to, (first_stn == To) ^ fRev,
+				 fDepthChange);
 		break;
 	      default:
-		r = 0; /* Suppress compiler warning */;
 		BUG("bad style");
 	     }
 
 	     process_eol();
-	     return r;
+	     return;
 	  }
 	  do {
 	     process_eol();
@@ -1689,7 +1683,7 @@ process_lrud(prefix *stn)
    return 1;
 }
 
-static int
+static void
 data_passage(void)
 {
    prefix *stn = NULL;
@@ -1717,9 +1711,9 @@ data_passage(void)
 	 skipline();
 	 /* fall through */
        case End: {
-	 int r = process_lrud(stn);
+	 process_lrud(stn);
 	 process_eol();
-	 return r;
+	 return;
        }
        default: BUG("Unknown reading in ordering");
       }
@@ -1757,7 +1751,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
-static int
+static void
 data_nosurvey(void)
 {
    prefix *fr = NULL, *to = NULL;
@@ -1793,9 +1787,8 @@ data_nosurvey(void)
 	 /* fall through */
        case Newline:
 	 if (fr != NULL) {
-	    int r;
-	    r = process_nosurvey(fr, to, first_stn == To);
-	    if (!r) skipline();
+	    if (!process_nosurvey(fr, to, first_stn == To))
+	       skipline();
 	 }
 	 if (ordering[1] == End) {
 	    do {
@@ -1804,7 +1797,7 @@ data_nosurvey(void)
 	    } while (isComm(ch));
 	    if (!isData(ch)) {
 	       push_back(ch);
-	       return 1;
+	       return;
 	    }
 	    goto again;
 	 }
@@ -1815,7 +1808,7 @@ data_nosurvey(void)
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
 	       push_back(ch);
-	       return 1;
+	       return;
 	    }
 	 }
 	 break;
@@ -1824,9 +1817,9 @@ data_nosurvey(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	    int r = process_nosurvey(fr, to, first_stn == To);
+	    (void)process_nosurvey(fr, to, first_stn == To);
 	    process_eol();
-	    return r;
+	    return;
 	 }
 	 do {
 	    process_eol();
@@ -1839,10 +1832,9 @@ data_nosurvey(void)
 }
 
 /* totally ignore a line of survey data */
-static int
+static void
 data_ignore(void)
 {
    skipline();
    process_eol();
-   return 1;
 }
