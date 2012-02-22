@@ -1,3 +1,7 @@
+Wed Feb 22 05:11:53 GMT 2012  Olly Betts <olly@survex.com>
+
+	* make_release: Update to work with Debian mingw-w64 packages.
+
 Mon Feb 20 05:08:26 GMT 2012  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.in: Update for 1.2.6.
