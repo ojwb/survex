@@ -1,4 +1,4 @@
-Changes in 1.2.6 (2012-02-20):
+Changes in 1.2.6 (2012-02-23):
 
 * (Mac OS X version): Fix so that cavern finds its messages when run by aven.
 
@@ -13,7 +13,12 @@ Changes in 1.2.6 (2012-02-20):
   Kahler.
 
 * findentrances: Add findentrances utility from Olaf Kahler which produces a
-  .gpx file with waypoints for entrances.
+  .gpx file with waypoints for entrances.  This needs libproj so is disabled
+  by default for this release - to enable it install the development stuff for
+  libproj and build survex with:
+
+      make FINDENTRANCES=findentrances
+      make install FINDENTRANCES=findentrances
 
 * dump3d: Add support for showing img_ERROR_INFO items.
 

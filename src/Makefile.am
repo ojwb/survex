@@ -31,11 +31,18 @@ LDADD = $(LIBOBJS)
 INCLUDES = -DIMG_HOSTED -DIMG_API_VERSION=1
 
 # dump3d is a test program
+#
+# findentrances needs libproj so is disabled by default for the moment -
+# to enable it install the development stuff for libproj and build survex
+# with:
+#     make FINDENTRANCES=findentrances
+#     make install FINDENTRANCES=findentrances
+FINDENTRANCES =
 EXTRA_PROGRAMS =\
-	aven dump3d editwrap
+	aven dump3d editwrap findentrances
 # FIXME: base_progs in top level Makefile.am needs updating if this is
-bin_PROGRAMS = cavern diffpos extend cad3d sorterr \
- 3dtopos findentrances aven $(WINPROGS) $(TESTPROGS)
+bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos \
+ aven $(WINPROGS) $(TESTPROGS) $(FINDENTRANCES)
 bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
