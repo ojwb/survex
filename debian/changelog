@@ -1,3 +1,9 @@
+survex (1.2.6-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Olly Betts <olly@survex.com>  Thu, 23 Feb 2012 23:33:36 +0000
+
 survex (1.2.5-1) unstable; urgency=low
 
   * New upstream release.
