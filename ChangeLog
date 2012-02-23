@@ -1,3 +1,8 @@
+Thu Feb 23 22:34:52 GMT 2012  Olly Betts <olly@survex.com>
+
+	* make_release: Link mingw build statically to avoid needing libgcc
+	  DLL.
+
 Wed Feb 22 23:39:25 GMT 2012  Olly Betts <olly@survex.com>
 
 	* configure.in,src/gla-gl.cc: The Debian mingw-w64 packages lack
