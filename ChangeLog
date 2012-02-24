@@ -1,3 +1,8 @@
+Fri Feb 24 00:43:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst,tests/equatenosuchstn.out: Fix test failure due to
+	  Survex version number appearing in expected output.
+
 Thu Feb 23 22:34:52 GMT 2012  Olly Betts <olly@survex.com>
 
 	* make_release: Link mingw build statically to avoid needing libgcc

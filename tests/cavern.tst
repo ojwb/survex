@@ -268,9 +268,9 @@ for file in $TESTS ; do
     if test -f "$file.out" ; then
       # Check output is as expected.
       if test -n "$VERBOSE" ; then
-	diff tmp.out "$file.out" || exit 1
+	sed '1,/^$/d' tmp.out|diff - "$file.out" || exit 1
       else
-	diff tmp.out "$file.out" > /dev/null || exit 1
+	sed '1,/^$/d' tmp.out|diff - "$file.out" > /dev/null || exit 1
       fi
     fi
     rm -f tmp.*
