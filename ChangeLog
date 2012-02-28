@@ -1,3 +1,7 @@
+Tue Feb 28 00:41:15 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/diffpos.tst: Force English messages for diffpos tests too.
+
 Tue Feb 28 00:39:45 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst: Force English messages so comparing expected output
