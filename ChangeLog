@@ -1,3 +1,8 @@
+Tue Feb 28 00:39:45 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst: Force English messages so comparing expected output
+	  works whatever the current language setting.
+
 Fri Feb 24 00:43:04 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst,tests/equatenosuchstn.out: Fix test failure due to

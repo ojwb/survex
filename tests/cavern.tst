@@ -59,7 +59,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 LC_ALL=C
 export LC_ALL
-unset SURVEXLANG
+SURVEXLANG=en
 export SURVEXLANG
 
 for file in $TESTS ; do
