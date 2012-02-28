@@ -1,3 +1,9 @@
+survex (1.2.6-2) unstable; urgency=low
+
+  * Fix further testcase issues due to i18n of expected output.
+
+ -- Olly Betts <olly@survex.com>  Tue, 28 Feb 2012 05:11:38 +0000
+
 survex (1.2.6-1) unstable; urgency=low
 
   * New upstream release.
