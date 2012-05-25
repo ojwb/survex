@@ -1,6 +1,6 @@
 /* listpos.h
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1994,2001 Olly Betts
+ * Copyright (C) 1994,2001,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,3 +18,6 @@
  */
 
 void print_node_stats(void);
+
+/* Check but don't print, for getting the checks we do during the scan. */
+void check_node_stats(void);

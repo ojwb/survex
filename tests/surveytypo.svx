@@ -1,0 +1,14 @@
+*begin gps
+*export 1
+*fix 1 66123.45 79123.45 123.45
+*end gps
+
+*begin cave
+*export 000
+
+000	001	05.55	038.0	-05.0
+
+*end cave
+
+; typo: gos should be gps
+*equate gos.1 cave.000

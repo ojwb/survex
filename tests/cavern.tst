@@ -55,7 +55,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
- surfequate passage hanging_lrud equatenosuchstn"}}
+ surfequate passage hanging_lrud equatenosuchstn surveytypo"}}
 
 LC_ALL=C
 export LC_ALL
@@ -199,6 +199,7 @@ for file in $TESTS ; do
   passage) pos=no; warn=0 ;;
   hanging_lrud) pos=fail; error=1 ;;
   equatenosuchstn) pos=fail; error=1 ;;
+  surveytypo) pos=fail ;; # Actually, 2 errors, but we exit before the error count.
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac
@@ -268,9 +269,9 @@ for file in $TESTS ; do
     if test -f "$file.out" ; then
       # Check output is as expected.
       if test -n "$VERBOSE" ; then
-	sed '1,/^$/d' tmp.out|diff - "$file.out" || exit 1
+	sed '1,/^$/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" || exit 1
       else
-	sed '1,/^$/d' tmp.out|diff - "$file.out" > /dev/null || exit 1
+	sed '1,/^$/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" > /dev/null || exit 1
       fi
     fi
     rm -f tmp.*

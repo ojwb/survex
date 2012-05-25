@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,6 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    name = NULL;
    do {
       fNew = fFalse;
-      if (isSep(ch)) fImplicitPrefix = fFalse;
       if (name == NULL) {
 	 /* Need a new name buffer */
 	 name = osmalloc(name_len);
@@ -108,6 +107,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
 	 }
 	 nextch();
       }
+      if (isSep(ch)) fImplicitPrefix = fFalse;
       if (i == 0) {
 	 osfree(name);
 	 if (!f_optional) {

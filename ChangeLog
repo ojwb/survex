@@ -1,3 +1,13 @@
+Fri May 25 14:20:24 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst,test/equatenosuchstn.out: Drop line reporting time
+	  taken when comparing output, as that can vary.
+	* src/listpos.c,tests/equatenosuchstn.out: Move "Station X referred to
+	  just once" warning after non-existent survey check.
+	* src/,tests/: If survey isn't all connected, still run survey tree
+	  checks and report errors and/or warnings which might suggest typo
+	  locations.
+
 Tue Feb 28 00:41:15 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/diffpos.tst: Force English messages for diffpos tests too.

@@ -64,12 +64,8 @@ traverse_prefix_tree(prefix *from, void (*fn)(prefix *))
    }
 }
 
-#if NODESTAT
-static int *cOrder;
-static int icOrderMac;
-
 static void
-node_stat(prefix *p)
+check_node(prefix *p)
 {
    if (!p->pos) {
       if (!TSTBIT(p->sflags, SFLAGS_SURVEY)) {
@@ -88,27 +84,7 @@ node_stat(prefix *p)
 	 }
       }
    } else {
-      int order;
-      SVX_ASSERT(pfx_fixed(p));
-
-      order = p->shape;
-
-      if (order >= icOrderMac) {
-	 int c = order * 2;
-	 cOrder = osrealloc(cOrder, c * ossizeof(int));
-	 while (icOrderMac < c) cOrder[icOrderMac++] = 0;
-      }
-      cOrder[order]++;
-
-      if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
-	 warning_in_file(p->filename, p->line,
-		 /*Station “%s” referred to just once, with an explicit prefix - typo?*/70,
-		 sprint_prefix(p));
-      }
-
-      /* Don't need to worry about export violations in hanging surveys -
-       * if there are hanging surveys then we give up in articulate()
-       * and never get here... */
+      /* Do we need to worry about export violations in hanging surveys? */
       if (fExportUsed) {
 #if 0
 	 printf("L min %d max %d pfx %s\n",
@@ -139,7 +115,37 @@ node_stat(prefix *p)
 	    osfree(s);
 	 }
       }
+
+      if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
+	 warning_in_file(p->filename, p->line,
+		 /*Station “%s” referred to just once, with an explicit prefix - typo?*/70,
+		 sprint_prefix(p));
+      }
    }
+}
+
+#if NODESTAT
+static int *cOrder;
+static int icOrderMac;
+
+static void
+node_stat(prefix *p)
+{
+   if (p->pos) {
+      int order;
+      SVX_ASSERT(pfx_fixed(p));
+
+      order = p->shape;
+
+      if (order >= icOrderMac) {
+	 int c = order * 2;
+	 cOrder = osrealloc(cOrder, c * ossizeof(int));
+	 while (icOrderMac < c) cOrder[icOrderMac++] = 0;
+      }
+      cOrder[order]++;
+   }
+
+   check_node(p);
 }
 
 static void
@@ -165,4 +171,10 @@ print_node_stats(void)
       }
    }
 #endif
+}
+
+extern void
+check_node_stats(void)
+{
+   traverse_prefix_tree(root, check_node);
 }

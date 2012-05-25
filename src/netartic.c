@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2003,2005 Olly Betts
+ * Copyright (C) 1993-2003,2005,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include "debug.h"
 #include "cavern.h"
 #include "filename.h"
+#include "listpos.h"
 #include "message.h"
 #include "netartic.h"
 #include "netbits.h"
@@ -366,6 +367,12 @@ articulate(void)
    }
 
    if (stnlist) {
+      /* The cause of the problem is pretty likely to be a typo, so run the
+       * checks which report errors and warnings about issues which such a
+       * typo is likely to result in.
+       */
+      check_node_stats();
+
       /* Actually this error is fatal, but we want to list the survey
        * stations which aren't connected, so we report it as an error
        * and die after listing them...
