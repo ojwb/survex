@@ -1,3 +1,7 @@
+Sun May 27 12:24:17 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Include "export.h".
+
 Fri May 25 14:20:24 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst,test/equatenosuchstn.out: Drop line reporting time

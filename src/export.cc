@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,6 +25,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#include "export.h"
 
 #include "wx.h"
 #include <wx/utils.h>
