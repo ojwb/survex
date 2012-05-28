@@ -1,3 +1,7 @@
+Mon May 28 16:56:27 GMT 2012  Olly Betts <olly@survex.com>
+
+	* configure.in: -W no longer seems to cause problems with wxWidgets.
+
 Mon May 28 16:49:37 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/: Remove unused parameter names.

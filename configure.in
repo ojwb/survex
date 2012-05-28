@@ -319,8 +319,7 @@ dnl to disable it for mingw builds.
     AM_CFLAGS="$AM_CFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wmissing-prototypes -Wwrite-strings -Wredundant-decls -Wnested-externs\
       -Wcast-align"
-    dnl -W causes problems with wxWidgets
-    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -Wunused -Wshadow -Wpointer-arith\
+    AM_CXXFLAGS="$AM_CXXFLAGS -Wall -W -Wunused -Wshadow -Wpointer-arith\
       -Wwrite-strings -Wcast-align"
   fi
   dnl too many complaints from headers, etc: -Wconversion
