@@ -405,7 +405,7 @@ svxPrintDlg::OnElevationUpdate(wxUpdateUIEvent& e) {
 }
 
 void
-svxPrintDlg::OnChangeSpin(wxSpinEvent&e) {
+svxPrintDlg::OnChangeSpin(wxSpinEvent&) {
     SomethingChanged();
 }
 

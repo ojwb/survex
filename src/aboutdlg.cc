@@ -41,7 +41,7 @@ BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
 END_EVENT_TABLE()
 
 void
-AboutDlg::OnTimer(wxTimerEvent &e)
+AboutDlg::OnTimer(wxTimerEvent &)
 {
     wxImage::AddHandler(new wxJPEGHandler);
     bitmap.LoadFile(icon_path + wxT("osterei.jpg"), wxBITMAP_TYPE_JPEG);
@@ -49,7 +49,7 @@ AboutDlg::OnTimer(wxTimerEvent &e)
 }
 
 void
-AboutDlg::OnCopy(wxCommandEvent &e)
+AboutDlg::OnCopy(wxCommandEvent &)
 {
     if (wxTheClipboard->Open()) {
 	wxTheClipboard->SetData(new wxTextDataObject(info));
@@ -60,7 +60,7 @@ AboutDlg::OnCopy(wxCommandEvent &e)
 }
 
 void
-AboutDlg::OnClose(wxCommandEvent &e)
+AboutDlg::OnClose(wxCommandEvent &)
 {
     Destroy();
 }

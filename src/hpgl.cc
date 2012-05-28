@@ -98,7 +98,7 @@ void HPGL::header(const char *)
 }
 
 void
-HPGL::line(const img_point *p1, const img_point *p, bool fSurface, bool fPending)
+HPGL::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPending)
 {
    if (fPending) {
       fprintf(fh, "PU%ld,%ld;", long(p1->x - x_org), long(p1->y - y_org));
@@ -109,7 +109,7 @@ HPGL::line(const img_point *p1, const img_point *p, bool fSurface, bool fPending
 #define CS HPGL_CROSS_SIZE
 #define CS2 (2 * HPGL_CROSS_SIZE)
 void
-HPGL::cross(const img_point *p, bool fSurface)
+HPGL::cross(const img_point *p, bool /*fSurface*/)
 {
     fprintf(fh, "PU%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
     /* SM plots a symbol at each point, but it isn't very convenient here   */
@@ -123,7 +123,7 @@ HPGL::cross(const img_point *p, bool fSurface)
 #undef CS2
 
 void
-HPGL::label(const img_point *p, const char *s, bool fSurface)
+HPGL::label(const img_point *p, const char *s, bool /*fSurface*/)
 {
     /* LB is a text label, terminated with a ^C */
     fprintf(fh, "PU%ld,%ld;LB", long(p->x - x_org), long(p->y - y_org));

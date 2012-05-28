@@ -913,7 +913,7 @@ EPS::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
 }
 
 void
-EPS::label(const img_point *p, const char *s, bool fSurface)
+EPS::label(const img_point *p, const char *s, bool /*fSurface*/)
 {
    fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
    PUTC('(', fh);

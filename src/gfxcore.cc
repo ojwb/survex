@@ -293,7 +293,7 @@ void GfxCore::UpdateBlobs()
 //  Event handlers
 //
 
-void GfxCore::OnLeaveWindow(wxMouseEvent& event) {
+void GfxCore::OnLeaveWindow(wxMouseEvent&) {
     SetHere();
     ClearCoords();
 }

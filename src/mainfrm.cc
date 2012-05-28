@@ -63,7 +63,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 	{
 	}
 
-	void OnSplitterDClick(wxSplitterEvent &e) {
+	void OnSplitterDClick(wxSplitterEvent &) {
 	    parent->ToggleSidePanel();
 	}
 
@@ -207,7 +207,7 @@ class AvenPresList : public wxListCtrl {
 	    SetItemCount(entries.size());
 	    modified = true;
 	}
-	void OnDeleteAllItems(wxListEvent& event) {
+	void OnDeleteAllItems(wxListEvent&) {
 	    entries.clear();
 	    SetItemCount(entries.size());
 	    filename = wxString();
