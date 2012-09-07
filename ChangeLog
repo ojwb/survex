@@ -1,3 +1,8 @@
+Fri Sep 07 11:39:06 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/namecompare.cc,src/namecompare.h: Add two new files which were
+	  in the last release but I failed to commit.
+
 Tue Aug 14 09:42:43 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Create de_DE.po as a symlink if it doesn't exist.
