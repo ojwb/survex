@@ -27,20 +27,23 @@
 #include <math.h>
 
 #include "cmdline.h"
+#include "date.h"
 #include "debug.h"
 #include "filelist.h"
+#define IMG_API_VERSION 1
 #include "img.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
    {"survey", required_argument, 0, 's'},
    {"rewind", no_argument, 0, 'r'},
+   {"show-dates", no_argument, 0, 'd'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "rs:"
+#define short_opts "rds:"
 
 static struct help_msg help[] = {
 /*				<-- */
@@ -58,6 +61,7 @@ main(int argc, char **argv)
    int code;
    const char *survey = NULL;
    bool fRewind = fFalse;
+   bool show_dates = fFalse;
 
    msg_init(argv);
 
@@ -67,6 +71,7 @@ main(int argc, char **argv)
       if (opt == EOF) break;
       if (opt == 's') survey = optarg;
       if (opt == 'r') fRewind = fTrue;
+      if (opt == 'd') show_dates = fTrue;
    }
    fnm = argv[optind];
 
@@ -110,6 +115,15 @@ main(int argc, char **argv)
 	    if (pimg->flags & img_FLAG_SURFACE) printf(" SURFACE");
 	    if (pimg->flags & img_FLAG_DUPLICATE) printf(" DUPLICATE");
 	    if (pimg->flags & img_FLAG_SPLAY) printf(" SPLAY");
+	    if (show_dates && pimg->days1 != -1) {
+		int y, m, d;
+		ymd_from_days_since_1900(pimg->days1, &y, &m, &d);
+		printf(" %04d.%02d.%02d", y, m, d);
+		if (pimg->days1 != pimg->days2) {
+		    ymd_from_days_since_1900(pimg->days2, &y, &m, &d);
+		    printf("-%04d.%02d.%02d", y, m, d);
+		}
+	    }
 	    printf("\n");
 	    break;
 	  case img_LABEL:

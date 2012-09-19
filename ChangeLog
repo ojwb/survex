@@ -1,3 +1,7 @@
+Wed Sep 19 22:12:35 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c: Add --show-dates option.
+
 Fri Sep 07 11:39:06 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/namecompare.cc,src/namecompare.h: Add two new files which were
