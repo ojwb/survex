@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005,2006,2010,2011 Olly Betts
+ * Copyright (C) 1991-2004,2005,2006,2010,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -844,7 +844,7 @@ replace_trailing_travs(void)
       } else {
 	  pimg->days1 = pimg->days2 = -1;
       }
-      img_write_item(pimg, img_LINE, p->flags,
+      img_write_item(pimg, img_LINE, p->flags|img_FLAG_NOSURVEY,
 		     sprint_prefix(p->fr->name->up),
 		     POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
       nosurveyhead = p->next;

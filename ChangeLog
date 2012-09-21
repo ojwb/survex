@@ -1,3 +1,9 @@
+Fri Sep 21 06:24:32 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/img.h: New leg flag img_FLAG_NOSURVEY.
+	* src/netskel.c: Set img_FLAG_NOSURVEY for nosurvey legs.
+	* src/dump3d.c: Report NOSURVEY leg flag.
+
 Fri Sep 21 06:22:29 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: dump3d now needs date.c.

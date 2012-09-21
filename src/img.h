@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ extern "C" {
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02
 # define img_FLAG_SPLAY     0x04
+# define img_FLAG_NOSURVEY  0x08
 
 # define img_SFLAG_SURFACE     0x01
 # define img_SFLAG_UNDERGROUND 0x02
