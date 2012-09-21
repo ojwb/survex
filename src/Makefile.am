@@ -62,7 +62,7 @@ aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
  avenprcore.cc printwx.cc ini.c hash.c \
  buttontaghandler.cc
 
-dump3d_SOURCES = dump3d.c img.c useful.c $(COMMONSRC)
+dump3d_SOURCES = dump3d.c date.c img.c useful.c $(COMMONSRC)
 
 findentrances_SOURCES = findentrances.cc img.c useful.c $(COMMONSRC)
 findentrances_LDADD = -lproj
