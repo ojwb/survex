@@ -224,10 +224,6 @@ class MainFrm : public wxFrame {
     wxString m_File;
     wxString m_Title, m_DateStamp;
     wxChar separator; // character separating survey levels (often '.')
-#ifdef PREFDLG
-    PrefsDlg* m_PrefsDlg;
-#endif
-
     Vector3 m_Offsets;
 
     wxString icon_path;
@@ -236,6 +232,11 @@ class MainFrm : public wxFrame {
     wxString here_text, coords_text, dist_text, distfree_text;
 
     bool m_IsExtendedElevation;
+    bool pending_find;
+
+#ifdef PREFDLG
+    PrefsDlg* m_PrefsDlg;
+#endif
 
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
@@ -275,7 +276,9 @@ public:
     void OnPresExportMovieUpdate(wxUpdateUIEvent& event);
     //void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
 
+    void DoFind();
     void OnFind(wxCommandEvent& event);
+    void OnIdle(wxIdleEvent& event);
     void OnGotoFound(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
     void OnHideUpdate(wxUpdateUIEvent& ui);

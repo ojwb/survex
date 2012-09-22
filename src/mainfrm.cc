@@ -451,6 +451,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(wxID_FIND, MainFrm::OnGotoFound)
     EVT_MENU(button_HIDE, MainFrm::OnHide)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
+    EVT_IDLE(MainFrm::OnIdle)
 
     EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
     EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
@@ -664,7 +665,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false),
-    m_HasErrorInformation(false), m_IsExtendedElevation(false)
+    m_HasErrorInformation(false), m_IsExtendedElevation(false),
+    pending_find(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
 #endif
@@ -1655,8 +1657,7 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
 
     if (!m_FindBox->GetValue().empty()) {
 	// Highlight any stations matching the current search.
-	wxCommandEvent dummy;
-	OnFind(dummy);
+	DoFind();
     }
 
     wxWindow * win = NULL;
@@ -2281,6 +2282,19 @@ void MainFrm::OnPresExportMovieUpdate(wxUpdateUIEvent& event)
 
 void MainFrm::OnFind(wxCommandEvent&)
 {
+    pending_find = true;
+}
+
+void MainFrm::OnIdle(wxIdleEvent&)
+{
+    if (pending_find) {
+	DoFind();
+    }
+}
+
+void MainFrm::DoFind()
+{
+    pending_find = false;
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression pattern.
 

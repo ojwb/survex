@@ -1,3 +1,10 @@
+Sat Sep 22 05:06:23 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: Don't run incremental search on every
+	  key-press, as on a slow machine the short initial search(es) will
+	  take a while but not be useful.  Instead set a flag, and actually
+	  run the search when MainFrm next receives an idle event.
+
 Fri Sep 21 06:24:32 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/img.h: New leg flag img_FLAG_NOSURVEY.
