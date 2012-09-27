@@ -597,7 +597,7 @@ data_file(const char *pth, const char *fnm)
 	    while (ch != ';' && ch != EOF) {
 	       prefix *name;
 	       nextch_handling_eol();
-	       name = read_prefix_stn(fTrue, fFalse);
+	       name = read_prefix(PFX_STATION|PFX_OPT);
 	       if (name) {
 		  skipblanks();
 		  if (ch == '[') {
@@ -1213,16 +1213,16 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	 fr = read_prefix_stn(fFalse, fTrue);
+	 fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	 if (first_stn == End) first_stn = Fr;
 	 break;
        case To:
-	 to = read_prefix_stn(fFalse, fTrue);
+	 to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	 if (first_stn == End) first_stn = To;
 	 break;
        case Station:
 	 fr = to;
-	 to = read_prefix_stn(fFalse, fFalse);
+	 to = read_prefix(PFX_STATION);
 	 first_stn = To;
 	 break;
        case Dx: case Dy: case Dz:
@@ -1367,16 +1367,16 @@ data_normal(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse, fTrue);
+	  fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to = read_prefix_stn(fFalse, fTrue);
+	  to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Station:
 	  fr = to;
-	  to = read_prefix_stn(fFalse, fFalse);
+	  to = read_prefix(PFX_STATION);
 	  first_stn = To;
 	  break;
        case Dir: {
@@ -1693,7 +1693,7 @@ data_passage(void)
       skipblanks();
       switch (*ordering) {
        case Station:
-	 stn = read_prefix_stn(fFalse, fFalse);
+	 stn = read_prefix(PFX_STATION);
 	 break;
        case Left: case Right: case Up: case Down:
 	 read_reading(*ordering, fTrue);
@@ -1768,16 +1768,16 @@ data_nosurvey(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix_stn(fFalse, fTrue);
+	  fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to = read_prefix_stn(fFalse, fTrue);
+	  to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Station:
 	  fr = to;
-	  to = read_prefix_stn(fFalse, fFalse);
+	  to = read_prefix(PFX_STATION);
 	  first_stn = To;
 	  break;
        case Ignore:

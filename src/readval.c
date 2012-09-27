@@ -43,10 +43,13 @@
 
 int root_depr_count = 0;
 
-/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
-static prefix *
-read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
+/* if prefix is omitted: if PFX_OPT set return NULL, otherwise use longjmp */
+extern prefix *
+read_prefix(unsigned pfx_flags)
 {
+   bool f_optional = !!(pfx_flags & PFX_OPT);
+   bool fSurvey = !!(pfx_flags & PFX_SURVEY);
+   bool fSuspectTypo = !!(pfx_flags & PFX_SUSPECT_TYPO);
    prefix *back_ptr, *ptr;
    char *name;
    size_t name_len = 32;
@@ -58,7 +61,7 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    skipblanks();
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
-      if (!fAllowRoot) {
+      if (!(pfx_flags & PFX_ALLOW_ROOT)) {
 	 compile_error_skip(/*ROOT is deprecated*/25);
 	 LONGJMP(file.jbSkipLine);
       }
@@ -253,27 +256,6 @@ read_prefix_(bool f_optional, bool fSurvey, bool fSuspectTypo, bool fAllowRoot)
    return ptr;
 }
 
-/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
-extern prefix *
-read_prefix_survey(bool f_optional, bool fAllowRoot)
-{
-   return read_prefix_(f_optional, fTrue, fFalse, fAllowRoot);
-}
-
-/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
-extern prefix *
-read_prefix_stn(bool f_optional, bool fAllowRoot)
-{
-   return read_prefix_(f_optional, fFalse, fFalse, fAllowRoot);
-}
-
-/* if prefix is omitted: if f_optional return NULL, otherwise use longjmp */
-/* Same as read_prefix_stn but implicit checks are made */
-extern prefix *
-read_prefix_stn_check_implicit(bool f_optional, bool fAllowRoot)
-{
-   return read_prefix_(f_optional, fFalse, fTrue, fAllowRoot);
-}
 
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
 static real

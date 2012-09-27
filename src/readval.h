@@ -1,6 +1,6 @@
 /* readval.h
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2010 Olly Betts
+ * Copyright (C) 1991-2003,2005,2010,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,20 @@
 
 extern int root_depr_count;
 
-prefix *read_prefix_survey(bool f_optional, bool fAllowRoot);
-prefix *read_prefix_stn(bool f_optional, bool fAllowRoot);
-prefix *read_prefix_stn_check_implicit(bool f_optional, bool fAllowRoot);
+enum {
+    /* Can the prefix be omitted? */
+    PFX_OPT = 1,
+    /* Read a survey? */
+    PFX_SURVEY = 2,
+    /* Make implicit checks */
+    PFX_SUSPECT_TYPO = 4,
+    /* Can the deprecated "root" be used? */
+    PFX_ALLOW_ROOT = 8,
+    /* Read a station? */
+    PFX_STATION = 0
+};
+
+prefix *read_prefix(unsigned flags);
 
 real read_numeric(bool f_optional, int *p_n_readings);
 real read_numeric_or_omit(int *p_n_readings);

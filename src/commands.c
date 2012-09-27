@@ -508,7 +508,7 @@ cmd_prefix(void)
       if (++prefix_depr_count == 5)
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
-   tag = read_prefix_survey(fFalse, fTrue);
+   tag = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
    pcs->Prefix = tag;
    check_reentry(tag);
 }
@@ -526,7 +526,7 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   tag = read_prefix_survey(fTrue, fTrue);
+   tag = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT);
    pcs->tag = tag;
    if (tag) {
       pcs->Prefix = tag;
@@ -578,7 +578,7 @@ cmd_end(void)
    pcs = pcsParent;
 
    /* note need to read using root *before* BEGIN */
-   tag = read_prefix_survey(fTrue, fTrue);
+   tag = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT);
    if (tag != tagBegin) {
       if (tag) {
 	 if (!tagBegin) {
@@ -598,7 +598,7 @@ cmd_end(void)
 static void
 cmd_entrance(void)
 {
-   prefix *pfx = read_prefix_stn(fFalse, fFalse);
+   prefix *pfx = read_prefix(PFX_STATION);
    pfx->sflags |= BIT(SFLAGS_ENTRANCE);
 }
 
@@ -613,7 +613,7 @@ cmd_fix(void)
    bool fRef = 0;
    filepos fp;
 
-   fix_name = read_prefix_stn(fFalse, fTrue);
+   fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
 
    get_pos(&fp);
@@ -777,10 +777,10 @@ cmd_equate(void)
    prefix *name1, *name2;
    bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
 
-   name1 = read_prefix_stn_check_implicit(fFalse, fTrue);
+   name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
    while (fTrue) {
       name2 = name1;
-      name1 = read_prefix_stn_check_implicit(fTrue, fTrue);
+      name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO|PFX_OPT);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
 	    compile_error_skip(/*Only one station in EQUATE command*/33);
@@ -825,7 +825,7 @@ cmd_export(void)
    prefix *pfx;
 
    fExportUsed = fTrue;
-   pfx = read_prefix_stn(fFalse, fFalse);
+   pfx = read_prefix(PFX_STATION);
    do {
       int depth = 0;
       {
@@ -859,7 +859,7 @@ cmd_export(void)
 	 }
 	 pfx->min_export = depth;
       }
-      pfx = read_prefix_stn(fTrue, fFalse);
+      pfx = read_prefix(PFX_STATION|PFX_OPT);
    } while (pfx);
 }
 
