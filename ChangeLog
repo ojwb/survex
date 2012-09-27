@@ -1,3 +1,7 @@
+Thu Sep 27 04:48:34 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/id.po: Add more translations and fix marking of unused messages.
+
 Thu Sep 27 04:07:24 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/Indonesian-5.1.11.isl,lib/Makefile.am,lib/id.po: Add start of

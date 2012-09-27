@@ -1,6 +1,6 @@
 # Indonesian translation for survex
 # Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
-# This file is distributed under the same license as the survex package.
+# This file is distributed under the same licence as the survex package.
 #
 msgid ""
 msgstr ""
@@ -137,9 +137,7 @@ msgid "Too many errors - giving up"
 msgstr "Terlalu banyak galat - menyerah"
 
 #: ../src/commands.c:1291
-msgid ""
-"*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT "
-"instead"
+msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr ""
 
 #. TRANSLATORS: A "plumbed leg" is one measured using a plumbline (a weight on a string).
@@ -547,8 +545,8 @@ msgid "3d file format versions %d to %d supported"
 msgstr ""
 
 #, c-format
-msgid "Error in format of font file “%s”"
-msgstr ""
+#~ msgid "Error in format of font file “%s”"
+#~ msgstr ""
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"
@@ -631,11 +629,11 @@ msgstr ""
 #. Actually, mouse is somewhat imprecise as it could refer to a trackerball
 #. or joystick, but mouse is more compact than "pointing device" and usually
 #. correct.
-msgid "No mouse detected"
-msgstr ""
+#~ msgid "No mouse detected"
+#~ msgstr ""
 
-msgid "You need to calibrate your printer - see the manual for details."
-msgstr ""
+#~ msgid "You need to calibrate your printer - see the manual for details."
+#~ msgstr ""
 
 #: ../src/commands.c:996
 #, c-format
@@ -684,7 +682,7 @@ msgstr ""
 
 #: ../src/filename.c:82
 msgid "Error writing to file"
-msgstr ""
+msgstr "Galat saat menulis ke berkas"
 
 #: ../src/sorterr.c:76
 #: ../src/sorterr.c:93
@@ -724,8 +722,8 @@ msgstr ""
 msgid "Elevation"
 msgstr ""
 
-msgid "3d file"
-msgstr ""
+#~ msgid "3d file"
+#~ msgstr ""
 
 #: ../src/cavern.c:341
 msgid "Calculating statistics"
@@ -747,7 +745,7 @@ msgstr ""
 #: ../src/cmdline.c:177
 #: ../src/cmdline.c:181
 msgid "FILE"
-msgstr ""
+msgstr "BERKAS"
 
 #. TRANSLATORS: a trailing traverse is a dead end back to a junction
 #: ../src/netskel.c:162
@@ -909,8 +907,8 @@ msgid "output version information and exit"
 msgstr ""
 
 #. TRANSLATORS: As in "printer driver"
-msgid "Driver"
-msgstr ""
+#~ msgid "Driver"
+#~ msgstr ""
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
 #: ../src/cmdline.c:166
@@ -924,49 +922,44 @@ msgstr ""
 msgid "Scale"
 msgstr ""
 
-msgid "Continue"
-msgstr ""
+#~ msgid "Continue"
+#~ msgstr ""
 
-msgid "Exiting."
-msgstr ""
+#~ msgid "Exiting."
+#~ msgstr ""
 
 #: ../src/cmdline.c:190
 #, c-format
 msgid "Try “%s --help” for more information.\n"
 msgstr ""
 
-msgid "Plan or Elevation"
-msgstr ""
+#~ msgid "Plan or Elevation"
+#~ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
-msgid "Bearing up page (degrees): "
-msgstr ""
+#~ msgid "Bearing up page (degrees): "
+#~ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
-msgid "Tilt (degrees): "
-msgstr ""
+#~ msgid "Tilt (degrees): "
+#~ msgstr ""
 
 #, c-format
-msgid ""
-"Please enter Map Scale = X:Y (default 1:%d)\n"
-": "
-msgstr ""
+#~ msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
+#~ msgstr ""
 
-msgid "Using scale %.0f:%.0f"
-msgstr ""
+#~ msgid "Using scale %.0f:%.0f"
+#~ msgstr ""
 
-msgid ""
-"Print which pages?\n"
-"(RETURN for all; “n” for one page, “m-n”, “m-”, “-n” for a range)\n"
-": "
-msgstr ""
+#~ msgid "Print which pages?\n(RETURN for all; “n” for one page, “m-n”, “m-”, “-n” for a range)\n: "
+#~ msgstr ""
 
 #. TRANSLATORS: e.g. "Printing to “somefile.ps”…" / "Printing to “Laserjet4 on amachine…”
 #, c-format
-msgid "Printing to “%s”…"
-msgstr ""
+#~ msgid "Printing to “%s”…"
+#~ msgstr ""
 
 #: ../src/avenprcore.cc:262
 #, c-format
@@ -981,11 +974,11 @@ msgstr ""
 
 #. TRANSLATORS: %s will be replaced by something like "123°"
 #, c-format
-msgid "Plan, %s up screen"
-msgstr ""
+#~ msgid "Plan, %s up screen"
+#~ msgstr ""
 
-msgid "View towards: "
-msgstr ""
+#~ msgid "View towards: "
+#~ msgstr ""
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1015,11 +1008,11 @@ msgid "Extended elevation"
 msgstr ""
 
 #, c-format
-msgid "This will need %d pages (%dx%d)."
-msgstr ""
+#~ msgid "This will need %d pages (%dx%d)."
+#~ msgstr ""
 
-msgid "This will need 1 page."
-msgstr ""
+#~ msgid "This will need 1 page."
+#~ msgstr ""
 
 #: ../src/cavern.c:410
 msgid "Survey contains 1 survey station,"
@@ -1058,28 +1051,28 @@ msgid "Survey has %ld connected components."
 msgstr ""
 
 #, c-format
-msgid "Bad list of pages to print “%s”"
-msgstr ""
+#~ msgid "Bad list of pages to print “%s”"
+#~ msgstr ""
 
 #. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-msgid "yes"
-msgstr ""
+#~ msgid "yes"
+#~ msgstr ""
 
 #. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-msgid "no"
-msgstr ""
+#~ msgid "no"
+#~ msgstr ""
 
 #. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-msgid "quit"
-msgstr ""
+#~ msgid "quit"
+#~ msgstr ""
 
 #. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
-msgid "plan"
-msgstr ""
+#~ msgid "plan"
+#~ msgstr ""
 
 #. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
-msgid "elevation"
-msgstr ""
+#~ msgid "elevation"
+#~ msgstr ""
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which causes the
 #. survey data to be reprocessed.
@@ -1146,7 +1139,7 @@ msgstr ""
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:173
 msgid " (colour)"
-msgstr ""
+msgstr " (warna)"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454
@@ -1257,8 +1250,8 @@ msgstr ""
 msgid "Facing"
 msgstr ""
 
-msgid "Close"
-msgstr ""
+#~ msgid "Close"
+#~ msgstr "Tutup"
 
 #. TRANSLATORS: for the title of the About box
 #: ../src/aboutdlg.cc:69
@@ -1307,7 +1300,7 @@ msgstr ""
 #. The accelerators must be different within this group
 #: ../src/mainfrm.cc:828
 msgid "&File"
-msgstr ""
+msgstr "&Berkas"
 
 #: ../src/mainfrm.cc:829
 msgid "&Rotation"
@@ -1319,7 +1312,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:831
 msgid "&View"
-msgstr ""
+msgstr "&Tilik"
 
 #: ../src/mainfrm.cc:833
 msgid "&Controls"
@@ -1327,7 +1320,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:842
 msgid "&Help"
-msgstr ""
+msgstr "&Bantuan"
 
 #: ../src/mainfrm.cc:835
 msgid "&Presentation"
@@ -1381,10 +1374,10 @@ msgstr ""
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:712
 msgid "&Open…\tCtrl+O"
-msgstr ""
+msgstr "&Buka…\tCtrl+O"
 
-msgid "&Quit\tCtrl+Q"
-msgstr ""
+#~ msgid "&Quit\tCtrl+Q"
+#~ msgstr "&Keluar\tCtrl+Q"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
@@ -1430,11 +1423,11 @@ msgstr ""
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
-msgid "Select a terrain file to view"
-msgstr ""
+#~ msgid "Select a terrain file to view"
+#~ msgstr ""
 
-msgid "Terrain files"
-msgstr ""
+#~ msgid "Terrain files"
+#~ msgstr ""
 
 #. TRANSLATORS: %s will be replaced by the application name ("Aven" currently)
 #: ../src/log.cc:30
@@ -1445,7 +1438,7 @@ msgstr ""
 #. TRANSLATORS: Used in the "Export" settings dialog
 #: ../src/printwx.cc:290
 msgid "&Export…"
-msgstr ""
+msgstr "&Ekspor…"
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within this group.
 #. Tickable menu item which toggles auto rotation
@@ -1562,7 +1555,7 @@ msgstr ""
 #. "what to print" dialog.
 #: ../src/printwx.cc:206
 msgid "View"
-msgstr ""
+msgstr "Tilik"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
 #. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn’t a
@@ -1648,8 +1641,8 @@ msgstr ""
 msgid "C&linometer"
 msgstr ""
 
-msgid "&Depth Bar"
-msgstr ""
+#~ msgid "&Depth Bar"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
@@ -1673,8 +1666,8 @@ msgstr ""
 msgid "Colour by E&rror"
 msgstr ""
 
-msgid "&About…"
-msgstr ""
+#~ msgid "&About…"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:783
 msgid "&Surface Survey Legs\tCtrl+F"
@@ -1877,16 +1870,16 @@ msgstr ""
 msgid "No matches were found."
 msgstr ""
 
-msgid "Open &Terrain…"
-msgstr ""
+#~ msgid "Open &Terrain…"
+#~ msgstr ""
 
-msgid "Solid Su&rface"
-msgstr ""
+#~ msgid "Solid Su&rface"
+#~ msgstr ""
 
 #. TRANSLATORS: number of stations found matching search
 #, c-format
-msgid "%d found"
-msgstr ""
+#~ msgid "%d found"
+#~ msgstr ""
 
 #. TRANSLATORS: "Find stations" button tooltip
 #: ../src/mainfrm.cc:893
@@ -1897,7 +1890,7 @@ msgstr ""
 #: ../src/mainfrm.cc:895
 #: ../src/mainfrm.cc:2423
 msgid "Hide"
-msgstr ""
+msgstr "Tersembunyi"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
 #: ../src/mainfrm.cc:2384
@@ -1906,8 +1899,8 @@ msgid "Hide %d found stations"
 msgstr ""
 
 #. TRANSLATORS: checkbox for regular expression search
-msgid "Regular expression"
-msgstr ""
+#~ msgid "Regular expression"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:193
 #: ../src/mainfrm.cc:1854
@@ -2019,94 +2012,94 @@ msgid "Passage &Tubes\tCtrl+T"
 msgstr ""
 
 #: ../src/mainfrm.cc:806
-msgid "&Preferences…"
-msgstr ""
+#~ msgid "&Preferences…"
+#~ msgstr ""
 
-msgid "Draw passage walls"
-msgstr ""
+#~ msgid "Draw passage walls"
+#~ msgstr ""
 
-msgid "Estimate LRUD readings based on heuristics"
-msgstr ""
+#~ msgid "Estimate LRUD readings based on heuristics"
+#~ msgstr ""
 
-msgid "Mark survey stations with crosses"
-msgstr ""
+#~ msgid "Mark survey stations with crosses"
+#~ msgstr ""
 
-msgid "Highlight stations marked as entrances"
-msgstr ""
+#~ msgid "Highlight stations marked as entrances"
+#~ msgstr ""
 
-msgid "Highlight stations marked as fixed points"
-msgstr ""
+#~ msgid "Highlight stations marked as fixed points"
+#~ msgstr ""
 
-msgid "Highlight stations which are exported"
-msgstr ""
+#~ msgid "Highlight stations which are exported"
+#~ msgstr ""
 
-msgid "Mark survey stations with their names"
-msgstr ""
+#~ msgid "Mark survey stations with their names"
+#~ msgstr ""
 
-msgid "Allow names to overlap on the display (faster)"
-msgstr ""
+#~ msgid "Allow names to overlap on the display (faster)"
+#~ msgstr ""
 
 #: ../src/mainfrm.cc:803
 msgid "Full Screen &Mode\tF11"
 msgstr ""
 
-msgid "Display underground survey legs"
-msgstr ""
+#~ msgid "Display underground survey legs"
+#~ msgstr ""
 
-msgid "Display surface survey legs"
-msgstr ""
+#~ msgid "Display surface survey legs"
+#~ msgstr ""
 
-msgid "Colour surface surveys by depth"
-msgstr ""
+#~ msgid "Colour surface surveys by depth"
+#~ msgstr ""
 
-msgid "Draw surface legs with dashed lines"
-msgstr ""
+#~ msgid "Draw surface legs with dashed lines"
+#~ msgstr ""
 
-msgid "Draw a grid"
-msgstr ""
+#~ msgid "Draw a grid"
+#~ msgstr ""
 
-msgid "metric units"
-msgstr ""
+#~ msgid "metric units"
+#~ msgstr ""
 
 #. TRANSLATORS: Miles, Feet, Inches, etc.  What they call "English units" in
 #. the USA (rather confusingly now that England has largely gone metric!)
-msgid "imperial units"
-msgstr ""
+#~ msgid "imperial units"
+#~ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
-msgid "degrees (°)"
-msgstr ""
+#~ msgid "degrees (°)"
+#~ msgstr ""
 
 #. TRANSLATORS: Grads are the angular measurement where there are 400 in a
 #. full circle.
-msgid "grads"
-msgstr ""
+#~ msgid "grads"
+#~ msgstr ""
 
-msgid "Display measurements in"
-msgstr ""
+#~ msgid "Display measurements in"
+#~ msgstr ""
 
-msgid "Display angles in"
-msgstr ""
+#~ msgid "Display angles in"
+#~ msgstr ""
 
 #. TRANSLATORS: reverses the sense of the mouse controls
-msgid "Reverse the sense of the controls"
-msgstr ""
+#~ msgid "Reverse the sense of the controls"
+#~ msgstr ""
 
-msgid "Display scale bar"
-msgstr ""
+#~ msgid "Display scale bar"
+#~ msgstr ""
 
-msgid "Display depth bar"
-msgstr ""
+#~ msgid "Display depth bar"
+#~ msgstr ""
 
-msgid "Display compass"
-msgstr ""
+#~ msgid "Display compass"
+#~ msgstr ""
 
-msgid "Display clinometer"
-msgstr ""
+#~ msgid "Display clinometer"
+#~ msgstr ""
 
-msgid "Display side panel"
-msgstr ""
+#~ msgid "Display side panel"
+#~ msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
 #: ../src/mainfrm.cc:1907
@@ -2142,11 +2135,11 @@ msgstr ""
 
 #: ../src/mainfrm.cc:715
 msgid "&Print…\tCtrl+P"
-msgstr ""
+msgstr "&Cetak…\tCtrl+P"
 
 #: ../src/mainfrm.cc:716
 msgid "P&age Setup…"
-msgstr ""
+msgstr "&Tata Halaman…"
 
 #: ../src/mainfrm.cc:719
 msgid "&Export as…"
@@ -2160,7 +2153,7 @@ msgstr ""
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:166
 msgid "Export"
-msgstr ""
+msgstr "Ekspor"
 
 #. TRANSLATORS: for about box:
 #: ../src/aboutdlg.cc:134
@@ -2170,22 +2163,22 @@ msgstr ""
 #. TRANSLATORS: Title of the print preview dialog
 #: ../src/printwx.cc:349
 msgid "Print Preview"
-msgstr ""
+msgstr "Pratilik Cetak"
 
 #. TRANSLATORS: Title of the print dialog
 #: ../src/printwx.cc:166
 msgid "Print"
-msgstr ""
+msgstr "Cetak"
 
 #: ../src/printwx.cc:287
 msgid "&Print…"
-msgstr ""
+msgstr "&Cetak…"
 
-msgid "Pre&view"
-msgstr ""
+#~ msgid "Pre&view"
+#~ msgstr "&Pratilik Cetak"
 
-msgid "&Cancel"
-msgstr ""
+#~ msgid "&Cancel"
+#~ msgstr "&Batal"
 
 #: ../src/printwx.cc:259
 msgid "Sur&face Survey Legs"
@@ -2193,8 +2186,8 @@ msgstr ""
 
 #. TRANSLATORS: "%s" is replaced by the invalid expression
 #, c-format
-msgid "Invalid regular expression: %s"
-msgstr ""
+#~ msgid "Invalid regular expression: %s"
+#~ msgstr ""
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:83
@@ -2209,7 +2202,7 @@ msgstr ""
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:125
 msgid "Time: "
-msgstr ""
+msgstr "Waktu: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:127
