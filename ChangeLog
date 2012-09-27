@@ -1,3 +1,7 @@
+Thu Sep 27 00:31:24 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Remove scripts and data files which are no longer used.
+
 Sat Sep 22 05:06:23 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc,src/mainfrm.h: Don't run incremental search on every
