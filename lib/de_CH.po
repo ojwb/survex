@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-01-06 11:46:46 +0000\n"
+"PO-Revision-Date: 2012-09-27 03:56:00 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -35,8 +35,8 @@ msgstr "von"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#: ../src/aven.cc:359
-#: ../src/message.c:1187
+#: ../src/aven.cc:360
+#: ../src/message.c:1189
 msgid "warning"
 msgstr "Warnung"
 
@@ -115,7 +115,7 @@ msgid "End of line not blank"
 msgstr "Ende der Zeile ist nicht leer"
 
 #. TRANSLATORS: de: Es wurden %d Warnungen registriert.
-#: ../src/cavern.c:385
+#: ../src/cavern.c:384
 #, c-format
 msgid "There were %d warning(s)."
 msgstr "Es gab %d Warnungen."
@@ -139,7 +139,7 @@ msgid "Error reading file"
 msgstr "Fehler beim Einlesen der Datei"
 
 #. TRANSLATORS: de: anthropomorphising version: "Zu viele Fehler - ich gebe auf"
-#: ../src/message.c:1202
+#: ../src/message.c:1204
 msgid "Too many errors - giving up"
 msgstr "Abbruch wegen zu vieler Fehler"
 
@@ -188,11 +188,18 @@ msgstr "ROOT ist veraltet"
 #. *end inner
 #. *end outer
 #: ../src/commands.c:813
-#: ../src/listpos.c:130
+#: ../src/listpos.c:131
 #: ../src/readval.c:240
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
 msgstr "Messpunkt “%s” nicht aus Vermessung “%s” exportiert"
+
+#. TRANSLATORS: This error occurs if there's an attempt to export a station
+#. from a survey which doesn't actually exist.
+#: ../src/listpos.c:134
+#, c-format
+msgid "Reference to station “%s” from non-existent survey “%s”"
+msgstr ""
 
 #: ../src/readval.c:212
 #, c-format
@@ -313,7 +320,7 @@ msgstr "Teile der Vermessung sind nicht an feste Punkte angeschlossen"
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Messpunkt ist schon fest oder gleich einem festen Punkt"
 
-#: ../src/cavern.c:288
+#: ../src/cavern.c:287
 #: ../src/filename.c:55
 #: ../src/img.c:179
 #, c-format
@@ -558,10 +565,10 @@ msgstr "Ungültiger Monat"
 msgid "Invalid day of the month"
 msgstr "Ungültiger Monatstag"
 
-#: ../src/cavern.c:237
+#: ../src/cavern.c:236
 #, c-format
 msgid "3d file format versions %d to %d supported"
-msgstr ""
+msgstr "Versionen %d bis %d des 3D-Dateiformats werden unterstützt"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
@@ -595,7 +602,7 @@ msgstr "Konnte Datei “%s” nicht öffnen"
 #: ../src/printwx.cc:331
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "In die Datei “%s” konnte nicht geschrieben werden"
 
 #: ../src/message.c:227
 msgid "Bad memory access"
@@ -711,7 +718,7 @@ msgid "Couldn’t parse .err file"
 msgstr ".err-Datei konnte nicht interpretiert werden"
 
 #. TRANSLATORS: de: Es wurden %d Warnungen und %d Fehler registriert.
-#: ../src/cavern.c:380
+#: ../src/cavern.c:379
 #, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Es gab %d Warnungen und %d Fehler - keine Ausgabedatei erstellt."
@@ -738,7 +745,7 @@ msgstr "&Grundriss"
 msgid "&Elevation"
 msgstr "&Aufriss"
 
-#: ../src/gfxcore.cc:673
+#: ../src/gfxcore.cc:686
 #: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr "Aufriss"
@@ -746,7 +753,7 @@ msgstr "Aufriss"
 #~ msgid "3d file"
 #~ msgstr "3D-Bilddatei"
 
-#: ../src/cavern.c:342
+#: ../src/cavern.c:341
 msgid "Calculating statistics"
 msgstr "Statistik wird berechnet"
 
@@ -798,70 +805,70 @@ msgstr "Netzwerk wird ausgeglichen"
 msgid "Found “%s”, expecting “F” or “B”"
 msgstr "“%s” gelesen, “F” oder “B” erwartet"
 
-#: ../src/cavern.c:437
+#: ../src/cavern.c:436
 #, c-format
 msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
 msgstr "Gesamtlänge der Messstrecken = %7.2fm (%7.2fm ausgeglichen)"
 
-#: ../src/cavern.c:440
+#: ../src/cavern.c:439
 #, c-format
 msgid "Total plan length of survey legs = %7.2fm"
 msgstr "Gesamte Horizontallänge der Messstrecken = %7.2fm"
 
-#: ../src/cavern.c:443
+#: ../src/cavern.c:442
 #, c-format
 msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "Gesamte Vertikallänge der Messstrecken = %7.2fm"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:449
+#: ../src/cavern.c:448
 #, c-format
 msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Vertikale Erstreckung = %4.2fm (von %s auf %4.2fm bis %s auf %4.2fm)"
 
 #. TRANSLATORS: c.f. previous message
-#: ../src/cavern.c:450
+#: ../src/cavern.c:449
 #, c-format
 msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Nord-Süd-Erstreckung = %4.2fm (von %s bei %4.2fm bis %s bei %4.2fm)"
 
 #. TRANSLATORS: c.f. previous two messages
-#: ../src/cavern.c:451
+#: ../src/cavern.c:450
 #, c-format
 msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Ost-West-Erstreckung = %4.2fm (von %s bei %4.2fm bis %s bei %4.2fm)"
 
 #. TRANSLATORS: de: There _is_ a technical term for this which I fail to remember at the moment.
-#: ../src/cavern.c:425
+#: ../src/cavern.c:424
 msgid "There is 1 loop."
 msgstr "Es gibt eine Ringverbindung."
 
 #. TRANSLATORS: de: There _is_ a technical term for this which I fail to remember at the moment.
-#: ../src/cavern.c:427
+#: ../src/cavern.c:426
 #, c-format
 msgid "There are %ld loops."
 msgstr "Es gibt %ld Ringverbindungen."
 
-#: ../src/cavern.c:364
+#: ../src/cavern.c:363
 #, c-format
 msgid "CPU time used %5.2fs"
 msgstr "Benötigte Rechenzeit (CPU) %5.2fs"
 
-#: ../src/cavern.c:367
+#: ../src/cavern.c:366
 #, c-format
 msgid "Time used %5.2fs"
 msgstr "Benötigte Zeit %5.2fs"
 
-#: ../src/cavern.c:369
+#: ../src/cavern.c:368
 msgid "Time used unavailable"
 msgstr "Benötigte Zeit nicht feststellbar"
 
-#: ../src/cavern.c:372
+#: ../src/cavern.c:371
 #, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Benötigte Zeit %5.2fs (%5.2fs CPU-Zeit)"
 
-#: ../src/cavern.c:376
+#: ../src/cavern.c:375
 msgid "Done."
 msgstr "Fertig."
 
@@ -1039,38 +1046,38 @@ msgstr "Abwicklung"
 #~ msgid "This will need 1 page."
 #~ msgstr "Dies benötigt eine Seite."
 
-#: ../src/cavern.c:411
+#: ../src/cavern.c:410
 msgid "Survey contains 1 survey station,"
 msgstr "Vermessung enthält 1 Verzweigungspunkt,"
 
-#: ../src/cavern.c:413
+#: ../src/cavern.c:412
 #, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "Vermessung enthält %ld Verzweigungspunkte,"
 
-#: ../src/cavern.c:417
+#: ../src/cavern.c:416
 msgid " joined by 1 leg."
 msgstr " verbunden durch eine Messstrecke."
 
-#: ../src/cavern.c:419
+#: ../src/cavern.c:418
 #, c-format
 msgid " joined by %ld legs."
 msgstr " verbunden durch %ld Strecken."
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:159
+#: ../src/listpos.c:164
 msgid "node"
 msgstr "Verzweigungspunkt"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:159
+#: ../src/listpos.c:164
 msgid "nodes"
 msgstr "Verzweigungspunkte"
 
 #. TRANSLATORS: connected component in the graph theory sense
 #. It means there are %ld bits of survey with no connections between them
 #. This message is only used if there are more than 1
-#: ../src/cavern.c:433
+#: ../src/cavern.c:432
 #, c-format
 msgid "Survey has %ld connected components."
 msgstr "Netzwerk hat %ld zusammenhängende Teile."
@@ -1166,12 +1173,12 @@ msgstr "( Rechtsw.,Hochwert, Höhe     )"
 #: ../src/aboutdlg.cc:172
 #, c-format
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "Farbtiefe: %d bpp"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:173
 msgid " (colour)"
-msgstr ""
+msgstr " (Farbe)"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454
@@ -1197,37 +1204,37 @@ msgid "print and exit (requires a 3d file)"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:122
+#: ../src/cavern.c:121
 msgid "display percentage progress"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --output option
-#: ../src/cavern.c:123
+#: ../src/cavern.c:122
 msgid "set location for output files"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --quiet option
-#: ../src/cavern.c:124
+#: ../src/cavern.c:123
 msgid "only show brief summary (-qq for errors only)"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
-#: ../src/cavern.c:125
+#: ../src/cavern.c:124
 msgid "do not create .err file"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
-#: ../src/cavern.c:126
+#: ../src/cavern.c:125
 msgid "turn warnings into errors"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --log option
-#: ../src/cavern.c:127
+#: ../src/cavern.c:126
 msgid "log output to .log file"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --3d-version option
-#: ../src/cavern.c:128
+#: ../src/cavern.c:127
 msgid "specify the 3d file format version to output"
 msgstr ""
 
@@ -1278,7 +1285,7 @@ msgstr "Bildschirm&abzug…"
 msgid "No survey data in 3d file “%s”"
 msgstr "Keine Vermessungsdaten in 3D-Datei “%s”"
 
-#: ../src/gfxcore.cc:631
+#: ../src/gfxcore.cc:644
 msgid "Facing"
 msgstr "Blickrichtung"
 
@@ -1406,13 +1413,13 @@ msgstr "Ö&ffnen…\tCtrl+O"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
-#: ../src/gfxcore.cc:896
+#: ../src/gfxcore.cc:925
 msgid "Undated"
 msgstr "Nicht datiert"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
-#: ../src/gfxcore.cc:918
+#: ../src/gfxcore.cc:947
 msgid "Not in loop"
 msgstr ""
 
@@ -1458,7 +1465,7 @@ msgstr "Winkel und Längen können nicht gleichzeitig kalibriert werden"
 #: ../src/log.cc:30
 #, c-format
 msgid "%s Error Log"
-msgstr ""
+msgstr "%s-Fehlerprotokoll"
 
 #. TRANSLATORS: Used in the "Export" settings dialog
 #: ../src/printwx.cc:290
@@ -1506,25 +1513,25 @@ msgid "Fade Distant Ob&jects"
 msgstr "D&unsteffekt"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:2970
+#: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
 msgid "View &North"
 msgstr "Nach &Norden"
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:2971
+#: ../src/gfxcore.cc:2964
 #: ../src/mainfrm.cc:743
 msgid "View &East"
 msgstr "Nach &Osten"
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:2972
+#: ../src/gfxcore.cc:2965
 #: ../src/mainfrm.cc:744
 msgid "View &South"
 msgstr "Nach &Süden"
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:2973
+#: ../src/gfxcore.cc:2966
 #: ../src/mainfrm.cc:745
 msgid "View &West"
 msgstr "Nach &Westen"
@@ -1545,12 +1552,12 @@ msgstr "Verschieben nach o&ben"
 msgid "Shift Survey &Down"
 msgstr "Verschieben nach &unten"
 
-#: ../src/gfxcore.cc:2985
+#: ../src/gfxcore.cc:2978
 #: ../src/mainfrm.cc:752
 msgid "&Plan View"
 msgstr "&Grundriss"
 
-#: ../src/gfxcore.cc:2986
+#: ../src/gfxcore.cc:2979
 #: ../src/mainfrm.cc:753
 msgid "Ele&vation"
 msgstr "&Aufriss"
@@ -1687,7 +1694,7 @@ msgstr "Richtung &umkehren\tCtrl+R"
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "Messlinie &abschalten\tEscape"
 
-#: ../src/gfxcore.cc:3010
+#: ../src/gfxcore.cc:3003
 #: ../src/mainfrm.cc:788
 msgid "Colour by E&rror"
 msgstr "Anhand Fehle&rn einfärben"
@@ -1699,12 +1706,12 @@ msgstr "Anhand Fehle&rn einfärben"
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Messzüge Oberfläc&he\tCtrl+F"
 
-#: ../src/gfxcore.cc:3008
+#: ../src/gfxcore.cc:3001
 #: ../src/mainfrm.cc:786
 msgid "Colour by &Depth"
 msgstr "Farbe je nach &Tiefe"
 
-#: ../src/gfxcore.cc:3009
+#: ../src/gfxcore.cc:3002
 #: ../src/mainfrm.cc:787
 msgid "Colour by D&ate"
 msgstr "Farbe je nach &Datum"
@@ -1835,7 +1842,7 @@ msgstr "&Exportieren als Film…"
 
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
-msgstr ""
+msgstr "Film exportieren"
 
 #: ../src/mainfrm.cc:780
 msgid "&Bounding Box\tCtrl+B"
@@ -1983,8 +1990,8 @@ msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr "%s: %s, Dist %.2f%s, Richt. %03d%s"
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:2999
-#: ../src/gfxcore.cc:3014
+#: ../src/gfxcore.cc:2992
+#: ../src/gfxcore.cc:3007
 #: ../src/mainfrm.cc:823
 msgid "&Metric"
 msgstr "&Metrisch"
@@ -1992,25 +1999,25 @@ msgstr "&Metrisch"
 #. TRANSLATORS: tickable menu item in View menu.
 #. Degrees are the angular measurement where there are 360 in a
 #. full circle.
-#: ../src/gfxcore.cc:2976
-#: ../src/gfxcore.cc:2989
+#: ../src/gfxcore.cc:2969
+#: ../src/gfxcore.cc:2982
 #: ../src/mainfrm.cc:824
 msgid "&Degrees"
 msgstr "&Grad"
 
-#: ../src/gfxcore.cc:2975
+#: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
-#: ../src/gfxcore.cc:2988
+#: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
-#: ../src/gfxcore.cc:2998
+#: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
-#: ../src/gfxcore.cc:3012
+#: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
 
@@ -2174,7 +2181,7 @@ msgstr "&Exportieren als…"
 #. TRANSLATORS: Title of file dialog to choose name and type of exported file.
 #: ../src/printwx.cc:323
 msgid "Export as:"
-msgstr ""
+msgstr "Exportieren als:"
 
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:166
@@ -2237,7 +2244,7 @@ msgstr ""
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
-#: ../src/aven.cc:213
+#: ../src/aven.cc:214
 #, c-format
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
 msgstr "Diese Version von %s benötigt zum Funktionieren OpenGL, was jedoch nicht verfügbar ist."
@@ -2350,3 +2357,21 @@ msgstr ""
 #, c-format
 msgid "Writing %s…"
 msgstr "%s wird geschrieben…"
+
+#: ../src/findentrances.cc:100
+#, c-format
+msgid "Failed to initialise input coordinate system “%s”"
+msgstr "Initialisierung des Eingangskoordinatensystem “%s” gescheitert"
+
+#: ../src/findentrances.cc:103
+#, c-format
+msgid "Failed to initialise output coordinate system “%s”"
+msgstr "Initialisierung des Ausgangskoordinatensystem “%s” gescheitert"
+
+#: ../src/findentrances.cc:155
+msgid "-d PROJ_DATUM 3D_FILE"
+msgstr ""
+
+#: ../src/findentrances.cc:146
+msgid "input datum as string to pass to PROJ"
+msgstr ""

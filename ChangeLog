@@ -1,3 +1,7 @@
+Thu Sep 27 03:56:22 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Merge translation updates from launchpad.
+
 Thu Sep 27 00:31:24 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/: Remove scripts and data files which are no longer used.

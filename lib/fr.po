@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-01-06 11:46:46 +0000\n"
+"PO-Revision-Date: 2012-09-27 03:56:00 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -32,8 +32,8 @@ msgstr "depuis"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#: ../src/aven.cc:359
-#: ../src/message.c:1187
+#: ../src/aven.cc:360
+#: ../src/message.c:1189
 msgid "warning"
 msgstr "avertissement"
 
@@ -100,7 +100,7 @@ msgstr "La valeur de l’azimut ne peut être omise, sauf sur les visées vertic
 msgid "End of line not blank"
 msgstr "Fin de ligne non vide"
 
-#: ../src/cavern.c:385
+#: ../src/cavern.c:384
 #, c-format
 msgid "There were %d warning(s)."
 msgstr "Il y a %d avertissement(s)."
@@ -123,7 +123,7 @@ msgstr "Ne peut pas ouvrir le “pipe”: “%s”"
 msgid "Error reading file"
 msgstr "Erreur à la lecture du fichier"
 
-#: ../src/message.c:1202
+#: ../src/message.c:1204
 msgid "Too many errors - giving up"
 msgstr "Trop d’erreurs, j’abandonne"
 
@@ -172,11 +172,18 @@ msgstr "ROOT n’est plus utilisé"
 #. *end inner
 #. *end outer
 #: ../src/commands.c:813
-#: ../src/listpos.c:130
+#: ../src/listpos.c:131
 #: ../src/readval.c:240
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
 msgstr "La station “%s” n’est pas exportée de la topographie “%s”"
+
+#. TRANSLATORS: This error occurs if there's an attempt to export a station
+#. from a survey which doesn't actually exist.
+#: ../src/listpos.c:134
+#, c-format
+msgid "Reference to station “%s” from non-existent survey “%s”"
+msgstr ""
 
 #: ../src/readval.c:212
 #, c-format
@@ -288,7 +295,7 @@ msgstr "Relevés topo pas tous reliés à des points fixes"
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Station déjà déclaré fixe ou équivalente à un point fixe"
 
-#: ../src/cavern.c:288
+#: ../src/cavern.c:287
 #: ../src/filename.c:55
 #: ../src/img.c:179
 #, c-format
@@ -523,7 +530,7 @@ msgstr "Mois invalide"
 msgid "Invalid day of the month"
 msgstr "Jour du mois invalide"
 
-#: ../src/cavern.c:237
+#: ../src/cavern.c:236
 #, c-format
 msgid "3d file format versions %d to %d supported"
 msgstr "Les fichiers au format 3d sont supportés des versions %d à %d"
@@ -675,7 +682,7 @@ msgstr "Erreur à l’écriture du fichier"
 msgid "Couldn’t parse .err file"
 msgstr "La lecture du fichier .err a échoué"
 
-#: ../src/cavern.c:380
+#: ../src/cavern.c:379
 #, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Il y a %d avertissement(s) et %d erreur(s) - aucun fichier n’a été produit"
@@ -702,7 +709,7 @@ msgstr "&Vue en plan"
 msgid "&Elevation"
 msgstr "&Elévation"
 
-#: ../src/gfxcore.cc:673
+#: ../src/gfxcore.cc:686
 #: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr "Elévation"
@@ -710,7 +717,7 @@ msgstr "Elévation"
 #~ msgid "3d file"
 #~ msgstr "fichier image 3d"
 
-#: ../src/cavern.c:342
+#: ../src/cavern.c:341
 msgid "Calculating statistics"
 msgstr "Calcul des statistiques"
 
@@ -766,69 +773,69 @@ msgstr "Calcul du réseau"
 msgid "Found “%s”, expecting “F” or “B”"
 msgstr "Vous avez écrit “%s”; on attendait “F” ou “B”"
 
-#: ../src/cavern.c:437
+#: ../src/cavern.c:436
 #, c-format
 msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
 msgstr "Longueur totale de la topo = %7.2fm (%7.2fm adjusté)"
 
-#: ../src/cavern.c:440
+#: ../src/cavern.c:439
 #, c-format
 msgid "Total plan length of survey legs = %7.2fm"
 msgstr "Longueur totale en projection horizontale = %7.2fm"
 
-#: ../src/cavern.c:443
+#: ../src/cavern.c:442
 #, c-format
 msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "Longueur totale verticale = %7.2fm"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:449
+#: ../src/cavern.c:448
 #, c-format
 msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Interval vertical = %4.2fm (de %s à %4.2fm jusqu’à %s à %4.2fm)"
 
 #. TRANSLATORS: c.f. previous message
-#: ../src/cavern.c:450
+#: ../src/cavern.c:449
 #, c-format
 msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Interval Nord-Sud = %4.2fm (de %s à %4.2fm jusqu’à %s à %4.2fm)"
 
 #. TRANSLATORS: c.f. previous two messages
-#: ../src/cavern.c:451
+#: ../src/cavern.c:450
 #, c-format
 msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Interval Est-Ouest = %4.2fm (de %s à %4.2fm jusqu’à %s à %4.2fm)"
 
-#: ../src/cavern.c:425
+#: ../src/cavern.c:424
 msgid "There is 1 loop."
 msgstr "Il y a 1 bouclage."
 
-#: ../src/cavern.c:427
+#: ../src/cavern.c:426
 #, c-format
 msgid "There are %ld loops."
 msgstr "Il y a %ld bouclages."
 
 #. TRANSLATORS: CPU apparently isn’t CPU in French?
-#: ../src/cavern.c:364
+#: ../src/cavern.c:363
 #, c-format
 msgid "CPU time used %5.2fs"
 msgstr "Temps CPU utilisé %5.2fs"
 
-#: ../src/cavern.c:367
+#: ../src/cavern.c:366
 #, c-format
 msgid "Time used %5.2fs"
 msgstr "Temps utilisé %5.2fs"
 
-#: ../src/cavern.c:369
+#: ../src/cavern.c:368
 msgid "Time used unavailable"
 msgstr "Temps utilisé non disponible"
 
-#: ../src/cavern.c:372
+#: ../src/cavern.c:371
 #, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Temps utilisé %5.2fs (%5.2fs temps CPU)"
 
-#: ../src/cavern.c:376
+#: ../src/cavern.c:375
 msgid "Done."
 msgstr "Terminé."
 
@@ -1004,38 +1011,38 @@ msgstr "Coupe développée"
 #~ msgid "This will need 1 page."
 #~ msgstr "Cela prendra 1 page."
 
-#: ../src/cavern.c:411
+#: ../src/cavern.c:410
 msgid "Survey contains 1 survey station,"
 msgstr "La topo contient 1 station,"
 
-#: ../src/cavern.c:413
+#: ../src/cavern.c:412
 #, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "La topo contient %ld stations,"
 
-#: ../src/cavern.c:417
+#: ../src/cavern.c:416
 msgid " joined by 1 leg."
 msgstr " connectées par 1 visé."
 
-#: ../src/cavern.c:419
+#: ../src/cavern.c:418
 #, c-format
 msgid " joined by %ld legs."
 msgstr " connectées par %ld visées."
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:159
+#: ../src/listpos.c:164
 msgid "node"
 msgstr "nœud"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:159
+#: ../src/listpos.c:164
 msgid "nodes"
 msgstr "nœuds"
 
 #. TRANSLATORS: connected component in the graph theory sense
 #. It means there are %ld bits of survey with no connections between them
 #. This message is only used if there are more than 1
-#: ../src/cavern.c:433
+#: ../src/cavern.c:432
 #, c-format
 msgid "Survey has %ld connected components."
 msgstr "La topo contient %ld composants connectés."
@@ -1155,37 +1162,37 @@ msgid "print and exit (requires a 3d file)"
 msgstr "Imprimer et quitter (nécessite un fichier 3d)"
 
 #. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:122
+#: ../src/cavern.c:121
 msgid "display percentage progress"
 msgstr "Afficher le pourcentage de progression"
 
 #. TRANSLATORS: --help output for cavern --output option
-#: ../src/cavern.c:123
+#: ../src/cavern.c:122
 msgid "set location for output files"
 msgstr "Définir l’endroit pour les fichiers sortis"
 
 #. TRANSLATORS: --help output for cavern --quiet option
-#: ../src/cavern.c:124
+#: ../src/cavern.c:123
 msgid "only show brief summary (-qq for errors only)"
 msgstr "Monter seulement un bref résumé (-qq pour les erreurs seulement)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
-#: ../src/cavern.c:125
+#: ../src/cavern.c:124
 msgid "do not create .err file"
 msgstr "Ne pas créer de fichier .err"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
-#: ../src/cavern.c:126
+#: ../src/cavern.c:125
 msgid "turn warnings into errors"
 msgstr "changer les avertissements en erreurs"
 
 #. TRANSLATORS: --help output for cavern --log option
-#: ../src/cavern.c:127
+#: ../src/cavern.c:126
 msgid "log output to .log file"
 msgstr "enregistrer la sortie dans un fichier .log"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
-#: ../src/cavern.c:128
+#: ../src/cavern.c:127
 msgid "specify the 3d file format version to output"
 msgstr "spécifier la version du format de fichier 3d en sortie"
 
@@ -1236,7 +1243,7 @@ msgstr "&Copie d’écran…"
 msgid "No survey data in 3d file “%s”"
 msgstr "Pas de données topo dans le fichier image 3d “%s”"
 
-#: ../src/gfxcore.cc:631
+#: ../src/gfxcore.cc:644
 msgid "Facing"
 msgstr "Direction"
 
@@ -1372,13 +1379,13 @@ msgstr "&Ouvrir…\tCtrl+O"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
-#: ../src/gfxcore.cc:896
+#: ../src/gfxcore.cc:925
 msgid "Undated"
 msgstr "Non datée"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
-#: ../src/gfxcore.cc:918
+#: ../src/gfxcore.cc:947
 msgid "Not in loop"
 msgstr "Pas dans la boucle"
 
@@ -1472,25 +1479,25 @@ msgid "Fade Distant Ob&jects"
 msgstr "Rendre &floue les objets lointains"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:2970
+#: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
 msgid "View &North"
 msgstr "Vue vers le &Nord"
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:2971
+#: ../src/gfxcore.cc:2964
 #: ../src/mainfrm.cc:743
 msgid "View &East"
 msgstr "Vue vers l’&Est"
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:2972
+#: ../src/gfxcore.cc:2965
 #: ../src/mainfrm.cc:744
 msgid "View &South"
 msgstr "Vue vers le &Sud"
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:2973
+#: ../src/gfxcore.cc:2966
 #: ../src/mainfrm.cc:745
 msgid "View &West"
 msgstr "Vue vers l’&Ouest"
@@ -1511,12 +1518,12 @@ msgstr "Déplacement vers le &Haut"
 msgid "Shift Survey &Down"
 msgstr "Déplacement vers le &Bas"
 
-#: ../src/gfxcore.cc:2985
+#: ../src/gfxcore.cc:2978
 #: ../src/mainfrm.cc:752
 msgid "&Plan View"
 msgstr "Vue en &plan"
 
-#: ../src/gfxcore.cc:2986
+#: ../src/gfxcore.cc:2979
 #: ../src/mainfrm.cc:753
 msgid "Ele&vation"
 msgstr "Elé&vation"
@@ -1652,7 +1659,7 @@ msgstr "Sens &Inverse\tCtrl+R"
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "&Annule la Ligne de Mesure\tEscape"
 
-#: ../src/gfxcore.cc:3010
+#: ../src/gfxcore.cc:3003
 #: ../src/mainfrm.cc:788
 msgid "Colour by E&rror"
 msgstr "Cou&leur par Érreur"
@@ -1664,12 +1671,12 @@ msgstr "Cou&leur par Érreur"
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Segments de topo en S&urface\tCtrl+F"
 
-#: ../src/gfxcore.cc:3008
+#: ../src/gfxcore.cc:3001
 #: ../src/mainfrm.cc:786
 msgid "Colour by &Depth"
 msgstr "Couleur par &profondeur"
 
-#: ../src/gfxcore.cc:3009
+#: ../src/gfxcore.cc:3002
 #: ../src/mainfrm.cc:787
 msgid "Colour by D&ate"
 msgstr "Couleur par &date"
@@ -1948,8 +1955,8 @@ msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr "%s: %s, Dist %.2f%s, Azim %03d%s"
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:2999
-#: ../src/gfxcore.cc:3014
+#: ../src/gfxcore.cc:2992
+#: ../src/gfxcore.cc:3007
 #: ../src/mainfrm.cc:823
 msgid "&Metric"
 msgstr "&Métrique"
@@ -1957,25 +1964,25 @@ msgstr "&Métrique"
 #. TRANSLATORS: tickable menu item in View menu.
 #. Degrees are the angular measurement where there are 360 in a
 #. full circle.
-#: ../src/gfxcore.cc:2976
-#: ../src/gfxcore.cc:2989
+#: ../src/gfxcore.cc:2969
+#: ../src/gfxcore.cc:2982
 #: ../src/mainfrm.cc:824
 msgid "&Degrees"
 msgstr "&Degrés"
 
-#: ../src/gfxcore.cc:2975
+#: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
-#: ../src/gfxcore.cc:2988
+#: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
-#: ../src/gfxcore.cc:2998
+#: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
-#: ../src/gfxcore.cc:3012
+#: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
 
@@ -2188,7 +2195,7 @@ msgstr "Éditer un waypoint"
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:120
 msgid " (unused in perspective view)"
-msgstr ""
+msgstr " (non utilisé dans la vue en perspective)"
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:125
@@ -2202,7 +2209,7 @@ msgstr " secs (0 = auto; *6 = 6 fois auto)"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
-#: ../src/aven.cc:213
+#: ../src/aven.cc:214
 #, c-format
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
 msgstr "Cette version de %s a besoin d’OpenGL pour fonctionner, mais il n’est pas disponible."
@@ -2315,3 +2322,21 @@ msgstr "Application du fichier de spécification: “%s”"
 #, c-format
 msgid "Writing %s…"
 msgstr "Écriture de %s…"
+
+#: ../src/findentrances.cc:100
+#, c-format
+msgid "Failed to initialise input coordinate system “%s”"
+msgstr ""
+
+#: ../src/findentrances.cc:103
+#, c-format
+msgid "Failed to initialise output coordinate system “%s”"
+msgstr ""
+
+#: ../src/findentrances.cc:155
+msgid "-d PROJ_DATUM 3D_FILE"
+msgstr ""
+
+#: ../src/findentrances.cc:146
+msgid "input datum as string to pass to PROJ"
+msgstr ""
