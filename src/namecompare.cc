@@ -30,8 +30,8 @@ inline bool u_digit(unsigned ch) {
 int name_cmp(const wxString &a, const wxString &b, int separator) {
    size_t i = 0;
    while (1) {
-      int cha = (i == a.size() ? wxUniChar(0) : a[i]);
-      int chb = (i == b.size() ? wxUniChar(0) : b[i]);
+      int cha = (i == a.size() ? 0 : (int)a[i]);
+      int chb = (i == b.size() ? 0 : (int)b[i]);
 
       /* done if end of either string */
       if (!cha || !chb) return cha - chb;

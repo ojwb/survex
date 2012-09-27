@@ -1,3 +1,7 @@
+Thu Sep 27 05:37:18 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/namecompare.cc: Fix to build with wx2.8.
+
 Thu Sep 27 05:25:49 GMT 2012  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog.
