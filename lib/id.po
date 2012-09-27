@@ -1320,7 +1320,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:842
 msgid "&Help"
-msgstr "&Bantuan"
+msgstr "Ba&ntuan"
 
 #: ../src/mainfrm.cc:835
 msgid "&Presentation"

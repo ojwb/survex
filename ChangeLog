@@ -1,3 +1,7 @@
+Thu Sep 27 09:23:41 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/id.po: Resolve clashing menu accelerators.
+
 Thu Sep 27 05:37:18 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/namecompare.cc: Fix to build with wx2.8.
