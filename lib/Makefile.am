@@ -17,7 +17,7 @@ check-local: survex.pot
 SUBDIRS = icons
 
 po_files = ca.po de.po de_CH.po de_DE.po en_US.po\
- es.po fr.po it.po pt.po pt_BR.po sk.po ro.po
+ es.po fr.po id.po it.po pt.po pt_BR.po sk.po ro.po
 
 de_DE.po:
 	ln -s de.po de_DE.po
@@ -26,7 +26,7 @@ msg_files = $(po_files:.po=.msg) en.msg
 
 EXTRA_DIST = survex.pot $(po_files) po_codes\
  po-to-msg.pl checkshortcut.pl extract-msgs.pl\
- English_GB.isl Romanian-7-5.1.11.isl\
+ English_GB.isl Indonesian-5.1.11.isl Romanian-7-5.1.11.isl\
  make-pixel-font\
  INSTALL.OSX
 
