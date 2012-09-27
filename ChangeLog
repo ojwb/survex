@@ -1,3 +1,9 @@
+Thu Sep 27 05:12:22 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/message.c: For determining character set on Unix, check LANG
+	  after LC_ALL and LC_CTYPE.  For determining language, check LC_ALL
+	  before LC_MESSAGES and LANG.
+
 Thu Sep 27 04:48:34 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/id.po: Add more translations and fix marking of unused messages.

@@ -261,7 +261,10 @@ default_charset(void)
    if (p == NULL || p[0] == '\0') {
       p = getenv("LC_CTYPE");
       if (p == NULL || p[0] == '\0') {
-	 p = msg_lang;
+	 p = getenv("LANG");
+	 /* Something (AutoCAD?) on Microsoft Windows sets LANG to a number. */
+	 if (p == NULL || !isalpha((unsigned char)p[0]))
+	    p = msg_lang;
       }
    }
 
@@ -1017,6 +1020,9 @@ macosx_got_msg:
    fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
+   if (!msg_lang || !*msg_lang) {
+      msg_lang = getenv("LC_ALL");
+   }
    if (!msg_lang || !*msg_lang) {
       msg_lang = getenv("LC_MESSAGES");
       if (!msg_lang || !*msg_lang) {
