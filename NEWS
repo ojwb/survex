@@ -1,3 +1,46 @@
+aa1927c4 (Olly Betts 2012-09-27 17:13:31 +1200    1) Thu Sep 27 05:12:22 GMT 2012  Olly Betts <olly@survex.com>
+
+Changes in 1.2.7 (2012-09-27):
+
+* aven: Don't run incremental search on every key-press, as on a slow machine
+  the short initial search(es) will take a while but not be useful.  Instead
+  only actually run the search when we're told there are no more key-presses
+  queued up.
+
+* cavern: If the survey isn't all connected, still run survey tree checks and
+  report errors and/or warnings which might suggest typo locations.  Thanks
+  to Kevin Dixon for the report which highlighted this issue.
+
+* cavern: Move "Station X referred to just once" warning after non-existent
+  survey check - if both fire, the non-existent survey error is likely to be
+  more relevant.
+
+* img library: New leg flag img_FLAG_NOSURVEY, now set by cavern for NOSURVEY
+  legs.
+
+* dump3d: Report new NOSURVEY leg flag.
+
+* dump3d: Add --show-dates option.
+
+* Test suite:
+
+  + cavern.tst: Fix equatenosuchstn testcase (added in 1.2.6) to normalise the
+    expected output so it passes reliably.
+
+* (Microsoft Windows version): Link mingw build statically to avoid needing
+  libgcc DLL.
+
+* (Unix version): When determining the character set for command-line tools,
+  check environmental variable LANG after LC_ALL and LC_CTYPE.
+
+* When determining the language, check environmental variable LC_ALL before
+  LC_MESSAGES and LANG (but after SURVEXLANG).
+
+* Merge translation updates for Brazilian Portuguese, Chinese, French, German,
+  and US English, mostly from launchpad.
+
+* Add start of Indonesian translation from Arief Setiadi Wibowo.
+
 Changes in 1.2.6 (2012-02-23):
 
 * (Mac OS X version): Fix so that cavern finds its messages when run by aven.

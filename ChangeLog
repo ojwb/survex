@@ -1,3 +1,7 @@
+Thu Sep 27 05:25:49 GMT 2012  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Thu Sep 27 05:12:22 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/message.c: For determining character set on Unix, check LANG
