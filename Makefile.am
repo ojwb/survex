@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 # We aim to be GNU compliant, but some required files are generated
-AUTOMAKE_OPTIONS = 1.5 foreign
+AUTOMAKE_OPTIONS = foreign
 
 # These files are installed automatically in --gnu mode
 GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog

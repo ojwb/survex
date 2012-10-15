@@ -1,3 +1,9 @@
+Mon Oct 15 02:21:53 GMT 2012  Olly Betts <olly@survex.com>
+
+	* Makefile.am,buildmacosx.sh,configure.ac,lib/mailmsgs.pl: Update
+	  configure.ac from passing version to AM_INIT_AUTOMAKE to passing it
+	  to AC_INIT, and fix places which grep out the version.
+
 Mon Oct 15 02:08:23 GMT 2012  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,configure.ac,configure.in,doc/Makefile.am,

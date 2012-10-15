@@ -3,9 +3,8 @@ dnl Process this file with autoconf to produce a configure script
 dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
 dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
-AC_INIT(src/aven.cc)
-
-AM_INIT_AUTOMAKE(survex, 1.2.6)
+AC_INIT([src/aven.cc], [1.2.6], [http://trac.survex.com/])
+AM_INIT_AUTOMAKE([1.5 -Wportability])
 RELEASE=1
 
 AC_SUBST(RELEASE)

@@ -5,7 +5,7 @@ use strict;
 
 use integer;
 
-my $version =`sed 's/^AM_INIT.*(.*, *\\([0-9][0-9\\.]*\\)).*/\\1/p;d' ../configure.ac`;
+my $version=`sed 's/^VERSION *= *//p;d' Makefile`;
 
 my %email = (
  'de' => 'Gerhard Niklasch <nikl@mathematik.tu-muenchen.de>, <niklasch@consol.de>',
