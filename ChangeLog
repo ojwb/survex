@@ -1,3 +1,7 @@
+Mon Oct 15 02:27:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Use AM_CPPFLAGS instead of obsolete INCLUDES.
+
 Mon Oct 15 02:21:53 GMT 2012  Olly Betts <olly@survex.com>
 
 	* Makefile.am,buildmacosx.sh,configure.ac,lib/mailmsgs.pl: Update

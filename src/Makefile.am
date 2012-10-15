@@ -28,7 +28,7 @@ aven-gfxcore.o: gfxcore.cc
 
 LDADD = $(LIBOBJS)
 
-INCLUDES = -DIMG_HOSTED -DIMG_API_VERSION=1
+AM_CPPFLAGS = -DIMG_HOSTED -DIMG_API_VERSION=1
 
 # dump3d is a test program
 #
