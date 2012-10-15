@@ -135,7 +135,7 @@ ditto lib/INSTALL.OSX "$mount_point/INSTALL"
 echo "Detaching image."
 hdiutil detach "$dev"
 
-version=`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.in`
+version=`sed 's/.*AM_INIT_AUTOMAKE([^,]*, *\([0-9.]*\).*/\1/p;d' configure.ac`
 file=survex-macosx-$version.dmg
 echo "Compressing image file survex-macosx.dmg to $file"
 # This needs MacOS X 10.1 or above for unpacking - change UDZO to UDCO to allow

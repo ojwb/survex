@@ -91,19 +91,19 @@ uninstall-local:
 maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
-# manual, etc depend on configure.in so they get rebuilt when the
+# manual, etc depend on configure.ac so they get rebuilt when the
 # version number is bumped
 
 manual: manual/stampfile
-manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.in
+manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.ac
 	$(SGMLTOOLS) --backend=html --dsssl-spec='custom.dsl#html' manual.sgml
 	cp caution.png note.png manual
 	touch manual/stampfile
 
-manual.txt: $(manual_sources) survex.ent ../configure.in
+manual.txt: $(manual_sources) survex.ent ../configure.ac
 	$(SGMLTOOLS) --backend=txt manual.sgml
 
-manual.pdf: $(manual_sources) survex.ent ../configure.in
+manual.pdf: $(manual_sources) survex.ent ../configure.ac
 	$(SGMLTOOLS) --backend=ps manual.sgml
 	ps2pdf manual.ps manual.pdf
 	rm manual.ps
@@ -111,14 +111,14 @@ manual.pdf: $(manual_sources) survex.ent ../configure.in
 # The rules below aren't used by the build system - they're for "manual" use
 # (ho ho)
 
-manual.html: $(manual_sources) custom.dsl survex.ent ../configure.in
+manual.html: $(manual_sources) custom.dsl survex.ent ../configure.ac
 	$(SGMLTOOLS) --backend=onehtml \
 		--dsssl-spec='custom.dsl#onehtml' manual.sgml
 
-manual.rtf: $(manual_sources) survex.ent ../configure.in
+manual.rtf: $(manual_sources) survex.ent ../configure.ac
 	$(SGMLTOOLS) --backend=rtf manual.sgml
 
-manual.ps: $(manual_sources) survex.ent ../configure.in
+manual.ps: $(manual_sources) survex.ent ../configure.ac
 	$(SGMLTOOLS) --backend=ps manual.sgml
 
 CLEANFILES = usr
