@@ -1,3 +1,8 @@
+Mon Oct 15 02:28:46 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Remove workaround for GCC 2.95 failing to compile
+	  gfxcore.cc - GCC 2.95 is obsolete now.
+
 Mon Oct 15 02:27:04 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Use AM_CPPFLAGS instead of obsolete INCLUDES.
