@@ -4,7 +4,7 @@ dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
 dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
 AC_INIT([src/aven.cc], [1.2.6], [http://trac.survex.com/])
-AM_INIT_AUTOMAKE([1.5 -Wportability])
+AM_INIT_AUTOMAKE([1.5 gnu -Wall -Wportability -Werror])
 RELEASE=1
 
 AC_SUBST(RELEASE)

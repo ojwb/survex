@@ -1,18 +1,12 @@
 ## Process this file with automake to produce Makefile.in
 
-# We aim to be GNU compliant, but some required files are generated
-AUTOMAKE_OPTIONS = foreign
-
-# These files are installed automatically in --gnu mode
-GNU_FILES = INSTALL NEWS README COPYING AUTHORS ChangeLog
-
 SUBDIRS = . lib src doc tests
 
 # We never want to implicitly recurse into the vim subdirectory, but we still
 # want to distribute the files there.
 DIST_SUBDIRS = $(SUBDIRS) vim
 
-EXTRA_DIST = $(GNU_FILES) TODO OLDNEWS\
+EXTRA_DIST = TODO OLDNEWS\
  desc.txt desc-aven.txt survex.spec\
  buildmacosx.sh
 
