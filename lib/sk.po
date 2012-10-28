@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-09-27 03:56:00 +0000\n"
-"Last-Translator: Olly Betts <olly@survex.com>\n"
+"PO-Revision-Date: 2012-10-28 04:14:00 +0000\n"
+"Last-Translator: Martin Sluka <martinsluka@mac.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -508,14 +508,14 @@ msgstr "Parameter “%s” v konfiguračnom súbore tlačiarne má nesprávnu ho
 #: ../src/netskel.c:980
 #, c-format
 msgid "Cross section specified at non-existent station “%s”"
-msgstr ""
+msgstr "Priečny rez definovaný na neexistujúcom bode “%s”"
 
 #. TRANSLATORS: In data with backsights, the user has tried to give a plumb for the
 #. foresight and a clino reading for the backsight, or something similar.
 #: ../src/datain.c:930
 #: ../src/datain.c:951
 msgid "CLINO and BACKCLINO readings must be of the same type"
-msgstr "Čítanie CLINO a BACKCLINO musí byť toho istého typu"
+msgstr "Hodnoty CLINO a BACKCLINO musí byť toho istého typu"
 
 #: ../src/avenprcore.cc:113
 #, c-format
@@ -534,15 +534,15 @@ msgstr "Tento deň v tomto mesiaci neexistuje"
 #: ../src/cavern.c:236
 #, c-format
 msgid "3d file format versions %d to %d supported"
-msgstr ""
+msgstr "Sú podporované 3D formáty súborov %d až %d"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
-#~ msgstr "Chyba vo formáte znakového súboru (fontu) “%s”"
+#~ msgstr "Chyba vo formáte fontu “%s”"
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"
-msgstr "Predpokladá sa názov merania (survey)"
+msgstr "Predpokladá sa názov survey"
 
 #. TRANSLATORS: Program will exit shortly after printing this
 #: ../src/message.c:224
@@ -568,7 +568,7 @@ msgstr "Nie je možné otvoriť súbor “%s”"
 #: ../src/printwx.cc:331
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "Súbor “%s” sa nedá zapísať"
 
 #: ../src/message.c:227
 msgid "Bad memory access"
@@ -592,30 +592,30 @@ msgstr "Bol obdržaný neznámy signál"
 #: ../src/datain.c:855
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
-msgstr "Čítanie COMPASS a BACKCOMPASS sa líši o %s stupňov"
+msgstr "Hodnoty COMPASS a BACKCOMPASS sa líši o %s stupňov"
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #: ../src/datain.c:999
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
-msgstr "Čítanie CLINO a BACKCLINO sa líši o %s stupňov"
+msgstr "Hodnoty CLINO a BACKCLINO sa líši o %s stupňov"
 
 #: ../src/cad3d.c:624
 msgid "do not generate station markers"
-msgstr ""
+msgstr "negenerovať symboly bodov"
 
 #: ../src/cad3d.c:625
 msgid "do not generate station labels"
-msgstr ""
+msgstr "negenerovať popisky bodov"
 
 #: ../src/cad3d.c:626
 msgid "do not generate survey legs"
-msgstr ""
+msgstr "negenerovať zámery"
 
 #: ../src/cad3d.c:630
 msgid "produce an elevation view"
-msgstr ""
+msgstr "vytvoriť bočný pohľad"
 
 #. TRANSLATORS: A computer mouse, not the rodent sort ;)
 #. Actually, mouse is somewhat imprecise as it could refer to a trackerball
@@ -855,38 +855,38 @@ msgstr "Chyba (nemá zmysel)"
 #: ../src/cad3d.c:627
 #, c-format
 msgid "generate grid (default %sm)"
-msgstr ""
+msgstr "generovať sieť (defaultne %sm)"
 
 #: ../src/cad3d.c:628
 #, c-format
 msgid "station labels text height (default %s)"
-msgstr ""
+msgstr "veľkosť textu pre popisky bodov (defaultne %sm)"
 
 #: ../src/cad3d.c:629
 #, c-format
 msgid "station marker size (default %s)"
-msgstr ""
+msgstr "veľkosť symbolu bodu (defaultne %sm)"
 
 #: ../src/cad3d.c:631
 #, c-format
 msgid "factor to scale down by (default %s)"
-msgstr ""
+msgstr "koeficient pre zmenšenie o (defaultne %sm)"
 
 #: ../src/cad3d.c:632
 msgid "produce DXF output"
-msgstr ""
+msgstr "vygenerovať formát DXF"
 
 #: ../src/cad3d.c:633
 msgid "produce Sketch output"
-msgstr ""
+msgstr "vygenerovať súbor so skicami"
 
 #: ../src/cad3d.c:634
 msgid "produce Compass PLT output for Carto"
-msgstr ""
+msgstr "vygenerovať formát Compass PLT pre Carto"
 
 #: ../src/cad3d.c:635
 msgid "produce SVG output"
-msgstr ""
+msgstr "vygenerovať formát SVG"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:137
@@ -977,14 +977,14 @@ msgstr "Meranie (survey) “%s”   Stránka %d (z %d)   Zpracované od stránky
 #: ../src/printwx.cc:637
 #, c-format
 msgid "Plan view, %s up page"
-msgstr ""
+msgstr "Mapa, %s v hlavičke"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
 #. something like "123°".  The bearing is the direction we’re looking.
 #: ../src/printwx.cc:671
 #, c-format
 msgid "Elevation facing %s"
-msgstr ""
+msgstr "Bočný pohľad v smere %s"
 
 #. TRANSLATORS: This is used on printouts of tilted elevations, with the first
 #. %s replaced by something like "123°", and the second by something like "-45°".
@@ -992,7 +992,7 @@ msgstr ""
 #: ../src/printwx.cc:676
 #, c-format
 msgid "Elevation facing %s, tilted %s"
-msgstr ""
+msgstr "Bočný pohľad v smere %s, pootočený o %s"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printwx.cc:684
@@ -1071,7 +1071,7 @@ msgstr "Meranie (survey) má %ld spojených častí."
 #: ../src/cavernlog.cc:371
 #: ../src/cavernlog.cc:382
 msgid "Reprocess"
-msgstr ""
+msgstr "Spracuj dáta znova"
 
 #: ../src/cmdline.c:238
 #: ../src/cmdline.c:257
@@ -1126,12 +1126,12 @@ msgstr "( východ,  sever,    výška    )"
 #: ../src/aboutdlg.cc:172
 #, c-format
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "Rozsah zobrazenia %d v bitoch na pixel)"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:173
 msgid " (colour)"
-msgstr ""
+msgstr "(pre farbu)"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454
@@ -1154,72 +1154,72 @@ msgstr "s prefixom sa natiahla iba časť merania"
 #. TRANSLATORS: --help output for aven --print option
 #: ../src/aven.cc:62
 msgid "print and exit (requires a 3d file)"
-msgstr ""
+msgstr "vytlač a ukonči (vyžaduje 3D súbor)"
 
 #. TRANSLATORS: --help output for cavern --percentage option
 #: ../src/cavern.c:121
 msgid "display percentage progress"
-msgstr ""
+msgstr "zobraz postup v %"
 
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:122
 msgid "set location for output files"
-msgstr ""
+msgstr "urči miesto pre uloženie výstupných súborov"
 
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:123
 msgid "only show brief summary (-qq for errors only)"
-msgstr ""
+msgstr "zobraz iba krátku správu (-qq iba pre chyby)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:124
 msgid "do not create .err file"
-msgstr ""
+msgstr "nedá sa vytvoriť súbor s chybami"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
 #: ../src/cavern.c:125
 msgid "turn warnings into errors"
-msgstr ""
+msgstr "zmena varovania na chyby"
 
 #. TRANSLATORS: --help output for cavern --log option
 #: ../src/cavern.c:126
 msgid "log output to .log file"
-msgstr ""
+msgstr "zápis výstupu do súboru .log"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
 #: ../src/cavern.c:127
 msgid "specify the 3d file format version to output"
-msgstr ""
+msgstr "ktorú verziu 3d súboru použiť pre výstup"
 
 #. TRANSLATORS: --help output for sorterr --horizontal option
 #: ../src/sorterr.c:52
 msgid "sort by horizontal error factor"
-msgstr ""
+msgstr "triedenie podľa horizontálnej chyby"
 
 #. TRANSLATORS: --help output for sorterr --vertical option
 #: ../src/sorterr.c:53
 msgid "sort by vertical error factor"
-msgstr ""
+msgstr "triedenie podľa vertikálnej chyby"
 
 #. TRANSLATORS: --help output for sorterr --percentage option
 #: ../src/sorterr.c:54
 msgid "sort by percentage error"
-msgstr ""
+msgstr "triedenie podľa perceptuálnej chyby"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
 #: ../src/sorterr.c:55
 msgid "sort by error per leg"
-msgstr ""
+msgstr "triedenie podľa chyby ne zámeru"
 
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:56
 msgid "replace .err file with resorted version"
-msgstr ""
+msgstr "prepísať súbor .err novým triedením"
 
 #. TRANSLATORS: --help output for dump3d --rewind option
 #: ../src/dump3d.c:48
 msgid "rewind file and read it a second time"
-msgstr ""
+msgstr "znova načítať súbor od začiatku"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
@@ -1231,7 +1231,7 @@ msgstr "*UNITS faktor musí byť nenulový"
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:718
 msgid "&Screenshot…"
-msgstr "&Snímok obrazovky…"
+msgstr "&Otlačok obrazovky…"
 
 #: ../src/mainfrm.cc:1267
 #, c-format
@@ -1268,19 +1268,19 @@ msgstr "Všetky súbory"
 
 #: ../src/mainfrm.cc:1706
 msgid "All survey files"
-msgstr ""
+msgstr "Všetky súbory s meraním"
 
 #: ../src/mainfrm.cc:1708
 msgid "Survex svx files"
-msgstr ""
+msgstr "Súbory svx Survexu"
 
 #: ../src/mainfrm.cc:1710
 msgid "Compass DAT and MAK files"
-msgstr ""
+msgstr "Súbory DAT a MAK pre Compass"
 
 #: ../src/printwx.cc:324
 msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
-msgstr ""
+msgstr "Súbory DXF|*.dxf|Súbory SVG|*.svg|Súbory so skicami|*.sk|Súbory EPS|*.eps|Súbory Compass PLT pre použitie v prog. Carto|*.plt|Súbory HPGL pre plotry|*.hpgl"
 
 #. TRANSLATORS: in the about box (summarising the purpose of aven)
 #: ../src/aboutdlg.cc:87
@@ -1324,34 +1324,34 @@ msgstr "Tento program je volný software; můžete jej šířit a modifikovat po
 #. TRANSLATORS: Part of 3dtopos --help
 #: ../src/3dtopos.c:85
 msgid "3D_FILE [POS_FILE]"
-msgstr ""
+msgstr "3D_FILE [POS_FILE]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:261
 msgid "FILE1 FILE2 [THRESHOLD]"
-msgstr ""
+msgstr "FILE1 FILE2 [THRESHOLD]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:262
 #, c-format
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
-msgstr ""
+msgstr "FILE1 a FILE2 môžu byť súbory .pos alebo .3d\nTHRESHOLD je max. ignorovateľná zmena pozdĺž ktorejkoľvek osi v metroch (defaultne %s)"
 
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:464
 msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
-msgstr ""
+msgstr "INPUT_3D_FILE [OUTPUT_3D_FILE]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:121
 msgid "ERR_FILE [HOW MANY]"
-msgstr ""
+msgstr "ERR_FILE [HOW MANY]"
 
 #. TRANSLATORS: Part of aven --help
 #: ../src/aven.cc:102
 #: ../src/aven.cc:129
 msgid "[SURVEY_FILE]"
-msgstr ""
+msgstr "[SURVEY_FILE]"
 
 #. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any accelerator key.
 #. The string "\t" separates the menu text and any accelerator key.
@@ -1374,7 +1374,7 @@ msgstr "Bez dátumu"
 #. which aren’t part of a loop and so have no error information.
 #: ../src/gfxcore.cc:947
 msgid "Not in loop"
-msgstr ""
+msgstr "Nie je súčasťou uzavretého ťahu"
 
 #. TRANSLATORS: error from "*data normal newline from to tape compass clino"
 #: ../src/commands.c:1079
@@ -1418,7 +1418,7 @@ msgstr "Nie je možné nakalibrovať uhlovýé a dļžkové údaje naraz"
 #: ../src/log.cc:30
 #, c-format
 msgid "%s Error Log"
-msgstr ""
+msgstr "%s záznam chýb"
 
 #. TRANSLATORS: Used in the "Export" settings dialog
 #: ../src/printwx.cc:290
@@ -1796,7 +1796,7 @@ msgstr "&Vyexportuj ako film…"
 
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
-msgstr ""
+msgstr "vygeneruj film"
 
 #: ../src/mainfrm.cc:780
 msgid "&Bounding Box\tCtrl+B"
@@ -1883,7 +1883,7 @@ msgstr "Schovať"
 #: ../src/mainfrm.cc:2384
 #, c-format
 msgid "Hide %d found stations"
-msgstr ""
+msgstr "Skryť %d nájdených bodov "
 
 #. TRANSLATORS: checkbox for regular expression search
 #~ msgid "Regular expression"
@@ -1961,19 +1961,19 @@ msgstr "&Stupne"
 
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&skryť azimut"
 
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
-msgstr ""
+msgstr "&skryť sklon"
 
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
-msgstr ""
+msgstr "&skryť mierku"
 
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
-msgstr ""
+msgstr "&skryť popis farieb"
 
 #. TRANSLATORS: degree symbol - probably should be translated to itself.
 #: ../src/mainfrm.cc:1900
@@ -2135,7 +2135,7 @@ msgstr "&Export ako…"
 #. TRANSLATORS: Title of file dialog to choose name and type of exported file.
 #: ../src/printwx.cc:323
 msgid "Export as:"
-msgstr ""
+msgstr "Exportuj ako:"
 
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:166
@@ -2179,12 +2179,12 @@ msgstr "Zámery &na povrchu"
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:83
 msgid "Edit Waypoint"
-msgstr ""
+msgstr "Zmeniť miesto pohľadu"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:120
 msgid " (unused in perspective view)"
-msgstr ""
+msgstr " (nepoužíva sa v perspektívnom zobrazení)"
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:125
@@ -2194,7 +2194,7 @@ msgstr "Čas: "
 #. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:127
 msgid " secs (0 = auto; *6 = 6 times auto)"
-msgstr ""
+msgstr " sekundy (0 = auto; *6 = 6 krát auto)"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).

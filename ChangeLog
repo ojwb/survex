@@ -1,3 +1,7 @@
+Sun Oct 28 04:21:27 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/sk.po: Merge updates from Martin Sluka.
+
 Mon Oct 15 04:19:57 GMT 2012  Olly Betts <olly@survex.com>
 
 	* Makefile.am,configure.ac: Modern automake seems to cope with files
