@@ -1,3 +1,9 @@
+Fri Nov 02 03:58:12 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/mailmsgs.pl: Remove obsolete script.
+	* lib/Makefile.am,lib/po-to-msg.pl: Remove references to *.todo, which
+	  we no longer generate.
+
 Fri Nov 02 03:46:59 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Add another TRANSLATORS comment.

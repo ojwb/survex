@@ -30,7 +30,7 @@ EXTRA_DIST = survex.pot $(po_files) po_codes\
  make-pixel-font\
  INSTALL.OSX
 
-MAINTAINERCLEANFILES = $(msg_files) de_DE.po *.todo unifont.pixelfont
+MAINTAINERCLEANFILES = $(msg_files) de_DE.po unifont.pixelfont
 
 dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 
