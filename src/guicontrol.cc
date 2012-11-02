@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005,2006,2011 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1134,16 +1134,6 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    m_View->InvalidateAllLists();
 	    m_View->ForceRefresh();
 	    break;
-#ifdef __WXMAC__
-	// Hugh St Lawrence reports that F11 enters full screen mode, but that
-	// there's no easy way back out (you have to exit aven and then edit
-	// "user(name)/Library/Preferences/aven Preferences" to remove the
-	// "width=-2" setting.  So we process this key press explicitly to
-	// fix this.  He was using the pre-built Survex 1.2.0 and OS X 10.6.8.
-	case WXK_F11:
-	    OnViewFullScreen();
-	    break;
-#endif
 	default:
 	    e.Skip();
     }

@@ -1,3 +1,9 @@
+Fri Nov 02 00:32:35 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc,src/mainfrm.cc: On OS X, F11 is used by the desktop
+	  so change the menu shortcut for "Full Screen Mode" to be the OS X
+	  standard shortcut Shift-Command-F.
+
 Sun Oct 28 04:21:27 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/sk.po: Merge updates from Martin Sluka.
