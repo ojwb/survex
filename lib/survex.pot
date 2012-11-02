@@ -1958,18 +1958,23 @@ msgstr ""
 msgid "&Degrees"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the key showing what colour is
+#. what depth, date, survey closure error, etc in aven.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
@@ -2325,6 +2330,9 @@ msgstr ""
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr ""
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr ""
