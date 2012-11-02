@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-10-28 04:14:00 +0000\n"
+"PO-Revision-Date: 2012-10-28 10:36:00 +0000\n"
 "Last-Translator: Martin Sluka <martinsluka@mac.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1131,7 +1131,7 @@ msgstr "Rozsah zobrazenia %d v bitoch na pixel)"
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:173
 msgid " (colour)"
-msgstr "(pre farbu)"
+msgstr " (pre farbu)"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454

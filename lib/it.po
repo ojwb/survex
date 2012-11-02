@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-09-27 03:56:00 +0000\n"
-"Last-Translator: Olly Betts <olly@survex.com>\n"
+"PO-Revision-Date: 2012-10-28 15:50:00 +0000\n"
+"Last-Translator: Roberto Maugeri <zoomx@tiscalinet.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -183,7 +183,7 @@ msgstr "La stazione “%s” non é stata esportata dal rilievo “%s”"
 #: ../src/listpos.c:134
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
-msgstr ""
+msgstr "riferimento alla stazione “%s” di un rilievo “%s” non esistente"
 
 #: ../src/readval.c:212
 #, c-format
@@ -537,7 +537,7 @@ msgstr "Giorno del mese non valido"
 #: ../src/cavern.c:236
 #, c-format
 msgid "3d file format versions %d to %d supported"
-msgstr ""
+msgstr "Sono supportati i file 3D dalla versione %d alla versione %d"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
@@ -571,7 +571,7 @@ msgstr "Non riesco ad aprire il file “%s”"
 #: ../src/printwx.cc:331
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "Non posso scrivere il file “%s”"
 
 #: ../src/message.c:227
 msgid "Bad memory access"
@@ -606,19 +606,19 @@ msgstr "Le letture CLINO e BACKCLINO differiscono di %s gradi"
 
 #: ../src/cad3d.c:624
 msgid "do not generate station markers"
-msgstr ""
+msgstr "Non generare i simboli di stazione"
 
 #: ../src/cad3d.c:625
 msgid "do not generate station labels"
-msgstr ""
+msgstr "Non generare le etichette di stazione"
 
 #: ../src/cad3d.c:626
 msgid "do not generate survey legs"
-msgstr ""
+msgstr "non generare i tiri del rilievo"
 
 #: ../src/cad3d.c:630
 msgid "produce an elevation view"
-msgstr ""
+msgstr "Produce una vista di prospetto"
 
 #. TRANSLATORS: A computer mouse, not the rodent sort ;)
 #. Actually, mouse is somewhat imprecise as it could refer to a trackerball
@@ -720,7 +720,7 @@ msgstr "Profilo"
 #~ msgid "3d file"
 #~ msgstr "File immagine 3d"
 
-#: ../src/cavern.c:342
+#: ../src/cavern.c:341
 msgid "Calculating statistics"
 msgstr "Sto calcolando le statistiche"
 
@@ -858,38 +858,38 @@ msgstr "Errore    N/A"
 #: ../src/cad3d.c:627
 #, c-format
 msgid "generate grid (default %sm)"
-msgstr ""
+msgstr "Genera la griglia (predefinita %sm)"
 
 #: ../src/cad3d.c:628
 #, c-format
 msgid "station labels text height (default %s)"
-msgstr ""
+msgstr "Altezza etichette di stazione (predefinita %s)"
 
 #: ../src/cad3d.c:629
 #, c-format
 msgid "station marker size (default %s)"
-msgstr ""
+msgstr "Dimensioni simbolo di stazione (predefinito %s)"
 
 #: ../src/cad3d.c:631
 #, c-format
 msgid "factor to scale down by (default %s)"
-msgstr ""
+msgstr "fattore di scala (predefinito %s)"
 
 #: ../src/cad3d.c:632
 msgid "produce DXF output"
-msgstr ""
+msgstr "produce un file DXF"
 
 #: ../src/cad3d.c:633
 msgid "produce Sketch output"
-msgstr ""
+msgstr "produce un file Sketch"
 
 #: ../src/cad3d.c:634
 msgid "produce Compass PLT output for Carto"
-msgstr ""
+msgstr "produce un file Compass PLT per Carto"
 
 #: ../src/cad3d.c:635
 msgid "produce SVG output"
-msgstr ""
+msgstr "produce un file SVG"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:137
@@ -980,14 +980,14 @@ msgstr "Topografia “%s”   Pagina %d (di %d)   In corso su %s"
 #: ../src/printwx.cc:637
 #, c-format
 msgid "Plan view, %s up page"
-msgstr ""
+msgstr "Vista in pianta, %s in alto"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
 #. something like "123°".  The bearing is the direction we’re looking.
 #: ../src/printwx.cc:671
 #, c-format
 msgid "Elevation facing %s"
-msgstr ""
+msgstr "Elevazione orientata a %s"
 
 #. TRANSLATORS: This is used on printouts of tilted elevations, with the first
 #. %s replaced by something like "123°", and the second by something like "-45°".
@@ -995,7 +995,7 @@ msgstr ""
 #: ../src/printwx.cc:676
 #, c-format
 msgid "Elevation facing %s, tilted %s"
-msgstr ""
+msgstr "Elevazione orientata a %s, inclinata di %s"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printwx.cc:684
@@ -1074,7 +1074,7 @@ msgstr "La topografia contiene %ld componenti connesse."
 #: ../src/cavernlog.cc:371
 #: ../src/cavernlog.cc:382
 msgid "Reprocess"
-msgstr ""
+msgstr "Riprocessa"
 
 #: ../src/cmdline.c:238
 #: ../src/cmdline.c:257
@@ -1129,12 +1129,12 @@ msgstr "( Est (X), Nord (Y), Quota  Z )"
 #: ../src/aboutdlg.cc:172
 #, c-format
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "Profondità display: %d bpp"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:173
 msgid " (colour)"
-msgstr ""
+msgstr " (colore)"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454
@@ -1162,67 +1162,67 @@ msgstr ""
 #. TRANSLATORS: --help output for cavern --percentage option
 #: ../src/cavern.c:121
 msgid "display percentage progress"
-msgstr ""
+msgstr "mostra la percentuale di progresso"
 
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:122
 msgid "set location for output files"
-msgstr ""
+msgstr "seleziona dove salvare i file"
 
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:123
 msgid "only show brief summary (-qq for errors only)"
-msgstr ""
+msgstr "mostra solamente un breve riassunto (-qq per i soli errori)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:124
 msgid "do not create .err file"
-msgstr ""
+msgstr "non creare il file .err"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
 #: ../src/cavern.c:125
 msgid "turn warnings into errors"
-msgstr ""
+msgstr "cambia gli avvisi in errori"
 
 #. TRANSLATORS: --help output for cavern --log option
 #: ../src/cavern.c:126
 msgid "log output to .log file"
-msgstr ""
+msgstr "usa il file .log"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
 #: ../src/cavern.c:127
 msgid "specify the 3d file format version to output"
-msgstr ""
+msgstr "specifica il formato di file 3D da generare"
 
 #. TRANSLATORS: --help output for sorterr --horizontal option
 #: ../src/sorterr.c:52
 msgid "sort by horizontal error factor"
-msgstr ""
+msgstr "ordina secondo il fattore di errore orizzontale"
 
 #. TRANSLATORS: --help output for sorterr --vertical option
 #: ../src/sorterr.c:53
 msgid "sort by vertical error factor"
-msgstr ""
+msgstr "ordina secondo il fattore di errore verticale"
 
 #. TRANSLATORS: --help output for sorterr --percentage option
 #: ../src/sorterr.c:54
 msgid "sort by percentage error"
-msgstr ""
+msgstr "ordina secondo l'errore percentuale"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
 #: ../src/sorterr.c:55
 msgid "sort by error per leg"
-msgstr ""
+msgstr "ordina secondo l'errore per tiro"
 
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:56
 msgid "replace .err file with resorted version"
-msgstr ""
+msgstr "sostituisci il file .err con quello riordinato"
 
 #. TRANSLATORS: --help output for dump3d --rewind option
 #: ../src/dump3d.c:48
 msgid "rewind file and read it a second time"
-msgstr ""
+msgstr "riavvolgi il file e rileggilo una seconda volta"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s meaningless to say
 #. your tape is marked in "0 feet" (but you might measure distance by counting
@@ -1256,9 +1256,8 @@ msgstr "Informazioni su %s"
 
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1715
-#, fuzzy
 msgid "Select a survey file to view"
-msgstr "Seleziona un file 3D da visualizzare"
+msgstr "Seleziona un file di rilievo da vedere"
 
 #: ../src/mainfrm.cc:1707
 msgid "Survex 3d files"
@@ -1271,19 +1270,19 @@ msgstr "Tutti i file"
 
 #: ../src/mainfrm.cc:1706
 msgid "All survey files"
-msgstr ""
+msgstr "Tutti i file di rilievo"
 
 #: ../src/mainfrm.cc:1708
 msgid "Survex svx files"
-msgstr ""
+msgstr "file Survex svx"
 
 #: ../src/mainfrm.cc:1710
 msgid "Compass DAT and MAK files"
-msgstr ""
+msgstr "file Compass DAT e MAK"
 
 #: ../src/printwx.cc:324
 msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
-msgstr ""
+msgstr "file DXF |*.dxf|file SVG|*.svg|file Sketch|*.sk|file EPS|*.eps|Compass PLT per Carto|*.plt|HPGL per plotter|*.hpgl"
 
 #. TRANSLATORS: in the about box (summarising the purpose of aven)
 #: ../src/aboutdlg.cc:87
@@ -1799,7 +1798,7 @@ msgstr "&Esporta come Animazione…"
 
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
-msgstr ""
+msgstr "Esporta filmato"
 
 #: ../src/mainfrm.cc:780
 msgid "&Bounding Box\tCtrl+B"
@@ -1886,7 +1885,7 @@ msgstr "Nascondi"
 #: ../src/mainfrm.cc:2384
 #, c-format
 msgid "Hide %d found stations"
-msgstr ""
+msgstr "nascondi %d stazioni trovate"
 
 #. TRANSLATORS: checkbox for regular expression search
 #~ msgid "Regular expression"
@@ -2139,7 +2138,7 @@ msgstr "E&sporta come…"
 #. TRANSLATORS: Title of file dialog to choose name and type of exported file.
 #: ../src/printwx.cc:323
 msgid "Export as:"
-msgstr ""
+msgstr "Esporta come:"
 
 #. TRANSLATORS: Title of the export dialog
 #: ../src/printwx.cc:166

@@ -1,3 +1,7 @@
+Fri Nov 02 03:06:00 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Merge translation updates.
+
 Fri Nov 02 00:32:35 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc,src/mainfrm.cc: On OS X, F11 is used by the desktop
