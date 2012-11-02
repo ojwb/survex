@@ -1,3 +1,7 @@
+Fri Nov 02 04:02:16 GMT 2012  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Fri Nov 02 03:58:12 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/mailmsgs.pl: Remove obsolete script.

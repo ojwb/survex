@@ -1,6 +1,21 @@
-aa1927c4 (Olly Betts 2012-09-27 17:13:31 +1200    1) Thu Sep 27 05:12:22 GMT 2012  Olly Betts <olly@survex.com>
+b0a90c10 (Olly Betts 2012-11-02 16:58:46 +1300    1) Fri Nov 02 03:58:12 GMT 2012  Olly Betts <olly@survex.com>
 
-Changes in 1.2.7 (2012-09-27):
+85c83ac5 (Olly Betts 2012-11-02 13:35:07 +1300)
+Fri Nov 02 00:32:35 GMT 2012  Olly Betts <olly@survex.com>
+	* src/guicontrol.cc,src/mainfrm.cc: On OS X, F11 is used by the desktop
+	  so change the menu shortcut for "Full Screen Mode" to be the OS X
+	  standard shortcut Shift-Command-F.
+
+0257ad04 (Olly Betts 2012-10-15 15:30:19 +1300)
+Mon Oct 15 02:28:46 GMT 2012  Olly Betts <olly@survex.com>
+	* src/Makefile.am: Remove workaround for GCC 2.95 failing to compile
+	  gfxcore.cc - GCC 2.95 is obsolete now.
+
+29c302d3 (Olly Betts 2012-09-27 17:39:14 +1200)
+Thu Sep 27 05:37:18 GMT 2012  Olly Betts <olly@survex.com>
+	* src/namecompare.cc: Fix to build with wx2.8.
+
+Changes in 1.2.7 (2012-11-02):
 
 * aven: Don't run incremental search on every key-press, as on a slow machine
   the short initial search(es) will take a while but not be useful.  Instead
@@ -36,8 +51,8 @@ Changes in 1.2.7 (2012-09-27):
 * When determining the language, check environmental variable LC_ALL before
   LC_MESSAGES and LANG (but after SURVEXLANG).
 
-* Merge translation updates for Brazilian Portuguese, Chinese, French, German,
-  and US English, mostly from launchpad.
+* Merge translation updates for Brazilian Portuguese, Catalan, Chinese, French,
+  German, Italian, Slovak, Spanish and US English.
 
 * Add start of Indonesian translation from Arief Setiadi Wibowo.
 
