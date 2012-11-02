@@ -1,3 +1,7 @@
+Fri Nov 02 03:46:59 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot: Add another TRANSLATORS comment.
+
 Fri Nov 02 03:25:52 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Add TRANSLATORS comments to clarify messages which

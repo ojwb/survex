@@ -1630,6 +1630,8 @@ msgstr ""
 #~ msgid "&Depth Bar"
 #~ msgstr ""
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr ""
@@ -1973,8 +1975,9 @@ msgstr ""
 msgid "&Hide scale bar"
 msgstr ""
 
-#. TRANSLATORS: Menu item which turns off the key showing what colour is
-#. what depth, date, survey closure error, etc in aven.
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
