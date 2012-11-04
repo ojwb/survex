@@ -1,3 +1,7 @@
+Sun Nov 04 21:26:01 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/ca.po: Merge in TRANSLATOR comments.
+
 Sun Nov 04 21:25:40 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/fr.po: Fix clashing menu accelerator.
