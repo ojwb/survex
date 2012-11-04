@@ -1644,7 +1644,7 @@ msgstr "C&lino"
 
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
-msgstr "Couleur &Clef"
+msgstr "Couleur Cle&f"
 
 #: ../src/mainfrm.cc:819
 msgid "&Scale Bar"
