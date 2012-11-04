@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-10-28 10:36:00 +0000\n"
+"PO-Revision-Date: 2012-11-02 10:25:00 +0000\n"
 "Last-Translator: Martin Sluka <martinsluka@mac.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -184,7 +184,7 @@ msgstr "Bod “%s” nebol exportovaný z merania (survey) “%s”"
 #: ../src/listpos.c:134
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
-msgstr ""
+msgstr "Odkaz na bod “%s” z neexistujúceho survey “%s”"
 
 #: ../src/readval.c:212
 #, c-format
@@ -1231,7 +1231,7 @@ msgstr "*UNITS faktor musí byť nenulový"
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:718
 msgid "&Screenshot…"
-msgstr "&Otlačok obrazovky…"
+msgstr "Otlačok o&brazovky…"
 
 #: ../src/mainfrm.cc:1267
 #, c-format
@@ -1253,9 +1253,8 @@ msgstr "O %s"
 
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1715
-#, fuzzy
 msgid "Select a survey file to view"
-msgstr "Vyberte 3D súbor k zobrazeniu"
+msgstr "Vyber súbor s meraním (survey)"
 
 #: ../src/mainfrm.cc:1707
 msgid "Survex 3d files"
@@ -1629,10 +1628,11 @@ msgstr "&Sklonomer"
 #~ msgid "&Depth Bar"
 #~ msgstr "&Hļbkové merítko"
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
-#, fuzzy
 msgid "Colour &Key"
-msgstr "Colour Ke&y"
+msgstr "Priradenie &Farieb"
 
 #: ../src/mainfrm.cc:819
 msgid "&Scale Bar"
@@ -1883,7 +1883,7 @@ msgstr "Schovať"
 #: ../src/mainfrm.cc:2384
 #, c-format
 msgid "Hide %d found stations"
-msgstr "Skryť %d nájdených bodov "
+msgstr "Skryť %d nájdených bodov"
 
 #. TRANSLATORS: checkbox for regular expression search
 #~ msgid "Regular expression"
@@ -1959,18 +1959,24 @@ msgstr "&Metricky"
 msgid "&Degrees"
 msgstr "&Stupne"
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr "&skryť azimut"
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr "&skryť sklon"
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr "&skryť mierku"
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr "&skryť popis farieb"
@@ -2199,9 +2205,9 @@ msgstr " sekundy (0 = auto; *6 = 6 krát auto)"
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
 #: ../src/aven.cc:214
-#, fuzzy, c-format
+#, c-format
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
-msgstr "Táto verzia (of %s) vyžaduje OpenGL. To však nie je dostupné."
+msgstr "Verzia %s vyžaduje funkčné OpenGL, ale to nie je dostupné."
 
 #. TRANSLATORS: for diffpos:
 #: ../src/diffpos.c:158
@@ -2315,17 +2321,20 @@ msgstr "Zapisuje sa súbor %s…"
 #: ../src/findentrances.cc:100
 #, c-format
 msgid "Failed to initialise input coordinate system “%s”"
-msgstr ""
+msgstr "Zlyhal pokus o inicializáciu vstupného súradnicového systému “%s”"
 
 #: ../src/findentrances.cc:103
 #, c-format
 msgid "Failed to initialise output coordinate system “%s”"
-msgstr ""
+msgstr "Zlyhal pokus o inicializáciu výstupného súradnicového systému “%s”"
 
 #: ../src/findentrances.cc:155
 msgid "-d PROJ_DATUM 3D_FILE"
-msgstr ""
+msgstr "-d PROJ_DÁTUM 3D_SÚBOR"
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
-msgstr ""
+msgstr "Vložiť dátum ako text pre PROJ"
