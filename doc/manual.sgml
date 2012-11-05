@@ -1356,9 +1356,9 @@ E.g.:
 <VarListEntry><Term>DIVING</Term>
 <listitem><Para>
 An underwater survey where the vertical information is from a diver's depth
-gauge.  This style can also be also used for an above water where the alititude
-is measured with an altimeter.  DEPTH is defined as the altitude (Z) so
-increases upwards by default.  So for a diver's depth guage, you'll need to
+gauge.  This style can also be also used for an above-water survey where the
+altitude is measured with an altimeter.  DEPTH is defined as the altitude (Z)
+so increases upwards by default.  So for a diver's depth gauge, you'll need to
 use *CALIBRATE with a negative scale factor (e.g. *calibrate depth 0 -1).
 </Para>
 
