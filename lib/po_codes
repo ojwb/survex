@@ -1452,20 +1452,6 @@ msgstr "235"
 msgid "Step Once &Clockwise"
 msgstr "236"
 
-#: ../src/mainfrm.cc:797
-msgid "&Perspective"
-msgstr "237"
-
-#: ../src/mainfrm.cc:799
-msgid "Textured &Walls"
-msgstr "238"
-
-#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
-#. instead if it gives a better translation which most users will understand.
-#: ../src/mainfrm.cc:800
-msgid "Fade Distant Ob&jects"
-msgstr "239"
-
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
@@ -1603,21 +1589,88 @@ msgstr "265"
 msgid "Blank Pages"
 msgstr "266"
 
+#. TRANSLATORS: Items in the "View" menu:
 #: ../src/mainfrm.cc:776
 msgid "Station &Names\tCtrl+N"
 msgstr "270"
+
+#. TRANSLATORS: Toggles drawing of 3D passages
+#: ../src/mainfrm.cc:777
+msgid "Passage &Tubes\tCtrl+T"
+msgstr "346"
 
 #: ../src/mainfrm.cc:778
 msgid "&Crosses\tCtrl+X"
 msgstr "271"
 
+#: ../src/mainfrm.cc:779
+msgid "&Grid\tCtrl+G"
+msgstr "297"
+
+#: ../src/mainfrm.cc:780
+msgid "&Bounding Box\tCtrl+B"
+msgstr "318"
+
 #: ../src/mainfrm.cc:782
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "272"
 
+#: ../src/mainfrm.cc:783
+msgid "&Surface Survey Legs\tCtrl+F"
+msgstr "291"
+
 #: ../src/mainfrm.cc:785
 msgid "&Overlapping Names"
 msgstr "273"
+
+#: ../src/gfxcore.cc:3001
+#: ../src/mainfrm.cc:786
+msgid "Colour by &Depth"
+msgstr "292"
+
+#: ../src/gfxcore.cc:3002
+#: ../src/mainfrm.cc:787
+msgid "Colour by D&ate"
+msgstr "293"
+
+#: ../src/gfxcore.cc:3003
+#: ../src/mainfrm.cc:788
+msgid "Colour by E&rror"
+msgstr "289"
+
+#: ../src/mainfrm.cc:790
+msgid "Highlight &Entrances"
+msgstr "294"
+
+#: ../src/mainfrm.cc:791
+msgid "Highlight &Fixed Points"
+msgstr "295"
+
+#: ../src/mainfrm.cc:792
+msgid "Highlight E&xported Points"
+msgstr "296"
+
+#: ../src/mainfrm.cc:797
+msgid "&Perspective"
+msgstr "237"
+
+#: ../src/mainfrm.cc:799
+msgid "Textured &Walls"
+msgstr "238"
+
+#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+#. instead if it gives a better translation which most users will understand.
+#: ../src/mainfrm.cc:800
+msgid "Fade Distant Ob&jects"
+msgstr "239"
+
+#: ../src/mainfrm.cc:801
+msgid "Smoot&hed Survey Legs"
+msgstr "298"
+
+#: ../src/mainfrm.cc:803
+msgid "Full Screen &Mode\tF11"
+msgstr "356"
 
 #: ../src/mainfrm.cc:816
 msgid "&Compass"
@@ -1630,6 +1683,8 @@ msgstr "275"
 #~ msgid "&Depth Bar"
 #~ msgstr ""
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr "276"
@@ -1647,47 +1702,8 @@ msgstr "280"
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "281"
 
-#: ../src/gfxcore.cc:3003
-#: ../src/mainfrm.cc:788
-msgid "Colour by E&rror"
-msgstr "289"
-
 #~ msgid "&About…"
 #~ msgstr ""
-
-#: ../src/mainfrm.cc:783
-msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "291"
-
-#: ../src/gfxcore.cc:3001
-#: ../src/mainfrm.cc:786
-msgid "Colour by &Depth"
-msgstr "292"
-
-#: ../src/gfxcore.cc:3002
-#: ../src/mainfrm.cc:787
-msgid "Colour by D&ate"
-msgstr "293"
-
-#: ../src/mainfrm.cc:790
-msgid "Highlight &Entrances"
-msgstr "294"
-
-#: ../src/mainfrm.cc:791
-msgid "Highlight &Fixed Points"
-msgstr "295"
-
-#: ../src/mainfrm.cc:792
-msgid "Highlight E&xported Points"
-msgstr "296"
-
-#: ../src/mainfrm.cc:779
-msgid "&Grid\tCtrl+G"
-msgstr "297"
-
-#: ../src/mainfrm.cc:801
-msgid "Smoot&hed Survey Legs"
-msgstr "298"
 
 #: ../src/mainfrm.cc:820
 msgid "&Indicators"
@@ -1796,10 +1812,6 @@ msgstr "317"
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
 msgstr "331"
-
-#: ../src/mainfrm.cc:780
-msgid "&Bounding Box\tCtrl+B"
-msgstr "318"
 
 #. TRANSLATORS: TRANSLATE: ro
 #: ../src/mainfrm.cc:309
@@ -1958,18 +1970,24 @@ msgstr "342"
 msgid "&Degrees"
 msgstr "343"
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr "387"
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr "384"
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr "385"
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr "386"
@@ -1991,11 +2009,6 @@ msgstr "344"
 #: ../src/mainfrm.cc:2007
 msgid "grad"
 msgstr "345"
-
-#. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:777
-msgid "Passage &Tubes\tCtrl+T"
-msgstr "346"
 
 #: ../src/mainfrm.cc:806
 #~ msgid "&Preferences…"
@@ -2024,10 +2037,6 @@ msgstr "346"
 
 #~ msgid "Allow names to overlap on the display (faster)"
 #~ msgstr "355"
-
-#: ../src/mainfrm.cc:803
-msgid "Full Screen &Mode\tF11"
-msgstr "356"
 
 #~ msgid "Display underground survey legs"
 #~ msgstr "357"
@@ -2325,6 +2334,9 @@ msgstr "288"
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr "388"
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr "389"

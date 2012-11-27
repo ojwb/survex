@@ -1452,20 +1452,6 @@ msgstr ""
 msgid "Step Once &Clockwise"
 msgstr ""
 
-#: ../src/mainfrm.cc:797
-msgid "&Perspective"
-msgstr ""
-
-#: ../src/mainfrm.cc:799
-msgid "Textured &Walls"
-msgstr ""
-
-#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
-#. instead if it gives a better translation which most users will understand.
-#: ../src/mainfrm.cc:800
-msgid "Fade Distant Ob&jects"
-msgstr ""
-
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
@@ -1603,20 +1589,87 @@ msgstr ""
 msgid "Blank Pages"
 msgstr ""
 
+#. TRANSLATORS: Items in the "View" menu:
 #: ../src/mainfrm.cc:776
 msgid "Station &Names\tCtrl+N"
+msgstr ""
+
+#. TRANSLATORS: Toggles drawing of 3D passages
+#: ../src/mainfrm.cc:777
+msgid "Passage &Tubes\tCtrl+T"
 msgstr ""
 
 #: ../src/mainfrm.cc:778
 msgid "&Crosses\tCtrl+X"
 msgstr ""
 
+#: ../src/mainfrm.cc:779
+msgid "&Grid\tCtrl+G"
+msgstr ""
+
+#: ../src/mainfrm.cc:780
+msgid "&Bounding Box\tCtrl+B"
+msgstr ""
+
 #: ../src/mainfrm.cc:782
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr ""
 
+#: ../src/mainfrm.cc:783
+msgid "&Surface Survey Legs\tCtrl+F"
+msgstr ""
+
 #: ../src/mainfrm.cc:785
 msgid "&Overlapping Names"
+msgstr ""
+
+#: ../src/gfxcore.cc:3001
+#: ../src/mainfrm.cc:786
+msgid "Colour by &Depth"
+msgstr ""
+
+#: ../src/gfxcore.cc:3002
+#: ../src/mainfrm.cc:787
+msgid "Colour by D&ate"
+msgstr ""
+
+#: ../src/gfxcore.cc:3003
+#: ../src/mainfrm.cc:788
+msgid "Colour by E&rror"
+msgstr ""
+
+#: ../src/mainfrm.cc:790
+msgid "Highlight &Entrances"
+msgstr ""
+
+#: ../src/mainfrm.cc:791
+msgid "Highlight &Fixed Points"
+msgstr ""
+
+#: ../src/mainfrm.cc:792
+msgid "Highlight E&xported Points"
+msgstr ""
+
+#: ../src/mainfrm.cc:797
+msgid "&Perspective"
+msgstr ""
+
+#: ../src/mainfrm.cc:799
+msgid "Textured &Walls"
+msgstr ""
+
+#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+#. instead if it gives a better translation which most users will understand.
+#: ../src/mainfrm.cc:800
+msgid "Fade Distant Ob&jects"
+msgstr ""
+
+#: ../src/mainfrm.cc:801
+msgid "Smoot&hed Survey Legs"
+msgstr ""
+
+#: ../src/mainfrm.cc:803
+msgid "Full Screen &Mode\tF11"
 msgstr ""
 
 #: ../src/mainfrm.cc:816
@@ -1649,47 +1702,8 @@ msgstr ""
 msgid "&Cancel Measuring Line\tEscape"
 msgstr ""
 
-#: ../src/gfxcore.cc:3003
-#: ../src/mainfrm.cc:788
-msgid "Colour by E&rror"
-msgstr ""
-
 #~ msgid "&About…"
 #~ msgstr ""
-
-#: ../src/mainfrm.cc:783
-msgid "&Surface Survey Legs\tCtrl+F"
-msgstr ""
-
-#: ../src/gfxcore.cc:3001
-#: ../src/mainfrm.cc:786
-msgid "Colour by &Depth"
-msgstr ""
-
-#: ../src/gfxcore.cc:3002
-#: ../src/mainfrm.cc:787
-msgid "Colour by D&ate"
-msgstr ""
-
-#: ../src/mainfrm.cc:790
-msgid "Highlight &Entrances"
-msgstr ""
-
-#: ../src/mainfrm.cc:791
-msgid "Highlight &Fixed Points"
-msgstr ""
-
-#: ../src/mainfrm.cc:792
-msgid "Highlight E&xported Points"
-msgstr ""
-
-#: ../src/mainfrm.cc:779
-msgid "&Grid\tCtrl+G"
-msgstr ""
-
-#: ../src/mainfrm.cc:801
-msgid "Smoot&hed Survey Legs"
-msgstr ""
 
 #: ../src/mainfrm.cc:820
 msgid "&Indicators"
@@ -1797,10 +1811,6 @@ msgstr ""
 
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
-msgstr ""
-
-#: ../src/mainfrm.cc:780
-msgid "&Bounding Box\tCtrl+B"
 msgstr ""
 
 #. TRANSLATORS: TRANSLATE: ro
@@ -2000,11 +2010,6 @@ msgstr ""
 msgid "grad"
 msgstr ""
 
-#. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:777
-msgid "Passage &Tubes\tCtrl+T"
-msgstr ""
-
 #: ../src/mainfrm.cc:806
 #~ msgid "&Preferences…"
 #~ msgstr ""
@@ -2032,10 +2037,6 @@ msgstr ""
 
 #~ msgid "Allow names to overlap on the display (faster)"
 #~ msgstr ""
-
-#: ../src/mainfrm.cc:803
-msgid "Full Screen &Mode\tF11"
-msgstr ""
 
 #~ msgid "Display underground survey legs"
 #~ msgstr ""
