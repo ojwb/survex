@@ -199,7 +199,7 @@ msgstr "Messpunkt “%s” nicht aus Vermessung “%s” exportiert"
 #: ../src/listpos.c:134
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
-msgstr ""
+msgstr "Referenz zu Messpunkt “%s” aus nicht existierender Vermessung “%s”"
 
 #: ../src/readval.c:212
 #, c-format
@@ -1300,9 +1300,8 @@ msgstr "Über %s"
 
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1715
-#, fuzzy
 msgid "Select a survey file to view"
-msgstr "3D-Datei zur Ansicht wählen"
+msgstr "Vermessungsdatei zur Ansicht wählen"
 
 #: ../src/mainfrm.cc:1707
 msgid "Survex 3d files"
@@ -1315,7 +1314,7 @@ msgstr "Alle Dateien"
 
 #: ../src/mainfrm.cc:1706
 msgid "All survey files"
-msgstr ""
+msgstr "Alle Vermessungsdateien"
 
 #: ../src/mainfrm.cc:1708
 msgid "Survex svx files"
@@ -1398,7 +1397,7 @@ msgstr ""
 #: ../src/aven.cc:102
 #: ../src/aven.cc:129
 msgid "[SURVEY_FILE]"
-msgstr ""
+msgstr "[VERMESSUNGSDATEI]"
 
 #. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any accelerator key.
 #. The string "\t" separates the menu text and any accelerator key.
