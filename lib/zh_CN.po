@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-09-27 03:56:00 +0000\n"
+"PO-Revision-Date: 2012-09-27 04:54:00 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1627,6 +1627,8 @@ msgstr ""
 #~ msgid "&Depth Bar"
 #~ msgstr ""
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr ""
@@ -1694,13 +1696,13 @@ msgstr ""
 #: ../src/z_getopt.c:707
 #, c-format
 msgid "%s: option “%s” is ambiguous\n"
-msgstr "%s：选项“%s”含义不明确"
+msgstr "%s：选项“%s”含义不明确\n"
 
 #: ../src/z_getopt.c:1023
 #: ../src/z_getopt.c:1034
 #, c-format
 msgid "%s: option “-W %s” is ambiguous\n"
-msgstr "%s：选项“-W %s”含义不明确"
+msgstr "%s：选项“-W %s”含义不明确\n"
 
 #: ../src/z_getopt.c:751
 #: ../src/z_getopt.c:755
@@ -1752,13 +1754,13 @@ msgstr "%s：无法识别的选项“%c%s”\n"
 #: ../src/z_getopt.c:904
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr "%s：非法选项 -- %c"
+msgstr "%s：非法选项 -- %c\n"
 
 #: ../src/z_getopt.c:910
 #: ../src/z_getopt.c:913
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr "%s：选项无效 -- %c"
+msgstr "%s：选项无效 -- %c\n"
 
 #: ../src/mainfrm.cc:765
 msgid "&New Presentation"
@@ -1955,18 +1957,24 @@ msgstr ""
 msgid "&Degrees"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
@@ -2322,6 +2330,9 @@ msgstr ""
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr ""
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr ""

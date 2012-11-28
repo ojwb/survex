@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-09-27 04:01:07 +0000\n"
+"PO-Revision-Date: 2012-11-28 01:54:00 +0000\n"
 "Last-Translator: Arief Setiadi Wibowo <q_thrynx@yahoo.com>\n"
 "Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -54,12 +54,8 @@ msgstr ""
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:121
 #, c-format
-msgid ""
-"Character “%c” not allowed in station name (use *SET NAMES to set allowed "
-"characters)"
-msgstr ""
-"Karakter “%c” tidak diperkenankan di nama station (gunakan *SET NAMES "
-"untuk mengatur karakter yang diperkenankan)"
+msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
+msgstr "Karakter “%c” tidak diperkenankan di nama station (gunakan *SET NAMES untuk mengatur karakter yang diperkenankan)"
 
 #: ../src/readval.c:319
 msgid "Field may not be omitted"
@@ -1644,6 +1640,8 @@ msgstr ""
 #~ msgid "&Depth Bar"
 #~ msgstr ""
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr ""
@@ -1972,18 +1970,24 @@ msgstr ""
 msgid "&Degrees"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
@@ -2339,6 +2343,9 @@ msgstr ""
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr ""
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr ""

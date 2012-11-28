@@ -1,3 +1,7 @@
+Wed Nov 28 01:00:53 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Merge translations from launchpad.
+
 Wed Nov 28 00:44:36 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/de_CH.po: Fill gaps from de.po.
