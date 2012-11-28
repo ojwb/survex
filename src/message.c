@@ -616,12 +616,8 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = ' '; return 1;
     case 161 /* ¡ */:
       *p = '!'; return 1;
-    case 171 /* « */:
-      p[1] = *p = '<'; return 2;
     case 176 /* ° */:
       *p = 'd'; p[1] = 'g'; return 2;
-    case 187 /* » */:
-      p[1] = *p = '>'; return 2;
     case 191 /* ¿ */:
       *p = '?'; return 1;
     case 192 /* À */: case 193 /* Á */: case 194 /* Â */: case 195 /* Ã */:
@@ -715,6 +711,7 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = 'z'; return 1;
     case 0x2019: /* &lsquo; */
       *p = '\''; return 1;
+    case 171: /* « */ case 187: /* » */
     case 0x201c: /* &ldquo; */ case 0x201d: /* &rdquo; */
       *p = '"'; return 1;
     case 0x2026: /* &hellip; */
