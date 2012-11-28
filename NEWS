@@ -1,19 +1,4 @@
-b0a90c10 (Olly Betts 2012-11-02 16:58:46 +1300    1) Fri Nov 02 03:58:12 GMT 2012  Olly Betts <olly@survex.com>
-
-85c83ac5 (Olly Betts 2012-11-02 13:35:07 +1300)
-Fri Nov 02 00:32:35 GMT 2012  Olly Betts <olly@survex.com>
-	* src/guicontrol.cc,src/mainfrm.cc: On OS X, F11 is used by the desktop
-	  so change the menu shortcut for "Full Screen Mode" to be the OS X
-	  standard shortcut Shift-Command-F.
-
-0257ad04 (Olly Betts 2012-10-15 15:30:19 +1300)
-Mon Oct 15 02:28:46 GMT 2012  Olly Betts <olly@survex.com>
-	* src/Makefile.am: Remove workaround for GCC 2.95 failing to compile
-	  gfxcore.cc - GCC 2.95 is obsolete now.
-
-29c302d3 (Olly Betts 2012-09-27 17:39:14 +1200)
-Thu Sep 27 05:37:18 GMT 2012  Olly Betts <olly@survex.com>
-	* src/namecompare.cc: Fix to build with wx2.8.
+6b9e4ebd (Olly Betts 2012-11-28 18:02:39 +1300    1) Wed Nov 28 05:02:26 GMT 2012  Olly Betts <olly@survex.com>
 
 Changes in 1.2.7 (2012-11-02):
 
@@ -21,6 +6,10 @@ Changes in 1.2.7 (2012-11-02):
   the short initial search(es) will take a while but not be useful.  Instead
   only actually run the search when we're told there are no more key-presses
   queued up.
+
+* (MacOS X version): Change the menu shortcut for "Full Screen Mode" to be the
+  OS X standard shortcut Shift-Command-F (previously we used F11, but that's
+  used by the desktop).
 
 * cavern: If the survey isn't all connected, still run survey tree checks and
   report errors and/or warnings which might suggest typo locations.  Thanks
