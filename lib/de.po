@@ -1389,7 +1389,7 @@ msgstr "EINGABE-3D-DATEI [AUSGABE-3D-DATEI]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:121
-msgid "ERR_FILE [HOW MANY]"
+msgid "ERR_FILE [HOW_MANY]"
 msgstr "ERR-DATEI [WIE_VIELE]"
 
 #. TRANSLATORS: Part of aven --help

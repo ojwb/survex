@@ -1343,8 +1343,8 @@ msgstr "INPUT_3D_FILE [OUTPUT_3D_FILE]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:121
-msgid "ERR_FILE [HOW MANY]"
-msgstr "ERR_FILE [HOW MANY]"
+msgid "ERR_FILE [HOW_MANY]"
+msgstr "ERR_FILE [HOW_MANY]"
 
 #. TRANSLATORS: Part of aven --help
 #: ../src/aven.cc:102

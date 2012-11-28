@@ -1,3 +1,8 @@
+Wed Nov 28 01:56:49 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/,src/sorterr.c: Change "HOW MANY" to "HOW_MANY" to make it
+	  clearer this is a placeholder for one argument.
+
 Wed Nov 28 01:52:16 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/message.c: Don't force Latin 1 if setlocale(LC_MESSAGES, ...)

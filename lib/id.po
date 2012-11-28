@@ -1355,7 +1355,7 @@ msgstr ""
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:121
-msgid "ERR_FILE [HOW MANY]"
+msgid "ERR_FILE [HOW_MANY]"
 msgstr ""
 
 #. TRANSLATORS: Part of aven --help

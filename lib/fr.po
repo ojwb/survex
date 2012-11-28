@@ -1357,7 +1357,7 @@ msgstr "FICHIER_D_ENTREE_3D [FICHIER_DE_SORTIE_3D]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:121
-msgid "ERR_FILE [HOW MANY]"
+msgid "ERR_FILE [HOW_MANY]"
 msgstr "FICHIER_D_ERREUR [NOMBRE]"
 
 #. TRANSLATORS: Part of aven --help
