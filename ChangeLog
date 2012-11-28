@@ -1,3 +1,8 @@
+Wed Nov 28 00:00:18 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Add FIXME to only check % formats for messages
+	  which have the "c-format" flag set.
+
 Tue Nov 27 23:57:25 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po-to-msg.pl: Fix quote check to handle “” vs »«.

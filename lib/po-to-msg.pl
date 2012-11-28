@@ -145,6 +145,7 @@ foreach $lang (@langs) {
 
 sub sanity_check {
    my ($where, $msg, $orig) = @_;
+   # FIXME: Only do this if the message has the "c-format" flag.
    # check printf-like specifiers match
    # allow valid printf specifiers, or %<any letter> to support strftime
    # and other printf-like formats.
