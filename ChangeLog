@@ -1,3 +1,7 @@
+Wed Nov 28 05:02:26 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/de.po: A few more translations from launchpad.
+
 Wed Nov 28 01:56:49 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/,src/sorterr.c: Change "HOW MANY" to "HOW_MANY" to make it

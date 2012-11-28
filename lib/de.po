@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-11-27 23:39:53 +0000\n"
+"PO-Revision-Date: 2012-11-28 02:10:00 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -572,7 +572,7 @@ msgstr "Versionen %d bis %d des 3D-Dateiformats werden unterstützt"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
-#~ msgstr "Formatfehler in der Zeichensatzdatei “%s”"
+#~ msgstr "Formatfehler in der Schriftdatei »%s«"
 
 #: ../src/readval.c:116
 msgid "Expecting survey name"
@@ -641,7 +641,7 @@ msgstr "Keine Messpunktmarkierungen erzeugen"
 
 #: ../src/cad3d.c:625
 msgid "do not generate station labels"
-msgstr "Keine Messpunkbezeichnungen erzeugen"
+msgstr "Keine Messpunktbezeichnungen erzeugen"
 
 #: ../src/cad3d.c:626
 msgid "do not generate survey legs"
@@ -1022,6 +1022,7 @@ msgstr "Grundriß, %s oben"
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
 #. something like "123°".  The bearing is the direction we’re looking.
 #: ../src/printwx.cc:671
+#, c-format
 msgid "Elevation facing %s"
 msgstr "Aufriss in Richtung %s"
 
@@ -1047,7 +1048,7 @@ msgstr "Abwicklung"
 
 #: ../src/cavern.c:410
 msgid "Survey contains 1 survey station,"
-msgstr "Vermessung enthält 1 Verzweigungspunkt,"
+msgstr "Vermessung enthält 1 Messpunkt,"
 
 #: ../src/cavern.c:412
 #, c-format
@@ -2158,7 +2159,7 @@ msgstr "%s: V %.2f%s"
 #. this is for the tab with the tree hierarchy of survey station names
 #: ../src/mainfrm.cc:946
 msgid "Surveys"
-msgstr "Vermessung"
+msgstr "Vermessungen"
 
 #: ../src/mainfrm.cc:947
 msgid "Presentation"
@@ -2236,7 +2237,7 @@ msgstr "Wegpunkt bearbeiten"
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:120
 msgid " (unused in perspective view)"
-msgstr ""
+msgstr " (in Ansicht »Perspektive« ungenutzt)"
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:125
