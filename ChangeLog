@@ -1,3 +1,7 @@
+Wed Nov 28 00:44:36 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/de_CH.po: Fill gaps from de.po.
+
 Wed Nov 28 00:44:05 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/de.po: Merge in new "TRANSLATORS" comments.
