@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-09-27 03:56:00 +0000\n"
+"PO-Revision-Date: 2012-11-28 00:10:00 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -575,7 +575,7 @@ msgstr "Impossível abrir arquivo “%s”"
 #: ../src/printwx.cc:331
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "Não foi possível gravar o arquivo “%s”"
 
 #: ../src/message.c:227
 msgid "Bad memory access"
@@ -881,19 +881,19 @@ msgstr ""
 
 #: ../src/cad3d.c:632
 msgid "produce DXF output"
-msgstr ""
+msgstr "produzir arquivo DXF"
 
 #: ../src/cad3d.c:633
 msgid "produce Sketch output"
-msgstr ""
+msgstr "produzir arquivo Sketch"
 
 #: ../src/cad3d.c:634
 msgid "produce Compass PLT output for Carto"
-msgstr ""
+msgstr "produzir arquivo Compass PLT para o Carto"
 
 #: ../src/cad3d.c:635
 msgid "produce SVG output"
-msgstr ""
+msgstr "Produzir arquivo SVG"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:137
@@ -1078,7 +1078,7 @@ msgstr "Topografia tem %ld componentes interligados."
 #: ../src/cavernlog.cc:371
 #: ../src/cavernlog.cc:382
 msgid "Reprocess"
-msgstr ""
+msgstr "Reprocesssar"
 
 #: ../src/cmdline.c:238
 #: ../src/cmdline.c:257
@@ -1133,12 +1133,12 @@ msgstr "( Leste,   Norte,    Altura   )"
 #: ../src/aboutdlg.cc:172
 #, c-format
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "Profundidade: %d bpp"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:173
 msgid " (colour)"
-msgstr ""
+msgstr " (cor)"
 
 #: ../src/readval.c:444
 #: ../src/readval.c:454
@@ -1638,6 +1638,8 @@ msgstr "&Clinômetro"
 #~ msgid "&Depth Bar"
 #~ msgstr "Barra de &Profundidade"
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr ""
@@ -1966,18 +1968,24 @@ msgstr "&Métrico"
 msgid "&Degrees"
 msgstr "&Graus"
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
@@ -2340,6 +2348,9 @@ msgstr ""
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr ""
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr ""

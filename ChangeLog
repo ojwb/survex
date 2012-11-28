@@ -1,3 +1,7 @@
+Wed Nov 28 00:11:07 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/pt_BR.po: Merge translations from launchpad.
+
 Wed Nov 28 00:00:18 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po-to-msg.pl: Add FIXME to only check % formats for messages
