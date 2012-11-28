@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-10-27 15:56:00 +0000\n"
+"PO-Revision-Date: 2012-11-05 03:32:00 +0000\n"
 "Last-Translator: Eric Madelaine <eric.madelaine@inria.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1642,6 +1642,8 @@ msgstr "C&lino"
 #~ msgid "&Depth Bar"
 #~ msgstr "Barre de controle des &Profondeurs"
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr "Couleur Cle&f"

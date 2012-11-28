@@ -1,3 +1,7 @@
+Wed Nov 28 00:43:39 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/es.po,lib/fr.po,lib/it.po: Merge translations from launchpad.
+
 Wed Nov 28 00:11:07 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/pt_BR.po: Merge translations from launchpad.

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-10-28 15:50:00 +0000\n"
+"PO-Revision-Date: 2012-11-02 06:14:00 +0000\n"
 "Last-Translator: Roberto Maugeri <zoomx@tiscalinet.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1157,7 +1157,7 @@ msgstr "carica un sotto-rilievo con prefisso"
 #. TRANSLATORS: --help output for aven --print option
 #: ../src/aven.cc:62
 msgid "print and exit (requires a 3d file)"
-msgstr ""
+msgstr "stampa ed esci (richiede un file 3d)"
 
 #. TRANSLATORS: --help output for cavern --percentage option
 #: ../src/cavern.c:121
@@ -1633,6 +1633,8 @@ msgstr "&Clinometro"
 #~ msgid "&Depth Bar"
 #~ msgstr "Barra di controllo della &Profonditá"
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr ""
@@ -1961,18 +1963,24 @@ msgstr "&Metrico"
 msgid "&Degrees"
 msgstr "&Gradi"
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr ""
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr ""
@@ -2329,6 +2337,9 @@ msgstr ""
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr ""
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr ""
