@@ -1121,18 +1121,16 @@ macosx_got_msg:
       *p = '_';
    }
 
-   int def_charset = default_charset();
-
 #ifdef LC_MESSAGES
    /* try to setlocale() appropriately too */
    if (!setlocale(LC_MESSAGES, msg_lang)) {
-      if (!msg_lang2 || !setlocale(LC_MESSAGES, msg_lang2)) {
-	 def_charset = CHARSET_ISO_8859_1;
+      if (msg_lang2) {
+	 (void)setlocale(LC_MESSAGES, msg_lang2);
       }
    }
 #endif
 
-   select_charset(def_charset);
+   select_charset(default_charset());
 
 #ifdef HAVE_SIGNAL
    /* Initialise signal handlers only after the messages have been as we need
