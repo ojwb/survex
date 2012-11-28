@@ -1727,6 +1727,8 @@ msgstr "&Neigungsanzeige"
 #~ msgid "&Depth Bar"
 #~ msgstr "&Tiefenskala"
 
+#. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
 msgid "Colour &Key"
 msgstr "Farbschl&üssel"
@@ -2012,18 +2014,24 @@ msgstr "&Metrisch"
 msgid "&Degrees"
 msgstr "&Grad"
 
+#. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:2968
 msgid "&Hide Compass"
 msgstr "&Kompass verstecken"
 
+#. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 msgid "&Hide Clino"
 msgstr "&Clino verstecken"
 
+#. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
 msgstr "Maßstab &verstecken"
 
+#. TRANSLATORS: Menu item which turns off the colour key.
+#. The "Colour Key" is the thing in aven showing which colour
+#. corresponds to which depth, date, survey closure error, etc.
 #: ../src/gfxcore.cc:3005
 msgid "&Hide colour key"
 msgstr "Farbsc&hlüssel verstecken"
@@ -2370,6 +2378,9 @@ msgstr "Initialisierung des Ausgabekoordinatensystems »%s« ist gescheitert"
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr "-d PROJ-DATUM 3D-DATEI"
 
+#. TRANSLATORS: The findentrances utility uses the PROJ library to do
+#. coordinate transformations (https://trac.osgeo.org/proj/) - you
+#. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
 msgstr "Eingabedatum als Zeichenkette zur Übergabe an PROJ"

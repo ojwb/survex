@@ -1,3 +1,7 @@
+Wed Nov 28 00:44:05 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/de.po: Merge in new "TRANSLATORS" comments.
+
 Wed Nov 28 00:43:39 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/es.po,lib/fr.po,lib/it.po: Merge translations from launchpad.
