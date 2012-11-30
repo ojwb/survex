@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-11-02 06:14:00 +0000\n"
+"PO-Revision-Date: 2012-11-28 15:34:00 +0000\n"
 "Last-Translator: Roberto Maugeri <zoomx@tiscalinet.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -943,7 +943,7 @@ msgstr "Usare “%s --help” per ulteriori informazioni.\n"
 
 #, c-format
 #~ msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
-#~ msgstr "Per favore, immettere la scala della carta = X:Y (default 1:%d)\n: "
+#~ msgstr "Per favore, immettere la scala della carta = X:Y (predefinito 1:%d)\n: "
 
 #~ msgid "Using scale %.0f:%.0f"
 #~ msgstr "Scala utilizzata %.0f:%.0f"
@@ -1453,20 +1453,6 @@ msgstr "Un passo a&ntiorario"
 msgid "Step Once &Clockwise"
 msgstr "Un passo &Orario"
 
-#: ../src/mainfrm.cc:797
-msgid "&Perspective"
-msgstr "Prospetti&va"
-
-#: ../src/mainfrm.cc:799
-msgid "Textured &Walls"
-msgstr "Pareti con te&xture"
-
-#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
-#. instead if it gives a better translation which most users will understand.
-#: ../src/mainfrm.cc:800
-msgid "Fade Distant Ob&jects"
-msgstr "Sbiadisce g&li oggetti distanti"
-
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
@@ -1606,21 +1592,88 @@ msgstr "Riquadro informazioni"
 msgid "Blank Pages"
 msgstr "Pagine bianche"
 
+#. TRANSLATORS: Items in the "View" menu:
 #: ../src/mainfrm.cc:776
 msgid "Station &Names\tCtrl+N"
 msgstr "&Nome di stazione\tCtrl+N"
+
+#. TRANSLATORS: Toggles drawing of 3D passages
+#: ../src/mainfrm.cc:777
+msgid "Passage &Tubes\tCtrl+T"
+msgstr "Passaggi come &Tubi\tCtrl+T"
 
 #: ../src/mainfrm.cc:778
 msgid "&Crosses\tCtrl+X"
 msgstr "&Croci\tCtrl+X"
 
+#: ../src/mainfrm.cc:779
+msgid "&Grid\tCtrl+G"
+msgstr "&Griglia\tCtrl+G"
+
+#: ../src/mainfrm.cc:780
+msgid "&Bounding Box\tCtrl+B"
+msgstr "B&ordo riquadro\tCtrl+B"
+
 #: ../src/mainfrm.cc:782
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "&Battute del rilievo sotterraneo\tCtrl+L"
 
+#: ../src/mainfrm.cc:783
+msgid "&Surface Survey Legs\tCtrl+F"
+msgstr "Battute topografia di Super&ficie\tCtrl+F"
+
 #: ../src/mainfrm.cc:785
 msgid "&Overlapping Names"
 msgstr "Nomi &Sovrapposti"
+
+#: ../src/gfxcore.cc:3001
+#: ../src/mainfrm.cc:786
+msgid "Colour by &Depth"
+msgstr "Colori secondo &profonditá"
+
+#: ../src/gfxcore.cc:3002
+#: ../src/mainfrm.cc:787
+msgid "Colour by D&ate"
+msgstr "Coloure per &Data"
+
+#: ../src/gfxcore.cc:3003
+#: ../src/mainfrm.cc:788
+msgid "Colour by E&rror"
+msgstr "Colore di &Error"
+
+#: ../src/mainfrm.cc:790
+msgid "Highlight &Entrances"
+msgstr "Marca gli Ing&ressi"
+
+#: ../src/mainfrm.cc:791
+msgid "Highlight &Fixed Points"
+msgstr "Marca i Punti f&issi"
+
+#: ../src/mainfrm.cc:792
+msgid "Highlight E&xported Points"
+msgstr "Marca i p&unti Esportati"
+
+#: ../src/mainfrm.cc:797
+msgid "&Perspective"
+msgstr "Prospetti&va"
+
+#: ../src/mainfrm.cc:799
+msgid "Textured &Walls"
+msgstr "Pareti con te&xture"
+
+#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+#. instead if it gives a better translation which most users will understand.
+#: ../src/mainfrm.cc:800
+msgid "Fade Distant Ob&jects"
+msgstr "Sbiadisce g&li oggetti distanti"
+
+#: ../src/mainfrm.cc:801
+msgid "Smoot&hed Survey Legs"
+msgstr "Battute topografiche &ammorbidite"
+
+#: ../src/mainfrm.cc:803
+msgid "Full Screen &Mode\tF11"
+msgstr "&Modo schermo pieno\tF11"
 
 #: ../src/mainfrm.cc:816
 msgid "&Compass"
@@ -1652,47 +1705,8 @@ msgstr "&Inverte il senso\tCtrl+R"
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "&Cancella la linea di misura\tEscape"
 
-#: ../src/gfxcore.cc:3003
-#: ../src/mainfrm.cc:788
-msgid "Colour by E&rror"
-msgstr "Colore di &Error"
-
 #~ msgid "&About…"
 #~ msgstr "&Informazioni su…"
-
-#: ../src/mainfrm.cc:783
-msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "Battute topografia di Super&ficie\tCtrl+F"
-
-#: ../src/gfxcore.cc:3001
-#: ../src/mainfrm.cc:786
-msgid "Colour by &Depth"
-msgstr "Colori secondo &profonditá"
-
-#: ../src/gfxcore.cc:3002
-#: ../src/mainfrm.cc:787
-msgid "Colour by D&ate"
-msgstr "Coloure per &Data"
-
-#: ../src/mainfrm.cc:790
-msgid "Highlight &Entrances"
-msgstr "Marca gli Ing&ressi"
-
-#: ../src/mainfrm.cc:791
-msgid "Highlight &Fixed Points"
-msgstr "Marca i Punti f&issi"
-
-#: ../src/mainfrm.cc:792
-msgid "Highlight E&xported Points"
-msgstr "Marca i p&unti Esportati"
-
-#: ../src/mainfrm.cc:779
-msgid "&Grid\tCtrl+G"
-msgstr "&Griglia\tCtrl+G"
-
-#: ../src/mainfrm.cc:801
-msgid "Smoot&hed Survey Legs"
-msgstr "Battute topografiche &ammorbidite"
 
 #: ../src/mainfrm.cc:820
 msgid "&Indicators"
@@ -1770,7 +1784,7 @@ msgstr "%s: opzione non valida -- %c\n"
 
 #: ../src/mainfrm.cc:765
 msgid "&New Presentation"
-msgstr "&Nuova PResentazione"
+msgstr "&Nuova Presentazione"
 
 #: ../src/mainfrm.cc:766
 msgid "&Open Presentation…"
@@ -1801,10 +1815,6 @@ msgstr "&Esporta come Animazione…"
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
 msgstr "Esporta filmato"
-
-#: ../src/mainfrm.cc:780
-msgid "&Bounding Box\tCtrl+B"
-msgstr "B&ordo riquadro\tCtrl+B"
 
 #. TRANSLATORS: TRANSLATE: ro
 #: ../src/mainfrm.cc:309
@@ -1976,7 +1986,7 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
 msgid "&Hide scale bar"
-msgstr ""
+msgstr "&Nascondi Scala"
 
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
@@ -1998,16 +2008,10 @@ msgstr "°"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
-#. it: gradi centesimali
 #: ../src/mainfrm.cc:1903
 #: ../src/mainfrm.cc:2007
 msgid "grad"
 msgstr "g.cent."
-
-#. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:777
-msgid "Passage &Tubes\tCtrl+T"
-msgstr "Passaggi come &Tubi\tCtrl+T"
 
 #: ../src/mainfrm.cc:806
 #~ msgid "&Preferences…"
@@ -2036,10 +2040,6 @@ msgstr "Passaggi come &Tubi\tCtrl+T"
 
 #~ msgid "Allow names to overlap on the display (faster)"
 #~ msgstr "Permetti che i nomi si sovrappongano (piú veloce)"
-
-#: ../src/mainfrm.cc:803
-msgid "Full Screen &Mode\tF11"
-msgstr "&Modo schermo pieno\tF11"
 
 #~ msgid "Display underground survey legs"
 #~ msgstr "Mostra i tiri del rilievo sotteraneo"
@@ -2195,7 +2195,7 @@ msgstr "Modifica Waypoint"
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:120
 msgid " (unused in perspective view)"
-msgstr ""
+msgstr " (inutilizzato nella vista in prospettiva)"
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:125
@@ -2326,12 +2326,12 @@ msgstr "Scrittura %s…"
 #: ../src/findentrances.cc:100
 #, c-format
 msgid "Failed to initialise input coordinate system “%s”"
-msgstr ""
+msgstr "Inizializzazione del sistema di coordinate d'ingresso “%s” fallito"
 
 #: ../src/findentrances.cc:103
 #, c-format
 msgid "Failed to initialise output coordinate system “%s”"
-msgstr ""
+msgstr "Inizializzazione del sistema di coordinate di uscita “%s” fallito"
 
 #: ../src/findentrances.cc:155
 msgid "-d PROJ_DATUM 3D_FILE"
@@ -2342,4 +2342,4 @@ msgstr ""
 #. pass findentrances a string to tell PROJ what the input datum is.
 #: ../src/findentrances.cc:146
 msgid "input datum as string to pass to PROJ"
-msgstr ""
+msgstr "Immetti il datum come stringa da passare a PROJ"

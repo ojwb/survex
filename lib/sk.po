@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-11-02 10:25:00 +0000\n"
+"PO-Revision-Date: 2012-11-28 12:47:00 +0000\n"
 "Last-Translator: Martin Sluka <martinsluka@mac.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1450,20 +1450,6 @@ msgstr "Jeden krok proti s&meru otáčania hodín"
 msgid "Step Once &Clockwise"
 msgstr "Jeden krok po smere otáča&nia hodín"
 
-#: ../src/mainfrm.cc:797
-msgid "&Perspective"
-msgstr "Perspektív&a"
-
-#: ../src/mainfrm.cc:799
-msgid "Textured &Walls"
-msgstr "&Texturované steny"
-
-#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
-#. instead if it gives a better translation which most users will understand.
-#: ../src/mainfrm.cc:800
-msgid "Fade Distant Ob&jects"
-msgstr "Hm&listý opar"
-
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:2963
 #: ../src/mainfrm.cc:742
@@ -1601,21 +1587,88 @@ msgstr "Popiska"
 msgid "Blank Pages"
 msgstr "Prázdne stránky"
 
+#. TRANSLATORS: Items in the "View" menu:
 #: ../src/mainfrm.cc:776
 msgid "Station &Names\tCtrl+N"
 msgstr "&Mená bodov\tCtrl+N"
+
+#. TRANSLATORS: Toggles drawing of 3D passages
+#: ../src/mainfrm.cc:777
+msgid "Passage &Tubes\tCtrl+T"
+msgstr "Chodby &rúrovité\tCtrl+T"
 
 #: ../src/mainfrm.cc:778
 msgid "&Crosses\tCtrl+X"
 msgstr "&Krížiky\tCtrl+X"
 
+#: ../src/mainfrm.cc:779
+msgid "&Grid\tCtrl+G"
+msgstr "&Sieť\tCtrl+G"
+
+#: ../src/mainfrm.cc:780
+msgid "&Bounding Box\tCtrl+B"
+msgstr "&Ohraničenie\tCtrl+B"
+
 #: ../src/mainfrm.cc:782
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "Zámery &pod povrchom\tCtrl+L"
 
+#: ../src/mainfrm.cc:783
+msgid "&Surface Survey Legs\tCtrl+F"
+msgstr "Zámery &na povrchu\tCtrl+F"
+
 #: ../src/mainfrm.cc:785
 msgid "&Overlapping Names"
 msgstr "Pr&ekrývajúce sa mená"
+
+#: ../src/gfxcore.cc:3001
+#: ../src/mainfrm.cc:786
+msgid "Colour by &Depth"
+msgstr "Farba podľa &hļbky"
+
+#: ../src/gfxcore.cc:3002
+#: ../src/mainfrm.cc:787
+msgid "Colour by D&ate"
+msgstr "Farna podľa &dátumu"
+
+#: ../src/gfxcore.cc:3003
+#: ../src/mainfrm.cc:788
+msgid "Colour by E&rror"
+msgstr "Colour &by Error"
+
+#: ../src/mainfrm.cc:790
+msgid "Highlight &Entrances"
+msgstr "Zvýrazniť &vchody"
+
+#: ../src/mainfrm.cc:791
+msgid "Highlight &Fixed Points"
+msgstr "Zvýrazniť &fixné body"
+
+#: ../src/mainfrm.cc:792
+msgid "Highlight E&xported Points"
+msgstr "Zvýrazniť e&xportované body"
+
+#: ../src/mainfrm.cc:797
+msgid "&Perspective"
+msgstr "Perspektív&a"
+
+#: ../src/mainfrm.cc:799
+msgid "Textured &Walls"
+msgstr "&Texturované steny"
+
+#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
+#. instead if it gives a better translation which most users will understand.
+#: ../src/mainfrm.cc:800
+msgid "Fade Distant Ob&jects"
+msgstr "Hm&listý opar"
+
+#: ../src/mainfrm.cc:801
+msgid "Smoot&hed Survey Legs"
+msgstr "V&yrovnané zámery"
+
+#: ../src/mainfrm.cc:803
+msgid "Full Screen &Mode\tF11"
+msgstr "&Celoobrazovkový režim\tF11"
 
 #: ../src/mainfrm.cc:816
 msgid "&Compass"
@@ -1648,47 +1701,8 @@ msgstr "Obrátený sme&r\tCtrl+R"
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "&Zrušit líniu meraní\tEscape"
 
-#: ../src/gfxcore.cc:3003
-#: ../src/mainfrm.cc:788
-msgid "Colour by E&rror"
-msgstr "Colour &by Error"
-
 #~ msgid "&About…"
 #~ msgstr "&Informácie o…"
-
-#: ../src/mainfrm.cc:783
-msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "Zámery &na povrchu\tCtrl+F"
-
-#: ../src/gfxcore.cc:3001
-#: ../src/mainfrm.cc:786
-msgid "Colour by &Depth"
-msgstr "Farba podľa &hļbky"
-
-#: ../src/gfxcore.cc:3002
-#: ../src/mainfrm.cc:787
-msgid "Colour by D&ate"
-msgstr "Farna podľa &dátumu"
-
-#: ../src/mainfrm.cc:790
-msgid "Highlight &Entrances"
-msgstr "Zvýrazniť &vchody"
-
-#: ../src/mainfrm.cc:791
-msgid "Highlight &Fixed Points"
-msgstr "Zvýrazniť &fixné body"
-
-#: ../src/mainfrm.cc:792
-msgid "Highlight E&xported Points"
-msgstr "Zvýrazniť e&xportované body"
-
-#: ../src/mainfrm.cc:779
-msgid "&Grid\tCtrl+G"
-msgstr "&Sieť\tCtrl+G"
-
-#: ../src/mainfrm.cc:801
-msgid "Smoot&hed Survey Legs"
-msgstr "V&yrovnané zámery"
 
 #: ../src/mainfrm.cc:820
 msgid "&Indicators"
@@ -1797,10 +1811,6 @@ msgstr "&Vyexportuj ako film…"
 #: ../src/mainfrm.cc:2184
 msgid "Export Movie"
 msgstr "vygeneruj film"
-
-#: ../src/mainfrm.cc:780
-msgid "&Bounding Box\tCtrl+B"
-msgstr "&Ohraničenie\tCtrl+B"
 
 #. TRANSLATORS: TRANSLATE: ro
 #: ../src/mainfrm.cc:309
@@ -1999,11 +2009,6 @@ msgstr "°"
 msgid "grad"
 msgstr "grády"
 
-#. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:777
-msgid "Passage &Tubes\tCtrl+T"
-msgstr "Chodby &rúrovité\tCtrl+T"
-
 #: ../src/mainfrm.cc:806
 #~ msgid "&Preferences…"
 #~ msgstr "&Predvoľby…"
@@ -2031,10 +2036,6 @@ msgstr "Chodby &rúrovité\tCtrl+T"
 
 #~ msgid "Allow names to overlap on the display (faster)"
 #~ msgstr "Povoliť prekrývanie názvov na obrazovke (rýchlejšie)"
-
-#: ../src/mainfrm.cc:803
-msgid "Full Screen &Mode\tF11"
-msgstr "&Celoobrazovkový režim\tF11"
 
 #~ msgid "Display underground survey legs"
 #~ msgstr "Zobraziť podzemné zámery"
