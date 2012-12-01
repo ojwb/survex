@@ -352,7 +352,7 @@ read_numeric_or_omit(int *p_n_readings)
 
 /* Don't skip blanks, variable error code */
 static unsigned int
-read_uint_internal(int errmsg, filepos *fp)
+read_uint_internal(int errmsg, const filepos *fp)
 {
    unsigned int n = 0;
    if (!isdigit(ch)) {
