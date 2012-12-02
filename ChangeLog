@@ -1,3 +1,7 @@
+Sun Dec 02 23:47:21 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c: s_zero() on a NULL pointer is a no-op, so remove.
+
 Sun Dec 02 22:53:34 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/de_CH.po: Consistently use Swiss quoting style.

@@ -148,7 +148,6 @@ compile_error_token(int en)
 {
    char *p = NULL;
    static int len;
-   s_zero(&p);
    skipblanks();
    while (!isBlank(ch) && !isEol(ch)) {
       s_catchar(&p, &len, (char)ch);
