@@ -1,3 +1,11 @@
+Sun Dec 02 22:40:07 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Always skip the current line if we longjmp to
+	  jbSkipLine.
+	* tests/cavern.tst,tests/skipafterbadomit.svx: We weren't skipping
+	  after complaining about OMIT for a required reading, which the
+	  change to always skip fixes, so add a regression test for that.
+
 Sat Dec 01 23:42:22 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/readval.c: Add a "const".

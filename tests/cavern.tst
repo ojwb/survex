@@ -55,7 +55,8 @@ test -x "$testdir"/../src/cavern || testdir=.
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
- surfequate passage hanging_lrud equatenosuchstn surveytypo"}}
+ surfequate passage hanging_lrud equatenosuchstn surveytypo\
+ skipafterbadomit"}}
 
 LC_ALL=C
 export LC_ALL
@@ -200,6 +201,7 @@ for file in $TESTS ; do
   hanging_lrud) pos=fail; error=1 ;;
   equatenosuchstn) pos=fail; error=1 ;;
   surveytypo) pos=fail ;; # Actually, 2 errors, but we exit before the error count.
+  skipafterbadomit) pos=fail; error=1 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac

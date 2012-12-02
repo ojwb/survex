@@ -458,6 +458,7 @@ data_file(const char *pth, const char *fnm)
 #ifdef HAVE_SETJMP_H
    /* errors in nested functions can longjmp here */
    if (setjmp(file.jbSkipLine)) {
+      skipline();
       process_eol();
    }
 #endif

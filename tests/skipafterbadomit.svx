@@ -1,0 +1,4 @@
+; The '-' should give an error, but then skip the rest of the line.
+; In 1.2.5 and earlier, we also reported 'End of line not blank'.
+*fix a - 2.0 3.0
+*fix z reference 0 0 0
