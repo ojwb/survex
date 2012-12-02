@@ -62,7 +62,7 @@ read_prefix(unsigned pfx_flags)
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!(pfx_flags & PFX_ALLOW_ROOT)) {
-	 compile_error_skip(/*ROOT is deprecated*/25);
+	 compile_error(/*ROOT is deprecated*/25);
 	 LONGJMP(file.jbSkipLine);
       }
       if (root_depr_count < 5) {
@@ -116,12 +116,12 @@ read_prefix(unsigned pfx_flags)
 	 if (!f_optional) {
 	    if (isEol(ch)) {
 	       if (fSurvey) {
-		  compile_error_skip(/*Expecting survey name*/89);
+		  compile_error(/*Expecting survey name*/89);
 	       } else {
-		  compile_error_skip(/*Expecting station name*/28);
+		  compile_error(/*Expecting station name*/28);
 	       }
 	    } else {
-	       compile_error_skip(/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	       compile_error(/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
 	    LONGJMP(file.jbSkipLine);
 	 }
@@ -385,7 +385,7 @@ read_string(char **pstr, int *plen)
       nextch();
       while (1) {
 	 if (isEol(ch)) {
-	    compile_error_skip(/*Missing \"*/69);
+	    compile_error(/*Missing \"*/69);
 	    return;
 	 }
 
@@ -399,7 +399,8 @@ read_string(char **pstr, int *plen)
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
 	    if (!*pstr || !(*pstr)[0]) {
-	       compile_error_skip(/*Expecting string field*/121);
+	       compile_error(/*Expecting string field*/121);
+	       LONGJMP(file.jbSkipLine);
 	    }
 	    return;
 	 }
@@ -427,7 +428,7 @@ read_date(int *py, int *pm, int *pd)
    /* Two digit year is 19xx. */
    if (y < 100) y += 1900;
    if (y < 1900 || y > 2078) {
-      compile_error_skip(/*Invalid year (< 1900 or > 2078)*/58);
+      compile_error(/*Invalid year (< 1900 or > 2078)*/58);
       LONGJMP(file.jbSkipLine);
       return; /* for brain-fried compilers */
    }
@@ -435,7 +436,7 @@ read_date(int *py, int *pm, int *pd)
       nextch();
       m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
       if (m < 1 || m > 12) {
-	 compile_error_skip(/*Invalid month*/86);
+	 compile_error(/*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
 	 return; /* for brain-fried compilers */
       }
@@ -443,7 +444,7 @@ read_date(int *py, int *pm, int *pd)
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
 	 if (d < 1 || d > last_day(y, m)) {
-	    compile_error_skip(/*Invalid day of the month*/87);
+	    compile_error(/*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */
 	 }
