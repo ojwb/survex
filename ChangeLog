@@ -1,3 +1,7 @@
+Sun Dec 02 22:53:34 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/de_CH.po: Consistently use Swiss quoting style.
+
 Sun Dec 02 22:51:53 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/readval.c: If we're about to longjmp to jbSkipLine, then we can
