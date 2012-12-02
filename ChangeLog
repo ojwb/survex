@@ -1,3 +1,8 @@
+Sun Dec 02 23:48:05 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/str.c,src/str.h: Inline s_zero() and s_free() since they should
+	  optimise down to similar or less code than a function call would.
+
 Sun Dec 02 23:47:21 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/datain.c: s_zero() on a NULL pointer is a no-op, so remove.

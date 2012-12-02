@@ -61,19 +61,3 @@ s_catchar(char **pstr, int *plen, char ch)
    (*pstr)[len] = ch;
    (*pstr)[len + 1] = '\0';
 }
-
-/* truncate string to zero length */
-void
-s_zero(char **pstr)
-{
-   if (*pstr) **pstr = '\0';
-}
-
-void
-s_free(char **pstr)
-{
-   if (*pstr) {
-      osfree(*pstr);
-      *pstr = NULL;
-   }
-}

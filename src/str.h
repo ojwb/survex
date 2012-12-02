@@ -1,5 +1,5 @@
 /* append a string */
-/* Copyright (c) Olly Betts 1999, 2001
+/* Copyright (c) Olly Betts 1999, 2001, 2012
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,12 +15,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+#include "osalloc.h"
+
 void s_cat(char **pstr, int *plen, char *s);
 
 /* append a character */
 void s_catchar(char **pstr, int *plen, char /*ch*/);
 
 /* truncate string to zero length */
-void s_zero(char **pstr);
+#define s_zero(P) do { \
+	char **s_zero__P = (P); \
+	if (*s_zero__P) **s_zero__P = '\0'; \
+    } while (0)
 
-void s_free(char **pstr);
+#define s_free(P) do { \
+	char **s_free__P = (P); \
+	if (*s_free__P) { \
+	    osfree(*s_free__P); \
+	    *s_free__P = NULL; \
+	} \
+    } while (0)
