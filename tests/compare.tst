@@ -33,17 +33,36 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${TESTS=${*-""}}
 
+vg_error=123
+vg_log=vg.log
+if [ -n "$VALGRIND" ] ; then
+  rm -f "$vg_log"
+  CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
+  DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
+fi
+
 for file in $TESTS ; do
   if test -n "$file" ; then
     echo "$file"
     rm -f tmp.* tmp_orig.*
     if test -n "$VERBOSE" ; then
       $CAVERN_ORIG "$file" --output=tmp_orig | tee tmp_orig.out || exit 1
-      $CAVERN "$file" --output=tmp | tee tmp.out || exit 1
+      $CAVERN "$file" --output=tmp | tee tmp.out
+      exitcode=$?
     else
       $CAVERN_ORIG "$file" --output=tmp_orig > tmp_orig.out || exit 1
-      $CAVERN "$file" --output=tmp > tmp.out || exit 1
+      $CAVERN "$file" --output=tmp > tmp.out
+      exitcode=$?
     fi
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
+    [ "$exitcode" = 0 ] || exit 1
     warn_orig=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp_orig.out`
     warn=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp.out`
     if test x"$warn_orig" != x"$warn" ; then
@@ -52,10 +71,21 @@ for file in $TESTS ; do
       exit 1
     fi
     if test -n "$VERBOSE" ; then
-      $DIFFPOS tmp.3d tmp_orig.3d || exit 1
+      $DIFFPOS tmp.3d tmp_orig.3d
+      exitcode=$?
     else
-      $DIFFPOS tmp.3d tmp_orig.3d > /dev/null || exit 1
+      $DIFFPOS tmp.3d tmp_orig.3d > /dev/null
+      exitcode=$?
     fi
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
+    [ "$exitcode" = 0 ] || exit 1
   fi
 done
 test -n "$VERBOSE" && echo "Test passed"

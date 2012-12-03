@@ -68,6 +68,7 @@ vg_log=vg.log
 if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
+  DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
 fi
 
 for file in $TESTS ; do
@@ -259,10 +260,22 @@ for file in $TESTS ; do
     case $pos in
     yes)
       if test -n "$VERBOSE" ; then
-        $DIFFPOS tmp.3d "$posfile" || exit 1
+	$DIFFPOS tmp.3d "$posfile"
+	exitcode=$?
       else
-        $DIFFPOS tmp.3d "$posfile" > /dev/null || exit 1
-      fi ;;
+	$DIFFPOS tmp.3d "$posfile" > /dev/null
+	exitcode=$?
+      fi
+      if [ -n "$VALGRIND" ] ; then
+	if [ $exitcode = "$vg_error" ] ; then
+	  cat "$vg_log"
+	  rm "$vg_log"
+	  exit 1
+	fi
+	rm "$vg_log"
+      fi
+      [ "$exitcode" = 0 ] || exit 1
+      ;;
     dxf)
       if test -n "$VERBOSE" ; then
         $CAD3D tmp.3d tmp.dxf || exit 1

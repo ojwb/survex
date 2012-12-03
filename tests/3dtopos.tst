@@ -32,6 +32,14 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${TESTS=${*:-"pos.pos v0 v0b v1 v2 v3"}}
 
+vg_error=123
+vg_log=vg.log
+if [ -n "$VALGRIND" ] ; then
+  rm -f "$vg_log"
+  TDTOPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $TDTOPOS"
+  DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
+fi
+
 for file in $TESTS ; do
   echo $file
   case $file in
@@ -39,10 +47,29 @@ for file in $TESTS ; do
   *) input="$srcdir/$file.3d" ;;
   esac
   rm -f tmp.pos diffpos.tmp
-  $TDTOPOS "$input" tmp.pos || exit 1
+  $TDTOPOS "$input" tmp.pos
+  exitcode=$?
+  if [ -n "$VALGRIND" ] ; then
+    if [ $exitcode = "$vg_error" ] ; then
+      cat "$vg_log"
+      rm "$vg_log"
+      exit 1
+    fi
+    rm "$vg_log"
+  fi
+  test $exitcode = 0 || exit 1
   $DIFFPOS "$input" tmp.pos > diffpos.tmp
+  exitcode=$?
   if test -n "$VERBOSE" ; then
     cat diffpos.tmp
+  fi
+  if [ -n "$VALGRIND" ] ; then
+    if [ $exitcode = "$vg_error" ] ; then
+      cat "$vg_log"
+      rm "$vg_log"
+      exit 1
+    fi
+    rm "$vg_log"
   fi
   test -s diffpos.tmp && exit 1
   rm -f tmp.pos diffpos.tmp

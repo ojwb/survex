@@ -34,10 +34,26 @@ test -x "$testdir"/../src/cavern || testdir=.
 SURVEXLANG=en
 export SURVEXLANG
 
+vg_error=123
+vg_log=vg.log
+if [ -n "$VALGRIND" ] ; then
+  rm -f "$vg_log"
+  DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
+fi
+
 for file in $TESTS ; do
   echo $file
   rm -f diffpos.tmp
   $DIFFPOS "$srcdir/${file}a.pos" "$srcdir/${file}b.pos" > diffpos.tmp
+  exitcode=$?
+  if [ -n "$VALGRIND" ] ; then
+    if [ $exitcode = "$vg_error" ] ; then
+      cat "$vg_log"
+      rm "$vg_log"
+      exit 1
+    fi
+    rm "$vg_log"
+  fi
   if test -n "$VERBOSE" ; then
     cat diffpos.tmp
     cmp diffpos.tmp "$srcdir/${file}.out" || exit 1
