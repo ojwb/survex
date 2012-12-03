@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-set -e
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
@@ -28,15 +27,34 @@ export DISPLAY
 
 PROGS="cad3d cavern diffpos extend sorterr 3dtopos aven"
 
+vgrun=
+vg_error=123
+vg_log=vg.log
+if [ -n "$VALGRIND" ] ; then
+  rm -f "$vg_log"
+  vgrun="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error"
+fi
+
 for p in ${PROGS}; do
-   echo $p
-   if test -n "$VERBOSE"; then
-      "$testdir/../src/$p" --version
-      "$testdir/../src/$p" --help
-   else
-      "$testdir/../src/$p" --version > /dev/null
-      "$testdir/../src/$p" --help > /dev/null
-   fi
+  echo $p
+  for o in version help ; do
+    if test -n "$VERBOSE"; then
+      $vgrun "$testdir/../src/$p" --$o
+      exitcode=$?
+    else
+      $vgrun "$testdir/../src/$p" --$o > /dev/null
+      exitcode=$?
+    fi
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
+    [ "$exitcode" = 0 ] || exit 1
+  done
 done
 test -n "$VERBOSE" && echo "Test passed"
 exit 0

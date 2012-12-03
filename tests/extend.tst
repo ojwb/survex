@@ -33,20 +33,68 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${TESTS=${*:-"extend extend2names eswap eswap-break"}}
 
+vg_error=123
+vg_log=vg.log
+if [ -n "$VALGRIND" ] ; then
+  rm -f "$vg_log"
+  CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
+  EXTEND="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $EXTEND"
+  DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
+fi
+
 for file in $TESTS ; do
   echo $file
   EXTEND_ARGS=""
   test -f "$srcdir/$file.espec" && EXTEND_ARGS="--specfile $srcdir/$file.espec"
   rm -f tmp.*
   if test -n "$VERBOSE" ; then
-    $CAVERN "$srcdir/$file.svx" --output=tmp || exit 1
-    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d || exit 1
-    $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" || exit 1
+    $CAVERN "$srcdir/$file.svx" --output=tmp
+    exitcode=$?
   else
-    $CAVERN "$srcdir/$file.svx" --output=tmp > /dev/null || exit 1
-    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d > /dev/null || exit 1
-    $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" > /dev/null || exit 1
+    $CAVERN "$srcdir/$file.svx" --output=tmp > /dev/null
+    exitcode=$?
   fi
+  if [ -n "$VALGRIND" ] ; then
+    if [ $exitcode = "$vg_error" ] ; then
+      cat "$vg_log"
+      rm "$vg_log"
+      exit 1
+    fi
+    rm "$vg_log"
+  fi
+  [ "$exitcode" = 0 ] || exit 1
+  if test -n "$VERBOSE" ; then
+    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d
+    exitcode=$?
+  else
+    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d > /dev/null
+    exitcode=$?
+  fi
+  if [ -n "$VALGRIND" ] ; then
+    if [ $exitcode = "$vg_error" ] ; then
+      cat "$vg_log"
+      rm "$vg_log"
+      exit 1
+    fi
+    rm "$vg_log"
+  fi
+  [ "$exitcode" = 0 ] || exit 1
+  if test -n "$VERBOSE" ; then
+    $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d"
+    exitcode=$?
+  else
+    $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" > /dev/null
+    exitcode=$?
+  fi
+  if [ -n "$VALGRIND" ] ; then
+    if [ $exitcode = "$vg_error" ] ; then
+      cat "$vg_log"
+      rm "$vg_log"
+      exit 1
+    fi
+    rm "$vg_log"
+  fi
+  [ "$exitcode" = 0 ] || exit 1
   rm -f tmp.*
 done
 test -n "$VERBOSE" && echo "Test passed"
