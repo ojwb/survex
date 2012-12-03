@@ -1,3 +1,10 @@
+Mon Dec 03 04:13:32 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c,tests/cavern.tst: Fix handling after reporting an error
+	  for a bad reading in passage data to not then complain "End of line
+	  not blank" but instead check other readings on the same line.
+	* tests/passagebad.svx: Add regression testcase.
+
 Mon Dec 03 02:55:33 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst,tests/extend.tst,tests/smoke.tst: Add valgrind hooks

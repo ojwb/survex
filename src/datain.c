@@ -153,7 +153,7 @@ compile_error_token(int en)
       s_catchar(&p, &len, (char)ch);
       nextch();
    }
-   compile_error_skip(en, p ? p : "");
+   compile_error(en, p ? p : "");
    osfree(p);
 }
 
@@ -1432,6 +1432,7 @@ data_normal(void)
 	     VAL(r) = handle_plumb(p_ctype);
 	     if (VAL(r) != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
+	     skipline();
 	     process_eol();
 	     return;
 	  }
@@ -1693,8 +1694,9 @@ data_passage(void)
          if (VAL(*ordering) == HUGE_REAL) {
             if (!isOmit(ch)) {
 	       compile_error_token(/*Expecting numeric field, found “%s”*/9);
+	    } else {
+	       nextch();
             }
-	    nextch();
             VAL(*ordering) = -1;
          }
 	 break;
