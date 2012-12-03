@@ -1,3 +1,8 @@
+Mon Dec 03 01:59:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst: If VALGRIND is set, run cavern under valgrind and
+	  fail the test if there's an error.
+
 Mon Dec 03 01:29:39 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Refactor to avoid duplicating code for handling clino

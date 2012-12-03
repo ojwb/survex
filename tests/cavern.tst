@@ -63,6 +63,13 @@ export LC_ALL
 SURVEXLANG=en
 export SURVEXLANG
 
+vg_error=123
+vg_log=vg.log
+if [ -n "$VALGRIND" ] ; then
+  rm -f "$vg_log"
+  CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
+fi
+
 for file in $TESTS ; do
   # how many warnings to expect
   warn=
@@ -222,6 +229,14 @@ for file in $TESTS ; do
     $CAVERN "$input" --output=tmp > tmp.out
     exitcode=$?
     test -n "$VERBOSE" && cat tmp.out
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
     if test fail = "$pos" ; then
       # success gives 0, signal (128 + <signal number>)
       test $exitcode = 1 || exit 1
