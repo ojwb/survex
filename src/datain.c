@@ -1424,28 +1424,20 @@ data_normal(void)
        case Comp: case BackComp:
 	  read_bearing_or_omit(*ordering);
 	  break;
-       case Clino:
-	  read_reading(Clino, fTrue);
-	  if (VAL(Clino) == HUGE_REAL) {
-	     VAL(Clino) = handle_plumb(&ctype);
-	     if (VAL(Clino) != HUGE_REAL) break;
+       case Clino: case BackClino: {
+	  reading r = *ordering;
+	  clino_type * p_ctype = (r == Clino ? &ctype : &backctype);
+	  read_reading(r, fTrue);
+	  if (VAL(r) == HUGE_REAL) {
+	     VAL(r) = handle_plumb(p_ctype);
+	     if (VAL(r) != HUGE_REAL) break;
 	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
 	     process_eol();
 	     return;
 	  }
-	  ctype = CTYPE_READING;
+	  *p_ctype = CTYPE_READING;
 	  break;
-       case BackClino:
-	  read_reading(BackClino, fTrue);
-	  if (VAL(BackClino) == HUGE_REAL) {
-	     VAL(BackClino) = handle_plumb(&backctype);
-	     if (VAL(BackClino) != HUGE_REAL) break;
-	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
-	     process_eol();
-	     return;
-	  }
-	  backctype = CTYPE_READING;
-	  break;
+       }
        case FrDepth: case ToDepth:
 	  read_reading(*ordering, fFalse);
 	  break;
@@ -1466,24 +1458,25 @@ data_normal(void)
 	  read_bearing_or_omit(BackComp);
 	  if (is_compass_NaN(VAL(BackComp))) VAL(BackComp) = HUGE_REAL;
 	  break;
-       case CompassDATClino:
-	  read_reading(Clino, fFalse);
-	  if (is_compass_NaN(VAL(Clino))) {
-	     VAL(Clino) = HUGE_REAL;
-	     ctype = CTYPE_OMIT;
+       case CompassDATClino: case CompassDATBackClino: {
+	  reading r;
+	  clino_type * p_ctype;
+	  if (*ordering == CompassDATClino) {
+	     r = Clino;
+	     p_ctype = &ctype;
 	  } else {
-	     ctype = CTYPE_READING;
+	     r = BackClino;
+	     p_ctype = &backctype;
+	  }
+	  read_reading(r, fFalse);
+	  if (is_compass_NaN(VAL(r))) {
+	     VAL(r) = HUGE_REAL;
+	     *p_ctype = CTYPE_OMIT;
+	  } else {
+	     *p_ctype = CTYPE_READING;
 	  }
 	  break;
-       case CompassDATBackClino:
-	  read_reading(BackClino, fFalse);
-	  if (is_compass_NaN(VAL(BackClino))) {
-	     VAL(BackClino) = HUGE_REAL;
-	     backctype = CTYPE_OMIT;
-	  } else {
-	     backctype = CTYPE_READING;
-	  }
-	  break;
+       }
        case CompassDATLeft: case CompassDATRight:
        case CompassDATUp: case CompassDATDown: {
 	  /* FIXME: need to actually make use of these entries! */

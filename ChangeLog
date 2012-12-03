@@ -1,3 +1,8 @@
+Mon Dec 03 01:29:39 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Refactor to avoid duplicating code for handling clino
+	  and backclino.
+
 Mon Dec 03 01:29:05 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Check r is valid before using it at all.
