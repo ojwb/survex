@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - smoke tests
-# Copyright (C) 1999-2003,2005,2011 Olly Betts
+# Copyright (C) 1999-2003,2005,2011,2012 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,4 +44,5 @@ for p in ${PROGS}; do
       "$testdir/../src/$p" --help > /dev/null
    fi
 done
+test -n "$VERBOSE" && echo "Test passed"
 exit 0

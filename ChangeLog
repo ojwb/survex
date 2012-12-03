@@ -1,3 +1,8 @@
+Mon Dec 03 02:28:45 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/: Make all test scripts report "Test passed" at the end if
+	  VERBOSE is set and all testcases in the script passed.
+
 Mon Dec 03 01:59:04 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst: If VALGRIND is set, run cavern under valgrind and

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - compare 2 versions of cavern on a dataset
-# Copyright (C) 1999-2003 Olly Betts
+# Copyright (C) 1999-2003,2012 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - extend tests
-# Copyright (C) 1999-2003,2010 Olly Betts
+# Copyright (C) 1999-2003,2010,2012 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,4 +49,5 @@ for file in $TESTS ; do
   fi
   rm -f tmp.*
 done
+test -n "$VERBOSE" && echo "Test passed"
 exit 0

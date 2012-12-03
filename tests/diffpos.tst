@@ -57,5 +57,5 @@ for args in '' '--survey survey' '--survey survey.xyzzy' '--survey xyzzy' ; do
   cmp diffpos.tmp /dev/null > /dev/null || exit 1
   rm -f diffpos.tmp
 done
-  
+test -n "$VERBOSE" && echo "Test passed"
 exit 0
