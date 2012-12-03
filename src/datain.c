@@ -272,7 +272,6 @@ read_reading(reading r, bool f_optional)
 {
    int n_readings;
    q_quantity q;
-   VAL(r) = read_numeric(f_optional, &n_readings);
    switch (r) {
       case Tape: q = Q_LENGTH; break;
       case Comp: q = Q_BEARING; break;
@@ -292,6 +291,7 @@ read_reading(reading r, bool f_optional)
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
+   VAL(r) = read_numeric(f_optional, &n_readings);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }

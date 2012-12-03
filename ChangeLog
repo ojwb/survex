@@ -1,3 +1,7 @@
+Mon Dec 03 01:29:05 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Check r is valid before using it at all.
+
 Sun Dec 02 23:48:05 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/str.c,src/str.h: Inline s_zero() and s_free() since they should
