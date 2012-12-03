@@ -1,3 +1,7 @@
+Mon Dec 03 06:34:20 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/badinc3.svx: Add new test file, missed in earlier commit.
+
 Mon Dec 03 04:18:34 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/cavern.c: Use /* */ comments, not //.
