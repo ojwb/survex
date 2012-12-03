@@ -20,13 +20,7 @@ set -e
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
-# allow us to run tests standalone more easily
-: ${srcdir="$testdir"}
-
 test -x "$testdir"/../src/cavern || testdir=.
-
-: ${CAVERN="$testdir"/../src/cavern}
-: ${DIFFPOS="$testdir"/../src/diffpos}
 
 # Ensure that --version and --help work without an X display.
 DISPLAY=

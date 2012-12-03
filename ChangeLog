@@ -1,3 +1,7 @@
+Mon Dec 03 02:29:56 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/smoke.tst: Remove variables which aren't ever used.
+
 Mon Dec 03 02:28:45 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/: Make all test scripts report "Test passed" at the end if
