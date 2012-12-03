@@ -1,3 +1,9 @@
+Mon Dec 03 06:50:51 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst,tests/equatenosuchstn.out,tests/surveytypo.out: Stop
+	  trimming output header when we get to copyright line, as there may be
+	  an error before the first blank line.
+
 Mon Dec 03 06:34:20 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/badinc3.svx: Add new test file, missed in earlier commit.

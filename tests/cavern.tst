@@ -315,9 +315,9 @@ for file in $TESTS ; do
     if test -f "$file.out" ; then
       # Check output is as expected.
       if test -n "$VERBOSE" ; then
-	sed '1,/^$/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" || exit 1
+	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" || exit 1
       else
-	sed '1,/^$/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" > /dev/null || exit 1
+	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" > /dev/null || exit 1
       fi
     fi
     rm -f tmp.*
