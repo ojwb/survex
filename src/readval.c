@@ -300,6 +300,7 @@ read_number(bool f_optional)
    if (isOmit(ch_old)) {
       compile_error(/*Field may not be omitted*/8);
    } else {
+      set_pos(&fp);
       compile_error_token(/*Expecting numeric field, found “%s”*/9);
    }
    LONGJMP(file.jbSkipLine);

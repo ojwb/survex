@@ -1,3 +1,11 @@
+Mon Dec 03 06:52:22 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/readval.c: If we were expecting a numeric field and instead get
+	  something which starts with '+', '-', or '.' but which isn't a
+	  number, then fix the error to include that character in the token
+	  reported.
+	* tests/: Add regression test badreadingdotplus.
+
 Mon Dec 03 06:50:51 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst,tests/equatenosuchstn.out,tests/surveytypo.out: Stop
