@@ -1,3 +1,7 @@
+Mon Dec 03 04:18:34 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/cavern.c: Use /* */ comments, not //.
+
 Mon Dec 03 04:16:40 GMT 2012  Olly Betts <olly@survex.com>
 
 	* tests/Makefile.am: Add new test suite files.

@@ -390,8 +390,9 @@ main(int argc, char **argv)
 static void
 do_range(int d, int msgno)
 {
-   // sprint_prefix uses a single buffer, so to report two stations in one
-   // message we need to make a temporary copy of the string for one of them.
+   /* sprint_prefix uses a single buffer, so to report two stations in one
+    * message we need to make a temporary copy of the string for one of them.
+    */
    char * pfx_hi = osstrdup(sprint_prefix(pfxHi[d]));
    char * pfx_lo = sprint_prefix(pfxLo[d]);
    printf(msg(msgno), max[d] - min[d], pfx_hi, max[d], pfx_lo, min[d]);
