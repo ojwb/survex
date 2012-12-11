@@ -1,3 +1,10 @@
+Tue Dec 11 22:22:20 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po_codes,lib/survex.pot,src/commands.c,tests/: If the scale
+	  factor in *calibrate is zero, flag that as an error - it doesn't
+	  make sense and probably means someone reversed the arguments to
+	  *calibrate.
+
 Mon Dec 03 06:52:22 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/readval.c: If we were expecting a numeric field and instead get

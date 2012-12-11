@@ -1,0 +1,5 @@
+*fix 1 reference 0 0 0
+; A scale factor of 0 isn't sensible
+*calibrate compass 1.0 0
+*calibrate clino backclino -0.5 0
+*calibrate tape 0 0

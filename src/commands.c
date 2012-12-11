@@ -1267,6 +1267,10 @@ cmd_calibrate(void)
       compile_error_skip(/*Scale factor must be 1.0 for DECLINATION*/40);
       return;
    }
+   if (sc == 0.0) {
+      compile_error_skip(/*Scale factor must be non-zero*/391);
+      return;
+   }
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1) {
       if (qmask & m) {
 	 pcs->z[quantity] = pcs->units[quantity] * z;

@@ -83,4 +83,5 @@ eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d\
 equatenosuchstn.out equatenosuchstn.svx\
 surveytypo.svx badinc3.svx skipafterbadomit.svx passagebad.svx\
-badreadingdotplus.svx badreadingdotplus.out
+badreadingdotplus.svx badreadingdotplus.out\
+badcalibrate.svx badcalibrate.out

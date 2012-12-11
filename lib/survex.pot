@@ -268,6 +268,11 @@ msgstr ""
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr ""
 
+#. TRANSLATORS: DECLINATION is a built-in keyword, so best not to translate
+#: ../src/commands.c:1267
+msgid "Scale factor must be non-zero"
+msgstr ""
+
 #: ../src/commands.c:1309
 #, c-format
 msgid "Unknown setting “%s”"
