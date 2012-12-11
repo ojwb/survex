@@ -84,4 +84,5 @@ eswap-break.svx eswap-break.espec eswap-breakx.3d\
 equatenosuchstn.out equatenosuchstn.svx\
 surveytypo.svx badinc3.svx skipafterbadomit.svx passagebad.svx\
 badreadingdotplus.svx badreadingdotplus.out\
-badcalibrate.svx badcalibrate.out
+badcalibrate.svx badcalibrate.out\
+calibrate_clino.svx calibrate_clino.out calibrate_clino.pos

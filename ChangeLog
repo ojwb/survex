@@ -1,3 +1,14 @@
+Tue Dec 11 23:07:31 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/datain.c,tests/: We want to warn if there's a clino reading which
+	  it would be impossible to have read from the instrument (e.g. on a
+	  -90 to 90 degree scale you can't read "96" (it's probably a typo for
+	  "69").  However, the gradient reading from a topofil is typically in
+	  the range 0 to 180, with 90 being horizontal.  Really we should allow
+	  the valid range to be specified, but for now we infer it from the
+	  zero error - if this is within 45 degrees of 90 then we assume the
+	  range is 0 to 180.
+
 Tue Dec 11 22:29:35 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po-to-msg.pl: Report unused message numbers.

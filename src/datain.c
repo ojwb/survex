@@ -889,16 +889,36 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    fNoComp = handle_comp_units();
 
    if (ctype == CTYPE_READING) {
+      bool range_0_180;
+      real z;
       real diff_from_abs90;
       clin *= pcs->units[Q_GRADIENT];
       /* percentage scale */
       if (pcs->f_clino_percent) clin = atan(clin);
+      /* We want to warn if there's a reading which it would be impossible
+       * to have read from the instrument (e.g. on a -90 to 90 degree scale
+       * you can't read "96" (it's probably a typo for "69").  However, the
+       * gradient reading from a topofil is typically in the range 0 to 180,
+       * with 90 being horizontal.
+       *
+       * Really we should allow the valid range to be specified, but for now
+       * we infer it from the zero error - if this is within 45 degrees of
+       * 90 then we assume the range is 0 to 180.
+       */
+      z = pcs->z[Q_GRADIENT];
+      range_0_180 = (z > M_PI_4 && z < 3*M_PI_4);
       diff_from_abs90 = fabs(clin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
-	 compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+	 if (!range_0_180)
+	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		 diff_from_abs90 >= -EPSILON) {
 	 ctype = CTYPE_INFERPLUMB;
+      }
+      if (range_0_180 && ctype != CTYPE_INFERPLUMB) {
+	 /* FIXME: Warning message not ideal... */
+	 if (clin < 0.0 || clin - M_PI > EPSILON)
+	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       }
    }
 
