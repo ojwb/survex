@@ -1,3 +1,7 @@
+Tue Dec 11 22:29:35 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Report unused message numbers.
+
 Tue Dec 11 22:22:20 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po_codes,lib/survex.pot,src/commands.c,tests/: If the scale

@@ -33,6 +33,7 @@ ${$msgs{'en'}}[0] = '©';
 
 # my %uses = ();
 
+my %n = ();
 my $num_list = Locale::PO->load_file_asarray("$srcdir/po_codes");
 foreach my $po_entry (@{$num_list}) {
     my $msgno = $po_entry->dequote($po_entry->msgstr);
@@ -43,7 +44,17 @@ foreach my $po_entry (@{$num_list}) {
 	print STDERR "Warning: already had message $msgno for language 'en'\n";
     }
     ${$msgs{'en'}}[$msgno] = $msg;
+    ++$n{$msgno};
 }
+my $last = 0;
+for (sort { $a <=> $b } keys %n) {
+    if ($_ > $last + 1) {
+	print STDERR "Unused msg numbers: ", join(" ", $last + 1 .. $_ - 1), "\n";
+    }
+    $last = $_;
+}
+print STDERR "Last used msg number: $last\n";
+%n = ();
 
 for my $po_file (@ARGV) {
     my $language = $po_file;
