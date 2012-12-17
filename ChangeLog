@@ -1,3 +1,8 @@
+Mon Dec 17 10:39:14 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Add translation for new message, adapted from two similar
+	  existing messages.
+
 Mon Dec 17 10:37:12 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/it.po: Merge a translation from launchpad.

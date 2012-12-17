@@ -277,7 +277,7 @@ msgstr "Le facteur d’échelle doit être égal à 1.0 pour DECLINATION"
 #. would be mapped to zero, which doesn't make sense.
 #: ../src/commands.c:1267
 msgid "Scale factor must be non-zero"
-msgstr ""
+msgstr "Le facteur d’échelle doit être non nul"
 
 #: ../src/commands.c:1309
 #, c-format
