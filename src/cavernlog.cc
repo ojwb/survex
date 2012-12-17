@@ -296,10 +296,10 @@ CavernLogWindow::process(const wxString &file)
 		// : after the drive letter!  FIXME: better to look for ": "?
 		size_t colon = cur.find(':', 2);
 #endif
-		if (colon != wxString::npos && colon < cur.size() - 1) {
+		if (colon != wxString::npos && colon < cur.size() - 2) {
 		    ++colon;
 		    size_t i = colon;
-		    while (i < cur.size() - 1 &&
+		    while (i < cur.size() - 2 &&
 			   cur[i] >= wxT('0') && cur[i] <= wxT('9')) {
 			++i;
 		    }
