@@ -1,3 +1,8 @@
+Mon Dec 17 22:02:43 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/zh_CN.po: Reuse existing translation of "Presentation" for the
+	  top level menu name - now all the whole menu bar is translated!
+
 Mon Dec 17 11:07:00 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Don't highlight a file:linenumber if there's no
