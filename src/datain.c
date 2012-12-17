@@ -96,21 +96,23 @@ push_back(int c)
 }
 
 static void
+report_parent(parse * p) {
+    if (p->parent)
+	report_parent(p->parent);
+    /* Force re-report of include tree for further errors in
+     * parent files */
+    p->reported_where = fFalse;
+    fprintf(STDERR, msg(/*In file included from %s:%u:\n*/5), p->filename, p->line);
+}
+
+static void
 error_list_parent_files(void)
 {
    if (!file.reported_where && file.parent) {
-      parse *p = file.parent;
+      report_parent(file.parent);
       /* Suppress reporting of full include tree for further errors
        * in this file */
       file.reported_where = fTrue;
-
-      while (p) {
-	 /* Force re-report of include tree for further errors in
-	  * parent files */
-	 p->reported_where = fFalse;
-	 fprintf(STDERR, msg(/*In file included from %s:%u:\n*/5), p->filename, p->line);
-	 p = p->parent;
-      }
    }
 }
 
