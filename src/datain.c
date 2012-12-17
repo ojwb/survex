@@ -100,12 +100,6 @@ error_list_parent_files(void)
 {
    if (!file.reported_where && file.parent) {
       parse *p = file.parent;
-      const char *m = msg(/*In file included from*/5);
-      size_t len = strlen(m);
-
-      fputs(m, STDERR);
-      m = msg(/*from*/3);
-
       /* Suppress reporting of full include tree for further errors
        * in this file */
       file.reported_where = fTrue;
@@ -114,11 +108,9 @@ error_list_parent_files(void)
 	 /* Force re-report of include tree for further errors in
 	  * parent files */
 	 p->reported_where = fFalse;
-	 fprintf(STDERR, " %s:%d", p->filename, p->line);
+	 fprintf(STDERR, msg(/*In file included from %s:%u:\n*/5), p->filename, p->line);
 	 p = p->parent;
-	 if (p) fprintf(STDERR, ",\n%*s", (int)len, m);
       }
-      fprintf(STDERR, ":\n");
    }
 }
 

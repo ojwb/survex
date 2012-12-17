@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-11-28 00:39:00 +0000\n"
+"PO-Revision-Date: 2012-12-17 03:54:08 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -25,14 +25,6 @@ msgstr "Zu wenig Speicherplatz (%lu Bytes nicht gefunden)."
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Zum Verarbeiten dieser Vermessungsdaten ist Survex-Version %s oder neuer erforderlich."
 
-#. TRANSLATORS: Used with message 5 like so:
-#. In file included from area.svx:12,
-#. from cave.svx:3:
-#. passage.svx:17: <some error or warning>
-#: ../src/datain.c:107
-msgid "from"
-msgstr "von"
-
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:360
@@ -40,14 +32,11 @@ msgstr "von"
 msgid "warning"
 msgstr "Warnung"
 
-#. TRANSLATORS: Followed by <filename>:<line number>
-#. de: We really want the filename/line number at the end (so error parsing
-#. editors can follow), so the natural translation:
-#. "In von %s:%d: aus eingelesener Datei"
-#. isn’t ideal.  This is "clumsy but workable":
+#. TRANSLATORS: %s is replaced by the filename of the parent file, and %u by
+#. the line number in that file.
 #: ../src/datain.c:103
-msgid "In file included from"
-msgstr "In eingelesener Datei ausgehend von"
+msgid "In file included from %s:%u:\n"
+msgstr "In von %s:%u aus eingelesener Datei:\n"
 
 #: ../src/commands.c:507
 msgid "*prefix is deprecated - use *begin and *end instead"

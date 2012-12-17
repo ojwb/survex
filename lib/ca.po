@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex-1.2.3\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-11-02 06:11:00 +0000\n"
+"PO-Revision-Date: 2012-12-17 03:54:19 +0000\n"
 "Last-Translator: Josep Guarro <josep@imapmail.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -22,14 +22,6 @@ msgstr "Memòria insuficient (es necessiten %lu bytes més)."
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Per processar aquestes dades topogràfiques es requereix la versió %s de Survex (o superior)."
 
-#. TRANSLATORS: Used with message 5 like so:
-#. In file included from area.svx:12,
-#. from cave.svx:3:
-#. passage.svx:17: <some error or warning>
-#: ../src/datain.c:107
-msgid "from"
-msgstr "des de"
-
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:360
@@ -37,10 +29,11 @@ msgstr "des de"
 msgid "warning"
 msgstr "alerta"
 
-#. TRANSLATORS: Followed by <filename>:<line number>
+#. TRANSLATORS: %s is replaced by the filename of the parent file, and %u by
+#. the line number in that file.
 #: ../src/datain.c:103
-msgid "In file included from"
-msgstr "Al fitxer inclòs des de"
+msgid "In file included from %s:%u:\n"
+msgstr "Al fitxer inclòs des de %s:%u:\n
 
 #: ../src/commands.c:507
 msgid "*prefix is deprecated - use *begin and *end instead"

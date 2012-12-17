@@ -25,14 +25,6 @@ msgstr ""
 msgid "Survex version %s or greater required to process this survey data."
 msgstr ""
 
-#. TRANSLATORS: Used with message 5 like so:
-#. In file included from area.svx:12,
-#. from cave.svx:3:
-#. passage.svx:17: <some error or warning>
-#: ../src/datain.c:107
-msgid "from"
-msgstr ""
-
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:360
@@ -40,9 +32,10 @@ msgstr ""
 msgid "warning"
 msgstr ""
 
-#. TRANSLATORS: Followed by <filename>:<line number>
+#. TRANSLATORS: %s is replaced by the filename of the parent file, and %u by
+#. the line number in that file.
 #: ../src/datain.c:103
-msgid "In file included from"
+msgid "In file included from %s:%u:\n"
 msgstr ""
 
 #: ../src/commands.c:507

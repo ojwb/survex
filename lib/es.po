@@ -22,14 +22,6 @@ msgstr "Memoria insuficiente (se necesitan %lu bytes de más)."
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Para procesar estos datos topográficos se requiere la versión %s de Survex (o superior)."
 
-#. TRANSLATORS: Used with message 5 like so:
-#. In file included from area.svx:12,
-#. from cave.svx:3:
-#. passage.svx:17: <some error or warning>
-#: ../src/datain.c:107
-msgid "from"
-msgstr "desde"
-
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:360
@@ -37,10 +29,11 @@ msgstr "desde"
 msgid "warning"
 msgstr "alerta"
 
-#. TRANSLATORS: Followed by <filename>:<line number>
+#. TRANSLATORS: %s is replaced by the filename of the parent file, and %u by
+#. the line number in that file.
 #: ../src/datain.c:103
-msgid "In file included from"
-msgstr "En el archivo incluido desde"
+msgid "In file included from %s:%u:\n"
+msgstr "En el archivo incluido desde %s:%u:\n"
 
 #: ../src/commands.c:507
 msgid "*prefix is deprecated - use *begin and *end instead"

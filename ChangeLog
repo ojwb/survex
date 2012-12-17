@@ -1,3 +1,9 @@
+Mon Dec 17 06:37:10 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/,src/datain.c: Move the <filename>:<line> into the message when
+	  reporting the include route to the file with the error in it, which
+	  allows a more natural translation into German.
+
 Mon Dec 17 03:26:40 GMT 2012  Olly Betts <olly@survex.com>
 
 	* .gitignore: Add src/dump3d.

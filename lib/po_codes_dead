@@ -115,4 +115,11 @@
 #~ msgid "Invalid regular expression: %s"
 #~ msgstr ""
 
+#. TRANSLATORS: Used with message 5 like so:
+#. In file included from area.svx:12,
+#. from cave.svx:3:
+#. passage.svx:17: <some error or warning>
+#: ../src/datain.c:107
+#~ msgid "from"
+#~ msgstr ""
 
