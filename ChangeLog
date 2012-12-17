@@ -1,3 +1,9 @@
+Mon Dec 17 11:04:36 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/: Rename testcase badinc3 to badinc4 and actually run it, and
+	  add new badinc3 which tests multiple levels of *include.  Add expect
+	  output for all the badinc testcases.
+
 Mon Dec 17 11:01:02 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Report the parent include files starting from the

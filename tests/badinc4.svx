@@ -1,0 +1,4 @@
+; The two lines below used to cause a segfault (fixed in 1.2.7)
+*include ; comment
+*include
+*fix 1 reference 0 0 0

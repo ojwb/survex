@@ -1,0 +1,4 @@
+In file included from ./badinc3.svx:2:
+In file included from ./badinc2.svx:2:
+./badinc.svx:2: Couldn't open data file "nonexistent_file"
+cavern: No survey data

@@ -28,7 +28,9 @@ revcomplist.svx\
 exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
 exporterr6.svx exporterr1b.svx exporterr2b.svx exporterr3b.svx exporterr6b.svx\
 hanging_cpt.svx\
-self_loop.svx self_eq_loop.svx badinc.svx badinc2.svx export.svx export2.svx\
+self_loop.svx self_eq_loop.svx\
+badinc.svx badinc2.svx badinc3.svx badinc4.svx\
+export.svx export2.svx\
 singlefix.svx singlefix.pos singlereffix.svx singlereffix.pos\
 singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\
 includecomment.svx reenterwarn.svx\
@@ -82,7 +84,7 @@ cmd_date.svx cmd_datebad.svx cmd_datebad2.svx\
 eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d\
 equatenosuchstn.out equatenosuchstn.svx\
-surveytypo.svx badinc3.svx skipafterbadomit.svx passagebad.svx\
+surveytypo.svx skipafterbadomit.svx passagebad.svx\
 badreadingdotplus.svx badreadingdotplus.out\
 badcalibrate.svx badcalibrate.out\
 calibrate_clino.svx calibrate_clino.out calibrate_clino.pos

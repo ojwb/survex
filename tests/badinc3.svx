@@ -1,4 +1,2 @@
-; The two lines below used to cause a segfault (fixed in 1.2.7)
-*include ; comment
-*include
-*fix 1 reference 0 0 0
+; include of a file which includes a file which includes a nonexistent file
+*include badinc2
