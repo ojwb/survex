@@ -1,3 +1,10 @@
+Mon Dec 17 03:24:22 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po_codes,lib/po_codes_dead: Prune strings we aren't using and are
+	  probably unlikely to use again into a new file po_codes_dead, so that
+	  translators don't get presented with them to translate.
+	* lib/survex.pot: Regenerate.
+
 Tue Dec 11 23:07:31 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/datain.c,tests/: We want to warn if there's a clino reading which

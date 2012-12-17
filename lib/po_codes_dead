@@ -1,0 +1,118 @@
+#. TRANSLATORS: A computer mouse, not the rodent sort ;)
+#. Actually, mouse is somewhat imprecise as it could refer to a trackerball
+#. or joystick, but mouse is more compact than "pointing device" and usually
+#. correct.
+#~ msgid "No mouse detected"
+#~ msgstr ""
+
+#~ msgid "You need to calibrate your printer - see the manual for details."
+#~ msgstr ""
+
+#~ msgid "3d file"
+#~ msgstr ""
+
+#. TRANSLATORS: As in "printer driver"
+#~ msgid "Driver"
+#~ msgstr ""
+
+#~ msgid "Continue"
+#~ msgstr ""
+
+#~ msgid "Exiting."
+#~ msgstr ""
+
+#~ msgid "Plan or Elevation"
+#~ msgstr ""
+
+#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
+#. full circle.
+#~ msgid "Bearing up page (degrees): "
+#~ msgstr ""
+
+#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
+#. full circle.
+#~ msgid "Tilt (degrees): "
+#~ msgstr ""
+
+#, c-format
+#~ msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
+#~ msgstr ""
+
+#~ msgid "Using scale %.0f:%.0f"
+#~ msgstr ""
+
+#~ msgid "Print which pages?\n(RETURN for all; “n” for one page, “m-n”, “m-”, “-n” for a range)\n: "
+#~ msgstr ""
+
+#. TRANSLATORS: e.g. "Printing to “somefile.ps”…" / "Printing to “Laserjet4 on amachine…”
+#, c-format
+#~ msgid "Printing to “%s”…"
+#~ msgstr ""
+
+#. TRANSLATORS: %s will be replaced by something like "123°"
+#, c-format
+#~ msgid "Plan, %s up screen"
+#~ msgstr ""
+
+#~ msgid "View towards: "
+#~ msgstr ""
+
+#, c-format
+#~ msgid "This will need %d pages (%dx%d)."
+#~ msgstr ""
+
+#~ msgid "This will need 1 page."
+#~ msgstr ""
+
+#, c-format
+#~ msgid "Bad list of pages to print “%s”"
+#~ msgstr ""
+
+#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
+#~ msgid "yes"
+#~ msgstr ""
+
+#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
+#~ msgid "no"
+#~ msgstr ""
+
+#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
+#~ msgid "quit"
+#~ msgstr ""
+
+#. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
+#~ msgid "plan"
+#~ msgstr ""
+
+#. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
+#~ msgid "elevation"
+#~ msgstr ""
+
+#~ msgid "Close"
+#~ msgstr ""
+
+#~ msgid "&Quit\tCtrl+Q"
+#~ msgstr ""
+
+#~ msgid "&Depth Bar"
+#~ msgstr ""
+
+#~ msgid "&About…"
+#~ msgstr ""
+
+#. TRANSLATORS: checkbox for regular expression search
+#~ msgid "Regular expression"
+#~ msgstr ""
+
+#~ msgid "Pre&view"
+#~ msgstr ""
+
+#~ msgid "&Cancel"
+#~ msgstr ""
+
+#. TRANSLATORS: "%s" is replaced by the invalid expression
+#, c-format
+#~ msgid "Invalid regular expression: %s"
+#~ msgstr ""
+
+

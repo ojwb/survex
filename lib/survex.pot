@@ -624,16 +624,6 @@ msgstr ""
 msgid "produce an elevation view"
 msgstr ""
 
-#. TRANSLATORS: A computer mouse, not the rodent sort ;)
-#. Actually, mouse is somewhat imprecise as it could refer to a trackerball
-#. or joystick, but mouse is more compact than "pointing device" and usually
-#. correct.
-#~ msgid "No mouse detected"
-#~ msgstr ""
-
-#~ msgid "You need to calibrate your printer - see the manual for details."
-#~ msgstr ""
-
 #: ../src/commands.c:996
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
@@ -720,9 +710,6 @@ msgstr ""
 #: ../src/mainfrm.cc:114
 msgid "Elevation"
 msgstr ""
-
-#~ msgid "3d file"
-#~ msgstr ""
 
 #: ../src/cavern.c:341
 msgid "Calculating statistics"
@@ -905,10 +892,6 @@ msgstr ""
 msgid "output version information and exit"
 msgstr ""
 
-#. TRANSLATORS: As in "printer driver"
-#~ msgid "Driver"
-#~ msgstr ""
-
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
 #: ../src/cmdline.c:166
 msgid "OPTION"
@@ -921,44 +904,10 @@ msgstr ""
 msgid "Scale"
 msgstr ""
 
-#~ msgid "Continue"
-#~ msgstr ""
-
-#~ msgid "Exiting."
-#~ msgstr ""
-
 #: ../src/cmdline.c:190
 #, c-format
 msgid "Try “%s --help” for more information.\n"
 msgstr ""
-
-#~ msgid "Plan or Elevation"
-#~ msgstr ""
-
-#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
-#. full circle.
-#~ msgid "Bearing up page (degrees): "
-#~ msgstr ""
-
-#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
-#. full circle.
-#~ msgid "Tilt (degrees): "
-#~ msgstr ""
-
-#, c-format
-#~ msgid "Please enter Map Scale = X:Y (default 1:%d)\n: "
-#~ msgstr ""
-
-#~ msgid "Using scale %.0f:%.0f"
-#~ msgstr ""
-
-#~ msgid "Print which pages?\n(RETURN for all; “n” for one page, “m-n”, “m-”, “-n” for a range)\n: "
-#~ msgstr ""
-
-#. TRANSLATORS: e.g. "Printing to “somefile.ps”…" / "Printing to “Laserjet4 on amachine…”
-#, c-format
-#~ msgid "Printing to “%s”…"
-#~ msgstr ""
 
 #: ../src/avenprcore.cc:262
 #, c-format
@@ -970,14 +919,6 @@ msgstr ""
 #, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
 msgstr ""
-
-#. TRANSLATORS: %s will be replaced by something like "123°"
-#, c-format
-#~ msgid "Plan, %s up screen"
-#~ msgstr ""
-
-#~ msgid "View towards: "
-#~ msgstr ""
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1005,13 +946,6 @@ msgstr ""
 #: ../src/printwx.cc:684
 msgid "Extended elevation"
 msgstr ""
-
-#, c-format
-#~ msgid "This will need %d pages (%dx%d)."
-#~ msgstr ""
-
-#~ msgid "This will need 1 page."
-#~ msgstr ""
 
 #: ../src/cavern.c:410
 msgid "Survey contains 1 survey station,"
@@ -1048,30 +982,6 @@ msgstr ""
 #, c-format
 msgid "Survey has %ld connected components."
 msgstr ""
-
-#, c-format
-#~ msgid "Bad list of pages to print “%s”"
-#~ msgstr ""
-
-#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-#~ msgid "yes"
-#~ msgstr ""
-
-#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-#~ msgid "no"
-#~ msgstr ""
-
-#. TRANSLATORS: menu commands for (ynq) style choices (may become menu entries later)
-#~ msgid "quit"
-#~ msgstr ""
-
-#. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
-#~ msgid "plan"
-#~ msgstr ""
-
-#. TRANSLATORS: menu commands for (pe) style choices (may become menu entries later)
-#~ msgid "elevation"
-#~ msgstr ""
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which causes the
 #. survey data to be reprocessed.
@@ -1249,9 +1159,6 @@ msgstr ""
 msgid "Facing"
 msgstr ""
 
-#~ msgid "Close"
-#~ msgstr ""
-
 #. TRANSLATORS: for the title of the About box
 #: ../src/aboutdlg.cc:69
 #, c-format
@@ -1366,9 +1273,6 @@ msgstr ""
 #: ../src/mainfrm.cc:712
 msgid "&Open…\tCtrl+O"
 msgstr ""
-
-#~ msgid "&Quit\tCtrl+Q"
-#~ msgstr ""
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
 #. surveys without date information.
@@ -1685,9 +1589,6 @@ msgstr ""
 msgid "C&linometer"
 msgstr ""
 
-#~ msgid "&Depth Bar"
-#~ msgstr ""
-
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:818
@@ -1706,9 +1607,6 @@ msgstr ""
 #: ../src/mainfrm.cc:813
 msgid "&Cancel Measuring Line\tEscape"
 msgstr ""
-
-#~ msgid "&About…"
-#~ msgstr ""
 
 #: ../src/mainfrm.cc:820
 msgid "&Indicators"
@@ -1900,10 +1798,6 @@ msgstr ""
 #, c-format
 msgid "Hide %d found stations"
 msgstr ""
-
-#. TRANSLATORS: checkbox for regular expression search
-#~ msgid "Regular expression"
-#~ msgstr ""
 
 #: ../src/mainfrm.cc:193
 #: ../src/mainfrm.cc:1854
@@ -2174,20 +2068,9 @@ msgstr ""
 msgid "&Print…"
 msgstr ""
 
-#~ msgid "Pre&view"
-#~ msgstr ""
-
-#~ msgid "&Cancel"
-#~ msgstr ""
-
 #: ../src/printwx.cc:259
 msgid "Sur&face Survey Legs"
 msgstr ""
-
-#. TRANSLATORS: "%s" is replaced by the invalid expression
-#, c-format
-#~ msgid "Invalid regular expression: %s"
-#~ msgstr ""
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:83
