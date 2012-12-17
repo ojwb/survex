@@ -1,3 +1,7 @@
+Mon Dec 17 09:11:09 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Merge changes from .pot to .po files.
+
 Mon Dec 17 06:37:10 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/,src/datain.c: Move the <filename>:<line> into the message when
