@@ -1,3 +1,7 @@
+Mon Dec 17 10:37:12 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/it.po: Merge a translation from launchpad.
+
 Mon Dec 17 09:11:09 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/: Merge changes from .pot to .po files.

@@ -1273,13 +1273,13 @@ msgstr ""
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:261
 msgid "FILE1 FILE2 [THRESHOLD]"
-msgstr ""
+msgstr "FILE1 FILE2 [LIMITE]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:262
 #, c-format
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
-msgstr ""
+msgstr "FILE1 e FILE2 possono essere file .pos o .3d\nLIMITE è il massimo cambiamento ignorabile lungo gli assi in metri (predefinito %s)"
 
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:464
