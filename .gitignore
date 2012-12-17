@@ -67,6 +67,7 @@ src/avenpal.h
 src/cad3d
 src/cavern
 src/diffpos
+src/dump3d
 src/extend
 src/sorterr
 src/svxedit
