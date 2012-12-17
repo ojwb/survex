@@ -31,9 +31,11 @@
 
 #include "cmdline.h"
 #include "message.h"
+#include "useful.h"
 
 #include <assert.h>
 #include <signal.h>
+#include <stdio.h>
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -198,7 +200,7 @@ bool Aven::OnInit()
     if (real_argv[optind]) {
 	fnm = wxString(real_argv[optind], wxConvUTF8);
 	if (fnm.empty() && *(real_argv[optind])) {
-	    wxGetApp().ReportError(wxT("File argument's filename has bad encoding"));
+	    ReportError(wxT("File argument's filename has bad encoding"));
 	    return false;
 	}
     }
@@ -349,18 +351,31 @@ wmsg_cfgpth()
 extern "C" void
 aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
 {
-   wxString m;
-   if (fnm) {
-       m = wxString(fnm, wxConvUTF8);
-       if (line) m += wxString::Format(wxT(":%d"), line);
-       m += wxT(": ");
-   }
+    wxString m;
+    if (fnm) {
+	m = wxString(fnm, wxConvUTF8);
+	if (line) m += wxString::Format(wxT(":%d"), line);
+	m += wxT(": ");
+    }
 
-   if (severity == 0) {
-       m += wmsg(/*warning*/4);
-       m += wxT(": ");
-   }
+    if (severity == 0) {
+	m += wmsg(/*warning*/4);
+	m += wxT(": ");
+    }
 
-   m += wxString::FormatV(wmsg(en), ap);
-   wxGetApp().ReportError(m);
+    char buf[1024];
+    vsnprintf(buf, sizeof(buf), msg(en), ap);
+    m += wxString(buf, wxConvUTF8);
+    if (wxTheApp == NULL) {
+	// We haven't initialised the Aven app object yet.
+	if (!wxInitialize()) {
+	    fputs(buf, stderr);
+	    PUTC('\n', stderr);
+	    exit(1);
+	}
+	wxMessageBox(m, APP_NAME, wxOK | wxICON_ERROR);
+	wxUninitialize();
+    } else {
+	wxGetApp().ReportError(m);
+    }
 }

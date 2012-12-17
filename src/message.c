@@ -736,6 +736,7 @@ static const char *pth_cfg_files = "";
 static int num_msgs = 0;
 static char **msg_array = NULL;
 
+static bool msg_lang_explicit = fFalse;
 const char *msg_lang = NULL;
 const char *msg_lang2 = NULL;
 
@@ -839,13 +840,24 @@ parse_msg_file(int charset_code)
 
    fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
 
-   if (!fh) {
+   if (!fh && strlen(fnm) > 3 && fnm[2] == '_') {
       /* e.g. if 'en_GB' is unknown, see if we know 'en' */
-      if (strlen(fnm) > 3 && fnm[2] == '_') {
-	 fnm[2] = '\0';
-	 fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
-	 if (!fh) fnm[2] = '_'; /* for error reporting */
+      fnm[2] = '\0';
+      fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
+      if (!fh) fnm[2] = '_'; /* for error reporting */
+   }
+
+   if (!fh && !msg_lang_explicit) {
+      /* If msg_lang wasn't specified using environment variable SURVEX_LANG,
+       * then default to 'en' if we don't find messages for language msg_lang.
+       */
+      if (fnm[0] && fnm[1]) {
+	 strcpy(fnm, "en");
+      } else {
+	 osfree(fnm);
+	 fnm = osstrdup("en");
       }
+      fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
    }
 
    if (!fh) {
@@ -1017,7 +1029,9 @@ macosx_got_msg:
    fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
+   msg_lang_explicit = fTrue;
    if (!msg_lang || !*msg_lang) {
+      msg_lang_explicit = fFalse;
       msg_lang = getenv("LC_ALL");
    }
    if (!msg_lang || !*msg_lang) {

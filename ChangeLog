@@ -1,3 +1,13 @@
+Mon Dec 17 22:19:21 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/message.c: If we don't find the message file, only give an error
+	  if it was specified with SURVEX_LANG, since that is an explicit
+	  instruction to Survex, whereas LANG, LC_ALL and LC_MESSAGES are
+	  essentially system "preferred locale" settings.
+	* src/aven.cc: Fix reporting of errors from message.c not to crash if
+	  the wxApp object hasn't yet been intitialised, and to convert the
+	  character encoding correctly.
+
 Mon Dec 17 22:17:00 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Install zh_CN (Chinese) messages.
