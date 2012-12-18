@@ -282,4 +282,7 @@ public:
     void OnSize(wxSizeEvent & event);
 
     glaCoord GetVolumeDiameter() const { return m_VolumeDiameter; }
+
+private:
+    DECLARE_EVENT_TABLE()
 };

@@ -1,3 +1,10 @@
+Tue Dec 18 10:50:28 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Fix OnSize handling
+	  so we can just call event.Skip() (which is the intended approach)
+	  rather than explicitly calling the parent class OnSize() method
+	  from the subclass OnSize() method.
+
 Tue Dec 18 08:23:14 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Fix MSW build to not rely on a GCC extension.

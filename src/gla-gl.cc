@@ -271,6 +271,10 @@ bool GLAList::DrawList() const {
 //  GLACanvas
 //
 
+BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
+    EVT_SIZE(GLACanvas::OnSize)
+END_EVENT_TABLE()
+
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
@@ -533,8 +537,7 @@ void GLACanvas::OnSize(wxSizeEvent & event)
 	if (y_size < 1) y_size = 1;
     }
 
-    // This apparently is (or at least was) needed for Mac OS X.
-    wxGLCanvas::OnSize(event);
+    event.Skip();
 
     if (!opengl_initialised) return;
 

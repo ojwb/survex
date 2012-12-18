@@ -91,7 +91,7 @@ static const gla_colour NAME_COLOUR = col_GREEN;
 // vector for lighting angle
 static const Vector3 light(.577, .577, .577);
 
-BEGIN_EVENT_TABLE(GfxCore, wxGLCanvas)
+BEGIN_EVENT_TABLE(GfxCore, GLACanvas)
     EVT_PAINT(GfxCore::OnPaint)
     EVT_LEFT_DOWN(GfxCore::OnLButtonDown)
     EVT_LEFT_UP(GfxCore::OnLButtonUp)
@@ -1129,7 +1129,7 @@ void GfxCore::OnSize(wxSizeEvent& event)
 	return;
     }
 
-    GLACanvas::OnSize(event);
+    event.Skip();
 
     if (m_DoneFirstShow) {
 	TryToFreeArrays();
