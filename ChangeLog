@@ -1,3 +1,7 @@
+Tue Dec 18 08:23:14 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Fix MSW build to not rely on a GCC extension.
+
 Tue Dec 18 07:20:16 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/: Merge changes from template.

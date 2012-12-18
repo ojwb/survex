@@ -90,19 +90,24 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
     // wxWidgets passes us wxChars, which may be wide characters but cmdline
     // wants UTF-8 so we need to convert.
+#ifdef __GNUC__
+    // This is a GCC extension.
     char *utf8_argv[my_argc + 1];
+#else
+    vector<char *> utf8_argv(my_argc + 1);
+#endif
     for (int i = 0; i < my_argc; ++i){
 	utf8_argv[i] = strdup(wxString(my_argv[i]).mb_str());
     }
     utf8_argv[my_argc] = NULL;
 
-    msg_init(utf8_argv);
+    msg_init(&utf8_argv[0]);
     select_charset(CHARSET_UTF8);
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
     cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
-    cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
+    cmdline_init(my_argc, &utf8_argv[0], short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
 }
