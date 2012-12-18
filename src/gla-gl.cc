@@ -277,8 +277,8 @@ END_EVENT_TABLE()
 
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
-    : wxGLCanvas(parent, id, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
-      m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
+    : wxGLCanvas(parent, id, NULL, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
+      ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
       x_size(0), y_size(0)
 {
     // Constructor.
@@ -314,7 +314,7 @@ void GLACanvas::FirstShow()
     if (x_size < 1) x_size = 1;
     if (y_size < 1) y_size = 1;
 
-    SetCurrent();
+    ctx.SetCurrent(*this);
     opengl_initialised = true;
 
     // Set the background colour of the canvas to black.
@@ -578,7 +578,7 @@ void GLACanvas::StartDrawing()
 {
     // Prepare for a redraw operation.
 
-    SetCurrent();
+    ctx.SetCurrent(*this);
     glDepthMask(GL_TRUE);
 
     if (!save_hints) return;

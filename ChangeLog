@@ -1,3 +1,8 @@
+Tue Dec 18 12:00:40 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Update to use wxGLContext to avoid
+	  deprecation warnings from wx 2.9.
+
 Tue Dec 18 11:40:34 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Fix unused parameter warnings when we don't have

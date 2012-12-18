@@ -98,6 +98,8 @@ class GLAList {
 class GLACanvas : public wxGLCanvas {
     friend class GLAList; // For flag values.
 
+    wxGLContext ctx;
+
 #ifdef GLA_DEBUG
     int m_Vertices;
 #endif
