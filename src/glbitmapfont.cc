@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011 Olly Betts
+//  Copyright (C) 2011,2012 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -32,11 +32,12 @@
 
 #define CHECK_GL_ERROR(M, F) do { \
     GLenum error_code_ = glGetError(); \
-    if (error_code_ != GL_NO_ERROR) \
+    if (error_code_ != GL_NO_ERROR) { \
 	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
 		   "(call "F" in method "M")"), \
 		   wxString((const char *)gluErrorString(error_code_), \
 			    wxConvUTF8).c_str()); \
+    } \
 } while (0)
 
 bool

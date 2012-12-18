@@ -1,3 +1,8 @@
+Tue Dec 18 11:39:40 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/glbitmapfont.cc: Fix warning about ambiguous else from wxLogError
+	  macro.
+
 Tue Dec 18 11:32:32 GMT 2012  Olly Betts <olly@survex.com>
 
 	* INSTALL,lib/INSTALL.OSX,src/,survex.spec.in: Require at least
