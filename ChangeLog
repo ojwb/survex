@@ -1,3 +1,7 @@
+Tue Dec 18 04:13:18 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/po_codes,lib/survex.pot: Merge in updated source line numbers.
+
 Tue Dec 18 04:11:09 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/extract-msgs.pl,src/Makefile.am: Don't include version in
