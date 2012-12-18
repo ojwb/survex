@@ -62,11 +62,11 @@ read_prefix(unsigned pfx_flags)
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!(pfx_flags & PFX_ALLOW_ROOT)) {
-	 compile_error(/*ROOT is deprecated*/25);
+	 compile_error(-/*ROOT is deprecated*/25);
 	 LONGJMP(file.jbSkipLine);
       }
       if (root_depr_count < 5) {
-	 compile_warning(/*ROOT is deprecated*/25);
+	 compile_warning(-/*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
       }
@@ -301,7 +301,7 @@ read_number(bool f_optional)
       compile_error(/*Field may not be omitted*/8);
    } else {
       set_pos(&fp);
-      compile_error_token(/*Expecting numeric field, found “%s”*/9);
+      compile_error_token(-/*Expecting numeric field, found “%s”*/9);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
@@ -342,7 +342,7 @@ read_numeric_or_omit(int *p_n_readings)
    real v = read_numeric(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
-	 compile_error_token(/*Expecting numeric field, found “%s”*/9);
+	 compile_error_token(-/*Expecting numeric field, found “%s”*/9);
 	 LONGJMP(file.jbSkipLine);
 	 return 0.0; /* for brain-fried compilers */
       }
@@ -358,7 +358,7 @@ read_uint_internal(int errmsg, const filepos *fp)
    unsigned int n = 0;
    if (!isdigit(ch)) {
       if (fp) set_pos(fp);
-      compile_error_token(errmsg);
+      compile_error_token(-errmsg);
       LONGJMP(file.jbSkipLine);
    }
    while (isdigit(ch)) {

@@ -1,6 +1,6 @@
-./badreadingdotplus.svx:2: Expecting numeric field, found ".hello."
-./badreadingdotplus.svx:3: Expecting numeric field, found "+hello+"
-./badreadingdotplus.svx:5: Expecting numeric field, found "-hello"
+./badreadingdotplus.svx:2:12: Expecting numeric field, found ".hello."
+./badreadingdotplus.svx:3:12: Expecting numeric field, found "+hello+"
+./badreadingdotplus.svx:5:11: Expecting numeric field, found "-hello"
 
 Removing trailing traverses...
 

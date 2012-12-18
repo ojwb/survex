@@ -103,15 +103,18 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     wxString title = link.GetTarget();
     size_t colon = href.rfind(wxT(':'));
     if (colon != wxString::npos) {
+	size_t colon2 = href.rfind(wxT(':'), colon - 1);
+	if (colon2 != wxString::npos) swap(colon, colon2);
 #ifdef __WXMSW__
 	wxString cmd = wxT("notepad $f");
 #elif defined __WXMAC__
 	wxString cmd = wxT("open -t $f");
 #else
-	wxString cmd = wxT("x-terminal-emulator -title $t -e vim -c $l $f");
-	// wxString cmd = "x-terminal-emulator -title $t -e emacs +$l $f";
-	// wxString cmd = "x-terminal-emulator -title $t -e nano +$l $f";
-	// wxString cmd = "x-terminal-emulator -title $t -e jed -g $l $f";
+	wxString cmd = wxT("x-terminal-emulator -title $t -e vim +'call cursor('$l,$c')' $f");
+	// wxString cmd = wxT("gedit -b $f +$l:$c $f");
+	// wxString cmd = wxT("x-terminal-emulator -title $t -e emacs +$l $f");
+	// wxString cmd = wxT("x-terminal-emulator -title $t -e nano +$l $f");
+	// wxString cmd = wxT("x-terminal-emulator -title $t -e jed -g $l $f");
 #endif
 	const char * p = getenv("SURVEXEDITOR");
 	if (p) {
@@ -140,7 +143,17 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 		    break;
 		}
 		case wxT('l'): {
-		    wxString l = escape_for_shell(href.substr(colon + 1));
+		    wxString l = escape_for_shell(href.substr(colon + 1, colon2 - colon - 1));
+		    cmd.replace(i - 1, 2, l);
+		    i += l.size() - 1;
+		    break;
+		}
+		case wxT('c'): {
+		    wxString l;
+		    if (colon2 == wxString::npos)
+			l = wxT("0");
+		    else
+			l = escape_for_shell(href.substr(colon2 + 1));
 		    cmd.replace(i - 1, 2, l);
 		    i += l.size() - 1;
 		    break;
@@ -305,6 +318,12 @@ CavernLogWindow::process(const wxString &file)
 		    }
 		    if (i > colon && cur[i] == wxT(':') ) {
 			colon = i;
+			// Check for column number.
+			while (++i < cur.size() - 2 &&
+			   cur[i] >= wxT('0') && cur[i] <= wxT('9')) { }
+			if (i > colon + 1 && cur[i] == wxT(':') ) {
+			    colon = i;
+			}
 			wxString tag = wxT("<a href=\"");
 			tag.append(cur, 0, colon);
 			while (cur[++i] == wxT(' ')) { }

@@ -30,3 +30,5 @@
 1 2 100 - down ; error
 *end bar
 *end
+*set FormFeed = ; error
+*set ROOT $

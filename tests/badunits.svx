@@ -1,0 +1,14 @@
+*fix 1 reference 0 0 0
+*units length FURLONGS
+*units compass 0.0174532925 Radians
+*units compass METRES
+*units tape clino Degrees
+*units tape clino 0.1 Metres
+*units Anemometer Knots
+*units deFault
+*units DEFault MeterS
+*units DEFault 1.0 MeterS
+*units Tape DEFault MeterS
+*units Tape DEFault
+*units DEFault Tape
+*units DEFault Tape Feet

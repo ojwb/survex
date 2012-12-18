@@ -1196,14 +1196,16 @@ msgPerm(int en)
 }
 
 void
-v_report(int severity, const char *fnm, int line, int en, va_list ap)
+v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
 {
 #ifdef AVEN
+   (void)col;
    aven_v_report(severity, fnm, line, en, ap);
 #else
    if (fnm) {
       fputs(fnm, STDERR);
       if (line) fprintf(STDERR, ":%d", line);
+      if (col > 0) fprintf(STDERR, ":%d", col);
    } else {
       fputs(appname_copy, STDERR);
    }
@@ -1237,7 +1239,7 @@ warning(int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(0, NULL, 0, en, ap);
+   v_report(0, NULL, 0, 0, en, ap);
    va_end(ap);
 }
 
@@ -1246,7 +1248,7 @@ error(int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(1, NULL, 0, en, ap);
+   v_report(1, NULL, 0, 0, en, ap);
    va_end(ap);
 }
 
@@ -1255,7 +1257,7 @@ fatalerror(int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(2, NULL, 0, en, ap);
+   v_report(2, NULL, 0, 0, en, ap);
    va_end(ap);
 }
 
@@ -1264,7 +1266,7 @@ warning_in_file(const char *fnm, int line, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(0, fnm, line, en, ap);
+   v_report(0, fnm, line, 0, en, ap);
    va_end(ap);
 }
 
@@ -1273,7 +1275,7 @@ error_in_file(const char *fnm, int line, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(1, fnm, line, en, ap);
+   v_report(1, fnm, line, 0, en, ap);
    va_end(ap);
 }
 
@@ -1282,7 +1284,7 @@ fatalerror_in_file(const char *fnm, int line, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(2, fnm, line, en, ap);
+   v_report(2, fnm, line, 0, en, ap);
    va_end(ap);
 }
 

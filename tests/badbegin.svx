@@ -1,0 +1,7 @@
+*begin
+*end  foo
+*begin		    foo
+*fix 1 reference 0 0 0
+*end   bar
+*begin omitted
+*end

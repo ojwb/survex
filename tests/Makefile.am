@@ -3,7 +3,7 @@
 TESTS = smoke.tst diffpos.tst cavern.tst extend.tst 3dtopos.tst
 
 EXTRA_DIST = smoke.tst diffpos.tst cavern.tst extend.tst 3dtopos.tst\
-beginroot.svx\
+beginroot.svx beginroot.out\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
 noose.svx noose.pos\
@@ -59,9 +59,9 @@ normignall.svx normignall.pos\
 nosurv.svx nosurv.pos\
 cmd_flags.svx bad_cmd_flags.svx\
 plumb.svx plumb.pos\
-cmd_fix_bad.svx\
-cmd_sd.svx cmd_sd_bad.svx\
-cmd_set.svx cmd_set_bad.svx\
+cmd_fix_bad.svx cmd_fix_bad.out\
+cmd_sd.svx cmd_sd_bad.svx cmd_sd_bad.out\
+cmd_set.svx cmd_set_bad.svx cmd_set_bad.out\
 unusedstation.svx exportnakedbegin.svx\
 oldestyle.svx\
 pos.pos v0.3d v0b.3d v1.3d v2.3d v3.3d\
@@ -87,4 +87,5 @@ equatenosuchstn.out equatenosuchstn.svx\
 surveytypo.svx skipafterbadomit.svx passagebad.svx\
 badreadingdotplus.svx badreadingdotplus.out\
 badcalibrate.svx badcalibrate.out\
-calibrate_clino.svx calibrate_clino.out calibrate_clino.pos
+calibrate_clino.svx calibrate_clino.out calibrate_clino.pos\
+badunits.svx badunits.out badbegin.svx badbegin.out

@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,7 +295,8 @@ get_units(unsigned long qmask, bool percent_ok)
    get_token();
    units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      compile_error_skip(/*Unknown units “%s”*/35, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Unknown units “%s”*/35, buffer);
       return UNITS_NULL;
    }
    if (units == UNITS_PERCENT && percent_ok &&
@@ -304,7 +305,8 @@ get_units(unsigned long qmask, bool percent_ok)
    }
    if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
        ((qmask & ANG_QMASK) && !TSTBIT(ANG_UMASK, units))) {
-      compile_error_skip(/*Invalid units “%s” for quantity*/37, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Invalid units “%s” for quantity*/37, buffer);
       return UNITS_NULL;
    }
    return units;
@@ -351,25 +353,30 @@ get_qlist(unsigned long mask_bad)
    int tok;
    filepos fp;
 
-   char default_buf[8] = "";
    while (1) {
       get_pos(&fp);
       get_token();
       tok = match_tok(qtab, TABSIZE(qtab));
+      if (tok == Q_DEFAULT && !(mask_bad & BIT(Q_DEFAULT))) {
+	  /* Only recognise DEFAULT if it is the first quantity, and then don't
+	   * look for any more. */
+	  if (qmask == 0)
+	      return BIT(Q_DEFAULT);
+	  break;
+      }
       /* bail out if we reach the table end with no match */
       if (tok == Q_NULL) break;
-      /* Preserve original case version of DeFAUlt token for error reports */
-      if (tok == Q_DEFAULT) strcpy(default_buf, buffer);
       qmask |= BIT(tok);
-      if (qmask != BIT(Q_DEFAULT) && (qmask & mask_bad)) {
-	 if (qmask & mask_bad & BIT(Q_DEFAULT)) strcpy(buffer, default_buf);
-	 compile_error_skip(/*Unknown instrument “%s”*/39, buffer);
+      if (qmask & mask_bad) {
+	 file.lpos += strlen(buffer);
+	 compile_error_skip(-/*Unknown instrument “%s”*/39, buffer);
 	 return 0;
       }
    }
 
    if (qmask == 0) {
-      compile_error_skip(/*Unknown quantity “%s”*/34, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Unknown quantity “%s”*/34, buffer);
    } else {
       set_pos(&fp);
    }
@@ -406,14 +413,16 @@ cmd_set(void)
    mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
-      compile_error_skip(/*Unknown character class “%s”*/42, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Unknown character class “%s”*/42, buffer);
       return;
    }
 
 #ifndef NO_DEPRECATED
    if (mask == SPECIAL_ROOT) {
       if (root_depr_count < 5) {
-	 compile_warning(/*ROOT is deprecated*/25);
+	 file.lpos += strlen(buffer);
+	 compile_warning(-/*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
       }
@@ -504,7 +513,7 @@ cmd_prefix(void)
     * deprecated and then that ROOT is...
     */
    if (prefix_depr_count < 5) {
-      compile_warning(/**prefix is deprecated - use *begin and *end instead*/6);
+      compile_warning(-/**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
@@ -583,14 +592,14 @@ cmd_end(void)
       if (tag) {
 	 if (!tagBegin) {
 	    /* "*begin" / "*end foo" */
-	    compile_error_skip(/*Matching BEGIN tag has no prefix*/36);
+	    compile_error_skip(-/*Matching BEGIN tag has no prefix*/36);
 	 } else {
 	    /* tag mismatch */
-	    compile_error_skip(/*Prefix tag doesn’t match BEGIN*/193);
+	    compile_error_skip(-/*Prefix tag doesn’t match BEGIN*/193);
 	 }
       } else {
 	 /* close tag omitted; open tag given */
-	 compile_warning(/*Closing prefix omitted from END*/194);
+	 compile_warning(-/*Closing prefix omitted from END*/194);
       }
    }
 }
@@ -751,7 +760,8 @@ cmd_flags(void)
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
-	 compile_error(/*FLAG “%s” unknown*/68, buffer);
+	 file.lpos += strlen(buffer);
+	 compile_error(-/*FLAG “%s” unknown*/68, buffer);
 	 /* Recover from “*FLAGS NOT BOGUS SURFACE” by ignoring "NOT BOGUS" */
 	 fNot = fFalse;
       } else if (flag == FLAGS_NOT) {
@@ -765,9 +775,11 @@ cmd_flags(void)
    }
 
    if (fNot) {
-      compile_error(/*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
+      file.lpos += strlen(buffer);
+      compile_error(-/*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
    } else if (fEmpty) {
-      compile_error(/*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
+      file.lpos += strlen(buffer);
+      compile_error(-/*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
    }
 }
 
@@ -783,7 +795,7 @@ cmd_equate(void)
       name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO|PFX_OPT);
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
-	    compile_error_skip(/*Only one station in EQUATE command*/33);
+	    compile_error_skip(-/*Only one station in EQUATE command*/33);
 	 }
 	 return;
       }
@@ -982,7 +994,8 @@ cmd_data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
-      compile_error_skip(/*Data style “%s” unknown*/65, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Data style “%s” unknown*/65, buffer);
       return;
    }
 
@@ -993,7 +1006,8 @@ cmd_data(void)
    if (isOmit(ch)) {
       static int data_depr_count = 0;
       if (data_depr_count < 5) {
-	 compile_warning(/*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
+	 file.lpos += strlen(buffer);
+	 compile_warning(-/*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
 			 buffer, ch, buffer);
 	 if (++data_depr_count == 5)
 	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
@@ -1015,7 +1029,8 @@ cmd_data(void)
       }
       /* Note: an unknown token is reported as trailing garbage */
       if (!TSTBIT(mask_all[style], d)) {
-	 compile_error_skip(/*Reading “%s” not allowed in data style “%s”*/63,
+	 file.lpos += strlen(buffer);
+	 compile_error_skip(-/*Reading “%s” not allowed in data style “%s”*/63,
 		       buffer, style_name);
 	 osfree(style_name);
 	 osfree(new_order);
@@ -1023,7 +1038,8 @@ cmd_data(void)
       }
       if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
 	 /* e.g. "*data diving station newline tape depth compass" */
-	 compile_error_skip(/*Reading “%s” must occur before NEWLINE*/225, buffer);
+	 file.lpos += strlen(buffer);
+	 compile_error_skip(-/*Reading “%s” must occur before NEWLINE*/225, buffer);
 	 osfree(style_name);
 	 osfree(new_order);
 	 return;
@@ -1033,7 +1049,8 @@ cmd_data(void)
        */
       if (!((BIT(Ignore) | BIT(End) | BIT(IgnoreAll)) & BIT(d))) {
 	 if (TSTBIT(mUsed, d)) {
-	    compile_error_skip(/*Duplicate reading “%s”*/67, buffer);
+	    file.lpos += strlen(buffer);
+	    compile_error_skip(-/*Duplicate reading “%s”*/67, buffer);
 	    osfree(style_name);
 	    osfree(new_order);
 	    return;
@@ -1070,13 +1087,15 @@ cmd_data(void)
 	     case Newline:
 	       if (mUsed & ~m_multi) {
 		  /* e.g. "*data normal from to tape newline compass clino" */
-		  compile_error_skip(/*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
+		  file.lpos += strlen(buffer);
+		  compile_error_skip(-/*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
 	       }
 	       if (k == 0) {
-		  compile_error_skip(/*NEWLINE can’t be the first reading*/222);
+		  file.lpos += strlen(buffer);
+		  compile_error_skip(-/*NEWLINE can’t be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1087,7 +1106,8 @@ cmd_data(void)
 	    }
 	    if (fBad) {
 	       /* Not entirely happy with phrasing this... */
-	       compile_error_skip(/*Reading “%s” duplicates previous reading(s)*/77,
+	       file.lpos += strlen(buffer);
+	       compile_error_skip(-/*Reading “%s” duplicates previous reading(s)*/77,
 			     buffer);
 	       osfree(style_name);
 	       osfree(new_order);
@@ -1109,7 +1129,8 @@ cmd_data(void)
    } while (d != End);
 
    if (k >= 2 && new_order[k - 2] == Newline) {
-      compile_error_skip(/*NEWLINE can’t be the last reading*/223);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*NEWLINE can’t be the last reading*/223);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1211,7 +1232,7 @@ cmd_units(void)
    unsigned long m; /* mask with bit x set to indicate quantity x specified */
    real factor;
 
-   qmask = get_qlist(BIT(Q_DEFAULT));
+   qmask = get_qlist(0);
    if (!qmask) return;
    if (qmask == BIT(Q_DEFAULT)) {
       default_units(pcs);
@@ -1220,7 +1241,7 @@ cmd_units(void)
 
    factor = read_numeric(fTrue, NULL);
    if (factor == 0.0) {
-      compile_error_skip(/**UNITS factor must be non-zero*/200);
+      compile_error_skip(-/**UNITS factor must be non-zero*/200);
       return;
    }
    if (factor == HUGE_REAL) factor = (real)1.0;
@@ -1245,7 +1266,7 @@ cmd_calibrate(void)
    unsigned long qmask, m;
    int quantity;
 
-   qmask = get_qlist(BIT(Q_DEFAULT)|BIT(Q_POS)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
+   qmask = get_qlist(BIT(Q_POS)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
    if (!qmask) return; /* error already reported */
 
    if (qmask == BIT(Q_DEFAULT)) {
@@ -1264,11 +1285,11 @@ cmd_calibrate(void)
    /* check for declination scale */
    /* perhaps "*calibrate declination XXX" should be "*declination XXX" ? */
    if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {
-      compile_error_skip(/*Scale factor must be 1.0 for DECLINATION*/40);
+      compile_error_skip(-/*Scale factor must be 1.0 for DECLINATION*/40);
       return;
    }
    if (sc == 0.0) {
-      compile_error_skip(/*Scale factor must be non-zero*/391);
+      compile_error_skip(-/*Scale factor must be non-zero*/391);
       return;
    }
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1) {
@@ -1292,7 +1313,7 @@ cmd_default(void)
    static int default_depr_count = 0;
 
    if (default_depr_count < 5) {
-      compile_warning(/**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
+      compile_warning(-/**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
@@ -1310,7 +1331,8 @@ cmd_default(void)
       default_units(pcs);
       break;
     default:
-      compile_error_skip(/*Unknown setting “%s”*/41, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Unknown setting “%s”*/41, buffer);
    }
 }
 #endif
@@ -1365,7 +1387,7 @@ cmd_sd(void)
    }
    sd = read_numeric(fFalse, NULL);
    if (sd <= (real)0.0) {
-      compile_error_skip(/*Standard deviation must be positive*/48);
+      compile_error_skip(-/*Standard deviation must be positive*/48);
       return;
    }
    units = get_units(qmask, fFalse);
@@ -1411,8 +1433,9 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_error_skip(/*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10,
-		    buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10,
+			 buffer);
    }
 }
 
@@ -1440,13 +1463,15 @@ cmd_infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == INFER_NULL) {
-      compile_error_skip(/*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, buffer);
       return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_error_skip(/*Found “%s”, expecting “ON” or “OFF”*/32, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Found “%s”, expecting “ON” or “OFF”*/32, buffer);
       return;
    }
 
@@ -1540,7 +1565,7 @@ cmd_date(void)
     days1 = days_since_1900(year, month ? month : 1, day ? day : 1);
 
     if (days1 > current_days_since_1900) {
-	compile_warning(/*Date is in the future!*/80);
+	compile_warning(-/*Date is in the future!*/80);
     }
 
     skipblanks();
@@ -1560,11 +1585,11 @@ cmd_date(void)
     days2 = days_since_1900(year, month, day);
 
     if (!implicit_range && days2 > current_days_since_1900) {
-	compile_warning(/*Date is in the future!*/80);
+	compile_warning(-/*Date is in the future!*/80);
     }
 
     if (days2 < days1) {
-	compile_error(/*End of date range is before the start*/81);
+	compile_error(-/*End of date range is before the start*/81);
     }
 
 read:
@@ -1615,7 +1640,8 @@ handle_command(void)
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
-      compile_error_skip(/*Unknown command “%s”*/12, buffer);
+      file.lpos += strlen(buffer);
+      compile_error_skip(-/*Unknown command “%s”*/12, buffer);
       return;
    }
 

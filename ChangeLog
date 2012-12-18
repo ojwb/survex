@@ -1,3 +1,11 @@
+Tue Dec 18 02:02:57 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/,tests/: Report column numbers as well as line numbers for some
+	  cavern errors and warnings, and update aven's cavern log parser to
+	  handle these.  Simplify handling of quantity lists to only recognise
+	  'DEFAULT' as the first item.  Add more testcases, expand some
+	  existing testcases, and expected output for more.
+
 Mon Dec 17 22:19:21 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/message.c: If we don't find the message file, only give an error

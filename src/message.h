@@ -63,7 +63,7 @@ const char *msgPerm(int en);
 /* Kill persistent copy of message */
 #define msgFree(S) (void)0
 
-void v_report(int severity, const char *fnm, int line, int en, va_list ap);
+void v_report(int severity, const char *fnm, int line, int col, int en, va_list ap);
 
 void warning(int en, ...);
 void error(int en, ...);

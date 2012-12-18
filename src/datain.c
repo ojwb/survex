@@ -119,20 +119,30 @@ error_list_parent_files(void)
 void
 compile_error(int en, ...)
 {
+   int col = 0;
    va_list ap;
    va_start(ap, en);
    error_list_parent_files();
-   v_report(1, file.filename, file.line, en, ap);
+   if (en < 0) {
+      en = -en;
+      col = ftell(file.fh) - file.lpos;
+   }
+   v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
 }
 
 void
 compile_error_skip(int en, ...)
 {
+   int col = 0;
    va_list ap;
    va_start(ap, en);
    error_list_parent_files();
-   v_report(1, file.filename, file.line, en, ap);
+   if (en < 0) {
+      en = -en;
+      col = ftell(file.fh) - file.lpos;
+   }
+   v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
    skipline();
 }
@@ -154,10 +164,15 @@ compile_error_token(int en)
 void
 compile_warning(int en, ...)
 {
+   int col = 0;
    va_list ap;
    va_start(ap, en);
    error_list_parent_files();
-   v_report(0, file.filename, file.line, en, ap);
+   if (en < 0) {
+      en = -en;
+      col = ftell(file.fh) - file.lpos;
+   }
+   v_report(0, file.filename, file.line, col, en, ap);
    va_end(ap);
 }
 
@@ -226,7 +241,7 @@ process_eol(void)
    skipblanks();
 
    if (!isEol(ch)) {
-      if (!isComm(ch)) compile_error(/*End of line not blank*/15);
+      if (!isComm(ch)) compile_error(-/*End of line not blank*/15);
       skipline();
    }
 
@@ -242,6 +257,7 @@ process_eol(void)
 	 break;
       }
    }
+   file.lpos = ftell(file.fh);
 }
 
 static bool
@@ -358,6 +374,7 @@ data_file(const char *pth, const char *fnm)
       file.fh = fh;
       file.filename = filename;
       file.line = 1;
+      file.lpos = 0;
       file.reported_where = fFalse;
    }
 
@@ -1411,7 +1428,8 @@ data_normal(void)
 	     fRev = fTrue;
 	     break;
 	   default:
-	     compile_error_skip(/*Found “%s”, expecting “F” or “B”*/131,
+	     file.lpos += strlen(buffer);
+	     compile_error_skip(-/*Found “%s”, expecting “F” or “B”*/131,
 				buffer);
 	     process_eol();
 	     return;
@@ -1421,7 +1439,7 @@ data_normal(void)
        case Tape:
 	  read_reading(Tape, fFalse);
 	  if (VAL(Tape) < (real)0.0)
-	     compile_warning(/*Negative tape reading*/60);
+	     compile_warning(-/*Negative tape reading*/60);
 	  break;
        case Count:
 	  VAL(FrCount) = VAL(ToCount);
@@ -1445,7 +1463,7 @@ data_normal(void)
 	  if (VAL(r) == HUGE_REAL) {
 	     VAL(r) = handle_plumb(p_ctype);
 	     if (VAL(r) != HUGE_REAL) break;
-	     compile_error_token(/*Expecting numeric field, found “%s”*/9);
+	     compile_error_token(-/*Expecting numeric field, found “%s”*/9);
 	     skipline();
 	     process_eol();
 	     return;
@@ -1707,7 +1725,7 @@ data_passage(void)
 	 read_reading(*ordering, fTrue);
          if (VAL(*ordering) == HUGE_REAL) {
             if (!isOmit(ch)) {
-	       compile_error_token(/*Expecting numeric field, found “%s”*/9);
+	       compile_error_token(-/*Expecting numeric field, found “%s”*/9);
 	    } else {
 	       nextch();
             }
