@@ -1,3 +1,9 @@
+Tue Dec 18 07:06:41 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/,src/Makefile.am,src/gettexttomsg.pl: Eliminate po_codes and just
+	  store the message numbers as the line number in a fake source
+	  reference to file 'n'.
+
 Tue Dec 18 04:13:18 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po_codes,lib/survex.pot: Merge in updated source line numbers.

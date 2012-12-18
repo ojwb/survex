@@ -23,25 +23,17 @@ use strict;
 
 my %revmsgs = ();
 
-my $msgid;
-open MSG, "../lib/po_codes" or die $!;
+my $msgno;
+open MSG, "../lib/survex.pot" or die $!;
 while (<MSG>) {
-    next if /^\s*#/; # skip comments
-   
-    if (/^\s*msgid\s*"(.*)"/) {
-	$msgid = $1;
-    } elsif (/^\s*msgstr\s*"(.*)"/) {
-	my $msgstr = $1;
-	if (! defined $msgid) {
-	    die "No msgid for msgstr '$msgstr'\n";
-	}
-	if ($msgstr !~ /^\d*$/) {
-	    die "Non-numeric msgstr '$msgstr'\n";
-	}
-	$revmsgs{$msgid} = $msgstr;
-	$msgid = undef;
+    if (/^#: n:(\d+)$/) {
+	$msgno = $1;
+    } elsif (defined $msgno && /^msgid\s*"(.*)"/) {
+	$revmsgs{$1} = $msgno;
+	$msgno = undef;
     }
 }
+close MSG;
 
 my $die = 0;
 

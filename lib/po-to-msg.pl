@@ -34,10 +34,11 @@ ${$msgs{'en'}}[0] = '©';
 # my %uses = ();
 
 my %n = ();
-my $num_list = Locale::PO->load_file_asarray("$srcdir/po_codes");
+my $num_list = Locale::PO->load_file_asarray("$srcdir/survex.pot");
 foreach my $po_entry (@{$num_list}) {
-    my $msgno = $po_entry->dequote($po_entry->msgstr);
-    next if $msgno !~ /^\d+$/;
+    my $ref = $po_entry->reference;
+    (defined $ref && $ref =~ /^n:(\d+)$/m) or next;
+    my $msgno = $1;
     my $key = $po_entry->msgid;
     my $msg = c_unescape($po_entry->dequote($key));
     if (${$msgs{'en'}}[$msgno]) {

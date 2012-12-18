@@ -45,10 +45,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\\n"
 END
 
-my $num_list = Locale::PO->load_file_asarray("po_codes");
+my $num_list = Locale::PO->load_file_asarray("survex.pot");
 my $first = 1;
 foreach my $po_entry (@{$num_list}) {
-    my $msgno = $po_entry->dequote($po_entry->msgstr);
+    my $msgno = '';
+    my $ref = $po_entry->reference;
+    if (defined $ref && $ref =~ /^n:(\d+)$/m) {
+	$msgno = $1;
+    }
     if ($first) {
 	$first = 0;
 	next if ($po_entry->msgid eq '""');
@@ -58,7 +62,7 @@ foreach my $po_entry (@{$num_list}) {
 	$msg = $msgs{$msgno};
 	delete $msgs{$msgno};
     } else {
-	print STDERR "Message number $msgno is in po_codes but not found in source - preserving\n" unless $po_entry->obsolete;
+	print STDERR "Message number $msgno is in survex.pot but not found in source - preserving\n" unless $po_entry->obsolete;
 	$msg = $po_entry->dequote($po_entry->msgid);
     }
     if (defined $po_entry->automatic) {
@@ -71,6 +75,7 @@ foreach my $po_entry (@{$num_list}) {
 	for (@{$uses[$msgno]}) {
 	    print "\n#: ", $_;
 	}
+	print "\n#: n:$msgno";
     }
     print "\n#, c-format" if $msg =~ /\%[a-z0-9]/;
     if ($msg =~ s/(?:^|[^\\])"/\\"/g) {
@@ -80,7 +85,7 @@ foreach my $po_entry (@{$num_list}) {
     print "#~ " if $po_entry->obsolete;
     print "msgid \"$msg\"\n";
     print "#~ " if $po_entry->obsolete;
-    print "msgstr \"$msgno\"\n";
+    print "msgstr \"\"\n";
 }
 
 for my $msgno (sort keys %msgs) {
@@ -90,10 +95,11 @@ for my $msgno (sort keys %msgs) {
 	print "\n#: ", $_;
     }
     my $msg = $msgs{$msgno};
+    print "\n#: n:$msgno";
     print "\n#, c-format" if $msg =~ /\%[a-z0-9]/;
     if ($msg =~ s/(?:^|[^\\])"/\\"/g) {
 	print STDERR "Escaping unescaped \" in message number $msgno\n";
     }
     print "\nmsgid \"$msg\"\n";
-    print "msgstr \"$msgno\"\n";
+    print "msgstr \"\"\n";
 }

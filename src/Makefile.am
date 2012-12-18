@@ -116,8 +116,8 @@ all_sources = \
 	$(cad3d_SOURCES) \
 	$(findentrances_SOURCES)
 
-../lib/po_codes.new: $(all_sources) ../lib/extract-msgs.pl
-	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > po_codes.new
+../lib/survex.pox: $(all_sources) ../lib/extract-msgs.pl
+	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox
 
 EXTRA_DIST = \
  aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
