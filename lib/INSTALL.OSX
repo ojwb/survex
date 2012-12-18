@@ -11,7 +11,7 @@ aven.
 Known shortcomings in the Mac OS X version of Aven
 ==================================================
 
-These could be reproduced with 1.2.2 plus a few patches, when using with wx
+These could be reproduced with 1.2.2 plus a few patches, when using wxWidgets
 2.8.11:
 
 - About dialog doesn't show.

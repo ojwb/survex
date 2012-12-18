@@ -37,11 +37,7 @@ TAG_HANDLER_BEGIN(AVENBUTTON, "AVENBUTTON")
 	wxHtmlContainerCell * cells = m_WParser->GetContainer();
 	cells->SetAlignHor(wxHTML_ALIGN_RIGHT);
 	wxWindow * win;
-#if !wxCHECK_VERSION(2,8,0)
-	win = m_WParser->GetWindow();
-#else
 	win = m_WParser->GetWindowInterface()->GetHTMLWindow();
-#endif
 	wxButton * but = new wxButton(win, id, tag.GetParam(wxT("name")));
 	if (tag.HasParam(wxT("default")))
 	    but->SetDefault();

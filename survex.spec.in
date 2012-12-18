@@ -9,8 +9,8 @@ Group: Applications/Misc
 Source: http://survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
 URL: http://survex.com/
 Packager: Olly Betts <olly@survex.com>
-BuildRequires: wxGTK-devel >= 2.6.0
-Requires: wxGTK >= 2.6.0
+BuildRequires: wxGTK-devel >= 2.8.0
+Requires: wxGTK >= 2.8.0
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description

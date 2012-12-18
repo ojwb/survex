@@ -1,3 +1,12 @@
+Tue Dec 18 11:32:32 GMT 2012  Olly Betts <olly@survex.com>
+
+	* INSTALL,lib/INSTALL.OSX,src/,survex.spec.in: Require at least
+	  wxWidgets 2.8.0 - it was released just over 6 years ago now,
+	  and the wx developers consider even 2.8 to be rather long in
+	  the tooth.  I haven't test build with wx 2.6 for more than a year
+	  and it's no longer packaged for Debian.  Dropping support for
+	  older wx allows a number of workarounds to be removed.
+
 Tue Dec 18 11:05:24 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/: Fix uses of some wx features which are deprecated in wx2.9.

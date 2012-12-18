@@ -235,7 +235,7 @@ bool Aven::OnInit()
     bool maximized = (width == -1);
     bool full_screen = (width <= -2);
     if (width <= 0 || height <= 0) {
-#if wxUSE_DISPLAY // wxDisplay was added in wx 2.5
+#if wxUSE_DISPLAY
 	wxRect geom = wxDisplay().GetGeometry();
 	pos.x = geom.x;
 	pos.y = geom.y;
@@ -336,11 +336,7 @@ void Aven::ReportError(const wxString& msg)
 wxString
 wmsg(int msg_no) 
 {
-#if !wxCHECK_VERSION(2,8,0)
-    return wxString(msg(msg_no), wxConvUTF8);
-#else
     return wxString::FromUTF8(msg(msg_no));
-#endif
 }
 
 const wxString &

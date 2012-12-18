@@ -31,19 +31,8 @@
 # include <wx/wx.h>
 #endif
 
-#if !wxCHECK_VERSION(2,6,0)
-# error We support building with wxWidgets 2.6.0 or newer
-#endif
-
-// These were renamed in wx 2.7.
-#if !wxCHECK_VERSION(2,7,0)
-# define wxFD_OPEN wxOPEN
-# define wxFD_OVERWRITE_PROMPT wxOVERWRITE_PROMPT
-# define wxFD_SAVE wxSAVE
-# define wxFD_FILE_MUST_EXIST wxFILE_MUST_EXIST
-
-# define wxBK_BOTTOM wxNB_BOTTOM
-# define wxBK_LEFT wxNB_LEFT
+#if !wxCHECK_VERSION(2,8,0)
+# error We support building with wxWidgets 2.8.0 or newer
 #endif
 
 #include <wx/splitter.h>
