@@ -5,12 +5,6 @@ use strict;
 use POSIX;
 use Locale::PO;
 
-my $version = '0.0.0';
-if ($ARGV[0] =~ /^-v(.+)/) {
-    $version = $1;
-    shift @ARGV;
-}
-
 my $pot_creation_date = strftime "%Y-%m-%d %H:%M:%S +0000", gmtime();
 
 use integer;
@@ -41,7 +35,7 @@ print << "END";
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: survex-$version\\n"
+"Project-Id-Version: survex\\n"
 "Report-Msgid-Bugs-To: olly\@survex.com\\n"
 "POT-Creation-Date: $pot_creation_date\\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI:SE +ZONE\\n"

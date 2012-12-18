@@ -1,3 +1,8 @@
+Tue Dec 18 04:11:09 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/extract-msgs.pl,src/Makefile.am: Don't include version in
+	  'Project-Id-Version'.
+
 Tue Dec 18 03:13:16 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/: Set Project-Id-Version to just "survex" - the version part just
