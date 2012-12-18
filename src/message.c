@@ -806,8 +806,8 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
 #else
 #define N_DONTEXTRACTMSGS 5
 static unsigned char dontextractmsgs[] =
-   "Can't open message file “%s” using path “%s”\0"/*1000*/
-   "Problem with message file “%s”\0"/*1001*/
+   "Can't open message file \"%s\" using path \"%s\"\0"/*1000*/
+   "Problem with message file \"%s\"\0"/*1001*/
    "I don't understand this message file version\0"/*1002*/
    "Message file truncated?\0"/*1003*/
    "Out of memory (couldn't find %lu bytes).\0"/*1004*/;

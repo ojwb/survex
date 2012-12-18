@@ -1,3 +1,9 @@
+Tue Dec 18 02:19:08 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/message.c: Only use ASCII for the handful of hardcoded messages
+	  we need for errors loading message files, as it's probably more
+	  likely the wrong encoding will be set in such cases.
+
 Tue Dec 18 02:02:57 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/,tests/: Report column numbers as well as line numbers for some
