@@ -261,6 +261,9 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     averrno = 0;
     return true;
 #else
+    (void)fnm;
+    (void)width;
+    (void)height;
     averrno = MOVIE_NOT_ENABLED;
     return false;
 #endif
