@@ -1,3 +1,9 @@
+Tue Dec 18 03:00:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* tests/Makefile.am,tests/aven.tst: Add new testsuite script (aven.tst)
+	  which currently has regression tests for the recently fixed segfault
+	  when aven didn't have messages for the requested language.
+
 Tue Dec 18 02:19:08 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/message.c: Only use ASCII for the handful of hardcoded messages
