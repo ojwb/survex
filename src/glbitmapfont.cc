@@ -172,12 +172,12 @@ BitmapFont::write_string(const wxChar *s, size_t len) const
 	while (len) {
 	    size_t n;
 	    for (n = 0; n < len; ++n)
-		if (s[n] >= BITMAPFONT_MAX_CHAR)
+		if (int(s[n]) >= BITMAPFONT_MAX_CHAR)
 		    break;
 	    call_lists(n, s);
 	    s += n;
 	    len -= n;
-	    while (len && s[n] >= BITMAPFONT_MAX_CHAR) {
+	    while (len && int(s[n]) >= BITMAPFONT_MAX_CHAR) {
 		write_glyph(s[n]);
 		++s;
 		--len;

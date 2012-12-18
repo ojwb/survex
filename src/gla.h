@@ -270,7 +270,7 @@ public:
     void ToggleAntiAlias() { m_AntiAlias = !m_AntiAlias; }
     bool GetAntiAlias() const { return m_AntiAlias; }
 
-    bool SaveScreenshot(const wxString & fnm, int type) const;
+    bool SaveScreenshot(const wxString & fnm, wxBitmapType type) const;
 
     void ReadPixels(int width, int height, unsigned char * buf) const;
 

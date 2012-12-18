@@ -900,10 +900,8 @@ void MainFrm::CreateToolBar()
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, wxString(), wxDefaultPosition,
 			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
-    toolbar->AddTool(wxID_FIND, TOOLBAR_BITMAP("find"),
-		     wmsg(/*Find*/332)/*"Search for station name"*/);
-    toolbar->AddTool(button_HIDE, TOOLBAR_BITMAP("hideresults"),
-		     wmsg(/*Hide*/333)/*"Hide search results"*/);
+    toolbar->AddTool(wxID_FIND, wmsg(/*Find*/332), TOOLBAR_BITMAP("find")/*, "Search for station name"*/);
+    toolbar->AddTool(button_HIDE, wmsg(/*Hide*/333), TOOLBAR_BITMAP("hideresults")/*, "Hide search results"*/);
 
     toolbar->Realize();
 }

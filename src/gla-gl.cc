@@ -1462,7 +1462,7 @@ void GLACanvas::ToggleTextured()
     }
 }
 
-bool GLACanvas::SaveScreenshot(const wxString & fnm, int type) const
+bool GLACanvas::SaveScreenshot(const wxString & fnm, wxBitmapType type) const
 {
     const int width = x_size;
     const int height = y_size;

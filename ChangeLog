@@ -1,3 +1,7 @@
+Tue Dec 18 11:05:24 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/: Fix uses of some wx features which are deprecated in wx2.9.
+
 Tue Dec 18 10:50:28 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Fix OnSize handling
