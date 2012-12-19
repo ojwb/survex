@@ -64,8 +64,9 @@ for my $po_file (@ARGV) {
     my $po_hash = Locale::PO->load_file_ashash("$srcdir/$po_file");
 
     foreach my $po_entry (@{$num_list}) {
-	my $msgno = $po_entry->dequote($po_entry->msgstr);
-	next if $msgno !~ /^\d+$/;
+	my $ref = $po_entry->reference;
+	(defined $ref && $ref =~ /^n:(\d+)$/m) or next;
+	my $msgno = $1;
 	my $key = $po_entry->msgid;
 	my $ent = $$po_hash{$key};
 	if (defined $ent) {
