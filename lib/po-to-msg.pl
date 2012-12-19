@@ -78,14 +78,6 @@ for my $po_file (@ARGV) {
 	    ${$msgs{$language}}[$msgno] = $msg;
 	}
     }
-
-#       local $_;
-#       open FINDUSES, "grep -no '*/$msgno\\>' \Q$srcdir\E/../src/*.cc \Q$srcdir\E../src/*.c \Q$srcdir\E/../src/*.h|" or die $!;
-#       while (<FINDUSES>) {
-#	   push @{$uses{$msgno}}, $1 if /^([^:]*:\d+):/;
-#       }
-#       close FINDUSES;
-
 }
 
 my $lang;
