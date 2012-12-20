@@ -1,3 +1,7 @@
+Thu Dec 20 03:25:45 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/it.po: Merge two new translations from launchpad.
+
 Thu Dec 20 03:24:52 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Correct "leg" to "shot" in a few places, and translate

@@ -2248,13 +2248,13 @@ msgstr "&Gradi"
 #: ../src/gfxcore.cc:2968
 #: n:387
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&Nascondi Bussola"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:2981
 #: n:384
 msgid "&Hide Clino"
-msgstr ""
+msgstr "&Nascondi Inclinazione"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:2991
