@@ -378,7 +378,10 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-#. TRANSLATORS: %s is a placeholder for the name of the station
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
+#.
+#. %s is replaced by the name of the station.
 #: ../src/netbits.c:335
 #: n:50
 #, c-format
@@ -536,7 +539,6 @@ msgstr ""
 msgid "The following survey stations are not attached to a fixed point:"
 msgstr ""
 
-#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netskel.c:128
 #: n:72
 #, c-format
@@ -1408,6 +1410,10 @@ msgstr ""
 msgid "About %s"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
+#.
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1725
 #: n:206
@@ -1425,6 +1431,9 @@ msgstr ""
 msgid "All files"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
 #: ../src/mainfrm.cc:1716
 #: n:229
 msgid "All survey files"
@@ -1445,7 +1454,11 @@ msgstr ""
 msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
 msgstr ""
 
-#. TRANSLATORS: in the about box (summarising the purpose of aven)
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
+#.
+#. This string is used in the about box (summarising the purpose of aven).
 #: ../src/aboutdlg.cc:87
 #: n:209
 msgid "Survey visualisation tool"
@@ -1524,7 +1537,11 @@ msgstr ""
 msgid "ERR_FILE [HOW_MANY]"
 msgstr ""
 
-#. TRANSLATORS: Part of aven --help
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
+#.
+#. Part of aven --help
 #: ../src/aven.cc:104
 #: ../src/aven.cc:131
 #: n:269
@@ -1671,21 +1688,33 @@ msgstr ""
 msgid "View &West"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
 #: ../src/mainfrm.cc:749
 #: n:244
 msgid "Shift Survey &Left"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
 #: ../src/mainfrm.cc:750
 #: n:245
 msgid "Shift Survey &Right"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
 #: ../src/mainfrm.cc:751
 #: n:246
 msgid "Shift Survey &Up"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
+#. it should be translated to the terminology that cavers using the language
+#. would use.
 #: ../src/mainfrm.cc:752
 #: n:247
 msgid "Shift Survey &Down"
@@ -1776,6 +1805,8 @@ msgstr ""
 msgid "Crosses"
 msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: ../src/printwx.cc:257
 #: n:262
 msgid "Underground Survey Legs"
@@ -1834,11 +1865,15 @@ msgstr ""
 msgid "&Bounding Box\tCtrl+B"
 msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: ../src/mainfrm.cc:784
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: ../src/mainfrm.cc:785
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
@@ -1899,6 +1934,8 @@ msgstr ""
 msgid "Fade Distant Ob&jects"
 msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: ../src/mainfrm.cc:803
 #: n:298
 msgid "Smoot&hed Survey Legs"
@@ -2331,10 +2368,14 @@ msgstr ""
 #~ msgid "Allow names to overlap on the display (faster)"
 #~ msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: n:357
 #~ msgid "Display underground survey legs"
 #~ msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: n:358
 #~ msgid "Display surface survey legs"
 #~ msgstr ""
@@ -2494,6 +2535,8 @@ msgstr ""
 msgid "&Print…"
 msgstr ""
 
+#. TRANSLATORS: Here a "survey leg" is a set of measurements between two
+#. "survey stations".
 #: ../src/printwx.cc:259
 #: n:403
 msgid "Sur&face Survey Legs"
