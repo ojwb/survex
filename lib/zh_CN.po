@@ -2192,9 +2192,10 @@ msgstr ""
 #: ../src/mainfrm.cc:1891
 #: ../src/mainfrm.cc:1977
 #: ../src/mainfrm.cc:1980
-#: n:338
+#: n:338o
+#, c-format
 msgid "%.2f E, %.2f N"
-msgstr ""
+msgstr "%.2f东%.2f北"
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>
