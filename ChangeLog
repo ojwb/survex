@@ -1,3 +1,7 @@
+Thu Dec 20 03:28:02 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/zh_CN.po: Add space after colon.
+
 Thu Dec 20 03:26:15 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Add more TRANSLATORS comments about terminology.

@@ -2512,7 +2512,7 @@ msgstr ""
 #: ../src/mainfrm.cc:125
 #: n:279
 msgid "Time: "
-msgstr "时间："
+msgstr "时间： "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:127
