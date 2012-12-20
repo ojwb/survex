@@ -1,3 +1,8 @@
+Thu Dec 20 03:24:52 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Correct "leg" to "shot" in a few places, and translate
+	  "Anticlockwise" to "Counterclockwise".
+
 Wed Dec 19 10:41:55 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/po-to-msg.pl: Remove commented out code to find uses, which is

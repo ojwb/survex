@@ -1633,7 +1633,7 @@ msgstr "&Reverse Direction"
 #: ../src/mainfrm.cc:740
 #: n:235
 msgid "Step Once &Anticlockwise"
-msgstr "Step Once &Anticlockwise"
+msgstr "Step Once Co&unterclockwise"
 
 #: ../src/mainfrm.cc:741
 #: n:236
@@ -2342,7 +2342,7 @@ msgstr "grad"
 
 #: n:360
 #~ msgid "Draw surface legs with dashed lines"
-#~ msgstr "Draw surface legs with dashed lines"
+#~ msgstr "Draw surface shots with dashed lines"
 
 #: n:361
 #~ msgid "Draw a grid"
@@ -2572,7 +2572,7 @@ msgstr "Failed to find station %s"
 #: n:511
 #, c-format
 msgid "Failed to find leg %s → %s"
-msgstr "Failed to find leg %s → %s"
+msgstr "Failed to find shot %s → %s"
 
 #. TRANSLATORS: for extend:
 #. "extend" is starting to produce an extended elevation from station %s
@@ -2601,14 +2601,14 @@ msgstr "Extending to the right from station %s"
 #: n:515
 #, c-format
 msgid "Extending to the left from leg %s → %s"
-msgstr "Extending to the left from leg %s → %s"
+msgstr "Extending to the left from shot %s → %s"
 
 #. TRANSLATORS: for extend:
 #: ../src/extend.c:327
 #: n:516
 #, c-format
 msgid "Extending to the right from leg %s → %s"
-msgstr "Extending to the right from leg %s → %s"
+msgstr "Extending to the right from shot %s → %s"
 
 #. TRANSLATORS: for extend:
 #: ../src/extend.c:388
@@ -2622,7 +2622,7 @@ msgstr "Breaking survey loop at station %s"
 #: n:518
 #, c-format
 msgid "Breaking survey loop at leg %s → %s"
-msgstr "Breaking survey loop at leg %s → %s"
+msgstr "Breaking survey loop at shot %s → %s"
 
 #. TRANSLATORS: for extend:
 #: ../src/extend.c:348
@@ -2636,7 +2636,7 @@ msgstr "Swapping extend direction from station %s"
 #: n:520
 #, c-format
 msgid "Swapping extend direction from leg %s → %s"
-msgstr "Swapping extend direction from leg %s → %s"
+msgstr "Swapping extend direction from shot %s → %s"
 
 #. TRANSLATORS: for extend:
 #: ../src/extend.c:535
