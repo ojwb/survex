@@ -2233,6 +2233,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1977
 #: ../src/mainfrm.cc:1980
 #: n:338
+#, c-format
 msgid "%.2f E, %.2f N"
 msgstr ""
 
