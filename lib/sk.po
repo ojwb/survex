@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-12-17 09:10:51 +0000\n"
+"PO-Revision-Date: 2012-12-23 07:19:16 +0000\n"
 "Last-Translator: Martin Sluka <martinsluka@mac.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2216,7 +2216,7 @@ msgstr "Od %s"
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
-msgstr "V %.2f%s, Š %.2f%s"
+msgstr "H %.2f%s, V %.2f%s"
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as in Compass bearing)
 #: ../src/mainfrm.cc:2021
@@ -2411,7 +2411,7 @@ msgstr "grády"
 #: n:374
 #, fuzzy, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
-msgstr "%s: V %.2f%s, Azim %03d%s"
+msgstr "%s: H %.2f%s, Azim %03d%s"
 
 #. TRANSLATORS: "V" is short for "Vertical"
 #: ../src/mainfrm.cc:1948
@@ -2419,7 +2419,7 @@ msgstr "%s: V %.2f%s, Azim %03d%s"
 #: n:375
 #, fuzzy, c-format
 msgid "%s: V %.2f%s"
-msgstr "%s: Š %.2f%s"
+msgstr "%s: V %.2f%s"
 
 #. TRANSLATORS: labels for tabbed side panel
 #. this is for the tab with the tree hierarchy of survey station names

@@ -1,3 +1,8 @@
+Sun Dec 23 07:19:22 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/sk.po: Resolve a couple of inconsistencies in translation of
+	  similar messages by asking Martin Sluka.
+
 Sun Dec 23 05:36:38 GMT 2012  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog.
