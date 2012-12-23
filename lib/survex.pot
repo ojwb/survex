@@ -765,8 +765,8 @@ msgstr ""
 msgid "Bad 3d image file “%s”"
 msgstr ""
 
-#. TRANSLATORS: This is the date format string used to timestamp .3d files internally
-#. Probably best to keep it the same for all translations
+#. TRANSLATORS: This is the date format string used to timestamp .3d files
+#. internally.  Probably best to keep it the same for all translations.
 #: ../src/img.c:46
 #: n:107
 #, c-format
