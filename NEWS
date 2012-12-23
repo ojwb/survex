@@ -1,23 +1,84 @@
-6b9e4ebd (Olly Betts 2012-11-28 18:02:39 +1300    1) Wed Nov 28 05:02:26 GMT 2012  Olly Betts <olly@survex.com>
+fc06ec5f (Olly Betts 2012-12-20 17:31:38 +1300    1) Thu Dec 20 04:31:22 GMT 2012  Olly Betts <olly@survex.com>
 
-Changes in 1.2.7 (2012-11-02):
+	* INSTALL,lib/INSTALL.OSX,src/,survex.spec.in: Require at least
+	  wxWidgets 2.8.0 - it was released just over 6 years ago now,
+	  and the wx developers consider even 2.8 to be rather long in
+	  the tooth.  I haven't test build with wx 2.6 for more than a year
+	  and it's no longer packaged for Debian.  Dropping support for
+	  older wx allows a number of workarounds to be removed.
+
+	* src/: Fix uses of some wx features which are deprecated in wx2.9.
+
+	* src/message.c: Use only ASCII for the handful of hardcoded messages
+	  we need for errors loading message files, as it's probably more
+	  likely the wrong encoding will be set in such cases.
+
+	* src/message.c: If we don't find the message file, only give an error
+	  if it was specified with SURVEX_LANG, since that is an explicit
+	  instruction to Survex, whereas LANG, LC_ALL and LC_MESSAGES are
+	  essentially system "preferred locale" settings.
+
+	* lib/po_codes,lib/po_codes_dead: Prune strings we aren't using and are
+	  probably unlikely to use again into a new file po_codes_dead, so that
+	  translators don't get presented with them to translate.
+
+Changes in 1.2.7 (2012-12-19):
 
 * aven: Don't run incremental search on every key-press, as on a slow machine
   the short initial search(es) will take a while but not be useful.  Instead
   only actually run the search when we're told there are no more key-presses
   queued up.
 
-* (MacOS X version): Change the menu shortcut for "Full Screen Mode" to be the
-  OS X standard shortcut Shift-Command-F (previously we used F11, but that's
-  used by the desktop).
+* aven: In the cavern log window, don't highlight a file:linenumber if there's
+  no message after it, which avoids highlighting the "Included from" lines
+  wrongly.
+
+* aven: Fix not to crash if we hit an error while trying to load translated
+  messages.
+
+* (MacOS X version): aven: Change the menu shortcut for "Full Screen Mode" to
+  be the OS X standard shortcut Shift-Command-F (previously we used F11, but
+  that's used by the desktop).
+
+* cavern: We want to warn if there's a clino reading which it would be
+  impossible to have read from the instrument (e.g. on a -90 to 90 degree scale
+  you can't read "93" (it's probably a typo e.g. for "39").  However, the
+  gradient reading from a topofil is typically in the range 0 to 180, with 90
+  being horizontal.  Really we should allow the valid range to be specified,
+  but for now we infer it from the zero error - if this is within 45 degrees of
+  90 then we assume the instrument can read between 0 and 180 degrees.
 
 * cavern: If the survey isn't all connected, still run survey tree checks and
   report errors and/or warnings which might suggest typo locations.  Thanks
   to Kevin Dixon for the report which highlighted this issue.
 
+* cavern: Report column numbers as well as line numbers for some cavern errors
+  and warnings.
+
 * cavern: Move "Station X referred to just once" warning after non-existent
   survey check - if both fire, the non-existent survey error is likely to be
   more relevant.
+
+* cavern: We no longer follow an error for a bad reading in passage data with
+  a bogus "End of line not blank" error, but instead check other the remaining
+  readings on the same line.
+
+* cavern: We no longer follow an error about OMIT for a required reading with
+  a bogus "End of line not blank" error.
+
+* cavern: Report an error if the scale factor in *calibrate is zero - it
+  doesn't make sense and probably means someone reversed the arguments to
+  *calibrate.
+
+* cavern: Report the parent include files starting from the outermost, as
+  that's more logical when there are multiple levels involved.
+
+* cavern: If we were expecting a numeric field and instead get something which
+  starts with '+', '-', or '.' but which isn't a number, then fix the error to
+  include that character in the token reported.
+
+* cavern: Simplify handling of quantity lists to only recognise 'DEFAULT' as
+  the first item.
 
 * img library: New leg flag img_FLAG_NOSURVEY, now set by cavern for NOSURVEY
   legs.
@@ -31,6 +92,9 @@ Changes in 1.2.7 (2012-11-02):
   + cavern.tst: Fix equatenosuchstn testcase (added in 1.2.6) to normalise the
     expected output so it passes reliably.
 
+  + Add more testcases, expand some existing testcases, and add expected output
+    for more.
+
 * (Microsoft Windows version): Link mingw build statically to avoid needing
   libgcc DLL.
 
@@ -40,10 +104,12 @@ Changes in 1.2.7 (2012-11-02):
 * When determining the language, check environmental variable LC_ALL before
   LC_MESSAGES and LANG (but after SURVEXLANG).
 
-* Merge translation updates for Brazilian Portuguese, Catalan, Chinese, French,
-  German, Italian, Slovak, Spanish and US English.
+* Merge lots of translation updates.  Most translations are now complete or
+  close to complete.
 
 * Add start of Indonesian translation from Arief Setiadi Wibowo.
+
+* Fix various compiler warnings when building from source.
 
 Changes in 1.2.6 (2012-02-23):
 
