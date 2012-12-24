@@ -1,3 +1,7 @@
+Mon Dec 24 08:44:04 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/listpos.c: Adjust width of node stats table to fit longest count.
+
 Sun Dec 23 07:20:53 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Wrap TRANSLATORS comment.

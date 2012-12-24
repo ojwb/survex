@@ -163,10 +163,19 @@ print_node_stats(void)
 {
 #if NODESTAT
    int c;
+   int max = 0;
+   int width;
    node_stats(root);
    for (c = 0; c < icOrderMac; c++) {
+      if (cOrder[c] > max) {
+	 max = cOrder[c];
+      }
+   }
+   if (max == 0) return;
+   width = 1 + (int)log10((double)max);
+   for (c = 0; c < icOrderMac; c++) {
       if (cOrder[c] > 0) {
-	 printf("%4d %d-%s.\n", cOrder[c], c,
+	 printf("%*d %d-%s.\n", width, cOrder[c], c,
 		msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));
       }
    }
