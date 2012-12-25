@@ -1,3 +1,9 @@
+Tue Dec 25 22:03:20 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/listpos.c: But always leave space for at least 4 digits, so we
+	  give exactly the same output as before unless we need the extra
+	  width.
+
 Mon Dec 24 08:44:04 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/listpos.c: Adjust width of node stats table to fit longest count.
