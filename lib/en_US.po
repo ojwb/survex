@@ -1633,7 +1633,7 @@ msgstr "&Reverse Direction"
 #: ../src/mainfrm.cc:740
 #: n:235
 msgid "Step Once &Anticlockwise"
-msgstr "Step Once Co&unterclockwise"
+msgstr "Step Once C&ounterclockwise"
 
 #: ../src/mainfrm.cc:741
 #: n:236
