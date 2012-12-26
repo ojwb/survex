@@ -440,6 +440,7 @@ read_date(int *py, int *pm, int *pd)
 	 compile_warning(/*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
 	 return; /* for brain-fried compilers */
+      }
       if (ch == '.') {
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
