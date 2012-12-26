@@ -1,3 +1,10 @@
+Tue Dec 25 23:04:06 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/readval.c,tests/: Demote errors about invalid dates to warnings,
+	  since we've accepted *date for ages without any checks on the value,
+	  and so existing datasets probably contain invalid dates and dates in
+	  other formats.  (ticket#19)
+
 Tue Dec 25 22:03:20 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/listpos.c: But always leave space for at least 4 digits, so we

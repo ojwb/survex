@@ -166,8 +166,8 @@ for file in $TESTS ; do
   cmd_dummy) pos=no ; warn=0 ;;
   cmd_infer) pos=yes ; warn=0 ;;
   cmd_date) pos=no ; warn=4 ;;
-  cmd_datebad) pos=fail ; error=37 ;;
-  cmd_datebad2) pos=fail ; error=21 ;;
+  cmd_datebad) pos=no ; warn=37 ;;
+  cmd_datebad2) pos=fail ; warn=20 ; error=2 ;;
   cartes) pos=yes ; warn=0 ;;
   diving) pos=yes ; warn=0 ;;
   cylpolar) pos=yes ; warn=0 ;;

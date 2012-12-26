@@ -1,0 +1,48 @@
+./cmd_datebad2.svx:3: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:4: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:5: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:6: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:7: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:8: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:9: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:10: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:11: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:12: warning: Invalid month
+./cmd_datebad2.svx:13: warning: Invalid month
+./cmd_datebad2.svx:14: warning: Invalid day of the month
+./cmd_datebad2.svx:15: warning: Invalid month
+./cmd_datebad2.svx:16: warning: Invalid month
+./cmd_datebad2.svx:17: warning: Invalid month
+./cmd_datebad2.svx:18:28: End of date range is before the start
+./cmd_datebad2.svx:19:14: End of date range is before the start
+./cmd_datebad2.svx:20: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:21: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:22: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:23: warning: Invalid year (< 1900 or > 2078)
+./cmd_datebad2.svx:24: warning: Invalid year (< 1900 or > 2078)
+
+Removing trailing traverses...
+
+Concatenating traverses between nodes...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses between nodes...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.05m
+Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
+North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
+East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
+   2 1-nodes.
+Done.
+There were 20 warning(s) and 2 error(s) - no output files produced.

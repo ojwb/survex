@@ -429,7 +429,7 @@ read_date(int *py, int *pm, int *pd)
    /* Two digit year is 19xx. */
    if (y < 100) y += 1900;
    if (y < 1900 || y > 2078) {
-      compile_error(/*Invalid year (< 1900 or > 2078)*/58);
+      compile_warning(/*Invalid year (< 1900 or > 2078)*/58);
       LONGJMP(file.jbSkipLine);
       return; /* for brain-fried compilers */
    }
@@ -437,15 +437,14 @@ read_date(int *py, int *pm, int *pd)
       nextch();
       m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
       if (m < 1 || m > 12) {
-	 compile_error(/*Invalid month*/86);
+	 compile_warning(/*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
 	 return; /* for brain-fried compilers */
-      }
       if (ch == '.') {
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
 	 if (d < 1 || d > last_day(y, m)) {
-	    compile_error(/*Invalid day of the month*/87);
+	    compile_warning(/*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */
 	 }

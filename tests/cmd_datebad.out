@@ -1,0 +1,63 @@
+./cmd_datebad.svx:3: warning: Invalid day of the month
+./cmd_datebad.svx:4: warning: Invalid day of the month
+./cmd_datebad.svx:5: warning: Invalid day of the month
+./cmd_datebad.svx:6: warning: Invalid day of the month
+./cmd_datebad.svx:7: warning: Invalid day of the month
+./cmd_datebad.svx:8: warning: Invalid day of the month
+./cmd_datebad.svx:9: warning: Invalid day of the month
+./cmd_datebad.svx:10: warning: Invalid day of the month
+./cmd_datebad.svx:11: warning: Invalid day of the month
+./cmd_datebad.svx:12: warning: Invalid day of the month
+./cmd_datebad.svx:13: warning: Invalid day of the month
+./cmd_datebad.svx:14: warning: Invalid day of the month
+./cmd_datebad.svx:15: warning: Invalid day of the month
+./cmd_datebad.svx:16: warning: Invalid day of the month
+./cmd_datebad.svx:17: warning: Invalid day of the month
+./cmd_datebad.svx:18: warning: Invalid day of the month
+./cmd_datebad.svx:19: warning: Invalid day of the month
+./cmd_datebad.svx:20: warning: Invalid day of the month
+./cmd_datebad.svx:21: warning: Invalid day of the month
+./cmd_datebad.svx:22: warning: Invalid day of the month
+./cmd_datebad.svx:23: warning: Invalid day of the month
+./cmd_datebad.svx:24: warning: Invalid day of the month
+./cmd_datebad.svx:25: warning: Invalid day of the month
+./cmd_datebad.svx:26: warning: Invalid day of the month
+./cmd_datebad.svx:27: warning: Invalid day of the month
+./cmd_datebad.svx:28: warning: Invalid day of the month
+./cmd_datebad.svx:29: warning: Invalid day of the month
+./cmd_datebad.svx:30: warning: Invalid day of the month
+./cmd_datebad.svx:31: warning: Invalid day of the month
+./cmd_datebad.svx:32: warning: Invalid day of the month
+./cmd_datebad.svx:33: warning: Invalid day of the month
+./cmd_datebad.svx:34: warning: Invalid day of the month
+./cmd_datebad.svx:35: warning: Invalid day of the month
+./cmd_datebad.svx:36: warning: Invalid day of the month
+./cmd_datebad.svx:37: warning: Invalid day of the month
+./cmd_datebad.svx:38: warning: Invalid day of the month
+./cmd_datebad.svx:39: warning: Invalid day of the month
+
+Removing trailing traverses...
+
+Concatenating traverses between nodes...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses between nodes...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.05m
+Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
+North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
+East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
+   2 1-nodes.
+Done.
+There were 37 warning(s).
