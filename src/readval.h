@@ -28,6 +28,8 @@ enum {
     PFX_SUSPECT_TYPO = 4,
     /* Can the deprecated "root" be used? */
     PFX_ALLOW_ROOT = 8,
+    /* Warn if the read prefix contains a separator? */
+    PFX_WARN_SEPARATOR = 16,
     /* Read a station? */
     PFX_STATION = 0
 };

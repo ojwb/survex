@@ -253,6 +253,9 @@ read_prefix(unsigned pfx_flags)
 	     depth, ptr->max_export);
 #endif
    }
+   if (!fImplicitPrefix && (pfx_flags & PFX_WARN_SEPARATOR)) {
+      compile_warning(/*Separator in survey name*/392);
+   }
    return ptr;
 }
 

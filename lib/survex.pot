@@ -2724,3 +2724,8 @@ msgstr ""
 #: n:389
 msgid "input datum as string to pass to PROJ"
 msgstr ""
+
+#: ../src/listpos.c:71
+#: n:392
+msgid "Separator in survey name"
+msgstr ""

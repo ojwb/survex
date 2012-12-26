@@ -535,7 +535,7 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   tag = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT);
+   tag = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
    pcs->tag = tag;
    if (tag) {
       pcs->Prefix = tag;

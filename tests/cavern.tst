@@ -194,7 +194,7 @@ for file in $TESTS ; do
   inferexports) pos=no; warn=0 ;;
   bad_units_factor) pos=fail; error=5 ;;
   percent_gradient) pos=yes; warn=0 ;;
-  dotinsurvey) pos=no; warn=0 ;;
+  dotinsurvey) pos=no; warn=2 ;;
   leandroclino) pos=yes; warn=0 ;;
   lowsd) pos=no; warn=0 ;;
   revdir) pos=yes; warn=0 ;;

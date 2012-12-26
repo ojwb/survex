@@ -4,3 +4,10 @@
 *fix 0 0 0 0
 0 1 10.00 000 00
 *end 106.1
+*begin 106
+*fix 3 reference 3 3 3
+*end 106
+*begin 106.2
+*fix 2 2 2 2
+1 2 5.00 010 -01
+*end 106.2

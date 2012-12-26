@@ -73,7 +73,8 @@ extend2names.svx extend2namesx.3d\
 omitclino.svx omitclino.pos\
 back.svx back.pos\
 notentranceorexport.svx inferunknown.svx inferexports.svx\
-bad_units_factor.svx percent_gradient.svx percent_gradient.pos dotinsurvey.svx\
+bad_units_factor.svx percent_gradient.svx percent_gradient.pos\
+dotinsurvey.svx dotinsurvey.out\
 2fixbug.svx leandroclino.svx leandroclino.pos lowsd.svx revdir.svx revdir.pos\
 gettokennullderef.svx lech.svx level.svx level.pos\
 declination.dat declination.pos ignore.dat ignore.pos backread.dat backread.pos\

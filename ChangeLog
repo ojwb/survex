@@ -1,3 +1,8 @@
+Wed Dec 26 22:21:10 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c,src/readval.c,src/readval.h,tests/: Add
+	  new warning if *begin SURVEY has a separator character in SUVERY.
+
 Wed Dec 26 07:29:42 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Fix clashing menu accelerator.
