@@ -66,22 +66,25 @@
 
 #define SQRT_2		1.41421356237309504880168872420969
 
-#define LEGS 1
-#define SURF 2
-#define STNS 4
-#define LABELS 8
-
-static const char *layer_names[] = {
-   NULL,
-   "Legs",	// LEGS
-   "Surface",	// SURF
-   "Legs",	// LEGS|SURF
-   "Stations",	// STNS
-   NULL,
-   NULL,
-   NULL,
-   "Labels"	// LABELS
-};
+static const char *layer_name(int mask) {
+    switch (mask) {
+	case LEGS: case LEGS|SURF:
+	    return "Legs";
+	case SURF:
+	    return "Surface";
+	case STNS:
+	    return "Stations";
+	case LABELS:
+	    return "Labels";
+	case XSECT:
+	    return "Cross-sections";
+	case WALL1: case WALL2: case WALLS:
+	    return "Walls";
+	case PASG:
+	    return "Passages";
+    }
+    return "";
+}
 
 /* default to DXF */
 #define FMT_DEFAULT FMT_DXF
@@ -320,7 +323,7 @@ Sketch::header(const char *)
 void
 Sketch::start_pass(int layer)
 {
-   fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_names[layer]);
+   fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_name(layer));
 }
 
 void
@@ -441,24 +444,31 @@ find_name(const img_point *p)
 }
 
 class SVG : public ExportFilter {
-    bool to_close;
+    const char * to_close;
     bool close_g;
+    char pending[1024];
 
   public:
-    SVG() : to_close(false), close_g(false) { }
+    SVG() : to_close(NULL), close_g(false) { pending[0] = '\0'; }
     const int * passes() const;
     void header(const char *);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool);
     void cross(const img_point *, bool);
+    void xsect(const img_point *, double, double, double);
+    void wall(const img_point *, double, double);
+    void passage(const img_point *, double, double, double);
+    void tube_end();
     void footer();
 };
 
 const int *
 SVG::passes() const
 {
-    static const int svg_passes[] = { LEGS|SURF, LABELS, STNS, 0 };
+    static const int svg_passes[] = {
+	PASG, LEGS|SURF, XSECT, WALL1, WALL2, LABELS, STNS, 0
+    };
     return svg_passes;
 }
 
@@ -480,7 +490,7 @@ SVG::header(const char *)
 	   width, unit, height, unit, width, height);
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
 	   SVG_MARGIN - min_x * factor, SVG_MARGIN + max_y * factor);
-   to_close = false;
+   to_close = NULL;
    close_g = false;
 }
 
@@ -488,19 +498,25 @@ void
 SVG::start_pass(int layer)
 {
    if (to_close) {
-      fprintf(fh, "\"/>\n");
-      to_close = false;
+      fputs(to_close, fh);
+      to_close = NULL;
    }
    if (close_g) {
       fprintf(fh, "</g>\n");
    }
-   fprintf(fh, "<g id=\"%s\"", layer_names[layer]);
+   fprintf(fh, "<g id=\"%s\"", layer_name(layer));
    if (layer & LEGS)
       fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.4px\"");
    else if (layer & STNS)
       fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.05px\"");
    else if (layer & LABELS)
       fprintf(fh, " font-size=\"%.3fem\"", text_height);
+   else if (layer & XSECT)
+      fprintf(fh, " stroke=\"grey\" fill=\"none\" stroke-width=\"0.1px\"");
+   else if (layer & WALLS)
+      fprintf(fh, " stroke=\"black\" fill=\"none\" stroke-width=\"0.1px\"");
+   else if (layer & PASG)
+      fprintf(fh, " stroke=\"none\" fill=\"peru\"");
    fprintf(fh, ">\n");
 
    close_g = true;
@@ -512,12 +528,12 @@ SVG::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
    fSurface = fSurface; /* unused */
    if (fPendingMove) {
        if (to_close) {
-	   fprintf(fh, "\"/>\n");
+	   fputs(to_close, fh);
        }
        fprintf(fh, "<path d=\"M%.3f %.3f", p1->x * factor, p1->y * -factor);
    }
    fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
-   to_close = true;
+   to_close = "\"/>\n";
 }
 
 void
@@ -545,11 +561,61 @@ SVG::cross(const img_point *p, bool fSurface)
 }
 
 void
+SVG::xsect(const img_point *p, double angle, double d1, double d2)
+{
+   double s = sin(rad(angle));
+   double c = cos(rad(angle));
+   fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3f\"/>\n",
+	   (p->x + c * d1) * factor, (p->y + s * d1) * -factor,
+	   (p->x - c * d2) * factor, (p->y - s * d2) * -factor);
+}
+
+void
+SVG::wall(const img_point *p, double angle, double d)
+{
+   if (!to_close) {
+       fprintf(fh, "<path d=\"M");
+       to_close = "\"/>\n";
+   } else {
+       fprintf(fh, "L");
+   }
+   double s = sin(rad(angle));
+   double c = cos(rad(angle));
+   fprintf(fh, "%.3f %.3f", (p->x + c * d) * factor, (p->y + s * d) * -factor);
+}
+
+void
+SVG::passage(const img_point *p, double angle, double d1, double d2)
+{
+   double s = sin(rad(angle));
+   double c = cos(rad(angle));
+   double x1 = (p->x + c * d1) * factor;
+   double y1 = (p->y + s * d1) * -factor;
+   double x2 = (p->x - c * d2) * factor;
+   double y2 = (p->y - s * d2) * -factor;
+   if (*pending) {
+       fputs(pending, fh);
+       fprintf(fh, "L%.3f %.3fL%.3f %.3fZ\"/>\n", x2, y2, x1, y1);
+   }
+   sprintf(pending, "<path d=\"M%.3f %.3fL%.3f %.3f", x1, y1, x2, y2);
+}
+
+void
+SVG::tube_end()
+{
+   *pending = '\0';
+   if (to_close) {
+      fputs(to_close, fh);
+      to_close = NULL;
+   }
+}
+
+void
 SVG::footer()
 {
    if (to_close) {
-      fprintf(fh, "\"/>\n");
-      to_close = false;
+      fputs(to_close, fh);
+      to_close = NULL;
    }
    if (close_g) {
       fprintf(fh, "</g>\n");
@@ -955,8 +1021,7 @@ static const char *extensions[] = { "dxf", "svg", "sk", "plt", "eps", "hpgl" };
 
 bool
 Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
-       double pan, double tilt, bool labels, bool crosses, bool legs,
-       bool surface)
+       double pan, double tilt, int show_mask)
 {
    int fPendingMove = 0;
    img_point p, p1;
@@ -1118,15 +1183,11 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 
    for (pass = filt->passes(); *pass; ++pass) {
-      bool legs_this_pass = ((*pass & LEGS) && legs);
-      bool surf_this_pass = ((*pass & SURF) && legs && surface);
-      bool crosses_this_pass = ((*pass & STNS) && crosses);
-      bool labels_this_pass = ((*pass & LABELS) && labels);
-      if (!(legs_this_pass || surf_this_pass || crosses_this_pass ||
-	    labels_this_pass))
+      int pass_mask = show_mask & *pass;
+      if (!pass_mask)
 	  continue;
       filt->start_pass(*pass);
-      if (legs_this_pass) {
+      if (pass_mask & LEGS) {
 	  trav = mainfrm->traverses_begin();
 	  tend = mainfrm->traverses_end();
 	  for ( ; trav != tend; ++trav) {
@@ -1173,7 +1234,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	     }
 	 }
       }
-      if (surf_this_pass) {
+      if (pass_mask & SURF) {
 	  trav = mainfrm->surface_traverses_begin();
 	  tend = mainfrm->surface_traverses_end();
 	  for ( ; trav != tend; ++trav) {
@@ -1220,7 +1281,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	     }
 	 }
       }
-      if (crosses_this_pass || labels_this_pass) {
+      if (pass_mask & (STNS | LABELS)) {
 	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
 	  list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
@@ -1251,10 +1312,60 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	      /* Use !UNDERGROUND as the criterion - we want stations where
 	       * a surface and underground survey meet to be in the
 	       * underground layer */
-	      if (labels_this_pass)
+	      if (pass_mask & LABELS)
 		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground());
-	      if (crosses_this_pass)
+	      if (pass_mask & STNS)
 		  filt->cross(&p, !(*pos)->IsUnderground());
+	  }
+      }
+      if (pass_mask & (XSECT|WALLS|PASG)) {
+	  list<vector<XSect> >::const_iterator tube = mainfrm->tubes_begin();
+	  list<vector<XSect> >::const_iterator tube_end = mainfrm->tubes_end();
+	  for ( ; tube != tube_end; ++tube) {
+	      vector<XSect>::const_iterator pos = tube->begin();
+	      vector<XSect>::const_iterator end = tube->end();
+	      for ( ; pos != end; ++pos) {
+		  const XSect & xs = *pos;
+		  p.x = xs.GetX();
+		  p.y = xs.GetY();
+		  p.z = xs.GetZ();
+
+		  if (format == FMT_SKETCH) {
+		      p.x -= min_x;
+		      p.y -= min_y;
+		      p.z -= min_z;
+		  } else if (format == FMT_HPGL) {
+		      p.x -= (min_x + max_x) / 2;
+		      p.y -= (min_y + max_y) / 2;
+		      p.z -= (min_z + max_z) / 2;
+		  }
+
+		  if (elevation) {
+		      double xnew = p.x * c - p.y * s;
+		      double znew = - p.x * s - p.y * c;
+		      p.y = p.z;
+		      p.z = znew;
+		      p.x = xnew;
+		      if (pass_mask & XSECT)
+			  filt->xsect(&p, 0, xs.GetU(), xs.GetD());
+		      if (pass_mask & WALL1)
+			  filt->wall(&p, 0, xs.GetU());
+		      if (pass_mask & WALL2)
+			  filt->wall(&p, 180, xs.GetD());
+		      if (pass_mask & PASG)
+			  filt->passage(&p, 0, xs.GetU(), xs.GetD());
+		  } else {
+		      if (pass_mask & XSECT)
+			  filt->xsect(&p, xs.get_right_bearing() + 180, xs.GetL(), xs.GetR());
+		      if (pass_mask & WALL1)
+			  filt->wall(&p, xs.get_right_bearing() + 180, xs.GetL());
+		      if (pass_mask & WALL2)
+			  filt->wall(&p, xs.get_right_bearing(), xs.GetR());
+		      if (pass_mask & PASG)
+			  filt->passage(&p, xs.get_right_bearing() + 180, xs.GetL(), xs.GetR());
+		  }
+	      }
+	      filt->tube_end();
 	  }
       }
    }

@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2004,2005 Olly Betts
+/* Copyright (C) 2004,2005,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,17 @@
 
 class MainFrm;
 
+#define LEGS 1
+#define SURF 2
+#define STNS 4
+#define LABELS 8
+#define XSECT 16
+#define WALL1 32
+#define WALL2 64
+#define WALLS (WALL1|WALL2)
+#define PASG 128
+
 bool Export(const wxString &fnm_out, const wxString &title,
-	const MainFrm * mainfrm, double pan, double tilt,
-	bool labels, bool crosses, bool legs, bool surface);
+	const MainFrm * mainfrm, double pan, double tilt, int show_mask);
 
 #endif

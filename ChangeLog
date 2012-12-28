@@ -1,3 +1,8 @@
+Fri Dec 28 05:53:56 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/: Implement exporting of passages (ticket#4) for SVG.  Currently
+	  it is always on (I'll update the Export dialog shortly).
+
 Wed Dec 26 22:21:10 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/commands.c,src/readval.c,src/readval.h,tests/: Add

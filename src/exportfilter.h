@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2005 Olly Betts
+/* Copyright (C) 2005,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,10 @@ class ExportFilter {
     virtual void line(const img_point *, const img_point *, bool, bool) = 0;
     virtual void label(const img_point *, const char *, bool) = 0;
     virtual void cross(const img_point *, bool) { }
+    virtual void xsect(const img_point *, double, double, double) { }
+    virtual void wall(const img_point *, double, double) { }
+    virtual void passage(const img_point *, double, double, double) { }
+    virtual void tube_end() { }
     virtual void footer() { }
 };
 

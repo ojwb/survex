@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWidgets specific parts of Survex wxWidgets printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -323,11 +323,21 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), baseleaf,
 		     wmsg(/*DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl*/96),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    int show_mask = 0;
+    if (m_layout.Labels)
+	show_mask |= LABELS;
+    if (m_layout.Crosses)
+	show_mask |= STNS;
+    if (m_layout.Shots)
+	show_mask |= LEGS;
+    if (m_layout.Surface)
+	show_mask |= SURF;
+    show_mask |= XSECT;
+    show_mask |= WALLS;
+    show_mask |= PASG;
     if (dlg.ShowModal() == wxID_OK) {
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
-		    m_layout.rot, m_layout.tilt,
-		    m_layout.Labels, m_layout.Crosses,
-		    m_layout.Shots, m_layout.Surface)) {
+		    m_layout.rot, m_layout.tilt, show_mask)) {
 	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					  m_File.c_str());
 	    wxGetApp().ReportError(m);

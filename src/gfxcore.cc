@@ -2011,8 +2011,8 @@ void GfxCore::GenerateDisplayList()
 void GfxCore::GenerateDisplayListTubes()
 {
     // Generate the display list for the tubes.
-    list<vector<XSect> >::const_iterator trav = m_Parent->tubes_begin();
-    list<vector<XSect> >::const_iterator tend = m_Parent->tubes_end();
+    list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect> >::iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
 	SkinPassage(*trav);
 	++trav;
@@ -2505,7 +2505,7 @@ void GfxCore::AddPolylineError(const traverse & centreline)
 }
 
 void
-GfxCore::SkinPassage(const vector<XSect> & centreline)
+GfxCore::SkinPassage(vector<XSect> & centreline)
 {
     assert(centreline.size() > 1);
     Vector3 U[4];
@@ -2514,11 +2514,11 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 
 //  FIXME: it's not simple to set the colour of a tube based on error...
 //    static_E_hack = something...
-    vector<XSect>::const_iterator i = centreline.begin();
+    vector<XSect>::iterator i = centreline.begin();
     vector<XSect>::size_type segment = 0;
     while (i != centreline.end()) {
 	// get the coordinates of this vertex
-	const XSect & pt_v = *i++;
+	XSect & pt_v = *i++;
 
 	double z_pitch_adjust = 0.0;
 	bool cover_end = false;
@@ -2711,6 +2711,8 @@ GfxCore::SkinPassage(const vector<XSect> & centreline)
 	U[1] = v[1];
 	U[2] = v[2];
 	U[3] = v[3];
+
+	pt_v.set_right_bearing(deg(atan2(right.GetY(), right.GetX())));
 
 	++segment;
     }

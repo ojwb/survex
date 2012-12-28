@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -139,16 +139,21 @@ public:
 class XSect : public PointInfo {
     friend class MainFrm;
     Double l, r, u, d;
+    Double right_bearing;
 
 public:
-    XSect() : PointInfo(), l(0), r(0), u(0), d(0) { }
+    XSect() : PointInfo(), l(0), r(0), u(0), d(0), right_bearing(0) { }
     XSect(const Point &p, int date_,
 	  Double l_, Double r_, Double u_, Double d_)
-	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_) { }
+	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
     Double GetL() const { return l; }
     Double GetR() const { return r; }
     Double GetU() const { return u; }
     Double GetD() const { return d; }
+    Double get_right_bearing() const { return right_bearing; }
+    void set_right_bearing(Double right_bearing_) {
+	right_bearing = right_bearing_;
+    }
 };
 
 #define LFLAG_SURFACE		img_SFLAG_SURFACE
@@ -490,6 +495,14 @@ public:
     }
 
     list<vector<XSect> >::const_iterator tubes_end() const {
+	return tubes.end();
+    }
+
+    list<vector<XSect> >::iterator tubes_begin() {
+	return tubes.begin();
+    }
+
+    list<vector<XSect> >::iterator tubes_end() {
 	return tubes.end();
     }
 
