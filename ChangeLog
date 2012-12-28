@@ -1,3 +1,9 @@
+Fri Dec 28 22:19:14 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Disable passage-related export options when in a
+	  tilted view.  Hook up "Cross-sections" to printing on left and
+	  right markers.
+
 Fri Dec 28 06:30:17 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Add options to export dialog to control showing

@@ -268,6 +268,12 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
     m_names = new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260));
     v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
+    m_xsect = new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393));
+    v3->Add(m_xsect, 0, wxALIGN_LEFT|wxALL, 2);
+    m_walls = new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394));
+    v3->Add(m_walls, 0, wxALIGN_LEFT|wxALL, 2);
+    m_passages = new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395));
+    v3->Add(m_passages, 0, wxALIGN_LEFT|wxALL, 2);
     if (printing) {
 	m_borders = new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264));
 	v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
@@ -275,13 +281,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 //	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
 	m_infoBox = new wxCheckBox(this, svx_INFOBOX, wmsg(/*Info Box*/265));
 	v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
-    } else {
-	m_xsect = new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393));
-	v3->Add(m_xsect, 0, wxALIGN_LEFT|wxALL, 2);
-	m_walls = new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394));
-	v3->Add(m_walls, 0, wxALIGN_LEFT|wxALL, 2);
-	m_passages = new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395));
-	v3->Add(m_passages, 0, wxALIGN_LEFT|wxALL, 2);
+	m_walls->Hide();
+	m_passages->Hide();
     }
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
@@ -492,9 +493,9 @@ svxPrintDlg::UIToLayout(){
     m_layout.Labels = m_names->IsChecked();
     m_layout.Shots = m_legs->IsChecked();
     m_layout.Crosses = m_stations->IsChecked();
-    m_layout.Xsect = m_xsect->IsChecked();
-    m_layout.Walls = m_walls->IsChecked();
-    m_layout.Passages = m_passages->IsChecked();
+    m_layout.Xsect = m_xsect->IsEnabled() && m_xsect->IsChecked();
+    m_layout.Walls = m_walls->IsEnabled() && m_walls->IsChecked();
+    m_layout.Passages = m_passages->IsEnabled() && m_passages->IsChecked();
     if (m_borders) m_layout.Border = m_borders->IsChecked();
 //    m_layout.SkipBlank = m_blanks->IsChecked();
     if (m_infoBox) m_layout.Raw = !m_infoBox->IsChecked();
@@ -509,6 +510,9 @@ svxPrintDlg::UIToLayout(){
 	} else {
 	    m_layout.view = layout::TILT;
 	}
+	m_xsect->Enable(m_layout.view != layout::TILT);
+	m_walls->Enable(m_layout.view != layout::TILT);
+	m_passages->Enable(m_layout.view != layout::TILT);
 	m_layout.rot = m_bearing->GetValue();
     }
 }
@@ -1079,7 +1083,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (l->Shots && (l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
+    if (l->Xsect && (l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
 	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
