@@ -61,6 +61,9 @@ enum {
 	svx_LEGS,
 	svx_STATIONS,
 	svx_NAMES,
+	svx_XSECT,
+	svx_WALLS,
+	svx_PASSAGES,
 	svx_BORDERS,
 	svx_BLANKS,
 	svx_INFOBOX,
@@ -174,6 +177,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_legs = NULL;
     m_stations = NULL;
     m_names = NULL;
+    m_xsect = NULL;
+    m_walls = NULL;
+    m_passages = NULL;
     m_borders = NULL;
     m_infoBox = NULL;
     m_surface = NULL;
@@ -269,6 +275,13 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 //	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
 	m_infoBox = new wxCheckBox(this, svx_INFOBOX, wmsg(/*Info Box*/265));
 	v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
+    } else {
+	m_xsect = new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393));
+	v3->Add(m_xsect, 0, wxALIGN_LEFT|wxALL, 2);
+	m_walls = new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394));
+	v3->Add(m_walls, 0, wxALIGN_LEFT|wxALL, 2);
+	m_passages = new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395));
+	v3->Add(m_passages, 0, wxALIGN_LEFT|wxALL, 2);
     }
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
@@ -449,6 +462,9 @@ svxPrintDlg::LayoutToUI(){
     m_names->SetValue(m_layout.Labels);
     m_legs->SetValue(m_layout.Shots);
     m_stations->SetValue(m_layout.Crosses);
+    m_xsect->SetValue(m_layout.Xsect);
+    m_walls->SetValue(m_layout.Walls);
+    m_passages->SetValue(m_layout.Passages);
     if (m_borders) m_borders->SetValue(m_layout.Border);
 //    m_blanks->SetValue(m_layout.SkipBlank);
     if (m_infoBox) m_infoBox->SetValue(!m_layout.Raw);
@@ -476,6 +492,9 @@ svxPrintDlg::UIToLayout(){
     m_layout.Labels = m_names->IsChecked();
     m_layout.Shots = m_legs->IsChecked();
     m_layout.Crosses = m_stations->IsChecked();
+    m_layout.Xsect = m_xsect->IsChecked();
+    m_layout.Walls = m_walls->IsChecked();
+    m_layout.Passages = m_passages->IsChecked();
     if (m_borders) m_layout.Border = m_borders->IsChecked();
 //    m_layout.SkipBlank = m_blanks->IsChecked();
     if (m_infoBox) m_layout.Raw = !m_infoBox->IsChecked();

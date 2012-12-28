@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006,2010,2011 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -50,6 +50,7 @@
 
 layout::layout(wxPageSetupDialogData* data)
 	: Labels(false), Crosses(false), Shots(true), Surface(false),
+	  Xsect(false), Walls(false), Passages(false),
 	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
 	  title(), datestamp(), Scale(0), rot(0), tilt(0),
 	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),

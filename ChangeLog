@@ -1,3 +1,8 @@
+Fri Dec 28 06:30:17 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/: Add options to export dialog to control showing
+	  cross-sections, walls and passages.
+
 Fri Dec 28 05:53:56 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/: Implement exporting of passages (ticket#4) for SVG.  Currently

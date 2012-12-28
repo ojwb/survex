@@ -1812,6 +1812,21 @@ msgstr ""
 msgid "Underground Survey Legs"
 msgstr ""
 
+#: ../src/printwx.cc:279
+#: n:393
+msgid "Cross-sections"
+msgstr ""
+
+#: ../src/printwx.cc:281
+#: n:394
+msgid "Walls"
+msgstr ""
+
+#: ../src/printwx.cc:283
+#: n:395
+msgid "Passages"
+msgstr ""
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:238
 #: n:263

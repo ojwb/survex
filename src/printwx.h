@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWidgets driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004,2005,2006,2011 Olly Betts
+ * Copyright (C) 2004,2005,2006,2011,2012 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,9 @@ class svxPrintDlg : public wxDialog {
 	wxCheckBox* m_legs;
 	wxCheckBox* m_stations;
 	wxCheckBox* m_names;
+	wxCheckBox* m_xsect;
+	wxCheckBox* m_walls;
+	wxCheckBox* m_passages;
 	wxCheckBox* m_borders;
 //	wxCheckBox* m_blanks;
 	wxCheckBox* m_infoBox;
