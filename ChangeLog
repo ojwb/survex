@@ -1,3 +1,7 @@
+Fri Dec 28 22:21:50 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot: Update locations.
+
 Fri Dec 28 22:19:14 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Disable passage-related export options when in a
