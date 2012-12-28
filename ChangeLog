@@ -1,3 +1,7 @@
+Fri Dec 28 21:03:33 GMT 2012  Olly Betts <olly@survex.com>
+
+	* lib/: Merge from survex.pot to .po files.
+
 Fri Dec 28 22:21:50 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Update locations.
