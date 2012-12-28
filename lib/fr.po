@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-12-17 09:10:51 +0000\n"
+"PO-Revision-Date: 2012-12-28 23:30:49 +0000\n"
 "Last-Translator: Eric Madelaine <eric.madelaine@inria.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1814,17 +1814,17 @@ msgstr "Visées sous terre"
 #: ../src/printwx.cc:279
 #: n:393
 msgid "Cross-sections"
-msgstr ""
+msgstr "Sections"
 
 #: ../src/printwx.cc:281
 #: n:394
 msgid "Walls"
-msgstr ""
+msgstr "Parois"
 
 #: ../src/printwx.cc:283
 #: n:395
 msgid "Passages"
-msgstr ""
+msgstr "Galeries"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:244
