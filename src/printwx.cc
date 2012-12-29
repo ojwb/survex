@@ -183,10 +183,23 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_borders = NULL;
     m_infoBox = NULL;
     m_surface = NULL;
-    m_layout.Labels = labels;
-    m_layout.Crosses = crosses;
-    m_layout.Shots = legs;
-    m_layout.Surface = surf;
+    int show_mask = 0;
+    if (labels)
+	show_mask |= LABELS;
+    if (crosses)
+	show_mask |= STNS;
+    if (legs)
+	show_mask |= LEGS;
+    if (surf)
+	show_mask |= SURF;
+#if 0
+    if (tubes) {
+	show_mask |= XSECT;
+	show_mask |= WALLS;
+	show_mask |= PASG;
+    }
+#endif
+    m_layout.show_mask = show_mask;
     m_layout.datestamp = datestamp;
     m_layout.rot = int(angle);
     m_layout.title = title;
@@ -337,21 +350,9 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), baseleaf,
 		     wmsg(/*DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl*/96),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
-    int show_mask = 0;
-    if (m_layout.Labels)
-	show_mask |= LABELS;
-    if (m_layout.Crosses)
-	show_mask |= STNS;
-    if (m_layout.Shots)
-	show_mask |= LEGS;
-    if (m_layout.Surface)
-	show_mask |= SURF;
-    show_mask |= XSECT;
-    show_mask |= WALLS;
-    show_mask |= PASG;
     if (dlg.ShowModal() == wxID_OK) {
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
-		    m_layout.rot, m_layout.tilt, show_mask)) {
+		    m_layout.rot, m_layout.tilt, m_layout.show_mask)) {
 	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					  m_File.c_str());
 	    wxGetApp().ReportError(m);
@@ -460,16 +461,16 @@ svxPrintDlg::SomethingChanged() {
 
 void
 svxPrintDlg::LayoutToUI(){
-    m_names->SetValue(m_layout.Labels);
-    m_legs->SetValue(m_layout.Shots);
-    m_stations->SetValue(m_layout.Crosses);
-    m_xsect->SetValue(m_layout.Xsect);
-    m_walls->SetValue(m_layout.Walls);
-    m_passages->SetValue(m_layout.Passages);
+    m_names->SetValue(m_layout.show_mask & LABELS);
+    m_legs->SetValue(m_layout.show_mask & LEGS);
+    m_stations->SetValue(m_layout.show_mask & STNS);
+    m_xsect->SetValue(m_layout.show_mask & XSECT);
+    m_walls->SetValue(m_layout.show_mask & WALLS);
+    m_passages->SetValue(m_layout.show_mask & PASG);
+    m_surface->SetValue(m_layout.show_mask & SURF);
     if (m_borders) m_borders->SetValue(m_layout.Border);
 //    m_blanks->SetValue(m_layout.SkipBlank);
     if (m_infoBox) m_infoBox->SetValue(!m_layout.Raw);
-    m_surface->SetValue(m_layout.Surface);
     if (m_layout.view != layout::EXTELEV) {
 	m_tilt->SetValue(m_layout.tilt);
 	m_bearing->SetValue(m_layout.rot);
@@ -490,16 +491,24 @@ svxPrintDlg::LayoutToUI(){
 
 void
 svxPrintDlg::UIToLayout(){
-    m_layout.Labels = m_names->IsChecked();
-    m_layout.Shots = m_legs->IsChecked();
-    m_layout.Crosses = m_stations->IsChecked();
-    m_layout.Xsect = m_xsect->IsEnabled() && m_xsect->IsChecked();
-    m_layout.Walls = m_walls->IsEnabled() && m_walls->IsChecked();
-    m_layout.Passages = m_passages->IsEnabled() && m_passages->IsChecked();
+    m_layout.show_mask = 0;
+    if (m_names->IsChecked())
+	m_layout.show_mask |= LABELS;
+    if (m_legs->IsChecked())
+	m_layout.show_mask |= LEGS;
+    if (m_stations->IsChecked())
+	m_layout.show_mask |= STNS;
+    if (m_xsect->IsEnabled() && m_xsect->IsChecked())
+	m_layout.show_mask |= XSECT;
+    if (m_walls->IsEnabled() && m_walls->IsChecked())
+	m_layout.show_mask |= WALLS;
+    if (m_passages->IsEnabled() && m_passages->IsChecked())
+	m_layout.show_mask |= PASG;
+    if (m_surface->IsChecked())
+	m_layout.show_mask |= SURF;
     if (m_borders) m_layout.Border = m_borders->IsChecked();
 //    m_layout.SkipBlank = m_blanks->IsChecked();
     if (m_infoBox) m_layout.Raw = !m_infoBox->IsChecked();
-    m_layout.Surface = m_surface->IsChecked();
 
     if (m_layout.view != layout::EXTELEV) {
 	m_layout.tilt = m_tilt->GetValue();
@@ -528,7 +537,7 @@ svxPrintDlg::RecalcBounds()
     double SINT = sin(rad(m_layout.tilt));
     double COST = cos(rad(m_layout.tilt));
 
-    if (m_layout.Shots) {
+    if (m_layout.show_mask & LEGS) {
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
@@ -547,7 +556,7 @@ svxPrintDlg::RecalcBounds()
 	    }
 	}
     }
-    if (m_layout.Surface) {
+    if (m_layout.show_mask & SURF) {
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
@@ -566,13 +575,13 @@ svxPrintDlg::RecalcBounds()
 	    }
 	}
     }
-    if (m_layout.Labels || m_layout.Crosses) {
+    if (m_layout.show_mask & (LABELS|STNS)) {
 	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
 	while (label != mainfrm->GetLabelsEnd()) {
 	    double x = (*label)->GetX();
 	    double y = (*label)->GetY();
 	    double z = (*label)->GetZ();
-	    if (m_layout.Surface || (*label)->IsUnderground()) {
+	    if ((m_layout.show_mask & SURF) || (*label)->IsUnderground()) {
 		double X = x * COS - y * SIN;
 		if (X > m_layout.xMax) m_layout.xMax = X;
 		if (X < m_layout.xMin) m_layout.xMin = X;
@@ -1059,7 +1068,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     const double Sc = 1000 / l->Scale;
 
-    if (l->Shots) {
+    if (l->show_mask & LEGS) {
 	SetColour(PR_COLOUR_LEG);
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
@@ -1083,7 +1092,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (l->Xsect && (l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
+    if ((l->show_mask & XSECT) &&
+	(l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
 	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
@@ -1092,7 +1102,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (l->Surface) {
+    if (l->show_mask & SURF) {
 	SetColour(PR_COLOUR_SURFACE_LEG);
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
@@ -1116,24 +1126,24 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (l->Labels || l->Crosses) {
-	if (l->Labels) SetFont(PR_FONT_LABELS);
+    if (l->show_mask & (LABELS|STNS)) {
+	if (l->show_mask & LABELS) SetFont(PR_FONT_LABELS);
 	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
 	while (label != mainfrm->GetLabelsEnd()) {
 	    double px = (*label)->GetX();
 	    double py = (*label)->GetY();
 	    double pz = (*label)->GetZ();
-	    if (l->Surface || (*label)->IsUnderground()) {
+	    if ((l->show_mask & SURF) || (*label)->IsUnderground()) {
 		double X = px * COS - py * SIN;
 		double Y = pz * COST - (px * SIN + py * COS) * SINT;
 		long xnew, ynew;
 		xnew = (long)((X * Sc + l->xOrg) * l->scX);
 		ynew = (long)((Y * Sc + l->yOrg) * l->scY);
-		if (l->Crosses) {
+		if (l->show_mask & STNS) {
 		    SetColour(PR_COLOUR_CROSS);
 		    DrawCross(xnew, ynew);
 		}
-		if (l->Labels) {
+		if (l->show_mask & LABELS) {
 		    SetColour(PR_COLOUR_LABELS);
 		    MoveTo(xnew, ynew);
 		    WriteString((*label)->GetText());

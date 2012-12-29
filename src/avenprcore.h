@@ -51,13 +51,7 @@ struct border {
 class layout {
 public:
     /* caller modifiable bits */
-    bool Labels;
-    bool Crosses;
-    bool Shots;
-    bool Surface;
-    bool Xsect;
-    bool Walls;
-    bool Passages;
+    int show_mask;
     bool SkipBlank;
     bool Border;
     bool Cutlines;

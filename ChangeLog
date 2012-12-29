@@ -1,3 +1,9 @@
+Sat Dec 29 05:09:54 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc,src/avenprcore.h,src/printwx.cc: Do away with the
+	  separate bool flags for each thing we can show in printing and export
+	  and just use the "show_mask" flags.
+
 Fri Dec 28 23:30:55 GMT 2012  Olly Betts <olly@survex.com>
 
 	* lib/: Fill in new messages from existing translations where possible.

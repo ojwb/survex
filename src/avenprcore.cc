@@ -49,8 +49,7 @@
 #endif
 
 layout::layout(wxPageSetupDialogData* data)
-	: Labels(false), Crosses(false), Shots(true), Surface(false),
-	  Xsect(false), Walls(false), Passages(false),
+	: show_mask(0),
 	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
 	  title(), datestamp(), Scale(0), rot(0), tilt(0),
 	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
