@@ -64,7 +64,7 @@ class svxPrintDlg : public wxDialog {
 		    const wxString & title, const wxString & datestamp,
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf,
-		    bool printing);
+		    bool tubes, bool printing);
 	void OnPrint(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
 #ifdef AVEN_PRINT_PREVIEW

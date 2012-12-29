@@ -1,3 +1,9 @@
+Sat Dec 29 05:29:31 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/printwx.cc,src/printwx.h: Default the export/print
+	  settings for passage related things to the "tubes" setting in the
+	  OpenGL view.
+
 Sat Dec 29 05:11:20 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Export of passage detail now works

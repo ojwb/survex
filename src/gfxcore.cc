@@ -2856,7 +2856,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, datestamp,
 			m_PanAngle, m_TiltAngle,
-			m_Names, m_Crosses, m_Legs, m_Surface,
+			m_Names, m_Crosses, m_Legs, m_Surface, m_Tubes,
 			true);
     p->Show(true);
 }
@@ -2875,7 +2875,7 @@ GfxCore::OnExport(const wxString &filename, const wxString &title)
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, wxString(),
 			m_PanAngle, m_TiltAngle,
-			m_Names, m_Crosses, m_Legs, m_Surface,
+			m_Names, m_Crosses, m_Legs, m_Surface, m_Tubes,
 			false);
     p->Show(true);
 }
