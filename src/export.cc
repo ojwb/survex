@@ -110,15 +110,32 @@ ExportFilter::passes() const
 }
 
 class DXF : public ExportFilter {
+    const char * to_close;
+    char pending[1024];
+
   public:
-    DXF() { }
+    DXF() : to_close(0) { pending[0] = '\0'; }
+    const int * passes() const;
     bool fopen(const char *fnm_out);
     void header(const char *);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool);
     void cross(const img_point *, bool);
+    void xsect(const img_point *, double, double, double);
+    void wall(const img_point *, double, double);
+    void passage(const img_point *, double, double, double);
+    void tube_end();
     void footer();
 };
+
+const int *
+DXF::passes() const
+{
+    static const int dxf_passes[] = {
+	PASG, XSECT, WALL1, WALL2, LEGS|SURF|STNS|LABELS, 0
+    };
+    return dxf_passes;
+}
 
 bool
 DXF::fopen(const char *fnm_out)
@@ -283,6 +300,73 @@ DXF::cross(const img_point *p, bool fSurface)
    fprintf(fh, "10\n%6.2f\n", p->x);
    fprintf(fh, "20\n%6.2f\n", p->y);
    fprintf(fh, "30\n%6.2f\n", p->z);
+}
+
+void
+DXF::xsect(const img_point *p, double angle, double d1, double d2)
+{
+   double s = sin(rad(angle));
+   double c = cos(rad(angle));
+   fprintf(fh, "0\nLINE\n");
+   fprintf(fh, "8\nCross-sections\n"); /* Layer */
+   fprintf(fh, "10\n%6.2f\n", p->x + c * d1);
+   fprintf(fh, "20\n%6.2f\n", p->y + s * d1);
+   fprintf(fh, "30\n%6.2f\n", p->z);
+   fprintf(fh, "11\n%6.2f\n", p->x - c * d2);
+   fprintf(fh, "21\n%6.2f\n", p->y - s * d2);
+   fprintf(fh, "31\n%6.2f\n", p->z);
+}
+
+void
+DXF::wall(const img_point *p, double angle, double d)
+{
+   if (!to_close) {
+       fprintf(fh, "0\nPOLYLINE\n");
+       fprintf(fh, "8\nWalls\n"); /* Layer */
+       fprintf(fh, "70\n0\n"); /* bit 0 == 0 => Open polyline */
+       to_close = "0\nSEQEND\n";
+   }
+   double s = sin(rad(angle));
+   double c = cos(rad(angle));
+   fprintf(fh, "0\nVERTEX\n");
+   fprintf(fh, "8\nWalls\n"); /* Layer */
+   fprintf(fh, "10\n%6.2f\n", p->x + c * d);
+   fprintf(fh, "20\n%6.2f\n", p->y + s * d);
+   fprintf(fh, "30\n%6.2f\n", p->z);
+}
+
+void
+DXF::passage(const img_point *p, double angle, double d1, double d2)
+{
+   fprintf(fh, "0\nSOLID\n");
+   fprintf(fh, "8\nPassages\n"); /* Layer */
+   double s = sin(rad(angle));
+   double c = cos(rad(angle));
+   double x1 = p->x + c * d1;
+   double y1 = p->y + s * d1;
+   double x2 = p->x - c * d2;
+   double y2 = p->y - s * d2;
+   if (*pending) {
+       fputs(pending, fh);
+       fprintf(fh, "12\n%6.2f\n22\n%6.2f\n32\n%6.2f\n"
+		   "13\n%6.2f\n23\n%6.2f\n33\n%6.2f\n",
+		   x1, y1, p->z,
+		   x2, y2, p->z);
+   }
+   sprintf(pending, "10\n%6.2f\n20\n%6.2f\n30\n%6.2f\n"
+		    "11\n%6.2f\n21\n%6.2f\n31\n%6.2f\n",
+		    x1, y1, p->z,
+		    x2, y2, p->z);
+}
+
+void
+DXF::tube_end()
+{
+   *pending = '\0';
+   if (to_close) {
+      fputs(to_close, fh);
+      to_close = NULL;
+   }
 }
 
 void
