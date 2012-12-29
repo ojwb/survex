@@ -1,3 +1,8 @@
+Sat Dec 29 05:11:20 GMT 2012  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Export of passage detail now works
+	  before we have displayed tubes in the OpenGL view.
+
 Sat Dec 29 05:09:54 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc,src/avenprcore.h,src/printwx.cc: Do away with the

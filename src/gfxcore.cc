@@ -2505,7 +2505,7 @@ void GfxCore::AddPolylineError(const traverse & centreline)
 }
 
 void
-GfxCore::SkinPassage(vector<XSect> & centreline)
+GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 {
     assert(centreline.size() > 1);
     Vector3 U[4];
@@ -2695,15 +2695,17 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 	v[2] = pt_v + right * r - up * d;
 	v[3] = pt_v - right * l - up * d;
 
-	if (segment > 0) {
-	    (this->*AddQuad)(v[0], v[1], U[1], U[0]);
-	    (this->*AddQuad)(v[2], v[3], U[3], U[2]);
-	    (this->*AddQuad)(v[1], v[2], U[2], U[1]);
-	    (this->*AddQuad)(v[3], v[0], U[0], U[3]);
-	}
+	if (draw) {
+	    if (segment > 0) {
+		(this->*AddQuad)(v[0], v[1], U[1], U[0]);
+		(this->*AddQuad)(v[2], v[3], U[3], U[2]);
+		(this->*AddQuad)(v[1], v[2], U[2], U[1]);
+		(this->*AddQuad)(v[3], v[0], U[0], U[3]);
+	    }
 
-	if (cover_end) {
-	    (this->*AddQuad)(v[3], v[2], v[1], v[0]);
+	    if (cover_end) {
+		(this->*AddQuad)(v[3], v[2], v[1], v[0]);
+	    }
 	}
 
 	prev_pt_v = pt_v;
@@ -2862,6 +2864,14 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 void
 GfxCore::OnExport(const wxString &filename, const wxString &title)
 {
+    // Fill in "right_bearing" for each cross-section.
+    list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect> >::iterator tend = m_Parent->tubes_end();
+    while (trav != tend) {
+	SkinPassage(*trav, false);
+	++trav;
+    }
+
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, wxString(),
 			m_PanAngle, m_TiltAngle,
