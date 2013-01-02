@@ -1,3 +1,8 @@
+Wed Jan 02 20:49:20 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/glbitmapfont.cc: Add checks for errors when reading
+	  the font file.
+
 Wed Jan 02 20:48:22 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/img.c: Avoid warning about redeclaration of round().

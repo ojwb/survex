@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011,2012 Olly Betts
+//  Copyright (C) 2011,2012,2013 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -63,18 +63,31 @@ BitmapFont::load(const wxString & font_file)
     for (int ch = 0; ch < BITMAPFONT_MAX_CHAR; ++ch) {
 	glNewList(gllist_base + ch, GL_COMPILE);
 	CHECK_GL_ERROR("BitmapFont::load", "glNewList");
+	int b = GETC(fh);
+	if (b == EOF) {
+	    fclose(fh);
+	    return false;
+	}
+	unsigned int byte_width = b;
 
-	unsigned int byte_width = GETC(fh);
 	char_width[ch] = (byte_width & 0x0f) + 2;
 	byte_width >>= 6;
 
 	int start = 0;
 	int n = 0;
 	if (byte_width) {
-	    unsigned int start_and_n = GETC(fh);
+	    b = GETC(fh);
+	    if (b == EOF) {
+		fclose(fh);
+		return false;
+	    }
+	    unsigned int start_and_n = b;
 	    start = start_and_n >> 4;
 	    n = (start_and_n & 15) + 1;
-	    fread(buf, n * byte_width, 1, fh);
+	    if (fread(buf, n * byte_width, 1, fh) != 1) {
+		fclose(fh);
+		return false;
+	    }
 	}
 
 	// Even if there's nothing to display, we want to advance the
@@ -107,11 +120,15 @@ BitmapFont::write_glyph(wxChar ch) const
     if (ch >= 0x10000) return;
     if (!extra_chars) {
 	long here = ftell(fh);
-	fseek(fh, 0, SEEK_END);
-	long data_len = ftell(fh) - here;
+	if (here == -1 || fseek(fh, 0, SEEK_END) < 0)
+	    return;
+	long data_len = ftell(fh);
+	if (data_len == -1)
+	    return;
+	data_len -= here;
 	unsigned char * data = new unsigned char [data_len];
-	fseek(fh, here, SEEK_SET);
-	if (fread(data, data_len, 1, fh) != 1) {
+	if (fseek(fh, here, SEEK_SET) < 0 ||
+	    fread(data, data_len, 1, fh) != 1) {
 	    delete data;
 	    return;
 	}

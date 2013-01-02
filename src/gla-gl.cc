@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -398,6 +398,7 @@ void GLACanvas::FirstShow()
     path += wxT("unifont.pixelfont");
     if (!m_Font.load(path)) {
 	// FIXME: do something better.
+	// We have this message available: Error in format of font file “%s”
 	fprintf(stderr, "Couldn't load font.\n");
 	exit(1);
     }
