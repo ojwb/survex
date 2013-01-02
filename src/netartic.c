@@ -456,7 +456,7 @@ articulate(void)
    FOR_EACH_STN(stn, stnlist) {
       int d;
       int f;
-      if (stn->name->ident && stn->name->sflags & BIT(SFLAGS_FIXED)) {
+      if (stn->name->ident && TSTBIT(stn->name->sflags, SFLAGS_FIXED)) {
 	 stn->colour = 1;
       } else {
 	 stn->colour = 0;

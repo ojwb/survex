@@ -1,3 +1,7 @@
+Wed Jan 02 09:10:57 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/netartic.c: Use TSTBIT(w, x) instead of w & BIT(x).
+
 Wed Jan 02 09:10:30 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/listpos.c: Fix compiler warning.
