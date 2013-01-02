@@ -333,7 +333,6 @@ read_prefix(unsigned pfx_flags)
    return ptr;
 }
 
-
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
 static real
 read_number(bool f_optional)
