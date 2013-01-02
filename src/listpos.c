@@ -163,15 +163,15 @@ print_node_stats(void)
 {
 #if NODESTAT
    int c;
-   int max = 9999; /* Always allow space for 4 digits. */
+   int max_c = 9999; /* Always allow space for 4 digits. */
    int width;
    node_stats(root);
    for (c = 0; c < icOrderMac; c++) {
-      if (cOrder[c] > max) {
-	 max = cOrder[c];
+      if (cOrder[c] > max_c) {
+	 max_c = cOrder[c];
       }
    }
-   width = 1 + (int)log10((double)max);
+   width = 1 + (int)log10((double)max_c);
    for (c = 0; c < icOrderMac; c++) {
       if (cOrder[c] > 0) {
 	 printf("%*d %d-%s.\n", width, cOrder[c], c,
