@@ -2743,3 +2743,8 @@ msgstr ""
 #: n:392
 msgid "Separator in survey name"
 msgstr ""
+
+#: ../src/readval.c:151
+#: n:3
+msgid "Can't have a leg between two anonymous stations"
+msgstr ""

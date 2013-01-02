@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011,2012 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,66 @@
 
 int root_depr_count = 0;
 
+static prefix *
+make_up_stn(void)
+{
+   static unsigned long fake_count = 0;
+   prefix *back_ptr, *ptr;
+   prefix *newptr;
+   char *name;
+   size_t name_len = 32;
+   size_t i;
+   /* Use caching to speed up handling a lot of anon. stations. */
+   static prefix *cached_station = NULL;
+   prefix *ptrPrev = NULL;
+   int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
+
+   name = osmalloc(name_len);
+try_next:
+   sprintf(name, "!%lu", fake_count++);
+   i = strlen(name) + 1;
+
+   back_ptr = root;
+   ptr = back_ptr->down;
+
+   if (cached_station) {
+      cmp = strcmp(cached_station->ident, name);
+      if (cmp <= 0) ptr = cached_station;
+   }
+   while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+      ptrPrev = ptr;
+      ptr = ptr->right;
+   }
+   if (cmp == 0) {
+      /* Um, somebody used the station manually already? */
+      goto try_next;
+   }
+
+   name = osrealloc(name, i);
+   newptr = osnew(prefix);
+   newptr->ident = name;
+   name = NULL;
+   if (ptrPrev == NULL)
+      back_ptr->down = newptr;
+   else
+      ptrPrev->right = newptr;
+   newptr->right = ptr;
+   newptr->down = NULL;
+   newptr->pos = NULL;
+   newptr->shape = 0;
+   newptr->stn = NULL;
+   newptr->up = back_ptr;
+   newptr->filename = file.filename;
+   newptr->line = file.line;
+   newptr->min_export = newptr->max_export = 0;
+   newptr->sflags = 0;
+   ptr = newptr;
+
+   cached_station = ptr;
+
+   return ptr;
+}
+
 /* if prefix is omitted: if PFX_OPT set return NULL, otherwise use longjmp */
 extern prefix *
 read_prefix(unsigned pfx_flags)
@@ -78,12 +138,26 @@ read_prefix(unsigned pfx_flags)
 	 nextch();
       }
       fImplicitPrefix = fFalse;
+#else
+   if (0) {
+#endif
    } else {
+      if ((pfx_flags & PFX_ANON) && isSep(ch)) {
+	 filepos here;
+	 get_pos(&here);
+	 nextch();
+	 if (isBlank(ch) || isEol(ch)) {
+	    if (TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY)) {
+	       compile_error(-/*Can't have a leg between two anonymous stations*/3);
+	    }
+	    pcs->flags |= BIT(FLAGS_IMPLICIT_SPLAY);
+	    /* Make up a name! */
+	    return make_up_stn();
+	 }
+	 set_pos(&here);
+      }
       ptr = pcs->Prefix;
    }
-#else
-   ptr = pcs->Prefix;
-#endif
 
    i = 0;
    name = NULL;

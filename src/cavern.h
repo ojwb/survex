@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2013 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -109,14 +109,15 @@ typedef enum {
 /* don't reorder these values!  They need to match with img.h too */
 typedef enum {
    FLAGS_NOT = -2, FLAGS_UNKNOWN = -1, FLAGS_SURFACE, FLAGS_DUPLICATE,
-   FLAGS_SPLAY
+   FLAGS_SPLAY,
 #if 0
-   ,
    /* underground, but through rock (e.g. radiolocation).  Want to hide from
     * plots by default (so not cave) but don't want to include in surface
     * triangulation nets (so not surface) */
-   FLAGS_SKELETAL /* FIXME */
+   FLAGS_SKELETAL, /* FIXME */
 #endif
+   /* Doesn't need to match img.h: */
+   FLAGS_IMPLICIT_SPLAY
 } flags;
 
 typedef int compiletimeassert_flags1[BIT(FLAGS_SURFACE) == img_FLAG_SURFACE ? 1 : -1];

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005,2006,2010,2012 Olly Betts
+# Copyright (C) 1999-2004,2005,2006,2010,2012,2013 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
- badunits badbegin"}}
+ badunits badbegin anonstn"}}
 
 LC_ALL=C
 export LC_ALL
@@ -220,6 +220,7 @@ for file in $TESTS ; do
   calibrate_clino) pos=yes; warn=8 ;;
   badunits) pos=fail; error=12 ;;
   badbegin) pos=fail; error=2 ;;
+  anonstn) pos=yes; warn=0; error=0 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac

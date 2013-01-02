@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1394,15 +1394,19 @@ data_normal(void)
 
    again:
 
+   /* We clear this in the normal course of events, but if there's an error in
+    * a reading, we might not, so make sure it has been cleared here.
+    */
+   pcs->flags &= ~BIT(FLAGS_IMPLICIT_SPLAY);
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
-	  fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
+	  fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	  if (first_stn == End) first_stn = Fr;
 	  break;
        case To:
-	  to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
+	  to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	  if (first_stn == End) first_stn = To;
 	  break;
        case Station:
@@ -1557,6 +1561,7 @@ data_normal(void)
        case Newline:
 	  if (fr != NULL) {
 	     int r;
+	     int save_flags;
 	     if (fTopofil)
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
@@ -1579,6 +1584,13 @@ data_normal(void)
 		VAL(Tape) -= pcs->z[Q_LENGTH];
 		VAL(Tape) *= pcs->sc[Q_LENGTH];
 	     }
+	     if (TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY)) {
+		pcs->flags &= ~BIT(FLAGS_IMPLICIT_SPLAY);
+		save_flags = pcs->flags;
+		pcs->flags |= BIT(FLAGS_SPLAY);
+	     } else {
+		save_flags = pcs->flags;
+	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
 		r = process_normal(fr, to, (first_stn == To) ^ fRev,
@@ -1596,6 +1608,7 @@ data_normal(void)
 		r = 0; /* avoid warning */
 		BUG("bad style");
 	     }
+	     pcs->flags = save_flags;
 	     if (!r) skipline();
 
 	     /* Swap fr and to back to how they were for next line */
@@ -1632,6 +1645,7 @@ data_normal(void)
 	  /* fall through */
        case End:
 	  if (!fMulti) {
+	     int save_flags;
 	     /* Compass ignore flag is 'X' */
 	     if ((compass_dat_flags & BIT('X' - 'A'))) {
 		process_eol();
@@ -1659,6 +1673,14 @@ data_normal(void)
 		VAL(Tape) -= pcs->z[Q_LENGTH];
 		VAL(Tape) *= pcs->sc[Q_LENGTH];
 	     }
+	     save_flags = pcs->flags;
+	     if (TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY)) {
+		pcs->flags &= ~BIT(FLAGS_IMPLICIT_SPLAY);
+		save_flags = pcs->flags;
+		pcs->flags |= BIT(FLAGS_SPLAY);
+	     } else {
+		save_flags = pcs->flags;
+	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
 		process_normal(fr, to, (first_stn == To) ^ fRev,
@@ -1675,6 +1697,7 @@ data_normal(void)
 	      default:
 		BUG("bad style");
 	     }
+	     pcs->flags = save_flags;
 
 	     process_eol();
 	     return;

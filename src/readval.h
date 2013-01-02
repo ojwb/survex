@@ -1,6 +1,6 @@
 /* readval.h
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2010,2012 Olly Betts
+ * Copyright (C) 1991-2003,2005,2010,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,8 @@ enum {
     PFX_ALLOW_ROOT = 8,
     /* Warn if the read prefix contains a separator? */
     PFX_WARN_SEPARATOR = 16,
+    /* Anonymous stations OK? */
+    PFX_ANON = 32,
     /* Read a station? */
     PFX_STATION = 0
 };

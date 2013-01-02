@@ -1,3 +1,8 @@
+Wed Jan 02 09:04:58 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/,tests/: Add support for anonymous stations,
+	  which are indicated by a station name of '.'.
+
 Sat Dec 29 18:50:07 GMT 2012  Olly Betts <olly@survex.com>
 
 	* src/export.cc: Implement export of passage info for DXF (untested).

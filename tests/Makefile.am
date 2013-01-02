@@ -89,4 +89,5 @@ surveytypo.svx skipafterbadomit.svx passagebad.svx\
 badreadingdotplus.svx badreadingdotplus.out\
 badcalibrate.svx badcalibrate.out\
 calibrate_clino.svx calibrate_clino.out calibrate_clino.pos\
-badunits.svx badunits.out badbegin.svx badbegin.out
+badunits.svx badunits.out badbegin.svx badbegin.out\
+anonstn.svx anonstn.out anonstn.pos
