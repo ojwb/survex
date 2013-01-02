@@ -235,6 +235,11 @@ if test yes != "$ac_cv_func_strftime"; then
   AC_LIBOBJ(strftime)
 fi
 AC_FUNC_VPRINTF
+dnl Check if there's a declaration of round().  Below we also check for
+dnl round() with AC_CHECK_FUNCS, which just checks if it can be linked
+dnl against.  Some platforms are missing a prototype for round(), so
+dnl both checks are useful.
+AC_CHECK_DECLS([round], [], [], [[#include <math.h>]])
 dnl check for strcasecmp here as well as below - this one is to get
 dnl HAVE_STRCASECMP defined if appropriate (for img.c)
 AC_CHECK_FUNCS(popen signal getpwuid round strcasecmp hypot lstat)

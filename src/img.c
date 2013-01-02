@@ -141,7 +141,10 @@ getu16(FILE *fh)
 }
 
 #include <math.h>
-#ifdef HAVE_ROUND
+#if defined HAVE_DECL_ROUND && !HAVE_DECL_ROUND
+extern double round(double);
+# define my_round round
+#elif !defined HAVE_DECL_ROUND && HAVE_ROUND
 extern double round(double); /* prototype is often missing... */
 # define my_round round
 #else
