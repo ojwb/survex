@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWidgets specific parts of Survex wxWidgets printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,6 +39,7 @@ using namespace std;
 #include <wx/spinctrl.h>
 #include <wx/radiobox.h>
 #include <wx/statbox.h>
+#include <wx/valgen.h>
 
 #include "debug.h" /* for BUG and SVX_ASSERT */
 #include "export.h"
@@ -70,6 +71,46 @@ enum {
 	svx_SURFACE,
 	svx_PLAN,
 	svx_ELEV
+};
+
+class BitValidator : public wxValidator {
+    // Disallow assignment.
+    BitValidator & operator=(const BitValidator&);
+
+  protected:
+    int * val;
+
+    int mask;
+
+  public:
+    BitValidator(int * val_, int mask_)
+	: val(val_), mask(mask_) { }
+
+    BitValidator(const BitValidator & o)
+	: val(o.val), mask(o.mask) { }
+
+    ~BitValidator() { }
+
+    wxObject *Clone() const { return new BitValidator(*this); }
+
+    bool Validate(wxWindow *) { return true; }
+
+    bool TransferToWindow() {
+	if (!m_validatorWindow->IsKindOf(CLASSINFO(wxCheckBox)))
+	    return false;
+	((wxCheckBox*)m_validatorWindow)->SetValue(*val & mask);
+	return true;
+    }
+
+    bool TransferFromWindow() {
+	if (!m_validatorWindow->IsKindOf(CLASSINFO(wxCheckBox)))
+	    return false;
+	if (((wxCheckBox*)m_validatorWindow)->IsChecked())
+	    *val |= mask;
+	else
+	    *val &= ~mask;
+	return true;
+    }
 };
 
 class svxPrintout : public wxPrintout {
@@ -174,15 +215,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_printSize = NULL;
     m_bearing = NULL;
     m_tilt = NULL;
-    m_legs = NULL;
-    m_stations = NULL;
-    m_names = NULL;
-    m_xsect = NULL;
-    m_walls = NULL;
-    m_passages = NULL;
-    m_borders = NULL;
-    m_infoBox = NULL;
-    m_surface = NULL;
     int show_mask = 0;
     if (labels)
 	show_mask |= LABELS;
@@ -269,29 +301,47 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     h1->Add(v2, 0, wxALIGN_LEFT|wxALL, 5);
 
-    m_legs = new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262));
-    v3->Add(m_legs, 0, wxALIGN_LEFT|wxALL, 2);
-    m_surface = new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403));
-    v3->Add(m_surface, 0, wxALIGN_LEFT|wxALL, 2);
-    m_stations = new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261));
-    v3->Add(m_stations, 0, wxALIGN_LEFT|wxALL, 2);
-    m_names = new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260));
-    v3->Add(m_names, 0, wxALIGN_LEFT|wxALL, 2);
-    m_xsect = new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393));
-    v3->Add(m_xsect, 0, wxALIGN_LEFT|wxALL, 2);
-    m_walls = new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394));
-    v3->Add(m_walls, 0, wxALIGN_LEFT|wxALL, 2);
-    m_passages = new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395));
-    v3->Add(m_passages, 0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, LEGS)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, SURF)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, STNS)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, LABELS)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, XSECT)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    if (!printing) {
+	v3->Add(new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       BitValidator(&m_layout.show_mask, WALLS)),
+		0, wxALIGN_LEFT|wxALL, 2);
+	v3->Add(new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       BitValidator(&m_layout.show_mask, PASG)),
+		0, wxALIGN_LEFT|wxALL, 2);
+    }
     if (printing) {
-	m_borders = new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264));
-	v3->Add(m_borders, 0, wxALIGN_LEFT|wxALL, 2);
+	v3->Add(new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       wxGenericValidator(&m_layout.Border)),
+		0, wxALIGN_LEFT|wxALL, 2);
 //	m_blanks = new wxCheckBox(this, svx_BLANKS, wmsg(/*Blank Pages*/266));
 //	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
-	m_infoBox = new wxCheckBox(this, svx_INFOBOX, wmsg(/*Info Box*/265));
-	v3->Add(m_infoBox, 0, wxALIGN_LEFT|wxALL, 2);
-	m_walls->Hide();
-	m_passages->Hide();
+	v3->Add(new wxCheckBox(this, svx_INFOBOX, wmsg(/*Info Box*/265),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       wxGenericValidator(&m_layout.Legend)),
+		0, wxALIGN_LEFT|wxALL, 2);
     }
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
@@ -457,16 +507,7 @@ svxPrintDlg::SomethingChanged() {
 
 void
 svxPrintDlg::LayoutToUI(){
-    m_names->SetValue(m_layout.show_mask & LABELS);
-    m_legs->SetValue(m_layout.show_mask & LEGS);
-    m_stations->SetValue(m_layout.show_mask & STNS);
-    m_xsect->SetValue(m_layout.show_mask & XSECT);
-    m_walls->SetValue(m_layout.show_mask & WALLS);
-    m_passages->SetValue(m_layout.show_mask & PASG);
-    m_surface->SetValue(m_layout.show_mask & SURF);
-    if (m_borders) m_borders->SetValue(m_layout.Border);
 //    m_blanks->SetValue(m_layout.SkipBlank);
-    if (m_infoBox) m_infoBox->SetValue(!m_layout.Raw);
     if (m_layout.view != layout::EXTELEV) {
 	m_tilt->SetValue(m_layout.tilt);
 	m_bearing->SetValue(m_layout.rot);
@@ -487,24 +528,7 @@ svxPrintDlg::LayoutToUI(){
 
 void
 svxPrintDlg::UIToLayout(){
-    m_layout.show_mask = 0;
-    if (m_names->IsChecked())
-	m_layout.show_mask |= LABELS;
-    if (m_legs->IsChecked())
-	m_layout.show_mask |= LEGS;
-    if (m_stations->IsChecked())
-	m_layout.show_mask |= STNS;
-    if (m_xsect->IsEnabled() && m_xsect->IsChecked())
-	m_layout.show_mask |= XSECT;
-    if (m_walls->IsEnabled() && m_walls->IsChecked())
-	m_layout.show_mask |= WALLS;
-    if (m_passages->IsEnabled() && m_passages->IsChecked())
-	m_layout.show_mask |= PASG;
-    if (m_surface->IsChecked())
-	m_layout.show_mask |= SURF;
-    if (m_borders) m_layout.Border = m_borders->IsChecked();
 //    m_layout.SkipBlank = m_blanks->IsChecked();
-    if (m_infoBox) m_layout.Raw = !m_infoBox->IsChecked();
 
     if (m_layout.view != layout::EXTELEV) {
 	m_layout.tilt = m_tilt->GetValue();
@@ -515,9 +539,16 @@ svxPrintDlg::UIToLayout(){
 	} else {
 	    m_layout.view = layout::TILT;
 	}
-	m_xsect->Enable(m_layout.view != layout::TILT);
-	m_walls->Enable(m_layout.view != layout::TILT);
-	m_passages->Enable(m_layout.view != layout::TILT);
+
+	bool enable_passage_opts = (m_layout.view != layout::TILT);
+	wxWindow * win;
+	win = FindWindow(svx_XSECT);
+	if (win) win->Enable(enable_passage_opts);
+	win = FindWindow(svx_WALLS);
+	if (win) win->Enable(enable_passage_opts);
+	win = FindWindow(svx_PASSAGES);
+	if (win) win->Enable(enable_passage_opts);
+
 	m_layout.rot = m_bearing->GetValue();
     }
 }
@@ -1057,7 +1088,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     NewPage(pageNum, l->pagesX, l->pagesY);
 
-    if (!l->Raw && pageNum == (l->pagesY - 1) * l->pagesX + 1) {
+    if (l->Legend && pageNum == (l->pagesY - 1) * l->pagesX + 1) {
 	SetFont(PR_FONT_DEFAULT);
 	draw_info_box();
     }

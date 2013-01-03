@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@
 
 layout::layout(wxPageSetupDialogData* data)
 	: show_mask(0),
-	  SkipBlank(false), Border(true), Cutlines(true), Raw(false),
+	  SkipBlank(false), Border(true), Cutlines(true), Legend(true),
 	  title(), datestamp(), Scale(0), rot(0), tilt(0),
 	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
 	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer()
@@ -79,7 +79,7 @@ layout::pages_required() {
     double paper_centre_x, paper_centre_y;
 
     double allow = 21.0;
-    if (!Raw) allow += 30.0;
+    if (Legend) allow += 30.0;
     double Sc = 1000 / Scale;
     image_dx = (xMax - xMin) * Sc;
     if (PaperWidth > 0.0) {
@@ -224,7 +224,7 @@ layout::pick_scale(int x, int y)
       Sc_x = (x * PaperWidth - 19.0) / (xMax - xMin);
    if (PaperDepth > 0.0 && yMax > yMin) {
       double allow = 21.0;
-      if (!Raw) allow += 30.0;
+      if (Legend) allow += 30.0;
       Sc_y = (y * PaperDepth - allow) / (yMax - yMin);
    }
 

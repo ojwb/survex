@@ -1,6 +1,6 @@
 /* avenprcore.h
  * Header file for printer independent parts of Survex printer drivers
- * Copyright (C) 1994-2002,2004,2005,2012 Olly Betts
+ * Copyright (C) 1994-2002,2004,2005,2012,2013 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -55,7 +55,7 @@ public:
     bool SkipBlank;
     bool Border;
     bool Cutlines;
-    bool Raw;
+    bool Legend;
     wxString title;
     wxString datestamp;
     double Scale;

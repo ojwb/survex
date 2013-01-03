@@ -32,7 +32,6 @@ class MainFrm;
 class wxComboBox;
 class wxStaticText;
 class wxSpinCtrl;
-class wxCheckBox;
 class wxSpinEvent;
 
 // This dialog is also use for Export as well as Print.
@@ -42,16 +41,7 @@ class svxPrintDlg : public wxDialog {
 	wxStaticText* m_printSize;
 	wxSpinCtrl* m_bearing;
 	wxSpinCtrl* m_tilt;
-	wxCheckBox* m_legs;
-	wxCheckBox* m_stations;
-	wxCheckBox* m_names;
-	wxCheckBox* m_xsect;
-	wxCheckBox* m_walls;
-	wxCheckBox* m_passages;
-	wxCheckBox* m_borders;
 //	wxCheckBox* m_blanks;
-	wxCheckBox* m_infoBox;
-	wxCheckBox* m_surface;
 	wxString m_File;
 	MainFrm* mainfrm;
 
