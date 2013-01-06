@@ -150,6 +150,7 @@ private:
     int m_SwitchingTo;
     bool m_Crosses;
     bool m_Legs;
+    bool m_Splays;
     bool m_Names;
     bool m_Scalebar;
     bool m_ColourKey;
@@ -370,10 +371,12 @@ public:
     int ColouringBy() const { return m_ColourBy; }
 
     bool HasUndergroundLegs() const;
+    bool HasSplays() const;
     bool HasSurfaceLegs() const;
     bool HasTubes() const;
 
     bool ShowingUndergroundLegs() const { return m_Legs; }
+    bool ShowingSplays() const { return m_Splays; }
     bool ShowingSurfaceLegs() const { return m_Surface; }
 
     bool ShowingColourKey() const { return m_ColourKey; }
@@ -389,6 +392,9 @@ public:
 
     void ToggleUndergroundLegs() {
 	ToggleFlag(&m_Legs, UPDATE_BLOBS_AND_CROSSES);
+    }
+    void ToggleSplays() {
+	ToggleFlag(&m_Splays, UPDATE_BLOBS_AND_CROSSES);
     }
     void ToggleSurfaceLegs() {
 	ToggleFlag(&m_Surface, UPDATE_BLOBS_AND_CROSSES);

@@ -122,6 +122,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_SwitchingTo(0),
     m_Crosses(false),
     m_Legs(true),
+    m_Splays(true),
     m_Names(false),
     m_Scalebar(true),
     m_ColourKey(true),
@@ -272,6 +273,11 @@ void GfxCore::SetScale(Double scale)
 bool GfxCore::HasUndergroundLegs() const
 {
     return m_Parent->HasUndergroundLegs();
+}
+
+bool GfxCore::HasSplays() const
+{
+    return m_Parent->HasSplays();
 }
 
 bool GfxCore::HasSurfaceLegs() const

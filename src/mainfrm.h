@@ -90,6 +90,7 @@ enum {
     menu_ORIENT_LOWER_VP,
     menu_ORIENT_DEFAULTS,
     menu_VIEW_SHOW_LEGS,
+    menu_VIEW_SHOW_SPLAYS,
     menu_VIEW_SHOW_CROSSES,
     menu_VIEW_SHOW_NAMES,
     menu_VIEW_SHOW_SURFACE,
@@ -218,6 +219,7 @@ class MainFrm : public wxFrame {
     int m_NumExportedPts;
     int m_NumHighlighted;
     bool m_HasUndergroundLegs;
+    bool m_HasSplays;
     bool m_HasSurfaceLegs;
     bool m_HasErrorInformation;
     wxSplitterWindow* m_Splitter;
@@ -341,6 +343,7 @@ public:
     void OnShowExportedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowExportedPtsUpdate(event); }
     void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowStationNamesUpdate(event); }
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurveyLegsUpdate(event); }
+    void OnShowSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysUpdate(event); }
     void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceUpdate(event); }
     void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveEastUpdate(event); }
     void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveNorthUpdate(event); }
@@ -389,6 +392,7 @@ public:
     void OnShowExportedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowExportedPts(); }
     void OnShowStationNames(wxCommandEvent&) { if (m_Control) m_Control->OnShowStationNames(); }
     void OnShowSurveyLegs(wxCommandEvent&) { if (m_Control) m_Control->OnShowSurveyLegs(); }
+    void OnShowSplays(wxCommandEvent&) { if (m_Control) m_Control->OnShowSplays(); }
     void OnShowSurface(wxCommandEvent&) { if (m_Control) m_Control->OnShowSurface(); }
     void OnMoveEast(wxCommandEvent&) { if (m_Control) m_Control->OnMoveEast(); }
     void OnMoveNorth(wxCommandEvent&) { if (m_Control) m_Control->OnMoveNorth(); }
@@ -460,6 +464,7 @@ public:
     int GetNumHighlightedPts() const { return m_NumHighlighted; }
 
     bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
+    bool HasSplays() const { return m_HasSplays; }
     bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
     bool HasTubes() const { return !tubes.empty(); }
     bool HasErrorInformation() const { return m_HasErrorInformation; }

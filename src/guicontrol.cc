@@ -518,6 +518,17 @@ void GUIControl::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->ShowingUndergroundLegs());
 }
 
+void GUIControl::OnShowSplays()
+{
+    m_View->ToggleSplays();
+}
+
+void GUIControl::OnShowSplaysUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasSplays());
+    cmd.Check(m_View->ShowingSplays());
+}
+
 void GUIControl::OnMoveEast()
 {
     m_View->TurnCaveTo(90.0);
