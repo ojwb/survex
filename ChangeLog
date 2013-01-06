@@ -1,3 +1,7 @@
+Sun Jan 06 19:31:30 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: "surface topology" -> "surface topography".
+
 Sun Jan 06 08:07:22 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Remove launchpad-tarball target - changes now

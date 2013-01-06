@@ -3218,7 +3218,7 @@ achieved like so:
 
 </Sect2>
 
-<Sect2><Title>Add surface topology</Title>
+<Sect2><Title>Add surface topography</Title>
 
 <!-- FIXME put DEM support in aven -->
 <Para>We intend to allow import of terrain data in DEM format, and also any
