@@ -528,6 +528,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(wxID_ZOOM_OUT, MainFrm::OnZoomOut)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
+    EVT_MENU(menu_VIEW_SHOW_SPLAYS, MainFrm::OnShowSplays)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
     EVT_MENU(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrances)
     EVT_MENU(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPts)
@@ -583,6 +584,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(wxID_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SHOW_SPLAYS, MainFrm::OnShowSplaysUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrancesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPtsUpdate)
@@ -675,7 +677,8 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
-    m_NumHighlighted(0), m_HasUndergroundLegs(false), m_HasSurfaceLegs(false),
+    m_NumHighlighted(0),
+    m_HasUndergroundLegs(false), m_HasSplays(false), m_HasSurfaceLegs(false),
     m_HasErrorInformation(false), m_IsExtendedElevation(false),
     pending_find(false)
 #ifdef PREFDLG
@@ -794,6 +797,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_LEGS, wmsg(/*&Underground Survey Legs\tCtrl+L*/272));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
+    viewmenu->AppendCheckItem(menu_VIEW_SHOW_SPLAYS, wmsg(/*Spla&y Legs*/397));
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
@@ -998,6 +1002,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_NumExportedPts = 0;
     m_NumEntrances = 0;
     m_HasUndergroundLegs = false;
+    m_HasSplays = false;
     m_HasSurfaceLegs = false;
     m_HasErrorInformation = false;
 
@@ -1078,6 +1083,8 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    complete_dateinfo = false;
 		}
 
+		if (survey->flags & img_FLAG_SPLAY)
+		    m_HasSplays = true;
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
 		if (!is_surface) {
 		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
@@ -1248,6 +1255,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		m_NumExportedPts = 0;
 		m_NumEntrances = 0;
 		m_HasUndergroundLegs = false;
+		m_HasSplays = false;
 		m_HasSurfaceLegs = false;
 
 		img_close(survey);

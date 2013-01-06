@@ -71,6 +71,7 @@ public:
     void OnShowCrosses();
     void OnShowStationNames();
     void OnShowSurveyLegs();
+    void OnShowSplays();
     void OnShowSurface();
     void OnMoveEast();
     void OnMoveNorth();
@@ -117,6 +118,7 @@ public:
     void OnShowCrossesUpdate(wxUpdateUIEvent&);
     void OnShowStationNamesUpdate(wxUpdateUIEvent&);
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
+    void OnShowSplaysUpdate(wxUpdateUIEvent&);
     void OnShowSurfaceUpdate(wxUpdateUIEvent&);
     void OnMoveEastUpdate(wxUpdateUIEvent&);
     void OnMoveNorthUpdate(wxUpdateUIEvent&);
