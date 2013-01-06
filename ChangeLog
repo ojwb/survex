@@ -1,3 +1,7 @@
+Sun Jan 06 05:45:10 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/dump3d.c: Add --show-dates/-d to --help output.
+
 Sun Jan 06 05:42:07 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/po-to-msg.pl: Fix matching quote check to really allow

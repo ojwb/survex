@@ -2748,3 +2748,8 @@ msgstr ""
 #: n:3
 msgid "Can't have a leg between two anonymous stations"
 msgstr ""
+
+#: ../src/dump3d.c:52
+#: n:396
+msgid "show survey date information (if present)"
+msgstr ""
