@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002,2006,2011,2012 Olly Betts
+/* Copyright (C) 2001,2002,2006,2011,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,6 +150,9 @@ main(int argc, char **argv)
 	  case img_BAD:
 	    img_close(pimg);
 	    fatalerror(img_error(), fnm);
+	  case img_STOP:
+	    printf("STOP\n");
+	    break;
 	  default:
 	    printf("CODE_0x%02x\n", code);
 	 }
