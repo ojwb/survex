@@ -1,3 +1,8 @@
+Sun Jan 06 05:42:07 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Fix matching quote check to really allow
+	  for using « and » in a translation.
+
 Sun Jan 06 05:23:48 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/dump3d.c: Report img_STOP as STOP rather than CODE_0xffffffff.

@@ -190,11 +190,11 @@ sub sanity_check {
    }
 
    # Check for missing (or added) double quotes (“ and ”)
-   if (scalar($msg =~ s/“/$&/g) != scalar($orig =~ s/(?:“|»)/$&/g)) {
+   if (scalar($msg =~ s/(?:“|»)/$&/g) != scalar($orig =~ s/“/$&/g)) {
        print STDERR "Warning: $where has different numbers of “\n";
        print STDERR "$orig\n$msg\n\n";
    }
-   if (scalar($msg =~ s/”/$&/g) != scalar($orig =~ s/(?:”|«)/$&/g)) {
+   if (scalar($msg =~ s/(?:”|«)/$&/g) != scalar($orig =~ s/”/$&/g)) {
        print STDERR "Warning: $where has different numbers of ”\n";
        print STDERR "$orig\n$msg\n\n";
    }
