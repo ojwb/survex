@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -328,6 +328,10 @@ Aven::SetPageSetupDialogData(const wxPageSetupDialogData & psdd)
 
 void Aven::ReportError(const wxString& msg)
 {
+    if (!m_Frame) {
+	wxMessageBox(msg, APP_NAME, wxOK | wxICON_ERROR);
+	return;
+    }
     AvenAllowOnTop ontop(m_Frame);
     wxMessageDialog dlg(m_Frame, msg, APP_NAME, wxOK | wxICON_ERROR);
     dlg.ShowModal();

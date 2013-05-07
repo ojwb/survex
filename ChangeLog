@@ -1,3 +1,8 @@
+Tue May 07 23:30:26 GMT 2013  olly <olly@survex.com>
+
+	* src/aven.cc: Don't crash trying to report an error after the app
+	  object has been created but before the frame window has.
+
 Sun Jan 06 19:31:30 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: "surface topology" -> "surface topography".
