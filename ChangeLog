@@ -2,7 +2,7 @@ Wed May 08 05:54:23 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po,lib/survex.pot: Update.
 
-Tue May 07 23:30:26 GMT 2013  olly <olly@survex.com>
+Tue May 07 23:30:26 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Don't crash trying to report an error after the app
 	  object has been created but before the frame window has.
