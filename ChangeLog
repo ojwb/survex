@@ -1,3 +1,9 @@
+Wed May 08 22:38:56 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/glbitmapfont.cc: Check sizeof(wxChar) at configure
+	  time, so we can avoid a warning when sizeof(wxChar)==2 (which is the
+	  case under mingw).
+
 Wed May 08 05:54:23 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po,lib/survex.pot: Update.

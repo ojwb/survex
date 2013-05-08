@@ -103,21 +103,23 @@ BitmapFont::load(const wxString & font_file)
 
 inline void call_lists(GLsizei n, const GLvoid * lists)
 {
-    // Each test is a compile-time constant, so this should get collapsed by
-    // the compiler.
-    if (sizeof(wxChar) == 1) {
-	glCallLists(n, GL_UNSIGNED_BYTE, lists);
-    } else if (sizeof(wxChar) == 2) {
-	glCallLists(n, GL_UNSIGNED_SHORT, lists);
-    } else if (sizeof(wxChar) == 4) {
-	glCallLists(n, GL_UNSIGNED_INT, lists);
-    }
+#if SIZEOF_WXCHAR == 1
+    glCallLists(n, GL_UNSIGNED_BYTE, lists);
+#elif SIZEOF_WXCHAR == 2
+    glCallLists(n, GL_UNSIGNED_SHORT, lists);
+#elif SIZEOF_WXCHAR == 4
+    glCallLists(n, GL_UNSIGNED_INT, lists);
+#else
+# error "sizeof(wxChar) not 1, 2 or 4"
+#endif
 }
 
 void
 BitmapFont::write_glyph(wxChar ch) const
 {
+#if SIZEOF_WXCHAR > 2
     if (ch >= 0x10000) return;
+#endif
     if (!extra_chars) {
 	long here = ftell(fh);
 	if (here == -1 || fseek(fh, 0, SEEK_END) < 0)
@@ -182,24 +184,24 @@ BitmapFont::write_string(const wxChar *s, size_t len) const
 {
     if (!gllist_base) return;
     glListBase(gllist_base);
-    // Each test is a compile-time constant, so this should get collapsed by
-    // the compiler.
-    if (sizeof(wxChar) == 1) {
-	call_lists(len, s);
-    } else if (sizeof(wxChar) == 2 || sizeof(wxChar) == 4) {
-	while (len) {
-	    size_t n;
-	    for (n = 0; n < len; ++n)
-		if (int(s[n]) >= BITMAPFONT_MAX_CHAR)
-		    break;
-	    call_lists(n, s);
-	    s += n;
-	    len -= n;
-	    while (len && int(s[n]) >= BITMAPFONT_MAX_CHAR) {
-		write_glyph(s[n]);
-		++s;
-		--len;
-	    }
+#if SIZEOF_WXCHAR == 1
+    call_lists(len, s);
+#elif SIZEOF_WXCHAR == 2 || SIZEOF_WXCHAR == 4
+    while (len) {
+	size_t n;
+	for (n = 0; n < len; ++n)
+	    if (int(s[n]) >= BITMAPFONT_MAX_CHAR)
+		break;
+	call_lists(n, s);
+	s += n;
+	len -= n;
+	while (len && int(s[n]) >= BITMAPFONT_MAX_CHAR) {
+	    write_glyph(s[n]);
+	    ++s;
+	    --len;
 	}
     }
+#else
+# error "sizeof(wxChar) not 1, 2 or 4"
+#endif
 }
