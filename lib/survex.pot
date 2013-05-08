@@ -55,22 +55,22 @@ msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr ""
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/readval.c:124
+#: ../src/readval.c:198
 #: n:7
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr ""
 
-#: ../src/readval.c:304
+#: ../src/readval.c:377
 #: n:8
 msgid "Field may not be omitted"
 msgstr ""
 
-#: ../src/datain.c:1466
-#: ../src/datain.c:1728
-#: ../src/readval.c:307
-#: ../src/readval.c:348
-#: ../src/readval.c:378
+#: ../src/datain.c:1470
+#: ../src/datain.c:1751
+#: ../src/readval.c:380
+#: ../src/readval.c:421
+#: ../src/readval.c:451
 #: n:9
 #, c-format
 msgid "Expecting numeric field, found “%s”"
@@ -173,8 +173,8 @@ msgid "BEGIN with no matching END in this file"
 msgstr ""
 
 #: ../src/datain.c:361
-#: ../src/img.c:176
-#: ../src/printwx.cc:1193
+#: ../src/img.c:179
+#: ../src/printwx.cc:1235
 #: n:24
 #, c-format
 msgid "Couldn’t open data file “%s”"
@@ -188,8 +188,8 @@ msgstr ""
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:425
-#: ../src/readval.c:65
-#: ../src/readval.c:69
+#: ../src/readval.c:125
+#: ../src/readval.c:129
 #: n:25
 msgid "ROOT is deprecated"
 msgstr ""
@@ -205,7 +205,7 @@ msgstr ""
 #. *end outer
 #: ../src/commands.c:825
 #: ../src/listpos.c:107
-#: ../src/readval.c:243
+#: ../src/readval.c:317
 #: n:26
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
@@ -219,7 +219,7 @@ msgstr ""
 msgid "Reference to station “%s” from non-existent survey “%s”"
 msgstr ""
 
-#: ../src/readval.c:215
+#: ../src/readval.c:289
 #: n:27
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
@@ -230,7 +230,7 @@ msgstr ""
 #: ../src/extend.c:302
 #: ../src/extend.c:342
 #: ../src/extend.c:382
-#: ../src/readval.c:121
+#: ../src/readval.c:195
 #: n:28
 msgid "Expecting station name"
 msgstr ""
@@ -299,7 +299,7 @@ msgstr ""
 #. TRANSLATORS: nasty hack - this message is for the .3d img code, and all errors there take
 #. a filename parameter - we don’t really want it here, so lose it with "%.0s"
 #. (which should display 0 characters from the filename) FIXME: sort out this
-#: ../src/img.c:177
+#: ../src/img.c:180
 #: n:38
 msgid "Out of memory %.0s"
 msgstr ""
@@ -342,7 +342,7 @@ msgid "No survey data"
 msgstr ""
 
 #: ../src/filename.c:52
-#: ../src/img.c:178
+#: ../src/img.c:181
 #: n:44
 #, c-format
 msgid "Filename “%s” refers to directory"
@@ -361,7 +361,7 @@ msgstr ""
 
 #: ../src/cavern.c:287
 #: ../src/filename.c:55
-#: ../src/img.c:179
+#: ../src/img.c:182
 #: n:47
 #, c-format
 msgid "Failed to open output file “%s”"
@@ -439,7 +439,7 @@ msgstr ""
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr ""
 
-#: ../src/readval.c:435
+#: ../src/readval.c:508
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr ""
@@ -451,7 +451,7 @@ msgstr ""
 msgid "Suspicious compass reading"
 msgstr ""
 
-#: ../src/datain.c:1442
+#: ../src/datain.c:1446
 #: n:60
 msgid "Negative tape reading"
 msgstr ""
@@ -521,7 +521,7 @@ msgstr ""
 msgid "FLAG “%s” unknown"
 msgstr ""
 
-#: ../src/readval.c:392
+#: ../src/readval.c:465
 #: n:69
 msgid "Missing \""
 msgstr ""
@@ -599,7 +599,7 @@ msgstr ""
 msgid "End of date range is before the start"
 msgstr ""
 
-#: ../src/avenprcore.cc:119
+#: ../src/avenprcore.cc:118
 #: n:82
 #, c-format
 msgid "Parameter “%s” has invalid value “%s” in printer configuration file"
@@ -621,19 +621,19 @@ msgstr ""
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr ""
 
-#: ../src/avenprcore.cc:114
+#: ../src/avenprcore.cc:113
 #: n:85
 #, c-format
 msgid "Parameter “%s” missing in printer configuration file"
 msgstr ""
 
-#: ../src/readval.c:443
+#: ../src/readval.c:516
 #: n:86
 msgid "Invalid month"
 msgstr ""
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
-#: ../src/readval.c:451
+#: ../src/readval.c:524
 #: n:87
 msgid "Invalid day of the month"
 msgstr ""
@@ -648,7 +648,7 @@ msgstr ""
 #~ msgid "Error in format of font file “%s”"
 #~ msgstr ""
 
-#: ../src/readval.c:119
+#: ../src/readval.c:193
 #: n:89
 msgid "Expecting survey name"
 msgstr ""
@@ -678,7 +678,7 @@ msgstr ""
 msgid "Couldn’t open file “%s”"
 msgstr ""
 
-#: ../src/printwx.cc:354
+#: ../src/printwx.cc:403
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
@@ -696,7 +696,7 @@ msgstr ""
 #: ../src/commands.c:518
 #: ../src/commands.c:1013
 #: ../src/commands.c:1318
-#: ../src/readval.c:71
+#: ../src/readval.c:131
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
 msgstr ""
@@ -759,7 +759,7 @@ msgstr ""
 #: ../src/3dtopos.c:160
 #: ../src/cad3d.c:866
 #: ../src/cad3d.c:877
-#: ../src/img.c:180
+#: ../src/img.c:183
 #: n:106
 #, c-format
 msgid "Bad 3d image file “%s”"
@@ -779,16 +779,16 @@ msgstr ""
 msgid "Date and time not available."
 msgstr ""
 
-#: ../src/img.c:181
+#: ../src/img.c:184
 #: n:109
 #, c-format
 msgid "Error reading from file “%s”"
 msgstr ""
 
 #: ../src/filename.c:79
-#: ../src/img.c:182
+#: ../src/img.c:185
 #: ../src/mainfrm.cc:322
-#: ../src/mainfrm.cc:1750
+#: ../src/mainfrm.cc:1756
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -812,29 +812,29 @@ msgstr ""
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr ""
 
-#: ../src/img.c:183
+#: ../src/img.c:186
 #: n:114
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
 msgstr ""
 
-#: ../src/printwx.cc:660
+#: ../src/printwx.cc:701
 #: n:115
 msgid "North"
 msgstr ""
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
-#: ../src/printwx.cc:684
+#: ../src/printwx.cc:725
 #: n:116
 msgid "Elevation on"
 msgstr ""
 
-#: ../src/printwx.cc:253
+#: ../src/printwx.cc:295
 #: n:117
 msgid "P&lan view"
 msgstr ""
 
-#: ../src/printwx.cc:255
+#: ../src/printwx.cc:297
 #: n:285
 msgid "&Elevation"
 msgstr ""
@@ -850,7 +850,7 @@ msgstr ""
 msgid "Calculating statistics"
 msgstr ""
 
-#: ../src/readval.c:406
+#: ../src/readval.c:479
 #: n:121
 msgid "Expecting string field"
 msgstr ""
@@ -926,7 +926,7 @@ msgstr ""
 msgid "Calculating network"
 msgstr ""
 
-#: ../src/datain.c:1432
+#: ../src/datain.c:1436
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
@@ -1094,9 +1094,9 @@ msgid "OPTION"
 msgstr ""
 
 #: ../src/mainfrm.cc:118
-#: ../src/printwx.cc:218
-#: ../src/printwx.cc:721
-#: ../src/printwx.cc:775
+#: ../src/printwx.cc:260
+#: ../src/printwx.cc:762
+#: ../src/printwx.cc:816
 #: n:154
 msgid "Scale"
 msgstr ""
@@ -1107,14 +1107,14 @@ msgstr ""
 msgid "Try “%s --help” for more information.\n"
 msgstr ""
 
-#: ../src/avenprcore.cc:263
+#: ../src/avenprcore.cc:262
 #: n:166
 #, c-format
 msgid "Page %d of %d"
 msgstr ""
 
-#: ../src/avenprcore.cc:266
-#: ../src/printwx.cc:1199
+#: ../src/avenprcore.cc:265
+#: ../src/printwx.cc:1241
 #: n:167
 #, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
@@ -1122,7 +1122,7 @@ msgstr ""
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
-#: ../src/printwx.cc:666
+#: ../src/printwx.cc:707
 #: n:168
 #, c-format
 msgid "Plan view, %s up page"
@@ -1130,7 +1130,7 @@ msgstr ""
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
 #. something like "123°".  The bearing is the direction we’re looking.
-#: ../src/printwx.cc:700
+#: ../src/printwx.cc:741
 #: n:169
 #, c-format
 msgid "Elevation facing %s"
@@ -1139,14 +1139,14 @@ msgstr ""
 #. TRANSLATORS: This is used on printouts of tilted elevations, with the first
 #. %s replaced by something like "123°", and the second by something like "-45°".
 #. The bearing is the direction we’re looking.
-#: ../src/printwx.cc:705
+#: ../src/printwx.cc:746
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
 msgstr ""
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
-#: ../src/printwx.cc:713
+#: ../src/printwx.cc:754
 #: n:191
 msgid "Extended elevation"
 msgstr ""
@@ -1274,9 +1274,9 @@ msgstr ""
 msgid " (colour)"
 msgstr ""
 
-#: ../src/readval.c:431
-#: ../src/readval.c:441
-#: ../src/readval.c:449
+#: ../src/readval.c:504
+#: ../src/readval.c:514
+#: ../src/readval.c:522
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
@@ -1392,7 +1392,7 @@ msgstr ""
 msgid "&Screenshot…"
 msgstr ""
 
-#: ../src/mainfrm.cc:1276
+#: ../src/mainfrm.cc:1282
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -1415,18 +1415,18 @@ msgstr ""
 #. would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1723
+#: ../src/mainfrm.cc:1729
 #: n:206
 msgid "Select a survey file to view"
 msgstr ""
 
-#: ../src/mainfrm.cc:1715
+#: ../src/mainfrm.cc:1721
 #: n:207
 msgid "Survex 3d files"
 msgstr ""
 
-#: ../src/mainfrm.cc:1720
-#: ../src/mainfrm.cc:2115
+#: ../src/mainfrm.cc:1726
+#: ../src/mainfrm.cc:2121
 #: n:208
 msgid "All files"
 msgstr ""
@@ -1434,22 +1434,22 @@ msgstr ""
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
 #. it should be translated to the terminology that cavers using the language
 #. would use.
-#: ../src/mainfrm.cc:1714
+#: ../src/mainfrm.cc:1720
 #: n:229
 msgid "All survey files"
 msgstr ""
 
-#: ../src/mainfrm.cc:1716
+#: ../src/mainfrm.cc:1722
 #: n:329
 msgid "Survex svx files"
 msgstr ""
 
-#: ../src/mainfrm.cc:1718
+#: ../src/mainfrm.cc:1724
 #: n:330
 msgid "Compass DAT and MAK files"
 msgstr ""
 
-#: ../src/printwx.cc:337
+#: ../src/printwx.cc:398
 #: n:96
 msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
 msgstr ""
@@ -1623,7 +1623,7 @@ msgid "%s Error Log"
 msgstr ""
 
 #. TRANSLATORS: Used in the "Export" settings dialog
-#: ../src/printwx.cc:303
+#: ../src/printwx.cc:364
 #: n:230
 msgid "&Export…"
 msgstr ""
@@ -1661,28 +1661,28 @@ msgid "Step Once &Clockwise"
 msgstr ""
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:2965
+#: ../src/gfxcore.cc:2975
 #: ../src/mainfrm.cc:744
 #: n:240
 msgid "View &North"
 msgstr ""
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:2966
+#: ../src/gfxcore.cc:2976
 #: ../src/mainfrm.cc:745
 #: n:241
 msgid "View &East"
 msgstr ""
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:2967
+#: ../src/gfxcore.cc:2977
 #: ../src/mainfrm.cc:746
 #: n:242
 msgid "View &South"
 msgstr ""
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:2968
+#: ../src/gfxcore.cc:2978
 #: ../src/mainfrm.cc:747
 #: n:243
 msgid "View &West"
@@ -1720,13 +1720,13 @@ msgstr ""
 msgid "Shift Survey &Down"
 msgstr ""
 
-#: ../src/gfxcore.cc:2980
+#: ../src/gfxcore.cc:2990
 #: ../src/mainfrm.cc:754
 #: n:248
 msgid "&Plan View"
 msgstr ""
 
-#: ../src/gfxcore.cc:2981
+#: ../src/gfxcore.cc:2991
 #: ../src/mainfrm.cc:755
 #: n:249
 msgid "Ele&vation"
@@ -1760,7 +1760,7 @@ msgstr ""
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing" and
 #. "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in the
 #. "what to print" dialog.
-#: ../src/printwx.cc:212
+#: ../src/printwx.cc:254
 #: n:283
 msgid "View"
 msgstr ""
@@ -1768,13 +1768,13 @@ msgstr ""
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
 #. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn’t a
 #. good name for this but nothing better has yet come to mind!
-#: ../src/printwx.cc:213
+#: ../src/printwx.cc:255
 #: n:256
 msgid "Elements"
 msgstr ""
 
-#: ../src/printwx.cc:232
-#: ../src/printwx.cc:456
+#: ../src/printwx.cc:274
+#: ../src/printwx.cc:505
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
@@ -1783,72 +1783,72 @@ msgstr ""
 #. TRANSLATORS: used in the scale drop down selector in the print dialog
 #. the implicit meaning is "choose a suitable scale to fit the
 #. plot on a single page", but we need something shorter
-#: ../src/printwx.cc:219
-#: ../src/printwx.cc:484
+#: ../src/printwx.cc:261
+#: ../src/printwx.cc:524
 #: n:258
 msgid "One page"
 msgstr ""
 
 #: ../src/mainfrm.cc:110
-#: ../src/printwx.cc:239
+#: ../src/printwx.cc:281
 #: n:259
 msgid "Bearing"
 msgstr ""
 
-#: ../src/printwx.cc:269
+#: ../src/printwx.cc:317
 #: n:260
 msgid "Station Names"
 msgstr ""
 
-#: ../src/printwx.cc:267
+#: ../src/printwx.cc:313
 #: n:261
 msgid "Crosses"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:263
+#: ../src/printwx.cc:305
 #: n:262
 msgid "Underground Survey Legs"
 msgstr ""
 
-#: ../src/printwx.cc:279
+#: ../src/printwx.cc:321
 #: n:393
 msgid "Cross-sections"
 msgstr ""
 
-#: ../src/printwx.cc:281
+#: ../src/printwx.cc:326
 #: n:394
 msgid "Walls"
 msgstr ""
 
-#: ../src/printwx.cc:283
+#: ../src/printwx.cc:330
 #: n:395
 msgid "Passages"
 msgstr ""
 
 #. TRANSLATORS: Used in the print dialog:
-#: ../src/printwx.cc:244
+#: ../src/printwx.cc:286
 #: n:263
 msgid "Tilt angle"
 msgstr ""
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines around each page
-#: ../src/printwx.cc:272
+#: ../src/printwx.cc:336
 #: n:264
 msgid "Page Borders"
 msgstr ""
 
 #. TRANSLATORS: used in the print dialog - controls drawing the box at the lower left
 #. with survey name, view angles, etc
-#: ../src/printwx.cc:276
+#: ../src/printwx.cc:342
 #: n:265
 msgid "Info Box"
 msgstr ""
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages
 #. (otherwise they’ll be skipped to save paper)
-#: ../src/printwx.cc:274
+#: ../src/printwx.cc:340
 #: n:266
 msgid "Blank Pages"
 msgstr ""
@@ -1899,19 +1899,19 @@ msgstr ""
 msgid "&Overlapping Names"
 msgstr ""
 
-#: ../src/gfxcore.cc:3003
+#: ../src/gfxcore.cc:3013
 #: ../src/mainfrm.cc:788
 #: n:292
 msgid "Colour by &Depth"
 msgstr ""
 
-#: ../src/gfxcore.cc:3004
+#: ../src/gfxcore.cc:3014
 #: ../src/mainfrm.cc:789
 #: n:293
 msgid "Colour by D&ate"
 msgstr ""
 
-#: ../src/gfxcore.cc:3005
+#: ../src/gfxcore.cc:3015
 #: ../src/mainfrm.cc:790
 #: n:289
 msgid "Colour by E&rror"
@@ -2118,7 +2118,7 @@ msgstr ""
 msgid "&Export as Movie…"
 msgstr ""
 
-#: ../src/mainfrm.cc:2192
+#: ../src/mainfrm.cc:2198
 #: n:331
 msgid "Export Movie"
 msgstr ""
@@ -2129,19 +2129,19 @@ msgid "Select an output filename"
 msgstr ""
 
 #: ../src/mainfrm.cc:306
-#: ../src/mainfrm.cc:2114
+#: ../src/mainfrm.cc:2120
 #: n:320
 msgid "Aven presentations"
 msgstr ""
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:1736
+#: ../src/mainfrm.cc:1742
 #: n:321
 msgid "Save Screenshot"
 msgstr ""
 
-#: ../src/mainfrm.cc:2109
-#: ../src/mainfrm.cc:2112
+#: ../src/mainfrm.cc:2115
+#: ../src/mainfrm.cc:2118
 #: n:322
 msgid "Select a presentation to open"
 msgstr ""
@@ -2154,35 +2154,35 @@ msgstr ""
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave surveying package, so probably shouldn’t
 #. be translated
-#: ../src/mainfrm.cc:1717
+#: ../src/mainfrm.cc:1723
 #: n:324
 msgid "Compass PLT files"
 msgstr ""
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying package, so don’t translate it.
-#: ../src/mainfrm.cc:1719
+#: ../src/mainfrm.cc:1725
 #: n:325
 msgid "CMAP XYZ files"
 msgstr ""
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:1792
-#: ../src/mainfrm.cc:2086
-#: ../src/mainfrm.cc:2103
+#: ../src/mainfrm.cc:1798
+#: ../src/mainfrm.cc:2092
+#: ../src/mainfrm.cc:2109
 #: n:326
 msgid "Modified Presentation"
 msgstr ""
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:1791
-#: ../src/mainfrm.cc:2085
-#: ../src/mainfrm.cc:2102
+#: ../src/mainfrm.cc:1797
+#: ../src/mainfrm.cc:2091
+#: ../src/mainfrm.cc:2108
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr ""
 
-#: ../src/mainfrm.cc:2403
-#: ../src/mainfrm.cc:2412
+#: ../src/mainfrm.cc:2409
+#: ../src/mainfrm.cc:2418
 #: n:328
 msgid "No matches were found."
 msgstr ""
@@ -2206,25 +2206,25 @@ msgstr ""
 
 #. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:904
-#: ../src/mainfrm.cc:2444
+#: ../src/mainfrm.cc:2450
 #: n:333
 msgid "Hide"
 msgstr ""
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2405
+#: ../src/mainfrm.cc:2411
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr ""
 
 #: ../src/mainfrm.cc:193
-#: ../src/mainfrm.cc:1862
-#: ../src/mainfrm.cc:1866
-#: ../src/mainfrm.cc:1931
-#: ../src/mainfrm.cc:1933
-#: ../src/mainfrm.cc:1976
-#: ../src/mainfrm.cc:1980
+#: ../src/mainfrm.cc:1868
+#: ../src/mainfrm.cc:1872
+#: ../src/mainfrm.cc:1937
+#: ../src/mainfrm.cc:1939
+#: ../src/mainfrm.cc:1982
+#: ../src/mainfrm.cc:1986
 #: n:335
 msgid "Altitude"
 msgstr ""
@@ -2241,12 +2241,12 @@ msgid "&Side Panel"
 msgstr ""
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or Easting)
-#: ../src/mainfrm.cc:1861
-#: ../src/mainfrm.cc:1864
-#: ../src/mainfrm.cc:1887
-#: ../src/mainfrm.cc:1889
-#: ../src/mainfrm.cc:1975
-#: ../src/mainfrm.cc:1978
+#: ../src/mainfrm.cc:1867
+#: ../src/mainfrm.cc:1870
+#: ../src/mainfrm.cc:1893
+#: ../src/mainfrm.cc:1895
+#: ../src/mainfrm.cc:1981
+#: ../src/mainfrm.cc:1984
 #: n:338
 msgid "%.2f E, %.2f N"
 msgstr ""
@@ -2255,33 +2255,33 @@ msgstr ""
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:1904
-#: ../src/mainfrm.cc:1943
-#: ../src/mainfrm.cc:1999
+#: ../src/mainfrm.cc:1910
+#: ../src/mainfrm.cc:1949
+#: ../src/mainfrm.cc:2005
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2003
-#: ../src/mainfrm.cc:2006
+#: ../src/mainfrm.cc:2009
+#: ../src/mainfrm.cc:2012
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
 msgstr ""
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as in Compass bearing)
-#: ../src/mainfrm.cc:2019
-#: ../src/mainfrm.cc:2023
+#: ../src/mainfrm.cc:2025
+#: ../src/mainfrm.cc:2029
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:2994
-#: ../src/gfxcore.cc:3009
+#: ../src/gfxcore.cc:3004
+#: ../src/gfxcore.cc:3019
 #: ../src/mainfrm.cc:834
 #: n:342
 msgid "&Metric"
@@ -2290,27 +2290,27 @@ msgstr ""
 #. TRANSLATORS: tickable menu item in View menu.
 #. Degrees are the angular measurement where there are 360 in a
 #. full circle.
-#: ../src/gfxcore.cc:2971
-#: ../src/gfxcore.cc:2984
+#: ../src/gfxcore.cc:2981
+#: ../src/gfxcore.cc:2994
 #: ../src/mainfrm.cc:835
 #: n:343
 msgid "&Degrees"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:2970
+#: ../src/gfxcore.cc:2980
 #: n:387
 msgid "&Hide Compass"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:2983
+#: ../src/gfxcore.cc:2993
 #: n:384
 msgid "&Hide Clino"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:2993
+#: ../src/gfxcore.cc:3003
 #: n:385
 msgid "&Hide scale bar"
 msgstr ""
@@ -2318,19 +2318,19 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:3007
+#: ../src/gfxcore.cc:3017
 #: n:386
 msgid "&Hide colour key"
 msgstr ""
 
 #. TRANSLATORS: degree symbol - probably should be translated to itself.
-#: ../src/mainfrm.cc:1908
-#: ../src/mainfrm.cc:2012
-#: ../src/printwx.cc:664
-#: ../src/printwx.cc:689
-#: ../src/printwx.cc:693
-#: ../src/printwx.cc:697
-#: ../src/printwx.cc:704
+#: ../src/mainfrm.cc:1914
+#: ../src/mainfrm.cc:2018
+#: ../src/printwx.cc:705
+#: ../src/printwx.cc:730
+#: ../src/printwx.cc:734
+#: ../src/printwx.cc:738
+#: ../src/printwx.cc:745
 #: n:344
 msgid "°"
 msgstr ""
@@ -2340,8 +2340,8 @@ msgstr ""
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:1911
-#: ../src/mainfrm.cc:2015
+#: ../src/mainfrm.cc:1917
+#: ../src/mainfrm.cc:2021
 #: n:345
 msgid "grad"
 msgstr ""
@@ -2463,16 +2463,16 @@ msgstr ""
 #~ msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
-#: ../src/mainfrm.cc:1915
-#: ../src/mainfrm.cc:1918
+#: ../src/mainfrm.cc:1921
+#: ../src/mainfrm.cc:1924
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:1946
-#: ../src/mainfrm.cc:1949
+#: ../src/mainfrm.cc:1952
+#: ../src/mainfrm.cc:1955
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2516,13 +2516,13 @@ msgid "&Export as…"
 msgstr ""
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported file.
-#: ../src/printwx.cc:336
+#: ../src/printwx.cc:397
 #: n:401
 msgid "Export as:"
 msgstr ""
 
 #. TRANSLATORS: Title of the export dialog
-#: ../src/printwx.cc:169
+#: ../src/printwx.cc:211
 #: n:383
 msgid "Export"
 msgstr ""
@@ -2534,25 +2534,25 @@ msgid "System Information:"
 msgstr ""
 
 #. TRANSLATORS: Title of the print preview dialog
-#: ../src/printwx.cc:372
+#: ../src/printwx.cc:421
 #: n:398
 msgid "Print Preview"
 msgstr ""
 
 #. TRANSLATORS: Title of the print dialog
-#: ../src/printwx.cc:169
+#: ../src/printwx.cc:211
 #: n:399
 msgid "Print"
 msgstr ""
 
-#: ../src/printwx.cc:300
+#: ../src/printwx.cc:361
 #: n:400
 msgid "&Print…"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:265
+#: ../src/printwx.cc:309
 #: n:403
 msgid "Sur&face Survey Legs"
 msgstr ""
@@ -2739,7 +2739,7 @@ msgstr ""
 msgid "input datum as string to pass to PROJ"
 msgstr ""
 
-#: ../src/readval.c:257
+#: ../src/readval.c:331
 #: n:392
 msgid "Separator in survey name"
 msgstr ""
