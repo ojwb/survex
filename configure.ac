@@ -173,8 +173,10 @@ dnl We use functions from libGL so always link -lGL explicitly if it's
 dnl present.
 AC_CHECK_LIB([GL], [glPushMatrix], [WX_LIBS="$WX_LIBS -lGL"], [], [$WX_LIBS])
 AC_SUBST(WX_LIBS)
+dnl Mac OS X has OpenGL/gl.h.
+AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
 dnl The Debian mingw-w64 packages lack GL/glext.h; Mac OS X has OpenGL/glext.h.
-AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h])
+AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [#include <GL/gl.h>])
 
 dnl Older wx-config didn't support --ldflags (2.6.3 doesn't) - error goes to
 dnl stderr, with nothing to stdout, so just ignore stderr.

@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011 Olly Betts
+//  Copyright (C) 2011,2013 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@
 
 #include "wx.h"
 
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
+#ifdef HAVE_GL_GL_H
+# include <GL/gl.h>
+#elif defined HAVE_OPENGL_GL_H
+# include <OpenGL/gl.h>
 #endif
 
 class BitmapFont {

@@ -35,10 +35,16 @@
 #include "message.h"
 #include "useful.h"
 
+#ifdef HAVE_GL_GL_H
+# include <GL/gl.h>
+#elif defined HAVE_OPENGL_GL_H
+# include <OpenGL/gl.h>
+#endif
+
 #ifdef HAVE_GL_GLEXT_H
 # include <GL/glext.h>
 #elif defined HAVE_OPENGL_GLEXT_H
-#include <OpenGL/glext.h>
+# include <OpenGL/glext.h>
 #endif
 
 #ifndef GL_POINT_SIZE_MAX

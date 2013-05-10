@@ -1,3 +1,9 @@
+Fri May 10 05:55:54 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/gla-gl.cc,src/glbitmapfont.h: It seems we need to
+	  include GL/gl.h before we can safely include GL/glext.h (at least on
+	  Debian wheezy).
+
 Fri May 10 05:43:09 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac: Fix wxChar test to work in a non-cross-compiled build.
