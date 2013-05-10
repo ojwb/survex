@@ -185,12 +185,14 @@ AC_SUBST(WX_CFLAGS)
 WX_CXXFLAGS=`$WX_CONFIG --cxxflags "$wx_libs"`
 AC_SUBST(WX_CXXFLAGS)
 
-AC_LANG([C++])
-save_CXXFLAGS=$CXXFLAGS
-CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS"
-AC_CHECK_SIZEOF([wxChar], [], [#include <wx/wx.h>])
-CXXFLAGS=$save_CXXFLAGS
 AC_LANG_C
+save_CFLAGS=$CFLAGS
+CFLAGS="$CFLAGS $WX_CFLAGS"
+AC_CHECK_SIZEOF([wxChar], [], [
+  #include <wx/defs.h>
+  #include <wx/wxchar.h>
+])
+CFLAGS=$save_CFLAGS
 
 dnl Check for ffmpeg
 MOVIE_LIBS=
