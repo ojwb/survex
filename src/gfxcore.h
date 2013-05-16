@@ -101,6 +101,12 @@ enum {
     UPDATE_BLOBS_AND_CROSSES
 };
 
+enum {
+      SPLAYS_HIDE,
+      SPLAYS_SHOW_FADED,
+      SPLAYS_SHOW_NORMAL,
+};
+
 class GfxCore : public GLACanvas {
     Double m_Scale;
     int m_ScaleBarWidth;
@@ -150,7 +156,7 @@ private:
     int m_SwitchingTo;
     bool m_Crosses;
     bool m_Legs;
-    bool m_Splays;
+    int m_Splays;
     bool m_Names;
     bool m_Scalebar;
     bool m_ColourKey;
@@ -181,6 +187,9 @@ private:
 
     wxStopWatch timer;
     long drawtime;
+
+    GLAPen * m_HalfPens;
+    GLAPen * m_FullPens;
 
     GLAPen * m_Pens;
 
@@ -267,6 +276,15 @@ private:
 
     void DrawShadowedBoundingBox();
     void DrawBoundingBox();
+    
+    void SwitchToFullPens() {
+        m_Pens = m_FullPens;
+    }
+
+    void SwitchToHalfPens() {
+        m_Pens = m_HalfPens;
+    }
+    
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
@@ -376,7 +394,7 @@ public:
     bool HasTubes() const;
 
     bool ShowingUndergroundLegs() const { return m_Legs; }
-    bool ShowingSplays() const { return m_Splays; }
+    int ShowingSplaysMode() const { return m_Splays; }
     bool ShowingSurfaceLegs() const { return m_Surface; }
 
     bool ShowingColourKey() const { return m_ColourKey; }
@@ -393,8 +411,11 @@ public:
     void ToggleUndergroundLegs() {
 	ToggleFlag(&m_Legs, UPDATE_BLOBS_AND_CROSSES);
     }
-    void ToggleSplays() {
-	ToggleFlag(&m_Splays, UPDATE_BLOBS_AND_CROSSES);
+    void SetSplaysMode(int mode) {
+        m_Splays = mode;
+	UpdateBlobs();
+	InvalidateList(LIST_UNDERGROUND_LEGS);
+	ForceRefresh();
     }
     void ToggleSurfaceLegs() {
 	ToggleFlag(&m_Surface, UPDATE_BLOBS_AND_CROSSES);

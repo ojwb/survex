@@ -528,7 +528,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(wxID_ZOOM_OUT, MainFrm::OnZoomOut)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
-    EVT_MENU(menu_VIEW_SHOW_SPLAYS, MainFrm::OnShowSplays)
+    EVT_MENU(menu_SPLAYS_HIDE, MainFrm::OnHideSplays)
+    EVT_MENU(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormal)
+    EVT_MENU(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFaded)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
     EVT_MENU(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrances)
     EVT_MENU(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPts)
@@ -585,6 +587,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_SPLAYS, MainFrm::OnShowSplaysUpdate)
+    EVT_UPDATE_UI(menu_SPLAYS_HIDE, MainFrm::OnHideSplaysUpdate)
+    EVT_UPDATE_UI(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormalUpdate)
+    EVT_UPDATE_UI(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFadedUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrancesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPtsUpdate)
@@ -797,7 +802,14 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_LEGS, wmsg(/*&Underground Survey Legs\tCtrl+L*/272));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
-    viewmenu->AppendCheckItem(menu_VIEW_SHOW_SPLAYS, wmsg(/*Spla&y Legs*/397));
+
+    wxMenu* splaymenu = new wxMenu;
+    splaymenu->AppendCheckItem(menu_SPLAYS_HIDE, wmsg(/*Hide splay legs*/523));
+    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_FADED, wmsg(/*Show splay legs faded*/524));
+    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*Show splay legs normally*/525));
+    viewmenu->Append(menu_VIEW_SHOW_SPLAYS, wmsg(/*Splay Legs*/397), splaymenu);
+
+
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
@@ -1039,6 +1051,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     int result;
     img_point prev_pt = {0,0,0};
     bool current_polyline_is_surface = false;
+    bool current_polyline_is_splay = false;
     bool pending_move = false;
     // When a traverse is split between surface and underground, we split it
     // into contiguous traverses of each, but we need to track these so we can
@@ -1086,15 +1099,16 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		if (survey->flags & img_FLAG_SPLAY)
 		    m_HasSplays = true;
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
+		bool is_splay = (survey->flags & img_FLAG_SPLAY);
 		if (!is_surface) {
 		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
 		    if (pt.z > depthmax) depthmax = pt.z;
 		}
-		if (pending_move || current_polyline_is_surface != is_surface) {
+		if (pending_move || current_polyline_is_surface != is_surface || current_polyline_is_splay != is_splay) {
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
 		    }
-		    current_polyline_is_surface = is_surface;
+		        
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
@@ -1105,11 +1119,19 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 			m_HasUndergroundLegs = true;
 			traverses.push_back(traverse());
 			current_traverse = &traverses.back();
+			current_traverse->isSplay = is_splay;
 			++n_traverses;
 			// The previous point was at a surface->ug transition.
-			if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
-			if (prev_pt.z > depthmax) depthmax = prev_pt.z;
+			if(current_polyline_is_surface)
+			{
+    			    if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
+    			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
+                        }
 		    }
+
+		    current_polyline_is_surface = is_surface;
+		    current_polyline_is_splay = is_splay;
+		    
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if
 			// there's a pending move, since for a surface <->

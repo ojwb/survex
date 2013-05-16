@@ -518,15 +518,42 @@ void GUIControl::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->ShowingUndergroundLegs());
 }
 
-void GUIControl::OnShowSplays()
+void GUIControl::OnHideSplays()
 {
-    m_View->ToggleSplays();
+    m_View->SetSplaysMode(SPLAYS_HIDE);
+}
+
+void GUIControl::OnShowSplaysNormal()
+{
+    m_View->SetSplaysMode(SPLAYS_SHOW_NORMAL);
+}
+
+void GUIControl::OnShowSplaysFaded()
+{
+    m_View->SetSplaysMode(SPLAYS_SHOW_FADED);
 }
 
 void GUIControl::OnShowSplaysUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasSplays());
-    cmd.Check(m_View->ShowingSplays());
+}
+
+void GUIControl::OnHideSplaysUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasSplays());
+    cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_HIDE);
+}
+
+void GUIControl::OnShowSplaysNormalUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasSplays());
+    cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_SHOW_NORMAL);
+}
+
+void GUIControl::OnShowSplaysFadedUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData() && m_View->HasSplays());
+    cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_SHOW_FADED);
 }
 
 void GUIControl::OnMoveEast()
