@@ -1108,7 +1108,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
 		    }
-		        
+
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
@@ -1122,8 +1122,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 			current_traverse->isSplay = is_splay;
 			++n_traverses;
 			// The previous point was at a surface->ug transition.
-			if(current_polyline_is_surface)
-			{
+			if (current_polyline_is_surface) {
     			    if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
     			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
                         }
@@ -1131,7 +1130,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
 		    current_polyline_is_surface = is_surface;
 		    current_polyline_is_splay = is_splay;
-		    
+
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if
 			// there's a pending move, since for a surface <->

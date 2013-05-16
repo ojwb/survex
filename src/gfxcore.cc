@@ -2017,20 +2017,19 @@ void GfxCore::GenerateDisplayList()
 
     /* We draw the faded splays first, so that they are behind
        the centerline in case of any conflicts */
-    if(m_Splays == SPLAYS_SHOW_FADED)
-    {
-        SwitchToHalfPens();
-        while (trav != tend) {
-            if((*trav).isSplay) 
-                (this->*AddPoly)(*trav);
-            ++trav;
-        }
-        SwitchToFullPens();
-        trav = m_Parent->traverses_begin();
+    if (m_Splays == SPLAYS_SHOW_FADED) {
+	SwitchToHalfPens();
+	while (trav != tend) {
+	    if ((*trav).isSplay)
+		(this->*AddPoly)(*trav);
+	    ++trav;
+	}
+	SwitchToFullPens();
+	trav = m_Parent->traverses_begin();
     }
 
     while (trav != tend) {
-        if(m_Splays == SPLAYS_SHOW_NORMAL || !(*trav).isSplay) 
+	if (m_Splays == SPLAYS_SHOW_NORMAL || !(*trav).isSplay)
 	    (this->*AddPoly)(*trav);
 	++trav;
     }

@@ -276,15 +276,14 @@ private:
 
     void DrawShadowedBoundingBox();
     void DrawBoundingBox();
-    
+
     void SwitchToFullPens() {
-        m_Pens = m_FullPens;
+	m_Pens = m_FullPens;
     }
 
     void SwitchToHalfPens() {
-        m_Pens = m_HalfPens;
+	m_Pens = m_HalfPens;
     }
-    
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);
@@ -412,7 +411,7 @@ public:
 	ToggleFlag(&m_Legs, UPDATE_BLOBS_AND_CROSSES);
     }
     void SetSplaysMode(int mode) {
-        m_Splays = mode;
+	m_Splays = mode;
 	UpdateBlobs();
 	InvalidateList(LIST_UNDERGROUND_LEGS);
 	ForceRefresh();
