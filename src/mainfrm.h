@@ -91,6 +91,9 @@ enum {
     menu_ORIENT_DEFAULTS,
     menu_VIEW_SHOW_LEGS,
     menu_VIEW_SHOW_SPLAYS,
+    menu_SPLAYS_HIDE,
+    menu_SPLAYS_SHOW_FADED,
+    menu_SPLAYS_SHOW_NORMAL,    
     menu_VIEW_SHOW_CROSSES,
     menu_VIEW_SHOW_NAMES,
     menu_VIEW_SHOW_SURFACE,
@@ -195,6 +198,7 @@ public:
 class traverse : public vector<PointInfo> {
   public:
     int n_legs;
+    bool isSplay;
     double length;
     double E, H, V;
 
@@ -344,6 +348,9 @@ public:
     void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowStationNamesUpdate(event); }
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurveyLegsUpdate(event); }
     void OnShowSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysUpdate(event); }
+    void OnHideSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHideSplaysUpdate(event); }
+    void OnShowSplaysNormalUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysNormalUpdate(event); }
+    void OnShowSplaysFadedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysFadedUpdate(event); }
     void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceUpdate(event); }
     void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveEastUpdate(event); }
     void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveNorthUpdate(event); }
@@ -392,7 +399,9 @@ public:
     void OnShowExportedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowExportedPts(); }
     void OnShowStationNames(wxCommandEvent&) { if (m_Control) m_Control->OnShowStationNames(); }
     void OnShowSurveyLegs(wxCommandEvent&) { if (m_Control) m_Control->OnShowSurveyLegs(); }
-    void OnShowSplays(wxCommandEvent&) { if (m_Control) m_Control->OnShowSplays(); }
+    void OnHideSplays(wxCommandEvent&) { if (m_Control) m_Control->OnHideSplays(); }
+    void OnShowSplaysNormal(wxCommandEvent&) { if (m_Control) m_Control->OnShowSplaysNormal(); }
+    void OnShowSplaysFaded(wxCommandEvent&) { if (m_Control) m_Control->OnShowSplaysFaded(); }
     void OnShowSurface(wxCommandEvent&) { if (m_Control) m_Control->OnShowSurface(); }
     void OnMoveEast(wxCommandEvent&) { if (m_Control) m_Control->OnMoveEast(); }
     void OnMoveNorth(wxCommandEvent&) { if (m_Control) m_Control->OnMoveNorth(); }

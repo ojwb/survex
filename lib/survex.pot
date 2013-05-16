@@ -2758,3 +2758,18 @@ msgstr ""
 #: n:397
 msgid "Spla&y Legs"
 msgstr ""
+
+#: ../src/mainfrm.cc:784
+#: n:523
+msgid "Hide splay legs"
+msgstr ""
+
+#: ../src/mainfrm.cc:784
+#: n:524
+msgid "Show splay legs faded"
+msgstr ""
+
+#: ../src/mainfrm.cc:784
+#: n:525
+msgid "Show splay legs normally"
+msgstr ""
