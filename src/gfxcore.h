@@ -188,9 +188,6 @@ private:
     wxStopWatch timer;
     long drawtime;
 
-    GLAPen * m_HalfPens;
-    GLAPen * m_FullPens;
-
     GLAPen * m_Pens;
 
 #define PLAYING 1
@@ -276,14 +273,6 @@ private:
 
     void DrawShadowedBoundingBox();
     void DrawBoundingBox();
-
-    void SwitchToFullPens() {
-	m_Pens = m_FullPens;
-    }
-
-    void SwitchToHalfPens() {
-	m_Pens = m_HalfPens;
-    }
 
 public:
     GfxCore(MainFrm* parent, wxWindow* parent_window, GUIControl* control);

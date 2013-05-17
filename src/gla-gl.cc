@@ -301,6 +301,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     m_Fog = false;
     m_AntiAlias = false;
     list_flags = 0;
+    alpha = 1.0;
 }
 
 GLACanvas::~GLACanvas()
@@ -810,10 +811,10 @@ void GLACanvas::SetDataTransform()
 	glDisable(GL_FOG);
     }
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     if (m_AntiAlias) {
 	glEnable(GL_LINE_SMOOTH);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     } else {
 	glDisable(GL_LINE_SMOOTH);
     }
@@ -927,14 +928,14 @@ void GLACanvas::DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotati
 void GLACanvas::SetColour(const GLAPen& pen, double rgb_scale)
 {
     // Set the colour for subsequent operations.
-    glColor3f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
-	      pen.GetBlue() * rgb_scale);
+    glColor4f(pen.GetRed() * rgb_scale, pen.GetGreen() * rgb_scale,
+	      pen.GetBlue() * rgb_scale, alpha);
 }
 
 void GLACanvas::SetColour(const GLAPen& pen)
 {
     // Set the colour for subsequent operations.
-    glColor3dv(pen.components);
+    glColor4d(pen.components[0], pen.components[1], pen.components[2], alpha);
 }
 
 void GLACanvas::SetColour(gla_colour colour)

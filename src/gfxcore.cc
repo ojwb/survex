@@ -160,25 +160,19 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
 
-    m_HalfPens = new GLAPen[NUM_COLOUR_BANDS + 1];
-    m_FullPens = new GLAPen[NUM_COLOUR_BANDS + 1];
+    m_Pens = new GLAPen[NUM_COLOUR_BANDS + 1];
     for (int pen = 0; pen < NUM_COLOUR_BANDS + 1; ++pen) {
-	m_HalfPens[pen].SetColour(REDS[pen] / 255.0 / 4.0,
-			      GREENS[pen] / 255.0 / 4.0,
-			      BLUES[pen] / 255.0 / 4.0);
-	m_FullPens[pen].SetColour(REDS[pen] / 255.0,
+	m_Pens[pen].SetColour(REDS[pen] / 255.0,
 			      GREENS[pen] / 255.0,
 			      BLUES[pen] / 255.0);
     }
-    m_Pens = m_FullPens;
 }
 
 GfxCore::~GfxCore()
 {
     TryToFreeArrays();
 
-    delete[] m_HalfPens;
-    delete[] m_FullPens;
+    delete[] m_Pens;
     delete[] m_PointGrid;
 }
 
@@ -2015,16 +2009,14 @@ void GfxCore::GenerateDisplayList()
     list<traverse>::const_iterator trav = m_Parent->traverses_begin();
     list<traverse>::const_iterator tend = m_Parent->traverses_end();
 
-    /* We draw the faded splays first, so that they are behind
-       the centerline in case of any conflicts */
     if (m_Splays == SPLAYS_SHOW_FADED) {
-	SwitchToHalfPens();
+	SetAlpha(0.25);
 	while (trav != tend) {
 	    if ((*trav).isSplay)
 		(this->*AddPoly)(*trav);
 	    ++trav;
 	}
-	SwitchToFullPens();
+	SetAlpha(1.0);
 	trav = m_Parent->traverses_begin();
     }
 

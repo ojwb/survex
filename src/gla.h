@@ -123,6 +123,8 @@ class GLACanvas : public wxGLCanvas {
     GLuint m_Texture;
     GLuint m_CrossTexture;
 
+    Double alpha;
+
     bool m_SmoothShading;
     bool m_Textured;
     bool m_Perspective;
@@ -179,6 +181,7 @@ public:
     void SetColour(const GLAPen& pen, double rgb_scale);
     void SetColour(const GLAPen& pen);
     void SetColour(gla_colour colour);
+    void SetAlpha(double new_alpha) { alpha = new_alpha; }
 
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);
     void DrawIndicatorText(int x, int y, const wxString& str);
