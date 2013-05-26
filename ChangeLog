@@ -1,3 +1,7 @@
+Sun May 26 11:47:06 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac: Fix sizeof(wxChar) test to work for wx2.9.
+
 Fri May 10 05:55:54 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/gla-gl.cc,src/glbitmapfont.h: It seems we need to
