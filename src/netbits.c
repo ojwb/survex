@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2003,2006,2011 Olly Betts
+ * Copyright (C) 1992-2003,2006,2011,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -308,13 +308,8 @@ addleg_(node *fr, node *to,
    fr->leg[i] = leg;
    to->leg[j] = leg2;
 
-   shape = fr->name->shape + 1;
-   if (shape < 1) shape = 1 - shape;
-   fr->name->shape = shape;
-
-   shape = to->name->shape + 1;
-   if (shape < 1) shape = 1 - shape;
-   to->name->shape = shape;
+   ++fr->name->shape;
+   ++to->name->shape;
 }
 
 /* Add a leg between names *fr_name and *to_name

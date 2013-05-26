@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -619,7 +619,6 @@ cmd_fix(void)
    static node *stnOmitAlready = NULL;
    real x, y, z;
    int nx, ny, nz;
-   bool fRef = 0;
    filepos fp;
 
    fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
@@ -628,7 +627,8 @@ cmd_fix(void)
    get_pos(&fp);
    get_token();
    if (strcmp(ucbuffer, "REFERENCE") == 0) {
-      fRef = 1;
+      /* suppress "unused fixed point" warnings for this station */
+      fix_name->sflags |= BIT(SFLAGS_USED);
    } else {
       if (*ucbuffer) set_pos(&fp);
    }
@@ -711,16 +711,11 @@ cmd_fix(void)
 		       , cxy, cyz, czx
 #endif
 		       );
-	    /* suppress "unused fixed point" warnings for this station */
-	    if (fRef && fix_name->shape == 1) fix_name->shape = -2;
 	 }
 	 return;
       }
       stn = StnFromPfx(fix_name);
    }
-
-   /* suppress "unused fixed point" warnings for this station */
-   if (fRef && fix_name->shape == 0) fix_name->shape = -1;
 
    if (!fixed(stn)) {
       POS(stn, 0) = x;

@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005,2006,2010,2011,2012 Olly Betts
+ * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -884,14 +884,19 @@ replace_trailing_travs(void)
       }
 
       d = stn1->name->shape;
-      if (d < 0) {
-	 /* "*fix STN reference ..." sets order negative to suppress the
-	  * unused fixed point warning */
-	 stn1->name->shape = -1 - d;
-      } else if (d <= 1) {
-	 if (d == 0 ||
-	     (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident)) {
-	    /* Unused fixed points without and with error estimates */
+      if (d <= 1 && !TSTBIT(stn1->name->sflags, SFLAGS_USED)) {
+	 bool unused_fixed_point = fFalse;
+	 if (d == 0) {
+	    /* Unused fixed point without error estimates */
+	    unused_fixed_point = fTrue;
+	 } else if (stn1->leg[0]) {
+	    prefix *pfx = stn1->leg[0]->l.to->name;
+	    if (!pfx->ident) {
+	       /* Unused fixed point with error estimates */
+	       unused_fixed_point = fTrue;
+	    }
+	 }
+	 if (unused_fixed_point) {
 	    warning_in_file(stn1->name->filename, stn1->name->line,
 		    /*Unused fixed point “%s”*/73, sprint_prefix(stn1->name));
 	 }

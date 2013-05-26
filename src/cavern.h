@@ -129,6 +129,7 @@ typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED,
    /* These values don't need to match img.h, but mustn't clash. */
+   SFLAGS_USED = 11,
    SFLAGS_SOLVED = 12, SFLAGS_SUSPECTTYPO = 13, SFLAGS_SURVEY = 14, SFLAGS_PREFIX_ENTERED = 15
 } sflags;
 

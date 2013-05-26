@@ -1774,15 +1774,10 @@ static int
 process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
 {
    nosurveylink *link;
-   int shape;
 
-   /* Suppress "unused fixed point" warnings for these stations
-    * We do this if it's a 0 or 1 node - 1 node might be an sdfix
-    */
-   shape = fr->shape;
-   if (shape == 0 || shape == 1) fr->shape = -1 - shape;
-   shape = to->shape;
-   if (shape == 0 || shape == 1) to->shape = -1 - shape;
+   /* Suppress "unused fixed point" warnings for these stations */
+   fr->sflags |= BIT(SFLAGS_USED);
+   to->sflags |= BIT(SFLAGS_USED);
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);

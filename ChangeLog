@@ -1,3 +1,10 @@
+Sun May 26 13:05:34 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/: New station flag SFLAGS_USED to mark a station as "used" so we
+	  don't issue "unused fixed point" warnings about it - previously we
+	  set 'shape' to be negative to indicate this, but that required us to
+	  handle that whenever we looked at or updated shape.
+
 Sun May 26 11:47:06 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac: Fix sizeof(wxChar) test to work for wx2.9.
