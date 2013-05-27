@@ -1,3 +1,7 @@
+Mon May 27 11:24:18 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac: Update copyright date.
+
 Sun May 26 13:05:34 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/: New station flag SFLAGS_USED to mark a station as "used" so we
