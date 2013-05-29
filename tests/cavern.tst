@@ -57,7 +57,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
- badunits badbegin anonstn"}}
+ badunits badbegin anonstn anonstnrev"}}
 
 LC_ALL=C
 export LC_ALL
@@ -221,6 +221,7 @@ for file in $TESTS ; do
   badunits) pos=fail; error=12 ;;
   badbegin) pos=fail; error=2 ;;
   anonstn) pos=yes; warn=0; error=0 ;;
+  anonstnrev) pos=yes; warn=0; error=0 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac

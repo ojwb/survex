@@ -1,6 +1,6 @@
 /* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2002,2011,2012 Olly Betts
+ * Copyright (C) 1991-2002,2011,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,10 +151,14 @@ node_stat(prefix *p)
 static void
 node_stats(prefix *from)
 {
+   prefix * p;
    icOrderMac = 8; /* Start value */
    cOrder = osmalloc(icOrderMac * ossizeof(int));
    memset(cOrder, 0, icOrderMac * ossizeof(int));
    traverse_prefix_tree(from, node_stat);
+   for (p = anon_list; p; p = p->right) {
+      node_stat(p);
+   }
 }
 #endif
 

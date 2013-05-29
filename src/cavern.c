@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010,2011 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2010,2011,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@
 node *stnlist = NULL;
 settings *pcs;
 prefix *root;
+prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
 bool fExportUsed = fFalse;

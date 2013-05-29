@@ -269,7 +269,6 @@ addleg_(node *fr, node *to,
 {
    int i, j;
    linkfor *leg, *leg2;
-   int shape;
    /* we have been asked to add a leg with the same node at both ends
     * - this should be trapped by the caller */
    SVX_ASSERT(fr->name != to->name);
@@ -542,6 +541,14 @@ extern void
 fprint_prefix(FILE *fh, const prefix *ptr)
 {
    SVX_ASSERT(ptr);
+   if (TSTBIT(ptr->sflags, SFLAGS_ANON)) {
+      /* We release the stations, so ptr->stn is NULL late on, so we can't
+       * use that to print "anonymous station surveyed from somesurvey.12"
+       * here.  FIXME */
+      fputs("anonymous station", fh);
+// FIXME: if ident is set,show it?
+      return;
+   }
    if (ptr->up != NULL) {
       fprint_prefix(fh, ptr->up);
       if (ptr->up->up != NULL) fputc('.', fh);
@@ -576,6 +583,14 @@ sprint_prefix(const prefix *ptr)
 {
    SVX_ASSERT(ptr);
    if (!buffer) buffer = osmalloc(buffer_len);
+   if (TSTBIT(ptr->sflags, SFLAGS_ANON)) {
+      /* We release the stations, so ptr->stn is NULL late on, so we can't
+       * use that to print "anonymous station surveyed from somesurvey.12"
+       * here.  FIXME */
+      sprintf(buffer, "anonymous station");
+// FIXME: if ident is set,show it?
+      return buffer;
+   }
    *buffer = '\0';
    sprint_prefix_(ptr);
    return buffer;

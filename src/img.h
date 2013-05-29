@@ -66,6 +66,7 @@ extern "C" {
 # define img_SFLAG_ENTRANCE    0x04
 # define img_SFLAG_EXPORTED    0x08
 # define img_SFLAG_FIXED       0x10
+# define img_SFLAG_ANON        0x20
 
 /* When writing img_XSECT, img_XFLAG_END in pimg->flags means this is the last
  * img_XSECT in this tube:

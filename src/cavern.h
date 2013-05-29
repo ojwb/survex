@@ -127,7 +127,7 @@ typedef int compiletimeassert_flags3[BIT(FLAGS_SPLAY) == img_FLAG_SPLAY ? 1 : -1
 typedef enum {
    /* Don't reorder these values!  They need to match with img.h too. */
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
-   SFLAGS_FIXED,
+   SFLAGS_FIXED, SFLAGS_ANON,
    /* These values don't need to match img.h, but mustn't clash. */
    SFLAGS_USED = 11,
    SFLAGS_SOLVED = 12, SFLAGS_SUSPECTTYPO = 13, SFLAGS_SURVEY = 14, SFLAGS_PREFIX_ENTERED = 15
@@ -135,13 +135,15 @@ typedef enum {
 
 /* Mask to AND with to get bits to pass to img library. */
 #define SFLAGS_MASK (BIT(SFLAGS_SURFACE) | BIT(SFLAGS_UNDERGROUND) |\
-	BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_EXPORTED) | BIT(SFLAGS_FIXED))
+	BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_EXPORTED) | BIT(SFLAGS_FIXED) |\
+	BIT(SFLAGS_ANON))
 
 typedef int compiletimeassert_sflags1[BIT(SFLAGS_SURFACE) == img_SFLAG_SURFACE ? 1 : -1];
 typedef int compiletimeassert_sflags2[BIT(SFLAGS_UNDERGROUND) == img_SFLAG_UNDERGROUND ? 1 : -1];
 typedef int compiletimeassert_sflags3[BIT(SFLAGS_ENTRANCE) == img_SFLAG_ENTRANCE ? 1 : -1];
 typedef int compiletimeassert_sflags4[BIT(SFLAGS_EXPORTED) == img_SFLAG_EXPORTED ? 1 : -1];
 typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 : -1];
+typedef int compiletimeassert_sflags6[BIT(SFLAGS_ANON) == img_SFLAG_ANON ? 1 : -1];
 
 /* enumeration of field types */
 typedef enum {
@@ -307,6 +309,7 @@ typedef struct Settings {
 /* global variables */
 extern settings *pcs;
 extern prefix *root;
+extern prefix *anon_list;
 extern node *stnlist;
 extern unsigned long optimize;
 

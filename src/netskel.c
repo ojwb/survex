@@ -855,22 +855,35 @@ replace_trailing_travs(void)
    FOR_EACH_STN(stn1, stnlist) {
       int d;
       SVX_ASSERT(fixed(stn1));
-      /* take care of unused fixed points */
-      if (stn1->name->stn == stn1 && stn1->name->ident) {
+      if (stn1->name->stn == stn1) {
 	 int sf = stn1->name->sflags;
+	 /* take care of unused fixed points */
 	 if (!TSTBIT(sf, SFLAGS_SOLVED)) {
-	    /* Set flag to stop station being rewritten after *solve. */
-	    stn1->name->sflags = sf | BIT(SFLAGS_SOLVED);
-	    sf &= SFLAGS_MASK;
-	    if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
-	    img_write_item(pimg, img_LABEL, sf, sprint_prefix(stn1->name),
-			   POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	    const char * label = NULL;
+	    if (TSTBIT(sf, SFLAGS_ANON)) {
+	       label = "";
+	    } else if (stn1->name->ident) {
+	       label = sprint_prefix(stn1->name);
+	    }
+	    if (label) {
+	       /* Set flag to stop station being rewritten after *solve. */
+	       stn1->name->sflags = sf | BIT(SFLAGS_SOLVED);
+	       sf &= SFLAGS_MASK;
+	       if (stn1->name->max_export) sf |= BIT(SFLAGS_EXPORTED);
+	       img_write_item(pimg, img_LABEL, sf, label,
+			      POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
+	    }
 	 }
       }
       /* update coords of bounding box, ignoring the base positions
        * of points fixed with error estimates and only counting stations
-       * in underground surveys. */
-      if (stn1->name->ident && TSTBIT(stn1->name->sflags, SFLAGS_UNDERGROUND)) {
+       * in underground surveys.
+       *
+       * NB We don't set SFLAGS_UNDERGROUND for the anchor station for
+       * a point fixed with error estimates, so this test will exclude
+       * those too, which is what we want.
+       */
+      if (TSTBIT(stn1->name->sflags, SFLAGS_UNDERGROUND)) {
 	 for (d = 0; d < 3; d++) {
 	    if (POS(stn1, d) < min[d]) {
 	       min[d] = POS(stn1, d);
@@ -891,7 +904,7 @@ replace_trailing_travs(void)
 	    unused_fixed_point = fTrue;
 	 } else if (stn1->leg[0]) {
 	    prefix *pfx = stn1->leg[0]->l.to->name;
-	    if (!pfx->ident) {
+	    if (!pfx->ident && !TSTBIT(pfx->sflags, SFLAGS_ANON)) {
 	       /* Unused fixed point with error estimates */
 	       unused_fixed_point = fTrue;
 	    }
@@ -905,7 +918,8 @@ replace_trailing_travs(void)
       /* For stations fixed with error estimates, we need to ignore the leg to
        * the "real" fixed point in the node stats.
        */
-      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident)
+      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident &&
+	  !TSTBIT(stn1->leg[0]->l.to->name->sflags, SFLAGS_ANON))
 	 stn1->name->shape--;
 
       for (i = 0; i <= 2; i++) {

@@ -135,6 +135,7 @@ main(int argc, char **argv)
 	    if (pimg->flags & img_SFLAG_ENTRANCE) printf(" ENTRANCE");
 	    if (pimg->flags & img_SFLAG_EXPORTED) printf(" EXPORTED");
 	    if (pimg->flags & img_SFLAG_FIXED) printf(" FIXED");
+	    if (pimg->flags & img_SFLAG_ANON) printf(" ANON");
 	    printf("\n");
 	    break;
 	  case img_XSECT:

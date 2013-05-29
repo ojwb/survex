@@ -44,63 +44,28 @@
 int root_depr_count = 0;
 
 static prefix *
-make_up_stn(void)
+new_anon_station(void)
 {
-   static unsigned long fake_count = 0;
-   prefix *back_ptr, *ptr;
-   prefix *newptr;
-   char *name;
-   size_t name_len = 32;
-   size_t i;
-   /* Use caching to speed up handling a lot of anon. stations. */
-   static prefix *cached_station = NULL;
-   prefix *ptrPrev = NULL;
-   int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
-
-   name = osmalloc(name_len);
-try_next:
-   sprintf(name, "!%lu", fake_count++);
-   i = strlen(name) + 1;
-
-   back_ptr = root;
-   ptr = back_ptr->down;
-
-   if (cached_station) {
-      cmp = strcmp(cached_station->ident, name);
-      if (cmp <= 0) ptr = cached_station;
-   }
-   while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
-      ptrPrev = ptr;
-      ptr = ptr->right;
-   }
-   if (cmp == 0) {
-      /* Um, somebody used the station manually already? */
-      goto try_next;
-   }
-
-   name = osrealloc(name, i);
-   newptr = osnew(prefix);
-   newptr->ident = name;
-   name = NULL;
-   if (ptrPrev == NULL)
-      back_ptr->down = newptr;
-   else
-      ptrPrev->right = newptr;
-   newptr->right = ptr;
-   newptr->down = NULL;
-   newptr->pos = NULL;
-   newptr->shape = 0;
-   newptr->stn = NULL;
-   newptr->up = back_ptr;
-   newptr->filename = file.filename;
-   newptr->line = file.line;
-   newptr->min_export = newptr->max_export = 0;
-   newptr->sflags = 0;
-   ptr = newptr;
-
-   cached_station = ptr;
-
-   return ptr;
+    prefix *name = osnew(prefix);
+    name->pos = NULL;
+    name->ident = NULL;
+    name->shape = 0;
+    name->stn = NULL;
+    name->up = pcs->Prefix;
+    name->down = NULL;
+    name->filename = file.filename;
+    name->line = file.line;
+    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
+	name->min_export = USHRT_MAX;
+    } else {
+	name->min_export = 0;
+    }
+    name->max_export = 0;
+    name->sflags = BIT(SFLAGS_ANON);
+    /* Keep linked list of anon stations for node stats. */
+    name->right = anon_list;
+    anon_list = name;
+    return name;
 }
 
 /* if prefix is omitted: if PFX_OPT set return NULL, otherwise use longjmp */
@@ -151,8 +116,7 @@ read_prefix(unsigned pfx_flags)
 	       compile_error(-/*Can't have a leg between two anonymous stations*/3);
 	    }
 	    pcs->flags |= BIT(FLAGS_IMPLICIT_SPLAY);
-	    /* Make up a name! */
-	    return make_up_stn();
+	    return new_anon_station();
 	 }
 	 set_pos(&here);
       }

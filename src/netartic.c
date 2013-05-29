@@ -367,7 +367,10 @@ articulate(void)
    }
 
    if (stnlist) {
-      /* The cause of the problem is pretty likely to be a typo, so run the
+      /* Any stations still in stnlist are unfixed, which is means we have
+       * one or more hanging surveys.
+       *
+       * The cause of the problem is pretty likely to be a typo, so run the
        * checks which report errors and warnings about issues which such a
        * typo is likely to result in.
        */
@@ -380,6 +383,11 @@ articulate(void)
       bool fNotAttached = fFalse;
       error(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
+	 /* Anonymous stations must be at the end of a trailing traverse (since
+	  * the same anonymous station can't be referred to more than once),
+	  * and trailing traverses have been removed at this point.
+	  */
+	 SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON));
 	 if (stn->name->ident) {
 	    if (!fNotAttached) {
 	       fNotAttached = fTrue;
