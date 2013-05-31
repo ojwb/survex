@@ -1,3 +1,8 @@
+Fri May 31 13:08:01 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Variable 'len' in compile_error_token was static for no
+	  good reason.
+
 Fri May 31 12:32:22 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc,src/mainfrm.h: Skip anonymous stations.
