@@ -1,3 +1,9 @@
+Fri May 31 13:51:16 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/netskel.c: Use fputs not printf to write literal string to avoid
+	  GCC format security warning (the string can never contain a '%' but
+	  the compiler can't see that).
+
 Fri May 31 13:08:01 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Variable 'len' in compile_error_token was static for no

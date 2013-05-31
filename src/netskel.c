@@ -173,7 +173,7 @@ remove_trailing_travs(void)
 	 do {
 	    struct Link *leg;
 #if PRINT_NETBITS
-	    print_prefix(stn2->name); printf("<%p>",stn2); printf(szLink);
+	    print_prefix(stn2->name); printf("<%p>",stn2); fputs(szLink, stdout);
 #endif
 	    remove_stn_from_list(&stnlist, stn2);
 	    leg = stn2->leg[i];
@@ -258,7 +258,7 @@ concatenate_trav(node *stn, int i)
       stn = stn2;
 
 #if PRINT_NETBITS
-      printf(szLink); print_prefix(stn->name); printf("<%p>",stn);
+      fputs(szLink, stdout); print_prefix(stn->name); printf("<%p>",stn);
 #endif
 
       /* stop if fixed or 3 or 1 node */
