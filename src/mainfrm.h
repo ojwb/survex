@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -160,6 +160,7 @@ public:
 #define LFLAG_UNDERGROUND	img_SFLAG_UNDERGROUND
 #define LFLAG_EXPORTED		img_SFLAG_EXPORTED
 #define LFLAG_FIXED		img_SFLAG_FIXED
+#define LFLAG_ANON		img_SFLAG_ANON
 #define LFLAG_ENTRANCE		0x100
 #define LFLAG_HIGHLIGHTED	0x200
 
@@ -175,7 +176,9 @@ public:
     wxTreeItemId tree_id;
 
     LabelInfo(const img_point &pt, const wxString &text_, int flags_)
-	: Point(pt), text(text_), flags(flags_) { }
+	: Point(pt), text(text_), flags(flags_) {
+	if (text.empty()) flags |= LFLAG_ANON;
+    }
     const wxString & GetText() const { return text; }
     int get_flags() const { return flags; }
     void set_flags(int mask) { flags |= mask; }
@@ -189,6 +192,7 @@ public:
     bool IsUnderground() const { return (flags & LFLAG_UNDERGROUND) != 0; }
     bool IsSurface() const { return (flags & LFLAG_SURFACE) != 0; }
     bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED) != 0; }
+    bool IsAnon() const { return (flags & LFLAG_ANON) != 0; }
 };
 
 class traverse : public vector<PointInfo> {

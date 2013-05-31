@@ -1,3 +1,7 @@
+Fri May 31 12:32:22 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: Skip anonymous stations.
+
 Fri May 31 12:17:56 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/,tests/: Anonymous stations no longer have a made up unique name,
