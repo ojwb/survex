@@ -110,7 +110,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 #elif defined __WXMAC__
 	wxString cmd = wxT("open -t $f");
 #else
-	wxString cmd = wxT("x-terminal-emulator -title $t -e vim +'call cursor('$l,$c')' $f");
+	wxString cmd = wxT("x-terminal-emulator -title $t -e vim +'call cursor($l,$c)' $f");
 	// wxString cmd = wxT("gedit -b $f +$l:$c $f");
 	// wxString cmd = wxT("x-terminal-emulator -title $t -e emacs +$l $f");
 	// wxString cmd = wxT("x-terminal-emulator -title $t -e nano +$l $f");
