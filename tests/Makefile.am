@@ -90,4 +90,8 @@ badreadingdotplus.svx badreadingdotplus.out\
 badcalibrate.svx badcalibrate.out\
 calibrate_clino.svx calibrate_clino.out calibrate_clino.pos\
 badunits.svx badunits.out badbegin.svx badbegin.out\
-anonstn.svx anonstn.out anonstn.pos
+anonstn.svx anonstn.out anonstn.pos\
+anonstnrev.svx anonstnrev.out anonstnrev.pos\
+cmd_entrance_bad.out cmd_entrance_bad.svx\
+cmd_prefix.out\
+cmd_prefix_bad.out cmd_prefix_bad.svx

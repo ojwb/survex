@@ -34,10 +34,10 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
  lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
- cmd_entrance cmd_sd cmd_sd_bad cmd_fix_bad cmd_set cmd_set_bad\
- beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
+ cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_fix_bad cmd_set\
+ cmd_set_bad beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
- self_loop self_eq_loop reenterwarn cmd_default cmd_prefix\
+ self_loop self_eq_loop reenterwarn cmd_default cmd_prefix cmd_prefix_bad\
  singlefixerr singlereffixerr\
  begin_no_end end_no_begin end_no_begin_nest require_fail\
  exporterr1 exporterr2 exporterr3 exporterr4 exporterr5\
@@ -48,10 +48,10 @@ test -x "$testdir"/../src/cavern || testdir=.
  multinormal multinormignall multidiving multicylpolar multicartesian\
  multinosurv multinormalbad multibug\
  cmd_title cmd_titlebad cmd_dummy cmd_infer cmd_date cmd_datebad cmd_datebad2\
- cartes diving cylpolar normal normignall nosurv cmd_flags bad_cmd_flags\
- plumb unusedstation exportnakedbegin oldestyle bugdz baddatacylpolar\
- badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug omitclino back\
- notentranceorexport inferunknown inferexports bad_units_factor\
+ cartes diving cylpolar normal normal_bad normignall nosurv cmd_flags\
+ bad_cmd_flags plumb unusedstation exportnakedbegin oldestyle bugdz\
+ baddatacylpolar badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug\
+ omitclino back notentranceorexport inferunknown inferexports bad_units_factor\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
@@ -101,6 +101,7 @@ for file in $TESTS ; do
   cmd_fix_bad) pos=fail ; error=10 ;;
   cmd_solve) pos=yes ; warn=0 ;;
   cmd_entrance) pos=no ; warn=0 ;;
+  cmd_entrance_bad) pos=fail ; warn=0 ;;
   cmd_sd) pos=no ; warn=0 ;;
   cmd_sd_bad) pos=fail ; error=7 ;;
   cmd_set) pos=no ; warn=0 ;;
@@ -124,6 +125,7 @@ for file in $TESTS ; do
   cmd_default) pos=no ; warn=3 ;;
   singlereffixerr) pos=no ; warn=0 ;;
   cmd_prefix) pos=no ; warn=1 ;;
+  cmd_prefix_bad) pos=fail ; warn=1 ;;
   singlefixerr) pos=no ; warn=1 ;;
   tapelessthandepth) pos=no ; warn=1 ;;
   chinabug2) pos=no ; warn=0 ;;
@@ -172,6 +174,7 @@ for file in $TESTS ; do
   diving) pos=yes ; warn=0 ;;
   cylpolar) pos=yes ; warn=0 ;;
   normal) pos=yes ; warn=0 ;;
+  normal_bad) pos=fail ; warn=0 ;;
   normignall) pos=yes ; warn=0 ;;
   nosurv) pos=yes ; warn=0 ;;
   cmd_flags) pos=no ; warn=0 ;;

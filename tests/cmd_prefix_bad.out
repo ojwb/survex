@@ -1,0 +1,28 @@
+./cmd_prefix_bad.svx:2:8: warning: *prefix is deprecated - use *begin and *end instead
+./cmd_prefix_bad.svx:2:8: Expecting survey name
+
+Removing trailing traverses...
+
+Concatenating traverses between nodes...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses between nodes...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
+North-South range = 1.00m (from 2 at 1.00m to 1 at 0.00m)
+East-West range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
+   2 1-nodes.
+Done.
+There were 1 warning(s) and 1 error(s) - no output files produced.

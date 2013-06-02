@@ -154,12 +154,12 @@ read_prefix(unsigned pfx_flags)
 	 if (!f_optional) {
 	    if (isEol(ch)) {
 	       if (fSurvey) {
-		  compile_error(/*Expecting survey name*/89);
+		  compile_error(-/*Expecting survey name*/89);
 	       } else {
-		  compile_error(/*Expecting station name*/28);
+		  compile_error(-/*Expecting station name*/28);
 	       }
 	    } else {
-	       compile_error(/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	       compile_error(-/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
 	    LONGJMP(file.jbSkipLine);
 	 }
@@ -332,15 +332,14 @@ read_number(bool f_optional)
    if (fDigits) return (fPositive ? n : -n);
 
    /* didn't read a valid number.  If it's optional, reset filepos & return */
+   set_pos(&fp);
    if (f_optional) {
-      set_pos(&fp);
       return HUGE_REAL;
    }
 
    if (isOmit(ch_old)) {
-      compile_error(/*Field may not be omitted*/8);
+      compile_error(-/*Field may not be omitted*/8);
    } else {
-      set_pos(&fp);
       compile_error_token(-/*Expecting numeric field, found “%s”*/9);
    }
    LONGJMP(file.jbSkipLine);
@@ -426,8 +425,8 @@ read_string(char **pstr, int *plen)
       nextch();
       while (1) {
 	 if (isEol(ch)) {
-	    compile_error(/*Missing \"*/69);
-	    return;
+	    compile_error(-/*Missing \"*/69);
+	    LONGJMP(file.jbSkipLine);
 	 }
 
 	 if (ch == '\"') break;
@@ -440,7 +439,7 @@ read_string(char **pstr, int *plen)
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
 	    if (!*pstr || !(*pstr)[0]) {
-	       compile_error(/*Expecting string field*/121);
+	       compile_error(-/*Expecting string field*/121);
 	       LONGJMP(file.jbSkipLine);
 	    }
 	    return;

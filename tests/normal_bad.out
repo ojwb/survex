@@ -1,0 +1,29 @@
+./normal_bad.svx:3:5: Field may not be omitted
+./normal_bad.svx:4: Compass reading may not be omitted except on plumbed legs
+./normal_bad.svx:5:3: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
+
+Removing trailing traverses...
+
+Concatenating traverses between nodes...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses between nodes...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    2.13m (   2.13m adjusted)
+Total plan length of survey legs =    2.13m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 1a at 0.00m to 1a at 0.00m)
+North-South range = 2.08m (from 1a at 2.08m to 1 at 0.00m)
+East-West range = 0.44m (from 1a at 0.44m to 1 at 0.00m)
+   2 1-nodes.
+Done.
+There were 0 warning(s) and 3 error(s) - no output files produced.

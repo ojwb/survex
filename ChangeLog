@@ -1,3 +1,10 @@
+Sun Jun 02 12:51:46 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/readval.c,tests/: Report column numbers as well as line numbers
+	  for more cavern errors and warnings.  Add more testcases.  If the
+	  argument to *include has an opening double quote but the closing
+	  double quote is missing, then skip trying to open the file.
+
 Sun Jun 02 10:52:26 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Remove useless extra quoting when invoking vim.
