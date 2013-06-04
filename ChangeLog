@@ -1,3 +1,7 @@
+Tue Jun 04 12:19:31 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Regenerate gradient.pov is gdtconvert changes.
+
 Sun Jun 02 12:51:46 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/readval.c,tests/: Report column numbers as well as line numbers

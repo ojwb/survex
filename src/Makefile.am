@@ -127,7 +127,7 @@ BUILT_SOURCES = z_getopt.c avenpal.h
 z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
-avenpal.h: $(srcdir)/gradient.pov
+avenpal.h: $(srcdir)/gdtconvert $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
 
 MAINTAINERCLEANFILES =\
