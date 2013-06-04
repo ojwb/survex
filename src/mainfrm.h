@@ -156,13 +156,14 @@ public:
     }
 };
 
-#define LFLAG_SURFACE		img_SFLAG_SURFACE
-#define LFLAG_UNDERGROUND	img_SFLAG_UNDERGROUND
-#define LFLAG_EXPORTED		img_SFLAG_EXPORTED
-#define LFLAG_FIXED		img_SFLAG_FIXED
-#define LFLAG_ANON		img_SFLAG_ANON
-#define LFLAG_ENTRANCE		0x100
-#define LFLAG_HIGHLIGHTED	0x200
+#define LFLAG_NOT_ANON		0x01
+#define LFLAG_NOT_WALL		0x02
+#define LFLAG_SURFACE		0x04
+#define LFLAG_UNDERGROUND	0x08
+#define LFLAG_EXPORTED		0x10
+#define LFLAG_FIXED		0x20
+#define LFLAG_ENTRANCE		0x40
+#define LFLAG_HIGHLIGHTED	0x80
 
 class LabelPlotCmp;
 class AvenPresList;
@@ -177,7 +178,8 @@ public:
 
     LabelInfo(const img_point &pt, const wxString &text_, int flags_)
 	: Point(pt), text(text_), flags(flags_) {
-	if (text.empty()) flags |= LFLAG_ANON;
+	if (text.empty())
+	    flags &= ~LFLAG_NOT_ANON;
     }
     const wxString & GetText() const { return text; }
     int get_flags() const { return flags; }
@@ -192,7 +194,8 @@ public:
     bool IsUnderground() const { return (flags & LFLAG_UNDERGROUND) != 0; }
     bool IsSurface() const { return (flags & LFLAG_SURFACE) != 0; }
     bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED) != 0; }
-    bool IsAnon() const { return (flags & LFLAG_ANON) != 0; }
+    bool IsAnon() const { return (flags & LFLAG_NOT_ANON) == 0; }
+    bool IsWall() const { return (flags & LFLAG_NOT_WALL) == 0; }
 };
 
 class traverse : public vector<PointInfo> {

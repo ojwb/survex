@@ -917,6 +917,65 @@ deprecated, esoteric (*set), useful, vital
 -->
 </itemizedlist>
 
+<Sect3><Title>ALIAS</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*alias station &lt;alias&gt; [&lt;target&gt;]</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*begin parsons_nose
+*alias station - ..
+1 2 12.21 073 -12
+2 -  4.33 011 +02
+2 -  1.64 180 +03
+2 3  6.77 098 -04
+*end parsons_nose</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*alias allows you to map a station name which appears in
+the survey data to a different name internally.  At present, you can only
+create an alias of '-' to '..', which is intended to support the pocket topo
+style notation of '-' being a splay to an anonymous point on the cave wall.
+And you can unalias '-' with '*alias station -'.
+</Para>
+
+<Para>
+Aliases are scoped by *begin/*end blocks - when a *end is reached, the aliases
+in force at the corresponding begin are restored.
+</Para>
+
+<Para>
+*alias was added in Survex 1.2.7.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *end</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
 <Sect3><Title>BEGIN</Title>
 
 <VariableList>

@@ -52,6 +52,17 @@
 
 using namespace std;
 
+const static int img2aven_tab[] = {
+#include "img2aven.h"
+};
+
+inline int
+img2aven(int flags)
+{
+    flags &= (sizeof(img2aven_tab) / sizeof(img2aven_tab[0]));
+    return img2aven_tab[flags];
+}
+
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
 
@@ -1124,10 +1135,6 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 	    }
 
 	    case img_LABEL: {
-		int flags = survey->flags;
-		if (flags & img_SFLAG_ENTRANCE) {
-		    flags ^= (img_SFLAG_ENTRANCE | LFLAG_ENTRANCE);
-		}
 		wxString s(survey->label, wxConvUTF8);
 		if (s.empty()) {
 		    // If label isn't valid UTF-8 then this conversion will
@@ -1142,6 +1149,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 			s = wxString(survey->label, wxConvISO8859_1);
 		    }
 		}
+		int flags = img2aven(survey->flags);
 		LabelInfo* label = new LabelInfo(pt, s, flags);
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;

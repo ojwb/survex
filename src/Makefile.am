@@ -7,7 +7,8 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h log.h mainfrm.h\
- vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h
+ vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h\
+ img2aven.h
 
 LDADD = $(LIBOBJS)
 
@@ -122,13 +123,16 @@ all_sources = \
 EXTRA_DIST = \
  aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
 
-BUILT_SOURCES = z_getopt.c avenpal.h
+BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h
 
 z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
 avenpal.h: $(srcdir)/gdtconvert $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
+
+img2aven.h: $(srcdir)/gen_img2aven
+	$(srcdir)/gen_img2aven > tmp-img2aven.h && mv tmp-img2aven.h img2aven.h
 
 MAINTAINERCLEANFILES =\
  $(BUILT_SOURCES)

@@ -1394,10 +1394,10 @@ data_normal(void)
 
    again:
 
-   /* We clear this in the normal course of events, but if there's an error in
-    * a reading, we might not, so make sure it has been cleared here.
+   /* We clear these flags in the normal course of events, but if there's an
+    * error in a reading, we might not, so make sure it has been cleared here.
     */
-   pcs->flags &= ~BIT(FLAGS_IMPLICIT_SPLAY);
+   pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
    for (ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
@@ -1562,6 +1562,7 @@ data_normal(void)
 	  if (fr != NULL) {
 	     int r;
 	     int save_flags;
+	     int implicit_splay;
 	     if (fTopofil)
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
@@ -1584,12 +1585,11 @@ data_normal(void)
 		VAL(Tape) -= pcs->z[Q_LENGTH];
 		VAL(Tape) *= pcs->sc[Q_LENGTH];
 	     }
-	     if (TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY)) {
-		pcs->flags &= ~BIT(FLAGS_IMPLICIT_SPLAY);
-		save_flags = pcs->flags;
+	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
+	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
+	     save_flags = pcs->flags;
+	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
-	     } else {
-		save_flags = pcs->flags;
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
@@ -1646,6 +1646,7 @@ data_normal(void)
        case End:
 	  if (!fMulti) {
 	     int save_flags;
+	     int implicit_splay;
 	     /* Compass ignore flag is 'X' */
 	     if ((compass_dat_flags & BIT('X' - 'A'))) {
 		process_eol();
@@ -1673,13 +1674,11 @@ data_normal(void)
 		VAL(Tape) -= pcs->z[Q_LENGTH];
 		VAL(Tape) *= pcs->sc[Q_LENGTH];
 	     }
+	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
+	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
 	     save_flags = pcs->flags;
-	     if (TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY)) {
-		pcs->flags &= ~BIT(FLAGS_IMPLICIT_SPLAY);
-		save_flags = pcs->flags;
+	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
-	     } else {
-		save_flags = pcs->flags;
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:

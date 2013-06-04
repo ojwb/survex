@@ -33,7 +33,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
- lengthunits angleunits cmd_truncate cmd_case cmd_fix cmd_solve\
+ lengthunits angleunits cmd_alias cmd_truncate cmd_case cmd_fix cmd_solve\
  cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_fix_bad cmd_set\
  cmd_set_bad beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
@@ -57,7 +57,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
- badunits badbegin anonstn anonstnrev"}}
+ badunits badbegin anonstn anonstnbad anonstnrev"}}
 
 LC_ALL=C
 export LC_ALL
@@ -95,6 +95,7 @@ for file in $TESTS ; do
   cartesian2) pos=yes ; warn=0 ;;
   lengthunits) pos=yes ; warn=0 ;;
   angleunits) pos=yes ; warn=0 ;;
+  cmd_alias) pos=yes ;;
   cmd_truncate) pos=yes ; warn=0 ;;
   cmd_case) pos=yes ; warn=0 ;;
   cmd_fix) pos=yes ; warn=1 ;;
@@ -224,6 +225,7 @@ for file in $TESTS ; do
   badunits) pos=fail; error=12 ;;
   badbegin) pos=fail; error=2 ;;
   anonstn) pos=yes; warn=0; error=0 ;;
+  anonstnbad) pos=fail; warn=1; error=6 ;;
   anonstnrev) pos=yes; warn=0; error=0 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;

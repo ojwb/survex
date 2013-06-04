@@ -107,16 +107,59 @@ read_prefix(unsigned pfx_flags)
    if (0) {
 #endif
    } else {
-      if ((pfx_flags & PFX_ANON) && isSep(ch)) {
+      if ((pfx_flags & PFX_ANON) &&
+	  (isSep(ch) || (pcs->dash_for_anon_wall_station && ch == '-'))) {
+	 int first_ch = ch;
 	 filepos here;
 	 get_pos(&here);
 	 nextch();
 	 if (isBlank(ch) || isEol(ch)) {
-	    if (TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY)) {
+	    if (!isSep(first_ch))
+	       goto anon_wall_station;
+	    /* A single separator alone ('.' by default) is an anonymous
+	     * station which is on a point inside the passage and implies
+	     * the leg to it is a splay.
+	     */
+	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 	       compile_error(-/*Can't have a leg between two anonymous stations*/3);
+	       LONGJMP(file.jbSkipLine);
 	    }
-	    pcs->flags |= BIT(FLAGS_IMPLICIT_SPLAY);
+	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
 	    return new_anon_station();
+	 }
+	 if (isSep(first_ch) && ch == first_ch) {
+	    nextch();
+	    if (isBlank(ch) || isEol(ch)) {
+	       /* A double separator ('..' by default) is an anonymous station
+		* which is on the wall and implies the leg to it is a splay.
+		*/
+	       prefix * pfx;
+anon_wall_station:
+	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
+		  compile_error(-/*Can't have a leg between two anonymous stations*/3);
+		  LONGJMP(file.jbSkipLine);
+	       }
+	       pcs->flags |= BIT(FLAGS_ANON_ONE_END);
+	       pfx = new_anon_station();
+	       pfx->sflags |= BIT(SFLAGS_WALL);
+	       return pfx;
+	    }
+	    if (ch == first_ch) {
+	       nextch();
+	       if (isBlank(ch) || isEol(ch)) {
+		  /* A triple separator ('...' by default) is an anonymous
+		   * station, but otherwise not handled specially (e.g. for
+		   * a single leg down an unexplored side passage to a station
+		   * which isn't refindable).
+		   */
+		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
+		     compile_error(-/*Can't have a leg between two anonymous stations*/3);
+		     LONGJMP(file.jbSkipLine);
+		  }
+		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
+		  return new_anon_station();
+	       }
+	    }
 	 }
 	 set_pos(&here);
       }

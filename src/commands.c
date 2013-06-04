@@ -76,6 +76,7 @@ default_style(settings *s)
 {
    s->style = STYLE_NORMAL;
    s->ordering = default_order;
+   s->dash_for_anon_wall_station = fFalse;
 }
 
 static void
@@ -199,6 +200,23 @@ get_token(void)
 #endif
 }
 
+/* read word */
+static void
+get_word(void)
+{
+   s_zero(&buffer);
+   skipblanks();
+   while (!isBlank(ch) && !isEol(ch)) {
+      s_catchar(&buffer, &buf_len, (char)ch);
+      nextch();
+   }
+
+   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
+#if 0
+   printf("get_word() got “%s”\n", buffer);
+#endif
+}
+
 /* match_tok() now uses binary chop
  * tab argument should be alphabetically sorted (ascending)
  */
@@ -223,7 +241,7 @@ match_tok(const sztok *tab, int tab_size)
 }
 
 typedef enum {
-   CMD_NULL = -1, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
+   CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
    CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_ENTRANCE, CMD_EQUATE,
    CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
    CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
@@ -231,6 +249,7 @@ typedef enum {
 } cmds;
 
 static sztok cmd_tab[] = {
+     {"ALIAS",     CMD_ALIAS},
      {"BEGIN",     CMD_BEGIN},
      {"CALIBRATE", CMD_CALIBRATE},
      {"CASE",      CMD_CASE},
@@ -522,6 +541,27 @@ cmd_prefix(void)
    check_reentry(tag);
 }
 #endif
+
+static void
+cmd_alias(void)
+{
+   /* Currently only one form is supported:
+    * *alias station - ..
+    */
+   get_token();
+   if (strcmp(ucbuffer, "STATION") != 0)
+      goto bad;
+   get_word();
+   if (strcmp(buffer, "-") != 0)
+      goto bad;
+   get_word();
+   if (*buffer && strcmp(buffer, "..") != 0)
+      goto bad;
+   pcs->dash_for_anon_wall_station = (*buffer != '\0');
+   return;
+bad:
+   compile_error_skip(/*Bad *alias command*/397);
+}
 
 static void
 cmd_begin(void)
@@ -1596,6 +1636,7 @@ read:
 typedef void (*cmd_fn)(void);
 
 static cmd_fn cmd_funcs[] = {
+   cmd_alias,
    cmd_begin,
    cmd_calibrate,
    cmd_case,

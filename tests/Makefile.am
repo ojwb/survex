@@ -36,6 +36,7 @@ singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\
 includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.pos\
+cmd_alias.svx cmd_alias.out cmd_alias.pos\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
 cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.pos cmd_solve.svx cmd_solve.pos\
 cmd_entrance.svx\
@@ -91,6 +92,7 @@ badcalibrate.svx badcalibrate.out\
 calibrate_clino.svx calibrate_clino.out calibrate_clino.pos\
 badunits.svx badunits.out badbegin.svx badbegin.out\
 anonstn.svx anonstn.out anonstn.pos\
+anonstnbad.svx anonstnbad.out\
 anonstnrev.svx anonstnrev.out anonstnrev.pos\
 cmd_entrance_bad.out cmd_entrance_bad.svx\
 cmd_prefix.out\

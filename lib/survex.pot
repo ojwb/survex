@@ -1607,6 +1607,11 @@ msgstr ""
 msgid "Can’t calibrate angular and length quantities together"
 msgstr ""
 
+#: ../src/command.c:564
+#: n:397
+msgid "Bad *alias command"
+msgstr ""
+
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
 #~ msgid "Select a terrain file to view"
