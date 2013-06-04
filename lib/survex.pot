@@ -2759,22 +2759,22 @@ msgstr ""
 msgid "show survey date information (if present)"
 msgstr ""
 
-#: ../src/mainfrm.cc:784
-#: n:397
+#: ../src/mainfrm.cc:810
+#: n:406
 msgid "Spla&y Legs"
 msgstr ""
 
-#: ../src/mainfrm.cc:784
-#: n:523
+#: ../src/mainfrm.cc:807
+#: n:407
 msgid "Hide splay legs"
 msgstr ""
 
-#: ../src/mainfrm.cc:784
-#: n:524
+#: ../src/mainfrm.cc:808
+#: n:408
 msgid "Show splay legs faded"
 msgstr ""
 
-#: ../src/mainfrm.cc:784
-#: n:525
+#: ../src/mainfrm.cc:809
+#: n:409
 msgid "Show splay legs normally"
 msgstr ""
