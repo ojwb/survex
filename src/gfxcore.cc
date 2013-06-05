@@ -2010,7 +2010,7 @@ void GfxCore::GenerateDisplayList()
     list<traverse>::const_iterator tend = m_Parent->traverses_end();
 
     if (m_Splays == SPLAYS_SHOW_FADED) {
-	SetAlpha(0.25);
+	SetAlpha(0.4);
 	while (trav != tend) {
 	    if ((*trav).isSplay)
 		(this->*AddPoly)(*trav);
