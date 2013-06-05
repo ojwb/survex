@@ -2766,15 +2766,15 @@ msgstr ""
 
 #: ../src/mainfrm.cc:807
 #: n:407
-msgid "Hide splay legs"
+msgid "&Hide"
 msgstr ""
 
 #: ../src/mainfrm.cc:808
 #: n:408
-msgid "Show splay legs faded"
+msgid "&Fade"
 msgstr ""
 
 #: ../src/mainfrm.cc:809
 #: n:409
-msgid "Show splay legs normally"
+msgid "&Show"
 msgstr ""

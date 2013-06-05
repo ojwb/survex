@@ -804,10 +804,10 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
 
     wxMenu* splaymenu = new wxMenu;
-    splaymenu->AppendCheckItem(menu_SPLAYS_HIDE, wmsg(/*Hide splay legs*/407));
-    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_FADED, wmsg(/*Show splay legs faded*/408));
-    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*Show splay legs normally*/409));
-    viewmenu->Append(menu_VIEW_SHOW_SPLAYS, wmsg(/*Splay Legs*/406), splaymenu);
+    splaymenu->AppendCheckItem(menu_SPLAYS_HIDE, wmsg(/*&Hide*/407));
+    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_FADED, wmsg(/*&Fade*/408));
+    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*&Show*/409));
+    viewmenu->Append(menu_VIEW_SHOW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
 
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));

@@ -1914,7 +1914,7 @@ msgstr "Color per &Data"
 #: n:289
 #, fuzzy
 msgid "Colour by E&rror"
-msgstr "Colour b&y Error"
+msgstr "Colour by Err&or"
 
 #: ../src/mainfrm.cc:792
 #: n:294
