@@ -1,3 +1,8 @@
+Thu Jun 06 10:56:22 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Show splay legs faded by default, with menu options to
+	  hide them or show them like other legs.
+
 Tue Jun 04 12:37:03 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,lib/survex.pot,src/,tests/Makefile.am,
