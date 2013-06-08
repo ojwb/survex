@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,11 @@ typedef struct {
    char *label;
    int flags;
    char *title;
+   /* Older versions of img wrote 3d files with a human readable string.  Newer
+    * versions write "@" followed by the number of seconds since midnight UTC
+    * on 1/1/1970.  Some foreign formats contain a human readable string,
+    * others no date information (which results in "?" being returned).
+    */
    char *datestamp;
    char separator; /* character used to separate survey levels ('.' usually) */
 #if IMG_API_VERSION == 0

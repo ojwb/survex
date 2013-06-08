@@ -1,3 +1,9 @@
+Sat Jun 08 13:40:38 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/img.h,src/mainfrm.cc: Store the 'processed at'
+	  timestamp in the .3d file as seconds since 1970 rather than as
+	  a human readable string.
+
 Sat Jun 08 06:19:17 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Correct comment about *alias.

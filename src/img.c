@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005,2006,2010,2011 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010,2011,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,20 +36,19 @@
 # error IMG_API_VERSION > 1 too new
 #endif
 
+#define TIMENA "?"
 #ifdef IMG_HOSTED
 # include "debug.h"
 # include "filelist.h"
 # include "filename.h"
 # include "message.h"
 # include "useful.h"
-# define TIMENA msg(/*Date and time not available.*/108)
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 # ifndef INT32_T
 #  define INT32_T int32_t
 # endif
 #else
 # define INT32_T int
-# define TIMENA "Time not available."
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
 # define EXT_SVX_POS "pos"
@@ -694,10 +693,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    if (tm == (time_t)-1) {
       fputsnl(TIMENA, pimg->fh);
    } else {
-      char date[256];
-      /* output current date and time in format specified */
-      strftime(date, 256, TIMEFMT, localtime(&tm));
-      fputsnl(date, pimg->fh);
+      fprintf(pimg->fh, "@%ld\n", (long)tm);
    }
 #if 0
    if (img_output_version >= 5) {

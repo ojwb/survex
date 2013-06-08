@@ -45,6 +45,7 @@
 #include <wx/process.h>
 #include <wx/regex.h>
 
+#include <cstdlib>
 #include <float.h>
 #include <functional>
 #include <stack>
@@ -1304,7 +1305,21 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     separator = survey->separator;
     m_Title = wxString(survey->title, wxConvUTF8);
-    m_DateStamp = wxString(survey->datestamp, wxConvUTF8);
+    if (strcmp(survey->datestamp, "?") == 0) {
+	m_DateStamp = wmsg(/*Date and time not available.*/108);
+    } else if (survey->datestamp[0] == '@') {
+	char * end;
+	time_t t = (time_t)strtol(survey->datestamp + 1, &end, 10);
+	if (*end == '\0') {
+	    const struct tm * tm = localtime(&t);
+	    char buf[256];
+	    strftime(buf, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107), tm);
+	    m_DateStamp = wxString(buf, wxConvUTF8);
+	}
+    }
+    if (m_DateStamp.empty()) {
+	m_DateStamp = wxString(survey->datestamp, wxConvUTF8);
+    }
     img_close(survey);
 
     // Check we've actually loaded some legs or stations!
