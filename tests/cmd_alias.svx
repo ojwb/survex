@@ -1,0 +1,9 @@
+*fix 1 0 0 0
+; This '-' is an actual station
+1 - 1.00 090 0
+*alias station - ..
+; This '-' is an anon station
+1 - 1.00 270 0
+*alias station -
+; An back to the actual one
+- 2 1.00 180 0
