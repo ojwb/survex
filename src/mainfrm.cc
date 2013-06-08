@@ -60,7 +60,7 @@ const static int img2aven_tab[] = {
 inline int
 img2aven(int flags)
 {
-    flags &= (sizeof(img2aven_tab) / sizeof(img2aven_tab[0]));
+    flags &= (sizeof(img2aven_tab) / sizeof(img2aven_tab[0]) - 1);
     return img2aven_tab[flags];
 }
 

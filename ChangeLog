@@ -1,3 +1,7 @@
+Sat Jun 08 15:12:25 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix mapping of flags when loading a .3d file.
+
 Sat Jun 08 15:07:05 GMT 2013  Olly Betts <olly@survex.com>
 
 	* .gitignore,src/gen_img2aven: Commit script to generate img2aven.h.
