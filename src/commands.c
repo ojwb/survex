@@ -545,8 +545,9 @@ cmd_prefix(void)
 static void
 cmd_alias(void)
 {
-   /* Currently only one form is supported:
+   /* Currently only two forms are supported:
     * *alias station - ..
+    * *alias station -
     */
    get_token();
    if (strcmp(ucbuffer, "STATION") != 0)
