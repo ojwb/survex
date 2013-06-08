@@ -1,3 +1,8 @@
+Sat Jun 08 14:17:52 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/merge-po: Add "merge-pos" target to merge in new
+	  messages and updates to comments from survex.pot to the .po files.
+
 Sat Jun 08 14:10:16 GMT 2013  Olly Betts <olly@survex.com>
 
 	* tests/: Commit files for new tests.

@@ -46,3 +46,8 @@ mime_DATA = survex.keys
 
 unifont.pixelfont: $(srcdir)/make-pixel-font
 	$(srcdir)/make-pixel-font
+
+merge-pos:
+	cd '$(srcdir)' && ./merge-po $(po_files)
+
+.PHONY: merge-pos

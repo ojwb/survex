@@ -1,0 +1,74 @@
+#!/usr/bin/perl -w
+require 5.008;
+use bytes;
+use strict;
+use POSIX;
+use Locale::PO;
+
+use integer;
+
+if (@ARGV == 0 || $ARGV[0] eq '--help') {
+  print STDERR "Syntax: $0 PO_FILE...\n";
+  exit (@ARGV != 0);
+}
+
+my $pot = Locale::PO->load_file_asarray("survex.pot");
+for my $po_file (@ARGV) {
+  my $po = Locale::PO->load_file_ashash($po_file);
+  if (!defined $po) {
+    print STDERR "$po_file: Bad!\n";
+    next;
+  }
+  open NEW, '>', "$po_file.tmp" or die $!;
+  foreach my $pot_entry (@{$pot}) {
+    my $msgid = $pot_entry->msgid;
+    my $msgstr = '""';
+    my $po_entry;
+    if (exists $$po{$msgid}) {
+	$po_entry = $$po{$msgid};
+	$msgstr = $po_entry->msgstr;
+	delete $$po{$msgid};
+	if ($msgid eq '""') {
+	    $msgstr =~ s/\\n(..)/\\n"\n"$1/g;
+	    print NEW "msgid $msgid\nmsgstr \"\"\n$msgstr\n";
+	    next;
+	}
+    } else {
+	$po_entry = $pot_entry;
+    }
+    if (defined $pot_entry->automatic) {
+	my $automatic = "\n" . $pot_entry->automatic;
+	$automatic =~ s/\n/\n#. /g;
+	while ($automatic =~ s/\n#. \n/\n#.\n/g) { }
+	print NEW $automatic;
+    }
+    my $ref = $pot_entry->reference;
+    if (defined $ref) {
+	$ref = "\n" . $ref;
+	$ref =~ s/\n/\n#: /mg;
+	print NEW $ref;
+    }
+    my $fuzzy = $po_entry->fuzzy;
+    my $c_format = $pot_entry->c_format;
+    if ($fuzzy || $c_format) {
+	print NEW "\n#";
+	print NEW ", fuzzy" if $fuzzy;
+	print NEW ", c-format" if $c_format;
+    }
+    print NEW "\n";
+    print NEW "#~ " if $pot_entry->obsolete;
+    print NEW "msgid $msgid\n";
+    print NEW "#~ " if $pot_entry->obsolete;
+    print NEW "msgstr $msgstr\n";
+  }
+  close NEW or die $!;
+  unlink "$po_file.old";
+  for (sort keys %{$po}) {
+    my $msgstr = $$po{$_}->msgstr;
+    if ($msgstr ne '""') {
+      print "$po_file: Dropping [$_] -> [$msgstr]\n";
+    }
+  }
+  link $po_file, "$po_file.old" or die $!;
+  rename "$po_file.tmp", $po_file or die $!;
+}
