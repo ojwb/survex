@@ -1604,6 +1604,11 @@ msgstr "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgid "Can’t calibrate angular and length quantities together"
 msgstr "Can’t calibrate angular and length quantities together"
 
+#: ../src/command.c:564
+#: n:397
+msgid "Bad *alias command"
+msgstr "Bad *alias command"
+
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
 #~ msgid "Select a terrain file to view"
@@ -2750,3 +2755,23 @@ msgstr "Can't have a shot between two anonymous stations"
 #: n:396
 msgid "show survey date information (if present)"
 msgstr "show survey date information (if present)"
+
+#: ../src/mainfrm.cc:810
+#: n:406
+msgid "Spla&y Legs"
+msgstr ""
+
+#: ../src/mainfrm.cc:807
+#: n:407
+msgid "Hide splay legs"
+msgstr "Hide splay shots"
+
+#: ../src/mainfrm.cc:808
+#: n:408
+msgid "Show splay legs faded"
+msgstr "Show splay shots faded"
+
+#: ../src/mainfrm.cc:809
+#: n:409
+msgid "Show splay legs normally"
+msgstr "Show splay shots normally"

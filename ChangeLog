@@ -1,3 +1,7 @@
+Sat Jun 08 06:01:38 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po,lib/en_US.po: Update translations.
+
 Thu Jun 06 10:56:22 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Show splay legs faded by default, with menu options to
