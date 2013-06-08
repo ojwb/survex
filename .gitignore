@@ -69,6 +69,7 @@ src/cavern
 src/diffpos
 src/dump3d
 src/extend
+src/img2aven.h
 src/sorterr
 src/svxedit
 src/svxedit.ico
