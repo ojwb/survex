@@ -1,3 +1,9 @@
+Sun Jun 09 00:04:37 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c: Handle .pos files containing unnamed stations - don't suck
+	  the next line in as the station name, and set img_SFLAG_ANON for
+	  them.
+
 Sat Jun 08 15:12:25 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Fix mapping of flags when loading a .3d file.

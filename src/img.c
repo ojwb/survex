@@ -1335,12 +1335,12 @@ img_read_item_ascii(img *pimg, img_point *p)
       return result;
    } else if (pimg->version == VERSION_SURVEX_POS) {
       /* Survex .pos file */
+      int ch;
       size_t off;
       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
       againpos:
       off = 0;
-      while (fscanf(pimg->fh, "(%lf,%lf,%lf ) ", &p->x, &p->y, &p->z) != 3) {
-	 int ch;
+      while (fscanf(pimg->fh, "(%lf,%lf,%lf )", &p->x, &p->y, &p->z) != 3) {
 	 if (ferror(pimg->fh)) {
 	    img_errno = IMG_READERROR;
 	    return img_BAD;
@@ -1358,6 +1358,16 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       pimg->label_buf[0] = '\0';
+      do {
+	  ch = GETC(pimg->fh);
+      } while (ch == ' ' || ch == '\t');
+      if (ch == '\n' || ch == EOF) {
+	  // If there's no label, set img_SFLAG_ANON.
+	  pimg->flags |= img_SFLAG_ANON;
+	  return img_LABEL;
+      }
+      pimg->label_buf[0] = ch;
+      off = 1;
       while (!feof(pimg->fh)) {
 	 if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
 	    img_errno = IMG_READERROR;
