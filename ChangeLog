@@ -1,3 +1,7 @@
+Mon Jun 10 11:47:37 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/unlaunchpad-po: Normalise dates in PO headers.
+
 Mon Jun 10 07:23:07 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am,lib/unlaunchpad-po: Add "launchpad-diff" make target
