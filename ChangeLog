@@ -1,3 +1,8 @@
+Mon Jun 10 07:23:07 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/unlaunchpad-po: Add "launchpad-diff" make target
+	  to assist with merging in translation changes from launchpad.
+
 Sun Jun 09 00:04:37 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.c: Handle .pos files containing unnamed stations - don't suck

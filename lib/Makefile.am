@@ -50,4 +50,21 @@ unifont.pixelfont: $(srcdir)/make-pixel-font
 merge-pos:
 	cd '$(srcdir)' && ./merge-po $(po_files)
 
+launchpad-diff:
+	rm -rf lib
+	tar xf launchpad-export.tar.gz
+	for po in $(po_files) ; do \
+	    lpo="lib/survex-$$po" ;\
+	    perl -i ./unlaunchpad-po "$$lpo" ;\
+	    if ! diff -q "$$po" "$$lpo" ; then \
+		echo "Edit changes for $$po ? (Y/n/q)" ;\
+		read ;\
+		case $$REPLY in \
+		q*) exit 0 ;;\
+		n*) ;;\
+		*) vimdiff "$$po" "$$lpo" ;;\
+		esac ;\
+	    fi ;\
+	done
+
 .PHONY: merge-pos
