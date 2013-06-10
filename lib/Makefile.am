@@ -55,14 +55,16 @@ launchpad-diff:
 	tar xf launchpad-export.tar.gz
 	for po in $(po_files) ; do \
 	    lpo="lib/survex-$$po" ;\
+	    [ -r "$$lpo" ] || continue ;\
 	    perl -i ./unlaunchpad-po "$$lpo" ;\
-	    if ! diff -q "$$po" "$$lpo" ; then \
+	    ./launchpad-merge-po "$$po" > "lib/$$po" ;\
+	    if ! diff -q "$$po" "lib/$$po" ; then \
 		echo "Edit changes for $$po ? (Y/n/q)" ;\
 		read ;\
 		case $$REPLY in \
 		q*) exit 0 ;;\
 		n*) ;;\
-		*) vimdiff "$$po" "$$lpo" ;;\
+		*) vimdiff "$$po" "lib/$$po" ;;\
 		esac ;\
 	    fi ;\
 	done

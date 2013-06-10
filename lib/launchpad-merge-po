@@ -1,0 +1,89 @@
+#!/usr/bin/perl -w
+use strict;
+
+open O, '<', $ARGV[0] or die $!;
+open N, '<', "lib/survex-$ARGV[0]" or die $!;
+
+my $fuzzy = 0;
+my $diff = 0;
+my ($o, $n);
+while (1) {
+    $o //= <O>;
+    $n //= <N>;
+    if (!defined $n) {
+	last unless defined $o;
+	print '-' if $diff;
+	print $o;
+	$o = undef;
+	next;
+    }
+    if (!defined $o) {
+	print '+' if $diff;
+	print $n;
+	$n = undef;
+	next;
+    }
+
+    if ($o eq '' || $n eq '') {
+	$fuzzy = 0;
+    }
+
+    if ($o eq $n) {
+	print ' ' if $diff;
+	print $n;
+	$n = $o = undef;
+	next;
+    }
+
+    if ($o eq "#~ $n") {
+	print ' ' if $diff;
+	print $o;
+	$n = $o = undef;
+	next;
+    }
+
+    if ($o =~ /^("PO(?:-Revision|T-Creation)-Date: \d+-\d+-\d+ \d+:\d+):\d\d (.*\n)$/ &&
+	$n eq "$1:00 $2") {
+	print ' ' if $diff;
+	print $o;
+	$n = $o = undef;
+	next;
+    }
+
+    if ($o =~ /^"PO-Revision-Date:/ && $n =~ /^"PO-Revision-Date:/) {
+	print ' ' if $diff;
+	print $o;
+	$n = $o = undef;
+	next;
+    }
+
+    if ($o eq "#, fuzzy\n") {
+	print ' ' if $diff;
+	print $o;
+	$o = undef;
+	$fuzzy = 1;
+	next;
+    }
+
+    my $tmp = $o;
+    if ($tmp =~ s/, fuzzy// && $n eq $tmp) {
+	print ' ' if $diff;
+	print $o;
+	$n = $o = undef;
+	$fuzzy = 1;
+	next;
+    }
+
+    if ($fuzzy && $o =~ /^(?:#~ )?msgstr / && $n eq "msgstr \"\"\n") {
+	print ' ' if $diff;
+	print $o;
+	$n = $o = undef;
+	$fuzzy = 0;
+	next;
+    }
+
+    print "-$o" if $diff;
+    print '+' if $diff;
+    print $n;
+    $n = $o = undef;
+}

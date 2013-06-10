@@ -1,3 +1,10 @@
+Mon Jun 10 11:50:18 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/launchpad-merge-po: New script to eliminate unwanted differences
+	  introduced by launchpad.
+	* lib/Makefile.am: Make launchpad-diff target use launchpad-merge-po
+	  and skip files missing in the launchpad export.
+
 Mon Jun 10 11:47:37 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/unlaunchpad-po: Normalise dates in PO headers.
