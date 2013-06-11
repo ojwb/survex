@@ -1,3 +1,7 @@
+Tue Jun 11 11:51:13 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Mon Jun 10 11:50:18 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/launchpad-merge-po: New script to eliminate unwanted differences

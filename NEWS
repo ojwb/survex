@@ -1,28 +1,86 @@
-fc06ec5f (Olly Betts 2012-12-20 17:31:38 +1300    1) Thu Dec 20 04:31:22 GMT 2012  Olly Betts <olly@survex.com>
+bb51ecde (Olly Betts 2013-06-10 23:52:12 +1200    1) Mon Jun 10 11:50:18 GMT 2013  Olly Betts <olly@survex.com>
 
-	* INSTALL,lib/INSTALL.OSX,src/,survex.spec.in: Require at least
-	  wxWidgets 2.8.0 - it was released just over 6 years ago now,
-	  and the wx developers consider even 2.8 to be rather long in
-	  the tooth.  I haven't test build with wx 2.6 for more than a year
-	  and it's no longer packaged for Debian.  Dropping support for
-	  older wx allows a number of workarounds to be removed.
+Changes in 1.2.7 (2013-06-11):
 
-	* src/: Fix uses of some wx features which are deprecated in wx2.9.
+* Store the 'processed at' timestamp in the .3d file as seconds since 1970
+  rather than as a human readable string.
 
-	* src/message.c: Use only ASCII for the handful of hardcoded messages
-	  we need for errors loading message files, as it's probably more
-	  likely the wrong encoding will be set in such cases.
+* Add more testcases for cavern.
 
-	* src/message.c: If we don't find the message file, only give an error
-	  if it was specified with SURVEX_LANG, since that is an explicit
-	  instruction to Survex, whereas LANG, LC_ALL and LC_MESSAGES are
-	  essentially system "preferred locale" settings.
+* aven: It seems we need to
+	  include GL/gl.h before we can safely include GL/glext.h (at least on
+	  Debian wheezy).
+
+* configure.ac,src/glbitmapfont.cc: Check sizeof(wxChar) at configure
+	  time, so we can avoid a warning when sizeof(wxChar)==2 (which is the
+	  case under mingw).
+
+* doc/manual.sgml: "surface topology" -> "surface topography".
+
+	* lib/po-to-msg.pl: Fix matching quote check to really allow
+	  for using « and » in a translation.
+
+* aven: Use wxValidator to simplify keeping svxPrintDlg member
+	  variables and fields in the dialog in sync.
+
+* Fix a number of compiler warnings.
+
+* Add support for anonymous stations,
+	  indicated by a separator character by itself, or repeated two or
+	  three times; with the default separator of '.', that means '.'
+	  '..' and '...' are anonymous stations.  A double
+	  separator ('..' by default) is an anoymous wall point at the end
+	  of an implicit splay (c.f. '.' being a non-wall point), and
+	  a triple separator ('...' by default) is an anoymous point (with
+	  nothing special about the leg).  3d file format now
+	  supports new 'ANON' and 'WALL' station flag.
+
+	* src/img.c: Handle .pos files containing unnamed stations - don't suck
+	  the next line in as the station name, and set img_SFLAG_ANON for
+	  them.
+
+* cavern: Report a warning if *begin SURVEY has a separator character in
+  SURVEY.
+
+* cavern: Demote errors about invalid dates to warnings, since we've accepted
+  *date for ages without any checks on the value, and so existing datasets
+  probably contain invalid dates and dates in other formats.  (ticket#19)
+
+* cavern: Adjust width of node stats table to fit longest count when there are
+  more than 9999 of a particular order of node.
+
+	* lib/sk.po: Resolve a couple of inconsistencies in translation of
+	  similar messages by asking Martin Sluka.
+	* lib/en_US.po: Fix clashing menu accelerator.
+	* lib/de.po,lib/de_CH.po,lib/en_US.po: Update translations.
+	* lib/: Fill in new messages from existing translations where possible.
+
+* There are a handful of hard-coded message strings for reporting errors
+  trying loading message files, etc.  These are all now ASCII, as if we
+  fail trying to open a message file, it's more likely the encoding isn't
+  set correctly.
+
+* If we don't find the message file, only give an error if it was specified
+  with SURVEX_LANG, since that is an explicit instruction to Survex, whereas
+  LANG, LC_ALL and LC_MESSAGES are essentially system "preferred locale"
+  settings.
 
 	* lib/po_codes,lib/po_codes_dead: Prune strings we aren't using and are
 	  probably unlikely to use again into a new file po_codes_dead, so that
 	  translators don't get presented with them to translate.
 
-Changes in 1.2.7 (2012-12-19):
+* aven: We now require at least wxWidgets 2.8.0 - it was released over 6 years
+  ago now, and the wx developers consider even 2.8 to be rather long in the
+  tooth.  We stopped testing building with wxWidgets 2.6 some time ago, and
+  formally dropping support for older versions allows a number of workarounds to
+  be removed from the aven source code.  Also, features deprecated in wxWidgets
+  2.9 are no longer used.
+
+* aven: Implement support for including cross-section information in exported
+  SVG and DXF files (ticket#4).  The DXF export is untested (FIXME ?)
+
+* aven: Add a checkbox to the print dialog to control exporting of
+  cross-section information.
 
 * aven: Don't run incremental search on every key-press, as on a slow machine
   the short initial search(es) will take a while but not be useful.  Instead
@@ -33,12 +91,27 @@ Changes in 1.2.7 (2012-12-19):
   no message after it, which avoids highlighting the "Included from" lines
   wrongly.
 
-* aven: Fix not to crash if we hit an error while trying to load translated
-  messages.
+* aven: Fix not to crash when trying to report an error while starting up.
+
+* aven: Show splay legs faded by default, with menu options to hide them or
+  show them like other legs.
+
+* aven: Add checks for errors when reading the font file.
+
+* aven: Remove useless extra quoting when invoking vim to show the location
+  of an error from cavern.
 
 * (MacOS X version): aven: Change the menu shortcut for "Full Screen Mode" to
   be the OS X standard shortcut Shift-Command-F (previously we used F11, but
   that's used by the desktop).
+
+* cavern: Report column numbers as well as line numbers for more cavern errors
+  and warnings.
+
+* cavern: If the argument to *include has an opening double quote but the
+  closing double quote is missing, then skip trying to open the file.
+
+* cavern: New *alias command allows '-' to be mapped to '..' to match pocket topo conventions.
 
 * cavern: We want to warn if there's a clino reading which it would be
   impossible to have read from the instrument (e.g. on a -90 to 90 degree scale
@@ -83,9 +156,11 @@ Changes in 1.2.7 (2012-12-19):
 * img library: New leg flag img_FLAG_NOSURVEY, now set by cavern for NOSURVEY
   legs.
 
+* dump3d: Add --show-dates option.
+
 * dump3d: Report new NOSURVEY leg flag.
 
-* dump3d: Add --show-dates option.
+* dump3d: Report img_STOP as STOP rather than CODE_0xffffffff.
 
 * Test suite:
 
