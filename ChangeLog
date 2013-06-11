@@ -1,3 +1,9 @@
+Tue Jun 11 12:06:08 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: wxValidator subclasses shouldn't have a copy ctor,
+	  so give BitValidator an unimplemented private copy ctor, and use
+	  the normal ctor instead to implement the Clone() method.
+
 Tue Jun 11 11:51:13 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog.
