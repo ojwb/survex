@@ -42,23 +42,31 @@ cd "$tardir"
 
 test -n "$build_platform" || build_platform=`sh config.guess`
 SAVE_PATH=$PATH
-wxc=/usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8
-if test -x /usr/bin/i686-w64-mingw32-g++ ; then
-  # debian mingw-w64 packages
-  CC=/usr/bin/i686-w64-mingw32-gcc
-  CXX=/usr/bin/i686-w64-mingw32-g++
-  wxc=/usr/lib/wx/config/i686-w64-mingw32-msw-unicode-release-static-2.8
-elif test -d /usr/i586-mingw32msvc/bin ; then
-  # debian mingw32 package
-  PATH=/usr/i586-mingw32msvc/bin:$PATH
-  CC=/usr/bin/i586-mingw32msvc-gcc
-  CXX=/usr/bin/i586-mingw32msvc-g++
-else
-  # variant of debian mingw32 package?
-  PATH=/usr/i386-mingw32msvc/bin:$PATH
-  CC=/usr/bin/i386-mingw32msvc-gcc
-  CXX=/usr/bin/i386-mingw32msvc-g++
-fi
+for wxc in \
+  /usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8 \
+  /usr/lib/wx/config/i686-w64-mingw32-msw-unicode-release-static-2.8 \
+  "" ; do
+  if test -z "$wxc" ; then
+    echo "wx-config for mingw not found" >&2
+    exit 1
+  fi
+  if test -x "$wxc" ; then
+    CC=`$wxc --cc`
+    CXX=`$wxc --cxx`
+    break
+  fi
+done
+case $CC in
+  *i586-mingw32msvc-gcc)
+    # debian mingw32 package
+    PATH=/usr/i586-mingw32msvc/bin:$PATH
+    ;;
+  *i386-mingw32msvc-gcc)
+    # debian mingw32 package
+    PATH=/usr/i386-mingw32msvc/bin:$PATH
+    ;;
+esac
+
 # Passing -Werror to configure causes AC_CHECK_FUNCS to fail, so pass it to
 # make instead.
 ./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CXXFLAGS="-fno-strict-aliasing -Werror" WX_CONFIG="$wxc" LDFLAGS='-s -static'

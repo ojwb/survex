@@ -1,3 +1,9 @@
+Wed Jun 12 13:33:38 GMT 2013  Olly Betts <olly@survex.com>
+
+	* make_release: Tweak 'mingw' building to look for a suitable
+	  wx-config and get the C and C++ compilers to use using its
+	  --cc and --cxx flags.
+
 Tue Jun 11 12:06:08 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: wxValidator subclasses shouldn't have a copy ctor,
