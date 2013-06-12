@@ -121,7 +121,7 @@ all_sources = \
 	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox
 
 EXTRA_DIST = \
- aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov
+ aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert gen_img2aven
 
 BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h
 

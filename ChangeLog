@@ -1,3 +1,7 @@
+Wed Jun 12 13:34:52 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Ship gdtconvert and gen_img2aven.
+
 Wed Jun 12 13:33:38 GMT 2013  Olly Betts <olly@survex.com>
 
 	* make_release: Tweak 'mingw' building to look for a suitable
