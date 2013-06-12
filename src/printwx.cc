@@ -77,9 +77,6 @@ class BitValidator : public wxValidator {
     // Disallow assignment.
     BitValidator & operator=(const BitValidator&);
 
-    // Disallow copying.
-    BitValidator(const BitValidator &);
-
   protected:
     int * val;
 
@@ -89,9 +86,20 @@ class BitValidator : public wxValidator {
     BitValidator(int * val_, int mask_)
 	: val(val_), mask(mask_) { }
 
+    BitValidator(const BitValidator &o) : wxValidator() {
+	Copy(o);
+    }
+
     ~BitValidator() { }
 
     wxObject *Clone() const { return new BitValidator(val, mask); }
+
+    bool Copy(const BitValidator& o) {
+	wxValidator::Copy(o);
+	val = o.val;
+	mask = o.mask;
+	return true;
+    }
 
     bool Validate(wxWindow *) { return true; }
 
