@@ -109,10 +109,10 @@ main(int argc, char **argv)
 	 code = img_read_item(pimg, &pt);
 	 switch (code) {
 	  case img_MOVE:
-	    printf("MOVE %f %f %f\n", pt.x, pt.y, pt.z);
+	    printf("MOVE %.2f %.2f %.2f\n", pt.x, pt.y, pt.z);
 	    break;
 	  case img_LINE:
-	    printf("LINE %f %f %f [%s]", pt.x, pt.y, pt.z, pimg->label);
+	    printf("LINE %.2f %.2f %.2f [%s]", pt.x, pt.y, pt.z, pimg->label);
 	    if (pimg->flags & img_FLAG_SURFACE) printf(" SURFACE");
 	    if (pimg->flags & img_FLAG_DUPLICATE) printf(" DUPLICATE");
 	    if (pimg->flags & img_FLAG_SPLAY) printf(" SPLAY");
@@ -129,7 +129,7 @@ main(int argc, char **argv)
 	    printf("\n");
 	    break;
 	  case img_LABEL:
-	    printf("NODE %f %f %f [%s]", pt.x, pt.y, pt.z, pimg->label);
+	    printf("NODE %.2f %.2f %.2f [%s]", pt.x, pt.y, pt.z, pimg->label);
 	    if (pimg->flags & img_SFLAG_SURFACE) printf(" SURFACE");
 	    if (pimg->flags & img_SFLAG_UNDERGROUND) printf(" UNDERGROUND");
 	    if (pimg->flags & img_SFLAG_ENTRANCE) printf(" ENTRANCE");
@@ -139,7 +139,7 @@ main(int argc, char **argv)
 	    printf("\n");
 	    break;
 	  case img_XSECT:
-	    printf("XSECT %f %f %f %f [%s]\n",
+	    printf("XSECT %.2f %.2f %.2f %.2f [%s]\n",
 		   pimg->l, pimg->r, pimg->u, pimg->d, pimg->label);
 	    break;
 	  case img_XSECT_END:

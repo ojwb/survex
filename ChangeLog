@@ -1,3 +1,8 @@
+Tue Jul 02 11:01:41 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c: Show only 2 decimal places on coordinates and passage
+	  dimensions.
+
 Wed Jun 12 13:35:21 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Implement a copy ctor for BitValidator in the same
