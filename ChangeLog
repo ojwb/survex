@@ -1,3 +1,8 @@
+Tue Jul 02 12:04:09 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c: Revert to putting a human readable timestamp string in
+	  v7 and older files.
+
 Tue Jul 02 11:01:41 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/dump3d.c: Show only 2 decimal places on coordinates and passage

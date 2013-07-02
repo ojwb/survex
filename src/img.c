@@ -692,6 +692,11 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    tm = time(NULL);
    if (tm == (time_t)-1) {
       fputsnl(TIMENA, pimg->fh);
+   } else if (pimg->version <= 7) {
+      char date[256];
+      /* output current date and time in format specified */
+      strftime(date, 256, TIMEFMT, localtime(&tm));
+      fputsnl(date, pimg->fh);
    } else {
       fprintf(pimg->fh, "@%ld\n", (long)tm);
    }
