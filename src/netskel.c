@@ -414,7 +414,7 @@ replace_travs(void)
    if (!pimg) {
       char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
       filename_register_output(fnm);
-      pimg = img_open_write(fnm, survey_title, fTrue);
+      pimg = img_open_write(fnm, survey_title, 0);
       if (!pimg) fatalerror(img_error(), fnm);
       osfree(fnm);
    }

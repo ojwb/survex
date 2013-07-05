@@ -1,3 +1,8 @@
+Fri Jul 05 13:11:25 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c,src/netskel.c: The fBinary parameter of img_open_write()
+	  has been unused for years, so stop passing fTrue.
+
 Tue Jul 02 12:04:09 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.c: Revert to putting a human readable timestamp string in

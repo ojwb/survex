@@ -77,7 +77,7 @@ main(int argc, char **argv)
    fnm = argv[optind];
 
 #if 0
-   pimg = img_open_write("dump3d.3d", "dump3d", fTrue);
+   pimg = img_open_write("dump3d.3d", "dump3d", 0);
    if (!pimg) fatalerror(img_error(), "dump3d.3d");
    img_write_item(pimg, img_MOVE, 0, NULL, 0, 0, 0);
    img_write_item(pimg, img_LINE, 0, "161.lostworld.upstream",
