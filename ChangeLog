@@ -1,3 +1,7 @@
+Sun Jul 07 12:14:23 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c: Report if the file is an extended elevation.
+
 Sun Jul 07 12:12:24 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/: Track the data style of each leg, and pass it in to img - it's
