@@ -123,11 +123,7 @@ typedef struct {
    char *label_buf;
    size_t buf_len;
    size_t label_len;
-# ifdef IMG_HOSTED
-   bool fRead;        /* fTrue for reading, fFalse for writing */
-# else
-   int fRead;        /* fTrue for reading, fFalse for writing */
-# endif
+   int fRead;        /* 1 for reading, 0 for writing */
    long start;
    /* version of file format:
     *  -4 => CMAP .xyz file, shot format

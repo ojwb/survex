@@ -1,3 +1,8 @@
+Sun Jul 07 13:03:56 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.h: Just make fRead always int, eliminating IMG_HOSTED
+	  conditional.
+
 Sun Jul 07 12:45:11 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/extend.c,src/img.c,src/img.h: Repurpose the long unused fBinary
