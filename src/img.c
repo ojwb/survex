@@ -723,6 +723,7 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
    pimg->days1 = pimg->days2 = -1;
    pimg->olddays1 = pimg->olddays2 = -1;
 #endif
+   pimg->style = pimg->oldstyle = img_STYLE_UNKNOWN;
 
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 

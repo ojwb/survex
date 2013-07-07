@@ -118,8 +118,16 @@ typedef enum {
 #endif
    /* Don't need to match img.h: */
    FLAGS_ANON_ONE_END,
-   FLAGS_IMPLICIT_SPLAY
+   FLAGS_IMPLICIT_SPLAY,
+   FLAGS_STYLE_BIT0, FLAGS_STYLE_BIT1, FLAGS_STYLE_BIT2
 } flags;
+
+/* flags are currently stored in an unsigned char */
+typedef int compiletimeassert_flags0[FLAGS_STYLE_BIT2 <= 7 ? 1 : -1];
+
+/* Mask to AND with to get bits to pass to img library. */
+#define FLAGS_MASK \
+    (BIT(FLAGS_SURFACE) | BIT(FLAGS_DUPLICATE) | BIT(FLAGS_SPLAY))
 
 typedef int compiletimeassert_flags1[BIT(FLAGS_SURFACE) == img_FLAG_SURFACE ? 1 : -1];
 typedef int compiletimeassert_flags2[BIT(FLAGS_DUPLICATE) == img_FLAG_DUPLICATE ? 1 : -1];
@@ -285,6 +293,12 @@ typedef struct Inst {
 #define STYLE_PASSAGE    4
 #define STYLE_NOSURVEY   5
 #define STYLE_IGNORE     6
+
+typedef int compiletimeassert_style1[STYLE_NORMAL == img_STYLE_NORMAL ? 1 : -1];
+typedef int compiletimeassert_style2[STYLE_DIVING == img_STYLE_DIVING ? 1 : -1];
+typedef int compiletimeassert_style3[STYLE_CARTESIAN == img_STYLE_CARTESIAN ? 1 : -1];
+typedef int compiletimeassert_style4[STYLE_CYLPOLAR == img_STYLE_CYLPOLAR ? 1 : -1];
+typedef int compiletimeassert_style5[STYLE_NOSURVEY == img_STYLE_NOSURVEY ? 1 : -1];
 
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {

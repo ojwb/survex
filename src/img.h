@@ -74,6 +74,13 @@ extern "C" {
  */
 # define img_XFLAG_END      0x01
 
+# define img_STYLE_UNKNOWN   -1
+# define img_STYLE_NORMAL     0
+# define img_STYLE_DIVING     1
+# define img_STYLE_CARTESIAN  2
+# define img_STYLE_CYLPOLAR   3
+# define img_STYLE_NOSURVEY   5
+
 /* 3D coordinates (in metres) */
 typedef struct {
    double x, y, z;
@@ -104,6 +111,9 @@ typedef struct {
    /* The filename actually opened (e.g. may have ".3d" added). */
    char * filename_opened;
    int is_extended_elevation;
+   /* The style of the data - one of the img_STYLE_* constants above */
+   int style;
+
    /* all other members are for internal use only */
    FILE *fh;          /* file handle of image file */
    char *label_buf;
@@ -139,6 +149,7 @@ typedef struct {
 #else /* IMG_API_VERSION == 1 */
    int olddays1, olddays2;
 #endif
+   int oldstyle;
 } img;
 
 /* Which version of the file format to output (defaults to newest) */

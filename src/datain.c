@@ -1787,7 +1787,7 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
       link->fr = StnFromPfx(fr);
       link->to = StnFromPfx(to);
    }
-   link->flags = pcs->flags;
+   link->flags = pcs->flags | (STYLE_NOSURVEY << FLAGS_STYLE_BIT0);
    link->meta = pcs->meta;
    if (pcs->meta) ++pcs->meta->ref_count;
    link->next = nosurveyhead;

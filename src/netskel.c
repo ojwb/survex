@@ -449,7 +449,8 @@ replace_travs(void)
 	    } else {
 		pimg->days1 = pimg->days2 = -1;
 	    }
-	    img_write_item(pimg, img_LINE, leg->l.flags,
+	    pimg->style = (leg->l.flags >> FLAGS_STYLE_BIT0) & 0x07;
+	    img_write_item(pimg, img_LINE, leg->l.flags & FLAGS_MASK,
 			   sprint_prefix(stn1->name->up),
 			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 	    if (!(leg->l.reverse & FLAG_ARTICULATION)) {
@@ -636,7 +637,8 @@ replace_travs(void)
 	    } else {
 		pimg->days1 = pimg->days2 = -1;
 	    }
-	    img_write_item(pimg, img_LINE, leg->l.flags,
+	    pimg->style = (leg->l.flags >> FLAGS_STYLE_BIT0) & 0x07;
+	    img_write_item(pimg, img_LINE, leg->l.flags & FLAGS_MASK,
 			   sprint_prefix(leg_pfx),
 			   POS(stn3, 0), POS(stn3, 1), POS(stn3, 2));
 	 }
@@ -807,7 +809,8 @@ replace_trailing_travs(void)
 	    } else {
 		pimg->days1 = pimg->days2 = -1;
 	    }
-	    img_write_item(pimg, img_LINE, leg->l.flags,
+	    pimg->style = (leg->l.flags >> FLAGS_STYLE_BIT0) & 0x07;
+	    img_write_item(pimg, img_LINE, leg->l.flags & FLAGS_MASK,
 			   sprint_prefix(leg_pfx),
 			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
 	 }
@@ -844,7 +847,8 @@ replace_trailing_travs(void)
       } else {
 	  pimg->days1 = pimg->days2 = -1;
       }
-      img_write_item(pimg, img_LINE, p->flags|img_FLAG_NOSURVEY,
+      pimg->style = img_STYLE_NOSURVEY;
+      img_write_item(pimg, img_LINE, (p->flags & FLAGS_MASK),
 		     sprint_prefix(p->fr->name->up),
 		     POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
       nosurveyhead = p->next;

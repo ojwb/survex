@@ -1,3 +1,9 @@
+Sun Jul 07 12:12:24 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/: Track the data style of each leg, and pass it in to img - it's
+	  not yet stored in the .3d file, but now it is easily available so it
+	  can be.
+
 Fri Jul 05 13:17:24 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac,doc/3dformat-old.htm: Split off a copy of the current
