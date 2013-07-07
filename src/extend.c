@@ -525,9 +525,7 @@ main(int argc, char **argv)
       }
    } while (result != img_STOP);
 
-   desc = osmalloc(strlen(pimg->title) + 11 + 1);
-   strcpy(desc, pimg->title);
-   strcat(desc, " (extended)");
+   desc = osstrdup(pimg->title);
 
    if (specfile) {
       FILE *fs = NULL;
@@ -594,7 +592,7 @@ main(int argc, char **argv)
 
    printf(msg(/*Writing %s…*/522), fnm_out);
    putnl();
-   pimg_out = img_open_write(fnm_out, desc, fTrue);
+   pimg_out = img_open_write(fnm_out, desc, img_FFLAG_EXTENDED);
 
    /* Only does single connected component currently. */
    do_stn(start, 0.0, NULL, ERIGHT, 0);

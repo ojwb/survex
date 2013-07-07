@@ -1,3 +1,12 @@
+Sun Jul 07 12:45:11 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/extend.c,src/img.c,src/img.h: Repurpose the long unused fBinary
+	  parameter to img_open_write() as a flags parameter, and add
+	  img_FFLAG_EXTENDED to specify that this is an extended elevation,
+	  in place of appending " (extended)" to the title.  Internally we
+	  still append this to the title (and remove it upon reading), but in
+	  the 3d v8 format, the flags will be stored explicitly in the file.
+
 Sun Jul 07 12:22:32 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.h: Add comments for the lists of "Leg flags" and "Station

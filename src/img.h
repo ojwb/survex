@@ -70,6 +70,9 @@ extern "C" {
 # define img_SFLAG_ANON        0x20
 # define img_SFLAG_WALL        0x40
 
+/* File-wide flags */
+# define img_FFLAG_EXTENDED 0x80
+
 /* When writing img_XSECT, img_XFLAG_END in pimg->flags means this is the last
  * img_XSECT in this tube:
  */
@@ -178,17 +181,17 @@ img *img_open_survey(const char *fnm, const char *survey);
 
 /* Open a .3d file for output
  * fnm is the filename
- * title_buf is the title
- * fBinary is ignored (it used to select an ASCII variant of the earliest
- * version of the 3d file format)
+ * title is the title
+ * flags contains a bitwise-or of any file-wide flags - currently only one
+ * is available: img_FFLAG_EXTENDED.  (The third parameter used to be
+ * 'fBinary', but has been ignored for many years, so the parameter has
+ * been repurposed for flags - for this reason, img.c deliberately ignores bit
+ * 1 being set, but callers should be written/updated not to set it).
+ *
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details)
  */
-# ifdef IMG_HOSTED
-img *img_open_write(const char *fnm, char *title_buf, bool fBinary);
-# else
-img *img_open_write(const char *fnm, char *title_buf, int fBinary);
-# endif
+img *img_open_write(const char *fnm, char *title, int flags);
 
 /* Read an item from a .3d file
  * pimg is a pointer to an img struct returned by img_open()

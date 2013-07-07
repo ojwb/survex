@@ -643,12 +643,10 @@ img_rewind(img *pimg)
 }
 
 img *
-img_open_write(const char *fnm, char *title_buf, bool fBinary)
+img_open_write(const char *fnm, char *title, int flags)
 {
    time_t tm;
    img *pimg;
-
-   fBinary = fBinary;
 
    if (fDirectory(fnm)) {
       img_errno = IMG_DIRECTORY;
@@ -688,7 +686,17 @@ img_open_write(const char *fnm, char *title_buf, bool fBinary)
       pimg->version = (img_output_version > IMG_VERSION_MAX) ? IMG_VERSION_MAX : img_output_version;
       fprintf(pimg->fh, "v%d\n", pimg->version); /* file format version no. */
    }
-   fputsnl(title_buf, pimg->fh);
+
+   fputs(title, pimg->fh);
+   if ((flags & img_FFLAG_EXTENDED)) {
+      /* Current format versions append " (extended)" to the title to mark
+       * extended elevations. */
+      size_t len = strlen(title);
+      if (len < 11 || strcmp(title + len - 11, " (extended)") != 0)
+	 fputs(" (extended)", pimg->fh);
+   }
+   PUTC('\n', pimg->fh);
+
    tm = time(NULL);
    if (tm == (time_t)-1) {
       fputsnl(TIMENA, pimg->fh);
