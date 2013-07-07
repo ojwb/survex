@@ -56,10 +56,12 @@ extern "C" {
 # define img_XSECT_END 5
 # define img_ERROR_INFO 6
 
+/* Leg flags */
 # define img_FLAG_SURFACE   0x01
 # define img_FLAG_DUPLICATE 0x02
 # define img_FLAG_SPLAY     0x04
 
+/* Station flags */
 # define img_SFLAG_SURFACE     0x01
 # define img_SFLAG_UNDERGROUND 0x02
 # define img_SFLAG_ENTRANCE    0x04

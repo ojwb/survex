@@ -1,3 +1,8 @@
+Sun Jul 07 12:22:32 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.h: Add comments for the lists of "Leg flags" and "Station
+	  flags".
+
 Sun Jul 07 12:20:29 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,src/dump3d.c,src/img.h: Drop img_FLAG_NOSURVEY - it's redundant
