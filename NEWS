@@ -153,12 +153,7 @@ Changes in 1.2.7 (2013-06-11):
 * cavern: Simplify handling of quantity lists to only recognise 'DEFAULT' as
   the first item.
 
-* img library: New leg flag img_FLAG_NOSURVEY, now set by cavern for NOSURVEY
-  legs.
-
 * dump3d: Add --show-dates option.
-
-* dump3d: Report new NOSURVEY leg flag.
 
 * dump3d: Report img_STOP as STOP rather than CODE_0xffffffff.
 

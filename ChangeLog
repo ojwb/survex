@@ -1,3 +1,9 @@
+Sun Jul 07 12:20:29 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS,src/dump3d.c,src/img.h: Drop img_FLAG_NOSURVEY - it's redundant
+	  now we're going to store the style of each leg, and it hasn't yet
+	  been in a release.
+
 Sun Jul 07 12:14:23 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/dump3d.c: Report if the file is an extended elevation.

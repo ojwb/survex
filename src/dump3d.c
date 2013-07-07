@@ -118,7 +118,6 @@ main(int argc, char **argv)
 	    if (pimg->flags & img_FLAG_SURFACE) printf(" SURFACE");
 	    if (pimg->flags & img_FLAG_DUPLICATE) printf(" DUPLICATE");
 	    if (pimg->flags & img_FLAG_SPLAY) printf(" SPLAY");
-	    if (pimg->flags & img_FLAG_NOSURVEY) printf(" NOSURVEY");
 	    if (show_dates && pimg->days1 != -1) {
 		int y, m, d;
 		ymd_from_days_since_1900(pimg->days1, &y, &m, &d);
