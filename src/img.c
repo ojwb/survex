@@ -603,13 +603,18 @@ v03d:
       return NULL;
    }
 
-   pimg->start = ftell(pimg->fh);
-
-   len = strlen(pimg->title);
-   if (len > 11 && strcmp(pimg->title + len - 11, " (extended)") == 0) {
-       pimg->title[len - 11] = '\0';
-       pimg->is_extended_elevation = 1;
+   if (pimg->version >= 8) {
+      int flags = GETC(pimg->fh);
+      if (flags & img_FFLAG_EXTENDED) pimg->is_extended_elevation = 1;
+   } else {
+      len = strlen(pimg->title);
+      if (len > 11 && strcmp(pimg->title + len - 11, " (extended)") == 0) {
+	  pimg->title[len - 11] = '\0';
+	  pimg->is_extended_elevation = 1;
+      }
    }
+
+   pimg->start = ftell(pimg->fh);
 
    return pimg;
 }
@@ -688,8 +693,8 @@ img_open_write(const char *fnm, char *title, int flags)
    }
 
    fputs(title, pimg->fh);
-   if ((flags & img_FFLAG_EXTENDED)) {
-      /* Current format versions append " (extended)" to the title to mark
+   if (pimg->version < 8 && (flags & img_FFLAG_EXTENDED)) {
+      /* Older format versions append " (extended)" to the title to mark
        * extended elevations. */
       size_t len = strlen(title);
       if (len < 11 || strcmp(title + len - 11, " (extended)") != 0)
@@ -708,6 +713,13 @@ img_open_write(const char *fnm, char *title, int flags)
    } else {
       fprintf(pimg->fh, "@%ld\n", (long)tm);
    }
+
+   if (pimg->version >= 8) {
+      /* Clear bit one in case anyone has been passing true for fBinary. */
+      flags &=~ 1;
+      PUTC(flags, pimg->fh);
+   }
+
 #if 0
    if (img_output_version >= 5) {
        static const unsigned char codelengths[32] = {

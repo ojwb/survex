@@ -54,6 +54,9 @@ seconds since the start of 1970 in UTC ("Unix time_t") as a string
 (for example: "@1371300355"), followed by a linefeed.  This is intended to be
 the time the file was generated, rather than the time the survey data was
 collected.
+<li> File-wide flags: a single byte.  If bit 7 is set, this is an extended
+elevation.  All other bits are reserved - set them to 0 when writing, and
+ignore them when reading.
 </ul>
 
 <H2>Items</H2>

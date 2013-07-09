@@ -1,3 +1,8 @@
+Tue Jul 09 13:36:35 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm,doc/TODO.htm,src/img.c: Add an explicit flag for
+	  'this is an extended elevation' to 3d v8.
+
 Tue Jul 09 13:24:29 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/3dformat.htm,doc/TODO.htm,src/img.h: Start on v8 of the 3d format
