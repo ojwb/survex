@@ -83,7 +83,7 @@ extern "C" {
 # define img_STYLE_DIVING     1
 # define img_STYLE_CARTESIAN  2
 # define img_STYLE_CYLPOLAR   3
-# define img_STYLE_NOSURVEY   5
+# define img_STYLE_NOSURVEY   4
 
 /* 3D coordinates (in metres) */
 typedef struct {

@@ -290,8 +290,8 @@ typedef struct Inst {
 #define STYLE_DIVING     1
 #define STYLE_CARTESIAN  2
 #define STYLE_CYLPOLAR   3
-#define STYLE_PASSAGE    4
-#define STYLE_NOSURVEY   5
+#define STYLE_NOSURVEY   4
+#define STYLE_PASSAGE    5
 #define STYLE_IGNORE     6
 
 typedef int compiletimeassert_style1[STYLE_NORMAL == img_STYLE_NORMAL ? 1 : -1];
