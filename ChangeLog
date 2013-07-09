@@ -1,3 +1,8 @@
+Tue Jul 09 12:41:51 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Fix ordering of the style masks to reflect swapping
+	  of STYLE_NOSURVEY and STYLE_PASSAGE.
+
 Tue Jul 09 11:14:28 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Update.

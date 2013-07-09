@@ -969,8 +969,8 @@ cmd_data(void)
 
    /* readings which may be given for each style */
    static const unsigned long mask[] = {
-      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_PASSAGE,
-      MASK_NOSURVEY
+      MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_NOSURVEY,
+      MASK_PASSAGE
    };
 
    /* readings which may be omitted for each style */
@@ -979,8 +979,8 @@ cmd_data(void)
       BIT(Dir),
       0,
       BIT(Dir),
-      0, /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
-      0
+      0,
+      0 /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
    };
 
    /* all valid readings */
@@ -989,8 +989,8 @@ cmd_data(void)
       MASK_DIVING | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
+      MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
    };
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
