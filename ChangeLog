@@ -1,3 +1,7 @@
+Tue Jul 09 11:14:28 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: Update.
+
 Tue Jul 09 10:31:50 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.h: Remove unnecessary include of "useful.h" in IMG_HOSTED
