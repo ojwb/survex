@@ -1,3 +1,8 @@
+Tue Jul 09 13:24:29 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm,doc/TODO.htm,src/img.h: Start on v8 of the 3d format
+	  - the timestamp is stored as seconds since 1970.
+
 Tue Jul 09 12:41:51 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Fix ordering of the style masks to reflect swapping

@@ -91,10 +91,11 @@ typedef struct {
    char *label;
    int flags;
    char *title;
-   /* Older versions of img wrote 3d files with a human readable string.  Newer
-    * versions write "@" followed by the number of seconds since midnight UTC
-    * on 1/1/1970.  Some foreign formats contain a human readable string,
-    * others no date information (which results in "?" being returned).
+   /* Older .3d format versions stored a human readable datestamp string.
+    * Format versions >= 8 versions store a string consisting of "@" followed
+    * by the number of seconds since midnight UTC on 1/1/1970.  Some foreign
+    * formats contain a human readable string, others no date information
+    * (which results in "?" being returned).
     */
    char *datestamp;
    char separator; /* character used to separate survey levels ('.' usually) */
@@ -134,6 +135,7 @@ typedef struct {
     *   5 => LRUD info
     *   6 => error info
     *   7 => more compact dates with wider range
+    *   8 => lots of changes
     */
    int version;
    char *survey;
@@ -155,7 +157,7 @@ extern unsigned int img_output_version;
 #define IMG_VERSION_MIN 1
 
 /* Maximum supported value for img_output_version: */
-#define IMG_VERSION_MAX 7
+#define IMG_VERSION_MAX 8
 
 /* Open a .3d file for reading
  * fnm is the filename

@@ -25,13 +25,10 @@ img routines, rather than having to update your own code.  It also
 allows you to read a sub-set of the data in the file, restricted by
 Survey prefix.</P>
 
-<P>This document only describes the more recent revisions of the 3d format
-(versions 3 to 7, inclusive).
-Version 3 was produced by Survex versions 0.97 and later,
-version 4 by Survex 1.1.0-1.1.3,
-version 5 by 1.1.4-1.1.10,
-version 6 by 1.1.11-1.1.14,
-and version 7 by versions from 1.1.15.</P>
+<P>This document only describes the most recent revision of the 3d format
+(version 8) which is produced by versions from 1.2.7.  A <a
+href="3dformat-old.htm">separate document</a> describes older versions.
+</P>
 
 <P>If you try to use this specification and find details which aren't
 spelled out clearly enough (or at all!) or any errors, please let us know.
@@ -48,16 +45,15 @@ using this document, but that doesn't mean it can't be improved.
 (decimal 10, hex x0a). [Note: v0.01 files can have a carriage return
 before this and other linefeeds - this is a file format error in any
 other format version].
-<li>File format version: "v3", "v4", "v5", "v6", "v7" followed by a linefeed.
-Any future versions will be "v8", "v9", "v10", "v11", etc.
-Older format versions aren't described here, but had version strings
-"v0.01", "Bv0.01", "bv0.01", and "v2").
-<li> Survey title: A string followed by a linefeed.  There's no length limit on this string.
-<li> Timestamp: A string followed by a linefeed.  This is intended to be the
-time the file was generated, rather than the time the survey data was
-collected.  The easiest way to generate this is with the strftime() format
-"%a,%Y.%m.%d %H:%M:%S %Z" if you have access to strftime().  An example
-timestamp is "Sun,2002.03.17 14:01:07 GMT".
+<li> File format version: "v8" followed by a linefeed.
+Any future versions will be "v9", "v10", "v11", etc.
+<li> Survey title: A string followed by a linefeed.  There's no length limit on
+this string.
+<li> Timestamp: A string consisting of an '@' followed by a count of
+seconds since the start of 1970 in UTC ("Unix time_t") as a string
+(for example: "@1371300355"), followed by a linefeed.  This is intended to be
+the time the file was generated, rather than the time the survey data was
+collected.
 </ul>
 
 <H2>Items</H2>
@@ -81,7 +77,7 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="desc" colspan="2">
     If the current label is empty, signifies the end of the data in the 3d
     file; if the current label isn't empty, make it empty.</td>
-    <td class="version">&ge;3</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x01 - 0x0e</td>
@@ -95,7 +91,7 @@ first byte of an item is a code identifying what the item is:</P>
     that removal of 1-16 characters can be encoded by 0x10-0x1f (see below)
     and we can make this encoding more powerful by not
     overlapping what can be encoded.</td>
-    <td class="version">&ge;3</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x0f</td>
@@ -105,7 +101,7 @@ first byte of an item is a code identifying what the item is:</P>
     Set current position to the coordinates given. Coordinates
     are 4 byte little-endian signed integers representing
     values in centimetres (0.01 metres).</td>
-    <td class="version">&ge;3</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x10 - 0x1f</td>
@@ -115,16 +111,7 @@ first byte of an item is a code identifying what the item is:</P>
     Remove N-15 (i.e. 1-16) characters from the current label. It's
     incorrect if the label ends up empty, or you attempt to trim more label
     than there is.</td>
-    <td class="version">&ge;3</td>
-</tr>
-<tr>
-    <td class="code">0x20</td>
-    <td class="type">DATE (old version)</td>
-    <td class="data">&lt;date&gt;</td>
-    <td colspan="2">
-    Set survey date of legs: date is 4 byte little-endian unsigned integer
-    counting seconds since 1970.</td>
-    <td class="version">&ge;4 and &le;6</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x20</td>
@@ -134,16 +121,7 @@ first byte of an item is a code identifying what the item is:</P>
     Set survey date of legs: date is a 2 byte little-endian unsigned integer
     counting days from the
     start of 1900.</td>
-    <td class="version">&ge;7</td>
-</tr>
-<tr>
-    <td class="code">0x21</td>
-    <td class="type">DATE (old version)</td>
-    <td class="data">&lt;date1&gt;&lt;date2&gt;</td>
-    <td colspan="2">
-    Set survey date of legs to a range: date1, date2 are 4 byte little-endian
-    unsigned integer counting seconds since 1970.</td>
-    <td class="version">&ge;4 and &le;6</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x21</td>
@@ -153,7 +131,7 @@ first byte of an item is a code identifying what the item is:</P>
     Set survey date of legs to a range: date1 is a
     2 byte little-endian unsigned integer counting days since the start of
     1900, and datespan is an unsigned byte counting days from date1.</td>
-    <td class="version">&ge;7</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x22</td>
@@ -164,7 +142,7 @@ first byte of an item is a code identifying what the item is:</P>
     legs. &lt;length&gt; is the total length of the
     traverse in cm (0.01m). E, H and V are the error and the horizontal and
     vertical components in cm. (All values are 4 byte little-endian signed integers) </td>
-    <td class="version">&ge;6</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x23</td>
@@ -174,7 +152,7 @@ first byte of an item is a code identifying what the item is:</P>
     Set survey date of legs to a range: date1, date2 are
     2 byte little-endian unsigned integers counting days since the
     start of 1900.</td>
-    <td class="version">&ge;7</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr>
     <td class="code">0x24</td>
@@ -182,7 +160,7 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="data">&nbsp;</td>
     <td colspan="2">
     No survey date information was specified.</td>
-    <td class="version">&ge;7</td>
+    <td class="version">&ge;8</td>
 </tr>
 <tr class="reserved">
     <td class="code">0x25 - 0x2f</td>
@@ -198,7 +176,7 @@ first byte of an item is a code identifying what the item is:</P>
     Dimensions are 2 byte little-endian signed integers representing values
     in centimetres (0.01 metres). Omitted dimensions are encoded as 0xffff.
     Station flags are (N &amp; 0x01): </td>
-    <td class="version" rowspan="3">&ge;5</td>
+    <td class="version" rowspan="3">&ge;8</td>
 </tr>
 <tr>
     <th>Flag (N &amp; 0x01)</th>
@@ -216,7 +194,7 @@ first byte of an item is a code identifying what the item is:</P>
     Dimensions are 4 byte little-endian signed integers representing values
     in centimetres (0.01 metres). Omitted dimensions are encoded as
     0xffffffff.</td>
-    <td class="version" rowspan="3">&ge;5</td>
+    <td class="version" rowspan="3">&ge;8</td>
 </tr>
 <tr>
     <th>Flag (N &amp; 0x01)</th>
@@ -241,7 +219,7 @@ first byte of an item is a code identifying what the item is:</P>
     Append label to the current label buffer. The updated contents of the
     label buffer give the survey stations full name. The length of label is
     given by length, which is encoded as follows:</td>
-    <td class="version" rowspan="12">&ge;3</td>
+    <td class="version" rowspan="12">&ge;8</td>
 </tr>
 <tr>
     <th>Length</th>
@@ -303,7 +281,7 @@ first byte of an item is a code identifying what the item is:</P>
     to coordinates given, and update current position to coordinates given.
     The updated contents of the label buffer give the survey that the leg is
     in.</td>
-    <td class="version" rowspan="5">&ge;3</td>
+    <td class="version" rowspan="5">&ge;8</td>
 </tr>
 <tr>
     <th>Flag (N &amp; 0x3f)</th>
