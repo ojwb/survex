@@ -1,3 +1,8 @@
+Tue Jul 09 10:31:50 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.h: Remove unnecessary include of "useful.h" in IMG_HOSTED
+	  mode.
+
 Tue Jul 09 08:48:35 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/cavern.h,src/img.h: Renumber STYLE_PASSAGE and STYLE_NOSURVEY so

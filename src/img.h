@@ -40,10 +40,6 @@ extern "C" {
 #include <stdio.h>
 #include <time.h> /* for time_t */
 
-# ifdef IMG_HOSTED
-#  include "useful.h"
-# endif
-
 # define img_BAD   -2
 # define img_STOP  -1
 # define img_MOVE   0
