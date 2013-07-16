@@ -277,10 +277,10 @@ for file in $TESTS ; do
     case $pos in
     yes)
       if test -n "$VERBOSE" ; then
-	$DIFFPOS tmp.3d "$posfile"
+	$DIFFPOS "$posfile" tmp.3d
 	exitcode=$?
       else
-	$DIFFPOS tmp.3d "$posfile" > /dev/null
+	$DIFFPOS "$posfile" tmp.3d > /dev/null
 	exitcode=$?
       fi
       if [ -n "$VALGRIND" ] ; then

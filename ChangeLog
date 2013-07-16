@@ -1,3 +1,8 @@
+Tue Jul 16 07:54:52 GMT 2013  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst: Run diffpos <expected> <actual> so the reports of
+	  'Added' and 'Deleted' stations are the more natural way round.
+
 Tue Jul 09 22:59:48 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/3dformat.htm: Formatting tweaks.
