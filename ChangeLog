@@ -1,3 +1,7 @@
+Tue Jul 16 11:32:13 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/cad3d.c: Check for errors from img_rewind() and report them.
+
 Tue Jul 16 07:54:52 GMT 2013  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst: Run diffpos <expected> <actual> so the reports of

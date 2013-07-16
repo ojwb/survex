@@ -3,7 +3,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2004,2008,2010,2011 Olly Betts
+/* Copyright (C) 1994-2004,2008,2010,2011,2013 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -841,7 +841,9 @@ main(int argc, char **argv)
       if (((*pass & LEGS) && legs) ||
 	  ((*pass & STNS) && crosses) ||
 	  ((*pass & LABELS) && labels)) {
-	 img_rewind(pimg);
+	 if (!img_rewind(pimg)) {
+	     fatalerror(img_error(), fnm_3d);
+	 }
 	 start_pass(*pass);
 	 do {
 	    item = img_read_item(pimg, &p);
