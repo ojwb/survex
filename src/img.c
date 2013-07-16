@@ -336,6 +336,8 @@ img_open_survey(const char *fnm, const char *survey)
 #endif
    pimg->is_extended_elevation = 0;
 
+   pimg->style = pimg->oldstyle = img_STYLE_UNKNOWN;
+
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
    pimg->title = pimg->datestamp = NULL;
@@ -644,6 +646,7 @@ img_rewind(img *pimg)
    /* for VERSION_CMAP_SHOT, we store the last station here to detect whether
     * we MOVE or LINE */
    pimg->label_len = 0;
+   pimg->style = img_STYLE_UNKNOWN;
    return 1;
 }
 
@@ -863,264 +866,588 @@ read_v3label(img *pimg)
    return 0;
 }
 
+static int
+read_v8label(img *pimg)
+{
+   char *q;
+   size_t del, add;
+   int ch = GETC(pimg->fh);
+   if (ch == EOF) {
+      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return img_BAD;
+   }
+   if (ch != 0xff) {
+      del = ch >> 4;
+      add = ch & 0x0f;
+   } else {
+      ch = GETC(pimg->fh);
+      if (ch == EOF) {
+	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 return img_BAD;
+      }
+      if (ch != 0xff) {
+	 del = ch;
+      } else {
+	 del = get32(pimg->fh);
+	 if (ferror(pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
+      }
+      ch = GETC(pimg->fh);
+      if (ch == EOF) {
+	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 return img_BAD;
+      }
+      if (ch != 0xff) {
+	 add = ch;
+      } else {
+	 add = get32(pimg->fh);
+	 if (ferror(pimg->fh)) {
+	    img_errno = IMG_READERROR;
+	    return img_BAD;
+	 }
+      }
+   }
+
+   if (add > del && !check_label_space(pimg, pimg->label_len + add - del + 1)) {
+      img_errno = IMG_OUTOFMEMORY;
+      return img_BAD;
+   }
+   if (del > pimg->label_len) {
+      img_errno = IMG_BADFORMAT;
+      return img_BAD;
+   }
+   pimg->label_len -= del;
+   q = pimg->label_buf + pimg->label_len;
+   pimg->label_len += add;
+   if (add && fread(q, add, 1, pimg->fh) != 1) {
+      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return img_BAD;
+   }
+   q[add] = '\0';
+   return 0;
+}
+
+static int img_read_item_new(img *pimg, img_point *p);
+static int img_read_item_v3to7(img *pimg, img_point *p);
+static int img_read_item_ancient(img *pimg, img_point *p);
+static int img_read_item_ascii_wrapper(img *pimg, img_point *p);
 static int img_read_item_ascii(img *pimg, img_point *p);
 
 int
 img_read_item(img *pimg, img_point *p)
 {
-   int result;
    pimg->flags = 0;
 
-   if (pimg->version >= 3) {
-      int opt;
-      pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+   if (pimg->version >= 8) {
+      return img_read_item_new(pimg, p);
+   } else if (pimg->version >= 3) {
+      return img_read_item_v3to7(pimg, p);
+   } else if (pimg->version >= 1) {
+      return img_read_item_ancient(pimg, p);
+   } else {
+      return img_read_item_ascii_wrapper(pimg, p);
+   }
+}
+
+int
+img_read_item_new(img *pimg, img_point *p)
+{
+   int result;
+   int opt;
+   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+   if (pimg->pending >= 0x40) {
       if (pimg->pending == 256) {
 	 pimg->pending = 0;
 	 return img_XSECT_END;
       }
-      if (pimg->pending >= 0x80) {
-	 *p = pimg->mv;
-	 pimg->flags = (int)(pimg->pending) & 0x3f;
-	 pimg->pending = 0;
-	 return img_LINE;
+      *p = pimg->mv;
+      pimg->flags = (int)(pimg->pending) & 0x3f;
+      pimg->pending = 0;
+      return img_LINE;
+   }
+   again3: /* label to goto if we get a prefix, date, or lrud */
+   pimg->label = pimg->label_buf;
+   opt = GETC(pimg->fh);
+   if (opt == EOF) {
+      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return img_BAD;
+   }
+   if (opt >> 6 == 0) {
+      if (opt <= 4) {
+	 if (opt == 0 && pimg->style == 0)
+	    return img_STOP; /* end of data marker */
+	 /* STYLE */
+	 pimg->style = opt;
+	 goto again3;
       }
-      again3: /* label to goto if we get a prefix, date, or lrud */
-      pimg->label = pimg->label_buf;
-      opt = GETC(pimg->fh);
-      if (opt == EOF) {
-	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      if (opt >= 0x20) {
+	  switch (opt) {
+	      case 0x20: { /* Single date */
+		  int days1 = (int)getu16(pimg->fh);
+#if IMG_API_VERSION == 0
+		  pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days2 = pimg->days1 = days1;
+#endif
+		  break;
+	      }
+	      case 0x21: { /* Date range (short for v7+) */
+		  int days1 = (int)getu16(pimg->fh);
+		  int days2 = days1 + GETC(pimg->fh) + 1;
+#if IMG_API_VERSION == 0
+		  pimg->date1 = (days1 - 25567) * 86400;
+		  pimg->date2 = (days2 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = days1;
+		  pimg->days2 = days2;
+#endif
+		  break;
+	      }
+	      case 0x22: /* Error info */
+		  pimg->n_legs = get32(pimg->fh);
+		  pimg->length = get32(pimg->fh) / 100.0;
+		  pimg->E = get32(pimg->fh) / 100.0;
+		  pimg->H = get32(pimg->fh) / 100.0;
+		  pimg->V = get32(pimg->fh) / 100.0;
+		  return img_ERROR_INFO;
+	      case 0x23: { /* v7+: Date range (long) */
+		  int days1 = (int)getu16(pimg->fh);
+		  int days2 = (int)getu16(pimg->fh);
+#if IMG_API_VERSION == 0
+		  pimg->date1 = (days1 - 25567) * 86400;
+		  pimg->date2 = (days2 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = days1;
+		  pimg->days2 = days2;
+#endif
+		  break;
+	      }
+	      case 0x24: { /* v7+: No date info */
+#if IMG_API_VERSION == 0
+		  pimg->date1 = pimg->date2 = 0;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = pimg->days2 = -1;
+#endif
+		  break;
+	      }
+	      case 0x30: case 0x31: /* LRUD */
+	      case 0x32: case 0x33: /* Big LRUD! */
+		  if (read_v8label(pimg) == img_BAD) return img_BAD;
+		  pimg->flags = (int)opt & 0x01;
+		  if (opt < 0x32) {
+		      pimg->l = get16(pimg->fh) / 100.0;
+		      pimg->r = get16(pimg->fh) / 100.0;
+		      pimg->u = get16(pimg->fh) / 100.0;
+		      pimg->d = get16(pimg->fh) / 100.0;
+		  } else {
+		      pimg->l = get32(pimg->fh) / 100.0;
+		      pimg->r = get32(pimg->fh) / 100.0;
+		      pimg->u = get32(pimg->fh) / 100.0;
+		      pimg->d = get32(pimg->fh) / 100.0;
+		  }
+		  if (pimg->survey_len) {
+		      size_t l = pimg->survey_len;
+		      const char *s = pimg->label_buf;
+		      if (strncmp(pimg->survey, s, l + 1) != 0) {
+			  return img_XSECT_END;
+		      }
+		      pimg->label += l;
+		      /* skip the dot if there */
+		      if (*pimg->label) pimg->label++;
+		  }
+		  /* If this is the last cross-section in this passage, set
+		   * pending so we return img_XSECT_END next time. */
+		  if (pimg->flags & 0x01) {
+		      pimg->pending = 256;
+		      pimg->flags &= ~0x01;
+		  }
+		  return img_XSECT;
+	      default: /* 0x25 - 0x2f and 0x34 - 0x3f are currently unallocated. */
+		  img_errno = IMG_BADFORMAT;
+		  return img_BAD;
+	  }
+	  goto again3;
+      }
+      if (opt != 15) {
+	 /* 1-14 and 16-31 reserved */
+	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
-      switch (opt >> 6) {
-       case 0:
-	 if (opt == 0) {
-	    if (!pimg->label_len) return img_STOP; /* end of data marker */
-	    pimg->label_len = 0;
+      result = img_MOVE;
+   } else if (opt >= 0x80) {
+      if (read_v8label(pimg) == img_BAD) return img_BAD;
+
+      result = img_LABEL;
+
+      if (pimg->survey_len) {
+	 size_t l = pimg->survey_len;
+	 const char *s = pimg->label_buf;
+	 if (strncmp(pimg->survey, s, l + 1) != 0) {
+	    if (!skip_coord(pimg->fh)) return img_BAD;
+	    pimg->pending = 0;
 	    goto again3;
 	 }
-	 if (opt < 15) {
-	    /* 1-14 mean trim that many levels from current prefix */
-	    int c;
-	    if (pimg->label_len <= 17) {
+	 pimg->label += l;
+	 /* skip the dot if there */
+	 if (*pimg->label) pimg->label++;
+      }
+
+      pimg->flags = (int)opt & 0x7f;
+   } else if ((opt >> 6) == 1) {
+      if (read_v8label(pimg) == img_BAD) return img_BAD;
+
+      result = img_LINE;
+
+      if (pimg->survey_len) {
+	 size_t l = pimg->survey_len;
+	 const char *s = pimg->label_buf;
+	 if (strncmp(pimg->survey, s, l) != 0 ||
+	     !(s[l] == '.' || s[l] == '\0')) {
+	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	    pimg->pending = 15;
+	    goto again3;
+	 }
+	 pimg->label += l;
+	 /* skip the dot if there */
+	 if (*pimg->label) pimg->label++;
+      }
+
+      if (pimg->pending) {
+	 *p = pimg->mv;
+	 if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	 pimg->pending = opt;
+	 return img_MOVE;
+      }
+      pimg->flags = (int)opt & 0x3f;
+   } else {
+      img_errno = IMG_BADFORMAT;
+      return img_BAD;
+   }
+   if (!read_coord(pimg->fh, p)) return img_BAD;
+   pimg->pending = 0;
+   return result;
+}
+
+int
+img_read_item_v3to7(img *pimg, img_point *p)
+{
+   int result;
+   int opt;
+   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
+   if (pimg->pending == 256) {
+      pimg->pending = 0;
+      return img_XSECT_END;
+   }
+   if (pimg->pending >= 0x80) {
+      *p = pimg->mv;
+      pimg->flags = (int)(pimg->pending) & 0x3f;
+      pimg->pending = 0;
+      return img_LINE;
+   }
+   again3: /* label to goto if we get a prefix, date, or lrud */
+   pimg->label = pimg->label_buf;
+   opt = GETC(pimg->fh);
+   if (opt == EOF) {
+      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      return img_BAD;
+   }
+   switch (opt >> 6) {
+    case 0:
+      if (opt == 0) {
+	 if (!pimg->label_len) return img_STOP; /* end of data marker */
+	 pimg->label_len = 0;
+	 goto again3;
+      }
+      if (opt < 15) {
+	 /* 1-14 mean trim that many levels from current prefix */
+	 int c;
+	 if (pimg->label_len <= 17) {
+	    /* zero prefix using "0" */
+	    img_errno = IMG_BADFORMAT;
+	    return img_BAD;
+	 }
+	 /* extra - 1 because label_len points to one past the end */
+	 c = pimg->label_len - 17 - 1;
+	 while (pimg->label_buf[c] != '.' || --opt > 0) {
+	    if (--c < 0) {
 	       /* zero prefix using "0" */
 	       img_errno = IMG_BADFORMAT;
 	       return img_BAD;
 	    }
-	    /* extra - 1 because label_len points to one past the end */
-	    c = pimg->label_len - 17 - 1;
-	    while (pimg->label_buf[c] != '.' || --opt > 0) {
-	       if (--c < 0) {
-		  /* zero prefix using "0" */
+	 }
+	 c++;
+	 pimg->label_len = c;
+	 goto again3;
+      }
+      if (opt == 15) {
+	 result = img_MOVE;
+	 break;
+      }
+      if (opt >= 0x20) {
+	  switch (opt) {
+	      case 0x20: /* Single date */
+		  if (pimg->version < 7) {
+		      int date1 = get32(pimg->fh);
+#if IMG_API_VERSION == 0
+		      pimg->date2 = pimg->date1 = date1;
+#else /* IMG_API_VERSION == 1 */
+		      if (date1 != 0) {
+			  pimg->days2 = pimg->days1 = (date1 / 86400) + 25567;
+		      } else {
+			  pimg->days2 = pimg->days1 = -1;
+		      }
+#endif
+		  } else {
+		      int days1 = (int)getu16(pimg->fh);
+#if IMG_API_VERSION == 0
+		      pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		      pimg->days2 = pimg->days1 = days1;
+#endif
+		  }
+		  break;
+	      case 0x21: /* Date range (short for v7+) */
+		  if (pimg->version < 7) {
+		      INT32_T date1 = get32(pimg->fh);
+		      INT32_T date2 = get32(pimg->fh);
+#if IMG_API_VERSION == 0
+		      pimg->date1 = date1;
+		      pimg->date2 = date2;
+#else /* IMG_API_VERSION == 1 */
+		      pimg->days1 = (date1 / 86400) + 25567;
+		      pimg->days2 = (date2 / 86400) + 25567;
+#endif
+		  } else {
+		      int days1 = (int)getu16(pimg->fh);
+		      int days2 = days1 + GETC(pimg->fh) + 1;
+#if IMG_API_VERSION == 0
+		      pimg->date1 = (days1 - 25567) * 86400;
+		      pimg->date2 = (days2 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		      pimg->days1 = days1;
+		      pimg->days2 = days2;
+#endif
+		  }
+		  break;
+	      case 0x22: /* Error info */
+		  pimg->n_legs = get32(pimg->fh);
+		  pimg->length = get32(pimg->fh) / 100.0;
+		  pimg->E = get32(pimg->fh) / 100.0;
+		  pimg->H = get32(pimg->fh) / 100.0;
+		  pimg->V = get32(pimg->fh) / 100.0;
+		  return img_ERROR_INFO;
+	      case 0x23: { /* v7+: Date range (long) */
+		  if (pimg->version < 7) {
+		      img_errno = IMG_BADFORMAT;
+		      return img_BAD;
+		  }
+		  int days1 = (int)getu16(pimg->fh);
+		  int days2 = (int)getu16(pimg->fh);
+#if IMG_API_VERSION == 0
+		  pimg->date1 = (days1 - 25567) * 86400;
+		  pimg->date2 = (days2 - 25567) * 86400;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = days1;
+		  pimg->days2 = days2;
+#endif
+		  break;
+	      }
+	      case 0x24: { /* v7+: No date info */
+#if IMG_API_VERSION == 0
+		  pimg->date1 = pimg->date2 = 0;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = pimg->days2 = -1;
+#endif
+		  break;
+	      }
+	      case 0x30: case 0x31: /* LRUD */
+	      case 0x32: case 0x33: /* Big LRUD! */
+		  if (read_v3label(pimg) == img_BAD) return img_BAD;
+		  pimg->flags = (int)opt & 0x01;
+		  if (opt < 0x32) {
+		      pimg->l = get16(pimg->fh) / 100.0;
+		      pimg->r = get16(pimg->fh) / 100.0;
+		      pimg->u = get16(pimg->fh) / 100.0;
+		      pimg->d = get16(pimg->fh) / 100.0;
+		  } else {
+		      pimg->l = get32(pimg->fh) / 100.0;
+		      pimg->r = get32(pimg->fh) / 100.0;
+		      pimg->u = get32(pimg->fh) / 100.0;
+		      pimg->d = get32(pimg->fh) / 100.0;
+		  }
+		  if (pimg->survey_len) {
+		      size_t l = pimg->survey_len;
+		      const char *s = pimg->label_buf;
+		      if (strncmp(pimg->survey, s, l + 1) != 0) {
+			  return img_XSECT_END;
+		      }
+		      pimg->label += l;
+		      /* skip the dot if there */
+		      if (*pimg->label) pimg->label++;
+		  }
+		  /* If this is the last cross-section in this passage, set
+		   * pending so we return img_XSECT_END next time. */
+		  if (pimg->flags & 0x01) {
+		      pimg->pending = 256;
+		      pimg->flags &= ~0x01;
+		  }
+		  return img_XSECT;
+	      default: /* 0x25 - 0x2f and 0x34 - 0x3f are currently unallocated. */
 		  img_errno = IMG_BADFORMAT;
 		  return img_BAD;
-	       }
-	    }
-	    c++;
-	    pimg->label_len = c;
-	    goto again3;
-	 }
-	 if (opt == 15) {
-	    result = img_MOVE;
-	    break;
-	 }
-	 if (opt >= 0x20) {
-	     switch (opt) {
-		 case 0x20: /* Single date */
-		     if (pimg->version < 7) {
-			 int date1 = get32(pimg->fh);
-#if IMG_API_VERSION == 0
-			 pimg->date2 = pimg->date1 = date1;
-#else /* IMG_API_VERSION == 1 */
-			 if (date1 != 0) {
-			     pimg->days2 = pimg->days1 = (date1 / 86400) + 25567;
-			 } else {
-			     pimg->days2 = pimg->days1 = -1;
-			 }
-#endif
-		     } else {
-			 int days1 = (int)getu16(pimg->fh);
-#if IMG_API_VERSION == 0
-			 pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
-#else /* IMG_API_VERSION == 1 */
-			 pimg->days2 = pimg->days1 = days1;
-#endif
-		     }
-		     break;
-		 case 0x21: /* Date range (short for v7+) */
-		     if (pimg->version < 7) {
-			 INT32_T date1 = get32(pimg->fh);
-			 INT32_T date2 = get32(pimg->fh);
-#if IMG_API_VERSION == 0
-			 pimg->date1 = date1;
-			 pimg->date2 = date2;
-#else /* IMG_API_VERSION == 1 */
-			 pimg->days1 = (date1 / 86400) + 25567;
-			 pimg->days2 = (date2 / 86400) + 25567;
-#endif
-		     } else {
-			 int days1 = (int)getu16(pimg->fh);
-			 int days2 = days1 + GETC(pimg->fh) + 1;
-#if IMG_API_VERSION == 0
-			 pimg->date1 = (days1 - 25567) * 86400;
-			 pimg->date2 = (days2 - 25567) * 86400;
-#else /* IMG_API_VERSION == 1 */
-			 pimg->days1 = days1;
-			 pimg->days2 = days2;
-#endif
-		     }
-		     break;
-		 case 0x22: /* Error info */
-		     pimg->n_legs = get32(pimg->fh);
-		     pimg->length = get32(pimg->fh) / 100.0;
-		     pimg->E = get32(pimg->fh) / 100.0;
-		     pimg->H = get32(pimg->fh) / 100.0;
-		     pimg->V = get32(pimg->fh) / 100.0;
-		     return img_ERROR_INFO;
-		 case 0x23: { /* v7+: Date range (long) */
-		     if (pimg->version < 7) {
-			 img_errno = IMG_BADFORMAT;
-			 return img_BAD;
-		     }
-		     int days1 = (int)getu16(pimg->fh);
-		     int days2 = (int)getu16(pimg->fh);
-#if IMG_API_VERSION == 0
-		     pimg->date1 = (days1 - 25567) * 86400;
-		     pimg->date2 = (days2 - 25567) * 86400;
-#else /* IMG_API_VERSION == 1 */
-		     pimg->days1 = days1;
-		     pimg->days2 = days2;
-#endif
-		     break;
-		 }
-		 case 0x24: { /* v7+: No date info */
-#if IMG_API_VERSION == 0
-		     pimg->date1 = pimg->date2 = 0;
-#else /* IMG_API_VERSION == 1 */
-		     pimg->days1 = pimg->days2 = -1;
-#endif
-		     break;
-		 }
-		 case 0x30: case 0x31: /* LRUD */
-		 case 0x32: case 0x33: /* Big LRUD! */
-		     if (read_v3label(pimg) == img_BAD) return img_BAD;
-		     pimg->flags = (int)opt & 0x01;
-		     if (opt < 0x32) {
-			 pimg->l = get16(pimg->fh) / 100.0;
-			 pimg->r = get16(pimg->fh) / 100.0;
-			 pimg->u = get16(pimg->fh) / 100.0;
-			 pimg->d = get16(pimg->fh) / 100.0;
-		     } else {
-			 pimg->l = get32(pimg->fh) / 100.0;
-			 pimg->r = get32(pimg->fh) / 100.0;
-			 pimg->u = get32(pimg->fh) / 100.0;
-			 pimg->d = get32(pimg->fh) / 100.0;
-		     }
-		     if (pimg->survey_len) {
-			 size_t l = pimg->survey_len;
-			 const char *s = pimg->label_buf;
-			 if (strncmp(pimg->survey, s, l + 1) != 0) {
-			     return img_XSECT_END;
-			 }
-			 pimg->label += l;
-			 /* skip the dot if there */
-			 if (*pimg->label) pimg->label++;
-		     }
-		     /* If this is the last cross-section in this passage, set
-		      * pending so we return img_XSECT_END next time. */
-		     if (pimg->flags & 0x01) {
-			 pimg->pending = 256;
-			 pimg->flags &= ~0x01;
-		     }
-		     return img_XSECT;
-		 default: /* 0x25 - 0x2f and 0x34 - 0x3f are currently unallocated. */
-		     img_errno = IMG_BADFORMAT;
-		     return img_BAD;
-	     }
-	     goto again3;
-	 }
-	 /* 16-31 mean remove (n - 15) characters from the prefix */
-	 /* zero prefix using 0 */
-	 if (pimg->label_len <= (size_t)(opt - 15)) {
-	    img_errno = IMG_BADFORMAT;
-	    return img_BAD;
-	 }
-	 pimg->label_len -= (opt - 15);
-	 goto again3;
-       case 1:
-	 if (read_v3label(pimg) == img_BAD) return img_BAD;
-
-	 result = img_LABEL;
-
-	 if (pimg->survey_len) {
-	    size_t l = pimg->survey_len;
-	    const char *s = pimg->label_buf;
-	    if (strncmp(pimg->survey, s, l + 1) != 0) {
-	       if (!skip_coord(pimg->fh)) return img_BAD;
-	       pimg->pending = 0;
-	       goto again3;
-	    }
-	    pimg->label += l;
-	    /* skip the dot if there */
-	    if (*pimg->label) pimg->label++;
-	 }
-
-	 pimg->flags = (int)opt & 0x3f;
-	 break;
-       case 2:
-	 if (read_v3label(pimg) == img_BAD) return img_BAD;
-
-	 result = img_LINE;
-
-	 if (pimg->survey_len) {
-	    size_t l = pimg->survey_len;
-	    const char *s = pimg->label_buf;
-	    if (strncmp(pimg->survey, s, l) != 0 ||
-		!(s[l] == '.' || s[l] == '\0')) {
-	       if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
-	       pimg->pending = 15;
-	       goto again3;
-	    }
-	    pimg->label += l;
-	    /* skip the dot if there */
-	    if (*pimg->label) pimg->label++;
-	 }
-
-	 if (pimg->pending) {
-	    *p = pimg->mv;
-	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
-	    pimg->pending = opt;
-	    return img_MOVE;
-	 }
-	 pimg->flags = (int)opt & 0x3f;
-	 break;
-       default:
+	  }
+	  goto again3;
+      }
+      /* 16-31 mean remove (n - 15) characters from the prefix */
+      /* zero prefix using 0 */
+      if (pimg->label_len <= (size_t)(opt - 15)) {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
-      if (!read_coord(pimg->fh, p)) return img_BAD;
-      pimg->pending = 0;
-      return result;
+      pimg->label_len -= (opt - 15);
+      goto again3;
+    case 1:
+      if (read_v3label(pimg) == img_BAD) return img_BAD;
+
+      result = img_LABEL;
+
+      if (pimg->survey_len) {
+	 size_t l = pimg->survey_len;
+	 const char *s = pimg->label_buf;
+	 if (strncmp(pimg->survey, s, l + 1) != 0) {
+	    if (!skip_coord(pimg->fh)) return img_BAD;
+	    pimg->pending = 0;
+	    goto again3;
+	 }
+	 pimg->label += l;
+	 /* skip the dot if there */
+	 if (*pimg->label) pimg->label++;
+      }
+
+      pimg->flags = (int)opt & 0x3f;
+      break;
+    case 2:
+      if (read_v3label(pimg) == img_BAD) return img_BAD;
+
+      result = img_LINE;
+
+      if (pimg->survey_len) {
+	 size_t l = pimg->survey_len;
+	 const char *s = pimg->label_buf;
+	 if (strncmp(pimg->survey, s, l) != 0 ||
+	     !(s[l] == '.' || s[l] == '\0')) {
+	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	    pimg->pending = 15;
+	    goto again3;
+	 }
+	 pimg->label += l;
+	 /* skip the dot if there */
+	 if (*pimg->label) pimg->label++;
+      }
+
+      if (pimg->pending) {
+	 *p = pimg->mv;
+	 if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	 pimg->pending = opt;
+	 return img_MOVE;
+      }
+      pimg->flags = (int)opt & 0x3f;
+      break;
+    default:
+      img_errno = IMG_BADFORMAT;
+      return img_BAD;
    }
+   if (!read_coord(pimg->fh, p)) return img_BAD;
+   pimg->pending = 0;
+   return result;
+}
+
+int
+img_read_item_ancient(img *pimg, img_point *p)
+{
+   int result;
+   static long opt_lookahead = 0;
+   static img_point pt = { 0.0, 0.0, 0.0 };
+   long opt;
 
    pimg->label = pimg->label_buf;
 
-   if (pimg->version > 0) {
-      static long opt_lookahead = 0;
-      static img_point pt = { 0.0, 0.0, 0.0 };
-      long opt;
-      again: /* label to goto if we get a cross */
-      pimg->label[0] = '\0';
+   again: /* label to goto if we get a cross */
+   pimg->label[0] = '\0';
 
-      if (pimg->version == 1) {
-	 if (opt_lookahead) {
-	    opt = opt_lookahead;
-	    opt_lookahead = 0;
-	 } else {
-	    opt = get32(pimg->fh);
-	 }
+   if (pimg->version == 1) {
+      if (opt_lookahead) {
+	 opt = opt_lookahead;
+	 opt_lookahead = 0;
       } else {
-	 opt = GETC(pimg->fh);
+	 opt = get32(pimg->fh);
       }
+   } else {
+      opt = GETC(pimg->fh);
+   }
+
+   if (feof(pimg->fh)) {
+      img_errno = IMG_BADFORMAT;
+      return img_BAD;
+   }
+   if (ferror(pimg->fh)) {
+      img_errno = IMG_READERROR;
+      return img_BAD;
+   }
+
+   switch (opt) {
+    case -1: case 0:
+      return img_STOP; /* end of data marker */
+    case 1:
+      /* skip coordinates */
+      if (!skip_coord(pimg->fh)) {
+	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 return img_BAD;
+      }
+      goto again;
+    case 2: case 3: {
+      char *q;
+      int ch;
+      result = img_LABEL;
+      ch = GETC(pimg->fh);
+      if (ch == EOF) {
+	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 return img_BAD;
+      }
+      if (ch != '\\') ungetc(ch, pimg->fh);
+      fgets(pimg->label_buf, 257, pimg->fh);
+      if (feof(pimg->fh)) {
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+      if (ferror(pimg->fh)) {
+	 img_errno = IMG_READERROR;
+	 return img_BAD;
+      }
+      q = pimg->label_buf + strlen(pimg->label_buf) - 1;
+      if (*q != '\n') {
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+      /* Ignore empty labels in some .3d files (caused by a bug) */
+      if (q == pimg->label_buf) goto again;
+      *q = '\0';
+      pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
+      if (opt == 2) goto done;
+      break;
+    }
+    case 6: case 7: {
+      long len;
+      result = img_LABEL;
+
+      if (opt == 7)
+	 pimg->flags = GETC(pimg->fh);
+      else
+	 pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
+
+      len = get32(pimg->fh);
 
       if (feof(pimg->fh)) {
 	 img_errno = IMG_BADFORMAT;
@@ -1131,165 +1458,108 @@ img_read_item(img *pimg, img_point *p)
 	 return img_BAD;
       }
 
-      switch (opt) {
-       case -1: case 0:
-	 return img_STOP; /* end of data marker */
-       case 1:
-	 /* skip coordinates */
-	 if (!skip_coord(pimg->fh)) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	    return img_BAD;
-	 }
-	 goto again;
-       case 2: case 3: {
+      /* Ignore empty labels in some .3d files (caused by a bug) */
+      if (len == 0) goto again;
+      if (!check_label_space(pimg, len + 1)) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 return img_BAD;
+      }
+      if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
+	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 return img_BAD;
+      }
+      pimg->label_buf[len] = '\0';
+      break;
+    }
+    case 4:
+      result = img_MOVE;
+      break;
+    case 5:
+      result = img_LINE;
+      break;
+    default:
+      switch ((int)opt & 0xc0) {
+       case 0x80:
+	 pimg->flags = (int)opt & 0x3f;
+	 result = img_LINE;
+	 break;
+       case 0x40: {
 	 char *q;
-	 int ch;
+	 pimg->flags = (int)opt & 0x3f;
 	 result = img_LABEL;
-	 ch = GETC(pimg->fh);
-	 if (ch == EOF) {
+	 if (!fgets(pimg->label_buf, 257, pimg->fh)) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	    return img_BAD;
-	 }
-	 if (ch != '\\') ungetc(ch, pimg->fh);
-	 fgets(pimg->label_buf, 257, pimg->fh);
-	 if (feof(pimg->fh)) {
-	    img_errno = IMG_BADFORMAT;
-	    return img_BAD;
-	 }
-	 if (ferror(pimg->fh)) {
-	    img_errno = IMG_READERROR;
 	    return img_BAD;
 	 }
 	 q = pimg->label_buf + strlen(pimg->label_buf) - 1;
+	 /* Ignore empty-labels in some .3d files (caused by a bug) */
+	 if (q == pimg->label_buf) goto again;
 	 if (*q != '\n') {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
 	 }
-	 /* Ignore empty labels in some .3d files (caused by a bug) */
-	 if (q == pimg->label_buf) goto again;
 	 *q = '\0';
-	 pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
-	 if (opt == 2) goto done;
 	 break;
        }
-       case 6: case 7: {
-	 long len;
-	 result = img_LABEL;
-
-	 if (opt == 7)
-	    pimg->flags = GETC(pimg->fh);
-	 else
-	    pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
-
-	 len = get32(pimg->fh);
-
-	 if (feof(pimg->fh)) {
-	    img_errno = IMG_BADFORMAT;
-	    return img_BAD;
-	 }
-	 if (ferror(pimg->fh)) {
-	    img_errno = IMG_READERROR;
-	    return img_BAD;
-	 }
-
-	 /* Ignore empty labels in some .3d files (caused by a bug) */
-	 if (len == 0) goto again;
-	 if (!check_label_space(pimg, len + 1)) {
-	    img_errno = IMG_OUTOFMEMORY;
-	    return img_BAD;
-	 }
-	 if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	    return img_BAD;
-	 }
-	 pimg->label_buf[len] = '\0';
-	 break;
-       }
-       case 4:
-	 result = img_MOVE;
-	 break;
-       case 5:
-	 result = img_LINE;
-	 break;
+       case 0xc0:
+	 /* use this for an extra leg or station flag if we need it */
        default:
-	 switch ((int)opt & 0xc0) {
-	  case 0x80:
-	    pimg->flags = (int)opt & 0x3f;
-	    result = img_LINE;
-	    break;
-	  case 0x40: {
-	    char *q;
-	    pimg->flags = (int)opt & 0x3f;
-	    result = img_LABEL;
-	    if (!fgets(pimg->label_buf, 257, pimg->fh)) {
-	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	       return img_BAD;
-	    }
-	    q = pimg->label_buf + strlen(pimg->label_buf) - 1;
-	    /* Ignore empty-labels in some .3d files (caused by a bug) */
-	    if (q == pimg->label_buf) goto again;
-	    if (*q != '\n') {
-	       img_errno = IMG_BADFORMAT;
-	       return img_BAD;
-	    }
-	    *q = '\0';
-	    break;
-	  }
-	  case 0xc0:
-	    /* use this for an extra leg or station flag if we need it */
-	  default:
-	    img_errno = IMG_BADFORMAT;
-	    return img_BAD;
-	 }
-	 break;
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
       }
-
-      if (!read_coord(pimg->fh, &pt)) return img_BAD;
-
-      if (result == img_LABEL && pimg->survey_len) {
-	 if (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0)
-	    goto again;
-	 pimg->label += pimg->survey_len + 1;
-      }
-
-      done:
-      *p = pt;
-
-      if (result == img_MOVE && pimg->version == 1) {
-	 /* peek at next code and see if it's an old-style label */
-	 opt_lookahead = get32(pimg->fh);
-
-	 if (feof(pimg->fh)) {
-	    img_errno = IMG_BADFORMAT;
-	    return img_BAD;
-	 }
-	 if (ferror(pimg->fh)) {
-	    img_errno = IMG_READERROR;
-	    return img_BAD;
-	 }
-
-	 if (opt_lookahead == 2) return img_read_item(pimg, p);
-      }
-
-      return result;
-   } else {
-      /* We need to set the default locale for fscanf() to work on
-       * numbers with "." as decimal point. */
-      char * current_locale = my_strdup(setlocale(LC_NUMERIC, NULL));
-      setlocale(LC_NUMERIC, "C");
-      result = img_read_item_ascii(pimg, p);
-      setlocale(LC_NUMERIC, current_locale);
-      free(current_locale);
-      return result;
+      break;
    }
+
+   if (!read_coord(pimg->fh, &pt)) return img_BAD;
+
+   if (result == img_LABEL && pimg->survey_len) {
+      if (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0)
+	 goto again;
+      pimg->label += pimg->survey_len + 1;
+   }
+
+   done:
+   *p = pt;
+
+   if (result == img_MOVE && pimg->version == 1) {
+      /* peek at next code and see if it's an old-style label */
+      opt_lookahead = get32(pimg->fh);
+
+      if (feof(pimg->fh)) {
+	 img_errno = IMG_BADFORMAT;
+	 return img_BAD;
+      }
+      if (ferror(pimg->fh)) {
+	 img_errno = IMG_READERROR;
+	 return img_BAD;
+      }
+
+      if (opt_lookahead == 2) return img_read_item(pimg, p);
+   }
+
+   return result;
 }
 
-/* Handle all for ASCII formats so we can easily fix up the locale
- * so fscanf(), etc work on numbers with "." as decimal point. */
+static int
+img_read_item_ascii_wrapper(img *pimg, img_point *p)
+{
+   /* We need to set the default locale for fscanf() to work on
+    * numbers with "." as decimal point. */
+   int result;
+   char * current_locale = my_strdup(setlocale(LC_NUMERIC, NULL));
+   setlocale(LC_NUMERIC, "C");
+   result = img_read_item_ascii(pimg, p);
+   setlocale(LC_NUMERIC, current_locale);
+   free(current_locale);
+   return result;
+}
+
+/* Handle all ASCII formats. */
 static int
 img_read_item_ascii(img *pimg, img_point *p)
 {
    int result;
+   pimg->label = pimg->label_buf;
    if (pimg->version == 0) {
       ascii_again:
       pimg->label[0] = '\0';
@@ -1689,6 +1959,25 @@ skip_to_N:
    }
 }
 
+static void
+write_coord(FILE *fh, double x, double y, double z)
+{
+   SVX_ASSERT(fh);
+   /* Output in cm */
+   static INT32_T X_, Y_, Z_;
+   INT32_T X = my_round(x * 100.0);
+   INT32_T Y = my_round(y * 100.0);
+   INT32_T Z = my_round(z * 100.0);
+
+   X_ -= X;
+   Y_ -= Y;
+   Z_ -= Z;
+   put32(X, fh);
+   put32(Y, fh);
+   put32(Z, fh);
+   X_ = X; Y_ = Y; Z_ = Z;
+}
+
 static int
 write_v3label(img *pimg, int opt, const char *s)
 {
@@ -1742,6 +2031,50 @@ write_v3label(img *pimg, int opt, const char *s)
    if (!check_label_space(pimg, n + 1))
       return 0; /* FIXME: distinguish out of memory... */
    memcpy(pimg->label_buf + len, s + len, n - len + 1);
+
+   return !ferror(pimg->fh);
+}
+
+static int
+write_v8label(img *pimg, int opt, const char *s)
+{
+   size_t len, del, add;
+
+   /* find length of common prefix */
+   for (len = 0; s[len] == pimg->label_buf[len] && s[len] != '\0'; len++) {
+   }
+
+   SVX_ASSERT(len <= pimg->label_len);
+   del = pimg->label_len - len;
+   add = strlen(s + len);
+
+   PUTC(opt, pimg->fh);
+   if (del <= 15 && add <= 15 && !(del == 15 && add == 15)) {
+      PUTC((del << 4) | add, pimg->fh);
+   } else {
+      PUTC(0xff, pimg->fh);
+      if (del < 0xff) {
+	 PUTC(del, pimg->fh);
+      } else {
+	 PUTC(0xff, pimg->fh);
+	 put32(del, pimg->fh);
+      }
+      if (add < 0xff) {
+	 PUTC(add, pimg->fh);
+      } else {
+	 PUTC(0xff, pimg->fh);
+	 put32(add, pimg->fh);
+      }
+   }
+
+   if (add)
+      fwrite(s + len, add, 1, pimg->fh);
+
+   pimg->label_len = len + add;
+   if (add > del && !check_label_space(pimg, pimg->label_len + 1))
+      return 0; /* FIXME: distinguish out of memory... */
+
+   memcpy(pimg->label_buf + len, s + len, add + 1);
 
    return !ferror(pimg->fh);
 }
@@ -1830,118 +2163,196 @@ img_write_item_date(img *pimg)
 #endif
 }
 
+static void
+img_write_item_new(img *pimg, int code, int flags, const char *s,
+		   double x, double y, double z);
+static void
+img_write_item_v3to7(img *pimg, int code, int flags, const char *s,
+		     double x, double y, double z);
+static void
+img_write_item_ancient(img *pimg, int code, int flags, const char *s,
+		       double x, double y, double z);
+
 void
 img_write_item(img *pimg, int code, int flags, const char *s,
 	       double x, double y, double z)
 {
    if (!pimg) return;
-   if (pimg->version >= 3) {
-      int opt = 0;
-      switch (code) {
-       case img_LABEL:
-	 write_v3label(pimg, 0x40 | flags, s);
-	 opt = 0;
-	 break;
-       case img_XSECT: {
-	 INT32_T l, r, u, d, max_dim;
-	 /* Need at least version 5 for img_XSECT. */
-	 if (pimg->version < 5) break;
-	 img_write_item_date(pimg);
-	 l = (INT32_T)my_round(pimg->l * 100.0);
-	 r = (INT32_T)my_round(pimg->r * 100.0);
-	 u = (INT32_T)my_round(pimg->u * 100.0);
-	 d = (INT32_T)my_round(pimg->d * 100.0);
-	 if (l < 0) l = -1;
-	 if (r < 0) r = -1;
-	 if (u < 0) u = -1;
-	 if (d < 0) d = -1;
-	 max_dim = max(max(l, r), max(u, d));
-	 flags = (flags & img_XFLAG_END) ? 1 : 0;
-	 if (max_dim >= 32768) flags |= 2;
-	 write_v3label(pimg, 0x30 | flags, s);
-	 if (flags & 2) {
-	    /* Big passage!  Need to use 4 bytes. */
-	    put32(l, pimg->fh);
-	    put32(r, pimg->fh);
-	    put32(u, pimg->fh);
-	    put32(d, pimg->fh);
-	 } else {
-	    put16(l, pimg->fh);
-	    put16(r, pimg->fh);
-	    put16(u, pimg->fh);
-	    put16(d, pimg->fh);
-	 }
-	 return;
-       }
-       case img_MOVE:
-	 opt = 15;
-	 break;
-       case img_LINE:
-	 if (pimg->version >= 4) {
-	     img_write_item_date(pimg);
-	 }
-	 write_v3label(pimg, 0x80 | flags, s ? s : "");
-	 opt = 0;
-	 break;
-       default: /* ignore for now */
-	 return;
-      }
-      if (opt) PUTC(opt, pimg->fh);
-      /* Output in cm */
-      put32((INT32_T)my_round(x * 100.0), pimg->fh);
-      put32((INT32_T)my_round(y * 100.0), pimg->fh);
-      put32((INT32_T)my_round(z * 100.0), pimg->fh);
+   if (pimg->version >= 8) {
+      img_write_item_new(pimg, code, flags, s, x, y, z);
+   } else if (pimg->version >= 3) {
+      img_write_item_v3to7(pimg, code, flags, s, x, y, z);
    } else {
-      size_t len;
-      INT32_T opt = 0;
-      SVX_ASSERT(pimg->version > 0);
-      switch (code) {
-       case img_LABEL:
-	 if (pimg->version == 1) {
-	    /* put a move before each label */
-	    img_write_item(pimg, img_MOVE, 0, NULL, x, y, z);
-	    put32(2, pimg->fh);
-	    fputsnl(s, pimg->fh);
-	    return;
-	 }
-	 len = strlen(s);
-	 if (len > 255 || strchr(s, '\n')) {
-	    /* long label - not in early incarnations of v2 format, but few
-	     * 3d files will need these, so better not to force incompatibility
-	     * with a new version I think... */
-	    PUTC(7, pimg->fh);
-	    PUTC(flags, pimg->fh);
-	    put32(len, pimg->fh);
-	    fputs(s, pimg->fh);
-	 } else {
-	    PUTC(0x40 | (flags & 0x3f), pimg->fh);
-	    fputsnl(s, pimg->fh);
-	 }
-	 opt = 0;
-	 break;
-       case img_MOVE:
-	 opt = 4;
-	 break;
-       case img_LINE:
-	 if (pimg->version > 1) {
-	    opt = 0x80 | (flags & 0x3f);
-	    break;
-	 }
-	 opt = 5;
-	 break;
-       default: /* ignore for now */
+      img_write_item_ancient(pimg, code, flags, s, x, y, z);
+   }
+}
+
+static void
+img_write_item_new(img *pimg, int code, int flags, const char *s,
+		   double x, double y, double z)
+{
+   switch (code) {
+    case img_LABEL:
+      write_v8label(pimg, 0x80 | flags, s);
+      break;
+    case img_XSECT: {
+      INT32_T l, r, u, d, max_dim;
+      img_write_item_date(pimg);
+      l = (INT32_T)my_round(pimg->l * 100.0);
+      r = (INT32_T)my_round(pimg->r * 100.0);
+      u = (INT32_T)my_round(pimg->u * 100.0);
+      d = (INT32_T)my_round(pimg->d * 100.0);
+      if (l < 0) l = -1;
+      if (r < 0) r = -1;
+      if (u < 0) u = -1;
+      if (d < 0) d = -1;
+      max_dim = max(max(l, r), max(u, d));
+      flags = (flags & img_XFLAG_END) ? 1 : 0;
+      if (max_dim >= 32768) flags |= 2;
+      write_v8label(pimg, 0x30 | flags, s);
+      if (flags & 2) {
+	 /* Big passage!  Need to use 4 bytes. */
+	 put32(l, pimg->fh);
+	 put32(r, pimg->fh);
+	 put32(u, pimg->fh);
+	 put32(d, pimg->fh);
+      } else {
+	 put16(l, pimg->fh);
+	 put16(r, pimg->fh);
+	 put16(u, pimg->fh);
+	 put16(d, pimg->fh);
+      }
+      return;
+    }
+    case img_MOVE:
+      PUTC(15, pimg->fh);
+      break;
+    case img_LINE:
+      img_write_item_date(pimg);
+      if (pimg->style != pimg->oldstyle) {
+	  switch (pimg->style) {
+	    case img_STYLE_NORMAL:
+	    case img_STYLE_DIVING:
+	    case img_STYLE_CARTESIAN:
+	    case img_STYLE_CYLPOLAR:
+	    case img_STYLE_NOSURVEY:
+	       PUTC(pimg->style, pimg->fh);
+	       break;
+	  }
+	  pimg->oldstyle = pimg->style;
+      }
+      write_v8label(pimg, 0x40 | flags, s ? s : "");
+      break;
+    default: /* ignore for now */
+      return;
+   }
+   write_coord(pimg->fh, x, y, z);
+}
+
+static void
+img_write_item_v3to7(img *pimg, int code, int flags, const char *s,
+		     double x, double y, double z)
+{
+   switch (code) {
+    case img_LABEL:
+      write_v3label(pimg, 0x40 | flags, s);
+      break;
+    case img_XSECT: {
+      INT32_T l, r, u, d, max_dim;
+      /* Need at least version 5 for img_XSECT. */
+      if (pimg->version < 5) return;
+      img_write_item_date(pimg);
+      l = (INT32_T)my_round(pimg->l * 100.0);
+      r = (INT32_T)my_round(pimg->r * 100.0);
+      u = (INT32_T)my_round(pimg->u * 100.0);
+      d = (INT32_T)my_round(pimg->d * 100.0);
+      if (l < 0) l = -1;
+      if (r < 0) r = -1;
+      if (u < 0) u = -1;
+      if (d < 0) d = -1;
+      max_dim = max(max(l, r), max(u, d));
+      flags = (flags & img_XFLAG_END) ? 1 : 0;
+      if (max_dim >= 32768) flags |= 2;
+      write_v3label(pimg, 0x30 | flags, s);
+      if (flags & 2) {
+	 /* Big passage!  Need to use 4 bytes. */
+	 put32(l, pimg->fh);
+	 put32(r, pimg->fh);
+	 put32(u, pimg->fh);
+	 put32(d, pimg->fh);
+      } else {
+	 put16(l, pimg->fh);
+	 put16(r, pimg->fh);
+	 put16(u, pimg->fh);
+	 put16(d, pimg->fh);
+      }
+      return;
+    }
+    case img_MOVE:
+      PUTC(15, pimg->fh);
+      break;
+    case img_LINE:
+      if (pimg->version >= 4) {
+	  img_write_item_date(pimg);
+      }
+      write_v3label(pimg, 0x80 | flags, s ? s : "");
+      break;
+    default: /* ignore for now */
+      return;
+   }
+   write_coord(pimg->fh, x, y, z);
+}
+
+static void
+img_write_item_ancient(img *pimg, int code, int flags, const char *s,
+		       double x, double y, double z)
+{
+   size_t len;
+   INT32_T opt = 0;
+   SVX_ASSERT(pimg->version > 0);
+   switch (code) {
+    case img_LABEL:
+      if (pimg->version == 1) {
+	 /* put a move before each label */
+	 img_write_item(pimg, img_MOVE, 0, NULL, x, y, z);
+	 put32(2, pimg->fh);
+	 fputsnl(s, pimg->fh);
 	 return;
       }
-      if (pimg->version == 1) {
-	 put32(opt, pimg->fh);
+      len = strlen(s);
+      if (len > 255 || strchr(s, '\n')) {
+	 /* long label - not in early incarnations of v2 format, but few
+	  * 3d files will need these, so better not to force incompatibility
+	  * with a new version I think... */
+	 PUTC(7, pimg->fh);
+	 PUTC(flags, pimg->fh);
+	 put32(len, pimg->fh);
+	 fputs(s, pimg->fh);
       } else {
-	 if (opt) PUTC(opt, pimg->fh);
+	 PUTC(0x40 | (flags & 0x3f), pimg->fh);
+	 fputsnl(s, pimg->fh);
       }
-      /* Output in cm */
-      put32((INT32_T)my_round(x * 100.0), pimg->fh);
-      put32((INT32_T)my_round(y * 100.0), pimg->fh);
-      put32((INT32_T)my_round(z * 100.0), pimg->fh);
+      opt = 0;
+      break;
+    case img_MOVE:
+      opt = 4;
+      break;
+    case img_LINE:
+      if (pimg->version > 1) {
+	 opt = 0x80 | (flags & 0x3f);
+	 break;
+      }
+      opt = 5;
+      break;
+    default: /* ignore for now */
+      return;
    }
+   if (pimg->version == 1) {
+      put32(opt, pimg->fh);
+   } else {
+      if (opt) PUTC(opt, pimg->fh);
+   }
+   write_coord(pimg->fh, x, y, z);
 }
 
 /* Write error information for the current traverse
@@ -1979,11 +2390,14 @@ img_close(img *pimg)
 	     case 1:
 	       put32((INT32_T)-1, pimg->fh);
 	       break;
-	     case 2:
-	       PUTC(0, pimg->fh);
-	       break;
 	     default:
-	       if (pimg->label_len) PUTC(0, pimg->fh);
+	       if (pimg->version <= 7 ?
+		   (pimg->label_len != 0) :
+		   (pimg->style != img_STYLE_NORMAL)) {
+		  PUTC(0, pimg->fh);
+	       }
+	       /* FALL THROUGH */
+	     case 2:
 	       PUTC(0, pimg->fh);
 	       break;
 	    }

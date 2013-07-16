@@ -1,3 +1,7 @@
+Tue Jul 16 12:04:55 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm,src/img.c: More work toward v8 of 3d format.
+
 Tue Jul 16 11:33:34 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: The data style of legs is now stored in the 3d file,

@@ -75,26 +75,52 @@ first byte of an item is a code identifying what the item is:</P>
 </tr>
 <tr>
     <td class="code">0x00</td>
-    <td class="type">STOP</td>
+    <td class="type">STYLE_NORMAL / STOP</td>
     <td class="data">&nbsp;</td>
-    <td class="desc" colspan="2">
-    If the current label is empty, signifies the end of the data in the 3d
-    file; if the current label isn't empty, make it empty.</td>
+    <td colspan="2">
+    Set style for following legs to tape, compass and clino.
+<p>
+    If the style is already set to STYLE_NORMAL, this code signifies the
+    end of the data in the 3d file.</td>
     <td class="version">&ge;8</td>
 </tr>
 <tr>
-    <td class="code">0x01 - 0x0e</td>
-    <td class="type">TRIM</td>
+    <td class="code">0x01</td>
+    <td class="type">STYLE_DIVING</td>
     <td class="data">&nbsp;</td>
-    <td class="desc" colspan="2">
-    Trim the last 16 characters of the current label, then trim back N (i.e.
-    1-14) dots ("."), everything after that particular dot.
-    It's incorrect if the label ends up empty, or you attempt to trim more
-    label than there is. The rationale for removing 16 characters first is
-    that removal of 1-16 characters can be encoded by 0x10-0x1f (see below)
-    and we can make this encoding more powerful by not
-    overlapping what can be encoded.</td>
+    <td colspan="2">
+    Set style for following legs to diving data</td>
     <td class="version">&ge;8</td>
+</tr>
+<tr>
+    <td class="code">0x02</td>
+    <td class="type">STYLE_CARTESIAN</td>
+    <td class="data">&nbsp;</td>
+    <td colspan="2">
+    Set style for following legs to cartesian data</td>
+    <td class="version">&ge;8</td>
+</tr>
+<tr>
+    <td class="code">0x03</td>
+    <td class="type">STYLE_CYLPOLAR</td>
+    <td class="data">&nbsp;</td>
+    <td colspan="2">
+    Set style for following legs to cylindrical polar data</td>
+    <td class="version">&ge;8</td>
+</tr>
+<tr>
+    <td class="code">0x04</td>
+    <td class="type">STYLE_NOSURVEY</td>
+    <td class="data">&nbsp;</td>
+    <td colspan="2">
+    Set style for following legs to unsurveyed</td>
+    <td class="version">&ge;8</td>
+</tr>
+<tr class="reserved">
+    <td class="code">0x05 - 0x0e</td>
+    <td class="type">&nbsp;</td>
+    <td class="data">&nbsp;</td>
+    <td class="desc" colspan="3">Reserved</td>
 </tr>
 <tr>
     <td class="code">0x0f</td>
@@ -106,15 +132,11 @@ first byte of an item is a code identifying what the item is:</P>
     values in centimetres (0.01 metres).</td>
     <td class="version">&ge;8</td>
 </tr>
-<tr>
+<tr class="reserved">
     <td class="code">0x10 - 0x1f</td>
-    <td class="type">TRIM</td>
+    <td class="type">&nbsp;</td>
     <td class="data">&nbsp;</td>
-    <td colspan="2">
-    Remove N-15 (i.e. 1-16) characters from the current label. It's
-    incorrect if the label ends up empty, or you attempt to trim more label
-    than there is.</td>
-    <td class="version">&ge;8</td>
+    <td colspan="3">Reserved</td>
 </tr>
 <tr>
     <td class="code">0x20</td>
@@ -174,7 +196,7 @@ first byte of an item is a code identifying what the item is:</P>
 <tr>
     <td class="code" rowspan="3">0x30 - 0x31</td>
     <td class="type" rowspan="3">XSECT</td>
-    <td class="data" rowspan="3">&lt;len&gt; &lt;label&gt; &lt;L&gt; &lt;R&gt; &lt;U&gt; &lt;D&gt;</td>
+    <td class="data" rowspan="3">&lt;label&gt; &lt;L&gt; &lt;R&gt; &lt;U&gt; &lt;D&gt;</td>
     <td colspan="2">
     Dimensions are 2 byte little-endian signed integers representing values
     in centimetres (0.01 metres). Omitted dimensions are encoded as 0xffff.
@@ -192,7 +214,7 @@ first byte of an item is a code identifying what the item is:</P>
 <tr>
     <td class="code" rowspan="3">0x32 - 0x33</td>
     <td class="type" rowspan="3">XSECT</td>
-    <td class="data" rowspan="3">&lt;len&gt; &lt;label&gt; &lt;L&gt; &lt;R&gt; &lt;U&gt; &lt;D&gt;</td>
+    <td class="data" rowspan="3">&lt;label&gt; &lt;L&gt; &lt;R&gt; &lt;U&gt; &lt;D&gt;</td>
     <td colspan="2">
     Dimensions are 4 byte little-endian signed integers representing values
     in centimetres (0.01 metres). Omitted dimensions are encoded as
@@ -215,72 +237,12 @@ first byte of an item is a code identifying what the item is:</P>
 </tr>
 <!-- Checked to here! -->
 <tr>
-    <td class="code" rowspan="13">0x40 - 0x7f</td>
-    <td class="type" rowspan="13">LABEL</td>
-    <td class="data" rowspan="13">&lt;len&gt; &lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
-    <td colspan="2">
-    Append label to the current label buffer. The updated contents of the
-    label buffer give the survey stations full name. The length of label is
-    given by length, which is encoded as follows:</td>
-    <td class="version" rowspan="12">&ge;8</td>
-</tr>
-<tr>
-    <th>Length</th>
-    <th>Encoding</th>
-</tr>
-<tr>
-    <td>0 - 253</td>
-    <td>byte 0x00 - 0xfd</td>
-</tr>
-<tr>
-    <td>254-65789</td>
-    <td>byte 0xfe 2 byte little-endian unsigned integer len-254 0x0000-0xffff</td>
-</tr>
-<tr>
-    <td>65790 and greater</td>
-    <td>byte 0xff 4 byte little-endian unsigned integer len
-    0x000100fd-0xffffffff</td>
-</tr>
-<tr>
-    <td colspan="2">
-    The station flags are encoded in the bottom 6 bits of the item code:</td>
-</tr>
-<tr>
-    <th>Flag (N &amp; 0x3f)</th>
-    <th>Meaning</th>
-</tr>
-<tr>
-    <td>0x01</td>
-    <td>Station is on leg above ground</td>
-</tr>
-<tr>
-    <td>0x02</td>
-    <td>Station is on an underground leg (both may be true at an entrance)</td>
-</tr>
-<tr>
-    <td>0x04</td>
-    <td>Station is marked as an entrance (with *entrance)</td>
-</tr>
-<tr>
-    <td>0x08</td>
-    <td>Station is exported (i.e. may be used as a connection point to other
-    surveys)</td>
-</tr>
-<tr>
-    <td>0x10</td>
-    <td>Station is a fixed point (control point)</td>
-</tr>
-<tr class="reserved">
-    <td>0x20</td>
-    <td colspan="2">Reserved</td>
-</tr>
-<tr>
-    <td class="code" rowspan="8">0x80 - 0xbf</td>
+    <td class="code" rowspan="8">0x40 - 0x7f</td>
     <td class="type" rowspan="8">LINE</td>
-    <td class="data" rowspan="8">&lt;len&gt; &lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+    <td class="data" rowspan="8">&lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
     <td colspan="2">
     Append label to the current label buffer. The length of the label is
-    encoded as for a station label above. Return leg from current position
+    encoded as for a station label below. Return leg from current position
     to coordinates given, and update current position to coordinates given.
     The updated contents of the label buffer give the survey that the leg is
     in.</td>
@@ -315,11 +277,69 @@ first byte of an item is a code identifying what the item is:</P>
     <td>0x20</td>
     <td colspan="2">Reserved</td>
 </tr>
-<tr class="reserved">
-    <td class="code">0xc0 - 0xff</td>
-    <td class="type">&nbsp;</td>
-    <td class="data">&nbsp;</td>
-    <td colspan="3">Reserved</td>
+<tr>
+    <td class="code" rowspan="14">0x80 - 0xff</td>
+    <td class="type" rowspan="14">LABEL</td>
+    <td class="data" rowspan="14">&lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+    <td colspan="2">
+    Append label to the current label buffer. The updated contents of the
+    label buffer give the survey stations full name. The length of label is
+    given by length, which is encoded as follows:</td>
+    <td class="version" rowspan="14">&ge;8</td>
+</tr>
+<tr>
+    <th>Length</th>
+    <th>Encoding</th>
+</tr>
+<tr>
+    <td>0 - 253</td>
+    <td>byte 0x00 - 0xfd</td>
+</tr>
+<tr>
+    <td>254-65789</td>
+    <td>byte 0xfe 2 byte little-endian unsigned integer len-254 0x0000-0xffff</td>
+</tr>
+<tr>
+    <td>65790 and greater</td>
+    <td>byte 0xff 4 byte little-endian unsigned integer len
+    0x000100fd-0xffffffff</td>
+</tr>
+<tr>
+    <td colspan="2">
+    The station flags are encoded in the bottom 7 bits of the item code:</td>
+</tr>
+<tr>
+    <th>Flag (N &amp; 0x7f)</th>
+    <th>Meaning</th>
+</tr>
+<tr>
+    <td>0x01</td>
+    <td>Station is on leg above ground</td>
+</tr>
+<tr>
+    <td>0x02</td>
+    <td>Station is on an underground leg (both may be true at an entrance)</td>
+</tr>
+<tr>
+    <td>0x04</td>
+    <td>Station is marked as an entrance (with *entrance)</td>
+</tr>
+<tr>
+    <td>0x08</td>
+    <td>Station is exported (i.e. may be used as a connection point to other
+    surveys)</td>
+</tr>
+<tr>
+    <td>0x10</td>
+    <td>Station is a fixed point (control point)</td>
+</tr>
+<tr>
+    <td>0x20</td>
+    <td>Station is anonymous</td>
+</tr>
+<tr>
+    <td>0x40</td>
+    <td>Station is on the passage wall</td>
 </tr>
 </table>
 
@@ -336,5 +356,5 @@ number of different &lt;LABEL&gt; items).</li>
 referenced (e.g. in &lt;XSECT&gt; items)</li>
 </ul>
 
-<P>Authors: Olly Betts and Mike McCombe, last updated: 2013-07-10</P>
+<P>Authors: Olly Betts and Mike McCombe, last updated: 2013-07-16</P>
 </BODY></HTML>
