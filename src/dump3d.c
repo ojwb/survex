@@ -115,6 +115,25 @@ main(int argc, char **argv)
 	    break;
 	  case img_LINE:
 	    printf("LINE %.2f %.2f %.2f [%s]", pt.x, pt.y, pt.z, pimg->label);
+	    switch (pimg->style) {
+		case img_STYLE_UNKNOWN:
+		    break;
+		case img_STYLE_NORMAL:
+		    printf(" STYLE=NORMAL");
+		    break;
+		case img_STYLE_DIVING:
+		    printf(" STYLE=DIVING");
+		    break;
+		case img_STYLE_CARTESIAN:
+		    printf(" STYLE=CARTESIAN");
+		    break;
+		case img_STYLE_CYLPOLAR:
+		    printf(" STYLE=CYLPOLAR");
+		    break;
+		case img_STYLE_NOSURVEY:
+		    printf(" STYLE=NOSURVEY");
+		    break;
+	    }
 	    if (pimg->flags & img_FLAG_SURFACE) printf(" SURFACE");
 	    if (pimg->flags & img_FLAG_DUPLICATE) printf(" DUPLICATE");
 	    if (pimg->flags & img_FLAG_SPLAY) printf(" SPLAY");
