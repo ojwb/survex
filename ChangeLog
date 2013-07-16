@@ -1,3 +1,8 @@
+Tue Jul 16 11:33:34 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: The data style of legs is now stored in the 3d file,
+	  so remove "flag nosurvey legs in .3d file" from todo list.
+
 Tue Jul 16 11:33:04 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/dump3d.c: Report the data style of legs.
