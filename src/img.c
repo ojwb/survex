@@ -867,52 +867,57 @@ read_v3label(img *pimg)
 }
 
 static int
-read_v8label(img *pimg)
+read_v8label(img *pimg, int common_flag, size_t common_val)
 {
    char *q;
    size_t del, add;
-   int ch = GETC(pimg->fh);
-   if (ch == EOF) {
-      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-      return img_BAD;
-   }
-   if (ch != 0xff) {
-      del = ch >> 4;
-      add = ch & 0x0f;
+   if (common_flag) {
+      if (common_val == 0) return 0;
+      add = del = common_val;
    } else {
-      ch = GETC(pimg->fh);
+      int ch = GETC(pimg->fh);
       if (ch == EOF) {
 	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
       }
-      if (ch != 0xff) {
-	 del = ch;
+      if (ch != 0x00) {
+	 del = ch >> 4;
+	 add = ch & 0x0f;
       } else {
-	 del = get32(pimg->fh);
-	 if (ferror(pimg->fh)) {
-	    img_errno = IMG_READERROR;
+	 ch = GETC(pimg->fh);
+	 if (ch == EOF) {
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
-      }
-      ch = GETC(pimg->fh);
-      if (ch == EOF) {
-	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
-	 return img_BAD;
-      }
-      if (ch != 0xff) {
-	 add = ch;
-      } else {
-	 add = get32(pimg->fh);
-	 if (ferror(pimg->fh)) {
-	    img_errno = IMG_READERROR;
+	 if (ch != 0xff) {
+	    del = ch;
+	 } else {
+	    del = get32(pimg->fh);
+	    if (ferror(pimg->fh)) {
+	       img_errno = IMG_READERROR;
+	       return img_BAD;
+	    }
+	 }
+	 ch = GETC(pimg->fh);
+	 if (ch == EOF) {
+	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
+	 if (ch != 0xff) {
+	    add = ch;
+	 } else {
+	    add = get32(pimg->fh);
+	    if (ferror(pimg->fh)) {
+	       img_errno = IMG_READERROR;
+	       return img_BAD;
+	    }
+	 }
       }
-   }
 
-   if (add > del && !check_label_space(pimg, pimg->label_len + add - del + 1)) {
-      img_errno = IMG_OUTOFMEMORY;
-      return img_BAD;
+      if (add > del && !check_label_space(pimg, pimg->label_len + add - del + 1)) {
+	 img_errno = IMG_OUTOFMEMORY;
+	 return img_BAD;
+      }
    }
    if (del > pimg->label_len) {
       img_errno = IMG_BADFORMAT;
@@ -1034,7 +1039,7 @@ img_read_item_new(img *pimg, img_point *p)
 	      }
 	      case 0x30: case 0x31: /* LRUD */
 	      case 0x32: case 0x33: /* Big LRUD! */
-		  if (read_v8label(pimg) == img_BAD) return img_BAD;
+		  if (read_v8label(pimg, 0, 0) == img_BAD) return img_BAD;
 		  pimg->flags = (int)opt & 0x01;
 		  if (opt < 0x32) {
 		      pimg->l = get16(pimg->fh) / 100.0;
@@ -1077,7 +1082,7 @@ img_read_item_new(img *pimg, img_point *p)
       }
       result = img_MOVE;
    } else if (opt >= 0x80) {
-      if (read_v8label(pimg) == img_BAD) return img_BAD;
+      if (read_v8label(pimg, 0, 0) == img_BAD) return img_BAD;
 
       result = img_LABEL;
 
@@ -1096,7 +1101,7 @@ img_read_item_new(img *pimg, img_point *p)
 
       pimg->flags = (int)opt & 0x7f;
    } else if ((opt >> 6) == 1) {
-      if (read_v8label(pimg) == img_BAD) return img_BAD;
+      if (read_v8label(pimg, opt & 0x20, 0) == img_BAD) return img_BAD;
 
       result = img_LINE;
 
@@ -2036,7 +2041,8 @@ write_v3label(img *pimg, int opt, const char *s)
 }
 
 static int
-write_v8label(img *pimg, int opt, const char *s)
+write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
+	      const char *s)
 {
    size_t len, del, add;
 
@@ -2048,22 +2054,26 @@ write_v8label(img *pimg, int opt, const char *s)
    del = pimg->label_len - len;
    add = strlen(s + len);
 
-   PUTC(opt, pimg->fh);
-   if (del <= 15 && add <= 15 && !(del == 15 && add == 15)) {
-      PUTC((del << 4) | add, pimg->fh);
+   if (add == common_val && del == common_val) {
+      PUTC(opt | common_flag, pimg->fh);
    } else {
-      PUTC(0xff, pimg->fh);
-      if (del < 0xff) {
-	 PUTC(del, pimg->fh);
+      PUTC(opt, pimg->fh);
+      if (del <= 15 && add <= 15 && (del || add)) {
+	 PUTC((del << 4) | add, pimg->fh);
       } else {
-	 PUTC(0xff, pimg->fh);
-	 put32(del, pimg->fh);
-      }
-      if (add < 0xff) {
-	 PUTC(add, pimg->fh);
-      } else {
-	 PUTC(0xff, pimg->fh);
-	 put32(add, pimg->fh);
+	 PUTC(0x00, pimg->fh);
+	 if (del < 0xff) {
+	    PUTC(del, pimg->fh);
+	 } else {
+	    PUTC(0xff, pimg->fh);
+	    put32(del, pimg->fh);
+	 }
+	 if (add < 0xff) {
+	    PUTC(add, pimg->fh);
+	 } else {
+	    PUTC(0xff, pimg->fh);
+	    put32(add, pimg->fh);
+	 }
       }
    }
 
@@ -2193,7 +2203,7 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
 {
    switch (code) {
     case img_LABEL:
-      write_v8label(pimg, 0x80 | flags, s);
+      write_v8label(pimg, 0x80 | flags, 0, -1, s);
       break;
     case img_XSECT: {
       INT32_T l, r, u, d, max_dim;
@@ -2209,7 +2219,7 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
       max_dim = max(max(l, r), max(u, d));
       flags = (flags & img_XFLAG_END) ? 1 : 0;
       if (max_dim >= 32768) flags |= 2;
-      write_v8label(pimg, 0x30 | flags, s);
+      write_v8label(pimg, 0x30 | flags, 0, -1, s);
       if (flags & 2) {
 	 /* Big passage!  Need to use 4 bytes. */
 	 put32(l, pimg->fh);
@@ -2241,7 +2251,7 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
 	  }
 	  pimg->oldstyle = pimg->style;
       }
-      write_v8label(pimg, 0x40 | flags, s ? s : "");
+      write_v8label(pimg, 0x40 | flags, 0x20, 0x00, s ? s : "");
       break;
     default: /* ignore for now */
       return;

@@ -1,3 +1,9 @@
+Wed Jul 17 11:13:37 GMT 2013  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm,src/img.c: The prefix is often unchanged from one
+	  leg to the next, so use a spare flag to compactly indicate that
+	  there's no label change.
+
 Tue Jul 16 12:04:55 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/3dformat.htm,src/img.c: More work toward v8 of 3d format.
