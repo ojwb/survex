@@ -987,9 +987,17 @@ img_read_item_new(img *pimg, img_point *p)
 	 pimg->style = opt;
 	 goto again3;
       }
-      if (opt >= 0x20) {
+      if (opt >= 0x10) {
 	  switch (opt) {
-	      case 0x20: { /* Single date */
+	      case 0x10: { /* No date info */
+#if IMG_API_VERSION == 0
+		  pimg->date1 = pimg->date2 = 0;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = pimg->days2 = -1;
+#endif
+		  break;
+	      }
+	      case 0x11: { /* Single date */
 		  int days1 = (int)getu16(pimg->fh);
 #if IMG_API_VERSION == 0
 		  pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
@@ -998,7 +1006,7 @@ img_read_item_new(img *pimg, img_point *p)
 #endif
 		  break;
 	      }
-	      case 0x21: { /* Date range (short for v7+) */
+	      case 0x12: { /* Date range (short) */
 		  int days1 = (int)getu16(pimg->fh);
 		  int days2 = days1 + GETC(pimg->fh) + 1;
 #if IMG_API_VERSION == 0
@@ -1010,14 +1018,7 @@ img_read_item_new(img *pimg, img_point *p)
 #endif
 		  break;
 	      }
-	      case 0x22: /* Error info */
-		  pimg->n_legs = get32(pimg->fh);
-		  pimg->length = get32(pimg->fh) / 100.0;
-		  pimg->E = get32(pimg->fh) / 100.0;
-		  pimg->H = get32(pimg->fh) / 100.0;
-		  pimg->V = get32(pimg->fh) / 100.0;
-		  return img_ERROR_INFO;
-	      case 0x23: { /* v7+: Date range (long) */
+	      case 0x13: { /* Date range (long) */
 		  int days1 = (int)getu16(pimg->fh);
 		  int days2 = (int)getu16(pimg->fh);
 #if IMG_API_VERSION == 0
@@ -1029,14 +1030,13 @@ img_read_item_new(img *pimg, img_point *p)
 #endif
 		  break;
 	      }
-	      case 0x24: { /* v7+: No date info */
-#if IMG_API_VERSION == 0
-		  pimg->date1 = pimg->date2 = 0;
-#else /* IMG_API_VERSION == 1 */
-		  pimg->days1 = pimg->days2 = -1;
-#endif
-		  break;
-	      }
+	      case 0x1f: /* Error info */
+		  pimg->n_legs = get32(pimg->fh);
+		  pimg->length = get32(pimg->fh) / 100.0;
+		  pimg->E = get32(pimg->fh) / 100.0;
+		  pimg->H = get32(pimg->fh) / 100.0;
+		  pimg->V = get32(pimg->fh) / 100.0;
+		  return img_ERROR_INFO;
 	      case 0x30: case 0x31: /* LRUD */
 	      case 0x32: case 0x33: /* Big LRUD! */
 		  if (read_v8label(pimg, 0, 0) == img_BAD) return img_BAD;
@@ -2090,6 +2090,70 @@ write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
 }
 
 static void
+img_write_item_date_new(img *pimg)
+{
+    int same, unset;
+    /* Only write dates when they've changed. */
+#if IMG_API_VERSION == 0
+    if (pimg->date1 == pimg->olddate1 && pimg->date2 == pimg->olddate2)
+	return;
+
+    same = (pimg->date1 == pimg->date2);
+    unset = (pimg->date1 == 0);
+#else /* IMG_API_VERSION == 1 */
+    if (pimg->days1 == pimg->olddays1 && pimg->days2 == pimg->olddays2)
+	return;
+
+    same = (pimg->days1 == pimg->days2);
+    unset = (pimg->days1 == -1);
+#endif
+
+    if (same) {
+	if (unset) {
+	    PUTC(0x10, pimg->fh);
+	} else {
+	    PUTC(0x11, pimg->fh);
+#if IMG_API_VERSION == 0
+	    put16(pimg->date1 / 86400 + 25567, pimg->fh);
+#else /* IMG_API_VERSION == 1 */
+	    put16(pimg->days1, pimg->fh);
+#endif
+	}
+    } else {
+#if IMG_API_VERSION == 0
+	int diff = (pimg->date2 - pimg->date1) / 86400;
+	if (diff > 0 && diff <= 256) {
+	    PUTC(0x12, pimg->fh);
+	    put16(pimg->date1 / 86400 + 25567, pimg->fh);
+	    PUTC(diff - 1, pimg->fh);
+	} else {
+	    PUTC(0x13, pimg->fh);
+	    put16(pimg->date1 / 86400 + 25567, pimg->fh);
+	    put16(pimg->date2 / 86400 + 25567, pimg->fh);
+	}
+#else /* IMG_API_VERSION == 1 */
+	int diff = pimg->days2 - pimg->days1;
+	if (diff > 0 && diff <= 256) {
+	    PUTC(0x12, pimg->fh);
+	    put16(pimg->days1, pimg->fh);
+	    PUTC(diff - 1, pimg->fh);
+	} else {
+	    PUTC(0x13, pimg->fh);
+	    put16(pimg->days1, pimg->fh);
+	    put16(pimg->days2, pimg->fh);
+	}
+#endif
+    }
+#if IMG_API_VERSION == 0
+    pimg->olddate1 = pimg->date1;
+    pimg->olddate2 = pimg->date2;
+#else /* IMG_API_VERSION == 1 */
+    pimg->olddays1 = pimg->days1;
+    pimg->olddays2 = pimg->days2;
+#endif
+}
+
+static void
 img_write_item_date(img *pimg)
 {
     int same, unset;
@@ -2207,7 +2271,7 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
       break;
     case img_XSECT: {
       INT32_T l, r, u, d, max_dim;
-      img_write_item_date(pimg);
+      img_write_item_date_new(pimg);
       l = (INT32_T)my_round(pimg->l * 100.0);
       r = (INT32_T)my_round(pimg->r * 100.0);
       u = (INT32_T)my_round(pimg->u * 100.0);
@@ -2238,7 +2302,7 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
       PUTC(15, pimg->fh);
       break;
     case img_LINE:
-      img_write_item_date(pimg);
+      img_write_item_date_new(pimg);
       if (pimg->style != pimg->oldstyle) {
 	  switch (pimg->style) {
 	    case img_STYLE_NORMAL:
@@ -2376,7 +2440,7 @@ void
 img_write_errors(img *pimg, int n_legs, double length,
 		 double E, double H, double V)
 {
-    PUTC(0x22, pimg->fh);
+    PUTC((pimg->version >= 8 ? 0x1f : 0x22), pimg->fh);
     put32(n_legs, pimg->fh);
     put32((INT32_T)my_round(length * 100.0), pimg->fh);
     put32((INT32_T)my_round(E * 100.0), pimg->fh);
