@@ -1125,7 +1125,7 @@ img_read_item_new(img *pimg, img_point *p)
 	 pimg->pending = opt;
 	 return img_MOVE;
       }
-      pimg->flags = (int)opt & 0x3f;
+      pimg->flags = (int)opt & 0x1f;
    } else {
       img_errno = IMG_BADFORMAT;
       return img_BAD;

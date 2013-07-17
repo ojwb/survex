@@ -1,3 +1,8 @@
+Wed Jul 17 12:29:33 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c: Mask out the bit used to indicate no label change from
+	  the returned leg flags.
+
 Wed Jul 17 11:13:37 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/3dformat.htm,src/img.c: The prefix is often unchanged from one
