@@ -25,8 +25,8 @@ FINDENTRANCES =
 EXTRA_PROGRAMS =\
 	aven dump3d editwrap findentrances
 # FIXME: base_progs in top level Makefile.am needs updating if this is
-bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos \
- aven $(WINPROGS) $(TESTPROGS) $(FINDENTRANCES)
+bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
+ aven $(WINPROGS) $(FINDENTRANCES)
 bin_SCRIPTS = svxedit
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c

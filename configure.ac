@@ -60,17 +60,6 @@ PKGDOCDIR_EXPANDED=`(
 AC_SUBST(PKGDOCDIR)
 AC_SUBST(PKGDOCDIR_EXPANDED)
 
-AC_ARG_ENABLE(testprogs,
-[  --enable-testprogs Enable building of various test harness programs],
-[case $enableval in
- yes) TESTPROGS=dump3d ;;
- no) TESTPROGS= ;;
- *) AC_MSG_ERROR(bad value $enableval for --enable-testprogs) ;;
-esac
-]
-AC_SUBST(TESTPROGS)
-)
-
 AC_CANONICAL_HOST
 
 dnl Checks for programs.

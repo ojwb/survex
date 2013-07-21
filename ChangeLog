@@ -1,3 +1,9 @@
+Sun Jul 21 16:09:24 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,debian/survex.install,src/Makefile.am: Build and
+	  package dump3d as standard - it's useful for grabbing info from
+	  3d files in scripts.
+
 Thu Jul 18 03:54:45 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/de.po: Merge German translation updates from launchpad.

@@ -15,6 +15,7 @@ debian/tmp/usr/bin/extend
 debian/tmp/usr/bin/cad3d
 debian/tmp/usr/bin/sorterr
 debian/tmp/usr/bin/3dtopos
+debian/tmp/usr/bin/dump3d
 debian/tmp/usr/share/man/man1/3dtopos.1
 debian/tmp/usr/share/man/man1/cad3d.1
 debian/tmp/usr/share/man/man1/cavern.1
