@@ -48,6 +48,7 @@
 #include <cstdlib>
 #include <float.h>
 #include <functional>
+#include <map>
 #include <stack>
 #include <vector>
 
@@ -1048,6 +1049,9 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     traverse * current_surface_traverse = NULL;
     vector<XSect> * current_tube = NULL;
 
+    map<wxString, LabelInfo *> labelmap;
+    list<LabelInfo*>::const_iterator last_mapped_label = m_Labels.begin();
+
     int result;
     img_point prev_pt = {0,0,0};
     bool current_polyline_is_surface = false;
@@ -1199,18 +1203,39 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    current_tube = &tubes.back();
 		}
 
-		// FIXME: avoid linear search...
-		list<LabelInfo*>::const_iterator i = m_Labels.begin();
+		LabelInfo * lab;
 		wxString label(survey->label, wxConvUTF8);
-		while (i != m_Labels.end() && (*i)->GetText() != label) ++i;
-
-		if (i == m_Labels.end()) {
-		    // Unattached cross-section - ignore for now.
-		    printf("unattached cross-section\n");
-		    if (current_tube->size() <= 1)
-			tubes.resize(tubes.size() - 1);
-		    current_tube = NULL;
-		    break;
+		map<wxString, LabelInfo *>::const_iterator p;
+		p = labelmap.find(label);
+		if (p != labelmap.end()) {
+		    lab = p->second;
+		} else {
+		    // Initialise labelmap lazily - we may have no
+		    // cross-sections.
+		    list<LabelInfo*>::const_iterator i;
+		    if (labelmap.empty()) {
+			i = m_Labels.begin();
+		    } else {
+			i = last_mapped_label;
+			++i;
+		    }
+		    while (i != m_Labels.end() && (*i)->GetText() != label) {
+			labelmap[(*i)->GetText()] = *i;
+			++i;
+		    }
+		    last_mapped_label = i;
+		    if (i == m_Labels.end()) {
+			// Unattached cross-section - ignore for now.
+			printf("unattached cross-section\n");
+			if (current_tube->size() <= 1)
+			    tubes.resize(tubes.size() - 1);
+			current_tube = NULL;
+			if (!m_Labels.empty())
+			    --last_mapped_label;
+			break;
+		    }
+		    lab = *i;
+		    labelmap[label] = lab;
 		}
 
 		int date = survey->days1;
@@ -1220,7 +1245,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 		    if (date > datemax) datemax = date;
 		}
 
-		current_tube->push_back(XSect(**i, date, survey->l, survey->r, survey->u, survey->d));
+		current_tube->push_back(XSect(*lab, date, survey->l, survey->r, survey->u, survey->d));
 		break;
 	    }
 
