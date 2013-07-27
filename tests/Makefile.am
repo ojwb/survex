@@ -56,6 +56,7 @@ cartes.svx cartes.pos\
 diving.svx diving.pos\
 cylpolar.svx cylpolar.pos\
 normal.svx normal.pos\
+normal_bad.svx normal_bad.out\
 normignall.svx normignall.pos\
 nosurv.svx nosurv.pos\
 cmd_flags.svx bad_cmd_flags.svx\

@@ -1,3 +1,7 @@
+Sat Jul 27 10:08:46 GMT 2013  Olly Betts <olly@survex.com>
+
+	* tests/Makefile.am: Distribute files for normal_bad testcase.
+
 Sat Jul 27 09:41:34 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.7.
