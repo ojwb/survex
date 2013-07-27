@@ -1,3 +1,7 @@
+Sat Jul 27 09:41:34 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac: Update for 1.2.7.
+
 Sun Jul 21 18:03:58 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Speed up loading a .3d file with cross-sections by
