@@ -139,7 +139,7 @@ anon_wall_station:
 		  compile_error(-/*Can't have a leg between two anonymous stations*/3);
 		  LONGJMP(file.jbSkipLine);
 	       }
-	       pcs->flags |= BIT(FLAGS_ANON_ONE_END);
+	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
 	       pfx = new_anon_station();
 	       pfx->sflags |= BIT(SFLAGS_WALL);
 	       return pfx;
