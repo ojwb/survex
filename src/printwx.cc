@@ -386,6 +386,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 void
 svxPrintDlg::OnPrint(wxCommandEvent&) {
     SomethingChanged();
+    TransferDataFromWindow();
     wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
     wxPrintDialogData pd(psdd->GetPrintData());
     wxPrinter pr(&pd);

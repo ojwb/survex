@@ -4,6 +4,9 @@ Changes in 1.2.8 (unreleased):
   implicitly set the SPLAY leg flag, as was intended.  Reported by Thomas
   Holder.
 
+* aven: Changing checkboxes in the print or export dialog didn't work in 1.2.7
+  - now works again.  Reported by Anthony Day.
+
 Changes in 1.2.7 (2013-07-27):
 
 * Add support for anonymous stations, which are indicated by one, two or three

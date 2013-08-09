@@ -1,3 +1,8 @@
+Fri Aug 09 10:23:24 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS,src/printwx.cc: Need to call TransferDataFromWindow() for the
+	  validators to get called and update the boolean flag settings mask.
+
 Fri Aug 02 13:04:39 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,src/readval.c,tests/cmd_alias.out: Fix handling of anonymous
