@@ -1,6 +1,6 @@
 /* matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-2003,2010 Olly Betts
+ * Copyright (C) 1993-2003,2010,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,13 +128,10 @@ build_matrix(node *list)
    B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));
 
    if (!fQuiet) {
-     putnl();
-     if (n_stn_tab == 1)
-       puts(msg(/*Solving one equation*/78));
-     else {
-       printf(msg(/*Solving %d simultaneous equations*/75), n_stn_tab);
-       putnl();
-     }
+      if (n_stn_tab == 1)
+	 out_current_action(msg(/*Solving one equation*/78));
+      else
+	 out_current_action1(msg(/*Solving %d simultaneous equations*/75), n_stn_tab);
    }
 
 #ifdef NO_COVARIANCES
@@ -143,12 +140,8 @@ build_matrix(node *list)
    dim = 0; /* fudge next loop for now */
 #endif
    for ( ; dim >= 0; dim--) {
-      char buf[256];
       node *stn;
       int row;
-
-      sprintf(buf, msg(/*Solving to find %c coordinates*/76), (char)('x'+dim));
-      out_current_action(buf);
 
       /* Initialise M and B to zero - zeroing "linearly" will minimise
        * paging when the matrix is large */

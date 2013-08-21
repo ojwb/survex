@@ -560,13 +560,6 @@ msgstr "Network solved by reduction - no simultaneous equations to solve."
 msgid "Solving %d simultaneous equations"
 msgstr "Solving %d simultaneous equations"
 
-#. TRANSLATORS: %c is “x”, “y” or “z”
-#: ../src/matrix.c:150
-#: n:76
-#, c-format
-msgid "Solving to find %c coordinates"
-msgstr "Solving to find %c coordinates"
-
 #: ../src/commands.c:1146
 #: n:77
 #, c-format

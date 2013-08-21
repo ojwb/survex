@@ -819,3 +819,18 @@ en:612 Error reading line %i from spec file
 fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
 it:612 Errore di lettura alla linea %i del file di specifiche
 #
+#. TRANSLATORS: %c is “x”, “y” or “z”
+#: n:76
+#, c-format
+msgid "Solving to find %c coordinates"
+ca "Resolent per trobar coordenades %c"
+de "Auflösen nach den %c-Koordinaten"
+de_CH "Auflösen nach den %c-Koordinaten"
+en_US "Solving to find %c coordinates"
+es "Resolviendo para encontrar coordenadas %c"
+fr "Résoud pour trouver %c coordonnées"
+it "Sto risolvendo per trovare le coordinate %c"
+pt "Resolvendo para encontrar coordenadas %c"
+pt_BR "Resolvendo para encontrar coordenadas %c"
+ro "Incerc sa gasesc coordonatele %c"
+sk "Hľadá sa %c súradníc"

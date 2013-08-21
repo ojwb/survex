@@ -560,13 +560,6 @@ msgstr "Coordenadas já calculadas - nenhum sistema de equações para resolver.
 msgid "Solving %d simultaneous equations"
 msgstr "Resolvendo sistema de %d equações"
 
-#. TRANSLATORS: %c is “x”, “y” or “z”
-#: ../src/matrix.c:150
-#: n:76
-#, c-format
-msgid "Solving to find %c coordinates"
-msgstr "Resolvendo para encontrar coordenadas %c"
-
 #: ../src/commands.c:1146
 #: n:77
 #, c-format

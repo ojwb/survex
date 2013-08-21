@@ -560,13 +560,6 @@ msgstr "Netzausgleichung gelöst durch Reduktion - kein Gleichungssystem erforde
 msgid "Solving %d simultaneous equations"
 msgstr "Löse System mit %d Gleichungen und Unbekannten"
 
-#. TRANSLATORS: %c is “x”, “y” or “z”
-#: ../src/matrix.c:150
-#: n:76
-#, c-format
-msgid "Solving to find %c coordinates"
-msgstr "Auflösen nach den %c-Koordinaten"
-
 #: ../src/commands.c:1146
 #: n:77
 #, c-format

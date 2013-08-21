@@ -560,13 +560,6 @@ msgstr "Retea rezolvata prin reducere - nici un sistem de ecuatii de rezolvat."
 msgid "Solving %d simultaneous equations"
 msgstr "Rezolv %d ecuatii simultane"
 
-#. TRANSLATORS: %c is “x”, “y” or “z”
-#: ../src/matrix.c:150
-#: n:76
-#, c-format
-msgid "Solving to find %c coordinates"
-msgstr "Incerc sa gasesc coordonatele %c"
-
 #: ../src/commands.c:1146
 #: n:77
 #, c-format

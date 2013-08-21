@@ -560,13 +560,6 @@ msgstr "Système resolu par réduction - pas d’équations simultanés à réso
 msgid "Solving %d simultaneous equations"
 msgstr "Résoud un système de %d équations"
 
-#. TRANSLATORS: %c is “x”, “y” or “z”
-#: ../src/matrix.c:150
-#: n:76
-#, c-format
-msgid "Solving to find %c coordinates"
-msgstr "Résoud pour trouver %c coordonnées"
-
 #: ../src/commands.c:1146
 #: n:77
 #, c-format
