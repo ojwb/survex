@@ -4,6 +4,9 @@ Changes in 1.2.8 (unreleased):
   implicitly set the SPLAY leg flag, as was intended.  Reported by Thomas
   Holder.
 
+* cavern: Tweak .err file output to not lose the space in front of certain
+  statistics when the value gets large.
+
 * cavern: Eliminate redundant progress message when solving simultaneous
   equations.
 

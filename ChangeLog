@@ -1,3 +1,8 @@
+Fri Aug 23 08:06:18 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS,lib/,src/netskel.c: Tweak cavern .err file output to not lose
+	  the space in front of certain statistics when the value gets large.
+
 Wed Aug 21 21:14:03 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,lib/,src/matrix.c,src/out.h,tests/calibrate_clino.out: Don't

@@ -716,10 +716,10 @@ err_stat(int cLegsTrav, double lenTrav,
    if (!fSuppress) {
       double sqrt_eTot = sqrt(eTot);
       fputnl(fhErrStat);
-      fprintf(fhErrStat, msg(/*Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). */145),
+      fprintf(fhErrStat, msg(/*Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). */145),
 	      lenTrav, cLegsTrav, sqrt_eTot, sqrt_eTot / cLegsTrav);
       if (lenTrav > 0.0)
-	 fprintf(fhErrStat, msg(/*Error%7.2f%%*/146), 100 * sqrt_eTot / lenTrav);
+	 fprintf(fhErrStat, msg(/*Error %6.2f%%*/146), 100 * sqrt_eTot / lenTrav);
       else
 	 fputs(msg(/*Error    N/A*/147), fhErrStat);
       fputnl(fhErrStat);

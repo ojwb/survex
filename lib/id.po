@@ -1004,13 +1004,13 @@ msgstr ""
 #: ../src/netskel.c:717
 #: n:145
 #, c-format
-msgid "Original length%7.2fm (%3d legs), moved%7.2fm (%5.2fm/leg). "
+msgid "Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). "
 msgstr ""
 
 #: ../src/netskel.c:720
 #: n:146
 #, c-format
-msgid "Error%7.2f%%"
+msgid "Error %6.2f%%"
 msgstr ""
 
 #. TRANSLATORS: Here N/A means "Not Applicable" -- it means the traverse has zero length, so
