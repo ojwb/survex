@@ -1,3 +1,8 @@
+Mon Sep 02 00:11:36 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c: Don't duplicate the IMG_API_VERSION defaulting logic from
+	  img.h as we get it just by including img.h first.
+
 Mon Sep 02 00:10:34 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/: IMG_HOSTED no longer affects the img API at all.

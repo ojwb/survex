@@ -30,12 +30,6 @@
 
 #include "img.h"
 
-#ifndef IMG_API_VERSION
-# define IMG_API_VERSION 0
-#elif IMG_API_VERSION > 1
-# error IMG_API_VERSION > 1 too new
-#endif
-
 #define TIMENA "?"
 #ifdef IMG_HOSTED
 # include "debug.h"
