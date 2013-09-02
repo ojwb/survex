@@ -61,11 +61,7 @@
     ((*(X) = NULL), fopen(FNM,MODE))
 # define PUTC(C, FH) putc(C, FH)
 # define GETC(FH) getc(FH)
-/* dummy do {...} while(0) hack to permit stuff like
- * if (s) fputsnl(s,fh); else exit(1);
- * to work as intended
- */
-# define fputsnl(S, FH) do {fputs((S), (FH)); PUTC('\n', (FH));} while(0)
+# define fputsnl(S, FH) (fputs((S), (FH)) == EOF ? EOF : putc('\n', (FH)))
 # define SVX_ASSERT(X)
 
 #ifdef __cplusplus
