@@ -34,7 +34,7 @@
 #include "aventreectrl.h"
 #include "gfxcore.h"
 #include "guicontrol.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "message.h"
 #include "vector3.h"
 #include "aven.h"

@@ -34,7 +34,7 @@
 #include "message.h"
 #include "filename.h"
 #include "filelist.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "listpos.h"
 #include "netbits.h"
 #include "netskel.h"
@@ -335,7 +335,7 @@ main(int argc, char **argv)
    /* close .3d file */
    if (!img_close(pimg)) {
       char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
-      fatalerror(img_error(), fnm);
+      fatalerror(img_error2msg(img_error()), fnm);
    }
    if (fhErrStat) safe_fclose(fhErrStat);
 

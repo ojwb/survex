@@ -2,7 +2,7 @@
  * Simple converter from survex .3d files to a list of entrances in GPX format
  *
  * Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012 Olly Betts
+ * Copyright (C) 2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@
 
 #include "message.h"
 #include "cmdline.h"
-#include "img.h"
+#include "img_hosted.h"
 
 using namespace std;
 
@@ -66,7 +66,7 @@ read_survey(const char *filename, vector<Point> & points)
 {
     img *survey = img_open_survey(filename, NULL);
     if (!survey) {
-	fatalerror(img_error(), filename);
+	fatalerror(img_error2msg(img_error()), filename);
     }
 
     int result;
@@ -85,7 +85,7 @@ read_survey(const char *filename, vector<Point> & points)
 	    }
 	} else if (result == img_BAD) {
 	    img_close(survey);
-	    fatalerror(img_error(), filename);
+	    fatalerror(img_error2msg(img_error()), filename);
 	}
     } while (result != img_STOP);
 

@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
 noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
- filelist.h filename.h getopt.h hash.h img.h ini.h listpos.h matrix.h\
- message.h namecmp.h namecompare.h netartic.h netbits.h netskel.h network.h\
- osalloc.h\
+ filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h\
+ listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h netbits.h\
+ netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h log.h mainfrm.h\
@@ -11,8 +11,6 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  img2aven.h
 
 LDADD = $(LIBOBJS)
-
-AM_CPPFLAGS = -DIMG_HOSTED -DIMG_API_VERSION=1
 
 # dump3d is a test program
 #
@@ -32,11 +30,11 @@ bin_SCRIPTS = svxedit
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
 cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
- network.c readval.c str.c matrix.c img.c netbits.c useful.c validate.c \
- netartic.c \
+ network.c readval.c str.c matrix.c img_hosted.c netbits.c useful.c \
+ validate.c netartic.c \
  $(COMMONSRC)
 
-aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
+aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc useful.c cmdline.c z_getopt.c \
  getopt1.c namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
  glbitmapfont.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
@@ -46,9 +44,11 @@ aven_SOURCES = aven.cc date.c img.c message.c filename.c osdepend.c \
  avenprcore.cc printwx.cc ini.c hash.c \
  buttontaghandler.cc
 
-dump3d_SOURCES = dump3d.c date.c img.c useful.c $(COMMONSRC)
+dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
+ $(COMMONSRC)
 
-findentrances_SOURCES = findentrances.cc img.c useful.c $(COMMONSRC)
+findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
+ $(COMMONSRC)
 findentrances_LDADD = -lproj
 
 editwrap_SOURCES = editwrap.c
@@ -87,21 +87,19 @@ aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
 aven_LDFLAGS = $(WX_LDFLAGS)
 endif
 
-diffpos_SOURCES = diffpos.c namecmp.c img.c useful.c hash.c $(COMMONSRC)
+diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \
+ $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
-3dtopos_SOURCES = 3dtopos.c namecmp.c img.c useful.c $(COMMONSRC)
-extend_SOURCES = extend.c $(COMMONSRC) img.c useful.c hash.c
+3dtopos_SOURCES = 3dtopos.c namecmp.c img_hosted.c useful.c \
+ $(COMMONSRC)
+extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
+ $(COMMONSRC)
 
-cad3d_SOURCES = cad3d.c $(COMMONSRC) useful.c img.c hash.c
+cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c \
+ $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
-#imgtest_SOURCES = imgtest.c imgalone.c
-
-# this doesn't work if compiler doesn't support -c and -o, or with
-# deANSIfication
-# Use imgalone.c containing '#define STANDALONE/#include "img.c"'?
-#imgalone.o: img.c
-#        $(COMPILE) -DSTANDALONE -o imgalone.o -c img.c
+#imgtest_SOURCES = imgtest.c img.c
 
 all_sources = \
 	$(noinst_HEADERS) \

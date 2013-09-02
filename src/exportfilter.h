@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2005,2012 Olly Betts
+/* Copyright (C) 2005,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
 
 #include <stdio.h>
 
-#include "img.h"
+#include "img_hosted.h"
 
 class ExportFilter {
   protected:

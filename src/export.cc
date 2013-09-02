@@ -51,7 +51,7 @@
 #include "debug.h"
 #include "filename.h"
 #include "hash.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "message.h"
 #include "useful.h"
 

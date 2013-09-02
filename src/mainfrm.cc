@@ -32,7 +32,7 @@
 #include "aboutdlg.h"
 
 #include "message.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "namecompare.h"
 #include "printwx.h"
 #include "filename.h"

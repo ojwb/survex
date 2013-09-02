@@ -37,7 +37,7 @@
 #include "debug.h"
 #include "filename.h"
 #include "hash.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "message.h"
 #include "useful.h"
 
@@ -784,7 +784,7 @@ main(int argc, char **argv)
    }
 
    pimg = img_open_survey(fnm_3d, survey);
-   if (!pimg) fatalerror(img_error(), fnm_3d);
+   if (!pimg) fatalerror(img_error2msg(img_error()), fnm_3d);
 
    fh = safe_fopen(fnm_out, mode);
 
@@ -842,7 +842,7 @@ main(int argc, char **argv)
 	  ((*pass & STNS) && crosses) ||
 	  ((*pass & LABELS) && labels)) {
 	 if (!img_rewind(pimg)) {
-	     fatalerror(img_error(), fnm_3d);
+	     fatalerror(img_error2msg(img_error()), fnm_3d);
 	 }
 	 start_pass(*pass);
 	 do {

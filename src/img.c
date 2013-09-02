@@ -172,21 +172,7 @@ int my_strcasecmp(const char *s1, const char *s2) {
 
 unsigned int img_output_version = IMG_VERSION_MAX;
 
-#ifdef IMG_HOSTED
-static enum {
-   IMG_NONE = 0,
-   IMG_FILENOTFOUND = /*Couldn’t open data file “%s”*/24,
-   IMG_OUTOFMEMORY  = /*Out of memory %.0s*/38,
-   IMG_DIRECTORY    = /*Filename “%s” refers to directory*/44,
-   IMG_CANTOPENOUT  = /*Failed to open output file “%s”*/47,
-   IMG_BADFORMAT    = /*Bad 3d image file “%s”*/106,
-   IMG_READERROR    = /*Error reading from file “%s”*/109,
-   IMG_WRITEERROR   = /*Error writing to file “%s”*/110,
-   IMG_TOONEW       = /*File “%s” has a newer format than this program can understand*/114
-} img_errno = IMG_NONE;
-#else
 static img_errcode img_errno = IMG_NONE;
-#endif
 
 #define FILEID "Survex 3D Image File"
 
@@ -247,19 +233,11 @@ getline_alloc(FILE *fh)
    return buf;
 }
 
-#ifndef IMG_HOSTED
 img_errcode
 img_error(void)
 {
    return img_errno;
 }
-#else
-int
-img_error(void)
-{
-   return (int)img_errno;
-}
-#endif
 
 static bool
 check_label_space(img *pimg, size_t len)

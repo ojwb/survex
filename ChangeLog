@@ -1,3 +1,7 @@
+Mon Sep 02 00:10:34 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/: IMG_HOSTED no longer affects the img API at all.
+
 Fri Aug 23 08:06:18 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,lib/,src/netskel.c: Tweak cavern .err file output to not lose

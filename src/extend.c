@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011 Olly Betts
+ * Copyright (C) 1995-2002,2005,2010,2011,2013 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 #include "filelist.h"
 #include "filename.h"
 #include "hash.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "message.h"
 #include "useful.h"
 
@@ -484,7 +484,7 @@ main(int argc, char **argv)
 
    /* try to open image file, and check it has correct header */
    pimg = img_open_survey(fnm_in, survey);
-   if (pimg == NULL) fatalerror(img_error(), fnm_in);
+   if (pimg == NULL) fatalerror(img_error2msg(img_error()), fnm_in);
 
    putnl();
    puts(msg(/*Reading in data - please wait…*/105));
@@ -517,7 +517,7 @@ main(int argc, char **argv)
 	 break;
       case img_BAD:
 	 (void)img_close(pimg);
-	 fatalerror(img_error(), fnm_in);
+	 fatalerror(img_error2msg(img_error()), fnm_in);
 	 break;
       case img_XSECT:
          have_xsect = 1;
@@ -629,7 +629,7 @@ main(int argc, char **argv)
 
    if (!img_close(pimg_out)) {
       (void)remove(fnm_out);
-      fatalerror(img_error(), fnm_out);
+      fatalerror(img_error2msg(img_error()), fnm_out);
    }
 
    return EXIT_SUCCESS;

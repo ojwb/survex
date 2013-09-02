@@ -21,7 +21,7 @@
 #ifndef survex_included_avenprcore_h
 #define survex_included_avenprcore_h
 
-#include "img.h"
+#include "img_hosted.h"
 #include <wx.h>
 
 extern bool fBlankPage;

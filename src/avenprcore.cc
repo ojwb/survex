@@ -38,7 +38,7 @@
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "avenprcore.h"
 #include "debug.h"
 

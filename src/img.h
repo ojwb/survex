@@ -233,7 +233,6 @@ int img_rewind(img *pimg);
 int img_close(img *pimg);
 
 /* Codes returned by img_error */
-# ifndef IMG_HOSTED
 typedef enum {
    IMG_NONE = 0, IMG_FILENOTFOUND, IMG_OUTOFMEMORY,
    IMG_CANTOPENOUT, IMG_BADFORMAT, IMG_DIRECTORY,
@@ -241,12 +240,11 @@ typedef enum {
 } img_errcode;
 
 /* Read the error code
- * if img_open() or img_open_write() returns NULL, you can call this
- * to discover why */
+ * If img_open(), img_open_survey() or img_open_write() returns NULL, or
+ * img_rewind() or img_close() returns 0, or img_read_item() returns img_BAD
+ * then you can call this function to discover why.
+ */
 img_errcode img_error(void);
-# else
-int img_error(void);
-# endif
 
 #ifdef __cplusplus
 }

@@ -30,8 +30,7 @@
 #include "date.h"
 #include "debug.h"
 #include "filelist.h"
-#define IMG_API_VERSION 1
-#include "img.h"
+#include "img_hosted.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -78,7 +77,7 @@ main(int argc, char **argv)
 
 #if 0
    pimg = img_open_write("dump3d.3d", "dump3d", 0);
-   if (!pimg) fatalerror(img_error(), "dump3d.3d");
+   if (!pimg) fatalerror(img_error2msg(img_error()), "dump3d.3d");
    img_write_item(pimg, img_MOVE, 0, NULL, 0, 0, 0);
    img_write_item(pimg, img_LINE, 0, "161.lostworld.upstream",
 		  36920.120000, 82672.840000, 1528.820000);
@@ -90,7 +89,7 @@ main(int argc, char **argv)
 #endif
 
    pimg = img_open_survey(fnm, survey);
-   if (!pimg) fatalerror(img_error(), fnm);
+   if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
 
    printf("TITLE \"%s\"\n", pimg->title);
    printf("DATE \"%s\"\n", pimg->datestamp);
@@ -104,7 +103,7 @@ main(int argc, char **argv)
       if (code == img_STOP) {
 	 printf("<<< REWIND <<<\n");
 	 fRewind = fFalse;
-	 if (!img_rewind(pimg)) fatalerror(img_error(), fnm);
+	 if (!img_rewind(pimg)) fatalerror(img_error2msg(img_error()), fnm);
       }
 
       do {
@@ -171,7 +170,7 @@ main(int argc, char **argv)
 	    break;
 	  case img_BAD:
 	    img_close(pimg);
-	    fatalerror(img_error(), fnm);
+	    fatalerror(img_error2msg(img_error()), fnm);
 	  case img_STOP:
 	    printf("STOP\n");
 	    break;

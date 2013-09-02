@@ -1,6 +1,6 @@
 /* 3dtopos.c */
 /* Produce a .pos file from a .3d file */
-/* Copyright (C) 2001,2002,2011 Olly Betts
+/* Copyright (C) 2001,2002,2011,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include "cmdline.h"
 #include "filelist.h"
 #include "filename.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "message.h"
 #include "namecmp.h"
 #include "osalloc.h"
@@ -100,7 +100,7 @@ main(int argc, char **argv)
    }
 
    pimg = img_open_survey(fnm, survey);
-   if (!pimg) fatalerror(img_error(), fnm);
+   if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
    separator = pimg->separator;
 
    fh_out = safe_fopen(fnm_out, "w");
@@ -121,7 +121,7 @@ main(int argc, char **argv)
 	 break;
        case img_BAD:
 	 img_close(pimg);
-	 fatalerror(img_error(), fnm);
+	 fatalerror(img_error2msg(img_error()), fnm);
       }
    } while (result != img_STOP);
 

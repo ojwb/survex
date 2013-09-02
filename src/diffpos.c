@@ -1,6 +1,6 @@
 /* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
-/* Copyright (C) 1994,1996,1998-2003,2010,2011 Olly Betts
+/* Copyright (C) 1994,1996,1998-2003,2010,2011,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #include "debug.h"
 #include "filelist.h"
 #include "hash.h"
-#include "img.h"
+#include "img_hosted.h"
 #include "namecmp.h"
 #include "useful.h"
 
@@ -228,7 +228,7 @@ parse_file(const char *fnm, const char *survey,
    int separator;
 
    img *pimg = img_open_survey(fnm, survey);
-   if (!pimg) fatalerror(img_error(), fnm);
+   if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
    separator = pimg->separator;
 
    do {
@@ -242,7 +242,7 @@ parse_file(const char *fnm, const char *survey,
 	 break;
        case img_BAD:
 	 img_close(pimg);
-	 fatalerror(img_error(), fnm);
+	 fatalerror(img_error2msg(img_error()), fnm);
       }
    } while (result != img_STOP);
 

@@ -33,7 +33,7 @@
 #include <math.h>
 #include <float.h>
 
-#include "img.h"
+#include "img_hosted.h"
 #include "useful.h"
 
 /* Set EXPLICIT_FIXED_FLAG to 1 to force an explicit fixed flag to be used
