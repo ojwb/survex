@@ -59,9 +59,6 @@
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) fopen(FNM,MODE)
 # define PUTC(C, FH) putc(C, FH)
 # define GETC(FH) getc(FH)
-# define fFalse 0
-# define fTrue 1
-# define bool int
 /* dummy do {...} while(0) hack to permit stuff like
  * if (s) fputsnl(s,fh); else exit(1);
  * to work as intended
@@ -123,7 +120,8 @@ static char *
 baseleaf_from_fnm(const char *fnm)
 {
    const char *p;
-   char *q;
+   const char *q;
+   char * res;
    size_t len;
 
    p = fnm;
@@ -135,11 +133,11 @@ baseleaf_from_fnm(const char *fnm)
    q = strrchr(p, FNM_SEP_EXT);
    if (q) len = (const char *)q - p; else len = strlen(p);
 
-   q = xosmalloc(len + 1);
-   if (!q) return NULL;
-   memcpy(q, p, len);
-   q[len] = '\0';
-   return q;
+   res = (char *)xosmalloc(len + 1);
+   if (!res) return NULL;
+   memcpy(res, p, len);
+   res[len] = '\0';
+   return res;
 }
 #endif
 
@@ -204,7 +202,7 @@ my_strdup(const char *str)
 {
    char *p;
    size_t len = strlen(str) + 1;
-   p = xosmalloc(len);
+   p = (char *)xosmalloc(len);
    if (p) memcpy(p, str, len);
    return p;
 }
@@ -215,7 +213,7 @@ getline_alloc(FILE *fh)
    int ch;
    size_t i = 0;
    size_t len = 16;
-   char *buf = xosmalloc(len);
+   char *buf = (char *)xosmalloc(len);
    if (!buf) return NULL;
 
    ch = GETC(fh);
@@ -224,7 +222,7 @@ getline_alloc(FILE *fh)
       if (i == len - 1) {
 	 char *p;
 	 len += len;
-	 p = xosrealloc(buf, len);
+	 p = (char *)xosrealloc(buf, len);
 	 if (!p) {
 	    osfree(buf);
 	    return NULL;
@@ -249,17 +247,17 @@ img_error(void)
    return img_errno;
 }
 
-static bool
+static int
 check_label_space(img *pimg, size_t len)
 {
    if (len > pimg->buf_len) {
-      char *b = xosrealloc(pimg->label_buf, len);
-      if (!b) return fFalse;
+      char *b = (char *)xosrealloc(pimg->label_buf, len);
+      if (!b) return 0;
       pimg->label = (pimg->label - pimg->label_buf) + b;
       pimg->label_buf = b;
       pimg->buf_len = len;
    }
-   return fTrue;
+   return 1;
 }
 
 #define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
@@ -286,7 +284,7 @@ img_open_survey(const char *fnm, const char *survey)
    }
 
    pimg->buf_len = 257;
-   pimg->label_buf = xosmalloc(pimg->buf_len);
+   pimg->label_buf = (char *)xosmalloc(pimg->buf_len);
    if (!pimg->label_buf) {
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
@@ -301,7 +299,7 @@ img_open_survey(const char *fnm, const char *survey)
       return NULL;
    }
 
-   pimg->fRead = fTrue; /* reading from this file */
+   pimg->fRead = 1; /* reading from this file */
    img_errno = IMG_NONE;
 
    pimg->flags = 0;
@@ -335,7 +333,7 @@ img_open_survey(const char *fnm, const char *survey)
 	 if (survey[len - 1] == '.') len--;
 	 if (len) {
 	    char *p;
-	    pimg->survey = xosmalloc(len + 2);
+	    pimg->survey = (char *)xosmalloc(len + 2);
 	    if (!pimg->survey) {
 	       img_errno = IMG_OUTOFMEMORY;
 	       goto error;
@@ -656,7 +654,7 @@ img_open_write(const char *fnm, char *title, int flags)
    }
 
    pimg->buf_len = 257;
-   pimg->label_buf = xosmalloc(pimg->buf_len);
+   pimg->label_buf = (char *)xosmalloc(pimg->buf_len);
    if (!pimg->label_buf) {
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
@@ -720,7 +718,7 @@ img_open_write(const char *fnm, char *title, int flags)
        fwrite(codelengths, 32, 1, pimg->fh);
    }
 #endif
-   pimg->fRead = fFalse; /* writing to this file */
+   pimg->fRead = 0; /* writing to this file */
    img_errno = IMG_NONE;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
@@ -1895,7 +1893,7 @@ skip_to_N:
 	    return img_BAD;
 	 }
 	 memcpy(pimg->label, line, 6);
-	 q = memchr(pimg->label, ' ', 6);
+	 q = (char *)memchr(pimg->label, ' ', 6);
 	 if (!q) q = pimg->label + 6;
 	 *q = '\0';
 
@@ -1906,7 +1904,7 @@ skip_to_N:
 	 return img_LABEL;
       } else {
 	 /* Shot variant */
-	 char old[8], new[8];
+	 char old[8], new_[8];
 	 if (len < 61) {
 	    osfree(line);
 	    img_errno = IMG_BADFORMAT;
@@ -1914,21 +1912,21 @@ skip_to_N:
 	 }
 
 	 memcpy(old, line, 7);
-	 q = memchr(old, ' ', 7);
+	 q = (char *)memchr(old, ' ', 7);
 	 if (!q) q = old + 7;
 	 *q = '\0';
 
-	 memcpy(new, line + 7, 7);
-	 q = memchr(new, ' ', 7);
-	 if (!q) q = new + 7;
+	 memcpy(new_, line + 7, 7);
+	 q = (char *)memchr(new_, ' ', 7);
+	 if (!q) q = new_ + 7;
 	 *q = '\0';
 
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 
-	 if (strcmp(old, new) == 0) {
+	 if (strcmp(old, new_) == 0) {
 	    pimg->pending = img_MOVE + 4;
 	    read_xyz_shot_coords(p, line);
-	    strcpy(pimg->label, new);
+	    strcpy(pimg->label, new_);
 	    osfree(line);
 	    return img_LABEL;
 	 }
@@ -1936,14 +1934,14 @@ skip_to_N:
 	 if (strcmp(old, pimg->label) == 0) {
 	    pimg->pending = img_LINE + 4;
 	    read_xyz_shot_coords(p, line);
-	    strcpy(pimg->label, new);
+	    strcpy(pimg->label, new_);
 	    osfree(line);
 	    return img_LABEL;
 	 }
 
 	 pimg->pending = img_LABEL + 4;
 	 read_xyz_shot_coords(p, line);
-	 strcpy(pimg->label, new);
+	 strcpy(pimg->label, new_);
 	 memcpy(pimg->label + 16, line, 70);
 
 	 osfree(line);

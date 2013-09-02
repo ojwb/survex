@@ -1,3 +1,7 @@
+Mon Sep 02 00:27:29 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS,src/img.c: img.c can now be compiled as C++ as well as as C.
+
 Mon Sep 02 00:17:36 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,src/img.c: Add missing definition of max() macro when built for

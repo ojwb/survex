@@ -17,6 +17,8 @@ Changes in 1.2.8 (unreleased):
 
   + Add missing definition of max() macro when built for use outside of Survex.
 
+  + Can now be compiled as C++ as well as as C.
+
 Changes in 1.2.7 (2013-07-27):
 
 * Add support for anonymous stations, which are indicated by one, two or three
