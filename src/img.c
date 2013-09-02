@@ -51,7 +51,8 @@
 # define xosmalloc(L) malloc((L))
 # define xosrealloc(L,S) realloc((L),(S))
 # define osfree(P) free((P))
-# define ossizeof(T) sizeof(T)
+# define osnew(T) (T*)malloc(sizeof(T))
+
 /* in IMG_HOSTED mode, this tests if a filename refers to a directory */
 # define fDirectory(X) 0
 /* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
@@ -278,7 +279,7 @@ img_open_survey(const char *fnm, const char *survey)
       return NULL;
    }
 
-   pimg = (img *)xosmalloc(ossizeof(img));
+   pimg = osnew(img);
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
@@ -648,7 +649,7 @@ img_open_write(const char *fnm, char *title, int flags)
       return NULL;
    }
 
-   pimg = (img *)xosmalloc(ossizeof(img));
+   pimg = osnew(img);
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
