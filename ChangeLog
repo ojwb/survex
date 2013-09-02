@@ -1,3 +1,7 @@
+Mon Sep 02 01:45:52 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c: Don't segfault on img_close() in non-hosted mode.
+
 Mon Sep 02 00:27:29 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,src/img.c: img.c can now be compiled as C++ as well as as C.

@@ -56,7 +56,8 @@
 # define fDirectory(X) 0
 /* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
 /* path isn't used in img.c, but EXT is */
-# define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) fopen(FNM,MODE)
+# define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) \
+    ((*(X) = NULL), fopen(FNM,MODE))
 # define PUTC(C, FH) putc(C, FH)
 # define GETC(FH) getc(FH)
 /* dummy do {...} while(0) hack to permit stuff like
