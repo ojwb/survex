@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@
 #include "wx.h"
 #include <wx/utils.h>
 #include "exportfilter.h"
+#include "gpx.h"
 #include "hpgl.h"
 #include "mainfrm.h"
 
@@ -1099,9 +1100,9 @@ EPS::footer(void)
 }
 
 typedef enum {
-    FMT_DXF = 0, FMT_SVG, FMT_SKETCH, FMT_PLT, FMT_EPS, FMT_HPGL, FMT_ENDMARKER
+    FMT_DXF = 0, FMT_SVG, FMT_SKETCH, FMT_PLT, FMT_EPS, FMT_HPGL, FMT_GPX, FMT_ENDMARKER
 } export_format;
-static const char *extensions[] = { "dxf", "svg", "sk", "plt", "eps", "hpgl" };
+static const char *extensions[] = { "dxf", "svg", "sk", "plt", "eps", "hpgl", "gpx" };
 
 bool
 Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
@@ -1177,6 +1178,9 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
        case FMT_HPGL:
 	   filt = new HPGL;
 	   // factor = POINTS_PER_MM * 1000.0 / scale;
+	   break;
+       case FMT_GPX:
+	   filt = new GPX;
 	   break;
        default:
 	   return false;

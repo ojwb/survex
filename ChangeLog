@@ -1,3 +1,7 @@
+Mon Sep 02 21:03:50 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Rework findentrances into GPX export for aven.
+
 Mon Sep 02 02:17:49 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.c: Improve fputsnl() for non-HOSTED mode to return a value.

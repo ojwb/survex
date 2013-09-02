@@ -403,7 +403,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxString baseleaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), baseleaf,
-		     wmsg(/*DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl*/96),
+		     wmsg(/*DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl|GPX files|*.gpx*/96),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,

@@ -1442,8 +1442,8 @@ msgstr "Súbory DAT a MAK pre Compass"
 
 #: ../src/printwx.cc:397
 #: n:96
-msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl"
-msgstr "Súbory DXF|*.dxf|Súbory SVG|*.svg|Súbory so skicami|*.sk|Súbory EPS|*.eps|Súbory Compass PLT pre použitie v prog. Carto|*.plt|Súbory HPGL pre plotry|*.hpgl"
+msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl|GPX files|*.gpx"
+msgstr "Súbory DXF|*.dxf|Súbory SVG|*.svg|Súbory so skicami|*.sk|Súbory EPS|*.eps|Súbory Compass PLT pre použitie v prog. Carto|*.plt|Súbory HPGL pre plotry|*.hpgl|Súbory GPX|*.gpx"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
 #. it should be translated to the terminology that cavers using the language

@@ -5,7 +5,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h netbits.h\
  netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
- glbitmapfont.h guicontrol.h gla.h moviemaker.h exportfilter.h hpgl.h\
+ glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h log.h mainfrm.h\
  vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h\
  img2aven.h
@@ -37,7 +37,7 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
 aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc useful.c cmdline.c z_getopt.c \
  getopt1.c namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
- glbitmapfont.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
+ glbitmapfont.cc gpx.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
@@ -80,11 +80,11 @@ if MACOSX
 # Aven must always be built into an application bundle to work correctly.
 aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN -DMACOSX_BUNDLE
 aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS) -DMACOSX_BUNDLE
-aven_LDFLAGS = $(WX_LDFLAGS) -framework OpenGL
+aven_LDFLAGS = $(WX_LDFLAGS) -lproj -framework OpenGL
 else
 aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
-aven_LDFLAGS = $(WX_LDFLAGS)
+aven_LDFLAGS = $(WX_LDFLAGS) -lproj
 endif
 
 diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \
