@@ -13,6 +13,10 @@ Changes in 1.2.8 (unreleased):
 * aven: Changing checkboxes in the print or export dialog didn't work in 1.2.7
   - now works again.  Reported by Anthony Day.
 
+* img library:
+
+  + Add missing definition of max() macro when built for use outside of Survex.
+
 Changes in 1.2.7 (2013-07-27):
 
 * Add support for anonymous stations, which are indicated by one, two or three

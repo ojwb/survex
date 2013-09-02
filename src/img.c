@@ -69,6 +69,22 @@
 # define fputsnl(S, FH) do {fputs((S), (FH)); PUTC('\n', (FH));} while(0)
 # define SVX_ASSERT(X)
 
+#ifdef __cplusplus
+# include <algorithm>
+using std::max;
+using std::min;
+#else
+/* Return max/min of two numbers. */
+/* May be defined already (e.g. by Borland C in stdlib.h) */
+/* NB Bad news if X or Y has side-effects... */
+# ifndef max
+#  define max(X, Y) ((X) > (Y) ? (X) : (Y))
+# endif
+# ifndef min
+#  define min(X, Y) ((X) < (Y) ? (X) : (Y))
+# endif
+#endif
+
 static INT32_T
 get32(FILE *fh)
 {

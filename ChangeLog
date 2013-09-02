@@ -1,3 +1,8 @@
+Mon Sep 02 00:17:36 GMT 2013  Olly Betts <olly@survex.com>
+
+	* NEWS,src/img.c: Add missing definition of max() macro when built for
+	  use outside of Survex.
+
 Mon Sep 02 00:11:36 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.c: Don't duplicate the IMG_API_VERSION defaulting logic from
