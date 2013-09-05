@@ -1,3 +1,8 @@
+Thu Sep 05 04:20:36 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/,survex.iss.in: Add translations for the Windows installer for
+	  all the languages we have any translations of Survex itself for.
+
 Mon Sep 02 21:03:50 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Rework findentrances into GPX export for aven.
