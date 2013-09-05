@@ -1,3 +1,7 @@
+Thu Sep 05 04:21:40 GMT 2013  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Newer innosetup no longer supports MinVersion.
+
 Thu Sep 05 04:20:36 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/,survex.iss.in: Add translations for the Windows installer for

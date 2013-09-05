@@ -21,7 +21,6 @@ AppCopyright=@COPYRIGHT_MSG@
 ;WizardSmallImageFile=??? (up to 55x58)
 LZMANumFastBytes=273
 SolidCompression=yes
-MinVersion=4,4
 ; Only show the "choose language" dialog if there isn't an exact match for
 ; the UI language the user has set.
 ShowLanguageDialog=auto
