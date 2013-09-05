@@ -1443,8 +1443,38 @@ msgid "Compass DAT and MAK files"
 msgstr ""
 
 #: ../src/printwx.cc:397
-#: n:96
-msgid "DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl|GPX files|*.gpx"
+#: n:411
+msgid "DXF files"
+msgstr ""
+
+#: ../src/printwx.cc:397
+#: n:412
+msgid "EPS files"
+msgstr ""
+
+#: ../src/printwx.cc:397
+#: n:413
+msgid "GPX files"
+msgstr ""
+
+#: ../src/printwx.cc:397
+#: n:414
+msgid "HPGL for plotters"
+msgstr ""
+
+#: ../src/printwx.cc:397
+#: n:415
+msgid "Compass PLT for use with Carto"
+msgstr ""
+
+#: ../src/printwx.cc:397
+#: n:416
+msgid "Sketch files"
+msgstr ""
+
+#: ../src/printwx.cc:397
+#: n:417
+msgid "SVG files"
 msgstr ""
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
@@ -2774,4 +2804,9 @@ msgstr ""
 #: ../src/mainfrm.cc:810
 #: n:409
 msgid "&Show"
+msgstr ""
+
+#: ../src/printwx.cc:297
+#: n:410
+msgid "Export format"
 msgstr ""

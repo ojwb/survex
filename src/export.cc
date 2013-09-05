@@ -87,9 +87,6 @@ static const char *layer_name(int mask) {
     return "";
 }
 
-/* default to DXF */
-#define FMT_DEFAULT FMT_DXF
-
 /* bounds */
 static double min_x, min_y, min_z, max_x, max_y, max_z;
 
@@ -1099,19 +1096,13 @@ EPS::footer(void)
 	 "%%EOF\n", fh);
 }
 
-typedef enum {
-    FMT_DXF = 0, FMT_SVG, FMT_SKETCH, FMT_PLT, FMT_EPS, FMT_HPGL, FMT_GPX, FMT_ENDMARKER
-} export_format;
-static const char *extensions[] = { "dxf", "svg", "sk", "plt", "eps", "hpgl", "gpx" };
-
 bool
 Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
-       double pan, double tilt, int show_mask)
+       double pan, double tilt, int show_mask, export_format format)
 {
    int fPendingMove = 0;
    img_point p, p1;
    double s = 0, c = 0;
-   export_format format = FMT_DXF;
    const int *pass;
    bool elevation = (tilt == 0.0);
 
@@ -1142,45 +1133,32 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	 break;
 #endif
 
-   {
-      size_t i;
-      size_t len = fnm_out.length();
-      for (i = 0; i < FMT_ENDMARKER; ++i) {
-	 size_t l = strlen(extensions[i]);
-	 if (len > l + 1 && fnm_out[len - l - 1] == FNM_SEP_EXT &&
-	     strcasecmp((const char *)fnm_out.mb_str() + len - l, extensions[i]) == 0) {
-	    format = export_format(i);
-	    break;
-	 }
-      }
-   }
-
    ExportFilter * filt;
    switch (format) {
        case FMT_DXF:
 	   filt = new DXF;
 	   break;
-       case FMT_SKETCH:
-	   filt = new Sketch;
-	   factor = POINTS_PER_MM * 1000.0 / scale;
-	   break;
-       case FMT_PLT:
-	   filt = new PLT;
-	   break;
-       case FMT_SVG:
-	   filt = new SVG;
-	   factor = 1000.0 / scale;
-	   break;
        case FMT_EPS:
 	   filt = new EPS;
 	   factor = POINTS_PER_MM * 1000.0 / scale;
+	   break;
+       case FMT_GPX:
+	   filt = new GPX;
 	   break;
        case FMT_HPGL:
 	   filt = new HPGL;
 	   // factor = POINTS_PER_MM * 1000.0 / scale;
 	   break;
-       case FMT_GPX:
-	   filt = new GPX;
+       case FMT_PLT:
+	   filt = new PLT;
+	   break;
+       case FMT_SKETCH:
+	   filt = new Sketch;
+	   factor = POINTS_PER_MM * 1000.0 / scale;
+	   break;
+       case FMT_SVG:
+	   filt = new SVG;
+	   factor = 1000.0 / scale;
 	   break;
        default:
 	   return false;

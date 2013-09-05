@@ -27,6 +27,16 @@
 
 class MainFrm;
 
+typedef enum {
+    FMT_DXF,
+    FMT_EPS,
+    FMT_GPX,
+    FMT_HPGL,
+    FMT_PLT,
+    FMT_SKETCH,
+    FMT_SVG
+} export_format;
+
 #define LEGS 1
 #define SURF 2
 #define STNS 4
@@ -36,8 +46,11 @@ class MainFrm;
 #define WALL2 64
 #define WALLS (WALL1|WALL2)
 #define PASG 128
+#define EXPORT_3D 256
+#define EXPORT_CENTRED 512
 
 bool Export(const wxString &fnm_out, const wxString &title,
-	const MainFrm * mainfrm, double pan, double tilt, int show_mask);
+	    const MainFrm * mainfrm, double pan, double tilt, int show_mask,
+	    export_format format);
 
 #endif

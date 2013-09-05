@@ -56,6 +56,7 @@ using namespace std;
 
 enum {
 	svx_EXPORT = 1200,
+	svx_FORMAT,
 	svx_SCALE,
 	svx_BEARING,
 	svx_TILT,
@@ -70,7 +71,9 @@ enum {
 	svx_INFOBOX,
 	svx_SURFACE,
 	svx_PLAN,
-	svx_ELEV
+	svx_ELEV,
+	svx_EXPORT_3D,
+	svx_EXPORT_CENTRED
 };
 
 class BitValidator : public wxValidator {
@@ -173,6 +176,7 @@ class svxPrintout : public wxPrintout {
 };
 
 BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
+    EVT_CHOICE(svx_FORMAT, svxPrintDlg::OnChange)
     EVT_TEXT(svx_SCALE, svxPrintDlg::OnChange)
     EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
     EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
@@ -208,6 +212,46 @@ static wxString scales[] = {
     wxT("100000")
 };
 
+static wxString formats[] = {
+    wxT("DXF"),
+    wxT("EPS"),
+    wxT("GPX"),
+    wxT("HPGL"),
+    wxT("Plot"),
+    wxT("Sketch"),
+    wxT("SVG")
+};
+
+static unsigned format_info[] = {
+    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|EXPORT_3D,
+    LABELS|LEGS|SURF|STNS,
+    LABELS,
+    LABELS|LEGS|SURF|STNS|EXPORT_CENTRED,
+    LABELS|LEGS|SURF,
+    LABELS|LEGS|SURF|STNS,
+    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS
+};
+
+static const char * extension[] = {
+    ".dxf",
+    ".eps",
+    ".gpx",
+    ".hpgl",
+    ".plt",
+    ".sk",
+    ".svg"
+};
+
+static int msg_filetype[] = {
+    /*DXF files*/411,
+    /*EPS files*/412,
+    /*GPX files*/413,
+    /*HPGL for plotters*/414,
+    /*Compass PLT for use with Carto*/415,
+    /*Sketch files*/416,
+    /*SVG files*/417
+};
+
 // there are three jobs to do here...
 // User <-> wx - this should possibly be done in a separate file
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
@@ -223,6 +267,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_printSize = NULL;
     m_bearing = NULL;
     m_tilt = NULL;
+    m_format = NULL;
     int show_mask = 0;
     if (labels)
 	show_mask |= LABELS;
@@ -262,6 +307,17 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
+    if (!printing) {
+	wxStaticText* label;
+	label = new wxStaticText(this, -1, wxString(wmsg(/*Export format*/410)));
+	m_format = new wxChoice(this, svx_FORMAT, wxDefaultPosition, wxDefaultSize,
+				sizeof(formats) / sizeof(formats[0]), formats);
+	wxBoxSizer* formatbox = new wxBoxSizer(wxHORIZONTAL);
+	formatbox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	formatbox->Add(m_format, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+	v1->Add(formatbox, 0, wxALIGN_LEFT|wxALL, 0);
+    }
     if (printing) {
 	wxStaticText* label;
 	label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
@@ -356,6 +412,12 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
+    // When we enable/disable checkboxes in the export dialog, ideally we'd
+    // like the dialog to resize, but not sure how to achieve that, so we
+    // add a stretchable spacer here so at least the buttons stay in the
+    // lower right corner.
+    v1->AddStretchSpacer();
+
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL);
     h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
@@ -380,12 +442,12 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v1->SetSizeHints(this);
 
     LayoutToUI();
-    SomethingChanged();
+    SomethingChanged(0);
 }
 
 void
 svxPrintDlg::OnPrint(wxCommandEvent&) {
-    SomethingChanged();
+    SomethingChanged(0);
     TransferDataFromWindow();
     wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
     wxPrintDialogData pd(psdd->GetPrintData());
@@ -400,14 +462,25 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void
 svxPrintDlg::OnExport(wxCommandEvent&) {
     UIToLayout();
-    wxString baseleaf;
-    wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
-    wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), baseleaf,
-		     wmsg(/*DXF files|*.dxf|SVG files|*.svg|Sketch files|*.sk|EPS files|*.eps|Compass PLT for use with Carto|*.plt|HPGL for plotters|*.hpgl|GPX files|*.gpx*/96),
-		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    wxString leaf;
+    wxFileName::SplitPath(m_File, NULL, NULL, &leaf, NULL, wxPATH_NATIVE);
+    unsigned format_idx = ((wxChoice*)FindWindow(svx_FORMAT))->GetSelection();
+    leaf += wxString::FromUTF8(extension[format_idx]);
+
+    wxString filespec = wmsg(msg_filetype[format_idx]);
+    filespec += wxT("|*");
+    filespec += wxString::FromUTF8(extension[format_idx]);
+    filespec += wxT("|");
+    filespec += wmsg(/*All files*/208);
+    filespec += wxT("|");
+    filespec += wxFileSelectorDefaultWildcardStr;
+
+    wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), leaf,
+		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
-		    m_layout.rot, m_layout.tilt, m_layout.show_mask)) {
+		    m_layout.rot, m_layout.tilt, m_layout.show_mask,
+		    export_format(format_idx))) {
 	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					  m_File.c_str());
 	    wxGetApp().ReportError(m);
@@ -419,7 +492,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 #ifdef AVEN_PRINT_PREVIEW
 void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
-    SomethingChanged();
+    SomethingChanged(0);
     wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
     wxPrintDialogData pd(psdd->GetPrintData());
     wxPrintPreview* pv;
@@ -465,13 +538,13 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
 void
 svxPrintDlg::OnPlan(wxCommandEvent&) {
     m_tilt->SetValue(-90);
-    SomethingChanged();
+    SomethingChanged(svx_TILT);
 }
 
 void
 svxPrintDlg::OnElevation(wxCommandEvent&) {
     m_tilt->SetValue(0);
-    SomethingChanged();
+    SomethingChanged(svx_TILT);
 }
 
 void
@@ -485,17 +558,33 @@ svxPrintDlg::OnElevationUpdate(wxUpdateUIEvent& e) {
 }
 
 void
-svxPrintDlg::OnChangeSpin(wxSpinEvent&) {
-    SomethingChanged();
+svxPrintDlg::OnChangeSpin(wxSpinEvent& e) {
+    SomethingChanged(e.GetId());
 }
 
 void
-svxPrintDlg::OnChange(wxCommandEvent&) {
-    SomethingChanged();
+svxPrintDlg::OnChange(wxCommandEvent& e) {
+    SomethingChanged(e.GetId());
 }
 
 void
-svxPrintDlg::SomethingChanged() {
+svxPrintDlg::SomethingChanged(int control_id) {
+    if (control_id == 0 || control_id == svx_FORMAT) {
+	// Update the shown/hidden fields for the newly selected export filter.
+	unsigned new_filter_idx = m_format->GetSelection();
+	unsigned mask = format_info[new_filter_idx];
+	FindWindow(svx_LEGS)->Show(mask & LEGS);
+	FindWindow(svx_SURFACE)->Show(mask & SURF);
+	FindWindow(svx_STATIONS)->Show(mask & STNS);
+	FindWindow(svx_NAMES)->Show(mask & LABELS);
+	FindWindow(svx_XSECT)->Show(mask & XSECT);
+	FindWindow(svx_WALLS)->Show(mask & WALLS);
+	FindWindow(svx_PASSAGES)->Show(mask & PASG);
+//	FindWindow(svx_EXPORT_3D)->Show(mask & EXPORT_3D);
+//	FindWindow(svx_EXPORT_CENTRED)->Show(mask & EXPORT_CENTRED);
+	GetSizer()->Layout();
+    }
+
     UIToLayout();
     if (!m_printSize) return;
     // Update the bounding box.

@@ -38,6 +38,7 @@ class wxSpinEvent;
 class svxPrintDlg : public wxDialog {
 	layout m_layout;
 	wxComboBox* m_scale;
+	wxChoice* m_format;
 	wxStaticText* m_printSize;
 	wxSpinCtrl* m_bearing;
 	wxSpinCtrl* m_tilt;
@@ -48,7 +49,7 @@ class svxPrintDlg : public wxDialog {
 	void LayoutToUI();
 	void UIToLayout();
 	void RecalcBounds();
-	void SomethingChanged();
+	void SomethingChanged(int control_id);
  public:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
 		    const wxString & title, const wxString & datestamp,
