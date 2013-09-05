@@ -34,7 +34,7 @@ fi
 # so that (a) we don't need to "make distclean" on the source tree and (b) we
 # ensure that any files required to build the mingw version and installer
 # package are actually shipped in the source tarball.
-tarball=`ls -1t survex-*.tar.gz`
+tarball=`ls -1t survex-1*.tar.gz|head -n1`
 tardir=`basename "$tarball" .tar.gz`
 rm -rf "$tardir"
 tar xf "$tarball"
