@@ -219,7 +219,7 @@ static wxString formats[] = {
     wxT("GPX"),
     wxT("HPGL"),
     wxT("Plot"),
-    wxT("Sketch"),
+    wxT("Skencil"),
     wxT("SVG")
 };
 
@@ -249,7 +249,7 @@ static int msg_filetype[] = {
     /*GPX files*/413,
     /*HPGL for plotters*/414,
     /*Compass PLT for use with Carto*/415,
-    /*Sketch files*/416,
+    /*Skencil files*/416,
     /*SVG files*/417
 };
 

@@ -13,6 +13,11 @@ Changes in 1.2.8 (unreleased):
 * aven: Changing checkboxes in the print or export dialog didn't work in 1.2.7
   - now works again.  Reported by Anthony Day.
 
+* aven,cad3d: The "Sketch" vector drawing program got renamed to "Skencil"
+  some time ago, so update all references in code and documentation.  cad3d
+  has a new --skencil option to specify this output format, but --sketch is
+  still recognised for compatibility.
+
 * img library:
 
   + Add missing definition of max() macro when built for use outside of Survex.

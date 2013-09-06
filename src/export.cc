@@ -1,5 +1,5 @@
 /* export.cc
- * Export to CAD-like formats (DXF, Sketch, SVG, EPS) and also Compass PLT.
+ * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
 /* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013 Olly Betts
@@ -374,9 +374,9 @@ DXF::footer()
    fprintf(fh, "000\nEOF\n");
 }
 
-class Sketch : public ExportFilter {
+class Skencil : public ExportFilter {
   public:
-    Sketch() { }
+    Skencil() { }
     const int * passes() const;
     void header(const char *);
     void start_pass(int layer);
@@ -387,29 +387,29 @@ class Sketch : public ExportFilter {
 };
 
 const int *
-Sketch::passes() const
+Skencil::passes() const
 {
-    static const int sketch_passes[] = { LEGS|SURF, STNS, LABELS, 0 };
-    return sketch_passes;
+    static const int skencil_passes[] = { LEGS|SURF, STNS, LABELS, 0 };
+    return skencil_passes;
 }
 
 void
-Sketch::header(const char *)
+Skencil::header(const char *)
 {
-   fprintf(fh, "##Sketch 1 2\n"); /* Sketch file version */
+   fprintf(fh, "##Sketch 1 2\n"); /* File format version */
    fprintf(fh, "document()\n");
    fprintf(fh, "layout((%.3f,%.3f),0)\n",
 	   (max_x - min_x) * factor, (max_y - min_y) * factor);
 }
 
 void
-Sketch::start_pass(int layer)
+Skencil::start_pass(int layer)
 {
    fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_name(layer));
 }
 
 void
-Sketch::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
+Skencil::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
    fSurface = fSurface; /* unused */
    if (fPendingMove) {
@@ -420,7 +420,7 @@ Sketch::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendi
 }
 
 void
-Sketch::label(const img_point *p, const char *s, bool fSurface)
+Skencil::label(const img_point *p, const char *s, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
@@ -437,7 +437,7 @@ Sketch::label(const img_point *p, const char *s, bool fSurface)
 }
 
 void
-Sketch::cross(const img_point *p, bool fSurface)
+Skencil::cross(const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "b()\n");
@@ -453,7 +453,7 @@ Sketch::cross(const img_point *p, bool fSurface)
 }
 
 void
-Sketch::footer(void)
+Skencil::footer(void)
 {
    fprintf(fh, "guidelayer('Guide Lines',1,0,0,1,(0,0,1))\n");
    if (grid) {
@@ -1152,8 +1152,8 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
        case FMT_PLT:
 	   filt = new PLT;
 	   break;
-       case FMT_SKETCH:
-	   filt = new Sketch;
+       case FMT_SK:
+	   filt = new Skencil;
 	   factor = POINTS_PER_MM * 1000.0 / scale;
 	   break;
        case FMT_SVG:
@@ -1265,7 +1265,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		 p.y = pos->GetY();
 		 p.z = pos->GetZ();
 
-		 if (format == FMT_SKETCH) {
+		 if (format == FMT_SK) {
 		     p.x -= min_x;
 		     p.y -= min_y;
 		     p.z -= min_z;
@@ -1312,7 +1312,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		 p.y = pos->GetY();
 		 p.z = pos->GetZ();
 
-		 if (format == FMT_SKETCH) {
+		 if (format == FMT_SK) {
 		     p.x -= min_x;
 		     p.y -= min_y;
 		     p.z -= min_z;
@@ -1355,7 +1355,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	      p.y = (*pos)->GetY();
 	      p.z = (*pos)->GetZ();
 
-	      if (format == FMT_SKETCH) {
+	      if (format == FMT_SK) {
 		  p.x -= min_x;
 		  p.y -= min_y;
 		  p.z -= min_z;
@@ -1396,7 +1396,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 		  p.y = xs.GetY();
 		  p.z = xs.GetZ();
 
-		  if (format == FMT_SKETCH) {
+		  if (format == FMT_SK) {
 		      p.x -= min_x;
 		      p.y -= min_y;
 		      p.z -= min_z;

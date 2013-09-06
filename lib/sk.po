@@ -1053,8 +1053,8 @@ msgstr "vygenerovať formát DXF"
 
 #: ../src/cad3d.c:633
 #: n:158
-msgid "produce Sketch output"
-msgstr "vygenerovať súbor so skicami"
+msgid "produce Skencil output"
+msgstr "vygenerovať formát Skencil"
 
 #: ../src/cad3d.c:634
 #: n:159
@@ -1467,8 +1467,8 @@ msgstr "Súbory Compass PLT pre použitie v prog. Carto"
 
 #: ../src/printwx.cc:397
 #: n:416
-msgid "Sketch files"
-msgstr "Súbory so skicami"
+msgid "Skencil files"
+msgstr "Súbory Skencil"
 
 #: ../src/printwx.cc:397
 #: n:417

@@ -1053,8 +1053,8 @@ msgstr "produce un file DXF"
 
 #: ../src/cad3d.c:633
 #: n:158
-msgid "produce Sketch output"
-msgstr "produce un file Sketch"
+msgid "produce Skencil output"
+msgstr "produce un file Skencil"
 
 #: ../src/cad3d.c:634
 #: n:159
@@ -1467,8 +1467,8 @@ msgstr "Compass PLT per Carto"
 
 #: ../src/printwx.cc:397
 #: n:416
-msgid "Sketch files"
-msgstr "file Sketch"
+msgid "Skencil files"
+msgstr "file Skencil"
 
 #: ../src/printwx.cc:397
 #: n:417

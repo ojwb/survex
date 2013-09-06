@@ -1,5 +1,7 @@
 /* cad3d.c
- * Converts a .3d file to CAD-like formats (DXF, Sketch) and also Compass PLT.
+ * Converts a .3d file to CAD-like formats (DXF, Skencil, SVG) and also Compass
+ * PLT.
+ *
  * Also useful as an example of how to use the img code in your own programs
  */
 
@@ -250,9 +252,9 @@ dxf_footer(void)
 }
 
 static void
-sketch_header(void)
+skencil_header(void)
 {
-   fprintf(fh, "##Sketch 1 2\n"); /* Sketch file version */
+   fprintf(fh, "##Sketch 1 2\n"); /* File format version */
    fprintf(fh, "document()\n");
    fprintf(fh, "layout((%.3f,%.3f),0)\n",
 	   (max_x - min_x) * factor, (max_y - min_y) * factor);
@@ -267,20 +269,20 @@ static const char *layer_names[] = {
 };
 
 static void
-sketch_start_pass(int layer)
+skencil_start_pass(int layer)
 {
    fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_names[layer]);
 }
 
 static void
-sketch_move(const img_point *p)
+skencil_move(const img_point *p)
 {
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
 }
 
 static void
-sketch_line(const img_point *p1, const img_point *p, bool fSurface)
+skencil_line(const img_point *p1, const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    p1 = p1; /* unused */
@@ -288,7 +290,7 @@ sketch_line(const img_point *p1, const img_point *p, bool fSurface)
 }
 
 static void
-sketch_label(const img_point *p, const char *s, bool fSurface)
+skencil_label(const img_point *p, const char *s, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
@@ -305,7 +307,7 @@ sketch_label(const img_point *p, const char *s, bool fSurface)
 }
 
 static void
-sketch_cross(const img_point *p, bool fSurface)
+skencil_cross(const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "b()\n");
@@ -321,7 +323,7 @@ sketch_cross(const img_point *p, bool fSurface)
 }
 
 static void
-sketch_footer(void)
+skencil_footer(void)
 {
    fprintf(fh, "guidelayer('Guide Lines',1,0,0,1,(0,0,1))\n");
    if (grid) {
@@ -566,7 +568,7 @@ plt_footer(void)
 }
 
 static int dxf_passes[] = { LEGS|STNS|LABELS, 0 };
-static int sketch_passes[] = { LEGS, STNS, LABELS, 0 };
+static int skencil_passes[] = { LEGS, STNS, LABELS, 0 };
 static int plt_passes[] = { LABELS, LEGS, 0 };
 static int svg_passes[] = { LEGS, LABELS, STNS, 0 };
 
@@ -581,7 +583,7 @@ main(int argc, char **argv)
    int elevation = 0;
    double elev_angle = 0;
    double s = 0, c = 0;
-   enum { FMT_DXF = 0, FMT_SKETCH, FMT_PLT, FMT_SVG, FMT_AUTO } format;
+   enum { FMT_DXF = 0, FMT_SK, FMT_PLT, FMT_SVG, FMT_AUTO } format;
    static const char *extensions[] = { "dxf", "sk", "plt", "svg" };
    int *pass;
 
@@ -607,11 +609,13 @@ main(int argc, char **argv)
 	{"elevation", required_argument, 0, 'e'},
 	{"reduction", required_argument, 0, 'r'},
 	{"dxf", no_argument, 0, 'D'},
-	{"sketch", no_argument, 0, 'S'},
+	{"skencil", no_argument, 0, 'S'},
 	{"plt", no_argument, 0, 'P'},
         {"svg", no_argument, 0, 'V'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
+	/* Old name for --skencil: */
+	{"sketch", no_argument, 0, 'S'},
 	{0,0,0,0}
    };
 
@@ -630,7 +634,7 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(7),   /*produce an elevation view*/103, 0},
 	{HLP_ENCODELONG(8),   /*factor to scale down by (default %s)*/155, "500"},
 	{HLP_ENCODELONG(9),   /*produce DXF output*/156, 0},
-	{HLP_ENCODELONG(10),  /*produce Sketch output*/158, 0},
+	{HLP_ENCODELONG(10),  /*produce Skencil output*/158, 0},
 	{HLP_ENCODELONG(11),  /*produce Compass PLT output for Carto*/159, 0},
 	{HLP_ENCODELONG(12),  /*produce SVG output*/160, 0},
 	{0, 0, 0}
@@ -691,7 +695,7 @@ main(int argc, char **argv)
 	 format = FMT_DXF;
 	 break;
        case 'S':
-	 format = FMT_SKETCH;
+	 format = FMT_SK;
 	 break;
        case 'P':
 	 format = FMT_PLT;
@@ -744,15 +748,15 @@ main(int argc, char **argv)
       footer = dxf_footer;
       pass = dxf_passes;
       break;
-    case FMT_SKETCH:
-      header = sketch_header;
-      start_pass = sketch_start_pass;
-      move = sketch_move;
-      line = sketch_line;
-      label = sketch_label;
-      cross = sketch_cross;
-      footer = sketch_footer;
-      pass = sketch_passes;
+    case FMT_SK:
+      header = skencil_header;
+      start_pass = skencil_start_pass;
+      move = skencil_move;
+      line = skencil_line;
+      label = skencil_label;
+      cross = skencil_cross;
+      footer = skencil_footer;
+      pass = skencil_passes;
       factor = POINTS_PER_MM * 1000.0 / scale;
       mode = "wb"; /* Binary file output */
       break;
@@ -848,7 +852,7 @@ main(int argc, char **argv)
 	 do {
 	    item = img_read_item(pimg, &p);
 
-	    if (format == FMT_SKETCH) {
+	    if (format == FMT_SK) {
 	       p.x -= min_x;
 	       p.y -= min_y;
 	       p.z -= min_z;

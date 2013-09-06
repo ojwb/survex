@@ -1,5 +1,5 @@
 /* exportfilter.h
- * Export to CAD-like formats (DXF, Sketch, SVG, EPS, HPGL) and also Compass
+ * Export to CAD-like formats (DXF, Skencil, SVG, EPS, HPGL) and also Compass
  * PLT.
  */
 

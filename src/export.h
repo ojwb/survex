@@ -1,5 +1,5 @@
 /* export.h
- * Export to CAD-like formats (DXF, Sketch, SVG, EPS, HPGL) and also Compass
+ * Export to CAD-like formats (DXF, Skencil, SVG, EPS, HPGL) and also Compass
  * PLT.
  */
 
@@ -33,7 +33,7 @@ typedef enum {
     FMT_GPX,
     FMT_HPGL,
     FMT_PLT,
-    FMT_SKETCH,
+    FMT_SK,
     FMT_SVG
 } export_format;
 

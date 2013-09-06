@@ -1053,8 +1053,8 @@ msgstr "produzir arquivo DXF"
 
 #: ../src/cad3d.c:633
 #: n:158
-msgid "produce Sketch output"
-msgstr "produzir arquivo Sketch"
+msgid "produce Skencil output"
+msgstr "produzir arquivo Skencil"
 
 #: ../src/cad3d.c:634
 #: n:159
@@ -1470,7 +1470,7 @@ msgstr ""
 
 #: ../src/printwx.cc:397
 #: n:416
-msgid "Sketch files"
+msgid "Skencil files"
 msgstr ""
 
 #: ../src/printwx.cc:397
