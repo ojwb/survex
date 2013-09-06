@@ -33,6 +33,7 @@ using namespace std;
 #include <ctype.h>
 #include <float.h>
 #include <limits.h>
+#include <wx/confbase.h>
 #include <wx/filename.h>
 #include <wx/print.h>
 #include <wx/printdlg.h>
@@ -312,6 +313,16 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	label = new wxStaticText(this, -1, wxString(wmsg(/*Export format*/410)));
 	m_format = new wxChoice(this, svx_FORMAT, wxDefaultPosition, wxDefaultSize,
 				sizeof(formats) / sizeof(formats[0]), formats);
+	wxConfigBase * cfg = wxConfigBase::Get();
+	wxString s;
+	if (cfg->Read(wxT("export_format"), &s, wxString())) {
+	    for (unsigned i = 0; i != sizeof(formats) / sizeof(wxString); ++i) {
+		if (s == formats[i]) {
+		    m_format->SetSelection(i);
+		    break;
+		}
+	    }
+	}
 	wxBoxSizer* formatbox = new wxBoxSizer(wxHORIZONTAL);
 	formatbox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	formatbox->Add(m_format, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -583,6 +594,8 @@ svxPrintDlg::SomethingChanged(int control_id) {
 //	FindWindow(svx_EXPORT_3D)->Show(mask & EXPORT_3D);
 //	FindWindow(svx_EXPORT_CENTRED)->Show(mask & EXPORT_CENTRED);
 	GetSizer()->Layout();
+	wxConfigBase * cfg = wxConfigBase::Get();
+	cfg->Write(wxT("export_format"), formats[new_filter_idx]);
     }
 
     UIToLayout();

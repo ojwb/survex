@@ -1,3 +1,8 @@
+Fri Sep 06 03:39:16 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Default to exporting in the export format used last
+	  time.
+
 Fri Sep 06 03:27:21 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/de_CH.po,lib/it.po,lib/sk.po: Minor translation updates.
