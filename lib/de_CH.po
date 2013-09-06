@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2013-01-23 18:49:00 +0000\n"
+"PO-Revision-Date: 2013-07-03 07:10:00 +0000\n"
 "Last-Translator: Dennis Baudys <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1631,7 +1631,7 @@ msgstr "Winkel und Längen können nicht gleichzeitig kalibriert werden"
 #: ../src/commands.c:564
 #: n:397
 msgid "Bad *alias command"
-msgstr ""
+msgstr "*alias-Befehl ist fehlerhaft"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
@@ -2235,7 +2235,7 @@ msgstr "Suchen"
 #: ../src/mainfrm.cc:2497
 #: n:333
 msgid "Hide"
-msgstr "Unterdrücken"
+msgstr "Verstecken"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
 #: ../src/mainfrm.cc:2458
@@ -2785,22 +2785,22 @@ msgstr "Datumsangaben einer Vermessung zeigen (wenn vorhanden)"
 #: ../src/mainfrm.cc:811
 #: n:406
 msgid "Spla&y Legs"
-msgstr ""
+msgstr "Messstrecken spre&izen"
 
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Verstecken"
 
 #: ../src/mainfrm.cc:809
 #: n:408
 msgid "&Fade"
-msgstr ""
+msgstr "Dunsteffe&kt"
 
 #: ../src/mainfrm.cc:810
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Zeigen"
 
 #: ../src/printwx.cc:297
 #: n:410

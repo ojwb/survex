@@ -1,3 +1,7 @@
+Fri Sep 06 03:27:21 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/de_CH.po,lib/it.po,lib/sk.po: Minor translation updates.
+
 Thu Sep 05 09:50:23 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Add a format drop down to the export dialog, and only

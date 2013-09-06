@@ -2790,19 +2790,19 @@ msgstr ""
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Nascondi"
 
 #: ../src/mainfrm.cc:809
 #: n:408
 msgid "&Fade"
-msgstr ""
+msgstr "&Sbiadire"
 
 #: ../src/mainfrm.cc:810
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Mostra"
 
 #: ../src/printwx.cc:297
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Formato d'esportazione"

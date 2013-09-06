@@ -2791,7 +2791,7 @@ msgstr "Splay Legs (&z)"
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Skryť"
 
 #: ../src/mainfrm.cc:809
 #: n:408
@@ -2801,7 +2801,7 @@ msgstr ""
 #: ../src/mainfrm.cc:810
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Zobraziť"
 
 #: ../src/printwx.cc:297
 #: n:410
