@@ -26,8 +26,8 @@ msg_files = $(po_files:.po=.msg) en.msg
 
 EXTRA_DIST = survex.pot $(po_files)\
  po-to-msg.pl checkshortcut.pl extract-msgs.pl\
- ChineseSimplified.isl ChineseTraditional.isl English_GB.isl\
- Indonesian-5.1.11.isl Romanian-7-5.1.11.isl Slovak.isl\
+ ChineseSimplified.isl ChineseTraditional.isl\
+ EnglishGB.isl Indonesian.isl Romanian.isl Slovak.isl\
  make-pixel-font\
  INSTALL.OSX
 

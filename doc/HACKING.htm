@@ -56,9 +56,12 @@ jadetex, docbook-to-man, and w3m.
 <H3>Mingw (Microsoft Windows)</H3>
 
 <P>Currently I build this with a Linux hosted cross-compiler.  I use
-the packaged cross-compiler in the debian testing/unstable distribution.
-You can probably install these on other distributions using alien to
-convert them to RPMs or similar.
+the packaged cross-compiler in the debian testing/unstable distribution:
+
+<code>
+sudo apt-get install mingw32
+</code>
+<!-- g++-mingw-w64 -->
 
 <P>Building on Windows in a native mingw environment will probably
 require tinkering.  Best bet is probably to install bash and use the
@@ -68,17 +71,44 @@ and I'll incorporate patches provided they're fairly clean.
 <H2>Microsoft Windows Installer Builder</H2>
 
 <P>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
-build the MS Windows Installer.  Survex 1.1.6 was built using InnoSetup
-5.4.2 (non-Unicode version, so that the installer works on older versions
+build the MS Windows Installer.  Survex 1.2.8 was built using InnoSetup
+5.5.3 (non-Unicode version, so that the installer works on older versions
 of Microsoft Windows).
 
 <P>Here are some random notes:
 
 <H3>Packages Needed</H3>
 
-<P>On Debian, you'll need to install these packages to build the installer:
+<P>On Debian, the commands to install wine vary depending on the architecture
+you're running - to check this use:
 
-<P>apt-get install wine wx2.8-i18n
+<pre>
+dpkg-architecture -qDEB_HOST_GNU_CPU
+</pre>
+
+<H4>For i386</H4>
+
+<pre>
+sudo apt-get install wine wx2.8-i18n
+</pre>
+
+<H4>For x86_64</H4>
+
+<P>You'll need to enable multi-arch and install the i386 packages of wine:
+
+<pre>
+sudo dpkg --add-architecture i386
+sudo apt-get update
+sudo apt-get install wine wine-bin:i386 wx2.8-i18n
+</pre>
+
+<H4>Common</H4>
+
+<P>And then run:
+
+<pre>
+wine ~/Downloads/isetup-5.5.3.exe
+</pre>
 
 <H3>Translations</H3>
 
@@ -87,8 +117,12 @@ add these, which you can find in the <code>lib</code> subdirectory of Xapian's
 source tree:
 
 <UL>
-<LI>English_GB.isl (unofficial, done by Olly)
-<LI>Romanian-7-5.1.11.isl (unofficial, asked Cristian to check it over)
+<li>ChineseSimplified.isl (Unofficial translation; for 5.5.3+)
+<li>ChineseTraditional.isl (Candidate official translation; for 5.5.0+)
+<li>EnglishGB.isl (Unofficial translation, done by Olly; for 5.5.3+)
+<li>Indonesian.isl (Unofficial translation; for 5.5.3+)
+<li>Romanian.isl (Unofficial translation; for 5.5.3+)
+<li>Slovak.isl (Unofficial translation; for 5.5.3+)
 </UL>
 
 <H3>survex.iss</H3>

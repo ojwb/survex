@@ -1,3 +1,9 @@
+Mon Sep 09 05:14:24 GMT 2013  Olly Betts <olly@survex.com>
+
+	* Makefile.am,doc/HACKING.htm,lib/,survex.iss.in: Upgrade to newer
+	  innosetup version.  Upgrade details of how to do a Microsoft Windows
+	  build.
+
 Mon Sep 09 04:19:36 GMT 2013  Olly Betts <olly@survex.com>
 
 	* make_release: Prefer a hand-installed 2.9 mingw build of wx to a

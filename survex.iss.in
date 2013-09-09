@@ -41,34 +41,22 @@ DisableWelcomePage=yes
 
 [Languages]
 ; Official translations:
-; Basque.isl
 Name: "ca"; MessagesFile: "compiler:Languages/Catalan.isl"
 Name: "cs"; MessagesFile: "compiler:Languages/Czech.isl"
-;Name: "da"; MessagesFile: "compiler:Languages/Danish.isl"
 Name: "de"; MessagesFile: "compiler:Languages/German.isl"
 Name: "en"; MessagesFile: "compiler:Default.isl"
-; Unofficial:
-Name: "en_gb"; MessagesFile: "English_GB.isl"
 Name: "es"; MessagesFile: "compiler:Languages/Spanish.isl"
 Name: "fr"; MessagesFile: "compiler:Languages/French.isl"
-;Name: "fi"; MessagesFile: "compiler:Languages/Finnish.isl"
-;Name: "he"; MessagesFile: "compiler:Languages/Hebrew.isl"
-;Name: "hu"; MessagesFile: "compiler:Languages/Hungarian.isl"
-Name: "id"; MessagesFile: "Indonesian-5.1.11.isl"
 Name: "it"; MessagesFile: "compiler:Languages/Italian.isl"
-;Name: "ja"; MessagesFile: "compiler:Languages/Japanese.isl
-;Name: "nb"; MessagesFile: "compiler:Languages/Norwegian.isl"
-;Name: "nl"; MessagesFile: "compiler:Languages/Dutch.isl"
-;Name: "pl"; MessagesFile: "compiler:Languages/Polish.isl"
 Name: "pt"; MessagesFile: "compiler:Languages/Portuguese.isl"
 Name: "pt_br"; MessagesFile: "compiler:Languages/BrazilianPortuguese.isl"
 ; Unofficial:
-Name: "ro"; MessagesFile: "Romanian-7-5.1.11.isl"
-;Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
+Name: "en_gb"; MessagesFile: "EnglishGB.isl"
+Name: "id"; MessagesFile: "Indonesian.isl"
+Name: "ro"; MessagesFile: "Romanian.isl"
 Name: "sk"; MessagesFile: "Slovak.isl"
-;Name: "sl"; MessagesFile: "compiler:Languages/Slovenian.isl"
-Name: "zh_cn"; MessagesFile: "ChineseSimplified.isl"
-Name: "zh_tw"; MessagesFile: "ChineseTraditional.isl"
+Name: "zh_CN"; MessagesFile: "ChineseSimplified.isl"
+Name: "zh_TW"; MessagesFile: "ChineseTraditional.isl"
 
 [Dirs]
 Name: "{app}\manual"

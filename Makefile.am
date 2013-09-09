@@ -52,12 +52,17 @@ mingw_iss : survex.iss
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp doc/manual/*.png iss_tmp/manual
 	cp $(extra_bin) iss_tmp
-	for f in /usr/share/locale/*/LC_MESSAGES/wxstd.mo ; do \
-	 a=`echo "$$f"|sed 's!^/usr/share/locale/\([^/]*\).*!\1!'`; \
-	 mkdir iss_tmp/$$a;\
-	 cp "$$f" iss_tmp/$$a;\
-	 echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' >> iss_tmp/i18nfiles.iss;\
-	done
+	for d in /usr/i586-mingw32msvc/share/locale /usr/share/locale ; do \
+	  if test -d "$d" ; then \
+	    for f in "$d"/locale/*/LC_MESSAGES/wxstd.mo ; do \
+	      a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$!\1!'`; \
+	      mkdir iss_tmp/$$a; \
+	      cp "$$f" iss_tmp/$$a; \
+	      echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' ; \
+	    done; \
+	    break; \
+	  fi \
+	done > iss_tmp/i18nfiles.iss
 	cp lib/*.isl iss_tmp
 	: # Also need to reduce colour depth it appears:
 	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
