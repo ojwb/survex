@@ -1,3 +1,7 @@
+Mon Sep 09 11:36:00 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/cad3d.c: Correct long option names in code comment.
+
 Mon Sep 09 11:33:20 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/cad3d.c: Make --marker-size work for Skencil and SVG output.

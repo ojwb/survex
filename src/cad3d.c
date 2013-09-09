@@ -43,7 +43,8 @@
 #include "message.h"
 #include "useful.h"
 
-/* default values - can be overridden with --htext and --msize respectively */
+/* default values - can be overridden with --text-height and --marker-size
+ * respectively */
 #define TEXT_HEIGHT	0.6
 #define MARKER_SIZE	0.8
 
