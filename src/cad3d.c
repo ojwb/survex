@@ -312,14 +312,14 @@ skencil_cross(const img_point *p, bool fSurface)
    fSurface = fSurface; /* unused */
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor - MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
+	   p->x * factor - marker_size, p->y * factor - marker_size, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor + MARKER_SIZE, p->y * factor + MARKER_SIZE, 0.0);
+	   p->x * factor + marker_size, p->y * factor + marker_size, 0.0);
    fprintf(fh, "bn()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor + MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
+	   p->x * factor + marker_size, p->y * factor - marker_size, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor - MARKER_SIZE, p->y * factor + MARKER_SIZE, 0.0);
+	   p->x * factor - marker_size, p->y * factor + marker_size, 0.0);
 }
 
 static void
@@ -472,12 +472,12 @@ svg_cross(const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
-           find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
+	   find_name(p), p->x * factor, p->y * -factor, marker_size * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
-	   p->x * factor - MARKER_SIZE, p->y * -factor - MARKER_SIZE,
-	   p->x * factor + MARKER_SIZE, p->y * -factor + MARKER_SIZE,
-	   p->x * factor + MARKER_SIZE, p->y * -factor - MARKER_SIZE,
-	   p->x * factor - MARKER_SIZE, p->y * -factor + MARKER_SIZE );
+	   p->x * factor - marker_size, p->y * -factor - marker_size,
+	   p->x * factor + marker_size, p->y * -factor + marker_size,
+	   p->x * factor + marker_size, p->y * -factor - marker_size,
+	   p->x * factor - marker_size, p->y * -factor + marker_size);
 }
 
 static void

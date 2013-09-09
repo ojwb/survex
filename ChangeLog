@@ -1,3 +1,7 @@
+Mon Sep 09 11:33:20 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/cad3d.c: Make --marker-size work for Skencil and SVG output.
+
 Mon Sep 09 07:01:57 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/moviemaker.cc,src/moviemaker.h: Improve reporting
