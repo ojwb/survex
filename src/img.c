@@ -1647,7 +1647,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 	  ch = GETC(pimg->fh);
       } while (ch == ' ' || ch == '\t');
       if (ch == '\n' || ch == EOF) {
-	  // If there's no label, set img_SFLAG_ANON.
+	  /* If there's no label, set img_SFLAG_ANON. */
 	  pimg->flags |= img_SFLAG_ANON;
 	  return img_LABEL;
       }

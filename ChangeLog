@@ -1,3 +1,8 @@
+Mon Sep 09 04:18:18 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/netbits.c: Fix // comments in C code for portability
+	  to pre-C99 compilers which don't support these as an extension.
+
 Mon Sep 09 04:12:57 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Fix to build with wxMSW 2.9.5.

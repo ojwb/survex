@@ -546,7 +546,7 @@ fprint_prefix(FILE *fh, const prefix *ptr)
        * use that to print "anonymous station surveyed from somesurvey.12"
        * here.  FIXME */
       fputs("anonymous station", fh);
-// FIXME: if ident is set,show it?
+      /* FIXME: if ident is set, show it? */
       return;
    }
    if (ptr->up != NULL) {
@@ -588,7 +588,7 @@ sprint_prefix(const prefix *ptr)
        * use that to print "anonymous station surveyed from somesurvey.12"
        * here.  FIXME */
       sprintf(buffer, "anonymous station");
-// FIXME: if ident is set,show it?
+      /* FIXME: if ident is set, show it? */
       return buffer;
    }
    *buffer = '\0';
