@@ -1,3 +1,8 @@
+Mon Sep 09 07:01:57 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/moviemaker.cc,src/moviemaker.h: Improve reporting
+	  of errors during the process of exporting a movie.
+
 Mon Sep 09 06:38:33 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/moviemaker.cc,src/moviemaker.h: Update movie export

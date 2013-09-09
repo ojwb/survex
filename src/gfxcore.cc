@@ -1214,7 +1214,13 @@ bool GfxCore::Animate()
     double t;
     if (movie) {
 	ReadPixels(movie->GetWidth(), movie->GetHeight(), movie->GetBuffer());
-	movie->AddFrame();
+	if (!movie->AddFrame()) {
+	    wxGetApp().ReportError(wxString(movie->get_error_string(), wxConvUTF8));
+	    delete movie;
+	    movie = NULL;
+	    presentation_mode = 0;
+	    return false;
+	}
 	t = 1.0 / 25.0; // 25 frames per second
     } else {
 	t = timer.Time() * 1.0e-3;
@@ -1239,6 +1245,9 @@ bool GfxCore::Animate()
 	    if (!next_mark.is_valid()) {
 		SetView(prev_mark);
 		presentation_mode = 0;
+		if (!movie->Close()) {
+		    wxGetApp().ReportError(wxString(movie->get_error_string(), wxConvUTF8));
+		}
 		delete movie;
 		movie = NULL;
 		break;

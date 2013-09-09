@@ -315,7 +315,7 @@ int MovieMaker::GetHeight() const {
 #endif
 }
 
-void MovieMaker::AddFrame()
+bool MovieMaker::AddFrame()
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     AVCodecContext * c = video_st->codec;
@@ -351,7 +351,8 @@ void MovieMaker::AddFrame()
 
     int ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
     if (ret < 0) {
-	abort(); // FIXME
+	averrno = ret;
+	return false;
     }
     if (got_packet && pkt.size) {
 	// Write the compressed frame to the media file.
@@ -366,8 +367,10 @@ void MovieMaker::AddFrame()
 	pkt.stream_index = video_st->index;
 
 	/* Write the compressed frame to the media file. */
-	if (av_interleaved_write_frame(oc, &pkt) != 0) {
-	    abort();
+	ret = av_interleaved_write_frame(oc, &pkt);
+	if (ret < 0) {
+	    averrno = ret;
+	    return false;
 	}
     }
 #else
@@ -388,15 +391,19 @@ void MovieMaker::AddFrame()
 	pkt.size = out_size;
 
 	/* Write the compressed frame to the media file. */
-	if (av_interleaved_write_frame(oc, &pkt) != 0) {
-	    abort();
+	int ret = av_interleaved_write_frame(oc, &pkt);
+	if (ret < 0) {
+	    averrno = ret;
+	    return false;
 	}
     }
 #endif
 #endif
+    return true;
 }
 
-MovieMaker::~MovieMaker()
+bool
+MovieMaker::Close()
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     if (video_st && averrno == 0) {
@@ -412,7 +419,9 @@ MovieMaker::~MovieMaker()
 
 	    int ret = avcodec_encode_video2(c, &pkt, NULL, &got_packet);
 	    if (ret < 0) {
-		abort(); // FIXME
+		release();
+		averrno = ret;
+		return false;
 	    }
 	    if (!got_packet) break;
 	    if (!pkt.size) continue;
@@ -429,8 +438,11 @@ MovieMaker::~MovieMaker()
 	    pkt.stream_index = video_st->index;
 
 	    /* Write the compressed frame to the media file. */
-	    if (av_interleaved_write_frame(oc, &pkt) != 0) {
-		abort();
+	    ret = av_interleaved_write_frame(oc, &pkt);
+	    if (ret < 0) {
+		release();
+		averrno = ret;
+		return false;
 	    }
 	}
 #else
@@ -450,8 +462,11 @@ MovieMaker::~MovieMaker()
 		pkt.size = out_size;
 
 		/* write the compressed frame in the media file */
-		if (av_interleaved_write_frame(oc, &pkt) != 0) {
-		    abort();
+		int ret = av_interleaved_write_frame(oc, &pkt);
+		if (ret < 0) {
+		    release();
+		    averrno = ret;
+		    return false;
 		}
 	    }
 	}
@@ -460,18 +475,32 @@ MovieMaker::~MovieMaker()
 	av_write_trailer(oc);
     }
 
+    release();
+#endif
+    return true;
+}
+
+void
+MovieMaker::release()
+{
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     if (video_st) {
 	// Close codec.
 	avcodec_close(video_st->codec);
+	video_st = NULL;
     }
 
     if (frame) {
 	free(frame->data[0]);
 	free(frame);
+	frame = NULL;
     }
     free(pixels);
+    pixels = NULL;
     free(outbuf);
+    outbuf = NULL;
     av_free(sws_ctx);
+    sws_ctx = NULL;
 
     if (oc) {
 	// Free the streams.
@@ -487,8 +516,14 @@ MovieMaker::~MovieMaker()
 
 	// Free the stream.
 	av_free(oc);
+	oc = NULL;
     }
 #endif
+}
+
+MovieMaker::~MovieMaker()
+{
+    release();
 }
 
 const char *

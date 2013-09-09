@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2010,2011 Olly Betts
+//  Copyright (C) 2004,2010,2011,2013 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -37,13 +37,16 @@ class MovieMaker {
     SwsContext *sws_ctx;
     int averrno;
  
+    void release();
+
 public:
     MovieMaker();
     bool Open(const char *fnm, int width, int height);
     unsigned char * GetBuffer() const;
     int GetWidth() const;
     int GetHeight() const;
-    void AddFrame();
+    bool AddFrame();
+    bool Close();
     ~MovieMaker();
     const char * get_error_string() const;
 };
