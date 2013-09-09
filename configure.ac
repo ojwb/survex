@@ -193,7 +193,7 @@ AVEN_LIBS=
 AC_SUBST(AVEN_LIBS)
 
 dnl Check for ffmpeg
-AC_CHECK_LIB(avcodec, avcodec_init,
+AC_CHECK_LIB(avcodec, avcodec_register_all,
   [AC_CHECK_LIB(avformat, av_register_all,
     [AC_CHECK_LIB(swscale, sws_scale,
       [AC_CHECK_LIB(avutil, av_malloc,
@@ -201,8 +201,10 @@ AC_CHECK_LIB(avcodec, avcodec_init,
 	  [AVEN_LIBS="-lswscale -lavformat -lavcodec -lavutil"
 	  save_LIBS=$LIBS
 	  LIBS="$LIBS $AVEN_LIBS"
-	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_open2 avformat_new_stream])
+	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_open2 avformat_new_stream])
 	  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
+	  AC_CHECK_DECLS([AVCODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
+	  AC_CHECK_DECLS([AV_PIX_FMT_YUV420P], [], [], [#include <libavutil/pixfmt.h>])
 	  LIBS=$save_LIBS])],
         [], [-lavformat -lavcodec -lswscale $WX_LIBS])],
       [], [-lavformat -lavcodec $WX_LIBS])],

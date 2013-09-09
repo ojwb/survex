@@ -1,3 +1,8 @@
+Mon Sep 09 06:38:33 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/moviemaker.cc,src/moviemaker.h: Update movie export
+	  code to work with latest libav API.
+
 Mon Sep 09 05:14:24 GMT 2013  Olly Betts <olly@survex.com>
 
 	* Makefile.am,doc/HACKING.htm,lib/,survex.iss.in: Upgrade to newer

@@ -28,7 +28,7 @@ struct SwsContext;
 
 class MovieMaker {
     AVFormatContext *oc;
-    AVStream *st;
+    AVStream *video_st;
     int out_size;
     AVFrame *frame;
     unsigned char *outbuf;
