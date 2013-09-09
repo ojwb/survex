@@ -111,7 +111,6 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
 }
-#define real_argv argv
 #else
 static char ** real_argv;
 
@@ -178,6 +177,10 @@ bool Aven::OnInit()
 
     wxString survey;
     bool print_and_exit = false;
+
+#ifdef __WXMSW__
+    char ** real_argv = argv;
+#endif
 
     while (true) {
 	int opt;
