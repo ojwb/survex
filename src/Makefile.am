@@ -55,7 +55,7 @@ editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-aven_LDADD = avenrc.o $(LIBOBJS) $(MOVIE_LIBS) $(WX_LIBS)
+aven_LDADD = avenrc.o $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS)
 
 svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` -o "$$pwd/svxeditrc.o" svxedit.rc
@@ -73,7 +73,7 @@ aven.ico: ../lib/icons/aven.ico
 
 CLEANFILES = aven.ico svxedit.ico
 else
-aven_LDADD = $(LIBOBJS) $(MOVIE_LIBS) $(WX_LIBS)
+aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS)
 endif
 
 if MACOSX

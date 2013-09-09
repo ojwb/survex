@@ -189,16 +189,18 @@ AC_CHECK_SIZEOF([wxChar], [], [
 ])
 CFLAGS=$save_CFLAGS
 
+AVEN_LIBS=
+AC_SUBST(AVEN_LIBS)
+
 dnl Check for ffmpeg
-MOVIE_LIBS=
 AC_CHECK_LIB(avcodec, avcodec_init,
   [AC_CHECK_LIB(avformat, av_register_all,
     [AC_CHECK_LIB(swscale, sws_scale,
       [AC_CHECK_LIB(avutil, av_malloc,
 	[AC_CHECK_HEADERS([libavformat/avformat.h],
-	  [MOVIE_LIBS="-lswscale -lavformat -lavcodec -lavutil"
+	  [AVEN_LIBS="-lswscale -lavformat -lavcodec -lavutil"
 	  save_LIBS=$LIBS
-	  LIBS="$LIBS $MOVIE_LIBS"
+	  LIBS="$LIBS $AVEN_LIBS"
 	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_open2 avformat_new_stream])
 	  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
 	  LIBS=$save_LIBS])],
@@ -206,7 +208,9 @@ AC_CHECK_LIB(avcodec, avcodec_init,
       [], [-lavformat -lavcodec $WX_LIBS])],
     [], [-lavcodec $WX_LIBS])
 ])
-AC_SUBST(MOVIE_LIBS)
+
+dnl Check for libproj
+AC_CHECK_LIB([proj], [pj_init_plus], [AVEN_LIBS="$AVEN_LIBS -lproj"])
 
 dnl Checks for header files.
 AC_HEADER_STDC

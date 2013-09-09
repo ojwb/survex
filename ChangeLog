@@ -1,3 +1,7 @@
+Mon Sep 09 04:10:48 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/Makefile.am: Probe for libproj.
+
 Fri Sep 06 04:18:23 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,doc/cad3d.sgml,lib/,src/: The "Sketch" vector drawing program
