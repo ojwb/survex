@@ -1,3 +1,8 @@
+Mon Sep 09 04:19:36 GMT 2013  Olly Betts <olly@survex.com>
+
+	* make_release: Prefer a hand-installed 2.9 mingw build of wx to a
+	  packaged 2.8 build.
+
 Mon Sep 09 04:18:18 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/img.c,src/netbits.c: Fix // comments in C code for portability
