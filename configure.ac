@@ -201,7 +201,7 @@ AC_CHECK_LIB(avcodec, avcodec_register_all,
 	  [AVEN_LIBS="-lswscale -lavformat -lavcodec -lavutil"
 	  save_LIBS=$LIBS
 	  LIBS="$LIBS $AVEN_LIBS"
-	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_open2 avformat_new_stream])
+	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_free_frame avcodec_open2 avformat_new_stream])
 	  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
 	  AC_CHECK_DECLS([AVCODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
 	  AC_CHECK_DECLS([AV_PIX_FMT_YUV420P], [], [], [#include <libavutil/pixfmt.h>])

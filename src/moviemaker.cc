@@ -76,6 +76,12 @@ extern "C" {
 # ifndef HAVE_AVIO_CLOSE
 #  define avio_close url_fclose
 # endif
+# ifndef HAVE_AVCODEC_FREE_FRAME
+static inline void avcodec_free_frame(AVFrame * frame) {
+    free(frame->data[0]);
+    free(frame);
+}
+# endif
 # ifndef HAVE_AVCODEC_OPEN2
 // We always pass NULL for OPTS below.
 #  define avcodec_open2(CTX, CODEC, OPTS) avcodec_open(CTX, CODEC)
@@ -491,8 +497,7 @@ MovieMaker::release()
     }
 
     if (frame) {
-	free(frame->data[0]);
-	free(frame);
+	avcodec_free_frame(frame);
 	frame = NULL;
     }
     free(pixels);

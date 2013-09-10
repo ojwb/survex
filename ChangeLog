@@ -1,3 +1,8 @@
+Tue Sep 10 00:21:53 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/moviemaker.cc: Use avcodec_free_frame() if it's
+	  available.
+
 Mon Sep 09 11:36:00 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/cad3d.c: Correct long option names in code comment.
