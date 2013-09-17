@@ -1245,7 +1245,7 @@ bool GfxCore::Animate()
 	    if (!next_mark.is_valid()) {
 		SetView(prev_mark);
 		presentation_mode = 0;
-		if (!movie->Close()) {
+		if (movie && !movie->Close()) {
 		    wxGetApp().ReportError(wxString(movie->get_error_string(), wxConvUTF8));
 		}
 		delete movie;

@@ -1,3 +1,8 @@
+Tue Sep 17 23:37:00 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Don't try to close the movie if we aren't producing
+	  one.
+
 Tue Sep 10 00:21:53 GMT 2013  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/moviemaker.cc: Use avcodec_free_frame() if it's
