@@ -1,3 +1,8 @@
+Tue Sep 17 23:38:10 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Make right click in an empty presentation mark the
+	  current position and open it to edit, instead of crashing.
+
 Tue Sep 17 23:37:00 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Don't try to close the movie if we aren't producing

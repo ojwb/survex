@@ -255,6 +255,10 @@ class AvenPresList : public wxListCtrl {
 	}
 	void OnRightClick(wxListEvent& event) {
 	    long item = event.GetIndex();
+	    if (item < 0) {
+		AddMark(item, gfx->GetView());
+		item = 0;
+	    }
 	    EditMarkDlg edit(mainfrm, entries[item]);
 	    if (edit.ShowModal() == wxID_OK) {
 		entries[item] = edit.GetMark();
