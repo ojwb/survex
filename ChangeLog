@@ -1,3 +1,8 @@
+Tue Sep 17 23:56:06 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc,src/guicontrol.h: Rename scale/rotate lock
+	  constants to have a "lock_" prefix.
+
 Tue Sep 17 23:38:10 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Make right click in an empty presentation mark the

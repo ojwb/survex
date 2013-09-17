@@ -101,7 +101,7 @@ void GUIControl::HandleScaleRotate(wxPoint point)
 
     int dx, dy;
     int threshold;
-    if (m_ScaleRotateLock == NONE) {
+    if (m_ScaleRotateLock == lock_NONE) {
 	// Dragging to scale or rotate but we've not decided which yet.
 	dx = point.x - m_DragRealStart.x;
 	dy = point.y - m_DragRealStart.y;
@@ -116,30 +116,30 @@ void GUIControl::HandleScaleRotate(wxPoint point)
     if (dx2 + dy2 < threshold) return;
 
     switch (m_ScaleRotateLock) {
-	case NONE:
+	case lock_NONE:
 	    if (dx2 > dy2) {
-		m_ScaleRotateLock = ROTATE;
+		m_ScaleRotateLock = lock_ROTATE;
 //		m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
 	    } else {
-		m_ScaleRotateLock = SCALE;
+		m_ScaleRotateLock = lock_SCALE;
 //		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
 	    }
 	    break;
-	case SCALE:
+	case lock_SCALE:
 	    if (dx2 >= 8 * dy2) {
-		m_ScaleRotateLock = ROTATE;
+		m_ScaleRotateLock = lock_ROTATE;
 //		m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
 	    }
 	    break;
-	case ROTATE:
+	case lock_ROTATE:
 	    if (dy2 >= 8 * dx2) {
-		m_ScaleRotateLock = SCALE;
+		m_ScaleRotateLock = lock_SCALE;
 //		m_View->SetCursor(GfxCore::CURSOR_ZOOM);
 	    }
 	    break;
     }
 
-    if (m_ScaleRotateLock == ROTATE) {
+    if (m_ScaleRotateLock == lock_ROTATE) {
 	dy = 0;
     } else {
 	dx = 0;
@@ -251,10 +251,11 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
     }
 
     static long timestamp = LONG_MIN;
-    if (dragging != NO_DRAG && m_ScaleRotateLock != NONE && timestamp != LONG_MIN) {
+    if (dragging != NO_DRAG && m_ScaleRotateLock != lock_NONE &&
+	timestamp != LONG_MIN) {
 	// If no motion for a second, reset the direction lock.
 	if (event.GetTimestamp() - timestamp >= 1000) {
-	    m_ScaleRotateLock = NONE;
+	    m_ScaleRotateLock = lock_NONE;
 	    m_DragRealStart = m_DragStart;
 	    RestoreCursor();
 	}
@@ -336,7 +337,7 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	    }
 
 	    m_LastDrag = drag_MAIN;
-	    m_ScaleRotateLock = NONE;
+	    m_ScaleRotateLock = lock_NONE;
 	}
 
 	m_View->CaptureMouse();
