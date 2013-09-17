@@ -1,3 +1,8 @@
+Tue Sep 17 23:57:02 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Make the Presentation->Play menu item a checkbox,
+	  to avoid a warning with wxMSW 2.9.5.  Reported by Brian Clipstone.
+
 Tue Sep 17 23:56:06 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc,src/guicontrol.h: Rename scale/rotate lock

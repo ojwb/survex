@@ -795,7 +795,7 @@ void MainFrm::CreateMenuBar()
     presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Sa&ve Presentation As…*/314));
     presmenu->AppendSeparator();
     presmenu->Append(menu_PRES_MARK, wmsg(/*&Mark*/315));
-    presmenu->Append(menu_PRES_PLAY, wmsg(/*Pla&y*/316));
+    presmenu->AppendCheckItem(menu_PRES_PLAY, wmsg(/*Pla&y*/316));
     presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie…*/317));
 
     wxMenu* viewmenu = new wxMenu;
