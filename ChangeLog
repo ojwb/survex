@@ -1,3 +1,8 @@
+Wed Sep 18 00:26:33 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Fix to build with wx 2.9.5 with wx2.8 compatibility
+	  disabled.
+
 Tue Sep 17 23:57:02 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Make the Presentation->Play menu item a checkbox,
