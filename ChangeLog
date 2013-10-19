@@ -1,3 +1,9 @@
+Sat Oct 19 17:39:49 GMT 2013  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/img.c: Use lround() instead of round(), and make
+	  the tests around whether we use the library function or the our
+	  fallback implementation saner.
+
 Wed Sep 18 00:26:33 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Fix to build with wx 2.9.5 with wx2.8 compatibility

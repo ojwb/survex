@@ -146,17 +146,28 @@ getu16(FILE *fh)
 }
 
 #include <math.h>
-#if defined HAVE_DECL_ROUND && !HAVE_DECL_ROUND
-extern double round(double);
-# define my_round round
-#elif !defined HAVE_DECL_ROUND && HAVE_ROUND
-extern double round(double); /* prototype is often missing... */
-# define my_round round
+
+#if !defined HAVE_LROUND && !defined HAVE_DECL_LROUND
+/* The autoconf tests are not in use, but C99 and C++11 both added lround(),
+ * so set HAVE_LROUND and HAVE_DECL_LROUND conservatively based on the language
+ * standard version the compiler claims to support. */
+# if (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
+     (defined __cplusplus && __cplusplus >= 201103L)
+#  define HAVE_LROUND 1
+#  define HAVE_DECL_LROUND 1
+# endif
+#endif
+
+#ifdef HAVE_LROUND
+# if defined HAVE_DECL_LROUND && !HAVE_DECL_LROUND
+/* On older systems, the prototype may be missing. */
+extern long lround(double);
+# endif
+# define my_lround lround
 #else
-static double
-my_round(double x) {
-   if (x >= 0.0) return floor(x + 0.5);
-   return ceil(x - 0.5);
+static long
+my_lround(double x) {
+   return (x >= 0.0) ? (long)(x + 0.5) : -(long)(0.5 - x);
 }
 #endif
 
@@ -1954,9 +1965,9 @@ write_coord(FILE *fh, double x, double y, double z)
    SVX_ASSERT(fh);
    /* Output in cm */
    static INT32_T X_, Y_, Z_;
-   INT32_T X = my_round(x * 100.0);
-   INT32_T Y = my_round(y * 100.0);
-   INT32_T Z = my_round(z * 100.0);
+   INT32_T X = my_lround(x * 100.0);
+   INT32_T Y = my_lround(y * 100.0);
+   INT32_T Z = my_lround(z * 100.0);
 
    X_ -= X;
    Y_ -= Y;
@@ -2256,10 +2267,10 @@ img_write_item_new(img *pimg, int code, int flags, const char *s,
     case img_XSECT: {
       INT32_T l, r, u, d, max_dim;
       img_write_item_date_new(pimg);
-      l = (INT32_T)my_round(pimg->l * 100.0);
-      r = (INT32_T)my_round(pimg->r * 100.0);
-      u = (INT32_T)my_round(pimg->u * 100.0);
-      d = (INT32_T)my_round(pimg->d * 100.0);
+      l = (INT32_T)my_lround(pimg->l * 100.0);
+      r = (INT32_T)my_lround(pimg->r * 100.0);
+      u = (INT32_T)my_lround(pimg->u * 100.0);
+      d = (INT32_T)my_lround(pimg->d * 100.0);
       if (l < 0) l = -1;
       if (r < 0) r = -1;
       if (u < 0) u = -1;
@@ -2320,10 +2331,10 @@ img_write_item_v3to7(img *pimg, int code, int flags, const char *s,
       /* Need at least version 5 for img_XSECT. */
       if (pimg->version < 5) return;
       img_write_item_date(pimg);
-      l = (INT32_T)my_round(pimg->l * 100.0);
-      r = (INT32_T)my_round(pimg->r * 100.0);
-      u = (INT32_T)my_round(pimg->u * 100.0);
-      d = (INT32_T)my_round(pimg->d * 100.0);
+      l = (INT32_T)my_lround(pimg->l * 100.0);
+      r = (INT32_T)my_lround(pimg->r * 100.0);
+      u = (INT32_T)my_lround(pimg->u * 100.0);
+      d = (INT32_T)my_lround(pimg->d * 100.0);
       if (l < 0) l = -1;
       if (r < 0) r = -1;
       if (u < 0) u = -1;
@@ -2426,10 +2437,10 @@ img_write_errors(img *pimg, int n_legs, double length,
 {
     PUTC((pimg->version >= 8 ? 0x1f : 0x22), pimg->fh);
     put32(n_legs, pimg->fh);
-    put32((INT32_T)my_round(length * 100.0), pimg->fh);
-    put32((INT32_T)my_round(E * 100.0), pimg->fh);
-    put32((INT32_T)my_round(H * 100.0), pimg->fh);
-    put32((INT32_T)my_round(V * 100.0), pimg->fh);
+    put32((INT32_T)my_lround(length * 100.0), pimg->fh);
+    put32((INT32_T)my_lround(E * 100.0), pimg->fh);
+    put32((INT32_T)my_lround(H * 100.0), pimg->fh);
+    put32((INT32_T)my_lround(V * 100.0), pimg->fh);
 }
 
 int
