@@ -313,16 +313,18 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	label = new wxStaticText(this, -1, wxString(wmsg(/*Export format*/410)));
 	m_format = new wxChoice(this, svx_FORMAT, wxDefaultPosition, wxDefaultSize,
 				sizeof(formats) / sizeof(formats[0]), formats);
+	unsigned current_format = 0;
 	wxConfigBase * cfg = wxConfigBase::Get();
 	wxString s;
 	if (cfg->Read(wxT("export_format"), &s, wxString())) {
 	    for (unsigned i = 0; i != sizeof(formats) / sizeof(wxString); ++i) {
 		if (s == formats[i]) {
-		    m_format->SetSelection(i);
+		    current_format = i;
 		    break;
 		}
 	    }
 	}
+	m_format->SetSelection(current_format);
 	wxBoxSizer* formatbox = new wxBoxSizer(wxHORIZONTAL);
 	formatbox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
 	formatbox->Add(m_format, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -582,20 +584,24 @@ void
 svxPrintDlg::SomethingChanged(int control_id) {
     if (control_id == 0 || control_id == svx_FORMAT) {
 	// Update the shown/hidden fields for the newly selected export filter.
-	unsigned new_filter_idx = m_format->GetSelection();
-	unsigned mask = format_info[new_filter_idx];
-	FindWindow(svx_LEGS)->Show(mask & LEGS);
-	FindWindow(svx_SURFACE)->Show(mask & SURF);
-	FindWindow(svx_STATIONS)->Show(mask & STNS);
-	FindWindow(svx_NAMES)->Show(mask & LABELS);
-	FindWindow(svx_XSECT)->Show(mask & XSECT);
-	FindWindow(svx_WALLS)->Show(mask & WALLS);
-	FindWindow(svx_PASSAGES)->Show(mask & PASG);
-//	FindWindow(svx_EXPORT_3D)->Show(mask & EXPORT_3D);
-//	FindWindow(svx_EXPORT_CENTRED)->Show(mask & EXPORT_CENTRED);
-	GetSizer()->Layout();
-	wxConfigBase * cfg = wxConfigBase::Get();
-	cfg->Write(wxT("export_format"), formats[new_filter_idx]);
+	int new_filter_idx = m_format->GetSelection();
+	if (new_filter_idx != wxNOT_FOUND) {
+	    unsigned mask = format_info[new_filter_idx];
+	    FindWindow(svx_LEGS)->Show(mask & LEGS);
+	    FindWindow(svx_SURFACE)->Show(mask & SURF);
+	    FindWindow(svx_STATIONS)->Show(mask & STNS);
+	    FindWindow(svx_NAMES)->Show(mask & LABELS);
+	    FindWindow(svx_XSECT)->Show(mask & XSECT);
+	    FindWindow(svx_WALLS)->Show(mask & WALLS);
+	    FindWindow(svx_PASSAGES)->Show(mask & PASG);
+//	    FindWindow(svx_EXPORT_3D)->Show(mask & EXPORT_3D);
+//	    FindWindow(svx_EXPORT_CENTRED)->Show(mask & EXPORT_CENTRED);
+	    GetSizer()->Layout();
+	    if (control_id == svx_FORMAT) {
+		wxConfigBase * cfg = wxConfigBase::Get();
+		cfg->Write(wxT("export_format"), formats[new_filter_idx]);
+	    }
+	}
     }
 
     UIToLayout();
