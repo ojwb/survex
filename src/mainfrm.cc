@@ -1003,7 +1003,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     // Load the processed survey data.
     img* survey = img_open_survey(file.mb_str(), prefix.mb_str());
     if (!survey) {
-	wxString m = wxString::Format(wmsg(img_error()), file.c_str());
+	wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
     }
@@ -1310,7 +1310,7 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
 		img_close(survey);
 
-		wxString m = wxString::Format(wmsg(img_error()), file.c_str());
+		wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
 		wxGetApp().ReportError(m);
 
 		return false;

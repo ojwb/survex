@@ -1,3 +1,8 @@
+Mon Oct 21 01:10:04 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Update to call img_error2msg() on the error code
+	  returned by img_error().
+
 Sat Oct 19 18:28:49 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix segfault in "File->Export" if an export format
