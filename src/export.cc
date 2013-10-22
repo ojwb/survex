@@ -56,12 +56,6 @@
 #include "message.h"
 #include "useful.h"
 
-/* default values - can be overridden with --htext and --msize respectively */
-#define TEXT_HEIGHT	0.6
-#define MARKER_SIZE	0.8
-
-#define GRID_SPACING	100
-
 #define POINTS_PER_INCH	72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
@@ -442,14 +436,14 @@ Skencil::cross(const img_point *p, bool fSurface)
    fSurface = fSurface; /* unused */
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor - MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
+	   p->x * factor - marker_size, p->y * factor - marker_size, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor + MARKER_SIZE, p->y * factor + MARKER_SIZE, 0.0);
+	   p->x * factor + marker_size, p->y * factor + marker_size, 0.0);
    fprintf(fh, "bn()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor + MARKER_SIZE, p->y * factor - MARKER_SIZE, 0.0);
+	   p->x * factor + marker_size, p->y * factor - marker_size, 0.0);
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor - MARKER_SIZE, p->y * factor + MARKER_SIZE, 0.0);
+	   p->x * factor - marker_size, p->y * factor + marker_size, 0.0);
 }
 
 void
@@ -634,12 +628,12 @@ SVG::cross(const img_point *p, bool fSurface)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
-	   find_name(p), p->x * factor, p->y * -factor, MARKER_SIZE * SQRT_2);
+	   find_name(p), p->x * factor, p->y * -factor, marker_size * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
-	   p->x * factor - MARKER_SIZE, p->y * -factor - MARKER_SIZE,
-	   p->x * factor + MARKER_SIZE, p->y * -factor + MARKER_SIZE,
-	   p->x * factor + MARKER_SIZE, p->y * -factor - MARKER_SIZE,
-	   p->x * factor - MARKER_SIZE, p->y * -factor + MARKER_SIZE );
+	   p->x * factor - marker_size, p->y * -factor - marker_size,
+	   p->x * factor + marker_size, p->y * -factor + marker_size,
+	   p->x * factor + marker_size, p->y * -factor - marker_size,
+	   p->x * factor - marker_size, p->y * -factor + marker_size);
 }
 
 void
@@ -1098,7 +1092,8 @@ EPS::footer(void)
 
 bool
 Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
-       double pan, double tilt, int show_mask, export_format format)
+       double pan, double tilt, int show_mask, export_format format,
+       double grid_, double text_height_, double marker_size_)
 {
    int fPendingMove = 0;
    img_point p, p1;
@@ -1106,27 +1101,13 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
    const int *pass;
    bool elevation = (tilt == 0.0);
 
-   /* Defaults */
-   grid = 0;
-   text_height = TEXT_HEIGHT;
-   marker_size = MARKER_SIZE;
-   // FIXME: allow these to be set from aven somehow!
-#if 0
-       case 'g': /* Grid */
-	 if (optarg) {
-	    grid = cmdline_double_arg();
-	 } else {
-	    grid = (double)GRID_SPACING;
-	 }
-	 break;
+   grid = grid_;
+   text_height = text_height_;
+   marker_size = marker_size_;
+
+#if 0 // FIXME: allow these to be set from aven somehow!
        case 'r': /* Reduction factor */
 	 scale = cmdline_double_arg();
-	 break;
-       case 't': /* Text height */
-	 text_height = cmdline_double_arg();
-	 break;
-       case 'm': /* Marker size */
-	 marker_size = cmdline_double_arg();
 	 break;
        case 's':
 	 survey = optarg;

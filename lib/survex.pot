@@ -1961,6 +1961,21 @@ msgstr ""
 msgid "Highlight E&xported Points"
 msgstr ""
 
+#: ../src/printwx.cc:415
+#: n:418
+msgid "Entrances"
+msgstr ""
+
+#: ../src/printwx.cc:419
+#: n:419
+msgid "Fixed Points"
+msgstr ""
+
+#: ../src/printwx.cc:423
+#: n:420
+msgid "Exported Stations"
+msgstr ""
+
 #: ../src/mainfrm.cc:826
 #: n:237
 msgid "&Perspective"

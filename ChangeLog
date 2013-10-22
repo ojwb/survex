@@ -1,3 +1,11 @@
+Tue Oct 22 05:55:55 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/: Hide the "View" box for GPX export.  Add
+	  checkboxes for "Entrances", "Fixed Points" and "Exported Stations"
+	  for GPX export (currently non-functional).  Prepare for allowing
+	  text height, marker size, and grid spacing to be set from aven (as
+	  cad3d allows).
+
 Mon Oct 21 01:10:04 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Update to call img_error2msg() on the error code

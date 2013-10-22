@@ -37,20 +37,29 @@ typedef enum {
     FMT_SVG
 } export_format;
 
-#define LEGS 1
-#define SURF 2
-#define STNS 4
-#define LABELS 8
-#define XSECT 16
-#define WALL1 32
-#define WALL2 64
+#define LEGS		0x00000001
+#define SURF		0x00000002
+#define STNS		0x00000004
+#define LABELS		0x00000008
+#define XSECT		0x00000010
+#define WALL1		0x00000020
+#define WALL2		0x00000040
 #define WALLS (WALL1|WALL2)
-#define PASG 128
-#define EXPORT_3D 256
-#define EXPORT_CENTRED 512
+#define PASG		0x00000080
+#define EXPORT_3D	0x00000100
+#define EXPORT_CENTRED	0x00000200
+#define ENTS		0x00000400
+#define FIXES		0x00000800
+#define EXPORTS		0x00001000
+#define PROJ		0x00002000
+#define GRID		0x00004000
+#define TEXT_HEIGHT	0x00008000
+#define MARKER_SIZE	0x00010000
+#define SCALE		0x00020000
 
 bool Export(const wxString &fnm_out, const wxString &title,
 	    const MainFrm * mainfrm, double pan, double tilt, int show_mask,
-	    export_format format);
+	    export_format format,
+	    double grid_, double text_height_, double marker_size_);
 
 #endif

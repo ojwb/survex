@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWidgets driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004,2005,2006,2011,2012 Olly Betts
+ * Copyright (C) 2004,2005,2006,2011,2012,2013 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ class wxSpinEvent;
 class svxPrintDlg : public wxDialog {
 	layout m_layout;
 	wxComboBox* m_scale;
+	wxBoxSizer* m_scalebox;
+	wxBoxSizer* m_viewbox;
 	wxChoice* m_format;
 	wxStaticText* m_printSize;
 	wxSpinCtrl* m_bearing;

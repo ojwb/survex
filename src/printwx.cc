@@ -73,8 +73,14 @@ enum {
 	svx_SURFACE,
 	svx_PLAN,
 	svx_ELEV,
-	svx_EXPORT_3D,
-	svx_EXPORT_CENTRED
+	svx_EXPORT_CENTRED,
+	svx_ENTS,
+	svx_FIXES,
+	svx_EXPORTS,
+	svx_PROJ,
+	svx_GRID,
+	svx_TEXT_HEIGHT,
+	svx_MARKER_SIZE
 };
 
 class BitValidator : public wxValidator {
@@ -195,6 +201,9 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_CHECKBOX(svx_STATIONS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_NAMES, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_SURFACE, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_ENTS, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_FIXES, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_EXPORTS, svxPrintDlg::OnChange)
 END_EVENT_TABLE()
 
 static wxString scales[] = {
@@ -224,13 +233,13 @@ static wxString formats[] = {
 };
 
 static unsigned format_info[] = {
-    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|EXPORT_3D,
+    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID,
     LABELS|LEGS|SURF|STNS,
-    LABELS,
+    LABELS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF|STNS|EXPORT_CENTRED,
     LABELS|LEGS|SURF,
-    LABELS|LEGS|SURF|STNS,
-    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS
+    LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
+    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
 };
 
 static const char * extension[] = {
@@ -304,7 +313,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
+    m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
@@ -331,25 +340,41 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
 	v1->Add(formatbox, 0, wxALIGN_LEFT|wxALL, 0);
     }
+
+    wxStaticText* label;
+    label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
+    if (scales[0].empty()) {
+	if (printing) {
+	    scales[0].assign(wmsg(/*One page*/258));
+	} else {
+	    scales[0].assign(wxT("1000"));
+	}
+    }
+    m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
+			     wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
+			     scales);
+    m_scalebox = new wxBoxSizer(wxHORIZONTAL);
+    m_scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+
+    m_viewbox->Add(m_scalebox, 0, wxALIGN_LEFT|wxALL, 0);
+
     if (printing) {
-	wxStaticText* label;
-	label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
-	if (scales[0].empty()) scales[0].assign(wmsg(/*One page*/258));
-	m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
-				 wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
-				 scales);
-	wxBoxSizer* scalebox = new wxBoxSizer(wxHORIZONTAL);
-	scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-
-	v2->Add(scalebox, 0, wxALIGN_LEFT|wxALL, 0);
-
 	// Make the dummy string wider than any sane value and use that to
 	// fix the width of the control so the sizers allow space for bigger
 	// page layouts.
 	m_printSize = new wxStaticText(this, -1, wxString::Format(wmsg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
-	v2->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
+	m_viewbox->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
+
+    /*
+	svx_EXPORT_CENTRED,
+	svx_PROJ,
+
+	svx_GRID, // double - spacing, default: 100m
+	svx_TEXT_HEIGHT, // default 0.6
+	svx_MARKER_SIZE // default 0.8
+    */
 
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
@@ -365,7 +390,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_tilt->SetRange(-90, 90);
 	anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
 
-	v2->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
+	m_viewbox->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
 
 	wxBoxSizer * planelevsizer = new wxBoxSizer(wxHORIZONTAL);
 	planelevsizer->Add(new wxButton(this, svx_PLAN, wmsg(/*P&lan view*/117)),
@@ -373,10 +398,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	planelevsizer->Add(new wxButton(this, svx_ELEV, wmsg(/*&Elevation*/285)),
 			   0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
 
-	v2->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
+	m_viewbox->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
-    h1->Add(v2, 0, wxALIGN_LEFT|wxALL, 5);
+    h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxALL, 5);
 
     v3->Add(new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262),
 			   wxDefaultPosition, wxDefaultSize, 0,
@@ -393,6 +418,18 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v3->Add(new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LABELS)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_ENTS, wmsg(/*Entrances*/418),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, ENTS)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_FIXES, wmsg(/*Fixed Points*/419),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, FIXES)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_EXPORTS, wmsg(/*Entrances*/420),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, EXPORTS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
     v3->Add(new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393),
 			   wxDefaultPosition, wxDefaultSize, 0,
@@ -491,9 +528,14 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), leaf,
 		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
+	double grid = 100; // metres
+	double text_height = 0.6;
+	double marker_size = 0.8;
+
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
 		    m_layout.rot, m_layout.tilt, m_layout.show_mask,
-		    export_format(format_idx))) {
+		    export_format(format_idx),
+		    grid, text_height, marker_size)) {
 	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					  m_File.c_str());
 	    wxGetApp().ReportError(m);
@@ -582,7 +624,7 @@ svxPrintDlg::OnChange(wxCommandEvent& e) {
 
 void
 svxPrintDlg::SomethingChanged(int control_id) {
-    if (control_id == 0 || control_id == svx_FORMAT) {
+    if ((control_id == 0 || control_id == svx_FORMAT) && m_format) {
 	// Update the shown/hidden fields for the newly selected export filter.
 	int new_filter_idx = m_format->GetSelection();
 	if (new_filter_idx != wxNOT_FOUND) {
@@ -594,8 +636,12 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	    FindWindow(svx_XSECT)->Show(mask & XSECT);
 	    FindWindow(svx_WALLS)->Show(mask & WALLS);
 	    FindWindow(svx_PASSAGES)->Show(mask & PASG);
-//	    FindWindow(svx_EXPORT_3D)->Show(mask & EXPORT_3D);
 //	    FindWindow(svx_EXPORT_CENTRED)->Show(mask & EXPORT_CENTRED);
+	    FindWindow(svx_ENTS)->Show(mask & ENTS);
+	    FindWindow(svx_FIXES)->Show(mask & FIXES);
+	    FindWindow(svx_EXPORTS)->Show(mask & EXPORTS);
+	    m_scalebox->Show(bool(mask & SCALE));
+	    m_viewbox->Show(!bool(mask & EXPORT_3D));
 	    GetSizer()->Layout();
 	    if (control_id == svx_FORMAT) {
 		wxConfigBase * cfg = wxConfigBase::Get();
