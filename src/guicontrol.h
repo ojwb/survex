@@ -120,7 +120,7 @@ public:
     void OnShowCrossesUpdate(wxUpdateUIEvent&);
     void OnShowStationNamesUpdate(wxUpdateUIEvent&);
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
-    void OnShowSplaysUpdate(wxUpdateUIEvent&);
+    void OnSplaysUpdate(wxUpdateUIEvent&);
     void OnHideSplaysUpdate(wxUpdateUIEvent&);
     void OnShowSplaysNormalUpdate(wxUpdateUIEvent&);
     void OnShowSplaysFadedUpdate(wxUpdateUIEvent&);

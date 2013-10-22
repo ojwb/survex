@@ -534,7 +534,7 @@ void GUIControl::OnShowSplaysFaded()
     m_View->SetSplaysMode(SPLAYS_SHOW_FADED);
 }
 
-void GUIControl::OnShowSplaysUpdate(wxUpdateUIEvent& cmd)
+void GUIControl::OnSplaysUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasSplays());
 }

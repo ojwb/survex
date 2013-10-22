@@ -90,7 +90,7 @@ enum {
     menu_ORIENT_LOWER_VP,
     menu_ORIENT_DEFAULTS,
     menu_VIEW_SHOW_LEGS,
-    menu_VIEW_SHOW_SPLAYS,
+    menu_VIEW_SPLAYS,
     menu_SPLAYS_HIDE,
     menu_SPLAYS_SHOW_FADED,
     menu_SPLAYS_SHOW_NORMAL,    
@@ -354,7 +354,7 @@ public:
     void OnShowExportedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowExportedPtsUpdate(event); }
     void OnShowStationNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowStationNamesUpdate(event); }
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurveyLegsUpdate(event); }
-    void OnShowSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysUpdate(event); }
+    void OnSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSplaysUpdate(event); }
     void OnHideSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHideSplaysUpdate(event); }
     void OnShowSplaysNormalUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysNormalUpdate(event); }
     void OnShowSplaysFadedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysFadedUpdate(event); }

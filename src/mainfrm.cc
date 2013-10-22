@@ -592,7 +592,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(wxID_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
-    EVT_UPDATE_UI(menu_VIEW_SHOW_SPLAYS, MainFrm::OnShowSplaysUpdate)
+    EVT_UPDATE_UI(menu_VIEW_SPLAYS, MainFrm::OnSplaysUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_HIDE, MainFrm::OnHideSplaysUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormalUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFadedUpdate)
@@ -813,7 +813,7 @@ void MainFrm::CreateMenuBar()
     splaymenu->AppendCheckItem(menu_SPLAYS_HIDE, wmsg(/*&Hide*/407));
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_FADED, wmsg(/*&Fade*/408));
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*&Show*/409));
-    viewmenu->Append(menu_VIEW_SHOW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
+    viewmenu->Append(menu_VIEW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
 
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
