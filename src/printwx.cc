@@ -518,6 +518,7 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 void
 svxPrintDlg::OnExport(wxCommandEvent&) {
     UIToLayout();
+    TransferDataFromWindow();
     wxString leaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &leaf, NULL, wxPATH_NATIVE);
     unsigned format_idx = ((wxChoice*)FindWindow(svx_FORMAT))->GetSelection();
@@ -554,6 +555,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 void
 svxPrintDlg::OnPreview(wxCommandEvent&) {
     SomethingChanged(0);
+    TransferDataFromWindow();
     wxPageSetupDialogData * psdd = wxGetApp().GetPageSetupDialogData();
     wxPrintDialogData pd(psdd->GetPrintData());
     wxPrintPreview* pv;

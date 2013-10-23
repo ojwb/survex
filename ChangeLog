@@ -1,3 +1,9 @@
+Wed Oct 23 06:46:39 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix export and (the built-in) print preview to
+	  actually use the options selected in the dialog rather than those
+	  set when the dialog was created.
+
 Wed Oct 23 06:30:05 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/: Hook up GPX export options to export entrances, fixed points,
