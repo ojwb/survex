@@ -111,7 +111,7 @@ class DXF : public ExportFilter {
     bool fopen(const char *fnm_out);
     void header(const char *);
     void line(const img_point *, const img_point *, bool, bool);
-    void label(const img_point *, const char *, bool);
+    void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void xsect(const img_point *, double, double, double);
     void wall(const img_point *, double, double);
@@ -271,7 +271,7 @@ DXF::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
 }
 
 void
-DXF::label(const img_point *p, const char *s, bool fSurface)
+DXF::label(const img_point *p, const char *s, bool fSurface, int)
 {
    /* write station label to dxf file */
    fprintf(fh, "0\nTEXT\n");
@@ -375,7 +375,7 @@ class Skencil : public ExportFilter {
     void header(const char *);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
-    void label(const img_point *, const char *, bool);
+    void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void footer();
 };
@@ -414,7 +414,7 @@ Skencil::line(const img_point *p1, const img_point *p, bool fSurface, bool fPend
 }
 
 void
-Skencil::label(const img_point *p, const char *s, bool fSurface)
+Skencil::label(const img_point *p, const char *s, bool fSurface, int)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
@@ -530,7 +530,7 @@ class SVG : public ExportFilter {
     void header(const char *);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
-    void label(const img_point *, const char *, bool);
+    void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void xsect(const img_point *, double, double, double);
     void wall(const img_point *, double, double);
@@ -613,7 +613,7 @@ SVG::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
 }
 
 void
-SVG::label(const img_point *p, const char *s, bool fSurface)
+SVG::label(const img_point *p, const char *s, bool fSurface, int)
 {
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
@@ -710,7 +710,7 @@ class PLT : public ExportFilter {
     const int * passes() const;
     void header(const char *);
     void line(const img_point *, const img_point *, bool, bool);
-    void label(const img_point *, const char *, bool);
+    void label(const img_point *, const char *, bool, int);
     void footer();
 };
 
@@ -782,7 +782,7 @@ PLT::find_name_plt(const img_point *p)
 }
 
 void
-PLT::label(const img_point *p, const char *s, bool fSurface)
+PLT::label(const img_point *p, const char *s, bool fSurface, int)
 {
    fSurface = fSurface; /* unused */
    set_name(p, s);
@@ -805,7 +805,7 @@ class EPS : public ExportFilter {
     EPS() { }
     void header(const char *);
     void line(const img_point *, const img_point *, bool, bool);
-    void label(const img_point *, const char *, bool);
+    void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void footer();
 };
@@ -1055,7 +1055,7 @@ EPS::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
 }
 
 void
-EPS::label(const img_point *p, const char *s, bool /*fSurface*/)
+EPS::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 {
    fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
    PUTC('(', fh);
@@ -1328,7 +1328,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	     }
 	 }
       }
-      if (pass_mask & (STNS | LABELS)) {
+      if (pass_mask & (STNS|LABELS|ENTS|FIXES|EXPORTS)) {
 	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
 	  list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
@@ -1359,8 +1359,15 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	      /* Use !UNDERGROUND as the criterion - we want stations where
 	       * a surface and underground survey meet to be in the
 	       * underground layer */
-	      if (pass_mask & LABELS)
-		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground());
+	      if ((pass_mask & ENTS) && (*pos)->IsEntrance()) {
+		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), ENTS);
+	      } else if ((pass_mask & FIXES) && (*pos)->IsFixedPt()) {
+		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), FIXES);
+	      } else if ((pass_mask & EXPORTS) && (*pos)->IsExportedPt())  {
+		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), EXPORTS);
+	      } else if (pass_mask & LABELS) {
+		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), LABELS);
+	      }
 	      if (pass_mask & STNS)
 		  filt->cross(&p, !(*pos)->IsUnderground());
 	  }

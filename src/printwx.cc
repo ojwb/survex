@@ -268,7 +268,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & datestamp,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
-			 bool tubes, bool printing)
+			 bool tubes, bool ents, bool fixes, bool exports,
+			 bool printing)
 	: wxDialog(mainfrm_, -1, wxString(printing ? wmsg(/*Print*/399) : wmsg(/*Export*/383))),
 	  m_layout(wxGetApp().GetPageSetupDialogData()),
 	  m_File(filename), mainfrm(mainfrm_)
@@ -287,9 +288,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	show_mask |= LEGS;
     if (surf)
 	show_mask |= SURF;
-    if (tubes) {
+    if (tubes)
 	show_mask |= XSECT|WALLS|PASG;
-    }
+    if (ents)
+	show_mask |= ENTS;
+    if (fixes)
+	show_mask |= FIXES;
+    if (exports)
+	show_mask |= EXPORTS;
     m_layout.show_mask = show_mask;
     m_layout.datestamp = datestamp;
     m_layout.rot = int(angle);

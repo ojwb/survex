@@ -1,3 +1,12 @@
+Wed Oct 23 06:30:05 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/: Hook up GPX export options to export entrances, fixed points,
+	  and/or exported points, and specify coloured pin symbols for these
+	  types of stations.  These options now default to what's being shown
+	  in the survey view, like other export options.   GPX export
+	  "creator" how includes the Survex version and website URL, and the
+	  survey title is includes as a <name> tag inside the <gpx> tag.
+
 Wed Oct 23 04:38:31 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: Fix assertion failure when double-clicking on the

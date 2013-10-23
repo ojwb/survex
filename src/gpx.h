@@ -28,8 +28,9 @@ class GPX : public ExportFilter {
   public:
     GPX();
     ~GPX();
+    const int * passes() const;
     void header(const char *);
     void line(const img_point *, const img_point *, bool, bool);
-    void label(const img_point *, const char *, bool);
+    void label(const img_point *, const char *, bool, int);
     void footer();
 };

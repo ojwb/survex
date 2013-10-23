@@ -42,7 +42,7 @@ class ExportFilter {
     virtual void header(const char *) { }
     virtual void start_pass(int) { }
     virtual void line(const img_point *, const img_point *, bool, bool) = 0;
-    virtual void label(const img_point *, const char *, bool) = 0;
+    virtual void label(const img_point *, const char *, bool, int) = 0;
     virtual void cross(const img_point *, bool) { }
     virtual void xsect(const img_point *, double, double, double) { }
     virtual void wall(const img_point *, double, double) { }

@@ -123,7 +123,7 @@ HPGL::cross(const img_point *p, bool /*fSurface*/)
 #undef CS2
 
 void
-HPGL::label(const img_point *p, const char *s, bool /*fSurface*/)
+HPGL::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 {
     /* LB is a text label, terminated with a ^C */
     fprintf(fh, "PU%ld,%ld;LB", long(p->x - x_org), long(p->y - y_org));
