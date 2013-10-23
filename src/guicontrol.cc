@@ -347,11 +347,12 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 void GUIControl::OnLButtonUp(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
+	if (dragging == NO_DRAG)
+	    return;
+
 	if (event.GetPosition() == m_DragRealStart) {
 	    // Just a "click"...
 	    m_View->CheckHitTestGrid(m_DragStart, true);
-	} else if (dragging == NO_DRAG) {
-	    return;
 	}
 
 //	m_View->RedrawIndicators();

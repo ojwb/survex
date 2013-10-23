@@ -1,3 +1,8 @@
+Wed Oct 23 04:38:31 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Fix assertion failure when double-clicking on the
+	  survey with wx2.9.
+
 Tue Oct 22 06:01:05 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/: Rename internal references to "show splays" to just "splays"
