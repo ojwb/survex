@@ -158,8 +158,18 @@ main(int argc, char **argv)
 	    printf("\n");
 	    break;
 	  case img_XSECT:
-	    printf("XSECT %.2f %.2f %.2f %.2f [%s]\n",
+	    printf("XSECT %.2f %.2f %.2f %.2f [%s]",
 		   pimg->l, pimg->r, pimg->u, pimg->d, pimg->label);
+	    if (show_dates && pimg->days1 != -1) {
+		int y, m, d;
+		ymd_from_days_since_1900(pimg->days1, &y, &m, &d);
+		printf(" %04d.%02d.%02d", y, m, d);
+		if (pimg->days1 != pimg->days2) {
+		    ymd_from_days_since_1900(pimg->days2, &y, &m, &d);
+		    printf("-%04d.%02d.%02d", y, m, d);
+		}
+	    }
+	    printf("\n");
 	    break;
 	  case img_XSECT_END:
 	    printf("XSECT_END\n");
