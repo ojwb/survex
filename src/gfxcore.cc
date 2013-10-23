@@ -1397,8 +1397,7 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    d = min(d, y - MARGIN);
 	}
     }
-    const wxRect R(l, d, r - l, u - d);
-    Refresh(false, &R);
+    RefreshRect(wxRect(l, d, r - l, u - d), false);
 }
 
 void GfxCore::SetHere()

@@ -1,3 +1,8 @@
+Wed Oct 23 21:47:07 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Tweak to use RefreshRect() rather than Refresh() for
+	  slightly simpler code.
+
 Wed Oct 23 21:46:13 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/dump3d.c: Show dates for XSECT.
