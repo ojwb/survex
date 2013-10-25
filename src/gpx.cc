@@ -116,16 +116,16 @@ GPX::passes() const
 /* Initialise GPX routines. */
 void GPX::header(const char * title)
 {
-    fprintf(fh,
+    fputs(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 "<gpx version=\"1.0\" creator=\""PACKAGE_STRING" (aven) - http://survex.com/\""
 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 " xmlns=\"http://www.topografix.com/GPX/1/0\""
 " xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0"
-" http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
-    fprintf(fh, "<name>");
+" http://www.topografix.com/GPX/1/0/gpx.xsd\">\n", fh);
+    fputs("<name>", fh);
     html_escape(fh, title);
-    fprintf(fh, "</name>\n");
+    fputs("</name>\n", fh);
     // FIXME: optional in GPX, but perhaps useful:
     // <bounds minlat="..." minlon="..." maxlat="..." maxlon="..." />
     // NB Not necessarily the same as the bounds in survex coords translated
