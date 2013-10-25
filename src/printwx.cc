@@ -406,8 +406,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_viewbox->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
-    h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxALL, 5);
-
     v3->Add(new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LEGS)),
@@ -472,6 +470,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     }
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
+    h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxALL, 5);
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 

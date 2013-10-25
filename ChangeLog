@@ -1,3 +1,9 @@
+Fri Oct 25 06:14:38 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Swap the "Elements" and "View" boxes in the print
+	  and export dialogs, as that works much better when the "View" box
+	  is hidden.
+
 Fri Oct 25 06:11:59 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/export.cc,src/export.h,src/printwx.cc: Add
