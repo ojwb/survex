@@ -46,8 +46,8 @@ typedef enum {
 #define WALL2		0x00000040
 #define WALLS (WALL1|WALL2)
 #define PASG		0x00000080
-#define EXPORT_3D	0x00000100
-#define EXPORT_CENTRED	0x00000200
+#define EXPORT_3D	0x10000000
+#define CENTRED		0x00000200
 #define ENTS		0x00000400
 #define FIXES		0x00000800
 #define EXPORTS		0x00001000
@@ -56,6 +56,7 @@ typedef enum {
 #define TEXT_HEIGHT	0x00008000
 #define MARKER_SIZE	0x00010000
 #define SCALE		0x00020000
+#define FULL_COORDS	0x00040000
 
 bool Export(const wxString &fnm_out, const wxString &title,
 	    const MainFrm * mainfrm, double pan, double tilt, int show_mask,

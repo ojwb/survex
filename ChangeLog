@@ -1,3 +1,10 @@
+Fri Oct 25 06:11:59 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/export.cc,src/export.h,src/printwx.cc: Add
+	  "Origin in centre" and "Full coordinates" options to export
+	  - the latter fixes #10.  GPX and PLT output force "full
+	  coordinates".
+
 Wed Oct 23 21:47:07 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Tweak to use RefreshRect() rather than Refresh() for

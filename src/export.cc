@@ -1125,6 +1125,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	   break;
        case FMT_GPX:
 	   filt = new GPX;
+	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_HPGL:
 	   filt = new HPGL;
@@ -1132,6 +1133,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	   break;
        case FMT_PLT:
 	   filt = new PLT;
+	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_SK:
 	   filt = new Skencil;
@@ -1224,6 +1226,30 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
       max_x = max_y = max_z = 0;
    }
 
+   double x_offset, y_offset, z_offset;
+   if (show_mask & FULL_COORDS) {
+       // Full coordinates.
+       x_offset = mainfrm->GetOffset().GetX();
+       y_offset = mainfrm->GetOffset().GetY();
+       z_offset = mainfrm->GetOffset().GetZ();
+   } else if (show_mask & CENTRED) {
+       // Centred.
+       x_offset = (min_x + max_x) * -0.5;
+       y_offset = (min_y + max_y) * -0.5;
+       z_offset = (min_z + max_z) * -0.5;
+   } else {
+       // Origin at lowest SW corner.
+       x_offset = -min_x;
+       y_offset = -min_y;
+       z_offset = -min_z;
+   }
+   min_x += x_offset;
+   max_x += x_offset;
+   min_y += y_offset;
+   max_y += y_offset;
+   min_z += z_offset;
+   max_z += z_offset;
+
    /* Header */
    filt->header(title.mb_str());
 
@@ -1242,20 +1268,9 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	     vector<PointInfo>::const_iterator pos = trav->begin();
 	     vector<PointInfo>::const_iterator end = trav->end();
 	     for ( ; pos != end; ++pos) {
-		 p.x = pos->GetX();
-		 p.y = pos->GetY();
-		 p.z = pos->GetZ();
-
-		 if (format == FMT_SK) {
-		     p.x -= min_x;
-		     p.y -= min_y;
-		     p.z -= min_z;
-		 } else if (format == FMT_HPGL) {
-		     p.x -= (min_x + max_x) / 2;
-		     p.y -= (min_y + max_y) / 2;
-		     p.z -= (min_z + max_z) / 2;
-		 }
-
+		 p.x = pos->GetX() + x_offset;
+		 p.y = pos->GetY() + y_offset;
+		 p.z = pos->GetZ() + z_offset;
 		 if (elevation) {
 		     double xnew = p.x * c - p.y * s;
 		     double znew = - p.x * s - p.y * c;
@@ -1289,19 +1304,9 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	     vector<PointInfo>::const_iterator pos = trav->begin();
 	     vector<PointInfo>::const_iterator end = trav->end();
 	     for ( ; pos != end; ++pos) {
-		 p.x = pos->GetX();
-		 p.y = pos->GetY();
-		 p.z = pos->GetZ();
-
-		 if (format == FMT_SK) {
-		     p.x -= min_x;
-		     p.y -= min_y;
-		     p.z -= min_z;
-		 } else if (format == FMT_HPGL) {
-		     p.x -= (min_x + max_x) / 2;
-		     p.y -= (min_y + max_y) / 2;
-		     p.z -= (min_z + max_z) / 2;
-		 }
+		 p.x = pos->GetX() + x_offset;
+		 p.y = pos->GetY() + y_offset;
+		 p.z = pos->GetZ() + z_offset;
 
 		 if (elevation) {
 		     double xnew = p.x * c - p.y * s;
@@ -1332,19 +1337,9 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
 	  list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
-	      p.x = (*pos)->GetX();
-	      p.y = (*pos)->GetY();
-	      p.z = (*pos)->GetZ();
-
-	      if (format == FMT_SK) {
-		  p.x -= min_x;
-		  p.y -= min_y;
-		  p.z -= min_z;
-	      } else if (format == FMT_HPGL) {
-		  p.x -= (min_x + max_x) / 2;
-		  p.y -= (min_y + max_y) / 2;
-		  p.z -= (min_z + max_z) / 2;
-	      }
+	      p.x = (*pos)->GetX() + x_offset;
+	      p.y = (*pos)->GetY() + y_offset;
+	      p.z = (*pos)->GetZ() + z_offset;
 
 	      if (elevation) {
 		  double xnew = p.x * c - p.y * s;
@@ -1356,17 +1351,22 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 #ifdef DEBUG_CAD3D
 	      printf("label '%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
 #endif
-	      /* Use !UNDERGROUND as the criterion - we want stations where
-	       * a surface and underground survey meet to be in the
-	       * underground layer */
+	      int type = 0;
 	      if ((pass_mask & ENTS) && (*pos)->IsEntrance()) {
-		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), ENTS);
+		  type = ENTS;
 	      } else if ((pass_mask & FIXES) && (*pos)->IsFixedPt()) {
-		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), FIXES);
+		  type = FIXES;
 	      } else if ((pass_mask & EXPORTS) && (*pos)->IsExportedPt())  {
-		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), EXPORTS);
+		  type = EXPORTS;
 	      } else if (pass_mask & LABELS) {
-		  filt->label(&p, (*pos)->GetText().mb_str(), !(*pos)->IsUnderground(), LABELS);
+		  type = LABELS;
+	      }
+	      if (type) {
+		  const char * text = (*pos)->GetText().mb_str();
+		  /* Use !UNDERGROUND as the criterion - we want stations where
+		   * a surface and underground survey meet to be in the
+		   * underground layer */
+		  filt->label(&p, text, !(*pos)->IsUnderground(), type);
 	      }
 	      if (pass_mask & STNS)
 		  filt->cross(&p, !(*pos)->IsUnderground());
@@ -1380,19 +1380,9 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	      vector<XSect>::const_iterator end = tube->end();
 	      for ( ; pos != end; ++pos) {
 		  const XSect & xs = *pos;
-		  p.x = xs.GetX();
-		  p.y = xs.GetY();
-		  p.z = xs.GetZ();
-
-		  if (format == FMT_SK) {
-		      p.x -= min_x;
-		      p.y -= min_y;
-		      p.z -= min_z;
-		  } else if (format == FMT_HPGL) {
-		      p.x -= (min_x + max_x) / 2;
-		      p.y -= (min_y + max_y) / 2;
-		      p.z -= (min_z + max_z) / 2;
-		  }
+		  p.x = xs.GetX() + x_offset;
+		  p.y = xs.GetY() + y_offset;
+		  p.z = xs.GetZ() + z_offset;
 
 		  if (elevation) {
 		      double xnew = p.x * c - p.y * s;

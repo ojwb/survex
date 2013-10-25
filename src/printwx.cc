@@ -73,14 +73,15 @@ enum {
 	svx_SURFACE,
 	svx_PLAN,
 	svx_ELEV,
-	svx_EXPORT_CENTRED,
 	svx_ENTS,
 	svx_FIXES,
 	svx_EXPORTS,
 	svx_PROJ,
 	svx_GRID,
 	svx_TEXT_HEIGHT,
-	svx_MARKER_SIZE
+	svx_MARKER_SIZE,
+	svx_CENTRED,
+	svx_FULLCOORDS
 };
 
 class BitValidator : public wxValidator {
@@ -233,10 +234,10 @@ static wxString formats[] = {
 };
 
 static unsigned format_info[] = {
-    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID,
+    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
     LABELS|LEGS|SURF|STNS,
     LABELS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF|STNS|EXPORT_CENTRED,
+    LABELS|LEGS|SURF|STNS|CENTRED,
     LABELS|LEGS|SURF,
     LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
     LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
@@ -373,10 +374,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_viewbox->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
-    /*
-	svx_EXPORT_CENTRED,
-	svx_PROJ,
-
+    /* FIXME:
+	svx_PROJ, // string describing coord transformatio to WGS84
 	svx_GRID, // double - spacing, default: 100m
 	svx_TEXT_HEIGHT, // default 0.6
 	svx_MARKER_SIZE // default 0.8
@@ -449,6 +448,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	v3->Add(new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, PASG)),
+		0, wxALIGN_LEFT|wxALL, 2);
+	v3->Add(new wxCheckBox(this, svx_CENTRED, wmsg(/*Origin in centre*/421),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       BitValidator(&m_layout.show_mask, CENTRED)),
+		0, wxALIGN_LEFT|wxALL, 2);
+	v3->Add(new wxCheckBox(this, svx_FULLCOORDS, wmsg(/*Full coordinates*/422),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       BitValidator(&m_layout.show_mask, FULL_COORDS)),
 		0, wxALIGN_LEFT|wxALL, 2);
     }
     if (printing) {
@@ -644,10 +651,11 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	    FindWindow(svx_XSECT)->Show(mask & XSECT);
 	    FindWindow(svx_WALLS)->Show(mask & WALLS);
 	    FindWindow(svx_PASSAGES)->Show(mask & PASG);
-//	    FindWindow(svx_EXPORT_CENTRED)->Show(mask & EXPORT_CENTRED);
 	    FindWindow(svx_ENTS)->Show(mask & ENTS);
 	    FindWindow(svx_FIXES)->Show(mask & FIXES);
 	    FindWindow(svx_EXPORTS)->Show(mask & EXPORTS);
+	    FindWindow(svx_CENTRED)->Show(mask & CENTRED);
+	    FindWindow(svx_FULLCOORDS)->Show(mask & FULL_COORDS);
 	    m_scalebox->Show(bool(mask & SCALE));
 	    m_viewbox->Show(!bool(mask & EXPORT_3D));
 	    GetSizer()->Layout();
