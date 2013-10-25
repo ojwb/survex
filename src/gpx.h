@@ -25,6 +25,7 @@
 
 class GPX : public ExportFilter {
     projPJ pj_input, pj_output;
+    bool in_trkseg;
   public:
     GPX();
     ~GPX();

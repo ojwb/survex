@@ -1,3 +1,8 @@
+Fri Oct 25 21:07:57 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/gpx.cc,src/gpx.h,src/printwx.cc: Add support for exporting legs
+	  as tracks in GPX.
+
 Fri Oct 25 06:14:38 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Swap the "Elements" and "View" boxes in the print

@@ -82,7 +82,7 @@ html_escape(FILE *fh, const char *s)
 }
 
 GPX::GPX()
-    : pj_input(NULL), pj_output(NULL)
+    : pj_input(NULL), pj_output(NULL), in_trkseg(false)
 {
     if (!(pj_input = pj_init_plus(input_datum))) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
@@ -109,7 +109,7 @@ GPX::~GPX()
 const int *
 GPX::passes() const
 {
-    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, 0 };
+    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, LEGS|SURF, 0 };
     return default_passes;
 }
 
@@ -133,8 +133,28 @@ void GPX::header(const char * title)
 }
 
 void
-GPX::line(const img_point *, const img_point *, bool, bool)
+GPX::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPendingMove)
 {
+    if (fPendingMove) {
+	if (in_trkseg) {
+	    fputs("</trkseg><trkseg>\n", fh);
+	} else {
+	    fputs("<trk><trkseg>\n", fh);
+	    in_trkseg = true;
+	}
+	double X = p1->x, Y = p1->y, Z = p1->z;
+	pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
+	X = deg(X);
+	Y = deg(Y);
+	// %.8f is at worst just over 1mm.
+	fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n", X, Y, Z);
+    }
+    double X = p->x, Y = p->y, Z = p->z;
+    pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
+    X = deg(X);
+    Y = deg(Y);
+    // %.8f is at worst just over 1mm.
+    fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n", X, Y, Z);
 }
 
 void
@@ -166,5 +186,7 @@ GPX::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
 void
 GPX::footer()
 {
-    fprintf(fh, "</gpx>\n");
+    if (in_trkseg)
+	fputs("</trkseg></trk>\n", fh);
+    fputs("</gpx>\n", fh);
 }
