@@ -1,3 +1,8 @@
+Sat Oct 26 06:35:52 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Another tweak to use RefreshRect() rather than
+	  Refresh() for slightly simpler code.
+
 Fri Oct 25 21:08:53 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/gpx.cc: Use fputs rather than fprintf for constant strings.

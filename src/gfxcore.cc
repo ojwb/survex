@@ -1707,13 +1707,11 @@ void GfxCore::RedrawIndicators()
 {
     // Redraw the compass and clino indicators.
 
-    const wxRect r(GetXSize() - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
-		     INDICATOR_GAP,
-		   GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
-		   INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
-		   INDICATOR_BOX_SIZE);
-
-    Refresh(false, &r);
+    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
+		       INDICATOR_GAP,
+		       GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+		       INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
+		       INDICATOR_BOX_SIZE), false);
 }
 
 void GfxCore::StartRotation()
