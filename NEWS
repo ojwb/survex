@@ -1,28 +1,87 @@
-Changes in 1.2.8 (unreleased):
+Changes in 1.2.8 (2013-10-29):
 
 * cavern: Fix handling of anonymous wall stations ('..' by default) to
   implicitly set the SPLAY leg flag, as was intended.  Reported by Thomas
   Holder.
 
-* cavern: Tweak .err file output to not lose the space in front of certain
+* cavern: Tweak .err file output not to lose the space in front of certain
   statistics when the value gets large.
 
 * cavern: Eliminate redundant progress message when solving simultaneous
   equations.
 
+* aven: Add a format drop down to the export dialog, and only show fields which
+  are meaningful and supported for the currently selected export format.  The
+  format defaults to that used most recently.  The "Elements" and "View" boxes
+  have been swapped in the print and export dialogs as that layout works much
+  better when the "View" box is hidden.
+
 * aven: Changing checkboxes in the print or export dialog didn't work in 1.2.7
   - now works again.  Reported by Anthony Day.
 
-* aven,cad3d: The "Sketch" vector drawing program got renamed to "Skencil"
-  some time ago, so update all references in code and documentation.  cad3d
-  has a new --skencil option to specify this output format, but --sketch is
-  still recognised for compatibility.
+* aven: Add GPX export (based on findentrances patch from Olaf Kähler).  In
+  this release the projection which the survey coordinates are in defaults
+  to the BMN M31 grid used in the Totes Gebirge in Austria.  On Unix, you
+  can edit ~/.aven and add a new line setting 'input_projection' to a PROJ
+  projection string.  The ability to specify this projection in a better
+  way is coming soon.
+
+* aven: New export options "Origin in centre" and "Full coordinates" - the
+  latter fixes #10.  GPX and PLT output implicitly force "full coordinates".
+
+* aven: The "Sketch" vector drawing program got renamed to "Skencil" some
+  time ago, so update references.
+
+* aven: Make the Presentation->Play menu item a checkbox, to avoid a warning
+  with wxMSW 2.9.5.  Reported by Brian Clipstone.
+
+* aven: Make right click in an empty presentation mark the current position and
+  open it to edit, instead of crashing.
+
+* aven: Update movie export code to work with latest libav API.  Reported by
+  Sebastian Ramacher.
+
+* aven: Improve reporting of errors during the process of exporting a movie.
+
+* aven: Don't try to close the movie if we aren't producing one.
+
+* aven: Fix assertion failure when double-clicking on the survey with wx2.9.
+
+* aven: Fix to build with wxMSW 2.9.5.
+
+* aven: Fix to build with wx 2.9.5 with wx2.8 compatibility disabled.
+
+* cad3d: The "Sketch" vector drawing program got renamed to "Skencil" some time
+  ago, so add a new --skencil option to specify this output format.  The old
+  name (--sketch) is still recognised for compatibility.
+
+* cad3d: Make --marker-size work for Skencil and SVG output.
+
+* dump3d: Make --show-dates option show dates for XSECT.
 
 * img library:
 
-  + Add missing definition of max() macro when built for use outside of Survex.
+  + Fix to work once more when used outside of Survex (missing definition of
+    max() macro and a bad call to free() in img_close() for a file opened for
+    reading).
+
+  + Use lround() instead of round(), and make the tests around whether we use
+    the library function or the our fallback implementation saner.
+
+  + Fix // comments in C code for portability to pre-C99 compilers which don't
+    support these as an extension.
 
   + Can now be compiled as C++ as well as as C.
+
+* (Microsoft Windows version): The installer is now built with a newer version
+  of Innosetup, and includes translations for all the languages which Survex
+  itself has any translations for.
+
+* (Microsoft Windows version): aven is now built with wxWidgets 2.9.5.
+
+* Minor translation updates.
+
+* tests/Makefile.am: Distribute files for "normal_bad" testcase.
 
 Changes in 1.2.7 (2013-07-27):
 
