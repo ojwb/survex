@@ -1,3 +1,14 @@
+survex (1.2.8-1) unstable; urgency=low
+
+  * New upstream release
+    + Includes all changes in debian/patches, so drop these.
+    + Works with libav 9 API (with additional patch
+      avcodec_free_frame-fix.patch).  (Closes: #721042)
+    + Add B-D on libproj-dev for GPX export.
+  * "Standards-Version: 3.9.5" - no changes required.
+
+ -- Olly Betts <olly@survex.com>  Wed, 30 Oct 2013 12:40:02 +1300
+
 survex (1.2.6-4) unstable; urgency=low
 
   * Normalise expected cavern output used by cavern.tst, to avoid sporadic

@@ -1,0 +1,32 @@
+Description: Fix to call avcodec_free_frame() correctly
+Author: Olly Betts <olly@survex.com>
+Bug-Debian: http://bugs.debian.org/721042
+Forwarded: yes
+Last-Update: 2013-10-30
+
+--- survex-1.2.8.orig/src/moviemaker.cc
++++ survex-1.2.8/src/moviemaker.cc
+@@ -77,9 +77,10 @@ extern "C" {
+ #  define avio_close url_fclose
+ # endif
+ # ifndef HAVE_AVCODEC_FREE_FRAME
+-static inline void avcodec_free_frame(AVFrame * frame) {
+-    free(frame->data[0]);
+-    free(frame);
++static inline void avcodec_free_frame(AVFrame ** frame) {
++    free((*frame)->data[0]);
++    free(*frame);
++    *frame = NULL
+ }
+ # endif
+ # ifndef HAVE_AVCODEC_OPEN2
+@@ -497,8 +498,7 @@ MovieMaker::release()
+     }
+ 
+     if (frame) {
+-	avcodec_free_frame(frame);
+-	frame = NULL;
++	avcodec_free_frame(&frame);
+     }
+     free(pixels);
+     pixels = NULL;
