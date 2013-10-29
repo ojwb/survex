@@ -1,3 +1,7 @@
+Tue Oct 29 23:47:57 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Fix to call avcodec_free_frame() correctly.
+
 Tue Oct 29 08:58:56 GMT 2013  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.8.
