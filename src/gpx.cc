@@ -23,20 +23,6 @@
 # include <config.h>
 #endif
 
-/* We us the PROJ.4 library to transform coordinates from almost arbitrary
- * grids into WGS84.  The output is then written as a GPX file ready for use in
- * your favourite GPS software.
- *
- * Example for data given in BMN M31 (Totes Gebirge, Austria):
- *   +proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232
- *
- * Example for data given in british grid SD (Yorkshire):
- *   +proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=100000 +y_0=-500000 +ellps=airy +towgs84=375,-111,431,0,0,0,0
- *
- * Example for data given as proper british grid reference:
- *   +proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=375,-111,431,0,0,0,0
- */
-
 #include "gpx.h"
 
 #include "export.h" // For LABELS, etc
@@ -54,11 +40,6 @@
 using namespace std;
 
 #define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
-
-//   {HLP_ENCODELONG(0),        /*input datum as string to pass to PROJ*/389, 0},
-
-// cmdline_set_syntax_message(/*-d PROJ_DATUM 3D_FILE*/388, 0, NULL);
-static const char * input_datum = "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232";
 
 static void
 html_escape(FILE *fh, const char *s)
@@ -81,7 +62,7 @@ html_escape(FILE *fh, const char *s)
     }
 }
 
-GPX::GPX()
+GPX::GPX(const char * input_datum)
     : pj_input(NULL), pj_output(NULL), in_trkseg(false)
 {
     if (!(pj_input = pj_init_plus(input_datum))) {

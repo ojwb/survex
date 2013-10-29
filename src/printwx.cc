@@ -233,10 +233,21 @@ static wxString formats[] = {
     wxT("SVG")
 };
 
+#if 0
+static wxString projs[] = {
+    /* CUCC Austria: */
+    wxT("+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"),
+    /* British grid SD (Yorkshire): */
+    wxT("+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=100000 +y_0=-500000 +ellps=airy +towgs84=375,-111,431,0,0,0,0"),
+    /* British full grid reference: */
+    wxT("+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=375,-111,431,0,0,0,0")
+};
+#endif
+
 static unsigned format_info[] = {
     LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
     LABELS|LEGS|SURF|STNS,
-    LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+    LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS/*|PROJ*/|EXPORT_3D,
     LABELS|LEGS|SURF|STNS|CENTRED,
     LABELS|LEGS|SURF,
     LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
@@ -322,7 +333,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
     m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
-    wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
+#if 0
+    wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL);
+#endif
+    wxBoxSizer* h3 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     if (!printing) {
 	wxStaticText* label;
@@ -375,11 +389,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     }
 
     /* FIXME:
-	svx_PROJ, // string describing coord transformatio to WGS84
-	svx_GRID, // double - spacing, default: 100m
-	svx_TEXT_HEIGHT, // default 0.6
-	svx_MARKER_SIZE // default 0.8
-    */
+     * svx_GRID, // double - spacing, default: 100m
+     * svx_TEXT_HEIGHT, // default 0.6
+     * svx_MARKER_SIZE // default 0.8
+     */
 
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
@@ -474,6 +487,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
+#if 0 // FIXME: too wide as-is
+    h2->Add(new wxStaticText(this, -1, wmsg(/*input datum as string to pass to PROJ*/389)));
+    h2->Add(new wxComboBox(this, svx_PROJ, projs[0], wxDefaultPosition,
+			   wxDefaultSize, sizeof(projs) / sizeof(projs[0]),
+			   projs));
+    v1->Add(h2, 0, wxALIGN_LEFT, 5);
+#endif
+
     // When we enable/disable checkboxes in the export dialog, ideally we'd
     // like the dialog to resize, but not sure how to achieve that, so we
     // add a stretchable spacer here so at least the buttons stay in the
@@ -482,11 +503,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL);
-    h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
     if (printing) {
 #ifdef AVEN_PRINT_PREVIEW
 	but = new wxButton(this, wxID_PREVIEW);
-	h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+	h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
 	but = new wxButton(this, wxID_PRINT);
 #else
 	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print…*/400));
@@ -495,8 +516,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export…*/230));
     }
     but->SetDefault();
-    h2->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
-    v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
+    h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    v1->Add(h3, 0, wxALIGN_RIGHT|wxALL, 5);
 
     SetAutoLayout(true);
     SetSizer(v1);
@@ -541,13 +562,21 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), leaf,
 		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
+#if 0 // FIXME: sort this out
+	wxString input_projection = ((wxComboBox*)FindWindow(svx_PROJ))->GetValue();
+#else
+	wxConfigBase * cfg = wxConfigBase::Get();
+	wxString input_projection;
+	cfg->Read(wxT("input_projection"), &input_projection,
+		  wxString(wxT("+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232")));
+#endif
 	double grid = 100; // metres
 	double text_height = 0.6;
 	double marker_size = 0.8;
 
 	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
 		    m_layout.rot, m_layout.tilt, m_layout.show_mask,
-		    export_format(format_idx),
+		    export_format(format_idx), input_projection.mb_str(),
 		    grid, text_height, marker_size)) {
 	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					  m_File.c_str());
@@ -655,6 +684,9 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	    FindWindow(svx_EXPORTS)->Show(mask & EXPORTS);
 	    FindWindow(svx_CENTRED)->Show(mask & CENTRED);
 	    FindWindow(svx_FULLCOORDS)->Show(mask & FULL_COORDS);
+#if 0
+	    FindWindow(svx_PROJ)->Show(mask & PROJ);
+#endif
 	    m_scalebox->Show(bool(mask & SCALE));
 	    m_viewbox->Show(!bool(mask & EXPORT_3D));
 	    GetSizer()->Layout();

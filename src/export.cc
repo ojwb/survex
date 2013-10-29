@@ -1093,6 +1093,7 @@ EPS::footer(void)
 bool
 Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
        double pan, double tilt, int show_mask, export_format format,
+       const char * input_projection,
        double grid_, double text_height_, double marker_size_)
 {
    int fPendingMove = 0;
@@ -1124,7 +1125,7 @@ Export(const wxString &fnm_out, const wxString &title, const MainFrm * mainfrm,
 	   factor = POINTS_PER_MM * 1000.0 / scale;
 	   break;
        case FMT_GPX:
-	   filt = new GPX;
+	   filt = new GPX(input_projection);
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_HPGL:

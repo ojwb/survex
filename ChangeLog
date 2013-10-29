@@ -1,3 +1,8 @@
+Tue Oct 29 08:10:45 GMT 2013  Olly Betts <olly@survex.com>
+
+	* src/: Hook up to pass "input_projection" from .aven config file
+	  through to GPX export code.
+
 Sat Oct 26 06:35:52 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Another tweak to use RefreshRect() rather than
