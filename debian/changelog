@@ -1,3 +1,17 @@
+survex (1.2.6-4) unstable; urgency=low
+
+  * Normalise expected cavern output used by cavern.tst, to avoid sporadic
+    test failures on slower buildds.
+
+ -- Olly Betts <olly@survex.com>  Wed, 16 May 2012 12:48:58 +0000
+
+survex (1.2.6-3) unstable; urgency=low
+
+  * Try harder to enforce known i18n state, and report environment in case this
+    fails.
+
+ -- Olly Betts <olly@survex.com>  Tue, 15 May 2012 23:23:43 +0000
+
 survex (1.2.6-2) unstable; urgency=low
 
   * Fix further testcase issues due to i18n of expected output.

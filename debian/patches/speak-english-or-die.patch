@@ -1,26 +1,30 @@
-Description: Avoid test failures due to i18n and of expected output
+Description: Avoid test failures due to i18n of expected output
  Force such tests to run with English messages.
 
  Patch backported from upstream git.
 Author: Olly Betts <olly@survex.com>
 
 ---
-Last-Update: 2012-02-28
+Last-Update: 2012-05-16
 
-diff --git a/tests/cavern.tst b/tests/cavern.tst
-index 65ea6ed..7a02132 100755
---- a/tests/cavern.tst
-+++ b/tests/cavern.tst
-@@ -59,7 +59,7 @@ test -x "$testdir"/../src/cavern || testdir=.
+Index: survex-1.2.6/tests/cavern.tst
+===================================================================
+--- survex-1.2.6.orig/tests/cavern.tst	2012-05-16 11:23:08.000000000 +1200
++++ survex-1.2.6/tests/cavern.tst	2012-05-16 11:23:15.000000000 +1200
+@@ -59,7 +59,11 @@
  
  LC_ALL=C
  export LC_ALL
 -unset SURVEXLANG
++LC_MESSAGES=C
++export LC_MESSAGES
++LC_CTYPE=C
++export LC_CTYPE
 +SURVEXLANG=en
  export SURVEXLANG
  
  for file in $TESTS ; do
-@@ -268,9 +268,9 @@ for file in $TESTS ; do
+@@ -268,9 +272,9 @@
      if test -f "$file.out" ; then
        # Check output is as expected.
        if test -n "$VERBOSE" ; then
@@ -32,10 +36,10 @@ index 65ea6ed..7a02132 100755
        fi
      fi
      rm -f tmp.*
-diff --git a/tests/diffpos.tst b/tests/diffpos.tst
-index d36fa50..cffde1a 100755
---- a/tests/diffpos.tst
-+++ b/tests/diffpos.tst
+Index: survex-1.2.6/tests/diffpos.tst
+===================================================================
+--- survex-1.2.6.orig/tests/diffpos.tst	2012-05-16 11:23:08.000000000 +1200
++++ survex-1.2.6/tests/diffpos.tst	2012-05-16 11:23:15.000000000 +1200
 @@ -1,7 +1,7 @@
  #!/bin/sh
  #
@@ -45,20 +49,24 @@ index d36fa50..cffde1a 100755
  #
  # This program is free software; you can redistribute it and/or modify
  # it under the terms of the GNU General Public License as published by
-@@ -31,6 +31,9 @@ test -x "$testdir"/../src/cavern || testdir=.
+@@ -31,6 +31,13 @@
  
  : ${TESTS=${*:-"delatend addatend"}}
  
++LC_MESSAGES=C
++export LC_MESSAGES
++LC_CTYPE=C
++export LC_CTYPE
 +SURVEXLANG=en
 +export SURVEXLANG
 +
  for file in $TESTS ; do
    echo $file
    rm -f diffpos.tmp
-diff --git a/tests/equatenosuchstn.out b/tests/equatenosuchstn.out
-index 39de2d5..76a4d16 100644
---- a/tests/equatenosuchstn.out
-+++ b/tests/equatenosuchstn.out
+Index: survex-1.2.6/tests/equatenosuchstn.out
+===================================================================
+--- survex-1.2.6.orig/tests/equatenosuchstn.out	2012-05-16 11:23:08.000000000 +1200
++++ survex-1.2.6/tests/equatenosuchstn.out	2012-05-16 11:23:15.000000000 +1200
 @@ -1,6 +1,3 @@
 -Survex 1.2.5
 -Copyright (C) 1990-2012 Olly Betts
