@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2012-12-28 23:30:49 +0000\n"
+"PO-Revision-Date: 2013-10-31 12:06:19 +0000\n"
 "Last-Translator: Eric Madelaine <eric.madelaine@inria.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1855,6 +1855,16 @@ msgstr "Parois"
 msgid "Passages"
 msgstr "Galeries"
 
+#: ../src/printwc.cc:453
+#: n:421
+msgid "Origin in centre"
+msgstr ""
+
+#: ../src/printwc.cc:458
+#: n:422
+msgid "Full coordinates"
+msgstr ""
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:285
 #: n:263
@@ -1959,6 +1969,21 @@ msgstr "Mise en valeur des points F&ixes"
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr "Mise de valeur des points exp&ortés"
+
+#: ../src/printwx.cc:415
+#: n:418
+msgid "Entrances"
+msgstr "Entrées"
+
+#: ../src/printwx.cc:419
+#: n:419
+msgid "Fixed Points"
+msgstr "Points Fixes"
+
+#: ../src/printwx.cc:423
+#: n:420
+msgid "Exported Stations"
+msgstr "Points exportés"
 
 #: ../src/mainfrm.cc:826
 #: n:237

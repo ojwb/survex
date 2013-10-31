@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2013-07-03 07:10:00 +0000\n"
-"Last-Translator: Dennis Baudys <Unknown>\n"
+"PO-Revision-Date: 2013-10-31 12:06:19 +0000\n"
+"Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1853,6 +1853,16 @@ msgstr "Wände"
 msgid "Passages"
 msgstr "Passagen"
 
+#: ../src/printwc.cc:453
+#: n:421
+msgid "Origin in centre"
+msgstr ""
+
+#: ../src/printwc.cc:458
+#: n:422
+msgid "Full coordinates"
+msgstr ""
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:285
 #: n:263
@@ -1957,6 +1967,21 @@ msgstr "&Festpunkte hervorheben"
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr "E&xportierte Punkte hervorheben"
+
+#: ../src/printwx.cc:415
+#: n:418
+msgid "Entrances"
+msgstr "Eingänge"
+
+#: ../src/printwx.cc:419
+#: n:419
+msgid "Fixed Points"
+msgstr "Festpunkte"
+
+#: ../src/printwx.cc:423
+#: n:420
+msgid "Exported Stations"
+msgstr "Exportierte Punkte"
 
 #: ../src/mainfrm.cc:826
 #: n:237
@@ -2805,4 +2830,4 @@ msgstr "&Zeigen"
 #: ../src/printwx.cc:297
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Exportformat"

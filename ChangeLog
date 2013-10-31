@@ -1,3 +1,8 @@
+Thu Oct 31 12:08:07 GMT 2013  Olly Betts <olly@survex.com>
+
+	* lib/: Update translations from launchpad and from existing similar
+	  messages.
+
 Tue Oct 29 23:47:57 GMT 2013  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Fix to call avcodec_free_frame() correctly.
