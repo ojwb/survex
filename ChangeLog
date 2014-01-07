@@ -1,3 +1,9 @@
+Tue Jan 07 22:05:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/msvc/config.h.in: Update to INT16_T to int16_t and INT32_T to
+	  int32_t.  AFAIK, building with MSVC hasn't been tested for a long
+	  time, so it's likely more fixes will be needed.
+
 Tue Jan 07 21:55:27 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac: Don't call AC_C_CONST - C compilers without 'const'

@@ -37,11 +37,15 @@
 /* Copyright Message for Aven */
 #define AVEN_COPYRIGHT_MSG "@AVEN_COPYRIGHT_MSG@"
 
-/* signed 32 bit integer type */
-#define INT32_T long
-
+#if _MSC_VER >= 1600
+# include <stdint.h>
+#else
 /* signed 16 bit integer type */
-#define INT16_T short
+typedef __int16 int16_t;
+
+/* signed 32 bit integer type */
+typedef __int32 int32_t;
+#endif
 
 /* strcasecmp define for systems which call it something else */
 #define strcasecmp stricmp
