@@ -1,3 +1,9 @@
+Tue Jan 07 23:08:21 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c: In non-hosted mode, check that int is at least 32 bits,
+	  and if not, use long.  In practice, platforms with 16 bit int are
+	  mostly obsolete, but it's not hard to be portable here.
+
 Tue Jan 07 22:05:58 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/msvc/config.h.in: Update to INT16_T to int16_t and INT32_T to

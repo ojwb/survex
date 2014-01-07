@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005,2006,2010,2011,2013 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010,2011,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,17 +32,25 @@
 
 #define TIMENA "?"
 #ifdef IMG_HOSTED
+# define INT32_T int32_t
 # include "debug.h"
 # include "filelist.h"
 # include "filename.h"
 # include "message.h"
 # include "useful.h"
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
-# ifndef INT32_T
-#  define INT32_T int32_t
-# endif
 #else
-# define INT32_T int
+# ifdef HAVE_STDINT_H
+#  include <stdint.h>
+#  define INT32_T int32_t
+# else
+#  include <limits.h>
+#  if INT_MAX >= 2147483647
+#   define INT32_T int
+#  else
+#   define INT32_T long
+#  endif
+# endif
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
 # define EXT_SVX_POS "pos"
