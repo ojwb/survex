@@ -1,3 +1,7 @@
+Tue Jan 07 23:09:53 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Fix GCC warnings.
+
 Tue Jan 07 23:08:21 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c: In non-hosted mode, check that int is at least 32 bits,

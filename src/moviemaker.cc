@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2011,2012,2013 Olly Betts
+//  Copyright (C) 2004,2011,2012,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -352,9 +352,10 @@ bool MovieMaker::AddFrame()
 
     // Encode this frame.
 #ifdef HAVE_AVCODEC_ENCODE_VIDEO2
-    AVPacket pkt = { 0 };
+    AVPacket pkt;
     int got_packet;
     av_init_packet(&pkt);
+    pkt.data = NULL;
 
     int ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
     if (ret < 0) {
@@ -363,11 +364,11 @@ bool MovieMaker::AddFrame()
     }
     if (got_packet && pkt.size) {
 	// Write the compressed frame to the media file.
-	if (pkt.pts != AV_NOPTS_VALUE) {
+	if (pkt.pts != int64_t(AV_NOPTS_VALUE)) {
 	    pkt.pts = av_rescale_q(pkt.pts,
 				   c->time_base, video_st->time_base);
 	}
-	if (pkt.dts != AV_NOPTS_VALUE) {
+	if (pkt.dts != int64_t(AV_NOPTS_VALUE)) {
 	    pkt.dts = av_rescale_q(pkt.dts,
 				   c->time_base, video_st->time_base);
 	}
@@ -420,9 +421,10 @@ MovieMaker::Close()
 
 #ifdef HAVE_AVCODEC_ENCODE_VIDEO2
 	while (1) {
-	    AVPacket pkt = { 0 };
+	    AVPacket pkt;
 	    int got_packet;
 	    av_init_packet(&pkt);
+	    pkt.data = NULL;
 
 	    int ret = avcodec_encode_video2(c, &pkt, NULL, &got_packet);
 	    if (ret < 0) {
@@ -434,11 +436,11 @@ MovieMaker::Close()
 	    if (!pkt.size) continue;
 
 	    // Write the compressed frame to the media file.
-	    if (pkt.pts != AV_NOPTS_VALUE) {
+	    if (pkt.pts != int64_t(AV_NOPTS_VALUE)) {
 		pkt.pts = av_rescale_q(pkt.pts,
 				       c->time_base, video_st->time_base);
 	    }
-	    if (pkt.dts != AV_NOPTS_VALUE) {
+	    if (pkt.dts != int64_t(AV_NOPTS_VALUE)) {
 		pkt.dts = av_rescale_q(pkt.dts,
 				       c->time_base, video_st->time_base);
 	    }
