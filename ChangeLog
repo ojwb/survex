@@ -1,3 +1,8 @@
+Tue Jan 07 21:55:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* configure.ac: Don't call AC_C_CONST - C compilers without 'const'
+	  support haven't been relevant for years.
+
 Thu Oct 31 12:08:07 GMT 2013  Olly Betts <olly@survex.com>
 
 	* lib/: Update translations from launchpad and from existing similar

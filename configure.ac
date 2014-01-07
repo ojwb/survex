@@ -220,7 +220,6 @@ dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
 AC_CHECK_HEADERS(limits.h string.h setjmp.h sys/select.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 AC_TYPE_SIGNAL
