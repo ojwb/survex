@@ -1,3 +1,7 @@
+Wed Jan 08 01:14:42 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/cavern.sgml: Document --3d-version in cavern man page.
+
 Wed Jan 08 01:05:34 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Set rc_buffer_size to avoid warning from libav

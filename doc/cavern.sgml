@@ -88,6 +88,18 @@ warnings and errors only).
 </ListItem>
 </VarListEntry>
 
+<VarListEntry>
+<Term>-v, --3d-version</Term>
+<ListItem>
+<Para>Specify the 3d file format version to output.  By default the latest
+version is written, but you can override this to produce a 3d file which can
+be read by software which doesn't understand the latest 3d file format version.
+Note that any information which the specified format version didn't support
+will be omitted.
+</Para>
+</ListItem>
+</VarListEntry>
+
 </VariableList>
 
 </refsect1>
