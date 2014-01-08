@@ -19,7 +19,9 @@ if test x"$rel" = xyes ; then
   test ! -f Makefile || make distclean
   cp -u /usr/share/misc/config.guess .
   cp -u /usr/share/misc/config.sub .
+  mv INSTALL INSTALL.keep
   autoreconf --force -i
+  mv INSTALL.keep INSTALL
   ./configure CC=gcc CXX=g++
   make distcheck
   # FIXME: setting c89 doesn't define unix and suppresses getc_unlocked().
