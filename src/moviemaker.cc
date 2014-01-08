@@ -189,6 +189,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     c->time_base.num = 1;
     c->gop_size = 12; /* emit one intra frame every twelve frames at most */
     c->pix_fmt = AV_PIX_FMT_YUV420P;
+    c->rc_buffer_size = c->bit_rate * 4; // Enough for 4 seconds
     // B frames are backwards predicted - they can improve compression,
     // but may slow encoding and decoding.
     // if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
