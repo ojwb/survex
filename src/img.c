@@ -67,8 +67,12 @@
 /* path isn't used in img.c, but EXT is */
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) \
     ((*(X) = NULL), fopen(FNM,MODE))
-# define PUTC(C, FH) putc(C, FH)
-# define GETC(FH) getc(FH)
+# ifndef PUTC
+#  define PUTC(C, FH) putc(C, FH)
+# endif
+# ifndef GETC
+#  define GETC(FH) getc(FH)
+# endif
 # define fputsnl(S, FH) (fputs((S), (FH)) == EOF ? EOF : putc('\n', (FH)))
 # define SVX_ASSERT(X)
 
