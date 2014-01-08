@@ -1,5 +1,6 @@
 msgid ""
 msgstr ""
+"Language: ca\n"
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"

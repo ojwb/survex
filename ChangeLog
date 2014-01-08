@@ -1,3 +1,7 @@
+Wed Jan 08 03:57:39 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Add "Language:" headers to .po files.
+
 Wed Jan 08 02:17:44 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c: In non-hosted mode, don't define GETC and PUTC if they're
