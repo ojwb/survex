@@ -90,6 +90,11 @@ echo "SHA1 checksums:"
 sha1sum $FILES
 echo
 
+gpg --detach-sign --armour $FILES
+for f in $FILES ; do
+    FILES="$FILES $f.asc"
+done
+
 echo "To tag this release and upload it to the webserver, run:"
 echo git tag -m"'Tagging $VERSION'" "$VERSION"
 
