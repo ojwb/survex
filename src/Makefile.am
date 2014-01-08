@@ -26,6 +26,7 @@ EXTRA_PROGRAMS =\
 bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
  aven $(WINPROGS) $(FINDENTRANCES)
 bin_SCRIPTS = svxedit
+check_PROGRAMS = imgtest
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
@@ -99,7 +100,8 @@ cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c \
  $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
-#imgtest_SOURCES = imgtest.c img.c
+
+imgtest_SOURCES = imgtest.c img.c
 
 all_sources = \
 	$(noinst_HEADERS) \

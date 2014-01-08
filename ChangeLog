@@ -1,3 +1,8 @@
+Wed Jan 08 02:13:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am,src/imgtest.c: Add compile test that img.c and img.h
+	  work in non-hosted mode.
+
 Wed Jan 08 01:14:42 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/cavern.sgml: Document --3d-version in cavern man page.
