@@ -45,7 +45,7 @@ cd "$tardir"
 test -n "$build_platform" || build_platform=`sh config.guess`
 SAVE_PATH=$PATH
 for wxc in \
-  /usr/i586-mingw32msvc/lib/wx/config/i586-mingw32msvc-msw-unicode-static-2.9 \
+  /usr/i586-mingw32msvc/lib/wx/config/i586-mingw32msvc-msw-unicode-static-3.0 \
   /usr/lib/wx/config/i586-mingw32msvc-msw-unicode-release-static-2.8 \
   /usr/lib/wx/config/i686-w64-mingw32-msw-unicode-release-static-2.8 \
   "" ; do
