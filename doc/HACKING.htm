@@ -69,6 +69,15 @@ sudo apt-get install mingw32
 </code>
 <!-- g++-mingw-w64 -->
 
+<p>
+I then install the various libraries by compiling from source.  For wxWidgets
+3.0.0, I configure with:
+</p>
+
+<code>
+./configure --prefix=/usr/i586-mingw32msvc --host i586-mingw32msvc --with-msw --with-opengl --enable-display --disable-threads --disable-shared
+</code>
+
 <P>Building on Windows in a native mingw environment will probably
 require tinkering.  Best bet is probably to install bash and use the
 current configure script.  I'm happy to help if you want to try this,

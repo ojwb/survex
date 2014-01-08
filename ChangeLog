@@ -1,3 +1,8 @@
+Wed Jan 08 04:50:10 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Document how to configure wxWidgets 3.0.0 for mingw
+	  cross-build.
+
 Wed Jan 08 04:11:32 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.9.
