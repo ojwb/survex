@@ -1,3 +1,28 @@
+Changes in 1.2.9 (2014-01-08):
+
+* Document --3d-version in cavern man page and the manual.
+
+* aven: Fix compilation error in movie export code with recent libavi.
+
+* aven: Fix warning on stderr when export a movie as MPEG.
+
+* img library: In non-hosted mode, don't define GETC and PUTC if they're
+  already defined, to allow easy overriding with getc_unlocked() and
+  putc_unlocked() (which are significantly faster on Linux).
+
+* img library: In non-hosted mode, check that int is at least 32 bits,
+  and if not, use long.  In practice, platforms with 16 bit int are mostly
+  obsolete, but it's not hard to be portable here.
+
+* img library: Add test that img.c and img.h compile in non-hosted mode
+  (regression test for issue fixed in 1.2.8).
+
+* (Microsoft Windows version): aven is now built with wxWidgets 3.0.0.
+
+* Update translations from launchpad and from existing similar messages.
+
+* Fix some compiler warnings.
+
 Changes in 1.2.8 (2013-10-29):
 
 * cavern: Fix handling of anonymous wall stations ('..' by default) to
