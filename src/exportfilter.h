@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2005,2012,2013 Olly Betts
+/* Copyright (C) 2005,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ class ExportFilter {
 	fh = ::fopen(fnm_out, "wb");
 	return (fh != NULL);
     }
-    virtual void header(const char *) { }
+    virtual void header(const char *, const char *) { }
     virtual void start_pass(int) { }
     virtual void line(const img_point *, const img_point *, bool, bool) = 0;
     virtual void label(const img_point *, const char *, bool, int) = 0;

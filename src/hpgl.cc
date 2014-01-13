@@ -1,7 +1,7 @@
 /* hpgl.cc
  * Export from Aven as HPGL.
  */
-/* Copyright (C) 1993-2003,2005,2010 Olly Betts
+/* Copyright (C) 1993-2003,2005,2010,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ static bool fOriginInCentre = fFalse;
 
 /* Check if this line intersects the current page */
 /* Initialise HPGL routines. */
-void HPGL::header(const char *)
+void HPGL::header(const char *, const char *)
 {
    // FIXME: mm_across_page, mm_down_page, origin_in_centre, scale
    double PaperWidth = 9999999, PaperDepth = 9999999;

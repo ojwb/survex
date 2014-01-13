@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWidgets specific parts of Survex wxWidgets printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -574,7 +574,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 	double text_height = 0.6;
 	double marker_size = 0.8;
 
-	if (!Export(dlg.GetPath(), m_layout.title, mainfrm,
+	if (!Export(dlg.GetPath(), m_layout.title, m_layout.datestamp, mainfrm,
 		    m_layout.rot, m_layout.tilt, m_layout.show_mask,
 		    export_format(format_idx), input_projection.mb_str(),
 		    grid, text_height, marker_size)) {

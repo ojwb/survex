@@ -2,7 +2,7 @@
  * Export from Aven as HPGL.
  */
 
-/* Copyright (C) 2005 Olly Betts
+/* Copyright (C) 2005, 2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 class HPGL : public ExportFilter {
   public:
     HPGL() {}
-    void header(const char *);
+    void header(const char *, const char *);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);

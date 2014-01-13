@@ -1862,7 +1862,7 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
 void MainFrm::OnExport(wxCommandEvent&)
 {
-    m_Gfx->OnExport(m_File, m_Title);
+    m_Gfx->OnExport(m_File, m_Title, m_DateStamp);
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

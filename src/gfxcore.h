@@ -487,7 +487,8 @@ public:
     bool ExportMovie(const wxString & fnm);
     void OnPrint(const wxString &filename, const wxString &title,
 		 const wxString &datestamp);
-    void OnExport(const wxString &filename, const wxString &title);
+    void OnExport(const wxString &filename, const wxString &title,
+		  const wxString &datestamp);
     void SetCursor(GfxCore::cursor new_cursor);
     bool MeasuringLineActive() const;
 

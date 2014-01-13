@@ -1,3 +1,7 @@
+Mon Jan 13 04:02:26 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Pass the datestamp from the 3d file to the export code.
+
 Mon Jan 13 04:00:54 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc,src/printwx.cc: Don't bother looking up the
