@@ -1,3 +1,8 @@
+Mon Jan 13 04:20:11 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gpx.cc: Don't try to write the title if it isn't set or is
+	  empty.
+
 Mon Jan 13 04:09:27 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/export.cc: If the survey has a title, add it as a top-level

@@ -104,9 +104,11 @@ void GPX::header(const char * title, const char *)
 " xmlns=\"http://www.topografix.com/GPX/1/0\""
 " xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0"
 " http://www.topografix.com/GPX/1/0/gpx.xsd\">\n", fh);
-    fputs("<name>", fh);
-    html_escape(fh, title);
-    fputs("</name>\n", fh);
+    if (title) {
+	fputs("<name>", fh);
+	html_escape(fh, title);
+	fputs("</name>\n", fh);
+    }
     // FIXME: optional in GPX, but perhaps useful:
     // <bounds minlat="..." minlon="..." maxlat="..." maxlon="..." />
     // NB Not necessarily the same as the bounds in survex coords translated
