@@ -1,3 +1,8 @@
+Mon Jan 13 04:09:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/export.cc: If the survey has a title, add it as a top-level
+	  <title> element to exported SVG files.
+
 Mon Jan 13 04:08:11 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/export.cc: Escape '<', '>', and '&' in labels in exported SVG

@@ -570,7 +570,7 @@ SVG::passes() const
 }
 
 void
-SVG::header(const char *, const char *)
+SVG::header(const char * title, const char *)
 {
    size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
