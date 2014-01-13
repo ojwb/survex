@@ -1,3 +1,8 @@
+Mon Jan 13 04:08:11 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Escape '<', '>', and '&' in labels in exported SVG
+	  files.
+
 Mon Jan 13 04:02:26 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/: Pass the datestamp from the 3d file to the export code.

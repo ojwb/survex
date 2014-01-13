@@ -61,6 +61,27 @@
 
 #define SQRT_2		1.41421356237309504880168872420969
 
+static void
+html_escape(FILE *fh, const char *s)
+{
+    while (*s) {
+	switch (*s) {
+	    case '<':
+		fputs("&lt;", fh);
+		break;
+	    case '>':
+		fputs("&gt;", fh);
+		break;
+	    case '&':
+		fputs("&amp;", fh);
+		break;
+	    default:
+		PUTC(*s, fh);
+	}
+	++s;
+    }
+}
+
 static const char *layer_name(int mask) {
     switch (mask) {
 	case LEGS: case LEGS|SURF:
@@ -564,6 +585,11 @@ SVG::header(const char *, const char *)
 	       "width=\"%.3f%s\" height=\"%.3f%s\"\n"
 	       "viewBox=\"0 0 %0.3f %0.3f\">\n",
 	   width, unit, height, unit, width, height);
+   if (title && title[0]) {
+       fputs("<title>", fh);
+       html_escape(fh, title);
+       fputs("</title>\n", fh);
+   }
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
 	   SVG_MARGIN - min_x * factor, SVG_MARGIN + max_y * factor);
    to_close = NULL;
@@ -618,7 +644,7 @@ SVG::label(const img_point *p, const char *s, bool fSurface, int)
    fSurface = fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
 	   p->x * factor, p->y * -factor);
-   fputs(s, fh);
+   html_escape(fh, s);
    fputs("</text>\n", fh);
    set_name(p, s);
 }
