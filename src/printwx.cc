@@ -283,7 +283,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 bool tubes, bool ents, bool fixes, bool exports,
 			 bool printing)
 	: wxDialog(mainfrm_, -1, wxString(printing ? wmsg(/*Print*/399) : wmsg(/*Export*/383))),
-	  m_layout(wxGetApp().GetPageSetupDialogData()),
+	  m_layout(printing ? wxGetApp().GetPageSetupDialogData() : NULL),
 	  m_File(filename), mainfrm(mainfrm_)
 {
     m_scale = NULL;

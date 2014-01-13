@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -55,21 +55,28 @@ layout::layout(wxPageSetupDialogData* data)
 	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
 	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0), footer()
 {
-    // Create a temporary wxPrinterDC/wxPostScriptDC so we can get access to
-    // the size of the printable area in mm to allow us to calculate how many
-    // pages will be needed.
+    if (data) {
+	// Printing.
+
+	// Create a temporary wxPrinterDC/wxPostScriptDC so we can get access
+	// to the size of the printable area in mm to allow us to calculate how
+	// many pages will be needed.
 #if defined __WXMSW__ || defined __WXMAC__
-    wxPrinterDC pdc(data->GetPrintData());
+	wxPrinterDC pdc(data->GetPrintData());
 #else
-    wxPostScriptDC pdc(data->GetPrintData());
+	wxPostScriptDC pdc(data->GetPrintData());
 #endif
-    int width, depth;
-    pdc.GetSizeMM(&width, &depth);
-    width -= data->GetMarginBottomRight().x + data->GetMarginTopLeft().x;
-    PaperWidth = width;
-    depth -= data->GetMarginBottomRight().y + data->GetMarginTopLeft().y;
-    // Allow for the 10mm footer.
-    PaperDepth = depth - 10;
+	int width, depth;
+	pdc.GetSizeMM(&width, &depth);
+	width -= data->GetMarginBottomRight().x + data->GetMarginTopLeft().x;
+	PaperWidth = width;
+	depth -= data->GetMarginBottomRight().y + data->GetMarginTopLeft().y;
+	// Allow for the 10mm footer.
+	PaperDepth = depth - 10;
+    } else {
+	// Exporting.
+	PaperWidth = PaperDepth = 0;
+    }
 }
 
 void
