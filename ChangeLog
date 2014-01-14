@@ -1,3 +1,7 @@
+Tue Jan 14 02:55:02 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/expobug.svx: Fix comment typo.
+
 Tue Jan 14 02:52:52 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/imgtest.c: Fix printf format to actually match types of
