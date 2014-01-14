@@ -1,3 +1,56 @@
+e0c2dfb360fe21d632cfc2521226674d0bcf4812 (Not Committed Yet 2014-01-15 10:49:35 +1300    1) Tue Jan 14 21:39:34 GMT 2014  Olly Betts <olly@survex.com>
+
+Changes in 1.2.10 (2014-01-15):
+
+* aven: Fix assertion if two mouse buttons are held down at the same time.
+  If dragging with more than one mouse button held down, releasing one causes
+  another which is still held down to take effect.  Reported by Brian
+  Clipstone.
+
+* (Microsoft Windows version): aven: Fix crash on "File->Print" or
+  "File->Export" under Windows XP, reported by Brian Clipstone.
+
+* (Microsoft Windows version): aven: Fix error dialog about an incorrectly
+  encoded filename which could occur if run without being asked to load a file
+  on startup.
+
+* (Microsoft Windows version): aven: Compile with optimisation on.
+
+* img library, aven: Although processed CMAP data files are often referred to
+  as "CMAP .XYZ files", it seems that actually, the extension .XYZ isn't used,
+  rather .SHT (shot variant, produced by CMAP v16 and later), .UNA (unadjusted)
+  and .ADJ (adjusted) extensions are.  Since we've long checked for .XYZ, we
+  continue to do so in case anyone is relying on it, but also check for the
+  other extensions.
+
+* doc/manual.sgml: Update references to Survex 1.1 which should be to 1.2.
+
+* doc/manual.sgml: Note the station length limit Smaps used.
+
+* cavern: Fix NULL pointer dereference when processing Compass DAT file without
+  'SURVEY DATE:'.
+
+* img library: Add new "datestamp_numeric" field to struct img giving the
+  datestamp as a time_t in UTC (or (time_t)-1 if there's no datestamp or we
+  failed to convert it).  For .3d >= v8, this field is reliable.  We attempt to
+  convert date strings in .3d <= v7 and CMAP XYZ files, but may get the
+  timezone wrong.
+
+* img library: Fix my_strcasecmp() to handle top-bit set characters better.
+
+* aven: If the survey has a title, add it as a top-level <title> element to
+  exported SVG files.
+
+* aven: Escape '<', '>', and '&' in labels in exported SVG files.
+
+* aven: In GPX export, set the <time> element to the datestamp from the 3d
+  file.
+
+* aven: Don't try to write the title if it isn't set or is empty when exporting
+  GPX files.
+
+* aven: Don't bother looking up the printer page setup info when exporting.
+
 Changes in 1.2.9 (2014-01-08):
 
 * Document --3d-version in cavern man page and the manual.
