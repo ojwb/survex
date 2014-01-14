@@ -1,3 +1,7 @@
+Tue Jan 14 21:39:34 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Add missing translation.
+
 Tue Jan 14 21:25:01 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix crash on "File->Print" or "File->Export" under
