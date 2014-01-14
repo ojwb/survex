@@ -1,3 +1,9 @@
+Tue Jan 14 04:17:10 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: If dragging with more than one mouse button held
+	  down, releasing one causes another which is still held down to take
+	  effect.
+
 Tue Jan 14 03:33:38 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: Fix assertion if two mouse buttons are held down

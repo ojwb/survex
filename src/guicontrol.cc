@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -319,15 +319,15 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 
 	if (m_View->PointWithinCompass(m_DragStart)) {
 	    m_LastDrag = drag_COMPASS;
+	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_HORIZONTALLY);
 	} else if (m_View->PointWithinClino(m_DragStart)) {
 	    m_LastDrag = drag_ELEV;
+	    m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
 	} else if (m_View->PointWithinScaleBar(m_DragStart)) {
 	    m_LastDrag = drag_SCALE;
+	    m_View->SetCursor(GfxCore::CURSOR_HORIZONTAL_RESIZE);
 	} else {
-	    if (event.ControlDown()) {
-		if (m_View->IsExtendedElevation()) {
-		    return;
-		}
+	    if (event.ControlDown() && !m_View->IsExtendedElevation()) {
 		m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
 	    } else {
 		m_View->SetCursor(GfxCore::CURSOR_ZOOM_ROTATE);
@@ -357,7 +357,16 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	    m_View->CheckHitTestGrid(m_DragStart, true);
 	}
 
-//	m_View->RedrawIndicators();
+	if (event.MiddleIsDown()) {
+	    OnMButtonDown(event);
+	    return;
+	}
+
+	if (event.RightIsDown()) {
+	    OnRButtonDown(event);
+	    return;
+	}
+
 	m_View->ReleaseMouse();
 
 	m_LastDrag = drag_NONE;
@@ -388,11 +397,21 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
     }
 }
 
-void GUIControl::OnMButtonUp(wxMouseEvent&)
+void GUIControl::OnMButtonUp(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
 	if (dragging != MIDDLE_DRAG)
 	    return;
+
+	if (event.LeftIsDown()) {
+	    OnLButtonDown(event);
+	    return;
+	}
+
+	if (event.RightIsDown()) {
+	    OnRButtonDown(event);
+	    return;
+	}
 
 	dragging = NO_DRAG;
 	m_View->ReleaseMouse();
@@ -420,10 +439,20 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
     }
 }
 
-void GUIControl::OnRButtonUp(wxMouseEvent&)
+void GUIControl::OnRButtonUp(wxMouseEvent& event)
 {
     if (dragging != RIGHT_DRAG)
 	return;
+
+    if (event.LeftIsDown()) {
+	OnLButtonDown(event);
+	return;
+    }
+
+    if (event.MiddleIsDown()) {
+	OnMButtonDown(event);
+	return;
+    }
 
     m_LastDrag = drag_NONE;
     m_View->ReleaseMouse();
