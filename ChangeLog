@@ -1,3 +1,8 @@
+Tue Jan 14 00:29:35 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c: Fix my_strcasecmp() to handle top-bit set characters
+	  better.
+
 Mon Jan 13 04:20:11 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gpx.cc: Don't try to write the title if it isn't set or is

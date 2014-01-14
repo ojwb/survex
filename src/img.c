@@ -187,9 +187,8 @@ my_lround(double x) {
 #if defined(strcasecmp) || defined(HAVE_STRCASECMP)
 # define my_strcasecmp strcasecmp
 #else
-/* What about top bit set chars? */
 int my_strcasecmp(const char *s1, const char *s2) {
-   register int c1, c2;
+   unsigned char c1, c2;
    do {
       c1 = *s1++;
       c2 = *s2++;
