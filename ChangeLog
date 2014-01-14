@@ -1,3 +1,8 @@
+Tue Jan 14 21:23:10 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Simplify handling of command line under __WXMSW__,
+	  fixing error if run with no parameters.
+
 Tue Jan 14 21:17:38 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/img.c: Only use _putenv_s() under MSVC - mingw

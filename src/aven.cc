@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -85,35 +85,30 @@ Aven::~Aven()
 
 static int getopt_first_response = 0;
 
+static char ** utf8_argv;
+
 #ifdef __WXMSW__
 bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
     // wxWidgets passes us wxChars, which may be wide characters but cmdline
     // wants UTF-8 so we need to convert.
-#ifdef __GNUC__
-    // This is a GCC extension.
-    char *utf8_argv[my_argc + 1];
-#else
-    vector<char *> utf8_argv(my_argc + 1);
-#endif
+    utf8_argv = new char * [my_argc + 1];
     for (int i = 0; i < my_argc; ++i){
 	utf8_argv[i] = strdup(wxString(my_argv[i]).mb_str());
     }
     utf8_argv[my_argc] = NULL;
 
-    msg_init(&utf8_argv[0]);
+    msg_init(utf8_argv);
     select_charset(CHARSET_UTF8);
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
     cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
-    cmdline_init(my_argc, &utf8_argv[0], short_opts, long_opts, NULL, help, 0, 1);
+    cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
     return wxApp::Initialize(my_argc, my_argv);
 }
 #else
-static char ** real_argv;
-
 int main(int argc, char **argv) 
 {
 #ifdef __WXMAC__
@@ -136,7 +131,7 @@ int main(int argc, char **argv)
     cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
 
-    real_argv = argv;
+    utf8_argv = argv;
 
 #if wxUSE_UNICODE
     wxWCharBuffer buf(wxConvFileName->cMB2WX(argv[0]));
@@ -182,10 +177,6 @@ bool Aven::OnInit()
     wxString survey;
     bool print_and_exit = false;
 
-#ifdef __WXMSW__
-    char ** real_argv = argv;
-#endif
-
     while (true) {
 	int opt;
 	if (getopt_first_response) {
@@ -203,15 +194,15 @@ bool Aven::OnInit()
 	}
     }
 
-    if (print_and_exit && !real_argv[optind]) {
+    if (print_and_exit && !utf8_argv[optind]) {
 	cmdline_syntax(); // FIXME : not a helpful error...
 	exit(1);
     }
 
     wxString fnm;
-    if (real_argv[optind]) {
-	fnm = wxString(real_argv[optind], wxConvUTF8);
-	if (fnm.empty() && *(real_argv[optind])) {
+    if (utf8_argv[optind]) {
+	fnm = wxString(utf8_argv[optind], wxConvUTF8);
+	if (fnm.empty() && *(utf8_argv[optind])) {
 	    ReportError(wxT("File argument's filename has bad encoding"));
 	    return false;
 	}
@@ -276,7 +267,7 @@ bool Aven::OnInit()
 	m_Frame->Maximize();
     }
 
-    if (real_argv[optind]) {
+    if (utf8_argv[optind]) {
 	m_Frame->OpenFile(fnm, survey);
     }
 
