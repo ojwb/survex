@@ -71,7 +71,7 @@ main(int argc, char **argv)
 	}
     }
 
-    printf("Stations: %d\nLegs: %d\n", c_stations, c_legs);
+    printf("Stations: %lu\nLegs: %lu\n", c_stations, c_legs);
 
     img_close(pimg);
 

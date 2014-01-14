@@ -1,3 +1,8 @@
+Tue Jan 14 02:52:52 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/imgtest.c: Fix printf format to actually match types of
+	  parameters.
+
 Tue Jan 14 02:52:31 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gpx.cc: Fix comment typo.
