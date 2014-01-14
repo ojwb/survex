@@ -284,7 +284,6 @@ static img_errcode img_errno = IMG_NONE;
 
 #define EXT_PLT "plt"
 #define EXT_PLF "plf"
-#define EXT_XYZ "xyz"
 
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
@@ -549,7 +548,16 @@ plt_file:
       }
    }
 
-   if (has_ext(fnm, len, EXT_XYZ)) {
+   /* Although these are often referred to as "CMAP .XYZ files", it seems
+    * that actually, the extension .XYZ isn't used, rather .SHT (shot
+    * variant, produced by CMAP v16 and later), .UNA (unadjusted) and
+    * .ADJ (adjusted) extensions are.  Since img has long checked for
+    * .XYZ, we continue to do so in case anyone is relying on it.
+    */
+   if (has_ext(fnm, len, "sht") ||
+       has_ext(fnm, len, "adj") ||
+       has_ext(fnm, len, "una") ||
+       has_ext(fnm, len, "xyz")) {
       char *line;
 xyz_file:
       /* Spaces aren't legal in CMAP station names, but dots are, so
@@ -2123,7 +2131,7 @@ skip_to_N:
 	 /* FIXME: duplicate stations... */
 	 return img_LABEL;
       } else {
-	 /* Shot variant */
+	 /* Shot variant (VERSION_CMAP_SHOT) */
 	 char old[8], new_[8];
 	 if (len < 61) {
 	    osfree(line);

@@ -1782,13 +1782,13 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxString filetypes = wxT("*.3d");
 #else
     wxString filetypes;
-    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.xyz"
-		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.XYZ")
+    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.adj;*.sht;*.una;*.xyz"
+		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|*.3d"CASE("*.3D")
 		     "|%s|*.svx"CASE("*.SVX")
 		     "|%s|*.plt;*.plf"CASE("*.PLT;*.PLF")
 		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
-		     "|%s|*.xyz"CASE("*.XYZ")
+		     "|%s|*.adj;*.sht;*.una;*.xyz"CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
 		     wmsg(/*All survey files*/229).c_str(),
 		     wmsg(/*Survex 3d files*/207).c_str(),

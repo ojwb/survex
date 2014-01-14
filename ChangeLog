@@ -1,3 +1,12 @@
+Tue Jan 14 03:22:54 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/mainfrm.cc: Although these are often referred to as
+	  "CMAP .XYZ files", it seems that actually, the extension .XYZ isn't
+	  used, rather .SHT (shot variant, produced by CMAP v16 and later),
+	  .UNA (unadjusted) and .ADJ (adjusted) extensions are.  Since we've
+	  long checked for .XYZ, we continue to do so in case anyone is
+	  relying on it, but also check for the other extensions.
+
 Tue Jan 14 03:20:03 GMT 2014  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,configure.ac,doc/manual.sgml: Update references to
