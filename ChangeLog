@@ -1,3 +1,8 @@
+Tue Jan 14 03:33:38 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Fix assertion if two mouse buttons are held down
+	  at the same time.  Reported by Brian Clipstone.
+
 Tue Jan 14 03:22:54 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c,src/mainfrm.cc: Although these are often referred to as

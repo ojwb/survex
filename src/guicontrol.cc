@@ -315,8 +315,6 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 void GUIControl::OnLButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
-	dragging = LEFT_DRAG;
-
 	m_DragStart = m_DragRealStart = event.GetPosition();
 
 	if (m_View->PointWithinCompass(m_DragStart)) {
@@ -328,7 +326,6 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	} else {
 	    if (event.ControlDown()) {
 		if (m_View->IsExtendedElevation()) {
-		    dragging = NO_DRAG;
 		    return;
 		}
 		m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
@@ -340,14 +337,19 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	    m_ScaleRotateLock = lock_NONE;
 	}
 
+	// We need to release and recapture for the cursor to update (noticed
+	// with wxGTK).
+	if (dragging != NO_DRAG) m_View->ReleaseMouse();
 	m_View->CaptureMouse();
+
+	dragging = LEFT_DRAG;
     }
 }
 
 void GUIControl::OnLButtonUp(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
-	if (dragging == NO_DRAG)
+	if (dragging != LEFT_DRAG)
 	    return;
 
 	if (event.GetPosition() == m_DragRealStart) {
@@ -361,7 +363,7 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	m_LastDrag = drag_NONE;
 	dragging = NO_DRAG;
 
-        m_View->DragFinished();
+	m_View->DragFinished();
 
 	if (event.GetPosition() == m_DragRealStart) {
 	    RestoreCursor();
@@ -374,23 +376,29 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 void GUIControl::OnMButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData() && !m_View->IsExtendedElevation()) {
-	dragging = MIDDLE_DRAG;
 	m_DragStart = event.GetPosition();
 
 	m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
 
+	// We need to release and recapture for the cursor to update (noticed
+	// with wxGTK).
+	if (dragging != NO_DRAG) m_View->ReleaseMouse();
 	m_View->CaptureMouse();
+	dragging = MIDDLE_DRAG;
     }
 }
 
 void GUIControl::OnMButtonUp(wxMouseEvent&)
 {
     if (m_View->HasData()) {
+	if (dragging != MIDDLE_DRAG)
+	    return;
+
 	dragging = NO_DRAG;
 	m_View->ReleaseMouse();
-        m_View->DragFinished();
+	m_View->DragFinished();
 
-        RestoreCursor();
+	RestoreCursor();
     }
 }
 
@@ -402,15 +410,21 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 
 	m_DragStart = event.GetPosition();
 
-	dragging = RIGHT_DRAG;
+	m_View->SetCursor(GfxCore::CURSOR_DRAGGING_HAND);
 
-        m_View->SetCursor(GfxCore::CURSOR_DRAGGING_HAND);
+	// We need to release and recapture for the cursor to update (noticed
+	// with wxGTK).
+	if (dragging != NO_DRAG) m_View->ReleaseMouse();
 	m_View->CaptureMouse();
+	dragging = RIGHT_DRAG;
     }
 }
 
 void GUIControl::OnRButtonUp(wxMouseEvent&)
 {
+    if (dragging != RIGHT_DRAG)
+	return;
+
     m_LastDrag = drag_NONE;
     m_View->ReleaseMouse();
 
