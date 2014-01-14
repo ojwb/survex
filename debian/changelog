@@ -1,3 +1,12 @@
+survex (1.2.9-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    + Includes avcodec_free_frame-fix.patch so drop patch
+  * debian/watch: Add pgpsigurlmangle setting to automatically verify
+    detached GPG signatures on upstream release tarballs.
+
+ -- Olly Betts <olly@survex.com>  Wed, 08 Jan 2014 18:22:05 +1300
+
 survex (1.2.8-1) unstable; urgency=low
 
   * New upstream release
