@@ -1,3 +1,8 @@
+Tue Jan 14 21:25:01 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix crash on "File->Print" or "File->Export" under
+	  Windows XP, reported by Brian Clipstone.
+
 Tue Jan 14 21:23:10 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Simplify handling of command line under __WXMSW__,

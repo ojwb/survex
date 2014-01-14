@@ -743,7 +743,7 @@ void
 svxPrintDlg::UIToLayout(){
 //    m_layout.SkipBlank = m_blanks->IsChecked();
 
-    if (m_layout.view != layout::EXTELEV) {
+    if (m_layout.view != layout::EXTELEV && m_tilt) {
 	m_layout.tilt = m_tilt->GetValue();
 	if (m_layout.tilt == -90) {
 	    m_layout.view = layout::PLAN;
