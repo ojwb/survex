@@ -160,7 +160,7 @@ mktime_with_tz(struct tm * tm, const char * tz)
 {
     time_t r;
     char * old_tz = getenv("TZ");
-#ifdef _WIN32
+#ifdef _MSC_VER
     if (old_tz) {
 	old_tz = my_strdup(old_tz);
 	if (!old_tz)
@@ -203,29 +203,32 @@ mktime_with_tz(struct tm * tm, const char * tz)
 	osfree(old_tz);
 	return (time_t)-1;
     }
+#define CLEANUP() osfree(p)
 #endif
     tzset();
     r = mktime(tm);
     if (old_tz) {
-#ifdef _WIN32
+#ifdef _MSC_VER
 	_putenv_s("TZ", old_tz);
 #elif !defined HAVE_SETENV
 	putenv(old_tz);
-	osfree(p);
 #else
 	setenv("TZ", old_tz, 1);
 #endif
 	osfree(old_tz);
     } else {
-#ifdef _WIN32
+#ifdef _MSC_VER
 	_putenv_s("TZ", "");
 #elif !defined HAVE_UNSETENV
 	putenv((char*)"TZ");
-	osfree(p);
 #else
 	unsetenv("TZ");
 #endif
     }
+#ifdef CLEANUP
+    CLEANUP();
+#undef CLEANUP
+#endif
     return r;
 }
 

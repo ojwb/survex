@@ -1,3 +1,8 @@
+Tue Jan 14 21:17:38 GMT 2014  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/img.c: Only use _putenv_s() under MSVC - mingw
+	  doesn't provide it.
+
 Tue Jan 14 21:14:51 GMT 2014  Olly Betts <olly@survex.com>
 
 	* make_release: Turn on optimisation when building aven for Microsoft

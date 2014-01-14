@@ -257,6 +257,8 @@ AC_CHECK_FUNCS(difftime)
 dnl Much faster than using getc()/putc(), at least on Linux.
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
 
+AC_CHECK_FUNCS([setenv unsetenv])
+
 dnl try to find a case-insensitive compare
 
 strcasecmp=no
