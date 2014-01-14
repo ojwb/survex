@@ -124,7 +124,7 @@ void GPX::header(const char * title, const char *, time_t datestamp_numeric)
     // FIXME: optional in GPX, but perhaps useful:
     // <bounds minlat="..." minlon="..." maxlat="..." maxlon="..." />
     // NB Not necessarily the same as the bounds in survex coords translated
-    // to WGS85 lat+long...
+    // to WGS84 lat+long...
 }
 
 void
