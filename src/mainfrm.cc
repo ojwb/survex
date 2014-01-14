@@ -1334,10 +1334,11 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
 
     separator = survey->separator;
     m_Title = wxString(survey->title, wxConvUTF8);
+    m_DateStamp_numeric = survey->datestamp_numeric;
     if (strcmp(survey->datestamp, "?") == 0) {
 	m_DateStamp = wmsg(/*Date and time not available.*/108);
     } else if (survey->datestamp[0] == '@') {
-	const struct tm * tm = localtime(&survey->datestamp_numeric);
+	const struct tm * tm = localtime(&m_DateStamp_numeric);
 	char buf[256];
 	strftime(buf, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107), tm);
 	m_DateStamp = wxString(buf, wxConvUTF8);
@@ -1845,7 +1846,7 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 
 void MainFrm::OnPrint(wxCommandEvent&)
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp);
+    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric);
 }
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
@@ -1858,7 +1859,7 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
 void MainFrm::OnExport(wxCommandEvent&)
 {
-    m_Gfx->OnExport(m_File, m_Title, m_DateStamp);
+    m_Gfx->OnExport(m_File, m_Title, m_DateStamp, m_DateStamp_numeric);
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@
 using namespace std;
 
 #include <math.h>
+#include <time.h>
 
 #define MARK_FIRST 1
 #define MARK_NEXT 2
@@ -241,6 +242,7 @@ class MainFrm : public wxFrame {
     AvenPresList* m_PresList;
     wxString m_File;
     wxString m_Title, m_DateStamp;
+    time_t m_DateStamp_numeric;
     wxChar separator; // character separating survey levels (often '.')
     Vector3 m_Offsets;
 

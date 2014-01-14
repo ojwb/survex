@@ -1,3 +1,8 @@
+Tue Jan 14 02:48:59 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Pass the numeric datestamp to ExportFilter::header(), and use
+	  it to set a timestamp in exported GPX files.
+
 Tue Jan 14 01:18:42 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Fix NULL pointer dereference when processing Compass

@@ -277,7 +277,8 @@ static int msg_filetype[] = {
 // there are three jobs to do here...
 // User <-> wx - this should possibly be done in a separate file
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
-			 const wxString & title, const wxString & datestamp,
+			 const wxString & title,
+			 const wxString & datestamp, time_t datestamp_numeric,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool tubes, bool ents, bool fixes, bool exports,
@@ -310,6 +311,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	show_mask |= EXPORTS;
     m_layout.show_mask = show_mask;
     m_layout.datestamp = datestamp;
+    m_layout.datestamp_numeric = datestamp_numeric;
     m_layout.rot = int(angle);
     m_layout.title = title;
     if (mainfrm->IsExtendedElevation()) {
@@ -574,7 +576,8 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 	double text_height = 0.6;
 	double marker_size = 0.8;
 
-	if (!Export(dlg.GetPath(), m_layout.title, m_layout.datestamp, mainfrm,
+	if (!Export(dlg.GetPath(), m_layout.title,
+		    m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
 		    m_layout.rot, m_layout.tilt, m_layout.show_mask,
 		    export_format(format_idx), input_projection.mb_str(),
 		    grid, text_height, marker_size)) {

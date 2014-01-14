@@ -58,6 +58,7 @@ public:
     bool Legend;
     wxString title;
     wxString datestamp;
+    time_t datestamp_numeric;
     double Scale;
     int rot, tilt;
     enum {PLAN, ELEV, TILT, EXTELEV} view;

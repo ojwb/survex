@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -2876,10 +2876,11 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
 void
 GfxCore::OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp)
+		 const wxString &datestamp, time_t datestamp_numeric)
 {
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, datestamp,
+    p = new svxPrintDlg(m_Parent, filename, title,
+			datestamp, datestamp_numeric,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Tubes,
 			m_Entrances, m_FixedPts, m_ExportedPts,
@@ -2889,7 +2890,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 
 void
 GfxCore::OnExport(const wxString &filename, const wxString &title,
-		  const wxString &datestamp)
+		  const wxString &datestamp, time_t datestamp_numeric)
 {
     // Fill in "right_bearing" for each cross-section.
     list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
@@ -2900,7 +2901,8 @@ GfxCore::OnExport(const wxString &filename, const wxString &title,
     }
 
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, datestamp,
+    p = new svxPrintDlg(m_Parent, filename, title,
+			datestamp, datestamp_numeric,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Tubes,
 			m_Entrances, m_FixedPts, m_ExportedPts,

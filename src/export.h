@@ -25,6 +25,8 @@
 
 #include "wx.h"
 
+#include <time.h>
+
 class MainFrm;
 
 typedef enum {
@@ -59,7 +61,8 @@ typedef enum {
 #define FULL_COORDS	0x00040000
 
 bool Export(const wxString &fnm_out, const wxString &title,
-	    const wxString &datestamp, const MainFrm * mainfrm,
+	    const wxString &datestamp, time_t datestamp_numeric,
+	    const MainFrm * mainfrm,
 	    double pan, double tilt, int show_mask, export_format format,
 	    const char * input_projection,
 	    double grid_, double text_height_, double marker_size_);

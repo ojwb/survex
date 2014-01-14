@@ -2,7 +2,7 @@
  * Export from Aven as GPX.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013 Olly Betts
+ * Copyright (C) 2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <string>
+#include <time.h>
 #include <math.h>
 
 #include "useful.h"
@@ -95,7 +96,7 @@ GPX::passes() const
 }
 
 /* Initialise GPX routines. */
-void GPX::header(const char * title, const char *)
+void GPX::header(const char * title, const char *, time_t datestamp_numeric)
 {
     fputs(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
@@ -108,6 +109,17 @@ void GPX::header(const char * title, const char *)
 	fputs("<name>", fh);
 	html_escape(fh, title);
 	fputs("</name>\n", fh);
+    }
+    if (datestamp_numeric != time_t(-1)) {
+	struct tm * tm = gmtime(&datestamp_numeric);
+	if (tm) {
+	    char buf[32];
+	    if (strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%SZ", tm)) {
+		fputs("<time>", fh);
+		fputs(buf, fh);
+		fputs("</time>\n", fh);
+	    }
+	}
     }
     // FIXME: optional in GPX, but perhaps useful:
     // <bounds minlat="..." minlon="..." maxlat="..." maxlon="..." />

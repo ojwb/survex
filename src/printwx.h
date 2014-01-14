@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWidgets driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004,2005,2006,2011,2012,2013 Olly Betts
+ * Copyright (C) 2004,2005,2006,2011,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 
 #include "wx.h"
 #include <wx/dialog.h>
+
+#include <time.h>
 
 #include "avenprcore.h"
 
@@ -54,7 +56,8 @@ class svxPrintDlg : public wxDialog {
 	void SomethingChanged(int control_id);
  public:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
-		    const wxString & title, const wxString & datestamp,
+		    const wxString & title,
+		    const wxString & datestamp, time_t datestamp_numeric,
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf,
 		    bool tubes, bool ents, bool fixes, bool exports,

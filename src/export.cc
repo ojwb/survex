@@ -130,7 +130,7 @@ class DXF : public ExportFilter {
     DXF() : to_close(0) { pending[0] = '\0'; }
     const int * passes() const;
     bool fopen(const char *fnm_out);
-    void header(const char *, const char *);
+    void header(const char *, const char *, time_t);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
@@ -159,7 +159,7 @@ DXF::fopen(const char *fnm_out)
 }
 
 void
-DXF::header(const char *, const char *)
+DXF::header(const char *, const char *, time_t)
 {
    fprintf(fh, "0\nSECTION\n"
 	       "2\nHEADER\n");
@@ -393,7 +393,7 @@ class Skencil : public ExportFilter {
   public:
     Skencil() { }
     const int * passes() const;
-    void header(const char *, const char *);
+    void header(const char *, const char *, time_t);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
@@ -409,7 +409,7 @@ Skencil::passes() const
 }
 
 void
-Skencil::header(const char *, const char *)
+Skencil::header(const char *, const char *, time_t)
 {
    fprintf(fh, "##Sketch 1 2\n"); /* File format version */
    fprintf(fh, "document()\n");
@@ -548,7 +548,7 @@ class SVG : public ExportFilter {
   public:
     SVG() : to_close(NULL), close_g(false) { pending[0] = '\0'; }
     const int * passes() const;
-    void header(const char *, const char *);
+    void header(const char *, const char *, time_t);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
@@ -570,7 +570,7 @@ SVG::passes() const
 }
 
 void
-SVG::header(const char * title, const char *)
+SVG::header(const char * title, const char *, time_t)
 {
    size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
@@ -734,7 +734,7 @@ class PLT : public ExportFilter {
   public:
     PLT() { }
     const int * passes() const;
-    void header(const char *, const char *);
+    void header(const char *, const char *, time_t);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void footer();
@@ -748,7 +748,7 @@ PLT::passes() const
 }
 
 void
-PLT::header(const char *title, const char *)
+PLT::header(const char *title, const char *, time_t)
 {
    size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
@@ -829,7 +829,7 @@ PLT::footer(void)
 class EPS : public ExportFilter {
   public:
     EPS() { }
-    void header(const char *, const char *);
+    void header(const char *, const char *, time_t);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
@@ -837,7 +837,7 @@ class EPS : public ExportFilter {
 };
 
 void
-EPS::header(const char *title, const char *)
+EPS::header(const char *title, const char *, time_t)
 {
    const char * fontname_labels = "helvetica"; // FIXME
    int fontsize_labels = 10; // FIXME
@@ -1119,7 +1119,8 @@ EPS::footer(void)
 
 bool
 Export(const wxString &fnm_out, const wxString &title,
-       const wxString &datestamp, const MainFrm * mainfrm,
+       const wxString &datestamp, time_t datestamp_numeric,
+       const MainFrm * mainfrm,
        double pan, double tilt, int show_mask, export_format format,
        const char * input_projection,
        double grid_, double text_height_, double marker_size_)
@@ -1280,7 +1281,7 @@ Export(const wxString &fnm_out, const wxString &title,
    max_z += z_offset;
 
    /* Header */
-   filt->header(title.mb_str(), datestamp.mb_str());
+   filt->header(title.mb_str(), datestamp.mb_str(), datestamp_numeric);
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 

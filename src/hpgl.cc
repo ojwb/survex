@@ -48,7 +48,7 @@ static bool fOriginInCentre = fFalse;
 
 /* Check if this line intersects the current page */
 /* Initialise HPGL routines. */
-void HPGL::header(const char *, const char *)
+void HPGL::header(const char *, const char *, time_t)
 {
    // FIXME: mm_across_page, mm_down_page, origin_in_centre, scale
    double PaperWidth = 9999999, PaperDepth = 9999999;

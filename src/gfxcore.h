@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013 Olly Betts
+//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 #define gfxcore_h
 
 #include <float.h>
+#include <time.h>
 
 #include "img_hosted.h"
 
@@ -486,9 +487,9 @@ public:
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
     void OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp);
+		 const wxString &datestamp, time_t datestamp_numeric);
     void OnExport(const wxString &filename, const wxString &title,
-		  const wxString &datestamp);
+		  const wxString &datestamp, time_t datestamp_numeric);
     void SetCursor(GfxCore::cursor new_cursor);
     bool MeasuringLineActive() const;
 
