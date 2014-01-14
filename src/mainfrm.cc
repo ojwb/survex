@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -1337,14 +1337,10 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     if (strcmp(survey->datestamp, "?") == 0) {
 	m_DateStamp = wmsg(/*Date and time not available.*/108);
     } else if (survey->datestamp[0] == '@') {
-	char * end;
-	time_t t = (time_t)strtol(survey->datestamp + 1, &end, 10);
-	if (*end == '\0') {
-	    const struct tm * tm = localtime(&t);
-	    char buf[256];
-	    strftime(buf, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107), tm);
-	    m_DateStamp = wxString(buf, wxConvUTF8);
-	}
+	const struct tm * tm = localtime(&survey->datestamp_numeric);
+	char buf[256];
+	strftime(buf, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107), tm);
+	m_DateStamp = wxString(buf, wxConvUTF8);
     }
     if (m_DateStamp.empty()) {
 	m_DateStamp = wxString(survey->datestamp, wxConvUTF8);

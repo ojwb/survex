@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013,2014
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,20 @@ typedef struct {
     * (which results in "?" being returned).
     */
    char *datestamp;
+   /* The datestamp as a time_t (or (time_t)-1 if not available).
+    *
+    * For 3d format versions >= 8, this is a reliable value and in UTC.  Older
+    * 3d format versions store a human readable time, which img will attempt
+    * to decode, but it may fail, particularly with handling timezones.  Even
+    * if it does work, beware that times in local time where DST applies are
+    * inherently ambiguous around when the clocks go back.
+    *
+    * CMAP XYZ files contain a timestamp.  It's probably in localtime (but
+    * without any timezone information) and the example files are all pre-2000
+    * and have two digit years.  We do our best to turn these into a useful
+    * time_t value.
+    */
+   time_t datestamp_numeric;
    char separator; /* character used to separate survey levels ('.' usually) */
 #if IMG_API_VERSION == 0
    time_t date1, date2;

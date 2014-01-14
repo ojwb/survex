@@ -21,12 +21,14 @@
 # include <config.h>
 #endif
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
 #include <ctype.h>
+#include <errno.h>
+#include <limits.h>
 #include <locale.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
 #include "img.h"
 
@@ -150,6 +152,82 @@ baseleaf_from_fnm(const char *fnm)
    return res;
 }
 #endif
+
+static char * my_strdup(const char *str);
+
+static time_t
+mktime_with_tz(struct tm * tm, const char * tz)
+{
+    time_t r;
+    char * old_tz = getenv("TZ");
+#ifdef _WIN32
+    if (old_tz) {
+	old_tz = my_strdup(old_tz);
+	if (!old_tz)
+	    return (time_t)-1;
+    }
+    if (_putenv_s("TZ", tz) != 0) {
+	osfree(old_tz);
+	return (time_t)-1;
+    }
+#elif defined HAVE_SETENV
+    if (old_tz) {
+	old_tz = my_strdup(old_tz);
+	if (!old_tz)
+	    return (time_t)-1;
+    }
+    if (setenv("TZ", tz, 1) < 0) {
+	osfree(old_tz);
+	return (time_t)-1;
+    }
+#else
+    char * p;
+    if (old_tz) {
+	size_t len = strlen(old_tz) + 1;
+	p = (char *)xosmalloc(len + 3);
+	if (!p)
+	    return (time_t)-1;
+	memcpy(p, "TZ=", 3);
+	memcpy(p + 3, tz, len);
+	old_tz = p;
+    }
+    p = (char *)xosmalloc(strlen(tz) + 4);
+    if (!p) {
+	osfree(old_tz);
+	return (time_t)-1;
+    }
+    memcpy(p, "TZ=", 3);
+    strcpy(p + 3, tz);
+    if (putenv(p) != 0) {
+	osfree(p);
+	osfree(old_tz);
+	return (time_t)-1;
+    }
+#endif
+    tzset();
+    r = mktime(tm);
+    if (old_tz) {
+#ifdef _WIN32
+	_putenv_s("TZ", old_tz);
+#elif !defined HAVE_SETENV
+	putenv(old_tz);
+	osfree(p);
+#else
+	setenv("TZ", old_tz, 1);
+#endif
+	osfree(old_tz);
+    } else {
+#ifdef _WIN32
+	_putenv_s("TZ", "");
+#elif !defined HAVE_UNSETENV
+	putenv((char*)"TZ");
+	osfree(p);
+#else
+	unsetenv("TZ");
+#endif
+    }
+    return r;
+}
 
 static unsigned short
 getu16(FILE *fh)
@@ -347,6 +425,8 @@ img_open_survey(const char *fnm, const char *survey)
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 
    pimg->title = pimg->datestamp = NULL;
+   pimg->datestamp_numeric = (time_t)-1;
+
    if (survey) {
       len = strlen(survey);
       if (len) {
@@ -480,14 +560,78 @@ xyz_file:
 	 img_errno = IMG_OUTOFMEMORY;
 	 goto error;
       }
-      /* FIXME: reparse date? */
+      /* There doesn't seem to be a spec for what happens after 1999 with cmap
+       * files, so this code allows for:
+       *  * 21xx -> xx (up to 2150)
+       *  * 21xx -> 1xx (up to 2199)
+       *  * full year being specified instead of 2 digits
+       */
       len = strlen(line);
-      if (len > 59) line[59] = '\0';
+      if (len > 59) {
+	 /* Don't just truncate at column 59, allow for a > 2 digit year. */
+	 char * p = strstr(line + len, "Page");
+	 if (p) {
+	    while (p > line && p[-1] == ' ')
+	       --p;
+	    *p = '\0';
+	    len = p - line;
+	 } else {
+	    line[59] = '\0';
+	 }
+      }
       if (len > 45) {
+	 /* YY/MM/DD HH:MM */
+	 struct tm tm;
+	 unsigned long v;
+	 char * p;
 	 pimg->datestamp = my_strdup(line + 45);
+	 p = pimg->datestamp;
+	 v = strtoul(p, &p, 10);
+	 if (v <= 50) {
+	    /* In the absence of a spec for cmap files, assume <= 50 means 21st
+	     * century. */
+	    v += 2000;
+	 } else if (v < 200) {
+	    /* Map 100-199 to 21st century. */
+	    v += 1900;
+	 }
+	 if (v == ULONG_MAX || *p++ != '/')
+	    goto bad_cmap_date;
+	 tm.tm_year = v - 1900;
+	 v = strtoul(p, &p, 10);
+	 if (v < 1 || v > 12 || *p++ != '/')
+	    goto bad_cmap_date;
+	 tm.tm_mon = v - 1;
+	 v = strtoul(p, &p, 10);
+	 if (v < 1 || v > 31 || *p++ != ' ')
+	    goto bad_cmap_date;
+	 tm.tm_mday = v;
+	 v = strtoul(p, &p, 10);
+	 if (v >= 24 || *p++ != ':')
+	    goto bad_cmap_date;
+	 tm.tm_hour = v;
+	 v = strtoul(p, &p, 10);
+	 if (v >= 60)
+	    goto bad_cmap_date;
+	 tm.tm_min = v;
+	 if (*p == ':') {
+	    v = strtoul(p + 1, &p, 10);
+	    if (v > 60)
+	       goto bad_cmap_date;
+	    tm.tm_sec = v;
+	 } else {
+	    tm.tm_sec = 0;
+	 }
+	 tm.tm_isdst = 0;
+	 /* We have no indication of what timezone this timestamp is in.  It's
+	  * probably local time for whoever processed the data, so just assume
+	  * UTC, which is at least fairly central in the possibilities.
+	  */
+	 pimg->datestamp_numeric = mktime_with_tz(&tm, "");
       } else {
 	 pimg->datestamp = my_strdup(TIMENA);
       }
+bad_cmap_date:
       if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
 		  LITLEN("  Cave Survey Data Processed by CMAP ")) == 0) {
 	 len = 0;
@@ -621,6 +765,62 @@ v03d:
 	  pimg->is_extended_elevation = 1;
       }
    }
+
+   if (pimg->datestamp[0] == '@') {
+      unsigned long v;
+      char * p;
+      errno = 0;
+      v = strtoul(pimg->datestamp + 1, &p, 10);
+      if (errno == 0 && *p == '\0')
+	 pimg->datestamp_numeric = v;
+      /* FIXME: We're assuming here that the C time_t epoch is 1970, which is
+       * true for Unix-like systems, Mac OS X and Windows, but isn't guaranteed
+       * by ISO C.
+       */
+   } else {
+      /* %a,%Y.%m.%d %H:%M:%S %Z */
+      struct tm tm;
+      unsigned long v;
+      char * p = pimg->datestamp;
+      while (isalpha((unsigned char)*p)) ++p;
+      if (*p == ',') ++p;
+      while (isspace((unsigned char)*p)) ++p;
+      v = strtoul(p, &p, 10);
+      if (v == ULONG_MAX || *p++ != '.')
+	 goto bad_3d_date;
+      tm.tm_year = v - 1900;
+      v = strtoul(p, &p, 10);
+      if (v < 1 || v > 12 || *p++ != '.')
+	 goto bad_3d_date;
+      tm.tm_mon = v - 1;
+      v = strtoul(p, &p, 10);
+      if (v < 1 || v > 31 || *p++ != ' ')
+	 goto bad_3d_date;
+      tm.tm_mday = v;
+      v = strtoul(p, &p, 10);
+      if (v >= 24 || *p++ != ':')
+	 goto bad_3d_date;
+      tm.tm_hour = v;
+      v = strtoul(p, &p, 10);
+      if (v >= 60 || *p++ != ':')
+	 goto bad_3d_date;
+      tm.tm_min = v;
+      v = strtoul(p, &p, 10);
+      if (v > 60)
+	 goto bad_3d_date;
+      tm.tm_sec = v;
+      tm.tm_isdst = 0;
+      while (isspace((unsigned char)*p)) ++p;
+      /* p now points to the timezone string.
+       *
+       * However, it's likely to be a string like "BST", and such strings can
+       * be ambiguous (BST could be UTC+1 or UTC+6), so it is impossible to
+       * reliably convert in all cases.  Just pass what we have to tzset() - if
+       * it doesn't handle it, UTC will be used.
+       */
+      pimg->datestamp_numeric = mktime_with_tz(&tm, p);
+   }
+bad_3d_date:
 
    pimg->start = ftell(pimg->fh);
 

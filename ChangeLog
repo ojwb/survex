@@ -1,3 +1,11 @@
+Tue Jan 14 00:40:06 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Add new "datestamp_numeric" field to struct img giving the
+	  datestamp as a time_t in UTC (or (time_t)-1 if there's no datestamp
+	  or we failed to convert it).  For .3d >= v8, this field is reliable.
+	  We attempt to convert date strings in .3d <= v7 and CMAP XYZ
+	  files, but may get the timezone wrong.
+
 Tue Jan 14 00:29:35 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c: Fix my_strcasecmp() to handle top-bit set characters

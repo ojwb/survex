@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002,2006,2011,2012,2013 Olly Betts
+/* Copyright (C) 2001,2002,2006,2011,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,7 @@ main(int argc, char **argv)
 
    printf("TITLE \"%s\"\n", pimg->title);
    printf("DATE \"%s\"\n", pimg->datestamp);
+   printf("DATE_NUMERIC %ld\n", pimg->datestamp_numeric);
    printf("VERSION %d\n", pimg->version);
    if (pimg->is_extended_elevation)
       printf("EXTENDED ELEVATION\n");
