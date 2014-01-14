@@ -1,3 +1,7 @@
+Tue Jan 14 03:14:31 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Note the station length limit Smaps used.
+
 Tue Jan 14 02:55:02 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/expobug.svx: Fix comment typo.
