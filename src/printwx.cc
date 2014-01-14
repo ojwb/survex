@@ -343,13 +343,15 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     if (!printing) {
 	wxStaticText* label;
 	label = new wxStaticText(this, -1, wxString(wmsg(/*Export format*/410)));
-	m_format = new wxChoice(this, svx_FORMAT, wxDefaultPosition, wxDefaultSize,
-				sizeof(formats) / sizeof(formats[0]), formats);
+	const size_t n_formats = sizeof(formats) / sizeof(formats[0]);
+	m_format = new wxChoice(this, svx_FORMAT,
+				wxDefaultPosition, wxDefaultSize,
+				n_formats, formats);
 	unsigned current_format = 0;
 	wxConfigBase * cfg = wxConfigBase::Get();
 	wxString s;
 	if (cfg->Read(wxT("export_format"), &s, wxString())) {
-	    for (unsigned i = 0; i != sizeof(formats) / sizeof(wxString); ++i) {
+	    for (unsigned i = 0; i != n_formats; ++i) {
 		if (s == formats[i]) {
 		    current_format = i;
 		    break;
@@ -675,21 +677,28 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	int new_filter_idx = m_format->GetSelection();
 	if (new_filter_idx != wxNOT_FOUND) {
 	    unsigned mask = format_info[new_filter_idx];
-	    FindWindow(svx_LEGS)->Show(mask & LEGS);
-	    FindWindow(svx_SURFACE)->Show(mask & SURF);
-	    FindWindow(svx_STATIONS)->Show(mask & STNS);
-	    FindWindow(svx_NAMES)->Show(mask & LABELS);
-	    FindWindow(svx_XSECT)->Show(mask & XSECT);
-	    FindWindow(svx_WALLS)->Show(mask & WALLS);
-	    FindWindow(svx_PASSAGES)->Show(mask & PASG);
-	    FindWindow(svx_ENTS)->Show(mask & ENTS);
-	    FindWindow(svx_FIXES)->Show(mask & FIXES);
-	    FindWindow(svx_EXPORTS)->Show(mask & EXPORTS);
-	    FindWindow(svx_CENTRED)->Show(mask & CENTRED);
-	    FindWindow(svx_FULLCOORDS)->Show(mask & FULL_COORDS);
+	    static const struct { int id; unsigned mask; } controls[] = {
+		{ svx_LEGS, LEGS },
+		{ svx_SURFACE, SURF },
+		{ svx_STATIONS, STNS },
+		{ svx_NAMES, LABELS },
+		{ svx_XSECT, XSECT },
+		{ svx_WALLS, WALLS },
+		{ svx_PASSAGES, PASG },
+		{ svx_ENTS, ENTS },
+		{ svx_FIXES, FIXES },
+		{ svx_EXPORTS, EXPORTS },
+		{ svx_CENTRED, CENTRED },
+		{ svx_FULLCOORDS, FULL_COORDS },
 #if 0
-	    FindWindow(svx_PROJ)->Show(mask & PROJ);
+		{ svx_PROJ, PROJ },
 #endif
+	    };
+	    static unsigned n_controls = sizeof(controls) / sizeof(controls[0]);
+	    for (unsigned i = 0; i != n_controls; ++i) {
+		wxWindow * control = FindWindow(controls[i].id);
+		if (control) control->Show(mask & controls[i].mask);
+	    }
 	    m_scalebox->Show(bool(mask & SCALE));
 	    m_viewbox->Show(!bool(mask & EXPORT_3D));
 	    GetSizer()->Layout();
