@@ -1,3 +1,8 @@
+Tue Jan 14 01:18:42 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Fix NULL pointer dereference when processing Compass
+	  DAT file without 'SURVEY DATE:'.
+
 Tue Jan 14 00:40:06 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/: Add new "datestamp_numeric" field to struct img giving the

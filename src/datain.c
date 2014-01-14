@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -504,10 +504,9 @@ data_file(const char *pth, const char *fnm)
 	 /* NB order is *month* *day* year */
 	 get_token();
 	 get_token();
+	 copy_on_write_meta(pcs);
 	 if (ch == ':') {
 	     int year, month, day;
-
-	     copy_on_write_meta(pcs);
 
 	     nextch();
 
