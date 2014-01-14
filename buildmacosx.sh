@@ -8,7 +8,7 @@
 # You probably need to have Xcode installed - you can download this for free
 # from Apple: http://developer.apple.com/xcode/
 #
-# Run from the unpacked survex-1.1.X directory like so:
+# Run from the unpacked survex-1.2.X directory like so:
 #
 #   ./buildmacosx.sh
 #

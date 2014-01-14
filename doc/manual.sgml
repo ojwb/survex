@@ -129,7 +129,7 @@ manual.
 
 <Para>&survexsuite; is a multi-platform open-source cave surveying
 package.
-Version 1.1
+Version 1.2
 currently runs on &unix;, Microsoft Windows 95/NT and
 successors, and Mac OS X.
 We're investigating support for various

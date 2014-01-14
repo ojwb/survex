@@ -391,5 +391,5 @@ AC_CONFIG_FILES([
  doc/version.ent survex.spec src/svxedit lib/survex.keys lib/Info.plist
  ])
 AC_OUTPUT
-dnl FIXME update msvc makefile for 1.1 branch
+dnl FIXME update msvc makefile for 1.2 branch
 dnl src/msvc/config.h

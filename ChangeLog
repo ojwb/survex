@@ -1,3 +1,8 @@
+Tue Jan 14 03:20:03 GMT 2014  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,configure.ac,doc/manual.sgml: Update references to
+	  Survex 1.1 which should be to 1.2.
+
 Tue Jan 14 03:14:31 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Note the station length limit Smaps used.
