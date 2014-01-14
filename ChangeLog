@@ -1,3 +1,8 @@
+Tue Jan 14 21:14:51 GMT 2014  Olly Betts <olly@survex.com>
+
+	* make_release: Turn on optimisation when building aven for Microsoft
+	  Windows.
+
 Tue Jan 14 04:17:10 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: If dragging with more than one mouse button held

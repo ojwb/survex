@@ -72,7 +72,7 @@ esac
 
 # Passing -Werror to configure causes AC_CHECK_FUNCS to fail, so pass it to
 # make instead.
-./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CXXFLAGS="-fno-strict-aliasing -Werror" WX_CONFIG="$wxc" LDFLAGS='-s -static'
+./configure --host=mingw32 --build="$build_platform" CC="$CC" CXX="$CXX" CXXFLAGS="-g -O2 -fno-strict-aliasing -Werror" WX_CONFIG="$wxc" LDFLAGS='-s -static'
 make CFLAGS=-Werror
 make mingw_iss
 PATH=$SAVE_PATH
