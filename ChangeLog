@@ -1,3 +1,7 @@
+Wed Jan 15 05:58:31 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c: Pass pimg->buf_len rather than literal 257.
+
 Wed Jan 15 00:23:34 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c: Remove pointless "future expansion" comment from

@@ -1671,7 +1671,7 @@ img_read_item_ancient(img *pimg, img_point *p)
 	 return img_BAD;
       }
       if (ch != '\\') ungetc(ch, pimg->fh);
-      fgets(pimg->label_buf, 257, pimg->fh);
+      fgets(pimg->label_buf, pimg->buf_len, pimg->fh);
       if (feof(pimg->fh)) {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
@@ -1741,7 +1741,7 @@ img_read_item_ancient(img *pimg, img_point *p)
 	 char *q;
 	 pimg->flags = (int)opt & 0x3f;
 	 result = img_LABEL;
-	 if (!fgets(pimg->label_buf, 257, pimg->fh)) {
+	 if (!fgets(pimg->label_buf, pimg->buf_len, pimg->fh)) {
 	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
