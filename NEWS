@@ -1,4 +1,4 @@
-e0c2dfb360fe21d632cfc2521226674d0bcf4812 (Not Committed Yet 2014-01-15 10:49:35 +1300    1) Tue Jan 14 21:39:34 GMT 2014  Olly Betts <olly@survex.com>
+15e50b0b (Olly Betts 2014-01-15 19:14:20 +1300    1) Wed Jan 15 06:13:44 GMT 2014  Olly Betts <olly@survex.com>
 
 Changes in 1.2.10 (2014-01-15):
 
@@ -6,6 +6,9 @@ Changes in 1.2.10 (2014-01-15):
   If dragging with more than one mouse button held down, releasing one causes
   another which is still held down to take effect.  Reported by Brian
   Clipstone.
+
+* aven: If we fail to start the external editor when the user clicks on an
+  error or warning from cavern, show an error box.
 
 * (Microsoft Windows version): aven: Fix crash on "File->Print" or
   "File->Export" under Windows XP, reported by Brian Clipstone.
@@ -50,6 +53,9 @@ Changes in 1.2.10 (2014-01-15):
   GPX files.
 
 * aven: Don't bother looking up the printer page setup info when exporting.
+
+* Fix some compiler warnings if built with glibc's fortify source feature
+  enabled.
 
 Changes in 1.2.9 (2014-01-08):
 
