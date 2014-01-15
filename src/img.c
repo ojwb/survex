@@ -1788,7 +1788,7 @@ img_read_item_ancient(img *pimg, img_point *p)
 	 return img_BAD;
       }
 
-      if (opt_lookahead == 2) return img_read_item(pimg, p);
+      if (opt_lookahead == 2) return img_read_item_ancient(pimg, p);
    }
 
    return result;
@@ -2637,7 +2637,7 @@ img_write_item_ancient(img *pimg, int code, int flags, const char *s,
     case img_LABEL:
       if (pimg->version == 1) {
 	 /* put a move before each label */
-	 img_write_item(pimg, img_MOVE, 0, NULL, x, y, z);
+	 img_write_item_ancient(pimg, img_MOVE, 0, NULL, x, y, z);
 	 put32(2, pimg->fh);
 	 fputsnl(s, pimg->fh);
 	 return;
