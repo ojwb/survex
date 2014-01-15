@@ -1,3 +1,8 @@
+Wed Jan 15 00:23:34 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c: Remove pointless "future expansion" comment from
+	  img_read_item_ancient().
+
 Wed Jan 15 00:22:22 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c: Tweak recursive calls in img_read_item_ancient() and

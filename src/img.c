@@ -1755,8 +1755,6 @@ img_read_item_ancient(img *pimg, img_point *p)
 	 *q = '\0';
 	 break;
        }
-       case 0xc0:
-	 /* use this for an extra leg or station flag if we need it */
        default:
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
