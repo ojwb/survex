@@ -268,7 +268,7 @@ my_lround(double x) {
 #if defined(strcasecmp) || defined(HAVE_STRCASECMP)
 # define my_strcasecmp strcasecmp
 #else
-int my_strcasecmp(const char *s1, const char *s2) {
+static int my_strcasecmp(const char *s1, const char *s2) {
    unsigned char c1, c2;
    do {
       c1 = *s1++;
@@ -1173,7 +1173,7 @@ img_read_item(img *pimg, img_point *p)
    }
 }
 
-int
+static int
 img_read_item_new(img *pimg, img_point *p)
 {
    int result;
@@ -1352,7 +1352,7 @@ img_read_item_new(img *pimg, img_point *p)
    return result;
 }
 
-int
+static int
 img_read_item_v3to7(img *pimg, img_point *p)
 {
    int result;
@@ -1586,7 +1586,7 @@ img_read_item_v3to7(img *pimg, img_point *p)
    return result;
 }
 
-int
+static int
 img_read_item_ancient(img *pimg, img_point *p)
 {
    int result;

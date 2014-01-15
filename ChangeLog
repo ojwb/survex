@@ -1,3 +1,7 @@
+Wed Jan 15 00:13:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c: Make 4 internal functions static.
+
 Tue Jan 14 21:57:03 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Minor code refactor.
