@@ -122,12 +122,12 @@ msgstr ""
 msgid "There were %d warning(s)."
 msgstr ""
 
-#. TRANSLATORS: pipe here means a Unix pipe, which transfers data between two programs.
-#. Possibly better not to translate it.
+#. TRANSLATORS: %s is replaced by the command we attempted to run.
+#: ../src/cavernlog.cc:174
 #: ../src/cavernlog.cc:224
 #: n:17
 #, c-format
-msgid "Couldn’t open pipe: “%s”"
+msgid "Couldn’t run external command: “%s”"
 msgstr ""
 
 #: ../src/datain.c:80

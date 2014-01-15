@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2011,2012 Olly Betts
+ * Copyright (C) 2005,2006,2010,2011,2012,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,72 +102,80 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     wxString href = link.GetHref();
     wxString title = link.GetTarget();
     size_t colon = href.rfind(wxT(':'));
-    if (colon != wxString::npos) {
-	size_t colon2 = href.rfind(wxT(':'), colon - 1);
-	if (colon2 != wxString::npos) swap(colon, colon2);
+    if (colon == wxString::npos)
+	return;
+    size_t colon2 = href.rfind(wxT(':'), colon - 1);
+    if (colon2 != wxString::npos) swap(colon, colon2);
 #ifdef __WXMSW__
-	wxString cmd = wxT("notepad $f");
+    wxString cmd = wxT("notepad $f");
 #elif defined __WXMAC__
-	wxString cmd = wxT("open -t $f");
+    wxString cmd = wxT("open -t $f");
 #else
-	wxString cmd = wxT("x-terminal-emulator -title $t -e vim +'call cursor($l,$c)' $f");
-	// wxString cmd = wxT("gedit -b $f +$l:$c $f");
-	// wxString cmd = wxT("x-terminal-emulator -title $t -e emacs +$l $f");
-	// wxString cmd = wxT("x-terminal-emulator -title $t -e nano +$l $f");
-	// wxString cmd = wxT("x-terminal-emulator -title $t -e jed -g $l $f");
+    wxString cmd = wxT("x-terminal-emulator -title $t -e vim +'call cursor($l,$c)' $f");
+    // wxString cmd = wxT("gedit -b $f +$l:$c $f");
+    // wxString cmd = wxT("x-terminal-emulator -title $t -e emacs +$l $f");
+    // wxString cmd = wxT("x-terminal-emulator -title $t -e nano +$l $f");
+    // wxString cmd = wxT("x-terminal-emulator -title $t -e jed -g $l $f");
 #endif
-	const char * p = getenv("SURVEXEDITOR");
-	if (p) {
-	    cmd = wxString(p, wxConvUTF8);
-	    if (!cmd.find(wxT("$f"))) {
-		cmd += wxT(" $f");
-	    }
+    const char * p = getenv("SURVEXEDITOR");
+    if (p) {
+	cmd = wxString(p, wxConvUTF8);
+	if (!cmd.find(wxT("$f"))) {
+	    cmd += wxT(" $f");
 	}
-	size_t i = 0;
-	while ((i = cmd.find(wxT('$'), i)) != wxString::npos) {
-	    if (++i >= cmd.size()) break;
-	    switch ((int)cmd[i]) {
-		case wxT('$'):
-		    cmd.erase(i, 1);
-		    break;
-		case wxT('f'): {
-		    wxString f = escape_for_shell(href.substr(0, colon), true);
-		    cmd.replace(i - 1, 2, f);
-		    i += f.size() - 1;
-		    break;
-		}
-		case wxT('t'): {
-		    wxString t = escape_for_shell(title);
-		    cmd.replace(i - 1, 2, t);
-		    i += t.size() - 1;
-		    break;
-		}
-		case wxT('l'): {
-		    wxString l = escape_for_shell(href.substr(colon + 1, colon2 - colon - 1));
-		    cmd.replace(i - 1, 2, l);
-		    i += l.size() - 1;
-		    break;
-		}
-		case wxT('c'): {
-		    wxString l;
-		    if (colon2 == wxString::npos)
-			l = wxT("0");
-		    else
-			l = escape_for_shell(href.substr(colon2 + 1));
-		    cmd.replace(i - 1, 2, l);
-		    i += l.size() - 1;
-		    break;
-		}
-		default:
-		    ++i;
-	    }
-	}
-#ifdef __WXMSW__
-	_wsystem(cmd.c_str());
-#else
-	system(cmd.mb_str());
-#endif
     }
+    size_t i = 0;
+    while ((i = cmd.find(wxT('$'), i)) != wxString::npos) {
+	if (++i >= cmd.size()) break;
+	switch ((int)cmd[i]) {
+	    case wxT('$'):
+		cmd.erase(i, 1);
+		break;
+	    case wxT('f'): {
+		wxString f = escape_for_shell(href.substr(0, colon), true);
+		cmd.replace(i - 1, 2, f);
+		i += f.size() - 1;
+		break;
+	    }
+	    case wxT('t'): {
+		wxString t = escape_for_shell(title);
+		cmd.replace(i - 1, 2, t);
+		i += t.size() - 1;
+		break;
+	    }
+	    case wxT('l'): {
+		wxString l = escape_for_shell(href.substr(colon + 1, colon2 - colon - 1));
+		cmd.replace(i - 1, 2, l);
+		i += l.size() - 1;
+		break;
+	    }
+	    case wxT('c'): {
+		wxString l;
+		if (colon2 == wxString::npos)
+		    l = wxT("0");
+		else
+		    l = escape_for_shell(href.substr(colon2 + 1));
+		cmd.replace(i - 1, 2, l);
+		i += l.size() - 1;
+		break;
+	    }
+	    default:
+		++i;
+	}
+    }
+#ifdef __WXMSW__
+    if (_wsystem(cmd.c_str()) >= 0)
+	return;
+#else
+    if (system(cmd.mb_str()) >= 0)
+	return;
+#endif
+    wxString m;
+    m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());
+    m += wxT(" (");
+    m += wxString(strerror(errno), wxConvUTF8);
+    m += wxT(')');
+    wxGetApp().ReportError(m);
 }
 
 int
@@ -221,7 +229,7 @@ CavernLogWindow::process(const wxString &file)
 #endif
     if (!cavern_out) {
 	wxString m;
-	m.Printf(wmsg(/*Couldn’t open pipe: “%s”*/17), cmd.c_str());
+	m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());
 	m += wxT(" (");
 	m += wxString(strerror(errno), wxConvUTF8);
 	m += wxT(')');

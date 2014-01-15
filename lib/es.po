@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2013-10-31 12:06:19 +0000\n"
+"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
 "Last-Translator: Josep Guarro <josep@imapmail.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -120,12 +120,12 @@ msgstr "Fin de línea no vacio"
 msgid "There were %d warning(s)."
 msgstr "Havia %d alerta(s)."
 
-#. TRANSLATORS: pipe here means a Unix pipe, which transfers data between two programs.
-#. Possibly better not to translate it.
+#. TRANSLATORS: %s is replaced by the command we attempted to run.
+#: ../src/cavernlog.cc:174
 #: ../src/cavernlog.cc:224
 #: n:17
-#, c-format
-msgid "Couldn’t open pipe: “%s”"
+#, c-format, fuzzy
+msgid "Couldn’t run external command: “%s”"
 msgstr "No se pudo abrir el “pipe”: “%s”"
 
 #: ../src/datain.c:80
