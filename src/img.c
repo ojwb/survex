@@ -1626,9 +1626,8 @@ img_read_item_ancient(img *pimg, img_point *p)
    static img_point pt = { 0.0, 0.0, 0.0 };
    long opt;
 
-   pimg->label = pimg->label_buf;
-
    again: /* label to goto if we get a cross */
+   pimg->label = pimg->label_buf;
    pimg->label[0] = '\0';
 
    if (pimg->version == 1) {
@@ -1662,32 +1661,21 @@ img_read_item_ancient(img *pimg, img_point *p)
       }
       goto again;
     case 2: case 3: {
-      char *q;
-      int ch;
+      size_t len;
       result = img_LABEL;
-      ch = GETC(pimg->fh);
-      if (ch == EOF) {
+      if (!fgets(pimg->label_buf, pimg->buf_len, pimg->fh)) {
 	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
       }
-      if (ch != '\\') ungetc(ch, pimg->fh);
-      fgets(pimg->label_buf, pimg->buf_len, pimg->fh);
-      if (feof(pimg->fh)) {
-	 img_errno = IMG_BADFORMAT;
-	 return img_BAD;
-      }
-      if (ferror(pimg->fh)) {
-	 img_errno = IMG_READERROR;
-	 return img_BAD;
-      }
-      q = pimg->label_buf + strlen(pimg->label_buf) - 1;
-      if (*q != '\n') {
+      if (pimg->label[0] == '\\') pimg->label++;
+      len = strlen(pimg->label);
+      if (len == 0 || pimg->label[len - 1] != '\n') {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
       /* Ignore empty labels in some .3d files (caused by a bug) */
-      if (q == pimg->label_buf) goto again;
-      *q = '\0';
+      if (len == 1) goto again;
+      pimg->label[len - 1] = '\0';
       pimg->flags = img_SFLAG_UNDERGROUND; /* no flags given... */
       if (opt == 2) goto done;
       break;
@@ -1765,7 +1753,7 @@ img_read_item_ancient(img *pimg, img_point *p)
    if (!read_coord(pimg->fh, &pt)) return img_BAD;
 
    if (result == img_LABEL && pimg->survey_len) {
-      if (strncmp(pimg->label_buf, pimg->survey, pimg->survey_len + 1) != 0)
+      if (strncmp(pimg->label, pimg->survey, pimg->survey_len + 1) != 0)
 	 goto again;
       pimg->label += pimg->survey_len + 1;
    }

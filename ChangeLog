@@ -1,3 +1,7 @@
+Wed Jan 15 06:13:44 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c: Simplify reading of labels in 3d v1 and v2 files.
+
 Wed Jan 15 06:11:12 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/,src/cavernlog.cc: If we fail to start the external editor,
