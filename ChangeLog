@@ -1,3 +1,8 @@
+Wed Jan 15 21:00:14 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Fill in some missing translations from existing similar
+	  translations.
+
 Wed Jan 15 10:55:44 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc,src/mainfrm.h: Fix wxWidgets assertion when double

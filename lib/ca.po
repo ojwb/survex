@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
+"PO-Revision-Date: 2014-01-15 20:41:13 +0000\n"
 "Last-Translator: Josep Guarro <josep@imapmail.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1435,7 +1435,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1769
 #: n:329
 msgid "Survex svx files"
-msgstr ""
+msgstr "Fitxers Survex svx"
 
 #: ../src/mainfrm.cc:1771
 #: n:330
@@ -1445,17 +1445,17 @@ msgstr ""
 #: ../src/printwx.cc:397
 #: n:411
 msgid "DXF files"
-msgstr ""
+msgstr "Fitxers DXF"
 
 #: ../src/printwx.cc:397
 #: n:412
 msgid "EPS files"
-msgstr ""
+msgstr "Fitxers EPS"
 
 #: ../src/printwx.cc:397
 #: n:413
 msgid "GPX files"
-msgstr ""
+msgstr "Fitxers GPX"
 
 #: ../src/printwx.cc:397
 #: n:414
@@ -1470,12 +1470,12 @@ msgstr ""
 #: ../src/printwx.cc:397
 #: n:416
 msgid "Skencil files"
-msgstr ""
+msgstr "Fitxers Skencil"
 
 #: ../src/printwx.cc:397
 #: n:417
 msgid "SVG files"
-msgstr ""
+msgstr "Fitxers SVG"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
 #. it should be translated to the terminology that cavers using the language
