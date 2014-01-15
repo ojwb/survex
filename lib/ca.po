@@ -124,7 +124,7 @@ msgstr "Hi havia %d alerta(es)."
 #: ../src/cavernlog.cc:174
 #: ../src/cavernlog.cc:224
 #: n:17
-#, c-format
+#, c-format, fuzzy
 msgid "Couldn’t run external command: “%s”"
 msgstr "No s’ha pogut obrir el “pipe”: “%s”"
 

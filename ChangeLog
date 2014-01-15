@@ -1,3 +1,8 @@
+Wed Jan 15 07:07:25 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/ca.po,lib/de.po: Mark altered message as fuzzy in languages I
+	  failed to before.
+
 Wed Jan 15 06:25:10 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
