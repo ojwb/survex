@@ -1459,6 +1459,14 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  pimg->E = get32(pimg->fh) / 100.0;
 		  pimg->H = get32(pimg->fh) / 100.0;
 		  pimg->V = get32(pimg->fh) / 100.0;
+		  if (feof(pimg->fh)) {
+		      img_errno = IMG_BADFORMAT;
+		      return img_BAD;
+		  }
+		  if (ferror(pimg->fh)) {
+		      img_errno = IMG_READERROR;
+		      return img_BAD;
+		  }
 		  return img_ERROR_INFO;
 	      case 0x23: { /* v7+: Date range (long) */
 		  if (pimg->version < 7) {
@@ -1467,6 +1475,14 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  }
 		  int days1 = (int)getu16(pimg->fh);
 		  int days2 = (int)getu16(pimg->fh);
+		  if (feof(pimg->fh)) {
+		      img_errno = IMG_BADFORMAT;
+		      return img_BAD;
+		  }
+		  if (ferror(pimg->fh)) {
+		      img_errno = IMG_READERROR;
+		      return img_BAD;
+		  }
 #if IMG_API_VERSION == 0
 		  pimg->date1 = (days1 - 25567) * 86400;
 		  pimg->date2 = (days2 - 25567) * 86400;
@@ -1499,6 +1515,14 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		      pimg->u = get32(pimg->fh) / 100.0;
 		      pimg->d = get32(pimg->fh) / 100.0;
 		  }
+		  if (feof(pimg->fh)) {
+		      img_errno = IMG_BADFORMAT;
+		      return img_BAD;
+		  }
+		  if (ferror(pimg->fh)) {
+		      img_errno = IMG_READERROR;
+		      return img_BAD;
+		  }
 		  if (pimg->survey_len) {
 		      size_t l = pimg->survey_len;
 		      const char *s = pimg->label_buf;
@@ -1519,6 +1543,14 @@ img_read_item_v3to7(img *pimg, img_point *p)
 	      default: /* 0x25 - 0x2f and 0x34 - 0x3f are currently unallocated. */
 		  img_errno = IMG_BADFORMAT;
 		  return img_BAD;
+	  }
+	  if (feof(pimg->fh)) {
+	      img_errno = IMG_BADFORMAT;
+	      return img_BAD;
+	  }
+	  if (ferror(pimg->fh)) {
+	      img_errno = IMG_READERROR;
+	      return img_BAD;
 	  }
 	  goto again3;
       }

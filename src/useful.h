@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2003,2004,2010,2011 Olly Betts
+ * Copyright (C) 1993-2003,2004,2010,2011,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,13 +122,21 @@
 
 static inline int16_t get16(FILE *fh) {
     int16_t w;
-    fread(&w, 2, 1, fh);
+    if (fread(&w, 2, 1, fh) == 0) {
+	/* We check feof() and ferror() afterwards, so checking the return
+	 * value achieves nothing, but we get a warning from glibc's
+	 * _FORTIFY_SOURCE if we don't pretend to. */
+    }
     return w;
 }
 
 static inline int32_t get32(FILE *fh) {
     int32_t w;
-    fread(&w, 4, 1, fh);
+    if (fread(&w, 4, 1, fh) == 0) {
+	/* We check feof() and ferror() afterwards, so checking the return
+	 * value achieves nothing, but we get a warning from glibc's
+	 * _FORTIFY_SOURCE if we don't pretend to. */
+    }
     return w;
 }
 #else

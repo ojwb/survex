@@ -1,3 +1,7 @@
+Wed Jan 15 00:15:30 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/useful.h: Fix some glibc fortify source warnings.
+
 Wed Jan 15 00:13:27 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c: Make 4 internal functions static.
