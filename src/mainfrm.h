@@ -473,7 +473,10 @@ public:
     int GetDateExtent() const { return m_DateExt; }
     int GetDateMin() const { return m_DateMin; }
 
-    void SelectTreeItem(LabelInfo* label);
+    void SelectTreeItem(LabelInfo* label) {
+	if (label->tree_id.IsOk())
+	    m_Tree->SelectItem(label->tree_id);
+    }
     void ClearTreeSelection();
 
     int GetNumFixedPts() const { return m_NumFixedPts; }

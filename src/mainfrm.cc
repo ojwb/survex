@@ -1595,11 +1595,6 @@ void MainFrm::FillTree()
     m_Tree->SetEnabled();
 }
 
-void MainFrm::SelectTreeItem(LabelInfo* label)
-{
-    m_Tree->SelectItem(label->tree_id);
-}
-
 void MainFrm::CentreDataset(const Vector3 & vmin)
 {
     // Centre the dataset around the origin.

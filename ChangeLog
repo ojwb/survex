@@ -1,3 +1,8 @@
+Wed Jan 15 10:55:44 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: Fix wxWidgets assertion when double
+	  clicking on an anonymous station.  Reported by Kevin Dixon.
+
 Wed Jan 15 07:11:30 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.10.
