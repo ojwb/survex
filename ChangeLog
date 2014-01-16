@@ -1,3 +1,7 @@
+Thu Jan 16 03:58:18 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Update pot and po files with current linenumber references.
+
 Thu Jan 16 03:57:55 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix incorrect message in comment.
