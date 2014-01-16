@@ -447,7 +447,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, FIXES)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_EXPORTS, wmsg(/*Entrances*/420),
+    v3->Add(new wxCheckBox(this, svx_EXPORTS, wmsg(/*Exported Stations*/420),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, EXPORTS)),
 	    0, wxALIGN_LEFT|wxALL, 2);

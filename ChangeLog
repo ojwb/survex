@@ -1,3 +1,7 @@
+Thu Jan 16 03:57:55 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix incorrect message in comment.
+
 Thu Jan 16 03:46:23 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/extract-msgs.pl: Fix to handle there being a comment before the
