@@ -1,3 +1,8 @@
+Thu Jan 16 03:46:23 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/extract-msgs.pl: Fix to handle there being a comment before the
+	  comment with the message in.
+
 Thu Jan 16 03:17:24 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Various translation updates.

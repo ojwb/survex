@@ -13,6 +13,8 @@ my (%msgs, @uses);
 while (<ARGV>) {
     while (m!/\*(.*?)\*/(\d+)\b!g) {
 	my ($msg, $msgno) = ($1, $2);
+	# Handle there being a comment before the comment with the message in.
+	$msg =~ s!.*/\*!!;
 	if (exists $msgs{$msgno}) {
 	    if ($msgs{$msgno} ne $msg) {
 		print STDERR "Mismatch for message number $msgno:\n";
