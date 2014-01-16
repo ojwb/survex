@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
+"PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
 "Last-Translator: Eric Madelaine <eric.madelaine@inria.fr>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1308,7 +1308,7 @@ msgstr "Définir l’endroit pour les fichiers sortis"
 #: ../src/cavern.c:124
 #: n:163
 msgid "only show brief summary (-qq for errors only)"
-msgstr "Monter seulement un bref résumé (-qq pour les erreurs seulement)"
+msgstr "Montrer seulement un bref résumé (-qq pour les erreurs seulement)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:125
@@ -2818,19 +2818,19 @@ msgstr ""
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "Mas&quer"
 
 #: ../src/mainfrm.cc:809
 #: n:408
 msgid "&Fade"
-msgstr ""
+msgstr "&Obscurcir"
 
 #: ../src/mainfrm.cc:810
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Montrer"
 
 #: ../src/printwx.cc:297
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Format d'exportation"

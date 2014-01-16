@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 20:42:19 +0000\n"
+"PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
 "Last-Translator: Josep Guarro <josep@imapmail.org>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1533,20 +1533,20 @@ msgstr "Este programa es software libre. Puede redistribuirlo y/o modificarlo ba
 #: ../src/3dtopos.c:85
 #: n:217
 msgid "3D_FILE [POS_FILE]"
-msgstr ""
+msgstr "ARCHIVO_3D [ARCHIVO_POS]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:261
 #: n:218
 msgid "FILE1 FILE2 [THRESHOLD]"
-msgstr ""
+msgstr "ARCHIVO1 ARCHIVO2 [LÍMITE]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:262
 #: n:255
-#, c-format
+#, c-format, fuzzy
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
-msgstr ""
+msgstr "ARCHIVO1 and ARCHIVO2 can be .pos or .3d files\nLÍMITE is the max. ignorable change along any axis in metres (default %s)"
 
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:464
@@ -2782,7 +2782,7 @@ msgstr ""
 #: ../src/findentrances.cc:155
 #: n:388
 msgid "-d PROJ_DATUM 3D_FILE"
-msgstr ""
+msgstr "-d DATURM_PROJ ARCHIVO_3D"
 
 #. TRANSLATORS: The findentrances utility uses the PROJ library to do
 #. coordinate transformations (https://trac.osgeo.org/proj/) - you
@@ -2817,19 +2817,19 @@ msgstr ""
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Oculta"
 
 #: ../src/mainfrm.cc:809
 #: n:408
 msgid "&Fade"
-msgstr ""
+msgstr "&Descolorarse"
 
 #: ../src/mainfrm.cc:810
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Mostrar"
 
 #: ../src/printwx.cc:297
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Formato de exportación"

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
+"PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
 "Last-Translator: Arief Setiadi Wibowo <q_thrynx@yahoo.com>\n"
 "Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -659,7 +659,7 @@ msgstr ""
 #: ../src/message.c:226
 #: n:92
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Instruksi tidak legal"
 
 #: ../src/extend.c:538
 #: ../src/mainfrm.cc:376
@@ -813,7 +813,7 @@ msgstr ""
 #: ../src/printwx.cc:700
 #: n:115
 msgid "North"
-msgstr ""
+msgstr "Utara"
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
 #: ../src/printwx.cc:724
@@ -850,12 +850,12 @@ msgstr ""
 #: ../src/cmdline.c:208
 #: n:122
 msgid "too few arguments"
-msgstr ""
+msgstr "parameternya kurang"
 
 #: ../src/cmdline.c:215
 #: n:123
 msgid "too many arguments"
-msgstr ""
+msgstr "parameternya terlalu banyak"
 
 #: ../src/cmdline.c:174
 #: ../src/cmdline.c:177
@@ -1077,7 +1077,7 @@ msgstr ""
 #: ../src/cmdline.c:139
 #: n:151
 msgid "output version information and exit"
-msgstr ""
+msgstr "keluarkan informasi versi dan keluar"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
 #: ../src/cmdline.c:166
@@ -1169,13 +1169,13 @@ msgstr ""
 #: ../src/listpos.c:182
 #: n:176
 msgid "node"
-msgstr ""
+msgstr "node"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
 #: ../src/listpos.c:182
 #: n:177
 msgid "nodes"
-msgstr ""
+msgstr "node"
 
 #. TRANSLATORS: connected component in the graph theory sense
 #. It means there are %ld bits of survey with no connections between them
@@ -1400,7 +1400,7 @@ msgstr ""
 #: n:205
 #, c-format
 msgid "About %s"
-msgstr ""
+msgstr "Tetang %s"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
 #. it should be translated to the terminology that cavers using the language
@@ -1421,7 +1421,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2168
 #: n:208
 msgid "All files"
-msgstr ""
+msgstr "Semua berkas"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
 #. it should be translated to the terminology that cavers using the language
@@ -1434,7 +1434,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1769
 #: n:329
 msgid "Survex svx files"
-msgstr ""
+msgstr "Berkas Survex svx"
 
 #: ../src/mainfrm.cc:1771
 #: n:330
@@ -1444,17 +1444,17 @@ msgstr ""
 #: ../src/printwx.cc:397
 #: n:411
 msgid "DXF files"
-msgstr ""
+msgstr "Berkas DXF"
 
 #: ../src/printwx.cc:397
 #: n:412
 msgid "EPS files"
-msgstr ""
+msgstr "Berkas EPS"
 
 #: ../src/printwx.cc:397
 #: n:413
 msgid "GPX files"
-msgstr ""
+msgstr "Berkas GPX"
 
 #: ../src/printwx.cc:397
 #: n:414
@@ -1469,12 +1469,12 @@ msgstr ""
 #: ../src/printwx.cc:397
 #: n:416
 msgid "Skencil files"
-msgstr ""
+msgstr "Berkas Skencil"
 
 #: ../src/printwx.cc:397
 #: n:417
 msgid "SVG files"
-msgstr ""
+msgstr "Berkas SVG"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
 #. it should be translated to the terminology that cavers using the language
@@ -1584,7 +1584,7 @@ msgstr "&Buka…\tCtrl+O"
 #: ../src/gfxcore.cc:931
 #: n:221
 msgid "Undated"
-msgstr ""
+msgstr "Tidak bertanggal"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
@@ -1798,7 +1798,7 @@ msgstr "Tilik"
 #: ../src/printwx.cc:254
 #: n:256
 msgid "Elements"
-msgstr ""
+msgstr "Bagian"
 
 #: ../src/printwx.cc:273
 #: ../src/printwx.cc:504
@@ -2057,35 +2057,35 @@ msgstr ""
 #: n:300
 #, c-format
 msgid "%s: option “%s” is ambiguous\n"
-msgstr ""
+msgstr "%s: pilihan “%s” ambigu\n"
 
 #: ../src/z_getopt.c:1023
 #: ../src/z_getopt.c:1034
 #: n:301
 #, c-format
 msgid "%s: option “-W %s” is ambiguous\n"
-msgstr ""
+msgstr "%s: pilihan “-W %s” ambigu\n"
 
 #: ../src/z_getopt.c:751
 #: ../src/z_getopt.c:755
 #: n:302
 #, c-format
 msgid "%s: option “%c%s” doesn’t allow an argument\n"
-msgstr ""
+msgstr "%s: pilihan “%c%s” tidak mengizinkan argumen\n"
 
 #: ../src/z_getopt.c:740
 #: ../src/z_getopt.c:743
 #: n:303
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
-msgstr ""
+msgstr "%s: pilihan “--%s” tidak mengizinkan argumen\n"
 
 #: ../src/z_getopt.c:1058
 #: ../src/z_getopt.c:1069
 #: n:304
 #, c-format
 msgid "%s: option “-W %s” doesn’t allow an argument\n"
-msgstr ""
+msgstr "%s: pilihan “-W %s” tidak mengizinkan argumen\n"
 
 #: ../src/z_getopt.c:790
 #: ../src/z_getopt.c:802
@@ -2094,7 +2094,7 @@ msgstr ""
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
-msgstr ""
+msgstr "%s: opsi “%s” membutuhkan sebuah argumen\n"
 
 #: ../src/z_getopt.c:960
 #: ../src/z_getopt.c:971
@@ -2103,35 +2103,35 @@ msgstr ""
 #: n:306
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr ""
+msgstr "%s: opsi membutuhkan argumen -- %c\n"
 
 #: ../src/z_getopt.c:840
 #: ../src/z_getopt.c:843
 #: n:307
 #, c-format
 msgid "%s: unrecognized option “--%s”\n"
-msgstr ""
+msgstr "%s: opsi tidak di-kenal “--%s”\n"
 
 #: ../src/z_getopt.c:851
 #: ../src/z_getopt.c:854
 #: n:308
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
-msgstr ""
+msgstr "%s: opsi tidak di-kenal “%c%s”\n"
 
 #: ../src/z_getopt.c:901
 #: ../src/z_getopt.c:904
 #: n:309
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr ""
+msgstr "%s: opsi ilegal -- %c\n"
 
 #: ../src/z_getopt.c:910
 #: ../src/z_getopt.c:913
 #: n:310
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr ""
+msgstr "%s: opsi tidak-valid -- %c\n"
 
 #: ../src/mainfrm.cc:787
 #: n:311
@@ -2190,7 +2190,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1789
 #: n:321
 msgid "Save Screenshot"
-msgstr ""
+msgstr "Simpan tangkapan layar"
 
 #: ../src/mainfrm.cc:2162
 #: ../src/mainfrm.cc:2165
@@ -2254,7 +2254,7 @@ msgstr ""
 #: ../src/mainfrm.cc:930
 #: n:332
 msgid "Find"
-msgstr ""
+msgstr "Cari"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:931
@@ -2385,7 +2385,7 @@ msgstr ""
 #: ../src/printwx.cc:744
 #: n:344
 msgid "°"
-msgstr ""
+msgstr "°"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
@@ -2816,7 +2816,7 @@ msgstr ""
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Tersembunyi"
 
 #: ../src/mainfrm.cc:809
 #: n:408

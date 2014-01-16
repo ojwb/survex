@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
+"PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1830,7 +1830,7 @@ msgstr ""
 #: ../src/printwx.cc:312
 #: n:261
 msgid "Crosses"
-msgstr ""
+msgstr "格点"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1905,7 +1905,7 @@ msgstr ""
 #: ../src/mainfrm.cc:800
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr ""
+msgstr "格点(&C)\tCtrl+X"
 
 #: ../src/mainfrm.cc:801
 #: n:297
@@ -2396,7 +2396,7 @@ msgstr "°"
 #: ../src/mainfrm.cc:2068
 #: n:345
 msgid "grad"
-msgstr ""
+msgstr "梯度"
 
 #: ../src/mainfrm.cc:844
 #: n:347
@@ -2589,7 +2589,7 @@ msgstr ""
 #: ../src/printwx.cc:420
 #: n:398
 msgid "Print Preview"
-msgstr ""
+msgstr "打印预览"
 
 #. TRANSLATORS: Title of the print dialog
 #: ../src/printwx.cc:210
@@ -2816,7 +2816,7 @@ msgstr ""
 #: ../src/mainfrm.cc:808
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "隐藏(&H)"
 
 #: ../src/mainfrm.cc:809
 #: n:408
@@ -2831,4 +2831,4 @@ msgstr ""
 #: ../src/printwx.cc:297
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "导出格式"
