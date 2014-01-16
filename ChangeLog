@@ -1,3 +1,8 @@
+Thu Jan 16 03:15:10 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po: Move menu accelerator on "Farbschlüssel"
+	  from "ü" to "F", since the latter isn't used in that menu.
+
 Wed Jan 15 21:00:14 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Fill in some missing translations from existing similar

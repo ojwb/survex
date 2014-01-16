@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
+"PO-Revision-Date: 2014-01-16 03:14:41 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -2029,7 +2029,7 @@ msgstr "&Neigungsanzeige"
 #: ../src/mainfrm.cc:856
 #: n:276
 msgid "Colour &Key"
-msgstr "Farbschl&üssel"
+msgstr "&Farbschlüssel"
 
 #: ../src/mainfrm.cc:857
 #: n:277
