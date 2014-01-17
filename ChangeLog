@@ -1,3 +1,8 @@
+Fri Jan 17 07:22:32 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Use cast to void rather than assignment to self to suppress
+	  unused parameter warnings, as clang warns about the latter.
+
 Fri Jan 17 07:12:47 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/aboutdlg.cc: Use string::erase() rather than assigning the

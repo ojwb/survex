@@ -1892,7 +1892,7 @@ svxPrintout::Init(FILE **fh_list, bool fCalibrate)
    };
    char **vals;
 
-   fCalibrate = fCalibrate; /* suppress unused argument warning */
+   (void)fCalibrate; /* suppress unused argument warning */
 
    vals = ini_read(fh_list, "aven", vars);
    fontsize_labels = 10;

@@ -5,7 +5,7 @@
  * Also useful as an example of how to use the img code in your own programs
  */
 
-/* Copyright (C) 1994-2004,2008,2010,2011,2013 Olly Betts
+/* Copyright (C) 1994-2004,2008,2010,2011,2013,2014 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -199,13 +199,13 @@ dxf_header(void)
 static void
 dxf_start_pass(int layer)
 {
-   layer = layer;
+   (void)layer;
 }
 
 static void
 dxf_move(const img_point *p)
 {
-   p = p; /* unused */
+   (void)p; /* unused */
 }
 
 static void
@@ -285,15 +285,15 @@ skencil_move(const img_point *p)
 static void
 skencil_line(const img_point *p1, const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   (void)fSurface; /* unused */
+   (void)p1; /* unused */
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
 }
 
 static void
 skencil_label(const img_point *p, const char *s, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
    fprintf(fh, "le()\n");
    fprintf(fh, "Fn('Times-Roman')\n");
@@ -310,7 +310,7 @@ skencil_label(const img_point *p, const char *s, bool fSurface)
 static void
 skencil_cross(const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
 	   p->x * factor - marker_size, p->y * factor - marker_size, 0.0);
@@ -451,8 +451,8 @@ svg_move(const img_point *p)
 static void
 svg_line(const img_point *p1, const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   (void)fSurface; /* unused */
+   (void)p1; /* unused */
    fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
    to_close = 1;
 }
@@ -460,7 +460,7 @@ svg_line(const img_point *p1, const img_point *p, bool fSurface)
 static void
 svg_label(const img_point *p, const char *s, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
            p->x * factor, p->y * -factor);
    fputs(s, fh);
@@ -471,7 +471,7 @@ svg_label(const img_point *p, const char *s, bool fSurface)
 static void
 svg_cross(const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
 	   find_name(p), p->x * factor, p->y * -factor, marker_size * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
@@ -512,7 +512,7 @@ plt_header(void)
 static void
 plt_start_pass(int layer)
 {
-   layer = layer;
+   (void)layer;
 }
 
 static void
@@ -528,8 +528,8 @@ plt_move(const img_point *p)
 static void
 plt_line(const img_point *p1, const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
-   p1 = p1; /* unused */
+   (void)fSurface; /* unused */
+   (void)p1; /* unused */
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "D %.3f %.3f %.3f ",
 	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
@@ -540,7 +540,7 @@ plt_line(const img_point *p1, const img_point *p, bool fSurface)
 static void
 plt_label(const img_point *p, const char *s, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    /* FIXME: also ctrl characters - ought to remap them, not give up */
    if (strchr(s, ' ')) {
       fprintf(stderr, "PLT format can't cope with spaces in station names\n");
@@ -552,8 +552,8 @@ plt_label(const img_point *p, const char *s, bool fSurface)
 static void
 plt_cross(const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
-   p = p; /* unused */
+   (void)fSurface; /* unused */
+   (void)p; /* unused */
 }
 
 static void

@@ -1,6 +1,6 @@
 /* editwrap.c
  * Run svxedit.tcl from the same directory as this program
- * Copyright (C) 2002,2010 Olly Betts
+ * Copyright (C) 2002,2010,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@ WinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
    DWORD len = 256;
    wchar_t *buf = NULL, *p;
    PWSTR cmd_line;
-   hInst = hInst; /* suppress compiler warning */
-   hPrevInst = hPrevInst; /* suppress compiler warning */
-   lpCmdLine = lpCmdLine; /* suppress compiler warning */
+   (void)hInst; /* suppress compiler warning */
+   (void)hPrevInst; /* suppress compiler warning */
+   (void)lpCmdLine; /* suppress compiler warning */
    while (1) {
        DWORD got;
        buf = realloc(buf, len * 2);

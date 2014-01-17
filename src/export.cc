@@ -280,7 +280,7 @@ DXF::header(const char *, const char *, time_t)
 void
 DXF::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   fPendingMove = fPendingMove; /* unused */
+   (void)fPendingMove; /* unused */
    fprintf(fh, "0\nLINE\n");
    fprintf(fh, fSurface ? "8\nSurface\n" : "8\nCentreLine\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p1->x);
@@ -426,7 +426,7 @@ Skencil::start_pass(int layer)
 void
 Skencil::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    if (fPendingMove) {
        fprintf(fh, "b()\n");
        fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p1->x * factor, p1->y * factor, 0.0);
@@ -437,7 +437,7 @@ Skencil::line(const img_point *p1, const img_point *p, bool fSurface, bool fPend
 void
 Skencil::label(const img_point *p, const char *s, bool fSurface, int)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
    fprintf(fh, "le()\n");
    fprintf(fh, "Fn('Times-Roman')\n");
@@ -454,7 +454,7 @@ Skencil::label(const img_point *p, const char *s, bool fSurface, int)
 void
 Skencil::cross(const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
 	   p->x * factor - marker_size, p->y * factor - marker_size, 0.0);
@@ -627,7 +627,7 @@ SVG::start_pass(int layer)
 void
 SVG::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    if (fPendingMove) {
        if (to_close) {
 	   fputs(to_close, fh);
@@ -641,7 +641,7 @@ SVG::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingM
 void
 SVG::label(const img_point *p, const char *s, bool fSurface, int)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
 	   p->x * factor, p->y * -factor);
    html_escape(fh, s);
@@ -652,7 +652,7 @@ SVG::label(const img_point *p, const char *s, bool fSurface, int)
 void
 SVG::cross(const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
 	   find_name(p), p->x * factor, p->y * -factor, marker_size * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
@@ -765,7 +765,7 @@ PLT::header(const char *title, const char *, time_t)
 void
 PLT::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    if (fPendingMove) {
        /* Survex is E, N, Alt - PLT file is N, E, Alt */
        fprintf(fh, "M %.3f %.3f %.3f ",
@@ -810,7 +810,7 @@ PLT::find_name_plt(const img_point *p)
 void
 PLT::label(const img_point *p, const char *s, bool fSurface, int)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    set_name(p, s);
 }
 
@@ -1074,7 +1074,7 @@ EPS::header(const char *title, const char *, time_t)
 void
 EPS::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    if (fPendingMove) {
        fprintf(fh, "%.2f %.2f M\n", p1->x, p1->y);
    }
@@ -1104,7 +1104,7 @@ EPS::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 void
 EPS::cross(const img_point *p, bool fSurface)
 {
-   fSurface = fSurface; /* unused */
+   (void)fSurface; /* unused */
    fprintf(fh, "%.2f %.2f X\n", p->x, p->y);
 }
 
