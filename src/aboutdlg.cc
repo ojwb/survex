@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001-2003 Mark R. Shinwell.
-//  Copyright (C) 2001,2002,2003,2004,2005,2006,2010 Olly Betts
+//  Copyright (C) 2001,2002,2003,2004,2005,2006,2010,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
 	if (!licence_str.empty()) licence_str += '\n';
 	licence_str += l.substr(0, a);
 	if (a < l.length() && l[a] == ' ') ++a;
-	l = l.substr(a);
+	l.erase(0, a);
     } while (!l.empty());
 
     wxStaticText* licence = new wxStaticText(this, 504, licence_str);
