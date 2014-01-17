@@ -22,17 +22,6 @@
 # include <config.h>
 #endif
 
-#include <vector>
-
-using namespace std;
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <ctype.h>
-#include <float.h>
-#include <limits.h>
 #include <wx/confbase.h>
 #include <wx/filename.h>
 #include <wx/print.h>
@@ -41,6 +30,16 @@ using namespace std;
 #include <wx/radiobox.h>
 #include <wx/statbox.h>
 #include <wx/valgen.h>
+
+#include <vector>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#include <ctype.h>
+#include <float.h>
+#include <limits.h>
 
 #include "debug.h" /* for BUG and SVX_ASSERT */
 #include "export.h"
@@ -54,6 +53,8 @@ using namespace std;
 #include "avenprcore.h"
 #include "mainfrm.h"
 #include "printwx.h"
+
+using namespace std;
 
 enum {
 	svx_EXPORT = 1200,
