@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2010,2011,2013 Olly Betts
+//  Copyright (C) 2004,2010,2011,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,6 +20,10 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef PACKAGE
+# error config.h must be included first in each C++ source file
+#endif
+
 struct AVFormatContext;
 struct AVStream;
 struct AVFrame;
@@ -27,6 +31,7 @@ struct AVPicture;
 struct SwsContext;
 
 class MovieMaker {
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     AVFormatContext *oc;
     AVStream *video_st;
     int out_size;
@@ -36,6 +41,7 @@ class MovieMaker {
     unsigned char *pixels;
     SwsContext *sws_ctx;
     int averrno;
+#endif
  
     void release();
 
