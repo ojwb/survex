@@ -1,3 +1,8 @@
+Sat Jan 18 22:47:20 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/checkshortcut.pl: Fix shortcut checking to allow for non-ASCII
+	  shortcuts.
+
 Sat Jan 18 22:45:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am,lib/bg.po,src/message.c: Add start of bulgarian
