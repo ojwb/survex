@@ -31,16 +31,12 @@
 # If using a pre-installed wxWidgets, note that it must satisfy the
 # following requirements:
 #   - It must be built with OpenGL support (--with-opengl).
-#   - It must be the Carbon version.
 #   - It probably should be a "Unicode" build (--enable-unicode).
 
 set -e
 
-# 2.8.12 doesn't work:
-# /bin/sh: line 0: cd: ../build/bakefiles/wxpresets/presets: No such file or directory
-# cp: wx.bkl: No such file or directory
-# [...]
-WXVERSION=2.8.11
+WXVERSION=3.0.0
+WX_SHA256=ff340539bcb6e45d8dbce848d3c13ebce34da6ffb9004a0a88e9541bec45bf85
 
 # Sadly, you can only specify one arch via -arch at a time (a restriction of
 # the wxWidgets build system).
@@ -59,7 +55,13 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     prefix=`pwd`/WXINSTALL
     wxtarball=wxWidgets-$WXVERSION.tar.bz2
     test -f "$wxtarball" || \
-      curl -O "ftp://ftp.wxwidgets.org/pub/$WXVERSION/$wxtarball"
+      curl -O "http://ftp.wxwidgets.org/pub/$WXVERSION/$wxtarball"
+    if echo "$WX_SHA256  $wxtarball" | shasum -a256 -c ; then
+      : # OK
+    else
+      echo "Checksum of downloaded file '$wxtarball' is incorrect, aborting."
+      exit 1
+    fi
     echo "+++ Extracting $wxtarball"
     test -d "wxWidgets-$WXVERSION" || tar jxf "$wxtarball"
     test -d "wxWidgets-$WXVERSION/build" || "mkdir wxWidgets-$WXVERSION/build"
