@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1055,6 +1055,9 @@ macosx_got_msg:
 	 if (locid) {
 	    WORD langid = LANGIDFROMLCID(locid);
 	    switch (PRIMARYLANGID(langid)) {
+	     case LANG_BULGARIAN:
+	       msg_lang = "bg";
+	       break;
 /* older mingw compilers don't seem to supply this value */
 #ifndef LANG_CATALAN
 # define LANG_CATALAN 0x03

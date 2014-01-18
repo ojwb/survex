@@ -1,3 +1,8 @@
+Sat Jan 18 22:45:50 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/bg.po,src/message.c: Add start of bulgarian
+	  translation, with messages take from therion.
+
 Fri Jan 17 07:39:48 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Include wx headers before ISO C/C++ ones, to try to
