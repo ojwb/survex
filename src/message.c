@@ -1089,6 +1089,9 @@ macosx_got_msg:
 		  msg_lang = "de";
 	       }
 	       break;
+	     case LANG_INDONESIAN:
+	       msg_lang = "id";
+	       break;
 	     case LANG_ITALIAN:
 	       msg_lang = "it";
 	       break;

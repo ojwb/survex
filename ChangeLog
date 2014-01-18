@@ -1,3 +1,8 @@
+Sat Jan 18 22:48:01 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/message.c: Hook up Indonesian translation to be used when
+	  Windows is set to Indonesian.
+
 Sat Jan 18 22:47:20 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/checkshortcut.pl: Fix shortcut checking to allow for non-ASCII
