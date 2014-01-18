@@ -1,3 +1,8 @@
+Sat Jan 18 22:49:02 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Translate "elevation" to "profile" in a couple of
+	  places where we weren't.
+
 Sat Jan 18 22:48:01 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/message.c: Hook up Indonesian translation to be used when

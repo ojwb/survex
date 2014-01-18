@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 00:39:01 +0000\n"
+"PO-Revision-Date: 2014-01-18 22:48:57 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -731,7 +731,7 @@ msgstr "do not generate survey shots"
 #: ../src/cad3d.c:635
 #: n:103
 msgid "produce an elevation view"
-msgstr "produce an elevation view"
+msgstr "produce a profile view"
 
 #: ../src/commands.c:1046
 #: n:104
@@ -1141,7 +1141,7 @@ msgstr "Profile facing %s, tilted %s"
 #: ../src/printwx.cc:975
 #: n:191
 msgid "Extended elevation"
-msgstr "Extended elevation"
+msgstr "Extended profile"
 
 #: ../src/cavern.c:412
 #: n:172
