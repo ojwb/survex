@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -140,6 +140,13 @@ string GetGLSystemDescription()
     return info;
 }
 
+static void
+log_gl_error(const wxChar * str, GLenum error_code)
+{
+    const char * e = reinterpret_cast<const char *>(gluErrorString(error_code));
+    wxLogError(str, wxString(e, wxConvUTF8).c_str());
+}
+
 // Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
 //            (thus it must not be called from BeginLines(), etc., or within a
 //             BeginLines()/EndLines() block etc.)
@@ -149,10 +156,8 @@ string GetGLSystemDescription()
     } \
     GLenum error_code_ = glGetError(); \
     if (error_code_ != GL_NO_ERROR) { \
-	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
-		   "(call "F" in method "M")"), \
-		   wxString((const char *)gluErrorString(error_code_), \
-			    wxConvUTF8).c_str()); \
+	log_gl_error(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
+			 "(call "F" in method "M")"), error_code_); \
     } \
 } while (0)
 
