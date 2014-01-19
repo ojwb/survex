@@ -175,17 +175,10 @@ sub sanity_check {
        print STDERR "Warning: $where is missing ellipses\n";
    }
 
-   # Check for missing (or added) menu shortcut (@)
-   if ($msg =~ /\@[A-Za-z]/ && $orig !~ /\@[A-Za-z]/) {
-       print STDERR "Warning: $where has menu shortcut but original doesn't\n";
-   } elsif ($msg !~ /\@[A-Za-z]/ && $orig =~ /\@[A-Za-z]/) {
-       print STDERR "Warning: $where is missing menu shortcut\n";
-   }
-
    # Check for missing (or added) menu shortcut (&)
-   if ($msg =~ /\&[A-Za-z]/ && $orig !~ /\&[A-Za-z]/) {
+   if ($msg =~ /\&[A-Za-z\xc2-\xf4]/ && $orig !~ /\&[A-Za-z]/) {
        print STDERR "Warning: $where has menu shortcut but original doesn't\n";
-   } elsif ($msg !~ /\&[A-Za-z]/ && $orig =~ /\&[A-Za-z]/) {
+   } elsif ($msg !~ /\&[A-Za-z\xc2-\xf4]/ && $orig =~ /\&[A-Za-z]/) {
        print STDERR "Warning: $where is missing menu shortcut\n";
    }
 

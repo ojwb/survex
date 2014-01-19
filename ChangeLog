@@ -1,3 +1,9 @@
+Sun Jan 19 00:51:33 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Fix menu shortcut check to allow for non-ASCII
+	  shortcuts.  Remove code to check for menu shortcuts marked with '@'
+	  as we no longer do that.
+
 Sat Jan 18 23:24:47 GMT 2014  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Update to use wx 3.0.0, and add a checksum check for
