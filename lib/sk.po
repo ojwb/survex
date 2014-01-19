@@ -883,8 +883,8 @@ msgstr "Odstránenie slepých odbočiek"
 #. indicate how processing is progressing.
 #: ../src/netskel.c:217
 #: n:126
-msgid "Concatenating traverses between nodes"
-msgstr "Pripojenie spojok medzi uzlami"
+msgid "Concatenating traverses"
+msgstr "Pripojenie spojok"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot
@@ -893,8 +893,8 @@ msgstr "Pripojenie spojok medzi uzlami"
 #. indicate how processing is progressing.
 #: ../src/netskel.c:410
 #: n:127
-msgid "Calculating traverses between nodes"
-msgstr "Výpočet spojok medzi uzlami"
+msgid "Calculating traverses"
+msgstr "Výpočet spojok"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot

@@ -883,7 +883,7 @@ msgstr ""
 #. indicate how processing is progressing.
 #: ../src/netskel.c:217
 #: n:126
-msgid "Concatenating traverses between nodes"
+msgid "Concatenating traverses"
 msgstr ""
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
@@ -893,7 +893,7 @@ msgstr ""
 #. indicate how processing is progressing.
 #: ../src/netskel.c:410
 #: n:127
-msgid "Calculating traverses between nodes"
+msgid "Calculating traverses"
 msgstr ""
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:

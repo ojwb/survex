@@ -883,8 +883,8 @@ msgstr "Sto rimuovendo le traverse terminali"
 #. indicate how processing is progressing.
 #: ../src/netskel.c:217
 #: n:126
-msgid "Concatenating traverses between nodes"
-msgstr "So connettendo le traverse fra i nodi"
+msgid "Concatenating traverses"
+msgstr "So connettendo le traverse"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot
@@ -893,8 +893,8 @@ msgstr "So connettendo le traverse fra i nodi"
 #. indicate how processing is progressing.
 #: ../src/netskel.c:410
 #: n:127
-msgid "Calculating traverses between nodes"
-msgstr "Sto calcolando le traverse fra i nodi"
+msgid "Calculating traverses"
+msgstr "Sto calcolando le traverse"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot

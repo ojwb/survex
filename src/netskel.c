@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013 Olly Betts
+ * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -214,7 +214,7 @@ static void
 remove_travs(void)
 {
    node *stn;
-   out_current_action(msg(/*Concatenating traverses between nodes*/126));
+   out_current_action(msg(/*Concatenating traverses*/126));
    FOR_EACH_STN(stn, stnlist) {
       if (fixed(stn) || three_node(stn)) {
 	 int d;
@@ -407,7 +407,7 @@ replace_travs(void)
    int cLegsTrav = 0;
    bool fArtic;
 
-   out_current_action(msg(/*Calculating traverses between nodes*/127));
+   out_current_action(msg(/*Calculating traverses*/127));
 
    if (!fhErrStat && !fSuppress)
       fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");

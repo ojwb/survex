@@ -883,8 +883,8 @@ msgstr "Removendo seqüências de ponta"
 #. indicate how processing is progressing.
 #: ../src/netskel.c:217
 #: n:126
-msgid "Concatenating traverses between nodes"
-msgstr "Concatenando seqüências entre nodos"
+msgid "Concatenating traverses"
+msgstr "Concatenando seqüências"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot
@@ -893,8 +893,8 @@ msgstr "Concatenando seqüências entre nodos"
 #. indicate how processing is progressing.
 #: ../src/netskel.c:410
 #: n:127
-msgid "Calculating traverses between nodes"
-msgstr "Calculando seqüências entre nodos"
+msgid "Calculating traverses"
+msgstr "Calculando seqüências"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot
