@@ -1,6 +1,5 @@
 msgid ""
 msgstr ""
-"Language: ro\n"
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
@@ -10,6 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ro\n"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex was trying to
 #. allocate space for.

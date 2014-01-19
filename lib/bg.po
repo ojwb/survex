@@ -1,6 +1,5 @@
 msgid ""
 msgstr ""
-"Language: bg\n"
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
@@ -10,6 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: bg\n"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex was trying to
 #. allocate space for.
@@ -660,7 +660,7 @@ msgstr ""
 #: ../src/message.c:226
 #: n:92
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Незаконна инструкция"
 
 #: ../src/extend.c:536
 #: ../src/mainfrm.cc:381
@@ -851,19 +851,19 @@ msgstr ""
 #: ../src/cmdline.c:208
 #: n:122
 msgid "too few arguments"
-msgstr ""
+msgstr "недостатъчно аргументи"
 
 #: ../src/cmdline.c:215
 #: n:123
 msgid "too many arguments"
-msgstr ""
+msgstr "твърде много аргументи"
 
 #: ../src/cmdline.c:174
 #: ../src/cmdline.c:177
 #: ../src/cmdline.c:181
 #: n:124
 msgid "FILE"
-msgstr ""
+msgstr "ФАЙЛ"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
 #. "sequence" for the English "traverse", which makes sense (although toporobot
@@ -1001,7 +1001,7 @@ msgstr ""
 #: ../src/cavern.c:376
 #: n:144
 msgid "Done."
-msgstr ""
+msgstr "Готово."
 
 #: ../src/netskel.c:720
 #: n:145
@@ -1105,14 +1105,14 @@ msgstr ""
 #: n:166
 #, c-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Страница %d от %d"
 
 #: ../src/avenprcore.cc:272
 #: ../src/printwx.cc:1462
 #: n:167
-#, c-format
+#, fuzzy, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
-msgstr ""
+msgstr "Survey “%s”   Страница %d от %d   Processed on %s"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1526,7 +1526,7 @@ msgstr "По&мощ"
 #: ../src/mainfrm.cc:878
 #: n:216
 msgid "&Presentation"
-msgstr ""
+msgstr "&Презентация"
 
 #: ../src/aboutdlg.cc:98
 #: n:219
@@ -1589,7 +1589,7 @@ msgstr "&Отвори…\tCtrl+O"
 #: ../src/gfxcore.cc:931
 #: n:221
 msgid "Undated"
-msgstr ""
+msgstr "Обновено"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
@@ -1681,7 +1681,7 @@ msgstr ""
 #: ../src/mainfrm.cc:763
 #: n:234
 msgid "&Reverse Direction"
-msgstr ""
+msgstr "&Обръщане на посока"
 
 #: ../src/mainfrm.cc:765
 #: n:235
@@ -1820,7 +1820,7 @@ msgstr ""
 #: ../src/printwx.cc:745
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "Една страница"
 
 #: ../src/mainfrm.cc:123
 #: ../src/printwx.cc:404
@@ -1836,7 +1836,7 @@ msgstr ""
 #: ../src/printwx.cc:434
 #: n:261
 msgid "Crosses"
-msgstr ""
+msgstr "Кръстчета"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1912,12 +1912,12 @@ msgstr ""
 #: ../src/mainfrm.cc:805
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr ""
+msgstr "&Кръстчета\tCtrl+X"
 
 #: ../src/mainfrm.cc:806
 #: n:297
 msgid "&Grid\tCtrl+G"
-msgstr ""
+msgstr "&Мрежа\tCtrl+G"
 
 #: ../src/mainfrm.cc:807
 #: n:318
@@ -2024,7 +2024,7 @@ msgstr "&Цял екран\tF11"
 #: ../src/mainfrm.cc:859
 #: n:274
 msgid "&Compass"
-msgstr ""
+msgstr "&Компас"
 
 #: ../src/mainfrm.cc:860
 #: n:275
@@ -2261,14 +2261,14 @@ msgstr ""
 #: ../src/mainfrm.cc:935
 #: n:332
 msgid "Find"
-msgstr ""
+msgstr "Търси следващ"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:936
 #: ../src/mainfrm.cc:2518
 #: n:333
 msgid "Hide"
-msgstr ""
+msgstr "Скрий"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
 #: ../src/mainfrm.cc:2479
@@ -2408,7 +2408,7 @@ msgstr ""
 #: ../src/mainfrm.cc:849
 #: n:347
 #~ msgid "&Preferences…"
-#~ msgstr ""
+#~ msgstr "&Настройки…"
 
 #: n:348
 #~ msgid "Draw passage walls"
@@ -2547,7 +2547,7 @@ msgstr ""
 #: ../src/mainfrm.cc:988
 #: n:377
 msgid "Presentation"
-msgstr ""
+msgstr "Презентация"
 
 #: ../src/mainfrm.cc:204
 #: n:378
@@ -2562,7 +2562,7 @@ msgstr "север"
 #: ../src/mainfrm.cc:742
 #: n:380
 msgid "&Print…\tCtrl+P"
-msgstr ""
+msgstr "&Принтиране…\tCtrl+P"
 
 #: ../src/mainfrm.cc:743
 #: n:381
@@ -2584,7 +2584,7 @@ msgstr ""
 #: ../src/printwx.cc:286
 #: n:383
 msgid "Export"
-msgstr ""
+msgstr "Експорт"
 
 #. TRANSLATORS: for about box:
 #: ../src/aboutdlg.cc:134
@@ -2596,18 +2596,18 @@ msgstr ""
 #: ../src/printwx.cc:605
 #: n:398
 msgid "Print Preview"
-msgstr ""
+msgstr "Предпечатен преглед"
 
 #. TRANSLATORS: Title of the print dialog
 #: ../src/printwx.cc:286
 #: n:399
 msgid "Print"
-msgstr ""
+msgstr "Принтиране"
 
 #: ../src/printwx.cc:517
 #: n:400
 msgid "&Print…"
-msgstr ""
+msgstr "&Принтиране…"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -2637,8 +2637,9 @@ msgstr ""
 #. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:140
 #: n:282
+#, fuzzy
 msgid " secs (0 = auto; *6 = 6 times auto)"
-msgstr ""
+msgstr " сек. (0 = auto; *6 = 6 times auto)"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
 #. things in future).
@@ -2826,17 +2827,17 @@ msgstr ""
 #: ../src/mainfrm.cc:813
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Скриване"
 
 #: ../src/mainfrm.cc:814
 #: n:408
 msgid "&Fade"
-msgstr ""
+msgstr "&Избледняване"
 
 #: ../src/mainfrm.cc:815
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Показване"
 
 #: ../src/printwx.cc:345
 #: n:410

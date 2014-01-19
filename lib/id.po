@@ -1,6 +1,5 @@
 msgid ""
 msgstr ""
-"Language: id\n"
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
@@ -10,6 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex was trying to
 #. allocate space for.
@@ -124,9 +124,9 @@ msgstr "Terdapat peringatan %d"
 #: ../src/cavernlog.cc:174
 #: ../src/cavernlog.cc:232
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Tidak dapat membuka pipa: “%s”"
+msgstr "Gagal mengeksekusi “%s”"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -363,7 +363,7 @@ msgstr ""
 #: n:47
 #, c-format
 msgid "Failed to open output file “%s”"
-msgstr ""
+msgstr "Gagal membuka “%s” untuk menulis"
 
 #: ../src/commands.c:1426
 #: n:48
@@ -517,12 +517,12 @@ msgstr ""
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
-msgstr ""
+msgstr "FLAG “%s” tidak dikenali"
 
 #: ../src/readval.c:471
 #: n:69
 msgid "Missing \""
-msgstr ""
+msgstr "\" hilang"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:121
@@ -667,13 +667,13 @@ msgstr "Instruksi tidak legal"
 #: n:93
 #, c-format
 msgid "Couldn’t open file “%s”"
-msgstr ""
+msgstr "Tidak bisa membuka berkas “%s”"
 
 #: ../src/printwx.cc:586
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "Gagal membuka “%s” untuk menulis"
 
 #: ../src/message.c:227
 #: n:94
@@ -775,7 +775,7 @@ msgstr ""
 #: n:109
 #, c-format
 msgid "Error reading from file “%s”"
-msgstr ""
+msgstr "Kesalahan membaca berkas “%s”"
 
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:36
@@ -784,7 +784,7 @@ msgstr ""
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
-msgstr ""
+msgstr "Galat saat menulis ke berkas “%s”"
 
 #: ../src/filename.c:82
 #: n:111
@@ -1000,7 +1000,7 @@ msgstr ""
 #: ../src/cavern.c:376
 #: n:144
 msgid "Done."
-msgstr ""
+msgstr "Selesai."
 
 #: ../src/netskel.c:720
 #: n:145
@@ -1010,9 +1010,9 @@ msgstr ""
 
 #: ../src/netskel.c:723
 #: n:146
-#, c-format
+#, fuzzy, c-format
 msgid "Error %6.2f%%"
-msgstr ""
+msgstr "Kesalahan %6.2f"
 
 #. TRANSLATORS: Here N/A means "Not Applicable" -- it means the traverse has zero length, so
 #. error per metre is meaningless
@@ -1020,8 +1020,9 @@ msgstr ""
 #. the numbers in the message above.
 #: ../src/netskel.c:725
 #: n:147
+#, fuzzy
 msgid "Error    N/A"
-msgstr ""
+msgstr "Kesalahan    N/A"
 
 #: ../src/cad3d.c:632
 #: n:148
@@ -1083,7 +1084,7 @@ msgstr "keluarkan informasi versi dan keluar"
 #: ../src/cmdline.c:166
 #: n:153
 msgid "OPTION"
-msgstr ""
+msgstr "OPSI"
 
 #: ../src/mainfrm.cc:131
 #: ../src/printwx.cc:370
@@ -1103,14 +1104,14 @@ msgstr ""
 #: n:166
 #, c-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Halaman %d dari %d"
 
 #: ../src/avenprcore.cc:272
 #: ../src/printwx.cc:1462
 #: n:167
-#, c-format
+#, fuzzy, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
-msgstr ""
+msgstr "Survey “%s”   Halaman %d dari %d   Processed on %s"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1502,7 +1503,7 @@ msgstr ""
 #: ../src/mainfrm.cc:873
 #: n:212
 msgid "&Orientation"
-msgstr ""
+msgstr "&Orientasi"
 
 #: ../src/mainfrm.cc:874
 #: n:213
@@ -1773,12 +1774,12 @@ msgstr ""
 #: ../src/mainfrm.cc:786
 #: n:252
 msgid "&Zoom In\t]"
-msgstr ""
+msgstr "Per&besar\t]"
 
 #: ../src/mainfrm.cc:787
 #: n:253
 msgid "Zoo&m Out\t["
-msgstr ""
+msgstr "Per&kecil\t["
 
 #: ../src/mainfrm.cc:789
 #: n:254
@@ -1806,7 +1807,7 @@ msgstr "Bagian"
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
-msgstr ""
+msgstr "%d halaman (%dx%d)"
 
 #. TRANSLATORS: used in the scale drop down selector in the print dialog
 #. the implicit meaning is "choose a suitable scale to fit the
@@ -1815,7 +1816,7 @@ msgstr ""
 #: ../src/printwx.cc:745
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "Satu halaman"
 
 #: ../src/mainfrm.cc:123
 #: ../src/printwx.cc:404
@@ -1874,8 +1875,9 @@ msgstr ""
 #. TRANSLATORS: used in the print dialog - controls drawing lines around each page
 #: ../src/printwx.cc:477
 #: n:264
+#, fuzzy
 msgid "Page Borders"
-msgstr ""
+msgstr "Batas"
 
 #. TRANSLATORS: used in the print dialog - controls drawing the box at the lower left
 #. with survey name, view angles, etc
@@ -2249,7 +2251,7 @@ msgstr ""
 #. TRANSLATORS: number of stations found matching search
 #, c-format
 #~ msgid "%d found"
-#~ msgstr ""
+#~ msgstr "%d ditemukan"
 
 #. TRANSLATORS: "Find stations" button tooltip
 #: ../src/mainfrm.cc:935
@@ -2402,7 +2404,7 @@ msgstr ""
 #: ../src/mainfrm.cc:849
 #: n:347
 #~ msgid "&Preferences…"
-#~ msgstr ""
+#~ msgstr "&Preferensi…"
 
 #: n:348
 #~ msgid "Draw passage walls"
