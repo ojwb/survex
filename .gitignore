@@ -37,6 +37,7 @@ install-sh
 lib/Info.plist
 lib/Makefile
 lib/Makefile.in
+lib/bg.msg
 lib/ca.msg
 lib/de.msg
 lib/de_CH.msg
@@ -54,8 +55,16 @@ lib/pt.msg
 lib/pt_BR.msg
 lib/ro.msg
 lib/sk.msg
+lib/zh_CN.msg
 lib/survex.keys
 lib/unifont.pixelfont
+lib/icons/3d.ico
+lib/icons/aven.ico
+lib/icons/err.ico
+lib/icons/plt.ico
+lib/icons/pos.ico
+lib/icons/svx.ico
+lib/icons/svxedit.ico
 missing
 src/*.o
 src/.deps/
