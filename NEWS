@@ -1,3 +1,28 @@
+4a7b9e30 (Olly Betts 2014-01-20 17:54:38 +1300    1) Mon Jan 20 04:54:28 GMT 2014  Olly Betts <olly@survex.com>
+
+Changes in 1.2.11 (2014-01-20):
+
+* aven: Fix wxWidgets assertion when double clicking on an anonymous station.
+  Reported by Kevin Dixon.
+
+* aven: Split log_fl_error helper function out of CHECK_GL_ERROR macro, which
+  will reduce code size and also the number of deprecation warnings about
+  gluErrorString on Mac OS X 10.9.
+
+* Various translation updates, including the start of a Bulgarian translation,
+  with messages take from Therion and elsewhere.
+
+* (Microsoft Windows version): The Indonesian translation will now be used
+  automatically when the system language is set to Indonesian.
+
+* (Mac OS X version): Fix to build with wx 3.0.0 on OS X 10.9.  Thanks to David
+  A. Riggs for his work on this.
+
+* (Mac OS X version): Update buildmacosx.sh script to use wx 3.0.0, and add a
+  checksum check for the downloaded wx sources.
+
+* Fix a lot of the compiler warnings when building with clang.
+
 Changes in 1.2.10 (2014-01-15):
 
 * aven: Fix assertion if two mouse buttons are held down at the same time.
