@@ -1,3 +1,7 @@
+Mon Jan 20 04:54:28 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/bg.po,lib/de.po,lib/de_CH.po: More translation updates.
+
 Sun Jan 19 01:44:44 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/,src/netskel.c,tests/: Drop "between nodes" from the progress

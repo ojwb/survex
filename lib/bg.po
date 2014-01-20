@@ -1085,7 +1085,7 @@ msgstr ""
 #: ../src/cmdline.c:166
 #: n:153
 msgid "OPTION"
-msgstr ""
+msgstr "ОПЦИЯ"
 
 #: ../src/mainfrm.cc:131
 #: ../src/printwx.cc:370
@@ -2041,7 +2041,7 @@ msgstr ""
 #: ../src/mainfrm.cc:862
 #: n:277
 msgid "&Scale Bar"
-msgstr ""
+msgstr "Лента за &мащаб"
 
 #: ../src/mainfrm.cc:854
 #: n:280
@@ -2138,7 +2138,7 @@ msgstr ""
 #: n:310
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr ""
+msgstr "%s: невалидна опция -- %c\n"
 
 #: ../src/mainfrm.cc:792
 #: n:311

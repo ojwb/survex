@@ -1858,12 +1858,12 @@ msgstr "Passagen"
 #: ../src/printwx.cc:467
 #: n:421
 msgid "Origin in centre"
-msgstr ""
+msgstr "Ursprung in der Mitte"
 
 #: ../src/printwx.cc:471
 #: n:422
 msgid "Full coordinates"
-msgstr ""
+msgstr "Vollständige Koordinaten"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:409
