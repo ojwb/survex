@@ -687,6 +687,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
+    m_SashPosition(-1),
     m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0),
     m_HasUndergroundLegs(false), m_HasSplays(false), m_HasSurfaceLegs(false),
@@ -1706,15 +1707,19 @@ void MainFrm::OpenFile(const wxString& file, wxString survey)
 
 void MainFrm::InitialiseAfterLoad(const wxString & file)
 {
-    int x;
-    int y;
-    GetClientSize(&x, &y);
-    if (x < 600)
-	x /= 3;
-    else if (x < 1000)
-	x = 200;
-    else
-	x /= 5;
+    if (m_SashPosition < 0) {
+	// Calculate sane default width for side panel.
+	int x;
+	int y;
+	GetClientSize(&x, &y);
+	if (x < 600)
+	    x /= 3;
+	else if (x < 1000)
+	    x = 200;
+	else
+	    x /= 5;
+	m_SashPosition = x;
+    }
 
     // Do this before we potentially delete the log window which may own the
     // wxString which parameter file refers to!
@@ -1747,11 +1752,16 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
 	if (win == m_Gfx) win = NULL;
     }
 
-    m_Splitter->SplitVertically(m_Notebook, m_Gfx, x);
-    m_SashPosition = x; // Save width of panel.
+    if (!IsFullScreen()) {
+	m_Splitter->SplitVertically(m_Notebook, m_Gfx, m_SashPosition);
+    } else {
+	was_showing_sidepanel_before_fullscreen = true;
+    }
 
     m_Gfx->Initialise(same_file);
-    m_Notebook->Show(true);
+    if (!IsFullScreen()) {
+	m_Notebook->Show(true);
+    }
 
     m_Gfx->Show(true);
     m_Gfx->SetFocus();
@@ -2557,7 +2567,8 @@ bool MainFrm::ShowingSidePanel()
 
 void MainFrm::ViewFullScreen() {
     ShowFullScreen(!IsFullScreen());
-    static bool sidepanel;
-    if (IsFullScreen()) sidepanel = ShowingSidePanel();
-    if (sidepanel) ToggleSidePanel();
+    if (IsFullScreen())
+	was_showing_sidepanel_before_fullscreen = ShowingSidePanel();
+    if (was_showing_sidepanel_before_fullscreen)
+	ToggleSidePanel();
 }

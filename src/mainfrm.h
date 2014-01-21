@@ -216,6 +216,7 @@ class traverse : public vector<PointInfo> {
 class MainFrm : public wxFrame {
     wxFileHistory m_history;
     int m_SashPosition;
+    bool was_showing_sidepanel_before_fullscreen;
     list<traverse> traverses;
     list<traverse> surface_traverses;
     list<vector<XSect> > tubes;

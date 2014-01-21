@@ -1,3 +1,8 @@
+Tue Jan 21 02:15:38 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: If full screen, don't recreate the
+	  side panel when a new file is opened (e.g. via Ctrl+O).
+
 Mon Jan 20 05:33:04 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
