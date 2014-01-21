@@ -124,9 +124,9 @@ msgstr "Il y a %d avertissement(s)."
 #: ../src/cavernlog.cc:174
 #: ../src/cavernlog.cc:232
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Ne peut pas ouvrir le “pipe”: “%s”"
+msgstr "Ne peut pas exécuter la commande externe: “%s”"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -1409,9 +1409,8 @@ msgstr "A propos %s"
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1821
 #: n:206
-#, fuzzy
 msgid "Select a survey file to view"
-msgstr "Selectionner un fichier de topo à afficher"
+msgstr "Sélectionner un fichier de topo à afficher"
 
 #: ../src/mainfrm.cc:1813
 #: n:207
@@ -1430,7 +1429,6 @@ msgstr "Tous les fichiers"
 #. would use.
 #: ../src/mainfrm.cc:1812
 #: n:229
-#, fuzzy
 msgid "All survey files"
 msgstr "Tous les fichiers de topo"
 
@@ -1635,7 +1633,7 @@ msgstr "On ne peut pas calibrer les angles et les longueurs en même temps"
 #: ../src/commands.c:564
 #: n:397
 msgid "Bad *alias command"
-msgstr ""
+msgstr "Commande illégale *alias"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
@@ -1860,12 +1858,12 @@ msgstr "Galeries"
 #: ../src/printwx.cc:468
 #: n:421
 msgid "Origin in centre"
-msgstr ""
+msgstr "Origine au centre"
 
 #: ../src/printwx.cc:472
 #: n:422
 msgid "Full coordinates"
-msgstr ""
+msgstr "Coordonnées complètes"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:410
@@ -1883,9 +1881,8 @@ msgstr "Bordures de page"
 #. drawing the box at the lower left with survey name, view angles, etc
 #: ../src/printwx.cc:484
 #: n:265
-#, fuzzy
 msgid "Legend"
-msgstr "Panneau d’information"
+msgstr "Légende"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages
 #. (otherwise they’ll be skipped to save paper)
@@ -2367,25 +2364,25 @@ msgstr "m"
 #: ../src/mainfrm.cc:67
 #: n:76
 msgid "ft"
-msgstr ""
+msgstr "ft"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3010
 #: n:387
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&Masquer le Compas"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:3023
 #: n:384
 msgid "&Hide Clino"
-msgstr ""
+msgstr "&Masquer le Clinomètre"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:3033
 #: n:385
 msgid "&Hide scale bar"
-msgstr ""
+msgstr "&Masquer l'échelle"
 
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
@@ -2393,7 +2390,7 @@ msgstr ""
 #: ../src/gfxcore.cc:3047
 #: n:386
 msgid "&Hide colour key"
-msgstr ""
+msgstr "&Masquer l’échelle des couleurs"
 
 #. TRANSLATORS: degree symbol - probably should be translated to itself.
 #: ../src/mainfrm.cc:2007
@@ -2812,29 +2809,29 @@ msgstr "-d PROJ_DATUM FICHIER_3D"
 #: ../src/printwx.cc:496
 #: n:389
 msgid "input datum as string to pass to PROJ"
-msgstr ""
+msgstr "données (chaine de caractères) à passer à PROJ"
 
 #: ../src/readval.c:338
 #: n:392
 msgid "Separator in survey name"
-msgstr ""
+msgstr "Séparateur dans le nom de la topo"
 
 #: ../src/readval.c:124
 #: ../src/readval.c:139
 #: ../src/readval.c:156
 #: n:3
 msgid "Can't have a leg between two anonymous stations"
-msgstr ""
+msgstr "Impossible d'avoir une visée entre deux stations anonymes"
 
 #: ../src/dump3d.c:51
 #: n:396
 msgid "show survey date information (if present)"
-msgstr ""
+msgstr "montrer la date de la topo (si présente)"
 
 #: ../src/mainfrm.cc:831
 #: n:406
 msgid "Spla&y Legs"
-msgstr ""
+msgstr "Visées l&atérales"
 
 #: ../src/mainfrm.cc:828
 #: n:407
