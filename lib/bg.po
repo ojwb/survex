@@ -1887,7 +1887,7 @@ msgstr ""
 #. with survey name, view angles, etc
 #: ../src/printwx.cc:483
 #: n:265
-msgid "Info Box"
+msgid "Legend"
 msgstr ""
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages

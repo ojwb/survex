@@ -293,7 +293,7 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
 	    putchar('\r');
 	    printf(msg166, (int)cPagesPrinted, l->pages);
 	}
-	/* don't skip the page with the info box on */
+	/* don't skip the page with the legend on */
 	if (l->SkipBlank && (int)page != (l->pagesY - 1) * l->pagesX + 1) {
 	    pass = -1;
 	    fBlankPage = fTrue;

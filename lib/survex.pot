@@ -1879,11 +1879,11 @@ msgstr ""
 msgid "Page Borders"
 msgstr ""
 
-#. TRANSLATORS: used in the print dialog - controls drawing the box at the lower left
-#. with survey name, view angles, etc
+#. TRANSLATORS: As in the legend on a map.  Used in the print dialog - controls
+#. drawing the box at the lower left with survey name, view angles, etc
 #: ../src/printwx.cc:483
 #: n:265
-msgid "Info Box"
+msgid "Legend"
 msgstr ""
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages

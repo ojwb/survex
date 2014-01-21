@@ -1877,12 +1877,12 @@ msgstr "Tilt angle"
 msgid "Page Borders"
 msgstr "Page Borders"
 
-#. TRANSLATORS: used in the print dialog - controls drawing the box at the lower left
-#. with survey name, view angles, etc
+#. TRANSLATORS: As in the legend on a map.  Used in the print dialog - controls
+#. drawing the box at the lower left with survey name, view angles, etc
 #: ../src/printwx.cc:483
 #: n:265
-msgid "Info Box"
-msgstr "Info Box"
+msgid "Legend"
+msgstr "Legend"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages
 #. (otherwise they’ll be skipped to save paper)

@@ -1878,11 +1878,12 @@ msgstr "Angulo de inclinación"
 msgid "Page Borders"
 msgstr "Marcos de la página"
 
-#. TRANSLATORS: used in the print dialog - controls drawing the box at the lower left
-#. with survey name, view angles, etc
+#. TRANSLATORS: As in the legend on a map.  Used in the print dialog - controls
+#. drawing the box at the lower left with survey name, view angles, etc
 #: ../src/printwx.cc:483
 #: n:265
-msgid "Info Box"
+#, fuzzy
+msgid "Legend"
 msgstr "Cajetín de información"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages

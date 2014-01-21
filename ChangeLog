@@ -1,3 +1,8 @@
+Tue Jan 21 02:29:06 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/,src/avenprcore.cc,src/printwx.cc: Change term "info box" to
+	  "legend".
+
 Tue Jan 21 02:15:38 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc,src/mainfrm.h: If full screen, don't recreate the

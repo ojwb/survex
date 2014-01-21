@@ -70,7 +70,7 @@ enum {
 	svx_PASSAGES,
 	svx_BORDERS,
 	svx_BLANKS,
-	svx_INFOBOX,
+	svx_LEGEND,
 	svx_SURFACE,
 	svx_PLAN,
 	svx_ELEV,
@@ -481,7 +481,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 		0, wxALIGN_LEFT|wxALL, 2);
 //	m_blanks = new wxCheckBox(this, svx_BLANKS, wmsg(/*Blank Pages*/266));
 //	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
-	v3->Add(new wxCheckBox(this, svx_INFOBOX, wmsg(/*Info Box*/265),
+	v3->Add(new wxCheckBox(this, svx_LEGEND, wmsg(/*Legend*/265),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       wxGenericValidator(&m_layout.Legend)),
 		0, wxALIGN_LEFT|wxALL, 2);
