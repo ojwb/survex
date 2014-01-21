@@ -1,3 +1,7 @@
+Tue Jan 21 11:31:22 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: More translation updates.
+
 Tue Jan 21 10:32:08 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am,lib/generate-po-todo: Add script and makefile target
