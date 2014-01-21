@@ -1051,7 +1051,21 @@ macosx_got_msg:
 	 msg_lang = "en";
 #endif
 #if OS_WIN32
-	 locid = GetUserDefaultLCID();
+	 /* GetUserDefaultUILanguage() requires Microsoft Windows 2000 or
+	  * newer.  For older versions, we use GetUserDefaultLCID().
+	  */
+	 {
+	    HMODULE win32 = GetModuleHandle(TEXT("kernel32.dll"));
+	    FARPROC f = GetProcAddress(win32, "GetUserDefaultUILanguage");
+	    if (f) {
+	       typedef LANGID (WINAPI *func_GetUserDefaultUILanguage)(void);
+	       func_GetUserDefaultUILanguage g;
+	       g = (func_GetUserDefaultUILanguage)f;
+	       locid = g();
+	    } else {
+	       locid = GetUserDefaultLCID();
+	    }
+	 }
 	 if (locid) {
 	    WORD langid = LANGIDFROMLCID(locid);
 	    switch (PRIMARYLANGID(langid)) {
