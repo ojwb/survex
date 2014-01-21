@@ -51,6 +51,9 @@ unifont.pixelfont: $(srcdir)/make-pixel-font
 merge-pos:
 	cd '$(srcdir)' && ./merge-po $(po_files)
 
+generate-todo:
+	cd '$(srcdir)' && ./generate-po-todo $(po_files)
+
 launchpad-diff:
 	rm -rf lib
 	tar xf launchpad-export.tar.gz

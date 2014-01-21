@@ -1,3 +1,8 @@
+Tue Jan 21 10:32:08 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/generate-po-todo: Add script and makefile target
+	  to pick out the messages from each po file which need attention.
+
 Tue Jan 21 10:30:45 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/mainfrm.cc: Allow "m" and "ft" suffixes to be

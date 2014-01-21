@@ -1,0 +1,66 @@
+#!/usr/bin/perl -w
+require 5.008;
+use bytes;
+use strict;
+use POSIX;
+use Locale::PO;
+
+use integer;
+
+if (@ARGV == 0 || $ARGV[0] eq '--help') {
+  print STDERR "Syntax: $0 PO_FILE...\n";
+  exit (@ARGV != 0);
+}
+
+for my $po_file (@ARGV) {
+  my $todo = $po_file;
+  if (!($todo =~ s/\.po$/.todo/)) {
+    print STDERR "$po_file: doesn't end '.po'\n";
+    next;
+  }
+  my $po = Locale::PO->load_file_asarray($po_file);
+  if (!defined $po) {
+    print STDERR "$po_file: Bad!\n";
+    next;
+  }
+  my $c = 0;
+  open TODO, '>', $todo or die $!;
+  foreach my $po_entry (@{$po}) {
+    my $msgid = $po_entry->msgid;
+    my $msgstr = $po_entry->msgstr;
+    ($msgid eq '""' || $msgstr eq '""' || $po_entry->fuzzy) or next;
+    $msgstr =~ s/\\n(..)/\\n"\n"$1/g;
+    if ($msgid eq '""') {
+      print TODO "msgid $msgid\n";
+      print TODO "msgstr \"\"\n$msgstr\n";
+      next;
+    }
+    if (defined $po_entry->automatic) {
+      my $automatic = "\n" . $po_entry->automatic;
+      $automatic =~ s/\n/\n#. /g;
+      while ($automatic =~ s/\n#. \n/\n#.\n/g) { }
+      print TODO $automatic;
+    }
+    my $ref = $po_entry->reference;
+    if (defined $ref) {
+      $ref = "\n" . $ref;
+      $ref =~ s/\n/\n#: /mg;
+      print TODO $ref;
+    }
+    my $fuzzy = $po_entry->fuzzy;
+    my $c_format = $po_entry->c_format;
+    if ($fuzzy || $c_format) {
+      print TODO "\n#";
+      print TODO ", fuzzy" if $fuzzy;
+      print TODO ", c-format" if $c_format;
+    }
+    print TODO "\n";
+    print TODO "#~ " if $po_entry->obsolete;
+    print TODO "msgid $msgid\n";
+    print TODO "#~ " if $po_entry->obsolete;
+    print TODO "msgstr $msgstr\n";
+    ++$c;
+  }
+  close TODO or die $!;
+  ($c == 0) and unlink $todo;
+}
