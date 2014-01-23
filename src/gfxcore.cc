@@ -1374,10 +1374,10 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	} else {
 	    int x = int(X);
 	    int y = GetYSize() - 1 - int(Y);
-	    l = x - MARGIN;
-	    r = x + MARGIN;
-	    u = y + MARGIN;
-	    d = y - MARGIN;
+	    l = x;
+	    r = x;
+	    u = y;
+	    d = y;
 	}
     }
     if (b.IsValid()) {
@@ -1386,10 +1386,10 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	} else {
 	    int x = int(X);
 	    int y = GetYSize() - 1 - int(Y);
-	    l = min(l, x - MARGIN);
-	    r = max(r, x + MARGIN);
-	    u = max(u, y + MARGIN);
-	    d = min(d, y - MARGIN);
+	    l = min(l, x);
+	    r = max(r, x);
+	    u = max(u, y);
+	    d = min(d, y);
 	}
     }
     if (c.IsValid()) {
@@ -1398,12 +1398,16 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	} else {
 	    int x = int(X);
 	    int y = GetYSize() - 1 - int(Y);
-	    l = min(l, x - MARGIN);
-	    r = max(r, x + MARGIN);
-	    u = max(u, y + MARGIN);
-	    d = min(d, y - MARGIN);
+	    l = min(l, x);
+	    r = max(r, x);
+	    u = max(u, y);
+	    d = min(d, y);
 	}
     }
+    l -= MARGIN;
+    r += MARGIN;
+    u += MARGIN;
+    d -= MARGIN;
     RefreshRect(wxRect(l, d, r - l, u - d), false);
 }
 
