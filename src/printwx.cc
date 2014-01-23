@@ -1000,15 +1000,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 {
    double StepEst, d;
    int E, Step, n, c;
-   char u_buf[3];
    wxString buf;
-   static const signed char powers[] = {
-      12, 9, 9, 9, 6, 6, 6, 3, 2, 2, 0, 0, 0, -3, -3, -3, -6, -6, -6, -9,
-   };
-   static const char si_mods[sizeof(powers)] = {
-      'p', 'n', 'n', 'n', 'u', 'u', 'u', 'm', 'c', 'c', '\0', '\0', '\0',
-      'k', 'k', 'k', 'M', 'M', 'M', 'G'
-   };
    /* Limit scalebar to 20cm to stop people with A0 plotters complaining */
    if (MaxLength > 200.0) MaxLength = 200.0;
 
@@ -1025,20 +1017,29 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
    /* Work out actual length of each scale bar division */
    d = Step * pow(10.0, (double)E) / m_layout->Scale * 1000.0;
 
+   /* FIXME: Non-metric units here... */
    /* Choose appropriate units, s.t. if possible E is >=0 and minimized */
-   /* Range of units is a little extreme, but it doesn't hurt... */
-   n = min(E, 9);
-   n = max(n, -10) + 10;
-   E += (int)powers[n];
-
-   u_buf[0] = si_mods[n];
-   u_buf[1] = '\0';
-   strcat(u_buf, "m");
+   int units;
+   if (E >= 3) {
+      E -= 3;
+      units = /*km*/423;
+   } else if (E >= 0) {
+      units = /*m*/424;
+   } else {
+      E += 2;
+      units = /*cm*/425;
+   }
 
    buf = wmsg(/*Scale*/154);
 
    /* Add units used - eg. "Scale (10m)" */
-   buf.Append(wxString::Format(wxT(" (%.0f%s)"), (double)pow(10.0, (double)E), wxString::FromAscii(u_buf).c_str()));
+   double pow10_E = pow(10.0, (double)E);
+   if (E >= 0) {
+      buf += wxString::Format(wxT(" (%.f%s)"), pow10_E, wmsg(units).c_str());
+   } else {
+      int sf = -(int)floor(E);
+      buf += wxString::Format(wxT(" (%.*f%s)"), sf, pow10_E, wmsg(units).c_str());
+   }
    SetColour(PR_COLOUR_TEXT);
    MOVEMM(x, y + 4); WriteString(buf);
 

@@ -54,20 +54,6 @@
 
 using namespace std;
 
-static wxString m_string, ft_string;
-
-static const wxChar * m() {
-    if (m_string.empty())
-	m_string = wmsg(/*m*/96);
-    return m_string.c_str();
-}
-
-static const wxChar * ft() {
-    if (ft_string.empty())
-	ft_string = wmsg(/*ft*/76);
-    return ft_string.c_str();
-}
-
 const static int img2aven_tab[] = {
 #include "img2aven.h"
 };
@@ -1954,17 +1940,22 @@ void MainFrm::ClearCoords()
 
 void MainFrm::SetCoords(const Vector3 &v)
 {
-    wxString & s = coords_text;
+    Double x = v.GetX();
+    Double y = v.GetY();
+    Double z = v.GetZ();
+    int units;
     if (m_Gfx->GetMetric()) {
-	s.Printf(wmsg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
-	s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
-			      v.GetZ(), m());
+	units = /*m*/424;
     } else {
-	s.Printf(wmsg(/*%.2f E, %.2f N*/338),
-		 v.GetX() / METRES_PER_FOOT, v.GetY() / METRES_PER_FOOT);
-	s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
-			      v.GetZ() / METRES_PER_FOOT, ft());
+	x /= METRES_PER_FOOT;
+	y /= METRES_PER_FOOT;
+	z /= METRES_PER_FOOT;
+	units = /*ft*/428;
     }
+    coords_text.Printf(wmsg(/*%.2f E, %.2f N*/338), x, y);
+    coords_text += wxString::Format(wxT(", %s %.2f%s"),
+				    wmsg(/*Altitude*/335).c_str(),
+				    z, wmsg(units).c_str());
     distfree_text = wxString();
     UpdateStatusBar();
 }
@@ -2002,22 +1993,24 @@ void MainFrm::SetCoords(Double x, Double y)
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
-	wxString brg_unit;
+	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
-	    brg_unit = wmsg(/*°*/344);
+	    brg_unit = /*°*/344;
 	} else {
 	    brg *= 400.0 / 360.0;
-	    brg_unit = wmsg(/*grad*/345);
+	    brg_unit = /*grad*/345;
 	}
 
+	int units;
 	if (m_Gfx->GetMetric()) {
-	    t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
-		     from_str.c_str(), dh, m(), int(brg), brg_unit.c_str());
+	    units = /*m*/424;
 	} else {
-	    t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
-		     from_str.c_str(), dh / METRES_PER_FOOT, ft(), int(brg),
-		     brg_unit.c_str());
+	    dh /= METRES_PER_FOOT;
+	    units = /*ft*/428;
 	}
+	t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
+		 from_str.c_str(), dh, wmsg(units).c_str(),
+		 int(brg), wmsg(brg_unit).c_str());
     }
 
     UpdateStatusBar();
@@ -2025,14 +2018,16 @@ void MainFrm::SetCoords(Double x, Double y)
 
 void MainFrm::SetAltitude(Double z)
 {
-    wxString & s = coords_text;
+    double alt = z;
+    int units;
     if (m_Gfx->GetMetric()) {
-	s.Printf(wxT("%s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
-		 double(z), m());
+	units = /*m*/424;
     } else {
-	s.Printf(wxT("%s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
-		 double(z / METRES_PER_FOOT), ft());
+	alt /= METRES_PER_FOOT;
+	units = /*ft*/428;
     }
+    coords_text.Printf(wxT("%s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
+		       alt, wmsg(units).c_str());
 
     wxString & t = distfree_text;
     t = wxString();
@@ -2043,13 +2038,11 @@ void MainFrm::SetAltitude(Double z)
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
-	if (m_Gfx->GetMetric()) {
-	    t.Printf(wmsg(/*%s: V %.2f%s*/375),
-		     from_str.c_str(), dz, m());
-	} else {
-	    t.Printf(wmsg(/*%s: V %.2f%s*/375),
-		     from_str.c_str(), dz / METRES_PER_FOOT, ft());
+	if (!m_Gfx->GetMetric()) {
+	    dz /= METRES_PER_FOOT;
 	}
+	t.Printf(wmsg(/*%s: V %.2f%s*/375), from_str.c_str(),
+		 dz, wmsg(units).c_str());
     }
 
     UpdateStatusBar();
@@ -2072,16 +2065,21 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 
     Vector3 v = *here + m_Offsets;
     wxString & s = here_text;
+    Double x = v.GetX();
+    Double y = v.GetY();
+    Double z = v.GetZ();
+    int units;
     if (m_Gfx->GetMetric()) {
-	s.Printf(wmsg(/*%.2f E, %.2f N*/338), v.GetX(), v.GetY());
-	s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
-			      v.GetZ(), m());
+	units = /*m*/424;
     } else {
-	s.Printf(wmsg(/*%.2f E, %.2f N*/338),
-		 v.GetX() / METRES_PER_FOOT, v.GetY() / METRES_PER_FOOT);
-	s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
-			      v.GetZ() / METRES_PER_FOOT, ft());
+	x /= METRES_PER_FOOT;
+	y /= METRES_PER_FOOT;
+	z /= METRES_PER_FOOT;
+	units = /*ft*/428;
     }
+    s.Printf(wmsg(/*%.2f E, %.2f N*/338), x, y);
+    s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
+			  z, wmsg(units).c_str());
     s += wxT(": ");
     s += here->GetText();
     m_Gfx->SetHere(*here);
@@ -2101,32 +2099,30 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	wxString hv_str;
+	Double z = v.GetZ();
+	int units;
 	if (m_Gfx->GetMetric()) {
-	    hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
-			  d_horiz, m(), delta.GetZ(), m());
+	    units = /*m*/424;
 	} else {
-	    hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
-			  d_horiz / METRES_PER_FOOT, ft(),
-			  delta.GetZ() / METRES_PER_FOOT, ft());
+	    d_horiz /= METRES_PER_FOOT;
+	    dr /= METRES_PER_FOOT;
+	    z /= METRES_PER_FOOT;
+	    units = /*ft*/428;
 	}
-	wxString brg_unit;
+	wxString len_unit = wmsg(units);
+	hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
+		      d_horiz, len_unit.c_str(), z, len_unit.c_str());
+	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
-	    brg_unit = wmsg(/*°*/344);
+	    brg_unit = /*°*/344;
 	} else {
 	    brg *= 400.0 / 360.0;
-	    brg_unit = wmsg(/*grad*/345);
+	    brg_unit = /*grad*/345;
 	}
 	wxString & d = dist_text;
-	if (m_Gfx->GetMetric()) {
-	    d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
-		     from_str.c_str(), hv_str.c_str(),
-		     dr, m(), int(brg), brg_unit.c_str());
-	} else {
-	    d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
-		     from_str.c_str(), hv_str.c_str(),
-		     dr / METRES_PER_FOOT, ft(), int(brg),
-		     brg_unit.c_str());
-	}
+	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
+		 from_str.c_str(), hv_str.c_str(),
+		 dr, len_unit.c_str(), int(brg), wmsg(brg_unit).c_str());
 	m_Gfx->SetThere(*label);
     } else {
 	dist_text = wxString();

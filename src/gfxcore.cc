@@ -901,7 +901,7 @@ void GfxCore::DrawDepthKey()
 	key_legends[band].Printf(wxT("%.*f"), sf, z);
     }
 
-    DrawColourKey(num_bands, wxString(), m_Metric ? wxT("m") : wxT("ft"));
+    DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
 }
 
 void GfxCore::DrawDateKey()
@@ -1013,33 +1013,40 @@ void GfxCore::DrawScaleBar()
 
     // Add labels.
     wxString str;
+    int units;
     if (m_Metric) {
-	if (size_snap >= 1e3) {
-	    str.Printf(wxT("%.fkm"), size_snap * 1e-3);
+	Double km = size_snap * 1e-3;
+	if (km >= 1.0) {
+	    size_snap = km;
+	    units = /*km*/423;
 	} else if (size_snap >= 1.0) {
-	    str.Printf(wxT("%.fm"), size_snap);
+	    units = /*m*/424;
 	} else {
-	    int sf = -(int)floor(log10(size_snap));
-	    str.Printf(wxT("%.*fm"), sf, size_snap);
+	    size_snap *= 1e2;
+	    units = /*cm*/425;
 	}
     } else {
 	size_snap /= METRES_PER_FOOT;
 	Double miles = size_snap / 5280.0;
-	if (miles >= 2.0) {
-	    str.Printf(wxT("%.f miles"), miles);
-	} else if (miles >= 1.0) {
-	    str.Printf(wxT("%.f mile"), miles);
-	} else if (size_snap >= 1.0) {
-	    str.Printf(wxT("%.fft"), size_snap);
-	} else {
-	    Double inches = size_snap * 12;
-	    if (inches >= 1.0) {
-		str.Printf(wxT("%.fin"), inches);
+	if (miles >= 1.0) {
+	    size_snap = miles;
+	    if (size_snap >= 2.0) {
+		units = /* miles*/426;
 	    } else {
-		int sf = -(int)floor(log10(inches));
-		str.Printf(wxT("%.*fin"), sf, inches);
+		units = /* mile*/427;
 	    }
+	} else if (size_snap >= 1.0) {
+	    units = /*ft*/428;
+	} else {
+	    size_snap *= 12.0;
+	    units = /*in*/429;
 	}
+    }
+    if (size_snap >= 1.0) {
+	str.Printf(wxT("%.f%s"), size_snap, wmsg(units).c_str());
+    } else {
+	int sf = -(int)floor(log10(size_snap));
+	str.Printf(wxT("%.*f%s"), sf, size_snap, wmsg(units).c_str());
     }
 
     int text_width, text_height;

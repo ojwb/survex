@@ -1,3 +1,7 @@
+Thu Jan 23 11:34:30 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Make all uses of unit names translatable.
+
 Tue Jan 21 12:23:06 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/fr.po: Merge translation updates from Eric Madelaine.

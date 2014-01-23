@@ -115,7 +115,9 @@ enum {
 const int OUTBUF_SIZE = 200000;
 
 MovieMaker::MovieMaker()
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     : oc(0), video_st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0), averrno(0)
+#endif
 {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     static bool initialised_ffmpeg = false;
@@ -289,7 +291,6 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     (void)fnm;
     (void)width;
     (void)height;
-    averrno = MOVIE_NOT_ENABLED;
     return false;
 #endif
 }
@@ -304,8 +305,8 @@ unsigned char * MovieMaker::GetBuffer() const {
 }
 
 int MovieMaker::GetWidth() const {
-    assert(video_st);
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+    assert(video_st);
     AVCodecContext *c = video_st->codec;
     return c->width;
 #else
@@ -314,8 +315,8 @@ int MovieMaker::GetWidth() const {
 }
 
 int MovieMaker::GetHeight() const {
-    assert(video_st);
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+    assert(video_st);
     AVCodecContext *c = video_st->codec;
     return c->height;
 #else
