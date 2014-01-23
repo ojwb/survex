@@ -41,9 +41,9 @@ class MovieMaker {
     unsigned char *pixels;
     SwsContext *sws_ctx;
     int averrno;
-#endif
  
     void release();
+#endif
 
 public:
     MovieMaker();

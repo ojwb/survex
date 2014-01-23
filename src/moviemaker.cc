@@ -108,8 +108,7 @@ static inline void avcodec_free_frame(AVFrame ** frame) {
 enum {
     MOVIE_NO_SUITABLE_FORMAT = 1,
     MOVIE_AUDIO_ONLY,
-    MOVIE_FILENAME_TOO_LONG,
-    MOVIE_NOT_ENABLED
+    MOVIE_FILENAME_TOO_LONG
 };
 
 const int OUTBUF_SIZE = 200000;
@@ -491,10 +490,10 @@ MovieMaker::Close()
     return true;
 }
 
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
 void
 MovieMaker::release()
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     if (video_st) {
 	// Close codec.
 	avcodec_close(video_st->codec);
@@ -527,12 +526,14 @@ MovieMaker::release()
 	av_free(oc);
 	oc = NULL;
     }
-#endif
 }
+#endif
 
 MovieMaker::~MovieMaker()
 {
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     release();
+#endif
 }
 
 const char *
