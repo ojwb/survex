@@ -124,9 +124,9 @@ msgstr "Es gab %d Warnungen."
 #: ../src/cavernlog.cc:174
 #: ../src/cavernlog.cc:232
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Pipe konnte nicht geöffnet werden: »%s«"
+msgstr "Externer Befehl konnte nicht ausgeführt werden: »%s«"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
