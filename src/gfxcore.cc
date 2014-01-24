@@ -2256,7 +2256,6 @@ int GfxCore::GetDepthColour(Double z) const
     // less than GetDepthMin() here, and it can certainly be true for passage
     // tubes, so just clamp the value to 0.
     if (z <= 0) return 0;
-    assert(z_ext > 0.0);
     // We seem to get rounding differences causing z to sometimes exceed z_ext
     // by a small amount here (see: http://trac.survex.com/ticket/26) and it
     // can certainly be true for passage tubes, so just clamp the value.

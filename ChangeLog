@@ -1,3 +1,9 @@
+Fri Jan 24 05:08:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Don't crash with assertion failure when showing
+	  passages for a cave with no vertical extent.  Reported by Jonny
+	  Prouty.
+
 Fri Jan 24 05:07:34 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Fix to build again with libav/ffmpeg.
