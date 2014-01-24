@@ -568,8 +568,6 @@ MovieMaker::get_error_string() const
 	    return "Audio-only format specified";
 	case MOVIE_FILENAME_TOO_LONG:
 	    return "Filename too long";
-	case MOVIE_NOT_ENABLED:
-	    return "Movie export support not included";
     }
     return "Unknown error";
 #else

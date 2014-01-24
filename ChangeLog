@@ -1,3 +1,7 @@
+Fri Jan 24 05:07:34 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc: Fix to build again with libav/ffmpeg.
+
 Tue Jan 23 19:52:21 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Simplify accounting for size of blobs on measuring
