@@ -2744,6 +2744,9 @@ versions removed this rather archaic restriction).
 
 <programlisting>
 *units dx dy dz 1000 metres ; data given as kilometres</programlisting>
+
+<programlisting>
+*units left right up down feet</programlisting>
 </Para>
 </listitem>
 
@@ -2752,8 +2755,8 @@ versions removed this rather archaic restriction).
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>
-&lt;quantity&gt; is one of
-TAPE|LENGTH|COMPASS|BEARING|CLINO|GRADIENT|COUNTER|DEPTH|DECLINATION|X|Y|Z
+&lt;quantity&gt; is one of the following (grouped entries are just alternative names for the same thing):
+TAPE/LENGTH, COMPASS/BEARING, BACKCOMPASS/BACKBEARING, CLINO/GRADIENT, BACKCLINO/BACKGRADIENT, COUNTER/COUNT, DEPTH, DECLINATION, DX/EASTING, DY/NORTHING, DZ/ALTITUDE, LEFT, RIGHT, UP/CEILING, DOWN/FLOOR
 </Para>
 
 <Para>Changes current units of all the quantities listed to [&lt;factor&gt;]
@@ -2770,25 +2773,21 @@ non-zero.
 <Para>Valid units for listed quantities are:
 </Para>
 
-<!-- FIXME: are these correct?
-  and dx,dy,dz -> easting/northing/altitude in preference -->
-<Para>TAPE, LENGTH, COUNTER, COUNT, DEPTH, dX, dY, dZ <!-- FIXME: , X,Y,Z,-->
-in YARDS|FEET|METRIC|METRES|METERS
+<Para>TAPE/LENGTH, COUNTER/COUNT, DEPTH, DX/EASTING, DY/NORTHING, DZ/ALTITUDE
+in YARDS|FEET|METRIC|METRES|METERS (default: METRES)
 </Para>
 
-<Para>CLINO, BACKCLINO, GRADIENT, BACKGRADIENT
-in DEG|DEGREES|GRADS|MILS|PERCENT|PERCENTAGE
+<Para>CLINO/GRADIENT, BACKCLINO/BACKGRADIENT
+in DEG|DEGREES|GRADS|MILS|PERCENT|PERCENTAGE (default: DEGREES)
 </Para>
 
-<Para>COMPASS, BACKCOMPASS, BEARING, BACKBEARING, DECLINATION
-in DEG|DEGREES|GRADS|MILS|MINUTES
+<Para>COMPASS/BEARING, BACKCOMPASS/BACKBEARING, DECLINATION
+in DEG|DEGREES|GRADS|MILS|MINUTES (default: DEGREES)
 </Para>
 
 <Para>(360 degrees = 400 grads (also known as Mils))
 </Para>
-
-<Para>Defaults are: Metres, Degrees, Degrees respectively.
-</Para></listitem>
+</listitem>
 
 </VarListEntry>
 

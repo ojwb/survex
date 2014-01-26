@@ -1,3 +1,13 @@
+Sun Jan 26 23:50:31 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Add missing quantities to the list documented as
+	  accepted by *units: LEFT, RIGHT, UP/CEILING, DOWN/FLOOR (missing
+	  entirely); BACKCOMPASS/BACKBEARING, BACKCLINO/BACKGRADIENT (missing
+	  from the main list, mentioned in list of the units that can be set
+	  for them); COUNT (missing alternative name for COUNTER); DX/EASTING,
+	  DY/NORTHING, DZ/ALTITUDE (incorrectly listed as X, Y, Z).  Reported
+	  by Jonny Prouty.
+
 Sun Jan 26 23:48:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c: If *units is used to set units for LEVEL, PLUMB, or
