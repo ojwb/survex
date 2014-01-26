@@ -52,6 +52,7 @@ test -x "$testdir"/../src/cavern || testdir=.
  bad_cmd_flags plumb unusedstation exportnakedbegin oldestyle bugdz\
  baddatacylpolar badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug\
  omitclino back notentranceorexport inferunknown inferexports bad_units_factor\
+ bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
@@ -197,6 +198,7 @@ for file in $TESTS ; do
   inferunknown) pos=fail; error=1 ;;
   inferexports) pos=no; warn=0 ;;
   bad_units_factor) pos=fail; error=6 ;;
+  bad_units_qlist) pos=fail; error=3 ;;
   percent_gradient) pos=yes; warn=0 ;;
   dotinsurvey) pos=no; warn=2 ;;
   leandroclino) pos=yes; warn=0 ;;

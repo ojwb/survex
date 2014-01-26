@@ -1,3 +1,9 @@
+Sun Jan 26 23:48:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c: If *units is used to set units for LEVEL, PLUMB, or
+	  POSITION, give an error rather than quietly ignore the attempt.
+	* tests/: New regression testcase bad_units_qlist.
+
 Sun Jan 26 23:35:18 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/bad_units_factor.svx,tests/cavern.tst: Test that "*units

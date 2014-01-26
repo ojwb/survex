@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1268,7 +1268,8 @@ cmd_units(void)
    unsigned long m; /* mask with bit x set to indicate quantity x specified */
    real factor;
 
-   qmask = get_qlist(0);
+   qmask = get_qlist(BIT(Q_POS)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
+
    if (!qmask) return;
    if (qmask == BIT(Q_DEFAULT)) {
       default_units(pcs);
