@@ -3,4 +3,5 @@
 *units compass 0 degrees
 *units clino 0 grads
 *units depth 0 metres
-*units altitude 0 meters 
+*units altitude 0 yards
+*units backclino 0 percent

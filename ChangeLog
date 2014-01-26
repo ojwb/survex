@@ -1,3 +1,11 @@
+Sun Jan 26 23:35:18 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/bad_units_factor.svx,tests/cavern.tst: Test that "*units
+	  backclino 0 percent" gives an error about the factor being zero.
+	* tests/Makefile.am,tests/bad_units_factor.out: Add expected output
+	  to make sure we're getting the errors we expect, not just the
+	  expected number of errors.
+
 Fri Jan 24 06:20:49 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/de.po,lib/de_CH.po: Update.
