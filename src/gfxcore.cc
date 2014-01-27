@@ -155,7 +155,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     AddPoly = &GfxCore::AddPolylineDepth;
     wxConfigBase::Get()->Read(wxT("metric"), &m_Metric, true);
     wxConfigBase::Get()->Read(wxT("degrees"), &m_Degrees, true);
-    wxConfigBase::Get()->Read(wxT("percent"), &m_Percent, true);
+    wxConfigBase::Get()->Read(wxT("percent"), &m_Percent, false);
     m_here.Invalidate();
     m_there.Invalidate();
 
