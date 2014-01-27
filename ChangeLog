@@ -1,3 +1,8 @@
+Mon Jan 27 10:25:02 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Make cad3d remap control characters and spaces in station
+	  names when generating PLT output in the same way aven does.
+
 Mon Jan 27 07:43:27 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

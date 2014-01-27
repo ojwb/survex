@@ -1,5 +1,5 @@
 /* append a string */
-/* Copyright (c) Olly Betts 1999, 2001, 2012
+/* Copyright (c) Olly Betts 1999, 2001, 2012, 2014
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 #include "osalloc.h"
 
 void s_cat(char **pstr, int *plen, char *s);
+
+void s_cat_len(char **pstr, int *plen, char *s, int s_len);
 
 /* append a character */
 void s_catchar(char **pstr, int *plen, char /*ch*/);

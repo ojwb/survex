@@ -1,5 +1,5 @@
 /* append a string */
-/* Copyright (c) Olly Betts 1999
+/* Copyright (c) Olly Betts 1999, 2014
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +25,14 @@
 void
 s_cat(char **pstr, int *plen, char *s)
 {
-   int new_len = strlen(s) + 1; /* extra 1 for nul */
+   s_cat_len(pstr, plen, s, strlen(s));
+}
+
+/* append a string with length */
+void
+s_cat_len(char **pstr, int *plen, char *s, int s_len)
+{
+   int new_len = s_len + 1; /* extra 1 for nul */
    int len = 0;
 
    if (*pstr) {
@@ -38,7 +45,8 @@ s_cat(char **pstr, int *plen, char *s)
       *pstr = osrealloc(*pstr, *plen);
    }
 
-   strcpy(*pstr + len, s);
+   memcpy(*pstr + len, s, s_len);
+   (*pstr + len)[s_len] = '\0';
 }
 
 /* append a character */

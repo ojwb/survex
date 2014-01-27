@@ -96,7 +96,7 @@ sorterr_SOURCES = sorterr.c $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
-cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c \
+cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c str.c \
  $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c

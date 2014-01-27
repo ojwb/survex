@@ -41,6 +41,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "message.h"
+#include "str.h"
 #include "useful.h"
 
 /* default values - can be overridden with --text-height and --marker-size
@@ -344,7 +345,7 @@ typedef struct point {
 static point **htab;
 
 static void
-set_name(const img_point *p, const char *s)
+set_name_(const img_point *p, const char *s, int copy)
 {
    int hash;
    point *pt;
@@ -361,17 +362,31 @@ set_name(const img_point *p, const char *s)
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z) {
 	 /* already got name for these coordinates */
 	 /* FIXME: what about multiple names for the same station? */
+	 if (!copy)
+	    osfree((char*)s);
 	 return;
       }
    }
 
    pt = osnew(point);
-   pt->label = osstrdup(s);
+   if (copy)
+      s = osstrdup(s);
+   pt->label = s;
    pt->p = *p;
    pt->next = htab[hash];
    htab[hash] = pt;
+}
 
-   return;
+static void
+set_name(const img_point *p, const char *s)
+{
+   set_name_(p, s, 0);
+}
+
+static void
+set_name_copy(const img_point *p, const char *s)
+{
+   set_name_(p, s, 1);
 }
 
 static const char *
@@ -465,7 +480,7 @@ svg_label(const img_point *p, const char *s, bool fSurface)
            p->x * factor, p->y * -factor);
    fputs(s, fh);
    fputs("</text>\n", fh);
-   set_name(p, s);
+   set_name_copy(p, s);
 }
 
 static void
@@ -540,13 +555,30 @@ plt_line(const img_point *p1, const img_point *p, bool fSurface)
 static void
 plt_label(const img_point *p, const char *s, bool fSurface)
 {
+   const char * q;
+   char * escaped = NULL;
+   int elen;
    (void)fSurface; /* unused */
-   /* FIXME: also ctrl characters - ought to remap them, not give up */
-   if (strchr(s, ' ')) {
-      fprintf(stderr, "PLT format can't cope with spaces in station names\n");
-      exit(1);
+   /* PLT format can't handle spaces or control characters, so escape them
+    * like in URLs (an arbitrary choice of escaping, but at least a familiar
+    * one and % isn't likely to occur in station names).
+    */
+   for (q = s; *q; ++q) {
+      unsigned char ch = *q;
+      if (ch <= ' ' || ch == '%') {
+	 s_cat_len(&escaped, &elen, s, q - s);
+	 s_catchar(&escaped, &elen, '%');
+	 s_catchar(&escaped, &elen, "0123456789abcdef"[ch >> 4]);
+	 s_catchar(&escaped, &elen, "0123456789abcdef"[ch & 0x0f]);
+	 s = q + 1;
+      }
    }
-   set_name(p, s);
+   if (escaped) {
+      s_cat_len(&escaped, &elen, s, q - s);
+      set_name(p, escaped);
+      return;
+   }
+   set_name_copy(p, s);
 }
 
 static void
