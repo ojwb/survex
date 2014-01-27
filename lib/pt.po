@@ -2370,7 +2370,7 @@ msgstr ""
 #: ../src/printwx.cc:1027
 #: n:424
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #. TRANSLATORS: abbreviation for "centimetres" (unit of length), used e.g.
 #. "50cm".
@@ -2416,7 +2416,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2110
 #: n:428
 msgid "ft"
-msgstr ""
+msgstr "ft"
 
 #. TRANSLATORS: abbreviation for "inches" (unit of length), used e.g. as "6in".
 #.

@@ -2350,7 +2350,7 @@ msgstr ""
 #: ../src/printwx.cc:1025
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "千米"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
 #.
@@ -2366,7 +2366,7 @@ msgstr ""
 #: ../src/printwx.cc:1027
 #: n:424
 msgid "m"
-msgstr ""
+msgstr "米"
 
 #. TRANSLATORS: abbreviation for "centimetres" (unit of length), used e.g.
 #. "50cm".
@@ -2377,7 +2377,7 @@ msgstr ""
 #: ../src/printwx.cc:1030
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "厘米"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length, plural), used e.g.
 #. "2 miles".
@@ -2387,7 +2387,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1034
 #: n:426
 msgid " miles"
-msgstr ""
+msgstr "英里"
 
 #. TRANSLATORS: abbreviation for "mile" (unit of length, singular), used e.g.
 #. "1 mile".
@@ -2397,7 +2397,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1036
 #: n:427
 msgid " mile"
-msgstr ""
+msgstr "英里"
 
 #. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g. as "10ft".
 #.
@@ -2412,7 +2412,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2110
 #: n:428
 msgid "ft"
-msgstr ""
+msgstr "英尺"
 
 #. TRANSLATORS: abbreviation for "inches" (unit of length), used e.g. as "6in".
 #.
@@ -2421,7 +2421,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1042
 #: n:429
 msgid "in"
-msgstr ""
+msgstr "英寸"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3017

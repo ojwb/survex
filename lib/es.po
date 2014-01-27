@@ -2414,7 +2414,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2110
 #: n:428
 msgid "ft"
-msgstr ""
+msgstr "pie"
 
 #. TRANSLATORS: abbreviation for "inches" (unit of length), used e.g. as "6in".
 #.
