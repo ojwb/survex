@@ -34,7 +34,7 @@ if test x"$rel" = xyes ; then
   mv INSTALL.keep INSTALL
   ./configure CC=gcc CXX=g++
   make CFLAGS='-Werror' CXXFLAGS='-Werror'
-  make distcheck
+  VALGRIND=valgrind make distcheck
 else
   make dist
 fi
