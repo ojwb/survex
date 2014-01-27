@@ -1,3 +1,9 @@
+Mon Jan 27 11:13:31 GMT 2014  Olly Betts <olly@survex.com>
+
+	* make_release: Add simple check for // comments in C sources.
+	* make_release: Before release, build with -Werror to catch any
+	  warnings which may have been missed.
+
 Mon Jan 27 10:25:02 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/: Make cad3d remap control characters and spaces in station

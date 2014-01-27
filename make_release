@@ -9,6 +9,16 @@ if test x"$1" = x-t ; then
 fi
 
 if test x"$rel" = xyes ; then
+  cd src
+  perl -ne 'if (m!(.*)//! && $1 !~ / \* /) {print "$ARGV:$.:// comment in C source\n"; exit 1}' \
+      *.c \
+      cavern.h commands.h cmdline.h date.h datain.h debug.h\
+      filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h\
+      listpos.h matrix.h message.h namecmp.h netartic.h netbits.h\
+      netskel.h network.h osalloc.h osdepend.h ostypes.h out.h readval.h str.h\
+      useful.h validate.h whichos.h
+  cd ..
+
   # Check there are no uncommitted changes.
   if git commit -a --dry-run >/dev/null 2>/dev/null ; then
     echo 'There are uncommitted changes - please rectify'
@@ -23,11 +33,8 @@ if test x"$rel" = xyes ; then
   autoreconf --force -i
   mv INSTALL.keep INSTALL
   ./configure CC=gcc CXX=g++
+  make CFLAGS='-Werror' CXXFLAGS='-Werror'
   make distcheck
-  # FIXME: setting c89 doesn't define unix and suppresses getc_unlocked().
-  # Tell the preprocessor to be C89 - this makes it reject // comments
-  # FIXME -Werror makes configure explode CFLAGS="-Werror -Wp,-std=c89"
-  # FIXME   CXXFLAGS="-Werror"
 else
   make dist
 fi
