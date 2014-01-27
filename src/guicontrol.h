@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2004,2006 Olly Betts
+//  Copyright (C) 2001-2004,2006,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -179,6 +179,9 @@ public:
 
     void OnToggleDegrees();
     void OnToggleDegreesUpdate(wxUpdateUIEvent& cmd);
+
+    void OnTogglePercent();
+    void OnTogglePercentUpdate(wxUpdateUIEvent& cmd);
 
     void OnToggleTubes();
     void OnToggleTubesUpdate(wxUpdateUIEvent& cmd);

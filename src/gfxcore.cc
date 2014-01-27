@@ -142,6 +142,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_BoundingBox(false),
     m_Degrees(false),
     m_Metric(false),
+    m_Percent(false),
     m_HitTestGridValid(false),
     m_here_is_temporary(false),
     presentation_mode(0),
@@ -154,6 +155,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     AddPoly = &GfxCore::AddPolylineDepth;
     wxConfigBase::Get()->Read(wxT("metric"), &m_Metric, true);
     wxConfigBase::Get()->Read(wxT("degrees"), &m_Degrees, true);
+    wxConfigBase::Get()->Read(wxT("percent"), &m_Percent, true);
     m_here.Invalidate();
     m_there.Invalidate();
 
@@ -639,12 +641,16 @@ void GfxCore::Draw2dIndicators()
     if (m_Compass && !m_Parent->IsExtendedElevation()) {
 	wxString str;
 	int value;
+	int brg_unit;
 	if (m_Degrees) {
 	    value = int(m_PanAngle);
+	    brg_unit = /*°*/344;
 	} else {
 	    value = int(m_PanAngle * 200.0 / 180.0);
+	    brg_unit = /*ᵍ*/76;
 	}
 	str.Printf(wxT("%03d"), value);
+	str += wmsg(brg_unit);
 	DrawIndicatorText(comp_centre_x - triple_zero_width / 2, y_off, str);
 
 	str = wmsg(/*Facing*/203);
@@ -657,7 +663,28 @@ void GfxCore::Draw2dIndicators()
 	int angle;
 	wxString str;
 	int width;
-	if (m_Degrees) {
+	int unit;
+	if (m_Percent) {
+	    static int zero_width = 0;
+	    if (!zero_width) {
+		GetTextExtent(wxT("0"), &zero_width, NULL);
+	    }
+	    width = zero_width;
+	    if (m_TiltAngle > 89.99) {
+		angle = 1000000;
+	    } else if (m_TiltAngle < -89.99) {
+		angle = -1000000;
+	    } else {
+		angle = int(100 * tan(rad(m_TiltAngle)));
+	    }
+	    if (angle > 99999 || angle < -99999) {
+		str = angle > 0 ? wxT("+") : wxT("-");
+		str += wmsg(/*∞*/431);
+	    } else {
+		str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("0");
+	    }
+	    unit = /*%*/96;
+	} else if (m_Degrees) {
 	    static int zero_zero_width = 0;
 	    if (!zero_zero_width) {
 		GetTextExtent(wxT("00"), &zero_zero_width, NULL);
@@ -665,34 +692,47 @@ void GfxCore::Draw2dIndicators()
 	    width = zero_zero_width;
 	    angle = int(m_TiltAngle);
 	    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("00");
+	    unit = /*°*/344;
 	} else {
 	    width = triple_zero_width;
 	    angle = int(m_TiltAngle * 200.0 / 180.0);
 	    str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
+	    unit = /*ᵍ*/76;
 	}
 
-	// Adjust horizontal position so the left of the first digit is
-	// always in the same place.
 	int sign_offset = 0;
-	if (angle < 0) {
+	if (unit == /*%*/96) {
+	    // Right align % since the width changes so much.
+	    GetTextExtent(str, &sign_offset, NULL);
+	    sign_offset -= width;
+	} else if (angle < 0) {
+	    // Adjust horizontal position so the left of the first digit is
+	    // always in the same place.
 	    static int minus_width = 0;
 	    if (!minus_width) {
 		GetTextExtent(wxT("-"), &minus_width, NULL);
 	    }
-	    sign_offset = minus_width + 1;
+	    sign_offset = minus_width;
 	} else if (angle > 0) {
+	    // Adjust horizontal position so the left of the first digit is
+	    // always in the same place.
 	    static int plus_width = 0;
 	    if (!plus_width) {
 		GetTextExtent(wxT("+"), &plus_width, NULL);
 	    }
-	    sign_offset = plus_width + 1;
+	    sign_offset = plus_width;
 	}
+
+	str += wmsg(unit);
 	DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
 
 	str = wmsg(/*Elevation*/118);
-	int w;
-	GetTextExtent(str, &w, NULL);
-	DrawIndicatorText(elev_centre_x - w / 2, y_off + height, str);
+	static int elevation_width = 0;
+	if (!elevation_width) {
+	    GetTextExtent(str, &elevation_width, NULL);
+	}
+	int x = elev_centre_x - elevation_width / 2;
+	DrawIndicatorText(x, y_off + height, str);
     }
 }
 
@@ -3042,6 +3082,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendSeparator();
 	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
+	menu.AppendCheckItem(menu_CTL_PERCENT, wmsg(/*&Percent*/430));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
 	return true;

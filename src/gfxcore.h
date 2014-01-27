@@ -179,6 +179,7 @@ private:
 
     bool m_Degrees;
     bool m_Metric;
+    bool m_Percent;
 
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
@@ -432,6 +433,7 @@ public:
 	InvalidateList(LIST_SCALE_BAR);
     }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
+    void TogglePercent() { ToggleFlag(&m_Percent); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
     void ToggleSmoothShading();
@@ -440,6 +442,7 @@ public:
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }
+    bool GetPercent() const { return m_Percent; }
     bool GetTubes() const { return m_Tubes; }
 
     bool CheckHitTestGrid(const wxPoint& point, bool centre);

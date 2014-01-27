@@ -563,6 +563,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_CTL_SIDE_PANEL, MainFrm::OnViewSidePanel)
     EVT_MENU(menu_CTL_METRIC, MainFrm::OnToggleMetric)
     EVT_MENU(menu_CTL_DEGREES, MainFrm::OnToggleDegrees)
+    EVT_MENU(menu_CTL_PERCENT, MainFrm::OnTogglePercent)
     EVT_MENU(menu_CTL_REVERSE, MainFrm::OnReverseControls)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
@@ -625,6 +626,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLineUpdate)
     EVT_UPDATE_UI(menu_CTL_METRIC, MainFrm::OnToggleMetricUpdate)
     EVT_UPDATE_UI(menu_CTL_DEGREES, MainFrm::OnToggleDegreesUpdate)
+    EVT_UPDATE_UI(menu_CTL_PERCENT, MainFrm::OnTogglePercentUpdate)
 END_EVENT_TABLE()
 
 class LabelCmp : public greater<const LabelInfo*> {
@@ -866,6 +868,7 @@ void MainFrm::CreateMenuBar()
     ctlmenu->AppendSeparator();
     ctlmenu->AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
     ctlmenu->AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
+    ctlmenu->AppendCheckItem(menu_CTL_PERCENT, wmsg(/*&Percent*/430));
 #endif
 
     wxMenuBar* menubar = new wxMenuBar();

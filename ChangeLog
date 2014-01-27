@@ -1,3 +1,9 @@
+Mon Jan 27 06:01:15 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Add support for showing percentage gradient in the tilt
+	  indicator in aven.  Show the units (degrees, grads, or percent) for
+	  the tilt and bearing indicators.
+
 Mon Jan 27 05:40:04 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Fix GCC warnings.

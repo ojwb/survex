@@ -123,6 +123,7 @@ enum {
     menu_CTL_SIDE_PANEL,
     menu_CTL_METRIC,
     menu_CTL_DEGREES,
+    menu_CTL_PERCENT,
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
     textctrl_FIND,
@@ -449,10 +450,12 @@ public:
 
     void OnToggleMetric(wxCommandEvent&) { if (m_Control) m_Control->OnToggleMetric(); }
     void OnToggleDegrees(wxCommandEvent&) { if (m_Control) m_Control->OnToggleDegrees(); }
+    void OnTogglePercent(wxCommandEvent&) { if (m_Control) m_Control->OnTogglePercent(); }
     void OnToggleTubes(wxCommandEvent&) { if (m_Control) m_Control->OnToggleTubes(); }
 
     void OnToggleMetricUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleMetricUpdate(event); }
     void OnToggleDegreesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleDegreesUpdate(event); }
+    void OnTogglePercentUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnTogglePercentUpdate(event); }
     void OnToggleTubesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleTubesUpdate(event); }
 
     // end of horrible bodges

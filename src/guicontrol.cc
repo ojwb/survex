@@ -1071,6 +1071,20 @@ void GUIControl::OnToggleDegreesUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->GetDegrees());
 }
 
+void GUIControl::OnTogglePercent()
+{
+    m_View->TogglePercent();
+
+    wxConfigBase::Get()->Write(wxT("percent"), m_View->GetPercent());
+    wxConfigBase::Get()->Flush();
+}
+
+void GUIControl::OnTogglePercentUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->GetPercent());
+}
+
 void GUIControl::OnToggleTubes()
 {
     m_View->ToggleTubes();
