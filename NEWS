@@ -1,5 +1,3 @@
-d171c0c6 (Olly Betts 2014-01-27 19:03:48 +1300    1) Mon Jan 27 06:01:15 GMT 2014  Olly Betts <olly@survex.com>
-
 Changes in 1.2.11 (2014-01-27):
 
 * aven: Fix wxWidgets assertion when double clicking on an anonymous station.
@@ -8,8 +6,8 @@ Changes in 1.2.11 (2014-01-27):
 * aven: Fix display of Unicode characters above 256 when there's a character
   <= 256 earlier in the same string.
 
-* aven: Use the actual width of characters above 256 rather than assuming they
-  are 16 pixels wide.
+* aven: Use the actual width of Unicode characters above 256 rather than
+  assuming they are 16 pixels wide.
 
 * aven: If full screen, don't show the side panel when a new file is opened
   (e.g. via Ctrl+O).
@@ -37,6 +35,9 @@ Changes in 1.2.11 (2014-01-27):
 
 * cavern: If *units is used to try to set units for LEVEL, PLUMB, or POSITION,
   give an error rather than quietly ignoring the attempt.
+
+* cad3d: Make cad3d remap control characters and spaces in station names when
+  generating PLT output in the same way aven does.
 
 * Various translation updates (particular thanks to Eric Madelaine and Dennis
   Baudys), including the start of a Bulgarian translation, with messages taken
