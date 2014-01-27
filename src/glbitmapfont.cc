@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011,2012,2013 Olly Betts
+//  Copyright (C) 2011,2012,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -195,8 +195,8 @@ BitmapFont::write_string(const wxChar *s, size_t len) const
 	call_lists(n, s);
 	s += n;
 	len -= n;
-	while (len && int(s[n]) >= BITMAPFONT_MAX_CHAR) {
-	    write_glyph(s[n]);
+	while (len && int(*s) >= BITMAPFONT_MAX_CHAR) {
+	    write_glyph(*s);
 	    ++s;
 	    --len;
 	}
