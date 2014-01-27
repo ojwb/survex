@@ -1361,6 +1361,15 @@ static const int HIGHLIGHTED_PT_SIZE = 2; // FIXME: tie in to blob and ring size
 #define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
 void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 {
+#ifdef __WXMSW__
+    (void)a;
+    (void)b;
+    (void)c;
+    // FIXME: We get odd redraw artifacts if we just update the line, and
+    // redrawing the whole scene doesn't actually seem to be measurably
+    // slower.  That may not be true with software rendering though...
+    ForceRefresh();
+#else
     // Best of all might be to copy the window contents before we draw the
     // line, then replace each time we redraw.
 
@@ -1409,6 +1418,7 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
     u += MARGIN;
     d -= MARGIN;
     RefreshRect(wxRect(l, d, r - l, u - d), false);
+#endif
 }
 
 void GfxCore::SetHere()

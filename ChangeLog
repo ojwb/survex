@@ -1,3 +1,9 @@
+Mon Jan 27 00:44:30 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Try to work around measuring line redraw issues on
+	  Microsoft Windows by redrawing the whole window, which doesn't
+	  seem to be measurably slower.
+
 Mon Jan 27 00:21:30 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Translation updates.
