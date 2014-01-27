@@ -115,46 +115,72 @@ inline void call_lists(GLsizei n, const GLvoid * lists)
 }
 
 void
+BitmapFont::init_extra_chars() const
+{
+    long here = ftell(fh);
+    if (here == -1 || fseek(fh, 0, SEEK_END) < 0)
+	return;
+    long data_len = ftell(fh);
+    if (data_len == -1)
+	return;
+    data_len -= here;
+    unsigned char * data = new unsigned char [data_len];
+    if (fseek(fh, here, SEEK_SET) < 0 ||
+	fread(data, data_len, 1, fh) != 1) {
+	delete data;
+	return;
+    }
+    extra_chars = new unsigned char * [0x10000 - BITMAPFONT_MAX_CHAR];
+
+    for (int i = 0; i < 0x10000 - BITMAPFONT_MAX_CHAR; ++i) {
+	if (data_len <= 0) {
+	    extra_chars[i] = NULL;
+	    continue;
+	}
+	extra_chars[i] = data;
+	unsigned int byte_width = *data++;
+	byte_width >>= 6;
+
+	if (byte_width) {
+	    unsigned int start_and_n = *data;
+	    int n = (start_and_n & 15) + 1;
+	    data += n * byte_width + 1;
+	    data_len -= n * byte_width + 1;
+	}
+    }
+    fclose(fh);
+    fh = NULL;
+}
+
+int
+BitmapFont::glyph_width(wxChar ch) const
+{
+#if SIZEOF_WXCHAR > 2
+    if (ch >= 0x10000) return 0;
+#endif
+    if (!extra_chars)
+	init_extra_chars();
+
+    unsigned int byte_width = 0;
+    int width = 8;
+
+    const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
+    if (p) {
+	byte_width = *p++;
+	width = (byte_width & 0x0f) + 2;
+    }
+
+    return width;
+}
+
+void
 BitmapFont::write_glyph(wxChar ch) const
 {
 #if SIZEOF_WXCHAR > 2
     if (ch >= 0x10000) return;
 #endif
-    if (!extra_chars) {
-	long here = ftell(fh);
-	if (here == -1 || fseek(fh, 0, SEEK_END) < 0)
-	    return;
-	long data_len = ftell(fh);
-	if (data_len == -1)
-	    return;
-	data_len -= here;
-	unsigned char * data = new unsigned char [data_len];
-	if (fseek(fh, here, SEEK_SET) < 0 ||
-	    fread(data, data_len, 1, fh) != 1) {
-	    delete data;
-	    return;
-	}
-	extra_chars = new unsigned char * [0x10000 - BITMAPFONT_MAX_CHAR];
-
-	for (int i = 0; i < 0x10000 - BITMAPFONT_MAX_CHAR; ++i) {
-	    if (data_len <= 0) {
-		extra_chars[i] = NULL;
-		continue;
-	    }
-	    extra_chars[i] = data;
-	    unsigned int byte_width = *data++;
-	    byte_width >>= 6;
-
-	    if (byte_width) {
-		unsigned int start_and_n = *data;
-		int n = (start_and_n & 15) + 1;
-		data += n * byte_width + 1;
-		data_len -= n * byte_width + 1;
-	    }
-	}
-	fclose(fh);
-	fh = NULL;
-    }
+    if (!extra_chars)
+	init_extra_chars();
 
     unsigned int byte_width = 0;
     int start = 0;

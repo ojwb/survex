@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011,2013 Olly Betts
+//  Copyright (C) 2011,2013,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -52,6 +52,10 @@ class BitmapFont {
 
     unsigned char char_width[BITMAPFONT_MAX_CHAR];
 
+    void init_extra_chars() const;
+
+    int glyph_width(wxChar ch) const;
+
     void write_glyph(wxChar ch) const;
 
   public:
@@ -78,7 +82,7 @@ class BitmapFont {
 		if (ch < BITMAPFONT_MAX_CHAR)
 		    total_width += char_width[ch];
 		else
-		    total_width += 16; // FIXME: look up the width...
+		    total_width += glyph_width(ch);
 	    }
 	    *width = total_width;
 	}
