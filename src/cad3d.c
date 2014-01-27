@@ -566,7 +566,7 @@ plt_label(const img_point *p, const char *s, bool fSurface)
    for (q = s; *q; ++q) {
       unsigned char ch = *q;
       if (ch <= ' ' || ch == '%') {
-	 s_cat_len(&escaped, &elen, s, q - s);
+	 s_catlen(&escaped, &elen, s, q - s);
 	 s_catchar(&escaped, &elen, '%');
 	 s_catchar(&escaped, &elen, "0123456789abcdef"[ch >> 4]);
 	 s_catchar(&escaped, &elen, "0123456789abcdef"[ch & 0x0f]);
@@ -574,7 +574,7 @@ plt_label(const img_point *p, const char *s, bool fSurface)
       }
    }
    if (escaped) {
-      s_cat_len(&escaped, &elen, s, q - s);
+      s_catlen(&escaped, &elen, s, q - s);
       set_name(p, escaped);
       return;
    }

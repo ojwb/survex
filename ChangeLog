@@ -1,3 +1,8 @@
+Mon Jan 27 11:15:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/cad3d.c,src/str.c,src/str.h: Rename s_cat_len() to s_catlen()
+	  for consistency with s_catchar().
+
 Mon Jan 27 11:13:31 GMT 2014  Olly Betts <olly@survex.com>
 
 	* make_release: Add simple check for // comments in C sources.

@@ -23,14 +23,14 @@
 
 /* append a string */
 void
-s_cat(char **pstr, int *plen, char *s)
+s_cat(char **pstr, int *plen, const char *s)
 {
-   s_cat_len(pstr, plen, s, strlen(s));
+   s_catlen(pstr, plen, s, strlen(s));
 }
 
 /* append a string with length */
 void
-s_cat_len(char **pstr, int *plen, char *s, int s_len)
+s_catlen(char **pstr, int *plen, const char *s, int s_len)
 {
    int new_len = s_len + 1; /* extra 1 for nul */
    int len = 0;

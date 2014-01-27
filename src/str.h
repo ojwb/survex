@@ -18,9 +18,9 @@
 
 #include "osalloc.h"
 
-void s_cat(char **pstr, int *plen, char *s);
+void s_cat(char **pstr, int *plen, const char *s);
 
-void s_cat_len(char **pstr, int *plen, char *s, int s_len);
+void s_catlen(char **pstr, int *plen, const char *s, int s_len);
 
 /* append a character */
 void s_catchar(char **pstr, int *plen, char /*ch*/);
