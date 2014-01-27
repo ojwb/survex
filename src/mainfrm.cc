@@ -2099,8 +2099,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	wxString hv_str;
-	Double z = v.GetZ();
-	int units;
+	z = v.GetZ();
 	if (m_Gfx->GetMetric()) {
 	    units = /*m*/424;
 	} else {
