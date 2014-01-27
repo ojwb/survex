@@ -1,3 +1,7 @@
+Mon Jan 27 07:43:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Mon Jan 27 06:01:15 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/,src/: Add support for showing percentage gradient in the tilt
