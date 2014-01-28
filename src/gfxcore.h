@@ -190,7 +190,7 @@ private:
     wxStopWatch timer;
     long drawtime;
 
-    GLAPen * m_Pens;
+    GLAPen m_Pens[NUM_COLOUR_BANDS + 1];
 
 #define PLAYING 1
     int presentation_mode; // for now, 0 => off, PLAYING => continuous play
@@ -264,12 +264,12 @@ private:
 
     void ToggleFlag(bool* flag, int update = UPDATE_NONE);
 
-    GLAPen& GetPen(int band) const {
+    const GLAPen& GetPen(int band) const {
 	assert(band >= 0 && band < NUM_COLOUR_BANDS);
 	return m_Pens[band];
     }
 
-    GLAPen& GetSurfacePen() const { return m_Pens[NUM_COLOUR_BANDS]; }
+    const GLAPen& GetSurfacePen() const { return m_Pens[NUM_COLOUR_BANDS]; }
 
     int GetNumColourBands() const { return NUM_COLOUR_BANDS; }
 

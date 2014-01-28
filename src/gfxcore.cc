@@ -162,7 +162,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     // Initialise grid for hit testing.
     m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
 
-    m_Pens = new GLAPen[NUM_COLOUR_BANDS + 1];
     for (int pen = 0; pen < NUM_COLOUR_BANDS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen] / 255.0,
 			      GREENS[pen] / 255.0,
@@ -174,7 +173,6 @@ GfxCore::~GfxCore()
 {
     TryToFreeArrays();
 
-    delete[] m_Pens;
     delete[] m_PointGrid;
 }
 

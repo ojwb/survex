@@ -1,3 +1,8 @@
+Tue Jan 28 00:08:18 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: No need to dynamically allocate
+	  m_Pens.
+
 Mon Jan 27 20:25:39 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Don't default to percent gradient.
