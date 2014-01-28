@@ -1,7 +1,12 @@
-Changes in 1.2.11 (2014-01-27):
+Changes in 1.2.11 (2014-01-28):
 
 * aven: Fix wxWidgets assertion when double clicking on an anonymous station.
   Reported by Kevin Dixon.
+
+* aven: Embed the font data for the first 256 Unicode characters for use in the
+  survey pane into the compiled aven binary to reduce start up overhead.  Any
+  additional characters needed are loaded from a data file only if/when a
+  character >= U+100 is actually needed (as before).
 
 * aven: Fix display of Unicode characters above 256 when there's a character
   <= 256 earlier in the same string.
