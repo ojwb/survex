@@ -17,7 +17,25 @@ while (<U>) {
 	next;
     }
     $ch = hex($ch);
-#    print "$ch:\n";
+    if ($ch == 256) {
+	close O;
+	open O, '<', 'unifont.pixelfont' or die $!;
+	open P, '>', 'preload_font.h' or die $!;
+	print P "static const unsigned char fontdata_preloaded[] = {";
+	my $c = 0;
+	while (<O>) {
+	    for (split //, $_) {
+		if ($c++ % 8 == 0) {
+		    print P "\n   ";
+		}
+		printf P "% 4d,", ord $_;
+	    }
+	}
+	print P "\n};\n";
+	close P;
+	close O;
+	open O, '>', 'unifont.pixelfont' or die $!;
+    }
 
     while (++$last_ch < $ch) {
 	# print "Missing entry for ".($last_ch - 1 )."\n";

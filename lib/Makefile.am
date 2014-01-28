@@ -31,9 +31,9 @@ EXTRA_DIST = survex.pot $(po_files)\
  make-pixel-font\
  INSTALL.OSX
 
-MAINTAINERCLEANFILES = $(msg_files) de_DE.po unifont.pixelfont
+MAINTAINERCLEANFILES = $(msg_files) de_DE.po unifont.pixelfont preload_font.h
 
-dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
+dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont preload_font.h
 
 appsdir = $(datadir)/applications
 dist_apps_DATA = survex-aven.desktop survex-svxedit.desktop
@@ -45,7 +45,7 @@ mimedir = $(datadir)/mime-info
 dist_mime_DATA = survex.mime
 mime_DATA = survex.keys
 
-unifont.pixelfont: $(srcdir)/make-pixel-font
+unifont.pixelfont preload_font.h: $(srcdir)/make-pixel-font
 	$(srcdir)/make-pixel-font
 
 merge-pos:

@@ -1,3 +1,11 @@
+Tue Jan 28 01:34:15 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/make-pixel-font,src/glbitmapfont.cc,
+	  src/glbitmapfont.h: Embed the font data for the first 256 Unicode
+	  codepoints into the compiled aven binary to reduce start up
+	  overhead.  Any additional codepoints are loaded from a data file
+	  only if/when a character >= U+100 is actually needed (as before).
+
 Tue Jan 28 00:08:18 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: No need to dynamically allocate

@@ -30,6 +30,8 @@
 #include "useful.h"
 #include "wx.h"
 
+#include "../lib/preload_font.h"
+
 #define CHECK_GL_ERROR(M, F) do { \
     GLenum error_code_ = glGetError(); \
     if (error_code_ != GL_NO_ERROR) { \
@@ -41,34 +43,23 @@
 } while (0)
 
 bool
-BitmapFont::load(const wxString & font_file)
+BitmapFont::load(const wxString & font_file_)
 {
-    if (fh) fclose(fh);
-#ifdef __WXMSW__
-    fh = _wfopen(font_file.fn_str(), L"rb");
-#else
-    fh = fopen(font_file.mb_str(), "rb");
-#endif
-
-    if (!fh) {
-	return false;
-    }
+    font_file = font_file_;
 
     if (!gllist_base) {
 	gllist_base = glGenLists(BITMAPFONT_MAX_CHAR);
     }
 
-    unsigned char buf[32];
-
+    const unsigned char * p = fontdata_preloaded;
+    const unsigned char * end = p + sizeof(fontdata_preloaded);
     for (int ch = 0; ch < BITMAPFONT_MAX_CHAR; ++ch) {
 	glNewList(gllist_base + ch, GL_COMPILE);
 	CHECK_GL_ERROR("BitmapFont::load", "glNewList");
-	int b = GETC(fh);
-	if (b == EOF) {
-	    fclose(fh);
+	if (p == end) {
 	    return false;
 	}
-	unsigned int byte_width = b;
+	unsigned int byte_width = *p++;
 
 	char_width[ch] = (byte_width & 0x0f) + 2;
 	byte_width >>= 6;
@@ -76,26 +67,26 @@ BitmapFont::load(const wxString & font_file)
 	int start = 0;
 	int n = 0;
 	if (byte_width) {
-	    b = GETC(fh);
-	    if (b == EOF) {
-		fclose(fh);
+	    if (p == end) {
 		return false;
 	    }
-	    unsigned int start_and_n = b;
+	    unsigned int start_and_n = *p++;
 	    start = start_and_n >> 4;
 	    n = (start_and_n & 15) + 1;
-	    if (fread(buf, n * byte_width, 1, fh) != 1) {
-		fclose(fh);
+
+	    if (end - p < n * byte_width) {
 		return false;
 	    }
 	}
 
 	// Even if there's nothing to display, we want to advance the
 	// raster position.
-	glBitmap(8 * byte_width, n, 0, -start, char_width[ch], 0, buf);
+	glBitmap(8 * byte_width, n, 0, -start, char_width[ch], 0, p);
 	CHECK_GL_ERROR("BitmapFont::load", "glBitmap");
 	glEndList();
 	CHECK_GL_ERROR("BitmapFont::load", "glEndList");
+
+	p += n * byte_width;
     }
 
     return true;
@@ -117,21 +108,30 @@ inline void call_lists(GLsizei n, const GLvoid * lists)
 void
 BitmapFont::init_extra_chars() const
 {
-    long here = ftell(fh);
-    if (here == -1 || fseek(fh, 0, SEEK_END) < 0)
-	return;
-    long data_len = ftell(fh);
-    if (data_len == -1)
-	return;
-    data_len -= here;
-    unsigned char * data = new unsigned char [data_len];
-    if (fseek(fh, here, SEEK_SET) < 0 ||
-	fread(data, data_len, 1, fh) != 1) {
-	delete data;
-	return;
-    }
-    extra_chars = new unsigned char * [0x10000 - BITMAPFONT_MAX_CHAR];
+#ifdef __WXMSW__
+    FILE * fh = _wfopen(font_file.fn_str(), L"rb");
+#else
+    FILE * fh = fopen(font_file.mb_str(), "rb");
+#endif
 
+    long data_len = 0;
+    if (fh && fseek(fh, 0, SEEK_END) >= 0) {
+	data_len = ftell(fh);
+	if (data_len == -1)
+	    data_len = 0;
+    }
+    unsigned char * data = new unsigned char [data_len];
+    if (data_len && (fseek(fh, 0, SEEK_SET) < 0 ||
+	       fread(data, data_len, 1, fh) != 1)) {
+	data_len = 0;
+	// FIXME: do something better.  wxGetApp().ReportError(m);
+	// We have this message available: Error in format of font file “%s”
+	// fprintf(stderr, "Couldn't load extended font.\n");
+    }
+    if (fh)
+	fclose(fh);
+
+    extra_chars = new unsigned char * [0x10000 - BITMAPFONT_MAX_CHAR];
     for (int i = 0; i < 0x10000 - BITMAPFONT_MAX_CHAR; ++i) {
 	if (data_len <= 0) {
 	    extra_chars[i] = NULL;
@@ -148,8 +148,6 @@ BitmapFont::init_extra_chars() const
 	    data_len -= n * byte_width + 1;
 	}
     }
-    fclose(fh);
-    fh = NULL;
 }
 
 int
@@ -161,12 +159,11 @@ BitmapFont::glyph_width(wxChar ch) const
     if (!extra_chars)
 	init_extra_chars();
 
-    unsigned int byte_width = 0;
     int width = 8;
 
     const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
     if (p) {
-	byte_width = *p++;
+	unsigned int byte_width = *p;
 	width = (byte_width & 0x0f) + 2;
     }
 
@@ -203,6 +200,7 @@ BitmapFont::write_glyph(wxChar ch) const
     // Even if there's nothing to display, we want to advance the
     // raster position.
     glBitmap(8 * byte_width, n, 0, -start, width, 0, p);
+    CHECK_GL_ERROR("BitmapFont::write_glyph", "glBitmap");
 }
 
 void

@@ -48,8 +48,6 @@ class BitmapFont {
 
     mutable unsigned char ** extra_chars;
 
-    mutable FILE * fh;
-
     unsigned char char_width[BITMAPFONT_MAX_CHAR];
 
     void init_extra_chars() const;
@@ -58,15 +56,15 @@ class BitmapFont {
 
     void write_glyph(wxChar ch) const;
 
+    wxString font_file;
+
   public:
 
-    BitmapFont() : gllist_base(0), extra_chars(0), fh(0) { }
+    BitmapFont() : gllist_base(0), extra_chars(0) { }
 
     ~BitmapFont() {
 	if (gllist_base)
 	    glDeleteLists(gllist_base, BITMAPFONT_MAX_CHAR);
-	if (fh)
-	    fclose(fh);
     }
 
     bool load(const wxString & font_file);
