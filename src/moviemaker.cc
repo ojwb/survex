@@ -80,7 +80,7 @@ extern "C" {
 static inline void avcodec_free_frame(AVFrame ** frame) {
     free((*frame)->data[0]);
     free(*frame);
-    *frame = NULL
+    *frame = NULL;
 }
 # endif
 # ifndef HAVE_AVCODEC_OPEN2
