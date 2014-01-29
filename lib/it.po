@@ -1881,9 +1881,8 @@ msgstr "Bordi pagina"
 #. drawing the box at the lower left with survey name, view angles, etc
 #: ../src/printwx.cc:484
 #: n:265
-#, fuzzy
 msgid "Legend"
-msgstr "Riquadro informazioni"
+msgstr "Didascalia"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print blank pages
 #. (otherwise they’ll be skipped to save paper)
@@ -2360,7 +2359,7 @@ msgstr ""
 #: ../src/printwx.cc:1025
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "km"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
 #.
@@ -2376,7 +2375,7 @@ msgstr ""
 #: ../src/printwx.cc:1027
 #: n:424
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #. TRANSLATORS: abbreviation for "centimetres" (unit of length), used e.g.
 #. "50cm".
@@ -2387,7 +2386,7 @@ msgstr ""
 #: ../src/printwx.cc:1030
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length, plural), used e.g.
 #. "2 miles".
@@ -2397,7 +2396,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1074
 #: n:426
 msgid " miles"
-msgstr ""
+msgstr " miglia"
 
 #. TRANSLATORS: abbreviation for "mile" (unit of length, singular), used e.g.
 #. "1 mile".
@@ -2407,7 +2406,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1076
 #: n:427
 msgid " mile"
-msgstr ""
+msgstr " miglio"
 
 #. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g. as "10ft".
 #.
@@ -2431,7 +2430,7 @@ msgstr "pd"
 #: ../src/gfxcore.cc:1082
 #: n:429
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3070
@@ -2478,7 +2477,7 @@ msgstr "°"
 #: ../src/gfxcore.cc:700
 #: n:76
 msgid "ᵍ"
-msgstr ""
+msgstr "ᵍ"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
@@ -2496,13 +2495,13 @@ msgstr "g.cent."
 #: ../src/gfxcore.cc:704
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: used for the percentage gradient on vertical angles.
 #: ../src/gfxcore.cc:682
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #: ../src/mainfrm.cc:852
 #: n:347

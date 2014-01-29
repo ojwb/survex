@@ -2361,7 +2361,7 @@ msgstr ""
 #: ../src/printwx.cc:1025
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "km"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
 #.

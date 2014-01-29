@@ -2360,7 +2360,7 @@ msgstr "P&ercent"
 #: ../src/printwx.cc:1025
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "km"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
 #.
@@ -2478,7 +2478,7 @@ msgstr "°"
 #: ../src/gfxcore.cc:700
 #: n:76
 msgid "ᵍ"
-msgstr ""
+msgstr "ᵍ"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
@@ -2496,13 +2496,13 @@ msgstr "grády"
 #: ../src/gfxcore.cc:704
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: used for the percentage gradient on vertical angles.
 #: ../src/gfxcore.cc:682
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #: ../src/mainfrm.cc:852
 #: n:347

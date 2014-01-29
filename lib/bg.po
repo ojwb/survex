@@ -2365,7 +2365,7 @@ msgstr ""
 #: ../src/printwx.cc:1025
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "км"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
 #.
@@ -2392,7 +2392,7 @@ msgstr "м"
 #: ../src/printwx.cc:1030
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "см"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length, plural), used e.g.
 #. "2 miles".
@@ -2476,14 +2476,14 @@ msgstr ""
 #: ../src/printwx.cc:967
 #: n:344
 msgid "°"
-msgstr ""
+msgstr "°"
 
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full circle).
 #: ../src/gfxcore.cc:650
 #: ../src/gfxcore.cc:700
 #: n:76
 msgid "ᵍ"
-msgstr ""
+msgstr "ᵍ"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
@@ -2494,20 +2494,20 @@ msgstr ""
 #: ../src/mainfrm.cc:2122
 #: n:345
 msgid "grad"
-msgstr ""
+msgstr "град"
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45 degrees = 50 grad).
 #: ../src/gfxcore.cc:686
 #: ../src/gfxcore.cc:704
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: used for the percentage gradient on vertical angles.
 #: ../src/gfxcore.cc:682
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #: ../src/mainfrm.cc:852
 #: n:347

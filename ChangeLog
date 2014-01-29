@@ -1,3 +1,7 @@
+Wed Jan 29 21:42:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Translation updates.
+
 Wed Jan 29 21:03:14 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc: Fix to build when avcodec_free_frame() isn't

@@ -1264,7 +1264,7 @@ msgstr ""
 #: ../src/aboutdlg.cc:173
 #: n:197
 msgid " (colour)"
-msgstr ""
+msgstr " (color)"
 
 #: ../src/readval.c:510
 #: ../src/readval.c:520
@@ -2362,7 +2362,7 @@ msgstr "P&ercent"
 #: ../src/printwx.cc:1025
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "km"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
 #.
@@ -2389,7 +2389,7 @@ msgstr "m"
 #: ../src/printwx.cc:1030
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length, plural), used e.g.
 #. "2 miles".
@@ -2399,7 +2399,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1074
 #: n:426
 msgid " miles"
-msgstr ""
+msgstr " millas"
 
 #. TRANSLATORS: abbreviation for "mile" (unit of length, singular), used e.g.
 #. "1 mile".
@@ -2409,7 +2409,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1076
 #: n:427
 msgid " mile"
-msgstr ""
+msgstr " milla"
 
 #. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g. as "10ft".
 #.
@@ -2433,7 +2433,7 @@ msgstr "pie"
 #: ../src/gfxcore.cc:1082
 #: n:429
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3070
@@ -2480,7 +2480,7 @@ msgstr "°"
 #: ../src/gfxcore.cc:700
 #: n:76
 msgid "ᵍ"
-msgstr ""
+msgstr "ᵍ"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
 #. Try to make this as short as sensibly possible.
@@ -2498,13 +2498,13 @@ msgstr "g.cent."
 #: ../src/gfxcore.cc:704
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: used for the percentage gradient on vertical angles.
 #: ../src/gfxcore.cc:682
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #: ../src/mainfrm.cc:852
 #: n:347
