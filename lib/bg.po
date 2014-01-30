@@ -1979,7 +1979,7 @@ msgstr ""
 #: ../src/printwx.cc:443
 #: n:418
 msgid "Entrances"
-msgstr ""
+msgstr "Входове"
 
 #: ../src/printwx.cc:447
 #: n:419

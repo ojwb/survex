@@ -1012,7 +1012,7 @@ msgstr ""
 #: n:146
 #, fuzzy, c-format
 msgid "Error %6.2f%%"
-msgstr "Kesalahan %6.2f"
+msgstr "Kesalahan %6.2f%%"
 
 #. TRANSLATORS: Here N/A means "Not Applicable" -- it means the traverse has zero length, so
 #. error per metre is meaningless
