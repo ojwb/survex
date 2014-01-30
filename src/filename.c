@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011
+ * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011,2014
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ safe_fclose(FILE *f)
 	 (void)remove(fnm);
 	 fatalerror(/*Error writing to file “%s”*/110, fnm);
       }
-      /* FIXME: this case should never happen... */
+      /* f wasn't opened with safe_fopen(), so we don't know the filename. */
       fatalerror(/*Error writing to file*/111);
    }
 }
