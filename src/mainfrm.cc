@@ -2092,8 +2092,10 @@ void MainFrm::ShowInfo(const LabelInfo *here)
     if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
 	Vector3 delta = *here - *label;
 
-	Double d_horiz = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
+	Double d_horiz = sqrt(delta.GetX()*delta.GetX() +
+			      delta.GetY()*delta.GetY());
 	Double dr = delta.magnitude();
+	Double dz = delta.GetZ();
 
 	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
@@ -2102,18 +2104,17 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	wxString hv_str;
-	z = v.GetZ();
 	if (m_Gfx->GetMetric()) {
 	    units = /*m*/424;
 	} else {
 	    d_horiz /= METRES_PER_FOOT;
 	    dr /= METRES_PER_FOOT;
-	    z /= METRES_PER_FOOT;
+	    dz /= METRES_PER_FOOT;
 	    units = /*ft*/428;
 	}
 	wxString len_unit = wmsg(units);
 	hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
-		      d_horiz, len_unit.c_str(), z, len_unit.c_str());
+		      d_horiz, len_unit.c_str(), dz, len_unit.c_str());
 	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
 	    brg_unit = /*°*/344;
