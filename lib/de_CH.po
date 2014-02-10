@@ -2350,7 +2350,7 @@ msgstr "&Grad"
 #: ../src/mainfrm.cc:871
 #: n:430
 msgid "&Percent"
-msgstr ""
+msgstr "&Prozentual"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length), used e.g.
 #. "5km".  If there should be a space between the number and this, include one

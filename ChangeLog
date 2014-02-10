@@ -1,3 +1,7 @@
+Mon Feb 10 22:48:29 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po: Translation updates.
+
 Mon Feb 10 21:23:12 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Fix measuring line to show change in altitude rather
