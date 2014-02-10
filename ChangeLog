@@ -1,3 +1,8 @@
+Mon Feb 10 22:48:50 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/osdepend.c: Don't use isalpha() for checking drive letters as
+	  it's locale dependent.
+
 Mon Feb 10 22:48:29 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/de.po,lib/de_CH.po: Translation updates.
