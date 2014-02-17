@@ -76,12 +76,23 @@ extern "C" {
 # ifndef HAVE_AVIO_CLOSE
 #  define avio_close url_fclose
 # endif
-# ifndef HAVE_AVCODEC_FREE_FRAME
-static inline void avcodec_free_frame(AVFrame ** frame) {
+# ifndef HAVE_AV_FRAME_ALLOC
+static inline AVFrame * av_frame_alloc() {
+    return avcodec_alloc_frame();
+}
+# endif
+# ifndef HAVE_AV_FRAME_FREE
+#  ifdef HAVE_AVCODEC_FREE_FRAME
+static inline void av_frame_free(AVFrame ** frame) {
+    avcodec_free_frame(frame);
+}
+#  else
+static inline void av_frame_free(AVFrame ** frame) {
     free((*frame)->data[0]);
     free(*frame);
     *frame = NULL;
 }
+#  endif
 # endif
 # ifndef HAVE_AVCODEC_OPEN2
 // We always pass NULL for OPTS below.
@@ -94,8 +105,8 @@ static inline void avcodec_free_frame(AVFrame ** frame) {
 # if !HAVE_DECL_AVMEDIA_TYPE_VIDEO
 #  define AVMEDIA_TYPE_VIDEO CODEC_TYPE_VIDEO
 # endif
-# if !HAVE_DECL_AVCODEC_ID_NONE
-#  define AVCODEC_ID_NONE CODEC_ID_NONE
+# if !HAVE_DECL_AV_CODEC_ID_NONE
+#  define AV_CODEC_ID_NONE CODEC_ID_NONE
 # endif
 # if !HAVE_DECL_AV_PIX_FMT_YUV420P
 #  define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
@@ -143,7 +154,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	    return false;
 	}
     }
-    if (fmt->video_codec == AVCODEC_ID_NONE) {
+    if (fmt->video_codec == AV_CODEC_ID_NONE) {
 	averrno = MOVIE_AUDIO_ONLY;
 	return false;
     }
@@ -229,7 +240,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 #endif
 
     /* Allocate the encoded raw picture. */
-    frame = avcodec_alloc_frame();
+    frame = av_frame_alloc();
     if (!frame) {
 	averrno = AVERROR(ENOMEM);
 	return false;
@@ -240,9 +251,9 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	return false;
     }
 
-    if (c->pix_fmt != PIX_FMT_YUV420P) {
+    if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
 	// FIXME need to allocate another frame for this case if we stop
-	// hardcoding PIX_FMT_YUV420P.
+	// hardcoding AV_PIX_FMT_YUV420P.
 	abort();
     }
 
@@ -328,7 +339,7 @@ bool MovieMaker::AddFrame()
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     AVCodecContext * c = video_st->codec;
 
-    if (c->pix_fmt != PIX_FMT_YUV420P) {
+    if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
 	// FIXME convert...
 	abort();
     }
@@ -501,7 +512,7 @@ MovieMaker::release()
     }
 
     if (frame) {
-	avcodec_free_frame(&frame);
+	av_frame_free(&frame);
     }
     free(pixels);
     pixels = NULL;

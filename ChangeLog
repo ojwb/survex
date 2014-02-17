@@ -1,3 +1,8 @@
+Mon Feb 17 22:48:33 GMT 2014  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/moviemaker.cc: Fix to work with libav 10.  Reported
+	  by Moritz Muehlenhoff in <http://bugs.debian.org/739332>.
+
 Mon Feb 10 22:48:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/osdepend.c: Don't use isalpha() for checking drive letters as
