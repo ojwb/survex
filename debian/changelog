@@ -3,6 +3,7 @@ survex (1.2.11-2) UNRELEASED; urgency=medium
   * debian/control: survex-svxedit works fine with tk8.5, so update dependency
     on tk8.4|wish to tk8.5|wish - the Debian Tcl/Tk maintainers are aiming to
     remove tk8.4 before jessie.
+  * debian/control: Update to build against wxWidgets 3.0 instead of 2.8.
 
  -- Olly Betts <olly@survex.com>  Mon, 24 Feb 2014 09:26:55 +1300
 
