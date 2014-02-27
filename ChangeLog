@@ -1,3 +1,8 @@
+Thu Feb 27 23:15:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* configure.ac: Enable large file support, mostly to support filing
+	  systems which return 64 bit inode values, such as CIFS mounts.
+
 Mon Feb 17 22:48:33 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/moviemaker.cc: Fix to work with libav 10.  Reported

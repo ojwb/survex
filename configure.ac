@@ -341,6 +341,11 @@ fi
 AC_SUBST(AM_CFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
+dnl See if large file support is available.  Survex is unlikely to need to
+dnl process files > 2GB in size, but LFS is also needed for stat() to work
+dnl on filing systems which return 64 bit inode values, such as CIFS mounts.
+AC_SYS_LARGEFILE
+
 AC_ARG_ENABLE(profiling,
 [  --enable-profiling Build binaries to generate profiling information],
 [case $enableval in
