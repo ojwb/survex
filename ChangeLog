@@ -1,3 +1,7 @@
+Sat Mar 15 11:23:54 GMT 2014  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Update dependencies to wxWidgets3 packages.
+
 Sat Mar 15 10:21:17 GMT 2014  Olly Betts <olly@survex.com>
 
 	* survex.spec.in: Add proj-devel to BuildRequires.

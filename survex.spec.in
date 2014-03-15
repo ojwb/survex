@@ -9,8 +9,12 @@ Group: Applications/Misc
 Source: http://survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
 URL: http://survex.com/
 Packager: Olly Betts <olly@survex.com>
-BuildRequires: wxGTK-devel >= 2.8.0, proj-devel
-Requires: wxGTK >= 2.8.0
+# If your distro doesn't have wxGTK3-devel and wxGTK3 yet, use these
+# dependencies instead:
+#BuildRequires: wxGTK-devel >= 2.8.0, proj-devel
+#Requires: wxGTK >= 2.8.0
+BuildRequires: wxGTK3-devel, proj-devel
+Requires: wxGTK3
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
