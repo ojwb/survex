@@ -1,3 +1,29 @@
+96a76294 (Olly Betts 2014-03-16 00:24:42 +1300    1) Sat Mar 15 11:23:54 GMT 2014  Olly Betts <olly@survex.com>
+
+Changes in 1.2.12 (2014-03-16):
+
+	* configure.ac,src/moviemaker.cc: Fix to work with libav 10.  Reported
+	  by Moritz Muehlenhoff in <http://bugs.debian.org/739332>.
+
+	* survex.spec: Update spec file.
+
+	* src/osdepend.c: Don't use isalpha() for checking drive letters as
+	  it's locale dependent.
+
+	* lib/de.po,lib/de_CH.po: Translation updates.
+
+	* src/mainfrm.cc: Fix measuring line to show change in altitude rather
+	  than altitude (broken in 1.2.11).  Reported by Brian Clipstone.
+
+	* src/filename.c: Comment tweak.
+
+	* lib/bg.po,lib/de_CH.po,lib/id.po: Translation updates.
+
+	* lib/: Translation updates.
+
+	* src/moviemaker.cc: Fix to build when avcodec_free_frame() isn't
+	  available.
+
 Changes in 1.2.11 (2014-01-28):
 
 * aven: Fix wxWidgets assertion when double clicking on an anonymous station.
