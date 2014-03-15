@@ -14,11 +14,12 @@ LDADD = $(LIBOBJS)
 
 # dump3d is a test program
 #
-# findentrances needs libproj so is disabled by default for the moment -
-# to enable it install the development stuff for libproj and build survex
-# with:
+# findentrances is mostly superceded by aven's GPX export, so is disabled
+# by default, and will be removed entirely at some point.  To build and
+# install it, pass "FINDENTRANCES=findentrances" as an argument to make
+# like so:
 #     make FINDENTRANCES=findentrances
-#     make install FINDENTRANCES=findentrances
+#     sudo make install FINDENTRANCES=findentrances
 FINDENTRANCES =
 EXTRA_PROGRAMS =\
 	aven dump3d editwrap findentrances
