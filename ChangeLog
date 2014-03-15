@@ -1,3 +1,7 @@
+Sat Mar 15 10:21:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Add proj-devel to BuildRequires.
+
 Mon Feb 17 22:48:33 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/moviemaker.cc: Fix to work with libav 10.  Reported
