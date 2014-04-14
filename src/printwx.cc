@@ -1662,8 +1662,10 @@ svxPrintout::DrawEllipse(long x, long y, long r, long R)
     if (cur_pass != -1) {
 	x_t = x_offset + x - clip.x_min;
 	y_t = y_offset + clip.y_max - y;
+	const wxBrush & save_brush = pdc->GetBrush();
 	pdc->SetBrush(*wxTRANSPARENT_BRUSH);
 	pdc->DrawEllipse(x_t - r, y_t - R, 2 * r, 2 * R);
+	pdc->SetBrush(save_brush);
     }
 }
 
@@ -1686,10 +1688,10 @@ svxPrintout::Pre()
 			      false, wxString(fontname, wxConvUTF8),
 			      wxFONTENCODING_ISO8859_1);
     current_font = font_default;
-    pen_leg = new wxPen(colour_leg,0,wxSOLID);
-    pen_surface_leg = new wxPen(colour_surface_leg,0,wxSOLID);
-    pen_cross = new wxPen(colour_cross,0,wxSOLID);
-    pen_frame = new wxPen(colour_frame,0,wxSOLID);
+    pen_leg = new wxPen(colour_leg);
+    pen_surface_leg = new wxPen(colour_surface_leg);
+    pen_cross = new wxPen(colour_cross);
+    pen_frame = new wxPen(colour_frame);
     return 1; /* only need 1 pass */
 }
 

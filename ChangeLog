@@ -1,3 +1,9 @@
+Mon Apr 14 03:40:54 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix printing with wx3.0 - 0 width lines don't appear
+	  (before they would be as thin as possible) and we need to reset the
+	  brush after setting it to transparent to draw a non-filled ellipse.
+
 Mon Apr 14 00:58:47 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex-aven.desktop,lib/survex-svxedit.desktop: Add "Keywords:"
