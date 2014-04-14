@@ -2,27 +2,22 @@
 
 Changes in 1.2.12 (2014-03-16):
 
-	* configure.ac,src/moviemaker.cc: Fix to work with libav 10.  Reported
-	  by Moritz Muehlenhoff in <http://bugs.debian.org/739332>.
+* (Linux version) survex.spec: Update spec file used for building RPM packages.
 
-	* survex.spec: Update spec file.
+* aven: Fix measuring line to show change in altitude rather than altitude
+  itself (accidentally broken by changes in 1.2.11).  Reported by Brian
+  Clipstone.
 
-	* src/osdepend.c: Don't use isalpha() for checking drive letters as
-	  it's locale dependent.
+* aven: Fix to build with libav 10.  Reported by Moritz Muehlenhoff in
+  <http://bugs.debian.org/739332>.
 
-	* lib/de.po,lib/de_CH.po: Translation updates.
+* aven: Fix to build with older libav where avcodec_free_frame() isn't
+  available.
 
-	* src/mainfrm.cc: Fix measuring line to show change in altitude rather
-	  than altitude (broken in 1.2.11).  Reported by Brian Clipstone.
+* (Microsoft Windows version): Only allow "A-Z" or "a-z" for driver letters,
+  rather than any character which is a letter in the current locale.
 
-	* src/filename.c: Comment tweak.
-
-	* lib/bg.po,lib/de_CH.po,lib/id.po: Translation updates.
-
-	* lib/: Translation updates.
-
-	* src/moviemaker.cc: Fix to build when avcodec_free_frame() isn't
-	  available.
+* Various translation updates.
 
 Changes in 1.2.11 (2014-01-28):
 
