@@ -97,8 +97,8 @@ echo "SHA1 checksums:"
 sha1sum $FILES
 echo
 
-gpg --detach-sign --armour $FILES
 for f in $FILES ; do
+    gpg --detach-sign --armour "$f"
     FILES="$FILES $f.asc"
 done
 
