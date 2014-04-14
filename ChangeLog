@@ -1,3 +1,8 @@
+Mon Apr 14 00:58:47 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex-aven.desktop,lib/survex-svxedit.desktop: Add "Keywords:"
+	  entry to .desktop files.
+
 Sat Mar 15 11:37:32 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Update findentrances comment.

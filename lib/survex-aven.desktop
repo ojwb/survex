@@ -7,3 +7,4 @@ Type=Application
 Exec=aven
 Icon=aven
 Categories=Education;Geology;Science;
+Keywords=caving;survey;data;visualisation;visualization;OpenGL;wxWidgets;3D
