@@ -6,6 +6,7 @@ survex (1.2.12-1) unstable; urgency=medium
     on tk8.4|wish to tk8.5|wish - the Debian Tcl/Tk maintainers are aiming to
     remove tk8.4 before jessie.
   * debian/control: Update to build against wxWidgets 3.0 instead of 2.8.
+  * debian/copyright: Update for 2014.
 
  -- Olly Betts <olly@survex.com>  Mon, 14 Apr 2014 16:56:11 +1200
 
