@@ -1076,7 +1076,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 #endif
       buf.Printf(wxT("%d"), c * Step);
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(x + c * d - buf.length(), y - 4);
+      MOVEMM(x + c * d - buf.length(), y - 5);
       WriteString(buf);
    }
 }

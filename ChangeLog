@@ -1,3 +1,8 @@
+Mon Apr 14 04:15:07 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Move the numbers below the scale bar down a little
+	  so that they don't overlap the scale bar ticks.
+
 Mon Apr 14 04:03:05 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Set the clipping region after we draw the page
