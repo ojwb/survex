@@ -1,3 +1,8 @@
+Mon Apr 14 04:15:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Tidy up the appearance of the "compass" and
+	  "elevation on" arrow.
+
 Mon Apr 14 04:15:07 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Move the numbers below the scale bar down a little

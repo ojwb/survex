@@ -898,7 +898,7 @@ svxPrintout::draw_info_box()
 
       long xc = boxwidth - boxheight / 2;
       long yc = boxheight / 2;
-      const double RADIUS = boxheight * 0.4;
+      const double RADIUS = boxheight / 3;
       DrawEllipse(long(xc * l->scX), long(yc * l->scY),
 		  long(RADIUS * l->scX), long(RADIUS * l->scY));
 
@@ -919,7 +919,7 @@ svxPrintout::draw_info_box()
       DrawTo(bx, by);
 
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(div, boxheight - 5);
+      MOVEMM(div + 0.5, boxheight - 5.5);
       WriteString(wmsg(/*North*/115));
 
       wxString angle;
@@ -933,7 +933,7 @@ svxPrintout::draw_info_box()
     case layout::ELEV: case layout::TILT: {
       const int L = div + 2;
       const int R = boxwidth - 2;
-      const int H = boxheight / 2 - 5;
+      const int H = boxheight / 2;
       MOVEMM(L, H); DRAWMM(L + 5, H - 3); DRAWMM(L + 3, H); DRAWMM(L + 5, H + 3);
 
       DRAWMM(L, H); DRAWMM(R, H);
@@ -943,14 +943,14 @@ svxPrintout::draw_info_box()
       MOVEMM((L + R) / 2, H - 2); DRAWMM((L + R) / 2, H + 2);
 
       SetColour(PR_COLOUR_TEXT);
-      MOVEMM(div, boxheight - 5);
+      MOVEMM(div + 2, boxheight - 8);
       WriteString(wmsg(/*Elevation on*/116));
       
-      MOVEMM(L, boxheight / 2);
+      MOVEMM(L, 2);
       WriteString(wxString::Format(wxT("%03d%s"),
 				   (l->rot + 270) % 360,
 				   wmsg(/*°*/344).c_str()));
-      MOVEMM(R - 10, boxheight / 2);
+      MOVEMM(R - 10, 2);
       WriteString(wxString::Format(wxT("%03d%s"),
 				   (l->rot + 90) % 360,
 				   wmsg(/*°*/344).c_str()));
