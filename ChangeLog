@@ -1,3 +1,19 @@
+Sat Mar 15 11:37:32 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Update findentrances comment.
+
+Sat Mar 15 11:26:12 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
+Sat Mar 15 11:23:54 GMT 2014  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Update dependencies to wxWidgets3 packages.
+
+Sat Mar 15 10:21:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Add proj-devel to BuildRequires.
+
 Thu Feb 27 23:15:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac: Enable large file support, mostly to support filing
