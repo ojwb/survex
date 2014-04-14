@@ -1,18 +1,33 @@
-96a76294 (Olly Betts 2014-03-16 00:24:42 +1300    1) Sat Mar 15 11:23:54 GMT 2014  Olly Betts <olly@survex.com>
-
-Changes in 1.2.12 (2014-03-16):
-
-* (Linux version) survex.spec: Update spec file used for building RPM packages.
+Changes in 1.2.12 (2014-04-14):
 
 * aven: Fix measuring line to show change in altitude rather than altitude
   itself (accidentally broken by changes in 1.2.11).  Reported by Brian
   Clipstone.
+
+* aven: Fix printing when built with wxWidgets 3.0.
+
+* aven: Several visual improvements to printouts:
+
+  + Move the numbers below the scale bar down a little so that they don't
+    overlap the scale bar ticks.
+
+  + Set the clipping region after we draw the page border and info box to avoid
+    clipping the border in print preview.
+
+  + Tidy up the appearance of the compass and elevation arrow.
 
 * aven: Fix to build with libav 10.  Reported by Moritz Muehlenhoff in
   <http://bugs.debian.org/739332>.
 
 * aven: Fix to build with older libav where avcodec_free_frame() isn't
   available.
+
+* (Linux version) survex.spec: Update spec file used for building RPM packages.
+
+* (Unix version): Add "Keywords:" entry to .desktop files.
+
+* (Unix version): Enable large file support, mostly to support filing systems
+  which return 64 bit inode values, such as CIFS mounts.
 
 * (Microsoft Windows version): Only allow "A-Z" or "a-z" for driver letters,
   rather than any character which is a letter in the current locale.
