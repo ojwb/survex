@@ -1317,6 +1317,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 	draw_info_box();
     }
 
+    pdc->SetClippingRegion(x_offset, y_offset,xpPageWidth+1, ypPageDepth+1);
+
     const double Sc = 1000 / l->Scale;
 
     if (l->show_mask & LEGS) {
@@ -1718,7 +1720,6 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 		  m_layout->datestamp.c_str());
     WriteString(footer);
     pdc->DestroyClippingRegion();
-    pdc->SetClippingRegion(x_offset, y_offset,xpPageWidth+1, ypPageDepth+1);
     drawticks(clip, (int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
 }
 

@@ -1,3 +1,8 @@
+Mon Apr 14 04:03:05 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Set the clipping region after we draw the page
+	  border and info box to avoid clipping the border in print preview.
+
 Mon Apr 14 03:40:54 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix printing with wx3.0 - 0 width lines don't appear
