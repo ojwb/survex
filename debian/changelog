@@ -1,11 +1,13 @@
-survex (1.2.11-2) unstable; urgency=medium
+survex (1.2.12-1) unstable; urgency=medium
 
+  * New upstream release:
+    + Fixes to work with libav10. (Closes: #739332)
   * debian/control: survex-svxedit works fine with tk8.5, so update dependency
     on tk8.4|wish to tk8.5|wish - the Debian Tcl/Tk maintainers are aiming to
     remove tk8.4 before jessie.
   * debian/control: Update to build against wxWidgets 3.0 instead of 2.8.
 
- -- Olly Betts <olly@survex.com>  Fri, 28 Feb 2014 12:22:50 +1300
+ -- Olly Betts <olly@survex.com>  Mon, 14 Apr 2014 16:56:11 +1200
 
 survex (1.2.11-1) unstable; urgency=medium
 
