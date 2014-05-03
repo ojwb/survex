@@ -56,6 +56,7 @@ lib/pt_BR.msg
 lib/ro.msg
 lib/sk.msg
 lib/zh_CN.msg
+lib/preload_font.h
 lib/survex.keys
 lib/unifont.pixelfont
 lib/icons/3d.ico
