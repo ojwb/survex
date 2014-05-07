@@ -16,8 +16,8 @@ check-local: survex.pot
 
 SUBDIRS = icons
 
-po_files = bg.po ca.po de.po de_CH.po de_DE.po en_US.po\
- es.po fr.po id.po it.po pt.po pt_BR.po sk.po ro.po zh_CN.po
+po_files = bg.po ca.po de.po de_CH.po de_DE.po en_US.po es.po fr.po\
+ id.po it.po pt.po pt_BR.po ro.po ru.po sk.po zh_CN.po
 
 de_DE.po:
 	ln -s de.po de_DE.po

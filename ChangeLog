@@ -1,3 +1,12 @@
+Mon May 05 05:53:01 GMT 2014  Olly Betts <olly@survex.com>
+
+	* .gitignore,lib/Makefile.am,lib/ru.po: Add the start of a Russian
+	  translation, with messages take from therion.
+
+Mon May 05 00:01:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Minor updates.
+
 Mon Apr 14 04:22:03 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.12.
