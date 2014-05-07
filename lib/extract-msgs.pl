@@ -9,8 +9,28 @@ my $pot_creation_date = strftime "%Y-%m-%d %H:%M:%S +0000", gmtime();
 
 use integer;
 
-my (%msgs, @uses);
+my (%msgs, @uses, %comment);
+my $translator_comment;
 while (<ARGV>) {
+    if (m!(/[/*])\s*(TRANSLATORS:.*?)\s*\z!) {
+	my ($comment_type, $comment) = ($1, $2);
+	if ($comment_type eq '/*') {
+	    while ($comment !~ s!\s*\*/\z!! && defined($_ = <ARGV>)) {
+		if (m!^\s*\*?\s*(.*?)\s*\z!) {
+		    # */ on a line by itself results in '/' for $1.
+		    last if $1 eq '/';
+		    $comment .= "\n$1";
+		}
+	    }
+	    $comment =~ s/\n+$//;
+	}
+	if (defined $translator_comment) {
+	    print STDERR "Ignored TRANSLATORS comment: $translator_comment\n";
+	}
+	$translator_comment = $comment;
+        last if !defined $_;
+    }
+
     while (m!/\*(.*?)\*/(\d+)\b!g) {
 	my ($msg, $msgno) = ($1, $2);
 	# Handle there being a comment before the comment with the message in.
@@ -22,6 +42,13 @@ while (<ARGV>) {
 	    }
 	} else {
 	    $msgs{$msgno} = $msg;
+	}
+	if (defined $translator_comment) {
+	    if (exists $comment{$msgno} && $comment{$msgno} ne $translator_comment) {
+		print STDERR "Different TRANSLATOR comemnts for message #$msgno\n";
+	    }
+	    $comment{$msgno} = $translator_comment;
+	    undef $translator_comment;
 	}
 	push @{$uses[$msgno]}, "$ARGV:$.";
     }
@@ -66,6 +93,17 @@ foreach my $po_entry (@{$num_list}) {
     } else {
 	print STDERR "Message number $msgno is in survex.pot but not found in source - preserving\n" unless $po_entry->obsolete;
 	$msg = $po_entry->dequote($po_entry->msgid);
+    }
+    if (exists $comment{$msgno}) {
+	my $old = $po_entry->automatic($comment{$msgno});
+	if (defined $old) {
+	    $old =~ s/\s+/ /g;
+	    my $new = $comment{$msgno};
+	    $new =~ s/\s+/ /g;
+	    if ($old ne $new) {
+		print STDERR "Comment for message #$msgno changed from\n[$old]\nto\n[$new]\n";
+	    }
+	}
     }
     if (defined $po_entry->automatic) {
 	my $automatic = "\n" . $po_entry->automatic;
