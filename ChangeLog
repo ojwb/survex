@@ -1,3 +1,8 @@
+Fri May 09 11:42:43 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/anonstn.out,tests/anonstn.pos,tests/anonstn.svx: Test that
+	  "..." anon station works.
+
 Fri May 09 09:42:11 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/message.c: Add handling for MS Windows LANG_RUSSIAN code.
