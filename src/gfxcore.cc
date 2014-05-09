@@ -2003,6 +2003,7 @@ void GfxCore::ToggleFlag(bool* flag, int update)
     } else if (update == UPDATE_BLOBS_AND_CROSSES) {
 	UpdateBlobs();
 	InvalidateList(LIST_CROSSES);
+	m_HitTestGridValid = false;
     }
     ForceRefresh();
 }

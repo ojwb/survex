@@ -1,3 +1,8 @@
+Fri May 09 07:44:26 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Invalidate the hit-test grid when surface or
+	  underground legs are toggled on or off.
+
 Fri May 09 03:31:55 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/cad3d.c: Whitespace tweak.
