@@ -386,6 +386,39 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    }
 	}
 
+	if (m_HitTestDebug) {
+	    // Show the hit test grid bucket sizes...
+	    SetColour(m_HitTestGridValid ? col_LIGHT_GREY : col_DARK_GREY);
+	    for (int i = 0; i != HITTEST_SIZE; ++i) {
+		int x = (GetXSize() + 1) * i / HITTEST_SIZE + 2;
+		for (int j = 0; j != HITTEST_SIZE; ++j) {
+		    int square = i + j * HITTEST_SIZE;
+		    size_t bucket_size = m_PointGrid[square].size();
+		    if (bucket_size) {
+			int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
+			char buf[40];
+			sprintf(buf, "%d", bucket_size);
+			DrawIndicatorText(x, y, buf);
+		    }
+		}
+	    }
+
+	    EnableDashedLines();
+	    BeginLines();
+	    for (int i = 0; i != HITTEST_SIZE; ++i) {
+		int x = (GetXSize() + 1) * i / HITTEST_SIZE;
+		PlaceIndicatorVertex(x, 0);
+		PlaceIndicatorVertex(x, GetYSize());
+	    }
+	    for (int j = 0; j != HITTEST_SIZE; ++j) {
+		int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
+		PlaceIndicatorVertex(0, y);
+		PlaceIndicatorVertex(GetXSize(), y);
+	    }
+	    EndLines();
+	    DisableDashedLines();
+	}
+
 	// Draw indicators.
 	//
 	// There's no advantage in generating an OpenGL list for the

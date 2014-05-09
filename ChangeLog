@@ -1,3 +1,9 @@
+Fri May 09 07:53:12 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h,src/guicontrol.cc: Add "hit test debug"
+	  mode, which shows the hit test grid and how many entries are in each
+	  box (toggled by F3).
+
 Fri May 09 07:50:15 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Increase the threshold for how close the pointer

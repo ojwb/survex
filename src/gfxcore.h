@@ -181,6 +181,8 @@ private:
     bool m_Metric;
     bool m_Percent;
 
+    bool m_HitTestDebug;
+
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
 
@@ -431,6 +433,9 @@ public:
 	ToggleFlag(&m_Metric);
 	InvalidateList(LIST_DEPTH_KEY);
 	InvalidateList(LIST_SCALE_BAR);
+    }
+    void ToggleHitTestDebug() {
+	ToggleFlag(&m_HitTestDebug);
     }
     void ToggleDegrees() { ToggleFlag(&m_Degrees); }
     void TogglePercent() { ToggleFlag(&m_Percent); }

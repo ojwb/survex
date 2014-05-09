@@ -1227,6 +1227,9 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 		OnCancelDistLine();
 	    }
 	    break;
+	case WXK_F3:
+	    m_View->ToggleHitTestDebug();
+	    break;
 	case WXK_F5:
 	    m_View->InvalidateAllLists();
 	    m_View->ForceRefresh();
