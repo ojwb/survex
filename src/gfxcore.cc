@@ -89,6 +89,9 @@ static const gla_colour NAME_COLOUR = col_GREEN;
 // Number of entries across and down the hit-test grid:
 #define HITTEST_SIZE 20
 
+// How close the pointer needs to be to a station to be considered:
+#define MEASURE_THRESHOLD 7
+
 // vector for lighting angle
 static const Vector3 light(.577, .577, .577);
 
@@ -1160,7 +1163,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
     int grid_y = point.y * HITTEST_SIZE / (GetYSize() + 1);
 
     LabelInfo *best = NULL;
-    int dist_sqrd = 25;
+    int dist_sqrd = sqrd(MEASURE_THRESHOLD);
     int square = grid_x + grid_y * HITTEST_SIZE;
     list<LabelInfo*>::iterator iter = m_PointGrid[square].begin();
 
