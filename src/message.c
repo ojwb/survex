@@ -1123,6 +1123,9 @@ macosx_got_msg:
 	     case LANG_ROMANIAN:
 	       msg_lang = "ro";
 	       break;
+	     case LANG_RUSSIAN:
+	       msg_lang = "ru";
+	       break;
 	     case LANG_SLOVAK:
 	       msg_lang = "sk";
 	       break;

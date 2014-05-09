@@ -1,3 +1,7 @@
+Fri May 09 09:42:11 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/message.c: Add handling for MS Windows LANG_RUSSIAN code.
+
 Fri May 09 09:41:23 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/de.po,lib/de_CH.po: Attempt to update "Präfix" to
