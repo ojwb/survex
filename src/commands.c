@@ -504,13 +504,13 @@ cmd_set(void)
 }
 
 static void
-check_reentry(prefix *tag)
+check_reentry(prefix *survey)
 {
    /* Don't try to check "*prefix \" or "*begin \" */
-   if (!tag->up) return;
-   if (TSTBIT(tag->sflags, SFLAGS_PREFIX_ENTERED)) {
-      if (tag->line != file.line ||
-	  strcmp(tag->filename, file.filename) != 0) {
+   if (!survey->up) return;
+   if (TSTBIT(survey->sflags, SFLAGS_PREFIX_ENTERED)) {
+      if (survey->line != file.line ||
+	  strcmp(survey->filename, file.filename) != 0) {
 	 const char *filename_store = file.filename;
 	 unsigned int line_store = file.line;
 	 static int reenter_depr_count = 0;
@@ -525,16 +525,16 @@ check_reentry(prefix *tag)
 	       compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
 	 }
 
-	 file.filename = tag->filename;
-	 file.line = tag->line;
+	 file.filename = survey->filename;
+	 file.line = survey->line;
 	 compile_warning(/*Originally entered here*/30);
 	 file.filename = filename_store;
 	 file.line = line_store;
       }
    } else {
-      tag->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
-      tag->filename = file.filename;
-      tag->line = file.line;
+      survey->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
+      survey->filename = file.filename;
+      survey->line = file.line;
    }
 }
 
@@ -543,7 +543,7 @@ static void
 cmd_prefix(void)
 {
    static int prefix_depr_count = 0;
-   prefix *tag;
+   prefix *survey;
    /* Issue warning first, so "*prefix \" warns first that *prefix is
     * deprecated and then that ROOT is...
     */
@@ -554,9 +554,9 @@ cmd_prefix(void)
       if (++prefix_depr_count == 5)
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
-   tag = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
-   pcs->Prefix = tag;
-   check_reentry(tag);
+   survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
+   pcs->Prefix = survey;
+   check_reentry(survey);
 }
 #endif
 
@@ -585,7 +585,7 @@ bad:
 static void
 cmd_begin(void)
 {
-   prefix *tag;
+   prefix *survey;
    settings *pcsNew;
 
    pcsNew = osnew(settings);
@@ -594,11 +594,11 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   tag = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
-   pcs->tag = tag;
-   if (tag) {
-      pcs->Prefix = tag;
-      check_reentry(tag);
+   survey = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
+   pcs->begin_survey = survey;
+   if (survey) {
+      pcs->Prefix = survey;
+      check_reentry(survey);
       f_export_ok = fTrue;
    }
 }
@@ -625,7 +625,7 @@ static void
 cmd_end(void)
 {
    settings *pcsParent;
-   prefix *tag, *tagBegin;
+   prefix *survey, *begin_survey;
 
    pcsParent = pcs->next;
 
@@ -639,33 +639,37 @@ cmd_end(void)
       return;
    }
 
-   tagBegin = pcs->tag;
+   begin_survey = pcs->begin_survey;
 
    SVX_ASSERT(pcsParent);
    free_settings(pcs);
    pcs = pcsParent;
 
    /* note need to read using root *before* BEGIN */
-   tag = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT);
-   if (tag != tagBegin) {
-      if (tag) {
-	 if (!tagBegin) {
-	    /* TRANSLATORS: Used when a BEGIN tag has no prefix, but the END
-	     * tag has one, e.g.:
+   survey = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT);
+   if (survey != begin_survey) {
+      if (survey) {
+	 if (!begin_survey) {
+	    /* TRANSLATORS: Used when a BEGIN command has no survey, but the
+	     * END command does, e.g.:
 	     *
 	     * *begin
 	     * 1 2 10.00 178 -01
 	     * *end entrance      <--[Message given here] */
-	    compile_error_skip(-/*Matching BEGIN tag has no prefix*/36);
+	    compile_error_skip(-/*Matching BEGIN command has no survey name*/36);
 	 } else {
-	    /* tag mismatch */
-	    /* TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the
-	     * same <prefix> if it’s given at all */
-	    compile_error_skip(-/*Prefix tag doesn’t match BEGIN*/193);
+	    /* TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
+	     * same <survey> if it’s given at all */
+	    compile_error_skip(-/*Survey name doesn’t match BEGIN*/193);
 	 }
       } else {
-	 /* close tag omitted; open tag given */
-	 compile_warning(-/*Closing prefix omitted from END*/194);
+	 /* TRANSLATORS: Used when a BEGIN command has a survey name, but the
+	  * END command omits it, e.g.:
+	  *
+	  * *begin entrance
+	  * 1 2 10.00 178 -01
+	  * *end     <--[Message given here] */
+	 compile_warning(-/*Survey name omitted from END*/194);
       }
    }
 }

@@ -1,6 +1,6 @@
-./badbegin.svx:2:10: Matching BEGIN tag has no prefix
-./badbegin.svx:5:11: Prefix tag doesn't match BEGIN
-./badbegin.svx:7:5: warning: Closing prefix omitted from END
+./badbegin.svx:2:10: Matching BEGIN command has no survey name
+./badbegin.svx:5:11: Survey name doesn't match BEGIN
+./badbegin.svx:7:5: warning: Survey name omitted from END
 
 Removing trailing traverses...
 

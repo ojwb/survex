@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2013,2014 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -311,7 +311,7 @@ typedef struct Settings {
    enum {OFF, LOWER, UPPER} Case;
    int style;
    prefix *Prefix;
-   prefix *tag; /* used to check BEGIN/END tags match */
+   prefix *begin_survey; /* used to check BEGIN and END match */
    short *Translate; /* if short is >= 16 bits, which ANSI requires */
    real Var[Q_MAC];
    real z[Q_MAC];

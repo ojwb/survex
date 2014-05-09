@@ -24,7 +24,7 @@ msgstr "Memoria insuficiente (se necesitan %lu bytes de más)."
 #. technically not quite right when there are parallel active release
 #. series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
 #. seems unlikely to confuse users.
-#: ../src/commands.c:1654
+#: ../src/commands.c:1658
 #: n:2
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -75,7 +75,7 @@ msgstr "Campo que no puede ser omitido"
 msgid "Expecting numeric field, found “%s”"
 msgstr "Se espera un campo numérico; encontrado “%s”"
 
-#: ../src/commands.c:1555
+#: ../src/commands.c:1559
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
@@ -89,7 +89,7 @@ msgstr "Encontrado “%s”, esperando “PRESERVE”, “TOUPPER”, o “TOLOW
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "Error detectado en el programa! Por favor comunícalo a los autores"
 
-#: ../src/commands.c:1768
+#: ../src/commands.c:1772
 #: ../src/extend.c:435
 #: n:12
 #, c-format
@@ -149,7 +149,7 @@ msgstr "Demasiados errores - proceso abandonado"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:1434
+#: ../src/commands.c:1438
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr "*DEFAULT ya no se usa - utiliza *CALIBRATE/DATA/SD/UNITS con el argumento DEFAULT en su lugar"
@@ -205,7 +205,7 @@ msgstr "ROOT ya no se usa"
 #. 1 2 1.23 045 -6
 #. *end inner
 #. *end outer
-#: ../src/commands.c:901
+#: ../src/commands.c:905
 #: ../src/listpos.c:107
 #: ../src/readval.c:325
 #: n:26
@@ -251,13 +251,13 @@ msgstr "Reentrar en un nivel de prefijo existente yo no se usa"
 msgid "Originally entered here"
 msgstr "Originalmente entrado aqui"
 
-#: ../src/commands.c:1585
+#: ../src/commands.c:1589
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr "Encontrado “%s”, esperando “EQUATES”, “EXPORTS”, o “PLUMBS”"
 
-#: ../src/commands.c:1592
+#: ../src/commands.c:1596
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
@@ -265,7 +265,7 @@ msgstr "Encontrado “%s”, esperando “ON” o “OFF”"
 
 #. TRANSLATORS: EQUATE is a command name, so shouldn’t be
 #. translated.
-#: ../src/commands.c:863
+#: ../src/commands.c:867
 #: n:33
 msgid "Only one station in EQUATE command"
 msgstr "Solo una estación en la orden EQUATE"
@@ -282,15 +282,16 @@ msgstr "Cantidad “%s” desconocida"
 msgid "Unknown units “%s”"
 msgstr "Unidades “%s” desconocidas"
 
-#. TRANSLATORS: Used when a BEGIN tag has no prefix, but the END
-#. tag has one, e.g.:
+#. TRANSLATORS: Used when a BEGIN command has no survey, but the
+#. END command does, e.g.:
 #.
 #. *begin
 #. 1 2 10.00 178 -01
 #. *end entrance      <--[Message given here]
 #: ../src/commands.c:659
 #: n:36
-msgid "Matching BEGIN tag has no prefix"
+#, fuzzy
+msgid "Matching BEGIN command has no survey name"
 msgstr "La instrucción BEGIN correspondiente no tiene prefijo"
 
 #. TRANSLATORS: Note: In English you talk about the *units* of a single
@@ -318,19 +319,19 @@ msgstr "Instrumento “%s” desconocido"
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
-#: ../src/commands.c:1402
+#: ../src/commands.c:1406
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr "El factor de escala debe ser 1.0 para el comando DECLINATION"
 
 #. TRANSLATORS: If the scale factor for an instrument is zero, then any
 #. reading would be mapped to zero, which doesn't make sense.
-#: ../src/commands.c:1408
+#: ../src/commands.c:1412
 #: n:391
 msgid "Scale factor must be non-zero"
 msgstr "El factor de escala debe de ser diferente de cero"
 
-#: ../src/commands.c:1453
+#: ../src/commands.c:1457
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
@@ -360,7 +361,7 @@ msgstr "Nombre de archivo “%s” referido a un directorio"
 msgid "Survey not all connected to fixed stations"
 msgstr "La topografia no está completamente conectada a estaciones fijas"
 
-#: ../src/commands.c:796
+#: ../src/commands.c:800
 #: ../src/datain.c:645
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
@@ -374,7 +375,7 @@ msgstr "Estación ya fijada o igualada a un punto fijado"
 msgid "Failed to open output file “%s”"
 msgstr "No se pudo abrir el archivo de salida “%s”"
 
-#: ../src/commands.c:1508
+#: ../src/commands.c:1512
 #: n:48
 msgid "Standard deviation must be positive"
 msgstr "La desviación estándard tiene que ser positiva"
@@ -422,19 +423,19 @@ msgid "Equating two equal fixed points: “%s” and “%s”"
 msgstr "Igualando dos estaciones fijadas en las mismas coordenadas: “%s” y “%s”"
 
 #. TRANSLATORS: " *fix a " gives this message:
-#: ../src/commands.c:719
+#: ../src/commands.c:723
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
 msgstr "Comando FIX sin coordenades - se fijará en (0,0,0)"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
-#: ../src/commands.c:800
+#: ../src/commands.c:804
 #: ../src/datain.c:647
 #: n:55
 msgid "Station already fixed at the same coordinates"
 msgstr "Estación fijada previamente en las mismas coordenadas"
 
-#: ../src/commands.c:711
+#: ../src/commands.c:715
 #: n:56
 msgid "More than one FIX command with no coordinates"
 msgstr "Más de un comando FIX sin coordenadas"
@@ -446,7 +447,7 @@ msgstr "Más de un comando FIX sin coordenadas"
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:1782
+#: ../src/commands.c:1786
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "*EXPORT debe seguir inmediatamente a “*BEGIN <TOPOGRAFÍA>”"
@@ -469,7 +470,7 @@ msgstr "Lectura de brújula sospechosa"
 msgid "Negative tape reading"
 msgstr "Lectura de longitud negativa"
 
-#: ../src/commands.c:713
+#: ../src/commands.c:717
 #: n:61
 msgid "Same station fixed twice with no coordinates"
 msgstr "La misma estación se fijó dos veces sin coordenadas"
@@ -488,21 +489,21 @@ msgstr "Lectura de longitud inferior a la diferencia de profundidades"
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
 #. neither style nor reading is a keyword in the program This error
 #. complains about a depth gauge reading in normal style, for example
-#: ../src/commands.c:1124
+#: ../src/commands.c:1128
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
 msgstr "Campo “%s” no permitido en este estilo de datos “%s”"
 
 #. TRANSLATORS: i.e. not enough readings for the style.
-#: ../src/commands.c:1309
+#: ../src/commands.c:1313
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
 msgstr "Faltan campos para el estilo de datos “%s”"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#: ../src/commands.c:1084
+#: ../src/commands.c:1088
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -517,7 +518,7 @@ msgstr "Estilo de datos “%s” desconocido"
 #. *export 1
 #. 1 2 1.24 045 -6
 #. *end example
-#: ../src/commands.c:954
+#: ../src/commands.c:958
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
@@ -525,13 +526,13 @@ msgstr "La estación “%s” ya ha sido exportada anteriormente"
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
-#: ../src/commands.c:1150
+#: ../src/commands.c:1154
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
 msgstr "Campo duplicado “%s”"
 
-#: ../src/commands.c:827
+#: ../src/commands.c:831
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
@@ -580,7 +581,7 @@ msgstr "Red resuelta por reducción - ningún sistema de ecuaciones por resolver
 msgid "Solving %d simultaneous equations"
 msgstr "Resolviendo un sistema de %d ecuaciones"
 
-#: ../src/commands.c:1212
+#: ../src/commands.c:1216
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
@@ -598,13 +599,13 @@ msgstr "Resolviendo una ecuación"
 msgid "Negative adjusted tape reading"
 msgstr "Distancia ajustada negativa"
 
-#: ../src/commands.c:1691
-#: ../src/commands.c:1711
+#: ../src/commands.c:1695
+#: ../src/commands.c:1715
 #: n:80
 msgid "Date is in the future!"
 msgstr "La fecha es en el futuro!"
 
-#: ../src/commands.c:1715
+#: ../src/commands.c:1719
 #: n:81
 msgid "End of date range is before the start"
 msgstr "La fecha final es anterior a la incial"
@@ -707,8 +708,8 @@ msgstr "Acceso a memoria erróneo"
 #: ../src/commands.c:458
 #: ../src/commands.c:525
 #: ../src/commands.c:555
-#: ../src/commands.c:1099
-#: ../src/commands.c:1436
+#: ../src/commands.c:1103
+#: ../src/commands.c:1440
 #: ../src/readval.c:96
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
@@ -755,7 +756,7 @@ msgstr ""
 msgid "produce an elevation view"
 msgstr ""
 
-#: ../src/commands.c:1096
+#: ../src/commands.c:1100
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
@@ -1239,12 +1240,12 @@ msgstr "El argumento “%s” no es un entero"
 msgid "argument “%s” not a number"
 msgstr "El argumento “%s” no es un número"
 
-#: ../src/commands.c:842
+#: ../src/commands.c:846
 #: n:188
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "Esperando “DUPLICATE”, “SPLAY”, o “SURFACE”"
 
-#: ../src/commands.c:845
+#: ../src/commands.c:849
 #: n:189
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "Esperando “NOT”, “DUPLICATE”, “SPLAY”, o “SURFACE”"
@@ -1260,16 +1261,24 @@ msgstr "La estación “%s” ha sido referenciada por *entrance o *export pero 
 msgid "No matching BEGIN"
 msgstr "Falta el BEGIN correspondiente"
 
-#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the
-#. same <prefix> if it’s given at all
-#: ../src/commands.c:664
+#. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
+#. same <survey> if it’s given at all
+#: ../src/commands.c:663
 #: n:193
-msgid "Prefix tag doesn’t match BEGIN"
+#, fuzzy
+msgid "Survey name doesn’t match BEGIN"
 msgstr "El prefijo no se corresponde con el de BEGIN"
 
-#: ../src/commands.c:668
+#. TRANSLATORS: Used when a BEGIN command has a survey name, but the
+#. END command omits it, e.g.:
+#.
+#. *begin entrance
+#. 1 2 10.00 178 -01
+#. *end     <--[Message given here]
+#: ../src/commands.c:672
 #: n:194
-msgid "Closing prefix omitted from END"
+#, fuzzy
+msgid "Survey name omitted from END"
 msgstr "Prefijo omitido en END"
 
 #. TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
@@ -1401,7 +1410,7 @@ msgstr ""
 #. meaningless to say your tape is marked in "0 feet" (but you might
 #. measure distance by counting knots on a diving line, and tie them
 #. every "2 feet").
-#: ../src/commands.c:1356
+#: ../src/commands.c:1360
 #: n:200
 msgid "*UNITS factor must be non-zero"
 msgstr "El factor de *UNITS debe de ser diferente de cero"
@@ -1631,7 +1640,7 @@ msgstr ""
 #. TRANSLATORS: error from:
 #.
 #. *data normal newline from to tape compass clino
-#: ../src/commands.c:1200
+#: ../src/commands.c:1204
 #: n:222
 msgid "NEWLINE can’t be the first reading"
 msgstr "NEWLINE no puede ser el primer campo"
@@ -1639,7 +1648,7 @@ msgstr "NEWLINE no puede ser el primer campo"
 #. TRANSLATORS: error from:
 #.
 #. *data normal from to tape compass clino newline
-#: ../src/commands.c:1238
+#: ../src/commands.c:1242
 #: n:223
 msgid "NEWLINE can’t be the last reading"
 msgstr "NEWLINE no puede ser el último campo"
@@ -1649,7 +1658,7 @@ msgstr "NEWLINE no puede ser el último campo"
 #. *data normal station tape compass clino
 #.
 #. ("station" signifies interleaved data).
-#: ../src/commands.c:1261
+#: ../src/commands.c:1265
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
 msgstr "Campos en más de una linea, pero sin NEWLINE"
@@ -1659,7 +1668,7 @@ msgstr "Campos en más de una linea, pero sin NEWLINE"
 #. *data diving station newline depth tape compass
 #.
 #. ("depth" needs to occur before "newline").
-#: ../src/commands.c:1137
+#: ../src/commands.c:1141
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
@@ -1668,12 +1677,12 @@ msgstr "El campo “%s” tiene que preceder a NEWLINE"
 #. TRANSLATORS: e.g.
 #.
 #. *data normal from to tape newline compass clino
-#: ../src/commands.c:1190
+#: ../src/commands.c:1194
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr "NEWLINE solo puede ser precedido por STATION, DEPTH, y COUNT"
 
-#: ../src/commands.c:1390
+#: ../src/commands.c:1394
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
 msgstr "No se pueden calibrar cantidades angulares y de longitud juntas"
