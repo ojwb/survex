@@ -1,0 +1,2 @@
+*include cmd_dummy
+*include cmd_dummy.svx

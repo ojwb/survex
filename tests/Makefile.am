@@ -99,4 +99,5 @@ anonstnbad.svx anonstnbad.out\
 anonstnrev.svx anonstnrev.out anonstnrev.pos\
 cmd_entrance_bad.out cmd_entrance_bad.svx\
 cmd_prefix.out\
-cmd_prefix_bad.out cmd_prefix_bad.svx
+cmd_prefix_bad.out cmd_prefix_bad.svx\
+doubleinc.out doubleinc.svx

@@ -1,3 +1,14 @@
+Fri May 09 11:49:29 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: For ages cavern has warned if you reentered
+	  a survey, but this warning was suppressed if it occurred at the
+	  same line of the same file as the survey was first entered, which can
+	  only happen if you include the same survey file more than once, which
+	  isn't a sensible thing to do for a file with actual survey data in
+	  (you might reasonably do it to set up survey grade details or
+	  something like that).  The warning is now given in this situation
+	  too.
+
 Fri May 09 11:42:43 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/anonstn.out,tests/anonstn.pos,tests/anonstn.svx: Test that

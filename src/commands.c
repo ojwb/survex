@@ -509,28 +509,25 @@ check_reentry(prefix *survey)
    /* Don't try to check "*prefix \" or "*begin \" */
    if (!survey->up) return;
    if (TSTBIT(survey->sflags, SFLAGS_PREFIX_ENTERED)) {
-      if (survey->line != file.line ||
-	  strcmp(survey->filename, file.filename) != 0) {
-	 const char *filename_store = file.filename;
-	 unsigned int line_store = file.line;
-	 static int reenter_depr_count = 0;
+      const char *filename_store = file.filename;
+      unsigned int line_store = file.line;
+      static int reenter_depr_count = 0;
 
-	 if (reenter_depr_count < 5) {
-	    /* TRANSLATORS: FIXME: perhaps use "survey" instead of "prefix level"?
-	     * 
-	     * If you're unsure what "deprecated" means, see:
-	     * http://en.wikipedia.org/wiki/Deprecation */
-	    compile_warning(/*Reentering an existing prefix level is deprecated*/29);
-	    if (++reenter_depr_count == 5)
-	       compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
-	 }
-
-	 file.filename = survey->filename;
-	 file.line = survey->line;
-	 compile_warning(/*Originally entered here*/30);
-	 file.filename = filename_store;
-	 file.line = line_store;
+      if (reenter_depr_count < 5) {
+	 /* TRANSLATORS: FIXME: perhaps use "survey" instead of "prefix level"?
+	  * 
+	  * If you're unsure what "deprecated" means, see:
+	  * http://en.wikipedia.org/wiki/Deprecation */
+	 compile_warning(/*Reentering an existing prefix level is deprecated*/29);
+	 if (++reenter_depr_count == 5)
+	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
       }
+
+      file.filename = survey->filename;
+      file.line = survey->line;
+      compile_warning(/*Originally entered here*/30);
+      file.filename = filename_store;
+      file.line = line_store;
    } else {
       survey->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
       survey->filename = file.filename;

@@ -1,0 +1,27 @@
+In file included from ./doubleinc.svx:2:
+./cmd_dummy.svx:1: warning: Reentering an existing prefix level is deprecated
+./cmd_dummy.svx:1: warning: Originally entered here
+./cmd_dummy.svx:10: warning: Station already fixed at the same coordinates
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+Done.
+There were 3 warning(s).
