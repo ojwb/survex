@@ -945,7 +945,7 @@ main(int argc, char **argv)
 	       printf("stop\n");
 	       break;
 	     default:
-	       printf("other info tag (code %d) ignored\n",item);
+	       printf("other info tag (code %d) ignored\n", item);
 #endif
 	    }
 	 } while (item != img_STOP);
