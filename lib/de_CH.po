@@ -292,7 +292,7 @@ msgstr "Unbekannte Einheit(en) «%s»"
 #: n:36
 #, fuzzy
 msgid "Matching BEGIN command has no survey name"
-msgstr "Zugehöriges BEGIN hatte keine Präfix"
+msgstr "Zugehöriges BEGIN hatte kein Vermessungsnamen"
 
 #. TRANSLATORS: Note: In English you talk about the *units* of a single
 #. measurement, but the correct term in other languages may be singular.
@@ -1267,7 +1267,7 @@ msgstr "Kein entsprechendes BEGIN"
 #: n:193
 #, fuzzy
 msgid "Survey name doesn’t match BEGIN"
-msgstr "Präfix passt nicht zu BEGIN"
+msgstr "Vermessungsnamen passt nicht zu BEGIN"
 
 #. TRANSLATORS: Used when a BEGIN command has a survey name, but the
 #. END command omits it, e.g.:
@@ -1279,7 +1279,7 @@ msgstr "Präfix passt nicht zu BEGIN"
 #: n:194
 #, fuzzy
 msgid "Survey name omitted from END"
-msgstr "Präfix vor END fehlt"
+msgstr "Vermessungsnamen vor END fehlt"
 
 #. TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
 #. (or at least the columns) are in the same place

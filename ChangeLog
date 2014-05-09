@@ -1,3 +1,8 @@
+Fri May 09 09:41:23 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po: Attempt to update "Präfix" to
+	  "Vermessungsnamen" in fuzzy messages.
+
 Fri May 09 07:53:12 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h,src/guicontrol.cc: Add "hit test debug"
