@@ -1,3 +1,7 @@
+Fri May 09 12:54:41 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Merge changes from survex.pot to the po files.
+
 Fri May 09 12:50:16 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/commands.c: Say "survey" instead of "prefix level"

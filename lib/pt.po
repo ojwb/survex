@@ -24,7 +24,7 @@ msgstr "Memória insuficiente (são necesssários mais %lu bytes)."
 #. technically not quite right when there are parallel active release
 #. series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
 #. seems unlikely to confuse users.
-#: ../src/commands.c:1658
+#: ../src/commands.c:1666
 #: n:2
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -33,7 +33,7 @@ msgstr "Para processar estes dados é necessária a versão %s (ou posterior) do
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:376
-#: ../src/message.c:1242
+#: ../src/message.c:1245
 #: n:4
 msgid "warning"
 msgstr "alerta"
@@ -48,7 +48,7 @@ msgstr "No arquivo incluído em %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:553
+#: ../src/commands.c:561
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix descontinuado - use *begin e *end em seu lugar"
@@ -75,7 +75,7 @@ msgstr "Campo não pode ser omitido"
 msgid "Expecting numeric field, found “%s”"
 msgstr "Esperava valor numérico, encontrei “%s”"
 
-#: ../src/commands.c:1559
+#: ../src/commands.c:1567
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
@@ -89,7 +89,7 @@ msgstr "Encontrei “%s” quando eram esperados “PRESERVE”, “TOUPPER” o
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "Erro no programa! Por favor, comunique aos autores"
 
-#: ../src/commands.c:1772
+#: ../src/commands.c:1780
 #: ../src/extend.c:435
 #: n:12
 #, c-format
@@ -142,14 +142,14 @@ msgstr "Impossível abrir “pipe”: “%s”"
 msgid "Error reading file"
 msgstr "Erro ao ler o ficheiro"
 
-#: ../src/message.c:1257
+#: ../src/message.c:1260
 #: n:19
 msgid "Too many errors - giving up"
 msgstr "Demasiados erros - desistindo"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:1438
+#: ../src/commands.c:1446
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr "*DEFAULT decontinuado - use *CALIBRATE/DATA/SD/UNITS com argumento DEFAULT em seu lugar"
@@ -162,7 +162,7 @@ msgstr "*DEFAULT decontinuado - use *CALIBRATE/DATA/SD/UNITS com argumento DEFAU
 msgid "Compass reading given on plumbed leg"
 msgstr "Azimute fornecido numa visada vertical"
 
-#: ../src/commands.c:637
+#: ../src/commands.c:645
 #: n:22
 msgid "END with no matching BEGIN in this file"
 msgstr "END sem o BEGIN correspondente neste ficheiro"
@@ -205,7 +205,7 @@ msgstr "ROOT descontinuado"
 #. 1 2 1.23 045 -6
 #. *end inner
 #. *end outer
-#: ../src/commands.c:905
+#: ../src/commands.c:913
 #: ../src/listpos.c:107
 #: ../src/readval.c:325
 #: n:26
@@ -237,27 +237,35 @@ msgstr "“%s” não pode ser nome de base e de topografia ao mesmo tempo"
 msgid "Expecting station name"
 msgstr "Esperava um nome de base"
 
-#. TRANSLATORS: FIXME: perhaps use "survey" instead of "prefix level"?
+#. TRANSLATORS: e.g.
+#.
+#. *begin crawl
+#. 1 2 9.45 234 -01
+#. *end crawl
+#. *begin crawl    # <- warning here
+#. 2 3 7.67 223 -03
+#. *end crawl
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:523
+#: ../src/commands.c:530
 #: n:29
-msgid "Reentering an existing prefix level is deprecated"
+#, fuzzy
+msgid "Reentering an existing survey is deprecated"
 msgstr "A re-utilização de um prefixo é desaconselhada"
 
-#: ../src/commands.c:530
+#: ../src/commands.c:536
 #: n:30
 msgid "Originally entered here"
 msgstr "Prefixo usado originalmente aqui"
 
-#: ../src/commands.c:1589
+#: ../src/commands.c:1597
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr "Encontrado “%s” quando “EQUATES”, “EXPORTS” ou “PLUMBS” era esperado"
 
-#: ../src/commands.c:1596
+#: ../src/commands.c:1604
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
@@ -265,7 +273,7 @@ msgstr "Encontrado “%s” quando “ON” ou “OFF” eram esperados"
 
 #. TRANSLATORS: EQUATE is a command name, so shouldn’t be
 #. translated.
-#: ../src/commands.c:867
+#: ../src/commands.c:875
 #: n:33
 msgid "Only one station in EQUATE command"
 msgstr "Apenas uma base para o comando EQUATE"
@@ -288,7 +296,7 @@ msgstr "Unidade “%s” desconhecida"
 #. *begin
 #. 1 2 10.00 178 -01
 #. *end entrance      <--[Message given here]
-#: ../src/commands.c:659
+#: ../src/commands.c:667
 #: n:36
 #, fuzzy
 msgid "Matching BEGIN command has no survey name"
@@ -319,19 +327,19 @@ msgstr "Instrumento “%s” desconhecido"
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
-#: ../src/commands.c:1406
+#: ../src/commands.c:1414
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr "Fator de escala tem que ser 1.0 para comando DECLINATION"
 
 #. TRANSLATORS: If the scale factor for an instrument is zero, then any
 #. reading would be mapped to zero, which doesn't make sense.
-#: ../src/commands.c:1412
+#: ../src/commands.c:1420
 #: n:391
 msgid "Scale factor must be non-zero"
 msgstr "Fator de escala não pode ser zero"
 
-#: ../src/commands.c:1457
+#: ../src/commands.c:1465
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
@@ -361,7 +369,7 @@ msgstr "Nome de arquivo “%s” referencia diretório ao invés de arquivo"
 msgid "Survey not all connected to fixed stations"
 msgstr "Topografia não completamente conectada a bases posicionadas"
 
-#: ../src/commands.c:800
+#: ../src/commands.c:808
 #: ../src/datain.c:645
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
@@ -375,7 +383,7 @@ msgstr "Base já posicionada ou com correspondência a uma base posicionada"
 msgid "Failed to open output file “%s”"
 msgstr "Não foi possível abrir arquivo de saída “%s”"
 
-#: ../src/commands.c:1512
+#: ../src/commands.c:1520
 #: n:48
 msgid "Standard deviation must be positive"
 msgstr "Desvio-padrão deve ser positivo"
@@ -423,19 +431,19 @@ msgid "Equating two equal fixed points: “%s” and “%s”"
 msgstr "Igualando duas bases posicionadas nas mesmas coordenadas: “%s” e “%s”"
 
 #. TRANSLATORS: " *fix a " gives this message:
-#: ../src/commands.c:723
+#: ../src/commands.c:731
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
 msgstr "Comando FIX sem coordenadas - atribuindo (0,0,0)"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
-#: ../src/commands.c:804
+#: ../src/commands.c:812
 #: ../src/datain.c:647
 #: n:55
 msgid "Station already fixed at the same coordinates"
 msgstr "Base já posicionada nessas coordenadas"
 
-#: ../src/commands.c:715
+#: ../src/commands.c:723
 #: n:56
 msgid "More than one FIX command with no coordinates"
 msgstr "Mais de um comando FIX sem coordenadas"
@@ -447,7 +455,7 @@ msgstr "Mais de um comando FIX sem coordenadas"
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:1786
+#: ../src/commands.c:1794
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "*EXPORT deve estar logo após um “*BEGIN <TOPO>”"
@@ -470,7 +478,7 @@ msgstr "Azimute suspeito"
 msgid "Negative tape reading"
 msgstr "Distância negativa"
 
-#: ../src/commands.c:717
+#: ../src/commands.c:725
 #: n:61
 msgid "Same station fixed twice with no coordinates"
 msgstr "Mesma base posicionada duas vezes sem coordenadas"
@@ -489,21 +497,21 @@ msgstr "Distância menor que mudança de profundidade"
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
 #. neither style nor reading is a keyword in the program This error
 #. complains about a depth gauge reading in normal style, for example
-#: ../src/commands.c:1128
+#: ../src/commands.c:1136
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
 msgstr "Campo “%s” não é permitido em tipo de visada “%s”"
 
 #. TRANSLATORS: i.e. not enough readings for the style.
-#: ../src/commands.c:1313
+#: ../src/commands.c:1321
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
 msgstr "Faltam campos necessários ao tipo de visada “%s”"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#: ../src/commands.c:1088
+#: ../src/commands.c:1096
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -518,7 +526,7 @@ msgstr "Tipo de visada “%s” desconhecido"
 #. *export 1
 #. 1 2 1.24 045 -6
 #. *end example
-#: ../src/commands.c:958
+#: ../src/commands.c:966
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
@@ -526,13 +534,13 @@ msgstr "Base “%s” já foi exportada"
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
-#: ../src/commands.c:1154
+#: ../src/commands.c:1162
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
 msgstr "Campo “%s” duplicado"
 
-#: ../src/commands.c:831
+#: ../src/commands.c:839
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
@@ -581,7 +589,7 @@ msgstr "Coordenadas já calculadas - nenhum sistema de equações para resolver.
 msgid "Solving %d simultaneous equations"
 msgstr "Resolvendo sistema de %d equações"
 
-#: ../src/commands.c:1216
+#: ../src/commands.c:1224
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
@@ -599,13 +607,13 @@ msgstr "Resolvendo uma equação"
 msgid "Negative adjusted tape reading"
 msgstr "Distância ajustada negativa"
 
-#: ../src/commands.c:1695
-#: ../src/commands.c:1715
+#: ../src/commands.c:1703
+#: ../src/commands.c:1723
 #: n:80
 msgid "Date is in the future!"
 msgstr "A data é no futuro!"
 
-#: ../src/commands.c:1719
+#: ../src/commands.c:1727
 #: n:81
 msgid "End of date range is before the start"
 msgstr "Data final do intervalo ocorre antes da data inicial"
@@ -706,10 +714,10 @@ msgstr "Erro de acesso à memória"
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:458
-#: ../src/commands.c:525
-#: ../src/commands.c:555
-#: ../src/commands.c:1103
-#: ../src/commands.c:1440
+#: ../src/commands.c:541
+#: ../src/commands.c:563
+#: ../src/commands.c:1111
+#: ../src/commands.c:1448
 #: ../src/readval.c:96
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
@@ -756,7 +764,7 @@ msgstr ""
 msgid "produce an elevation view"
 msgstr ""
 
-#: ../src/commands.c:1100
+#: ../src/commands.c:1108
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
@@ -855,7 +863,7 @@ msgstr "&Planta"
 msgid "&Elevation"
 msgstr "Pe&rfil"
 
-#: ../src/gfxcore.cc:735
+#: ../src/gfxcore.cc:772
 #: ../src/mainfrm.cc:128
 #: n:118
 msgid "Elevation"
@@ -1240,12 +1248,12 @@ msgstr "argumento “%s” não é um número inteiro"
 msgid "argument “%s” not a number"
 msgstr "argumento “%s” não é um número"
 
-#: ../src/commands.c:846
+#: ../src/commands.c:854
 #: n:188
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "“DUPLICATE”, “SPLAY” ou “SURFACE” eram esperados"
 
-#: ../src/commands.c:849
+#: ../src/commands.c:857
 #: n:189
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "“NOT”, “DUPLICATE”, “SPLAY” ou “SURFACE” eram esperados"
@@ -1256,14 +1264,14 @@ msgstr "“NOT”, “DUPLICATE”, “SPLAY” ou “SURFACE” eram esperados"
 msgid "Station “%s” referred to by *entrance or *export but never used"
 msgstr "Base “%s” referenciada por *entrance ou *export mas nunca usada"
 
-#: ../src/commands.c:635
+#: ../src/commands.c:643
 #: n:192
 msgid "No matching BEGIN"
 msgstr "Não há BEGIN correspondente"
 
 #. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 #. same <survey> if it’s given at all
-#: ../src/commands.c:663
+#: ../src/commands.c:671
 #: n:193
 #, fuzzy
 msgid "Survey name doesn’t match BEGIN"
@@ -1275,7 +1283,7 @@ msgstr "Prefixo não corresponde ao do BEGIN"
 #. *begin entrance
 #. 1 2 10.00 178 -01
 #. *end     <--[Message given here]
-#: ../src/commands.c:672
+#: ../src/commands.c:680
 #: n:194
 #, fuzzy
 msgid "Survey name omitted from END"
@@ -1411,7 +1419,7 @@ msgstr ""
 #. meaningless to say your tape is marked in "0 feet" (but you might
 #. measure distance by counting knots on a diving line, and tie them
 #. every "2 feet").
-#: ../src/commands.c:1360
+#: ../src/commands.c:1368
 #: n:200
 msgid "*UNITS factor must be non-zero"
 msgstr "Fator em *UNITS não pode ser zero"
@@ -1428,7 +1436,7 @@ msgstr "&Captura de Ecrã…"
 msgid "No survey data in 3d file “%s”"
 msgstr "Não há dados de topografia no ficheiro 3d “%s”"
 
-#: ../src/gfxcore.cc:658
+#: ../src/gfxcore.cc:695
 #: n:203
 msgid "Facing"
 msgstr "Olhando para"
@@ -1627,14 +1635,14 @@ msgstr "&Abrir…\tCtrl+O"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.
-#: ../src/gfxcore.cc:979
+#: ../src/gfxcore.cc:1016
 #: n:221
 msgid "Undated"
 msgstr "Sem data"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
-#: ../src/gfxcore.cc:1003
+#: ../src/gfxcore.cc:1040
 #: n:290
 msgid "Not in loop"
 msgstr ""
@@ -1642,7 +1650,7 @@ msgstr ""
 #. TRANSLATORS: error from:
 #.
 #. *data normal newline from to tape compass clino
-#: ../src/commands.c:1204
+#: ../src/commands.c:1212
 #: n:222
 msgid "NEWLINE can’t be the first reading"
 msgstr "NEWLINE não pode ser o primeiro valor"
@@ -1650,7 +1658,7 @@ msgstr "NEWLINE não pode ser o primeiro valor"
 #. TRANSLATORS: error from:
 #.
 #. *data normal from to tape compass clino newline
-#: ../src/commands.c:1242
+#: ../src/commands.c:1250
 #: n:223
 msgid "NEWLINE can’t be the last reading"
 msgstr "NEWLINE não pode ser o último valor"
@@ -1660,7 +1668,7 @@ msgstr "NEWLINE não pode ser o último valor"
 #. *data normal station tape compass clino
 #.
 #. ("station" signifies interleaved data).
-#: ../src/commands.c:1265
+#: ../src/commands.c:1273
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
 msgstr "Valores em mais de uma linha sem NEWLINE"
@@ -1670,7 +1678,7 @@ msgstr "Valores em mais de uma linha sem NEWLINE"
 #. *data diving station newline depth tape compass
 #.
 #. ("depth" needs to occur before "newline").
-#: ../src/commands.c:1141
+#: ../src/commands.c:1149
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
@@ -1679,17 +1687,17 @@ msgstr "Valor “%s” deve estar antes do NEWLINE"
 #. TRANSLATORS: e.g.
 #.
 #. *data normal from to tape newline compass clino
-#: ../src/commands.c:1194
+#: ../src/commands.c:1202
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr "NEWLINE só pode ser precedido por STATION, DEPTH e COUNT"
 
-#: ../src/commands.c:1394
+#: ../src/commands.c:1402
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
 msgstr "Não é possível calibrar ângulos e comprimentos ao mesmo tempo"
 
-#: ../src/commands.c:582
+#: ../src/commands.c:590
 #: n:397
 msgid "Bad *alias command"
 msgstr ""
@@ -1750,28 +1758,28 @@ msgid "Step Once &Clockwise"
 msgstr "Um Passo &Horário"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:3111
+#: ../src/gfxcore.cc:3149
 #: ../src/mainfrm.cc:791
 #: n:240
 msgid "View &North"
 msgstr "Olhar para &Norte"
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:3113
+#: ../src/gfxcore.cc:3151
 #: ../src/mainfrm.cc:792
 #: n:241
 msgid "View &East"
 msgstr "Olhar para &Leste"
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:3115
+#: ../src/gfxcore.cc:3153
 #: ../src/mainfrm.cc:793
 #: n:242
 msgid "View &South"
 msgstr "Olhar para &Sul"
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:3117
+#: ../src/gfxcore.cc:3155
 #: ../src/mainfrm.cc:794
 #: n:243
 msgid "View &West"
@@ -1809,13 +1817,13 @@ msgstr "Mover para &Cima"
 msgid "Shift Survey &Down"
 msgstr "Mover para &Baixo"
 
-#: ../src/gfxcore.cc:3131
+#: ../src/gfxcore.cc:3169
 #: ../src/mainfrm.cc:813
 #: n:248
 msgid "&Plan View"
 msgstr "&Planta"
 
-#: ../src/gfxcore.cc:3132
+#: ../src/gfxcore.cc:3170
 #: ../src/mainfrm.cc:814
 #: n:249
 msgid "Ele&vation"
@@ -2002,19 +2010,19 @@ msgstr "Visadas de Super&fície\tCtrl+F"
 msgid "&Overlapping Names"
 msgstr "Nomes &Sobrepostos"
 
-#: ../src/gfxcore.cc:3166
+#: ../src/gfxcore.cc:3204
 #: ../src/mainfrm.cc:862
 #: n:292
 msgid "Colour by &Depth"
 msgstr "Colorir de acordo com &Profundidade"
 
-#: ../src/gfxcore.cc:3167
+#: ../src/gfxcore.cc:3205
 #: ../src/mainfrm.cc:863
 #: n:293
 msgid "Colour by D&ate"
 msgstr "Colorir de acordo com &Data"
 
-#: ../src/gfxcore.cc:3168
+#: ../src/gfxcore.cc:3206
 #: ../src/mainfrm.cc:864
 #: n:289
 msgid "Colour by E&rror"
@@ -2396,8 +2404,8 @@ msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr "%s: %s, Dist %.2f%s, Azim %03d%s"
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:3157
-#: ../src/gfxcore.cc:3175
+#: ../src/gfxcore.cc:3195
+#: ../src/gfxcore.cc:3213
 #: ../src/mainfrm.cc:915
 #: n:342
 msgid "&Metric"
@@ -2407,8 +2415,8 @@ msgstr "&Métrico"
 #.
 #. Degrees are the angular measurement where there are 360 in a full
 #. circle.
-#: ../src/gfxcore.cc:3122
-#: ../src/gfxcore.cc:3140
+#: ../src/gfxcore.cc:3160
+#: ../src/gfxcore.cc:3178
 #: ../src/mainfrm.cc:916
 #: n:343
 msgid "&Degrees"
@@ -2418,7 +2426,7 @@ msgstr "&Graus"
 #.
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/gfxcore.cc:3145
+#: ../src/gfxcore.cc:3183
 #: ../src/mainfrm.cc:917
 #: n:430
 #, fuzzy
@@ -2430,7 +2438,7 @@ msgstr "P&ercent"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1076
+#: ../src/gfxcore.cc:1113
 #: ../src/printwx.cc:1073
 #: n:423
 msgid "km"
@@ -2441,8 +2449,8 @@ msgstr "km"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:950
-#: ../src/gfxcore.cc:1083
+#: ../src/gfxcore.cc:987
+#: ../src/gfxcore.cc:1120
 #: ../src/mainfrm.cc:2028
 #: ../src/mainfrm.cc:2097
 #: ../src/mainfrm.cc:2117
@@ -2458,7 +2466,7 @@ msgstr "m"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1091
+#: ../src/gfxcore.cc:1128
 #: ../src/printwx.cc:1078
 #: n:425
 msgid "cm"
@@ -2469,7 +2477,7 @@ msgstr ""
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1104
+#: ../src/gfxcore.cc:1141
 #: n:426
 msgid " miles"
 msgstr ""
@@ -2479,7 +2487,7 @@ msgstr ""
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1111
+#: ../src/gfxcore.cc:1148
 #: n:427
 msgid " mile"
 msgstr ""
@@ -2489,8 +2497,8 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:950
-#: ../src/gfxcore.cc:1119
+#: ../src/gfxcore.cc:987
+#: ../src/gfxcore.cc:1156
 #: ../src/mainfrm.cc:2033
 #: ../src/mainfrm.cc:2100
 #: ../src/mainfrm.cc:2120
@@ -2505,25 +2513,25 @@ msgstr "ft"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1127
+#: ../src/gfxcore.cc:1164
 #: n:429
 msgid "in"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:3120
+#: ../src/gfxcore.cc:3158
 #: n:387
 msgid "&Hide Compass"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:3135
+#: ../src/gfxcore.cc:3173
 #: n:384
 msgid "&Hide Clino"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:3155
+#: ../src/gfxcore.cc:3193
 #: n:385
 msgid "&Hide scale bar"
 msgstr ""
@@ -2531,15 +2539,15 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:3173
+#: ../src/gfxcore.cc:3211
 #: n:386
 msgid "&Hide colour key"
 msgstr ""
 
 #. TRANSLATORS: degree symbol - probably should be translated to
 #. itself.
-#: ../src/gfxcore.cc:647
-#: ../src/gfxcore.cc:701
+#: ../src/gfxcore.cc:684
+#: ../src/gfxcore.cc:738
 #: ../src/mainfrm.cc:2084
 #: ../src/mainfrm.cc:2212
 #: ../src/printwx.cc:964
@@ -2553,8 +2561,8 @@ msgstr "°"
 
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 #. circle).
-#: ../src/gfxcore.cc:652
-#: ../src/gfxcore.cc:706
+#: ../src/gfxcore.cc:689
+#: ../src/gfxcore.cc:743
 #: n:76
 msgid "ᵍ"
 msgstr ""
@@ -2572,15 +2580,15 @@ msgstr "grados"
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
 #. 50 grad).
-#: ../src/gfxcore.cc:692
-#: ../src/gfxcore.cc:710
+#: ../src/gfxcore.cc:729
+#: ../src/gfxcore.cc:747
 #: n:96
 msgid "%"
 msgstr "%"
 
 #. TRANSLATORS: used for the percentage gradient on vertical
 #. angles.
-#: ../src/gfxcore.cc:686
+#: ../src/gfxcore.cc:723
 #: n:431
 msgid "∞"
 msgstr "∞"
