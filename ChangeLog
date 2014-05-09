@@ -1,3 +1,12 @@
+Fri May 09 12:50:16 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c: Say "survey" instead of "prefix level"
+	  in the warning about reentering one.
+	* lib/survex.pot,src/commands.c: After 5 warnings about reentering a
+	  survey we give up warning about that, but we used to keep reporting
+	  where the survey was originally entered - this secondary diagnostic
+	  message is now silenced when the main message is.
+
 Fri May 09 11:49:29 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/: For ages cavern has warned if you reentered
