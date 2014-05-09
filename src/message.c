@@ -80,6 +80,8 @@ static const char *exe_pth = "";
 static void
 outofmem(OSSIZE_T size)
 {
+   /* TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
+    * was trying to allocate space for. */
    fatalerror(/*Out of memory (couldn’t find %lu bytes).*/1,
 	      (unsigned long)size);
 }
@@ -221,8 +223,11 @@ init_signals(void)
    signal(sigReceived, SIG_DFL);
 
    switch (sigReceived) {
+      /* TRANSLATORS: Program will exit shortly after printing this */
       case SIGABRT: en = /*Abnormal termination*/90; break;
       case SIGFPE:  en = /*Arithmetic error*/91; break;
+      /* TRANSLATORS: Something is badly wrong -- the CPU tried to execute bad
+       * opcodes -- corrupted program? */
       case SIGILL:  en = /*Illegal instruction*/92; break;
       case SIGSEGV: en = /*Bad memory access*/94; break;
       default:      en = /*Unknown signal received*/97; break;
@@ -1232,6 +1237,8 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    fputs(": ", STDERR);
 
    if (severity == 0) {
+      /* TRANSLATORS: Indicates a warning message e.g.:
+       * "spoon.svx:12: warning: *prefix is deprecated" */
       fputs(msg(/*warning*/4), STDERR);
       fputs(": ", STDERR);
    }

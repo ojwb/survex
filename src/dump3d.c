@@ -47,6 +47,7 @@ static const struct option long_opts[] = {
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),	      /*only load the sub-survey with this prefix*/199, 0},
+   /* TRANSLATORS: --help output for dump3d --rewind option */
    {HLP_ENCODELONG(1),	      /*rewind file and read it a second time*/204, 0},
    {HLP_ENCODELONG(2),	      /*show survey date information (if present)*/396, 0},
    {0, 0, 0}

@@ -102,6 +102,8 @@ report_parent(parse * p) {
     /* Force re-report of include tree for further errors in
      * parent files */
     p->reported_where = fFalse;
+    /* TRANSLATORS: %s is replaced by the filename of the parent file, and %u
+     * by the line number in that file. */
     fprintf(STDERR, msg(/*In file included from %s:%u:\n*/5), p->filename, p->line);
 }
 
@@ -822,6 +824,8 @@ handle_comp_units(void)
       fNoComp = fFalse;
       VAL(Comp) *= pcs->units[Q_BEARING];
       if (VAL(Comp) < (real)0.0 || VAL(Comp) - M_PI * 2.0 > EPSILON) {
+	 /* TRANSLATORS: Suspicious means something like 410 degrees or -20
+	  * degrees */
 	 compile_warning(/*Suspicious compass reading*/59);
 	 VAL(Comp) = mod2pi(VAL(Comp));
       }
@@ -859,6 +863,8 @@ handle_compass(real *p_var)
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
 	 if (sqrd(diff / 2.0) > compvar + VAR(Q_BACKBEARING)) {
 	    /* fore and back readings differ by more than 2 sds */
+	    /* TRANSLATORS: Degrees are the angular measurement where there are
+	     * 360 in a full circle. */
 	    warn_readings_differ(/*COMPASS reading and BACKCOMPASS reading disagree by %s degrees*/98, diff);
 	 }
 	 comp = (comp / compvar + backcomp / VAR(BackComp));
@@ -920,6 +926,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       diff_from_abs90 = fabs(clin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
 	 if (!range_0_180)
+	    /* TRANSLATORS: Degrees are the angular measurement where there are
+	     * 360 in a full circle. */
 	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		 diff_from_abs90 >= -EPSILON) {
@@ -954,6 +962,9 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    }
 
    if (ctype != CTYPE_OMIT && backctype != CTYPE_OMIT && ctype != backctype) {
+      /* TRANSLATORS: In data with backsights, the user has tried to give a
+       * plumb for the foresight and a clino reading for the backsight, or
+       * something similar. */
       compile_error_skip(/*CLINO and BACKCLINO readings must be of the same type*/84);
       return 0;
    }
@@ -967,6 +978,9 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	     backctype == CTYPE_PLUMB ||
 	     (backctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
 	    /* FIXME: Different message for BackComp? */
+	    /* TRANSLATORS: A "plumbed leg" is one measured using a plumbline
+	     * (a weight on a string).  So the problem here is that the leg is
+	     * vertical, so a compass reading has no meaning! */
 	    compile_warning(/*Compass reading given on plumbed leg*/21);
 	 }
       }
@@ -994,6 +1008,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       /* clino */
       real L2, cosG, LcosG, cosG2, sinB, cosB, dx2, dy2, dz2, v, V;
       if (fNoComp) {
+	 /* TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
+	  * survey stations. */
 	 compile_error_skip(/*Compass reading may not be omitted except on plumbed legs*/14);
 	 return 0;
       }
@@ -1023,6 +1039,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    if (ctype == CTYPE_READING) {
 	       if (sqrd((clin + backclin) / 3.0) > var_clin + VAR(BackClino)) {
 		  /* fore and back readings differ by more than 3 sds */
+		  /* TRANSLATORS: Degrees are the angular measurement where
+		   * there are 360 in a full circle. */
 		  warn_readings_differ(/*CLINO reading and BACKCLINO reading disagree by %s degrees*/99, clin + backclin);
 	       }
 	       clin = (clin / var_clin - backclin / VAR(BackClino));
@@ -1141,6 +1159,11 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
    /* check if tape is less than depth change */
    if (tape < fabs(dz)) {
       /* FIXME: allow margin of error based on variances? */
+      /* TRANSLATORS: This means that the data fed in said this.
+       *
+       * It could be a gross error (e.g. the decimal point is missing from the
+       * depth gauge reading) or it could just be due to random error on a near
+       * vertical leg */
       compile_warning(/*Tape reading is less than change in depth*/62);
    }
 

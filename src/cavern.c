@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010,2011,2013 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,12 +119,19 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
+   /* TRANSLATORS: --help output for cavern --percentage option */
    {HLP_ENCODELONG(0),	      /*display percentage progress*/161, 0},
+   /* TRANSLATORS: --help output for cavern --output option */
    {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0},
+   /* TRANSLATORS: --help output for cavern --quiet option */
    {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0},
+   /* TRANSLATORS: --help output for cavern --no-auxiliary-files option */
    {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0},
+   /* TRANSLATORS: --help output for cavern --warnings-are-errors option */
    {HLP_ENCODELONG(5),	      /*turn warnings into errors*/165, 0},
+   /* TRANSLATORS: --help output for cavern --log option */
    {HLP_ENCODELONG(6),	      /*log output to .log file*/170, 0},
+   /* TRANSLATORS: --help output for cavern --3d-version option */
    {HLP_ENCODELONG(7),	      /*specify the 3d file format version to output*/171, 0},
  /*{'z',			"set optimizations for network reduction"},*/
    {0, 0, 0}
@@ -431,6 +438,9 @@ do_stats(void)
    putnl();
 
    if (cComponents != 1) {
+      /* TRANSLATORS: "Connected component" in the graph theory sense - it
+       * means there are %ld bits of survey with no connections between them.
+       * This message is only used if there are more than 1. */
       printf(msg(/*Survey has %ld connected components.*/178), cComponents);
       putnl();
    }
@@ -447,8 +457,11 @@ do_stats(void)
 
    /* If there's no underground survey, we've no ranges */
    if (pfxHi[0]) {
+      /* TRANSLATORS: numbers are altitudes of highest and lowest stations */
       do_range(2, /*Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/135);
+      /* TRANSLATORS: c.f. previous message */
       do_range(1, /*North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/136);
+      /* TRANSLATORS: c.f. previous two messages */
       do_range(0, /*East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/137);
    }
 

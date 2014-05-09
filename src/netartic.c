@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2003,2005,2012 Olly Betts
+ * Copyright (C) 1993-2003,2005,2012,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -391,6 +391,8 @@ articulate(void)
 	 if (stn->name->ident) {
 	    if (!fNotAttached) {
 	       fNotAttached = fTrue;
+	       /* TRANSLATORS: Here "station" is a survey station, not a train
+		* station. */
 	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	    }
 	    puts(sprint_prefix(stn->name));

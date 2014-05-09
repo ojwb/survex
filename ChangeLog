@@ -1,3 +1,8 @@
+Fri May 09 00:15:46 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/extract-msgs.pl,lib/survex.pot,src/: Insert "TRANSLATORS"
+	  comments into source code.
+
 Mon May 05 05:53:01 GMT 2014  Olly Betts <olly@survex.com>
 
 	* .gitignore,lib/Makefile.am,lib/ru.po: Add the start of a Russian

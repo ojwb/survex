@@ -1,6 +1,6 @@
 /* sorterr.c */
 /* Sort a survex .err file */
-/* Copyright (C) 2001,2002,2005,2010,2011 Olly Betts
+/* Copyright (C) 2001,2002,2005,2010,2011,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,10 +49,15 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
+   /* TRANSLATORS: --help output for sorterr --horizontal option */
    {HLP_ENCODELONG(0),        /*sort by horizontal error factor*/179, 0},
+   /* TRANSLATORS: --help output for sorterr --vertical option */
    {HLP_ENCODELONG(1),        /*sort by vertical error factor*/180, 0},
+   /* TRANSLATORS: --help output for sorterr --percentage option */
    {HLP_ENCODELONG(2),        /*sort by percentage error*/181, 0},
+   /* TRANSLATORS: --help output for sorterr --per-leg option */
    {HLP_ENCODELONG(3),        /*sort by error per leg*/182, 0},
+   /* TRANSLATORS: --help output for sorterr --replace option */
    {HLP_ENCODELONG(4),        /*replace .err file with resorted version*/183, 0},
    {0, 0, 0}
 };
@@ -118,6 +123,7 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
+   /* TRANSLATORS: Part of sorterr --help */
    cmdline_set_syntax_message(/*ERR_FILE [HOW_MANY]*/268, 0, NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {

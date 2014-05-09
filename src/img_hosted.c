@@ -1,6 +1,6 @@
 /* img_hosted.c
  * Build img for use in Survex code
- * Copyright (C) 1997,1999,2000,2001,2011,2013 Olly Betts
+ * Copyright (C) 1997,1999,2000,2001,2011,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,15 @@
 static const int img_error2msg_map[] = {
     /* IMG_NONE */         0,
     /* IMG_FILENOTFOUND */ /*Couldn’t open data file “%s”*/24,
+    /* TRANSLATORS: nasty hack - this message is for the .3d img code, and all
+     * errors there take a filename parameter - we don’t really want it here,
+     * so lose it with "%.0s" (which should display 0 characters from the
+     * filename) FIXME: sort out this */
     /* IMG_OUTOFMEMORY */  /*Out of memory %.0s*/38,
     /* IMG_DIRECTORY */    /*Filename “%s” refers to directory*/44,
     /* IMG_CANTOPENOUT */  /*Failed to open output file “%s”*/47,
+    /* TRANSLATORS: Perhaps the user tried to load a different type of file as
+     * a Survex .3d file, or the .3d file was corrupted. */
     /* IMG_BADFORMAT */    /*Bad 3d image file “%s”*/106,
     /* IMG_READERROR */    /*Error reading from file “%s”*/109,
     /* IMG_WRITEERROR */   /*Error writing to file “%s”*/110,

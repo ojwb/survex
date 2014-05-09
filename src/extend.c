@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011,2013 Olly Betts
+ * Copyright (C) 1995-2002,2005,2010,2011,2013,2014 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -249,12 +249,16 @@ parseconfigline(const char *fnm, char *ln)
 	 for (s = p->stns; s; s = s->next) {
 	    if (strcmp(s->label, ln)==0) {
 	       start = p;
+	       /* TRANSLATORS: for extend: "extend" is starting to produce an extended elevation from station %s */
 	       printf(msg(/*Starting from station %s*/512),ln);
 	       putnl();
 	       goto loopend;
 	    }
 	 }
       }
+      /* TRANSLATORS: for extend: the user specified breaking a loop or
+       * changing extend direction at this station, but we didn’t find it in
+       * the 3d file */
       warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ln);
    } else if (strcmp(ln, "*eleft")==0) {
       char *ll = delimword(lc, &lc);
@@ -265,6 +269,7 @@ parseconfigline(const char *fnm, char *ln)
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
+		  /* TRANSLATORS: for extend: */
 		  printf(msg(/*Extending to the left from station %s*/513), ll);
 		  putnl();
 		  p->dir = ELEFT;
@@ -284,6 +289,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
+			   /* TRANSLATORS: for extend: */
 			   printf(msg(/*Extending to the left from leg %s → %s*/515), s->label, t->label);
 			   putnl();
 			   l->dir = ELEFT;
@@ -294,6 +300,9 @@ parseconfigline(const char *fnm, char *ln)
 	       }
 	    }
 	 }
+	 /* TRANSLATORS: for extend: the user specified breaking a loop or
+	  * changing extend direction at this leg, but we didn’t find it in the
+	  * 3d file */
 	 warning_in_file(fnm, lineno, /*Failed to find leg %s → %s*/511, ll, ln);
       }
    } else if (strcmp(ln, "*eright")==0) {
@@ -305,6 +314,7 @@ parseconfigline(const char *fnm, char *ln)
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
+		  /* TRANSLATORS: for extend: */
 		  printf(msg(/*Extending to the right from station %s*/514), ll);
 		  putnl();
 		  p->dir = ERIGHT;
@@ -324,6 +334,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
+			   /* TRANSLATORS: for extend: */
 			   printf(msg(/*Extending to the right from leg %s → %s*/516), s->label, t->label);
 			   putnl();
 			   l->dir=ERIGHT;
@@ -345,6 +356,7 @@ parseconfigline(const char *fnm, char *ln)
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
+		  /* TRANSLATORS: for extend: */
 		  printf(msg(/*Swapping extend direction from station %s*/519),ll);
 		  putnl();
 		  p->dir = ESWAP;
@@ -364,6 +376,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
+			   /* TRANSLATORS: for extend: */
 			   printf(msg(/*Swapping extend direction from leg %s → %s*/520), s->label, t->label);
 			   putnl();
 			   l->dir = ESWAP;
@@ -385,6 +398,7 @@ parseconfigline(const char *fnm, char *ln)
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
+		  /* TRANSLATORS: for extend: */
 		  printf(msg(/*Breaking survey loop at station %s*/517), ll);
 		  putnl();
 		  p->fBroken = 1;
@@ -404,6 +418,7 @@ parseconfigline(const char *fnm, char *ln)
 		     char * lr = (b ? ll : ln);
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
+			   /* TRANSLATORS: for extend: */
 			   printf(msg(/*Breaking survey loop at leg %s → %s*/518), s->label, t->label);
 			   putnl();
 			   l->broken = (b ? BREAK_TO : BREAK_FR);
@@ -461,6 +476,7 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
+   /* TRANSLATORS: Part of extend --help */
    cmdline_set_syntax_message(/*INPUT_3D_FILE [OUTPUT_3D_FILE]*/267, 0, NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
@@ -530,6 +546,7 @@ main(int argc, char **argv)
    if (specfile) {
       FILE *fs = NULL;
       char *fnm_used;
+      /* TRANSLATORS: for extend: */
       printf(msg(/*Applying specfile: “%s”*/521), specfile);
       putnl();
       fs = fopenWithPthAndExt("", specfile, NULL, "r", &fnm_used);
@@ -590,6 +607,9 @@ main(int argc, char **argv)
       }
    }
 
+   /* TRANSLATORS: for extend:
+    * Used to tell the user that a file is being written - %s is the filename
+    */
    printf(msg(/*Writing %s…*/522), fnm_out);
    putnl();
    pimg_out = img_open_write(fnm_out, desc, img_FFLAG_EXTENDED);

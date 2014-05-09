@@ -1,6 +1,6 @@
 /* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001,2003,2004,2011,2012 Olly Betts
+ * Copyright (C) 1998-2001,2003,2004,2011,2012,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,8 +134,10 @@ cmdline_help(void)
       help++;
    }
    fputs("      --help\t\t\t", stdout);
+   /* TRANSLATORS: description of --help option */
    puts(msg(/*display this help and exit*/150));
    fputs("      --version\t\t\t", stdout);
+   /* TRANSLATORS: description of --verbose option */
    puts(msg(/*output version information and exit*/151));
 
    if (msg_extra) {
@@ -162,7 +164,9 @@ cmdline_version(void)
 void
 cmdline_syntax(void)
 {
+   /* TRANSLATORS: as in: Usage: cavern … */
    printf("\n%s: %s", msg(/*Usage*/49), msg_appname());
+   /* TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]… */
    if (help && help->opt) printf(" [%s]...", msg(/*OPTION*/153));
    if (msg_args) {
       putchar(' ');

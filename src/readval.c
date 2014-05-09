@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,6 +202,7 @@ anon_wall_station:
 		  compile_error(-/*Expecting station name*/28);
 	       }
 	    } else {
+	       /* TRANSLATORS: Here "station" is a survey station, not a train station. */
 	       compile_error(-/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
 	    LONGJMP(file.jbSkipLine);
@@ -527,6 +528,7 @@ read_date(int *py, int *pm, int *pd)
 	 nextch();
 	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
 	 if (d < 1 || d > last_day(y, m)) {
+	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
 	    compile_warning(/*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */

@@ -171,6 +171,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 	return;
 #endif
     wxString m;
+    // TRANSLATORS: %s is replaced by the command we attempted to run.
     m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());
     m += wxT(" (");
     m += wxString(strerror(errno), wxConvUTF8);
@@ -393,6 +394,8 @@ CavernLogWindow::process(const wxString &file)
 
     int retval = pclose(cavern_out);
     if (retval) {
+	/* TRANSLATORS: Label for button in aven’s cavern log window which
+	 * causes the survey data to be reprocessed. */
 	AppendToPage(wxString::Format(wxT("<avenbutton default id=1234 name=\"%s\">"),
 				      wmsg(/*Reprocess*/184).c_str()));
 	if (retval == -1) {

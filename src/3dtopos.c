@@ -1,6 +1,6 @@
 /* 3dtopos.c */
 /* Produce a .pos file from a .3d file */
-/* Copyright (C) 2001,2002,2011,2013 Olly Betts
+/* Copyright (C) 2001,2002,2011,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
+   /* TRANSLATORS: Part of 3dtopos --help */
    cmdline_set_syntax_message(/*3D_FILE [POS_FILE]*/217, 0, NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
@@ -106,6 +107,8 @@ main(int argc, char **argv)
    fh_out = safe_fopen(fnm_out, "w");
 
    /* Output headings line */
+   /* TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
+    * (or at least the columns) are in the same place */
    fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fh_out);
 
    do {

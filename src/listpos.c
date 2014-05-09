@@ -1,6 +1,6 @@
 /* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2002,2011,2012,2013 Olly Betts
+ * Copyright (C) 1991-2002,2011,2012,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,9 @@ check_node(prefix *p)
 	       compile_error(/*Station “%s” not exported from survey “%s”*/26,
 			     sprint_prefix(p), s);
 	    } else {
+		/* TRANSLATORS: This error occurs if there's an attempt to
+		 * export a station from a survey which doesn't actually exist.
+		 */
 	       compile_error(/*Reference to station “%s” from non-existent survey “%s”*/286,
 			     sprint_prefix(p), s);
 	    }
@@ -117,6 +120,7 @@ check_node(prefix *p)
       }
 
       if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
+	 /* TRANSLATORS: Here "station" is a survey station, not a train station. */
 	 warning_in_file(p->filename, p->line,
 		 /*Station “%s” referred to just once, with an explicit prefix - typo?*/70,
 		 sprint_prefix(p));
@@ -179,7 +183,11 @@ print_node_stats(void)
    for (c = 0; c < icOrderMac; c++) {
       if (cOrder[c] > 0) {
 	 printf("%*d %d-%s.\n", width, cOrder[c], c,
-		msg(cOrder[c] == 1 ? /*node*/176 : /*nodes*/177));
+		msg(cOrder[c] == 1 ?
+		    /* TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes." */
+		    /*node*/176 :
+		    /* TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes." */
+		    /*nodes*/177));
       }
    }
 #endif

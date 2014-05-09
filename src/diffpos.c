@@ -1,6 +1,6 @@
 /* diffpos.c */
 /* Utility to compare two SURVEX .pos or .3d files */
-/* Copyright (C) 1994,1996,1998-2003,2010,2011,2013 Olly Betts
+/* Copyright (C) 1994,1996,1998-2003,2010,2011,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,6 +155,7 @@ tree_remove(const char *name, const img_point *pt)
    }
 
    if (!was_close_enough) {
+      /* TRANSLATORS: for diffpos: */
       printf(msg(/*Moved by (%3.2f,%3.2f,%3.2f): %s*/500),
 	     pt->x - (*found)->pt.x,
 	     pt->y - (*found)->pt.y,
@@ -191,6 +192,7 @@ tree_check(void)
       sort_separator = new_separator;
       qsort(names, c_added, sizeof(char *), cmp_pname);
       for (i = 0; i < c_added; i++) {
+	 /* TRANSLATORS: for diffpos: */
 	 printf(msg(/*Added: %s*/501), names[i]);
 	 putnl();
 	 osfree(names[i]);
@@ -213,6 +215,7 @@ tree_check(void)
    sort_separator = old_separator;
    qsort(names, c, sizeof(char *), cmp_pname);
    for (i = 0; i < c; i++) {
+      /* TRANSLATORS: for diffpos: */
       printf(msg(/*Deleted: %s*/502), names[i]);
       putnl();
    }
@@ -258,7 +261,9 @@ main(int argc, char **argv)
 
    msg_init(argv);
 
+   /* TRANSLATORS: Part of diffpos --help */
    cmdline_set_syntax_message(/*FILE1 FILE2 [THRESHOLD]*/218,
+			      /* TRANSLATORS: Part of diffpos --help */
 			      /*FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)*/255,
 			      STRING(DFLT_MAX_THRESHOLD));
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 2, 3);

@@ -60,7 +60,11 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
     /*				<-- */
+    /* TRANSLATORS: --help output for --survey option.
+     *
+     * "this" has been added to English translation */
     {HLP_ENCODELONG(0),       /*only load the sub-survey with this prefix*/199, 0},
+    /* TRANSLATORS: --help output for aven --print option */
     {HLP_ENCODELONG(1),       /*print and exit (requires a 3d file)*/119, 0},
     {0, 0, 0}
 };
@@ -103,6 +107,11 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
      */
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use.
+     * 
+     * Part of aven --help */
     cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
     cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
@@ -216,6 +225,8 @@ bool Aven::OnInit()
 	int wx_gl_attribs_no_db[] = { WX_GL_RGBA, 0 };
 	if (!InitGLVisual(wx_gl_attribs_no_db)) {
 	    wxString m;
+	    /* TRANSLATORS: %s will be replaced with "Aven" currently (and
+	     * perhaps by "Survex" or other things in future). */
 	    m.Printf(wmsg(/*This version of %s requires OpenGL to work, but it isn’t available.*/405), APP_NAME);
 	    wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
 	    exit(1);

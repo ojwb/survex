@@ -160,6 +160,13 @@ static void
 remove_trailing_travs(void)
 {
    node *stn;
+   /* TRANSLATORS: In French, Eric chose to use the terminology used by
+    * toporobot: "sequence" for the English "traverse", which makes sense
+    * (although toporobot actually uses this term to mean something more
+    * specific).  Feel free to follow this lead if you can't think of a better
+    * term - these messages mostly indicate how processing is progressing.
+    * 
+    * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Removing trailing traverses*/125));
    FOR_EACH_STN(stn, stnlist) {
       if (!fixed(stn) && one_node(stn)) {
@@ -214,6 +221,11 @@ static void
 remove_travs(void)
 {
    node *stn;
+   /* TRANSLATORS: In French, Eric chose to use the terminology used by
+    * toporobot: "sequence" for the English "traverse", which makes sense
+    * (although toporobot actually uses this term to mean something more
+    * specific).  Feel free to follow this lead if you can't think of a better
+    * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Concatenating traverses*/126));
    FOR_EACH_STN(stn, stnlist) {
       if (fixed(stn) || three_node(stn)) {
@@ -407,6 +419,11 @@ replace_travs(void)
    int cLegsTrav = 0;
    bool fArtic;
 
+    /* TRANSLATORS: In French, Eric chose to use the terminology used by
+     * toporobot: "sequence" for the English "traverse", which makes sense
+     * (although toporobot actually uses this term to mean something more
+     * specific).  Feel free to follow this lead if you can't think of a better
+     * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Calculating traverses*/127));
 
    if (!fhErrStat && !fSuppress)
@@ -719,10 +736,16 @@ err_stat(int cLegsTrav, double lenTrav,
       fputnl(fhErrStat);
       fprintf(fhErrStat, msg(/*Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). */145),
 	      lenTrav, cLegsTrav, sqrt_eTot, sqrt_eTot / cLegsTrav);
-      if (lenTrav > 0.0)
+      if (lenTrav > 0.0) {
 	 fprintf(fhErrStat, msg(/*Error %6.2f%%*/146), 100 * sqrt_eTot / lenTrav);
-      else
+      } else {
+	 /* TRANSLATORS: Here N/A means "Not Applicable" -- it means the
+	  * traverse has zero length, so error per metre is meaningless.
+	  *
+	  * There should be 4 spaces between "Error" and "N/A" so that it lines
+	  * up with the numbers in the message above. */
 	 fputs(msg(/*Error    N/A*/147), fhErrStat);
+      }
       fputnl(fhErrStat);
       fprintf(fhErrStat, "%f\n", E);
       fprintf(fhErrStat, "H: %f V: %f\n", H, V);
@@ -739,6 +762,13 @@ replace_trailing_travs(void)
    linkfor *leg;
    int i;
 
+   /* TRANSLATORS: In French, Eric chose to use the terminology used by
+    * toporobot: "sequence" for the English "traverse", which makes sense
+    * (although toporobot actually uses this term to mean something more
+    * specific).  Feel free to follow this lead if you can't think of a better
+    * term - these messages mostly indicate how processing is progressing.
+    * 
+    * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Calculating trailing traverses*/128));
 
    while (ptrTrail != NULL) {
@@ -915,6 +945,8 @@ replace_trailing_travs(void)
 	    }
 	 }
 	 if (unused_fixed_point) {
+	    /* TRANSLATORS: fixed survey station that is not part of any survey
+	     */
 	    warning_in_file(stn1->name->filename, stn1->name->line,
 		    /*Unused fixed point “%s”*/73, sprint_prefix(stn1->name));
 	 }
@@ -1000,6 +1032,9 @@ write_passage_models(void)
 	 osfree(oldx);
 
 	 if (!pfx->pos) {
+	     /* TRANSLATORS: e.g. the user specifies a passage cross-section at
+	      * station "entrance.27", but there is no station "entrance.27" in
+	      * the centre-line. */
 	     error_in_file(pfx->filename, pfx->line,
 			   /*Cross section specified at non-existent station “%s”*/83,
 			   name);

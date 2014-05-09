@@ -642,9 +642,13 @@ void GfxCore::Draw2dIndicators()
 	int brg_unit;
 	if (m_Degrees) {
 	    value = int(m_PanAngle);
+	    /* TRANSLATORS: degree symbol - probably should be translated to
+	     * itself. */
 	    brg_unit = /*°*/344;
 	} else {
 	    value = int(m_PanAngle * 200.0 / 180.0);
+	    /* TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
+	     * circle). */
 	    brg_unit = /*ᵍ*/76;
 	}
 	str.Printf(wxT("%03d"), value);
@@ -677,10 +681,14 @@ void GfxCore::Draw2dIndicators()
 	    }
 	    if (angle > 99999 || angle < -99999) {
 		str = angle > 0 ? wxT("+") : wxT("-");
+		/* TRANSLATORS: used for the percentage gradient on vertical
+		 * angles. */
 		str += wmsg(/*∞*/431);
 	    } else {
 		str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("0");
 	    }
+	    /* TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
+	     * 50 grad). */
 	    unit = /*%*/96;
 	} else if (m_Degrees) {
 	    static int zero_zero_width = 0;
@@ -966,6 +974,8 @@ void GfxCore::DrawDateKey()
 
     wxString other;
     if (!m_Parent->HasCompleteDateInfo()) {
+	/* TRANSLATORS: Used in the "colour key" for "colour by date" if there
+	 * are surveys without date information. */
 	other = wmsg(/*Undated*/221);
     }
 
@@ -988,6 +998,8 @@ void GfxCore::DrawErrorKey()
     }
 
     // Always show the "Not in loop" legend for now (FIXME).
+    /* TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
+     * which aren’t part of a loop and so have no error information. */
     DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
 }
 
@@ -1056,11 +1068,26 @@ void GfxCore::DrawScaleBar()
 	Double km = size_snap * 1e-3;
 	if (km >= 1.0) {
 	    size_snap = km;
+	    /* TRANSLATORS: abbreviation for "kilometres" (unit of length),
+	     * used e.g.  "5km".
+	     *
+	     * If there should be a space between the number and this, include
+	     * one in the translation. */
 	    units = /*km*/423;
 	} else if (size_snap >= 1.0) {
+	    /* TRANSLATORS: abbreviation for "metres" (unit of length), used
+	     * e.g. "10m".
+	     * 
+	     * If there should be a space between the number and this, include
+	     * one in the translation. */
 	    units = /*m*/424;
 	} else {
 	    size_snap *= 1e2;
+	    /* TRANSLATORS: abbreviation for "centimetres" (unit of length),
+	     * used e.g.  "50cm".
+	     * 
+	     * If there should be a space between the number and this, include
+	     * one in the translation. */
 	    units = /*cm*/425;
 	}
     } else {
@@ -1069,14 +1096,34 @@ void GfxCore::DrawScaleBar()
 	if (miles >= 1.0) {
 	    size_snap = miles;
 	    if (size_snap >= 2.0) {
+		/* TRANSLATORS: abbreviation for "miles" (unit of length,
+		 * plural), used e.g.  "2 miles".
+		 * 
+		 * If there should be a space between the number and this,
+		 * include one in the translation. */
 		units = /* miles*/426;
 	    } else {
+		/* TRANSLATORS: abbreviation for "mile" (unit of length,
+		 * singular), used e.g.  "1 mile".
+		 * 
+		 * If there should be a space between the number and this,
+		 * include one in the translation. */
 		units = /* mile*/427;
 	    }
 	} else if (size_snap >= 1.0) {
+	    /* TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
+	     * as "10ft".
+	     * 
+	     * If there should be a space between the number and this, include
+	     * one in the translation. */
 	    units = /*ft*/428;
 	} else {
 	    size_snap *= 12.0;
+	    /* TRANSLATORS: abbreviation for "inches" (unit of length), used
+	     * e.g. as "6in".
+	     * 
+	     * If there should be a space between the number and this, include
+	     * one in the translation. */
 	    units = /*in*/429;
 	}
     }
@@ -3060,12 +3107,18 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinCompass(point)) {
 	// Pop up menu.
 	wxMenu menu;
+	/* TRANSLATORS: View *looking* North */
 	menu.Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North*/240));
+	/* TRANSLATORS: View *looking* East */
 	menu.Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East*/241));
+	/* TRANSLATORS: View *looking* South */
 	menu.Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
+	/* TRANSLATORS: View *looking* West */
 	menu.Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
 	menu.AppendSeparator();
+	/* TRANSLATORS: Menu item which turns off the "north arrow" in aven. */
 	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/387));
+	/* TRANSLATORS: tickable menu item in View menu */
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
@@ -3078,8 +3131,17 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
 	menu.Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation*/249));
 	menu.AppendSeparator();
+	/* TRANSLATORS: Menu item which turns off the tilt indicator in aven. */
 	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));
+	/* TRANSLATORS: tickable menu item in View menu.
+	 *
+	 * Degrees are the angular measurement where there are 360 in a full
+	 * circle. */
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
+	/* TRANSLATORS: tickable menu item in View menu.
+	 *
+	 * Show the tilt of the survey as a percentage gradient (100% = 45
+	 * degrees = 50 grad). */
 	menu.AppendCheckItem(menu_CTL_PERCENT, wmsg(/*&Percent*/430));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
@@ -3089,7 +3151,9 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinScaleBar(point)) {
 	// Pop up menu.
 	wxMenu menu;
+	/* TRANSLATORS: Menu item which turns off the scale bar in aven. */
 	menu.AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Hide scale bar*/385));
+	/* TRANSLATORS: tickable menu item in View menu */
 	menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
@@ -3103,6 +3167,9 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
 	menu.AppendSeparator();
+	/* TRANSLATORS: Menu item which turns off the colour key.
+	 * The "Colour Key" is the thing in aven showing which colour
+	 * corresponds to which depth, date, survey closure error, etc. */
 	menu.AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*&Hide colour key*/386));
 	if (m_ColourBy == COLOUR_BY_DEPTH)
 	    menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));

@@ -284,7 +284,13 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool tubes, bool ents, bool fixes, bool exports,
 			 bool printing)
-	: wxDialog(mainfrm_, -1, wxString(printing ? wmsg(/*Print*/399) : wmsg(/*Export*/383))),
+	: wxDialog(mainfrm_, -1, wxString(printing ?
+					  /* TRANSLATORS: Title of the print
+					   * dialog */
+					  wmsg(/*Print*/399) :
+					  /* TRANSLATORS: Title of the export
+					   * dialog */
+					  wmsg(/*Export*/383))),
 	  m_layout(printing ? wxGetApp().GetPageSetupDialogData() : NULL),
 	  m_File(filename), mainfrm(mainfrm_)
 {
@@ -334,7 +340,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* setup our print dialog*/
     wxBoxSizer* v1 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* h1 = new wxBoxSizer(wxHORIZONTAL); // holds controls
+    /* TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
+     * and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
+     * the "what to print/export" dialog. */
     m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
+    /* TRANSLATORS: Used as a label for the surrounding box for the "survey
+     * legs" "stations" "names" etc checkboxes in the "what to print" dialog.
+     * "Elements" isn’t a good name for this but nothing better has yet come to
+     * mind! */
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
 #if 0
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL);
@@ -371,6 +384,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
     if (scales[0].empty()) {
 	if (printing) {
+	    /* TRANSLATORS: used in the scale drop down selector in the print
+	     * dialog the implicit meaning is "choose a suitable scale to fit
+	     * the plot on a single page", but we need something shorter */
 	    scales[0].assign(wmsg(/*One page*/258));
 	} else {
 	    scales[0].assign(wxT("1000"));
@@ -407,6 +423,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_bearing = new wxSpinCtrl(this, svx_BEARING);
 	m_bearing->SetRange(0, 359);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
+	/* TRANSLATORS: Used in the print dialog: */
 	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	m_tilt = new wxSpinCtrl(this, svx_TILT);
@@ -424,10 +441,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_viewbox->Add(planelevsizer, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
+    /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
+     * "survey stations". */
     v3->Add(new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LEGS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
+    /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
+     * "survey stations". */
     v3->Add(new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, SURF)),
@@ -475,12 +496,19 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 		0, wxALIGN_LEFT|wxALL, 2);
     }
     if (printing) {
+	/* TRANSLATORS: used in the print dialog - controls drawing lines
+	 * around each page */
 	v3->Add(new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       wxGenericValidator(&m_layout.Border)),
 		0, wxALIGN_LEFT|wxALL, 2);
+	/* TRANSLATORS: will be used in the print dialog - check this to print
+	 * blank pages (otherwise they’ll be skipped to save paper) */
 //	m_blanks = new wxCheckBox(this, svx_BLANKS, wmsg(/*Blank Pages*/266));
 //	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
+	/* TRANSLATORS: As in the legend on a map.  Used in the print dialog -
+	 * controls drawing the box at the lower left with survey name, view
+	 * angles, etc */
 	v3->Add(new wxCheckBox(this, svx_LEGEND, wmsg(/*Legend*/265),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       wxGenericValidator(&m_layout.Legend)),
@@ -493,6 +521,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
 #if 0 // FIXME: too wide as-is
+    /* TRANSLATORS: The PROJ library is used to do coordinate transformations
+     * (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
+     * what the input datum is.
+     */
     h2->Add(new wxStaticText(this, -1, wmsg(/*input datum as string to pass to PROJ*/389)));
     h2->Add(new wxComboBox(this, svx_PROJ, projs[0], wxDefaultPosition,
 			   wxDefaultSize, sizeof(projs) / sizeof(projs[0]),
@@ -518,6 +550,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print…*/400));
 #endif
     } else {
+	/* TRANSLATORS: The text on the action button in the "Export" settings
+	 * dialog */
 	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export…*/230));
     }
     but->SetDefault();
@@ -564,6 +598,8 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     filespec += wxT("|");
     filespec += wxFileSelectorDefaultWildcardStr;
 
+    /* TRANSLATORS: Title of file dialog to choose name and type of exported
+     * file. */
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), leaf,
 		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
@@ -603,6 +639,7 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
     pv = new wxPrintPreview(new svxPrintout(mainfrm, &m_layout, psdd, m_File),
 			    new svxPrintout(mainfrm, &m_layout, psdd, m_File),
 			    &pd);
+    // TRANSLATORS: Title of the print preview dialog
     wxPreviewFrame *frame = new wxPreviewFrame(pv, mainfrm, wmsg(/*Print Preview*/398));
     frame->Initialize();
 
@@ -926,6 +963,8 @@ svxPrintout::draw_info_box()
       angle.Printf(wxT("%03d"), l->rot);
       angle += wmsg(/*°*/344);
       wxString s;
+      /* TRANSLATORS: This is used on printouts of plans, with %s replaced by
+       * something like "123°".  The bearing is up the page. */
       s.Printf(wmsg(/*Plan view, %s up page*/168), angle.c_str());
       MOVEMM(2, 12); WriteString(s);
       break;
@@ -944,6 +983,7 @@ svxPrintout::draw_info_box()
 
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(div + 2, boxheight - 8);
+      /* TRANSLATORS: "Elevation on" 020 <-> 200 degrees */
       WriteString(wmsg(/*Elevation on*/116));
       
       MOVEMM(L, 2);
@@ -960,11 +1000,18 @@ svxPrintout::draw_info_box()
       angle += wmsg(/*°*/344);
       wxString s;
       if (l->view == layout::ELEV) {
+	  /* TRANSLATORS: This is used on printouts of elevations, with %s
+	   * replaced by something like "123°".  The bearing is the direction
+	   * we’re looking. */
 	  s.Printf(wmsg(/*Elevation facing %s*/169), angle.c_str());
       } else {
 	  wxString a2;
 	  a2.Printf(wxT("%d"), l->tilt);
 	  a2 += wmsg(/*°*/344);
+	  /* TRANSLATORS: This is used on printouts of tilted elevations, with
+	   * the first %s replaced by something like "123°", and the second by
+	   * something like "-45°".  The bearing is the direction we’re
+	   * looking. */
 	  s.Printf(wmsg(/*Elevation facing %s, tilted %s*/284), angle.c_str(), a2.c_str());
       }
       MOVEMM(2, 12); WriteString(s);
@@ -973,6 +1020,7 @@ svxPrintout::draw_info_box()
     case layout::EXTELEV:
       SetColour(PR_COLOUR_TEXT);
       MOVEMM(2, 12);
+      /* TRANSLATORS: This is used on printouts of extended elevations. */
       WriteString(wmsg(/*Extended elevation*/191));
       break;
    }

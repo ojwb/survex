@@ -95,10 +95,11 @@ foreach my $po_entry (@{$num_list}) {
 	$msg = $po_entry->dequote($po_entry->msgid);
     }
     if (exists $comment{$msgno}) {
-	my $old = $po_entry->automatic($comment{$msgno});
+	my $new = $comment{$msgno};
+	my $old = $po_entry->automatic;
+	$po_entry->automatic($new);
 	if (defined $old) {
 	    $old =~ s/\s+/ /g;
-	    my $new = $comment{$msgno};
 	    $new =~ s/\s+/ /g;
 	    if ($old ne $new) {
 		print STDERR "Comment for message #$msgno changed from\n[$old]\nto\n[$new]\n";
@@ -106,6 +107,17 @@ foreach my $po_entry (@{$num_list}) {
 	}
     }
     if (defined $po_entry->automatic) {
+	if (!exists $comment{$msgno}) {
+	    my $fake_err = ": Comment for message #$msgno not in source code\n";
+	    if ($msgno ne '' && exists($uses[$msgno])) {
+		print STDERR join($fake_err, @{$uses[$msgno]}), $fake_err if exists($uses[$msgno]);
+	    } else {
+		print STDERR $fake_err;
+	    }
+	    my $x = $po_entry->automatic;
+	    $x =~ s/\n/\n     * /g;
+	    print STDERR "    /* $x */\n";
+	}
 	my $automatic = "\n" . $po_entry->automatic;
 	$automatic =~ s/\n/\n#. /g;
 	while ($automatic =~ s/\n#. \n/\n#.\n/g) { }

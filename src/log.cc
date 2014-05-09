@@ -26,6 +26,8 @@
 #include "gla.h"
 
 MyLogWindow::MyLogWindow()
+    /* TRANSLATORS: %s will be replaced by the application name ("Aven"
+     * currently) */
     : wxLogWindow(NULL,
 		  wxString::Format(wmsg(/*%s Error Log*/228), APP_NAME).c_str(),
 		  false, false),

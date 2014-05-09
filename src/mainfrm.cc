@@ -92,6 +92,7 @@ class EditMarkDlg : public wxDialog {
     wxTextCtrl * easting, * northing, * altitude;
     wxTextCtrl * angle, * tilt_angle, * scale, * time;
 public:
+    // TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
     EditMarkDlg(wxWindow* parent, const PresentationMark & p)
 	: wxDialog(parent, 500, wmsg(/*Edit Waypoint*/404))
     {
@@ -130,13 +131,19 @@ public:
 	wxBoxSizer * r4 = new wxBoxSizer(wxHORIZONTAL);
 	r4->Add(new wxStaticText(this, 616, wmsg(/*Scale*/154) + wxT(": ")), 0, wxALIGN_CENTRE_VERTICAL);
 	r4->Add(scale);
+	/* TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
+	 * in a presentation. */
 	r4->Add(new wxStaticText(this, 617, wmsg(/* (unused in perspective view)*/278)),
 		0, wxALIGN_CENTRE_VERTICAL);
 	vert->Add(r4, 0, wxALL, 8);
 
 	wxBoxSizer * r5 = new wxBoxSizer(wxHORIZONTAL);
+	/* TRANSLATORS: Field label in dialog to edit a waypoint in a
+	 * presentation. */
 	r5->Add(new wxStaticText(this, 616, wmsg(/*Time: */279)), 0, wxALIGN_CENTRE_VERTICAL);
 	r5->Add(time);
+	/* TRANSLATORS: units+info after time field in dialog to edit a
+	 * waypoint in a presentation. */
 	r5->Add(new wxStaticText(this, 617, wmsg(/* secs (0 = auto; *6 = 6 times auto)*/282)),
 		0, wxALIGN_CENTRE_VERTICAL);
 	vert->Add(r5, 0, wxALL, 8);
@@ -678,6 +685,8 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
     assert(filenames.GetCount() > 0);
 
     if (filenames.GetCount() != 1) {
+	/* TRANSLATORS: error if you try to drag multiple files to the aven
+	 * window */
 	wxGetApp().ReportError(wmsg(/*You may only view one 3d file at a time.*/336));
 	return false;
     }
@@ -739,12 +748,20 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* filemenu = new wxMenu;
     // wxID_OPEN stock label lacks the ellipses
+    /* TRANSLATORS: Aven menu items.  An “&” goes before the letter of any
+     * accelerator key.
+     *
+     * The string "\t" separates the menu text and any accelerator key.
+     *
+     * "File" menu.  The accelerators must be different within this group.
+     * c.f. 201, 380, 381. */
     filemenu->Append(wxID_OPEN, wmsg(/*&Open…\tCtrl+O*/220));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
     filemenu->Append(wxID_PRINT, wmsg(/*&Print…\tCtrl+P*/380));
     filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup…*/381));
     filemenu->AppendSeparator();
+    /* TRANSLATORS: In the "File" menu */
     filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot…*/201));
     filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as…*/382));
 #ifndef __WXMAC__
@@ -758,6 +775,8 @@ void MainFrm::CreateMenuBar()
     m_history.Load(*wxConfigBase::Get());
 
     wxMenu* rotmenu = new wxMenu;
+    /* TRANSLATORS: "Rotation" menu.  The accelerators must be different within
+     * this group.  Tickable menu item which toggles auto rotation */
     rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*Au&to-Rotate\tSpace*/231));
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_SPEED_UP, wmsg(/*Speed &Up*/232));
@@ -774,9 +793,21 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
     orientmenu->Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
     orientmenu->AppendSeparator();
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use. */
     orientmenu->Append(menu_ORIENT_SHIFT_LEFT, wmsg(/*Shift Survey &Left*/244));
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use. */
     orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, wmsg(/*Shift Survey &Right*/245));
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use. */
     orientmenu->Append(menu_ORIENT_SHIFT_UP, wmsg(/*Shift Survey &Up*/246));
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use. */
     orientmenu->Append(menu_ORIENT_SHIFT_DOWN, wmsg(/*Shift Survey &Down*/247));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
@@ -797,19 +828,27 @@ void MainFrm::CreateMenuBar()
     presmenu->Append(menu_PRES_SAVE, wmsg(/*&Save Presentation*/313));
     presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Sa&ve Presentation As…*/314));
     presmenu->AppendSeparator();
+    /* TRANSLATORS: "Mark" as in "Mark this position" */
     presmenu->Append(menu_PRES_MARK, wmsg(/*&Mark*/315));
+    /* TRANSLATORS: "Play" as in "Play back a recording" */
     presmenu->AppendCheckItem(menu_PRES_PLAY, wmsg(/*Pla&y*/316));
     presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie…*/317));
 
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
+    /* TRANSLATORS: Items in the "View" menu: */
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_NAMES, wmsg(/*Station &Names\tCtrl+N*/270));
+    /* TRANSLATORS: Toggles drawing of 3D passages */
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, wmsg(/*Passage &Tubes\tCtrl+T*/346));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, wmsg(/*&Crosses\tCtrl+X*/271));
     viewmenu->AppendCheckItem(menu_VIEW_GRID, wmsg(/*&Grid\tCtrl+G*/297));
     viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, wmsg(/*&Bounding Box\tCtrl+B*/318));
     viewmenu->AppendSeparator();
+    /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
+     * "survey stations". */
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_LEGS, wmsg(/*&Underground Survey Legs\tCtrl+L*/272));
+    /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
+     * "survey stations". */
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
 
     wxMenu* splaymenu = new wxMenu;
@@ -834,7 +873,12 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, wmsg(/*&Perspective*/237));
 // FIXME: enable this    viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_SHADING, wmsg(/*&Smooth Shading*/?!?);
     viewmenu->AppendCheckItem(menu_VIEW_TEXTURED, wmsg(/*Textured &Walls*/238));
+    /* TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
+     * using that term instead if it gives a better translation which most
+     * users will understand. */
     viewmenu->AppendCheckItem(menu_VIEW_FOG, wmsg(/*Fade Distant Ob&jects*/239));
+    /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
+     * "survey stations". */
     viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, wmsg(/*Smoot&hed Survey Legs*/298));
     viewmenu->AppendSeparator();
 #ifdef __WXMAC__
@@ -861,6 +905,8 @@ void MainFrm::CreateMenuBar()
     wxMenu* indmenu = new wxMenu;
     indmenu->AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Compass*/274));
     indmenu->AppendCheckItem(menu_IND_CLINO, wmsg(/*C&linometer*/275));
+    /* TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
+     * corresponds to which depth, date, survey closure error, etc. */
     indmenu->AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*Colour &Key*/276));
     indmenu->AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Scale Bar*/277));
     ctlmenu->Append(menu_CTL_INDICATORS, wmsg(/*&Indicators*/299), indmenu);
@@ -872,6 +918,9 @@ void MainFrm::CreateMenuBar()
 #endif
 
     wxMenuBar* menubar = new wxMenuBar();
+    /* TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
+     * accelerator key.  The accelerators must be different within this group
+     */
     menubar->Append(filemenu, wmsg(/*&File*/210));
     menubar->Append(rotmenu, wmsg(/*&Rotation*/211));
     menubar->Append(orientmenu, wmsg(/*&Orientation*/212));
@@ -936,7 +985,9 @@ void MainFrm::CreateToolBar()
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, wxString(), wxDefaultPosition,
 			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
+    /* TRANSLATORS: "Find stations" button tooltip */
     toolbar->AddTool(wxID_FIND, wmsg(/*Find*/332), TOOLBAR_BITMAP("find")/*, "Search for station name"*/);
+    /* TRANSLATORS: "Hide stations" button default tooltip */
     toolbar->AddTool(button_HIDE, wmsg(/*Hide*/333), TOOLBAR_BITMAP("hideresults")/*, "Hide search results"*/);
 
     toolbar->Realize();
@@ -988,6 +1039,8 @@ void MainFrm::CreateSidePanel()
     image_list->Add(wxBitmap(path + wxT("survey-tree.png"), wxBITMAP_TYPE_PNG));
     image_list->Add(wxBitmap(path + wxT("pres-tree.png"), wxBITMAP_TYPE_PNG));
     m_Notebook->SetImageList(image_list);
+    /* TRANSLATORS: labels for tabbed side panel this is for the tab with the
+     * tree hierarchy of survey station names */
     m_Notebook->AddPage(panel, wmsg(/*Surveys*/376), true, 0);
     m_Notebook->AddPage(prespanel, wmsg(/*Presentation*/377), false, 1);
 
@@ -1340,10 +1393,14 @@ bool MainFrm::LoadData(const wxString& file, wxString prefix)
     m_Title = wxString(survey->title, wxConvUTF8);
     m_DateStamp_numeric = survey->datestamp_numeric;
     if (strcmp(survey->datestamp, "?") == 0) {
+	/* TRANSLATORS: used a processed survey with no processing date/time info */
 	m_DateStamp = wmsg(/*Date and time not available.*/108);
     } else if (survey->datestamp[0] == '@') {
 	const struct tm * tm = localtime(&m_DateStamp_numeric);
 	char buf[256];
+	/* TRANSLATORS: This is the date format string used to timestamp .3d
+	 * files internally.  Probably best to keep it the same for all
+	 * translations. */
 	strftime(buf, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107), tm);
 	m_DateStamp = wxString(buf, wxConvUTF8);
     }
@@ -1798,15 +1855,32 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
 		     "|%s|*.adj;*.sht;*.una;*.xyz"CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
+		     /* TRANSLATORS: Here "survey" is a "cave map" rather than
+		      * list of questions - it should be translated to the
+		      * terminology that cavers using the language would use.
+		      */
 		     wmsg(/*All survey files*/229).c_str(),
 		     wmsg(/*Survex 3d files*/207).c_str(),
 		     wmsg(/*Survex svx files*/329).c_str(),
+		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
+		      * surveying package, so probably shouldn’t be translated
+		      */
 		     wmsg(/*Compass PLT files*/324).c_str(),
+		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
+		      * surveying package, so probably shouldn’t be translated
+		      */
 		     wmsg(/*Compass DAT and MAK files*/330).c_str(),
+		     /* TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
+		      * package, so don’t translate it. */
 		     wmsg(/*CMAP XYZ files*/325).c_str(),
 		     wmsg(/*All files*/208).c_str(),
 		     wxFileSelectorDefaultWildcardStr);
 #endif
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use.
+     * 
+     * File->Open dialog: */
     wxFileDialog dlg(this, wmsg(/*Select a survey file to view*/206),
 		     wxString(), wxString(),
 		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
@@ -1820,6 +1894,7 @@ void MainFrm::OnScreenshot(wxCommandEvent&)
     AvenAllowOnTop ontop(this);
     wxString baseleaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
+    /* TRANSLATORS: title of the save screenshot dialog */
     wxFileDialog dlg(this, wmsg(/*Save Screenshot*/321), wxString(),
 		     baseleaf + wxT(".png"),
 		     wxT("*.png"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
@@ -1875,7 +1950,9 @@ void MainFrm::OnQuit(wxCommandEvent&)
     if (m_PresList->Modified()) {
 	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
+	/* TRANSLATORS: and the question in that box */
 	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
+			 /* TRANSLATORS: title of message box */
 			 wmsg(/*Modified Presentation*/326),
 			 wxOK|wxCANCEL|wxICON_QUESTION) == wxCANCEL) {
 	    return;
@@ -1955,6 +2032,8 @@ void MainFrm::SetCoords(const Vector3 &v)
 	z /= METRES_PER_FOOT;
 	units = /*ft*/428;
     }
+    /* TRANSLATORS: show coordinates (N = North or Northing, E = East or
+     * Easting) */
     coords_text.Printf(wmsg(/*%.2f E, %.2f N*/338), x, y);
     coords_text += wxString::Format(wxT(", %s %.2f%s"),
 				    wmsg(/*Altitude*/335).c_str(),
@@ -1994,6 +2073,10 @@ void MainFrm::SetCoords(Double x, Double y)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
+	/* TRANSLATORS: Used in Aven:
+	 * From <stationname>
+	 * H: 123.45m V: 234.56m
+	 * Dist: 456.78m  Brg: 200 */
 	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
 
 	int brg_unit;
@@ -2001,6 +2084,11 @@ void MainFrm::SetCoords(Double x, Double y)
 	    brg_unit = /*°*/344;
 	} else {
 	    brg *= 400.0 / 360.0;
+	    /* TRANSLATORS: alternative angle units (400 grad = 360 degrees =
+	     * full circle).  Try to make this as short as sensibly possible.
+	     * 
+	     * E.g. in Italian and Spanish we use "g.cent." rather than
+	     * "gradi quattrocentesimali"/"grados centesimales" */
 	    brg_unit = /*grad*/345;
 	}
 
@@ -2011,6 +2099,8 @@ void MainFrm::SetCoords(Double x, Double y)
 	    dh /= METRES_PER_FOOT;
 	    units = /*ft*/428;
 	}
+	/* TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
+	 * in Compass bearing) */
 	t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
 		 from_str.c_str(), dh, wmsg(units).c_str(),
 		 int(brg), wmsg(brg_unit).c_str());
@@ -2044,6 +2134,7 @@ void MainFrm::SetAltitude(Double z)
 	if (!m_Gfx->GetMetric()) {
 	    dz /= METRES_PER_FOOT;
 	}
+	// TRANSLATORS: "V" is short for "Vertical"
 	t.Printf(wmsg(/*%s: V %.2f%s*/375), from_str.c_str(),
 		 dz, wmsg(units).c_str());
     }
@@ -2113,6 +2204,7 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	    units = /*ft*/428;
 	}
 	wxString len_unit = wmsg(units);
+	/* TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical" */
 	hv_str.Printf(wmsg(/*H %.2f%s, V %.2f%s*/340),
 		      d_horiz, len_unit.c_str(), dz, len_unit.c_str());
 	int brg_unit;
@@ -2123,6 +2215,8 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	    brg_unit = /*grad*/345;
 	}
 	wxString & d = dist_text;
+	/* TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
+	 * in Compass bearing) */
 	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
 		 from_str.c_str(), hv_str.c_str(),
 		 dr, len_unit.c_str(), int(brg), wmsg(brg_unit).c_str());
@@ -2503,6 +2597,8 @@ void MainFrm::DoFind()
     if (!m_NumHighlighted) {
 	GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*No matches were found.*/328));
     } else {
+	/* TRANSLATORS: "Hide stations" button tooltip when stations are found
+	 */
 	GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format(wmsg(/*Hide %d found stations*/334).c_str(), m_NumHighlighted));
     }
 }

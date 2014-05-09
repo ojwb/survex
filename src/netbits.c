@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2003,2006,2011,2013 Olly Betts
+ * Copyright (C) 1992-2003,2006,2011,2013,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,6 +326,10 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 {
    node *to, *fr;
    if (to_name == fr_name) {
+      /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
+       * "survey stations".
+       * 
+       * %s is replaced by the name of the station. */
       compile_error(/*Survey leg with same station (“%s”) at both ends - typing error?*/50,
 		    sprint_prefix(to_name));
       return;
@@ -398,6 +402,8 @@ process_equate(prefix *name1, prefix *name2)
    node *stn1, *stn2;
    if (name1 == name2) {
       /* catch something like *equate "fred fred" */
+      /* TRANSLATORS: Here "station" is a survey station, not a train station.
+       */
       compile_warning(/*Station “%s” equated to itself*/13,
 		      sprint_prefix(name1));
       return;
@@ -419,6 +425,11 @@ process_equate(prefix *name1, prefix *name2)
 		  return;
 	       }
 	    }
+	    /* TRANSLATORS: "equal" as in:
+	     *
+	     * *fix a 1 2 3
+	     * *fix b 1 2 3
+	     * *equate a b */
 	    compile_warning(/*Equating two equal fixed points: “%s” and “%s”*/53,
 			    s, sprint_prefix(name2));
 	    osfree(s);

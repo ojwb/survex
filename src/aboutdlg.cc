@@ -66,6 +66,7 @@ AboutDlg::OnClose(wxCommandEvent &)
 }
 
 AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
+    /* TRANSLATORS: for the title of the About box */
     wxDialog(parent, 500, wxString::Format(wmsg(/*About %s*/205), APP_NAME)),
     icon_path(icon_path_), timer(this, about_TIMER)
 {
@@ -84,6 +85,12 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     horiz->Add(vert, 0, wxALL, 2);
 
     wxString id(APP_NAME wxT(" "VERSION"\n"));
+    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+     * - it should be translated to the terminology that cavers using the
+     * language would use.
+     * 
+     * This string is used in the about box (summarising the purpose of aven).
+     */
     id += wmsg(/*Survey visualisation tool*/209);
     wxBoxSizer* title = new wxBoxSizer(wxHORIZONTAL);
     if (bitmap_icon.Ok()) {
@@ -131,6 +138,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     vert->Add(licence, 0, wxLEFT | wxRIGHT, 20);
     vert->Add(10, 5, 0, wxTOP, 5);
 
+    // TRANSLATORS: for about box:
     vert->Add(new wxStaticText(this, 505, wmsg(/*System Information:*/390)),
 	      0, wxLEFT | wxRIGHT, 20);
 
@@ -169,7 +177,9 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
 	wxT("\n");
 #endif
     int bpp = wxDisplayDepth();
+    /* TRANSLATORS: bpp is "Bits Per Pixel" */
     info += wxString::Format(wmsg(/*Display Depth: %d bpp*/196), bpp);
+    /* TRANSLATORS: appended to previous message if the display is colour */
     if (wxColourDisplay()) info += wmsg(/* (colour)*/197);
     info += wxT('\n');
     info += wxString(GetGLSystemDescription().c_str(), wxConvUTF8);
