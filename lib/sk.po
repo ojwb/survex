@@ -11,19 +11,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sk\n"
 
-#. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex was trying to
-#. allocate space for.
-#: ../src/message.c:83
+#. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
+#. was trying to allocate space for.
+#: ../src/message.c:85
 #: n:1
 #, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Nedostatok pamäte (chýba %lu bytov)."
 
-#. TRANSLATORS: Feel free to translate as "or newer" instead of "or greater" if that
-#. gives a more natural translation.  It's technically not quite right when there are
-#. parallel active release series (e.g. Survex 1.0.40 was released *after* 1.2.0), but
-#. this seems unlikely to confuse users.
-#: ../src/commands.c:1568
+#. TRANSLATORS: Feel free to translate as "or newer" instead of "or
+#. greater" if that gives a more natural translation.  It's
+#. technically not quite right when there are parallel active release
+#. series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
+#. seems unlikely to confuse users.
+#: ../src/commands.c:1654
 #: n:2
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -31,15 +32,15 @@ msgstr "Pre spracovanie týchto dát je potrebná verzia Survexu %s alebo novši
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#: ../src/aven.cc:365
-#: ../src/message.c:1235
+#: ../src/aven.cc:376
+#: ../src/message.c:1242
 #: n:4
 msgid "warning"
 msgstr "varovanie"
 
-#. TRANSLATORS: %s is replaced by the filename of the parent file, and %u by
-#. the line number in that file.
-#: ../src/datain.c:105
+#. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
+#. by the line number in that file.
+#: ../src/datain.c:107
 #: n:5
 #, c-format
 msgid "In file included from %s:%u:\n"
@@ -47,34 +48,34 @@ msgstr "V súbore vloženom z %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:535
+#: ../src/commands.c:553
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix bol odmietnutý - použijte namiesto toho *begin a *end"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/readval.c:205
+#: ../src/readval.c:206
 #: n:7
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr "Znak “%c” v mene bodu nie je povolený (použijte *SET NAMES pre nastavenie povolených znakov)"
 
-#: ../src/readval.c:384
+#: ../src/readval.c:385
 #: n:8
 msgid "Field may not be omitted"
 msgstr "Pole by nemalo zostať nevyplnené"
 
-#: ../src/datain.c:1469
-#: ../src/datain.c:1749
-#: ../src/readval.c:386
-#: ../src/readval.c:427
-#: ../src/readval.c:457
+#: ../src/datain.c:1492
+#: ../src/datain.c:1772
+#: ../src/readval.c:387
+#: ../src/readval.c:428
+#: ../src/readval.c:458
 #: n:9
 #, c-format
 msgid "Expecting numeric field, found “%s”"
 msgstr "predpokladá sa numerické pole, zistené “%s”"
 
-#: ../src/commands.c:1474
+#: ../src/commands.c:1555
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
@@ -83,46 +84,47 @@ msgstr "Zistené “%s”, predpokladá sa “PRESERVE”, “TOUPPER” alebo �
 #: ../src/debug.h:45
 #: ../src/debug.h:47
 #: ../src/matrix.c:352
-#: ../src/message.c:233
+#: ../src/message.c:238
 #: n:11
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "Zistená chyba programu! Prosíme, dajte to na vedomie autorom"
 
-#: ../src/commands.c:1682
-#: ../src/extend.c:420
+#: ../src/commands.c:1768
+#: ../src/extend.c:435
 #: n:12
 #, c-format
 msgid "Unknown command “%s”"
 msgstr "Neznámy príkaz “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/netbits.c:401
+#: ../src/netbits.c:407
 #: n:13
 #, c-format
 msgid "Station “%s” equated to itself"
 msgstr "Bod “%s” je totožný sám so sebou"
 
-#. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between survey stations.
-#: ../src/datain.c:997
+#. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
+#. survey stations.
+#: ../src/datain.c:1013
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Nemalo by chýbať čítanie kompasu pokiaľ nejde o vertikálnu zámeru"
 
-#: ../src/datain.c:244
-#: ../src/extend.c:425
+#: ../src/datain.c:246
+#: ../src/extend.c:440
 #: n:15
 msgid "End of line not blank"
 msgstr "Koniec riadku obsahuje nepatričný znak"
 
-#: ../src/cavern.c:385
+#: ../src/cavern.c:392
 #: n:16
 #, c-format
 msgid "There were %d warning(s)."
 msgstr "Celkom bolo zaznamenaných %d varovaní."
 
 #. TRANSLATORS: %s is replaced by the command we attempted to run.
-#: ../src/cavernlog.cc:174
-#: ../src/cavernlog.cc:232
+#: ../src/cavernlog.cc:175
+#: ../src/cavernlog.cc:233
 #: n:17
 #, fuzzy, c-format
 msgid "Couldn’t run external command: “%s”"
@@ -131,48 +133,48 @@ msgstr "Nepodarilo sa otvoriť “pipe”: “%s”"
 #: ../src/datain.c:80
 #: ../src/datain.c:88
 #: ../src/datain.c:95
-#: ../src/datain.c:730
-#: ../src/extend.c:541
-#: ../src/sorterr.c:75
-#: ../src/sorterr.c:92
-#: ../src/sorterr.c:234
+#: ../src/datain.c:732
+#: ../src/extend.c:558
+#: ../src/sorterr.c:80
+#: ../src/sorterr.c:97
+#: ../src/sorterr.c:240
 #: n:18
 msgid "Error reading file"
 msgstr "Chyba pri čítaní súboru"
 
-#: ../src/message.c:1250
+#: ../src/message.c:1257
 #: n:19
 msgid "Too many errors - giving up"
 msgstr "Príliš mnoho chýb, koniec"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:1353
+#: ../src/commands.c:1434
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr "*DEFAULT bol odmietnutý - použijte namiesto toho *CALIBRATE/DATA/SD/UNITS s argumentom DEFAULT"
 
-#. TRANSLATORS: A "plumbed leg" is one measured using a plumbline (a weight on a string).
-#. So the problem here is that the leg is vertical, so a compass reading has
-#. no meaning!
-#: ../src/datain.c:970
+#. TRANSLATORS: A "plumbed leg" is one measured using a plumbline
+#. (a weight on a string).  So the problem here is that the leg is
+#. vertical, so a compass reading has no meaning!
+#: ../src/datain.c:984
 #: n:21
 msgid "Compass reading given on plumbed leg"
 msgstr "Pri vertikálnej zámere bol zadaný azimut"
 
-#: ../src/commands.c:619
+#: ../src/commands.c:637
 #: n:22
 msgid "END with no matching BEGIN in this file"
 msgstr "V tomto súbore sa vyskytlo END bez odpovadajúceho BEGIN"
 
-#: ../src/datain.c:717
+#: ../src/datain.c:719
 #: n:23
 msgid "BEGIN with no matching END in this file"
 msgstr "V tomto súbore sa vyskytlo BEGIN bez odpovadajúceho END"
 
-#: ../src/datain.c:361
+#: ../src/datain.c:363
 #: ../src/img_hosted.c:30
-#: ../src/printwx.cc:1458
+#: ../src/printwx.cc:1508
 #: n:24
 #, c-format
 msgid "Couldn’t open data file “%s”"
@@ -185,15 +187,17 @@ msgstr "Nie je možné otvoriť datový súbor “%s”"
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:444
+#: ../src/commands.c:454
 #: ../src/readval.c:90
 #: ../src/readval.c:94
 #: n:25
 msgid "ROOT is deprecated"
 msgstr "ROOT bol zamietnutý"
 
-#. TRANSLATORS: A station must be exported out of each level it is in, so this would give
-#. "Station “\outer.inner.1” not exported from survey “\outer”)":
+#. TRANSLATORS: A station must be exported out of each level it is in, so
+#. this would give "Station “\outer.inner.1” not exported from survey
+#. “\outer”)":
+#.
 #. *equate entrance outer.inner.1
 #. *begin outer
 #. *begin inner
@@ -201,33 +205,33 @@ msgstr "ROOT bol zamietnutý"
 #. 1 2 1.23 045 -6
 #. *end inner
 #. *end outer
-#: ../src/commands.c:861
+#: ../src/commands.c:901
 #: ../src/listpos.c:107
-#: ../src/readval.c:324
+#: ../src/readval.c:325
 #: n:26
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
 msgstr "Bod “%s” nebol exportovaný z merania (survey) “%s”"
 
-#. TRANSLATORS: This error occurs if there's an attempt to export a station
-#. from a survey which doesn't actually exist.
-#: ../src/listpos.c:110
+#. TRANSLATORS: This error occurs if there's an attempt to
+#. export a station from a survey which doesn't actually exist.
+#: ../src/listpos.c:113
 #: n:286
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
 msgstr "Odkaz na bod “%s” z neexistujúceho survey “%s”"
 
-#: ../src/readval.c:296
+#: ../src/readval.c:297
 #: n:27
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
 msgstr "“%s” nemôže byť súčasne bodom i meraním (survey)"
 
 #: ../src/extend.c:247
-#: ../src/extend.c:262
-#: ../src/extend.c:302
-#: ../src/extend.c:342
-#: ../src/extend.c:382
+#: ../src/extend.c:266
+#: ../src/extend.c:311
+#: ../src/extend.c:353
+#: ../src/extend.c:395
 #: ../src/readval.c:202
 #: n:28
 msgid "Expecting station name"
@@ -237,35 +241,36 @@ msgstr "Predpokladá sa meno bodu"
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:507
+#: ../src/commands.c:523
 #: n:29
 msgid "Reentering an existing prefix level is deprecated"
 msgstr "Opakované vloženie existujúcej úrovne prefixu nie je povolené"
 
-#: ../src/commands.c:514
+#: ../src/commands.c:530
 #: n:30
 msgid "Originally entered here"
 msgstr "Pôvodne vložené sem"
 
-#: ../src/commands.c:1504
+#: ../src/commands.c:1585
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr "Zistené “%s”, predpokladané “EQUATES”, “EXPORTS” alebo “PLUMBS”"
 
-#: ../src/commands.c:1511
+#: ../src/commands.c:1592
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
 msgstr "Zistené “%s”, predpokladané “ON” alebo “OFF”"
 
-#. TRANSLATORS: EQUATE is a command name, so shouldn’t be translated.
-#: ../src/commands.c:834
+#. TRANSLATORS: EQUATE is a command name, so shouldn’t be
+#. translated.
+#: ../src/commands.c:863
 #: n:33
 msgid "Only one station in EQUATE command"
 msgstr "V zozname EQUATE zistený iba jeden bod"
 
-#: ../src/commands.c:398
+#: ../src/commands.c:401
 #: n:34
 #, c-format
 msgid "Unknown quantity “%s”"
@@ -277,70 +282,74 @@ msgstr "Neznáma hodnota “%s”"
 msgid "Unknown units “%s”"
 msgstr "Neznáma jednotka “%s”"
 
-#. TRANSLATORS: Used when a BEGIN tag has no prefix, but the END tag has one, e.g.:
+#. TRANSLATORS: Used when a BEGIN tag has no prefix, but the END
+#. tag has one, e.g.:
+#.
 #. *begin
 #. 1 2 10.00 178 -01
 #. *end entrance      <--[Message given here]
-#: ../src/commands.c:636
+#: ../src/commands.c:659
 #: n:36
 msgid "Matching BEGIN tag has no prefix"
 msgstr "Odpovedajúci tag BEGIN nemá prefix"
 
-#. TRANSLATORS: Note: In English you talk about the *units* of a single measurement, but
-#. the correct term in other languages may be singular.
-#: ../src/commands.c:328
+#. TRANSLATORS: Note: In English you talk about the *units* of a single
+#. measurement, but the correct term in other languages may be singular.
+#: ../src/commands.c:331
 #: n:37
 #, c-format
 msgid "Invalid units “%s” for quantity"
 msgstr "Nesprávna jednotka “%s” pre hodnotu"
 
-#. TRANSLATORS: nasty hack - this message is for the .3d img code, and all errors there take
-#. a filename parameter - we don’t really want it here, so lose it with "%.0s"
-#. (which should display 0 characters from the filename) FIXME: sort out this
-#: ../src/img_hosted.c:31
+#. TRANSLATORS: nasty hack - this message is for the .3d img code, and all
+#. errors there take a filename parameter - we don’t really want it here,
+#. so lose it with "%.0s" (which should display 0 characters from the
+#. filename) FIXME: sort out this
+#: ../src/img_hosted.c:35
 #: n:38
 msgid "Out of memory %.0s"
 msgstr "Nedostatočná pamäť %.0s"
 
-#: ../src/commands.c:391
+#: ../src/commands.c:394
 #: n:39
 #, c-format
 msgid "Unknown instrument “%s”"
 msgstr "Neznáma pomôcka “%s”"
 
-#. TRANSLATORS: DECLINATION is a built-in keyword, so best not to translate
-#: ../src/commands.c:1325
+#. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
+#. translate
+#: ../src/commands.c:1402
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr "Prepočítací faktor pre DECLINATION musí byť 1.0"
 
-#. TRANSLATORS: If the scale factor for an instrument is zero, then any reading
-#. would be mapped to zero, which doesn't make sense.
-#: ../src/commands.c:1329
+#. TRANSLATORS: If the scale factor for an instrument is zero, then any
+#. reading would be mapped to zero, which doesn't make sense.
+#: ../src/commands.c:1408
 #: n:391
 msgid "Scale factor must be non-zero"
 msgstr "Prepočítací faktor musí byť nenulový"
 
-#: ../src/commands.c:1372
+#: ../src/commands.c:1453
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
 msgstr "Neznáme nastavenie “%s”"
 
-#: ../src/commands.c:436
+#: ../src/commands.c:439
 #: n:42
 #, c-format
 msgid "Unknown character class “%s”"
 msgstr "Neznáma trieda charakteru “%s”"
 
-#: ../src/extend.c:587
+#: ../src/extend.c:604
 #: ../src/netskel.c:90
 #: n:43
 msgid "No survey data"
 msgstr "Chýbajú údaje z merania"
 
 #: ../src/filename.c:52
-#: ../src/img_hosted.c:32
+#: ../src/img_hosted.c:36
 #: n:44
 #, c-format
 msgid "Filename “%s” refers to directory"
@@ -351,27 +360,27 @@ msgstr "Meno súboru “%s” odpovedá adresáru"
 msgid "Survey not all connected to fixed stations"
 msgstr "Časti merania nie sú pripojené na fixné body"
 
-#: ../src/commands.c:770
-#: ../src/datain.c:643
+#: ../src/commands.c:796
+#: ../src/datain.c:645
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Bod je už fixný alebo je totožný s fixným bodom"
 
-#: ../src/cavern.c:288
+#: ../src/cavern.c:295
 #: ../src/filename.c:55
-#: ../src/img_hosted.c:33
+#: ../src/img_hosted.c:37
 #: n:47
 #, c-format
 msgid "Failed to open output file “%s”"
 msgstr "Zlyhal pokus o otvorenie výstupného súboru  “%s”"
 
-#: ../src/commands.c:1427
+#: ../src/commands.c:1508
 #: n:48
 msgid "Standard deviation must be positive"
 msgstr "Štandardná ochylka musí byť pozitívna"
 
 #. TRANSLATORS: as in: Usage: cavern …
-#: ../src/cmdline.c:165
+#: ../src/cmdline.c:168
 #: n:49
 msgid "Usage"
 msgstr "Použitie"
@@ -380,113 +389,120 @@ msgstr "Použitie"
 #. "survey stations".
 #.
 #. %s is replaced by the name of the station.
-#: ../src/netbits.c:329
+#: ../src/netbits.c:333
 #: n:50
 #, c-format
 msgid "Survey leg with same station (“%s”) at both ends - typing error?"
 msgstr "Zámera s tým istým bodom (“%s”) na oboch koncoch - preklep?"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
-#. full circle.
-#: ../src/datain.c:923
+#. TRANSLATORS: Degrees are the angular measurement where there are
+#. 360 in a full circle.
 #: ../src/datain.c:931
-#: ../src/datain.c:943
+#: ../src/datain.c:939
+#: ../src/datain.c:951
 #: n:51
 msgid "Clino reading over 90 degrees (absolute value)"
 msgstr "Absolútna hodnota sklonu väčšia ako 90 stupňov"
 
-#: ../src/netbits.c:416
+#: ../src/netbits.c:422
 #: n:52
 #, c-format
 msgid "Tried to equate two non-equal fixed stations: “%s” and “%s”"
 msgstr "Pokus o ztotožnenie dvoch rôznych fixných bodov “%s” a “%s”"
 
-#. TRANSLATORS: "equal" as in: *fix a 1 2 3 / *fix b 1 2 3 / *equate a b
-#: ../src/netbits.c:422
+#. TRANSLATORS: "equal" as in:
+#.
+#. *fix a 1 2 3
+#. *fix b 1 2 3
+#. *equate a b
+#: ../src/netbits.c:433
 #: n:53
 #, c-format
 msgid "Equating two equal fixed points: “%s” and “%s”"
 msgstr "Ztotožnenie dvoch identických fixných bodov “%s” a “%s”"
 
 #. TRANSLATORS: " *fix a " gives this message:
-#: ../src/commands.c:693
+#: ../src/commands.c:719
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
 msgstr "Príkaz FIX bez odpovedajúcich súradníc - priradené (0,0,0)"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
-#: ../src/commands.c:773
-#: ../src/datain.c:645
+#: ../src/commands.c:800
+#: ../src/datain.c:647
 #: n:55
 msgid "Station already fixed at the same coordinates"
 msgstr "Bod už bol fixovaný s tými istými súradnicami"
 
-#: ../src/commands.c:686
+#: ../src/commands.c:711
 #: n:56
 msgid "More than one FIX command with no coordinates"
 msgstr "Viac ako jeden príkaz FIX bez súradníc"
 
-#. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN <SURVEY>, so this
-#. would generate error 57:
+#. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
+#. <SURVEY>, so this would generate this error:
+#.
 #. *begin fred
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:1689
+#: ../src/commands.c:1782
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "*EXPORT musí bezprostredne nasledovať “*BEGIN <SURVEY>”"
 
-#: ../src/readval.c:514
+#: ../src/readval.c:515
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr "Neplatný rok (< 1900 alebo > 2078)"
 
-#. TRANSLATORS: Suspicious means something like 410 degrees or -20 degrees
-#: ../src/datain.c:825
-#: ../src/datain.c:834
+#. TRANSLATORS: Suspicious means something like 410 degrees or -20
+#. degrees
+#: ../src/datain.c:829
+#: ../src/datain.c:838
 #: n:59
 msgid "Suspicious compass reading"
 msgstr "Podozrivé čítanie kompasu"
 
-#: ../src/datain.c:1445
+#: ../src/datain.c:1468
 #: n:60
 msgid "Negative tape reading"
 msgstr "Záporný dļžkový údaj"
 
-#: ../src/commands.c:688
+#: ../src/commands.c:713
 #: n:61
 msgid "Same station fixed twice with no coordinates"
 msgstr "Niektorý z bodov bol fixovaný dvakrát bez súradníc"
 
 #. TRANSLATORS: This means that the data fed in said this.
-#. It could be a gross error (e.g. the decimal point is missing from
-#. the depth gauge reading) or it could just be due to random error on
-#. a near vertical leg
-#: ../src/datain.c:1144
+#.
+#. It could be a gross error (e.g. the decimal point is missing from the
+#. depth gauge reading) or it could just be due to random error on a near
+#. vertical leg
+#: ../src/datain.c:1167
 #: n:62
 msgid "Tape reading is less than change in depth"
 msgstr "Dļžkový údaj je menší ako výškový rozdiel"
 
 #. TRANSLATORS: a data "style" is something like NORMAL, DIVING, etc.
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
-#. neither style nor reading is a keyword in the program
-#. This error complains about a depth gauge reading in normal style, for example
-#: ../src/commands.c:1069
+#. neither style nor reading is a keyword in the program This error
+#. complains about a depth gauge reading in normal style, for example
+#: ../src/commands.c:1124
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
 msgstr "Hodnota “%s” nie je povolená v type dát “%s”"
 
 #. TRANSLATORS: i.e. not enough readings for the style.
-#: ../src/commands.c:1238
+#: ../src/commands.c:1309
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
 msgstr "Príliš málo údajov pre typ dát “%s”"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#: ../src/commands.c:1034
+#: ../src/commands.c:1084
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -494,45 +510,48 @@ msgstr "Neznámy typ dát “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #.
-#. Exporting a station twice give error 66:
+#. Exporting a station twice gives this error:
+#.
 #. *begin example
 #. *export 1
 #. *export 1
 #. 1 2 1.24 045 -6
 #. *end example
-#: ../src/commands.c:905
+#: ../src/commands.c:954
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
 msgstr "Bod “%s” už bol vyexportovaný"
 
-#. TRANSLATORS: complains about a situation like trying to define two from stations per leg
-#: ../src/commands.c:1089
+#. TRANSLATORS: complains about a situation like trying to define
+#. two from stations per leg
+#: ../src/commands.c:1150
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
 msgstr "Duplicitná hodnota “%s”"
 
-#: ../src/commands.c:800
+#: ../src/commands.c:827
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
 msgstr "FLAG “%s” je neznámy"
 
-#: ../src/readval.c:471
+#: ../src/readval.c:472
 #: n:69
 msgid "Missing \""
 msgstr "Chýba \""
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/listpos.c:121
+#: ../src/listpos.c:125
 #: n:70
 #, c-format
 msgid "Station “%s” referred to just once, with an explicit prefix - typo?"
 msgstr "Bod “%s” použitý iba raz s explicitným prefixom - preklep?"
 
-#. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/netartic.c:394
+#. TRANSLATORS: Here "station" is a survey station, not a train
+#. station.
+#: ../src/netartic.c:396
 #: n:71
 msgid "The following survey stations are not attached to a fixed point:"
 msgstr "Nasledujúci body nie sú pripojené na fixný bod"
@@ -544,7 +563,7 @@ msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
 msgstr "Meranie (survey) nemá fixné body. Preto bude fixovaný %s so súradnicami (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
-#: ../src/netskel.c:919
+#: ../src/netskel.c:951
 #: n:73
 #, c-format
 msgid "Unused fixed point “%s”"
@@ -561,7 +580,7 @@ msgstr "Sieť vyriešená redukciou - nie je treba riešiť simultánne rovnice"
 msgid "Solving %d simultaneous equations"
 msgstr "Rieši sa %d simultánnych rovníc"
 
-#: ../src/commands.c:1146
+#: ../src/commands.c:1212
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
@@ -572,20 +591,20 @@ msgstr "Údaj “%s” duplikuje predchádzajúci údaj/e"
 msgid "Solving one equation"
 msgstr "Rieši sa jedna rovnica"
 
-#: ../src/datain.c:896
-#: ../src/datain.c:1138
-#: ../src/datain.c:1326
+#: ../src/datain.c:902
+#: ../src/datain.c:1156
+#: ../src/datain.c:1349
 #: n:79
 msgid "Negative adjusted tape reading"
 msgstr "Záporná nastavená vzdialenosť"
 
-#: ../src/commands.c:1605
-#: ../src/commands.c:1625
+#: ../src/commands.c:1691
+#: ../src/commands.c:1711
 #: n:80
 msgid "Date is in the future!"
 msgstr "Dátum je v budúcnosti!"
 
-#: ../src/commands.c:1629
+#: ../src/commands.c:1715
 #: n:81
 msgid "End of date range is before the start"
 msgstr "Posledný dátum je pred prvým"
@@ -596,18 +615,20 @@ msgstr "Posledný dátum je pred prvým"
 msgid "Parameter “%s” has invalid value “%s” in printer configuration file"
 msgstr "Parameter “%s” v konfiguračnom súbore tlačiarne má nesprávnu hodnotu “%s”"
 
-#. TRANSLATORS: e.g. the user specifies a passage cross-section at station "entrance.27", but
-#. there is no station "entrance.27" in the centre-line.
-#: ../src/netskel.c:1004
+#. TRANSLATORS: e.g. the user specifies a passage cross-section at
+#. station "entrance.27", but there is no station "entrance.27" in
+#. the centre-line.
+#: ../src/netskel.c:1039
 #: n:83
 #, c-format
 msgid "Cross section specified at non-existent station “%s”"
 msgstr "Priečny rez definovaný na neexistujúcom bode “%s”"
 
-#. TRANSLATORS: In data with backsights, the user has tried to give a plumb for the
-#. foresight and a clino reading for the backsight, or something similar.
-#: ../src/datain.c:957
-#: ../src/datain.c:978
+#. TRANSLATORS: In data with backsights, the user has tried to give a
+#. plumb for the foresight and a clino reading for the backsight, or
+#. something similar.
+#: ../src/datain.c:968
+#: ../src/datain.c:992
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr "Hodnoty CLINO a BACKCLINO musí byť toho istého typu"
@@ -618,18 +639,18 @@ msgstr "Hodnoty CLINO a BACKCLINO musí byť toho istého typu"
 msgid "Parameter “%s” missing in printer configuration file"
 msgstr "Parameter “%s” v konfiguračnom súbore tlačiarne chýba"
 
-#: ../src/readval.c:522
+#: ../src/readval.c:523
 #: n:86
 msgid "Invalid month"
 msgstr "Nesprávny mesiac"
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
-#: ../src/readval.c:530
+#: ../src/readval.c:532
 #: n:87
 msgid "Invalid day of the month"
 msgstr "Tento deň v tomto mesiaci neexistuje"
 
-#: ../src/cavern.c:237
+#: ../src/cavern.c:244
 #: n:88
 #, c-format
 msgid "3d file format versions %d to %d supported"
@@ -645,142 +666,144 @@ msgid "Expecting survey name"
 msgstr "Predpokladá sa názov survey"
 
 #. TRANSLATORS: Program will exit shortly after printing this
-#: ../src/message.c:224
+#: ../src/message.c:227
 #: n:90
 msgid "Abnormal termination"
 msgstr "Abnormálne ukončenie"
 
-#: ../src/message.c:225
+#: ../src/message.c:228
 #: n:91
 msgid "Arithmetic error"
 msgstr "Aritmetická chyba"
 
-#. TRANSLATORS: Something is badly wrong -- the CPU tried to execute bad opcodes -- corrupted program?
-#: ../src/message.c:226
+#. TRANSLATORS: Something is badly wrong -- the CPU tried to execute bad
+#. opcodes -- corrupted program?
+#: ../src/message.c:231
 #: n:92
 msgid "Illegal instruction"
 msgstr "Ilegálna inštrukcia"
 
-#: ../src/extend.c:536
-#: ../src/mainfrm.cc:381
-#: ../src/sorterr.c:140
+#: ../src/extend.c:553
+#: ../src/mainfrm.cc:388
+#: ../src/sorterr.c:146
 #: n:93
 #, c-format
 msgid "Couldn’t open file “%s”"
 msgstr "Nie je možné otvoriť súbor “%s”"
 
-#: ../src/printwx.cc:587
+#: ../src/printwx.cc:623
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
 msgstr "Súbor “%s” sa nedá zapísať"
 
-#: ../src/message.c:227
+#: ../src/message.c:232
 #: n:94
 msgid "Bad memory access"
 msgstr "Chyba prístupu do pamäte"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:446
-#: ../src/commands.c:509
-#: ../src/commands.c:537
-#: ../src/commands.c:1049
-#: ../src/commands.c:1355
+#: ../src/commands.c:458
+#: ../src/commands.c:525
+#: ../src/commands.c:555
+#: ../src/commands.c:1099
+#: ../src/commands.c:1436
 #: ../src/readval.c:96
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
 msgstr "Ďalšie použitia zamietnutej fukcie nebudú zaznamenané"
 
-#: ../src/message.c:228
+#: ../src/message.c:233
 #: n:97
 msgid "Unknown signal received"
 msgstr "Bol obdržaný neznámy signál"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
-#. full circle.
-#: ../src/datain.c:862
+#. TRANSLATORS: Degrees are the angular measurement where there are
+#. 360 in a full circle.
+#: ../src/datain.c:868
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
 msgstr "Hodnoty COMPASS a BACKCOMPASS sa líši o %s stupňov"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
-#. full circle.
-#: ../src/datain.c:1026
+#. TRANSLATORS: Degrees are the angular measurement where
+#. there are 360 in a full circle.
+#: ../src/datain.c:1044
 #: n:99
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
 msgstr "Hodnoty CLINO a BACKCLINO sa líši o %s stupňov"
 
-#: ../src/cad3d.c:629
+#: ../src/cad3d.c:661
 #: n:100
 msgid "do not generate station markers"
 msgstr "negenerovať symboly bodov"
 
-#: ../src/cad3d.c:630
+#: ../src/cad3d.c:662
 #: n:101
 msgid "do not generate station labels"
 msgstr "negenerovať popisky bodov"
 
-#: ../src/cad3d.c:631
+#: ../src/cad3d.c:663
 #: n:102
 msgid "do not generate survey legs"
 msgstr "negenerovať zámery"
 
-#: ../src/cad3d.c:635
+#: ../src/cad3d.c:667
 #: n:103
 msgid "produce an elevation view"
 msgstr "vytvoriť bočný pohľad"
 
-#: ../src/commands.c:1046
+#: ../src/commands.c:1096
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
 msgstr "“*data %s %c …” boly zamietnuté - použijte “*data %s …” namiesto toho"
 
-#: ../src/extend.c:490
+#: ../src/extend.c:506
 #: n:105
 msgid "Reading in data - please wait…"
 msgstr "Načítam údaje - prosím počkajte…"
 
-#. TRANSLATORS: Perhaps the user tried to load a different type of file as a
-#. Survex .3d file, or the .3d file was corrupted.
-#: ../src/3dtopos.c:154
-#: ../src/3dtopos.c:160
-#: ../src/cad3d.c:873
-#: ../src/cad3d.c:884
-#: ../src/img_hosted.c:34
+#. TRANSLATORS: Perhaps the user tried to load a different type of file as
+#. a Survex .3d file, or the .3d file was corrupted.
+#: ../src/3dtopos.c:157
+#: ../src/3dtopos.c:163
+#: ../src/cad3d.c:905
+#: ../src/cad3d.c:916
+#: ../src/img_hosted.c:40
 #: n:106
 #, c-format
 msgid "Bad 3d image file “%s”"
 msgstr "Nesprávny 3D obrazový súbor  “%s”"
 
-#. TRANSLATORS: This is the date format string used to timestamp .3d files
-#. internally.  Probably best to keep it the same for all translations.
+#. TRANSLATORS: This is the date format string used to timestamp .3d
+#. files internally.  Probably best to keep it the same for all
+#. translations.
 #: ../src/img.c:43
-#: ../src/mainfrm.cc:1347
+#: ../src/mainfrm.cc:1404
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
-#. TRANSLATORS: put in .3d file if we can’t read the date/time
-#: ../src/mainfrm.cc:1343
+#. TRANSLATORS: used a processed survey with no processing date/time info
+#: ../src/mainfrm.cc:1397
 #: n:108
 msgid "Date and time not available."
 msgstr "Dátum a čas nie sú dostupné"
 
-#: ../src/img_hosted.c:35
+#: ../src/img_hosted.c:41
 #: n:109
 #, c-format
 msgid "Error reading from file “%s”"
 msgstr "Chyba pri čítaní zo súboru “%s”"
 
 #: ../src/filename.c:79
-#: ../src/img_hosted.c:36
-#: ../src/mainfrm.cc:339
-#: ../src/mainfrm.cc:1837
+#: ../src/img_hosted.c:42
+#: ../src/mainfrm.cc:346
+#: ../src/mainfrm.cc:1912
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -791,119 +814,119 @@ msgstr "Chyba pri zápise do súboru “%s”"
 msgid "Error writing to file"
 msgstr "Chyba pri zápise do súboru"
 
-#: ../src/sorterr.c:76
-#: ../src/sorterr.c:93
-#: ../src/sorterr.c:164
+#: ../src/sorterr.c:81
+#: ../src/sorterr.c:98
+#: ../src/sorterr.c:170
 #: n:112
 msgid "Couldn’t parse .err file"
 msgstr "Chyba pri analýze .err súboru"
 
-#: ../src/cavern.c:380
+#: ../src/cavern.c:387
 #: n:113
 #, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Vyskytlo sa %d varovaní a %d chýb - nebol vytvorený výstupný súbor."
 
-#: ../src/img_hosted.c:37
+#: ../src/img_hosted.c:43
 #: n:114
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
 msgstr "Súbor “%s” má novší formát, než je tento program schopný zpracovať"
 
-#: ../src/printwx.cc:923
+#: ../src/printwx.cc:960
 #: n:115
 msgid "North"
 msgstr "Sever"
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
-#: ../src/printwx.cc:947
+#: ../src/printwx.cc:987
 #: n:116
 msgid "Elevation on"
 msgstr "Profil v smere"
 
-#: ../src/printwx.cc:419
+#: ../src/printwx.cc:436
 #: n:117
 msgid "P&lan view"
 msgstr "&Pôdorys"
 
-#: ../src/printwx.cc:421
+#: ../src/printwx.cc:438
 #: n:285
 msgid "&Elevation"
 msgstr "P&rofil"
 
-#: ../src/gfxcore.cc:729
-#: ../src/mainfrm.cc:127
+#: ../src/gfxcore.cc:735
+#: ../src/mainfrm.cc:128
 #: n:118
 msgid "Elevation"
 msgstr "Profil"
 
-#: ../src/cavern.c:342
+#: ../src/cavern.c:349
 #: n:120
 msgid "Calculating statistics"
 msgstr "Počíta sa štatistika"
 
-#: ../src/readval.c:485
+#: ../src/readval.c:486
 #: n:121
 msgid "Expecting string field"
 msgstr "Predpokladá sa textové pole"
 
-#: ../src/cmdline.c:208
+#: ../src/cmdline.c:212
 #: n:122
 msgid "too few arguments"
 msgstr "Príliš málo argumentov"
 
-#: ../src/cmdline.c:215
+#: ../src/cmdline.c:219
 #: n:123
 msgid "too many arguments"
 msgstr "Príliš mnoho argumentov"
 
-#: ../src/cmdline.c:174
-#: ../src/cmdline.c:177
+#: ../src/cmdline.c:178
 #: ../src/cmdline.c:181
+#: ../src/cmdline.c:185
 #: n:124
 msgid "FILE"
 msgstr "SÚBOR"
 
-#. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
-#. "sequence" for the English "traverse", which makes sense (although toporobot
-#. actually uses this term to mean something more specific).  Feel free to
-#. follow this lead if you can't think of a better term - these messages mostly
-#. indicate how processing is progressing.
+#. TRANSLATORS: In French, Eric chose to use the terminology used by
+#. toporobot: "sequence" for the English "traverse", which makes sense
+#. (although toporobot actually uses this term to mean something more
+#. specific).  Feel free to follow this lead if you can't think of a better
+#. term - these messages mostly indicate how processing is progressing.
 #.
 #. A trailing traverse is a dead end back to a junction.
-#: ../src/netskel.c:163
+#: ../src/netskel.c:170
 #: n:125
 msgid "Removing trailing traverses"
 msgstr "Odstránenie slepých odbočiek"
 
-#. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
-#. "sequence" for the English "traverse", which makes sense (although toporobot
-#. actually uses this term to mean something more specific).  Feel free to
-#. follow this lead if you can't think of a better term - these messages mostly
-#. indicate how processing is progressing.
-#: ../src/netskel.c:217
+#. TRANSLATORS: In French, Eric chose to use the terminology used by
+#. toporobot: "sequence" for the English "traverse", which makes sense
+#. (although toporobot actually uses this term to mean something more
+#. specific).  Feel free to follow this lead if you can't think of a better
+#. term - these messages mostly indicate how processing is progressing.
+#: ../src/netskel.c:229
 #: n:126
 msgid "Concatenating traverses"
 msgstr "Pripojenie spojok"
 
-#. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
-#. "sequence" for the English "traverse", which makes sense (although toporobot
-#. actually uses this term to mean something more specific).  Feel free to
-#. follow this lead if you can't think of a better term - these messages mostly
-#. indicate how processing is progressing.
-#: ../src/netskel.c:410
+#. TRANSLATORS: In French, Eric chose to use the terminology used by
+#. toporobot: "sequence" for the English "traverse", which makes sense
+#. (although toporobot actually uses this term to mean something more
+#. specific).  Feel free to follow this lead if you can't think of a better
+#. term - these messages mostly indicate how processing is progressing.
+#: ../src/netskel.c:427
 #: n:127
 msgid "Calculating traverses"
 msgstr "Výpočet spojok"
 
-#. TRANSLATORS: In French, Eric chose to use the terminology used by toporobot:
-#. "sequence" for the English "traverse", which makes sense (although toporobot
-#. actually uses this term to mean something more specific).  Feel free to
-#. follow this lead if you can't think of a better term - these messages mostly
-#. indicate how processing is progressing.
+#. TRANSLATORS: In French, Eric chose to use the terminology used by
+#. toporobot: "sequence" for the English "traverse", which makes sense
+#. (although toporobot actually uses this term to mean something more
+#. specific).  Feel free to follow this lead if you can't think of a better
+#. term - these messages mostly indicate how processing is progressing.
 #.
 #. A trailing traverse is a dead end back to a junction.
-#: ../src/netskel.c:742
+#: ../src/netskel.c:772
 #: n:128
 msgid "Calculating trailing traverses"
 msgstr "Výpočet koncových spojok"
@@ -918,182 +941,183 @@ msgstr "Zjednodušenie siete"
 msgid "Calculating network"
 msgstr "Výpočet siete"
 
-#: ../src/datain.c:1435
+#: ../src/datain.c:1458
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
 msgstr "Nájdené “%s”, očakávané “F” alebo “B”"
 
-#: ../src/cavern.c:438
+#: ../src/cavern.c:448
 #: n:132
 #, c-format
 msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
 msgstr "Celková dļžka zámer = %7.2fm (%7.2fm nastavené)"
 
-#: ../src/cavern.c:441
+#: ../src/cavern.c:451
 #: n:133
 #, c-format
 msgid "Total plan length of survey legs = %7.2fm"
 msgstr "Celková pôdorysná dļžka zámer %7.2fm"
 
-#: ../src/cavern.c:444
+#: ../src/cavern.c:454
 #: n:134
 #, c-format
 msgid "Total vertical length of survey legs = %7.2fm"
 msgstr "Celková vertikálna dļžka zámer %7.2fm"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:450
+#: ../src/cavern.c:461
 #: n:135
 #, c-format
 msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Vertikálny rozsah = %4.2fm (od %s v %4.2fm do %s v %4.2fm)"
 
 #. TRANSLATORS: c.f. previous message
-#: ../src/cavern.c:451
+#: ../src/cavern.c:463
 #: n:136
 #, c-format
 msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Rozsah sever-juh = %4.2fm (od %s od %4.2fm do %s do %4.2fm)"
 
 #. TRANSLATORS: c.f. previous two messages
-#: ../src/cavern.c:452
+#: ../src/cavern.c:465
 #: n:137
 #, c-format
 msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
 msgstr "Rozsah východ-západ = %4.2fm (od %s od %4.2fm do %s do %4.2fm)"
 
-#: ../src/cavern.c:426
+#: ../src/cavern.c:433
 #: n:138
 msgid "There is 1 loop."
 msgstr "Jeden uzavretý polygón."
 
-#: ../src/cavern.c:428
+#: ../src/cavern.c:435
 #: n:139
 #, c-format
 msgid "There are %ld loops."
 msgstr "%ld uzavretých polygónov."
 
-#: ../src/cavern.c:364
+#: ../src/cavern.c:371
 #: n:140
 #, c-format
 msgid "CPU time used %5.2fs"
 msgstr "Využitý čas CPU %5.2fs"
 
-#: ../src/cavern.c:367
+#: ../src/cavern.c:374
 #: n:141
 #, c-format
 msgid "Time used %5.2fs"
 msgstr "Celkový čas %5.2fs"
 
-#: ../src/cavern.c:369
+#: ../src/cavern.c:376
 #: n:142
 msgid "Time used unavailable"
 msgstr "Celkový čas - nedostupný"
 
-#: ../src/cavern.c:372
+#: ../src/cavern.c:379
 #: n:143
 #, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Celkový čas %5.2fs (%5.2fs času CPU)"
 
-#: ../src/cavern.c:376
+#: ../src/cavern.c:383
 #: n:144
 msgid "Done."
 msgstr "Hotovo."
 
-#: ../src/netskel.c:720
+#: ../src/netskel.c:737
 #: n:145
 #, c-format
 msgid "Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). "
 msgstr "Pôvodná dļžka %6.2fm (%3d zámer), redukovaná %6.2fm (%5.2fm/zámeru). "
 
-#: ../src/netskel.c:723
+#: ../src/netskel.c:740
 #: n:146
 #, c-format
 msgid "Error %6.2f%%"
 msgstr "Chyba %6.2f%%"
 
-#. TRANSLATORS: Here N/A means "Not Applicable" -- it means the traverse has zero length, so
-#. error per metre is meaningless
-#. There should be 4 spaces between "Error" and "N/A" so that it lines up with
-#. the numbers in the message above.
-#: ../src/netskel.c:725
+#. TRANSLATORS: Here N/A means "Not Applicable" -- it means the
+#. traverse has zero length, so error per metre is meaningless.
+#.
+#. There should be 4 spaces between "Error" and "N/A" so that it lines
+#. up with the numbers in the message above.
+#: ../src/netskel.c:747
 #: n:147
 msgid "Error    N/A"
 msgstr "Chyba (nemá zmysel)"
 
-#: ../src/cad3d.c:632
+#: ../src/cad3d.c:664
 #: n:148
 #, c-format
 msgid "generate grid (default %sm)"
 msgstr "generovať sieť (defaultne %sm)"
 
-#: ../src/cad3d.c:633
+#: ../src/cad3d.c:665
 #: n:149
 #, c-format
 msgid "station labels text height (default %s)"
 msgstr "veľkosť textu pre popisky bodov (defaultne %sm)"
 
-#: ../src/cad3d.c:634
+#: ../src/cad3d.c:666
 #: n:152
 #, c-format
 msgid "station marker size (default %s)"
 msgstr "veľkosť symbolu bodu (defaultne %sm)"
 
-#: ../src/cad3d.c:636
+#: ../src/cad3d.c:668
 #: n:155
 #, c-format
 msgid "factor to scale down by (default %s)"
 msgstr "koeficient pre zmenšenie o (defaultne %sm)"
 
-#: ../src/cad3d.c:637
+#: ../src/cad3d.c:669
 #: n:156
 msgid "produce DXF output"
 msgstr "vygenerovať formát DXF"
 
-#: ../src/cad3d.c:638
+#: ../src/cad3d.c:670
 #: n:158
 msgid "produce Skencil output"
 msgstr "vygenerovať formát Skencil"
 
-#: ../src/cad3d.c:639
+#: ../src/cad3d.c:671
 #: n:159
 msgid "produce Compass PLT output for Carto"
 msgstr "vygenerovať formát Compass PLT pre Carto"
 
-#: ../src/cad3d.c:640
+#: ../src/cad3d.c:672
 #: n:160
 msgid "produce SVG output"
 msgstr "vygenerovať formát SVG"
 
 #. TRANSLATORS: description of --help option
-#: ../src/cmdline.c:137
+#: ../src/cmdline.c:138
 #: n:150
 msgid "display this help and exit"
 msgstr "zobraziť túto nápovedu a skončiť"
 
 #. TRANSLATORS: description of --verbose option
-#: ../src/cmdline.c:139
+#: ../src/cmdline.c:141
 #: n:151
 msgid "output version information and exit"
 msgstr "zobraziť informáciu o verzii a skončiť"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
-#: ../src/cmdline.c:166
+#: ../src/cmdline.c:170
 #: n:153
 msgid "OPTION"
 msgstr "OPTION"
 
-#: ../src/mainfrm.cc:131
-#: ../src/printwx.cc:371
-#: ../src/printwx.cc:984
-#: ../src/printwx.cc:1033
+#: ../src/mainfrm.cc:132
+#: ../src/printwx.cc:384
+#: ../src/printwx.cc:1032
+#: ../src/printwx.cc:1081
 #: n:154
 msgid "Scale"
 msgstr "Merítko"
 
-#: ../src/cmdline.c:190
+#: ../src/cmdline.c:194
 #: n:157
 #, c-format
 msgid "Try “%s --help” for more information.\n"
@@ -1106,7 +1130,7 @@ msgid "Page %d of %d"
 msgstr "Stránka  %d z %d"
 
 #: ../src/avenprcore.cc:272
-#: ../src/printwx.cc:1464
+#: ../src/printwx.cc:1514
 #: n:167
 #, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
@@ -1114,111 +1138,113 @@ msgstr "Meranie (survey) “%s”   Stránka %d (z %d)   Zpracované od stránky
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
-#: ../src/printwx.cc:929
+#: ../src/printwx.cc:968
 #: n:168
 #, c-format
 msgid "Plan view, %s up page"
 msgstr "Mapa, %s v hlavičke"
 
-#. TRANSLATORS: This is used on printouts of elevations, with %s replaced by
-#. something like "123°".  The bearing is the direction we’re looking.
-#: ../src/printwx.cc:963
+#. TRANSLATORS: This is used on printouts of elevations, with %s
+#. replaced by something like "123°".  The bearing is the direction
+#. we’re looking.
+#: ../src/printwx.cc:1006
 #: n:169
 #, c-format
 msgid "Elevation facing %s"
 msgstr "Bočný pohľad v smere %s"
 
-#. TRANSLATORS: This is used on printouts of tilted elevations, with the first
-#. %s replaced by something like "123°", and the second by something like "-45°".
-#. The bearing is the direction we’re looking.
-#: ../src/printwx.cc:968
+#. TRANSLATORS: This is used on printouts of tilted elevations, with
+#. the first %s replaced by something like "123°", and the second by
+#. something like "-45°".  The bearing is the direction we’re
+#. looking.
+#: ../src/printwx.cc:1015
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
 msgstr "Bočný pohľad v smere %s, pootočený o %s"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
-#: ../src/printwx.cc:976
+#: ../src/printwx.cc:1024
 #: n:191
 msgid "Extended elevation"
 msgstr "Rozvinutý rez"
 
-#: ../src/cavern.c:412
+#: ../src/cavern.c:419
 #: n:172
 msgid "Survey contains 1 survey station,"
 msgstr "Meranie (survey) obsahuje jediný bod,"
 
-#: ../src/cavern.c:414
+#: ../src/cavern.c:421
 #: n:173
 #, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "Meranie (survey) obsahuje %ld bodov,"
 
-#: ../src/cavern.c:418
+#: ../src/cavern.c:425
 #: n:174
 msgid " joined by 1 leg."
 msgstr " spojených 1 zámerou."
 
-#: ../src/cavern.c:420
+#: ../src/cavern.c:427
 #: n:175
 #, c-format
 msgid " joined by %ld legs."
 msgstr " spojených %ld zámerami."
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:182
+#: ../src/listpos.c:188
 #: n:176
 msgid "node"
 msgstr "uzol"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:182
+#: ../src/listpos.c:190
 #: n:177
 msgid "nodes"
 msgstr "uzly"
 
-#. TRANSLATORS: connected component in the graph theory sense
-#. It means there are %ld bits of survey with no connections between them
-#. This message is only used if there are more than 1
-#: ../src/cavern.c:434
+#. TRANSLATORS: "Connected component" in the graph theory sense - it
+#. means there are %ld bits of survey with no connections between them.
+#. This message is only used if there are more than 1.
+#: ../src/cavern.c:444
 #: n:178
 #, c-format
 msgid "Survey has %ld connected components."
 msgstr "Meranie (survey) má %ld spojených častí."
 
-#. TRANSLATORS: Label for button in aven’s cavern log window which causes the
-#. survey data to be reprocessed.
-#: ../src/cavernlog.cc:397
-#: ../src/cavernlog.cc:408
+#. TRANSLATORS: Label for button in aven’s cavern log window which
+#. causes the survey data to be reprocessed.
+#: ../src/cavernlog.cc:400
+#: ../src/cavernlog.cc:411
 #: n:184
 msgid "Reprocess"
 msgstr "Spracuj dáta znova"
 
-#: ../src/cmdline.c:238
-#: ../src/cmdline.c:257
+#: ../src/cmdline.c:242
+#: ../src/cmdline.c:261
 #: n:185
 #, c-format
 msgid "numeric argument “%s” out of range"
 msgstr "číselný argument “%s” mimo rozsah"
 
-#: ../src/cmdline.c:240
+#: ../src/cmdline.c:244
 #: n:186
 #, c-format
 msgid "argument “%s” not an integer"
 msgstr "argument “%s” nie je integer"
 
-#: ../src/cmdline.c:259
+#: ../src/cmdline.c:263
 #: n:187
 #, c-format
 msgid "argument “%s” not a number"
 msgstr "argument “%s” nie je číslo"
 
-#: ../src/commands.c:815
+#: ../src/commands.c:842
 #: n:188
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "predpokladá sa “DUPLICATE”, “SPLAY”, alebo “SURFACE”"
 
-#: ../src/commands.c:818
+#: ../src/commands.c:845
 #: n:189
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "Predpokladá sa “NOT”, “DUPLICATE”, “SPLAY”, alebo “SURFACE”"
@@ -1229,215 +1255,219 @@ msgstr "Predpokladá sa “NOT”, “DUPLICATE”, “SPLAY”, alebo “SURFAC
 msgid "Station “%s” referred to by *entrance or *export but never used"
 msgstr "Bod “%s” sa uvádza ako *entrance alebo *export ale nebol použitý"
 
-#: ../src/commands.c:617
+#: ../src/commands.c:635
 #: n:192
 msgid "No matching BEGIN"
 msgstr "Chýba odpovedajúce BEGIN"
 
-#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the same <prefix> if it’s
-#. given at all
-#: ../src/commands.c:639
+#. TRANSLATORS: *BEGIN <prefix> and *END <prefix> should have the
+#. same <prefix> if it’s given at all
+#: ../src/commands.c:664
 #: n:193
 msgid "Prefix tag doesn’t match BEGIN"
 msgstr "Prefix tag neodpovedá BEGIN"
 
-#: ../src/commands.c:643
+#: ../src/commands.c:668
 #: n:194
 msgid "Closing prefix omitted from END"
 msgstr "Koncový prefix chýba v END"
 
-#. TRANSLATORS: heading line for .pos file
-#. please try to ensure the “,”s (or at least the columns) are in the same place
-#: ../src/3dtopos.c:109
+#. TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
+#. (or at least the columns) are in the same place
+#: ../src/3dtopos.c:112
 #: n:195
 msgid "( Easting, Northing, Altitude )"
 msgstr "( východ,  sever,    výška    )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
-#: ../src/aboutdlg.cc:172
+#: ../src/aboutdlg.cc:181
 #: n:196
 #, c-format
 msgid "Display Depth: %d bpp"
 msgstr "Rozsah zobrazenia %d v bitoch na pixel)"
 
 #. TRANSLATORS: appended to previous message if the display is colour
-#: ../src/aboutdlg.cc:173
+#: ../src/aboutdlg.cc:183
 #: n:197
 msgid " (colour)"
 msgstr " (pre farbu)"
 
-#: ../src/readval.c:510
-#: ../src/readval.c:520
-#: ../src/readval.c:528
+#: ../src/readval.c:511
+#: ../src/readval.c:521
+#: ../src/readval.c:529
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
 msgstr "Predpokladá sa čas, najdené “%s”"
 
-#. TRANSLATORS: --help output for --survey option
+#. TRANSLATORS: --help output for --survey option.
+#.
 #. "this" has been added to English translation
 #: ../src/3dtopos.c:50
-#: ../src/aven.cc:63
-#: ../src/cad3d.c:628
+#: ../src/aven.cc:66
+#: ../src/cad3d.c:660
 #: ../src/diffpos.c:57
 #: ../src/dump3d.c:49
-#: ../src/extend.c:443
+#: ../src/extend.c:458
 #: n:199
 msgid "only load the sub-survey with this prefix"
 msgstr "s prefixom sa natiahla iba časť merania"
 
 #. TRANSLATORS: --help output for aven --print option
-#: ../src/aven.cc:64
+#: ../src/aven.cc:68
 #: n:119
 msgid "print and exit (requires a 3d file)"
 msgstr "vytlač a ukonči (vyžaduje 3D súbor)"
 
 #. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:122
+#: ../src/cavern.c:123
 #: n:161
 msgid "display percentage progress"
 msgstr "zobraz postup v percento"
 
 #. TRANSLATORS: --help output for cavern --output option
-#: ../src/cavern.c:123
+#: ../src/cavern.c:125
 #: n:162
 msgid "set location for output files"
 msgstr "urči miesto pre uloženie výstupných súborov"
 
 #. TRANSLATORS: --help output for cavern --quiet option
-#: ../src/cavern.c:124
+#: ../src/cavern.c:127
 #: n:163
 msgid "only show brief summary (-qq for errors only)"
 msgstr "zobraz iba krátku správu (-qq iba pre chyby)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
-#: ../src/cavern.c:125
+#: ../src/cavern.c:129
 #: n:164
 msgid "do not create .err file"
 msgstr "nedá sa vytvoriť súbor s chybami"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
-#: ../src/cavern.c:126
+#: ../src/cavern.c:131
 #: n:165
 msgid "turn warnings into errors"
 msgstr "zmena varovania na chyby"
 
 #. TRANSLATORS: --help output for cavern --log option
-#: ../src/cavern.c:127
+#: ../src/cavern.c:133
 #: n:170
 msgid "log output to .log file"
 msgstr "zápis výstupu do súboru .log"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
-#: ../src/cavern.c:128
+#: ../src/cavern.c:135
 #: n:171
 msgid "specify the 3d file format version to output"
 msgstr "ktorú verziu 3d súboru použiť pre výstup"
 
 #. TRANSLATORS: --help output for sorterr --horizontal option
-#: ../src/sorterr.c:52
+#: ../src/sorterr.c:53
 #: n:179
 msgid "sort by horizontal error factor"
 msgstr "triedenie podľa horizontálnej chyby"
 
 #. TRANSLATORS: --help output for sorterr --vertical option
-#: ../src/sorterr.c:53
+#: ../src/sorterr.c:55
 #: n:180
 msgid "sort by vertical error factor"
 msgstr "triedenie podľa vertikálnej chyby"
 
 #. TRANSLATORS: --help output for sorterr --percentage option
-#: ../src/sorterr.c:54
+#: ../src/sorterr.c:57
 #: n:181
 msgid "sort by percentage error"
 msgstr "triedenie podľa perceptuálnej chyby"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
-#: ../src/sorterr.c:55
+#: ../src/sorterr.c:59
 #: n:182
 msgid "sort by error per leg"
 msgstr "triedenie podľa chyby ne zámeru"
 
 #. TRANSLATORS: --help output for sorterr --replace option
-#: ../src/sorterr.c:56
+#: ../src/sorterr.c:61
 #: n:183
 msgid "replace .err file with resorted version"
 msgstr "prepísať súbor .err novým triedením"
 
 #. TRANSLATORS: --help output for dump3d --rewind option
-#: ../src/dump3d.c:50
+#: ../src/dump3d.c:51
 #: n:204
 msgid "rewind file and read it a second time"
 msgstr "znova načítať súbor od začiatku"
 
-#. TRANSLATORS: error message given by "*units tape 0 feet" - it’s meaningless to say
-#. your tape is marked in "0 feet" (but you might measure distance by counting
-#. knots on a diving line, and tie them every "2 feet").
-#: ../src/commands.c:1281
+#. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
+#. meaningless to say your tape is marked in "0 feet" (but you might
+#. measure distance by counting knots on a diving line, and tie them
+#. every "2 feet").
+#: ../src/commands.c:1356
 #: n:200
 msgid "*UNITS factor must be non-zero"
 msgstr "*UNITS faktor musí byť nenulový"
 
 #. TRANSLATORS: In the "File" menu
-#: ../src/mainfrm.cc:748
+#: ../src/mainfrm.cc:765
 #: n:201
 msgid "&Screenshot…"
 msgstr "Otlačok o&brazovky…"
 
-#: ../src/mainfrm.cc:1357
+#: ../src/mainfrm.cc:1414
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
 msgstr "V 3d súbore “%s” nie sú údaje"
 
-#: ../src/gfxcore.cc:656
+#: ../src/gfxcore.cc:658
 #: n:203
 msgid "Facing"
 msgstr "Smer"
 
 #. TRANSLATORS: for the title of the About box
-#: ../src/aboutdlg.cc:69
+#: ../src/aboutdlg.cc:70
 #: n:205
 #, c-format
 msgid "About %s"
 msgstr "O %s"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1810
+#: ../src/mainfrm.cc:1884
 #: n:206
 msgid "Select a survey file to view"
 msgstr "Vyber súbor s meraním (survey)"
 
-#: ../src/mainfrm.cc:1802
+#: ../src/mainfrm.cc:1863
 #: n:207
 msgid "Survex 3d files"
 msgstr "3D súbory Survex"
 
-#: ../src/mainfrm.cc:1807
-#: ../src/mainfrm.cc:2215
-#: ../src/printwx.cc:563
+#: ../src/mainfrm.cc:1876
+#: ../src/mainfrm.cc:2310
+#: ../src/printwx.cc:597
 #: n:208
 msgid "All files"
 msgstr "Všetky súbory"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
-#: ../src/mainfrm.cc:1801
+#. TRANSLATORS: Here "survey" is a "cave map" rather than
+#. list of questions - it should be translated to the
+#. terminology that cavers using the language would use.
+#: ../src/mainfrm.cc:1862
 #: n:229
 msgid "All survey files"
 msgstr "Všetky súbory s meraním"
 
-#: ../src/mainfrm.cc:1803
+#: ../src/mainfrm.cc:1864
 #: n:329
 msgid "Survex svx files"
 msgstr "Súbory svx Survexu"
 
-#: ../src/mainfrm.cc:1805
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave
+#. surveying package, so probably shouldn’t be translated
+#: ../src/mainfrm.cc:1872
 #: n:330
 msgid "Compass DAT and MAK files"
 msgstr "Súbory DAT a MAK pre Compass"
@@ -1477,160 +1507,177 @@ msgstr "Súbory Skencil"
 msgid "SVG files"
 msgstr "Súbory SVG"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
 #.
 #. This string is used in the about box (summarising the purpose of aven).
-#: ../src/aboutdlg.cc:87
+#: ../src/aboutdlg.cc:94
 #: n:209
 msgid "Survey visualisation tool"
 msgstr "Vizualizácia polygónu"
 
-#. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any accelerator key.
-#. The accelerators must be different within this group
-#: ../src/mainfrm.cc:875
+#. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
+#. accelerator key.  The accelerators must be different within this group
+#: ../src/mainfrm.cc:924
 #: n:210
 msgid "&File"
 msgstr "&Súbor"
 
-#: ../src/mainfrm.cc:876
+#: ../src/mainfrm.cc:925
 #: n:211
 msgid "&Rotation"
 msgstr "&Rotácia"
 
-#: ../src/mainfrm.cc:877
+#: ../src/mainfrm.cc:926
 #: n:212
 msgid "&Orientation"
 msgstr "&Orientácia"
 
-#: ../src/mainfrm.cc:878
+#: ../src/mainfrm.cc:927
 #: n:213
 msgid "&View"
 msgstr "&Pohľad"
 
-#: ../src/mainfrm.cc:880
+#: ../src/mainfrm.cc:929
 #: n:214
 msgid "&Controls"
 msgstr "O&vládanie"
 
-#: ../src/mainfrm.cc:889
+#: ../src/mainfrm.cc:938
 #: n:215
 msgid "&Help"
 msgstr "&Help"
 
-#: ../src/mainfrm.cc:882
+#: ../src/mainfrm.cc:931
 #: n:216
 msgid "&Presentation"
 msgstr "Pre&zentácia"
 
-#: ../src/aboutdlg.cc:98
+#: ../src/aboutdlg.cc:105
 #: n:219
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
 msgstr "Tento program je volný software; můžete jej šířit a modifikovat podle ustanovení Obecné veřejné licence GNU, vydávané Free Software Foundation; a to buď verze 2 této licence anebo (podle vašeho uvážení) kterékoli pozdější verze."
 
 #. TRANSLATORS: Part of 3dtopos --help
-#: ../src/3dtopos.c:85
+#: ../src/3dtopos.c:86
 #: n:217
 msgid "3D_FILE [POS_FILE]"
 msgstr "3D_FILE [POS_FILE]"
 
 #. TRANSLATORS: Part of diffpos --help
-#: ../src/diffpos.c:261
+#: ../src/diffpos.c:265
 #: n:218
 msgid "FILE1 FILE2 [THRESHOLD]"
 msgstr "FILE1 FILE2 [THRESHOLD]"
 
 #. TRANSLATORS: Part of diffpos --help
-#: ../src/diffpos.c:262
+#: ../src/diffpos.c:267
 #: n:255
 #, c-format
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
 msgstr "FILE1 a FILE2 môžu byť súbory .pos alebo .3d\nTHRESHOLD je max. ignorovateľná zmena pozdĺž ktorejkoľvek osi v metroch (defaultne %s)"
 
 #. TRANSLATORS: Part of extend --help
-#: ../src/extend.c:464
+#: ../src/extend.c:480
 #: n:267
 msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
 msgstr "INPUT_3D_FILE [OUTPUT_3D_FILE]"
 
 #. TRANSLATORS: Part of sorterr --help
-#: ../src/sorterr.c:121
+#: ../src/sorterr.c:127
 #: n:268
 msgid "ERR_FILE [HOW_MANY]"
 msgstr "ERR_FILE [HOW_MANY]"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
 #.
 #. Part of aven --help
-#: ../src/aven.cc:106
-#: ../src/aven.cc:130
+#: ../src/aven.cc:115
+#: ../src/aven.cc:139
 #: n:269
 msgid "[SURVEY_FILE]"
 msgstr "[SURVEY_FILE]"
 
-#. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any accelerator key.
+#. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any
+#. accelerator key.
+#.
 #. The string "\t" separates the menu text and any accelerator key.
-#. TRANSLATORS: "File" menu.  The accelerators must be different within this group.
+#.
+#. "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
-#: ../src/mainfrm.cc:742
+#: ../src/mainfrm.cc:758
 #: n:220
 msgid "&Open…\tCtrl+O"
 msgstr "&Otvoriť…\tCtrl+O"
 
-#. TRANSLATORS: Used in the "colour key" for "colour by date" if there are
-#. surveys without date information.
-#: ../src/gfxcore.cc:971
+#. TRANSLATORS: Used in the "colour key" for "colour by date" if there
+#. are surveys without date information.
+#: ../src/gfxcore.cc:979
 #: n:221
 msgid "Undated"
 msgstr "Bez dátumu"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
-#: ../src/gfxcore.cc:993
+#: ../src/gfxcore.cc:1003
 #: n:290
 msgid "Not in loop"
 msgstr "Nie je súčasťou uzavretého ťahu"
 
-#. TRANSLATORS: error from "*data normal newline from to tape compass clino"
-#: ../src/commands.c:1134
+#. TRANSLATORS: error from:
+#.
+#. *data normal newline from to tape compass clino
+#: ../src/commands.c:1200
 #: n:222
 msgid "NEWLINE can’t be the first reading"
 msgstr "NEWLINE nemôže byť prvý údaj"
 
-#. TRANSLATORS: error from "*data normal from to tape compass clino newline"
-#: ../src/commands.c:1169
+#. TRANSLATORS: error from:
+#.
+#. *data normal from to tape compass clino newline
+#: ../src/commands.c:1238
 #: n:223
 msgid "NEWLINE can’t be the last reading"
 msgstr "NEWLINE nemôže byť posledný údaj"
 
-#. TRANSLATORS: error from "*data normal station tape compass clino"
-#: ../src/commands.c:1191
+#. TRANSLATORS: Error given by something like:
+#.
+#. *data normal station tape compass clino
+#.
+#. ("station" signifies interleaved data).
+#: ../src/commands.c:1261
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
 msgstr "Vložené údaje, ale nie NEWLINE"
 
-#. TRANSLATORS: caused by e.g. "*data diving station newline depth tape compass"
-#: ../src/commands.c:1078
+#. TRANSLATORS: caused by e.g.
+#.
+#. *data diving station newline depth tape compass
+#.
+#. ("depth" needs to occur before "newline").
+#: ../src/commands.c:1137
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
 msgstr "Údaj “%s” musí predchádzať NEWLINE"
 
-#. TRANSLATORS: e.g. "*data normal from to tape newline compass clino"
-#: ../src/commands.c:1127
+#. TRANSLATORS: e.g.
+#.
+#. *data normal from to tape newline compass clino
+#: ../src/commands.c:1190
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr "NEWLINE môže byť zpracované iba pri STATION, DEPTH, a COUNT"
 
-#: ../src/commands.c:1315
+#: ../src/commands.c:1390
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
 msgstr "Nie je možné nakalibrovať uhlovýé a dļžkové údaje naraz"
 
-#: ../src/commands.c:564
+#: ../src/commands.c:582
 #: n:397
 msgid "Bad *alias command"
 msgstr ""
@@ -1643,412 +1690,418 @@ msgstr ""
 #~ msgid "Terrain files"
 #~ msgstr "Súbory s povrchom"
 
-#. TRANSLATORS: %s will be replaced by the application name ("Aven" currently)
-#: ../src/log.cc:30
+#. TRANSLATORS: %s will be replaced by the application name ("Aven"
+#. currently)
+#: ../src/log.cc:32
 #: n:228
 #, c-format
 msgid "%s Error Log"
 msgstr "%s záznam chýb"
 
-#. TRANSLATORS: Used in the "Export" settings dialog
-#: ../src/printwx.cc:521
+#. TRANSLATORS: The text on the action button in the "Export" settings
+#. dialog
+#: ../src/printwx.cc:555
 #: n:230
 msgid "&Export…"
 msgstr "&Export…"
 
-#. TRANSLATORS: "Rotation" menu.  The accelerators must be different within this group.
-#. Tickable menu item which toggles auto rotation
-#: ../src/mainfrm.cc:761
+#. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
+#. this group.  Tickable menu item which toggles auto rotation
+#: ../src/mainfrm.cc:780
 #: n:231
 msgid "Au&to-Rotate\tSpace"
 msgstr "&Autorotácia\tSpace"
 
-#: ../src/mainfrm.cc:763
+#: ../src/mainfrm.cc:782
 #: n:232
 msgid "Speed &Up"
 msgstr "Z&rýchliť rotáciu"
 
-#: ../src/mainfrm.cc:764
+#: ../src/mainfrm.cc:783
 #: n:233
 msgid "Slow &Down"
 msgstr "&Spomaliť rotáciu"
 
-#: ../src/mainfrm.cc:766
+#: ../src/mainfrm.cc:785
 #: n:234
 msgid "&Reverse Direction"
 msgstr "&Otočiť rotáciu"
 
-#: ../src/mainfrm.cc:768
+#: ../src/mainfrm.cc:787
 #: n:235
 msgid "Step Once &Anticlockwise"
 msgstr "Jeden krok proti s&meru otáčania hodín"
 
-#: ../src/mainfrm.cc:769
+#: ../src/mainfrm.cc:788
 #: n:236
 msgid "Step Once &Clockwise"
 msgstr "Jeden krok po smere otáča&nia hodín"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:3065
-#: ../src/mainfrm.cc:772
+#: ../src/gfxcore.cc:3111
+#: ../src/mainfrm.cc:791
 #: n:240
 msgid "View &North"
 msgstr "Pohľad na &sever"
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:3066
-#: ../src/mainfrm.cc:773
+#: ../src/gfxcore.cc:3113
+#: ../src/mainfrm.cc:792
 #: n:241
 msgid "View &East"
 msgstr "Pohľad na &východ"
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:3067
-#: ../src/mainfrm.cc:774
+#: ../src/gfxcore.cc:3115
+#: ../src/mainfrm.cc:793
 #: n:242
 msgid "View &South"
 msgstr "Pohľad na &juh"
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:3068
-#: ../src/mainfrm.cc:775
+#: ../src/gfxcore.cc:3117
+#: ../src/mainfrm.cc:794
 #: n:243
 msgid "View &West"
 msgstr "Pohľad na &západ"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
-#: ../src/mainfrm.cc:777
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
+#: ../src/mainfrm.cc:799
 #: n:244
 msgid "Shift Survey &Left"
 msgstr "Posunúť do&lava"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
-#: ../src/mainfrm.cc:778
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
+#: ../src/mainfrm.cc:803
 #: n:245
 msgid "Shift Survey &Right"
 msgstr "Posunúť dop&rava"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
-#: ../src/mainfrm.cc:779
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
+#: ../src/mainfrm.cc:807
 #: n:246
 msgid "Shift Survey &Up"
 msgstr "Posunúť do&hora"
 
-#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions -
-#. it should be translated to the terminology that cavers using the language
-#. would use.
-#: ../src/mainfrm.cc:780
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
+#: ../src/mainfrm.cc:811
 #: n:247
 msgid "Shift Survey &Down"
 msgstr "Posunúť &dolu"
 
-#: ../src/gfxcore.cc:3080
-#: ../src/mainfrm.cc:782
+#: ../src/gfxcore.cc:3131
+#: ../src/mainfrm.cc:813
 #: n:248
 msgid "&Plan View"
 msgstr "&Pôdorys"
 
-#: ../src/gfxcore.cc:3081
-#: ../src/mainfrm.cc:783
+#: ../src/gfxcore.cc:3132
+#: ../src/mainfrm.cc:814
 #: n:249
 msgid "Ele&vation"
 msgstr "R&ez"
 
-#: ../src/mainfrm.cc:785
+#: ../src/mainfrm.cc:816
 #: n:250
 msgid "&Higher Viewpoint"
 msgstr "Zväčšiť &náklon"
 
-#: ../src/mainfrm.cc:786
+#: ../src/mainfrm.cc:817
 #: n:251
 msgid "L&ower Viewpoint"
 msgstr "Z&menšiť náklon"
 
-#: ../src/mainfrm.cc:789
+#: ../src/mainfrm.cc:820
 #: n:252
 msgid "&Zoom In\t]"
 msgstr "Zväčš&iť\t]"
 
-#: ../src/mainfrm.cc:790
+#: ../src/mainfrm.cc:821
 #: n:253
 msgid "Zoo&m Out\t["
 msgstr "Zmenši&t\t["
 
-#: ../src/mainfrm.cc:792
+#: ../src/mainfrm.cc:823
 #: n:254
 msgid "Restore De&fault View"
 msgstr "&Obnovenie východzieho pohľadu"
 
-#. TRANSLATORS: Used as a label for the surrounding box for the "Bearing" and
-#. "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in the
-#. "what to print" dialog.
-#: ../src/printwx.cc:337
+#. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
+#. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
+#. the "what to print/export" dialog.
+#: ../src/printwx.cc:346
 #: n:283
 msgid "View"
 msgstr "Pohľad na"
 
-#. TRANSLATORS: Used as a label for the surrounding box for the "survey legs" "stations"
-#. "names" etc checkboxes in the "what to print" dialog.  "Elements" isn’t a
-#. good name for this but nothing better has yet come to mind!
-#: ../src/printwx.cc:338
+#. TRANSLATORS: Used as a label for the surrounding box for the "survey
+#. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
+#. "Elements" isn’t a good name for this but nothing better has yet come to
+#. mind!
+#: ../src/printwx.cc:351
 #: n:256
 msgid "Elements"
 msgstr "Objekty"
 
-#: ../src/printwx.cc:392
-#: ../src/printwx.cc:727
+#: ../src/printwx.cc:408
+#: ../src/printwx.cc:764
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
 msgstr "%d stránok (%dx%d)"
 
-#. TRANSLATORS: used in the scale drop down selector in the print dialog
-#. the implicit meaning is "choose a suitable scale to fit the
-#. plot on a single page", but we need something shorter
-#: ../src/printwx.cc:374
-#: ../src/printwx.cc:746
+#. TRANSLATORS: used in the scale drop down selector in the print
+#. dialog the implicit meaning is "choose a suitable scale to fit
+#. the plot on a single page", but we need something shorter
+#: ../src/printwx.cc:390
+#: ../src/printwx.cc:783
 #: n:258
 msgid "One page"
 msgstr "Jednu stránku"
 
-#: ../src/mainfrm.cc:123
-#: ../src/printwx.cc:405
+#: ../src/mainfrm.cc:124
+#: ../src/printwx.cc:421
 #: n:259
 msgid "Bearing"
 msgstr "Azimut"
 
-#: ../src/printwx.cc:439
+#: ../src/printwx.cc:460
 #: n:260
 msgid "Station Names"
 msgstr "Mená bodov"
 
-#: ../src/printwx.cc:435
+#: ../src/printwx.cc:456
 #: n:261
 msgid "Crosses"
 msgstr "Krížiky"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:427
+#: ../src/printwx.cc:446
 #: n:262
 msgid "Underground Survey Legs"
 msgstr "Zámery pod povrchom"
 
-#: ../src/printwx.cc:455
+#: ../src/printwx.cc:476
 #: n:393
 msgid "Cross-sections"
 msgstr ""
 
-#: ../src/printwx.cc:460
+#: ../src/printwx.cc:481
 #: n:394
 msgid "Walls"
 msgstr "Steny"
 
-#: ../src/printwx.cc:464
+#: ../src/printwx.cc:485
 #: n:395
 msgid "Passages"
 msgstr "Chodby"
 
-#: ../src/printwx.cc:468
+#: ../src/printwx.cc:489
 #: n:421
 msgid "Origin in centre"
 msgstr ""
 
-#: ../src/printwx.cc:472
+#: ../src/printwx.cc:493
 #: n:422
 msgid "Full coordinates"
 msgstr ""
 
 #. TRANSLATORS: Used in the print dialog:
-#: ../src/printwx.cc:410
+#: ../src/printwx.cc:427
 #: n:263
 msgid "Tilt angle"
 msgstr "Náklon"
 
-#. TRANSLATORS: used in the print dialog - controls drawing lines around each page
-#: ../src/printwx.cc:478
+#. TRANSLATORS: used in the print dialog - controls drawing lines
+#. around each page
+#: ../src/printwx.cc:501
 #: n:264
 msgid "Page Borders"
 msgstr "Rámček"
 
-#. TRANSLATORS: As in the legend on a map.  Used in the print dialog - controls
-#. drawing the box at the lower left with survey name, view angles, etc
-#: ../src/printwx.cc:484
+#. TRANSLATORS: As in the legend on a map.  Used in the print dialog -
+#. controls drawing the box at the lower left with survey name, view
+#. angles, etc
+#: ../src/printwx.cc:512
 #: n:265
 msgid "Legend"
 msgstr "Popiska"
 
-#. TRANSLATORS: will be used in the print dialog - check this to print blank pages
-#. (otherwise they’ll be skipped to save paper)
-#: ../src/printwx.cc:482
+#. TRANSLATORS: will be used in the print dialog - check this to print
+#. blank pages (otherwise they’ll be skipped to save paper)
+#: ../src/printwx.cc:507
 #: n:266
 msgid "Blank Pages"
 msgstr "Prázdne stránky"
 
 #. TRANSLATORS: Items in the "View" menu:
-#: ../src/mainfrm.cc:806
+#: ../src/mainfrm.cc:840
 #: n:270
 msgid "Station &Names\tCtrl+N"
 msgstr "&Mená bodov\tCtrl+N"
 
 #. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:807
+#: ../src/mainfrm.cc:842
 #: n:346
 msgid "Passage &Tubes\tCtrl+T"
 msgstr "Chodby &rúrovité\tCtrl+T"
 
-#: ../src/mainfrm.cc:808
+#: ../src/mainfrm.cc:843
 #: n:271
 msgid "&Crosses\tCtrl+X"
 msgstr "&Krížiky\tCtrl+X"
 
-#: ../src/mainfrm.cc:809
+#: ../src/mainfrm.cc:844
 #: n:297
 msgid "&Grid\tCtrl+G"
 msgstr "&Sieť\tCtrl+G"
 
-#: ../src/mainfrm.cc:810
+#: ../src/mainfrm.cc:845
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
 msgstr "&Ohraničenie\tCtrl+B"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:812
+#: ../src/mainfrm.cc:849
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "Zámery &pod povrchom\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:813
+#: ../src/mainfrm.cc:852
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Zámery &na povrchu\tCtrl+F"
 
-#: ../src/mainfrm.cc:822
+#: ../src/mainfrm.cc:861
 #: n:273
 msgid "&Overlapping Names"
 msgstr "Pr&ekrývajúce sa mená"
 
-#: ../src/gfxcore.cc:3104
-#: ../src/mainfrm.cc:823
+#: ../src/gfxcore.cc:3166
+#: ../src/mainfrm.cc:862
 #: n:292
 msgid "Colour by &Depth"
 msgstr "Farba podľa &hļbky"
 
-#: ../src/gfxcore.cc:3105
-#: ../src/mainfrm.cc:824
+#: ../src/gfxcore.cc:3167
+#: ../src/mainfrm.cc:863
 #: n:293
 msgid "Colour by D&ate"
 msgstr "Farna podľa &dátumu"
 
-#: ../src/gfxcore.cc:3106
-#: ../src/mainfrm.cc:825
+#: ../src/gfxcore.cc:3168
+#: ../src/mainfrm.cc:864
 #: n:289
 msgid "Colour by E&rror"
 msgstr "Colour &by Error"
 
-#: ../src/mainfrm.cc:827
+#: ../src/mainfrm.cc:866
 #: n:294
 msgid "Highlight &Entrances"
 msgstr "Zvýrazniť &vchody"
 
-#: ../src/mainfrm.cc:828
+#: ../src/mainfrm.cc:867
 #: n:295
 msgid "Highlight &Fixed Points"
 msgstr "Zvýrazniť &fixné body"
 
-#: ../src/mainfrm.cc:829
+#: ../src/mainfrm.cc:868
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr "Zvýrazniť e&xportované body"
 
-#: ../src/printwx.cc:443
+#: ../src/printwx.cc:464
 #: n:418
 msgid "Entrances"
 msgstr "Vchody"
 
-#: ../src/printwx.cc:447
+#: ../src/printwx.cc:468
 #: n:419
 msgid "Fixed Points"
 msgstr "Fixné body"
 
-#: ../src/printwx.cc:451
+#: ../src/printwx.cc:472
 #: n:420
 msgid "Exported Stations"
 msgstr "Exportované body"
 
-#: ../src/mainfrm.cc:834
+#: ../src/mainfrm.cc:873
 #: n:237
 msgid "&Perspective"
 msgstr "Perspektív&a"
 
-#: ../src/mainfrm.cc:836
+#: ../src/mainfrm.cc:875
 #: n:238
 msgid "Textured &Walls"
 msgstr "&Texturované steny"
 
-#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate using that term
-#. instead if it gives a better translation which most users will understand.
-#: ../src/mainfrm.cc:837
+#. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
+#. using that term instead if it gives a better translation which most
+#. users will understand.
+#: ../src/mainfrm.cc:879
 #: n:239
 msgid "Fade Distant Ob&jects"
 msgstr "Hm&listý opar"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:838
+#: ../src/mainfrm.cc:882
 #: n:298
 msgid "Smoot&hed Survey Legs"
 msgstr "V&yrovnané zámery"
 
-#: ../src/mainfrm.cc:844
-#: ../src/mainfrm.cc:848
+#: ../src/mainfrm.cc:888
+#: ../src/mainfrm.cc:892
 #: n:356
 msgid "Full Screen &Mode\tF11"
 msgstr "&Celoobrazovkový režim\tF11"
 
-#: ../src/mainfrm.cc:862
+#: ../src/mainfrm.cc:906
 #: n:274
 msgid "&Compass"
 msgstr "&Kompas"
 
-#: ../src/mainfrm.cc:863
+#: ../src/mainfrm.cc:907
 #: n:275
 msgid "C&linometer"
 msgstr "&Sklonomer"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/mainfrm.cc:864
+#: ../src/mainfrm.cc:910
 #: n:276
 msgid "Colour &Key"
 msgstr "Priradenie &Farieb"
 
-#: ../src/mainfrm.cc:865
+#: ../src/mainfrm.cc:911
 #: n:277
 msgid "&Scale Bar"
 msgstr "&Merítko"
 
-#: ../src/mainfrm.cc:857
+#: ../src/mainfrm.cc:901
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
 msgstr "Obrátený sme&r\tCtrl+R"
 
-#: ../src/mainfrm.cc:832
-#: ../src/mainfrm.cc:859
+#: ../src/mainfrm.cc:871
+#: ../src/mainfrm.cc:903
 #: n:281
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "&Zrušit líniu meraní\tEscape"
 
-#: ../src/mainfrm.cc:866
+#: ../src/mainfrm.cc:912
 #: n:299
 msgid "&Indicators"
 msgstr "Indiká&tory"
@@ -2134,108 +2187,109 @@ msgstr "%s: nepovolená možnosť -- %c\n"
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: nesprávna možnosť -- %c\n"
 
-#: ../src/mainfrm.cc:795
+#: ../src/mainfrm.cc:826
 #: n:311
 msgid "&New Presentation"
 msgstr "&Nová prezentácia"
 
-#: ../src/mainfrm.cc:796
+#: ../src/mainfrm.cc:827
 #: n:312
 msgid "&Open Presentation…"
 msgstr "&Otvoriť prezentáciu…"
 
-#: ../src/mainfrm.cc:797
+#: ../src/mainfrm.cc:828
 #: n:313
 msgid "&Save Presentation"
 msgstr "&Ulož prezentáciu"
 
-#: ../src/mainfrm.cc:798
+#: ../src/mainfrm.cc:829
 #: n:314
 msgid "Sa&ve Presentation As…"
 msgstr "Ulož prezentáciu a&ko…"
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
-#: ../src/mainfrm.cc:800
+#: ../src/mainfrm.cc:832
 #: n:315
 msgid "&Mark"
 msgstr "&Zvýrazni"
 
 #. TRANSLATORS: "Play" as in "Play back a recording"
-#: ../src/mainfrm.cc:801
+#: ../src/mainfrm.cc:834
 #: n:316
 msgid "Pla&y"
 msgstr "&Prehrať"
 
-#: ../src/mainfrm.cc:802
+#: ../src/mainfrm.cc:835
 #: n:317
 msgid "&Export as Movie…"
 msgstr "&Vyexportuj ako film…"
 
-#: ../src/mainfrm.cc:2292
+#: ../src/mainfrm.cc:2387
 #: n:331
 msgid "Export Movie"
 msgstr "vygeneruj film"
 
-#: ../src/mainfrm.cc:326
+#: ../src/mainfrm.cc:333
 #: n:319
 msgid "Select an output filename"
 msgstr "Zvoliť meno výstupného súboru"
 
-#: ../src/mainfrm.cc:323
-#: ../src/mainfrm.cc:2214
+#: ../src/mainfrm.cc:330
+#: ../src/mainfrm.cc:2309
 #: n:320
 msgid "Aven presentations"
 msgstr "Prezentácie programu Aven"
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:1823
+#: ../src/mainfrm.cc:1898
 #: n:321
 msgid "Save Screenshot"
 msgstr "Uložiť otlačok obrazovky"
 
-#: ../src/mainfrm.cc:2209
-#: ../src/mainfrm.cc:2212
+#: ../src/mainfrm.cc:2304
+#: ../src/mainfrm.cc:2307
 #: n:322
 msgid "Select a presentation to open"
 msgstr "Vybrať prezentáciu pre otvorenie"
 
-#: ../src/mainfrm.cc:405
+#: ../src/mainfrm.cc:412
 #: n:323
 #, c-format
 msgid "Error in format of presentation file “%s”"
 msgstr "Chyba vo formáte prezentačného súboru “%s”"
 
-#. TRANSLATORS: "Compass" as in Larry Fish’s cave surveying package, so probably shouldn’t
-#. be translated
-#: ../src/mainfrm.cc:1804
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave
+#. surveying package, so probably shouldn’t be translated
+#: ../src/mainfrm.cc:1868
 #: n:324
 msgid "Compass PLT files"
 msgstr "Súbory Compass PLT"
 
-#. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying package, so don’t translate it.
-#: ../src/mainfrm.cc:1806
+#. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
+#. package, so don’t translate it.
+#: ../src/mainfrm.cc:1875
 #: n:325
 msgid "CMAP XYZ files"
 msgstr "Súbory CMAP XYZ"
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:1879
-#: ../src/mainfrm.cc:2186
-#: ../src/mainfrm.cc:2203
+#: ../src/mainfrm.cc:1956
+#: ../src/mainfrm.cc:2281
+#: ../src/mainfrm.cc:2298
 #: n:326
 msgid "Modified Presentation"
 msgstr "Upravená prezentácia"
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:1878
-#: ../src/mainfrm.cc:2185
-#: ../src/mainfrm.cc:2202
+#: ../src/mainfrm.cc:1954
+#: ../src/mainfrm.cc:2280
+#: ../src/mainfrm.cc:2297
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr "Prezentácia bola zmenená. Nechcete radšej uožiť zmeny?"
 
-#: ../src/mainfrm.cc:2503
-#: ../src/mainfrm.cc:2512
+#: ../src/mainfrm.cc:2598
+#: ../src/mainfrm.cc:2609
 #: n:328
 msgid "No matches were found."
 msgstr "Neúspešné hľadanie."
@@ -2252,49 +2306,51 @@ msgstr "Neúspešné hľadanie."
 #~ msgstr "%d nájdených"
 
 #. TRANSLATORS: "Find stations" button tooltip
-#: ../src/mainfrm.cc:939
+#: ../src/mainfrm.cc:989
 #: n:332
 msgid "Find"
 msgstr "Hľadať"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
-#: ../src/mainfrm.cc:940
-#: ../src/mainfrm.cc:2544
+#: ../src/mainfrm.cc:991
+#: ../src/mainfrm.cc:2641
 #: n:333
 msgid "Hide"
 msgstr "Schovať"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2505
+#: ../src/mainfrm.cc:2602
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr "Skryť %d nájdených bodov"
 
-#: ../src/mainfrm.cc:206
-#: ../src/mainfrm.cc:1960
-#: ../src/mainfrm.cc:2032
-#: ../src/mainfrm.cc:2084
+#: ../src/mainfrm.cc:213
+#: ../src/mainfrm.cc:2039
+#: ../src/mainfrm.cc:2122
+#: ../src/mainfrm.cc:2175
 #: n:335
 msgid "Altitude"
 msgstr "Nadmorská výška"
 
-#. TRANSLATORS: error if you try to drag multiple files to the aven window
-#: ../src/mainfrm.cc:681
+#. TRANSLATORS: error if you try to drag multiple files to the aven
+#. window
+#: ../src/mainfrm.cc:690
 #: n:336
 msgid "You may only view one 3d file at a time."
 msgstr "Môžete prehliadať iba jeden 3D súbor"
 
-#: ../src/mainfrm.cc:867
+#: ../src/mainfrm.cc:913
 #: n:337
 msgid "&Side Panel"
 msgstr "&Postranný panel"
 
-#. TRANSLATORS: show coordinates (N = North or Northing, E = East or Easting)
-#: ../src/mainfrm.cc:1958
-#: ../src/mainfrm.cc:1980
-#: ../src/mainfrm.cc:1982
-#: ../src/mainfrm.cc:2083
+#. TRANSLATORS: show coordinates (N = North or Northing, E = East or
+#. Easting)
+#: ../src/mainfrm.cc:2037
+#: ../src/mainfrm.cc:2059
+#: ../src/mainfrm.cc:2061
+#: ../src/mainfrm.cc:2174
 #: n:338
 msgid "%.2f E, %.2f N"
 msgstr "%.2f V, %.2f S"
@@ -2303,150 +2359,158 @@ msgstr "%.2f V, %.2f S"
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:1997
-#: ../src/mainfrm.cc:2042
-#: ../src/mainfrm.cc:2102
+#: ../src/mainfrm.cc:2080
+#: ../src/mainfrm.cc:2132
+#: ../src/mainfrm.cc:2195
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr "Od %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2115
+#: ../src/mainfrm.cc:2208
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
 msgstr "H %.2f%s, V %.2f%s"
 
-#. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as in Compass bearing)
-#: ../src/mainfrm.cc:2125
+#. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
+#. in Compass bearing)
+#: ../src/mainfrm.cc:2220
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr "%s: %s, Vzd %.2f%s, Azim %03d%s"
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:3095
-#: ../src/gfxcore.cc:3110
-#: ../src/mainfrm.cc:869
+#: ../src/gfxcore.cc:3157
+#: ../src/gfxcore.cc:3175
+#: ../src/mainfrm.cc:915
 #: n:342
 msgid "&Metric"
 msgstr "&Metricky"
 
 #. TRANSLATORS: tickable menu item in View menu.
-#. Degrees are the angular measurement where there are 360 in a
-#. full circle.
-#: ../src/gfxcore.cc:3071
-#: ../src/gfxcore.cc:3084
-#: ../src/mainfrm.cc:870
+#.
+#. Degrees are the angular measurement where there are 360 in a full
+#. circle.
+#: ../src/gfxcore.cc:3122
+#: ../src/gfxcore.cc:3140
+#: ../src/mainfrm.cc:916
 #: n:343
 msgid "&Degrees"
 msgstr "&Stupne"
 
 #. TRANSLATORS: tickable menu item in View menu.
-#. Show the tilt of the survey as a percentage gradient (100% = 45 degrees = 50
-#. grad).
-#: ../src/gfxcore.cc:3085
-#: ../src/mainfrm.cc:871
+#.
+#. Show the tilt of the survey as a percentage gradient (100% = 45
+#. degrees = 50 grad).
+#: ../src/gfxcore.cc:3145
+#: ../src/mainfrm.cc:917
 #: n:430
 #, fuzzy
 msgid "&Percent"
 msgstr "P&ercent"
 
-#. TRANSLATORS: abbreviation for "kilometres" (unit of length), used e.g.
-#. "5km".  If there should be a space between the number and this, include one
-#. in the translation.
-#: ../src/gfxcore.cc:1061
-#: ../src/printwx.cc:1025
+#. TRANSLATORS: abbreviation for "kilometres" (unit of length),
+#. used e.g.  "5km".
+#.
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:1076
+#: ../src/printwx.cc:1073
 #: n:423
 msgid "km"
 msgstr "km"
 
-#. TRANSLATORS: abbreviation for "metres" (unit of length), used e.g. "10m".
+#. TRANSLATORS: abbreviation for "metres" (unit of length), used
+#. e.g. "10m".
 #.
-#. If there should be a space between the number and this, include one in the
-#. translation.
-#: ../src/gfxcore.cc:944
-#: ../src/gfxcore.cc:1063
-#: ../src/mainfrm.cc:1951
-#: ../src/mainfrm.cc:2009
-#: ../src/mainfrm.cc:2027
-#: ../src/mainfrm.cc:2076
-#: ../src/mainfrm.cc:2107
-#: ../src/printwx.cc:1027
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:950
+#: ../src/gfxcore.cc:1083
+#: ../src/mainfrm.cc:2028
+#: ../src/mainfrm.cc:2097
+#: ../src/mainfrm.cc:2117
+#: ../src/mainfrm.cc:2167
+#: ../src/mainfrm.cc:2199
+#: ../src/printwx.cc:1075
 #: n:424
 msgid "m"
 msgstr "m"
 
-#. TRANSLATORS: abbreviation for "centimetres" (unit of length), used e.g.
-#. "50cm".
+#. TRANSLATORS: abbreviation for "centimetres" (unit of length),
+#. used e.g.  "50cm".
 #.
-#. If there should be a space between the number and this, include one in the
-#. translation.
-#: ../src/gfxcore.cc:1066
-#: ../src/printwx.cc:1030
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:1091
+#: ../src/printwx.cc:1078
 #: n:425
 msgid "cm"
 msgstr ""
 
-#. TRANSLATORS: abbreviation for "miles" (unit of length, plural), used e.g.
-#. "2 miles".
+#. TRANSLATORS: abbreviation for "miles" (unit of length,
+#. plural), used e.g.  "2 miles".
 #.
-#. If there should be a space between the number and this, include one in the
-#. translation.
-#: ../src/gfxcore.cc:1074
+#. If there should be a space between the number and this,
+#. include one in the translation.
+#: ../src/gfxcore.cc:1104
 #: n:426
 msgid " miles"
 msgstr ""
 
-#. TRANSLATORS: abbreviation for "mile" (unit of length, singular), used e.g.
-#. "1 mile".
+#. TRANSLATORS: abbreviation for "mile" (unit of length,
+#. singular), used e.g.  "1 mile".
 #.
-#. If there should be a space between the number and this, include one in the
-#. translation.
-#: ../src/gfxcore.cc:1076
+#. If there should be a space between the number and this,
+#. include one in the translation.
+#: ../src/gfxcore.cc:1111
 #: n:427
 msgid " mile"
 msgstr ""
 
-#. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g. as "10ft".
+#. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
+#. as "10ft".
 #.
-#. If there should be a space between the number and this, include one in the
-#. translation.
-#: ../src/gfxcore.cc:944
-#: ../src/gfxcore.cc:1079
-#: ../src/mainfrm.cc:1956
-#: ../src/mainfrm.cc:2012
-#: ../src/mainfrm.cc:2030
-#: ../src/mainfrm.cc:2081
-#: ../src/mainfrm.cc:2112
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:950
+#: ../src/gfxcore.cc:1119
+#: ../src/mainfrm.cc:2033
+#: ../src/mainfrm.cc:2100
+#: ../src/mainfrm.cc:2120
+#: ../src/mainfrm.cc:2172
+#: ../src/mainfrm.cc:2204
 #: n:428
 msgid "ft"
 msgstr "ft"
 
-#. TRANSLATORS: abbreviation for "inches" (unit of length), used e.g. as "6in".
+#. TRANSLATORS: abbreviation for "inches" (unit of length), used
+#. e.g. as "6in".
 #.
-#. If there should be a space between the number and this, include one in the
-#. translation.
-#: ../src/gfxcore.cc:1082
+#. If there should be a space between the number and this, include
+#. one in the translation.
+#: ../src/gfxcore.cc:1127
 #: n:429
 msgid "in"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:3070
+#: ../src/gfxcore.cc:3120
 #: n:387
 msgid "&Hide Compass"
 msgstr "&skryť azimut"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:3083
+#: ../src/gfxcore.cc:3135
 #: n:384
 msgid "&Hide Clino"
 msgstr "&skryť sklon"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:3094
+#: ../src/gfxcore.cc:3155
 #: n:385
 msgid "&Hide scale bar"
 msgstr "&skryť mierku"
@@ -2454,57 +2518,61 @@ msgstr "&skryť mierku"
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:3108
+#: ../src/gfxcore.cc:3173
 #: n:386
 msgid "&Hide colour key"
 msgstr "&skryť popis farieb"
 
-#. TRANSLATORS: degree symbol - probably should be translated to itself.
+#. TRANSLATORS: degree symbol - probably should be translated to
+#. itself.
 #: ../src/gfxcore.cc:647
-#: ../src/gfxcore.cc:695
-#: ../src/mainfrm.cc:2001
-#: ../src/mainfrm.cc:2119
-#: ../src/printwx.cc:927
-#: ../src/printwx.cc:952
-#: ../src/printwx.cc:956
-#: ../src/printwx.cc:960
-#: ../src/printwx.cc:967
+#: ../src/gfxcore.cc:701
+#: ../src/mainfrm.cc:2084
+#: ../src/mainfrm.cc:2212
+#: ../src/printwx.cc:964
+#: ../src/printwx.cc:992
+#: ../src/printwx.cc:996
+#: ../src/printwx.cc:1000
+#: ../src/printwx.cc:1010
 #: n:344
 msgid "°"
 msgstr "°"
 
-#. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full circle).
-#: ../src/gfxcore.cc:650
-#: ../src/gfxcore.cc:700
+#. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
+#. circle).
+#: ../src/gfxcore.cc:652
+#: ../src/gfxcore.cc:706
 #: n:76
 msgid "ᵍ"
 msgstr "ᵍ"
 
-#. TRANSLATORS: alternative angle units (400 grad = 360 degrees = full circle).
-#. Try to make this as short as sensibly possible.
+#. TRANSLATORS: alternative angle units (400 grad = 360 degrees =
+#. full circle).  Try to make this as short as sensibly possible.
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2004
-#: ../src/mainfrm.cc:2122
+#: ../src/mainfrm.cc:2092
+#: ../src/mainfrm.cc:2215
 #: n:345
 msgid "grad"
 msgstr "grády"
 
-#. TRANSLATORS: symbol for percentage gradient (100% = 45 degrees = 50 grad).
-#: ../src/gfxcore.cc:686
-#: ../src/gfxcore.cc:704
+#. TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
+#. 50 grad).
+#: ../src/gfxcore.cc:692
+#: ../src/gfxcore.cc:710
 #: n:96
 msgid "%"
 msgstr "%"
 
-#. TRANSLATORS: used for the percentage gradient on vertical angles.
-#: ../src/gfxcore.cc:682
+#. TRANSLATORS: used for the percentage gradient on vertical
+#. angles.
+#: ../src/gfxcore.cc:686
 #: n:431
 msgid "∞"
 msgstr "∞"
 
-#: ../src/mainfrm.cc:852
+#: ../src/mainfrm.cc:896
 #: n:347
 #~ msgid "&Preferences…"
 #~ msgstr "&Predvoľby…"
@@ -2620,243 +2688,249 @@ msgstr "∞"
 #~ msgid "Display side panel"
 #~ msgstr "Zobraziť bočný panel"
 
-#. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as in Compass bearing)
-#: ../src/mainfrm.cc:2014
+#. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
+#. in Compass bearing)
+#: ../src/mainfrm.cc:2104
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr "%s: H %.2f%s, Azim %03d%s"
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:2047
+#: ../src/mainfrm.cc:2138
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
 msgstr "%s: V %.2f%s"
 
-#. TRANSLATORS: labels for tabbed side panel
-#. this is for the tab with the tree hierarchy of survey station names
-#: ../src/mainfrm.cc:991
+#. TRANSLATORS: labels for tabbed side panel this is for the tab with the
+#. tree hierarchy of survey station names
+#: ../src/mainfrm.cc:1044
 #: n:376
 msgid "Surveys"
 msgstr "Merania"
 
-#: ../src/mainfrm.cc:992
+#: ../src/mainfrm.cc:1045
 #: n:377
 msgid "Presentation"
 msgstr "Zobrazenie"
 
-#: ../src/mainfrm.cc:204
+#: ../src/mainfrm.cc:211
 #: n:378
 msgid "Easting"
 msgstr "východ"
 
-#: ../src/mainfrm.cc:205
+#: ../src/mainfrm.cc:212
 #: n:379
 msgid "Northing"
 msgstr "sever"
 
-#: ../src/mainfrm.cc:745
+#: ../src/mainfrm.cc:761
 #: n:380
 msgid "&Print…\tCtrl+P"
 msgstr "&Tlačiť…\tCtrl+P"
 
-#: ../src/mainfrm.cc:746
+#: ../src/mainfrm.cc:762
 #: n:381
 msgid "P&age Setup…"
 msgstr "&Nastavení tisku…"
 
-#: ../src/mainfrm.cc:749
+#: ../src/mainfrm.cc:766
 #: n:382
 msgid "&Export as…"
 msgstr "&Export ako…"
 
-#. TRANSLATORS: Title of file dialog to choose name and type of exported file.
-#: ../src/printwx.cc:567
+#. TRANSLATORS: Title of file dialog to choose name and type of exported
+#. file.
+#: ../src/printwx.cc:603
 #: n:401
 msgid "Export as:"
 msgstr "Exportuj ako:"
 
-#. TRANSLATORS: Title of the export dialog
-#: ../src/printwx.cc:287
+#. TRANSLATORS: Title of the export
+#. dialog
+#: ../src/printwx.cc:293
 #: n:383
 msgid "Export"
 msgstr "Export"
 
 #. TRANSLATORS: for about box:
-#: ../src/aboutdlg.cc:134
+#: ../src/aboutdlg.cc:142
 #: n:390
 msgid "System Information:"
 msgstr "Informácie o systéme:"
 
 #. TRANSLATORS: Title of the print preview dialog
-#: ../src/printwx.cc:606
+#: ../src/printwx.cc:643
 #: n:398
 msgid "Print Preview"
 msgstr "Náhľad tlače"
 
-#. TRANSLATORS: Title of the print dialog
-#: ../src/printwx.cc:287
+#. TRANSLATORS: Title of the print
+#. dialog
+#: ../src/printwx.cc:290
 #: n:399
 msgid "Print"
 msgstr "Tlačiť"
 
-#: ../src/printwx.cc:518
+#: ../src/printwx.cc:550
 #: n:400
 msgid "&Print…"
 msgstr "&Tlačiť…"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:431
+#: ../src/printwx.cc:452
 #: n:403
 msgid "Sur&face Survey Legs"
 msgstr "Zámery &na povrchu"
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:96
+#: ../src/mainfrm.cc:97
 #: n:404
 msgid "Edit Waypoint"
 msgstr "Zmeniť miesto pohľadu"
 
-#. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:133
+#. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
+#. in a presentation.
+#: ../src/mainfrm.cc:136
 #: n:278
 msgid " (unused in perspective view)"
 msgstr " (nepoužíva sa v perspektívnom zobrazení)"
 
-#. TRANSLATORS: Field label in dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:138
+#. TRANSLATORS: Field label in dialog to edit a waypoint in a
+#. presentation.
+#: ../src/mainfrm.cc:143
 #: n:279
 msgid "Time: "
 msgstr "Čas: "
 
-#. TRANSLATORS: units+info after time field in dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:140
+#. TRANSLATORS: units+info after time field in dialog to edit a
+#. waypoint in a presentation.
+#: ../src/mainfrm.cc:147
 #: n:282
 msgid " secs (0 = auto; *6 = 6 times auto)"
 msgstr " sekundy (0 = auto; *6 = 6 krát auto)"
 
-#. TRANSLATORS: %s will be replaced with "Aven" currently (and perhaps by "Survex" or other
-#. things in future).
-#: ../src/aven.cc:219
+#. TRANSLATORS: %s will be replaced with "Aven" currently (and
+#. perhaps by "Survex" or other things in future).
+#: ../src/aven.cc:230
 #: n:405
 #, c-format
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
 msgstr "Verzia %s vyžaduje funkčné OpenGL, ale to nie je dostupné."
 
 #. TRANSLATORS: for diffpos:
-#: ../src/diffpos.c:158
+#: ../src/diffpos.c:159
 #: n:500
 #, c-format
 msgid "Moved by (%3.2f,%3.2f,%3.2f): %s"
 msgstr "Posun (%3.2f,%3.2f,%3.2f): %s"
 
 #. TRANSLATORS: for diffpos:
-#: ../src/diffpos.c:194
+#: ../src/diffpos.c:196
 #: n:501
 #, c-format
 msgid "Added: %s"
 msgstr "Pridané: %s"
 
 #. TRANSLATORS: for diffpos:
-#: ../src/diffpos.c:216
+#: ../src/diffpos.c:219
 #: n:502
 #, c-format
 msgid "Deleted: %s"
 msgstr "Zrušené: %s"
 
-#. TRANSLATORS: for extend:
-#. the user specified breaking a loop or changing extend direction at
-#. this station, but we didn’t find it in the 3d file
-#: ../src/extend.c:258
-#: ../src/extend.c:275
-#: ../src/extend.c:315
-#: ../src/extend.c:355
-#: ../src/extend.c:395
+#. TRANSLATORS: for extend: the user specified breaking a loop or
+#. changing extend direction at this station, but we didn’t find it in
+#. the 3d file
+#: ../src/extend.c:262
+#: ../src/extend.c:280
+#: ../src/extend.c:325
+#: ../src/extend.c:367
+#: ../src/extend.c:409
 #: n:510
 #, c-format
 msgid "Failed to find station %s"
 msgstr "Nepodarilo sa nájsť bod %s"
 
-#. TRANSLATORS: for extend:
-#. the user specified breaking a loop or changing extend direction at
-#. this leg, but we didn’t find it in the 3d file
-#: ../src/extend.c:297
-#: ../src/extend.c:337
-#: ../src/extend.c:377
-#: ../src/extend.c:417
+#. TRANSLATORS: for extend: the user specified breaking a loop or
+#. changing extend direction at this leg, but we didn’t find it in the
+#. 3d file
+#: ../src/extend.c:306
+#: ../src/extend.c:348
+#: ../src/extend.c:390
+#: ../src/extend.c:432
 #: n:511
 #, c-format
 msgid "Failed to find leg %s → %s"
 msgstr "Nepodarilo sa nájsť zámeru %s → %s"
 
-#. TRANSLATORS: for extend:
-#. "extend" is starting to produce an extended elevation from station %s
-#: ../src/extend.c:252
+#. TRANSLATORS: for extend: "extend" is starting to produce an extended elevation from station %s
+#: ../src/extend.c:253
 #: n:512
 #, c-format
 msgid "Starting from station %s"
 msgstr "Začať od bodu %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:268
+#: ../src/extend.c:273
 #: n:513
 #, c-format
 msgid "Extending to the left from station %s"
 msgstr "Rozvinutý rez vľavo od bodu %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:308
+#: ../src/extend.c:318
 #: n:514
 #, c-format
 msgid "Extending to the right from station %s"
 msgstr "Rozvinutý rez vpravo od bodu %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:287
+#: ../src/extend.c:293
 #: n:515
 #, c-format
 msgid "Extending to the left from leg %s → %s"
 msgstr "Rozvinutý rez vľavo od zámery %s → %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:327
+#: ../src/extend.c:338
 #: n:516
 #, c-format
 msgid "Extending to the right from leg %s → %s"
 msgstr "Rozvinutý rez vpravo od zámery %s → %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:388
+#: ../src/extend.c:402
 #: n:517
 #, c-format
 msgid "Breaking survey loop at station %s"
 msgstr "Prerušený okruh na bode %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:407
+#: ../src/extend.c:422
 #: n:518
 #, c-format
 msgid "Breaking survey loop at leg %s → %s"
 msgstr "Prerušený okruh v zámere %s → %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:348
+#: ../src/extend.c:360
 #: n:519
 #, c-format
 msgid "Swapping extend direction from station %s"
 msgstr "Zrkadlový smer rozvinutého rezu od bodu %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:367
+#: ../src/extend.c:380
 #: n:520
 #, c-format
 msgid "Swapping extend direction from leg %s → %s"
 msgstr "Zrkadlový smer rozvinutého rezu od zámery %s → %s"
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:533
+#: ../src/extend.c:550
 #: n:521
 #, c-format
 msgid "Applying specfile: “%s”"
@@ -2864,7 +2938,7 @@ msgstr "Použiť nastavenie zo súboru: “%s”"
 
 #. TRANSLATORS: for extend:
 #. Used to tell the user that a file is being written - %s is the filename
-#: ../src/extend.c:593
+#: ../src/extend.c:613
 #: n:522
 #, c-format
 msgid "Writing %s…"
@@ -2889,16 +2963,16 @@ msgstr "Zlyhal pokus o inicializáciu výstupného súradnicového systému “%
 msgid "-d PROJ_DATUM 3D_FILE"
 msgstr "-d PROJ_DÁTUM 3D_SÚBOR"
 
-#. TRANSLATORS: The findentrances utility uses the PROJ library to do
-#. coordinate transformations (https://trac.osgeo.org/proj/) - you
-#. pass findentrances a string to tell PROJ what the input datum is.
+#. TRANSLATORS: The PROJ library is used to do coordinate transformations
+#. (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
+#. what the input datum is.
 #: ../src/findentrances.cc:146
-#: ../src/printwx.cc:496
+#: ../src/printwx.cc:528
 #: n:389
 msgid "input datum as string to pass to PROJ"
 msgstr "Vložiť dátum ako text pre PROJ"
 
-#: ../src/readval.c:338
+#: ../src/readval.c:339
 #: n:392
 msgid "Separator in survey name"
 msgstr ""
@@ -2910,33 +2984,33 @@ msgstr ""
 msgid "Can't have a leg between two anonymous stations"
 msgstr ""
 
-#: ../src/dump3d.c:51
+#: ../src/dump3d.c:52
 #: n:396
 msgid "show survey date information (if present)"
 msgstr ""
 
-#: ../src/mainfrm.cc:819
+#: ../src/mainfrm.cc:858
 #: n:406
 #, fuzzy
 msgid "Spla&y Legs"
 msgstr "Splay Legs (&z)"
 
-#: ../src/mainfrm.cc:816
+#: ../src/mainfrm.cc:855
 #: n:407
 msgid "&Hide"
 msgstr "&Skryť"
 
-#: ../src/mainfrm.cc:817
+#: ../src/mainfrm.cc:856
 #: n:408
 msgid "&Fade"
 msgstr ""
 
-#: ../src/mainfrm.cc:818
+#: ../src/mainfrm.cc:857
 #: n:409
 msgid "&Show"
 msgstr "&Zobraziť"
 
-#: ../src/printwx.cc:346
+#: ../src/printwx.cc:359
 #: n:410
 msgid "Export format"
 msgstr ""

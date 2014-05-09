@@ -1,3 +1,7 @@
+Fri May 09 00:30:14 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Merge template changes into .po files.
+
 Fri May 09 00:15:46 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/extract-msgs.pl,lib/survex.pot,src/: Insert "TRANSLATORS"
