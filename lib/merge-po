@@ -19,6 +19,21 @@ for my $po_file (@ARGV) {
     print STDERR "$po_file: Bad!\n";
     next;
   }
+
+  # Build a map from msgno to po msgid, so we can find the old translation when
+  # a msgid has since changed in the pot file.
+  my %msgno_to_po;
+  foreach my $msgid (keys %{$po}) {
+    my $ref = $po->{$msgid}->reference;
+    if (defined $ref) {
+      my ($msgno) = $ref =~ /\bn:(\d+)/;
+      if (defined $msgno) {
+	$msgno_to_po{$msgno} = [ $msgid, $po->{$msgid}->msgstr ];
+      }
+    }
+  }
+
+  my @fuzzy;
   open NEW, '>', "$po_file.tmp" or die $!;
   foreach my $pot_entry (@{$pot}) {
     my $msgid = $pot_entry->msgid;
@@ -42,13 +57,25 @@ for my $po_file (@ARGV) {
 	while ($automatic =~ s/\n#. \n/\n#.\n/g) { }
 	print NEW $automatic;
     }
+    my $fuzzy = $po_entry->fuzzy;
     my $ref = $pot_entry->reference;
     if (defined $ref) {
+	if ($msgstr eq '""') {
+	    my ($msgno) = $ref =~ /\bn:(\d+)/;
+	    if (exists $msgno_to_po{$msgno}) {
+		my $old_msgid;
+		($old_msgid, $msgstr) = @{$msgno_to_po{$msgno}};
+		if ($msgstr ne '""') {
+		    $fuzzy = 1;
+		    print "$po_file: Fuzzifying translation $old_msgid / $msgid -> $msgstr\n";
+		    push @fuzzy, $old_msgid;
+		}
+	    }
+	}
 	$ref = "\n" . $ref;
 	$ref =~ s/\n/\n#: /mg;
 	print NEW $ref;
     }
-    my $fuzzy = $po_entry->fuzzy;
     my $c_format = $pot_entry->c_format;
     if ($fuzzy || $c_format) {
 	print NEW "\n#";
@@ -63,6 +90,7 @@ for my $po_file (@ARGV) {
   }
   close NEW or die $!;
   unlink "$po_file.old";
+  delete @$po{@fuzzy};
   for (sort keys %{$po}) {
     my $msgstr = $$po{$_}->msgstr;
     if ($msgstr ne '""') {
