@@ -86,6 +86,7 @@ static const gla_colour TEXT_COLOUR = col_GREEN;
 static const gla_colour HERE_COLOUR = col_WHITE;
 static const gla_colour NAME_COLOUR = col_GREEN;
 
+// Number of entries across and down the hit-test grid:
 #define HITTEST_SIZE 20
 
 // vector for lighting angle
@@ -1155,8 +1156,8 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 
     if (!m_HitTestGridValid) CreateHitTestGrid();
 
-    int grid_x = (point.x * (HITTEST_SIZE - 1)) / GetXSize();
-    int grid_y = (point.y * (HITTEST_SIZE - 1)) / GetYSize();
+    int grid_x = point.x * HITTEST_SIZE / (GetXSize() + 1);
+    int grid_y = point.y * HITTEST_SIZE / (GetYSize() + 1);
 
     LabelInfo *best = NULL;
     int dist_sqrd = 25;
@@ -1571,8 +1572,8 @@ void GfxCore::CreateHitTestGrid()
 	cy = GetYSize() - cy;
 
 	// On-screen, so add to hit-test grid...
-	int grid_x = int((cx * (HITTEST_SIZE - 1)) / GetXSize());
-	int grid_y = int((cy * (HITTEST_SIZE - 1)) / GetYSize());
+	int grid_x = int(cx * HITTEST_SIZE / (GetXSize() + 1));
+	int grid_y = int(cy * HITTEST_SIZE / (GetYSize() + 1));
 
 	m_PointGrid[grid_x + grid_y * HITTEST_SIZE].push_back(label);
     }

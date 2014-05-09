@@ -1,3 +1,8 @@
+Fri May 09 07:46:12 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Divide evenly over the full number of hittest grid
+	  boxes, rather than not really using the final box in each direction.
+
 Fri May 09 07:44:26 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Invalidate the hit-test grid when surface or
