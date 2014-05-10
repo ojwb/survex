@@ -1,3 +1,7 @@
+Sat May 10 02:20:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/glbitmapfont.cc: Fix compiler warning from GCC.
+
 Sat May 10 00:08:15 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/: Add regression test 'reenterlots' for the fix in e1a66da.

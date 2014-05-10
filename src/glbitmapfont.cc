@@ -65,7 +65,7 @@ BitmapFont::load(const wxString & font_file_)
 	byte_width >>= 6;
 
 	int start = 0;
-	int n = 0;
+	unsigned int n = 0;
 	if (byte_width) {
 	    if (p == end) {
 		return false;
