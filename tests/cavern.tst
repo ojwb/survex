@@ -27,6 +27,10 @@ test -n "$*" && VERBOSE=1
 
 test -x "$testdir"/../src/cavern || testdir=.
 
+# Make testdir absolute, so we can cd before running cavern to get a consistent
+# path in diagnostic messages.
+testdir=`(cd "$testdir" && pwd)`
+
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
 : ${CAD3D="$testdir"/../src/cad3d}
@@ -239,17 +243,20 @@ for file in $TESTS ; do
     echo "$file"
     case $file in
     *.*)
-      input="$srcdir/$file"
+      input="./$file"
       posfile="$srcdir"/`echo "$file"|sed 's/\.[^.]*$/.pos/'`
       dxffile="$srcdir"/`echo "$file"|sed 's/\.[^.]*$/.dxf/'` ;;
     *)
-      input="$srcdir/$file.svx"
+      input="./$file.svx"
       posfile="$srcdir/$file.pos"
       dxffile="$srcdir/$file.dxf" ;;
     esac
     rm -f tmp.*
-    $CAVERN "$input" --output=tmp > tmp.out
+    pwd=`pwd`
+    cd "$srcdir"
+    srcdir=. $CAVERN "$input" --output="$pwd/tmp" > "$pwd/tmp.out"
     exitcode=$?
+    cd "$pwd"
     test -n "$VERBOSE" && cat tmp.out
     if [ -n "$VALGRIND" ] ; then
       if [ $exitcode = "$vg_error" ] ; then
@@ -331,12 +338,13 @@ for file in $TESTS ; do
       echo "Bad value for pos: '$pos'" ; exit 1 ;;
     esac
 
-    if test -f "$file.out" ; then
+    out=$srcdir/$file.out
+    if test -f "$out" ; then
       # Check output is as expected.
       if test -n "$VERBOSE" ; then
-	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" || exit 1
+	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$out" || exit 1
       else
-	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$file.out" > /dev/null || exit 1
+	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$out" > /dev/null || exit 1
       fi
     fi
     rm -f tmp.*

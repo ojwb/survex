@@ -1,3 +1,7 @@
+Sat May 10 02:21:42 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst: Fix tests to work when builddir != srcdir.
+
 Sat May 10 02:20:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/glbitmapfont.cc: Fix compiler warning from GCC.
