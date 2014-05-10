@@ -107,7 +107,7 @@ for file in $TESTS ; do
   cmd_fix_bad) pos=fail ; error=10 ;;
   cmd_solve) pos=yes ; warn=0 ;;
   cmd_entrance) pos=no ; warn=0 ;;
-  cmd_entrance_bad) pos=fail ; warn=0 ;;
+  cmd_entrance_bad) pos=fail ; warn=0 ; error=1 ;;
   cmd_sd) pos=no ; warn=0 ;;
   cmd_sd_bad) pos=fail ; error=7 ;;
   cmd_set) pos=no ; warn=0 ;;
@@ -125,49 +125,49 @@ for file in $TESTS ; do
   export) pos=no ; warn=0 ;;
   export2) pos=no ; warn=0 ;;
   includecomment) pos=no ; warn=0 ;;
-  self_loop) pos=fail ; warn=0 ;;
+  self_loop) pos=fail ; warn=0 ; error=1 ;;
   self_eq_loop) pos=no ; warn=1 ;;
   reenterwarn) pos=no ; warn=2 ;;
   cmd_default) pos=no ; warn=3 ;;
   singlereffixerr) pos=no ; warn=0 ;;
   cmd_prefix) pos=no ; warn=1 ;;
-  cmd_prefix_bad) pos=fail ; warn=1 ;;
+  cmd_prefix_bad) pos=fail ; warn=1 ; error=1 ;;
   singlefixerr) pos=no ; warn=1 ;;
   tapelessthandepth) pos=no ; warn=1 ;;
   chinabug2) pos=no ; warn=0 ;;
   longname) pos=no ; warn=0 ;;
-  chinabug) pos=fail ;;
-  begin_no_end) pos=fail ;;
-  end_no_begin) pos=fail ;;
-  end_no_begin_nest) pos=fail ;;
-  require_fail) pos=fail ;;
-  exporterr1) pos=fail ;;
-  exporterr2) pos=fail ;;
-  exporterr3) pos=fail ;;
-  exporterr4) pos=fail ;;
-  exporterr5) pos=fail ;;
-  exporterr1b) pos=fail ;;
-  exporterr2b) pos=fail ;;
-  exporterr3b) pos=fail ;;
-  exporterr6) pos=fail ;;
-  exporterr6b) pos=fail ;;
-  hanging_cpt) pos=fail ;;
-  badinc) pos=fail ;;
-  badinc2) pos=fail ;;
-  badinc3) pos=fail ;;
-  badinc4) pos=fail ;;
-  non_existant_file) pos=fail ;;
-  ONELEG) pos=fail ;;
-  stnsurvey1) pos=fail ;;
-  stnsurvey2) pos=fail ;;
-  stnsurvey3) pos=fail ;;
+  chinabug) pos=fail ;; # We exit before the error count.
+  begin_no_end) pos=fail ; error=1 ;;
+  end_no_begin) pos=fail ; error=1 ;;
+  end_no_begin_nest) pos=fail ; error=2 ;;
+  require_fail) pos=fail ; error=1 ;;
+  exporterr1) pos=fail ; error=1 ;;
+  exporterr2) pos=fail ; error=1 ;;
+  exporterr3) pos=fail ; error=1 ;;
+  exporterr4) pos=fail ; error=1 ;;
+  exporterr5) pos=fail ; error=1 ;;
+  exporterr1b) pos=fail ; error=1 ;;
+  exporterr2b) pos=fail ; error=1 ;;
+  exporterr3b) pos=fail ; error=1 ;;
+  exporterr6) pos=fail ; error=1 ;;
+  exporterr6b) pos=fail ; error=1 ;;
+  hanging_cpt) pos=fail ;; # We exit before the error count.
+  badinc) pos=fail ;; # We exit before the error count.
+  badinc2) pos=fail ;; # We exit before the error count.
+  badinc3) pos=fail ;; # We exit before the error count.
+  badinc4) pos=fail ; error=3 ;;
+  non_existant_file) pos=fail ;; # We exit before the error count.
+  ONELEG) pos=fail ;; # We exit before the error count.
+  stnsurvey1) pos=fail ; error=1 ;;
+  stnsurvey2) pos=fail ; error=2 ;;
+  stnsurvey3) pos=fail ;; # We exit before the error count.
   multinormal) pos=yes ; warn=0 ;;
   multinormignall) pos=yes ; warn=0 ;;
   multidiving) pos=yes ; warn=0 ;;
   multicylpolar) pos=yes ; warn=0 ;;
   multicartesian) pos=yes ; warn=0 ;;
   multinosurv) pos=yes ; warn=0 ;;
-  multinormalbad) pos=fail ;;
+  multinormalbad) pos=fail ; error=1 ;;
   multibug) pos=no ; warn=0 ;;
   cmd_title) pos=no ; warn=0 ;;
   cmd_titlebad) pos=fail ; error=4 ;;
@@ -180,7 +180,7 @@ for file in $TESTS ; do
   diving) pos=yes ; warn=0 ;;
   cylpolar) pos=yes ; warn=0 ;;
   normal) pos=yes ; warn=0 ;;
-  normal_bad) pos=fail ; warn=0 ;;
+  normal_bad) pos=fail ; warn=0 ; error=3 ;;
   normignall) pos=yes ; warn=0 ;;
   nosurv) pos=yes ; warn=0 ;;
   cmd_flags) pos=no ; warn=0 ;;
@@ -188,7 +188,7 @@ for file in $TESTS ; do
   plumb) pos=yes ; warn=0 ;;
   unusedstation) pos=no ; warn=2 ;;
   oldestyle) pos=no ; warn=1 ;;
-  exportnakedbegin) pos=fail ;;
+  exportnakedbegin) pos=fail ; error=1 ;;
   bugdz) pos=yes ; warn=0 ;;
   baddatacylpolar) pos=fail ; error=1 ;;
   badnewline) pos=fail ; error=2 ;;
@@ -198,7 +198,7 @@ for file in $TESTS ; do
   3sdfixbug) pos=yes ; warn=0 ;;
   omitclino) pos=yes ; warn=0 ;;
   back) pos=yes; warn=0 ;;
-  notentranceorexport) pos=fail; warn=0 ;;
+  notentranceorexport) pos=fail; warn=0 ; error=1 ;;
   inferunknown) pos=fail; error=1 ;;
   inferexports) pos=no; warn=0 ;;
   bad_units_factor) pos=fail; error=6 ;;
@@ -208,7 +208,7 @@ for file in $TESTS ; do
   leandroclino) pos=yes; warn=0 ;;
   lowsd) pos=no; warn=0 ;;
   revdir) pos=yes; warn=0 ;;
-  gettokennullderef) pos=fail ;;
+  gettokennullderef) pos=fail ;; # We exit before the error count.
   lech) pos=no; warn=0 ;;
   level) pos=yes; warn=0 ;;
   2fixbug) pos=no; warn=0 ;;
@@ -216,8 +216,8 @@ for file in $TESTS ; do
   dot17) pos=yes; warn=0 ;;
   3dcorner) pos=yes; warn=0 ;;
   surfequate) pos=dxf; warn=0 ;;
-  nosurveyhanging) pos=fail ;;
-  cmd_solve_hanging) pos=fail ;;
+  nosurveyhanging) pos=fail ;; # We exit before the error count.
+  cmd_solve_hanging) pos=fail ; error=1 ;;
   cmd_solve_nothing*) pos=no; warn=0 ;;
   passage) pos=no; warn=0 ;;
   hanging_lrud) pos=fail; error=1 ;;
@@ -225,7 +225,7 @@ for file in $TESTS ; do
   surveytypo) pos=fail ;; # Actually, 2 errors, but we exit before the error count.
   skipafterbadomit) pos=fail; error=1 ;;
   passagebad) pos=fail; error=3 ;;
-  badreadingdotplus) pos=fail ;;
+  badreadingdotplus) pos=fail ; error=3 ;;
   badcalibrate) pos=fail; error=3 ;;
   calibrate_clino) pos=yes; warn=8 ;;
   badunits) pos=fail; error=12 ;;

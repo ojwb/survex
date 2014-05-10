@@ -1,3 +1,8 @@
+Sat May 10 02:58:26 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst: Check number of errors returned by all testcases
+	  expected to fail which give an error count.
+
 Sat May 10 02:21:42 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst: Fix tests to work when builddir != srcdir.
