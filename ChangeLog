@@ -1,3 +1,7 @@
+Sat May 10 00:08:15 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/: Add regression test 'reenterlots' for the fix in e1a66da.
+
 Fri May 09 12:58:26 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/doubleinc.out: Fix testsuite for change to message in last

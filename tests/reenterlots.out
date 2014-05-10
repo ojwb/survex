@@ -1,0 +1,39 @@
+./reenterlots.svx:6: warning: Reentering an existing survey is deprecated
+./reenterlots.svx:2: warning: Originally entered here
+./reenterlots.svx:9: warning: Reentering an existing survey is deprecated
+./reenterlots.svx:2: warning: Originally entered here
+./reenterlots.svx:12: warning: Reentering an existing survey is deprecated
+./reenterlots.svx:2: warning: Originally entered here
+./reenterlots.svx:15: warning: Reentering an existing survey is deprecated
+./reenterlots.svx:2: warning: Originally entered here
+./reenterlots.svx:18: warning: Reentering an existing survey is deprecated
+./reenterlots.svx:2: warning: Originally entered here
+./reenterlots.svx:18: warning: Further uses of this deprecated feature will not be reported
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 9 survey stations, joined by 8 legs.
+There is 1 loop.
+Survey has 2 connected components.
+Total length of survey legs =   80.00m (  80.00m adjusted)
+Total plan length of survey legs =   60.00m
+Total vertical length of survey legs =   20.00m
+Vertical range = 20.00m (from svy.9 at 10.00m to svy.8 at -10.00m)
+North-South range = 20.00m (from svy.2 at 10.00m to svy.5 at -10.00m)
+East-West range = 17.32m (from svy.4 at 8.66m to svy.7 at -8.66m)
+   8 1-nodes.
+   1 8-node.
+Done.
+There were 11 warning(s).
