@@ -122,7 +122,7 @@ check_node(prefix *p)
       if (TSTBIT(p->sflags, SFLAGS_SUSPECTTYPO)) {
 	 /* TRANSLATORS: Here "station" is a survey station, not a train station. */
 	 warning_in_file(p->filename, p->line,
-		 /*Station “%s” referred to just once, with an explicit prefix - typo?*/70,
+		 /*Station “%s” referred to just once, with an explicit survey name - typo?*/70,
 		 sprint_prefix(p));
       }
    }

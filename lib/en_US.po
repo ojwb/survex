@@ -553,8 +553,8 @@ msgstr "Missing \""
 #: ../src/listpos.c:125
 #: n:70
 #, c-format
-msgid "Station “%s” referred to just once, with an explicit prefix - typo?"
-msgstr "Station “%s” referred to just once, with an explicit prefix - typo?"
+msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
+msgstr "Station “%s” referred to just once, with an explicit survey name - typo?"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train
 #. station.

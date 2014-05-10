@@ -554,8 +554,8 @@ msgstr "Manca \""
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:125
 #: n:70
-#, c-format
-msgid "Station “%s” referred to just once, with an explicit prefix - typo?"
+#, fuzzy, c-format
+msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
 msgstr "La statione “%s” é ha un unico riferimento, con un prefisso esplicito - errore di scrittura?"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train

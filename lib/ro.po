@@ -555,7 +555,7 @@ msgstr "Lipseste \""
 #: ../src/listpos.c:125
 #: n:70
 #, fuzzy, c-format
-msgid "Station “%s” referred to just once, with an explicit prefix - typo?"
+msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
 msgstr "Punctul de statie “%s” are o referinta unica, cu un prefix explicit - eroare de scriere?"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train
