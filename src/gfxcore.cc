@@ -396,9 +396,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 			size_t bucket_size = m_PointGrid[square].size();
 			if (bucket_size) {
 			    int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
-			    char buf[40];
-			    sprintf(buf, "%d", bucket_size);
-			    DrawIndicatorText(x, y, buf);
+			    DrawIndicatorText(x, y, wxString::Format("%d", bucket_size));
 			}
 		    }
 		}
