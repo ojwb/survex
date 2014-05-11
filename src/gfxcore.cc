@@ -147,6 +147,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Degrees(false),
     m_Metric(false),
     m_Percent(false),
+    m_HitTestDebug(false),
+    m_PointGrid(NULL),
     m_HitTestGridValid(false),
     m_here_is_temporary(false),
     presentation_mode(0),
@@ -162,9 +164,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     wxConfigBase::Get()->Read(wxT("percent"), &m_Percent, false);
     m_here.Invalidate();
     m_there.Invalidate();
-
-    // Initialise grid for hit testing.
-    m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
 
     for (int pen = 0; pen < NUM_COLOUR_BANDS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen] / 255.0,
@@ -389,16 +388,18 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	if (m_HitTestDebug) {
 	    // Show the hit test grid bucket sizes...
 	    SetColour(m_HitTestGridValid ? col_LIGHT_GREY : col_DARK_GREY);
-	    for (int i = 0; i != HITTEST_SIZE; ++i) {
-		int x = (GetXSize() + 1) * i / HITTEST_SIZE + 2;
-		for (int j = 0; j != HITTEST_SIZE; ++j) {
-		    int square = i + j * HITTEST_SIZE;
-		    size_t bucket_size = m_PointGrid[square].size();
-		    if (bucket_size) {
-			int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
-			char buf[40];
-			sprintf(buf, "%d", bucket_size);
-			DrawIndicatorText(x, y, buf);
+	    if (m_PointGrid) {
+		for (int i = 0; i != HITTEST_SIZE; ++i) {
+		    int x = (GetXSize() + 1) * i / HITTEST_SIZE + 2;
+		    for (int j = 0; j != HITTEST_SIZE; ++j) {
+			int square = i + j * HITTEST_SIZE;
+			size_t bucket_size = m_PointGrid[square].size();
+			if (bucket_size) {
+			    int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
+			    char buf[40];
+			    sprintf(buf, "%d", bucket_size);
+			    DrawIndicatorText(x, y, buf);
+			}
 		    }
 		}
 	    }
@@ -1580,9 +1581,14 @@ void GfxCore::SetThere(const Point &p)
 
 void GfxCore::CreateHitTestGrid()
 {
-    // Clear hit-test grid.
-    for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
-	m_PointGrid[i].clear();
+    if (!m_PointGrid) {
+	// Initialise hit-test grid.
+	m_PointGrid = new list<LabelInfo*>[HITTEST_SIZE * HITTEST_SIZE];
+    } else {
+	// Clear hit-test grid.
+	for (int i = 0; i < HITTEST_SIZE * HITTEST_SIZE; i++) {
+	    m_PointGrid[i].clear();
+	}
     }
 
     // Fill the grid.
