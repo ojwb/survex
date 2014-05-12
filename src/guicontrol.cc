@@ -1227,6 +1227,9 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 		OnCancelDistLine();
 	    }
 	    break;
+	case WXK_F2:
+	    m_View->ToggleFatFinger();
+	    break;
 	case WXK_F3:
 	    m_View->ToggleHitTestDebug();
 	    break;

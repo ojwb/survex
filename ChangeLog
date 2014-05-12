@@ -1,3 +1,10 @@
+Mon May 12 13:13:55 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h,src/guicontrol.cc: Add "fat finger
+	  mode", toggled by pressing F2, to allow investigating if increasing
+	  the minimum pointer-station threshold helps Hugh's problems with
+	  using aven on a touch screen device.
+
 Mon May 12 06:38:01 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog.

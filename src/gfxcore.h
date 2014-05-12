@@ -206,6 +206,8 @@ private:
 
     cursor current_cursor;
 
+    int sqrd_measure_threshold;
+
     // The legends for each entry in the colour key.
     wxString key_legends[NUM_COLOUR_BANDS];
 
@@ -444,6 +446,7 @@ public:
     void ToggleSmoothShading();
     bool DisplayingBoundingBox() const { return m_BoundingBox; }
     void ToggleBoundingBox() { ToggleFlag(&m_BoundingBox); }
+    void ToggleFatFinger();
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }

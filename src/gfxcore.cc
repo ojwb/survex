@@ -155,7 +155,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     pres_reverse(false),
     pres_speed(0.0),
     movie(NULL),
-    current_cursor(GfxCore::CURSOR_DEFAULT)
+    current_cursor(GfxCore::CURSOR_DEFAULT),
+    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD))
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
@@ -1195,7 +1196,7 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
     int grid_y = point.y * HITTEST_SIZE / (GetYSize() + 1);
 
     LabelInfo *best = NULL;
-    int dist_sqrd = sqrd(MEASURE_THRESHOLD);
+    int dist_sqrd = sqrd_measure_threshold;
     int square = grid_x + grid_y * HITTEST_SIZE;
     list<LabelInfo*>::iterator iter = m_PointGrid[square].begin();
 
@@ -2062,6 +2063,17 @@ int GfxCore::GetNumFixedPts() const
 int GfxCore::GetNumExportedPts() const
 {
     return m_Parent->GetNumExportedPts();
+}
+
+void GfxCore::ToggleFatFinger()
+{
+    if (sqrd_measure_threshold == sqrd(MEASURE_THRESHOLD)) {
+	sqrd_measure_threshold = sqrd(5 * MEASURE_THRESHOLD);
+	wxMessageBox("Fat finger enabled", "Aven Debug", wxOK | wxICON_INFORMATION);
+    } else {
+	sqrd_measure_threshold = sqrd(MEASURE_THRESHOLD);
+	wxMessageBox("Fat finger disabled", "Aven Debug", wxOK | wxICON_INFORMATION);
+    }
 }
 
 void GfxCore::ClearTreeSelection()
