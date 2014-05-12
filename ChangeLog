@@ -1,3 +1,7 @@
+Mon May 12 06:38:01 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Sun May 11 08:24:23 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Use wxString::Format() instead of sprintf().

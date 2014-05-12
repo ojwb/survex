@@ -1,3 +1,55 @@
+09e4d5f1 (Olly Betts 2014-05-11 20:24:52 +1200    1) Sun May 11 08:24:23 GMT 2014  Olly Betts <olly@survex.com>
+
+Changes in 1.2.13 (2014-05-??):
+
+* aven: Increase the threshold for how close the pointer needs to be to a
+  station from 5 pixels to 7 to try to help touchscreen users.  Reported by
+  Hugh St Lawrence.
+
+* aven: The measuring line was unable to see stations which had just been
+  revealed by toggling surface or underground legs on - this is now fixed.
+
+* aven: Add "hit test grid debug" mode, which shows the hit test grid and how
+  many entries are in each box (toggled by F3).
+
+* aven: Pressing F4 now allows the user to toggle wxWidgets assertion messages
+  off and back on.
+
+* aven: Create the empty hit-test grid data structure lazily, to reduce start
+  up time a little.
+
+* cavern: Improve messages which talk about "tags" and/or "prefixes" in *begin
+  and *end commands to instead talk about "survey names".
+
+* cavern: For ages cavern has warned if you reentered a survey, but this
+  warning was suppressed if it occurred at the same line of the same file as
+  the survey was first entered, but this can only happen if you include the
+  same survey file more than once, which isn't a sensible thing to do for a
+  file with actual survey data in (you might reasonably do it to set up survey
+  grade details or something like that).  The warning is now given in this
+  situation too.
+
+* cavern: After 5 warnings about reentering a survey we give up warning about
+  it, but we used to keep reporting where the survey was originally entered -
+  this secondary diagnostic message is now silenced when the main message is.
+
+* (Microsoft Windows version): Compile C code with optimisation on.
+
+* Add the start of a Russian translation, with messages take from therion.
+
+* Minor translation updates to French.
+
+* Fix compiler warning from GCC.
+
+* Testsuite improvements:
+
+  + Test that "..." anon station works.
+
+  + cavern.tst: Check number of errors returned by all testcases which should
+    fail and give an error count.
+
+  + cavern.tst: Fix to actually fully test everything when builddir != srcdir.
+
 Changes in 1.2.12 (2014-04-14):
 
 * aven: Fix measuring line to show change in altitude rather than altitude
