@@ -283,9 +283,7 @@ bool Aven::OnInit()
     }
 
     if (print_and_exit) {
-	wxCommandEvent dummy;
-	m_Frame->OnPrint(dummy);
-	m_Frame->OnQuit(dummy);
+	m_Frame->PrintAndExit();
 	return true;
     }
 

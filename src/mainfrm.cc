@@ -1932,6 +1932,11 @@ void MainFrm::OnPrint(wxCommandEvent&)
     m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric);
 }
 
+void MainFrm::PrintAndExit()
+{
+    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, true);
+}
+
 void MainFrm::OnPageSetup(wxCommandEvent&)
 {
     wxPageSetupDialog dlg(this, wxGetApp().GetPageSetupDialogData());

@@ -52,6 +52,7 @@ class svxPrintDlg : public wxDialog {
 //	wxCheckBox* m_blanks;
 	wxString m_File;
 	MainFrm* mainfrm;
+	bool close_after;
 
 	void LayoutToUI();
 	void UIToLayout();
@@ -64,7 +65,12 @@ class svxPrintDlg : public wxDialog {
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf,
 		    bool tubes, bool ents, bool fixes, bool exports,
-		    bool printing);
+		    bool printing, bool close_after_ = false);
+
+	~svxPrintDlg() {
+	    if (close_after) mainfrm->Close();
+	}
+
 	void OnPrint(wxCommandEvent& event);
 	void OnExport(wxCommandEvent& event);
 #ifdef AVEN_PRINT_PREVIEW
@@ -76,6 +82,7 @@ class svxPrintDlg : public wxDialog {
 	void OnElevationUpdate(wxUpdateUIEvent& e);
 	void OnChangeSpin(wxSpinEvent& event);
 	void OnChange(wxCommandEvent& event);
+	void OnCancel(wxCommandEvent& event);
  private:
 	DECLARE_EVENT_TABLE()
 };

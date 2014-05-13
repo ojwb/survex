@@ -3035,7 +3035,8 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
 void
 GfxCore::OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp, time_t datestamp_numeric)
+		 const wxString &datestamp, time_t datestamp_numeric,
+		 bool close_after_print)
 {
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title,
@@ -3043,7 +3044,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Tubes,
 			m_Entrances, m_FixedPts, m_ExportedPts,
-			true);
+			true, close_after_print);
     p->Show(true);
 }
 

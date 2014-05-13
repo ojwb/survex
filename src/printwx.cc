@@ -192,6 +192,7 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(wxID_PRINT, svxPrintDlg::OnPrint)
     EVT_BUTTON(svx_EXPORT, svxPrintDlg::OnExport)
+    EVT_BUTTON(wxID_CANCEL, svxPrintDlg::OnCancel)
 #ifdef AVEN_PRINT_PREVIEW
     EVT_BUTTON(wxID_PREVIEW, svxPrintDlg::OnPreview)
 #endif
@@ -283,7 +284,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool tubes, bool ents, bool fixes, bool exports,
-			 bool printing)
+			 bool printing, bool close_after_)
 	: wxDialog(mainfrm_, -1, wxString(printing ?
 					  /* TRANSLATORS: Title of the print
 					   * dialog */
@@ -292,7 +293,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 					   * dialog */
 					  wmsg(/*Export*/383))),
 	  m_layout(printing ? wxGetApp().GetPageSetupDialogData() : NULL),
-	  m_File(filename), mainfrm(mainfrm_)
+	  m_File(filename), mainfrm(mainfrm_), close_after(close_after_)
 {
     m_scale = NULL;
     m_printSize = NULL;
@@ -706,6 +707,12 @@ svxPrintDlg::OnChangeSpin(wxSpinEvent& e) {
 void
 svxPrintDlg::OnChange(wxCommandEvent& e) {
     SomethingChanged(e.GetId());
+}
+
+void
+svxPrintDlg::OnCancel(wxCommandEvent&) {
+    if (close_after)
+	mainfrm->Close();
 }
 
 void

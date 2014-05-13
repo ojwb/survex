@@ -498,7 +498,8 @@ public:
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
     void OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp, time_t datestamp_numeric);
+		 const wxString &datestamp, time_t datestamp_numeric,
+		 bool close_after_print = false);
     void OnExport(const wxString &filename, const wxString &title,
 		  const wxString &datestamp, time_t datestamp_numeric);
     void SetCursor(GfxCore::cursor new_cursor);

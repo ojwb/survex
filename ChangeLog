@@ -1,3 +1,9 @@
+Tue May 13 12:13:21 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Fix aven --print to wait for printing to happen before exiting
+	  (previously it would exit right after opening the print dialog, so
+	  you couldn't actually print anything out).
+
 Tue May 13 11:44:09 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.h: Fix test for libgnomeprint, and add test for GtkPrint.

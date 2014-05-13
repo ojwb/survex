@@ -311,6 +311,7 @@ public:
     void OnFilePreferences(wxCommandEvent& event);
     void OnFileOpenTerrain(wxCommandEvent& event);
     void OnPrint(wxCommandEvent& event);
+    void PrintAndExit();
     void OnPageSetup(wxCommandEvent& event);
     void OnPresNew(wxCommandEvent& event);
     void OnPresOpen(wxCommandEvent& event);
