@@ -1,3 +1,7 @@
+Tue May 13 12:21:32 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Tue May 13 12:13:21 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/: Fix aven --print to wait for printing to happen before exiting

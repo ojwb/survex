@@ -1,10 +1,18 @@
-09e4d5f1 (Olly Betts 2014-05-11 20:24:52 +1200    1) Sun May 11 08:24:23 GMT 2014  Olly Betts <olly@survex.com>
+4ed81546 (Olly Betts 2014-05-14 00:14:48 +1200    1) Tue May 13 12:13:21 GMT 2014  Olly Betts <olly@survex.com>
 
 Changes in 1.2.13 (2014-05-??):
+
+* aven: Fix --print option to wait for printing to happen before exiting
+  (previously it would exit right after opening the print dialog, so you
+  couldn't actually print anything out using it).
 
 * aven: Increase the threshold for how close the pointer needs to be to a
   station from 5 pixels to 7 to try to help touchscreen users.  Reported by
   Hugh St Lawrence.
+
+* aven: Add "fat finger mode", toggled by pressing F2, to allow investigating
+  if increasing the minimum pointer to station threshold helps Hugh's problems
+  with using aven on a touch screen device.
 
 * aven: The measuring line was unable to see stations which had just been
   revealed by toggling surface or underground legs on - this is now fixed.
