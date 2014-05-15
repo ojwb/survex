@@ -1,3 +1,8 @@
+Thu May 15 03:00:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/equatenosuchstn.out,tests/surveytypo.out: Update expected
+	  output to match recent changes to messages.
+
 Thu May 15 02:28:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.13.
