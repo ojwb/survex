@@ -1,3 +1,7 @@
+Thu May 15 02:28:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac: Update for 1.2.13.
+
 Wed May 14 04:02:58 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/Bulgarian.isl,lib/Makefile.am,survex.iss.in: (Microsoft Windows
