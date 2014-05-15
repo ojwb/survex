@@ -1,3 +1,8 @@
+Thu May 15 04:45:23 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/cavern.tst: Fix cavern.tst to run under valgrind during "make
+	  distcheck".
+
 Thu May 15 03:00:27 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/equatenosuchstn.out,tests/surveytypo.out: Update expected

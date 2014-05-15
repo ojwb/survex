@@ -70,7 +70,7 @@ SURVEXLANG=en
 export SURVEXLANG
 
 vg_error=123
-vg_log=vg.log
+vg_log=$testdir/vg.log
 if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
