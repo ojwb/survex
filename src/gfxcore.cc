@@ -394,10 +394,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		    int x = (GetXSize() + 1) * i / HITTEST_SIZE + 2;
 		    for (int j = 0; j != HITTEST_SIZE; ++j) {
 			int square = i + j * HITTEST_SIZE;
-			size_t bucket_size = m_PointGrid[square].size();
+			unsigned long bucket_size = m_PointGrid[square].size();
 			if (bucket_size) {
 			    int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
-			    DrawIndicatorText(x, y, wxString::Format("%d", bucket_size));
+			    DrawIndicatorText(x, y, wxString::Format("%lu", bucket_size));
 			}
 		    }
 		}

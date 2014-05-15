@@ -1,3 +1,8 @@
+Thu May 15 06:20:07 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Fix wx assertion failures when showing hit test
+	  debug view on platforms such as 64-bit Linux.
+
 Thu May 15 04:45:23 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/cavern.tst: Fix cavern.tst to run under valgrind during "make
