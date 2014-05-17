@@ -121,6 +121,7 @@ BitmapFont::init_extra_chars() const
 	    data_len = 0;
     }
     unsigned char * data = new unsigned char [data_len];
+    extra_data = data;
     if (data_len && (fseek(fh, 0, SEEK_SET) < 0 ||
 	       fread(data, data_len, 1, fh) != 1)) {
 	data_len = 0;
@@ -131,21 +132,21 @@ BitmapFont::init_extra_chars() const
     if (fh)
 	fclose(fh);
 
-    extra_chars = new unsigned char * [0x10000 - BITMAPFONT_MAX_CHAR];
+    extra_chars = new int [0x10000 - BITMAPFONT_MAX_CHAR];
+    int data_ch = 0;
     for (int i = 0; i < 0x10000 - BITMAPFONT_MAX_CHAR; ++i) {
-	if (data_len <= 0) {
-	    extra_chars[i] = NULL;
+	if (data_ch >= data_len) {
+	    extra_chars[i] = -1;
 	    continue;
 	}
-	extra_chars[i] = data;
-	unsigned int byte_width = *data++;
+	extra_chars[i] = data_ch;
+	unsigned int byte_width = data[data_ch++];
 	byte_width >>= 6;
 
 	if (byte_width) {
-	    unsigned int start_and_n = *data;
+	    unsigned int start_and_n = data[data_ch];
 	    int n = (start_and_n & 15) + 1;
-	    data += n * byte_width + 1;
-	    data_len -= n * byte_width + 1;
+	    data_ch += n * byte_width + 1;
 	}
     }
 }
@@ -156,14 +157,14 @@ BitmapFont::glyph_width(wxChar ch) const
 #if SIZEOF_WXCHAR > 2
     if (ch >= 0x10000) return 0;
 #endif
-    if (!extra_chars)
+    if (!extra_data)
 	init_extra_chars();
 
     int width = 8;
 
-    const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
-    if (p) {
-	unsigned int byte_width = *p;
+    int char_idx = extra_chars[ch - BITMAPFONT_MAX_CHAR];
+    if (char_idx >= 0) {
+	unsigned int byte_width = extra_data[char_idx];
 	width = (byte_width & 0x0f) + 2;
     }
 
@@ -176,7 +177,7 @@ BitmapFont::write_glyph(wxChar ch) const
 #if SIZEOF_WXCHAR > 2
     if (ch >= 0x10000) return;
 #endif
-    if (!extra_chars)
+    if (!extra_data)
 	init_extra_chars();
 
     unsigned int byte_width = 0;
@@ -184,8 +185,10 @@ BitmapFont::write_glyph(wxChar ch) const
     int n = 0;
     int width = 8;
 
-    const unsigned char * p = extra_chars[ch - BITMAPFONT_MAX_CHAR];
-    if (p) {
+    int char_idx = extra_chars[ch - BITMAPFONT_MAX_CHAR];
+    const unsigned char * p = extra_data;
+    if (char_idx >= 0) {
+	p += char_idx;
 	byte_width = *p++;
 	width = (byte_width & 0x0f) + 2;
 	byte_width >>= 6;
