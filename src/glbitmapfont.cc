@@ -30,6 +30,11 @@
 #include "useful.h"
 #include "wx.h"
 
+#include <cerrno>
+#include <sys/mman.h>
+
+using namespace std;
+
 #include "../lib/preload_font.h"
 
 #define CHECK_GL_ERROR(M, F) do { \
@@ -109,28 +114,53 @@ void
 BitmapFont::init_extra_chars() const
 {
 #ifdef __WXMSW__
-    FILE * fh = _wfopen(font_file.fn_str(), L"rb");
+    int fd = _wopen(font_file.fn_str(), _O_RDONLY|_O_SEQUENTIAL);
 #else
-    FILE * fh = fopen(font_file.mb_str(), "rb");
+    int fd = open(font_file.mb_str(), O_RDONLY);
 #endif
 
-    long data_len = 0;
-    if (fh && fseek(fh, 0, SEEK_END) >= 0) {
-	data_len = ftell(fh);
-	if (data_len == -1)
+    int data_len = 0;
+    unsigned char * data = NULL;
+    if (fd >= 0) {
+	struct stat sb;
+	if (fstat(fd, &sb) >= 0) {
+	    data_len = sb.st_size;
+	}
+    }
+
+#if HAVE_MMAP
+    if (data_len) {
+	void * p = mmap(NULL, data_len, PROT_READ, MAP_SHARED, fd, 0);
+	if (p == MAP_FAILED) {
 	    data_len = 0;
+	} else {
+	    extra_data = data = static_cast<unsigned char*>(p);
+	}
     }
-    unsigned char * data = new unsigned char [data_len];
+#else
+    data = new unsigned char [data_len];
     extra_data = data;
-    if (data_len && (fseek(fh, 0, SEEK_SET) < 0 ||
-	       fread(data, data_len, 1, fh) != 1)) {
-	data_len = 0;
-	// FIXME: do something better.  wxGetApp().ReportError(m);
-	// We have this message available: Error in format of font file “%s”
-	// fprintf(stderr, "Couldn't load extended font.\n");
+    if (data_len) {
+	size_t c = data_len;
+	while (c) {
+	    ssize_t n = read(fd, data, c);
+	    if (n <= 0) {
+		if (errno == EINTR) continue;
+		data_len = 0;
+		// FIXME: do something better.  wxGetApp().ReportError(m);
+		// We have this message available: Error in format of font file “%s”
+		// fprintf(stderr, "Couldn't load extended font.\n");
+		break;
+	    }
+	    data += n;
+	    c -= n;
+	}
+	data = extra_data;
     }
-    if (fh)
-	fclose(fh);
+#endif
+
+    if (fd >= 0)
+	close(fd);
 
     extra_chars = new int [0x10000 - BITMAPFONT_MAX_CHAR];
     int data_ch = 0;
@@ -157,7 +187,7 @@ BitmapFont::glyph_width(wxChar ch) const
 #if SIZEOF_WXCHAR > 2
     if (ch >= 0x10000) return 0;
 #endif
-    if (!extra_data)
+    if (!extra_chars)
 	init_extra_chars();
 
     int width = 8;
@@ -177,7 +207,7 @@ BitmapFont::write_glyph(wxChar ch) const
 #if SIZEOF_WXCHAR > 2
     if (ch >= 0x10000) return;
 #endif
-    if (!extra_data)
+    if (!extra_chars)
 	init_extra_chars();
 
     unsigned int byte_width = 0;

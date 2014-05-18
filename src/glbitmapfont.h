@@ -46,7 +46,7 @@ class BitmapFont {
 
     int gllist_base;
 
-    mutable unsigned char * extra_data;
+    mutable const unsigned char * extra_data;
 
     mutable int * extra_chars;
 

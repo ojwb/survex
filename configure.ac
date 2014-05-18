@@ -249,7 +249,7 @@ dnl both checks are useful.
 AC_CHECK_DECLS([lround], [], [], [[#include <math.h>]])
 dnl check for strcasecmp here as well as below - this one is to get
 dnl HAVE_STRCASECMP defined if appropriate (for img.c)
-AC_CHECK_FUNCS(popen signal getpwuid lround strcasecmp hypot lstat)
+AC_CHECK_FUNCS([popen signal getpwuid lround strcasecmp hypot lstat mmap])
 
 dnl difftime seems to be an ANSI invention
 AC_CHECK_FUNCS(difftime)

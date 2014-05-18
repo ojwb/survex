@@ -1,3 +1,12 @@
+Sun May 18 12:03:05 GMT 2014  Olly Betts <olly@survex.com>
+
+	* configure.ac,src/glbitmapfont.cc,src/glbitmapfont.h: For platforms
+	  which support mmap(), just mmap the extra font data, which on Linux
+	  seems to typically be about twice as quick as loading it via fread()
+	  or read().  For other platforms, use read() instead of fread(), since
+	  that seems fractionally faster, and means more code in common with
+	  the mmap case.
+
 Sun May 18 07:01:23 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/glbitmapfont.cc: Fix signed/unsigned comparison warning.
