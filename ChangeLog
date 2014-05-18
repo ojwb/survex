@@ -1,3 +1,7 @@
+Sun May 18 07:01:23 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/glbitmapfont.cc: Fix signed/unsigned comparison warning.
+
 Sat May 17 06:36:29 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/glbitmapfont.cc,src/glbitmapfont.h: Use an array of offsets to

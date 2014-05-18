@@ -74,7 +74,7 @@ BitmapFont::load(const wxString & font_file_)
 	    start = start_and_n >> 4;
 	    n = (start_and_n & 15) + 1;
 
-	    if (end - p < n * byte_width) {
+	    if (unsigned(end - p) < n * byte_width) {
 		return false;
 	    }
 	}
