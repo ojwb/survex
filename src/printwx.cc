@@ -713,6 +713,7 @@ void
 svxPrintDlg::OnCancel(wxCommandEvent&) {
     if (close_after)
 	mainfrm->Close();
+    Destroy();
 }
 
 void

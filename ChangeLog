@@ -1,3 +1,8 @@
+Mon May 19 21:43:08 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Fix cancel to work on print/export dialog, broken
+	  by changes in 1.2.13.  (Reported by Brian Clipstone)
+
 Sun May 18 12:03:05 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/glbitmapfont.cc,src/glbitmapfont.h: For platforms
