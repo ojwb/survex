@@ -1,3 +1,7 @@
+Tue May 20 01:59:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Correct "SURVEX_LANG" to "SURVEXLANG" in old NEWS entry.
+
 Tue May 20 01:55:39 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/smoke.tst: Add regression test for aven segfault when used on

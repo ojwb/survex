@@ -517,7 +517,7 @@ Changes in 1.2.7 (2013-07-27):
   LC_MESSAGES and LANG (but after SURVEXLANG).
 
 * If we don't find the message file, only give an error if it was specified
-  with SURVEX_LANG, since that is an explicit instruction to Survex, whereas
+  with SURVEXLANG, since that is an explicit instruction to Survex, whereas
   LANG, LC_ALL and LC_MESSAGES are essentially system "preferred locale"
   settings.
 
