@@ -1,3 +1,9 @@
+Tue May 20 01:55:39 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/smoke.tst: Add regression test for aven segfault when used on
+	  a system set to use a language which aven doesn't support (this bug
+	  was fixed some time ago, but we want to ensure it doesn't reappear).
+
 Tue May 20 01:44:59 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/smoke.tst: Check that --help and --version don't produce
