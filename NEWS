@@ -1,3 +1,20 @@
+665183ce (Olly Betts 2014-05-20 13:59:50 +1200    1) Tue May 20 01:59:27 GMT 2014  Olly Betts <olly@survex.com>
+
+Changes in 1.2.14 (2014-05-20):
+
+* aven: Fix "Cancel" to work on the print/export dialog, broken by changes in
+  1.2.13.  (Reported by Brian Clipstone)
+
+* aven: Fix wx assertion failures when showing hit test debug view on platforms
+  such as 64-bit Linux.
+
+* aven: The extended font data now loads faster, and also uses less memory on
+  64-bit platforms.
+
+* Fix a compiler warning.
+
+* Improve test coverage.
+
 Changes in 1.2.13 (2014-05-15):
 
 * aven: Fix --print option to wait for printing to happen before exiting
