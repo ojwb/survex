@@ -1,3 +1,8 @@
+Tue May 20 01:44:59 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/smoke.tst: Check that --help and --version don't produce
+	  output on stderr.
+
 Mon May 19 21:43:08 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Fix cancel to work on print/export dialog, broken

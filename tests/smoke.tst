@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - smoke tests
-# Copyright (C) 1999-2003,2005,2011,2012 Olly Betts
+# Copyright (C) 1999-2003,2005,2011,2012,2014 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,7 +44,14 @@ for p in ${PROGS}; do
     else
       $vgrun "$testdir/../src/$p" --$o > /dev/null
       exitcode=$?
+    fi 2> stderr.log
+    if [ -s stderr.log ] ; then
+      echo "$p --$o produced output on stderr:"
+      cat stderr.log
+      rm stderr.log
+      exit 1
     fi
+    rm stderr.log
     if [ -n "$VALGRIND" ] ; then
       if [ $exitcode = "$vg_error" ] ; then
 	cat "$vg_log"
