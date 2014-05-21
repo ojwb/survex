@@ -1435,10 +1435,12 @@ msgstr "Bildschirm&abzug…"
 msgid "No survey data in 3d file “%s”"
 msgstr "Keine Vermessungsdaten in 3D-Datei «%s»"
 
+# Abbreviated from "Blickrichtung" so it doesn't overfill the
+# space available in the UI.
 #: ../src/gfxcore.cc:695
 #: n:203
 msgid "Facing"
-msgstr "Blickrichtung"
+msgstr "Blickricht."
 
 #. TRANSLATORS: for the title of the About box
 #: ../src/aboutdlg.cc:70

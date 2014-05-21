@@ -1,3 +1,8 @@
+Wed May 21 07:19:52 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po: Abbreviate "Blickrichtung" so it doesn't
+	  overfill the space available in the aven UI.
+
 Tue May 20 02:03:08 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
