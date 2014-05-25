@@ -699,83 +699,105 @@ void GfxCore::Draw2dIndicators()
     }
 
     if (m_Clino) {
-	int angle;
-	wxString str;
-	int width;
-	int unit;
-	if (m_Percent) {
-	    static int zero_width = 0;
-	    if (!zero_width) {
-		GetTextExtent(wxT("0"), &zero_width, NULL);
+	if (m_TiltAngle == -90.0) {
+	    // TRANSLATORS: Label used for "clino" in Aven when the view is
+	    // from directly above.
+	    wxString str = wmsg(/*Plan*/432);
+	    static int width = 0;
+	    if (!width) {
+		GetTextExtent(str, &width, NULL);
 	    }
-	    width = zero_width;
-	    if (m_TiltAngle > 89.99) {
-		angle = 1000000;
-	    } else if (m_TiltAngle < -89.99) {
-		angle = -1000000;
-	    } else {
-		angle = int(100 * tan(rad(m_TiltAngle)));
+	    int x = elev_centre_x - width / 2;
+	    DrawIndicatorText(x, y_off + height / 2, str);
+	} else if (m_TiltAngle == 90.0) {
+	    // TRANSLATORS: Label used for "clino" in Aven when the view is
+	    // from directly below.
+	    wxString str = wmsg(/*Kiwi Plan*/433);
+	    static int width = 0;
+	    if (!width) {
+		GetTextExtent(str, &width, NULL);
 	    }
-	    if (angle > 99999 || angle < -99999) {
-		str = angle > 0 ? wxT("+") : wxT("-");
-		/* TRANSLATORS: used for the percentage gradient on vertical
-		 * angles. */
-		str += wmsg(/*∞*/431);
-	    } else {
-		str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("0");
-	    }
-	    /* TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
-	     * 50 grad). */
-	    unit = /*%*/96;
-	} else if (m_Degrees) {
-	    static int zero_zero_width = 0;
-	    if (!zero_zero_width) {
-		GetTextExtent(wxT("00"), &zero_zero_width, NULL);
-	    }
-	    width = zero_zero_width;
-	    angle = int(m_TiltAngle);
-	    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("00");
-	    unit = /*°*/344;
+	    int x = elev_centre_x - width / 2;
+	    DrawIndicatorText(x, y_off + height / 2, str);
 	} else {
-	    width = triple_zero_width;
-	    angle = int(m_TiltAngle * 200.0 / 180.0);
-	    str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
-	    unit = /*ᵍ*/76;
-	}
-
-	int sign_offset = 0;
-	if (unit == /*%*/96) {
-	    // Right align % since the width changes so much.
-	    GetTextExtent(str, &sign_offset, NULL);
-	    sign_offset -= width;
-	} else if (angle < 0) {
-	    // Adjust horizontal position so the left of the first digit is
-	    // always in the same place.
-	    static int minus_width = 0;
-	    if (!minus_width) {
-		GetTextExtent(wxT("-"), &minus_width, NULL);
+	    int angle;
+	    wxString str;
+	    int width;
+	    int unit;
+	    if (m_Percent) {
+		static int zero_width = 0;
+		if (!zero_width) {
+		    GetTextExtent(wxT("0"), &zero_width, NULL);
+		}
+		width = zero_width;
+		if (m_TiltAngle > 89.99) {
+		    angle = 1000000;
+		} else if (m_TiltAngle < -89.99) {
+		    angle = -1000000;
+		} else {
+		    angle = int(100 * tan(rad(m_TiltAngle)));
+		}
+		if (angle > 99999 || angle < -99999) {
+		    str = angle > 0 ? wxT("+") : wxT("-");
+		    /* TRANSLATORS: used for the percentage gradient on vertical
+		     * angles. */
+		    str += wmsg(/*∞*/431);
+		} else {
+		    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("0");
+		}
+		/* TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
+		 * 50 grad). */
+		unit = /*%*/96;
+	    } else if (m_Degrees) {
+		static int zero_zero_width = 0;
+		if (!zero_zero_width) {
+		    GetTextExtent(wxT("00"), &zero_zero_width, NULL);
+		}
+		width = zero_zero_width;
+		angle = int(m_TiltAngle);
+		str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("00");
+		unit = /*°*/344;
+	    } else {
+		width = triple_zero_width;
+		angle = int(m_TiltAngle * 200.0 / 180.0);
+		str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
+		unit = /*ᵍ*/76;
 	    }
-	    sign_offset = minus_width;
-	} else if (angle > 0) {
-	    // Adjust horizontal position so the left of the first digit is
-	    // always in the same place.
-	    static int plus_width = 0;
-	    if (!plus_width) {
-		GetTextExtent(wxT("+"), &plus_width, NULL);
+
+	    int sign_offset = 0;
+	    if (unit == /*%*/96) {
+		// Right align % since the width changes so much.
+		GetTextExtent(str, &sign_offset, NULL);
+		sign_offset -= width;
+	    } else if (angle < 0) {
+		// Adjust horizontal position so the left of the first digit is
+		// always in the same place.
+		static int minus_width = 0;
+		if (!minus_width) {
+		    GetTextExtent(wxT("-"), &minus_width, NULL);
+		}
+		sign_offset = minus_width;
+	    } else if (angle > 0) {
+		// Adjust horizontal position so the left of the first digit is
+		// always in the same place.
+		static int plus_width = 0;
+		if (!plus_width) {
+		    GetTextExtent(wxT("+"), &plus_width, NULL);
+		}
+		sign_offset = plus_width;
 	    }
-	    sign_offset = plus_width;
-	}
 
-	str += wmsg(unit);
-	DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
+	    str += wmsg(unit);
+	    DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
 
-	str = wmsg(/*Elevation*/118);
-	static int elevation_width = 0;
-	if (!elevation_width) {
-	    GetTextExtent(str, &elevation_width, NULL);
+	    str = wmsg(/*Elevation*/118);
+	    static int elevation_width = 0;
+	    if (!elevation_width) {
+		GetTextExtent(str, &elevation_width, NULL);
+	    }
+	    int x = elev_centre_x - elevation_width / 2;
+	    DrawIndicatorText(x, y_off + height, str);
 	}
-	int x = elev_centre_x - elevation_width / 2;
-	DrawIndicatorText(x, y_off + height, str);
     }
 }
 

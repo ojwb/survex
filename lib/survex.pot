@@ -869,6 +869,16 @@ msgstr ""
 msgid "Elevation"
 msgstr ""
 
+#: ../src/gfxcore.cc:705
+#: n:432
+msgid "Plan"
+msgstr ""
+
+#: ../src/gfxcore.cc:715
+#: n:433
+msgid "Kiwi Plan"
+msgstr ""
+
 #: ../src/cavern.c:349
 #: n:120
 msgid "Calculating statistics"

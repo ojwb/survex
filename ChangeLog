@@ -1,3 +1,8 @@
+Sun May 25 10:42:53 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/gfxcore.cc: Show special for views from
+	  above and below in Aven, instead of always saying "Elevation".
+
 Wed May 21 07:19:52 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/de.po,lib/de_CH.po: Abbreviate "Blickrichtung" so it doesn't
