@@ -32,7 +32,7 @@ msgstr "Survex versi %s atau selanjutnya dibutuhkan untuk memproses data survei 
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#: ../src/aven.cc:376
+#: ../src/aven.cc:374
 #: ../src/message.c:1245
 #: n:4
 msgid "warning"
@@ -174,7 +174,7 @@ msgstr ""
 
 #: ../src/datain.c:363
 #: ../src/img_hosted.c:30
-#: ../src/printwx.cc:1508
+#: ../src/printwx.cc:1516
 #: n:24
 #, c-format
 msgid "Couldn’t open data file “%s”"
@@ -698,7 +698,7 @@ msgstr "Instruksi tidak legal"
 msgid "Couldn’t open file “%s”"
 msgstr "Tidak bisa membuka berkas “%s”"
 
-#: ../src/printwx.cc:623
+#: ../src/printwx.cc:624
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
@@ -840,31 +840,41 @@ msgstr ""
 msgid "File “%s” has a newer format than this program can understand"
 msgstr ""
 
-#: ../src/printwx.cc:960
+#: ../src/printwx.cc:968
 #: n:115
 msgid "North"
 msgstr "Utara"
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
-#: ../src/printwx.cc:987
+#: ../src/printwx.cc:995
 #: n:116
 msgid "Elevation on"
 msgstr ""
 
-#: ../src/printwx.cc:436
+#: ../src/printwx.cc:437
 #: n:117
 msgid "P&lan view"
 msgstr ""
 
-#: ../src/printwx.cc:438
+#: ../src/printwx.cc:439
 #: n:285
 msgid "&Elevation"
 msgstr ""
 
-#: ../src/gfxcore.cc:772
+#: ../src/gfxcore.cc:793
 #: ../src/mainfrm.cc:128
 #: n:118
 msgid "Elevation"
+msgstr ""
+
+#: ../src/gfxcore.cc:705
+#: n:432
+msgid "Plan"
+msgstr ""
+
+#: ../src/gfxcore.cc:715
+#: n:433
+msgid "Kiwi Plan"
 msgstr ""
 
 #: ../src/cavern.c:349
@@ -1118,9 +1128,9 @@ msgid "OPTION"
 msgstr "OPSI"
 
 #: ../src/mainfrm.cc:132
-#: ../src/printwx.cc:384
-#: ../src/printwx.cc:1032
-#: ../src/printwx.cc:1081
+#: ../src/printwx.cc:385
+#: ../src/printwx.cc:1040
+#: ../src/printwx.cc:1089
 #: n:154
 msgid "Scale"
 msgstr ""
@@ -1138,7 +1148,7 @@ msgid "Page %d of %d"
 msgstr "Halaman %d dari %d"
 
 #: ../src/avenprcore.cc:272
-#: ../src/printwx.cc:1514
+#: ../src/printwx.cc:1522
 #: n:167
 #, fuzzy, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
@@ -1146,7 +1156,7 @@ msgstr "Survey “%s”   Halaman %d dari %d   Processed on %s"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
-#: ../src/printwx.cc:968
+#: ../src/printwx.cc:976
 #: n:168
 #, c-format
 msgid "Plan view, %s up page"
@@ -1155,7 +1165,7 @@ msgstr ""
 #. TRANSLATORS: This is used on printouts of elevations, with %s
 #. replaced by something like "123°".  The bearing is the direction
 #. we’re looking.
-#: ../src/printwx.cc:1006
+#: ../src/printwx.cc:1014
 #: n:169
 #, c-format
 msgid "Elevation facing %s"
@@ -1165,14 +1175,14 @@ msgstr ""
 #. the first %s replaced by something like "123°", and the second by
 #. something like "-45°".  The bearing is the direction we’re
 #. looking.
-#: ../src/printwx.cc:1015
+#: ../src/printwx.cc:1023
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
 msgstr ""
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
-#: ../src/printwx.cc:1024
+#: ../src/printwx.cc:1032
 #: n:191
 msgid "Extended elevation"
 msgstr ""
@@ -1460,8 +1470,8 @@ msgid "Survex 3d files"
 msgstr ""
 
 #: ../src/mainfrm.cc:1876
-#: ../src/mainfrm.cc:2310
-#: ../src/printwx.cc:597
+#: ../src/mainfrm.cc:2315
+#: ../src/printwx.cc:598
 #: n:208
 msgid "All files"
 msgstr "Semua berkas"
@@ -1486,37 +1496,37 @@ msgstr "Berkas Survex svx"
 msgid "Compass DAT and MAK files"
 msgstr ""
 
-#: ../src/printwx.cc:269
+#: ../src/printwx.cc:270
 #: n:411
 msgid "DXF files"
 msgstr "Berkas DXF"
 
-#: ../src/printwx.cc:270
+#: ../src/printwx.cc:271
 #: n:412
 msgid "EPS files"
 msgstr "Berkas EPS"
 
-#: ../src/printwx.cc:271
+#: ../src/printwx.cc:272
 #: n:413
 msgid "GPX files"
 msgstr "Berkas GPX"
 
-#: ../src/printwx.cc:272
+#: ../src/printwx.cc:273
 #: n:414
 msgid "HPGL for plotters"
 msgstr ""
 
-#: ../src/printwx.cc:273
+#: ../src/printwx.cc:274
 #: n:415
 msgid "Compass PLT for use with Carto"
 msgstr ""
 
-#: ../src/printwx.cc:274
+#: ../src/printwx.cc:275
 #: n:416
 msgid "Skencil files"
 msgstr "Berkas Skencil"
 
-#: ../src/printwx.cc:275
+#: ../src/printwx.cc:276
 #: n:417
 msgid "SVG files"
 msgstr "Berkas SVG"
@@ -1629,14 +1639,14 @@ msgstr "&Buka…\tCtrl+O"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.
-#: ../src/gfxcore.cc:1016
+#: ../src/gfxcore.cc:1038
 #: n:221
 msgid "Undated"
 msgstr "Tidak bertanggal"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
-#: ../src/gfxcore.cc:1040
+#: ../src/gfxcore.cc:1062
 #: n:290
 msgid "Not in loop"
 msgstr ""
@@ -1714,7 +1724,7 @@ msgstr ""
 
 #. TRANSLATORS: The text on the action button in the "Export" settings
 #. dialog
-#: ../src/printwx.cc:555
+#: ../src/printwx.cc:556
 #: n:230
 msgid "&Export…"
 msgstr "&Ekspor…"
@@ -1752,28 +1762,28 @@ msgid "Step Once &Clockwise"
 msgstr ""
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:3149
+#: ../src/gfxcore.cc:3188
 #: ../src/mainfrm.cc:791
 #: n:240
 msgid "View &North"
 msgstr ""
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:3151
+#: ../src/gfxcore.cc:3190
 #: ../src/mainfrm.cc:792
 #: n:241
 msgid "View &East"
 msgstr ""
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:3153
+#: ../src/gfxcore.cc:3192
 #: ../src/mainfrm.cc:793
 #: n:242
 msgid "View &South"
 msgstr ""
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:3155
+#: ../src/gfxcore.cc:3194
 #: ../src/mainfrm.cc:794
 #: n:243
 msgid "View &West"
@@ -1811,13 +1821,13 @@ msgstr ""
 msgid "Shift Survey &Down"
 msgstr ""
 
-#: ../src/gfxcore.cc:3169
+#: ../src/gfxcore.cc:3208
 #: ../src/mainfrm.cc:813
 #: n:248
 msgid "&Plan View"
 msgstr ""
 
-#: ../src/gfxcore.cc:3170
+#: ../src/gfxcore.cc:3209
 #: ../src/mainfrm.cc:814
 #: n:249
 msgid "Ele&vation"
@@ -1851,7 +1861,7 @@ msgstr ""
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
 #. the "what to print/export" dialog.
-#: ../src/printwx.cc:346
+#: ../src/printwx.cc:347
 #: n:283
 msgid "View"
 msgstr "Tilik"
@@ -1860,13 +1870,13 @@ msgstr "Tilik"
 #. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
 #. "Elements" isn’t a good name for this but nothing better has yet come to
 #. mind!
-#: ../src/printwx.cc:351
+#: ../src/printwx.cc:352
 #: n:256
 msgid "Elements"
 msgstr "Bagian"
 
-#: ../src/printwx.cc:408
-#: ../src/printwx.cc:764
+#: ../src/printwx.cc:409
+#: ../src/printwx.cc:772
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
@@ -1875,69 +1885,69 @@ msgstr "%d halaman (%dx%d)"
 #. TRANSLATORS: used in the scale drop down selector in the print
 #. dialog the implicit meaning is "choose a suitable scale to fit
 #. the plot on a single page", but we need something shorter
-#: ../src/printwx.cc:390
-#: ../src/printwx.cc:783
+#: ../src/printwx.cc:391
+#: ../src/printwx.cc:791
 #: n:258
 msgid "One page"
 msgstr "Satu halaman"
 
 #: ../src/mainfrm.cc:124
-#: ../src/printwx.cc:421
+#: ../src/printwx.cc:422
 #: n:259
 msgid "Bearing"
 msgstr ""
 
-#: ../src/printwx.cc:460
+#: ../src/printwx.cc:461
 #: n:260
 msgid "Station Names"
 msgstr ""
 
-#: ../src/printwx.cc:456
+#: ../src/printwx.cc:457
 #: n:261
 msgid "Crosses"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:446
+#: ../src/printwx.cc:447
 #: n:262
 msgid "Underground Survey Legs"
 msgstr ""
 
-#: ../src/printwx.cc:476
+#: ../src/printwx.cc:477
 #: n:393
 msgid "Cross-sections"
 msgstr ""
 
-#: ../src/printwx.cc:481
+#: ../src/printwx.cc:482
 #: n:394
 msgid "Walls"
 msgstr ""
 
-#: ../src/printwx.cc:485
+#: ../src/printwx.cc:486
 #: n:395
 msgid "Passages"
 msgstr ""
 
-#: ../src/printwx.cc:489
+#: ../src/printwx.cc:490
 #: n:421
 msgid "Origin in centre"
 msgstr ""
 
-#: ../src/printwx.cc:493
+#: ../src/printwx.cc:494
 #: n:422
 msgid "Full coordinates"
 msgstr ""
 
 #. TRANSLATORS: Used in the print dialog:
-#: ../src/printwx.cc:427
+#: ../src/printwx.cc:428
 #: n:263
 msgid "Tilt angle"
 msgstr ""
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
-#: ../src/printwx.cc:501
+#: ../src/printwx.cc:502
 #: n:264
 #, fuzzy
 msgid "Page Borders"
@@ -1946,14 +1956,14 @@ msgstr "Batas"
 #. TRANSLATORS: As in the legend on a map.  Used in the print dialog -
 #. controls drawing the box at the lower left with survey name, view
 #. angles, etc
-#: ../src/printwx.cc:512
+#: ../src/printwx.cc:513
 #: n:265
 msgid "Legend"
 msgstr ""
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
-#: ../src/printwx.cc:507
+#: ../src/printwx.cc:508
 #: n:266
 msgid "Blank Pages"
 msgstr ""
@@ -2004,19 +2014,19 @@ msgstr ""
 msgid "&Overlapping Names"
 msgstr ""
 
-#: ../src/gfxcore.cc:3204
+#: ../src/gfxcore.cc:3243
 #: ../src/mainfrm.cc:862
 #: n:292
 msgid "Colour by &Depth"
 msgstr ""
 
-#: ../src/gfxcore.cc:3205
+#: ../src/gfxcore.cc:3244
 #: ../src/mainfrm.cc:863
 #: n:293
 msgid "Colour by D&ate"
 msgstr ""
 
-#: ../src/gfxcore.cc:3206
+#: ../src/gfxcore.cc:3245
 #: ../src/mainfrm.cc:864
 #: n:289
 msgid "Colour by E&rror"
@@ -2037,17 +2047,17 @@ msgstr ""
 msgid "Highlight E&xported Points"
 msgstr ""
 
-#: ../src/printwx.cc:464
+#: ../src/printwx.cc:465
 #: n:418
 msgid "Entrances"
 msgstr ""
 
-#: ../src/printwx.cc:468
+#: ../src/printwx.cc:469
 #: n:419
 msgid "Fixed Points"
 msgstr ""
 
-#: ../src/printwx.cc:472
+#: ../src/printwx.cc:473
 #: n:420
 msgid "Exported Stations"
 msgstr ""
@@ -2239,7 +2249,7 @@ msgstr ""
 msgid "&Export as Movie…"
 msgstr ""
 
-#: ../src/mainfrm.cc:2387
+#: ../src/mainfrm.cc:2392
 #: n:331
 msgid "Export Movie"
 msgstr ""
@@ -2250,7 +2260,7 @@ msgid "Select an output filename"
 msgstr ""
 
 #: ../src/mainfrm.cc:330
-#: ../src/mainfrm.cc:2309
+#: ../src/mainfrm.cc:2314
 #: n:320
 msgid "Aven presentations"
 msgstr ""
@@ -2261,8 +2271,8 @@ msgstr ""
 msgid "Save Screenshot"
 msgstr "Simpan tangkapan layar"
 
-#: ../src/mainfrm.cc:2304
-#: ../src/mainfrm.cc:2307
+#: ../src/mainfrm.cc:2309
+#: ../src/mainfrm.cc:2312
 #: n:322
 msgid "Select a presentation to open"
 msgstr ""
@@ -2288,23 +2298,23 @@ msgid "CMAP XYZ files"
 msgstr ""
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:1956
-#: ../src/mainfrm.cc:2281
-#: ../src/mainfrm.cc:2298
+#: ../src/mainfrm.cc:1961
+#: ../src/mainfrm.cc:2286
+#: ../src/mainfrm.cc:2303
 #: n:326
 msgid "Modified Presentation"
 msgstr ""
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:1954
-#: ../src/mainfrm.cc:2280
-#: ../src/mainfrm.cc:2297
+#: ../src/mainfrm.cc:1959
+#: ../src/mainfrm.cc:2285
+#: ../src/mainfrm.cc:2302
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr ""
 
-#: ../src/mainfrm.cc:2598
-#: ../src/mainfrm.cc:2609
+#: ../src/mainfrm.cc:2603
+#: ../src/mainfrm.cc:2614
 #: n:328
 msgid "No matches were found."
 msgstr ""
@@ -2328,22 +2338,22 @@ msgstr "Cari"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:991
-#: ../src/mainfrm.cc:2641
+#: ../src/mainfrm.cc:2646
 #: n:333
 msgid "Hide"
 msgstr "Tersembunyi"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2602
+#: ../src/mainfrm.cc:2607
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr ""
 
 #: ../src/mainfrm.cc:213
-#: ../src/mainfrm.cc:2039
-#: ../src/mainfrm.cc:2122
-#: ../src/mainfrm.cc:2175
+#: ../src/mainfrm.cc:2044
+#: ../src/mainfrm.cc:2127
+#: ../src/mainfrm.cc:2180
 #: n:335
 msgid "Altitude"
 msgstr ""
@@ -2362,10 +2372,10 @@ msgstr ""
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
-#: ../src/mainfrm.cc:2037
-#: ../src/mainfrm.cc:2059
-#: ../src/mainfrm.cc:2061
-#: ../src/mainfrm.cc:2174
+#: ../src/mainfrm.cc:2042
+#: ../src/mainfrm.cc:2064
+#: ../src/mainfrm.cc:2066
+#: ../src/mainfrm.cc:2179
 #: n:338
 msgid "%.2f E, %.2f N"
 msgstr ""
@@ -2374,16 +2384,16 @@ msgstr ""
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:2080
-#: ../src/mainfrm.cc:2132
-#: ../src/mainfrm.cc:2195
+#: ../src/mainfrm.cc:2085
+#: ../src/mainfrm.cc:2137
+#: ../src/mainfrm.cc:2200
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2208
+#: ../src/mainfrm.cc:2213
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
@@ -2391,15 +2401,15 @@ msgstr ""
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2220
+#: ../src/mainfrm.cc:2225
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: tickable menu item in View menu
-#: ../src/gfxcore.cc:3195
-#: ../src/gfxcore.cc:3213
+#: ../src/gfxcore.cc:3234
+#: ../src/gfxcore.cc:3252
 #: ../src/mainfrm.cc:915
 #: n:342
 msgid "&Metric"
@@ -2409,8 +2419,8 @@ msgstr ""
 #.
 #. Degrees are the angular measurement where there are 360 in a full
 #. circle.
-#: ../src/gfxcore.cc:3160
-#: ../src/gfxcore.cc:3178
+#: ../src/gfxcore.cc:3199
+#: ../src/gfxcore.cc:3217
 #: ../src/mainfrm.cc:916
 #: n:343
 msgid "&Degrees"
@@ -2420,7 +2430,7 @@ msgstr ""
 #.
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/gfxcore.cc:3183
+#: ../src/gfxcore.cc:3222
 #: ../src/mainfrm.cc:917
 #: n:430
 msgid "&Percent"
@@ -2431,8 +2441,8 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1113
-#: ../src/printwx.cc:1073
+#: ../src/gfxcore.cc:1135
+#: ../src/printwx.cc:1081
 #: n:423
 msgid "km"
 msgstr ""
@@ -2442,14 +2452,14 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:987
-#: ../src/gfxcore.cc:1120
-#: ../src/mainfrm.cc:2028
-#: ../src/mainfrm.cc:2097
-#: ../src/mainfrm.cc:2117
-#: ../src/mainfrm.cc:2167
-#: ../src/mainfrm.cc:2199
-#: ../src/printwx.cc:1075
+#: ../src/gfxcore.cc:1009
+#: ../src/gfxcore.cc:1142
+#: ../src/mainfrm.cc:2033
+#: ../src/mainfrm.cc:2102
+#: ../src/mainfrm.cc:2122
+#: ../src/mainfrm.cc:2172
+#: ../src/mainfrm.cc:2204
+#: ../src/printwx.cc:1083
 #: n:424
 msgid "m"
 msgstr ""
@@ -2459,8 +2469,8 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1128
-#: ../src/printwx.cc:1078
+#: ../src/gfxcore.cc:1150
+#: ../src/printwx.cc:1086
 #: n:425
 msgid "cm"
 msgstr ""
@@ -2470,7 +2480,7 @@ msgstr ""
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1141
+#: ../src/gfxcore.cc:1163
 #: n:426
 msgid " miles"
 msgstr ""
@@ -2480,7 +2490,7 @@ msgstr ""
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1148
+#: ../src/gfxcore.cc:1170
 #: n:427
 msgid " mile"
 msgstr ""
@@ -2490,13 +2500,13 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:987
-#: ../src/gfxcore.cc:1156
-#: ../src/mainfrm.cc:2033
-#: ../src/mainfrm.cc:2100
-#: ../src/mainfrm.cc:2120
-#: ../src/mainfrm.cc:2172
-#: ../src/mainfrm.cc:2204
+#: ../src/gfxcore.cc:1009
+#: ../src/gfxcore.cc:1178
+#: ../src/mainfrm.cc:2038
+#: ../src/mainfrm.cc:2105
+#: ../src/mainfrm.cc:2125
+#: ../src/mainfrm.cc:2177
+#: ../src/mainfrm.cc:2209
 #: n:428
 msgid "ft"
 msgstr ""
@@ -2506,25 +2516,25 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1164
+#: ../src/gfxcore.cc:1186
 #: n:429
 msgid "in"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:3158
+#: ../src/gfxcore.cc:3197
 #: n:387
 msgid "&Hide Compass"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:3173
+#: ../src/gfxcore.cc:3212
 #: n:384
 msgid "&Hide Clino"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:3193
+#: ../src/gfxcore.cc:3232
 #: n:385
 msgid "&Hide scale bar"
 msgstr ""
@@ -2532,7 +2542,7 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:3211
+#: ../src/gfxcore.cc:3250
 #: n:386
 msgid "&Hide colour key"
 msgstr ""
@@ -2540,14 +2550,14 @@ msgstr ""
 #. TRANSLATORS: degree symbol - probably should be translated to
 #. itself.
 #: ../src/gfxcore.cc:684
-#: ../src/gfxcore.cc:738
-#: ../src/mainfrm.cc:2084
-#: ../src/mainfrm.cc:2212
-#: ../src/printwx.cc:964
-#: ../src/printwx.cc:992
-#: ../src/printwx.cc:996
+#: ../src/gfxcore.cc:759
+#: ../src/mainfrm.cc:2089
+#: ../src/mainfrm.cc:2217
+#: ../src/printwx.cc:972
 #: ../src/printwx.cc:1000
-#: ../src/printwx.cc:1010
+#: ../src/printwx.cc:1004
+#: ../src/printwx.cc:1008
+#: ../src/printwx.cc:1018
 #: n:344
 msgid "°"
 msgstr "°"
@@ -2555,7 +2565,7 @@ msgstr "°"
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 #. circle).
 #: ../src/gfxcore.cc:689
-#: ../src/gfxcore.cc:743
+#: ../src/gfxcore.cc:764
 #: n:76
 msgid "ᵍ"
 msgstr ""
@@ -2565,23 +2575,23 @@ msgstr ""
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2092
-#: ../src/mainfrm.cc:2215
+#: ../src/mainfrm.cc:2097
+#: ../src/mainfrm.cc:2220
 #: n:345
 msgid "grad"
 msgstr ""
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
 #. 50 grad).
-#: ../src/gfxcore.cc:729
-#: ../src/gfxcore.cc:747
+#: ../src/gfxcore.cc:750
+#: ../src/gfxcore.cc:768
 #: n:96
 msgid "%"
 msgstr ""
 
 #. TRANSLATORS: used for the percentage gradient on vertical
 #. angles.
-#: ../src/gfxcore.cc:723
+#: ../src/gfxcore.cc:744
 #: n:431
 msgid "∞"
 msgstr ""
@@ -2704,14 +2714,14 @@ msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2104
+#: ../src/mainfrm.cc:2109
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:2138
+#: ../src/mainfrm.cc:2143
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2756,14 +2766,14 @@ msgstr ""
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
-#: ../src/printwx.cc:603
+#: ../src/printwx.cc:604
 #: n:401
 msgid "Export as:"
 msgstr ""
 
 #. TRANSLATORS: Title of the export
 #. dialog
-#: ../src/printwx.cc:293
+#: ../src/printwx.cc:294
 #: n:383
 msgid "Export"
 msgstr "Ekspor"
@@ -2775,26 +2785,26 @@ msgid "System Information:"
 msgstr ""
 
 #. TRANSLATORS: Title of the print preview dialog
-#: ../src/printwx.cc:643
+#: ../src/printwx.cc:644
 #: n:398
 msgid "Print Preview"
 msgstr "Pratilik Cetak"
 
 #. TRANSLATORS: Title of the print
 #. dialog
-#: ../src/printwx.cc:290
+#: ../src/printwx.cc:291
 #: n:399
 msgid "Print"
 msgstr "Cetak"
 
-#: ../src/printwx.cc:550
+#: ../src/printwx.cc:551
 #: n:400
 msgid "&Print…"
 msgstr "&Cetak…"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:452
+#: ../src/printwx.cc:453
 #: n:403
 msgid "Sur&face Survey Legs"
 msgstr ""
@@ -2981,7 +2991,7 @@ msgstr ""
 #. (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
 #. what the input datum is.
 #: ../src/findentrances.cc:146
-#: ../src/printwx.cc:528
+#: ../src/printwx.cc:529
 #: n:389
 msgid "input datum as string to pass to PROJ"
 msgstr ""
@@ -3023,7 +3033,7 @@ msgstr ""
 msgid "&Show"
 msgstr ""
 
-#: ../src/printwx.cc:359
+#: ../src/printwx.cc:360
 #: n:410
 msgid "Export format"
 msgstr ""

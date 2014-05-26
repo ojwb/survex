@@ -1,3 +1,8 @@
+Mon May 26 11:07:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Translate "Plan" in languages where we already have a suitable
+	  similar translation.
+
 Sun May 25 10:42:53 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/gfxcore.cc: Show special for views from
