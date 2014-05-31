@@ -1,3 +1,7 @@
+Sat May 31 00:47:36 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Re-wrap two comments.
+
 Mon May 26 11:07:58 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Translate "Plan" in languages where we already have a suitable

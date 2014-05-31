@@ -739,14 +739,14 @@ void GfxCore::Draw2dIndicators()
 		}
 		if (angle > 99999 || angle < -99999) {
 		    str = angle > 0 ? wxT("+") : wxT("-");
-		    /* TRANSLATORS: used for the percentage gradient on vertical
-		     * angles. */
+		    /* TRANSLATORS: used for the percentage gradient on
+		     * vertical angles. */
 		    str += wmsg(/*∞*/431);
 		} else {
 		    str = angle ? wxString::Format(wxT("%+03d"), angle) : wxT("0");
 		}
-		/* TRANSLATORS: symbol for percentage gradient (100% = 45 degrees =
-		 * 50 grad). */
+		/* TRANSLATORS: symbol for percentage gradient (100% = 45
+		 * degrees = 50 grad). */
 		unit = /*%*/96;
 	    } else if (m_Degrees) {
 		static int zero_zero_width = 0;
