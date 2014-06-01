@@ -262,7 +262,7 @@ class MainFrm : public wxFrame {
 
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
-    bool LoadData(const wxString& file, wxString prefix = wxString());
+    bool LoadData(const wxString& file, const wxString& prefix = wxString());
 //    void FixLRUD(traverse & centreline);
     void CentreDataset(const Vector3 & vmin);
 
@@ -280,7 +280,7 @@ public:
     void InitialiseAfterLoad(const wxString & file);
 
     void OnMRUFile(wxCommandEvent& event);
-    void OpenFile(const wxString& file, wxString survey = wxString());
+    void OpenFile(const wxString& file, const wxString& survey = wxString());
 
     void OnPresNewUpdate(wxUpdateUIEvent& event);
     void OnPresOpenUpdate(wxUpdateUIEvent& event);

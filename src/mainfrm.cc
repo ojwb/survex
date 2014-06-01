@@ -1047,7 +1047,7 @@ void MainFrm::CreateSidePanel()
     m_Splitter->Initialize(m_Gfx);
 }
 
-bool MainFrm::LoadData(const wxString& file, wxString prefix)
+bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
     // and prepare the data for drawing.
@@ -1723,7 +1723,7 @@ void MainFrm::AddToFileHistory(const wxString & file)
     b->Flush();
 }
 
-void MainFrm::OpenFile(const wxString& file, wxString survey)
+void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 {
     wxBusyCursor hourglass;
 
