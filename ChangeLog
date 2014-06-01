@@ -1,3 +1,8 @@
+Sun Jun 01 11:45:36 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.h: Remove unused default parameter value from
+	  MainFrm::LoadData().
+
 Sun Jun 01 11:35:56 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc,src/mainfrm.h: Pass wxString by const reference in a

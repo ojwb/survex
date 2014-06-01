@@ -262,7 +262,7 @@ class MainFrm : public wxFrame {
 
     void FillTree();
     bool ProcessSVXFile(const wxString & file);
-    bool LoadData(const wxString& file, const wxString& prefix = wxString());
+    bool LoadData(const wxString& file, const wxString& prefix);
 //    void FixLRUD(traverse & centreline);
     void CentreDataset(const Vector3 & vmin);
 
