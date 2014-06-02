@@ -16,7 +16,7 @@ extra_txt = lib/*.svx lib/print.ini
 extra_files = $(extra_bin) $(extra_txt)
 
 # FIXME: need to keep in step with src/Makefile.am
-base_progs = cad3d cavern diffpos extend sorterr 3dtopos
+base_progs = cad3d cavern diffpos extend sorterr 3dtopos dump3d
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
