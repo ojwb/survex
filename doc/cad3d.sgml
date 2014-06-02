@@ -29,7 +29,8 @@ for importing into Carto, but can also be used with Compass itself.
 </para>
 
 <Para>An alternative to cad3d is SpeleoGen, which can be found in the
-"Related Tools" section of the Survex web site. <!--FIXME: url-->
+<ulink url="http://survex.com/related.html">"Related Tools" section of the
+Survex web site.</ulink>
 SpeleoGen is a Windows (3.1/95/NT) utility which reads in
 &survexsuite; &x3d; files, LRUD passage wall data (in <filename/.cav/ format)
 and surface topography info in <filename/.csv/ format.  The results are

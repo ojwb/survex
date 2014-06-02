@@ -1,3 +1,8 @@
+Mon Jun 02 12:21:43 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/cad3d.sgml: Add link to "Related Tools" section of the Survex web
+	  site in the section about SpeloGen.
+
 Mon Jun 02 12:18:30 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
