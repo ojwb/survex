@@ -1,3 +1,7 @@
+Mon Jun 02 12:18:30 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Mon Jun 02 12:08:39 GMT 2014  Olly Betts <olly@survex.com>
 
 	* Makefile.am: (Microsoft Windows version) Include dump3d in the
