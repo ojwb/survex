@@ -82,6 +82,7 @@ dotinsurvey.svx dotinsurvey.out\
 2fixbug.svx leandroclino.svx leandroclino.pos lowsd.svx revdir.svx revdir.pos\
 gettokennullderef.svx lech.svx level.svx level.pos\
 declination.dat declination.pos ignore.dat ignore.pos backread.dat backread.pos\
+nomeasure.dat nomeasure.out nomeasure.pos\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
 nosurveyhanging.svx cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
 cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\

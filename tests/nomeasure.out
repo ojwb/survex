@@ -1,0 +1,27 @@
+Survey has no fixed points. Therefore I've fixed C1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 4 survey stations, joined by 3 legs.
+There are 0 loops.
+Total length of survey legs =    4.00m (   4.00m adjusted)
+Total plan length of survey legs =    4.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from C4 at 0.00m to C4 at 0.00m)
+North-South range = 6.00m (from C4 at 6.00m to C1 at 0.00m)
+East-West range = 0.00m (from C4 at 0.00m to C4 at 0.00m)
+   2 1-nodes.
+   2 2-nodes.
+Done.

@@ -1,3 +1,9 @@
+Wed Jun 04 07:14:41 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/datain.c,tests/: Add support for 'L' flag (exclude from length)
+	  in Compass .dat files - this handled in the same way as the
+	  "DUPLICATE" flag in .svx files.
+
 Mon Jun 02 12:21:43 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/cad3d.sgml: Add link to "Related Tools" section of the Survex web

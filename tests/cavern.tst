@@ -59,7 +59,8 @@ testdir=`(cd "$testdir" && pwd)`
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
- lech level 2fixbug declination.dat ignore.dat backread.dat dot17 3dcorner\
+ lech level 2fixbug dot17 3dcorner\
+ declination.dat ignore.dat backread.dat nomeasure.dat\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots"}}
@@ -212,7 +213,7 @@ for file in $TESTS ; do
   lech) pos=no; warn=0 ;;
   level) pos=yes; warn=0 ;;
   2fixbug) pos=no; warn=0 ;;
-  declination.dat|ignore.dat|backread.dat) pos=yes; warn=0 ;;
+  declination.dat|ignore.dat|backread.dat|nomeasure.dat) pos=yes; warn=0 ;;
   dot17) pos=yes; warn=0 ;;
   3dcorner) pos=yes; warn=0 ;;
   surfequate) pos=dxf; warn=0 ;;

@@ -1553,11 +1553,12 @@ data_normal(void)
 		nextch();
 		while (ch >= 'A' && ch <= 'Z') {
 		   compass_dat_flags |= BIT(ch - 'A');
-		   /* FIXME: we currently understand X (exclude data)
+		   /* FIXME: we currently understand:
+		    *   L (exclude from length)
+		    *   X (exclude data)
 		    * but should also handle at least some of:
-		    * L exclude from length
-		    * P no plot
-		    * C no adjustment
+		    *   C (no adjustment)
+		    *   P (no plot)
 		    */
 		   nextch();
 		}
@@ -1701,6 +1702,11 @@ data_normal(void)
 	     save_flags = pcs->flags;
 	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
+	     }
+	     if ((compass_dat_flags & BIT('L' - 'A'))) {
+		/* 'L' means "exclude from length" - map this to Survex's
+		 * FLAGS_DUPLICATE. */
+		pcs->flags |= BIT(FLAGS_DUPLICATE);
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
