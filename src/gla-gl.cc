@@ -943,9 +943,20 @@ void GLACanvas::SetColour(const GLAPen& pen)
     glColor4d(pen.components[0], pen.components[1], pen.components[2], alpha);
 }
 
+void GLACanvas::SetColour(gla_colour colour, double rgb_scale)
+{
+    // Set the colour for subsequent operations.
+    rgb_scale /= 255.0;
+    glColor4f(COLOURS[colour].r * rgb_scale,
+	      COLOURS[colour].g * rgb_scale,
+	      COLOURS[colour].b * rgb_scale,
+	      alpha);
+}
+
 void GLACanvas::SetColour(gla_colour colour)
 {
     // Set the colour for subsequent operations.
+    assert(alpha == 1.0);
     glColor3ubv(&COLOURS[colour].r);
 }
 

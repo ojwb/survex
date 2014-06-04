@@ -1,3 +1,8 @@
+Wed Jun 04 08:49:30 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Use col_WHITE to specify we
+	  want to draw something in white.
+
 Wed Jun 04 07:14:41 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/datain.c,tests/: Add support for 'L' flag (exclude from length)

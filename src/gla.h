@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -180,6 +180,7 @@ public:
 
     void SetColour(const GLAPen& pen, double rgb_scale);
     void SetColour(const GLAPen& pen);
+    void SetColour(gla_colour colour, double rgb_scale);
     void SetColour(gla_colour colour);
     void SetAlpha(double new_alpha) { alpha = new_alpha; }
 

@@ -2337,7 +2337,7 @@ void GfxCore::PlaceVertexWithColour(const Vector3 & v,
 				    glaTexCoord tex_x, glaTexCoord tex_y,
 				    Double factor)
 {
-    SetColour(GetSurfacePen(), factor); // FIXME : assumes surface pen is white!
+    SetColour(col_WHITE, factor);
     PlaceVertex(v, tex_x, tex_y);
 }
 
@@ -2450,7 +2450,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
 void GfxCore::AddPolyline(const traverse & centreline)
 {
     BeginPolyline();
-    SetColour(GetSurfacePen());
+    SetColour(col_WHITE);
     vector<PointInfo>::const_iterator i = centreline.begin();
     PlaceVertex(*i);
     ++i;
@@ -2560,7 +2560,7 @@ void GfxCore::SetColourFromDate(int date, Double factor)
 
     if (date == -1) {
 	// Undated.
-	SetColour(GetSurfacePen(), factor);
+	SetColour(col_WHITE, factor);
 	return;
     }
 
@@ -2650,7 +2650,7 @@ void GfxCore::SetColourFromError(double E, Double factor)
     // Set the drawing colour based on an error value.
 
     if (E < 0) {
-	SetColour(GetSurfacePen(), factor);
+	SetColour(col_WHITE, factor);
 	return;
     }
 
