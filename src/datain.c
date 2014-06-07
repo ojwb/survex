@@ -434,7 +434,7 @@ data_file(const char *pth, const char *fnm)
       pcs->Translate = t;
       pcs->Case = OFF;
       pcs->Truncate = INT_MAX;
-      pcs->infer = 7; /* FIXME: BIT(EQUATES)|BIT(EXPORTS)|BIT(PLUMBS); */
+      pcs->infer = BIT(INFER_EQUATES)|BIT(INFER_EXPORTS)|BIT(INFER_PLUMBS);
    } else if (fmt == FMT_MAK) {
       short *t;
       int i;
