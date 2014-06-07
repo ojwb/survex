@@ -1,3 +1,8 @@
+Sat Jun 07 06:55:55 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Remove superfluous call to skipblanks() before
+	  get_token().
+
 Sat Jun 07 06:35:21 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c,src/commands.h: Refactor to provide new

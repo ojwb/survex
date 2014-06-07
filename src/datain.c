@@ -497,7 +497,6 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 /* if (ch != ':') ... */
 	 nextch();
-	 skipblanks();
 	 get_token();
 	 skipline();
 	 process_eol();
