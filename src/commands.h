@@ -1,6 +1,6 @@
 /* commands.h
  * Header file for code for directives
- * Copyright (C) 1994-2003 Olly Betts
+ * Copyright (C) 1994-2003,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ void copy_on_write_meta(settings *s);
 
 extern char *buffer;
 void get_token(void);
+void get_token_no_blanks(void);
 
 typedef struct { const char *sz; int tok; } sztok;
 int match_tok(const sztok *tab, int tab_size);

@@ -1,3 +1,9 @@
+Sat Jun 07 06:35:21 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c,src/commands.h: Refactor to provide new
+	  get_token_no_blanks() function which is like get_token() but doesn't
+	  skip blanks first.
+
 Wed Jun 04 08:49:30 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Use col_WHITE to specify we

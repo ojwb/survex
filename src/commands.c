@@ -178,11 +178,17 @@ static char *ucbuffer = NULL;
 extern void
 get_token(void)
 {
+   skipblanks();
+   get_token_no_blanks();
+}
+
+extern void
+get_token_no_blanks(void)
+{
    int i = -1;
 
    s_zero(&buffer);
    osfree(ucbuffer);
-   skipblanks();
    while (isalpha(ch)) {
       s_catchar(&buffer, &buf_len, (char)ch);
       nextch();
@@ -196,7 +202,7 @@ get_token(void)
       ucbuffer[i] = toupper(buffer[i]);
    } while (buffer[i]);
 #if 0
-   printf("get_token() got “%s”\n", buffer);
+   printf("get_token_no_blanks() got “%s”\n", buffer);
 #endif
 }
 
