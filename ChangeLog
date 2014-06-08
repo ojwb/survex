@@ -1,3 +1,9 @@
+Sun Jun 08 12:13:43 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Fix the conditions on which "Cancel measuring line"
+	  is enabled - previously it was hard to actually cancel it via the
+	  menu.  Reported by Hugh St Lawrence.
+
 Sat Jun 07 07:03:59 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Move comments next to the code that they relate to.

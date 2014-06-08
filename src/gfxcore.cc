@@ -2054,9 +2054,10 @@ bool GfxCore::ShowingElevation() const
 
 bool GfxCore::ShowingMeasuringLine() const
 {
-    // Determine if the measuring line is being shown.
+    // Determine if the measuring line is being shown.  Only check if "there"
+    // is valid, since that means the measuring line anchor is out.
 
-    return (m_there.IsValid() && m_here.IsValid());
+    return m_there.IsValid();
 }
 
 void GfxCore::ToggleFlag(bool* flag, int update)
