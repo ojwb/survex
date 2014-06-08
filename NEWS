@@ -1,9 +1,13 @@
-2e8608e0 (Olly Betts 2014-06-03 00:10:17 +1200    1) Mon Jun 02 12:08:39 GMT 2014  Olly Betts <olly@survex.com>
+0afefe60 (Olly Betts 2014-06-09 00:15:30 +1200    1) Sun Jun 08 12:13:43 GMT 2014  Olly Betts <olly@survex.com>
 
 Changes in 1.2.14 (2014-06-??):
 
 * aven: Fix "Cancel" to work on the print/export dialog, broken by changes in
   1.2.13.  (Reported by Brian Clipstone)
+
+* aven: Fix the conditions on which the menu item "Cancel measuring line" is
+  enabled - previously it was hard to actually cancel it via the menu.
+  Reported by Hugh St Lawrence.
 
 * aven: Fix wx assertion failures when showing hit test debug view on platforms
   such as 64-bit Linux.
@@ -16,6 +20,9 @@ Changes in 1.2.14 (2014-06-??):
 
 * aven: (German translation) Abbreviate "Blickrichtung" so it doesn't overfill
   the space available in the aven UI.
+
+* cavern: Add support for 'L' flag (exclude from length) in Compass .dat files
+  and handle it in the same way as the "DUPLICATE" flag in .svx files.
 
 * (Microsoft Windows version): Include dump3d in the installer.
 
