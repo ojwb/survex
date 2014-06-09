@@ -71,7 +71,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
     public:
 	AvenSplitterWindow(MainFrm *parent_)
 	    : wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
-			       wxSP_3D | wxSP_LIVE_UPDATE),
+			       wxSP_3DSASH),
 	      parent(parent_)
 	{
 	}

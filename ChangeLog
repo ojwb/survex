@@ -1,3 +1,10 @@
+Mon Jun 09 07:48:34 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Turn off live-update while dragging the sash - it
+	  just looks clunky except on an ultra-fast machine.  Also, turn off
+	  the 3D border for the splitter window (though it wasn't being shown
+	  as such under wxGTK anyway).
+
 Sun Jun 08 14:44:17 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
