@@ -1,3 +1,8 @@
+Thu Jun 12 14:23:00 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc: Support alpha in SetColour(gla_colour), since we use
+	  that in some cases.
+
 Mon Jun 09 07:48:34 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Turn off live-update while dragging the sash - it

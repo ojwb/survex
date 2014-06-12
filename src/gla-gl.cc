@@ -956,8 +956,14 @@ void GLACanvas::SetColour(gla_colour colour, double rgb_scale)
 void GLACanvas::SetColour(gla_colour colour)
 {
     // Set the colour for subsequent operations.
-    assert(alpha == 1.0);
-    glColor3ubv(&COLOURS[colour].r);
+    if (alpha == 1.0) {
+	glColor3ubv(&COLOURS[colour].r);
+    } else {
+	glColor4ub(COLOURS[colour].r,
+		   COLOURS[colour].g,
+		   COLOURS[colour].b,
+		   (unsigned char)(255 * alpha));
+    }
 }
 
 void GLACanvas::DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str)
