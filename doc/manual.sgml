@@ -1308,6 +1308,51 @@ stored in a way that can be automatically collated.
 
 </Sect3>
 
+<Sect3><Title>CS</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*cs &lt;coordinate system&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*cs UTM60S
+*fix beehive 313800 5427953 20</programlisting>
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>*cs allows the coordinate system to be specified.
+<!-- FIXME: need to document supported coordinate systems -->
+</Para>
+
+<Para>
+*cs was added in Survex 1.2.14.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*fix</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
 <Sect3><Title>DATA</Title>
 
 <VariableList>

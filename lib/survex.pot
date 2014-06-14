@@ -291,6 +291,11 @@ msgstr ""
 msgid "Unknown units “%s”"
 msgstr ""
 
+#: ../src/commands.c:1643
+#: n:434
+msgid "Unknown coordinate system"
+msgstr ""
+
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
 #.

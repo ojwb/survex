@@ -248,7 +248,7 @@ match_tok(const sztok *tab, int tab_size)
 
 typedef enum {
    CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
-   CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_ENTRANCE, CMD_EQUATE,
+   CMD_CS, CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_ENTRANCE, CMD_EQUATE,
    CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
    CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
    CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
@@ -260,6 +260,7 @@ static sztok cmd_tab[] = {
      {"CALIBRATE", CMD_CALIBRATE},
      {"CASE",      CMD_CASE},
      {"COPYRIGHT", CMD_COPYRIGHT},
+     {"CS",        CMD_CS},
      {"DATA",      CMD_DATA},
      {"DATE",      CMD_DATE},
 #ifndef NO_DEPRECATED
@@ -1575,6 +1576,143 @@ cmd_case(void)
    }
 }
 
+typedef enum {
+    CS_NONE = -1,
+    CS_CUSTOM,
+    CS_EPSG,
+    CS_ESRI,
+    CS_EUR,
+    CS_IJTSK,
+    CS_JTSK,
+    CS_LAT,
+    CS_LOCAL,
+    CS_LONG,
+    CS_OSGB,
+    CS_S_MERC,
+    CS_UTM
+} cs_class;
+
+static sztok cs_tab[] = {
+     {"CUSTOM", CS_CUSTOM},
+     {"EPSG",   CS_EPSG},	/* EPSG:<number> */
+     {"ESRI",   CS_ESRI},	/* ESRI:<number> */
+     {"EUR",    CS_EUR},	/* EUR79Z30 */
+     {"IJTSK",  CS_IJTSK},	/* IJTSK or IJTSK03 */
+     {"JTSK",   CS_JTSK},	/* JTSK or JTSK03 */
+     {"LAT",    CS_LAT},	/* LAT-LONG */
+     {"LOCAL",  CS_LOCAL},
+     {"LONG",   CS_LONG},	/* LONG-LAT */
+     {"OSGB",   CS_OSGB},	/* OSGB:<H, N, O, S or T><A-Z except I> */
+     {"S",      CS_S_MERC},	/* S-MERC */
+     {"UTM",    CS_UTM},	/* UTM<zone><N or S or nothing> */
+     {NULL,     CS_NONE}
+};
+
+static void
+cmd_cs(void)
+{
+   const char * proj_str = NULL;
+   int proj_str_len;
+   cs_class cs;
+   int cs_sub = INT_MIN;
+   filepos fp;
+
+   get_pos(&fp);
+   /* Note get_token() only accept letters - it'll stop at digits so "UTM12"
+    * will give token "UTM". */
+   get_token();
+   cs = match_tok(cs_tab, TABSIZE(cs_tab));
+   switch (cs) {
+      case CS_NONE:
+	 break;
+      case CS_CUSTOM:
+	 read_string(&proj_str, &proj_str_len);
+	 break;
+      case CS_EPSG: case CS_ESRI:
+	 if (ch == ':' && isdigit(nextch())) {
+	    unsigned n = read_uint();
+	    if (n < 32768) {
+	       cs_sub = (int)n;
+	       /* FIXME: Implement */
+	    }
+	 }
+	 break;
+      case CS_EUR:
+	 if (isdigit(ch) &&
+	     read_uint() == 79 &&
+	     (ch == 'Z' || ch == 'z') &&
+	     isdigit(nextch()) &&
+	     read_uint() == 30) {
+	    cs_sub = 7930;
+	 }
+	 break;
+      case CS_IJTSK: case CS_JTSK:
+	 if (ch == '0') {
+	    if (nextch() == '3') {
+	       nextch();
+	       cs_sub = 3;
+	    }
+	 } else {
+	    cs_sub = 0;
+	 }
+	 break;
+      case CS_LAT: case CS_LONG:
+	 if (ch == '-') {
+	    nextch();
+	    get_token_no_blanks();
+	    cs_class cs2 = match_tok(cs_tab, TABSIZE(cs_tab));
+	    if ((cs ^ CS_LAT) == (cs2 ^ CS_LONG)) {
+		cs_sub = 0;
+	    }
+	 }
+	 break;
+      case CS_LOCAL:
+	 cs_sub = 0;
+	 break;
+      case CS_OSGB:
+	 if (ch == ':') {
+	    int uch1 = toupper(nextch());
+	    if (strchr("HNOST", uch1)) {
+	       int uch2 = toupper(nextch());
+	       if (uch2 >= 'A' && uch2 <= 'Z' && uch2 != 'I') {
+		  nextch();
+		  if (uch2 > 'I') --uch2;
+		  cs_sub = (uch1 - 'A') * 25 + (uch2 - 'A');
+	       }
+	    }
+	 }
+	 break;
+      case CS_S_MERC:
+	 if (ch == '-') {
+	    get_token_no_blanks();
+	    if (strcmp(ucbuffer, "MERC") == 0) {
+	       cs_sub = 0;
+	    }
+	 }
+	 break;
+      case CS_UTM:
+	 if (isdigit(ch)) {
+	    unsigned n = read_uint();
+	    if (n >= 1 && n <= 60) {
+	       int uch = toupper(ch);
+	       cs_sub = (int)n;
+	       if (uch == 'S') {
+		  nextch();
+		  cs_sub = -cs_sub;
+	       } else if (uch == 'N') {
+		  nextch();
+	       }
+	    }
+	 }
+	 break;
+   }
+   if (cs_sub == INT_MIN || isalnum(ch)) {
+      set_pos(&fp);
+      compile_error_skip(-/*Unknown coordinate system*/434);
+   }
+   /* Actually handle the cs */
+}
+
 static sztok infer_tab[] = {
      { "EQUATES",	INFER_EQUATES },
      { "EXPORTS",	INFER_EXPORTS },
@@ -1747,6 +1885,7 @@ static cmd_fn cmd_funcs[] = {
    cmd_calibrate,
    cmd_case,
    skipline, /*cmd_copyright,*/
+   cmd_cs,
    cmd_data,
    cmd_date,
 #ifndef NO_DEPRECATED

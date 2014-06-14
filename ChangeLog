@@ -1,3 +1,9 @@
+Sat Jun 14 11:57:39 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,lib/survex.pot,src/commands.c: Add a *cs command to
+	  set the coordinate system.  Currently only the parsing part is
+	  implemented.
+
 Thu Jun 12 14:23:00 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Support alpha in SetColour(gla_colour), since we use
