@@ -1,6 +1,12 @@
-0afefe60 (Olly Betts 2014-06-09 00:15:30 +1200    1) Sun Jun 08 12:13:43 GMT 2014  Olly Betts <olly@survex.com>
+a3f87374 (Olly Betts 2014-06-15 23:33:37 +1200    1) Sun Jun 15 11:33:25 GMT 2014  Olly Betts <olly@survex.com>
 
 Changes in 1.2.14 (2014-06-??):
+
+* aven: You can now quickly zoom to a particular area by holding down the
+  "Shift" key and dragging with the left mouse button to create a rectangular
+  "rubber band box" around the area you wish to zoom to.  If you release the
+  "Shift" key while still dragging, the box is centred on the start point
+  rather than having one corner there.
 
 * aven: Fix "Cancel" to work on the print/export dialog, broken by changes in
   1.2.13.  (Reported by Brian Clipstone)
@@ -18,8 +24,15 @@ Changes in 1.2.14 (2014-06-??):
 * aven: The extended font data now loads faster, and also uses less memory on
   64-bit platforms.
 
+* aven: Dragging the vertical divider between the side panel and the 3D view
+  now only updates when you finish the drag, as redrawing continuously just
+  looks clunky except on an ultra-fast machine.
+
 * aven: (German translation) Abbreviate "Blickrichtung" so it doesn't overfill
   the space available in the aven UI.
+
+* cavern: Add a *cs command to set the coordinate system.  Currently only the
+  parsing part is implemented - using this command won't actually do anything.
 
 * cavern: Add support for 'L' flag (exclude from length) in Compass .dat files
   and handle it in the same way as the "DUPLICATE" flag in .svx files.
