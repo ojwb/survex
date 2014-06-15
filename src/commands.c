@@ -1618,7 +1618,7 @@ cmd_cs(void)
    filepos fp;
 
    get_pos(&fp);
-   /* Note get_token() only accept letters - it'll stop at digits so "UTM12"
+   /* Note get_token() only accepts letters - it'll stop at digits so "UTM12"
     * will give token "UTM". */
    get_token();
    cs = match_tok(cs_tab, TABSIZE(cs_tab));
