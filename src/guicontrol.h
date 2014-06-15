@@ -37,7 +37,14 @@ class GUIControl {
     wxPoint m_DragRealStart;
     wxPoint m_DragLast;
 
-    enum { drag_NONE, drag_MAIN, drag_COMPASS, drag_ELEV, drag_SCALE } m_LastDrag;
+    enum {
+	drag_NONE,
+	drag_MAIN,
+	drag_COMPASS,
+	drag_ELEV,
+	drag_SCALE,
+	drag_ZOOM
+    } m_LastDrag;
 
     enum { lock_NONE, lock_ROTATE, lock_SCALE } m_ScaleRotateLock;
 

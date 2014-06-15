@@ -294,6 +294,9 @@ void GUIControl::OnMouseMove(wxMouseEvent& event)
 			HandleScaleRotate(point);
 		    }
 		    break;
+		case drag_ZOOM:
+		    m_View->SetZoomBox(m_DragStart, point, !event.ShiftDown(), event.ControlDown());
+		    break;
 		case drag_NONE:
 		    // Shouldn't happen?!  FIXME: assert or something.
 		    break;
@@ -326,6 +329,9 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	} else if (m_View->PointWithinScaleBar(m_DragStart)) {
 	    m_LastDrag = drag_SCALE;
 	    m_View->SetCursor(GfxCore::CURSOR_HORIZONTAL_RESIZE);
+	} else if (event.ShiftDown()) {
+	    m_LastDrag = drag_ZOOM;
+	    m_View->SetCursor(GfxCore::CURSOR_ZOOM);
 	} else {
 	    if (event.ControlDown() && !m_View->IsExtendedElevation()) {
 		m_View->SetCursor(GfxCore::CURSOR_ROTATE_EITHER_WAY);
@@ -358,13 +364,21 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	}
 
 	if (event.MiddleIsDown()) {
+	    if (m_LastDrag == drag_ZOOM)
+		m_View->UnsetZoomBox();
 	    OnMButtonDown(event);
 	    return;
 	}
 
 	if (event.RightIsDown()) {
+	    if (m_LastDrag == drag_ZOOM)
+		m_View->UnsetZoomBox();
 	    OnRButtonDown(event);
 	    return;
+	}
+
+	if (m_LastDrag == drag_ZOOM) {
+	    m_View->ZoomBoxGo();
 	}
 
 	m_View->ReleaseMouse();
@@ -389,9 +403,13 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 
 	m_View->SetCursor(GfxCore::CURSOR_ROTATE_VERTICALLY);
 
-	// We need to release and recapture for the cursor to update (noticed
-	// with wxGTK).
-	if (dragging != NO_DRAG) m_View->ReleaseMouse();
+	if (dragging != NO_DRAG) {
+	    if (m_LastDrag == drag_ZOOM)
+		m_View->UnsetZoomBox();
+	    // We need to release and recapture for the cursor to update
+	    // (noticed with wxGTK).
+	    m_View->ReleaseMouse();
+	}
 	m_View->CaptureMouse();
 	dragging = MIDDLE_DRAG;
     }
@@ -431,9 +449,13 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 
 	m_View->SetCursor(GfxCore::CURSOR_DRAGGING_HAND);
 
-	// We need to release and recapture for the cursor to update (noticed
-	// with wxGTK).
-	if (dragging != NO_DRAG) m_View->ReleaseMouse();
+	if (dragging != NO_DRAG) {
+	    if (m_LastDrag == drag_ZOOM)
+		m_View->UnsetZoomBox();
+	    // We need to release and recapture for the cursor to update
+	    // (noticed with wxGTK).
+	    m_View->ReleaseMouse();
+	}
 	m_View->CaptureMouse();
 	dragging = RIGHT_DRAG;
     }

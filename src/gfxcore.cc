@@ -85,6 +85,7 @@ static const int SCALE_BAR_HEIGHT = 12;
 static const gla_colour TEXT_COLOUR = col_GREEN;
 static const gla_colour HERE_COLOUR = col_WHITE;
 static const gla_colour NAME_COLOUR = col_GREEN;
+static const gla_colour SEL_COLOUR = col_WHITE;
 
 // Number of entries across and down the hit-test grid:
 #define HITTEST_SIZE 20
@@ -429,7 +430,19 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	// right...
 	DrawIndicators();
 
-	if (MeasuringLineActive()) {
+	if (zoombox.active()) {
+	    SetColour(SEL_COLOUR);
+	    EnableDashedLines();
+	    BeginPolyline();
+	    glaCoord Y = GetYSize();
+	    PlaceIndicatorVertex(zoombox.x1, Y - zoombox.y1);
+	    PlaceIndicatorVertex(zoombox.x1, Y - zoombox.y2);
+	    PlaceIndicatorVertex(zoombox.x2, Y - zoombox.y2);
+	    PlaceIndicatorVertex(zoombox.x2, Y - zoombox.y1);
+	    PlaceIndicatorVertex(zoombox.x1, Y - zoombox.y1);
+	    EndPolyline();
+	    DisableDashedLines();
+	} else if (MeasuringLineActive()) {
 	    // Draw "here" and "there".
 	    double hx, hy;
 	    SetColour(HERE_COLOUR);
@@ -3257,4 +3270,50 @@ bool GfxCore::HandleRClick(wxPoint point)
     }
 
     return false;
+}
+
+void GfxCore::SetZoomBox(wxPoint p1, wxPoint p2, bool centred, bool aspect)
+{
+    if (centred) {
+	p1.x = p2.x + (p1.x - p2.x) * 2;
+	p1.y = p2.y + (p1.y - p2.y) * 2;
+    }
+    if (aspect) {
+#if 0 // FIXME: This needs more work.
+	int sx = GetXSize();
+	int sy = GetYSize();
+	int dx = p1.x - p2.x;
+	int dy = p1.y - p2.y;
+	int dy_new = dx * sy / sx;
+	if (abs(dy_new) >= abs(dy)) {
+	    p1.y += (dy_new - dy) / 2;
+	    p2.y -= (dy_new - dy) / 2;
+	} else {
+	    int dx_new = dy * sx / sy;
+	    p1.x += (dx_new - dx) / 2;
+	    p2.x -= (dx_new - dx) / 2;
+	}
+#endif
+    }
+    zoombox.set(p1, p2);
+    ForceRefresh();
+}
+
+void GfxCore::ZoomBoxGo()
+{
+    if (!zoombox.active()) return;
+
+    int width = GetXSize();
+    int height = GetYSize();
+
+    TranslateCave(-0.5 * (zoombox.x1 + zoombox.x2 - width),
+		  -0.5 * (zoombox.y1 + zoombox.y2 - height));
+    int box_w = abs(zoombox.x1 - zoombox.x2);
+    int box_h = abs(zoombox.y1 - zoombox.y2);
+
+    double factor = min(double(width) / box_w, double(height) / box_h);
+
+    zoombox.unset();
+
+    SetScale(GetScale() * factor);
 }

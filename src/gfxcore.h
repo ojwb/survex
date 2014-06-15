@@ -26,6 +26,7 @@
 #define gfxcore_h
 
 #include <float.h>
+#include <limits.h>
 #include <time.h>
 
 #include "img_hosted.h"
@@ -86,6 +87,27 @@ class PresentationMark : public Point {
 	  time(time_)
 	{ }
     bool is_valid() const { return scale > 0; }
+};
+
+struct ZoomBox {
+  public:
+    int x1, y1, x2, y2;
+
+    ZoomBox()
+	: x1(INT_MAX) { }
+
+    bool active() const { return x1 != INT_MAX; }
+
+    void set(const wxPoint & p1, const wxPoint & p2) {
+	x1 = p1.x;
+	y1 = p1.y;
+	x2 = p2.x;
+	y2 = p2.y;
+    }
+
+    void unset() {
+	x1 = INT_MAX;
+    }
 };
 
 enum {
@@ -212,6 +234,8 @@ private:
     wxString key_legends[NUM_COLOUR_BANDS];
 
     wxPoint key_lowerleft[COLOUR_BY_LIMIT_];
+
+    ZoomBox zoombox;
 
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
@@ -512,6 +536,17 @@ public:
 	    InvalidateList(i);
 	}
     }
+
+    void SetZoomBox(wxPoint p1, wxPoint p2, bool centred, bool aspect);
+
+    void UnsetZoomBox() {
+	if (!zoombox.active()) return;
+	zoombox.unset();
+	ForceRefresh();
+    }
+
+    void ZoomBoxGo();
+
 private:
     DECLARE_EVENT_TABLE()
 };

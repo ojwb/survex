@@ -1,3 +1,9 @@
+Sun Jun 15 08:52:37 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Add ability to zoom to a rubber-banded box - use Shift+Left
+	  mouse button drag.  Releasing the left mouse button after the drag is
+	  started changes the box to be centred on the start point.
+
 Sat Jun 14 11:57:39 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,lib/survex.pot,src/commands.c: Add a *cs command to
