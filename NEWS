@@ -8,6 +8,9 @@ Changes in 1.2.14 (2014-06-??):
   "Shift" key while still dragging, the box is centred on the start point
   rather than having one corner there.
 
+* aven: Fix exporting of passage tubes in elevations and extended elevations
+  - previously up and down were getting drawn across the page!
+
 * aven: Fix "Cancel" to work on the print/export dialog, broken by changes in
   1.2.13.  (Reported by Brian Clipstone)
 

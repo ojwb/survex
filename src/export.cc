@@ -1421,13 +1421,13 @@ Export(const wxString &fnm_out, const wxString &title,
 		      p.z = znew;
 		      p.x = xnew;
 		      if (pass_mask & XSECT)
-			  filt->xsect(&p, 0, xs.GetU(), xs.GetD());
+			  filt->xsect(&p, 90, xs.GetU(), xs.GetD());
 		      if (pass_mask & WALL1)
-			  filt->wall(&p, 0, xs.GetU());
+			  filt->wall(&p, 90, xs.GetU());
 		      if (pass_mask & WALL2)
-			  filt->wall(&p, 180, xs.GetD());
+			  filt->wall(&p, 270, xs.GetD());
 		      if (pass_mask & PASG)
-			  filt->passage(&p, 0, xs.GetU(), xs.GetD());
+			  filt->passage(&p, 90, xs.GetU(), xs.GetD());
 		  } else {
 		      if (pass_mask & XSECT)
 			  filt->xsect(&p, xs.get_right_bearing() + 180, xs.GetL(), xs.GetR());

@@ -1,3 +1,9 @@
+Sun Jun 22 07:36:50 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS,src/export.cc: Fix exporting of passage tubes in elevations and
+	  extended elevations - previously up and down were getting drawn
+	  across the page!
+
 Sun Jun 15 11:39:15 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
