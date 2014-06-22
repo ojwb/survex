@@ -1611,7 +1611,7 @@ static sztok cs_tab[] = {
 static void
 cmd_cs(void)
 {
-   const char * proj_str = NULL;
+   char * proj_str = NULL;
    int proj_str_len;
    cs_class cs;
    int cs_sub = INT_MIN;

@@ -1,3 +1,7 @@
+Sun Jun 22 07:37:26 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Fix warning in recently added code for "*cs".
+
 Sun Jun 22 07:36:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,src/export.cc: Fix exporting of passage tubes in elevations and
