@@ -629,7 +629,7 @@ free_settings(settings *p) {
    if (!p->next || p->Translate != p->next->Translate)
       osfree(p->Translate - 1);
 
-   /* free meta is not used by parent, or in this block */
+   /* free meta if not used by parent, or in this block */
    if (p->meta && p->meta != p->next->meta && p->meta->ref_count == 0)
        osfree(p->meta);
 
