@@ -61,6 +61,8 @@ prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
 bool fExportUsed = fFalse;
+projPJ proj_out = NULL;
+char * proj_str_out = NULL;
 
 FILE *fhErrStat = NULL;
 img *pimg = NULL;
@@ -178,6 +180,7 @@ main(int argc, char **argv)
    pcs->next = NULL;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
    pcs->meta = NULL;
+   pcs->proj = NULL;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);

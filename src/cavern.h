@@ -33,6 +33,8 @@
 #include <math.h>
 #include <float.h>
 
+#include <proj_api.h>
+
 #include "img_hosted.h"
 #include "useful.h"
 
@@ -320,6 +322,7 @@ typedef struct Settings {
    reading *ordering;
    int begin_lineno; /* 0 means no block started in this file */
    int flags;
+   projPJ proj;
    meta_data * meta;
 } settings;
 
@@ -329,6 +332,8 @@ extern prefix *root;
 extern prefix *anon_list;
 extern node *stnlist;
 extern unsigned long optimize;
+extern projPJ proj_out;
+extern char * proj_str_out;
 
 extern char *survey_title;
 extern int survey_title_len;

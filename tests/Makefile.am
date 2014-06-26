@@ -102,4 +102,6 @@ cmd_entrance_bad.out cmd_entrance_bad.svx\
 cmd_prefix.out\
 cmd_prefix_bad.out cmd_prefix_bad.svx\
 doubleinc.out doubleinc.svx\
-reenterlots.out reenterlots.svx
+reenterlots.out reenterlots.svx\
+cs.out cs.svx\
+csbad.out csbad.svx

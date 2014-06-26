@@ -63,7 +63,9 @@ testdir=`(cd "$testdir" && pwd)`
  declination.dat ignore.dat backread.dat nomeasure.dat\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
- badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots"}}
+ badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
+ cs csbad\
+"}}
 
 LC_ALL=C
 export LC_ALL
@@ -236,6 +238,8 @@ for file in $TESTS ; do
   anonstnrev) pos=yes; warn=0; error=0 ;;
   doubleinc) pos=no; warn=3; error=0 ;;
   reenterlots) pos=no; warn=11; error=0 ;;
+  cs) pos=no; warn=0; error=0 ;;
+  csbad) pos=fail; warn=0; error=17 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac

@@ -1,3 +1,7 @@
+Thu Jun 26 14:57:00 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/,tests/: More work on *cs.
+
 Tue Jun 24 12:01:32 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Check !p->next before comparing with p->next->meta.

@@ -296,6 +296,26 @@ msgstr ""
 msgid "Unknown coordinate system"
 msgstr ""
 
+#: ../src/commands.c:1764
+#: n:435
+msgid "Coordinate system unsuitable for output"
+msgstr ""
+
+#: ../src/commands.c:779
+#: n:436
+msgid "Failed to convert coordinates"
+msgstr ""
+
+#: ../src/commands.c:783
+#: n:437
+msgid "The input project is set but the output projection isn't"
+msgstr ""
+
+#: ../src/commands.c:785
+#: n:438
+msgid "The output project is set but the input projection isn't"
+msgstr ""
+
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
 #.

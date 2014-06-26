@@ -1,0 +1,26 @@
+*fix 1 reference 0 0 0
+; Not yet supported: *cs EPSG:1234
+; Not yet supported: *cs ESRI:2345
+; Not yet supported: *cs EUR79Z30
+; Not yet supported: *cs IJTSK
+; Not yet supported: *cs IJTSK03
+; Not yet supported: *cs JTSK
+; Not yet supported: *cs JTSK03
+; Not yet supported: *cs lat-long
+; Not yet supported: *cs Long-Lat
+; Not yet supported: *cs local
+; Not yet supported: *cs OSGB:HA
+; Not yet supported: *cs S-MERC
+*cs UTM1
+*cs UTM12N
+*cs UTM60S
+*cs custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
+; Not yet supported: *cs out EUR79Z30
+; Not yet supported: *cs out IJTSK
+; Not yet supported: *cs out IJTSK03
+; Not yet supported: *cs out OSGB:HA
+; Not yet supported: *cs out S-MERC
+*cs out UTM1
+*cs out UTM12N
+*cs out UTM60S
+*cs out custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"

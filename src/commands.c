@@ -25,6 +25,8 @@
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
 
+#include <proj_api.h>
+
 #include "cavern.h"
 #include "commands.h"
 #include "datain.h"
@@ -633,6 +635,10 @@ free_settings(settings *p) {
    if (p->meta && (!p->next || p->meta != p->next->meta) && p->meta->ref_count == 0)
        osfree(p->meta);
 
+   /* free proj if not used by parent, or as the output projection */
+   if (p->proj && (!p->next || p->proj != p->next->proj) && p->proj != proj_out)
+       pj_free(p->proj);
+
    osfree(p);
 }
 
@@ -801,6 +807,19 @@ cmd_fix(void)
 	 return;
       }
       stn = StnFromPfx(fix_name);
+
+      if (pcs->proj && proj_out) {
+	 int r = pj_transform(pcs->proj, proj_out, 1, 1, &x, &y, &z);
+	 if (r != 0) {
+	    compile_error(/*Failed to convert coordinates*/436);
+	    /* FIXME: report pj_strerrno(r) */
+	    printf("[%s]\n", pj_strerrno(r));
+	 }
+      } else if (pcs->proj) {
+	 compile_error(/*The input project is set but the output projection isn't*/437);
+      } else if (proj_out) {
+	 compile_error(/*The output project is set but the input projection isn't*/438);
+      }
    }
 
    if (!fixed(stn)) {
@@ -1616,19 +1635,28 @@ cmd_cs(void)
    cs_class cs;
    int cs_sub = INT_MIN;
    filepos fp;
+   bool output = fFalse;
+   enum { YES, NO, MAYBE } ok_for_output = YES;
 
    get_pos(&fp);
    /* Note get_token() only accepts letters - it'll stop at digits so "UTM12"
     * will give token "UTM". */
    get_token();
+   if (strcmp(ucbuffer, "OUT") == 0) {
+      output = fTrue;
+      get_token();
+   }
    cs = match_tok(cs_tab, TABSIZE(cs_tab));
    switch (cs) {
       case CS_NONE:
 	 break;
       case CS_CUSTOM:
+	 ok_for_output = MAYBE;
 	 read_string(&proj_str, &proj_str_len);
+	 cs_sub = 0;
 	 break;
       case CS_EPSG: case CS_ESRI:
+	 ok_for_output = MAYBE;
 	 if (ch == ':' && isdigit(nextch())) {
 	    unsigned n = read_uint();
 	    if (n < 32768) {
@@ -1646,7 +1674,10 @@ cmd_cs(void)
 	    cs_sub = 7930;
 	 }
 	 break;
-      case CS_IJTSK: case CS_JTSK:
+      case CS_JTSK:
+         ok_for_output = NO;
+	 /* FALLTHRU */
+      case CS_IJTSK:
 	 if (ch == '0') {
 	    if (nextch() == '3') {
 	       nextch();
@@ -1657,6 +1688,7 @@ cmd_cs(void)
 	 }
 	 break;
       case CS_LAT: case CS_LONG:
+	 ok_for_output = NO;
 	 if (ch == '-') {
 	    nextch();
 	    get_token_no_blanks();
@@ -1683,6 +1715,7 @@ cmd_cs(void)
 	 }
 	 break;
       case CS_S_MERC:
+         // FIXME: Is this ok_for_output?
 	 if (ch == '-') {
 	    get_token_no_blanks();
 	    if (strcmp(ucbuffer, "MERC") == 0) {
@@ -1709,8 +1742,92 @@ cmd_cs(void)
    if (cs_sub == INT_MIN || isalnum(ch)) {
       set_pos(&fp);
       compile_error_skip(-/*Unknown coordinate system*/434);
+      return;
    }
    /* Actually handle the cs */
+   switch (cs) {
+      case CS_CUSTOM:
+	 break;
+      case CS_EPSG:
+      case CS_ESRI:
+      case CS_EUR:
+      case CS_IJTSK:
+      case CS_JTSK:
+      case CS_LAT:
+      case CS_LOCAL:
+      case CS_LONG:
+      case CS_OSGB:
+      case CS_S_MERC:
+      default:
+	 /* FIXME: Handle these too... */
+	 /* printf("CS %d:%d\n", (int)cs, cs_sub); */
+	 set_pos(&fp);
+	 compile_error_skip(-/*Unknown coordinate system*/434);
+	 return;
+      case CS_UTM:
+	 proj_str = osmalloc(64);
+	 if (cs_sub > 0) {
+	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d", cs_sub);
+	 } else {
+	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +south", -cs_sub);
+	 }
+	 break;
+   }
+
+   if (output) {
+      if (ok_for_output == NO) {
+	 set_pos(&fp);
+	 compile_error_skip(-/*Coordinate system unsuitable for output*/435);
+	 return;
+      }
+
+      /* If the output projection is already set, we still need to create the
+       * projection object for a custom projection, so we can report errors.
+       * But if the string is identical, we know it's valid.
+       */
+      if (!proj_out ||
+	  (ok_for_output == MAYBE && strcmp(proj_str, proj_str_out) != 0)) {
+	 projPJ pj = pj_init_plus(proj_str);
+	 if (!pj) {
+	    set_pos(&fp);
+	    compile_error_skip(-/*Unknown coordinate system*/434);
+	    /* FIXME: report pj_strerrno(pj_errno) */
+	    return;
+	 }
+	 if (ok_for_output == MAYBE && pj_is_latlong(pj)) {
+	    compile_error_skip(-/*Coordinate system unsuitable for output*/435);
+	    return;
+	 }
+	 if (proj_out) {
+	    pj_free(pj);
+	    osfree(proj_str);
+	 } else {
+	    proj_out = pj;
+	    proj_str_out = proj_str;
+	 }
+      }
+   } else {
+      projPJ pj;
+      if (proj_str_out && strcmp(proj_str, proj_str_out) == 0) {
+	 /* Same as the current output projection. */
+	 pj = proj_out;
+      } else {
+	 pj = pj_init_plus(proj_str);
+	 if (!pj) {
+	    set_pos(&fp);
+	    compile_error_skip(-/*Unknown coordinate system*/434);
+	    /* FIXME: report pj_strerrno(pj_errno) */
+	    return;
+	 }
+      }
+
+      /* Free proj if not used by parent, or as the output projection. */
+      settings * p = pcs;
+      if (p->proj && (!p->next || p->proj != p->next->proj))
+	 if (p->proj != proj_out)
+	    pj_free(p->proj);
+      p->proj = pj;
+   }
 }
 
 static sztok infer_tab[] = {

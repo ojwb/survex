@@ -35,6 +35,7 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  network.c readval.c str.c matrix.c img_hosted.c netbits.c useful.c \
  validate.c netartic.c \
  $(COMMONSRC)
+cavern_LDFLAGS = -lproj
 
 aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc useful.c cmdline.c z_getopt.c \
