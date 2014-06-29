@@ -96,43 +96,50 @@ solve_network(void /*node *stnlist*/)
    ptrTrail = NULL;
    dump_network();
 
-   /* If there are no fixed points, invent one.  Do this first to
-    * avoid problems with sub-nodes of the invented fix which have
-    * been removed.  It also means we can fix the "first" station,
-    * which makes more sense to the user. */
-   FOR_EACH_STN(stn, stnlist)
-      if (fixed(stn)) break;
+   if (first_solve && !pcs->proj && !proj_out) {
+      /* If we haven't already solved to find some station positions, and
+       * there's no specified coordinate system, then check if there are any
+       * fixed points, and if there aren't, invent one at (0,0,0).
+       *
+       * We do this first so the solving part is just like the standard case -
+       * this avoid problems, such as sub-nodes of the invented fix having been
+       * removed.  It also means we can fix the "first" station, which makes
+       * more sense to the user. */
+      FOR_EACH_STN(stn, stnlist)
+	 if (fixed(stn)) break;
 
-   if (!stn && first_solve) {
-     /* If we've had a *solve and all the new survey since then is hanging,
-      * we don't want to invent a fixed point.  We want to complain but
-      * the easiest way to is just to continue processing and let
-      * articulate() catch this condition as it will any hanging survey
-      * data. */
-      node *stnFirst = NULL;
+      if (!stn) {
+	/* If we've had a *solve and all the new survey since then is hanging,
+	 * we don't want to invent a fixed point.  We want to complain but
+	 * the easiest way to is just to continue processing and let
+	 * articulate() catch this condition as it will any hanging survey
+	 * data. */
+	 node *stnFirst = NULL;
 
-      /* New stations are pushed onto the head of the list, so the
-       * first station added is the last in the list. */
-      FOR_EACH_STN(stn, stnlist) {
-	  /* Prefer a station with legs attached when choosing one to fix
-	   * so that if there's a hanging station on a nosurvey leg we pick
-	   * the main clump of survey data. */
-	  if (stnFirst && !stnFirst->leg[0]) continue;
-	  stnFirst = stn;
+	 /* New stations are pushed onto the head of the list, so the
+	  * first station added is the last in the list. */
+	 FOR_EACH_STN(stn, stnlist) {
+	     /* Prefer a station with legs attached when choosing one to fix
+	      * so that if there's a hanging station on a nosurvey leg we pick
+	      * the main clump of survey data. */
+	     if (stnFirst && !stnFirst->leg[0]) continue;
+	     stnFirst = stn;
+	 }
+
+	 /* If we've got nosurvey legs, then the station we find to fix could
+	  * have no real legs attached. */
+	 SVX_ASSERT2(nosurveyhead || stnFirst->leg[0],
+		     "no fixed stns, but we've got a zero node!");
+	 SVX_ASSERT2(stnFirst, "no stations left in net!");
+	 stn = stnFirst;
+	 printf(msg(/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72),
+		sprint_prefix(stn->name));
+	 putnl();
+	 POS(stn,0) = (real)0.0;
+	 POS(stn,1) = (real)0.0;
+	 POS(stn,2) = (real)0.0;
+	 fix(stn);
       }
-
-      /* If we've got nosurvey legs, then the station we find to fix could have
-       * no real legs attached. */
-      SVX_ASSERT2(nosurveyhead || stnFirst->leg[0], "no fixed stns, but we've got a zero node!");
-      SVX_ASSERT2(stnFirst, "no stations left in net!");
-      stn = stnFirst;
-      printf(msg(/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72),
-	     sprint_prefix(stn->name));
-      putnl();
-      POS(stn,0) = (real)0.0;
-      POS(stn,1) = (real)0.0;
-      POS(stn,2) = (real)0.0;
-      fix(stn);
    }
 
    first_solve = 0;

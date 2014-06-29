@@ -1,3 +1,9 @@
+Sun Jun 29 13:28:19 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/netskel.c: If a coordinate system has been specified, don't
+	  invent a fixed point if none exists like we do if the coordinate
+	  system isn't specified.
+
 Sun Jun 29 10:29:58 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/commands.c: Reject *fix without coordinates when a
