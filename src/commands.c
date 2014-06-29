@@ -731,6 +731,11 @@ cmd_fix(void)
       if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse, &nx);
    }
    if (x == HUGE_REAL) {
+      if (pcs->proj || proj_out) {
+	 compile_error_skip(/*Coordinates can't be omitted when coordinate system has been specified*/439);
+	 return;
+      }
+
       if (stnOmitAlready) {
 	 if (fix_name != stnOmitAlready->name) {
 	    compile_error_skip(/*More than one FIX command with no coordinates*/56);

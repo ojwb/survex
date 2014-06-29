@@ -1,3 +1,9 @@
+Sun Jun 29 10:29:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c: Reject *fix without coordinates when a
+	  coordinate system has been specified - defaulting to (0,0,0) in this
+	  case doesn't make sense.
+
 Thu Jun 26 14:57:00 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/,tests/: More work on *cs.

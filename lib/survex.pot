@@ -316,6 +316,11 @@ msgstr ""
 msgid "The output project is set but the input projection isn't"
 msgstr ""
 
+#: ../src/commands.c:735
+#: n:439
+msgid "Coordinates can't be omitted when coordinate system has been specified"
+msgstr ""
+
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
 #.
