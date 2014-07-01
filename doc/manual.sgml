@@ -1314,7 +1314,7 @@ stored in a way that can be automatically collated.
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><Para>*cs &lt;coordinate system&gt;</Para></listitem>
+<listitem><Para>*cs [out] &lt;coordinate system&gt;</Para></listitem>
 
 </VarListEntry>
 
@@ -1326,19 +1326,74 @@ stored in a way that can be automatically collated.
 *cs UTM60S
 *fix beehive 313800 5427953 20</programlisting>
 </Para>
+
+<Para>
+<programlisting>
+; Output in the coordinate system used in the Totes Gebirge in Austria
+*cs out "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"</programlisting>
+</Para>
 </listitem>
 
 </VarListEntry>
 
 <VarListEntry><Term>Description</Term>
 
-<listitem><Para>*cs allows the coordinate system to be specified.
-<!-- FIXME: need to document supported coordinate systems -->
+<listitem><Para>*cs allows the coordinate systems used for fixed points and for
+processed survey data to be specified.
 </Para>
 
 <Para>
 *cs was added in Survex 1.2.14.
-</Para></listitem>
+</Para>
+
+<Para>
+By default, Survex works in an unspecified coordinate system (and this was the
+only option before *cs was added).  However, it's useful for coordinate system
+which the processed survey data is in to be specified if you want to use the
+processed data in ways which required knowing the coordinate system (such as
+exporting a list of entrances for use in a GPS).  You can now do this by using
+"*cs out".
+</Para>
+
+<Para>
+It is also useful to be able to take coordinates for fixed points in whatever
+coordinate system you receive them in and put them directly into Survex, rather
+than having to convert with an external tool.  For example, you may have your
+GPS set to show coordinates in UTM with the WGS84 datum, even though you want
+the processed data to be in some local coordinate system.  And someone else
+may provide GPS coordinates in yet another coordinate system.  You just need
+to set the appropriate coordinate system with "*cs" before each group of "*fix"
+commands in a particular coordinate system.
+</Para>
+
+<Para>
+If you're going to make use of "*cs", then the coordinate system must be
+specified for everything, so a coordinate system must be in effect for all
+"*fix" commands, and you must set the output coordinate system before any
+points are fixed.
+</Para>
+
+<Para>
+Also, if "*cs" is in use, then you can't omit the coordinates in a "*fix"
+command, and a fixed point won't be invented if none exists.
+</Para>
+
+<Para>
+If you use "*cs out" more than once, the second and subsequent commands are
+silently ignored - this makes it possible to combine two datasets with
+different "*cs out" settings without having to modify either of them.
+</Para>
+
+<Para>
+Something to be aware of with "*cs" is that altitudes are currently assumed to
+be "height above the ellipsoid", whereas GPS units typically give you "height
+above sea level", or more accurately "height above a particular geoid".  This
+is something we're looking at how best to address, but you shouldn't need to
+worry about it if your fixed points are in the same coordinate system as your
+output, or if they all use the same ellipsoid.  For a more detailed discussion
+of this, please see: http://expo.survex.com/handbook/survey/coord.htm
+</Para>
+</listitem>
 
 </VarListEntry>
 
@@ -1956,13 +2011,11 @@ disagree, you can always use one of the other methods!
 <listitem>
 <Para>
 *fix fixes the position of &lt;station&gt; at the given coordinates.
-If the position is omitted it defaults to (0,0,0). <!-- which allows
-sub-sections of a large survey to be easily processed separately.
- FIXME - don't want to encourage people to do this really -->
-The standard errors default to zero (fix station exactly). cavern will
-give an error if you attempt to fix the same survey station twice
-at different coordinates, or a warning if you fix it twice with matching
-coordinates.
+If you haven't specified the coordinate system with "*cs", you can
+omit the position and it will default to (0,0,0).  The standard errors default
+to zero (fix station exactly).  cavern will give an error if you attempt to fix
+the same survey station twice at different coordinates, or a warning if you fix
+it twice with matching coordinates.
 </Para>
 
 <Para>
