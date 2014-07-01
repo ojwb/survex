@@ -26,6 +26,7 @@ doc/cavern.1
 doc/diffpos.1
 doc/extend.1
 doc/index.htm
+doc/manual/
 doc/manual.pdf
 doc/manual.txt
 doc/print.ini.5
@@ -81,6 +82,7 @@ src/diffpos
 src/dump3d
 src/extend
 src/img2aven.h
+src/imgtest
 src/sorterr
 src/svxedit
 src/svxedit.ico

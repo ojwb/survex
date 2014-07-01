@@ -1,3 +1,7 @@
+Tue Jul 01 07:47:55 GMT 2014  Olly Betts <olly@survex.com>
+
+	* .gitignore: Update.
+
 Sun Jun 29 13:28:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/netskel.c: If a coordinate system has been specified, don't
