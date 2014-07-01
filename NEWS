@@ -1,6 +1,6 @@
-a3f87374 (Olly Betts 2014-06-15 23:33:37 +1200    1) Sun Jun 15 11:33:25 GMT 2014  Olly Betts <olly@survex.com>
+ad5bd05f (Olly Betts 2014-07-02 00:15:23 +1200    1) Tue Jul 01 12:14:56 GMT 2014  Olly Betts <olly@survex.com>
 
-Changes in 1.2.14 (2014-06-??):
+Changes in 1.2.14 (2014-07-??):
 
 * aven: You can now quickly zoom to a particular area by holding down the
   "Shift" key and dragging with the left mouse button to create a rectangular
@@ -34,11 +34,15 @@ Changes in 1.2.14 (2014-06-??):
 * aven: (German translation) Abbreviate "Blickrichtung" so it doesn't overfill
   the space available in the aven UI.
 
-* cavern: Add a *cs command to set the coordinate system.  Currently only the
-  parsing part is implemented - using this command won't actually do anything.
+* cavern: Add a *cs command to setting the coordinate system for *fix commands
+  and the coordinate system used for processed survey data.
 
 * cavern: Add support for 'L' flag (exclude from length) in Compass .dat files
   and handle it in the same way as the "DUPLICATE" flag in .svx files.
+
+* cavern: Fix handling of the rather contrived case of *fix with no coordinates
+  followed by *solve and then another *fix with no coordinates not to access
+  freed memory.
 
 * (Microsoft Windows version): Include dump3d in the installer.
 
