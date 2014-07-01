@@ -702,12 +702,14 @@ cmd_entrance(void)
    pfx->sflags |= BIT(SFLAGS_ENTRANCE);
 }
 
+static node *stn_fixed_already = NULL;
+
 static void
 cmd_fix(void)
 {
    prefix *fix_name;
    node *stn = NULL;
-   static node *stnOmitAlready = NULL;
+   static prefix *name_omit_already = NULL;
    real x, y, z;
    int nx, ny, nz;
    filepos fp;
@@ -736,19 +738,19 @@ cmd_fix(void)
 	 return;
       }
 
-      if (stnOmitAlready) {
-	 if (fix_name != stnOmitAlready->name) {
+      if (name_omit_already) {
+	 if (fix_name != name_omit_already) {
 	    compile_error_skip(/*More than one FIX command with no coordinates*/56);
 	 } else {
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
 	 }
 	 return;
       }
+      name_omit_already = fix_name;
       stn = StnFromPfx(fix_name);
       /* TRANSLATORS: " *fix a " gives this message: */
       compile_warning(/*FIX command with no coordinates - fixing at (0,0,0)*/54);
       x = y = z = (real)0.0;
-      stnOmitAlready = stn;
    } else {
       real sdx;
       y = read_numeric(fFalse, &ny);

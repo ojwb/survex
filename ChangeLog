@@ -1,3 +1,9 @@
+Tue Jul 01 09:54:52 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: Fix handling of *fix with no coordinates
+	  followed by *solve and then another *fix with no coorindates not to
+	  access freed memory.
+
 Tue Jul 01 07:47:55 GMT 2014  Olly Betts <olly@survex.com>
 
 	* .gitignore: Update.

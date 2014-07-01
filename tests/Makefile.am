@@ -104,4 +104,5 @@ cmd_prefix_bad.out cmd_prefix_bad.svx\
 doubleinc.out doubleinc.svx\
 reenterlots.out reenterlots.svx\
 cs.out cs.svx\
-csbad.out csbad.svx
+csbad.out csbad.svx\
+omitfixaroundsolve.out omitfixaroundsolve.svx

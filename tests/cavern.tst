@@ -64,7 +64,7 @@ testdir=`(cd "$testdir" && pwd)`
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
- cs csbad\
+ cs csbad omitfixaroundsolve\
 "}}
 
 LC_ALL=C
@@ -240,6 +240,7 @@ for file in $TESTS ; do
   reenterlots) pos=no; warn=11; error=0 ;;
   cs) pos=no; warn=0; error=0 ;;
   csbad) pos=fail; warn=0; error=17 ;;
+  omitfixaroundsolve) pos=fail; warn=2; error=1 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
   esac

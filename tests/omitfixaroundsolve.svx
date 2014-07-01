@@ -1,0 +1,5 @@
+; Regression test for bug fixed in 1.2.14
+*fix a
+*solve
+*fix b
+a b 123 10.0 -01
