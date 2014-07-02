@@ -47,8 +47,17 @@ before this and other linefeeds - this is a file format error in any
 other format version].
 <li> File format version: "v8" followed by a linefeed.
 Any future versions will be "v9", "v10", "v11", etc.
-<li> Survey title: A string followed by a linefeed.  There's no length limit on
-this string.
+<li> Assorted string metadata - the sublist below lists these, and they
+must appear in the order given, separated by zero bytes, with the end of
+the metadata marked by a linefeed.  More items may be added, so ignore any
+additional ones which are present.  Any trailing items with empty values
+can be omitted along with the separating zero byte before them.
+ <ul>
+  <li>Survey title: Human readable description of the data in the file.
+There's no length limit on this string.
+  <li>Coordinate system: PROJ4 string describing the coordinate
+system in use.
+ </ul>
 <li> Timestamp: A string consisting of an '@' followed by a count of
 seconds since the start of 1970 in UTC ("Unix time_t") as a string
 (for example: "@1371300355"), followed by a linefeed.  This is intended to be
@@ -356,5 +365,5 @@ number of different &lt;LABEL&gt; items).</li>
 referenced (e.g. in &lt;XSECT&gt; items)</li>
 </ul>
 
-<P>Authors: Olly Betts and Mike McCombe, last updated: 2013-07-16</P>
+<P>Authors: Olly Betts and Mike McCombe, last updated: 2014-07-02</P>
 </BODY></HTML>

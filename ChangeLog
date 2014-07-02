@@ -1,3 +1,7 @@
+Wed Jul 02 09:31:48 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/3dformat.htm: Update format doc to mention coordinate system.
+
 Wed Jul 02 08:59:07 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.c,src/img.h: Add ability to store a proj string describing
