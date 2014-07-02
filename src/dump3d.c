@@ -95,6 +95,8 @@ main(int argc, char **argv)
    printf("TITLE \"%s\"\n", pimg->title);
    printf("DATE \"%s\"\n", pimg->datestamp);
    printf("DATE_NUMERIC %ld\n", pimg->datestamp_numeric);
+   if (pimg->cs)
+      printf("CS %s\n", pimg->cs);
    printf("VERSION %d\n", pimg->version);
    if (pimg->is_extended_elevation)
       printf("EXTENDED ELEVATION\n");
