@@ -1,3 +1,10 @@
+Wed Jul 02 13:14:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/: If the 3d file specifies a coordinate system,
+	  then use it for exporting to formats which need to know (currently
+	  GPX).  If the input file doesn't specify, allow the user to enter
+	  one in the export dialog.
+
 Wed Jul 02 12:03:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/netskel.c: If there's an output coordinate system set, write it

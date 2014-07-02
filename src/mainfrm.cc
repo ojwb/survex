@@ -1392,6 +1392,11 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     separator = survey->separator;
     m_Title = wxString(survey->title, wxConvUTF8);
     m_DateStamp_numeric = survey->datestamp_numeric;
+    if (survey->cs) {
+	m_cs_proj = survey->cs;
+    } else {
+	m_cs_proj = wxString();
+    }
     if (strcmp(survey->datestamp, "?") == 0) {
 	/* TRANSLATORS: used a processed survey with no processing date/time info */
 	m_DateStamp = wmsg(/*Date and time not available.*/108);
@@ -1929,12 +1934,12 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 
 void MainFrm::OnPrint(wxCommandEvent&)
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric);
+    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
 }
 
 void MainFrm::PrintAndExit()
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, true);
+    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj, true);
 }
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
@@ -1947,7 +1952,7 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
 void MainFrm::OnExport(wxCommandEvent&)
 {
-    m_Gfx->OnExport(m_File, m_Title, m_DateStamp, m_DateStamp_numeric);
+    m_Gfx->OnExport(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

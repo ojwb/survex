@@ -77,6 +77,7 @@ enum {
 	svx_ENTS,
 	svx_FIXES,
 	svx_EXPORTS,
+	svx_PROJ_LABEL,
 	svx_PROJ,
 	svx_GRID,
 	svx_TEXT_HEIGHT,
@@ -249,7 +250,7 @@ static wxString projs[] = {
 static unsigned format_info[] = {
     LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
     LABELS|LEGS|SURF|STNS,
-    LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS/*|PROJ*/|EXPORT_3D,
+    LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF|STNS|CENTRED,
     LABELS|LEGS|SURF,
     LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
@@ -279,7 +280,7 @@ static int msg_filetype[] = {
 // there are three jobs to do here...
 // User <-> wx - this should possibly be done in a separate file
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
-			 const wxString & title,
+			 const wxString & title, const wxString & cs_proj,
 			 const wxString & datestamp, time_t datestamp_numeric,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
@@ -322,6 +323,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_layout.datestamp_numeric = datestamp_numeric;
     m_layout.rot = int(angle);
     m_layout.title = title;
+    m_layout.cs_proj = cs_proj;
     if (mainfrm->IsExtendedElevation()) {
 	m_layout.view = layout::EXTELEV;
 	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
@@ -350,9 +352,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
      * "Elements" isn’t a good name for this but nothing better has yet come to
      * mind! */
     wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
-#if 0
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL);
-#endif
     wxBoxSizer* h3 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     if (!printing) {
@@ -517,21 +517,36 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     }
 
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
-    h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxALL, 5);
+    h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxLEFT, 5);
+
+    /* TRANSLATORS: The PROJ library is used to do coordinate transformations
+     * (https://trac.osgeo.org/proj/) - if the .3d file doesn't contain details
+     * of the coordinate projection in use, the user must specify it here for
+     * export formats which need to know it (e.g. GPX).
+     */
+    h2->Add(new wxStaticText(this, svx_PROJ_LABEL, wmsg(/*Coordinate projection*/440)),
+	    0, wxLEFT|wxALIGN_CENTRE_VERTICAL, 5);
+    long style = 0;
+    if (!m_layout.cs_proj.empty()) {
+	// If the input file specified the coordinate system, don't let the
+	// user mess with it.
+	style = wxTE_READONLY;
+    } else {
+#if 0 // FIXME: Is it a good idea to save this?
+	wxConfigBase * cfg = wxConfigBase::Get();
+	wxString input_projection;
+	cfg->Read(wxT("input_projection"), &input_projection);
+        if (!input_projection.empty())
+	    proj_edit.SetValue(input_projection);
+#endif
+    }
+    wxTextCtrl * proj_edit = new wxTextCtrl(this, svx_PROJ, m_layout.cs_proj,
+					    wxDefaultPosition, wxDefaultSize,
+					    style);
+    h2->Add(proj_edit, 1, wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL, 5);
+    v1->Add(h2, 0, wxALIGN_LEFT|wxEXPAND, 5);
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
-
-#if 0 // FIXME: too wide as-is
-    /* TRANSLATORS: The PROJ library is used to do coordinate transformations
-     * (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
-     * what the input datum is.
-     */
-    h2->Add(new wxStaticText(this, -1, wmsg(/*input datum as string to pass to PROJ*/389)));
-    h2->Add(new wxComboBox(this, svx_PROJ, projs[0], wxDefaultPosition,
-			   wxDefaultSize, sizeof(projs) / sizeof(projs[0]),
-			   projs));
-    v1->Add(h2, 0, wxALIGN_LEFT, 5);
-#endif
 
     // When we enable/disable checkboxes in the export dialog, ideally we'd
     // like the dialog to resize, but not sure how to achieve that, so we
@@ -604,25 +619,22 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), leaf,
 		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
-#if 0 // FIXME: sort this out
-	wxString input_projection = ((wxComboBox*)FindWindow(svx_PROJ))->GetValue();
-#else
-	wxConfigBase * cfg = wxConfigBase::Get();
-	wxString input_projection;
-	cfg->Read(wxT("input_projection"), &input_projection,
-		  wxString(wxT("+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232")));
-#endif
+	wxString input_projection = ((wxTextCtrl*)FindWindow(svx_PROJ))->GetValue();
 	double grid = 100; // metres
 	double text_height = 0.6;
 	double marker_size = 0.8;
 
-	if (!Export(dlg.GetPath(), m_layout.title,
-		    m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
-		    m_layout.rot, m_layout.tilt, m_layout.show_mask,
-		    export_format(format_idx), input_projection.mb_str(),
-		    grid, text_height, marker_size)) {
-	    wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
-					  m_File.c_str());
+	try {
+	    if (!Export(dlg.GetPath(), m_layout.title,
+			m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
+			m_layout.rot, m_layout.tilt, m_layout.show_mask,
+			export_format(format_idx), input_projection.mb_str(),
+			grid, text_height, marker_size)) {
+		wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
+					      m_File.c_str());
+		wxGetApp().ReportError(m);
+	    }
+	} catch (const wxString & m) {
 	    wxGetApp().ReportError(m);
 	}
     }
@@ -736,9 +748,8 @@ svxPrintDlg::SomethingChanged(int control_id) {
 		{ svx_EXPORTS, EXPORTS },
 		{ svx_CENTRED, CENTRED },
 		{ svx_FULLCOORDS, FULL_COORDS },
-#if 0
+		{ svx_PROJ_LABEL, PROJ },
 		{ svx_PROJ, PROJ },
-#endif
 	    };
 	    static unsigned n_controls = sizeof(controls) / sizeof(controls[0]);
 	    for (unsigned i = 0; i != n_controls; ++i) {

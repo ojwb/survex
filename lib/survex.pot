@@ -3021,9 +3021,17 @@ msgstr ""
 #. (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
 #. what the input datum is.
 #: ../src/findentrances.cc:146
-#: ../src/printwx.cc:529
 #: n:389
 msgid "input datum as string to pass to PROJ"
+msgstr ""
+
+#. TRANSLATORS: The PROJ library is used to do coordinate transformations
+#. (https://trac.osgeo.org/proj/) - if the .3d file doesn't contain details of
+#. the coordinate projection in use, the user must specify it here for export
+#. formats which need to know it (e.g. GPX).
+#: ../src/printwx.cc:528
+#: n:440
+msgid "Coordinate projection"
 msgstr ""
 
 #: ../src/readval.c:339

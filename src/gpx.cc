@@ -69,14 +69,12 @@ GPX::GPX(const char * input_datum)
     if (!(pj_input = pj_init_plus(input_datum))) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
 	m = wxString::Format(m.c_str(), input_datum);
-	wxGetApp().ReportError(m);
-	return;
+	throw m;
     }
     if (!(pj_output = pj_init_plus(WGS84_DATUM_STRING))) {
 	wxString m = wmsg(/*Failed to initialise output coordinate system “%s”*/288);
 	m = wxString::Format(m.c_str(), WGS84_DATUM_STRING);
-	wxGetApp().ReportError(m);
-	return;
+	throw m;
     }
 }
 
