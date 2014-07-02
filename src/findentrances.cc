@@ -143,6 +143,9 @@ static const char *short_opts = "d:";
 
 static struct help_msg help[] = {
 /*				<-- */
+   /* TRANSLATORS: The PROJ library is used to do coordinate transformations
+    * (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
+    * what the input datum is. */
    {HLP_ENCODELONG(0),        /*input datum as string to pass to PROJ*/389, 0},
    {0, 0, 0}
 };
