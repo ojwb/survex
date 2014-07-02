@@ -45,7 +45,7 @@ while (<ARGV>) {
 	}
 	if (defined $translator_comment) {
 	    if (exists $comment{$msgno} && $comment{$msgno} ne $translator_comment) {
-		print STDERR "Different TRANSLATOR comemnts for message #$msgno\n";
+		print STDERR "Different TRANSLATOR comments for message #$msgno\n";
 	    }
 	    $comment{$msgno} = $translator_comment;
 	    undef $translator_comment;
