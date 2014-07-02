@@ -1,3 +1,8 @@
+Wed Jul 02 08:59:07 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/img.c,src/img.h: Add ability to store a proj string describing
+	  the coordinate system in use in 3d v8 files.
+
 Tue Jul 01 12:15:37 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

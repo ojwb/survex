@@ -91,6 +91,10 @@ typedef struct {
    char *label;
    int flags;
    char *title;
+   /* If the coordinate system was specified, this contains a PROJ4 string
+    * describing it.  If not, this member will be NULL.
+    */
+   char *cs;
    /* Older .3d format versions stored a human readable datestamp string.
     * Format versions >= 8 versions store a string consisting of "@" followed
     * by the number of seconds since midnight UTC on 1/1/1970.  Some foreign
@@ -199,7 +203,20 @@ img *img_open_survey(const char *fnm, const char *survey);
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details)
  */
-img *img_open_write(const char *fnm, char *title, int flags);
+#define img_open_write(F, T, S) img_open_write_cs(F, T, NULL, S)
+
+/* Open a .3d file for output in a specified coordinate system
+ * fnm is the filename
+ * title is the title
+ * cs is a PROJ4 string describing the coordinate system (or NULL)
+ * flags contains a bitwise-or of any file-wide flags - currently only one
+ * is available: img_FFLAG_EXTENDED.
+ *
+ * Returns pointer to an img struct or NULL for error (check img_error()
+ * for details)
+ */
+img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
+		       int flags);
 
 /* Read an item from a .3d file
  * pimg is a pointer to an img struct returned by img_open()
