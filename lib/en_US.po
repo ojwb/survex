@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-27 05:35:16 +0000\n"
+"PO-Revision-Date: 2014-07-03 06:35:00 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -295,33 +295,33 @@ msgstr "Unknown units “%s”"
 #: ../src/commands.c:1825
 #: n:434
 msgid "Unknown coordinate system"
-msgstr ""
+msgstr "Unknown coordinate system"
 
 #: ../src/commands.c:1787
 #: ../src/commands.c:1805
 #: n:435
 msgid "Coordinate system unsuitable for output"
-msgstr ""
+msgstr "Coordinate system unsuitable for output"
 
 #: ../src/commands.c:821
 #: n:436
 msgid "Failed to convert coordinates"
-msgstr ""
+msgstr "Failed to convert coordinates"
 
 #: ../src/commands.c:826
 #: n:437
 msgid "The input project is set but the output projection isn't"
-msgstr ""
+msgstr "The input project is set but the output projection isn't"
 
 #: ../src/commands.c:828
 #: n:438
 msgid "The output project is set but the input projection isn't"
-msgstr ""
+msgstr "The output project is set but the input projection isn't"
 
 #: ../src/commands.c:737
 #: n:439
 msgid "Coordinates can't be omitted when coordinate system has been specified"
-msgstr ""
+msgstr "Coordinates can't be omitted when coordinate system has been specified"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -3038,7 +3038,7 @@ msgstr "input datum as string to pass to PROJ"
 #: ../src/printwx.cc:527
 #: n:440
 msgid "Coordinate projection"
-msgstr ""
+msgstr "Coordinate projection"
 
 #: ../src/readval.c:339
 #: n:392
