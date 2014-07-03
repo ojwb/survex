@@ -1,3 +1,7 @@
+Thu Jul 03 06:33:12 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Merge changes for survex.pot.
+
 Thu Jul 03 06:31:49 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/extract-msgs.pl: Handle TRANSLATORS comments spread over
