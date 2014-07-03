@@ -1,3 +1,8 @@
+Thu Jul 03 06:31:49 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/extract-msgs.pl: Handle TRANSLATORS comments spread over
+	  multiple '//' comments.
+
 Thu Jul 03 06:30:35 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Update from sources.

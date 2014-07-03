@@ -22,8 +22,14 @@ while (<ARGV>) {
 		    $comment .= "\n$1";
 		}
 	    }
-	    $comment =~ s/\n+$//;
+	} else {
+	    # // comment - see if there are further // comments immediately
+	    # following.
+	    while (defined($_ = <ARGV>) && m!//\s*(.*?)\s*\z!) {
+		$comment .= "\n$1";
+	    }
 	}
+	$comment =~ s/\n+$//;
 	if (defined $translator_comment) {
 	    print STDERR "Ignored TRANSLATORS comment: $translator_comment\n";
 	}
