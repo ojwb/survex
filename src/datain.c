@@ -150,6 +150,24 @@ compile_error_skip(int en, ...)
 }
 
 void
+compile_error_at(const char * filename, unsigned line, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   v_report(1, filename, line, 0, en, ap);
+   va_end(ap);
+}
+
+void
+compile_error_pfx(const prefix * pfx, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   v_report(1, pfx->filename, pfx->line, 0, en, ap);
+   va_end(ap);
+}
+
+void
 compile_error_token(int en)
 {
    char *p = NULL;
@@ -175,6 +193,24 @@ compile_warning(int en, ...)
       col = ftell(file.fh) - file.lpos;
    }
    v_report(0, file.filename, file.line, col, en, ap);
+   va_end(ap);
+}
+
+void
+compile_warning_at(const char * filename, unsigned line, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   v_report(0, filename, line, 0, en, ap);
+   va_end(ap);
+}
+
+void
+compile_warning_pfx(const prefix * pfx, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   v_report(0, pfx->filename, pfx->line, 0, en, ap);
    va_end(ap);
 }
 

@@ -93,28 +93,22 @@ check_node(prefix *p)
 	 if ((p->min_export > 1 && p->min_export != USHRT_MAX) ||
 	     (p->min_export == 0 && p->max_export)) {
 	    char *s;
-	    const char *filename_store = file.filename;
-	    unsigned int line_store = file.line;
 	    prefix *where = p->up;
+	    int msgno;
 	    SVX_ASSERT(where);
 	    s = osstrdup(sprint_prefix(where));
 	    /* Report better when station called 2.1 for example */
 	    while (!where->filename && where->up) where = where->up;
 
-	    file.filename = where->filename;
-	    file.line = where->line;
 	    if (TSTBIT(where->sflags, SFLAGS_PREFIX_ENTERED)) {
-	       compile_error(/*Station “%s” not exported from survey “%s”*/26,
-			     sprint_prefix(p), s);
+	       msgno = /*Station “%s” not exported from survey “%s”*/26;
 	    } else {
 		/* TRANSLATORS: This error occurs if there's an attempt to
 		 * export a station from a survey which doesn't actually exist.
 		 */
-	       compile_error(/*Reference to station “%s” from non-existent survey “%s”*/286,
-			     sprint_prefix(p), s);
+	       msgno = /*Reference to station “%s” from non-existent survey “%s”*/286;
 	    }
-	    file.filename = filename_store;
-	    file.line = line_store;
+	    compile_error_pfx(where, msgno, sprint_prefix(p), s);
 	    osfree(s);
 	 }
       }

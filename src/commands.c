@@ -518,8 +518,6 @@ check_reentry(prefix *survey)
    /* Don't try to check "*prefix \" or "*begin \" */
    if (!survey->up) return;
    if (TSTBIT(survey->sflags, SFLAGS_PREFIX_ENTERED)) {
-      const char *filename_store;
-      unsigned int line_store;
       static int reenter_depr_count = 0;
 
       if (reenter_depr_count >= 5)
@@ -537,15 +535,7 @@ check_reentry(prefix *survey)
        * If you're unsure what "deprecated" means, see:
        * http://en.wikipedia.org/wiki/Deprecation */
       compile_warning(/*Reentering an existing survey is deprecated*/29);
-
-      filename_store = file.filename;
-      line_store = file.line;
-      file.filename = survey->filename;
-      file.line = survey->line;
-      compile_warning(/*Originally entered here*/30);
-      file.filename = filename_store;
-      file.line = line_store;
-
+      compile_warning_pfx(survey, /*Originally entered here*/30);
       if (++reenter_depr_count == 5)
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    } else {
@@ -918,36 +908,32 @@ cmd_equate(void)
 static void
 report_missing_export(prefix *pfx, int depth)
 {
-   const char *filename_store = file.filename;
-   unsigned int line_store = file.line;
-   prefix *survey = pfx;
    char *s;
+   const char *p;
+   prefix *survey = pfx;
    int i;
    for (i = depth + 1; i; i--) {
       survey = survey->up;
       SVX_ASSERT(survey);
    }
    s = osstrdup(sprint_prefix(survey));
+   p = sprint_prefix(pfx);
    if (survey->filename) {
-      file.filename = survey->filename;
-      file.line = survey->line;
-   }
-   /* TRANSLATORS: A station must be exported out of each level it is in, so
-    * this would give "Station “\outer.inner.1” not exported from survey
-    * “\outer”)":
-    *
-    * *equate entrance outer.inner.1
-    * *begin outer
-    * *begin inner
-    * *export 1
-    * 1 2 1.23 045 -6
-    * *end inner
-    * *end outer */
-   compile_error(/*Station “%s” not exported from survey “%s”*/26,
-		 sprint_prefix(pfx), s);
-   if (survey->filename) {
-      file.filename = filename_store;
-      file.line = line_store;
+      /* TRANSLATORS: A station must be exported out of each level it is in, so
+       * this would give "Station “\outer.inner.1” not exported from survey
+       * “\outer”)":
+       *
+       * *equate entrance outer.inner.1
+       * *begin outer
+       * *begin inner
+       * *export 1
+       * 1 2 1.23 045 -6
+       * *end inner
+       * *end outer */
+      compile_error_pfx(survey,
+			/*Station “%s” not exported from survey “%s”*/26, p, s);
+   } else {
+      compile_error(/*Station “%s” not exported from survey “%s”*/26, p, s);
    }
    osfree(s);
 }

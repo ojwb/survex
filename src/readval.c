@@ -308,25 +308,22 @@ anon_wall_station:
    if (ptr->min_export == 0 || ptr->min_export == USHRT_MAX) {
       if (depth > ptr->max_export) ptr->max_export = depth;
    } else if (ptr->max_export < depth) {
-      const char *filename_store = file.filename;
-      unsigned int line_store = file.line;
       prefix *survey = ptr;
       char *s;
+      const char *p;
       int level;
       for (level = ptr->max_export + 1; level; level--) {
 	 survey = survey->up;
 	 SVX_ASSERT(survey);
       }
       s = osstrdup(sprint_prefix(survey));
+      p = sprint_prefix(ptr);
       if (survey->filename) {
-	 file.filename = survey->filename;
-	 file.line = survey->line;
-      }
-      compile_error(/*Station “%s” not exported from survey “%s”*/26,
-		    sprint_prefix(ptr), s);
-      if (survey->filename) {
-	 file.filename = filename_store;
-	 file.line = line_store;
+	 compile_error_pfx(survey,
+			   /*Station “%s” not exported from survey “%s”*/26,
+			   p, s);
+      } else {
+	 compile_error(/*Station “%s” not exported from survey “%s”*/26, p, s);
       }
       osfree(s);
 #if 0

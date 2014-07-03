@@ -1,3 +1,9 @@
+Thu Jul 03 12:12:05 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Add compile_error() and compiler_warning() variants which
+	  take a filename and line number, or a prefix to get the filename
+	  and line number from.
+
 Thu Jul 03 06:39:45 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Update for new messages.

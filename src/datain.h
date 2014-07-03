@@ -1,7 +1,7 @@
 /* datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1994-2002,2005,2010,2012 Olly Betts
+ * Copyright (C) 1994-2002,2005,2010,2012,2014 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,11 @@ void data_file(const char *pth, const char *fnm);
 void skipline(void);
 
 void compile_warning(int en, ...);
+void compile_warning_at(const char * file, unsigned line, int en, ...);
+void compile_warning_pfx(const prefix * pfx, int en, ...);
 void compile_error(int en, ...);
 void compile_error_skip(int en, ...);
+void compile_error_at(const char * file, unsigned line, int en, ...);
+void compile_error_pfx(const prefix * pfx, int en, ...);
 
 void compile_error_token(int en);
