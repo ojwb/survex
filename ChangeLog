@@ -1,3 +1,10 @@
+Thu Jul 03 12:57:00 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c,tests/cavern.tst,
+	  tests/omitfixaroundsolve.out,tests/omitfixaroundsolve.svx: If there's
+	  more than one *fix command with coordinates, the station name of the
+	  previous one, plus the file and line number where it was.
+
 Thu Jul 03 12:12:05 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/: Add compile_error() and compiler_warning() variants which

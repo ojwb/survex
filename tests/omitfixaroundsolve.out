@@ -1,4 +1,4 @@
-./omitfixaroundsolve.svx:2: warning: FIX command with no coordinates - fixing at (0,0,0)
+./omitfixaroundsolve.svx:3: warning: FIX command with no coordinates - fixing at (0,0,0)
 
 Removing trailing traverses...
 
@@ -11,8 +11,8 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./omitfixaroundsolve.svx:2: warning: Unused fixed point "a"
-./omitfixaroundsolve.svx:4: More than one FIX command with no coordinates
+./omitfixaroundsolve.svx:5: More than one FIX command with no coordinates
+./omitfixaroundsolve.svx:3: Previous FIX command was for station "a"
 
 Removing trailing traverses...
 
@@ -28,15 +28,16 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 3 survey stations, joined by 1 leg.
+Survey contains 4 survey stations, joined by 2 legs.
 There are 0 loops.
 Survey has 2 connected components.
-Total length of survey legs =  123.00m ( 123.00m adjusted)
-Total plan length of survey legs =  122.98m
-Total vertical length of survey legs =    2.15m
-Vertical range = 2.15m (from a at 0.00m to b at -2.15m)
+Total length of survey legs =  135.00m ( 135.00m adjusted)
+Total plan length of survey legs =  134.72m
+Total vertical length of survey legs =    4.64m
+Vertical range = 4.64m (from 0 at 2.49m to b at -2.15m)
 North-South range = 121.11m (from b at 121.11m to a at 0.00m)
 East-West range = 21.36m (from b at 21.36m to a at 0.00m)
    2 1-nodes.
+   1 2-node.
 Done.
-There were 2 warning(s) and 1 error(s) - no output files produced.
+There were 1 warning(s) and 2 error(s) - no output files produced.

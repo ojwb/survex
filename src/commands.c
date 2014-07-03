@@ -700,6 +700,8 @@ cmd_fix(void)
    prefix *fix_name;
    node *stn = NULL;
    static prefix *name_omit_already = NULL;
+   static const char * name_omit_already_filename = NULL;
+   static unsigned int name_omit_already_line;
    real x, y, z;
    int nx, ny, nz;
    filepos fp;
@@ -731,12 +733,18 @@ cmd_fix(void)
       if (name_omit_already) {
 	 if (fix_name != name_omit_already) {
 	    compile_error_skip(/*More than one FIX command with no coordinates*/56);
+	    compile_error_at(name_omit_already_filename,
+			     name_omit_already_line,
+			     /*Previous FIX command was for station “%s”*/441,
+			     sprint_prefix(name_omit_already));
 	 } else {
 	    compile_warning(/*Same station fixed twice with no coordinates*/61);
 	 }
 	 return;
       }
       name_omit_already = fix_name;
+      name_omit_already_filename = file.filename;
+      name_omit_already_line = file.line;
       stn = StnFromPfx(fix_name);
       /* TRANSLATORS: " *fix a " gives this message: */
       compile_warning(/*FIX command with no coordinates - fixing at (0,0,0)*/54);

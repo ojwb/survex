@@ -482,6 +482,10 @@ msgstr ""
 msgid "More than one FIX command with no coordinates"
 msgstr ""
 
+#: n:441
+msgid "Previous FIX command was for station “%s”"
+msgstr ""
+
 #. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
 #. <SURVEY>, so this would generate this error:
 #.
