@@ -293,8 +293,6 @@ msgstr "Unknown units “%s”"
 
 #: ../src/commands.c:1770
 #: ../src/commands.c:1791
-#: ../src/commands.c:1819
-#: ../src/commands.c:1844
 #: n:434
 msgid "Unknown coordinate system"
 msgstr "Unknown coordinate system"
@@ -489,7 +487,7 @@ msgstr "Already had FIX command with no coordinates for station “%s”"
 #: n:442
 #, c-format
 msgid "Station “%s” fixed before CS command first used"
-msgstr ""
+msgstr "Station “%s” fixed before CS command first used"
 
 #. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
 #. <SURVEY>, so this would generate this error:
@@ -3092,3 +3090,10 @@ msgstr "&Show"
 #: n:410
 msgid "Export format"
 msgstr "Export format"
+
+#: ../src/commands.c:1819
+#: ../src/commands.c:1844
+#: n:443
+#, c-format
+msgid "Invalid coordinate system: %s"
+msgstr "Invalid coordinate system: %s"

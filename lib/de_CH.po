@@ -294,8 +294,6 @@ msgstr "Unbekannte Einheit(en) «%s»"
 
 #: ../src/commands.c:1770
 #: ../src/commands.c:1791
-#: ../src/commands.c:1819
-#: ../src/commands.c:1844
 #: n:434
 msgid "Unknown coordinate system"
 msgstr ""
@@ -3096,3 +3094,10 @@ msgstr "&Zeigen"
 #: n:410
 msgid "Export format"
 msgstr "Exportformat"
+
+#: ../src/commands.c:1819
+#: ../src/commands.c:1844
+#: n:443
+#, c-format
+msgid "Invalid coordinate system: %s"
+msgstr ""

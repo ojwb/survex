@@ -294,8 +294,6 @@ msgstr "Unitati necunoscute “%s”"
 
 #: ../src/commands.c:1770
 #: ../src/commands.c:1791
-#: ../src/commands.c:1819
-#: ../src/commands.c:1844
 #: n:434
 msgid "Unknown coordinate system"
 msgstr ""
@@ -3100,4 +3098,11 @@ msgstr "A&răta"
 #: ../src/printwx.cc:360
 #: n:410
 msgid "Export format"
+msgstr ""
+
+#: ../src/commands.c:1819
+#: ../src/commands.c:1844
+#: n:443
+#, c-format
+msgid "Invalid coordinate system: %s"
 msgstr ""

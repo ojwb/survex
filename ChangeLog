@@ -1,3 +1,7 @@
+Fri Jul 04 12:57:12 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Merge changes from pot to po files.
+
 Fri Jul 04 12:52:58 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/commands.c,tests/csbad.out: If proj fails to
