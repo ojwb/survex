@@ -26,7 +26,7 @@ msgstr ""
 #. technically not quite right when there are parallel active release
 #. series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
 #. seems unlikely to confuse users.
-#: ../src/commands.c:1934
+#: ../src/commands.c:1933
 #: n:2
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -50,7 +50,7 @@ msgstr ""
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:570
+#: ../src/commands.c:560
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr ""
@@ -62,22 +62,22 @@ msgstr ""
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr ""
 
-#: ../src/readval.c:385
+#: ../src/readval.c:382
 #: n:8
 msgid "Field may not be omitted"
 msgstr ""
 
-#: ../src/datain.c:1490
-#: ../src/datain.c:1776
-#: ../src/readval.c:387
-#: ../src/readval.c:428
-#: ../src/readval.c:458
+#: ../src/datain.c:1526
+#: ../src/datain.c:1812
+#: ../src/readval.c:384
+#: ../src/readval.c:425
+#: ../src/readval.c:455
 #: n:9
 #, c-format
 msgid "Expecting numeric field, found “%s”"
 msgstr ""
 
-#: ../src/commands.c:1600
+#: ../src/commands.c:1599
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
@@ -91,7 +91,7 @@ msgstr ""
 msgid "Bug in program detected! Please report this to the authors"
 msgstr ""
 
-#: ../src/commands.c:2049
+#: ../src/commands.c:2048
 #: ../src/extend.c:435
 #: n:12
 #, c-format
@@ -107,12 +107,12 @@ msgstr ""
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
-#: ../src/datain.c:1011
+#: ../src/datain.c:1047
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr ""
 
-#: ../src/datain.c:246
+#: ../src/datain.c:282
 #: ../src/extend.c:440
 #: n:15
 msgid "End of line not blank"
@@ -135,7 +135,7 @@ msgstr ""
 #: ../src/datain.c:80
 #: ../src/datain.c:88
 #: ../src/datain.c:95
-#: ../src/datain.c:730
+#: ../src/datain.c:766
 #: ../src/extend.c:558
 #: ../src/sorterr.c:80
 #: ../src/sorterr.c:97
@@ -151,7 +151,7 @@ msgstr ""
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:1479
+#: ../src/commands.c:1478
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr ""
@@ -159,22 +159,22 @@ msgstr ""
 #. TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 #. (a weight on a string).  So the problem here is that the leg is
 #. vertical, so a compass reading has no meaning!
-#: ../src/datain.c:982
+#: ../src/datain.c:1018
 #: n:21
 msgid "Compass reading given on plumbed leg"
 msgstr ""
 
-#: ../src/commands.c:658
+#: ../src/commands.c:648
 #: n:22
 msgid "END with no matching BEGIN in this file"
 msgstr ""
 
-#: ../src/datain.c:717
+#: ../src/datain.c:753
 #: n:23
 msgid "BEGIN with no matching END in this file"
 msgstr ""
 
-#: ../src/datain.c:363
+#: ../src/datain.c:399
 #: ../src/img_hosted.c:30
 #: ../src/printwx.cc:1527
 #: n:24
@@ -207,9 +207,11 @@ msgstr ""
 #. 1 2 1.23 045 -6
 #. *end inner
 #. *end outer
-#: ../src/commands.c:946
-#: ../src/listpos.c:107
-#: ../src/readval.c:325
+#: ../src/commands.c:947
+#: ../src/commands.c:949
+#: ../src/listpos.c:104
+#: ../src/readval.c:323
+#: ../src/readval.c:326
 #: n:26
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
@@ -217,7 +219,7 @@ msgstr ""
 
 #. TRANSLATORS: This error occurs if there's an attempt to
 #. export a station from a survey which doesn't actually exist.
-#: ../src/listpos.c:113
+#: ../src/listpos.c:109
 #: n:286
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
@@ -250,23 +252,23 @@ msgstr ""
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:539
+#: ../src/commands.c:537
 #: n:29
 msgid "Reentering an existing survey is deprecated"
 msgstr ""
 
-#: ../src/commands.c:545
+#: ../src/commands.c:538
 #: n:30
 msgid "Originally entered here"
 msgstr ""
 
-#: ../src/commands.c:1865
+#: ../src/commands.c:1864
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr ""
 
-#: ../src/commands.c:1872
+#: ../src/commands.c:1871
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
@@ -274,7 +276,7 @@ msgstr ""
 
 #. TRANSLATORS: EQUATE is a command name, so shouldn’t be
 #. translated.
-#: ../src/commands.c:908
+#: ../src/commands.c:911
 #: n:33
 msgid "Only one station in EQUATE command"
 msgstr ""
@@ -291,36 +293,36 @@ msgstr ""
 msgid "Unknown units “%s”"
 msgstr ""
 
-#: ../src/commands.c:1751
-#: ../src/commands.c:1772
-#: ../src/commands.c:1800
-#: ../src/commands.c:1825
+#: ../src/commands.c:1750
+#: ../src/commands.c:1771
+#: ../src/commands.c:1799
+#: ../src/commands.c:1824
 #: n:434
 msgid "Unknown coordinate system"
 msgstr ""
 
-#: ../src/commands.c:1787
-#: ../src/commands.c:1805
+#: ../src/commands.c:1786
+#: ../src/commands.c:1804
 #: n:435
 msgid "Coordinate system unsuitable for output"
 msgstr ""
 
-#: ../src/commands.c:821
+#: ../src/commands.c:824
 #: n:436
 msgid "Failed to convert coordinates"
 msgstr ""
 
-#: ../src/commands.c:826
+#: ../src/commands.c:829
 #: n:437
 msgid "The input project is set but the output projection isn't"
 msgstr ""
 
-#: ../src/commands.c:828
+#: ../src/commands.c:831
 #: n:438
 msgid "The output project is set but the input projection isn't"
 msgstr ""
 
-#: ../src/commands.c:737
+#: ../src/commands.c:729
 #: n:439
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr ""
@@ -331,7 +333,7 @@ msgstr ""
 #. *begin
 #. 1 2 10.00 178 -01
 #. *end entrance      <--[Message given here]
-#: ../src/commands.c:680
+#: ../src/commands.c:670
 #: n:36
 msgid "Matching BEGIN command has no survey name"
 msgstr ""
@@ -361,19 +363,19 @@ msgstr ""
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
-#: ../src/commands.c:1447
+#: ../src/commands.c:1446
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr ""
 
 #. TRANSLATORS: If the scale factor for an instrument is zero, then any
 #. reading would be mapped to zero, which doesn't make sense.
-#: ../src/commands.c:1453
+#: ../src/commands.c:1452
 #: n:391
 msgid "Scale factor must be non-zero"
 msgstr ""
 
-#: ../src/commands.c:1498
+#: ../src/commands.c:1497
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
@@ -403,8 +405,8 @@ msgstr ""
 msgid "Survey not all connected to fixed stations"
 msgstr ""
 
-#: ../src/commands.c:841
-#: ../src/datain.c:643
+#: ../src/commands.c:844
+#: ../src/datain.c:679
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
 msgstr ""
@@ -417,7 +419,7 @@ msgstr ""
 msgid "Failed to open output file “%s”"
 msgstr ""
 
-#: ../src/commands.c:1553
+#: ../src/commands.c:1552
 #: n:48
 msgid "Standard deviation must be positive"
 msgstr ""
@@ -440,9 +442,9 @@ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are
 #. 360 in a full circle.
-#: ../src/datain.c:929
-#: ../src/datain.c:937
-#: ../src/datain.c:949
+#: ../src/datain.c:965
+#: ../src/datain.c:973
+#: ../src/datain.c:985
 #: n:51
 msgid "Clino reading over 90 degrees (absolute value)"
 msgstr ""
@@ -465,25 +467,28 @@ msgid "Equating two equal fixed points: “%s” and “%s”"
 msgstr ""
 
 #. TRANSLATORS: " *fix a " gives this message:
-#: ../src/commands.c:752
+#: ../src/commands.c:739
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
 msgstr ""
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
-#: ../src/commands.c:845
-#: ../src/datain.c:645
+#: ../src/commands.c:848
+#: ../src/datain.c:681
 #: n:55
 msgid "Station already fixed at the same coordinates"
 msgstr ""
 
-#: ../src/commands.c:743
 #: n:56
 msgid "More than one FIX command with no coordinates"
 msgstr ""
 
+#. TRANSLATORS: Emitted after second and subsequent "FIX command with
+#. no coordinates - fixing at (0,0,0)" warnings.
+#: ../src/commands.c:747
 #: n:441
-msgid "Previous FIX command was for station “%s”"
+#, c-format
+msgid "Already had FIX command with no coordinates for station “%s”"
 msgstr ""
 
 #. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
@@ -493,30 +498,30 @@ msgstr ""
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:2063
+#: ../src/commands.c:2062
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr ""
 
-#: ../src/readval.c:515
+#: ../src/readval.c:512
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr ""
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
-#: ../src/datain.c:827
-#: ../src/datain.c:836
+#: ../src/datain.c:863
+#: ../src/datain.c:872
 #: n:59
 msgid "Suspicious compass reading"
 msgstr ""
 
-#: ../src/datain.c:1466
+#: ../src/datain.c:1502
 #: n:60
 msgid "Negative tape reading"
 msgstr ""
 
-#: ../src/commands.c:745
+#: ../src/commands.c:734
 #: n:61
 msgid "Same station fixed twice with no coordinates"
 msgstr ""
@@ -526,7 +531,7 @@ msgstr ""
 #. It could be a gross error (e.g. the decimal point is missing from the
 #. depth gauge reading) or it could just be due to random error on a near
 #. vertical leg
-#: ../src/datain.c:1165
+#: ../src/datain.c:1201
 #: n:62
 msgid "Tape reading is less than change in depth"
 msgstr ""
@@ -535,21 +540,21 @@ msgstr ""
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
 #. neither style nor reading is a keyword in the program This error
 #. complains about a depth gauge reading in normal style, for example
-#: ../src/commands.c:1169
+#: ../src/commands.c:1168
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
 msgstr ""
 
 #. TRANSLATORS: i.e. not enough readings for the style.
-#: ../src/commands.c:1354
+#: ../src/commands.c:1353
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
 msgstr ""
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#: ../src/commands.c:1129
+#: ../src/commands.c:1128
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -564,7 +569,7 @@ msgstr ""
 #. *export 1
 #. 1 2 1.24 045 -6
 #. *end example
-#: ../src/commands.c:999
+#: ../src/commands.c:998
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
@@ -572,25 +577,25 @@ msgstr ""
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
-#: ../src/commands.c:1195
+#: ../src/commands.c:1194
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
 msgstr ""
 
-#: ../src/commands.c:872
+#: ../src/commands.c:875
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
 msgstr ""
 
-#: ../src/readval.c:472
+#: ../src/readval.c:469
 #: n:69
 msgid "Missing \""
 msgstr ""
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/listpos.c:125
+#: ../src/listpos.c:119
 #: n:70
 #, c-format
 msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
@@ -627,7 +632,7 @@ msgstr ""
 msgid "Solving %d simultaneous equations"
 msgstr ""
 
-#: ../src/commands.c:1257
+#: ../src/commands.c:1256
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
@@ -638,20 +643,20 @@ msgstr ""
 msgid "Solving one equation"
 msgstr ""
 
-#: ../src/datain.c:900
-#: ../src/datain.c:1154
-#: ../src/datain.c:1347
+#: ../src/datain.c:936
+#: ../src/datain.c:1190
+#: ../src/datain.c:1383
 #: n:79
 msgid "Negative adjusted tape reading"
 msgstr ""
 
-#: ../src/commands.c:1971
-#: ../src/commands.c:1991
+#: ../src/commands.c:1970
+#: ../src/commands.c:1990
 #: n:80
 msgid "Date is in the future!"
 msgstr ""
 
-#: ../src/commands.c:1995
+#: ../src/commands.c:1994
 #: n:81
 msgid "End of date range is before the start"
 msgstr ""
@@ -674,8 +679,8 @@ msgstr ""
 #. TRANSLATORS: In data with backsights, the user has tried to give a
 #. plumb for the foresight and a clino reading for the backsight, or
 #. something similar.
-#: ../src/datain.c:966
-#: ../src/datain.c:990
+#: ../src/datain.c:1002
+#: ../src/datain.c:1026
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr ""
@@ -686,13 +691,13 @@ msgstr ""
 msgid "Parameter “%s” missing in printer configuration file"
 msgstr ""
 
-#: ../src/readval.c:523
+#: ../src/readval.c:520
 #: n:86
 msgid "Invalid month"
 msgstr ""
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
-#: ../src/readval.c:532
+#: ../src/readval.c:529
 #: n:87
 msgid "Invalid day of the month"
 msgstr ""
@@ -752,10 +757,10 @@ msgstr ""
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:467
-#: ../src/commands.c:550
-#: ../src/commands.c:572
-#: ../src/commands.c:1144
-#: ../src/commands.c:1481
+#: ../src/commands.c:540
+#: ../src/commands.c:562
+#: ../src/commands.c:1143
+#: ../src/commands.c:1480
 #: ../src/readval.c:96
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
@@ -768,7 +773,7 @@ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where there are
 #. 360 in a full circle.
-#: ../src/datain.c:866
+#: ../src/datain.c:902
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
@@ -776,7 +781,7 @@ msgstr ""
 
 #. TRANSLATORS: Degrees are the angular measurement where
 #. there are 360 in a full circle.
-#: ../src/datain.c:1042
+#: ../src/datain.c:1078
 #: n:99
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
@@ -802,7 +807,7 @@ msgstr ""
 msgid "produce an elevation view"
 msgstr ""
 
-#: ../src/commands.c:1141
+#: ../src/commands.c:1140
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
@@ -926,7 +931,7 @@ msgstr ""
 msgid "Calculating statistics"
 msgstr ""
 
-#: ../src/readval.c:486
+#: ../src/readval.c:483
 #: n:121
 msgid "Expecting string field"
 msgstr ""
@@ -1002,7 +1007,7 @@ msgstr ""
 msgid "Calculating network"
 msgstr ""
 
-#: ../src/datain.c:1456
+#: ../src/datain.c:1492
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
@@ -1253,13 +1258,13 @@ msgid " joined by %ld legs."
 msgstr ""
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:188
+#: ../src/listpos.c:182
 #: n:176
 msgid "node"
 msgstr ""
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
-#: ../src/listpos.c:190
+#: ../src/listpos.c:184
 #: n:177
 msgid "nodes"
 msgstr ""
@@ -1300,12 +1305,12 @@ msgstr ""
 msgid "argument “%s” not a number"
 msgstr ""
 
-#: ../src/commands.c:887
+#: ../src/commands.c:890
 #: n:188
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr ""
 
-#: ../src/commands.c:890
+#: ../src/commands.c:893
 #: n:189
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr ""
@@ -1316,14 +1321,14 @@ msgstr ""
 msgid "Station “%s” referred to by *entrance or *export but never used"
 msgstr ""
 
-#: ../src/commands.c:656
+#: ../src/commands.c:646
 #: n:192
 msgid "No matching BEGIN"
 msgstr ""
 
 #. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 #. same <survey> if it’s given at all
-#: ../src/commands.c:684
+#: ../src/commands.c:674
 #: n:193
 msgid "Survey name doesn’t match BEGIN"
 msgstr ""
@@ -1334,7 +1339,7 @@ msgstr ""
 #. *begin entrance
 #. 1 2 10.00 178 -01
 #. *end     <--[Message given here]
-#: ../src/commands.c:693
+#: ../src/commands.c:683
 #: n:194
 msgid "Survey name omitted from END"
 msgstr ""
@@ -1359,9 +1364,9 @@ msgstr ""
 msgid " (colour)"
 msgstr ""
 
-#: ../src/readval.c:511
-#: ../src/readval.c:521
-#: ../src/readval.c:529
+#: ../src/readval.c:508
+#: ../src/readval.c:518
+#: ../src/readval.c:526
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
@@ -1468,7 +1473,7 @@ msgstr ""
 #. meaningless to say your tape is marked in "0 feet" (but you might
 #. measure distance by counting knots on a diving line, and tie them
 #. every "2 feet").
-#: ../src/commands.c:1401
+#: ../src/commands.c:1400
 #: n:200
 msgid "*UNITS factor must be non-zero"
 msgstr ""
@@ -1697,7 +1702,7 @@ msgstr ""
 #. TRANSLATORS: error from:
 #.
 #. *data normal newline from to tape compass clino
-#: ../src/commands.c:1245
+#: ../src/commands.c:1244
 #: n:222
 msgid "NEWLINE can’t be the first reading"
 msgstr ""
@@ -1705,7 +1710,7 @@ msgstr ""
 #. TRANSLATORS: error from:
 #.
 #. *data normal from to tape compass clino newline
-#: ../src/commands.c:1283
+#: ../src/commands.c:1282
 #: n:223
 msgid "NEWLINE can’t be the last reading"
 msgstr ""
@@ -1715,7 +1720,7 @@ msgstr ""
 #. *data normal station tape compass clino
 #.
 #. ("station" signifies interleaved data).
-#: ../src/commands.c:1306
+#: ../src/commands.c:1305
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
 msgstr ""
@@ -1725,7 +1730,7 @@ msgstr ""
 #. *data diving station newline depth tape compass
 #.
 #. ("depth" needs to occur before "newline").
-#: ../src/commands.c:1182
+#: ../src/commands.c:1181
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
@@ -1734,17 +1739,17 @@ msgstr ""
 #. TRANSLATORS: e.g.
 #.
 #. *data normal from to tape newline compass clino
-#: ../src/commands.c:1235
+#: ../src/commands.c:1234
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr ""
 
-#: ../src/commands.c:1435
+#: ../src/commands.c:1434
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
 msgstr ""
 
-#: ../src/commands.c:599
+#: ../src/commands.c:589
 #: n:397
 msgid "Bad *alias command"
 msgstr ""
@@ -3046,7 +3051,7 @@ msgstr ""
 msgid "Coordinate projection"
 msgstr ""
 
-#: ../src/readval.c:339
+#: ../src/readval.c:336
 #: n:392
 msgid "Separator in survey name"
 msgstr ""

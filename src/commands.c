@@ -730,24 +730,29 @@ cmd_fix(void)
 	 return;
       }
 
-      if (name_omit_already) {
-	 if (fix_name != name_omit_already) {
-	    compile_error_skip(/*More than one FIX command with no coordinates*/56);
-	    compile_error_at(name_omit_already_filename,
-			     name_omit_already_line,
-			     /*Previous FIX command was for station “%s”*/441,
-			     sprint_prefix(name_omit_already));
-	 } else {
-	    compile_warning(/*Same station fixed twice with no coordinates*/61);
-	 }
+      if (fix_name == name_omit_already) {
+	 compile_warning(/*Same station fixed twice with no coordinates*/61);
 	 return;
       }
-      name_omit_already = fix_name;
-      name_omit_already_filename = file.filename;
-      name_omit_already_line = file.line;
-      stn = StnFromPfx(fix_name);
+
       /* TRANSLATORS: " *fix a " gives this message: */
       compile_warning(/*FIX command with no coordinates - fixing at (0,0,0)*/54);
+
+      if (name_omit_already) {
+	 /* TRANSLATORS: Emitted after second and subsequent "FIX command with
+	  * no coordinates - fixing at (0,0,0)" warnings.
+	  */
+	 compile_error_at(name_omit_already_filename,
+			  name_omit_already_line,
+			  /*Already had FIX command with no coordinates for station “%s”*/441,
+			  sprint_prefix(name_omit_already));
+      } else {
+	 name_omit_already = fix_name;
+	 name_omit_already_filename = file.filename;
+	 name_omit_already_line = file.line;
+      }
+
+      stn = StnFromPfx(fix_name);
       x = y = z = (real)0.0;
    } else {
       real sdx;

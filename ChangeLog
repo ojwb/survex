@@ -1,3 +1,11 @@
+Fri Jul 04 10:37:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c,tests/cavern.tst,
+	  tests/omitfixaroundsolve.out,tests/omitfixaroundsolve.svx: In the
+	  case of more than one *fix without coordinates, still actually fix
+	  the second and subsequent ones, to avoid then triggering bogus errors
+	  about unconnected surveys.
+
 Thu Jul 03 12:57:00 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/commands.c,tests/cavern.tst,
