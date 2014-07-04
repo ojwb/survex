@@ -692,7 +692,9 @@ cmd_entrance(void)
    pfx->sflags |= BIT(SFLAGS_ENTRANCE);
 }
 
-static node *stn_fixed_already = NULL;
+static const prefix * first_fix_name = NULL;
+static const char * first_fix_filename;
+static unsigned first_fix_line;
 
 static void
 cmd_fix(void)
@@ -752,7 +754,6 @@ cmd_fix(void)
 	 name_omit_already_line = file.line;
       }
 
-      stn = StnFromPfx(fix_name);
       x = y = z = (real)0.0;
    } else {
       real sdx;
@@ -816,7 +817,6 @@ cmd_fix(void)
 	 }
 	 return;
       }
-      stn = StnFromPfx(fix_name);
 
       if (pcs->proj && proj_out) {
 	 int r = pj_transform(pcs->proj, proj_out, 1, 1, &x, &y, &z);
@@ -832,6 +832,16 @@ cmd_fix(void)
       }
    }
 
+   if (!first_fix_name) {
+      /* We track if we've fixed a station yet, and if so what the name of the
+       * first fix was, so that we can issue an error if the output coordinate
+       * system is set after fixing a station. */
+      first_fix_name = fix_name;
+      first_fix_filename = file.filename;
+      first_fix_line = file.line;
+   }
+
+   stn = StnFromPfx(fix_name);
    if (!fixed(stn)) {
       POS(stn, 0) = x;
       POS(stn, 1) = y;
@@ -1643,6 +1653,16 @@ cmd_cs(void)
    filepos fp;
    bool output = fFalse;
    enum { YES, NO, MAYBE } ok_for_output = YES;
+   static bool had_cs = fFalse;
+
+   if (!had_cs) {
+      had_cs = fTrue;
+      if (first_fix_name) {
+	 compile_error_at(first_fix_filename, first_fix_line,
+			  /*Station “%s” fixed before CS command first used*/442,
+			  sprint_prefix(first_fix_name));
+      }
+   }
 
    get_pos(&fp);
    /* Note get_token() only accepts letters - it'll stop at digits so "UTM12"

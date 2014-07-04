@@ -1,3 +1,9 @@
+Fri Jul 04 12:33:33 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c,tests/cavern.tst,tests/cs.svx,
+	  tests/csbad.out: Issue an error is a station has already been fixed
+	  when *cs is first used.
+
 Fri Jul 04 11:18:33 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Update translations.

@@ -491,6 +491,12 @@ msgstr ""
 msgid "Already had FIX command with no coordinates for station “%s”"
 msgstr ""
 
+#: ../src/commands.c:1662
+#: n:442
+#, c-format
+msgid "Station “%s” fixed before CS command first used"
+msgstr ""
+
 #. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
 #. <SURVEY>, so this would generate this error:
 #.

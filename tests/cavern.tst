@@ -239,7 +239,7 @@ for file in $TESTS ; do
   doubleinc) pos=no; warn=3; error=0 ;;
   reenterlots) pos=no; warn=11; error=0 ;;
   cs) pos=no; warn=0; error=0 ;;
-  csbad) pos=fail; warn=0; error=17 ;;
+  csbad) pos=fail; warn=0; error=18 ;;
   omitfixaroundsolve) pos=fail; warn=2; error=1 ;;
   *) echo "Warning: don't know how to run test '$file' - skipping it"
      file='' ;;
