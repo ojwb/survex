@@ -1816,8 +1816,8 @@ cmd_cs(void)
 	 projPJ pj = pj_init_plus(proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_error_skip(-/*Unknown coordinate system*/434);
-	    /* FIXME: report pj_strerrno(pj_errno) */
+	    compile_error_skip(-/*Invalid coordinate system: %s*/443,
+			       pj_strerrno(pj_errno));
 	    return;
 	 }
 	 if (ok_for_output == MAYBE && pj_is_latlong(pj)) {
@@ -1841,8 +1841,8 @@ cmd_cs(void)
 	 pj = pj_init_plus(proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_error_skip(-/*Unknown coordinate system*/434);
-	    /* FIXME: report pj_strerrno(pj_errno) */
+	    compile_error_skip(-/*Invalid coordinate system: %s*/443,
+			       pj_strerrno(pj_errno));
 	    return;
 	 }
       }

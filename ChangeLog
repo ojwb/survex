@@ -1,3 +1,8 @@
+Fri Jul 04 12:52:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/commands.c,tests/csbad.out: If proj fails to
+	  handle a custom cs description, report pj_strerrno().
+
 Fri Jul 04 12:41:40 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/,src/commands.c: Fix typo in two recently added messages; drop
