@@ -826,9 +826,9 @@ cmd_fix(void)
 	    printf("[%s]\n", pj_strerrno(r));
 	 }
       } else if (pcs->proj) {
-	 compile_error(/*The input project is set but the output projection isn't*/437);
+	 compile_error(/*The input projection is set but the output projection isn't*/437);
       } else if (proj_out) {
-	 compile_error(/*The output project is set but the input projection isn't*/438);
+	 compile_error(/*The output projection is set but the input projection isn't*/438);
       }
    }
 
