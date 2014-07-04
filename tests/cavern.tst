@@ -328,9 +328,9 @@ for file in $TESTS ; do
       fi
       [ "$exitcode" = 0 ] || exit 1
       if test -n "$VERBOSE" ; then
-	diff tmp.dxf "$dxffile" || exit 1
+	diff "$dxffile" tmp.dxf || exit 1
       else
-	cmp -s tmp.dxf "$dxffile" || exit 1
+	cmp -s "$dxffile" tmp.dxf || exit 1
       fi ;;
     no)
       test -f tmp.3d || exit 1 ;;
@@ -348,9 +348,9 @@ for file in $TESTS ; do
     if test -f "$out" ; then
       # Check output is as expected.
       if test -n "$VERBOSE" ; then
-	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$out" || exit 1
+	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$out" - || exit 1
       else
-	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff - "$out" > /dev/null || exit 1
+	sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$out" - > /dev/null || exit 1
       fi
     fi
     rm -f tmp.*
