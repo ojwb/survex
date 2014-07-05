@@ -35,7 +35,7 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  network.c readval.c str.c matrix.c img_hosted.c netbits.c useful.c \
  validate.c netartic.c \
  $(COMMONSRC)
-cavern_LDFLAGS = -lproj
+cavern_LDADD = $(PROJ_LIBS)
 
 aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc useful.c cmdline.c z_getopt.c \
@@ -52,13 +52,13 @@ dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
 
 findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
  $(COMMONSRC)
-findentrances_LDADD = -lproj
+findentrances_LDADD = $(PROJ_LIBS)
 
 editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows
 
 if WIN32
-aven_LDADD = avenrc.o $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS)
+aven_LDADD = avenrc.o $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 
 svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` -o "$$pwd/svxeditrc.o" svxedit.rc
@@ -76,18 +76,18 @@ aven.ico: ../lib/icons/aven.ico
 
 CLEANFILES = aven.ico svxedit.ico
 else
-aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS)
+aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 endif
 
 if MACOSX
 # Aven must always be built into an application bundle to work correctly.
 aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN -DMACOSX_BUNDLE
 aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS) -DMACOSX_BUNDLE
-aven_LDFLAGS = $(WX_LDFLAGS) -lproj -framework OpenGL
+aven_LDFLAGS = $(WX_LDFLAGS) -framework OpenGL
 else
 aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
-aven_LDFLAGS = $(WX_LDFLAGS) -lproj
+aven_LDFLAGS = $(WX_LDFLAGS)
 endif
 
 diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \

@@ -167,8 +167,9 @@ AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
 dnl The Debian mingw-w64 packages lack GL/glext.h; Mac OS X has OpenGL/glext.h.
 AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [#include <GL/gl.h>])
 
-dnl Older wx-config didn't support --ldflags (2.6.3 doesn't) - error goes to
-dnl stderr, with nothing to stdout, so just ignore stderr.
+dnl Older wx-config didn't support --ldflags (2.6.3 doesn't), and neither do
+dnl newer ones (3.0.1 doesn't) but presumably some in between did - error goes
+dnl to stderr, with nothing to stdout, so just ignore stderr.
 WX_LDFLAGS=`$WX_CONFIG --ldflags "$wx_libs" 2> /dev/null`
 AC_SUBST(WX_LDFLAGS)
 WX_CFLAGS=`$WX_CONFIG --cflags "$wx_libs"`
@@ -212,7 +213,11 @@ AC_CHECK_LIB(avcodec, avcodec_register_all,
 ])
 
 dnl Check for libproj
-AC_CHECK_LIB([proj], [pj_init_plus], [AVEN_LIBS="$AVEN_LIBS -lproj"])
+PROJ_LIBS=
+AC_CHECK_LIB([proj], [pj_init_plus],
+  [PROJ_LIBS=-lproj],
+  [AC_MSG_ERROR([PROJ4 required for coordinate transformations])])
+AC_SUBST([PROJ_LIBS])
 
 dnl Checks for header files.
 AC_HEADER_STDC
