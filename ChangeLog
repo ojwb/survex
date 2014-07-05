@@ -1,3 +1,7 @@
+Sat Jul 05 02:11:07 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac: Update for 1.2.14.
+
 Fri Jul 04 12:57:12 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Merge changes from pot to po files.

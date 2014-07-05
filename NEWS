@@ -1,13 +1,12 @@
-6d3938b9 (Olly Betts 2014-07-03 01:15:42 +1200    1) Wed Jul 02 13:14:17 GMT 2014  Olly Betts <olly@survex.com>
-
-Changes in 1.2.14 (2014-07-??):
+Changes in 1.2.14 (2014-07-05):
 
 * img library: Add ability to store a PROJ4 string describing the coordinate
   system in use in 3d v8 files.
 
 * aven: If the 3d file specifies a coordinate system, then use it for exporting
   to formats which need to know (currently GPX).  If the input file doesn't
-  specify, allow the user to enter one in the export dialog.
+  specify the coordinate system, allow the user to enter a PROJ4 string in the
+  export dialog.
 
 * aven: You can now quickly zoom to a particular area by holding down the
   "Shift" key and dragging with the left mouse button to create a rectangular
@@ -47,6 +46,13 @@ Changes in 1.2.14 (2014-07-??):
 
 * cavern: Add support for 'L' flag (exclude from length) in Compass .dat files
   and handle it in the same way as the "DUPLICATE" flag in .svx files.
+
+* cavern: If there's more than one *fix command with coordinates, still
+  actually fix the second and subsequent ones, to avoid triggering bogus errors
+  about unconnected surveys.
+
+* cavern: If there's more than one *fix command with coordinates, report the
+  station name of the previous one, plus the file and line number where it was.
 
 * cavern: Fix handling of the rather contrived case of *fix with no coordinates
   followed by *solve and then another *fix with no coordinates not to access
