@@ -1741,7 +1741,7 @@ cmd_cs(void)
 	 }
 	 break;
       case CS_S_MERC:
-         // FIXME: Is this ok_for_output?
+         /* FIXME: Is this ok_for_output? */
 	 if (ch == '-') {
 	    get_token_no_blanks();
 	    if (strcmp(ucbuffer, "MERC") == 0) {
