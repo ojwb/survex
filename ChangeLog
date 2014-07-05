@@ -1,3 +1,8 @@
+Sat Jul 05 11:20:34 GMT 2014  Olly Betts <olly@survex.com>
+
+	* make_release: Report correct line number for a // comment in a C
+	  source file.
+
 Sat Jul 05 02:11:07 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.14.

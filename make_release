@@ -10,7 +10,7 @@ fi
 
 if test x"$rel" = xyes ; then
   cd src
-  perl -ne 'if (m!(.*)//! && $1 !~ / \* /) {print "$ARGV:$.:// comment in C source\n"; exit 1}' \
+  perl -e 'while (<>) { if (m!(.*)//! && $1 !~ / \* /) {print "$ARGV:$.:// comment in C source\n"; exit 1}} continue { close ARGV if eof }' \
       *.c \
       cavern.h commands.h cmdline.h date.h datain.h debug.h\
       filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h\
