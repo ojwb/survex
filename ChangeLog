@@ -1,3 +1,7 @@
+Sat Jul 05 12:27:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/glbitmapfont.cc: Fix to build on mingw.
+
 Sat Jul 05 12:00:55 GMT 2014  Olly Betts <olly@survex.com>
 
 	* configure.ac,src/Makefile.am: Error out in configure is PROJ isn't

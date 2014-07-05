@@ -31,7 +31,11 @@
 #include "wx.h"
 
 #include <cerrno>
+#ifdef HAVE_MMAP
 #include <sys/mman.h>
+#else
+#include <unistd.h>
+#endif
 
 using namespace std;
 
@@ -142,8 +146,9 @@ BitmapFont::init_extra_chars() const
     extra_data = data;
     if (data_len) {
 	size_t c = data_len;
+	unsigned char * p = data;
 	while (c) {
-	    ssize_t n = read(fd, data, c);
+	    ssize_t n = read(fd, p, c);
 	    if (n <= 0) {
 		if (errno == EINTR) continue;
 		data_len = 0;
@@ -152,10 +157,9 @@ BitmapFont::init_extra_chars() const
 		// fprintf(stderr, "Couldn't load extended font.\n");
 		break;
 	    }
-	    data += n;
+	    p += n;
 	    c -= n;
 	}
-	data = extra_data;
     }
 #endif
 
