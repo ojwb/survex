@@ -1,3 +1,7 @@
+Sun Jul 06 12:14:04 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Add missing "custom" to "*cs out" example.
+
 Sat Jul 05 12:27:17 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/glbitmapfont.cc: Fix to build on mingw.

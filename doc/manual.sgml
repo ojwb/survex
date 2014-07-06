@@ -1330,7 +1330,7 @@ stored in a way that can be automatically collated.
 <Para>
 <programlisting>
 ; Output in the coordinate system used in the Totes Gebirge in Austria
-*cs out "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"</programlisting>
+*cs out custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"</programlisting>
 </Para>
 </listitem>
 
