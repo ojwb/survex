@@ -1343,7 +1343,9 @@ processed survey data to be specified.
 </Para>
 
 <Para>
-*cs was added in Survex 1.2.14.
+*cs was added in Survex 1.2.14.  Currently only "custom" or UTM followed
+by a zone number (1-60), optionally followed by "N" or "S" (default is North)
+are supported.  The latter is assumed to be in the WGS84 datum.
 </Para>
 
 <Para>
