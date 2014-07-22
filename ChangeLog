@@ -1,3 +1,9 @@
+Tue Jul 22 04:50:23 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/: cavern.tst testcase back2 is now actually used.  Fix a bug
+	  in this testcase, and extend it to cover a variant of the situation
+	  reported as a bug in therion by Bill Gee to the therion list.
+
 Fri Jul 11 21:58:11 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Note what coordinate systems *cs currently actually

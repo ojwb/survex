@@ -55,7 +55,8 @@ testdir=`(cd "$testdir" && pwd)`
  cartes diving cylpolar normal normal_bad normignall nosurv cmd_flags\
  bad_cmd_flags plumb unusedstation exportnakedbegin oldestyle bugdz\
  baddatacylpolar badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug\
- omitclino back notentranceorexport inferunknown inferexports bad_units_factor\
+ omitclino back back2\
+ notentranceorexport inferunknown inferexports bad_units_factor\
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
@@ -201,6 +202,7 @@ for file in $TESTS ; do
   3sdfixbug) pos=yes ; warn=0 ;;
   omitclino) pos=yes ; warn=0 ;;
   back) pos=yes; warn=0 ;;
+  back2) pos=yes; warn=2 ;;
   notentranceorexport) pos=fail; warn=0 ; error=1 ;;
   inferunknown) pos=fail; error=1 ;;
   inferexports) pos=no; warn=0 ;;
