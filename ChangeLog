@@ -1,3 +1,9 @@
+Tue Jul 22 04:52:44 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/inferplumbs.svx: Remove unused file containing the start of a
+	  testcase for "*infer plumbs" - this isn't useful as we already test
+	  this in cmd_infer.svx.
+
 Tue Jul 22 04:50:23 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/: cavern.tst testcase back2 is now actually used.  Fix a bug
