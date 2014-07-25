@@ -1,3 +1,10 @@
+Fri Jul 25 08:47:01 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Don't persist full screen mode between runs - it's not a
+	  standard behaviour of desktop programs, and it's too easy to go into
+	  full screen mode from the menu and then not be able to get out again
+	  because you don't know the required key shortcut.
+
 Tue Jul 22 04:57:13 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/Makefile.am: Ship some missing .out files and compare.tst.

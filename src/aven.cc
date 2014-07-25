@@ -241,8 +241,10 @@ bool Aven::OnInit()
     int width, height;
     wxConfigBase::Get()->Read(wxT("width"), &width, 0);
     if (width > 0) wxConfigBase::Get()->Read(wxT("height"), &height, 0);
-    bool maximized = (width == -1);
-    bool full_screen = (width <= -2);
+    // We used to persist full screen mode (-1 was maximized,
+    // -2 full screen), but people would get stuck in full
+    // screen mode, unsure how to exit.
+    bool maximized = (width <= -1);
     if (width <= 0 || height <= 0) {
 #if wxUSE_DISPLAY
 	wxRect geom = wxDisplay().GetGeometry();
@@ -271,10 +273,8 @@ bool Aven::OnInit()
     // Create the main window.
     m_Frame = new MainFrm(APP_NAME, pos, wxSize(width, height));
 
-    // Select full_screen or maximised if that's the saved state.
-    if (full_screen) {
-	m_Frame->ShowFullScreen(true);
-    } else if (maximized) {
+    // Select maximised if that's the saved state.
+    if (maximized) {
 	m_Frame->Maximize();
     }
 
