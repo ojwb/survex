@@ -1,3 +1,11 @@
+Sat Jul 26 02:01:23 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: When in full screen mode, moving the mouse to the top of the
+	  screen now makes the menu bar appear (and moving the mouse down again
+	  makes it disappear).  This provides a non-shortcut way out of full
+	  screen mode, as well as making it easier to perform other operations
+	  while in full screen mode.
+
 Fri Jul 25 08:47:01 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Don't persist full screen mode between runs - it's not a

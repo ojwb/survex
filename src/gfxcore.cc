@@ -2950,6 +2950,16 @@ bool GfxCore::IsFullScreen() const
     return m_Parent->IsFullScreen();
 }
 
+bool GfxCore::FullScreenModeShowingMenus() const
+{
+    return m_Parent->FullScreenModeShowingMenus();
+}
+
+void GfxCore::FullScreenModeShowMenus(bool show)
+{
+    m_Parent->FullScreenModeShowMenus(show);
+}
+
 void
 GfxCore::MoveViewer(double forward, double up, double right)
 {

@@ -223,6 +223,16 @@ void GUIControl::RestoreCursor()
 }
 
 void GUIControl::HandleNonDrag(const wxPoint & point) {
+    if (m_View->IsFullScreen()) {
+	if (m_View->FullScreenModeShowingMenus()) {
+	    if (point.y > 8)
+		m_View->FullScreenModeShowMenus(false);
+	} else {
+	    if (point.y == 0) {
+		m_View->FullScreenModeShowMenus(true);
+	    }
+	}
+    }
     if (m_View->CheckHitTestGrid(point, false)) {
 	m_View->SetCursor(GfxCore::CURSOR_POINTING_HAND);
     } else if (m_View->PointWithinScaleBar(point)) {

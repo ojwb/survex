@@ -256,6 +256,8 @@ class MainFrm : public wxFrame {
     bool m_IsExtendedElevation;
     bool pending_find;
 
+    bool fullscreen_showing_menus;
+
 #ifdef PREFDLG
     PrefsDlg* m_PrefsDlg;
 #endif
@@ -446,6 +448,8 @@ public:
     void OnViewSmoothLines(wxCommandEvent&) { if (m_Control) m_Control->OnViewSmoothLines(); }
     void OnViewFullScreen(wxCommandEvent&) { ViewFullScreen(); }
     void ViewFullScreen();
+    bool FullScreenModeShowingMenus() const;
+    void FullScreenModeShowMenus(bool show);
     void OnReverseDirectionOfRotation(wxCommandEvent&) { if (m_Control) m_Control->OnReverseDirectionOfRotation(); }
     void OnCancelDistLine(wxCommandEvent&) { if (m_Control) m_Control->OnCancelDistLine(); }
 

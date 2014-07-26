@@ -487,6 +487,10 @@ public:
 
     bool IsFullScreen() const;
 
+    bool FullScreenModeShowingMenus() const;
+
+    void FullScreenModeShowMenus(bool show);
+
     void DragFinished();
 
     void SplitLineAcrossBands(int band, int band2,

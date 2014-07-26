@@ -703,7 +703,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_NumHighlighted(0),
     m_HasUndergroundLegs(false), m_HasSplays(false), m_HasSurfaceLegs(false),
     m_HasErrorInformation(false), m_IsExtendedElevation(false),
-    pending_find(false)
+    pending_find(false), fullscreen_showing_menus(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
 #endif
@@ -2690,8 +2690,29 @@ bool MainFrm::ShowingSidePanel()
 
 void MainFrm::ViewFullScreen() {
     ShowFullScreen(!IsFullScreen());
+    fullscreen_showing_menus = false;
     if (IsFullScreen())
 	was_showing_sidepanel_before_fullscreen = ShowingSidePanel();
     if (was_showing_sidepanel_before_fullscreen)
 	ToggleSidePanel();
+}
+
+bool MainFrm::FullScreenModeShowingMenus() const
+{
+    return fullscreen_showing_menus;
+}
+
+void MainFrm::FullScreenModeShowMenus(bool show)
+{
+    if (!IsFullScreen() || show == fullscreen_showing_menus)
+	return;
+    Freeze();
+    ShowFullScreen(false);
+    if (show) {
+	ShowFullScreen(true, wxFULLSCREEN_ALL ^ wxFULLSCREEN_NOMENUBAR);
+    } else {
+	ShowFullScreen(true);
+    }
+    Thaw();
+    fullscreen_showing_menus = show;
 }
