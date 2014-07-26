@@ -721,6 +721,11 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
 #endif
 
+#if wxCHECK_VERSION(3,1,0)
+    // Add a full screen button to the right upper corner of title bar under OS
+    // X 10.7 and later.
+    EnableFullScreenView();
+#endif
     CreateMenuBar();
     CreateToolBar();
     CreateStatusBar(2, wxST_SIZEGRIP);
