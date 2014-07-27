@@ -1,3 +1,8 @@
+Sun Jul 27 07:09:41 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,src/commands.c,tests/cs.svx: Add support for for
+	  "*cs s-merc".
+
 Sun Jul 27 06:27:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,src/commands.c,tests/cs.svx,tests/csbad.out: Add

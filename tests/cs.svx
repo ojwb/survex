@@ -9,7 +9,7 @@
 *cs Long-Lat
 ; Not yet supported: *cs local
 ; Not yet supported: *cs OSGB:HA
-; Not yet supported: *cs S-MERC
+*cs S-MERC
 *cs UTM1
 *cs UTM12N
 *cs UTM60S
@@ -19,7 +19,7 @@
 ; Not yet supported: *cs out IJTSK
 ; Not yet supported: *cs out IJTSK03
 ; Not yet supported: *cs out OSGB:HA
-; Not yet supported: *cs out S-MERC
+*cs out S-MERC
 *cs out UTM1
 *cs out UTM12N
 *cs out UTM60S

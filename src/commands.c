@@ -1741,8 +1741,8 @@ cmd_cs(void)
 	 }
 	 break;
       case CS_S_MERC:
-         /* FIXME: Is this ok_for_output? */
 	 if (ch == '-') {
+	    nextch();
 	    get_token_no_blanks();
 	    if (strcmp(ucbuffer, "MERC") == 0) {
 	       cs_sub = 0;
@@ -1781,7 +1781,6 @@ cmd_cs(void)
       case CS_JTSK:
       case CS_LOCAL:
       case CS_OSGB:
-      case CS_S_MERC:
       default:
 	 /* FIXME: Handle these too... */
 	 /* printf("CS %d:%d\n", (int)cs, cs_sub); */
@@ -1797,6 +1796,9 @@ cmd_cs(void)
 #endif
       case CS_LONG:
 	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84");
+	 break;
+      case CS_S_MERC:
+	 proj_str = osstrdup("+proj=merc +latts=0 +lon0=0 +k=1 +x0=0 +y0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null +no_defs");
 	 break;
       case CS_UTM:
 	 proj_str = osmalloc(64);
