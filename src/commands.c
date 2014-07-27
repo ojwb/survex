@@ -1685,9 +1685,8 @@ cmd_cs(void)
 	 ok_for_output = MAYBE;
 	 if (ch == ':' && isdigit(nextch())) {
 	    unsigned n = read_uint();
-	    if (n < 32768) {
+	    if (n < 1000000) {
 	       cs_sub = (int)n;
-	       /* FIXME: Implement */
 	    }
 	 }
 	 break;
@@ -1774,9 +1773,6 @@ cmd_cs(void)
    switch (cs) {
       case CS_CUSTOM:
 	 break;
-      case CS_EPSG:
-      case CS_ESRI:
-      case CS_EUR:
       case CS_IJTSK:
       case CS_JTSK:
       case CS_LOCAL:
@@ -1787,6 +1783,17 @@ cmd_cs(void)
 	 set_pos(&fp);
 	 compile_error_skip(-/*Unknown coordinate system*/434);
 	 return;
+      case CS_EPSG:
+	 proj_str = osmalloc(32);
+	 sprintf(proj_str, "+init=epsg:%d +no_defs", cs_sub);
+	 break;
+      case CS_ESRI:
+	 proj_str = osmalloc(32);
+	 sprintf(proj_str, "+init=esri:%d +no_defs", cs_sub);
+	 break;
+      case CS_EUR:
+	 proj_str = osstrdup("+proj=utm +zone=30 +ellps=intl +towgs84=-86,-98,-119,0,0,0,0 +no_defs");
+	 break;
 #if 0
       case CS_LAT:
 	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be

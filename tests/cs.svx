@@ -1,6 +1,6 @@
-; Not yet supported: *cs EPSG:1234
-; Not yet supported: *cs ESRI:2345
-; Not yet supported: *cs EUR79Z30
+*cs EPSG:4167
+*cs ESRI:104305
+*cs EUR79Z30
 ; Not yet supported: *cs IJTSK
 ; Not yet supported: *cs IJTSK03
 ; Not yet supported: *cs JTSK

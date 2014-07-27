@@ -1349,6 +1349,18 @@ are:
 
 <Para>CUSTOM followed by a PROJ4 string (like in the example above).</Para>
 
+<Para>EPSG: followed by a positive integer code.  EPSG codes cover most
+coordinate systems in use, and PROJ supports many of these.  The website
+<ulink url="http://epsg.io/">http://epsg.io/</ulink> is a useful resource for
+finding the EPSG code you want.  Supported since Survex 1.2.15.</Para>
+
+<Para>ESRI: followed by a positive integer code.  ESRI codes are used by
+ArcGIS to specify coordinate systems (in a similar way to EPSG codes), and PROJ
+supports many of them.  Supported since Survex 1.2.15.</Para>
+
+<Para>EUR79Z30 for UTM zone 30, EUR79 datum.  Supported since Survex 1.2.15.
+</Para>
+
 <Para>LONG-LAT for longitude/latitude.  The WGS84 datum is assumed.  Supported
 since Survex 1.2.15.</Para>
 
