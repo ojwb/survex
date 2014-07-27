@@ -1,3 +1,8 @@
+Sun Jul 27 14:25:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/cs.svx: Test that IJTSK and IJTSK03 are accepted as output
+	  coordinate systems.
+
 Sun Jul 27 12:17:47 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,src/commands.c,tests/: Add support for "*cs ijtsk"
