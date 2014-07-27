@@ -1798,7 +1798,7 @@ cmd_cs(void)
 	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84");
 	 break;
       case CS_S_MERC:
-	 proj_str = osstrdup("+proj=merc +latts=0 +lon0=0 +k=1 +x0=0 +y0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null +no_defs");
+	 proj_str = osstrdup("+proj=merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null +no_defs");
 	 break;
       case CS_UTM:
 	 proj_str = osmalloc(64);
