@@ -1,3 +1,8 @@
+Sun Jul 27 06:27:50 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,src/commands.c,tests/cs.svx,tests/csbad.out: Add
+	  support for "*cs long-lat".
+
 Sat Jul 26 07:06:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Call EnableFullScreenView() if built with wx >= 3.1.0

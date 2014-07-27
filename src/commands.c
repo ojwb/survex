@@ -1779,9 +1779,7 @@ cmd_cs(void)
       case CS_EUR:
       case CS_IJTSK:
       case CS_JTSK:
-      case CS_LAT:
       case CS_LOCAL:
-      case CS_LONG:
       case CS_OSGB:
       case CS_S_MERC:
       default:
@@ -1790,6 +1788,16 @@ cmd_cs(void)
 	 set_pos(&fp);
 	 compile_error_skip(-/*Unknown coordinate system*/434);
 	 return;
+#if 0
+      case CS_LAT:
+	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be
+	  * misapplied, so we want to swap ourselves really. */
+	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +axis=neu");
+	 break;
+#endif
+      case CS_LONG:
+	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84");
+	 break;
       case CS_UTM:
 	 proj_str = osmalloc(64);
 	 if (cs_sub > 0) {

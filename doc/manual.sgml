@@ -1343,10 +1343,17 @@ processed survey data to be specified.
 </Para>
 
 <Para>
-*cs was added in Survex 1.2.14.  Currently only "custom" or UTM followed
-by a zone number (1-60), optionally followed by "N" or "S" (default is North)
-are supported.  The latter is assumed to be in the WGS84 datum.
+*cs was added in Survex 1.2.14.  The currently supported coordinate systems
+are:
 </Para>
+
+<Para>CUSTOM followed by a PROJ4 string (like in the example above).</Para>
+
+<Para>LONG-LAT for longitude/latitude.  The WGS84 datum is assumed.  Supported
+since Survex 1.2.15.</Para>
+
+<Para>UTM followed by a zone number (1-60), optionally followed by "N" or "S"
+(default is North).  The WGS84 datum is assumed.</Para>
 
 <Para>
 By default, Survex works in an unspecified coordinate system (and this was the
