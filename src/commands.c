@@ -1791,21 +1791,21 @@ cmd_cs(void)
       case CS_LAT:
 	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be
 	  * misapplied, so we want to swap ourselves really. */
-	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +axis=neu");
+	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +axis=neu +no_defs");
 	 break;
 #endif
       case CS_LONG:
-	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84");
+	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 	 break;
       case CS_S_MERC:
 	 proj_str = osstrdup("+proj=merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null +no_defs");
 	 break;
       case CS_UTM:
-	 proj_str = osmalloc(64);
+	 proj_str = osmalloc(74);
 	 if (cs_sub > 0) {
-	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d", cs_sub);
+	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +no_defs", cs_sub);
 	 } else {
-	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +south", -cs_sub);
+	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +south +no_defs", -cs_sub);
 	 }
 	 break;
    }

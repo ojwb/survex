@@ -1,3 +1,7 @@
+Sun Jul 27 09:47:55 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Make sure all proj strings have "+no_defs".
+
 Sun Jul 27 09:46:53 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Fix incorrect codes in proj string for S-MERC (all
