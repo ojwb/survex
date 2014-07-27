@@ -2,7 +2,7 @@
 ./csbad.svx:2:4: Unknown coordinate system
 ./csbad.svx:3:4: Unknown coordinate system
 ./csbad.svx:4:4: Unknown coordinate system
-./csbad.svx:5:4: Unknown coordinate system
+./csbad.svx:5:11: End of line not blank
 ./csbad.svx:6:4: Unknown coordinate system
 ./csbad.svx:7:4: Unknown coordinate system
 ./csbad.svx:8:4: Unknown coordinate system
@@ -11,11 +11,15 @@
 ./csbad.svx:11:4: Unknown coordinate system
 ./csbad.svx:12:4: Unknown coordinate system
 ./csbad.svx:13:4: Unknown coordinate system
-./csbad.svx:14:4: Invalid coordinate system: unknown projection id
+./csbad.svx:14:4: Unknown coordinate system
 ./csbad.svx:15:4: Unknown coordinate system
-./csbad.svx:16:4: Coordinate system unsuitable for output
+./csbad.svx:16:4: Unknown coordinate system
 ./csbad.svx:17:4: Unknown coordinate system
-./csbad.svx:18:4: Unknown coordinate system
+./csbad.svx:18:4: Invalid coordinate system: unknown projection id
+./csbad.svx:19:4: Unknown coordinate system
+./csbad.svx:20:4: Coordinate system unsuitable for output
+./csbad.svx:21:4: Unknown coordinate system
+./csbad.svx:22:4: Unknown coordinate system
 
 Removing trailing traverses...
 
@@ -38,4 +42,4 @@ Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
 Done.
-There were 0 warning(s) and 18 error(s) - no output files produced.
+There were 0 warning(s) and 22 error(s) - no output files produced.

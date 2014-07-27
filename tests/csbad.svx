@@ -4,6 +4,10 @@
 *cs EUR79Z31
 *cs IJTSK 03
 *cs IJTSK04
+*cs IJTSK99
+*cs IJTSK3
+*cs IJTSK032
+*cs IJTSK03a
 *cs lat-lat
 *cs Long-LONG
 *cs OSGB:ZZ

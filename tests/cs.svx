@@ -1,8 +1,8 @@
 *cs EPSG:4167
 *cs ESRI:104305
 *cs EUR79Z30
-; Not yet supported: *cs IJTSK
-; Not yet supported: *cs IJTSK03
+*cs IJTSK
+*cs IJTSK03
 ; Not yet supported: *cs JTSK
 ; Not yet supported: *cs JTSK03
 ; Not yet supported: *cs lat-long
@@ -15,7 +15,7 @@
 *cs UTM60S
 *cs custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
 *cs out custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
-; Not yet supported: *cs out EUR79Z30
+*cs out EUR79Z30
 ; Not yet supported: *cs out IJTSK
 ; Not yet supported: *cs out IJTSK03
 ; Not yet supported: *cs out OSGB:HA

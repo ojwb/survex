@@ -1773,7 +1773,6 @@ cmd_cs(void)
    switch (cs) {
       case CS_CUSTOM:
 	 break;
-      case CS_IJTSK:
       case CS_JTSK:
       case CS_LOCAL:
       case CS_OSGB:
@@ -1793,6 +1792,12 @@ cmd_cs(void)
 	 break;
       case CS_EUR:
 	 proj_str = osstrdup("+proj=utm +zone=30 +ellps=intl +towgs84=-86,-98,-119,0,0,0,0 +no_defs");
+	 break;
+      case CS_IJTSK:
+	 if (cs_sub == 0)
+	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
+	 else
+	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
 #if 0
       case CS_LAT:
