@@ -1732,9 +1732,17 @@ cmd_cs(void)
 	    if (strchr("HNOST", uch1)) {
 	       int uch2 = toupper(nextch());
 	       if (uch2 >= 'A' && uch2 <= 'Z' && uch2 != 'I') {
+		  int x, y;
 		  nextch();
+		  if (uch1 > 'I') --uch1;
+		  uch1 -= 'A';
 		  if (uch2 > 'I') --uch2;
-		  cs_sub = (uch1 - 'A') * 25 + (uch2 - 'A');
+		  uch2 -= 'A';
+		  x = uch1 % 5;
+		  y = uch1 / 5;
+		  x = (x * 5) + uch2 % 5;
+		  y = (y * 5) + uch2 / 5;
+		  cs_sub = y * 25 + x;
 	       }
 	    }
 	 }
@@ -1775,7 +1783,6 @@ cmd_cs(void)
 	 break;
       case CS_JTSK:
       case CS_LOCAL:
-      case CS_OSGB:
       default:
 	 /* FIXME: Handle these too... */
 	 /* printf("CS %d:%d\n", (int)cs, cs_sub); */
@@ -1809,6 +1816,13 @@ cmd_cs(void)
       case CS_LONG:
 	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 	 break;
+      case CS_OSGB: {
+	 int x = 14 - (cs_sub % 25);
+	 int y = (cs_sub / 25) - 20;
+	 proj_str = osmalloc(160);
+	 sprintf(proj_str, "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=%d +y_0=%d +ellps=airy +datum=OSGB36 +units=m +no_defs", x * 100000, y * 100000);
+	 break;
+      }
       case CS_S_MERC:
 	 proj_str = osstrdup("+proj=merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null +no_defs");
 	 break;

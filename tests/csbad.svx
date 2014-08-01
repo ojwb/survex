@@ -11,6 +11,7 @@
 *cs lat-lat
 *cs Long-LONG
 *cs OSGB:ZZ
+*cs OSGB:HI
 *cs S-LONG
 *cs UTM0
 *cs UTM61N
