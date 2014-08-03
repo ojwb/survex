@@ -1,3 +1,8 @@
+Sun Aug 03 09:54:39 GMT 2014  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Add run-time requirement on proj and proj-epsg for
+	  survex package and on tk for svxedit package.
+
 Fri Aug 01 19:42:00 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,src/commands.c,tests/: Add support for "*cs

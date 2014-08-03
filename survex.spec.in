@@ -12,9 +12,9 @@ Packager: Olly Betts <olly@survex.com>
 # If your distro doesn't have wxGTK3-devel and wxGTK3 yet, use these
 # dependencies instead:
 #BuildRequires: wxGTK-devel >= 2.8.0, proj-devel
-#Requires: wxGTK >= 2.8.0
+#Requires: wxGTK >= 2.8.0, proj, proj-epsg
 BuildRequires: wxGTK3-devel, proj-devel
-Requires: wxGTK3
+Requires: wxGTK3, proj, proj-epsg
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
@@ -23,7 +23,7 @@ BuildRoot: %{_tmppath}/%{name}-buildroot
 %package svxedit
 Summary: SvxEdit survey data editor for Survex
 Group: Applications/Misc
-Requires: survex = @VERSION@
+Requires: survex = @VERSION@, tk
 
 %description svxedit
 @SVXEDITDESC@
