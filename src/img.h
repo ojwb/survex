@@ -50,6 +50,8 @@ extern "C" {
 # define img_LABEL  3
 # define img_XSECT  4
 # define img_XSECT_END 5
+/* Loop closure information for the *preceeding* traverse (img_MOVE + one or
+ * more img_LINEs). */
 # define img_ERROR_INFO 6
 
 /* Leg flags */
@@ -123,7 +125,7 @@ typedef struct {
    int days1, days2;
 #endif
    double l, r, u, d;
-   /* Error information - valid when IMG_ERROR is returned: */
+   /* Error information - valid when img_ERROR_INFO is returned: */
    int n_legs;
    double length;
    double E, H, V;
