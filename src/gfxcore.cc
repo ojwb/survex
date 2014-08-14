@@ -3160,7 +3160,7 @@ const
 #include "rotatezoommask.xbm"
 
 void
-GfxCore::SetCursor(GfxCore::cursor new_cursor)
+GfxCore::UpdateCursor(GfxCore::cursor new_cursor)
 {
     // Check if we're already showing that cursor.
     if (current_cursor == new_cursor) return;

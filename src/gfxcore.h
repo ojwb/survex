@@ -532,7 +532,7 @@ public:
     void OnExport(const wxString &filename, const wxString &title,
 		  const wxString &datestamp, time_t datestamp_numeric,
 		  const wxString &cs_proj);
-    void SetCursor(GfxCore::cursor new_cursor);
+    void UpdateCursor(GfxCore::cursor new_cursor);
     bool MeasuringLineActive() const;
 
     bool HandleRClick(wxPoint point);

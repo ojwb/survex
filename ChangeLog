@@ -1,3 +1,8 @@
+Thu Aug 14 23:28:01 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/: Rename methods which hide virtual methods in the parent class.
+	  Reported by Martin Sluka.
+
 Thu Aug 14 23:27:08 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Remove constants which are no longer used.  Reported

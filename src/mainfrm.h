@@ -269,7 +269,7 @@ class MainFrm : public wxFrame {
     void CentreDataset(const Vector3 & vmin);
 
     void CreateMenuBar();
-    void CreateToolBar();
+    void MakeToolBar();
     void CreateSidePanel();
 
     void UpdateStatusBar();

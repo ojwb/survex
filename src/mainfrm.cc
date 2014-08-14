@@ -727,7 +727,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     EnableFullScreenView();
 #endif
     CreateMenuBar();
-    CreateToolBar();
+    MakeToolBar();
     CreateStatusBar(2, wxST_SIZEGRIP);
     CreateSidePanel();
 
@@ -948,9 +948,9 @@ void MainFrm::CreateMenuBar()
 // ICON must be a literal string.
 #define TOOLBAR_BITMAP(ICON) wxBitmap(icon_path + wxT(ICON".png"), wxBITMAP_TYPE_PNG)
 
-void MainFrm::CreateToolBar()
+void MainFrm::MakeToolBar()
 {
-    // Create the toolbar.
+    // Make the toolbar.
 
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 
