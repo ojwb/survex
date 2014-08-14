@@ -1,3 +1,7 @@
+Thu Aug 14 11:03:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac: Update for 1.2.15.
+
 Thu Aug 14 10:34:58 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm,make_release: Update for building with latest Debian

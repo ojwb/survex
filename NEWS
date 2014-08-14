@@ -1,3 +1,37 @@
+Changes in 1.2.15 (2014-08-14):
+
+* cavern: The *cs command now also supports "long-lat", "s-merc" (for "Web
+  Mercator"), EPSG and ESRI codes, "eur79z30", "ijtsk" and "ijtsk03".  This
+  means that we now support all the coordinates systems which Therion does,
+  except for a few which don't have X=East and Y=North.  The documentation
+  for *cs has also been improved.
+
+* aven: We no longer persist full screen mode between runs - it's not a
+  standard behaviour of desktop programs, and it's too easy to go into full
+  screen mode from the menu and then not be able to get out again because you
+  don't know the required key shortcut. (ticket#39)
+
+* aven: When in full screen mode, moving the mouse to the top of the screen now
+  makes the menu bar appear.  This provides a non-shortcut way out of full
+  screen mode, as well as making it easier to perform other operations while in
+  full screen mode.  The current implementation gives an annoyingly flickery
+  transition, but hopefully we can improve this in future. (ticket#39)
+
+* (MacOS X version): If built with wxWidgets >= 3.1.0 (which is still in
+  development), we now call EnableFullScreenView() which improves the full
+  screen mode experience on OS X 10.7 and later.
+
+* img library: Improve documentation for img_ERROR_INFO.
+
+* tests/: Ship some missing .out files and compare.tst.
+
+* tests/: cavern.tst testcase back2 is now actually used.  Fix a bug in this
+  testcase, and extend it to cover a variant of the situation reported as a bug
+  in therion by Bill Gee to the therion list.
+
+* (Linux version) survex.spec: Add run-time requirement on proj and proj-epsg
+  for the survex package and on tk for the svxedit package.
+
 Changes in 1.2.14 (2014-07-05):
 
 * img library: Add ability to store a PROJ4 string describing the coordinate
