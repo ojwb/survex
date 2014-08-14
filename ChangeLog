@@ -1,3 +1,8 @@
+Thu Aug 14 23:39:27 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Fix to build against wxWidgets built with
+	  assertions disabled.  Reported by Martin Sluka.
+
 Thu Aug 14 23:29:20 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/moviemaker.cc,src/moviemaker.h: Fix warnings from clang.
