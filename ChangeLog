@@ -1,3 +1,8 @@
+Thu Aug 14 10:34:58 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm,make_release: Update for building with latest Debian
+	  packaged mingw cross compiler.
+
 Mon Aug 04 10:34:19 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/img.h: Improve documentation for img_ERROR_INFO.

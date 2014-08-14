@@ -64,19 +64,45 @@ sudo apt-get install sgmltools-lite jadetex docbook-to-man w3m unifont
 <P>Currently I build this with a Linux hosted cross-compiler.  I use
 the packaged cross-compiler in the debian testing/unstable distribution:
 
-<code>
-sudo apt-get install mingw32
-</code>
-<!-- g++-mingw-w64 -->
+<pre>
+sudo apt-get install mingw-w64-i686-dev
+</pre>
 
 <p>
 I then install the various libraries by compiling from source.  For wxWidgets
-3.0.0, I configure with:
+3.0.1, I configure, build and install with:
 </p>
 
-<code>
-./configure --prefix=/usr/i586-mingw32msvc --host i586-mingw32msvc --with-msw --with-opengl --enable-display --disable-threads --disable-shared
-</code>
+<pre>
+./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --enable-display --disable-threads --disable-shared host_alias=i686-w64-mingw32 --disable-tls
+make
+sudo make install
+</pre>
+
+<p>
+For PROJ 4.8.0:
+</p>
+
+<pre>
+mkdir BUILD
+cd BUILD
+../configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --disable-shared host_alias=i686-w64-mingw32
+make
+sudo make install
+</pre>
+
+<p>
+For libav 10.3:
+</p>
+
+<pre>
+sudo apt-get install yasm
+mkdir BUILD
+cd BUILD
+../configure --prefix=/usr/i686-w64-mingw32 --cross-prefix=i686-w64-mingw32 --enable-cross-compile --target-os=mingw32 --arch=i686 --disable-shared
+make
+sudo make install
+</pre>
 
 <P>Building on Windows in a native mingw environment will probably
 require tinkering.  Best bet is probably to install bash and use the
