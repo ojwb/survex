@@ -1,3 +1,8 @@
+Thu Aug 14 23:27:08 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Remove constants which are no longer used.  Reported
+	  by Martin Sluka.
+
 Thu Aug 14 22:30:41 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/getopt.h,src/gettexttomsg.pl: Fix warnings when compiling with

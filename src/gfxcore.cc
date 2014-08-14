@@ -62,8 +62,6 @@ const unsigned int QUANTISE_FACTOR = 2;
 
 #include "avenpal.h"
 
-static const int COMPASS_OFFSET_X = 60;
-static const int COMPASS_OFFSET_Y = 80;
 static const int INDICATOR_BOX_SIZE = 60;
 static const int INDICATOR_GAP = 2;
 static const int INDICATOR_MARGIN = 5;
