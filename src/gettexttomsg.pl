@@ -2,7 +2,7 @@
 
 #  gettexttomsg.pl
 #
-#  Copyright (C) 2001,2002,2005,2011,2012 Olly Betts
+#  Copyright (C) 2001,2002,2005,2011,2012,2014 Olly Betts
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -37,8 +37,17 @@ close MSG;
 
 my $die = 0;
 
+my $suppress_argc_argv_unused_warnings = 0;
 while (<>) {
-    if (!/^\s*#/) {
+    if ($suppress_argc_argv_unused_warnings && /^{/) {
+	$suppress_argc_argv_unused_warnings = 0;
+	print "$_  (void)argc;\n  (void)argv\n";
+	next;
+    }
+
+    if (/^_getopt_initialize\b/) {
+	$suppress_argc_argv_unused_warnings = 1;
+    } elsif (!/^\s*#/) {
 	while (/\\\n$/) {
 	    $_ .= <>;
 	}

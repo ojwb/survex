@@ -19,9 +19,9 @@
 
 #ifndef _GETOPT_H
 
-#ifndef __need_getopt
+/* #ifdef __need_getopt */
 # define _GETOPT_H 1
-#endif
+/* #endif */
 
 /* If __GNU_LIBRARY__ is not already defined, either we are being used
    standalone, or this is the first header included in the source file.

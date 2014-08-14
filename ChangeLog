@@ -1,3 +1,8 @@
+Thu Aug 14 22:30:41 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/getopt.h,src/gettexttomsg.pl: Fix warnings when compiling with
+	  clang.  Reported by Martin Sluka.
+
 Thu Aug 14 22:29:25 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/log.cc,src/log.h: Fix log window under wxWidgets >= 2.9 to
