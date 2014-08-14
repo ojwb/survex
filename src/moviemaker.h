@@ -34,10 +34,14 @@ class MovieMaker {
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
     AVFormatContext *oc;
     AVStream *video_st;
+# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
     int out_size;
+# endif
     AVFrame *frame;
     unsigned char *outbuf;
+# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
     AVPicture *out;
+# endif
     unsigned char *pixels;
     SwsContext *sws_ctx;
     int averrno;

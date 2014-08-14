@@ -114,7 +114,6 @@ static inline void av_frame_free(AVFrame ** frame) {
 # ifndef AVIO_FLAG_WRITE
 #  define AVIO_FLAG_WRITE URL_WRONLY
 # endif
-#endif
 
 enum {
     MOVIE_NO_SUITABLE_FORMAT = 1,
@@ -122,7 +121,10 @@ enum {
     MOVIE_FILENAME_TOO_LONG
 };
 
+# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
 const int OUTBUF_SIZE = 200000;
+# endif
+#endif
 
 MovieMaker::MovieMaker()
 #ifdef HAVE_LIBAVFORMAT_AVFORMAT_H

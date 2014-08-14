@@ -1,3 +1,8 @@
+Thu Aug 14 23:29:20 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/moviemaker.cc,src/moviemaker.h: Fix warnings from clang.
+	  Reported by Martin Sluka.
+
 Thu Aug 14 23:28:01 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/: Rename methods which hide virtual methods in the parent class.
