@@ -1,3 +1,9 @@
+Thu Aug 14 22:29:25 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/log.cc,src/log.h: Fix log window under wxWidgets >= 2.9 to
+	  include the system information before the first log message like it
+	  does under wxWidgets 2.8.
+
 Thu Aug 14 11:48:09 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Update for *cs being added.

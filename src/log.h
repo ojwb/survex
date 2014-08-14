@@ -1,6 +1,6 @@
 //  log.h - Error log window for Aven.
 //
-//  Copyright (C) 2006,2011 Olly Betts
+//  Copyright (C) 2006,2011,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ class MyLogWindow : public wxLogWindow {
     MyLogWindow();
   protected:
 #if wxCHECK_VERSION(2,9,0)
-    void DoLogText(const wxChar *msg);
+    void DoLogText(const wxString & msg);
 #else
     void DoLogString(const wxChar *msg, time_t timestamp);
 #endif

@@ -1,6 +1,6 @@
 //  log.cc - Error log window for Aven.
 //
-//  Copyright (C) 2006,2011 Olly Betts
+//  Copyright (C) 2006,2011,2014 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ MyLogWindow::MyLogWindow()
 }
 
 #if wxCHECK_VERSION(2,9,0)
-void MyLogWindow::DoLogText(const wxChar *msg) {
+void MyLogWindow::DoLogText(const wxString & msg) {
     if (first) {
 	wxLogWindow::DoLogText(wxString(GetGLSystemDescription().c_str(), wxConvUTF8));
 	first = false;
