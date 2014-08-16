@@ -3,8 +3,8 @@
 *cs EUR79Z30
 *cs IJTSK
 *cs IJTSK03
-; Not yet supported: *cs JTSK
-; Not yet supported: *cs JTSK03
+*cs JTSK
+*cs JTSK03
 ; Not yet supported: *cs lat-long
 *cs Long-Lat
 ; Not yet supported: *cs local

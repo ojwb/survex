@@ -19,8 +19,8 @@
 ./csbad.svx:19:4: Invalid coordinate system: unknown projection id
 ./csbad.svx:20:4: Unknown coordinate system
 ./csbad.svx:21:4: Coordinate system unsuitable for output
-./csbad.svx:22:4: Unknown coordinate system
-./csbad.svx:23:4: Unknown coordinate system
+./csbad.svx:22:4: Coordinate system unsuitable for output
+./csbad.svx:23:4: Coordinate system unsuitable for output
 
 Removing trailing traverses...
 

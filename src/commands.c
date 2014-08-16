@@ -1779,16 +1779,6 @@ cmd_cs(void)
    }
    /* Actually handle the cs */
    switch (cs) {
-      case CS_CUSTOM:
-	 break;
-      case CS_JTSK:
-      case CS_LOCAL:
-      default:
-	 /* FIXME: Handle these too... */
-	 /* printf("CS %d:%d\n", (int)cs, cs_sub); */
-	 set_pos(&fp);
-	 compile_error_skip(-/*Unknown coordinate system*/434);
-	 return;
       case CS_EPSG:
 	 proj_str = osmalloc(32);
 	 sprintf(proj_str, "+init=epsg:%d +no_defs", cs_sub);
@@ -1806,11 +1796,26 @@ cmd_cs(void)
 	 else
 	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
+      case CS_JTSK:
+	 if (cs_sub == 0)
+	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
+	 else
+	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
+	 break;
 #if 0
       case CS_LAT:
 	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be
-	  * misapplied, so we want to swap ourselves really. */
+	  * misapplied, so we may want to swap ourselves.  Also, while
+	  * therion supports lat-long, I'm not totally convinced that it is
+	  * sensible to do so - people often say "lat-long", but probably
+	  * don't think that that's actually "Northing, Easting".  This
+	  * seems like it'll result in people accidentally getting X and Y
+	  * swapped in their fixed points...
+	  */
 	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +axis=neu +no_defs");
+	 break;
+      case CS_LOCAL:
+	 /* FIXME: Is it useful to be able to explicitly specify this? */
 	 break;
 #endif
       case CS_LONG:
@@ -1834,6 +1839,13 @@ cmd_cs(void)
 	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +south +no_defs", -cs_sub);
 	 }
 	 break;
+   }
+
+   if (!proj_str) {
+      /* printf("CS %d:%d\n", (int)cs, cs_sub); */
+      set_pos(&fp);
+      compile_error_skip(-/*Unknown coordinate system*/434);
+      return;
    }
 
    if (output) {

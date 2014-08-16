@@ -1,3 +1,8 @@
+Sat Aug 17 01:36:50 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,src/commands.c,tests/cs.svx,tests/csbad.out: Add
+	  support for "*cs JTSK" and "*cs JTSK03".
+
 Thu Aug 14 23:39:27 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/guicontrol.cc: Fix to build against wxWidgets built with
