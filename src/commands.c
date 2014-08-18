@@ -1779,6 +1779,11 @@ cmd_cs(void)
    }
    /* Actually handle the cs */
    switch (cs) {
+      case CS_NONE:
+	 break;
+      case CS_CUSTOM:
+	 /* proj_str already set */
+	 break;
       case CS_EPSG:
 	 proj_str = osmalloc(32);
 	 sprintf(proj_str, "+init=epsg:%d +no_defs", cs_sub);
@@ -1802,7 +1807,6 @@ cmd_cs(void)
 	 else
 	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
-#if 0
       case CS_LAT:
 	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be
 	  * misapplied, so we may want to swap ourselves.  Also, while
@@ -1812,12 +1816,13 @@ cmd_cs(void)
 	  * seems like it'll result in people accidentally getting X and Y
 	  * swapped in their fixed points...
 	  */
+#if 0
 	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +axis=neu +no_defs");
+#endif
 	 break;
       case CS_LOCAL:
 	 /* FIXME: Is it useful to be able to explicitly specify this? */
 	 break;
-#endif
       case CS_LONG:
 	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
 	 break;

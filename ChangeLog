@@ -1,3 +1,7 @@
+Tue Aug 19 08:26:11 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Fix compiler warnings caused by previous change.
+
 Sat Aug 17 01:36:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,src/commands.c,tests/cs.svx,tests/csbad.out: Add
