@@ -1,3 +1,9 @@
+Tue Aug 19 11:24:46 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Take a const ref to the wxString for the label name
+	  when exporting, to ensure the object is still valid when we call
+	  mb_str() on it.
+
 Tue Aug 19 08:26:11 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Fix compiler warnings caused by previous change.

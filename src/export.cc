@@ -1391,15 +1391,16 @@ Export(const wxString &fnm_out, const wxString &title,
 	      } else if (pass_mask & LABELS) {
 		  type = LABELS;
 	      }
+	      /* Use !UNDERGROUND as the criterion - we want stations where a
+	       * surface and underground survey meet to be in the underground
+	       * layer */
+	      bool f_surface = !(*pos)->IsUnderground();
 	      if (type) {
-		  const char * text = (*pos)->GetText().mb_str();
-		  /* Use !UNDERGROUND as the criterion - we want stations where
-		   * a surface and underground survey meet to be in the
-		   * underground layer */
-		  filt->label(&p, text, !(*pos)->IsUnderground(), type);
+		  const wxString & text = (*pos)->GetText();
+		  filt->label(&p, text.mb_str(), f_surface, type);
 	      }
 	      if (pass_mask & STNS)
-		  filt->cross(&p, !(*pos)->IsUnderground());
+		  filt->cross(&p, f_surface);
 	  }
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {
