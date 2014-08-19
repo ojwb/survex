@@ -40,7 +40,7 @@ cavern_LDADD = $(PROJ_LIBS)
 aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc useful.c cmdline.c z_getopt.c \
  getopt1.c namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
- glbitmapfont.cc gpx.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
+ glbitmapfont.cc gpx.cc kml.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \

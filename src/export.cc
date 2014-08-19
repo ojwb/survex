@@ -33,6 +33,7 @@
 #include "exportfilter.h"
 #include "gpx.h"
 #include "hpgl.h"
+#include "kml.h"
 #include "mainfrm.h"
 
 #include <float.h>
@@ -1160,6 +1161,10 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_HPGL:
 	   filt = new HPGL;
 	   // factor = POINTS_PER_MM * 1000.0 / scale;
+	   break;
+       case FMT_KML:
+	   filt = new KML(input_projection);
+	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_PLT:
 	   filt = new PLT;

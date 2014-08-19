@@ -231,6 +231,7 @@ static wxString formats[] = {
     wxT("EPS"),
     wxT("GPX"),
     wxT("HPGL"),
+    wxT("KML"),
     wxT("Plot"),
     wxT("Skencil"),
     wxT("SVG")
@@ -252,6 +253,7 @@ static unsigned format_info[] = {
     LABELS|LEGS|SURF|STNS,
     LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF|STNS|CENTRED,
+    LABELS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF,
     LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
     LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
@@ -262,6 +264,7 @@ static const char * extension[] = {
     ".eps",
     ".gpx",
     ".hpgl",
+    ".kml",
     ".plt",
     ".sk",
     ".svg"
@@ -272,6 +275,7 @@ static int msg_filetype[] = {
     /*EPS files*/412,
     /*GPX files*/413,
     /*HPGL for plotters*/414,
+    /*KML files*/444,
     /*Compass PLT for use with Carto*/415,
     /*Skencil files*/416,
     /*SVG files*/417

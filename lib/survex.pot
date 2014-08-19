@@ -1571,6 +1571,11 @@ msgstr ""
 msgid "HPGL for plotters"
 msgstr ""
 
+#: ../src/printwx.cc:278
+#: n:444
+msgid "KML files"
+msgstr ""
+
 #: ../src/printwx.cc:275
 #: n:415
 msgid "Compass PLT for use with Carto"
