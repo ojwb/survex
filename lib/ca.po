@@ -126,9 +126,9 @@ msgstr "Hi havia %d alerta(es)."
 #: ../src/cavernlog.cc:175
 #: ../src/cavernlog.cc:233
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "No s’ha pogut obrir el “pipe”: “%s”"
+msgstr "L'execució de l'ordre “%s” ha fallit"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -749,7 +749,7 @@ msgstr "No s’ha pogut obrir el fitxer “%s”"
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "No s'ha pogut escriure el fitxer “%s”"
 
 #: ../src/message.c:232
 #: n:94
@@ -1366,7 +1366,7 @@ msgstr ""
 #: ../src/aboutdlg.cc:183
 #: n:197
 msgid " (colour)"
-msgstr ""
+msgstr " (color)"
 
 #: ../src/readval.c:508
 #: ../src/readval.c:518
@@ -2492,7 +2492,7 @@ msgstr "&Graus"
 #: ../src/mainfrm.cc:922
 #: n:430
 msgid "&Percent"
-msgstr ""
+msgstr "&Percentatge"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".
@@ -2531,7 +2531,7 @@ msgstr "m"
 #: ../src/printwx.cc:1101
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length,
 #. plural), used e.g.  "2 miles".
@@ -2626,7 +2626,7 @@ msgstr "°"
 #: ../src/gfxcore.cc:775
 #: n:76
 msgid "ᵍ"
-msgstr ""
+msgstr "ᵍ"
 
 #. TRANSLATORS: alternative angle units (400 grad = 360 degrees =
 #. full circle).  Try to make this as short as sensibly possible.
@@ -2827,7 +2827,7 @@ msgstr "&Exporta com…"
 #: ../src/printwx.cc:623
 #: n:401
 msgid "Export as:"
-msgstr ""
+msgstr "Exporta com:"
 
 #. TRANSLATORS: Title of the export
 #. dialog

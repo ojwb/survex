@@ -128,7 +128,7 @@ msgstr ""
 #: n:17
 #, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr ""
+msgstr "Ошибка выполнения команды “%s”"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -1970,7 +1970,7 @@ msgstr ""
 #: ../src/printwx.cc:481
 #: n:393
 msgid "Cross-sections"
-msgstr ""
+msgstr "Сечения"
 
 #: ../src/printwx.cc:486
 #: n:394
@@ -2486,7 +2486,7 @@ msgstr ""
 #: ../src/mainfrm.cc:922
 #: n:430
 msgid "&Percent"
-msgstr ""
+msgstr "&Печать"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".

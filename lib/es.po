@@ -126,9 +126,9 @@ msgstr "Havia %d alerta(s)."
 #: ../src/cavernlog.cc:175
 #: ../src/cavernlog.cc:233
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "No se pudo abrir el “pipe”: “%s”"
+msgstr "Falló la ejecución del comando “%s”"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -749,7 +749,7 @@ msgstr "No se pudo abrir el archivo “%s”"
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "No se pudo escribir en el archivo “%s”"
 
 #: ../src/message.c:232
 #: n:94
@@ -919,7 +919,7 @@ msgstr "Alzado"
 #: ../src/gfxcore.cc:716
 #: n:432
 msgid "Plan"
-msgstr ""
+msgstr "Planta"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. from directly below.
@@ -1235,7 +1235,7 @@ msgstr ""
 #: ../src/printwx.cc:1047
 #: n:191
 msgid "Extended elevation"
-msgstr "Alzado desarrolado"
+msgstr "Alzado desarrollado"
 
 #: ../src/cavern.c:422
 #: n:172
@@ -2015,9 +2015,8 @@ msgstr "Marcos de la página"
 #. angles, etc
 #: ../src/printwx.cc:517
 #: n:265
-#, fuzzy
 msgid "Legend"
-msgstr "Cajetín de información"
+msgstr "Leyenda"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -2310,7 +2309,7 @@ msgstr "&Exporta como Animación…"
 #: ../src/mainfrm.cc:2402
 #: n:331
 msgid "Export Movie"
-msgstr ""
+msgstr "Exporta como Animación"
 
 #: ../src/mainfrm.cc:333
 #: n:319
@@ -2491,9 +2490,8 @@ msgstr "&Grados"
 #: ../src/gfxcore.cc:3246
 #: ../src/mainfrm.cc:922
 #: n:430
-#, fuzzy
 msgid "&Percent"
-msgstr "P&ercent"
+msgstr "Porc&entaje"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".
@@ -2828,7 +2826,7 @@ msgstr "&Exporta como…"
 #: ../src/printwx.cc:623
 #: n:401
 msgid "Export as:"
-msgstr ""
+msgstr "Exporta como:"
 
 #. TRANSLATORS: Title of the export
 #. dialog

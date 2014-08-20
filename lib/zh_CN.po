@@ -128,7 +128,7 @@ msgstr ""
 #: n:17
 #, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr ""
+msgstr "命令 “%s” 执行失败"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -2486,7 +2486,7 @@ msgstr ""
 #: ../src/mainfrm.cc:922
 #: n:430
 msgid "&Percent"
-msgstr ""
+msgstr "百分比(&P)"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".

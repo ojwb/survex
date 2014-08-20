@@ -126,9 +126,9 @@ msgstr "Celkom bolo zaznamenaných %d varovaní."
 #: ../src/cavernlog.cc:175
 #: ../src/cavernlog.cc:233
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Nepodarilo sa otvoriť “pipe”: “%s”"
+msgstr "Vykonávanie príkazu “%s” zlyhalo"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -2530,7 +2530,7 @@ msgstr "m"
 #: ../src/printwx.cc:1101
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length,
 #. plural), used e.g.  "2 miles".

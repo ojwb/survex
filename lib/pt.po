@@ -126,9 +126,9 @@ msgstr "Há %d alerta(s)."
 #: ../src/cavernlog.cc:175
 #: ../src/cavernlog.cc:233
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Impossível abrir “pipe”: “%s”"
+msgstr "Falhou a execução do comando “%s”"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -749,7 +749,7 @@ msgstr "Impossível abrir ficheiro “%s”"
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "Não foi possível escrever no ficheiro “%s”"
 
 #: ../src/message.c:232
 #: n:94
@@ -2017,9 +2017,8 @@ msgstr "Margens da Página"
 #. angles, etc
 #: ../src/printwx.cc:517
 #: n:265
-#, fuzzy
 msgid "Legend"
-msgstr "Caixa de Informação"
+msgstr "Legenda"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -2493,9 +2492,8 @@ msgstr "&Graus"
 #: ../src/gfxcore.cc:3246
 #: ../src/mainfrm.cc:922
 #: n:430
-#, fuzzy
 msgid "&Percent"
-msgstr "P&ercent"
+msgstr "P&ercentagem"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".
@@ -2534,7 +2532,7 @@ msgstr "m"
 #: ../src/printwx.cc:1101
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length,
 #. plural), used e.g.  "2 miles".
@@ -2837,7 +2835,7 @@ msgstr "&Exportar como…"
 #: ../src/printwx.cc:623
 #: n:401
 msgid "Export as:"
-msgstr ""
+msgstr "Exportar como:"
 
 #. TRANSLATORS: Title of the export
 #. dialog

@@ -126,9 +126,9 @@ msgstr "Há %d alerta(s)."
 #: ../src/cavernlog.cc:175
 #: ../src/cavernlog.cc:233
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Impossível abrir “pipe”: “%s”"
+msgstr "A execução do comando “%s” falhou"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88

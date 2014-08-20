@@ -1971,7 +1971,7 @@ msgstr ""
 #: ../src/printwx.cc:481
 #: n:393
 msgid "Cross-sections"
-msgstr ""
+msgstr "Potongan melintang"
 
 #: ../src/printwx.cc:486
 #: n:394
@@ -2488,7 +2488,7 @@ msgstr ""
 #: ../src/mainfrm.cc:922
 #: n:430
 msgid "&Percent"
-msgstr ""
+msgstr "&Persen"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".

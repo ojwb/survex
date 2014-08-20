@@ -126,9 +126,9 @@ msgstr "Ci sono %d avvertimenti."
 #: ../src/cavernlog.cc:175
 #: ../src/cavernlog.cc:233
 #: n:17
-#, fuzzy, c-format
+#, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Il piping non puó essere eseguito: “%s”"
+msgstr "Esecuzione del comando “%s” fallita"
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -2490,7 +2490,7 @@ msgstr "&Gradi"
 #: ../src/mainfrm.cc:922
 #: n:430
 msgid "&Percent"
-msgstr ""
+msgstr "&Percento"
 
 #. TRANSLATORS: abbreviation for "kilometres" (unit of length),
 #. used e.g.  "5km".
