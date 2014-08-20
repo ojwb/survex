@@ -356,7 +356,7 @@ msgstr ""
 #: ../src/img_hosted.c:35
 #: n:38
 msgid "Out of memory %.0s"
-msgstr ""
+msgstr "内存耗尽 %.0s"
 
 #: ../src/commands.c:403
 #: n:39
@@ -1520,7 +1520,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1873
 #: n:207
 msgid "Survex 3d files"
-msgstr ""
+msgstr "Survex 3d 文件"
 
 #: ../src/mainfrm.cc:1886
 #: ../src/mainfrm.cc:2325
@@ -1540,7 +1540,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1874
 #: n:329
 msgid "Survex svx files"
-msgstr ""
+msgstr "Survex svx 文件"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
@@ -1552,17 +1552,17 @@ msgstr ""
 #: ../src/printwx.cc:274
 #: n:411
 msgid "DXF files"
-msgstr ""
+msgstr "DXF 文件"
 
 #: ../src/printwx.cc:275
 #: n:412
 msgid "EPS files"
-msgstr ""
+msgstr "EPS 文件"
 
 #: ../src/printwx.cc:276
 #: n:413
 msgid "GPX files"
-msgstr ""
+msgstr "GPS 文件"
 
 #: ../src/printwx.cc:277
 #: n:414
@@ -1572,7 +1572,7 @@ msgstr ""
 #: ../src/printwx.cc:278
 #: n:444
 msgid "KML files"
-msgstr ""
+msgstr "KML 文件"
 
 #: ../src/printwx.cc:279
 #: n:415
@@ -1582,12 +1582,12 @@ msgstr ""
 #: ../src/printwx.cc:280
 #: n:416
 msgid "Skencil files"
-msgstr ""
+msgstr "Skencil 文件"
 
 #: ../src/printwx.cc:281
 #: n:417
 msgid "SVG files"
-msgstr ""
+msgstr "SVG 文件"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -2809,12 +2809,12 @@ msgstr "向北"
 #: ../src/mainfrm.cc:766
 #: n:380
 msgid "&Print…\tCtrl+P"
-msgstr ""
+msgstr "打印(&P)…\tCtrl+P"
 
 #: ../src/mainfrm.cc:767
 #: n:381
 msgid "P&age Setup…"
-msgstr ""
+msgstr "页面设置(&a)…"
 
 #: ../src/mainfrm.cc:771
 #: n:382

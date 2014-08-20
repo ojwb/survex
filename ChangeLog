@@ -1,3 +1,8 @@
+Wed Aug 20 01:50:07 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/ru.po,lib/zh_CN.po: Fill in some translations from the wxWidgets
+	  po files.
+
 Wed Aug 20 01:49:06 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/id.po: Adapt an existing translation in obvious way.

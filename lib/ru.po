@@ -356,7 +356,7 @@ msgstr ""
 #: ../src/img_hosted.c:35
 #: n:38
 msgid "Out of memory %.0s"
-msgstr ""
+msgstr "Недостаточно памяти %.0s"
 
 #: ../src/commands.c:403
 #: n:39
@@ -1520,14 +1520,14 @@ msgstr ""
 #: ../src/mainfrm.cc:1873
 #: n:207
 msgid "Survex 3d files"
-msgstr ""
+msgstr "Survex 3d файлы"
 
 #: ../src/mainfrm.cc:1886
 #: ../src/mainfrm.cc:2325
 #: ../src/printwx.cc:617
 #: n:208
 msgid "All files"
-msgstr ""
+msgstr "Все файлы"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
@@ -1540,7 +1540,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1874
 #: n:329
 msgid "Survex svx files"
-msgstr ""
+msgstr "Survex svx файлы"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
@@ -1552,17 +1552,17 @@ msgstr ""
 #: ../src/printwx.cc:274
 #: n:411
 msgid "DXF files"
-msgstr ""
+msgstr "DXF файлы"
 
 #: ../src/printwx.cc:275
 #: n:412
 msgid "EPS files"
-msgstr ""
+msgstr "EPS файлы"
 
 #: ../src/printwx.cc:276
 #: n:413
 msgid "GPX files"
-msgstr ""
+msgstr "GPX файлы"
 
 #: ../src/printwx.cc:277
 #: n:414
@@ -1572,7 +1572,7 @@ msgstr ""
 #: ../src/printwx.cc:278
 #: n:444
 msgid "KML files"
-msgstr ""
+msgstr "KML файлы"
 
 #: ../src/printwx.cc:279
 #: n:415
@@ -1582,12 +1582,12 @@ msgstr ""
 #: ../src/printwx.cc:280
 #: n:416
 msgid "Skencil files"
-msgstr ""
+msgstr "Skencil файлы"
 
 #: ../src/printwx.cc:281
 #: n:417
 msgid "SVG files"
-msgstr ""
+msgstr "SVG файлы"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -2809,12 +2809,12 @@ msgstr ""
 #: ../src/mainfrm.cc:766
 #: n:380
 msgid "&Print…\tCtrl+P"
-msgstr ""
+msgstr "&Печать…\tCtrl+P"
 
 #: ../src/mainfrm.cc:767
 #: n:381
 msgid "P&age Setup…"
-msgstr ""
+msgstr "&Настройки страницы…"
 
 #: ../src/mainfrm.cc:771
 #: n:382
@@ -2845,19 +2845,19 @@ msgstr ""
 #: ../src/printwx.cc:660
 #: n:398
 msgid "Print Preview"
-msgstr ""
+msgstr "Предварительный просмотр печати"
 
 #. TRANSLATORS: Title of the print
 #. dialog
 #: ../src/printwx.cc:296
 #: n:399
 msgid "Print"
-msgstr ""
+msgstr "Печать"
 
 #: ../src/printwx.cc:570
 #: n:400
 msgid "&Print…"
-msgstr ""
+msgstr "&Печать…"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
