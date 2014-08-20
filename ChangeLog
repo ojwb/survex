@@ -1,3 +1,7 @@
+Wed Aug 20 00:02:59 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/: Merge changes from template.
+
 Tue Aug 19 23:51:15 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Update source references.
