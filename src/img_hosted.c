@@ -27,7 +27,7 @@
 
 static const int img_error2msg_map[] = {
     /* IMG_NONE */         0,
-    /* IMG_FILENOTFOUND */ /*Couldn’t open data file “%s”*/24,
+    /* IMG_FILENOTFOUND */ /*Couldn’t open file “%s”*/24,
     /* TRANSLATORS: nasty hack - this message is for the .3d img code, and all
      * errors there take a filename parameter - we don’t really want it here,
      * so lose it with "%.0s" (which should display 0 characters from the

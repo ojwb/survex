@@ -396,7 +396,7 @@ data_file(const char *pth, const char *fnm)
       }
 
       if (fh == NULL) {
-	 compile_error(/*Couldn’t open data file “%s”*/24, fnm);
+	 compile_error(/*Couldn’t open file “%s”*/24, fnm);
 	 return;
       }
 

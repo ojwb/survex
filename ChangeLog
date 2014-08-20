@@ -1,3 +1,9 @@
+Wed Aug 20 05:28:20 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/,src/datain.c,src/img_hosted.c,src/printwx.cc,tests/badinc.out,
+	  tests/badinc2.out,tests/badinc3.out: Merge two very similar
+	  messages.
+
 Wed Aug 20 01:50:07 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/ru.po,lib/zh_CN.po: Fill in some translations from the wxWidgets
