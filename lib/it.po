@@ -1088,11 +1088,6 @@ msgstr "Tempo totale non disponibile"
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Tempo totale %5.2fs (tempo CPU %5.2fs)"
 
-#: ../src/cavern.c:386
-#: n:144
-msgid "Done."
-msgstr "Fatto."
-
 #: ../src/netskel.c:744
 #: n:145
 #, c-format

@@ -1088,11 +1088,6 @@ msgstr "Temps utilitzat no disponible"
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Temps utilitzat %5.2fs (%5.2fs temps CPU)"
 
-#: ../src/cavern.c:386
-#: n:144
-msgid "Done."
-msgstr "Fet."
-
 #: ../src/netskel.c:744
 #: n:145
 #, c-format

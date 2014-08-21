@@ -1,3 +1,8 @@
+Thu Aug 21 01:49:09 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/,src/cavern.c,tests/: Eliminate the "Done." message which cavern
+	  outputs near the end - it doesn't really serve a useful purpose.
+
 Thu Aug 21 01:28:43 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/merge-po: Add dropped messages with translations to

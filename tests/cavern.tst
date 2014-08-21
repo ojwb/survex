@@ -144,7 +144,7 @@ for file in $TESTS ; do
   begin_no_end) pos=fail ; error=1 ;;
   end_no_begin) pos=fail ; error=1 ;;
   end_no_begin_nest) pos=fail ; error=2 ;;
-  require_fail) pos=fail ; error=1 ;;
+  require_fail) pos=fail ;; # We exit before the error count.
   exporterr1) pos=fail ; error=1 ;;
   exporterr2) pos=fail ; error=1 ;;
   exporterr3) pos=fail ; error=1 ;;
@@ -281,12 +281,18 @@ for file in $TESTS ; do
       test $exitcode = 0 || exit 1
     fi
     if test -n "$warn" ; then
-      w=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*\([0-9]*\).*/\1/' tmp.out`
-      test x"$w" = x"$warn" || exit 1
+      w=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp.out`
+      if test x"$w" != x"$warn" ; then
+	test -n "$VERBOSE" && echo "Got $w warnings, expected $warn"
+	exit 1
+      fi
     fi
     if test -n "$error" ; then
-      e=`sed '$!d;$s/^Done.*/0/;s/[^0-9]*[0-9][0-9]*[^0-9][^0-9]*\([0-9][0-9]*\).*/\1/;s/\(.*[^0-9].*\)/0/' tmp.out`
-      test x"$e" = x"$error" || exit 1
+      e=`sed '$!d;s/^There were .* and \([0-9][0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp.out`
+      if test x"$e" != x"$error" ; then
+	test -n "$VERBOSE" && echo "Got $e errors, expected $error"
+	exit 1
+      fi
     fi
     nan=`sed 's/.*\<[Nn]a[Nn]m\?\>.*/x/p;d' tmp.out`
     if test -n "$nan" ; then

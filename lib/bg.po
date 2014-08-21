@@ -1087,11 +1087,6 @@ msgstr ""
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr ""
 
-#: ../src/cavern.c:386
-#: n:144
-msgid "Done."
-msgstr "Готово."
-
 #: ../src/netskel.c:744
 #: n:145
 #, c-format

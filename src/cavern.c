@@ -382,8 +382,6 @@ main(int argc, char **argv)
 	 printf(msg(/*Time used %5.2fs (%5.2fs CPU time)*/143), tmUser, tmCPU);
       }
       putnl();
-
-      puts(msg(/*Done.*/144));
    }
    if (msg_warnings || msg_errors) {
       if (msg_errors || (f_warnings_are_errors && msg_warnings)) {

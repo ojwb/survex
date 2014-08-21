@@ -1088,11 +1088,6 @@ msgstr "Benötigte Zeit nicht feststellbar"
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Benötigte Zeit %5.2fs (%5.2fs CPU-Zeit)"
 
-#: ../src/cavern.c:386
-#: n:144
-msgid "Done."
-msgstr "Fertig."
-
 #: ../src/netskel.c:744
 #: n:145
 #, c-format

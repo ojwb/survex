@@ -1086,11 +1086,6 @@ msgstr "Time used unavailable"
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Time used %5.2fs (%5.2fs CPU time)"
 
-#: ../src/cavern.c:386
-#: n:144
-msgid "Done."
-msgstr "Done."
-
 #: ../src/netskel.c:744
 #: n:145
 #, c-format

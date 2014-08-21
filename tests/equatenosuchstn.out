@@ -25,5 +25,4 @@ East-West range = 9.70m (from entrance.2 at 9.70m to entrance.1 at 0.00m)
 ./equatenosuchstn.svx:7: warning: Station "nosuchsurvey.1" referred to just once, with an explicit survey name - typo?
    2 1-nodes.
    1 2-node.
-Done.
 There were 1 warning(s) and 1 error(s) - no output files produced.
