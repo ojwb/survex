@@ -1157,19 +1157,19 @@ msgstr ""
 #: ../src/cmdline.c:138
 #: n:150
 msgid "display this help and exit"
-msgstr ""
+msgstr "показать справку и выйти"
 
 #. TRANSLATORS: description of --verbose option
 #: ../src/cmdline.c:141
 #: n:151
 msgid "output version information and exit"
-msgstr ""
+msgstr "вывести информацию о версии и выйти"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
 #: ../src/cmdline.c:170
 #: n:153
 msgid "OPTION"
-msgstr ""
+msgstr "ОПЦИЯ"
 
 #: ../src/mainfrm.cc:132
 #: ../src/printwx.cc:389
@@ -1183,7 +1183,7 @@ msgstr "Масштаб"
 #: n:157
 #, c-format
 msgid "Try “%s --help” for more information.\n"
-msgstr ""
+msgstr "Попробуйте “%s --help” для дополнительной информации.\n"
 
 #: ../src/avenprcore.cc:269
 #: n:166
@@ -1600,7 +1600,7 @@ msgstr "&Файл"
 #: ../src/mainfrm.cc:930
 #: n:211
 msgid "&Rotation"
-msgstr ""
+msgstr "В&ращение"
 
 #: ../src/mainfrm.cc:931
 #: n:212
@@ -1610,12 +1610,12 @@ msgstr "&Ориентация"
 #: ../src/mainfrm.cc:932
 #: n:213
 msgid "&View"
-msgstr ""
+msgstr "&Вид"
 
 #: ../src/mainfrm.cc:934
 #: n:214
 msgid "&Controls"
-msgstr ""
+msgstr "&Управление"
 
 #: ../src/mainfrm.cc:943
 #: n:215
@@ -1691,7 +1691,7 @@ msgstr "&Открыть…\tCtrl+O"
 #: ../src/gfxcore.cc:1049
 #: n:221
 msgid "Undated"
-msgstr ""
+msgstr "Недатированный"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information.
@@ -1913,7 +1913,7 @@ msgstr ""
 #: ../src/printwx.cc:353
 #: n:283
 msgid "View"
-msgstr ""
+msgstr "Вид"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey
 #. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
@@ -1922,7 +1922,7 @@ msgstr ""
 #: ../src/printwx.cc:358
 #: n:256
 msgid "Elements"
-msgstr ""
+msgstr "Элементы"
 
 #: ../src/printwx.cc:413
 #: ../src/printwx.cc:787
@@ -1954,7 +1954,7 @@ msgstr "номер пикеты"
 #: ../src/printwx.cc:461
 #: n:261
 msgid "Crosses"
-msgstr ""
+msgstr "Кресты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -2007,7 +2007,7 @@ msgstr ""
 #: ../src/printwx.cc:517
 #: n:265
 msgid "Legend"
-msgstr ""
+msgstr "Легенда"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -2031,7 +2031,7 @@ msgstr ""
 #: ../src/mainfrm.cc:848
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr ""
+msgstr "&Кресты\tCtrl+X"
 
 #: ../src/mainfrm.cc:849
 #: n:297
@@ -2144,7 +2144,7 @@ msgstr ""
 #: ../src/mainfrm.cc:911
 #: n:274
 msgid "&Compass"
-msgstr ""
+msgstr "&Компас"
 
 #: ../src/mainfrm.cc:912
 #: n:275
@@ -2161,7 +2161,7 @@ msgstr ""
 #: ../src/mainfrm.cc:916
 #: n:277
 msgid "&Scale Bar"
-msgstr ""
+msgstr "&Масштаб"
 
 #: ../src/mainfrm.cc:906
 #: n:280
@@ -2184,35 +2184,35 @@ msgstr ""
 #: n:300
 #, c-format
 msgid "%s: option “%s” is ambiguous\n"
-msgstr ""
+msgstr "%s: опция “%s” неоднозначна\n"
 
 #: ../src/z_getopt.c:1025
 #: ../src/z_getopt.c:1036
 #: n:301
 #, c-format
 msgid "%s: option “-W %s” is ambiguous\n"
-msgstr ""
+msgstr "%s: опция “-W %s” неоднозначна\n"
 
 #: ../src/z_getopt.c:753
 #: ../src/z_getopt.c:757
 #: n:302
 #, c-format
 msgid "%s: option “%c%s” doesn’t allow an argument\n"
-msgstr ""
+msgstr "%s: опция “%c%s” не допускает указания аргумента\n"
 
 #: ../src/z_getopt.c:742
 #: ../src/z_getopt.c:745
 #: n:303
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
-msgstr ""
+msgstr "%s: опция “--%s” не допускает указания аргумента\n"
 
 #: ../src/z_getopt.c:1060
 #: ../src/z_getopt.c:1071
 #: n:304
 #, c-format
 msgid "%s: option “-W %s” doesn’t allow an argument\n"
-msgstr ""
+msgstr "%s: опция “-W %s” не допускает указания аргумента\n"
 
 #: ../src/z_getopt.c:792
 #: ../src/z_getopt.c:804
@@ -2221,7 +2221,7 @@ msgstr ""
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
-msgstr ""
+msgstr "%s: опция “%s” требует указания аргумента\n"
 
 #: ../src/z_getopt.c:962
 #: ../src/z_getopt.c:973
@@ -2230,35 +2230,35 @@ msgstr ""
 #: n:306
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr ""
+msgstr "%s: опция требует аргумент -- %c\n"
 
 #: ../src/z_getopt.c:842
 #: ../src/z_getopt.c:845
 #: n:307
 #, c-format
 msgid "%s: unrecognized option “--%s”\n"
-msgstr ""
+msgstr "%s: неизвестная опция “--%s”\n"
 
 #: ../src/z_getopt.c:853
 #: ../src/z_getopt.c:856
 #: n:308
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
-msgstr ""
+msgstr "%s: неизвестная опция “%c%s”\n"
 
 #: ../src/z_getopt.c:903
 #: ../src/z_getopt.c:906
 #: n:309
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr ""
+msgstr "%s: недопустимая опция -- %c\n"
 
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915
 #: n:310
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr ""
+msgstr "%s: неверная опция -- %c\n"
 
 #: ../src/mainfrm.cc:831
 #: n:311
