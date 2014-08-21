@@ -12,8 +12,11 @@ if (@ARGV == 0 || $ARGV[0] eq '--help') {
   exit (@ARGV != 0);
 }
 
+my %dropped;
+
 my $pot = Locale::PO->load_file_asarray("survex.pot");
 for my $po_file (@ARGV) {
+  my ($lang) = ($po_file =~ m!([^/]+)\.po$!);
   my $po = Locale::PO->load_file_ashash($po_file);
   if (!defined $po) {
     print STDERR "$po_file: Bad!\n";
@@ -95,8 +98,22 @@ for my $po_file (@ARGV) {
     my $msgstr = $$po{$_}->msgstr;
     if ($msgstr ne '""') {
       print "$po_file: Dropping [$_] -> [$msgstr]\n";
+      $dropped{$_}->{$lang} = $msgstr;
     }
   }
   link $po_file, "$po_file.old" or die $!;
   rename "$po_file.tmp", $po_file or die $!;
+}
+
+if (%dropped) {
+    print "Saving dropped messages to deadmessages.txt\n";
+    open DEAD, '>>deadmessages.txt' or die "Failed to open deadmessages.txt\n";
+    for (sort keys %dropped) {
+	print DEAD "\nmsgid \"$_\"\n";
+	my $h = $dropped{$_};
+	for my $lang (sort keys %$h) {
+	    print DEAD "$lang $$h{$lang}\n";
+	}
+    }
+    close DEAD;
 }

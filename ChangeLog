@@ -1,3 +1,8 @@
+Thu Aug 21 01:28:43 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/merge-po: Add dropped messages with translations to
+	  deadmessages.txt.
+
 Thu Aug 21 01:08:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: More translation updates.
