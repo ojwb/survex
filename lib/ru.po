@@ -140,7 +140,7 @@ msgstr "Ошибка выполнения команды “%s”"
 #: ../src/sorterr.c:240
 #: n:18
 msgid "Error reading file"
-msgstr ""
+msgstr "Ошибка при чтении файла"
 
 #: ../src/message.c:1260
 #: n:19
@@ -423,7 +423,7 @@ msgstr ""
 #: ../src/cmdline.c:168
 #: n:49
 msgid "Usage"
-msgstr ""
+msgstr "Использование"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -502,8 +502,9 @@ msgstr ""
 
 #: ../src/readval.c:512
 #: n:58
+#, fuzzy
 msgid "Invalid year (< 1900 or > 2078)"
-msgstr ""
+msgstr "Введите год в промежутке от 1900 до 2078"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
@@ -589,7 +590,7 @@ msgstr ""
 #: ../src/readval.c:469
 #: n:69
 msgid "Missing \""
-msgstr ""
+msgstr "Недостающие \""
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:119
@@ -691,7 +692,7 @@ msgstr ""
 #: ../src/readval.c:520
 #: n:86
 msgid "Invalid month"
-msgstr ""
+msgstr "Неверно указан месяц"
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
 #: ../src/readval.c:529
@@ -730,7 +731,7 @@ msgstr ""
 #: ../src/message.c:231
 #: n:92
 msgid "Illegal instruction"
-msgstr ""
+msgstr "Недопустимая инструкция"
 
 #: ../src/datain.c:399
 #: ../src/extend.c:553
@@ -888,7 +889,7 @@ msgstr ""
 #: ../src/printwx.cc:983
 #: n:115
 msgid "North"
-msgstr ""
+msgstr "Север"
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
 #: ../src/printwx.cc:1010
@@ -944,7 +945,7 @@ msgstr ""
 #: ../src/cmdline.c:219
 #: n:123
 msgid "too many arguments"
-msgstr ""
+msgstr "слишком много аргументов"
 
 #: ../src/cmdline.c:178
 #: ../src/cmdline.c:181
@@ -1193,7 +1194,7 @@ msgstr ""
 #: n:166
 #, c-format
 msgid "Page %d of %d"
-msgstr ""
+msgstr "Страница %d из %d"
 
 #: ../src/avenprcore.cc:272
 #: ../src/printwx.cc:1537

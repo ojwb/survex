@@ -590,7 +590,7 @@ msgstr ""
 #: ../src/readval.c:469
 #: n:69
 msgid "Missing \""
-msgstr ""
+msgstr "Липсва \""
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:119

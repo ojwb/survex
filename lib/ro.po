@@ -2576,7 +2576,7 @@ msgstr "ft"
 #: ../src/gfxcore.cc:1197
 #: n:429
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3221
@@ -2644,14 +2644,14 @@ msgstr "gr.cent"
 #: ../src/gfxcore.cc:779
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: used for the percentage gradient on
 #. vertical angles.
 #: ../src/gfxcore.cc:755
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #: ../src/mainfrm.cc:901
 #: n:347
