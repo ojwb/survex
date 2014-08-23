@@ -1478,7 +1478,7 @@ msgstr ""
 #: ../src/mainfrm.cc:770
 #: n:201
 msgid "&Screenshot…"
-msgstr ""
+msgstr "&Снимок экрана…"
 
 #: ../src/mainfrm.cc:1424
 #: n:202
@@ -2290,7 +2290,7 @@ msgstr ""
 #: ../src/mainfrm.cc:839
 #: n:316
 msgid "Pla&y"
-msgstr ""
+msgstr "&Воспроизвести"
 
 #: ../src/mainfrm.cc:840
 #: n:317
@@ -2317,7 +2317,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1908
 #: n:321
 msgid "Save Screenshot"
-msgstr ""
+msgstr "Сохранить снимок экрана"
 
 #: ../src/mainfrm.cc:2319
 #: ../src/mainfrm.cc:2322
@@ -2627,7 +2627,7 @@ msgstr "ᵍ"
 #: ../src/mainfrm.cc:2230
 #: n:345
 msgid "grad"
-msgstr ""
+msgstr "град"
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45
 #. degrees = 50 grad).
@@ -2703,7 +2703,7 @@ msgstr "∞"
 
 #: n:361
 #~ msgid "Draw a grid"
-#~ msgstr ""
+#~ msgstr "Рисовать сетку"
 
 #: n:362
 #~ msgid "metric units"
