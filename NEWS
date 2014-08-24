@@ -1,3 +1,24 @@
+9733c653 (Olly Betts 2014-08-24 18:13:30 +1200    1) Sun Aug 24 06:13:10 GMT 2014  Olly Betts <olly@survex.com>
+
+* aven: Add KML export (stations only currently).
+
+* aven: Fix corrupted names in exported files.
+
+* aven: Fix error log window under wxWidgets >= 2.9 to include the system
+  information before the first log message like it does under wxWidgets 2.8.
+
+* cavern: Add support for "*cs JTSK" and "*cs JTSK03".
+
+* tests/: Improve test coverage.
+
+* Translation updates for many languages.
+
+* Fix to build against wxWidgets 3.0 built with assertions disabled.  Reported
+  by Martin Sluka.
+
+* Fix warnings when compiling with clang (which is the default compiler on
+  Mac OS X).  Reported by Martin Sluka.
+
 Changes in 1.2.15 (2014-08-14):
 
 * cavern: The *cs command now also supports "long-lat", "s-merc" (for "Web

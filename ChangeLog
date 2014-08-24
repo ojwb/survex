@@ -1,3 +1,7 @@
+Sun Aug 24 12:49:31 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update from ChangeLog.
+
 Sun Aug 24 06:13:10 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/: Add expected outputs for tests of nosurvey data style.
