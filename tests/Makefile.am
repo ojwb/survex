@@ -15,8 +15,8 @@ break_replace_pfx.svx\
 bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx bug5.svx\
 expobug.svx\
 nosurvey2.svx nosurvey2.pos\
-cartesian.svx cartesian.pos\
-cartesian2.svx cartesian2.pos\
+cartesian.svx cartesian.pos cartesian.out\
+cartesian2.svx cartesian2.pos cartesian2.out\
 require.svx\
 calibrate_tape.svx calibrate_tape.pos\
 delatenda.pos delatendb.pos delatend.out\
@@ -50,12 +50,12 @@ multinormal.svx multinormal.pos\
 multinormignall.svx multinormignall.pos\
 multidiving.svx multidiving.pos\
 multicylpolar.svx multicylpolar.pos\
-multicartesian.svx multicartesian.pos\
+multicartesian.svx multicartesian.pos multicartesian.out\
 multinosurv.svx multinosurv.pos\
 multinormalbad.svx multibug.svx\
 cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\
-cartes.svx cartes.pos\
+cartes.svx cartes.pos cartes.out\
 diving.svx diving.pos\
 cylpolar.svx cylpolar.pos\
 normal.svx normal.pos\
