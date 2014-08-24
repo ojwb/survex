@@ -1,3 +1,7 @@
+Sun Aug 24 06:13:10 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/: Add expected outputs for tests of nosurvey data style.
+
 Sun Aug 24 06:06:54 GMT 2014  Olly Betts <olly@survex.com>
 
 	* tests/: Add expected outputs for tests of cartesian data style.

@@ -14,7 +14,7 @@ firststn.svx firststn.pos\
 break_replace_pfx.svx\
 bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx bug5.svx\
 expobug.svx\
-nosurvey2.svx nosurvey2.pos\
+nosurvey2.svx nosurvey2.pos nosurvey2.out\
 cartesian.svx cartesian.pos cartesian.out\
 cartesian2.svx cartesian2.pos cartesian2.out\
 require.svx\
@@ -51,7 +51,7 @@ multinormignall.svx multinormignall.pos\
 multidiving.svx multidiving.pos\
 multicylpolar.svx multicylpolar.pos\
 multicartesian.svx multicartesian.pos multicartesian.out\
-multinosurv.svx multinosurv.pos\
+multinosurv.svx multinosurv.pos multinosurv.out\
 multinormalbad.svx multibug.svx\
 cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\
@@ -61,7 +61,7 @@ cylpolar.svx cylpolar.pos\
 normal.svx normal.pos\
 normal_bad.svx normal_bad.out\
 normignall.svx normignall.pos\
-nosurv.svx nosurv.pos\
+nosurv.svx nosurv.pos nosurv.out\
 cmd_flags.svx bad_cmd_flags.svx\
 plumb.svx plumb.pos\
 cmd_fix_bad.svx cmd_fix_bad.out\
@@ -88,7 +88,8 @@ gettokennullderef.svx lech.svx level.svx level.pos\
 declination.dat declination.pos ignore.dat ignore.pos backread.dat backread.pos\
 nomeasure.dat nomeasure.out nomeasure.pos\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
-nosurveyhanging.svx cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
+nosurveyhanging.svx nosurveyhanging.out\
+cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
 cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\
 cmd_date.svx cmd_datebad.svx cmd_datebad.out cmd_datebad2.svx cmd_datebad2.out\
 eswap.svx eswap.espec eswapx.3d\
