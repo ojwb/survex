@@ -1,3 +1,8 @@
+Tue Aug 26 22:27:03 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am,lib/el.po,lib/pl.po: Add the start of translations
+	  to Greek and Polish.
+
 Sun Aug 24 12:49:31 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update from ChangeLog.
