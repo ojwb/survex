@@ -1108,11 +1108,17 @@ macosx_got_msg:
 		  msg_lang = "de";
 	       }
 	       break;
+	     case LANG_GREEK:
+	       msg_lang = "el";
+	       break;
 	     case LANG_INDONESIAN:
 	       msg_lang = "id";
 	       break;
 	     case LANG_ITALIAN:
 	       msg_lang = "it";
+	       break;
+	     case LANG_POLISH:
+	       msg_lang = "pl";
 	       break;
 	     case LANG_PORTUGUESE:
 	       if (SUBLANGID(langid) == SUBLANG_PORTUGUESE_BRAZILIAN)

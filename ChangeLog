@@ -1,3 +1,8 @@
+Sun Aug 31 02:12:50 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/message.c: Add handling for automatically selecting Greek and
+	  Polish translations on Microsoft Windows.
+
 Tue Aug 26 22:27:03 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am,lib/el.po,lib/pl.po: Add the start of translations
