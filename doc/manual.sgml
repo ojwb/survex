@@ -524,16 +524,23 @@ of the codes currently supported:</Para>
 <tbody>
 <row><entry/en/<entry/International English/</row>
 <row><entry/en_US/<entry/US English/</row>
+<row><entry/bg/<entry/Bulgarian/</row>
 <row><entry/ca/<entry/Catalan/</row>
 <row><entry/de/<entry/German/</row>
 <row><entry/de_CH/<entry/Swiss German/</row>
 <row><entry/de_DE/<entry/German German/</row>
+<row><entry/el/<entry/Greek/</row>
 <row><entry/es/<entry/Spanish/</row>
 <row><entry/fr/<entry/French/</row>
+<row><entry/id/<entry/Indonesian/</row>
 <row><entry/it/<entry/Italian/</row>
+<row><entry/pl/<entry/Polish/</row>
 <row><entry/pt/<entry/Portuguese/</row>
 <row><entry/pt_BR/<entry/Brazillian Portuguese/</row>
+<row><entry/ro/<entry/Romanian/</row>
+<row><entry/ru/<entry/Russian/</row>
 <row><entry/sk/<entry/Slovak/</row>
+<row><entry/zh_CN/<entry/Chinese (Simplified)/</row>
 </tbody>
 </tgroup>
 </informaltable>

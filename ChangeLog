@@ -1,3 +1,8 @@
+Sun Aug 31 03:22:15 GMT 2014  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Update list of codes for supported translations in
+	  the manual.
+
 Sun Aug 31 02:12:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/message.c: Add handling for automatically selecting Greek and
