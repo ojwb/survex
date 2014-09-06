@@ -1,3 +1,8 @@
+Sat Sep 06 12:43:29 GMT 2014  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: Include Greek and Polish translations for the
+	  installer.
+
 Sun Aug 31 03:22:15 GMT 2014  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Update list of codes for supported translations in
