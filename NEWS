@@ -1,4 +1,4 @@
-9733c653 (Olly Betts 2014-08-24 18:13:30 +1200    1) Sun Aug 24 06:13:10 GMT 2014  Olly Betts <olly@survex.com>
+0040469d (Olly Betts 2014-09-09 13:13:30 -0300    1) Tue Sep 09 16:13:00 GMT 2014  Olly Betts <olly@survex.com>
 
 * aven: Add KML export (stations only currently).
 
@@ -11,7 +11,8 @@
 
 * tests/: Improve test coverage.
 
-* Translation updates for many languages.
+* Translation updates for many languages, plus the start of translations to
+  Greek and Polish.
 
 * Fix to build against wxWidgets 3.0 built with assertions disabled.  Reported
   by Martin Sluka.

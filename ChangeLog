@@ -1,3 +1,7 @@
+Tue Sep 09 16:26:07 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Tue Sep 09 16:13:00 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Tiny code simplification.
