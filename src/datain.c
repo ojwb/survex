@@ -845,7 +845,7 @@ warn_readings_differ(int msgno, real diff)
       while (*++p) {
 	 if (*p != '0') z = p + 1;
       }
-      if (*z) *z = '\0';
+      *z = '\0';
    }
    compile_warning(msgno, buf);
 }
