@@ -1,3 +1,8 @@
+Sat Sep 13 20:59:34 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/ca.po,lib/es.po: Apply translation updates from Adolfo Jayme via
+	  launchpad.
+
 Tue Sep 09 16:26:07 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
