@@ -159,7 +159,6 @@ public:
 	SetAutoLayout(true);
 	SetSizer(vert);
 
-	vert->Fit(this);
 	vert->SetSizeHints(this);
     }
     PresentationMark GetMark() const {
@@ -1017,7 +1016,6 @@ void MainFrm::CreateSidePanel()
     panel_sizer->Add(m_Tree, 1, wxALL | wxEXPAND, 2);
     panel->SetAutoLayout(true);
     panel->SetSizer(panel_sizer);
-//    panel_sizer->Fit(panel);
 //    panel_sizer->SetSizeHints(panel);
 
     m_Control = new GUIControl();

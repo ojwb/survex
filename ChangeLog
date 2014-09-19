@@ -1,3 +1,8 @@
+Fri Sep 19 11:05:26 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc,src/mainfrm.cc,src/printwx.cc: Calling Fit() on a
+	  sizer is redundant where we also call SetSizeHints() on it.
+
 Sat Sep 13 20:59:34 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/ca.po,lib/es.po: Apply translation updates from Adolfo Jayme via

@@ -580,7 +580,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     SetAutoLayout(true);
     SetSizer(v1);
-    v1->Fit(this);
     v1->SetSizeHints(this);
 
     LayoutToUI();

@@ -203,7 +203,6 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
     SetSizer(horiz);
     close->SetDefault();
 
-    horiz->Fit(this);
     horiz->SetSizeHints(this);
 
     timer.Start(42000);
