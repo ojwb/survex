@@ -119,12 +119,16 @@ foreach my $po_entry (@{$num_list}) {
 	    my $fake_err = ": Comment for message #$msgno not in source code\n";
 	    if ($msgno ne '' && exists($uses[$msgno])) {
 		print STDERR join($fake_err, @{$uses[$msgno]}), $fake_err if exists($uses[$msgno]);
+		my $x = $po_entry->automatic;
+		$x =~ s/\n/\n     * /g;
+		print STDERR "    /* $x */\n";
 	    } else {
-		print STDERR $fake_err;
+		# Currently unused message.
+		# print STDERR $fake_err;
+		# my $x = $po_entry->automatic;
+		# $x =~ s/\n/\n     * /g;
+		# print STDERR "    /* $x */\n";
 	    }
-	    my $x = $po_entry->automatic;
-	    $x =~ s/\n/\n     * /g;
-	    print STDERR "    /* $x */\n";
 	}
 	my $automatic = "\n" . $po_entry->automatic;
 	$automatic =~ s/\n/\n#. /g;
