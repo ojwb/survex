@@ -52,6 +52,8 @@ while (<ARGV>) {
 	if (defined $translator_comment) {
 	    if (exists $comment{$msgno} && $comment{$msgno} ne $translator_comment) {
 		print STDERR "Different TRANSLATOR comments for message #$msgno\n";
+		print STDERR "survex.pot: $comment{$msgno}\n";
+		print STDERR "$ARGV:$.: $translator_comment\n";
 	    }
 	    $comment{$msgno} = $translator_comment;
 	    undef $translator_comment;
