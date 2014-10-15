@@ -171,7 +171,6 @@ public:
 #define LFLAG_ENTRANCE		0x40
 #define LFLAG_HIGHLIGHTED	0x80
 
-class LabelPlotCmp;
 class AvenPresList;
 
 class LabelInfo : public Point {
