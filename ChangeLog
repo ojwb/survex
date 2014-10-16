@@ -1,3 +1,7 @@
+Thu Oct 16 23:56:51 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot: Update source file references.
+
 Thu Oct 16 23:48:31 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/labelinfo.h,src/mainfrm.cc: Factor out code to show station name
