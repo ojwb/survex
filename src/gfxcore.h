@@ -32,6 +32,7 @@
 #include "img_hosted.h"
 
 #include "guicontrol.h"
+#include "labelinfo.h"
 #include "vector3.h"
 #include "wx.h"
 #include "gla.h"
@@ -45,32 +46,7 @@ using namespace std;
 class MainFrm;
 class traverse;
 
-// Mac OS X headers pollute the global namespace with generic names like
-// "class Point", which clashes with our "class Point".  So for __WXMAC__
-// put our class in a namespace and define Point as a macro.
-#ifdef __WXMAC__
-namespace svx {
-#endif
-
-class Point : public Vector3 {
-  public:
-    Point() {}
-    Point(const Vector3 & v) : Vector3(v) { }
-    Point(const img_point & pt) : Vector3(pt.x, pt.y, pt.z) { }
-    Double GetX() const { return x; }
-    Double GetY() const { return y; }
-    Double GetZ() const { return z; }
-    void Invalidate() { x = DBL_MAX; }
-    bool IsValid() const { return x != DBL_MAX; }
-};
-
-#ifdef __WXMAC__
-}
-#define Point svx::Point
-#endif
-
 class XSect;
-class LabelInfo;
 class PointInfo;
 class MovieMaker;
 
@@ -208,8 +184,9 @@ private:
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
 
-    bool m_here_is_temporary;
-    Point m_here, m_there;
+    LabelInfo temp_here;
+    const LabelInfo * m_here;
+    const LabelInfo * m_there;
 
     wxStopWatch timer;
     long drawtime;
@@ -314,12 +291,14 @@ public:
     void UpdateBlobs();
     void ForceRefresh();
 
-    void RefreshLine(const Point& a, const Point& b, const Point& c);
+    void RefreshLine(const Point* a, const Point* b, const Point* c);
+
+    void SetHereFromTree(const LabelInfo * p);
 
     void SetHere();
-    void SetHere(const Point &p);
+    void SetHere(const LabelInfo * p);
     void SetThere();
-    void SetThere(const Point &p);
+    void SetThere(const LabelInfo * p);
 
     void CentreOn(const Point &p);
 
@@ -385,7 +364,7 @@ public:
     bool ShowingPlan() const;
     bool ShowingElevation() const;
     bool ShowingMeasuringLine() const;
-    bool HereIsReal() const { return m_here.IsValid() && !m_here_is_temporary; }
+    bool HereIsReal() const { return m_here && m_here != &temp_here; }
 
     bool CanRaiseViewpoint() const;
     bool CanLowerViewpoint() const;

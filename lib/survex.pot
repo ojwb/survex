@@ -3060,6 +3060,16 @@ msgstr ""
 msgid "Separator in survey name"
 msgstr ""
 
+#. TRANSLATORS: Used in place of the station name when talking about an
+#. anonymous station.
+#: ../src/mainfrm.cc:2096
+#: ../src/mainfrm.cc:2150
+#: ../src/mainfrm.cc:2199
+#: ../src/mainfrm.cc:2219
+#: n:56
+msgid "anonymous station"
+msgstr ""
+
 #: ../src/readval.c:124
 #: ../src/readval.c:139
 #: ../src/readval.c:156

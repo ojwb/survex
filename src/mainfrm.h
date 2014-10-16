@@ -35,6 +35,7 @@
 #include "gfxcore.h"
 #include "guicontrol.h"
 #include "img_hosted.h"
+#include "labelinfo.h"
 #include "message.h"
 #include "vector3.h"
 #include "aven.h"
@@ -162,46 +163,7 @@ public:
     }
 };
 
-#define LFLAG_NOT_ANON		0x01
-#define LFLAG_NOT_WALL		0x02
-#define LFLAG_SURFACE		0x04
-#define LFLAG_UNDERGROUND	0x08
-#define LFLAG_EXPORTED		0x10
-#define LFLAG_FIXED		0x20
-#define LFLAG_ENTRANCE		0x40
-#define LFLAG_HIGHLIGHTED	0x80
-
 class AvenPresList;
-
-class LabelInfo : public Point {
-    wxString text;
-    unsigned width;
-    int flags;
-
-public:
-    wxTreeItemId tree_id;
-
-    LabelInfo(const img_point &pt, const wxString &text_, int flags_)
-	: Point(pt), text(text_), flags(flags_) {
-	if (text.empty())
-	    flags &= ~LFLAG_NOT_ANON;
-    }
-    const wxString & GetText() const { return text; }
-    int get_flags() const { return flags; }
-    void set_flags(int mask) { flags |= mask; }
-    void clear_flags(int mask) { flags &= ~mask; }
-    unsigned get_width() const { return width; }
-    void set_width(unsigned width_) { width = width_; }
-
-    bool IsEntrance() const { return (flags & LFLAG_ENTRANCE) != 0; }
-    bool IsFixedPt() const { return (flags & LFLAG_FIXED) != 0; }
-    bool IsExportedPt() const { return (flags & LFLAG_EXPORTED) != 0; }
-    bool IsUnderground() const { return (flags & LFLAG_UNDERGROUND) != 0; }
-    bool IsSurface() const { return (flags & LFLAG_SURFACE) != 0; }
-    bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED) != 0; }
-    bool IsAnon() const { return (flags & LFLAG_NOT_ANON) == 0; }
-    bool IsWall() const { return (flags & LFLAG_NOT_WALL) == 0; }
-};
 
 class traverse : public vector<PointInfo> {
   public:
@@ -481,10 +443,13 @@ public:
     int GetDateExtent() const { return m_DateExt; }
     int GetDateMin() const { return m_DateMin; }
 
-    void SelectTreeItem(LabelInfo* label) {
+    void SelectTreeItem(const LabelInfo* label) {
 	if (label->tree_id.IsOk())
 	    m_Tree->SelectItem(label->tree_id);
+	else
+	    m_Tree->UnselectAll();
     }
+
     void ClearTreeSelection();
 
     int GetNumFixedPts() const { return m_NumFixedPts; }
@@ -503,8 +468,8 @@ public:
     void ClearCoords();
     void SetCoords(const Vector3 &v);
     const LabelInfo * GetTreeSelection() const;
-    void SetCoords(Double x, Double y);
-    void SetAltitude(Double z);
+    void SetCoords(Double x, Double y, const LabelInfo * there);
+    void SetAltitude(Double z, const LabelInfo * there);
 
     const Vector3 & GetOffset() const { return m_Offsets; }
 
@@ -564,8 +529,8 @@ public:
 	return m_Labels.end();
     }
 
-    void ShowInfo(const LabelInfo *label);
-    void DisplayTreeInfo(const wxTreeItemData* data);
+    void ShowInfo(const LabelInfo *here = NULL, const LabelInfo *there = NULL);
+    void DisplayTreeInfo(const wxTreeItemData* data = NULL);
     void TreeItemSelected(const wxTreeItemData* data, bool zoom);
     PresentationMark GetPresMark(int which);
 

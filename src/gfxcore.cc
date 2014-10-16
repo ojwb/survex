@@ -149,7 +149,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_HitTestDebug(false),
     m_PointGrid(NULL),
     m_HitTestGridValid(false),
-    m_here_is_temporary(false),
+    m_here(NULL),
+    m_there(NULL),
     presentation_mode(0),
     pres_reverse(false),
     pres_speed(0.0),
@@ -162,8 +163,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     wxConfigBase::Get()->Read(wxT("metric"), &m_Metric, true);
     wxConfigBase::Get()->Read(wxT("degrees"), &m_Degrees, true);
     wxConfigBase::Get()->Read(wxT("percent"), &m_Percent, false);
-    m_here.Invalidate();
-    m_there.Invalidate();
 
     for (int pen = 0; pen < NUM_COLOUR_BANDS + 1; ++pen) {
 	m_Pens[pen].SetColour(REDS[pen] / 255.0,
@@ -199,9 +198,8 @@ void GfxCore::Initialise(bool same_file)
     m_DoneFirstShow = false;
 
     m_HitTestGridValid = false;
-    m_here_is_temporary = true;
-    m_here.Invalidate();
-    m_there.Invalidate();
+    m_here = NULL;
+    m_there = NULL;
 
     m_MouseOutsideCompass = m_MouseOutsideElev = false;
 
@@ -268,7 +266,7 @@ void GfxCore::SetScale(Double scale)
 
     m_Scale = scale;
     m_HitTestGridValid = false;
-    if (m_here_is_temporary) SetHere();
+    if (m_here && m_here == &temp_here) SetHere();
 
     GLACanvas::SetScale(scale);
 }
@@ -444,16 +442,16 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    // Draw "here" and "there".
 	    double hx, hy;
 	    SetColour(HERE_COLOUR);
-	    if (m_here.IsValid()) {
+	    if (m_here) {
 		double dummy;
-		Transform(m_here, &hx, &hy, &dummy);
-		if (!m_here_is_temporary) DrawRing(hx, hy);
+		Transform(*m_here, &hx, &hy, &dummy);
+		if (m_here != &temp_here) DrawRing(hx, hy);
 	    }
-	    if (m_there.IsValid()) {
+	    if (m_there) {
 		double tx, ty;
 		double dummy;
-		Transform(m_there, &tx, &ty, &dummy);
-		if (m_here.IsValid()) {
+		Transform(*m_there, &tx, &ty, &dummy);
+		if (m_here) {
 		    BeginLines();
 		    PlaceIndicatorVertex(hx, hy);
 		    PlaceIndicatorVertex(tx, ty);
@@ -1257,12 +1255,12 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
     }
 
     if (best) {
-	m_Parent->ShowInfo(best);
+	m_Parent->ShowInfo(best, m_there);
 	if (centre) {
 	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
 	    WarpPointer(GetXSize() / 2, GetYSize() / 2);
-	    SetThere(*best);
+	    SetThere(best);
 	    m_Parent->SelectTreeItem(best);
 	}
     } else {
@@ -1270,11 +1268,11 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (centre) {
 	    ClearTreeSelection();
 	} else {
-	    m_Parent->ShowInfo(best);
+	    m_Parent->ShowInfo(best, m_there);
 	    double x, y, z;
 	    ReverseTransform(point.x, GetYSize() - point.y, &x, &y, &z);
-	    SetHere(Point(Vector3(x, y, z)));
-	    m_here_is_temporary = true;
+	    temp_here.assign(Vector3(x, y, z));
+	    SetHere(&temp_here);
 	}
     }
 
@@ -1370,7 +1368,7 @@ bool GfxCore::Animate()
     // MainFrm now checks if we're trying to clear already cleared labels
     // and just returns, but it might be simpler to check here!
     ClearCoords();
-    m_Parent->ShowInfo(NULL);
+    m_Parent->ShowInfo();
 
     static double last_t = 0;
     double t;
@@ -1514,7 +1512,7 @@ bool GfxCore::Animate()
 // at one end of the line.
 static const int HIGHLIGHTED_PT_SIZE = 2; // FIXME: tie in to blob and ring size
 #define MARGIN (HIGHLIGHTED_PT_SIZE * 2 + 1)
-void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
+void GfxCore::RefreshLine(const Point *a, const Point *b, const Point *c)
 {
 #ifdef __WXMSW__
     (void)a;
@@ -1532,8 +1530,8 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
     // measuring lines to minimise the redraw time
     int l = INT_MAX, r = INT_MIN, u = INT_MIN, d = INT_MAX;
     double X, Y, Z;
-    if (a.IsValid()) {
-	if (!Transform(a, &X, &Y, &Z)) {
+    if (a) {
+	if (!Transform(*a, &X, &Y, &Z)) {
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
@@ -1544,8 +1542,8 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    d = y;
 	}
     }
-    if (b.IsValid()) {
-	if (!Transform(b, &X, &Y, &Z)) {
+    if (b) {
+	if (!Transform(*b, &X, &Y, &Z)) {
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
@@ -1556,8 +1554,8 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 	    d = min(d, y);
 	}
     }
-    if (c.IsValid()) {
-	if (!Transform(c, &X, &Y, &Z)) {
+    if (c) {
+	if (!Transform(*c, &X, &Y, &Z)) {
 	    printf("oops\n");
 	} else {
 	    int x = int(X);
@@ -1576,37 +1574,42 @@ void GfxCore::RefreshLine(const Point &a, const Point &b, const Point &c)
 #endif
 }
 
+void GfxCore::SetHereFromTree(const LabelInfo * p)
+{
+    SetHere(p);
+    m_Parent->ShowInfo(m_here, m_there);
+}
+
 void GfxCore::SetHere()
 {
-    if (!m_here.IsValid()) return;
+    if (!m_here) return;
     bool line_active = MeasuringLineActive();
-    Point old = m_here;
-    m_here.Invalidate();
+    const LabelInfo * old = m_here;
+    m_here = NULL;
     if (line_active || MeasuringLineActive())
 	RefreshLine(old, m_there, m_here);
 }
 
-void GfxCore::SetHere(const Point &p)
+void GfxCore::SetHere(const LabelInfo *p)
 {
     bool line_active = MeasuringLineActive();
-    Point old = m_here;
+    const LabelInfo * old = m_here;
     m_here = p;
     if (line_active || MeasuringLineActive())
 	RefreshLine(old, m_there, m_here);
-    m_here_is_temporary = false;
 }
 
 void GfxCore::SetThere()
 {
-    if (!m_there.IsValid()) return;
-    Point old = m_there;
-    m_there.Invalidate();
+    if (!m_there) return;
+    const LabelInfo * old = m_there;
+    m_there = NULL;
     RefreshLine(m_here, old, m_there);
 }
 
-void GfxCore::SetThere(const Point &p)
+void GfxCore::SetThere(const LabelInfo * p)
 {
-    Point old = m_there;
+    const LabelInfo * old = m_there;
     m_there = p;
     RefreshLine(m_here, old, m_there);
 }
@@ -1671,7 +1674,7 @@ void GfxCore::TurnCave(Double angle)
     }
 
     m_HitTestGridValid = false;
-    if (m_here_is_temporary) SetHere();
+    if (m_here && m_here == &temp_here) SetHere();
 
     SetRotation(m_PanAngle, m_TiltAngle);
 }
@@ -1702,7 +1705,7 @@ void GfxCore::TiltCave(Double tilt_angle)
     }
 
     m_HitTestGridValid = false;
-    if (m_here_is_temporary) SetHere();
+    if (m_here && m_here == &temp_here) SetHere();
 
     SetRotation(m_PanAngle, m_TiltAngle);
 }
@@ -1712,7 +1715,7 @@ void GfxCore::TranslateCave(int dx, int dy)
     AddTranslationScreenCoordinates(dx, dy);
     m_HitTestGridValid = false;
 
-    if (m_here_is_temporary) SetHere();
+    if (m_here && m_here == &temp_here) SetHere();
 
     ForceRefresh();
 }
@@ -1745,9 +1748,11 @@ void GfxCore::SetCoords(wxPoint point)
 
     if (ShowingPlan()) {
 	m_Parent->SetCoords(cx + m_Parent->GetOffset().GetX(),
-			    cy + m_Parent->GetOffset().GetY());
+			    cy + m_Parent->GetOffset().GetY(),
+			    m_there);
     } else if (ShowingElevation()) {
-	m_Parent->SetAltitude(cz + m_Parent->GetOffset().GetZ());
+	m_Parent->SetAltitude(cz + m_Parent->GetOffset().GetZ(),
+			      m_there);
     } else {
 	m_Parent->ClearCoords();
     }
@@ -2068,7 +2073,7 @@ bool GfxCore::ShowingMeasuringLine() const
     // Determine if the measuring line is being shown.  Only check if "there"
     // is valid, since that means the measuring line anchor is out.
 
-    return m_there.IsValid();
+    return m_there;
 }
 
 void GfxCore::ToggleFlag(bool* flag, int update)
@@ -3200,7 +3205,7 @@ GfxCore::UpdateCursor(GfxCore::cursor new_cursor)
 bool GfxCore::MeasuringLineActive() const
 {
     if (Animating()) return false;
-    return (m_here.IsValid() && !m_here_is_temporary) || m_there.IsValid();
+    return HereIsReal() || m_there;
 }
 
 bool GfxCore::HandleRClick(wxPoint point)

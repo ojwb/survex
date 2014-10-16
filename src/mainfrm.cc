@@ -2020,7 +2020,7 @@ void MainFrm::ClearTreeSelection()
 {
     m_Tree->UnselectAll();
     m_Gfx->SetThere();
-    ShowInfo(NULL);
+    ShowInfo();
 }
 
 void MainFrm::ClearCoords()
@@ -2065,7 +2065,7 @@ const LabelInfo * MainFrm::GetTreeSelection() const {
     return data->GetLabel();
 }
 
-void MainFrm::SetCoords(Double x, Double y)
+void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
@@ -2077,10 +2077,9 @@ void MainFrm::SetCoords(Double x, Double y)
 
     wxString & t = distfree_text;
     t = wxString();
-    const LabelInfo* label;
-    if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
-	Vector3 delta(x - m_Offsets.GetX() - label->GetX(),
-		      y - m_Offsets.GetY() - label->GetY(), 0);
+    if (m_Gfx->ShowingMeasuringLine() && there) {
+	Vector3 delta(x - m_Offsets.GetX() - there->GetX(),
+		      y - m_Offsets.GetY() - there->GetY(), 0);
 	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
 	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
@@ -2090,8 +2089,11 @@ void MainFrm::SetCoords(Double x, Double y)
 	 * From <stationname>
 	 * H: 123.45m V: 234.56m
 	 * Dist: 456.78m  Brg: 200 */
-	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
-
+	const wxString & label = there->GetText();
+	from_str.Printf(wmsg(/*From %s*/339),
+			!label.empty() ?
+			    label.c_str() :
+			    msg(/*anonymous station*/56));
 	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
 	    brg_unit = /*°*/344;
@@ -2122,7 +2124,7 @@ void MainFrm::SetCoords(Double x, Double y)
     UpdateStatusBar();
 }
 
-void MainFrm::SetAltitude(Double z)
+void MainFrm::SetAltitude(Double z, const LabelInfo * there)
 {
     double alt = z;
     int units;
@@ -2137,12 +2139,15 @@ void MainFrm::SetAltitude(Double z)
 
     wxString & t = distfree_text;
     t = wxString();
-    const LabelInfo* label;
-    if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
-	Double dz = z - m_Offsets.GetZ() - label->GetZ();
+    if (m_Gfx->ShowingMeasuringLine() && there) {
+	Double dz = z - m_Offsets.GetZ() - there->GetZ();
 
 	wxString from_str;
-	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
+	const wxString & label = there->GetText();
+	from_str.Printf(wmsg(/*From %s*/339),
+			!label.empty() ?
+			    label.c_str() :
+			    msg(/*anonymous station*/56));
 
 	if (!m_Gfx->GetMetric()) {
 	    dz /= METRES_PER_FOOT;
@@ -2155,7 +2160,7 @@ void MainFrm::SetAltitude(Double z)
     UpdateStatusBar();
 }
 
-void MainFrm::ShowInfo(const LabelInfo *here)
+void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 {
     assert(m_Gfx);
 
@@ -2188,13 +2193,15 @@ void MainFrm::ShowInfo(const LabelInfo *here)
     s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
 			  z, wmsg(units).c_str());
     s += wxT(": ");
-    s += here->GetText();
-    m_Gfx->SetHere(*here);
+    const wxString & label = here->GetText();
+    s += !label.empty() ?
+	     label.c_str() :
+	     msg(/*anonymous station*/56);
+    m_Gfx->SetHere(here);
     m_Tree->SetHere(here->tree_id);
 
-    const LabelInfo* label;
-    if (m_Gfx->ShowingMeasuringLine() && (label = GetTreeSelection())) {
-	Vector3 delta = *here - *label;
+    if (m_Gfx->ShowingMeasuringLine() && there) {
+	Vector3 delta = *here - *there;
 
 	Double d_horiz = sqrt(delta.GetX()*delta.GetX() +
 			      delta.GetY()*delta.GetY());
@@ -2205,7 +2212,11 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	from_str.Printf(wmsg(/*From %s*/339), label->GetText().c_str());
+	const wxString & label2 = there->GetText();
+	from_str.Printf(wmsg(/*From %s*/339),
+			!label2.empty() ?
+			    label2.c_str() :
+			    msg(/*anonymous station*/56));
 
 	wxString hv_str;
 	if (m_Gfx->GetMetric()) {
@@ -2233,7 +2244,6 @@ void MainFrm::ShowInfo(const LabelInfo *here)
 	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
 		 from_str.c_str(), hv_str.c_str(),
 		 dr, len_unit.c_str(), int(brg), wmsg(brg_unit).c_str());
-	m_Gfx->SetThere(*label);
     } else {
 	dist_text = wxString();
 	m_Gfx->SetThere();
@@ -2245,11 +2255,9 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 {
     const TreeData* data = static_cast<const TreeData*>(item);
     if (data && data->IsStation()) {
-	const LabelInfo * label = data->GetLabel();
-	ShowInfo(label);
-	m_Gfx->SetHere(*label);
+	m_Gfx->SetHereFromTree(data->GetLabel());
     } else {
-	ShowInfo(NULL);
+	ShowInfo();
     }
 }
 
@@ -2259,7 +2267,7 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
 	if (zoom) m_Gfx->CentreOn(*label);
-	m_Gfx->SetThere(*label);
+	m_Gfx->SetThere(label);
 	dist_text = wxString();
 	// FIXME: Need to update dist_text (From ... etc)
 	// But we don't currently know where "here" is at this point in the

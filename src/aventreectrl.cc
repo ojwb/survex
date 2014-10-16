@@ -61,7 +61,7 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 	if (pos.IsOk()) {
 	    m_Parent->DisplayTreeInfo(GetItemData(pos));
 	} else {
-	    m_Parent->DisplayTreeInfo(NULL);
+	    m_Parent->DisplayTreeInfo();
 	}
     }
 }
@@ -86,7 +86,7 @@ void AvenTreeCtrl::OnLeaveWindow(wxMouseEvent&)
 	SetItemBackgroundColour(m_LastItem, m_BackgroundColour);
 	m_LastItem = wxTreeItemId();
     }
-    m_Parent->DisplayTreeInfo(NULL);
+    m_Parent->DisplayTreeInfo();
 }
 
 void AvenTreeCtrl::SetEnabled(bool enabled)
