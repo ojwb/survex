@@ -1,3 +1,8 @@
+Thu Oct 16 23:48:31 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/labelinfo.h,src/mainfrm.cc: Factor out code to show station name
+	  or "anonymous station".
+
 Thu Oct 16 23:47:50 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Fix TRANSLATORS comment punctuation to match source

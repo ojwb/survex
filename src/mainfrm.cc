@@ -2089,11 +2089,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	 * From <stationname>
 	 * H: 123.45m V: 234.56m
 	 * Dist: 456.78m  Brg: 200 */
-	const wxString & label = there->GetText();
-	from_str.Printf(wmsg(/*From %s*/339),
-			!label.empty() ?
-			    label.c_str() :
-			    msg(/*anonymous station*/56));
+	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon());
 	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
 	    brg_unit = /*°*/344;
@@ -2143,11 +2139,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
 	Double dz = z - m_Offsets.GetZ() - there->GetZ();
 
 	wxString from_str;
-	const wxString & label = there->GetText();
-	from_str.Printf(wmsg(/*From %s*/339),
-			!label.empty() ?
-			    label.c_str() :
-			    msg(/*anonymous station*/56));
+	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon());
 
 	if (!m_Gfx->GetMetric()) {
 	    dz /= METRES_PER_FOOT;
@@ -2193,10 +2185,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
     s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
 			  z, wmsg(units).c_str());
     s += wxT(": ");
-    const wxString & label = here->GetText();
-    s += !label.empty() ?
-	     label.c_str() :
-	     msg(/*anonymous station*/56);
+    s += here->name_or_anon();
     m_Gfx->SetHere(here);
     m_Tree->SetHere(here->tree_id);
 
@@ -2212,11 +2201,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	const wxString & label2 = there->GetText();
-	from_str.Printf(wmsg(/*From %s*/339),
-			!label2.empty() ?
-			    label2.c_str() :
-			    msg(/*anonymous station*/56));
+	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon());
 
 	wxString hv_str;
 	if (m_Gfx->GetMetric()) {

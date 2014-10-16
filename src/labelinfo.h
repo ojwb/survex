@@ -24,6 +24,7 @@
 #ifndef labelinfo_h
 #define labelinfo_h
 
+#include "message.h"
 #include "vector3.h"
 #include "wx.h"
 
@@ -73,6 +74,12 @@ public:
 	    flags &= ~LFLAG_NOT_ANON;
     }
     const wxString & GetText() const { return text; }
+    const char * name_or_anon() const {
+	if (!text.empty()) return text.c_str();
+	/* TRANSLATORS: Used in place of the station name when talking about an
+	 * anonymous station. */
+	return msg(/*anonymous station*/56);
+    }
     int get_flags() const { return flags; }
     void set_flags(int mask) { flags |= mask; }
     void clear_flags(int mask) { flags &= ~mask; }
