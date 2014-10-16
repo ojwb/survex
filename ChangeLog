@@ -1,3 +1,7 @@
+Thu Oct 16 11:02:17 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac: Update for 1.2.16.
+
 Thu Oct 16 10:03:48 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Make measuring line work from anonymous

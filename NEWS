@@ -1,6 +1,8 @@
-0040469d (Olly Betts 2014-09-09 13:13:30 -0300    1) Tue Sep 09 16:13:00 GMT 2014  Olly Betts <olly@survex.com>
+Changes in 1.2.16 (2014-10-16):
 
 * aven: Add KML export (stations only currently).
+
+* aven: Allow measuring line to measure from anonymous stations.  (Fixes #44)
 
 * aven: Fix corrupted names in exported files.
 
