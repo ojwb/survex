@@ -1,3 +1,7 @@
+Thu Oct 16 11:15:24 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Tweak code so one side of comparison is a constant.
+
 Thu Oct 16 11:02:17 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac: Update for 1.2.16.

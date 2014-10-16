@@ -1718,7 +1718,7 @@ cmd_cs(void)
 	    nextch();
 	    get_token_no_blanks();
 	    cs_class cs2 = match_tok(cs_tab, TABSIZE(cs_tab));
-	    if ((cs ^ CS_LAT) == (cs2 ^ CS_LONG)) {
+	    if ((cs ^ cs2) == (CS_LAT ^ CS_LONG)) {
 		cs_sub = 0;
 	    }
 	 }
