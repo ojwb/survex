@@ -384,7 +384,7 @@ class AvenPresList : public wxListCtrl {
 #endif
 	    if (!fh_pres) {
 		wxString m;
-		m.Printf(wmsg(/*Couldn’t open file “%s”*/93), fnm.c_str());
+		m.Printf(wmsg(/*Couldn’t open file “%s”*/24), fnm.c_str());
 		wxGetApp().ReportError(m);
 		return false;
 	    }

@@ -143,7 +143,7 @@ main(int argc, char **argv)
    if (argv[optind]) howmany = atoi(argv[optind]);
 
    fh = fopen(fnm, "rb");
-   if (!fh) fatalerror(/*Couldn’t open file “%s”*/93, fnm);
+   if (!fh) fatalerror(/*Couldn’t open file “%s”*/24, fnm);
 
    /* 4 line paragraphs, separated by blank lines...
     * 041.verhall.12 - 041.verhall.13

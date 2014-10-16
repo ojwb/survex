@@ -1,3 +1,8 @@
+Thu Oct 16 23:47:08 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/extend.c,src/mainfrm.cc,src/sorterr.c: Fix message references
+	  which I failed to update.
+
 Thu Oct 16 11:15:24 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Tweak code so one side of comparison is a constant.
