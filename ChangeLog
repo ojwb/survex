@@ -1,3 +1,7 @@
+Thu Oct 16 23:59:43 GMT 2014  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Translate new message.
+
 Thu Oct 16 23:57:46 GMT 2014  Olly Betts <olly@survex.com>
 
 	* lib/: Merge changes from survex.pot to *.po.

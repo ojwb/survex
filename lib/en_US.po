@@ -3063,7 +3063,7 @@ msgstr "Separator in survey name"
 #: ../src/labelinfo.h:81
 #: n:56
 msgid "anonymous station"
-msgstr ""
+msgstr "anonymous station"
 
 #: ../src/readval.c:124
 #: ../src/readval.c:139
