@@ -41,7 +41,7 @@ my $suppress_argc_argv_unused_warnings = 0;
 while (<>) {
     if ($suppress_argc_argv_unused_warnings && /^{/) {
 	$suppress_argc_argv_unused_warnings = 0;
-	print "$_  (void)argc;\n  (void)argv\n";
+	print "$_  (void)argc;\n  (void)argv;\n";
 	next;
     }
 
