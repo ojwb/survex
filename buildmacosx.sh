@@ -35,8 +35,8 @@
 
 set -e
 
-WXVERSION=3.0.0
-WX_SHA256=ff340539bcb6e45d8dbce848d3c13ebce34da6ffb9004a0a88e9541bec45bf85
+WXVERSION=3.0.2
+WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
 
 # Sadly, you can only specify one arch via -arch at a time (a restriction of
 # the wxWidgets build system).
