@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
- filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h\
+ filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h kml.h\
  labelinfo.h listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h\
  netbits.h netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
