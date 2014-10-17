@@ -110,7 +110,7 @@ for f in $FILES ; do
 done
 
 echo "To tag this release and upload it to the webserver, run:"
-echo git tag -m"'Tagging $VERSION'" "$VERSION"
+echo git tag -s -m"'Tagging $VERSION'" "$VERSION"
 
 HOST=atreus.tartarus.org
 echo ssh "$HOST" mkdir /srv/www/survex.com/software/"$VERSION"
