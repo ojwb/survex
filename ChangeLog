@@ -1,3 +1,7 @@
+Fri Oct 17 00:55:04 GMT 2014  Olly Betts <olly@survex.com>
+
+	* NEWS: Bump release date.
+
 Fri Oct 17 00:53:25 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/gettexttomsg.pl: Fix typo in generated code to suppress compiler
