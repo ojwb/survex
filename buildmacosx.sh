@@ -31,7 +31,8 @@
 # If using a pre-installed wxWidgets, note that it must satisfy the
 # following requirements:
 #   - It must be built with OpenGL support (--with-opengl).
-#   - It probably should be a "Unicode" build (--enable-unicode).
+#   - If you build with wx < 3, it probably should be a "Unicode" build
+#     (--enable-unicode); wx >= 3 dropped support for non-Unicode builds.
 
 set -e
 
