@@ -3,7 +3,7 @@ Section: science
 Priority: extra
 Maintainer: Olly Betts <olly@survex.com>
 Uploaders: Wookey <wookey@debian.org>
-Standards-Version: 3.9.5
+Standards-Version: 3.9.6
 Build-Depends: debhelper (>= 9), libx11-dev, libxext-dev, x11proto-core-dev,
     libavcodec-dev, libavformat-dev, libproj-dev, libswscale-dev,
     libwxgtk3.0-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev
@@ -16,10 +16,9 @@ Recommends: survex-aven (= ${binary:Version})
 Suggests: survex-svxedit (= ${source:Version}), vim-addon-manager
 Description: cave surveying and mapping software
  A software suite to process, view, and print cave survey data.  Survex
- is cross-platform (Linux, Unix, Mac OS X, Microsoft Windows).  It includes
- English, French, German, Portuguese, Catalan, Spanish, Slovak, and Romanian
- internationalisations.  It can deal with extremely large and complex
- datasets and can read survey data from many sources.
+ is cross-platform (Linux, Unix, Mac OS X, Microsoft Windows).  It has
+ been translated into many languages.  It can deal with extremely large and
+ complex datasets and can read survey data from many sources.
 
 Package: survex-aven
 Architecture: any
@@ -36,6 +35,6 @@ Architecture: all
 Depends: tk8.5|wish, bwidget, ${misc:Depends}
 Recommends: survex (>= ${source:Version})
 Description: survey data editor for Survex
- Experimental cave survey data entry editor for Survex.  Packaged separately
- as it requires Tcl to be installed, and some users prefer to use a text
- editor instead.
+ Experimental cave survey data entry editor for Survex.  It is packaged
+ separately as it requires Tcl to be installed, and some users prefer to use a
+ text editor instead.

@@ -1,3 +1,12 @@
+survex (1.2.16-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: "Standards-Version: 3.9.6" - no changes required.
+  * debian/control: Improve descriptions - in particular, stop trying to
+    explicitly list all the languages there are translations to.
+
+ -- Olly Betts <olly@survex.com>  Fri, 17 Oct 2014 22:38:44 +1300
+
 survex (1.2.14-1) unstable; urgency=medium
 
   * New upstream release.
