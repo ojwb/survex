@@ -1,3 +1,4 @@
+; pos=fail
 ; based on example from alessandro antonelli
 ; caused an assertion to fail with 1.0.35 and earlier
 *begin test

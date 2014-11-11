@@ -1,7 +1,7 @@
-./beginroot.svx:3:8: warning: *prefix is deprecated - use *begin and *end instead
-./beginroot.svx:3:9: warning: ROOT is deprecated
-./beginroot.svx:4:8: warning: ROOT is deprecated
-./beginroot.svx:6:6: warning: ROOT is deprecated
+./beginroot.svx:4:8: warning: *prefix is deprecated - use *begin and *end instead
+./beginroot.svx:4:9: warning: ROOT is deprecated
+./beginroot.svx:5:8: warning: ROOT is deprecated
+./beginroot.svx:7:6: warning: ROOT is deprecated
 
 Removing trailing traverses...
 
@@ -14,7 +14,7 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./beginroot.svx:5: warning: Unused fixed point "1"
+./beginroot.svx:6: warning: Unused fixed point "1"
 
 Calculating statistics...
 

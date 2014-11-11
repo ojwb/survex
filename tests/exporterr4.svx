@@ -1,3 +1,4 @@
+; pos=fail warn=0 error=1
 *begin fred
 1 2 1.23 045 -6
 *export 2

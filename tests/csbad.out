@@ -1,9 +1,8 @@
-./csbad.svx:1: Station "1" fixed before CS command first used
-./csbad.svx:2:4: Unknown coordinate system
+./csbad.svx:2: Station "1" fixed before CS command first used
 ./csbad.svx:3:4: Unknown coordinate system
 ./csbad.svx:4:4: Unknown coordinate system
-./csbad.svx:5:11: End of line not blank
-./csbad.svx:6:4: Unknown coordinate system
+./csbad.svx:5:4: Unknown coordinate system
+./csbad.svx:6:11: End of line not blank
 ./csbad.svx:7:4: Unknown coordinate system
 ./csbad.svx:8:4: Unknown coordinate system
 ./csbad.svx:9:4: Unknown coordinate system
@@ -16,11 +15,12 @@
 ./csbad.svx:16:4: Unknown coordinate system
 ./csbad.svx:17:4: Unknown coordinate system
 ./csbad.svx:18:4: Unknown coordinate system
-./csbad.svx:19:4: Invalid coordinate system: unknown projection id
-./csbad.svx:20:4: Unknown coordinate system
-./csbad.svx:21:4: Coordinate system unsuitable for output
+./csbad.svx:19:4: Unknown coordinate system
+./csbad.svx:20:4: Invalid coordinate system: unknown projection id
+./csbad.svx:21:4: Unknown coordinate system
 ./csbad.svx:22:4: Coordinate system unsuitable for output
 ./csbad.svx:23:4: Coordinate system unsuitable for output
+./csbad.svx:24:4: Coordinate system unsuitable for output
 
 Removing trailing traverses...
 

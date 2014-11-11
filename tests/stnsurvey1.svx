@@ -1,3 +1,4 @@
+; pos=fail warn=0 error=1
 *begin A
 *end A
-*fix A 0 0 0
+*fix A reference 0 0 0

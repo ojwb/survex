@@ -1,2 +1,3 @@
+; pos=fail error=2
 *begin
 *include end_no_begin.svx

@@ -1,2 +1,3 @@
+; pos=fail
 ; include of a nonexistent file
 *include nonexistent_file

@@ -1,3 +1,4 @@
+; pos=no warn=0
 ; test that we can at least specify a title
 *title cave
 *begin survey

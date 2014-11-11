@@ -1,3 +1,4 @@
+; pos=no warn=0
 *equate P007 007.1
 *entrance P007
 *begin 007

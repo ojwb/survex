@@ -1,3 +1,4 @@
+; pos=no warn=0
 ; bug discovered on CUCC 2000 expo
 ; A would incorrectly get added to XYZ component list
 *fix B 1 1 1

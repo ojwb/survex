@@ -1,3 +1,4 @@
+; pos=no warn=0
 *begin outer
 *export inner.1
 *begin inner

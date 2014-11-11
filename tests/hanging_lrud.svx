@@ -1,3 +1,4 @@
+; pos=fail warn=0 error=1
 *begin test
 *data normal from to tape compass clino
 1       2       1.00    30      -5

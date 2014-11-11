@@ -1,3 +1,5 @@
+; pos=yes
+; (don't actually care about coords, just the names)
 *fix P.BPG.A.1 0 0 0
 *BEGIN P
 *Begin BPG

@@ -1,3 +1,4 @@
+; pos=no warn=4
 ; valid dates:
 *begin
 *date 00.01.01

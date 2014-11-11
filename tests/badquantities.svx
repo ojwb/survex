@@ -1,3 +1,4 @@
+; pos=fail error=11
 *fix 1 reference 0 0 0
 ; these weren't caught until 0.99
 *units default tape metres

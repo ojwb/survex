@@ -1,6 +1,6 @@
-./badcalibrate.svx:3:25: Scale factor must be non-zero
-./badcalibrate.svx:4:34: Scale factor must be non-zero
-./badcalibrate.svx:5:20: Scale factor must be non-zero
+./badcalibrate.svx:4:25: Scale factor must be non-zero
+./badcalibrate.svx:5:34: Scale factor must be non-zero
+./badcalibrate.svx:6:20: Scale factor must be non-zero
 
 Removing trailing traverses...
 

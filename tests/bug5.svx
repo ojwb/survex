@@ -1,3 +1,4 @@
+; pos=no warn=0 dummy=crlf
 A B 1 0 0
 *equate A C
 D C 1 0 0

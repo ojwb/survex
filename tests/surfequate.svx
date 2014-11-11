@@ -1,3 +1,4 @@
+; pos=dxf warn=0
 *equate A.2 B.2
 *flags surface
 *fix A.1 0 0 0

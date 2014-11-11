@@ -1,3 +1,4 @@
+; pos=no warn=2
 *fix 1 reference 0 0 0
 *entrance 2
 *begin a

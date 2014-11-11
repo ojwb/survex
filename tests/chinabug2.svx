@@ -1,3 +1,4 @@
+; pos=no warn=0
 1 2 29.84 306 15
 1 2 29.84 306 15
 *sd compass 10.0 degrees

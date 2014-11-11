@@ -1,2 +1,3 @@
+; pos=no warn=1
 *data normal - from to tape compass clino
 1 2 10.00 123 -07

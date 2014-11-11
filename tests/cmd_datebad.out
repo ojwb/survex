@@ -1,4 +1,3 @@
-./cmd_datebad.svx:3: warning: Invalid day of the month
 ./cmd_datebad.svx:4: warning: Invalid day of the month
 ./cmd_datebad.svx:5: warning: Invalid day of the month
 ./cmd_datebad.svx:6: warning: Invalid day of the month
@@ -35,6 +34,7 @@
 ./cmd_datebad.svx:37: warning: Invalid day of the month
 ./cmd_datebad.svx:38: warning: Invalid day of the month
 ./cmd_datebad.svx:39: warning: Invalid day of the month
+./cmd_datebad.svx:40: warning: Invalid day of the month
 
 Removing trailing traverses...
 

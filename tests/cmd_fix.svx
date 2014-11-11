@@ -1,3 +1,4 @@
+; pos=yes warn=1
 *fix A reference ; generates a warning
 *fix B reference 0 0 0
 *fix C reference 0 0 0 1.0

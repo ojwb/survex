@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *fix 1 0 0 0
 *units clino percent
 1 2 10.00 000 100

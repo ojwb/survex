@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *fix 1 0 4 0
 *fix 2 4 0 0
 *fix 3 8 4 0

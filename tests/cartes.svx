@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *fix 1 0 0 0
 *data cartesian from easting northing altitude to
 1 0 1 0 2

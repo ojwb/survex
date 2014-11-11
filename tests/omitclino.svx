@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *fix 1 0 0 0
 1 2 12.00 000 -
 ; this failed up to Survex 1.0.7:

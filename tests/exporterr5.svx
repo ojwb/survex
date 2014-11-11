@@ -1,3 +1,4 @@
+; pos=fail warn=0 error=1
 *begin example
 *export 1
 *export 1

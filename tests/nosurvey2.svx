@@ -1,3 +1,4 @@
+; pos=yes warn=0
 1 2 1.00 000 00
 2 3 1.00 090 00
 *data nosurvey from to

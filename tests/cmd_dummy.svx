@@ -1,3 +1,4 @@
+; pos=no warn=0
 *begin it_all
 *copyright 2001 "Space Oddity Speleos"
 *date 1971.02.07

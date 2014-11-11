@@ -1,3 +1,4 @@
+; pos=fail warn=0 error=1
 *equate entrance outer.inner.1
 *begin outer
 *export inner.1

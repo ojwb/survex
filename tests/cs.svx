@@ -1,3 +1,4 @@
+; pos=no warn=0
 *cs EPSG:4167
 *cs ESRI:104305
 *cs EUR79Z30

@@ -1,3 +1,4 @@
+; pos=yes warn=0
 ; check that closure of plumbed legs doesn't depend on orientation
 *sd tape position 0.1 metres
 *sd plumb 0.25 degrees

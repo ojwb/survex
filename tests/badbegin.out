@@ -1,6 +1,6 @@
-./badbegin.svx:2:10: Matching BEGIN command has no survey name
-./badbegin.svx:5:11: Survey name doesn't match BEGIN
-./badbegin.svx:7:5: warning: Survey name omitted from END
+./badbegin.svx:3:10: Matching BEGIN command has no survey name
+./badbegin.svx:6:11: Survey name doesn't match BEGIN
+./badbegin.svx:8:5: warning: Survey name omitted from END
 
 Removing trailing traverses...
 

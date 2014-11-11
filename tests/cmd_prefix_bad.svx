@@ -1,3 +1,4 @@
+; pos=fail warn=1 error=1
 ; this should give an error
 *prefix
 *fix 1 0 0 0

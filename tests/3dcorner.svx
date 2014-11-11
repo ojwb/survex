@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *begin reallylongprefixtogetusstarted
 *begin 1
 *begin 2

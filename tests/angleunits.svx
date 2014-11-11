@@ -1,3 +1,4 @@
+; pos=yes warn=0
 ; tests angle units, also test begin/end saving/restoring units
 *fix 1 0 0 0
 *units compass grads

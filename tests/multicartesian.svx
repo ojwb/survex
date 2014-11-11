@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *fix 1 0 0 0
 *data cartesian station newline easting northing altitude
 1

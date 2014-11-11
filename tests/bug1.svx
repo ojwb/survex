@@ -1,3 +1,4 @@
+; pos=no warn=0 dummy=crlf
 A B 1 0 0
 C D 1 0 0
 C A 1 0 0

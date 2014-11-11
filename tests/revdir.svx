@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *data normal station newline direction tape compass clino
 *fix 0 0 0 0
 0

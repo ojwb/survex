@@ -1,3 +1,4 @@
+; pos=no warn=0
 *equate entrance outer.inner.1
 *begin outer
 *export inner.1
