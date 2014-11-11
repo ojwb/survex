@@ -1,3 +1,8 @@
+Tue Nov 11 04:05:16 GMT 2014  Olly Betts <olly@survex.com>
+
+	* tests/back2.pos,tests/back2.svx,tests/cavern.tst: Extend test of fore
+	  and back sights to test calibration of the back compass.
+
 Fri Oct 17 00:55:04 GMT 2014  Olly Betts <olly@survex.com>
 
 	* NEWS: Bump release date.

@@ -202,7 +202,7 @@ for file in $TESTS ; do
   3sdfixbug) pos=yes ; warn=0 ;;
   omitclino) pos=yes ; warn=0 ;;
   back) pos=yes; warn=0 ;;
-  back2) pos=yes; warn=2 ;;
+  back2) pos=yes; warn=6 ;;
   notentranceorexport) pos=fail; warn=0 ; error=1 ;;
   inferunknown) pos=fail; error=1 ;;
   inferexports) pos=no; warn=0 ;;
