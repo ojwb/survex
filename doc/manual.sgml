@@ -107,8 +107,6 @@ joining it, e.g. at a T-junction. And so on.
    <year>1998-2014</year>
    <holder role="mailto:&ollyemail;">Olly Betts</holder>
   </copyright>
-  <pubdate role="rcs">$Date: 2005-10-17 04:49:04 $</pubdate>
-  <ReleaseInfo>$Id: manual.sgml,v 1.96.2.11 2005-10-17 04:49:04 olly Exp $</ReleaseInfo>
   <Abstract>
    <Para>
     This is the manual for &survexsuite; - an open-source software package for
