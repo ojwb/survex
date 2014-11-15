@@ -42,13 +42,14 @@ WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
 # Sadly, you can only specify one arch via -arch at a time (a restriction of
 # the wxWidgets build system).
 #
-# Using -arch i386 produces a build which will also work on 64-bit Intel Macs.
-# If you want a build which *only* works on 64 bit Intel Macs, then use
-# arch_flags='-arch x86_64' instead.
+# Using -arch x86_64 produces a build which will only work on 64-bit Intel
+# Macs, but that's probably all machines modern enough to worry about.
+# If you want a build which also works on 32 bit Intel Macs, then use
+# arch_flags='-arch i386' instead.
 #
-# To build for older machines with a ppc CPU, you want arch_flags='-arch ppc'
-# instead.
-arch_flags='-arch i386'
+# To build for much older machines with a ppc CPU, you want arch_flags='-arch
+# ppc' instead.
+arch_flags='-arch x86_64'
 if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
