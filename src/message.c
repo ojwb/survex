@@ -274,7 +274,7 @@ default_charset(void)
    }
 
    if (p) {
-      char *q = strchr(p, '.');
+      const char *q = strchr(p, '.');
       if (q) p = q + 1;
    }
 

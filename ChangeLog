@@ -1,3 +1,8 @@
+Sun Nov 23 18:49:52 GMT 2014  Olly Betts <olly@survex.com>
+
+	* src/message.c: Avoid needless dropping of const qualifier via
+	  strchr().
+
 Sat Nov 15 10:43:36 GMT 2014  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Default to building for x86_64, since modern Macs are
