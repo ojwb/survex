@@ -1,3 +1,7 @@
+Tue Jan 20 20:29:27 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix short-cut for Full Screen mode on OS X.
+
 Tue Jan 20 20:26:10 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/datain.c,src/netbits.c,src/netbits.h,tests/: If the same leg is

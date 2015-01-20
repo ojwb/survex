@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -890,7 +890,7 @@ void MainFrm::CreateMenuBar()
     // navigation).  The standard OS X shortcut for full screen mode is
     // Shift-Command-F which in wxWidgets terms is Shift+Ctrl+F.
     wxString wxmac_fullscreen = wmsg(/*Full Screen &Mode\tF11*/356);
-    wxmac_fullscreen.Replace(wxT("\tF11"), wxT("\rShift+Ctrl+F"), false);
+    wxmac_fullscreen.Replace(wxT("\tF11"), wxT("\tShift+Ctrl+F"), false);
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wxmac_fullscreen);
 #else
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*Full Screen &Mode\tF11*/356));
