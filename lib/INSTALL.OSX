@@ -14,7 +14,6 @@ Known shortcomings in the Mac OS X version of Aven
 These could be reproduced with 1.2.2 plus a few patches, when using wxWidgets
 2.8.11:
 
-- About dialog doesn't show.
 - Spurious Help menu appears after opening any other menu.
 - Spurious "Please wait" dialog appears whilst printing (cosmetic issue, not
   too intrusive).

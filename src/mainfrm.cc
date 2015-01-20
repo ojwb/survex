@@ -772,6 +772,12 @@ void MainFrm::CreateMenuBar()
     // On wxMac the "Quit" menu item will be moved elsewhere, so we suppress
     // this separator.
     filemenu->AppendSeparator();
+#else
+    // We suppress the "Help" menu under OS X as it would otherwise end up as
+    // an empty menu, but we need to add the "About" menu item somewhere.  It
+    // really doesn't matter where as wxWidgets will move it to the "Apple"
+    // menu.
+    filemenu->Append(wxID_ABOUT);
 #endif
     filemenu->Append(wxID_EXIT);
 
