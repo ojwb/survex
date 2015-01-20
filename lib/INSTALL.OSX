@@ -11,23 +11,12 @@ aven.
 Known shortcomings in the Mac OS X version of Aven
 ==================================================
 
-These could be reproduced with 1.2.2 plus a few patches, when using wxWidgets
-2.8.11:
+These could be reproduced with 1.2.16, when using wxWidgets 3.0.2:
 
-- Spurious Help menu appears after opening any other menu.
 - Spurious "Please wait" dialog appears whilst printing (cosmetic issue, not
   too intrusive).
-- Status bar during full screen mode.
-- Redraw artifacts before loading a survey.
-- Icon for application bundle.
-- Custom cursors are quite small.
+- Status bar and tool bar appear during full screen mode.
+- Lacks a custom icon for application bundle.
 - Put everything into the app bundle?
 - Run actions for filetypes in Finder are needed (including for .svx etc).
 - Drag-and-drop into Aven window should be supported.
-
-Issues noted by Mark Shinwell originally which Dan and I couldn't reproduce with
-1.2.2 plus a few patches:
-
-- Not always as responsive as under X Windows.
-- Spurious menu bar items appear whilst application is launching.
-- GL canvas isn't correct size before a file is opened (should be hidden).

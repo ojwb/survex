@@ -1,3 +1,7 @@
+Tue Jan 20 20:36:02 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX: Update for current status.
+
 Tue Jan 20 20:33:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,src/mainfrm.cc: Make "About" menu item appear on OS
