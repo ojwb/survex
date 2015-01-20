@@ -1,6 +1,6 @@
 /* netbits.h
  * Header file for miscellaneous primitive network routines for Survex
- * Copyright (C) 1994,1997,1998,2001,2006 Olly Betts
+ * Copyright (C) 1994,1997,1998,2001,2006,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+void clear_last_leg(void);
 
 node *StnFromPfx(prefix *name);
 

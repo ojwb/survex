@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2003,2006,2011,2013,2014 Olly Betts
+ * Copyright (C) 1992-2003,2006,2011,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,17 @@
 #define THRESHOLD (REAL_EPSILON * 1000) /* 100 was too small */
 
 node *stn_iter = NULL; /* for FOR_EACH_STN */
+
+static struct {
+   prefix * to_name;
+   prefix * fr_name;
+   linkfor * leg;
+   int n;
+} last_leg = { NULL, NULL, NULL, 0 };
+
+void clear_last_leg(void) {
+   last_leg.to_name = NULL;
+}
 
 static char freeleg(node **stnptr);
 
@@ -258,7 +269,7 @@ addto_link(linkfor *leg, const linkfor *leg2)
    return leg;
 }
 
-static void
+static linkfor *
 addleg_(node *fr, node *to,
 	real dx, real dy, real dz,
 	real vx, real vy, real vz,
@@ -309,6 +320,8 @@ addleg_(node *fr, node *to,
 
    ++fr->name->shape;
    ++to->name->shape;
+
+   return leg;
 }
 
 /* Add a leg between names *fr_name and *to_name
@@ -341,12 +354,40 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
       fr = StnFromPfx(fr_name);
       to = StnFromPfx(to_name);
    }
-   cLegs++; /* increment count (first as compiler may do tail recursion) */
-   addleg_(fr, to, dx, dy, dz, vx, vy, vz,
+   if (last_leg.to_name) {
+      if (last_leg.to_name == to_name && last_leg.fr_name == fr_name) {
+	 /* FIXME: Not the right way to average... */
+	 linkfor * leg = last_leg.leg;
+	 int n = last_leg.n++;
+	 leg->d[0] = (leg->d[0] * n + dx) / (n + 1);
+	 leg->d[1] = (leg->d[1] * n + dy) / (n + 1);
+	 leg->d[2] = (leg->d[2] * n + dz) / (n + 1);
 #ifndef NO_COVARIANCES
-	   cyz, czx, cxy,
+	 leg->v[0] = (leg->v[0] * n + vx) / (n + 1);
+	 leg->v[1] = (leg->v[1] * n + vy) / (n + 1);
+	 leg->v[2] = (leg->v[2] * n + vz) / (n + 1);
+	 leg->v[3] = (leg->v[3] * n + cxy) / (n + 1);
+	 leg->v[4] = (leg->v[4] * n + czx) / (n + 1);
+	 leg->v[5] = (leg->v[5] * n + cyz) / (n + 1);
+	 check_svar(&(leg->v));
+#else
+	 leg->v[0] = (leg->v[0] * n + vx) / (n + 1);
+	 leg->v[1] = (leg->v[1] * n + vy) / (n + 1);
+	 leg->v[2] = (leg->v[2] * n + vz) / (n + 1);
 #endif
-	   0);
+	 return;
+      }
+   }
+   cLegs++;
+
+   last_leg.to_name = to_name;
+   last_leg.fr_name = fr_name;
+   last_leg.n = 1;
+   last_leg.leg = addleg_(fr, to, dx, dy, dz, vx, vy, vz,
+#ifndef NO_COVARIANCES
+			  cyz, czx, cxy,
+#endif
+			  0);
 }
 
 /* helper function for replace_pfx */
@@ -400,6 +441,7 @@ void
 process_equate(prefix *name1, prefix *name2)
 {
    node *stn1, *stn2;
+   clear_last_leg();
    if (name1 == name2) {
       /* catch something like *equate "fred fred" */
       /* TRANSLATORS: Here "station" is a survey station, not a train station.
@@ -468,6 +510,7 @@ addfakeleg(node *fr, node *to,
 #endif
 	   )
 {
+   clear_last_leg();
    addleg_(fr, to, dx, dy, dz, vx, vy, vz,
 #ifndef NO_COVARIANCES
 	   cyz, czx, cxy,

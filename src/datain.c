@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -617,6 +617,7 @@ data_file(const char *pth, const char *fnm)
 	    }
 	    data_normal();
 	 }
+	 clear_last_leg();
       }
       {
 	 settings *pcsParent = pcs->next;
@@ -738,6 +739,7 @@ data_file(const char *pth, const char *fnm)
 	    }
 	 }
       }
+      clear_last_leg();
    }
 
    /* don't allow *BEGIN at the end of a file, then *EXPORT in the

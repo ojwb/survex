@@ -111,4 +111,5 @@ doubleinc.out doubleinc.svx\
 reenterlots.out reenterlots.svx\
 cs.out cs.svx\
 csbad.out csbad.svx\
-omitfixaroundsolve.out omitfixaroundsolve.svx
+omitfixaroundsolve.out omitfixaroundsolve.svx\
+repeatreading.svx repeatreading.out repeatreading.pos

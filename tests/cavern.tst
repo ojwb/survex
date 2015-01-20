@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014 Olly Betts
+# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014,2015 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ testdir=`(cd "$testdir" && pwd)`
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
- cs csbad omitfixaroundsolve\
+ cs csbad omitfixaroundsolve repeatreading\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.

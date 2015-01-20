@@ -1,0 +1,8 @@
+; pos=yes warn=0 error=0
+; Feature test for averaging of repeated readings
+*fix 1 0 0 0
+*data normal from to tape compass clino
+1 2 11.00 000 0
+1 2 10.00 000 0
+1 2 10.00 000 0
+1 2 10.00 000 0

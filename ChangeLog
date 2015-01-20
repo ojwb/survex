@@ -1,3 +1,9 @@
+Tue Jan 20 20:26:10 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c,src/netbits.c,src/netbits.h,tests/: If the same leg is
+	  repeated consecutively, average the readings and treat as a single
+	  leg.
+
 Sun Nov 23 18:49:52 GMT 2014  Olly Betts <olly@survex.com>
 
 	* src/message.c: Avoid needless dropping of const qualifier via
