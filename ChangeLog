@@ -1,3 +1,12 @@
+Wed Jan 21 10:15:02 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Build a static version of PROJ and use it.  Get wx
+	  tarball from a sourceforge mirror as the wx ftp site has a
+	  permissions problem.  Build wx with --disable-webview to avoid a
+	  compilation failure.  Use wx-config --cc and --cxx to get the
+	  compilers to use for building everything else, as wx adds options
+	  to them which otherwise cause linking errors.
+
 Wed Jan 21 09:41:10 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aboutdlg.cc: Fix "Close" button in about dialog under OS X.

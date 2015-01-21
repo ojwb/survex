@@ -36,8 +36,11 @@
 
 set -e
 
-WXVERSION=3.0.2
+WX_VERSION=3.0.2
 WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
+
+PROJ_VERSION=4.8.0
+PROJ_SHA256=2db2dbf0fece8d9880679154e0d6d1ce7c694dd8e08b4d091028093d87a9d1b5
 
 # Sadly, you can only specify one arch via -arch at a time (a restriction of
 # the wxWidgets build system).
@@ -55,9 +58,9 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     :
   else
     prefix=`pwd`/WXINSTALL
-    wxtarball=wxWidgets-$WXVERSION.tar.bz2
+    wxtarball=wxWidgets-$WX_VERSION.tar.bz2
     test -f "$wxtarball" || \
-      curl -O "http://ftp.wxwidgets.org/pub/$WXVERSION/$wxtarball"
+      curl -O "http://iweb.dl.sourceforge.net/project/wxwindows/$WX_VERSION/$wxtarball"
     if echo "$WX_SHA256  $wxtarball" | shasum -a256 -c ; then
       : # OK
     else
@@ -65,15 +68,43 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
       exit 1
     fi
     echo "+++ Extracting $wxtarball"
-    test -d "wxWidgets-$WXVERSION" || tar jxf "$wxtarball"
-    test -d "wxWidgets-$WXVERSION/build" || "mkdir wxWidgets-$WXVERSION/build"
-    cd "wxWidgets-$WXVERSION/build"
-    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode CC="gcc $arch_flags" CXX="g++ $arch_flags"
+    test -d "wxWidgets-$WX_VERSION" || tar jxf "$wxtarball"
+    test -d "wxWidgets-$WX_VERSION/build" || mkdir "wxWidgets-$WX_VERSION/build"
+    cd "wxWidgets-$WX_VERSION/build"
+    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode --disable-webview CC="gcc $arch_flags" CXX="g++ $arch_flags"
     make -s
     make -s install
     cd ../..
   fi
   WX_CONFIG=`pwd`/WXINSTALL/bin/wx-config
+fi
+
+CC=`$WX_CONFIG --cc`
+CXX=`$WX_CONFIG --cxx`
+
+if [ "x$1" != "x--no-install-proj" ] ; then
+  if test -f PROJINSTALL/include/proj_api.h ; then
+    :
+  else
+    prefix=`pwd`/PROJINSTALL
+    projtarball=proj-$PROJ_VERSION.tar.gz
+    test -f "$projtarball" || \
+      curl -O "http://download.osgeo.org/proj/$projtarball"
+    if echo "$PROJ_SHA256  $projtarball" | shasum -a256 -c ; then
+      : # OK
+    else
+      echo "Checksum of downloaded file '$projtarball' is incorrect, aborting."
+      exit 1
+    fi
+    echo "+++ Extracting $projtarball"
+    test -d "proj-$PROJ_VERSION" || tar jxf "$projtarball"
+    test -d "proj-$PROJ_VERSION/build" || mkdir "proj-$PROJ_VERSION/build"
+    cd "proj-$PROJ_VERSION/build"
+    ../configure --disable-shared --prefix="$prefix" CC="$CC" CXX="$CXX"
+    make -s
+    make -s install
+    cd ../..
+  fi
 fi
 
 test -n "$WX_CONFIG" || WX_CONFIG=`which wx-config`
@@ -86,7 +117,7 @@ WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
 D=`pwd`/Survex
 T=`pwd`/macosxtmp
-./configure --prefix="$D" --bindir="$D" --mandir="$T" WX_CONFIG="$WX_CONFIG" CC="gcc $arch_flags" CXX="g++ $arch_flags"
+./configure --prefix="$D" --bindir="$D" --mandir="$T" WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX" CPPFLAGS=-I"`pwd`/PROJINSTALL/include" LDFLAGS=-L"`pwd`/PROJINSTALL/lib"
 make
 make install
 #mv Survex/survex Survex/Survex
