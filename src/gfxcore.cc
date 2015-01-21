@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -3126,7 +3126,16 @@ make_cursor(const unsigned char * bits, const unsigned char * mask,
 	    int hotx, int hoty)
 {
 #if defined __WXMSW__ || defined __WXMAC__
-    wxBitmap cursor_bitmap(reinterpret_cast<const char *>(bits), 32, 32);
+# ifdef __WXMAC__
+    // The default Mac cursor is black with a white edge, so
+    // invert our custom cursors to match.
+    char b[128];
+    for (int i = 0; i < 128; ++i)
+	b[i] = bits[i] ^ 0xff;
+# else
+    const char * b = reinterpret_cast<const char *>(bits);
+# endif
+    wxBitmap cursor_bitmap(b, 32, 32);
     wxBitmap mask_bitmap(reinterpret_cast<const char *>(mask), 32, 32);
     cursor_bitmap.SetMask(new wxMask(mask_bitmap, *wxWHITE));
     wxImage cursor_image = cursor_bitmap.ConvertToImage();

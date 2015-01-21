@@ -1,3 +1,8 @@
+Wed Jan 21 10:48:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,src/gfxcore.cc: On OS X, make custom cursors black
+	  with a white outline to match the standard OS X cursor.
+
 Wed Jan 21 10:18:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX: Update status.

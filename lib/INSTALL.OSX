@@ -18,4 +18,3 @@ These could be reproduced with Survex 1.2.17 when built using wxWidgets 3.0.2:
 - Lacks a custom icon for application bundle.
 - Put everything into the app bundle?
 - Run actions for filetypes in Finder are needed (including for .svx etc).
-- Make custom cursors black with white outline?
