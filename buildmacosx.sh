@@ -161,7 +161,7 @@ echo "Presenting image to the filesystems for mounting."
 hdid_output=`hdid survex-macosx.dmg|tail -1`
 echo "Last line of hdid output was: $hdid_output"
 dev=`echo "$hdid_output"|sed 's!/dev/\([^	 ]*\).*!\1!'`
-mount_point=`echo "$hdid_output"|sed 's!.*[	 ]!!'`
+mount_point=`echo "$hdid_output"|sed 's!.*	!!'`
 
 echo "Device $dev mounted on $mount_point, copying files into image."
 ditto -rsrcFork Survex "$mount_point/Survex"
