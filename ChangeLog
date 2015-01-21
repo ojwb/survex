@@ -1,3 +1,7 @@
+Wed Jan 21 09:41:10 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc: Fix "Close" button in about dialog under OS X.
+
 Wed Jan 21 04:16:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* configure.ac,debian/copyright,doc/manual.sgml: Update copyright
