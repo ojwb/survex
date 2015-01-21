@@ -1,3 +1,7 @@
+Wed Jan 21 10:18:50 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX: Update status.
+
 Wed Jan 21 10:15:02 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Build a static version of PROJ and use it.  Get wx
