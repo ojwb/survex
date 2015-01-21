@@ -1,3 +1,26 @@
+d590ad87 (Olly Betts 2015-01-21 09:36:19 +1300    1) Tue Jan 20 20:36:02 GMT 2015  Olly Betts <olly@survex.com>
+
+Changes in 1.2.17 (2015-01-21):
+
+* MacOS X version:
+
+  + Update INSTALL file with current status.
+
+  + aven: Fix short-cut for toggling Full Screen mode.
+
+  + aven: Make "About" menu item appear.
+
+  + Default to building for x86_64, since all modern Macs are 64 bit.
+
+* cavern: If the same leg is repeated consecutively, average the readings and
+  treat as a single leg.
+
+* doc/manual.sgml: Remove $Id and $Date markers, as they don't get expanded now
+  we're using git.
+
+* tests/: Extend tests of fore and back sights to test calibration of the back
+  compass.
+
 Changes in 1.2.16 (2014-10-17):
 
 * aven: Add KML export (stations only currently).
