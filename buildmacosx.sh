@@ -60,7 +60,7 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     prefix=`pwd`/WXINSTALL
     wxtarball=wxWidgets-$WX_VERSION.tar.bz2
     test -f "$wxtarball" || \
-      curl -O "http://iweb.dl.sourceforge.net/project/wxwindows/$WX_VERSION/$wxtarball"
+      curl -L -O "http://downloads.sourceforge.net/project/wxwindows/$WX_VERSION/$wxtarball"
     if echo "$WX_SHA256  $wxtarball" | shasum -a256 -c ; then
       : # OK
     else
