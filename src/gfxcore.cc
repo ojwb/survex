@@ -1357,7 +1357,7 @@ void GfxCore::Defaults()
     ForceRefresh();
 }
 
-// return: true if animation occured (and ForceRefresh() needs to be called)
+// return: true if animation occurred (and ForceRefresh() needs to be called)
 bool GfxCore::Animate()
 {
     if (!Animating()) return false;

@@ -1,3 +1,7 @@
+Fri Jan 23 05:21:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Fix comment typo.
+
 Wed Jan 21 11:25:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: The pathname of the mount point for the disk image
