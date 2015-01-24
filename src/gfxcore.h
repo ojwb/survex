@@ -106,6 +106,11 @@ enum {
       SPLAYS_SHOW_NORMAL,
 };
 
+// It's pointless to redraw the screen as often as we can on a fast machine,
+// since the display hardware will only update so many times per second.
+// This is the maximum framerate we'll redraw at.
+const int MAX_FRAMERATE = 50;
+
 class GfxCore : public GLACanvas {
     Double m_Scale;
     int m_ScaleBarWidth;
@@ -132,12 +137,12 @@ class GfxCore : public GLACanvas {
 
     void SetPanBase() {
 	base_pan = m_PanAngle;
-	base_pan_time = timer.Time() - (1000 / 25);
+	base_pan_time = timer.Time() - (1000 / MAX_FRAMERATE);
     }
 
     void SetTiltBase() {
 	base_tilt = m_TiltAngle;
-	base_tilt_time = timer.Time() - (1000 / 25);
+	base_tilt_time = timer.Time() - (1000 / MAX_FRAMERATE);
     }
 
 public:

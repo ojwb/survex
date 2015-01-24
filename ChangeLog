@@ -1,3 +1,7 @@
+Sat Jan 24 13:01:22 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Factor out MAX_FRAMERATE.
+
 Sat Jan 24 11:28:58 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Fix presentation playback to work after the animation

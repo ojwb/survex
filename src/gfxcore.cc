@@ -1382,8 +1382,8 @@ void GfxCore::Animate()
 	static long t_prev = 0;
 	t = timer.Time();
 	// Avoid redrawing twice in the same frame.
-	long delta_t = (t_prev == 0 ? 1000 / 50 : t - t_prev);
-	if (delta_t < 1000 / 50)
+	long delta_t = (t_prev == 0 ? 1000 / MAX_FRAMERATE : t - t_prev);
+	if (delta_t < 1000 / MAX_FRAMERATE)
 	    return;
 	t_prev = t;
 	if (presentation_mode == PLAYING && pres_speed != 0.0)
