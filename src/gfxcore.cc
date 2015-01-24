@@ -1382,15 +1382,22 @@ void GfxCore::Animate()
 	static long t_prev = 0;
 	t = timer.Time();
 	// Avoid redrawing twice in the same frame.
-	long delta_t = t - t_prev;
-	if (delta_t < 1000 / 50) return;
+	long delta_t = (t_prev == 0 ? 1000 / 50 : t - t_prev);
+	if (delta_t < 1000 / 50)
+	    return;
 	t_prev = t;
+	if (presentation_mode == PLAYING && pres_speed != 0.0)
+	    t = delta_t;
     }
 
     if (presentation_mode == PLAYING && pres_speed != 0.0) {
-	t *= fabs(pres_speed);
-	while (t >= next_mark_time) {
-	    t -= next_mark_time;
+	// FIXME: It would probably be better to work relative to the time we
+	// passed the last mark, but that's complicated by the speed
+	// potentially changing (or even the direction of playback reversing)
+	// at any point during playback.
+	Double tick = t * 0.001 * fabs(pres_speed);
+	while (tick >= next_mark_time) {
+	    tick -= next_mark_time;
 	    this_mark_total = 0;
 	    PresentationMark prev_mark = next_mark;
 	    if (prev_mark.angle < 0) prev_mark.angle += 360.0;
@@ -1443,7 +1450,7 @@ void GfxCore::Animate()
 
 	if (presentation_mode) {
 	    // Advance position towards next_mark
-	    double p = t / next_mark_time;
+	    double p = tick / next_mark_time;
 	    double q = 1 - p;
 	    PresentationMark here = GetView();
 	    if (next_mark.angle < 0) {
@@ -1460,9 +1467,12 @@ void GfxCore::Animate()
 	    here.tilt_angle = q * here.tilt_angle + p * next_mark.tilt_angle;
 	    here.scale = exp(q * log(here.scale) + p * log(next_mark.scale));
 	    SetView(here);
-	    this_mark_total += t;
-	    next_mark_time -= t;
+	    this_mark_total += tick;
+	    next_mark_time -= tick;
 	}
+
+	ForceRefresh();
+	return;
     }
 
     // When rotating...
