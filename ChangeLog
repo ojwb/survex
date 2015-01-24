@@ -1,3 +1,8 @@
+Sat Jan 24 06:50:19 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: Disable stepping the rotation angle if animating,
+	  not just if rotating.
+
 Sat Jan 24 06:22:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Reimplement animation so that it's

@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -741,7 +741,7 @@ void GUIControl::OnStepOnceAnticlockwise(bool accel)
 
 void GUIControl::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->IsRotating());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->Animating());
 }
 
 void GUIControl::OnStepOnceClockwise(bool accel)
@@ -756,7 +756,7 @@ void GUIControl::OnStepOnceClockwise(bool accel)
 
 void GUIControl::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
 {
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->IsRotating());
+    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->Animating());
 }
 
 void GUIControl::OnDefaults()
