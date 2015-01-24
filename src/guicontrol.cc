@@ -739,11 +739,6 @@ void GUIControl::OnStepOnceAnticlockwise(bool accel)
     m_View->ForceRefresh();
 }
 
-void GUIControl::OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->Animating());
-}
-
 void GUIControl::OnStepOnceClockwise(bool accel)
 {
     if (m_View->GetPerspective()) {
@@ -754,7 +749,7 @@ void GUIControl::OnStepOnceClockwise(bool accel)
     m_View->ForceRefresh();
 }
 
-void GUIControl::OnStepOnceClockwiseUpdate(wxUpdateUIEvent& cmd)
+void GUIControl::OnStepOnceUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->Animating());
 }

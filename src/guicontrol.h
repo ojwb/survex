@@ -141,8 +141,7 @@ public:
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);
     void OnSlowDownUpdate(wxUpdateUIEvent&);
     void OnSpeedUpUpdate(wxUpdateUIEvent&);
-    void OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent&);
-    void OnStepOnceClockwiseUpdate(wxUpdateUIEvent&);
+    void OnStepOnceUpdate(wxUpdateUIEvent&);
     void OnDefaultsUpdate(wxUpdateUIEvent&);
     void OnElevationUpdate(wxUpdateUIEvent&);
     void OnHigherViewpointUpdate(wxUpdateUIEvent&);

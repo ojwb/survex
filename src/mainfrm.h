@@ -335,8 +335,7 @@ public:
     void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseControlsUpdate(event); }
     void OnSlowDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSlowDownUpdate(event); }
     void OnSpeedUpUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSpeedUpUpdate(event); }
-    void OnStepOnceAnticlockwiseUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStepOnceAnticlockwiseUpdate(event); }
-    void OnStepOnceClockwiseUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStepOnceClockwiseUpdate(event); }
+    void OnStepOnceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStepOnceUpdate(event); }
     void OnHigherViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHigherViewpointUpdate(event); }
     void OnLowerViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnLowerViewpointUpdate(event); }
     void OnShiftDisplayDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayDownUpdate(event); }
