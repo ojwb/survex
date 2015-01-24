@@ -1667,9 +1667,9 @@ void GfxCore::TurnCave(Double angle)
     // Turn the cave around its z-axis by a given angle.
 
     m_PanAngle += angle;
-    if (m_PanAngle >= 360.0) {
-	m_PanAngle -= 360.0;
-    } else if (m_PanAngle < 0.0) {
+    // Wrap to range [0, 360):
+    m_PanAngle = fmod(m_PanAngle, 360.0);
+    if (m_PanAngle < 0.0) {
 	m_PanAngle += 360.0;
     }
 
