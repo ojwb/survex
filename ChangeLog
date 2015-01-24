@@ -1,3 +1,8 @@
+Sat Jan 24 22:32:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Disable use of liblzma when building wxWidgets for
+	  OS X, as this prevents the build from working on OS X 10.6.8.
+
 Sat Jan 24 13:01:22 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Factor out MAX_FRAMERATE.

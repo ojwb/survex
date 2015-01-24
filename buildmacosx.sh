@@ -71,7 +71,12 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     test -d "wxWidgets-$WX_VERSION" || tar jxf "$wxtarball"
     test -d "wxWidgets-$WX_VERSION/build" || mkdir "wxWidgets-$WX_VERSION/build"
     cd "wxWidgets-$WX_VERSION/build"
-    ../configure --disable-shared --prefix="$prefix" --with-opengl --enable-unicode --disable-webview CC="gcc $arch_flags" CXX="g++ $arch_flags"
+    # Compliation of wx 3.0.2 fails on OS X 10.10.1 with webview enabled.
+    # A build with liblzma enabled doesn't work on OS X 10.6.8.
+    ../configure --disable-shared --prefix="$prefix" \
+	--with-opengl --enable-unicode \
+	--disable-webview --without-liblzma \
+	CC="gcc $arch_flags" CXX="g++ $arch_flags"
     make -s
     make -s install
     cd ../..
