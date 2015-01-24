@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014 Olly Betts
+//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014,2017 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -130,6 +130,16 @@ class GfxCore : public GLACanvas {
 
     static const int NUM_COLOUR_BANDS = 13;
 
+    void SetPanBase() {
+	base_pan = m_PanAngle;
+	base_pan_time = timer.Time() - (1000 / 25);
+    }
+
+    void SetTiltBase() {
+	base_tilt = m_TiltAngle;
+	base_tilt_time = timer.Time() - (1000 / 25);
+    }
+
 public:
     typedef enum {
 	CURSOR_DEFAULT,
@@ -189,7 +199,10 @@ private:
     const LabelInfo * m_there;
 
     wxStopWatch timer;
-    long drawtime;
+    long base_tilt_time;
+    long base_pan_time;
+    Double base_tilt;
+    Double base_pan;
 
     GLAPen m_Pens[NUM_COLOUR_BANDS + 1];
 
@@ -323,7 +336,7 @@ public:
     void OnMouseWheel(wxMouseEvent& event) { SetFocus(); m_Control->OnMouseWheel(event); }
     void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
 
-    bool Animate();
+    void Animate();
     bool Animating() const {
 	return m_Rotating || m_SwitchingTo || presentation_mode != 0;
     }

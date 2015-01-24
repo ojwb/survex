@@ -169,6 +169,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 			      GREENS[pen] / 255.0,
 			      BLUES[pen] / 255.0);
     }
+
+    timer.Start();
 }
 
 GfxCore::~GfxCore()
@@ -308,9 +310,11 @@ void GfxCore::OnLeaveWindow(wxMouseEvent&) {
 void GfxCore::OnIdle(wxIdleEvent& event)
 {
     // Handle an idle event.
-    if (Animate()) {
-	ForceRefresh();
-	event.RequestMore();
+    if (Animating()) {
+	Animate();
+	// If still animating, we want more idle events.
+	if (Animating())
+	    event.RequestMore();
     }
 }
 
@@ -335,8 +339,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	// Set up model transformation matrix.
 	SetDataTransform();
-
-	timer.Start(); // reset timer
 
 	if (m_Legs || m_Tubes) {
 	    if (m_Tubes) {
@@ -464,8 +466,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 
 	FinishDrawing();
-
-	drawtime = timer.Time();
     } else {
 	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
 	dc.Clear();
@@ -1357,11 +1357,8 @@ void GfxCore::Defaults()
     ForceRefresh();
 }
 
-// return: true if animation occurred (and ForceRefresh() needs to be called)
-bool GfxCore::Animate()
+void GfxCore::Animate()
 {
-    if (!Animating()) return false;
-
     // Don't show pointer coordinates while animating.
     // FIXME : only do this when we *START* animating!  Use a static copy
     // of the value of "Animating()" last time we were here to track this?
@@ -1370,8 +1367,7 @@ bool GfxCore::Animate()
     ClearCoords();
     m_Parent->ShowInfo();
 
-    static double last_t = 0;
-    double t;
+    long t;
     if (movie) {
 	ReadPixels(movie->GetWidth(), movie->GetHeight(), movie->GetBuffer());
 	if (!movie->AddFrame()) {
@@ -1379,15 +1375,16 @@ bool GfxCore::Animate()
 	    delete movie;
 	    movie = NULL;
 	    presentation_mode = 0;
-	    return false;
+	    return;
 	}
-	t = 1.0 / 25.0; // 25 frames per second
+	t = 1000 / 25; // 25 frames per second
     } else {
-	t = timer.Time() * 1.0e-3;
-	if (t == 0) t = 0.001;
-	else if (t > 1.0) t = 1.0;
-	if (last_t > 0) t = (t + last_t) / 2;
-	last_t = t;
+	static long t_prev = 0;
+	t = timer.Time();
+	// Avoid redrawing twice in the same frame.
+	long delta_t = t - t_prev;
+	if (delta_t < 1000 / 50) return;
+	t_prev = t;
     }
 
     if (presentation_mode == PLAYING && pres_speed != 0.0) {
@@ -1470,42 +1467,63 @@ bool GfxCore::Animate()
 
     // When rotating...
     if (m_Rotating) {
-	TurnCave(m_RotationStep * t);
+	Double step = base_pan + (t - base_pan_time) * 1e-3 * m_RotationStep - m_PanAngle;
+	TurnCave(step);
     }
 
     if (m_SwitchingTo == PLAN) {
 	// When switching to plan view...
-	TiltCave(-90.0 * t);
+	Double step = base_tilt - (t - base_tilt_time) * 1e-3 * 90.0 - m_TiltAngle;
+	TiltCave(step);
 	if (m_TiltAngle == -90.0) {
 	    m_SwitchingTo = 0;
 	}
     } else if (m_SwitchingTo == ELEVATION) {
 	// When switching to elevation view...
-	if (fabs(m_TiltAngle) < 90.0 * t) {
-	    m_SwitchingTo = 0;
-	    TiltCave(-m_TiltAngle);
-	} else if (m_TiltAngle > 0.0) {
-	    TiltCave(-90.0 * t);
+	Double step;
+	if (m_TiltAngle > 0.0) {
+	    step = base_tilt - (t - base_tilt_time) * 1e-3 * 90.0 - m_TiltAngle;
 	} else {
-	    TiltCave(90.0 * t);
+	    step = base_tilt + (t - base_tilt_time) * 1e-3 * 90.0 - m_TiltAngle;
 	}
+	if (fabs(step) >= fabs(m_TiltAngle)) {
+	    m_SwitchingTo = 0;
+	    step = -m_TiltAngle;
+	}
+	TiltCave(step);
     } else if (m_SwitchingTo) {
-	int angle = (m_SwitchingTo - NORTH) * 90;
-	double diff = angle - m_PanAngle;
-	if (diff < -180) diff += 360;
-	if (diff > 180) diff -= 360;
-	double move = 90.0 * t;
-	if (move >= fabs(diff)) {
-	    TurnCave(diff);
-	    m_SwitchingTo = 0;
-	} else if (diff < 0) {
-	    TurnCave(-move);
+	// Rotate the shortest way around to the destination angle.  If we're
+	// 180 off, we favour turning anticlockwise, as auto-rotation does by
+	// default.
+	Double target = (m_SwitchingTo - NORTH) * 90;
+	Double diff = target - m_PanAngle;
+	diff = fmod(diff, 360);
+	if (diff <= -180)
+	    diff += 360;
+	else if (diff > 180)
+	    diff -= 360;
+	if (m_RotationStep < 0 && diff == 180.0)
+	    diff = -180.0;
+	Double step = base_pan - m_PanAngle;
+	Double delta = (t - base_pan_time) * 1e-3 * fabs(m_RotationStep);
+	if (diff > 0) {
+	    step += delta;
 	} else {
-	    TurnCave(move);
+	    step -= delta;
 	}
+	step = fmod(step, 360);
+	if (step <= -180)
+	    step += 360;
+	else if (step > 180)
+	    step -= 360;
+	if (fabs(step) >= fabs(diff)) {
+	    m_SwitchingTo = 0;
+	    step = diff;
+	}
+	TurnCave(step);
     }
 
-    return true;
+    ForceRefresh();
 }
 
 // How much to allow around the box - this is because of the ring shape
@@ -1681,7 +1699,13 @@ void GfxCore::TurnCave(Double angle)
 
 void GfxCore::TurnCaveTo(Double angle)
 {
-    timer.Start(drawtime);
+    if (m_Rotating) {
+	// If we're rotating, jump to the specified angle.
+	TurnCave(angle - m_PanAngle);
+	SetPanBase();
+	return;
+    }
+
     int new_switching_to = ((int)angle) / 90 + NORTH;
     if (new_switching_to == m_SwitchingTo) {
 	// A second order to switch takes us there right away
@@ -1689,6 +1713,7 @@ void GfxCore::TurnCaveTo(Double angle)
 	m_SwitchingTo = 0;
 	ForceRefresh();
     } else {
+	SetPanBase();
 	m_SwitchingTo = new_switching_to;
     }
 }
@@ -1904,8 +1929,10 @@ void GfxCore::StartRotation()
 {
     // Start the survey rotating.
 
+    if (m_SwitchingTo >= NORTH)
+	m_SwitchingTo = 0;
     m_Rotating = true;
-    timer.Start(drawtime);
+    SetPanBase();
 }
 
 void GfxCore::ToggleRotation()
@@ -1937,47 +1964,51 @@ void GfxCore::ReverseRotation()
     // Reverse the direction of rotation.
 
     m_RotationStep = -m_RotationStep;
+    if (m_Rotating)
+	SetPanBase();
 }
 
 void GfxCore::RotateSlower(bool accel)
 {
     // Decrease the speed of rotation, optionally by an increased amount.
+    if (fabs(m_RotationStep) == 1.0)
+	return;
 
-    m_RotationStep /= accel ? 1.44 : 1.2;
-    if (m_RotationStep < 1.0) {
-	m_RotationStep = 1.0;
+    m_RotationStep *= accel ? (1 / 1.44) : (1 / 1.2);
+
+    if (fabs(m_RotationStep) < 1.0) {
+	m_RotationStep = (m_RotationStep > 0 ? 1.0 : -1.0);
     }
+    if (m_Rotating)
+	SetPanBase();
 }
 
 void GfxCore::RotateFaster(bool accel)
 {
     // Increase the speed of rotation, optionally by an increased amount.
+    if (fabs(m_RotationStep) == 180.0)
+	return;
 
     m_RotationStep *= accel ? 1.44 : 1.2;
-    if (m_RotationStep > 450.0) {
-	m_RotationStep = 450.0;
+    if (fabs(m_RotationStep) > 180.0) {
+	m_RotationStep = (m_RotationStep > 0 ? 180.0 : -180.0);
     }
+    if (m_Rotating)
+	SetPanBase();
 }
 
 void GfxCore::SwitchToElevation()
 {
     // Perform an animated switch to elevation view.
 
-    switch (m_SwitchingTo) {
-	case 0:
-	    timer.Start(drawtime);
-	    m_SwitchingTo = ELEVATION;
-	    break;
-
-	case PLAN:
-	    m_SwitchingTo = ELEVATION;
-	    break;
-
-	case ELEVATION:
-	    // a second order to switch takes us there right away
-	    TiltCave(-m_TiltAngle);
-	    m_SwitchingTo = 0;
-	    ForceRefresh();
+    if (m_SwitchingTo != ELEVATION) {
+	SetTiltBase();
+	m_SwitchingTo = ELEVATION;
+    } else {
+	// A second order to switch takes us there right away
+	TiltCave(-m_TiltAngle);
+	m_SwitchingTo = 0;
+	ForceRefresh();
     }
 }
 
@@ -1985,21 +2016,14 @@ void GfxCore::SwitchToPlan()
 {
     // Perform an animated switch to plan view.
 
-    switch (m_SwitchingTo) {
-	case 0:
-	    timer.Start(drawtime);
-	    m_SwitchingTo = PLAN;
-	    break;
-
-	case ELEVATION:
-	    m_SwitchingTo = PLAN;
-	    break;
-
-	case PLAN:
-	    // A second order to switch takes us there right away
-	    TiltCave(-90.0 - m_TiltAngle);
-	    m_SwitchingTo = 0;
-	    ForceRefresh();
+    if (m_SwitchingTo != PLAN) {
+	SetTiltBase();
+	m_SwitchingTo = PLAN;
+    } else {
+	// A second order to switch takes us there right away
+	TiltCave(-90.0 - m_TiltAngle);
+	m_SwitchingTo = 0;
+	ForceRefresh();
     }
 }
 

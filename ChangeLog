@@ -1,3 +1,15 @@
+Sat Jan 24 06:22:04 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Reimplement animation so that it's
+	  based on angular change per unit of elapsed time, rather than
+	  averaging the time take for the last two scene redraws.  This gives
+	  a more even animation in the face of variable load and scene redraw
+	  time, and should be more consistent between platforms.
+	* src/gfxcore.cc: Switch to a point of the compass during auto-rotation
+	  now jumps straight there rather than the two animations fighting.
+	* src/gfxcore.cc: Reduce the maximum auto-rotation speed, as the
+	  previous limit was uselessly fast.
+
 Sat Jan 24 04:49:33 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Wrap the rotation angle to the range [0,360)
