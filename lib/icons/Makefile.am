@@ -20,10 +20,27 @@ dist_icon_DATA = elevation.png open.png crosses.png entrances.png plan.png\
 pixmapsdir = $(datadir)/pixmaps
 dist_pixmaps_DATA = aven.png aven.svg svxedit.png
 
+Aven.iconset.zip: aven.svg
+	rm -rf Aven.iconset
+	mkdir Aven.iconset
+	for r in 16 32 128 256 512 ; do \
+	  convert aven.svg -resize "$${r}x$${r}" "Aven.iconset/icon_$${r}x$${r}.png" ; \
+	done
+	for r in 16 128 256 ; do \
+	  d=`expr $$r + $$r` ; \
+	  ln "Aven.iconset/icon_$${d}x$${d}.png" "Aven.iconset/icon_$${r}x$${r}@2x.png" ; \
+	done
+	for r in 32 512 ; do \
+	  d=`expr $$r + $$r` ; \
+	  convert aven.svg -resize "$${d}x$${d}" "Aven.iconset/icon_$${r}x$${r}@2x.png" ; \
+	done
+	rm -f Aven.iconset.zip
+	zip --move -r Aven.iconset.zip Aven.iconset
+
 SUFFIXES = .ico .png
 
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@
 
 EXTRA_DIST = 3d.ico err.ico plt.ico pos.ico svx.ico\
- aven.ico svxedit.ico png2winicon
+ aven.ico svxedit.ico png2winicon Aven.iconset.zip

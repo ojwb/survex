@@ -135,7 +135,12 @@ mkdir Survex/Aven.app/Contents/Resources
 cp lib/Info.plist Survex/Aven.app/Contents
 printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
 cp -r "$D"/share/survex/* Survex/Aven.app/Contents/Resources/
-# FIXME: Generate Survex/Aven.app/Resources/Aven.icns
+
+# Create Aven.icns containing the icon for Aven.app.
+unzip -d Survex/Aven.app/Resources lib/icons/Aven.iconset.zip
+iconutil --convert icns Survex/Aven.app/Resources/Aven.iconset
+rm -rf Survex/Aven.app/Resources/Aven.iconset
+
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 rm -f Survex/share/survex/unifont.pixelfont

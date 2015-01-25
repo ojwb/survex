@@ -1,3 +1,8 @@
+Mon Jan 26 08:31:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,lib/INSTALL.OSX,lib/icons/Makefile.am: Add a custom
+	  icon for the Mac OS X application bundle.
+
 Mon Jan 26 04:55:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/export.cc,src/export.h,src/printwx.cc: For export formats where
