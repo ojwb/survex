@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2004,2005,2012,2014 Olly Betts
+/* Copyright (C) 2004,2005,2012,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ bool Export(const wxString &fnm_out, const wxString &title,
 	    const MainFrm * mainfrm,
 	    double pan, double tilt, int show_mask, export_format format,
 	    const char * input_projection,
-	    double grid_, double text_height_, double marker_size_);
+	    double grid_, double text_height_, double marker_size_,
+	    double scale);
 
 #endif

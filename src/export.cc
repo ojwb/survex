@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -109,7 +109,6 @@ static double min_x, min_y, min_z, max_x, max_y, max_z;
 static double text_height; /* for station labels */
 static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
-static double scale = 500.0;
 static double factor;
 static const char *unit = "mm";
 const double SVG_MARGIN = 5.0; // In units of "unit".
@@ -1124,7 +1123,8 @@ Export(const wxString &fnm_out, const wxString &title,
        const MainFrm * mainfrm,
        double pan, double tilt, int show_mask, export_format format,
        const char * input_projection,
-       double grid_, double text_height_, double marker_size_)
+       double grid_, double text_height_, double marker_size_,
+       double scale)
 {
    int fPendingMove = 0;
    img_point p, p1;
@@ -1136,10 +1136,7 @@ Export(const wxString &fnm_out, const wxString &title,
    text_height = text_height_;
    marker_size = marker_size_;
 
-#if 0 // FIXME: allow these to be set from aven somehow!
-       case 'r': /* Reduction factor */
-	 scale = cmdline_double_arg();
-	 break;
+#if 0 // FIXME: allow this to be set from aven somehow!
        case 's':
 	 survey = optarg;
 	 break;

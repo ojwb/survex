@@ -1,6 +1,6 @@
 /* printwx.cc */
 /* wxWidgets specific parts of Survex wxWidgets printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -632,7 +632,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 			m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
 			m_layout.rot, m_layout.tilt, m_layout.show_mask,
 			export_format(format_idx), input_projection.mb_str(),
-			grid, text_height, marker_size)) {
+			grid, text_height, marker_size, m_layout.Scale)) {
 		wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					      m_File.c_str());
 		wxGetApp().ReportError(m);
@@ -770,18 +770,20 @@ svxPrintDlg::SomethingChanged(int control_id) {
     }
 
     UIToLayout();
-    if (!m_printSize) return;
-    // Update the bounding box.
-    RecalcBounds();
 
-    if (m_scale) {
-	(m_scale->GetValue()).ToDouble(&(m_layout.Scale));
-	if (m_layout.Scale == 0.0) {
-	    m_layout.pick_scale(1, 1);
+    if (m_printSize || m_scale) {
+	// Update the bounding box.
+	RecalcBounds();
+
+	if (m_scale) {
+	    (m_scale->GetValue()).ToDouble(&(m_layout.Scale));
+	    if (m_layout.Scale == 0.0) {
+		m_layout.pick_scale(1, 1);
+	    }
 	}
     }
 
-    if (m_layout.xMax >= m_layout.xMin) {
+    if (m_printSize && m_layout.xMax >= m_layout.xMin) {
 	m_layout.pages_required();
 	m_printSize->SetLabel(wxString::Format(wmsg(/*%d pages (%dx%d)*/257), m_layout.pages, m_layout.pagesX, m_layout.pagesY));
     }
