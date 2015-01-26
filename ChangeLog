@@ -1,3 +1,8 @@
+Mon Jan 26 10:50:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,src/mainfrm.cc: On OS X, hide the status bar and tool
+	  bar in full screen mode, as wx doesn't currently do this for us.
+
 Mon Jan 26 08:44:17 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Use mkdir -p.

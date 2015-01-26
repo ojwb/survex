@@ -2691,12 +2691,29 @@ bool MainFrm::ShowingSidePanel()
 }
 
 void MainFrm::ViewFullScreen() {
+#ifdef __WXMAC__
+    // On OS X, wxWidgets doesn't currently hide the toolbar or statusbar in
+    // full screen mode (last checked with 3.0.2), but it is easy to do
+    // ourselves.
+    if (!IsFullScreen()) {
+	GetToolBar()->Hide();
+	GetStatusBar()->Hide();
+    }
+#endif
+
     ShowFullScreen(!IsFullScreen());
     fullscreen_showing_menus = false;
     if (IsFullScreen())
 	was_showing_sidepanel_before_fullscreen = ShowingSidePanel();
     if (was_showing_sidepanel_before_fullscreen)
 	ToggleSidePanel();
+
+#ifdef __WXMAC__
+    if (!IsFullScreen()) {
+	GetStatusBar()->Show();
+	GetToolBar()->Show();
+    }
+#endif
 }
 
 bool MainFrm::FullScreenModeShowingMenus() const
