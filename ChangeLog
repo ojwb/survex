@@ -1,3 +1,8 @@
+Mon Jan 26 08:33:14 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Reduce flicker when mouse is moved to the top of the
+	  screen in full screen mode and the menu bar reappears.
+
 Mon Jan 26 08:31:17 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,lib/INSTALL.OSX,lib/icons/Makefile.am: Add a custom

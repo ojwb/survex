@@ -2708,13 +2708,6 @@ void MainFrm::FullScreenModeShowMenus(bool show)
 {
     if (!IsFullScreen() || show == fullscreen_showing_menus)
 	return;
-    Freeze();
-    ShowFullScreen(false);
-    if (show) {
-	ShowFullScreen(true, wxFULLSCREEN_ALL ^ wxFULLSCREEN_NOMENUBAR);
-    } else {
-	ShowFullScreen(true);
-    }
-    Thaw();
+    GetMenuBar()->Show(show);
     fullscreen_showing_menus = show;
 }
