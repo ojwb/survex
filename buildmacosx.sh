@@ -128,10 +128,7 @@ make install
 #mv Survex/survex Survex/Survex
 
 # Construct the Aven application bundle.
-mkdir Survex/Aven.app
-mkdir Survex/Aven.app/Contents
-mkdir Survex/Aven.app/Contents/MacOS
-mkdir Survex/Aven.app/Contents/Resources
+mkdir -p Survex/Aven.app/Contents/MacOS Survex/Aven.app/Contents/Resources
 cp lib/Info.plist Survex/Aven.app/Contents
 printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
 cp -r "$D"/share/survex/* Survex/Aven.app/Contents/Resources/
