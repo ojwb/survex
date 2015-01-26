@@ -37,10 +37,28 @@ Aven.iconset.zip: aven.svg
 	rm -f Aven.iconset.zip
 	zip --move -r Aven.iconset.zip Aven.iconset
 
+3d.iconset.zip: 3d.png
+	rm -rf 3d.iconset
+	mkdir 3d.iconset
+	for r in 16 32 128 256 512 ; do \
+	  convert 3d.png -resize "$${r}x$${r}" "3d.iconset/icon_$${r}x$${r}.png" ; \
+	done
+	for r in 16 128 256 ; do \
+	  d=`expr $$r + $$r` ; \
+	  ln "3d.iconset/icon_$${d}x$${d}.png" "3d.iconset/icon_$${r}x$${r}@2x.png" ; \
+	done
+	for r in 32 512 ; do \
+	  d=`expr $$r + $$r` ; \
+	  convert 3d.png -resize "$${d}x$${d}" "3d.iconset/icon_$${r}x$${r}@2x.png" ; \
+	done
+	rm -f 3d.iconset.zip
+	zip --move -r 3d.iconset.zip 3d.iconset
+
 SUFFIXES = .ico .png
 
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@
 
 EXTRA_DIST = 3d.ico err.ico plt.ico pos.ico svx.ico\
- aven.ico svxedit.ico png2winicon Aven.iconset.zip
+ aven.ico svxedit.ico png2winicon\
+ Aven.iconset.zip 3d.iconset.zip

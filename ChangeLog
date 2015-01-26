@@ -1,3 +1,9 @@
+Mon Jan 26 13:03:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Fix location of Aven.icns inside Aven.app.
+	* buildmacosx.sh,lib/Info.plist.in,lib/icons/Makefile.am: Attempt to
+	  add filetype info for 3d files.
+
 Mon Jan 26 10:50:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,src/mainfrm.cc: On OS X, hide the status bar and tool

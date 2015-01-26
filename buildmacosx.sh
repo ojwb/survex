@@ -132,16 +132,17 @@ mkdir -p Survex/Aven.app/Contents/MacOS Survex/Aven.app/Contents/Resources
 cp lib/Info.plist Survex/Aven.app/Contents
 printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
 cp -r "$D"/share/survex/* Survex/Aven.app/Contents/Resources/
-
-# Create Aven.icns containing the icon for Aven.app.
-unzip -d Survex/Aven.app/Resources lib/icons/Aven.iconset.zip
-iconutil --convert icns Survex/Aven.app/Resources/Aven.iconset
-rm -rf Survex/Aven.app/Resources/Aven.iconset
-
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 rm -f Survex/share/survex/unifont.pixelfont
 rm -rf Survex/share/survex/icons
+
+# Create .icns files in the bundle's "Resources" directory.
+for i in Aven 3d ; do
+  unzip -d Survex/Aven.app/Contents/Resources "lib/icons/$i.iconset.zip"
+  iconutil --convert icns "Survex/Aven.app/Contents/Resources/$i.iconset"
+  rm -rf "Survex/Aven.app/Contents/Resources/$i.iconset"
+done
 
 size=`du -s Survex|sed 's/[^0-9].*//'`
 # Allow 1000 extra sectors for various overheads (500 wasn't enough).

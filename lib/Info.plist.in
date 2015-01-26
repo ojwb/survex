@@ -28,5 +28,18 @@
 	<string>Licensed under the GNU General Public License version 2 or later.
 @COPYRIGHT_MSG@
 @AVEN_COPYRIGHT_MSG@</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<key>CFBundleTypeName</key>
+		<string>com.survex.3d</string>
+		<key>CFBundleTypeExtensions</key>
+		<array><string>3d</string></array>
+		<key>CFBundleTypeIconFile</key>
+		<string>3d</string>
+		<key>CFBundleTypeRole</key>
+		<string>Viewer</string>
+		<key>LSHandlerRank</key>
+		<string>Owner</string>
+	</array>
 </dict>
 </plist>
