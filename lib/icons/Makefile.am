@@ -24,7 +24,7 @@ Aven.iconset.zip: aven.svg
 	rm -rf Aven.iconset
 	mkdir Aven.iconset
 	for r in 16 32 128 256 512 ; do \
-	  convert aven.svg -resize "$${r}x$${r}" "Aven.iconset/icon_$${r}x$${r}.png" ; \
+	  inkscape -w "$$r" -h "$$r" -e "Aven.iconset/icon_$${r}x$${r}.png" aven.svg ; \
 	done
 	for r in 16 128 256 ; do \
 	  d=`expr $$r + $$r` ; \
@@ -32,7 +32,7 @@ Aven.iconset.zip: aven.svg
 	done
 	for r in 32 512 ; do \
 	  d=`expr $$r + $$r` ; \
-	  convert aven.svg -resize "$${d}x$${d}" "Aven.iconset/icon_$${r}x$${r}@2x.png" ; \
+	  inkscape -w "$$d" -h "$$d" -e "Aven.iconset/icon_$${r}x$${r}@2x.png" aven.svg ; \
 	done
 	rm -f Aven.iconset.zip
 	zip --move -r Aven.iconset.zip Aven.iconset

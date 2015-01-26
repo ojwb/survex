@@ -1,3 +1,8 @@
+Mon Jan 26 13:35:46 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am: Convert SVG to PNG with inkscape, as "convert"
+	  loses transparency information.
+
 Mon Jan 26 13:08:21 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/aven.svg: Fix visual glitch in SVG icon for aven.  Noted
