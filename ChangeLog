@@ -1,3 +1,8 @@
+Mon Jan 26 13:08:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/aven.svg: Fix visual glitch in SVG icon for aven.  Noted
+	  by David A. Riggs.
+
 Mon Jan 26 13:05:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Use bzip2 to compress the disk image, which gives a
