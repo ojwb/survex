@@ -181,9 +181,9 @@ hdiutil detach "$dev"
 version=`sed 's/^VERSION *= *//p;d' Makefile`
 file=survex-macosx-$version.dmg
 echo "Compressing image file survex-macosx.dmg to $file"
-# This needs MacOS X 10.1 or above for unpacking - change UDZO to UDCO to allow
-# the dmg to be unpacked on 10.0 as well:
-hdiutil convert survex-macosx.dmg -format UDZO -o "$file"
+# UDBZ means the resultant disk image will only open on OS X 10.4 or above.
+# UDZO works on 10.1 and later, but is larger,  UDCO works on 10.0 as well.
+hdiutil convert survex-macosx.dmg -format UDBZ -o "$file"
 rm survex-macosx.dmg
 
 echo "$file created successfully."

@@ -1,3 +1,10 @@
+Mon Jan 26 13:05:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Use bzip2 to compress the disk image, which gives a
+	  smaller download.  This means OS X 10.4 is required, but we probably
+	  already need 10.5 because that's the minimum version which the
+	  wxWidgets build supports by default.
+
 Mon Jan 26 13:03:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Fix location of Aven.icns inside Aven.app.
