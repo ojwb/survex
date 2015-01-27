@@ -1,3 +1,7 @@
+Tue Jan 27 23:05:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c: Report SEPARATOR used by the file being read.
+
 Tue Jan 27 12:26:08 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX: Add svxedit issue.
