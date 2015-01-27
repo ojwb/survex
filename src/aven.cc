@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -332,6 +332,29 @@ Aven::SetPageSetupDialogData(const wxPageSetupDialogData & psdd)
     cfg->Flush();
 #endif
 }
+
+#ifdef __WXMAC__
+void
+Aven::MacOpenFiles(const wxArrayString & filenames)
+{
+    if (filenames.size() != 1) {
+	ReportError(wxT("Aven can only load one file at a time"));
+	return;
+    }
+    m_Frame->OpenFile(filenames[0], wxString());
+}
+
+void
+Aven::MacPrintFiles(const wxArrayString & filenames)
+{
+    if (filenames.size() != 1) {
+	ReportError(wxT("Aven can only print one file at a time"));
+	return;
+    }
+    m_Frame->OpenFile(filenames[0], wxString());
+    m_Frame->PrintAndExit();
+}
+#endif
 
 void Aven::ReportError(const wxString& msg)
 {

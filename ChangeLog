@@ -1,3 +1,8 @@
+Tue Jan 27 23:23:26 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,src/aven.cc,src/aven.h: Add handlers so that files
+	  can be loaded and printed from the finder on OS X.
+
 Tue Jan 27 23:05:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/dump3d.c: Report SEPARATOR used by the file being read.

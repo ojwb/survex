@@ -17,7 +17,5 @@ These could be reproduced with Survex 1.2.17 when built using wxWidgets 3.0.2:
 - Pushing the pointer to the top of the screen when in full screen mode doesn't
   make the menu bar appear
 - Put everything into the app bundle?
-- Run actions for svx and 3d start aven but fail to pass it the filename to
-  load
 - Add run actions for more filetypes
 - Running svxedit doesn't start wish - needs to be put into an app bundle?

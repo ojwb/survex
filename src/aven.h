@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -102,6 +102,11 @@ public:
 
     wxPageSetupDialogData * GetPageSetupDialogData();
     void SetPageSetupDialogData(const wxPageSetupDialogData & psdd);
+
+#ifdef __WXMAC__
+    void MacOpenFiles(const wxArrayString & filenames);
+    void MacPrintFiles(const wxArrayString & filenames);
+#endif
 
     void ReportError(const wxString&);
 };
