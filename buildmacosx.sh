@@ -138,7 +138,7 @@ rm -f Survex/share/survex/unifont.pixelfont
 rm -rf Survex/share/survex/icons
 
 # Create .icns files in the bundle's "Resources" directory.
-for i in Aven 3d ; do
+for i in Aven 3d svx ; do
   unzip -d Survex/Aven.app/Contents/Resources "lib/icons/$i.iconset.zip"
   iconutil --convert icns "Survex/Aven.app/Contents/Resources/$i.iconset"
   rm -rf "Survex/Aven.app/Contents/Resources/$i.iconset"

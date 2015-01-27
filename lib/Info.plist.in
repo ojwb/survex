@@ -30,16 +30,30 @@
 @AVEN_COPYRIGHT_MSG@</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
-		<key>CFBundleTypeName</key>
-		<string>com.survex.3d</string>
-		<key>CFBundleTypeExtensions</key>
-		<array><string>3d</string></array>
-		<key>CFBundleTypeIconFile</key>
-		<string>3d</string>
-		<key>CFBundleTypeRole</key>
-		<string>Viewer</string>
-		<key>LSHandlerRank</key>
-		<string>Owner</string>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>com.survex.3d</string>
+			<key>CFBundleTypeExtensions</key>
+			<array><string>3d</string></array>
+			<key>CFBundleTypeIconFile</key>
+			<string>3d</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>com.survex.svx</string>
+			<key>CFBundleTypeExtensions</key>
+			<array><string>svx</string></array>
+			<key>CFBundleTypeIconFile</key>
+			<string>svx</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+		</dict>
 	</array>
 </dict>
 </plist>
