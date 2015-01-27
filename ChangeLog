@@ -1,3 +1,7 @@
+Tue Jan 27 12:26:08 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX: Add svxedit issue.
+
 Tue Jan 27 12:20:14 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,lib/INSTALL.OSX,lib/Info.plist.in,lib/icons/Makefile.am:
