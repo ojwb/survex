@@ -1,3 +1,8 @@
+Wed Jan 28 04:19:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/: Rename helper scripts to match the names used in
+	  Makefile.am.
+
 Wed Jan 28 04:05:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,lib/INSTALL.OSX,lib/svxedit_Info.plist.in: Create app
