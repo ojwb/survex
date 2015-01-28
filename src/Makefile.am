@@ -22,10 +22,11 @@ LDADD = $(LIBOBJS)
 #     sudo make install FINDENTRANCES=findentrances
 FINDENTRANCES =
 EXTRA_PROGRAMS =\
-	aven dump3d editwrap findentrances
+	aven dump3d editwrap findentrances svxedit_wrap
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
- aven $(WINPROGS) $(FINDENTRANCES)
+ aven $(OSPROGS) $(FINDENTRANCES)
+
 bin_SCRIPTS = svxedit
 check_PROGRAMS = imgtest
 
@@ -53,6 +54,8 @@ dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
 findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
  $(COMMONSRC)
 findentrances_LDADD = $(PROJ_LIBS)
+
+svxedit_wrap_SOURCES = editwrap_osx.c
 
 editwrap_SOURCES = editwrap.c
 editwrap_LDFLAGS = -mwindows

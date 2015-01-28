@@ -1,3 +1,9 @@
+Wed Jan 28 06:59:22 GMT 2015  Olly Betts <olly@survex.com>
+
+	* .gitignore,buildmacosx.sh,configure.ac,src/Makefile.am,
+	  src/editwrap_osx.c: Add compiled C wrapper for svxedit on OS X as
+	  OS X won't run the Tcl script for some reason.
+
 Wed Jan 28 04:19:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/: Rename helper scripts to match the names used in

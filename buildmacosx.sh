@@ -148,7 +148,7 @@ done
 mkdir -p Survex/svxedit.App/Contents/MacOS Survex/svxedit.App/Contents/Resources
 cp lib/svxedit_Info.plist Survex/svxedit.App/Contents/Info.plist
 printf APPLSVXE > Survex/svxedit.App/Contents/PkgInfo
-mv Survex/svxedit Survex/svxedit.App/Contents/MacOS/
+mv Survex/svxedit Survex/svxedit_wrap Survex/svxedit.App/Contents/MacOS/
 
 mv Survex/Aven.app/Contents/Resources/svxedit.icns \
   Survex/svxedit.App/Contents/Resources

@@ -94,12 +94,15 @@ AC_CHECK_LIB(m, sqrt)
 
 AC_PATH_XTRA
 
-WINPROGS=
+OSPROGS=
+AC_MSG_CHECKING([for OS-specific programs to build])
 if test yes = "$mswindows"; then
-  WINPROGS='editwrap$(EXEEXT)'
-  AC_MSG_RESULT(building editwrap)
+  OSPROGS='editwrap$(EXEEXT)'
+elif test yes = "$macosx"; then
+  OSPROGS=svxedit_wrap
 fi
-AC_SUBST(WINPROGS)
+AC_MSG_RESULT([${OSPROGS:-none])
+AC_SUBST([OSPROGS])
 
 dnl The wxWidgets libraries we need:
 wx_libs="core,gl,html"
