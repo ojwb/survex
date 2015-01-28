@@ -1,3 +1,9 @@
+Wed Jan 28 03:13:36 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/png2iconset,lib/icons/svg2iconset:
+	  Factor out conversion from png and svg to iconset.zip into helper
+	  scripts.
+
 Wed Jan 28 00:36:24 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

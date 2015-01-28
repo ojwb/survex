@@ -21,57 +21,12 @@ pixmapsdir = $(datadir)/pixmaps
 dist_pixmaps_DATA = aven.png aven.svg svxedit.png
 
 Aven.iconset.zip: aven.svg
-	rm -rf Aven.iconset
-	mkdir Aven.iconset
-	for r in 16 32 128 256 512 ; do \
-	  inkscape -w "$$r" -h "$$r" -e "Aven.iconset/icon_$${r}x$${r}.png" aven.svg ; \
-	done
-	for r in 16 128 256 ; do \
-	  d=`expr $$r + $$r` ; \
-	  ln "Aven.iconset/icon_$${d}x$${d}.png" "Aven.iconset/icon_$${r}x$${r}@2x.png" ; \
-	done
-	for r in 32 512 ; do \
-	  d=`expr $$r + $$r` ; \
-	  inkscape -w "$$d" -h "$$d" -e "Aven.iconset/icon_$${r}x$${r}@2x.png" aven.svg ; \
-	done
-	rm -f Aven.iconset.zip
-	zip --move -r Aven.iconset.zip Aven.iconset
+	$(SHELL) $(srcdir)/svg2iconsetzip aven.svg Aven.iconset.zip
 
-svx.iconset.zip: svx.png
-	rm -rf svx.iconset
-	mkdir svx.iconset
-	for r in 16 32 128 256 512 ; do \
-	  convert svx.png -resize "$${r}x$${r}" "svx.iconset/icon_$${r}x$${r}.png" ; \
-	done
-	for r in 16 128 256 ; do \
-	  d=`expr $$r + $$r` ; \
-	  ln "svx.iconset/icon_$${d}x$${d}.png" "svx.iconset/icon_$${r}x$${r}@2x.png" ; \
-	done
-	for r in 32 512 ; do \
-	  d=`expr $$r + $$r` ; \
-	  convert svx.png -resize "$${d}x$${d}" "svx.iconset/icon_$${r}x$${r}@2x.png" ; \
-	done
-	rm -f svx.iconset.zip
-	zip --move -r svx.iconset.zip svx.iconset
+SUFFIXES = .ico .png .svg .iconset.zip
 
-3d.iconset.zip: 3d.png
-	rm -rf 3d.iconset
-	mkdir 3d.iconset
-	for r in 16 32 128 256 512 ; do \
-	  convert 3d.png -resize "$${r}x$${r}" "3d.iconset/icon_$${r}x$${r}.png" ; \
-	done
-	for r in 16 128 256 ; do \
-	  d=`expr $$r + $$r` ; \
-	  ln "3d.iconset/icon_$${d}x$${d}.png" "3d.iconset/icon_$${r}x$${r}@2x.png" ; \
-	done
-	for r in 32 512 ; do \
-	  d=`expr $$r + $$r` ; \
-	  convert 3d.png -resize "$${d}x$${d}" "3d.iconset/icon_$${r}x$${r}@2x.png" ; \
-	done
-	rm -f 3d.iconset.zip
-	zip --move -r 3d.iconset.zip 3d.iconset
-
-SUFFIXES = .ico .png
+.png.iconset.zip:
+	$(SHELL) $(srcdir)/png2iconsetzip $< $@
 
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@

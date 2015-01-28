@@ -1,0 +1,28 @@
+#!/bin/sh
+set -e
+
+case $1 in
+  -*) in=./$1 ;;
+  *) in=$1 ;;
+esac
+case $2 in
+  -*) out=./$2 ;;
+  *) out=$2 ;;
+esac
+tmp=`echo "$out"|sed 's/\.zip$//'`
+
+rm -rf "$tmp"
+mkdir "$tmp"
+for r in 16 32 128 256 512 ; do
+  convert "$in" -resize "${r}x${r}" "$tmp/icon_${r}x${r}.png"
+done
+for r in 16 128 256 ; do
+  d=`expr $r + $r`
+  ln "$tmp/icon_${d}x${d}.png" "$tmp/icon_${r}x${r}@2x.png"
+done
+for r in 32 512 ; do
+  d=`expr $r + $r`
+  convert "$in" -resize "${d}x${d}" "$tmp/icon_${r}x${r}@2x.png" ; \
+done
+rm -f "$out"
+zip --move -r "$out" "$tmp"
