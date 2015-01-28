@@ -5,11 +5,11 @@ icondir = $(pkgdatadir)/icons
 dist_icon_DATA = elevation.png open.png crosses.png entrances.png plan.png\
 	rotation.png defaults.png surface-legs.png ug-legs.png fixed-pts.png\
 	exported-pts.png names.png aven-about.png\
-       	texture.png solid-surface.png osterei.jpg\
+	texture.png solid-surface.png osterei.jpg\
 	tubes.png find.png hideresults.png survey-tree.png pres-tree.png \
 	open-pres.png\
 	pres-frew.png pres-rew.png pres-go-back.png pres-pause.png\
-       	pres-go.png pres-ff.png pres-fff.png pres-stop.png\
+	pres-go.png pres-ff.png pres-fff.png pres-stop.png\
 	3d.png err.png plt.png pos.png svx.png aven.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
