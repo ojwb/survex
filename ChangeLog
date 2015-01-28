@@ -1,3 +1,7 @@
+Wed Jan 28 07:05:49 GMT 2015  Olly Betts <olly@survex.com>
+
+	* configure.ac: Fix typo from c1a94492.
+
 Wed Jan 28 07:00:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Remove unused files and copies of files.

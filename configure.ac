@@ -101,7 +101,7 @@ if test yes = "$mswindows"; then
 elif test yes = "$macosx"; then
   OSPROGS=svxedit_wrap
 fi
-AC_MSG_RESULT([${OSPROGS:-none])
+AC_MSG_RESULT([${OSPROGS:-none}])
 AC_SUBST([OSPROGS])
 
 dnl The wxWidgets libraries we need:
