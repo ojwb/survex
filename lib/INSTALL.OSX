@@ -5,16 +5,20 @@ Next to the INSTALL file that you are currently reading is the Survex
 directory.  To install, just drag this directory to your Applications folder.
 You will need to be logged in at an Administrator level to do this.
 
-Since version 1.2.3, you can process .svx files by simply opening them with
-aven.
+Note that since version 1.2.3, you can process .svx files by simply opening
+them with aven.
 
-Known shortcomings in the Mac OS X version of Aven
-==================================================
+Known shortcomings specific to the Mac OS X version of Survex
+=============================================================
 
 These could be reproduced with Survex 1.2.17 when built using wxWidgets 3.0.2:
 
-- Tool bar icons are a bit big and fuzzy
-- Filetype icons are currently just scaled up from low-res versions
 - Pushing the pointer to the top of the screen when in full screen mode doesn't
   make the menu bar appear
-- Put everything into the app bundle?
+- The movie export code in aven isn't enabled
+- The tool bar icons in aven are a bit big and fuzzy
+- Icons for files and svxedit.app are just scaled up from low-res versions
+- You can't load files from the finder into svxedit by clicking or dragging
+  them onto the svxedit.app icon
+- The programs alongside Aven.app and svxedit.app need to be run from the
+  command-line (open Terminal.app)
