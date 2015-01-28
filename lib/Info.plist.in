@@ -44,6 +44,38 @@
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
+			<string>com.survex.err</string>
+			<key>CFBundleTypeExtensions</key>
+			<array><string>err</string></array>
+			<key>CFBundleTypeIconFile</key>
+			<string>err</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>com.survex.plt</string>
+			<key>CFBundleTypeExtensions</key>
+			<array><string>plt</string></array>
+			<key>CFBundleTypeIconFile</key>
+			<string>plt</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>com.survex.pos</string>
+			<key>CFBundleTypeExtensions</key>
+			<array><string>pos</string></array>
+			<key>CFBundleTypeIconFile</key>
+			<string>pos</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeName</key>
 			<string>com.survex.svx</string>
 			<key>CFBundleTypeExtensions</key>
 			<array><string>svx</string></array>

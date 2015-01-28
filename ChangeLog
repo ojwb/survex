@@ -1,3 +1,8 @@
+Wed Jan 28 03:26:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,lib/Info.plist.in: Add icons for other filetypes,
+	  and run actions to load "plt" and "pos" into aven.
+
 Wed Jan 28 03:22:41 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am: Whitespace fix.
