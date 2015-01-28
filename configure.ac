@@ -196,7 +196,7 @@ CFLAGS=$save_CFLAGS
 AVEN_LIBS=
 AC_SUBST(AVEN_LIBS)
 
-dnl Check for ffmpeg
+dnl Check for ffmpeg or libav
 AC_CHECK_LIB(avcodec, avcodec_register_all,
   [AC_CHECK_LIB(avformat, av_register_all,
     [AC_CHECK_LIB(swscale, sws_scale,

@@ -1,3 +1,7 @@
+Wed Jan 28 13:46:50 GMT 2015  Olly Betts <olly@survex.com>
+
+	* configure.ac: Note in comment that libav is an alternative to ffmpeg.
+
 Wed Jan 28 09:45:29 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/svxedit_Info.plist.in: Update to run svxedit_wrap.
