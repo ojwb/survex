@@ -1,3 +1,7 @@
+Wed Jan 28 07:09:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Fix typo from 0f5d06e9.
+
 Wed Jan 28 07:05:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* configure.ac: Fix typo from c1a94492.
