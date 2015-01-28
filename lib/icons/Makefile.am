@@ -31,9 +31,13 @@ SUFFIXES = .ico .png .svg .iconset.zip
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@
 
-iconsets = Aven.iconset.zip 3d.iconset.zip svx.iconset.zip
+iconsets = Aven.iconset.zip svxedit.iconset.zip\
+	3d.iconset.zip err.iconset.zip plt.iconset.zip pos.iconset.zip\
+	svx.iconset.zip
 
 MAINTAINERCLEANFILES = $(iconsets)
 
-EXTRA_DIST = 3d.ico err.ico plt.ico pos.ico svx.ico\
- aven.ico svxedit.ico png2winicon $(iconsets)
+EXTRA_DIST = png2winicon png2iconsetzip svg2iconsetzip\
+	aven.ico svxedit.ico\
+	3d.ico err.ico plt.ico pos.ico svx.ico\
+	$(iconsets)

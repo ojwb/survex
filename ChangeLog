@@ -1,3 +1,8 @@
+Wed Jan 28 03:22:08 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,lib/icons/Makefile.am: Generate OS X .icns files for
+	  all the filetypes and svxedit.
+
 Wed Jan 28 03:13:36 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am,lib/icons/png2iconset,lib/icons/svg2iconset:
