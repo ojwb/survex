@@ -5,7 +5,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>svxedit</string>
 	<key>CFBundleExecutable</key>
-	<string>svxedit</string>
+	<string>svxedit_wrap</string>
 	<key>CFBundleIconFile</key>
 	<string>svxedit</string>
 	<key>CFBundleIdentifier</key>

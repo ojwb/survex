@@ -1,3 +1,7 @@
+Wed Jan 28 09:45:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/svxedit_Info.plist.in: Update to run svxedit_wrap.
+
 Wed Jan 28 09:45:01 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Remove empty share/doc directory from OS X disk
