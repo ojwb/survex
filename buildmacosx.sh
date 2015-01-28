@@ -141,6 +141,7 @@ rm Survex/Aven.app/Contents/Resources/icons/svx.png
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 mv Survex/share/doc/survex Survex/Docs
+rmdir Survex/share/doc
 rm -f Survex/share/survex/unifont.pixelfont
 rm -rf Survex/share/survex/icons
 rm -rf Survex/share/applications Survex/share/mime-info Survex/share/pixmaps
