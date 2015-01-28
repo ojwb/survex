@@ -144,6 +144,17 @@ for i in Aven svxedit 3d err plt pos svx ; do
   rm -rf "Survex/Aven.app/Contents/Resources/$i.iconset"
 done
 
+# Construct the svxedit application bundle.
+mkdir -p Survex/svxedit.App/Contents/MacOS Survex/svxedit.App/Contents/Resources
+cp lib/svxedit_Info.plist Survex/svxedit.App/Contents/Info.plist
+printf APPLSVXE > Survex/svxedit.App/Contents/PkgInfo
+mv Survex/svxedit Survex/svxedit.App/Contents/MacOS/
+
+mv Survex/Aven.app/Contents/Resources/svxedit.icns \
+  Survex/svxedit.App/Contents/Resources
+ln Survex/Aven.app/Contents/Resources/svx.icns \
+  Survex/svxedit.App/Contents/Resources
+
 size=`du -s Survex|sed 's/[^0-9].*//'`
 # Allow 1000 extra sectors for various overheads (500 wasn't enough).
 sectors=`expr 1000 + "$size"`

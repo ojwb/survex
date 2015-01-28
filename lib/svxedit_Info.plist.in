@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>svxedit</string>
+	<key>CFBundleExecutable</key>
+	<string>svxedit</string>
+	<key>CFBundleIconFile</key>
+	<string>svxedit</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.survex.app.svxedit</string>
+	<key>CFBundleName</key>
+	<string>svxedit</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>@VERSION@</string>
+	<key>CFBundleSignature</key>
+	<string>SVXE</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>LSHasLocalizedDisplayName</key>
+	<string>0</string>
+	<key>NSAppleScriptEnabled</key>
+	<false/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Licensed under the GNU General Public License version 2 or later.
+@COPYRIGHT_MSG@
+@AVEN_COPYRIGHT_MSG@</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>com.survex.svx</string>
+			<key>CFBundleTypeExtensions</key>
+			<array><string>svx</string></array>
+			<key>CFBundleTypeIconFile</key>
+			<string>svx</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+		</dict>
+	</array>
+</dict>
+</plist>

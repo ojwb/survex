@@ -1,3 +1,8 @@
+Wed Jan 28 04:05:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,lib/INSTALL.OSX,lib/svxedit_Info.plist.in: Create app
+	  bundle for svxedit.
+
 Wed Jan 28 03:26:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,lib/Info.plist.in: Add icons for other filetypes,
