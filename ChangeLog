@@ -1,3 +1,7 @@
+Wed Jan 28 07:00:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Remove unused files and copies of files.
+
 Wed Jan 28 07:00:41 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/Makefile.am: Don't install preload_font.h.
