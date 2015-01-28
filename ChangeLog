@@ -1,3 +1,7 @@
+Wed Jan 28 09:44:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* .gitignore,configure.ac: Actually generate lib/svxedit_Info.plist.
+
 Wed Jan 28 07:17:56 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX: Update.

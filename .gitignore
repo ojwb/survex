@@ -36,6 +36,7 @@ doc/svxedit.1
 doc/version.ent
 install-sh
 lib/Info.plist
+lib/svxedit_Info.plist
 lib/Makefile
 lib/Makefile.in
 lib/bg.msg
