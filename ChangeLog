@@ -1,3 +1,7 @@
+Wed Jan 28 07:00:41 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/Makefile.am: Don't install preload_font.h.
+
 Wed Jan 28 06:59:22 GMT 2015  Olly Betts <olly@survex.com>
 
 	* .gitignore,buildmacosx.sh,configure.ac,src/Makefile.am,
