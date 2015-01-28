@@ -1,4 +1,4 @@
-d590ad87 (Olly Betts 2015-01-21 09:36:19 +1300    1) Tue Jan 20 20:36:02 GMT 2015  Olly Betts <olly@survex.com>
+ddc0994b (Olly Betts 2015-01-28 12:24:02 +1300    1) Tue Jan 27 23:23:26 GMT 2015  Olly Betts <olly@survex.com>
 
 Changes in 1.2.17 (2015-01-21):
 
@@ -6,14 +6,76 @@ Changes in 1.2.17 (2015-01-21):
 
   + Update INSTALL file with current status.
 
+  * Aven.app now has a custom icon.
+
+  * Add icon and file associations for .3d and .svx files.
+
+  + The diskimage (.dmg) file is now compressed with bzip2, which gives a
+    smaller download.  This means OS X 10.4 is required, but we probably
+    already need at least 10.5 because that's the minimum version which the
+    wxWidgets build supports by default.
+
+  + aven: Hide the status bar and tool bar in Full Screen mode, as wx doesn't
+    currently do this for us.
+
   + aven: Fix short-cut for toggling Full Screen mode.
 
   + aven: Make "About" menu item appear.
 
+  + aven: Fix "Close" button in about dialog.
+
+  + aven: Make custom cursors black with a white outline to match the standard
+    OS X cursor.
+
   + Default to building for x86_64, since all modern Macs are 64 bit.
+
+  + Disable use of liblzma when building wxWidgets for OS X, which was
+    preventing the build from working on OS X 10.6.8.
+
+  + Download wx sources from SF via redirecting link.  Thanks to David A.
+    Riggs.
+
+  + buildmacosx.sh: Handle the mount point for the disk image containing a
+    space.
+
+  + Link with a static build of PROJ and use it.
+
+  + Build wx with --disable-webview to avoid a compilation failure on OS X
+    10.10.1.
+
+  + Use wx-config --cc and --cxx to get the compilers to use for building
+    everything else, as wx adds options to them which otherwise cause linking
+    errors.
 
 * cavern: If the same leg is repeated consecutively, average the readings and
   treat as a single leg.
+
+* dump3d: Report SEPARATOR used by the file being read.
+
+* aven.svg: Fix visual glitch in SVG icon for aven.  Noted by David A. Riggs.
+
+* aven:
+
+  + Greatly reduce flicker when mouse is moved to the top of the screen in full
+    screen mode and the menu bar reappears.
+
+  + For export formats where scaling is supporting, aven now actually uses the
+    scale specified in the export dialog (previously it ignored this and used
+    1:500).
+
+  + Reimplement animation so that it's based on angular change per unit of
+    elapsed time, rather than averaging the time take for the last two scene
+    redraws.  This gives smoother animation in the face of variable load and
+    scene redraw time, and should be more consistent between platforms.
+
+  + Switching to a point of the compass during auto-rotation now jumps straight
+    there rather than the two animations fighting.
+
+  + Reduce the maximum auto-rotation speed, as the previous limit was uselessly
+    fast.
+
+  + Disable stepping the rotation angle when animating (previously we only did
+    when rotating).
 
 * doc/manual.sgml: Remove $Id and $Date markers, as they don't get expanded now
   we're using git.

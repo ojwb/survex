@@ -1,3 +1,7 @@
+Wed Jan 28 00:36:24 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Tue Jan 27 23:23:26 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,src/aven.cc,src/aven.h: Add handlers so that files
