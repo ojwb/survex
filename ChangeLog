@@ -1,3 +1,7 @@
+Fri Jan 30 21:59:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Fri Jan 30 21:58:05 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Allow specifying arch to build for on the command

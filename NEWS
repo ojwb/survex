@@ -1,4 +1,4 @@
-08be670e (Olly Betts 2015-01-30 23:29:30 +1300    1) Fri Jan 30 10:28:38 GMT 2015  Olly Betts <olly@survex.com>
+9d49627b (Olly Betts 2015-01-31 10:58:57 +1300    1) Fri Jan 30 21:58:05 GMT 2015  Olly Betts <olly@survex.com>
 
 Changes in 1.2.17 (2015-01-30):
 
@@ -11,11 +11,6 @@ Changes in 1.2.17 (2015-01-30):
   + Add icons for all the filetypes supported.
 
   + Add Finder actions for .svx, .3d, .plt and .pos files.
-
-  + The diskimage (.dmg) file is now compressed with bzip2, which gives a
-    smaller download.  This means OS X 10.4 is required, but we probably
-    already need at least 10.5 because that's the minimum version which the
-    wxWidgets build supports by default.
 
   + aven: Hide the status bar and tool bar in Full Screen mode, as wx doesn't
     currently do this for us.
@@ -51,7 +46,7 @@ Changes in 1.2.17 (2015-01-30):
   + buildmacosx.sh: Handle the mount point for the disk image containing a
     space.
 
-  + Link with a static build of PROJ and use it.
+  + Link with a static build of PROJ for doing coordinate system conversions.
 
   + Build wx with --disable-webview to avoid a compilation failure on OS X
     10.10.1.
@@ -59,6 +54,11 @@ Changes in 1.2.17 (2015-01-30):
   + Use wx-config --cc and --cxx to get the compilers to use for building
     everything else, as wx adds options to them which otherwise cause linking
     errors.
+
+  + The diskimage (.dmg) file is now compressed with bzip2, which gives a
+    smaller download.  This means OS X 10.4 is required, but we probably
+    already need at least 10.5 because that's the minimum version which the
+    wxWidgets build supports by default.
 
   + Remove unused files and copies of files from the diskimage.
 
