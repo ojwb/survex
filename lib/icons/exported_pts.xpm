@@ -1,0 +1,24 @@
+/* XPM */
+static char *exported_pts_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 3 1",
+"  c #000000",
+". c #2070E8",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXX  XX",
+"XXXXXXXXXX  XXX",
+"XXXXX..... XXXX",
+"XXXX.......XXXX",
+"XXXX.......XXXX",
+"XXXX.......XXXX",
+"XXXX.......XXXX",
+"XXXX.......XXXX",
+"XX   ..... XXXX",
+"X  XXXXXXX  XXX",
+"XXXXXXXXXXX  XX",
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX"
+};

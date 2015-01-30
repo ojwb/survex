@@ -1,0 +1,24 @@
+/* XPM */
+static char *crosses_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 3 1",
+"  c #1B64E2",
+". c #FFFFFF",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX",
+"XX. XXXXXX. XXX",
+"XXX. XXXX. XXXX",
+"XXXX. XX. XXXXX",
+"XXXXX. . XXXXXX",
+"XXXXXX. XXXXXXX",
+"XXXXX. . XXXXXX",
+"XXXX. XX. XXXXX",
+"XXX. XXXX. XXXX",
+"XX. XXXXXX. XXX",
+"XXXXXXXXXXXXXXX",
+"XXXXXXXXXXXXXXX"
+};

@@ -62,13 +62,9 @@ lib/zh_CN.msg
 lib/preload_font.h
 lib/survex.keys
 lib/unifont.pixelfont
-lib/icons/3d.ico
-lib/icons/aven.ico
-lib/icons/err.ico
-lib/icons/plt.ico
-lib/icons/pos.ico
-lib/icons/svx.ico
-lib/icons/svxedit.ico
+lib/icons/*.ico
+lib/icons/*.iconset.zip
+lib/icons/aven-icons.rc
 missing
 src/*.o
 src/.deps/

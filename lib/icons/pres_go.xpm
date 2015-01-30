@@ -1,0 +1,24 @@
+/* XPM */
+static char *pres_go_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 3 1",
+"  c #000000",
+". c #60E03C",
+"X c None",
+/* pixels */
+"XXXXXXXXXXXXXXX",
+"XXXXX XXXXXXXXX",
+"XXXXX  XXXXXXXX",
+"XXXXX . XXXXXXX",
+"XXXXX .. XXXXXX",
+"XXXXX ... XXXXX",
+"XXXXX .... XXXX",
+"XXXXX ..... XXX",
+"XXXXX .... XXXX",
+"XXXXX ... XXXXX",
+"XXXXX .. XXXXXX",
+"XXXXX . XXXXXXX",
+"XXXXX  XXXXXXXX",
+"XXXXX XXXXXXXXX",
+"XXXXXXXXXXXXXXX"
+};

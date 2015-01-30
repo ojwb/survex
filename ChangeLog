@@ -1,3 +1,10 @@
+Fri Jan 30 10:12:14 GMT 2015  Olly Betts <olly@survex.com>
+
+	* .gitignore,lib/icons/,src/aven.rc,src/mainfrm.cc: Rather than loading
+	  all the toolbar and notebook icons from PNG files on disk, compile
+	  them into the aven binary.  On most platforms, as XPMs; on MSW as
+	  .ico files via a generated .rc file.
+
 Wed Jan 28 13:46:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* configure.ac: Note in comment that libav is an alternative to ffmpeg.

@@ -1,0 +1,25 @@
+/* XPM */
+static char *pres_tree_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 4 1",
+"  c #686868",
+". c #38C914",
+"X c #FFFFFF",
+"o c None",
+/* pixels */
+"ooooooooooooooo",
+"oooo.Xooooooooo",
+"oooo..Xoooooooo",
+"oooo...Xooooooo",
+"oooo....Xoooooo",
+"oooo.....Xooooo",
+"oooo......Xoooo",
+"oooo....... ooo",
+"oooo...... oooo",
+"oooo..... ooooo",
+"oooo.... oooooo",
+"oooo... ooooooo",
+"oooo.. oooooooo",
+"oooo. ooooooooo",
+"ooooooooooooooo"
+};

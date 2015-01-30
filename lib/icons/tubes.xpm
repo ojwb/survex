@@ -1,0 +1,27 @@
+/* XPM */
+static char *tubes_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 6 1",
+"  c #000000",
+". c #474747",
+"X c #D3B637",
+"o c #F2CE41",
+"O c #848484",
+"+ c None",
+/* pixels */
+"+++++++++++++++",
+"+++++++++++++++",
+"++++++       ++",
+"+++++ XXXXX  ++",
+"++++ XXXXX o ++",
+"+++ XXXXX oo ++",
+"++ XXXXX ooo ++",
+"+       oooo ++",
+"+ ....  oooo ++",
+"+ ... O ooo +++",
+"+ .. OO oo ++++",
+"+ . OOO o +++++",
+"+  OOOO  ++++++",
+"+       +++++++",
+"+++++++++++++++"
+};
