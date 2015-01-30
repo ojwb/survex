@@ -1,3 +1,8 @@
+Fri Jan 30 10:28:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/png2winicon: Clean up - use set -e, create temporary files
+	  in current directory, and quote filenames.
+
 Fri Jan 30 10:12:14 GMT 2015  Olly Betts <olly@survex.com>
 
 	* .gitignore,lib/icons/,src/aven.rc,src/mainfrm.cc: Rather than loading
