@@ -69,8 +69,8 @@ if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
     fi
     echo "+++ Extracting $wxtarball"
     test -d "wxWidgets-$WX_VERSION" || tar jxf "$wxtarball"
-    test -d "wxWidgets-$WX_VERSION/build" || mkdir "wxWidgets-$WX_VERSION/build"
-    cd "wxWidgets-$WX_VERSION/build"
+    test -d "wxWidgets-$WX_VERSION/BUILD" || mkdir "wxWidgets-$WX_VERSION/BUILD"
+    cd "wxWidgets-$WX_VERSION/BUILD"
     # Compliation of wx 3.0.2 fails on OS X 10.10.1 with webview enabled.
     # A build with liblzma enabled doesn't work on OS X 10.6.8.
     ../configure --disable-shared --prefix="$prefix" \
@@ -103,8 +103,8 @@ if [ "x$1" != "x--no-install-proj" ] ; then
     fi
     echo "+++ Extracting $projtarball"
     test -d "proj-$PROJ_VERSION" || tar jxf "$projtarball"
-    test -d "proj-$PROJ_VERSION/build" || mkdir "proj-$PROJ_VERSION/build"
-    cd "proj-$PROJ_VERSION/build"
+    test -d "proj-$PROJ_VERSION/BUILD" || mkdir "proj-$PROJ_VERSION/BUILD"
+    cd "proj-$PROJ_VERSION/BUILD"
     ../configure --disable-shared --prefix="$prefix" CC="$CC" CXX="$CXX"
     make -s
     make -s install
