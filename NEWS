@@ -1,14 +1,16 @@
-ddc0994b (Olly Betts 2015-01-28 12:24:02 +1300    1) Tue Jan 27 23:23:26 GMT 2015  Olly Betts <olly@survex.com>
+08be670e (Olly Betts 2015-01-30 23:29:30 +1300    1) Fri Jan 30 10:28:38 GMT 2015  Olly Betts <olly@survex.com>
 
-Changes in 1.2.17 (2015-01-21):
+Changes in 1.2.17 (2015-01-30):
 
 * MacOS X version:
 
   + Update INSTALL file with current status.
 
-  * Aven.app now has a custom icon.
+  + Aven.app now has a custom icon.
 
-  * Add icon and file associations for .3d and .svx files.
+  + Add icons for all the filetypes supported.
+
+  + Add Finder actions for .svx, .3d, .plt and .pos files.
 
   + The diskimage (.dmg) file is now compressed with bzip2, which gives a
     smaller download.  This means OS X 10.4 is required, but we probably
@@ -26,6 +28,17 @@ Changes in 1.2.17 (2015-01-21):
 
   + aven: Make custom cursors black with a white outline to match the standard
     OS X cursor.
+
+  + svxedit: Now wrapped up in an application bundle as svxedit.app.  It
+    still doesn't really work like a standard app though - e.g. you can't load
+    files from Finder (instead run svxedit.app and use File->Open), the font
+    size of most menu items is wrong, the icon for the app is the wish icon
+    rather than the svxedit icon, shortcuts use Ctrl not the Cmd key, and
+    probably more.  I'd probably recommend using another editor (OS X comes
+    with TextEdit.app for example).
+
+  + The documentation is now in a "Docs" directory alongside the apps, rather
+    than in the rather less obvious "share/doc/survex" directory.
 
   + Default to building for x86_64, since all modern Macs are 64 bit.
 
@@ -46,6 +59,8 @@ Changes in 1.2.17 (2015-01-21):
   + Use wx-config --cc and --cxx to get the compilers to use for building
     everything else, as wx adds options to them which otherwise cause linking
     errors.
+
+  + Remove unused files and copies of files from the diskimage.
 
 * cavern: If the same leg is repeated consecutively, average the readings and
   treat as a single leg.
@@ -76,6 +91,9 @@ Changes in 1.2.17 (2015-01-21):
 
   + Disable stepping the rotation angle when animating (previously we only did
     when rotating).
+
+  + Speed up start-up a bit - rather than loading all the toolbar and notebook
+    icons from individual PNG files on disk, compile them into the aven binary.
 
 * doc/manual.sgml: Remove $Id and $Date markers, as they don't get expanded now
   we're using git.
