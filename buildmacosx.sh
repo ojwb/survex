@@ -1,20 +1,27 @@
 #!/bin/sh
 #
-# Note: this script requires MacOS X 10.2 or greater, and builds diskimages
-# which require MacOS X 10.1 or greater to install.
+# You'll need some development tools which aren't installed by default.  To
+# get these you can install Xcode (which is a free download from Apple):
 #
-# Currently (at least if built on 10.6) at least 10.6 is required to run.
+#   https://developer.apple.com/xcode/downloads/
 #
-# You probably need to have Xcode installed - you can download this for free
-# from Apple: http://developer.apple.com/xcode/
+# To build, open a terminal (Terminal.app in the "Utils" folder in
+# "Applications") and unpack the downloaded survex source code. E.g. for
+# 1.2.17:
 #
-# Run from the unpacked survex-1.2.X directory like so:
+#   tar xf survex-1.2.17.tar.gz
+#
+# Then change directory into the unpacked sources:
+#
+#   cd survex-1.2.17
+#
+# And then run this script:
 #
 #   ./buildmacosx.sh
 #
-# This will automatically download and temporarily install wxWidgets
-# (this script is smart enough not to download or build it if it already
-# has).
+# This will automatically download and temporarily install wxWidgets in
+# a subdirectory of the source tree (this script is smart enough not to
+# download or build it if it already has).
 #
 # If you already have wxWidgets installed permanently, use:
 #
@@ -33,8 +40,57 @@
 #   - It must be built with OpenGL support (--with-opengl).
 #   - If you build with wx < 3, it probably should be a "Unicode" build
 #     (--enable-unicode); wx >= 3 dropped support for non-Unicode builds.
+#
+# This script builds diskimages which are known to work at least as far back
+# as OS X 10.6.8.  A build of wxWidgets 3.0.2 with the options we pass will
+# default to assuming at least OS X 10.5, but we've not heard from anyone
+# trying with such an old version.
 
 set -e
+
+install_wx=yes
+install_proj=yes
+while [ "$#" != 0 ] ; do
+  case $1 in
+    --no-install-wx)
+      install_wx=no
+      shift
+      ;;
+    --no-install-proj)
+      install_proj=no
+      shift
+      ;;
+    --help|-h)
+      echo "Usage: $0 [--no-install-wx] [--no-install-proj] [ppc|i386|x86_86]"
+      exit 0
+      ;;
+    -*)
+      echo "Unknown option - try --help" >&2
+      exit 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+# Mac OS X support "fat" binaries which contain code for more than one
+# processor, but the wxWidgets build system doesn't seem to allow creating
+# these.
+#
+# We default to using -arch x86_64 which produces a build which will only work
+# on # 64-bit Intel Macs, but that's probably all machines modern enough to
+# worry about.
+#
+# If you want a build which also works on 32 bit Intel Macs, then run this
+# script passing i386:
+#
+#   ./buildmacosx.sh i386
+#
+# Or to build for much older machines with a Power PC processor, use:
+#
+#   ./buildmacosx.sh ppc
+arch_flags='-arch '${1:-x86_64}
 
 WX_VERSION=3.0.2
 WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
@@ -42,18 +98,7 @@ WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
 PROJ_VERSION=4.8.0
 PROJ_SHA256=2db2dbf0fece8d9880679154e0d6d1ce7c694dd8e08b4d091028093d87a9d1b5
 
-# Sadly, you can only specify one arch via -arch at a time (a restriction of
-# the wxWidgets build system).
-#
-# Using -arch x86_64 produces a build which will only work on 64-bit Intel
-# Macs, but that's probably all machines modern enough to worry about.
-# If you want a build which also works on 32 bit Intel Macs, then use
-# arch_flags='-arch i386' instead.
-#
-# To build for much older machines with a ppc CPU, you want arch_flags='-arch
-# ppc' instead.
-arch_flags='-arch x86_64'
-if [ -z "${WX_CONFIG+set}" ] && [ "x$1" != "x--no-install-wx" ] ; then
+if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
     :
   else
@@ -87,7 +132,7 @@ fi
 CC=`$WX_CONFIG --cc`
 CXX=`$WX_CONFIG --cxx`
 
-if [ "x$1" != "x--no-install-proj" ] ; then
+if [ "$install_proj" != no ] ; then
   if test -f PROJINSTALL/include/proj_api.h ; then
     :
   else
