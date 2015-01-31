@@ -1,3 +1,8 @@
+Sat Jan 31 13:09:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/svx.svg: Add SVG version of .svx file
+	  icon.
+
 Sat Jan 31 13:03:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am: Ship 3d.svg.

@@ -37,7 +37,7 @@ aven-icons.rc: Makefile.am
 
 icondir = $(pkgdatadir)/icons
 dist_icon_DATA = \
-	3d.svg \
+	3d.svg svx.svg \
 	3d.png err.png plt.png pos.png svx.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
@@ -53,6 +53,9 @@ Aven.iconset.zip: aven.svg
 
 3d.iconset.zip: 3d.svg
 	$(SHELL) $(srcdir)/svg2iconsetzip 3d.svg 3d.iconset.zip
+
+svx.iconset.zip: svx.svg
+	$(SHELL) $(srcdir)/svg2iconsetzip svx.svg svx.iconset.zip
 
 SUFFIXES = .ico .png .svg .iconset.zip .xpm
 
