@@ -18,7 +18,7 @@ for r in 16 32 128 256 512 ; do
 done
 for r in 16 128 256 ; do
   d=`expr $r + $r`
-  ln "$tmp/icon_${d}x${d}.png" "Aven.iconset/icon_${r}x${r}@2x.png"
+  ln "$tmp/icon_${d}x${d}.png" "$tmp/icon_${r}x${r}@2x.png"
 done
 for r in 32 512 ; do
   d=`expr $r + $r`

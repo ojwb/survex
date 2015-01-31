@@ -1,3 +1,7 @@
+Sat Jan 31 12:25:06 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/svg2iconsetzip: Fix hard-coded icon name.
+
 Sat Jan 31 10:45:17 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,configure.ac,debian/survex-aven.install,
