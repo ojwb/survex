@@ -1,3 +1,8 @@
+Sat Jan 31 03:43:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/3d.svg,lib/icons/Makefile.am: Add SVG version of 3d file
+	  icon, and use it to generate icon for OS X.
+
 Fri Jan 30 21:59:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

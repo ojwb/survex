@@ -52,6 +52,9 @@ dist_pixmaps_DATA = aven.png aven.svg svxedit.png
 Aven.iconset.zip: aven.svg
 	$(SHELL) $(srcdir)/svg2iconsetzip aven.svg Aven.iconset.zip
 
+3d.iconset.zip: 3d.svg
+	$(SHELL) $(srcdir)/svg2iconsetzip 3d.svg 3d.iconset.zip
+
 SUFFIXES = .ico .png .svg .iconset.zip .xpm
 
 .png.iconset.zip:
