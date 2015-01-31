@@ -57,6 +57,7 @@
 // This avoids a compiler warning, and also means the data can go in a
 // read-only page and be shared between processes.
 #define static static const
+#include "../lib/icons/aven.xpm"
 #include "../lib/icons/open.xpm"
 #include "../lib/icons/open_pres.xpm"
 #include "../lib/icons/rotation.xpm"
@@ -741,17 +742,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     , m_PrefsDlg(NULL)
 #endif
 {
-    icon_path = wxString(wmsg_cfgpth());
-    icon_path += wxCONFIG_PATH_SEPARATOR;
-    icon_path += wxT("icons");
-    icon_path += wxCONFIG_PATH_SEPARATOR;
-
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
     // (required by Microsoft Windows for this type of icon)
-    SetIcon(wxIcon(wxT("aaaaaAven")));
+    SetIcon(wxICON(AAA_aven));
 #else
-    SetIcon(wxIcon(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG));
+    SetIcon(wxICON(aven));
 #endif
 
 #if wxCHECK_VERSION(3,1,0)
@@ -2030,7 +2026,7 @@ void MainFrm::OnClose(wxCloseEvent&)
 void MainFrm::OnAbout(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
-    AboutDlg dlg(this, icon_path);
+    AboutDlg dlg(this, GetIcon());
     dlg.Centre();
     dlg.ShowModal();
 }

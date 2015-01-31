@@ -65,17 +65,22 @@ AboutDlg::OnClose(wxCommandEvent &)
     Close();
 }
 
-AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
+AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     /* TRANSLATORS: for the title of the About box */
     wxDialog(parent, 500, wxString::Format(wmsg(/*About %s*/205), APP_NAME)),
-    icon_path(icon_path_), timer(this, about_TIMER)
+    timer(this, about_TIMER)
 {
+    icon_path = wxString(wmsg_cfgpth());
+    icon_path += wxCONFIG_PATH_SEPARATOR;
+    icon_path += wxT("icons");
+    icon_path += wxCONFIG_PATH_SEPARATOR;
+
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
     if (!bitmap.Ok()) {
 	bitmap.LoadFile(icon_path + APP_ABOUT_IMAGE, wxBITMAP_TYPE_PNG);
-	bitmap_icon.LoadFile(icon_path + APP_IMAGE, wxBITMAP_TYPE_PNG);
+	bitmap_icon.CopyFromIcon(app_icon);
     }
     if (bitmap.Ok()) {
 	wxStaticBitmap* static_bitmap = new wxStaticBitmap(this, 501, bitmap);
@@ -93,9 +98,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxString & icon_path_) :
      */
     id += wmsg(/*Survey visualisation tool*/209);
     wxBoxSizer* title = new wxBoxSizer(wxHORIZONTAL);
-    if (bitmap_icon.Ok()) {
-	title->Add(new wxStaticBitmap(this, 599, bitmap_icon), 0, wxALIGN_CENTRE_VERTICAL|wxRIGHT, 8);
-    }
+    title->Add(new wxStaticBitmap(this, 599, bitmap_icon), 0, wxALIGN_CENTRE_VERTICAL|wxRIGHT, 8);
     title->Add(new wxStaticText(this, 502, id), 0, wxALL, 2);
 
     wxStaticText* copyright = new wxStaticText(this, 503,

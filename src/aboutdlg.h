@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2004,2005,2010 Olly Betts
+//  Copyright (C) 2004,2005,2010,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ enum {
 
 class AboutDlg : public wxDialog {
 public:
-    AboutDlg(wxWindow* parent, const wxString & icon_path);
+    AboutDlg(wxWindow* parent, const wxIcon & app_icon);
     void OnTimer(wxTimerEvent &e);
     void OnCopy(wxCommandEvent &e);
     void OnClose(wxCommandEvent &e);

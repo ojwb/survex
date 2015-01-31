@@ -29,7 +29,6 @@
 #include <stdarg.h>
 
 #define APP_NAME wxT("Aven")
-#define APP_IMAGE wxT("aven.png")
 #define APP_ABOUT_IMAGE wxT("aven-about.png")
 
 extern

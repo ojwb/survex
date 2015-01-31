@@ -1,3 +1,3 @@
-aaaaaAven ICON aven.ico
+AAA_aven ICON aven.ico
 #include "../lib/icons/aven-icons.rc"
 #include "wx/msw/wx.rc"

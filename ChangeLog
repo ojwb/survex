@@ -1,3 +1,10 @@
+Sat Jan 31 09:19:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* Makefile.am,lib/icons/Makefile.am,lib/icons/aven.png,
+	  lib/icons/aven.xpm,src/: Compile in the "aven" icon on all platforms,
+	  not just MSW, and use this icon for the about dialog instead of
+	  loading it from disk.
+
 Sat Jan 31 03:44:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex-aven.desktop,lib/survex-svxedit.desktop: Add "MimeType"

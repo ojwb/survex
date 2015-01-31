@@ -209,8 +209,6 @@ class MainFrm : public wxFrame {
     wxChar separator; // character separating survey levels (often '.')
     Vector3 m_Offsets;
 
-    wxString icon_path;
-
     // Strings for status bar reporting of distances.
     wxString here_text, coords_text, dist_text, distfree_text;
 

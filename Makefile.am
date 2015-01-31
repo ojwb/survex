@@ -43,8 +43,6 @@ mingw_iss : survex.iss
 	cp lib/icons/*.ico lib/icons/*.png lib/icons/*.jpg iss_tmp
 	: # don't ship pngs for which we ship the ico version
 	for a in iss_tmp/*.ico ; do rm `echo $$a|sed 's/\.ico/.png/'` ; done
-	: # but we do want aven.png for the About dialog
-	cp lib/icons/aven.png iss_tmp
 	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual
 	cp doc/manual/*.htm iss_tmp/manual

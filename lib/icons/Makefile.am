@@ -1,6 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 xpm_files = \
+	aven.xpm \
 	open.xpm \
 	open_pres.xpm \
 	rotation.xpm \
@@ -35,11 +36,10 @@ aven-icons.rc: Makefile.am
 	  $(ico_files) > aven-icons.rc
 
 icondir = $(pkgdatadir)/icons
-# aven.png doesn't need to be installed on win32, but it's only 527 bytes.
 dist_icon_DATA = \
 	aven-about.png\
 	texture.png solid-surface.png osterei.jpg\
-	3d.png err.png plt.png pos.png svx.png aven.png
+	3d.png err.png plt.png pos.png svx.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
@@ -47,7 +47,7 @@ dist_icon_DATA = \
 #	pres-record.png pres-finish.png
 
 pixmapsdir = $(datadir)/pixmaps
-dist_pixmaps_DATA = aven.png aven.svg svxedit.png
+dist_pixmaps_DATA = aven.svg svxedit.png
 
 Aven.iconset.zip: aven.svg
 	$(SHELL) $(srcdir)/svg2iconsetzip aven.svg Aven.iconset.zip
