@@ -1472,7 +1472,7 @@ void GLACanvas::ToggleTextured()
 	wxImage img;
 	wxString texture(wmsg_cfgpth());
 	texture += wxCONFIG_PATH_SEPARATOR;
-	texture += wxT("icons");
+	texture += wxT("images");
 	texture += wxCONFIG_PATH_SEPARATOR;
 	texture += wxT("texture.png");
 	if (!img.LoadFile(texture, wxBITMAP_TYPE_PNG)) {

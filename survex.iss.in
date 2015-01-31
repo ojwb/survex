@@ -64,7 +64,7 @@ Name: "zh_TW"; MessagesFile: "ChineseTraditional.isl"
 
 [Dirs]
 Name: "{app}\manual"
-Name: "{app}\icons"
+Name: "{app}\images"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
@@ -74,8 +74,8 @@ Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.tcl"; DestDir: "{app}"
 Source: "*.pixelfont"; DestDir: "{app}"
-Source: "*.png"; DestDir: "{app}\icons"
-Source: "*.jpg"; DestDir: "{app}\icons"
+Source: "*.png"; DestDir: "{app}\images"
+Source: "*.jpg"; DestDir: "{app}\images"
 Source: "*.ini"; DestDir: "{app}"
 Source: "*.msg"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"

@@ -37,8 +37,6 @@ aven-icons.rc: Makefile.am
 
 icondir = $(pkgdatadir)/icons
 dist_icon_DATA = \
-	aven-about.png\
-	texture.png osterei.jpg\
 	3d.png err.png plt.png pos.png svx.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\

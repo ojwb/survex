@@ -1,8 +1,4 @@
-debian/tmp/usr/share/survex/icons/3d.png
-debian/tmp/usr/share/survex/icons/err.png
-debian/tmp/usr/share/survex/icons/plt.png
-debian/tmp/usr/share/survex/icons/pos.png
-debian/tmp/usr/share/survex/icons/svx.png
+debian/tmp/usr/share/survex/icons
 debian/tmp/usr/share/survex/print.ini
 debian/tmp/usr/share/survex/bcra3.svx
 debian/tmp/usr/share/survex/bcra5.svx

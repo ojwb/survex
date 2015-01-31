@@ -14,7 +14,7 @@ check-local: survex.pot
 	    echo '.po file with numeric code'; exit 1;\
 	fi
 
-SUBDIRS = icons
+SUBDIRS = icons images
 
 po_files = bg.po ca.po de.po de_CH.po de_DE.po el.po en_US.po es.po fr.po\
  id.po it.po pl.po pt.po pt_BR.po ro.po ru.po sk.po zh_CN.po

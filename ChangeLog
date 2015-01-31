@@ -1,3 +1,10 @@
+Sat Jan 31 10:45:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,configure.ac,debian/survex-aven.install,
+	  debian/survex.install,lib/Makefile.am,lib/icons/,lib/images/,
+	  src/aboutdlg.cc,src/aboutdlg.h,src/gla-gl.cc,survex.iss.in: Split
+	  out the images which aren't icons into an "images" directory.
+
 Sat Jan 31 09:28:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am: solid-surface.png isn't currently used, so

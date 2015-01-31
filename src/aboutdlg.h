@@ -39,7 +39,7 @@ public:
 
 private:
     wxBitmap bitmap, bitmap_icon;
-    wxString icon_path;
+    wxString img_path;
     wxTimer timer;
     wxString info;
 

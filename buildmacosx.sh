@@ -176,19 +176,14 @@ make install
 mkdir -p Survex/Aven.app/Contents/MacOS Survex/Aven.app/Contents/Resources
 cp lib/Info.plist Survex/Aven.app/Contents
 printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
-cp -r "$D"/share/survex/* Survex/Aven.app/Contents/Resources/
-rm Survex/Aven.app/Contents/Resources/bcra*.svx
-rm Survex/Aven.app/Contents/Resources/icons/3d.png
-rm Survex/Aven.app/Contents/Resources/icons/err.png
-rm Survex/Aven.app/Contents/Resources/icons/plt.png
-rm Survex/Aven.app/Contents/Resources/icons/pos.png
-rm Survex/Aven.app/Contents/Resources/icons/svx.png
-mv Survex/aven Survex/Aven.app/Contents/MacOS/
-ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 mv Survex/share/doc/survex Survex/Docs
 rmdir Survex/share/doc
-rm -f Survex/share/survex/unifont.pixelfont
 rm -rf Survex/share/survex/icons
+cp -r Survex/share/survex/* Survex/Aven.app/Contents/Resources/
+rm Survex/Aven.app/Contents/Resources/bcra*.svx
+mv Survex/aven Survex/Aven.app/Contents/MacOS/
+ln Survex/cavern Survex/Aven.app/Contents/MacOS/
+rm -f Survex/share/survex/unifont.pixelfont
 rm -rf Survex/share/applications Survex/share/mime-info Survex/share/pixmaps
 
 # Create .icns files in the bundle's "Resources" directory.

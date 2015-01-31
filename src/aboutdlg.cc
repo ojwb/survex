@@ -44,7 +44,7 @@ void
 AboutDlg::OnTimer(wxTimerEvent &)
 {
     wxImage::AddHandler(new wxJPEGHandler);
-    bitmap.LoadFile(icon_path + wxT("osterei.jpg"), wxBITMAP_TYPE_JPEG);
+    bitmap.LoadFile(img_path + wxT("osterei.jpg"), wxBITMAP_TYPE_JPEG);
     ((wxStaticBitmap*)FindWindowById(501, this))->SetBitmap(bitmap);
 }
 
@@ -70,16 +70,16 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     wxDialog(parent, 500, wxString::Format(wmsg(/*About %s*/205), APP_NAME)),
     timer(this, about_TIMER)
 {
-    icon_path = wxString(wmsg_cfgpth());
-    icon_path += wxCONFIG_PATH_SEPARATOR;
-    icon_path += wxT("icons");
-    icon_path += wxCONFIG_PATH_SEPARATOR;
+    img_path = wxString(wmsg_cfgpth());
+    img_path += wxCONFIG_PATH_SEPARATOR;
+    img_path += wxT("images");
+    img_path += wxCONFIG_PATH_SEPARATOR;
 
     wxBoxSizer* horiz = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* vert = new wxBoxSizer(wxVERTICAL);
 
     if (!bitmap.Ok()) {
-	bitmap.LoadFile(icon_path + APP_ABOUT_IMAGE, wxBITMAP_TYPE_PNG);
+	bitmap.LoadFile(img_path + APP_ABOUT_IMAGE, wxBITMAP_TYPE_PNG);
 	bitmap_icon.CopyFromIcon(app_icon);
     }
     if (bitmap.Ok()) {
