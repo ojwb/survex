@@ -38,13 +38,13 @@ aven-icons.rc: Makefile.am
 icondir = $(pkgdatadir)/icons
 dist_icon_DATA = \
 	aven-about.png\
-	texture.png solid-surface.png osterei.jpg\
+	texture.png osterei.jpg\
 	3d.png err.png plt.png pos.png svx.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
 #	legsprefs.png ctlprefs.png pres-restart.png pres-create.png\
-#	pres-record.png pres-finish.png
+#	pres-record.png pres-finish.png solid-surface.png
 
 pixmapsdir = $(datadir)/pixmaps
 dist_pixmaps_DATA = aven.svg svxedit.png

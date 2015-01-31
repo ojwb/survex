@@ -1,3 +1,8 @@
+Sat Jan 31 09:28:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am: solid-surface.png isn't currently used, so
+	  don't install it.
+
 Sat Jan 31 09:19:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* Makefile.am,lib/icons/Makefile.am,lib/icons/aven.png,
