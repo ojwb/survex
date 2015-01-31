@@ -38,7 +38,7 @@ public:
     void OnClose(wxCommandEvent &e);
 
 private:
-    wxBitmap bitmap, bitmap_icon;
+    wxBitmap bitmap;
     wxString img_path;
     wxTimer timer;
     wxString info;

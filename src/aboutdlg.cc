@@ -80,7 +80,6 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
 
     if (!bitmap.Ok()) {
 	bitmap.LoadFile(img_path + APP_ABOUT_IMAGE, wxBITMAP_TYPE_PNG);
-	bitmap_icon.CopyFromIcon(app_icon);
     }
     if (bitmap.Ok()) {
 	wxStaticBitmap* static_bitmap = new wxStaticBitmap(this, 501, bitmap);
@@ -98,7 +97,9 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
      */
     id += wmsg(/*Survey visualisation tool*/209);
     wxBoxSizer* title = new wxBoxSizer(wxHORIZONTAL);
-    title->Add(new wxStaticBitmap(this, 599, bitmap_icon), 0, wxALIGN_CENTRE_VERTICAL|wxRIGHT, 8);
+    wxStaticBitmap* static_bitmap = new wxStaticBitmap(this, 599, wxBitmap());
+    static_bitmap->SetIcon(app_icon);
+    title->Add(static_bitmap, 0, wxALIGN_CENTRE_VERTICAL|wxRIGHT, 8);
     title->Add(new wxStaticText(this, 502, id), 0, wxALL, 2);
 
     wxStaticText* copyright = new wxStaticText(this, 503,

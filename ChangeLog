@@ -1,3 +1,8 @@
+Sat Jan 31 14:39:32 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc,src/aboutdlg.h: Put the wxIcon into the
+	  wxStaticBitmap directly, rather than converting it to a wxBitmap.
+
 Sat Jan 31 13:09:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am,lib/icons/svx.svg: Add SVG version of .svx file
