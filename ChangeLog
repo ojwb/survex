@@ -1,3 +1,8 @@
+Sat Jan 31 03:44:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex-aven.desktop,lib/survex-svxedit.desktop: Add "MimeType"
+	  field to desktop files.
+
 Sat Jan 31 03:43:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/3d.svg,lib/icons/Makefile.am: Add SVG version of 3d file

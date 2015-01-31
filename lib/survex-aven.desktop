@@ -8,3 +8,4 @@ Exec=aven
 Icon=aven
 Categories=Education;Geology;Science;
 Keywords=caving;survey;data;visualisation;visualization;OpenGL;wxWidgets;3D
+MimeType=application/x-survex-svx;application/x-survex-3d;application/x-survex-pos;application/x-compass-plot;application/x-cmap-xyz;
