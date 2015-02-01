@@ -1,3 +1,8 @@
+Sun Feb 01 04:53:22 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,lib/icons/Makefile.am,lib/icons/err.svg: Add SVG
+	  version of .err file icon.
+
 Sun Feb 01 04:49:06 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,lib/icons/Makefile.am,lib/icons/pos.svg: Add SVG
