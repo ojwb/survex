@@ -1,3 +1,8 @@
+Sun Feb 15 23:46:12 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,lib/Makefile.am,lib/hu.po,src/message.c,
+	  survex.iss.in: Add start of Hungarian translation from Imre Balogh.
+
 Sun Feb 01 04:53:22 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,lib/icons/Makefile.am,lib/icons/err.svg: Add SVG

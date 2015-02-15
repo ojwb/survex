@@ -1111,6 +1111,9 @@ macosx_got_msg:
 	     case LANG_GREEK:
 	       msg_lang = "el";
 	       break;
+	     case LANG_HUNGARIAN:
+	       msg_lang = "hu";
+	       break;
 	     case LANG_INDONESIAN:
 	       msg_lang = "id";
 	       break;
