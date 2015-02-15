@@ -33,16 +33,22 @@ ${$msgs{'en'}}[0] = '©';
 
 # my %uses = ();
 
+my $file;
+
 my %n = ();
-my $num_list = Locale::PO->load_file_asarray("$srcdir/survex.pot");
+my %loc = ();
+$file = "$srcdir/survex.pot";
+my $num_list = Locale::PO->load_file_asarray($file);
 foreach my $po_entry (@{$num_list}) {
     my $ref = $po_entry->reference;
     (defined $ref && $ref =~ /^n:(\d+)$/m) or next;
     my $msgno = $1;
     my $key = $po_entry->msgid;
     my $msg = c_unescape($po_entry->dequote($key));
+    my $where = $file . ":" . $po_entry->loaded_line_number;
+    ${$loc{'en'}}[$msgno] = $where;
     if (${$msgs{'en'}}[$msgno]) {
-	print STDERR "Warning: already had message $msgno for language 'en'\n";
+	print STDERR "$where: warning: already had message $msgno for language 'en'\n";
     }
     ${$msgs{'en'}}[$msgno] = $msg;
     ++$n{$msgno};
@@ -50,18 +56,19 @@ foreach my $po_entry (@{$num_list}) {
 my $last = 0;
 for (sort { $a <=> $b } keys %n) {
     if ($_ > $last + 1) {
-	print STDERR "Unused msg numbers: ", join(" ", $last + 1 .. $_ - 1), "\n";
+	print STDERR "$file: Unused msg numbers: ", join(" ", $last + 1 .. $_ - 1), "\n";
     }
     $last = $_;
 }
-print STDERR "Last used msg number: $last\n";
+print STDERR "$file: Last used msg number: $last\n";
 %n = ();
 
 for my $po_file (@ARGV) {
     my $language = $po_file;
     $language =~ s/\.po$//;
 
-    my $po_hash = Locale::PO->load_file_ashash("$srcdir/$po_file");
+    $file = "$srcdir/$po_file";
+    my $po_hash = Locale::PO->load_file_ashash($file);
 
     foreach my $po_entry (@{$num_list}) {
 	my $ref = $po_entry->reference;
@@ -69,11 +76,13 @@ for my $po_file (@ARGV) {
 	my $msgno = $1;
 	my $key = $po_entry->msgid;
 	my $ent = $$po_hash{$key};
+	my $where = $file . ":" . $po_entry->loaded_line_number;
+	${$loc{$language}}[$msgno] = $where;
 	if (defined $ent) {
 	    my $msg = c_unescape($po_entry->dequote($ent->msgstr));
 	    next if $msg eq '';
 	    if (${$msgs{$language}}[$msgno]) {
-		print STDERR "Warning: already had message $msgno for language $language\n";
+		print STDERR "$where: warning: already had message $msgno for language $language\n";
 	    }
 	    ${$msgs{$language}}[$msgno] = $msg;
 	}
@@ -91,6 +100,7 @@ foreach $lang (@langs) {
 
 foreach $lang (@langs) {
    my $fnm = $lang;
+   $file = "$srcdir/$lang.po";
    $fnm =~ s/(_.*)$/\U$1/;
    open OUT, ">$fnm.msg" or die $!;
 
@@ -125,7 +135,7 @@ foreach $lang (@langs) {
 	 }
       } else {
 	 if ($lang ne 'en') {
-	     sanity_check("Message $n in language $lang", $msg, ${$msgs{'en'}}[$n]);
+	     sanity_check("Message $n in language $lang", $msg, ${$msgs{'en'}}[$n], ${$loc{$lang}}[$n]);
 	 }
       }
       $buff .= $msg . "\0";
@@ -137,19 +147,19 @@ foreach $lang (@langs) {
    if ($missing || $retranslate) {
        print STDERR "Warning: ";
        if ($missing) {
-	   print STDERR "$lang: $missing missing message(s)";
+	   print STDERR "$file: $missing missing message(s)";
 	   if ($retranslate) {
 	       print STDERR " and $retranslate requiring retranslation";
 	   }
        } else {
-	   print STDERR "$lang: $retranslate message(s) requiring retranslation";
+	   print STDERR "$file: $retranslate message(s) requiring retranslation";
        }
-       print STDERR "\n";
+       print STDERR " for $lang\n";
    }
 }
 
 sub sanity_check {
-   my ($where, $msg, $orig) = @_;
+   my ($what, $msg, $orig, $where) = @_;
    # FIXME: Only do this if the message has the "c-format" flag.
    # check printf-like specifiers match
    # allow valid printf specifiers, or %<any letter> to support strftime
@@ -158,11 +168,11 @@ sub sanity_check {
    my @pcent_o = grep /\%/, split /(%(?:[-#0 +'I]*(?:[0-9]*|\*|\*m\$)(?:\.[0-9]*)?(?:hh|ll|[hlLqjzt])?[diouxXeEfFgGaAcsCSpn]|[a-zA-Z]))/, $orig;
    while (scalar @pcent_m || scalar @pcent_o) {
        if (!scalar @pcent_m) {
-	   print STDERR "Warning: $where misses out \%spec $pcent_o[0]\n";
+	   print STDERR "$where: warning: $what misses out \%spec $pcent_o[0]\n";
        } elsif (!scalar @pcent_o) {
-	   print STDERR "Warning: $where has extra \%spec $pcent_m[0]\n";
+	   print STDERR "$where: warning: $what has extra \%spec $pcent_m[0]\n";
        } elsif ($pcent_m[0] ne $pcent_o[0]) {
-	   print STDERR "Warning: $where has \%spec $pcent_m[0] instead of $pcent_o[0]\n";
+	   print STDERR "$where: warning: $what has \%spec $pcent_m[0] instead of $pcent_o[0]\n";
        }
        pop @pcent_m;
        pop @pcent_o;
@@ -170,51 +180,51 @@ sub sanity_check {
 
    # Check for missing (or added) ellipses (...)
    if ($msg =~ /\.\.\./ && $orig !~ /\.\.\./) {
-       print STDERR "Warning: $where has ellipses but original doesn't\n";
+       print STDERR "$where: warning: $what has ellipses but original doesn't\n";
    } elsif ($msg !~ /\.\.\./ && $orig =~ /\.\.\./) {
-       print STDERR "Warning: $where is missing ellipses\n";
+       print STDERR "$where: warning: $what is missing ellipses\n";
    }
 
    # Check for missing (or added) menu shortcut (&)
    if ($msg =~ /\&[A-Za-z\xc2-\xf4]/ && $orig !~ /\&[A-Za-z]/) {
-       print STDERR "Warning: $where has menu shortcut but original doesn't\n";
+       print STDERR "$where: warning: $what has menu shortcut but original doesn't\n";
    } elsif ($msg !~ /\&[A-Za-z\xc2-\xf4]/ && $orig =~ /\&[A-Za-z]/) {
-       print STDERR "Warning: $where is missing menu shortcut\n";
+       print STDERR "$where: warning: $what is missing menu shortcut\n";
    }
 
    # Check for missing (or added) double quotes (“ and ”)
    if (scalar($msg =~ s/(?:“|»)/$&/g) != scalar($orig =~ s/“/$&/g)) {
-       print STDERR "Warning: $where has different numbers of “\n";
+       print STDERR "$where: warning: $what has different numbers of “\n";
        print STDERR "$orig\n$msg\n\n";
    }
    if (scalar($msg =~ s/(?:”|«)/$&/g) != scalar($orig =~ s/”/$&/g)) {
-       print STDERR "Warning: $where has different numbers of ”\n";
+       print STDERR "$where: warning: $what has different numbers of ”\n";
        print STDERR "$orig\n$msg\n\n";
    }
 
    # Check for missing (or added) menu accelerator "##"
    if ($msg =~ /\#\#/ && $orig !~ /\#\#/) {
-       print STDERR "Warning: $where has menu accelerator but original doesn't\n";
+       print STDERR "$where: warning: $what has menu accelerator but original doesn't\n";
    } elsif ($msg !~ /\#\#/ && $orig =~ /\#\#/) {
-       print STDERR "Warning: $where is missing menu accelerator\n";
+       print STDERR "$where: warning: $what is missing menu accelerator\n";
    } elsif ($orig =~ /\#\#(.*)/) {
        my $acc_o = $1;
        my ($acc_m) = $msg =~ /\#\#(.*)/;
        if ($acc_o ne $acc_m) {
-	   print STDERR "Warning: $where has menu accelerator $acc_m instead of $acc_o\n";
+	   print STDERR "$where: warning: $what has menu accelerator $acc_m instead of $acc_o\n";
        }
    }
 
    # Check for missing (or added) menu accelerator "\t"
    if ($msg =~ /\t/ && $orig !~ /\t/) {
-       print STDERR "Warning: $where has menu accelerator but original doesn't\n";
+       print STDERR "$where: warning: $what has menu accelerator but original doesn't\n";
    } elsif ($msg !~ /\t/ && $orig =~ /\t/) {
-       print STDERR "Warning: $where is missing menu accelerator\n";
+       print STDERR "$where: warning: $what is missing menu accelerator\n";
    } elsif ($orig =~ /\t(.*)/) {
        my $acc_o = $1;
        my ($acc_m) = $msg =~ /\t(.*)/;
        if ($acc_o ne $acc_m) {
-	   print STDERR "Warning: $where has menu accelerator $acc_m instead of $acc_o\n";
+	   print STDERR "$where: warning: $what has menu accelerator $acc_m instead of $acc_o\n";
        }
    }
 }

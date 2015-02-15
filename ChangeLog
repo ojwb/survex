@@ -1,3 +1,7 @@
+Sun Feb 15 23:47:35 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Report file and line number for warnings.
+
 Sun Feb 15 23:46:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,lib/Makefile.am,lib/hu.po,src/message.c,
