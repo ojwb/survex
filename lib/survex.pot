@@ -25,7 +25,11 @@ msgstr ""
 #. greater" if that gives a more natural translation.  It's
 #. technically not quite right when there are parallel active release
 #. series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
-#. seems unlikely to confuse users.
+#. seems unlikely to confuse users.  "Survex" is the name of the
+#. software, so should not be translated.
+#.
+#. Here "survey" is a "cave map" rather than list of questions - it should be
+#. translated to the terminology that cavers using the language would use.
 #: ../src/commands.c:2006
 #: n:2
 #, c-format
@@ -41,7 +45,9 @@ msgid "warning"
 msgstr ""
 
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
-#. by the line number in that file.
+#. by the line number in that file.  Your translation should also contain
+#. %s:%u so that automatic parsing of error messages to determine the file
+#. and line number still works.
 #: ../src/datain.c:107
 #: n:5
 #, c-format
@@ -199,6 +205,9 @@ msgstr ""
 #. 1 2 1.23 045 -6
 #. *end inner
 #. *end outer
+#.
+#. Here "survey" is a "cave map" rather than list of questions - it should be
+#. translated to the terminology that cavers using the language would use.
 #: ../src/commands.c:957
 #: ../src/commands.c:959
 #: ../src/listpos.c:104
@@ -211,18 +220,26 @@ msgstr ""
 
 #. TRANSLATORS: This error occurs if there's an attempt to
 #. export a station from a survey which doesn't actually exist.
+#.
+#. Here "survey" is a "cave map" rather than list of questions - it should be
+#. translated to the terminology that cavers using the language would use.
 #: ../src/listpos.c:109
 #: n:286
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
 msgstr ""
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
+#.
+#. Here "survey" is a "cave map" rather than list of questions - it should be
+#. translated to the terminology that cavers using the language would use.
 #: ../src/readval.c:297
 #: n:27
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
 msgstr ""
 
+#. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/extend.c:247
 #: ../src/extend.c:266
 #: ../src/extend.c:311
@@ -268,6 +285,8 @@ msgstr ""
 
 #. TRANSLATORS: EQUATE is a command name, so shouldn’t be
 #. translated.
+#.
+#. Here "station" is a survey station, not a train station.
 #: ../src/commands.c:921
 #: n:33
 msgid "Only one station in EQUATE command"
@@ -1139,11 +1158,15 @@ msgstr ""
 msgid "produce DXF output"
 msgstr ""
 
+#. TRANSLATORS: "Skencil" is the name of a software package, so should not be
+#. translated.
 #: ../src/cad3d.c:670
 #: n:158
 msgid "produce Skencil output"
 msgstr ""
 
+#. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
+#. so should not be translated.
 #: ../src/cad3d.c:671
 #: n:159
 msgid "produce Compass PLT output for Carto"
@@ -1509,6 +1532,8 @@ msgstr ""
 msgid "Select a survey file to view"
 msgstr ""
 
+#. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
+#. file extension, so neither should be translated.
 #: ../src/mainfrm.cc:1871
 #: n:207
 msgid "Survex 3d files"
@@ -1529,13 +1554,15 @@ msgstr ""
 msgid "All survey files"
 msgstr ""
 
+#. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
+#. file extension, so neither should be translated.
 #: ../src/mainfrm.cc:1872
 #: n:329
 msgid "Survex svx files"
 msgstr ""
 
-#. TRANSLATORS: "Compass" as in Larry Fish’s cave
-#. surveying package, so probably shouldn’t be translated
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave surveying package, so
+#. should not be translated
 #: ../src/mainfrm.cc:1880
 #: n:330
 msgid "Compass DAT and MAK files"
@@ -1556,6 +1583,9 @@ msgstr ""
 msgid "GPX files"
 msgstr ""
 
+#. TRANSLATORS: Here "plotter" refers to a machine which draws a printout
+#. on a (usually large) sheet of paper using a pen mounted in a motorised
+#. mechanism.
 #: ../src/printwx.cc:277
 #: n:414
 msgid "HPGL for plotters"
@@ -1566,11 +1596,17 @@ msgstr ""
 msgid "KML files"
 msgstr ""
 
+#. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
+#. so should not be translated:
+#. http://www.fountainware.com/compass/
+#. http://www.psc-cavers.org/carto/
 #: ../src/printwx.cc:279
 #: n:415
 msgid "Compass PLT for use with Carto"
 msgstr ""
 
+#. TRANSLATORS: "Skencil" is the name of a software package, so should not be
+#. translated: http://www.skencil.org/
 #: ../src/printwx.cc:280
 #: n:416
 msgid "Skencil files"
@@ -1628,6 +1664,9 @@ msgstr ""
 msgid "&Presentation"
 msgstr ""
 
+#. TRANSLATORS: Summary paragraph for the GPLv2 - there are translations for
+#. some languages here:
+#. http://www.gnu.org/licenses/old-licenses/gpl-2.0-translations.html
 #: ../src/aboutdlg.cc:105
 #: n:219
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
@@ -1688,14 +1727,15 @@ msgid "&Open…\tCtrl+O"
 msgstr ""
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
-#. are surveys without date information.
+#. are surveys without date information.  Try to keep this fairly short.
 #: ../src/gfxcore.cc:1047
 #: n:221
 msgid "Undated"
 msgstr ""
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
-#. which aren’t part of a loop and so have no error information.
+#. which aren’t part of a loop and so have no error information.  Try to keep
+#. this fairly short.
 #: ../src/gfxcore.cc:1071
 #: n:290
 msgid "Not in loop"
@@ -1746,6 +1786,9 @@ msgstr ""
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr ""
 
+#. TRANSLATORS: e.g.
+#.
+#. *calibrate tape compass 1 1
 #: ../src/commands.c:1444
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
@@ -2457,6 +2500,8 @@ msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: tickable menu item in View menu.
+#.
+#. "Metric" here means metres, km, etc (rather than feet, miles, etc)
 #: ../src/gfxcore.cc:3263
 #: ../src/gfxcore.cc:3281
 #: ../src/mainfrm.cc:919
@@ -2638,7 +2683,7 @@ msgstr ""
 msgid "%"
 msgstr ""
 
-#. TRANSLATORS: used for the percentage gradient on
+#. TRANSLATORS: infinity symbol - used for the percentage gradient on
 #. vertical angles.
 #: ../src/gfxcore.cc:753
 #: n:431

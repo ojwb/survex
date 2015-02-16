@@ -103,7 +103,9 @@ report_parent(parse * p) {
      * parent files */
     p->reported_where = fFalse;
     /* TRANSLATORS: %s is replaced by the filename of the parent file, and %u
-     * by the line number in that file. */
+     * by the line number in that file.  Your translation should also contain
+     * %s:%u so that automatic parsing of error messages to determine the file
+     * and line number still works. */
     fprintf(STDERR, msg(/*In file included from %s:%u:\n*/5), p->filename, p->line);
 }
 

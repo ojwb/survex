@@ -294,6 +294,11 @@ anon_wall_station:
    } else {
       /* check that the same name isn't being used for a survey and station */
       if (fSurvey ^ TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
+	 /* TRANSLATORS: Here "station" is a survey station, not a train station.
+	  *
+	  * Here "survey" is a "cave map" rather than list of questions - it should be
+	  * translated to the terminology that cavers using the language would use.
+	  */
 	 compile_error(/*“%s” can’t be both a station and a survey*/27,
 		       sprint_prefix(ptr));
       }

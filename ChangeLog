@@ -1,3 +1,7 @@
+Mon Feb 16 00:13:55 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/: Add more TRANSLATOR comments.
+
 Mon Feb 16 00:12:32 GMT 2015  Olly Betts <olly@survex.com>
 
 	* tests/badcalibrate.out,tests/badcalibrate.svx: Add test coverage for

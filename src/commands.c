@@ -917,7 +917,10 @@ cmd_equate(void)
       if (name1 == NULL) {
 	 if (fOnlyOneStn) {
 	    /* TRANSLATORS: EQUATE is a command name, so shouldn’t be
-	     * translated. */
+	     * translated.
+	     *
+	     * Here "station" is a survey station, not a train station.
+	     */
 	    compile_error_skip(-/*Only one station in EQUATE command*/33);
 	 }
 	 return;
@@ -952,7 +955,11 @@ report_missing_export(prefix *pfx, int depth)
        * *export 1
        * 1 2 1.23 045 -6
        * *end inner
-       * *end outer */
+       * *end outer
+       *
+       * Here "survey" is a "cave map" rather than list of questions - it should be
+       * translated to the terminology that cavers using the language would use.
+       */
       compile_error_pfx(survey,
 			/*Station “%s” not exported from survey “%s”*/26, p, s);
    } else {
@@ -1441,6 +1448,10 @@ cmd_calibrate(void)
    }
 
    if (((qmask & LEN_QMASK)) && ((qmask & ANG_QMASK))) {
+      /* TRANSLATORS: e.g.
+       *
+       * *calibrate tape compass 1 1
+       */
       compile_error_skip(/*Can’t calibrate angular and length quantities together*/227);
       return;
    }
@@ -2002,7 +2013,12 @@ cmd_require(void)
 	  * greater" if that gives a more natural translation.  It's
 	  * technically not quite right when there are parallel active release
 	  * series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
-	  * seems unlikely to confuse users. */
+	  * seems unlikely to confuse users.  "Survex" is the name of the
+	  * software, so should not be translated.
+	  *
+	  * Here "survey" is a "cave map" rather than list of questions - it should be
+	  * translated to the terminology that cavers using the language would use.
+	  */
 	 fatalerror_in_file(file.filename, file.line, /*Survex version %s or greater required to process this survey data.*/2, v);
       }
       if (ch != '.') break;

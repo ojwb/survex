@@ -667,7 +667,11 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(7),   /*produce an elevation view*/103, 0},
 	{HLP_ENCODELONG(8),   /*factor to scale down by (default %s)*/155, "500"},
 	{HLP_ENCODELONG(9),   /*produce DXF output*/156, 0},
+	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
+	 * translated. */
 	{HLP_ENCODELONG(10),  /*produce Skencil output*/158, 0},
+	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
+	 * so should not be translated. */
 	{HLP_ENCODELONG(11),  /*produce Compass PLT output for Carto*/159, 0},
 	{HLP_ENCODELONG(12),  /*produce SVG output*/160, 0},
 	{0, 0, 0}

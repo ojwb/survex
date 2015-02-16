@@ -105,6 +105,9 @@ check_node(prefix *p)
 	    } else {
 		/* TRANSLATORS: This error occurs if there's an attempt to
 		 * export a station from a survey which doesn't actually exist.
+		 *
+		 * Here "survey" is a "cave map" rather than list of questions - it should be
+		 * translated to the terminology that cavers using the language would use.
 		 */
 	       msgno = /*Reference to station “%s” from non-existent survey “%s”*/286;
 	    }

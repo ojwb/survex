@@ -274,9 +274,18 @@ static int msg_filetype[] = {
     /*DXF files*/411,
     /*EPS files*/412,
     /*GPX files*/413,
+    /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
+     * on a (usually large) sheet of paper using a pen mounted in a motorised
+     * mechanism. */
     /*HPGL for plotters*/414,
     /*KML files*/444,
+    /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
+     * so should not be translated:
+     * http://www.fountainware.com/compass/
+     * http://www.psc-cavers.org/carto/ */
     /*Compass PLT for use with Carto*/415,
+    /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
+     * translated: http://www.skencil.org/ */
     /*Skencil files*/416,
     /*SVG files*/417
 };

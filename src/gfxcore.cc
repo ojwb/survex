@@ -748,7 +748,7 @@ void GfxCore::Draw2dIndicators()
 		}
 		if (angle > 99999 || angle < -99999) {
 		    str = angle > 0 ? wxT("+") : wxT("-");
-		    /* TRANSLATORS: used for the percentage gradient on
+		    /* TRANSLATORS: infinity symbol - used for the percentage gradient on
 		     * vertical angles. */
 		    str += wmsg(/*∞*/431);
 		} else {
@@ -1043,7 +1043,8 @@ void GfxCore::DrawDateKey()
     wxString other;
     if (!m_Parent->HasCompleteDateInfo()) {
 	/* TRANSLATORS: Used in the "colour key" for "colour by date" if there
-	 * are surveys without date information. */
+	 * are surveys without date information.  Try to keep this fairly short.
+	 */
 	other = wmsg(/*Undated*/221);
     }
 
@@ -1067,7 +1068,8 @@ void GfxCore::DrawErrorKey()
 
     // Always show the "Not in loop" legend for now (FIXME).
     /* TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
-     * which aren’t part of a loop and so have no error information. */
+     * which aren’t part of a loop and so have no error information. Try to keep
+     * this fairly short. */
     DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
 }
 
@@ -3267,7 +3269,10 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the "north arrow" in aven. */
 	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/387));
-	/* TRANSLATORS: tickable menu item in View menu */
+	/* TRANSLATORS: tickable menu item in View menu.
+	 *
+	 * Degrees are the angular measurement where there are 360 in a full
+	 * circle. */
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
@@ -3302,7 +3307,10 @@ bool GfxCore::HandleRClick(wxPoint point)
 	wxMenu menu;
 	/* TRANSLATORS: Menu item which turns off the scale bar in aven. */
 	menu.AppendCheckItem(menu_IND_SCALE_BAR, wmsg(/*&Hide scale bar*/385));
-	/* TRANSLATORS: tickable menu item in View menu */
+	/* TRANSLATORS: tickable menu item in View menu.
+	 *
+	 * "Metric" here means metres, km, etc (rather than feet, miles, etc)
+	 */
 	menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);

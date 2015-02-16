@@ -244,6 +244,7 @@ parseconfigline(const char *fnm, char *ln)
    if (strcmp(ln, "*start")==0) {
       ln = delimword(lc, &lc);
       if (*ln == 0)
+	 /* TRANSLATORS: Here "station" is a survey station, not a train station. */
 	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       for (p = headpoint.next; p != NULL; p = p->next) {
 	 for (s = p->stns; s; s = s->next) {

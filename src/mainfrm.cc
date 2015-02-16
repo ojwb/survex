@@ -1897,14 +1897,18 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		      * terminology that cavers using the language would use.
 		      */
 		     wmsg(/*All survey files*/229).c_str(),
+		     /* TRANSLATORS: Survex is the name of the software, and "3d" refers to a
+		      * file extension, so neither should be translated. */
 		     wmsg(/*Survex 3d files*/207).c_str(),
+		     /* TRANSLATORS: Survex is the name of the software, and "svx" refers to a
+		      * file extension, so neither should be translated. */
 		     wmsg(/*Survex svx files*/329).c_str(),
 		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
 		      * surveying package, so probably shouldn’t be translated
 		      */
 		     wmsg(/*Compass PLT files*/324).c_str(),
 		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
-		      * surveying package, so probably shouldn’t be translated
+		      * surveying package, so should not be translated
 		      */
 		     wmsg(/*Compass DAT and MAK files*/330).c_str(),
 		     /* TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
