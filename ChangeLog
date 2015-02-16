@@ -1,3 +1,7 @@
+Mon Feb 16 00:46:01 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/extract-msgs.pl: Report file:line for issues we spot.
+
 Mon Feb 16 00:13:55 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Add more TRANSLATOR comments.

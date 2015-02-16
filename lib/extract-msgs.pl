@@ -9,7 +9,7 @@ my $pot_creation_date = strftime "%Y-%m-%d %H:%M:%S +0000", gmtime();
 
 use integer;
 
-my (%msgs, @uses, %comment);
+my (%msgs, @uses, %comment, %loc);
 my $translator_comment;
 while (<ARGV>) {
     if (m!(/[/*])\s*(TRANSLATORS:.*?)\s*\z!) {
@@ -31,7 +31,7 @@ while (<ARGV>) {
 	}
 	$comment =~ s/\n+$//;
 	if (defined $translator_comment) {
-	    print STDERR "Ignored TRANSLATORS comment: $translator_comment\n";
+	    print STDERR "$ARGV:$.: Ignored TRANSLATORS comment: $translator_comment\n";
 	}
 	$translator_comment = $comment;
         last if !defined $_;
@@ -43,7 +43,7 @@ while (<ARGV>) {
 	$msg =~ s!.*/\*!!;
 	if (exists $msgs{$msgno}) {
 	    if ($msgs{$msgno} ne $msg) {
-		print STDERR "Mismatch for message number $msgno:\n";
+		print STDERR "$ARGV:$.: Mismatch for message number $msgno:\n";
 		print STDERR "$msgs{$msgno}\n$msg\n";
 	    }
 	} else {
@@ -52,7 +52,7 @@ while (<ARGV>) {
 	if (defined $translator_comment) {
 	    if (exists $comment{$msgno} && $comment{$msgno} ne $translator_comment) {
 		print STDERR "Different TRANSLATOR comments for message #$msgno\n";
-		print STDERR "survex.pot: $comment{$msgno}\n";
+		print STDERR "${$uses[$msgno]}[0]: $comment{$msgno}\n";
 		print STDERR "$ARGV:$.: $translator_comment\n";
 	    }
 	    $comment{$msgno} = $translator_comment;
@@ -99,7 +99,7 @@ foreach my $po_entry (@{$num_list}) {
 	$msg = $msgs{$msgno};
 	delete $msgs{$msgno};
     } else {
-	print STDERR "Message number $msgno is in survex.pot but not found in source - preserving\n" unless $po_entry->obsolete;
+	print STDERR "../lib/survex.pot:", $po_entry->loaded_line_number, ": Message number $msgno is in survex.pot but not found in source - preserving\n" unless $po_entry->obsolete;
 	$msg = $po_entry->dequote($po_entry->msgid);
     }
     if (exists $comment{$msgno}) {
@@ -110,7 +110,9 @@ foreach my $po_entry (@{$num_list}) {
 	    $old =~ s/\s+/ /g;
 	    $new =~ s/\s+/ /g;
 	    if ($old ne $new) {
-		print STDERR "Comment for message #$msgno changed from\n[$old]\nto\n[$new]\n";
+		print STDERR "Comment for message #$msgno changed:\n";
+		print STDERR "../lib/survex.pot:", $po_entry->loaded_line_number, ": [$old]\n";
+		print STDERR "${$uses[$msgno]}[0]: [$new]\n";
 	    }
 	}
     }
@@ -118,7 +120,7 @@ foreach my $po_entry (@{$num_list}) {
 	if (!exists $comment{$msgno}) {
 	    my $fake_err = ": Comment for message #$msgno not in source code\n";
 	    if ($msgno ne '' && exists($uses[$msgno])) {
-		print STDERR join($fake_err, @{$uses[$msgno]}), $fake_err if exists($uses[$msgno]);
+		print STDERR join($fake_err, "../lib/survex.pot:".$po_entry->loaded_line_number, @{$uses[$msgno]}), $fake_err if exists($uses[$msgno]);
 		my $x = $po_entry->automatic;
 		$x =~ s/\n/\n     * /g;
 		print STDERR "    /* $x */\n";
