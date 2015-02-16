@@ -1,6 +1,7 @@
 ./badcalibrate.svx:4:25: Scale factor must be non-zero
 ./badcalibrate.svx:5:34: Scale factor must be non-zero
 ./badcalibrate.svx:6:20: Scale factor must be non-zero
+./badcalibrate.svx:8: Can't calibrate angular and length quantities together
 
 Removing trailing traverses...
 
@@ -22,4 +23,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 0 warning(s) and 3 error(s) - no output files produced.
+There were 0 warning(s) and 4 error(s) - no output files produced.
