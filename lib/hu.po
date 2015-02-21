@@ -442,7 +442,7 @@ msgstr ""
 #: ../src/cmdline.c:168
 #: n:49
 msgid "Usage"
-msgstr ""
+msgstr "Használat"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1730,7 +1730,7 @@ msgstr "&Megnyitás...\tCtrl+O"
 #: ../src/gfxcore.cc:1048
 #: n:221
 msgid "Undated"
-msgstr ""
+msgstr "Keltezetlen"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information. Try to keep
@@ -2050,7 +2050,7 @@ msgstr ""
 #: ../src/printwx.cc:526
 #: n:265
 msgid "Legend"
-msgstr ""
+msgstr "Legenda"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -2447,7 +2447,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2218
 #: n:335
 msgid "Altitude"
-msgstr ""
+msgstr "Magasság"
 
 #. TRANSLATORS: error if you try to drag multiple files to the aven
 #. window

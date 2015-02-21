@@ -145,9 +145,8 @@ msgstr ""
 #: ../src/sorterr.c:97
 #: ../src/sorterr.c:240
 #: n:18
-#, fuzzy
 msgid "Error reading file"
-msgstr "Грешка при четене на входният файл"
+msgstr "Грешка при четене на файл"
 
 #: ../src/message.c:1269
 #: n:19

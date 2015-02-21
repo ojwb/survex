@@ -2057,7 +2057,7 @@ msgstr "Bordas da Página"
 #: n:265
 #, fuzzy
 msgid "Legend"
-msgstr "Caixa de Informação"
+msgstr "Legenda"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
