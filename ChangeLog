@@ -1,3 +1,8 @@
+Sat Feb 21 04:52:26 GMT 2015  Olly Betts <olly@survex.com>
+
+	* tests/cmd_set.pos,tests/cmd_set.svx,tests/Makefile.am: Check that
+	  '*set names .' works when '.' is also the decimal point.
+
 Sat Feb 21 04:48:45 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: A few translation updates.
