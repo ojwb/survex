@@ -45,6 +45,21 @@
 # as OS X 10.6.8.  A build of wxWidgets 3.0.2 with the options we pass will
 # default to assuming at least OS X 10.5, but we've not heard from anyone
 # trying with such an old version.
+#
+# Mac OS X support "fat" binaries which contain code for more than one
+# processor, but the wxWidgets build system doesn't seem to allow creating
+# these, so we have to choose what processor family to build for.  By default
+# we use -arch x86_64 which produces a build which will only work on 64-bit
+# Intel Macs, but that's probably all machines modern enough to worry about.
+#
+# If you want a build which also works on older 32 bit Intel Macs, then run
+# this script passing i386 on the command line, like so:
+#
+#   ./buildmacosx.sh i386
+#
+# Or to build for much older machines with a Power PC processor, use:
+#
+#   ./buildmacosx.sh ppc
 
 set -e
 
@@ -74,22 +89,6 @@ while [ "$#" != 0 ] ; do
   esac
 done
 
-# Mac OS X support "fat" binaries which contain code for more than one
-# processor, but the wxWidgets build system doesn't seem to allow creating
-# these.
-#
-# We default to using -arch x86_64 which produces a build which will only work
-# on # 64-bit Intel Macs, but that's probably all machines modern enough to
-# worry about.
-#
-# If you want a build which also works on 32 bit Intel Macs, then run this
-# script passing i386:
-#
-#   ./buildmacosx.sh i386
-#
-# Or to build for much older machines with a Power PC processor, use:
-#
-#   ./buildmacosx.sh ppc
 arch_flags='-arch '${1:-x86_64}
 
 WX_VERSION=3.0.2
