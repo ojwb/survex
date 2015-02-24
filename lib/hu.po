@@ -1587,7 +1587,7 @@ msgstr "GPX fájlok"
 #: ../src/printwx.cc:280
 #: n:414
 msgid "HPGL for plotters"
-msgstr ""
+msgstr "HGPL razjgépeknek"
 
 #: ../src/printwx.cc:281
 #: n:444
