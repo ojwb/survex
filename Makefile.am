@@ -36,7 +36,7 @@ mingw_iss : survex.iss
 	cp $(extra_txt) survex.iss iss_tmp
 	: # so the installer can display the license
 	cp COPYING iss_tmp/COPYING.txt
-	cd doc;cp @HTMLFILES@ ../iss_tmp
+	cd doc && cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	for f in $(base_progs) aven editwrap ; do cp src/$$f.exe iss_tmp ; done

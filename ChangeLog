@@ -1,3 +1,8 @@
+Tue Feb 24 20:23:19 GMT 2015  Olly Betts <olly@survex.com>
+
+	* Makefile.am: Fail building the MS Windows installer if the 'doc'
+	  subdirectory somehow fails to exist.
+
 Tue Feb 24 20:22:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* Makefile.am: Copy PNG and JPG images from their new location.
