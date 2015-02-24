@@ -241,7 +241,8 @@ version=`sed 's/^VERSION *= *//p;d' Makefile`
 file=survex-macosx-$version.dmg
 echo "Compressing image file survex-macosx.dmg to $file"
 # UDBZ means the resultant disk image will only open on OS X 10.4 or above.
-# UDZO works on 10.1 and later, but is larger,  UDCO works on 10.0 as well.
+# UDZO works on 10.1 and later, but is larger,  UDCO works on 10.0 as well,
+# but is larger still.
 hdiutil convert survex-macosx.dmg -format UDBZ -o "$file"
 rm survex-macosx.dmg
 
