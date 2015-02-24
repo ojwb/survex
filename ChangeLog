@@ -1,3 +1,8 @@
+Tue Feb 24 04:28:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/ru.po: Merge in many updates to the Russian translation from
+	  "vsuhachev".
+
 Sat Feb 21 04:52:26 GMT 2015  Olly Betts <olly@survex.com>
 
 	* tests/cmd_set.pos,tests/cmd_set.svx,tests/Makefile.am: Check that
