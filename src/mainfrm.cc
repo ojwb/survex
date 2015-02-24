@@ -2030,7 +2030,12 @@ void MainFrm::OnClose(wxCloseEvent&)
 void MainFrm::OnAbout(wxCommandEvent&)
 {
     AvenAllowOnTop ontop(this);
+#ifdef __WXMAC__
+    // GetIcon() returns an invalid wxIcon under OS X.
+    AboutDlg dlg(this, wxICON(aven));
+#else
     AboutDlg dlg(this, GetIcon());
+#endif
     dlg.Centre();
     dlg.ShowModal();
 }

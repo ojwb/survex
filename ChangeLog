@@ -1,3 +1,7 @@
+Tue Feb 24 22:10:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Work around GetIcon() not working under OS X.
+
 Tue Feb 24 20:24:47 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Note that UDCO is larger still.
