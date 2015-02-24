@@ -1,3 +1,7 @@
+Tue Feb 24 04:44:41 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Tue Feb 24 04:35:58 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/ru.po: Copy a couple of messages which only differ in the

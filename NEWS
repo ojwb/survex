@@ -1,6 +1,6 @@
-9d49627b (Olly Betts 2015-01-31 10:58:57 +1300    1) Fri Jan 30 21:58:05 GMT 2015  Olly Betts <olly@survex.com>
+69ddbce6 (Olly Betts 2015-02-24 17:36:27 +1300    1) Tue Feb 24 04:35:58 GMT 2015  Olly Betts <olly@survex.com>
 
-Changes in 1.2.17 (2015-01-30):
+Changes in 1.2.17 (2015-02-24):
 
 * MacOS X version:
 
@@ -92,14 +92,31 @@ Changes in 1.2.17 (2015-01-30):
   + Disable stepping the rotation angle when animating (previously we only did
     when rotating).
 
-  + Speed up start-up a bit - rather than loading all the toolbar and notebook
-    icons from individual PNG files on disk, compile them into the aven binary.
+  + Speed up start-up a bit - rather than loading icons from individual PNG
+    files on disk, compile them into the aven binary.
+
+* (Unix version): Add "MimeType" field to desktop files so that file
+  associations work out of the box with modern desktop environments.
+
+* Add start of Hungarian translation from Imre Balogh.
+
+* Merge in many updates to the Russian translation from "vsuhachev".
+
+* Assorted minor updates to other translations.
+
+* Create scalable (SVG) versions of file type icons.
 
 * doc/manual.sgml: Remove $Id and $Date markers, as they don't get expanded now
   we're using git.
 
-* tests/: Extend tests of fore and back sights to test calibration of the back
-  compass.
+* tests/: Improve test coverage in a few places:
+
+  + Extend tests of fore and back sights to test calibration of the back
+    compass.
+
+  + Test "Can't calibrate angular and length quantities together" error.
+
+  + Check that "*set names ." works when "." is also the decimal point.
 
 Changes in 1.2.16 (2014-10-17):
 
