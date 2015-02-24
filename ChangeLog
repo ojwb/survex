@@ -1,3 +1,10 @@
+Tue Feb 24 20:22:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* Makefile.am: Copy PNG and JPG images from their new location.
+	  Remove the code to strip out PNG images with .ico versions, as
+	  those are now in a separate directory to the images that are PNG
+	  format cross-platform.
+
 Tue Feb 24 19:26:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Fix include path to .ico files.
