@@ -1917,13 +1917,13 @@ msgstr ""
 #: ../src/mainfrm.cc:853
 #: n:248
 msgid "&Plan View"
-msgstr ""
+msgstr "&План"
 
 #: ../src/gfxcore.cc:3286
 #: ../src/mainfrm.cc:854
 #: n:249
 msgid "Ele&vation"
-msgstr ""
+msgstr "&Разрез"
 
 #: ../src/mainfrm.cc:856
 #: n:250
