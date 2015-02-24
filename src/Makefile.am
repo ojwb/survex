@@ -63,21 +63,14 @@ editwrap_LDFLAGS = -mwindows
 if WIN32
 aven_LDADD = avenrc.o $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 
-svxeditrc.o: $(srcdir)/svxedit.rc svxedit.ico
-	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` -o "$$pwd/svxeditrc.o" svxedit.rc
-
-svxedit.ico: ../lib/icons/svxedit.ico
-	cp ../lib/icons/svxedit.ico .
+svxeditrc.o: $(srcdir)/svxedit.rc ../lib/icons/svxedit.ico
+	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/svxeditrc.o" svxedit.rc
 
 editwrap_LDADD = svxeditrc.o
 
-avenrc.o: $(srcdir)/aven.rc aven.ico
-	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` -o "$$pwd/avenrc.o" aven.rc
+avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
+	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/avenrc.o" aven.rc
 
-aven.ico: ../lib/icons/aven.ico
-	cp ../lib/icons/aven.ico .
-
-CLEANFILES = aven.ico svxedit.ico
 else
 aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 endif
