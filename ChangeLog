@@ -1,3 +1,8 @@
+Wed Feb 25 06:34:53 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/xpm2png,src/mainfrm.cc: Fix display
+	  of icons for toolbar and notebook under WXMSW.
+
 Tue Feb 24 22:10:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Work around GetIcon() not working under OS X.

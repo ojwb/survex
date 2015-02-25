@@ -52,7 +52,9 @@
 #include <stack>
 #include <vector>
 
-#ifndef __WXMSW__
+#ifdef __WXMSW__
+#define TOOL(x) wxBitmap(wxT(#x), wxBITMAP_TYPE_PNG_RESOURCE)
+#else
 // XPM files declare the array as static, but we also want it to be const too.
 // This avoids a compiler warning, and also means the data can go in a
 // read-only page and be shared between processes.
@@ -85,6 +87,7 @@
 #include "../lib/icons/survey_tree.xpm"
 #include "../lib/icons/pres_tree.xpm"
 #undef static
+#define TOOL(x) wxBITMAP(x)
 #endif
 
 using namespace std;
@@ -991,41 +994,41 @@ void MainFrm::MakeToolBar()
 #endif
 
     // FIXME: TRANSLATE tooltips
-    toolbar->AddTool(wxID_OPEN, wxT("Open"), wxBITMAP(open), wxT("Open a survey file for viewing"));
-    toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), wxBITMAP(open_pres), wxT("Open a presentation"));
+    toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOL(open), wxT("Open a survey file for viewing"));
+    toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOL(open_pres), wxT("Open a presentation"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), wxBITMAP(rotation), wxNullBitmap, wxT("Toggle rotation"));
-    toolbar->AddTool(menu_ORIENT_PLAN, wxT("Plan"), wxBITMAP(plan), wxT("Switch to plan view"));
-    toolbar->AddTool(menu_ORIENT_ELEVATION, wxT("Elevation"), wxBITMAP(elevation), wxT("Switch to elevation view"));
-    toolbar->AddTool(menu_ORIENT_DEFAULTS, wxT("Default view"), wxBITMAP(defaults), wxT("Restore default view"));
+    toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), TOOL(rotation), wxNullBitmap, wxT("Toggle rotation"));
+    toolbar->AddTool(menu_ORIENT_PLAN, wxT("Plan"), TOOL(plan), wxT("Switch to plan view"));
+    toolbar->AddTool(menu_ORIENT_ELEVATION, wxT("Elevation"), TOOL(elevation), wxT("Switch to elevation view"));
+    toolbar->AddTool(menu_ORIENT_DEFAULTS, wxT("Default view"), TOOL(defaults), wxT("Restore default view"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_VIEW_SHOW_NAMES, wxT("Names"), wxBITMAP(names), wxNullBitmap, wxT("Show station names"));
-    toolbar->AddCheckTool(menu_VIEW_SHOW_CROSSES, wxT("Crosses"), wxBITMAP(crosses), wxNullBitmap, wxT("Show crosses on stations"));
-    toolbar->AddCheckTool(menu_VIEW_SHOW_ENTRANCES, wxT("Entrances"), wxBITMAP(entrances), wxNullBitmap, wxT("Highlight entrances"));
-    toolbar->AddCheckTool(menu_VIEW_SHOW_FIXED_PTS, wxT("Fixed points"), wxBITMAP(fixed_pts), wxNullBitmap, wxT("Highlight fixed points"));
-    toolbar->AddCheckTool(menu_VIEW_SHOW_EXPORTED_PTS, wxT("Exported points"), wxBITMAP(exported_pts), wxNullBitmap, wxT("Highlight exported stations"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_NAMES, wxT("Names"), TOOL(names), wxNullBitmap, wxT("Show station names"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_CROSSES, wxT("Crosses"), TOOL(crosses), wxNullBitmap, wxT("Show crosses on stations"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_ENTRANCES, wxT("Entrances"), TOOL(entrances), wxNullBitmap, wxT("Highlight entrances"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_FIXED_PTS, wxT("Fixed points"), TOOL(fixed_pts), wxNullBitmap, wxT("Highlight fixed points"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_EXPORTED_PTS, wxT("Exported points"), TOOL(exported_pts), wxNullBitmap, wxT("Highlight exported stations"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_VIEW_SHOW_LEGS, wxT("Underground legs"), wxBITMAP(ug_legs), wxNullBitmap, wxT("Show underground surveys"));
-    toolbar->AddCheckTool(menu_VIEW_SHOW_SURFACE, wxT("Surface legs"), wxBITMAP(surface_legs), wxNullBitmap, wxT("Show surface surveys"));
-    toolbar->AddCheckTool(menu_VIEW_SHOW_TUBES, wxT("Tubes"), wxBITMAP(tubes), wxNullBitmap, wxT("Show passage tubes"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_LEGS, wxT("Underground legs"), TOOL(ug_legs), wxNullBitmap, wxT("Show underground surveys"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_SURFACE, wxT("Surface legs"), TOOL(surface_legs), wxNullBitmap, wxT("Show surface surveys"));
+    toolbar->AddCheckTool(menu_VIEW_SHOW_TUBES, wxT("Tubes"), TOOL(tubes), wxNullBitmap, wxT("Show passage tubes"));
     toolbar->AddSeparator();
-    toolbar->AddCheckTool(menu_PRES_FREWIND, wxT("Fast Rewind"), wxBITMAP(pres_frew), wxNullBitmap, wxT("Very Fast Rewind"));
-    toolbar->AddCheckTool(menu_PRES_REWIND, wxT("Rewind"), wxBITMAP(pres_rew), wxNullBitmap, wxT("Fast Rewind"));
-    toolbar->AddCheckTool(menu_PRES_REVERSE, wxT("Backwards"), wxBITMAP(pres_go_back), wxNullBitmap, wxT("Play Backwards"));
-    toolbar->AddCheckTool(menu_PRES_PAUSE, wxT("Pause"), wxBITMAP(pres_pause), wxNullBitmap, wxT("Pause"));
-    toolbar->AddCheckTool(menu_PRES_PLAY, wxT("Go"), wxBITMAP(pres_go), wxNullBitmap, wxT("Play"));
-    toolbar->AddCheckTool(menu_PRES_FF, wxT("FF"), wxBITMAP(pres_ff), wxNullBitmap, wxT("Fast Forward"));
-    toolbar->AddCheckTool(menu_PRES_FFF, wxT("Very FF"), wxBITMAP(pres_fff), wxNullBitmap, wxT("Very Fast Forward"));
-    toolbar->AddTool(wxID_STOP, wxT("Stop"), wxBITMAP(pres_stop), wxT("Stop"));
+    toolbar->AddCheckTool(menu_PRES_FREWIND, wxT("Fast Rewind"), TOOL(pres_frew), wxNullBitmap, wxT("Very Fast Rewind"));
+    toolbar->AddCheckTool(menu_PRES_REWIND, wxT("Rewind"), TOOL(pres_rew), wxNullBitmap, wxT("Fast Rewind"));
+    toolbar->AddCheckTool(menu_PRES_REVERSE, wxT("Backwards"), TOOL(pres_go_back), wxNullBitmap, wxT("Play Backwards"));
+    toolbar->AddCheckTool(menu_PRES_PAUSE, wxT("Pause"), TOOL(pres_pause), wxNullBitmap, wxT("Pause"));
+    toolbar->AddCheckTool(menu_PRES_PLAY, wxT("Go"), TOOL(pres_go), wxNullBitmap, wxT("Play"));
+    toolbar->AddCheckTool(menu_PRES_FF, wxT("FF"), TOOL(pres_ff), wxNullBitmap, wxT("Fast Forward"));
+    toolbar->AddCheckTool(menu_PRES_FFF, wxT("Very FF"), TOOL(pres_fff), wxNullBitmap, wxT("Very Fast Forward"));
+    toolbar->AddTool(wxID_STOP, wxT("Stop"), TOOL(pres_stop), wxT("Stop"));
 
     toolbar->AddSeparator();
     m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, wxString(), wxDefaultPosition,
 			       wxDefaultSize, wxTE_PROCESS_ENTER);
     toolbar->AddControl(m_FindBox);
     /* TRANSLATORS: "Find stations" button tooltip */
-    toolbar->AddTool(wxID_FIND, wmsg(/*Find*/332), wxBITMAP(find)/*, "Search for station name"*/);
+    toolbar->AddTool(wxID_FIND, wmsg(/*Find*/332), TOOL(find)/*, "Search for station name"*/);
     /* TRANSLATORS: "Hide stations" button default tooltip */
-    toolbar->AddTool(button_HIDE, wmsg(/*Hide*/333), wxBITMAP(hideresults)/*, "Hide search results"*/);
+    toolbar->AddTool(button_HIDE, wmsg(/*Hide*/333), TOOL(hideresults)/*, "Hide search results"*/);
 
     toolbar->Realize();
 }
@@ -1068,8 +1071,8 @@ void MainFrm::CreateSidePanel()
     // Overall tabbed structure:
     // FIXME: this assumes images are 15x15
     wxImageList* image_list = new wxImageList(15, 15);
-    image_list->Add(wxBITMAP(survey_tree));
-    image_list->Add(wxBITMAP(pres_tree));
+    image_list->Add(TOOL(survey_tree));
+    image_list->Add(TOOL(pres_tree));
     m_Notebook->SetImageList(image_list);
     /* TRANSLATORS: labels for tabbed side panel this is for the tab with the
      * tree hierarchy of survey station names */
