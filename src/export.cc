@@ -103,7 +103,6 @@ static const char *layer_name(int mask) {
     return "";
 }
 
-static double text_height; /* for station labels */
 static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
 static double factor;
@@ -121,10 +120,13 @@ ExportFilter::passes() const
 
 class DXF : public ExportFilter {
     const char * to_close;
+    /* for station labels */
+    double text_height;
     char pending[1024];
 
   public:
-    DXF() : to_close(0) { pending[0] = '\0'; }
+    DXF(double text_height_)
+	: to_close(0), text_height(text_height_) { pending[0] = '\0'; }
     const int * passes() const;
     bool fopen(const char *fnm_out);
     void header(const char *, const char *, time_t,
@@ -548,10 +550,15 @@ find_name(const img_point *p)
 class SVG : public ExportFilter {
     const char * to_close;
     bool close_g;
+    /* for station labels */
+    double text_height;
     char pending[1024];
 
   public:
-    SVG() : to_close(NULL), close_g(false) { pending[0] = '\0'; }
+    SVG(double text_height_)
+	: to_close(NULL), close_g(false), text_height(text_height_) {
+	pending[0] = '\0';
+    }
     const int * passes() const;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
@@ -1143,7 +1150,7 @@ Export(const wxString &fnm_out, const wxString &title,
        const MainFrm * mainfrm,
        double pan, double tilt, int show_mask, export_format format,
        const char * input_projection,
-       double grid_, double text_height_, double marker_size_,
+       double grid_, double text_height, double marker_size_,
        double scale)
 {
    int fPendingMove = 0;
@@ -1153,7 +1160,6 @@ Export(const wxString &fnm_out, const wxString &title,
    bool elevation = (tilt == 0.0);
 
    grid = grid_;
-   text_height = text_height_;
    marker_size = marker_size_;
 
 #if 0 // FIXME: allow this to be set from aven somehow!
@@ -1165,7 +1171,7 @@ Export(const wxString &fnm_out, const wxString &title,
    ExportFilter * filt;
    switch (format) {
        case FMT_DXF:
-	   filt = new DXF;
+	   filt = new DXF(text_height);
 	   break;
        case FMT_EPS:
 	   filt = new EPS;
@@ -1192,7 +1198,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   factor = POINTS_PER_MM * 1000.0 / scale;
 	   break;
        case FMT_SVG:
-	   filt = new SVG;
+	   filt = new SVG(text_height);
 	   factor = 1000.0 / scale;
 	   break;
        default:

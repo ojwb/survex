@@ -1,3 +1,7 @@
+Sat Feb 28 11:26:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Eliminate use of static for text_height.
+
 Sat Feb 28 11:06:25 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/export.cc,src/exportfilter.h: Pass bounding box as parameters to
