@@ -103,9 +103,6 @@ static const char *layer_name(int mask) {
     return "";
 }
 
-/* bounds */
-static double min_x, min_y, min_z, max_x, max_y, max_z;
-
 static double text_height; /* for station labels */
 static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
@@ -130,7 +127,9 @@ class DXF : public ExportFilter {
     DXF() : to_close(0) { pending[0] = '\0'; }
     const int * passes() const;
     bool fopen(const char *fnm_out);
-    void header(const char *, const char *, time_t);
+    void header(const char *, const char *, time_t,
+		double min_x, double min_y, double min_z,
+		double max_x, double max_y, double max_z);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
@@ -159,7 +158,9 @@ DXF::fopen(const char *fnm_out)
 }
 
 void
-DXF::header(const char *, const char *, time_t)
+DXF::header(const char *, const char *, time_t,
+	    double min_x, double min_y, double min_z,
+	    double max_x, double max_y, double max_z)
 {
    fprintf(fh, "0\nSECTION\n"
 	       "2\nHEADER\n");
@@ -393,7 +394,9 @@ class Skencil : public ExportFilter {
   public:
     Skencil() { }
     const int * passes() const;
-    void header(const char *, const char *, time_t);
+    void header(const char *, const char *, time_t,
+		double min_x, double min_y, double min_z,
+		double max_x, double max_y, double max_z);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
@@ -409,7 +412,9 @@ Skencil::passes() const
 }
 
 void
-Skencil::header(const char *, const char *, time_t)
+Skencil::header(const char *, const char *, time_t,
+		double min_x, double min_y, double /*min_z*/,
+		double max_x, double max_y, double /*max_z*/)
 {
    fprintf(fh, "##Sketch 1 2\n"); /* File format version */
    fprintf(fh, "document()\n");
@@ -548,7 +553,9 @@ class SVG : public ExportFilter {
   public:
     SVG() : to_close(NULL), close_g(false) { pending[0] = '\0'; }
     const int * passes() const;
-    void header(const char *, const char *, time_t);
+    void header(const char *, const char *, time_t,
+		double min_x, double min_y, double min_z,
+		double max_x, double max_y, double max_z);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
@@ -570,7 +577,9 @@ SVG::passes() const
 }
 
 void
-SVG::header(const char * title, const char *, time_t)
+SVG::header(const char * title, const char *, time_t,
+	    double min_x, double min_y, double /*min_z*/,
+	    double max_x, double max_y, double /*max_z*/)
 {
    size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
@@ -731,10 +740,14 @@ class PLT : public ExportFilter {
 
     const char * find_name_plt(const img_point *p);
 
+    double min_N, max_N, min_E, max_E, min_A, max_A;
+
   public:
     PLT() { }
     const int * passes() const;
-    void header(const char *, const char *, time_t);
+    void header(const char *, const char *, time_t,
+		double min_x, double min_y, double min_z,
+		double max_x, double max_y, double max_z);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void footer();
@@ -748,16 +761,21 @@ PLT::passes() const
 }
 
 void
-PLT::header(const char *title, const char *, time_t)
+PLT::header(const char *title, const char *, time_t,
+	    double min_x, double min_y, double min_z,
+	    double max_x, double max_y, double max_z)
 {
-   size_t i;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
-   for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
+   for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
+   min_N = min_y / METRES_PER_FOOT;
+   max_N = max_y / METRES_PER_FOOT;
+   min_E = min_x / METRES_PER_FOOT;
+   max_E = max_x / METRES_PER_FOOT;
+   min_A = min_z / METRES_PER_FOOT;
+   max_A = max_z / METRES_PER_FOOT;
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_N, max_N, min_E, max_E, min_A, max_A);
    fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X",
 	   (title && title[0]) ? title : "X");
 }
@@ -819,9 +837,7 @@ PLT::footer(void)
 {
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "X %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_N, max_N, min_E, max_E, min_A, max_A);
    /* Yucky DOS "end of textfile" marker */
    PUTC('\x1a', fh);
 }
@@ -829,7 +845,9 @@ PLT::footer(void)
 class EPS : public ExportFilter {
   public:
     EPS() { }
-    void header(const char *, const char *, time_t);
+    void header(const char *, const char *, time_t,
+		double min_x, double min_y, double min_z,
+		double max_x, double max_y, double max_z);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
@@ -837,7 +855,9 @@ class EPS : public ExportFilter {
 };
 
 void
-EPS::header(const char *title, const char *, time_t)
+EPS::header(const char *title, const char *, time_t,
+	    double min_x, double min_y, double /*min_z*/,
+	    double max_x, double max_y, double /*max_z*/)
 {
    const char * fontname_labels = "helvetica"; // FIXME
    int fontsize_labels = 10; // FIXME
@@ -1191,7 +1211,8 @@ Export(const wxString &fnm_out, const wxString &title,
       c = cos(rad(pan));
    }
 
-   /* Get drawing corners */
+   /* Get bounding box */
+   double min_x, min_y, min_z, max_x, max_y, max_z;
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
    list<traverse>::const_iterator trav = mainfrm->traverses_begin();
@@ -1283,7 +1304,8 @@ Export(const wxString &fnm_out, const wxString &title,
    max_z += z_offset;
 
    /* Header */
-   filt->header(title.mb_str(), datestamp.mb_str(), datestamp_numeric);
+   filt->header(title.mb_str(), datestamp.mb_str(), datestamp_numeric,
+		min_x, min_y, min_z, max_x, max_y, max_z);
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
 

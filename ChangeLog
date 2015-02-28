@@ -1,3 +1,8 @@
+Sat Feb 28 11:06:25 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/export.cc,src/exportfilter.h: Pass bounding box as parameters to
+	  header() method rather than storing them as static data.
+
 Wed Feb 25 06:34:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am,lib/icons/xpm2png,src/mainfrm.cc: Fix display
