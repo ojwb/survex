@@ -105,7 +105,6 @@ static const char *layer_name(int mask) {
 
 static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
-static double factor;
 static const char *unit = "mm";
 const double SVG_MARGIN = 5.0; // In units of "unit".
 
@@ -393,8 +392,10 @@ DXF::footer()
 }
 
 class Skencil : public ExportFilter {
+    double factor;
   public:
-    Skencil() { }
+    Skencil(double scale)
+	: factor(POINTS_PER_MM * 1000.0 / scale) { }
     const int * passes() const;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
@@ -550,13 +551,17 @@ find_name(const img_point *p)
 class SVG : public ExportFilter {
     const char * to_close;
     bool close_g;
+    double factor;
     /* for station labels */
     double text_height;
     char pending[1024];
 
   public:
-    SVG(double text_height_)
-	: to_close(NULL), close_g(false), text_height(text_height_) {
+    SVG(double scale, double text_height_)
+	: to_close(NULL),
+	  close_g(false),
+	  factor(1000.0 / scale),
+	  text_height(text_height_) {
 	pending[0] = '\0';
     }
     const int * passes() const;
@@ -850,8 +855,10 @@ PLT::footer(void)
 }
 
 class EPS : public ExportFilter {
+    double factor;
   public:
-    EPS() { }
+    EPS(double scale)
+	: factor(POINTS_PER_MM * 1000.0 / scale) { }
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
@@ -1174,8 +1181,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   filt = new DXF(text_height);
 	   break;
        case FMT_EPS:
-	   filt = new EPS;
-	   factor = POINTS_PER_MM * 1000.0 / scale;
+	   filt = new EPS(scale);
 	   break;
        case FMT_GPX:
 	   filt = new GPX(input_projection);
@@ -1194,12 +1200,10 @@ Export(const wxString &fnm_out, const wxString &title,
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_SK:
-	   filt = new Skencil;
-	   factor = POINTS_PER_MM * 1000.0 / scale;
+	   filt = new Skencil(scale);
 	   break;
        case FMT_SVG:
-	   filt = new SVG(text_height);
-	   factor = 1000.0 / scale;
+	   filt = new SVG(scale, text_height);
 	   break;
        default:
 	   return false;
