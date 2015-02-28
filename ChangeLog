@@ -1,3 +1,7 @@
+Sat Feb 28 12:38:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Eliminate more static variables.
+
 Sat Feb 28 12:05:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/export.cc: Eliminate static double factor.

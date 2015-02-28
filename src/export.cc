@@ -105,10 +105,6 @@ static const char *layer_name(int mask) {
 
 static double marker_size; /* for station markers */
 static double grid; /* grid spacing (or 0 for no grid) */
-static const char *unit = "mm";
-const double SVG_MARGIN = 5.0; // In units of "unit".
-
-static const char *survey = NULL;
 
 const int *
 ExportFilter::passes() const
@@ -593,9 +589,10 @@ SVG::header(const char * title, const char *, time_t,
 	    double min_x, double min_y, double /*min_z*/,
 	    double max_x, double max_y, double /*max_z*/)
 {
-   size_t i;
+   const char *unit = "mm";
+   const double SVG_MARGIN = 5.0; // In units of "unit".
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
-   for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
+   for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    fprintf(fh, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
    double width = (max_x - min_x) * factor + SVG_MARGIN * 2;
    double height = (max_y - min_y) * factor + SVG_MARGIN * 2;
@@ -777,6 +774,8 @@ PLT::header(const char *title, const char *, time_t,
 	    double min_x, double min_y, double min_z,
 	    double max_x, double max_y, double max_z)
 {
+   // FIXME: allow survey to be set from aven somehow!
+   const char *survey = NULL;
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
    for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
@@ -1168,12 +1167,6 @@ Export(const wxString &fnm_out, const wxString &title,
 
    grid = grid_;
    marker_size = marker_size_;
-
-#if 0 // FIXME: allow this to be set from aven somehow!
-       case 's':
-	 survey = optarg;
-	 break;
-#endif
 
    ExportFilter * filt;
    switch (format) {
