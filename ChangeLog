@@ -1,3 +1,8 @@
+Mon Mar 02 09:24:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/labelinfo.h: Fix to compile with a unicode build of wxwidgets
+	  2.8.
+
 Mon Mar 02 07:43:47 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/hu.po: Change '...' to ellipses.
