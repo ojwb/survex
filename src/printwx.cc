@@ -231,6 +231,7 @@ static wxString formats[] = {
     wxT("EPS"),
     wxT("GPX"),
     wxT("HPGL"),
+    wxT("JSON"),
     wxT("KML"),
     wxT("Plot"),
     wxT("Skencil"),
@@ -253,6 +254,7 @@ static unsigned format_info[] = {
     LABELS|LEGS|SURF|STNS,
     LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF|STNS|CENTRED,
+    LEGS|CENTRED|EXPORT_3D,
     LABELS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF,
     LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
@@ -264,6 +266,7 @@ static const char * extension[] = {
     ".eps",
     ".gpx",
     ".hpgl",
+    ".json",
     ".kml",
     ".plt",
     ".sk",
@@ -278,6 +281,7 @@ static int msg_filetype[] = {
      * on a (usually large) sheet of paper using a pen mounted in a motorised
      * mechanism. */
     /*HPGL for plotters*/414,
+    /*JSON files*/445,
     /*KML files*/444,
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:

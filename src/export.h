@@ -34,6 +34,7 @@ typedef enum {
     FMT_EPS,
     FMT_GPX,
     FMT_HPGL,
+    FMT_JSON,
     FMT_KML,
     FMT_PLT,
     FMT_SK,

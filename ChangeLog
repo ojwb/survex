@@ -1,3 +1,7 @@
+Mon Mar 02 07:13:01 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Add JSON export.
+
 Mon Mar 02 07:11:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm: Update.

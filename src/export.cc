@@ -33,6 +33,7 @@
 #include "exportfilter.h"
 #include "gpx.h"
 #include "hpgl.h"
+#include "json.h"
 #include "kml.h"
 #include "mainfrm.h"
 
@@ -1183,6 +1184,9 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_HPGL:
 	   filt = new HPGL;
 	   // factor = POINTS_PER_MM * 1000.0 / scale;
+	   break;
+       case FMT_JSON:
+	   filt = new JSON;
 	   break;
        case FMT_KML:
 	   filt = new KML(input_projection);
