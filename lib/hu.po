@@ -367,7 +367,7 @@ msgstr ""
 #: ../src/img_hosted.c:35
 #: n:38
 msgid "Out of memory %.0s"
-msgstr "A memória megtelt \"%.0s\""
+msgstr "A memória megtelt %.0s"
 
 #: ../src/commands.c:403
 #: n:39
