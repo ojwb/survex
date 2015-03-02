@@ -1,3 +1,8 @@
+Mon Mar 02 05:57:25 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/id.po: Merged translation updates from "Cave ID" - all messages
+	  are now translated into Indonesian!
+
 Sat Feb 28 12:38:09 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/export.cc: Eliminate more static variables.
