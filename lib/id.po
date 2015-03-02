@@ -2771,7 +2771,7 @@ msgstr "∞"
 #. full circle.
 #: n:365
 #~ msgid "grads"
-msgstr "grads"
+#~ msgstr "grads"
 
 #: n:366
 #~ msgid "Display measurements in"
