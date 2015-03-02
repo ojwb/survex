@@ -1656,7 +1656,7 @@ msgstr "&Управление"
 #: ../src/mainfrm.cc:978
 #: n:215
 msgid "&Help"
-msgstr "&Помощь"
+msgstr "По&мощь"
 
 #: ../src/mainfrm.cc:971
 #: n:216
@@ -2176,7 +2176,7 @@ msgstr "Затенять отдаленные об&ъекты"
 #: ../src/mainfrm.cc:922
 #: n:298
 msgid "Smoot&hed Survey Legs"
-msgstr "С&глаживать линии"
+msgstr "Сглажи&вать линии"
 
 #: ../src/mainfrm.cc:928
 #: ../src/mainfrm.cc:932
@@ -2220,7 +2220,7 @@ msgstr ""
 #: ../src/mainfrm.cc:952
 #: n:299
 msgid "&Indicators"
-msgstr "&Индикаторы"
+msgstr "И&ндикаторы"
 
 #: ../src/z_getopt.c:697
 #: ../src/z_getopt.c:709
