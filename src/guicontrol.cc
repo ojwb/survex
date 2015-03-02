@@ -1260,17 +1260,23 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	case WXK_F3:
 	    m_View->ToggleHitTestDebug();
 	    break;
-	case WXK_F4:
+	case WXK_F4: {
+	    const wxChar * msg;
 #if wxDEBUG_LEVEL
 	    if (wxTheAssertHandler)
 		wxTheAssertHandler = NULL;
 	    else
 		wxSetDefaultAssertHandler();
-	    wxMessageBox(wxTheAssertHandler ? "Assertions enabled" : "Assertions disabled", "Aven Debug", wxOK | wxICON_INFORMATION);
+	    if (wxTheAssertHandler)
+		msg = wxT("Assertions enabled");
+	    else
+		msg = wxT("Assertions disabled");
 #else
-	    wxMessageBox("wxWidgets was built without assertions", "Aven Debug", wxOK | wxICON_INFORMATION);
+	    msg = wxT("wxWidgets was built without assertions");
 #endif
+	    wxMessageBox(msg, wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
 	    break;
+	}
 	case WXK_F5:
 	    m_View->InvalidateAllLists();
 	    m_View->ForceRefresh();

@@ -1428,7 +1428,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     m_Title = wxString(survey->title, wxConvUTF8);
     m_DateStamp_numeric = survey->datestamp_numeric;
     if (survey->cs) {
-	m_cs_proj = survey->cs;
+	m_cs_proj = wxString(survey->cs, wxConvUTF8);
     } else {
 	m_cs_proj = wxString();
     }
@@ -2130,7 +2130,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	 * From <stationname>
 	 * H: 123.45m V: 234.56m
 	 * Dist: 456.78m  Brg: 200 */
-	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon());
+	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
 	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
 	    brg_unit = /*°*/344;
@@ -2180,7 +2180,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
 	Double dz = z - m_Offsets.GetZ() - there->GetZ();
 
 	wxString from_str;
-	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon());
+	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
 
 	if (!m_Gfx->GetMetric()) {
 	    dz /= METRES_PER_FOOT;
@@ -2242,7 +2242,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
-	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon());
+	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
 
 	wxString hv_str;
 	if (m_Gfx->GetMetric()) {

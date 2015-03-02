@@ -1,3 +1,8 @@
+Mon Mar 02 11:45:41 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/guicontrol.cc,src/mainfrm.cc: More tweaks to
+	  compile with a unicode build of wx2.8.
+
 Mon Mar 02 09:24:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/labelinfo.h: Fix to compile with a unicode build of wxwidgets

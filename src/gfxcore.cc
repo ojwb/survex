@@ -396,7 +396,7 @@ void GfxCore::OnPaint(wxPaintEvent&)
 			unsigned long bucket_size = m_PointGrid[square].size();
 			if (bucket_size) {
 			    int y = (GetYSize() + 1) * (HITTEST_SIZE - 1 - j) / HITTEST_SIZE;
-			    DrawIndicatorText(x, y, wxString::Format("%lu", bucket_size));
+			    DrawIndicatorText(x, y, wxString::Format(wxT("%lu"), bucket_size));
 			}
 		    }
 		}
@@ -2144,10 +2144,10 @@ void GfxCore::ToggleFatFinger()
 {
     if (sqrd_measure_threshold == sqrd(MEASURE_THRESHOLD)) {
 	sqrd_measure_threshold = sqrd(5 * MEASURE_THRESHOLD);
-	wxMessageBox("Fat finger enabled", "Aven Debug", wxOK | wxICON_INFORMATION);
+	wxMessageBox(wxT("Fat finger enabled"), wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
     } else {
 	sqrd_measure_threshold = sqrd(MEASURE_THRESHOLD);
-	wxMessageBox("Fat finger disabled", "Aven Debug", wxOK | wxICON_INFORMATION);
+	wxMessageBox(wxT("Fat finger disabled"), wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
     }
 }
 
