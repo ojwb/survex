@@ -1831,12 +1831,12 @@ msgstr "Au&to-Rotate\tSpace"
 #: ../src/mainfrm.cc:822
 #: n:232
 msgid "Speed &Up"
-msgstr "Cepat &Atas"
+msgstr "&Cepat Atas"
 
 #: ../src/mainfrm.cc:823
 #: n:233
 msgid "Slow &Down"
-msgstr "Lambat &Bawah"
+msgstr "&Lambat Bawah"
 
 #: ../src/mainfrm.cc:825
 #: n:234
@@ -1887,7 +1887,7 @@ msgstr "Lihat &Barat"
 #: ../src/mainfrm.cc:839
 #: n:244
 msgid "Shift Survey &Left"
-msgstr "Shift Survei &Kiri"
+msgstr "Shift Survei K&iri"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1911,13 +1911,13 @@ msgstr "Shift Survei &Atas"
 #: ../src/mainfrm.cc:851
 #: n:247
 msgid "Shift Survey &Down"
-msgstr "Shift Survei &Bawah"
+msgstr "Shift Survei Ba&wah"
 
 #: ../src/gfxcore.cc:3285
 #: ../src/mainfrm.cc:853
 #: n:248
 msgid "&Plan View"
-msgstr "&Tampilan Atas"
+msgstr "Tam&pilan Atas"
 
 #: ../src/gfxcore.cc:3286
 #: ../src/mainfrm.cc:854
@@ -1928,27 +1928,27 @@ msgstr "Ele&vasi"
 #: ../src/mainfrm.cc:856
 #: n:250
 msgid "&Higher Viewpoint"
-msgstr "&Tertinggi Sudut Pandang"
+msgstr "Tertin&ggi Sudut Pandang"
 
 #: ../src/mainfrm.cc:857
 #: n:251
 msgid "L&ower Viewpoint"
-msgstr "&Terendah Sudut Pandang"
+msgstr "Teren&dah Sudut Pandang"
 
 #: ../src/mainfrm.cc:860
 #: n:252
 msgid "&Zoom In\t]"
-msgstr "Per&besar\t]"
+msgstr "Perbesa&r\t]"
 
 #: ../src/mainfrm.cc:861
 #: n:253
 msgid "Zoo&m Out\t["
-msgstr "Per&kecil\t["
+msgstr "Perkeci&l\t["
 
 #: ../src/mainfrm.cc:863
 #: n:254
 msgid "Restore De&fault View"
-msgstr "Kembali tampilan Ba&ku"
+msgstr "Kembali ta&mpilan Baku"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
@@ -2092,19 +2092,19 @@ msgstr "&Batas Kotak\tCtrl+B"
 #: ../src/mainfrm.cc:889
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
-msgstr "&Kaki Survey di bawah tanah\tCtrl+L"
+msgstr "Kaki Survey di ba&wah tanah\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/mainfrm.cc:892
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "&Kaki survei permukaan\tCtrl+F"
+msgstr "Kaki survei perm&ukaan\tCtrl+F"
 
 #: ../src/mainfrm.cc:901
 #: n:273
 msgid "&Overlapping Names"
-msgstr "&Nama Tumpang Tindih"
+msgstr "Nama Tumpang Tindi&h"
 
 #: ../src/gfxcore.cc:3323
 #: ../src/mainfrm.cc:902
@@ -2122,7 +2122,7 @@ msgstr "Warna berdasarkan T&anggal"
 #: ../src/mainfrm.cc:904
 #: n:289
 msgid "Colour by E&rror"
-msgstr "Warna berdasarkan K&esalahan"
+msgstr "Warna berdasarkan Kesa&lahan"
 
 #: ../src/mainfrm.cc:906
 #: n:294
@@ -2157,7 +2157,7 @@ msgstr "Stasiun diekspor"
 #: ../src/mainfrm.cc:913
 #: n:237
 msgid "&Perspective"
-msgstr "&Perspektif"
+msgstr "Perspekti&f"
 
 #: ../src/mainfrm.cc:915
 #: n:238
@@ -2170,7 +2170,7 @@ msgstr "Tekstur &Dinding"
 #: ../src/mainfrm.cc:919
 #: n:239
 msgid "Fade Distant Ob&jects"
-msgstr "Ob&yek Jauh Pudar"
+msgstr "&Obyek Jauh Pudar"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -2183,7 +2183,7 @@ msgstr "Merap&ikan Kaki Survey"
 #: ../src/mainfrm.cc:932
 #: n:356
 msgid "Full Screen &Mode\tF11"
-msgstr "Layar Penuh &Mode\tF11"
+msgstr "La&yar Penuh Mode\tF11"
 
 #: ../src/mainfrm.cc:946
 #: n:274
@@ -2200,7 +2200,7 @@ msgstr "K&linometer"
 #: ../src/mainfrm.cc:950
 #: n:276
 msgid "Colour &Key"
-msgstr "Warna &Kunci"
+msgstr "&Warna Kunci"
 
 #: ../src/mainfrm.cc:951
 #: n:277
@@ -2210,7 +2210,7 @@ msgstr "&Skala Bar"
 #: ../src/mainfrm.cc:941
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
-msgstr "&Memutar\tCtrl+R"
+msgstr "Memuta&r\tCtrl+R"
 
 #: ../src/mainfrm.cc:911
 #: ../src/mainfrm.cc:943
@@ -2312,7 +2312,7 @@ msgstr "Presentasi &Baru"
 #: ../src/mainfrm.cc:867
 #: n:312
 msgid "&Open Presentation…"
-msgstr "&Buka Presentasi…"
+msgstr "Bu&ka Presentasi…"
 
 #: ../src/mainfrm.cc:868
 #: n:313
