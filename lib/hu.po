@@ -835,7 +835,7 @@ msgstr ""
 #: ../src/extend.c:507
 #: n:105
 msgid "Reading in data - please wait…"
-msgstr "Adat beolvasása - kérem várjon..."
+msgstr "Adat beolvasása - kérem várjon…"
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
@@ -1723,7 +1723,7 @@ msgstr "[FELMÉRÉS_FÁJL]"
 #: ../src/mainfrm.cc:792
 #: n:220
 msgid "&Open…\tCtrl+O"
-msgstr "&Megnyitás...\tCtrl+O"
+msgstr "&Megnyitás…\tCtrl+O"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.  Try to keep this fairly short.
