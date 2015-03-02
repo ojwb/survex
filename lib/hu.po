@@ -100,7 +100,7 @@ msgstr "Programhibát találtál! Kérlek jelezd a készítőknek."
 #: n:12
 #, c-format
 msgid "Unknown command “%s”"
-msgstr "Imeretlen parancs \"%s\""
+msgstr "Imeretlen parancs “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:449
@@ -134,7 +134,7 @@ msgstr "%d figyelmeztetés volt."
 #: n:17
 #, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "\"%s\" külső parancsként nem futtatható."
+msgstr "“%s” külső parancsként nem futtatható."
 
 #: ../src/datain.c:80
 #: ../src/datain.c:88
@@ -214,7 +214,7 @@ msgstr ""
 #: n:26
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
-msgstr "\"%s\" állomás nem exportálódott a(z) \"%s\" felmérésből"
+msgstr "“%s” állomás nem exportálódott a(z) “%s” felmérésből"
 
 #. TRANSLATORS: This error occurs if there's an attempt to
 #. export a station from a survey which doesn't actually exist.
@@ -225,7 +225,7 @@ msgstr "\"%s\" állomás nem exportálódott a(z) \"%s\" felmérésből"
 #: n:286
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
-msgstr "\"%s\" állomás egy nemlétező \"%s\" felmérésre hivatkozik"
+msgstr "“%s” állomás egy nemlétező “%s” felmérésre hivatkozik"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #.
@@ -235,7 +235,7 @@ msgstr "\"%s\" állomás egy nemlétező \"%s\" felmérésre hivatkozik"
 #: n:27
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
-msgstr "\"%s\" nem lehet mindkettő: állomás és felmérés"
+msgstr "“%s” nem lehet mindkettő: állomás és felmérés"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/extend.c:248
@@ -294,13 +294,13 @@ msgstr ""
 #: n:34
 #, c-format
 msgid "Unknown quantity “%s”"
-msgstr "Ismeretlen mennyiség: \"%s\""
+msgstr "Ismeretlen mennyiség: “%s”"
 
 #: ../src/commands.c:327
 #: n:35
 #, c-format
 msgid "Unknown units “%s”"
-msgstr "Ismeretlen egység: \"%s\""
+msgstr "Ismeretlen egység: “%s”"
 
 #: ../src/commands.c:1788
 #: ../src/commands.c:1863
@@ -373,7 +373,7 @@ msgstr "A memória megtelt %.0s"
 #: n:39
 #, c-format
 msgid "Unknown instrument “%s”"
-msgstr "Ismeretlen műszer \"%s\""
+msgstr "Ismeretlen műszer “%s”"
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
@@ -393,13 +393,13 @@ msgstr "Skála értéke nem lehet nulla"
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
-msgstr "Ismeretlen beállítás \"%s\""
+msgstr "Ismeretlen beállítás “%s”"
 
 #: ../src/commands.c:448
 #: n:42
 #, c-format
 msgid "Unknown character class “%s”"
-msgstr "Ismeretlen karakter osztály \"%s\""
+msgstr "Ismeretlen karakter osztály “%s”"
 
 #: ../src/extend.c:605
 #: ../src/netskel.c:90
@@ -589,7 +589,7 @@ msgstr ""
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
-msgstr "\"%s\" állomás már exportálásra került"
+msgstr "“%s” állomás már exportálásra került"
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
@@ -628,14 +628,14 @@ msgstr "A következő állomások a felmérésben nem lettek fix ponthoz kapcsol
 #: n:72
 #, c-format
 msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
-msgstr "A felmérésnek nincsenek fiy pontjai. Ezért rögzítettem \"%s\"-t (0,0,0) ban"
+msgstr "A felmérésnek nincsenek fiy pontjai. Ezért rögzítettem “%s”-t (0,0,0) ban"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
 #: ../src/netskel.c:958
 #: n:73
 #, c-format
 msgid "Unused fixed point “%s”"
-msgstr "Fel nem használt fix pont, \"%s\""
+msgstr "Fel nem használt fix pont, “%s”"
 
 #: ../src/matrix.c:123
 #: n:74
@@ -705,7 +705,7 @@ msgstr ""
 #: n:85
 #, c-format
 msgid "Parameter “%s” missing in printer configuration file"
-msgstr "\"%s\" paraméter hiányzik a nyomtató beállítási fáljból"
+msgstr "“%s” paraméter hiányzik a nyomtató beállítási fáljból"
 
 #: ../src/readval.c:525
 #: n:86
@@ -726,7 +726,7 @@ msgstr ""
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
-#~ msgstr "Formátum hiba a betűkészlet fáljban (\"%s\")"
+#~ msgstr "Formátum hiba a betűkészlet fáljban (“%s”)"
 
 #: ../src/readval.c:200
 #: n:89
@@ -760,13 +760,13 @@ msgstr "Érvénytelen utasítás"
 #: n:24
 #, c-format
 msgid "Couldn’t open file “%s”"
-msgstr "\"%s\" fáljt nem lehet megnyitni"
+msgstr "“%s” fáljt nem lehet megnyitni"
 
 #: ../src/printwx.cc:645
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr "\"%s\" fáljt nem lehet írni"
+msgstr "“%s” fáljt nem lehet írni"
 
 #: ../src/message.c:232
 #: n:94
@@ -847,7 +847,7 @@ msgstr "Adat beolvasása - kérem várjon..."
 #: n:106
 #, c-format
 msgid "Bad 3d image file “%s”"
-msgstr "hibás 3D képfájl \"%s\""
+msgstr "hibás 3D képfájl “%s”"
 
 #. TRANSLATORS: This is the date format string used to timestamp .3d
 #. files internally.  Probably best to keep it the same for all
@@ -869,7 +869,7 @@ msgstr "Dátum és idő nem érhető el"
 #: n:109
 #, c-format
 msgid "Error reading from file “%s”"
-msgstr "Hiba \"%s\" fájl olvasásakor"
+msgstr "Hiba “%s” fájl olvasásakor"
 
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:42
@@ -878,7 +878,7 @@ msgstr "Hiba \"%s\" fájl olvasásakor"
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
-msgstr "Hiba \"%s\" fájl írásakor"
+msgstr "Hiba “%s” fájl írásakor"
 
 #: ../src/filename.c:82
 #: n:111
@@ -902,7 +902,7 @@ msgstr ""
 #: n:114
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
-msgstr "\"%s\" fájlnak újabb formátuma van, mint amit ez a program kezelni tud"
+msgstr "“%s” fájlnak újabb formátuma van, mint amit ez a program kezelni tud"
 
 #: ../src/printwx.cc:993
 #: n:115
@@ -1030,7 +1030,7 @@ msgstr "Hálózat számítása"
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
-msgstr "\"%s\" megtalálva, várom \"F\"-t vagy \"B\"-t"
+msgstr "“%s” megtalálva, várom “F”-t vagy “B”-t"
 
 #: ../src/cavern.c:449
 #: n:132
@@ -1315,7 +1315,7 @@ msgstr ""
 #: n:186
 #, c-format
 msgid "argument “%s” not an integer"
-msgstr "\"%s\" változó nem egész szám"
+msgstr "“%s” változó nem egész szám"
 
 #: ../src/cmdline.c:263
 #: n:187
