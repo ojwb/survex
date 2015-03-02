@@ -1,3 +1,7 @@
+Mon Mar 02 07:43:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/hu.po: Add missing quotes.
+
 Mon Mar 02 07:42:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/hu.po: Use curly double quotes.

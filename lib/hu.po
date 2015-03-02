@@ -1506,7 +1506,7 @@ msgstr ""
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
-msgstr "Nincsen felmérési adat a(z) %s 3D fájlban"
+msgstr "Nincsen felmérési adat a(z) “%s” 3D fájlban"
 
 #: ../src/gfxcore.cc:704
 #: n:203
