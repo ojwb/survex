@@ -1350,7 +1350,7 @@ msgstr "Нет соответствующей команды BEGIN"
 #: ../src/commands.c:674
 #: n:193
 msgid "Survey name doesn’t match BEGIN"
-msgstr ""
+msgstr "Имя топо-съемки не совпадает с именем, указанным в команде BEGIN"
 
 #. TRANSLATORS: Used when a BEGIN command has a survey name, but the
 #. END command omits it, e.g.:
@@ -1361,7 +1361,7 @@ msgstr ""
 #: ../src/commands.c:683
 #: n:194
 msgid "Survey name omitted from END"
-msgstr ""
+msgstr "Имя топосъемки указано в BEGIN, но отсутствует в END"
 
 #. TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
 #. (or at least the columns) are in the same place
@@ -1375,13 +1375,13 @@ msgstr "( Easting, Northing, Высота   )"
 #: n:196
 #, c-format
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "Глубина цвета: %d bpp"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:190
 #: n:197
 msgid " (colour)"
-msgstr ""
+msgstr " (цветное)"
 
 #: ../src/readval.c:513
 #: ../src/readval.c:523
@@ -1389,7 +1389,7 @@ msgstr ""
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
-msgstr ""
+msgstr "Вместо “%s” ожидается дата"
 
 #. TRANSLATORS: --help output for --survey option.
 #.
@@ -1402,91 +1402,91 @@ msgstr ""
 #: ../src/extend.c:459
 #: n:199
 msgid "only load the sub-survey with this prefix"
-msgstr ""
+msgstr "обрабатывать топо-съемки только с указаным префиксом"
 
 #. TRANSLATORS: --help output for aven --print option
 #: ../src/aven.cc:68
 #: n:119
 msgid "print and exit (requires a 3d file)"
-msgstr ""
+msgstr "распечатать и выйти (нуобходимо указать 3d файл)"
 
 #. TRANSLATORS: --help output for cavern --percentage option
 #: ../src/cavern.c:125
 #: n:161
 msgid "display percentage progress"
-msgstr ""
+msgstr "отображать ход выполнения задачи в процентах"
 
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:127
 #: n:162
 msgid "set location for output files"
-msgstr ""
+msgstr "указать местоположения для выходных файлов"
 
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:129
 #: n:163
 msgid "only show brief summary (-qq for errors only)"
-msgstr ""
+msgstr "отображать только краткие итоги (-qq для отображения только ошибок)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:131
 #: n:164
 msgid "do not create .err file"
-msgstr ""
+msgstr "не создавать файл .err"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
 #: ../src/cavern.c:133
 #: n:165
 msgid "turn warnings into errors"
-msgstr ""
+msgstr "трактовать предупреждения как ошибки"
 
 #. TRANSLATORS: --help output for cavern --log option
 #: ../src/cavern.c:135
 #: n:170
 msgid "log output to .log file"
-msgstr ""
+msgstr "выводить сообщения программы в .log файл"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
 #: ../src/cavern.c:137
 #: n:171
 msgid "specify the 3d file format version to output"
-msgstr ""
+msgstr "указать версию формата в котором будет сохранятся 3d файл"
 
 #. TRANSLATORS: --help output for sorterr --horizontal option
 #: ../src/sorterr.c:53
 #: n:179
 msgid "sort by horizontal error factor"
-msgstr ""
+msgstr "сортировать по величине горизонтальной составляющей ошибки"
 
 #. TRANSLATORS: --help output for sorterr --vertical option
 #: ../src/sorterr.c:55
 #: n:180
 msgid "sort by vertical error factor"
-msgstr ""
+msgstr "сортировать по величине вертикальной составляющей ошибки"
 
 #. TRANSLATORS: --help output for sorterr --percentage option
 #: ../src/sorterr.c:57
 #: n:181
 msgid "sort by percentage error"
-msgstr ""
+msgstr "сортировать по проценту ошибки относительно длинны кольца"
 
 #. TRANSLATORS: --help output for sorterr --per-leg option
 #: ../src/sorterr.c:59
 #: n:182
 msgid "sort by error per leg"
-msgstr ""
+msgstr "сортировать по средней величине ошибки на замер"
 
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:61
 #: n:183
 msgid "replace .err file with resorted version"
-msgstr ""
+msgstr "заменить .err файл на пересортированный"
 
 #. TRANSLATORS: --help output for dump3d --rewind option
 #: ../src/dump3d.c:51
 #: n:204
 msgid "rewind file and read it a second time"
-msgstr ""
+msgstr "повторно перечитать файл"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
@@ -1495,7 +1495,7 @@ msgstr ""
 #: ../src/commands.c:1417
 #: n:200
 msgid "*UNITS factor must be non-zero"
-msgstr ""
+msgstr "Коэффициент в команде *UNITS должен быть ненулевым"
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
@@ -1507,7 +1507,7 @@ msgstr "&Снимок экрана…"
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
-msgstr ""
+msgstr "Данные топо-съемки не найдены в файле “%s”"
 
 #: ../src/gfxcore.cc:704
 #: n:203
@@ -1519,7 +1519,7 @@ msgstr ""
 #: n:205
 #, c-format
 msgid "About %s"
-msgstr "О %s"
+msgstr "О программе %s"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1529,7 +1529,7 @@ msgstr "О %s"
 #: ../src/mainfrm.cc:1925
 #: n:206
 msgid "Select a survey file to view"
-msgstr ""
+msgstr "Выберите топо-съемку для просмотра"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
@@ -1551,7 +1551,7 @@ msgstr "Все файлы"
 #: ../src/mainfrm.cc:1899
 #: n:229
 msgid "All survey files"
-msgstr ""
+msgstr "Все файлы топо-съемок"
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
@@ -1565,7 +1565,7 @@ msgstr "Survex svx файлы"
 #: ../src/mainfrm.cc:1913
 #: n:330
 msgid "Compass DAT and MAK files"
-msgstr ""
+msgstr "DAT и MAK файлы Compass"
 
 #: ../src/printwx.cc:274
 #: n:411
@@ -1588,7 +1588,7 @@ msgstr "GPX файлы"
 #: ../src/printwx.cc:280
 #: n:414
 msgid "HPGL for plotters"
-msgstr ""
+msgstr "HPGL файлы (для плоттера)"
 
 #: ../src/printwx.cc:281
 #: n:444
@@ -1602,7 +1602,7 @@ msgstr "KML файлы"
 #: ../src/printwx.cc:286
 #: n:415
 msgid "Compass PLT for use with Carto"
-msgstr ""
+msgstr "Compass PLT файлы для использования в Carto"
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated: http://www.skencil.org/
@@ -1624,7 +1624,7 @@ msgstr "SVG файлы"
 #: ../src/aboutdlg.cc:98
 #: n:209
 msgid "Survey visualisation tool"
-msgstr ""
+msgstr "Инструмент для визуализации топо-съемок пещер"
 
 #. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
 #. accelerator key.  The accelerators must be different within this group
@@ -1661,7 +1661,7 @@ msgstr "&Помощь"
 #: ../src/mainfrm.cc:971
 #: n:216
 msgid "&Presentation"
-msgstr ""
+msgstr "&Презентация"
 
 #. TRANSLATORS: Summary paragraph for the GPLv2 - there are translations for
 #. some languages here:
@@ -1669,32 +1669,32 @@ msgstr ""
 #: ../src/aboutdlg.cc:112
 #: n:219
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
-msgstr ""
+msgstr "Эта программа является свободным программным обеспечением; Вы можете распространять и/или изменять его в соответствии с условиями GNU General Public Licence, опубликованной Фондом свободного программного обеспечения; действительно либо для версии 2 Лицензии, либо (по вашему выбору) любой более поздней версии."
 
 #. TRANSLATORS: Part of 3dtopos --help
 #: ../src/3dtopos.c:86
 #: n:217
 msgid "3D_FILE [POS_FILE]"
-msgstr ""
+msgstr "3D_ФАЙЛ [POS_ФАЙЛ]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:265
 #: n:218
 msgid "FILE1 FILE2 [THRESHOLD]"
-msgstr ""
+msgstr "ФАЙЛ1 ФАЙЛ2 [ПОРОГ]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:267
 #: n:255
 #, c-format
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
-msgstr ""
+msgstr "ФАЙЛ1 и ФАЙЛ2 могут быть .pos или .3d файлами\nПОРОГ это максимальное игнорируемое изменение в метрах вдоль любой из координатных осей (по умолчанию %s)"
 
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:481
 #: n:267
 msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
-msgstr ""
+msgstr "ВХОДНОЙ_3D_ФАЙЛ [ВЫХОДНОЙ_3D_ФАЙЛ]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:127
@@ -1711,7 +1711,7 @@ msgstr ""
 #: ../src/aven.cc:139
 #: n:269
 msgid "[SURVEY_FILE]"
-msgstr ""
+msgstr "[ФАЙЛ_ТОПОСЪЕМКИ]"
 
 #. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any
 #. accelerator key.
@@ -1730,7 +1730,7 @@ msgstr "&Открыть…\tCtrl+O"
 #: ../src/gfxcore.cc:1048
 #: n:221
 msgid "Undated"
-msgstr "Недатированный"
+msgstr "Дата не указана"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information. Try to keep
@@ -1738,7 +1738,7 @@ msgstr "Недатированный"
 #: ../src/gfxcore.cc:1073
 #: n:290
 msgid "Not in loop"
-msgstr ""
+msgstr "Не в кольце"
 
 #. TRANSLATORS: error from:
 #.
@@ -1746,7 +1746,7 @@ msgstr ""
 #: ../src/commands.c:1261
 #: n:222
 msgid "NEWLINE can’t be the first reading"
-msgstr ""
+msgstr "NEWLINE не может быть первым значением"
 
 #. TRANSLATORS: error from:
 #.
@@ -1754,7 +1754,7 @@ msgstr ""
 #: ../src/commands.c:1299
 #: n:223
 msgid "NEWLINE can’t be the last reading"
-msgstr ""
+msgstr "NEWLINE не может быть последним значением"
 
 #. TRANSLATORS: Error given by something like:
 #.
@@ -1764,7 +1764,7 @@ msgstr ""
 #: ../src/commands.c:1322
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
-msgstr ""
+msgstr "Стиль данных подразумевает наличие перевода строки, но NEWLINE отсутствует"
 
 #. TRANSLATORS: caused by e.g.
 #.
@@ -1775,7 +1775,7 @@ msgstr ""
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
-msgstr ""
+msgstr "Значение “%s” должно быть перед NEWLINE"
 
 #. TRANSLATORS: e.g.
 #.
@@ -1783,7 +1783,7 @@ msgstr ""
 #: ../src/commands.c:1251
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
-msgstr ""
+msgstr "Значению NEWLINE могут предшествовать только значения STATION, DEPTH или COUNT"
 
 #. TRANSLATORS: e.g.
 #.
@@ -1801,10 +1801,10 @@ msgstr ""
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
 #. height values).
 #~ msgid "Select a terrain file to view"
-#~ msgstr ""
+#~ msgstr "Выберите файл с рельефом поверхности для отображения"
 
 #~ msgid "Terrain files"
-#~ msgstr ""
+#~ msgstr "Файлы рельефа поверхности"
 
 #. TRANSLATORS: %s will be replaced by the application name ("Aven"
 #. currently)
@@ -1812,74 +1812,74 @@ msgstr ""
 #: n:228
 #, c-format
 msgid "%s Error Log"
-msgstr ""
+msgstr "Журнал ошибок %s"
 
 #. TRANSLATORS: The text on the action button in the "Export" settings
 #. dialog
 #: ../src/printwx.cc:584
 #: n:230
 msgid "&Export…"
-msgstr ""
+msgstr "&Экспорт"
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
 #: ../src/mainfrm.cc:820
 #: n:231
 msgid "Au&to-Rotate\tSpace"
-msgstr ""
+msgstr "Ав&томатическое вращение\tSpace"
 
 #: ../src/mainfrm.cc:822
 #: n:232
 msgid "Speed &Up"
-msgstr ""
+msgstr "&Ускорить вращение"
 
 #: ../src/mainfrm.cc:823
 #: n:233
 msgid "Slow &Down"
-msgstr ""
+msgstr "&Замедлить вращение"
 
 #: ../src/mainfrm.cc:825
 #: n:234
 msgid "&Reverse Direction"
-msgstr ""
+msgstr "&Поменять направление вращения"
 
 #: ../src/mainfrm.cc:827
 #: n:235
 msgid "Step Once &Anticlockwise"
-msgstr ""
+msgstr "Шаг П&ротив часовой стрелки"
 
 #: ../src/mainfrm.cc:828
 #: n:236
 msgid "Step Once &Clockwise"
-msgstr ""
+msgstr "Шаг По &часовой стрелке"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:3262
 #: ../src/mainfrm.cc:831
 #: n:240
 msgid "View &North"
-msgstr ""
+msgstr "На &Север"
 
 #. TRANSLATORS: View *looking* East
 #: ../src/gfxcore.cc:3264
 #: ../src/mainfrm.cc:832
 #: n:241
 msgid "View &East"
-msgstr ""
+msgstr "На &Восток"
 
 #. TRANSLATORS: View *looking* South
 #: ../src/gfxcore.cc:3266
 #: ../src/mainfrm.cc:833
 #: n:242
 msgid "View &South"
-msgstr ""
+msgstr "На &Юг"
 
 #. TRANSLATORS: View *looking* West
 #: ../src/gfxcore.cc:3268
 #: ../src/mainfrm.cc:834
 #: n:243
 msgid "View &West"
-msgstr ""
+msgstr "На &Запад"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1887,7 +1887,7 @@ msgstr ""
 #: ../src/mainfrm.cc:839
 #: n:244
 msgid "Shift Survey &Left"
-msgstr ""
+msgstr "Сдвиг В&лево"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1895,7 +1895,7 @@ msgstr ""
 #: ../src/mainfrm.cc:843
 #: n:245
 msgid "Shift Survey &Right"
-msgstr ""
+msgstr "Сдвиг В&право"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1903,7 +1903,7 @@ msgstr ""
 #: ../src/mainfrm.cc:847
 #: n:246
 msgid "Shift Survey &Up"
-msgstr ""
+msgstr "Сдвиг В&верх"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1911,7 +1911,7 @@ msgstr ""
 #: ../src/mainfrm.cc:851
 #: n:247
 msgid "Shift Survey &Down"
-msgstr ""
+msgstr "Сдвиг В&низ"
 
 #: ../src/gfxcore.cc:3285
 #: ../src/mainfrm.cc:853
@@ -1972,7 +1972,7 @@ msgstr "Элементы"
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
-msgstr ""
+msgstr "%d страниц (%dx%d)"
 
 #. TRANSLATORS: used in the scale drop down selector in the print
 #. dialog the implicit meaning is "choose a suitable scale to fit
@@ -1981,30 +1981,30 @@ msgstr ""
 #: ../src/printwx.cc:816
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "Одна страница"
 
 #: ../src/mainfrm.cc:159
 #: ../src/printwx.cc:435
 #: n:259
 msgid "Bearing"
-msgstr ""
+msgstr "Азимут"
 
 #: ../src/printwx.cc:474
 #: n:260
 msgid "Station Names"
-msgstr "номер пикеты"
+msgstr "Названия пикетов"
 
 #: ../src/printwx.cc:470
 #: n:261
 msgid "Crosses"
-msgstr "Кресты"
+msgstr "Пикеты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/printwx.cc:460
 #: n:262
 msgid "Underground Survey Legs"
-msgstr ""
+msgstr "Подземные замеры"
 
 #: ../src/printwx.cc:490
 #: n:393
@@ -2014,7 +2014,7 @@ msgstr "Сечения"
 #: ../src/printwx.cc:495
 #: n:394
 msgid "Walls"
-msgstr ""
+msgstr "Стены ходов"
 
 #: ../src/printwx.cc:499
 #: n:395
@@ -2029,20 +2029,20 @@ msgstr ""
 #: ../src/printwx.cc:507
 #: n:422
 msgid "Full coordinates"
-msgstr ""
+msgstr "Полные координаты"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printwx.cc:441
 #: n:263
 msgid "Tilt angle"
-msgstr ""
+msgstr "Угол наклона"
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
 #: ../src/printwx.cc:515
 #: n:264
 msgid "Page Borders"
-msgstr ""
+msgstr "Границы страницы"
 
 #. TRANSLATORS: As in the legend on a map.  Used in the print dialog -
 #. controls drawing the box at the lower left with survey name, view
@@ -2050,20 +2050,20 @@ msgstr ""
 #: ../src/printwx.cc:526
 #: n:265
 msgid "Legend"
-msgstr "Легенда"
+msgstr "Условные обозначения"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
 #: ../src/printwx.cc:521
 #: n:266
 msgid "Blank Pages"
-msgstr ""
+msgstr "Пустые страницы"
 
 #. TRANSLATORS: Items in the "View" menu:
 #: ../src/mainfrm.cc:880
 #: n:270
 msgid "Station &Names\tCtrl+N"
-msgstr ""
+msgstr "&Названия пикетов\tCtrl+N"
 
 #. TRANSLATORS: Toggles drawing of 3D passages
 #: ../src/mainfrm.cc:882
@@ -2074,7 +2074,7 @@ msgstr ""
 #: ../src/mainfrm.cc:883
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr "&Кресты\tCtrl+X"
+msgstr "&Пикеты\tCtrl+X"
 
 #: ../src/mainfrm.cc:884
 #: n:297
@@ -2084,7 +2084,7 @@ msgstr "&Сетка\tCtrl+G"
 #: ../src/mainfrm.cc:885
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
-msgstr ""
+msgstr "&Вмещающий прямоугольник\tCtrl+B"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -2103,40 +2103,40 @@ msgstr ""
 #: ../src/mainfrm.cc:901
 #: n:273
 msgid "&Overlapping Names"
-msgstr ""
+msgstr "П&ерекрывающиеся надписи"
 
 #: ../src/gfxcore.cc:3323
 #: ../src/mainfrm.cc:902
 #: n:292
 msgid "Colour by &Depth"
-msgstr ""
+msgstr "Раскраска по &глубине"
 
 #: ../src/gfxcore.cc:3324
 #: ../src/mainfrm.cc:903
 #: n:293
 msgid "Colour by D&ate"
-msgstr ""
+msgstr "Раскраска по &дате"
 
 #: ../src/gfxcore.cc:3325
 #: ../src/mainfrm.cc:904
 #: n:289
 msgid "Colour by E&rror"
-msgstr ""
+msgstr "Раскраска по &ошибкам на кольцах"
 
 #: ../src/mainfrm.cc:906
 #: n:294
 msgid "Highlight &Entrances"
-msgstr ""
+msgstr "Подсветить в&ходы"
 
 #: ../src/mainfrm.cc:907
 #: n:295
 msgid "Highlight &Fixed Points"
-msgstr ""
+msgstr "Подсветить &фиксированные точки"
 
 #: ../src/mainfrm.cc:908
 #: n:296
 msgid "Highlight E&xported Points"
-msgstr ""
+msgstr "Подсветить &экспортированные точки"
 
 #: ../src/printwx.cc:478
 #: n:418
@@ -2146,12 +2146,12 @@ msgstr "Входы"
 #: ../src/printwx.cc:482
 #: n:419
 msgid "Fixed Points"
-msgstr "Реперов"
+msgstr "Фиксированные точки"
 
 #: ../src/printwx.cc:486
 #: n:420
 msgid "Exported Stations"
-msgstr ""
+msgstr "Экспортированные пикеты"
 
 #: ../src/mainfrm.cc:913
 #: n:237
@@ -2161,7 +2161,7 @@ msgstr ""
 #: ../src/mainfrm.cc:915
 #: n:238
 msgid "Textured &Walls"
-msgstr ""
+msgstr "Текстурированные &стены"
 
 #. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
 #. using that term instead if it gives a better translation which most
@@ -2169,20 +2169,20 @@ msgstr ""
 #: ../src/mainfrm.cc:919
 #: n:239
 msgid "Fade Distant Ob&jects"
-msgstr ""
+msgstr "Затенять отдаленные об&ъекты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/mainfrm.cc:922
 #: n:298
 msgid "Smoot&hed Survey Legs"
-msgstr ""
+msgstr "С&глаживать линии"
 
 #: ../src/mainfrm.cc:928
 #: ../src/mainfrm.cc:932
 #: n:356
 msgid "Full Screen &Mode\tF11"
-msgstr ""
+msgstr "Полноэкранный ре&жим\tF11"
 
 #: ../src/mainfrm.cc:946
 #: n:274
@@ -2192,14 +2192,14 @@ msgstr "&Компас"
 #: ../src/mainfrm.cc:947
 #: n:275
 msgid "C&linometer"
-msgstr ""
+msgstr "&Угломер"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:950
 #: n:276
 msgid "Colour &Key"
-msgstr ""
+msgstr "&Цветовая шкала"
 
 #: ../src/mainfrm.cc:951
 #: n:277
@@ -2209,7 +2209,7 @@ msgstr "&Масштаб"
 #: ../src/mainfrm.cc:941
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
-msgstr ""
+msgstr "&Инвертировать управление\tCtrl+R"
 
 #: ../src/mainfrm.cc:911
 #: ../src/mainfrm.cc:943
@@ -2220,7 +2220,7 @@ msgstr ""
 #: ../src/mainfrm.cc:952
 #: n:299
 msgid "&Indicators"
-msgstr ""
+msgstr "&Индикаторы"
 
 #: ../src/z_getopt.c:697
 #: ../src/z_getopt.c:709
