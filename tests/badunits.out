@@ -1,15 +1,15 @@
-./badunits.svx:3:15: Unknown units "FURLONGS"
-./badunits.svx:4:29: Unknown units "Radians"
-./badunits.svx:5:16: Invalid units "METRES" for quantity
-./badunits.svx:6:19: Invalid units "Degrees" for quantity
-./badunits.svx:7:23: Invalid units "Metres" for quantity
-./badunits.svx:8:8: Unknown quantity "Anemometer"
-./badunits.svx:10:16: End of line not blank
-./badunits.svx:11:16: End of line not blank
-./badunits.svx:12:13: Unknown units "DEFault"
-./badunits.svx:13:13: Unknown units "DEFault"
-./badunits.svx:14:16: End of line not blank
-./badunits.svx:15:16: End of line not blank
+./badunits.svx:3:15: error: Unknown units "FURLONGS"
+./badunits.svx:4:29: error: Unknown units "Radians"
+./badunits.svx:5:16: error: Invalid units "METRES" for quantity
+./badunits.svx:6:19: error: Invalid units "Degrees" for quantity
+./badunits.svx:7:23: error: Invalid units "Metres" for quantity
+./badunits.svx:8:8: error: Unknown quantity "Anemometer"
+./badunits.svx:10:16: error: End of line not blank
+./badunits.svx:11:16: error: End of line not blank
+./badunits.svx:12:13: error: Unknown units "DEFault"
+./badunits.svx:13:13: error: Unknown units "DEFault"
+./badunits.svx:14:16: error: End of line not blank
+./badunits.svx:15:16: error: End of line not blank
 
 Removing trailing traverses...
 

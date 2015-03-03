@@ -1,6 +1,6 @@
-./badinc4.svx:3:10: Expecting string field
-./badinc4.svx:4:9: Expecting string field
-./badinc4.svx:5:25: Missing "
+./badinc4.svx:3:10: error: Expecting string field
+./badinc4.svx:4:9: error: Expecting string field
+./badinc4.svx:5:25: error: Missing "
 
 Removing trailing traverses...
 

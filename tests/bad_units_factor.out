@@ -1,9 +1,9 @@
-./bad_units_factor.svx:3:14: *UNITS factor must be non-zero
-./bad_units_factor.svx:4:17: *UNITS factor must be non-zero
-./bad_units_factor.svx:5:15: *UNITS factor must be non-zero
-./bad_units_factor.svx:6:15: *UNITS factor must be non-zero
-./bad_units_factor.svx:7:18: *UNITS factor must be non-zero
-./bad_units_factor.svx:8:19: *UNITS factor must be non-zero
+./bad_units_factor.svx:3:14: error: *UNITS factor must be non-zero
+./bad_units_factor.svx:4:17: error: *UNITS factor must be non-zero
+./bad_units_factor.svx:5:15: error: *UNITS factor must be non-zero
+./bad_units_factor.svx:6:15: error: *UNITS factor must be non-zero
+./bad_units_factor.svx:7:18: error: *UNITS factor must be non-zero
+./bad_units_factor.svx:8:19: error: *UNITS factor must be non-zero
 
 Removing trailing traverses...
 

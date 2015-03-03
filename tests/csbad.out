@@ -1,26 +1,26 @@
-./csbad.svx:2: Station "1" fixed before CS command first used
-./csbad.svx:3:4: Unknown coordinate system
-./csbad.svx:4:4: Unknown coordinate system
-./csbad.svx:5:4: Unknown coordinate system
-./csbad.svx:6:11: End of line not blank
-./csbad.svx:7:4: Unknown coordinate system
-./csbad.svx:8:4: Unknown coordinate system
-./csbad.svx:9:4: Unknown coordinate system
-./csbad.svx:10:4: Unknown coordinate system
-./csbad.svx:11:4: Unknown coordinate system
-./csbad.svx:12:4: Unknown coordinate system
-./csbad.svx:13:4: Unknown coordinate system
-./csbad.svx:14:4: Unknown coordinate system
-./csbad.svx:15:4: Unknown coordinate system
-./csbad.svx:16:4: Unknown coordinate system
-./csbad.svx:17:4: Unknown coordinate system
-./csbad.svx:18:4: Unknown coordinate system
-./csbad.svx:19:4: Unknown coordinate system
-./csbad.svx:20:4: Invalid coordinate system: unknown projection id
-./csbad.svx:21:4: Unknown coordinate system
-./csbad.svx:22:4: Coordinate system unsuitable for output
-./csbad.svx:23:4: Coordinate system unsuitable for output
-./csbad.svx:24:4: Coordinate system unsuitable for output
+./csbad.svx:2: error: Station "1" fixed before CS command first used
+./csbad.svx:3:4: error: Unknown coordinate system
+./csbad.svx:4:4: error: Unknown coordinate system
+./csbad.svx:5:4: error: Unknown coordinate system
+./csbad.svx:6:11: error: End of line not blank
+./csbad.svx:7:4: error: Unknown coordinate system
+./csbad.svx:8:4: error: Unknown coordinate system
+./csbad.svx:9:4: error: Unknown coordinate system
+./csbad.svx:10:4: error: Unknown coordinate system
+./csbad.svx:11:4: error: Unknown coordinate system
+./csbad.svx:12:4: error: Unknown coordinate system
+./csbad.svx:13:4: error: Unknown coordinate system
+./csbad.svx:14:4: error: Unknown coordinate system
+./csbad.svx:15:4: error: Unknown coordinate system
+./csbad.svx:16:4: error: Unknown coordinate system
+./csbad.svx:17:4: error: Unknown coordinate system
+./csbad.svx:18:4: error: Unknown coordinate system
+./csbad.svx:19:4: error: Unknown coordinate system
+./csbad.svx:20:4: error: Invalid coordinate system: unknown projection id
+./csbad.svx:21:4: error: Unknown coordinate system
+./csbad.svx:22:4: error: Coordinate system unsuitable for output
+./csbad.svx:23:4: error: Coordinate system unsuitable for output
+./csbad.svx:24:4: error: Coordinate system unsuitable for output
 
 Removing trailing traverses...
 

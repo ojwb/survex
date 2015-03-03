@@ -1,13 +1,13 @@
-./cmd_fix_bad.svx:2:9: Expecting numeric field, found ""
-./cmd_fix_bad.svx:3:11: Expecting numeric field, found ""
-./cmd_fix_bad.svx:4:30: Expecting numeric field, found ""
-./cmd_fix_bad.svx:5:35: Expecting numeric field, found ""
-./cmd_fix_bad.svx:6:12: Expecting numeric field, found "test"
-./cmd_fix_bad.svx:8:20: Expecting numeric field, found ""
-./cmd_fix_bad.svx:9:22: Expecting numeric field, found ""
-./cmd_fix_bad.svx:10:41: Expecting numeric field, found ""
-./cmd_fix_bad.svx:11:46: Expecting numeric field, found ""
-./cmd_fix_bad.svx:12:23: Expecting numeric field, found "test"
+./cmd_fix_bad.svx:2:9: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:3:11: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:4:30: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:5:35: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:6:12: error: Expecting numeric field, found "test"
+./cmd_fix_bad.svx:8:20: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:9:22: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:10:41: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:11:46: error: Expecting numeric field, found ""
+./cmd_fix_bad.svx:12:23: error: Expecting numeric field, found "test"
 
 Removing trailing traverses...
 

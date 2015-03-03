@@ -1,6 +1,6 @@
-./bad_units_qlist.svx:3:8: Unknown instrument "position"
-./bad_units_qlist.svx:4:8: Unknown instrument "plumb"
-./bad_units_qlist.svx:5:8: Unknown instrument "level"
+./bad_units_qlist.svx:3:8: error: Unknown instrument "position"
+./bad_units_qlist.svx:4:8: error: Unknown instrument "plumb"
+./bad_units_qlist.svx:5:8: error: Unknown instrument "level"
 
 Removing trailing traverses...
 

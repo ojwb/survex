@@ -1,3 +1,9 @@
+Tue Mar 03 12:14:22 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/message.c,tests/: Show 'error' in front of error
+	  messages, like we show 'warning' in front of warnings.  Fixes #48,
+	  reported by Wookey.
+
 Tue Mar 03 11:05:17 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Add new message "JSON files".

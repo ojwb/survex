@@ -1,4 +1,4 @@
-./cmd_entrance_bad.svx:3:10: Expecting station name
+./cmd_entrance_bad.svx:3:10: error: Expecting station name
 
 Removing trailing traverses...
 

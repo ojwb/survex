@@ -44,6 +44,13 @@ msgstr ""
 msgid "warning"
 msgstr ""
 
+#. TRANSLATORS: Indicates an error message e.g.:
+#. "spoon.svx:13:4: error: Field may not be omitted"
+#: ../src/message.c:1254
+#: n:93
+msgid "error"
+msgstr ""
+
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
 #. by the line number in that file.  Your translation should also contain
 #. %s:%u so that automatic parsing of error messages to determine the file

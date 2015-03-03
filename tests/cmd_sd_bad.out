@@ -1,10 +1,10 @@
-./cmd_sd_bad.svx:4:16: Expecting numeric field, found "metres"
-./cmd_sd_bad.svx:5:15: Unknown units "furlongs"
-./cmd_sd_bad.svx:6:15: Unknown units "furlongs"
-./cmd_sd_bad.svx:7:5: Unknown quantity "tripe"
-./cmd_sd_bad.svx:8:15: Expecting numeric field, found "tripe"
-./cmd_sd_bad.svx:9:22: Invalid units "meters" for quantity
-./cmd_sd_bad.svx:10:5: Unknown quantity ""
+./cmd_sd_bad.svx:4:16: error: Expecting numeric field, found "metres"
+./cmd_sd_bad.svx:5:15: error: Unknown units "furlongs"
+./cmd_sd_bad.svx:6:15: error: Unknown units "furlongs"
+./cmd_sd_bad.svx:7:5: error: Unknown quantity "tripe"
+./cmd_sd_bad.svx:8:15: error: Expecting numeric field, found "tripe"
+./cmd_sd_bad.svx:9:22: error: Invalid units "meters" for quantity
+./cmd_sd_bad.svx:10:5: error: Unknown quantity ""
 
 Removing trailing traverses...
 

@@ -1239,6 +1239,7 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    (void)col;
    aven_v_report(severity, fnm, line, en, ap);
 #else
+   const char * level;
    if (fnm) {
       fputs(fnm, STDERR);
       if (line) fprintf(STDERR, ":%d", line);
@@ -1251,9 +1252,14 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    if (severity == 0) {
       /* TRANSLATORS: Indicates a warning message e.g.:
        * "spoon.svx:12: warning: *prefix is deprecated" */
-      fputs(msg(/*warning*/4), STDERR);
-      fputs(": ", STDERR);
+      level = msg(/*warning*/4);
+   } else {
+      /* TRANSLATORS: Indicates an error message e.g.:
+       * "spoon.svx:13:4: error: Field may not be omitted" */
+      level = msg(/*error*/93);
    }
+   fputs(level, STDERR);
+   fputs(": ", STDERR);
 
    vfprintf(STDERR, msg(en), ap);
    fputnl(STDERR);
