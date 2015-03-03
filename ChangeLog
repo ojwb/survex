@@ -1,3 +1,7 @@
+Tue Mar 03 11:05:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot: Add new message "JSON files".
+
 Tue Mar 03 10:03:21 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Rework code to read cavern's output.  In

@@ -3148,3 +3148,8 @@ msgstr ""
 #: n:410
 msgid "Export format"
 msgstr ""
+
+#: ../src/printwx.cc:284
+#: n:445
+msgid "JSON files"
+msgstr ""
