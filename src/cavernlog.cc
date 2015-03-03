@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2011,2012,2014 Olly Betts
+ * Copyright (C) 2005,2006,2010,2011,2012,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,150 +247,186 @@ CavernLogWindow::process(const wxString &file)
     assert(cavern_fd < FD_SETSIZE); // FIXME we shouldn't just assert, but what else to do?
     wxString cur;
     int link_count = 0;
-    // We're only guaranteed one character of pushback by ungetc() but we
-    // need two so for portability we implement the second ourselves.
-    int left = EOF;
-    while (!feof(cavern_out)) {
+    unsigned char buf[1024];
+    unsigned char * end = buf;
+    while (true) {
 	fd_set rfds, efds;
 	FD_ZERO(&rfds);
 	FD_SET(cavern_fd, &rfds);
 	FD_ZERO(&efds);
 	FD_SET(cavern_fd, &efds);
-	// Timeout instantly.
+	// Timeout instantly the first time, and call Update() so the window
+	// contents get updated.  If we're still waiting for output after that,
+	// wait for output for 0.1 seconds, then call wxYield() so that the UI
+	// doesn't block.
 	struct timeval timeout;
 	timeout.tv_sec = 0;
 	timeout.tv_usec = 0;
-	if (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
-	    Update();
+	bool first = true;
+	while (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
+	    if (first) {
+		first = false;
+		Update();
+	    } else {
+		wxYield();
+	    }
 	    FD_SET(cavern_fd, &rfds);
 	    FD_SET(cavern_fd, &efds);
 	    // Set timeout to 0.1 seconds.
 	    timeout.tv_sec = 0;
 	    timeout.tv_usec = 100000;
-	    if (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
-		wxYield();
-		continue;
-	    }
 	}
 	if (!FD_ISSET(cavern_fd, &rfds)) {
 	    // Error, which pclose() should report.
 	    break;
 	}
-	int ch;
-	if (left == EOF) {
-	    ch = GETC(cavern_out);
-	    if (ch == EOF) break;
-	} else {
-	    ch = left;
-	    left = EOF;
+
+	ssize_t r = read(cavern_fd, end, sizeof(buf) - (end - buf));
+	if (r <= 0) {
+	    if (r == 0 && buf != end) {
+		// FIXME: Truncated UTF-8 sequence.
+	    }
+	    break;
 	}
-	// Decode UTF-8 first to avoid security issues with <, >, &, etc
-	// encoded using multibyte encodings.
-	if (ch >= 0xc0 && ch < 0xf0) {
-	    int ch1 = GETC(cavern_out);
-	    if ((ch1 & 0xc0) != 0x80) {
-		left = ch1;
-	    } else if (ch < 0xe0) {
-		/* 2 byte sequence */
-		ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
-	    } else {
-		/* 3 byte sequence */
-		int ch2 = GETC(cavern_out);
-		if ((ch2 & 0xc0) != 0x80) {
-		    ungetc(ch2, cavern_out);
-		    left = ch1;
+	end += r;
+
+	const unsigned char * p = buf;
+
+	while (p != end) {
+	    int ch = *p++;
+	    if (ch >= 0x80) {
+		// Decode multi-byte UTF-8 sequence.
+		if (ch < 0xc0) {
+		    // FIXME: Invalid UTF-8 sequence.
+		    goto abort;
+		} else if (ch < 0xe0) {
+		    /* 2 byte sequence */
+		    if (p == end) {
+			// Incomplete UTF-8 sequence - try to read more.
+			break;
+		    }
+		    int ch1 = *p++;
+		    if ((ch1 & 0xc0) != 0x80) {
+			// FIXME: Invalid UTF-8 sequence.
+			goto abort;
+		    }
+		    ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
+		} else if (ch < 0xf0) {
+		    /* 3 byte sequence */
+		    if (end - p <= 1) {
+			// Incomplete UTF-8 sequence - try to read more.
+			break;
+		    }
+		    int ch1 = *p++;
+		    ch = ((ch & 0x1f) << 12) | ((ch1 & 0x3f) << 6);
+		    if ((ch1 & 0xc0) != 0x80) {
+			// FIXME: Invalid UTF-8 sequence.
+			goto abort;
+		    }
+		    int ch2 = *p++;
+		    if ((ch2 & 0xc0) != 0x80) {
+			// FIXME: Invalid UTF-8 sequence.
+			goto abort;
+		    }
+		    ch |= (ch2 & 0x3f);
 		} else {
-		    ch = ((ch & 0x1f) << 12) | ((ch1 & 0x3f) << 6) | (ch2 & 0x3f);
+		    // FIXME: Overlong UTF-8 sequence.
+		    goto abort;
 		}
 	    }
-	}
 
-	switch (ch) {
-	    case '\r':
-		// Ignore.
-		break;
-	    case '\n': {
-		if (cur.empty()) continue;
+	    switch (ch) {
+		case '\r':
+		    // Ignore.
+		    break;
+		case '\n': {
+		    if (cur.empty()) continue;
 #ifndef __WXMSW__
-		size_t colon = cur.find(':');
+		    size_t colon = cur.find(':');
 #else
-		// If the path is "C:\path\to\file.svx" then don't split at the
-		// : after the drive letter!  FIXME: better to look for ": "?
-		size_t colon = cur.find(':', 2);
+		    // If the path is "C:\path\to\file.svx" then don't split at the
+		    // : after the drive letter!  FIXME: better to look for ": "?
+		    size_t colon = cur.find(':', 2);
 #endif
-		if (colon != wxString::npos && colon < cur.size() - 2) {
-		    ++colon;
-		    size_t i = colon;
-		    while (i < cur.size() - 2 &&
-			   cur[i] >= wxT('0') && cur[i] <= wxT('9')) {
-			++i;
-		    }
-		    if (i > colon && cur[i] == wxT(':') ) {
-			colon = i;
-			// Check for column number.
-			while (++i < cur.size() - 2 &&
-			   cur[i] >= wxT('0') && cur[i] <= wxT('9')) { }
-			if (i > colon + 1 && cur[i] == wxT(':') ) {
-			    colon = i;
+		    if (colon != wxString::npos && colon < cur.size() - 2) {
+			++colon;
+			size_t i = colon;
+			while (i < cur.size() - 2 &&
+			       cur[i] >= wxT('0') && cur[i] <= wxT('9')) {
+			    ++i;
 			}
-			wxString tag = wxT("<a href=\"");
-			tag.append(cur, 0, colon);
-			while (cur[++i] == wxT(' ')) { }
-			tag += wxT("\" target=\"");
-			tag.append(cur, i, wxString::npos);
-			tag += wxT("\">");
-			cur.insert(0, tag);
-			cur.insert(colon + tag.size(), wxT("</a>"));
-			++link_count;
+			if (i > colon && cur[i] == wxT(':') ) {
+			    colon = i;
+			    // Check for column number.
+			    while (++i < cur.size() - 2 &&
+			       cur[i] >= wxT('0') && cur[i] <= wxT('9')) { }
+			    if (i > colon + 1 && cur[i] == wxT(':') ) {
+				colon = i;
+			    }
+			    wxString tag = wxT("<a href=\"");
+			    tag.append(cur, 0, colon);
+			    while (cur[++i] == wxT(' ')) { }
+			    tag += wxT("\" target=\"");
+			    tag.append(cur, i, wxString::npos);
+			    tag += wxT("\">");
+			    cur.insert(0, tag);
+			    cur.insert(colon + tag.size(), wxT("</a>"));
+			    ++link_count;
+			}
 		    }
+
+		    // Save the scrollbar positions.
+		    int scroll_x = 0, scroll_y = 0;
+		    GetViewStart(&scroll_x, &scroll_y);
+
+		    cur += wxT("<br>\n");
+		    AppendToPage(cur);
+
+		    if (!link_count) {
+			// Auto-scroll the window until we've reported a warning or
+			// error.
+			int x, y;
+			GetVirtualSize(&x, &y);
+			int xs, ys;
+			GetClientSize(&xs, &ys);
+			y -= ys;
+			int xu, yu;
+			GetScrollPixelsPerUnit(&xu, &yu);
+			Scroll(scroll_x, y / yu);
+		    } else {
+			// Restore the scrollbar positions.
+			Scroll(scroll_x, scroll_y);
+		    }
+
+		    cur.clear();
+		    break;
 		}
-
-		// Save the scrollbar positions.
-		int scroll_x = 0, scroll_y = 0;
-		GetViewStart(&scroll_x, &scroll_y);
-
-		cur += wxT("<br>\n");
-		AppendToPage(cur);
-
-		if (!link_count) {
-		    // Auto-scroll the window until we've reported a warning or
-		    // error.
-		    int x, y;
-		    GetVirtualSize(&x, &y);
-		    int xs, ys;
-		    GetClientSize(&xs, &ys);
-		    y -= ys;
-		    int xu, yu;
-		    GetScrollPixelsPerUnit(&xu, &yu);
-		    Scroll(scroll_x, y / yu);
-		} else {
-		    // Restore the scrollbar positions.
-		    Scroll(scroll_x, scroll_y);
-		}
-
-		cur.clear();
-		break;
+		case '<':
+		    cur += wxT("&lt;");
+		    break;
+		case '>':
+		    cur += wxT("&gt;");
+		    break;
+		case '&':
+		    cur += wxT("&amp;");
+		    break;
+		case '"':
+		    cur += wxT("&#22;");
+		    continue;
+		default:
+		    if (ch >= 128) {
+			cur += wxString::Format(wxT("&#%u;"), ch);
+		    } else {
+			cur += (char)ch;
+		    }
 	    }
-	    case '<':
-		cur += wxT("&lt;");
-		break;
-	    case '>':
-		cur += wxT("&gt;");
-		break;
-	    case '&':
-		cur += wxT("&amp;");
-		break;
-	    case '"':
-		cur += wxT("&#22;");
-		continue;
-	    default:
-		if (ch >= 128) {
-		    cur += wxString::Format(wxT("&#%u;"), ch);
-		} else {
-		    cur += (char)ch;
-		}
 	}
+
+	size_t left = end - p;
+	end = buf + left;
+	if (left) memmove(buf, p, left);
     }
+abort:
 
     int retval = pclose(cavern_out);
     if (retval) {

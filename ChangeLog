@@ -1,3 +1,9 @@
+Tue Mar 03 10:03:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Rework code to read cavern's output.  In
+	  particular, we no longer mix buffered I/O with select() on the
+	  file descriptor.
+
 Mon Mar 02 11:45:41 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/guicontrol.cc,src/mainfrm.cc: More tweaks to
