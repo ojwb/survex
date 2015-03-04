@@ -1,3 +1,7 @@
+Wed Mar 04 08:16:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/json.cc,src/json.h: Add new files for JSON export.
+
 Tue Mar 03 12:14:22 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/message.c,tests/: Show 'error' in front of error
