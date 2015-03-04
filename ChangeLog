@@ -1,3 +1,9 @@
+Wed Mar 04 09:47:56 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c,src/readval.c,tests/badinc.out,tests/badinc2.out,
+	  tests/badinc3.out: Include column number when a *include file isn't
+	  found.
+
 Wed Mar 04 09:22:14 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Fix compile_error() and friends not to segfault if 
