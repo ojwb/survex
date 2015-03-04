@@ -1,3 +1,8 @@
+Wed Mar 04 09:22:14 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Fix compile_error() and friends not to segfault if 
+	  passed a negative message number when no file is open.
+
 Wed Mar 04 08:16:44 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/json.cc,src/json.h: Add new files for JSON export.

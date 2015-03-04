@@ -129,7 +129,7 @@ compile_error(int en, ...)
    error_list_parent_files();
    if (en < 0) {
       en = -en;
-      col = ftell(file.fh) - file.lpos;
+      if (file.fh) col = ftell(file.fh) - file.lpos;
    }
    v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
@@ -144,7 +144,7 @@ compile_error_skip(int en, ...)
    error_list_parent_files();
    if (en < 0) {
       en = -en;
-      col = ftell(file.fh) - file.lpos;
+      if (file.fh) col = ftell(file.fh) - file.lpos;
    }
    v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
@@ -192,7 +192,7 @@ compile_warning(int en, ...)
    error_list_parent_files();
    if (en < 0) {
       en = -en;
-      col = ftell(file.fh) - file.lpos;
+      if (file.fh) col = ftell(file.fh) - file.lpos;
    }
    v_report(0, file.filename, file.line, col, en, ap);
    va_end(ap);
