@@ -238,6 +238,9 @@ CavernLogWindow::process(const wxString &file)
 	return -2;
     }
 
+    const wxString & error_marker = wmsg(/*error*/93);
+    const wxString & warning_marker = wmsg(/*warning*/4);
+
     int cavern_fd;
 #ifdef __WXMSW__
     cavern_fd = _fileno(cavern_out);
@@ -370,7 +373,21 @@ CavernLogWindow::process(const wxString &file)
 			    tag.append(cur, i, wxString::npos);
 			    tag += wxT("\">");
 			    cur.insert(0, tag);
-			    cur.insert(colon + tag.size(), wxT("</a>"));
+			    size_t offset = colon + tag.size();
+			    cur.insert(offset, wxT("</a>"));
+			    offset += 4 + 2;
+			    if (cur.substr(offset, error_marker.size()) == error_marker) {
+				// Show "error" marker in red.
+				cur.insert(offset, wxT("<span style=\"color:red\">"));
+				offset += 24 + error_marker.size();
+				cur.insert(offset, wxT("</span>"));
+			    } else if (cur.substr(offset, warning_marker.size()) == warning_marker) {
+				// Show "warning" marker in orange.
+				cur.insert(offset, wxT("<span style=\"color:orange\">"));
+				offset += 27 + warning_marker.size();
+				cur.insert(offset, wxT("</span>"));
+			    }
+
 			    ++link_count;
 			}
 		    }
