@@ -56,7 +56,7 @@ msgstr "Внимание"
 #: ../src/cavernlog.cc:241
 #: ../src/message.c:1259
 #: n:93
-msgid "error"
+msgid "Грешка"
 msgstr ""
 
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u

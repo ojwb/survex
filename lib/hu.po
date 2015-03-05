@@ -57,7 +57,7 @@ msgstr "figyelmeztetés"
 #: ../src/message.c:1259
 #: n:93
 msgid "error"
-msgstr ""
+msgstr "hiba"
 
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
 #. by the line number in that file.  Your translation should also contain
@@ -1108,8 +1108,9 @@ msgstr "Hiba %6.2f%%"
 #. up with the numbers in the message above.
 #: ../src/netskel.c:754
 #: n:147
+#, fuzzy
 msgid "Error    N/A"
-msgstr ""
+msgstr "Hiba    N/A"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:138

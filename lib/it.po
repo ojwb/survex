@@ -57,7 +57,7 @@ msgstr "avvertimento"
 #: ../src/message.c:1259
 #: n:93
 msgid "error"
-msgstr ""
+msgstr "errore"
 
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
 #. by the line number in that file.  Your translation should also contain
