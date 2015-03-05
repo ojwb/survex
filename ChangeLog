@@ -1,3 +1,9 @@
+Thu Mar 05 00:51:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/img_hosted.c: Include the filename when we run
+	  out of memory while reading a file with img, which avoids the %.0s
+	  hack and is more helpful for users.
+
 Wed Mar 04 12:30:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Highlight "error" marker in red and "warning"

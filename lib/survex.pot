@@ -21,6 +21,14 @@ msgstr ""
 msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr ""
 
+#. TRANSLATORS: %s will be replaced by the filename that we were trying
+#. to read when we ran out of memory.
+#: ../src/img_hosted.c:34
+#: n:38
+#, c-format
+msgid "Out of memory trying to read file “%s”"
+msgstr ""
+
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
 #. technically not quite right when there are parallel active release
@@ -367,15 +375,6 @@ msgstr ""
 #: n:37
 #, c-format
 msgid "Invalid units “%s” for quantity"
-msgstr ""
-
-#. TRANSLATORS: nasty hack - this message is for the .3d img code, and all
-#. errors there take a filename parameter - we don’t really want it here,
-#. so lose it with "%.0s" (which should display 0 characters from the
-#. filename) FIXME: sort out this
-#: ../src/img_hosted.c:35
-#: n:38
-msgid "Out of memory %.0s"
 msgstr ""
 
 #: ../src/commands.c:403
