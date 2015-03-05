@@ -5,7 +5,9 @@ use strict;
 use POSIX;
 use Locale::PO;
 
-my $pot_creation_date = strftime "%Y-%m-%d %H:%M:%S +0000", gmtime();
+sub pot_creation_date {
+    return strftime "%Y-%m-%d %H:%M:%S +0000", gmtime();
+}
 
 use integer;
 
@@ -65,23 +67,6 @@ while (<ARGV>) {
     close ARGV if eof;
 }
 
-print << "END";
-# Survex translation template.
-# Copyright (C) YEAR COPYRIGHT HOLDERS
-# This file is distributed under the same licence as Survex.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: survex\\n"
-"Report-Msgid-Bugs-To: olly\@survex.com\\n"
-"POT-Creation-Date: $pot_creation_date\\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI:SE +ZONE\\n"
-"Language-Team: LANGUAGE <LL\@li.org>\\n"
-"MIME-Version: 1.0\\n"
-"Content-Type: text/plain; charset=utf-8\\n"
-"Content-Transfer-Encoding: 8bit\\n"
-END
-
 my $num_list = Locale::PO->load_file_asarray("survex.pot");
 my $first = 1;
 foreach my $po_entry (@{$num_list}) {
@@ -92,7 +77,27 @@ foreach my $po_entry (@{$num_list}) {
     }
     if ($first) {
 	$first = 0;
-	next if ($po_entry->msgid eq '""');
+	if ($po_entry->msgid eq '""') {
+	    chomp(my $header = $po_entry->dump);
+	    print $header;
+	    next;
+	}
+	print << "END";
+# Survex translation template.
+# Copyright (C) YEAR COPYRIGHT HOLDERS
+# This file is distributed under the same licence as Survex.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: survex\\n"
+"Report-Msgid-Bugs-To: olly\@survex.com\\n"
+"POT-Creation-Date: ${\(pot_creation_date)}\\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI:SE +ZONE\\n"
+"Language-Team: LANGUAGE <LL\@li.org>\\n"
+"MIME-Version: 1.0\\n"
+"Content-Type: text/plain; charset=utf-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+END
     }
     my $msg;
     if (exists $msgs{$msgno}) {
