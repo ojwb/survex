@@ -1,3 +1,10 @@
+Thu Mar 05 02:19:25 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot: Update line number references, and reorder messages
+	  a bit so some which are lower priority to translate are later in the
+	  file.
+	* lib/: Merge .pot changes.
+
 Thu Mar 05 01:05:24 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/extract-msgs.pl: Whitespace tweak.
