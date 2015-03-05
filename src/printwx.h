@@ -1,7 +1,7 @@
 /* printwx.h */
 /* Device dependent part of Survex wxWidgets driver */
 /* Copyright (C) 2004 Philip Underwood
- * Copyright (C) 2004,2005,2006,2011,2012,2013,2014 Olly Betts
+ * Copyright (C) 2004,2005,2006,2011,2012,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@
 class MainFrm;
 class wxComboBox;
 class wxStaticText;
-class wxSpinCtrl;
+class wxSpinCtrlDouble;
 class wxSpinEvent;
 
 // This dialog is also use for Export as well as Print.
@@ -47,8 +47,8 @@ class svxPrintDlg : public wxDialog {
 	wxBoxSizer* m_viewbox;
 	wxChoice* m_format;
 	wxStaticText* m_printSize;
-	wxSpinCtrl* m_bearing;
-	wxSpinCtrl* m_tilt;
+	wxSpinCtrlDouble* m_bearing;
+	wxSpinCtrlDouble* m_tilt;
 //	wxCheckBox* m_blanks;
 	wxString m_File;
 	MainFrm* mainfrm;

@@ -56,6 +56,41 @@
 
 using namespace std;
 
+// How many decimal points to show on angles:
+#define ANGLE_DP 1
+
+#if ANGLE_DP == 0
+# define ANGLE_FMT wxT("%03.f")
+# define ANGLE2_FMT wxT("%.f")
+#elif ANGLE_DP == 1
+# define ANGLE_FMT wxT("%05.1f")
+# define ANGLE2_FMT wxT("%.1f")
+#elif ANGLE_DP == 2
+# define ANGLE_FMT wxT("%06.2f")
+# define ANGLE2_FMT wxT("%.2f")
+#else
+# error Need to add ANGLE_FMT and ANGLE2_FMT for the currently set ANGLE_DP
+#endif
+
+static wxString
+format_angle(const wxChar * fmt, double angle)
+{
+    wxString s;
+    s.Printf(fmt, angle);
+    size_t dot = s.find('.');
+    size_t i = s.size();
+    while (i > dot) {
+	--i;
+	if (s[i] != '0') {
+	    if (i != dot) ++i;
+	    s.resize(i);
+	    break;
+	}
+    }
+    s += wmsg(/*°*/344);
+    return s;
+}
+
 enum {
 	svx_EXPORT = 1200,
 	svx_FORMAT,
@@ -338,19 +373,18 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_layout.show_mask = show_mask;
     m_layout.datestamp = datestamp;
     m_layout.datestamp_numeric = datestamp_numeric;
-    m_layout.rot = int(angle);
+    m_layout.rot = angle;
     m_layout.title = title;
     m_layout.cs_proj = cs_proj;
     if (mainfrm->IsExtendedElevation()) {
 	m_layout.view = layout::EXTELEV;
-	if (m_layout.rot != 0 && m_layout.rot != 180) m_layout.rot = 0;
+	if (m_layout.rot != 0.0 && m_layout.rot != 180.0) m_layout.rot = 0;
 	m_layout.tilt = 0;
     } else {
-	// FIXME rot and tilt shouldn't be integers.
-	m_layout.tilt = int(tilt_angle);
-	if (m_layout.tilt == -90) {
+	m_layout.tilt = tilt_angle;
+	if (m_layout.tilt == -90.0) {
 	    m_layout.view = layout::PLAN;
-	} else if (m_layout.tilt == 0) {
+	} else if (m_layout.tilt == 0.0) {
 	    m_layout.view = layout::ELEV;
 	} else {
 	    m_layout.view = layout::TILT;
@@ -438,14 +472,16 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	wxStaticText * brg_label, * tilt_label;
 	brg_label = new wxStaticText(this, -1, wmsg(/*Bearing*/259));
 	anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-	m_bearing = new wxSpinCtrl(this, svx_BEARING);
-	m_bearing->SetRange(0, 359);
+	m_bearing = new wxSpinCtrlDouble(this, svx_BEARING);
+	m_bearing->SetRange(0.0, 360.0);
+	m_bearing->SetDigits(ANGLE_DP);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
 	/* TRANSLATORS: Used in the print dialog: */
 	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-	m_tilt = new wxSpinCtrl(this, svx_TILT);
-	m_tilt->SetRange(-90, 90);
+	m_tilt = new wxSpinCtrlDouble(this, svx_TILT);
+	m_tilt->SetRange(-90.0, 90.0);
+	m_tilt->SetDigits(ANGLE_DP);
 	anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
 
 	m_viewbox->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
@@ -707,24 +743,24 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
 
 void
 svxPrintDlg::OnPlan(wxCommandEvent&) {
-    m_tilt->SetValue(-90);
+    m_tilt->SetValue(-90.0);
     SomethingChanged(svx_TILT);
 }
 
 void
 svxPrintDlg::OnElevation(wxCommandEvent&) {
-    m_tilt->SetValue(0);
+    m_tilt->SetValue(0.0);
     SomethingChanged(svx_TILT);
 }
 
 void
 svxPrintDlg::OnPlanUpdate(wxUpdateUIEvent& e) {
-    e.Enable(m_tilt->GetValue() != -90);
+    e.Enable(m_tilt->GetValue() != -90.0);
 }
 
 void
 svxPrintDlg::OnElevationUpdate(wxUpdateUIEvent& e) {
-    e.Enable(m_tilt->GetValue() != 0);
+    e.Enable(m_tilt->GetValue() != 0.0);
 }
 
 void
@@ -829,9 +865,9 @@ svxPrintDlg::UIToLayout(){
 
     if (m_layout.view != layout::EXTELEV && m_tilt) {
 	m_layout.tilt = m_tilt->GetValue();
-	if (m_layout.tilt == -90) {
+	if (m_layout.tilt == -90.0) {
 	    m_layout.view = layout::PLAN;
-	} else if (m_layout.tilt == 0) {
+	} else if (m_layout.tilt == 0.0) {
 	    m_layout.view = layout::ELEV;
 	} else {
 	    m_layout.view = layout::TILT;
@@ -996,9 +1032,7 @@ svxPrintout::draw_info_box()
       MOVEMM(div + 0.5, boxheight - 5.5);
       WriteString(wmsg(/*North*/115));
 
-      wxString angle;
-      angle.Printf(wxT("%03d"), l->rot);
-      angle += wmsg(/*°*/344);
+      wxString angle = format_angle(ANGLE_FMT, l->rot);
       wxString s;
       /* TRANSLATORS: This is used on printouts of plans, with %s replaced by
        * something like "123°".  The bearing is up the page. */
@@ -1024,17 +1058,11 @@ svxPrintout::draw_info_box()
       WriteString(wmsg(/*Elevation on*/116));
       
       MOVEMM(L, 2);
-      WriteString(wxString::Format(wxT("%03d%s"),
-				   (l->rot + 270) % 360,
-				   wmsg(/*°*/344).c_str()));
+      WriteString(format_angle(ANGLE_FMT, fmod(l->rot + 270.0, 360.0)));
       MOVEMM(R - 10, 2);
-      WriteString(wxString::Format(wxT("%03d%s"),
-				   (l->rot + 90) % 360,
-				   wmsg(/*°*/344).c_str()));
+      WriteString(format_angle(ANGLE_FMT, fmod(l->rot + 90.0, 360.0)));
 
-      wxString angle;
-      angle.Printf(wxT("%03d"), l->rot);
-      angle += wmsg(/*°*/344);
+      wxString angle = format_angle(ANGLE_FMT, l->rot);
       wxString s;
       if (l->view == layout::ELEV) {
 	  /* TRANSLATORS: This is used on printouts of elevations, with %s
@@ -1042,9 +1070,7 @@ svxPrintout::draw_info_box()
 	   * we’re looking. */
 	  s.Printf(wmsg(/*Elevation facing %s*/169), angle.c_str());
       } else {
-	  wxString a2;
-	  a2.Printf(wxT("%d"), l->tilt);
-	  a2 += wmsg(/*°*/344);
+	  wxString a2 = format_angle(ANGLE2_FMT, l->tilt);
 	  /* TRANSLATORS: This is used on printouts of tilted elevations, with
 	   * the first %s replaced by something like "123°", and the second by
 	   * something like "-45°".  The bearing is the direction we’re

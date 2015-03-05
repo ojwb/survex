@@ -1,6 +1,6 @@
 /* avenprcore.h
  * Header file for printer independent parts of Survex printer drivers
- * Copyright (C) 1994-2002,2004,2005,2012,2013,2014 Olly Betts
+ * Copyright (C) 1994-2002,2004,2005,2012,2013,2014,2015 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -61,7 +61,7 @@ public:
     wxString datestamp;
     time_t datestamp_numeric;
     double Scale;
-    int rot, tilt;
+    double rot, tilt;
     enum {PLAN, ELEV, TILT, EXTELEV} view;
 
     /* internal data, but may be accessed */

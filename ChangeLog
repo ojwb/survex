@@ -1,3 +1,8 @@
+Thu Mar 05 03:21:45 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.h,src/printwx.cc,src/printwx.h: Don't round bearing
+	  and tilt angles to integers when printing and exporting.
+
 Thu Mar 05 02:19:25 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot: Update line number references, and reorder messages
