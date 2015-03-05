@@ -1,3 +1,7 @@
+Thu Mar 05 04:32:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: Fix (C) year typo.
+
 Thu Mar 05 04:30:56 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aboutdlg.cc,src/aboutdlg.h: Make the button to dismiss the
