@@ -1,3 +1,9 @@
+Thu Mar 05 23:42:33 GMT 2015  Olly Betts <olly@survex.com>
+
+	* .gitignore,doc/manual.sgml,lib/Makefile.am,src/message.c: There's no
+	  need to duplicate de.msg to de_DE.msg, as the code will fall-back to
+	  de from de_DE anyway.
+
 Thu Mar 05 04:32:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.h: Fix (C) year typo.

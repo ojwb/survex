@@ -1101,9 +1101,6 @@ macosx_got_msg:
 		case SUBLANG_GERMAN_SWISS:
 		  msg_lang = "de_CH";
 		  break;
-		case SUBLANG_GERMAN:
-		  msg_lang = "de_DE";
-		  break;
 		default:
 		  msg_lang = "de";
 	       }

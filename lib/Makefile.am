@@ -16,11 +16,8 @@ check-local: survex.pot
 
 SUBDIRS = icons images
 
-po_files = bg.po ca.po de.po de_CH.po de_DE.po el.po en_US.po es.po fr.po\
+po_files = bg.po ca.po de.po de_CH.po el.po en_US.po es.po fr.po\
  hu.po id.po it.po pl.po pt.po pt_BR.po ro.po ru.po sk.po zh_CN.po
-
-de_DE.po:
-	ln -s de.po de_DE.po
 
 msg_files = $(po_files:.po=.msg) en.msg
 
@@ -32,7 +29,7 @@ EXTRA_DIST = survex.pot $(po_files)\
  make-pixel-font preload_font.h\
  INSTALL.OSX
 
-MAINTAINERCLEANFILES = $(msg_files) de_DE.po unifont.pixelfont preload_font.h
+MAINTAINERCLEANFILES = $(msg_files) unifont.pixelfont preload_font.h
 
 dist_pkgdata_DATA = print.ini bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 
