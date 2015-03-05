@@ -1,3 +1,9 @@
+Thu Mar 05 04:30:56 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aboutdlg.cc,src/aboutdlg.h: Make the button to dismiss the
+	  "About" dialog "OK" rather than "Close", which seems more logical,
+	  and also allows the dialog to be closed by pressing "Escape".
+
 Thu Mar 05 03:21:45 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.h,src/printwx.cc,src/printwx.h: Don't round bearing

@@ -37,7 +37,6 @@
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
     EVT_TIMER(about_TIMER, AboutDlg::OnTimer)
     EVT_BUTTON(wxID_COPY, AboutDlg::OnCopy)
-    EVT_BUTTON(wxID_CLOSE, AboutDlg::OnClose)
 END_EVENT_TABLE()
 
 void
@@ -57,12 +56,6 @@ AboutDlg::OnCopy(wxCommandEvent &)
 	// (Try to) make the selection persist after aven exits.
 	(void)wxTheClipboard->Flush();
     }
-}
-
-void
-AboutDlg::OnClose(wxCommandEvent &)
-{
-    Close();
 }
 
 AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
@@ -202,7 +195,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
     bottom->Add(5, 5, 1);
     bottom->Add(new wxButton(this, wxID_COPY), 0, wxRIGHT | wxBOTTOM, 6);
-    wxButton* close = new wxButton(this, wxID_CLOSE);
+    wxButton* close = new wxButton(this, wxID_OK);
     bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
     vert->SetMinSize(0, bitmap.GetHeight());

@@ -35,7 +35,6 @@ public:
     AboutDlg(wxWindow* parent, const wxIcon & app_icon);
     void OnTimer(wxTimerEvent &e);
     void OnCopy(wxCommandEvent &e);
-    void OnClose(wxCommandEvent &e);
 
 private:
     wxBitmap bitmap;
