@@ -36,7 +36,7 @@ while (<ARGV>) {
 	    print STDERR "$ARGV:$.: Ignored TRANSLATORS comment: $translator_comment\n";
 	}
 	$translator_comment = $comment;
-        last if !defined $_;
+	last if !defined $_;
     }
 
     while (m!/\*(.*?)\*/(\d+)\b!g) {
