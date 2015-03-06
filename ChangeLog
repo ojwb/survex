@@ -1,3 +1,7 @@
+Fri Mar 06 12:38:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Improve wording of FIXME comment.
+
 Fri Mar 06 11:48:08 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

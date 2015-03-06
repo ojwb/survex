@@ -1591,12 +1591,12 @@ data_normal(void)
 		nextch();
 		while (ch >= 'A' && ch <= 'Z') {
 		   compass_dat_flags |= BIT(ch - 'A');
-		   /* FIXME: we currently understand:
+		   /* We currently understand:
 		    *   L (exclude from length)
 		    *   X (exclude data)
-		    * but should also handle at least some of:
-		    *   C (no adjustment)
-		    *   P (no plot)
+		    * FIXME: but should also handle at least some of:
+		    *   C (no adjustment) (set all (co)variances to 0?)
+		    *   P (no plot) (new flag in 3d for "hidden by default"?)
 		    */
 		   nextch();
 		}
