@@ -2,6 +2,7 @@
 
 xpm_files = \
 	aven.xpm \
+	log.xpm \
 	open.xpm \
 	open_pres.xpm \
 	rotation.xpm \

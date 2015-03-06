@@ -1655,18 +1655,6 @@ msgstr ""
 msgid "[SURVEY_FILE]"
 msgstr ""
 
-#. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any
-#. accelerator key.
-#.
-#. The string "\t" separates the menu text and any accelerator key.
-#.
-#. "File" menu.  The accelerators must be different within this group.
-#. c.f. 201, 380, 381.
-#: ../src/mainfrm.cc:795
-#: n:220
-msgid "&Open…\tCtrl+O"
-msgstr ""
-
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.  Try to keep this fairly short.
 #: ../src/gfxcore.cc:1048
@@ -2652,6 +2640,23 @@ msgstr ""
 #: ../src/mainfrm.cc:249
 #: n:379
 msgid "Northing"
+msgstr ""
+
+#. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any
+#. accelerator key.
+#.
+#. The string "\t" separates the menu text and any accelerator key.
+#.
+#. "File" menu.  The accelerators must be different within this group.
+#. c.f. 201, 380, 381.
+#: ../src/mainfrm.cc:795
+#: n:220
+msgid "&Open…\tCtrl+O"
+msgstr ""
+
+#: ../src/mainfrm.cc:796
+#: n:144
+msgid "Show &Log"
 msgstr ""
 
 #: ../src/mainfrm.cc:798

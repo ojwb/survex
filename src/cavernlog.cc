@@ -88,8 +88,8 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
     return s;
 }
 
-CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, wxWindow * parent)
-    : wxHtmlWindow(parent), mainfrm(mainfrm_)
+CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
+    : wxHtmlWindow(parent), mainfrm(mainfrm_), init_done(false), survey(survey_)
 {
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
@@ -459,12 +459,11 @@ abort:
 	}
 	return -1;
     }
-    if (link_count) {
-	AppendToPage(wxString::Format(wxT("<avenbutton id=1234 name=\"%s\">"),
-				      wmsg(/*Reprocess*/184).c_str()));
-	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
-	Update();
-    }
+    AppendToPage(wxString::Format(wxT("<avenbutton id=1234 name=\"%s\">"),
+				  wmsg(/*Reprocess*/184).c_str()));
+    AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
+    Update();
+    init_done = false;
     return link_count;
 }
 
@@ -472,7 +471,15 @@ void
 CavernLogWindow::OnReprocess(wxCommandEvent & e)
 {
     SetPage(wxString());
-    if (process(filename) == 0) {
+    int result = process(filename);
+    if (result < 0) return;
+    mainfrm->AddToFileHistory(filename);
+    wxString file3d(filename, 0, filename.length() - 3);
+    file3d.append(wxT("3d"));
+    if (!mainfrm->LoadData(file3d, survey)) {
+	return;
+    }
+    if (result == 0) {
 	OnOK(e);
     }
 }
@@ -480,5 +487,10 @@ CavernLogWindow::OnReprocess(wxCommandEvent & e)
 void
 CavernLogWindow::OnOK(wxCommandEvent &)
 {
-    mainfrm->InitialiseAfterLoad(filename);
+    if (init_done) {
+	mainfrm->HideLog(this);
+    } else {
+	mainfrm->InitialiseAfterLoad(filename);
+	init_done = true;
+    }
 }

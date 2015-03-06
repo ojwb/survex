@@ -54,7 +54,8 @@ using namespace std;
 #define MARK_PREV 3
 
 enum {
-    menu_FILE_PAGE_SETUP = 1000,
+    menu_FILE_LOG = 1000,
+    menu_FILE_PAGE_SETUP,
     menu_FILE_SCREENSHOT,
     menu_FILE_EXPORT,
     menu_PRES_NEW,
@@ -188,6 +189,7 @@ class MainFrm : public wxFrame {
     int m_DateMin, m_DateExt;
     bool complete_dateinfo;
     GfxCore* m_Gfx;
+    wxWindow* m_Log;
     GUIControl* m_Control;
     int m_NumEntrances;
     int m_NumFixedPts;
@@ -221,9 +223,8 @@ class MainFrm : public wxFrame {
     PrefsDlg* m_PrefsDlg;
 #endif
 
-    void FillTree();
+    void FillTree(const wxString & root_name);
     bool ProcessSVXFile(const wxString & file);
-    bool LoadData(const wxString& file, const wxString& prefix);
 //    void FixLRUD(traverse & centreline);
     void CentreDataset(const Vector3 & vmin);
 
@@ -233,12 +234,15 @@ class MainFrm : public wxFrame {
 
     void UpdateStatusBar();
 
-    void AddToFileHistory(const wxString & file);
-
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);
 
+    // public for CavernLog.
+    bool LoadData(const wxString& file, const wxString& prefix);
+    void AddToFileHistory(const wxString & file);
+
     void InitialiseAfterLoad(const wxString & file);
+    void OnShowLog(wxCommandEvent& event);
 
     void OnMRUFile(wxCommandEvent& event);
     void OpenFile(const wxString& file, const wxString& survey = wxString());
@@ -267,6 +271,7 @@ public:
     void OnHideUpdate(wxUpdateUIEvent& ui);
 
     void OnOpen(wxCommandEvent& event);
+    void HideLog(wxWindow * log_window);
     void OnScreenshot(wxCommandEvent& event);
     void OnScreenshotUpdate(wxUpdateUIEvent& event);
     void OnFilePreferences(wxCommandEvent& event);
@@ -303,6 +308,7 @@ public:
 	}
     }
 
+    void OnShowLogUpdate(wxUpdateUIEvent &ui) { ui.Enable(m_Log != NULL); }
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
 

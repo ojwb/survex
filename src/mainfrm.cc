@@ -60,6 +60,7 @@
 // read-only page and be shared between processes.
 #define static static const
 #include "../lib/icons/aven.xpm"
+#include "../lib/icons/log.xpm"
 #include "../lib/icons/open.xpm"
 #include "../lib/icons/open_pres.xpm"
 #include "../lib/icons/rotation.xpm"
@@ -515,6 +516,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_IDLE(MainFrm::OnIdle)
 
     EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
+    EVT_MENU(menu_FILE_LOG, MainFrm::OnShowLog)
     EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
     EVT_MENU(menu_FILE_SCREENSHOT, MainFrm::OnScreenshot)
@@ -612,6 +614,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
 
+    EVT_UPDATE_UI(menu_FILE_LOG, MainFrm::OnShowLogUpdate)
     EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
@@ -736,7 +739,8 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
     m_SashPosition(-1),
-    m_Gfx(NULL), m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
+    m_Gfx(NULL), m_Log(NULL),
+    m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0),
     m_HasUndergroundLegs(false), m_HasSplays(false), m_HasSurfaceLegs(false),
     m_HasErrorInformation(false), m_IsExtendedElevation(false),
@@ -793,6 +797,7 @@ void MainFrm::CreateMenuBar()
      * "File" menu.  The accelerators must be different within this group.
      * c.f. 201, 380, 381. */
     filemenu->Append(wxID_OPEN, wmsg(/*&Open…\tCtrl+O*/220));
+    filemenu->Append(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
     filemenu->Append(wxID_PRINT, wmsg(/*&Print…\tCtrl+P*/380));
@@ -996,6 +1001,7 @@ void MainFrm::MakeToolBar()
     // FIXME: TRANSLATE tooltips
     toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOL(open), wxT("Open a survey file for viewing"));
     toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOL(open_pres), wxT("Open a presentation"));
+    toolbar->AddTool(menu_FILE_LOG, wxT("View log"), TOOL(log), wxT("View log from processing survey data"));
     toolbar->AddSeparator();
     toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), TOOL(rotation), wxNullBitmap, wxT("Toggle rotation"));
     toolbar->AddTool(menu_ORIENT_PLAN, wxT("Plan"), TOOL(plan), wxT("Switch to plan view"));
@@ -1492,6 +1498,25 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     // Update window title.
     SetTitle(m_Title + " - "APP_NAME);
 
+    // Sort the labels ready for filling the tree.
+    m_Labels.sort(LabelCmp(separator));
+
+    // Fill the tree of stations and prefixes.
+    FillTree(wxFileNameFromPath(file));
+
+    // Sort labels so that entrances are displayed in preference,
+    // then fixed points, then exported points, then other points.
+    //
+    // Also sort by leaf name so that we'll tend to choose labels
+    // from different surveys, rather than labels from surveys which
+    // are earlier in the list.
+    m_Labels.sort(LabelPlotCmp(separator));
+
+    if (!m_FindBox->GetValue().empty()) {
+	// Highlight any stations matching the current search.
+	DoFind();
+    }
+
     return true;
 }
 
@@ -1566,10 +1591,10 @@ MainFrm::FixLRUD(traverse & centreline)
 }
 #endif
 
-void MainFrm::FillTree()
+void MainFrm::FillTree(const wxString & root_name)
 {
     // Create the root of the tree.
-    wxTreeItemId treeroot = m_Tree->AddRoot(wxFileNameFromPath(m_File));
+    wxTreeItemId treeroot = m_Tree->AddRoot(root_name);
 
     // Fill the tree of stations and prefixes.
     stack<wxTreeItemId> previous_ids;
@@ -1772,7 +1797,7 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 	wxString ext(file, file.length() - 3, 3);
 	ext.MakeLower();
 	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak")) {
-	    CavernLogWindow * log = new CavernLogWindow(this, m_Splitter);
+	    CavernLogWindow * log = new CavernLogWindow(this, survey, m_Splitter);
 	    wxWindow * win = m_Splitter->GetWindow1();
 	    m_Splitter->ReplaceWindow(win, log);
 	    if (m_Splitter->GetWindow2() == NULL) {
@@ -1803,6 +1828,14 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 	return;
     AddToFileHistory(file);
     InitialiseAfterLoad(file);
+
+    // If aven is showing the log for a .svx file and you load a .3d file, then
+    // at this point m_Log will be the log window for the .svx file, so destroy
+    // it - it should never legitimately be set if we get here.
+    if (m_Log) {
+	m_Log->Destroy();
+	m_Log = NULL;
+    }
 }
 
 void MainFrm::InitialiseAfterLoad(const wxString & file)
@@ -1827,25 +1860,6 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
     if (!same_file)
 	m_File = file;
 
-    // Sort the labels ready for filling the tree.
-    m_Labels.sort(LabelCmp(separator));
-
-    // Fill the tree of stations and prefixes.
-    FillTree();
-
-    // Sort labels so that entrances are displayed in preference,
-    // then fixed points, then exported points, then other points.
-    //
-    // Also sort by leaf name so that we'll tend to choose labels
-    // from different surveys, rather than labels from surveys which
-    // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp(separator));
-
-    if (!m_FindBox->GetValue().empty()) {
-	// Highlight any stations matching the current search.
-	DoFind();
-    }
-
     wxWindow * win = NULL;
     if (m_Splitter->GetWindow2() == NULL) {
 	win = m_Splitter->GetWindow1();
@@ -1859,14 +1873,38 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
     }
 
     m_Gfx->Initialise(same_file);
+
+    if (win) {
+	// FIXME: check it actually is the log window!
+	if (m_Log && m_Log != win)
+	    m_Log->Destroy();
+	m_Log = win;
+	m_Log->Show(false);
+    }
+
     if (!IsFullScreen()) {
 	m_Notebook->Show(true);
     }
 
     m_Gfx->Show(true);
     m_Gfx->SetFocus();
+}
 
-    if (win) win->Destroy();
+void MainFrm::HideLog(wxWindow * log_window)
+{
+    if (!IsFullScreen()) {
+	m_Splitter->SplitVertically(m_Notebook, m_Gfx, m_SashPosition);
+    }
+
+    m_Log = log_window;
+    m_Log->Show(false);
+
+    if (!IsFullScreen()) {
+	m_Notebook->Show(true);
+    }
+
+    m_Gfx->Show(true);
+    m_Gfx->SetFocus();
 }
 
 //
@@ -1931,6 +1969,20 @@ void MainFrm::OnOpen(wxCommandEvent&)
     if (dlg.ShowModal() == wxID_OK) {
 	OpenFile(dlg.GetPath());
     }
+}
+
+void MainFrm::OnShowLog(wxCommandEvent&)
+{
+    if (!m_Log) return;
+    wxWindow * win = m_Splitter->GetWindow1();
+    m_Splitter->ReplaceWindow(win, m_Log);
+    if (m_Splitter->IsSplit()) {
+	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
+	m_Splitter->Unsplit();
+    }
+    m_Log->Show(true);
+    m_Log->SetFocus();
+    m_Log = NULL;
 }
 
 void MainFrm::OnScreenshot(wxCommandEvent&)

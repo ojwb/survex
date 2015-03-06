@@ -1,3 +1,11 @@
+Fri Mar 06 03:24:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/log.xpm,lib/survex.pot,src/: Add a
+	  menu item and toolbar button to show the cavern log window if the
+	  currently shown survey data was processed by aven.  Reported by
+	  Hugh St Lawrence in #47, and by Dave Clucas and others previously on
+	  the list.
+
 Fri Mar 06 01:24:57 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Add complete list of quantities you can set SDs

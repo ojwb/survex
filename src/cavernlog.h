@@ -31,8 +31,12 @@ class CavernLogWindow : public wxHtmlWindow {
 
     MainFrm * mainfrm;
 
+    bool init_done;
+
+    wxString survey;
+
   public:
-    CavernLogWindow(MainFrm * mainfrm_, wxWindow * parent);
+    CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent);
 
     /** Process survey data in file.
      *
