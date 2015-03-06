@@ -1,3 +1,9 @@
+Fri Mar 06 01:24:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Add complete list of quantities you can set SDs
+	  for.  Thanks for Wookey for highlighting that the previous list was
+	  incomplete.
+
 Fri Mar 06 01:24:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/id.po,lib/pl.po: More translation updates.

@@ -2503,10 +2503,30 @@ getting an error message and having to guess what the real problem is.
 </Para>
 
 <Para>
-&lt;quantity&gt; is one of
-TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|DX|DY|DZ <!-- FIXME:
-check this list -->
+&lt;quantity&gt; is one of (each group gives alternative names for the same
+quantity):
 </Para>
+
+<ItemizedList>
+    <listitem><para>TAPE, LENGTH</para></listitem>
+    <listitem><para>COMPASS, BEARING</para></listitem>
+    <listitem><para>BACKCOMPASS, BACKBEARING</para></listitem>
+    <listitem><para>CLINO, GRADIENT</para></listitem>
+    <listitem><para>BACKCLINO, BACKGRADIENT</para></listitem>
+    <listitem><para>COUNTER, COUNT</para></listitem>
+    <listitem><para>DEPTH</para></listitem>
+    <listitem><para>DECLINATION</para></listitem>
+    <listitem><para>DX, EASTING</para></listitem>
+    <listitem><para>DY, NORTHING</para></listitem>
+    <listitem><para>DZ, ALTITUDE</para></listitem>
+    <listitem><para>LEFT</para></listitem>
+    <listitem><para>RIGHT</para></listitem>
+    <listitem><para>UP, CEILING</para></listitem>
+    <listitem><para>DOWN, FLOOR</para></listitem>
+    <listitem><para>LEVEL</para></listitem>
+    <listitem><para>PLUMB</para></listitem>
+    <listitem><para>POSITION</para></listitem>
+</ItemizedList>
 
 <Para>
 &lt;standard deviation&gt; must include units and thus is typically
