@@ -899,8 +899,8 @@ handle_compass(real *p_var)
 	 real diff = comp - backcomp;
 	 real adj = fabs(diff) > M_PI ? M_PI : 0;
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	 if (sqrd(diff / 2.0) > compvar + VAR(Q_BACKBEARING)) {
-	    /* fore and back readings differ by more than 2 sds */
+	 if (sqrd(diff / 3.0) > compvar + VAR(Q_BACKBEARING)) {
+	    /* fore and back readings differ by more than 3 sds */
 	    /* TRANSLATORS: Degrees are the angular measurement where there are
 	     * 360 in a full circle. */
 	    warn_readings_differ(/*COMPASS reading and BACKCOMPASS reading disagree by %s degrees*/98, diff);

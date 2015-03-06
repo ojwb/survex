@@ -1,3 +1,8 @@
+Fri Mar 06 05:08:28 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Warn if fore and back measurements differ by more than
+	  3 SDs, rather than just by 2 SDs.
+
 Fri Mar 06 05:01:24 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: More translation updates.
