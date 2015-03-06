@@ -85,10 +85,6 @@ void drawticks(border clip, int tick_size, int x, int y);
 
 int as_int(const char *v, char *p, int min_val, int max_val);
 unsigned long as_colour(const char *v, char *p);
-int as_bool(const char *v, char *p);
-double as_double(const char *v, char *p, double min_val, double max_val);
-int as_escstring(const char *v, char *s);
-char *as_string(const char *v, char *p);
 
 #if 0
 class MainFrm;
