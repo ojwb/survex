@@ -1189,7 +1189,7 @@ msgstr "La topografia contiene %ld componenti connesse."
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Salva Log"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -1479,7 +1479,7 @@ msgstr "File JSON"
 #: ../src/cavernlog.cc:508
 #: n:447
 msgid "Log files"
-msgstr ""
+msgstr "File di log"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -2540,7 +2540,7 @@ msgstr "&Apri…\tCtrl+O"
 #: ../src/mainfrm.cc:800
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Mostra &Log"
 
 #: ../src/mainfrm.cc:803
 #: n:380

@@ -1189,7 +1189,7 @@ msgstr "Survei yang memiliki %ld komponen terhubung."
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Simpan Log"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.

@@ -2541,7 +2541,7 @@ msgstr "&Otvoriť…\tCtrl+O"
 #: ../src/mainfrm.cc:800
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Zobraziť &záznam"
 
 #: ../src/mainfrm.cc:803
 #: n:380
