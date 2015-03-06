@@ -1,3 +1,8 @@
+Fri Mar 06 04:30:33 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix TRANSLATORS comment in source to match .pot
+	  file.
+
 Fri Mar 06 04:00:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Avoid hardcoding numeric value of LOG_REPROCESS.

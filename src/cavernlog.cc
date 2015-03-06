@@ -504,7 +504,7 @@ CavernLogWindow::OnSave(wxCommandEvent &)
 #ifdef __WXMOTIF__
     wxString ext(wxT("*.log"));
 #else
-    /* TRANSLATORS: Log files from cavern (extension .log) */
+    /* TRANSLATORS: Log files from running cavern (extension .log) */
     wxString ext = wmsg(/*Log files*/447);
     ext += wxT("|*.log");
 #endif
