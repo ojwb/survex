@@ -70,6 +70,20 @@ for my $po_file (@ARGV) {
     $file = "$srcdir/$po_file";
     my $po_hash = Locale::PO->load_file_ashash($file);
 
+    if (exists $$po_hash{'""'}) {
+	if ($$po_hash{'""'}->msgstr =~ /^(?:.*\\n)?Language:\s*([^\s\\]+)/im) {
+	    if ($language ne $1) {
+		my $line = 3 + scalar(@{[$& =~ /(\\n)/g]});
+		print STDERR "$file:$line: Language code '$1' doesn't match '$language' from filename\n";
+	    }
+	} else {
+	    my $line = 2 + scalar(@{[$$po_hash{'""'}->msgstr =~ /(\\n)/g]});
+	    print STDERR "$file:$line: No suitable 'Language:' field in header\n";
+	}
+    } else {
+	print STDERR "$file:1: Expected 'msgid \"\"' with header\n";
+    }
+
     foreach my $po_entry (@{$num_list}) {
 	my $ref = $po_entry->reference;
 	(defined $ref && $ref =~ /^n:(\d+)$/m) or next;
