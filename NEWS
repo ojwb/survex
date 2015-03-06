@@ -1,3 +1,68 @@
+c11ceba6 (Olly Betts 2015-03-06 23:30:34 +1300    1) Fri Mar 06 10:30:26 GMT 2015  Olly Betts <olly@survex.com>
+
+Changes in 1.2.18 (2015-03-07):
+
+* cavern: Warn if fore and back measurements differ by more than 3 SDs, rather
+  than just by 2 SDs.
+
+* aven: Add a menu item and toolbar button to show the cavern log window if the
+  currently shown survey data was processed by aven.  Reported by Hugh St
+  Lawrence in #47, and by Dave Clucas and others previously on the list.
+
+* aven : Add "Save Log" button to Aven's cavern log window.
+
+* doc/manual.sgml: Add complete list of quantities you can set SDs for.  Thanks
+  for Wookey for highlighting that the previous list was incomplete.
+
+* aven: Make the button to dismiss the "About" dialog "OK" rather than "Close",
+  which seems more logical, and also allows the dialog to be closed by pressing
+  "Escape".
+
+* aven: Don't round bearing and tilt angles to integers when printing and
+  exporting.
+
+* aven: In cavern log window, highlight "error" markers in red and "warning"
+  markers in orange.
+
+* aven: Aven's support for reading colours and font sizes for printouts from
+  print.ini has never worked - the contents of the ini files are ignored due to
+  a bug which has been there since the code was added in 2005 - but nobody has
+  ever complained.  So just strip out that code entirely - we should support
+  setting the colours and font sizes, but a GUI interface for setting them
+  would be better.
+
+* cavern: Include column number when a *include file isn't found.
+
+* cavern: Show 'error' in front of error messages, like we show 'warning' in
+  front of warnings.  Fixes #48, reported by Wookey.
+
+* aven: Rework code to read cavern's output.  In particular, we no longer mix
+  buffered I/O with select() on the file descriptor.
+
+* aven: Fix to compile with a Unicode build of wxWidgets 2.8.  Reported by Bill
+  Gee.
+
+* aven: Add JSON export.
+
+* If we run out of memory while reading a processed survey data file, include
+  the filename in the error message.
+
+	* lib/: More translation updates.
+
+	* lib/el.po: Fix language code in file to be 'el'.
+
+	* lib/hu.po: Change '...' to ellipses.
+	* lib/hu.po: Add missing quotes.
+	* lib/hu.po: Use curly double quotes.
+	* lib/hu.po: Remove erroneous quotes from message.
+
+	* lib/ru.po: Merge more translation updates from "vsuhachev".
+
+	* lib/id.po: Merged translation updates from "Cave ID" - all messages
+	  are now translated into Indonesian!
+
+	* doc/TODO.htm: Update.
+
 Changes in 1.2.17 (2015-02-24):
 
 * MacOS X version:
