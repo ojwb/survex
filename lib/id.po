@@ -1555,7 +1555,7 @@ msgstr "Berkas SVG"
 #: ../src/printwx.cc:284
 #: n:445
 msgid "JSON files"
-msgstr ""
+msgstr "Berkas JSON"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the

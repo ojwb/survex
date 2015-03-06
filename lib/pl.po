@@ -57,7 +57,7 @@ msgstr "ostrzeżenie"
 #: ../src/message.c:1259
 #: n:93
 msgid "error"
-msgstr ""
+msgstr "błąd"
 
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
 #. by the line number in that file.  Your translation should also contain
@@ -163,7 +163,7 @@ msgstr "Wykonanie polecenia “%s” nie powiodło się"
 #: ../src/sorterr.c:240
 #: n:18
 msgid "Error reading file"
-msgstr ""
+msgstr "Błąd przy odczycie pliku"
 
 #: ../src/message.c:1275
 #: n:19
@@ -854,7 +854,7 @@ msgstr ""
 #: n:109
 #, c-format
 msgid "Error reading from file “%s”"
-msgstr ""
+msgstr "Błąd przy odczycie pliku “%s”"
 
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:41
@@ -863,12 +863,12 @@ msgstr ""
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
-msgstr ""
+msgstr "Błąd zapisu do pliku “%s”"
 
 #: ../src/filename.c:82
 #: n:111
 msgid "Error writing to file"
-msgstr ""
+msgstr "Błąd zapisu do pliku"
 
 #: ../src/sorterr.c:81
 #: ../src/sorterr.c:98
