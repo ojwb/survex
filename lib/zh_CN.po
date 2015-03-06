@@ -1470,7 +1470,7 @@ msgstr "SVG 文件"
 #: ../src/printwx.cc:319
 #: n:445
 msgid "JSON files"
-msgstr ""
+msgstr "JSON 文件"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:508

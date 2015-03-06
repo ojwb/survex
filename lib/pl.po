@@ -1445,7 +1445,7 @@ msgstr ""
 #: ../src/printwx.cc:320
 #: n:444
 msgid "KML files"
-msgstr ""
+msgstr "KML pliki"
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated:
@@ -1471,7 +1471,7 @@ msgstr "SVG pliki"
 #: ../src/printwx.cc:319
 #: n:445
 msgid "JSON files"
-msgstr ""
+msgstr "JSON pliki"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:508

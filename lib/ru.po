@@ -1471,7 +1471,7 @@ msgstr "SVG файлы"
 #: ../src/printwx.cc:319
 #: n:445
 msgid "JSON files"
-msgstr ""
+msgstr "JSON файлы"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:508

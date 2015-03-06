@@ -1412,29 +1412,29 @@ msgstr "Tutti i file di rilievo"
 #: ../src/mainfrm.cc:1946
 #: n:329
 msgid "Survex svx files"
-msgstr "file Survex svx"
+msgstr "File Survex svx"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
 #: ../src/mainfrm.cc:1954
 #: n:330
 msgid "Compass DAT and MAK files"
-msgstr "file Compass DAT e MAK"
+msgstr "File Compass DAT e MAK"
 
 #: ../src/printwx.cc:312
 #: n:411
 msgid "DXF files"
-msgstr "file DXF"
+msgstr "File DXF"
 
 #: ../src/printwx.cc:313
 #: n:412
 msgid "EPS files"
-msgstr "file EPS"
+msgstr "File EPS"
 
 #: ../src/printwx.cc:314
 #: n:413
 msgid "GPX files"
-msgstr "file GPX"
+msgstr "File GPX"
 
 #. TRANSLATORS: Here "plotter" refers to a machine which draws a printout
 #. on a (usually large) sheet of paper using a pen mounted in a motorised
@@ -1447,7 +1447,7 @@ msgstr "HPGL per plotter"
 #: ../src/printwx.cc:320
 #: n:444
 msgid "KML files"
-msgstr "file KML"
+msgstr "File KML"
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated:
@@ -1463,17 +1463,17 @@ msgstr "Compass PLT per Carto"
 #: ../src/printwx.cc:328
 #: n:416
 msgid "Skencil files"
-msgstr "file Skencil"
+msgstr "File Skencil"
 
 #: ../src/printwx.cc:329
 #: n:417
 msgid "SVG files"
-msgstr "file SVG"
+msgstr "File SVG"
 
 #: ../src/printwx.cc:319
 #: n:445
 msgid "JSON files"
-msgstr ""
+msgstr "File JSON"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:508

@@ -1189,7 +1189,7 @@ msgstr "Meranie (survey) má %ld spojených častí."
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Uložiť Záznam"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -1473,7 +1473,7 @@ msgstr "Súbory SVG"
 #: ../src/printwx.cc:319
 #: n:445
 msgid "JSON files"
-msgstr ""
+msgstr "Súbory JSON"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:508
