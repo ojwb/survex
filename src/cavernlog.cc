@@ -238,8 +238,8 @@ CavernLogWindow::process(const wxString &file)
 	return -2;
     }
 
-    const wxString & error_marker = wmsg(/*error*/93);
-    const wxString & warning_marker = wmsg(/*warning*/4);
+    const wxString & error_marker = wmsg(/*error*/93) + ":";
+    const wxString & warning_marker = wmsg(/*warning*/4) + ":";
 
     int cavern_fd;
 #ifdef __WXMSW__
@@ -379,12 +379,12 @@ CavernLogWindow::process(const wxString &file)
 			    if (cur.substr(offset, error_marker.size()) == error_marker) {
 				// Show "error" marker in red.
 				cur.insert(offset, wxT("<span style=\"color:red\">"));
-				offset += 24 + error_marker.size();
+				offset += 24 + error_marker.size() - 1;
 				cur.insert(offset, wxT("</span>"));
 			    } else if (cur.substr(offset, warning_marker.size()) == warning_marker) {
 				// Show "warning" marker in orange.
 				cur.insert(offset, wxT("<span style=\"color:orange\">"));
-				offset += 27 + warning_marker.size();
+				offset += 27 + warning_marker.size() - 1;
 				cur.insert(offset, wxT("</span>"));
 			    }
 

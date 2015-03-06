@@ -1,3 +1,7 @@
+Fri Mar 06 00:49:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Require ':' after error/warning marker.
+
 Fri Mar 06 00:42:43 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/el.po: Fix language code in file to be 'el'.
