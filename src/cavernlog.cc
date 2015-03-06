@@ -40,10 +40,11 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-enum { LOG_REPROCESS = 1234 };
+enum { LOG_REPROCESS = 1234, LOG_SAVE = 1235 };
 
 BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
     EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
+    EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
 END_EVENT_TABLE()
 
@@ -185,6 +186,8 @@ CavernLogWindow::process(const wxString &file)
     SetFocus();
     filename = file;
 
+    log_txt.resize(0);
+
 #ifdef __WXMSW__
     SetEnvironmentVariable(wxT("SURVEX_UTF8"), wxT("1"));
 #else
@@ -291,6 +294,7 @@ CavernLogWindow::process(const wxString &file)
 	    }
 	    break;
 	}
+	log_txt.append((const char *)end, r);
 	end += r;
 
 	const unsigned char * p = buf;
@@ -445,6 +449,11 @@ CavernLogWindow::process(const wxString &file)
     }
 abort:
 
+    /* TRANSLATORS: Label for button in aven’s cavern log window which
+     * allows the user to save the log to a file. */
+    AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
+				  (int)LOG_SAVE,
+				  wmsg(/*Save Log*/446).c_str()));
     int retval = pclose(cavern_out);
     if (retval) {
 	/* TRANSLATORS: Label for button in aven’s cavern log window which
@@ -482,6 +491,37 @@ CavernLogWindow::OnReprocess(wxCommandEvent & e)
     if (result == 0) {
 	OnOK(e);
     }
+}
+
+void
+CavernLogWindow::OnSave(wxCommandEvent &)
+{
+    wxString filelog(filename, 0, filename.length() - 3);
+    filelog += wxT("log");
+    AvenAllowOnTop ontop(mainfrm);
+#ifdef __WXMOTIF__
+    wxString ext(wxT("*.log"));
+#else
+    /* TRANSLATORS: Log files from cavern (extension .log) */
+    wxString ext = wmsg(/*Log files*/447);
+    ext += wxT("|*.log");
+#endif
+    wxFileDialog dlg(this, wmsg(/*Select an output filename*/319),
+		     wxString(), filelog, ext,
+		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+    if (dlg.ShowModal() != wxID_OK) return;
+    filelog = dlg.GetPath();
+#ifdef __WXMSW__
+    FILE * fh_log = _wfopen(filelog.fn_str(), L"w");
+#else
+    FILE * fh_log = fopen(filelog.mb_str(), "w");
+#endif
+    if (!fh_log) {
+	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), filelog.c_str()));
+	return;
+    }
+    fwrite(log_txt.data(), log_txt.size(), 1, fh_log);
+    fclose(fh_log);
 }
 
 void

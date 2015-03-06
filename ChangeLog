@@ -1,3 +1,8 @@
+Fri Mar 06 03:56:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/cavernlog.cc,src/cavernlog.h: Add "Save Log"
+	  button to Aven's cavern log window.
+
 Fri Mar 06 03:24:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am,lib/icons/log.xpm,lib/survex.pot,src/: Add a

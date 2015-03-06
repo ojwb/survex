@@ -1235,6 +1235,13 @@ msgid "Survey has %ld connected components."
 msgstr ""
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
+#. allows the user to save the log to a file.
+#: ../src/cavernlog.cc:450
+#: n:446
+msgid "Save Log"
+msgstr ""
+
+#. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
 #: ../src/cavernlog.cc:453
 #: ../src/cavernlog.cc:464
@@ -1556,6 +1563,12 @@ msgstr ""
 #: ../src/printwx.cc:284
 #: n:445
 msgid "JSON files"
+msgstr ""
+
+#. TRANSLATORS: Log files from running cavern (extension .log)
+#: ../src/cavernlog.cc:508
+#: n:447
+msgid "Log files"
 msgstr ""
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
