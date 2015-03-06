@@ -1,3 +1,13 @@
+Fri Mar 06 10:15:16 GMT 2015  Olly Betts <olly@survex.com>
+
+	* .gitignore,Makefile.am,debian/survex.install,doc/,lib/,src/: Aven's
+	  support for reading colours and font sizes for printouts from
+	  print.ini has never worked - the contents of the ini files are
+	  ignored due to a bug which has been there since the code was added
+	  in 2005 - but nobody has ever complained.  So just strip out that
+	  code entirely - we should support setting the colours and font sizes,
+	  but a GUI interface for setting them would be better.
+
 Fri Mar 06 07:00:35 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.h: Remove prototypes for functions we no longer

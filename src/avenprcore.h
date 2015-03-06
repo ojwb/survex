@@ -83,9 +83,6 @@ public:
 /* things for a back end */
 void drawticks(border clip, int tick_size, int x, int y);
 
-int as_int(const char *v, char *p, int min_val, int max_val);
-unsigned long as_colour(const char *v, char *p);
-
 #if 0
 class MainFrm;
 void print_all(MainFrm *m_parent, layout *l, device *pri);

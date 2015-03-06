@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
- filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h kml.h\
+ filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h kml.h\
  labelinfo.h listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h\
  netbits.h netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
@@ -45,7 +45,7 @@ aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
- avenprcore.cc printwx.cc ini.c hash.c \
+ avenprcore.cc printwx.cc hash.c \
  buttontaghandler.cc
 
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \

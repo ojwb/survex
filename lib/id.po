@@ -2910,18 +2910,6 @@ msgstr "Aslinya dimasukkan di sini"
 msgid "ROOT is deprecated"
 msgstr "ROOT sudah ditinggalkan"
 
-#: ../src/avenprcore.cc:125
-#: n:82
-#, c-format
-msgid "Parameter “%s” has invalid value “%s” in printer configuration file"
-msgstr "Parameter “%s” nilai tidak valid “%s” dalam berkas konfigurasi printer"
-
-#: ../src/avenprcore.cc:120
-#: n:85
-#, c-format
-msgid "Parameter “%s” missing in printer configuration file"
-msgstr "Parameter “%s” hilang dalam berkas konfigurasi printer"
-
 #. TRANSLATORS: --help output for dump3d --rewind option
 #: ../src/dump3d.c:51
 #: n:204

@@ -3,7 +3,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH SURVEX 7 "2012-01-03" "@PRETTYPACKAGE@ @VERSION@"
+.TH SURVEX 7 "2015-03-06" "@PRETTYPACKAGE@ @VERSION@"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -49,8 +49,7 @@ Output version information and exit.
 \fBcavern\fP\fB(1)\fP, 
 \fBdiffpos\fP\fB(1)\fP, 
 \fBextend\fP\fB(1)\fP, 
-\fBsorterr\fP\fB(1)\fP,
-\fBprint.ini\fP\fB(5)\fP.
+\fBsorterr\fP\fB(1)\fP.
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and
 Olly Betts <olly@survex.com>

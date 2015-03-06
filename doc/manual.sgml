@@ -580,21 +580,6 @@ if you're interested.</Para>
 
 </Sect3>
 
-<Sect3><Title>Configuring the Printer Drivers</Title>
-
-<Para>
-Printing is now built into aven.
-The print.ini configuration file still exists, but is only
-useful if you want to configure the colours used if you
-have a colour printer.
-</Para>
-
-<refentry id="print.ini">
-&man.print.ini;
-</refentry>
-
-</Sect3>
-
 </Sect2>
 
 </Sect1>

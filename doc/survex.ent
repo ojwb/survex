@@ -24,4 +24,3 @@
 <!entity man.extend SYSTEM "extend.sgml">
 <!entity man.sorterr SYSTEM "sorterr.sgml">
 <!entity man.svxedit SYSTEM "svxedit.sgml">
-<!entity man.print.ini SYSTEM "print.ini.sgml">

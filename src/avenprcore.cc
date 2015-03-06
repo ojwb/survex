@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-/* FIXME provide more explanation when reporting errors in print.ini */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -113,104 +111,6 @@ layout::pages_required() {
     yOrg = paper_centre_y - image_centre_y;
 
     pages = pagesX * pagesY;
-}
-
-static void setting_missing(const char *v)
-{
-   fatalerror(/*Parameter “%s” missing in printer configuration file*/85, v);
-}
-
-static void setting_bad_value(const char *v, const char *p)
-{
-   fatalerror(/*Parameter “%s” has invalid value “%s” in printer configuration file*/82,
-	      v, p);
-}
-
-int
-as_int(const char *v, char *p, int min_val, int max_val)
-{
-   long val;
-   char *pEnd;
-   if (!p) setting_missing(v);
-   val = strtol(p, &pEnd, 10);
-   if (pEnd == p || val < (long)min_val || val > (long)max_val)
-      setting_bad_value(v, p);
-   osfree(p);
-   return (int)val;
-}
-
-/* Converts '0'-'9' to 0-9, 'A'-'F' to 10-15 and 'a'-'f' to 10-15.
- * Undefined on other values */
-#define CHAR2HEX(C) (((C)+((C)>64?9:0))&15)
-
-unsigned long
-as_colour(const char *v, char *p)
-{
-   unsigned long val = 0xffffffff;
-   if (!p) setting_missing(v);
-   switch (tolower(*p)) {
-      case '#': {
-	 char *q = p + 1;
-	 while (isxdigit((unsigned char)*q)) q++;
-	 if (q - p == 4) {
-	    val = CHAR2HEX(p[1]) * 0x110000;
-	    val |= CHAR2HEX(p[2]) * 0x1100;
-	    val |= CHAR2HEX(p[3]) * 0x11;
-	 } else if (q - p == 7) {
-	    val = ((CHAR2HEX(p[1]) << 4) | CHAR2HEX(p[2])) << 16;
-	    val |= ((CHAR2HEX(p[3]) << 4) | CHAR2HEX(p[4])) << 8;
-	    val |= (CHAR2HEX(p[5]) << 4) | CHAR2HEX(p[6]);
-	 }
-	 break;
-      }
-      case 'a':
-	 if (strcasecmp(p, "aqua") == 0) val = 0x00fffful;
-	 break;
-      case 'b':
-	 if (strcasecmp(p, "black") == 0) val = 0x000000ul;
-	 else if (strcasecmp(p, "blue") == 0) val = 0x0000fful;
-	 break;
-      case 'f':
-	 if (strcasecmp(p, "fuchsia") == 0) val = 0xff00fful;
-	 break;
-      case 'g':
-	 if (strcasecmp(p, "gray") == 0) val = 0x808080ul;
-	 else if (strcasecmp(p, "green") == 0) val = 0x008000ul;
-	 break;
-      case 'l':
-	 if (strcasecmp(p, "lime") == 0) val = 0x00ff00ul;
-	 break;
-      case 'm':
-	 if (strcasecmp(p, "maroon") == 0) val = 0x800000ul;
-	 break;
-      case 'n':
-	 if (strcasecmp(p, "navy") == 0) val = 0x000080ul;
-	 break;
-      case 'o':
-	 if (strcasecmp(p, "olive") == 0) val = 0x808000ul;
-	 break;
-      case 'p':
-	 if (strcasecmp(p, "purple") == 0) val = 0x800080ul;
-	 break;
-      case 'r':
-	 if (strcasecmp(p, "red") == 0) val = 0xff0000ul;
-	 break;
-      case 's':
-	 if (strcasecmp(p, "silver") == 0) val = 0xc0c0c0ul;
-	 break;
-      case 't':
-	 if (strcasecmp(p, "teal") == 0) val = 0x008080ul;
-	 break;
-      case 'w':
-	 if (strcasecmp(p, "white") == 0) val = 0xfffffful;
-	 break;
-      case 'y':
-	 if (strcasecmp(p, "yellow") == 0) val = 0xffff00ul;
-	 break;
-   }
-   if (val == 0xffffffff) setting_bad_value(v, p);
-   osfree(p);
-   return val;
 }
 
 #define DEF_RATIO (1.0/(double)DEFAULT_SCALE)

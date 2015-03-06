@@ -12,7 +12,7 @@ EXTRA_DIST = TODO OLDNEWS\
 
 extra_bin = lib/*.msg\
  lib/unifont.pixelfont
-extra_txt = lib/*.svx lib/print.ini
+extra_txt = lib/*.svx
 extra_files = $(extra_bin) $(extra_txt)
 
 # FIXME: need to keep in step with src/Makefile.am

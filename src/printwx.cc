@@ -45,7 +45,6 @@
 #include "export.h"
 #include "filelist.h"
 #include "filename.h"
-#include "ini.h"
 #include "message.h"
 #include "useful.h"
 
@@ -209,7 +208,7 @@ class svxPrintout : public wxPrintout {
     void NewPage(int pg, int pagesX, int pagesY);
     void PlotLR(const vector<XSect> & centreline);
     void PlotUD(const vector<XSect> & centreline);
-    char * Init(FILE **fh_list, bool fCalibrate);
+    void Init();
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupDialogData *data, const wxString & title);
     bool OnPrintPage(int pageNum);
@@ -1535,44 +1534,7 @@ svxPrintout::HasPage(int pageNum) {
 
 void
 svxPrintout::OnBeginPrinting() {
-    FILE *fh_list[4];
-
-    FILE **pfh = fh_list;
-    FILE *fh;
-    const char *pth_cfg;
-    char *print_ini;
-
-    /* ini files searched in this order:
-     * ~/.survex/print.ini [unix only]
-     * /etc/survex/print.ini [unix only]
-     * <support file directory>/myprint.ini [not unix]
-     * <support file directory>/print.ini [must exist]
-     */
-
-#ifdef __UNIX__
-    pth_cfg = getenv("HOME");
-    if (pth_cfg) {
-	fh = fopenWithPthAndExt(pth_cfg, ".survex/print."EXT_INI, NULL,
-		"rb", NULL);
-	if (fh) *pfh++ = fh;
-    }
-    pth_cfg = msg_cfgpth();
-    fh = fopenWithPthAndExt(NULL, "/etc/survex/print."EXT_INI, NULL, "rb",
-	    NULL);
-    if (fh) *pfh++ = fh;
-#else
-    pth_cfg = msg_cfgpth();
-    print_ini = add_ext("myprint", EXT_INI);
-    fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
-    if (fh) *pfh++ = fh;
-#endif
-    print_ini = add_ext("print", EXT_INI);
-    fh = fopenWithPthAndExt(pth_cfg, print_ini, NULL, "rb", NULL);
-    if (!fh) fatalerror(/*Couldn’t open file “%s”*/24, print_ini);
-    *pfh++ = fh;
-    *pfh = NULL;
-    Init(pfh, false);
-    for (pfh = fh_list; *pfh; pfh++) (void)fclose(*pfh);
+    Init();
     Pre();
     m_layout->footer = wmsg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
 }
@@ -1983,46 +1945,14 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
     }
 }
 
-static wxColour
-to_rgb(const char *var, char *val)
-{
-   unsigned long rgb;
-   if (!val) return *wxBLACK;
-   rgb = as_colour(var, val);
-   return wxColour((rgb & 0xff0000) >> 16, (rgb & 0xff00) >> 8, rgb & 0xff);
-}
-
 /* Initialise printer routines */
-char *
-svxPrintout::Init(FILE **fh_list, bool fCalibrate)
+void
+svxPrintout::Init()
 {
-   static const char *vars[] = {
-      "font_size_labels",
-      "colour_text",
-      "colour_labels",
-      "colour_frame",
-      "colour_legs",
-      "colour_crosses",
-      "colour_surface_legs",
-      NULL
-   };
-   char **vals;
-
-   (void)fCalibrate; /* suppress unused argument warning */
-
-   vals = ini_read(fh_list, "aven", vars);
    fontsize_labels = 10;
-   if (vals[0]) fontsize_labels = as_int(vars[0], vals[0], 1, INT_MAX);
    fontsize = 10;
 
    colour_text = colour_labels = colour_frame = colour_leg = colour_cross = colour_surface_leg = *wxBLACK;
-   if (vals[1]) colour_text = to_rgb(vars[1], vals[1]);
-   if (vals[2]) colour_labels = to_rgb(vars[2], vals[2]);
-   if (vals[3]) colour_frame = to_rgb(vars[3], vals[3]);
-   if (vals[4]) colour_leg = to_rgb(vars[4], vals[4]);
-   if (vals[5]) colour_cross = to_rgb(vars[5], vals[5]);
-   if (vals[6]) colour_surface_leg = to_rgb(vars[6], vals[6]);
    m_layout->scX = 1;
    m_layout->scY = 1;
-   return NULL;
 }

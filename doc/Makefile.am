@@ -4,11 +4,11 @@ pkgdocdir = @PKGDOCDIR@
 
 other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
  aven.1 \
- print.ini.5 svxedit.1
+ svxedit.1
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml\
  diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml\
- print.ini.sgml svxedit.sgml
+ svxedit.sgml
 
 manual_alt = manual.txt manual.pdf
 
@@ -21,7 +21,7 @@ EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_extend.sgml man_sorterr.sgml\
- man_print.ini.sgml man_svxedit.sgml news2html.pl\
+ man_svxedit.sgml news2html.pl\
  version.ent
 
 NEWS.htm: ../NEWS news2html.pl
@@ -67,10 +67,6 @@ sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.en
 svxedit.1: $(srcdir)/svxedit.sgml $(srcdir)/man_svxedit.sgml $(srcdir)/survex.ent
 	$(DOCBOOK_TO_MAN) $(srcdir)/man_svxedit.sgml > svxedit.tmp
 	mv svxedit.tmp svxedit.1
-
-print.ini.5: $(srcdir)/print.ini.sgml $(srcdir)/man_print.ini.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_print.ini.sgml > print.ini.tmp
-	mv print.ini.tmp print.ini.5
 
 install-data-local: manual
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual

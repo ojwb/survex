@@ -2914,18 +2914,6 @@ msgstr ""
 msgid "ROOT is deprecated"
 msgstr ""
 
-#: ../src/avenprcore.cc:125
-#: n:82
-#, c-format
-msgid "Parameter “%s” has invalid value “%s” in printer configuration file"
-msgstr ""
-
-#: ../src/avenprcore.cc:120
-#: n:85
-#, c-format
-msgid "Parameter “%s” missing in printer configuration file"
-msgstr ""
-
 #. TRANSLATORS: --help output for dump3d --rewind option
 #: ../src/dump3d.c:51
 #: n:204

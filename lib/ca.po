@@ -2913,18 +2913,6 @@ msgstr "Originalment entrat aqui"
 msgid "ROOT is deprecated"
 msgstr "ROOT ja no s’utilitza"
 
-#: ../src/avenprcore.cc:125
-#: n:82
-#, c-format
-msgid "Parameter “%s” has invalid value “%s” in printer configuration file"
-msgstr "Paràmetres “%s” tenen un valor incorrecte “%s” al fitxer de configuració de l’impresora"
-
-#: ../src/avenprcore.cc:120
-#: n:85
-#, c-format
-msgid "Parameter “%s” missing in printer configuration file"
-msgstr "Paràmetres “%s” manquen al fitxer de configuració de l’impresora"
-
 #. TRANSLATORS: --help output for dump3d --rewind option
 #: ../src/dump3d.c:51
 #: n:204
