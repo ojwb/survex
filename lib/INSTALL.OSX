@@ -17,7 +17,7 @@ These could be reproduced with Survex 1.2.17 when built using wxWidgets 3.0.2:
   make the menu bar appear
 - The movie export code in aven isn't enabled
 - The tool bar icons in aven are a bit big and fuzzy
-- Icons for .plt files and svxedit.app are just scaled up from low-res versions
+- Icon for svxedit.app is just scaled up from low-res version
 - You can't load files from the finder into svxedit by clicking or dragging
   them onto the svxedit.app icon
 - The programs alongside Aven.app and svxedit.app need to be run from the

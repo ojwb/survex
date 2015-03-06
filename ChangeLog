@@ -1,3 +1,8 @@
+Fri Mar 06 12:39:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,lib/icons/Makefile.am,lib/icons/plt.svg: Add SVG
+	  version of .plt icon.
+
 Fri Mar 06 12:38:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Improve wording of FIXME comment.
