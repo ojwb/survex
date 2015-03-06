@@ -458,7 +458,8 @@ abort:
     if (retval) {
 	/* TRANSLATORS: Label for button in aven’s cavern log window which
 	 * causes the survey data to be reprocessed. */
-	AppendToPage(wxString::Format(wxT("<avenbutton default id=1234 name=\"%s\">"),
+	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d name=\"%s\">"),
+				      (int)LOG_REPROCESS,
 				      wmsg(/*Reprocess*/184).c_str()));
 	if (retval == -1) {
 	    wxString m = wxT("Problem running cavern: ");
@@ -468,7 +469,8 @@ abort:
 	}
 	return -1;
     }
-    AppendToPage(wxString::Format(wxT("<avenbutton id=1234 name=\"%s\">"),
+    AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
+				  (int)LOG_REPROCESS,
 				  wmsg(/*Reprocess*/184).c_str()));
     AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
     Update();
