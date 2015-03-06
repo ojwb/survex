@@ -1,3 +1,7 @@
+Fri Mar 06 21:48:58 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/bg.po: Minor update.
+
 Fri Mar 06 12:39:29 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,lib/icons/Makefile.am,lib/icons/plt.svg: Add SVG

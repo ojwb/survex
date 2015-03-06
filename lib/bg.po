@@ -93,7 +93,7 @@ msgstr ""
 #: ../src/message.c:1252
 #: n:4
 msgid "warning"
-msgstr "Внимание"
+msgstr "внимание"
 
 #. TRANSLATORS: Indicates an error message e.g.:
 #. "spoon.svx:13:4: error: Field may not be omitted"
@@ -101,7 +101,7 @@ msgstr "Внимание"
 #: ../src/message.c:1256
 #: n:93
 msgid "error"
-msgstr ""
+msgstr "грешка"
 
 #. TRANSLATORS: %s is replaced by the filename of the parent file, and %u
 #. by the line number in that file.  Your translation should also contain
@@ -1197,8 +1197,9 @@ msgstr ""
 #: ../src/cavernlog.cc:463
 #: ../src/cavernlog.cc:474
 #: n:184
+#, fuzzy
 msgid "Reprocess"
-msgstr ""
+msgstr "Възстановяване"
 
 #: ../src/cmdline.c:242
 #: ../src/cmdline.c:261
