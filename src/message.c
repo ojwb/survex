@@ -1191,13 +1191,12 @@ const char *
 msg(int en)
 {
    /* NB can't use SVX_ASSERT here! */
-   static char badbuf[256];
    if (dontextract && en >= 1000 && en < 1000 + N_DONTEXTRACTMSGS)
       return dontextract[en - 1000];
    if (!msg_array) {
       if (en != 1)  {
-	 sprintf(badbuf, "Message %d requested before fully initialised\n", en);
-	 return badbuf;
+	 fprintf(STDERR, "Message %d requested before fully initialised\n", en);
+	 return "Message requested before fully initialised\n";
       }
       /* this should be the only other message which can be requested before
        * the message file is opened and read... */
@@ -1207,8 +1206,8 @@ msg(int en)
    }
 
    if (en < 0 || en >= num_msgs) {
-      sprintf(badbuf, "Message %d out of range\n", en);
-      return badbuf;
+      fprintf(STDERR, "Message %d out of range\n", en);
+      return "Message out of range\n";
    }
 
    if (en == 0) {
