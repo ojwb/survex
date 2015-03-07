@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2003,2005,2010 Olly Betts
+ * Copyright (C) 1998-2003,2005,2010,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,12 +56,8 @@ const char *msg_cfgpth(void);
 const char *msg_exepth(void);
 const char *msg_appname(void);
 
-/* Message may be overwritten by next call */
+/* Return the message string corresponding to number en */
 const char *msg(int en);
-/* Returns persistent copy of message */
-const char *msgPerm(int en);
-/* Kill persistent copy of message */
-#define msgFree(S) (void)0
 
 void v_report(int severity, const char *fnm, int line, int col, int en, va_list ap);
 

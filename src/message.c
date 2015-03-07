@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1187,8 +1187,6 @@ macosx_got_msg:
 #endif
 }
 
-/* Message may be overwritten by next call
- * (but not in current implementation) */
 const char *
 msg(int en)
 {
@@ -1220,13 +1218,6 @@ msg(int en)
    }
 
    return msg_array[en];
-}
-
-/* returns persistent copy of message */
-const char *
-msgPerm(int en)
-{
-   return msg(en);
 }
 
 void

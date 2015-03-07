@@ -1,3 +1,13 @@
+Sat Mar 07 10:03:37 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc,src/message.c,src/message.h: msg() has returned a
+	  persistent copy of the message for decades, so the code's bound to
+	  rely on that in some places.  And there's no real reason it
+	  shouldn't continue to as the messages are under 20KB of UTF-8 text
+	  for any language, so lazy loading isn't worth the complication.  So
+	  remove msgPerm() and the unused msgFree() macro, and document that
+	  msg() returns a persistent copy.
+
 Sat Mar 07 00:01:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Make data tables const where possible.

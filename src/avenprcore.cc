@@ -166,10 +166,10 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
     cPasses = Pre(l->pages, l->title);
 
     /* note down so we can switch to printer charset */
-    msg166 = msgPerm(/*Page %d of %d*/166);
+    msg166 = msg(/*Page %d of %d*/166);
     old_charset = select_charset(CHARSET_ISO_8859_1);
 
-    l->footer = msgPerm(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
+    l->footer = msg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
 
     cPagesPrinted = 0;
     page = state = 0;
