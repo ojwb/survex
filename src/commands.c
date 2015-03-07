@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -256,7 +256,7 @@ typedef enum {
    CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
-static sztok cmd_tab[] = {
+static const sztok cmd_tab[] = {
      {"ALIAS",     CMD_ALIAS},
      {"BEGIN",     CMD_BEGIN},
      {"CALIBRATE", CMD_CALIBRATE},
@@ -296,7 +296,7 @@ static sztok cmd_tab[] = {
 #define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
 
 /* ordering must be the same as the units enum */
-static real factor_tab[] = {
+static const real factor_tab[] = {
    1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
    (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
 };
@@ -304,7 +304,7 @@ static real factor_tab[] = {
 static int
 get_units(unsigned long qmask, bool percent_ok)
 {
-   static sztok utab[] = {
+   static const sztok utab[] = {
 	{"DEGREES",       UNITS_DEGS },
 	{"DEGS",	  UNITS_DEGS },
 	{"FEET",	  UNITS_FEET },
@@ -347,7 +347,7 @@ get_units(unsigned long qmask, bool percent_ok)
 static unsigned long
 get_qlist(unsigned long mask_bad)
 {
-   static sztok qtab[] = {
+   static const sztok qtab[] = {
 	{"ALTITUDE",	 Q_DZ },
 	{"BACKBEARING",  Q_BACKBEARING },
 	{"BACKCLINO",    Q_BACKGRADIENT },    /* alternative name */
@@ -419,7 +419,7 @@ get_qlist(unsigned long mask_bad)
 static void
 cmd_set(void)
 {
-   static sztok chartab[] = {
+   static const sztok chartab[] = {
 	{"BLANK",     SPECIAL_BLANK },
 /*FIXME	{"CLOSE",     SPECIAL_CLOSE }, */
 	{"COMMENT",   SPECIAL_COMMENT },
@@ -861,7 +861,7 @@ cmd_fix(void)
 static void
 cmd_flags(void)
 {
-   static sztok flagtab[] = {
+   static const sztok flagtab[] = {
 	{"DUPLICATE", FLAGS_DUPLICATE },
 	{"NOT",	      FLAGS_NOT },
 	{"SPLAY",     FLAGS_SPLAY },
@@ -1024,7 +1024,7 @@ cmd_export(void)
 static void
 cmd_data(void)
 {
-   static sztok dtab[] = {
+   static const sztok dtab[] = {
 	{"ALTITUDE",	 Dz },
 	{"BACKBEARING",  BackComp },
 	{"BACKCLINO",    BackClino }, /* alternative name */
@@ -1105,7 +1105,7 @@ cmd_data(void)
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
 
-   static sztok styletab[] = {
+   static const sztok styletab[] = {
 	{"CARTESIAN",    STYLE_CARTESIAN },
 	{"CYLPOLAR",     STYLE_CYLPOLAR },
 	{"DEFAULT",      STYLE_DEFAULT },
@@ -1485,7 +1485,7 @@ cmd_calibrate(void)
 static void
 cmd_default(void)
 {
-   static sztok defaulttab[] = {
+   static const sztok defaulttab[] = {
       { "CALIBRATE", CMD_CALIBRATE },
       { "DATA",      CMD_DATA },
       { "UNITS",     CMD_UNITS },
@@ -1600,7 +1600,7 @@ cmd_title(void)
    }
 }
 
-static sztok case_tab[] = {
+static const sztok case_tab[] = {
      {"PRESERVE", OFF},
      {"TOLOWER",  LOWER},
      {"TOUPPER",  UPPER},
@@ -1638,7 +1638,7 @@ typedef enum {
     CS_UTM
 } cs_class;
 
-static sztok cs_tab[] = {
+static const sztok cs_tab[] = {
      {"CUSTOM", CS_CUSTOM},
      {"EPSG",   CS_EPSG},	/* EPSG:<number> */
      {"ESRI",   CS_ESRI},	/* ESRI:<number> */
@@ -1920,7 +1920,7 @@ cmd_cs(void)
    }
 }
 
-static sztok infer_tab[] = {
+static const sztok infer_tab[] = {
      { "EQUATES",	INFER_EQUATES },
      { "EXPORTS",	INFER_EXPORTS },
      { "PLUMBS",	INFER_PLUMBS },
@@ -1930,7 +1930,7 @@ static sztok infer_tab[] = {
      { NULL,		INFER_NULL }
 };
 
-static sztok onoff_tab[] = {
+static const sztok onoff_tab[] = {
      { "OFF", 0 },
      { "ON",  1 },
      { NULL, -1 }
@@ -2091,7 +2091,7 @@ read:
 
 typedef void (*cmd_fn)(void);
 
-static cmd_fn cmd_funcs[] = {
+static const cmd_fn cmd_funcs[] = {
    cmd_alias,
    cmd_begin,
    cmd_calibrate,
