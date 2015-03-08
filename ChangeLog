@@ -1,3 +1,7 @@
+Sun Mar 08 04:22:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm: "Save cavern log from aven" now implemented.
+
 Sun Mar 08 02:22:33 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Slightly simplify handling of the units scaling
