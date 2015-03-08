@@ -1007,7 +1007,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    int clino_units = get_angle_units(Q_BACKGRADIENT);
 	    const char * units = get_units_string(clino_units);
 	    real right_angle = M_PI_2 / get_units_factor(clino_units);
-	    compile_warning(/*Clino reading over %.f%s degrees (absolute value)*/51,
+	    compile_warning(/*Clino reading over %.f%s (absolute value)*/51,
 			    right_angle, units);
 	 } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		    diff_from_abs90 >= -EPSILON) {
