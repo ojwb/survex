@@ -729,7 +729,9 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = 'i'; p[1] = 'n'; p[2] = 'f'; return 3;
    }
 #ifdef DEBUG
-   fprintf(stderr, "failed to transliterate\n");
+   /* 169 is reported (copyright symbol), but there isn't a good <= 2 ASCII
+    * character transliteration for that, so we handle that elsewhere. */
+   fprintf(stderr, "failed to transliterate codepoint %d\n", value);
 #endif
    return 0;
 }
