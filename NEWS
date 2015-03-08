@@ -1,18 +1,34 @@
-c11ceba6 (Olly Betts 2015-03-06 23:30:34 +1300    1) Fri Mar 06 10:30:26 GMT 2015  Olly Betts <olly@survex.com>
+fbf7fa04 (Olly Betts 2015-03-09 02:12:58 +1300    1) Sun Mar 08 13:12:10 GMT 2015  Olly Betts <olly@survex.com>
 
-Changes in 1.2.18 (2015-03-07):
+Changes in 1.2.18 (2015-03-09):
+
+* cavern: Use the currently set units when outputting measurements in warnings,
+  errors, and the stats at the end of the run.
+
+* (Microsoft Windows version): Add code page 1252 mappings for fancy quotes.
+
+* Transliterate gradient and infinity symbols if the current character set
+  lacks them.
+
+* Add SVG version of .plt icon.
 
 * cavern: Warn if fore and back measurements differ by more than 3 SDs, rather
   than just by 2 SDs.
+
+* aven: Add "Colour by Length".
 
 * aven: Add a menu item and toolbar button to show the cavern log window if the
   currently shown survey data was processed by aven.  Reported by Hugh St
   Lawrence in #47, and by Dave Clucas and others previously on the list.
 
-* aven : Add "Save Log" button to Aven's cavern log window.
+* aven: Add "Save Log" button to Aven's cavern log window.
 
 * doc/manual.sgml: Add complete list of quantities you can set SDs for.  Thanks
   for Wookey for highlighting that the previous list was incomplete.
+
+* doc/manual.sgml: Document averaging of a group of repeated readings.
+
+* doc/TODO.htm: "Save cavern log from aven" now implemented.
 
 * aven: Make the button to dismiss the "About" dialog "OK" rather than "Close",
   which seems more logical, and also allows the dialog to be closed by pressing
