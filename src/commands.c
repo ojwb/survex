@@ -1444,7 +1444,6 @@ cmd_units(void)
       compile_error_skip(-/**UNITS factor must be non-zero*/200);
       return;
    }
-   if (factor == HUGE_REAL) factor = (real)1.0;
 
    units = get_units(qmask, fTrue);
    if (units == UNITS_NULL) return;
@@ -1453,7 +1452,11 @@ cmd_units(void)
    if (TSTBIT(qmask, Q_BACKGRADIENT))
       pcs->f_backclino_percent = (units == UNITS_PERCENT);
 
-   factor *= factor_tab[units];
+   if (factor == HUGE_REAL) {
+      factor = factor_tab[units];
+   } else {
+      factor *= factor_tab[units];
+   }
 
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
       if (qmask & m) pcs->units[quantity] = factor;
