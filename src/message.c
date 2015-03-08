@@ -562,12 +562,15 @@ add_unicode(int charset, unsigned char *p, int value)
       /* MS Windows extensions to ISO-8859-1 */
       switch (value) {
        case 0x2026: value = 0x85; break; /* hellip */
-       case 0x160: value = 0x8a; break; /* Scaron */
-       case 0x152: value = 0x8c; break; /* OElig */
-       case 0x17d: value = 0x8e; break; /* Zcaron */
-       case 0x161: value = 0x9a; break; /* scaron */
-       case 0x153: value = 0x9c; break; /* oelig */
-       case 0x17e: value = 0x9e; break; /* zcaron */
+       case 0x0160: value = 0x8a; break; /* Scaron */
+       case 0x0152: value = 0x8c; break; /* OElig */
+       case 0x017d: value = 0x8e; break; /* Zcaron */
+       case 0x2019: value = 0x92; break; /* lsquo */
+       case 0x201c: value = 0x93; break; /* ldquo */
+       case 0x201d: value = 0x94; break; /* rdquo */
+       case 0x0161: value = 0x9a; break; /* scaron */
+       case 0x0153: value = 0x9c; break; /* oelig */
+       case 0x017e: value = 0x9e; break; /* zcaron */
 #if 0
       /* there are a few other obscure ones we don't currently need */
 #endif

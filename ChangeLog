@@ -1,3 +1,7 @@
+Sun Mar 08 02:06:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/message.c: Add CP-1252 mappings for fancy quotes.
+
 Sun Mar 08 02:03:43 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/message.c: Improve debug message for a missing transliteration to
