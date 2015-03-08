@@ -296,10 +296,37 @@ static const sztok cmd_tab[] = {
 #define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
 
 /* ordering must be the same as the units enum */
-static const real factor_tab[] = {
+const real factor_tab[] = {
    1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
    (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
 };
+
+const int units_to_msgno[] = {
+    /*m*/424,
+    /*ft*/428,
+    -1, /* yards */
+    /*°*/344,
+    /*ᵍ*/76,
+    /*%*/96,
+    -1 /* minutes */
+};
+
+int get_length_units(int quantity) {
+    double factor = pcs->units[quantity];
+    if (fabs(factor - METRES_PER_FOOT) <= REAL_EPSILON ||
+	fabs(factor - METRES_PER_FOOT * 3.0) <= REAL_EPSILON) {
+	return UNITS_FEET;
+    }
+    return UNITS_METRES;
+}
+
+int get_angle_units(int quantity) {
+    double factor = pcs->units[quantity];
+    if (fabs(factor - M_PI / 200.0) <= REAL_EPSILON) {
+	return UNITS_GRADS;
+    }
+    return UNITS_DEGS;
+}
 
 static int
 get_units(unsigned long qmask, bool percent_ok)

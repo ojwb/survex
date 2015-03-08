@@ -838,19 +838,23 @@ handle_plumb(clino_type *p_ctype)
 }
 
 static void
-warn_readings_differ(int msgno, real diff)
+warn_readings_differ(int msgno, real diff, int units)
 {
    char buf[64];
    char *p;
-   sprintf(buf, "%.2f", deg(fabs(diff)));
-   p = strchr(buf, '.');
-   if (p) {
-      char *z = p;
-      while (*++p) {
-	 if (*p != '0') z = p + 1;
+   diff /= get_units_factor(units);
+   sprintf(buf, "%.2f", fabs(diff));
+   for (p = buf; *p; ++p) {
+      if (*p == '.') {
+	 char *z = p;
+	 while (*++p) {
+	    if (*p != '0') z = p + 1;
+	 }
+	 p = z;
+	 break;
       }
-      *z = '\0';
    }
+   strcpy(p, get_units_string(units));
    compile_warning(msgno, buf);
 }
 
@@ -901,9 +905,10 @@ handle_compass(real *p_var)
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
 	 if (sqrd(diff / 3.0) > compvar + VAR(Q_BACKBEARING)) {
 	    /* fore and back readings differ by more than 3 sds */
-	    /* TRANSLATORS: Degrees are the angular measurement where there are
-	     * 360 in a full circle. */
-	    warn_readings_differ(/*COMPASS reading and BACKCOMPASS reading disagree by %s degrees*/98, diff);
+	    /* TRANSLATORS: %s is replaced by the amount the readings disagree
+	     * by, e.g. "2.5°" or "3ᵍ". */
+	    warn_readings_differ(/*COMPASS reading and BACKCOMPASS reading disagree by %s*/98,
+				 diff, get_angle_units(Q_BEARING));
 	 }
 	 comp = (comp / compvar + backcomp / VAR(BackComp));
 	 compvar = (compvar + VAR(BackComp)) / 4;
@@ -963,18 +968,30 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       range_0_180 = (z > M_PI_4 && z < 3*M_PI_4);
       diff_from_abs90 = fabs(clin) - M_PI_2;
       if (diff_from_abs90 > EPSILON) {
-	 if (!range_0_180)
-	    /* TRANSLATORS: Degrees are the angular measurement where there are
-	     * 360 in a full circle. */
-	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+	 if (!range_0_180) {
+	    int clino_units = get_angle_units(Q_GRADIENT);
+	    const char * units = get_units_string(clino_units);
+	    real right_angle = M_PI_2 / get_units_factor(clino_units);
+	    /* TRANSLATORS: %.f%s will be replaced with a right angle in the
+	     * units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
+	     * value" means the reading ignoring the sign (so it might be
+	     * < -90° or > 90°. */
+	    compile_warning(/*Clino reading over %.f%s (absolute value)*/51,
+			    right_angle, units);
+	 }
       } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		 diff_from_abs90 >= -EPSILON) {
 	 ctype = CTYPE_INFERPLUMB;
       }
       if (range_0_180 && ctype != CTYPE_INFERPLUMB) {
 	 /* FIXME: Warning message not ideal... */
-	 if (clin < 0.0 || clin - M_PI > EPSILON)
-	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+	 if (clin < 0.0 || clin - M_PI > EPSILON) {
+	    int clino_units = get_angle_units(Q_GRADIENT);
+	    const char * units = get_units_string(clino_units);
+	    real right_angle = M_PI_2 / get_units_factor(clino_units);
+	    compile_warning(/*Clino reading over %.f%s (absolute value)*/51,
+			    right_angle, units);
+	 }
       }
    }
 
@@ -986,7 +1003,11 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 real diff_from_abs90 = fabs(backclin) - M_PI_2;
 	 if (diff_from_abs90 > EPSILON) {
 	    /* FIXME: different message for BackClino? */
-	    compile_warning(/*Clino reading over 90 degrees (absolute value)*/51);
+	    int clino_units = get_angle_units(Q_BACKGRADIENT);
+	    const char * units = get_units_string(clino_units);
+	    real right_angle = M_PI_2 / get_units_factor(clino_units);
+	    compile_warning(/*Clino reading over %.f%s degrees (absolute value)*/51,
+			    right_angle, units);
 	 } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 		    diff_from_abs90 >= -EPSILON) {
 	    backctype = CTYPE_INFERPLUMB;
@@ -1077,9 +1098,10 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    if (ctype == CTYPE_READING) {
 	       if (sqrd((clin + backclin) / 3.0) > var_clin + VAR(BackClino)) {
 		  /* fore and back readings differ by more than 3 sds */
-		  /* TRANSLATORS: Degrees are the angular measurement where
-		   * there are 360 in a full circle. */
-		  warn_readings_differ(/*CLINO reading and BACKCLINO reading disagree by %s degrees*/99, clin + backclin);
+		  /* TRANSLATORS: %s is replaced by the amount the readings disagree
+		   * by, e.g. "2.5°" or "3ᵍ". */
+		  warn_readings_differ(/*CLINO reading and BACKCLINO reading disagree by %s*/99,
+				       clin + backclin, get_angle_units(Q_GRADIENT));
 	       }
 	       clin = (clin / var_clin - backclin / VAR(BackClino));
 	       var_clin = (var_clin + VAR(BackClino)) / 4;

@@ -13,3 +13,4 @@
 *units Tape DEFault
 *units DEFault Tape
 *units DEFault Tape Feet
+*units tape feet

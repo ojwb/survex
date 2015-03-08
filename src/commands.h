@@ -1,6 +1,6 @@
 /* commands.h
  * Header file for code for directives
- * Copyright (C) 1994-2003,2014 Olly Betts
+ * Copyright (C) 1994-2003,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+int get_length_units(int quantity);
+int get_angle_units(int quantity);
+
+extern const real factor_tab[];
+extern const int units_to_msgno[];
+
+#define get_units_factor(U) (factor_tab[(U)])
+#define get_units_string(U) (msg(units_to_msgno[(U)]))
 
 void handle_command(void);
 void default_all(settings *s);

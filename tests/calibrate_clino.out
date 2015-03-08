@@ -1,11 +1,11 @@
-./calibrate_clino.svx:8: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:9: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:10: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:11: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:18: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:19: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:26: warning: Clino reading over 90 degrees (absolute value)
-./calibrate_clino.svx:27: warning: Clino reading over 90 degrees (absolute value)
+./calibrate_clino.svx:8: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:9: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:10: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:11: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:18: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:19: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:26: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:27: warning: Clino reading over 90dg (absolute value)
 
 Removing trailing traverses...
 

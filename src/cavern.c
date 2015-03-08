@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -397,14 +397,16 @@ main(int argc, char **argv)
 }
 
 static void
-do_range(int d, int msgno)
+do_range(int d, int msgno, real length_factor, const char * units)
 {
    /* sprint_prefix uses a single buffer, so to report two stations in one
     * message we need to make a temporary copy of the string for one of them.
     */
    char * pfx_hi = osstrdup(sprint_prefix(pfxHi[d]));
    char * pfx_lo = sprint_prefix(pfxLo[d]);
-   printf(msg(msgno), max[d] - min[d], pfx_hi, max[d], pfx_lo, min[d]);
+   real hi = max[d] * length_factor;
+   real lo = min[d] * length_factor;
+   printf(msg(msgno), hi - lo, units, pfx_hi, hi, units, pfx_lo, lo, units);
    osfree(pfx_hi);
    putnl();
 }
@@ -413,6 +415,9 @@ static void
 do_stats(void)
 {
    long cLoops = cComponents + cLegs - cStns;
+   int length_units = get_length_units(Q_LENGTH);
+   const char * units = get_units_string(length_units);
+   real length_factor = 1.0 / get_units_factor(length_units);
 
    putnl();
 
@@ -446,24 +451,27 @@ do_stats(void)
       putnl();
    }
 
-   printf(msg(/*Total length of survey legs = %7.2fm (%7.2fm adjusted)*/132),
-	  total, totadj);
+   printf(msg(/*Total length of survey legs = %7.2f%s (%7.2f%s adjusted)*/132),
+	  total * length_factor, units, totadj * length_factor, units);
    putnl();
-   printf(msg(/*Total plan length of survey legs = %7.2fm*/133),
-	  totplan);
+   printf(msg(/*Total plan length of survey legs = %7.2f%s*/133),
+	  totplan * length_factor, units);
    putnl();
-   printf(msg(/*Total vertical length of survey legs = %7.2fm*/134),
-	  totvert);
+   printf(msg(/*Total vertical length of survey legs = %7.2f%s*/134),
+	  totvert * length_factor, units);
    putnl();
 
    /* If there's no underground survey, we've no ranges */
    if (pfxHi[0]) {
       /* TRANSLATORS: numbers are altitudes of highest and lowest stations */
-      do_range(2, /*Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/135);
+      do_range(2, /*Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)*/135,
+	       length_factor, units);
       /* TRANSLATORS: c.f. previous message */
-      do_range(1, /*North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/136);
+      do_range(1, /*North-South range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)*/136,
+	       length_factor, units);
       /* TRANSLATORS: c.f. previous two messages */
-      do_range(0, /*East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)*/137);
+      do_range(0, /*East-West range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)*/137,
+	       length_factor, units);
    }
 
    print_node_stats();

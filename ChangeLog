@@ -1,3 +1,9 @@
+Sun Mar 08 02:16:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm,lib/,src/,tests/: In cavern, use the currently set units
+	  when outputting measurements in warnings, errors, and the stats at
+	  the end of the run.
+
 Sun Mar 08 02:10:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/message.c: Document the CP-1250 and CP-1252 mappings are

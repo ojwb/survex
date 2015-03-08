@@ -465,14 +465,17 @@ msgstr "La deviazione standard deve essere positiva"
 msgid "Survey leg with same station (“%s”) at both ends - typing error?"
 msgstr "Alle estremitá di una battuta c’é la stessa stazione (“%s”) - Errore di trascrizione?"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are
-#. 360 in a full circle.
+#. TRANSLATORS: %.f%s will be replaced with a right angle in the
+#. units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
+#. value" means the reading ignoring the sign (so it might be
+#. < -90° or > 90°.
 #: ../src/datain.c:969
 #: ../src/datain.c:977
 #: ../src/datain.c:989
 #: n:51
-msgid "Clino reading over 90 degrees (absolute value)"
-msgstr "Lettura del clinometro superiore a 90 gradi (valore assoluto)"
+#, c-format
+msgid "Clino reading over %.f%s (absolute value)"
+msgstr "Lettura del clinometro superiore a %.f%s (valore assoluto)"
 
 #: ../src/netbits.c:464
 #: n:52
@@ -757,21 +760,21 @@ msgstr "Non posso scrivere il file “%s”"
 msgid "Further uses of this deprecated feature will not be reported"
 msgstr "Usi futuri di questa funzionalitá non piú usata non verranno segnalati"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are
-#. 360 in a full circle.
+#. TRANSLATORS: %s is replaced by the amount the readings disagree
+#. by, e.g. "2.5°" or "3ᵍ".
 #: ../src/datain.c:906
 #: n:98
 #, c-format
-msgid "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
-msgstr "Le letture COMPASS e BACKCOMPASS differiscono di %s gradi"
+msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
+msgstr "Le letture COMPASS e BACKCOMPASS differiscono di %s"
 
-#. TRANSLATORS: Degrees are the angular measurement where
-#. there are 360 in a full circle.
+#. TRANSLATORS: %s is replaced by the amount the readings disagree
+#. by, e.g. "2.5°" or "3ᵍ".
 #: ../src/datain.c:1082
 #: n:99
 #, c-format
-msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
-msgstr "Le letture CLINO e BACKCLINO differiscono di %s gradi"
+msgid "CLINO reading and BACKCLINO reading disagree by %s"
+msgstr "Le letture CLINO e BACKCLINO differiscono di %s"
 
 #: ../src/commands.c:1157
 #: n:104
@@ -971,41 +974,41 @@ msgstr "Trovato “%s”, atteso “F” o “B”"
 #: ../src/cavern.c:449
 #: n:132
 #, c-format
-msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
-msgstr "Sviluppo spaziale = %7.2fm (%7.2fm corretto)"
+msgid "Total length of survey legs = %7.2f%s (%7.2f%s adjusted)"
+msgstr "Sviluppo spaziale = %7.2f%s (%7.2f%s corretto)"
 
 #: ../src/cavern.c:452
 #: n:133
 #, c-format
-msgid "Total plan length of survey legs = %7.2fm"
-msgstr "Sviluppo planimetrico = %7.2fm"
+msgid "Total plan length of survey legs = %7.2f%s"
+msgstr "Sviluppo planimetrico = %7.2f%s"
 
 #: ../src/cavern.c:455
 #: n:134
 #, c-format
-msgid "Total vertical length of survey legs = %7.2fm"
-msgstr "Totale delle componenti verticali delle battute = %7.2fm"
+msgid "Total vertical length of survey legs = %7.2f%s"
+msgstr "Totale delle componenti verticali delle battute = %7.2f%s"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
 #: ../src/cavern.c:462
 #: n:135
 #, c-format
-msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
-msgstr "Dislivello totale = %4.2fm (da %s a %4.2fm a %s a %4.2fm)"
+msgid "Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
+msgstr "Dislivello totale = %4.2f%s (da %s a %4.2f%s a %s a %4.2f%s)"
 
 #. TRANSLATORS: c.f. previous message
 #: ../src/cavern.c:464
 #: n:136
 #, c-format
-msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
-msgstr "Estensione Nord-Sud = %4.2fm (da %s a %4.2fm a %s a %4.2fm)"
+msgid "North-South range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
+msgstr "Estensione Nord-Sud = %4.2f%s (da %s a %4.2f%s a %s a %4.2f%s)"
 
 #. TRANSLATORS: c.f. previous two messages
 #: ../src/cavern.c:466
 #: n:137
 #, c-format
-msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
-msgstr "Estensione Est-Ovest = %4.2fm (da %s a %4.2fm a %s a %4.2fm)"
+msgid "East-West range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
+msgstr "Estensione Est-Ovest = %4.2f%s (da %s a %4.2f%s a %s a %4.2f%s)"
 
 #: ../src/cavern.c:434
 #: n:138

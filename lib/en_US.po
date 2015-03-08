@@ -464,14 +464,17 @@ msgstr "Standard deviation must be positive"
 msgid "Survey leg with same station (“%s”) at both ends - typing error?"
 msgstr "Survey shot with same station (“%s”) at both ends - typing error?"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are
-#. 360 in a full circle.
+#. TRANSLATORS: %.f%s will be replaced with a right angle in the
+#. units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
+#. value" means the reading ignoring the sign (so it might be
+#. < -90° or > 90°.
 #: ../src/datain.c:969
 #: ../src/datain.c:977
 #: ../src/datain.c:989
 #: n:51
-msgid "Clino reading over 90 degrees (absolute value)"
-msgstr "Clino reading over 90 degrees (absolute value)"
+#, c-format
+msgid "Clino reading over %.f%s (absolute value)"
+msgstr "Clino reading over %.f%s (absolute value)"
 
 #: ../src/netbits.c:464
 #: n:52
@@ -756,21 +759,21 @@ msgstr "Couldn’t write file “%s”"
 msgid "Further uses of this deprecated feature will not be reported"
 msgstr "Further uses of this deprecated feature will not be reported"
 
-#. TRANSLATORS: Degrees are the angular measurement where there are
-#. 360 in a full circle.
+#. TRANSLATORS: %s is replaced by the amount the readings disagree
+#. by, e.g. "2.5°" or "3ᵍ".
 #: ../src/datain.c:906
 #: n:98
 #, c-format
-msgid "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
-msgstr "COMPASS reading and BACKCOMPASS reading disagree by %s degrees"
+msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
+msgstr "COMPASS reading and BACKCOMPASS reading disagree by %s"
 
-#. TRANSLATORS: Degrees are the angular measurement where
-#. there are 360 in a full circle.
+#. TRANSLATORS: %s is replaced by the amount the readings disagree
+#. by, e.g. "2.5°" or "3ᵍ".
 #: ../src/datain.c:1082
 #: n:99
 #, c-format
-msgid "CLINO reading and BACKCLINO reading disagree by %s degrees"
-msgstr "CLINO reading and BACKCLINO reading disagree by %s degrees"
+msgid "CLINO reading and BACKCLINO reading disagree by %s"
+msgstr "CLINO reading and BACKCLINO reading disagree by %s"
 
 #: ../src/commands.c:1157
 #: n:104
@@ -970,41 +973,41 @@ msgstr "Found “%s”, expecting “F” or “B”"
 #: ../src/cavern.c:449
 #: n:132
 #, c-format
-msgid "Total length of survey legs = %7.2fm (%7.2fm adjusted)"
-msgstr "Total length of survey shots = %7.2fm (%7.2fm adjusted)"
+msgid "Total length of survey legs = %7.2f%s (%7.2f%s adjusted)"
+msgstr "Total length of survey shots = %7.2f%s (%7.2f%s adjusted)"
 
 #: ../src/cavern.c:452
 #: n:133
 #, c-format
-msgid "Total plan length of survey legs = %7.2fm"
-msgstr "Total plan length of survey shots = %7.2fm"
+msgid "Total plan length of survey legs = %7.2f%s"
+msgstr "Total plan length of survey shots = %7.2f%s"
 
 #: ../src/cavern.c:455
 #: n:134
 #, c-format
-msgid "Total vertical length of survey legs = %7.2fm"
-msgstr "Total vertical length of survey shots = %7.2fm"
+msgid "Total vertical length of survey legs = %7.2f%s"
+msgstr "Total vertical length of survey shots = %7.2f%s"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
 #: ../src/cavern.c:462
 #: n:135
 #, c-format
-msgid "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
-msgstr "Vertical range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgid "Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
+msgstr "Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 
 #. TRANSLATORS: c.f. previous message
 #: ../src/cavern.c:464
 #: n:136
 #, c-format
-msgid "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
-msgstr "North-South range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgid "North-South range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
+msgstr "North-South range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 
 #. TRANSLATORS: c.f. previous two messages
 #: ../src/cavern.c:466
 #: n:137
 #, c-format
-msgid "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
-msgstr "East-West range = %4.2fm (from %s at %4.2fm to %s at %4.2fm)"
+msgid "East-West range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
+msgstr "East-West range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 
 #: ../src/cavern.c:434
 #: n:138

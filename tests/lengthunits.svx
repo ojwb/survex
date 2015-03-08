@@ -8,5 +8,5 @@
 2 3 10.00 0 00
 *end
 3 4 10.00 0 00
-*units tape 3 feet
+*units tape yards
 4 5 10.00 0 00

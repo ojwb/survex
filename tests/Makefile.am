@@ -38,7 +38,7 @@ singlefix.svx singlefix.pos singlereffix.svx singlereffix.pos\
 singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\
 includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
-lengthunits.svx lengthunits.pos\
+lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
 cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.pos cmd_solve.svx cmd_solve.pos\
@@ -77,8 +77,8 @@ infereqtopofil.svx infereqtopofil.pos\
 3sdfixbug.svx 3sdfixbug.pos\
 extend2names.svx extend2namesx.3d\
 omitclino.svx omitclino.pos\
-back.svx back.pos\
-back2.svx back2.pos\
+back.svx back.out back.pos\
+back2.svx back2.out back2.pos\
 notentranceorexport.svx inferunknown.svx inferexports.svx\
 bad_units_factor.svx bad_units_factor.out\
 bad_units_qlist.svx bad_units_qlist.out\
