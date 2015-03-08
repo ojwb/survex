@@ -572,7 +572,24 @@ add_unicode(int charset, unsigned char *p, int value)
        case 0x0153: value = 0x9c; break; /* oelig */
        case 0x017e: value = 0x9e; break; /* zcaron */
 #if 0
-      /* there are a few other obscure ones we don't currently need */
+       /* there are a few other obscure ones we don't currently need */
+       case 0x20ac: value = 0x80; break;
+       case 0x201a: value = 0x82; break;
+       case 0x0192: value = 0x83; break;
+       case 0x201e: value = 0x84; break;
+       case 0x2020: value = 0x86; break;
+       case 0x2021: value = 0x87; break;
+       case 0x02c6: value = 0x88; break;
+       case 0x2030: value = 0x89; break;
+       case 0x2039: value = 0x8b; break;
+       case 0x2018: value = 0x91; break;
+       case 0x2022: value = 0x95; break;
+       case 0x2013: value = 0x96; break;
+       case 0x2014: value = 0x97; break;
+       case 0x02dc: value = 0x98; break;
+       case 0x2122: value = 0x99; break;
+       case 0x203a: value = 0x9b; break;
+       case 0x0178: value = 0x9f; break;
 #endif
       }
       if (value < 0x100) {
