@@ -999,6 +999,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       backclin *= pcs->units[Q_BACKGRADIENT];
       /* percentage scale */
       if (pcs->f_backclino_percent) backclin = atan(backclin);
+      /* FIXME: Add range_0_180 handling here too */
       if (ctype != CTYPE_READING) {
 	 real diff_from_abs90 = fabs(backclin) - M_PI_2;
 	 if (diff_from_abs90 > EPSILON) {
