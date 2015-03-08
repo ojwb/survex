@@ -2666,12 +2666,6 @@ void GfxCore::SetColourFromDate(int date, Double factor)
 	Double interval = date_ext / (GetNumColourBands() - 1);
 	Double into_band = date_offset / interval - band;
 
-//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
-//	       z_offset, interval, band);
-	// FIXME: why do we need to clamp here?  Is it because the walls can
-	// extend further up/down than the centre-line?
-	if (into_band < 0.0) into_band = 0.0;
-	if (into_band > 1.0) into_band = 1.0;
 	assert(into_band >= 0.0);
 	assert(into_band <= 1.0);
 
@@ -2748,12 +2742,6 @@ void GfxCore::SetColourFromError(double E, Double factor)
 	Double interval = MAX_ERROR / (GetNumColourBands() - 1);
 	Double into_band = E / interval - band;
 
-//	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
-//	       z_offset, interval, band);
-	// FIXME: why do we need to clamp here?  Is it because the walls can
-	// extend further up/down than the centre-line?
-	if (into_band < 0.0) into_band = 0.0;
-	if (into_band > 1.0) into_band = 1.0;
 	assert(into_band >= 0.0);
 	assert(into_band <= 1.0);
 

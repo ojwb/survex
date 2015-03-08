@@ -1,3 +1,8 @@
+Sun Mar 08 10:09:04 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Remove unnecessary clamping when colouring by date or
+	  error, due to cut-and-pasting code from the colour by depth case.
+
 Sun Mar 08 09:35:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Add "Colour by Length".
