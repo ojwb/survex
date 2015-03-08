@@ -1,3 +1,8 @@
+Sun Mar 08 02:10:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/message.c: Document the CP-1250 and CP-1252 mappings are
+	  complete, and which positions are unused in these character sets.
+
 Sun Mar 08 02:07:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/message.c: Add commented out mappings for the CP-1252 characters

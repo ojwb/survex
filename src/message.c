@@ -467,6 +467,8 @@ add_unicode(int charset, unsigned char *p, int value)
       /* MS Windows rough equivalent to ISO-8859-2 */
       if (value >= 0x80) {
 	 int v = 0;
+	 /* This mapping is complete - there are 5 unused positions:
+	  * 0x81 0x83 0x88 0x90 0x98 */
 	 switch (value) {
 	    case 0xa0: case 0xa4: case 0xa6: case 0xa7: case 0xa8: case 0xa9:
 	    case 0xab: case 0xac: case 0xad: case 0xae: case 0xb0: case 0xb1:
@@ -560,6 +562,8 @@ add_unicode(int charset, unsigned char *p, int value)
       return 1;
    case CHARSET_WINCP1252:
       /* MS Windows extensions to ISO-8859-1 */
+      /* This mapping is complete - there are 5 unused positions:
+       * 0x81 0x8d 0x8f 0x90 0x9d */
       switch (value) {
        case 0x2026: value = 0x85; break; /* hellip */
        case 0x0160: value = 0x8a; break; /* Scaron */
