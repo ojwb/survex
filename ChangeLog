@@ -1,3 +1,8 @@
+Sun Mar 08 02:21:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavern.h: Reorder the Q_ enum values so that those used in
+	  bitmasks tests are together and first.
+
 Sun Mar 08 02:20:30 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Add FIXME about warnings when the backclino has range

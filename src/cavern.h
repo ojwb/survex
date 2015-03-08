@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013,2014 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -80,9 +80,11 @@ extern int current_days_since_1900;
 /* Types */
 
 typedef enum {
-   Q_NULL = -1, Q_DEFAULT, Q_LENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_POS,
-   Q_BEARING, Q_BACKBEARING, Q_GRADIENT, Q_BACKGRADIENT, Q_DECLINATION,
-   Q_PLUMB, Q_LEVEL, Q_LEFT, Q_RIGHT, Q_UP, Q_DOWN, Q_MAC
+   Q_NULL = -1, Q_DEFAULT, Q_POS, Q_PLUMB, Q_LEVEL,
+   Q_GRADIENT, Q_BACKGRADIENT, Q_BEARING, Q_BACKBEARING,
+   Q_LENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_DECLINATION,
+   Q_LEFT, Q_RIGHT, Q_UP, Q_DOWN,
+   Q_MAC
 } q_quantity;
 
 typedef enum {
