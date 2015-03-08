@@ -56,6 +56,9 @@
 // Any error value higher than this is clamped to this.
 #define MAX_ERROR 12.0
 
+// Any length greater than pow(10, LOG_LEN_MAX) will be clamped to this.
+const Double LOG_LEN_MAX = 1.5;
+
 // How many bins per letter height to use when working out non-overlapping
 // labels.
 const unsigned int QUANTISE_FACTOR = 2;
@@ -220,6 +223,7 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_DEPTH_KEY);
     InvalidateList(LIST_DATE_KEY);
     InvalidateList(LIST_ERROR_KEY);
+    InvalidateList(LIST_LENGTH_KEY);
     InvalidateList(LIST_UNDERGROUND_LEGS);
     InvalidateList(LIST_TUBES);
     InvalidateList(LIST_SURFACE_LEGS);
@@ -1071,6 +1075,25 @@ void GfxCore::DrawErrorKey()
      * which aren’t part of a loop and so have no error information. Try to keep
      * this fairly short. */
     DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
+}
+
+void GfxCore::DrawLengthKey()
+{
+    int num_bands;
+    // Use fixed colours for each length so it's directly visually comparable
+    // between surveys.
+    num_bands = GetNumColourBands();
+    for (int band = 0; band < num_bands; ++band) {
+	double len = pow(10, LOG_LEN_MAX * band / (num_bands - 1));
+	int units = /*m*/424;
+	if (!m_Metric) {
+	    len /= METRES_PER_FOOT;
+	    units = /*ft*/428;
+	}
+	key_legends[band].Printf(wxT("%.2f%s"), len, wmsg(units));
+    }
+
+    DrawColourKey(num_bands, wxString(), wxString());
 }
 
 void GfxCore::DrawScaleBar()
@@ -2195,6 +2218,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_ERROR_KEY:
 	    DrawErrorKey();
 	    break;
+	case LIST_LENGTH_KEY:
+	    DrawLengthKey();
+	    break;
 	case LIST_UNDERGROUND_LEGS:
 	    GenerateDisplayList();
 	    break;
@@ -2371,6 +2397,9 @@ void GfxCore::DrawIndicators()
 		       GetYSize() - KEY_OFFSET_Y, 0);
 	} else if (m_ColourBy == COLOUR_BY_ERROR) {
 	    DrawList2D(LIST_ERROR_KEY, GetXSize() - KEY_OFFSET_X,
+		       GetYSize() - KEY_OFFSET_Y, 0);
+	} else if (m_ColourBy == COLOUR_BY_LENGTH) {
+	    DrawList2D(LIST_LENGTH_KEY, GetXSize() - KEY_OFFSET_X,
 		       GetYSize() - KEY_OFFSET_Y, 0);
 	}
     }
@@ -2763,6 +2792,68 @@ void GfxCore::AddPolylineError(const traverse & centreline)
     EndPolyline();
 }
 
+void GfxCore::SetColourFromLength(double length, Double factor)
+{
+    // Set the drawing colour based on log(length_of_leg).
+
+    Double log_len = log10(length);
+    Double how_far = log_len / LOG_LEN_MAX;
+    how_far = max(how_far, 0.0);
+    how_far = min(how_far, 1.0);
+
+    int band = int(floor(how_far * (GetNumColourBands() - 1)));
+    GLAPen pen1 = GetPen(band);
+    if (band < GetNumColourBands() - 1) {
+	const GLAPen& pen2 = GetPen(band + 1);
+
+	Double interval = LOG_LEN_MAX / (GetNumColourBands() - 1);
+	Double into_band = log_len / interval - band;
+
+	assert(into_band >= 0.0);
+	assert(into_band <= 1.0);
+
+	pen1.Interpolate(pen2, into_band);
+    }
+    SetColour(pen1, factor);
+}
+
+void GfxCore::AddPolylineLength(const traverse & centreline)
+{
+    vector<PointInfo>::const_iterator i, prev_i;
+    i = centreline.begin();
+    prev_i = i;
+    while (++i != centreline.end()) {
+	Double len = (*i - *prev_i).magnitude();
+	BeginPolyline();
+	SetColourFromLength(len, 1.0);
+	PlaceVertex(*prev_i);
+	PlaceVertex(*i);
+	prev_i = i;
+	EndPolyline();
+    }
+}
+
+static double static_length_hack; // FIXME
+
+void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
+				     const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginQuadrilaterals();
+////    PlaceNormal(normal);
+    SetColourFromLength(static_length_hack, factor);
+    PlaceVertex(a, 0, 0);
+    PlaceVertex(b, w, 0);
+    PlaceVertex(c, w, h);
+    PlaceVertex(d, 0, h);
+    EndQuadrilaterals();
+}
+
 void
 GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 {
@@ -2955,6 +3046,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	v[3] = pt_v - right * l - up * d;
 
 	if (draw) {
+	    static_length_hack = (pt_v - prev_pt_v).magnitude();
 	    if (segment > 0) {
 		(this->*AddQuad)(v[0], v[1], U[1], U[0]);
 		(this->*AddQuad)(v[2], v[3], U[3], U[2]);
@@ -3080,6 +3172,10 @@ void GfxCore::SetColourBy(int colour_by) {
 	case COLOUR_BY_ERROR:
 	    AddQuad = &GfxCore::AddQuadrilateralError;
 	    AddPoly = &GfxCore::AddPolylineError;
+	    break;
+	case COLOUR_BY_LENGTH:
+	    AddQuad = &GfxCore::AddQuadrilateralLength;
+	    AddPoly = &GfxCore::AddPolylineLength;
 	    break;
 	default: // case COLOUR_BY_NONE:
 	    AddQuad = &GfxCore::AddQuadrilateral;
@@ -3323,6 +3419,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
+	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the colour key.
 	 * The "Colour Key" is the thing in aven showing which colour

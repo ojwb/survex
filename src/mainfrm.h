@@ -117,6 +117,7 @@ enum {
     menu_VIEW_COLOUR_BY_DEPTH,
     menu_VIEW_COLOUR_BY_DATE,
     menu_VIEW_COLOUR_BY_ERROR,
+    menu_VIEW_COLOUR_BY_LENGTH,
     menu_IND_COMPASS,
     menu_IND_CLINO,
     menu_IND_COLOUR_KEY,
@@ -320,6 +321,7 @@ public:
     void OnColourByDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDepthUpdate(event); }
     void OnColourByDateUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDateUpdate(event); }
     void OnColourByErrorUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByErrorUpdate(event); }
+    void OnColourByLengthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByLengthUpdate(event); }
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowCrossesUpdate(event); }
     void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowEntrancesUpdate(event); }
     void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowFixedPtsUpdate(event); }
@@ -371,6 +373,7 @@ public:
     void OnColourByDepth(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDepth(); }
     void OnColourByDate(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDate(); }
     void OnColourByError(wxCommandEvent&) { if (m_Control) m_Control->OnColourByError(); }
+    void OnColourByLength(wxCommandEvent&) { if (m_Control) m_Control->OnColourByLength(); }
     void OnShowCrosses(wxCommandEvent&) { if (m_Control) m_Control->OnShowCrosses(); }
     void OnShowEntrances(wxCommandEvent&) { if (m_Control) m_Control->OnShowEntrances(); }
     void OnShowFixedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowFixedPts(); }
