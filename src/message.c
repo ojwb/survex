@@ -723,6 +723,10 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = '.'; p[1] = '.'; p[2] = '.'; return 3;
     case 0x2192: /* &rarr; */
       *p = '-'; p[1] = '>'; return 2;
+    case 0x1d4d: /* gradient symbol */
+      *p = 'g'; p[1] = 'r'; p[2] = 'd'; return 3;
+    case 0x221e: /* infinity symbol */
+      *p = 'i'; p[1] = 'n'; p[2] = 'f'; return 3;
    }
 #ifdef DEBUG
    fprintf(stderr, "failed to transliterate\n");
