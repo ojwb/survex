@@ -3235,6 +3235,16 @@ leg:
 tape... -->
 </Sect2>
 
+<Sect2><Title>Enter Repeated Readings</Title>
+
+<Para>If your survey data contains multiple versions of each leg (for example,
+pockettopo produces such data), then provided these are adjacent to one another
+Survex 1.2.17 and later will automatically average these and treat them as a
+single leg.
+</Para>
+
+</Sect2>
+
 <Sect2><Title>Enter Radiolocation Data</Title>
 
 <!-- FIXME comments from David Gibson here -->

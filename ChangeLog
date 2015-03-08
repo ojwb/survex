@@ -1,3 +1,7 @@
+Sun Mar 08 13:12:10 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Document averaging of a group of repeated readings.
+
 Sun Mar 08 10:09:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Remove unnecessary clamping when colouring by date or
