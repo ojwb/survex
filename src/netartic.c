@@ -381,6 +381,9 @@ articulate(void)
        * and die after listing them...
        */
       bool fNotAttached = fFalse;
+      /* TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
+       * cavern will issue this error if there are any sections of the survey
+       * network which are hanging. */
       error(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
 	 /* Anonymous stations must be at the end of a trailing traverse (since

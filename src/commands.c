@@ -434,6 +434,8 @@ get_qlist(unsigned long mask_bad)
 
    if (qmask == 0) {
       file.lpos += strlen(buffer);
+      /* TRANSLATORS: A "quantity" is something measured like "LENGTH",
+       * "BEARING", "ALTITUDE", etc. */
       compile_error_skip(-/*Unknown quantity “%s”*/34, buffer);
    } else {
       set_pos(&fp);
@@ -1297,6 +1299,11 @@ cmd_data(void)
 	    if (fBad) {
 	       /* Not entirely happy with phrasing this... */
 	       file.lpos += strlen(buffer);
+	       /* TRANSLATORS: This is an error from the *DATA command.  It
+		* means that a reading (which will appear where %s is isn't
+		* valid as the list of readings has already included the same
+		* reading, or an equivalent one (e.g. you can't have both
+		* DEPTH and DEPTHCHANGE together). */
 	       compile_error_skip(-/*Reading “%s” duplicates previous reading(s)*/77,
 			     buffer);
 	       osfree(style_name);
