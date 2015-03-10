@@ -66,9 +66,9 @@ msgstr "Kehabisan memori (tidak dapat menemukan %lu byte)."
 #. to read when we ran out of memory.
 #: ../src/img_hosted.c:34
 #: n:38
-#, fuzzy, c-format
+#, c-format
 msgid "Out of memory trying to read file “%s”"
-msgstr "Kehabisan memori: “%s”"
+msgstr "Kehabisan memori mencoba membaca berkas “%s”"
 
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
@@ -1051,7 +1051,7 @@ msgstr "Panjang asli %6.2fm (%3d kaki), dipindah %6.2fm (%5.2fm/kaki). "
 
 #: ../src/netskel.c:747
 #: n:146
-#, fuzzy, c-format
+#, c-format
 msgid "Error %6.2f%%"
 msgstr "Kesalahan %6.2f%%"
 
@@ -1062,7 +1062,6 @@ msgstr "Kesalahan %6.2f%%"
 #. up with the numbers in the message above.
 #: ../src/netskel.c:754
 #: n:147
-#, fuzzy
 msgid "Error    N/A"
 msgstr "Kesalahan    N/A"
 
@@ -1107,7 +1106,7 @@ msgstr "Halaman %d dari %d"
 #: ../src/avenprcore.cc:272
 #: ../src/printwx.cc:1577
 #: n:167
-#, fuzzy, c-format
+#, c-format
 msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
 msgstr "Survei “%s”   halaman %d (dari %d)   diproses pada %s"
 
@@ -1480,7 +1479,7 @@ msgstr "Berkas JSON"
 #: ../src/cavernlog.cc:508
 #: n:447
 msgid "Log files"
-msgstr ""
+msgstr "Berkas log"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1855,7 +1854,6 @@ msgstr "Sudut kemiringan"
 #. around each page
 #: ../src/printwx.cc:555
 #: n:264
-#, fuzzy
 msgid "Page Borders"
 msgstr "Batas halaman"
 
@@ -2548,7 +2546,7 @@ msgstr "&Buka…\tCtrl+O"
 #: ../src/mainfrm.cc:800
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Tampilkan &Log"
 
 #: ../src/mainfrm.cc:803
 #: n:380
