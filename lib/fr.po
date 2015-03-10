@@ -1939,6 +1939,12 @@ msgstr "Couleur par &date"
 msgid "Colour by E&rror"
 msgstr "Cou&leur par Érreur"
 
+#: ../src/gfxcore.cc:3410
+#: ../src/mainfrm.cc:915
+#: n:82
+msgid "Colour by &Length"
+msgstr ""
+
 #: ../src/mainfrm.cc:914
 #: n:294
 msgid "Highlight &Entrances"

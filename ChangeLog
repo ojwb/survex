@@ -1,3 +1,7 @@
+Tue Mar 10 00:05:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/: Update po files for new message.
+
 Sun Mar 08 09:35:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Add "Colour by Length".

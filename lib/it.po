@@ -1939,6 +1939,12 @@ msgstr "Coloure per &Data"
 msgid "Colour by E&rror"
 msgstr "Colore di &Error"
 
+#: ../src/gfxcore.cc:3410
+#: ../src/mainfrm.cc:915
+#: n:82
+msgid "Colour by &Length"
+msgstr ""
+
 #: ../src/mainfrm.cc:914
 #: n:294
 msgid "Highlight &Entrances"

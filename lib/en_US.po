@@ -1936,6 +1936,12 @@ msgstr "Color by D&ate"
 msgid "Colour by E&rror"
 msgstr "Color by E&rror"
 
+#: ../src/gfxcore.cc:3410
+#: ../src/mainfrm.cc:915
+#: n:82
+msgid "Colour by &Length"
+msgstr "Color by &Length"
+
 #: ../src/mainfrm.cc:914
 #: n:294
 msgid "Highlight &Entrances"

@@ -1938,6 +1938,12 @@ msgstr "Warna berdasarkan T&anggal"
 msgid "Colour by E&rror"
 msgstr "Warna berdasarkan Kesa&lahan"
 
+#: ../src/gfxcore.cc:3410
+#: ../src/mainfrm.cc:915
+#: n:82
+msgid "Colour by &Length"
+msgstr ""
+
 #: ../src/mainfrm.cc:914
 #: n:294
 msgid "Highlight &Entrances"

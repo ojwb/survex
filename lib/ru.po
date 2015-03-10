@@ -1937,6 +1937,12 @@ msgstr "Раскраска по &дате"
 msgid "Colour by E&rror"
 msgstr "Раскраска по &ошибкам на кольцах"
 
+#: ../src/gfxcore.cc:3410
+#: ../src/mainfrm.cc:915
+#: n:82
+msgid "Colour by &Length"
+msgstr "Раскрашивать по &Длине"
+
 #: ../src/mainfrm.cc:914
 #: n:294
 msgid "Highlight &Entrances"
