@@ -902,8 +902,15 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
 
     wxMenu* splaymenu = new wxMenu;
+    /* TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
+     * splay legs are not shown. */
     splaymenu->AppendCheckItem(menu_SPLAYS_HIDE, wmsg(/*&Hide*/407));
+    /* TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
+     * aven will show splay legs with less bright colours (rather than the
+     * same as other legs "Show" or not shown "Hide"). */
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_FADED, wmsg(/*&Fade*/408));
+    /* TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
+     * splay legs are shown the same as other legs. */
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*&Show*/409));
     viewmenu->Append(menu_VIEW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
 

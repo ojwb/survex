@@ -535,6 +535,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, WALLS)),
 		0, wxALIGN_LEFT|wxALL, 2);
+	// TRANSLATORS: Label for checkbox which controls whether there's a
+	// layer in the exported file (for formats such as DXF and SVG)
+	// containing polygons for the inside of cave passages).
 	v3->Add(new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, PASG)),

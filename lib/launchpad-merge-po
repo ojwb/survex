@@ -10,6 +10,8 @@ my ($o, $n);
 while (1) {
     $o //= <O>;
     $n //= <N>;
+    defined $o and $o =~ s/[ \t]+$//;
+    defined $n and $n =~ s/[ \t]+$//;
     if (!defined $n) {
 	last unless defined $o;
 	print '-' if $diff;
@@ -24,7 +26,7 @@ while (1) {
 	next;
     }
 
-    if ($o eq '' || $n eq '') {
+    if ($o eq "\n" || $n eq "\n") {
 	$fuzzy = 0;
     }
 
@@ -54,6 +56,19 @@ while (1) {
 	print ' ' if $diff;
 	print $o;
 	$n = $o = undef;
+	next;
+    }
+
+    if ($o eq "\n") {
+	print '+' if $diff;
+	print $n;
+	$n = undef;
+	next;
+    }
+
+    if ($n eq "\n") {
+	print '-$o' if $diff;
+	$o = undef;
 	next;
     }
 
