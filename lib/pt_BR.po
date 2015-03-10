@@ -2743,7 +2743,7 @@ msgstr "Estendendo-se para a esquerda a partir da base %s"
 #. TRANSLATORS: for extend:
 #: ../src/extend.c:319
 #: n:514
-#, c-format
+#, fuzzy, c-format
 msgid "Extending to the right from station %s"
 msgstr "Estendendo-se para a direita a partir da base %s"
 
