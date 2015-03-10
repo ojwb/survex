@@ -1,3 +1,8 @@
+Tue Mar 10 00:45:15 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/launchpad-merge-po: Sync merging at blank lines between
+	  messages.
+
 Tue Mar 10 00:05:29 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Update po files for new message.
