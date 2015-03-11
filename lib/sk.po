@@ -1958,8 +1958,9 @@ msgstr ""
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Colour by Len&gth"
 
 #: ../src/mainfrm.cc:924
 #: n:294

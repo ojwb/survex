@@ -1960,7 +1960,7 @@ msgstr ""
 #: ../src/mainfrm.cc:922
 #: n:82
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Colour b&y Length"
 
 #: ../src/mainfrm.cc:924
 #: n:294
