@@ -1954,8 +1954,9 @@ msgstr "Cou&leur par Érreur"
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Couleur par &Longueur"
 
 #: ../src/mainfrm.cc:924
 #: n:294
