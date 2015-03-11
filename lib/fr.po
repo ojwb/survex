@@ -1949,7 +1949,11 @@ msgstr "Couleur par &date"
 #: ../src/mainfrm.cc:921
 #: n:289
 msgid "Colour by E&rror"
-msgstr "Cou&leur par Érreur"
+msgstr "Couleur par Érr&eur"
+
+#: n:85
+msgid "Colour by Grad&ient"
+msgstr ""
 
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
@@ -1966,7 +1970,7 @@ msgstr "Mise en valeur des &entrées"
 #: ../src/mainfrm.cc:925
 #: n:295
 msgid "Highlight &Fixed Points"
-msgstr "Mise en valeur des points F&ixes"
+msgstr "Mise en valeur des points &Fixes"
 
 #: ../src/mainfrm.cc:926
 #: n:296
@@ -2004,7 +2008,7 @@ msgstr "Te&xture des parois"
 #: ../src/mainfrm.cc:937
 #: n:239
 msgid "Fade Distant Ob&jects"
-msgstr "Rendre &floue les objets lointains"
+msgstr "Rendre floue les ob&jets lointains"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
