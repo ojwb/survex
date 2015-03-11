@@ -1,3 +1,8 @@
+Wed Mar 11 03:12:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Put units below length key (like we do for depth
+	  key) and only show one decimal place on the lengths.
+
 Wed Mar 11 03:11:11 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/de.po,lib/de_CH.po,lib/fr.po: Attempt to update some

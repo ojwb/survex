@@ -1085,15 +1085,13 @@ void GfxCore::DrawLengthKey()
     num_bands = GetNumColourBands();
     for (int band = 0; band < num_bands; ++band) {
 	double len = pow(10, LOG_LEN_MAX * band / (num_bands - 1));
-	int units = /*m*/424;
 	if (!m_Metric) {
 	    len /= METRES_PER_FOOT;
-	    units = /*ft*/428;
 	}
-	key_legends[band].Printf(wxT("%.2f%s"), len, wmsg(units));
+	key_legends[band].Printf(wxT("%.1f"), len);
     }
 
-    DrawColourKey(num_bands, wxString(), wxString());
+    DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
 }
 
 void GfxCore::DrawScaleBar()
