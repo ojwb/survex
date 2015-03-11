@@ -1,3 +1,7 @@
+Wed Mar 11 03:15:46 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: Invalidate the length key when "Metric" is toggled.
+
 Wed Mar 11 03:14:30 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Context menu on length key now allows toggling

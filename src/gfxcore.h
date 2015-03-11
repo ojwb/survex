@@ -459,6 +459,7 @@ public:
     void ToggleMetric() {
 	ToggleFlag(&m_Metric);
 	InvalidateList(LIST_DEPTH_KEY);
+	InvalidateList(LIST_LENGTH_KEY);
 	InvalidateList(LIST_SCALE_BAR);
     }
     void ToggleHitTestDebug() {
