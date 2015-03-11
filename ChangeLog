@@ -1,3 +1,8 @@
+Wed Mar 11 03:59:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Factor out function to pick the colour
+	  pen based on a value between 0 and 1.
+
 Wed Mar 11 03:15:46 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.h: Invalidate the length key when "Metric" is toggled.

@@ -2655,21 +2655,7 @@ void GfxCore::SetColourFromDate(int date, Double factor)
     Double how_far = (Double)date_offset / date_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
-
-    int band = int(floor(how_far * (GetNumColourBands() - 1)));
-    GLAPen pen1 = GetPen(band);
-    if (band < GetNumColourBands() - 1) {
-	const GLAPen& pen2 = GetPen(band + 1);
-
-	Double interval = date_ext / (GetNumColourBands() - 1);
-	Double into_band = date_offset / interval - band;
-
-	assert(into_band >= 0.0);
-	assert(into_band <= 1.0);
-
-	pen1.Interpolate(pen2, into_band);
-    }
-    SetColour(pen1, factor);
+    SetColourFrom01(how_far, factor);
 }
 
 void GfxCore::AddPolylineDate(const traverse & centreline)
@@ -2731,21 +2717,7 @@ void GfxCore::SetColourFromError(double E, Double factor)
     Double how_far = E / MAX_ERROR;
     assert(how_far >= 0.0);
     if (how_far > 1.0) how_far = 1.0;
-
-    int band = int(floor(how_far * (GetNumColourBands() - 1)));
-    GLAPen pen1 = GetPen(band);
-    if (band < GetNumColourBands() - 1) {
-	const GLAPen& pen2 = GetPen(band + 1);
-
-	Double interval = MAX_ERROR / (GetNumColourBands() - 1);
-	Double into_band = E / interval - band;
-
-	assert(into_band >= 0.0);
-	assert(into_band <= 1.0);
-
-	pen1.Interpolate(pen2, into_band);
-    }
-    SetColour(pen1, factor);
+    SetColourFrom01(how_far, factor);
 }
 
 void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
@@ -2786,18 +2758,18 @@ void GfxCore::SetColourFromLength(double length, Double factor)
     Double how_far = log_len / LOG_LEN_MAX;
     how_far = max(how_far, 0.0);
     how_far = min(how_far, 1.0);
+    SetColourFrom01(how_far, factor);
+}
 
-    int band = int(floor(how_far * (GetNumColourBands() - 1)));
+void GfxCore::SetColourFrom01(double how_far, Double factor)
+{
+    double b;
+    double into_band = modf(how_far * (GetNumColourBands() - 1), &b);
+    int band(b);
     GLAPen pen1 = GetPen(band);
-    if (band < GetNumColourBands() - 1) {
+    // With 24bit colour, interpolating by less than this can have no effect.
+    if (into_band >= 1.0 / 512.0) {
 	const GLAPen& pen2 = GetPen(band + 1);
-
-	Double interval = LOG_LEN_MAX / (GetNumColourBands() - 1);
-	Double into_band = log_len / interval - band;
-
-	assert(into_band >= 0.0);
-	assert(into_band <= 1.0);
-
 	pen1.Interpolate(pen2, into_band);
     }
     SetColour(pen1, factor);

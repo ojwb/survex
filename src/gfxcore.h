@@ -241,6 +241,8 @@ private:
     void PlaceVertexWithDepthColour(const Vector3 & v, Double factor = 1.0);
     void PlaceVertexWithDepthColour(const Vector3 & v, GLint tex_x, GLint tex_y, Double factor);
 
+    void SetColourFrom01(double how_far, Double factor);
+
     void SetColourFromDate(int date, Double factor);
     void SetColourFromError(double E, Double factor);
     void SetColourFromLength(double len, Double factor);
