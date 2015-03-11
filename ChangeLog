@@ -1,3 +1,7 @@
+Wed Mar 11 04:30:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Minor refactor.
+
 Wed Mar 11 04:27:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Refactor code to dispatch drawing of the colour key.

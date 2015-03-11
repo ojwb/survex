@@ -2783,9 +2783,8 @@ void GfxCore::AddPolylineLength(const traverse & centreline)
     i = centreline.begin();
     prev_i = i;
     while (++i != centreline.end()) {
-	Double len = (*i - *prev_i).magnitude();
 	BeginPolyline();
-	SetColourFromLength(len, 1.0);
+	SetColourFromLength((*i - *prev_i).magnitude(), 1.0);
 	PlaceVertex(*prev_i);
 	PlaceVertex(*i);
 	prev_i = i;
