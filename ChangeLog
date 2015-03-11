@@ -1,3 +1,7 @@
+Wed Mar 11 04:38:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Fix typo.
+
 Wed Mar 11 04:30:17 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Minor refactor.

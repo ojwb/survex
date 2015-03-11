@@ -569,7 +569,7 @@ msgstr "Même station fixée deux fois sans coordonées"
 #: ../src/datain.c:1228
 #: n:62
 msgid "Tape reading is less than change in depth"
-msgstr "Lecture de longeur inférieure à la différence de profondeur"
+msgstr "Lecture de longueur inférieure à la différence de profondeur"
 
 #. TRANSLATORS: a data "style" is something like NORMAL, DIVING, etc.
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
