@@ -2387,17 +2387,19 @@ void GfxCore::DrawIndicators()
 {
     // Draw colour key.
     if (m_ColourKey) {
-	if (m_ColourBy == COLOUR_BY_DEPTH) {
-	    DrawList2D(LIST_DEPTH_KEY, GetXSize() - KEY_OFFSET_X,
-		       GetYSize() - KEY_OFFSET_Y, 0);
-	} else if (m_ColourBy == COLOUR_BY_DATE) {
-	    DrawList2D(LIST_DATE_KEY, GetXSize() - KEY_OFFSET_X,
-		       GetYSize() - KEY_OFFSET_Y, 0);
-	} else if (m_ColourBy == COLOUR_BY_ERROR) {
-	    DrawList2D(LIST_ERROR_KEY, GetXSize() - KEY_OFFSET_X,
-		       GetYSize() - KEY_OFFSET_Y, 0);
-	} else if (m_ColourBy == COLOUR_BY_LENGTH) {
-	    DrawList2D(LIST_LENGTH_KEY, GetXSize() - KEY_OFFSET_X,
+	drawing_list key_list = LIST_LIMIT_;
+	switch (m_ColourBy) {
+	    case COLOUR_BY_DEPTH:
+		key_list = LIST_DEPTH_KEY; break;
+	    case COLOUR_BY_DATE:
+		key_list = LIST_DATE_KEY; break;
+	    case COLOUR_BY_ERROR:
+		key_list = LIST_ERROR_KEY; break;
+	    case COLOUR_BY_LENGTH:
+		key_list = LIST_LENGTH_KEY; break;
+	}
+	if (key_list != LIST_LIMIT_) {
+	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X,
 		       GetYSize() - KEY_OFFSET_Y, 0);
 	}
     }
