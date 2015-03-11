@@ -518,7 +518,7 @@ msgstr "Messpunkt schon auf die gleichen Koordinaten festgelegt"
 #: n:441
 #, fuzzy, c-format
 msgid "Already had FIX command with no coordinates for station “%s”"
-msgstr "Mehr als ein FIX-Befehl ohne Koordinaten: “%s”"
+msgstr "Mehr als ein FIX-Befehl ohne Koordinaten für Messpunkt »%s«"
 
 #: ../src/commands.c:1710
 #: n:442
@@ -634,7 +634,7 @@ msgstr "\" fehlt"
 #: n:70
 #, fuzzy, c-format
 msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
-msgstr "Messpunkt »%s« nur einmal erwähnt, mit explizitem Präfix - Tippfehler?"
+msgstr "Messpunkt »%s« nur einmal erwähnt, mit explizitem Vermessungsnamen - Tippfehler?"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train
 #. station.

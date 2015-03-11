@@ -1,3 +1,8 @@
+Wed Mar 11 03:11:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/de.po,lib/de_CH.po,lib/fr.po: Attempt to update some
+	  translations.
+
 Tue Mar 10 12:30:42 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
