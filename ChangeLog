@@ -1,3 +1,8 @@
+Wed Mar 11 03:14:30 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Context menu on length key now allows toggling
+	  "Metric", like it does on the depth key.
+
 Wed Mar 11 03:12:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Put units below length key (like we do for depth

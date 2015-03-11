@@ -3411,7 +3411,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	 * The "Colour Key" is the thing in aven showing which colour
 	 * corresponds to which depth, date, survey closure error, etc. */
 	menu.AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*&Hide colour key*/386));
-	if (m_ColourBy == COLOUR_BY_DEPTH)
+	if (m_ColourBy == COLOUR_BY_DEPTH || m_ColourBy == COLOUR_BY_LENGTH)
 	    menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
