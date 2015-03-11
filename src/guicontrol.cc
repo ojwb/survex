@@ -544,6 +544,15 @@ void GUIControl::OnColourByError()
     }
 }
 
+void GUIControl::OnColourByGradient()
+{
+    if (m_View->ColouringBy() == COLOUR_BY_GRADIENT) {
+	m_View->SetColourBy(COLOUR_BY_NONE);
+    } else {
+	m_View->SetColourBy(COLOUR_BY_GRADIENT);
+    }
+}
+
 void GUIControl::OnColourByLength()
 {
     if (m_View->ColouringBy() == COLOUR_BY_LENGTH) {
@@ -569,6 +578,12 @@ void GUIControl::OnColourByErrorUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_ERROR);
+}
+
+void GUIControl::OnColourByGradientUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->ColouringBy() == COLOUR_BY_GRADIENT);
 }
 
 void GUIControl::OnColourByLengthUpdate(wxUpdateUIEvent& cmd)

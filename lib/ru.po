@@ -1948,6 +1948,10 @@ msgstr "Раскраска по &дате"
 msgid "Colour by E&rror"
 msgstr "Раскраска по &ошибкам на кольцах"
 
+#: n:85
+msgid "Colour by Grad&ient"
+msgstr ""
+
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
 #: n:82

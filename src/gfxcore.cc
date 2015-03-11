@@ -223,6 +223,7 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_DEPTH_KEY);
     InvalidateList(LIST_DATE_KEY);
     InvalidateList(LIST_ERROR_KEY);
+    InvalidateList(LIST_GRADIENT_KEY);
     InvalidateList(LIST_LENGTH_KEY);
     InvalidateList(LIST_UNDERGROUND_LEGS);
     InvalidateList(LIST_TUBES);
@@ -1075,6 +1076,26 @@ void GfxCore::DrawErrorKey()
      * which aren’t part of a loop and so have no error information. Try to keep
      * this fairly short. */
     DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
+}
+
+void GfxCore::DrawGradientKey()
+{
+    int num_bands;
+    // Use fixed colours for each gradient so it's directly visually comparable
+    // between surveys.
+    num_bands = GetNumColourBands();
+    wxString units = wmsg(m_Degrees ? /*°*/344 : /*ᵍ*/76);
+    for (int band = 0; band < num_bands; ++band) {
+	double gradient = double(band) / (num_bands - 1);
+	if (m_Degrees) {
+	    gradient *= 90.0;
+	} else {
+	    gradient *= 100.0;
+	}
+	key_legends[band].Printf(wxT("%.f%s"), gradient, units);
+    }
+
+    DrawColourKey(num_bands, wxString(), wxString());
 }
 
 void GfxCore::DrawLengthKey()
@@ -2216,6 +2237,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_ERROR_KEY:
 	    DrawErrorKey();
 	    break;
+	case LIST_GRADIENT_KEY:
+	    DrawGradientKey();
+	    break;
 	case LIST_LENGTH_KEY:
 	    DrawLengthKey();
 	    break;
@@ -2395,6 +2419,8 @@ void GfxCore::DrawIndicators()
 		key_list = LIST_DATE_KEY; break;
 	    case COLOUR_BY_ERROR:
 		key_list = LIST_ERROR_KEY; break;
+	    case COLOUR_BY_GRADIENT:
+		key_list = LIST_GRADIENT_KEY; break;
 	    case COLOUR_BY_LENGTH:
 		key_list = LIST_LENGTH_KEY; break;
 	}
@@ -2752,6 +2778,53 @@ void GfxCore::AddPolylineError(const traverse & centreline)
     EndPolyline();
 }
 
+// gradient is in *radians*.
+void GfxCore::SetColourFromGradient(double gradient, Double factor)
+{
+    // Set the drawing colour based on the gradient of the leg.
+
+    const Double GRADIENT_MAX = M_PI_2;
+    gradient = fabs(gradient);
+    Double how_far = gradient / GRADIENT_MAX;
+    SetColourFrom01(how_far, factor);
+}
+
+void GfxCore::AddPolylineGradient(const traverse & centreline)
+{
+    vector<PointInfo>::const_iterator i, prev_i;
+    i = centreline.begin();
+    prev_i = i;
+    while (++i != centreline.end()) {
+	BeginPolyline();
+	SetColourFromGradient((*i - *prev_i).gradient(), 1.0);
+	PlaceVertex(*prev_i);
+	PlaceVertex(*i);
+	prev_i = i;
+	EndPolyline();
+    }
+}
+
+static double static_gradient_hack; // FIXME
+
+void GfxCore::AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
+				       const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
+    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginQuadrilaterals();
+////    PlaceNormal(normal);
+    SetColourFromGradient(static_gradient_hack, factor);
+    PlaceVertex(a, 0, 0);
+    PlaceVertex(b, w, 0);
+    PlaceVertex(c, w, h);
+    PlaceVertex(d, 0, h);
+    EndQuadrilaterals();
+}
+
 void GfxCore::SetColourFromLength(double length, Double factor)
 {
     // Set the drawing colour based on log(length_of_leg).
@@ -3005,7 +3078,9 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	v[3] = pt_v - right * l - up * d;
 
 	if (draw) {
-	    static_length_hack = (pt_v - prev_pt_v).magnitude();
+	    const Vector3 & delta = pt_v - prev_pt_v;
+	    static_length_hack = delta.magnitude();
+	    static_gradient_hack = delta.gradient();
 	    if (segment > 0) {
 		(this->*AddQuad)(v[0], v[1], U[1], U[0]);
 		(this->*AddQuad)(v[2], v[3], U[3], U[2]);
@@ -3131,6 +3206,10 @@ void GfxCore::SetColourBy(int colour_by) {
 	case COLOUR_BY_ERROR:
 	    AddQuad = &GfxCore::AddQuadrilateralError;
 	    AddPoly = &GfxCore::AddPolylineError;
+	    break;
+	case COLOUR_BY_GRADIENT:
+	    AddQuad = &GfxCore::AddQuadrilateralGradient;
+	    AddPoly = &GfxCore::AddPolylineGradient;
 	    break;
 	case COLOUR_BY_LENGTH:
 	    AddQuad = &GfxCore::AddQuadrilateralLength;
@@ -3378,6 +3457,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
+	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_GRADIENT, wmsg(/*Colour by Grad&ient*/85));
 	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the colour key.
@@ -3386,6 +3466,8 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_IND_COLOUR_KEY, wmsg(/*&Hide colour key*/386));
 	if (m_ColourBy == COLOUR_BY_DEPTH || m_ColourBy == COLOUR_BY_LENGTH)
 	    menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
+	else if (m_ColourBy == COLOUR_BY_GRADIENT)
+	    menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
 	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
 	PopupMenu(&menu);
 	return true;

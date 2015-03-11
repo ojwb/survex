@@ -1,3 +1,7 @@
+Wed Mar 11 05:00:26 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/,src/: Add "Colour by Gradient".
+
 Wed Mar 11 04:55:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/fr.po: Juggle menu shortcuts.

@@ -91,6 +91,7 @@ enum {
     COLOUR_BY_DEPTH,
     COLOUR_BY_DATE,
     COLOUR_BY_ERROR,
+    COLOUR_BY_GRADIENT,
     COLOUR_BY_LENGTH,
     COLOUR_BY_LIMIT_ // Leave this last.
 };
@@ -124,6 +125,7 @@ class GfxCore : public GLACanvas {
 	LIST_DEPTH_KEY,
 	LIST_DATE_KEY,
 	LIST_ERROR_KEY,
+	LIST_GRADIENT_KEY,
 	LIST_LENGTH_KEY,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
@@ -245,6 +247,7 @@ private:
 
     void SetColourFromDate(int date, Double factor);
     void SetColourFromError(double E, Double factor);
+    void SetColourFromGradient(double angle, Double factor);
     void SetColourFromLength(double len, Double factor);
 
     int GetClinoOffset() const;
@@ -270,6 +273,7 @@ private:
     void DrawDepthKey();
     void DrawDateKey();
     void DrawErrorKey();
+    void DrawGradientKey();
     void DrawLengthKey();
     void DrawCompass();
     void DrawClino();
@@ -467,7 +471,10 @@ public:
     void ToggleHitTestDebug() {
 	ToggleFlag(&m_HitTestDebug);
     }
-    void ToggleDegrees() { ToggleFlag(&m_Degrees); }
+    void ToggleDegrees() {
+	ToggleFlag(&m_Degrees);
+	InvalidateList(LIST_GRADIENT_KEY);
+    }
     void TogglePercent() { ToggleFlag(&m_Percent); }
     void ToggleTubes() { ToggleFlag(&m_Tubes); }
     void TogglePerspective() { GLACanvas::TogglePerspective(); ForceRefresh(); }
@@ -506,6 +513,7 @@ public:
     void AddPolylineDepth(const traverse & centreline);
     void AddPolylineDate(const traverse & centreline);
     void AddPolylineError(const traverse & centreline);
+    void AddPolylineGradient(const traverse & centreline);
     void AddPolylineLength(const traverse & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
@@ -516,6 +524,8 @@ public:
 			      const Vector3 &c, const Vector3 &d);
     void AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
 			       const Vector3 &c, const Vector3 &d);
+    void AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
+				  const Vector3 &c, const Vector3 &d);
     void AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
 			        const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);

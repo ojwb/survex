@@ -1948,6 +1948,10 @@ msgstr "Color by D&ate"
 msgid "Colour by E&rror"
 msgstr "Color by E&rror"
 
+#: n:85
+msgid "Colour by Grad&ient"
+msgstr "Color by Grad&ient"
+
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
 #: n:82

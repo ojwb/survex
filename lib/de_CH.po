@@ -1951,6 +1951,10 @@ msgstr "Farbe je nach &Datum"
 msgid "Colour by E&rror"
 msgstr "Anhand Fehle&rn einfärben"
 
+#: n:85
+msgid "Colour by Grad&ient"
+msgstr ""
+
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
 #: n:82

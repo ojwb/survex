@@ -3,7 +3,7 @@
 //  C++ class for 3-element vectors
 //
 //  Copyright (C) 2000-2002, Mark R. Shinwell.
-//  Copyright (C) 2002-2004,2005,2006 Olly Betts
+//  Copyright (C) 2002-2004,2005,2006,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -39,6 +39,11 @@ public:
 
     double magnitude() const {
 	return sqrt(x*x + y*y + z*z);
+    }
+
+    // Returns a value in *radians*.
+    double gradient() const {
+	return atan2(z, sqrt(x*x + y*y));
     }
 
     void normalise();

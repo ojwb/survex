@@ -592,6 +592,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
     EVT_MENU(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDate)
     EVT_MENU(menu_VIEW_COLOUR_BY_ERROR, MainFrm::OnColourByError)
+    EVT_MENU(menu_VIEW_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradient)
     EVT_MENU(menu_VIEW_COLOUR_BY_LENGTH, MainFrm::OnColourByLength)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
@@ -655,6 +656,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDateUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_ERROR, MainFrm::OnColourByErrorUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradientUpdate)
     EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_LENGTH, MainFrm::OnColourByLengthUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBoxUpdate)
@@ -919,6 +921,7 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
+    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_GRADIENT, wmsg(/*Colour by Grad&ient*/85));
     viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, wmsg(/*Highlight &Entrances*/294));
