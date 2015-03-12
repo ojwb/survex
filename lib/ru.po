@@ -1899,7 +1899,7 @@ msgstr "&Объемные ходы\tCtrl+T"
 #: ../src/mainfrm.cc:893
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr "&Пикеты\tCtrl+X"
+msgstr "Пикет&ы\tCtrl+X"
 
 #: ../src/mainfrm.cc:894
 #: n:297
@@ -1909,7 +1909,7 @@ msgstr "&Сетка\tCtrl+G"
 #: ../src/mainfrm.cc:895
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
-msgstr "&Вмещающий прямоугольник\tCtrl+B"
+msgstr "Вме&щающий прямоугольник\tCtrl+B"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1923,7 +1923,7 @@ msgstr "Под&земная нитка\tCtrl+L"
 #: ../src/mainfrm.cc:902
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "По&верхностная нитка\tCtrl+F"
+msgstr "Поверхностна&я нитка\tCtrl+F"
 
 #: ../src/mainfrm.cc:918
 #: n:273
@@ -2162,7 +2162,7 @@ msgstr "Со&хранить презентацию как…"
 #: ../src/mainfrm.cc:882
 #: n:315
 msgid "&Mark"
-msgstr "&Отметить"
+msgstr "От&метить"
 
 #. TRANSLATORS: "Play" as in "Play back a recording"
 #: ../src/mainfrm.cc:884
