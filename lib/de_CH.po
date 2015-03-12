@@ -68,7 +68,7 @@ msgstr "Nicht genug Speicher vorhanden (%lu Bytes nicht gefunden)."
 #: n:38
 #, fuzzy, c-format
 msgid "Out of memory trying to read file “%s”"
-msgstr "Nicht genug Speicher vorhanden: “%s”"
+msgstr "Nicht genug Speicher vorhanden beim Einlesen der Datei «%s»"
 
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
@@ -1952,14 +1952,16 @@ msgid "Colour by E&rror"
 msgstr "Anhand Fehle&rn einfärben"
 
 #: n:85
+#, fuzzy
 msgid "Colour by Grad&ient"
-msgstr ""
+msgstr "Farbe je nach Grad&ient"
 
 #: ../src/gfxcore.cc:3422
 #: ../src/mainfrm.cc:922
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Farbe je nach &Länge"
 
 #: ../src/mainfrm.cc:924
 #: n:294
@@ -2684,8 +2686,9 @@ msgstr "Trennzeichen im Vermessungsnamen"
 #. anonymous station.
 #: ../src/labelinfo.h:82
 #: n:56
+#, fuzzy
 msgid "anonymous station"
-msgstr ""
+msgstr "anonymer Messpunkt"
 
 #: ../src/readval.c:124
 #: ../src/readval.c:139
