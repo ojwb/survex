@@ -68,7 +68,7 @@ msgstr "Plus de mémoire (%lu octets nécessaires, non disponibles)."
 #: n:38
 #, fuzzy, c-format
 msgid "Out of memory trying to read file “%s”"
-msgstr "Plus de mémoire: “%s”"
+msgstr "Plus de mémoire lors de la lecture du fichier “%s”"
 
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
@@ -2685,8 +2685,9 @@ msgstr "Séparateur dans le nom de la topo"
 #. anonymous station.
 #: ../src/labelinfo.h:82
 #: n:56
+#, fuzzy
 msgid "anonymous station"
-msgstr ""
+msgstr "station anonyme"
 
 #: ../src/readval.c:124
 #: ../src/readval.c:139
