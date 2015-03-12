@@ -1960,6 +1960,10 @@ msgstr ""
 msgid "Colour by &Length"
 msgstr ""
 
+#: n:448
+msgid "Colour by &Survey"
+msgstr ""
+
 #: ../src/mainfrm.cc:924
 #: n:294
 msgid "Highlight &Entrances"
