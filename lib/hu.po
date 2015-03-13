@@ -81,9 +81,9 @@ msgstr "A memória megtelt: “%s”"
 #. translated to the terminology that cavers using the language would use.
 #: ../src/commands.c:2059
 #: n:2
-#, c-format
+#, fuzzy, c-format
 msgid "Survex version %s or greater required to process this survey data."
-msgstr ""
+msgstr "Legalább %s verzió szükséges a feladat végrehajtásához."
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
@@ -108,9 +108,9 @@ msgstr "hiba"
 #. and line number still works.
 #: ../src/datain.c:109
 #: n:5
-#, c-format
+#, fuzzy, c-format
 msgid "In file included from %s:%u:\n"
-msgstr ""
+msgstr "Megtalálható a %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
@@ -122,9 +122,9 @@ msgstr ""
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:206
 #: n:7
-#, c-format
+#, fuzzy, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
-msgstr ""
+msgstr "“%c” karakter nem engedélyezett a mérőpont nevében (use *SET NAMES to set allowed characters)"
 
 #: ../src/readval.c:387
 #: n:8
@@ -3067,8 +3067,9 @@ msgstr ""
 #. so should not be translated.
 #: ../src/cad3d.c:675
 #: n:159
+#, fuzzy
 msgid "produce Compass PLT output for Carto"
-msgstr ""
+msgstr "Iránytű Compass PLT kimenet készítése Carto-hoz"
 
 #: ../src/cad3d.c:676
 #: n:160
