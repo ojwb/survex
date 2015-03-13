@@ -1,4 +1,4 @@
-c6a54a89 (Olly Betts 2015-03-10 13:54:52 +1300    1) Tue Mar 10 00:54:10 GMT 2015  Olly Betts <olly@survex.com>
+d2994202 (Olly Betts 2015-03-14 10:29:04 +1300    1) Fri Mar 13 21:28:07 GMT 2015  Olly Betts <olly@survex.com>
 
 Changes in 1.2.18 (2015-03-10):
 
@@ -8,7 +8,7 @@ Changes in 1.2.18 (2015-03-10):
 
 * aven: Add "Save Log" button to Aven's cavern log window.
 
-* aven: Add "Colour by Length".
+* aven: Add "Colour by Gradient" and "Colour by Length".
 
 * aven: Make the button to dismiss the "About" dialog "OK" rather than "Close",
   which seems more logical, and also allows the dialog to be closed by pressing
@@ -37,6 +37,8 @@ Changes in 1.2.18 (2015-03-10):
 
 * cavern: Use the currently set units when outputting measurements in warnings,
   errors, and the stats at the end of the run.
+
+* findentrances: If the 3d file specifies the coordinate system, use it.
 
 * (Microsoft Windows version): Add code page 1252 mappings for fancy quotes.
 
@@ -76,6 +78,8 @@ Changes in 1.2.18 (2015-03-10):
 
 	* lib/id.po: Merged translation updates from "Cave ID" - all messages
 	  are now translated into Indonesian!
+
+* doc/manual.sgml: Document averaging of a group of repeated readings.
 
 	* doc/TODO.htm: Update.
 
