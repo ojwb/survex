@@ -1,3 +1,8 @@
+Fri Mar 13 11:27:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/findentrances.cc: If the 3d file specifies the coordinate system,
+	  use it.
+
 Fri Mar 13 03:49:45 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/hu.po: Merged adjusted versions of some suggestions, marked as

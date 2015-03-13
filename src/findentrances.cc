@@ -2,7 +2,7 @@
  * Simple converter from survex .3d files to a list of entrances in GPX format
  *
  * Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013 Olly Betts
+ * Copyright (C) 2012,2013,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
  * and minimalistic as possible.
  *
  * Usage:
- *   findentrances -d <+proj +datum +string> <input.3d>
+ *   findentrances [-d <+proj +datum +string>] <input.3d>
  *
  * Example for data given in BMN M31 (Totes Gebirge, Austria):
  *   findentrances -d '+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232' cucc_austria.3d > ent.gpx
@@ -62,11 +62,22 @@ struct Point {
 };
 
 static void
-read_survey(const char *filename, vector<Point> & points)
+read_survey(const char *filename, vector<Point> & points, const char ** p_proj)
 {
     img *survey = img_open_survey(filename, NULL);
     if (!survey) {
 	fatalerror(img_error2msg(img_error()), filename);
+    }
+
+    if (survey->cs) {
+	if (*p_proj) {
+	    fprintf(stderr, "3d file specifies the coordinate system, ignoring datum specified on command line\n");
+	}
+	*p_proj = osstrdup(survey->cs);
+    } else if (!*p_proj) {
+	cmdline_syntax();
+	fprintf(stderr, "3d file does not specify the coordinate system - you need to specify the datum on the command line\n");
+	exit(1);
     }
 
     int result;
@@ -163,15 +174,10 @@ int main(int argc, char **argv)
 	else if (opt == 'd') datum_string = optarg;
     }
 
-    if (!datum_string) {
-	cmdline_syntax();
-	exit(1);
-    }
-
     const char *survey_filename = argv[optind];
 
     vector<Point> points;
-    read_survey(survey_filename, points);
+    read_survey(survey_filename, points, &datum_string);
     convert_coordinates(points, datum_string, WGS84_DATUM_STRING);
     sort_points(points);
     write_gpx(points, stdout);
