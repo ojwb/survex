@@ -706,6 +706,13 @@ void GfxCore::Draw2dIndicators()
 	str += wmsg(brg_unit);
 	DrawIndicatorText(comp_centre_x - triple_zero_width / 2, y_off, str);
 
+	// TRANSLATORS: Used in aven above the compass indicator at the lower
+	// right of the display, with a bearing below "Facing".  This indicates the
+	// direction the viewer is "facing" in.
+	//
+	// Try to keep this translation short - ideally at most 10 characters -
+	// as otherwise the compass and clino will be moved further apart to
+	// make room. */
 	str = wmsg(/*Facing*/203);
 	int w;
 	GetTextExtent(str, &w, NULL);
@@ -716,6 +723,10 @@ void GfxCore::Draw2dIndicators()
 	if (m_TiltAngle == -90.0) {
 	    // TRANSLATORS: Label used for "clino" in Aven when the view is
 	    // from directly above.
+	    //
+	    // Try to keep this translation short - ideally at most 10
+	    // characters - as otherwise the compass and clino will be moved
+	    // further apart to make room. */
 	    wxString str = wmsg(/*Plan*/432);
 	    static int width = 0;
 	    if (!width) {
@@ -726,6 +737,10 @@ void GfxCore::Draw2dIndicators()
 	} else if (m_TiltAngle == 90.0) {
 	    // TRANSLATORS: Label used for "clino" in Aven when the view is
 	    // from directly below.
+	    //
+	    // Try to keep this translation short - ideally at most 10
+	    // characters - as otherwise the compass and clino will be moved
+	    // further apart to make room. */
 	    wxString str = wmsg(/*Kiwi Plan*/433);
 	    static int width = 0;
 	    if (!width) {
@@ -804,6 +819,14 @@ void GfxCore::Draw2dIndicators()
 	    str += wmsg(unit);
 	    DrawIndicatorText(elev_centre_x - sign_offset - width / 2, y_off, str);
 
+	    // TRANSLATORS: Label used for "clino" in Aven when the view is
+	    // neither from directly above nor from directly below.  It is
+	    // also used in the dialog for editing a marked position in a
+	    // presentation.
+	    //
+	    // Try to keep this translation short - ideally at most 10
+	    // characters - as otherwise the compass and clino will be moved
+	    // further apart to make room. */
 	    str = wmsg(/*Elevation*/118);
 	    static int elevation_width = 0;
 	    if (!elevation_width) {

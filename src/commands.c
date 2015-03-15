@@ -552,21 +552,50 @@ check_reentry(prefix *survey)
       if (reenter_depr_count >= 5)
 	 return;
 
-      /* TRANSLATORS: e.g.
+      /* TRANSLATORS: The first of two warnings given when a survey which has
+       * already been completed is reentered.  This example file crawl.svx:
        *
        * *begin crawl
-       * 1 2 9.45 234 -01
+       * 1 2 9.45 234 -01 # <- second warning here
        * *end crawl
-       * *begin crawl    # <- warning here
+       * *begin crawl     # <- first warning here
        * 2 3 7.67 223 -03
        * *end crawl
-       * 
+       *
+       * Would lead to:
+       *
+       * crawl.svx:3: Reentering an existing survey is deprecated
+       * crawl.svx:1: Originally entered here
+       *
        * If you're unsure what "deprecated" means, see:
        * http://en.wikipedia.org/wiki/Deprecation */
       compile_warning(/*Reentering an existing survey is deprecated*/29);
+      /* TRANSLATORS: The second of two warnings given when a survey which has
+       * already been completed is reentered.  This example file crawl.svx:
+       *
+       * *begin crawl
+       * 1 2 9.45 234 -01 # <- second warning here
+       * *end crawl
+       * *begin crawl     # <- first warning here
+       * 2 3 7.67 223 -03
+       * *end crawl
+       *
+       * Would lead to:
+       *
+       * crawl.svx:3: Reentering an existing survey is deprecated
+       * crawl.svx:1: Originally entered here
+       *
+       * If you're unsure what "deprecated" means, see:
+       * http://en.wikipedia.org/wiki/Deprecation */
       compile_warning_pfx(survey, /*Originally entered here*/30);
-      if (++reenter_depr_count == 5)
+      if (++reenter_depr_count == 5) {
+	 /* After we've warned about 5 uses of the same deprecated feature, we
+	  * give up for the rest of the current processing run.
+	  *
+	  * If you're unsure what "deprecated" means, see:
+	  * http://en.wikipedia.org/wiki/Deprecation */
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
+      }
    } else {
       survey->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
       survey->filename = file.filename;
