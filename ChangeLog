@@ -1,3 +1,9 @@
+Sun Mar 15 03:35:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Take the width of the messages used
+	  above the compass and clino into account when calculating how wide
+	  they are.
+
 Sun Mar 15 03:35:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc,src/gla.h: Make GLACanvas::GetTextExtent() const.

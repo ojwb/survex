@@ -149,6 +149,9 @@ class GfxCore : public GLACanvas {
 	base_tilt_time = timer.Time() - (1000 / MAX_FRAMERATE);
     }
 
+    int GetCompassWidth() const;
+    int GetClinoWidth() const;
+
 public:
     typedef enum {
 	CURSOR_DEFAULT,

@@ -71,8 +71,6 @@ static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
 static const int INDICATOR_RADIUS = INDICATOR_BOX_SIZE / 2 - INDICATOR_MARGIN;
-static const int CLINO_OFFSET_X = 6 + INDICATOR_OFFSET_X +
-				  INDICATOR_BOX_SIZE + INDICATOR_GAP;
 static const int KEY_OFFSET_X = 10;
 static const int KEY_OFFSET_Y = 10;
 static const int KEY_EXTRA_LEFT_MARGIN = 2;
@@ -579,7 +577,11 @@ void GfxCore::DrawGrid()
 
 int GfxCore::GetClinoOffset() const
 {
-    return m_Compass ? CLINO_OFFSET_X : INDICATOR_OFFSET_X;
+    int result = INDICATOR_OFFSET_X;
+    if (m_Compass) {
+	result += 6 + GetCompassWidth() + INDICATOR_GAP;
+    }
+    return result;
 }
 
 void GfxCore::DrawTick(int angle_cw)
@@ -1860,18 +1862,50 @@ void GfxCore::SetCoords(wxPoint point)
     }
 }
 
+int GfxCore::GetCompassWidth() const
+{
+    static int result = 0;
+    if (result == 0) {
+	result = INDICATOR_BOX_SIZE;
+	int width;
+	const wxString & msg = wmsg(/*Facing*/203);
+	GetTextExtent(msg, &width, NULL);
+	if (width > result) result = width;
+    }
+    return result;
+}
+
+int GfxCore::GetClinoWidth() const
+{
+    static int result = 0;
+    if (result == 0) {
+	result = INDICATOR_BOX_SIZE;
+	int width;
+	const wxString & msg1 = wmsg(/*Plan*/432);
+	GetTextExtent(msg1, &width, NULL);
+	if (width > result) result = width;
+	const wxString & msg2 = wmsg(/*Kiwi Plan*/433);
+	GetTextExtent(msg2, &width, NULL);
+	if (width > result) result = width;
+	const wxString & msg3 = wmsg(/*Elevation*/118);
+	GetTextExtent(msg3, &width, NULL);
+	if (width > result) result = width;
+    }
+    return result;
+}
+
 int GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
     // coordinates.
-    return GetXSize() - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE / 2;
+    return GetXSize() - INDICATOR_OFFSET_X - GetCompassWidth() / 2;
 }
 
 int GfxCore::GetClinoXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
     // coordinates.
-    return GetXSize() - GetClinoOffset() - INDICATOR_BOX_SIZE / 2;
+    return GetXSize() - GetClinoOffset() - GetClinoWidth() / 2;
 }
 
 int GfxCore::GetIndicatorYPosition() const
@@ -1995,10 +2029,10 @@ void GfxCore::RedrawIndicators()
 {
     // Redraw the compass and clino indicators.
 
-    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X - INDICATOR_BOX_SIZE*2 -
-		       INDICATOR_GAP,
+    int total_width = GetCompassWidth() + INDICATOR_GAP + GetClinoWidth();
+    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X - total_width,
 		       GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
-		       INDICATOR_BOX_SIZE*2 + INDICATOR_GAP,
+		       total_width,
 		       INDICATOR_BOX_SIZE), false);
 }
 
