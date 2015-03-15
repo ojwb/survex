@@ -1,3 +1,7 @@
+Sun Mar 15 03:38:32 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/: Merge po changes.
+
 Sun Mar 15 03:35:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Take the width of the messages used
