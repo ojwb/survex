@@ -3087,9 +3087,11 @@ msgstr ""
 #~ msgid "Terrain files"
 #~ msgstr ""
 
+#. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the terrain.
 #~ msgid "Open &Terrain…"
 #~ msgstr ""
 
+#. TRANSLATORS: Show the terrain as solid rather than transparent.
 #~ msgid "Solid Su&rface"
 #~ msgstr ""
 
