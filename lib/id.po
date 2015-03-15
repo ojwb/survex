@@ -548,7 +548,7 @@ msgstr "Tahun tidak valid (< 1900 or > 2078)"
 #: ../src/datain.c:880
 #: n:59
 msgid "Suspicious compass reading"
-msgstr "Pembacaan kompas yang mencurigakan"
+msgstr "Pembacaan kompas yang meragukan"
 
 #: ../src/datain.c:1529
 #: n:60
@@ -1952,17 +1952,17 @@ msgstr "Warna berdasarkan Kesa&lahan"
 #: ../src/mainfrm.cc:924
 #: n:85
 msgid "Colour by Grad&ient"
-msgstr ""
+msgstr "Warna menurut Gra&dasi"
 
 #: ../src/gfxcore.cc:3461
 #: ../src/mainfrm.cc:925
 #: n:82
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Warna menurut &Panjang"
 
 #: n:448
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Warna menurut &Survei"
 
 #: ../src/mainfrm.cc:927
 #: n:294
