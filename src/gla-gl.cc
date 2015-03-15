@@ -981,7 +981,7 @@ void GLACanvas::DrawIndicatorText(int x, int y, const wxString& str)
     m_Font.write_string(str.data(), str.size());
 }
 
-void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext)
+void GLACanvas::GetTextExtent(const wxString& str, int * x_ext, int * y_ext) const
 {
     m_Font.get_text_extent(str.data(), str.size(), x_ext, y_ext);
 }

@@ -1,3 +1,7 @@
+Sun Mar 15 03:35:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gla-gl.cc,src/gla.h: Make GLACanvas::GetTextExtent() const.
+
 Sun Mar 15 03:34:26 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,src/gfxcore.cc: Add and enhance some TRANSLATORS

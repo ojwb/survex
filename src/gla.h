@@ -186,7 +186,7 @@ public:
 
     void DrawText(glaCoord x, glaCoord y, glaCoord z, const wxString& str);
     void DrawIndicatorText(int x, int y, const wxString& str);
-    void GetTextExtent(const wxString& str, int * x_ext, int * y_ext);
+    void GetTextExtent(const wxString& str, int * x_ext, int * y_ext) const;
 
     void BeginQuadrilaterals();
     void EndQuadrilaterals();
