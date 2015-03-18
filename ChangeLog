@@ -1,3 +1,7 @@
+Wed Mar 18 03:22:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Add a link to the sample data from the manual too.
+
 Wed Mar 18 03:12:09 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Remove references to contact addresses which are

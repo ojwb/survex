@@ -294,6 +294,10 @@ install it, and how to configure it.</Para>
 freely redistributable, so you welcome to get a copy from someone else
 who has already downloaded it.</Para>
 
+<Para>If you want some sample data to experiment with, you can download some
+from the Survex website too:
+<ulink url="http://survex.com/software/sample.tar.gz">http://survex.com/software/sample.tar.gz</ulink></Para>
+
 </Sect2>
 
 <Sect2><Title>Installing &survexsuite;</Title>
