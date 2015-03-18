@@ -1,3 +1,9 @@
+Wed Mar 18 03:12:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Remove references to contact addresses which are
+	  no longer there.  Remove offer to post people floppies, and
+	  references to a fictional CD image.
+
 Sun Mar 15 03:38:32 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Merge po changes.

@@ -167,8 +167,8 @@ complete in some sense, but development continues - initially in reshaping
 Survex into a more integrated GUI package.</Para>
 
 <Para>We encourage feedback from users on important features or problems,
-which will help to direct future development. Contact addresses are at the
-end of this manual.</Para>
+which will help to direct future development.  See the "Mailing List" section
+of this manual for the best way to contact us.</Para>
 
 </Sect2>
 
@@ -290,17 +290,9 @@ install it, and how to configure it.</Para>
 <Sect2><Title>Obtaining &survexsuite;</Title>
 
 <Para>The latest version is available from the &survexsuite; website:
-<ulink url="&survexwebsite;">&survexwebsite;</ulink>. If you do not
-have internet access or would prefer to get a copy by post, we are
-also happy to send out up-to-date copies on a floppy on receipt of
-a stamped, self-addressed envelope. See the end of this
-document for addresses.</Para>
-
-<Para>
-There's also a CD containing versions of &survexsuite; for every supported
-platform.  You can download an image for this from the website, or we'll
-send you a copy on a CD-R if you send us money to cover the costs.
-</Para>
+<ulink url="&survexwebsite;">&survexwebsite;</ulink>.  It is also
+freely redistributable, so you welcome to get a copy from someone else
+who has already downloaded it.</Para>
 
 </Sect2>
 
