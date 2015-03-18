@@ -21,7 +21,7 @@ msgstr "&Файл"
 #: ../src/mainfrm.cc:986
 #: n:211
 msgid "&Rotation"
-msgstr "&авъртане"
+msgstr "&Завъртане"
 
 #: ../src/mainfrm.cc:987
 #: n:212

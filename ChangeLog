@@ -1,3 +1,7 @@
+Wed Mar 18 04:11:49 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/bg.po,lib/el.po: A few updates.
+
 Wed Mar 18 03:22:09 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Add a link to the sample data from the manual too.

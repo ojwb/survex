@@ -21,7 +21,7 @@ msgstr "&Αρχείο"
 #: ../src/mainfrm.cc:986
 #: n:211
 msgid "&Rotation"
-msgstr ""
+msgstr "&περιστροφή"
 
 #: ../src/mainfrm.cc:987
 #: n:212
@@ -31,7 +31,7 @@ msgstr "&Προσανατολισμός"
 #: ../src/mainfrm.cc:988
 #: n:213
 msgid "&View"
-msgstr ""
+msgstr "&Όψη"
 
 #: ../src/mainfrm.cc:990
 #: n:214
