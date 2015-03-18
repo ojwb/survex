@@ -13,6 +13,14 @@ be read natively.
 Survex provides a very fast and capable .3d file viewer called aven which
 runs under X in the package survex-aven. 
 
+Sample Data
+-----------
+
+If you want some sample data to experiment with, you can download some from
+the Survex website:
+
+http://survex.com/software/sample.tar.gz
+
 Docs
 ----
 
@@ -42,4 +50,4 @@ vim-addons is provided by the vim-addon-manager package, and you can look
 at its manpage for more information.
 
 
- -- Olly Betts <olly@survex.com>  Tue, 15 Jun 2010 15:25:27 +0000
+ -- Olly Betts <olly@survex.com>  Wed, 18 Mar 2015 03:00:16 +0000
