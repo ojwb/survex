@@ -1,3 +1,9 @@
+Thu Mar 19 10:32:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am,lib/icons/solid-surface.png,
+	  lib/icons/solid_surface.xpm,lib/survex.pot,src/: Add UI for toggling
+	  terrain on and off.
+
 Wed Mar 18 04:11:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/bg.po,lib/el.po: A few updates.

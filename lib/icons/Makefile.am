@@ -17,6 +17,7 @@ xpm_files = \
 	ug_legs.xpm \
 	surface_legs.xpm \
 	tubes.xpm \
+	solid_surface.xpm \
 	pres_frew.xpm \
 	pres_rew.xpm \
 	pres_go_back.xpm \
@@ -46,7 +47,7 @@ dist_icon_DATA = \
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
 #	legsprefs.png ctlprefs.png pres-restart.png pres-create.png\
-#	pres-record.png pres-finish.png solid-surface.png
+#	pres-record.png pres-finish.png
 
 pixmapsdir = $(datadir)/pixmaps
 dist_pixmaps_DATA = aven.svg svxedit.png

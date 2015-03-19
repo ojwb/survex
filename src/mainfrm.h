@@ -107,6 +107,7 @@ enum {
     menu_VIEW_STATUS_BAR,
     menu_VIEW_GRID,
     menu_VIEW_BOUNDING_BOX,
+    menu_VIEW_TERRAIN,
     menu_VIEW_SHOW_TUBES,
     menu_VIEW_PERSPECTIVE,
     menu_VIEW_SMOOTH_SHADING,
@@ -357,6 +358,7 @@ public:
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewCompassUpdate(event); }
     void OnViewGridUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewGridUpdate(event); }
     void OnViewBoundingBoxUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewBoundingBoxUpdate(event); }
+    void OnViewTerrainUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewTerrainUpdate(event); }
     void OnViewClinoUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewClinoUpdate(event); }
     void OnViewPerspectiveUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewPerspectiveUpdate(event); }
     void OnViewSmoothShadingUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewSmoothShadingUpdate(event); }
@@ -411,6 +413,7 @@ public:
     void OnViewClino(wxCommandEvent&) { if (m_Control) m_Control->OnViewClino(); }
     void OnViewGrid(wxCommandEvent&) { if (m_Control) m_Control->OnViewGrid(); }
     void OnViewBoundingBox(wxCommandEvent&) { if (m_Control) m_Control->OnViewBoundingBox(); }
+    void OnViewTerrain(wxCommandEvent&) { if (m_Control) m_Control->OnViewTerrain(); }
     void OnViewPerspective(wxCommandEvent&) { if (m_Control) m_Control->OnViewPerspective(); }
     void OnViewSmoothShading(wxCommandEvent&) { if (m_Control) m_Control->OnViewSmoothShading(); }
     void OnViewTextured(wxCommandEvent&) { if (m_Control) m_Control->OnViewTextured(); }

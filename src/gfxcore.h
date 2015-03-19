@@ -188,6 +188,7 @@ private:
     int m_ColourBy;
 
     bool m_HaveData;
+    bool m_HaveTerrain;
     bool m_MouseOutsideCompass;
     bool m_MouseOutsideElev;
     bool m_Surface;
@@ -196,6 +197,7 @@ private:
     bool m_ExportedPts;
     bool m_Grid;
     bool m_BoundingBox;
+    bool m_Terrain;
 
     bool m_Degrees;
     bool m_Metric;
@@ -402,6 +404,7 @@ public:
 
     bool IsRotating() const { return m_Rotating; }
     bool HasData() const { return m_DoneFirstShow && m_HaveData; }
+    bool HasTerrain() const { return m_DoneFirstShow && m_HaveTerrain; }
     bool HasDepth() const;
     bool HasErrorInformation() const;
     bool HasDateInformation() const;
@@ -484,6 +487,8 @@ public:
     void ToggleSmoothShading();
     bool DisplayingBoundingBox() const { return m_BoundingBox; }
     void ToggleBoundingBox() { ToggleFlag(&m_BoundingBox); }
+    bool DisplayingTerrain() const { return m_Terrain; }
+    void ToggleTerrain() { ToggleFlag(&m_Terrain); }
     void ToggleFatFinger();
 
     bool GetMetric() const { return m_Metric; }

@@ -1338,3 +1338,14 @@ void GUIControl::OnViewBoundingBox()
 {
     m_View->ToggleBoundingBox();
 }
+
+void GUIControl::OnViewTerrainUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasTerrain());
+    cmd.Check(m_View->DisplayingTerrain());
+}
+
+void GUIControl::OnViewTerrain()
+{
+    m_View->ToggleTerrain();
+}

@@ -201,6 +201,9 @@ public:
 
     void OnViewBoundingBoxUpdate(wxUpdateUIEvent&);
     void OnViewBoundingBox();
+
+    void OnViewTerrainUpdate(wxUpdateUIEvent&);
+    void OnViewTerrain();
 };
 
 #endif

@@ -75,6 +75,7 @@
 #include "../lib/icons/ug_legs.xpm"
 #include "../lib/icons/surface_legs.xpm"
 #include "../lib/icons/tubes.xpm"
+#include "../lib/icons/solid_surface.xpm"
 #include "../lib/icons/pres_frew.xpm"
 #include "../lib/icons/pres_rew.xpm"
 #include "../lib/icons/pres_go_back.xpm"
@@ -604,6 +605,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLines)
     EVT_MENU(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreen)
     EVT_MENU(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubes)
+    EVT_MENU(menu_VIEW_TERRAIN, MainFrm::OnViewTerrain)
     EVT_MENU(menu_IND_COMPASS, MainFrm::OnViewCompass)
     EVT_MENU(menu_IND_CLINO, MainFrm::OnViewClino)
     EVT_MENU(menu_IND_COLOUR_KEY, MainFrm::OnToggleColourKey)
@@ -667,6 +669,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SMOOTH_LINES, MainFrm::OnViewSmoothLinesUpdate)
     EVT_UPDATE_UI(menu_VIEW_FULLSCREEN, MainFrm::OnViewFullScreenUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_TUBES, MainFrm::OnToggleTubesUpdate)
+    EVT_UPDATE_UI(menu_VIEW_TERRAIN, MainFrm::OnViewTerrainUpdate)
     EVT_UPDATE_UI(menu_IND_COMPASS, MainFrm::OnViewCompassUpdate)
     EVT_UPDATE_UI(menu_IND_CLINO, MainFrm::OnViewClinoUpdate)
     EVT_UPDATE_UI(menu_IND_COLOUR_KEY, MainFrm::OnToggleColourKeyUpdate)
@@ -892,6 +895,8 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_NAMES, wmsg(/*Station &Names\tCtrl+N*/270));
     /* TRANSLATORS: Toggles drawing of 3D passages */
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, wmsg(/*Passage &Tubes\tCtrl+T*/346));
+    /* TRANSLATORS: Toggles drawing the surface of the Earth */
+    viewmenu->AppendCheckItem(menu_VIEW_TERRAIN, wmsg(/*&Terrain*/449));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, wmsg(/*&Crosses\tCtrl+X*/271));
     viewmenu->AppendCheckItem(menu_VIEW_GRID, wmsg(/*&Grid\tCtrl+G*/297));
     viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, wmsg(/*&Bounding Box\tCtrl+B*/318));
@@ -1030,6 +1035,7 @@ void MainFrm::MakeToolBar()
     toolbar->AddCheckTool(menu_VIEW_SHOW_LEGS, wxT("Underground legs"), TOOL(ug_legs), wxNullBitmap, wxT("Show underground surveys"));
     toolbar->AddCheckTool(menu_VIEW_SHOW_SURFACE, wxT("Surface legs"), TOOL(surface_legs), wxNullBitmap, wxT("Show surface surveys"));
     toolbar->AddCheckTool(menu_VIEW_SHOW_TUBES, wxT("Tubes"), TOOL(tubes), wxNullBitmap, wxT("Show passage tubes"));
+    toolbar->AddCheckTool(menu_VIEW_TERRAIN, wxT("Terrain"), TOOL(solid_surface), wxNullBitmap, wxT("Show terrain"));
     toolbar->AddSeparator();
     toolbar->AddCheckTool(menu_PRES_FREWIND, wxT("Fast Rewind"), TOOL(pres_frew), wxNullBitmap, wxT("Very Fast Rewind"));
     toolbar->AddCheckTool(menu_PRES_REWIND, wxT("Rewind"), TOOL(pres_rew), wxNullBitmap, wxT("Fast Rewind"));

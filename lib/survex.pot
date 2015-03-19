@@ -1925,6 +1925,12 @@ msgstr ""
 msgid "Passage &Tubes\tCtrl+T"
 msgstr ""
 
+#. TRANSLATORS: Toggles drawing the surface of the Earth
+#: ../src/mainfrm.cc:899
+#: n:449
+msgid "&Terrain"
+msgstr ""
+
 #: ../src/mainfrm.cc:895
 #: n:271
 msgid "&Crosses\tCtrl+X"
