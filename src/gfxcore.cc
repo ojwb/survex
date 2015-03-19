@@ -42,6 +42,9 @@
 #include <wx/confbase.h>
 #include <wx/image.h>
 
+#include <proj_api.h>
+#include <sys/mman.h>
+
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
 
@@ -136,7 +139,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Tubes(false),
     m_ColourBy(COLOUR_BY_DEPTH),
     m_HaveData(false),
-    m_HaveTerrain(false),
+    m_HaveTerrain(true),
     m_MouseOutsideCompass(false),
     m_MouseOutsideElev(false),
     m_Surface(false),
@@ -232,6 +235,7 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_CROSSES);
     InvalidateList(LIST_GRID);
     InvalidateList(LIST_SHADOW);
+    InvalidateList(LIST_TERRAIN);
 
     ForceRefresh();
 }
@@ -375,6 +379,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	if (m_Crosses) {
 	    DrawList(LIST_CROSSES);
+	}
+
+	if (m_Terrain) {
+	    DrawList(LIST_TERRAIN);
 	}
 
 	SetIndicatorTransform();
@@ -2338,6 +2346,69 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_SHADOW:
 	    GenerateDisplayListShadow();
 	    break;
+	case LIST_TERRAIN: {
+	    static const short * bil = NULL;
+	    if (!bil) {
+		size_t len = 25934402;
+		int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3.bil", O_RDONLY);
+		if (fd >= 0)
+		    bil = (short*)mmap(NULL, len, PROT_READ, MAP_SHARED, fd, 0);
+	    }
+	    if (!bil) {
+		break;
+	    }
+	    size_t width = 3601;
+	    size_t height = 3601;
+	    double o_x = 13, o_y = 48;
+	    double step_x = 0.0002777778;
+	    double step_y = 0.0002777778;
+#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
+	    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
+	    if (!pj_in) {
+		fatalerror(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
+	    }
+	    static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
+	    if (!pj_out) {
+		fatalerror(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
+	    }
+	    size_t n_x = 0;
+	    SetColour(col_LIGHT_GREY);
+	    const Vector3 & off = m_Parent->GetOffset();
+	    for (size_t x = 1800; x < width; ++x) {
+		double X_ = (o_x + x * step_x) * DEG_TO_RAD;
+		bool in_line = false;
+		for (size_t y = 0; y < height / 2; ++y) {
+		    double Z = bil[x + y * width];
+		    if (Z == -32767) {
+			if (in_line) {
+			    EndPolyline();
+			    in_line = false;
+			}
+			continue;
+		    }
+		    double X = X_;
+		    double Y = (o_y - y * step_y) * DEG_TO_RAD;
+		    pj_transform(pj_in, pj_out, 1, 1, &X, &Y, &Z);
+		    X -= off.GetX();
+		    Y -= off.GetY();
+		    double dist_2 = sqrd(X) + sqrd(Y);
+		    if (dist_2 < sqrd(8000.0)) {
+			Z -= off.GetZ();
+			if (!in_line) {
+			    in_line = true;
+			    BeginPolyline();
+			}
+			PlaceVertex(X, Y, Z);
+			++n_x;
+		    }
+		}
+		if (in_line) {
+		    EndPolyline();
+		}
+	    }
+	    printf("%d DEM points drawn\n", n_x);
+	    break;
+	}
 	default:
 	    assert(false);
 	    break;

@@ -134,6 +134,7 @@ class GfxCore : public GLACanvas {
 	LIST_CROSSES,
 	LIST_GRID,
 	LIST_SHADOW,
+	LIST_TERRAIN,
 	LIST_LIMIT_ // Leave this last.
     } drawing_list;
 

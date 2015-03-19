@@ -209,7 +209,9 @@ class MainFrm : public wxFrame {
     wxNotebook* m_Notebook;
     AvenPresList* m_PresList;
     wxString m_File;
+public: // FIXME for m_cs_proj
     wxString m_Title, m_cs_proj, m_DateStamp;
+private:
     time_t m_DateStamp_numeric;
     wxChar separator; // character separating survey levels (often '.')
     Vector3 m_Offsets;
