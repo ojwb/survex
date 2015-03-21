@@ -62,7 +62,7 @@ And if you have a scrollwheel, this can be used to zoom in/out.
 </Para>
 
 <Para>
-By default the mouse moves the cave, but if you press <keycap/Ctrl-R/,
+By default the mouse moves the cave, but if you press <keycap>Ctrl-R</keycap>,
 then the mouse will move the viewpoint instead (i.e. everything will
 go in the opposite direction). Apparently this feels more natural to some
 people.
@@ -72,14 +72,14 @@ people.
 
 <refsect2><Title>Keyboard Control</Title>
 
-<Para><keycap/P/ and <keycap/L/ select Plan and eLevation
+<Para><keycap>P</keycap> and <keycap>L</keycap> select Plan and eLevation
 respectively.  Changing between plan to elevation is animated to help
 you see where you are and how things relate. This animation is
 automatically disabled on slow machines to avoid user frustration.
 </Para>
 
 <Para>
-Comma <keycap/'/, and Slash <keycap>/</keycap> tilt up
+Comma <keycap>'</keycap>, and Slash <keycap>/</keycap> tilt up
 and down respectively. Tilt goes 180 degrees from plan view to a view
 from directly below (upside down plan).
 </Para>
@@ -87,53 +87,53 @@ from directly below (upside down plan).
 <Para>
 <keycap>Space</keycap> toggles automatic rotation about a vertical
 axis on and off.  The speed of rotation for this, and animated transitions
-between plan and elevation, is controlled by <keycap/Z/ and <keycap/X/.
+between plan and elevation, is controlled by <keycap>Z</keycap> and <keycap>X</keycap>.
 </Para>
 
 <Para>Crosses and/or labels can be displayed at survey stations.
-<keycap/Ctrl-X/ toggles crosses and <keycap/Ctrl-N/ station names.
-<keycap/Ctrl-L/ toggles the display of survey legs.
+<keycap>Ctrl-X</keycap> toggles crosses and <keycap>Ctrl-N</keycap> station names.
+<keycap>Ctrl-L</keycap> toggles the display of survey legs.
 </Para>
 
 <!--
 <para>By default, labels and crosses are not redrawn during
 movement, to improve responsiveness.  With a small cave, or a fast
 computer, you can enable redraw of everything during movement with
-<keycap/Ctrl-A/.  <keycap/Ctrl-O/ toggles whether all names are
+<keycap>Ctrl-A</keycap>.  <keycap>Ctrl-O</keycap> toggles whether all names are
 displayed, or only non-overlapping ones.
 </para>
 -->
 
-<para><keycap/Delete/ is useful if you get lost - it resets the scale,
+<para><keycap>Delete</keycap> is useful if you get lost - it resets the scale,
 position, and rotation speed, so that the cave returns to the centre
 of the screen. There are also keyboard controls to use instead of the
-mouse - <keycap/Shift/ helps here as it accelerates all
+mouse - <keycap>Shift</keycap> helps here as it accelerates all
 movements:
 </para>
 
 <screen>
-<keycap/Z/, <keycap/X/ : Faster/Slower Rotation
-<keycap/R/: Reverse direction of rotation
-<keycap/Enter/, <keycap/Space/: Start and stop auto-rotation
-<keycap/C/, <keycap/V/: Rotate cave one step clockwise/anti-clockwise
-<keycap/'/ , <keycap>/</keycap>: Higher/Lower Viewpoint
-<keycap/]/ , <keycap/[/: Zoom in/Out
-<keycap/U/, <keycap/D/: Set view to Up/Down
-<keycap/N/, <keycap/S/, <keycap/E/, <keycap/W/: Set view to North, South, East, West
-<keycap/Delete/: Reset to default scale, rotation rate, etc
-<keycap/P/, <keycap/L/: Plan, Elevation
-<keycap/Cursor Left/, <keycap/Cursor Right/: Pan survey Left/Right (on screen)
-<keycap/Cursor Up/, <keycap/Cursor Down/: Pan survey Up/Down (on screen)
-<keycap/Ctrl-N/: Toggle display of station names
-<keycap/Ctrl-X/: Toggle display of crosses at stations
-<keycap/Ctrl-L/: Toggle display of survey legs
-<keycap/Ctrl-F/: Toggle display of surface legs
-<!--<keycap/Ctrl-A/: Toggle display of All/skeleton when moving-->
-<keycap/Ctrl-G/: Toggle display of grid
-<keycap/Ctrl-B/: Toggle display of bounding box
-<keycap/O/: Toggle display of non-overlapping/all names
-<keycap/Ctrl-R/: reverse sense of controls
-<keycap/Shift/: accelerates all movement keys
+<keycap>Z</keycap>, <keycap>X</keycap> : Faster/Slower Rotation
+<keycap>R</keycap>: Reverse direction of rotation
+<keycap>Enter</keycap>, <keycap>Space</keycap>: Start and stop auto-rotation
+<keycap>C</keycap>, <keycap>V</keycap>: Rotate cave one step clockwise/anti-clockwise
+<keycap>'</keycap> , <keycap>/</keycap>: Higher/Lower Viewpoint
+<keycap>]</keycap> , <keycap>[</keycap>: Zoom in/Out
+<keycap>U</keycap>, <keycap>D</keycap>: Set view to Up/Down
+<keycap>N</keycap>, <keycap>S</keycap>, <keycap>E</keycap>, <keycap>W</keycap>: Set view to North, South, East, West
+<keycap>Delete</keycap>: Reset to default scale, rotation rate, etc
+<keycap>P</keycap>, <keycap>L</keycap>: Plan, Elevation
+<keycap>Cursor Left</keycap>, <keycap>Cursor Right</keycap>: Pan survey Left/Right (on screen)
+<keycap>Cursor Up</keycap>, <keycap>Cursor Down</keycap>: Pan survey Up/Down (on screen)
+<keycap>Ctrl-N</keycap>: Toggle display of station names
+<keycap>Ctrl-X</keycap>: Toggle display of crosses at stations
+<keycap>Ctrl-L</keycap>: Toggle display of survey legs
+<keycap>Ctrl-F</keycap>: Toggle display of surface legs
+<!--<keycap>Ctrl-A</keycap>: Toggle display of All/skeleton when moving-->
+<keycap>Ctrl-G</keycap>: Toggle display of grid
+<keycap>Ctrl-B</keycap>: Toggle display of bounding box
+<keycap>O</keycap>: Toggle display of non-overlapping/all names
+<keycap>Ctrl-R</keycap>: reverse sense of controls
+<keycap>Shift</keycap>: accelerates all movement keys
 </screen>
 
 <Para>A little experimentation should give a better understanding of how

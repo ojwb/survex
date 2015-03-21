@@ -1,3 +1,8 @@
+Sat Mar 21 02:26:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/: Eliminate uses of Null End Tag, as a step towards making the
+	  docs valid XML rather than just SGML.
+
 Thu Mar 19 11:57:14 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.h: Terrain data work in

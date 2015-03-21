@@ -84,8 +84,8 @@ joining it, e.g. at a T-junction. And so on.
   <Title>&survexsuite; &version; Manual</Title>
   <AuthorGroup>
    <Author>
-    <FirstName/Olly/
-    <SurName/Betts/
+    <FirstName>Olly</FirstName>
+    <SurName>Betts</SurName>
     <AuthorBlurb><Para>
       Olly Betts wrote most of &survexsuite;.
     </Para></AuthorBlurb>
@@ -94,7 +94,7 @@ joining it, e.g. at a T-junction. And so on.
     </Affiliation>
    </Author>
    <Author>
-    <SurName/Wookey/
+    <SurName>Wookey</SurName>
     <AuthorBlurb><Para>
       Wookey is a small furry creature.
     </Para></AuthorBlurb>
@@ -155,10 +155,10 @@ including the
 <ulink url="http://www.oucc.org.uk/draenen/draenenmain.htm"
 >Ogof Draenen</ulink> survey, the 
 <ulink url="http://www.easegill.org.uk/">Easegill</ulink> resurvey project,
-the <Acronym/OFD/ survey, the 
+the <Acronym>OFD</Acronym> survey, the 
 <!-- url="http://milos2.zoo.ox.ac.uk/~oucc/reports/surveys/surveys.htm" -->
 <ulink url="http://www.oucc.org.uk/reports/surveys/surveys.htm"
-><Acronym/OUCC/ Picos expeditions</ulink>, and the 
+><Acronym>OUCC</Acronym> Picos expeditions</ulink>, and the 
 <ulink url="http://www.hongmeigui.net/">Hong Meigui China
 expeditions</ulink>. <!-- FIXME more? --></Para>
 
@@ -513,28 +513,28 @@ of the codes currently supported:</Para>
 <informaltable frame="all">
 <tgroup cols="2">
 <thead>
-<row><entry/Code/<entry/Language/</row>
+<row><entry>Code</entry><entry>Language</entry></row>
 </thead>
 <tbody>
-<row><entry/en/<entry/International English/</row>
-<row><entry/en_US/<entry/US English/</row>
-<row><entry/bg/<entry/Bulgarian/</row>
-<row><entry/ca/<entry/Catalan/</row>
-<row><entry/de/<entry/German/</row>
-<row><entry/de_CH/<entry/Swiss German/</row>
-<row><entry/el/<entry/Greek/</row>
-<row><entry/es/<entry/Spanish/</row>
-<row><entry/fr/<entry/French/</row>
-<row><entry/hu/<entry/Hungarian/</row>
-<row><entry/id/<entry/Indonesian/</row>
-<row><entry/it/<entry/Italian/</row>
-<row><entry/pl/<entry/Polish/</row>
-<row><entry/pt/<entry/Portuguese/</row>
-<row><entry/pt_BR/<entry/Brazillian Portuguese/</row>
-<row><entry/ro/<entry/Romanian/</row>
-<row><entry/ru/<entry/Russian/</row>
-<row><entry/sk/<entry/Slovak/</row>
-<row><entry/zh_CN/<entry/Chinese (Simplified)/</row>
+<row><entry>en</entry><entry>International English</entry></row>
+<row><entry>en_US</entry><entry>US English</entry></row>
+<row><entry>bg</entry><entry>Bulgarian</entry></row>
+<row><entry>ca</entry><entry>Catalan</entry></row>
+<row><entry>de</entry><entry>German</entry></row>
+<row><entry>de_CH</entry><entry>Swiss German</entry></row>
+<row><entry>el</entry><entry>Greek</entry></row>
+<row><entry>es</entry><entry>Spanish</entry></row>
+<row><entry>fr</entry><entry>French</entry></row>
+<row><entry>hu</entry><entry>Hungarian</entry></row>
+<row><entry>id</entry><entry>Indonesian</entry></row>
+<row><entry>it</entry><entry>Italian</entry></row>
+<row><entry>pl</entry><entry>Polish</entry></row>
+<row><entry>pt</entry><entry>Portuguese</entry></row>
+<row><entry>pt_BR</entry><entry>Brazillian Portuguese</entry></row>
+<row><entry>ro</entry><entry>Romanian</entry></row>
+<row><entry>ru</entry><entry>Russian</entry></row>
+<row><entry>sk</entry><entry>Slovak</entry></row>
+<row><entry>zh_CN</entry><entry>Chinese (Simplified)</entry></row>
 </tbody>
 </tgroup>
 </informaltable>
@@ -619,8 +619,8 @@ output version information and exit
 
 <Para>
 Options have two forms: short (a dash followed by a single letter e.g.
-<command/cavern -p/) and long (two dashes followed by one or more words e.g.
-<command/cavern --percentage/).  The long form is generally easier to
+<command>cavern -p</command>) and long (two dashes followed by one or more words e.g.
+<command>cavern --percentage</command>).  The long form is generally easier to
 remember, while the short form is quicker to type.  Options are often
 available in both forms.
 </Para>
@@ -720,9 +720,9 @@ station name twice.
 
 <!-- FIXME don't encourage separate processing -->
 <Para>The usual arrangement is to have one file which lists all the others
-that are included (e.g., <filename/161.svx/). Then
-<command/cavern 161/ will process all your data. To just process a
-section use the filename for that section, e.g. <command/cavern dtime/
+that are included (e.g., <filename>161.svx</filename>). Then
+<command>cavern 161</command> will process all your data. To just process a
+section use the filename for that section, e.g. <command>cavern dtime</command>
 will process the dreamtime file/section of Kaninchenh&ouml;hle.  To
 help you out, if all legs in a survey are connected to one another
 but the survey has no fixed points, cavern
@@ -879,7 +879,7 @@ I will have to do some sums...
 <Sect2><Title>Cavern Commands</Title>
 
 <Para>Commands in &svx; files are introduced by an asterisk
-(by default - this can be changed using the <command/set/ command).
+(by default - this can be changed using the <command>set</command> command).
 </Para>
 
 <Para>The commands are documented in a common format:
@@ -3619,7 +3619,7 @@ read them.
 which you can then inspect with a text editor.
 </Para>
 
-<!-- <command/cavern cavename &gt; tmpfile/ -->
+<!-- <command>cavern cavename &gt; tmpfile</command> -->
 
 </Sect2>
 
