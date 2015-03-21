@@ -1,3 +1,7 @@
+Sat Mar 21 20:51:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Sat Mar 21 02:43:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/diffpos.sgml,doc/extend.sgml: Remove &nbsp; which actually make
