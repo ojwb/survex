@@ -1,3 +1,9 @@
+Sat Mar 21 02:43:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/diffpos.sgml,doc/extend.sgml: Remove &nbsp; which actually make
+	  the output formatting worse (presumably these used to work around a
+	  bug in one of the docbook processing tools.
+
 Sat Mar 21 02:26:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/: Eliminate uses of Null End Tag, as a step towards making the
