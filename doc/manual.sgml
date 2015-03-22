@@ -1,12 +1,12 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
-<!entity man.aven SYSTEM "aven.sgml">
-<!entity man.3dtopos SYSTEM "3dtopos.sgml">
-<!entity man.cad3d SYSTEM "cad3d.sgml">
-<!entity man.cavern SYSTEM "cavern.sgml">
-<!entity man.diffpos SYSTEM "diffpos.sgml">
-<!entity man.extend SYSTEM "extend.sgml">
-<!entity man.sorterr SYSTEM "sorterr.sgml">
-<!entity man.svxedit SYSTEM "svxedit.sgml">
+<!ENTITY man.aven SYSTEM "aven.sgml">
+<!ENTITY man.3dtopos SYSTEM "3dtopos.sgml">
+<!ENTITY man.cad3d SYSTEM "cad3d.sgml">
+<!ENTITY man.cavern SYSTEM "cavern.sgml">
+<!ENTITY man.diffpos SYSTEM "diffpos.sgml">
+<!ENTITY man.extend SYSTEM "extend.sgml">
+<!ENTITY man.sorterr SYSTEM "sorterr.sgml">
+<!ENTITY man.svxedit SYSTEM "svxedit.sgml">
 ]>
 
 <!--
@@ -81,7 +81,7 @@ joining it, e.g. at a T-junction. And so on.
 
 -->
 
-<article Status="draft" id=index>
+<article Status="draft" id="index">
  <articleinfo>
   <Title><Application>Survex</Application> <!--VERSION-->1.2.17 Manual</Title>
   <AuthorGroup>
@@ -118,7 +118,7 @@ joining it, e.g. at a T-junction. And so on.
  </articleinfo>
 
 <Sect1><Title>Introduction</Title>
-<?dbhtml filename="intro.htm">
+<?dbhtml filename="intro.htm"?>
 
 <Para>
 This section describes what <Application>Survex</Application> is, and outlines the scope of this
@@ -284,7 +284,7 @@ surveying.</Para>
 </Sect1>
 
 <Sect1><Title>Getting Started</Title>
-<?dbhtml filename="getstart.htm">
+<?dbhtml filename="getstart.htm"?>
 
 <Para>This section covers how to obtain the software, and how to unpack and
 install it, and how to configure it.</Para>
@@ -329,6 +329,8 @@ On UNIX you need to drive <Application>Survex</Application> from a command-line
 prompt (or set some a filemanager or graphics shell).
 </Para>
 -->
+
+</Sect3>
 
 <Sect3><Title>Other versions of UNIX</Title>
 
@@ -444,6 +446,7 @@ possible actions.
   </VarListEntry>
   </VariableList>
 </ListItem>
+</VarListEntry>
 
 <VarListEntry><Term><filename>.err</filename></Term>
 <ListItem>
@@ -596,7 +599,7 @@ how to print/export etc
 
 <!-- FIXME perhaps move this after data files section? -->
 <Sect1><Title>Survex Programs</Title>
-<?dbhtml filename="cmdline.htm">
+<?dbhtml filename="cmdline.htm"?>
 
 <Sect2><Title>Standard Options</Title>
 
@@ -654,35 +657,35 @@ file is looked for with the appropriate extension appended.  So
 <Sect2><title>Command Reference</title>
 
 <refentry id="cavern">
-<?dbhtml filename="cavern.htm">
+<?dbhtml filename="cavern.htm"?>
 &man.cavern;
 </refentry>
 <refentry id="svxedit">
-<?dbhtml filename="svxedit.htm">
+<?dbhtml filename="svxedit.htm"?>
 &man.svxedit;
 </refentry>
 <refentry id="aven">
-<?dbhtml filename="aven.htm">
+<?dbhtml filename="aven.htm"?>
 &man.aven;
 </refentry>
 <refentry id="x3dtopos">
-<?dbhtml filename="3dtopos.htm">
+<?dbhtml filename="3dtopos.htm"?>
 &man.3dtopos;
 </refentry>
 <refentry id="cad3d">
-<?dbhtml filename="cad3d.htm">
+<?dbhtml filename="cad3d.htm"?>
 &man.cad3d;
 </refentry>
 <refentry id="diffpos">
-<?dbhtml filename="diffpos.htm">
+<?dbhtml filename="diffpos.htm"?>
 &man.diffpos;
 </refentry>
 <refentry id="extend">
-<?dbhtml filename="extend.htm">
+<?dbhtml filename="extend.htm"?>
 &man.extend;
 </refentry>
 <refentry id="sorterr">
-<?dbhtml filename="sorterr.htm">
+<?dbhtml filename="sorterr.htm"?>
 &man.sorterr;
 </refentry>
 
@@ -691,7 +694,7 @@ file is looked for with the appropriate extension appended.  So
 </Sect1>
 
 <Sect1><Title><Application>Survex</Application> data files</Title>
-<?dbhtml filename="datafile.htm">
+<?dbhtml filename="datafile.htm"?>
 
 <Para>Survey data is entered in the form of text files. You can use any
 text editor you like for this, so long as it has the capability of
@@ -1600,6 +1603,7 @@ Cartesian data are relative to <emphasis>true</emphasis> North not
 <emphasis>magnetic</emphasis> North (i.e. they are unaffected by
 <command>*calibrate declination</command>).
 </Para></Note>
+</listitem>
 </VarListEntry>
 
 <VarListEntry><Term>CYLPOLAR</Term>
@@ -1672,6 +1676,7 @@ to allow a free-form text description to be given):
 3  1.0 0.7 9.0 0.8  Highest point of boulder
 </programlisting>
 </Para>
+</listitem>
 </VarListEntry>
 </VariableList>
 
@@ -2082,6 +2087,7 @@ systems with more than one entrance.  It also gives a right-handed
 set of axes.
 </Para></Note>
 
+</listitem>
 </VarListEntry>
 
 <!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
@@ -2956,7 +2962,7 @@ in DEG|DEGREES|GRADS|MILS|MINUTES (default: DEGREES)
 
 <!-- FIXME rename to "Cookbook"? -->
 <Sect1><Title>Contents of <filename>.svx</filename> files: How do I?</Title>
-<?dbhtml filename="svxhowto.htm">
+<?dbhtml filename="svxhowto.htm"?>
 
 <Para>
 Here is some example <Application>Survex</Application> data (a very small cave numbered 1623/163):
@@ -3059,7 +3065,7 @@ points.  You want to mark the surface surveys so that their length isn't
 included in length statistics, and so that Aven knows to display them
 differently.  To do this you mark surface data with the "surface" flag
 - this is set with "*flags surface" like so:
-<Para>
+</Para>
 
 <programlisting>
 ; fixed reference points
@@ -3313,7 +3319,7 @@ is part of a loop.
 </Sect1>
 
 <Sect1><Title>General: How do I?</Title>
-<?dbhtml filename="genhowto.htm">
+<?dbhtml filename="genhowto.htm"?>
 
 <Sect2><Title>Create a new survey</Title>
 
@@ -3637,7 +3643,7 @@ which you can then inspect with a text editor.
 
 <!--
 <Sect1><Title>Appendices</Title>
-<?dbhtml filename="appendix.htm">
+<?dbhtml filename="appendix.htm"?>
 
 <Para>Files provided
 </Para>
@@ -3648,7 +3654,7 @@ which you can then inspect with a text editor.
 </Sect1>
 -->
 <Sect1><Title>Working with Larry Fish's Compass</Title>
-<?dbhtml filename="compass.htm">
+<?dbhtml filename="compass.htm"?>
 
 <Para>
 Survex can read Compass survey data - both raw data (.DAT and .MAK
@@ -3681,7 +3687,7 @@ what you have to do:
 </Sect1>
 
 <Sect1><Title>Mailing List</Title>
-<?dbhtml filename="maillist.htm">
+<?dbhtml filename="maillist.htm"?>
 
 <Para>The best way to contact the authors and other Survex users is the
 Survex mailing list - for details visit:
@@ -3704,7 +3710,7 @@ plenty to do, so feel free to join in.
 </Sect1>
 
 <Sect1><Title>Future Developments</Title>
-<?dbhtml filename="future.htm">
+<?dbhtml filename="future.htm"?>
 
 <Para>
 Now that <Application>Survex</Application> has reached version 1.0, we are continuing progress

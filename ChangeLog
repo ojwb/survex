@@ -1,3 +1,7 @@
+Sun Mar 22 04:39:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Fix bugs in the markup.
+
 Sun Mar 22 04:07:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* .gitignore,configure.ac,doc/: Eliminate most of the SGML entities we
