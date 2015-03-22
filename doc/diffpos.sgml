@@ -5,7 +5,7 @@
 
 <refnamediv>
 <refname>diffpos</refname>
-<refpurpose>compare the contents of two &x3d; files
+<refpurpose>compare the contents of two <filename>.3d</filename> files
 </refpurpose>
 </refnamediv>
 
@@ -30,7 +30,7 @@ specified.
 
 <Para>
 For backward compatibility diffpos will also read the
-&pos; files produced by earlier versions of cavern, or by 3dtopos.
+<filename>.pos</filename> files produced by earlier versions of cavern, or by 3dtopos.
 </Para>
 
 </refsect1>

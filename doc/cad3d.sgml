@@ -5,7 +5,7 @@
 
 <refnamediv>
 <refname>cad3d</refname>
-<refpurpose>convert a &survexsuite; &x3d; file into formats which can be read
+<refpurpose>convert a <Application>Survex</Application> <filename>.3d</filename> file into formats which can be read
 by CAD and drawing packages
 </refpurpose>
 </refnamediv>
@@ -32,7 +32,7 @@ for importing into Carto, but can also be used with Compass itself.
 <ulink url="http://survex.com/related.html">"Related Tools" section of the
 Survex web site.</ulink>
 SpeleoGen is a Windows (3.1/95/NT) utility which reads in
-&survexsuite; &x3d; files, LRUD passage wall data (in <filename>.cav</filename> format)
+<Application>Survex</Application> <filename>.3d</filename> files, LRUD passage wall data (in <filename>.cav</filename> format)
 and surface topography info in <filename>.csv</filename> format.  The results are
 combined, displayed, and saved out as a DXF file for import into
 CAD or drawing packages.

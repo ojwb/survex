@@ -5,7 +5,7 @@
 
 <refnamediv>
 <refname>extend</refname>
-<refpurpose>produce an extended elevation from a &x3d; file
+<refpurpose>produce an extended elevation from a <filename>.3d</filename> file
 </refpurpose>
 </refnamediv>
 
@@ -24,7 +24,7 @@
 <Para>
 The <command>extend</command> program can also work on
 <Application>Compass</Application> <filename>.plt</filename> (as can
-<command>aven</command> and any other &survexsuite; program which reads &x3d;
+<command>aven</command> and any other <Application>Survex</Application> program which reads <filename>.3d</filename>
 files).
 </Para>
 </Note>

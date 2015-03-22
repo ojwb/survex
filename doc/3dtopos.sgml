@@ -5,7 +5,7 @@
 
 <refnamediv>
 <refname>3dtopos</refname>
-<refpurpose>produce a &pos; file from a &x3d; file
+<refpurpose>produce a <filename>.pos</filename> file from a <filename>.3d</filename> file
 </refpurpose>
 </refnamediv>
 
@@ -22,7 +22,7 @@
 <title>Description</title>
 
 <Para>
-3dtopos takes a &x3d; file and produces a &pos; file which contains a
+3dtopos takes a <filename>.3d</filename> file and produces a <filename>.pos</filename> file which contains a
 list of all the stations with coordinates (ordered x,y,z [East, North,
 Up]) and complete names.
 </Para>

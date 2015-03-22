@@ -1,17 +1,19 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
- <!-- Define a parameter entity to pull in the standard entities -->
- <!ENTITY % entities SYSTEM "survex.ent">
- <!-- Now use the parameter entity -->
- %entities;
- <!ENTITY % versionentity SYSTEM "version.ent">
- %versionentity;
+<!entity man.aven SYSTEM "aven.sgml">
+<!entity man.3dtopos SYSTEM "3dtopos.sgml">
+<!entity man.cad3d SYSTEM "cad3d.sgml">
+<!entity man.cavern SYSTEM "cavern.sgml">
+<!entity man.diffpos SYSTEM "diffpos.sgml">
+<!entity man.extend SYSTEM "extend.sgml">
+<!entity man.sorterr SYSTEM "sorterr.sgml">
+<!entity man.svxedit SYSTEM "svxedit.sgml">
 ]>
 
 <!--
 FIXME:
 
 3dfile title:
-defaults to a list of the leafnames of the &svx; files specified on the
+defaults to a list of the leafnames of the <filename>.svx</filename> files specified on the
 command line (with any paths and extensions removed).
 .
 e.g.: cavern entrance.svx \data\2ndpart.svx
@@ -81,16 +83,16 @@ joining it, e.g. at a T-junction. And so on.
 
 <article Status="draft" id=index>
  <articleinfo>
-  <Title>&survexsuite; &version; Manual</Title>
+  <Title><Application>Survex</Application> <!--VERSION-->1.2.17 Manual</Title>
   <AuthorGroup>
    <Author>
     <FirstName>Olly</FirstName>
     <SurName>Betts</SurName>
     <AuthorBlurb><Para>
-      Olly Betts wrote most of &survexsuite;.
+      Olly Betts wrote most of <Application>Survex</Application>.
     </Para></AuthorBlurb>
     <Affiliation>
-     <Address><Email>&ollyemail;</Email></Address>
+     <Address><Email>olly@survex.com</Email></Address>
     </Affiliation>
    </Author>
    <Author>
@@ -99,17 +101,17 @@ joining it, e.g. at a T-junction. And so on.
       Wookey is a small furry creature.
     </Para></AuthorBlurb>
     <Affiliation>
-     <Address><Email>&wookeyemail;</Email></Address>
+     <Address><Email>wookey@survex.com</Email></Address>
     </Affiliation>
    </Author>
   </AuthorGroup>
   <copyright>
    <year>1998-2015</year>
-   <holder role="mailto:&ollyemail;">Olly Betts</holder>
+   <holder role="mailto:olly@survex.com">Olly Betts</holder>
   </copyright>
   <Abstract>
    <Para>
-    This is the manual for &survexsuite; - an open-source software package for
+    This is the manual for <Application>Survex</Application> - an open-source software package for
     cave surveyors.
    </Para>
   </Abstract>
@@ -119,34 +121,34 @@ joining it, e.g. at a T-junction. And so on.
 <?dbhtml filename="intro.htm">
 
 <Para>
-This section describes what &survexsuite; is, and outlines the scope of this
+This section describes what <Application>Survex</Application> is, and outlines the scope of this
 manual.
 </Para>
 
-<Sect2><Title>About &survexsuite;</Title>
+<Sect2><Title>About <Application>Survex</Application></Title>
 
-<Para>&survexsuite; is a multi-platform open-source cave surveying
+<Para><Application>Survex</Application> is a multi-platform open-source cave surveying
 package.
 Version 1.2
-currently runs on &unix;, Microsoft Windows 95/NT and
+currently runs on UNIX, Microsoft Windows 95/NT and
 successors, and Mac OS X.
 We're investigating support for various
 palmtop devices.
-Version 1.0 has fewer features, but also runs on &msdos; and &riscos; machines.
+Version 1.0 has fewer features, but also runs on DOS and RISC OS machines.
 </Para>
 
 <Para>We are well aware that not everyone has access to super hardware
 - often surveying projects are run on little or no budget and any
-computers used are donated.  We aim to ensure that &survexsuite; is
+computers used are donated.  We aim to ensure that <Application>Survex</Application> is
 feasible to use on low-spec machines.  Obviously it won't be as
 responsive, but we intend it to be usable.
 Please help us to achieve this by giving us some feedback
-if you use &survexsuite; on a slow machine.</Para>
+if you use <Application>Survex</Application> on a slow machine.</Para>
 
-<Para>&survexsuite; is capable of processing extremely complex caves very
+<Para><Application>Survex</Application> is capable of processing extremely complex caves very
 quickly and has a very effective, real-time cave viewer which allows
 you to rotate, zoom, and pan the cave using mouse or keyboard. We have
-tested it extensively using &cucc; and &arge;'s surveys of the caves
+tested it extensively using <Acronym>CUCC</Acronym> and <Acronym>ARGE</Acronym>'s surveys of the caves
 under the Loser Plateau in Austria (over 22,000 survey legs, and over
 120km of underground survey data). This can all be processed in around
 10 seconds on a low-end netbook.
@@ -162,7 +164,7 @@ the <Acronym>OFD</Acronym> survey, the
 <ulink url="http://www.hongmeigui.net/">Hong Meigui China
 expeditions</ulink>. <!-- FIXME more? --></Para>
 
-<Para>&survexsuite; is still actively being worked on.  Version 1.0 was
+<Para><Application>Survex</Application> is still actively being worked on.  Version 1.0 was
 complete in some sense, but development continues - initially in reshaping
 Survex into a more integrated GUI package.</Para>
 
@@ -173,10 +175,10 @@ of this manual for the best way to contact us.</Para>
 </Sect2>
 
 <!--
-<Para>Because &survexsuite; is still being actively developed, this document
+<Para>Because <Application>Survex</Application> is still being actively developed, this document
 has an unfortunate tendency to lag slightly behind the capabilities of the
 software. The latest version is now available on the web at <ulink
-url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
+url="http://survex.com/">http://survex.com/</ulink> - check there for latest info.
 </Para>
 -->
 
@@ -187,7 +189,7 @@ url="&survexwebsite;">&survexwebsite;</ulink> - check there for latest info.
 <varlistentry>
 <term>NEWS or NEWS.txt</term>
 <listitem><Para>a list of changes of interest to
-&survexsuite; users, broken down by version number.  Consult this file
+<Application>Survex</Application> users, broken down by version number.  Consult this file
 when upgrading to find out what has changed since the version you were
 using previously.
 </Para></listitem>
@@ -217,7 +219,7 @@ to produce INSTALL*
 
 <varlistentry>
 <term>INSTALL or INSTALL.txt</term>
-<listitem><Para>instructions for installing &survexsuite;.  The
+<listitem><Para>instructions for installing <Application>Survex</Application>.  The
 Microsoft Windows version comes packaged up with an installation wizard,
 so this file doesn't exist there (you just run the package and follow
 the on-screen instructions).
@@ -287,10 +289,10 @@ surveying.</Para>
 <Para>This section covers how to obtain the software, and how to unpack and
 install it, and how to configure it.</Para>
 
-<Sect2><Title>Obtaining &survexsuite;</Title>
+<Sect2><Title>Obtaining <Application>Survex</Application></Title>
 
-<Para>The latest version is available from the &survexsuite; website:
-<ulink url="&survexwebsite;">&survexwebsite;</ulink>.  It is also
+<Para>The latest version is available from the <Application>Survex</Application> website:
+<ulink url="http://survex.com/">http://survex.com/</ulink>.  It is also
 freely redistributable, so you welcome to get a copy from someone else
 who has already downloaded it.</Para>
 
@@ -300,15 +302,15 @@ from the Survex website too:
 
 </Sect2>
 
-<Sect2><Title>Installing &survexsuite;</Title>
+<Sect2><Title>Installing <Application>Survex</Application></Title>
 
 <Para>The details of installation depend greatly on what platform you
 are using, so there is a separate section below for each platform.</Para>
 
-<Sect3><Title>&linux;</Title>
+<Sect3><Title>Linux</Title>
 
 <Para>
-We supply pre-compiled versions for x86 &linux; machines in RPM format
+We supply pre-compiled versions for x86 Linux machines in RPM format
 (suitable for Redhat, Mandrake, and some other distributions).
 Survex Debian packages are available from Debian mirror sites in
 the usual way.
@@ -321,16 +323,16 @@ If you don't have root access you will need to build from source
 </Para>
 
 <!-- FIXME Add Gnome file association note for Linux/Unix
-<Para>On Microsoft Windows, &survexsuite; installs with
+<Para>On Microsoft Windows, <Application>Survex</Application> installs with
 suitable file associations so that you can drive it from the GUI.
-On &unix; you need to drive &survexsuite; from a command-line
+On UNIX you need to drive <Application>Survex</Application> from a command-line
 prompt (or set some a filemanager or graphics shell).
 </Para>
 -->
 
-<Sect3><Title>Other versions of &unix;</Title>
+<Sect3><Title>Other versions of UNIX</Title>
 
-<Para>For other &unix; versions you'll need to get the source code
+<Para>For other UNIX versions you'll need to get the source code
 and compile it on your system.  Unpack the sources and read
 the file called INSTALL in the top level for details about building
 from source.
@@ -350,7 +352,7 @@ can be set up for all users.
 </Para>
 
 <Para>
-The survey viewer that's part of &survexsuite; is called aven, and uses OpenGL
+The survey viewer that's part of <Application>Survex</Application> is called aven, and uses OpenGL
 for 3d rendering.
 OpenGL comes as standard as of Windows 98, and was included in the
 OSR2 update to Windows 95.  It's also possible that you've installed
@@ -384,18 +386,18 @@ Start menu containing the following items:
 </ItemizedList>
 
 <Para>
-Icons are installed for &svx;, &x3d;, &err;, and &pos; files, and also for
+Icons are installed for <filename>.svx</filename>, <filename>.3d</filename>, <filename>.err</filename>, and <filename>.pos</filename> files, and also for
 Compass Plot files (<filename>.plt</filename> and <filename>.plf</filename>)
 (which Survex can read). <!-- FIXME XYZ -->
-Double-clicking on a &svx; file loads it for editing.  To process it to
-produce a &x3d; file, right click and choose "Process" from the menu.
-Double-clicking the resultant &x3d; file views it in aven.
-All the &survexsuite; file types can be right clicked on to give a menu of
+Double-clicking on a <filename>.svx</filename> file loads it for editing.  To process it to
+produce a <filename>.3d</filename> file, right click and choose "Process" from the menu.
+Double-clicking the resultant <filename>.3d</filename> file views it in aven.
+All the <Application>Survex</Application> file types can be right clicked on to give a menu of
 possible actions.  
 </Para>
 
 <VariableList>
-<VarListEntry><Term>&svx;</Term>
+<VarListEntry><Term><filename>.svx</filename></Term>
 <ListItem>
   <VariableList>
   <VarListEntry><Term>Open</Term>
@@ -405,14 +407,14 @@ possible actions.
   </VarListEntry>
   <VarListEntry><Term>Process</Term>
   <ListItem><Para>
-  Process file with cavern to produce &x3d; file (and &err; file)
+  Process file with cavern to produce <filename>.3d</filename> file (and <filename>.err</filename> file)
   </Para></ListItem>
   </VarListEntry>
   </VariableList>
 </ListItem>
 </VarListEntry>
     
-<VarListEntry><Term>&x3d;</Term>
+<VarListEntry><Term><filename>.3d</filename></Term>
 <ListItem>
   <VariableList>
   <VarListEntry><Term>Open</Term>
@@ -437,13 +439,13 @@ possible actions.
   </VarListEntry>
   <VarListEntry><Term>Convert for hand plotting</Term>
   <ListItem><Para>
-  Produce a &pos; file listing all the stations and their coordinates
+  Produce a <filename>.pos</filename> file listing all the stations and their coordinates
   </Para></ListItem>
   </VarListEntry>
   </VariableList>
 </ListItem>
 
-<VarListEntry><Term>&err;</Term>
+<VarListEntry><Term><filename>.err</filename></Term>
 <ListItem>
   <VariableList>
   <VarListEntry><Term>Open</Term>
@@ -453,27 +455,27 @@ possible actions.
   </VarListEntry>
   <VarListEntry><Term>Sort by Error</Term>
   <ListItem><Para>
-  Sort &err; file by the error in each traverse
+  Sort <filename>.err</filename> file by the error in each traverse
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Sort by Horizontal Error</Term>
   <ListItem><Para>
-  Sort &err; file by the horizontal error in each traverse
+  Sort <filename>.err</filename> file by the horizontal error in each traverse
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Sort by Vertical Error</Term>
   <ListItem><Para>
-  Sort &err; file by the vertical error in each traverse
+  Sort <filename>.err</filename> file by the vertical error in each traverse
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Sort by Percentage Error</Term>
   <ListItem><Para>
-  Sort &err; file by the percentage error in each traverse
+  Sort <filename>.err</filename> file by the percentage error in each traverse
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Sort by Error per Leg</Term>
   <ListItem><Para>
-  Sort &err; file by the error per leg in each traverse
+  Sort <filename>.err</filename> file by the error per leg in each traverse
   </Para></ListItem>
   </VarListEntry>
   </VariableList>
@@ -494,9 +496,9 @@ language used for messages from Survex and most of the library calls
 it uses can be changed.  By default this is picked up from the
 language the operating system is set to use (from "Regional Settings"
 in Control Panel on Microsoft Windows, from the
-<systemitem>LANG</systemitem> environment variable on &unix;
+<systemitem>LANG</systemitem> environment variable on UNIX
 If no setting
-is found, or &survexsuite; hasn't been translated into the
+is found, or <Application>Survex</Application> hasn't been translated into the
 requested language, UK English is used.</Para>
 
 <Para>
@@ -560,15 +562,15 @@ Advanced tab.  Choose `Environmental Variables', and create a new one: name
 Click OK and the new value should be effective immediately.
    </Para></ListItem>
  </VarListEntry>
- <VarListEntry><Term>&unix; - csh/tcsh</Term>
+ <VarListEntry><Term>UNIX - csh/tcsh</Term>
    <ListItem><Para><userinput>setenv SURVEXLANG fr</userinput></Para></ListItem>
  </VarListEntry>
- <VarListEntry><Term>&unix; - sh/bash</Term>
+ <VarListEntry><Term>UNIX - sh/bash</Term>
    <ListItem><Para><userinput>SURVEXLANG=fr ; export SURVEXLANG</userinput></Para></ListItem>
  </VarListEntry>
 </VariableList>
 
-<Para>If &survexsuite; isn't available in your language, you could
+<Para>If <Application>Survex</Application> isn't available in your language, you could
 help out by providing a translation.  The initial translation is
 likely to be about a day's work; after that translations for
 new or changed messages are occasionally required.  Contact us for details
@@ -598,7 +600,7 @@ how to print/export etc
 
 <Sect2><Title>Standard Options</Title>
 
-<Para>All &survexsuite; programs respond to the following command line options:
+<Para>All <Application>Survex</Application> programs respond to the following command line options:
 </Para>
 
 <VariableList>
@@ -628,19 +630,19 @@ available in both forms.
 <Note><Para>Command line options are case sensitive, so "-B" and "-b"
 are different (this didn't used to be the case before Survex 0.90).  Case
 sensitivity doubles the number of available short options (and is also the
-norm on &unix;).
+norm on UNIX).
 </Para></Note>
 </Sect2>
 
 <Sect2><Title>Filenames on the Command Line</Title>
 
 <Para>Filenames with spaces can be processed (provided your operating system
-supports them - &unix; does, and so do recent versions of Microsoft
+supports them - UNIX does, and so do recent versions of Microsoft
 Windows).  You need to enclose the filename in quotes like so:
 <userinput>cavern "Spider Cave"</userinput>
 </Para>
 
-<Para>A file specified on the command line of any of the &survexsuite; suite
+<Para>A file specified on the command line of any of the <Application>Survex</Application> suite
 of programs will be looked for as specified.  If it is not found, then the
 file is looked for with the appropriate extension appended.  So
 <userinput>cavern survey</userinput> will look first for
@@ -688,7 +690,7 @@ file is looked for with the appropriate extension appended.  So
 
 </Sect1>
 
-<Sect1><Title>&survexsuite; data files</Title>
+<Sect1><Title><Application>Survex</Application> data files</Title>
 <?dbhtml filename="datafile.htm">
 
 <Para>Survey data is entered in the form of text files. You can use any
@@ -711,8 +713,8 @@ means that it should be possible to read in data from almost any sort of
 survey data file without much work.
 </Para>
 
-<Para>&survexsuite; places no restrictions on you in terms of the ordering
-of survey legs. You can enter or process data in any order and &survexsuite; will
+<Para><Application>Survex</Application> places no restrictions on you in terms of the ordering
+of survey legs. You can enter or process data in any order and <Application>Survex</Application> will
 read it all in before determining how it is connected. You can also use the
 hierarchical naming so that you do not need to worry about using the same
 station name twice.
@@ -761,7 +763,7 @@ not optional, then an error is given.
 
 <Sect2><Title>Survey Station Names</Title>
 
-<Para>&survexsuite; has a powerful system for naming stations.  It
+<Para><Application>Survex</Application> has a powerful system for naming stations.  It
 uses a hierarchy of survey names, similar to the nested folders
 your computer stores files in.
 So point 6 in the entrance survey of Kaninchenh&ouml;hle
@@ -878,7 +880,7 @@ I will have to do some sums...
 
 <Sect2><Title>Cavern Commands</Title>
 
-<Para>Commands in &svx; files are introduced by an asterisk
+<Para>Commands in <filename>.svx</filename> files are introduced by an asterisk
 (by default - this can be changed using the <command>set</command> command).
 </Para>
 
@@ -2233,19 +2235,19 @@ use the deprecated *prefix command.
 
 <Para>An included file which does not have a complete path
 is resolved relative to the directory which the parent file is in
-(just as relative HTML links do).  Cavern will try adding a &svx;
+(just as relative HTML links do).  Cavern will try adding a <filename>.svx</filename>
 extension, and will also try translating "\" to "/".
 And as a last
 resort, it will try a lower case version of the filename (so if you
 use Unix and someone sends you a DOS/Windows dataset with mismatched
-case, unzip it with "unzip -L" and unix cavern will process it).
+case, unzip it with "unzip -L" and UNIX cavern will process it).
 </Para>
 
 <Para>
 The depth to which you can nest
 include files may be limited by the operating system
 you use.  Usually the limit is fairly high (>30), but if you want to be able to
-process your dataset with &survexsuite; on any supported platform, it
+process your dataset with <Application>Survex</Application> on any supported platform, it
 would be prudent not to go overboard with nested include files.
 </Para>
 </listitem>
@@ -2826,11 +2828,11 @@ given in the *begin command.
 
 <VarListEntry><Term>Description</Term>
 
-<listitem><Para>Station names may be of any length in &survexsuite;, but some
+<listitem><Para>Station names may be of any length in <Application>Survex</Application>, but some
 other (mostly older) cave surveying software only regard the first few
 characters of a name as significant (e.g. "entran" and "entrance"
 might be treated as the same).  To facilitate using data imported from
-such a package &survexsuite; allows you to truncate names to whatever
+such a package <Application>Survex</Application> allows you to truncate names to whatever
 length you want (but by default truncation is off).
 </Para>
 
@@ -2840,7 +2842,7 @@ CMAP has a limit of 6,
 Smaps 4 had a limit of 8,
 <!-- FIXME any limits for other software, winkarst for example? -->
 Surveyor87/8 used 8.
-&survexsuite; itself used 8 per prefix
+<Application>Survex</Application> itself used 8 per prefix
 level up to version 0.41, and 12 per prefix level up to 0.73 (more recent
 versions removed this rather archaic restriction).
 </Para>
@@ -2953,11 +2955,11 @@ in DEG|DEGREES|GRADS|MILS|MINUTES (default: DEGREES)
 </Sect1>
 
 <!-- FIXME rename to "Cookbook"? -->
-<Sect1><Title>Contents of &svx; files: How do I?</Title>
+<Sect1><Title>Contents of <filename>.svx</filename> files: How do I?</Title>
 <?dbhtml filename="svxhowto.htm">
 
 <Para>
-Here is some example &survexsuite; data (a very small cave numbered 1623/163):
+Here is some example <Application>Survex</Application> data (a very small cave numbered 1623/163):
 </Para>
 
 <programlisting>
@@ -2976,7 +2978,7 @@ from-station to-station tape compass clino
 </Para>
 
 <Para>
-This data demonstrates a number of useful features of &survexsuite;:
+This data demonstrates a number of useful features of <Application>Survex</Application>:
 </Para>
 
 <Para>
@@ -2991,11 +2993,11 @@ do not need to specify this specially.
 </Para>
 
 <Para>
-&survexsuite; places few restrictions on station naming (see "Survey
+<Application>Survex</Application> places few restrictions on station naming (see "Survey
 Station Names" in the previous section), so you can number the stations
 as they were in the original survey notes.  Although not apparent from
 this example, there is no requirement for each leg to connect to an
-existing station.  &survexsuite; can accept data in any order, and will
+existing station.  <Application>Survex</Application> can accept data in any order, and will
 check for connectedness once all the data has been read in.
 </Para>
 
@@ -3013,7 +3015,7 @@ surveys.
 </Para>
 
 <Para>
-To accomplish this, &survexsuite; has a very flexible system of hierarchical
+To accomplish this, <Application>Survex</Application> has a very flexible system of hierarchical
 prefixes.  All you need do is give each survey a unique name or
 number, and enter the data like so:
 </Para>
@@ -3028,7 +3030,7 @@ number, and enter the data like so:
 5 6  9.29 271 -28.5
 *end 163</programlisting>
 
-<Para>&survexsuite; will name the stations by attaching the current prefix.
+<Para><Application>Survex</Application> will name the stations by attaching the current prefix.
 In this case, the stations will be named 163.1, 163.2, etc.
 </Para>
 
@@ -3316,7 +3318,7 @@ is part of a loop.
 <Sect2><Title>Create a new survey</Title>
 
 <Para>You simply create a text file containing the relevant survey data,
-using a text editor, and save it with a suitable name with a &svx;
+using a text editor, and save it with a suitable name with a <filename>.svx</filename>
 extension. The
 easiest way is to look at some of the example data and use that
 as a template. Nearly all surveys will need a bit of basic info
@@ -3326,7 +3328,7 @@ instrument error corrections etc. Here is a typical survey file:
 </Para>
 
 <Para>All the lines starting with ';' are comments, which are ignored
-by &survexsuite;. You can also see the use of 'DOWN' for plumbs, and
+by <Application>Survex</Application>. You can also see the use of 'DOWN' for plumbs, and
 *calibrate tape for dealing with a tape length error (in this case
 the end of the tape had fallen off so measurements were made from the
 20cm point).</Para>
@@ -3395,7 +3397,7 @@ enclosing survey to join them together.
 <Sect2><Title>Organise my surveys</Title>
 
 <Para>This is actually a large subject. There are many ways you can
-organise your data using &survexsuite;. Take a look at the example dataset
+organise your data using <Application>Survex</Application>. Take a look at the example dataset
 for some ideas of ways to go about it.
 </Para>
 
@@ -3437,7 +3439,7 @@ achieved like so:
 <!-- FIXME put DEM support in aven -->
 <Para>We intend to allow import of terrain data in DEM format, and also any
 other formats in common use.  But at present the simplest approach is to
-generate a &svx; file with the surface mesh in and display it with the
+generate a <filename>.svx</filename> file with the surface mesh in and display it with the
 survey data.
 </Para>
 
@@ -3456,7 +3458,7 @@ Group magazine Compass Points issue 11, available online at
 <ulink url="http://www.chaos.org.uk/survex/cp/CP11/CPoint11.htm#Art_5">http://www.chaos.org.uk/survex/cp/CP11/CPoint11.htm#Art_5</ulink>
 </Para>
 
-<Para>If you're using another program to generate a &svx; file for the surface
+<Para>If you're using another program to generate a <filename>.svx</filename> file for the surface
 mesh, it's best to use the NOSURVEY data style.
 Simply fix all the grid intersections at the correct
 coordinates and height, and put legs between them using the NOSURVEY style.
@@ -3519,7 +3521,7 @@ Survex website for download links.
 
 <Para>Aven is able to display a grid, but this functionality isn't currently
 available in printouts.
-You can achieve a similar effect for now by creating a &svx; file
+You can achieve a similar effect for now by creating a <filename>.svx</filename> file
 where the survey legs form a grid.
 </Para>
 
@@ -3527,10 +3529,10 @@ where the survey legs form a grid.
 
 <Sect2><Title>Import data from other programs</Title>
 
-<Para>&survexsuite; supports a number of features to help with importing
+<Para><Application>Survex</Application> supports a number of features to help with importing
 existing data. You can specify the ordering of items on a line using *Data
-(see &survexsuite; Keywords above), and you can specify the characters used
-to mean different things using *Set (see &survexsuite; Keywords above).
+(see <Application>Survex</Application> Keywords above), and you can specify the characters used
+to mean different things using *Set (see <Application>Survex</Application> Keywords above).
 </Para>
 
 <Para>The Ignore and Ignoreall options to the *Data command are often
@@ -3569,7 +3571,7 @@ you use
 completely confuse the software, as it may not be able to work out what is
 going on, or it may simply be ambiguous. It can cope with some ambiguity (e.g.
 the '-' character is used both for 'MINUS' and for 'OMIT'), but there are
-limits. If you have a dataset that you can not make &survexsuite;
+limits. If you have a dataset that you can not make <Application>Survex</Application>
 understand, then send it to us, and we will see what can be done.
 </Para>
 -->
@@ -3584,9 +3586,9 @@ understand, then send it to us, and we will see what can be done.
 
 <Para>We have an Excel 5 macro for converting The Lotus 123 spreadsheets
 used by the German survey software Cad F&uuml;r H&ouml;hlen into
-&survexsuite; data files. Other converters may also come to be available.
+<Application>Survex</Application> data files. Other converters may also come to be available.
 These will normally be available via the
-<ulink url="&survexwebsite;">&survexsuite; Web pages</ulink>.
+<ulink url="http://survex.com/"><Application>Survex</Application> Web pages</ulink>.
 </Para>
 
 </Sect3>
@@ -3594,7 +3596,7 @@ These will normally be available via the
 
 </Sect2>
 
-<Sect2><Title>Export data from &survexsuite;</Title>
+<Sect2><Title>Export data from <Application>Survex</Application></Title>
 
 <Para>See Rosetta Stal in the Related Tools section of the Survex web
 site.  This is a utility written by Taco van Ieperen and Gary Petrie.
@@ -3606,7 +3608,7 @@ and doesn't understand the more recently added commands.</Para>
 
 <Sect2><Title>See errors and warnings that have gone off the screen</Title>
 
-<Para>When you run &survexsuite; it will process the specified survey data
+<Para>When you run <Application>Survex</Application> it will process the specified survey data
 files in order, reporting any warnings and errors.  If there are no
 errors, the output files are written and various statistics about the
 survey are displayed. If there are a lot of warnings or errors, they can
@@ -3625,7 +3627,7 @@ which you can then inspect with a text editor.
 
 <Sect2><Title>Create an Extended Elevation</Title>
 
-<Para>Use the Extend program. This takes &x3d; files and
+<Para>Use the Extend program. This takes <filename>.3d</filename> files and
 'flattens' them.  See 'Extend' for details.
 </Para>
 
@@ -3651,7 +3653,7 @@ which you can then inspect with a text editor.
 <Para>
 Survex can read Compass survey data - both raw data (.DAT and .MAK
 files) and processed survey data (.PLT and .PLF files).  You can even
-use <command>*include compassfile.dat</command> in a &svx; file and
+use <command>*include compassfile.dat</command> in a <filename>.svx</filename> file and
 it'll work!
 </Para>
 
@@ -3686,11 +3688,11 @@ Survex mailing list - for details visit:
 <ulink url="http://survex.com/maillist.html">http://survex.com/maillist.html</ulink>
 </Para>
 
-<Para>We'd be delighted to hear how you get on with &survexsuite; and
+<Para>We'd be delighted to hear how you get on with <Application>Survex</Application> and
 welcome comments and suggestions for improvements.</Para>
 
 <Para>
-And we'd love you to contribute your skills to help make &survexsuite; even
+And we'd love you to contribute your skills to help make <Application>Survex</Application> even
 better.  Point out areas of the documentation which could be made clearer, or
 sections which are missing entirely.  Download test releases, try them out, and
 let us know if you find problems or have suggestions for improvements.
@@ -3705,17 +3707,17 @@ plenty to do, so feel free to join in.
 <?dbhtml filename="future.htm">
 
 <Para>
-Now that &survexsuite; has reached version 1.0, we are continuing progress
+Now that <Application>Survex</Application> has reached version 1.0, we are continuing progress
 towards version 2, in a series of steps, evolving out of 
 Survex 1.0.  The GUI framework is being based on aven, with
 the printer drivers and other utility programs being pulled in
 and integrated into the menus.</Para>
 
-<Para>Aven is built on &wxwidgets;, which means that it can easily support
+<Para>Aven is built on <Application>wxWidgets</Application>, which means that it can easily support
 Unix, Microsoft Windows, and Mac OS X.</Para>
 
 <Para>More information on our plans is on the <ulink
-url="&survexwebsite;">web site</ulink>.
+url="http://survex.com/">web site</ulink>.
 </Para>
 
 </Sect1>

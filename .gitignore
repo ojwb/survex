@@ -32,7 +32,6 @@ doc/manual.txt
 doc/sorterr.1
 doc/survex.7
 doc/svxedit.1
-doc/version.ent
 install-sh
 lib/Info.plist
 lib/svxedit_Info.plist

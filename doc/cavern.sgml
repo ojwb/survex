@@ -19,7 +19,7 @@
   
 <refsect1><title>Description</title>
 
-<Para>Cavern is the &survexsuite; data processing engine.</Para>
+<Para>Cavern is the <Application>Survex</Application> data processing engine.</Para>
 
 <Para>If multiple survey data files are listed on the command line,
 they are processed in order from left to right.  Settings are reset to
@@ -35,7 +35,7 @@ their defaults before processing each file.
 <Term>-p, --percentage</Term>
 <ListItem>
 <Para>You can get cavern to display the percentage progress through the
-current file.  As of &survexsuite; 0.90 this is disabled by default, but you
+current file.  As of <Application>Survex</Application> 0.90 this is disabled by default, but you
 can enable it if you want.  Because the value given is for the
 <emphasis>current</emphasis> file, the values jump around for a multi-file survey
 project. Also note that displaying this information slows down processing
@@ -107,10 +107,10 @@ will be omitted.
 <refsect1><Title>Output</Title>
 
 <Para>Cavern reads in text files containing the survey data
-&svx;) and outputs two files, with the extensions
-&x3d; and &err;.
+<filename>.svx</filename>) and outputs two files, with the extensions
+<filename>.3d</filename> and <filename>.err</filename>.
 By default these files are put in the current directory, 
-with the same base filename as the first &svx; file read,
+with the same base filename as the first <filename>.svx</filename> file read,
 but a different extension.
 You can change the directory and/or base filename using the --output
 command line option.
@@ -160,7 +160,7 @@ used.
 </para></listitem>
 </itemizedlist>
 
-<refsect2><Title>&x3d; - data describing the loop-closed centre line</Title>
+<refsect2><Title><filename>.3d</filename> - data describing the loop-closed centre line</Title>
 
 <Para>This file contains details of the stations and legs, and any
 flags associated with them.
@@ -168,7 +168,7 @@ flags associated with them.
 
 </refsect2>
 
-<refsect2><Title>&err; - loop closure statistics (%age errors, etc)</Title>
+<refsect2><Title><filename>.err</filename> - loop closure statistics (%age errors, etc)</Title>
 
 <Para>This file contains statistics about each traverse in the survey
 which is part of a loop. It includes various statistics for each
@@ -189,7 +189,7 @@ are of lower quality or contain gross errors.
 There are a number of error messages that you may get when processing
 data.  Most of these are self explanatory, and will be caused by such
 problems as typing mistakes, or by your survey data not being attached
-to fixed points (in this situation, &survexsuite; will
+to fixed points (in this situation, <Application>Survex</Application> will
 list some of the stations that are not connected).
 </Para>
 
