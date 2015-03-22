@@ -118,7 +118,7 @@ joining it, e.g. at a T-junction. And so on.
  </articleinfo>
 
 <Sect1><Title>Introduction</Title>
-<?dbhtml filename="intro.htm"?>
+<?dbhtml filename="intro.htm">
 
 <Para>
 This section describes what <Application>Survex</Application> is, and outlines the scope of this
@@ -284,7 +284,7 @@ surveying.</Para>
 </Sect1>
 
 <Sect1><Title>Getting Started</Title>
-<?dbhtml filename="getstart.htm"?>
+<?dbhtml filename="getstart.htm">
 
 <Para>This section covers how to obtain the software, and how to unpack and
 install it, and how to configure it.</Para>
@@ -599,7 +599,7 @@ how to print/export etc
 
 <!-- FIXME perhaps move this after data files section? -->
 <Sect1><Title>Survex Programs</Title>
-<?dbhtml filename="cmdline.htm"?>
+<?dbhtml filename="cmdline.htm">
 
 <Sect2><Title>Standard Options</Title>
 
@@ -657,35 +657,35 @@ file is looked for with the appropriate extension appended.  So
 <Sect2><title>Command Reference</title>
 
 <refentry id="cavern">
-<?dbhtml filename="cavern.htm"?>
+<?dbhtml filename="cavern.htm">
 &man.cavern;
 </refentry>
 <refentry id="svxedit">
-<?dbhtml filename="svxedit.htm"?>
+<?dbhtml filename="svxedit.htm">
 &man.svxedit;
 </refentry>
 <refentry id="aven">
-<?dbhtml filename="aven.htm"?>
+<?dbhtml filename="aven.htm">
 &man.aven;
 </refentry>
 <refentry id="x3dtopos">
-<?dbhtml filename="3dtopos.htm"?>
+<?dbhtml filename="3dtopos.htm">
 &man.3dtopos;
 </refentry>
 <refentry id="cad3d">
-<?dbhtml filename="cad3d.htm"?>
+<?dbhtml filename="cad3d.htm">
 &man.cad3d;
 </refentry>
 <refentry id="diffpos">
-<?dbhtml filename="diffpos.htm"?>
+<?dbhtml filename="diffpos.htm">
 &man.diffpos;
 </refentry>
 <refentry id="extend">
-<?dbhtml filename="extend.htm"?>
+<?dbhtml filename="extend.htm">
 &man.extend;
 </refentry>
 <refentry id="sorterr">
-<?dbhtml filename="sorterr.htm"?>
+<?dbhtml filename="sorterr.htm">
 &man.sorterr;
 </refentry>
 
@@ -694,7 +694,7 @@ file is looked for with the appropriate extension appended.  So
 </Sect1>
 
 <Sect1><Title><Application>Survex</Application> data files</Title>
-<?dbhtml filename="datafile.htm"?>
+<?dbhtml filename="datafile.htm">
 
 <Para>Survey data is entered in the form of text files. You can use any
 text editor you like for this, so long as it has the capability of
@@ -2962,7 +2962,7 @@ in DEG|DEGREES|GRADS|MILS|MINUTES (default: DEGREES)
 
 <!-- FIXME rename to "Cookbook"? -->
 <Sect1><Title>Contents of <filename>.svx</filename> files: How do I?</Title>
-<?dbhtml filename="svxhowto.htm"?>
+<?dbhtml filename="svxhowto.htm">
 
 <Para>
 Here is some example <Application>Survex</Application> data (a very small cave numbered 1623/163):
@@ -3319,7 +3319,7 @@ is part of a loop.
 </Sect1>
 
 <Sect1><Title>General: How do I?</Title>
-<?dbhtml filename="genhowto.htm"?>
+<?dbhtml filename="genhowto.htm">
 
 <Sect2><Title>Create a new survey</Title>
 
@@ -3643,7 +3643,7 @@ which you can then inspect with a text editor.
 
 <!--
 <Sect1><Title>Appendices</Title>
-<?dbhtml filename="appendix.htm"?>
+<?dbhtml filename="appendix.htm">
 
 <Para>Files provided
 </Para>
@@ -3654,7 +3654,7 @@ which you can then inspect with a text editor.
 </Sect1>
 -->
 <Sect1><Title>Working with Larry Fish's Compass</Title>
-<?dbhtml filename="compass.htm"?>
+<?dbhtml filename="compass.htm">
 
 <Para>
 Survex can read Compass survey data - both raw data (.DAT and .MAK
@@ -3687,7 +3687,7 @@ what you have to do:
 </Sect1>
 
 <Sect1><Title>Mailing List</Title>
-<?dbhtml filename="maillist.htm"?>
+<?dbhtml filename="maillist.htm">
 
 <Para>The best way to contact the authors and other Survex users is the
 Survex mailing list - for details visit:
@@ -3710,7 +3710,7 @@ plenty to do, so feel free to join in.
 </Sect1>
 
 <Sect1><Title>Future Developments</Title>
-<?dbhtml filename="future.htm"?>
+<?dbhtml filename="future.htm">
 
 <Para>
 Now that <Application>Survex</Application> has reached version 1.0, we are continuing progress

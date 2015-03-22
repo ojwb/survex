@@ -1,3 +1,7 @@
+Sun Mar 22 10:10:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: <?dbhtml seems to require > not ?> to terminate.
+
 Sun Mar 22 04:39:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Fix bugs in the markup.
