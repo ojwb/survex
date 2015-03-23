@@ -1,3 +1,11 @@
+Mon Mar 23 02:27:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* .gitignore,Makefile.am,configure.ac,lib/INSTALL.OSX,
+	  lib/icons/Makefile.am,src/,survex.iss.in: Remove editwrap - while an
+	  editor with built-in knowledge of survex would be nice to have,
+	  svxedit doesn't really offer that, and it looks ugly in a modern
+	  desktop.
+
 Mon Mar 23 00:55:24 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,src/mainfrm.cc: Attempt to address the size of the

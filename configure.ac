@@ -95,13 +95,13 @@ AC_CHECK_LIB(m, sqrt)
 AC_PATH_XTRA
 
 OSPROGS=
-AC_MSG_CHECKING([for OS-specific programs to build])
-if test yes = "$mswindows"; then
-  OSPROGS='editwrap$(EXEEXT)'
-elif test yes = "$macosx"; then
-  OSPROGS=svxedit_wrap
-fi
-AC_MSG_RESULT([${OSPROGS:-none}])
+dnl AC_MSG_CHECKING([for OS-specific programs to build])
+dnl if test yes = "$mswindows"; then
+dnl   OSPROGS=
+dnl elif test yes = "$macosx"; then
+dnl   OSPROGS=
+dnl fi
+dnl AC_MSG_RESULT([${OSPROGS:-none}])
 AC_SUBST([OSPROGS])
 
 dnl The wxWidgets libraries we need:
@@ -404,7 +404,7 @@ AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  lib/images/Makefile
  tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.7
- survex.spec src/svxedit lib/survex.keys lib/Info.plist
+ survex.spec lib/survex.keys lib/Info.plist
  lib/svxedit_Info.plist
  ])
 AC_OUTPUT

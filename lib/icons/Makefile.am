@@ -47,30 +47,18 @@ dist_icon_DATA = \
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
 #	legsprefs.png ctlprefs.png pres-restart.png pres-create.png\
-#	pres-record.png pres-finish.png
+#	pres-record.png pres-finish.png svxedit.png
 
 pixmapsdir = $(datadir)/pixmaps
-dist_pixmaps_DATA = aven.svg svxedit.png
+dist_pixmaps_DATA = aven.svg
 
 Aven.iconset.zip: aven.svg
 	$(SHELL) $(srcdir)/svg2iconsetzip aven.svg Aven.iconset.zip
 
-3d.iconset.zip: 3d.svg
-	$(SHELL) $(srcdir)/svg2iconsetzip 3d.svg 3d.iconset.zip
-
-pos.iconset.zip: pos.svg
-	$(SHELL) $(srcdir)/svg2iconsetzip pos.svg pos.iconset.zip
-
-svx.iconset.zip: svx.svg
-	$(SHELL) $(srcdir)/svg2iconsetzip svx.svg svx.iconset.zip
-
-plt.iconset.zip: plt.svg
-	$(SHELL) $(srcdir)/svg2iconsetzip plt.svg plt.iconset.zip
-
 SUFFIXES = .ico .png .svg .iconset.zip .xpm
 
-.png.iconset.zip:
-	$(SHELL) $(srcdir)/png2iconsetzip $< $@
+.svg.iconset.zip:
+	$(SHELL) $(srcdir)/svg2iconsetzip $< $@
 
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@
@@ -81,7 +69,7 @@ SUFFIXES = .ico .png .svg .iconset.zip .xpm
 .xpm.rcdata:
 	$(SHELL) $(srcdir)/xpm2png $< $@
 
-iconsets = Aven.iconset.zip svxedit.iconset.zip\
+iconsets = Aven.iconset.zip\
 	3d.iconset.zip err.iconset.zip plt.iconset.zip pos.iconset.zip\
 	svx.iconset.zip
 
@@ -93,6 +81,6 @@ EXTRA_DIST = png2winicon png2iconsetzip svg2iconsetzip\
 	aven-icons.rc\
 	$(xpm_files)\
 	$(rcdata_files)\
-	aven.ico svxedit.ico\
+	aven.ico\
 	3d.ico err.ico plt.ico pos.ico svx.ico\
 	$(iconsets)

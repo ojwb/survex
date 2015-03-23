@@ -73,7 +73,6 @@ Source: "*.exe"; DestDir: "{app}"
 ;Source: "*.dll"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
-Source: "*.tcl"; DestDir: "{app}"
 Source: "*.pixelfont"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\images"
 Source: "*.jpg"; DestDir: "{app}\images"
@@ -89,7 +88,7 @@ Source: "manual\*.*"; DestDir: "{app}\manual"
 ;Filename: "{app}\aven.exe"; Description: "Launch aven"; Flags: postinstall nowait skipifsilent unchecked
 
 [Icons]
-Name: "{group}\SvxEdit"; Filename: "{app}\editwrap.exe"; Comment: "Enter survey data"
+; Name: "{group}\SvxEdit"; Filename: "{app}\editwrap.exe"; Comment: "Enter survey data"
 Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surveys"
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
 Name: "{group}\{cm:UninstallProgram,@PRETTYPACKAGE@}"; Filename: "{uninstallexe}"
@@ -117,7 +116,7 @@ Root: HKCU; Subkey: "Software\Classes\survex.source\DefaultIcon"; ValueType: str
 Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open"; ValueType: none; Flags: deletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process"; ValueType: none; Flags: deletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
-Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+;Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
@@ -165,7 +164,7 @@ Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "
 Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
-Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+;Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn

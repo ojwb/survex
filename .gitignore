@@ -83,7 +83,6 @@ src/imgtest
 src/sorterr
 src/svxedit
 src/svxedit.ico
-src/svxedit_wrap
 src/z_getopt.c
 stamp-h1
 survex.iss

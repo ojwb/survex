@@ -32,14 +32,13 @@ mingw : all mingw_iss
 mingw_iss : survex.iss
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
-	cp src/svxedit iss_tmp/svxedit.tcl
 	cp $(extra_txt) survex.iss iss_tmp
 	: # so the installer can display the license
 	cp COPYING iss_tmp/COPYING.txt
 	cd doc && cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	for f in $(base_progs) aven editwrap ; do cp src/$$f.exe iss_tmp ; done
+	for f in $(base_progs) aven ; do cp src/$$f.exe iss_tmp ; done
 	cp lib/icons/*.ico lib/images/*.png lib/images/*.jpg iss_tmp
 	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual

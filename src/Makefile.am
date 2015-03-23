@@ -22,12 +22,11 @@ LDADD = $(LIBOBJS)
 #     sudo make install FINDENTRANCES=findentrances
 FINDENTRANCES =
 EXTRA_PROGRAMS =\
-	aven dump3d editwrap findentrances svxedit_wrap
+	aven dump3d findentrances
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
  aven $(OSPROGS) $(FINDENTRANCES)
 
-bin_SCRIPTS = svxedit
 check_PROGRAMS = imgtest
 
 COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
@@ -55,18 +54,13 @@ findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
  $(COMMONSRC)
 findentrances_LDADD = $(PROJ_LIBS)
 
-svxedit_wrap_SOURCES = editwrap_osx.c
-
-editwrap_SOURCES = editwrap.c
-editwrap_LDFLAGS = -mwindows
-
 if WIN32
 aven_LDADD = avenrc.o $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 
-svxeditrc.o: $(srcdir)/svxedit.rc ../lib/icons/svxedit.ico
-	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/svxeditrc.o" svxedit.rc
+#svxeditrc.o: $(srcdir)/svxedit.rc ../lib/icons/svxedit.ico
+#	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/svxeditrc.o" svxedit.rc
 
-editwrap_LDADD = svxeditrc.o
+#editwrap_LDADD = svxeditrc.o
 
 avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/avenrc.o" aven.rc
@@ -107,7 +101,6 @@ all_sources = \
 	$(cavern_SOURCES) \
 	$(aven_SOURCES) \
 	$(dump3d_SOURCES) \
-	$(editwrap_SOURCES) \
 	$(diffpos_SOURCES) \
 	$(sorterr_SOURCES) \
 	$(3dtopos_SOURCES) \
