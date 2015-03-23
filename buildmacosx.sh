@@ -186,22 +186,12 @@ rm -f Survex/share/survex/unifont.pixelfont
 rm -rf Survex/share/applications Survex/share/mime-info Survex/share/pixmaps
 
 # Create .icns files in the bundle's "Resources" directory.
-for i in Aven svxedit 3d err plt pos svx ; do
-  unzip -d Survex/Aven.app/Contents/Resources "lib/icons/$i.iconset.zip"
-  iconutil --convert icns "Survex/Aven.app/Contents/Resources/$i.iconset"
-  rm -rf "Survex/Aven.app/Contents/Resources/$i.iconset"
+for zip in lib/icons/*.iconset.zip ; do
+  unzip -d Survex/Aven.app/Contents/Resources "$zip"
+  i=`echo "$zip"|sed 's!.*/\(.*\)\.zip$!\1!'`
+  iconutil --convert icns "Survex/Aven.app/Contents/Resources/$i"
+  rm -rf "Survex/Aven.app/Contents/Resources/$i"
 done
-
-# Construct the svxedit application bundle.
-mkdir -p Survex/svxedit.App/Contents/MacOS Survex/svxedit.App/Contents/Resources
-cp lib/svxedit_Info.plist Survex/svxedit.App/Contents/Info.plist
-printf APPLSVXE > Survex/svxedit.App/Contents/PkgInfo
-mv Survex/svxedit Survex/svxedit_wrap Survex/svxedit.App/Contents/MacOS/
-
-mv Survex/Aven.app/Contents/Resources/svxedit.icns \
-  Survex/svxedit.App/Contents/Resources
-ln Survex/Aven.app/Contents/Resources/svx.icns \
-  Survex/svxedit.App/Contents/Resources
 
 size=`du -s Survex|sed 's/[^0-9].*//'`
 # Allow 1000 extra sectors for various overheads (500 wasn't enough).
