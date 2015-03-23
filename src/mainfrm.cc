@@ -89,7 +89,13 @@
 #include "../lib/icons/survey_tree.xpm"
 #include "../lib/icons/pres_tree.xpm"
 #undef static
+#ifdef __WXMAC__
+#define TOOLPREP(WIN) double client_scale_factor = wxClientDC(WIN).GetClientScaleFactor()
+#define TOOL(x) wxBitmap(wxImage(#x"_xpm"), -1, client_scale_factor)
+#else
+#define TOOLPREP(WIN) (void)WIN
 #define TOOL(x) wxBITMAP(x)
+#endif
 #endif
 
 using namespace std;
@@ -1016,6 +1022,7 @@ void MainFrm::MakeToolBar()
     toolbar->SetMargins(5, 5);
 #endif
 
+    TOOLPREP(toolbar);
     // FIXME: TRANSLATE tooltips
     toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOL(open), wxT("Open a survey file for viewing"));
     toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOL(open_pres), wxT("Open a presentation"));
@@ -1096,6 +1103,7 @@ void MainFrm::CreateSidePanel()
     // Overall tabbed structure:
     // FIXME: this assumes images are 15x15
     wxImageList* image_list = new wxImageList(15, 15);
+    TOOLPREP(m_Notebook);
     image_list->Add(TOOL(survey_tree));
     image_list->Add(TOOL(pres_tree));
     m_Notebook->SetImageList(image_list);

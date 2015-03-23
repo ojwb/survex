@@ -1,3 +1,8 @@
+Mon Mar 23 00:55:24 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX,src/mainfrm.cc: Attempt to address the size of the
+	  toolbar icons on Mac OS X.
+
 Sun Mar 22 10:10:21 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: <?dbhtml seems to require > not ?> to terminate.
