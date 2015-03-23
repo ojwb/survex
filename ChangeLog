@@ -1,3 +1,7 @@
+Mon Mar 23 02:30:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* survex.spec.in: Drop svxedit from RPM spec file.
+
 Mon Mar 23 02:27:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* .gitignore,Makefile.am,configure.ac,lib/INSTALL.OSX,

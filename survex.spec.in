@@ -20,14 +20,6 @@ BuildRoot: %{_tmppath}/%{name}-buildroot
 %description
 @DESC@
 
-%package svxedit
-Summary: SvxEdit survey data editor for Survex
-Group: Applications/Misc
-Requires: survex = @VERSION@, tk
-
-%description svxedit
-@SVXEDITDESC@
-
 %prep
 %setup
 
@@ -55,18 +47,9 @@ mv "%{buildroot}"/usr/share/doc/@PACKAGE@ ./built-docs
 %doc @EXTRA_TEXT@
 %doc built-docs/*
 %doc /usr/share/man/
-%exclude /usr/share/man/man1/svxedit*
 /usr/bin/*
-%exclude /usr/bin/svxedit
 /usr/share/@PACKAGE@/
 /usr/share/mime-info/survex.*
 /usr/share/applications/survex-aven.desktop
 /usr/share/pixmaps/aven.*
 /usr/share/vim/
-
-%files svxedit
-%defattr(-, root, root)
-%doc /usr/share/man/man1/svxedit*
-/usr/bin/svxedit
-/usr/share/applications/survex-svxedit.desktop
-/usr/share/pixmaps/svxedit.*
