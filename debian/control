@@ -29,12 +29,3 @@ Description: sophisticated cave survey viewer for Survex
  highlighting categories of stations such entrances or fixed points, measuring
  the distance between stations, showing passage walls, and supports
  presentations (pre-recorded fly-throughs).
-
-Package: survex-svxedit
-Architecture: all
-Depends: tk8.5|wish, bwidget, ${misc:Depends}
-Recommends: survex (>= ${source:Version})
-Description: survey data editor for Survex
- Experimental cave survey data entry editor for Survex.  It is packaged
- separately as it requires Tcl to be installed, and some users prefer to use a
- text editor instead.

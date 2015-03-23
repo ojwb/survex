@@ -1,5 +1,6 @@
 survex (1.2.16-2) UNRELEASED; urgency=medium
 
+  * Upstream are dropping svxedit so drop the survex-svxedit package.
   * Add a link to the sample data in README.Debian, as suggested by Andy
     Waddington a mere 7 years ago.
 
