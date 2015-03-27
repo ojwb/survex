@@ -4,10 +4,10 @@ compiler:
   - gcc
 script:
   - autoreconf -fiv
-  - [ "$TRAVIS_OS_NAME" == osx ] || ./configure
-  - [ "$TRAVIS_OS_NAME" == osx ] || make
-  - [ "$TRAVIS_OS_NAME" == osx ] || make check
-  - [ "$TRAVIS_OS_NAME" != osx ] || ./buildmacosx.sh
+  - test "$TRAVIS_OS_NAME" = osx || ./configure
+  - test "$TRAVIS_OS_NAME" = osx || make
+  - test "$TRAVIS_OS_NAME" = osx || make check
+  - test "$TRAVIS_OS_NAME" != osx || ./buildmacosx.sh
 branches:
   only:
     - master
