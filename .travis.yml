@@ -1,0 +1,13 @@
+language: cpp
+compiler:
+  - clang
+  - gcc
+script:
+  - autoreconf -fiv
+  - [ "$TRAVIS_OS_NAME" == osx ] || ./configure
+  - [ "$TRAVIS_OS_NAME" == osx ] || make
+  - [ "$TRAVIS_OS_NAME" == osx ] || make check
+  - [ "$TRAVIS_OS_NAME" != osx ] || ./buildmacosx.sh
+branches:
+  only:
+    - master
