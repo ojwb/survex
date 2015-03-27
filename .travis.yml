@@ -3,7 +3,7 @@ compiler:
   - gcc
 before_install:
   - test "$TRAVIS_OS_NAME" != linux || sudo apt-get -qq update
-  - test "$TRAVIS_OS_NAME" != linux || sudo apt-get -qq install libwxgtk3.0-dev libavcodec-dev libavformat-dev libproj-dev libswscale-dev mesa-common-dev libglu1-mesa-dev libx11-dev libxext-dev x11proto-core-dev liblocale-po-perl unifont sgmltools-like jadetex docbook-to-man w3m
+  - test "$TRAVIS_OS_NAME" != linux || sudo apt-get -qq install libwxgtk3.0-dev libavcodec-dev libavformat-dev libproj-dev libswscale-dev mesa-common-dev libglu1-mesa-dev libx11-dev libxext-dev x11proto-core-dev liblocale-po-perl unifont sgmltools-lite jadetex docbook-to-man w3m
 script:
   - autoreconf -fiv
   - test "$TRAVIS_OS_NAME" = osx || ./configure
