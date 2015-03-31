@@ -2372,7 +2372,8 @@ void GfxCore::GenerateList(unsigned int l)
 		fatalerror(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
 	    }
 	    size_t n_x = 0;
-	    SetColour(col_LIGHT_GREY);
+	    SetAlpha(0.3);
+	    SetColour(col_WHITE);
 	    const Vector3 & off = m_Parent->GetOffset();
 	    for (size_t x = 1800; x < width; ++x) {
 		double X_ = (o_x + x * step_x) * DEG_TO_RAD;
@@ -2406,6 +2407,7 @@ void GfxCore::GenerateList(unsigned int l)
 		    EndPolyline();
 		}
 	    }
+	    SetAlpha(1.0);
 	    printf("%d DEM points drawn\n", n_x);
 	    break;
 	}
