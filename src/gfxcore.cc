@@ -40,7 +40,9 @@
 #include "moviemaker.h"
 
 #include <wx/confbase.h>
+#include <wx/wfstream.h>
 #include <wx/image.h>
+#include <wx/zipstrm.h>
 
 #include <proj_api.h>
 #include <sys/mman.h>
@@ -2347,21 +2349,107 @@ void GfxCore::GenerateList(unsigned int l)
 	    GenerateDisplayListShadow();
 	    break;
 	case LIST_TERRAIN: {
-	    static const short * bil = NULL;
+	    static short * bil = NULL;
+	    unsigned long width, height;
+	    double o_x, o_y, step_x, step_y;
+	    long nodata_value;
 	    if (!bil) {
-		size_t len = 25934402;
-		int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3.bil", O_RDONLY);
-		if (fd >= 0)
-		    bil = (short*)mmap(NULL, len, PROT_READ, MAP_SHARED, fd, 0);
+		size_t size;
+		int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
+		if (fd < 0) {
+		    wxMessageBox(wxT("Failed to open DEM zip"));
+		    ToggleTerrain();
+		    return;
+		}
+		wxZipEntry * ze_bil = NULL;
+		wxFileInputStream fs(fd);
+		wxZipInputStream zs(fs);
+		wxZipEntry * ze;
+		while ((ze = zs.GetNextEntry()) != NULL) {
+		    if (!ze->IsDir()) {
+			const wxString & name = ze->GetName();
+			if (!ze_bil && name.EndsWith(wxT(".bil"))) {
+			    ze_bil = ze;
+			    continue;
+			}
+
+			if (name.EndsWith(wxT(".hdr"))) {
+			    unsigned long nbits;
+			    while (!zs.Eof()) {
+				wxString line;
+				int ch;
+				while ((ch = zs.GetC()) != wxEOF) {
+				    if (ch == '\n' || ch == '\r') break;
+				    line += wxChar(ch);
+				}
+#define CHECK(X, COND) \
+    } else if (line.StartsWith(wxT(X" "))) { \
+	size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
+	if (v == line.npos || !(COND)) { \
+	    err += wxT("Unexpected value for "X); \
+	}
+				wxString err;
+				unsigned long dummy;
+				if (false) {
+				CHECK("BYTEORDER", line[v] == 'I')
+				CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
+				CHECK("NROWS", line.substr(v).ToCULong(&width))
+				CHECK("NCOLS", line.substr(v).ToCULong(&height))
+				CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
+				CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
+				//: BANDROWBYTES   7202
+				//: TOTALROWBYTES  7202
+				CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
+				CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
+				CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
+				CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
+				CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
+				CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
+				}
+				if (!err.empty()) {
+				    wxMessageBox(err);
+				}
+			    }
+			    size = ((nbits + 7) / 8) * width * height;
+			    bil = new short[size];
+			} else if (name.EndsWith(wxT(".prj"))) {
+			    //FIXME: check this matches the datum string we use
+			    //Projection    GEOGRAPHIC
+			    //Datum         WGS84
+			    //Zunits        METERS
+			    //Units         DD
+			    //Spheroid      WGS84
+			    //Xshift        0.0000000000
+			    //Yshift        0.0000000000
+			    //Parameters
+			}
+		    }
+		    delete ze;
+		}
+		if (ze_bil && zs.OpenEntry(*ze_bil)) {
+#if wxCHECK_VERSION(2,9,5)
+		    if (!zs.ReadAll(bil, size)) {
+		        wxMessageBox(wxT("Failed to read terrain data"));
+		    }
+#else
+		    char * p = reinterpret_cast<char *>(bil);
+		    while (size) {
+			zs.Read(p, size);
+			size_t c = zs.LastRead();
+			if (c == 0) {
+			    wxMessageBox(wxT("Failed to read terrain data"));
+			    break;
+			}
+			p += c;
+			size -= c;
+		    }
+#endif
+		}
+		delete ze_bil;
 	    }
 	    if (!bil) {
 		break;
 	    }
-	    size_t width = 3601;
-	    size_t height = 3601;
-	    double o_x = 13, o_y = 48;
-	    double step_x = 0.0002777778;
-	    double step_y = 0.0002777778;
 #define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
 	    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
 	    if (!pj_in) {
@@ -2380,7 +2468,7 @@ void GfxCore::GenerateList(unsigned int l)
 		bool in_line = false;
 		for (size_t y = 0; y < height / 2; ++y) {
 		    double Z = bil[x + y * width];
-		    if (Z == -32767) {
+		    if (Z == nodata_value) {
 			if (in_line) {
 			    EndPolyline();
 			    in_line = false;

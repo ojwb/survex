@@ -1,3 +1,7 @@
+Tue Mar 31 11:46:25 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Read terrain data directly from the zip file.
+
 Tue Mar 31 11:37:21 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Make terrain white with 30% alpha rather than light
