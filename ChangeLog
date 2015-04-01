@@ -1,3 +1,7 @@
+Wed Apr 01 07:33:18 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Process all of the DEM data.
+
 Tue Mar 31 11:46:25 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Read terrain data directly from the zip file.

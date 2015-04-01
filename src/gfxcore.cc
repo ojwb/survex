@@ -2463,10 +2463,10 @@ void GfxCore::GenerateList(unsigned int l)
 	    SetAlpha(0.3);
 	    SetColour(col_WHITE);
 	    const Vector3 & off = m_Parent->GetOffset();
-	    for (size_t x = 1800; x < width; ++x) {
+	    for (size_t x = 0; x < width; ++x) {
 		double X_ = (o_x + x * step_x) * DEG_TO_RAD;
 		bool in_line = false;
-		for (size_t y = 0; y < height / 2; ++y) {
+		for (size_t y = 0; y < height; ++y) {
 		    double Z = bil[x + y * width];
 		    if (Z == nodata_value) {
 			if (in_line) {
