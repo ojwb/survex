@@ -1,3 +1,7 @@
+Wed Apr 01 11:53:26 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Make stats read from DEM file static.
+
 Wed Apr 01 07:33:18 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Process all of the DEM data.

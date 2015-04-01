@@ -2350,9 +2350,9 @@ void GfxCore::GenerateList(unsigned int l)
 	    break;
 	case LIST_TERRAIN: {
 	    static short * bil = NULL;
-	    unsigned long width, height;
-	    double o_x, o_y, step_x, step_y;
-	    long nodata_value;
+	    static unsigned long width, height;
+	    static double o_x, o_y, step_x, step_y;
+	    static long nodata_value;
 	    if (!bil) {
 		size_t size;
 		int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
