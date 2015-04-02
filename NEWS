@@ -1,12 +1,28 @@
-9e171673 (Olly Betts 2015-03-21 15:44:29 +1300    1) Sat Mar 21 02:43:48 GMT 2015  Olly Betts <olly@survex.com>
+45630e23 (Olly Betts 2015-04-03 00:13:36 +1300    1) Thu Apr 02 11:13:24 GMT 2015  Olly Betts <olly@survex.com>
+
+Changes in 1.2.18 (2015-04-03):
+
+	* buildmacosx.sh: Remove packaging of svxedit for OS X.
+	* survex.spec.in: Drop svxedit from RPM spec file.
+	* .gitignore,Makefile.am,configure.ac,lib/INSTALL.OSX,
+	  lib/icons/Makefile.am,src/,survex.iss.in: Remove editwrap - while an
+	  editor with built-in knowledge of survex would be nice to have,
+	  svxedit doesn't really offer that, and it looks ugly in a modern
+	  desktop.
+
+	* lib/INSTALL.OSX,src/mainfrm.cc: Attempt to address the size of the
+	  toolbar icons on Mac OS X.
+
+	* doc/manual.sgml: Fix bugs in the markup.
+	* .gitignore,configure.ac,doc/: Eliminate most of the SGML entities we
+	  define.
 
 	* lib/icons/Makefile.am,lib/icons/solid-surface.png,
 	  lib/icons/solid_surface.xpm,lib/survex.pot,src/: Add UI for toggling
 	  terrain on and off.
 	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.h: Terrain data work in
 	  progress.
-
-Changes in 1.2.18 (2015-03-10):
+	* src/gfxcore.cc: Read terrain data directly from the zip file.
 
 * aven: Add a menu item and toolbar button to show the cavern log window if the
   currently shown survey data was processed by aven.  Reported by Hugh St
