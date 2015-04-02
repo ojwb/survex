@@ -2751,7 +2751,7 @@ msgstr "&Скрыть"
 #: ../src/mainfrm.cc:913
 #: n:408
 msgid "&Fade"
-msgstr "&Пониженная яркость"
+msgstr "Пониженная &яркость"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are shown the same as other legs.
