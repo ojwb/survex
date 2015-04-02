@@ -1,3 +1,7 @@
+Thu Apr 02 10:43:37 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/id.po,lib/ru.po: Merge translation updates.
+
 Wed Apr 01 11:53:26 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Make stats read from DEM file static.

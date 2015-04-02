@@ -1923,6 +1923,12 @@ msgstr "Stasiun &Nama\tCtrl+N"
 msgid "Passage &Tubes\tCtrl+T"
 msgstr "Lorong &Pipa\tCtrl+T"
 
+#. TRANSLATORS: Toggles drawing the surface of the Earth
+#: ../src/mainfrm.cc:899
+#: n:449
+msgid "&Terrain"
+msgstr "&Permukaan"
+
 #: ../src/mainfrm.cc:895
 #: n:271
 msgid "&Crosses\tCtrl+X"
