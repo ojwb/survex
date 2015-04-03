@@ -1,3 +1,7 @@
+Fri Apr 03 04:26:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Test with the void-filled 3-arc second SRTM data.
+
 Thu Apr 02 11:17:01 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

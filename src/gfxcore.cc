@@ -2355,7 +2355,8 @@ void GfxCore::GenerateList(unsigned int l)
 	    static long nodata_value;
 	    if (!bil) {
 		size_t size;
-		int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
+		//int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
+		int fd = open("/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip", O_RDONLY);
 		if (fd < 0) {
 		    wxMessageBox(wxT("Failed to open DEM zip"));
 		    ToggleTerrain();
