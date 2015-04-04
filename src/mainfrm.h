@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -74,11 +74,7 @@ enum {
     menu_ROTATION_START,
     menu_ROTATION_STOP,
     menu_ROTATION_TOGGLE,
-    menu_ROTATION_SPEED_UP,
-    menu_ROTATION_SLOW_DOWN,
     menu_ROTATION_REVERSE,
-    menu_ROTATION_STEP_CCW,
-    menu_ROTATION_STEP_CW,
     menu_ORIENT_MOVE_NORTH,
     menu_ORIENT_MOVE_EAST,
     menu_ORIENT_MOVE_SOUTH,
@@ -344,9 +340,6 @@ public:
     void OnMoveWestUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveWestUpdate(event); }
     void OnToggleRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleRotationUpdate(event); }
     void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseControlsUpdate(event); }
-    void OnSlowDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSlowDownUpdate(event); }
-    void OnSpeedUpUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnSpeedUpUpdate(event); }
-    void OnStepOnceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnStepOnceUpdate(event); }
     void OnHigherViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHigherViewpointUpdate(event); }
     void OnLowerViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnLowerViewpointUpdate(event); }
     void OnShiftDisplayDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayDownUpdate(event); }
@@ -397,10 +390,6 @@ public:
     void OnMoveWest(wxCommandEvent&) { if (m_Control) m_Control->OnMoveWest(); }
     void OnToggleRotation(wxCommandEvent&) { if (m_Control) m_Control->OnToggleRotation(); }
     void OnReverseControls(wxCommandEvent&) { if (m_Control) m_Control->OnReverseControls(); }
-    void OnSlowDown(wxCommandEvent&) { if (m_Control) m_Control->OnSlowDown(); }
-    void OnSpeedUp(wxCommandEvent&) { if (m_Control) m_Control->OnSpeedUp(); }
-    void OnStepOnceAnticlockwise(wxCommandEvent&) { if (m_Control) m_Control->OnStepOnceAnticlockwise(); }
-    void OnStepOnceClockwise(wxCommandEvent&) { if (m_Control) m_Control->OnStepOnceClockwise(); }
     void OnHigherViewpoint(wxCommandEvent&) { if (m_Control) m_Control->OnHigherViewpoint(); }
     void OnLowerViewpoint(wxCommandEvent&) { if (m_Control) m_Control->OnLowerViewpoint(); }
     void OnShiftDisplayDown(wxCommandEvent&) { if (m_Control) m_Control->OnShiftDisplayDown(); }

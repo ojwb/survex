@@ -1,3 +1,8 @@
+Sat Apr 04 23:24:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Remove actions from 'Rotation' menu which you wouldn't sanely
+	  want to perform from the menu.
+
 Sat Apr 04 23:06:26 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Factor out DEM loading into a separate

@@ -739,26 +739,6 @@ void GUIControl::OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent& cmd)
     cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
 }
 
-void GUIControl::OnSlowDown(bool accel)
-{
-    m_View->RotateSlower(accel);
-}
-
-void GUIControl::OnSlowDownUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
-}
-
-void GUIControl::OnSpeedUp(bool accel)
-{
-    m_View->RotateFaster(accel);
-}
-
-void GUIControl::OnSpeedUpUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation());
-}
-
 void GUIControl::OnStepOnceAnticlockwise(bool accel)
 {
     if (m_View->GetPerspective()) {
@@ -777,11 +757,6 @@ void GUIControl::OnStepOnceClockwise(bool accel)
 	m_View->TurnCave(accel ? -5.0 * ROTATE_STEP : -ROTATE_STEP);
     }
     m_View->ForceRefresh();
-}
-
-void GUIControl::OnStepOnceUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && !m_View->IsExtendedElevation() && !m_View->Animating());
 }
 
 void GUIControl::OnDefaults()
@@ -1214,11 +1189,11 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    break;
 	case 'Z': case 'z':
 	    if (!m_View->IsExtendedElevation())
-		OnSpeedUp(e.GetModifiers() == wxMOD_SHIFT);
+		m_View->RotateFaster(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'X': case 'x':
 	    if (!m_View->IsExtendedElevation())
-		OnSlowDown(e.GetModifiers() == wxMOD_SHIFT);
+		m_View->RotateSlower(e.GetModifiers() == wxMOD_SHIFT);
 	    break;
 	case 'R': case 'r':
 	    if (!m_View->IsExtendedElevation())

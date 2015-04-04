@@ -566,11 +566,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_SET_FOCUS(MainFrm::OnSetFocus)
 
     EVT_MENU(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotation)
-    EVT_MENU(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUp)
-    EVT_MENU(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDown)
     EVT_MENU(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotation)
-    EVT_MENU(menu_ROTATION_STEP_CCW, MainFrm::OnStepOnceAnticlockwise)
-    EVT_MENU(menu_ROTATION_STEP_CW, MainFrm::OnStepOnceClockwise)
     EVT_MENU(menu_ORIENT_MOVE_NORTH, MainFrm::OnMoveNorth)
     EVT_MENU(menu_ORIENT_MOVE_EAST, MainFrm::OnMoveEast)
     EVT_MENU(menu_ORIENT_MOVE_SOUTH, MainFrm::OnMoveSouth)
@@ -629,11 +625,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
-    EVT_UPDATE_UI(menu_ROTATION_SPEED_UP, MainFrm::OnSpeedUpUpdate)
-    EVT_UPDATE_UI(menu_ROTATION_SLOW_DOWN, MainFrm::OnSlowDownUpdate)
     EVT_UPDATE_UI(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotationUpdate)
-    EVT_UPDATE_UI(menu_ROTATION_STEP_CCW, MainFrm::OnStepOnceUpdate)
-    EVT_UPDATE_UI(menu_ROTATION_STEP_CW, MainFrm::OnStepOnceUpdate)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_NORTH, MainFrm::OnMoveNorthUpdate)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_EAST, MainFrm::OnMoveEastUpdate)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_SOUTH, MainFrm::OnMoveSouthUpdate)
@@ -840,13 +832,7 @@ void MainFrm::CreateMenuBar()
      * this group.  Tickable menu item which toggles auto rotation */
     rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*Au&to-Rotate\tSpace*/231));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_SPEED_UP, wmsg(/*Speed &Up*/232));
-    rotmenu->Append(menu_ROTATION_SLOW_DOWN, wmsg(/*Slow &Down*/233));
-    rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_REVERSE, wmsg(/*&Reverse Direction*/234));
-    rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_STEP_CCW, wmsg(/*Step Once &Anticlockwise*/235));
-    rotmenu->Append(menu_ROTATION_STEP_CW, wmsg(/*Step Once &Clockwise*/236));
 
     wxMenu* orientmenu = new wxMenu;
     orientmenu->Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North*/240));
