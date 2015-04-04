@@ -1,3 +1,8 @@
+Sat Apr 04 03:17:32 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Render terrain as a transparent mesh of
+	  triangles.
+
 Fri Apr 03 04:26:34 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Test with the void-filled 3-arc second SRTM data.

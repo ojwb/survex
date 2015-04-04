@@ -242,6 +242,8 @@ private:
 
     ZoomBox zoombox;
 
+    size_t n_tris;
+
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
 			       Double factor);
@@ -266,6 +268,8 @@ private:
     void GenerateDisplayList();
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
+    void DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Vector3 & c);
+    void DrawTerrain();
     void GenerateDisplayListShadow();
     void GenerateBlobsDisplayList();
 

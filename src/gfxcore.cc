@@ -164,7 +164,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     pres_speed(0.0),
     movie(NULL),
     current_cursor(GfxCore::CURSOR_DEFAULT),
-    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD))
+    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD)),
+    n_tris(0)
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
@@ -2348,158 +2349,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_SHADOW:
 	    GenerateDisplayListShadow();
 	    break;
-	case LIST_TERRAIN: {
-	    static short * bil = NULL;
-	    static unsigned long width, height;
-	    static double o_x, o_y, step_x, step_y;
-	    static long nodata_value;
-	    if (!bil) {
-		size_t size;
-		//int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
-		int fd = open("/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip", O_RDONLY);
-		if (fd < 0) {
-		    wxMessageBox(wxT("Failed to open DEM zip"));
-		    ToggleTerrain();
-		    return;
-		}
-		wxZipEntry * ze_bil = NULL;
-		wxFileInputStream fs(fd);
-		wxZipInputStream zs(fs);
-		wxZipEntry * ze;
-		while ((ze = zs.GetNextEntry()) != NULL) {
-		    if (!ze->IsDir()) {
-			const wxString & name = ze->GetName();
-			if (!ze_bil && name.EndsWith(wxT(".bil"))) {
-			    ze_bil = ze;
-			    continue;
-			}
-
-			if (name.EndsWith(wxT(".hdr"))) {
-			    unsigned long nbits;
-			    while (!zs.Eof()) {
-				wxString line;
-				int ch;
-				while ((ch = zs.GetC()) != wxEOF) {
-				    if (ch == '\n' || ch == '\r') break;
-				    line += wxChar(ch);
-				}
-#define CHECK(X, COND) \
-    } else if (line.StartsWith(wxT(X" "))) { \
-	size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
-	if (v == line.npos || !(COND)) { \
-	    err += wxT("Unexpected value for "X); \
-	}
-				wxString err;
-				unsigned long dummy;
-				if (false) {
-				CHECK("BYTEORDER", line[v] == 'I')
-				CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
-				CHECK("NROWS", line.substr(v).ToCULong(&width))
-				CHECK("NCOLS", line.substr(v).ToCULong(&height))
-				CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
-				CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
-				//: BANDROWBYTES   7202
-				//: TOTALROWBYTES  7202
-				CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
-				CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
-				CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
-				CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
-				CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
-				CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
-				}
-				if (!err.empty()) {
-				    wxMessageBox(err);
-				}
-			    }
-			    size = ((nbits + 7) / 8) * width * height;
-			    bil = new short[size];
-			} else if (name.EndsWith(wxT(".prj"))) {
-			    //FIXME: check this matches the datum string we use
-			    //Projection    GEOGRAPHIC
-			    //Datum         WGS84
-			    //Zunits        METERS
-			    //Units         DD
-			    //Spheroid      WGS84
-			    //Xshift        0.0000000000
-			    //Yshift        0.0000000000
-			    //Parameters
-			}
-		    }
-		    delete ze;
-		}
-		if (ze_bil && zs.OpenEntry(*ze_bil)) {
-#if wxCHECK_VERSION(2,9,5)
-		    if (!zs.ReadAll(bil, size)) {
-		        wxMessageBox(wxT("Failed to read terrain data"));
-		    }
-#else
-		    char * p = reinterpret_cast<char *>(bil);
-		    while (size) {
-			zs.Read(p, size);
-			size_t c = zs.LastRead();
-			if (c == 0) {
-			    wxMessageBox(wxT("Failed to read terrain data"));
-			    break;
-			}
-			p += c;
-			size -= c;
-		    }
-#endif
-		}
-		delete ze_bil;
-	    }
-	    if (!bil) {
-		break;
-	    }
-#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
-	    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
-	    if (!pj_in) {
-		fatalerror(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
-	    }
-	    static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
-	    if (!pj_out) {
-		fatalerror(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
-	    }
-	    size_t n_x = 0;
-	    SetAlpha(0.3);
-	    SetColour(col_WHITE);
-	    const Vector3 & off = m_Parent->GetOffset();
-	    for (size_t x = 0; x < width; ++x) {
-		double X_ = (o_x + x * step_x) * DEG_TO_RAD;
-		bool in_line = false;
-		for (size_t y = 0; y < height; ++y) {
-		    double Z = bil[x + y * width];
-		    if (Z == nodata_value) {
-			if (in_line) {
-			    EndPolyline();
-			    in_line = false;
-			}
-			continue;
-		    }
-		    double X = X_;
-		    double Y = (o_y - y * step_y) * DEG_TO_RAD;
-		    pj_transform(pj_in, pj_out, 1, 1, &X, &Y, &Z);
-		    X -= off.GetX();
-		    Y -= off.GetY();
-		    double dist_2 = sqrd(X) + sqrd(Y);
-		    if (dist_2 < sqrd(8000.0)) {
-			Z -= off.GetZ();
-			if (!in_line) {
-			    in_line = true;
-			    BeginPolyline();
-			}
-			PlaceVertex(X, Y, Z);
-			++n_x;
-		    }
-		}
-		if (in_line) {
-		    EndPolyline();
-		}
-	    }
-	    SetAlpha(1.0);
-	    printf("%d DEM points drawn\n", n_x);
+	case LIST_TERRAIN:
+	    DrawTerrain();
 	    break;
-	}
 	default:
 	    assert(false);
 	    break;
@@ -2574,6 +2426,223 @@ void GfxCore::GenerateDisplayListShadow()
 	AddPolylineShadow(*trav);
 	++trav;
     }
+}
+
+void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Vector3 & c)
+{
+    Vector3 n = (b - a) * (c - a);
+    n.normalise();
+    Double factor = dot(n, light) * .95 + .05;
+    SetColour(col_WHITE, factor);
+    PlaceVertex(a);
+    PlaceVertex(b);
+    PlaceVertex(c);
+    ++n_tris;
+}
+
+void GfxCore::DrawTerrain()
+{
+    static short * bil = NULL;
+    static unsigned long width, height;
+    static double o_x, o_y, step_x, step_y;
+    static long nodata_value;
+    if (!bil) {
+	size_t size;
+	int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
+	//int fd = open("/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip", O_RDONLY);
+	if (fd < 0) {
+	    wxMessageBox(wxT("Failed to open DEM zip"));
+	    ToggleTerrain();
+	    return;
+	}
+	wxZipEntry * ze_bil = NULL;
+	wxFileInputStream fs(fd);
+	wxZipInputStream zs(fs);
+	wxZipEntry * ze;
+	while ((ze = zs.GetNextEntry()) != NULL) {
+	    if (!ze->IsDir()) {
+		const wxString & name = ze->GetName();
+		if (!ze_bil && name.EndsWith(wxT(".bil"))) {
+		    ze_bil = ze;
+		    continue;
+		}
+
+		if (name.EndsWith(wxT(".hdr"))) {
+		    unsigned long nbits;
+		    while (!zs.Eof()) {
+			wxString line;
+			int ch;
+			while ((ch = zs.GetC()) != wxEOF) {
+			    if (ch == '\n' || ch == '\r') break;
+			    line += wxChar(ch);
+			}
+#define CHECK(X, COND) \
+} else if (line.StartsWith(wxT(X" "))) { \
+size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
+if (v == line.npos || !(COND)) { \
+    err += wxT("Unexpected value for "X); \
+}
+			wxString err;
+			unsigned long dummy;
+			if (false) {
+			CHECK("BYTEORDER", line[v] == 'I')
+			CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
+			CHECK("NROWS", line.substr(v).ToCULong(&width))
+			CHECK("NCOLS", line.substr(v).ToCULong(&height))
+			CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
+			CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
+			//: BANDROWBYTES   7202
+			//: TOTALROWBYTES  7202
+			CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
+			CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
+			CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
+			CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
+			CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
+			CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
+			}
+			if (!err.empty()) {
+			    wxMessageBox(err);
+			}
+		    }
+		    size = ((nbits + 7) / 8) * width * height;
+		    bil = new short[size];
+		} else if (name.EndsWith(wxT(".prj"))) {
+		    //FIXME: check this matches the datum string we use
+		    //Projection    GEOGRAPHIC
+		    //Datum         WGS84
+		    //Zunits        METERS
+		    //Units         DD
+		    //Spheroid      WGS84
+		    //Xshift        0.0000000000
+		    //Yshift        0.0000000000
+		    //Parameters
+		}
+	    }
+	    delete ze;
+	}
+	if (ze_bil && zs.OpenEntry(*ze_bil)) {
+#if wxCHECK_VERSION(2,9,5)
+	    if (!zs.ReadAll(bil, size)) {
+		wxMessageBox(wxT("Failed to read terrain data"));
+	    }
+#else
+	    char * p = reinterpret_cast<char *>(bil);
+	    while (size) {
+		zs.Read(p, size);
+		size_t c = zs.LastRead();
+		if (c == 0) {
+		    wxMessageBox(wxT("Failed to read terrain data"));
+		    break;
+		}
+		p += c;
+		size -= c;
+	    }
+#endif
+	}
+	delete ze_bil;
+    }
+    if (!bil) {
+	return;
+    }
+    // Draw terrain to twice the extent, or at least 1km.
+    double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
+#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
+    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
+    if (!pj_in) {
+	fatalerror(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
+    }
+    static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
+    if (!pj_out) {
+	fatalerror(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
+    }
+    n_tris = 0;
+    SetAlpha(0.3);
+    BeginTriangles();
+    const Vector3 & off = m_Parent->GetOffset();
+    vector<Vector3> prevcol(height + 1);
+    for (size_t x = 0; x < width; ++x) {
+	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
+	Vector3 prev;
+	for (size_t y = 0; y < height; ++y) {
+	    double Z = bil[x + y * width];
+	    Vector3 pt;
+	    if (Z == nodata_value) {
+		pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+	    } else {
+		double X = X_;
+		double Y = (o_y - y * step_y) * DEG_TO_RAD;
+		pj_transform(pj_in, pj_out, 1, 1, &X, &Y, &Z);
+		pt = Vector3(X, Y, Z) - off;
+		double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
+		if (dist_2 > r_sqrd) {
+		    pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+		}
+	    }
+	    if (x > 0 && y > 0) {
+		const Vector3 & a = prevcol[y - 1];
+		const Vector3 & b = prevcol[y];
+		// If all points are valid, split the quadrilateral into
+		// triangles along the shorter 3D diagonal, which typically
+		// looks better:
+		//
+		//               ----->
+		//     prev---a    x     prev---a
+		//   |   |P  /|            |\  S|
+		// y |   |  / |    or      | \  |
+		//   V   | /  |            |  \ |
+		//       |/  Q|            |R  \|
+		//       b----pt           b----pt
+		//
+		//       FORWARD           BACKWARD
+		enum { NONE = 0, P = 1, Q = 2, R = 4, S = 8, ALL = P|Q|R|S };
+		int valid =
+		    ((prev.GetZ() != DBL_MAX)) |
+		    ((a.GetZ() != DBL_MAX) << 1) |
+		    ((b.GetZ() != DBL_MAX) << 2) |
+		    ((pt.GetZ() != DBL_MAX) << 3);
+		static const int tris_map[16] = {
+		    NONE, // nothing valid
+		    NONE, // prev
+		    NONE, // a
+		    NONE, // a, prev
+		    NONE, // b
+		    NONE, // b, prev
+		    NONE, // b, a
+		    P, // b, a, prev
+		    NONE, // pt
+		    NONE, // pt, prev
+		    NONE, // pt, a
+		    S, // pt, a, prev
+		    NONE, // pt, b
+		    R, // pt, b, prev
+		    Q, // pt, b, a
+		    ALL, // pt, b, a, prev
+		};
+		int tris = tris_map[valid];
+		if (tris == ALL) {
+		    // All points valid.
+		    if ((a - b).magnitude() < (prev - pt).magnitude()) {
+			tris = P | Q;
+		    } else {
+			tris = R | S;
+		    }
+		}
+		if (tris & P)
+		    DrawTerrainTriangle(a, prev, b);
+		if (tris & Q)
+		    DrawTerrainTriangle(a, b, pt);
+		if (tris & R)
+		    DrawTerrainTriangle(pt, prev, b);
+		if (tris & S)
+		    DrawTerrainTriangle(a, prev, pt);
+	    }
+	    prev = prevcol[y];
+	    prevcol[y].assign(pt);
+	}
+    }
+    EndTriangles();
+    SetAlpha(1.0);
+    printf("%d DEM triangles drawn\n", n_tris);
 }
 
 // Plot blobs.
