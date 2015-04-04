@@ -2442,7 +2442,7 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 
 void GfxCore::DrawTerrain()
 {
-    static short * bil = NULL;
+    static unsigned short * bil = NULL;
     static unsigned long width, height;
     static double o_x, o_y, step_x, step_y;
     static long nodata_value;
@@ -2505,7 +2505,7 @@ if (v == line.npos || !(COND)) { \
 			}
 		    }
 		    size = ((nbits + 7) / 8) * width * height;
-		    bil = new short[size];
+		    bil = new unsigned short[size];
 		} else if (name.EndsWith(wxT(".prj"))) {
 		    //FIXME: check this matches the datum string we use
 		    //Projection    GEOGRAPHIC
@@ -2564,7 +2564,15 @@ if (v == line.npos || !(COND)) { \
 	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
 	Vector3 prev;
 	for (size_t y = 0; y < height; ++y) {
-	    double Z = bil[x + y * width];
+	    unsigned short elev = bil[x + y * width];
+#ifdef WORDS_BIGENDIAN
+# ifdef __GNUC__
+	    elev = __builtin_bswap16(elev);
+# else
+	    elev = (elev >> 8) | (elev << 8);
+# endif
+#endif
+	    double Z = (short)elev;
 	    Vector3 pt;
 	    if (Z == nodata_value) {
 		pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
