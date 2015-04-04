@@ -2445,6 +2445,9 @@ void GfxCore::DrawTerrain()
     static long nodata_value;
     if (!bil) {
 	size_t size;
+	// Default is to not skip any bytes.
+	unsigned long skipbytes = 0;
+
 	int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
 	//int fd = open("/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip", O_RDONLY);
 	if (fd < 0) {
@@ -2498,6 +2501,7 @@ if (v == line.npos || !(COND)) { \
 			CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
 			CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
 			CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
+			CHECK("SKIPBYTES", line.substr(v).ToCULong(&skipbytes))
 			}
 			if (!err.empty()) {
 			    wxMessageBox(err);
@@ -2520,6 +2524,22 @@ if (v == line.npos || !(COND)) { \
 	    delete ze;
 	}
 	if (ze_bil && zs.OpenEntry(*ze_bil)) {
+	    if (skipbytes) {
+		if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
+		    while (skipbytes) {
+			unsigned long to_read = skipbytes;
+			if (size < to_read) to_read = size;
+			zs.Read(reinterpret_cast<char *>(bil), to_read);
+			size_t c = zs.LastRead();
+			if (c == 0) {
+			    wxMessageBox(wxT("Failed to read terrain data"));
+			    break;
+			}
+			skipbytes -= c;
+		    }
+		}
+	    }
+
 #if wxCHECK_VERSION(2,9,5)
 	    if (!zs.ReadAll(bil, size)) {
 		wxMessageBox(wxT("Failed to read terrain data"));
