@@ -242,6 +242,11 @@ private:
 
     ZoomBox zoombox;
 
+    // DEM:
+    unsigned short * bil;
+    unsigned long dem_width, dem_height;
+    double o_x, o_y, step_x, step_y;
+    long nodata_value;
     size_t n_tris;
 
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
@@ -268,6 +273,7 @@ private:
     void GenerateDisplayList();
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
+    bool LoadDEM(const wxString & file);
     void DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Vector3 & c);
     void DrawTerrain();
     void GenerateDisplayListShadow();

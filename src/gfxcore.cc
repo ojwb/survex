@@ -162,6 +162,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     movie(NULL),
     current_cursor(GfxCore::CURSOR_DEFAULT),
     sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD)),
+    bil(NULL),
     n_tris(0)
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
@@ -2425,6 +2426,124 @@ void GfxCore::GenerateDisplayListShadow()
     }
 }
 
+bool GfxCore::LoadDEM(const wxString & file)
+{
+    size_t size = 0;
+    // Default is to not skip any bytes.
+    unsigned long skipbytes = 0;
+
+    int fd = open(file.mb_str(), O_RDONLY);
+    if (fd < 0) {
+	wxMessageBox(wxT("Failed to open DEM zip"));
+	return false;
+    }
+    wxZipEntry * ze_bil = NULL;
+    wxFileInputStream fs(fd);
+    wxZipInputStream zs(fs);
+    wxZipEntry * ze;
+    while ((ze = zs.GetNextEntry()) != NULL) {
+	if (!ze->IsDir()) {
+	    const wxString & name = ze->GetName();
+	    if (!ze_bil && name.EndsWith(wxT(".bil"))) {
+		ze_bil = ze;
+		continue;
+	    }
+
+	    if (name.EndsWith(wxT(".hdr"))) {
+		unsigned long nbits;
+		while (!zs.Eof()) {
+		    wxString line;
+		    int ch;
+		    while ((ch = zs.GetC()) != wxEOF) {
+			if (ch == '\n' || ch == '\r') break;
+			line += wxChar(ch);
+		    }
+#define CHECK(X, COND) \
+} else if (line.StartsWith(wxT(X" "))) { \
+size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
+if (v == line.npos || !(COND)) { \
+err += wxT("Unexpected value for "X); \
+}
+		    wxString err;
+		    unsigned long dummy;
+		    if (false) {
+		    // I = little-endian; M = big-endian
+		    CHECK("BYTEORDER", line[v] == 'I')
+		    CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
+		    CHECK("NROWS", line.substr(v).ToCULong(&dem_width))
+		    CHECK("NCOLS", line.substr(v).ToCULong(&dem_height))
+		    CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
+		    CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
+		    //: BANDROWBYTES   7202
+		    //: TOTALROWBYTES  7202
+		    // PIXELTYPE is a GDAL extension, so may not be present.
+		    CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
+		    CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
+		    CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
+		    CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
+		    CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
+		    CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
+		    CHECK("SKIPBYTES", line.substr(v).ToCULong(&skipbytes))
+		    }
+		    if (!err.empty()) {
+			wxMessageBox(err);
+		    }
+		}
+		size = ((nbits + 7) / 8) * dem_width * dem_height;
+		bil = new unsigned short[size];
+	    } else if (name.EndsWith(wxT(".prj"))) {
+		//FIXME: check this matches the datum string we use
+		//Projection    GEOGRAPHIC
+		//Datum         WGS84
+		//Zunits        METERS
+		//Units         DD
+		//Spheroid      WGS84
+		//Xshift        0.0000000000
+		//Yshift        0.0000000000
+		//Parameters
+	    }
+	}
+	delete ze;
+    }
+    if (ze_bil && zs.OpenEntry(*ze_bil)) {
+	if (skipbytes) {
+	    if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
+		while (skipbytes) {
+		    unsigned long to_read = skipbytes;
+		    if (size < to_read) to_read = size;
+		    zs.Read(reinterpret_cast<char *>(bil), to_read);
+		    size_t c = zs.LastRead();
+		    if (c == 0) {
+			wxMessageBox(wxT("Failed to read terrain data"));
+			break;
+		    }
+		    skipbytes -= c;
+		}
+	    }
+	}
+
+#if wxCHECK_VERSION(2,9,5)
+	if (!zs.ReadAll(bil, size)) {
+	    wxMessageBox(wxT("Failed to read terrain data"));
+	}
+#else
+	char * p = reinterpret_cast<char *>(bil);
+	while (size) {
+	    zs.Read(p, size);
+	    size_t c = zs.LastRead();
+	    if (c == 0) {
+		wxMessageBox(wxT("Failed to read terrain data"));
+		break;
+	    }
+	    p += c;
+	    size -= c;
+	}
+#endif
+    }
+    delete ze_bil;
+    return true;
+}
+
 void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Vector3 & c)
 {
     Vector3 n = (b - a) * (c - a);
@@ -2439,129 +2558,13 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 
 void GfxCore::DrawTerrain()
 {
-    static unsigned short * bil = NULL;
-    static unsigned long width, height;
-    static double o_x, o_y, step_x, step_y;
-    static long nodata_value;
     if (!bil) {
-	size_t size;
-	// Default is to not skip any bytes.
-	unsigned long skipbytes = 0;
-
-	int fd = open("/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip", O_RDONLY);
-	//int fd = open("/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip", O_RDONLY);
-	if (fd < 0) {
-	    wxMessageBox(wxT("Failed to open DEM zip"));
+	//"/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip"
+	//"/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip"
+	if (!LoadDEM("/home/olly/git/survex/DEM/N47E013_1arc.zip")) {
 	    ToggleTerrain();
 	    return;
 	}
-	wxZipEntry * ze_bil = NULL;
-	wxFileInputStream fs(fd);
-	wxZipInputStream zs(fs);
-	wxZipEntry * ze;
-	while ((ze = zs.GetNextEntry()) != NULL) {
-	    if (!ze->IsDir()) {
-		const wxString & name = ze->GetName();
-		if (!ze_bil && name.EndsWith(wxT(".bil"))) {
-		    ze_bil = ze;
-		    continue;
-		}
-
-		if (name.EndsWith(wxT(".hdr"))) {
-		    unsigned long nbits;
-		    while (!zs.Eof()) {
-			wxString line;
-			int ch;
-			while ((ch = zs.GetC()) != wxEOF) {
-			    if (ch == '\n' || ch == '\r') break;
-			    line += wxChar(ch);
-			}
-#define CHECK(X, COND) \
-} else if (line.StartsWith(wxT(X" "))) { \
-size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
-if (v == line.npos || !(COND)) { \
-    err += wxT("Unexpected value for "X); \
-}
-			wxString err;
-			unsigned long dummy;
-			if (false) {
-			// I = little-endian; M = big-endian
-			CHECK("BYTEORDER", line[v] == 'I')
-			CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
-			CHECK("NROWS", line.substr(v).ToCULong(&width))
-			CHECK("NCOLS", line.substr(v).ToCULong(&height))
-			CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
-			CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
-			//: BANDROWBYTES   7202
-			//: TOTALROWBYTES  7202
-			// PIXELTYPE is a GDAL extension, so may not be present.
-			CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
-			CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
-			CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
-			CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
-			CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
-			CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
-			CHECK("SKIPBYTES", line.substr(v).ToCULong(&skipbytes))
-			}
-			if (!err.empty()) {
-			    wxMessageBox(err);
-			}
-		    }
-		    size = ((nbits + 7) / 8) * width * height;
-		    bil = new unsigned short[size];
-		} else if (name.EndsWith(wxT(".prj"))) {
-		    //FIXME: check this matches the datum string we use
-		    //Projection    GEOGRAPHIC
-		    //Datum         WGS84
-		    //Zunits        METERS
-		    //Units         DD
-		    //Spheroid      WGS84
-		    //Xshift        0.0000000000
-		    //Yshift        0.0000000000
-		    //Parameters
-		}
-	    }
-	    delete ze;
-	}
-	if (ze_bil && zs.OpenEntry(*ze_bil)) {
-	    if (skipbytes) {
-		if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
-		    while (skipbytes) {
-			unsigned long to_read = skipbytes;
-			if (size < to_read) to_read = size;
-			zs.Read(reinterpret_cast<char *>(bil), to_read);
-			size_t c = zs.LastRead();
-			if (c == 0) {
-			    wxMessageBox(wxT("Failed to read terrain data"));
-			    break;
-			}
-			skipbytes -= c;
-		    }
-		}
-	    }
-
-#if wxCHECK_VERSION(2,9,5)
-	    if (!zs.ReadAll(bil, size)) {
-		wxMessageBox(wxT("Failed to read terrain data"));
-	    }
-#else
-	    char * p = reinterpret_cast<char *>(bil);
-	    while (size) {
-		zs.Read(p, size);
-		size_t c = zs.LastRead();
-		if (c == 0) {
-		    wxMessageBox(wxT("Failed to read terrain data"));
-		    break;
-		}
-		p += c;
-		size -= c;
-	    }
-#endif
-	}
-	delete ze_bil;
-    }
-    if (!bil) {
-	return;
     }
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
@@ -2578,12 +2581,12 @@ if (v == line.npos || !(COND)) { \
     SetAlpha(0.3);
     BeginTriangles();
     const Vector3 & off = m_Parent->GetOffset();
-    vector<Vector3> prevcol(height + 1);
-    for (size_t x = 0; x < width; ++x) {
+    vector<Vector3> prevcol(dem_height + 1);
+    for (size_t x = 0; x < dem_width; ++x) {
 	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
 	Vector3 prev;
-	for (size_t y = 0; y < height; ++y) {
-	    unsigned short elev = bil[x + y * width];
+	for (size_t y = 0; y < dem_height; ++y) {
+	    unsigned short elev = bil[x + y * dem_width];
 #ifdef WORDS_BIGENDIAN
 # ifdef __GNUC__
 	    elev = __builtin_bswap16(elev);

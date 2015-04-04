@@ -1,3 +1,8 @@
+Sat Apr 04 23:06:26 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Factor out DEM loading into a separate
+	  method.
+
 Sat Apr 04 22:30:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Draw terrain before crosses/blobs.
