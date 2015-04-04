@@ -47,9 +47,6 @@
 #include <proj_api.h>
 #include <sys/mman.h>
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define MAX3(a, b, c) ((a) > (b) ? MAX(a, c) : MAX(b, c))
-
 // Values for m_SwitchingTo
 #define PLAN 1
 #define ELEVATION 2
@@ -2485,6 +2482,7 @@ if (v == line.npos || !(COND)) { \
 			wxString err;
 			unsigned long dummy;
 			if (false) {
+			// I = little-endian; M = big-endian
 			CHECK("BYTEORDER", line[v] == 'I')
 			CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
 			CHECK("NROWS", line.substr(v).ToCULong(&width))
@@ -2493,6 +2491,7 @@ if (v == line.npos || !(COND)) { \
 			CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
 			//: BANDROWBYTES   7202
 			//: TOTALROWBYTES  7202
+			// PIXELTYPE is a GDAL extension, so may not be present.
 			CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
 			CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
 			CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))

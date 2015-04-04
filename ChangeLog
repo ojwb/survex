@@ -1,3 +1,7 @@
+Sat Apr 04 21:58:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Remove unused macros.
+
 Sat Apr 04 13:04:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Fix DEM reading for big-endian platforms.
