@@ -375,14 +375,14 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(LIST_GRID);
 	}
 
+	if (m_Terrain) {
+	    DrawList(LIST_TERRAIN);
+	}
+
 	DrawList(LIST_BLOBS);
 
 	if (m_Crosses) {
 	    DrawList(LIST_CROSSES);
-	}
-
-	if (m_Terrain) {
-	    DrawList(LIST_TERRAIN);
 	}
 
 	SetIndicatorTransform();

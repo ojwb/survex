@@ -1,3 +1,7 @@
+Sat Apr 04 22:30:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Draw terrain before crosses/blobs.
+
 Sat Apr 04 22:01:29 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Support 'SKIPBYTES' in the DEM data.
