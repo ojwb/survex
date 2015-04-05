@@ -1,3 +1,7 @@
+Sun Apr 05 09:49:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Fix reversed check for endian-ness of .bil files.
+
 Sun Apr 05 09:48:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Plot the terrain with a

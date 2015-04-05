@@ -2503,7 +2503,7 @@ err += wxT("Unexpected value for "X); \
 		    unsigned long dummy;
 		    if (false) {
 		    // I = little-endian; M = big-endian
-		    CHECK("BYTEORDER", (bigendian = (line[v] != 'M')) || line[v] == 'I')
+		    CHECK("BYTEORDER", (bigendian = (line[v] == 'M')) || line[v] == 'I')
 		    CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
 		    CHECK("NROWS", line.substr(v).ToCULong(&dem_width))
 		    CHECK("NCOLS", line.substr(v).ToCULong(&dem_height))
