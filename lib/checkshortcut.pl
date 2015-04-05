@@ -35,6 +35,7 @@ for my $lang (@ARGV) {
 	    my ($acc) = ($msg[$_] =~ /\&([\x00-\x7f]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/);
 	    if (!defined $acc) {
 		print "Lang $lang : message $_ '$msg[$_]' has no shortcut\n";
+		$bad = 1;
 	    } else {
 		$acc = lc $acc;
 		if (exists $sc{$acc}) {

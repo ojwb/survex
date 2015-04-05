@@ -1,3 +1,7 @@
+Sun Apr 05 04:25:32 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/checkshortcut.pl: Treat a missing shortcut as an error too.
+
 Sun Apr 05 04:24:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/checkshortcut.pl: If there's a shortcut clash, report letters
