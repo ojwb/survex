@@ -792,11 +792,6 @@ void GUIControl::OnHigherViewpoint(bool accel)
     m_View->ForceRefresh();
 }
 
-void GUIControl::OnHigherViewpointUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && m_View->CanRaiseViewpoint() && !m_View->IsExtendedElevation());
-}
-
 void GUIControl::OnLowerViewpoint(bool accel)
 {
     // Lower the viewpoint.
@@ -806,11 +801,6 @@ void GUIControl::OnLowerViewpoint(bool accel)
 	m_View->TiltCave(accel ? 5.0 * ROTATE_STEP : ROTATE_STEP);
     }
     m_View->ForceRefresh();
-}
-
-void GUIControl::OnLowerViewpointUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData() && m_View->CanLowerViewpoint() && !m_View->IsExtendedElevation());
 }
 
 void GUIControl::OnPlan()
@@ -832,22 +822,12 @@ void GUIControl::OnShiftDisplayDown(bool accel)
 	m_View->TranslateCave(0, accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT);
 }
 
-void GUIControl::OnShiftDisplayDownUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData());
-}
-
 void GUIControl::OnShiftDisplayLeft(bool accel)
 {
     if (m_View->GetPerspective())
 	m_View->MoveViewer(0, 0, accel ? 5 * FLYFREE_SHIFT : FLYFREE_SHIFT);
     else
 	m_View->TranslateCave(accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT, 0);
-}
-
-void GUIControl::OnShiftDisplayLeftUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnShiftDisplayRight(bool accel)
@@ -858,22 +838,12 @@ void GUIControl::OnShiftDisplayRight(bool accel)
 	m_View->TranslateCave(accel ? 5 * DISPLAY_SHIFT : DISPLAY_SHIFT, 0);
 }
 
-void GUIControl::OnShiftDisplayRightUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData());
-}
-
 void GUIControl::OnShiftDisplayUp(bool accel)
 {
     if (m_View->GetPerspective())
 	m_View->MoveViewer(0, accel ? -5 * FLYFREE_SHIFT : -FLYFREE_SHIFT, 0);
     else
 	m_View->TranslateCave(0, accel ? -5 * DISPLAY_SHIFT : -DISPLAY_SHIFT);
-}
-
-void GUIControl::OnShiftDisplayUpUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnZoomIn(bool accel)
@@ -888,11 +858,6 @@ void GUIControl::OnZoomIn(bool accel)
     }
 }
 
-void GUIControl::OnZoomInUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData());
-}
-
 void GUIControl::OnZoomOut(bool accel)
 {
     // Decrease the scale.
@@ -903,11 +868,6 @@ void GUIControl::OnZoomOut(bool accel)
 	m_View->SetScale(m_View->GetScale() / (accel ? 1.1236 : 1.06));
 	m_View->ForceRefresh();
     }
-}
-
-void GUIControl::OnZoomOutUpdate(wxUpdateUIEvent& cmd)
-{
-    cmd.Enable(m_View->HasData());
 }
 
 void GUIControl::OnToggleScalebar()

@@ -571,16 +571,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_ORIENT_MOVE_EAST, MainFrm::OnMoveEast)
     EVT_MENU(menu_ORIENT_MOVE_SOUTH, MainFrm::OnMoveSouth)
     EVT_MENU(menu_ORIENT_MOVE_WEST, MainFrm::OnMoveWest)
-    EVT_MENU(menu_ORIENT_SHIFT_LEFT, MainFrm::OnShiftDisplayLeft)
-    EVT_MENU(menu_ORIENT_SHIFT_RIGHT, MainFrm::OnShiftDisplayRight)
-    EVT_MENU(menu_ORIENT_SHIFT_UP, MainFrm::OnShiftDisplayUp)
-    EVT_MENU(menu_ORIENT_SHIFT_DOWN, MainFrm::OnShiftDisplayDown)
     EVT_MENU(menu_ORIENT_PLAN, MainFrm::OnPlan)
     EVT_MENU(menu_ORIENT_ELEVATION, MainFrm::OnElevation)
-    EVT_MENU(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpoint)
-    EVT_MENU(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpoint)
-    EVT_MENU(wxID_ZOOM_IN, MainFrm::OnZoomIn)
-    EVT_MENU(wxID_ZOOM_OUT, MainFrm::OnZoomOut)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
     EVT_MENU(menu_SPLAYS_HIDE, MainFrm::OnHideSplays)
@@ -630,16 +622,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_EAST, MainFrm::OnMoveEastUpdate)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_SOUTH, MainFrm::OnMoveSouthUpdate)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_WEST, MainFrm::OnMoveWestUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_SHIFT_LEFT, MainFrm::OnShiftDisplayLeftUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_SHIFT_RIGHT, MainFrm::OnShiftDisplayRightUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_SHIFT_UP, MainFrm::OnShiftDisplayUpUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_SHIFT_DOWN, MainFrm::OnShiftDisplayDownUpdate)
     EVT_UPDATE_UI(menu_ORIENT_PLAN, MainFrm::OnPlanUpdate)
     EVT_UPDATE_UI(menu_ORIENT_ELEVATION, MainFrm::OnElevationUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_HIGHER_VP, MainFrm::OnHigherViewpointUpdate)
-    EVT_UPDATE_UI(menu_ORIENT_LOWER_VP, MainFrm::OnLowerViewpointUpdate)
-    EVT_UPDATE_UI(wxID_ZOOM_IN, MainFrm::OnZoomInUpdate)
-    EVT_UPDATE_UI(wxID_ZOOM_OUT, MainFrm::OnZoomOutUpdate)
     EVT_UPDATE_UI(menu_ORIENT_DEFAULTS, MainFrm::OnDefaultsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SPLAYS, MainFrm::OnSplaysUpdate)
@@ -840,32 +824,8 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
     orientmenu->Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
     orientmenu->AppendSeparator();
-    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
-     * - it should be translated to the terminology that cavers using the
-     * language would use. */
-    orientmenu->Append(menu_ORIENT_SHIFT_LEFT, wmsg(/*Shift Survey &Left*/244));
-    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
-     * - it should be translated to the terminology that cavers using the
-     * language would use. */
-    orientmenu->Append(menu_ORIENT_SHIFT_RIGHT, wmsg(/*Shift Survey &Right*/245));
-    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
-     * - it should be translated to the terminology that cavers using the
-     * language would use. */
-    orientmenu->Append(menu_ORIENT_SHIFT_UP, wmsg(/*Shift Survey &Up*/246));
-    /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
-     * - it should be translated to the terminology that cavers using the
-     * language would use. */
-    orientmenu->Append(menu_ORIENT_SHIFT_DOWN, wmsg(/*Shift Survey &Down*/247));
-    orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
     orientmenu->Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation*/249));
-    orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_HIGHER_VP, wmsg(/*&Higher Viewpoint*/250));
-    orientmenu->Append(menu_ORIENT_LOWER_VP, wmsg(/*L&ower Viewpoint*/251));
-    orientmenu->AppendSeparator();
-    // Default labels for wxID_ZOOM_IN and wxID_ZOOM_OUT don't have accels.
-    orientmenu->Append(wxID_ZOOM_IN, wmsg(/*&Zoom In\t]*/252));
-    orientmenu->Append(wxID_ZOOM_OUT, wmsg(/*Zoo&m Out\t[*/253));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_DEFAULTS, wmsg(/*Restore De&fault View*/254));
 

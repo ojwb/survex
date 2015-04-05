@@ -145,15 +145,7 @@ public:
     void OnReverseDirectionOfRotationUpdate(wxUpdateUIEvent&);
     void OnDefaultsUpdate(wxUpdateUIEvent&);
     void OnElevationUpdate(wxUpdateUIEvent&);
-    void OnHigherViewpointUpdate(wxUpdateUIEvent&);
-    void OnLowerViewpointUpdate(wxUpdateUIEvent&);
     void OnPlanUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayDownUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayLeftUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayRightUpdate(wxUpdateUIEvent&);
-    void OnShiftDisplayUpUpdate(wxUpdateUIEvent&);
-    void OnZoomInUpdate(wxUpdateUIEvent&);
-    void OnZoomOutUpdate(wxUpdateUIEvent&);
     void OnToggleScalebarUpdate(wxUpdateUIEvent&);
     void OnToggleColourKeyUpdate(wxUpdateUIEvent&);
     void OnViewCompassUpdate(wxUpdateUIEvent&);

@@ -79,14 +79,8 @@ enum {
     menu_ORIENT_MOVE_EAST,
     menu_ORIENT_MOVE_SOUTH,
     menu_ORIENT_MOVE_WEST,
-    menu_ORIENT_SHIFT_LEFT,
-    menu_ORIENT_SHIFT_RIGHT,
-    menu_ORIENT_SHIFT_UP,
-    menu_ORIENT_SHIFT_DOWN,
     menu_ORIENT_PLAN,
     menu_ORIENT_ELEVATION,
-    menu_ORIENT_HIGHER_VP,
-    menu_ORIENT_LOWER_VP,
     menu_ORIENT_DEFAULTS,
     menu_VIEW_SHOW_LEGS,
     menu_VIEW_SPLAYS,
@@ -340,14 +334,6 @@ public:
     void OnMoveWestUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveWestUpdate(event); }
     void OnToggleRotationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleRotationUpdate(event); }
     void OnReverseControlsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnReverseControlsUpdate(event); }
-    void OnHigherViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHigherViewpointUpdate(event); }
-    void OnLowerViewpointUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnLowerViewpointUpdate(event); }
-    void OnShiftDisplayDownUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayDownUpdate(event); }
-    void OnShiftDisplayLeftUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayLeftUpdate(event); }
-    void OnShiftDisplayRightUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayRightUpdate(event); }
-    void OnShiftDisplayUpUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShiftDisplayUpUpdate(event); }
-    void OnZoomInUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnZoomInUpdate(event); }
-    void OnZoomOutUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnZoomOutUpdate(event); }
     void OnToggleScalebarUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleScalebarUpdate(event); }
     void OnToggleColourKeyUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnToggleColourKeyUpdate(event); }
     void OnViewCompassUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnViewCompassUpdate(event); }
@@ -390,14 +376,6 @@ public:
     void OnMoveWest(wxCommandEvent&) { if (m_Control) m_Control->OnMoveWest(); }
     void OnToggleRotation(wxCommandEvent&) { if (m_Control) m_Control->OnToggleRotation(); }
     void OnReverseControls(wxCommandEvent&) { if (m_Control) m_Control->OnReverseControls(); }
-    void OnHigherViewpoint(wxCommandEvent&) { if (m_Control) m_Control->OnHigherViewpoint(); }
-    void OnLowerViewpoint(wxCommandEvent&) { if (m_Control) m_Control->OnLowerViewpoint(); }
-    void OnShiftDisplayDown(wxCommandEvent&) { if (m_Control) m_Control->OnShiftDisplayDown(); }
-    void OnShiftDisplayLeft(wxCommandEvent&) { if (m_Control) m_Control->OnShiftDisplayLeft(); }
-    void OnShiftDisplayRight(wxCommandEvent&) { if (m_Control) m_Control->OnShiftDisplayRight(); }
-    void OnShiftDisplayUp(wxCommandEvent&) { if (m_Control) m_Control->OnShiftDisplayUp(); }
-    void OnZoomIn(wxCommandEvent&) { if (m_Control) m_Control->OnZoomIn(); }
-    void OnZoomOut(wxCommandEvent&) { if (m_Control) m_Control->OnZoomOut(); }
     void OnToggleScalebar(wxCommandEvent&) { if (m_Control) m_Control->OnToggleScalebar(); }
     void OnToggleColourKey(wxCommandEvent&) { if (m_Control) m_Control->OnToggleColourKey(); }
     void OnViewCompass(wxCommandEvent&) { if (m_Control) m_Control->OnViewCompass(); }

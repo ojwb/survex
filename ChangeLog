@@ -1,3 +1,8 @@
+Sun Apr 05 01:25:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Remove actions from 'Orientation' menu which you wouldn't
+	  sanely want to perform from the menu.
+
 Sat Apr 04 23:24:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/: Remove actions from 'Rotation' menu which you wouldn't sanely
