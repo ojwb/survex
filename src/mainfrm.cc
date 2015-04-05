@@ -584,11 +584,11 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_VIEW_SHOW_EXPORTED_PTS, MainFrm::OnShowExportedPts)
     EVT_MENU(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNames)
     EVT_MENU(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNames)
-    EVT_MENU(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
-    EVT_MENU(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDate)
-    EVT_MENU(menu_VIEW_COLOUR_BY_ERROR, MainFrm::OnColourByError)
-    EVT_MENU(menu_VIEW_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradient)
-    EVT_MENU(menu_VIEW_COLOUR_BY_LENGTH, MainFrm::OnColourByLength)
+    EVT_MENU(menu_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
+    EVT_MENU(menu_COLOUR_BY_DATE, MainFrm::OnColourByDate)
+    EVT_MENU(menu_COLOUR_BY_ERROR, MainFrm::OnColourByError)
+    EVT_MENU(menu_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradient)
+    EVT_MENU(menu_COLOUR_BY_LENGTH, MainFrm::OnColourByLength)
     EVT_MENU(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurface)
     EVT_MENU(menu_VIEW_GRID, MainFrm::OnViewGrid)
     EVT_MENU(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBox)
@@ -637,11 +637,12 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_NAMES, MainFrm::OnShowStationNamesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_SURFACE, MainFrm::OnShowSurfaceUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_OVERLAPPING_NAMES, MainFrm::OnDisplayOverlappingNamesUpdate)
-    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
-    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_DATE, MainFrm::OnColourByDateUpdate)
-    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_ERROR, MainFrm::OnColourByErrorUpdate)
-    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradientUpdate)
-    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY_LENGTH, MainFrm::OnColourByLengthUpdate)
+    EVT_UPDATE_UI(menu_VIEW_COLOUR_BY, MainFrm::OnColourByUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_DATE, MainFrm::OnColourByDateUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_ERROR, MainFrm::OnColourByErrorUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradientUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_LENGTH, MainFrm::OnColourByLengthUpdate)
     EVT_UPDATE_UI(menu_VIEW_GRID, MainFrm::OnViewGridUpdate)
     EVT_UPDATE_UI(menu_VIEW_BOUNDING_BOX, MainFrm::OnViewBoundingBoxUpdate)
     EVT_UPDATE_UI(menu_VIEW_PERSPECTIVE, MainFrm::OnViewPerspectiveUpdate)
@@ -875,11 +876,16 @@ void MainFrm::CreateMenuBar()
 
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_GRADIENT, wmsg(/*Colour by Grad&ient*/85));
-    viewmenu->AppendCheckItem(menu_VIEW_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
+
+    wxMenu* colourbymenu = new wxMenu;
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_ERROR, wmsg(/*Colour by &Error*/289));
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
+
+    viewmenu->Append(menu_VIEW_COLOUR_BY, wmsg(/*Colour by*/450), colourbymenu);
+
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, wmsg(/*Highlight &Entrances*/294));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_FIXED_PTS, wmsg(/*Highlight &Fixed Points*/295));

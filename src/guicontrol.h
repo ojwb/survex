@@ -123,6 +123,7 @@ public:
     void OnKeyPress(wxKeyEvent &e);
 
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent&);
+    void OnColourByUpdate(wxUpdateUIEvent&);
     void OnColourByDepthUpdate(wxUpdateUIEvent&);
     void OnColourByDateUpdate(wxUpdateUIEvent&);
     void OnColourByErrorUpdate(wxUpdateUIEvent&);

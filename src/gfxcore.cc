@@ -3836,11 +3836,11 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinColourKey(point)) {
 	// Pop up menu.
 	wxMenu menu;
-	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
-	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
-	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_ERROR, wmsg(/*Colour by E&rror*/289));
-	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_GRADIENT, wmsg(/*Colour by Grad&ient*/85));
-	menu.AppendCheckItem(menu_VIEW_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
+	menu.AppendCheckItem(menu_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
+	menu.AppendCheckItem(menu_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
+	menu.AppendCheckItem(menu_COLOUR_BY_ERROR, wmsg(/*Colour by &Error*/289));
+	menu.AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
+	menu.AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the colour key.
 	 * The "Colour Key" is the thing in aven showing which colour

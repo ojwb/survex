@@ -105,11 +105,12 @@ enum {
     menu_VIEW_FOG,
     menu_VIEW_SMOOTH_LINES,
     menu_VIEW_FULLSCREEN,
-    menu_VIEW_COLOUR_BY_DEPTH,
-    menu_VIEW_COLOUR_BY_DATE,
-    menu_VIEW_COLOUR_BY_ERROR,
-    menu_VIEW_COLOUR_BY_GRADIENT,
-    menu_VIEW_COLOUR_BY_LENGTH,
+    menu_VIEW_COLOUR_BY,
+    menu_COLOUR_BY_DEPTH,
+    menu_COLOUR_BY_DATE,
+    menu_COLOUR_BY_ERROR,
+    menu_COLOUR_BY_GRADIENT,
+    menu_COLOUR_BY_LENGTH,
     menu_IND_COMPASS,
     menu_IND_CLINO,
     menu_IND_COLOUR_KEY,
@@ -312,6 +313,7 @@ public:
     void OnPlanUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnPlanUpdate(event); }
     void OnElevationUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnElevationUpdate(event); }
     void OnDisplayOverlappingNamesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDisplayOverlappingNamesUpdate(event); }
+    void OnColourByUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByUpdate(event); }
     void OnColourByDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDepthUpdate(event); }
     void OnColourByDateUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDateUpdate(event); }
     void OnColourByErrorUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByErrorUpdate(event); }

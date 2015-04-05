@@ -562,6 +562,11 @@ void GUIControl::OnColourByLength()
     }
 }
 
+void GUIControl::OnColourByUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+}
+
 void GUIControl::OnColourByDepthUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData());

@@ -1,3 +1,7 @@
+Sun Apr 05 03:34:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/: Create a "Colour by" submenu of the "View" menu.
+
 Sun Apr 05 03:04:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Add support for reading DEM data from

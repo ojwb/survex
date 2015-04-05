@@ -1965,38 +1965,9 @@ msgstr ""
 msgid "&Overlapping Names"
 msgstr ""
 
-#: ../src/gfxcore.cc:3514
 #: ../src/mainfrm.cc:921
-#: n:292
-msgid "Colour by &Depth"
-msgstr ""
-
-#: ../src/gfxcore.cc:3515
-#: ../src/mainfrm.cc:922
-#: n:293
-msgid "Colour by D&ate"
-msgstr ""
-
-#: ../src/gfxcore.cc:3516
-#: ../src/mainfrm.cc:923
-#: n:289
-msgid "Colour by E&rror"
-msgstr ""
-
-#: ../src/gfxcore.cc:3517
-#: ../src/mainfrm.cc:924
-#: n:85
-msgid "Colour by Grad&ient"
-msgstr ""
-
-#: ../src/gfxcore.cc:3518
-#: ../src/mainfrm.cc:925
-#: n:82
-msgid "Colour by &Length"
-msgstr ""
-
-#: n:448
-msgid "Colour by &Survey"
+#: n:450
+msgid "&Colour by"
 msgstr ""
 
 #: ../src/mainfrm.cc:927
@@ -2058,6 +2029,40 @@ msgstr ""
 #: ../src/mainfrm.cc:953
 #: n:356
 msgid "Full Screen &Mode\tF11"
+msgstr ""
+
+#: ../src/gfxcore.cc:3514
+#: ../src/mainfrm.cc:921
+#: n:292
+msgid "Colour by &Depth"
+msgstr ""
+
+#: ../src/gfxcore.cc:3515
+#: ../src/mainfrm.cc:922
+#: n:293
+msgid "Colour by D&ate"
+msgstr ""
+
+#: ../src/gfxcore.cc:3516
+#: ../src/mainfrm.cc:923
+#: n:289
+msgid "Colour by &Error"
+msgstr ""
+
+#: ../src/gfxcore.cc:3517
+#: ../src/mainfrm.cc:924
+#: n:85
+msgid "Colour by &Gradient"
+msgstr ""
+
+#: ../src/gfxcore.cc:3518
+#: ../src/mainfrm.cc:925
+#: n:82
+msgid "Colour by &Length"
+msgstr ""
+
+#: n:448
+msgid "Colour by &Survey"
 msgstr ""
 
 #: ../src/mainfrm.cc:967
