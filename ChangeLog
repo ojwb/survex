@@ -1,3 +1,10 @@
+Sun Apr 05 04:24:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/checkshortcut.pl: If there's a shortcut clash, report letters
+	  used in strings in the menu which aren't used for shortcuts, and
+	  separately any ASCII letters which aren't used in the menu strings at
+	  all.
+
 Sun Apr 05 04:22:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/deadmessages.txt,lib/merge-po: Fix extra "" on msgid when adding

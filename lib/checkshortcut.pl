@@ -28,7 +28,8 @@ for my $lang (@ARGV) {
     close L;
     my @msg = split /\0/, $buf;
     for my $menu (sort keys %menu) {
-	my %sc = ();
+	my %sc;
+	my %let;
 	my $bad = 0;
 	for (@{$menu{$menu}}) {
 	    my ($acc) = ($msg[$_] =~ /\&([\x00-\x7f]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/);
@@ -47,9 +48,14 @@ for my $lang (@ARGV) {
 		    $sc{$acc} = $_;
 		}
 	    }
+	    # Tally available letters
+	    while ($msg[$_] =~ /([A-Za-z]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/g) {
+		++$let{"\l$1"};
+	    }
 	}
 	if ($bad) {
-	    print "Unused letters: ", grep {!exists $sc{$_}} ('a' .. 'z'), "\n";
+	    print "Unused letters: ", grep {!exists $sc{$_}} (sort keys %let), "\n";
+	    print "Not-present ASCII letters: ", grep {!exists $let{$_}} ('a' .. 'z'), "\n";
 	    $exitcode = 1;
 	}
     }
