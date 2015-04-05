@@ -1,3 +1,7 @@
+Sun Apr 05 03:59:42 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/: Merge messages and resolve clashing menu accelarators.
+
 Sun Apr 05 03:40:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/mainfrm.cc: Fix clashing menu accelarators.
