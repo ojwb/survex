@@ -1,3 +1,7 @@
+Sun Apr 05 10:58:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm,doc/manual.sgml: Update for addition of terrain support.
+
 Sun Apr 05 09:50:09 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gla-gl.cc: Tweak code for drawing crosses to be more like the

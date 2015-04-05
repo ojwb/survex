@@ -3442,18 +3442,27 @@ achieved like so:
 
 <Sect2><Title>Add surface topography</Title>
 
-<!-- FIXME put DEM support in aven -->
-<Para>We intend to allow import of terrain data in DEM format, and also any
-other formats in common use.  But at present the simplest approach is to
-generate a <filename>.svx</filename> file with the surface mesh in and display it with the
-survey data.
+<Para>Survex 1.2.18 added support for loading terrain data and rendering it as
+a transparent surface.
+</Para>
+
+<Para>
+We recommend using this new code in preference, but previously the simplest
+approach was to generate a <filename>.svx</filename> file with the surface mesh
+in and display it with the survey data.
 </Para>
 
 <Para>
 It is possible to generate
-a mesh or contours overlaying your area by various means.  In the USA,
-usable resolution data can be obtained for free.  In other countries,
-it's harder to come by.  Reading heights from the
+a mesh or contours overlaying your area by various means.  NASA have made
+1 arc-second (approximately 30m) terrain data available for the USA for
+some years, with only 3 arc-second data available for other countries.
+However, starting in 2014 they're gradually making 1 arc-second data
+available for more countries.
+</Para>
+
+<Para>
+If you want a better resolution that this, reading heights from the
 contours on a map is one approach.  It's laborious, but feasible for
 a small area.
 </Para>
