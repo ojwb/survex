@@ -2611,6 +2611,8 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 
 void GfxCore::DrawTerrain()
 {
+    wxBusyCursor hourglass;
+
     if (!dem) {
 	//"/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip"
 	//"/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip"

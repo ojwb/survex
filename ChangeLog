@@ -1,3 +1,7 @@
+Sun Apr 05 06:36:56 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Show busy cursor while building the terrain model.
+
 Sun Apr 05 04:36:51 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/checkshortcut.pl: Strip off accelerator before looking at
