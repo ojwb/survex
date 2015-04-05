@@ -1,3 +1,8 @@
+Sun Apr 05 04:22:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/deadmessages.txt,lib/merge-po: Fix extra "" on msgid when adding
+	  to deadmessages.txt.
+
 Sun Apr 05 03:59:42 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Merge messages and resolve clashing menu accelarators.

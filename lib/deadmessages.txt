@@ -866,7 +866,7 @@ ro "Gata."
 sk "Hotovo."
 zh_CN "完成。"
 
-msgid ""Parameter “%s” has invalid value “%s” in printer configuration file""
+msgid "Parameter “%s” has invalid value “%s” in printer configuration file"
 ca "Paràmetres “%s” tenen un valor incorrecte “%s” al fitxer de configuració de l’impresora"
 de "Parameter »%s« hat den ungültigen Wert »%s« in der Druckerkonfigurationsdatei"
 de_CH "Parameter «%s» hat den ungültigen Wert «%s» in der Druckerkonfigurationsdatei"
@@ -881,7 +881,7 @@ ro "Parametrul “%s” are valoarea incorecta “%s” in fişierul de configur
 ru "Параметр “%s” имеет недопустимое значение “%s” в файле конфигурации принтера"
 sk "Parameter “%s” v konfiguračnom súbore tlačiarne má nesprávnu hodnotu “%s”"
 
-msgid ""Parameter “%s” missing in printer configuration file""
+msgid "Parameter “%s” missing in printer configuration file"
 ca "Paràmetres “%s” manquen al fitxer de configuració de l’impresora"
 de "Parameter »%s« fehlt in der Druckerkonfigurationsdatei"
 de_CH "Parameter «%s» fehlt in der Druckerkonfigurationsdatei"

@@ -109,7 +109,7 @@ if (%dropped) {
     print "Saving dropped messages to deadmessages.txt\n";
     open DEAD, '>>deadmessages.txt' or die "Failed to open deadmessages.txt\n";
     for (sort keys %dropped) {
-	print DEAD "\nmsgid \"$_\"\n";
+	print DEAD "\nmsgid $_\n";
 	my $h = $dropped{$_};
 	for my $lang (sort keys %$h) {
 	    print DEAD "$lang $$h{$lang}\n";
