@@ -1,3 +1,8 @@
+Sun Apr 05 09:46:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Increase volume diameter so that terrain doesn't get
+	  clipped.
+
 Sun Apr 05 06:36:56 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Show busy cursor while building the terrain model.

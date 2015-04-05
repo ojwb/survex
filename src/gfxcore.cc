@@ -259,9 +259,11 @@ void GfxCore::FirstShow()
     }
 
     // Set diameter of the viewing volume.
-    SetVolumeDiameter(sqrt(sqrd(m_Parent->GetXExtent()) +
+    double diameter = sqrt(sqrd(m_Parent->GetXExtent()) +
 			   sqrd(m_Parent->GetYExtent()) +
-			   sqrd(m_Parent->GetZExtent())));
+			   sqrd(m_Parent->GetZExtent()));
+    // Allow for terrain.
+    SetVolumeDiameter(max(1000.0 * 2, diameter * 2));
 
     m_DoneFirstShow = true;
 }
