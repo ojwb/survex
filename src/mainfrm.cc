@@ -849,7 +849,7 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: Toggles drawing of 3D passages */
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_TUBES, wmsg(/*Passage &Tubes\tCtrl+T*/346));
     /* TRANSLATORS: Toggles drawing the surface of the Earth */
-    viewmenu->AppendCheckItem(menu_VIEW_TERRAIN, wmsg(/*&Terrain*/449));
+    viewmenu->AppendCheckItem(menu_VIEW_TERRAIN, wmsg(/*Terr&ain*/449));
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_CROSSES, wmsg(/*&Crosses\tCtrl+X*/271));
     viewmenu->AppendCheckItem(menu_VIEW_GRID, wmsg(/*&Grid\tCtrl+G*/297));
     viewmenu->AppendCheckItem(menu_VIEW_BOUNDING_BOX, wmsg(/*&Bounding Box\tCtrl+B*/318));
@@ -884,7 +884,7 @@ void MainFrm::CreateMenuBar()
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 
-    viewmenu->Append(menu_VIEW_COLOUR_BY, wmsg(/*Colour by*/450), colourbymenu);
+    viewmenu->Append(menu_VIEW_COLOUR_BY, wmsg(/*Co&lour by*/450), colourbymenu);
 
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_ENTRANCES, wmsg(/*Highlight &Entrances*/294));

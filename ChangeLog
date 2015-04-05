@@ -1,3 +1,7 @@
+Sun Apr 05 03:40:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/mainfrm.cc: Fix clashing menu accelarators.
+
 Sun Apr 05 03:34:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Create a "Colour by" submenu of the "View" menu.

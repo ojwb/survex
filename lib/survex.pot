@@ -1928,7 +1928,7 @@ msgstr ""
 #. TRANSLATORS: Toggles drawing the surface of the Earth
 #: ../src/mainfrm.cc:899
 #: n:449
-msgid "&Terrain"
+msgid "Terr&ain"
 msgstr ""
 
 #: ../src/mainfrm.cc:895
@@ -1967,7 +1967,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:921
 #: n:450
-msgid "&Colour by"
+msgid "Co&lour by"
 msgstr ""
 
 #: ../src/mainfrm.cc:927
