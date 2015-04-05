@@ -32,9 +32,11 @@ for my $lang (@ARGV) {
 	my %let;
 	my $bad = 0;
 	for (@{$menu{$menu}}) {
-	    my ($acc) = ($msg[$_] =~ /\&([\x00-\x7f]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/);
+	    my $m = $msg[$_];
+	    my ($item) = (split(/\\t/, $m))[0];
+	    my ($acc) = ($item =~ /\&([\x00-\x7f]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/);
 	    if (!defined $acc) {
-		print "Lang $lang : message $_ '$msg[$_]' has no shortcut\n";
+		print "Lang $lang : message $_ '$m' has no shortcut\n";
 		$bad = 1;
 	    } else {
 		$acc = lc $acc;
@@ -43,15 +45,18 @@ for my $lang (@ARGV) {
 			print $hdr;
 			$hdr = undef;
 		    }
-		    print "Menu $menu : '$msg[$sc{$acc}]' and '$msg[$_]' both use shortcut '$acc'\n";
+		    print "Menu $menu : '$msg[$sc{$acc}]' and '$m' both use shortcut '$acc'\n";
 		    $bad = 1;
 		} else {
 		    $sc{$acc} = $_;
 		}
 	    }
+
 	    # Tally available letters
-	    while ($msg[$_] =~ /([A-Za-z]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/g) {
-		++$let{"\l$1"};
+	    while ($item =~ /([A-Za-z]|[\xc2-\xdf].|[\xe0-\xef]..|[\xf0-\xf4]...)/g) {
+		$acc = lc $1;
+		next if $acc eq '…';
+		++$let{$acc};
 	    }
 	}
 	if ($bad) {

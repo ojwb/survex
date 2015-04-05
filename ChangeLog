@@ -1,3 +1,8 @@
+Sun Apr 05 04:36:51 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/checkshortcut.pl: Strip off accelerator before looking at
+	  shortcuts, and don't offer ellipses as a potential shortcut.
+
 Sun Apr 05 04:25:32 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/checkshortcut.pl: Treat a missing shortcut as an error too.
