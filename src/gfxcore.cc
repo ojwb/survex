@@ -45,7 +45,6 @@
 #include <wx/zipstrm.h>
 
 #include <proj_api.h>
-#include <sys/mman.h>
 
 // Values for m_SwitchingTo
 #define PLAN 1
