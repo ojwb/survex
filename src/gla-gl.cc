@@ -1258,6 +1258,7 @@ void GLACanvas::EndCrosses()
 void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 {
     if (cross_method == SPRITE) {
+	// Draw a marker.
 	PlaceVertex(x, y, z);
     } else {
 	double X, Y, Z;
@@ -1267,16 +1268,16 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 	}
 	// Stuff behind us (in perspective view) will get clipped,
 	// but we can save effort with a cheap check here.
-	if (Z > 0) {
-	    // Round to integers before adding on the offsets for the
-	    // cross arms to avoid uneven crosses.
-	    X = rint(X);
-	    Y = rint(Y);
-	    PlaceVertex(X - 3, Y - 3, Z);
-	    PlaceVertex(X + 3, Y + 3, Z);
-	    PlaceVertex(X - 3, Y + 3, Z);
-	    PlaceVertex(X + 3, Y - 3, Z);
-	}
+	if (Z <= 0) return;
+
+	// Round to integers before adding on the offsets for the
+	// cross arms to avoid uneven crosses.
+	X = rint(X);
+	Y = rint(Y);
+	PlaceVertex(X - 3, Y - 3, Z);
+	PlaceVertex(X + 3, Y + 3, Z);
+	PlaceVertex(X - 3, Y + 3, Z);
+	PlaceVertex(X + 3, Y - 3, Z);
     }
 #ifdef GLA_DEBUG
     m_Vertices++;
