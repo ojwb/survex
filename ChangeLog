@@ -1,3 +1,8 @@
+Sun Apr 05 09:48:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Plot the terrain with a
+	  Z-prepass so that we don't see the terrain through itself.
+
 Sun Apr 05 09:46:31 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Increase volume diameter so that terrain doesn't get

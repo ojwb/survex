@@ -911,6 +911,18 @@ void GLACanvas::DrawList(unsigned int l)
     }
 }
 
+void GLACanvas::DrawListZPrepass(unsigned int l)
+{
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    DrawList(l);
+    glDepthMask(GL_FALSE);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDepthFunc(GL_EQUAL);
+    DrawList(l);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+}
+
 void GLACanvas::DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation)
 {
     glMatrixMode(GL_PROJECTION);

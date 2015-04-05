@@ -168,6 +168,7 @@ public:
     void SetIndicatorTransform();
 
     void DrawList(unsigned int l);
+    void DrawListZPrepass(unsigned int l);
     void DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation);
     void InvalidateList(unsigned int l) {
 	if (l < drawing_lists.size()) {

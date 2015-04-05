@@ -381,7 +381,11 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 
 	if (m_Terrain) {
-	    DrawList(LIST_TERRAIN);
+	    // We don't want to be able to see the terrain through itself, so
+	    // do a "Z-prepass" - plot the terrain once only updating the
+	    // Z-buffer, then again with Z-clipping only plotting where the
+	    // depth matches the value in the Z-buffer.
+	    DrawListZPrepass(LIST_TERRAIN);
 	}
 
 	DrawList(LIST_BLOBS);
