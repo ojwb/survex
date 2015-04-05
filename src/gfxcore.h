@@ -243,10 +243,11 @@ private:
     ZoomBox zoombox;
 
     // DEM:
-    unsigned short * bil;
+    unsigned short * dem;
     unsigned long dem_width, dem_height;
     double o_x, o_y, step_x, step_y;
     long nodata_value;
+    bool bigendian;
     size_t n_tris;
 
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);

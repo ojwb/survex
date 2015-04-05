@@ -1,3 +1,8 @@
+Sun Apr 05 03:04:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Add support for reading DEM data from
+	  SRTM .hgt files.
+
 Sun Apr 05 02:22:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Remove header which is no longer used.

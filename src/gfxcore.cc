@@ -46,6 +46,9 @@
 
 #include <proj_api.h>
 
+const unsigned long DEFAULT_HGT_DIM = 3601;
+const unsigned long DEFAULT_HGT_SIZE = sqrd(DEFAULT_HGT_DIM) * 2;
+
 // Values for m_SwitchingTo
 #define PLAN 1
 #define ELEVATION 2
@@ -161,7 +164,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     movie(NULL),
     current_cursor(GfxCore::CURSOR_DEFAULT),
     sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD)),
-    bil(NULL),
+    dem(NULL),
     n_tris(0)
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
@@ -2430,21 +2433,48 @@ bool GfxCore::LoadDEM(const wxString & file)
     size_t size = 0;
     // Default is to not skip any bytes.
     unsigned long skipbytes = 0;
+    // For .hgt files, default to using filesize to determine.
+    dem_width = dem_height = 0;
+    // ESRI say "The default byte order is the same as that of the host machine
+    // executing the software", but that's stupid so we default to
+    // little-endian.
+    bigendian = false;
 
     int fd = open(file.mb_str(), O_RDONLY);
     if (fd < 0) {
 	wxMessageBox(wxT("Failed to open DEM zip"));
 	return false;
     }
-    wxZipEntry * ze_bil = NULL;
+    wxZipEntry * ze_data = NULL;
     wxFileInputStream fs(fd);
     wxZipInputStream zs(fs);
     wxZipEntry * ze;
     while ((ze = zs.GetNextEntry()) != NULL) {
 	if (!ze->IsDir()) {
 	    const wxString & name = ze->GetName();
-	    if (!ze_bil && name.EndsWith(wxT(".bil"))) {
-		ze_bil = ze;
+	    if (!ze_data && name.EndsWith(wxT(".hgt"))) {
+		// SRTM .hgt files are raw binary data, with the filename
+		// encoding the coordinates.
+		ze_data = ze;
+		const char * p = name.mb_str();
+		char * q;
+		char dirn = *p++;
+		o_y = strtoul(p, &q, 10);
+		p = q;
+		if (dirn == 'S' || dirn == 's')
+		    o_y = -o_y;
+		++o_y;
+		dirn = *p++;
+		o_x = strtoul(p, &q, 10);
+		if (dirn == 'W' || dirn == 'w')
+		    o_x = -o_x;
+		bigendian = true;
+		nodata_value = -32768;
+		break;
+	    }
+
+	    if (!ze_data && name.EndsWith(wxT(".bil"))) {
+		ze_data = ze;
 		continue;
 	    }
 
@@ -2467,7 +2497,7 @@ err += wxT("Unexpected value for "X); \
 		    unsigned long dummy;
 		    if (false) {
 		    // I = little-endian; M = big-endian
-		    CHECK("BYTEORDER", line[v] == 'I')
+		    CHECK("BYTEORDER", (bigendian = (line[v] != 'M')) || line[v] == 'I')
 		    CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
 		    CHECK("NROWS", line.substr(v).ToCULong(&dem_width))
 		    CHECK("NCOLS", line.substr(v).ToCULong(&dem_height))
@@ -2489,7 +2519,6 @@ err += wxT("Unexpected value for "X); \
 		    }
 		}
 		size = ((nbits + 7) / 8) * dem_width * dem_height;
-		bil = new unsigned short[size];
 	    } else if (name.EndsWith(wxT(".prj"))) {
 		//FIXME: check this matches the datum string we use
 		//Projection    GEOGRAPHIC
@@ -2504,13 +2533,17 @@ err += wxT("Unexpected value for "X); \
 	}
 	delete ze;
     }
-    if (ze_bil && zs.OpenEntry(*ze_bil)) {
+    if (ze_data && zs.OpenEntry(*ze_data)) {
+	bool know_size = (size != 0);
+	if (!size)
+	    size = DEFAULT_HGT_SIZE;
+	dem = new unsigned short[size / 2];
 	if (skipbytes) {
 	    if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
 		while (skipbytes) {
 		    unsigned long to_read = skipbytes;
 		    if (size < to_read) to_read = size;
-		    zs.Read(reinterpret_cast<char *>(bil), to_read);
+		    zs.Read(reinterpret_cast<char *>(dem), to_read);
 		    size_t c = zs.LastRead();
 		    if (c == 0) {
 			wxMessageBox(wxT("Failed to read terrain data"));
@@ -2522,15 +2555,32 @@ err += wxT("Unexpected value for "X); \
 	}
 
 #if wxCHECK_VERSION(2,9,5)
-	if (!zs.ReadAll(bil, size)) {
+	if (!zs.ReadAll(dem, size)) {
+	    if (!know_size) {
+		size = zs.LastRead();
+		dem_width = dem_height = sqrt(size / 2);
+		if (dem_width * dem_height * 2 == size) {
+		    step_x = step_y = 1.0 / dem_width;
+		    goto size_ok;
+		}
+	    }
 	    wxMessageBox(wxT("Failed to read terrain data"));
+size_ok: ;
 	}
 #else
-	char * p = reinterpret_cast<char *>(bil);
+	char * p = reinterpret_cast<char *>(dem);
 	while (size) {
 	    zs.Read(p, size);
 	    size_t c = zs.LastRead();
 	    if (c == 0) {
+		if (!know_size) {
+		    size = DEFAULT_HGT_SIZE - size;
+		    dem_width = dem_height = sqrt(size / 2);
+		    if (dem_width * dem_height * 2 == size) {
+			step_x = step_y = 1.0 / dem_width;
+			break;
+		    }
+		}
 		wxMessageBox(wxT("Failed to read terrain data"));
 		break;
 	    }
@@ -2538,8 +2588,12 @@ err += wxT("Unexpected value for "X); \
 	    size -= c;
 	}
 #endif
+	if (!know_size) {
+	    dem_width = dem_height = DEFAULT_HGT_DIM;
+	    step_x = step_y = 1.0 / DEFAULT_HGT_DIM;
+	}
     }
-    delete ze_bil;
+    delete ze_data;
     return true;
 }
 
@@ -2557,10 +2611,10 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 
 void GfxCore::DrawTerrain()
 {
-    if (!bil) {
+    if (!dem) {
 	//"/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip"
 	//"/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip"
-	if (!LoadDEM("/home/olly/git/survex/DEM/N47E013_1arc.zip")) {
+	if (!LoadDEM("/home/olly/git/survex/DEM/N47E013.zip")) {
 	    ToggleTerrain();
 	    return;
 	}
@@ -2570,11 +2624,15 @@ void GfxCore::DrawTerrain()
 #define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
     static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
     if (!pj_in) {
-	fatalerror(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
+	ToggleTerrain();
+	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
+	return;
     }
     static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
     if (!pj_out) {
-	fatalerror(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
+	ToggleTerrain();
+	error(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
+	return;
     }
     n_tris = 0;
     SetAlpha(0.3);
@@ -2585,14 +2643,19 @@ void GfxCore::DrawTerrain()
 	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
 	Vector3 prev;
 	for (size_t y = 0; y < dem_height; ++y) {
-	    unsigned short elev = bil[x + y * dem_width];
+	    unsigned short elev = dem[x + y * dem_width];
 #ifdef WORDS_BIGENDIAN
-# ifdef __GNUC__
-	    elev = __builtin_bswap16(elev);
-# else
-	    elev = (elev >> 8) | (elev << 8);
-# endif
+	    const bool MACHINE_BIGENDIAN = true;
+#else
+	    const bool MACHINE_BIGENDIAN = false;
 #endif
+	    if (bigendian != MACHINE_BIGENDIAN) {
+#if defined __GNUC__ && (__GNUC__ * 100 + __GNUC_MINOR__ >= 408)
+		elev = __builtin_bswap16(elev);
+#else
+		elev = (elev >> 8) | (elev << 8);
+#endif
+	    }
 	    double Z = (short)elev;
 	    Vector3 pt;
 	    if (Z == nodata_value) {
