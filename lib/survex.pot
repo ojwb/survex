@@ -1413,6 +1413,16 @@ msgstr ""
 msgid "About %s"
 msgstr ""
 
+#. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
+#. height values).
+#: n:451
+msgid "Select a terrain file to view"
+msgstr ""
+
+#: n:452
+msgid "Terrain files"
+msgstr ""
+
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
 #. language would use.
@@ -2543,6 +2553,11 @@ msgstr ""
 msgid "&Open…\tCtrl+O"
 msgstr ""
 
+#. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the terrain.
+#: n:453
+msgid "Open &Terrain…"
+msgstr ""
+
 #: ../src/mainfrm.cc:790
 #: n:144
 msgid "Show &Log"
@@ -3068,18 +3083,6 @@ msgstr ""
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
-#~ msgstr ""
-
-#. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
-#. height values).
-#~ msgid "Select a terrain file to view"
-#~ msgstr ""
-
-#~ msgid "Terrain files"
-#~ msgstr ""
-
-#. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the terrain.
-#~ msgid "Open &Terrain…"
 #~ msgstr ""
 
 #. TRANSLATORS: Show the terrain as solid rather than transparent.

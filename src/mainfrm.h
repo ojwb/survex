@@ -55,6 +55,7 @@ using namespace std;
 
 enum {
     menu_FILE_LOG = 1000,
+    menu_FILE_OPEN_TERRAIN,
     menu_FILE_PAGE_SETUP,
     menu_FILE_SCREENSHOT,
     menu_FILE_EXPORT,
@@ -257,7 +258,7 @@ public:
     void OnPresPauseUpdate(wxUpdateUIEvent& event);
     void OnPresStopUpdate(wxUpdateUIEvent& event);
     void OnPresExportMovieUpdate(wxUpdateUIEvent& event);
-    //void OnFileOpenTerrainUpdate(wxUpdateUIEvent& event);
+    void OnOpenTerrainUpdate(wxUpdateUIEvent& event);
 
     void DoFind();
     void OnFind(wxCommandEvent& event);
@@ -267,11 +268,11 @@ public:
     void OnHideUpdate(wxUpdateUIEvent& ui);
 
     void OnOpen(wxCommandEvent& event);
+    void OnOpenTerrain(wxCommandEvent&);
     void HideLog(wxWindow * log_window);
     void OnScreenshot(wxCommandEvent& event);
     void OnScreenshotUpdate(wxUpdateUIEvent& event);
     void OnFilePreferences(wxCommandEvent& event);
-    void OnFileOpenTerrain(wxCommandEvent& event);
     void OnPrint(wxCommandEvent& event);
     void PrintAndExit();
     void OnPageSetup(wxCommandEvent& event);

@@ -2258,6 +2258,15 @@ int GfxCore::GetNumExportedPts() const
     return m_Parent->GetNumExportedPts();
 }
 
+void GfxCore::ToggleTerrain()
+{
+    ToggleFlag(&m_Terrain);
+    if (m_Terrain && !dem) {
+	wxCommandEvent dummy;
+	m_Parent->OnOpenTerrain(dummy);
+    }
+}
+
 void GfxCore::ToggleFatFinger()
 {
     if (sqrd_measure_threshold == sqrd(MEASURE_THRESHOLD)) {
@@ -2436,6 +2445,9 @@ void GfxCore::GenerateDisplayListShadow()
 
 bool GfxCore::LoadDEM(const wxString & file)
 {
+    delete [] dem;
+    dem = NULL;
+
     size_t size = 0;
     // Default is to not skip any bytes.
     unsigned long skipbytes = 0;
@@ -2600,6 +2612,8 @@ size_ok: ;
 	}
     }
     delete ze_data;
+
+    InvalidateList(LIST_TERRAIN);
     return true;
 }
 
@@ -2617,16 +2631,10 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 
 void GfxCore::DrawTerrain()
 {
+    if (!dem) return;
+
     wxBusyCursor hourglass;
 
-    if (!dem) {
-	//"/home/olly/git/survex/DEM/n47_e013_1arc_v3_bil.zip"
-	//"/home/olly/git/survex/DEM/n47_e013_3arc_v2_bil.zip"
-	if (!LoadDEM("/home/olly/git/survex/DEM/N47E013.zip")) {
-	    ToggleTerrain();
-	    return;
-	}
-    }
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
 #define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"

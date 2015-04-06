@@ -1,3 +1,7 @@
+Mon Apr 06 14:03:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/: Add UI for loading terrain files.
+
 Mon Apr 06 11:28:57 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.h: Remove method which is never defined.

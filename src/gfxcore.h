@@ -274,7 +274,6 @@ private:
     void GenerateDisplayList();
     void GenerateDisplayListTubes();
     void GenerateDisplayListSurface();
-    bool LoadDEM(const wxString & file);
     void DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Vector3 & c);
     void DrawTerrain();
     void GenerateDisplayListShadow();
@@ -499,7 +498,7 @@ public:
     bool DisplayingBoundingBox() const { return m_BoundingBox; }
     void ToggleBoundingBox() { ToggleFlag(&m_BoundingBox); }
     bool DisplayingTerrain() const { return m_Terrain; }
-    void ToggleTerrain() { ToggleFlag(&m_Terrain); }
+    void ToggleTerrain();
     void ToggleFatFinger();
 
     bool GetMetric() const { return m_Metric; }
@@ -588,6 +587,8 @@ public:
     }
 
     void ZoomBoxGo();
+
+    bool LoadDEM(const wxString & file);
 
 private:
     DECLARE_EVENT_TABLE()

@@ -523,6 +523,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_IDLE(MainFrm::OnIdle)
 
     EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
+    EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnOpenTerrain)
     EVT_MENU(menu_FILE_LOG, MainFrm::OnShowLog)
     EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
@@ -612,6 +613,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_CTL_CANCEL_DIST_LINE, MainFrm::OnCancelDistLine)
     EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
 
+    EVT_UPDATE_UI(menu_FILE_OPEN_TERRAIN, MainFrm::OnOpenTerrainUpdate)
     EVT_UPDATE_UI(menu_FILE_LOG, MainFrm::OnShowLogUpdate)
     EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
@@ -787,6 +789,7 @@ void MainFrm::CreateMenuBar()
      * "File" menu.  The accelerators must be different within this group.
      * c.f. 201, 380, 381. */
     filemenu->Append(wxID_OPEN, wmsg(/*&Open…\tCtrl+O*/220));
+    filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain…*/453));
     filemenu->Append(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
@@ -1950,6 +1953,28 @@ void MainFrm::OnOpen(wxCommandEvent&)
     }
 }
 
+void MainFrm::OnOpenTerrain(wxCommandEvent&)
+{
+    if (!m_Gfx) return;
+
+#ifdef __WXMOTIF__
+    wxString filetypes = wxT("*.zip");
+#else
+    wxString filetypes;
+    filetypes.Printf(wxT("%s|*.zip"CASE("*.ZIP")
+		     "|%s|%s"),
+		     wmsg(/*Terrain files*/452).c_str(),
+		     wmsg(/*All files*/208).c_str(),
+		     wxFileSelectorDefaultWildcardStr);
+#endif
+    wxFileDialog dlg(this, wmsg(/*Select a terrain file to view*/451),
+		     wxString(), wxString(),
+		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    if (dlg.ShowModal() == wxID_OK && m_Gfx->LoadDEM(dlg.GetPath())) {
+	if (!m_Gfx->DisplayingTerrain()) m_Gfx->ToggleTerrain();
+    }
+}
+
 void MainFrm::OnShowLog(wxCommandEvent&)
 {
     if (!m_Log) return;
@@ -2477,10 +2502,10 @@ PresentationMark MainFrm::GetPresMark(int which)
     return m_PresList->GetPresMark(which);
 }
 
-//void MainFrm::OnFileOpenTerrainUpdate(wxUpdateUIEvent& event)
-//{
-//    event.Enable(!m_File.empty());
-//}
+void MainFrm::OnOpenTerrainUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_File.empty());
+}
 
 void MainFrm::OnPresNewUpdate(wxUpdateUIEvent& event)
 {
