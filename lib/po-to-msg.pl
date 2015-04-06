@@ -143,7 +143,7 @@ foreach $lang (@langs) {
 	    $msg = ${$msgs{'en'}}[$n];
 	    # don't report if we have a parent (as the omission will be
 	    # reported there)
-	    if (defined $msg && $msg ne '' && !defined $parentaref) {
+	    if (defined $msg && $msg ne '' && $msg ne '©' && !defined $parentaref) {
 	       ++$missing;
 	       $warned = 1;
 	    } else {
