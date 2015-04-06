@@ -1,3 +1,8 @@
+Mon Apr 06 15:33:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Tweak accelerators to match recent tweaks to the master
+	  strings.
+
 Mon Apr 06 15:30:55 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Add translation of new message.
