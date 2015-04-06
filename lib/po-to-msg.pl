@@ -63,6 +63,7 @@ for (sort { $a <=> $b } keys %n) {
 print STDERR "$file: Last used msg number: $last\n";
 %n = ();
 
+my %fuzzy;
 for my $po_file (@ARGV) {
     my $language = $po_file;
     $language =~ s/\.po$//;
@@ -84,6 +85,7 @@ for my $po_file (@ARGV) {
 	print STDERR "$file:1: Expected 'msgid \"\"' with header\n";
     }
 
+    my $fuzzy = 0;
     foreach my $po_entry (@{$num_list}) {
 	my $ref = $po_entry->reference;
 	(defined $ref && $ref =~ /^n:(\d+)$/m) or next;
@@ -99,8 +101,10 @@ for my $po_file (@ARGV) {
 		print STDERR "$where: warning: already had message $msgno for language $language\n";
 	    }
 	    ${$msgs{$language}}[$msgno] = $msg;
+	    $ent->fuzzy() and ++$fuzzy;
 	}
     }
+    $fuzzy{$language} = $fuzzy;
 }
 
 my $lang;
@@ -129,7 +133,6 @@ foreach $lang (@langs) {
 
    my $buff = '';
    my $missing = 0;
-   my $retranslate = 0;
 
    for my $n (0 .. $num_msgs - 1) {
       my $warned = 0;
@@ -158,15 +161,16 @@ foreach $lang (@langs) {
    print OUT pack('N',length($buff)), $buff or die $!;
    close OUT or die $!;
 
-   if ($missing || $retranslate) {
-       print STDERR "Warning: ";
+   my $fuzzy = $fuzzy{$lang};
+   if ($missing || $fuzzy) {
+       print STDERR "Warning: $file: ";
        if ($missing) {
-	   print STDERR "$file: $missing missing message(s)";
-	   if ($retranslate) {
-	       print STDERR " and $retranslate requiring retranslation";
+	   print STDERR "$missing missing message(s)";
+	   if ($fuzzy) {
+	       print STDERR " and $fuzzy fuzzy message(s)";
 	   }
        } else {
-	   print STDERR "$file: $retranslate message(s) requiring retranslation";
+	   print STDERR "$fuzzy fuzzy message(s)";
        }
        print STDERR " for $lang\n";
    }

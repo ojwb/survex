@@ -1,3 +1,7 @@
+Mon Apr 06 15:21:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Report if there are fuzzy strings for a language.
+
 Mon Apr 06 15:17:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/,src/mainfrm.cc: Update pot and merge pos.
