@@ -1,3 +1,7 @@
+Mon Apr 06 11:28:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.h: Remove method which is never defined.
+
 Sun Apr 05 10:58:34 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm,doc/manual.sgml: Update for addition of terrain support.

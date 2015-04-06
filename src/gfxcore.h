@@ -331,7 +331,6 @@ public:
     ~GfxCore();
 
     void Initialise(bool same_file);
-    void InitialiseTerrain();
 
     void UpdateBlobs();
     void ForceRefresh();
