@@ -13,37 +13,37 @@ msgstr ""
 
 #. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
 #. accelerator key.  The accelerators must be different within this group
-#: ../src/mainfrm.cc:948
+#: ../src/mainfrm.cc:953
 #: n:210
 msgid "&File"
 msgstr "&Datei"
 
-#: ../src/mainfrm.cc:949
+#: ../src/mainfrm.cc:954
 #: n:211
 msgid "&Rotation"
 msgstr "&Rotieren"
 
-#: ../src/mainfrm.cc:950
+#: ../src/mainfrm.cc:955
 #: n:212
 msgid "&Orientation"
 msgstr "&Orientierung"
 
-#: ../src/mainfrm.cc:951
+#: ../src/mainfrm.cc:956
 #: n:213
 msgid "&View"
 msgstr "&Ansicht"
 
-#: ../src/mainfrm.cc:953
+#: ../src/mainfrm.cc:958
 #: n:214
 msgid "&Controls"
 msgstr "&Steuerung"
 
-#: ../src/mainfrm.cc:962
+#: ../src/mainfrm.cc:967
 #: n:215
 msgid "&Help"
 msgstr "&Hilfe"
 
-#: ../src/mainfrm.cc:955
+#: ../src/mainfrm.cc:960
 #: n:216
 msgid "&Presentation"
 msgstr "&Präsentation"
@@ -807,14 +807,14 @@ msgstr "3D-Bilddatei »%s« ist fehlerhaft"
 #. files internally.  Probably best to keep it the same for all
 #. translations.
 #: ../src/img.c:43
-#: ../src/mainfrm.cc:1429
+#: ../src/mainfrm.cc:1434
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
-#: ../src/mainfrm.cc:1422
+#: ../src/mainfrm.cc:1427
 #: n:108
 msgid "Date and time not available."
 msgstr "Datum und Uhrzeit nicht feststellbar."
@@ -829,7 +829,7 @@ msgstr "Fehler beim Lesen der Datei »%s«"
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:41
 #: ../src/mainfrm.cc:391
-#: ../src/mainfrm.cc:1987
+#: ../src/mainfrm.cc:2016
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -881,8 +881,8 @@ msgstr "&Aufriss"
 #. Try to keep this translation short - ideally at most 10
 #. characters - as otherwise the compass and clino will be moved
 #. further apart to make room. */
-#: ../src/gfxcore.cc:845
-#: ../src/gfxcore.cc:1903
+#: ../src/gfxcore.cc:851
+#: ../src/gfxcore.cc:1909
 #: ../src/mainfrm.cc:174
 #: n:118
 msgid "Elevation"
@@ -894,8 +894,8 @@ msgstr "Aufriss"
 #. Try to keep this translation short - ideally at most 10
 #. characters - as otherwise the compass and clino will be moved
 #. further apart to make room. */
-#: ../src/gfxcore.cc:745
-#: ../src/gfxcore.cc:1897
+#: ../src/gfxcore.cc:751
+#: ../src/gfxcore.cc:1903
 #: n:432
 msgid "Plan"
 msgstr "Grundriss"
@@ -906,8 +906,8 @@ msgstr "Grundriss"
 #. Try to keep this translation short - ideally at most 10
 #. characters - as otherwise the compass and clino will be moved
 #. further apart to make room. */
-#: ../src/gfxcore.cc:759
-#: ../src/gfxcore.cc:1900
+#: ../src/gfxcore.cc:765
+#: ../src/gfxcore.cc:1906
 #: n:433
 msgid "Kiwi Plan"
 msgstr ""
@@ -1388,7 +1388,7 @@ msgstr "Version des 3D-Dateiformats für die Ausgabe"
 msgid "*UNITS factor must be non-zero"
 msgstr "Faktor nach *UNITS muss von Null verschieden sein"
 
-#: ../src/mainfrm.cc:1439
+#: ../src/mainfrm.cc:1444
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -1401,8 +1401,8 @@ msgstr "Keine Vermessungsdaten in 3D-Datei »%s«"
 #. Try to keep this translation short - ideally at most 10 characters -
 #. as otherwise the compass and clino will be moved further apart to
 #. make room. */
-#: ../src/gfxcore.cc:731
-#: ../src/gfxcore.cc:1884
+#: ../src/gfxcore.cc:737
+#: ../src/gfxcore.cc:1890
 #: n:203
 msgid "Facing"
 msgstr "Blickricht."
@@ -1414,25 +1414,38 @@ msgstr "Blickricht."
 msgid "About %s"
 msgstr "Über %s"
 
+#. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
+#. grid of height values).
+#: ../src/mainfrm.cc:1974
+#: n:451
+msgid "Select a terrain file to view"
+msgstr "Geländedatei zur Ansicht wählen"
+
+#: ../src/mainfrm.cc:1968
+#: n:452
+msgid "Terrain files"
+msgstr "Geländedateien"
+
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
 #. language would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1945
+#: ../src/mainfrm.cc:1950
 #: n:206
 msgid "Select a survey file to view"
 msgstr "Vermessungsdatei zur Ansicht wählen"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1922
+#: ../src/mainfrm.cc:1927
 #: n:207
 msgid "Survex 3d files"
 msgstr "Survex 3D-Dateien"
 
-#: ../src/mainfrm.cc:1937
-#: ../src/mainfrm.cc:2388
+#: ../src/mainfrm.cc:1942
+#: ../src/mainfrm.cc:1969
+#: ../src/mainfrm.cc:2417
 #: ../src/printwx.cc:667
 #: n:208
 msgid "All files"
@@ -1441,21 +1454,21 @@ msgstr "Alle Dateien"
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
 #. terminology that cavers using the language would use.
-#: ../src/mainfrm.cc:1919
+#: ../src/mainfrm.cc:1924
 #: n:229
 msgid "All survey files"
 msgstr "Alle Vermessungsdateien"
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1925
+#: ../src/mainfrm.cc:1930
 #: n:329
 msgid "Survex svx files"
 msgstr "SVX-Dateien für Survex"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1933
+#: ../src/mainfrm.cc:1938
 #: n:330
 msgid "Compass DAT and MAK files"
 msgstr "Compass DAT- und MAK-Dateien"
@@ -1582,7 +1595,7 @@ msgstr "[VERMESSUNGSDATEI]"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.  Try to keep this fairly short.
-#: ../src/gfxcore.cc:1091
+#: ../src/gfxcore.cc:1097
 #: n:221
 msgid "Undated"
 msgstr "Nicht datiert"
@@ -1590,7 +1603,7 @@ msgstr "Nicht datiert"
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information. Try to keep
 #. this fairly short.
-#: ../src/gfxcore.cc:1116
+#: ../src/gfxcore.cc:1122
 #: n:290
 msgid "Not in loop"
 msgstr "Nicht in Schleife"
@@ -1670,57 +1683,57 @@ msgstr "&Exportieren…"
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
-#: ../src/mainfrm.cc:818
+#: ../src/mainfrm.cc:823
 #: n:231
 msgid "Au&to-Rotate\tSpace"
 msgstr "Auto&matisch rotieren\tSpace"
 
-#: ../src/mainfrm.cc:820
+#: ../src/mainfrm.cc:825
 #: n:234
 msgid "&Reverse Direction"
 msgstr "&Andere Richtung"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:3778
-#: ../src/mainfrm.cc:823
+#: ../src/gfxcore.cc:3794
+#: ../src/mainfrm.cc:828
 #: n:240
 msgid "View &North"
 msgstr "Nach &Norden"
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:3780
-#: ../src/mainfrm.cc:824
+#: ../src/gfxcore.cc:3796
+#: ../src/mainfrm.cc:829
 #: n:241
 msgid "View &East"
 msgstr "Nach &Osten"
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:3782
-#: ../src/mainfrm.cc:825
+#: ../src/gfxcore.cc:3798
+#: ../src/mainfrm.cc:830
 #: n:242
 msgid "View &South"
 msgstr "Nach &Süden"
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:3784
-#: ../src/mainfrm.cc:826
+#: ../src/gfxcore.cc:3800
+#: ../src/mainfrm.cc:831
 #: n:243
 msgid "View &West"
 msgstr "Nach &Westen"
 
-#: ../src/gfxcore.cc:3801
-#: ../src/mainfrm.cc:828
+#: ../src/gfxcore.cc:3817
+#: ../src/mainfrm.cc:833
 #: n:248
 msgid "&Plan View"
 msgstr "&Grundriss"
 
-#: ../src/gfxcore.cc:3802
-#: ../src/mainfrm.cc:829
+#: ../src/gfxcore.cc:3818
+#: ../src/mainfrm.cc:834
 #: n:249
 msgid "Ele&vation"
 msgstr "&Aufriss"
 
-#: ../src/mainfrm.cc:831
+#: ../src/mainfrm.cc:836
 #: n:254
 msgid "Restore De&fault View"
 msgstr "&Zurück zur voreingestellten Ansicht"
@@ -1843,74 +1856,74 @@ msgid "Blank Pages"
 msgstr "Leerseiten"
 
 #. TRANSLATORS: Items in the "View" menu:
-#: ../src/mainfrm.cc:848
+#: ../src/mainfrm.cc:853
 #: n:270
 msgid "Station &Names\tCtrl+N"
 msgstr "Messpunkt&namen\tCtrl+N"
 
 #. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:850
+#: ../src/mainfrm.cc:855
 #: n:346
 msgid "Passage &Tubes\tCtrl+T"
 msgstr "3D-Pa&ssagen\tCtrl+T"
 
 #. TRANSLATORS: Toggles drawing the surface of the Earth
-#: ../src/mainfrm.cc:852
+#: ../src/mainfrm.cc:857
 #: n:449
 msgid "Terr&ain"
 msgstr ""
 
-#: ../src/mainfrm.cc:853
+#: ../src/mainfrm.cc:858
 #: n:271
 msgid "&Crosses\tCtrl+X"
 msgstr "Kreu&ze\tCtrl+X"
 
-#: ../src/mainfrm.cc:854
+#: ../src/mainfrm.cc:859
 #: n:297
 msgid "&Grid\tCtrl+G"
 msgstr "&Gitter\tCtrl+G"
 
-#: ../src/mainfrm.cc:855
+#: ../src/mainfrm.cc:860
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
 msgstr "&Begrenzendes Rechteck\tCtrl+B"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:859
+#: ../src/mainfrm.cc:864
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "Messstrecken unter Gr&und\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:862
+#: ../src/mainfrm.cc:867
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Messstrecken an der &Oberfläche\tCtrl+F"
 
-#: ../src/mainfrm.cc:878
+#: ../src/mainfrm.cc:883
 #: n:273
 msgid "&Overlapping Names"
 msgstr "Über&lappende Namen"
 
-#: ../src/mainfrm.cc:887
+#: ../src/mainfrm.cc:892
 #: n:450
 #, fuzzy
 msgid "Co&lour by"
 msgstr "&Colour by"
 
-#: ../src/mainfrm.cc:890
+#: ../src/mainfrm.cc:895
 #: n:294
 msgid "Highlight &Entrances"
 msgstr "&Eingänge hervorheben"
 
-#: ../src/mainfrm.cc:891
+#: ../src/mainfrm.cc:896
 #: n:295
 msgid "Highlight &Fixed Points"
 msgstr "&Festpunkte hervorheben"
 
-#: ../src/mainfrm.cc:892
+#: ../src/mainfrm.cc:897
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr "E&xportierte Punkte hervorheben"
@@ -1930,12 +1943,12 @@ msgstr "Festpunkte"
 msgid "Exported Stations"
 msgstr "Exportierte Punkte"
 
-#: ../src/mainfrm.cc:897
+#: ../src/mainfrm.cc:902
 #: n:237
 msgid "&Perspective"
 msgstr "&Perspektive"
 
-#: ../src/mainfrm.cc:899
+#: ../src/mainfrm.cc:904
 #: n:238
 msgid "Textured &Walls"
 msgstr "&Wandtextur"
@@ -1943,52 +1956,52 @@ msgstr "&Wandtextur"
 #. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
 #. using that term instead if it gives a better translation which most
 #. users will understand.
-#: ../src/mainfrm.cc:903
+#: ../src/mainfrm.cc:908
 #: n:239
 msgid "Fade Distant Ob&jects"
 msgstr "Dunsteffe&kt"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:906
+#: ../src/mainfrm.cc:911
 #: n:298
 msgid "Smoot&hed Survey Legs"
 msgstr "Geglättete &Messstrecken"
 
-#: ../src/mainfrm.cc:912
-#: ../src/mainfrm.cc:916
+#: ../src/mainfrm.cc:917
+#: ../src/mainfrm.cc:921
 #: n:356
 msgid "Full Screen &Mode\tF11"
 msgstr "&Vollbild-Modus\tF11"
 
-#: ../src/gfxcore.cc:3839
-#: ../src/mainfrm.cc:881
+#: ../src/gfxcore.cc:3855
+#: ../src/mainfrm.cc:886
 #: n:292
 msgid "Colour by &Depth"
 msgstr "Farbe je nach &Tiefe"
 
-#: ../src/gfxcore.cc:3840
-#: ../src/mainfrm.cc:882
+#: ../src/gfxcore.cc:3856
+#: ../src/mainfrm.cc:887
 #: n:293
 msgid "Colour by D&ate"
 msgstr "Farbe je nach &Datum"
 
-#: ../src/gfxcore.cc:3841
-#: ../src/mainfrm.cc:883
+#: ../src/gfxcore.cc:3857
+#: ../src/mainfrm.cc:888
 #: n:289
 #, fuzzy
 msgid "Colour by &Error"
 msgstr "Anhand Fehle&rn einfärben"
 
-#: ../src/gfxcore.cc:3842
-#: ../src/mainfrm.cc:884
+#: ../src/gfxcore.cc:3858
+#: ../src/mainfrm.cc:889
 #: n:85
 #, fuzzy
 msgid "Colour by &Gradient"
 msgstr "Farbe je nach Grad&ient"
 
-#: ../src/gfxcore.cc:3843
-#: ../src/mainfrm.cc:885
+#: ../src/gfxcore.cc:3859
+#: ../src/mainfrm.cc:890
 #: n:82
 #, fuzzy
 msgid "Colour by &Length"
@@ -1998,40 +2011,40 @@ msgstr "Farbe je nach &Länge"
 msgid "Colour by &Survey"
 msgstr ""
 
-#: ../src/mainfrm.cc:930
+#: ../src/mainfrm.cc:935
 #: n:274
 msgid "&Compass"
 msgstr "&Kompass"
 
-#: ../src/mainfrm.cc:931
+#: ../src/mainfrm.cc:936
 #: n:275
 msgid "C&linometer"
 msgstr "&Neigungsanzeige"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/mainfrm.cc:934
+#: ../src/mainfrm.cc:939
 #: n:276
 msgid "Colour &Key"
 msgstr "&Farbschlüssel"
 
-#: ../src/mainfrm.cc:935
+#: ../src/mainfrm.cc:940
 #: n:277
 msgid "&Scale Bar"
 msgstr "&Maßstab"
 
-#: ../src/mainfrm.cc:925
+#: ../src/mainfrm.cc:930
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
 msgstr "Richtung &umkehren\tCtrl+R"
 
-#: ../src/mainfrm.cc:895
-#: ../src/mainfrm.cc:927
+#: ../src/mainfrm.cc:900
+#: ../src/mainfrm.cc:932
 #: n:281
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "Messlinie &abschalten\tEscape"
 
-#: ../src/mainfrm.cc:936
+#: ../src/mainfrm.cc:941
 #: n:299
 msgid "&Indicators"
 msgstr "&Richtungsanzeiger"
@@ -2117,44 +2130,44 @@ msgstr "%s: unzulässige Option -- %c\n"
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: ungültige Option -- %c\n"
 
-#: ../src/mainfrm.cc:834
+#: ../src/mainfrm.cc:839
 #: n:311
 msgid "&New Presentation"
 msgstr "&Neue Präsentation"
 
-#: ../src/mainfrm.cc:835
+#: ../src/mainfrm.cc:840
 #: n:312
 msgid "&Open Presentation…"
 msgstr "&Präsentation öffnen…"
 
-#: ../src/mainfrm.cc:836
+#: ../src/mainfrm.cc:841
 #: n:313
 msgid "&Save Presentation"
 msgstr "Präsentation &speichern"
 
-#: ../src/mainfrm.cc:837
+#: ../src/mainfrm.cc:842
 #: n:314
 msgid "Sa&ve Presentation As…"
 msgstr "Präsentation speichern &als…"
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
-#: ../src/mainfrm.cc:840
+#: ../src/mainfrm.cc:845
 #: n:315
 msgid "&Mark"
 msgstr "&Markieren"
 
 #. TRANSLATORS: "Play" as in "Play back a recording"
-#: ../src/mainfrm.cc:842
+#: ../src/mainfrm.cc:847
 #: n:316
 msgid "Pla&y"
 msgstr "Abspie&len"
 
-#: ../src/mainfrm.cc:843
+#: ../src/mainfrm.cc:848
 #: n:317
 msgid "&Export as Movie…"
 msgstr "&Exportieren als Film…"
 
-#: ../src/mainfrm.cc:2465
+#: ../src/mainfrm.cc:2494
 #: n:331
 msgid "Export Movie"
 msgstr "Film exportieren"
@@ -2166,19 +2179,19 @@ msgid "Select an output filename"
 msgstr "Name der Ausgabedatei wählen"
 
 #: ../src/mainfrm.cc:375
-#: ../src/mainfrm.cc:2387
+#: ../src/mainfrm.cc:2416
 #: n:320
 msgid "Aven presentations"
 msgstr "Aven Präsentationen"
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:1973
+#: ../src/mainfrm.cc:2002
 #: n:321
 msgid "Save Screenshot"
 msgstr "Bildschirmabzug speichern"
 
-#: ../src/mainfrm.cc:2382
-#: ../src/mainfrm.cc:2385
+#: ../src/mainfrm.cc:2411
+#: ../src/mainfrm.cc:2414
 #: n:322
 msgid "Select a presentation to open"
 msgstr "Zu öffnende Präsentation auswählen"
@@ -2191,86 +2204,86 @@ msgstr "Formatfehler in der Präsentationsdatei »%s«"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
-#: ../src/mainfrm.cc:1929
+#: ../src/mainfrm.cc:1934
 #: n:324
 msgid "Compass PLT files"
 msgstr "Compass PLT Datei"
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 #. package, so don’t translate it.
-#: ../src/mainfrm.cc:1936
+#: ../src/mainfrm.cc:1941
 #: n:325
 msgid "CMAP XYZ files"
 msgstr "CAMP XYZ Datei"
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:2036
-#: ../src/mainfrm.cc:2359
-#: ../src/mainfrm.cc:2376
+#: ../src/mainfrm.cc:2065
+#: ../src/mainfrm.cc:2388
+#: ../src/mainfrm.cc:2405
 #: n:326
 msgid "Modified Presentation"
 msgstr "Modifizierte Präsentation"
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:2034
-#: ../src/mainfrm.cc:2358
-#: ../src/mainfrm.cc:2375
+#: ../src/mainfrm.cc:2063
+#: ../src/mainfrm.cc:2387
+#: ../src/mainfrm.cc:2404
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr "Die aktuelle Präsentation wurde verändert. Abbrechen, ohne die Änderungen zu speichern?"
 
-#: ../src/mainfrm.cc:2676
-#: ../src/mainfrm.cc:2687
+#: ../src/mainfrm.cc:2705
+#: ../src/mainfrm.cc:2716
 #: n:328
 msgid "No matches were found."
 msgstr "Kein Treffer gefunden."
 
 #. TRANSLATORS: "Find stations" button tooltip
-#: ../src/mainfrm.cc:1013
+#: ../src/mainfrm.cc:1018
 #: n:332
 msgid "Find"
 msgstr "Suchen"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
-#: ../src/mainfrm.cc:1015
-#: ../src/mainfrm.cc:2719
+#: ../src/mainfrm.cc:1020
+#: ../src/mainfrm.cc:2748
 #: n:333
 msgid "Hide"
 msgstr "Verstecken"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2680
+#: ../src/mainfrm.cc:2709
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr "%d gefundene(n) Messpunkt(e) verstecken"
 
 #: ../src/mainfrm.cc:258
-#: ../src/mainfrm.cc:2124
-#: ../src/mainfrm.cc:2205
-#: ../src/mainfrm.cc:2257
+#: ../src/mainfrm.cc:2153
+#: ../src/mainfrm.cc:2234
+#: ../src/mainfrm.cc:2286
 #: n:335
 msgid "Altitude"
 msgstr "Höhe"
 
 #. TRANSLATORS: error if you try to drag multiple files to the aven
 #. window
-#: ../src/mainfrm.cc:720
+#: ../src/mainfrm.cc:722
 #: n:336
 msgid "You may only view one 3d file at a time."
 msgstr "Es kann nur eine 3D-Datei zugleich angezeigt werden."
 
-#: ../src/mainfrm.cc:937
+#: ../src/mainfrm.cc:942
 #: n:337
 msgid "&Side Panel"
 msgstr "&Seitliches Kontrollfeld"
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
-#: ../src/mainfrm.cc:2122
-#: ../src/mainfrm.cc:2144
-#: ../src/mainfrm.cc:2146
-#: ../src/mainfrm.cc:2256
+#: ../src/mainfrm.cc:2151
+#: ../src/mainfrm.cc:2173
+#: ../src/mainfrm.cc:2175
+#: ../src/mainfrm.cc:2285
 #: n:338
 msgid "%.2f E, %.2f N"
 msgstr "%.2f H, %.2f R"
@@ -2279,16 +2292,16 @@ msgstr "%.2f H, %.2f R"
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:2164
-#: ../src/mainfrm.cc:2214
-#: ../src/mainfrm.cc:2276
+#: ../src/mainfrm.cc:2193
+#: ../src/mainfrm.cc:2243
+#: ../src/mainfrm.cc:2305
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr "Von %s aus"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2289
+#: ../src/mainfrm.cc:2318
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
@@ -2296,7 +2309,7 @@ msgstr "H %.2f%s, V %.2f%s"
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2301
+#: ../src/mainfrm.cc:2330
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
@@ -2305,9 +2318,9 @@ msgstr "%s: %s, Dist %.2f%s, Richt. %03d%s"
 #. TRANSLATORS: tickable menu item in View menu.
 #.
 #. "Metric" here means metres, km, etc (rather than feet, miles, etc)
-#: ../src/gfxcore.cc:3830
-#: ../src/gfxcore.cc:3850
-#: ../src/mainfrm.cc:939
+#: ../src/gfxcore.cc:3846
+#: ../src/gfxcore.cc:3866
+#: ../src/mainfrm.cc:944
 #: n:342
 msgid "&Metric"
 msgstr "&Metrisch"
@@ -2316,10 +2329,10 @@ msgstr "&Metrisch"
 #.
 #. Degrees are the angular measurement where there are 360 in a full
 #. circle.
-#: ../src/gfxcore.cc:3792
-#: ../src/gfxcore.cc:3810
-#: ../src/gfxcore.cc:3852
-#: ../src/mainfrm.cc:940
+#: ../src/gfxcore.cc:3808
+#: ../src/gfxcore.cc:3826
+#: ../src/gfxcore.cc:3868
+#: ../src/mainfrm.cc:945
 #: n:343
 msgid "&Degrees"
 msgstr "&Grad"
@@ -2328,8 +2341,8 @@ msgstr "&Grad"
 #.
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/gfxcore.cc:3815
-#: ../src/mainfrm.cc:941
+#: ../src/gfxcore.cc:3831
+#: ../src/mainfrm.cc:946
 #: n:430
 msgid "&Percent"
 msgstr "&Prozentual"
@@ -2339,7 +2352,7 @@ msgstr "&Prozentual"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1226
+#: ../src/gfxcore.cc:1232
 #: ../src/printwx.cc:1138
 #: n:423
 msgid "km"
@@ -2351,14 +2364,14 @@ msgstr "km"
 #. If there should be a space between the number and this, include
 #. one in the translation.
 #: ../src/commands.c:305
-#: ../src/gfxcore.cc:1061
-#: ../src/gfxcore.cc:1153
-#: ../src/gfxcore.cc:1233
-#: ../src/mainfrm.cc:2113
-#: ../src/mainfrm.cc:2180
-#: ../src/mainfrm.cc:2200
-#: ../src/mainfrm.cc:2249
-#: ../src/mainfrm.cc:2280
+#: ../src/gfxcore.cc:1067
+#: ../src/gfxcore.cc:1159
+#: ../src/gfxcore.cc:1239
+#: ../src/mainfrm.cc:2142
+#: ../src/mainfrm.cc:2209
+#: ../src/mainfrm.cc:2229
+#: ../src/mainfrm.cc:2278
+#: ../src/mainfrm.cc:2309
 #: ../src/printwx.cc:1140
 #: n:424
 msgid "m"
@@ -2369,7 +2382,7 @@ msgstr "m"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1241
+#: ../src/gfxcore.cc:1247
 #: ../src/printwx.cc:1143
 #: n:425
 msgid "cm"
@@ -2380,7 +2393,7 @@ msgstr "cm"
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1254
+#: ../src/gfxcore.cc:1260
 #: n:426
 msgid " miles"
 msgstr " Meilen"
@@ -2390,7 +2403,7 @@ msgstr " Meilen"
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1261
+#: ../src/gfxcore.cc:1267
 #: n:427
 msgid " mile"
 msgstr " Meile"
@@ -2401,14 +2414,14 @@ msgstr " Meile"
 #. If there should be a space between the number and this, include
 #. one in the translation.
 #: ../src/commands.c:306
-#: ../src/gfxcore.cc:1061
-#: ../src/gfxcore.cc:1153
-#: ../src/gfxcore.cc:1269
-#: ../src/mainfrm.cc:2118
-#: ../src/mainfrm.cc:2183
-#: ../src/mainfrm.cc:2203
-#: ../src/mainfrm.cc:2254
-#: ../src/mainfrm.cc:2285
+#: ../src/gfxcore.cc:1067
+#: ../src/gfxcore.cc:1159
+#: ../src/gfxcore.cc:1275
+#: ../src/mainfrm.cc:2147
+#: ../src/mainfrm.cc:2212
+#: ../src/mainfrm.cc:2232
+#: ../src/mainfrm.cc:2283
+#: ../src/mainfrm.cc:2314
 #: n:428
 msgid "ft"
 msgstr "ft"
@@ -2418,25 +2431,25 @@ msgstr "ft"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1277
+#: ../src/gfxcore.cc:1283
 #: n:429
 msgid "in"
 msgstr "in"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:3787
+#: ../src/gfxcore.cc:3803
 #: n:387
 msgid "&Hide Compass"
 msgstr "&Kompass verstecken"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:3805
+#: ../src/gfxcore.cc:3821
 #: n:384
 msgid "&Hide Clino"
 msgstr "&Clino verstecken"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:3825
+#: ../src/gfxcore.cc:3841
 #: n:385
 msgid "&Hide scale bar"
 msgstr "Maßstab &verstecken"
@@ -2444,7 +2457,7 @@ msgstr "Maßstab &verstecken"
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:3848
+#: ../src/gfxcore.cc:3864
 #: n:386
 msgid "&Hide colour key"
 msgstr "Farbsc&hlüssel verstecken"
@@ -2452,11 +2465,11 @@ msgstr "Farbsc&hlüssel verstecken"
 #. TRANSLATORS: degree symbol - probably should be translated to
 #. itself.
 #: ../src/commands.c:308
-#: ../src/gfxcore.cc:713
-#: ../src/gfxcore.cc:803
-#: ../src/gfxcore.cc:1125
-#: ../src/mainfrm.cc:2167
-#: ../src/mainfrm.cc:2293
+#: ../src/gfxcore.cc:719
+#: ../src/gfxcore.cc:809
+#: ../src/gfxcore.cc:1131
+#: ../src/mainfrm.cc:2196
+#: ../src/mainfrm.cc:2322
 #: ../src/printwx.cc:89
 #: n:344
 msgid "°"
@@ -2465,9 +2478,9 @@ msgstr "°"
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 #. circle).
 #: ../src/commands.c:309
-#: ../src/gfxcore.cc:718
-#: ../src/gfxcore.cc:808
-#: ../src/gfxcore.cc:1125
+#: ../src/gfxcore.cc:724
+#: ../src/gfxcore.cc:814
+#: ../src/gfxcore.cc:1131
 #: n:76
 msgid "ᵍ"
 msgstr "ᵍ"
@@ -2477,8 +2490,8 @@ msgstr "ᵍ"
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2175
-#: ../src/mainfrm.cc:2296
+#: ../src/mainfrm.cc:2204
+#: ../src/mainfrm.cc:2325
 #: n:345
 msgid "grad"
 msgstr "Neugrad"
@@ -2486,29 +2499,29 @@ msgstr "Neugrad"
 #. TRANSLATORS: symbol for percentage gradient (100% = 45
 #. degrees = 50 grad).
 #: ../src/commands.c:310
-#: ../src/gfxcore.cc:794
-#: ../src/gfxcore.cc:812
+#: ../src/gfxcore.cc:800
+#: ../src/gfxcore.cc:818
 #: n:96
 msgid "%"
 msgstr "%"
 
 #. TRANSLATORS: infinity symbol - used for the percentage gradient on
 #. vertical angles.
-#: ../src/gfxcore.cc:788
+#: ../src/gfxcore.cc:794
 #: n:431
 msgid "∞"
 msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2187
+#: ../src/mainfrm.cc:2216
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr "%s: H %.2f%s, Richt. %03d%s"
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:2220
+#: ../src/mainfrm.cc:2249
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2516,12 +2529,12 @@ msgstr "%s: V %.2f%s"
 
 #. TRANSLATORS: labels for tabbed side panel this is for the tab with the
 #. tree hierarchy of survey station names
-#: ../src/mainfrm.cc:1064
+#: ../src/mainfrm.cc:1069
 #: n:376
 msgid "Surveys"
 msgstr "Vermessungen"
 
-#: ../src/mainfrm.cc:1065
+#: ../src/mainfrm.cc:1070
 #: n:377
 msgid "Presentation"
 msgstr "Präsentation"
@@ -2543,33 +2556,40 @@ msgstr "Hochwert"
 #.
 #. "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
-#: ../src/mainfrm.cc:789
+#: ../src/mainfrm.cc:791
 #: n:220
 msgid "&Open…\tCtrl+O"
 msgstr "Ö&ffnen…\tCtrl+O"
 
-#: ../src/mainfrm.cc:790
+#. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
+#. terrain.
+#: ../src/mainfrm.cc:794
+#: n:453
+msgid "Open &Terrain…"
+msgstr "Gelände&modell öffnen…"
+
+#: ../src/mainfrm.cc:795
 #: n:144
 msgid "Show &Log"
 msgstr "&Protokoll anzeigen"
 
-#: ../src/mainfrm.cc:793
+#: ../src/mainfrm.cc:798
 #: n:380
 msgid "&Print…\tCtrl+P"
 msgstr "&Drucken…\tCtrl+P"
 
-#: ../src/mainfrm.cc:794
+#: ../src/mainfrm.cc:799
 #: n:381
 msgid "P&age Setup…"
 msgstr "&Seite einrichten…"
 
 #. TRANSLATORS: In the "File" menu
-#: ../src/mainfrm.cc:797
+#: ../src/mainfrm.cc:802
 #: n:201
 msgid "&Screenshot…"
 msgstr "Bildschirm&abzug…"
 
-#: ../src/mainfrm.cc:798
+#: ../src/mainfrm.cc:803
 #: n:382
 msgid "&Export as…"
 msgstr "&Exportieren als…"
@@ -2674,14 +2694,14 @@ msgstr "anonymer Messpunkt"
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Zwischen zwei anonymen Messpunkten kann keine Messstrecke sein"
 
-#: ../src/mainfrm.cc:875
+#: ../src/mainfrm.cc:880
 #: n:406
 msgid "Spla&y Legs"
 msgstr "Messstrecken spre&izen"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are not shown.
-#: ../src/mainfrm.cc:867
+#: ../src/mainfrm.cc:872
 #: n:407
 msgid "&Hide"
 msgstr "&Verstecken"
@@ -2689,14 +2709,14 @@ msgstr "&Verstecken"
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. aven will show splay legs with less bright colours (rather than the
 #. same as other legs "Show" or not shown "Hide").
-#: ../src/mainfrm.cc:871
+#: ../src/mainfrm.cc:876
 #: n:408
 msgid "&Fade"
 msgstr "Dunsteffe&kt"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are shown the same as other legs.
-#: ../src/mainfrm.cc:874
+#: ../src/mainfrm.cc:879
 #: n:409
 msgid "&Show"
 msgstr "&Zeigen"
@@ -2966,7 +2986,7 @@ msgid "show survey date information (if present)"
 msgstr "Datumsangaben einer Vermessung zeigen (wenn vorhanden)"
 
 #: ../src/findentrances.cc:111
-#: ../src/gfxcore.cc:2628
+#: ../src/gfxcore.cc:2644
 #: ../src/gpx.cc:70
 #: ../src/kml.cc:69
 #: n:287
@@ -2975,7 +2995,7 @@ msgid "Failed to initialise input coordinate system “%s”"
 msgstr "Initialisierung des Eingabekoordinatensystems »%s« ist gescheitert"
 
 #: ../src/findentrances.cc:114
-#: ../src/gfxcore.cc:2634
+#: ../src/gfxcore.cc:2650
 #: ../src/gpx.cc:75
 #: ../src/kml.cc:74
 #: n:288
@@ -3077,18 +3097,6 @@ msgstr "SVG-Ausgabe erzeugen"
 #~ msgid "Error in format of font file “%s”"
 #~ msgstr "Formatfehler in der Schriftdatei »%s«"
 
-#. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a grid of
-#. height values).
-#~ msgid "Select a terrain file to view"
-#~ msgstr "Geländedatei zur Ansicht wählen"
-
-#~ msgid "Terrain files"
-#~ msgstr "Geländedateien"
-
-#. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the terrain.
-#~ msgid "Open &Terrain…"
-#~ msgstr "Gelände&modell öffnen…"
-
 #. TRANSLATORS: Show the terrain as solid rather than transparent.
 #~ msgid "Solid Su&rface"
 #~ msgstr "&Durchgezogene Oberfläche"
@@ -3098,7 +3106,7 @@ msgstr "SVG-Ausgabe erzeugen"
 #~ msgid "%d found"
 #~ msgstr "%d gefunden"
 
-#: ../src/mainfrm.cc:920
+#: ../src/mainfrm.cc:925
 #: n:347
 #~ msgid "&Preferences…"
 #~ msgstr "&Einstellungen…"

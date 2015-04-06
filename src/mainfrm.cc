@@ -789,6 +789,8 @@ void MainFrm::CreateMenuBar()
      * "File" menu.  The accelerators must be different within this group.
      * c.f. 201, 380, 381. */
     filemenu->Append(wxID_OPEN, wmsg(/*&Open…\tCtrl+O*/220));
+    /* TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
+     * terrain. */
     filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain…*/453));
     filemenu->Append(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
@@ -1967,6 +1969,8 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
 		     wmsg(/*All files*/208).c_str(),
 		     wxFileSelectorDefaultWildcardStr);
 #endif
+    /* TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
+     * grid of height values). */
     wxFileDialog dlg(this, wmsg(/*Select a terrain file to view*/451),
 		     wxString(), wxString(),
 		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
