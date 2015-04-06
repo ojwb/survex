@@ -1868,7 +1868,7 @@ msgstr "Passage &Tubes\tCtrl+T"
 #: ../src/mainfrm.cc:857
 #: n:449
 msgid "Terr&ain"
-msgstr ""
+msgstr "Terr&ain"
 
 #: ../src/mainfrm.cc:858
 #: n:271
