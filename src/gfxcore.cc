@@ -2755,7 +2755,7 @@ void GfxCore::DrawTerrain()
     }
     EndTriangles();
     SetAlpha(1.0);
-    printf("%d DEM triangles drawn\n", n_tris);
+    printf("%lu DEM triangles drawn\n", (unsigned long)n_tris);
 }
 
 // Plot blobs.
