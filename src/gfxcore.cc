@@ -2445,6 +2445,11 @@ void GfxCore::GenerateDisplayListShadow()
 
 bool GfxCore::LoadDEM(const wxString & file)
 {
+    if (m_Parent->m_cs_proj.empty()) {
+	wxMessageBox(wxT("No coordinate system specified in survey data"));
+	return false;
+    }
+
     delete [] dem;
     dem = NULL;
 
