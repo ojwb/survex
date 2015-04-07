@@ -1,3 +1,7 @@
+Tue Apr 07 21:52:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Remove fuzzy markers from a couple of messages.
+
 Tue Apr 07 06:03:01 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Fix printf format/type mismatch.

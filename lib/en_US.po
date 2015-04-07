@@ -1985,14 +1985,12 @@ msgstr "Color by D&ate"
 #: ../src/gfxcore.cc:3857
 #: ../src/mainfrm.cc:888
 #: n:289
-#, fuzzy
 msgid "Colour by &Error"
 msgstr "Color by &Error"
 
 #: ../src/gfxcore.cc:3858
 #: ../src/mainfrm.cc:889
 #: n:85
-#, fuzzy
 msgid "Colour by &Gradient"
 msgstr "Color by &Gradient"
 
