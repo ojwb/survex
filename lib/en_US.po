@@ -438,13 +438,13 @@ msgstr "Filename “%s” refers to directory"
 #: ../src/netartic.c:387
 #: n:45
 msgid "Survey not all connected to fixed stations"
-msgstr "Survey not all connected to fixed stations"
+msgstr "Survey not all connected to control points"
 
 #: ../src/commands.c:912
 #: ../src/datain.c:682
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
-msgstr "Station already fixed or equated to a fixed point"
+msgstr "Station already fixed or equated to a control point"
 
 #: ../src/cavern.c:298
 #: ../src/filename.c:55
@@ -485,7 +485,7 @@ msgstr "Clino reading over %.f%s (absolute value)"
 #: n:52
 #, c-format
 msgid "Tried to equate two non-equal fixed stations: “%s” and “%s”"
-msgstr "Tried to equate two non-equal fixed stations: “%s” and “%s”"
+msgstr "Tried to equate two non-equal control points: “%s” and “%s”"
 
 #. TRANSLATORS: "equal" as in:
 #.
@@ -496,7 +496,7 @@ msgstr "Tried to equate two non-equal fixed stations: “%s” and “%s”"
 #: n:53
 #, c-format
 msgid "Equating two equal fixed points: “%s” and “%s”"
-msgstr "Equating two equal fixed points: “%s” and “%s”"
+msgstr "Equating two equal control points: “%s” and “%s”"
 
 #. TRANSLATORS: " *fix a " gives this message:
 #: ../src/commands.c:799
@@ -640,20 +640,20 @@ msgstr "Station “%s” referred to just once, with an explicit survey name - t
 #: ../src/netartic.c:399
 #: n:71
 msgid "The following survey stations are not attached to a fixed point:"
-msgstr "The following survey stations are not attached to a fixed point:"
+msgstr "The following survey stations are not attached to a control point:"
 
 #: ../src/netskel.c:135
 #: n:72
 #, c-format
 msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
-msgstr "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
+msgstr "Survey has no control points. Therefore I’ve fixed %s at (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
 #: ../src/netskel.c:958
 #: n:73
 #, c-format
 msgid "Unused fixed point “%s”"
-msgstr "Unused fixed point “%s”"
+msgstr "Unused control point “%s”"
 
 #: ../src/matrix.c:123
 #: n:74
@@ -1932,7 +1932,7 @@ msgstr "Entrances"
 #: ../src/printwx.cc:521
 #: n:419
 msgid "Fixed Points"
-msgstr "Fixed Points"
+msgstr "Control Points"
 
 #: ../src/printwx.cc:525
 #: n:420
@@ -3120,7 +3120,7 @@ msgstr "produce SVG output"
 
 #: n:352
 #~ msgid "Highlight stations marked as fixed points"
-#~ msgstr "Highlight stations marked as fixed points"
+#~ msgstr "Highlight stations marked as control points"
 
 #: n:353
 #~ msgid "Highlight stations which are exported"

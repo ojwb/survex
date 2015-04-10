@@ -1,3 +1,7 @@
+Fri Apr 10 20:31:56 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Say "control point" more consistently.
+
 Fri Apr 10 10:34:57 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/: Pressing F6 toggles the display of rendering stats, currently
