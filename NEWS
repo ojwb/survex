@@ -1,4 +1,39 @@
-45630e23 (Olly Betts 2015-04-03 00:13:36 +1300    1) Thu Apr 02 11:13:24 GMT 2015  Olly Betts <olly@survex.com>
+89e0fe52 (Olly Betts 2015-04-08 09:52:50 +1200    1) Tue Apr 07 21:52:29 GMT 2015  Olly Betts <olly@survex.com>
+
+
+29f2e7d6 (Olly Betts 2015-04-05 21:46:54 +1200)
+Sun Apr 05 09:46:31 GMT 2015  Olly Betts <olly@survex.com>
+	* src/gfxcore.cc: Increase volume diameter so that terrain doesn't get
+	  clipped.
+
+46beda0b (Olly Betts 2015-04-05 15:35:32 +1200)
+Sun Apr 05 03:34:52 GMT 2015  Olly Betts <olly@survex.com>
+	* lib/survex.pot,src/: Create a "Colour by" submenu of the "View" menu.
+
+d36c3dc0 (Olly Betts 2015-04-05 13:27:38 +1200)
+Sun Apr 05 01:25:59 GMT 2015  Olly Betts <olly@survex.com>
+	* src/: Remove actions from 'Orientation' menu which you wouldn't
+	  sanely want to perform from the menu.
+a9a4db08 (Olly Betts 2015-04-05 11:25:36 +1200)
+Sat Apr 04 23:24:13 GMT 2015  Olly Betts <olly@survex.com>
+	* src/: Remove actions from 'Rotation' menu which you wouldn't sanely
+	  want to perform from the menu.
+
+11fe902a (Olly Betts 2015-04-05 21:49:07 +1200)
+Sun Apr 05 09:48:39 GMT 2015  Olly Betts <olly@survex.com>
+	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Plot the terrain with a
+	  Z-prepass so that we don't see the terrain through itself.
+9df33bce (Olly Betts 2015-04-05 15:04:51 +1200)
+Sun Apr 05 03:04:00 GMT 2015  Olly Betts <olly@survex.com>
+	* src/gfxcore.cc,src/gfxcore.h: Add support for reading DEM data from
+	  SRTM .hgt files.
+bfb3ab09 (Olly Betts 2015-04-05 10:02:00 +1200)
+Sat Apr 04 22:01:29 GMT 2015  Olly Betts <olly@survex.com>
+	* src/gfxcore.cc: Support 'SKIPBYTES' in the DEM data.
+6388423f (Olly Betts 2015-04-04 16:18:50 +1300)
+Sat Apr 04 03:17:32 GMT 2015  Olly Betts <olly@survex.com>
+	* src/gfxcore.cc,src/gfxcore.h: Render terrain as a transparent mesh of
+	  triangles.
 
 Changes in 1.2.18 (2015-04-03):
 

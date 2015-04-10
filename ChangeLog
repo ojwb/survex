@@ -1,3 +1,9 @@
+Fri Apr 10 10:34:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Pressing F6 toggles the display of rendering stats, currently
+	  FPS (Frames Per Second) and the number of triangles in the terrain
+	  mesh.
+
 Tue Apr 07 21:52:29 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/en_US.po: Remove fuzzy markers from a couple of messages.

@@ -154,6 +154,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Metric(false),
     m_Percent(false),
     m_HitTestDebug(false),
+    m_RenderStats(false),
     m_PointGrid(NULL),
     m_HitTestGridValid(false),
     m_here(NULL),
@@ -165,6 +166,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     current_cursor(GfxCore::CURSOR_DEFAULT),
     sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD)),
     dem(NULL),
+    last_time(0),
     n_tris(0)
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
@@ -329,6 +331,9 @@ void GfxCore::OnIdle(wxIdleEvent& event)
 	// If still animating, we want more idle events.
 	if (Animating())
 	    event.RequestMore();
+    } else {
+	// If we're idle, don't show a bogus FPS next time we render.
+	last_time = 0;
     }
 }
 
@@ -439,6 +444,21 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    EndLines();
 	    DisableDashedLines();
 	}
+
+	long now = timer.Time();
+	if (m_RenderStats) {
+	    // Show stats about rendering.
+	    SetColour(col_TURQUOISE);
+	    int y = GetYSize() - GetFontSize();
+	    if (last_time != 0.0) {
+		// timer.Time() measure in milliseconds.
+		double fps = 1000.0 / (now - last_time);
+		DrawIndicatorText(1, y, wxString::Format(wxT("FPS:% 5.1f"), fps));
+	    }
+	    y -= GetFontSize();
+	    DrawIndicatorText(1, y, wxString::Format(wxT("▲:%lu"), (unsigned long)n_tris));
+	}
+	last_time = now;
 
 	// Draw indicators.
 	//
@@ -2755,7 +2775,6 @@ void GfxCore::DrawTerrain()
     }
     EndTriangles();
     SetAlpha(1.0);
-    printf("%lu DEM triangles drawn\n", (unsigned long)n_tris);
 }
 
 // Plot blobs.

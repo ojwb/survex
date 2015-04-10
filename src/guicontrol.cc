@@ -1251,6 +1251,9 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    m_View->InvalidateAllLists();
 	    m_View->ForceRefresh();
 	    break;
+	case WXK_F6:
+	    m_View->ToggleRenderStats();
+	    break;
 	default:
 	    e.Skip();
     }

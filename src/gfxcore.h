@@ -205,6 +205,7 @@ private:
     bool m_Percent;
 
     bool m_HitTestDebug;
+    bool m_RenderStats;
 
     list<LabelInfo*> *m_PointGrid;
     bool m_HitTestGridValid;
@@ -248,6 +249,7 @@ private:
     double o_x, o_y, step_x, step_y;
     long nodata_value;
     bool bigendian;
+    long last_time;
     size_t n_tris;
 
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
@@ -486,6 +488,9 @@ public:
     }
     void ToggleHitTestDebug() {
 	ToggleFlag(&m_HitTestDebug);
+    }
+    void ToggleRenderStats() {
+	ToggleFlag(&m_RenderStats);
     }
     void ToggleDegrees() {
 	ToggleFlag(&m_Degrees);
