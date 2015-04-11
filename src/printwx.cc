@@ -1776,6 +1776,8 @@ svxPrintout::Pre()
 void
 svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 {
+    pdc->DestroyClippingRegion();
+
     int x, y;
     x = (pg - 1) % pagesX;
     y = pagesY - 1 - ((pg - 1) / pagesX);
@@ -1795,7 +1797,6 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 		  m_layout->pagesX * m_layout->pagesY,
 		  m_layout->datestamp.c_str());
     WriteString(footer);
-    pdc->DestroyClippingRegion();
     drawticks(clip, (int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
 }
 

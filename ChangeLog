@@ -1,3 +1,8 @@
+Sat Apr 11 23:30:42 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Destroy any existing clipping region before we write
+	  the page footer.  Hopefully solves #52, reported by Erin Lynch.
+
 Sat Apr 11 00:50:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
