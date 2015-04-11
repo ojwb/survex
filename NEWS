@@ -1,110 +1,86 @@
-89e0fe52 (Olly Betts 2015-04-08 09:52:50 +1200    1) Tue Apr 07 21:52:29 GMT 2015  Olly Betts <olly@survex.com>
+2bf355e5 (Olly Betts 2015-04-11 08:32:14 +1200    1) Fri Apr 10 20:31:56 GMT 2015  Olly Betts <olly@survex.com>
 
+Changes in 1.2.18 (2015-04-11):
 
-29f2e7d6 (Olly Betts 2015-04-05 21:46:54 +1200)
-Sun Apr 05 09:46:31 GMT 2015  Olly Betts <olly@survex.com>
-	* src/gfxcore.cc: Increase volume diameter so that terrain doesn't get
-	  clipped.
+* aven:
 
-46beda0b (Olly Betts 2015-04-05 15:35:32 +1200)
-Sun Apr 05 03:34:52 GMT 2015  Olly Betts <olly@survex.com>
-	* lib/survex.pot,src/: Create a "Colour by" submenu of the "View" menu.
+  + Add support for reading terrain data (from a zip file containing either an
+    SRTM .hgt file, or an ESRI .bil file and associated metadata files), and
+    rendering it as a transparent surface.
 
-d36c3dc0 (Olly Betts 2015-04-05 13:27:38 +1200)
-Sun Apr 05 01:25:59 GMT 2015  Olly Betts <olly@survex.com>
-	* src/: Remove actions from 'Orientation' menu which you wouldn't
-	  sanely want to perform from the menu.
-a9a4db08 (Olly Betts 2015-04-05 11:25:36 +1200)
-Sat Apr 04 23:24:13 GMT 2015  Olly Betts <olly@survex.com>
-	* src/: Remove actions from 'Rotation' menu which you wouldn't sanely
-	  want to perform from the menu.
+  + Remove actions from 'Orientation' and 'Rotation' menus which you wouldn't
+    sanely want to perform from the menu.
 
-11fe902a (Olly Betts 2015-04-05 21:49:07 +1200)
-Sun Apr 05 09:48:39 GMT 2015  Olly Betts <olly@survex.com>
-	* src/gfxcore.cc,src/gla-gl.cc,src/gla.h: Plot the terrain with a
-	  Z-prepass so that we don't see the terrain through itself.
-9df33bce (Olly Betts 2015-04-05 15:04:51 +1200)
-Sun Apr 05 03:04:00 GMT 2015  Olly Betts <olly@survex.com>
-	* src/gfxcore.cc,src/gfxcore.h: Add support for reading DEM data from
-	  SRTM .hgt files.
-bfb3ab09 (Olly Betts 2015-04-05 10:02:00 +1200)
-Sat Apr 04 22:01:29 GMT 2015  Olly Betts <olly@survex.com>
-	* src/gfxcore.cc: Support 'SKIPBYTES' in the DEM data.
-6388423f (Olly Betts 2015-04-04 16:18:50 +1300)
-Sat Apr 04 03:17:32 GMT 2015  Olly Betts <olly@survex.com>
-	* src/gfxcore.cc,src/gfxcore.h: Render terrain as a transparent mesh of
-	  triangles.
+  + Create a "Colour by" submenu of the "View" menu to house the various
+    colouring options.
 
-Changes in 1.2.18 (2015-04-03):
+  + Add "Colour by Gradient" and "Colour by Length".
 
-	* buildmacosx.sh: Remove packaging of svxedit for OS X.
-	* survex.spec.in: Drop svxedit from RPM spec file.
-	* .gitignore,Makefile.am,configure.ac,lib/INSTALL.OSX,
-	  lib/icons/Makefile.am,src/,survex.iss.in: Remove editwrap - while an
-	  editor with built-in knowledge of survex would be nice to have,
-	  svxedit doesn't really offer that, and it looks ugly in a modern
-	  desktop.
+  + Make the button to dismiss the "About" dialog "OK" rather than "Close",
+    which seems more logical, and also allows the dialog to be closed by
+    pressing "Escape".
 
-	* lib/INSTALL.OSX,src/mainfrm.cc: Attempt to address the size of the
-	  toolbar icons on Mac OS X.
+  + Don't round bearing and tilt angles to integers when printing and
+    exporting.
 
-	* doc/manual.sgml: Fix bugs in the markup.
-	* .gitignore,configure.ac,doc/: Eliminate most of the SGML entities we
-	  define.
+  + Pressing F6 now toggles the display of rendering stats, currently FPS
+    (Frames Per Second) and the number of triangles in the terrain mesh.
 
-	* lib/icons/Makefile.am,lib/icons/solid-surface.png,
-	  lib/icons/solid_surface.xpm,lib/survex.pot,src/: Add UI for toggling
-	  terrain on and off.
-	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.h: Terrain data work in
-	  progress.
-	* src/gfxcore.cc: Read terrain data directly from the zip file.
+  + Add a menu item and toolbar button to show the cavern log window if the
+    currently shown survey data was processed by aven.  Reported by Hugh St
+    Lawrence in #47, and by Dave Clucas and others previously on the list.
 
-* aven: Add a menu item and toolbar button to show the cavern log window if the
-  currently shown survey data was processed by aven.  Reported by Hugh St
-  Lawrence in #47, and by Dave Clucas and others previously on the list.
+  + Add "Save Log" button to Aven's cavern log window.
 
-* aven: Add "Save Log" button to Aven's cavern log window.
+  + In cavern log window, highlight "error" markers in red and "warning"
+    markers in orange.
 
-* aven: Add "Colour by Gradient" and "Colour by Length".
+  + Rework code to read cavern's output.  In particular, we no longer mix
+    buffered and non-buffered system calls.
 
-* aven: Make the button to dismiss the "About" dialog "OK" rather than "Close",
-  which seems more logical, and also allows the dialog to be closed by pressing
-  "Escape".
+  + Aven's support for reading colours and font sizes for printouts from
+    print.ini has never worked - the contents of the ini files are ignored due
+    to a bug which has been there since the code was added in 2005 - but nobody
+    has ever complained.  So just strip out that code entirely - we should
+    support setting the colours and font sizes, but a GUI interface for setting
+    them would be better.
 
-* aven: Don't round bearing and tilt angles to integers when printing and
-  exporting.
+  + Add JSON export.  This should be regarded as experimental, and the format
+    is quite likely to change.
 
-* aven: In cavern log window, highlight "error" markers in red and "warning"
-  markers in orange.
+  + Fix to compile with a Unicode build of wxWidgets 2.8.  Reported by Bill
+    Gee.
 
-* aven: Aven's support for reading colours and font sizes for printouts from
-  print.ini has never worked - the contents of the ini files are ignored due to
-  a bug which has been there since the code was added in 2005 - but nobody has
-  ever complained.  So just strip out that code entirely - we should support
-  setting the colours and font sizes, but a GUI interface for setting them
-  would be better.
+  + Take the width of the messages used above the compass and clino into
+    account when calculating how much space to allow for them - now the labels
+    won't overlap or be cut off in translations where they are long.
 
-* aven: Rework code to read cavern's output.  In particular, we no longer mix
-  buffered I/O with select() on the file descriptor.
+  + (Mac OS X version): Attempt to address the size of the toolbar icons.
 
-* aven: Fix to compile with a Unicode build of wxWidgets 2.8.  Reported by Bill
-  Gee.
+* cavern:
 
-* aven: Add JSON export.
+  + Use the currently set units when outputting measurements in warnings,
+    errors, and the stats at the end of the run.
 
-* aven: Take the width of the messages used above the compass and clino into
-  account when calculating how much space to allow for them - now the labels
-  won't overlap or be cut off in translations where they are long.
+  + Include column number when a *include file isn't found.
 
-* cavern: Use the currently set units when outputting measurements in warnings,
-  errors, and the stats at the end of the run.
+  + Show 'error' in front of error messages, like we show 'warning' in front of
+    warnings.  Fixes #48, reported by Wookey.
 
-* cavern: Include column number when a *include file isn't found.
-
-* cavern: Show 'error' in front of error messages, like we show 'warning' in
-  front of warnings.  Fixes #48, reported by Wookey.
+  + Increase the threshold for warning that fore and back measurements differ
+    from 2 SDs to 3 SDs.
 
 * findentrances: If the 3d file specifies the coordinate system, use it.
+
+* svxedit: Remove svxedit - while an editor with built-in knowledge of survex
+  would be nice to have, svxedit doesn't really offer that, and it looks ugly
+  in a modern desktop.
+
+* If we run out of memory while reading a processed survey data file, include
+  the filename in the error message.
+
+* Many translation updates - notably Indonesian and Russian are now the two
+  most complete translations.
 
 * (Microsoft Windows version): Add code page 1252 mappings for fancy quotes.
 
@@ -113,46 +89,24 @@ Changes in 1.2.18 (2015-04-03):
 
 * Add SVG version of .plt icon.
 
-* cavern: Warn if fore and back measurements differ by more than 3 SDs, rather
-  than just by 2 SDs.
+* Manual:
 
-* doc/manual.sgml: Add complete list of quantities you can set SDs for.  Thanks
-  for Wookey for highlighting that the previous list was incomplete.
+  + Add complete list of quantities you can set SDs for.  Thanks for Wookey for
+    highlighting that the previous list was incomplete.
 
-* doc/manual.sgml: Document averaging of a group of repeated readings.
+  + Document averaging of a group of repeated readings.
 
-* doc/manual.sgml: Add a link to the sample data from the manual.
+  + Add a link to the sample data from the manual.
 
-* doc/manual.sgml: Remove references to contact addresses which are no longer
-  there.  Remove offer to post people floppies, and references to a CD image
-  which isn't available for download.
+  + Remove references to contact addresses which are no longer there.  Remove
+    offer to post people floppies, and references to a CD image which isn't
+    available for download.
 
 * Remove non-breaking spaces from the diffpos and extend manual pages, as they
   actually make the output formatting worse (presumably these used to work
   around a since-fixed bug in one of the docbook processing tools).
 
-* doc/TODO.htm: "Save cavern log from aven" now implemented.
-
-* If we run out of memory while reading a processed survey data file, include
-  the filename in the error message.
-
-	* lib/: More translation updates.
-
-	* lib/el.po: Fix language code in file to be 'el'.
-
-	* lib/hu.po: Change '...' to ellipses.
-	* lib/hu.po: Add missing quotes.
-	* lib/hu.po: Use curly double quotes.
-	* lib/hu.po: Remove erroneous quotes from message.
-
-	* lib/ru.po: Merge more translation updates from "vsuhachev".
-
-	* lib/id.po: Merged translation updates from "Cave ID" - all messages
-	  are now translated into Indonesian!
-
-* doc/manual.sgml: Document averaging of a group of repeated readings.
-
-	* doc/TODO.htm: Update.
+* doc/TODO.htm: Update.
 
 Changes in 1.2.17 (2015-02-24):
 
