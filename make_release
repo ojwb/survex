@@ -1,5 +1,7 @@
 #! /bin/sh
 
+# This script automates most of the process on making a new release.
+
 set -e
 
 rel=yes
