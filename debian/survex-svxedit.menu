@@ -1,2 +1,0 @@
-?package(survex-svxedit):needs="X11" section="Applications/Science/Geoscience" \
- title="SvxEdit" command="/usr/bin/svxedit"
