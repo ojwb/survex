@@ -175,7 +175,7 @@ class svxPrintout : public wxPrintout {
     wxDC* pdc;
     wxFont *font_labels, *font_default;
     // Currently unused, but "skip blank pages" would use it.
-    static const int cur_pass = 0;
+    bool scan_for_blank_pages;
 
     wxPen *pen_frame, *pen_cross, *pen_leg, *pen_surface_leg;
     wxColour colour_text, colour_labels;
@@ -186,6 +186,8 @@ class svxPrintout : public wxPrintout {
     struct {
 	long x_min, y_min, x_max, y_max;
     } clip;
+
+    bool fBlankPage;
 
     int check_intersection(long x_p, long y_p);
     void draw_info_box();
@@ -645,6 +647,22 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
     wxPrintDialogData pd(psdd->GetPrintData());
     wxPrinter pr(&pd);
     svxPrintout po(mainfrm, &m_layout, psdd, m_File);
+    if (m_layout.SkipBlank) {
+	// FIXME: wx's printing requires a contiguous range of valid page
+	// numbers.  To achieve that, we need to run a scan for blank pages
+	// here, so that GetPageInfo() knows what range to return, and so
+	// that OnPrintPage() can map a page number back to where in the
+	// MxN multi-page layout.
+#if 0
+	po.scan_for_blank_pages = true;
+	for (int page = 1; page <= m_layout->pages; ++page) {
+	    po.fBlankPage = fTrue;
+	    po.OnPrintPage(page);
+	    // FIXME: Do something with po.fBlankPage
+	}
+	po.scan_for_blank_pages = false;
+#endif
+    }
     if (pr.Print(this, &po, true)) {
 	// Close the print dialog if printing succeeded.
 	Destroy();
@@ -966,7 +984,8 @@ static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
 			 wxPageSetupDialogData *data, const wxString & title)
-    : wxPrintout(title), font_labels(NULL), font_default(NULL)
+    : wxPrintout(title), font_labels(NULL), font_default(NULL),
+      scan_for_blank_pages(false)
 {
     mainfrm = mainfrm_;
     m_layout = l;
@@ -1646,7 +1665,7 @@ svxPrintout::DrawTo(long x, long y)
     long x_p = x_t, y_p = y_t;
     x_t = x_offset + x - clip.x_min;
     y_t = y_offset + clip.y_max - y;
-    if (cur_pass != -1) {
+    if (!scan_for_blank_pages) {
 	pdc->DrawLine(x_p, y_p, x_t, y_t);
     } else {
 	if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
@@ -1660,7 +1679,7 @@ svxPrintout::DrawTo(long x, long y)
 void
 svxPrintout::DrawCross(long x, long y)
 {
-   if (cur_pass != -1) {
+   if (!scan_for_blank_pages) {
       MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
       DrawTo(x + PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
       MoveTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
@@ -1682,7 +1701,7 @@ svxPrintout::WriteString(const wxString & s)
     double xsc, ysc;
     pdc->GetUserScale(&xsc, &ysc);
     pdc->SetUserScale(xsc * font_scaling_x, ysc * font_scaling_y);
-    if (cur_pass != -1) {
+    if (!scan_for_blank_pages) {
 	pdc->DrawText(s,
 		      long(x_t / font_scaling_x),
 		      long(y_t / font_scaling_y) - pdc->GetCharHeight());
@@ -1700,14 +1719,15 @@ svxPrintout::WriteString(const wxString & s)
 void
 svxPrintout::DrawEllipse(long x, long y, long r, long R)
 {
-    /* Don't need to check in first-pass - circle is only used in title box */
-    if (cur_pass != -1) {
+    if (!scan_for_blank_pages) {
 	x_t = x_offset + x - clip.x_min;
 	y_t = y_offset + clip.y_max - y;
 	const wxBrush & save_brush = pdc->GetBrush();
 	pdc->SetBrush(*wxTRANSPARENT_BRUSH);
 	pdc->DrawEllipse(x_t - r, y_t - R, 2 * r, 2 * R);
 	pdc->SetBrush(save_brush);
+    } else {
+	/* No need to check - this is only used in the legend. */
     }
 }
 

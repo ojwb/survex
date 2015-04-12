@@ -23,8 +23,6 @@
 
 #include <wx.h>
 
-extern bool fBlankPage;
-
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 
