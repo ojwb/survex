@@ -208,7 +208,7 @@ class svxPrintout : public wxPrintout {
     void WriteString(const wxString & s);
     void DrawEllipse(long x, long y, long r, long R);
     void SolidRectangle(long x, long y, long w, long h);
-    int Pre();
+    void Pre();
     void NewPage(int pg, int pagesX, int pagesY);
     void PlotLR(const vector<XSect> & centreline);
     void PlotUD(const vector<XSect> & centreline);
@@ -1708,7 +1708,7 @@ svxPrintout::SolidRectangle(long x, long y, long w, long h)
     pdc->DrawRectangle(X, Y - h, w, h);
 }
 
-int
+void
 svxPrintout::Pre()
 {
     font_labels = new wxFont(fontsize_labels, wxDEFAULT, wxNORMAL, wxNORMAL,
@@ -1717,7 +1717,6 @@ svxPrintout::Pre()
     font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
 			      false, wxString(fontname, wxConvUTF8),
 			      wxFONTENCODING_ISO8859_1);
-    return 1; /* only need 1 pass */
 }
 
 void
