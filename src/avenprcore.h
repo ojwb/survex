@@ -51,7 +51,6 @@ public:
     double PaperWidth, PaperDepth;
     int pagesX, pagesY, pages;
     double xOrg, yOrg;
-    wxString footer;
 
     layout(wxPageSetupDialogData* data);
 #if 0

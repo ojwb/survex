@@ -1,3 +1,8 @@
+Sun Apr 12 10:01:08 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc,src/avenprcore.h,src/printwx.cc: Eliminate footer
+	  member of layout.
+
 Sun Apr 12 09:50:24 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Eliminate 4 file global variables.

@@ -1542,7 +1542,6 @@ void
 svxPrintout::OnBeginPrinting() {
     Init();
     Pre();
-    m_layout->footer = wmsg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
 }
 
 void
@@ -1739,7 +1738,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     SetFont(font_labels);
     MoveTo(clip.x_min, clip.y_min - (long)(7 * m_layout->scY));
     wxString footer;
-    footer.Printf(m_layout->footer,
+    footer.Printf(wmsg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167),
 		  m_layout->title.c_str(),
 		  pg,
 		  m_layout->pagesX * m_layout->pagesY,
