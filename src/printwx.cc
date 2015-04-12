@@ -1031,7 +1031,7 @@ svxPrintout::draw_info_box()
       DrawTo(dx, dy);
       DrawTo(bx, by);
 
-      SetColour(PR_COLOUR_TEXT);
+      pdc->SetTextForeground(colour_text);
       MOVEMM(div + 0.5, boxheight - 5.5);
       WriteString(wmsg(/*North*/115));
 
@@ -1055,7 +1055,7 @@ svxPrintout::draw_info_box()
 
       MOVEMM((L + R) / 2, H - 2); DRAWMM((L + R) / 2, H + 2);
 
-      SetColour(PR_COLOUR_TEXT);
+      pdc->SetTextForeground(colour_text);
       MOVEMM(div + 2, boxheight - 8);
       /* TRANSLATORS: "Elevation on" 020 <-> 200 degrees */
       WriteString(wmsg(/*Elevation on*/116));
@@ -1084,7 +1084,7 @@ svxPrintout::draw_info_box()
       break;
     }
     case layout::EXTELEV:
-      SetColour(PR_COLOUR_TEXT);
+      pdc->SetTextForeground(colour_text);
       MOVEMM(2, 12);
       /* TRANSLATORS: This is used on printouts of extended elevations. */
       WriteString(wmsg(/*Extended elevation*/191));
@@ -1154,7 +1154,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
       int sf = -(int)floor(E);
       buf += wxString::Format(wxT(" (%.*f%s)"), sf, pow10_E, wmsg(units).c_str());
    }
-   SetColour(PR_COLOUR_TEXT);
+   pdc->SetTextForeground(colour_text);
    MOVEMM(x, y + 4); WriteString(buf);
 
    /* Work out how many divisions there will be */
@@ -1189,7 +1189,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
       }
 #endif
       buf.Printf(wxT("%d"), c * Step);
-      SetColour(PR_COLOUR_TEXT);
+      pdc->SetTextForeground(colour_text);
       MOVEMM(x + c * d - buf.length(), y - 5);
       WriteString(buf);
    }
@@ -1389,6 +1389,7 @@ bool
 svxPrintout::OnPrintPage(int pageNum) {
     GetPageSizePixels(&xpPageWidth, &ypPageDepth);
     pdc = GetDC();
+    pdc->SetBackgroundMode(wxTRANSPARENT);
 #ifdef AVEN_PRINT_PREVIEW
     if (IsPreview()) {
 	int dcx, dcy;
@@ -1511,7 +1512,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 		    DrawCross(xnew, ynew);
 		}
 		if (l->show_mask & LABELS) {
-		    SetColour(PR_COLOUR_LABELS);
+		    pdc->SetTextForeground(colour_labels);
 		    MoveTo(xnew, ynew);
 		    WriteString((*label)->GetText());
 		}
@@ -1672,13 +1673,6 @@ void
 svxPrintout::SetColour(int colourcode)
 {
     switch (colourcode) {
-	case PR_COLOUR_TEXT:
-	    pdc->SetTextForeground(colour_text);
-	    break;
-	case PR_COLOUR_LABELS:
-	    pdc->SetTextForeground(colour_labels);
-	    pdc->SetBackgroundMode(wxTRANSPARENT);
-	    break;
 	case PR_COLOUR_FRAME:
 	    pdc->SetPen(*pen_frame);
 	    break;
