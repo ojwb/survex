@@ -1717,13 +1717,12 @@ svxPrintout::WriteString(const wxString & s)
     pdc->GetUserScale(&xsc, &ysc);
     pdc->SetUserScale(xsc * font_scaling_x, ysc * font_scaling_y);
     pdc->SetFont(*current_font);
-    int w, h;
     if (cur_pass != -1) {
-	pdc->GetTextExtent(wxT("My"), &w, &h);
 	pdc->DrawText(s,
 		      long(x_t / font_scaling_x),
-		      long(y_t / font_scaling_y) - h);
+		      long(y_t / font_scaling_y) - pdc->GetCharHeight());
     } else {
+	int w, h;
 	pdc->GetTextExtent(s, &w, &h);
 	if ((y_t + h > 0 && y_t - h < clip.y_max - clip.y_min) ||
 	    (x_t < clip.x_max - clip.x_min && x_t + w > 0)) {

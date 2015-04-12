@@ -1,3 +1,8 @@
+Sun Apr 12 07:04:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Use DC::GetCharHeight() to get the height of the
+	  font, rather than calling DC::GetTextExtent("My").
+
 Sat Apr 11 23:30:42 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Destroy any existing clipping region before we write
