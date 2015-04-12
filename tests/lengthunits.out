@@ -1,0 +1,25 @@
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 5 survey stations, joined by 4 legs.
+There are 0 loops.
+Total length of survey legs =  105.62ft ( 105.62ft adjusted)
+Total plan length of survey legs =  105.62ft
+Total vertical length of survey legs =    0.00ft
+Vertical range = 0.00ft (from 5 at 0.00ft to 5 at 0.00ft)
+North-South range = 105.62ft (from 5 at 105.62ft to 1 at 0.00ft)
+East-West range = 0.00ft (from 5 at 0.00ft to 5 at 0.00ft)
+   2 1-nodes.
+   3 2-nodes.

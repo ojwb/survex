@@ -1,0 +1,33 @@
+./back2.svx:4: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+./back2.svx:5: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+./back2.svx:9: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+./back2.svx:10: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+./back2.svx:15: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+./back2.svx:16: warning: COMPASS reading and BACKCOMPASS reading disagree by 2dg
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 7 survey stations, joined by 6 legs.
+There is 1 loop.
+Survey has 2 connected components.
+Total length of survey legs =   60.00m (  60.00m adjusted)
+Total plan length of survey legs =   60.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 4b at 0.00m to 4b at 0.00m)
+North-South range = 10.00m (from 4b at 10.00m to 1 at 0.00m)
+East-West range = 0.00m (from 4b at 0.00m to 3b at -0.00m)
+   6 1-nodes.
+   1 6-node.
+There were 6 warning(s).
