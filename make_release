@@ -13,7 +13,7 @@ if test x"$rel" = xyes ; then
   perl -e 'while (<>) { if (m!(.*)//! && $1 !~ / \* /) {print "$ARGV:$.:// comment in C source\n"; exit 1}} continue { close ARGV if eof }' \
       *.c \
       cavern.h commands.h cmdline.h date.h datain.h debug.h\
-      filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h ini.h\
+      filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h\
       listpos.h matrix.h message.h namecmp.h netartic.h netbits.h\
       netskel.h network.h osalloc.h osdepend.h ostypes.h out.h readval.h str.h\
       useful.h validate.h whichos.h
