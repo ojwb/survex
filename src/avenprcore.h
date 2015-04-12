@@ -66,14 +66,4 @@ public:
     void pages_required();
 };
 
-/* things for a back end */
-void drawticks(border clip, int tick_size, int x, int y);
-
-#if 0
-class MainFrm;
-void print_all(MainFrm *m_parent, layout *l, device *pri);
-void print_page(MainFrm *m_parent, layout *l, int page, int pass, int cPasses);
-int next_page(int *pstate, char **q, int pageLim);
-#endif
-
 #endif
