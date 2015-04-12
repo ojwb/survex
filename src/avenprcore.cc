@@ -153,11 +153,8 @@ bool fBlankPage = fFalse;
 
 void print_all(MainFrm *m_parent, layout *l, device *pri) {
     int cPasses, pass;
-    unsigned int cPagesPrinted;
-    const char *msg166;
     int state;
     char *p;
-    int old_charset;
     int page, pageLim;
     pageLim = l->pagesX*l->pagesY;
     PaperWidth = l->PaperWidth;
@@ -165,13 +162,6 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
     /* if no explicit Alloc, default to one pass */
     cPasses = Pre(l->pages, l->title);
 
-    /* note down so we can switch to printer charset */
-    msg166 = msg(/*Page %d of %d*/166);
-    old_charset = select_charset(CHARSET_ISO_8859_1);
-
-    l->footer = msg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167);
-
-    cPagesPrinted = 0;
     page = state = 0;
     p = l->szPages;
     while (1) {
@@ -188,11 +178,6 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
 	}
 	SVX_ASSERT(state >= 0); /* errors should have been caught above */
 	if (page == 0) break;
-	cPagesPrinted++;
-	if (l->pages > 1) {
-	    putchar('\r');
-	    printf(msg166, (int)cPagesPrinted, l->pages);
-	}
 	/* don't skip the page with the legend on */
 	if (l->SkipBlank && (int)page != (l->pagesY - 1) * l->pagesX + 1) {
 	    pass = -1;
@@ -205,6 +190,5 @@ void print_all(MainFrm *m_parent, layout *l, device *pri) {
     }
 
     Quit();
-    select_charset(old_charset);
 }
 #endif

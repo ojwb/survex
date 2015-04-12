@@ -1,3 +1,8 @@
+Sun Apr 12 08:23:24 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc: Clean up the currently unused code for skipping
+	  blank pages, by removing parts we definitely don't want.
+
 Sun Apr 12 08:08:28 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.h,src/printwx.cc: Simplify setting of pen colours
