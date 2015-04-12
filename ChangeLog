@@ -1,3 +1,8 @@
+Sun Apr 12 09:38:49 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.h,src/printwx.cc: Make clip rectangle part of the
+	  svxPrintout class.
+
 Sun Apr 12 09:32:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.h: Remove unused header.

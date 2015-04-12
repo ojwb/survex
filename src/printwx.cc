@@ -183,11 +183,15 @@ class svxPrintout : public wxPrintout {
     long x_t, y_t;
     double font_scaling_x, font_scaling_y;
 
+    struct {
+	long x_min, y_min, x_max, y_max;
+    } clip;
+
     int check_intersection(long x_p, long y_p);
     void draw_info_box();
     void draw_scale_bar(double x, double y, double MaxLength);
     int next_page(int *pstate, char **q, int pageLim);
-    void drawticks(border clip, int tsize, int x, int y);
+    void drawticks(int tsize, int x, int y);
 
     void MOVEMM(double X, double Y) {
 	MoveTo((long)(X * m_layout->scX), (long)(Y * m_layout->scY));
@@ -1269,7 +1273,7 @@ svxPrintout::next_page(int *pstate, char **q, int pageLim)
 
 /* Draws in alignment marks on each page or borders on edge pages */
 void
-svxPrintout::drawticks(border clip, int tsize, int x, int y)
+svxPrintout::drawticks(int tsize, int x, int y)
 {
    long i;
    int s = tsize * 4;
@@ -1556,11 +1560,6 @@ svxPrintout::OnEndPrinting() {
 // prcore -> wx.grafx (calls to move pens around and stuff - low level)
 // this seems to have been done...
 
-
-
-static border clip;
-
-
 int
 svxPrintout::check_intersection(long x_p, long y_p)
 {
@@ -1747,7 +1746,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 		  m_layout->pagesX * m_layout->pagesY,
 		  m_layout->datestamp.c_str());
     WriteString(footer);
-    drawticks(clip, (int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
+    drawticks((int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
 }
 
 void

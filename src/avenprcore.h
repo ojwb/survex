@@ -25,10 +25,6 @@
 
 extern bool fBlankPage;
 
-struct border {
-   long x_min, y_min, x_max, y_max;
-};
-
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 
