@@ -41,7 +41,7 @@
 #include <float.h>
 #include <limits.h>
 
-#include "debug.h" /* for BUG and SVX_ASSERT */
+#include "debug.h" /* for SVX_ASSERT */
 #include "export.h"
 #include "filelist.h"
 #include "filename.h"
@@ -332,8 +332,6 @@ static const int msg_filetype[] = {
     /*SVG files*/417
 };
 
-// there are three jobs to do here...
-// User <-> wx - this should possibly be done in a separate file
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & cs_proj,
 			 const wxString & datestamp, time_t datestamp_numeric,
@@ -968,7 +966,6 @@ static int fontsize, fontsize_labels;
 
 static const char *fontname = "Arial", *fontname_labels = "Arial";
 
-// wx <-> prcore (calls to print_page etc...)
 svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
 			 wxPageSetupDialogData *data, const wxString & title)
     : wxPrintout(title), font_labels(NULL), font_default(NULL)
@@ -1554,10 +1551,6 @@ svxPrintout::OnEndPrinting() {
     delete pen_surface_leg;
 }
 
-
-// prcore -> wx.grafx (calls to move pens around and stuff - low level)
-// this seems to have been done...
-
 int
 svxPrintout::check_intersection(long x_p, long y_p)
 {
@@ -1733,7 +1726,6 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     clip.x_max = clip.x_min + xpPageWidth; /* dm/pcl/ps had -1; */
     clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
 
-    //we have to write the footer here. PostScript is being weird. Really weird.
     SetFont(font_labels);
     MoveTo(clip.x_min, clip.y_min - (long)(7 * m_layout->scY));
     wxString footer;
