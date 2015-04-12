@@ -1126,12 +1126,6 @@ msgstr "Scara"
 msgid "Try “%s --help” for more information.\n"
 msgstr "Încercaţi “%s --help” pentru informaclţii suplimentare.\n"
 
-#: ../src/avenprcore.cc:169
-#: n:166
-#, c-format
-msgid "Page %d of %d"
-msgstr "Pagina %d din %d"
-
 #: ../src/avenprcore.cc:172
 #: ../src/printwx.cc:1542
 #: n:167

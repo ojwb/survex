@@ -1126,12 +1126,6 @@ msgstr "Escala"
 msgid "Try “%s --help” for more information.\n"
 msgstr "Tente “%s --help” para mais informações.\n"
 
-#: ../src/avenprcore.cc:169
-#: n:166
-#, c-format
-msgid "Page %d of %d"
-msgstr "Página %d de %d"
-
 #: ../src/avenprcore.cc:172
 #: ../src/printwx.cc:1542
 #: n:167

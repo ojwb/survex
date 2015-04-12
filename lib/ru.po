@@ -1125,12 +1125,6 @@ msgstr "Масштаб"
 msgid "Try “%s --help” for more information.\n"
 msgstr "Выполните “%s --help” для получения дополнительной информации.\n"
 
-#: ../src/avenprcore.cc:169
-#: n:166
-#, c-format
-msgid "Page %d of %d"
-msgstr "Страница %d из %d"
-
 #: ../src/avenprcore.cc:172
 #: ../src/printwx.cc:1542
 #: n:167
