@@ -37,10 +37,6 @@ struct border {
 #define PR_COLOUR_CROSS		4
 #define PR_COLOUR_SURFACE_LEG	5
 
-#define PR_FLAG_NOFILEOUTPUT	1
-#define PR_FLAG_NOINI		2
-#define PR_FLAG_CALIBRATE	4
-
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 
