@@ -961,7 +961,6 @@ svxPrintDlg::RecalcBounds()
 }
 
 static int xpPageWidth, ypPageDepth;
-static long MarginLeft, MarginRight, MarginTop, MarginBottom;
 static long x_offset, y_offset;
 static int fontsize, fontsize_labels;
 
@@ -1408,10 +1407,10 @@ svxPrintout::OnPrintPage(int pageNum) {
 	l->scY = (double)ypPageDepth / pdepth;
 	font_scaling_x = l->scX * (25.4 / 72.0);
 	font_scaling_y = l->scY * (25.4 / 72.0);
-	MarginLeft = m_data->GetMarginTopLeft().x;
-	MarginTop = m_data->GetMarginTopLeft().y;
-	MarginBottom = m_data->GetMarginBottomRight().y;
-	MarginRight = m_data->GetMarginBottomRight().x;
+	long MarginLeft = m_data->GetMarginTopLeft().x;
+	long MarginTop = m_data->GetMarginTopLeft().y;
+	long MarginBottom = m_data->GetMarginBottomRight().y;
+	long MarginRight = m_data->GetMarginBottomRight().x;
 	xpPageWidth -= (int)(l->scX * (MarginLeft + MarginRight));
 	ypPageDepth -= (int)(l->scY * (10 + MarginBottom + MarginRight));
 	// xpPageWidth -= 1;
