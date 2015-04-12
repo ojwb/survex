@@ -1,3 +1,7 @@
+Sun Apr 12 08:37:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/dump3d.c: Remove some commented out code from development.
+
 Sun Apr 12 08:24:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Remove unused message 166.
