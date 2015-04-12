@@ -30,9 +30,6 @@ struct border {
    long x_min, y_min, x_max, y_max;
 };
 
-#define PR_FONT_DEFAULT	0
-#define PR_FONT_LABELS	1
-
 #define PR_COLOUR_TEXT		0
 #define PR_COLOUR_LABELS	1
 #define PR_COLOUR_FRAME		2

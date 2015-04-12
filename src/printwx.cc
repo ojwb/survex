@@ -173,6 +173,7 @@ class svxPrintout : public wxPrintout {
     layout *m_layout;
     wxPageSetupDialogData* m_data;
     wxDC* pdc;
+    wxFont *font_labels, *font_default;
     // Currently unused, but "skip blank pages" would use it.
     static const int cur_pass = 0;
 
@@ -182,7 +183,6 @@ class svxPrintout : public wxPrintout {
 
     long x_t, y_t;
     double font_scaling_x, font_scaling_y;
-    wxFont * current_font;
 
     int check_intersection(long x_p, long y_p);
     void draw_info_box();
@@ -199,7 +199,9 @@ class svxPrintout : public wxPrintout {
     void MoveTo(long x, long y);
     void DrawTo(long x, long y);
     void DrawCross(long x, long y);
-    void SetFont(int fontcode);
+    void SetFont(wxFont * font) {
+	pdc->SetFont(*font);
+    }
     void SetColour(int colourcode);
     void WriteString(const wxString & s);
     void DrawEllipse(long x, long y, long r, long R);
@@ -959,7 +961,6 @@ svxPrintDlg::RecalcBounds()
 static int xpPageWidth, ypPageDepth;
 static long MarginLeft, MarginRight, MarginTop, MarginBottom;
 static long x_offset, y_offset;
-static wxFont *font_labels, *font_default;
 static int fontsize, fontsize_labels;
 
 /* FIXME: allow the font to be set */
@@ -969,7 +970,7 @@ static const char *fontname = "Arial", *fontname_labels = "Arial";
 // wx <-> prcore (calls to print_page etc...)
 svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
 			 wxPageSetupDialogData *data, const wxString & title)
-    : wxPrintout(title)
+    : wxPrintout(title), font_labels(NULL), font_default(NULL)
 {
     mainfrm = mainfrm_;
     m_layout = l;
@@ -1426,7 +1427,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     NewPage(pageNum, l->pagesX, l->pagesY);
 
     if (l->Legend && pageNum == (l->pagesY - 1) * l->pagesX + 1) {
-	SetFont(PR_FONT_DEFAULT);
+	SetFont(font_default);
 	draw_info_box();
     }
 
@@ -1493,7 +1494,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     }
 
     if (l->show_mask & (LABELS|STNS)) {
-	if (l->show_mask & LABELS) SetFont(PR_FONT_LABELS);
+	if (l->show_mask & LABELS) SetFont(font_labels);
 	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
 	while (label != mainfrm->GetLabelsEnd()) {
 	    double px = (*label)->GetX();
@@ -1668,21 +1669,6 @@ svxPrintout::DrawCross(long x, long y)
 }
 
 void
-svxPrintout::SetFont(int fontcode)
-{
-    switch (fontcode) {
-	case PR_FONT_DEFAULT:
-	    current_font = font_default;
-	    break;
-	case PR_FONT_LABELS:
-	    current_font = font_labels;
-	    break;
-	default:
-	    BUG("unknown font code");
-    }
-}
-
-void
 svxPrintout::SetColour(int colourcode)
 {
     switch (colourcode) {
@@ -1716,7 +1702,6 @@ svxPrintout::WriteString(const wxString & s)
     double xsc, ysc;
     pdc->GetUserScale(&xsc, &ysc);
     pdc->SetUserScale(xsc * font_scaling_x, ysc * font_scaling_y);
-    pdc->SetFont(*current_font);
     if (cur_pass != -1) {
 	pdc->DrawText(s,
 		      long(x_t / font_scaling_x),
@@ -1764,7 +1749,6 @@ svxPrintout::Pre()
     font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
 			      false, wxString(fontname, wxConvUTF8),
 			      wxFONTENCODING_ISO8859_1);
-    current_font = font_default;
     pen_leg = new wxPen(colour_leg);
     pen_surface_leg = new wxPen(colour_surface_leg);
     pen_cross = new wxPen(colour_cross);
@@ -1787,7 +1771,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
 
     //we have to write the footer here. PostScript is being weird. Really weird.
-    pdc->SetFont(*font_labels);
+    SetFont(font_labels);
     MoveTo(clip.x_min, clip.y_min - (long)(7 * m_layout->scY));
     wxString footer;
     footer.Printf(m_layout->footer,

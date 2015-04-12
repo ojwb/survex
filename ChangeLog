@@ -1,3 +1,8 @@
+Sun Apr 12 07:22:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.h,src/printwx.cc: Simplify font handling when
+	  printing.
+
 Sun Apr 12 07:04:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Use DC::GetCharHeight() to get the height of the
