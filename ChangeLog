@@ -1,3 +1,8 @@
+Sun Apr 12 10:22:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Eliminate Init() and Pre() methods of svxPrintout
+	  class.
+
 Sun Apr 12 10:08:42 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printwx.cc: Comment clean-ups.

@@ -208,11 +208,9 @@ class svxPrintout : public wxPrintout {
     void WriteString(const wxString & s);
     void DrawEllipse(long x, long y, long r, long R);
     void SolidRectangle(long x, long y, long w, long h);
-    void Pre();
     void NewPage(int pg, int pagesX, int pagesY);
     void PlotLR(const vector<XSect> & centreline);
     void PlotUD(const vector<XSect> & centreline);
-    void Init();
   public:
     svxPrintout(MainFrm *mainfrm, layout *l, wxPageSetupDialogData *data, const wxString & title);
     bool OnPrintPage(int pageNum);
@@ -1537,8 +1535,29 @@ svxPrintout::HasPage(int pageNum) {
 
 void
 svxPrintout::OnBeginPrinting() {
-    Init();
-    Pre();
+    /* Initialise printer routines */
+    fontsize_labels = 10;
+    fontsize = 10;
+
+    colour_text = colour_labels = *wxBLACK;
+
+    wxColour colour_frame, colour_cross, colour_leg, colour_surface_leg;
+    colour_frame = colour_cross = colour_leg = colour_surface_leg = *wxBLACK;
+
+    pen_frame = new wxPen(colour_frame);
+    pen_cross = new wxPen(colour_cross);
+    pen_leg = new wxPen(colour_leg);
+    pen_surface_leg = new wxPen(colour_surface_leg);
+
+    m_layout->scX = 1;
+    m_layout->scY = 1;
+
+    font_labels = new wxFont(fontsize_labels, wxDEFAULT, wxNORMAL, wxNORMAL,
+			     false, wxString(fontname_labels, wxConvUTF8),
+			     wxFONTENCODING_ISO8859_1);
+    font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
+			      false, wxString(fontname, wxConvUTF8),
+			      wxFONTENCODING_ISO8859_1);
 }
 
 void
@@ -1699,17 +1718,6 @@ svxPrintout::SolidRectangle(long x, long y, long w, long h)
     long Y = y_offset + clip.y_max - y;
     pdc->SetBrush(*wxBLACK_BRUSH);
     pdc->DrawRectangle(X, Y - h, w, h);
-}
-
-void
-svxPrintout::Pre()
-{
-    font_labels = new wxFont(fontsize_labels, wxDEFAULT, wxNORMAL, wxNORMAL,
-			     false, wxString(fontname_labels, wxConvUTF8),
-			     wxFONTENCODING_ISO8859_1);
-    font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
-			      false, wxString(fontname, wxConvUTF8),
-			      wxFONTENCODING_ISO8859_1);
 }
 
 void
@@ -1885,25 +1893,4 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	    }
 	}
     }
-}
-
-/* Initialise printer routines */
-void
-svxPrintout::Init()
-{
-   fontsize_labels = 10;
-   fontsize = 10;
-
-   colour_text = colour_labels = *wxBLACK;
-
-   wxColour colour_frame, colour_cross, colour_leg, colour_surface_leg;
-   colour_frame = colour_cross = colour_leg = colour_surface_leg = *wxBLACK;
-
-   pen_frame = new wxPen(colour_frame);
-   pen_cross = new wxPen(colour_cross);
-   pen_leg = new wxPen(colour_leg);
-   pen_surface_leg = new wxPen(colour_surface_leg);
-
-   m_layout->scX = 1;
-   m_layout->scY = 1;
 }
