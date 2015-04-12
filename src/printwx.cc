@@ -287,7 +287,7 @@ static wxString projs[] = {
 };
 #endif
 
-static unsigned format_info[] = {
+static const unsigned format_info[] = {
     LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
     LABELS|LEGS|SURF|STNS,
     LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
@@ -311,7 +311,7 @@ static const char * extension[] = {
     ".svg"
 };
 
-static int msg_filetype[] = {
+static const int msg_filetype[] = {
     /*DXF files*/411,
     /*EPS files*/412,
     /*GPX files*/413,

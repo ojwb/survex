@@ -1,3 +1,7 @@
+Sun Apr 12 09:49:58 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printwx.cc: Make a couple of arrays const.
+
 Sun Apr 12 09:38:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.h,src/printwx.cc: Make clip rectangle part of the
