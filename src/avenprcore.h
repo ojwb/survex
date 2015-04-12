@@ -30,11 +30,6 @@ struct border {
    long x_min, y_min, x_max, y_max;
 };
 
-#define PR_COLOUR_FRAME		2
-#define PR_COLOUR_LEG		3
-#define PR_COLOUR_CROSS		4
-#define PR_COLOUR_SURFACE_LEG	5
-
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 

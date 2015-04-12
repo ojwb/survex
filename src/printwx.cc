@@ -177,9 +177,8 @@ class svxPrintout : public wxPrintout {
     // Currently unused, but "skip blank pages" would use it.
     static const int cur_pass = 0;
 
-    wxPen *pen_frame, *pen_cross, *pen_surface_leg, *pen_leg;
-    wxColour colour_text, colour_labels, colour_frame, colour_leg;
-    wxColour colour_cross,colour_surface_leg;
+    wxPen *pen_frame, *pen_cross, *pen_leg, *pen_surface_leg;
+    wxColour colour_text, colour_labels;
 
     long x_t, y_t;
     double font_scaling_x, font_scaling_y;
@@ -202,7 +201,6 @@ class svxPrintout : public wxPrintout {
     void SetFont(wxFont * font) {
 	pdc->SetFont(*font);
     }
-    void SetColour(int colourcode);
     void WriteString(const wxString & s);
     void DrawEllipse(long x, long y, long r, long R);
     void SolidRectangle(long x, long y, long w, long h);
@@ -984,7 +982,7 @@ svxPrintout::draw_info_box()
    int boxwidth = 70;
    int boxheight = 30;
 
-   SetColour(PR_COLOUR_FRAME);
+   pdc->SetPen(*pen_frame);
 
    int div = boxwidth;
    if (l->view != layout::EXTELEV) {
@@ -1160,7 +1158,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
    /* Work out how many divisions there will be */
    n = (int)(MaxLength / d);
 
-   SetColour(PR_COLOUR_FRAME);
+   pdc->SetPen(*pen_frame);
 
    long Y = long(y * m_layout->scY);
    long Y2 = long((y + 3) * m_layout->scY);
@@ -1177,7 +1175,7 @@ svxPrintout::draw_scale_bar(double x, double y, double MaxLength)
 #endif
    /* Draw divisions and label them */
    for (c = 0; c <= n; c++) {
-      SetColour(PR_COLOUR_FRAME);
+      pdc->SetPen(*pen_frame);
       X = long((x + c * d) * m_layout->scX);
       MoveTo(X, Y);
       DrawTo(X, Y2);
@@ -1277,7 +1275,7 @@ svxPrintout::drawticks(border clip, int tsize, int x, int y)
    int s = tsize * 4;
    int o = s / 8;
    bool fAtCorner = fFalse;
-   SetColour(PR_COLOUR_FRAME);
+   pdc->SetPen(*pen_frame);
    if (x == 0 && m_layout->Border) {
       /* solid left border */
       MoveTo(clip.x_min, clip.y_min);
@@ -1437,7 +1435,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     const double Sc = 1000 / l->Scale;
 
     if (l->show_mask & LEGS) {
-	SetColour(PR_COLOUR_LEG);
+	pdc->SetPen(*pen_leg);
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
@@ -1471,7 +1469,7 @@ svxPrintout::OnPrintPage(int pageNum) {
     }
 
     if (l->show_mask & SURF) {
-	SetColour(PR_COLOUR_SURFACE_LEG);
+	pdc->SetPen(*pen_surface_leg);
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
@@ -1508,7 +1506,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 		xnew = (long)((X * Sc + l->xOrg) * l->scX);
 		ynew = (long)((Y * Sc + l->yOrg) * l->scY);
 		if (l->show_mask & STNS) {
-		    SetColour(PR_COLOUR_CROSS);
+		    pdc->SetPen(*pen_cross);
 		    DrawCross(xnew, ynew);
 		}
 		if (l->show_mask & LABELS) {
@@ -1549,9 +1547,9 @@ svxPrintout::OnEndPrinting() {
     delete font_labels;
     delete font_default;
     delete pen_frame;
+    delete pen_cross;
     delete pen_leg;
     delete pen_surface_leg;
-    delete pen_cross;
 }
 
 
@@ -1670,27 +1668,6 @@ svxPrintout::DrawCross(long x, long y)
 }
 
 void
-svxPrintout::SetColour(int colourcode)
-{
-    switch (colourcode) {
-	case PR_COLOUR_FRAME:
-	    pdc->SetPen(*pen_frame);
-	    break;
-	case PR_COLOUR_LEG:
-	    pdc->SetPen(*pen_leg);
-	    break;
-	case PR_COLOUR_CROSS:
-	    pdc->SetPen(*pen_cross);
-	    break;
-	case PR_COLOUR_SURFACE_LEG:
-	    pdc->SetPen(*pen_surface_leg);
-	    break;
-	default:
-	    BUG("unknown colour code");
-    }
-}
-
-void
 svxPrintout::WriteString(const wxString & s)
 {
     double xsc, ysc;
@@ -1743,10 +1720,6 @@ svxPrintout::Pre()
     font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
 			      false, wxString(fontname, wxConvUTF8),
 			      wxFONTENCODING_ISO8859_1);
-    pen_leg = new wxPen(colour_leg);
-    pen_surface_leg = new wxPen(colour_surface_leg);
-    pen_cross = new wxPen(colour_cross);
-    pen_frame = new wxPen(colour_frame);
     return 1; /* only need 1 pass */
 }
 
@@ -1933,7 +1906,16 @@ svxPrintout::Init()
    fontsize_labels = 10;
    fontsize = 10;
 
-   colour_text = colour_labels = colour_frame = colour_leg = colour_cross = colour_surface_leg = *wxBLACK;
+   colour_text = colour_labels = *wxBLACK;
+
+   wxColour colour_frame, colour_cross, colour_leg, colour_surface_leg;
+   colour_frame = colour_cross = colour_leg = colour_surface_leg = *wxBLACK;
+
+   pen_frame = new wxPen(colour_frame);
+   pen_cross = new wxPen(colour_cross);
+   pen_leg = new wxPen(colour_leg);
+   pen_surface_leg = new wxPen(colour_surface_leg);
+
    m_layout->scX = 1;
    m_layout->scY = 1;
 }
