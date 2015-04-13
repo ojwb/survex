@@ -1,3 +1,7 @@
+Mon Apr 13 02:34:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* tests/cmd_entrance_bad.svx: Fix not to accidentally specify sd of 0.
+
 Sun Apr 12 13:00:37 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc,src/avenprcore.h,src/printwx.cc: Working towards
