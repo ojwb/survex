@@ -1,3 +1,8 @@
+Mon Apr 13 11:20:04 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/export.cc,src/printwx.cc: Add passage export for EPS format.
+	  (see #4)
+
 Mon Apr 13 03:06:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/cmd_fix_bad.out,tests/cmd_fix_bad.svx: Reject

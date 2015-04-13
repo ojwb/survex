@@ -50,6 +50,9 @@
 # include <unistd.h>
 #endif
 
+#include <utility>
+#include <vector>
+
 #include "cmdline.h"
 #include "debug.h"
 #include "filename.h"
@@ -856,17 +859,34 @@ PLT::footer(void)
 
 class EPS : public ExportFilter {
     double factor;
+    bool first;
+    vector<pair<double, double> > psg;
   public:
     EPS(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
+    const int * passes() const;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
+    void start_pass(int layer);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
+    void xsect(const img_point *, double, double, double);
+    void wall(const img_point *, double, double);
+    void passage(const img_point *, double, double, double);
+    void tube_end();
     void footer();
 };
+
+const int *
+EPS::passes() const
+{
+    static const int eps_passes[] = {
+	PASG, XSECT, WALL1, WALL2, LEGS|SURF|STNS|LABELS, 0
+    };
+    return eps_passes;
+}
 
 void
 EPS::header(const char *title, const char *, time_t,
@@ -1038,8 +1058,6 @@ EPS::header(const char *title, const char *, time_t,
 
    fprintf(fh, "/lab findfont %d scalefont setfont\n", int(fontsize_labels));
 
-   fprintf(fh, "0.1 setlinewidth\n");
-
 #if 0
    /* C<digit> changes colour */
    /* FIXME: read from ini */
@@ -1064,8 +1082,10 @@ EPS::header(const char *title, const char *, time_t,
 
    /* define some functions to keep file short */
    fputs("/M {stroke moveto} def\n"
+	 "/P {stroke newpath moveto} def\n"
+	 "/F {closepath gsave 0.8 setgray fill grestore} def\n"
 	 "/L {lineto} def\n"
-/*	 "/R {rlineto} def\n" */
+	 "/R {rlineto} def\n"
 	 "/S {show} def\n", fh);
 
    fprintf(fh, "gsave %.8f dup scale\n", factor);
@@ -1106,6 +1126,20 @@ EPS::header(const char *title, const char *, time_t,
 }
 
 void
+EPS::start_pass(int layer)
+{
+    first = true;
+    switch (layer) {
+	case LEGS|SURF|STNS|LABELS:
+	    fprintf(fh, "0.1 setlinewidth\n");
+	    break;
+	case PASG: case XSECT: case WALL1: case WALL2:
+	    fprintf(fh, "0.01 setlinewidth\n");
+	    break;
+    }
+}
+
+void
 EPS::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
 {
    (void)fSurface; /* unused */
@@ -1140,6 +1174,52 @@ EPS::cross(const img_point *p, bool fSurface)
 {
    (void)fSurface; /* unused */
    fprintf(fh, "%.2f %.2f X\n", p->x, p->y);
+}
+
+void
+EPS::xsect(const img_point *p, double angle, double d1, double d2)
+{
+    double s = sin(rad(angle));
+    double c = cos(rad(angle));
+    fprintf(fh, "%.2f %.2f M %.2f %.2f R\n",
+	    p->x - c * d2, p->y - s * d2,
+	    c * (d1 + d2), s * (d1 + d2));
+}
+
+void
+EPS::wall(const img_point *p, double angle, double d)
+{
+    double s = sin(rad(angle));
+    double c = cos(rad(angle));
+    fprintf(fh, "%.2f %.2f %c\n", p->x + c * d, p->y + s * d, first ? 'M' : 'L');
+    first = false;
+}
+
+void
+EPS::passage(const img_point *p, double angle, double d1, double d2)
+{
+    double s = sin(rad(angle));
+    double c = cos(rad(angle));
+    double x1 = p->x + c * d1;
+    double y1 = p->y + s * d1;
+    double x2 = p->x - c * d2;
+    double y2 = p->y - s * d2;
+    fprintf(fh, "%.2f %.2f %c\n", x1, y1, first ? 'P' : 'L');
+    first = false;
+    psg.push_back(make_pair(x2, y2));
+}
+
+void
+EPS::tube_end()
+{
+    if (!psg.empty()) {
+	vector<pair<double, double> >::const_reverse_iterator i;
+	for (i = psg.rbegin(); i != psg.rend(); ++i) {
+	    fprintf(fh, "%.2f %.2f L\n", i->first, i->second);
+	}
+	fputs("F\n", fh);
+	psg.clear();
+    }
 }
 
 void
