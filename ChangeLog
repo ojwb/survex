@@ -1,3 +1,7 @@
+Mon Apr 13 11:37:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Adjust 'creator' in EPS output.
+
 Mon Apr 13 11:20:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/export.cc,src/printwx.cc: Add passage export for EPS format.
