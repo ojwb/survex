@@ -818,6 +818,10 @@ cmd_fix(void)
       y = read_numeric(fFalse, &ny);
       z = read_numeric(fFalse, &nz);
       sdx = read_numeric(fTrue, NULL);
+      if (sdx <= 0) {
+	  compile_error_skip(-/*Standard deviation must be positive*/48);
+	  return;
+      }
       if (sdx != HUGE_REAL) {
 	 real sdy, sdz;
 	 real cxy = 0, cyz = 0, czx = 0;
@@ -826,12 +830,20 @@ cmd_fix(void)
 	    /* only one variance given */
 	    sdy = sdz = sdx;
 	 } else {
+	    if (sdy <= 0) {
+	       compile_error_skip(-/*Standard deviation must be positive*/48);
+	       return;
+	    }
 	    sdz = read_numeric(fTrue, NULL);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
 	       sdy = sdx;
 	    } else {
+	       if (sdz <= 0) {
+		  compile_error_skip(-/*Standard deviation must be positive*/48);
+		  return;
+	       }
 	       cxy = read_numeric(fTrue, NULL);
 	       if (cxy != HUGE_REAL) {
 		  /* covariances given */

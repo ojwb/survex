@@ -1,3 +1,9 @@
+Mon Apr 13 03:06:48 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/cmd_fix_bad.out,tests/cmd_fix_bad.svx: Reject
+	  *fix with SDs which aren't all positive.  (fixes#2, reported by
+	  susscorfa).
+
 Mon Apr 13 02:34:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* tests/cmd_entrance_bad.svx: Fix not to accidentally specify sd of 0.

@@ -1,4 +1,4 @@
-; pos=fail error=10
+; pos=fail error=40
 *fix A 0
 *fix B 0 0
 *fix C 0 0 0 1.0 2.0 3.0 3.14
@@ -10,6 +10,37 @@
 *fix Cr reference 0 0 0 1.0 2.0 3.0 3.14
 *fix Dr reference 0 0 0 1.0 2.0 3.0 3.14 2.18
 *fix Er reference test
+
+*fix W1 reference 123 456 789 0
+*fix W2 reference 123 456 789 0 0
+*fix W3 reference 123 456 789 0 0 0
+*fix W1m reference 123 456 789 -1
+*fix W2m reference 123 456 789 -1 -1
+*fix W3m reference 123 456 789 -1 -1 -1
+*fix W1o reference 123 456 789 -1 0
+*fix W2o reference 123 456 789 0 -1
+*fix W3o reference 123 456 789 0 -1 -1
+*fix W4o reference 123 456 789 -1 0 -1
+*fix W5o reference 123 456 789 -1 -1 0
+*fix W6o reference 123 456 789 0 0 -1
+*fix W7o reference 123 456 789 0 -1 0
+*fix W8o reference 123 456 789 -1 0 0
+*fix X1 reference 123 456 789 0 0.1
+*fix X2 reference 123 456 789 0.1 0
+*fix X1m reference 123 456 789 -0.1 0.1
+*fix X2m reference 123 456 789 0.1 -0.1
+*fix Y1 reference 123 456 789 0 0.1 0.1
+*fix Y2 reference 123 456 789 0.1 0 0.1
+*fix Y3 reference 123 456 789 0.1 0.1 0
+*fix Y4 reference 123 456 789 0 0 0.1
+*fix Y5 reference 123 456 789 0 0.1 0
+*fix Y6 reference 123 456 789 0.1 0 0
+*fix Y1m reference 123 456 789 -1 0.1 0.1
+*fix Y2m reference 123 456 789 0.1 -1 0.1
+*fix Y3m reference 123 456 789 0.1 0.1 -1
+*fix Y4m reference 123 456 789 -1 -1 0.1
+*fix Y5m reference 123 456 789 -1 0.1 -1
+*fix Y6m reference 123 456 789 0.1 -1 -1
 
 ; so we actually have some survey data
 *fix 1 reference 0 0 0
