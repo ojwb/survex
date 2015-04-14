@@ -1959,6 +1959,11 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
 {
     if (!m_Gfx) return;
 
+    if (m_cs_proj.empty()) {
+	wxMessageBox(wxT("No coordinate system specified in survey data"));
+	return;
+    }
+
 #ifdef __WXMOTIF__
     wxString filetypes = wxT("*.zip");
 #else
