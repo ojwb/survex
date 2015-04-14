@@ -1,6 +1,6 @@
-2bf355e5 (Olly Betts 2015-04-11 08:32:14 +1200    1) Fri Apr 10 20:31:56 GMT 2015  Olly Betts <olly@survex.com>
+ceb2edbb (Olly Betts 2015-04-14 12:27:42 +1200    1) Tue Apr 14 00:27:12 GMT 2015  Olly Betts <olly@survex.com>
 
-Changes in 1.2.18 (2015-04-11):
+Changes in 1.2.18 (2015-04-14):
 
 * aven:
 
@@ -20,8 +20,16 @@ Changes in 1.2.18 (2015-04-11):
     which seems more logical, and also allows the dialog to be closed by
     pressing "Escape".
 
+  + Destroy any existing clipping region before we write the page footer.
+    Hopefully solves ticket #52, reported by Erin Lynch.
+
   + Don't round bearing and tilt angles to integers when printing and
     exporting.
+
+  + Add passage export for EPS format.  (Partly addresses ticket #4)
+
+  + Add JSON export.  This should be regarded as experimental, and the format
+    is quite likely to change.
 
   + Pressing F6 now toggles the display of rendering stats, currently FPS
     (Frames Per Second) and the number of triangles in the terrain mesh.
@@ -45,9 +53,6 @@ Changes in 1.2.18 (2015-04-11):
     support setting the colours and font sizes, but a GUI interface for setting
     them would be better.
 
-  + Add JSON export.  This should be regarded as experimental, and the format
-    is quite likely to change.
-
   + Fix to compile with a Unicode build of wxWidgets 2.8.  Reported by Bill
     Gee.
 
@@ -59,8 +64,11 @@ Changes in 1.2.18 (2015-04-11):
 
 * cavern:
 
+  + Reject *fix with SDs which aren't all positive.  (fixes#2, reported by
+    susscorfa).
+
   + Use the currently set units when outputting measurements in warnings,
-    errors, and the stats at the end of the run.
+    errors, and the stats at the end of the run.  Requested by Bill Gee.
 
   + Include column number when a *include file isn't found.
 
