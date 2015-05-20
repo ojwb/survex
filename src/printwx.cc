@@ -1117,7 +1117,7 @@ svxPrintout::draw_info_box()
     * mis-interpreted as us claiming copyright on the survey, so let's
     * give the website URL instead */
    MOVEMM(boxwidth + 2, 2);
-   WriteString(wxT("Survex "VERSION" - http://survex.com/"));
+   WriteString(wxT("Survex " VERSION " - http://survex.com/"));
 
    draw_scale_bar(boxwidth + 10.0, 17.0, l->PaperWidth - boxwidth - 18.0);
 }

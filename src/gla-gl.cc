@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -152,12 +152,12 @@ log_gl_error(const wxChar * str, GLenum error_code)
 //             BeginLines()/EndLines() block etc.)
 #define CHECK_GL_ERROR(M, F) do { \
     if (!opengl_initialised) { \
-	wxLogError(wxT(__FILE__":"STRING(__LINE__)": OpenGL not initialised before (call "F" in method "M")")); \
+	wxLogError(wxT(__FILE__ ":" STRING(__LINE__) ": OpenGL not initialised before (call " F " in method " M ")")); \
     } \
     GLenum error_code_ = glGetError(); \
     if (error_code_ != GL_NO_ERROR) { \
-	log_gl_error(wxT(__FILE__":"STRING(__LINE__)": OpenGL error: %s " \
-			 "(call "F" in method "M")"), error_code_); \
+	log_gl_error(wxT(__FILE__ ":" STRING(__LINE__) ": OpenGL error: %s " \
+			 "(call " F " in method " M ")"), error_code_); \
     } \
 } while (0)
 

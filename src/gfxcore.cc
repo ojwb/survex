@@ -2531,10 +2531,10 @@ bool GfxCore::LoadDEM(const wxString & file)
 			line += wxChar(ch);
 		    }
 #define CHECK(X, COND) \
-} else if (line.StartsWith(wxT(X" "))) { \
+} else if (line.StartsWith(wxT(X " "))) { \
 size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
 if (v == line.npos || !(COND)) { \
-err += wxT("Unexpected value for "X); \
+err += wxT("Unexpected value for " X); \
 }
 		    wxString err;
 		    unsigned long dummy;

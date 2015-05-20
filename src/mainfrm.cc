@@ -91,7 +91,7 @@
 #undef static
 #ifdef __WXMAC__
 #define TOOLPREP(WIN) double client_scale_factor = wxClientDC(WIN).GetClientScaleFactor()
-#define TOOL(x) wxBitmap(wxImage(#x"_xpm"), -1, client_scale_factor)
+#define TOOL(x) wxBitmap(wxImage(#x "_xpm"), -1, client_scale_factor)
 #else
 #define TOOLPREP(WIN) (void)WIN
 #define TOOL(x) wxBITMAP(x)
@@ -1480,7 +1480,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 #endif
 
     // Update window title.
-    SetTitle(m_Title + " - "APP_NAME);
+    SetTitle(m_Title + " - " APP_NAME);
 
     // Sort the labels ready for filling the tree.
     m_Labels.sort(LabelCmp(separator));
@@ -1899,7 +1899,7 @@ void MainFrm::HideLog(wxWindow * log_window)
 #ifdef _WIN32
 # define CASE(X)
 #else
-# define CASE(X) ";"X
+# define CASE(X) ";" X
 #endif
 
 void MainFrm::OnOpen(wxCommandEvent&)
@@ -1911,11 +1911,11 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxString filetypes;
     filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.adj;*.sht;*.una;*.xyz"
 		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.ADJ;*.SHT;*.UNA;*.XYZ")
-		     "|%s|*.3d"CASE("*.3D")
-		     "|%s|*.svx"CASE("*.SVX")
-		     "|%s|*.plt;*.plf"CASE("*.PLT;*.PLF")
-		     "|%s|*.dat;*.mak"CASE("*.DAT;*.MAK")
-		     "|%s|*.adj;*.sht;*.una;*.xyz"CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
+		     "|%s|*.3d" CASE("*.3D")
+		     "|%s|*.svx" CASE("*.SVX")
+		     "|%s|*.plt;*.plf" CASE("*.PLT;*.PLF")
+		     "|%s|*.dat;*.mak" CASE("*.DAT;*.MAK")
+		     "|%s|*.adj;*.sht;*.una;*.xyz" CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
 		     /* TRANSLATORS: Here "survey" is a "cave map" rather than
 		      * list of questions - it should be translated to the
@@ -1968,7 +1968,7 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
     wxString filetypes = wxT("*.zip");
 #else
     wxString filetypes;
-    filetypes.Printf(wxT("%s|*.zip"CASE("*.ZIP")
+    filetypes.Printf(wxT("%s|*.zip" CASE("*.ZIP")
 		     "|%s|%s"),
 		     wmsg(/*Terrain files*/452).c_str(),
 		     wmsg(/*All files*/208).c_str(),

@@ -81,7 +81,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     }
     horiz->Add(vert, 0, wxALL, 2);
 
-    wxString id(APP_NAME wxT(" "VERSION"\n"));
+    wxString id(APP_NAME wxT(" " VERSION "\n"));
     /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
      * - it should be translated to the terminology that cavers using the
      * language would use.
@@ -96,7 +96,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     title->Add(new wxStaticText(this, 502, id), 0, wxALL, 2);
 
     wxStaticText* copyright = new wxStaticText(this, 503,
-					wxT(COPYRIGHT_MSG_UTF8"\n"AVEN_COPYRIGHT_MSG_UTF8));
+					wxT(COPYRIGHT_MSG_UTF8 "\n" AVEN_COPYRIGHT_MSG_UTF8));
 
     wxString licence_str;
     /* TRANSLATORS: Summary paragraph for the GPLv2 - there are translations for

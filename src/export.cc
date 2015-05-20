@@ -896,7 +896,7 @@ EPS::header(const char *title, const char *, time_t,
    const char * fontname_labels = "helvetica"; // FIXME
    int fontsize_labels = 10; // FIXME
    fputs("%!PS-Adobe-2.0 EPSF-1.2\n", fh);
-   fputs("%%Creator: Survex "VERSION" EPS Export Filter\n", fh);
+   fputs("%%Creator: Survex " VERSION " EPS Export Filter\n", fh);
 
    if (title && title[0])
        fprintf(fh, "%%%%Title: %s\n", title);
