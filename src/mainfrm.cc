@@ -53,6 +53,7 @@
 #include <vector>
 
 #ifdef __WXMSW__
+#define TOOLPREP(WIN) (void)WIN
 #define TOOL(x) wxBitmap(wxT(#x), wxBITMAP_TYPE_PNG_RESOURCE)
 #else
 // XPM files declare the array as static, but we also want it to be const too.
