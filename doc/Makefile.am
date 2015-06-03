@@ -119,4 +119,4 @@ manual.ps: $(manual_sources) survex.ent ../configure.ac
 CLEANFILES = usr
 
 check-local:
-	grep -F '<!--VERSION-->$(VERSION)' manual.sgml
+	grep -F '<!--VERSION-->$(VERSION)' '$(srcdir)/manual.sgml'
