@@ -90,8 +90,8 @@
 #include "../lib/icons/survey_tree.xpm"
 #include "../lib/icons/pres_tree.xpm"
 #undef static
-#ifdef __WXMAC__
-#define TOOLPREP(WIN) double client_scale_factor = wxClientDC(WIN).GetClientScaleFactor()
+#if defined __WXMAC__ && wxCHECK_VERSION(3,1,0)
+#define TOOLPREP(WIN) double client_scale_factor = wxClientDC(WIN).GetContentScaleFactor()
 #define TOOL(x) wxBitmap(wxImage(#x "_xpm"), -1, client_scale_factor)
 #else
 #define TOOLPREP(WIN) (void)WIN
