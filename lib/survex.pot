@@ -1130,10 +1130,10 @@ msgstr ""
 msgid "Try “%s --help” for more information.\n"
 msgstr ""
 
-#: ../src/printwx.cc:1760
-#: n:167
+#. TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
+#: n:232
 #, c-format
-msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
+msgid "%d/%d"
 msgstr ""
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by

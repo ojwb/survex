@@ -1,3 +1,10 @@
+Sun Jun 07 14:40:23 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/printwx.cc: Simplify the page footer on printouts.
+	  If the footer is too long to fit the page width, reduce the font size
+	  so it exactly fits; otherwise space out the elements evenly to fill
+	  the width.
+
 Sun Jun 07 06:38:14 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Tweak error message in terrain reading code to

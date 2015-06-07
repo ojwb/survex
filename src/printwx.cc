@@ -1754,15 +1754,53 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     clip.x_max = clip.x_min + xpPageWidth; /* dm/pcl/ps had -1; */
     clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
 
-    SetFont(font_labels);
-    MoveTo(clip.x_min, clip.y_min - (long)(7 * m_layout->scY));
-    wxString footer;
-    footer.Printf(wmsg(/*Survey “%s”   Page %d (of %d)   Processed on %s*/167),
-		  m_layout->title.c_str(),
-		  pg,
-		  m_layout->pagesX * m_layout->pagesY,
-		  m_layout->datestamp.c_str());
-    WriteString(footer);
+    const int FOOTERS = 3;
+    wxString footer[FOOTERS];
+    footer[0] = m_layout->title;
+    // TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
+    footer[1].Printf(wmsg(/*%d/%d*/232), pg, m_layout->pagesX * m_layout->pagesY);
+    footer[2] = m_layout->datestamp;
+    const wxChar * footer_sep = wxT("    ");
+    int fontsize_footer = fontsize_labels;
+    wxFont * font_footer;
+    font_footer = new wxFont(fontsize_footer, wxDEFAULT, wxNORMAL, wxNORMAL,
+			     false, wxString(fontname_labels, wxConvUTF8),
+			     wxFONTENCODING_UTF8);
+    font_footer->Scale(font_scaling_x);
+    SetFont(font_footer);
+    int w[FOOTERS], ws, h;
+    pdc->GetTextExtent(footer_sep, &ws, &h);
+    int wtotal = ws * (FOOTERS - 1);
+    for (int i = 0; i < FOOTERS; ++i) {
+	pdc->GetTextExtent(footer[i], &w[i], &h);
+	wtotal += w[i];
+    }
+
+    long X = x_offset;
+    long Y = y_offset + ypPageDepth + (long)(7 * m_layout->scY) - pdc->GetCharHeight();
+
+    if (wtotal > xpPageWidth) {
+	// Scale down the font so the footer fits.
+	font_footer->Scale(double(xpPageWidth) / wtotal);
+	SetFont(font_footer);
+	wxString fullfooter = footer[0];
+	for (int i = 1; i < FOOTERS; ++i) {
+	    fullfooter += footer_sep;
+	    fullfooter += footer[i];
+	}
+	pdc->DrawText(fullfooter, X, Y);
+    } else {
+	// Space out the elements of the footer to fill the line.
+	pdc->DrawText(footer[0], X, Y);
+	double extra = (xpPageWidth - wtotal) / (FOOTERS - 1);
+	for (int i = 1; i < FOOTERS - 1; ++i) {
+	    X += w[i - 1];
+	    pdc->DrawText(footer[i], X + extra * i, Y);
+	}
+	// Draw final item right aligned to avoid misaligning.
+	wxRect rect(x_offset, Y, xpPageWidth, pdc->GetCharHeight());
+	pdc->DrawLabel(footer[2], rect, wxALIGN_RIGHT|wxALIGN_TOP);
+    }
     drawticks((int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
 }
 
