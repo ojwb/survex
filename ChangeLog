@@ -1,3 +1,8 @@
+Sun Jun 07 06:38:14 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Tweak error message in terrain reading code to
+	  distinguish two failure cases.
+
 Thu Jun 04 05:37:23 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,src/mainfrm.cc: Only try to scale the OS X toolbar

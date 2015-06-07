@@ -2589,7 +2589,7 @@ err += wxT("Unexpected value for " X); \
 		    zs.Read(reinterpret_cast<char *>(dem), to_read);
 		    size_t c = zs.LastRead();
 		    if (c == 0) {
-			wxMessageBox(wxT("Failed to read terrain data"));
+			wxMessageBox(wxT("Failed to skip terrain data header"));
 			break;
 		    }
 		    skipbytes -= c;
