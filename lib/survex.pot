@@ -1131,9 +1131,28 @@ msgid "Try “%s --help” for more information.\n"
 msgstr ""
 
 #. TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
+#: ../src/printing.cc:1790
 #: n:232
 #, c-format
 msgid "%d/%d"
+msgstr ""
+
+#: ../src/printing.cc:1767
+#: n:233
+#, c-format
+msgid "↑%s"
+msgstr ""
+
+#: ../src/printing.cc:1775
+#: n:235
+#, c-format
+msgid "%s↔%s"
+msgstr ""
+
+#: ../src/printing.cc:1784
+#: n:236
+#, c-format
+msgid "%s↔%s;∡%s"
 msgstr ""
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by

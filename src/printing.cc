@@ -1754,12 +1754,41 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     clip.x_max = clip.x_min + xpPageWidth; /* dm/pcl/ps had -1; */
     clip.y_max = clip.y_min + ypPageDepth; /* dm/pcl/ps had -1; */
 
-    const int FOOTERS = 3;
+    const int FOOTERS = 4;
     wxString footer[FOOTERS];
     footer[0] = m_layout->title;
+    double rot = m_layout->rot;
+    double tilt = m_layout->tilt;
+    if (tilt == -90.0) {
+	// TRANSLATORS: Used in the footer of printouts to compactly indicate
+	// this is a plan view and what the viewing angle is.  Aven will
+	// replace %s with the bearing.  This message probably doesn't need
+	// translating for most languages.
+	footer[1].Printf(wmsg(/*↑%s*/233),
+		format_angle(ANGLE_FMT, rot).c_str());
+    } else if (tilt == 0) {
+	// TRANSLATORS: Used in the footer of printouts to compactly indicate
+	// this is an elevation view and what the viewing angle is.  Aven
+	// will replace the %s codes with the bearings to the left and right
+	// of the viewer.  This message probably doesn't need translating for
+	// most languages.
+	footer[1].Printf(wmsg(/*%s↔%s*/235),
+		format_angle(ANGLE_FMT, fmod(rot + 270.0, 360.0)).c_str(),
+		format_angle(ANGLE_FMT, fmod(rot + 90.0, 360.0)).c_str());
+    } else {
+	// TRANSLATORS: Used in the footer of printouts to compactly indicate
+	// this is a tilted elevation view and what the viewing angles are.
+	// Aven will replace the %s codes with the bearings to the left and
+	// right of the viewer, and the angle the view is tilted at.  This
+	// message probably doesn't need translating for most languages.
+	footer[1].Printf(wmsg(/*%s↔%s;∡%s*/236),
+		format_angle(ANGLE_FMT, fmod(rot + 270.0, 360.0)).c_str(),
+		format_angle(ANGLE_FMT, fmod(rot + 90.0, 360.0)).c_str(),
+		format_angle(ANGLE2_FMT, tilt).c_str());
+    }
     // TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
-    footer[1].Printf(wmsg(/*%d/%d*/232), pg, m_layout->pagesX * m_layout->pagesY);
-    footer[2] = m_layout->datestamp;
+    footer[2].Printf(wmsg(/*%d/%d*/232), pg, m_layout->pagesX * m_layout->pagesY);
+    footer[3] = m_layout->datestamp;
     const wxChar * footer_sep = wxT("    ");
     int fontsize_footer = fontsize_labels;
     wxFont * font_footer;
@@ -1791,15 +1820,14 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 	pdc->DrawText(fullfooter, X, Y);
     } else {
 	// Space out the elements of the footer to fill the line.
-	pdc->DrawText(footer[0], X, Y);
-	double extra = (xpPageWidth - wtotal) / (FOOTERS - 1);
-	for (int i = 1; i < FOOTERS - 1; ++i) {
-	    X += w[i - 1];
+	double extra = double(xpPageWidth - wtotal) / (FOOTERS - 1);
+	for (int i = 0; i < FOOTERS - 1; ++i) {
 	    pdc->DrawText(footer[i], X + extra * i, Y);
+	    X += ws + w[i];
 	}
 	// Draw final item right aligned to avoid misaligning.
 	wxRect rect(x_offset, Y, xpPageWidth, pdc->GetCharHeight());
-	pdc->DrawLabel(footer[2], rect, wxALIGN_RIGHT|wxALIGN_TOP);
+	pdc->DrawLabel(footer[FOOTERS - 1], rect, wxALIGN_RIGHT|wxALIGN_TOP);
     }
     drawticks((int)(9 * m_layout->scX / POINTS_PER_MM), x, y);
 }
