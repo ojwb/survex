@@ -1,3 +1,8 @@
+Mon Jun 08 12:00:47 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Rename printwx.cc to printing.cc, etc - we only have wx-based
+	  printing now.
+
 Sun Jun 07 14:40:23 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/printwx.cc: Simplify the page footer on printouts.

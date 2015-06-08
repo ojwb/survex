@@ -1,5 +1,5 @@
-/* printwx.h */
-/* Device dependent part of Survex wxWidgets driver */
+/* printing.h */
+/* Aven printing code */
 /* Copyright (C) 2004 Philip Underwood
  * Copyright (C) 2004,2005,2006,2011,2012,2013,2014,2015 Olly Betts
  *

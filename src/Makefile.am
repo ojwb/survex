@@ -7,7 +7,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
- vector3.h wx.h aventypes.h aventreectrl.h export.h printwx.h avenprcore.h\
+ vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h avenprcore.h\
  img2aven.h
 
 LDADD = $(LIBOBJS)
@@ -44,7 +44,7 @@ aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
- avenprcore.cc printwx.cc hash.c \
+ avenprcore.cc printing.cc hash.c \
  buttontaghandler.cc
 
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \

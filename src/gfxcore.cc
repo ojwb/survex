@@ -35,7 +35,7 @@
 #include "mainfrm.h"
 #include "message.h"
 #include "useful.h"
-#include "printwx.h"
+#include "printing.h"
 #include "guicontrol.h"
 #include "moviemaker.h"
 

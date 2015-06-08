@@ -34,7 +34,7 @@
 #include "message.h"
 #include "img_hosted.h"
 #include "namecompare.h"
-#include "printwx.h"
+#include "printing.h"
 #include "filename.h"
 #include "useful.h"
 
