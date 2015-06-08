@@ -1759,32 +1759,40 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     footer[0] = m_layout->title;
     double rot = m_layout->rot;
     double tilt = m_layout->tilt;
+    double scale = m_layout->Scale;
     if (tilt == -90.0) {
 	// TRANSLATORS: Used in the footer of printouts to compactly indicate
 	// this is a plan view and what the viewing angle is.  Aven will
-	// replace %s with the bearing.  This message probably doesn't need
-	// translating for most languages.
-	footer[1].Printf(wmsg(/*↑%s*/233),
-		format_angle(ANGLE_FMT, rot).c_str());
+	// replace %s with the bearing, and %.0f with the scale.
+	//
+	// This message probably doesn't need translating for most languages.
+	footer[1].Printf(wmsg(/*↑%s 1:%.0f*/233),
+		format_angle(ANGLE_FMT, rot).c_str(),
+		scale);
     } else if (tilt == 0) {
 	// TRANSLATORS: Used in the footer of printouts to compactly indicate
 	// this is an elevation view and what the viewing angle is.  Aven
 	// will replace the %s codes with the bearings to the left and right
-	// of the viewer.  This message probably doesn't need translating for
-	// most languages.
-	footer[1].Printf(wmsg(/*%s↔%s*/235),
+	// of the viewer, and %.0f with the scale.
+	//
+	// This message probably doesn't need translating for most languages.
+	footer[1].Printf(wmsg(/*%s↔%s 1:%.0f*/235),
 		format_angle(ANGLE_FMT, fmod(rot + 270.0, 360.0)).c_str(),
-		format_angle(ANGLE_FMT, fmod(rot + 90.0, 360.0)).c_str());
+		format_angle(ANGLE_FMT, fmod(rot + 90.0, 360.0)).c_str(),
+		scale);
     } else {
 	// TRANSLATORS: Used in the footer of printouts to compactly indicate
 	// this is a tilted elevation view and what the viewing angles are.
 	// Aven will replace the %s codes with the bearings to the left and
-	// right of the viewer, and the angle the view is tilted at.  This
-	// message probably doesn't need translating for most languages.
-	footer[1].Printf(wmsg(/*%s↔%s;∡%s*/236),
+	// right of the viewer and the angle the view is tilted at, and %.0f
+	// with the scale.
+	//
+	// This message probably doesn't need translating for most languages.
+	footer[1].Printf(wmsg(/*%s↔%s ∡%s 1:%.0f*/236),
 		format_angle(ANGLE_FMT, fmod(rot + 270.0, 360.0)).c_str(),
 		format_angle(ANGLE_FMT, fmod(rot + 90.0, 360.0)).c_str(),
-		format_angle(ANGLE2_FMT, tilt).c_str());
+		format_angle(ANGLE2_FMT, tilt).c_str(),
+		scale);
     }
     // TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
     footer[2].Printf(wmsg(/*%d/%d*/232), pg, m_layout->pagesX * m_layout->pagesY);

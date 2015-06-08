@@ -1,3 +1,8 @@
+Mon Jun 08 13:13:20 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/printing.cc: Also include the scale in the footer
+	  of printouts.
+
 Mon Jun 08 13:00:55 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/printing.cc: Add view details to footer of
