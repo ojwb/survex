@@ -1173,6 +1173,21 @@ msgstr ""
 msgid "%s↔%s ∡%s 1:%.0f"
 msgstr ""
 
+#. TRANSLATORS: Used in the footer of printouts to compactly
+#. indicate this is an extended elevation view.  Aven will replace
+#. %.0f with the scale.
+#.
+#. Try to keep the translation short (for example, in English we
+#. use "Extended" not "Extended elevation") - there is limited room
+#. in the footer, and the details there are mostly to make it easy
+#. to check that you have corresponding pages from a multiple page
+#. printout.
+#: ../src/printing.cc:1791
+#: n:244
+#, c-format
+msgid "Extended 1:%.0f"
+msgstr ""
+
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
 #: ../src/printwx.cc:1057

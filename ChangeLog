@@ -1,3 +1,8 @@
+Tue Jun 09 00:05:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/printing.cc: Mark printouts of extended
+	  elevations in the footer appropriately.
+
 Mon Jun 08 13:13:20 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/printing.cc: Also include the scale in the footer
