@@ -13,37 +13,37 @@ msgstr ""
 
 #. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
 #. accelerator key.  The accelerators must be different within this group
-#: ../src/mainfrm.cc:953
+#: ../src/mainfrm.cc:954
 #: n:210
 msgid "&File"
 msgstr "&Файл"
 
-#: ../src/mainfrm.cc:954
+#: ../src/mainfrm.cc:955
 #: n:211
 msgid "&Rotation"
 msgstr "В&ращение"
 
-#: ../src/mainfrm.cc:955
+#: ../src/mainfrm.cc:956
 #: n:212
 msgid "&Orientation"
 msgstr "&Ориентация"
 
-#: ../src/mainfrm.cc:956
+#: ../src/mainfrm.cc:957
 #: n:213
 msgid "&View"
 msgstr "&Вид"
 
-#: ../src/mainfrm.cc:958
+#: ../src/mainfrm.cc:959
 #: n:214
 msgid "&Controls"
 msgstr "&Управление"
 
-#: ../src/mainfrm.cc:967
+#: ../src/mainfrm.cc:968
 #: n:215
 msgid "&Help"
 msgstr "По&мощь"
 
-#: ../src/mainfrm.cc:960
+#: ../src/mainfrm.cc:961
 #: n:216
 msgid "&Presentation"
 msgstr "&Презентация"
@@ -746,14 +746,14 @@ msgstr "Ожидается имя топо-съемки"
 #: ../src/datain.c:401
 #: ../src/extend.c:554
 #: ../src/img_hosted.c:30
-#: ../src/mainfrm.cc:433
+#: ../src/mainfrm.cc:434
 #: ../src/sorterr.c:146
 #: n:24
 #, c-format
 msgid "Couldn’t open file “%s”"
 msgstr "Невозможно открыть файл “%s”"
 
-#: ../src/printwx.cc:705
+#: ../src/printing.cc:705
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
@@ -809,14 +809,14 @@ msgstr "Файл “%s” не распознан как корректный .3
 #. files internally.  Probably best to keep it the same for all
 #. translations.
 #: ../src/img.c:43
-#: ../src/mainfrm.cc:1434
+#: ../src/mainfrm.cc:1435
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
-#: ../src/mainfrm.cc:1427
+#: ../src/mainfrm.cc:1428
 #: n:108
 msgid "Date and time not available."
 msgstr "Дата и время недоступны."
@@ -830,8 +830,8 @@ msgstr "Ошибка чтения из файла “%s”"
 #: ../src/cavernlog.cc:522
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:41
-#: ../src/mainfrm.cc:391
-#: ../src/mainfrm.cc:2021
+#: ../src/mainfrm.cc:392
+#: ../src/mainfrm.cc:2022
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -854,23 +854,23 @@ msgstr "Визникло %d предупреждений и %d ошибок - р
 msgid "File “%s” has a newer format than this program can understand"
 msgstr "Файл “%s” имеет более новый формат, с которым данная версия программы не может работать"
 
-#: ../src/printwx.cc:1051
+#: ../src/printing.cc:1051
 #: n:115
 msgid "North"
 msgstr "Север"
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
-#: ../src/printwx.cc:1076
+#: ../src/printing.cc:1076
 #: n:116
 msgid "Elevation on"
 msgstr "Разрез-сечение по азимуту"
 
-#: ../src/printwx.cc:491
+#: ../src/printing.cc:491
 #: n:117
 msgid "P&lan view"
 msgstr "П&лан"
 
-#: ../src/printwx.cc:493
+#: ../src/printing.cc:493
 #: n:285
 msgid "&Elevation"
 msgstr "&Разрез"
@@ -885,7 +885,7 @@ msgstr "&Разрез"
 #. further apart to make room. */
 #: ../src/gfxcore.cc:871
 #: ../src/gfxcore.cc:1929
-#: ../src/mainfrm.cc:174
+#: ../src/mainfrm.cc:175
 #: n:118
 msgid "Elevation"
 msgstr "Разрез"
@@ -1114,10 +1114,10 @@ msgstr "вывести информацию о версии и выйти"
 msgid "OPTION"
 msgstr "ОПЦИЯ"
 
-#: ../src/mainfrm.cc:178
-#: ../src/printwx.cc:437
-#: ../src/printwx.cc:1113
-#: ../src/printwx.cc:1162
+#: ../src/mainfrm.cc:179
+#: ../src/printing.cc:437
+#: ../src/printing.cc:1113
+#: ../src/printing.cc:1162
 #: n:154
 msgid "Scale"
 msgstr "Масштаб"
@@ -1128,15 +1128,78 @@ msgstr "Масштаб"
 msgid "Try “%s --help” for more information.\n"
 msgstr "Выполните “%s --help” для получения дополнительной информации.\n"
 
-#: ../src/printwx.cc:1760
-#: n:167
+#. TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
+#: ../src/printing.cc:1816
+#: n:232
 #, c-format
-msgid "Survey “%s”   Page %d (of %d)   Processed on %s"
-msgstr "Топо-съемка “%s”   Страница %d (из %d)   Обработана на %s"
+msgid "%d/%d"
+msgstr ""
+
+#. TRANSLATORS: Used in the footer of printouts to compactly indicate that
+#. the date which follows is the date that the survey data was processed.
+#.
+#. Aven will replace %s with a string giving the date and time (e.g.
+#. "2015-06-09 12:40:44").
+#: ../src/printing.cc:1857
+#: n:167
+#, fuzzy, c-format
+msgid "Processed: %s"
+msgstr "Обработана на %s"
+
+#. TRANSLATORS: Used in the footer of printouts to compactly
+#. indicate this is a plan view and what the viewing angle is.
+#. Aven will replace %s with the bearing, and %.0f with the scale.
+#.
+#. This message probably doesn't need translating for most languages.
+#: ../src/printing.cc:1771
+#: n:233
+#, c-format
+msgid "↑%s 1:%.0f"
+msgstr ""
+
+#. TRANSLATORS: Used in the footer of printouts to compactly
+#. indicate this is an elevation view and what the viewing angle
+#. is.  Aven will replace the %s codes with the bearings to the
+#. left and right of the viewer, and %.0f with the scale.
+#.
+#. This message probably doesn't need translating for most languages.
+#: ../src/printing.cc:1782
+#: n:235
+#, c-format
+msgid "%s↔%s 1:%.0f"
+msgstr ""
+
+#. TRANSLATORS: Used in the footer of printouts to compactly
+#. indicate this is a tilted elevation view and what the viewing
+#. angles are.  Aven will replace the %s codes with the bearings to
+#. the left and right of the viewer and the angle the view is
+#. tilted at, and %.0f with the scale.
+#.
+#. This message probably doesn't need translating for most languages.
+#: ../src/printing.cc:1795
+#: n:236
+#, c-format
+msgid "%s↔%s ∡%s 1:%.0f"
+msgstr ""
+
+#. TRANSLATORS: Used in the footer of printouts to compactly
+#. indicate this is an extended elevation view.  Aven will replace
+#. %.0f with the scale.
+#.
+#. Try to keep the translation short (for example, in English we
+#. use "Extended" not "Extended elevation") - there is limited room
+#. in the footer, and the details there are mostly to make it easy
+#. to check that you have corresponding pages from a multiple page
+#. printout.
+#: ../src/printing.cc:1811
+#: n:244
+#, c-format
+msgid "Extended 1:%.0f"
+msgstr ""
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
-#: ../src/printwx.cc:1057
+#: ../src/printing.cc:1057
 #: n:168
 #, c-format
 msgid "Plan view, %s up page"
@@ -1145,7 +1208,7 @@ msgstr "План, верх страницы сориентирован на аз
 #. TRANSLATORS: This is used on printouts of elevations, with %s
 #. replaced by something like "123°".  The bearing is the direction
 #. we’re looking.
-#: ../src/printwx.cc:1089
+#: ../src/printing.cc:1089
 #: n:169
 #, c-format
 msgid "Elevation facing %s"
@@ -1155,14 +1218,14 @@ msgstr "Разрез-проекция, направление взгляда - �
 #. the first %s replaced by something like "123°", and the second by
 #. something like "-45°".  The bearing is the direction we’re
 #. looking.
-#: ../src/printwx.cc:1096
+#: ../src/printing.cc:1096
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
 msgstr "Разрез-проекция, направление взгляда  - азимут %s, угол %s"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
-#: ../src/printwx.cc:1105
+#: ../src/printing.cc:1105
 #: n:191
 msgid "Extended elevation"
 msgstr "Разрез-развертка"
@@ -1381,7 +1444,7 @@ msgstr "указать версию формата в котором будет 
 msgid "*UNITS factor must be non-zero"
 msgstr "Коэффициент в команде *UNITS должен быть ненулевым"
 
-#: ../src/mainfrm.cc:1444
+#: ../src/mainfrm.cc:1445
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -1409,12 +1472,12 @@ msgstr "О программе %s"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
 #. grid of height values).
-#: ../src/mainfrm.cc:1979
+#: ../src/mainfrm.cc:1980
 #: n:451
 msgid "Select a terrain file to view"
 msgstr "Выберите файл с рельефом поверхности для отображения"
 
-#: ../src/mainfrm.cc:1973
+#: ../src/mainfrm.cc:1974
 #: n:452
 msgid "Terrain files"
 msgstr "Файлы рельефа поверхности"
@@ -1424,22 +1487,22 @@ msgstr "Файлы рельефа поверхности"
 #. language would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1950
+#: ../src/mainfrm.cc:1951
 #: n:206
 msgid "Select a survey file to view"
 msgstr "Выберите топо-съемку для просмотра"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1927
+#: ../src/mainfrm.cc:1928
 #: n:207
 msgid "Survex 3d files"
 msgstr "Survex 3d файлы"
 
-#: ../src/mainfrm.cc:1942
-#: ../src/mainfrm.cc:1974
-#: ../src/mainfrm.cc:2422
-#: ../src/printwx.cc:685
+#: ../src/mainfrm.cc:1943
+#: ../src/mainfrm.cc:1975
+#: ../src/mainfrm.cc:2423
+#: ../src/printing.cc:685
 #: n:208
 msgid "All files"
 msgstr "Все файлы"
@@ -1447,36 +1510,36 @@ msgstr "Все файлы"
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
 #. terminology that cavers using the language would use.
-#: ../src/mainfrm.cc:1924
+#: ../src/mainfrm.cc:1925
 #: n:229
 msgid "All survey files"
 msgstr "Все файлы топо-съемок"
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1930
+#: ../src/mainfrm.cc:1931
 #: n:329
 msgid "Survex svx files"
 msgstr "Survex svx файлы"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1938
+#: ../src/mainfrm.cc:1939
 #: n:330
 msgid "Compass DAT and MAK files"
 msgstr "DAT и MAK файлы Compass"
 
-#: ../src/printwx.cc:315
+#: ../src/printing.cc:315
 #: n:411
 msgid "DXF files"
 msgstr "DXF файлы"
 
-#: ../src/printwx.cc:316
+#: ../src/printing.cc:316
 #: n:412
 msgid "EPS files"
 msgstr "EPS файлы"
 
-#: ../src/printwx.cc:317
+#: ../src/printing.cc:317
 #: n:413
 msgid "GPX files"
 msgstr "GPX файлы"
@@ -1484,12 +1547,12 @@ msgstr "GPX файлы"
 #. TRANSLATORS: Here "plotter" refers to a machine which draws a printout
 #. on a (usually large) sheet of paper using a pen mounted in a motorised
 #. mechanism.
-#: ../src/printwx.cc:321
+#: ../src/printing.cc:321
 #: n:414
 msgid "HPGL for plotters"
 msgstr "HPGL файлы (для плоттера)"
 
-#: ../src/printwx.cc:323
+#: ../src/printing.cc:323
 #: n:444
 msgid "KML files"
 msgstr "KML файлы"
@@ -1498,24 +1561,24 @@ msgstr "KML файлы"
 #. so should not be translated:
 #. http://www.fountainware.com/compass/
 #. http://www.psc-cavers.org/carto/
-#: ../src/printwx.cc:328
+#: ../src/printing.cc:328
 #: n:415
 msgid "Compass PLT for use with Carto"
 msgstr "Compass PLT файлы для использования в Carto"
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated: http://www.skencil.org/
-#: ../src/printwx.cc:331
+#: ../src/printing.cc:331
 #: n:416
 msgid "Skencil files"
 msgstr "Skencil файлы"
 
-#: ../src/printwx.cc:332
+#: ../src/printing.cc:332
 #: n:417
 msgid "SVG files"
 msgstr "SVG файлы"
 
-#: ../src/printwx.cc:322
+#: ../src/printing.cc:322
 #: n:445
 msgid "JSON files"
 msgstr "JSON файлы"
@@ -1669,64 +1732,64 @@ msgstr "Журнал ошибок %s"
 
 #. TRANSLATORS: The text on the action button in the "Export" settings
 #. dialog
-#: ../src/printwx.cc:628
+#: ../src/printing.cc:628
 #: n:230
 msgid "&Export…"
 msgstr "&Экспорт"
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
-#: ../src/mainfrm.cc:823
+#: ../src/mainfrm.cc:824
 #: n:231
 msgid "Au&to-Rotate\tSpace"
 msgstr "Ав&томатическое вращение\tSpace"
 
-#: ../src/mainfrm.cc:825
+#: ../src/mainfrm.cc:826
 #: n:234
 msgid "&Reverse Direction"
 msgstr "&Поменять направление вращения"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:3818
-#: ../src/mainfrm.cc:828
+#: ../src/mainfrm.cc:829
 #: n:240
 msgid "View &North"
 msgstr "На &Север"
 
 #. TRANSLATORS: View *looking* East
 #: ../src/gfxcore.cc:3820
-#: ../src/mainfrm.cc:829
+#: ../src/mainfrm.cc:830
 #: n:241
 msgid "View &East"
 msgstr "На &Восток"
 
 #. TRANSLATORS: View *looking* South
 #: ../src/gfxcore.cc:3822
-#: ../src/mainfrm.cc:830
+#: ../src/mainfrm.cc:831
 #: n:242
 msgid "View &South"
 msgstr "На &Юг"
 
 #. TRANSLATORS: View *looking* West
 #: ../src/gfxcore.cc:3824
-#: ../src/mainfrm.cc:831
+#: ../src/mainfrm.cc:832
 #: n:243
 msgid "View &West"
 msgstr "На &Запад"
 
 #: ../src/gfxcore.cc:3841
-#: ../src/mainfrm.cc:833
+#: ../src/mainfrm.cc:834
 #: n:248
 msgid "&Plan View"
 msgstr "&План"
 
 #: ../src/gfxcore.cc:3842
-#: ../src/mainfrm.cc:834
+#: ../src/mainfrm.cc:835
 #: n:249
 msgid "Ele&vation"
 msgstr "&Разрез"
 
-#: ../src/mainfrm.cc:836
+#: ../src/mainfrm.cc:837
 #: n:254
 msgid "Restore De&fault View"
 msgstr "Восстановить об&зор по умолчанию"
@@ -1734,7 +1797,7 @@ msgstr "Восстановить об&зор по умолчанию"
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
 #. the "what to print/export" dialog.
-#: ../src/printwx.cc:401
+#: ../src/printing.cc:401
 #: n:283
 msgid "View"
 msgstr "Вид"
@@ -1743,18 +1806,18 @@ msgstr "Вид"
 #. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
 #. "Elements" isn’t a good name for this but nothing better has yet come to
 #. mind!
-#: ../src/printwx.cc:406
+#: ../src/printing.cc:406
 #: n:256
 msgid "Elements"
 msgstr "Элементы"
 
-#: ../src/printwx.cc:412
+#: ../src/printing.cc:412
 #: n:410
 msgid "Export format"
 msgstr "Формат экспорта"
 
-#: ../src/printwx.cc:461
-#: ../src/printwx.cc:857
+#: ../src/printing.cc:461
+#: ../src/printing.cc:857
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
@@ -1763,41 +1826,41 @@ msgstr "%d страниц (%dx%d)"
 #. TRANSLATORS: used in the scale drop down selector in the print
 #. dialog the implicit meaning is "choose a suitable scale to fit
 #. the plot on a single page", but we need something shorter
-#: ../src/printwx.cc:443
-#: ../src/printwx.cc:876
+#: ../src/printing.cc:443
+#: ../src/printing.cc:876
 #: n:258
 msgid "One page"
 msgstr "Одна страница"
 
-#: ../src/mainfrm.cc:170
-#: ../src/printwx.cc:474
+#: ../src/mainfrm.cc:171
+#: ../src/printing.cc:474
 #: n:259
 msgid "Bearing"
 msgstr "Азимут"
 
-#: ../src/printwx.cc:515
+#: ../src/printing.cc:515
 #: n:260
 msgid "Station Names"
 msgstr "Названия пикетов"
 
-#: ../src/printwx.cc:511
+#: ../src/printing.cc:511
 #: n:261
 msgid "Crosses"
 msgstr "Пикеты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:501
+#: ../src/printing.cc:501
 #: n:262
 msgid "Underground Survey Legs"
 msgstr "Подземные замеры"
 
-#: ../src/printwx.cc:531
+#: ../src/printing.cc:531
 #: n:393
 msgid "Cross-sections"
 msgstr "Сечения"
 
-#: ../src/printwx.cc:536
+#: ../src/printing.cc:536
 #: n:394
 msgid "Walls"
 msgstr "Стены ходов"
@@ -1805,30 +1868,30 @@ msgstr "Стены ходов"
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
 #. containing polygons for the inside of cave passages).
-#: ../src/printwx.cc:543
+#: ../src/printing.cc:543
 #: n:395
 msgid "Passages"
 msgstr "Пещерныхе ходы"
 
-#: ../src/printwx.cc:547
+#: ../src/printing.cc:547
 #: n:421
 msgid "Origin in centre"
 msgstr "Начало координат в центре"
 
-#: ../src/printwx.cc:551
+#: ../src/printing.cc:551
 #: n:422
 msgid "Full coordinates"
 msgstr "Полные координаты"
 
 #. TRANSLATORS: Used in the print dialog:
-#: ../src/printwx.cc:481
+#: ../src/printing.cc:481
 #: n:263
 msgid "Tilt angle"
 msgstr "Угол наклона"
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
-#: ../src/printwx.cc:559
+#: ../src/printing.cc:559
 #: n:264
 msgid "Page Borders"
 msgstr "Границы страницы"
@@ -1836,112 +1899,112 @@ msgstr "Границы страницы"
 #. TRANSLATORS: As in the legend on a map.  Used in the print dialog -
 #. controls drawing the box at the lower left with survey name, view
 #. angles, etc
-#: ../src/printwx.cc:570
+#: ../src/printing.cc:570
 #: n:265
 msgid "Legend"
 msgstr "Условные обозначения"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
-#: ../src/printwx.cc:565
+#: ../src/printing.cc:565
 #: n:266
 msgid "Blank Pages"
 msgstr "Пустые страницы"
 
 #. TRANSLATORS: Items in the "View" menu:
-#: ../src/mainfrm.cc:853
+#: ../src/mainfrm.cc:854
 #: n:270
 msgid "Station &Names\tCtrl+N"
 msgstr "&Названия пикетов\tCtrl+N"
 
 #. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:855
+#: ../src/mainfrm.cc:856
 #: n:346
 msgid "Passage &Tubes\tCtrl+T"
 msgstr "&Объемные ходы\tCtrl+T"
 
 #. TRANSLATORS: Toggles drawing the surface of the Earth
-#: ../src/mainfrm.cc:857
+#: ../src/mainfrm.cc:858
 #: n:449
 #, fuzzy
 msgid "Terr&ain"
 msgstr "Рел&ьеф"
 
-#: ../src/mainfrm.cc:858
+#: ../src/mainfrm.cc:859
 #: n:271
 msgid "&Crosses\tCtrl+X"
 msgstr "Пикет&ы\tCtrl+X"
 
-#: ../src/mainfrm.cc:859
+#: ../src/mainfrm.cc:860
 #: n:297
 msgid "&Grid\tCtrl+G"
 msgstr "&Сетка\tCtrl+G"
 
-#: ../src/mainfrm.cc:860
+#: ../src/mainfrm.cc:861
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
 msgstr "Вме&щающий прямоугольник\tCtrl+B"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:864
+#: ../src/mainfrm.cc:865
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "Под&земная нитка\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:867
+#: ../src/mainfrm.cc:868
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Поверхностна&я нитка\tCtrl+F"
 
-#: ../src/mainfrm.cc:883
+#: ../src/mainfrm.cc:884
 #: n:273
 msgid "&Overlapping Names"
 msgstr "П&ерекрывающиеся надписи"
 
-#: ../src/mainfrm.cc:892
+#: ../src/mainfrm.cc:893
 #: n:450
 msgid "Co&lour by"
 msgstr ""
 
-#: ../src/mainfrm.cc:895
+#: ../src/mainfrm.cc:896
 #: n:294
 msgid "Highlight &Entrances"
 msgstr "Подсветить в&ходы"
 
-#: ../src/mainfrm.cc:896
+#: ../src/mainfrm.cc:897
 #: n:295
 msgid "Highlight &Fixed Points"
 msgstr "Подсветить &фиксированные точки"
 
-#: ../src/mainfrm.cc:897
+#: ../src/mainfrm.cc:898
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr "Подсветить &экспортированные точки"
 
-#: ../src/printwx.cc:519
+#: ../src/printing.cc:519
 #: n:418
 msgid "Entrances"
 msgstr "Входы"
 
-#: ../src/printwx.cc:523
+#: ../src/printing.cc:523
 #: n:419
 msgid "Fixed Points"
 msgstr "Фиксированные точки"
 
-#: ../src/printwx.cc:527
+#: ../src/printing.cc:527
 #: n:420
 msgid "Exported Stations"
 msgstr "Экспортированные пикеты"
 
-#: ../src/mainfrm.cc:902
+#: ../src/mainfrm.cc:903
 #: n:237
 msgid "&Perspective"
 msgstr "&Перспектива"
 
-#: ../src/mainfrm.cc:904
+#: ../src/mainfrm.cc:905
 #: n:238
 msgid "Textured &Walls"
 msgstr "Текстурированные &стены"
@@ -1949,52 +2012,52 @@ msgstr "Текстурированные &стены"
 #. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
 #. using that term instead if it gives a better translation which most
 #. users will understand.
-#: ../src/mainfrm.cc:908
+#: ../src/mainfrm.cc:909
 #: n:239
 msgid "Fade Distant Ob&jects"
 msgstr "Затенять отдаленные об&ъекты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:911
+#: ../src/mainfrm.cc:912
 #: n:298
 msgid "Smoot&hed Survey Legs"
 msgstr "Сглажи&вать линии"
 
-#: ../src/mainfrm.cc:917
-#: ../src/mainfrm.cc:921
+#: ../src/mainfrm.cc:918
+#: ../src/mainfrm.cc:922
 #: n:356
 msgid "Full Screen &Mode\tF11"
 msgstr "Полноэкранный ре&жим\tF11"
 
 #: ../src/gfxcore.cc:3879
-#: ../src/mainfrm.cc:886
+#: ../src/mainfrm.cc:887
 #: n:292
 msgid "Colour by &Depth"
 msgstr "Раскраска по &глубине"
 
 #: ../src/gfxcore.cc:3880
-#: ../src/mainfrm.cc:887
+#: ../src/mainfrm.cc:888
 #: n:293
 msgid "Colour by D&ate"
 msgstr "Раскраска по &дате"
 
 #: ../src/gfxcore.cc:3881
-#: ../src/mainfrm.cc:888
+#: ../src/mainfrm.cc:889
 #: n:289
 #, fuzzy
 msgid "Colour by &Error"
 msgstr "Раскраска по &ошибкам на кольцах"
 
 #: ../src/gfxcore.cc:3882
-#: ../src/mainfrm.cc:889
+#: ../src/mainfrm.cc:890
 #: n:85
 #, fuzzy
 msgid "Colour by &Gradient"
 msgstr "Раскраска по &уклону хода"
 
 #: ../src/gfxcore.cc:3883
-#: ../src/mainfrm.cc:890
+#: ../src/mainfrm.cc:891
 #: n:82
 msgid "Colour by &Length"
 msgstr "Раскрашивать по &Длине"
@@ -2003,40 +2066,40 @@ msgstr "Раскрашивать по &Длине"
 msgid "Colour by &Survey"
 msgstr "Раскраска по &топо-съемке"
 
-#: ../src/mainfrm.cc:935
+#: ../src/mainfrm.cc:936
 #: n:274
 msgid "&Compass"
 msgstr "&Компас"
 
-#: ../src/mainfrm.cc:936
+#: ../src/mainfrm.cc:937
 #: n:275
 msgid "C&linometer"
 msgstr "&Угломер"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/mainfrm.cc:939
+#: ../src/mainfrm.cc:940
 #: n:276
 msgid "Colour &Key"
 msgstr "&Цветовая шкала"
 
-#: ../src/mainfrm.cc:940
+#: ../src/mainfrm.cc:941
 #: n:277
 msgid "&Scale Bar"
 msgstr "&Масштаб"
 
-#: ../src/mainfrm.cc:930
+#: ../src/mainfrm.cc:931
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
 msgstr "&Инвертировать управление\tCtrl+R"
 
-#: ../src/mainfrm.cc:900
-#: ../src/mainfrm.cc:932
+#: ../src/mainfrm.cc:901
+#: ../src/mainfrm.cc:933
 #: n:281
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "&Выйти из режима измерения\tEscape"
 
-#: ../src/mainfrm.cc:941
+#: ../src/mainfrm.cc:942
 #: n:299
 msgid "&Indicators"
 msgstr "И&ндикаторы"
@@ -2122,73 +2185,73 @@ msgstr "%s: недопустимая опция -- %c\n"
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: неверная опция -- %c\n"
 
-#: ../src/mainfrm.cc:839
+#: ../src/mainfrm.cc:840
 #: n:311
 msgid "&New Presentation"
 msgstr "&Новая презантация"
 
-#: ../src/mainfrm.cc:840
+#: ../src/mainfrm.cc:841
 #: n:312
 msgid "&Open Presentation…"
 msgstr "&Открвть презентацию…"
 
-#: ../src/mainfrm.cc:841
+#: ../src/mainfrm.cc:842
 #: n:313
 msgid "&Save Presentation"
 msgstr "&Сохранить презентацию"
 
-#: ../src/mainfrm.cc:842
+#: ../src/mainfrm.cc:843
 #: n:314
 msgid "Sa&ve Presentation As…"
 msgstr "Со&хранить презентацию как…"
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
-#: ../src/mainfrm.cc:845
+#: ../src/mainfrm.cc:846
 #: n:315
 msgid "&Mark"
 msgstr "От&метить"
 
 #. TRANSLATORS: "Play" as in "Play back a recording"
-#: ../src/mainfrm.cc:847
+#: ../src/mainfrm.cc:848
 #: n:316
 msgid "Pla&y"
 msgstr "&Воспроизвести"
 
-#: ../src/mainfrm.cc:848
+#: ../src/mainfrm.cc:849
 #: n:317
 msgid "&Export as Movie…"
 msgstr "&Экспортировать видео…"
 
-#: ../src/mainfrm.cc:2499
+#: ../src/mainfrm.cc:2500
 #: n:331
 msgid "Export Movie"
 msgstr "Экспортировать видео"
 
 #: ../src/cavernlog.cc:511
-#: ../src/mainfrm.cc:378
+#: ../src/mainfrm.cc:379
 #: n:319
 msgid "Select an output filename"
 msgstr "Выберите имя выходного файла"
 
-#: ../src/mainfrm.cc:375
-#: ../src/mainfrm.cc:2421
+#: ../src/mainfrm.cc:376
+#: ../src/mainfrm.cc:2422
 #: n:320
 msgid "Aven presentations"
 msgstr "Презентации Aven"
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:2007
+#: ../src/mainfrm.cc:2008
 #: n:321
 msgid "Save Screenshot"
 msgstr "Сохранить снимок экрана"
 
-#: ../src/mainfrm.cc:2416
-#: ../src/mainfrm.cc:2419
+#: ../src/mainfrm.cc:2417
+#: ../src/mainfrm.cc:2420
 #: n:322
 msgid "Select a presentation to open"
 msgstr "Выберите презентацию для открытия"
 
-#: ../src/mainfrm.cc:457
+#: ../src/mainfrm.cc:458
 #: n:323
 #, c-format
 msgid "Error in format of presentation file “%s”"
@@ -2196,87 +2259,88 @@ msgstr "Ошибка формата в презентации “%s”"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
-#: ../src/mainfrm.cc:1934
+#: ../src/mainfrm.cc:1935
 #: n:324
 msgid "Compass PLT files"
 msgstr "Файлы Compass PLT"
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 #. package, so don’t translate it.
-#: ../src/mainfrm.cc:1941
+#: ../src/mainfrm.cc:1942
 #: n:325
 msgid "CMAP XYZ files"
 msgstr "Файлы CMAP XYZ"
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:2070
-#: ../src/mainfrm.cc:2393
-#: ../src/mainfrm.cc:2410
+#: ../src/mainfrm.cc:2071
+#: ../src/mainfrm.cc:2394
+#: ../src/mainfrm.cc:2411
 #: n:326
 msgid "Modified Presentation"
 msgstr "Измененная презентация"
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:2068
-#: ../src/mainfrm.cc:2392
-#: ../src/mainfrm.cc:2409
+#: ../src/mainfrm.cc:2069
+#: ../src/mainfrm.cc:2393
+#: ../src/mainfrm.cc:2410
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr "Текущая презентация была изменена.  Отменить не сохраненные изменения?"
 
-#: ../src/mainfrm.cc:2710
-#: ../src/mainfrm.cc:2721
+#: ../src/mainfrm.cc:2711
+#: ../src/mainfrm.cc:2722
 #: n:328
 msgid "No matches were found."
 msgstr "Совпадений не найдено."
 
 #. TRANSLATORS: "Find stations" button tooltip
-#: ../src/mainfrm.cc:1018
+#: ../src/mainfrm.cc:1019
 #: n:332
 msgid "Find"
 msgstr "Поиск"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
-#: ../src/mainfrm.cc:1020
-#: ../src/mainfrm.cc:2753
+#: ../src/mainfrm.cc:1021
+#: ../src/mainfrm.cc:2754
 #: n:333
 msgid "Hide"
 msgstr "Скрыть"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2714
+#: ../src/mainfrm.cc:2715
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr "Скрыть %d найденных пикетов"
 
-#: ../src/mainfrm.cc:258
-#: ../src/mainfrm.cc:2158
-#: ../src/mainfrm.cc:2239
-#: ../src/mainfrm.cc:2291
+#: ../src/mainfrm.cc:259
+#: ../src/mainfrm.cc:2159
+#: ../src/mainfrm.cc:2240
+#: ../src/mainfrm.cc:2292
 #: n:335
 msgid "Altitude"
 msgstr "Высота"
 
 #. TRANSLATORS: error if you try to drag multiple files to the aven
 #. window
-#: ../src/mainfrm.cc:722
+#: ../src/mainfrm.cc:723
 #: n:336
 msgid "You may only view one 3d file at a time."
 msgstr "Вы можете просматривать только один 3d файл одновременно."
 
-#: ../src/mainfrm.cc:942
+#: ../src/mainfrm.cc:943
 #: n:337
 msgid "&Side Panel"
 msgstr "&Боковая панель"
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
-#: ../src/mainfrm.cc:2156
-#: ../src/mainfrm.cc:2178
-#: ../src/mainfrm.cc:2180
-#: ../src/mainfrm.cc:2290
+#: ../src/mainfrm.cc:2157
+#: ../src/mainfrm.cc:2179
+#: ../src/mainfrm.cc:2181
+#: ../src/mainfrm.cc:2291
 #: n:338
+#, c-format
 msgid "%.2f E, %.2f N"
 msgstr "%.2f E, %.2f N"
 
@@ -2284,16 +2348,16 @@ msgstr "%.2f E, %.2f N"
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:2198
-#: ../src/mainfrm.cc:2248
-#: ../src/mainfrm.cc:2310
+#: ../src/mainfrm.cc:2199
+#: ../src/mainfrm.cc:2249
+#: ../src/mainfrm.cc:2311
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr "От %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2323
+#: ../src/mainfrm.cc:2324
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
@@ -2301,7 +2365,7 @@ msgstr "Проложение%.2f%s, Перепад %.2f%s"
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2335
+#: ../src/mainfrm.cc:2336
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
@@ -2312,7 +2376,7 @@ msgstr "%s: %s, Расстояние %.2f%s, Азимут %03d%s"
 #. "Metric" here means metres, km, etc (rather than feet, miles, etc)
 #: ../src/gfxcore.cc:3870
 #: ../src/gfxcore.cc:3890
-#: ../src/mainfrm.cc:944
+#: ../src/mainfrm.cc:945
 #: n:342
 msgid "&Metric"
 msgstr "&Метрические длины"
@@ -2324,7 +2388,7 @@ msgstr "&Метрические длины"
 #: ../src/gfxcore.cc:3832
 #: ../src/gfxcore.cc:3850
 #: ../src/gfxcore.cc:3892
-#: ../src/mainfrm.cc:945
+#: ../src/mainfrm.cc:946
 #: n:343
 msgid "&Degrees"
 msgstr "&Градусы"
@@ -2334,7 +2398,7 @@ msgstr "&Градусы"
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
 #: ../src/gfxcore.cc:3855
-#: ../src/mainfrm.cc:946
+#: ../src/mainfrm.cc:947
 #: n:430
 msgid "&Percent"
 msgstr "&Печать"
@@ -2345,7 +2409,7 @@ msgstr "&Печать"
 #. If there should be a space between the number and this, include
 #. one in the translation.
 #: ../src/gfxcore.cc:1252
-#: ../src/printwx.cc:1154
+#: ../src/printing.cc:1154
 #: n:423
 msgid "km"
 msgstr "км"
@@ -2359,12 +2423,12 @@ msgstr "км"
 #: ../src/gfxcore.cc:1087
 #: ../src/gfxcore.cc:1179
 #: ../src/gfxcore.cc:1259
-#: ../src/mainfrm.cc:2147
-#: ../src/mainfrm.cc:2214
-#: ../src/mainfrm.cc:2234
-#: ../src/mainfrm.cc:2283
-#: ../src/mainfrm.cc:2314
-#: ../src/printwx.cc:1156
+#: ../src/mainfrm.cc:2148
+#: ../src/mainfrm.cc:2215
+#: ../src/mainfrm.cc:2235
+#: ../src/mainfrm.cc:2284
+#: ../src/mainfrm.cc:2315
+#: ../src/printing.cc:1156
 #: n:424
 msgid "m"
 msgstr "м"
@@ -2375,7 +2439,7 @@ msgstr "м"
 #. If there should be a space between the number and this, include
 #. one in the translation.
 #: ../src/gfxcore.cc:1267
-#: ../src/printwx.cc:1159
+#: ../src/printing.cc:1159
 #: n:425
 msgid "cm"
 msgstr "см"
@@ -2409,11 +2473,11 @@ msgstr " миля"
 #: ../src/gfxcore.cc:1087
 #: ../src/gfxcore.cc:1179
 #: ../src/gfxcore.cc:1295
-#: ../src/mainfrm.cc:2152
-#: ../src/mainfrm.cc:2217
-#: ../src/mainfrm.cc:2237
-#: ../src/mainfrm.cc:2288
-#: ../src/mainfrm.cc:2319
+#: ../src/mainfrm.cc:2153
+#: ../src/mainfrm.cc:2218
+#: ../src/mainfrm.cc:2238
+#: ../src/mainfrm.cc:2289
+#: ../src/mainfrm.cc:2320
 #: n:428
 msgid "ft"
 msgstr "футов"
@@ -2460,9 +2524,9 @@ msgstr "Скрыть &цветовую шкалу"
 #: ../src/gfxcore.cc:739
 #: ../src/gfxcore.cc:829
 #: ../src/gfxcore.cc:1151
-#: ../src/mainfrm.cc:2201
-#: ../src/mainfrm.cc:2327
-#: ../src/printwx.cc:89
+#: ../src/mainfrm.cc:2202
+#: ../src/mainfrm.cc:2328
+#: ../src/printing.cc:89
 #: n:344
 msgid "°"
 msgstr "°"
@@ -2482,8 +2546,8 @@ msgstr "ᵍ"
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2209
-#: ../src/mainfrm.cc:2330
+#: ../src/mainfrm.cc:2210
+#: ../src/mainfrm.cc:2331
 #: n:345
 msgid "grad"
 msgstr "град"
@@ -2506,14 +2570,14 @@ msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2221
+#: ../src/mainfrm.cc:2222
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr "%s: Проложение %.2f%s, Азимут %03d%s"
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:2254
+#: ../src/mainfrm.cc:2255
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2521,22 +2585,22 @@ msgstr "%s: Перепад %.2f%s"
 
 #. TRANSLATORS: labels for tabbed side panel this is for the tab with the
 #. tree hierarchy of survey station names
-#: ../src/mainfrm.cc:1069
+#: ../src/mainfrm.cc:1070
 #: n:376
 msgid "Surveys"
 msgstr "Топо-съемки"
 
-#: ../src/mainfrm.cc:1070
+#: ../src/mainfrm.cc:1071
 #: n:377
 msgid "Presentation"
 msgstr "Режим презентации"
 
-#: ../src/mainfrm.cc:256
+#: ../src/mainfrm.cc:257
 #: n:378
 msgid "Easting"
 msgstr "Востосное отклонение (Easting)"
 
-#: ../src/mainfrm.cc:257
+#: ../src/mainfrm.cc:258
 #: n:379
 msgid "Northing"
 msgstr "Северное отклонение (Northing)"
@@ -2548,54 +2612,54 @@ msgstr "Северное отклонение (Northing)"
 #.
 #. "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
-#: ../src/mainfrm.cc:791
+#: ../src/mainfrm.cc:792
 #: n:220
 msgid "&Open…\tCtrl+O"
 msgstr "&Открыть…\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
-#: ../src/mainfrm.cc:794
+#: ../src/mainfrm.cc:795
 #: n:453
 msgid "Open &Terrain…"
 msgstr "Открыть &Рельеф…"
 
-#: ../src/mainfrm.cc:795
+#: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
 msgstr "Показать &журнал"
 
-#: ../src/mainfrm.cc:798
+#: ../src/mainfrm.cc:799
 #: n:380
 msgid "&Print…\tCtrl+P"
 msgstr "&Печать…\tCtrl+P"
 
-#: ../src/mainfrm.cc:799
+#: ../src/mainfrm.cc:800
 #: n:381
 msgid "P&age Setup…"
 msgstr "&Настройки страницы…"
 
 #. TRANSLATORS: In the "File" menu
-#: ../src/mainfrm.cc:802
+#: ../src/mainfrm.cc:803
 #: n:201
 msgid "&Screenshot…"
 msgstr "&Снимок экрана…"
 
-#: ../src/mainfrm.cc:803
+#: ../src/mainfrm.cc:804
 #: n:382
 msgid "&Export as…"
 msgstr "&Экспортировать как…"
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
-#: ../src/printwx.cc:691
+#: ../src/printing.cc:691
 #: n:401
 msgid "Export as:"
 msgstr "Экспортировать как:"
 
 #. TRANSLATORS: Title of the export
 #. dialog
-#: ../src/printwx.cc:348
+#: ../src/printing.cc:348
 #: n:383
 msgid "Export"
 msgstr "Экспортировать"
@@ -2607,53 +2671,53 @@ msgid "System Information:"
 msgstr "Информация о системе:"
 
 #. TRANSLATORS: Title of the print preview dialog
-#: ../src/printwx.cc:728
+#: ../src/printing.cc:728
 #: n:398
 msgid "Print Preview"
 msgstr "Предварительный просмотр печати"
 
 #. TRANSLATORS: Title of the print
 #. dialog
-#: ../src/printwx.cc:345
+#: ../src/printing.cc:345
 #: n:399
 msgid "Print"
 msgstr "Печать"
 
-#: ../src/printwx.cc:623
+#: ../src/printing.cc:623
 #: n:400
 msgid "&Print…"
 msgstr "&Печать…"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printwx.cc:507
+#: ../src/printing.cc:507
 #: n:403
 msgid "Sur&face Survey Legs"
 msgstr "&Поверхностнные замеры"
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:143
+#: ../src/mainfrm.cc:144
 #: n:404
 msgid "Edit Waypoint"
 msgstr "Редактировать точку маршрута"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
 #. in a presentation.
-#: ../src/mainfrm.cc:182
+#: ../src/mainfrm.cc:183
 #: n:278
 msgid " (unused in perspective view)"
 msgstr " (не используется с перспективной проекцией)"
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a
 #. presentation.
-#: ../src/mainfrm.cc:189
+#: ../src/mainfrm.cc:190
 #: n:279
 msgid "Time: "
 msgstr "Время: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.
-#: ../src/mainfrm.cc:193
+#: ../src/mainfrm.cc:194
 #: n:282
 msgid " secs (0 = auto; *6 = 6 times auto)"
 msgstr " секунд (0 = авто; *6 = 6 раз авто)"
@@ -2685,14 +2749,14 @@ msgstr "анонимный пикет"
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Отсутствует замер между двумя анонимными пикетами"
 
-#: ../src/mainfrm.cc:880
+#: ../src/mainfrm.cc:881
 #: n:406
 msgid "Spla&y Legs"
 msgstr "&Вспомогательные замеры"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are not shown.
-#: ../src/mainfrm.cc:872
+#: ../src/mainfrm.cc:873
 #: n:407
 msgid "&Hide"
 msgstr "&Скрыть"
@@ -2700,14 +2764,14 @@ msgstr "&Скрыть"
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. aven will show splay legs with less bright colours (rather than the
 #. same as other legs "Show" or not shown "Hide").
-#: ../src/mainfrm.cc:876
+#: ../src/mainfrm.cc:877
 #: n:408
 msgid "&Fade"
 msgstr "Пониженная &яркость"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are shown the same as other legs.
-#: ../src/mainfrm.cc:879
+#: ../src/mainfrm.cc:880
 #: n:409
 msgid "&Show"
 msgstr "&Показать"
@@ -3010,7 +3074,7 @@ msgstr "входной датум в виде названия датума из
 #. (https://trac.osgeo.org/proj/) - if the .3d file doesn't contain details
 #. of the coordinate projection in use, the user must specify it here for
 #. export formats which need to know it (e.g. GPX).
-#: ../src/printwx.cc:584
+#: ../src/printing.cc:584
 #: n:440
 msgid "Coordinate projection"
 msgstr "Проекция для координат"
@@ -3096,7 +3160,7 @@ msgstr "создавать SVG"
 #~ msgid "%d found"
 #~ msgstr "%d найдено"
 
-#: ../src/mainfrm.cc:925
+#: ../src/mainfrm.cc:926
 #: n:347
 #~ msgid "&Preferences…"
 #~ msgstr "&Настройки…"
