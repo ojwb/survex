@@ -148,7 +148,7 @@ END
 	}
 	print "\n#: n:$msgno";
     }
-    print "\n#, c-format" if $msg =~ /\%[a-z0-9]/;
+    print "\n#, c-format" if $msg =~ /\%[a-z0-9.]/;
     if ($msg =~ s/(?:^|[^\\])"/\\"/g) {
 	print STDERR "Escaping unescaped \" in message number $msgno\n";
     }
@@ -167,7 +167,7 @@ for my $msgno (sort keys %msgs) {
     }
     my $msg = $msgs{$msgno};
     print "\n#: n:$msgno";
-    print "\n#, c-format" if $msg =~ /\%[a-z0-9]/;
+    print "\n#, c-format" if $msg =~ /\%[a-z0-9.]/;
     if ($msg =~ s/(?:^|[^\\])"/\\"/g) {
 	print STDERR "Escaping unescaped \" in message number $msgno\n";
     }
