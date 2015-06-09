@@ -1926,9 +1926,8 @@ msgstr "Lorong &Pipa\tCtrl+T"
 #. TRANSLATORS: Toggles drawing the surface of the Earth
 #: ../src/mainfrm.cc:858
 #: n:449
-#, fuzzy
 msgid "Terr&ain"
-msgstr "Permu&kaan"
+msgstr "&Lahan"
 
 #: ../src/mainfrm.cc:859
 #: n:271
@@ -1950,7 +1949,7 @@ msgstr "&Batas Kotak\tCtrl+B"
 #: ../src/mainfrm.cc:865
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
-msgstr "Kaki Survey di ba&wah tanah\tCtrl+L"
+msgstr "&Kaki Survey di bawah tanah\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1967,7 +1966,7 @@ msgstr "Nama Tumpang Tindi&h"
 #: ../src/mainfrm.cc:893
 #: n:450
 msgid "Co&lour by"
-msgstr ""
+msgstr "&Warna menurut"
 
 #: ../src/mainfrm.cc:896
 #: n:294
@@ -2040,21 +2039,19 @@ msgstr "Warna berdasarkan &Kedalaman"
 #: ../src/mainfrm.cc:888
 #: n:293
 msgid "Colour by D&ate"
-msgstr "Warna berdasarkan T&anggal"
+msgstr "Warna berdasarkan &Tanggal"
 
 #: ../src/gfxcore.cc:3881
 #: ../src/mainfrm.cc:889
 #: n:289
-#, fuzzy
 msgid "Colour by &Error"
-msgstr "Warna berdasarkan Kesa&lahan"
+msgstr "Warna menurut &Eror"
 
 #: ../src/gfxcore.cc:3882
 #: ../src/mainfrm.cc:890
 #: n:85
-#, fuzzy
 msgid "Colour by &Gradient"
-msgstr "Warna menurut Gra&dasi"
+msgstr "Warna menurut &Gradien"
 
 #: ../src/gfxcore.cc:3883
 #: ../src/mainfrm.cc:891
