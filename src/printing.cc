@@ -1876,15 +1876,23 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     long Y = y_offset + ypPageDepth + (long)(7 * m_layout->scY) - pdc->GetCharHeight();
 
     if (wtotal > xpPageWidth) {
-	// Scale down the font so the footer fits.
-	font_footer->Scale(double(xpPageWidth) / wtotal);
+	// Rescale the footer so it fits.
+	double rescale = double(wtotal) / xpPageWidth;
+	double xsc, ysc;
+	pdc->GetUserScale(&xsc, &ysc);
+	pdc->SetUserScale(xsc / rescale, ysc / rescale);
 	SetFont(font_footer);
 	wxString fullfooter = footer[0];
-	for (int i = 1; i < FOOTERS; ++i) {
+	for (int i = 1; i < FOOTERS - 1; ++i) {
 	    fullfooter += footer_sep;
 	    fullfooter += footer[i];
 	}
-	pdc->DrawText(fullfooter, X, Y);
+	pdc->DrawText(fullfooter, X * rescale, Y * rescale);
+	// Draw final item right aligned to avoid misaligning.
+	wxRect rect(x_offset * rescale, Y * rescale,
+		    xpPageWidth * rescale, pdc->GetCharHeight() * rescale);
+	pdc->DrawLabel(footer[FOOTERS - 1], rect, wxALIGN_RIGHT|wxALIGN_TOP);
+	pdc->SetUserScale(xsc, ysc);
     } else {
 	// Space out the elements of the footer to fill the line.
 	double extra = double(xpPageWidth - wtotal) / (FOOTERS - 1);
