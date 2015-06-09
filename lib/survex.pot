@@ -1137,6 +1137,17 @@ msgstr ""
 msgid "%d/%d"
 msgstr ""
 
+#. TRANSLATORS: Used in the footer of printouts to compactly indicate that
+#. the date which follows is the date that the survey data was processed.
+#.
+#. Aven will replace %s with a string giving the date and time (e.g.
+#. "2015-06-09 12:40:44").
+#: ../src/printing.cc:1857
+#: n:167
+#, c-format
+msgid "Processed: %s"
+msgstr ""
+
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate
 #. this is a plan view and what the viewing angle is.  Aven will
 #. replace %s with the bearing, and %.0f with the scale.

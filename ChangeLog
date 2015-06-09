@@ -1,3 +1,9 @@
+Tue Jun 09 00:48:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/printing.cc: Shorten the datestamp by dropping
+	  any day name and timezone, and add "Processed: " before it so it
+	  is clear what it is the date and time of.
+
 Tue Jun 09 00:05:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/printing.cc: Mark printouts of extended

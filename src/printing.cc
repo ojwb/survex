@@ -1757,6 +1757,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     const int FOOTERS = 4;
     wxString footer[FOOTERS];
     footer[0] = m_layout->title;
+
     double rot = m_layout->rot;
     double tilt = m_layout->tilt;
     double scale = m_layout->Scale;
@@ -1810,9 +1811,51 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 	    footer[1].Printf(wmsg(/*Extended 1:%.0f*/244), scale);
 	    break;
     }
+
     // TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
     footer[2].Printf(wmsg(/*%d/%d*/232), pg, m_layout->pagesX * m_layout->pagesY);
-    footer[3] = m_layout->datestamp;
+
+    wxString datestamp = m_layout->datestamp;
+    if (!datestamp.empty()) {
+	// Remove any timezone suffix (e.g. " UTC" or " +1200").
+	wxChar ch = datestamp[datestamp.size() - 1];
+	if (ch >= 'A' && ch <= 'Z') {
+	    for (size_t i = datestamp.size() - 1; i; --i) {
+		ch = datestamp[i];
+		if (ch < 'A' || ch > 'Z') {
+		    if (ch == ' ') datestamp.resize(i);
+		    break;
+		}
+	    }
+	} else if (ch >= '0' && ch <= '9') {
+	    for (size_t i = datestamp.size() - 1; i; --i) {
+		ch = datestamp[i];
+		if (ch < '0' || ch > '9') {
+		    if ((ch == '-' || ch == '+') && datestamp[--i] == ' ')
+			datestamp.resize(i);
+		    break;
+		}
+	    }
+	}
+
+	// Remove any day prefix (e.g. "Mon,").
+	for (size_t i = 0; i != datestamp.size(); ++i) {
+	    if (datestamp[i] == ',' && i + 1 != datestamp.size()) {
+		// Also skip a space after the comma.
+		if (datestamp[i + 1] == ' ') ++i;
+		datestamp.erase(0, i + 1);
+		break;
+	    }
+	}
+    }
+
+    // TRANSLATORS: Used in the footer of printouts to compactly indicate that
+    // the date which follows is the date that the survey data was processed.
+    //
+    // Aven will replace %s with a string giving the date and time (e.g.
+    // "2015-06-09 12:40:44").
+    footer[3].Printf(wmsg(/*Processed: %s*/167), datestamp.c_str());
+
     const wxChar * footer_sep = wxT("    ");
     int fontsize_footer = fontsize_labels;
     wxFont * font_footer;
