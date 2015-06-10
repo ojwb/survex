@@ -49,6 +49,8 @@
 			<array><string>err</string></array>
 			<key>CFBundleTypeIconFile</key>
 			<string>err</string>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeName</key>
