@@ -368,11 +368,6 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	if (dragging != LEFT_DRAG)
 	    return;
 
-	if (event.GetPosition() == m_DragRealStart) {
-	    // Just a "click"...
-	    m_View->CheckHitTestGrid(m_DragStart, true);
-	}
-
 	if (event.MiddleIsDown()) {
 	    if (m_LastDrag == drag_ZOOM)
 		m_View->UnsetZoomBox();
@@ -399,6 +394,8 @@ void GUIControl::OnLButtonUp(wxMouseEvent& event)
 	m_View->DragFinished();
 
 	if (event.GetPosition() == m_DragRealStart) {
+	    // Just a "click"...
+	    m_View->CheckHitTestGrid(m_DragStart, true);
 	    RestoreCursor();
 	} else {
 	    HandleNonDrag(event.GetPosition());

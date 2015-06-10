@@ -1,3 +1,11 @@
+Wed Jun 10 11:23:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc: On OS X, when we centre the view on the station
+	  this can generate a mouse move event, so clear the variable which
+	  says we are dragging before we process a left click on a station.
+	  This avoids random rotations of the survey when clicking on a
+	  station, reported in #47 by Hugh St. Lawrence.
+
 Wed Jun 10 11:22:02 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/Info.plist.in: Add missing CFBundleTypeRole to silence warning
