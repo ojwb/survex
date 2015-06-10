@@ -1197,7 +1197,6 @@ msgstr "%s↔%s ∡%s 1:%.0f"
 msgid "Extended 1:%.0f"
 msgstr "Extended 1:%.0f"
 
-
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
 #: ../src/printing.cc:1057

@@ -1,3 +1,7 @@
+Wed Jun 10 06:17:22 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/en_US.po: Remove extra blank line.
+
 Tue Jun 09 02:16:44 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/id.po: Merge translation updates from launchpad.
