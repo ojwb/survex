@@ -1133,7 +1133,7 @@ msgstr "Coba “%s --help” untuk informasi lebih lanjut.\n"
 #: n:232
 #, c-format
 msgid "%d/%d"
-msgstr ""
+msgstr "%d/%d"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate that
 #. the date which follows is the date that the survey data was processed.
@@ -1142,9 +1142,9 @@ msgstr ""
 #. "2015-06-09 12:40:44").
 #: ../src/printing.cc:1857
 #: n:167
-#, fuzzy, c-format
+#, c-format
 msgid "Processed: %s"
-msgstr "diproses pada %s"
+msgstr "Diproses: %s"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a plan view and what the viewing angle is.
@@ -1155,7 +1155,7 @@ msgstr "diproses pada %s"
 #: n:233
 #, c-format
 msgid "↑%s 1:%.0f"
-msgstr ""
+msgstr "↑%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an elevation view and what the viewing angle
@@ -1167,7 +1167,7 @@ msgstr ""
 #: n:235
 #, c-format
 msgid "%s↔%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a tilted elevation view and what the viewing
@@ -1180,7 +1180,7 @@ msgstr ""
 #: n:236
 #, c-format
 msgid "%s↔%s ∡%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s ∡%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an extended elevation view.  Aven will replace
@@ -1195,7 +1195,7 @@ msgstr ""
 #: n:244
 #, c-format
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "Diperpanjang 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1853,7 +1853,7 @@ msgstr "Silang"
 #: ../src/printing.cc:501
 #: n:262
 msgid "Underground Survey Legs"
-msgstr "Kaki Suvei di Bawah tanah"
+msgstr "Kaki Survei di Bawah tanah"
 
 #: ../src/printing.cc:531
 #: n:393
@@ -1949,7 +1949,7 @@ msgstr "&Batas Kotak\tCtrl+B"
 #: ../src/mainfrm.cc:865
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
-msgstr "&Kaki Survey di bawah tanah\tCtrl+L"
+msgstr "&Kaki Survei di bawah tanah\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -2021,7 +2021,7 @@ msgstr "&Obyek Jauh Pudar"
 #: ../src/mainfrm.cc:912
 #: n:298
 msgid "Smoot&hed Survey Legs"
-msgstr "Merap&ikan Kaki Survey"
+msgstr "Merap&ikan Kaki Survei"
 
 #: ../src/mainfrm.cc:918
 #: ../src/mainfrm.cc:922
@@ -3034,7 +3034,7 @@ msgstr "memutar mundur berkas dan membacanya untuk kedua kalinya"
 #: ../src/dump3d.c:52
 #: n:396
 msgid "show survey date information (if present)"
-msgstr "Menampilkan informasi tanggal survey (jika ada)"
+msgstr "Menampilkan informasi tanggal survei (jika ada)"
 
 #: ../src/findentrances.cc:111
 #: ../src/gfxcore.cc:2669
