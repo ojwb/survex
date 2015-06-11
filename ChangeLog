@@ -1,3 +1,10 @@
+Thu Jun 11 01:39:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Stop trying to scale toolbar icons by the content
+	  scale factor on OS X, as this doesn't seem to achieve what we want,
+	  requires an as-yet unreleased version of wx, and forcing a
+	  non-native toolbar works with current releases.
+
 Thu Jun 11 00:55:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX,src/mainfrm.cc: Force use of a non-native toolbar on
