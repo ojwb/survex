@@ -1134,7 +1134,7 @@ msgstr "Tente “%s --help” para maiores informações.\n"
 #: n:232
 #, c-format
 msgid "%d/%d"
-msgstr ""
+msgstr "%d/%d"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate that
 #. the date which follows is the date that the survey data was processed.
@@ -1279,7 +1279,7 @@ msgstr "Topografia tem %ld componentes interligados."
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Guardar Registro"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -1593,7 +1593,7 @@ msgstr "Arquivos JSON"
 #: ../src/cavernlog.cc:508
 #: n:447
 msgid "Log files"
-msgstr ""
+msgstr "Arquivos de registro"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1907,7 +1907,6 @@ msgstr "Bordas da Página"
 #. angles, etc
 #: ../src/printing.cc:570
 #: n:265
-#, fuzzy
 msgid "Legend"
 msgstr "Legenda"
 
@@ -2449,7 +2448,7 @@ msgstr "m"
 #: ../src/printing.cc:1159
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length,
 #. plural), used e.g.  "2 miles".
@@ -2573,7 +2572,7 @@ msgstr "%"
 #: ../src/gfxcore.cc:814
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
@@ -2634,7 +2633,7 @@ msgstr "Abrir &Terreno…"
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Mostrar &Registro"
 
 #: ../src/mainfrm.cc:799
 #: n:380

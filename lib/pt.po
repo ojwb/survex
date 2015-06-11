@@ -1134,7 +1134,7 @@ msgstr "Tente “%s --help” para mais informações.\n"
 #: n:232
 #, c-format
 msgid "%d/%d"
-msgstr ""
+msgstr "%d/%d"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate that
 #. the date which follows is the date that the survey data was processed.
@@ -1279,7 +1279,7 @@ msgstr "Topografia tem %ld componentes interligados."
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Guardar Registo"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -2632,7 +2632,7 @@ msgstr "Abrir &Terreno…"
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Mostrar &Registo"
 
 #: ../src/mainfrm.cc:799
 #: n:380

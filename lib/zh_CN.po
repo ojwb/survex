@@ -900,7 +900,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1923
 #: n:432
 msgid "Plan"
-msgstr ""
+msgstr "计划"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. from directly below.
@@ -911,8 +911,9 @@ msgstr ""
 #: ../src/gfxcore.cc:785
 #: ../src/gfxcore.cc:1926
 #: n:433
+#, fuzzy
 msgid "Kiwi Plan"
-msgstr ""
+msgstr "新西兰计划"
 
 #: ../src/cavern.c:352
 #: n:120
@@ -1278,7 +1279,7 @@ msgstr ""
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "保存日志"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -1351,7 +1352,7 @@ msgstr ""
 #: ../src/3dtopos.c:112
 #: n:195
 msgid "( Easting, Northing, Altitude )"
-msgstr ""
+msgstr "( 向东,    向北,     海拔     )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
 #: ../src/aboutdlg.cc:181
@@ -1587,7 +1588,7 @@ msgstr "JSON 文件"
 #: ../src/cavernlog.cc:508
 #: n:447
 msgid "Log files"
-msgstr ""
+msgstr "日志文件"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the

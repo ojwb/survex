@@ -2630,7 +2630,7 @@ msgstr "Deschidere &Model Teren…"
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Salvează Istoricu&l"
 
 #: ../src/mainfrm.cc:799
 #: n:380

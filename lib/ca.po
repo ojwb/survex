@@ -1279,7 +1279,7 @@ msgstr "La topografía conté %ld components connectats."
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Desa el Registre"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -2563,14 +2563,14 @@ msgstr "g.cent"
 #: ../src/gfxcore.cc:838
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: infinity symbol - used for the percentage gradient on
 #. vertical angles.
 #: ../src/gfxcore.cc:814
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
@@ -2631,7 +2631,7 @@ msgstr "Obrir &Terreny…"
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Mostra el &Registre"
 
 #: ../src/mainfrm.cc:799
 #: n:380

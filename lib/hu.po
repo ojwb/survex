@@ -45,8 +45,9 @@ msgstr "&Súgó"
 
 #: ../src/mainfrm.cc:961
 #: n:216
+#, fuzzy
 msgid "&Presentation"
-msgstr ""
+msgstr "&Bemutató"
 
 #. TRANSLATORS: as in: Usage: cavern …
 #: ../src/cmdline.c:168
@@ -345,8 +346,9 @@ msgstr "Érvénytelen koordináta rendszer: %s"
 #: ../src/commands.c:1948
 #: ../src/commands.c:1966
 #: n:435
+#, fuzzy
 msgid "Coordinate system unsuitable for output"
-msgstr ""
+msgstr "A koordináta rendszer alkalmatlan kimentenek"
 
 #: ../src/commands.c:894
 #: n:436
@@ -365,8 +367,9 @@ msgstr "A kimeneti projekció beállítva, de a bemeneti NEM!"
 
 #: ../src/commands.c:789
 #: n:439
+#, fuzzy
 msgid "Coordinates can't be omitted when coordinate system has been specified"
-msgstr ""
+msgstr "A koordináták nem elhagyhatók, ha a koordináta rendszer meghatározott"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -383,9 +386,9 @@ msgstr ""
 #. measurement, but the correct term in other languages may be singular.
 #: ../src/commands.c:367
 #: n:37
-#, c-format
+#, fuzzy, c-format
 msgid "Invalid units “%s” for quantity"
-msgstr ""
+msgstr "Érvénytelen “%s” egység a mennyiségnek"
 
 #: ../src/commands.c:430
 #: n:39
@@ -437,8 +440,9 @@ msgstr ""
 #. network which are hanging.
 #: ../src/netartic.c:387
 #: n:45
+#, fuzzy
 msgid "Survey not all connected to fixed stations"
-msgstr ""
+msgstr "A Felmérés nem teljesen kapcsolt rögzített állomásokhoz"
 
 #: ../src/commands.c:924
 #: ../src/datain.c:682
@@ -511,8 +515,9 @@ msgstr "Rögzítés parancs koordináták nélkül - rögzítés (0,0,0) ban"
 #: ../src/commands.c:928
 #: ../src/datain.c:684
 #: n:55
+#, fuzzy
 msgid "Station already fixed at the same coordinates"
-msgstr ""
+msgstr "Már van rögzítve ezeken a koordinátákon állomás"
 
 #. TRANSLATORS: Emitted after second and subsequent "FIX command with
 #. no coordinates - fixing at (0,0,0)" warnings.

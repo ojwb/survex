@@ -53,7 +53,7 @@ msgstr "&Презентация"
 #: ../src/cmdline.c:168
 #: n:49
 msgid "Usage"
-msgstr ""
+msgstr "Използване"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
@@ -834,14 +834,14 @@ msgstr ""
 #: ../src/mainfrm.cc:392
 #: ../src/mainfrm.cc:2022
 #: n:110
-#, c-format
+#, fuzzy, c-format
 msgid "Error writing to file “%s”"
-msgstr ""
+msgstr "Грешка при запис във файл “%s”"
 
 #: ../src/filename.c:82
 #: n:111
 msgid "Error writing to file"
-msgstr ""
+msgstr "Грешка при запис във файл"
 
 #: ../src/cavern.c:388
 #: n:113
@@ -1108,7 +1108,7 @@ msgstr ""
 #: ../src/cmdline.c:141
 #: n:151
 msgid "output version information and exit"
-msgstr ""
+msgstr "извеждане на информация за версията и изход"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
 #: ../src/cmdline.c:170
@@ -1258,13 +1258,13 @@ msgstr ""
 #: ../src/listpos.c:185
 #: n:176
 msgid "node"
-msgstr ""
+msgstr "възел"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
 #: ../src/listpos.c:187
 #: n:177
 msgid "nodes"
-msgstr ""
+msgstr "възела"
 
 #. TRANSLATORS: "Connected component" in the graph theory sense - it
 #. means there are %ld bits of survey with no connections between them.
@@ -1280,7 +1280,7 @@ msgstr ""
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Съхрани дневника"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -1508,7 +1508,7 @@ msgstr ""
 #: ../src/printing.cc:685
 #: n:208
 msgid "All files"
-msgstr ""
+msgstr "Всички файлове"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
