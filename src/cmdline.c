@@ -137,7 +137,7 @@ cmdline_help(void)
    /* TRANSLATORS: description of --help option */
    puts(msg(/*display this help and exit*/150));
    fputs("      --version\t\t\t", stdout);
-   /* TRANSLATORS: description of --verbose option */
+   /* TRANSLATORS: description of --version option */
    puts(msg(/*output version information and exit*/151));
 
    if (msg_extra) {

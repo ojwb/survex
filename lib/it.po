@@ -1103,7 +1103,7 @@ msgstr "Errore    N/A"
 msgid "display this help and exit"
 msgstr "mostra questo aiuto ed esce"
 
-#. TRANSLATORS: description of --verbose option
+#. TRANSLATORS: description of --version option
 #: ../src/cmdline.c:141
 #: n:151
 msgid "output version information and exit"

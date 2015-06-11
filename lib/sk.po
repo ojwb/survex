@@ -1103,7 +1103,7 @@ msgstr "Chyba (nemá zmysel)"
 msgid "display this help and exit"
 msgstr "zobraziť túto nápovedu a skončiť"
 
-#. TRANSLATORS: description of --verbose option
+#. TRANSLATORS: description of --version option
 #: ../src/cmdline.c:141
 #: n:151
 msgid "output version information and exit"
