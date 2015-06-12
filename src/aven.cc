@@ -34,7 +34,6 @@
 #include "useful.h"
 
 #include <assert.h>
-#include <signal.h>
 #include <stdio.h>
 
 #include <wx/confbase.h>
