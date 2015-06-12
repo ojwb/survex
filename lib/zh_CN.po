@@ -887,8 +887,9 @@ msgstr ""
 #: ../src/gfxcore.cc:1929
 #: ../src/mainfrm.cc:175
 #: n:118
+#, fuzzy
 msgid "Elevation"
-msgstr ""
+msgstr "坡度"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. from directly above.
@@ -1903,7 +1904,7 @@ msgstr ""
 #: ../src/printing.cc:570
 #: n:265
 msgid "Legend"
-msgstr ""
+msgstr "图例"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -1938,7 +1939,7 @@ msgstr "格点(&C)\tCtrl+X"
 #: ../src/mainfrm.cc:860
 #: n:297
 msgid "&Grid\tCtrl+G"
-msgstr ""
+msgstr "网格(&G)\tCtrl+G"
 
 #: ../src/mainfrm.cc:861
 #: n:318
@@ -2352,14 +2353,14 @@ msgstr "%.2f东%.2f北"
 #: n:339
 #, c-format
 msgid "From %s"
-msgstr ""
+msgstr "自 %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
 #: ../src/mainfrm.cc:2324
 #: n:340
-#, c-format
+#, fuzzy, c-format
 msgid "H %.2f%s, V %.2f%s"
-msgstr ""
+msgstr "横%.2f%s, 垂直 %.2f%s"
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing)
@@ -2557,14 +2558,14 @@ msgstr "梯度"
 #: ../src/gfxcore.cc:838
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: infinity symbol - used for the percentage gradient on
 #. vertical angles.
 #: ../src/gfxcore.cc:814
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
@@ -2625,7 +2626,7 @@ msgstr ""
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "显示日志(&L)"
 
 #: ../src/mainfrm.cc:799
 #: n:380
@@ -2772,7 +2773,7 @@ msgstr ""
 #: ../src/mainfrm.cc:880
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "显示(&S)"
 
 #: ../src/extend.c:507
 #: n:105
@@ -3217,7 +3218,7 @@ msgstr ""
 
 #: n:361
 #~ msgid "Draw a grid"
-#~ msgstr ""
+#~ msgstr "绘制网格"
 
 #: n:362
 #~ msgid "metric units"

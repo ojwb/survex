@@ -1805,7 +1805,7 @@ msgstr "&Стандартен изглед"
 #: ../src/printing.cc:401
 #: n:283
 msgid "View"
-msgstr ""
+msgstr "Изглед"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey
 #. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
@@ -1908,7 +1908,7 @@ msgstr ""
 #: ../src/printing.cc:570
 #: n:265
 msgid "Legend"
-msgstr ""
+msgstr "Легенда"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -2149,7 +2149,7 @@ msgstr ""
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
-msgstr ""
+msgstr "%s: опция “%s” изисква аргумент\n"
 
 #: ../src/z_getopt.c:962
 #: ../src/z_getopt.c:973
@@ -2158,7 +2158,7 @@ msgstr ""
 #: n:306
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr ""
+msgstr "%s: опция изисква аргумент -- %c\n"
 
 #: ../src/z_getopt.c:842
 #: ../src/z_getopt.c:845
@@ -2493,7 +2493,7 @@ msgstr "футове"
 #: ../src/gfxcore.cc:1303
 #: n:429
 msgid "in"
-msgstr ""
+msgstr " Инча"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3827
@@ -2630,7 +2630,7 @@ msgstr ""
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Показване на &Дневника"
 
 #: ../src/mainfrm.cc:799
 #: n:380
@@ -2716,7 +2716,7 @@ msgstr ""
 #: ../src/mainfrm.cc:190
 #: n:279
 msgid "Time: "
-msgstr ""
+msgstr "Време: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.

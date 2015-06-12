@@ -21,7 +21,7 @@ msgstr "&Berkas"
 #: ../src/mainfrm.cc:955
 #: n:211
 msgid "&Rotation"
-msgstr "&Rotation"
+msgstr "&Rotasi"
 
 #: ../src/mainfrm.cc:956
 #: n:212
@@ -36,7 +36,7 @@ msgstr "&Tilik"
 #: ../src/mainfrm.cc:959
 #: n:214
 msgid "&Controls"
-msgstr "&Controls"
+msgstr "&Kontrol"
 
 #: ../src/mainfrm.cc:968
 #: n:215
@@ -46,7 +46,7 @@ msgstr "Ba&ntuan"
 #: ../src/mainfrm.cc:961
 #: n:216
 msgid "&Presentation"
-msgstr "&Presentation"
+msgstr "&Presentasi"
 
 #. TRANSLATORS: as in: Usage: cavern …
 #: ../src/cmdline.c:168
@@ -777,7 +777,7 @@ msgstr "Penggunaan lebih lanjut dari fitur yang ditinggalkan ini tidak perlu dil
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
-msgstr "Pembacaan COMPASS dan pembacaan BACKCOMPASS tidak sama %s"
+msgstr "Pembacaan Azimuth Kompass (COMPASS) dan pembacaan Back Azimuth Kompass (BACKCOMPASS) tidak sama %s"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".

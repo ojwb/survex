@@ -16,37 +16,38 @@ msgstr ""
 #: ../src/mainfrm.cc:954
 #: n:210
 msgid "&File"
-msgstr ""
+msgstr "&Plik"
 
 #: ../src/mainfrm.cc:955
 #: n:211
 msgid "&Rotation"
-msgstr ""
+msgstr "&Obrót"
 
 #: ../src/mainfrm.cc:956
 #: n:212
 msgid "&Orientation"
-msgstr ""
+msgstr "Orientac&ja"
 
 #: ../src/mainfrm.cc:957
 #: n:213
 msgid "&View"
-msgstr ""
+msgstr "&Widok"
 
 #: ../src/mainfrm.cc:959
 #: n:214
+#, fuzzy
 msgid "&Controls"
-msgstr ""
+msgstr "&Sterownica"
 
 #: ../src/mainfrm.cc:968
 #: n:215
 msgid "&Help"
-msgstr ""
+msgstr "Pomo&c"
 
 #: ../src/mainfrm.cc:961
 #: n:216
 msgid "&Presentation"
-msgstr ""
+msgstr "Pre&zentacja"
 
 #. TRANSLATORS: as in: Usage: cavern …
 #: ../src/cmdline.c:168
@@ -900,8 +901,9 @@ msgstr "Przekrój"
 #: ../src/gfxcore.cc:771
 #: ../src/gfxcore.cc:1923
 #: n:432
+#, fuzzy
 msgid "Plan"
-msgstr ""
+msgstr "Widok z góry"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. from directly below.
@@ -928,7 +930,7 @@ msgstr ""
 #: ../src/cmdline.c:212
 #: n:122
 msgid "too few arguments"
-msgstr ""
+msgstr "za mało argumentów"
 
 #: ../src/cmdline.c:219
 #: n:123
@@ -940,7 +942,7 @@ msgstr "zbyt dużo parametrów"
 #: ../src/cmdline.c:185
 #: n:124
 msgid "FILE"
-msgstr ""
+msgstr "PLIK"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by
 #. toporobot: "sequence" for the English "traverse", which makes sense
@@ -1101,19 +1103,19 @@ msgstr ""
 #: ../src/cmdline.c:138
 #: n:150
 msgid "display this help and exit"
-msgstr ""
+msgstr "wyświetl tę pomoc i wyjdź"
 
 #. TRANSLATORS: description of --version option
 #: ../src/cmdline.c:141
 #: n:151
 msgid "output version information and exit"
-msgstr ""
+msgstr "wyświetl informacje o wersji i wyjdź"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
 #: ../src/cmdline.c:170
 #: n:153
 msgid "OPTION"
-msgstr ""
+msgstr "OPCJA"
 
 #: ../src/mainfrm.cc:179
 #: ../src/printing.cc:437
@@ -1121,7 +1123,7 @@ msgstr ""
 #: ../src/printing.cc:1162
 #: n:154
 msgid "Scale"
-msgstr ""
+msgstr "Scala"
 
 #: ../src/cmdline.c:194
 #: n:157
@@ -1134,7 +1136,7 @@ msgstr ""
 #: n:232
 #, c-format
 msgid "%d/%d"
-msgstr ""
+msgstr "%d/%d"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate that
 #. the date which follows is the date that the survey data was processed.
@@ -1257,13 +1259,13 @@ msgstr ""
 #: ../src/listpos.c:185
 #: n:176
 msgid "node"
-msgstr ""
+msgstr "węzeł"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
 #: ../src/listpos.c:187
 #: n:177
 msgid "nodes"
-msgstr ""
+msgstr "węzły"
 
 #. TRANSLATORS: "Connected component" in the graph theory sense - it
 #. means there are %ld bits of survey with no connections between them.
@@ -1279,7 +1281,7 @@ msgstr ""
 #: ../src/cavernlog.cc:456
 #: n:446
 msgid "Save Log"
-msgstr ""
+msgstr "Zapisz dziennik"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -1352,7 +1354,7 @@ msgstr ""
 #: ../src/3dtopos.c:112
 #: n:195
 msgid "( Easting, Northing, Altitude )"
-msgstr ""
+msgstr "( Wschód,  Północ,  Wysokość  )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
 #: ../src/aboutdlg.cc:181
@@ -1469,7 +1471,7 @@ msgstr ""
 #: n:205
 #, c-format
 msgid "About %s"
-msgstr ""
+msgstr "O %s"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
 #. grid of height values).
@@ -1655,7 +1657,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1117
 #: n:221
 msgid "Undated"
-msgstr ""
+msgstr "Bez daty"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information. Try to keep
@@ -1736,7 +1738,7 @@ msgstr ""
 #: ../src/printing.cc:628
 #: n:230
 msgid "&Export…"
-msgstr ""
+msgstr "&Eksport…"
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
@@ -1801,7 +1803,7 @@ msgstr ""
 #: ../src/printing.cc:401
 #: n:283
 msgid "View"
-msgstr ""
+msgstr "Widok"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "survey
 #. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
@@ -1810,12 +1812,12 @@ msgstr ""
 #: ../src/printing.cc:406
 #: n:256
 msgid "Elements"
-msgstr ""
+msgstr "Elementy"
 
 #: ../src/printing.cc:412
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Format eksportu"
 
 #: ../src/printing.cc:461
 #: ../src/printing.cc:857
@@ -1831,7 +1833,7 @@ msgstr ""
 #: ../src/printing.cc:876
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "Jedna strona"
 
 #: ../src/mainfrm.cc:171
 #: ../src/printing.cc:474
@@ -1847,7 +1849,7 @@ msgstr ""
 #: ../src/printing.cc:511
 #: n:261
 msgid "Crosses"
-msgstr ""
+msgstr "Krzyżei"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1903,7 +1905,7 @@ msgstr ""
 #: ../src/printing.cc:570
 #: n:265
 msgid "Legend"
-msgstr ""
+msgstr "Legenda"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -1933,7 +1935,7 @@ msgstr ""
 #: ../src/mainfrm.cc:859
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr ""
+msgstr "&Krzyżei\tCtrl+X"
 
 #: ../src/mainfrm.cc:860
 #: n:297
@@ -2067,24 +2069,25 @@ msgstr ""
 #: ../src/mainfrm.cc:936
 #: n:274
 msgid "&Compass"
-msgstr ""
+msgstr "&Kompas"
 
 #: ../src/mainfrm.cc:937
 #: n:275
 msgid "C&linometer"
-msgstr ""
+msgstr "&Chyłomierz"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:940
 #: n:276
+#, fuzzy
 msgid "Colour &Key"
-msgstr ""
+msgstr "Colour Ke&y"
 
 #: ../src/mainfrm.cc:941
 #: n:277
 msgid "&Scale Bar"
-msgstr ""
+msgstr "&Pasek skali"
 
 #: ../src/mainfrm.cc:931
 #: n:280
@@ -2144,7 +2147,7 @@ msgstr ""
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
-msgstr ""
+msgstr "%s: opcja “%s” wymaga argumentu\n"
 
 #: ../src/z_getopt.c:962
 #: ../src/z_getopt.c:973
@@ -2153,7 +2156,7 @@ msgstr ""
 #: n:306
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr ""
+msgstr "%s: opcja wymaga argumentu -- %c\n"
 
 #: ../src/z_getopt.c:842
 #: ../src/z_getopt.c:845
@@ -2174,7 +2177,7 @@ msgstr ""
 #: n:309
 #, c-format
 msgid "%s: illegal option -- %c\n"
-msgstr ""
+msgstr "%s: nieprawidłowa opcja -- %c\n"
 
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915
@@ -2190,8 +2193,9 @@ msgstr ""
 
 #: ../src/mainfrm.cc:841
 #: n:312
+#, fuzzy
 msgid "&Open Presentation…"
-msgstr ""
+msgstr "Open &Presentation…"
 
 #: ../src/mainfrm.cc:842
 #: n:313
@@ -2213,7 +2217,7 @@ msgstr ""
 #: ../src/mainfrm.cc:848
 #: n:316
 msgid "Pla&y"
-msgstr ""
+msgstr "&Odtwarzaj"
 
 #: ../src/mainfrm.cc:849
 #: n:317
@@ -2229,7 +2233,7 @@ msgstr ""
 #: ../src/mainfrm.cc:379
 #: n:319
 msgid "Select an output filename"
-msgstr ""
+msgstr "Wybierz nazwę pliku wyjściowego"
 
 #: ../src/mainfrm.cc:376
 #: ../src/mainfrm.cc:2422
@@ -2289,20 +2293,20 @@ msgstr ""
 #: ../src/mainfrm.cc:2722
 #: n:328
 msgid "No matches were found."
-msgstr ""
+msgstr "Nie znaleziono żadnych dopasowań."
 
 #. TRANSLATORS: "Find stations" button tooltip
 #: ../src/mainfrm.cc:1019
 #: n:332
 msgid "Find"
-msgstr ""
+msgstr "Szukaj"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
 #: ../src/mainfrm.cc:1021
 #: ../src/mainfrm.cc:2754
 #: n:333
 msgid "Hide"
-msgstr ""
+msgstr "Ukryć"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
 #: ../src/mainfrm.cc:2715
@@ -2317,7 +2321,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2292
 #: n:335
 msgid "Altitude"
-msgstr ""
+msgstr "Wysokość"
 
 #. TRANSLATORS: error if you try to drag multiple files to the aven
 #. window
@@ -2350,9 +2354,9 @@ msgstr ""
 #: ../src/mainfrm.cc:2249
 #: ../src/mainfrm.cc:2311
 #: n:339
-#, c-format
+#, fuzzy, c-format
 msgid "From %s"
-msgstr ""
+msgstr "Z %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
 #: ../src/mainfrm.cc:2324
@@ -2410,7 +2414,7 @@ msgstr "&Procent"
 #: ../src/printing.cc:1154
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "km"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used
 #. e.g. "10m".
@@ -2429,7 +2433,7 @@ msgstr ""
 #: ../src/printing.cc:1156
 #: n:424
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #. TRANSLATORS: abbreviation for "centimetres" (unit of length),
 #. used e.g.  "50cm".
@@ -2440,7 +2444,7 @@ msgstr ""
 #: ../src/printing.cc:1159
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length,
 #. plural), used e.g.  "2 miles".
@@ -2478,7 +2482,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2320
 #: n:428
 msgid "ft"
-msgstr ""
+msgstr " stóp"
 
 #. TRANSLATORS: abbreviation for "inches" (unit of length), used
 #. e.g. as "6in".
@@ -2488,7 +2492,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1303
 #: n:429
 msgid "in"
-msgstr ""
+msgstr " cali"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:3827
@@ -2557,14 +2561,14 @@ msgstr ""
 #: ../src/gfxcore.cc:838
 #: n:96
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #. TRANSLATORS: infinity symbol - used for the percentage gradient on
 #. vertical angles.
 #: ../src/gfxcore.cc:814
 #: n:431
 msgid "∞"
-msgstr ""
+msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
@@ -2591,17 +2595,17 @@ msgstr ""
 #: ../src/mainfrm.cc:1071
 #: n:377
 msgid "Presentation"
-msgstr ""
+msgstr "Prezentacja"
 
 #: ../src/mainfrm.cc:257
 #: n:378
 msgid "Easting"
-msgstr ""
+msgstr "Wschód"
 
 #: ../src/mainfrm.cc:258
 #: n:379
 msgid "Northing"
-msgstr ""
+msgstr "Północ"
 
 #. TRANSLATORS: Aven menu items.  An “&” goes before the letter of any
 #. accelerator key.
@@ -2625,7 +2629,7 @@ msgstr ""
 #: ../src/mainfrm.cc:796
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "&Pokaż dziennik"
 
 #: ../src/mainfrm.cc:799
 #: n:380
@@ -2660,7 +2664,7 @@ msgstr ""
 #: ../src/printing.cc:348
 #: n:383
 msgid "Export"
-msgstr ""
+msgstr "Eksport"
 
 #. TRANSLATORS: for about box:
 #: ../src/aboutdlg.cc:142
@@ -2697,7 +2701,7 @@ msgstr ""
 #: ../src/mainfrm.cc:144
 #: n:404
 msgid "Edit Waypoint"
-msgstr ""
+msgstr "Edytuj punkt orientacyjny"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
 #. in a presentation.
@@ -2711,7 +2715,7 @@ msgstr ""
 #: ../src/mainfrm.cc:190
 #: n:279
 msgid "Time: "
-msgstr ""
+msgstr "Czas: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.
@@ -2757,22 +2761,23 @@ msgstr ""
 #: ../src/mainfrm.cc:873
 #: n:407
 msgid "&Hide"
-msgstr ""
+msgstr "&Ukryć"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. aven will show splay legs with less bright colours (rather than the
 #. same as other legs "Show" or not shown "Hide").
 #: ../src/mainfrm.cc:877
 #: n:408
+#, fuzzy
 msgid "&Fade"
-msgstr ""
+msgstr "&Blaknąć"
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are shown the same as other legs.
 #: ../src/mainfrm.cc:880
 #: n:409
 msgid "&Show"
-msgstr ""
+msgstr "&Pokaż"
 
 #: ../src/extend.c:507
 #: n:105
@@ -3217,7 +3222,7 @@ msgstr ""
 
 #: n:361
 #~ msgid "Draw a grid"
-#~ msgstr ""
+#~ msgstr "Rysuj siatkę"
 
 #: n:362
 #~ msgid "metric units"

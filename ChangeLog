@@ -1,3 +1,7 @@
+Fri Jun 12 10:30:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/: Translation updates.
+
 Fri Jun 12 06:13:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Use $(COMMONSRC) in aven_SOURCES.
