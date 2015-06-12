@@ -37,15 +37,15 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  $(COMMONSRC)
 cavern_LDADD = $(PROJ_LIBS)
 
-aven_SOURCES = aven.cc date.c img_hosted.c message.c filename.c osdepend.c \
- gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc useful.c cmdline.c z_getopt.c \
- getopt1.c namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
- glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc cavernlog.cc \
+aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
+ namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
+ glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
+ cavernlog.cc avenprcore.cc printing.cc buttontaghandler.cc \
+ date.c img_hosted.c useful.c hash.c \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
- avenprcore.cc printing.cc hash.c \
- buttontaghandler.cc
+ $(COMMONSRC)
 
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
  $(COMMONSRC)
