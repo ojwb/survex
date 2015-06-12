@@ -1,3 +1,7 @@
+Fri Jun 12 11:28:46 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/,src/mainfrm.cc: Add another TRANSLATORS comment.
+
 Fri Jun 12 10:43:27 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: Remove unused '#include <signal.h>'.

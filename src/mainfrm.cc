@@ -954,6 +954,9 @@ void MainFrm::CreateMenuBar()
 #ifndef PREFDLG
     menubar->Append(ctlmenu, wmsg(/*&Controls*/214));
 #endif
+    // TRANSLATORS: "Presentation" in the sense of a talk with a slideshow -
+    // the items in this menu allow the user to animate between preset
+    // views.
     menubar->Append(presmenu, wmsg(/*&Presentation*/216));
 #ifndef __WXMAC__
     // On wxMac the "About" menu item will be moved elsewhere, so we suppress

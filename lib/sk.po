@@ -43,7 +43,10 @@ msgstr "O&vládanie"
 msgid "&Help"
 msgstr "&Help"
 
-#: ../src/mainfrm.cc:961
+#. TRANSLATORS: "Presentation" in the sense of a talk with a slideshow -
+#. the items in this menu allow the user to animate between preset
+#. views.
+#: ../src/mainfrm.cc:960
 #: n:216
 msgid "&Presentation"
 msgstr "Pre&zentácia"
