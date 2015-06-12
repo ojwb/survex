@@ -43,16 +43,6 @@
 # include "aven.h"
 #endif
 
-#ifdef HAVE_SIGNAL
-# ifdef HAVE_SETJMP_H
-#  include <setjmp.h>
-static jmp_buf jmpbufSignal;
-#  include <signal.h>
-# else
-#  undef HAVE_SIGNAL
-# endif
-#endif
-
 #if OS_WIN32
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
@@ -186,58 +176,6 @@ osfree(void *p)
 	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
    }
    free(p);
-}
-#endif
-
-#ifdef HAVE_SIGNAL
-
-static int sigReceived;
-
-/* for systems not using autoconf, assume the signal handler returns void
- * unless specified elsewhere */
-#ifndef RETSIGTYPE
-# define RETSIGTYPE void
-#endif
-
-static CDECL RETSIGTYPE
-report_sig(int sig)
-{
-   sigReceived = sig;
-   longjmp(jmpbufSignal, 1);
-}
-
-static void
-init_signals(void)
-{
-   int en;
-   if (!setjmp(jmpbufSignal)) {
-      signal(SIGABRT, report_sig); /* abnormal termination eg abort() */
-      signal(SIGFPE,  report_sig); /* arithmetic error eg /0 or overflow */
-      signal(SIGILL,  report_sig); /* illegal function image eg illegal instruction */
-      signal(SIGSEGV, report_sig); /* illegal storage access eg access outside memory limits */
-      return;
-   }
-
-   /* Remove that signal handler to avoid the possibility of an infinite loop.
-    */
-   signal(sigReceived, SIG_DFL);
-
-   switch (sigReceived) {
-      /* TRANSLATORS: Program will exit shortly after printing this */
-      case SIGABRT: en = /*Abnormal termination*/90; break;
-      case SIGFPE:  en = /*Arithmetic error*/91; break;
-      /* TRANSLATORS: Something is badly wrong -- the CPU tried to execute bad
-       * opcodes -- corrupted program? */
-      case SIGILL:  en = /*Illegal instruction*/92; break;
-      case SIGSEGV: en = /*Bad memory access*/94; break;
-      default:      en = /*Unknown signal received*/97; break;
-   }
-   fputsnl(msg(en), STDERR);
-
-   /* Any of the signals we catch indicates a bug */
-   fatalerror(/*Bug in program detected! Please report this to the authors*/11);
-
-   exit(EXIT_FAILURE);
 }
 #endif
 
@@ -1209,12 +1147,6 @@ macosx_got_msg:
 #endif
 
    select_charset(default_charset());
-
-#ifdef HAVE_SIGNAL
-   /* Initialise signal handlers only after the messages have been as we need
-    * the messages to usefully handle the signals. */
-   init_signals();
-#endif
 }
 
 const char *

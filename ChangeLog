@@ -1,3 +1,14 @@
+Fri Jun 12 10:34:37 GMT 2015  Olly Betts <olly@survex.com>
+
+	* configure.ac,lib/,src/message.c,src/msvc/config.h.in: Stop trying to
+	  catch and report signals.  The only real reason to do it is so we
+	  can say "Bug in program detected! Please report this to the authors"
+	  before we exit, but when the program crashes that's pretty obvious.
+	  In aven we try to pop up a message box for this message, which may
+	  fail due to whatever caused the signal, while with the command line
+	  tools there's no great benefit over just letting the shell report
+	  the signal.
+
 Fri Jun 12 10:30:11 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Translation updates.

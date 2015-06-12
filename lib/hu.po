@@ -2952,35 +2952,6 @@ msgstr ""
 msgid "Deleted: %s"
 msgstr ""
 
-#. TRANSLATORS: Program will exit shortly after printing this
-#: ../src/message.c:227
-#: n:90
-msgid "Abnormal termination"
-msgstr ""
-
-#: ../src/message.c:228
-#: n:91
-msgid "Arithmetic error"
-msgstr ""
-
-#. TRANSLATORS: Something is badly wrong -- the CPU tried to execute bad
-#. opcodes -- corrupted program?
-#: ../src/message.c:231
-#: n:92
-msgid "Illegal instruction"
-msgstr "Érvénytelen utasítás"
-
-#: ../src/message.c:232
-#: n:94
-#, fuzzy
-msgid "Bad memory access"
-msgstr "Memória hozzáférés hiba"
-
-#: ../src/message.c:233
-#: n:97
-msgid "Unknown signal received"
-msgstr "Ismeretlen jelet észleltem"
-
 #. TRANSLATORS: The first of two warnings given when a survey which has
 #. already been completed is reentered.  This example file crawl.svx:
 #.
