@@ -1971,6 +1971,7 @@ msgstr "Über&lappende Namen"
 
 #: ../src/mainfrm.cc:893
 #: n:450
+#, fuzzy
 msgid "Co&lour by"
 msgstr "&Colour by"
 
