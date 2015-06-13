@@ -2842,6 +2842,14 @@ void MainFrm::FullScreenModeShowMenus(bool show)
 {
     if (!IsFullScreen() || show == fullscreen_showing_menus)
 	return;
+#ifdef __WXMAC__
+    // On OS X, enabling the menu bar while in full
+    // screen mode doesn't have any effect, so instead
+    // make moving the mouse to the top of the screen
+    // drop us out of full screen mode for now.
+    ViewFullScreen();
+#else
     GetMenuBar()->Show(show);
     fullscreen_showing_menus = show;
+#endif
 }
