@@ -1,3 +1,66 @@
+3c8cf51a1 (Olly Betts 2015-06-14 01:31:00 +1200    1) Sat Jun 13 13:29:01 GMT 2015  Olly Betts <olly@survex.com>
+
+Changes in 1.2.19 (2015-06-14):
+
+* aven:
+
+  + Fix exporting to GPX, KML and HPGL, which all failed to write the header to
+    the exported file in 1.2.18.
+
+  + (Mac OS X version): When we centre the view on the station this can
+    generate a mouse move event, so clear the variable which says we are
+    dragging before we process a left click on a station.  This avoids random
+    rotations of the survey when clicking on a station, reported in #47 by Hugh
+    St.  Lawrence.
+
+  + (Mac OS X version): Force use of a non-native toolbar to stop the toolbar
+    icons from being rescaled and looking fuzzy.
+
+  + (Mac OS X version): Remove code added in 1.2.18 which tries to set stop the
+    toolbar icons from being rescaled, but which requires an unreleased version
+    of wxWidgets, had a typo in, and doesn't actually seem to work anyway.
+
+  + (Mac OS X version): Drop out of full screen mode if the mouse is mode to
+    the top of the screen, since we can't seem to display the menu bar in this
+    case like we do on other platforms.
+
+  + (Mac OS X version): Silence warning visible when aven is run from a
+    terminal about a missing CFBundleTypeRole.
+
+  + Tweak error message in terrain reading code to distinguish two failure
+    cases.
+
+  + Improve footer on printouts.
+	  Add view details and scale to footer of printouts.
+	  Shorten the datestamp by dropping
+	  any day name and timezone, and add "Processed: " before it so it
+	  is clear what it is the date and time of.
+	  If the footer is too long to fit the page width, reduce the font size
+	  so it exactly fits; otherwise space out the elements evenly to fill
+	  the width.  (Fixes ticket #52, reported by Erin Lynch)
+
+  + If the saved size for aven's window exceeds the current display size
+    (mostly likely because we're now plugged into a smaller monitor), then
+    reduce the size of the window to fit the display.  If the saved size is <
+    (480x320), increase it to at least that, as aven isn't usable in a smaller
+    window.
+
+  + Remove crude bodge which tries to pick a suitable initial window size when
+    using wxWidgets without wxDisplay on a
+	  multi-monitor setup.  It was based on the setup I had at the time,
+	  and might not work well in every situation, and now we persist the
+	  window size between runs, picking a nice initial size isn't so
+	  important.
+
+* Assorted translation updates.  Notably Indonesian is at 100% again.
+
+* Stop trying to catch and report signals.  The only real reason to do it is so
+  we can say "Bug in program detected! Please report this to the authors"
+  before we exit, but when the program crashes that's pretty obvious.  In aven
+  we try to pop up a message box for this message, which may fail due to
+  whatever caused the signal, while with the command line tools there's no
+  great benefit over just letting the shell report the signal.
+
 Changes in 1.2.18 (2015-06-03):
 
 * aven:

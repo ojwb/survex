@@ -1,3 +1,7 @@
+Sat Jun 13 13:48:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Sat Jun 13 13:29:01 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printing.cc: Remove code to workaround wxMac opening the preview
