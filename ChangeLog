@@ -1,3 +1,11 @@
+Sat Jun 13 07:24:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: If the saved size for aven's window exceeds the current
+	  display size (mostly likely because we're now plugged into a smaller
+	  monitor), then reduce the size of the window to fit the display.
+	  If the saved size is < (480x320), increase it to at least that, as
+	  aven isn't usable in a smaller window.
+
 Fri Jun 12 11:28:46 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/,src/mainfrm.cc: Add another TRANSLATORS comment.

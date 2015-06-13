@@ -235,7 +235,14 @@ bool Aven::OnInit()
 
     wxImage::AddHandler(new wxPNGHandler);
 
-    // Obtain the screen size.
+    // Obtain the screen geometry.
+#if wxUSE_DISPLAY
+    wxRect geom = wxDisplay().GetGeometry();
+#else
+    wxRect geom;
+    wxClientDisplayRect(&geom.x, &geom.y, &geom.width, &geom.height);
+#endif
+
     wxPoint pos(wxDefaultPosition);
     int width, height;
     wxConfigBase::Get()->Read(wxT("width"), &width, 0);
@@ -245,14 +252,11 @@ bool Aven::OnInit()
     // screen mode, unsure how to exit.
     bool maximized = (width <= -1);
     if (width <= 0 || height <= 0) {
-#if wxUSE_DISPLAY
-	wxRect geom = wxDisplay().GetGeometry();
 	pos.x = geom.x;
 	pos.y = geom.y;
 	width = geom.width;
 	height = geom.height;
-#else
-	wxClientDisplayRect(&pos.x, &pos.y, &width, &height);
+#ifndef wxUSE_DISPLAY
 	// Crude fix to help behaviour on multi-monitor displays.
 	// Fudge factors are a bit specific to my setup...
 	if (width > height * 3 / 2) {
@@ -267,6 +271,23 @@ bool Aven::OnInit()
 	pos.y += height / 8;
 	width = width * 3 / 4;
 	height = height * 3 / 4;
+    } else {
+	// Impose a minimum size for sanity, and make sure the window fits on
+	// the display (in case the current display is smaller than the one
+	// in use when the window size was saved).  (480x320) is about the
+	// smallest usable size for aven's window.
+	const int min_width = min(geom.width, 480);
+	const int min_height = min(geom.height, 320);
+	if (width < min_width || height < min_height) {
+	    if (width < min_width) {
+		width = min_width;
+	    }
+	    if (height < min_height) {
+		height = min_height;
+	    }
+	    pos.x = geom.x + (geom.width - width) / 4;
+	    pos.y = geom.y + (geom.height - height) / 4;
+	}
     }
 
     // Create the main window.
