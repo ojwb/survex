@@ -49,6 +49,12 @@ using namespace std;
 #include <math.h>
 #include <time.h>
 
+#ifdef __WXMAC__
+// Currently on OS X, we force use of a generic toolbar, which needs to be put
+// in a sizer.
+# define USING_GENERIC_TOOLBAR
+#endif
+
 #define MARK_FIRST 1
 #define MARK_NEXT 2
 #define MARK_PREV 3
@@ -230,6 +236,14 @@ private:
     void CreateSidePanel();
 
     void UpdateStatusBar();
+
+#ifdef USING_GENERIC_TOOLBAR
+    wxToolBar * GetToolBar() const {
+	wxSizer * sizer = GetSizer();
+	if (!sizer) return NULL;
+	return (wxToolBar*)sizer->GetItem(size_t(0))->GetWindow();
+    }
+#endif
 
 public:
     MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size);

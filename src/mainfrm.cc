@@ -44,7 +44,7 @@
 #include <wx/imaglist.h>
 #include <wx/process.h>
 #include <wx/regex.h>
-#ifdef __WXMAC__
+#ifdef USING_GENERIC_TOOLBAR
 # include <wx/sysopt.h>
 #endif
 
@@ -973,16 +973,16 @@ void MainFrm::MakeToolBar()
 {
     // Make the toolbar.
 
-#ifdef __WXMAC__
+#ifdef USING_GENERIC_TOOLBAR
     // This OS-X-specific code is only needed to stop the toolbar icons getting
     // scaled up, which just makes them look nasty and fuzzy.  Once we have
     // larger versions of the icons, we can drop this code.
     wxSystemOptions::SetOption(wxT("mac.toolbar.no-native"), 1);
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    SetSizer(sizer);
     wxToolBar* toolbar = new wxToolBar(this, wxID_ANY, wxDefaultPosition,
 				       wxDefaultSize, wxNO_BORDER|wxTB_FLAT|wxTB_NODIVIDER|wxTB_NOALIGN);
+    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
     sizer->Add(toolbar, 0, wxEXPAND);
+    SetSizer(sizer);
 #else
     wxToolBar* toolbar = wxFrame::CreateToolBar();
 #endif
@@ -1036,7 +1036,7 @@ void MainFrm::MakeToolBar()
 void MainFrm::CreateSidePanel()
 {
     m_Splitter = new AvenSplitterWindow(this);
-#ifdef __WXMAC__
+#ifdef USING_GENERIC_TOOLBAR
     // This OS-X-specific code is only needed to stop the toolbar icons getting
     // scaled up, which just makes them look nasty and fuzzy.  Once we have
     // larger versions of the icons, we can drop this code.

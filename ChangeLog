@@ -1,3 +1,9 @@
+Sat Jun 13 11:00:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc,src/mainfrm.h: Now we're using a non-native toolbar
+	  for OS X, GetToolBar() returns NULL, and we need to do a bit of
+	  extra work to get the toolbar.
+
 Sat Jun 13 10:18:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/de_CH.po: Add missing "fuzzy" marker.
