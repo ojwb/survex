@@ -1,3 +1,11 @@
+Sat Jun 13 13:29:01 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printing.cc: Remove code to workaround wxMac opening the preview
+	  window at minimum size, as this no longer happens with wxWidgets
+	  3.0.2.  We currently disable this preview window anyway, as OS X has
+	  its own print preview, which is slicker than the generic wxWidgets
+	  one.
+
 Sat Jun 13 13:20:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: We need to call Layout() when we come out of

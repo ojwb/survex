@@ -733,19 +733,10 @@ svxPrintDlg::OnPreview(wxCommandEvent&) {
     int w, h;
     // GetBestSize gives us the width needed to show the whole controlbar.
     frame->GetBestSize(&w, &h);
-#ifdef __WXMAC__
-    // wxMac opens the preview window at minimum size by default.
-    // 360x480 is apparently enough to show A4 portrait.
-    if (h < 480 || w < 360) {
-	if (h < 480) h = 480;
-	if (w < 360) w = 360;
-    }
-#else
     if (h < w) {
 	// On wxGTK at least, GetBestSize() returns much too small a height.
 	h = w * 6 / 5;
     }
-#endif
     // Ensure that we don't make the window bigger than the screen.
     // Use wxGetClientDisplayRect() so we don't cover the MS Windows
     // task bar either.
