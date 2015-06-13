@@ -256,15 +256,6 @@ bool Aven::OnInit()
 	pos.y = geom.y;
 	width = geom.width;
 	height = geom.height;
-#ifndef wxUSE_DISPLAY
-	// Crude fix to help behaviour on multi-monitor displays.
-	// Fudge factors are a bit specific to my setup...
-	if (width > height * 3 / 2) {
-	    pos.x += width;
-	    width = height * 3 / 2;
-	    pos.x -= width;
-	}
-#endif
 
 	// Calculate a reasonable size for our window.
 	pos.x += width / 8;

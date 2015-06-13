@@ -1,3 +1,12 @@
+Sat Jun 13 07:27:27 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aven.cc: Remove crude bodge which tries to pick a suitable
+	  initial window size when using wxWidgets without wxDisplay on a
+	  multi-monitor setup.  It was based on the setup I had at the time,
+	  and might not work well in every situation, and now we persist the
+	  window size between runs, picking a nice initial size isn't so
+	  important.
+
 Sat Jun 13 07:24:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aven.cc: If the saved size for aven's window exceeds the current
