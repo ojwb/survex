@@ -94,7 +94,8 @@ GPX::passes() const
 }
 
 /* Initialise GPX routines. */
-void GPX::header(const char * title, const char *, time_t datestamp_numeric)
+void GPX::header(const char * title, const char *, time_t datestamp_numeric,
+		 double, double, double, double, double, double)
 {
     fputs(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"

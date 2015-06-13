@@ -2,7 +2,7 @@
  * Export from Aven as GPX.
  */
 
-/* Copyright (C) 2005,2013,2014 Olly Betts
+/* Copyright (C) 2005,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,9 @@ class GPX : public ExportFilter {
     GPX(const char * input_datum);
     ~GPX();
     const int * passes() const;
-    void header(const char *, const char *, time_t);
+    void header(const char *, const char *, time_t,
+		double, double, double,
+		double, double, double);
     void line(const img_point *, const img_point *, bool, bool);
     void label(const img_point *, const char *, bool, int);
     void footer();
