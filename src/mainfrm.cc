@@ -2829,6 +2829,9 @@ void MainFrm::ViewFullScreen() {
     if (!IsFullScreen()) {
 	GetStatusBar()->Show();
 	GetToolBar()->Show();
+#ifdef USING_GENERIC_TOOLBAR
+	Layout();
+#endif
     }
 #endif
 }

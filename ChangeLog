@@ -1,3 +1,8 @@
+Sat Jun 13 13:20:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: We need to call Layout() when we come out of
+	  FullScreen mode under OS X so the sizer adjusts to show the toolbar.
+
 Sat Jun 13 13:17:47 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/: Fix exporting to GPX, KML and HPGL, which all failed to write
