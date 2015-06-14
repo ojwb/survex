@@ -2576,66 +2576,76 @@ err += wxT("Unexpected value for " X); \
 	}
 	delete ze;
     }
-    if (ze_data && zs.OpenEntry(*ze_data)) {
-	bool know_size = (size != 0);
-	if (!size)
-	    size = DEFAULT_HGT_SIZE;
-	dem = new unsigned short[size / 2];
-	if (skipbytes) {
-	    if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
-		while (skipbytes) {
-		    unsigned long to_read = skipbytes;
-		    if (size < to_read) to_read = size;
-		    zs.Read(reinterpret_cast<char *>(dem), to_read);
-		    size_t c = zs.LastRead();
-		    if (c == 0) {
-			wxMessageBox(wxT("Failed to skip terrain data header"));
-			break;
-		    }
-		    skipbytes -= c;
+    if (!ze_data) {
+	wxMessageBox(wxT("No DEM data found in .zip file"));
+	return false;
+    }
+
+    if (!zs.OpenEntry(*ze_data)) {
+	wxMessageBox(wxT("Couldn't read DEM data from .zip file"));
+	delete ze_data;
+	return false;
+    }
+
+    bool know_size = (size != 0);
+    if (!size)
+	size = DEFAULT_HGT_SIZE;
+    dem = new unsigned short[size / 2];
+    if (skipbytes) {
+	if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
+	    while (skipbytes) {
+		unsigned long to_read = skipbytes;
+		if (size < to_read) to_read = size;
+		zs.Read(reinterpret_cast<char *>(dem), to_read);
+		size_t c = zs.LastRead();
+		if (c == 0) {
+		    wxMessageBox(wxT("Failed to skip terrain data header"));
+		    break;
 		}
+		skipbytes -= c;
 	    }
 	}
+    }
 
 #if wxCHECK_VERSION(2,9,5)
-	if (!zs.ReadAll(dem, size)) {
+    if (!zs.ReadAll(dem, size)) {
+	if (!know_size) {
+	    size = zs.LastRead();
+	    dem_width = dem_height = sqrt(size / 2);
+	    if (dem_width * dem_height * 2 == size) {
+		step_x = step_y = 1.0 / dem_width;
+		goto size_ok;
+	    }
+	}
+	wxMessageBox(wxT("Failed to read terrain data"));
+size_ok: ;
+    }
+#else
+    char * p = reinterpret_cast<char *>(dem);
+    while (size) {
+	zs.Read(p, size);
+	size_t c = zs.LastRead();
+	if (c == 0) {
 	    if (!know_size) {
-		size = zs.LastRead();
+		size = DEFAULT_HGT_SIZE - size;
 		dem_width = dem_height = sqrt(size / 2);
 		if (dem_width * dem_height * 2 == size) {
 		    step_x = step_y = 1.0 / dem_width;
-		    goto size_ok;
+		    break;
 		}
 	    }
 	    wxMessageBox(wxT("Failed to read terrain data"));
-size_ok: ;
+	    break;
 	}
-#else
-	char * p = reinterpret_cast<char *>(dem);
-	while (size) {
-	    zs.Read(p, size);
-	    size_t c = zs.LastRead();
-	    if (c == 0) {
-		if (!know_size) {
-		    size = DEFAULT_HGT_SIZE - size;
-		    dem_width = dem_height = sqrt(size / 2);
-		    if (dem_width * dem_height * 2 == size) {
-			step_x = step_y = 1.0 / dem_width;
-			break;
-		    }
-		}
-		wxMessageBox(wxT("Failed to read terrain data"));
-		break;
-	    }
-	    p += c;
-	    size -= c;
-	}
-#endif
-	if (!know_size) {
-	    dem_width = dem_height = DEFAULT_HGT_DIM;
-	    step_x = step_y = 1.0 / DEFAULT_HGT_DIM;
-	}
+	p += c;
+	size -= c;
     }
+#endif
+    if (!know_size) {
+	dem_width = dem_height = DEFAULT_HGT_DIM;
+	step_x = step_y = 1.0 / DEFAULT_HGT_DIM;
+    }
+
     delete ze_data;
 
     InvalidateList(LIST_TERRAIN);

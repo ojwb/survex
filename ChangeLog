@@ -1,3 +1,9 @@
+Sun Jun 14 12:31:32 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: When reading terrain data from a .zip file, report an
+	  error if the .zip file is bad, or if it doesn't contain any terrain
+	  data we recognise.
+
 Sun Jun 14 12:30:36 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Enable wxDisplay to better support multi-monitor
