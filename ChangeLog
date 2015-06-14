@@ -1,3 +1,8 @@
+Sun Jun 14 12:30:36 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Enable wxDisplay to better support multi-monitor
+	  setups.
+
 Sun Jun 14 12:11:11 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: No need for --enable-unicode with wx3.

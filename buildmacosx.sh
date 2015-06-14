@@ -118,7 +118,7 @@ if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
     # Compilation of wx 3.0.2 fails on OS X 10.10.1 with webview enabled.
     # A build with liblzma enabled doesn't work on OS X 10.6.8.
     ../configure --disable-shared --prefix="$prefix" \
-	--with-opengl \
+	--with-opengl --enable-display \
 	--disable-webview --without-liblzma \
 	CC="gcc $arch_flags" CXX="g++ $arch_flags"
     make -s
