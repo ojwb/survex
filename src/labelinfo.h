@@ -39,8 +39,8 @@ namespace svx {
 class Point : public Vector3 {
   public:
     Point() {}
-    Point(const Vector3 & v) : Vector3(v) { }
-    Point(const img_point & pt) : Vector3(pt.x, pt.y, pt.z) { }
+    explicit Point(const Vector3 & v) : Vector3(v) { }
+    explicit Point(const img_point & pt) : Vector3(pt.x, pt.y, pt.z) { }
     double GetX() const { return x; }
     double GetY() const { return y; }
     double GetZ() const { return z; }

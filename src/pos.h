@@ -36,7 +36,7 @@ class POS : public ExportFilter {
     char separator;
 
   public:
-    POS(char separator_) : separator(separator_) { }
+    explicit POS(char separator_) : separator(separator_) { }
     ~POS();
     const int * passes() const;
     void header(const char *, const char *, time_t,

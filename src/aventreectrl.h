@@ -35,8 +35,9 @@ class TreeData : public wxTreeItemData {
     wxString survey;
 
 public:
-    TreeData(const LabelInfo* label) : m_Label(label) {}
-    TreeData(const wxString & survey_) : m_Label(NULL), survey(survey_) {}
+    explicit TreeData(const LabelInfo* label) : m_Label(label) {}
+    explicit TreeData(const wxString & survey_)
+	: m_Label(NULL), survey(survey_) {}
     const LabelInfo* GetLabel() const { return m_Label; }
     const wxString & GetSurvey() const { return survey; }
     bool IsStation() const { return m_Label != NULL; }

@@ -1,3 +1,7 @@
+Sun Jun 14 13:17:15 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Mark all single-argument constructors as 'explicit'.
+
 Sun Jun 14 12:59:37 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Update source references and fill in translations for new

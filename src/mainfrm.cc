@@ -112,7 +112,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
 
     public:
-	AvenSplitterWindow(MainFrm *parent_)
+	explicit AvenSplitterWindow(MainFrm *parent_)
 	    : wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
 			       wxSP_3DSASH),
 	      parent(parent_)
@@ -668,7 +668,7 @@ END_EVENT_TABLE()
 class LabelCmp : public greater<const LabelInfo*> {
     wxChar separator;
 public:
-    LabelCmp(wxChar separator_) : separator(separator_) {}
+    explicit LabelCmp(wxChar separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
 	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
     }
@@ -677,7 +677,7 @@ public:
 class LabelPlotCmp : public greater<const LabelInfo*> {
     wxChar separator;
 public:
-    LabelPlotCmp(wxChar separator_) : separator(separator_) {}
+    explicit LabelPlotCmp(wxChar separator_) : separator(separator_) {}
     bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
 	int n = pt1->get_flags() - pt2->get_flags();
 	if (n) return n > 0;
@@ -699,7 +699,7 @@ public:
 #if wxUSE_DRAG_AND_DROP
 class DnDFile : public wxFileDropTarget {
     public:
-	DnDFile(MainFrm *parent) : m_Parent(parent) { }
+	explicit DnDFile(MainFrm *parent) : m_Parent(parent) { }
 	virtual bool OnDropFiles(wxCoord, wxCoord,
 			const wxArrayString &filenames);
 

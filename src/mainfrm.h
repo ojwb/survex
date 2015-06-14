@@ -139,7 +139,7 @@ class PointInfo : public Point {
 
 public:
     PointInfo() : Point(), date(-1) { }
-    PointInfo(const img_point & pt) : Point(pt), date(-1) { }
+    explicit PointInfo(const img_point & pt) : Point(pt), date(-1) { }
     PointInfo(const img_point & pt, int date_) : Point(pt), date(date_) { }
     PointInfo(const Point & p, int date_) : Point(p), date(date_) { }
     int GetDate() const { return date; }
@@ -548,7 +548,7 @@ class AvenAllowOnTop {
 #if defined __WXGTK__ && !wxCHECK_VERSION(2,8,10)
 	MainFrm * mainfrm;
     public:
-	AvenAllowOnTop(MainFrm * mainfrm_) {
+	explicit AvenAllowOnTop(MainFrm * mainfrm_) {
 	    if (mainfrm_ && mainfrm_->IsFullScreen()) {
 		mainfrm = mainfrm_;
 		mainfrm->ViewFullScreen();

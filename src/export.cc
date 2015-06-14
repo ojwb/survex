@@ -125,7 +125,7 @@ class DXF : public ExportFilter {
     char pending[1024];
 
   public:
-    DXF(double text_height_)
+    explicit DXF(double text_height_)
 	: to_close(0), text_height(text_height_) { pending[0] = '\0'; }
     const int * passes() const;
     bool fopen(const char *fnm_out);
@@ -395,7 +395,7 @@ DXF::footer()
 class Skencil : public ExportFilter {
     double factor;
   public:
-    Skencil(double scale)
+    explicit Skencil(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
     const int * passes() const;
     void header(const char *, const char *, time_t,
@@ -863,7 +863,7 @@ class EPS : public ExportFilter {
     bool first;
     vector<pair<double, double> > psg;
   public:
-    EPS(double scale)
+    explicit EPS(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
     const int * passes() const;
     void header(const char *, const char *, time_t,

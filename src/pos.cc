@@ -75,7 +75,7 @@ class pos_label_ptr_cmp {
     char separator;
 
   public:
-    pos_label_ptr_cmp(char separator_) : separator(separator_) { }
+    explicit pos_label_ptr_cmp(char separator_) : separator(separator_) { }
 
     bool operator()(const POS::pos_label* a, const POS::pos_label* b) {
 	return name_cmp(a->name, b->name, separator) < 0;

@@ -50,7 +50,7 @@ public:
     int pagesX, pagesY, pages;
     double xOrg, yOrg;
 
-    layout(wxPageSetupDialogData* data);
+    explicit layout(wxPageSetupDialogData* data);
 #if 0
     void make_calibration();
 #endif
