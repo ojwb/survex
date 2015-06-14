@@ -1,3 +1,8 @@
+Sun Jun 14 11:33:46 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Use the correct separator for sorting stations when exporting a
+	  .pos file.
+
 Sun Jun 14 11:09:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/: Add exporting to Survex POS format to aven.

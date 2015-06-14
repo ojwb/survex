@@ -471,6 +471,8 @@ public:
 
     const Vector3 & GetOffset() const { return m_Offsets; }
 
+    wxChar GetSeparator() const { return separator; }
+
     list<traverse>::const_iterator traverses_begin() const {
 	return traverses.begin();
     }

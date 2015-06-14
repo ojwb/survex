@@ -71,17 +71,21 @@ POS::label(const img_point *p, const char *s, bool /*fSurface*/, int /*type*/)
     todo.push_back(l);
 }
 
-struct pos_label_ptr_cmp {
+class pos_label_ptr_cmp {
+    char separator;
+
+  public:
+    pos_label_ptr_cmp(char separator_) : separator(separator_) { }
+
     bool operator()(const POS::pos_label* a, const POS::pos_label* b) {
-	// FIXME: Use correct separator.
-	return name_cmp(a->name, b->name, '.') < 0;
+	return name_cmp(a->name, b->name, separator) < 0;
     }
 };
 
 void
 POS::footer()
 {
-    sort(todo.begin(), todo.end(), pos_label_ptr_cmp());
+    sort(todo.begin(), todo.end(), pos_label_ptr_cmp(separator));
     vector<pos_label*>::const_iterator i;
     for (i = todo.begin(); i != todo.end(); ++i) {
 	fprintf(fh, "(%8.2f, %8.2f, %8.2f ) %s\n",

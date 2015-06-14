@@ -33,8 +33,10 @@ class POS : public ExportFilter {
   private:
     std::vector<pos_label *> todo;
 
+    char separator;
+
   public:
-    POS() { }
+    POS(char separator_) : separator(separator_) { }
     ~POS();
     const int * passes() const;
     void header(const char *, const char *, time_t,

@@ -1278,7 +1278,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_POS:
-	   filt = new POS;
+	   filt = new POS(mainfrm->GetSeparator());
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_SK:
