@@ -7,8 +7,8 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
- vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h avenprcore.h\
- img2aven.h
+ pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h\
+ avenprcore.h img2aven.h
 
 LDADD = $(LIBOBJS)
 
@@ -40,7 +40,7 @@ cavern_LDADD = $(PROJ_LIBS)
 aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
  namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
  glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
- cavernlog.cc avenprcore.cc printing.cc buttontaghandler.cc \
+ cavernlog.cc avenprcore.cc printing.cc buttontaghandler.cc pos.cc \
  date.c img_hosted.c useful.c hash.c \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \

@@ -36,6 +36,7 @@
 #include "json.h"
 #include "kml.h"
 #include "mainfrm.h"
+#include "pos.h"
 
 #include <float.h>
 #include <math.h>
@@ -1274,6 +1275,10 @@ Export(const wxString &fnm_out, const wxString &title,
 	   break;
        case FMT_PLT:
 	   filt = new PLT;
+	   show_mask |= FULL_COORDS;
+	   break;
+       case FMT_POS:
+	   filt = new POS;
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_SK:

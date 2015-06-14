@@ -1571,6 +1571,11 @@ msgstr ""
 msgid "Compass PLT for use with Carto"
 msgstr ""
 
+#: ../src/printing.cc:332
+#: n:166
+msgid "Survex POS files"
+msgstr ""
+
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated: http://www.skencil.org/
 #: ../src/printing.cc:331

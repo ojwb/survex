@@ -272,6 +272,7 @@ static wxString formats[] = {
     wxT("JSON"),
     wxT("KML"),
     wxT("Plot"),
+    wxT("POS"),
     wxT("Skencil"),
     wxT("SVG")
 };
@@ -295,6 +296,7 @@ static const unsigned format_info[] = {
     LEGS|CENTRED|EXPORT_3D,
     LABELS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
     LABELS|LEGS|SURF,
+    LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
     LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
     LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
 };
@@ -307,6 +309,7 @@ static const char * extension[] = {
     ".json",
     ".kml",
     ".plt",
+    ".pos",
     ".sk",
     ".svg"
 };
@@ -326,6 +329,7 @@ static const int msg_filetype[] = {
      * http://www.fountainware.com/compass/
      * http://www.psc-cavers.org/carto/ */
     /*Compass PLT for use with Carto*/415,
+    /*Survex POS files*/166,
     /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
      * translated: http://www.skencil.org/ */
     /*Skencil files*/416,

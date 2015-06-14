@@ -37,6 +37,7 @@ typedef enum {
     FMT_JSON,
     FMT_KML,
     FMT_PLT,
+    FMT_POS,
     FMT_SK,
     FMT_SVG
 } export_format;
