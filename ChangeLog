@@ -1,3 +1,7 @@
+Mon Jun 15 01:16:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/INSTALL.OSX: Update status and list the command line tools.
+
 Mon Jun 15 01:07:17 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Just use "tar xf" - GNU tar automatically detects
