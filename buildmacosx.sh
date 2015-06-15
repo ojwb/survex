@@ -131,7 +131,7 @@ if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
       exit 1
     fi
     echo "+++ Extracting $wxtarball"
-    test -d "wxWidgets-$WX_VERSION" || tar jxf "$wxtarball"
+    test -d "wxWidgets-$WX_VERSION" || tar xf "$wxtarball"
     test -d "wxWidgets-$WX_VERSION/BUILD" || mkdir "wxWidgets-$WX_VERSION/BUILD"
     cd "wxWidgets-$WX_VERSION/BUILD"
     # Compilation of wx 3.0.2 fails on OS X 10.10.1 with webview enabled.
@@ -165,7 +165,7 @@ if [ "$install_proj" != no ] ; then
       exit 1
     fi
     echo "+++ Extracting $projtarball"
-    test -d "proj-$PROJ_VERSION" || tar jxf "$projtarball"
+    test -d "proj-$PROJ_VERSION" || tar xf "$projtarball"
     test -d "proj-$PROJ_VERSION/BUILD" || mkdir "proj-$PROJ_VERSION/BUILD"
     cd "proj-$PROJ_VERSION/BUILD"
     ../configure --disable-shared --prefix="$prefix" CC="$CC" CXX="$CXX"

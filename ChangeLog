@@ -1,3 +1,8 @@
+Mon Jun 15 01:07:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Just use "tar xf" - GNU tar automatically detects
+	  any decompressor needed in the versions we'll encounter on OS X.
+
 Mon Jun 15 01:06:16 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,lib/INSTALL.OSX: Build OS X version with libav to
