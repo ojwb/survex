@@ -37,9 +37,13 @@
 #
 # If using a pre-installed wxWidgets, note that it must satisfy the
 # following requirements:
+#
 #   - It must be built with OpenGL support (--with-opengl).
-#   - If you build with wx < 3, it probably should be a "Unicode" build
-#     (--enable-unicode); wx >= 3 dropped support for non-Unicode builds.
+#
+# We strongly recommend using wxWidgets >= 3.0, but if you want to build with
+# wxWidgets 2.8, it probably should be a "Unicode" build (--enable-unicode);
+# wxWidgets >= 3.0 effectively is always a "Unicode" build, so the
+# --enable-unicode option isn't needed (and is ignored if specified).
 #
 # This script builds diskimages which are known to work at least as far back
 # as OS X 10.6.8.  A build of wxWidgets 3.0.2 with the options we pass will

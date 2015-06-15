@@ -1,3 +1,7 @@
+Mon Jun 15 01:03:23 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Improve documentation of wx --enable-unicode.
+
 Sun Jun 14 13:17:15 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/: Mark all single-argument constructors as 'explicit'.
