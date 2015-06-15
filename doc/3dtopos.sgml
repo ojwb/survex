@@ -43,4 +43,8 @@ and/or suffix, so you'd get:
 40_entrance_tag
 40b_entrance_tag</screen>
 
+<Para>
+You can also export <filename>.pos</filename> files from aven in versions 1.2.19 and later.
+</Para>
+
 </refsect1>

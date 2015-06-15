@@ -1,3 +1,8 @@
+Mon Jun 15 01:25:56 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/3dtopos.sgml,doc/diffpos.sgml: Add notes that aven can now
+	  export .pos files.
+
 Mon Jun 15 01:16:11 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX: Update status and list the command line tools.

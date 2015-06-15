@@ -30,7 +30,8 @@ specified.
 
 <Para>
 For backward compatibility diffpos will also read the
-<filename>.pos</filename> files produced by earlier versions of cavern, or by 3dtopos.
+<filename>.pos</filename> files produced by earlier versions of cavern, by
+3dtopos, or by aven's export feature (requires 1.2.19 or later).
 </Para>
 
 </refsect1>
