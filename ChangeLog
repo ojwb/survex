@@ -1,3 +1,8 @@
+Mon Jun 15 01:06:16 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,lib/INSTALL.OSX: Build OS X version with libav to
+	  enable aven's movie export feature.
+
 Mon Jun 15 01:04:22 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Move compression used for disk image into variable

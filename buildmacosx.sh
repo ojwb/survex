@@ -19,13 +19,15 @@
 #
 #   ./buildmacosx.sh
 #
-# This will automatically download and temporarily install wxWidgets in
-# a subdirectory of the source tree (this script is smart enough not to
-# download or build it if it already has).
+# This will automatically download and temporarily install wxWidgets,
+# PROJ.4 and libav in subdirectories of the source tree (this script is smart
+# enough not to re-download or re-build these if it already has).
 #
-# If you already have wxWidgets installed permanently, use:
+# If you already have wxWidgets, PROJ.4 and/or libav installed permanently,
+# you can disable these by passing one or more extra options - e.g. to build
+# none of them, use:
 #
-#   ./buildmacosx.sh --no-install-wx
+#   ./buildmacosx.sh --no-install-wx --no-install-proj --no-install-libav
 #
 # If wxWidgets is installed somewhere such that wx-config isn't on your
 # PATH you need to indicate where wx-config is by running this script
@@ -69,6 +71,7 @@ set -e
 
 install_wx=yes
 install_proj=yes
+install_libav=yes
 while [ "$#" != 0 ] ; do
   case $1 in
     --no-install-wx)
@@ -77,6 +80,10 @@ while [ "$#" != 0 ] ; do
       ;;
     --no-install-proj)
       install_proj=no
+      shift
+      ;;
+    --no-install-libav)
+      install_libav=no
       shift
       ;;
     --help|-h)
@@ -105,6 +112,9 @@ WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
 
 PROJ_VERSION=4.8.0
 PROJ_SHA256=2db2dbf0fece8d9880679154e0d6d1ce7c694dd8e08b4d091028093d87a9d1b5
+
+LIBAV_VERSION=11.4
+LIBAV_SHA256=0b7dabc2605f3a254ee410bb4b1a857945696aab495fe21b34c3b6544ff5d525
 
 if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
@@ -165,6 +175,38 @@ if [ "$install_proj" != no ] ; then
   fi
 fi
 
+if [ "$install_libav" != no ] ; then
+  if test -f LIBAVINSTALL/include/libavcodec/avcodec.h ; then
+    :
+  else
+    prefix=`pwd`/LIBAVINSTALL
+    libavtarball=libav-$LIBAV_VERSION.tar.xz
+    test -f "$libavtarball" || \
+      curl -O "http://libav.org/releases/$libavtarball"
+    if echo "$LIBAV_SHA256  $libavtarball" | shasum -a256 -c ; then
+      : # OK
+    else
+      echo "Checksum of downloaded file '$libavtarball' is incorrect, aborting."
+      exit 1
+    fi
+    echo "+++ Extracting $libavtarball"
+    test -d "libav-$LIBAV_VERSION" || tar xf "$libavtarball"
+    test -d "libav-$LIBAV_VERSION/BUILD" || mkdir "libav-$LIBAV_VERSION/BUILD"
+    cd "libav-$LIBAV_VERSION/BUILD"
+    if nasm -hf|grep -q macho64 ; then
+      LIBAV_CONFIGURE_OPTS=
+    else
+      # nasm needs to support macho64, at least for x86_64 builds.
+      LIBAV_CONFIGURE_OPTS=--disable-yasm
+    fi
+    ../configure --disable-shared --prefix="$prefix" --cc="$CC" \
+	$LIBAV_CONFIGURE_OPTS
+    make -s
+    make -s install
+    cd ../..
+  fi
+fi
+
 test -n "$WX_CONFIG" || WX_CONFIG=`which wx-config`
 if test -z "$WX_CONFIG" ; then
   echo "WX_CONFIG not set and wx-config not on your PATH"
@@ -175,7 +217,10 @@ WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
 D=`pwd`/Survex
 T=`pwd`/macosxtmp
-./configure --prefix="$D" --bindir="$D" --mandir="$T" WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX" CPPFLAGS=-I"`pwd`/PROJINSTALL/include" LDFLAGS=-L"`pwd`/PROJINSTALL/lib"
+./configure --prefix="$D" --bindir="$D" --mandir="$T" \
+    WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX" \
+    CPPFLAGS="-I`pwd`/PROJINSTALL/include -I`pwd`/LIBAVINSTALL/include" \
+    LDFLAGS="-L`pwd`/PROJINSTALL/lib -L`pwd`/LIBAVINSTALL/lib"
 make
 make install
 #mv Survex/survex Survex/Survex
@@ -203,8 +248,8 @@ for zip in lib/icons/*.iconset.zip ; do
 done
 
 size=`du -s Survex|sed 's/[^0-9].*//'`
-# Allow 1000 extra sectors for various overheads (500 wasn't enough).
-sectors=`expr 1000 + "$size"`
+# Allow 1500 extra sectors for various overheads (1000 wasn't enough).
+sectors=`expr 1500 + "$size"`
 # Partition needs to be at least 4M and sectors are 512 bytes.
 if test "$sectors" -lt 8192 ; then
   sectors=8192
