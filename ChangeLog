@@ -1,3 +1,7 @@
+Mon Jun 15 01:26:18 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/survex.ent: Remove SGML entities which are no longer used.
+
 Mon Jun 15 01:25:56 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/3dtopos.sgml,doc/diffpos.sgml: Add notes that aven can now
