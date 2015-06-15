@@ -1,3 +1,7 @@
+Mon Jun 15 01:31:01 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac: Update for 1.2.19.
+
 Mon Jun 15 01:26:18 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/survex.ent: Remove SGML entities which are no longer used.

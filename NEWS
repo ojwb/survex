@@ -1,6 +1,4 @@
-c2fa50c69 (Olly Betts 2015-06-15 00:32:38 +1200    1) Sun Jun 14 12:31:32 GMT 2015  Olly Betts <olly@survex.com>
-
-Changes in 1.2.19 (2015-06-14):
+Changes in 1.2.19 (2015-06-15):
 
 * aven:
 
@@ -28,6 +26,8 @@ Changes in 1.2.19 (2015-06-14):
   + (Mac OS X version): Drop out of full screen mode if the mouse is mode to
     the top of the screen, since we can't seem to display the menu bar in this
     case like we do on other platforms.
+
+  + (Mac OS X version): Enable aven's movie export feature.
 
   + (Mac OS X version): Enable wxDisplay when building wxWidgets to better
     support multi-monitor setups.
