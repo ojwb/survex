@@ -95,6 +95,11 @@ done
 
 arch_flags='-arch '${1:-x86_64}
 
+# UDBZ means the resultant disk image will only open on OS X 10.4 or above.
+# UDZO works on 10.1 and later, but is larger,  UDCO works on 10.0 as well,
+# but is larger still.
+dmg_format=UDBZ
+
 WX_VERSION=3.0.2
 WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
 
@@ -234,10 +239,7 @@ hdiutil detach "$dev"
 version=`sed 's/^VERSION *= *//p;d' Makefile`
 file=survex-macosx-$version.dmg
 echo "Compressing image file survex-macosx.dmg to $file"
-# UDBZ means the resultant disk image will only open on OS X 10.4 or above.
-# UDZO works on 10.1 and later, but is larger,  UDCO works on 10.0 as well,
-# but is larger still.
-hdiutil convert survex-macosx.dmg -format UDBZ -o "$file"
+hdiutil convert survex-macosx.dmg -format "$dmg_format" -o "$file"
 rm survex-macosx.dmg
 
 echo "$file created successfully."
