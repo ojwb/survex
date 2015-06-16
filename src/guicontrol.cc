@@ -1219,6 +1219,10 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	case WXK_ESCAPE:
 	    if (m_View->ShowingMeasuringLine()) {
 		OnCancelDistLine();
+	    } else if (m_View->IsFullScreen()) {
+		// Cancel full-screen mode on "Escape" if it isn't cancelling
+		// the measuring line.
+		m_View->FullScreenMode();
 	    }
 	    break;
 	case WXK_F2:

@@ -926,7 +926,21 @@ void MainFrm::CreateMenuBar()
     wxMenu* ctlmenu = new wxMenu;
     ctlmenu->AppendCheckItem(menu_CTL_REVERSE, wmsg(/*&Reverse Sense\tCtrl+R*/280));
     ctlmenu->AppendSeparator();
+#ifdef __WXGTK__
+    // wxGTK (at least with GTK+ v2.24), if we specify a short-cut here then
+    // the key handler isn't called, so we can't exit full screen mode on
+    // Escape.  wxGTK doesn't actually show the "Escape" shortcut text in the
+    // menu item, so removing it doesn't make any visual difference, and doing
+    // so allows Escape to still cancel the measuring line, but also serve to
+    // exit full screen mode if no measuring line is shown.
+    wxString wxgtk_cancelline = wmsg(/*&Cancel Measuring Line\tEscape*/281);
+    wxgtk_cancelline.Replace(wxT("\tEscape"), wxT(""), false);
+    ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, wxgtk_cancelline);
+#else
+    // With wxMac and wxMSW, we can have the short-cut on the menu and still
+    // have Escape handled by the key handler to exit full screen mode.
     ctlmenu->Append(menu_CTL_CANCEL_DIST_LINE, wmsg(/*&Cancel Measuring Line\tEscape*/281));
+#endif
     ctlmenu->AppendSeparator();
     wxMenu* indmenu = new wxMenu;
     indmenu->AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Compass*/274));

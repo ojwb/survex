@@ -1,3 +1,8 @@
+Tue Jun 16 22:29:49 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/guicontrol.cc,src/mainfrm.cc: If the measuring line isn't
+	  currently active, exit full screen mode if "Escape" is pressed.
+
 Tue Jun 16 22:28:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* make_release: Update for change to use pkg-config to find libav and
