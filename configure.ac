@@ -193,34 +193,30 @@ AC_CHECK_SIZEOF([wxChar], [], [
 ])
 CFLAGS=$save_CFLAGS
 
-AVEN_LIBS=
-AC_SUBST(AVEN_LIBS)
-
-dnl Check for ffmpeg or libav
-AC_CHECK_LIB(avcodec, avcodec_register_all,
-  [AC_CHECK_LIB(avformat, av_register_all,
-    [AC_CHECK_LIB(swscale, sws_scale,
-      [AC_CHECK_LIB(avutil, av_malloc,
-	[AC_CHECK_HEADERS([libavformat/avformat.h],
-	  [AVEN_LIBS="-lswscale -lavformat -lavcodec -lavutil"
-	  save_LIBS=$LIBS
-	  LIBS="$LIBS $AVEN_LIBS"
-	  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_free_frame avcodec_open2 avformat_new_stream av_frame_alloc av_frame_free])
-	  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
-	  AC_CHECK_DECLS([AV_CODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
-	  AC_CHECK_DECLS([AV_PIX_FMT_YUV420P], [], [], [#include <libavutil/pixfmt.h>])
-	  LIBS=$save_LIBS])],
-        [], [-lavformat -lavcodec -lswscale $WX_LIBS])],
-      [], [-lavformat -lavcodec $WX_LIBS])],
-    [], [-lavcodec $WX_LIBS])
+dnl Check for libav (FIXME: does our code still work with ffmpeg?)
+PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
+  AC_DEFINE([WITH_LIBAV], [1], [Use libav for movie export])
+  save_CXXFLAGS=$CXXFLAGS
+  save_LIBS=$LIBS
+  CFLAGS="$CFLAGS $LIBAV_CFLAGS"
+  LIBS="$LIBS $LIBAV_LIBS"
+  AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_free_frame avcodec_open2 avformat_new_stream av_frame_alloc av_frame_free])
+  AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
+  AC_CHECK_DECLS([AV_CODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
+  AC_CHECK_DECLS([AV_PIX_FMT_YUV420P], [], [], [#include <libavutil/pixfmt.h>])
+  CXXFLAGS=$save_CXXFLAGS
+  LIBS=$save_LIBS
 ])
+AC_SUBST([LIBAV_LIBS])
+AC_SUBST([LIBAV_CFLAGS])
 
-dnl Check for libproj
-PROJ_LIBS=
-AC_CHECK_LIB([proj], [pj_init_plus],
-  [PROJ_LIBS=-lproj],
-  [AC_MSG_ERROR([PROJ4 required for coordinate transformations])])
+dnl Check for PROJ4
+PKG_CHECK_MODULES([PROJ], [proj], [
+], [
+  AC_MSG_ERROR([PROJ4 required for coordinate transformations])
+])
 AC_SUBST([PROJ_LIBS])
+AC_SUBST([PROJ_CFLAGS])
 
 dnl Checks for header files.
 AC_HEADER_STDC

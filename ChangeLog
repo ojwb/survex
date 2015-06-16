@@ -1,3 +1,10 @@
+Tue Jun 16 07:28:50 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,configure.ac,src/Makefile.am,src/moviemaker.cc,
+	  src/moviemaker.h: Use pkg-config to probe for libav and proj.  This
+	  sorts out the correct flags for building on OS X against a static
+	  install of libav.
+
 Mon Jun 15 01:54:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Update version in manual.

@@ -58,7 +58,7 @@
 
 #include "moviemaker.h"
 
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
 extern "C" {
 # include <libavutil/mathematics.h>
 # include <libavformat/avformat.h>
@@ -127,11 +127,11 @@ const int OUTBUF_SIZE = 200000;
 #endif
 
 MovieMaker::MovieMaker()
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     : oc(0), video_st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0), averrno(0)
 #endif
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     static bool initialised_ffmpeg = false;
     if (initialised_ffmpeg) return;
 
@@ -145,7 +145,7 @@ MovieMaker::MovieMaker()
 
 bool MovieMaker::Open(const char *fnm, int width, int height)
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     AVOutputFormat * fmt = av_guess_format(NULL, fnm, NULL);
     if (!fmt) {
 	// We couldn't deduce the output format from file extension so default
@@ -308,7 +308,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 }
 
 unsigned char * MovieMaker::GetBuffer() const {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     AVCodecContext * c = video_st->codec;
     return pixels + c->height * c->width * 3;
 #else
@@ -317,7 +317,7 @@ unsigned char * MovieMaker::GetBuffer() const {
 }
 
 int MovieMaker::GetWidth() const {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     assert(video_st);
     AVCodecContext *c = video_st->codec;
     return c->width;
@@ -327,7 +327,7 @@ int MovieMaker::GetWidth() const {
 }
 
 int MovieMaker::GetHeight() const {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     assert(video_st);
     AVCodecContext *c = video_st->codec;
     return c->height;
@@ -338,7 +338,7 @@ int MovieMaker::GetHeight() const {
 
 bool MovieMaker::AddFrame()
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     AVCodecContext * c = video_st->codec;
 
     if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
@@ -427,7 +427,7 @@ bool MovieMaker::AddFrame()
 bool
 MovieMaker::Close()
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     if (video_st && averrno == 0) {
 	// No more frames to compress.  The codec may have a few frames
 	// buffered if we're using B frames, so write those too.
@@ -503,7 +503,7 @@ MovieMaker::Close()
     return true;
 }
 
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
 void
 MovieMaker::release()
 {
@@ -544,7 +544,7 @@ MovieMaker::release()
 
 MovieMaker::~MovieMaker()
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     release();
 #endif
 }
@@ -552,7 +552,7 @@ MovieMaker::~MovieMaker()
 const char *
 MovieMaker::get_error_string() const
 {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     switch (averrno) {
 	case AVERROR(EIO):
 	    return "I/O error";

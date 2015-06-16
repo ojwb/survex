@@ -217,10 +217,10 @@ WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
 D=`pwd`/Survex
 T=`pwd`/macosxtmp
+PKG_CONFIG_PATH=`pwd`/PROJINSTALL/lib/pkgconfig:`pwd`/LIBAVINSTALL/lib/pkgconfig
+export PKG_CONFIG_PATH
 ./configure --prefix="$D" --bindir="$D" --mandir="$T" \
-    WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX" \
-    CPPFLAGS="-I`pwd`/PROJINSTALL/include -I`pwd`/LIBAVINSTALL/include" \
-    LDFLAGS="-L`pwd`/PROJINSTALL/lib -L`pwd`/LIBAVINSTALL/lib"
+    WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX"
 make
 make install
 #mv Survex/survex Survex/Survex

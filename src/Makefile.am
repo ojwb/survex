@@ -55,7 +55,7 @@ findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
 findentrances_LDADD = $(PROJ_LIBS)
 
 if WIN32
-aven_LDADD = avenrc.o $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
+aven_LDADD = avenrc.o $(LIBOBJS) $(LIBAV_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 
 #svxeditrc.o: $(srcdir)/svxedit.rc ../lib/icons/svxedit.ico
 #	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/svxeditrc.o" svxedit.rc
@@ -66,18 +66,20 @@ avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/avenrc.o" aven.rc
 
 else
-aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS)
+aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS) $(LIBAV_LIBS)
 endif
+
+AM_CFLAGS += $(PROJ_CFLAGS)
+
+aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
+aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
+aven_LDFLAGS = $(WX_LDFLAGS)
 
 if MACOSX
 # Aven must always be built into an application bundle to work correctly.
-aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN -DMACOSX_BUNDLE
-aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS) -DMACOSX_BUNDLE
-aven_LDFLAGS = $(WX_LDFLAGS) -framework OpenGL
-else
-aven_CFLAGS = $(WX_CFLAGS) $(AM_CFLAGS) -DAVEN
-aven_CXXFLAGS = $(WX_CXXFLAGS) $(AM_CXXFLAGS)
-aven_LDFLAGS = $(WX_LDFLAGS)
+aven_CFLAGS += -DMACOSX_BUNDLE
+aven_CXXFLAGS += -DMACOSX_BUNDLE
+aven_LDFLAGS += -framework OpenGL
 endif
 
 diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \

@@ -31,7 +31,7 @@ struct AVPicture;
 struct SwsContext;
 
 class MovieMaker {
-#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#ifdef WITH_LIBAV
     AVFormatContext *oc;
     AVStream *video_st;
 # ifndef HAVE_AVCODEC_ENCODE_VIDEO2
