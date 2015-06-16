@@ -910,9 +910,9 @@ void MainFrm::CreateMenuBar()
 #ifdef __WXMAC__
     // F11 on OS X is used by the desktop (for speaker volume and/or window
     // navigation).  The standard OS X shortcut for full screen mode is
-    // Shift-Command-F which in wxWidgets terms is Shift+Ctrl+F.
+    // Ctrl-Command-F which in wxWidgets terms is RawCtrl+Ctrl+F.
     wxString wxmac_fullscreen = wmsg(/*Full Screen &Mode\tF11*/356);
-    wxmac_fullscreen.Replace(wxT("\tF11"), wxT("\tShift+Ctrl+F"), false);
+    wxmac_fullscreen.Replace(wxT("\tF11"), wxT("\tRawCtrl+Ctrl+F"), false);
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wxmac_fullscreen);
 #else
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*Full Screen &Mode\tF11*/356));

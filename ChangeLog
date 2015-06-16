@@ -1,3 +1,9 @@
+Tue Jun 16 07:31:35 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix OS X shortcut for full screen mode to be
+	  Ctrl+Command+F as that's the standard one, not Shift+Command+F
+	  which we have been using since 1.2.7.
+
 Tue Jun 16 07:28:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,configure.ac,src/Makefile.am,src/moviemaker.cc,
