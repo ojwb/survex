@@ -2171,9 +2171,9 @@ msgstr ""
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915
 #: n:310
-#, c-format
+#, fuzzy, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr ""
+msgstr "%s: nieprawidłowa opcja -- %c\n"
 
 #: ../src/mainfrm.cc:836
 #: n:311
