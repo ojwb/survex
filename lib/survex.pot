@@ -15,32 +15,32 @@ msgstr ""
 
 #. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
 #. accelerator key.  The accelerators must be different within this group
-#: ../src/mainfrm.cc:950
+#: ../src/mainfrm.cc:964
 #: n:210
 msgid "&File"
 msgstr ""
 
-#: ../src/mainfrm.cc:951
+#: ../src/mainfrm.cc:965
 #: n:211
 msgid "&Rotation"
 msgstr ""
 
-#: ../src/mainfrm.cc:952
+#: ../src/mainfrm.cc:966
 #: n:212
 msgid "&Orientation"
 msgstr ""
 
-#: ../src/mainfrm.cc:953
+#: ../src/mainfrm.cc:967
 #: n:213
 msgid "&View"
 msgstr ""
 
-#: ../src/mainfrm.cc:955
+#: ../src/mainfrm.cc:969
 #: n:214
 msgid "&Controls"
 msgstr ""
 
-#: ../src/mainfrm.cc:967
+#: ../src/mainfrm.cc:981
 #: n:215
 msgid "&Help"
 msgstr ""
@@ -48,7 +48,7 @@ msgstr ""
 #. TRANSLATORS: "Presentation" in the sense of a talk with a slideshow -
 #. the items in this menu allow the user to animate between preset
 #. views.
-#: ../src/mainfrm.cc:960
+#: ../src/mainfrm.cc:974
 #: n:216
 msgid "&Presentation"
 msgstr ""
@@ -813,14 +813,14 @@ msgstr ""
 #. files internally.  Probably best to keep it the same for all
 #. translations.
 #: ../src/img.c:43
-#: ../src/mainfrm.cc:1451
+#: ../src/mainfrm.cc:1465
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr ""
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
-#: ../src/mainfrm.cc:1444
+#: ../src/mainfrm.cc:1458
 #: n:108
 msgid "Date and time not available."
 msgstr ""
@@ -835,7 +835,7 @@ msgstr ""
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:41
 #: ../src/mainfrm.cc:388
-#: ../src/mainfrm.cc:2038
+#: ../src/mainfrm.cc:2052
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -1449,7 +1449,7 @@ msgstr ""
 msgid "*UNITS factor must be non-zero"
 msgstr ""
 
-#: ../src/mainfrm.cc:1461
+#: ../src/mainfrm.cc:1475
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -1477,12 +1477,12 @@ msgstr ""
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
 #. grid of height values).
-#: ../src/mainfrm.cc:1996
+#: ../src/mainfrm.cc:2010
 #: n:451
 msgid "Select a terrain file to view"
 msgstr ""
 
-#: ../src/mainfrm.cc:1990
+#: ../src/mainfrm.cc:2004
 #: n:452
 msgid "Terrain files"
 msgstr ""
@@ -1492,21 +1492,21 @@ msgstr ""
 #. language would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1967
+#: ../src/mainfrm.cc:1981
 #: n:206
 msgid "Select a survey file to view"
 msgstr ""
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1944
+#: ../src/mainfrm.cc:1958
 #: n:207
 msgid "Survex 3d files"
 msgstr ""
 
-#: ../src/mainfrm.cc:1959
-#: ../src/mainfrm.cc:1991
-#: ../src/mainfrm.cc:2439
+#: ../src/mainfrm.cc:1973
+#: ../src/mainfrm.cc:2005
+#: ../src/mainfrm.cc:2453
 #: ../src/printing.cc:691
 #: n:208
 msgid "All files"
@@ -1515,21 +1515,21 @@ msgstr ""
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
 #. terminology that cavers using the language would use.
-#: ../src/mainfrm.cc:1941
+#: ../src/mainfrm.cc:1955
 #: n:229
 msgid "All survey files"
 msgstr ""
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1947
+#: ../src/mainfrm.cc:1961
 #: n:329
 msgid "Survex svx files"
 msgstr ""
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1955
+#: ../src/mainfrm.cc:1969
 #: n:330
 msgid "Compass DAT and MAK files"
 msgstr ""
@@ -2075,24 +2075,24 @@ msgstr ""
 msgid "Colour by &Survey"
 msgstr ""
 
-#: ../src/mainfrm.cc:932
+#: ../src/mainfrm.cc:946
 #: n:274
 msgid "&Compass"
 msgstr ""
 
-#: ../src/mainfrm.cc:933
+#: ../src/mainfrm.cc:947
 #: n:275
 msgid "C&linometer"
 msgstr ""
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/mainfrm.cc:936
+#: ../src/mainfrm.cc:950
 #: n:276
 msgid "Colour &Key"
 msgstr ""
 
-#: ../src/mainfrm.cc:937
+#: ../src/mainfrm.cc:951
 #: n:277
 msgid "&Scale Bar"
 msgstr ""
@@ -2103,71 +2103,60 @@ msgid "&Reverse Sense\tCtrl+R"
 msgstr ""
 
 #: ../src/mainfrm.cc:897
-#: ../src/mainfrm.cc:929
+#: ../src/mainfrm.cc:936
+#: ../src/mainfrm.cc:942
 #: n:281
 msgid "&Cancel Measuring Line\tEscape"
 msgstr ""
 
-#: ../src/mainfrm.cc:938
+#: ../src/mainfrm.cc:952
 #: n:299
 msgid "&Indicators"
 msgstr ""
 
-#: ../src/z_getopt.c:697
-#: ../src/z_getopt.c:709
+#: ../src/z_getopt.c:712
 #: n:300
 #, c-format
 msgid "%s: option “%s” is ambiguous\n"
 msgstr ""
 
-#: ../src/z_getopt.c:753
-#: ../src/z_getopt.c:757
+#: ../src/z_getopt.c:762
 #: n:302
 #, c-format
 msgid "%s: option “%c%s” doesn’t allow an argument\n"
 msgstr ""
 
-#: ../src/z_getopt.c:742
-#: ../src/z_getopt.c:745
+#: ../src/z_getopt.c:749
 #: n:303
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
 msgstr ""
 
-#: ../src/z_getopt.c:792
-#: ../src/z_getopt.c:804
-#: ../src/z_getopt.c:1091
-#: ../src/z_getopt.c:1103
+#: ../src/z_getopt.c:810
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
 msgstr ""
 
-#: ../src/z_getopt.c:962
-#: ../src/z_getopt.c:973
-#: ../src/z_getopt.c:1156
-#: ../src/z_getopt.c:1168
+#: ../src/z_getopt.c:1182
 #: n:306
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
 msgstr ""
 
-#: ../src/z_getopt.c:842
-#: ../src/z_getopt.c:845
+#: ../src/z_getopt.c:851
 #: n:307
 #, c-format
 msgid "%s: unrecognized option “--%s”\n"
 msgstr ""
 
-#: ../src/z_getopt.c:853
-#: ../src/z_getopt.c:856
+#: ../src/z_getopt.c:862
 #: n:308
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
 msgstr ""
 
-#: ../src/z_getopt.c:912
-#: ../src/z_getopt.c:915
+#: ../src/z_getopt.c:923
 #: n:310
 #, c-format
 msgid "%s: invalid option -- %c\n"
@@ -2210,7 +2199,7 @@ msgstr ""
 msgid "&Export as Movie..."
 msgstr ""
 
-#: ../src/mainfrm.cc:2516
+#: ../src/mainfrm.cc:2530
 #: n:331
 msgid "Export Movie"
 msgstr ""
@@ -2222,19 +2211,19 @@ msgid "Select an output filename"
 msgstr ""
 
 #: ../src/mainfrm.cc:372
-#: ../src/mainfrm.cc:2438
+#: ../src/mainfrm.cc:2452
 #: n:320
 msgid "Aven presentations"
 msgstr ""
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:2024
+#: ../src/mainfrm.cc:2038
 #: n:321
 msgid "Save Screenshot"
 msgstr ""
 
-#: ../src/mainfrm.cc:2433
-#: ../src/mainfrm.cc:2436
+#: ../src/mainfrm.cc:2447
+#: ../src/mainfrm.cc:2450
 #: n:322
 msgid "Select a presentation to open"
 msgstr ""
@@ -2247,64 +2236,64 @@ msgstr ""
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
-#: ../src/mainfrm.cc:1951
+#: ../src/mainfrm.cc:1965
 #: n:324
 msgid "Compass PLT files"
 msgstr ""
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 #. package, so don’t translate it.
-#: ../src/mainfrm.cc:1958
+#: ../src/mainfrm.cc:1972
 #: n:325
 msgid "CMAP XYZ files"
 msgstr ""
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:2087
-#: ../src/mainfrm.cc:2410
-#: ../src/mainfrm.cc:2427
+#: ../src/mainfrm.cc:2101
+#: ../src/mainfrm.cc:2424
+#: ../src/mainfrm.cc:2441
 #: n:326
 msgid "Modified Presentation"
 msgstr ""
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:2085
-#: ../src/mainfrm.cc:2409
-#: ../src/mainfrm.cc:2426
+#: ../src/mainfrm.cc:2099
+#: ../src/mainfrm.cc:2423
+#: ../src/mainfrm.cc:2440
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr ""
 
-#: ../src/mainfrm.cc:2727
-#: ../src/mainfrm.cc:2738
+#: ../src/mainfrm.cc:2741
+#: ../src/mainfrm.cc:2752
 #: n:328
 msgid "No matches were found."
 msgstr ""
 
 #. TRANSLATORS: "Find stations" button tooltip
-#: ../src/mainfrm.cc:1029
+#: ../src/mainfrm.cc:1043
 #: n:332
 msgid "Find"
 msgstr ""
 
 #. TRANSLATORS: "Hide stations" button default tooltip
-#: ../src/mainfrm.cc:1031
-#: ../src/mainfrm.cc:2770
+#: ../src/mainfrm.cc:1045
+#: ../src/mainfrm.cc:2784
 #: n:333
 msgid "Hide"
 msgstr ""
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2731
+#: ../src/mainfrm.cc:2745
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr ""
 
 #: ../src/mainfrm.cc:255
-#: ../src/mainfrm.cc:2175
-#: ../src/mainfrm.cc:2256
-#: ../src/mainfrm.cc:2308
+#: ../src/mainfrm.cc:2189
+#: ../src/mainfrm.cc:2270
+#: ../src/mainfrm.cc:2322
 #: n:335
 msgid "Altitude"
 msgstr ""
@@ -2316,17 +2305,17 @@ msgstr ""
 msgid "You may only view one 3d file at a time."
 msgstr ""
 
-#: ../src/mainfrm.cc:939
+#: ../src/mainfrm.cc:953
 #: n:337
 msgid "&Side Panel"
 msgstr ""
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
-#: ../src/mainfrm.cc:2173
-#: ../src/mainfrm.cc:2195
-#: ../src/mainfrm.cc:2197
-#: ../src/mainfrm.cc:2307
+#: ../src/mainfrm.cc:2187
+#: ../src/mainfrm.cc:2209
+#: ../src/mainfrm.cc:2211
+#: ../src/mainfrm.cc:2321
 #: n:338
 #, c-format
 msgid "%.2f E, %.2f N"
@@ -2336,16 +2325,16 @@ msgstr ""
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:2215
-#: ../src/mainfrm.cc:2265
-#: ../src/mainfrm.cc:2327
+#: ../src/mainfrm.cc:2229
+#: ../src/mainfrm.cc:2279
+#: ../src/mainfrm.cc:2341
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2340
+#: ../src/mainfrm.cc:2354
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
@@ -2353,7 +2342,7 @@ msgstr ""
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2352
+#: ../src/mainfrm.cc:2366
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
@@ -2364,7 +2353,7 @@ msgstr ""
 #. "Metric" here means metres, km, etc (rather than feet, miles, etc)
 #: ../src/gfxcore.cc:3880
 #: ../src/gfxcore.cc:3900
-#: ../src/mainfrm.cc:941
+#: ../src/mainfrm.cc:955
 #: n:342
 msgid "&Metric"
 msgstr ""
@@ -2376,7 +2365,7 @@ msgstr ""
 #: ../src/gfxcore.cc:3842
 #: ../src/gfxcore.cc:3860
 #: ../src/gfxcore.cc:3902
-#: ../src/mainfrm.cc:942
+#: ../src/mainfrm.cc:956
 #: n:343
 msgid "&Degrees"
 msgstr ""
@@ -2386,7 +2375,7 @@ msgstr ""
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
 #: ../src/gfxcore.cc:3865
-#: ../src/mainfrm.cc:943
+#: ../src/mainfrm.cc:957
 #: n:430
 msgid "&Percent"
 msgstr ""
@@ -2411,11 +2400,11 @@ msgstr ""
 #: ../src/gfxcore.cc:1087
 #: ../src/gfxcore.cc:1179
 #: ../src/gfxcore.cc:1259
-#: ../src/mainfrm.cc:2164
-#: ../src/mainfrm.cc:2231
-#: ../src/mainfrm.cc:2251
-#: ../src/mainfrm.cc:2300
-#: ../src/mainfrm.cc:2331
+#: ../src/mainfrm.cc:2178
+#: ../src/mainfrm.cc:2245
+#: ../src/mainfrm.cc:2265
+#: ../src/mainfrm.cc:2314
+#: ../src/mainfrm.cc:2345
 #: ../src/printing.cc:1153
 #: n:424
 msgid "m"
@@ -2461,11 +2450,11 @@ msgstr ""
 #: ../src/gfxcore.cc:1087
 #: ../src/gfxcore.cc:1179
 #: ../src/gfxcore.cc:1295
-#: ../src/mainfrm.cc:2169
-#: ../src/mainfrm.cc:2234
-#: ../src/mainfrm.cc:2254
-#: ../src/mainfrm.cc:2305
-#: ../src/mainfrm.cc:2336
+#: ../src/mainfrm.cc:2183
+#: ../src/mainfrm.cc:2248
+#: ../src/mainfrm.cc:2268
+#: ../src/mainfrm.cc:2319
+#: ../src/mainfrm.cc:2350
 #: n:428
 msgid "ft"
 msgstr ""
@@ -2512,8 +2501,8 @@ msgstr ""
 #: ../src/gfxcore.cc:739
 #: ../src/gfxcore.cc:829
 #: ../src/gfxcore.cc:1151
-#: ../src/mainfrm.cc:2218
-#: ../src/mainfrm.cc:2344
+#: ../src/mainfrm.cc:2232
+#: ../src/mainfrm.cc:2358
 #: ../src/printing.cc:89
 #: n:344
 msgid "°"
@@ -2534,8 +2523,8 @@ msgstr ""
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2226
-#: ../src/mainfrm.cc:2347
+#: ../src/mainfrm.cc:2240
+#: ../src/mainfrm.cc:2361
 #: n:345
 msgid "grad"
 msgstr ""
@@ -2558,14 +2547,14 @@ msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2238
+#: ../src/mainfrm.cc:2252
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:2271
+#: ../src/mainfrm.cc:2285
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2573,12 +2562,12 @@ msgstr ""
 
 #. TRANSLATORS: labels for tabbed side panel this is for the tab with the
 #. tree hierarchy of survey station names
-#: ../src/mainfrm.cc:1086
+#: ../src/mainfrm.cc:1100
 #: n:376
 msgid "Surveys"
 msgstr ""
 
-#: ../src/mainfrm.cc:1087
+#: ../src/mainfrm.cc:1101
 #: n:377
 msgid "Presentation"
 msgstr ""
