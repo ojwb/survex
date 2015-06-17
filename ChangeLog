@@ -1,3 +1,7 @@
+Wed Jun 17 01:18:20 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Wed Jun 17 01:12:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/,src/mainfrm.cc,src/printing.cc: Use "..." rather than Unicode

@@ -1,4 +1,4 @@
-Changes in 1.2.19 (2015-06-15):
+Changes in 1.2.19 (2015-06-17):
 
 * aven:
 
@@ -7,8 +7,12 @@ Changes in 1.2.19 (2015-06-15):
 
   + Add exporting to Survex .pos format.
 
-  + When reading terrain data from a .zip file, report an error if the .zip
-    file is bad, or if it doesn't contain any terrain data we recognise.
+  + If the measuring line isn't currently active, pressing "Escape" will now
+    exit full screen mode.
+
+  + (Mac OS X version): Change the shortcut for full screen mode to be the
+    standard Ctrl+Command+F (rather than Shift+Command+F which we have been
+    using since 1.2.7).
 
   + (Mac OS X version): When we centre the view on the station this can
     generate a mouse move event, so clear the variable which says we are
@@ -34,6 +38,9 @@ Changes in 1.2.19 (2015-06-15):
 
   + (Mac OS X version): Silence warning visible when aven is run from a
     terminal about a missing CFBundleTypeRole.
+
+  + When reading terrain data from a .zip file, report an error if the .zip
+    file is bad, or if it doesn't contain any terrain data we recognise.
 
   + Tweak error message in terrain reading code to distinguish two failure
     cases.
@@ -65,6 +72,9 @@ Changes in 1.2.19 (2015-06-15):
   we try to pop up a message box for this message, which may fail due to
   whatever caused the signal, while with the command line tools there's no
   great benefit over just letting the shell report the signal.
+
+* Use pkg-config to probe for libav and proj, which sorts out the correct flags
+  for building on OS X against a static install of libav.
 
 Changes in 1.2.18 (2015-06-03):
 
