@@ -2,7 +2,7 @@
 
 #  gettexttomsg.pl
 #
-#  Copyright (C) 2001,2002,2005,2011,2012,2014 Olly Betts
+#  Copyright (C) 2001,2002,2005,2011,2012,2014,2015 Olly Betts
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -38,7 +38,64 @@ close MSG;
 my $die = 0;
 
 my $suppress_argc_argv_unused_warnings = 0;
+my @conditionals;
+my %macro;
+# Helper so we can just eval preprocessor expressions.
+sub pp_defined { exists $macro{$_[0]} // 0 }
+
+sub pp_eval {
+    local $_ = shift;
+    # defined is a built-in function in Perl.
+    s/\bdefined\b/pp_defined/g;
+    no strict 'subs';
+    no warnings;
+    return eval($_);
+}
+
+my $active = 1;
 while (<>) {
+    if (m!^#\s*(\w+)\s*(.*?)\s*(?:/[/*].*)?$!) {
+	my ($directive, $cond) = ($1, $2);
+	if ($directive eq 'endif') {
+	    if (@conditionals == 0) {
+		die "$ARGV:$.: Unmatched #endif\n";
+	    }
+	    $active = pop @conditionals;
+	} elsif ($directive eq 'else') {
+	    if (@conditionals == 0) {
+		die "$ARGV:$.: Unmatched #else\n";
+	    }
+	    $active = (!$active) && $conditionals[-1];
+	} elsif ($directive eq 'ifdef') {
+	    push @conditionals, $active;
+	    $active &&= pp_defined($cond);
+	} elsif ($directive eq 'ifndef') {
+	    push @conditionals, $active;
+	    $active &&= !pp_defined($cond);
+	} elsif ($directive eq 'if') {
+	    push @conditionals, $active;
+	    $active &&= pp_eval($cond);
+	} elsif ($active) {
+	    if ($directive eq 'define') {
+		$cond =~ /^(\w+)\s*(.*)/;
+		$macro{$1} = $2;
+		no warnings;
+		eval "sub $1 { q($2) }";
+	    } elsif ($directive eq 'undef') {
+		$cond =~ /^(\w+)/;
+		no warnings;
+		eval "sub $1 { 0 }";
+	    }
+	}
+	print;
+	next;
+    }
+
+    if (!$active) {
+	print;
+	next;
+    }
+
     if ($suppress_argc_argv_unused_warnings && /^{/) {
 	$suppress_argc_argv_unused_warnings = 0;
 	print "$_  (void)argc;\n  (void)argv;\n";

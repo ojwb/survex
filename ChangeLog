@@ -1,3 +1,8 @@
+Wed Jun 17 10:18:12 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/getopt.c,src/gettexttomsg.pl: Take preprocessor directives into
+	  account to avoid converting gettext() uses which won't be used.
+
 Wed Jun 17 02:06:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/INSTALL.OSX: Update.

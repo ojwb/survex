@@ -31,6 +31,9 @@
 # include <config.h>
 #endif
 
+#include "message.h"
+#define _
+
 #if !defined __STDC__ || !__STDC__
 /* This is a separate conditional since some stdc systems
    reject `defined (const)'.  */
