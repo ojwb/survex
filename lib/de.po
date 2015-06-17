@@ -2125,13 +2125,6 @@ msgstr "&Richtungsanzeiger"
 msgid "%s: option “%s” is ambiguous\n"
 msgstr "%s: Die Option »%s« ist nicht eindeutig\n"
 
-#: ../src/z_getopt.c:1025
-#: ../src/z_getopt.c:1036
-#: n:301
-#, c-format
-msgid "%s: option “-W %s” is ambiguous\n"
-msgstr "%s: Die Option »-W %s« ist nicht eindeutig\n"
-
 #: ../src/z_getopt.c:753
 #: ../src/z_getopt.c:757
 #: n:302
@@ -2145,13 +2138,6 @@ msgstr "%s: Die Option »%c%s« erlaubt kein Argument\n"
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
 msgstr "%s: Die Option »--%s« erlaubt kein Argument\n"
-
-#: ../src/z_getopt.c:1060
-#: ../src/z_getopt.c:1071
-#: n:304
-#, c-format
-msgid "%s: option “-W %s” doesn’t allow an argument\n"
-msgstr "%s: Die Option »-W %s« erlaubt kein Argument\n"
 
 #: ../src/z_getopt.c:792
 #: ../src/z_getopt.c:804
@@ -2184,13 +2170,6 @@ msgstr "%s: Unbekannte Option »--%s«\n"
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
 msgstr "%s: Unbekannte Option »%c%s«\n"
-
-#: ../src/z_getopt.c:903
-#: ../src/z_getopt.c:906
-#: n:309
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: unzulässige Option -- %c\n"
 
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915

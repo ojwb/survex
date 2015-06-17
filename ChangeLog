@@ -1,3 +1,9 @@
+Wed Jun 17 10:57:42 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/,src/getopt.c: #if 0 out the support for -W longopt (which we
+	  don't use) and the posixly_correct "illegal option" message
+	  ("invalid option" is clearer).
+
 Wed Jun 17 10:18:12 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/getopt.c,src/gettexttomsg.pl: Take preprocessor directives into

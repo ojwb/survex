@@ -2121,13 +2121,6 @@ msgstr "И&ндикаторы"
 msgid "%s: option “%s” is ambiguous\n"
 msgstr "%s: опция “%s” неоднозначна\n"
 
-#: ../src/z_getopt.c:1025
-#: ../src/z_getopt.c:1036
-#: n:301
-#, c-format
-msgid "%s: option “-W %s” is ambiguous\n"
-msgstr "%s: опция “-W %s” неоднозначна\n"
-
 #: ../src/z_getopt.c:753
 #: ../src/z_getopt.c:757
 #: n:302
@@ -2141,13 +2134,6 @@ msgstr "%s: опция “%c%s” не допускает указания ар�
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
 msgstr "%s: опция “--%s” не допускает указания аргумента\n"
-
-#: ../src/z_getopt.c:1060
-#: ../src/z_getopt.c:1071
-#: n:304
-#, c-format
-msgid "%s: option “-W %s” doesn’t allow an argument\n"
-msgstr "%s: опция “-W %s” не допускает указания аргумента\n"
 
 #: ../src/z_getopt.c:792
 #: ../src/z_getopt.c:804
@@ -2180,13 +2166,6 @@ msgstr "%s: неизвестная опция “--%s”\n"
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
 msgstr "%s: неизвестная опция “%c%s”\n"
-
-#: ../src/z_getopt.c:903
-#: ../src/z_getopt.c:906
-#: n:309
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: недопустимая опция -- %c\n"
 
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915

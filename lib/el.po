@@ -2119,13 +2119,6 @@ msgstr ""
 msgid "%s: option “%s” is ambiguous\n"
 msgstr ""
 
-#: ../src/z_getopt.c:1025
-#: ../src/z_getopt.c:1036
-#: n:301
-#, c-format
-msgid "%s: option “-W %s” is ambiguous\n"
-msgstr ""
-
 #: ../src/z_getopt.c:753
 #: ../src/z_getopt.c:757
 #: n:302
@@ -2138,13 +2131,6 @@ msgstr ""
 #: n:303
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
-msgstr ""
-
-#: ../src/z_getopt.c:1060
-#: ../src/z_getopt.c:1071
-#: n:304
-#, c-format
-msgid "%s: option “-W %s” doesn’t allow an argument\n"
 msgstr ""
 
 #: ../src/z_getopt.c:792
@@ -2178,13 +2164,6 @@ msgstr ""
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
 msgstr ""
-
-#: ../src/z_getopt.c:903
-#: ../src/z_getopt.c:906
-#: n:309
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: μη αναγνωρίσιμη επιλογή -- %c\n"
 
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915

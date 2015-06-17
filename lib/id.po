@@ -2118,13 +2118,6 @@ msgstr "&Indikator"
 msgid "%s: option “%s” is ambiguous\n"
 msgstr "%s: pilihan “%s” ambigu\n"
 
-#: ../src/z_getopt.c:1025
-#: ../src/z_getopt.c:1036
-#: n:301
-#, c-format
-msgid "%s: option “-W %s” is ambiguous\n"
-msgstr "%s: pilihan “-W %s” ambigu\n"
-
 #: ../src/z_getopt.c:753
 #: ../src/z_getopt.c:757
 #: n:302
@@ -2138,13 +2131,6 @@ msgstr "%s: pilihan “%c%s” tidak mengizinkan argumen\n"
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
 msgstr "%s: pilihan “--%s” tidak mengizinkan argumen\n"
-
-#: ../src/z_getopt.c:1060
-#: ../src/z_getopt.c:1071
-#: n:304
-#, c-format
-msgid "%s: option “-W %s” doesn’t allow an argument\n"
-msgstr "%s: pilihan “-W %s” tidak mengizinkan argumen\n"
 
 #: ../src/z_getopt.c:792
 #: ../src/z_getopt.c:804
@@ -2177,13 +2163,6 @@ msgstr "%s: opsi tidak di-kenal “--%s”\n"
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
 msgstr "%s: opsi tidak di-kenal “%c%s”\n"
-
-#: ../src/z_getopt.c:903
-#: ../src/z_getopt.c:906
-#: n:309
-#, c-format
-msgid "%s: illegal option -- %c\n"
-msgstr "%s: opsi ilegal -- %c\n"
 
 #: ../src/z_getopt.c:912
 #: ../src/z_getopt.c:915

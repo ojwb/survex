@@ -902,6 +902,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 	      int n;
 #endif
 
+#if 0
 	    if (posixly_correct)
 	      {
 		/* 1003.2 specifies the format of this message.  */
@@ -913,6 +914,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 #endif
 	      }
 	    else
+#endif
 	      {
 #if defined _LIBC && defined USE_IN_LIBIO
 		n = __asprintf (&buf, _("%s: invalid option -- %c\n"),
@@ -937,6 +939,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 	optopt = c;
 	return '?';
       }
+#if 0
     /* Convenience. Treat POSIX -W foo same as long option --foo */
     if (temp[0] == 'W' && temp[1] == ';')
       {
@@ -1130,6 +1133,7 @@ _getopt_internal (argc, argv, optstring, longopts, longind, long_only)
 	  nextchar = NULL;
 	  return 'W';	/* Let the application handle it.   */
       }
+#endif
     if (temp[1] == ':')
       {
 	if (temp[2] == ':')
