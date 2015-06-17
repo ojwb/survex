@@ -2652,7 +2652,7 @@ msgstr "&Napló Megjelenítése"
 #: ../src/mainfrm.cc:795
 #: n:380
 msgid "&Print...\tCtrl+P"
-msgstr ""
+msgstr "N&yomtat...\tCtrl+P"
 
 #: ../src/mainfrm.cc:796
 #: n:381
@@ -3156,7 +3156,7 @@ msgstr "SVG kimenet készítése"
 #: ../src/mainfrm.cc:922
 #: n:347
 #~ msgid "&Preferences..."
-#~ msgstr ""
+#~ msgstr "&Beállítások..."
 
 #: n:348
 #~ msgid "Draw passage walls"
