@@ -1747,8 +1747,8 @@ msgstr "%s záznam chýb"
 #. dialog
 #: ../src/printing.cc:634
 #: n:230
-msgid "&Export…"
-msgstr "&Export…"
+msgid "&Export..."
+msgstr "&Export..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
@@ -2204,8 +2204,8 @@ msgstr "&Nová prezentácia"
 
 #: ../src/mainfrm.cc:837
 #: n:312
-msgid "&Open Presentation…"
-msgstr "&Otvoriť prezentáciu…"
+msgid "&Open Presentation..."
+msgstr "&Otvoriť prezentáciu..."
 
 #: ../src/mainfrm.cc:838
 #: n:313
@@ -2214,8 +2214,8 @@ msgstr "&Ulož prezentáciu"
 
 #: ../src/mainfrm.cc:839
 #: n:314
-msgid "Sa&ve Presentation As…"
-msgstr "Ulož prezentáciu a&ko…"
+msgid "Sa&ve Presentation As..."
+msgstr "Ulož prezentáciu a&ko..."
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
 #: ../src/mainfrm.cc:842
@@ -2231,8 +2231,8 @@ msgstr "&Prehrať"
 
 #: ../src/mainfrm.cc:845
 #: n:317
-msgid "&Export as Movie…"
-msgstr "&Vyexportuj ako film…"
+msgid "&Export as Movie..."
+msgstr "&Vyexportuj ako film..."
 
 #: ../src/mainfrm.cc:2516
 #: n:331
@@ -2627,15 +2627,15 @@ msgstr "sever"
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:788
 #: n:220
-msgid "&Open…\tCtrl+O"
-msgstr "&Otvoriť…\tCtrl+O"
+msgid "&Open...\tCtrl+O"
+msgstr "&Otvoriť...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
 #: ../src/mainfrm.cc:791
 #: n:453
-msgid "Open &Terrain…"
-msgstr "Otvoriť &digitálny model terénu…"
+msgid "Open &Terrain..."
+msgstr "Otvoriť &digitálny model terénu..."
 
 #: ../src/mainfrm.cc:792
 #: n:144
@@ -2644,24 +2644,24 @@ msgstr "Zobraziť &záznam"
 
 #: ../src/mainfrm.cc:795
 #: n:380
-msgid "&Print…\tCtrl+P"
-msgstr "&Tlačiť…\tCtrl+P"
+msgid "&Print...\tCtrl+P"
+msgstr "&Tlačiť...\tCtrl+P"
 
 #: ../src/mainfrm.cc:796
 #: n:381
-msgid "P&age Setup…"
-msgstr "&Nastavení tisku…"
+msgid "P&age Setup..."
+msgstr "&Nastavení tisku..."
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
 #: n:201
-msgid "&Screenshot…"
-msgstr "Otlačok o&brazovky…"
+msgid "&Screenshot..."
+msgstr "Otlačok o&brazovky..."
 
 #: ../src/mainfrm.cc:800
 #: n:382
-msgid "&Export as…"
-msgstr "&Export ako…"
+msgid "&Export as..."
+msgstr "&Export ako..."
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
@@ -2698,8 +2698,8 @@ msgstr "Tlačiť"
 
 #: ../src/printing.cc:629
 #: n:400
-msgid "&Print…"
-msgstr "&Tlačiť…"
+msgid "&Print..."
+msgstr "&Tlačiť..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -3149,8 +3149,8 @@ msgstr "vygenerovať formát SVG"
 
 #: ../src/mainfrm.cc:922
 #: n:347
-#~ msgid "&Preferences…"
-#~ msgstr "&Predvoľby…"
+#~ msgid "&Preferences..."
+#~ msgstr "&Predvoľby..."
 
 #: n:348
 #~ msgid "Draw passage walls"

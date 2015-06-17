@@ -1744,8 +1744,8 @@ msgstr "%s Kesalahan Log"
 #. dialog
 #: ../src/printing.cc:634
 #: n:230
-msgid "&Export…"
-msgstr "&Ekspor…"
+msgid "&Export..."
+msgstr "&Ekspor..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
@@ -2199,8 +2199,8 @@ msgstr "Presentasi &Baru"
 
 #: ../src/mainfrm.cc:837
 #: n:312
-msgid "&Open Presentation…"
-msgstr "Bu&ka Presentasi…"
+msgid "&Open Presentation..."
+msgstr "Bu&ka Presentasi..."
 
 #: ../src/mainfrm.cc:838
 #: n:313
@@ -2209,8 +2209,8 @@ msgstr "&Simpan Presentasi"
 
 #: ../src/mainfrm.cc:839
 #: n:314
-msgid "Sa&ve Presentation As…"
-msgstr "Si&mpan Presentasi sebagai…"
+msgid "Sa&ve Presentation As..."
+msgstr "Si&mpan Presentasi sebagai..."
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
 #: ../src/mainfrm.cc:842
@@ -2226,8 +2226,8 @@ msgstr "Put&ar"
 
 #: ../src/mainfrm.cc:845
 #: n:317
-msgid "&Export as Movie…"
-msgstr "&Ekspor sebagai film…"
+msgid "&Export as Movie..."
+msgstr "&Ekspor sebagai film..."
 
 #: ../src/mainfrm.cc:2516
 #: n:331
@@ -2621,15 +2621,15 @@ msgstr "Arah Utara"
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:788
 #: n:220
-msgid "&Open…\tCtrl+O"
-msgstr "&Buka…\tCtrl+O"
+msgid "&Open...\tCtrl+O"
+msgstr "&Buka...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
 #: ../src/mainfrm.cc:791
 #: n:453
-msgid "Open &Terrain…"
-msgstr "Buka &Dataran…"
+msgid "Open &Terrain..."
+msgstr "Buka &Dataran..."
 
 #: ../src/mainfrm.cc:792
 #: n:144
@@ -2638,24 +2638,24 @@ msgstr "Tampilkan &Log"
 
 #: ../src/mainfrm.cc:795
 #: n:380
-msgid "&Print…\tCtrl+P"
-msgstr "&Cetak…\tCtrl+P"
+msgid "&Print...\tCtrl+P"
+msgstr "&Cetak...\tCtrl+P"
 
 #: ../src/mainfrm.cc:796
 #: n:381
-msgid "P&age Setup…"
-msgstr "&Tata Halaman…"
+msgid "P&age Setup..."
+msgstr "&Tata Halaman..."
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
 #: n:201
-msgid "&Screenshot…"
-msgstr "&Screenshot…"
+msgid "&Screenshot..."
+msgstr "&Screenshot..."
 
 #: ../src/mainfrm.cc:800
 #: n:382
-msgid "&Export as…"
-msgstr "&Ekpor sebagai…"
+msgid "&Export as..."
+msgstr "&Ekpor sebagai..."
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
@@ -2692,8 +2692,8 @@ msgstr "Cetak"
 
 #: ../src/printing.cc:629
 #: n:400
-msgid "&Print…"
-msgstr "&Cetak…"
+msgid "&Print..."
+msgstr "&Cetak..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -3141,8 +3141,8 @@ msgstr "menghasilkan keluaran SVG"
 
 #: ../src/mainfrm.cc:922
 #: n:347
-#~ msgid "&Preferences…"
-#~ msgstr "&Preferensi…"
+#~ msgid "&Preferences..."
+#~ msgstr "&Preferensi..."
 
 #: n:348
 #~ msgid "Draw passage walls"

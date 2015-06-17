@@ -785,19 +785,19 @@ void MainFrm::CreateMenuBar()
      *
      * "File" menu.  The accelerators must be different within this group.
      * c.f. 201, 380, 381. */
-    filemenu->Append(wxID_OPEN, wmsg(/*&Open…\tCtrl+O*/220));
+    filemenu->Append(wxID_OPEN, wmsg(/*&Open...\tCtrl+O*/220));
     /* TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
      * terrain. */
-    filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain…*/453));
+    filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain...*/453));
     filemenu->Append(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
-    filemenu->Append(wxID_PRINT, wmsg(/*&Print…\tCtrl+P*/380));
-    filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup…*/381));
+    filemenu->Append(wxID_PRINT, wmsg(/*&Print...\tCtrl+P*/380));
+    filemenu->Append(menu_FILE_PAGE_SETUP, wmsg(/*P&age Setup...*/381));
     filemenu->AppendSeparator();
     /* TRANSLATORS: In the "File" menu */
-    filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot…*/201));
-    filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as…*/382));
+    filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot...*/201));
+    filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as...*/382));
 #ifndef __WXMAC__
     // On wxMac the "Quit" menu item will be moved elsewhere, so we suppress
     // this separator.
@@ -834,15 +834,15 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_NEW, wmsg(/*&New Presentation*/311));
-    presmenu->Append(menu_PRES_OPEN, wmsg(/*&Open Presentation…*/312));
+    presmenu->Append(menu_PRES_OPEN, wmsg(/*&Open Presentation...*/312));
     presmenu->Append(menu_PRES_SAVE, wmsg(/*&Save Presentation*/313));
-    presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Sa&ve Presentation As…*/314));
+    presmenu->Append(menu_PRES_SAVE_AS, wmsg(/*Sa&ve Presentation As...*/314));
     presmenu->AppendSeparator();
     /* TRANSLATORS: "Mark" as in "Mark this position" */
     presmenu->Append(menu_PRES_MARK, wmsg(/*&Mark*/315));
     /* TRANSLATORS: "Play" as in "Play back a recording" */
     presmenu->AppendCheckItem(menu_PRES_PLAY, wmsg(/*Pla&y*/316));
-    presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie…*/317));
+    presmenu->Append(menu_PRES_EXPORT_MOVIE, wmsg(/*&Export as Movie...*/317));
 
     wxMenu* viewmenu = new wxMenu;
 #ifndef PREFDLG
@@ -919,7 +919,7 @@ void MainFrm::CreateMenuBar()
 #endif
 #ifdef PREFDLG
     viewmenu->AppendSeparator();
-    viewmenu-> Append(wxID_PREFERENCES, wmsg(/*&Preferences…*/347));
+    viewmenu-> Append(wxID_PREFERENCES, wmsg(/*&Preferences...*/347));
 #endif
 
 #ifndef PREFDLG

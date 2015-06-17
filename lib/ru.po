@@ -1744,7 +1744,7 @@ msgstr "Журнал ошибок %s"
 #. dialog
 #: ../src/printing.cc:634
 #: n:230
-msgid "&Export…"
+msgid "&Export..."
 msgstr "&Экспорт"
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
@@ -2202,8 +2202,8 @@ msgstr "&Новая презантация"
 
 #: ../src/mainfrm.cc:837
 #: n:312
-msgid "&Open Presentation…"
-msgstr "&Открвть презентацию…"
+msgid "&Open Presentation..."
+msgstr "&Открвть презентацию..."
 
 #: ../src/mainfrm.cc:838
 #: n:313
@@ -2212,8 +2212,8 @@ msgstr "&Сохранить презентацию"
 
 #: ../src/mainfrm.cc:839
 #: n:314
-msgid "Sa&ve Presentation As…"
-msgstr "Со&хранить презентацию как…"
+msgid "Sa&ve Presentation As..."
+msgstr "Со&хранить презентацию как..."
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
 #: ../src/mainfrm.cc:842
@@ -2229,8 +2229,8 @@ msgstr "&Воспроизвести"
 
 #: ../src/mainfrm.cc:845
 #: n:317
-msgid "&Export as Movie…"
-msgstr "&Экспортировать видео…"
+msgid "&Export as Movie..."
+msgstr "&Экспортировать видео..."
 
 #: ../src/mainfrm.cc:2516
 #: n:331
@@ -2624,15 +2624,15 @@ msgstr "Северное отклонение (Northing)"
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:788
 #: n:220
-msgid "&Open…\tCtrl+O"
-msgstr "&Открыть…\tCtrl+O"
+msgid "&Open...\tCtrl+O"
+msgstr "&Открыть...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
 #: ../src/mainfrm.cc:791
 #: n:453
-msgid "Open &Terrain…"
-msgstr "Открыть &Рельеф…"
+msgid "Open &Terrain..."
+msgstr "Открыть &Рельеф..."
 
 #: ../src/mainfrm.cc:792
 #: n:144
@@ -2641,24 +2641,24 @@ msgstr "Показать &журнал"
 
 #: ../src/mainfrm.cc:795
 #: n:380
-msgid "&Print…\tCtrl+P"
-msgstr "&Печать…\tCtrl+P"
+msgid "&Print...\tCtrl+P"
+msgstr "&Печать...\tCtrl+P"
 
 #: ../src/mainfrm.cc:796
 #: n:381
-msgid "P&age Setup…"
-msgstr "&Настройки страницы…"
+msgid "P&age Setup..."
+msgstr "&Настройки страницы..."
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
 #: n:201
-msgid "&Screenshot…"
-msgstr "&Снимок экрана…"
+msgid "&Screenshot..."
+msgstr "&Снимок экрана..."
 
 #: ../src/mainfrm.cc:800
 #: n:382
-msgid "&Export as…"
-msgstr "&Экспортировать как…"
+msgid "&Export as..."
+msgstr "&Экспортировать как..."
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
@@ -2695,8 +2695,8 @@ msgstr "Печать"
 
 #: ../src/printing.cc:629
 #: n:400
-msgid "&Print…"
-msgstr "&Печать…"
+msgid "&Print..."
+msgstr "&Печать..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -3144,8 +3144,8 @@ msgstr "создавать SVG"
 
 #: ../src/mainfrm.cc:922
 #: n:347
-#~ msgid "&Preferences…"
-#~ msgstr "&Настройки…"
+#~ msgid "&Preferences..."
+#~ msgstr "&Настройки..."
 
 #: n:348
 #~ msgid "Draw passage walls"

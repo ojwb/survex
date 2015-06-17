@@ -1746,7 +1746,7 @@ msgstr ""
 #. dialog
 #: ../src/printing.cc:634
 #: n:230
-msgid "&Export…"
+msgid "&Export..."
 msgstr ""
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
@@ -2201,7 +2201,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:837
 #: n:312
-msgid "&Open Presentation…"
+msgid "&Open Presentation..."
 msgstr ""
 
 #: ../src/mainfrm.cc:838
@@ -2211,7 +2211,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:839
 #: n:314
-msgid "Sa&ve Presentation As…"
+msgid "Sa&ve Presentation As..."
 msgstr ""
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
@@ -2228,7 +2228,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:845
 #: n:317
-msgid "&Export as Movie…"
+msgid "&Export as Movie..."
 msgstr ""
 
 #: ../src/mainfrm.cc:2516
@@ -2623,14 +2623,14 @@ msgstr ""
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:788
 #: n:220
-msgid "&Open…\tCtrl+O"
+msgid "&Open...\tCtrl+O"
 msgstr ""
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
 #: ../src/mainfrm.cc:791
 #: n:453
-msgid "Open &Terrain…"
+msgid "Open &Terrain..."
 msgstr ""
 
 #: ../src/mainfrm.cc:792
@@ -2640,23 +2640,23 @@ msgstr ""
 
 #: ../src/mainfrm.cc:795
 #: n:380
-msgid "&Print…\tCtrl+P"
+msgid "&Print...\tCtrl+P"
 msgstr ""
 
 #: ../src/mainfrm.cc:796
 #: n:381
-msgid "P&age Setup…"
+msgid "P&age Setup..."
 msgstr ""
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
 #: n:201
-msgid "&Screenshot…"
+msgid "&Screenshot..."
 msgstr ""
 
 #: ../src/mainfrm.cc:800
 #: n:382
-msgid "&Export as…"
+msgid "&Export as..."
 msgstr ""
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
@@ -2694,7 +2694,7 @@ msgstr ""
 
 #: ../src/printing.cc:629
 #: n:400
-msgid "&Print…"
+msgid "&Print..."
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
@@ -3143,7 +3143,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:922
 #: n:347
-#~ msgid "&Preferences…"
+#~ msgid "&Preferences..."
 #~ msgstr ""
 
 #: n:348

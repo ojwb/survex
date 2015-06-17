@@ -1747,8 +1747,8 @@ msgstr "%s-Fehlerprotokoll"
 #. dialog
 #: ../src/printing.cc:634
 #: n:230
-msgid "&Export…"
-msgstr "&Exportieren…"
+msgid "&Export..."
+msgstr "&Exportieren..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
@@ -2206,8 +2206,8 @@ msgstr "&Neue Präsentation"
 
 #: ../src/mainfrm.cc:837
 #: n:312
-msgid "&Open Presentation…"
-msgstr "&Präsentation öffnen…"
+msgid "&Open Presentation..."
+msgstr "&Präsentation öffnen..."
 
 #: ../src/mainfrm.cc:838
 #: n:313
@@ -2216,8 +2216,8 @@ msgstr "Präsentation &speichern"
 
 #: ../src/mainfrm.cc:839
 #: n:314
-msgid "Sa&ve Presentation As…"
-msgstr "Präsentation speichern &als…"
+msgid "Sa&ve Presentation As..."
+msgstr "Präsentation speichern &als..."
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
 #: ../src/mainfrm.cc:842
@@ -2233,8 +2233,8 @@ msgstr "Abspie&len"
 
 #: ../src/mainfrm.cc:845
 #: n:317
-msgid "&Export as Movie…"
-msgstr "&Exportieren als Film…"
+msgid "&Export as Movie..."
+msgstr "&Exportieren als Film..."
 
 #: ../src/mainfrm.cc:2516
 #: n:331
@@ -2628,15 +2628,15 @@ msgstr "Hochwert"
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:788
 #: n:220
-msgid "&Open…\tCtrl+O"
-msgstr "Ö&ffnen…\tCtrl+O"
+msgid "&Open...\tCtrl+O"
+msgstr "Ö&ffnen...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
 #: ../src/mainfrm.cc:791
 #: n:453
-msgid "Open &Terrain…"
-msgstr "Gelände&modell öffnen…"
+msgid "Open &Terrain..."
+msgstr "Gelände&modell öffnen..."
 
 #: ../src/mainfrm.cc:792
 #: n:144
@@ -2645,24 +2645,24 @@ msgstr "&Protokoll anzeigen"
 
 #: ../src/mainfrm.cc:795
 #: n:380
-msgid "&Print…\tCtrl+P"
-msgstr "&Drucken…\tCtrl+P"
+msgid "&Print...\tCtrl+P"
+msgstr "&Drucken...\tCtrl+P"
 
 #: ../src/mainfrm.cc:796
 #: n:381
-msgid "P&age Setup…"
-msgstr "&Seite einrichten…"
+msgid "P&age Setup..."
+msgstr "&Seite einrichten..."
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
 #: n:201
-msgid "&Screenshot…"
-msgstr "Bildschirm&abzug…"
+msgid "&Screenshot..."
+msgstr "Bildschirm&abzug..."
 
 #: ../src/mainfrm.cc:800
 #: n:382
-msgid "&Export as…"
-msgstr "&Exportieren als…"
+msgid "&Export as..."
+msgstr "&Exportieren als..."
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
@@ -2699,8 +2699,8 @@ msgstr "Drucken"
 
 #: ../src/printing.cc:629
 #: n:400
-msgid "&Print…"
-msgstr "&Drucken…"
+msgid "&Print..."
+msgstr "&Drucken..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -3150,8 +3150,8 @@ msgstr "SVG-Ausgabe erzeugen"
 
 #: ../src/mainfrm.cc:922
 #: n:347
-#~ msgid "&Preferences…"
-#~ msgstr "&Einstellungen…"
+#~ msgid "&Preferences..."
+#~ msgstr "&Einstellungen..."
 
 #: n:348
 #~ msgid "Draw passage walls"

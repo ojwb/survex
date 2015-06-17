@@ -1745,8 +1745,8 @@ msgstr ""
 #. dialog
 #: ../src/printing.cc:634
 #: n:230
-msgid "&Export…"
-msgstr "&Εξαγωγή…"
+msgid "&Export..."
+msgstr "&Εξαγωγή..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
@@ -2200,7 +2200,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:837
 #: n:312
-msgid "&Open Presentation…"
+msgid "&Open Presentation..."
 msgstr ""
 
 #: ../src/mainfrm.cc:838
@@ -2210,7 +2210,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:839
 #: n:314
-msgid "Sa&ve Presentation As…"
+msgid "Sa&ve Presentation As..."
 msgstr ""
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
@@ -2227,7 +2227,7 @@ msgstr "&Αναπαραγωγή"
 
 #: ../src/mainfrm.cc:845
 #: n:317
-msgid "&Export as Movie…"
+msgid "&Export as Movie..."
 msgstr ""
 
 #: ../src/mainfrm.cc:2516
@@ -2622,14 +2622,14 @@ msgstr "Βόρεια"
 #. c.f. 201, 380, 381.
 #: ../src/mainfrm.cc:788
 #: n:220
-msgid "&Open…\tCtrl+O"
-msgstr "&Άνοιγμα…\tCtrl+O"
+msgid "&Open...\tCtrl+O"
+msgstr "&Άνοιγμα...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
 #: ../src/mainfrm.cc:791
 #: n:453
-msgid "Open &Terrain…"
+msgid "Open &Terrain..."
 msgstr ""
 
 #: ../src/mainfrm.cc:792
@@ -2639,23 +2639,23 @@ msgstr "Εμφάνιση &Καταγραφής"
 
 #: ../src/mainfrm.cc:795
 #: n:380
-msgid "&Print…\tCtrl+P"
-msgstr "&Εκτύπωση…\tCtrl+P"
+msgid "&Print...\tCtrl+P"
+msgstr "&Εκτύπωση...\tCtrl+P"
 
 #: ../src/mainfrm.cc:796
 #: n:381
-msgid "P&age Setup…"
+msgid "P&age Setup..."
 msgstr ""
 
 #. TRANSLATORS: In the "File" menu
 #: ../src/mainfrm.cc:799
 #: n:201
-msgid "&Screenshot…"
+msgid "&Screenshot..."
 msgstr ""
 
 #: ../src/mainfrm.cc:800
 #: n:382
-msgid "&Export as…"
+msgid "&Export as..."
 msgstr ""
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
@@ -2693,8 +2693,8 @@ msgstr "Εκτύπωση"
 
 #: ../src/printing.cc:629
 #: n:400
-msgid "&Print…"
-msgstr "&Εκτύπωση…"
+msgid "&Print..."
+msgstr "&Εκτύπωση..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -3143,7 +3143,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:922
 #: n:347
-#~ msgid "&Preferences…"
+#~ msgid "&Preferences..."
 #~ msgstr ""
 
 #: n:348

@@ -626,12 +626,12 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
 	but = new wxButton(this, wxID_PRINT);
 #else
-	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print…*/400));
+	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print...*/400));
 #endif
     } else {
 	/* TRANSLATORS: The text on the action button in the "Export" settings
 	 * dialog */
-	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export…*/230));
+	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export...*/230));
     }
     but->SetDefault();
     h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
