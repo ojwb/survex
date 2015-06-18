@@ -1,3 +1,7 @@
+Thu Jun 18 11:01:37 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Fix typo.
+
 Thu Jun 18 11:00:33 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Update recipe for building libav for mingw to
