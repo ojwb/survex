@@ -1,3 +1,7 @@
+Thu Jun 18 05:04:04 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Bump release date for 1.2.19.
+
 Thu Jun 18 00:07:46 GMT 2015  Olly Betts <olly@survex.com>
 
 	* configure.ac: pkg-config support in proj seems quite new, so probe
