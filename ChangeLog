@@ -1,3 +1,7 @@
+Thu Jun 18 12:04:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* configure.ac: Fix to allow compiling without libav.
+
 Thu Jun 18 12:02:46 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc,src/avenprcore.h: Clean up unused header includes.

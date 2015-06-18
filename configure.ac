@@ -206,6 +206,8 @@ PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
   AC_CHECK_DECLS([AV_PIX_FMT_YUV420P], [], [], [#include <libavutil/pixfmt.h>])
   CXXFLAGS=$save_CXXFLAGS
   LIBS=$save_LIBS
+], [
+  dnl Build without movie export feature.
 ])
 AC_SUBST([LIBAV_LIBS])
 AC_SUBST([LIBAV_CFLAGS])
