@@ -213,7 +213,14 @@ AC_SUBST([LIBAV_CFLAGS])
 dnl Check for PROJ4
 PKG_CHECK_MODULES([PROJ], [proj], [
 ], [
-  AC_MSG_ERROR([PROJ4 required for coordinate transformations])
+  dnl pkg-config support in proj seems quite new, so probe directly if not
+  dnl found.
+  AC_CHECK_LIB([proj], [pj_init_plus], [
+      PROJ_LIBS=-lproj
+      PROJ_CFLAGS=
+    ], [
+      AC_MSG_ERROR([PROJ4 required for coordinate transformations])
+    ])
 ])
 AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
