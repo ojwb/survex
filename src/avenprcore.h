@@ -26,6 +26,8 @@
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 
+class wxPageSetupDialogData;
+
 /* Store everything describing the page layout */
 class layout {
 public:

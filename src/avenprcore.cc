@@ -22,23 +22,11 @@
 # include <config.h>
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
+#include <algorithm>
 #include <math.h>
-#include <string.h>
-#include <ctype.h>
-#include <float.h>
-
-#include "mainfrm.h"
 
 #include "useful.h"
-#include "filename.h"
-#include "message.h"
-#include "filelist.h"
-#include "img_hosted.h"
 #include "avenprcore.h"
-#include "debug.h"
 
 #if defined __WXMSW__ || defined __WXMAC__
 # include <wx/dcprint.h>
@@ -135,7 +123,7 @@ layout::pick_scale(int x, int y)
       Sc_y = (y * PaperDepth - allow) / (yMax - yMin);
    }
 
-   Sc_x = min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
+   Sc_x = std::min(Sc_x, Sc_y) * 0.99; /* shrink by 1% so we don't cock up */
 #if 0 /* this picks a nice (in some sense) ratio, but is too stingy */
    double E = pow(10.0, floor(log10(Sc_x)));
    Sc_x = floor(Sc_x / E) * E;
