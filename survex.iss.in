@@ -56,7 +56,7 @@ Name: "pt_br"; MessagesFile: "compiler:Languages/BrazilianPortuguese.isl"
 Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
 ; Unofficial:
 Name: "bg"; MessagesFile: "Bulgarian.isl"
-Name: "en_gb"; MessagesFile: "EnglishGB.isl"
+Name: "en_gb"; MessagesFile: "EnglishBritish.isl"
 Name: "id"; MessagesFile: "Indonesian.isl"
 Name: "ro"; MessagesFile: "Romanian.isl"
 Name: "sk"; MessagesFile: "Slovak.isl"

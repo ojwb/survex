@@ -25,7 +25,7 @@ EXTRA_DIST = survex.pot $(po_files)\
  po-to-msg.pl checkshortcut.pl extract-msgs.pl\
  Bulgarian.isl\
  ChineseSimplified.isl ChineseTraditional.isl\
- EnglishGB.isl Indonesian.isl Romanian.isl Slovak.isl\
+ EnglishBritish.isl Indonesian.isl Romanian.isl Slovak.isl\
  make-pixel-font preload_font.h\
  INSTALL.OSX
 

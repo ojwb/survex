@@ -1,3 +1,9 @@
+Thu Jun 18 10:58:58 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm,lib/,survex.iss.in: Update innosetup translations -
+	  minor updates for zh_CN and an unofficial translation for en_GB from
+	  the issrc repo (which is identical to mine in content).
+
 Thu Jun 18 05:04:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Bump release date for 1.2.19.
