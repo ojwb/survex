@@ -99,7 +99,7 @@ For libav 10.3:
 sudo apt-get install yasm
 mkdir BUILD
 cd BUILD
-../configure --prefix=/usr/i686-w64-mingw32 --cross-prefix=i686-w64-mingw32 --enable-cross-compile --target-os=mingw32 --arch=i686 --disable-shared
+../configure --prefix=/usr/i686-w64-mingw32 --cross-prefix=i686-w64-mingw32- --enable-cross-compile --target-os=mingw32 --arch=i686 --disable-shared --disable-decoders --disable-demuxers --disable-programs --disable-network --disable-bsfs --disable-protocols --disable-devices
 make
 sudo make install
 </pre>
