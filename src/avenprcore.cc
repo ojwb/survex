@@ -48,6 +48,10 @@ layout::layout(wxPageSetupDialogData* data)
 	// Create a temporary wxPrinterDC/wxPostScriptDC so we can get access
 	// to the size of the printable area in mm to allow us to calculate how
 	// many pages will be needed.
+	//
+	// It may seem like data->GetPaperSize() would tell us this page size
+	// without having to construct a temporary DC, but that just returns
+	// (0, 0) for the size, at least with wxGTK 3.0.2.
 #if defined __WXMSW__ || defined __WXMAC__
 	wxPrinterDC pdc(data->GetPrintData());
 #else
