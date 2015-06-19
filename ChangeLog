@@ -1,3 +1,7 @@
+Fri Jun 19 08:27:08 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc: Add back in header required in mingw build.
+
 Fri Jun 19 08:22:57 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Remove useless extra copy of about box images from

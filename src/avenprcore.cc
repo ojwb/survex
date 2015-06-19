@@ -33,6 +33,7 @@
 #else
 # include <wx/dcps.h>
 #endif
+#include <wx/print.h>
 
 layout::layout(wxPageSetupDialogData* data)
 	: show_mask(0),
