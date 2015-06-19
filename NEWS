@@ -1,3 +1,39 @@
+a31e3fd14 (Olly Betts 2015-06-19 23:46:53 +1200    1) Fri Jun 19 11:46:10 GMT 2015  Olly Betts <olly@survex.com>
+
+Changes in 1.2.20 (2015-06-20):
+
+* aven:
+
+  + When printing, fix to use top margin rather than right margin when
+    calculating the page height.
+
+  + Avoid assertion if the about dialog image fails to load.  Reported by Phil
+    Maynard.
+
+  + Optimise the size of the about dialog images.
+
+* Remove lingering traces of svxedit.
+
+* configure: Fix to allow compiling without libav/ffmpeg, as was possible
+  before 1.2.19.
+
+* (Unix version): Install the filetype and aven application icons under
+  /usr/share/icons/hicolor, which is where they're expected to be these days.
+
+* (Unix version): Add %f to Exec in survex-aven.desktop.
+
+* (Mac OS X version): Remove useless extra copy of about box images from OS X
+  disk image.
+
+* (Mac OS X version): Reduce the size of the aven binary by disabling a load of
+  libav features we don't use.
+
+* (Microsoft Windows version): Reduce the size of the aven binary by disabling
+  a load of libav features we don't use.
+
+* (Microsoft Windows version): Update message files to fix a missing Chinese
+  message in the installer.
+
 Changes in 1.2.19 (2015-06-18):
 
 * aven:

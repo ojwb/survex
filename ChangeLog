@@ -1,3 +1,7 @@
+Fri Jun 19 12:20:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Fri Jun 19 11:46:10 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printing.cc: Fix to use top margin rather than right margin when
