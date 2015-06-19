@@ -57,13 +57,14 @@ layout::layout(wxPageSetupDialogData* data)
 #else
 	wxPostScriptDC pdc(data->GetPrintData());
 #endif
-	int width, depth;
-	pdc.GetSizeMM(&width, &depth);
-	width -= data->GetMarginBottomRight().x + data->GetMarginTopLeft().x;
-	PaperWidth = width;
-	depth -= data->GetMarginBottomRight().y + data->GetMarginTopLeft().y;
-	// Allow for the 10mm footer.
-	PaperDepth = depth - 10;
+	// Calculate the size of the printable area in mm to allow us to work
+	// out how many pages will be needed for a given scale.
+	wxSize size = pdc.GetSizeMM();
+	size.DecBy(data->GetMarginBottomRight());
+	size.DecBy(data->GetMarginTopLeft());
+	PaperWidth = size.x;
+	// Allow 10mm for our footer.
+	PaperDepth = size.y - 10;
     } else {
 	// Exporting.
 	PaperWidth = PaperDepth = 0;

@@ -1,3 +1,7 @@
+Fri Jun 19 10:59:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/avenprcore.cc: Cleaner code to calculate printable area.
+
 Fri Jun 19 10:54:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc: Note why we seem to have to create a temporary
