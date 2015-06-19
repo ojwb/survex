@@ -1,3 +1,7 @@
+Fri Jun 19 04:39:04 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex-aven.desktop: Add %f to Exec.
+
 Fri Jun 19 03:46:48 GMT 2015  Olly Betts <olly@survex.com>
 
 	* .gitignore,configure.ac,desc-svxedit.txt,doc/,lib/,src/Makefile.am,
