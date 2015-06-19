@@ -198,7 +198,9 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     wxButton* close = new wxButton(this, wxID_OK);
     bottom->Add(close, 0, wxRIGHT | wxBOTTOM, 15);
     vert->Add(bottom, 0, wxEXPAND | wxLEFT | wxRIGHT, 0);
-    vert->SetMinSize(0, bitmap.GetHeight());
+    if (bitmap.Ok()) {
+	vert->SetMinSize(0, bitmap.GetHeight());
+    }
 
     SetSizer(horiz);
     close->SetDefault();
