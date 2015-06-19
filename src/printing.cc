@@ -1423,7 +1423,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	long MarginBottom = m_data->GetMarginBottomRight().y;
 	long MarginRight = m_data->GetMarginBottomRight().x;
 	xpPageWidth -= (int)(l->scX * (MarginLeft + MarginRight));
-	ypPageDepth -= (int)(l->scY * (FOOTER_HEIGHT_MM + MarginBottom + MarginRight));
+	ypPageDepth -= (int)(l->scY * (FOOTER_HEIGHT_MM + MarginBottom + MarginTop));
 	// xpPageWidth -= 1;
 	pdepth -= FOOTER_HEIGHT_MM;
 	x_offset = (long)(l->scX * MarginLeft);

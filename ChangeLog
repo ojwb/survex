@@ -1,3 +1,8 @@
+Fri Jun 19 11:46:10 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printing.cc: Fix to use top margin rather than right margin when
+	  calculating the page height.
+
 Fri Jun 19 11:44:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/avenprcore.cc,src/avenprcore.h,src/printing.cc: Factor out the
