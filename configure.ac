@@ -379,8 +379,6 @@ AC_SUBST_FILE(DESC)
 DESC=desc.txt
 AC_SUBST_FILE(AVENDESC)
 AVENDESC=desc-aven.txt
-AC_SUBST_FILE(SVXEDITDESC)
-SVXEDITDESC=desc-svxedit.txt
 
 dnl Don't define DATADIR if building for MS Windows - it won't be used, and
 dnl can conflict with the DATADIR typedef in objidl.h
@@ -410,7 +408,6 @@ AC_CONFIG_FILES([
  lib/images/Makefile
  tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.7
  survex.spec lib/survex.keys lib/Info.plist
- lib/svxedit_Info.plist
  ])
 AC_OUTPUT
 dnl FIXME update msvc makefile for 1.2 branch

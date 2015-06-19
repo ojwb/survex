@@ -34,7 +34,7 @@ MAINTAINERCLEANFILES = $(msg_files) unifont.pixelfont preload_font.h
 dist_pkgdata_DATA = bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 
 appsdir = $(datadir)/applications
-dist_apps_DATA = survex-aven.desktop survex-svxedit.desktop
+dist_apps_DATA = survex-aven.desktop
 
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)

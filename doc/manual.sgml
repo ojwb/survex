@@ -6,7 +6,6 @@
 <!ENTITY man.diffpos SYSTEM "diffpos.sgml">
 <!ENTITY man.extend SYSTEM "extend.sgml">
 <!ENTITY man.sorterr SYSTEM "sorterr.sgml">
-<!ENTITY man.svxedit SYSTEM "svxedit.sgml">
 ]>
 
 <!--
@@ -402,11 +401,6 @@ possible actions.
 <VarListEntry><Term><filename>.svx</filename></Term>
 <ListItem>
   <VariableList>
-  <VarListEntry><Term>Open</Term>
-  <ListItem><Para>
-  Load file into SvxEdit
-  </Para></ListItem>
-  </VarListEntry>
   <VarListEntry><Term>Process</Term>
   <ListItem><Para>
   Process file with cavern to produce <filename>.3d</filename> file (and <filename>.err</filename> file)
@@ -659,10 +653,6 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="cavern">
 <?dbhtml filename="cavern.htm">
 &man.cavern;
-</refentry>
-<refentry id="svxedit">
-<?dbhtml filename="svxedit.htm">
-&man.svxedit;
 </refentry>
 <refentry id="aven">
 <?dbhtml filename="aven.htm">

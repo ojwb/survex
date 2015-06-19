@@ -57,11 +57,6 @@ findentrances_LDADD = $(PROJ_LIBS)
 if WIN32
 aven_LDADD = avenrc.o $(LIBOBJS) $(LIBAV_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 
-#svxeditrc.o: $(srcdir)/svxedit.rc ../lib/icons/svxedit.ico
-#	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/svxeditrc.o" svxedit.rc
-
-#editwrap_LDADD = svxeditrc.o
-
 avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/avenrc.o" aven.rc
 
@@ -114,7 +109,7 @@ all_sources = \
 	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox
 
 EXTRA_DIST = \
- aven.rc svxedit.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert gen_img2aven
+ aven.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert gen_img2aven
 
 BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h
 
