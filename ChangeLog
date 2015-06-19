@@ -1,3 +1,9 @@
+Fri Jun 19 05:12:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh,lib/icons/Makefile.am,survex.spec.in: Install the
+	  filetype and app icons under /usr/share/icons/hicolor, which is
+	  where they're expected to be these days.
+
 Fri Jun 19 04:39:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex-aven.desktop: Add %f to Exec.

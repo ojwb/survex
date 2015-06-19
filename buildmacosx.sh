@@ -229,13 +229,12 @@ cp lib/Info.plist Survex/Aven.app/Contents
 printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
 mv Survex/share/doc/survex Survex/Docs
 rmdir Survex/share/doc
-rm -rf Survex/share/survex/icons
 cp -r Survex/share/survex/* Survex/Aven.app/Contents/Resources/
 rm Survex/Aven.app/Contents/Resources/bcra*.svx
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 rm -f Survex/share/survex/unifont.pixelfont
-rm -rf Survex/share/applications Survex/share/mime-info Survex/share/pixmaps
+rm -rf Survex/share/applications Survex/share/mime-info Survex/share/icons
 
 # Create .icns files in the bundle's "Resources" directory.
 for zip in lib/icons/*.iconset.zip ; do

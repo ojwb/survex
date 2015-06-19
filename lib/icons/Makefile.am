@@ -39,18 +39,36 @@ aven-icons.rc: Makefile.am
 	perl -e 'for (@ARGV) { /(.*)\.rcdata$$/ and $$1 ne "aven" and print "$$1 RCDATA $$_\n" }' \
 	  $(rcdata_files) > aven-icons.rc
 
-icondir = $(pkgdatadir)/icons
-dist_icon_DATA = \
+EXTRA_DIST = \
 	3d.svg err.svg plt.svg pos.svg svx.svg \
 	3d.png err.png plt.png pos.png svx.png
+
+svgicondir = $(datadir)/icons/hicolor/scalable
+x32icondir = $(datadir)/icons/hicolor/32x32
+
+install-data-local:
+	for f in 3d err pos svx ; do \
+	  $(INSTALL_DATA) $$f.svg $(DESTDIR)$(svgicondir)/application-x-survex-$$f.svg ; \
+	  $(INSTALL_DATA) $$f.png $(DESTDIR)$(x32icondir)/application-x-survex-$$f.png ; \
+	done
+	$(INSTALL_DATA) plt.svg $(DESTDIR)$(svgicondir)/application-x-compass-plot.svg
+	$(INSTALL_DATA) plt.png $(DESTDIR)$(x32icondir)/application-x-compass-plot.png
+
+uninstall-local:
+	for f in 3d err pos svx ; do \
+	  rm -f $(DESTDIR)$(svgicondir)/application-x-survex-$$f.svg ; \
+	  rm -f $(DESTDIR)$(x32icondir)/application-x-survex-$$f.png ; \
+	done
+	rm -f $(DESTDIR)$(svgicondir)/application-x-compass-plot.svg
+	rm -f $(DESTDIR)$(x32icondir)/application-x-compass-plot.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
 #	legsprefs.png ctlprefs.png pres-restart.png pres-create.png\
 #	pres-record.png pres-finish.png svxedit.png
 
-pixmapsdir = $(datadir)/pixmaps
-dist_pixmaps_DATA = aven.svg
+appicondir = $(datadir)/icons/hicolor/scalable/apps
+dist_appicon_DATA = aven.svg
 
 Aven.iconset.zip: aven.svg
 	$(SHELL) $(srcdir)/svg2iconsetzip aven.svg Aven.iconset.zip
@@ -77,7 +95,7 @@ MAINTAINERCLEANFILES = $(iconsets)
 
 BUILT_SOURCES = aven-icons.rc $(rcdata_files)
 
-EXTRA_DIST = png2winicon png2iconsetzip svg2iconsetzip\
+EXTRA_DIST += png2winicon png2iconsetzip svg2iconsetzip\
 	aven-icons.rc\
 	$(xpm_files)\
 	$(rcdata_files)\
