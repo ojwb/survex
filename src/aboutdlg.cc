@@ -42,8 +42,7 @@ END_EVENT_TABLE()
 void
 AboutDlg::OnTimer(wxTimerEvent &)
 {
-    wxImage::AddHandler(new wxJPEGHandler);
-    bitmap.LoadFile(img_path + wxT("osterei.jpg"), wxBITMAP_TYPE_JPEG);
+    bitmap.LoadFile(img_path + wxT("osterei.png"), wxBITMAP_TYPE_PNG);
     ((wxStaticBitmap*)FindWindowById(501, this))->SetBitmap(bitmap);
 }
 

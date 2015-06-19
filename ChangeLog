@@ -1,3 +1,8 @@
+Fri Jun 19 08:22:20 GMT 2015  Olly Betts <olly@survex.com>
+
+	* Makefile.am,lib/images/,src/aboutdlg.cc,survex.iss.in: Optimise the
+	  size of the about dialog images.
+
 Fri Jun 19 05:12:59 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh,lib/icons/Makefile.am,survex.spec.in: Install the

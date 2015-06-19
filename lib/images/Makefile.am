@@ -2,4 +2,4 @@
 
 imagedir = $(pkgdatadir)/images
 dist_image_DATA = \
-	aven-about.png texture.png osterei.jpg
+	aven-about.png osterei.png texture.png
