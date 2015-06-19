@@ -26,6 +26,9 @@
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
 
+/* Height of our footer in mm. */
+#define FOOTER_HEIGHT_MM 10
+
 class wxPageSetupDialogData;
 
 /* Store everything describing the page layout */

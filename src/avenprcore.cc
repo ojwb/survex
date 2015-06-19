@@ -63,8 +63,8 @@ layout::layout(wxPageSetupDialogData* data)
 	size.DecBy(data->GetMarginBottomRight());
 	size.DecBy(data->GetMarginTopLeft());
 	PaperWidth = size.x;
-	// Allow 10mm for our footer.
-	PaperDepth = size.y - 10;
+	// Allow for our footer.
+	PaperDepth = size.y - FOOTER_HEIGHT_MM;
     } else {
 	// Exporting.
 	PaperWidth = PaperDepth = 0;
