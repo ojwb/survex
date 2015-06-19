@@ -1,3 +1,8 @@
+Fri Jun 19 08:22:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Remove useless extra copy of about box images from
+	  OS X disk image.
+
 Fri Jun 19 08:22:20 GMT 2015  Olly Betts <olly@survex.com>
 
 	* Makefile.am,lib/images/,src/aboutdlg.cc,survex.iss.in: Optimise the

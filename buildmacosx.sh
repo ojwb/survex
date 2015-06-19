@@ -234,7 +234,7 @@ rm Survex/Aven.app/Contents/Resources/bcra*.svx
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 rm -f Survex/share/survex/unifont.pixelfont
-rm -rf Survex/share/applications Survex/share/mime-info Survex/share/icons
+rm -rf Survex/share/applications Survex/share/icons Survex/share/images Survex/share/mime-info
 
 # Create .icns files in the bundle's "Resources" directory.
 for zip in lib/icons/*.iconset.zip ; do
