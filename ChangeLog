@@ -1,3 +1,8 @@
+Mon Jun 22 00:40:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* buildmacosx.sh: Hardlink the .msg files in the .dmg rather than
+	  shipping two copies of each.
+
 Fri Jun 19 12:20:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
