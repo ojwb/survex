@@ -21,3 +21,7 @@
 8	128	2.0
 			000
 9	141	-3.0
+
+; check diving leg with clino
+*data diving from to fromdepth todepth tape compass clino
+9 10 0 -4.0 8.0 090 -30

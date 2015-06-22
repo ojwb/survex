@@ -5,3 +5,5 @@
 1 2 12345 67890 090
 *data diving from to tape compass fromdepth todepth
 2 3 2.00 090 0.0 1.2
+*data diving from to tape compass fromdepth todepth clino
+3 4 2.00 090 0.0 1.2 -

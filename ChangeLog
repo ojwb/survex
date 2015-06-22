@@ -1,3 +1,11 @@
+Mon Jun 22 02:14:08 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,src/datain.c,tests/bug4.svx,tests/diving.pos,
+	  tests/diving.svx: Allow clino readings in diving style data,
+	  suggested by Andrew Atkinson.  Currently these readings are ignored,
+	  but a future version will check that they're consistent with the angle
+	  given by the depth gauge and tape, and perform suitable averaging.
+
 Mon Jun 22 00:40:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Hardlink the .msg files in the .dmg rather than

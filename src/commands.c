@@ -1141,7 +1141,7 @@ cmd_data(void)
 #define MASK_clin BIT(Clino) | BIT(BackClino)
 
 #define MASK_NORMAL MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_clin
-#define MASK_DIVING MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
+#define MASK_DIVING MASK_NORMAL | MASK_dpth
 #define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
@@ -1156,7 +1156,7 @@ cmd_data(void)
    /* readings which may be omitted for each style */
    static const unsigned long mask_optional[] = {
       BIT(Dir) | BIT(Clino) | BIT(BackClino),
-      BIT(Dir),
+      BIT(Dir) | BIT(Clino) | BIT(BackClino),
       0,
       BIT(Dir),
       0,

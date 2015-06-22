@@ -1681,6 +1681,7 @@ data_normal(void)
 				   ctype, backctype);
 		break;
 	      case STYLE_DIVING:
+		/* FIXME: Handle any clino readings */
 		r = process_diving(fr, to, (first_stn == To) ^ fRev,
 				   fDepthChange);
 		break;
@@ -1775,6 +1776,7 @@ data_normal(void)
 			       ctype, backctype);
 		break;
 	      case STYLE_DIVING:
+		/* FIXME: Handle any clino readings */
 		process_diving(fr, to, (first_stn == To) ^ fRev,
 			       fDepthChange);
 		break;
