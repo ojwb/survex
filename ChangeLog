@@ -1,3 +1,8 @@
+Mon Jun 22 04:36:26 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Define MASK_PASSAGE after MASK_NOSURVEY to match
+	  order of mask[] array.
+
 Mon Jun 22 04:35:57 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Document that clino is now allowed in diving data.

@@ -1144,8 +1144,8 @@ cmd_data(void)
 #define MASK_DIVING MASK_NORMAL | MASK_dpth
 #define MASK_CARTESIAN MASK_stns | BIT(Dx) | BIT(Dy) | BIT(Dz)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
-#define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
 #define MASK_NOSURVEY MASK_stns
+#define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
 
    /* readings which may be given for each style */
    static const unsigned long mask[] = {
