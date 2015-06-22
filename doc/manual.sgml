@@ -1544,9 +1544,15 @@ use *CALIBRATE with a negative scale factor (e.g. *calibrate depth 0 -1).
 </Para>
 
 <Para>For non-interleaved data the allowed readings are:
-FROM TO TAPE COMPASS BACKCOMPASS FROMDEPTH TODEPTH DEPTHCHANGE (the vertical
+FROM TO TAPE COMPASS CLINO BACKCOMPASS BACKCLINO FROMDEPTH TODEPTH DEPTHCHANGE (the vertical
 can be given as readings at each station, (FROMDEPTH/TODEPTH) or as a change
 along the leg (DEPTHCHANGE)).</Para>
+
+<Para>Survex 1.2.20 and later allow an optional CLINO and/or BACKCLINO reading
+in DIVING style.  At present these extra readings are checked for syntactic
+validity, but are otherwise ignored.  The intention is that a future version
+will check them against the other readings to flag up likely blunders, and
+average with the slope data from the depth gauge and tape reading.</Para>
 
 <Para>For interleaved data the allowed readings are:
 STATION DIRECTION TAPE COMPASS BACKCOMPASS DEPTH DEPTHCHANGE.

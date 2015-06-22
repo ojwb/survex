@@ -1,3 +1,7 @@
+Mon Jun 22 04:35:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Document that clino is now allowed in diving data.
+
 Mon Jun 22 02:14:08 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,src/datain.c,tests/bug4.svx,tests/diving.pos,
