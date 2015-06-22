@@ -2494,7 +2494,7 @@ bool GfxCore::LoadDEM(const wxString & file)
     wxZipEntry * ze;
     while ((ze = zs.GetNextEntry()) != NULL) {
 	if (!ze->IsDir()) {
-	    const wxString & name = ze->GetName();
+	    const wxString & name = ze->GetName().Lower();
 	    if (!ze_data && name.EndsWith(wxT(".hgt"))) {
 		// SRTM .hgt files are raw binary data, with the filename
 		// encoding the coordinates.
@@ -2504,12 +2504,12 @@ bool GfxCore::LoadDEM(const wxString & file)
 		char dirn = *p++;
 		o_y = strtoul(p, &q, 10);
 		p = q;
-		if (dirn == 'S' || dirn == 's')
+		if (dirn == 's')
 		    o_y = -o_y;
 		++o_y;
 		dirn = *p++;
 		o_x = strtoul(p, &q, 10);
-		if (dirn == 'W' || dirn == 'w')
+		if (dirn == 'w')
 		    o_x = -o_x;
 		bigendian = true;
 		nodata_value = -32768;
