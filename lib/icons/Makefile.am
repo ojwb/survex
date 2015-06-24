@@ -47,12 +47,14 @@ svgicondir = $(datadir)/icons/hicolor/scalable
 x32icondir = $(datadir)/icons/hicolor/32x32
 
 install-data-local:
+	$(MKDIR_P) "$(DESTDIR)$(svgicondir)"
+	$(MKDIR_P) "$(DESTDIR)$(x32icondir)"
 	for f in 3d err pos svx ; do \
-	  $(INSTALL_DATA) $$f.svg $(DESTDIR)$(svgicondir)/application-x-survex-$$f.svg ; \
-	  $(INSTALL_DATA) $$f.png $(DESTDIR)$(x32icondir)/application-x-survex-$$f.png ; \
+	  $(INSTALL_DATA) "$(srcdir)/$$f.svg" "$(DESTDIR)$(svgicondir)/application-x-survex-$$f.svg" ; \
+	  $(INSTALL_DATA) "$(srcdir)/$$f.png" "$(DESTDIR)$(x32icondir)/application-x-survex-$$f.png" ; \
 	done
-	$(INSTALL_DATA) plt.svg $(DESTDIR)$(svgicondir)/application-x-compass-plot.svg
-	$(INSTALL_DATA) plt.png $(DESTDIR)$(x32icondir)/application-x-compass-plot.png
+	$(INSTALL_DATA) "$(srcdir)/plt.svg" "$(DESTDIR)$(svgicondir)/application-x-compass-plot.svg"
+	$(INSTALL_DATA) "$(srcdir)/plt.png" "$(DESTDIR)$(x32icondir)/application-x-compass-plot.png"
 
 uninstall-local:
 	for f in 3d err pos svx ; do \

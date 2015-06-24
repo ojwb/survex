@@ -1,3 +1,8 @@
+Wed Jun 24 12:51:10 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/icons/Makefile.am: Fix for VPATH build and to create directories
+	  to install icons to if necessary.
+
 Wed Jun 24 12:45:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac,doc/manual.sgml: Update for 1.2.20.
