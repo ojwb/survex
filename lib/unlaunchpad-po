@@ -13,5 +13,5 @@ $_ = <>;
 s/"\n"//g;
 s/^(#\.)\s+$/$1/mg;
 # Fix transifex source refs
-while (s/(^#: .*) /$1\n#. /m) { }
+while (s/(^#: .*) /$1\n#: /m) { }
 print;

@@ -1,3 +1,7 @@
+Wed Jun 24 12:45:06 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/unlaunchpad-po: Fix regex to clean up transifex source refs.
+
 Wed Jun 24 12:24:31 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Add a FIXME about problem reading zip files with
