@@ -1,3 +1,8 @@
+Wed Jun 24 12:23:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: When reading .hgt files, flag a read error if we
+	  can't read any data.
+
 Wed Jun 24 12:22:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: If we reading terrain data fails, don't continue and

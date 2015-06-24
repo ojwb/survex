@@ -2610,7 +2610,7 @@ err += wxT("Unexpected value for " X); \
 
 #if wxCHECK_VERSION(2,9,5)
     if (!zs.ReadAll(dem, size)) {
-	if (!know_size) {
+	if (!know_size && size > 0) {
 	    size = zs.LastRead();
 	    dem_width = dem_height = sqrt(size / 2);
 	    if (dem_width * dem_height * 2 == size) {
@@ -2628,7 +2628,7 @@ size_ok: ;
 	zs.Read(p, size);
 	size_t c = zs.LastRead();
 	if (c == 0) {
-	    if (!know_size) {
+	    if (!know_size && size != DEFAULT_HGT_SIZE) {
 		size = DEFAULT_HGT_SIZE - size;
 		dem_width = dem_height = sqrt(size / 2);
 		if (dem_width * dem_height * 2 == size) {
