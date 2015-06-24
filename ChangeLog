@@ -1,3 +1,8 @@
+Wed Jun 24 12:24:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Add a FIXME about problem reading zip files with
+	  wxZipInputStream on __WXMSW__.
+
 Wed Jun 24 12:23:44 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: When reading .hgt files, flag a read error if we

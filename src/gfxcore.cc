@@ -2618,6 +2618,8 @@ err += wxT("Unexpected value for " X); \
 		goto size_ok;
 	    }
 	}
+	// FIXME: On __WXMSW__ currently we fail to
+	// read any data from files in zips.
 	wxMessageBox(wxT("Failed to read terrain data"));
 	return false;
 size_ok: ;
