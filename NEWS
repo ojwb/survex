@@ -1,16 +1,25 @@
-a31e3fd14 (Olly Betts 2015-06-19 23:46:53 +1200    1) Fri Jun 19 11:46:10 GMT 2015  Olly Betts <olly@survex.com>
-
-Changes in 1.2.20 (2015-06-20):
+Changes in 1.2.20 (2015-06-25):
 
 * aven:
 
-  + When printing, fix to use top margin rather than right margin when
-    calculating the page height.
+  + When printing, use the top margin rather than the right margin to calculate
+    the height of the printable area.  In practice, the two values seem to be the
+    same or very similar by default.
 
   + Avoid assertion if the about dialog image fails to load.  Reported by Phil
     Maynard.
 
   + Optimise the size of the about dialog images.
+
+  + Make checks for DEM data extensions in zip files case insensitive.
+
+  + If reading terrain data fails, always report an error and never try to
+    display it.
+
+* cavern: Allow clino readings in diving style data, suggested by Andrew
+  Atkinson.  Currently these readings are ignored, but a future version will
+  check that they're consistent with the angle given by the depth gauge and
+  tape, and perform suitable averaging.
 
 * Remove lingering traces of svxedit.
 
@@ -24,6 +33,8 @@ Changes in 1.2.20 (2015-06-20):
 
 * (Mac OS X version): Remove useless extra copy of about box images from OS X
   disk image.
+
+* (Mac OS X version): Only ship one copy of each of the translations.
 
 * (Mac OS X version): Reduce the size of the aven binary by disabling a load of
   libav features we don't use.

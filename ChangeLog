@@ -1,3 +1,7 @@
+Wed Jun 24 12:45:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac,doc/manual.sgml: Update for 1.2.20.
+
 Wed Jun 24 12:45:06 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/unlaunchpad-po: Fix regex to clean up transifex source refs.
