@@ -2619,6 +2619,7 @@ err += wxT("Unexpected value for " X); \
 	    }
 	}
 	wxMessageBox(wxT("Failed to read terrain data"));
+	return false;
 size_ok: ;
     }
 #else
@@ -2636,7 +2637,7 @@ size_ok: ;
 		}
 	    }
 	    wxMessageBox(wxT("Failed to read terrain data"));
-	    break;
+	    return false;
 	}
 	p += c;
 	size -= c;
