@@ -2581,7 +2581,8 @@ err += wxT("Unexpected value for " X); \
 	return false;
     }
 
-    if (!zs.OpenEntry(*ze_data)) {
+    // No need for OpenEntry() if the current entry is the one we want.
+    if (ze != ze_data && !zs.OpenEntry(*ze_data)) {
 	wxMessageBox(wxT("Couldn't read DEM data from .zip file"));
 	delete ze_data;
 	return false;

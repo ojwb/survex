@@ -1,3 +1,8 @@
+Wed Jun 24 12:21:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Avoid unnecessary call to OpenEntry() if we're
+	  already on the zip entry we want to read.
+
 Mon Jun 22 05:00:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Lowercase filenames of .zip entries before checking
