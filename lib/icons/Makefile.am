@@ -47,22 +47,22 @@ svgicondir = $(datadir)/icons/hicolor/scalable
 x32icondir = $(datadir)/icons/hicolor/32x32
 
 install-data-local:
-	$(MKDIR_P) "$(DESTDIR)$(svgicondir)"
-	$(MKDIR_P) "$(DESTDIR)$(x32icondir)"
+	$(MKDIR_P) "$(DESTDIR)$(svgicondir)/mimetypes"
+	$(MKDIR_P) "$(DESTDIR)$(x32icondir)/mimetypes"
 	for f in 3d err pos svx ; do \
-	  $(INSTALL_DATA) "$(srcdir)/$$f.svg" "$(DESTDIR)$(svgicondir)/application-x-survex-$$f.svg" ; \
-	  $(INSTALL_DATA) "$(srcdir)/$$f.png" "$(DESTDIR)$(x32icondir)/application-x-survex-$$f.png" ; \
+	  $(INSTALL_DATA) "$(srcdir)/$$f.svg" "$(DESTDIR)$(svgicondir)/mimetypes/application-x-survex-$$f.svg" ; \
+	  $(INSTALL_DATA) "$(srcdir)/$$f.png" "$(DESTDIR)$(x32icondir)/mimetypes/application-x-survex-$$f.png" ; \
 	done
-	$(INSTALL_DATA) "$(srcdir)/plt.svg" "$(DESTDIR)$(svgicondir)/application-x-compass-plot.svg"
-	$(INSTALL_DATA) "$(srcdir)/plt.png" "$(DESTDIR)$(x32icondir)/application-x-compass-plot.png"
+	$(INSTALL_DATA) "$(srcdir)/plt.svg" "$(DESTDIR)$(svgicondir)/mimetypes/application-x-compass-plot.svg"
+	$(INSTALL_DATA) "$(srcdir)/plt.png" "$(DESTDIR)$(x32icondir)/mimetypes/application-x-compass-plot.png"
 
 uninstall-local:
 	for f in 3d err pos svx ; do \
-	  rm -f $(DESTDIR)$(svgicondir)/application-x-survex-$$f.svg ; \
-	  rm -f $(DESTDIR)$(x32icondir)/application-x-survex-$$f.png ; \
+	  rm -f $(DESTDIR)$(svgicondir)/mimetypes/application-x-survex-$$f.svg ; \
+	  rm -f $(DESTDIR)$(x32icondir)/mimetypes/application-x-survex-$$f.png ; \
 	done
-	rm -f $(DESTDIR)$(svgicondir)/application-x-compass-plot.svg
-	rm -f $(DESTDIR)$(x32icondir)/application-x-compass-plot.png
+	rm -f $(DESTDIR)$(svgicondir)/mimetypes/application-x-compass-plot.svg
+	rm -f $(DESTDIR)$(x32icondir)/mimetypes/application-x-compass-plot.png
 
 #	tubesprefs.png stationsprefs.png indicatorprefs.png\
 #	windowprefs.png gridprefs.png unitsprefs.png \
