@@ -2653,6 +2653,7 @@ size_ok: ;
     delete ze_data;
 
     InvalidateList(LIST_TERRAIN);
+    ForceRefresh();
     return true;
 }
 

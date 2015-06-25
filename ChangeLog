@@ -1,3 +1,8 @@
+Thu Jun 25 21:58:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Force a refresh after loading terrain data so
+	  that it gets displayed right away.
+
 Wed Jun 24 12:24:31 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Add a FIXME about problem reading zip files with
