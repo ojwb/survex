@@ -1,3 +1,13 @@
+Fri Jun 26 00:05:51 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.cc: Add support for reading
+	  DEM data which isn't in a .zip file.
+
+Thu Jun 25 21:58:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Force a refresh after loading terrain data so
+	  that it gets displayed right away.
+
 Thu Jun 25 05:16:10 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/icons/Makefile.am: Fix install directories for filetype icons.
