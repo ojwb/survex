@@ -1,4 +1,4 @@
-Changes in 1.2.20 (2015-06-25):
+Changes in 1.2.20 (2015-06-26):
 
 * aven:
 
@@ -11,7 +11,12 @@ Changes in 1.2.20 (2015-06-25):
 
   + Optimise the size of the about dialog images.
 
-  + Make checks for DEM data extensions in zip files case insensitive.
+  + Add support for reading terrain data which isn't in a .zip file.
+
+  + Force a refresh after loading terrain data so that it gets displayed right
+    away.
+
+  + Make checks for terrain data extensions in zip files case insensitive.
 
   + If reading terrain data fails, always report an error and never try to
     display it.

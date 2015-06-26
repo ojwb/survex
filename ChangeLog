@@ -1,3 +1,7 @@
+Fri Jun 26 00:42:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: More updates for 1.2.20.
+
 Fri Jun 26 00:05:51 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h,src/mainfrm.cc: Add support for reading
