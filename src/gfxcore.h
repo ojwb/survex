@@ -593,6 +593,9 @@ public:
 
     void ZoomBoxGo();
 
+    void parse_hgt_filename(const wxString & lc_name);
+    size_t parse_hdr(wxInputStream & is, unsigned long & skipbytes);
+    bool read_bil(wxInputStream & is, size_t size, unsigned long skipbytes);
     bool LoadDEM(const wxString & file);
 
 private:

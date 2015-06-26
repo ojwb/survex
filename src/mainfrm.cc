@@ -1996,10 +1996,10 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
     }
 
 #ifdef __WXMOTIF__
-    wxString filetypes = wxT("*.zip");
+    wxString filetypes = wxT("*.*");
 #else
     wxString filetypes;
-    filetypes.Printf(wxT("%s|*.zip" CASE("*.ZIP")
+    filetypes.Printf(wxT("%s|*.bil;*.hgt;*.zip" CASE("*.BIL;*.HGT;*.ZIP")
 		     "|%s|%s"),
 		     wmsg(/*Terrain files*/452).c_str(),
 		     wmsg(/*All files*/208).c_str(),

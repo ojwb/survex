@@ -31,6 +31,7 @@
 
 #include "aven.h"
 #include "date.h"
+#include "filename.h"
 #include "gfxcore.h"
 #include "mainfrm.h"
 #include "message.h"
@@ -2463,6 +2464,148 @@ void GfxCore::GenerateDisplayListShadow()
     }
 }
 
+void
+GfxCore::parse_hgt_filename(const wxString & lc_name)
+{
+    char * leaf = leaf_from_fnm(lc_name.mb_str());
+    const char * p = leaf;
+    char * q;
+    char dirn = *p++;
+    o_y = strtoul(p, &q, 10);
+    p = q;
+    if (dirn == 's')
+	o_y = -o_y;
+    ++o_y;
+    dirn = *p++;
+    o_x = strtoul(p, &q, 10);
+    if (dirn == 'w')
+	o_x = -o_x;
+    bigendian = true;
+    nodata_value = -32768;
+    osfree(leaf);
+}
+
+size_t
+GfxCore::parse_hdr(wxInputStream & is, unsigned long & skipbytes)
+{
+    unsigned long nbits;
+    while (!is.Eof()) {
+	wxString line;
+	int ch;
+	while ((ch = is.GetC()) != wxEOF) {
+	    if (ch == '\n' || ch == '\r') break;
+	    line += wxChar(ch);
+	}
+#define CHECK(X, COND) \
+} else if (line.StartsWith(wxT(X " "))) { \
+size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
+if (v == line.npos || !(COND)) { \
+err += wxT("Unexpected value for " X); \
+}
+	wxString err;
+	unsigned long dummy;
+	if (false) {
+	// I = little-endian; M = big-endian
+	CHECK("BYTEORDER", (bigendian = (line[v] == 'M')) || line[v] == 'I')
+	CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
+	CHECK("NROWS", line.substr(v).ToCULong(&dem_width))
+	CHECK("NCOLS", line.substr(v).ToCULong(&dem_height))
+	CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
+	CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
+	//: BANDROWBYTES   7202
+	//: TOTALROWBYTES  7202
+	// PIXELTYPE is a GDAL extension, so may not be present.
+	CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
+	CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
+	CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
+	CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
+	CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
+	CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
+	CHECK("SKIPBYTES", line.substr(v).ToCULong(&skipbytes))
+	}
+	if (!err.empty()) {
+	    wxMessageBox(err);
+	}
+    }
+    return ((nbits + 7) / 8) * dem_width * dem_height;
+}
+
+bool
+GfxCore::read_bil(wxInputStream & is, size_t size, unsigned long skipbytes)
+{
+    bool know_size = true;
+    if (!size) {
+	// If the stream doesn't know its size, GetSize() returns 0.
+	size = is.GetSize();
+	if (!size) {
+	    size = DEFAULT_HGT_SIZE;
+	    know_size = false;
+	}
+    }
+    dem = new unsigned short[size / 2];
+    if (skipbytes) {
+	if (is.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
+	    while (skipbytes) {
+		unsigned long to_read = skipbytes;
+		if (size < to_read) to_read = size;
+		is.Read(reinterpret_cast<char *>(dem), to_read);
+		size_t c = is.LastRead();
+		if (c == 0) {
+		    wxMessageBox(wxT("Failed to skip terrain data header"));
+		    break;
+		}
+		skipbytes -= c;
+	    }
+	}
+    }
+
+#if wxCHECK_VERSION(2,9,5)
+    if (!is.ReadAll(dem, size)) {
+	if (know_size) {
+	    // FIXME: On __WXMSW__ currently we fail to
+	    // read any data from files in zips.
+	    delete [] dem;
+	    dem = NULL;
+	    wxMessageBox(wxT("Failed to read terrain data"));
+	    return false;
+	}
+	size = is.LastRead();
+    }
+#else
+    char * p = reinterpret_cast<char *>(dem);
+    while (size) {
+	is.Read(p, size);
+	size_t c = is.LastRead();
+	if (c == 0) {
+	    if (!know_size) {
+		size = DEFAULT_HGT_SIZE - size;
+		if (size)
+		    break;
+	    }
+	    delete [] dem;
+	    dem = NULL;
+	    wxMessageBox(wxT("Failed to read terrain data"));
+	    return false;
+	}
+	p += c;
+	size -= c;
+    }
+#endif
+
+    if (dem_width == 0 && dem_height == 0) {
+	dem_width = dem_height = sqrt(size / 2);
+	if (dem_width * dem_height * 2 != size) {
+	    delete [] dem;
+	    dem = NULL;
+	    wxMessageBox(wxT("HGT format data doesn't form a square"));
+	    return false;
+	}
+	step_x = step_y = 1.0 / dem_width;
+    }
+
+    return true;
+}
+
 bool GfxCore::LoadDEM(const wxString & file)
 {
     if (m_Parent->m_cs_proj.empty()) {
@@ -2485,172 +2628,80 @@ bool GfxCore::LoadDEM(const wxString & file)
 
     int fd = open(file.mb_str(), O_RDONLY);
     if (fd < 0) {
-	wxMessageBox(wxT("Failed to open DEM zip"));
+	wxMessageBox(wxT("Failed to open DEM file"));
 	return false;
     }
-    wxZipEntry * ze_data = NULL;
+
     wxFileInputStream fs(fd);
-    wxZipInputStream zs(fs);
-    wxZipEntry * ze;
-    while ((ze = zs.GetNextEntry()) != NULL) {
-	if (!ze->IsDir()) {
-	    const wxString & name = ze->GetName().Lower();
-	    if (!ze_data && name.EndsWith(wxT(".hgt"))) {
-		// SRTM .hgt files are raw binary data, with the filename
-		// encoding the coordinates.
-		ze_data = ze;
-		const char * p = name.mb_str();
-		char * q;
-		char dirn = *p++;
-		o_y = strtoul(p, &q, 10);
-		p = q;
-		if (dirn == 's')
-		    o_y = -o_y;
-		++o_y;
-		dirn = *p++;
-		o_x = strtoul(p, &q, 10);
-		if (dirn == 'w')
-		    o_x = -o_x;
-		bigendian = true;
-		nodata_value = -32768;
-		break;
-	    }
-
-	    if (!ze_data && name.EndsWith(wxT(".bil"))) {
-		ze_data = ze;
-		continue;
-	    }
-
-	    if (name.EndsWith(wxT(".hdr"))) {
-		unsigned long nbits;
-		while (!zs.Eof()) {
-		    wxString line;
-		    int ch;
-		    while ((ch = zs.GetC()) != wxEOF) {
-			if (ch == '\n' || ch == '\r') break;
-			line += wxChar(ch);
-		    }
-#define CHECK(X, COND) \
-} else if (line.StartsWith(wxT(X " "))) { \
-size_t v = line.find_first_not_of(wxT(' '), sizeof(X)); \
-if (v == line.npos || !(COND)) { \
-err += wxT("Unexpected value for " X); \
-}
-		    wxString err;
-		    unsigned long dummy;
-		    if (false) {
-		    // I = little-endian; M = big-endian
-		    CHECK("BYTEORDER", (bigendian = (line[v] == 'M')) || line[v] == 'I')
-		    CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
-		    CHECK("NROWS", line.substr(v).ToCULong(&dem_width))
-		    CHECK("NCOLS", line.substr(v).ToCULong(&dem_height))
-		    CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
-		    CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
-		    //: BANDROWBYTES   7202
-		    //: TOTALROWBYTES  7202
-		    // PIXELTYPE is a GDAL extension, so may not be present.
-		    CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
-		    CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
-		    CHECK("ULYMAP", line.substr(v).ToCDouble(&o_y))
-		    CHECK("XDIM", line.substr(v).ToCDouble(&step_x))
-		    CHECK("YDIM", line.substr(v).ToCDouble(&step_y))
-		    CHECK("NODATA", line.substr(v).ToCLong(&nodata_value))
-		    CHECK("SKIPBYTES", line.substr(v).ToCULong(&skipbytes))
-		    }
-		    if (!err.empty()) {
-			wxMessageBox(err);
-		    }
-		}
-		size = ((nbits + 7) / 8) * dem_width * dem_height;
-	    } else if (name.EndsWith(wxT(".prj"))) {
-		//FIXME: check this matches the datum string we use
-		//Projection    GEOGRAPHIC
-		//Datum         WGS84
-		//Zunits        METERS
-		//Units         DD
-		//Spheroid      WGS84
-		//Xshift        0.0000000000
-		//Yshift        0.0000000000
-		//Parameters
-	    }
-	}
-	delete ze;
-    }
-    if (!ze_data) {
-	wxMessageBox(wxT("No DEM data found in .zip file"));
-	return false;
-    }
-
-    // No need for OpenEntry() if the current entry is the one we want.
-    if (ze != ze_data && !zs.OpenEntry(*ze_data)) {
-	wxMessageBox(wxT("Couldn't read DEM data from .zip file"));
-	delete ze_data;
-	return false;
-    }
-
-    bool know_size = (size != 0);
-    if (!size)
-	size = DEFAULT_HGT_SIZE;
-    dem = new unsigned short[size / 2];
-    if (skipbytes) {
-	if (zs.SeekI(skipbytes, wxFromStart) == ::wxInvalidOffset) {
-	    while (skipbytes) {
-		unsigned long to_read = skipbytes;
-		if (size < to_read) to_read = size;
-		zs.Read(reinterpret_cast<char *>(dem), to_read);
-		size_t c = zs.LastRead();
-		if (c == 0) {
-		    wxMessageBox(wxT("Failed to skip terrain data header"));
-		    break;
-		}
-		skipbytes -= c;
-	    }
-	}
-    }
-
-#if wxCHECK_VERSION(2,9,5)
-    if (!zs.ReadAll(dem, size)) {
-	if (!know_size && size > 0) {
-	    size = zs.LastRead();
-	    dem_width = dem_height = sqrt(size / 2);
-	    if (dem_width * dem_height * 2 == size) {
-		step_x = step_y = 1.0 / dem_width;
-		goto size_ok;
-	    }
-	}
-	// FIXME: On __WXMSW__ currently we fail to
-	// read any data from files in zips.
-	wxMessageBox(wxT("Failed to read terrain data"));
-	return false;
-size_ok: ;
-    }
-#else
-    char * p = reinterpret_cast<char *>(dem);
-    while (size) {
-	zs.Read(p, size);
-	size_t c = zs.LastRead();
-	if (c == 0) {
-	    if (!know_size && size != DEFAULT_HGT_SIZE) {
-		size = DEFAULT_HGT_SIZE - size;
-		dem_width = dem_height = sqrt(size / 2);
-		if (dem_width * dem_height * 2 == size) {
-		    step_x = step_y = 1.0 / dem_width;
-		    break;
-		}
-	    }
-	    wxMessageBox(wxT("Failed to read terrain data"));
+    const wxString & lc_file = file.Lower();
+    if (lc_file.EndsWith(wxT(".hgt"))) {
+	parse_hgt_filename(lc_file);
+	read_bil(fs, size, skipbytes);
+    } else if (lc_file.EndsWith(wxT(".bil"))) {
+	wxString hdr_file = file;
+	hdr_file.replace(file.size() - 4, 4, wxT(".hdr"));
+	int hdr_fd = open(hdr_file.mb_str(), O_RDONLY);
+	if (hdr_fd < 0) {
+	    wxMessageBox(wxT("Failed to open HDR file '") + hdr_file + wxT("'"));
 	    return false;
 	}
-	p += c;
-	size -= c;
-    }
-#endif
-    if (!know_size) {
-	dem_width = dem_height = DEFAULT_HGT_DIM;
-	step_x = step_y = 1.0 / DEFAULT_HGT_DIM;
+	wxFileInputStream hdr_is(hdr_fd);
+	size = parse_hdr(hdr_is, skipbytes);
+	read_bil(fs, size, skipbytes);
+    } else if (lc_file.EndsWith(wxT(".zip"))) {
+	wxZipEntry * ze_data = NULL;
+	wxZipInputStream zs(fs);
+	wxZipEntry * ze;
+	while ((ze = zs.GetNextEntry()) != NULL) {
+	    if (!ze->IsDir()) {
+		const wxString & lc_name = ze->GetName().Lower();
+		if (!ze_data && lc_name.EndsWith(wxT(".hgt"))) {
+		    // SRTM .hgt files are raw binary data, with the filename
+		    // encoding the coordinates.
+		    parse_hgt_filename(lc_name);
+		    read_bil(zs, size, skipbytes);
+		    delete ze;
+		    break;
+		}
+
+		if (!ze_data && lc_name.EndsWith(wxT(".bil"))) {
+		    if (size) {
+			read_bil(zs, size, skipbytes);
+			break;
+		    }
+		    ze_data = ze;
+		    continue;
+		}
+
+		if (lc_name.EndsWith(wxT(".hdr"))) {
+		    size = parse_hdr(zs, skipbytes);
+		    if (ze_data) {
+			if (!zs.OpenEntry(*ze_data)) {
+			    wxMessageBox(wxT("Couldn't read DEM data from .zip file"));
+			    break;
+			}
+			read_bil(zs, size, skipbytes);
+		    }
+		} else if (lc_name.EndsWith(wxT(".prj"))) {
+		    //FIXME: check this matches the datum string we use
+		    //Projection    GEOGRAPHIC
+		    //Datum         WGS84
+		    //Zunits        METERS
+		    //Units         DD
+		    //Spheroid      WGS84
+		    //Xshift        0.0000000000
+		    //Yshift        0.0000000000
+		    //Parameters
+		}
+	    }
+	    delete ze;
+	}
+	delete ze_data;
     }
 
-    delete ze_data;
+    if (!dem) {
+	return false;
+    }
 
     InvalidateList(LIST_TERRAIN);
     ForceRefresh();
