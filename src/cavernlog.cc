@@ -164,13 +164,8 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 		++i;
 	}
     }
-#ifdef __WXMSW__
-    if (_wsystem(cmd.c_str()) >= 0)
+    if (wxSystem(cmd) >= 0)
 	return;
-#else
-    if (system(cmd.mb_str()) >= 0)
-	return;
-#endif
     wxString m;
     // TRANSLATORS: %s is replaced by the command we attempted to run.
     m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());

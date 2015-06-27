@@ -1,3 +1,8 @@
+Sat Jun 27 12:46:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Use wxSystem() rather than conditionally calling
+	  system() or _wsystem() depending on the platform.
+
 Sat Jun 27 12:45:22 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Use wxAtof() to get double from wxString.
