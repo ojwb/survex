@@ -2626,13 +2626,12 @@ bool GfxCore::LoadDEM(const wxString & file)
     // little-endian.
     bigendian = false;
 
-    int fd = open(file.mb_str(), O_RDONLY);
-    if (fd < 0) {
+    wxFileInputStream fs(file);
+    if (!fs.IsOk()) {
 	wxMessageBox(wxT("Failed to open DEM file"));
 	return false;
     }
 
-    wxFileInputStream fs(fd);
     const wxString & lc_file = file.Lower();
     if (lc_file.EndsWith(wxT(".hgt"))) {
 	parse_hgt_filename(lc_file);
@@ -2640,12 +2639,11 @@ bool GfxCore::LoadDEM(const wxString & file)
     } else if (lc_file.EndsWith(wxT(".bil"))) {
 	wxString hdr_file = file;
 	hdr_file.replace(file.size() - 4, 4, wxT(".hdr"));
-	int hdr_fd = open(hdr_file.mb_str(), O_RDONLY);
-	if (hdr_fd < 0) {
+	wxFileInputStream hdr_is(hdr_file);
+	if (!hdr_is.IsOk()) {
 	    wxMessageBox(wxT("Failed to open HDR file '") + hdr_file + wxT("'"));
 	    return false;
 	}
-	wxFileInputStream hdr_is(hdr_fd);
 	size = parse_hdr(hdr_is, skipbytes);
 	read_bil(fs, size, skipbytes);
     } else if (lc_file.EndsWith(wxT(".zip"))) {

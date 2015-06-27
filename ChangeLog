@@ -1,3 +1,8 @@
+Sat Jun 27 12:42:57 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc: Create wxFileInputStream directly, avoiding
+	  intermediate file descriptor.
+
 Sat Jun 27 12:41:32 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Use wxGetenv() to read the SURVEXEDITOR variable,
