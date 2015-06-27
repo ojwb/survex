@@ -379,11 +379,7 @@ class AvenPresList : public wxListCtrl {
 		fnm = dlg.GetPath();
 	    }
 
-#ifdef __WXMSW__
-	    FILE * fh_pres = _wfopen(fnm.fn_str(), L"w");
-#else
-	    FILE * fh_pres = fopen(fnm.mb_str(), "w");
-#endif
+	    FILE * fh_pres = wxFopen(fnm, wxT("w"));
 	    if (!fh_pres) {
 		wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), fnm.c_str()));
 		return;
@@ -420,11 +416,7 @@ class AvenPresList : public wxListCtrl {
 	    force_save_as = true;
 	}
 	bool Load(const wxString &fnm) {
-#ifdef __WXMSW__
-	    FILE * fh_pres = _wfopen(fnm.fn_str(), L"r");
-#else
-	    FILE * fh_pres = fopen(fnm.mb_str(), "r");
-#endif
+	    FILE * fh_pres = wxFopen(fnm, wxT("r"));
 	    if (!fh_pres) {
 		wxString m;
 		m.Printf(wmsg(/*Couldn’t open file “%s”*/24), fnm.c_str());

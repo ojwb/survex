@@ -513,11 +513,7 @@ CavernLogWindow::OnSave(wxCommandEvent &)
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() != wxID_OK) return;
     filelog = dlg.GetPath();
-#ifdef __WXMSW__
-    FILE * fh_log = _wfopen(filelog.fn_str(), L"w");
-#else
-    FILE * fh_log = fopen(filelog.mb_str(), "w");
-#endif
+    FILE * fh_log = wxFopen(filelog, wxT("w"));
     if (!fh_log) {
 	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), filelog.c_str()));
 	return;
