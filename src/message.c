@@ -821,7 +821,7 @@ parse_msg_file(int charset_code)
    }
 
    if (!fh && !msg_lang_explicit) {
-      /* If msg_lang wasn't specified using environment variable SURVEX_LANG,
+      /* If msg_lang wasn't specified using environment variable SURVEXLANG,
        * then default to 'en' if we don't find messages for language msg_lang.
        */
       if (fnm[0] && fnm[1]) {
