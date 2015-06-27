@@ -1,3 +1,10 @@
+Sat Jun 27 06:49:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/netartic.c: Fix small memory leak when solving network.  This
+	  doesn't really matter when solving at the end of processing as cavern
+	  will exit after that, but if *solve is used we continue processing
+	  after solving.
+
 Sat Jun 27 04:36:39 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/message.c: Fix comment typo.

@@ -1,6 +1,6 @@
 /* netartic.c
  * Split up network at articulation points
- * Copyright (C) 1993-2003,2005,2012,2014 Olly Betts
+ * Copyright (C) 1993-2003,2005,2012,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -405,19 +405,22 @@ articulate(void)
    }
 
    {
-      component *comp;
+      component *comp = component_list;
 
 #ifdef DEBUG_ARTIC
       printf("\nDump of %d components:\n", cComponents);
 #endif
-      for (comp = component_list; comp; comp = comp->next) {
+      while (comp) {
 	 node *list = NULL, *listend = NULL;
 	 articulation *art;
+	 component * old_comp;
 #ifdef DEBUG_ARTIC
 	 printf("Component:\n");
 #endif
 	 SVX_ASSERT(comp->artic);
-	 for (art = comp->artic; art; art = art->next) {
+	 art = comp->artic;
+	 while (art) {
+	    articulation * old_art;
 #ifdef DEBUG_ARTIC
 	    printf("  Articulation (%p):\n", art->stnlist);
 #endif
@@ -437,6 +440,9 @@ articulate(void)
 #endif
 	       listend = stn;
 	    }
+	    old_art = art;
+	    art = art->next;
+	    osfree(old_art);
 	 }
 #ifdef DEBUG_ARTIC
 	 putnl();
@@ -458,6 +464,10 @@ articulate(void)
 	 listend->next = stnlist;
 	 if (stnlist) stnlist->prev = listend;
 	 stnlist = list;
+
+	 old_comp = comp;
+	 comp = comp->next;
+	 osfree(old_comp);
       }
 #ifdef DEBUG_ARTIC
       printf("done articulating\n");
