@@ -1,3 +1,7 @@
+Sat Jun 27 12:45:22 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Use wxAtof() to get double from wxString.
+
 Sat Jun 27 12:44:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc,src/mainfrm.cc: Use wxFopen() rather than

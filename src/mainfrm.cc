@@ -206,15 +206,15 @@ public:
     }
     PresentationMark GetMark() const {
 	double a, t, s, T;
-	Vector3 v(atof(easting->GetValue().mb_str()),
-		  atof(northing->GetValue().mb_str()),
-		  atof(altitude->GetValue().mb_str()));
-	a = atof(angle->GetValue().mb_str());
-	t = atof(tilt_angle->GetValue().mb_str());
-	s = atof(scale->GetValue().mb_str());
+	Vector3 v(wxAtof(easting->GetValue()),
+		  wxAtof(northing->GetValue()),
+		  wxAtof(altitude->GetValue()));
+	a = wxAtof(angle->GetValue());
+	t = wxAtof(tilt_angle->GetValue());
+	s = wxAtof(scale->GetValue());
 	wxString str = time->GetValue();
 	if (!str.empty() && str[0u] == '*') str[0u] = '-';
-	T = atof(str.mb_str());
+	T = wxAtof(str);
 	return PresentationMark(v, a, t, s, T);
     }
 
