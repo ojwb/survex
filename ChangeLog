@@ -1,3 +1,8 @@
+Sat Jun 27 12:41:32 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Use wxGetenv() to read the SURVEXEDITOR variable,
+	  so we can accept Unicode values on Windows.
+
 Sat Jun 27 06:51:29 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/netskel.c: Fix use after free after *solve.  This only occurs if

@@ -118,9 +118,9 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     // wxString cmd = wxT("x-terminal-emulator -title $t -e nano +$l $f");
     // wxString cmd = wxT("x-terminal-emulator -title $t -e jed -g $l $f");
 #endif
-    const char * p = getenv("SURVEXEDITOR");
+    wxChar * p = wxGetenv(wxT("SURVEXEDITOR"));
     if (p) {
-	cmd = wxString(p, wxConvUTF8);
+	cmd = p;
 	if (!cmd.find(wxT("$f"))) {
 	    cmd += wxT(" $f");
 	}
