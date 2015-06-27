@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013,2014 Olly Betts
+ * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,9 @@ solve_network(void /*node *stnlist*/)
 {
    static int first_solve = 1;
    node *stn;
+
+   /* We can't average across solving to fix positions. */
+   clear_last_leg();
 
    if (stnlist == NULL) {
       if (first_solve) fatalerror(/*No survey data*/43);

@@ -1,3 +1,11 @@
+Sat Jun 27 06:51:29 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/netskel.c: Fix use after free after *solve.  This only occurs if
+	  a leg between the two exact same stations appears right before and
+	  right after the *solve, which is unlikely in real data, but the
+	  testsuite has an instance of this.  This was introduced by the repeat
+	  leg averaging added in 1.2.17.
+
 Sat Jun 27 06:49:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/netartic.c: Fix small memory leak when solving network.  This
