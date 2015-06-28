@@ -1,3 +1,34 @@
+c7096e68 (Olly Betts 2015-06-28 23:44:04 +1200    1) Sun Jun 28 11:43:11 GMT 2015  Olly Betts <olly@survex.com>
+
+* aven:
+
+  + Put "paddle" placemarker icons on stations in exported KML files, using the
+    same colour coding for entrances, fixed points and exported points as aven
+    does.
+
+  + Implement exporting of survey legs in KML format.
+
+  + Use wxGetenv() to read the SURVEXEDITOR variable, so we can accept Unicode
+    values on Windows.
+
+* cavern:
+
+  + Fix use after free after *solve.  This only occurs if a leg between the two
+    exact same stations appears right before and right after the *solve, which
+    is unlikely in real data, but the testsuite has an instance of this.  This
+    was introduced by the repeat leg averaging added in 1.2.17.
+
+  + Fix small memory leak when solving network.  This doesn't really matter
+    when solving at the end of processing as cavern will exit after that, but
+    if *solve is used we continue processing after solving.
+
+* Remove compatibility handling for specifying a country variant of a language
+  in SURVEXLANG using "-" with a lower case country code (e.g. "en-us") - we
+  changed to the standard "en_US" way back in 2001.  This code was mangling
+  character sets with a "-" in, and is no longer useful.
+
+* Ignore any "@<something>" modifier in the language code.
+
 Changes in 1.2.20 (2015-06-26):
 
 * aven:
