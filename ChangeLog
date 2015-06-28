@@ -1,3 +1,8 @@
+Sun Jun 28 07:18:42 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/kml.cc: Put coloured "pin" icons into KML files, like we do for
+	  GPX files.
+
 Sat Jun 27 12:46:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Use wxSystem() rather than conditionally calling

@@ -103,6 +103,16 @@ void KML::header(const char * title, const char *, time_t,
     fputs("<Document><name>", fh);
     html_escape(fh, title);
     fputs("</name>\n", fh);
+    // Set up styles for the icons to reduce the file size.
+    fputs("<Style id=\"fix\"><IconStyle>"
+	  "<Icon><href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png</href></Icon>"
+	  "</IconStyle></Style>\n", fh);
+    fputs("<Style id=\"exp\"><IconStyle>"
+	  "<Icon><href>http://maps.google.com/mapfiles/kml/pushpin/blue-pushpin.png</href></Icon>"
+	  "</IconStyle></Style>\n", fh);
+    fputs("<Style id=\"ent\"><IconStyle>"
+	  "<Icon><href>http://maps.google.com/mapfiles/kml/pushpin/grn-pushpin.png</href></Icon>"
+	  "</IconStyle></Style>\n", fh);
     // FIXME: does KML allow bounds?
     // NB Lat+long bounds are not necessarily the same as the bounds in survex
     // coords translated to WGS84 lat+long...
@@ -150,20 +160,18 @@ KML::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
     fprintf(fh, "<Placemark><Point><coordinates>%.8f,%.8f,%.2f</coordinates></Point><name>", X, Y, Z);
     html_escape(fh, s);
     fputs("</name>", fh);
-#if 0
     // Add a "pin" symbol with colour matching what aven shows.
     switch (type) {
 	case FIXES:
-	    fputs("<sym>Pin, Red</sym>", fh);
+	    fputs("<styleUrl>#fix</styleUrl>", fh);
 	    break;
 	case EXPORTS:
-	    fputs("<sym>Pin, Blue</sym>", fh);
+	    fputs("<styleUrl>#exp</styleUrl>", fh);
 	    break;
 	case ENTS:
-	    fputs("<sym>Pin, Green</sym>", fh);
+	    fputs("<styleUrl>#ent</styleUrl>", fh);
 	    break;
     }
-#endif
     fputs("</Placemark>\n", fh);
 }
 
