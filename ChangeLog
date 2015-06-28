@@ -1,3 +1,8 @@
+Sun Jun 28 07:25:12 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/kml.cc,src/kml.h,src/printing.cc: Implement exporting of survey
+	  legs in KML format.
+
 Sun Jun 28 07:20:09 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/kml.h: Whitespace tweak.

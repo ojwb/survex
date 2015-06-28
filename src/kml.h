@@ -24,7 +24,7 @@
 
 class KML : public ExportFilter {
     projPJ pj_input, pj_output;
-    bool in_trkseg;
+    bool in_linestring;
   public:
     explicit KML(const char * input_datum);
     ~KML();

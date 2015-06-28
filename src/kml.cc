@@ -63,7 +63,7 @@ html_escape(FILE *fh, const char *s)
 }
 
 KML::KML(const char * input_datum)
-    : pj_input(NULL), pj_output(NULL), in_trkseg(false)
+    : pj_input(NULL), pj_output(NULL), in_linestring(false)
 {
     if (!(pj_input = pj_init_plus(input_datum))) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
@@ -88,8 +88,7 @@ KML::~KML()
 const int *
 KML::passes() const
 {
-    // static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, LEGS|SURF, 0 };
-    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, 0 };
+    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, LEGS|SURF, 0 };
     return default_passes;
 }
 
@@ -121,37 +120,29 @@ void KML::header(const char * title, const char *, time_t,
 void
 KML::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPendingMove)
 {
-    (void)p1;
-    (void)p;
-    (void)fPendingMove;
-#if 0
     if (fPendingMove) {
-	if (in_trkseg) {
-	    fputs("</trkseg><trkseg>\n", fh);
-	} else {
-	    fputs("<trk><trkseg>\n", fh);
-	    in_trkseg = true;
-	}
+	if (in_linestring)
+	    fputs("</coordinates></LineString></Placemark>\n", fh);
+	fputs("<Placemark><LineString><altitudeMode>absolute</altitudeMode><coordinates>\n", fh);
+	in_linestring = true;
 	double X = p1->x, Y = p1->y, Z = p1->z;
 	pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
 	X = deg(X);
 	Y = deg(Y);
 	// %.8f is at worst just over 1mm.
-	fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n", X, Y, Z);
+	fprintf(fh, "%.8f,%.8f,%.2f\n", X, Y, Z);
     }
     double X = p->x, Y = p->y, Z = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
     X = deg(X);
     Y = deg(Y);
     // %.8f is at worst just over 1mm.
-    fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n", X, Y, Z);
-#endif
+    fprintf(fh, "%.8f,%.8f,%.2f\n", X, Y, Z);
 }
 
 void
 KML::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
 {
-    (void)type;
     double X = p->x, Y = p->y, Z = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
     X = deg(X);
@@ -178,9 +169,7 @@ KML::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
 void
 KML::footer()
 {
-#if 0
-    if (in_trkseg)
-	fputs("</trkseg></trk>\n", fh);
-#endif
+    if (in_linestring)
+	fputs("</coordinates></LineString></Placemark>\n", fh);
     fputs("</Document></kml>\n", fh);
 }
