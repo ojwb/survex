@@ -1,3 +1,7 @@
+Sun Jun 28 07:20:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/kml.h: Whitespace tweak.
+
 Sun Jun 28 07:18:42 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/kml.cc: Put coloured "pin" icons into KML files, like we do for

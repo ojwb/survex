@@ -1,7 +1,6 @@
 /* kml.h
  * Export from Aven as KML.
  */
-
 /* Copyright (C) 2005,2013,2014,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
