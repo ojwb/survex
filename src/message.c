@@ -1118,23 +1118,21 @@ macosx_got_msg:
    /* On Mandrake LANG defaults to C */
    if (strcmp(msg_lang, "C") == 0) msg_lang = "en";
 
-   msg_lang = osstrdup(msg_lang);
-
-   /* Convert en-us to en_US, etc */
-   p = strchr(msg_lang, '-');
-   if (p) {
-      *p++ = '_';
-      while (*p) {
-	 *p = toupper(*p);
-	 p++;
+   { /* If msg_lang has a country code, snip it out to give msg_lang2. */
+      size_t b = 0;
+      while (isalpha((unsigned char)msg_lang[b])) {
+	 ++b;
       }
-   }
-
-   p = strchr(msg_lang, '_');
-   if (p) {
-      *p = '\0';
-      msg_lang2 = osstrdup(msg_lang);
-      *p = '_';
+      if (msg_lang[b] == '_') {
+	 char * tmp;
+	 size_t e = b + 1;
+	 while (isalpha((unsigned char)msg_lang[e])) {
+	    ++e;
+	 }
+	 tmp = osstrdup(msg_lang);
+	 memmove(tmp + b, tmp + e, strlen(tmp + e) + 1);
+	 msg_lang2 = tmp;
+      }
    }
 
 #ifdef LC_MESSAGES

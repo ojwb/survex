@@ -1,3 +1,10 @@
+Sun Jun 28 11:40:06 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/message.c: Remove compatibility handling for specifying a country
+	  variant of a language in SURVEXLANG using "-" with a lower case
+	  country code (e.g. "en-us") - we changed to the standard "en_US" way
+	  back in 2001.
+
 Sun Jun 28 09:28:56 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/kml.cc: Use the "paddle" placemarkers rather than push pins.
