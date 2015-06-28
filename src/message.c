@@ -810,6 +810,9 @@ parse_msg_file(int charset_code)
    /* trim off charset from stuff like "de_DE.iso8859_1" */
    s = strchr(fnm, '.');
    if (s) *s = '\0';
+   /* trim off any "@<something>" modifier. */
+   s = strchr(fnm, '@');
+   if (s) *s = '\0';
 
    fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
 

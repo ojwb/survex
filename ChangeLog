@@ -1,3 +1,8 @@
+Sun Jun 28 11:43:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/message.c: Ignore any "@<something>" modifier in the language
+	  code.
+
 Sun Jun 28 11:40:06 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/message.c: Remove compatibility handling for specifying a country
