@@ -1,5 +1,7 @@
 c7096e68 (Olly Betts 2015-06-28 23:44:04 +1200    1) Sun Jun 28 11:43:11 GMT 2015  Olly Betts <olly@survex.com>
 
+Changes in 1.2.21 (2015-06-29):
+
 * aven:
 
   + Put "paddle" placemarker icons on stations in exported KML files, using the
@@ -34,8 +36,8 @@ Changes in 1.2.20 (2015-06-26):
 * aven:
 
   + When printing, use the top margin rather than the right margin to calculate
-    the height of the printable area.  In practice, the two values seem to be the
-    same or very similar by default.
+    the height of the printable area.  In practice, the two values seem to be
+    the same or very similar by default.
 
   + Avoid assertion if the about dialog image fails to load.  Reported by Phil
     Maynard.
