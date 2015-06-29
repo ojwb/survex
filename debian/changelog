@@ -1,10 +1,22 @@
-survex (1.2.16-2) UNRELEASED; urgency=medium
+survex (1.2.20-2) unstable; urgency=medium
 
-  * Upstream are dropping svxedit so drop the survex-svxedit package.
+  * Fix use after free which was causing test suite failure on some
+    architectures.
+
+ -- Olly Betts <olly@survex.com>  Fri, 26 Jun 2015 15:41:11 +1200
+
+survex (1.2.20-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Upstream has dropped svxedit so drop the survex-svxedit package.
+    + Adds terrain visualisation, so note this in the package description.
+    + Installs filetype and app icons under /usr/share/icons/hicolor, which is
+      where modern desktops look for them.
+    + survex-aven.desktop: Adds %f to Exec
   * Add a link to the sample data in README.Debian, as suggested by Andy
     Waddington a mere 7 years ago.
 
- -- Olly Betts <olly@survex.com>  Wed, 18 Mar 2015 16:01:12 +1300
+ -- Olly Betts <olly@survex.com>  Fri, 26 Jun 2015 12:55:51 +1200
 
 survex (1.2.16-1) unstable; urgency=low
 

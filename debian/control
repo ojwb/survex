@@ -6,14 +6,15 @@ Uploaders: Wookey <wookey@debian.org>
 Standards-Version: 3.9.6
 Build-Depends: debhelper (>= 9), libx11-dev, libxext-dev, x11proto-core-dev,
     libavcodec-dev, libavformat-dev, libproj-dev, libswscale-dev,
-    libwxgtk3.0-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev
+    libwxgtk3.0-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev,
+    pkg-config
 Homepage: http://survex.com/
 
 Package: survex
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Recommends: survex-aven (= ${binary:Version})
-Suggests: survex-svxedit (= ${source:Version}), vim-addon-manager
+Suggests: vim-addon-manager
 Description: cave surveying and mapping software
  A software suite to process, view, and print cave survey data.  Survex
  is cross-platform (Linux, Unix, Mac OS X, Microsoft Windows).  It has
@@ -27,5 +28,5 @@ Description: sophisticated cave survey viewer for Survex
  An advanced cave survey data viewer for Survex, written using the wxWidgets
  library, and using OpenGL for rendering.  Aven allows searching for stations,
  highlighting categories of stations such entrances or fixed points, measuring
- the distance between stations, showing passage walls, and supports
- presentations (pre-recorded fly-throughs).
+ the distance between stations, showing passage walls, showing the terrain
+ above the cave, and supports presentations (pre-recorded fly-throughs).

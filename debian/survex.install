@@ -1,4 +1,5 @@
-debian/tmp/usr/share/survex/icons
+debian/tmp/usr/share/icons/hicolor/32x32/mimetypes/
+debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/
 debian/tmp/usr/share/survex/bcra3.svx
 debian/tmp/usr/share/survex/bcra5.svx
 debian/tmp/usr/share/survex/*.msg

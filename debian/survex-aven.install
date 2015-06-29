@@ -2,5 +2,5 @@ debian/tmp/usr/bin/aven
 debian/tmp/usr/share/man/man1/aven.1
 debian/tmp/usr/share/survex/unifont.pixelfont
 debian/tmp/usr/share/survex/images
-debian/tmp/usr/share/pixmaps/aven.*
+debian/tmp/usr/share/icons/hicolor/scalable/apps
 debian/tmp/usr/share/applications/survex-aven.desktop
