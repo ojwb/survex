@@ -1,3 +1,9 @@
+Mon Jun 29 12:27:49 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/cad3d.sgml,doc/manual.sgml: Remove references to SpeleoGen,
+	  which hasn't been updated for many years, and which can't read
+	  current the recent versions of the .3d format.
+
 Mon Jun 29 03:14:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

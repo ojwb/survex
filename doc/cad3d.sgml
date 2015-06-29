@@ -28,14 +28,4 @@ packages.  It can also produce Compass .plt files, which are primarily intended
 for importing into Carto, but can also be used with Compass itself.
 </para>
 
-<Para>An alternative to cad3d is SpeleoGen, which can be found in the
-<ulink url="http://survex.com/related.html">"Related Tools" section of the
-Survex web site.</ulink>
-SpeleoGen is a Windows (3.1/95/NT) utility which reads in
-<Application>Survex</Application> <filename>.3d</filename> files, LRUD passage wall data (in <filename>.cav</filename> format)
-and surface topography info in <filename>.csv</filename> format.  The results are
-combined, displayed, and saved out as a DXF file for import into
-CAD or drawing packages.
-</Para>
-
 </refsect1>

@@ -3521,11 +3521,6 @@ the right length for each line in the mesh.  It's also very fast to process
 with cavern.
 </Para>
 
-<Para>SpeleoGen can also help with this process if you want
-final output in DXF form.  See the 'Related Tools' section of the
-Survex website for download links.
-</Para>
-
 </Sect2>
 
 <Sect2><Title>Overlay a grid</Title>
