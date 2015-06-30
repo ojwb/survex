@@ -314,8 +314,8 @@ GLACanvas::~GLACanvas()
     // Destructor.
 
     if (m_Quadric) {
-        gluDeleteQuadric(m_Quadric);
-        CHECK_GL_ERROR("~GLACanvas", "gluDeleteQuadric");
+	gluDeleteQuadric(m_Quadric);
+	CHECK_GL_ERROR("~GLACanvas", "gluDeleteQuadric");
     }
 }
 
@@ -569,10 +569,10 @@ void GLACanvas::AddTranslationScreenCoordinates(int dx, int dy)
     double x0, y0, z0;
     double x, y, z;
     gluUnProject(0.0, 0.0, 0.0, modelview_matrix, projection_matrix, viewport,
-                 &x0, &y0, &z0);
+		 &x0, &y0, &z0);
     CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject");
     gluUnProject(dx, -dy, 0.0, modelview_matrix, projection_matrix, viewport,
-                 &x, &y, &z);
+		 &x, &y, &z);
     CHECK_GL_ERROR("AddTranslationScreenCoordinates", "gluUnProject (2)");
 
     // Apply the translation.
@@ -1302,7 +1302,7 @@ void GLACanvas::DrawRing(glaCoord x, glaCoord y)
 }
 
 void GLACanvas::DrawRectangle(gla_colour edge, gla_colour fill,
-                              glaCoord x0, glaCoord y0, glaCoord w, glaCoord h)
+			      glaCoord x0, glaCoord y0, glaCoord w, glaCoord h)
 {
     // Draw a filled rectangle with an edge in the indicator plane.
     // (x0, y0) specify the bottom-left corner of the rectangle and (w, h) the
@@ -1317,13 +1317,13 @@ void GLACanvas::DrawRectangle(gla_colour edge, gla_colour fill,
     EndQuadrilaterals();
 
     if (edge != fill) {
-        SetColour(edge);
-        BeginLines();
-        PlaceIndicatorVertex(x0, y0);
-        PlaceIndicatorVertex(x0 + w, y0);
-        PlaceIndicatorVertex(x0 + w, y0 + h);
-        PlaceIndicatorVertex(x0, y0 + h);
-        EndLines();
+	SetColour(edge);
+	BeginLines();
+	PlaceIndicatorVertex(x0, y0);
+	PlaceIndicatorVertex(x0 + w, y0);
+	PlaceIndicatorVertex(x0 + w, y0 + h);
+	PlaceIndicatorVertex(x0, y0 + h);
+	EndLines();
     }
 }
 
@@ -1372,8 +1372,8 @@ void GLACanvas::DrawCircle(gla_colour edge, gla_colour fill,
 }
 
 void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
-                               glaCoord cx, glaCoord cy,
-                               glaCoord radius, glaCoord start)
+			       glaCoord cx, glaCoord cy,
+			       glaCoord radius, glaCoord start)
 {
     // Draw a filled semicircle with an edge.
     // The semicircle extends from "start" deg to "start"+180 deg (increasing
@@ -1451,7 +1451,7 @@ void GLACanvas::ReverseTransform(Double x, Double y,
 
     // Perform the projection.
     gluUnProject(x, y, 0.0, modelview_matrix, projection_matrix, viewport,
-                 x_out, y_out, z_out);
+		 x_out, y_out, z_out);
     CHECK_GL_ERROR("ReverseTransform", "gluUnProject");
 }
 

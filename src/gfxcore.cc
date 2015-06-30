@@ -1254,7 +1254,7 @@ void GfxCore::DrawScaleBar()
 	} else if (size_snap >= 1.0) {
 	    /* TRANSLATORS: abbreviation for "metres" (unit of length), used
 	     * e.g. "10m".
-	     * 
+	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
 	    units = /*m*/424;
@@ -1262,7 +1262,7 @@ void GfxCore::DrawScaleBar()
 	    size_snap *= 1e2;
 	    /* TRANSLATORS: abbreviation for "centimetres" (unit of length),
 	     * used e.g.  "50cm".
-	     * 
+	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
 	    units = /*cm*/425;
@@ -1275,14 +1275,14 @@ void GfxCore::DrawScaleBar()
 	    if (size_snap >= 2.0) {
 		/* TRANSLATORS: abbreviation for "miles" (unit of length,
 		 * plural), used e.g.  "2 miles".
-		 * 
+		 *
 		 * If there should be a space between the number and this,
 		 * include one in the translation. */
 		units = /* miles*/426;
 	    } else {
 		/* TRANSLATORS: abbreviation for "mile" (unit of length,
 		 * singular), used e.g.  "1 mile".
-		 * 
+		 *
 		 * If there should be a space between the number and this,
 		 * include one in the translation. */
 		units = /* mile*/427;
@@ -1290,7 +1290,7 @@ void GfxCore::DrawScaleBar()
 	} else if (size_snap >= 1.0) {
 	    /* TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
 	     * as "10ft".
-	     * 
+	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
 	    units = /*ft*/428;
@@ -1298,7 +1298,7 @@ void GfxCore::DrawScaleBar()
 	    size_snap *= 12.0;
 	    /* TRANSLATORS: abbreviation for "inches" (unit of length), used
 	     * e.g. as "6in".
-	     * 
+	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
 	    units = /*in*/429;

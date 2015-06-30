@@ -537,8 +537,8 @@ main(int argc, char **argv)
 	 fatalerror(img_error2msg(img_error()), fnm_in);
 	 break;
       case img_XSECT:
-         have_xsect = 1;
-         break;
+	 have_xsect = 1;
+	 break;
       }
    } while (result != img_STOP);
 

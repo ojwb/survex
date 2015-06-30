@@ -1236,9 +1236,9 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 			++n_traverses;
 			// The previous point was at a surface->ug transition.
 			if (current_polyline_is_surface) {
-    			    if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
-    			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
-                        }
+			    if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
+			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
+			}
 		    }
 
 		    current_polyline_is_surface = is_surface;
@@ -1968,7 +1968,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
     /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
      * - it should be translated to the terminology that cavers using the
      * language would use.
-     * 
+     *
      * File->Open dialog: */
     wxFileDialog dlg(this, wmsg(/*Select a survey file to view*/206),
 		     wxString(), wxString(),
@@ -2226,7 +2226,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	    brg *= 400.0 / 360.0;
 	    /* TRANSLATORS: alternative angle units (400 grad = 360 degrees =
 	     * full circle).  Try to make this as short as sensibly possible.
-	     * 
+	     *
 	     * E.g. in Italian and Spanish we use "g.cent." rather than
 	     * "gradi quattrocentesimali"/"grados centesimales" */
 	    brg_unit = /*grad*/345;
@@ -2441,9 +2441,9 @@ void MainFrm::OnPresOpen(wxCommandEvent&)
 #else
     wxFileDialog dlg(this, wmsg(/*Select a presentation to open*/322), wxString(), wxString(),
 		     wxString::Format(wxT("%s|*.fly|%s|%s"),
-		       	       wmsg(/*Aven presentations*/320).c_str(),
-		       	       wmsg(/*All files*/208).c_str(),
-		       	       wxFileSelectorDefaultWildcardStr),
+			       wmsg(/*Aven presentations*/320).c_str(),
+			       wmsg(/*All files*/208).c_str(),
+			       wxFileSelectorDefaultWildcardStr),
 		     wxFD_OPEN|wxFD_FILE_MUST_EXIST);
 #endif
     if (dlg.ShowModal() == wxID_OK) {

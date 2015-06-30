@@ -93,7 +93,7 @@ enum {
     menu_VIEW_SPLAYS,
     menu_SPLAYS_HIDE,
     menu_SPLAYS_SHOW_FADED,
-    menu_SPLAYS_SHOW_NORMAL,    
+    menu_SPLAYS_SHOW_NORMAL,
     menu_VIEW_SHOW_CROSSES,
     menu_VIEW_SHOW_NAMES,
     menu_VIEW_SHOW_SURFACE,

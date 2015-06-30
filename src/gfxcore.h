@@ -554,7 +554,7 @@ public:
     void MoveViewer(double forward, double up, double right);
 
     void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
-                              const Vector3 &c, const Vector3 &d);
+			      const Vector3 &c, const Vector3 &d);
     void (GfxCore::* AddPoly)(const traverse & centreline);
 
     PresentationMark GetView() const;

@@ -599,7 +599,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	wxConfigBase * cfg = wxConfigBase::Get();
 	wxString input_projection;
 	cfg->Read(wxT("input_projection"), &input_projection);
-        if (!input_projection.empty())
+	if (!input_projection.empty())
 	    proj_edit.SetValue(input_projection);
 #endif
     }
@@ -1071,7 +1071,7 @@ svxPrintout::draw_info_box()
       MOVEMM(div + 2, boxheight - 8);
       /* TRANSLATORS: "Elevation on" 020 <-> 200 degrees */
       WriteString(wmsg(/*Elevation on*/116));
-      
+
       MOVEMM(L, 2);
       WriteString(format_angle(ANGLE_FMT, fmod(l->rot + 270.0, 360.0)));
       MOVEMM(R - 10, 2);

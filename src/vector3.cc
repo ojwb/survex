@@ -33,9 +33,9 @@ void Vector3::normalise()
 {
     double mag = magnitude();
     if (mag != 0.0) {
-        x /= mag;
-        y /= mag;
-        z /= mag;
+	x /= mag;
+	y /= mag;
+	z /= mag;
     }
 }
 

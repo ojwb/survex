@@ -1836,14 +1836,14 @@ data_passage(void)
 	 break;
        case Left: case Right: case Up: case Down:
 	 read_reading(*ordering, fTrue);
-         if (VAL(*ordering) == HUGE_REAL) {
-            if (!isOmit(ch)) {
+	 if (VAL(*ordering) == HUGE_REAL) {
+	    if (!isOmit(ch)) {
 	       compile_error_token(-/*Expecting numeric field, found “%s”*/9);
 	    } else {
 	       nextch();
-            }
-            VAL(*ordering) = -1;
-         }
+	    }
+	    VAL(*ordering) = -1;
+	 }
 	 break;
        case Ignore:
 	 skipword(); break;

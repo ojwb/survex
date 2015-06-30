@@ -422,11 +422,11 @@ svg_header(void)
    for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    fprintf(fh, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
    fprintf(fh, "<svg width=\"%.3f%s\" height=\"%.3f%s\""
-               " viewBox=\"0 0 %0.3f %0.3f\">\n",
-           (max_x - min_x) * factor, unit, (max_y - min_y) * factor, unit,
-           (max_x - min_x) * factor, (max_y - min_y) * factor );
+	       " viewBox=\"0 0 %0.3f %0.3f\">\n",
+	   (max_x - min_x) * factor, unit, (max_y - min_y) * factor, unit,
+	   (max_x - min_x) * factor, (max_y - min_y) * factor );
    fprintf(fh, "<g transform=\"translate(%.3f %.3f)\">\n",
-           min_x * -factor, max_y * factor);
+	   min_x * -factor, max_y * factor);
    to_close = 0;
    close_g = 0;
 }
@@ -477,7 +477,7 @@ svg_label(const img_point *p, const char *s, bool fSurface)
 {
    (void)fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
-           p->x * factor, p->y * -factor);
+	   p->x * factor, p->y * -factor);
    fputs(s, fh);
    fputs("</text>\n", fh);
    set_name_copy(p, s);
@@ -518,9 +518,9 @@ plt_header(void)
    for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X", pimg->title);
 }
 
@@ -593,9 +593,9 @@ plt_footer(void)
 {
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    fprintf(fh, "X %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
-           min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
-           min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
-           min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
+	   min_y / METRES_PER_FOOT, max_y / METRES_PER_FOOT,
+	   min_x / METRES_PER_FOOT, max_x / METRES_PER_FOOT,
+	   min_z / METRES_PER_FOOT, max_z / METRES_PER_FOOT);
    /* Yucky DOS "end of textfile" marker */
    PUTC('\x1a', fh);
 }
@@ -644,7 +644,7 @@ main(int argc, char **argv)
 	{"dxf", no_argument, 0, 'D'},
 	{"skencil", no_argument, 0, 'S'},
 	{"plt", no_argument, 0, 'P'},
-        {"svg", no_argument, 0, 'V'},
+	{"svg", no_argument, 0, 'V'},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
 	/* Old name for --skencil: */
@@ -738,8 +738,8 @@ main(int argc, char **argv)
 	 format = FMT_PLT;
 	 break;
        case 'V':
-         format = FMT_SVG;
-         break;
+	 format = FMT_SVG;
+	 break;
        case 's':
 	 survey = optarg;
 	 break;

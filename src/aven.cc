@@ -109,7 +109,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
      * - it should be translated to the terminology that cavers using the
      * language would use.
-     * 
+     *
      * Part of aven --help */
     cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
     cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
@@ -117,7 +117,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     return wxApp::Initialize(my_argc, my_argv);
 }
 #else
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
 #ifdef __WXMAC__
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
@@ -379,7 +379,7 @@ void Aven::ReportError(const wxString& msg)
 }
 
 wxString
-wmsg(int msg_no) 
+wmsg(int msg_no)
 {
     return wxString::FromUTF8(msg(msg_no));
 }

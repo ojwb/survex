@@ -1,3 +1,7 @@
+Tue Jun 30 09:32:17 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Whitespace cleanup.
+
 Mon Jun 29 12:27:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/cad3d.sgml,doc/manual.sgml: Remove references to SpeleoGen,

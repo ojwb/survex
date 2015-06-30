@@ -341,7 +341,7 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
    if (to_name == fr_name) {
       /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
        * "survey stations".
-       * 
+       *
        * %s is replaced by the name of the station. */
       compile_error(/*Survey leg with same station (“%s”) at both ends - typing error?*/50,
 		    sprint_prefix(to_name));

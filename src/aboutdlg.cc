@@ -84,7 +84,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     /* TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
      * - it should be translated to the terminology that cavers using the
      * language would use.
-     * 
+     *
      * This string is used in the about box (summarising the purpose of aven).
      */
     id += wmsg(/*Survey visualisation tool*/209);

@@ -1176,9 +1176,9 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    OnDefaults();
 	    break;
 	case WXK_RETURN:
-            // For compatibility with older versions.
+	    // For compatibility with older versions.
 	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
-                m_View->StartRotation();
+		m_View->StartRotation();
 	    break;
 	case WXK_SPACE:
 	    if (!m_View->IsExtendedElevation())

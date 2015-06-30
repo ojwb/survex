@@ -175,7 +175,7 @@ remove_trailing_travs(void)
     * (although toporobot actually uses this term to mean something more
     * specific).  Feel free to follow this lead if you can't think of a better
     * term - these messages mostly indicate how processing is progressing.
-    * 
+    *
     * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Removing trailing traverses*/125));
    FOR_EACH_STN(stn, stnlist) {
@@ -777,7 +777,7 @@ replace_trailing_travs(void)
     * (although toporobot actually uses this term to mean something more
     * specific).  Feel free to follow this lead if you can't think of a better
     * term - these messages mostly indicate how processing is progressing.
-    * 
+    *
     * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Calculating trailing traverses*/128));
 

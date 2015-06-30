@@ -192,37 +192,37 @@ GLint trGet(TRcontext *tr, TRenum param)
 
    switch (param) {
       case TR_TILE_WIDTH:
-         return tr->TileWidth;
+	 return tr->TileWidth;
       case TR_TILE_HEIGHT:
-         return tr->TileHeight;
+	 return tr->TileHeight;
       case TR_TILE_BORDER:
-         return tr->TileBorder;
+	 return tr->TileBorder;
       case TR_IMAGE_WIDTH:
-         return tr->ImageWidth;
+	 return tr->ImageWidth;
       case TR_IMAGE_HEIGHT:
-         return tr->ImageHeight;
+	 return tr->ImageHeight;
       case TR_ROWS:
-         return tr->Rows;
+	 return tr->Rows;
       case TR_COLUMNS:
-         return tr->Columns;
+	 return tr->Columns;
       case TR_CURRENT_ROW:
-         if (tr->CurrentTile<0)
-            return -1;
-         else
-            return tr->CurrentRow;
+	 if (tr->CurrentTile<0)
+	    return -1;
+	 else
+	    return tr->CurrentRow;
       case TR_CURRENT_COLUMN:
-         if (tr->CurrentTile<0)
-            return -1;
-         else
-            return tr->CurrentColumn;
+	 if (tr->CurrentTile<0)
+	    return -1;
+	 else
+	    return tr->CurrentColumn;
       case TR_CURRENT_TILE_WIDTH:
-         return tr->CurrentTileWidth;
+	 return tr->CurrentTileWidth;
       case TR_CURRENT_TILE_HEIGHT:
-         return tr->CurrentTileHeight;
+	 return tr->CurrentTileHeight;
       case TR_ROW_ORDER:
-         return (GLint) tr->RowOrder;
+	 return (GLint) tr->RowOrder;
       default:
-         return 0;
+	 return 0;
    }
 }
 
@@ -238,9 +238,9 @@ void trRowOrder(TRcontext *tr, TRenum order)
 
 
 void trOrtho(TRcontext *tr,
-             GLdouble left, GLdouble right,
-             GLdouble bottom, GLdouble top,
-             GLdouble zNear, GLdouble zFar)
+	     GLdouble left, GLdouble right,
+	     GLdouble bottom, GLdouble top,
+	     GLdouble zNear, GLdouble zFar)
 {
    if (!tr)
       return;
@@ -256,9 +256,9 @@ void trOrtho(TRcontext *tr,
 
 
 void trFrustum(TRcontext *tr,
-               GLdouble left, GLdouble right,
-               GLdouble bottom, GLdouble top,
-               GLdouble zNear, GLdouble zFar)
+	       GLdouble left, GLdouble right,
+	       GLdouble bottom, GLdouble top,
+	       GLdouble zNear, GLdouble zFar)
 {
    if (!tr)
       return;
@@ -274,8 +274,8 @@ void trFrustum(TRcontext *tr,
 
 
 void trPerspective(TRcontext *tr,
-                   GLdouble fovy, GLdouble aspect,
-                   GLdouble zNear, GLdouble zFar )
+		   GLdouble fovy, GLdouble aspect,
+		   GLdouble zNear, GLdouble zFar )
 {
    GLdouble xmin, xmax, ymin, ymax;
    ymax = zNear * tan(fovy * 3.14159265 / 360.0);
@@ -343,10 +343,10 @@ void trBeginTile(TRcontext *tr)
 
    /* compute projection parameters */
    left = tr->Left + (tr->Right - tr->Left)
-        * (tr->CurrentColumn * tr->TileWidthNB - border) / tr->ImageWidth;
+	* (tr->CurrentColumn * tr->TileWidthNB - border) / tr->ImageWidth;
    right = left + (tr->Right - tr->Left) * tileWidth / tr->ImageWidth;
    bottom = tr->Bottom + (tr->Top - tr->Bottom)
-          * (tr->CurrentRow * tr->TileHeightNB - border) / tr->ImageHeight;
+	  * (tr->CurrentRow * tr->TileHeightNB - border) / tr->ImageHeight;
    top = bottom + (tr->Top - tr->Bottom) * tileHeight / tr->ImageHeight;
 
    if (tr->Perspective)
@@ -384,7 +384,7 @@ int trEndTile(TRcontext *tr)
       GLint srcWidth = tr->TileWidthNB;
       GLint srcHeight = tr->TileHeightNB;
       glReadPixels(srcX, srcY, srcWidth, srcHeight,
-                   tr->TileFormat, tr->TileType, tr->TileBuffer);
+		   tr->TileFormat, tr->TileType, tr->TileBuffer);
    }
 
    if (tr->ImageBuffer) {
@@ -403,7 +403,7 @@ int trEndTile(TRcontext *tr)
 
       /* read the tile into the final image */
       glReadPixels(srcX, srcY, srcWidth, srcHeight,
-                   tr->ImageFormat, tr->ImageType, tr->ImageBuffer);
+		   tr->ImageFormat, tr->ImageType, tr->ImageBuffer);
    }
 
    /* restore previous glPixelStore values */
@@ -417,7 +417,7 @@ int trEndTile(TRcontext *tr)
    if (tr->CurrentTile >= tr->Rows * tr->Columns) {
       /* restore user's viewport */
       glViewport(tr->ViewportSave[0], tr->ViewportSave[1],
-                 tr->ViewportSave[2], tr->ViewportSave[3]);
+		 tr->ViewportSave[2], tr->ViewportSave[3]);
       tr->CurrentTile = -1;  /* all done */
       return 0;
    }
@@ -452,31 +452,31 @@ void trRasterPos3f(TRcontext *tr, GLfloat x, GLfloat y, GLfloat z)
       /* Project object coord to window coordinate */
       if (gluProject(x, y, z, modelview, proj, viewport, &winX, &winY, &winZ)){
 
-         /* set raster pos to window coord (0,0) */
-         glMatrixMode(GL_MODELVIEW);
-         glPushMatrix();
-         glLoadIdentity();
-         glMatrixMode(GL_PROJECTION);
-         glPushMatrix();
-         glLoadIdentity();
-         glOrtho(0.0, tr->CurrentTileWidth,
-                 0.0, tr->CurrentTileHeight, 0.0, 1.0);
-         glRasterPos3f(0.0, 0.0, -winZ);
+	 /* set raster pos to window coord (0,0) */
+	 glMatrixMode(GL_MODELVIEW);
+	 glPushMatrix();
+	 glLoadIdentity();
+	 glMatrixMode(GL_PROJECTION);
+	 glPushMatrix();
+	 glLoadIdentity();
+	 glOrtho(0.0, tr->CurrentTileWidth,
+		 0.0, tr->CurrentTileHeight, 0.0, 1.0);
+	 glRasterPos3f(0.0, 0.0, -winZ);
 
-         /* Now use empty bitmap to adjust raster position to (winX,winY) */
-         {
-            GLubyte bitmap[1] = {0};
-            glBitmap(1, 1, 0.0, 0.0, winX, winY, bitmap);
-         }
+	 /* Now use empty bitmap to adjust raster position to (winX,winY) */
+	 {
+	    GLubyte bitmap[1] = {0};
+	    glBitmap(1, 1, 0.0, 0.0, winX, winY, bitmap);
+	 }
 
-         /* restore original matrices */
-         glPopMatrix(); /*proj*/
-         glMatrixMode(GL_MODELVIEW);
-         glPopMatrix();
+	 /* restore original matrices */
+	 glPopMatrix(); /*proj*/
+	 glMatrixMode(GL_MODELVIEW);
+	 glPopMatrix();
       }
 #ifdef DEBUG
       if (glGetError())
-         printf("GL error!\n");
+	 printf("GL error!\n");
 #endif
    }
 }
