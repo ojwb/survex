@@ -121,10 +121,13 @@ void
 KML::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPendingMove)
 {
     if (fPendingMove) {
-	if (in_linestring)
-	    fputs("</coordinates></LineString></Placemark>\n", fh);
-	fputs("<Placemark><LineString><altitudeMode>absolute</altitudeMode><coordinates>\n", fh);
-	in_linestring = true;
+	if (!in_linestring) {
+	    in_linestring = true;
+	    fputs("<Placemark><MultiGeometry>\n", fh);
+	} else {
+	    fputs("</coordinates></LineString>\n", fh);
+	}
+	fputs("<LineString><altitudeMode>absolute</altitudeMode><coordinates>\n", fh);
 	double X = p1->x, Y = p1->y, Z = p1->z;
 	pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
 	X = deg(X);
@@ -170,6 +173,6 @@ void
 KML::footer()
 {
     if (in_linestring)
-	fputs("</coordinates></LineString></Placemark>\n", fh);
+	fputs("</coordinates></LineString></MultiGeometry></Placemark>\n", fh);
     fputs("</Document></kml>\n", fh);
 }
