@@ -1,3 +1,10 @@
+Wed Jul 08 09:42:14 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: Fix coordinate systems using latitude and
+	  longitude - PROJ.4 wants these in radians, but we were passing
+	  degrees, which would generally cause the conversion to the output
+	  coordinate system to fail.  Reported by Wookey.
+
 Wed Jul 01 10:15:49 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Strip references to obsolete versions of MS Windows.
