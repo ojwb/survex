@@ -817,6 +817,25 @@ cmd_fix(void)
       real sdx;
       y = read_numeric(fFalse, &ny);
       z = read_numeric(fFalse, &nz);
+
+      if (pcs->proj && proj_out) {
+	 if (pj_is_latlong(pcs->proj)) {
+	    /* PROJ expect lat and long in radians. */
+	    x = rad(x);
+	    y = rad(y);
+	 }
+	 int r = pj_transform(pcs->proj, proj_out, 1, 1, &x, &y, &z);
+	 if (r != 0) {
+	    compile_error(/*Failed to convert coordinates*/436);
+	    /* FIXME: report pj_strerrno(r) */
+	    printf("[%s]\n", pj_strerrno(r));
+	 }
+      } else if (pcs->proj) {
+	 compile_error(/*The input projection is set but the output projection isn't*/437);
+      } else if (proj_out) {
+	 compile_error(/*The output projection is set but the input projection isn't*/438);
+      }
+
       sdx = read_numeric(fTrue, NULL);
       if (sdx <= 0) {
 	  compile_error_skip(-/*Standard deviation must be positive*/48);
@@ -886,24 +905,6 @@ cmd_fix(void)
 		       );
 	 }
 	 return;
-      }
-
-      if (pcs->proj && proj_out) {
-	 if (pj_is_latlong(pcs->proj)) {
-	    /* PROJ expect lat and long in radians. */
-	    x = rad(x);
-	    y = rad(y);
-	 }
-	 int r = pj_transform(pcs->proj, proj_out, 1, 1, &x, &y, &z);
-	 if (r != 0) {
-	    compile_error(/*Failed to convert coordinates*/436);
-	    /* FIXME: report pj_strerrno(r) */
-	    printf("[%s]\n", pj_strerrno(r));
-	 }
-      } else if (pcs->proj) {
-	 compile_error(/*The input projection is set but the output projection isn't*/437);
-      } else if (proj_out) {
-	 compile_error(/*The output projection is set but the input projection isn't*/438);
       }
    }
 

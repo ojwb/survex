@@ -1,3 +1,8 @@
+Tue Jul 14 17:46:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: Fix *fix with standard deviations when *cs is
+	  in use.
+
 Wed Jul 08 09:42:14 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/: Fix coordinate systems using latitude and

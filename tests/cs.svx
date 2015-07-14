@@ -1,4 +1,4 @@
-; pos=no warn=0
+; pos=yes warn=0
 *cs EPSG:4167
 *cs ESRI:104305
 *cs EUR79Z30
@@ -27,3 +27,6 @@
 *cs out UTM12N
 *cs out UTM60S
 *fix 1 reference 36000 83000 1600
+; regression test - until 1.2.21, *fix with sds ignored the coordinate system
+*cs UTM33N
+*fix 2 reference 410848.11 5281938.82 1646.82 10 10 30

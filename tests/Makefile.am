@@ -110,7 +110,7 @@ cmd_prefix.out\
 cmd_prefix_bad.out cmd_prefix_bad.svx\
 doubleinc.out doubleinc.svx\
 reenterlots.out reenterlots.svx\
-cs.out cs.svx\
+cs.out cs.pos cs.svx\
 csbad.out csbad.svx\
 cslonglat.out cslonglat.svx\
 omitfixaroundsolve.out omitfixaroundsolve.svx\
