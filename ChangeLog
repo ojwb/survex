@@ -1,3 +1,7 @@
+Tue Jul 14 17:53:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Tue Jul 14 17:46:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/: Fix *fix with standard deviations when *cs is

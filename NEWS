@@ -1,19 +1,25 @@
-c7096e68 (Olly Betts 2015-06-28 23:44:04 +1200    1) Sun Jun 28 11:43:11 GMT 2015  Olly Betts <olly@survex.com>
+702be52c5 (Olly Betts 2015-07-14 19:47:15 +0200    1) Tue Jul 14 17:46:38 GMT 2015  Olly Betts <olly@survex.com>
 
-Changes in 1.2.21 (2015-06-29):
+Changes in 1.2.21 (2015-07-14):
 
 * aven:
+
+  + Implement exporting of survey legs in KML format.
 
   + Put "paddle" placemarker icons on stations in exported KML files, using the
     same colour coding for entrances, fixed points and exported points as aven
     does.
 
-  + Implement exporting of survey legs in KML format.
-
   + Use wxGetenv() to read the SURVEXEDITOR variable, so we can accept Unicode
     values on Windows.
 
 * cavern:
+
+  + Fix coordinate systems using latitude and longitude - PROJ.4 wants these in
+    radians, but we were passing degrees, which would generally cause the
+    conversion to the output coordinate system to fail.  Reported by Wookey.
+
+  + Fix *fix with standard deviations when *cs is in use.
 
   + Fix use after free after *solve.  This only occurs if a leg between the two
     exact same stations appears right before and right after the *solve, which
@@ -30,6 +36,11 @@ Changes in 1.2.21 (2015-06-29):
   character sets with a "-" in, and is no longer useful.
 
 * Ignore any "@<something>" modifier in the language code.
+
+* Remove references to SpeleoGen from the documentation - it hasn't been
+  updated for many years, and can't read recent versions of the .3d format.
+
+* Strip documentation references to obsolete versions of MS Windows.
 
 Changes in 1.2.20 (2015-06-26):
 
