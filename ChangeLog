@@ -1,3 +1,8 @@
+Wed Jul 15 09:10:50 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/HACKING.htm: Update list of debian packages to install to build
+	  from git.
+
 Wed Jul 15 08:16:44 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac,doc/manual.sgml: Update for 1.2.21.
