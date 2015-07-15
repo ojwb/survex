@@ -1,3 +1,8 @@
+Wed Jul 15 08:15:20 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Document that 1.2.21 is needed for *fix using
+	  latitude and longitude, or with standard deviations.
+
 Tue Jul 14 17:53:21 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

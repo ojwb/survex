@@ -1306,8 +1306,13 @@ processed survey data to be specified.
 </Para>
 
 <Para>
-*cs was added in Survex 1.2.14.  The currently supported coordinate systems
-are:
+*cs was added in Survex 1.2.14, but handling of fixed points specified with
+latitude and longitude didn't work until 1.2.21.  And *fix with standard
+deviations specified also didn't work until 1.2.21.
+</Para>
+
+<Para>
+The currently supported coordinate systems are:
 </Para>
 
 <Para>CUSTOM followed by a PROJ4 string (like in the example above).</Para>
