@@ -119,6 +119,7 @@ END_EVENT_TABLE()
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100),
     m_Scale(0.0),
+    initial_scale(1.0),
     m_ScaleBarWidth(0),
     m_Control(control),
     m_LabelGrid(NULL),
@@ -220,9 +221,6 @@ void GfxCore::Initialise(bool same_file)
     if (!same_file) {
 	// Apply default parameters unless reloading the same file.
 	DefaultParameters();
-
-	// Set the initial scale.
-	SetScale(1.0);
     }
 
     m_HaveData = true;
@@ -243,6 +241,29 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_SHADOW);
     InvalidateList(LIST_TERRAIN);
 
+    // Set diameter of the viewing volume.
+    double cave_diameter = sqrt(sqrd(m_Parent->GetXExtent()) +
+				sqrd(m_Parent->GetYExtent()) +
+				sqrd(m_Parent->GetZExtent()));
+
+    // Allow for terrain.
+    double diameter = max(1000.0 * 2, cave_diameter * 2);
+
+    if (!same_file) {
+	SetVolumeDiameter(diameter);
+
+	// Set initial scale based on the size of the cave.
+	initial_scale = diameter / cave_diameter;
+	SetScale(initial_scale);
+    } else {
+	// Try to keep the same scale, allowing for the
+	// cave having grown (or shrunk).
+	double rescale = GetVolumeDiameter() / diameter;
+	SetVolumeDiameter(diameter);
+	SetScale(GetScale() * rescale);
+	initial_scale = initial_scale * rescale;
+    }
+
     ForceRefresh();
 }
 
@@ -260,13 +281,6 @@ void GfxCore::FirstShow()
 	GLACanvas::GetTextExtent(label->GetText(), &ext_x, NULL);
 	label->set_width(unsigned(ext_x) / quantise + 1);
     }
-
-    // Set diameter of the viewing volume.
-    double diameter = sqrt(sqrd(m_Parent->GetXExtent()) +
-			   sqrd(m_Parent->GetYExtent()) +
-			   sqrd(m_Parent->GetZExtent()));
-    // Allow for terrain.
-    SetVolumeDiameter(max(1000.0 * 2, diameter * 2));
 
     m_DoneFirstShow = true;
 }
@@ -1452,13 +1466,15 @@ void GfxCore::DefaultParameters()
     m_BoundingBox = false;
     m_Tubes = false;
     if (GetPerspective()) TogglePerspective();
+
+    // Set the initial scale.
+    SetScale(initial_scale);
 }
 
 void GfxCore::Defaults()
 {
     // Restore default scale, rotation and translation parameters.
     DefaultParameters();
-    SetScale(1.0);
 
     // Invalidate all the cached lists.
     GLACanvas::FirstShow();

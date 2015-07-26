@@ -1,3 +1,10 @@
+Sun Jul 26 11:21:33 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/gfxcore.cc,src/gfxcore.h: Fix initial scale for small caves
+	  (since 1.2.18 the initial scale has been too small).  Don't rescale
+	  if the same file is reloaded, but adjust the volume diameter as
+	  appropriate.
+
 Wed Jul 15 09:10:50 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Update list of debian packages to install to build

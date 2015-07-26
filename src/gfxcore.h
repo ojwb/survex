@@ -115,6 +115,7 @@ const int MAX_FRAMERATE = 50;
 
 class GfxCore : public GLACanvas {
     Double m_Scale;
+    Double initial_scale;
     int m_ScaleBarWidth;
 
     typedef enum {
