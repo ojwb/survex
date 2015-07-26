@@ -582,32 +582,35 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
     h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxLEFT, 5);
 
-    /* TRANSLATORS: The PROJ library is used to do coordinate transformations
-     * (https://trac.osgeo.org/proj/) - if the .3d file doesn't contain details
-     * of the coordinate projection in use, the user must specify it here for
-     * export formats which need to know it (e.g. GPX).
-     */
-    h2->Add(new wxStaticText(this, svx_PROJ_LABEL, wmsg(/*Coordinate projection*/440)),
-	    0, wxLEFT|wxALIGN_CENTRE_VERTICAL, 5);
-    long style = 0;
-    if (!m_layout.cs_proj.empty()) {
-	// If the input file specified the coordinate system, don't let the
-	// user mess with it.
-	style = wxTE_READONLY;
-    } else {
+    if (!printing) {
+	/* TRANSLATORS: The PROJ library is used to do coordinate
+	 * transformations (https://trac.osgeo.org/proj/) - if the .3d file
+	 * doesn't contain details of the coordinate projection in use, the
+	 * user must specify it here for export formats which need to know it
+	 * (e.g. GPX).
+	 */
+	h2->Add(new wxStaticText(this, svx_PROJ_LABEL, wmsg(/*Coordinate projection*/440)),
+		0, wxLEFT|wxALIGN_CENTRE_VERTICAL, 5);
+	long style = 0;
+	if (!m_layout.cs_proj.empty()) {
+	    // If the input file specified the coordinate system, don't let the
+	    // user mess with it.
+	    style = wxTE_READONLY;
+	} else {
 #if 0 // FIXME: Is it a good idea to save this?
-	wxConfigBase * cfg = wxConfigBase::Get();
-	wxString input_projection;
-	cfg->Read(wxT("input_projection"), &input_projection);
-	if (!input_projection.empty())
-	    proj_edit.SetValue(input_projection);
+	    wxConfigBase * cfg = wxConfigBase::Get();
+	    wxString input_projection;
+	    cfg->Read(wxT("input_projection"), &input_projection);
+	    if (!input_projection.empty())
+		proj_edit.SetValue(input_projection);
 #endif
+	}
+	wxTextCtrl * proj_edit = new wxTextCtrl(this, svx_PROJ, m_layout.cs_proj,
+						wxDefaultPosition, wxDefaultSize,
+						style);
+	h2->Add(proj_edit, 1, wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL, 5);
+	v1->Add(h2, 0, wxALIGN_LEFT|wxEXPAND, 5);
     }
-    wxTextCtrl * proj_edit = new wxTextCtrl(this, svx_PROJ, m_layout.cs_proj,
-					    wxDefaultPosition, wxDefaultSize,
-					    style);
-    h2->Add(proj_edit, 1, wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL, 5);
-    v1->Add(h2, 0, wxALIGN_LEFT|wxEXPAND, 5);
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 

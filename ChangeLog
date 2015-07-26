@@ -1,3 +1,8 @@
+Sun Jul 26 11:36:36 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/printing.cc: Remove the "Coordinate projection" field from the
+	  print dialog, as it isn't relevant there.
+
 Sun Jul 26 11:21:33 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc,src/gfxcore.h: Fix initial scale for small caves
