@@ -1,3 +1,8 @@
+Mon Jul 27 20:04:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavern.h: Document what days1 and days2 members of meta_data
+	  struct are.
+
 Mon Jul 27 15:15:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/: Clean up support for repeat readings (currently disabled) to

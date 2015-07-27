@@ -228,6 +228,7 @@ typedef struct Prefix {
 /* survey metadata */
 typedef struct Meta_data {
     size_t ref_count;
+    /* Days since 1900 for start and end date of survey, or -1 if undated. */
     int days1, days2;
 } meta_data;
 
