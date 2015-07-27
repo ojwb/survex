@@ -1,3 +1,7 @@
+Mon Jul 27 22:13:16 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Fix doc typo.
+
 Mon Jul 27 22:11:09 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/TODO.htm,doc/manual.sgml,lib/survex.pot,src/cavern.h,

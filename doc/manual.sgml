@@ -1043,7 +1043,7 @@ Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
 
 <Para>
 You need to be careful about the sign of the ZeroError. The value of
-ZeroError is what the the instrument would read when measuring a
+ZeroError is what the instrument would read when measuring a
 reading which should be zero.  So for example, if your tape measure
 has the end missing, and you are using the 30cm mark to take all
 measurements from, then a zero distance would be measured as 30cm and
