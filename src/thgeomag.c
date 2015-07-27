@@ -24,8 +24,9 @@
 * --------------------------------------------------------------------
 */
 
-// #include	<stdlib.h>
-#include <cmath>
+#include "thgeomag.h"
+
+#include <math.h>
 #include "thgeomagdata.h"
 
 #define	max(a,b)	(((a) > (b)) ? (a) : (b))
@@ -140,7 +141,7 @@ double thgeomag(double lat, double lon, double h, double dat) {
 
   /* compute gnm, hnm at dat */
 
-  int mindex = int((dat - thgeomag_minyear) / thgeomag_step);
+  int mindex = (int)((dat - thgeomag_minyear) / thgeomag_step);
   if (mindex < 0) mindex = 0;
   if (mindex > thgeomag_maxmindex) mindex = thgeomag_maxmindex;
   yearfrac = dat - thgeomag_step*mindex - thgeomag_minyear;
