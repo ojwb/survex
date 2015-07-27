@@ -1,3 +1,7 @@
+Mon Jul 27 12:54:19 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/thgeomag.cxx: Fix "set but not used" warning.
+
 Mon Jul 27 12:42:47 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/: Add IGRF handling code from therion 5.3.16.
