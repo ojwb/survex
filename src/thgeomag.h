@@ -30,6 +30,6 @@ double thgeomag(double lat, double lon, double h, double dat);
               // lat, long in radians, 
 	      // h = height above ellipsoid in metres, 
 	      // dat decimal year
-	      // output declination in degrees
+	      // output declination in radians
 
 #endif

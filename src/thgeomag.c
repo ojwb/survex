@@ -212,6 +212,6 @@ double thgeomag(double lat, double lon, double h, double dat) {
   magfield.Y = Y;
   magfield.Z = Z; */
 
-  return (X != 0. || Y != 0.) ? atan2(Y, X) * 180 / pi : (double) 0.; 
+  return (X != 0. || Y != 0.) ? atan2(Y, X) : (double) 0.;
 }
 

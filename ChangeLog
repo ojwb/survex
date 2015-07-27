@@ -1,3 +1,9 @@
+Mon Jul 27 20:07:30 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/thgeomag.c,src/thgeomag.h: Make thgeomag() return declination in
+	  radians, since that's what we want and it's more consistent with it
+	  taking lat and lon in radians.
+
 Mon Jul 27 20:04:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavern.h: Document what days1 and days2 members of meta_data
