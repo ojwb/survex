@@ -21,6 +21,7 @@
 ./csbad.svx:22:4: error: Coordinate system unsuitable for output
 ./csbad.svx:23:4: error: Coordinate system unsuitable for output
 ./csbad.svx:24:4: error: Coordinate system unsuitable for output
+./csbad.svx:29: error: Failed to convert coordinates: latitude or longitude exceeded limits
 
 Removing trailing traverses...
 
@@ -36,10 +37,11 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 1 survey station, joined by 0 legs.
+Survey contains 2 survey stations, joined by 0 legs.
 There are 0 loops.
+Survey has 2 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
-   1 0-node.
-There were 0 warning(s) and 23 error(s) - no output files produced.
+   2 0-nodes.
+There were 0 warning(s) and 24 error(s) - no output files produced.

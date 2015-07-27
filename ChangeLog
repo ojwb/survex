@@ -1,3 +1,9 @@
+Mon Jul 27 20:48:21 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/,src/commands.c,tests/csbad.out,tests/csbad.svx: Report error
+	  from PROJ when coordinate conversion fails as part of the actual
+	  error rather than on a separate line.
+
 Mon Jul 27 20:07:30 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/thgeomag.c,src/thgeomag.h: Make thgeomag() return declination in

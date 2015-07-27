@@ -825,9 +825,7 @@ cmd_fix(void)
 	 }
 	 int r = pj_transform(pcs->proj, proj_out, 1, 1, &x, &y, &z);
 	 if (r != 0) {
-	    compile_error(/*Failed to convert coordinates*/436);
-	    /* FIXME: report pj_strerrno(r) */
-	    printf("[%s]\n", pj_strerrno(r));
+	    compile_error(/*Failed to convert coordinates: %s*/436, pj_strerrno(r));
 	 }
       } else if (pcs->proj) {
 	 compile_error(/*The input projection is set but the output projection isn't*/437);

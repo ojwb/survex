@@ -352,8 +352,8 @@ msgstr ""
 
 #: ../src/commands.c:894
 #: n:436
-msgid "Failed to convert coordinates"
-msgstr "Falló la conversión de las coordenadas"
+msgid "Failed to convert coordinates: %s"
+msgstr "Falló la conversión de las coordenadas: %s"
 
 #: ../src/commands.c:899
 #: n:437

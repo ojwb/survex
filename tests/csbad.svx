@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=23
+; pos=fail warn=0 error=24
 *fix 1 reference 0 0 0
 *cs EPSG:-1
 *cs ERSI:1234
@@ -22,3 +22,8 @@
 *cs out long-lat
 *cs out jtsk
 *cs out jtsk03
+; PROJ.4 should fail to convert a point near the South pole to OSGB - check
+; that cavern relays the error usefully.
+*cs out osgb:ha
+*cs long-lat
+*fix 2 reference 179 -89 1000

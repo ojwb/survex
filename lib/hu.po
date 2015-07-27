@@ -354,8 +354,8 @@ msgstr "A koordináta rendszer alkalmatlan kimentenek"
 
 #: ../src/commands.c:894
 #: n:436
-msgid "Failed to convert coordinates"
-msgstr "A koordináták konvertálása sikertelen"
+msgid "Failed to convert coordinates: %s"
+msgstr "A koordináták konvertálása sikertelen: %s"
 
 #: ../src/commands.c:899
 #: n:437

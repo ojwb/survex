@@ -352,8 +352,8 @@ msgstr "Sistem koordinat tidak cocok pada keluaran"
 
 #: ../src/commands.c:894
 #: n:436
-msgid "Failed to convert coordinates"
-msgstr "Gagal mengkonversi koordinat"
+msgid "Failed to convert coordinates: %s"
+msgstr "Gagal mengkonversi koordinat: %s"
 
 #: ../src/commands.c:899
 #: n:437

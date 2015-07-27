@@ -352,7 +352,7 @@ msgstr ""
 
 #: ../src/commands.c:894
 #: n:436
-msgid "Failed to convert coordinates"
+msgid "Failed to convert coordinates: %s"
 msgstr ""
 
 #: ../src/commands.c:899
