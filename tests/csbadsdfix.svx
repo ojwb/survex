@@ -1,0 +1,24 @@
+; pos=fail warn=0 error=23
+*fix 1 reference 0 0 0 1 1 1
+*cs EPSG:-1
+*cs ERSI:1234
+*cs EUR79Z31
+*cs IJTSK 03
+*cs IJTSK04
+*cs IJTSK99
+*cs IJTSK3
+*cs IJTSK032
+*cs IJTSK03a
+*cs lat-lat
+*cs Long-LONG
+*cs OSGB:ZZ
+*cs OSGB:HI
+*cs S-LONG
+*cs UTM0
+*cs UTM61N
+*cs UTM61S
+*cs custom "+proj=ection"
+*cs out lat-long
+*cs out long-lat
+*cs out jtsk
+*cs out jtsk03

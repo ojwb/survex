@@ -904,6 +904,16 @@ cmd_fix(void)
 #endif
 		       );
 	 }
+
+	 if (!first_fix_name) {
+	    /* We track if we've fixed a station yet, and if so what the name
+	     * of the first fix was, so that we can issue an error if the
+	     * output coordinate system is set after fixing a station. */
+	    first_fix_name = fix_name;
+	    first_fix_filename = file.filename;
+	    first_fix_line = file.line;
+	 }
+
 	 return;
       }
    }

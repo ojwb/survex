@@ -1,0 +1,45 @@
+./csbadsdfix.svx:2: error: Station "1" fixed before CS command first used
+./csbadsdfix.svx:3:4: error: Unknown coordinate system
+./csbadsdfix.svx:4:4: error: Unknown coordinate system
+./csbadsdfix.svx:5:4: error: Unknown coordinate system
+./csbadsdfix.svx:6:11: error: End of line not blank
+./csbadsdfix.svx:7:4: error: Unknown coordinate system
+./csbadsdfix.svx:8:4: error: Unknown coordinate system
+./csbadsdfix.svx:9:4: error: Unknown coordinate system
+./csbadsdfix.svx:10:4: error: Unknown coordinate system
+./csbadsdfix.svx:11:4: error: Unknown coordinate system
+./csbadsdfix.svx:12:4: error: Unknown coordinate system
+./csbadsdfix.svx:13:4: error: Unknown coordinate system
+./csbadsdfix.svx:14:4: error: Unknown coordinate system
+./csbadsdfix.svx:15:4: error: Unknown coordinate system
+./csbadsdfix.svx:16:4: error: Unknown coordinate system
+./csbadsdfix.svx:17:4: error: Unknown coordinate system
+./csbadsdfix.svx:18:4: error: Unknown coordinate system
+./csbadsdfix.svx:19:4: error: Unknown coordinate system
+./csbadsdfix.svx:20:4: error: Invalid coordinate system: unknown projection id
+./csbadsdfix.svx:21:4: error: Unknown coordinate system
+./csbadsdfix.svx:22:4: error: Coordinate system unsuitable for output
+./csbadsdfix.svx:23:4: error: Coordinate system unsuitable for output
+./csbadsdfix.svx:24:4: error: Coordinate system unsuitable for output
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 23 error(s) - no output files produced.

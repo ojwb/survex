@@ -1,3 +1,8 @@
+Mon Jul 27 08:08:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: Extend check for *fix before *cs to catch
+	  *fix with standard deviations too.
+
 Sun Jul 26 11:36:36 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/printing.cc: Remove the "Coordinate projection" field from the
