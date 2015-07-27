@@ -1,3 +1,7 @@
+Mon Jul 27 13:05:58 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Add thgeomag code to the build system.
+
 Mon Jul 27 13:04:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/thgeomag.c,src/thgeomag.cxx: Tweak thgeomag.cxx to be valid C

@@ -8,7 +8,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
  pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h\
- avenprcore.h img2aven.h
+ avenprcore.h img2aven.h thgeomagdata.h
 
 LDADD = $(LIBOBJS)
 
@@ -33,7 +33,7 @@ COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
 
 cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  network.c readval.c str.c matrix.c img_hosted.c netbits.c useful.c \
- validate.c netartic.c \
+ validate.c netartic.c thgeomag.c \
  $(COMMONSRC)
 cavern_LDADD = $(PROJ_LIBS)
 
@@ -111,7 +111,7 @@ all_sources = \
 EXTRA_DIST = \
  aven.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert gen_img2aven
 
-BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h
+BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h thgeomagdata.h
 
 z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
@@ -121,6 +121,10 @@ avenpal.h: $(srcdir)/gdtconvert $(srcdir)/gradient.pov
 
 img2aven.h: $(srcdir)/gen_img2aven
 	$(srcdir)/gen_img2aven > tmp-img2aven.h && mv tmp-img2aven.h img2aven.h
+
+thgeomagdata.h: $(srcdir)/igrf2c.py $(srcdir)/igrf12coeffs.txt
+	python $(srcdir)/igrf2c.py $(srcdir)/igrf12coeffs.txt
+	mv ../thgeomagdata.h .
 
 MAINTAINERCLEANFILES =\
  $(BUILT_SOURCES)
