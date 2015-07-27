@@ -326,6 +326,9 @@ typedef struct Settings {
    int begin_lineno; /* 0 means no block started in this file */
    int flags;
    projPJ proj;
+   /* Location at which we calculate the declination if
+    * z[Q_DECLINATION] == HUGE_REAL. */
+   real dec_x, dec_y, dec_z;
    meta_data * meta;
 } settings;
 

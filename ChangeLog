@@ -1,3 +1,10 @@
+Mon Jul 27 22:11:09 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/TODO.htm,doc/manual.sgml,lib/survex.pot,src/cavern.h,
+	  src/commands.c,src/datain.c: Add new *declination command with
+	  support for setting the declination automatically based on the
+	  survey date.
+
 Mon Jul 27 20:48:21 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/,src/commands.c,tests/csbad.out,tests/csbad.svx: Report error

@@ -1062,10 +1062,24 @@ then you can correct it with:
 gauges since pairs of readings are subtracted.
 </Para>
 
+</Para>
+The magnetic declination is the difference between true north and magnetic
+north.  This varies both by location and over time.  You can just use
+*calibrate compass to correct for any zero error and the declination in one,
+but it's generally preferable to keep the compass zero error and the magnetic
+declination separate.
+</Para>
+
 <Para>
-The magnetic declination varies from year to year and it is often
-desirable to keep the compass zero error and the magnetic declination
-separate. cavern calculates the true bearing as follows:
+As of Survex 1.2.22, you can specify the magnetic declination using the
+*declination command - either by giving an explicit value, or by specifying
+a location to use along with the survey date to calculate a value from the
+IGRF model.  In earlier versions, you could only specify the declination
+using *calibrate declination.
+</Para>
+
+</Para>
+Cavern calculates the true bearing as follows:
 </Para>
 
 <Para>
@@ -1084,9 +1098,10 @@ is given.
 
 <Para>
 Magnetic declinations are conventionally positive when magnetic north is east of
-true north, so you need to reverse the sign when specifying the declination
-correction to use - for example, for an area where the magnetic declination is
-5 degrees, you should use:
+true north.  With *declination, you specify the declination with the conventional
+sign, but with *calibrate declination you need to reverse the sign when
+specifying the declination correction to use - for example, for an area where
+the magnetic declination is 5 degrees, you should use:
 </Para>
 
 <programlisting>*CALIBRATE DECLINATION -5</programlisting>
@@ -1104,7 +1119,7 @@ zero error 0.0
 
 <VarListEntry><Term>See Also</Term>
 
-<listitem><Para>*units</Para></listitem>
+<listitem><Para>*declination, *units</Para></listitem>
 
 </VarListEntry>
 
@@ -1262,7 +1277,7 @@ whole run.
 
 <VarListEntry><Term>Description</Term>
 
-<listitem><Para>*copyright allow the copyright information to be
+<listitem><Para>*copyright allows the copyright information to be
 stored in a way that can be automatically collated.
 </Para></listitem>
 
@@ -1753,6 +1768,54 @@ can be specified (useful for overnight or multi-day surveying trips).
 <VarListEntry><Term>See Also</Term>
 
 <listitem><Para>*begin, *instrument, *team</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
+<Sect3><Title>DECLINATION</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem>
+<Para>*declination &lt;declination&gt; &lt;units&gt;</Para>
+<Para>*declination &lt;auto&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<Para>
+This command allows the magnetic declination to be specified.  This is added to
+compass readings to give bearings relative to true North.
+</Para>
+
+<Para>
+The first form above specifies an explicit value for the magnetic declination,
+while the second tells cavern to use the IGRF (International Geomagnetic
+Reference Field) model to calculate a value for the declination at the
+specified coordinates on the date of each survey.  The coordinates are
+interpreted as being in the current coordinate system (as set with *cs).
+</Para>
+
+<Para>
+This command was added in Survex 1.2.22 - in earlier versions you can set a
+fixed declination value using <programlisting>*calibrate declination
+&lt;value&gt;</programlisting> (but note that &lt;value&gt; needs to have the
+opposite sign to that conventionally used for the declination, while this
+command take the declination with the conventional sign.
+</Para>
+
+</VarListEntry>
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*calibrate</Para></listitem>
 
 </VarListEntry>
 

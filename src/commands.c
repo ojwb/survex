@@ -40,6 +40,8 @@
 #include "readval.h"
 #include "str.h"
 
+static projPJ proj_wgs84;
+
 static void
 default_grade(settings *s)
 {
@@ -250,10 +252,10 @@ match_tok(const sztok *tab, int tab_size)
 
 typedef enum {
    CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
-   CMD_CS, CMD_DATA, CMD_DATE, CMD_DEFAULT, CMD_END, CMD_ENTRANCE, CMD_EQUATE,
-   CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT,
-   CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET, CMD_SOLVE,
-   CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
+   CMD_CS, CMD_DATA, CMD_DATE, CMD_DECLINATION, CMD_DEFAULT, CMD_END,
+   CMD_ENTRANCE, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE,
+   CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
+   CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
 static const sztok cmd_tab[] = {
@@ -265,6 +267,7 @@ static const sztok cmd_tab[] = {
      {"CS",        CMD_CS},
      {"DATA",      CMD_DATA},
      {"DATE",      CMD_DATE},
+     {"DECLINATION", CMD_DECLINATION},
 #ifndef NO_DEPRECATED
      {"DEFAULT",   CMD_DEFAULT},
 #endif
@@ -1551,7 +1554,6 @@ cmd_calibrate(void)
    sc = read_numeric(fTrue);
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
-   /* perhaps "*calibrate declination XXX" should be "*declination XXX" ? */
    if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {
       /* TRANSLATORS: DECLINATION is a built-in keyword, so best not to
        * translate */
@@ -1570,6 +1572,52 @@ cmd_calibrate(void)
 	 pcs->sc[quantity] = sc;
       }
    }
+}
+
+static void
+cmd_declination(void)
+{
+    real v = read_numeric(fTrue);
+    if (v == HUGE_REAL) {
+	get_token_no_blanks();
+	if (strcmp(ucbuffer, "AUTO") != 0) {
+	    compile_error_skip(-/*Expected number or 'AUTO'*/309);
+	    return;
+	}
+	/* *declination auto X Y Z */
+	real x = read_numeric(fFalse);
+	real y = read_numeric(fFalse);
+	real z = read_numeric(fFalse);
+	if (!pcs->proj) {
+	    compile_error(/*Input coordinate system must be specified for '*DECLINATION AUTO'*/301);
+	    return;
+	}
+	if (!proj_wgs84) {
+	    proj_wgs84 = pj_init_plus("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+	}
+	/* Convert to WGS84 lat long. */
+	if (pj_is_latlong(pcs->proj)) {
+	    /* PROJ expects lat and long in radians. */
+	    x = rad(x);
+	    y = rad(y);
+	}
+	int r = pj_transform(pcs->proj, proj_wgs84, 1, 1, &x, &y, &z);
+	if (r != 0) {
+	    compile_error(/*Failed to convert coordinates: %s*/436, pj_strerrno(r));
+	    return;
+	}
+	pcs->z[Q_DECLINATION] = HUGE_REAL;
+	pcs->dec_x = x;
+	pcs->dec_y = y;
+	pcs->dec_z = z;
+    } else {
+	/* *declination D UNITS */
+	int units = get_units(Q_DECLINATION, fFalse);
+	if (units == UNITS_NULL) {
+	    return;
+	}
+	pcs->z[Q_DECLINATION] = v * factor_tab[units];
+    }
 }
 
 #ifndef NO_DEPRECATED
@@ -2191,6 +2239,7 @@ static const cmd_fn cmd_funcs[] = {
    cmd_cs,
    cmd_data,
    cmd_date,
+   cmd_declination,
 #ifndef NO_DEPRECATED
    cmd_default,
 #endif

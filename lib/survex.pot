@@ -372,6 +372,14 @@ msgstr ""
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr ""
 
+#: n:301
+msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
+msgstr ""
+
+#: n:309
+msgid "Expected number or 'AUTO'"
+msgstr ""
+
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
 #.
