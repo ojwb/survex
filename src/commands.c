@@ -763,7 +763,6 @@ cmd_fix(void)
    static const char * name_omit_already_filename = NULL;
    static unsigned int name_omit_already_line;
    real x, y, z;
-   int nx, ny, nz;
    filepos fp;
 
    fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
@@ -778,11 +777,11 @@ cmd_fix(void)
       if (*ucbuffer) set_pos(&fp);
    }
 
-   x = read_numeric(fTrue, &nx);
+   x = read_numeric(fTrue);
    if (x == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */
-      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse, &nx);
+      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse);
    }
    if (x == HUGE_REAL) {
       if (pcs->proj || proj_out) {
@@ -815,8 +814,8 @@ cmd_fix(void)
       x = y = z = (real)0.0;
    } else {
       real sdx;
-      y = read_numeric(fFalse, &ny);
-      z = read_numeric(fFalse, &nz);
+      y = read_numeric(fFalse);
+      z = read_numeric(fFalse);
 
       if (pcs->proj && proj_out) {
 	 if (pj_is_latlong(pcs->proj)) {
@@ -836,7 +835,7 @@ cmd_fix(void)
 	 compile_error(/*The output projection is set but the input projection isn't*/438);
       }
 
-      sdx = read_numeric(fTrue, NULL);
+      sdx = read_numeric(fTrue);
       if (sdx <= 0) {
 	  compile_error_skip(-/*Standard deviation must be positive*/48);
 	  return;
@@ -844,7 +843,7 @@ cmd_fix(void)
       if (sdx != HUGE_REAL) {
 	 real sdy, sdz;
 	 real cxy = 0, cyz = 0, czx = 0;
-	 sdy = read_numeric(fTrue, NULL);
+	 sdy = read_numeric(fTrue);
 	 if (sdy == HUGE_REAL) {
 	    /* only one variance given */
 	    sdy = sdz = sdx;
@@ -853,7 +852,7 @@ cmd_fix(void)
 	       compile_error_skip(-/*Standard deviation must be positive*/48);
 	       return;
 	    }
-	    sdz = read_numeric(fTrue, NULL);
+	    sdz = read_numeric(fTrue);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
@@ -863,11 +862,11 @@ cmd_fix(void)
 		  compile_error_skip(-/*Standard deviation must be positive*/48);
 		  return;
 	       }
-	       cxy = read_numeric(fTrue, NULL);
+	       cxy = read_numeric(fTrue);
 	       if (cxy != HUGE_REAL) {
 		  /* covariances given */
-		  cyz = read_numeric(fFalse, NULL);
-		  czx = read_numeric(fFalse, NULL);
+		  cyz = read_numeric(fFalse);
+		  czx = read_numeric(fFalse);
 	       } else {
 		  cxy = 0;
 	       }
@@ -1499,7 +1498,7 @@ cmd_units(void)
       return;
    }
 
-   factor = read_numeric(fTrue, NULL);
+   factor = read_numeric(fTrue);
    if (factor == 0.0) {
       /* TRANSLATORS: error message given by "*units tape 0 feet" - it’s
        * meaningless to say your tape is marked in "0 feet" (but you might
@@ -1550,8 +1549,8 @@ cmd_calibrate(void)
       return;
    }
 
-   z = read_numeric(fFalse, NULL);
-   sc = read_numeric(fTrue, NULL);
+   z = read_numeric(fFalse);
+   sc = read_numeric(fTrue);
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
    /* perhaps "*calibrate declination XXX" should be "*declination XXX" ? */
@@ -1662,7 +1661,7 @@ cmd_sd(void)
       default_grade(pcs);
       return;
    }
-   sd = read_numeric(fFalse, NULL);
+   sd = read_numeric(fFalse);
    if (sd <= (real)0.0) {
       compile_error_skip(-/*Standard deviation must be positive*/48);
       return;

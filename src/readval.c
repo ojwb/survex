@@ -393,7 +393,14 @@ read_number(bool f_optional)
 }
 
 extern real
-read_numeric(bool f_optional, int *p_n_readings)
+read_numeric(bool f_optional)
+{
+   skipblanks();
+   return read_number(f_optional);
+}
+
+extern real
+read_numeric_multi(bool f_optional, int *p_n_readings)
 {
    size_t n_readings = 0;
    real tot = (real)0.0;
@@ -422,9 +429,9 @@ read_numeric(bool f_optional, int *p_n_readings)
 
 /* read numeric expr or omit (return HUGE_REAL); else longjmp */
 extern real
-read_numeric_or_omit(int *p_n_readings)
+read_numeric_multi_or_omit(int *p_n_readings)
 {
-   real v = read_numeric(fTrue, p_n_readings);
+   real v = read_numeric_multi(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
 	 compile_error_token(-/*Expecting numeric field, found “%s”*/9);

@@ -38,8 +38,9 @@ enum {
 
 prefix *read_prefix(unsigned flags);
 
-real read_numeric(bool f_optional, int *p_n_readings);
-real read_numeric_or_omit(int *p_n_readings);
+real read_numeric(bool f_optional);
+real read_numeric_multi(bool f_optional, int *p_n_readings);
+real read_numeric_multi_or_omit(int *p_n_readings);
 
 unsigned int read_uint(void);
 

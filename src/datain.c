@@ -341,7 +341,7 @@ read_reading(reading r, bool f_optional)
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
-   VAL(r) = read_numeric(f_optional, &n_readings);
+   VAL(r) = read_numeric_multi(f_optional, &n_readings);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }
@@ -351,7 +351,7 @@ read_bearing_or_omit(reading r)
 {
    int n_readings;
    q_quantity q = Q_NULL;
-   VAL(r) = read_numeric_or_omit(&n_readings);
+   VAL(r) = read_numeric_multi_or_omit(&n_readings);
    switch (r) {
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
@@ -573,7 +573,7 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 nextch(); /* : */
 	 skipblanks();
-	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse, NULL);
+	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse);
 	 pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
 	 get_token();
 	 pcs->ordering = compass_order;
@@ -588,9 +588,9 @@ data_file(const char *pth, const char *fnm)
 	 }
 	 if (strcmp(buffer, "CORRECTIONS") == 0) {
 	    nextch(); /* : */
-	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse, NULL));
-	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse, NULL));
-	    pcs->z[Q_LENGTH] = -read_numeric(fFalse, NULL);
+	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse));
+	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse));
+	    pcs->z[Q_LENGTH] = -read_numeric(fFalse);
 	 } else {
 	    pcs->z[Q_BEARING] = 0;
 	    pcs->z[Q_GRADIENT] = 0;
@@ -659,17 +659,17 @@ data_file(const char *pth, const char *fnm)
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
 		     }
-		     x = read_numeric(fFalse, NULL);
+		     x = read_numeric(fFalse);
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
 		     }
-		     y = read_numeric(fFalse, NULL);
+		     y = read_numeric(fFalse);
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
 		     }
-		     z = read_numeric(fFalse, NULL);
+		     z = read_numeric(fFalse);
 		     stn = StnFromPfx(name);
 		     if (!fixed(stn)) {
 			POS(stn, 0) = x;

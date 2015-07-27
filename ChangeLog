@@ -1,3 +1,8 @@
+Mon Jul 27 15:15:53 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/: Clean up support for repeat readings (currently disabled) to
+	  only expect them for survey readings.
+
 Mon Jul 27 13:25:28 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Add example of using "*CALIBRATE DECLINATION".
