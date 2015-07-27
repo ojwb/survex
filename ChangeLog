@@ -1,3 +1,8 @@
+Mon Jul 27 13:24:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Consistently say "magnetic declination" instead of
+	  "magnetic deviation".
+
 Mon Jul 27 13:05:58 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Add thgeomag code to the build system.

@@ -1063,8 +1063,8 @@ gauges since pairs of readings are subtracted.
 </Para>
 
 <Para>
-The magnetic deviation varies from year to year and it is often
-desirable to keep the compass zero error and the magnetic deviation
+The magnetic declination varies from year to year and it is often
+desirable to keep the compass zero error and the magnetic declination
 separate. cavern calculates the true bearing as follows:
 </Para>
 
