@@ -1079,8 +1079,17 @@ scale factor)
 
 <Para>
 The scale factor for DECLINATION must be 1.0, otherwise an error
-is given. <!-- FIXME: practical example for declination -->
+is given.
 </Para>
+
+<Para>
+Magnetic declinations are conventionally positive when magnetic north is east of
+true north, so you need to reverse the sign when specifying the declination
+correction to use - for example, for an area where the magnetic declination is
+5 degrees, you should use:
+</Para>
+
+<programlisting>*CALIBRATE DECLINATION -5</programlisting>
 
 <Para>
 The default is all quantities calibrated to scale factor 1.0,

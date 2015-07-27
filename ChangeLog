@@ -1,3 +1,7 @@
+Mon Jul 27 13:25:28 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Add example of using "*CALIBRATE DECLINATION".
+
 Mon Jul 27 13:24:52 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Consistently say "magnetic declination" instead of
