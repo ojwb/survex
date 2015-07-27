@@ -1,3 +1,7 @@
+Mon Jul 27 22:13:54 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c: Fix comment typo.
+
 Mon Jul 27 22:13:33 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/zh_CN.po: Add missing ellipses to translated message.

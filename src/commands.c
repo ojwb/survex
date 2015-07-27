@@ -822,7 +822,7 @@ cmd_fix(void)
 
       if (pcs->proj && proj_out) {
 	 if (pj_is_latlong(pcs->proj)) {
-	    /* PROJ expect lat and long in radians. */
+	    /* PROJ expects lat and long in radians. */
 	    x = rad(x);
 	    y = rad(y);
 	 }
