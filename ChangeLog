@@ -1,3 +1,7 @@
+Mon Jul 27 22:13:33 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/zh_CN.po: Add missing ellipses to translated message.
+
 Mon Jul 27 22:13:16 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Fix doc typo.

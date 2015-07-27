@@ -2663,7 +2663,7 @@ msgstr "打印"
 #: ../src/printing.cc:629
 #: n:400
 msgid "&Print..."
-msgstr "打印(&P)"
+msgstr "打印(&P)..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
