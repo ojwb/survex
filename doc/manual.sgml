@@ -1086,7 +1086,7 @@ If the scale factor is 1.0, then the two forms are equivalent, though they
 still allow you to diffentiate between how the zero error has been determined.
 </Para>
 
-</Para>
+<Para>
 The magnetic declination is the difference between true north and magnetic
 north.  This varies both by location and over time.  You can just use
 *calibrate compass to correct for any zero error and the declination in one,
@@ -1102,7 +1102,7 @@ IGRF model.  In earlier versions, you could only specify the declination
 using *calibrate declination.
 </Para>
 
-</Para>
+<Para>
 Cavern calculates the true bearing as follows:
 </Para>
 
@@ -1814,6 +1814,8 @@ can be specified (useful for overnight or multi-day surveying trips).
 
 <VarListEntry><Term>Description</Term>
 
+<listitem>
+
 <Para>
 This command allows the magnetic declination to be specified.  This is added to
 compass readings to give bearings relative to true North.
@@ -1834,6 +1836,8 @@ fixed declination value using <programlisting>*calibrate declination
 opposite sign to that conventionally used for the declination, while this
 command take the declination with the conventional sign.
 </Para>
+
+</listitem>
 
 </VarListEntry>
 

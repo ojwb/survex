@@ -1,3 +1,7 @@
+Tue Jul 28 18:17:16 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Fix broken markup introduced by recent changes.
+
 Tue Jul 28 15:55:23 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
