@@ -36,6 +36,12 @@ Changes in 1.2.21 (2015-07-28):
   + Add new *declination command with support for setting the declination
     automatically from the IGRF model based on the survey date.  Thanks to the
     Therion developers for the IGRF support code, which we're reusing.
+    Fixes #54, reported by Wookey.
+
+  + Allow the units for the zero error to be specified, making it easier to
+    specify calibration with a scale if you measure the zero error externally
+    (rather than using the instrument itself).  Fixes #61, reported by Andrew
+    Atkinson.
 
   + Report the error from PROJ when coordinate conversion fails as part of the
     actual error rather than on a separate line.
