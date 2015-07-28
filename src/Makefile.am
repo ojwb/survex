@@ -8,7 +8,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
  pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h\
- avenprcore.h img2aven.h thgeomagdata.h
+ avenprcore.h img2aven.h thgeomag.h thgeomagdata.h
 
 LDADD = $(LIBOBJS)
 
