@@ -1,3 +1,7 @@
+Tue Jul 28 11:43:27 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/ru.po: Add missing ellipses to translated message.
+
 Tue Jul 28 10:33:37 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.

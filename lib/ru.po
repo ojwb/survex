@@ -1745,7 +1745,7 @@ msgstr "Журнал ошибок %s"
 #: ../src/printing.cc:634
 #: n:230
 msgid "&Export..."
-msgstr "&Экспорт"
+msgstr "&Экспортi..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
