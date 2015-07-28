@@ -1191,12 +1191,11 @@ the case as is (in which case '2a' and '2A' will be regarded as different).
 
 <!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
 
-<!-- <VarListEntry><Term>See Also</Term>
+<VarListEntry><Term>See Also</Term>
 
-<listitem><Para>*end, *prefix</Para></listitem>
+<listitem><Para>*truncate</Para></listitem>
 
 </VarListEntry>
--->
 
 </VariableList>
 
@@ -2941,13 +2940,11 @@ versions removed this rather archaic restriction).
 
 <!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
 
-<!--
 <VarListEntry><Term>See Also</Term>
 
-<listitem><Para>*end, *prefix</Para></listitem>
+<listitem><Para>*case</Para></listitem>
 
 </VarListEntry>
--->
 
 </VariableList>
 
