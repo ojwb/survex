@@ -1309,6 +1309,10 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 	 czx = -2 * VAR(ToDepth) * dx / D;
 #endif
       }
+      /* FIXME: If there's a clino reading, check it against the depth reading,
+       * and average.
+       * if (VAL(Clino) != HUGE_REAL || VAL(BackClino) != HUGE_REAL) { ... }
+       */
    }
    addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
 #ifndef NO_COVARIANCES

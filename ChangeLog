@@ -1,3 +1,8 @@
+Tue Jul 28 18:35:03 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c: Add FIXME for actually looking at clino readings in
+	  diving data.
+
 Tue Jul 28 18:23:07 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/aven.sgml: Document the command line options.  Reported by Jenny
