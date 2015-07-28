@@ -1,3 +1,10 @@
+Tue Jul 28 15:52:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,src/commands.c,tests/: Allow the units for the zero
+	  error to be specified, making it easier to specify calibration with
+	  a scale if you measure the zero error externally (rather than using
+	  the instrument itself).  Fixes #61, reported by Andrew Atkinson.
+
 Tue Jul 28 12:15:20 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/datain.c,src/date.c,src/date.h: Calculate the Julian date to use

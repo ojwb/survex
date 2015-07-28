@@ -1552,6 +1552,28 @@ cmd_calibrate(void)
 
    z = read_numeric(fFalse);
    sc = read_numeric(fTrue);
+   if (sc == HUGE_REAL) {
+      if (isalpha(ch)) {
+	 int units = get_units(qmask, fFalse);
+	 if (units == UNITS_NULL) {
+	    return;
+	 }
+	 z *= factor_tab[units];
+	 sc = read_numeric(fTrue);
+	 if (sc == HUGE_REAL) {
+	    sc = (real)1.0;
+	 } else {
+	    /* Adjustment applied is: (reading - z) * sc
+	     * We want: reading * sc - z
+	     * So divide z by sc so the applied adjustment does what we want.
+	     */
+	    z /= sc;
+	 }
+      } else {
+	 sc = (real)1.0;
+      }
+   }
+
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
    if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {

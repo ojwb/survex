@@ -1,0 +1,6 @@
+; pos=no
+*fix 1 0 0 0
+*calibrate tape -10 0.5
+1 2 100.00 090 0 ; corrected length should be 55
+*calibrate tape -10 metres 0.5
+1 3 100.00 090 0 ; corrected length should be 60

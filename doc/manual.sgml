@@ -1003,6 +1003,8 @@ and the corresponding *end should have the same survey name.
 <listitem>
 <Para>*calibrate &lt;quantity list&gt; &lt;zero error&gt; [&lt;scale&gt;]
 </Para>
+<Para>*calibrate &lt;quantity list&gt; &lt;zero error&gt; &lt;units&gt; [&lt;scale&gt;]
+</Para>
 <Para>*calibrate default
 </Para>
 </listitem>
@@ -1038,10 +1040,6 @@ Several quantities can be given in &lt;quantity list&gt;
 </Para>
 
 <Para>
-Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
-</Para>
-
-<Para>
 You need to be careful about the sign of the ZeroError. The value of
 ZeroError is what the instrument would read when measuring a
 reading which should be zero.  So for example, if your tape measure
@@ -1060,6 +1058,32 @@ then you can correct it with:
 
 <Para>Note: ZeroError is irrelevant for Topofil counters and depth
 gauges since pairs of readings are subtracted.
+</Para>
+
+<Para>
+In the first form in the synopsis above, the zero error is measured by the
+instrument itself (e.g. reading off the number where a truncated tape now ends)
+and any scale factor specified applies to it, like so:
+</Para>
+
+<Para>
+Value = ( Reading - ZeroError ) * Scale    (Scale defaults to 1.0)
+</Para>
+
+<Para>
+In the second form above (supported since Survex 1.2.21), the zero error has
+been measured externally (e.g. measuring how much too long your tape is with
+a ruler) - the units of the zero error are explicitly specified and any scale
+factor isn't applied to it:
+</Para>
+
+<Para>
+Value = ( Reading * Scale ) - ZeroError    (Scale defaults to 1.0)
+</Para>
+
+<Para>
+If the scale factor is 1.0, then the two forms are equivalent, though they
+still allow you to diffentiate between how the zero error has been determined.
 </Para>
 
 </Para>
