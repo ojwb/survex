@@ -1,3 +1,7 @@
+Tue Jul 28 18:56:46 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Tue Jul 28 18:35:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/datain.c: Add FIXME for actually looking at clino readings in

@@ -65,6 +65,12 @@ Changes in 1.2.21 (2015-07-28):
 * Improve documentation of magnetic declination handling, and cover the new
   "*DECLINATION" command.
 
+* Document aven's command line options in the manual and its man page.
+  Reported by Jenny Black.
+
+* Point to '*case' and '*truncate' from the 'SEE ALSO' sections of each other's
+  documentation.
+
 * Remove references to SpeleoGen from the documentation - it hasn't been
   updated for many years, and can't read recent versions of the .3d format.
 
