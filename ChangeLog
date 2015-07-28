@@ -1,3 +1,9 @@
+Tue Jul 28 09:22:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/export.cc: Set LC_NUMERIC to the C locale while exporting so that
+	  "." is used for the decimal separator in KML and other textual formats.
+	  Reported by Jan Schorn.
+
 Mon Jul 27 22:13:54 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Fix comment typo.

@@ -39,6 +39,7 @@
 #include "pos.h"
 
 #include <float.h>
+#include <locale.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1232,6 +1233,21 @@ EPS::footer(void)
 	 "%%EOF\n", fh);
 }
 
+class UseNumericCLocale {
+    char * current_locale;
+
+  public:
+    UseNumericCLocale() {
+	current_locale = osstrdup(setlocale(LC_NUMERIC, NULL));
+	setlocale(LC_NUMERIC, "C");
+    }
+
+    ~UseNumericCLocale() {
+	setlocale(LC_NUMERIC, current_locale);
+	osfree(current_locale);
+    }
+};
+
 bool
 Export(const wxString &fnm_out, const wxString &title,
        const wxString &datestamp, time_t datestamp_numeric,
@@ -1241,6 +1257,7 @@ Export(const wxString &fnm_out, const wxString &title,
        double grid_, double text_height, double marker_size_,
        double scale)
 {
+   UseNumericCLocale dummy;
    int fPendingMove = 0;
    img_point p, p1;
    double s = 0, c = 0;
