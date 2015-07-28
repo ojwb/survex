@@ -1,3 +1,7 @@
+Tue Jul 28 10:33:37 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Tue Jul 28 09:22:44 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/export.cc: Set LC_NUMERIC to the C locale while exporting so that

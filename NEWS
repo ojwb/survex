@@ -1,12 +1,25 @@
-Changes in 1.2.21 (2015-07-15):
+Changes in 1.2.21 (2015-07-28):
 
 * aven:
+
+  + Fix exporting to KML and other text-based formats to always use "." for the
+    decimal separator - previously "," would be used when the user's locale
+    specified this for the decimal separator.  Reported by Jan Schorn.
 
   + Implement exporting of survey legs in KML format.
 
   + Put "paddle" placemarker icons on stations in exported KML files, using the
     same colour coding for entrances, fixed points and exported points as aven
     does.
+
+  + Remove the "Coordinate projection" field from the print dialog, as it isn't
+    relevant there.  Reported by Wookey.
+
+  + Fix the initial scale for small caves (since 1.2.18 the initial scale has
+    been too small).  Reported by Wookey.
+
+  + Don't rescale if the same file is reloaded, but adjust the volume diameter
+    as appropriate.
 
   + Use wxGetenv() to read the SURVEXEDITOR variable, so we can accept Unicode
     values on Windows.
@@ -17,7 +30,15 @@ Changes in 1.2.21 (2015-07-15):
     radians, but we were passing degrees, which would generally cause the
     conversion to the output coordinate system to fail.  Reported by Wookey.
 
-  + Fix *fix with standard deviations when *cs is in use.
+  + Fix *fix with standard deviations when *cs is in use, give an error for use
+    of *fix with standard deviations before *cs.
+
+  + Add new *declination command with support for setting the declination
+    automatically from the IGRF model based on the survey date.  Thanks to the
+    Therion developers for the IGRF support code, which we're reusing.
+
+  + Report the error from PROJ when coordinate conversion fails as part of the
+    actual error rather than on a separate line.
 
   + Fix use after free after *solve.  This only occurs if a leg between the two
     exact same stations appears right before and right after the *solve, which
@@ -35,10 +56,15 @@ Changes in 1.2.21 (2015-07-15):
 
 * Ignore any "@<something>" modifier in the language code.
 
+* Improve documentation of magnetic declination handling, and cover the new
+  "*DECLINATION" command.
+
 * Remove references to SpeleoGen from the documentation - it hasn't been
   updated for many years, and can't read recent versions of the .3d format.
 
 * Strip documentation references to obsolete versions of MS Windows.
+
+* doc/HACKING.htm: Update list of debian packages to install to build from git.
 
 Changes in 1.2.20 (2015-06-26):
 
