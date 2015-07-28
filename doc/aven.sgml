@@ -12,7 +12,8 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>aven</command>
-<arg choice="opt">options</arg>
+<arg choice="opt">--survey=SURVEY</arg>
+<arg choice="opt">--print</arg>
 <arg choice="req">.3d file</arg> <!--FIXME  rep="repeat"-->
 </cmdsynopsis>
 </refsynopsisdiv>
@@ -149,5 +150,30 @@ colour and depth (by default - you can also colour by date or by error).
 </Para>
 
 </refsect2>
+
+</refsect1>
+
+<refsect1><Title>Options</Title>
+
+<VariableList>
+<VarListEntry>
+<Term>-p, --print</Term>
+<ListItem>
+<Para>
+Print the specified file and exit.
+</Para>
+</ListItem>
+</VarListEntry>
+
+<VarListEntry>
+<Term>-s, --survey=SURVEY</Term>
+<ListItem>
+<Para>
+Only load the sub-survey 'SURVEY'.
+</Para>
+</ListItem>
+</VarListEntry>
+
+</VariableList>
 
 </refsect1>

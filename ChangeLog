@@ -1,3 +1,8 @@
+Tue Jul 28 18:23:07 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/aven.sgml: Document the command line options.  Reported by Jenny
+	  Black.
+
 Tue Jul 28 18:17:51 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Point to '*case' and '*truncate' from the 'SEE ALSO'
