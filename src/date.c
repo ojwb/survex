@@ -1,6 +1,6 @@
 /* date.c
  * Routines for date handling
- * Copyright (C) 2010 Olly Betts
+ * Copyright (C) 2010,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,3 +82,28 @@ ymd_from_days_since_1900(int days, int * py, int * pm, int * pd)
     *pd = da - (m + 2) * 153 / 5 + 123;
 }
 
+double
+julian_date_from_days_since_1900(int days)
+{
+    int g, dg, c, dc, b, db, a, da, y, m;
+    int days_in = days;
+    int dys;
+    double scale;
+    days += 693901;
+    g = days / 146097;
+    dg = days % 146097;
+    c = (dg / 36524 + 1) * 3 / 4;
+    dc = dg - c * 36524;
+    b = dc / 1461;
+    db = dc % 1461;
+    a = (db / 365 + 1) * 3 / 4;
+    da = db - a * 365;
+    y = g * 400 + c * 100 + b * 4 + a;
+    m = (da * 5 + 308) / 153;
+    y = y + m / 12;
+    /* dys is days since 1900 for the start of the year y. */
+    dys = (y - 1900) * 365 - 460;
+    dys += ((y - 1) / 4) - ((y - 1) / 100) + ((y - 1) / 400);
+    scale = (is_leap_year(y) ? 1 / 366.0 : 1 / 365.0);
+    return y + scale * (days_in - dys);
+}

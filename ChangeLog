@@ -1,3 +1,8 @@
+Tue Jul 28 12:15:20 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/datain.c,src/date.c,src/date.h: Calculate the Julian date to use
+	  for the declination properly.
+
 Tue Jul 28 11:44:05 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/survex.pot,src/,tests/: Warn if we see an undated compass reading

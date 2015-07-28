@@ -902,8 +902,8 @@ handle_compass(real *p_var)
 	  compile_warning(/*No survey date specified - using 0 for magnetic declination*/304);
 	  declination = 0;
       } else {
-	  /* FIXME: Calculate the Julian date properly. */
-	  double dat = (pcs->meta->days1 + pcs->meta->days2) * 0.5 / 365.25 + 1900;
+	  int avg_days = (pcs->meta->days1 + pcs->meta->days2) / 2;
+	  double dat = julian_date_from_days_since_1900(avg_days);
 	  /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
 	  declination = thgeomag(pcs->dec_y, pcs->dec_x, pcs->dec_z, dat);
       }

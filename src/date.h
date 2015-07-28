@@ -1,6 +1,6 @@
 /* date.h
  * Routines for date handling
- * Copyright (C) 2010 Olly Betts
+ * Copyright (C) 2010,2015 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ int last_day(int year, int month);
 int days_since_1900(int y, int m, int d);
 
 void ymd_from_days_since_1900(int days, int * py, int * pm, int * pd);
+
+double julian_date_from_days_since_1900(int days);
 
 #ifdef __cplusplus
 }
