@@ -181,6 +181,7 @@ main(int argc, char **argv)
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
    pcs->meta = NULL;
    pcs->proj = NULL;
+   pcs->declination = HUGE_REAL;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);

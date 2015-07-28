@@ -2220,12 +2220,19 @@ cmd_date(void)
 
     if (days2 < days1) {
 	compile_error(-/*End of date range is before the start*/81);
+	int tmp = days1;
+	days1 = days2;
+	days2 = tmp;
     }
 
 read:
-    copy_on_write_meta(pcs);
-    pcs->meta->days1 = days1;
-    pcs->meta->days2 = days2;
+    if (!pcs->meta || pcs->meta->days1 != days1 || pcs->meta->days2 != days2) {
+	copy_on_write_meta(pcs);
+	pcs->meta->days1 = days1;
+	pcs->meta->days2 = days2;
+	/* Invalidate cached declination. */
+	pcs->declination = HUGE_REAL;
+    }
 }
 
 typedef void (*cmd_fn)(void);

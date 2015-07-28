@@ -60,6 +60,7 @@ testdir=`(cd "$testdir" && pwd)`
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
+ cmd_declination_auto\
  lech level 2fixbug dot17 3dcorner\
  declination.dat ignore.dat backread.dat nomeasure.dat\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\

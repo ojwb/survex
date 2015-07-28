@@ -559,6 +559,7 @@ data_file(const char *pth, const char *fnm)
 	 } else {
 	     pcs->meta->days1 = pcs->meta->days2 = -1;
 	 }
+	 pcs->declination = HUGE_REAL;
 	 skipline();
 	 process_eol();
 	 /* SURVEY TEAM: */
@@ -894,18 +895,23 @@ handle_compass(real *p_var)
    real declination;
    if (pcs->z[Q_DECLINATION] != HUGE_REAL) {
       declination = -pcs->z[Q_DECLINATION];
+   } else if (pcs->declination != HUGE_REAL) {
+      declination = pcs->declination;
    } else {
-      double dat;
       if (!pcs->meta || pcs->meta->days1 == -1) {
-	  /* FIXME: Must set date for autodeclination to work */
+	  compile_warning(/*No survey date specified - using 0 for magnetic declination*/304);
 	  declination = 0;
       } else {
 	  /* FIXME: Calculate the Julian date properly. */
-	  dat = (pcs->meta->days1 + pcs->meta->days2) * 0.5 / 365.25 + 1900;
+	  double dat = (pcs->meta->days1 + pcs->meta->days2) * 0.5 / 365.25 + 1900;
 	  /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
-	  /* FIXME: cache the declination */
 	  declination = thgeomag(pcs->dec_y, pcs->dec_x, pcs->dec_z, dat);
       }
+      /* We cache the calculated declination as the calculation is relatively
+       * expensive.  We also calculate an "assumed 0" answer so that we only
+       * warn once per such survey rather than for every line with a compass
+       * reading. */
+      pcs->declination = declination;
    }
    if (comp != HUGE_REAL) {
       comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];

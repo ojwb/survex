@@ -380,6 +380,10 @@ msgstr ""
 msgid "Expected number or 'AUTO'"
 msgstr ""
 
+#: n:304
+msgid "No survey date specified - using 0 for magnetic declination"
+msgstr ""
+
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
 #.

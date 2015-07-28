@@ -1,3 +1,9 @@
+Tue Jul 28 11:44:05 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/survex.pot,src/,tests/: Warn if we see an undated compass reading
+	  when 'declination auto' is active.  Cache the computed declination
+	  as that saves 5-6% of the run time when processing CUCC's big dataset.
+
 Tue Jul 28 11:43:27 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/ru.po: Add missing ellipses to translated message.
