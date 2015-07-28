@@ -1095,7 +1095,7 @@ declination separate.
 </Para>
 
 <Para>
-As of Survex 1.2.22, you can specify the magnetic declination using the
+As of Survex 1.2.21, you can specify the magnetic declination using the
 *declination command - either by giving an explicit value, or by specifying
 a location to use along with the survey date to calculate a value from the
 IGRF model.  In earlier versions, you could only specify the declination
@@ -1828,7 +1828,7 @@ interpreted as being in the current coordinate system (as set with *cs).
 </Para>
 
 <Para>
-This command was added in Survex 1.2.22 - in earlier versions you can set a
+This command was added in Survex 1.2.21 - in earlier versions you can set a
 fixed declination value using <programlisting>*calibrate declination
 &lt;value&gt;</programlisting> (but note that &lt;value&gt; needs to have the
 opposite sign to that conventionally used for the declination, while this
