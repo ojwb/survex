@@ -1,3 +1,8 @@
+Tue Jul 28 19:10:52 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/Makefile.am: Distribute igrf coefficients file and script to
+	  generate C header from it.
+
 Tue Jul 28 18:57:43 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/HACKING.htm: Document where the unofficial Innosetup translations
