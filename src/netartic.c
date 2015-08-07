@@ -389,8 +389,14 @@ articulate(void)
 	 /* Anonymous stations must be at the end of a trailing traverse (since
 	  * the same anonymous station can't be referred to more than once),
 	  * and trailing traverses have been removed at this point.
+	  *
+	  * However, we may removed a trailing traverse back to an anonymous
+	  * station.  FIXME: It's not helpful to fail to point to a station
+	  * in such a case - it would be much nicer to look through the list
+	  * of trailing traverses in such a case to find a relevant traverse
+	  * and then report a station name from there.
 	  */
-	 SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON));
+	 /* SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON)); */
 	 if (stn->name->ident) {
 	    if (!fNotAttached) {
 	       fNotAttached = fTrue;

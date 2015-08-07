@@ -62,6 +62,7 @@ testdir=`(cd "$testdir" && pwd)`
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  cmd_calibrate cmd_declination cmd_declination_auto\
  lech level 2fixbug dot17 3dcorner\
+ unconnected-bug\
  declination.dat ignore.dat backread.dat nomeasure.dat\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\

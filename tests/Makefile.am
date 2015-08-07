@@ -96,6 +96,7 @@ cmd_date.svx cmd_datebad.svx cmd_datebad.out cmd_datebad2.svx cmd_datebad2.out\
 cmd_calibrate.svx cmd_calibrate.out cmd_calibrate.pos\
 cmd_declination.svx cmd_declination.out cmd_declination.pos\
 cmd_declination_auto.svx cmd_declination_auto.out cmd_declination_auto.pos\
+unconnected-bug.svx unconnected-bug.out\
 eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d\
 equatenosuchstn.out equatenosuchstn.svx\
