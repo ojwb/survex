@@ -1,0 +1,23 @@
+; pos=yes warn=0
+
+*fix 1 0 0 0
+
+*equate 1 a.1
+*begin a
+*export 1 2
+*declination 90 degrees
+1 2 10.00 000 0
+*end a
+
+*equate a.2 b.1
+*begin b
+*export 1 2
+1 2 10.00 000 0
+*end b
+
+*equate b.2 c.1
+*begin c
+*export 1 2
+*declination 10800 minutes ; 180 degrees
+1 2 10.00 000 0
+*end c

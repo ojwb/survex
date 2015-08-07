@@ -1,3 +1,8 @@
+Fri Aug 07 10:33:38 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: Fix *declination with an angle to actually
+	  work.
+
 Tue Jul 28 19:18:37 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/Makefile.am: Ship thgeomag.h.

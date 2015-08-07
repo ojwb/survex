@@ -94,6 +94,7 @@ cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
 cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\
 cmd_date.svx cmd_datebad.svx cmd_datebad.out cmd_datebad2.svx cmd_datebad2.out\
 cmd_calibrate.svx cmd_calibrate.out cmd_calibrate.pos\
+cmd_declination.svx cmd_declination.out cmd_declination.pos\
 cmd_declination_auto.svx cmd_declination_auto.out cmd_declination_auto.pos\
 eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d\

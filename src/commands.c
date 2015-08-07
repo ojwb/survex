@@ -1634,11 +1634,11 @@ cmd_declination(void)
 	pcs->dec_z = z;
     } else {
 	/* *declination D UNITS */
-	int units = get_units(Q_DECLINATION, fFalse);
+	int units = get_units(BIT(Q_DECLINATION), fFalse);
 	if (units == UNITS_NULL) {
 	    return;
 	}
-	pcs->z[Q_DECLINATION] = v * factor_tab[units];
+	pcs->z[Q_DECLINATION] = -v * factor_tab[units];
     }
 }
 
