@@ -1095,11 +1095,13 @@ declination separate.
 </Para>
 
 <Para>
-As of Survex 1.2.21, you can specify the magnetic declination using the
-*declination command - either by giving an explicit value, or by specifying
-a location to use along with the survey date to calculate a value from the
-IGRF model.  In earlier versions, you could only specify the declination
-using *calibrate declination.
+In earlier Survex versions, you specified the magnetic declination using
+*calibrate declination.  Now you can specify it using the *declination command
+- either by giving an explicit value (since Survex 1.2.22), or by specifying a
+location to use along with the survey date to calculate a value from the IGRF
+model (since Survex 1.2.21).  You can still use *calibrate declination, but the
+new command is preferred if you can assume a new enough version of Survex is
+available.
 </Para>
 
 <Para>
