@@ -1,3 +1,11 @@
+Fri Aug 07 14:19:04 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aven.cc,src/gla-gl.cc: Ensure that the window has a depth buffer.
+	  Whether it does by default seems to vary depending on OS and maybe
+	  graphics card.  Fixes #55 (terrain is no longer visible through
+	  itself), and also the rendering of passage tubes.  Thanks to Martin
+	  Green for pointing me in the right direction for finding this fix.
+
 Fri Aug 07 11:13:19 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Update to reflect *declination with a number not

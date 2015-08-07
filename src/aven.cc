@@ -219,10 +219,13 @@ bool Aven::OnInit()
     // Use a double-buffered visual if available, as it will give much smoother
     // animation.
     double_buffered = true;
-    int wx_gl_attribs[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, 0 };
+    const int wx_gl_attribs[] = {
+	WX_GL_DOUBLEBUFFER,
+	WX_GL_RGBA,
+	0
+    };
     if (!InitGLVisual(wx_gl_attribs)) {
-	int wx_gl_attribs_no_db[] = { WX_GL_RGBA, 0 };
-	if (!InitGLVisual(wx_gl_attribs_no_db)) {
+	if (!InitGLVisual(wx_gl_attribs + 1)) {
 	    wxString m;
 	    /* TRANSLATORS: %s will be replaced with "Aven" currently (and
 	     * perhaps by "Survex" or other things in future). */

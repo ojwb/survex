@@ -286,9 +286,17 @@ BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
     EVT_SIZE(GLACanvas::OnSize)
 END_EVENT_TABLE()
 
+static const int wx_gl_window_attribs[] = {
+    WX_GL_DOUBLEBUFFER,
+    WX_GL_RGBA,
+    WX_GL_DEPTH_SIZE, 16,
+    0
+};
+
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
-    : wxGLCanvas(parent, id, NULL, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS),
+    : wxGLCanvas(parent, id, wx_gl_window_attribs, wxDefaultPosition,
+		 wxDefaultSize, wxWANTS_CHARS),
       ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
       x_size(0), y_size(0)
 {
