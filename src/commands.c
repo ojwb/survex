@@ -1007,8 +1007,8 @@ cmd_equate(void)
    name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
    while (fTrue) {
       name2 = name1;
-      name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO|PFX_OPT);
-      if (name1 == NULL) {
+      skipblanks();
+      if (isEol(ch) || isComm(ch)) {
 	 if (fOnlyOneStn) {
 	    /* TRANSLATORS: EQUATE is a command name, so shouldn’t be
 	     * translated.
@@ -1020,6 +1020,7 @@ cmd_equate(void)
 	 return;
       }
 
+      name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
       process_equate(name1, name2);
       fOnlyOneStn = fFalse;
    }
@@ -1068,9 +1069,9 @@ cmd_export(void)
    prefix *pfx;
 
    fExportUsed = fTrue;
-   pfx = read_prefix(PFX_STATION);
    do {
       int depth = 0;
+      pfx = read_prefix(PFX_STATION);
       {
 	 prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
@@ -1111,8 +1112,8 @@ cmd_export(void)
 	 }
 	 pfx->min_export = depth;
       }
-      pfx = read_prefix(PFX_STATION|PFX_OPT);
-   } while (pfx);
+      skipblanks();
+   } while (!isEol(ch) && !isComm(ch));
 }
 
 static void

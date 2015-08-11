@@ -1,3 +1,9 @@
+Tue Aug 11 21:31:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/Makefile.am,tests/cavern.tst,
+	  tests/cmd_set_bad.out: Improve errors for invalid survey names in
+	  *equate and *export.
+
 Tue Aug 11 20:34:05 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/cmd_begin_bad.out,tests/cmd_begin_bad.svx:

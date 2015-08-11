@@ -3,7 +3,7 @@
 ./cmd_set_bad.svx:13:1: error: End of line not blank
 ./cmd_set_bad.svx:20:23: error: Expecting numeric field, found ".0"
 ./cmd_set_bad.svx:22:22: error: Expecting numeric field, found "+1.0"
-./cmd_set_bad.svx:28:12: error: Only one station in EQUATE command
+./cmd_set_bad.svx:28:12: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
 ./cmd_set_bad.svx:31:10: error: Expecting numeric field, found "-"
 ./cmd_set_bad.svx:34:6: error: Unknown character class "FormFeed"
 ./cmd_set_bad.svx:35:6: warning: ROOT is deprecated

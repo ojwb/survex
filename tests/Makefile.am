@@ -65,6 +65,8 @@ nosurv.svx nosurv.pos nosurv.out\
 cmd_flags.svx bad_cmd_flags.svx\
 plumb.svx plumb.pos\
 cmd_begin_bad.svx cmd_begin_bad.out\
+cmd_equate_bad.svx cmd_equate_bad.out\
+cmd_export_bad.svx cmd_export_bad.out\
 cmd_fix_bad.svx cmd_fix_bad.out\
 cmd_sd.svx cmd_sd_bad.svx cmd_sd_bad.out\
 cmd_set.svx cmd_set.pos\
