@@ -653,7 +653,6 @@ bad:
 static void
 cmd_begin(void)
 {
-   prefix *survey;
    settings *pcsNew;
 
    pcsNew = osnew(settings);
@@ -662,9 +661,12 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   survey = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
-   pcs->begin_survey = survey;
-   if (survey) {
+   skipblanks();
+   if (isEol(ch) || isComm(ch)) {
+      pcs->begin_survey = NULL;
+   } else {
+      prefix *survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
+      pcs->begin_survey = survey;
       pcs->Prefix = survey;
       check_reentry(survey);
       f_export_ok = fTrue;

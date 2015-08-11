@@ -1,3 +1,8 @@
+Tue Aug 11 20:02:31 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/: Improve error when *begin is followed by an
+	  invalid survey name.
+
 Tue Aug 11 19:44:40 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
