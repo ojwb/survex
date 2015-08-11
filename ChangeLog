@@ -1,3 +1,8 @@
+Tue Aug 11 20:34:05 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/commands.c,tests/cmd_begin_bad.out,tests/cmd_begin_bad.svx:
+	  Improve error when *begin is followed by an invalid survey name.
+
 Tue Aug 11 20:02:31 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/: Improve error when *begin is followed by an

@@ -1,10 +1,14 @@
-; pos=fail warn=0 error=3
+; pos=fail warn=0 error=7
 ; We used to report "End of line not blank" but 1.2.22 gives "Character "=" not
 ; allowed in station name (use *SET NAMES to set allowed characters)" instead.
 *fix 1 reference 0 0 0
 *begin *
 *end
-*begin .
-*end
+*begin .0
+*end (
+*begin
+*end +_
 *begin =
-*end
+*end a
+*begin a
+*end =

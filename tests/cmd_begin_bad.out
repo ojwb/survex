@@ -1,6 +1,10 @@
 ./cmd_begin_bad.svx:5:8: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
 ./cmd_begin_bad.svx:7:8: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
-./cmd_begin_bad.svx:9:8: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+./cmd_begin_bad.svx:8:6: error: Character "(" not allowed in station name (use *SET NAMES to set allowed characters)
+./cmd_begin_bad.svx:10:6: error: Character "+" not allowed in station name (use *SET NAMES to set allowed characters)
+./cmd_begin_bad.svx:11:8: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+./cmd_begin_bad.svx:12:7: error: Matching BEGIN command has no survey name
+./cmd_begin_bad.svx:14:6: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
 
 Removing trailing traverses...
 
@@ -22,4 +26,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 0 warning(s) and 3 error(s) - no output files produced.
+There were 0 warning(s) and 7 error(s) - no output files produced.

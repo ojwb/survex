@@ -720,7 +720,13 @@ cmd_end(void)
    pcs = pcsParent;
 
    /* note need to read using root *before* BEGIN */
-   survey = read_prefix(PFX_SURVEY|PFX_OPT|PFX_ALLOW_ROOT);
+   skipblanks();
+   if (isEol(ch) || isComm(ch)) {
+      survey = NULL;
+   } else {
+      survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
+   }
+
    if (survey != begin_survey) {
       if (survey) {
 	 if (!begin_survey) {
