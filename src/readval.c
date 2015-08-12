@@ -55,12 +55,7 @@ new_anon_station(void)
     name->down = NULL;
     name->filename = file.filename;
     name->line = file.line;
-    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
-	name->min_export = USHRT_MAX;
-    } else {
-	name->min_export = 0;
-    }
-    name->max_export = 0;
+    name->min_export = name->max_export = 0;
     name->sflags = BIT(SFLAGS_ANON);
     /* Keep linked list of anon stations for node stats. */
     name->right = anon_list;

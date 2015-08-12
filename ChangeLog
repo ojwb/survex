@@ -1,3 +1,8 @@
+Wed Aug 12 19:46:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/readval.c: Anonymous stations can't be exported, so we don't need
+	  to set them up ready for implicit exports.
+
 Tue Aug 11 21:31:44 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c,tests/Makefile.am,tests/cavern.tst,
