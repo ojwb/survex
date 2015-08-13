@@ -1,3 +1,7 @@
+Thu Aug 13 16:12:06 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/: Update source references and merge po files.
+
 Thu Aug 13 16:11:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Correct an example in a TRANSLATORS comment.
