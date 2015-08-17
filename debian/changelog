@@ -1,3 +1,12 @@
+survex (1.2.22-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Includes fix-use-after-free-after-solve.patch so drop patch.
+    + Fix conversion from coordinate systems using latitude and longitude.
+    + Supports new *declination command.
+
+ -- Olly Betts <olly@pippikin>  Mon, 17 Aug 2015 11:17:10 +0200
+
 survex (1.2.20-2) unstable; urgency=medium
 
   * Fix use after free which was causing test suite failure on some
