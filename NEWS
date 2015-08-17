@@ -1,4 +1,4 @@
-cbd9829e1 (Olly Betts 2015-08-07 16:21:35 +0200    1) Fri Aug 07 14:19:04 GMT 2015  Olly Betts <olly@survex.com>
+Changes in 1.2.22 (2015-08-17):
 
 * aven:
 
@@ -14,6 +14,9 @@ cbd9829e1 (Olly Betts 2015-08-07 16:21:35 +0200    1) Fri Aug 07 14:19:04 GMT 20
 
   + Fix assertion if we try to identify a hanging survey by an anonymous
     station.
+
+  + Improve errors for invalid survey names in *begin, *end, *equate and
+    *export.
 
 Changes in 1.2.21 (2015-07-28):
 

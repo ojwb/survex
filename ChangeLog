@@ -1,3 +1,7 @@
+Mon Aug 17 08:32:18 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS,configure.ac,doc/manual.sgml: Update for 1.2.22.
+
 Thu Aug 13 16:12:06 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/: Update source references and merge po files.
