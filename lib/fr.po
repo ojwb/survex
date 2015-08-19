@@ -169,7 +169,7 @@ msgstr "Commande inconnue “%s”"
 #: n:13
 #, c-format
 msgid "Station “%s” equated to itself"
-msgstr "Station “%s” ne doit pas être déclarée “égale” à elle-même"
+msgstr "Station “%s” ne doit pas être déclarée 'égale' à elle-même"
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
@@ -335,57 +335,57 @@ msgstr "Unité “%s” inconnue"
 #: ../src/commands.c:2033
 #: n:434
 msgid "Unknown coordinate system"
-msgstr ""
+msgstr "Système de coordonnées inconnu"
 
 #: ../src/commands.c:2053
 #: ../src/commands.c:2078
 #: n:443
 #, c-format
 msgid "Invalid coordinate system: %s"
-msgstr ""
+msgstr "Système de coordonnées non valide: %s"
 
 #: ../src/commands.c:2040
 #: ../src/commands.c:2058
 #: n:435
 msgid "Coordinate system unsuitable for output"
-msgstr ""
+msgstr "Système de coordonnée impropre en sortie"
 
 #: ../src/commands.c:839
 #: ../src/commands.c:1637
 #: n:436
 #, c-format
 msgid "Failed to convert coordinates: %s"
-msgstr ""
+msgstr "Echec de la conversion des coordonnées: %s"
 
 #: ../src/commands.c:842
 #: n:437
 msgid "The input projection is set but the output projection isn't"
-msgstr ""
+msgstr "La projection est définie en entrée mais manque en sortie"
 
 #: ../src/commands.c:844
 #: n:438
 msgid "The output projection is set but the input projection isn't"
-msgstr ""
+msgstr "La projection est définie en sortie mais manque en entrée"
 
 #: ../src/commands.c:799
 #: n:439
 msgid "Coordinates can't be omitted when coordinate system has been specified"
-msgstr ""
+msgstr "Les coordonnées ne peut être omises quand le système de coordonnées est spécifié"
 
 #: ../src/commands.c:1623
 #: n:301
 msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
-msgstr ""
+msgstr "Le système de coordonnées en entrée doit être spécifié pour '*DECLINATION AUTO'"
 
 #: ../src/commands.c:1615
 #: n:309
 msgid "Expected number or 'AUTO'"
-msgstr ""
+msgstr "Nombre ou 'AUTO' attendu"
 
 #: ../src/datain.c:902
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
-msgstr ""
+msgstr "La date de topographie n'est pas spécifié - utilise 0 pour la déclinaison magnétique"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -546,7 +546,7 @@ msgstr "Plusieurs commandes FIX sans coordonnées: “%s”"
 #: n:442
 #, c-format
 msgid "Station “%s” fixed before CS command first used"
-msgstr ""
+msgstr "La station “%s” est fixé avant l'utilisation de la commande CS"
 
 #. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
 #. <SURVEY>, so this would generate this error:
@@ -932,7 +932,7 @@ msgstr "Plan"
 #: ../src/gfxcore.cc:1943
 #: n:433
 msgid "Kiwi Plan"
-msgstr ""
+msgstr "Antipode"
 
 #: ../src/cavern.c:353
 #: n:120
@@ -1997,7 +1997,7 @@ msgstr "&Superposition des noms"
 #: ../src/mainfrm.cc:881
 #: n:450
 msgid "Co&lour by"
-msgstr ""
+msgstr "Cou&leur par"
 
 #: ../src/mainfrm.cc:884
 #: n:294
@@ -2083,7 +2083,7 @@ msgstr "Couleur par Érr&eur"
 #: ../src/mainfrm.cc:878
 #: n:85
 msgid "Colour by &Gradient"
-msgstr ""
+msgstr "Couleur par &Gradient"
 
 #: ../src/gfxcore.cc:3963
 #: ../src/mainfrm.cc:879
@@ -2094,7 +2094,7 @@ msgstr "Couleur par &Longueur"
 
 #: n:448
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Couleur par &Topographie"
 
 #: ../src/mainfrm.cc:938
 #: n:274
@@ -3050,7 +3050,7 @@ msgstr "données (chaine de caractères) à passer à PROJ"
 #: ../src/printing.cc:592
 #: n:440
 msgid "Coordinate projection"
-msgstr ""
+msgstr "Projection des coordonnées"
 
 #: ../src/cad3d.c:661
 #: n:100

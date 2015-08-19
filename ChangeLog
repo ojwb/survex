@@ -1,3 +1,7 @@
+Wed Aug 19 14:08:14 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Merge translation updates from Michel Bovey.
+
 Mon Aug 17 08:32:18 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac,doc/manual.sgml: Update for 1.2.22.
