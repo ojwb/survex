@@ -69,9 +69,9 @@ msgstr "Plus de mémoire (%lu octets nécessaires, non disponibles)."
 #. to read when we ran out of memory.
 #: ../src/img_hosted.c:34
 #: n:38
-#, fuzzy, c-format
+#, c-format
 msgid "Out of memory trying to read file “%s”"
-msgstr "Plus de mémoire lors de la lecture du fichier “%s”"
+msgstr "Mémoire épuisée lors de la lecture du fichier “%s”"
 
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
@@ -395,9 +395,8 @@ msgstr "La date de topographie n'est pas spécifié - utilise 0 pour la déclina
 #. *end entrance      <--[Message given here]
 #: ../src/commands.c:739
 #: n:36
-#, fuzzy
 msgid "Matching BEGIN command has no survey name"
-msgstr "Le tag BEGIN correspondant n’a pas de nom de topo"
+msgstr "La commande BEGIN correspondante n’a pas de nom de la topographie"
 
 #. TRANSLATORS: Note: In English you talk about the *units* of a single
 #. measurement, but the correct term in other languages may be singular.
@@ -443,7 +442,7 @@ msgstr "Classe de caractère inconnue “%s”"
 #: ../src/netskel.c:93
 #: n:43
 msgid "No survey data"
-msgstr "Pas de données topo"
+msgstr "Pas de données topographiques"
 
 #: ../src/filename.c:52
 #: ../src/img_hosted.c:35
@@ -458,7 +457,7 @@ msgstr "Nom de fichier “%s” relatif à un répertoire"
 #: ../src/netartic.c:387
 #: n:45
 msgid "Survey not all connected to fixed stations"
-msgstr "Relevés topo pas tous reliés à des points fixes"
+msgstr "Relevés topographiques pas tous reliés à des points fixes"
 
 #: ../src/commands.c:948
 #: ../src/datain.c:684
@@ -538,9 +537,9 @@ msgstr "Station déjà fixée aux même coordonnées"
 #. no coordinates - fixing at (0,0,0)" warnings.
 #: ../src/commands.c:817
 #: n:441
-#, fuzzy, c-format
+#, c-format
 msgid "Already had FIX command with no coordinates for station “%s”"
-msgstr "Plusieurs commandes FIX sans coordonnées: “%s”"
+msgstr "Il exite déjà des commandes FIX sans coordonnées pour la station “%s”"
 
 #: ../src/commands.c:1843
 #: n:442
@@ -654,22 +653,22 @@ msgstr "\" manquant"
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/listpos.c:122
 #: n:70
-#, fuzzy, c-format
+#, c-format
 msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
-msgstr "La station “%s” n’est mentionnée qu’une fois, avec un nom de topo explicite - typo?"
+msgstr "La station “%s” n’est mentionnée qu’une fois, avec un nom de topographie explicite - faute de frappe?"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train
 #. station.
 #: ../src/netartic.c:405
 #: n:71
 msgid "The following survey stations are not attached to a fixed point:"
-msgstr "Les stations topo suivantes ne sont pas attachés à des points fixes:"
+msgstr "Les stations topographiques suivantes ne sont pas attachés à des points fixes:"
 
 #: ../src/netskel.c:138
 #: n:72
 #, c-format
 msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
-msgstr "La topo n’a pas de points fixes. Par conséquent j’ai fixé %s à (0,0,0)"
+msgstr "La topographie n’a pas de points fixes. Par conséquent j’ai fixé %s à (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
 #: ../src/netskel.c:961
@@ -1162,9 +1161,9 @@ msgstr "%d/%d"
 #. "2015-06-09 12:40:44").
 #: ../src/printing.cc:1857
 #: n:167
-#, fuzzy, c-format
+#, c-format
 msgid "Processed: %s"
-msgstr "En cours sur %s"
+msgstr "Traité le %s"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a plan view and what the viewing angle is.
@@ -1253,13 +1252,13 @@ msgstr "Coupe développée"
 #: ../src/cavern.c:426
 #: n:172
 msgid "Survey contains 1 survey station,"
-msgstr "La topo contient 1 station,"
+msgstr "La topographie contient 1 station,"
 
 #: ../src/cavern.c:428
 #: n:173
 #, c-format
 msgid "Survey contains %ld survey stations,"
-msgstr "La topo contient %ld stations,"
+msgstr "La topographie contient %ld stations,"
 
 #: ../src/cavern.c:432
 #: n:174
@@ -1291,7 +1290,7 @@ msgstr "nœuds"
 #: n:178
 #, c-format
 msgid "Survey has %ld connected components."
-msgstr "La topo contient %ld composants connectés."
+msgstr "La topographie contient %ld composants connectés."
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. allows the user to save the log to a file.
@@ -1352,9 +1351,8 @@ msgstr "BEGIN manquant"
 #. same <survey> if it’s given at all
 #: ../src/commands.c:743
 #: n:193
-#, fuzzy
 msgid "Survey name doesn’t match BEGIN"
-msgstr "Le nom de topo du END ne correspond pas à celui du BEGIN"
+msgstr "Le nom de topographie du END ne correspond pas à celui du BEGIN"
 
 #. TRANSLATORS: Used when a BEGIN command has a survey name, but the
 #. END command omits it, e.g.:
@@ -1364,9 +1362,8 @@ msgstr "Le nom de topo du END ne correspond pas à celui du BEGIN"
 #. *end     <--[Message given here]
 #: ../src/commands.c:752
 #: n:194
-#, fuzzy
 msgid "Survey name omitted from END"
-msgstr "Nom de topo manquant dans le END"
+msgstr "Nom de topographie manquant dans le END"
 
 #. TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
 #. (or at least the columns) are in the same place
@@ -1408,7 +1405,7 @@ msgstr "On attendait une date, on a trouvé “%s”"
 #: ../src/extend.c:459
 #: n:199
 msgid "only load the sub-survey with this prefix"
-msgstr "ne charge que la partie de topo avec le prefixe"
+msgstr "ne charge que la partie de la topographie avec le préfixe"
 
 #. TRANSLATORS: --help output for aven --print option
 #: ../src/aven.cc:67
@@ -1471,7 +1468,7 @@ msgstr "*UNITS: le facteur doit être non nul"
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
-msgstr "Pas de données topo dans le fichier image 3d “%s”"
+msgstr "Pas de données topographiques dans le fichier image 3d “%s”"
 
 #. TRANSLATORS: Used in aven above the compass indicator at the lower
 #. right of the display, with a bearing below "Facing".  This indicates the
@@ -1513,7 +1510,7 @@ msgstr "Fichiers de surface"
 #: ../src/mainfrm.cc:1973
 #: n:206
 msgid "Select a survey file to view"
-msgstr "Sélectionner un fichier de topo à afficher"
+msgstr "Sélectionner un fichier de topographie à afficher"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
@@ -1536,7 +1533,8 @@ msgstr "Tous les fichiers"
 #: ../src/mainfrm.cc:1947
 #: n:229
 msgid "All survey files"
-msgstr "Tous les fichiers de topo"
+msgstr "Tous les fichiers de topographie"
+
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
@@ -1956,7 +1954,6 @@ msgstr "Galeries &Tubulaires\tCtrl+T"
 #. TRANSLATORS: Toggles drawing the surface of the Earth
 #: ../src/mainfrm.cc:846
 #: n:449
-#, fuzzy
 msgid "Terr&ain"
 msgstr "Terra&in"
 
@@ -2064,18 +2061,17 @@ msgstr "&Mode Plein Ecran\tF11"
 #: ../src/mainfrm.cc:875
 #: n:292
 msgid "Colour by &Depth"
-msgstr "Couleur par &profondeur"
+msgstr "Couleur par &Profondeur"
 
 #: ../src/gfxcore.cc:3960
 #: ../src/mainfrm.cc:876
 #: n:293
 msgid "Colour by D&ate"
-msgstr "Couleur par &date"
+msgstr "Couleur par &Date"
 
 #: ../src/gfxcore.cc:3961
 #: ../src/mainfrm.cc:877
 #: n:289
-#, fuzzy
 msgid "Colour by &Error"
 msgstr "Couleur par Érr&eur"
 
@@ -2088,7 +2084,6 @@ msgstr "Couleur par &Gradient"
 #: ../src/gfxcore.cc:3963
 #: ../src/mainfrm.cc:879
 #: n:82
-#, fuzzy
 msgid "Colour by &Length"
 msgstr "Couleur par &Longueur"
 
@@ -2691,7 +2686,7 @@ msgstr "&Imprimer..."
 #: ../src/printing.cc:513
 #: n:403
 msgid "Sur&face Survey Legs"
-msgstr "Segments de topo en Sur&face"
+msgstr "Segments de topographie en Sur&face"
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
 #: ../src/mainfrm.cc:140
@@ -2731,13 +2726,12 @@ msgstr "Cette version de %s a besoin d’OpenGL pour fonctionner, mais il n’es
 #: ../src/readval.c:336
 #: n:392
 msgid "Separator in survey name"
-msgstr "Séparateur dans le nom de la topo"
+msgstr "Séparateur dans le nom de la topographie"
 
 #. TRANSLATORS: Used in place of the station name when talking about an
 #. anonymous station.
 #: ../src/labelinfo.h:82
 #: n:56
-#, fuzzy
 msgid "anonymous station"
 msgstr "station anonyme"
 
@@ -2960,9 +2954,8 @@ msgstr "Effacé: %s"
 #. http://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:575
 #: n:29
-#, fuzzy
 msgid "Reentering an existing survey is deprecated"
-msgstr "Ré-utiliser un même nom de topo n’est pas recommandé"
+msgstr "Ré-utiliser un même nom de topographie n’est plus supporté"
 
 #. TRANSLATORS: The second of two warnings given when a survey which has
 #. already been completed is reentered.  This example file crawl.svx:
@@ -2984,7 +2977,7 @@ msgstr "Ré-utiliser un même nom de topo n’est pas recommandé"
 #: ../src/commands.c:593
 #: n:30
 msgid "Originally entered here"
-msgstr "Nom de topo utilisé une premiére fois ici"
+msgstr "Première utilisation du nom de topographie ici"
 
 #. TRANSLATORS: Use of the ROOT character (which is "\" by default) is
 #. deprecated, so this error would be generated by:
@@ -3009,7 +3002,7 @@ msgstr "rembobiner le fichier et le lire une seconde fois"
 #: ../src/dump3d.c:52
 #: n:396
 msgid "show survey date information (if present)"
-msgstr "montrer la date de la topo (si présente)"
+msgstr "montrer la date de la topographie (si présente)"
 
 #: ../src/findentrances.cc:111
 #: ../src/gfxcore.cc:2749
@@ -3184,7 +3177,7 @@ msgstr "Produire une sortie SVG"
 
 #: n:359
 #~ msgid "Colour surface surveys by depth"
-#~ msgstr "Couleur de la topo de surface en fonction de l’altitude"
+#~ msgstr "Couleur de la topographie de surface en fonction de l’altitude"
 
 #: n:360
 #~ msgid "Draw surface legs with dashed lines"
