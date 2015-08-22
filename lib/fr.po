@@ -169,7 +169,7 @@ msgstr "Commande inconnue “%s”"
 #: n:13
 #, c-format
 msgid "Station “%s” equated to itself"
-msgstr "Station “%s” ne doit pas être déclarée 'égale' à elle-même"
+msgstr "Station “%s” ne doit pas être déclarée ‘égale’ à elle-même"
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
