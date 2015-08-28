@@ -39,6 +39,7 @@
 #include "useful.h"
 
 #include <wx/confbase.h>
+//#include <wx/filefn.h>
 #include <wx/filename.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>
@@ -1813,20 +1814,9 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 		if (m_Splitter->IsSplit()) m_Splitter->Unsplit();
 	    }
 
-	    int result = log->process(file);
-	    if (result < 0) {
-		// Error running cavern or processing data.
-		return;
-	    }
-
-	    AddToFileHistory(file);
-	    wxString file3d(file, 0, file.length() - 3);
-	    file3d.append(wxT("3d"));
-	    if (!LoadData(file3d, survey))
-		return;
-	    if (result == 0) {
-		InitialiseAfterLoad(file);
-	    }
+	    if (wxFileExists(file)) AddToFileHistory(file);
+	    log->process(file);
+	    // Log window will tell us to load file if it successfully completes.
 	    return;
 	}
     }

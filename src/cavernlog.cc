@@ -46,6 +46,7 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
     EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
     EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
+    EVT_IDLE(CavernLogWindow::OnIdle)
 END_EVENT_TABLE()
 
 static wxString escape_for_shell(wxString s, bool protect_dash = false)
@@ -90,11 +91,18 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 }
 
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
-    : wxHtmlWindow(parent), mainfrm(mainfrm_), init_done(false), survey(survey_)
+    : wxHtmlWindow(parent), mainfrm(mainfrm_), cavern_out(NULL),
+      link_count(0), end(buf), init_done(false), survey(survey_)
 {
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
     SetFonts(wxString(), wxString(), sizes);
+}
+
+CavernLogWindow::~CavernLogWindow()
+{
+    if (cavern_out)
+	pclose(cavern_out);
 }
 
 void
@@ -175,12 +183,14 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     wxGetApp().ReportError(m);
 }
 
-int
+void
 CavernLogWindow::process(const wxString &file)
 {
     SetFocus();
     filename = file;
 
+    link_count = 0;
+    cur.resize(0);
     log_txt.resize(0);
 
 #ifdef __WXMSW__
@@ -221,10 +231,13 @@ CavernLogWindow::process(const wxString &file)
     cmd += wxT(' ');
     cmd += escaped_file;
 
+    if (cavern_out)
+	pclose(cavern_out);
+
 #ifdef __WXMSW__
-    FILE * cavern_out = _wpopen(cmd.c_str(), L"r");
+    cavern_out = _wpopen(cmd.c_str(), L"r");
 #else
-    FILE * cavern_out = popen(cmd.mb_str(), "r");
+    cavern_out = popen(cmd.mb_str(), "r");
 #endif
     if (!cavern_out) {
 	wxString m;
@@ -233,11 +246,14 @@ CavernLogWindow::process(const wxString &file)
 	m += wxString(strerror(errno), wxConvUTF8);
 	m += wxT(')');
 	wxGetApp().ReportError(m);
-	return -2;
+	return;
     }
+}
 
-    const wxString & error_marker = wmsg(/*error*/93) + ":";
-    const wxString & warning_marker = wmsg(/*warning*/4) + ":";
+void
+CavernLogWindow::OnIdle(wxIdleEvent& event)
+{
+    if (cavern_out == NULL) return;
 
     int cavern_fd;
 #ifdef __WXMSW__
@@ -246,48 +262,29 @@ CavernLogWindow::process(const wxString &file)
     cavern_fd = fileno(cavern_out);
 #endif
     assert(cavern_fd < FD_SETSIZE); // FIXME we shouldn't just assert, but what else to do?
-    wxString cur;
-    int link_count = 0;
-    unsigned char buf[1024];
-    unsigned char * end = buf;
-    while (true) {
-	fd_set rfds, efds;
-	FD_ZERO(&rfds);
-	FD_SET(cavern_fd, &rfds);
-	FD_ZERO(&efds);
-	FD_SET(cavern_fd, &efds);
-	// Timeout instantly the first time, and call Update() so the window
-	// contents get updated.  If we're still waiting for output after that,
-	// wait for output for 0.1 seconds, then call wxYield() so that the UI
-	// doesn't block.
-	struct timeval timeout;
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
-	bool first = true;
-	while (select(cavern_fd + 1, &rfds, NULL, &efds, &timeout) == 0) {
-	    if (first) {
-		first = false;
-		Update();
-	    } else {
-		wxYield();
-	    }
-	    FD_SET(cavern_fd, &rfds);
-	    FD_SET(cavern_fd, &efds);
-	    // Set timeout to 0.1 seconds.
-	    timeout.tv_sec = 0;
-	    timeout.tv_usec = 100000;
-	}
-	if (!FD_ISSET(cavern_fd, &rfds)) {
-	    // Error, which pclose() should report.
-	    break;
-	}
 
+    fd_set rfds, efds;
+    FD_ZERO(&rfds);
+    FD_ZERO(&efds);
+    FD_SET(cavern_fd, &rfds);
+    FD_SET(cavern_fd, &efds);
+    // Wait up to 0.01 seconds for data to avoid a tight idle loop.
+    struct timeval timeout;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 10000;
+    int r = select(cavern_fd + 1, &rfds, NULL, &efds, &timeout);
+    if (r == 0) {
+	// No new output to process.
+	event.RequestMore();
+	return;
+    }
+    if (r > 0 && FD_ISSET(cavern_fd, &rfds)) {
 	ssize_t r = read(cavern_fd, end, sizeof(buf) - (end - buf));
 	if (r <= 0) {
 	    if (r == 0 && buf != end) {
 		// FIXME: Truncated UTF-8 sequence.
 	    }
-	    break;
+	    goto abort;
 	}
 	log_txt.append((const char *)end, r);
 	end += r;
@@ -375,6 +372,10 @@ CavernLogWindow::process(const wxString &file)
 			    size_t offset = colon + tag.size();
 			    cur.insert(offset, wxT("</a>"));
 			    offset += 4 + 2;
+
+			    static const wxString & error_marker = wmsg(/*error*/93) + ":";
+			    static const wxString & warning_marker = wmsg(/*warning*/4) + ":";
+
 			    if (cur.substr(offset, error_marker.size()) == error_marker) {
 				// Show "error" marker in red.
 				cur.insert(offset, wxT("<span style=\"color:red\">"));
@@ -399,8 +400,8 @@ CavernLogWindow::process(const wxString &file)
 		    AppendToPage(cur);
 
 		    if (!link_count) {
-			// Auto-scroll the window until we've reported a warning or
-			// error.
+			// Auto-scroll the window until we've reported a
+			// warning or error.
 			int x, y;
 			GetVirtualSize(&x, &y);
 			int xs, ys;
@@ -441,7 +442,11 @@ CavernLogWindow::process(const wxString &file)
 	size_t left = end - p;
 	end = buf + left;
 	if (left) memmove(buf, p, left);
+	Update();
+	event.RequestMore();
+	return;
     }
+
 abort:
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
@@ -450,6 +455,7 @@ abort:
 				  (int)LOG_SAVE,
 				  wmsg(/*Save Log*/446).c_str()));
     int retval = pclose(cavern_out);
+    cavern_out = NULL;
     if (retval) {
 	/* TRANSLATORS: Label for button in aven’s cavern log window which
 	 * causes the survey data to be reprocessed. */
@@ -460,9 +466,9 @@ abort:
 	    wxString m = wxT("Problem running cavern: ");
 	    m += wxString(strerror(errno), wxConvUTF8);
 	    wxGetApp().ReportError(m);
-	    return -2;
+	    return;
 	}
-	return -1;
+	return;
     }
     AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
 				  (int)LOG_REPROCESS,
@@ -470,24 +476,23 @@ abort:
     AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
     Update();
     init_done = false;
-    return link_count;
+
+    wxString file3d(filename, 0, filename.length() - 3);
+    file3d.append(wxT("3d"));
+    if (!mainfrm->LoadData(file3d, survey)) {
+	return;
+    }
+    if (link_count == 0) {
+	wxCommandEvent dummy;
+	OnOK(dummy);
+    }
 }
 
 void
 CavernLogWindow::OnReprocess(wxCommandEvent & e)
 {
     SetPage(wxString());
-    int result = process(filename);
-    if (result < 0) return;
-    mainfrm->AddToFileHistory(filename);
-    wxString file3d(filename, 0, filename.length() - 3);
-    file3d.append(wxT("3d"));
-    if (!mainfrm->LoadData(file3d, survey)) {
-	return;
-    }
-    if (result == 0) {
-	OnOK(e);
-    }
+    process(filename);
 }
 
 void

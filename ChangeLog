@@ -1,3 +1,11 @@
+Fri Aug 28 19:09:44 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc,src/cavernlog.h,src/mainfrm.cc: Use idle events
+	  rather than wxYield to give much smoother update of the cavern log
+	  window, especially on slower machines.  Also fixes an assertion if
+	  you try to start processing a survex file while one is already
+	  being processed.
+
 Fri Aug 28 18:10:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/cavern.sgml: Fix broken SGML from previous commit.

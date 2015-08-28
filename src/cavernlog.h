@@ -33,6 +33,12 @@ class CavernLogWindow : public wxHtmlWindow {
 
     MainFrm * mainfrm;
 
+    FILE * cavern_out;
+    wxString cur;
+    int link_count;
+    unsigned char buf[1024];
+    unsigned char * end;
+
     bool init_done;
 
     wxString survey;
@@ -42,12 +48,10 @@ class CavernLogWindow : public wxHtmlWindow {
   public:
     CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent);
 
-    /** Process survey data in file.
-     *
-     *  @return -2 on failure to run cavern, -1 on error from cavern, or the
-     *		number of warnings if no errors.
-     */
-    int process(const wxString &file);
+    ~CavernLogWindow();
+
+    /** Start to process survey data in file. */
+    void process(const wxString &file);
 
     virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
 
@@ -56,6 +60,8 @@ class CavernLogWindow : public wxHtmlWindow {
     void OnSave(wxCommandEvent &);
 
     void OnOK(wxCommandEvent &);
+
+    void OnIdle(wxIdleEvent &);
 
     DECLARE_EVENT_TABLE()
 };
