@@ -64,6 +64,7 @@ print STDERR "$file: Last used msg number: $last\n";
 %n = ();
 
 my %fuzzy;
+my %c_format;
 for my $po_file (@ARGV) {
     my $language = $po_file;
     $language =~ s/\.po$//;
@@ -103,6 +104,7 @@ for my $po_file (@ARGV) {
 	    ${$msgs{$language}}[$msgno] = $msg;
 	    $ent->fuzzy() and ++$fuzzy;
 	}
+	$po_entry->c_format and $c_format{$language}[$msgno]++;
     }
     $fuzzy{$language} = $fuzzy;
 }
@@ -152,7 +154,8 @@ foreach $lang (@langs) {
 	 }
       } else {
 	 if ($lang ne 'en') {
-	     sanity_check("Message $n in language $lang", $msg, ${$msgs{'en'}}[$n], ${$loc{$lang}}[$n]);
+	     my $c_format = $c_format{$lang}[$n] // 0;
+	     sanity_check("Message $n in language $lang", $msg, ${$msgs{'en'}}[$n], ${$loc{$lang}}[$n], $c_format);
 	 }
       }
       $buff .= $msg . "\0";
@@ -177,23 +180,24 @@ foreach $lang (@langs) {
 }
 
 sub sanity_check {
-   my ($what, $msg, $orig, $where) = @_;
-   # FIXME: Only do this if the message has the "c-format" flag.
-   # check printf-like specifiers match
-   # allow valid printf specifiers, or %<any letter> to support strftime
-   # and other printf-like formats.
-   my @pcent_m = grep /\%/, split /(%(?:[-#0 +'I]*(?:[0-9]*|\*|\*m\$)(?:\.[0-9]*)?(?:hh|ll|[hlLqjzt])?[diouxXeEfFgGaAcsCSpn]|[a-zA-Z]))/, $msg;
-   my @pcent_o = grep /\%/, split /(%(?:[-#0 +'I]*(?:[0-9]*|\*|\*m\$)(?:\.[0-9]*)?(?:hh|ll|[hlLqjzt])?[diouxXeEfFgGaAcsCSpn]|[a-zA-Z]))/, $orig;
-   while (scalar @pcent_m || scalar @pcent_o) {
-       if (!scalar @pcent_m) {
-	   print STDERR "$where: warning: $what misses out \%spec $pcent_o[0]\n";
-       } elsif (!scalar @pcent_o) {
-	   print STDERR "$where: warning: $what has extra \%spec $pcent_m[0]\n";
-       } elsif ($pcent_m[0] ne $pcent_o[0]) {
-	   print STDERR "$where: warning: $what has \%spec $pcent_m[0] instead of $pcent_o[0]\n";
-       }
-       pop @pcent_m;
-       pop @pcent_o;
+   my ($what, $msg, $orig, $where, $c_format) = @_;
+   if ($c_format) {
+      # check printf-like specifiers match
+      # allow valid printf specifiers, or %<any letter> to support strftime
+      # and other printf-like formats.
+      my @pcent_m = grep /\%/, split /(%(?:[-#0 +'I]*(?:[0-9]*|\*|\*m\$)(?:\.[0-9]*)?(?:hh|ll|[hlLqjzt])?[diouxXeEfFgGaAcsCSpn]|[a-zA-Z]))/, $msg;
+      my @pcent_o = grep /\%/, split /(%(?:[-#0 +'I]*(?:[0-9]*|\*|\*m\$)(?:\.[0-9]*)?(?:hh|ll|[hlLqjzt])?[diouxXeEfFgGaAcsCSpn]|[a-zA-Z]))/, $orig;
+      while (scalar @pcent_m || scalar @pcent_o) {
+	  if (!scalar @pcent_m) {
+	      print STDERR "$where: warning: $what misses out \%spec $pcent_o[0]\n";
+	  } elsif (!scalar @pcent_o) {
+	      print STDERR "$where: warning: $what has extra \%spec $pcent_m[0]\n";
+	  } elsif ($pcent_m[0] ne $pcent_o[0]) {
+	      print STDERR "$where: warning: $what has \%spec $pcent_m[0] instead of $pcent_o[0]\n";
+	  }
+	  pop @pcent_m;
+	  pop @pcent_o;
+      }
    }
 
    # Check for missing (or added) ellipses (...)

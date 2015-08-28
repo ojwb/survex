@@ -1,3 +1,8 @@
+Fri Aug 28 21:21:28 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/po-to-msg.pl: Only check C format strings in messages with the
+	  c-format flag.
+
 Fri Aug 28 21:11:24 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS: Update.
