@@ -1,3 +1,7 @@
+Fri Aug 28 21:11:24 GMT 2015  Olly Betts <olly@survex.com>
+
+	* NEWS: Update.
+
 Fri Aug 28 21:03:26 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Show "busy" mouse cursor while processing survey
