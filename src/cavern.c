@@ -42,6 +42,7 @@
 #include "out.h"
 #include "str.h"
 #include "validate.h"
+#include "whichos.h"
 
 #if OS_WIN32
 # include <conio.h> /* for _kbhit() and _getch() */
@@ -166,6 +167,10 @@ main(int argc, char **argv)
    setvbuf(stdout, NULL, _IOLBF, 0);
 
    msg_init(argv);
+
+#if OS_WIN32 || OS_UNIX_MACOSX
+   pj_set_finder(msg_proj_finder);
+#endif
 
    pcs = osnew(settings);
    pcs->next = NULL;

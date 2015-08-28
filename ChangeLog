@@ -1,3 +1,9 @@
+Fri Aug 28 23:15:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* Makefile.am,buildmacosx.sh,src/,survex.iss.in: Bundle proj's EPSG and
+	  ESRI code lists in the installers for MS Windows and OS X so that
+	  things like "*cs EPSG:29903" work.  Reported by Graham Mullan.
+
 Fri Aug 28 21:47:15 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/gfxcore.cc: Fix the orientation of the starting end of tubes.

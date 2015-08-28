@@ -1150,6 +1150,20 @@ macosx_got_msg:
    select_charset(default_charset());
 }
 
+#if OS_WIN32 || OS_UNIX_MACOSX
+const char *
+msg_proj_finder(const char * file)
+{
+    static const char * r = NULL;
+    static int r_len = 0;
+    s_zero(&r);
+    s_cat(&r, &r_len, pth_cfg_files);
+    s_cat(&r, &r_len, "/proj/");
+    s_cat(&r, &r_len, file);
+    return r;
+}
+#endif
+
 const char *
 msg(int en)
 {

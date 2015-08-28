@@ -102,6 +102,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     utf8_argv[my_argc] = NULL;
 
     msg_init(utf8_argv);
+    pj_set_finder(msg_proj_finder);
     select_charset(CHARSET_UTF8);
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
@@ -131,6 +132,9 @@ int main(int argc, char **argv)
     // Call msg_init() and start processing the command line first so that
     // we can respond to --help and --version even without an X display.
     msg_init(argv);
+#ifdef __WXMAC__
+    pj_set_finder(msg_proj_finder);
+#endif
     select_charset(CHARSET_UTF8);
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.

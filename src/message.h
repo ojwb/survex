@@ -51,6 +51,7 @@ extern const char *msg_lang;
 extern const char *msg_lang2;
 
 void msg_init(char *const *argv);
+const char * msg_proj_finder(const char * file);
 
 const char *msg_cfgpth(void);
 const char *msg_exepth(void);
