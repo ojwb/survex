@@ -3591,7 +3591,11 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	    }
 
 	    if (cover_end) {
-		(this->*AddQuad)(v[3], v[2], v[1], v[0]);
+		if (segment == 0) {
+		    (this->*AddQuad)(v[0], v[1], v[2], v[3]);
+		} else {
+		    (this->*AddQuad)(v[3], v[2], v[1], v[0]);
+		}
 	    }
 	}
 
