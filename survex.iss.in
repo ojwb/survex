@@ -115,7 +115,7 @@ Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open"; ValueType: none
 Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process"; ValueType: none; Flags: deletekey; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 ;Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
-Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
+Root: HKCU; Subkey: "Software\Classes\survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
 Root: HKCU; Subkey: "Software\Classes\survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue; Check: not (IsAdminLoggedOn or IsPowerUserLoggedOn)
@@ -163,7 +163,7 @@ Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deleteke
 Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 ;Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
-Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\cavern.exe"" --log -q -o ""%1"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
+Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn
 Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue; Check: IsAdminLoggedOn or IsPowerUserLoggedOn

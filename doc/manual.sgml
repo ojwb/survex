@@ -391,7 +391,7 @@ possible actions.
   <VariableList>
   <VarListEntry><Term>Process</Term>
   <ListItem><Para>
-  Process file with cavern to produce <filename>.3d</filename> file (and <filename>.err</filename> file)
+  Process file with aven to produce <filename>.3d</filename> file (and <filename>.err</filename> file)
   </Para></ListItem>
   </VarListEntry>
   </VariableList>
