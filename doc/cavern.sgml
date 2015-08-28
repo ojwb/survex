@@ -30,6 +30,8 @@ their defaults before processing each file.
 
 <refsect1><Title>Options</Title>
 
+<VariableList>
+
 <VarListEntry>
 <Term>-o, --output=OUTPUT</Term>
 <ListItem>

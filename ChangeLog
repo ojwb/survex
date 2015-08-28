@@ -1,3 +1,7 @@
+Fri Aug 28 18:10:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/cavern.sgml: Fix broken SGML from previous commit.
+
 Fri Aug 28 05:53:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/cavern.sgml,doc/manual.sgml,lib/,src/: Drop support for showing
