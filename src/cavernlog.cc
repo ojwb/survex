@@ -101,8 +101,10 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
 
 CavernLogWindow::~CavernLogWindow()
 {
-    if (cavern_out)
+    if (cavern_out) {
+	wxEndBusyCursor();
 	pclose(cavern_out);
+    }
 }
 
 void
@@ -186,6 +188,12 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 void
 CavernLogWindow::process(const wxString &file)
 {
+    if (cavern_out) {
+	pclose(cavern_out);
+    } else {
+	wxBeginBusyCursor();
+    }
+
     SetFocus();
     filename = file;
 
@@ -230,9 +238,6 @@ CavernLogWindow::process(const wxString &file)
     cmd += escaped_file;
     cmd += wxT(' ');
     cmd += escaped_file;
-
-    if (cavern_out)
-	pclose(cavern_out);
 
 #ifdef __WXMSW__
     cavern_out = _wpopen(cmd.c_str(), L"r");
@@ -454,6 +459,7 @@ abort:
     AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
 				  (int)LOG_SAVE,
 				  wmsg(/*Save Log*/446).c_str()));
+    wxEndBusyCursor();
     int retval = pclose(cavern_out);
     cavern_out = NULL;
     if (retval) {
