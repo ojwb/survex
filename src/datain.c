@@ -254,22 +254,9 @@ skipline(void)
    while (!isEol(ch)) nextch();
 }
 
-#ifndef NO_PERCENTAGE
-static long int filelen;
-#endif
-
 static void
 process_bol(void)
 {
-#ifndef NO_PERCENTAGE
-   /* print %age of file done */
-   if (filelen > 0) {
-      filepos fp;
-      get_pos(&fp);
-      printf("%d%%\r", (int)(100 * fp.offset / filelen));
-   }
-#endif
-
    nextch();
    skipblanks();
 }
@@ -419,26 +406,10 @@ data_file(const char *pth, const char *fnm)
       file.reported_where = fFalse;
    }
 
-   if (fPercent) printf("%s:\n", fnm);
-
    using_data_file(file.filename);
 
    begin_lineno_store = pcs->begin_lineno;
    pcs->begin_lineno = 0;
-
-#ifndef NO_PERCENTAGE
-   /* Try to find how long the file is...
-    * However, under ANSI fseek( ..., SEEK_END) may not be supported */
-   filelen = 0;
-   if (fPercent) {
-      if (fseek(file.fh, 0l, SEEK_END) == 0) {
-	 filepos fp;
-	 get_pos(&fp);
-	 filelen = fp.offset;
-      }
-      rewind(file.fh); /* reset file ptr to start & clear any error state */
-   }
-#endif
 
    if (fmt == FMT_DAT) {
       short *t;
@@ -749,10 +720,6 @@ data_file(const char *pth, const char *fnm)
    /* don't allow *BEGIN at the end of a file, then *EXPORT in the
     * including file */
    f_export_ok = fFalse;
-
-#ifndef NO_PERCENTAGE
-   if (fPercent) putnl();
-#endif
 
    if (pcs->begin_lineno) {
       error_in_file(file.filename, pcs->begin_lineno,

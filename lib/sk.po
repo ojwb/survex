@@ -1416,12 +1416,6 @@ msgstr "s prefixom sa natiahla iba časť merania"
 msgid "print and exit (requires a 3d file)"
 msgstr "vytlač a ukonči (vyžaduje 3D súbor)"
 
-#. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:125
-#: n:161
-msgid "display percentage progress"
-msgstr "zobraz postup v percento"
-
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:127
 #: n:162

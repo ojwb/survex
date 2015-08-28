@@ -1,3 +1,12 @@
+Fri Aug 28 05:53:00 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/cavern.sgml,doc/manual.sgml,lib/,src/: Drop support for showing
+	  percentage progress in cavern.  It's confusing in a multiple-file
+	  dataset as it shows progress in the current file so jumps around.
+	  It also slows down processing, and on a slow machine you'd don't
+	  want that, while on a fast machine processing isn't slow enough for
+	  the progress display to be useful.
+
 Fri Aug 28 05:28:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,survex.iss.in: Process survey data with aven rather

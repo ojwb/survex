@@ -66,9 +66,6 @@ char * proj_str_out = NULL;
 
 FILE *fhErrStat = NULL;
 img *pimg = NULL;
-#ifndef NO_PERCENTAGE
-bool fPercent = fFalse;
-#endif
 bool fQuiet = fFalse; /* just show brief summary + errors */
 bool fMute = fFalse; /* just show errors */
 bool fSuppress = fFalse; /* only output 3d file */
@@ -96,13 +93,9 @@ static void do_stats(void);
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
-#ifdef NO_PERCENTAGE
-   {"percentage", no_argument, 0, 0},
-   {"no-percentage", no_argument, 0, 0},
-#else
    {"percentage", no_argument, 0, 'p'},
-   {"no-percentage", no_argument, 0, 3},
-#endif
+   /* Ignore for compatibility with older versions. */
+   {"no-percentage", no_argument, 0, 0},
    {"output", required_argument, 0, 'o'},
    {"quiet", no_argument, 0, 'q'},
    {"no-auxiliary-files", no_argument, 0, 's'},
@@ -121,8 +114,6 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   /* TRANSLATORS: --help output for cavern --percentage option */
-   {HLP_ENCODELONG(0),	      /*display percentage progress*/161, 0},
    /* TRANSLATORS: --help output for cavern --output option */
    {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0},
    /* TRANSLATORS: --help output for cavern --quiet option */
@@ -212,15 +203,8 @@ main(int argc, char **argv)
       if (opt == EOF) break;
       switch (opt) {
        case 'p':
-#ifndef NO_PERCENTAGE
-	 fPercent = 1;
-#endif
+	 /* Ignore for compatibility with older versions. */
 	 break;
-#ifndef NO_PERCENTAGE
-       case 3:
-	 fPercent = 0;
-	 break;
-#endif
        case 'o': {
 	 osfree(fnm_output_base); /* in case of multiple -o options */
 	 /* can be a directory (in which case use basename of leaf input)

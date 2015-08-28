@@ -1413,12 +1413,6 @@ msgstr "only load the sub-survey with this prefix"
 msgid "print and exit (requires a 3d file)"
 msgstr "print and exit (requires a 3d file)"
 
-#. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:125
-#: n:161
-msgid "display percentage progress"
-msgstr "display percentage progress"
-
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:127
 #: n:162

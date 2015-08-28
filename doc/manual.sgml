@@ -600,8 +600,8 @@ output version information and exit
 
 <Para>
 Options have two forms: short (a dash followed by a single letter e.g.
-<command>cavern -p</command>) and long (two dashes followed by one or more words e.g.
-<command>cavern --percentage</command>).  The long form is generally easier to
+<command>cavern -q</command>) and long (two dashes followed by one or more words e.g.
+<command>cavern --quiet</command>).  The long form is generally easier to
 remember, while the short form is quicker to type.  Options are often
 available in both forms.
 </Para>

@@ -1413,12 +1413,6 @@ msgstr "ne charge que la partie de la topographie avec le préfixe"
 msgid "print and exit (requires a 3d file)"
 msgstr "Imprimer et quitter (nécessite un fichier 3d)"
 
-#. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:125
-#: n:161
-msgid "display percentage progress"
-msgstr "Afficher le pourcentage de progression"
-
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:127
 #: n:162
@@ -1534,7 +1528,6 @@ msgstr "Tous les fichiers"
 #: n:229
 msgid "All survey files"
 msgstr "Tous les fichiers de topographie"
-
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.

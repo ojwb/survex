@@ -1413,12 +1413,6 @@ msgstr "обрабатывать топо-съемки только с указ�
 msgid "print and exit (requires a 3d file)"
 msgstr "распечатать и выйти (нуобходимо указать 3d файл)"
 
-#. TRANSLATORS: --help output for cavern --percentage option
-#: ../src/cavern.c:125
-#: n:161
-msgid "display percentage progress"
-msgstr "отображать ход выполнения задачи в процентах"
-
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:127
 #: n:162

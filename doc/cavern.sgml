@@ -30,22 +30,6 @@ their defaults before processing each file.
 
 <refsect1><Title>Options</Title>
 
-<VariableList>
-<VarListEntry>
-<Term>-p, --percentage</Term>
-<ListItem>
-<Para>You can get cavern to display the percentage progress through the
-current file.  As of <Application>Survex</Application> 0.90 this is disabled by default, but you
-can enable it if you want.  Because the value given is for the
-<emphasis>current</emphasis> file, the values jump around for a multi-file survey
-project. Also note that displaying this information slows down processing
-a little.
-<!-- FIXME: on a slow machine you'd probably rather it ran faster, and on a
-fast machine you can't follow the change percentages.-->
-</Para>
-</ListItem>
-</VarListEntry>
-
 <VarListEntry>
 <Term>-o, --output=OUTPUT</Term>
 <ListItem>
