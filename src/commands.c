@@ -2156,6 +2156,16 @@ cmd_truncate(void)
 }
 
 static void
+cmd_ref(void)
+{
+   /* Just syntax check for now. */
+   char *ref;
+   int ref_len;
+   read_string(&ref, &ref_len);
+   s_free(&ref);
+}
+
+static void
 cmd_require(void)
 {
    const unsigned int version[] = {COMMAVERSION};
@@ -2297,7 +2307,7 @@ static const cmd_fn cmd_funcs[] = {
 #ifndef NO_DEPRECATED
    cmd_prefix,
 #endif
-   skipline, /* cmd_ref, */
+   cmd_ref,
    cmd_require,
    cmd_sd,
    cmd_set,
