@@ -13,13 +13,23 @@ Changes in 1.2.23 (2015-08-29):
   + Processing a .svx file with an error now still adds it to the file history.
     Reported by Martin Green.
 
-* cavern: Drop support for showing percentage progress in cavern.  It's
-  confusing in a multiple-file dataset as it shows progress in the current file
-  so jumps around.  It also slows down processing, and on a slow machine you'd
-  don't want that, while on a fast machine processing isn't slow enough for the
-  progress display to be useful.
+  + Fix the orientation of the starting end of tubes.
+
+* cavern:
+
+  + New *ref command to allow specifying an external reference (e.g. where to
+    find the original survey notes).
+
+  + Drop support for showing percentage progress in cavern.  It's confusing in
+    a multiple-file dataset as it shows progress in the current file so jumps
+    around.  It also slows down processing, and on a slow machine you'd don't
+    want that, while on a fast machine processing isn't slow enough for the
+    progress display to be useful.
 
 * French translation is now completely up to date, thanks to Michel Bovey.
+
+* Bundle proj's EPSG and ESRI code lists in the installers for MS Windows and
+  OS X so that things like "*cs EPSG:29903" work.  Reported by Graham Mullan.
 
 * (Microsoft Windows version): Process survey data with aven rather than
   running cavern.
