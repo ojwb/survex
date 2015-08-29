@@ -2509,6 +2509,59 @@ instead.</Para></listitem>
 
 </Sect3>
 
+<Sect3><Title>REF</Title>
+
+<VariableList>
+
+<VarListEntry><Term>Syntax</Term>
+
+<listitem><Para>*ref &lt;string&gt;</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Example</Term>
+
+<listitem>
+<Para>
+<programlisting>
+*ref "survey folder 2007#12"
+</Para>
+</listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Validity</Term>
+
+<listitem><Para>valid at the start of a *begin/*end block.
+</Para></listitem>
+
+</VarListEntry>
+
+<VarListEntry><Term>Description</Term>
+
+<listitem><Para>
+*ref allows you to specify a reference.  It's up to you how you use it, but for
+example it could specify where the original survey notes can be found.
+</Para>
+
+<Para>
+*ref was added in Survex 1.2.23.
+</Para></listitem>
+
+</VarListEntry>
+
+<!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->
+
+<VarListEntry><Term>See Also</Term>
+
+<listitem><Para>*begin, *date, *instrument, *team</Para></listitem>
+
+</VarListEntry>
+
+</VariableList>
+
+</Sect3>
+
 <Sect3><Title>REQUIRE</Title>
 
 <VariableList>

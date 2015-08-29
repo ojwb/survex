@@ -1,7 +1,7 @@
 In file included from ./doubleinc.svx:3:
 ./cmd_dummy.svx:2: warning: Reentering an existing survey is deprecated
 ./cmd_dummy.svx:2: warning: Originally entered here
-./cmd_dummy.svx:11: warning: Station already fixed at the same coordinates
+./cmd_dummy.svx:12: warning: Station already fixed at the same coordinates
 
 Removing trailing traverses...
 

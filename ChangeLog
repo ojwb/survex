@@ -1,3 +1,9 @@
+Sat Aug 29 00:53:16 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml,src/commands.c,tests/cmd_dummy.svx,
+	  tests/doubleinc.out: Add *ref command to allow specifying an external
+	  reference.
+
 Fri Aug 28 23:15:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* Makefile.am,buildmacosx.sh,src/,survex.iss.in: Bundle proj's EPSG and

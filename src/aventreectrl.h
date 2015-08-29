@@ -61,6 +61,7 @@ public:
     void OnSelChanged(wxTreeEvent& event);
     void OnKeyPress(wxKeyEvent &e);
     void OnItemActivated(wxTreeEvent& e);
+    void OnRightClick(wxTreeEvent& e);
 
     bool GetSelectionData(wxTreeItemData**) const;
 

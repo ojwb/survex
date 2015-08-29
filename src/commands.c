@@ -254,8 +254,8 @@ typedef enum {
    CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
    CMD_CS, CMD_DATA, CMD_DATE, CMD_DECLINATION, CMD_DEFAULT, CMD_END,
    CMD_ENTRANCE, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE,
-   CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REQUIRE, CMD_SD, CMD_SET,
-   CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
+   CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REF, CMD_REQUIRE, CMD_SD,
+   CMD_SET, CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
 static const sztok cmd_tab[] = {
@@ -283,6 +283,7 @@ static const sztok cmd_tab[] = {
 #ifndef NO_DEPRECATED
      {"PREFIX",    CMD_PREFIX},
 #endif
+     {"REF",	   CMD_REF},
      {"REQUIRE",   CMD_REQUIRE},
      {"SD",	   CMD_SD},
      {"SET",       CMD_SET},
@@ -1071,8 +1072,11 @@ cmd_export(void)
    fExportUsed = fTrue;
    do {
       int depth = 0;
-      pfx = read_prefix(PFX_STATION);
-      {
+      pfx = read_prefix(PFX_STATION|PFX_NEW);
+      if (pfx == NULL) {
+	 /* The argument was an existing station. */
+	 /* FIXME */
+      } else {
 	 prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
 	    depth++;
@@ -2293,6 +2297,7 @@ static const cmd_fn cmd_funcs[] = {
 #ifndef NO_DEPRECATED
    cmd_prefix,
 #endif
+   skipline, /* cmd_ref, */
    cmd_require,
    cmd_sd,
    cmd_set,
@@ -2328,11 +2333,26 @@ handle_command(void)
 	  * *end fred */
 	 compile_error(/**EXPORT must immediately follow “*BEGIN <SURVEY>”*/57);
       break;
+    case CMD_ALIAS:
+    case CMD_CALIBRATE:
+    case CMD_CASE:
     case CMD_COPYRIGHT:
+    case CMD_CS:
+    case CMD_DATA:
     case CMD_DATE:
+    case CMD_DECLINATION:
+    case CMD_DEFAULT:
+    case CMD_FLAGS:
+    case CMD_INFER:
     case CMD_INSTRUMENT:
+    case CMD_REF:
+    case CMD_REQUIRE:
+    case CMD_SD:
+    case CMD_SET:
     case CMD_TEAM:
     case CMD_TITLE:
+    case CMD_TRUNCATE:
+    case CMD_UNITS:
       /* These can occur between *begin and *export */
       break;
     default:

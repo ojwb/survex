@@ -32,6 +32,8 @@ enum {
     PFX_WARN_SEPARATOR = 16,
     /* Anonymous stations OK? */
     PFX_ANON = 32,
+    /* */
+    PFX_NEW = 64,
     /* Read a station? */
     PFX_STATION = 0
 };
