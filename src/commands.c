@@ -2159,7 +2159,7 @@ static void
 cmd_ref(void)
 {
    /* Just syntax check for now. */
-   char *ref;
+   char *ref = NULL;
    int ref_len;
    read_string(&ref, &ref_len);
    s_free(&ref);
