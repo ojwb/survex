@@ -1,3 +1,8 @@
+Tue Sep 01 08:49:59 GMT 2015  Olly Betts <olly@survex.com>
+
+	* Makefile.am,src/Makefile.am,src/aven.cc,src/message.c: Fix up the
+	  handling of bundled epsg and esri files to work.
+
 Tue Sep 01 08:32:34 GMT 2015  Olly Betts <olly@survex.com>
 
 	* tests/cmd_export_bad.out,tests/cmd_export_bad.svx: Add more new files

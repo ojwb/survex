@@ -29,10 +29,10 @@ bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
 
 check_PROGRAMS = imgtest
 
-COMMONSRC = cmdline.c message.c filename.c osdepend.c z_getopt.c getopt1.c
+COMMONSRC = cmdline.c message.c str.c filename.c osdepend.c z_getopt.c getopt1.c
 
 cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
- network.c readval.c str.c matrix.c img_hosted.c netbits.c useful.c \
+ network.c readval.c matrix.c img_hosted.c netbits.c useful.c \
  validate.c netartic.c thgeomag.c \
  $(COMMONSRC)
 cavern_LDADD = $(PROJ_LIBS)
@@ -85,7 +85,7 @@ sorterr_SOURCES = sorterr.c $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
-cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c str.c \
+cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c \
  $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c

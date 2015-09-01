@@ -38,6 +38,7 @@
 #include "osdepend.h"
 #include "filelist.h"
 #include "debug.h"
+#include "str.h"
 
 #ifdef AVEN
 # include "aven.h"
@@ -1154,7 +1155,7 @@ macosx_got_msg:
 const char *
 msg_proj_finder(const char * file)
 {
-    static const char * r = NULL;
+    static char * r = NULL;
     static int r_len = 0;
     s_zero(&r);
     s_cat(&r, &r_len, pth_cfg_files);

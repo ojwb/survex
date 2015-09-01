@@ -44,6 +44,10 @@
 #include <wx/display.h>
 #endif
 
+#if defined __WXMAC__ || defined __WXMSW__
+#include <proj_api.h>
+#endif
+
 bool double_buffered = false;
 
 static const struct option long_opts[] = {
