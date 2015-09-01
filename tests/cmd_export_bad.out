@@ -1,0 +1,28 @@
+./cmd_export_bad.svx:6:9: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
+./cmd_export_bad.svx:7:11: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 3 survey stations, joined by 2 legs.
+There are 0 loops.
+Total length of survey legs =    2.00m (   2.00m adjusted)
+Total plan length of survey legs =    2.00m
+Total vertical length of survey legs =    0.03m
+Vertical range = 0.03m (from x.3 at 0.03m to x.1 at 0.00m)
+North-South range = 1.97m (from x.3 at 1.97m to x.1 at 0.00m)
+East-West range = 0.35m (from x.3 at 0.35m to x.1 at 0.00m)
+   2 1-nodes.
+   1 2-node.
+There were 0 warning(s) and 2 error(s) - no output files produced.

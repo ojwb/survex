@@ -1,0 +1,12 @@
+; pos=fail warn=0 error=2
+; We used to report "End of line not blank" but 1.2.22 gives "Character "=" not
+; allowed in station name (use *SET NAMES to set allowed characters)" instead.
+*fix x.1 0 0 0
+*begin x
+*export *
+*export 1 =
+*export 2 
+*export 3 ; test
+1 2 1.00 010 01
+2 3 1.00 010 01
+*end x

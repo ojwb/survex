@@ -1,3 +1,8 @@
+Tue Sep 01 08:32:34 GMT 2015  Olly Betts <olly@survex.com>
+
+	* tests/cmd_export_bad.out,tests/cmd_export_bad.svx: Add more new files
+	  missed from earlier commit.
+
 Tue Sep 01 08:28:41 GMT 2015  Olly Betts <olly@survex.com>
 
 	* tests/cmd_equate_bad.out,tests/cmd_equate_bad.svx: Add new files
