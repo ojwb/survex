@@ -1,3 +1,8 @@
+Tue Sep 01 08:28:41 GMT 2015  Olly Betts <olly@survex.com>
+
+	* tests/cmd_equate_bad.out,tests/cmd_equate_bad.svx: Add new files
+	  missed from earlier commit.
+
 Sun Aug 30 01:32:13 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/commands.c: Fix potential crash in *ref.

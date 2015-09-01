@@ -1,0 +1,26 @@
+./cmd_equate_bad.svx:5:11: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+./cmd_equate_bad.svx:6:13: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 4 survey stations, joined by 3 legs.
+There is 1 loop.
+Survey has 2 connected components.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   2 1-nodes.
+   2 2-nodes.
+There were 0 warning(s) and 2 error(s) - no output files produced.

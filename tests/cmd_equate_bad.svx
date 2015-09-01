@@ -1,0 +1,8 @@
+; pos=fail warn=0 error=2
+; We used to report "End of line not blank" but 1.2.22 gives "Character "=" not
+; allowed in station name (use *SET NAMES to set allowed characters)" instead.
+*fix 1 reference 0 0 0
+*equate 1 =
+*equate 1 2 =
+*equate 3 4 
+*equate 2 1 3 ; test
