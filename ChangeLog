@@ -1,3 +1,7 @@
+Sun Sep 06 03:23:47 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Improve wording.
+
 Sun Sep 06 03:23:30 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS,configure.ac,doc/manual.sgml: Update for 1.2.23.

@@ -2540,8 +2540,10 @@ instead.</Para></listitem>
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>
-*ref allows you to specify a reference.  It's up to you how you use it, but for
-example it could specify where the original survey notes can be found.
+*ref allows you to specify a reference.  If the reference contains spaces, you
+must enclose it in double quotes.  Survex doesn't try to interpret the
+reference in any way, so it's up to you how you use it - for example it could
+specify where the original survey notes can be found.
 </Para>
 
 <Para>
