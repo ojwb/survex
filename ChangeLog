@@ -1,3 +1,7 @@
+Sun Sep 06 03:18:12 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/fr.po: Fill in missing translations.
+
 Sun Sep 06 00:03:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Building libav with --disable-decoders

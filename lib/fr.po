@@ -1172,9 +1172,9 @@ msgstr "Traité le %s"
 #. This message probably doesn't need translating for most languages.
 #: ../src/printing.cc:1771
 #: n:233
-#, c-format
+#, c-format, fuzzy
 msgid "↑%s 1:%.0f"
-msgstr ""
+msgstr "↑%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an elevation view and what the viewing angle
@@ -1184,9 +1184,9 @@ msgstr ""
 #. This message probably doesn't need translating for most languages.
 #: ../src/printing.cc:1782
 #: n:235
-#, c-format
+#, c-format, fuzzy
 msgid "%s↔%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a tilted elevation view and what the viewing
@@ -1197,9 +1197,9 @@ msgstr ""
 #. This message probably doesn't need translating for most languages.
 #: ../src/printing.cc:1795
 #: n:236
-#, c-format
+#, c-format, fuzzy
 msgid "%s↔%s ∡%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s ∡%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an extended elevation view.  Aven will replace
@@ -1212,9 +1212,9 @@ msgstr ""
 #. printout.
 #: ../src/printing.cc:1811
 #: n:244
-#, c-format
+#, c-format, fuzzy
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "Développée 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
