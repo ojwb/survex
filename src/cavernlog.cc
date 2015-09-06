@@ -284,15 +284,15 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
 	return;
     }
     if (r > 0 && FD_ISSET(cavern_fd, &rfds)) {
-	ssize_t r = read(cavern_fd, end, sizeof(buf) - (end - buf));
-	if (r <= 0) {
-	    if (r == 0 && buf != end) {
+	ssize_t n = read(cavern_fd, end, sizeof(buf) - (end - buf));
+	if (n <= 0) {
+	    if (n == 0 && buf != end) {
 		// FIXME: Truncated UTF-8 sequence.
 	    }
 	    goto abort;
 	}
-	log_txt.append((const char *)end, r);
-	end += r;
+	log_txt.append((const char *)end, n);
+	end += n;
 
 	const unsigned char * p = buf;
 
@@ -495,7 +495,7 @@ abort:
 }
 
 void
-CavernLogWindow::OnReprocess(wxCommandEvent & e)
+CavernLogWindow::OnReprocess(wxCommandEvent &)
 {
     SetPage(wxString());
     process(filename);

@@ -1,3 +1,7 @@
+Sun Sep 06 04:25:13 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix compiler warnings.
+
 Sun Sep 06 03:50:08 GMT 2015  Olly Betts <olly@survex.com>
 
 	* NEWS,doc/HACKING.htm: Now using InnoSetup 5.5.6 rather than 5.5.3.
