@@ -193,7 +193,10 @@ if [ "$install_libav" != no ] ; then
     test -d "libav-$LIBAV_VERSION" || tar xf "$libavtarball"
     test -d "libav-$LIBAV_VERSION/BUILD" || mkdir "libav-$LIBAV_VERSION/BUILD"
     cd "libav-$LIBAV_VERSION/BUILD"
-    LIBAV_CONFIGURE_OPTS='--disable-shared --disable-decoders --disable-demuxers --disable-programs --disable-network --disable-bsfs --disable-protocols --disable-devices'
+    LIBAV_CONFIGURE_OPTS='--disable-shared --disable-programs --disable-network --disable-bsfs --disable-protocols --disable-devices'
+    # We don't need to decode video, but disabling these causes a link failure
+    # when linking aven:
+    # --disable-decoders --disable-demuxers
     if ! nasm -hf|grep -q macho64 ; then
       # nasm needs to support macho64, at least for x86_64 builds.
       LIBAV_CONFIGURE_OPTS="$LIBAV_CONFIGURE_OPTS --disable-yasm"
