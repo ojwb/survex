@@ -238,10 +238,10 @@ ln Survex/share/survex/*.msg Survex/Aven.app/Contents/Resources/
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
 ln Survex/cavern Survex/Aven.app/Contents/MacOS/
 rm -rf Survex/share/applications Survex/share/icons Survex/share/mime-info
-mkdir Survex/share/proj
-cp -p PROJINSTALL/share/epsg PROJINSTALL/share/esri Survex/share/proj
-mkdir Survex/Aven.app/proj
-ln Survex/share/proj/* Survex/Aven.app/proj
+mkdir Survex/share/survex/proj
+cp -p PROJINSTALL/share/proj/epsg PROJINSTALL/share/proj/esri Survex/share/survex/proj
+mkdir Survex/Aven.app/Contents/Resources/proj
+ln Survex/share/survex/proj/* Survex/Aven.app/Contents/Resources/proj
 
 # Create .icns files in the bundle's "Resources" directory.
 for zip in lib/icons/*.iconset.zip ; do
