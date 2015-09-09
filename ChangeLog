@@ -1,3 +1,8 @@
+Wed Sep 09 07:16:51 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Fix handling of encoding of filename when there's no
+	  corresponding locale on the system.
+
 Wed Sep 09 07:08:04 GMT 2015  Olly Betts <olly@survex.com>
 
 	* buildmacosx.sh: Fix locations proj 'epsg' and 'esri' files get
