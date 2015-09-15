@@ -1,3 +1,8 @@
+Tue Sep 15 07:26:53 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: Fix the cavern log under WXMSW.  Reported by Brian
+	  Clipstone.
+
 Tue Sep 15 06:57:00 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/sk.po: Translate "Help".

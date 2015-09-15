@@ -266,6 +266,7 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
 #else
     cavern_fd = fileno(cavern_out);
 #endif
+#ifndef __WXMSW__
     assert(cavern_fd < FD_SETSIZE); // FIXME we shouldn't just assert, but what else to do?
 
     fd_set rfds, efds;
@@ -284,6 +285,12 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
 	return;
     }
     if (r > 0 && FD_ISSET(cavern_fd, &rfds)) {
+#else
+    // Dumb implementation of select() which only works on sockets, so just
+    // block as doing anything else requires a custom implementation.
+    // FIXME: Use a thread or something?
+    if (true) {
+#endif
 	ssize_t n = read(cavern_fd, end, sizeof(buf) - (end - buf));
 	if (n <= 0) {
 	    if (n == 0 && buf != end) {
