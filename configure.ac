@@ -131,7 +131,9 @@ else
     wxdef=__WXGTK__
   fi
   dnl See if wx-config exists and is for the correct version.
-  AC_PATH_PROGS(WX_CONFIG, [wx-config])
+  dnl Fedora install wx3's wx-config as wx-config-3.0, so look for that in
+  dnl preference.
+  AC_PATH_PROGS(WX_CONFIG, [wx-config-3.0 wx-config])
   if test -n "$WX_CONFIG" ; then
     if (exec >&5 2>&5;$WX_CONFIG --cflags "$wx_libs"|grep -e -D"$wxdef";exit $?) then
       :

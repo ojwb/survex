@@ -1,3 +1,8 @@
+Tue Sep 15 20:57:58 GMT 2015  Olly Betts <olly@survex.com>
+
+	* configure.ac: Look for wx-config-3.0, which Fedora's wx3 packages
+	  have.  Reported by James Begley.
+
 Tue Sep 15 07:26:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Fix the cavern log under WXMSW.  Reported by Brian
