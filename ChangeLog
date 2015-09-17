@@ -1,3 +1,7 @@
+Thu Sep 17 21:50:35 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/id.po: Update Indonesian translation.
+
 Tue Sep 15 20:57:58 GMT 2015  Olly Betts <olly@survex.com>
 
 	* configure.ac: Look for wx-config-3.0, which Fedora's wx3 packages

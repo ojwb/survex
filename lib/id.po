@@ -375,17 +375,17 @@ msgstr "Koordinat tidak dapat diabaikan saat sistem koordinat yang telah ditentu
 #: ../src/commands.c:1623
 #: n:301
 msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
-msgstr ""
+msgstr "Masukan sistem koordinat ada harus dicantumkan untuk '*DECLINATION AUTO'"
 
 #: ../src/commands.c:1615
 #: n:309
 msgid "Expected number or 'AUTO'"
-msgstr ""
+msgstr "Angka yang diharapkan atau 'AUTO'"
 
 #: ../src/datain.c:902
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
-msgstr ""
+msgstr "Tidak ada tanggal survei yang ditentukan - menggunakan 0 untuk deklinasi magnetik"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
