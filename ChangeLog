@@ -1,3 +1,9 @@
+Fri Sep 18 09:22:11 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/aventreectrl.cc,src/aventreectrl.h: Back out accidentally
+	  committed debugging code which sends output to stdout from the
+	  tree control.
+
 Thu Sep 17 21:50:35 GMT 2015  Olly Betts <olly@survex.com>
 
 	* lib/id.po: Update Indonesian translation.

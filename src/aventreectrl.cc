@@ -35,7 +35,6 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_TREE_SEL_CHANGED(-1, AvenTreeCtrl::OnSelChanged)
     EVT_TREE_ITEM_ACTIVATED(-1, AvenTreeCtrl::OnItemActivated)
     EVT_CHAR(AvenTreeCtrl::OnKeyPress)
-    EVT_TREE_ITEM_RIGHT_CLICK(-1, AvenTreeCtrl::OnRightClick)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
@@ -69,7 +68,6 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 
 void AvenTreeCtrl::SetHere(wxTreeItemId pos)
 {
-cout << "SetHere" << endl;
     if (pos == m_LastItem) return;
 
     if (m_LastItem.IsOk()) {
@@ -98,7 +96,6 @@ void AvenTreeCtrl::SetEnabled(bool enabled)
 
 void AvenTreeCtrl::OnSelChanged(wxTreeEvent& e)
 {
-cout << "OnSelChanged" << endl;
     if (m_Enabled) {
 	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), false);
     }
@@ -108,26 +105,9 @@ cout << "OnSelChanged" << endl;
 
 void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
 {
-cout << "OnItemActivated" << endl;
     if (m_Enabled) {
 	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), true);
 	// Need to skip to allow double-clicking to work on wxMSW >= 2.8.11.
-	e.Skip();
-    }
-}
-
-void AvenTreeCtrl::OnRightClick(wxTreeEvent& e)
-{
-cout << "OnRightClick" << endl;
-    if (m_Enabled) {
-	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), true);
-	//
-	const TreeData* data = static_cast<const TreeData*>(GetItemData(e.GetItem()));
-	if (data->GetLabel()) {
-	    // Station: data->GetLabel()->GetText()
-	} else {
-	    // Survey: data->GetSurvey()
-	}
 	e.Skip();
     }
 }
@@ -165,7 +145,6 @@ void AvenTreeCtrl::DeleteAllItems()
 
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 {
-cout << "OnKeyPress" << endl;
     switch (e.GetKeyCode()) {
 	case WXK_ESCAPE:
 	    m_Parent->ClearTreeSelection();
