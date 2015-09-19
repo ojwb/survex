@@ -3,6 +3,11 @@ Sun Sep 20 06:50:53 GMT 2015  Olly Betts <olly@survex.com>
 	* doc/manual.sgml: Document anonymous stations in the manual, based on
 	  the text from NEWS.  Reported by Wookey.
 
+Sat Sep 19 03:54:39 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Use utf8_str() instead of fn_str() for the filename
+	  to pass to the img library.
+
 Sat Sep 19 03:08:28 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/mainfrm.cc: Hide the OpenGL window when we show the log window,

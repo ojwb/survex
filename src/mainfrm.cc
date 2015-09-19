@@ -1107,7 +1107,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 #endif
 
     // Load the processed survey data.
-    img* survey = img_open_survey(file.fn_str(), prefix.utf8_str());
+    img* survey = img_open_survey(file.utf8_str(), prefix.utf8_str());
     if (!survey) {
 	wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
 	wxGetApp().ReportError(m);
