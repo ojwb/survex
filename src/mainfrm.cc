@@ -1808,6 +1808,7 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 	    CavernLogWindow * log = new CavernLogWindow(this, survey, m_Splitter);
 	    wxWindow * win = m_Splitter->GetWindow1();
 	    m_Splitter->ReplaceWindow(win, log);
+	    win->Show(false);
 	    if (m_Splitter->GetWindow2() == NULL) {
 		if (win != m_Gfx) win->Destroy();
 	    } else {
@@ -2002,6 +2003,7 @@ void MainFrm::OnShowLog(wxCommandEvent&)
     if (!m_Log) return;
     wxWindow * win = m_Splitter->GetWindow1();
     m_Splitter->ReplaceWindow(win, m_Log);
+    win->Show(false);
     if (m_Splitter->IsSplit()) {
 	m_SashPosition = m_Splitter->GetSashPosition(); // save width of panel
 	m_Splitter->Unsplit();

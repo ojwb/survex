@@ -3,6 +3,11 @@ Sun Sep 20 06:50:53 GMT 2015  Olly Betts <olly@survex.com>
 	* doc/manual.sgml: Document anonymous stations in the manual, based on
 	  the text from NEWS.  Reported by Wookey.
 
+Sat Sep 19 03:08:28 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Hide the OpenGL window when we show the log window,
+	  to fix issues with the OpenGL window still showing up under wxMSW.
+
 Fri Sep 18 09:22:11 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc,src/aventreectrl.h: Back out accidentally
