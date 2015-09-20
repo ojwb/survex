@@ -796,6 +796,48 @@ the first few characters as significant you can get cavern to truncate
 the names using the *truncate command.
 </Para>
 
+<Sect3><Title>Anonymous Stations</Title>
+
+<Para>
+Survex supports the concept of anonymous survey stations.  That is
+survey stations without a name.  Each time an anonymous station name is
+used it represents a different point.  Currently three types of anonymous
+station are supported, referred to by one, two or three separator characters
+- with the default separator of '.', that means '.', '..', and '...' are
+anonymous stations.  Their meanings are:</Para>
+
+<VariableList>
+<VarListEntry><Term>Single separator ('.' by default)</Term>
+<ListItem><Para>
+An anonymous non-wall point at the end of an implicit splay.
+</Para></ListItem></VarListEntry>
+
+<VarListEntry><Term>Double separator ('..' by default)</Term>
+<ListItem><Para>
+An anoymous wall point at the end of an implicit splay.
+</Para></ListItem></VarListEntry>
+
+<VarListEntry><Term>Triple separator ('...' by default)</Term>
+<ListItem><Para>
+an anoymous point with no implicit flags on the leg (intended for cases like
+a disto leg along a continuing passage).
+</Para></ListItem></VarListEntry>
+</ListItem>
+
+<Para>
+You can map '-' to '..' (for compatibility with data from pocket topo) using
+the command:
+</Para>
+
+<programlisting>
+*alias station - ..
+</programlisting>
+
+<Para>Support for anonymous stations and for '*alias station - ..' was added in
+Survex 1.2.7.</Para>
+
+</Sect3>
+
 </Sect2>
 
 <Sect2><Title>Numeric fields</Title>

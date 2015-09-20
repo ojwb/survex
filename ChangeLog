@@ -1,3 +1,8 @@
+Sun Sep 20 06:50:53 GMT 2015  Olly Betts <olly@survex.com>
+
+	* doc/manual.sgml: Document anonymous stations in the manual, based on
+	  the text from NEWS.  Reported by Wookey.
+
 Fri Sep 18 09:22:11 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc,src/aventreectrl.h: Back out accidentally
