@@ -42,11 +42,72 @@
 
 enum { LOG_REPROCESS = 1234, LOG_SAVE = 1235 };
 
+#ifdef wxUSE_THREADS
+// New event type for passing a chunk of cavern output from the worker thread
+// to the main thread.
+class CavernOutputEvent;
+
+wxDEFINE_EVENT(wxEVT_CAVERN_OUTPUT, CavernOutputEvent);
+
+class CavernOutputEvent : public wxEvent {
+  public:
+    char buf[1000];
+    int len;
+    CavernOutputEvent() : wxEvent(0, wxEVT_CAVERN_OUTPUT), len(0) { }
+
+    wxEvent * Clone() const {
+	CavernOutputEvent * e = new CavernOutputEvent();
+	e->len = len;
+	if (len > 0) memcpy(e->buf, buf, len);
+	return e;
+    }
+};
+
+class CavernThread : public wxThread {
+  protected:
+    virtual ExitCode Entry();
+
+    CavernLogWindow *handler;
+
+    int cavern_fd;
+
+  public:
+    CavernThread(CavernLogWindow *handler_, int fd)
+	: wxThread(wxTHREAD_DETACHED), handler(handler_), cavern_fd(fd) { }
+
+    ~CavernThread() {
+	wxCriticalSectionLocker enter(handler->thread_lock);
+	handler->thread = NULL;
+    }
+};
+
+wxThread::ExitCode
+CavernThread::Entry()
+{
+    ssize_t n;
+    do {
+	CavernOutputEvent * e = new CavernOutputEvent();
+	e->len = n = read(cavern_fd, e->buf, sizeof(e->buf));
+	if (TestDestroy()) {
+	    delete e;
+	    break;
+	}
+	wxQueueEvent(handler, e);
+    } while (n > 0);
+    return (wxThread::ExitCode)0;
+}
+#endif
+
 BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
     EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
     EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
+#ifdef wxUSE_THREADS
+    EVT_CLOSE(CavernLogWindow::OnClose)
+    EVT_COMMAND(wxID_ANY, wxEVT_CAVERN_OUTPUT, CavernLogWindow::OnCavernOutput)
+#else
     EVT_IDLE(CavernLogWindow::OnIdle)
+#endif
 END_EVENT_TABLE()
 
 static wxString escape_for_shell(wxString s, bool protect_dash = false)
@@ -93,6 +154,9 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
     : wxHtmlWindow(parent), mainfrm(mainfrm_), cavern_out(NULL),
       link_count(0), end(buf), init_done(false), survey(survey_)
+#ifdef wxUSE_THREADS
+      , thread(NULL)
+#endif
 {
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
@@ -106,6 +170,37 @@ CavernLogWindow::~CavernLogWindow()
 	pclose(cavern_out);
     }
 }
+
+#ifdef wxUSE_THREADS
+void
+CavernLogWindow::stop_thread()
+{
+    {
+	wxCriticalSectionLocker enter(thread_lock);
+	if (thread) {
+	    if (thread->Delete() != wxTHREAD_NO_ERROR) {
+		// FIXME
+	    }
+	}
+    }
+
+    // Wait for thread to complete.
+    while (true) {
+	{
+	    wxCriticalSectionLocker enter(thread_lock);
+	    if (!thread) break;
+	}
+	wxMilliSleep(1);
+    }
+}
+
+void
+CavernLogWindow::OnClose(wxCloseEvent &)
+{
+    if (thread) stop_thread();
+    Destroy();
+}
+#endif
 
 void
 CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
@@ -188,6 +283,9 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 void
 CavernLogWindow::process(const wxString &file)
 {
+#ifdef wxUSE_THREADS
+    if (thread) stop_thread();
+#endif
     if (cavern_out) {
 	pclose(cavern_out);
     } else {
@@ -253,12 +351,14 @@ CavernLogWindow::process(const wxString &file)
 	wxGetApp().ReportError(m);
 	return;
     }
+#ifndef wxUSE_THREADS
 }
 
 void
 CavernLogWindow::OnIdle(wxIdleEvent& event)
 {
     if (cavern_out == NULL) return;
+#endif
 
     int cavern_fd;
 #ifdef __WXMSW__
@@ -266,6 +366,26 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
 #else
     cavern_fd = fileno(cavern_out);
 #endif
+#ifdef wxUSE_THREADS
+    thread = new CavernThread(this, cavern_fd);
+    if (thread->Run() != wxTHREAD_NO_ERROR) {
+	wxGetApp().ReportError(wxT("Thread failed to start"));
+	delete thread;
+	thread = NULL;
+    }
+}
+
+void
+CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
+{
+    CavernOutputEvent & e = (CavernOutputEvent&)e_;
+
+    if (e.len > 0) {
+	ssize_t n = e.len;
+	if (n > sizeof(buf) - (end - buf)) abort();
+	memcpy(end, e.buf, n);
+#else
+    ssize_t n;
 #ifndef __WXMSW__
     assert(cavern_fd < FD_SETSIZE); // FIXME we shouldn't just assert, but what else to do?
 
@@ -284,20 +404,12 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
 	event.RequestMore();
 	return;
     }
-    if (r > 0 && FD_ISSET(cavern_fd, &rfds)) {
-#else
-    // Dumb implementation of select() which only works on sockets, so just
-    // block as doing anything else requires a custom implementation.
-    // FIXME: Use a thread or something?
-    if (true) {
+    if (r <= 0 || !FD_ISSET(cavern_fd, &rfds))
+	goto abort;
 #endif
-	ssize_t n = read(cavern_fd, end, sizeof(buf) - (end - buf));
-	if (n <= 0) {
-	    if (n == 0 && buf != end) {
-		// FIXME: Truncated UTF-8 sequence.
-	    }
-	    goto abort;
-	}
+    n = read(cavern_fd, end, sizeof(buf) - (end - buf));
+    if (n > 0) {
+#endif
 	log_txt.append((const char *)end, n);
 	end += n;
 
@@ -455,10 +567,21 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
 	end = buf + left;
 	if (left) memmove(buf, p, left);
 	Update();
+#ifndef wxUSE_THREADS
 	event.RequestMore();
+#endif
 	return;
     }
 
+#ifdef wxUSE_THREADS
+    if (e.len == 0 && buf != end) {
+	// FIXME: Truncated UTF-8 sequence.
+    }
+#else
+    if (n == 0 && buf != end) {
+	// FIXME: Truncated UTF-8 sequence.
+    }
+#endif
 abort:
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which

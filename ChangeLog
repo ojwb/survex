@@ -1,3 +1,10 @@
+Mon Sep 21 07:25:37 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc,src/cavernlog.h: If wx was built with thread
+	  support, aven now runs cavern from a separate thread, which
+	  works better under wxMSW (where we can't use select), and seems
+	  a bit smoother on Linux.
+
 Sun Sep 20 06:50:53 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Document anonymous stations in the manual, based on

@@ -26,9 +26,17 @@
 
 #include <string>
 
+#ifdef wxUSE_THREADS
+class CavernOutputEvent;
+class CavernThread;
+#endif
 class MainFrm;
 
 class CavernLogWindow : public wxHtmlWindow {
+#ifdef wxUSE_THREADS
+    friend class CavernThread;
+#endif
+
     wxString filename;
 
     MainFrm * mainfrm;
@@ -44,6 +52,14 @@ class CavernLogWindow : public wxHtmlWindow {
     wxString survey;
 
     std::string log_txt;
+
+#ifdef wxUSE_THREADS
+    void stop_thread();
+
+    CavernThread * thread;
+
+    wxCriticalSection thread_lock;
+#endif
 
   public:
     CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent);
@@ -61,7 +77,13 @@ class CavernLogWindow : public wxHtmlWindow {
 
     void OnOK(wxCommandEvent &);
 
+#ifdef wxUSE_THREADS
+    void OnCavernOutput(wxCommandEvent & e);
+
+    void OnClose(wxCloseEvent &);
+#else
     void OnIdle(wxIdleEvent &);
+#endif
 
     DECLARE_EVENT_TABLE()
 };
