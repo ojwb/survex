@@ -144,8 +144,8 @@ if you use <Application>Survex</Application> on a slow machine.</Para>
 quickly and has a very effective, real-time cave viewer which allows
 you to rotate, zoom, and pan the cave using mouse or keyboard. We have
 tested it extensively using <Acronym>CUCC</Acronym> and <Acronym>ARGE</Acronym>'s surveys of the caves
-under the Loser Plateau in Austria (over 22,000 survey legs, and over
-120km of underground survey data). This can all be processed in around
+under the Loser Plateau in Austria (over 25,000 survey legs, and over
+140km of underground survey data). This can all be processed in around
 10 seconds on a low-end netbook.
 Survex is also used by many other survey projects around the world,
 including the 
