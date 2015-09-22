@@ -1,3 +1,7 @@
+Tue Sep 22 20:59:41 GMT 2015  Olly Betts <olly@survex.com>
+
+	* lib/sk.po: Fix clashing menu accelerators.
+
 Tue Sep 22 20:52:33 GMT 2015  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml: Update stats for CUCC dataset.
