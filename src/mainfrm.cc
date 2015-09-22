@@ -907,6 +907,9 @@ void MainFrm::CreateMenuBar()
     wxString wxmac_fullscreen = wmsg(/*Full Screen &Mode\tF11*/356);
     wxmac_fullscreen.Replace(wxT("\tF11"), wxT("\tRawCtrl+Ctrl+F"), false);
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wxmac_fullscreen);
+    // FIXME: On OS X, the standard wording here is "Enter Full Screen" and
+    // "Exit Full Screen", depending whether we are in full screen mode or not,
+    // and this isn't a checked menu item.
 #else
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wmsg(/*Full Screen &Mode\tF11*/356));
 #endif

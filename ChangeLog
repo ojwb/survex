@@ -1,3 +1,8 @@
+Tue Sep 22 20:42:02 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/mainfrm.cc: Add FIXME for wording of "Full Screen Mode" menu
+	  item on OS X.
+
 Mon Sep 21 07:25:37 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc,src/cavernlog.h: If wx was built with thread
