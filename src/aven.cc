@@ -97,6 +97,21 @@ static char ** utf8_argv;
 #ifdef __WXMSW__
 bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
+    // Horrible bodge to handle therion's assumptions about the "Process"
+    // file association.
+    if (my_argc == 5 &&
+	wxStrcmp(my_argv[1], wxT("--quiet")) == 0 &&
+	wxStrcmp(my_argv[2], wxT("--log")) == 0 &&
+	wxStrncmp(my_argv[3], wxT("--output="), 9) == 0) {
+	wxString cavern = my_argv[0];
+	int slash = max(cavern.Find(wxT('/'), true),
+			cavern.Find(wxT('\\'), true));
+	// wxNOT_FOUND is -1, so this should work even if there's no slash.
+	cavern.replace(slash + 1, wxString::npos, wxT("cavern.exe"));
+	my_argv[0] = const_cast<wxChar*>((const wxChar*)cavern.c_str());
+	exit(wxExecute(my_argv, wxEXEC_SYNC));
+    }
+
     // wxWidgets passes us wxChars, which may be wide characters but cmdline
     // wants UTF-8 so we need to convert.
     utf8_argv = new char * [my_argc + 1];
