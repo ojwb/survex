@@ -1,3 +1,9 @@
+Wed Sep 23 05:16:53 GMT 2015  Olly Betts <olly@survex.com>
+
+	* survex.iss.in: On Vista or later, the installer requires admin
+	  privileges, so don't try to set up the registry conditional on
+	  whether we are or not.
+
 Wed Sep 23 00:45:38 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/cavernlog.cc: Fix compiler warning.
