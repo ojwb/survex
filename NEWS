@@ -1,3 +1,32 @@
+Changes in 1.2.24 (2015-09-23):
+
+* aven:
+
+  + (Microsoft Windows version): Fix the cavern log window.  Reported by Brian
+    Clipstone.
+
+  + (Microsoft Windows version): Add workaround to avoid breakage in Therion.
+    Reported by Jenny Black.
+
+  + If wx was built with thread support, aven now runs cavern from a separate
+    thread, which works much better under wxMSW (where we can't use select),
+    and also seems a bit smoother on Linux.
+
+  + Fix handling of encoding of filenames when the operating system has no
+    locale installed corresponding to the language selected for Survex's
+    messages.
+
+  + Undo accidentally committed debugging code which was sending message to
+    the terminal in 1.2.23.
+
+* (Linux version): configure now looks first for wx-config-3.0, which Fedora's
+  wx3 packages have.  Reported by James Begley.
+
+* Indonesian translation fully up to date again.
+
+* Manual: Document anonymous stations, based on the text from NEWS.  Reported
+  by Wookey.
+
 Changes in 1.2.23 (2015-09-06):
 
 * aven:
