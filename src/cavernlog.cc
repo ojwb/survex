@@ -382,7 +382,7 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 
     if (e.len > 0) {
 	ssize_t n = e.len;
-	if (n > sizeof(buf) - (end - buf)) abort();
+	if (size_t(n) > sizeof(buf) - (end - buf)) abort();
 	memcpy(end, e.buf, n);
 #else
     ssize_t n;
