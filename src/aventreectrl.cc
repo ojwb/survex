@@ -51,7 +51,7 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 {
-    if (m_Enabled) {
+    if (m_Enabled && !m_Parent->Animating()) {
 	int flags;
 	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
 	if (!(flags & TREE_MASK)) {

@@ -533,6 +533,7 @@ public:
     void DisplayTreeInfo(const wxTreeItemData* data = NULL);
     void TreeItemSelected(const wxTreeItemData* data, bool zoom);
     PresentationMark GetPresMark(int which);
+    bool Animating() const { return m_Gfx && m_Gfx->Animating(); }
 
 private:
     DECLARE_EVENT_TABLE()
