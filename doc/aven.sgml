@@ -116,8 +116,8 @@ movements:
 <keycap>Z</keycap>, <keycap>X</keycap> : Faster/Slower Rotation
 <keycap>R</keycap>: Reverse direction of rotation
 <keycap>Enter</keycap>, <keycap>Space</keycap>: Start and stop auto-rotation
-<keycap>C</keycap>, <keycap>V</keycap>: Rotate cave one step clockwise/anti-clockwise
-<keycap>'</keycap> , <keycap>/</keycap>: Higher/Lower Viewpoint
+<keycap>Ctrl-Cursor Left</keycap>, <keycap>Ctrl-Cursor Right</keycap>: Rotate cave one step clockwise/anti-clockwise (also: <keycap>C</keycap>, <keycap>V</keycap>)
+<keycap>Ctrl-Cursor Up</keycap> , <keycap>Ctrl-Cursor Down</keycap>: Higher/Lower Viewpoint (also: <keycap>'</keycap> , <keycap>/</keycap>)
 <keycap>]</keycap> , <keycap>[</keycap>: Zoom in/Out
 <keycap>U</keycap>, <keycap>D</keycap>: Set view to Up/Down
 <keycap>N</keycap>, <keycap>S</keycap>, <keycap>E</keycap>, <keycap>W</keycap>: Set view to North, South, East, West
