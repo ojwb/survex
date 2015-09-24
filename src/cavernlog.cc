@@ -114,23 +114,29 @@ static wxString escape_for_shell(wxString s, bool protect_dash = false)
 {
     size_t p = 0;
 #ifdef __WXMSW__
+    // Correct quoting here is insane - you need to quote for CommandLineToArgV
+    // and then also for cmd.exe:
+    // http://blogs.msdn.com/b/twistylittlepassagesallalike/archive/2011/04/23/everyone-quotes-arguments-the-wrong-way.aspx
     bool needs_quotes = false;
     while (p < s.size()) {
 	wxChar ch = s[p];
 	if (ch < 127) {
 	    if (ch == wxT('"')) {
-		s.insert(p, 1, wxT('\\'));
+		s.insert(p, wxT("\\^"));
+		p += 2;
+		needs_quotes = true;
+	    } else if (ch == ' ') {
+		needs_quotes = true;
+	    } else if (strchr("()%<>&|^", ch)) {
+		s.insert(p, wxT('^'));
 		++p;
-		needs_quotes = true;
-	    } else if (strchr(" <>&|^", ch)) {
-		needs_quotes = true;
 	    }
 	}
 	++p;
     }
     if (needs_quotes) {
-	s.insert(0u, 1, wxT('"'));
-	s += wxT('"');
+	s.insert(0u, wxT("^\""));
+	s += wxT("^\"");
     }
 #else
     if (protect_dash && !s.empty() && s[0u] == '-') {

@@ -1,3 +1,8 @@
+Thu Sep 24 21:01:01 GMT 2015  Olly Betts <olly@survex.com>
+
+	* src/cavernlog.cc: On wxMSW, also quote for cmd.exe so that paths
+	  with spaces in work reliably.  Reported by Marco Cotto.
+
 Thu Sep 24 21:00:03 GMT 2015  Olly Betts <olly@survex.com>
 
 	* src/aventreectrl.cc,src/mainfrm.h: If we're animating, don't try to
