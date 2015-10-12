@@ -693,7 +693,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
-   if (show_breaks && p->X != HUGE_VAL) {
+   if (show_breaks && p->X != HUGE_VAL && p->X != X) {
       /* Draw "surface" leg between broken stations. */
       img_write_item(pimg_out, img_MOVE, 0, NULL, p->X, 0, p->p.z);
       img_write_item(pimg_out, img_LINE, img_FLAG_SURFACE, NULL, X, 0, p->p.z);
