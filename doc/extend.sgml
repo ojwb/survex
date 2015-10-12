@@ -12,6 +12,7 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>extend</command>
+<arg choice="opt">--survey=SURVEY</arg>
 <arg choice="opt">--specfile configuration .espec file</arg>
 <arg choice="req">input .3d file</arg>
 <arg choice="opt">output .3d file</arg>
