@@ -14,6 +14,7 @@
 <command>extend</command>
 <arg choice="opt">--survey=SURVEY</arg>
 <arg choice="opt">--specfile=ESPEC_FILE</arg>
+<arg choice="opt">--show-breaks</arg>
 <arg choice="req">INPUT_3D_FILE</arg>
 <arg choice="opt">OUTPUT_3D_FILE</arg>
 </cmdsynopsis>
@@ -43,6 +44,11 @@ junctions).</Para>
 filename on the input filename, but ending "_extend.3d".  For example,
 <command>extend deep_pit.3d</command> produces an extended elevation
 called <filename>deep_pit_extend.3d</filename>.</Para>
+
+<Para>If you pass <option>--show-breaks</option> then a leg flagged as
+"surface survey" will be added between each point at which a loop has
+been broken - this can be very useful for visualising the result in
+aven.</Para>
 
 <Para>
 This approach suffices for simple caves or sections of cave, but for more

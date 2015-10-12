@@ -1457,6 +1457,12 @@ msgstr ""
 msgid ".espec file to control extending"
 msgstr ""
 
+#. TRANSLATORS: --help output for extend --show-breaks option
+#: ../src/extend.c:465
+#: n:91
+msgid "show breaks with surface survey legs in output"
+msgstr ""
+
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
 #. measure distance by counting knots on a diving line, and tie them

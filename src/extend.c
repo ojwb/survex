@@ -81,6 +81,8 @@ static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
 static img *pimg_out;
 
+static int show_breaks = 0;
+
 static void do_stn(point *, double, const char *, int, int);
 
 typedef struct pfx {
@@ -449,18 +451,21 @@ static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
    {"survey", required_argument, 0, 's'},
    {"specfile", required_argument, 0, 'p'},
+   {"show-breaks", no_argument, 0, 'b' },
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "s:p:"
+#define short_opts "s:p:b"
 
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
    /* TRANSLATORS: --help output for extend --specfile option */
    {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0},
+   /* TRANSLATORS: --help output for extend --show-breaks option */
+   {HLP_ENCODELONG(2),        /*show breaks with surface survey legs in output*/91, 0},
    {0, 0, 0}
 };
 
@@ -488,6 +493,9 @@ main(int argc, char **argv)
       int opt = cmdline_getopt();
       if (opt == EOF) break;
       switch (opt) {
+	 case 'b':
+	    show_breaks = 1;
+	    break;
 	 case 's':
 	    survey = optarg;
 	    break;
@@ -685,7 +693,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
-   if (p->X != HUGE_VAL) {
+   if (show_breaks && p->X != HUGE_VAL) {
       /* Draw "surface" leg between broken stations. */
       img_write_item(pimg_out, img_MOVE, 0, NULL, p->X, 0, p->p.z);
       img_write_item(pimg_out, img_LINE, img_FLAG_SURFACE, NULL, X, 0, p->p.z);
