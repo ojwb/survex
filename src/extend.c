@@ -47,6 +47,7 @@ typedef struct stn {
 
 typedef struct POINT {
    img_point p;
+   double X;
    const stn *stns;
    unsigned int order;
    char dir;
@@ -74,7 +75,7 @@ typedef struct LEG {
 #define ERIGHT 0x02
 #define ESWAP  0x04
 
-static point headpoint = {{0, 0, 0}, NULL, 0, 0, 0, 0, NULL};
+static point headpoint = {{0, 0, 0}, 0, NULL, 0, 0, 0, 0, NULL};
 
 static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
@@ -124,6 +125,7 @@ find_point(const img_point *pt)
 
    p = osmalloc(ossizeof(point));
    p->p = *pt;
+   p->X = HUGE_VAL;
    p->stns = NULL;
    p->order = 0;
    p->dir = 0;
@@ -675,6 +677,12 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
+   if (p->X != HUGE_VAL) {
+      /* Draw "surface" leg between broken stations. */
+      img_write_item(pimg_out, img_MOVE, 0, NULL, p->X, 0, p->p.z);
+      img_write_item(pimg_out, img_LINE, img_FLAG_SURFACE, NULL, X, 0, p->p.z);
+   }
+   p->X = X;
    if (labOnly || p->fBroken) {
       return;
    }
