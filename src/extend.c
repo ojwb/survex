@@ -459,6 +459,8 @@ static const struct option long_opts[] = {
 static struct help_msg help[] = {
 /*				<-- */
    {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
+   /* TRANSLATORS: --help output for extend --specfile option */
+   {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0},
    {0, 0, 0}
 };
 
