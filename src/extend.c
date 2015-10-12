@@ -487,8 +487,14 @@ main(int argc, char **argv)
    while (1) {
       int opt = cmdline_getopt();
       if (opt == EOF) break;
-      if (opt == 's') survey = optarg;
-      if (opt == 'p') specfile = optarg;
+      switch (opt) {
+	 case 's':
+	    survey = optarg;
+	    break;
+	 case 'p':
+	    specfile = optarg;
+	    break;
+      }
    }
    fnm_in = argv[optind++];
    if (argv[optind]) {
