@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2011,2012,2013,2014 Olly Betts
+//  Copyright (C) 2004,2011,2012,2013,2014,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -107,6 +107,9 @@ static inline void av_frame_free(AVFrame ** frame) {
 # endif
 # if !HAVE_DECL_AV_CODEC_ID_NONE
 #  define AV_CODEC_ID_NONE CODEC_ID_NONE
+# endif
+# if !HAVE_DECL_AV_PIX_FMT_RGB24
+#  define AV_PIX_FMT_RGB24 PIX_FMT_RGB24
 # endif
 # if !HAVE_DECL_AV_PIX_FMT_YUV420P
 #  define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
@@ -269,7 +272,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     // av_dump_format(oc, 0, fnm, 1);
 
     av_free(sws_ctx);
-    sws_ctx = sws_getContext(width, height, PIX_FMT_RGB24,
+    sws_ctx = sws_getContext(width, height, AV_PIX_FMT_RGB24,
 			     width, height, c->pix_fmt, SWS_BICUBIC,
 			     NULL, NULL, NULL);
     if (sws_ctx == NULL) {

@@ -205,6 +205,7 @@ PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
   AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_free_frame avcodec_open2 avformat_new_stream av_frame_alloc av_frame_free])
   AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
   AC_CHECK_DECLS([AV_CODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
+  AC_CHECK_DECLS([AV_PIX_FMT_RGB24], [], [], [#include <libavutil/pixfmt.h>])
   AC_CHECK_DECLS([AV_PIX_FMT_YUV420P], [], [], [#include <libavutil/pixfmt.h>])
   CXXFLAGS=$save_CXXFLAGS
   LIBS=$save_LIBS
