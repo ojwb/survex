@@ -563,7 +563,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
 #if 0
       if (value == 305) { /* LATIN SMALL LETTER DOTLESS I */
-	 *p = 213;
+	 *p = 213; /* "Modified CP850" has the Euro sign here. */
 	 return 1;
       }
       if (value == 402) { /* LATIN SMALL LETTER F WITH HOOK */
