@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
 "PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
-"Last-Translator: Olly Betts <olly@survex.com>\n"
+"Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1142,7 +1142,7 @@ msgstr "OPCJA"
 #: ../src/printing.cc:1162
 #: n:154
 msgid "Scale"
-msgstr "Scala"
+msgstr "Skala"
 
 #: ../src/cmdline.c:194
 #: n:157
