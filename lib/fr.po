@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
 "PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
-"Last-Translator: Eric Madelaine <eric.madelaine@inria.fr>\n"
+"Last-Translator: Jean-Marc <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1482,7 +1482,7 @@ msgstr "Direction"
 #: n:205
 #, c-format
 msgid "About %s"
-msgstr "A propos %s"
+msgstr "À propos de %s"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
 #. grid of height values).
