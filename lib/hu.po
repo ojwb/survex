@@ -13,32 +13,32 @@ msgstr ""
 
 #. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
 #. accelerator key.  The accelerators must be different within this group
-#: ../src/mainfrm.cc:956
+#: ../src/mainfrm.cc:960
 #: n:210
 msgid "&File"
 msgstr "&Fájl"
 
-#: ../src/mainfrm.cc:957
+#: ../src/mainfrm.cc:961
 #: n:211
 msgid "&Rotation"
 msgstr "&Elforgatás"
 
-#: ../src/mainfrm.cc:958
+#: ../src/mainfrm.cc:962
 #: n:212
 msgid "&Orientation"
 msgstr "&Tájolás"
 
-#: ../src/mainfrm.cc:959
+#: ../src/mainfrm.cc:963
 #: n:213
 msgid "&View"
 msgstr "&Nézet"
 
-#: ../src/mainfrm.cc:961
+#: ../src/mainfrm.cc:965
 #: n:214
 msgid "&Controls"
 msgstr "&Vezérlés"
 
-#: ../src/mainfrm.cc:973
+#: ../src/mainfrm.cc:977
 #: n:215
 msgid "&Help"
 msgstr "&Súgó"
@@ -46,7 +46,7 @@ msgstr "&Súgó"
 #. TRANSLATORS: "Presentation" in the sense of a talk with a slideshow -
 #. the items in this menu allow the user to animate between preset
 #. views.
-#: ../src/mainfrm.cc:966
+#: ../src/mainfrm.cc:970
 #: n:216
 #, fuzzy
 msgid "&Presentation"
@@ -60,7 +60,7 @@ msgstr "Használat"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
-#: ../src/message.c:75
+#: ../src/message.c:76
 #: n:1
 #, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
@@ -83,7 +83,7 @@ msgstr "A memória megtelt: “%s”"
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/commands.c:2192
+#: ../src/commands.c:2206
 #: n:2
 #, fuzzy, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -91,17 +91,17 @@ msgstr "Legalább %s verzió szükséges a feladat végrehajtásához."
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
-#: ../src/aven.cc:411
-#: ../src/cavernlog.cc:240
-#: ../src/message.c:1205
+#: ../src/aven.cc:434
+#: ../src/cavernlog.cc:507
+#: ../src/message.c:1220
 #: n:4
 msgid "warning"
 msgstr "figyelmeztetés"
 
 #. TRANSLATORS: Indicates an error message e.g.:
 #. "spoon.svx:13:4: error: Field may not be omitted"
-#: ../src/cavernlog.cc:239
-#: ../src/message.c:1209
+#: ../src/cavernlog.cc:506
+#: ../src/message.c:1224
 #: n:93
 msgid "error"
 msgstr "hiba"
@@ -118,7 +118,7 @@ msgstr "Megtalálható a %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:621
+#: ../src/commands.c:622
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr ""
@@ -135,8 +135,8 @@ msgstr "“%c” karakter nem engedélyezett a mérőpont nevében (use *SET NAM
 msgid "Field may not be omitted"
 msgstr "Nem elhagyható mező"
 
-#: ../src/datain.c:1580
-#: ../src/datain.c:1868
+#: ../src/datain.c:1547
+#: ../src/datain.c:1835
 #: ../src/readval.c:384
 #: ../src/readval.c:432
 #: ../src/readval.c:462
@@ -145,7 +145,7 @@ msgstr "Nem elhagyható mező"
 msgid "Expecting numeric field, found “%s”"
 msgstr ""
 
-#: ../src/commands.c:1790
+#: ../src/commands.c:1794
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
@@ -158,8 +158,8 @@ msgstr ""
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "Programhibát találtál! Kérlek jelezd a készítőknek."
 
-#: ../src/commands.c:2315
-#: ../src/extend.c:436
+#: ../src/commands.c:2330
+#: ../src/extend.c:440
 #: n:12
 #, c-format
 msgid "Unknown command “%s”"
@@ -174,26 +174,26 @@ msgstr "“%s” mérőpont önmagával egyezik"
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
-#: ../src/datain.c:1096
+#: ../src/datain.c:1063
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr ""
 
-#: ../src/datain.c:285
-#: ../src/extend.c:441
+#: ../src/datain.c:272
+#: ../src/extend.c:445
 #: n:15
 msgid "End of line not blank"
 msgstr "Sor vége nem üres."
 
-#: ../src/cavern.c:394
+#: ../src/cavern.c:383
 #: n:16
 #, c-format
 msgid "There were %d warning(s)."
 msgstr "%d figyelmeztetés volt."
 
 #. TRANSLATORS: %s is replaced by the command we attempted to run.
-#: ../src/cavernlog.cc:171
-#: ../src/cavernlog.cc:231
+#: ../src/cavernlog.cc:282
+#: ../src/cavernlog.cc:353
 #: n:17
 #, c-format
 msgid "Couldn’t run external command: “%s”"
@@ -202,8 +202,8 @@ msgstr "“%s” külső parancsként nem futtatható."
 #: ../src/datain.c:81
 #: ../src/datain.c:89
 #: ../src/datain.c:96
-#: ../src/datain.c:772
-#: ../src/extend.c:559
+#: ../src/datain.c:739
+#: ../src/extend.c:577
 #: ../src/sorterr.c:80
 #: ../src/sorterr.c:97
 #: ../src/sorterr.c:240
@@ -211,14 +211,14 @@ msgstr "“%s” külső parancsként nem futtatható."
 msgid "Error reading file"
 msgstr "Fájlbeolvasási hiba"
 
-#: ../src/message.c:1225
+#: ../src/message.c:1240
 #: n:19
 msgid "Too many errors - giving up"
 msgstr "Feladom! Túl sok hiba történt."
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:1669
+#: ../src/commands.c:1673
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr ""
@@ -226,17 +226,17 @@ msgstr ""
 #. TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 #. (a weight on a string).  So the problem here is that the leg is
 #. vertical, so a compass reading has no meaning!
-#: ../src/datain.c:1067
+#: ../src/datain.c:1034
 #: n:21
 msgid "Compass reading given on plumbed leg"
 msgstr "Irányszög értelmezhetetlen (polygonszakasz függőleges, pl. függőón)"
 
-#: ../src/commands.c:711
+#: ../src/commands.c:712
 #: n:22
 msgid "END with no matching BEGIN in this file"
 msgstr ""
 
-#: ../src/datain.c:759
+#: ../src/datain.c:726
 #: n:23
 msgid "BEGIN with no matching END in this file"
 msgstr ""
@@ -255,8 +255,8 @@ msgstr ""
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/commands.c:1059
-#: ../src/commands.c:1061
+#: ../src/commands.c:1060
+#: ../src/commands.c:1062
 #: ../src/listpos.c:104
 #: ../src/readval.c:323
 #: ../src/readval.c:326
@@ -287,23 +287,23 @@ msgid "“%s” can’t be both a station and a survey"
 msgstr "“%s” nem lehet mindkettő: állomás és felmérés"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/extend.c:248
-#: ../src/extend.c:267
-#: ../src/extend.c:312
-#: ../src/extend.c:354
-#: ../src/extend.c:396
+#: ../src/extend.c:252
+#: ../src/extend.c:271
+#: ../src/extend.c:316
+#: ../src/extend.c:358
+#: ../src/extend.c:400
 #: ../src/readval.c:197
 #: n:28
 msgid "Expecting station name"
 msgstr "Elnevezésre váró pont"
 
-#: ../src/commands.c:2118
+#: ../src/commands.c:2122
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr ""
 
-#: ../src/commands.c:2125
+#: ../src/commands.c:2129
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
@@ -313,79 +313,79 @@ msgstr ""
 #. translated.
 #.
 #. Here "station" is a survey station, not a train station.
-#: ../src/commands.c:1018
+#: ../src/commands.c:1019
 #: n:33
 msgid "Only one station in EQUATE command"
 msgstr ""
 
 #. TRANSLATORS: A "quantity" is something measured like "LENGTH",
 #. "BEARING", "ALTITUDE", etc.
-#: ../src/commands.c:442
+#: ../src/commands.c:443
 #: n:34
 #, c-format
 msgid "Unknown quantity “%s”"
 msgstr "Ismeretlen mennyiség: “%s”"
 
-#: ../src/commands.c:357
+#: ../src/commands.c:358
 #: n:35
 #, c-format
 msgid "Unknown units “%s”"
 msgstr "Ismeretlen egység: “%s”"
 
-#: ../src/commands.c:1958
-#: ../src/commands.c:2033
+#: ../src/commands.c:1962
+#: ../src/commands.c:2037
 #: n:434
 msgid "Unknown coordinate system"
 msgstr "Ismeretlen koordináta rendszer"
 
-#: ../src/commands.c:2053
-#: ../src/commands.c:2078
+#: ../src/commands.c:2057
+#: ../src/commands.c:2082
 #: n:443
 #, c-format
 msgid "Invalid coordinate system: %s"
 msgstr "Érvénytelen koordináta rendszer: %s"
 
-#: ../src/commands.c:2040
-#: ../src/commands.c:2058
+#: ../src/commands.c:2044
+#: ../src/commands.c:2062
 #: n:435
 #, fuzzy
 msgid "Coordinate system unsuitable for output"
 msgstr "A koordináta rendszer alkalmatlan kimentenek"
 
-#: ../src/commands.c:839
-#: ../src/commands.c:1637
+#: ../src/commands.c:840
+#: ../src/commands.c:1641
 #: n:436
 #, c-format
 msgid "Failed to convert coordinates: %s"
 msgstr "A koordináták konvertálása sikertelen: %s"
 
-#: ../src/commands.c:842
+#: ../src/commands.c:843
 #: n:437
 msgid "The input projection is set but the output projection isn't"
 msgstr "A bemeneti projekció beállítva, de a kimeneti NEM!"
 
-#: ../src/commands.c:844
+#: ../src/commands.c:845
 #: n:438
 msgid "The output projection is set but the input projection isn't"
 msgstr "A kimeneti projekció beállítva, de a bemeneti NEM!"
 
-#: ../src/commands.c:799
+#: ../src/commands.c:800
 #: n:439
 #, fuzzy
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "A koordináták nem elhagyhatók, ha a koordináta rendszer meghatározott"
 
-#: ../src/commands.c:1623
+#: ../src/commands.c:1627
 #: n:301
 msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
 msgstr ""
 
-#: ../src/commands.c:1615
+#: ../src/commands.c:1619
 #: n:309
 msgid "Expected number or 'AUTO'"
 msgstr ""
 
-#: ../src/datain.c:902
+#: ../src/datain.c:869
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
 msgstr ""
@@ -396,20 +396,20 @@ msgstr ""
 #. *begin
 #. 1 2 10.00 178 -01
 #. *end entrance      <--[Message given here]
-#: ../src/commands.c:739
+#: ../src/commands.c:740
 #: n:36
 msgid "Matching BEGIN command has no survey name"
 msgstr ""
 
 #. TRANSLATORS: Note: In English you talk about the *units* of a single
 #. measurement, but the correct term in other languages may be singular.
-#: ../src/commands.c:370
+#: ../src/commands.c:371
 #: n:37
 #, fuzzy, c-format
 msgid "Invalid units “%s” for quantity"
 msgstr "Érvénytelen “%s” egység a mennyiségnek"
 
-#: ../src/commands.c:433
+#: ../src/commands.c:434
 #: n:39
 #, c-format
 msgid "Unknown instrument “%s”"
@@ -417,31 +417,31 @@ msgstr "Ismeretlen műszer “%s”"
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
-#: ../src/commands.c:1591
+#: ../src/commands.c:1595
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr "Deklináció skálája 1.0 kell legyen"
 
 #. TRANSLATORS: If the scale factor for an instrument is zero, then any
 #. reading would be mapped to zero, which doesn't make sense.
-#: ../src/commands.c:1597
+#: ../src/commands.c:1601
 #: n:391
 msgid "Scale factor must be non-zero"
 msgstr "Skála értéke nem lehet nulla"
 
-#: ../src/commands.c:1688
+#: ../src/commands.c:1692
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
 msgstr "Ismeretlen beállítás “%s”"
 
-#: ../src/commands.c:480
+#: ../src/commands.c:481
 #: n:42
 #, c-format
 msgid "Unknown character class “%s”"
 msgstr "Ismeretlen karakter osztály “%s”"
 
-#: ../src/extend.c:605
+#: ../src/extend.c:623
 #: ../src/netskel.c:93
 #: n:43
 msgid "No survey data"
@@ -463,13 +463,13 @@ msgstr ""
 msgid "Survey not all connected to fixed stations"
 msgstr "A Felmérés nem teljesen kapcsolt rögzített állomásokhoz"
 
-#: ../src/commands.c:948
-#: ../src/datain.c:684
+#: ../src/commands.c:949
+#: ../src/datain.c:655
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Az állomás már rögzített, vagy azonosítva lett egy fix ponttal"
 
-#: ../src/cavern.c:299
+#: ../src/cavern.c:288
 #: ../src/filename.c:55
 #: ../src/img_hosted.c:36
 #: n:47
@@ -477,10 +477,10 @@ msgstr "Az állomás már rögzített, vagy azonosítva lett egy fix ponttal"
 msgid "Failed to open output file “%s”"
 msgstr ""
 
-#: ../src/commands.c:849
-#: ../src/commands.c:861
-#: ../src/commands.c:871
-#: ../src/commands.c:1743
+#: ../src/commands.c:850
+#: ../src/commands.c:862
+#: ../src/commands.c:872
+#: ../src/commands.c:1747
 #: n:48
 msgid "Standard deviation must be positive"
 msgstr ""
@@ -499,9 +499,9 @@ msgstr ""
 #. units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
 #. value" means the reading ignoring the sign (so it might be
 #. < -90° or > 90°.
-#: ../src/datain.c:1002
-#: ../src/datain.c:1015
-#: ../src/datain.c:1033
+#: ../src/datain.c:969
+#: ../src/datain.c:982
+#: ../src/datain.c:1000
 #: n:51
 #, c-format
 msgid "Clino reading over %.f%s (absolute value)"
@@ -525,14 +525,14 @@ msgid "Equating two equal fixed points: “%s” and “%s”"
 msgstr ""
 
 #. TRANSLATORS: " *fix a " gives this message:
-#: ../src/commands.c:809
+#: ../src/commands.c:810
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
 msgstr "Rögzítés parancs koordináták nélkül - rögzítés (0,0,0) ban"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
-#: ../src/commands.c:952
-#: ../src/datain.c:686
+#: ../src/commands.c:953
+#: ../src/datain.c:657
 #: n:55
 #, fuzzy
 msgid "Station already fixed at the same coordinates"
@@ -540,13 +540,13 @@ msgstr "Már van rögzítve ezeken a koordinátákon állomás"
 
 #. TRANSLATORS: Emitted after second and subsequent "FIX command with
 #. no coordinates - fixing at (0,0,0)" warnings.
-#: ../src/commands.c:817
+#: ../src/commands.c:818
 #: n:441
 #, c-format
 msgid "Already had FIX command with no coordinates for station “%s”"
 msgstr ""
 
-#: ../src/commands.c:1843
+#: ../src/commands.c:1847
 #: n:442
 #, fuzzy, c-format
 msgid "Station “%s” fixed before CS command first used"
@@ -559,7 +559,7 @@ msgstr "“%s” állomást rögzíteni kell mielőtt CS parancsot használnánk
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:2329
+#: ../src/commands.c:2344
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr ""
@@ -571,18 +571,18 @@ msgstr "Érvénytelen év (<1900 vagy >2078)"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
-#: ../src/datain.c:873
-#: ../src/datain.c:882
+#: ../src/datain.c:840
+#: ../src/datain.c:849
 #: n:59
 msgid "Suspicious compass reading"
 msgstr ""
 
-#: ../src/datain.c:1556
+#: ../src/datain.c:1523
 #: n:60
 msgid "Negative tape reading"
 msgstr ""
 
-#: ../src/commands.c:804
+#: ../src/commands.c:805
 #: n:61
 msgid "Same station fixed twice with no coordinates"
 msgstr "Ugyanaz az állomás lett rögzítve kétszer koordináták nélkül"
@@ -592,7 +592,7 @@ msgstr "Ugyanaz az állomás lett rögzítve kétszer koordináták nélkül"
 #. It could be a gross error (e.g. the decimal point is missing from the
 #. depth gauge reading) or it could just be due to random error on a near
 #. vertical leg
-#: ../src/datain.c:1251
+#: ../src/datain.c:1218
 #: n:62
 msgid "Tape reading is less than change in depth"
 msgstr ""
@@ -601,21 +601,21 @@ msgstr ""
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
 #. neither style nor reading is a keyword in the program This error
 #. complains about a depth gauge reading in normal style, for example
-#: ../src/commands.c:1280
+#: ../src/commands.c:1284
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
 msgstr ""
 
 #. TRANSLATORS: i.e. not enough readings for the style.
-#: ../src/commands.c:1470
+#: ../src/commands.c:1474
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
 msgstr ""
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#: ../src/commands.c:1240
+#: ../src/commands.c:1244
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -630,7 +630,7 @@ msgstr ""
 #. *export 1
 #. 1 2 1.24 045 -6
 #. *end example
-#: ../src/commands.c:1110
+#: ../src/commands.c:1114
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
@@ -638,13 +638,13 @@ msgstr "“%s” állomás már exportálásra került"
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
-#: ../src/commands.c:1306
+#: ../src/commands.c:1310
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
 msgstr ""
 
-#: ../src/commands.c:979
+#: ../src/commands.c:980
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
@@ -698,7 +698,7 @@ msgstr ""
 #. valid as the list of readings has already included the same
 #. reading, or an equivalent one (e.g. you can't have both
 #. DEPTH and DEPTHCHANGE together).
-#: ../src/commands.c:1373
+#: ../src/commands.c:1377
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
@@ -710,20 +710,20 @@ msgstr ""
 msgid "Solving one equation"
 msgstr "Egy egyenlet megoldása"
 
-#: ../src/datain.c:968
-#: ../src/datain.c:1240
-#: ../src/datain.c:1437
+#: ../src/datain.c:935
+#: ../src/datain.c:1207
+#: ../src/datain.c:1404
 #: n:79
 msgid "Negative adjusted tape reading"
 msgstr ""
 
-#: ../src/commands.c:2229
-#: ../src/commands.c:2249
+#: ../src/commands.c:2243
+#: ../src/commands.c:2263
 #: n:80
 msgid "Date is in the future!"
 msgstr "Dátum a jövőben lesz!"
 
-#: ../src/commands.c:2253
+#: ../src/commands.c:2267
 #: n:81
 #, fuzzy
 msgid "End of date range is before the start"
@@ -741,8 +741,8 @@ msgstr ""
 #. TRANSLATORS: In data with backsights, the user has tried to give a
 #. plumb for the foresight and a clino reading for the backsight, or
 #. something similar.
-#: ../src/datain.c:1051
-#: ../src/datain.c:1075
+#: ../src/datain.c:1018
+#: ../src/datain.c:1042
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr ""
@@ -758,7 +758,7 @@ msgstr "Érvénytelen hónap"
 msgid "Invalid day of the month"
 msgstr "Érvénytelen nap"
 
-#: ../src/cavern.c:248
+#: ../src/cavern.c:237
 #: n:88
 #, c-format
 msgid "3d file format versions %d to %d supported"
@@ -769,10 +769,10 @@ msgstr ""
 msgid "Expecting survey name"
 msgstr "Adja meg a felmérés nevét"
 
-#: ../src/datain.c:402
-#: ../src/extend.c:554
+#: ../src/datain.c:389
+#: ../src/extend.c:572
 #: ../src/img_hosted.c:30
-#: ../src/mainfrm.cc:422
+#: ../src/mainfrm.cc:423
 #: ../src/sorterr.c:146
 #: n:24
 #, c-format
@@ -787,11 +787,11 @@ msgstr "“%s” fáljt nem lehet írni"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:499
-#: ../src/commands.c:600
-#: ../src/commands.c:623
-#: ../src/commands.c:1255
-#: ../src/commands.c:1671
+#: ../src/commands.c:500
+#: ../src/commands.c:601
+#: ../src/commands.c:624
+#: ../src/commands.c:1259
+#: ../src/commands.c:1675
 #: ../src/readval.c:91
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
@@ -799,7 +799,7 @@ msgstr ""
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
-#: ../src/datain.c:933
+#: ../src/datain.c:900
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
@@ -807,13 +807,13 @@ msgstr ""
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
-#: ../src/datain.c:1127
+#: ../src/datain.c:1094
 #: n:99
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s"
 msgstr ""
 
-#: ../src/commands.c:1252
+#: ../src/commands.c:1256
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
@@ -835,14 +835,14 @@ msgstr "hibás 3D képfájl “%s”"
 #. files internally.  Probably best to keep it the same for all
 #. translations.
 #: ../src/img.c:43
-#: ../src/mainfrm.cc:1457
+#: ../src/mainfrm.cc:1461
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr ""
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
-#: ../src/mainfrm.cc:1450
+#: ../src/mainfrm.cc:1454
 #: n:108
 msgid "Date and time not available."
 msgstr "Dátum és idő nem érhető el"
@@ -853,11 +853,11 @@ msgstr "Dátum és idő nem érhető el"
 msgid "Error reading from file “%s”"
 msgstr "Hiba “%s” fájl olvasásakor"
 
-#: ../src/cavernlog.cc:513
+#: ../src/cavernlog.cc:660
 #: ../src/filename.c:79
 #: ../src/img_hosted.c:41
-#: ../src/mainfrm.cc:384
-#: ../src/mainfrm.cc:2044
+#: ../src/mainfrm.cc:385
+#: ../src/mainfrm.cc:2039
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -868,7 +868,7 @@ msgstr "Hiba “%s” fájl írásakor"
 msgid "Error writing to file"
 msgstr "Hiba a fájl irása közben"
 
-#: ../src/cavern.c:389
+#: ../src/cavern.c:378
 #: n:113
 #, fuzzy, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
@@ -911,7 +911,7 @@ msgstr ""
 #. further apart to make room. */
 #: ../src/gfxcore.cc:886
 #: ../src/gfxcore.cc:1946
-#: ../src/mainfrm.cc:171
+#: ../src/mainfrm.cc:172
 #: n:118
 msgid "Elevation"
 msgstr ""
@@ -940,7 +940,7 @@ msgstr "Felülnézet"
 msgid "Kiwi Plan"
 msgstr ""
 
-#: ../src/cavern.c:353
+#: ../src/cavern.c:342
 #: n:120
 msgid "Calculating statistics"
 msgstr "Statisztika számítása"
@@ -1021,80 +1021,80 @@ msgstr "Hálózat egyszerűsítése"
 msgid "Calculating network"
 msgstr "Hálózat számítása"
 
-#: ../src/datain.c:1546
+#: ../src/datain.c:1513
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
 msgstr "“%s” megtalálva, várom “F”-t vagy “B”-t"
 
-#: ../src/cavern.c:455
+#: ../src/cavern.c:444
 #: n:132
 #, c-format
 msgid "Total length of survey legs = %7.2f%s (%7.2f%s adjusted)"
 msgstr "A felmérés teljes hossza: %7.2f%s (%7.2f%s javítva)"
 
-#: ../src/cavern.c:458
+#: ../src/cavern.c:447
 #: n:133
 #, c-format
 msgid "Total plan length of survey legs = %7.2f%s"
 msgstr ""
 
-#: ../src/cavern.c:461
+#: ../src/cavern.c:450
 #: n:134
 #, c-format
 msgid "Total vertical length of survey legs = %7.2f%s"
 msgstr ""
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:468
+#: ../src/cavern.c:457
 #: n:135
 #, c-format
 msgid "Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 msgstr ""
 
 #. TRANSLATORS: c.f. previous message
-#: ../src/cavern.c:471
+#: ../src/cavern.c:460
 #: n:136
 #, c-format
 msgid "North-South range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 msgstr ""
 
 #. TRANSLATORS: c.f. previous two messages
-#: ../src/cavern.c:474
+#: ../src/cavern.c:463
 #: n:137
 #, c-format
 msgid "East-West range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 msgstr ""
 
-#: ../src/cavern.c:440
+#: ../src/cavern.c:429
 #: n:138
 msgid "There is 1 loop."
 msgstr "1 hurkot találtam"
 
-#: ../src/cavern.c:442
+#: ../src/cavern.c:431
 #: n:139
 #, c-format
 msgid "There are %ld loops."
 msgstr "%ld hurkot találtam"
 
-#: ../src/cavern.c:375
+#: ../src/cavern.c:364
 #: n:140
 #, c-format
 msgid "CPU time used %5.2fs"
 msgstr "FElhasznált processzoridő: %5.2fs"
 
-#: ../src/cavern.c:378
+#: ../src/cavern.c:367
 #: n:141
 #, c-format
 msgid "Time used %5.2fs"
 msgstr "Felhasznált idő %5.2fs"
 
-#: ../src/cavern.c:380
+#: ../src/cavern.c:369
 #: n:142
 msgid "Time used unavailable"
 msgstr "Felhasznált idő nem elérhető"
 
-#: ../src/cavern.c:383
+#: ../src/cavern.c:372
 #: n:143
 #, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
@@ -1141,7 +1141,7 @@ msgstr "Verzióinformációk kiírása és kilépés"
 msgid "OPTION"
 msgstr "OPCIÓ"
 
-#: ../src/mainfrm.cc:175
+#: ../src/mainfrm.cc:176
 #: ../src/printing.cc:443
 #: ../src/printing.cc:1113
 #: ../src/printing.cc:1162
@@ -1258,24 +1258,24 @@ msgstr "Keresztmetszet nézete %s, dőlése %s"
 msgid "Extended elevation"
 msgstr "Vetített keresztmetszet"
 
-#: ../src/cavern.c:426
+#: ../src/cavern.c:415
 #: n:172
 #, fuzzy
 msgid "Survey contains 1 survey station,"
 msgstr "A felmérés 1 db felmérési állomást tartalmaz,"
 
-#: ../src/cavern.c:428
+#: ../src/cavern.c:417
 #: n:173
 #, fuzzy, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "A felmérés %ld db felmérési állomást tartalmaz,"
 
-#: ../src/cavern.c:432
+#: ../src/cavern.c:421
 #: n:174
 msgid " joined by 1 leg."
 msgstr ""
 
-#: ../src/cavern.c:434
+#: ../src/cavern.c:423
 #: n:175
 #, c-format
 msgid " joined by %ld legs."
@@ -1296,7 +1296,7 @@ msgstr "csomópontok"
 #. TRANSLATORS: "Connected component" in the graph theory sense - it
 #. means there are %ld bits of survey with no connections between them.
 #. This message is only used if there are more than 1.
-#: ../src/cavern.c:451
+#: ../src/cavern.c:440
 #: n:178
 #, c-format
 msgid "Survey has %ld connected components."
@@ -1304,15 +1304,15 @@ msgstr ""
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. allows the user to save the log to a file.
-#: ../src/cavernlog.cc:451
+#: ../src/cavernlog.cc:597
 #: n:446
 msgid "Save Log"
 msgstr "Napló mentése"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
-#: ../src/cavernlog.cc:458
-#: ../src/cavernlog.cc:469
+#: ../src/cavernlog.cc:606
+#: ../src/cavernlog.cc:617
 #: n:184
 msgid "Reprocess"
 msgstr "Újrafeldolgozás"
@@ -1336,12 +1336,12 @@ msgstr "“%s” változó nem egész szám"
 msgid "argument “%s” not a number"
 msgstr ""
 
-#: ../src/commands.c:994
+#: ../src/commands.c:995
 #: n:188
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr ""
 
-#: ../src/commands.c:997
+#: ../src/commands.c:998
 #: n:189
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr ""
@@ -1352,14 +1352,14 @@ msgstr ""
 msgid "Station “%s” referred to by *entrance or *export but never used"
 msgstr ""
 
-#: ../src/commands.c:709
+#: ../src/commands.c:710
 #: n:192
 msgid "No matching BEGIN"
 msgstr ""
 
 #. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 #. same <survey> if it’s given at all
-#: ../src/commands.c:743
+#: ../src/commands.c:744
 #: n:193
 msgid "Survey name doesn’t match BEGIN"
 msgstr ""
@@ -1370,7 +1370,7 @@ msgstr ""
 #. *begin entrance
 #. 1 2 10.00 178 -01
 #. *end     <--[Message given here]
-#: ../src/commands.c:752
+#: ../src/commands.c:753
 #: n:194
 msgid "Survey name omitted from END"
 msgstr ""
@@ -1408,67 +1408,79 @@ msgstr ""
 #.
 #. "this" has been added to English translation
 #: ../src/3dtopos.c:50
-#: ../src/aven.cc:65
+#: ../src/aven.cc:69
 #: ../src/cad3d.c:660
 #: ../src/diffpos.c:57
 #: ../src/dump3d.c:49
-#: ../src/extend.c:459
+#: ../src/extend.c:464
 #: n:199
 msgid "only load the sub-survey with this prefix"
 msgstr ""
 
 #. TRANSLATORS: --help output for aven --print option
-#: ../src/aven.cc:67
+#: ../src/aven.cc:71
 #: n:119
 msgid "print and exit (requires a 3d file)"
 msgstr "Nyomtatás és kilépés (3D fájl feltétele)"
 
 #. TRANSLATORS: --help output for cavern --output option
-#: ../src/cavern.c:127
+#: ../src/cavern.c:119
 #: n:162
 msgid "set location for output files"
 msgstr "Add megg a  kimeneti fájl elérési útját"
 
 #. TRANSLATORS: --help output for cavern --quiet option
-#: ../src/cavern.c:129
+#: ../src/cavern.c:121
 #: n:163
 msgid "only show brief summary (-qq for errors only)"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
-#: ../src/cavern.c:131
+#: ../src/cavern.c:123
 #: n:164
 msgid "do not create .err file"
 msgstr "Ne készítsen .err fájlt"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
-#: ../src/cavern.c:133
+#: ../src/cavern.c:125
 #: n:165
 msgid "turn warnings into errors"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --log option
-#: ../src/cavern.c:135
+#: ../src/cavern.c:127
 #: n:170
 msgid "log output to .log file"
 msgstr "Napló kimenete .log fájl"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
-#: ../src/cavern.c:137
+#: ../src/cavern.c:129
 #: n:171
 msgid "specify the 3d file format version to output"
 msgstr "Határozd meg a 3D fájl formátumát"
+
+#. TRANSLATORS: --help output for extend --specfile option
+#: ../src/extend.c:466
+#: n:90
+msgid ".espec file to control extending"
+msgstr ""
+
+#. TRANSLATORS: --help output for extend --show-breaks option
+#: ../src/extend.c:468
+#: n:91
+msgid "show breaks with surface survey legs in output"
+msgstr ""
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
 #. measure distance by counting knots on a diving line, and tie them
 #. every "2 feet").
-#: ../src/commands.c:1517
+#: ../src/commands.c:1521
 #: n:200
 msgid "*UNITS factor must be non-zero"
 msgstr ""
 
-#: ../src/mainfrm.cc:1467
+#: ../src/mainfrm.cc:1471
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -1496,12 +1508,12 @@ msgstr "A(z) %s névjegye"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
 #. grid of height values).
-#: ../src/mainfrm.cc:2002
+#: ../src/mainfrm.cc:1996
 #: n:451
 msgid "Select a terrain file to view"
 msgstr ""
 
-#: ../src/mainfrm.cc:1996
+#: ../src/mainfrm.cc:1990
 #: n:452
 msgid "Terrain files"
 msgstr ""
@@ -1511,7 +1523,7 @@ msgstr ""
 #. language would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1973
+#: ../src/mainfrm.cc:1967
 #: n:206
 #, fuzzy
 msgid "Select a survey file to view"
@@ -1519,14 +1531,14 @@ msgstr "Válassz ki egy felmérési fájlt a megtekintéshez"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1950
+#: ../src/mainfrm.cc:1944
 #: n:207
 msgid "Survex 3d files"
 msgstr "Survex 3D fájlok"
 
-#: ../src/mainfrm.cc:1965
-#: ../src/mainfrm.cc:1997
-#: ../src/mainfrm.cc:2445
+#: ../src/mainfrm.cc:1959
+#: ../src/mainfrm.cc:1991
+#: ../src/mainfrm.cc:2440
 #: ../src/printing.cc:694
 #: n:208
 msgid "All files"
@@ -1535,21 +1547,21 @@ msgstr "Összes fájl"
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
 #. terminology that cavers using the language would use.
-#: ../src/mainfrm.cc:1947
+#: ../src/mainfrm.cc:1941
 #: n:229
 msgid "All survey files"
 msgstr "Összes felmérési fájl"
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1953
+#: ../src/mainfrm.cc:1947
 #: n:329
 msgid "Survex svx files"
 msgstr "Survex svx fájlok"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1961
+#: ../src/mainfrm.cc:1955
 #: n:330
 msgid "Compass DAT and MAK files"
 msgstr "Compass DAT és MAK fájlok"
@@ -1617,7 +1629,7 @@ msgid "JSON files"
 msgstr "JSON fájlok"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
-#: ../src/cavernlog.cc:503
+#: ../src/cavernlog.cc:650
 #: n:447
 msgid "Log files"
 msgstr ""
@@ -1660,7 +1672,7 @@ msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable
 msgstr "FÁJL1 és FÁJL2 lehet .pos vagy .3d fájl\nHATÁRÉRTÉK a maximális figyelmen kívül hagyható változás bármely tengely mentén méterben (alapértelmezett %s)"
 
 #. TRANSLATORS: Part of extend --help
-#: ../src/extend.c:481
+#: ../src/extend.c:490
 #: n:267
 msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
 msgstr ""
@@ -1676,8 +1688,8 @@ msgstr ""
 #. language would use.
 #.
 #. Part of aven --help
-#: ../src/aven.cc:114
-#: ../src/aven.cc:138
+#: ../src/aven.cc:134
+#: ../src/aven.cc:161
 #: n:269
 msgid "[SURVEY_FILE]"
 msgstr "[FELMÉRÉS_FÁJL]"
@@ -1700,7 +1712,7 @@ msgstr "Nincs a hurokban"
 #. TRANSLATORS: error from:
 #.
 #. *data normal newline from to tape compass clino
-#: ../src/commands.c:1356
+#: ../src/commands.c:1360
 #: n:222
 msgid "NEWLINE can’t be the first reading"
 msgstr ""
@@ -1708,7 +1720,7 @@ msgstr ""
 #. TRANSLATORS: error from:
 #.
 #. *data normal from to tape compass clino newline
-#: ../src/commands.c:1399
+#: ../src/commands.c:1403
 #: n:223
 msgid "NEWLINE can’t be the last reading"
 msgstr ""
@@ -1718,7 +1730,7 @@ msgstr ""
 #. *data normal station tape compass clino
 #.
 #. ("station" signifies interleaved data).
-#: ../src/commands.c:1422
+#: ../src/commands.c:1426
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
 msgstr ""
@@ -1728,7 +1740,7 @@ msgstr ""
 #. *data diving station newline depth tape compass
 #.
 #. ("depth" needs to occur before "newline").
-#: ../src/commands.c:1293
+#: ../src/commands.c:1297
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
@@ -1737,7 +1749,7 @@ msgstr ""
 #. TRANSLATORS: e.g.
 #.
 #. *data normal from to tape newline compass clino
-#: ../src/commands.c:1346
+#: ../src/commands.c:1350
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr ""
@@ -1745,12 +1757,12 @@ msgstr ""
 #. TRANSLATORS: e.g.
 #.
 #. *calibrate tape compass 1 1
-#: ../src/commands.c:1558
+#: ../src/commands.c:1562
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
 msgstr ""
 
-#: ../src/commands.c:650
+#: ../src/commands.c:651
 #: n:397
 msgid "Bad *alias command"
 msgstr ""
@@ -1772,57 +1784,57 @@ msgstr "&Exportálás..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
-#: ../src/mainfrm.cc:812
+#: ../src/mainfrm.cc:813
 #: n:231
 msgid "Au&to-Rotate\tSpace"
 msgstr ""
 
-#: ../src/mainfrm.cc:814
+#: ../src/mainfrm.cc:815
 #: n:234
 msgid "&Reverse Direction"
 msgstr "&Fordított irány"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:3898
-#: ../src/mainfrm.cc:817
+#: ../src/gfxcore.cc:3902
+#: ../src/mainfrm.cc:818
 #: n:240
 msgid "View &North"
 msgstr ""
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:3900
-#: ../src/mainfrm.cc:818
+#: ../src/gfxcore.cc:3904
+#: ../src/mainfrm.cc:819
 #: n:241
 msgid "View &East"
 msgstr ""
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:3902
-#: ../src/mainfrm.cc:819
+#: ../src/gfxcore.cc:3906
+#: ../src/mainfrm.cc:820
 #: n:242
 msgid "View &South"
 msgstr ""
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:3904
-#: ../src/mainfrm.cc:820
+#: ../src/gfxcore.cc:3908
+#: ../src/mainfrm.cc:821
 #: n:243
 msgid "View &West"
 msgstr ""
 
-#: ../src/gfxcore.cc:3921
-#: ../src/mainfrm.cc:822
+#: ../src/gfxcore.cc:3925
+#: ../src/mainfrm.cc:823
 #: n:248
 msgid "&Plan View"
 msgstr "&Felülnézet"
 
-#: ../src/gfxcore.cc:3922
-#: ../src/mainfrm.cc:823
+#: ../src/gfxcore.cc:3926
+#: ../src/mainfrm.cc:824
 #: n:249
 msgid "Ele&vation"
 msgstr ""
 
-#: ../src/mainfrm.cc:825
+#: ../src/mainfrm.cc:826
 #: n:254
 msgid "Restore De&fault View"
 msgstr "Restore &Default View"
@@ -1865,7 +1877,7 @@ msgstr ""
 msgid "One page"
 msgstr ""
 
-#: ../src/mainfrm.cc:167
+#: ../src/mainfrm.cc:168
 #: ../src/printing.cc:480
 #: n:259
 msgid "Bearing"
@@ -1945,73 +1957,73 @@ msgid "Blank Pages"
 msgstr ""
 
 #. TRANSLATORS: Items in the "View" menu:
-#: ../src/mainfrm.cc:842
+#: ../src/mainfrm.cc:843
 #: n:270
 msgid "Station &Names\tCtrl+N"
 msgstr ""
 
 #. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:844
+#: ../src/mainfrm.cc:845
 #: n:346
 msgid "Passage &Tubes\tCtrl+T"
 msgstr ""
 
 #. TRANSLATORS: Toggles drawing the surface of the Earth
-#: ../src/mainfrm.cc:846
+#: ../src/mainfrm.cc:847
 #: n:449
 msgid "Terr&ain"
 msgstr ""
 
-#: ../src/mainfrm.cc:847
+#: ../src/mainfrm.cc:848
 #: n:271
 msgid "&Crosses\tCtrl+X"
 msgstr ""
 
-#: ../src/mainfrm.cc:848
+#: ../src/mainfrm.cc:849
 #: n:297
 msgid "&Grid\tCtrl+G"
 msgstr ""
 
-#: ../src/mainfrm.cc:849
+#: ../src/mainfrm.cc:850
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:853
+#: ../src/mainfrm.cc:854
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:856
+#: ../src/mainfrm.cc:857
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr ""
 
-#: ../src/mainfrm.cc:872
+#: ../src/mainfrm.cc:873
 #: n:273
 msgid "&Overlapping Names"
 msgstr ""
 
-#: ../src/mainfrm.cc:881
+#: ../src/mainfrm.cc:882
 #: n:450
 msgid "Co&lour by"
 msgstr ""
 
-#: ../src/mainfrm.cc:884
+#: ../src/mainfrm.cc:885
 #: n:294
 msgid "Highlight &Entrances"
 msgstr ""
 
-#: ../src/mainfrm.cc:885
+#: ../src/mainfrm.cc:886
 #: n:295
 msgid "Highlight &Fixed Points"
 msgstr ""
 
-#: ../src/mainfrm.cc:886
+#: ../src/mainfrm.cc:887
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr ""
@@ -2031,12 +2043,12 @@ msgstr ""
 msgid "Exported Stations"
 msgstr ""
 
-#: ../src/mainfrm.cc:891
+#: ../src/mainfrm.cc:892
 #: n:237
 msgid "&Perspective"
 msgstr ""
 
-#: ../src/mainfrm.cc:893
+#: ../src/mainfrm.cc:894
 #: n:238
 msgid "Textured &Walls"
 msgstr ""
@@ -2044,50 +2056,50 @@ msgstr ""
 #. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
 #. using that term instead if it gives a better translation which most
 #. users will understand.
-#: ../src/mainfrm.cc:897
+#: ../src/mainfrm.cc:898
 #: n:239
 msgid "Fade Distant Ob&jects"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:900
+#: ../src/mainfrm.cc:901
 #: n:298
 msgid "Smoot&hed Survey Legs"
 msgstr ""
 
-#: ../src/mainfrm.cc:906
-#: ../src/mainfrm.cc:910
+#: ../src/mainfrm.cc:907
+#: ../src/mainfrm.cc:914
 #: n:356
 msgid "Full Screen &Mode\tF11"
 msgstr ""
 
-#: ../src/gfxcore.cc:3959
-#: ../src/mainfrm.cc:875
+#: ../src/gfxcore.cc:3963
+#: ../src/mainfrm.cc:876
 #: n:292
 msgid "Colour by &Depth"
 msgstr ""
 
-#: ../src/gfxcore.cc:3960
-#: ../src/mainfrm.cc:876
+#: ../src/gfxcore.cc:3964
+#: ../src/mainfrm.cc:877
 #: n:293
 msgid "Colour by D&ate"
 msgstr ""
 
-#: ../src/gfxcore.cc:3961
-#: ../src/mainfrm.cc:877
+#: ../src/gfxcore.cc:3965
+#: ../src/mainfrm.cc:878
 #: n:289
 msgid "Colour by &Error"
 msgstr ""
 
-#: ../src/gfxcore.cc:3962
-#: ../src/mainfrm.cc:878
+#: ../src/gfxcore.cc:3966
+#: ../src/mainfrm.cc:879
 #: n:85
 msgid "Colour by &Gradient"
 msgstr ""
 
-#: ../src/gfxcore.cc:3963
-#: ../src/mainfrm.cc:879
+#: ../src/gfxcore.cc:3967
+#: ../src/mainfrm.cc:880
 #: n:82
 msgid "Colour by &Length"
 msgstr ""
@@ -2096,41 +2108,41 @@ msgstr ""
 msgid "Colour by &Survey"
 msgstr ""
 
-#: ../src/mainfrm.cc:938
+#: ../src/mainfrm.cc:942
 #: n:274
 msgid "&Compass"
 msgstr ""
 
-#: ../src/mainfrm.cc:939
+#: ../src/mainfrm.cc:943
 #: n:275
 msgid "C&linometer"
 msgstr ""
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/mainfrm.cc:942
+#: ../src/mainfrm.cc:946
 #: n:276
 msgid "Colour &Key"
 msgstr ""
 
-#: ../src/mainfrm.cc:943
+#: ../src/mainfrm.cc:947
 #: n:277
 msgid "&Scale Bar"
 msgstr "&Skálázási sáv"
 
-#: ../src/mainfrm.cc:919
+#: ../src/mainfrm.cc:923
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
 msgstr ""
 
-#: ../src/mainfrm.cc:889
-#: ../src/mainfrm.cc:928
-#: ../src/mainfrm.cc:934
+#: ../src/mainfrm.cc:890
+#: ../src/mainfrm.cc:932
+#: ../src/mainfrm.cc:938
 #: n:281
 msgid "&Cancel Measuring Line\tEscape"
 msgstr ""
 
-#: ../src/mainfrm.cc:944
+#: ../src/mainfrm.cc:948
 #: n:299
 msgid "&Indicators"
 msgstr ""
@@ -2183,73 +2195,73 @@ msgstr ""
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: érvénytelen kapcsoló -- %c\n"
 
-#: ../src/mainfrm.cc:828
+#: ../src/mainfrm.cc:829
 #: n:311
 msgid "&New Presentation"
 msgstr ""
 
-#: ../src/mainfrm.cc:829
+#: ../src/mainfrm.cc:830
 #: n:312
 msgid "&Open Presentation..."
 msgstr ""
 
-#: ../src/mainfrm.cc:830
+#: ../src/mainfrm.cc:831
 #: n:313
 msgid "&Save Presentation"
 msgstr ""
 
-#: ../src/mainfrm.cc:831
+#: ../src/mainfrm.cc:832
 #: n:314
 msgid "Sa&ve Presentation As..."
 msgstr ""
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
-#: ../src/mainfrm.cc:834
+#: ../src/mainfrm.cc:835
 #: n:315
 msgid "&Mark"
 msgstr ""
 
 #. TRANSLATORS: "Play" as in "Play back a recording"
-#: ../src/mainfrm.cc:836
+#: ../src/mainfrm.cc:837
 #: n:316
 msgid "Pla&y"
 msgstr ""
 
-#: ../src/mainfrm.cc:837
+#: ../src/mainfrm.cc:838
 #: n:317
 msgid "&Export as Movie..."
 msgstr ""
 
-#: ../src/mainfrm.cc:2522
+#: ../src/mainfrm.cc:2517
 #: n:331
 msgid "Export Movie"
 msgstr ""
 
-#: ../src/cavernlog.cc:506
-#: ../src/mainfrm.cc:375
+#: ../src/cavernlog.cc:653
+#: ../src/mainfrm.cc:376
 #: n:319
 msgid "Select an output filename"
 msgstr ""
 
-#: ../src/mainfrm.cc:372
-#: ../src/mainfrm.cc:2444
+#: ../src/mainfrm.cc:373
+#: ../src/mainfrm.cc:2439
 #: n:320
 msgid "Aven presentations"
 msgstr ""
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:2030
+#: ../src/mainfrm.cc:2025
 #: n:321
 msgid "Save Screenshot"
 msgstr ""
 
-#: ../src/mainfrm.cc:2439
-#: ../src/mainfrm.cc:2442
+#: ../src/mainfrm.cc:2434
+#: ../src/mainfrm.cc:2437
 #: n:322
 msgid "Select a presentation to open"
 msgstr ""
 
-#: ../src/mainfrm.cc:446
+#: ../src/mainfrm.cc:447
 #: n:323
 #, c-format
 msgid "Error in format of presentation file “%s”"
@@ -2257,86 +2269,86 @@ msgstr ""
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
-#: ../src/mainfrm.cc:1957
+#: ../src/mainfrm.cc:1951
 #: n:324
 msgid "Compass PLT files"
 msgstr ""
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 #. package, so don’t translate it.
-#: ../src/mainfrm.cc:1964
+#: ../src/mainfrm.cc:1958
 #: n:325
 msgid "CMAP XYZ files"
 msgstr ""
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:2093
-#: ../src/mainfrm.cc:2416
-#: ../src/mainfrm.cc:2433
+#: ../src/mainfrm.cc:2088
+#: ../src/mainfrm.cc:2411
+#: ../src/mainfrm.cc:2428
 #: n:326
 msgid "Modified Presentation"
 msgstr ""
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:2091
-#: ../src/mainfrm.cc:2415
-#: ../src/mainfrm.cc:2432
+#: ../src/mainfrm.cc:2086
+#: ../src/mainfrm.cc:2410
+#: ../src/mainfrm.cc:2427
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr ""
 
-#: ../src/mainfrm.cc:2733
-#: ../src/mainfrm.cc:2744
+#: ../src/mainfrm.cc:2728
+#: ../src/mainfrm.cc:2739
 #: n:328
 msgid "No matches were found."
 msgstr "Nincs találat."
 
 #. TRANSLATORS: "Find stations" button tooltip
-#: ../src/mainfrm.cc:1035
+#: ../src/mainfrm.cc:1039
 #: n:332
 msgid "Find"
 msgstr "Keresés"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
-#: ../src/mainfrm.cc:1037
-#: ../src/mainfrm.cc:2776
+#: ../src/mainfrm.cc:1041
+#: ../src/mainfrm.cc:2771
 #: n:333
 msgid "Hide"
 msgstr "Elrejtés"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2737
+#: ../src/mainfrm.cc:2732
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr ""
 
-#: ../src/mainfrm.cc:255
-#: ../src/mainfrm.cc:2181
-#: ../src/mainfrm.cc:2262
-#: ../src/mainfrm.cc:2314
+#: ../src/mainfrm.cc:256
+#: ../src/mainfrm.cc:2176
+#: ../src/mainfrm.cc:2257
+#: ../src/mainfrm.cc:2309
 #: n:335
 msgid "Altitude"
 msgstr "Magasság"
 
 #. TRANSLATORS: error if you try to drag multiple files to the aven
 #. window
-#: ../src/mainfrm.cc:711
+#: ../src/mainfrm.cc:712
 #: n:336
 msgid "You may only view one 3d file at a time."
 msgstr ""
 
-#: ../src/mainfrm.cc:945
+#: ../src/mainfrm.cc:949
 #: n:337
 msgid "&Side Panel"
 msgstr ""
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
-#: ../src/mainfrm.cc:2179
-#: ../src/mainfrm.cc:2201
-#: ../src/mainfrm.cc:2203
-#: ../src/mainfrm.cc:2313
+#: ../src/mainfrm.cc:2174
+#: ../src/mainfrm.cc:2196
+#: ../src/mainfrm.cc:2198
+#: ../src/mainfrm.cc:2308
 #: n:338
 #, c-format
 msgid "%.2f E, %.2f N"
@@ -2346,16 +2358,16 @@ msgstr ""
 #. From <stationname>
 #. H: 123.45m V: 234.56m
 #. Dist: 456.78m  Brg: 200
-#: ../src/mainfrm.cc:2221
-#: ../src/mainfrm.cc:2271
-#: ../src/mainfrm.cc:2333
+#: ../src/mainfrm.cc:2216
+#: ../src/mainfrm.cc:2266
+#: ../src/mainfrm.cc:2328
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr ""
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:2346
+#: ../src/mainfrm.cc:2341
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
@@ -2363,7 +2375,7 @@ msgstr ""
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2358
+#: ../src/mainfrm.cc:2353
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
@@ -2372,9 +2384,9 @@ msgstr ""
 #. TRANSLATORS: tickable menu item in View menu.
 #.
 #. "Metric" here means metres, km, etc (rather than feet, miles, etc)
-#: ../src/gfxcore.cc:3950
-#: ../src/gfxcore.cc:3970
-#: ../src/mainfrm.cc:947
+#: ../src/gfxcore.cc:3954
+#: ../src/gfxcore.cc:3974
+#: ../src/mainfrm.cc:951
 #: n:342
 msgid "&Metric"
 msgstr ""
@@ -2383,10 +2395,10 @@ msgstr ""
 #.
 #. Degrees are the angular measurement where there are 360 in a full
 #. circle.
-#: ../src/gfxcore.cc:3912
-#: ../src/gfxcore.cc:3930
-#: ../src/gfxcore.cc:3972
-#: ../src/mainfrm.cc:948
+#: ../src/gfxcore.cc:3916
+#: ../src/gfxcore.cc:3934
+#: ../src/gfxcore.cc:3976
+#: ../src/mainfrm.cc:952
 #: n:343
 msgid "&Degrees"
 msgstr ""
@@ -2395,8 +2407,8 @@ msgstr ""
 #.
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/gfxcore.cc:3935
-#: ../src/mainfrm.cc:949
+#: ../src/gfxcore.cc:3939
+#: ../src/mainfrm.cc:953
 #: n:430
 msgid "&Percent"
 msgstr ""
@@ -2417,15 +2429,15 @@ msgstr "km"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/commands.c:308
+#: ../src/commands.c:309
 #: ../src/gfxcore.cc:1102
 #: ../src/gfxcore.cc:1194
 #: ../src/gfxcore.cc:1274
-#: ../src/mainfrm.cc:2170
-#: ../src/mainfrm.cc:2237
-#: ../src/mainfrm.cc:2257
-#: ../src/mainfrm.cc:2306
-#: ../src/mainfrm.cc:2337
+#: ../src/mainfrm.cc:2165
+#: ../src/mainfrm.cc:2232
+#: ../src/mainfrm.cc:2252
+#: ../src/mainfrm.cc:2301
+#: ../src/mainfrm.cc:2332
 #: ../src/printing.cc:1156
 #: n:424
 msgid "m"
@@ -2467,15 +2479,15 @@ msgstr ""
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/commands.c:309
+#: ../src/commands.c:310
 #: ../src/gfxcore.cc:1102
 #: ../src/gfxcore.cc:1194
 #: ../src/gfxcore.cc:1310
-#: ../src/mainfrm.cc:2175
-#: ../src/mainfrm.cc:2240
-#: ../src/mainfrm.cc:2260
-#: ../src/mainfrm.cc:2311
-#: ../src/mainfrm.cc:2342
+#: ../src/mainfrm.cc:2170
+#: ../src/mainfrm.cc:2235
+#: ../src/mainfrm.cc:2255
+#: ../src/mainfrm.cc:2306
+#: ../src/mainfrm.cc:2337
 #: n:428
 msgid "ft"
 msgstr ""
@@ -2491,19 +2503,19 @@ msgid "in"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:3907
+#: ../src/gfxcore.cc:3911
 #: n:387
 msgid "&Hide Compass"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:3925
+#: ../src/gfxcore.cc:3929
 #: n:384
 msgid "&Hide Clino"
 msgstr ""
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:3945
+#: ../src/gfxcore.cc:3949
 #: n:385
 msgid "&Hide scale bar"
 msgstr ""
@@ -2511,19 +2523,19 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:3968
+#: ../src/gfxcore.cc:3972
 #: n:386
 msgid "&Hide colour key"
 msgstr ""
 
 #. TRANSLATORS: degree symbol - probably should be translated to
 #. itself.
-#: ../src/commands.c:311
+#: ../src/commands.c:312
 #: ../src/gfxcore.cc:754
 #: ../src/gfxcore.cc:844
 #: ../src/gfxcore.cc:1166
-#: ../src/mainfrm.cc:2224
-#: ../src/mainfrm.cc:2350
+#: ../src/mainfrm.cc:2219
+#: ../src/mainfrm.cc:2345
 #: ../src/printing.cc:89
 #: n:344
 msgid "°"
@@ -2531,7 +2543,7 @@ msgstr "°"
 
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 #. circle).
-#: ../src/commands.c:312
+#: ../src/commands.c:313
 #: ../src/gfxcore.cc:759
 #: ../src/gfxcore.cc:849
 #: ../src/gfxcore.cc:1166
@@ -2544,15 +2556,15 @@ msgstr "ᵍ"
 #.
 #. E.g. in Italian and Spanish we use "g.cent." rather than
 #. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2232
-#: ../src/mainfrm.cc:2353
+#: ../src/mainfrm.cc:2227
+#: ../src/mainfrm.cc:2348
 #: n:345
 msgid "grad"
 msgstr ""
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/commands.c:313
+#: ../src/commands.c:314
 #: ../src/gfxcore.cc:835
 #: ../src/gfxcore.cc:853
 #: n:96
@@ -2568,14 +2580,14 @@ msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:2244
+#: ../src/mainfrm.cc:2239
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03d%s"
 msgstr ""
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:2277
+#: ../src/mainfrm.cc:2272
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2583,23 +2595,23 @@ msgstr ""
 
 #. TRANSLATORS: labels for tabbed side panel this is for the tab with the
 #. tree hierarchy of survey station names
-#: ../src/mainfrm.cc:1092
+#: ../src/mainfrm.cc:1096
 #: n:376
 msgid "Surveys"
 msgstr ""
 
-#: ../src/mainfrm.cc:1093
+#: ../src/mainfrm.cc:1097
 #: n:377
 #, fuzzy
 msgid "Presentation"
 msgstr "Bemutató"
 
-#: ../src/mainfrm.cc:253
+#: ../src/mainfrm.cc:254
 #: n:378
 msgid "Easting"
 msgstr "Keleti"
 
-#: ../src/mainfrm.cc:254
+#: ../src/mainfrm.cc:255
 #: n:379
 msgid "Northing"
 msgstr "Északi"
@@ -2611,40 +2623,40 @@ msgstr "Északi"
 #.
 #. "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
-#: ../src/mainfrm.cc:780
+#: ../src/mainfrm.cc:781
 #: n:220
 msgid "&Open...\tCtrl+O"
 msgstr "&Megnyitás...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
-#: ../src/mainfrm.cc:783
+#: ../src/mainfrm.cc:784
 #: n:453
 msgid "Open &Terrain..."
 msgstr ""
 
-#: ../src/mainfrm.cc:784
+#: ../src/mainfrm.cc:785
 #: n:144
 msgid "Show &Log"
 msgstr "&Napló Megjelenítése"
 
-#: ../src/mainfrm.cc:787
+#: ../src/mainfrm.cc:788
 #: n:380
 msgid "&Print...\tCtrl+P"
 msgstr "N&yomtat...\tCtrl+P"
 
-#: ../src/mainfrm.cc:788
+#: ../src/mainfrm.cc:789
 #: n:381
 msgid "P&age Setup..."
 msgstr ""
 
 #. TRANSLATORS: In the "File" menu
-#: ../src/mainfrm.cc:791
+#: ../src/mainfrm.cc:792
 #: n:201
 msgid "&Screenshot..."
 msgstr ""
 
-#: ../src/mainfrm.cc:792
+#: ../src/mainfrm.cc:793
 #: n:382
 msgid "&Export as..."
 msgstr ""
@@ -2695,35 +2707,35 @@ msgid "Sur&face Survey Legs"
 msgstr ""
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:140
+#: ../src/mainfrm.cc:141
 #: n:404
 msgid "Edit Waypoint"
 msgstr "Útpont szerkesztése"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
 #. in a presentation.
-#: ../src/mainfrm.cc:179
+#: ../src/mainfrm.cc:180
 #: n:278
 msgid " (unused in perspective view)"
 msgstr ""
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a
 #. presentation.
-#: ../src/mainfrm.cc:186
+#: ../src/mainfrm.cc:187
 #: n:279
 msgid "Time: "
 msgstr "Idő: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.
-#: ../src/mainfrm.cc:190
+#: ../src/mainfrm.cc:191
 #: n:282
 msgid " secs (0 = auto; *6 = 6 times auto)"
 msgstr ""
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and
 #. perhaps by "Survex" or other things in future).
-#: ../src/aven.cc:232
+#: ../src/aven.cc:255
 #: n:405
 #, c-format
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
@@ -2748,14 +2760,14 @@ msgstr ""
 msgid "Can't have a leg between two anonymous stations"
 msgstr ""
 
-#: ../src/mainfrm.cc:869
+#: ../src/mainfrm.cc:870
 #: n:406
 msgid "Spla&y Legs"
 msgstr ""
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are not shown.
-#: ../src/mainfrm.cc:861
+#: ../src/mainfrm.cc:862
 #: n:407
 msgid "&Hide"
 msgstr "&Elrejtés"
@@ -2763,19 +2775,19 @@ msgstr "&Elrejtés"
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. aven will show splay legs with less bright colours (rather than the
 #. same as other legs "Show" or not shown "Hide").
-#: ../src/mainfrm.cc:865
+#: ../src/mainfrm.cc:866
 #: n:408
 msgid "&Fade"
 msgstr ""
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are shown the same as other legs.
-#: ../src/mainfrm.cc:868
+#: ../src/mainfrm.cc:869
 #: n:409
 msgid "&Show"
 msgstr "&Megjelenítése"
 
-#: ../src/extend.c:507
+#: ../src/extend.c:525
 #: n:105
 msgid "Reading in data - please wait…"
 msgstr "Adat beolvasása - kérem várjon…"
@@ -2783,11 +2795,11 @@ msgstr "Adat beolvasása - kérem várjon…"
 #. TRANSLATORS: for extend: the user specified breaking a loop or
 #. changing extend direction at this station, but we didn’t find it in
 #. the 3d file
-#: ../src/extend.c:263
-#: ../src/extend.c:281
-#: ../src/extend.c:326
-#: ../src/extend.c:368
-#: ../src/extend.c:410
+#: ../src/extend.c:267
+#: ../src/extend.c:285
+#: ../src/extend.c:330
+#: ../src/extend.c:372
+#: ../src/extend.c:414
 #: n:510
 #, c-format
 msgid "Failed to find station %s"
@@ -2796,80 +2808,80 @@ msgstr ""
 #. TRANSLATORS: for extend: the user specified breaking a loop or
 #. changing extend direction at this leg, but we didn’t find it in the
 #. 3d file
-#: ../src/extend.c:307
-#: ../src/extend.c:349
-#: ../src/extend.c:391
-#: ../src/extend.c:433
+#: ../src/extend.c:311
+#: ../src/extend.c:353
+#: ../src/extend.c:395
+#: ../src/extend.c:437
 #: n:511
 #, c-format
 msgid "Failed to find leg %s → %s"
 msgstr ""
 
 #. TRANSLATORS: for extend: "extend" is starting to produce an extended elevation from station %s
-#: ../src/extend.c:254
+#: ../src/extend.c:258
 #: n:512
 #, c-format
 msgid "Starting from station %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:274
+#: ../src/extend.c:278
 #: n:513
 #, c-format
 msgid "Extending to the left from station %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:319
+#: ../src/extend.c:323
 #: n:514
 #, c-format
 msgid "Extending to the right from station %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:294
+#: ../src/extend.c:298
 #: n:515
 #, c-format
 msgid "Extending to the left from leg %s → %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:339
+#: ../src/extend.c:343
 #: n:516
 #, c-format
 msgid "Extending to the right from leg %s → %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:403
+#: ../src/extend.c:407
 #: n:517
 #, c-format
 msgid "Breaking survey loop at station %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:423
+#: ../src/extend.c:427
 #: n:518
 #, c-format
 msgid "Breaking survey loop at leg %s → %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:361
+#: ../src/extend.c:365
 #: n:519
 #, c-format
 msgid "Swapping extend direction from station %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:381
+#: ../src/extend.c:385
 #: n:520
 #, c-format
 msgid "Swapping extend direction from leg %s → %s"
 msgstr ""
 
 #. TRANSLATORS: for extend:
-#: ../src/extend.c:551
+#: ../src/extend.c:569
 #: n:521
 #, c-format
 msgid "Applying specfile: “%s”"
@@ -2877,7 +2889,7 @@ msgstr ""
 
 #. TRANSLATORS: for extend:
 #. Used to tell the user that a file is being written - %s is the filename
-#: ../src/extend.c:614
+#: ../src/extend.c:632
 #: n:522
 #, c-format
 msgid "Writing %s…"
@@ -2958,7 +2970,7 @@ msgstr ""
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:575
+#: ../src/commands.c:576
 #: n:29
 msgid "Reentering an existing survey is deprecated"
 msgstr ""
@@ -2980,7 +2992,7 @@ msgstr ""
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:593
+#: ../src/commands.c:594
 #: n:30
 msgid "Originally entered here"
 msgstr ""
@@ -2992,7 +3004,7 @@ msgstr ""
 #.
 #. If you're unsure what "deprecated" means, see:
 #. http://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:495
+#: ../src/commands.c:496
 #: ../src/readval.c:85
 #: ../src/readval.c:89
 #: n:25
@@ -3133,7 +3145,7 @@ msgstr "SVG kimenet készítése"
 #~ msgid "%d found"
 #~ msgstr ""
 
-#: ../src/mainfrm.cc:914
+#: ../src/mainfrm.cc:918
 #: n:347
 #~ msgid "&Preferences..."
 #~ msgstr "&Beállítások..."
