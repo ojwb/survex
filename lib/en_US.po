@@ -1453,13 +1453,13 @@ msgstr "specify the 3d file format version to output"
 #: ../src/extend.c:466
 #: n:90
 msgid ".espec file to control extending"
-msgstr ""
+msgstr ".espec file to control extending"
 
 #. TRANSLATORS: --help output for extend --show-breaks option
 #: ../src/extend.c:468
 #: n:91
 msgid "show breaks with surface survey legs in output"
-msgstr ""
+msgstr "show breaks with surface survey legs in output"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
