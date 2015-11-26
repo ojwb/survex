@@ -543,7 +543,7 @@ add_unicode(int charset, unsigned char *p, int value)
 #endif
 #if OS_WIN32
    case CHARSET_DOSCP850: {
-      unsigned char uni2dostab[] = {
+      static const unsigned char uni2dostab[] = {
 	 255, 173, 189, 156, 207, 190, 221, 245,
 	 249, 184, 166, 174, 170, 240, 169, 238,
 	 248, 241, 253, 252, 239, 230, 244, 250,
