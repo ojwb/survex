@@ -1,13 +1,13 @@
 " Vim syntax file
 " Language:     Survex
 " Maintainer:   David Loeffler <dave@cucc.survex.com>
-" Last Change:  $Date: 2006-07-04 03:18:25 $
+" Last Change:  2016-01-01
 " Filenames:    *.svx
 " URL:          [NONE]
 " Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code.  Since updated for version 1.1.8.
 "
 " Copyright (C) 2005 David Loeffler
-" Copyright (C) 2006 Olly Betts
+" Copyright (C) 2006,2016 Olly Betts
 "
 " This program is free software; you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ syn match svxAsterisk "^\s*\*" nextgroup=SvxCmd,SvxCmdDeprecated skipwhite
 syn match svxAnything ".*" contained
 
 " Command names: these first few take no interesting arguments
-syn keyword svxCmd contained    begin date
+syn keyword svxCmd contained    alias begin cs date declination
 syn keyword svxCmd contained    end entrance equate export
-syn keyword svxCmd contained    include require
+syn keyword svxCmd contained    include ref require
 syn keyword svxCmd contained    solve title truncate
 
 syn keyword svxCmdDeprecated contained  default prefix
