@@ -1606,7 +1606,7 @@ msgstr "Skencil 文件"
 #: ../src/printing.cc:337
 #: n:166
 msgid "Survex pos files"
-msgstr ""
+msgstr "Survex pos 打开"
 
 #: ../src/printing.cc:338
 #: n:417
@@ -2262,14 +2262,14 @@ msgstr ""
 #: ../src/mainfrm.cc:1951
 #: n:324
 msgid "Compass PLT files"
-msgstr ""
+msgstr "Compass PLT 打开"
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 #. package, so don’t translate it.
 #: ../src/mainfrm.cc:1958
 #: n:325
 msgid "CMAP XYZ files"
-msgstr ""
+msgstr "CMAP XYZ 打开"
 
 #. TRANSLATORS: title of message box
 #: ../src/mainfrm.cc:2088
@@ -2615,7 +2615,7 @@ msgstr "向北"
 #: ../src/mainfrm.cc:781
 #: n:220
 msgid "&Open...\tCtrl+O"
-msgstr ""
+msgstr "打开(&O)...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
