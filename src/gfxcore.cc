@@ -3404,7 +3404,6 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	// get the coordinates of this vertex
 	XSect & pt_v = *i++;
 
-	double z_pitch_adjust = 0.0;
 	bool cover_end = false;
 
 	Vector3 right, up;
@@ -3483,11 +3482,6 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		right = last_right;
 	    }
 	    if (r1.magnitude() == 0) {
-		Vector3 n = leg1_v;
-		n.normalise();
-		z_pitch_adjust = n.GetZ();
-		//up = Vector3(0, 0, leg1_v.GetZ());
-		//up = right * up;
 		up = up_v;
 
 		// Rotate pitch section to minimise the
@@ -3547,13 +3541,6 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		    }
 		}
 #endif
-	    } else if (r2.magnitude() == 0) {
-		Vector3 n = leg2_v;
-		n.normalise();
-		z_pitch_adjust = n.GetZ();
-		//up = Vector3(0, 0, leg2_v.GetZ());
-		//up = right * up;
-		up = up_v;
 	    } else {
 		up = up_v;
 	    }
@@ -3564,8 +3551,6 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	// Scale to unit vectors in the LRUD plane.
 	right.normalise();
 	up.normalise();
-
-	if (z_pitch_adjust != 0) up += Vector3(0, 0, fabs(z_pitch_adjust));
 
 	Double l = fabs(pt_v.GetL());
 	Double r = fabs(pt_v.GetR());
