@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2011,2012,2014,2015 Olly Betts
+ * Copyright (C) 2005,2006,2010,2011,2012,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,13 @@ CavernLogWindow::stop_thread()
     {
 	wxCriticalSectionLocker enter(thread_lock);
 	if (thread) {
-	    if (thread->Delete() != wxTHREAD_NO_ERROR) {
+	    wxThreadError res;
+#if wxCHECK_VERSION(2,9,2)
+	    res = thread->Delete(NULL, wxTHREAD_WAIT_BLOCK);
+#else
+	    res = thread->Delete();
+#endif
+	    if (res != wxTHREAD_NO_ERROR) {
 		// FIXME
 	    }
 	}
