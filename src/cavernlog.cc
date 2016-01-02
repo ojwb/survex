@@ -213,11 +213,12 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 {
     wxString href = link.GetHref();
     wxString title = link.GetTarget();
-    size_t colon = href.rfind(wxT(':'));
+    size_t colon2 = href.rfind(wxT(':'));
+    if (colon2 == wxString::npos)
+	return;
+    size_t colon = href.rfind(wxT(':'), colon2 - 1);
     if (colon == wxString::npos)
 	return;
-    size_t colon2 = href.rfind(wxT(':'), colon - 1);
-    if (colon2 != wxString::npos) swap(colon, colon2);
 #ifdef __WXMSW__
     wxString cmd = wxT("notepad $f");
 #elif defined __WXMAC__
@@ -263,7 +264,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 	    }
 	    case wxT('c'): {
 		wxString l;
-		if (colon2 == wxString::npos)
+		if (colon2 >= href.size())
 		    l = wxT("0");
 		else
 		    l = escape_for_shell(href.substr(colon2 + 1));
@@ -491,6 +492,11 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 			       cur[i] >= wxT('0') && cur[i] <= wxT('9')) { }
 			    if (i > colon + 1 && cur[i] == wxT(':') ) {
 				colon = i;
+			    } else {
+				// If there's no colon, include a trailing ':'
+				// so that we can unambiguously split the href
+				// value up into filename, line and column.
+				++colon;
 			    }
 			    wxString tag = wxT("<a href=\"");
 			    tag.append(cur, 0, colon);
