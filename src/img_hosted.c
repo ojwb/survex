@@ -1,6 +1,6 @@
 /* img_hosted.c
  * Build img for use in Survex code
- * Copyright (C) 1997,1999,2000,2001,2011,2013,2014,2015 Olly Betts
+ * Copyright (C) 1997,1999,2000,2001,2011,2013,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,11 @@ static const int img_error2msg_map[] = {
      * to read when we ran out of memory.
      */
     /* IMG_OUTOFMEMORY */  /*Out of memory trying to read file “%s”*/38,
-    /* IMG_DIRECTORY */    /*Filename “%s” refers to directory*/44,
     /* IMG_CANTOPENOUT */  /*Failed to open output file “%s”*/47,
     /* TRANSLATORS: Perhaps the user tried to load a different type of file as
      * a Survex .3d file, or the .3d file was corrupted. */
     /* IMG_BADFORMAT */    /*Bad 3d image file “%s”*/106,
+    /* IMG_DIRECTORY */    /*Filename “%s” refers to directory*/44,
     /* IMG_READERROR */    /*Error reading from file “%s”*/109,
     /* IMG_WRITEERROR */   /*Error writing to file “%s”*/110,
     /* IMG_TOONEW */       /*File “%s” has a newer format than this program can understand*/114

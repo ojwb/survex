@@ -3404,6 +3404,11 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	// get the coordinates of this vertex
 	XSect & pt_v = *i++;
 
+	// We extend the ceiling/floor over/under pitches, so they don't end up
+	// as vertical 2D sheets.
+	bool pitch_adjust = false;
+	double z_pitch_adjust_x = 0.0;
+	double z_pitch_adjust_y = 0.0;
 	bool cover_end = false;
 
 	Vector3 right, up;
@@ -3482,6 +3487,13 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		right = last_right;
 	    }
 	    if (r1.magnitude() == 0) {
+		Vector3 n = leg2_v;
+		n.normalise();
+		pitch_adjust = true;
+		z_pitch_adjust_x = n.GetX();
+		z_pitch_adjust_y = n.GetY();
+		//up = Vector3(0, 0, leg1_v.GetZ());
+		//up = right * up;
 		up = up_v;
 
 		// Rotate pitch section to minimise the
@@ -3541,6 +3553,15 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		    }
 		}
 #endif
+	    } else if (r2.magnitude() == 0) {
+		Vector3 n = leg1_v;
+		n.normalise();
+		pitch_adjust = true;
+		z_pitch_adjust_x = n.GetX();
+		z_pitch_adjust_y = n.GetY();
+		//up = Vector3(0, 0, leg2_v.GetZ());
+		//up = right * up;
+		up = up_v;
 	    } else {
 		up = up_v;
 	    }
@@ -3556,6 +3577,11 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	Double r = fabs(pt_v.GetR());
 	Double u = fabs(pt_v.GetU());
 	Double d = fabs(pt_v.GetD());
+
+	if (pitch_adjust) {
+cout << "Pitch adjust : " << z_pitch_adjust_x << ", " << z_pitch_adjust_y << endl;
+	    up += Vector3(z_pitch_adjust_x, z_pitch_adjust_y, 0);
+	}
 
 	// Produce coordinates of the corners of the LRUD "plane".
 	Vector3 v[4];
