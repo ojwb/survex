@@ -714,89 +714,53 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
       return;
    }
 
-   lp = &headleg;
-   for (l = lp->next; l; lp = l, l = lp->next) {
-      dir = odir;
-      if (l->fDone) {
-	 /* this case happens iff a recursive call causes the next leg to be
-	  * removed, leaving our next pointing to a leg which has been dealt
-	  * with... */
-	 continue;
-      }
-      if (l->prefix != prefix) {
-	 continue;
-      }
-      if (l->to == p) {
-	 if (l->broken & BREAK_TO) continue;
-	 lp->next = l->next;
-	 /* adjust direction of extension if necessary */
-	 dir = adjust_direction(dir, l->to->dir);
-	 dir = adjust_direction(dir, l->dir);
+   /* It's better to follow legs along a survey, so make two passes and only
+    * follow legs in the same survey for the first pass.
+    */
+   for (int try_all = 0; try_all != 2; ++try_all) {
+      lp = &headleg;
+      for (l = lp->next; l; lp = l, l = lp->next) {
+	 dir = odir;
+	 if (l->fDone) {
+	    /* this case happens iff a recursive call causes the next leg to be
+	     * removed, leaving our next pointing to a leg which has been dealt
+	     * with... */
+	    continue;
+	 }
+	 if (!try_all && l->prefix != prefix) {
+	    continue;
+	 }
+	 if (l->to == p) {
+	    if (l->broken & BREAK_TO) continue;
+	    lp->next = l->next;
+	    /* adjust direction of extension if necessary */
+	    dir = adjust_direction(dir, l->to->dir);
+	    dir = adjust_direction(dir, l->dir);
 
-	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
-			X, 0, l->to->p.z);
-	 l->fDone = 1;
-	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
-	 l = lp;
-      } else if (l->fr == p) {
-	 if (l->broken & BREAK_FR) continue;
-	 lp->next = l->next;
-	 /* adjust direction of extension if necessary */
-	 dir = adjust_direction(dir, l->fr->dir);
-	 dir = adjust_direction(dir, l->dir);
+	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    if (dir == ELEFT) dX = -dX;
+	    img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
+	    img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
+			   X, 0, l->to->p.z);
+	    l->fDone = 1;
+	    do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
+	    l = lp;
+	 } else if (l->fr == p) {
+	    if (l->broken & BREAK_FR) continue;
+	    lp->next = l->next;
+	    /* adjust direction of extension if necessary */
+	    dir = adjust_direction(dir, l->fr->dir);
+	    dir = adjust_direction(dir, l->dir);
 
-	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
-			X + dX, 0, l->to->p.z);
-	 l->fDone = 1;
-	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
-	 l = lp;
-      }
-   }
-   lp = &headleg;
-   for (l = lp->next; l; lp = l, l = lp->next) {
-      dir = odir;
-      if (l->fDone) {
-	 /* this case happens iff a recursive call causes the next leg to be
-	  * removed, leaving our next pointing to a leg which has been dealt
-	  * with... */
-	 continue;
-      }
-      if (l->to == p) {
-	 if (l->broken & BREAK_TO) continue;
-	 lp->next = l->next;
-	 /* adjust direction of extension if necessary */
-	 dir = adjust_direction(dir, l->to->dir);
-	 dir = adjust_direction(dir, l->dir);
-
-	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
-			X, 0, l->to->p.z);
-	 l->fDone = 1;
-	 do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
-	 l = lp;
-      } else if (l->fr == p) {
-	 if (l->broken & BREAK_FR) continue;
-	 lp->next = l->next;
-	 /* adjust direction of extension if necessary */
-	 dir = adjust_direction(dir, l->fr->dir);
-	 dir = adjust_direction(dir, l->dir);
-
-	 dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	 if (dir == ELEFT) dX = -dX;
-	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
-			X + dX, 0, l->to->p.z);
-	 l->fDone = 1;
-	 do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
-	 l = lp;
+	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
+	    if (dir == ELEFT) dX = -dX;
+	    img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
+	    img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
+			   X + dX, 0, l->to->p.z);
+	    l->fDone = 1;
+	    do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
+	    l = lp;
+	 }
       }
    }
 }
