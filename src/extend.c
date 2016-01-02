@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011,2013,2014 Olly Betts
+ * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -270,7 +270,8 @@ parseconfigline(const char *fnm, char *ln)
       if (*ll == 0)
 	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
-      if (*ln == 0) { /* One argument, look for point to switch at. */
+      if (*ln == 0) {
+	 /* One argument - look for station to switch at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
@@ -283,7 +284,8 @@ parseconfigline(const char *fnm, char *ln)
 	    }
 	 }
 	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
-      } else { /* Two arguments look for a specific leg */
+      } else {
+	 /* Two arguments - look for a specified leg. */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
 	    point * to = l->to;
@@ -315,7 +317,8 @@ parseconfigline(const char *fnm, char *ln)
       if (*ll == 0)
 	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
-      if (*ln == 0) { /* One argument, look for point to switch at. */
+      if (*ln == 0) {
+	 /* One argument - look for station to switch at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
@@ -328,7 +331,8 @@ parseconfigline(const char *fnm, char *ln)
 	    }
 	 }
 	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
-      } else { /* Two arguments look for a specific leg */
+      } else {
+	 /* Two arguments - look for a specified leg. */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
 	    point * to = l->to;
@@ -357,7 +361,8 @@ parseconfigline(const char *fnm, char *ln)
       if (*ll == 0)
 	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
-      if (*ln == 0) { /* One argument, look for point to switch at. */
+      if (*ln == 0) {
+	 /* One argument - look for station to switch at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
@@ -370,7 +375,8 @@ parseconfigline(const char *fnm, char *ln)
 	    }
 	 }
 	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
-      } else { /* Two arguments look for a specific leg */
+      } else {
+	 /* Two arguments - look for a specified leg. */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
 	    point * to = l->to;
@@ -399,7 +405,8 @@ parseconfigline(const char *fnm, char *ln)
       if (*ll == 0)
 	 fatalerror_in_file(fnm, lineno, /*Expecting station name*/28);
       ln = delimword(lc, &lc);
-      if (*ln == 0) { /* One argument, look for point to break at. */
+      if (*ln == 0) {
+	 /* One argument - look for specified station to break at. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    for (s = p->stns; s; s = s->next) {
 	       if (strcmp(s->label, ll)==0) {
@@ -412,7 +419,9 @@ parseconfigline(const char *fnm, char *ln)
 	    }
 	 }
 	 warning_in_file(fnm, lineno, /*Failed to find station %s*/510, ll);
-      } else { /* Two arguments look for a specific leg */
+      } else {
+	 /* Two arguments - look for specified leg and disconnect it at the
+	  * first station. */
 	 for (l = headleg.next; l; l=l->next) {
 	    point * fr = l->fr;
 	    point * to = l->to;
@@ -581,9 +590,11 @@ main(int argc, char **argv)
       osfree(fnm_used);
    }
 
-   if (start == NULL) { /* i.e. start wasn't specified in specfile */
-
-      /* start at the highest entrance with some legs attached */
+   if (start == NULL) {
+      /* *start wasn't specified in specfile.
+       *
+       * Start at the highest entrance with some legs attached.
+       */
       for (p = headpoint.next; p != NULL; p = p->next) {
 	 if (p->order > 0 && p->p.z > zMax) {
 	    const stn *s;
@@ -597,7 +608,7 @@ main(int argc, char **argv)
 	 }
       }
       if (start == NULL) {
-	 /* if no entrances with legs, start at the highest 1-node */
+	 /* If no entrances with legs, start at the highest 1-node. */
 	 for (p = headpoint.next; p != NULL; p = p->next) {
 	    if (p->order == 1 && p->p.z > zMax) {
 	       start = p;
@@ -707,7 +718,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    for (l = lp->next; l; lp = l, l = lp->next) {
       dir = odir;
       if (l->fDone) {
-	 /* this case happens if a recursive call causes the next leg to be
+	 /* this case happens iff a recursive call causes the next leg to be
 	  * removed, leaving our next pointing to a leg which has been dealt
 	  * with... */
 	 continue;
