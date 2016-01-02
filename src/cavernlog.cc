@@ -296,6 +296,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 void
 CavernLogWindow::process(const wxString &file)
 {
+    SetPage(wxString());
 #ifdef wxUSE_THREADS
     if (thread) stop_thread();
 #endif
@@ -645,7 +646,6 @@ abort:
 void
 CavernLogWindow::OnReprocess(wxCommandEvent &)
 {
-    SetPage(wxString());
     process(filename);
 }
 
