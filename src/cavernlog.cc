@@ -302,6 +302,7 @@ CavernLogWindow::process(const wxString &file)
 #endif
     if (cavern_out) {
 	pclose(cavern_out);
+	cavern_out = NULL;
     } else {
 	wxBeginBusyCursor();
     }
