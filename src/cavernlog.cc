@@ -40,11 +40,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <wx/process.h>
+
 enum { LOG_REPROCESS = 1234, LOG_SAVE = 1235 };
 
-#ifdef CAVERNLOG_USE_THREADS
 // New event type for passing a chunk of cavern output from the worker thread
-// to the main thread.
+// to the main thread (or from the idle event handler if we're not using
+// threads).
 class CavernOutputEvent;
 
 wxDEFINE_EVENT(wxEVT_CAVERN_OUTPUT, CavernOutputEvent);
@@ -63,17 +65,18 @@ class CavernOutputEvent : public wxEvent {
     }
 };
 
+#ifdef CAVERNLOG_USE_THREADS
 class CavernThread : public wxThread {
   protected:
     virtual ExitCode Entry();
 
     CavernLogWindow *handler;
 
-    int cavern_fd;
+    wxInputStream * in;
 
   public:
-    CavernThread(CavernLogWindow *handler_, int fd)
-	: wxThread(wxTHREAD_DETACHED), handler(handler_), cavern_fd(fd) { }
+    CavernThread(CavernLogWindow *handler_, wxInputStream * in_)
+	: wxThread(wxTHREAD_DETACHED), handler(handler_), in(in_) { }
 
     ~CavernThread() {
 	wxCriticalSectionLocker enter(handler->thread_lock);
@@ -84,17 +87,54 @@ class CavernThread : public wxThread {
 wxThread::ExitCode
 CavernThread::Entry()
 {
-    ssize_t n;
-    do {
+    while (true) {
 	CavernOutputEvent * e = new CavernOutputEvent();
-	e->len = n = read(cavern_fd, e->buf, sizeof(e->buf));
-	if (TestDestroy()) {
+	in->Read(e->buf, sizeof(e->buf));
+	size_t n = in->LastRead();
+	if (n == 0 || TestDestroy()) {
 	    delete e;
-	    break;
+	    return (wxThread::ExitCode)0;
 	}
-	wxQueueEvent(handler, e);
-    } while (n > 0);
-    return (wxThread::ExitCode)0;
+	if (n == 1 && e->buf[0] == '\n') {
+	    // Don't send an event with just a blank line in.
+	    in->Read(e->buf + 1, sizeof(e->buf) - 1);
+	    n += in->LastRead();
+	    if (TestDestroy()) {
+		delete e;
+		return (wxThread::ExitCode)0;
+	    }
+	}
+	e->len = n;
+	handler->QueueEvent(e);
+    }
+}
+
+#else
+
+void
+CavernLogWindow::OnIdle(wxIdleEvent& event)
+{
+    if (cavern_out == NULL) return;
+
+    wxInputStream * in = cavern_out->GetInputStream();
+
+    if (!in->CanRead()) {
+	// Avoid a tight busy-loop on idle events.
+	wxMilliSleep(10);
+    }
+    if (in->CanRead()) {
+	CavernOutputEvent * e = new CavernOutputEvent();
+	in->Read(e->buf, sizeof(e->buf));
+	size_t n = in->LastRead();
+	if (n == 0) {
+	    delete e;
+	    return;
+	}
+	e->len = n;
+	QueueEvent(e);
+    }
+
+    event.RequestMore();
 }
 #endif
 
@@ -102,12 +142,13 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
     EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
     EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
+    EVT_COMMAND(wxID_ANY, wxEVT_CAVERN_OUTPUT, CavernLogWindow::OnCavernOutput)
 #ifdef CAVERNLOG_USE_THREADS
     EVT_CLOSE(CavernLogWindow::OnClose)
-    EVT_COMMAND(wxID_ANY, wxEVT_CAVERN_OUTPUT, CavernLogWindow::OnCavernOutput)
 #else
     EVT_IDLE(CavernLogWindow::OnIdle)
 #endif
+    EVT_END_PROCESS(wxID_ANY, CavernLogWindow::OnEndProcess)
 END_EVENT_TABLE()
 
 static wxString escape_for_shell(wxString s, bool protect_dash = false)
@@ -171,9 +212,12 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
 
 CavernLogWindow::~CavernLogWindow()
 {
+#ifdef CAVERNLOG_USE_THREADS
+    if (thread) stop_thread();
+#endif
     if (cavern_out) {
 	wxEndBusyCursor();
-	pclose(cavern_out);
+	cavern_out->Detach();
     }
 }
 
@@ -181,6 +225,24 @@ CavernLogWindow::~CavernLogWindow()
 void
 CavernLogWindow::stop_thread()
 {
+    // Killing the subprocess by its pid is theoretically racy, but in practice
+    // it's not going to cause issues, and it's all the wxProcess API seems to
+    // allow us to do.  If we don't kill the subprocess, we need to wait for it
+    // to write out some output - there seems to be no way to do the equivalent
+    // of select() with a timeout on a a wxInputStream.
+    //
+    // The only alternative to this seems to be to do:
+    //
+    //     while (!s.CanRead()) {
+    //         if (TestDestroy()) return (wxThread::ExitCode)0;
+    //         wxMilliSleep(N);
+    //     }
+    //
+    // But that makes the log window update sluggishly, and we're using a
+    // worker thread precisely to try to avoid having to do dumb stuff like
+    // this.
+    wxProcess::Kill(cavern_out->GetPid());
+
     {
 	wxCriticalSectionLocker enter(thread_lock);
 	if (thread) {
@@ -301,7 +363,7 @@ CavernLogWindow::process(const wxString &file)
     if (thread) stop_thread();
 #endif
     if (cavern_out) {
-	pclose(cavern_out);
+	cavern_out->Detach();
 	cavern_out = NULL;
     } else {
 	wxBeginBusyCursor();
@@ -352,11 +414,7 @@ CavernLogWindow::process(const wxString &file)
     cmd += wxT(' ');
     cmd += escaped_file;
 
-#ifdef __WXMSW__
-    cavern_out = _wpopen(cmd.c_str(), L"r");
-#else
-    cavern_out = popen(cmd.mb_str(), "r");
-#endif
+    cavern_out = wxProcess::Open(cmd);
     if (!cavern_out) {
 	wxString m;
 	m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());
@@ -366,28 +424,18 @@ CavernLogWindow::process(const wxString &file)
 	wxGetApp().ReportError(m);
 	return;
     }
-#ifndef CAVERNLOG_USE_THREADS
-}
 
-void
-CavernLogWindow::OnIdle(wxIdleEvent& event)
-{
-    if (cavern_out == NULL) return;
-#endif
+    // We want to receive the wxProcessEvent when cavern exits.
+    cavern_out->SetNextHandler(this);
 
-    int cavern_fd;
-#ifdef __WXMSW__
-    cavern_fd = _fileno(cavern_out);
-#else
-    cavern_fd = fileno(cavern_out);
-#endif
 #ifdef CAVERNLOG_USE_THREADS
-    thread = new CavernThread(this, cavern_fd);
+    thread = new CavernThread(this, cavern_out->GetInputStream());
     if (thread->Run() != wxTHREAD_NO_ERROR) {
 	wxGetApp().ReportError(wxT("Thread failed to start"));
 	delete thread;
 	thread = NULL;
     }
+#endif
 }
 
 void
@@ -399,32 +447,6 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	ssize_t n = e.len;
 	if (size_t(n) > sizeof(buf) - (end - buf)) abort();
 	memcpy(end, e.buf, n);
-#else
-    ssize_t n;
-#ifndef __WXMSW__
-    assert(cavern_fd < FD_SETSIZE); // FIXME we shouldn't just assert, but what else to do?
-
-    fd_set rfds, efds;
-    FD_ZERO(&rfds);
-    FD_ZERO(&efds);
-    FD_SET(cavern_fd, &rfds);
-    FD_SET(cavern_fd, &efds);
-    // Wait up to 0.01 seconds for data to avoid a tight idle loop.
-    struct timeval timeout;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 10000;
-    int r = select(cavern_fd + 1, &rfds, NULL, &efds, &timeout);
-    if (r == 0) {
-	// No new output to process.
-	event.RequestMore();
-	return;
-    }
-    if (r <= 0 || !FD_ISSET(cavern_fd, &rfds))
-	goto abort;
-#endif
-    n = read(cavern_fd, end, sizeof(buf) - (end - buf));
-    if (n > 0) {
-#endif
 	log_txt.append((const char *)end, n);
 	end += n;
 
@@ -587,31 +609,13 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	end = buf + left;
 	if (left) memmove(buf, p, left);
 	Update();
-#ifndef CAVERNLOG_USE_THREADS
-	event.RequestMore();
-#endif
 	return;
     }
 
-#ifdef CAVERNLOG_USE_THREADS
-    if (e.len == 0 && buf != end) {
+    if (e.len <= 0 && buf != end) {
 	// Truncated UTF-8 sequence.
 	goto bad_utf8;
     }
-#else
-    if (n == 0 && buf != end) {
-	// Truncated UTF-8 sequence.
-	goto bad_utf8;
-    }
-#endif
-
-    if (false) {
-bad_utf8:
-	errno = EILSEQ;
-    }
-#if !defined CAVERNLOG_USE_THREADS && !defined __WXMSW__
-abort:
-#endif
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
      * allows the user to save the log to a file. */
@@ -619,20 +623,15 @@ abort:
 				  (int)LOG_SAVE,
 				  wmsg(/*Save Log*/446).c_str()));
     wxEndBusyCursor();
-    int retval = pclose(cavern_out);
+    delete cavern_out;
     cavern_out = NULL;
-    if (retval) {
+    if (e.len < 0) {
+	/* Negative length indicates non-zero exit status from cavern. */
 	/* TRANSLATORS: Label for button in aven’s cavern log window which
 	 * causes the survey data to be reprocessed. */
 	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d name=\"%s\">"),
 				      (int)LOG_REPROCESS,
 				      wmsg(/*Reprocess*/184).c_str()));
-	if (retval == -1) {
-	    wxString m = wxT("Problem running cavern: ");
-	    m += wxString(strerror(errno), wxConvUTF8);
-	    wxGetApp().ReportError(m);
-	    return;
-	}
 	return;
     }
     AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
@@ -642,15 +641,50 @@ abort:
     Update();
     init_done = false;
 
-    wxString file3d(filename, 0, filename.length() - 3);
-    file3d.append(wxT("3d"));
-    if (!mainfrm->LoadData(file3d, survey)) {
-	return;
+    {
+	wxString file3d(filename, 0, filename.length() - 3);
+	file3d.append(wxT("3d"));
+	if (!mainfrm->LoadData(file3d, survey)) {
+	    return;
+	}
     }
+
     if (link_count == 0) {
 	wxCommandEvent dummy;
 	OnOK(dummy);
     }
+    return;
+
+bad_utf8:
+    errno = EILSEQ;
+
+    /* TRANSLATORS: Label for button in aven’s cavern log window which
+     * allows the user to save the log to a file. */
+    AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
+				  (int)LOG_SAVE,
+				  wmsg(/*Save Log*/446).c_str()));
+    if (cavern_out) {
+#ifdef CAVERNLOG_USE_THREADS
+	if (thread) stop_thread();
+#endif
+	wxEndBusyCursor();
+	cavern_out->Detach();
+	cavern_out = NULL;
+    }
+    /* TRANSLATORS: Label for button in aven’s cavern log window which
+     * causes the survey data to be reprocessed. */
+    AppendToPage(wxString::Format(wxT("<avenbutton default id=%d name=\"%s\">"),
+				  (int)LOG_REPROCESS,
+				  wmsg(/*Reprocess*/184).c_str()));
+}
+
+void
+CavernLogWindow::OnEndProcess(wxProcessEvent & evt)
+{
+    CavernOutputEvent * e = new CavernOutputEvent();
+    // Zero length indicates successful exit, negative length unsuccessful exit.
+    e->len = (evt.GetExitCode() == 0 ? 0 : -1);
+    QueueEvent(e);
 }
 
 void

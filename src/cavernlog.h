@@ -23,9 +23,12 @@
 
 #include "wx.h"
 #include <wx/html/htmlwin.h>
+#include <wx/process.h>
 
 #include <string>
 
+// We probably want to use a thread if we can - that way we can use a blocking
+// read from cavern rather than busy-waiting via idle events.
 #ifdef wxUSE_THREADS
 # define CAVERNLOG_USE_THREADS
 #endif
@@ -44,7 +47,7 @@ class CavernLogWindow : public wxHtmlWindow {
 
     MainFrm * mainfrm;
 
-    FILE * cavern_out;
+    wxProcess * cavern_out;
     wxString cur;
     int link_count;
     unsigned char buf[1024];
@@ -80,13 +83,15 @@ class CavernLogWindow : public wxHtmlWindow {
 
     void OnOK(wxCommandEvent &);
 
-#ifdef CAVERNLOG_USE_THREADS
     void OnCavernOutput(wxCommandEvent & e);
 
+#ifdef CAVERNLOG_USE_THREADS
     void OnClose(wxCloseEvent &);
 #else
     void OnIdle(wxIdleEvent &);
 #endif
+
+    void OnEndProcess(wxProcessEvent & e);
 
     DECLARE_EVENT_TABLE()
 };
