@@ -31,7 +31,6 @@
 #endif
 
 #ifdef CAVERNLOG_USE_THREADS
-class CavernOutputEvent;
 class CavernThread;
 #endif
 class MainFrm;
