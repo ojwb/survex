@@ -1,7 +1,7 @@
 /* cavernlog.h
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2015 Olly Betts
+ * Copyright (C) 2005,2006,2010,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,13 +27,17 @@
 #include <string>
 
 #ifdef wxUSE_THREADS
+# define CAVERNLOG_USE_THREADS
+#endif
+
+#ifdef CAVERNLOG_USE_THREADS
 class CavernOutputEvent;
 class CavernThread;
 #endif
 class MainFrm;
 
 class CavernLogWindow : public wxHtmlWindow {
-#ifdef wxUSE_THREADS
+#ifdef CAVERNLOG_USE_THREADS
     friend class CavernThread;
 #endif
 
@@ -53,7 +57,7 @@ class CavernLogWindow : public wxHtmlWindow {
 
     std::string log_txt;
 
-#ifdef wxUSE_THREADS
+#ifdef CAVERNLOG_USE_THREADS
     void stop_thread();
 
     CavernThread * thread;
@@ -77,7 +81,7 @@ class CavernLogWindow : public wxHtmlWindow {
 
     void OnOK(wxCommandEvent &);
 
-#ifdef wxUSE_THREADS
+#ifdef CAVERNLOG_USE_THREADS
     void OnCavernOutput(wxCommandEvent & e);
 
     void OnClose(wxCloseEvent &);
