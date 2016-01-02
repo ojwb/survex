@@ -434,8 +434,8 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	    if (ch >= 0x80) {
 		// Decode multi-byte UTF-8 sequence.
 		if (ch < 0xc0) {
-		    // FIXME: Invalid UTF-8 sequence.
-		    goto abort;
+		    // Invalid UTF-8 sequence.
+		    goto bad_utf8;
 		} else if (ch < 0xe0) {
 		    /* 2 byte sequence */
 		    if (p == end) {
@@ -444,8 +444,8 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		    }
 		    int ch1 = *p++;
 		    if ((ch1 & 0xc0) != 0x80) {
-			// FIXME: Invalid UTF-8 sequence.
-			goto abort;
+			// Invalid UTF-8 sequence.
+			goto bad_utf8;
 		    }
 		    ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
 		} else if (ch < 0xf0) {
@@ -457,18 +457,18 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		    int ch1 = *p++;
 		    ch = ((ch & 0x1f) << 12) | ((ch1 & 0x3f) << 6);
 		    if ((ch1 & 0xc0) != 0x80) {
-			// FIXME: Invalid UTF-8 sequence.
-			goto abort;
+			// Invalid UTF-8 sequence.
+			goto bad_utf8;
 		    }
 		    int ch2 = *p++;
 		    if ((ch2 & 0xc0) != 0x80) {
-			// FIXME: Invalid UTF-8 sequence.
-			goto abort;
+			// Invalid UTF-8 sequence.
+			goto bad_utf8;
 		    }
 		    ch |= (ch2 & 0x3f);
 		} else {
-		    // FIXME: Overlong UTF-8 sequence.
-		    goto abort;
+		    // Overlong UTF-8 sequence.
+		    goto bad_utf8;
 		}
 	    }
 
@@ -594,14 +594,23 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 
 #ifdef wxUSE_THREADS
     if (e.len == 0 && buf != end) {
-	// FIXME: Truncated UTF-8 sequence.
+	// Truncated UTF-8 sequence.
+	goto bad_utf8;
     }
 #else
     if (n == 0 && buf != end) {
-	// FIXME: Truncated UTF-8 sequence.
+	// Truncated UTF-8 sequence.
+	goto bad_utf8;
     }
 #endif
+
+    if (false) {
+bad_utf8:
+	errno = EILSEQ;
+    }
+#if !defined wxUSE_THREADS && !defined __WXMSW__
 abort:
+#endif
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
      * allows the user to save the log to a file. */
