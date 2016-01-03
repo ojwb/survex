@@ -20,3 +20,7 @@
 ; as we were using 0 for the BACKCOMPASS s.d. which leads to a threshold of
 ; about 71% of what it should be:
 1 R 10 001.178 198.822 -1.178 -1.178
+
+*data cartesian from to dx dy dz
+; Work around variation in which station is picked for the maximum:
+1 max 9 12 36
