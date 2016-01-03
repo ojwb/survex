@@ -15,15 +15,15 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 13 survey stations, joined by 12 legs.
+Survey contains 14 survey stations, joined by 13 legs.
 There is 1 loop.
 Survey has 2 connected components.
-Total length of survey legs =   39.00m (  39.00m adjusted)
-Total plan length of survey legs =   37.79m
+Total length of survey legs =   49.00m (  49.00m adjusted)
+Total plan length of survey legs =   47.79m
 Total vertical length of survey legs =    4.50m
-Vertical range = 0.50m (from z at 0.00m to e at -0.50m)
-North-South range = 10.00m (from z at 10.00m to 1 at 0.00m)
+Vertical range = 0.50m (from r at 0.00m to e at -0.50m)
+North-South range = 10.00m (from r at 10.00m to 1 at 0.00m)
 East-West range = 0.00m (from x at 0.00m to z at 0.00m)
-  12 1-nodes.
-   1 12-node.
+  13 1-nodes.
+   1 13-node.
 There were 2 warning(s).

@@ -15,3 +15,8 @@
 1 X 10 000.5 199.5  00  -
 1 Y 10 000  -   02  02
 1 Z 10 000  -  -01.25 -01.25
+; Regression test for bug fixed in 1.2.25.  In versions prior to this, this
+; would incorrectly warn about the difference between COMPASS and BACKCOMPASS,
+; as we were using 0 for the BACKCOMPASS s.d. which leads to a threshold of
+; about 71% of what it should be:
+1 R 10 001.178 198.822 -1.178 -1.178

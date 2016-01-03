@@ -893,7 +893,7 @@ handle_compass(real *p_var)
 	 real diff = comp - backcomp;
 	 real adj = fabs(diff) > M_PI ? M_PI : 0;
 	 diff -= floor((diff + M_PI) / (2 * M_PI)) * 2 * M_PI;
-	 if (sqrd(diff / 3.0) > compvar + VAR(Q_BACKBEARING)) {
+	 if (sqrd(diff / 3.0) > compvar + VAR(BackComp)) {
 	    /* fore and back readings differ by more than 3 sds */
 	    /* TRANSLATORS: %s is replaced by the amount the readings disagree
 	     * by, e.g. "2.5°" or "3ᵍ". */
