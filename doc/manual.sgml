@@ -822,7 +822,7 @@ An anoymous wall point at the end of an implicit splay.
 an anoymous point with no implicit flags on the leg (intended for cases like
 a disto leg along a continuing passage).
 </Para></ListItem></VarListEntry>
-</ListItem>
+</VariableList>
 
 <Para>
 You can map '-' to '..' (for compatibility with data from pocket topo) using
@@ -2567,6 +2567,7 @@ instead.</Para></listitem>
 <Para>
 <programlisting>
 *ref "survey folder 2007#12"
+</programlisting>
 </Para>
 </listitem>
 
