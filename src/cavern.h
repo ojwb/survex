@@ -183,7 +183,6 @@ typedef enum {
    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
    CompassDATFlags
 } reading;
-/* Tape Comp Clino BackComp BackClino FrDepth ToDepth Dx Dy Dz FrCount ToCount */
 
 /* if IgnoreAll is >= 32, the compiler will choke on this */
 typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
