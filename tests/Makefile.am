@@ -82,6 +82,7 @@ extend2names.svx extend2namesx.3d\
 omitclino.svx omitclino.pos\
 back.svx back.out back.pos\
 back2.svx back2.out back2.pos\
+bad_back.svx bad_back.out\
 notentranceorexport.svx inferunknown.svx inferexports.svx\
 bad_units_factor.svx bad_units_factor.out\
 bad_units_qlist.svx bad_units_qlist.out\

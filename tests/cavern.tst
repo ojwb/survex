@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014,2015 Olly Betts
+# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014,2015,2016 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ testdir=`(cd "$testdir" && pwd)`
  cartes diving cylpolar normal normal_bad normignall nosurv cmd_flags\
  bad_cmd_flags plumb unusedstation exportnakedbegin oldestyle bugdz\
  baddatacylpolar badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug\
- omitclino back back2\
+ omitclino back back2 bad_back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\

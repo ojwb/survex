@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015,2016 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1038,8 +1038,9 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       dx = dy = (real)0.0;
       if (ctype != CTYPE_OMIT) {
 	 if (backctype != CTYPE_OMIT && (clin > 0) == (backclin > 0)) {
-	    /* We've got two UPs or two DOWNs - FIXME: not ideal message */
-	    compile_error_skip(/*CLINO and BACKCLINO readings must be of the same type*/84);
+	    /* TRANSLATORS: We've been told the foresight and backsight are
+	     * both "UP", or that they're both "DOWN". */
+	    compile_error_skip(/*Plumbed CLINO and BACKCLINO readings can't be in the same direction*/92);
 	    return 0;
 	 }
 	 dz = (clin > (real)0.0) ? tape : -tape;

@@ -736,10 +736,16 @@ msgstr "Priečny rez definovaný na neexistujúcom bode “%s”"
 #. plumb for the foresight and a clino reading for the backsight, or
 #. something similar.
 #: ../src/datain.c:1018
-#: ../src/datain.c:1042
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr "Hodnoty CLINO a BACKCLINO musí byť toho istého typu"
+
+#. TRANSLATORS: We've been told the foresight and backsight are
+#. both "UP", or that they're both "DOWN".
+#: ../src/datain.c:1043
+#: n:92
+msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
+msgstr ""
 
 #: ../src/readval.c:526
 #: n:86
