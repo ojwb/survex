@@ -700,6 +700,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    double dX;
    const stn *s;
    int odir = dir;
+   int try_all;
 
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
@@ -717,7 +718,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    /* It's better to follow legs along a survey, so make two passes and only
     * follow legs in the same survey for the first pass.
     */
-   for (int try_all = 0; try_all != 2; ++try_all) {
+   for (try_all = 0; try_all != 2; ++try_all) {
       lp = &headleg;
       for (l = lp->next; l; lp = l, l = lp->next) {
 	 dir = odir;
