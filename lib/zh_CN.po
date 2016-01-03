@@ -1776,7 +1776,7 @@ msgstr ""
 #: ../src/printing.cc:637
 #: n:230
 msgid "&Export..."
-msgstr ""
+msgstr "导出(&E)..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation
@@ -2649,7 +2649,7 @@ msgstr "页面设置(&a)..."
 #: ../src/mainfrm.cc:792
 #: n:201
 msgid "&Screenshot..."
-msgstr ""
+msgstr "截图(&S)..."
 
 #: ../src/mainfrm.cc:793
 #: n:382
