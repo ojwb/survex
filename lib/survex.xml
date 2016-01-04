@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/x-survex-svx">
+    <comment>Survex Raw Survey Data</comment>
+    <glob pattern="*.svx"/>
+    <sub-class-of type="text/plain"/>
+  </mime-type>
+  <mime-type type="application/x-survex-3d">
+    <comment>Survex Processed Data</comment>
+    <glob pattern="*.3d"/>
+  </mime-type>
+  <mime-type type="application/x-survex-pos">
+    <comment>Survex Station Positions</comment>
+    <glob pattern="*.pos"/>
+    <sub-class-of type="text/plain"/>
+  </mime-type>
+  <mime-type type="application/x-survex-err">
+    <comment>Survex Loop Closure Errors</comment>
+    <glob pattern="*.err"/>
+    <sub-class-of type="text/plain"/>
+  </mime-type>
+  <mime-type type="application/x-compass-plot">
+    <comment>Compass Plot File</comment>
+    <glob pattern="*.plt"/>
+    <glob pattern="*.plf"/>
+    <sub-class-of type="text/plain"/>
+  </mime-type>
+  <mime-type type="application/x-cmap-xyz">
+    <comment>CMAP Processed Data</comment>
+    <glob pattern="*.sht"/>
+    <glob pattern="*.adj"/>
+    <glob pattern="*.una"/>
+    <sub-class-of type="text/plain"/>
+  </mime-type>
+</mime-info>

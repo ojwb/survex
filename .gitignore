@@ -55,7 +55,6 @@ lib/ru.msg
 lib/sk.msg
 lib/zh_CN.msg
 lib/preload_font.h
-lib/survex.keys
 lib/unifont.pixelfont
 lib/icons/Makefile
 lib/icons/Makefile.in

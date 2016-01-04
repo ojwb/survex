@@ -39,9 +39,8 @@ dist_apps_DATA = survex-aven.desktop
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
 
-mimedir = $(datadir)/mime-info
-dist_mime_DATA = survex.mime
-mime_DATA = survex.keys
+packagesdir = $(datadir)/mime/packages
+dist_packages_DATA = survex.xml
 
 unifont.pixelfont preload_font.h: $(srcdir)/make-pixel-font
 	$(srcdir)/make-pixel-font

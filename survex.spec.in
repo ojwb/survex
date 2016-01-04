@@ -49,7 +49,7 @@ mv "%{buildroot}"/usr/share/doc/@PACKAGE@ ./built-docs
 %doc /usr/share/man/
 /usr/bin/*
 /usr/share/@PACKAGE@/
-/usr/share/mime-info/survex.*
+/usr/share/mime/survex*
 /usr/share/applications/survex-aven.desktop
 /usr/share/icons/
 /usr/share/vim/

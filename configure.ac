@@ -410,7 +410,7 @@ AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  lib/images/Makefile
  tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.7
- survex.spec lib/survex.keys lib/Info.plist
+ survex.spec lib/Info.plist
  ])
 AC_OUTPUT
 dnl FIXME update msvc makefile for 1.2 branch
