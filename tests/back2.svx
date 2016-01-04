@@ -14,3 +14,7 @@
 *data normal from to tape compass backcompass clino backclino
 1 4a 10.00 011.5 178.5 01 01
 1 4b 10.00 008.5 181.5 01 01
+
+*data cartesian from to dx dy dz
+; Work around variation in which station is picked for the maximum:
+1 max 9 12 36
