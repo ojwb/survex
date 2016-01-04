@@ -312,6 +312,7 @@ read_reading(reading r, bool f_optional)
    q_quantity q;
    switch (r) {
       case Tape: q = Q_LENGTH; break;
+      case BackTape: q = Q_BACKLENGTH; break;
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
       case Clino: q = Q_GRADIENT; break;
@@ -1456,7 +1457,7 @@ data_normal(void)
 
    reading *ordering;
 
-   VAL(Tape) = 0;
+   VAL(Tape) = VAL(BackTape) = HUGE_REAL;
    VAL(Comp) = VAL(BackComp) = HUGE_REAL;
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
@@ -1518,9 +1519,9 @@ data_normal(void)
 	  }
 	  break;
        }
-       case Tape:
-	  read_reading(Tape, fFalse);
-	  if (VAL(Tape) < (real)0.0)
+       case Tape: case BackTape:
+	  read_reading(*ordering, fFalse);
+	  if (VAL(*ordering) < (real)0.0)
 	     compile_warning(-/*Negative tape reading*/60);
 	  break;
        case Count:
@@ -1648,7 +1649,9 @@ data_normal(void)
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
-		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
+		 (VAL(Tape) == (real)0.0 || VAL(Tape) == HUGE_REAL) &&
+		 (VAL(BackTape) == (real)0.0 || VAL(BackTape) == HUGE_REAL) &&
+		 VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		goto inferred_equate;
 	     }
@@ -1659,10 +1662,31 @@ data_normal(void)
 	     }
 	     if (fTopofil) {
 		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
-	     } else {
+	     } else if (VAL(Tape) != HUGE_REAL) {
 		VAL(Tape) *= pcs->units[Q_LENGTH];
 		VAL(Tape) -= pcs->z[Q_LENGTH];
 		VAL(Tape) *= pcs->sc[Q_LENGTH];
+	     }
+	     if (VAL(BackTape) != HUGE_REAL) {
+		VAL(BackTape) *= pcs->units[Q_BACKLENGTH];
+		VAL(BackTape) -= pcs->z[Q_BACKLENGTH];
+		VAL(BackTape) *= pcs->sc[Q_BACKLENGTH];
+		if (VAL(Tape) != HUGE_REAL) {
+		   real diff = VAL(Tape) - VAL(BackTape);
+		   if (sqrd(diff / 3.0) > VAR(Tape) + VAR(BackTape)) {
+		      /* fore and back readings differ by more than 3 sds */
+		      /* TRANSLATORS: %s is replaced by the amount the readings disagree
+		       * by, e.g. "0.12m" or "0.2ft". */
+		      warn_readings_differ(/*TAPE reading and BACKTAPE reading disagree by %s*/97,
+					   diff, get_length_units(Q_LENGTH));
+		   }
+		   VAL(Tape) = VAL(Tape) / VAR(Tape) + VAL(BackTape) / VAR(BackTape);
+		   VAR(Tape) = (VAR(Tape) + VAR(BackTape)) / 4;
+		   VAL(Tape) *= VAR(Tape);
+		} else {
+		   VAL(Tape) = VAL(BackTape);
+		   VAR(Tape) = VAR(BackTape);
+		}
 	     }
 	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
@@ -1742,17 +1766,40 @@ data_normal(void)
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
 	     if (TSTBIT(pcs->infer, INFER_EQUATES) &&
-		 VAL(Tape) == (real)0.0 && VAL(FrDepth) == VAL(ToDepth)) {
+		 (VAL(Tape) == (real)0.0 || VAL(Tape) == HUGE_REAL) &&
+		 (VAL(BackTape) == (real)0.0 || VAL(BackTape) == HUGE_REAL) &&
+		 VAL(FrDepth) == VAL(ToDepth)) {
 		process_equate(fr, to);
 		process_eol();
 		return;
 	     }
 	     if (fTopofil) {
 		VAL(Tape) *= pcs->units[Q_COUNT] * pcs->sc[Q_COUNT];
-	     } else {
+	     } else if (VAL(Tape) != HUGE_REAL) {
 		VAL(Tape) *= pcs->units[Q_LENGTH];
 		VAL(Tape) -= pcs->z[Q_LENGTH];
 		VAL(Tape) *= pcs->sc[Q_LENGTH];
+	     }
+	     if (VAL(BackTape) != HUGE_REAL) {
+		VAL(BackTape) *= pcs->units[Q_BACKLENGTH];
+		VAL(BackTape) -= pcs->z[Q_BACKLENGTH];
+		VAL(BackTape) *= pcs->sc[Q_BACKLENGTH];
+		if (VAL(Tape) != HUGE_REAL) {
+		   real diff = VAL(Tape) - VAL(BackTape);
+		   if (sqrd(diff / 3.0) > VAR(Tape) + VAR(BackTape)) {
+		      /* fore and back readings differ by more than 3 sds */
+		      /* TRANSLATORS: %s is replaced by the amount the readings disagree
+		       * by, e.g. "0.12m" or "0.2ft". */
+		      warn_readings_differ(/*TAPE reading and BACKTAPE reading disagree by %s*/97,
+					   diff, get_length_units(Q_LENGTH));
+		   }
+		   VAL(Tape) = VAL(Tape) / VAR(Tape) + VAL(BackTape) / VAR(BackTape);
+		   VAR(Tape) = (VAR(Tape) + VAR(BackTape)) / 4;
+		   VAL(Tape) *= VAR(Tape);
+		} else {
+		   VAL(Tape) = VAL(BackTape);
+		   VAR(Tape) = VAR(BackTape);
+		}
 	     }
 	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));

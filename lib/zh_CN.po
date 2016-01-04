@@ -797,6 +797,14 @@ msgid "Further uses of this deprecated feature will not be reported"
 msgstr ""
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
+#. by, e.g. "0.12m" or "0.2ft".
+#: ../src/datain.c:1679
+#: n:97
+#, c-format
+msgid "TAPE reading and BACKTAPE reading disagree by %s"
+msgstr ""
+
+#. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
 #: ../src/datain.c:900
 #: n:98

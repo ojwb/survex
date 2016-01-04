@@ -2,7 +2,7 @@
 
 ; tape error
 ; 95.44% of readings are within 0.5m (2 S.D.)
-*sd length 0.25 metres
+*sd length backlength     0.25 metres
 
 ; compass error
 ; 95.44% of readings are within 2.5 degrees (2 S.D.)

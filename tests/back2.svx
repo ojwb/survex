@@ -4,6 +4,10 @@
 1 2a 10.00 001.5 178.5 01 01
 1 2b 10.00 358.5 181.5 01 01
 
+*data normal from to tape backtape compass backcompass clino backclino
+1 5a 10.03 9.97 000 180 01 01
+1 5b 10.04 9.96 359 181 01 01
+
 *calibrate backcompass 10
 *data normal from to tape compass backcompass clino backclino
 1 3a 10.00 001.5 188.5 01 01

@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -82,7 +82,7 @@ extern int current_days_since_1900;
 typedef enum {
    Q_NULL = -1, Q_DEFAULT, Q_POS, Q_PLUMB, Q_LEVEL,
    Q_GRADIENT, Q_BACKGRADIENT, Q_BEARING, Q_BACKBEARING,
-   Q_LENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_DECLINATION,
+   Q_LENGTH, Q_BACKLENGTH, Q_DEPTH, Q_DX, Q_DY, Q_DZ, Q_COUNT, Q_DECLINATION,
    Q_LEFT, Q_RIGHT, Q_UP, Q_DOWN,
    Q_MAC
 } q_quantity;
@@ -98,7 +98,7 @@ typedef enum {
 #define TSTBIT(W, N) (((W)>>(N))&1)
 
 /* masks for quantities which are length and angles respectively */
-#define LEN_QMASK (BIT(Q_LENGTH) | BIT(Q_DEPTH) |\
+#define LEN_QMASK (BIT(Q_LENGTH) | BIT(Q_BACKLENGTH) | BIT(Q_DEPTH) |\
    BIT(Q_DX) | BIT(Q_DY) | BIT(Q_DZ) | BIT(Q_POS) | BIT(Q_COUNT))
 #define ANG_QMASK (BIT(Q_BEARING) | BIT(Q_BACKBEARING) |\
    BIT(Q_GRADIENT) | BIT(Q_BACKGRADIENT) | BIT(Q_PLUMB) | BIT(Q_LEVEL) |\
@@ -161,7 +161,8 @@ typedef int compiletimeassert_sflags7[BIT(SFLAGS_WALL) == img_SFLAG_WALL ? 1 : -
 
 /* enumeration of field types */
 typedef enum {
-   End = 0, Tape, Comp, Clino, BackComp, BackClino, Left, Right, Up, Down,
+   End = 0, Tape, Comp, Clino, BackTape, BackComp, BackClino,
+   Left, Right, Up, Down,
    FrDepth, ToDepth, Dx, Dy, Dz, FrCount, ToCount,
    /* Up to here are readings are allowed multiple values
     * and have slot in the value[] array in datain.c.

@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ default_grade(settings *s)
    /* Values correspond to those in bcra5.svx */
    s->Var[Q_POS] = (real)sqrd(0.05);
    s->Var[Q_LENGTH] = (real)sqrd(0.05);
+   s->Var[Q_BACKLENGTH] = (real)sqrd(0.05);
    s->Var[Q_COUNT] = (real)sqrd(0.05);
    s->Var[Q_DX] = s->Var[Q_DY] = s->Var[Q_DZ] = (real)sqrd(0.05);
    s->Var[Q_BEARING] = (real)sqrd(rad(0.5));
@@ -384,6 +385,8 @@ get_qlist(unsigned long mask_bad)
 	{"BACKCLINO",    Q_BACKGRADIENT },    /* alternative name */
 	{"BACKCOMPASS",  Q_BACKBEARING },     /* alternative name */
 	{"BACKGRADIENT", Q_BACKGRADIENT },
+	{"BACKLENGTH",   Q_BACKLENGTH },
+	{"BACKTAPE",     Q_BACKLENGTH },    /* alternative name */
 	{"BEARING",      Q_BEARING },
 	{"CEILING",      Q_UP },          /* alternative name */
 	{"CLINO",	 Q_GRADIENT },    /* alternative name */
@@ -1129,6 +1132,8 @@ cmd_data(void)
 	{"BACKCLINO",    BackClino }, /* alternative name */
 	{"BACKCOMPASS",  BackComp }, /* alternative name */
 	{"BACKGRADIENT", BackClino },
+	{"BACKLENGTH",   BackTape },
+	{"BACKTAPE",     BackTape }, /* alternative name */
 	{"BEARING",      Comp },
 	{"CEILING",      Up }, /* alternative name */
 	{"CLINO",	 Clino }, /* alternative name */
@@ -1164,7 +1169,7 @@ cmd_data(void)
    };
 
 #define MASK_stns BIT(Fr) | BIT(To) | BIT(Station)
-#define MASK_tape BIT(Tape) | BIT(FrCount) | BIT(ToCount) | BIT(Count)
+#define MASK_tape BIT(Tape) | BIT(BackTape) | BIT(FrCount) | BIT(ToCount) | BIT(Count)
 #define MASK_dpth BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange)
 #define MASK_comp BIT(Comp) | BIT(BackComp)
 #define MASK_clin BIT(Clino) | BIT(BackClino)
@@ -1435,7 +1440,7 @@ cmd_data(void)
 
    /* Check the supplied readings form a sufficient set. */
    if (style != STYLE_PASSAGE) {
-       if (mUsed & (BIT(Fr) | BIT(To)))
+       if ((mUsed & (BIT(Fr) | BIT(To))) == (BIT(Fr) | BIT(To)))
 	   mUsed |= BIT(Station);
        else if (TSTBIT(mUsed, Station))
 	   mUsed |= BIT(Fr) | BIT(To);
@@ -1447,19 +1452,15 @@ cmd_data(void)
    if (mUsed & (BIT(Clino) | BIT(BackClino)))
       mUsed |= BIT(Clino) | BIT(BackClino);
 
-   if (mUsed & (BIT(FrDepth) | BIT(ToDepth)))
+   if ((mUsed & (BIT(FrDepth) | BIT(ToDepth))) == (BIT(FrDepth) | BIT(ToDepth)))
       mUsed |= BIT(Depth) | BIT(DepthChange);
-   else if (TSTBIT(mUsed, Depth))
-      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(DepthChange);
-   else if (TSTBIT(mUsed, DepthChange))
-      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Depth);
+   else if (mUsed & (BIT(Depth) | BIT(DepthChange)))
+      mUsed |= BIT(FrDepth) | BIT(ToDepth) | BIT(Depth) | BIT(DepthChange);
 
-   if (mUsed & (BIT(FrCount) | BIT(ToCount)))
-      mUsed |= BIT(Count) | BIT(Tape);
-   else if (TSTBIT(mUsed, Count))
-      mUsed |= BIT(FrCount) | BIT(ToCount) | BIT(Tape);
-   else if (TSTBIT(mUsed, Tape))
-      mUsed |= BIT(FrCount) | BIT(ToCount) | BIT(Count);
+   if ((mUsed & (BIT(FrCount) | BIT(ToCount))) == (BIT(FrCount) | BIT(ToCount)))
+      mUsed |= BIT(Count) | BIT(Tape) | BIT(BackTape);
+   else if (mUsed & (BIT(Count) | BIT(Tape) | BIT(BackTape)))
+      mUsed |= BIT(FrCount) | BIT(ToCount) | BIT(Count) | BIT(Tape) | BIT(BackTape);
 
 #if 0
    printf("mUsed = 0x%x, opt = 0x%x, mask = 0x%x\n", mUsed,

@@ -2680,6 +2680,7 @@ quantity):
 
 <ItemizedList>
     <listitem><para>TAPE, LENGTH</para></listitem>
+    <listitem><para>BACKTAPE, BACKLENGTH (added in Survex 1.2.25)</para></listitem>
     <listitem><para>COMPASS, BEARING</para></listitem>
     <listitem><para>BACKCOMPASS, BACKBEARING</para></listitem>
     <listitem><para>CLINO, GRADIENT</para></listitem>
@@ -3089,7 +3090,7 @@ versions removed this rather archaic restriction).
 
 <listitem><Para>
 &lt;quantity&gt; is one of the following (grouped entries are just alternative names for the same thing):
-TAPE/LENGTH, COMPASS/BEARING, BACKCOMPASS/BACKBEARING, CLINO/GRADIENT, BACKCLINO/BACKGRADIENT, COUNTER/COUNT, DEPTH, DECLINATION, DX/EASTING, DY/NORTHING, DZ/ALTITUDE, LEFT, RIGHT, UP/CEILING, DOWN/FLOOR
+TAPE/LENGTH, BACKTAPE/BACKLENGTH (added in Survex 1.2.25), COMPASS/BEARING, BACKCOMPASS/BACKBEARING, CLINO/GRADIENT, BACKCLINO/BACKGRADIENT, COUNTER/COUNT, DEPTH, DECLINATION, DX/EASTING, DY/NORTHING, DZ/ALTITUDE, LEFT, RIGHT, UP/CEILING, DOWN/FLOOR
 </Para>
 
 <Para>Changes current units of all the quantities listed to [&lt;factor&gt;]
@@ -3106,7 +3107,7 @@ non-zero.
 <Para>Valid units for listed quantities are:
 </Para>
 
-<Para>TAPE/LENGTH, COUNTER/COUNT, DEPTH, DX/EASTING, DY/NORTHING, DZ/ALTITUDE
+<Para>TAPE/LENGTH, BACKTAPE/BACKLENGTH, COUNTER/COUNT, DEPTH, DX/EASTING, DY/NORTHING, DZ/ALTITUDE
 in YARDS|FEET|METRIC|METRES|METERS (default: METRES)
 </Para>
 
