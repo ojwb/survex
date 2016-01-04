@@ -154,15 +154,16 @@ msgstr ""
 #: ../src/debug.h:47
 #: ../src/matrix.c:352
 #: n:11
+#, fuzzy
 msgid "Bug in program detected! Please report this to the authors"
-msgstr ""
+msgstr "发生了一个内部错误! 请将报告发送给程序维护人员"
 
 #: ../src/commands.c:2330
 #: ../src/extend.c:440
 #: n:12
-#, c-format
+#, fuzzy, c-format
 msgid "Unknown command “%s”"
-msgstr ""
+msgstr "未知命令 “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:449
@@ -2733,8 +2734,9 @@ msgstr "时间： "
 #. waypoint in a presentation.
 #: ../src/mainfrm.cc:191
 #: n:282
+#, fuzzy
 msgid " secs (0 = auto; *6 = 6 times auto)"
-msgstr ""
+msgstr " 秒 (0 = 自动; *6 = 6 times 自动)"
 
 #. TRANSLATORS: %s will be replaced with "Aven" currently (and
 #. perhaps by "Survex" or other things in future).
@@ -3150,7 +3152,7 @@ msgstr ""
 #: ../src/mainfrm.cc:918
 #: n:347
 #~ msgid "&Preferences..."
-#~ msgstr ""
+#~ msgstr "首选项(&P)..."
 
 #: n:348
 #~ msgid "Draw passage walls"
