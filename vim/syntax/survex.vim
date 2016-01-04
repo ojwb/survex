@@ -52,8 +52,8 @@ syn keyword svxCmdDeprecated contained  default prefix
 syn keyword svxCmd contained	copyright instrument team nextgroup=svxAnything
 
 syn keyword svxCmd      calibrate sd units      contained nextgroup=svxQty skipwhite
-syn keyword svxQty contained    altitude backbearing backclino nextgroup=svxQty,svxUnit skipwhite
-syn keyword svxQty contained    backcompass backgradient bearing clino nextgroup=svxQty,svxUnit skipwhite
+syn keyword svxQty contained    altitude backbearing backclino backlength nextgroup=svxQty,svxUnit skipwhite
+syn keyword svxQty contained    backcompass backgradient backtape bearing clino nextgroup=svxQty,svxUnit skipwhite
 syn keyword svxQty contained    compass count counter declination nextgroup=svxQty,svxUnit skipwhite
 syn keyword svxQty contained    default depth dx dy dz easting gradient nextgroup=svxQty,svxUnit skipwhite
 syn keyword svxQty contained    length level northing plumb position nextgroup=svxQty,svxUnit skipwhite
@@ -67,8 +67,8 @@ syn keyword svxStyle contained  default normal diving topofil nextgroup=svxField
 syn keyword svxStyle contained  cartesian cylpolar nosurvey nextgroup=svxField skipwhite
 syn keyword svxStyle contained  passage nextgroup=svxField skipwhite
 
-syn keyword svxField contained nextgroup=svxField skipwhite     altitude backbearing backclino
-syn keyword svxField contained nextgroup=svxField skipwhite	backcompass backgradient bearing clino
+syn keyword svxField contained nextgroup=svxField skipwhite     altitude backbearing backclino backlength
+syn keyword svxField contained nextgroup=svxField skipwhite	backcompass backgradient backtape bearing clino
 syn keyword svxField contained nextgroup=svxField skipwhite     compass count counter depth depthchange
 syn keyword svxField contained nextgroup=svxField skipwhite     direction dx dy dz easting from
 syn keyword svxField contained nextgroup=svxField skipwhite     fromcount fromdepth gradient ignore
