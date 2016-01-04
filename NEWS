@@ -1,3 +1,93 @@
+up to: e6ead0ba08a106fdacb32a89b2647b351f88abc6
+
+Changes in 1.2.25 (2016-01-04):
+
+* (Unix version): Update filetype metadata to work with modern desktops.
+
+* Fix broken SGML markup in manual.
+
+* Update vim syntax file for newer commands, etc.
+
+* Minor translation updates.  Thanks to Piotr Strębski and Jean-Marc.
+
+* extend:
+
+  + New --show-breaks options which adds a leg flagged as surface survey
+    between each point at which a loop has been broken.
+
+  + Document --specfile in extend --help.
+
+  + Clearer option synopsis in extend man page.
+
+  + Document --survey in extend man page
+
+* Fix to compile with FFmpeg 2.9.  Reported by Andreas Cadhalpun in
+  https://bugs.debian.org/803863
+
+* Fix typo in manual reported by Jenny Black.
+
+* Stop maintaining ChangeLog files.  They make merging patches harder, and stop
+  'git cherry-pick' from working as it should.  The git repo history should be
+  sufficient for complying with GPLv2 2(a).
+
+* Document Document Ctrl+cursor keys for rotating and tilting in aven man page.
+
+* (Microsoft Windows version): The installer requires admin privileges on Vista
+  and later, and older OS versions are past end of life, so drop code which
+  tries to set up the registry differently depending if we have admin privileges
+  or not.
+
+* aven:
+
+  + Rework CavernLogWindow to use wxProcess
+    Hopefully this should fix random misbehaviour under WXMSW.
+
+  + Report bad UTF-8 sequences in cavern output.
+
+  + Drop broken code which attempts to fix 2D pitches
+Fixes #73, reported by Erin Lynch.
+    I've opened #76 for the issue the removed code was trying (but failing) to
+    address.
+
+  + (Microsoft Windows version): Also quote for cmd.exe so that paths
+with spaces in work reliably.  Reported by Marco Cotto.
+
+  + If we're animating, don't try to
+    update station info based on mouse movement over the survey tree.
+
+    Use wxTHREAD_WAIT_BLOCK if available
+    As recommended by the wx documentation
+
+    Fix incorrect reporting of errors from img library
+    Since 1.2.8, the errors corresponding to IMG_CANTOPENOUT, IMG_BADFORMAT and
+    IMG_DIRECTORY have been mixed up (this doesn't affect external programs using
+    the img library, only Survex).
+    Reported by Jenny Black.
+
+    Fix jump to error for filenames containing colons
+    If an error only had a line number (but no column), and the filename
+    contained a colon (most do on MS Windows, as a full path usually has
+    a drive letter), we'd split at that colon, truncating the filename,
+    getting a bogus line number, and using the line number as the column
+    number.
+    Now fixed so we always include a second colon even if there's no
+    column number, so we can unambiguously split it up again.
+    Bug noted by Jenny Black.
+
+* cavern:
+
+  + Improve error for mismatched fore/back-sight plumbs, reported by Andy
+    Edwards (see #78).
+
+  + Fix to use correct sd for backcompass
+    We were using zero instead, the most obvious effect of which was that the
+    threshold for warning about differing COMPASS and BACKCOMPASS was about
+    71% of what it should have been.
+
+  + Implement support for tape on backsights.
+    If you're using something like a disto-x, you'll get a distance reading for the
+    backsight too.  Fixes #71, reported by Erin Lynch.
+
 Changes in 1.2.24 (2015-09-23):
 
 * aven:
