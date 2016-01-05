@@ -44,6 +44,10 @@
 
 enum { LOG_REPROCESS = 1234, LOG_SAVE = 1235 };
 
+static const wxString badutf8_html(
+    wxT("<span style=\"color:white;background-color:red;\">&#xfffd;</span>"));
+static const wxString badutf8(wxUniChar(0xfffd));
+
 // New event type for passing a chunk of cavern output from the worker thread
 // to the main thread (or from the idle event handler if we're not using
 // threads).
@@ -495,6 +499,17 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		}
 	    }
 
+	    if (false) {
+bad_utf8:
+		// Resync to next byte which starts a UTF-8 sequence.
+		while (p != end) {
+		    if (*p < 0x80 || (*p >= 0xc0 && *p < 0xf0)) break;
+		    ++p;
+		}
+		cur += badutf8_html;
+		continue;
+	    }
+
 	    switch (ch) {
 		case '\r':
 		    // Ignore.
@@ -532,7 +547,9 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 			    tag.append(cur, 0, colon);
 			    while (cur[++i] == wxT(' ')) { }
 			    tag += wxT("\" target=\"");
-			    tag.append(cur, i, wxString::npos);
+			    wxString target(cur, i, wxString::npos);
+			    target.Replace(badutf8_html, badutf8);
+			    tag += target;
 			    tag += wxT("\">");
 			    cur.insert(0, tag);
 			    size_t offset = colon + tag.size();
@@ -614,7 +631,7 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 
     if (e.len <= 0 && buf != end) {
 	// Truncated UTF-8 sequence.
-	goto bad_utf8;
+	cur += badutf8_html;
     }
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
@@ -653,29 +670,6 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	wxCommandEvent dummy;
 	OnOK(dummy);
     }
-    return;
-
-bad_utf8:
-    errno = EILSEQ;
-
-    /* TRANSLATORS: Label for button in aven’s cavern log window which
-     * allows the user to save the log to a file. */
-    AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
-				  (int)LOG_SAVE,
-				  wmsg(/*Save Log*/446).c_str()));
-    if (cavern_out) {
-#ifdef CAVERNLOG_USE_THREADS
-	if (thread) stop_thread();
-#endif
-	wxEndBusyCursor();
-	cavern_out->Detach();
-	cavern_out = NULL;
-    }
-    /* TRANSLATORS: Label for button in aven’s cavern log window which
-     * causes the survey data to be reprocessed. */
-    AppendToPage(wxString::Format(wxT("<avenbutton default id=%d name=\"%s\">"),
-				  (int)LOG_REPROCESS,
-				  wmsg(/*Reprocess*/184).c_str()));
 }
 
 void
