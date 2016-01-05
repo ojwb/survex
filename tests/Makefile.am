@@ -123,4 +123,5 @@ csbad.out csbad.svx\
 csbadsdfix.out csbadsdfix.svx\
 cslonglat.out cslonglat.svx\
 omitfixaroundsolve.out omitfixaroundsolve.svx\
-repeatreading.svx repeatreading.out repeatreading.pos
+repeatreading.svx repeatreading.out repeatreading.pos\
+mixedeols.out mixedeols.svx

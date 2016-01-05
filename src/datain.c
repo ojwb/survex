@@ -284,6 +284,7 @@ process_eol(void)
 	 push_back(ch);
 	 break;
       }
+      if (ch == '\n') eolchar = ch;
    }
    file.lpos = ftell(file.fh);
 }

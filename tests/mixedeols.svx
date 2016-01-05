@@ -1,0 +1,10 @@
+; pos=no warn=3
+*fix 1 0 0 0
+; This file has erratic line endings, which used to confuse cavern's line
+; counting in some cases - we sprinkle in unused *fix commands to generate
+; warnings so we can check the reported line numbers are what we want.
+
+*fix 2 0 0 0
+
+
+*fix 3 0 0 0
