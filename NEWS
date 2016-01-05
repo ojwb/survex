@@ -1,92 +1,85 @@
-up to: e6ead0ba08a106fdacb32a89b2647b351f88abc6
-
-Changes in 1.2.25 (2016-01-04):
-
-* (Unix version): Update filetype metadata to work with modern desktops.
-
-* Fix broken SGML markup in manual.
-
-* Update vim syntax file for newer commands, etc.
-
-* Minor translation updates.  Thanks to Piotr Strębski and Jean-Marc.
-
-* extend:
-
-  + New --show-breaks options which adds a leg flagged as surface survey
-    between each point at which a loop has been broken.
-
-  + Document --specfile in extend --help.
-
-  + Clearer option synopsis in extend man page.
-
-  + Document --survey in extend man page
-
-* Fix to compile with FFmpeg 2.9.  Reported by Andreas Cadhalpun in
-  https://bugs.debian.org/803863
-
-* Fix typo in manual reported by Jenny Black.
-
-* Stop maintaining ChangeLog files.  They make merging patches harder, and stop
-  'git cherry-pick' from working as it should.  The git repo history should be
-  sufficient for complying with GPLv2 2(a).
-
-* Document Document Ctrl+cursor keys for rotating and tilting in aven man page.
-
-* (Microsoft Windows version): The installer requires admin privileges on Vista
-  and later, and older OS versions are past end of life, so drop code which
-  tries to set up the registry differently depending if we have admin privileges
-  or not.
+Changes in 1.2.25 (2016-01-05):
 
 * aven:
 
-  + Rework CavernLogWindow to use wxProcess
-    Hopefully this should fix random misbehaviour under WXMSW.
+  + Drop broken code which attempts to fix 2D pitches.  Fixes #73, reported by
+    Erin Lynch.  #76 tracks the issue the removed code was trying (but failing)
+    to address.
 
-  + Report bad UTF-8 sequences in cavern output.
+  + When animating, don't try to update station info based on mouse movement
+    over the survey tree.
 
-  + Drop broken code which attempts to fix 2D pitches
-Fixes #73, reported by Erin Lynch.
-    I've opened #76 for the issue the removed code was trying (but failing) to
-    address.
+  + Further improve code to handle cavern subprocess in aven.
 
-  + (Microsoft Windows version): Also quote for cmd.exe so that paths
-with spaces in work reliably.  Reported by Marco Cotto.
+  + Fix jump to error for filenames containing colons when the error location
+    doesn't have a column number.  Bug noted by Jenny Black.
 
-  + If we're animating, don't try to
-    update station info based on mouse movement over the survey tree.
+  + If we encounter bad UTF-8 in cavern output, replace it with a red and white
+    ? in a diamond (previously we gave up showing output at the first bad
+    sequence).  This can happen if you process a .svx file which isn't UTF-8
+    encoded.
 
-    Use wxTHREAD_WAIT_BLOCK if available
-    As recommended by the wx documentation
+  + (Unix version): Don't try to set the terminal window title when opening an
+    editor from the cavern log window - gnome-terminal no longer supports this,
+    and there doesn't seem to be a portable option for specifying the title for
+    terminals which do still support this.
 
-    Fix incorrect reporting of errors from img library
-    Since 1.2.8, the errors corresponding to IMG_CANTOPENOUT, IMG_BADFORMAT and
-    IMG_DIRECTORY have been mixed up (this doesn't affect external programs using
-    the img library, only Survex).
-    Reported by Jenny Black.
-
-    Fix jump to error for filenames containing colons
-    If an error only had a line number (but no column), and the filename
-    contained a colon (most do on MS Windows, as a full path usually has
-    a drive letter), we'd split at that colon, truncating the filename,
-    getting a bogus line number, and using the line number as the column
-    number.
-    Now fixed so we always include a second colon even if there's no
-    column number, so we can unambiguously split it up again.
-    Bug noted by Jenny Black.
+  + (Microsoft Windows version): Also quote for cmd.exe so that paths with
+    spaces in work reliably.  Reported by Marco Cotto.
 
 * cavern:
 
   + Improve error for mismatched fore/back-sight plumbs, reported by Andy
     Edwards (see #78).
 
-  + Fix to use correct sd for backcompass
-    We were using zero instead, the most obvious effect of which was that the
-    threshold for warning about differing COMPASS and BACKCOMPASS was about
-    71% of what it should have been.
+  + Fix to use correct sd for backcompass.  We were using zero instead, the
+    most obvious effect of which was that the threshold for warning about
+    differing COMPASS and BACKCOMPASS was about 71% of what it should have
+    been, so we were warning in more cases than we should have been.
 
-  + Implement support for tape on backsights.
-    If you're using something like a disto-x, you'll get a distance reading for the
-    backsight too.  Fixes #71, reported by Erin Lynch.
+  + Implement support for specifying a length on backsights - if you're using
+    something like a disto-x, you'll get a distance reading for the backsight
+    too.  Fixes #71, reported by Erin Lynch.
+
+  + Make line counting more robust to mixed line ends.  Noticed in example file
+    from Pete Smart (see #69).
+
+* extend: New --show-breaks option which adds a leg flagged as surface survey
+  between each points at which a loop has been broken.  Suggested by Jenny
+  Black.
+
+* (Unix version): Update filetype metadata to work with modern desktops.
+
+* Fix incorrect reporting of errors reading and writing processed survey data.
+  Since 1.2.8, the error strings corresponding to IMG_CANTOPENOUT,
+  IMG_BADFORMAT and IMG_DIRECTORY have been mixed up (this doesn't affect
+  external programs using the img library, only Survex).  Reported by Jenny
+  Black.
+
+* Add missing options to extend man page and --help output.  Noted by Jenny
+  Black.
+
+* Document Document Ctrl+cursor keys for rotating and tilting in aven man page.
+
+* Fix broken SGML markup in manual.
+
+* Fix typo in manual reported by Jenny Black.
+
+* Update vim syntax file for newer commands, etc.
+
+* Minor translation updates.  Thanks to Piotr Strębski and Jean-Marc.
+
+* Fix to compile with FFmpeg 2.9.  Reported by Andreas Cadhalpun in
+  https://bugs.debian.org/803863
+
+* Stop maintaining ChangeLog files.  They make merging patches harder, and stop
+  'git cherry-pick' from working as it should.  The git repo history should be
+  sufficient for complying with GPLv2 2(a).
+
+* (Microsoft Windows version): The installer requires admin privileges on Vista
+  and later and OS versions older than Vista are past end of life, so drop code
+  which tries to set up the registry differently depending if we have admin
+  privileges or not.
 
 Changes in 1.2.24 (2015-09-23):
 

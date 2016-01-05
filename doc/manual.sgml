@@ -82,7 +82,7 @@ joining it, e.g. at a T-junction. And so on.
 
 <article Status="draft" id="index">
  <articleinfo>
-  <Title><Application>Survex</Application> <!--VERSION-->1.2.24 Manual</Title>
+  <Title><Application>Survex</Application> <!--VERSION-->1.2.25 Manual</Title>
   <AuthorGroup>
    <Author>
     <FirstName>Olly</FirstName>
@@ -105,7 +105,7 @@ joining it, e.g. at a T-junction. And so on.
    </Author>
   </AuthorGroup>
   <copyright>
-   <year>1998-2015</year>
+   <year>1998-2016</year>
    <holder role="mailto:olly@survex.com">Olly Betts</holder>
   </copyright>
   <Abstract>
