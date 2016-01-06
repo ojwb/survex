@@ -35,6 +35,10 @@ TimeStampsInUTC=yes
 ; SignedUninstaller ???
 ; If upgrading, default to the language selected last time.
 UsePreviousLanguage=yes
+; If upgrading, install to the same location and use the same start menu folder.
+DisableDirPage=auto
+DisableProgramGroupPage=auto
+; Disable the "welcome" page of the wizard.
 DisableWelcomePage=yes
 
 [Languages]

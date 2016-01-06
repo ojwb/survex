@@ -108,7 +108,8 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     if (cmd_line) {
 	// None of these are valid aven command line options, so this is not
 	// going to be triggered accidentally.
-	wxChar * p = wxStrStr(cmd_line, "aven.exe\" --quiet --log --output=");
+	const wxChar * p = wxStrstr(cmd_line,
+				    wxT("aven.exe\" --quiet --log --output="));
 	if (p) {
 	    // Just change the command name in the command line string - that
 	    // way the quoting should match what the C runtime expects.
