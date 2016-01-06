@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -46,6 +46,10 @@
 
 #if defined __WXMAC__ || defined __WXMSW__
 #include <proj_api.h>
+#endif
+
+#ifdef __WXMSW__
+#include <windows.h>
 #endif
 
 bool double_buffered = false;
@@ -97,28 +101,62 @@ static char ** utf8_argv;
 #ifdef __WXMSW__
 bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 {
+    const wxChar * cmd_line = GetCommandLineW();
+
     // Horrible bodge to handle therion's assumptions about the "Process"
     // file association.
-    if (my_argc == 5 &&
-	wxStrcmp(my_argv[1], wxT("--quiet")) == 0 &&
-	wxStrcmp(my_argv[2], wxT("--log")) == 0 &&
-	wxStrncmp(my_argv[3], wxT("--output="), 9) == 0) {
-	wxString cavern = my_argv[0];
-	int slash = max(cavern.Find(wxT('/'), true),
-			cavern.Find(wxT('\\'), true));
-	// wxNOT_FOUND is -1, so this should work even if there's no slash.
-	cavern.replace(slash + 1, wxString::npos, wxT("cavern.exe"));
-	my_argv[0] = const_cast<wxChar*>((const wxChar*)cavern.c_str());
-	exit(wxExecute(my_argv, wxEXEC_SYNC));
+    if (cmd_line) {
+	// None of these are valid aven command line options, so this is not
+	// going to be triggered accidentally.
+	wxChar * p = wxStrStr(cmd_line, "aven.exe\" --quiet --log --output=");
+	if (p) {
+	    // Just change the command name in the command line string - that
+	    // way the quoting should match what the C runtime expects.
+	    wxString cmd(cmd_line, p - cmd_line);
+	    cmd += "cavern";
+	    cmd += p + 4;
+	    exit(wxExecute(cmd, wxEXEC_SYNC));
+	}
     }
 
-    // wxWidgets passes us wxChars, which may be wide characters but cmdline
-    // wants UTF-8 so we need to convert.
-    utf8_argv = new char * [my_argc + 1];
-    for (int i = 0; i < my_argc; ++i){
-	utf8_argv[i] = strdup(wxString(my_argv[i]).mb_str());
+    int utf8_argc;
+    {
+	// wxWidgets doesn't split up the command line in the standard way, so
+	// redo it ourselves using the standard API function.
+	//
+	// Warning: The returned array from this has no terminating NULL
+	// element.
+	wxChar ** new_argv = NULL;
+	if (cmd_line)
+	    new_argv = CommandLineToArgvW(cmd_line, &utf8_argc);
+	bool failed = (new_argv == NULL);
+	if (failed) {
+	    wxChar * p;
+	    FormatMessage(
+		    FORMAT_MESSAGE_ALLOCATE_BUFFER|FORMAT_MESSAGE_FROM_SYSTEM,
+		    NULL,
+		    GetLastError(),
+		    0,
+		    (LPWSTR)&p,
+		    4096,
+		    NULL);
+	    wxString m = "CommandLineToArgvW failed: ";
+	    m += p;
+	    wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
+	    LocalFree(p);
+	    utf8_argc = my_argc;
+	    new_argv = my_argv;
+	}
+
+	// Convert wide characters to UTF-8.
+	utf8_argv = new char * [utf8_argc + 1];
+	for (int i = 0; i < utf8_argc; ++i){
+	    utf8_argv[i] = strdup(wxString(new_argv[i]).mb_str());
+	}
+	utf8_argv[utf8_argc] = NULL;
+
+	if (!failed) LocalFree(new_argv);
     }
-    utf8_argv[my_argc] = NULL;
 
     msg_init(utf8_argv);
     pj_set_finder(msg_proj_finder);
@@ -132,9 +170,12 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
      *
      * Part of aven --help */
     cmdline_set_syntax_message(/*[SURVEY_FILE]*/269, 0, NULL);
-    cmdline_init(my_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
+    cmdline_init(utf8_argc, utf8_argv, short_opts, long_opts, NULL, help, 0, 1);
     getopt_first_response = cmdline_getopt();
-    return wxApp::Initialize(my_argc, my_argv);
+
+    // The argc and argv arguments don't actually get used here.
+    int dummy_argc = 0;
+    return wxApp::Initialize(dummy_argc, NULL);
 }
 #else
 int main(int argc, char **argv)

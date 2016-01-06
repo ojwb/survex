@@ -157,33 +157,39 @@ END_EVENT_TABLE()
 
 static wxString escape_for_shell(wxString s, bool protect_dash = false)
 {
-    size_t p = 0;
 #ifdef __WXMSW__
-    // Correct quoting here is insane - you need to quote for CommandLineToArgV
-    // and then also for cmd.exe:
+    // Correct quoting rules are insane:
+    //
     // http://blogs.msdn.com/b/twistylittlepassagesallalike/archive/2011/04/23/everyone-quotes-arguments-the-wrong-way.aspx
-    bool needs_quotes = false;
-    while (p < s.size()) {
-	wxChar ch = s[p];
-	if (ch < 127) {
-	    if (ch == wxT('"')) {
-		s.insert(p, wxT("\\^"));
-		p += 2;
-		needs_quotes = true;
-	    } else if (ch == ' ') {
-		needs_quotes = true;
-	    } else if (strchr("()%<>&|^", ch)) {
-		s.insert(p, wxT('^'));
-		++p;
+    //
+    // Thankfully wxExecute passes the command string to CreateProcess(), so
+    // at least we don't need to quote for cmd.exe too.
+    if (s.empty() || s.find_first_of(wxT(" \"\t\n\v")) != s.npos) {
+	// Need to quote.
+	s.insert(0, wxT('"'));
+	for (size_t p = 1; p < s.size(); ++p) {
+	    size_t backslashes = 0;
+	    while (s[p] == wxT('\\')) {
+		++backslashes;
+		if (++p == s.size()) {
+		    // Escape all the backslashes, since they're before
+		    // the closing quote we add below.
+		    s.append(backslashes, wxT('\\'));
+		    goto done;
+		}
+	    }
+
+	    if (s[p] == wxT('"')) {
+		// Escape any preceding backslashes and this quote.
+		s.insert(p, backslashes + 1, wxT('\\'));
+		p += backslashes + 1;
 	    }
 	}
-	++p;
-    }
-    if (needs_quotes) {
-	s.insert(0u, wxT("^\""));
-	s += wxT("^\"");
+done:
+	s.append(wxT('"'));
     }
 #else
+    size_t p = 0;
     if (protect_dash && !s.empty() && s[0u] == '-') {
 	// If the filename starts with a '-', protect it from being
 	// treated as an option by prepending "./".
@@ -348,8 +354,10 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 		++i;
 	}
     }
-    if (wxSystem(cmd) >= 0)
+
+    if (wxExecute(cmd, wxEXEC_ASYNC|wxEXEC_MAKE_GROUP_LEADER) >= 0)
 	return;
+
     wxString m;
     // TRANSLATORS: %s is replaced by the command we attempted to run.
     m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());
@@ -400,11 +408,13 @@ CavernLogWindow::process(const wxString &file)
 	    len += len;
 	}
 	/* Strange Win32 nastiness - strip prefix "\\?\" if present */
-	if (wcsncmp(buf, L"\\\\?\\", 4) == 0) buf += 4;
-	wchar_t * slash = wcsrchr(buf, L'\\');
+	wchar_t *start = buf;
+	if (wcsncmp(start, L"\\\\?\\", 4) == 0) start += 4;
+	wchar_t * slash = wcsrchr(start, L'\\');
 	if (slash) {
-	    cmd.assign(buf, slash - buf + 1);
+	    cmd.assign(start, slash - start + 1);
 	}
+	osfree(buf);
     }
     cmd += L"cavern";
     cmd = escape_for_shell(cmd, false);
