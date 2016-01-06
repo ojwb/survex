@@ -101,6 +101,8 @@ cd ..
 
 if test x"$rel" = xyes ; then
   rm -rf "$tardir"
+else
+  exit 0
 fi
 
 VERSION=`sed 's/^VERSION *= *//p;d' Makefile`
