@@ -14,6 +14,7 @@ before_install:
   - if test "$TRAVIS_OS_NAME" = osx ; then echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc ; fi
 script:
   - autoreconf -fiv
+  - if test "$TRAVIS_OS_NAME" = osx ; then wget http://unifoundry.com/pub/unifont-8.0.01/font-builds/unifont-8.0.01.hex.gz && gunzip unifont-8.0.01.hex.gz && mv unifont-8.0.01.hex lib/unifont.hex ; fi
   - test "$TRAVIS_OS_NAME" = osx || ./configure
   - test "$TRAVIS_OS_NAME" = osx || make
   - test "$TRAVIS_OS_NAME" = osx || make check

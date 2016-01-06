@@ -8,7 +8,8 @@ for (0 .. 31) {
 }
 
 my $last_ch = -1;
-open U, '<', '/usr/share/unifont/unifont.hex' or die $!;
+open U, '<', 'unifont.hex' or
+    open U, '<', '/usr/share/unifont/unifont.hex' or die $!;
 open O, '>', 'unifont.pixelfont' or die $!;
 while (<U>) {
     my ($ch, $hex) = /^([[:xdigit:]]+):([[:xdigit:]]+)$/;
