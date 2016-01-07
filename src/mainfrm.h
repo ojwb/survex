@@ -174,7 +174,7 @@ class traverse : public vector<PointInfo> {
     double length;
     double E, H, V;
 
-    traverse() : n_legs(0), length(0), E(-1), H(-1), V(-1) { }
+    traverse() : n_legs(0), isSplay(false), length(0), E(-1), H(-1), V(-1) { }
 };
 
 class MainFrm : public wxFrame {
