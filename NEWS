@@ -1,11 +1,19 @@
-up to: faf83bee58e17bcfb1df86c7f21525993e194c03
-
 Changes in 1.2.26 (2016-01-07):
 
 * aven:
 
   + (Microsoft Windows version): Fix to be able to process .svx files with
     cavern again.
+
+* (Microsoft Windows version): Simplify upgrading process with innosetup
+  installer - if Survex is already installed, we now just install to the same
+  location and use the same start menu folder.
+
+* (Linux version): survex.spec: Update for filetype metadata change in 1.2.25.
+  Fixes #79, reported by James Begley.
+
+* (Linux version): survex.spec: Fix to work with RPM 4.13.  Fixes #79, reported
+  by James Begley.
 
 Changes in 1.2.25 (2016-01-05):
 
