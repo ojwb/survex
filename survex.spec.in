@@ -32,7 +32,7 @@ make
 [ "%{buildroot}" = "/" ] && echo "buildroot cannot be /" && exit 1
 [ "%{buildroot}" != "/" ] && rm -rf %{buildroot}
 mkdir -p "%{buildroot}"
-make install-strip DESTDIR="%{buildroot}"
+make install DESTDIR="%{buildroot}"
 make -C vim vimdir=/usr/share/vim install DESTDIR="%{buildroot}"
 # Move docs back into build tree to keep rpmbuild happy by letting
 # it do the installing.
@@ -49,7 +49,7 @@ mv "%{buildroot}"/usr/share/doc/@PACKAGE@ ./built-docs
 %doc /usr/share/man/
 /usr/bin/*
 /usr/share/@PACKAGE@/
-/usr/share/mime/survex*
+/usr/share/mime/
 /usr/share/applications/survex-aven.desktop
 /usr/share/icons/
 /usr/share/vim/
