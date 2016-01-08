@@ -1,3 +1,13 @@
+survex (1.2.26-1) unstable; urgency=medium
+
+  * New upstream release
+    + Compatible with FFmpeg 2.9. (Closes: #803863)
+    + Includes modern MIME mappings, so survex filetypes now have icons.
+  * debian/survex-aven.menu: Remove obsolete file, fixes lintian warning.
+  * debian/copyright: Update.
+
+ -- Olly Betts <olly@survex.com>  Fri, 08 Jan 2016 12:27:19 +1300
+
 survex (1.2.22-1) unstable; urgency=medium
 
   * New upstream release:
@@ -5,7 +15,7 @@ survex (1.2.22-1) unstable; urgency=medium
     + Fix conversion from coordinate systems using latitude and longitude.
     + Supports new *declination command.
 
- -- Olly Betts <olly@pippikin>  Mon, 17 Aug 2015 11:17:10 +0200
+ -- Olly Betts <olly@survex.com>  Mon, 17 Aug 2015 11:17:10 +0200
 
 survex (1.2.20-2) unstable; urgency=medium
 

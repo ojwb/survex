@@ -3,7 +3,7 @@ debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/
 debian/tmp/usr/share/survex/bcra3.svx
 debian/tmp/usr/share/survex/bcra5.svx
 debian/tmp/usr/share/survex/*.msg
-debian/tmp/usr/share/mime/packages/survex.xml
+debian/tmp/usr/share/mime
 debian/tmp/usr/bin/3dtopos
 debian/tmp/usr/bin/cad3d
 debian/tmp/usr/bin/cavern
