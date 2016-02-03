@@ -127,7 +127,7 @@ msgstr "*prefix n’est plus utilisé - employer *begin et *end à la place"
 #: n:7
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
-msgstr "Caractère “%c” interdit dans un nom de station (cf *SET NAMES pour modifier la liste des caractères autorisés)"
+msgstr "Le caractère “%c” est interdit dans un nom de station (cf *SET NAMES pour modifier la liste des caractères autorisés)"
 
 #: ../src/readval.c:382
 #: n:8
@@ -155,7 +155,7 @@ msgstr "Vous avez écrit “%s”; on attendait “PRESERVE”, “TOUPPER”, o
 #: ../src/matrix.c:352
 #: n:11
 msgid "Bug in program detected! Please report this to the authors"
-msgstr "Bug détecté dans le programme! Signaler ce message à l’auteur S.V.P."
+msgstr "Bogue détecté dans le programme! Veuillez le signaler à l’auteur."
 
 #: ../src/commands.c:2330
 #: ../src/extend.c:440
@@ -355,7 +355,7 @@ msgstr "Système de coordonnée impropre en sortie"
 #: n:436
 #, c-format
 msgid "Failed to convert coordinates: %s"
-msgstr "Echec de la conversion des coordonnées: %s"
+msgstr "Échec de la conversion des coordonnées: %s"
 
 #: ../src/commands.c:843
 #: n:437
