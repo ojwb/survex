@@ -19,7 +19,7 @@ Sample Data
 If you want some sample data to experiment with, you can download some from
 the Survex website:
 
-http://survex.com/software/sample.tar.gz
+https://survex.com/software/sample.tar.gz
 
 Docs
 ----
@@ -27,11 +27,11 @@ Docs
 The documentation is provided in HTML, text and PDF formats, and is also
 online at:
 
-http://survex.com/docs.html
+https://survex.com/docs.html
 
 There is a mailing list for users at survex@survex.com - subscribe at:
 
-http://survex.com/maillist.html
+https://survex.com/maillist.html
 
 Vim Support
 -----------
@@ -50,4 +50,4 @@ vim-addons is provided by the vim-addon-manager package, and you can look
 at its manpage for more information.
 
 
- -- Olly Betts <olly@survex.com>  Wed, 18 Mar 2015 03:00:16 +0000
+ -- Olly Betts <olly@survex.com>  Sat, Apr 02 2016 05:30:31 +0000
