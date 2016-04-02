@@ -6,8 +6,8 @@ Version: @VERSION@
 Release: @RELEASE@
 License: GPL
 Group: Applications/Misc
-Source: http://survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
-URL: http://survex.com/
+Source: https://survex.com/software/@VERSION@/@PACKAGE@-@VERSION@.tar.gz
+URL: https://survex.com/
 Packager: Olly Betts <olly@survex.com>
 # If your distro doesn't have wxGTK3-devel and wxGTK3 yet, use these
 # dependencies instead:

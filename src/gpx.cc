@@ -2,7 +2,7 @@
  * Export from Aven as GPX.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 2012,2013,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ void GPX::header(const char * title, const char *, time_t datestamp_numeric,
 {
     fputs(
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-"<gpx version=\"1.0\" creator=\"" PACKAGE_STRING " (aven) - http://survex.com/\""
+"<gpx version=\"1.0\" creator=\"" PACKAGE_STRING " (aven) - https://survex.com/\""
 " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 " xmlns=\"http://www.topografix.com/GPX/1/0\""
 " xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0"

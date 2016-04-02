@@ -28,7 +28,7 @@ cave survey data.
 The individual programs each have a man page, and there's also a
 comprehensive manual, available in HTML, PDF, and plain text formats.
 The manual is located in \fI@PKGDOCDIR_EXPANDED@\fP and can also be found
-online at \fIhttp://survex.com/docs.html\fP
+online at \fIhttps://survex.com/docs.html\fP
 
 .SH OPTIONS
 These programs follow the usual GNU command line syntax, with long

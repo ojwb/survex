@@ -173,7 +173,7 @@ of this manual for the best way to contact us.</Para>
 <Para>Because <Application>Survex</Application> is still being actively developed, this document
 has an unfortunate tendency to lag slightly behind the capabilities of the
 software. The latest version is now available on the web at <ulink
-url="http://survex.com/">http://survex.com/</ulink> - check there for latest info.
+url="https://survex.com/">https://survex.com/</ulink> - check there for latest info.
 </Para>
 -->
 
@@ -244,7 +244,7 @@ and automatically converted to a number of other formats.  If
 you are going to send us <emphasis>major</emphasis> changes, it's much easier
 to include them if you work from this master.  You can get it
 from the source archive (docs/manual.sgml) or from <ulink
-url="http://survex.com/docs.html">the Survex website</ulink>.
+url="https://survex.com/docs.html">the Survex website</ulink>.
 </Para>
 
 <Sect3><Title>Terminology</Title>
@@ -287,13 +287,13 @@ install it, and how to configure it.</Para>
 <Sect2><Title>Obtaining <Application>Survex</Application></Title>
 
 <Para>The latest version is available from the <Application>Survex</Application> website:
-<ulink url="http://survex.com/">http://survex.com/</ulink>.  It is also
+<ulink url="https://survex.com/">https://survex.com/</ulink>.  It is also
 freely redistributable, so you welcome to get a copy from someone else
 who has already downloaded it.</Para>
 
 <Para>If you want some sample data to experiment with, you can download some
 from the Survex website too:
-<ulink url="http://survex.com/software/sample.tar.gz">http://survex.com/software/sample.tar.gz</ulink></Para>
+<ulink url="https://survex.com/software/sample.tar.gz">https://survex.com/software/sample.tar.gz</ulink></Para>
 
 </Sect2>
 
@@ -1410,7 +1410,7 @@ The currently supported coordinate systems are:
 
 <Para>EPSG: followed by a positive integer code.  EPSG codes cover most
 coordinate systems in use, and PROJ supports many of these.  The website
-<ulink url="http://epsg.io/">http://epsg.io/</ulink> is a useful resource for
+<ulink url="https://epsg.io/">https://epsg.io/</ulink> is a useful resource for
 finding the EPSG code you want.  Supported since Survex 1.2.15.</Para>
 
 <Para>ESRI: followed by a positive integer code.  ESRI codes are used by
@@ -3779,7 +3779,7 @@ understand, then send it to us, and we will see what can be done.
 used by the German survey software Cad F&uuml;r H&ouml;hlen into
 <Application>Survex</Application> data files. Other converters may also come to be available.
 These will normally be available via the
-<ulink url="http://survex.com/"><Application>Survex</Application> Web pages</ulink>.
+<ulink url="https://survex.com/"><Application>Survex</Application> Web pages</ulink>.
 </Para>
 
 </Sect3>
@@ -3876,7 +3876,7 @@ what you have to do:
 
 <Para>The best way to contact the authors and other Survex users is the
 Survex mailing list - for details visit:
-<ulink url="http://survex.com/maillist.html">http://survex.com/maillist.html</ulink>
+<ulink url="https://survex.com/maillist.html">https://survex.com/maillist.html</ulink>
 </Para>
 
 <Para>We'd be delighted to hear how you get on with <Application>Survex</Application> and
@@ -3908,7 +3908,7 @@ and integrated into the menus.</Para>
 Unix, Microsoft Windows, and Mac OS X.</Para>
 
 <Para>More information on our plans is on the <ulink
-url="http://survex.com/">web site</ulink>.
+url="https://survex.com/">web site</ulink>.
 </Para>
 
 </Sect1>

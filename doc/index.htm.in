@@ -8,7 +8,7 @@ BODY, TD, CENTER, UL, OL {font-family: sans-serif;}
 </HEAD><BODY BGCOLOR=white TEXT=black>
 
 Access to mailing lists and downloads are available at the <A
-HREF="http://survex.com/">Survex web site</A>.
+HREF="https://survex.com/">Survex web site</A>.
 
 <H1>@PRETTYPACKAGE@ @VERSION@ Documentation</H1>
 
@@ -17,7 +17,7 @@ HREF="http://survex.com/">Survex web site</A>.
 <li><A HREF="NEWS.htm">Details of user visible changes in this
 and previous versions</A> (<A HREF="OLDNEWS.htm">older changes</A>)
 <li><A HREF="TODO.htm">"To do" list (includes known bugs)</A>
-<li><A HREF="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU GENERAL PUBLIC LICENSE</A>
+<li><A HREF="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU GENERAL PUBLIC LICENSE</A>
 <li><A HREF="AUTHORS.htm">Credits</A>
 </ul>
 
