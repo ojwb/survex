@@ -1,9 +1,9 @@
 ./back2.svx:4: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
 ./back2.svx:5: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
-./back2.svx:13: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
-./back2.svx:14: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
-./back2.svx:19: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
-./back2.svx:20: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+./back2.svx:15: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+./back2.svx:16: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+./back2.svx:21: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+./back2.svx:22: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
 
 Removing trailing traverses...
 
@@ -19,15 +19,15 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 10 survey stations, joined by 9 legs.
+Survey contains 12 survey stations, joined by 11 legs.
 There is 1 loop.
 Survey has 2 connected components.
-Total length of survey legs =  119.00m ( 119.00m adjusted)
-Total plan length of survey legs =   95.00m
+Total length of survey legs =  139.00m ( 139.00m adjusted)
+Total plan length of survey legs =  115.00m
 Total vertical length of survey legs =   36.00m
 Vertical range = 36.00m (from max at 36.00m to 4b at 0.00m)
 North-South range = 12.00m (from max at 12.00m to 1 at 0.00m)
 East-West range = 9.00m (from max at 9.00m to 3b at -0.00m)
-   9 1-nodes.
-   1 9-node.
+  11 1-nodes.
+   1 11-node.
 There were 6 warning(s).

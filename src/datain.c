@@ -1520,11 +1520,22 @@ data_normal(void)
 	  }
 	  break;
        }
-       case Tape: case BackTape:
-	  read_reading(*ordering, fFalse);
-	  if (VAL(*ordering) < (real)0.0)
+       case Tape: case BackTape: {
+	  reading r = *ordering;
+	  read_reading(r, fTrue);
+	  if (VAL(r) == HUGE_REAL) {
+	     if (!isOmit(ch)) {
+		compile_error_token(-/*Expecting numeric field, found “%s”*/9);
+		/* Avoid also warning about omitted tape reading. */
+		VAL(r) = 0;
+	     } else {
+		nextch();
+	     }
+	  } else if (VAL(r) < (real)0.0) {
 	     compile_warning(-/*Negative tape reading*/60);
+	  }
 	  break;
+       }
        case Count:
 	  VAL(FrCount) = VAL(ToCount);
 	  read_reading(ToCount, fFalse);
@@ -1688,6 +1699,9 @@ data_normal(void)
 		   VAL(Tape) = VAL(BackTape);
 		   VAR(Tape) = VAR(BackTape);
 		}
+	     } else if (VAL(Tape) == HUGE_REAL) {
+		compile_error(/*Tape reading may not be omitted*/94);
+		goto inferred_equate;
 	     }
 	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
@@ -1801,6 +1815,10 @@ data_normal(void)
 		   VAL(Tape) = VAL(BackTape);
 		   VAR(Tape) = VAR(BackTape);
 		}
+	     } else if (VAL(Tape) == HUGE_REAL) {
+		compile_error(/*Tape reading may not be omitted*/94);
+		process_eol();
+		return;
 	     }
 	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
@@ -1877,17 +1895,19 @@ data_passage(void)
        case Station:
 	 stn = read_prefix(PFX_STATION);
 	 break;
-       case Left: case Right: case Up: case Down:
-	 read_reading(*ordering, fTrue);
-	 if (VAL(*ordering) == HUGE_REAL) {
+       case Left: case Right: case Up: case Down: {
+	 reading r = *ordering;
+	 read_reading(r, fTrue);
+	 if (VAL(r) == HUGE_REAL) {
 	    if (!isOmit(ch)) {
 	       compile_error_token(-/*Expecting numeric field, found “%s”*/9);
 	    } else {
 	       nextch();
 	    }
-	    VAL(*ordering) = -1;
+	    VAL(r) = -1;
 	 }
 	 break;
+       }
        case Ignore:
 	 skipword(); break;
        case IgnoreAll:
