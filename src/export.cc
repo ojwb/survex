@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1413,7 +1413,7 @@ Export(const wxString &fnm_out, const wxString &title,
    max_z += z_offset;
 
    /* Header */
-   filt->header(title.mb_str(), datestamp.mb_str(), datestamp_numeric,
+   filt->header(title.utf8_str(), datestamp.utf8_str(), datestamp_numeric,
 		min_x, min_y, min_z, max_x, max_y, max_z);
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
@@ -1530,7 +1530,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	      bool f_surface = !(*pos)->IsUnderground();
 	      if (type) {
 		  const wxString & text = (*pos)->GetText();
-		  filt->label(&p, text.mb_str(), f_surface, type);
+		  filt->label(&p, text.utf8_str(), f_surface, type);
 	      }
 	      if (pass_mask & STNS)
 		  filt->cross(&p, f_surface);

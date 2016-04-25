@@ -152,7 +152,7 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 	// Convert wide characters to UTF-8.
 	utf8_argv = new char * [utf8_argc + 1];
 	for (int i = 0; i < utf8_argc; ++i){
-	    utf8_argv[i] = strdup(wxString(new_argv[i]).mb_str());
+	    utf8_argv[i] = strdup(wxString(new_argv[i]).utf8_str());
 	}
 	utf8_argv[utf8_argc] = NULL;
 

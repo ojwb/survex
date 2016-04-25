@@ -709,7 +709,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 	    if (!Export(dlg.GetPath(), m_layout.title,
 			m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
 			m_layout.rot, m_layout.tilt, m_layout.show_mask,
-			export_format(format_idx), input_projection.mb_str(),
+			export_format(format_idx), input_projection.utf8_str(),
 			grid, text_height, marker_size, m_layout.Scale)) {
 		wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					      m_File.c_str());

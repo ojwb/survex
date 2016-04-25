@@ -2483,7 +2483,7 @@ void GfxCore::GenerateDisplayListShadow()
 void
 GfxCore::parse_hgt_filename(const wxString & lc_name)
 {
-    char * leaf = leaf_from_fnm(lc_name.mb_str());
+    char * leaf = leaf_from_fnm(lc_name.utf8_str());
     const char * p = leaf;
     char * q;
     char dirn = *p++;
