@@ -178,6 +178,12 @@ msgstr "Stasiun “%s” disamakan dengan sendirinya"
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Membaca kompas tidak dapat diabaikan kecuali pada plumbed leg"
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+msgid "Tape reading may not be omitted"
+msgstr "Pembacaan pita tidak dapat diabaikan"
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15

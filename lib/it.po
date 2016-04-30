@@ -178,6 +178,12 @@ msgstr "Stazione “%s” uguagliata a se stessa"
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "La lettura della bussola non puó essere omessa qui eccettto che nelle battute verticali"
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+msgid "Tape reading may not be omitted"
+msgstr "La distanza non puó essere omessa"
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15

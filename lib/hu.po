@@ -179,6 +179,12 @@ msgstr "“%s” mérőpont önmagával egyezik"
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr ""
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+msgid "Tape reading may not be omitted"
+msgstr ""
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15

@@ -178,6 +178,12 @@ msgstr "Station “%s” ne doit pas être déclarée ‘égale’ à elle-même
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "La valeur de l’azimut ne peut être omise, sauf sur les visées verticales"
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+msgid "Tape reading may not be omitted"
+msgstr "Lecture de longueur ne peut être omise"
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15

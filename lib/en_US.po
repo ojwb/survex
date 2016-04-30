@@ -178,6 +178,12 @@ msgstr "Station “%s” equated to itself"
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Compass reading may not be omitted except on plumbed shots"
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+msgid "Tape reading may not be omitted"
+msgstr "Tape reading may not be omitted"
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15

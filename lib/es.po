@@ -178,6 +178,12 @@ msgstr "Estación “%s” igualada a si misma"
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "La lectura de la brújula no se puede omitir excepto en tiradas a plomo"
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+msgid "Tape reading may not be omitted"
+msgstr "Lectura de longitud no se puede omitir"
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15

@@ -178,6 +178,13 @@ msgstr "Пикет “%s” был объявлен эквивалентным �
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Азимут не может быть пропущен за исключением вертикальных замеров"
 
+#: ../src/datain.c:1705
+#: ../src/datain.c:1821
+#: n:94
+#, fuzzy
+msgid "Tape reading may not be omitted"
+msgstr "Длинна замера не может быть пропущено"
+
 #: ../src/datain.c:272
 #: ../src/extend.c:445
 #: n:15
