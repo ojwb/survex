@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014,2015 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014,2015,2016 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1173,16 +1173,21 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    OnDisplayOverlappingNames();
 	    break;
 	case WXK_DELETE:
-	    OnDefaults();
+	    if (e.GetModifiers() == 0)
+		OnDefaults();
 	    break;
 	case WXK_RETURN:
-	    // For compatibility with older versions.
-	    if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
-		m_View->StartRotation();
+	    if (e.GetModifiers() == 0) {
+		// For compatibility with older versions.
+		if (!m_View->IsExtendedElevation() && !m_View->IsRotating())
+		    m_View->StartRotation();
+	    }
 	    break;
 	case WXK_SPACE:
-	    if (!m_View->IsExtendedElevation())
-		OnToggleRotation();
+	    if (e.GetModifiers() == 0) {
+		if (!m_View->IsExtendedElevation())
+		    OnToggleRotation();
+	    }
 	    break;
 	case WXK_LEFT:
 	    if ((e.GetModifiers() &~ wxMOD_SHIFT) == wxMOD_CONTROL) {
@@ -1217,43 +1222,52 @@ void GUIControl::OnKeyPress(wxKeyEvent &e)
 	    }
 	    break;
 	case WXK_ESCAPE:
-	    if (m_View->ShowingMeasuringLine()) {
-		OnCancelDistLine();
-	    } else if (m_View->IsFullScreen()) {
-		// Cancel full-screen mode on "Escape" if it isn't cancelling
-		// the measuring line.
-		m_View->FullScreenMode();
+	    if (e.GetModifiers() == 0) {
+		if (m_View->ShowingMeasuringLine()) {
+		    OnCancelDistLine();
+		} else if (m_View->IsFullScreen()) {
+		    // Cancel full-screen mode on "Escape" if it isn't cancelling
+		    // the measuring line.
+		    m_View->FullScreenMode();
+		}
 	    }
 	    break;
 	case WXK_F2:
-	    m_View->ToggleFatFinger();
+	    if (e.GetModifiers() == 0)
+		m_View->ToggleFatFinger();
 	    break;
 	case WXK_F3:
-	    m_View->ToggleHitTestDebug();
+	    if (e.GetModifiers() == 0)
+		m_View->ToggleHitTestDebug();
 	    break;
 	case WXK_F4: {
-	    const wxChar * msg;
+	    if (e.GetModifiers() == 0) {
+		const wxChar * msg;
 #if wxDEBUG_LEVEL
-	    if (wxTheAssertHandler)
-		wxTheAssertHandler = NULL;
-	    else
-		wxSetDefaultAssertHandler();
-	    if (wxTheAssertHandler)
-		msg = wxT("Assertions enabled");
-	    else
-		msg = wxT("Assertions disabled");
+		if (wxTheAssertHandler)
+		    wxTheAssertHandler = NULL;
+		else
+		    wxSetDefaultAssertHandler();
+		if (wxTheAssertHandler)
+		    msg = wxT("Assertions enabled");
+		else
+		    msg = wxT("Assertions disabled");
 #else
-	    msg = wxT("wxWidgets was built without assertions");
+		msg = wxT("wxWidgets was built without assertions");
 #endif
-	    wxMessageBox(msg, wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
+		wxMessageBox(msg, wxT("Aven Debug"), wxOK | wxICON_INFORMATION);
+	    }
 	    break;
 	}
 	case WXK_F5:
-	    m_View->InvalidateAllLists();
-	    m_View->ForceRefresh();
+	    if (e.GetModifiers() == 0) {
+		m_View->InvalidateAllLists();
+		m_View->ForceRefresh();
+	    }
 	    break;
 	case WXK_F6:
-	    m_View->ToggleRenderStats();
+	    if (e.GetModifiers() == 0)
+		m_View->ToggleRenderStats();
 	    break;
 	default:
 	    e.Skip();
