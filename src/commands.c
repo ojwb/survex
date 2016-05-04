@@ -666,9 +666,8 @@ cmd_begin(void)
    pcs = pcsNew;
 
    skipblanks();
-   if (isEol(ch) || isComm(ch)) {
-      pcs->begin_survey = NULL;
-   } else {
+   pcs->begin_survey = NULL;
+   if (!isEol(ch) && !isComm(ch)) {
       prefix *survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
       pcs->begin_survey = survey;
       pcs->Prefix = survey;
