@@ -2207,7 +2207,8 @@ cmd_require(void)
       }
       if (ch != '.') break;
       nextch();
-      if (!isdigit(ch) || ver == version + sizeof(version)) break;
+      if (!isdigit(ch) || ver == version + sizeof(version) / sizeof(*version))
+	 break;
    }
    /* skip rest of version number */
    while (isdigit(ch) || ch == '.') nextch();
