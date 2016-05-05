@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2011,2012,2013,2014,2015 Olly Betts
+//  Copyright (C) 2004,2011,2012,2013,2014,2015,2016 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -60,6 +60,7 @@
 
 #ifdef WITH_LIBAV
 extern "C" {
+# include <libavutil/imgutils.h>
 # include <libavutil/mathematics.h>
 # include <libavformat/avformat.h>
 # include <libswscale/swscale.h>
@@ -250,7 +251,8 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	averrno = AVERROR(ENOMEM);
 	return false;
     }
-    retval = avpicture_alloc((AVPicture *)frame, c->pix_fmt, c->width, c->height);
+    retval = av_image_alloc(frame->data, frame->linesize,
+			    c->width, c->height, c->pix_fmt, 1);
     if (retval < 0) {
 	averrno = retval;
 	return false;
