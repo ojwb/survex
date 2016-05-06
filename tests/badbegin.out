@@ -1,6 +1,7 @@
 ./badbegin.svx:3:10: error: Matching BEGIN command has no survey name
 ./badbegin.svx:6:11: error: Survey name doesn't match BEGIN
-./badbegin.svx:8:5: warning: Survey name omitted from END
+./badbegin.svx:8:8: error: Character "<" not allowed in station name (use *SET NAMES to set allowed characters)
+./badbegin.svx:11:5: warning: Survey name omitted from END
 
 Removing trailing traverses...
 
@@ -22,4 +23,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 1 warning(s) and 2 error(s) - no output files produced.
+There were 1 warning(s) and 3 error(s) - no output files produced.

@@ -1,8 +1,11 @@
-; pos=fail error=2
+; pos=fail error=3
 *begin
 *end  foo
 *begin		    foo
 *fix 1 reference 0 0 0
 *end   bar
 *begin omitted
+*begin <
+; In 1.2.26 this next line gave: "warning: Survey name omitted from END"
+*end
 *end
