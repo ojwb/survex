@@ -1992,25 +1992,69 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	Double l = pt_v.GetL();
 	Double r = pt_v.GetR();
 
-	if (l >= 0) {
-	    Vector3 p = pt_v - right * l;
-	    double X = p.GetX() * COS - p.GetY() * SIN;
-	    double Y = (p.GetX() * SIN + p.GetY() * COS);
-	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
-	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
-	    MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
-	    DrawTo(x, y);
-	    DrawTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
-	}
-	if (r >= 0) {
-	    Vector3 p = pt_v + right * r;
-	    double X = p.GetX() * COS - p.GetY() * SIN;
-	    double Y = (p.GetX() * SIN + p.GetY() * COS);
-	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
-	    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
-	    MoveTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
-	    DrawTo(x, y);
-	    DrawTo(x + PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+	if (l >= 0 || r >= 0) {
+	    // Get the x and y coordinates of the survey station
+	    double pt_X = pt_v.GetX() * COS - pt_v.GetY() * SIN;
+	    double pt_Y = pt_v.GetX() * SIN + pt_v.GetY() * COS;
+	    long pt_x = (long)((pt_X * Sc + m_layout->xOrg) * m_layout->scX);
+	    long pt_y = (long)((pt_Y * Sc + m_layout->yOrg) * m_layout->scY);
+
+	    // Calculate dimensions for the right arrow
+	    double COSR = right.GetX();
+	    double SINR = right.GetY();
+	    long CROSS_MAJOR = (COSR + SINR) * PWX_CROSS_SIZE;
+	    long CROSS_MINOR = (COSR - SINR) * PWX_CROSS_SIZE;
+
+	    // Set fraction for arrow stem
+	    double frac = 0.5;
+
+	    if (l >= 0) {
+		// Get the x and y coordinates of the end of the left arrow
+		Vector3 p = pt_v - right * l;
+		double X = p.GetX() * COS - p.GetY() * SIN;
+		double Y = (p.GetX() * SIN + p.GetY() * COS);
+		long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+		long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
+
+		// Draw the arrow stem from partway
+		MoveTo(frac*x + (1-frac)*pt_x, frac*y + (1-frac)*pt_y);
+		DrawTo(x, y);
+
+		// Rotate the arrow by the page rotation
+		long dx1 = (+CROSS_MINOR) * COS - (+CROSS_MAJOR) * SIN;
+		long dy1 = (+CROSS_MINOR) * SIN + (+CROSS_MAJOR) * COS;
+		long dx2 = (+CROSS_MAJOR) * COS - (-CROSS_MINOR) * SIN;
+		long dy2 = (+CROSS_MAJOR) * SIN + (-CROSS_MINOR) * COS;
+
+		// Draw the arrow
+		MoveTo(x + dx1, y + dy1);
+		DrawTo(x , y);
+		DrawTo(x + dx2, y + dy2);
+	    }
+
+	    if (r >= 0) {
+		// Get the x and y coordinates of the end of the right arrow
+		Vector3 p = pt_v + right * r;
+		double X = p.GetX() * COS - p.GetY() * SIN;
+		double Y = (p.GetX() * SIN + p.GetY() * COS);
+		long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+		long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
+
+		// Draw the arrow stem from partway
+		MoveTo(frac*x + (1-frac)*pt_x, frac*y + (1-frac)*pt_y);
+		DrawTo(x, y);
+
+		// Rotate the arrow by the page rotation
+		long dx1 = (-CROSS_MINOR) * COS - (-CROSS_MAJOR) * SIN;
+		long dy1 = (-CROSS_MINOR) * SIN + (-CROSS_MAJOR) * COS;
+		long dx2 = (-CROSS_MAJOR) * COS - (+CROSS_MINOR) * SIN;
+		long dy2 = (-CROSS_MAJOR) * SIN + (+CROSS_MINOR) * COS;
+
+		// Draw the arrow
+		MoveTo(x + dx1, y + dy1);
+		DrawTo(x , y);
+		DrawTo(x + dx2, y + dy2);
+	    }
 	}
 
 	prev_pt_v = pt_v;
@@ -2034,23 +2078,44 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	Double d = pt_v.GetD();
 
 	if (u >= 0 || d >= 0) {
+	    // Get the coordinates of the survey point
 	    Vector3 p = pt_v;
 	    double SIN = sin(rad(m_layout->rot));
 	    double COS = cos(rad(m_layout->rot));
 	    double X = p.GetX() * COS - p.GetY() * SIN;
 	    double Y = p.GetZ();
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+	    long pt_y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scX);
+
+	    // Set fraction for arrow stem
+	    double frac = 0.5;
+
 	    if (u >= 0) {
+		// Get the y coordinate of the up arrow
 		long y = (long)(((Y + u) * Sc + m_layout->yOrg) * m_layout->scY);
-		MoveTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+
+		// Draw the arrow stem from partway
+		MoveTo(x, frac*y + (1-frac)*pt_y);
 		DrawTo(x, y);
-		DrawTo(x + PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
-	    }
-	    if (d >= 0) {
-		long y = (long)(((Y - d) * Sc + m_layout->yOrg) * m_layout->scY);
+
+		// Draw the up arrow
 		MoveTo(x - PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
 		DrawTo(x, y);
 		DrawTo(x + PWX_CROSS_SIZE, y - PWX_CROSS_SIZE);
+	    }
+
+	    if (d >= 0) {
+		// Get the y coordinate of the down arrow
+		long y = (long)(((Y - d) * Sc + m_layout->yOrg) * m_layout->scY);
+
+		// Draw the arrow stem from partway
+		MoveTo(x, frac*y + (1-frac)*pt_y);
+		DrawTo(x, y);
+
+		// Draw the down arrow
+		MoveTo(x - PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
+		DrawTo(x, y);
+		DrawTo(x + PWX_CROSS_SIZE, y + PWX_CROSS_SIZE);
 	    }
 	}
     }
