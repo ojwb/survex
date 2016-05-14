@@ -177,7 +177,7 @@ class svxPrintout : public wxPrintout {
     // Currently unused, but "skip blank pages" would use it.
     bool scan_for_blank_pages;
 
-    wxPen *pen_frame, *pen_cross, *pen_leg, *pen_surface_leg;
+    wxPen *pen_frame, *pen_cross, *pen_leg, *pen_surface_leg, *pen_splay;
     wxColour colour_text, colour_labels;
 
     long x_t, y_t;
@@ -1477,6 +1477,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     if ((l->show_mask & XSECT) &&
 	(l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
+	pdc->SetPen(*pen_splay);
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
 	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
@@ -1567,6 +1568,7 @@ svxPrintout::OnBeginPrinting() {
     pen_cross = new wxPen(colour_cross);
     pen_leg = new wxPen(colour_leg);
     pen_surface_leg = new wxPen(colour_surface_leg);
+    pen_splay = new wxPen(wxColour(192, 192, 192));
 
     m_layout->scX = 1;
     m_layout->scY = 1;
@@ -1587,6 +1589,7 @@ svxPrintout::OnEndPrinting() {
     delete pen_cross;
     delete pen_leg;
     delete pen_surface_leg;
+    delete pen_splay;
 }
 
 int
