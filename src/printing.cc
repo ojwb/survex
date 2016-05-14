@@ -106,6 +106,7 @@ enum {
 	svx_BLANKS,
 	svx_LEGEND,
 	svx_SURFACE,
+	svx_SPLAYS,
 	svx_PLAN,
 	svx_ELEV,
 	svx_ENTS,
@@ -243,6 +244,7 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_CHECKBOX(svx_STATIONS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_NAMES, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_SURFACE, svxPrintDlg::OnChange)
+    EVT_CHECKBOX(svx_SPLAYS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_ENTS, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_FIXES, svxPrintDlg::OnChange)
     EVT_CHECKBOX(svx_EXPORTS, svxPrintDlg::OnChange)
@@ -289,16 +291,16 @@ static wxString projs[] = {
 #endif
 
 static const unsigned format_info[] = {
-    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
-    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS,
-    LABELS|LEGS|SURF|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF|STNS|CENTRED,
-    LEGS|CENTRED|EXPORT_3D,
-    LABELS|LEGS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF,
-    LABELS|LEGS|SURF|STNS|MARKER_SIZE|GRID|SCALE,
+    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
+    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS,
+    LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+    LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED,
+    LEGS|SPLAYS|CENTRED|EXPORT_3D,
+    LABELS|LEGS|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+    LABELS|LEGS|SURF|SPLAYS,
+    LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE,
     LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
-    LABELS|LEGS|SURF|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
+    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
 };
 
 static const char * extension[] = {
@@ -343,8 +345,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & datestamp, time_t datestamp_numeric,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
-			 bool tubes, bool ents, bool fixes, bool exports,
-			 bool printing, bool close_after_)
+			 bool splays, bool tubes, bool ents, bool fixes,
+			 bool exports, bool printing, bool close_after_)
 	: wxDialog(mainfrm_, -1, wxString(printing ?
 					  /* TRANSLATORS: Title of the print
 					   * dialog */
@@ -369,6 +371,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	show_mask |= LEGS;
     if (surf)
 	show_mask |= SURF;
+    if (splays)
+	show_mask |= SPLAYS;
     if (tubes)
 	show_mask |= XSECT|WALLS|PASG;
     if (ents)
@@ -513,6 +517,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     v3->Add(new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, SURF)),
+	    0, wxALIGN_LEFT|wxALL, 2);
+    v3->Add(new wxCheckBox(this, svx_SPLAYS, wmsg(/*Spla&y Legs*/406),
+			   wxDefaultPosition, wxDefaultSize, 0,
+			   BitValidator(&m_layout.show_mask, SPLAYS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
     v3->Add(new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261),
 			   wxDefaultPosition, wxDefaultSize, 0,
@@ -810,6 +818,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	    static const struct { int id; unsigned mask; } controls[] = {
 		{ svx_LEGS, LEGS },
 		{ svx_SURFACE, SURF },
+		{ svx_SPLAYS, SPLAYS },
 		{ svx_STATIONS, STNS },
 		{ svx_NAMES, LABELS },
 		{ svx_XSECT, XSECT },
@@ -1452,10 +1461,16 @@ svxPrintout::OnPrintPage(int pageNum) {
     const double Sc = 1000 / l->Scale;
 
     if (l->show_mask & LEGS) {
-	pdc->SetPen(*pen_leg);
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
+	    if (trav->isSplay) {
+		if (!(l->show_mask & SPLAYS))
+		    continue;
+		pdc->SetPen(*pen_splay);
+	    } else {
+		pdc->SetPen(*pen_leg);
+	    }
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
 	    for ( ; pos != end; ++pos) {
@@ -1487,10 +1502,16 @@ svxPrintout::OnPrintPage(int pageNum) {
     }
 
     if (l->show_mask & SURF) {
-	pdc->SetPen(*pen_surface_leg);
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
+	    if (trav->isSplay) {
+		if (!(l->show_mask & SPLAYS))
+		    continue;
+		pdc->SetPen(*pen_splay);
+	    } else {
+		pdc->SetPen(*pen_surface_leg);
+	    }
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
 	    for ( ; pos != end; ++pos) {

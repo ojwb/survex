@@ -64,8 +64,8 @@ class svxPrintDlg : public wxDialog {
 		    const wxString & datestamp, time_t datestamp_numeric,
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf,
-		    bool tubes, bool ents, bool fixes, bool exports,
-		    bool printing, bool close_after_ = false);
+		    bool splays, bool tubes, bool ents, bool fixes,
+		    bool exports, bool printing, bool close_after_ = false);
 
 	~svxPrintDlg() {
 	    if (close_after) mainfrm->Close();

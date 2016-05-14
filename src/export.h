@@ -62,6 +62,7 @@ typedef enum {
 #define MARKER_SIZE	0x00010000
 #define SCALE		0x00020000
 #define FULL_COORDS	0x00040000
+#define SPLAYS		0x00080000
 
 bool Export(const wxString &fnm_out, const wxString &title,
 	    const wxString &datestamp, time_t datestamp_numeric,

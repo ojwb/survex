@@ -1327,6 +1327,9 @@ Export(const wxString &fnm_out, const wxString &title,
    list<traverse>::const_iterator trav = mainfrm->traverses_begin();
    list<traverse>::const_iterator tend = mainfrm->traverses_end();
    for ( ; trav != tend; ++trav) {
+	if (trav->isSplay && (show_mask & SPLAYS) == 0) {
+	    continue;
+	}
 	vector<PointInfo>::const_iterator pos = trav->begin();
 	vector<PointInfo>::const_iterator end = trav->end();
 	for ( ; pos != end; ++pos) {
@@ -1427,6 +1430,9 @@ Export(const wxString &fnm_out, const wxString &title,
 	  trav = mainfrm->traverses_begin();
 	  tend = mainfrm->traverses_end();
 	  for ( ; trav != tend; ++trav) {
+	     if (trav->isSplay && (show_mask & SPLAYS) == 0) {
+		 continue;
+	     }
 	     assert(trav->size() > 1);
 	     vector<PointInfo>::const_iterator pos = trav->begin();
 	     vector<PointInfo>::const_iterator end = trav->end();
@@ -1463,6 +1469,9 @@ Export(const wxString &fnm_out, const wxString &title,
 	  trav = mainfrm->surface_traverses_begin();
 	  tend = mainfrm->surface_traverses_end();
 	  for ( ; trav != tend; ++trav) {
+	     if (trav->isSplay && (show_mask & SPLAYS) == 0) {
+		 continue;
+	     }
 	     assert(trav->size() > 1);
 	     vector<PointInfo>::const_iterator pos = trav->begin();
 	     vector<PointInfo>::const_iterator end = trav->end();
