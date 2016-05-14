@@ -51,7 +51,7 @@ typedef enum {
 #define WALL2		0x00000040
 #define WALLS (WALL1|WALL2)
 #define PASG		0x00000080
-#define EXPORT_3D	0x10000000
+#define EXPORT_3D	0x00000100
 #define CENTRED		0x00000200
 #define ENTS		0x00000400
 #define FIXES		0x00000800
