@@ -2029,9 +2029,6 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    long CROSS_MAJOR = (COSR + SINR) * PWX_CROSS_SIZE;
 	    long CROSS_MINOR = (COSR - SINR) * PWX_CROSS_SIZE;
 
-	    // Set fraction for arrow stem
-	    double frac = 0.5;
-
 	    if (l >= 0) {
 		// Get the x and y coordinates of the end of the left arrow
 		Vector3 p = pt_v - right * l;
@@ -2040,8 +2037,8 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 		long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 		long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 
-		// Draw the arrow stem from partway
-		MoveTo(frac*x + (1-frac)*pt_x, frac*y + (1-frac)*pt_y);
+		// Draw the arrow stem
+		MoveTo(pt_x, pt_y);
 		DrawTo(x, y);
 
 		// Rotate the arrow by the page rotation
@@ -2064,8 +2061,8 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 		long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 		long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 
-		// Draw the arrow stem from partway
-		MoveTo(frac*x + (1-frac)*pt_x, frac*y + (1-frac)*pt_y);
+		// Draw the arrow stem
+		MoveTo(pt_x, pt_y);
 		DrawTo(x, y);
 
 		// Rotate the arrow by the page rotation
@@ -2111,15 +2108,12 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
 	    long pt_y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scX);
 
-	    // Set fraction for arrow stem
-	    double frac = 0.5;
-
 	    if (u >= 0) {
 		// Get the y coordinate of the up arrow
 		long y = (long)(((Y + u) * Sc + m_layout->yOrg) * m_layout->scY);
 
-		// Draw the arrow stem from partway
-		MoveTo(x, frac*y + (1-frac)*pt_y);
+		// Draw the arrow stem
+		MoveTo(x, pt_y);
 		DrawTo(x, y);
 
 		// Draw the up arrow
@@ -2132,8 +2126,8 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 		// Get the y coordinate of the down arrow
 		long y = (long)(((Y - d) * Sc + m_layout->yOrg) * m_layout->scY);
 
-		// Draw the arrow stem from partway
-		MoveTo(x, frac*y + (1-frac)*pt_y);
+		// Draw the arrow stem
+		MoveTo(x, pt_y);
 		DrawTo(x, y);
 
 		// Draw the down arrow
