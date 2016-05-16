@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -1513,7 +1513,13 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     m_Labels.sort(LabelCmp(separator));
 
     // Fill the tree of stations and prefixes.
-    FillTree(wxFileNameFromPath(file));
+    wxString root_name = wxFileNameFromPath(file);
+    if (!prefix.empty()) {
+	root_name += " (";
+	root_name += prefix;
+	root_name += ")";
+    }
+    FillTree(root_name);
 
     // Sort labels so that entrances are displayed in preference,
     // then fixed points, then exported points, then other points.
