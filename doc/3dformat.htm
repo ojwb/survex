@@ -206,9 +206,13 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type" rowspan="3">XSECT</td>
     <td class="data" rowspan="3">&lt;label&gt; &lt;L&gt; &lt;R&gt; &lt;U&gt; &lt;D&gt;</td>
     <td colspan="2">
-    Dimensions are 2 byte little-endian signed integers representing values
-    in centimetres (0.01 metres). Omitted dimensions are encoded as 0xffff.
-    Station flags are (N &amp; 0x01): </td>
+    Modify the current label buffer according to &lt;label&gt; (see below for
+    details). The updated contents of the label buffer give the full name of
+    the survey station which these dimensions were measured at.  Dimensions are
+    2 byte little-endian signed integers representing values in centimetres
+    (0.01 metres). Omitted dimensions are encoded as 0xffff.  Station flags are
+    (N &amp; 0x01):
+    </td>
     <td class="version" rowspan="3">&ge;8</td>
 </tr>
 <tr>
@@ -224,9 +228,12 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type" rowspan="3">XSECT</td>
     <td class="data" rowspan="3">&lt;label&gt; &lt;L&gt; &lt;R&gt; &lt;U&gt; &lt;D&gt;</td>
     <td colspan="2">
-    Dimensions are 4 byte little-endian signed integers representing values
-    in centimetres (0.01 metres). Omitted dimensions are encoded as
-    0xffffffff.</td>
+    Modify the current label buffer according to &lt;label&gt; (see below for
+    details). The updated contents of the label buffer give the full name of
+    the survey station which these dimensions were measured at.  Dimensions are
+    4 byte little-endian signed integers representing values in centimetres
+    (0.01 metres). Omitted dimensions are encoded as 0xffffffff.
+    </td>
     <td class="version" rowspan="3">&ge;8</td>
 </tr>
 <tr>
@@ -249,11 +256,13 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="type" rowspan="8">LINE</td>
     <td class="data" rowspan="8">&lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
     <td colspan="2">
-    Append label to the current label buffer. The length of the label is
-    encoded as for a station label below. Return leg from current position
-    to coordinates given, and update current position to coordinates given.
-    The updated contents of the label buffer give the survey that the leg is
-    in.</td>
+    Modify the current label buffer according to &lt;label&gt; (see below for
+    details) - if &lt;label&gt; is omitted due to flag bit 0x20 being set then
+    the current label buffer is used unmodified. The updated contents of the
+    label buffer give the survey that the leg is in. Return leg from current
+    position to coordinates given, and update current position to coordinates
+    given.
+    </td>
     <td class="version" rowspan="5">&ge;8</td>
 </tr>
 <tr>
@@ -287,31 +296,15 @@ first byte of an item is a code identifying what the item is:</P>
     <td class="version">&ge;8</td>
 </tr>
 <tr>
-    <td class="code" rowspan="14">0x80 - 0xff</td>
-    <td class="type" rowspan="14">LABEL</td>
-    <td class="data" rowspan="14">&lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
+    <td class="code" rowspan="10">0x80 - 0xff</td>
+    <td class="type" rowspan="10">LABEL</td>
+    <td class="data" rowspan="10">&lt;label&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</td>
     <td colspan="2">
-    Append label to the current label buffer. The updated contents of the
-    label buffer give the survey stations full name. The length of label is
-    given by length, which is encoded as follows:</td>
-    <td class="version" rowspan="14">&ge;8</td>
-</tr>
-<tr>
-    <th>Length</th>
-    <th>Encoding</th>
-</tr>
-<tr>
-    <td>0 - 253</td>
-    <td>byte 0x00 - 0xfd</td>
-</tr>
-<tr>
-    <td>254-65789</td>
-    <td>byte 0xfe 2 byte little-endian unsigned integer len-254 0x0000-0xffff</td>
-</tr>
-<tr>
-    <td>65790 and greater</td>
-    <td>byte 0xff 4 byte little-endian unsigned integer len
-    0x000100fd-0xffffffff</td>
+    Modify the current label buffer according to &lt;label&gt; (see below for
+    details). The updated contents of the label buffer give the survey
+    station's full name.
+    </td>
+    <td class="version" rowspan="10">&ge;8</td>
 </tr>
 <tr>
     <td colspan="2">
@@ -352,6 +345,28 @@ first byte of an item is a code identifying what the item is:</P>
 </tr>
 </table>
 
+<p>A &lt;label&gt; value in the tabel above encodes modifications to the
+current label buffer, which consist of removing the last <i>D</i> bytes
+from the buffer, and then appending the next <i>A</i> bytes from the file
+to the buffer.  <i>D</i> and <i>A</i> are encoded as follows:</p>
+
+<ul>
+<li>Read a byte - if it is non-zero then: <i>D</i> = <code>byte &gt;&gt; 4</code>, <i>A</i> = <code>byte &amp; 0x0f</code>
+<li>Otherwise (i.e. the first byte is zero):
+  <ul>
+  <li>Read a byte and:
+    <ul>
+    <li>If it is not 255 then <i>D</i> = <code>byte</code>
+    <li>Otherwise, <i>D</i> = 4 byte unsigned integer read from the file
+    </ul>
+  <li>Read a byte and:
+    <ul>
+    <li>If it is not 255 then <i>A</i> = <code>byte</code>
+    <li>Otherwise, <i>A</i> = 4 byte unsigned integer read from the file
+    </ul>
+  </ul>
+</ul>
+
 <H2>Item order</H2>
 <ul>
 <li>A continuous section of centreline is defined by a &lt;MOVE&gt; item, followed
@@ -365,5 +380,5 @@ number of different &lt;LABEL&gt; items).</li>
 referenced (e.g. in &lt;XSECT&gt; items)</li>
 </ul>
 
-<P>Authors: Olly Betts and Mike McCombe, last updated: 2014-07-02</P>
+<P>Authors: Olly Betts and Mike McCombe, last updated: 2016-05-17</P>
 </BODY></HTML>
