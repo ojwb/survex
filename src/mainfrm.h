@@ -547,7 +547,6 @@ public:
 	new_prefix += survey;
 	// FIXME: Be more efficient to reload the processed data rather rather than
 	// potentially reprocessing.
-	// FIXME: Currrently recentres the view (but scale, etc kept) - better not to?
 	if (!LoadData(m_File, new_prefix))
 	    return;
 	m_Gfx->InvalidateAllLists();

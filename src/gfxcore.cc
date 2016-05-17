@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -256,13 +256,19 @@ void GfxCore::Initialise(bool same_file)
 	initial_scale = diameter / cave_diameter;
 	SetScale(initial_scale);
     } else {
+	// Adjust the position when restricting the view to a subsurvey (or
+	// expanding the view to show the whole survey).
+	AddTranslation(m_Parent->GetOffset() - offsets);
+
 	// Try to keep the same scale, allowing for the
 	// cave having grown (or shrunk).
 	double rescale = GetVolumeDiameter() / diameter;
 	SetVolumeDiameter(diameter);
-	SetScale(GetScale() * rescale);
+	SetScale(GetScale() / rescale); // ?
 	initial_scale = initial_scale * rescale;
     }
+
+    offsets = m_Parent->GetOffset();
 
     ForceRefresh();
 }
