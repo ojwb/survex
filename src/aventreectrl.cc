@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003,2005,2006 Olly Betts
+//  Copyright (C) 2001-2003,2005,2006,2016 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -35,6 +35,8 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_TREE_SEL_CHANGED(-1, AvenTreeCtrl::OnSelChanged)
     EVT_TREE_ITEM_ACTIVATED(-1, AvenTreeCtrl::OnItemActivated)
     EVT_CHAR(AvenTreeCtrl::OnKeyPress)
+    EVT_TREE_ITEM_MENU(-1, AvenTreeCtrl::OnMenu)
+    EVT_MENU(menu_SURVEY_RESTRICT, AvenTreeCtrl::OnRestrict)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
@@ -43,7 +45,8 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     m_Enabled(false),
     m_LastItem(),
     m_BackgroundColour(),
-    m_SelValid(false)
+    m_SelValid(false),
+    menu_data(NULL)
 {
 }
 
@@ -112,6 +115,41 @@ void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
     }
 }
 
+void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
+{
+    if (m_Enabled) {
+	const TreeData* data = static_cast<const TreeData*>(GetItemData(e.GetItem()));
+	menu_data = data;
+	if (!data) {
+	    // Root:
+	    wxMenu menu;
+	    /* TRANSLATORS: In aven's survey tree, right-clicking on a survey
+	     * name gives a pop-up menu and this is an option.  It reloads the
+	     * current survey file with the view restricted to the survey
+	     * clicked upon.
+	     */
+	    menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
+//	    if (m_Survey.empty())
+		menu.Enable(menu_SURVEY_SHOW_ALL, false);
+	    PopupMenu(&menu);
+	} else if (data->GetLabel()) {
+	    // Station: name is data->GetLabel()->GetText()
+	} else {
+	    // Survey:
+	    wxMenu menu;
+	    /* TRANSLATORS: In aven's survey tree, right-clicking on a survey
+	     * name gives a pop-up menu and this is an option.  It reloads the
+	     * current survey file with the view restricted to the survey
+	     * clicked upon.
+	     */
+	    menu.Append(menu_SURVEY_RESTRICT, wmsg(/*Hide others*/246));
+	    PopupMenu(&menu);
+	}
+	menu_data = NULL;
+	e.Skip();
+    }
+}
+
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data) const
 {
     assert(m_Enabled);
@@ -176,4 +214,11 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 	    m_Parent->OnKeyPress(e);
 	    break;
     }
+}
+
+void AvenTreeCtrl::OnRestrict(wxCommandEvent& e)
+{
+    if (!menu_data) return;
+    m_Parent->RestrictTo(menu_data->GetSurvey());
+    e.Skip();
 }

@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -129,6 +129,8 @@ enum {
     menu_CTL_PERCENT,
     menu_CTL_REVERSE,
     menu_CTL_CANCEL_DIST_LINE,
+    menu_SURVEY_RESTRICT,
+    menu_SURVEY_SHOW_ALL,
     textctrl_FIND,
     button_HIDE,
     listctrl_PRES
@@ -207,6 +209,7 @@ class MainFrm : public wxFrame {
     wxNotebook* m_Notebook;
     AvenPresList* m_PresList;
     wxString m_File;
+    wxString m_Survey;
 public: // FIXME for m_cs_proj
     wxString m_Title, m_cs_proj, m_DateStamp;
 private:
@@ -252,7 +255,7 @@ public:
     bool LoadData(const wxString& file, const wxString& prefix);
     void AddToFileHistory(const wxString & file);
 
-    void InitialiseAfterLoad(const wxString & file);
+    void InitialiseAfterLoad(const wxString & file, const wxString & prefix);
     void OnShowLog(wxCommandEvent& event);
 
     void OnMRUFile(wxCommandEvent& event);
@@ -534,6 +537,22 @@ public:
     void TreeItemSelected(const wxTreeItemData* data, bool zoom);
     PresentationMark GetPresMark(int which);
     bool Animating() const { return m_Gfx && m_Gfx->Animating(); }
+
+    void RestrictTo(const wxString & survey) {
+	wxString new_prefix;
+	if (!m_Survey.empty()) {
+	    new_prefix = m_Survey;
+	    new_prefix += separator;
+	}
+	new_prefix += survey;
+	// FIXME: Be more efficient to reload the processed data rather rather than
+	// potentially reprocessing.
+	// FIXME: Currrently recentres the view (but scale, etc kept) - better not to?
+	if (!LoadData(m_File, new_prefix))
+	    return;
+	m_Gfx->InvalidateAllLists();
+	InitialiseAfterLoad(m_File, new_prefix);
+    }
 
 private:
     DECLARE_EVENT_TABLE()

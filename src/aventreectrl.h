@@ -49,6 +49,7 @@ class AvenTreeCtrl : public wxTreeCtrl {
     wxTreeItemId m_LastItem;
     wxColour m_BackgroundColour;
     bool m_SelValid;
+    const TreeData* menu_data;
 
 public:
     AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent);
@@ -61,6 +62,9 @@ public:
     void OnSelChanged(wxTreeEvent& event);
     void OnKeyPress(wxKeyEvent &e);
     void OnItemActivated(wxTreeEvent& e);
+    void OnMenu(wxTreeEvent& e);
+
+    void OnRestrict(wxCommandEvent& e);
 
     bool GetSelectionData(wxTreeItemData**) const;
 

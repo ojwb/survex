@@ -730,7 +730,7 @@ CavernLogWindow::OnOK(wxCommandEvent &)
     if (init_done) {
 	mainfrm->HideLog(this);
     } else {
-	mainfrm->InitialiseAfterLoad(filename);
+	mainfrm->InitialiseAfterLoad(filename, survey);
 	init_done = true;
     }
 }

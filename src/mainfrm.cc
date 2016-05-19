@@ -1834,7 +1834,7 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
     if (!LoadData(file, survey))
 	return;
     AddToFileHistory(file);
-    InitialiseAfterLoad(file);
+    InitialiseAfterLoad(file, survey);
 
     // If aven is showing the log for a .svx file and you load a .3d file, then
     // at this point m_Log will be the log window for the .svx file, so destroy
@@ -1845,7 +1845,7 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
     }
 }
 
-void MainFrm::InitialiseAfterLoad(const wxString & file)
+void MainFrm::InitialiseAfterLoad(const wxString & file, const wxString & prefix)
 {
     if (m_SashPosition < 0) {
 	// Calculate sane default width for side panel.
@@ -1866,6 +1866,7 @@ void MainFrm::InitialiseAfterLoad(const wxString & file)
     bool same_file = (file == m_File);
     if (!same_file)
 	m_File = file;
+    m_Survey = prefix;
 
     wxWindow * win = NULL;
     if (m_Splitter->GetWindow2() == NULL) {

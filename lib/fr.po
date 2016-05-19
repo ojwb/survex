@@ -2613,6 +2613,24 @@ msgstr "Topographies"
 msgid "Presentation"
 msgstr "Présentation"
 
+#. TRANSLATORS: In aven's survey tree, right-clicking on the root
+#. gives a pop-up menu and this is an option (but only enabled if
+#. the view is restricted to a subsurvey).  It reloads the current
+#. survey file with the who survey visible.
+#: ../src/aventreectrl.cc:131
+#: n:245
+msgid "Show all"
+msgstr "Tout montrer"
+
+#. TRANSLATORS: In aven's survey tree, right-clicking on a survey
+#. name gives a pop-up menu and this is an option.  It reloads the
+#. current survey file with the view restricted to the survey
+#. clicked upon.
+#: ../src/aventreectrl.cc:145
+#: n:246
+msgid "Hide others"
+msgstr "Cacher les autres"
+
 #: ../src/mainfrm.cc:254
 #: n:378
 msgid "Easting"
