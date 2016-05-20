@@ -2536,6 +2536,28 @@ PresentationMark MainFrm::GetPresMark(int which)
     return m_PresList->GetPresMark(which);
 }
 
+void MainFrm::RestrictTo(const wxString & survey)
+{
+    // The station names will change, so clear the current search.
+    wxCommandEvent dummy;
+    OnHide(dummy);
+
+    wxString new_prefix;
+    if (!survey.empty()) {
+	if (!m_Survey.empty()) {
+	    new_prefix = m_Survey;
+	    new_prefix += separator;
+	}
+	new_prefix += survey;
+    }
+    // FIXME: Be more efficient to reload the processed data rather rather than
+    // potentially reprocessing.
+    if (!LoadData(m_File, new_prefix))
+	return;
+    m_Gfx->InvalidateAllLists();
+    InitialiseAfterLoad(m_File, new_prefix);
+}
+
 void MainFrm::OnOpenTerrainUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_File.empty());
