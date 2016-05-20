@@ -538,13 +538,16 @@ public:
     PresentationMark GetPresMark(int which);
     bool Animating() const { return m_Gfx && m_Gfx->Animating(); }
 
+    // Restrict to subsurvey `survey` (or show all if `survey` empty).
     void RestrictTo(const wxString & survey) {
 	wxString new_prefix;
-	if (!m_Survey.empty()) {
-	    new_prefix = m_Survey;
-	    new_prefix += separator;
+	if (!survey.empty()) {
+	    if (!m_Survey.empty()) {
+		new_prefix = m_Survey;
+		new_prefix += separator;
+	    }
+	    new_prefix += survey;
 	}
-	new_prefix += survey;
 	// FIXME: Be more efficient to reload the processed data rather rather than
 	// potentially reprocessing.
 	if (!LoadData(m_File, new_prefix))
@@ -552,6 +555,8 @@ public:
 	m_Gfx->InvalidateAllLists();
 	InitialiseAfterLoad(m_File, new_prefix);
     }
+
+    wxString GetSurvey() const { return m_Survey; }
 
 private:
     DECLARE_EVENT_TABLE()

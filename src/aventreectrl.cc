@@ -36,6 +36,7 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_TREE_ITEM_ACTIVATED(-1, AvenTreeCtrl::OnItemActivated)
     EVT_CHAR(AvenTreeCtrl::OnKeyPress)
     EVT_TREE_ITEM_MENU(-1, AvenTreeCtrl::OnMenu)
+    EVT_MENU(menu_SURVEY_SHOW_ALL, AvenTreeCtrl::OnRestrict)
     EVT_MENU(menu_SURVEY_RESTRICT, AvenTreeCtrl::OnRestrict)
 END_EVENT_TABLE()
 
@@ -129,7 +130,7 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 	     * clicked upon.
 	     */
 	    menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
-//	    if (m_Survey.empty())
+	    if (m_Parent->GetSurvey().empty())
 		menu.Enable(menu_SURVEY_SHOW_ALL, false);
 	    PopupMenu(&menu);
 	} else if (data->GetLabel()) {
@@ -218,7 +219,6 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 
 void AvenTreeCtrl::OnRestrict(wxCommandEvent& e)
 {
-    if (!menu_data) return;
-    m_Parent->RestrictTo(menu_data->GetSurvey());
+    m_Parent->RestrictTo(menu_data ? menu_data->GetSurvey() : wxString());
     e.Skip();
 }
