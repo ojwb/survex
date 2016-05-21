@@ -32,4 +32,9 @@
 *export 1 2
 *date 2000.12.25
 1 2 100.0 000 0
+; Regression test for bug fixed in 1.2.27 - cavern caches the declination,
+; but fails to invalidate the cache when the declination coordindates are
+; changed, only when the date changed.
+*declination auto 0490600 5282000 1234
+1 2a 50.0 000 0
 *end d

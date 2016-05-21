@@ -1645,6 +1645,8 @@ cmd_declination(void)
 	pcs->dec_x = x;
 	pcs->dec_y = y;
 	pcs->dec_z = z;
+	/* Invalidate cached declination. */
+	pcs->declination = HUGE_REAL;
     } else {
 	/* *declination D UNITS */
 	int units = get_units(BIT(Q_DECLINATION), fFalse);
