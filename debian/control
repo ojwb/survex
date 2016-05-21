@@ -3,7 +3,7 @@ Section: science
 Priority: extra
 Maintainer: Olly Betts <olly@survex.com>
 Uploaders: Wookey <wookey@debian.org>
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Build-Depends: debhelper (>= 9), libx11-dev, libxext-dev, x11proto-core-dev,
     libavcodec-dev, libavformat-dev, libproj-dev, libswscale-dev,
     libwxgtk3.0-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev,
