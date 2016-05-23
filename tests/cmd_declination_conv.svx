@@ -1,0 +1,11 @@
+; pos=yes warn=0
+; Adapted from example posted by Mateusz Golicz to the mailing list
+*begin test
+*date 2015.08.01
+*cs UTM33N
+*cs out UTM33N
+*fix 0 328000 5260000 2500
+*declination auto 328000 5260000 2500
+*data normal from to tape compass clino
+0       1       1000   356.9275   0
+*end test

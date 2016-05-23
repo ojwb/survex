@@ -865,6 +865,9 @@ handle_compass(real *p_var)
    if (pcs->z[Q_DECLINATION] != HUGE_REAL) {
       declination = -pcs->z[Q_DECLINATION];
    } else if (pcs->declination != HUGE_REAL) {
+      /* Cached value calculated for a previous compass reading taken on the
+       * same date (by the 'else' just below).
+       */
       declination = pcs->declination;
    } else {
       if (!pcs->meta || pcs->meta->days1 == -1) {
@@ -876,8 +879,9 @@ handle_compass(real *p_var)
 	  /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
 	  declination = thgeomag(pcs->dec_y, pcs->dec_x, pcs->dec_z, dat);
       }
+      declination -= pcs->convergence;
       /* We cache the calculated declination as the calculation is relatively
-       * expensive.  We also calculate an "assumed 0" answer so that we only
+       * expensive.  We also cache an "assumed 0" answer so that we only
        * warn once per such survey rather than for every line with a compass
        * reading. */
       pcs->declination = declination;

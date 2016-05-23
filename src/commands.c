@@ -40,6 +40,25 @@
 #include "readval.h"
 #include "str.h"
 
+//// Extracted from proj.4 projects (yuck, but grass also does this):
+struct DERIVS {
+    double x_l, x_p; /* derivatives of x for lambda-phi */
+    double y_l, y_p; /* derivatives of y for lambda-phi */
+};
+
+struct FACTORS {
+    struct DERIVS der;
+    double h, k;	/* meridinal, parallel scales */
+    double omega, thetap;	/* angular distortion, theta prime */
+    double conv;	/* convergence */
+    double s;		/* areal scale factor */
+    double a, b;	/* max-min scale error */
+    int code;		/* info as to analytics, see following */
+};
+
+int pj_factors(projLP, projPJ *, double, struct FACTORS *);
+////
+
 static projPJ proj_wgs84;
 
 static void
@@ -1647,6 +1666,12 @@ cmd_declination(void)
 	pcs->dec_z = z;
 	/* Invalidate cached declination. */
 	pcs->declination = HUGE_REAL;
+	{
+	    projLP lp = { x, y };
+	    struct FACTORS factors = { 0 };
+	    pj_factors(lp, proj_out, 0.0, &factors);
+	    pcs->convergence = factors.conv;
+	}
     } else {
 	/* *declination D UNITS */
 	int units = get_units(BIT(Q_DECLINATION), fFalse);
@@ -1654,6 +1679,7 @@ cmd_declination(void)
 	    return;
 	}
 	pcs->z[Q_DECLINATION] = -v * factor_tab[units];
+	pcs->convergence = 0;
     }
 }
 

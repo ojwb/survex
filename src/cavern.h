@@ -333,6 +333,8 @@ typedef struct Settings {
     * meaningful if date1 != -1.
     */
    real declination;
+   /* Grid convergence. */
+   real convergence;
    meta_data * meta;
 } settings;
 
