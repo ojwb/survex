@@ -24,6 +24,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
+#include <string.h>
 
 #include <proj_api.h>
 
@@ -1668,7 +1669,8 @@ cmd_declination(void)
 	pcs->declination = HUGE_REAL;
 	{
 	    projLP lp = { x, y };
-	    struct FACTORS factors = { 0 };
+	    struct FACTORS factors;
+	    memset(&factors, 0, sizeof(factors));
 	    pj_factors(lp, proj_out, 0.0, &factors);
 	    pcs->convergence = factors.conv;
 	}
