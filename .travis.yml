@@ -19,6 +19,8 @@ script:
   - test "$TRAVIS_OS_NAME" = osx || make
   - test "$TRAVIS_OS_NAME" = osx || make check
   - test "$TRAVIS_OS_NAME" != osx || touch doc/3dtopos.1 doc/aven.1 doc/cad3d.1 doc/cavern.1 doc/diffpos.1 doc/extend.1 doc/sorterr.1
+  - test "$TRAVIS_OS_NAME" != osx || mkdir -p doc/manual
+  - test "$TRAVIS_OS_NAME" != osx || touch doc/manual.pdf doc/manual.txt doc/manual/stampfile
   - test "$TRAVIS_OS_NAME" != osx || ./buildmacosx.sh
 branches:
   only:
