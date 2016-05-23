@@ -78,6 +78,7 @@ src/extend
 src/img2aven.h
 src/imgtest
 src/sorterr
+src/thgeomagdata.h
 src/z_getopt.c
 stamp-h1
 survex.iss
