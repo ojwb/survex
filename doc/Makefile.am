@@ -34,32 +34,32 @@ pkgdoc_DATA = @HTMLFILES@ $(manual_alt)
 man_MANS = survex.7 $(other_mans)
 
 aven.1: $(srcdir)/aven.sgml $(srcdir)/man_aven.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_aven.sgml > aven.tmp
-	mv aven.tmp aven.1
+	$(DOCBOOK2MAN) $(srcdir)/man_aven.sgml
+	rm -f manpage.links manpage.refs
 
 cad3d.1: $(srcdir)/cad3d.sgml $(srcdir)/man_cad3d.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_cad3d.sgml > cad3d.tmp
-	mv cad3d.tmp cad3d.1
+	$(DOCBOOK2MAN) $(srcdir)/man_cad3d.sgml
+	rm -f manpage.links manpage.refs
 
 cavern.1: $(srcdir)/cavern.sgml $(srcdir)/man_cavern.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_cavern.sgml > cavern.tmp
-	mv cavern.tmp cavern.1
+	$(DOCBOOK2MAN) $(srcdir)/man_cavern.sgml
+	rm -f manpage.links manpage.refs
 
 diffpos.1: $(srcdir)/diffpos.sgml $(srcdir)/man_diffpos.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_diffpos.sgml > diffpos.tmp
-	mv diffpos.tmp diffpos.1
+	$(DOCBOOK2MAN) $(srcdir)/man_diffpos.sgml
+	rm -f manpage.links manpage.refs
 
 extend.1: $(srcdir)/extend.sgml $(srcdir)/man_extend.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_extend.sgml > extend.tmp
-	mv extend.tmp extend.1
+	$(DOCBOOK2MAN) $(srcdir)/man_extend.sgml
+	rm -f manpage.links manpage.refs
 
 sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_sorterr.sgml > sorterr.tmp
-	mv sorterr.tmp sorterr.1
+	$(DOCBOOK2MAN) $(srcdir)/man_sorterr.sgml
+	rm -f manpage.links manpage.refs
 
 3dtopos.1: $(srcdir)/3dtopos.sgml $(srcdir)/man_3dtopos.sgml $(srcdir)/survex.ent
-	$(DOCBOOK_TO_MAN) $(srcdir)/man_3dtopos.sgml > 3dtopos.tmp
-	mv 3dtopos.tmp 3dtopos.1
+	$(DOCBOOK2MAN) $(srcdir)/man_3dtopos.sgml
+	rm -f manpage.links manpage.refs
 
 install-data-local: manual
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual

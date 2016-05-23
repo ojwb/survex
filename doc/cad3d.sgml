@@ -5,8 +5,7 @@
 
 <refnamediv>
 <refname>cad3d</refname>
-<refpurpose>convert a <Application>Survex</Application> <filename>.3d</filename> file into formats which can be read
-by CAD and drawing packages
+<refpurpose>convert a <Application>Survex</Application> <filename>.3d</filename> file into formats which can be read by CAD and drawing packages
 </refpurpose>
 </refnamediv>
 

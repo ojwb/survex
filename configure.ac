@@ -318,21 +318,21 @@ fi
 AC_SUBST(SGMLTOOLS)
 AC_ARG_VAR(SGMLTOOLS, [sgmltools command])
 
-AC_MSG_CHECKING(for docbook-to-man)
-if test : != "$DOCBOOK_TO_MAN" ; then
-  : ${DOCBOOK_TO_MAN=docbook-to-man}
-  $DOCBOOK_TO_MAN 2> /dev/null
+AC_MSG_CHECKING(for docbook2man)
+if test : != "$DOCBOOK2MAN" ; then
+  : ${DOCBOOK2MAN=docbook2man}
+  $DOCBOOK2MAN 2> /dev/null
   if test $? = 1 ; then
-    AC_MSG_RESULT([$DOCBOOK_TO_MAN])
+    AC_MSG_RESULT([$DOCBOOK2MAN])
   else
-    DOCBOOK_TO_MAN="$MISSING docbook-to-man"
+    DOCBOOK2MAN="$MISSING docbook2man"
     AC_MSG_RESULT([not found])
   fi
 else
-  AC_MSG_RESULT([$DOCBOOK_TO_MAN])
+  AC_MSG_RESULT([$DOCBOOK2MAN])
 fi
-AC_SUBST(DOCBOOK_TO_MAN)
-AC_ARG_VAR(DOCBOOK_TO_MAN, [docbook-to-man command])
+AC_SUBST(DOCBOOK2MAN)
+AC_ARG_VAR(DOCBOOK2MAN, [docbook2man command])
 
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
