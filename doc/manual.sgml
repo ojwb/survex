@@ -1125,7 +1125,7 @@ Value = ( Reading * Scale ) - ZeroError    (Scale defaults to 1.0)
 
 <Para>
 If the scale factor is 1.0, then the two forms are equivalent, though they
-still allow you to diffentiate between how the zero error has been determined.
+still allow you to differentiate between how the zero error has been determined.
 </Para>
 
 <Para>
