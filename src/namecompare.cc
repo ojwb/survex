@@ -1,6 +1,6 @@
 /* namecompare.cc */
 /* Ordering function for station names */
-/* Copyright (C) 1991-2002,2004,2012 Olly Betts
+/* Copyright (C) 1991-2002,2004,2012,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,18 +24,15 @@
 #include "namecompare.h"
 
 inline bool u_digit(unsigned ch) {
-    return ch < 256 && isdigit((unsigned char)ch);
+    return (ch - unsigned('0')) <= unsigned('9' - '0');
 }
 
 int name_cmp(const wxString &a, const wxString &b, int separator) {
    size_t i = 0;
-   while (1) {
-      int cha = (i == a.size() ? 0 : (int)a[i]);
-      int chb = (i == b.size() ? 0 : (int)b[i]);
-
-      /* done if end of either string */
-      if (!cha || !chb) return cha - chb;
-
+   size_t shorter = std::min(a.size(), b.size());
+   while (i != shorter) {
+      int cha = a[i];
+      int chb = b[i];
       /* check for end of non-numeric prefix */
       if (u_digit(cha)) {
 	 /* sort numbers numerically and before non-numbers */
@@ -47,12 +44,12 @@ int name_cmp(const wxString &a, const wxString &b, int separator) {
 	 sa = i;
 	 while (sa != a.size() && a[sa] == '0') sa++;
 	 ea = sa;
-	 while (ea != a.size() && u_digit((unsigned char)a[ea])) ea++;
+	 while (ea != a.size() && u_digit(a[ea])) ea++;
 
 	 sb = i;
 	 while (sb != b.size() && b[sb] == '0') sb++;
 	 eb = sb;
-	 while (eb != b.size() && u_digit((unsigned char)b[eb])) eb++;
+	 while (eb != b.size() && u_digit(b[eb])) eb++;
 
 	 /* shorter sorts first */
 	 res = (ea - sa) - (eb - sb);
@@ -78,4 +75,5 @@ int name_cmp(const wxString &a, const wxString &b, int separator) {
 
       i++;
    }
+   return int(a.size()) - int(b.size());
 }
