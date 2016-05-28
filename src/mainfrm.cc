@@ -2607,7 +2607,6 @@ void MainFrm::RestrictTo(const wxString & survey)
     // potentially reprocessing.
     if (!LoadData(m_File, new_prefix))
 	return;
-    m_Gfx->InvalidateAllLists();
     InitialiseAfterLoad(m_File, new_prefix);
 }
 
