@@ -1070,7 +1070,9 @@ and the corresponding *end should have the same survey name.
 <listitem>
 
 <Para>
-*calibrate is used to specify instrument calibrations.
+*calibrate is used to specify instrument calibrations, via a zero error
+and a scale factor.  By default, the zero error is 0.0 and the scale
+factor 1.0 for all quantities.
 </Para>
 
 <Para>
@@ -1078,16 +1080,17 @@ and the corresponding *end should have the same survey name.
 </Para>
 
 <Para>
-Several quantities can be given in &lt;quantity list&gt;
+Several quantities can be given in &lt;quantity list&gt; - the specified
+calibration will be applied to each of them.
 </Para>
 
 <Para>
-You need to be careful about the sign of the ZeroError. The value of
-ZeroError is what the instrument would read when measuring a
-reading which should be zero.  So for example, if your tape measure
-has the end missing, and you are using the 30cm mark to take all
-measurements from, then a zero distance would be measured as 30cm and
-you would correct this with:
+You need to be careful about the sign of the ZeroError.  Survex follows
+the convention used with scientific instruments - the ZeroError is what
+the instrument reads when measuring a reading which should be zero.  So
+for example, if your tape measure has the end missing, and you are using the
+30cm mark to take all measurements from, then a zero distance would be measured
+as 30cm and you would correct this with:
 </Para>
 
 <programlisting>*CALIBRATE tape +0.3</programlisting>
@@ -1129,54 +1132,11 @@ still allow you to differentiate between how the zero error has been determined.
 </Para>
 
 <Para>
-The magnetic declination is the difference between true north and magnetic
-north.  This varies both by location and over time.  You can just use
-*calibrate compass to correct for any zero error and the declination in one,
-but it's generally preferable to keep the compass zero error and the magnetic
-declination separate.
-</Para>
-
-<Para>
-In earlier Survex versions, you specified the magnetic declination using
-*calibrate declination.  Now you can specify it using the *declination command
-- either by giving an explicit value (since Survex 1.2.22), or by specifying a
-location to use along with the survey date to calculate a value from the IGRF
-model (since Survex 1.2.21).  You can still use *calibrate declination, but the
-new command is preferred if you can assume a new enough version of Survex is
-available.
-</Para>
-
-<Para>
-Cavern calculates the true bearing as follows:
-</Para>
-
-<Para>
-(magnetic bearing) = ((reading)-(compass zero err)) * (compass
-scale factor)
-</Para>
-
-<Para>
-(true bearing) = ((bearing)-(declination zero err))
-</Para>
-
-<Para>
-The scale factor for DECLINATION must be 1.0, otherwise an error
-is given.
-</Para>
-
-<Para>
-Magnetic declinations are conventionally positive when magnetic north is east of
-true north.  With *declination, you specify the declination with the conventional
-sign, but with *calibrate declination you need to reverse the sign when
-specifying the declination correction to use - for example, for an area where
-the magnetic declination is 5 degrees, you should use:
-</Para>
-
-<programlisting>*CALIBRATE DECLINATION -5</programlisting>
-
-<Para>
-The default is all quantities calibrated to scale factor 1.0,
-zero error 0.0
+With older Survex versions, you would specify the magnetic declination
+(difference between True North and Magnetic North) by using *calibrate
+declination to set an explicit value (with no scale factor allowed).  Since
+Survex 1.2.22, it's recommended to instead use the new *declination command
+instead - see the documentation of that command for more details.
 </Para>
 
 </listitem>
@@ -1849,8 +1809,8 @@ can be specified (useful for overnight or multi-day surveying trips).
 <VarListEntry><Term>Syntax</Term>
 
 <listitem>
-<Para>*declination &lt;declination&gt; &lt;units&gt;</Para>
 <Para>*declination &lt;auto&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</Para>
+<Para>*declination &lt;declination&gt; &lt;units&gt;</Para>
 </listitem>
 
 </VarListEntry>
@@ -1860,24 +1820,74 @@ can be specified (useful for overnight or multi-day surveying trips).
 <listitem>
 
 <Para>
-This command allows the magnetic declination to be specified.  This is added to
-compass readings to give bearings relative to true North.
+The *declination command is the modern way to specify magnetic declinations in
+Survex (prior to 1.2.22, *calibrate declination was used instead).
 </Para>
 
 <Para>
-The first form above specifies an explicit value for the magnetic declination,
-while the second tells cavern to use the IGRF (International Geomagnetic
-Reference Field) model to calculate a value for the declination at the
-specified coordinates on the date of each survey.  The coordinates are
-interpreted as being in the current coordinate system (as set with *cs).
+Magnetic declination is the difference between Magnetic North and True North.
+It varies both with location and over time.  Compass bearings are measured
+relative to Magnetic North - adding the magnetic declination gives bearings
+relative to True North.
 </Para>
 
 <Para>
-This command was added in Survex 1.2.21 - in earlier versions you can set a
-fixed declination value using <programlisting>*calibrate declination
-&lt;value&gt;</programlisting> (but note that &lt;value&gt; needs to have the
-opposite sign to that conventionally used for the declination, while this
-command take the declination with the conventional sign.
+If you have specified the output coordinate system (using *cs out) then you can
+use *declination auto (and we recommend that you do).  This is supported since
+Survex 1.2.21 and automatically calculates magnetic declinations based on the
+IGRF (International Geomagnetic Reference Field) model for the specified date
+of each survey and at the specified representative location (given in the
+current input coordinate system, as set with *cs).  Survex 1.2.27 and
+later also automatically correct for grid convergence (the difference between
+Grid North and True North) when *declination auto is in use, based on the same
+specified representative location.
+</Para>
+
+<Para>
+You might wonder why Survex needs a representative location instead of
+calculating the magnetic declination and grid convergence for the actual
+position of each survey station.  The reason is that we need to adjust the
+compass bearings before we can solve the network to find survey station
+locations.  Both magnetic declination and grid convergence don't generally vary
+significantly over the area of a typical cave system - if you are mapping a
+very large cave system, or caves over a wide area, or are working close to a
+magnetic pole or where the output coordinate system is rather distorted, then
+you can specify *declination auto several times with different locations - the
+one currently in effect is used for each survey leg.
+</Para>
+
+<Para>
+Generally it's best to specify a suitable output coordinate system, and use
+*declination auto so Survex corrects for magnetic declination and grid
+convergence for you.  Then Aven knows how to translate coordinates to allow
+export to formats such as GPX and KML, and to overlay terrain data.
+</Para>
+
+<Para>
+If you don't specify an output coordinate system, but fix one or more points
+then Survex works implicitly in the coordinate system your fixed points were
+specified in.  This mode of operation is provided for compatibility with
+datasets from before support for explicit coordinate systems was added to
+Survex - it's much better to specify the output coordinate system as above.
+But if you have a survey of a cave which isn't connected to any known fixed
+points then you'll need to handle it this way, either fixing an entrance
+to some arbitrary coordinates (probably (0,0,0)) or letting Survex pick a
+station as the origin.  If the survey was all done in a short enough period
+of time that the magentic declination won't have changed significantly, you
+can just ignore it and Grid North in the implicit coordinate system will be
+Magnetic North at the time of the survey.  If you want to correct for magnetic
+declination, you can't use *declination auto because the IGRF model needs the
+real world coordinates, but you can specify literal declination values for each
+survey using *declination &lt;declination&gt; &lt;units&gt;.  Then Grid North
+in the implicit coordinate system is True North.
+</Para>
+
+<Para>
+Note that the value specified uses the conventional sign for magnetic
+declination, unlike the old *calibrate declination which needed a value with
+the opposite sign (because *calibrate specifies a zero error), so take care
+when updating old data, or if you're used to the semantics of *calibrate
+declination.
 </Para>
 
 </listitem>
