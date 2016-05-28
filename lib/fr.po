@@ -2681,6 +2681,12 @@ msgstr "Configurer la &page..."
 msgid "&Screenshot..."
 msgstr "&Copie d’écran..."
 
+#. TRANSLATORS: In the "File" menu - c.f. n:191
+#: ../src/mainfrm.cc:797
+#: n:247
+msgid "E&xtended Elevation..."
+msgstr "Coupe &Développée..."
+
 #: ../src/mainfrm.cc:793
 #: n:382
 msgid "&Export as..."

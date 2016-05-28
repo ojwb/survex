@@ -2687,6 +2687,12 @@ msgstr "&Imposta pagina..."
 msgid "&Screenshot..."
 msgstr "&Cattura schermo..."
 
+#. TRANSLATORS: In the "File" menu - c.f. n:191
+#: ../src/mainfrm.cc:797
+#: n:247
+msgid "E&xtended Elevation..."
+msgstr "Profilo &Longitudinale..."
+
 #: ../src/mainfrm.cc:793
 #: n:382
 msgid "&Export as..."

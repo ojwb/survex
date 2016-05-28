@@ -2694,6 +2694,13 @@ msgstr ""
 msgid "&Screenshot..."
 msgstr ""
 
+#. TRANSLATORS: In the "File" menu - c.f. n:191
+#: ../src/mainfrm.cc:797
+#: n:247
+#, fuzzy
+msgid "E&xtended Elevation..."
+msgstr "&Vetített Keresztmetszet..."
+
 #: ../src/mainfrm.cc:793
 #: n:382
 msgid "&Export as..."

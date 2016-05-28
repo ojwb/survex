@@ -2688,6 +2688,12 @@ msgstr "&Seite einrichten..."
 msgid "&Screenshot..."
 msgstr "Bildschirm&abzug..."
 
+#. TRANSLATORS: In the "File" menu - c.f. n:191
+#: ../src/mainfrm.cc:797
+#: n:247
+msgid "E&xtended Elevation..."
+msgstr "&Abwicklung..."
+
 #: ../src/mainfrm.cc:793
 #: n:382
 msgid "&Export as..."

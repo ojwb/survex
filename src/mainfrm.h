@@ -65,6 +65,7 @@ enum {
     menu_FILE_PAGE_SETUP,
     menu_FILE_SCREENSHOT,
     menu_FILE_EXPORT,
+    menu_FILE_EXTEND,
     menu_PRES_NEW,
     menu_PRES_OPEN,
     menu_PRES_SAVE,
@@ -209,6 +210,8 @@ class MainFrm : public wxFrame {
     wxNotebook* m_Notebook;
     AvenPresList* m_PresList;
     wxString m_File;
+    // Processed version of data - same as m_File if m_File is processed data.
+    wxString m_FileProcessed;
     wxString m_Survey;
 public: // FIXME for m_cs_proj
     wxString m_Title, m_cs_proj, m_DateStamp;
@@ -308,6 +311,7 @@ public:
     void OnPresStop(wxCommandEvent& event);
     void OnPresExportMovie(wxCommandEvent& event);
     void OnExport(wxCommandEvent& event);
+    void OnExtend(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& event);
 
     void OnAbout(wxCommandEvent& event);
@@ -325,6 +329,7 @@ public:
     void OnShowLogUpdate(wxUpdateUIEvent &ui) { ui.Enable(m_Log != NULL); }
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
+    void OnExtendUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_IsExtendedElevation); }
 
     // temporary bodges until event handling problem is sorted out:
     void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDefaultsUpdate(event); }

@@ -96,4 +96,7 @@ class CavernLogWindow : public wxHtmlWindow {
     DECLARE_EVENT_TABLE()
 };
 
+wxString escape_for_shell(wxString s, bool protect_dash = false);
+wxString get_command_path(const wxChar * command_name);
+
 #endif

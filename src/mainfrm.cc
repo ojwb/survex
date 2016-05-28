@@ -49,6 +49,7 @@
 # include <wx/sysopt.h>
 #endif
 
+#include <cerrno>
 #include <cstdlib>
 #include <float.h>
 #include <functional>
@@ -520,6 +521,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_FILE_SCREENSHOT, MainFrm::OnScreenshot)
 //    EVT_MENU(wxID_PREFERENCES, MainFrm::OnFilePreferences)
     EVT_MENU(menu_FILE_EXPORT, MainFrm::OnExport)
+    EVT_MENU(menu_FILE_EXTEND, MainFrm::OnExtend)
     EVT_MENU(wxID_EXIT, MainFrm::OnQuit)
     EVT_MENU_RANGE(wxID_FILE1, wxID_FILE9, MainFrm::OnMRUFile)
 
@@ -608,6 +610,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
     EVT_UPDATE_UI(menu_FILE_EXPORT, MainFrm::OnExportUpdate)
+    EVT_UPDATE_UI(menu_FILE_EXTEND, MainFrm::OnExtendUpdate)
     EVT_UPDATE_UI(menu_ROTATION_TOGGLE, MainFrm::OnToggleRotationUpdate)
     EVT_UPDATE_UI(menu_ROTATION_REVERSE, MainFrm::OnReverseDirectionOfRotationUpdate)
     EVT_UPDATE_UI(menu_ORIENT_MOVE_NORTH, MainFrm::OnMoveNorthUpdate)
@@ -791,6 +794,8 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: In the "File" menu */
     filemenu->Append(menu_FILE_SCREENSHOT, wmsg(/*&Screenshot...*/201));
     filemenu->Append(menu_FILE_EXPORT, wmsg(/*&Export as...*/382));
+    /* TRANSLATORS: In the "File" menu - c.f. n:191 */
+    filemenu->Append(menu_FILE_EXTEND, wmsg(/*E&xtended Elevation...*/247));
 #ifndef __WXMAC__
     // On wxMac the "Quit" menu item will be moved elsewhere, so we suppress
     // this separator.
@@ -1534,6 +1539,8 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 	DoFind();
     }
 
+    m_FileProcessed = file;
+
     return true;
 }
 
@@ -2082,6 +2089,52 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 void MainFrm::OnExport(wxCommandEvent&)
 {
     m_Gfx->OnExport(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
+}
+
+void MainFrm::OnExtend(wxCommandEvent&)
+{
+    wxString output = m_Survey;
+    if (output.empty()) {
+	wxFileName::SplitPath(m_File, NULL, NULL, &output, NULL, wxPATH_NATIVE);
+    }
+    output += wxT("_extend.3d");
+    {
+	AvenAllowOnTop ontop(this);
+#ifdef __WXMOTIF__
+	wxString ext(wxT("*.3d"));
+#else
+	/* TRANSLATORS: Survex is the name of the software, and "3d" refers to a
+	 * file extension, so neither should be translated. */
+	wxString ext = wmsg(/*Survex 3d files*/207);
+	ext += wxT("|*.3d");
+#endif
+	wxFileDialog dlg(this, wmsg(/*Select an output filename*/319),
+			 wxString(), output, ext,
+			 wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
+	if (dlg.ShowModal() != wxID_OK) return;
+	output = dlg.GetPath();
+    }
+    wxString cmd = get_command_path(L"extend");
+    cmd = escape_for_shell(cmd, false);
+    if (!m_Survey.empty()) {
+	cmd += wxT(" --survey=");
+	cmd += escape_for_shell(m_Survey, false);
+    }
+    cmd += wxT(" --show-breaks ");
+    cmd += escape_for_shell(m_FileProcessed, true);
+    cmd += wxT(" ");
+    cmd += escape_for_shell(output, true);
+    if (wxExecute(cmd, wxEXEC_SYNC) < 0) {
+	wxString m;
+	m.Printf(wmsg(/*Couldn’t run external command: “%s”*/17), cmd.c_str());
+	m += wxT(" (");
+	m += wxString(strerror(errno), wxConvUTF8);
+	m += wxT(')');
+	wxGetApp().ReportError(m);
+	return;
+    }
+    if (LoadData(output, wxString()))
+	InitialiseAfterLoad(output, wxString());
 }
 
 void MainFrm::OnQuit(wxCommandEvent&)

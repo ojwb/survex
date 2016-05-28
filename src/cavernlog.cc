@@ -155,7 +155,7 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
     EVT_END_PROCESS(wxID_ANY, CavernLogWindow::OnEndProcess)
 END_EVENT_TABLE()
 
-static wxString escape_for_shell(wxString s, bool protect_dash = false)
+wxString escape_for_shell(wxString s, bool protect_dash)
 {
 #ifdef __WXMSW__
     // Correct quoting rules are insane:
@@ -206,6 +206,36 @@ done:
     }
 #endif
     return s;
+}
+
+wxString get_command_path(const wxChar * command_name)
+{
+#ifdef __WXMSW__
+    wxString cmd;
+    {
+	DWORD len = 256;
+	wchar_t *buf = NULL;
+	while (1) {
+	    DWORD got;
+	    buf = (wchar_t*)osrealloc(buf, len * 2);
+	    got = GetModuleFileNameW(NULL, buf, len);
+	    if (got < len) break;
+	    len += len;
+	}
+	/* Strange Win32 nastiness - strip prefix "\\?\" if present */
+	wchar_t *start = buf;
+	if (wcsncmp(start, L"\\\\?\\", 4) == 0) start += 4;
+	wchar_t * slash = wcsrchr(start, L'\\');
+	if (slash) {
+	    cmd.assign(start, slash - start + 1);
+	}
+	osfree(buf);
+    }
+#else
+    wxString cmd = wxString(msg_exepth(), wxConvUTF8);
+#endif
+    cmd += command_name;
+    return cmd;
 }
 
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
@@ -395,34 +425,8 @@ CavernLogWindow::process(const wxString &file)
 #endif
 
     wxString escaped_file = escape_for_shell(file, true);
-#ifdef __WXMSW__
-    wxString cmd;
-    {
-	DWORD len = 256;
-	wchar_t *buf = NULL;
-	while (1) {
-	    DWORD got;
-	    buf = (wchar_t*)osrealloc(buf, len * 2);
-	    got = GetModuleFileNameW(NULL, buf, len);
-	    if (got < len) break;
-	    len += len;
-	}
-	/* Strange Win32 nastiness - strip prefix "\\?\" if present */
-	wchar_t *start = buf;
-	if (wcsncmp(start, L"\\\\?\\", 4) == 0) start += 4;
-	wchar_t * slash = wcsrchr(start, L'\\');
-	if (slash) {
-	    cmd.assign(start, slash - start + 1);
-	}
-	osfree(buf);
-    }
-    cmd += L"cavern";
+    wxString cmd = get_command_path(L"cavern");
     cmd = escape_for_shell(cmd, false);
-#else
-    char *cavern = use_path(msg_exepth(), "cavern");
-    wxString cmd = escape_for_shell(wxString(cavern, wxConvUTF8), false);
-    osfree(cavern);
-#endif
     cmd += wxT(" -o ");
     cmd += escaped_file;
     cmd += wxT(' ');
