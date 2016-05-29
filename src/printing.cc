@@ -930,6 +930,8 @@ svxPrintDlg::RecalcBounds()
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
+	    if (trav->isSplay && !(m_layout.show_mask & SPLAYS))
+		continue;
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
 	    for ( ; pos != end; ++pos) {
@@ -949,6 +951,8 @@ svxPrintDlg::RecalcBounds()
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
+	    if (trav->isSplay && !(m_layout.show_mask & SPLAYS))
+		continue;
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
 	    for ( ; pos != end; ++pos) {
