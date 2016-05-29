@@ -1,3 +1,87 @@
+up to: 513935e0536fa24e5cb10b443a0e915c3e201112
+
+Changes in 1.2.27 (2016-05-29):
+
+* aven:
+
+  + Right click on a survey in the survey tree now gives a pop-up menu
+    with "Hide others", which restricts the view to just that survey
+    and any subsurveys.  Right click on the root of the survey tree
+    gives a menu with "Show all" to undo any restriction in effect.
+    (Currently these are implemented by reloading the file and using
+    the same machinery as the --survey= command line option, but that will
+    probably change in the future).
+
+  + Any currect sub-survey restriction (from the --survey= command line
+    option or the new UI described above) is now shown in brackets after the
+    survey tree root.
+
+  + When reloading a survey, preserve the current view position rather
+    than recentring.
+
+  + When reloading a survey, actually preserve the current scale factor
+    (this was meant to happen, but the adjustment was applied in the
+    wrong direction).
+
+  + New "File->Extended Elevation..." menu item provides a way to generate
+    extended elevations for simple cases without having to use the command
+    line.  Suggested by Fleur Loveridge.
+
+  + Check modifier keys when processing key presses.  If Shift, Control, Alt,
+    etc are pressed along with Function keys, Escape, Delete, Space, Return,
+    etc, then don't process the key press.  Reported by Владимир Георгиев.
+
+  + Reduce file loading time by ~5%.  The station name compare function was
+    something of a hot spot, and optimising it yielded a nice improvement.
+
+  + Allow splay legs to be disabled in when printing and exporting.
+    Mostly addresses #60 (when enabled, splays just export as normal
+    legs but ought to be distinguished in formats which provide an
+    appropriate way to do so).
+
+  + Printouts now show LRUD as pale grey arrows from the station they are
+    measured from.  Based on patch from Michael Sargent.  Closes #65.
+
+Use utf8_str() instead of mb_str() to get UTF-8
+- user visible effect(s)?
+
+  + Update movie export code for compatibility with the ever shifting
+    libav/ffmpeg API (AVPicture and related functions are now deprecated).
+
+* cavern:
+
+  + Allow tape or backtape to be omitted.  Reported by Erin Lynch.
+
+  + Grid convergence is now corrected for when using automatically
+    calculated declinations (*declination auto <X> <Y> <Z>).  Requested
+    by Mateusz Golicz on the mailing list.
+
+  + Clear any cached calculated declination upon another *declination auto
+    with different coordinates.  Previously if the date stayed the same,
+    a previously cached declination for the old coordinates was used.
+
+  + Fix check for end of version number array in *required.   We would check up
+    to 12 version components, the last 9 being bogus.  In practice, *require is
+    only likely to be used with up to three components, so this wouldn't be an
+    issue.
+
+  + *begin with an invalid prefix could cause a crash in some cases.  Fixed
+    by patch from Colin Watson.
+
+* Merge translation updates from Jean-Marc.
+
+* img library: Better document which members can be set when writing.
+  Highlighted by email query about use of img API from Владимир Георгиев.
+
+* doc/3dformat.htm: Update details of how changes to the current label buffer
+  are encoded to reflect changes in v8.  Reported by Angus Sawyer.
+
+* Use docbook2man instead of docbook-to-man to generated Unix man pages
+  from SGML source.  The latter seems to be no longer actively maintained, and
+  docbook2man now does a similarly good job.
+
+* Use https for survex.com links, and for other sites which support it.
+
 Changes in 1.2.26 (2016-01-07):
 
 * aven:
