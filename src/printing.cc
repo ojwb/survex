@@ -1500,8 +1500,12 @@ svxPrintout::OnPrintPage(int pageNum) {
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
 	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
-	    if (l->tilt == 90.0 || l->tilt == -90.0) PlotLR(*trav);
-	    if (l->tilt == 0.0) PlotUD(*trav);
+	    if (l->tilt == 0.0) {
+		PlotUD(*trav);
+	    } else {
+		// m_layout.tilt is 90.0 or -90.0 due to check above.
+		PlotLR(*trav);
+	    }
 	}
     }
 
