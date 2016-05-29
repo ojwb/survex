@@ -785,7 +785,7 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
      * terrain. */
     filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain...*/453));
-    filemenu->Append(menu_FILE_LOG, wmsg(/*Show &Log*/144));
+    filemenu->AppendCheckItem(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
     filemenu->Append(wxID_PRINT, wmsg(/*&Print...\tCtrl+P*/380));
@@ -1009,7 +1009,7 @@ void MainFrm::MakeToolBar()
     // FIXME: TRANSLATE tooltips
     toolbar->AddTool(wxID_OPEN, wxT("Open"), TOOL(open), wxT("Open a survey file for viewing"));
     toolbar->AddTool(menu_PRES_OPEN, wxT("Open presentation"), TOOL(open_pres), wxT("Open a presentation"));
-    toolbar->AddTool(menu_FILE_LOG, wxT("View log"), TOOL(log), wxT("View log from processing survey data"));
+    toolbar->AddCheckTool(menu_FILE_LOG, wxT("View log"), TOOL(log), wxNullBitmap, wxT("View log from processing survey data"));
     toolbar->AddSeparator();
     toolbar->AddCheckTool(menu_ROTATION_TOGGLE, wxT("Toggle rotation"), TOOL(rotation), wxNullBitmap, wxT("Toggle rotation"));
     toolbar->AddTool(menu_ORIENT_PLAN, wxT("Plan"), TOOL(plan), wxT("Switch to plan view"));
@@ -2017,7 +2017,10 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
 
 void MainFrm::OnShowLog(wxCommandEvent&)
 {
-    if (!m_Log) return;
+    if (!m_Log) {
+	HideLog(m_Splitter->GetWindow1());
+	return;
+    }
     wxWindow * win = m_Splitter->GetWindow1();
     m_Splitter->ReplaceWindow(win, m_Log);
     win->Show(false);

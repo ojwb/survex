@@ -326,7 +326,10 @@ public:
 	}
     }
 
-    void OnShowLogUpdate(wxUpdateUIEvent &ui) { ui.Enable(m_Log != NULL); }
+    void OnShowLogUpdate(wxUpdateUIEvent &ui) {
+	ui.Enable(m_Log != NULL || (m_Splitter->GetWindow1() != m_Gfx && m_Splitter->GetWindow2() != m_Gfx));
+	ui.Check(m_Log == NULL);
+    }
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExtendUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_IsExtendedElevation); }
