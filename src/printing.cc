@@ -1230,21 +1230,21 @@ make_calibration(layout *l) {
       l->xMax = l->yMax = 0.1;
       l->xMin = l->yMin = 0;
 
-      stack(l,img_MOVE, NULL, &pt);
+      stack(l, img_MOVE, NULL, &pt);
       pt.x = 0.1;
-      stack(l,img_LINE, NULL, &pt);
+      stack(l, img_LINE, NULL, &pt);
       pt.y = 0.1;
-      stack(l,img_LINE, NULL, &pt);
+      stack(l, img_LINE, NULL, &pt);
       pt.x = 0.0;
-      stack(l,img_LINE, NULL, &pt);
+      stack(l, img_LINE, NULL, &pt);
       pt.y = 0.0;
-      stack(l,img_LINE, NULL, &pt);
+      stack(l, img_LINE, NULL, &pt);
       pt.x = 0.05;
       pt.y = 0.001;
-      stack(l,img_LABEL, "10cm", &pt);
+      stack(l, img_LABEL, "10cm", &pt);
       pt.x = 0.001;
       pt.y = 0.05;
-      stack(l,img_LABEL, "10cm", &pt);
+      stack(l, img_LABEL, "10cm", &pt);
       l->Scale = 1.0;
 }
 #endif
@@ -1460,7 +1460,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	draw_info_box();
     }
 
-    pdc->SetClippingRegion(x_offset, y_offset,xpPageWidth+1, ypPageDepth+1);
+    pdc->SetClippingRegion(x_offset, y_offset, xpPageWidth + 1, ypPageDepth + 1);
 
     const double Sc = 1000 / l->Scale;
 
@@ -2053,7 +2053,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 
 		// Draw the arrow
 		MoveTo(x + dx1, y + dy1);
-		DrawTo(x , y);
+		DrawTo(x, y);
 		DrawTo(x + dx2, y + dy2);
 	    }
 
@@ -2077,7 +2077,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 
 		// Draw the arrow
 		MoveTo(x + dx1, y + dy1);
-		DrawTo(x , y);
+		DrawTo(x, y);
 		DrawTo(x + dx2, y + dy2);
 	    }
 	}
