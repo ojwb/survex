@@ -89,6 +89,7 @@ html_escape(FILE *fh, const char *s)
     }
 }
 
+// Used by Skencil and SVG.
 static const char *layer_name(int mask) {
     switch (mask) {
 	case LEGS: case LEGS|SURF:
