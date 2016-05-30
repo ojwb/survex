@@ -144,7 +144,7 @@ BitmapFont::init_extra_chars() const
 	}
     }
 #else
-    data = new unsigned char [data_len];
+    data = new unsigned char[data_len];
     extra_data = data;
     if (data_len) {
 	size_t c = data_len;
@@ -168,7 +168,7 @@ BitmapFont::init_extra_chars() const
     if (fd >= 0)
 	close(fd);
 
-    extra_chars = new int [0x10000 - BITMAPFONT_MAX_CHAR];
+    extra_chars = new int[0x10000 - BITMAPFONT_MAX_CHAR];
     int data_ch = 0;
     for (int i = 0; i < 0x10000 - BITMAPFONT_MAX_CHAR; ++i) {
 	if (data_ch >= data_len) {
