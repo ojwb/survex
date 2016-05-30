@@ -1,9 +1,9 @@
-./bad_back.svx:5: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
-./bad_back.svx:7: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
-./bad_back.svx:8: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
-./bad_back.svx:9: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
-./bad_back.svx:10: error: CLINO and BACKCLINO readings must be of the same type
-./bad_back.svx:11: error: CLINO and BACKCLINO readings must be of the same type
+./bad_back.svx:5:13: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
+./bad_back.svx:7:14: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
+./bad_back.svx:8:14: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
+./bad_back.svx:9:14: error: Plumbed CLINO and BACKCLINO readings can't be in the same direction
+./bad_back.svx:10:14: error: CLINO and BACKCLINO readings must be of the same type
+./bad_back.svx:11:14: error: CLINO and BACKCLINO readings must be of the same type
 
 Removing trailing traverses...
 

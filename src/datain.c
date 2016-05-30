@@ -64,6 +64,8 @@ static real value[Fr - 1];
 #define VAL(N) value[(N)-1]
 static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
+static long location[Fr - 1];
+#define LOC(N) location[(N)-1]
 
 /* style functions */
 static void data_normal(void);
@@ -148,6 +150,31 @@ compile_error_skip(int en, ...)
    va_list ap;
    va_start(ap, en);
    compile_v_report(1, en, ap);
+   va_end(ap);
+   skipline();
+}
+
+static void
+compile_error_reading(reading r, int en, ...)
+{
+   va_list ap;
+   int col = 0;
+   va_start(ap, en);
+   error_list_parent_files();
+   if (LOC(r) > file.lpos) col = LOC(r) - file.lpos;
+   v_report(1, file.filename, file.line, col, en, ap);
+   va_end(ap);
+}
+
+static void
+compile_error_reading_skip(reading r, int en, ...)
+{
+   va_list ap;
+   int col = 0;
+   va_start(ap, en);
+   error_list_parent_files();
+   if (LOC(r) > file.lpos) col = LOC(r) - file.lpos;
+   v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
    skipline();
 }
@@ -325,6 +352,7 @@ read_reading(reading r, bool f_optional)
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
+   LOC(r) = ftell(file.fh);
    VAL(r) = read_numeric_multi(f_optional, &n_readings);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
@@ -335,6 +363,7 @@ read_bearing_or_omit(reading r)
 {
    int n_readings;
    q_quantity q = Q_NULL;
+   LOC(r) = ftell(file.fh);
    VAL(r) = read_numeric_multi_or_omit(&n_readings);
    switch (r) {
       case Comp: q = Q_BEARING; break;
@@ -1015,7 +1044,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       /* TRANSLATORS: In data with backsights, the user has tried to give a
        * plumb for the foresight and a clino reading for the backsight, or
        * something similar. */
-      compile_error_skip(/*CLINO and BACKCLINO readings must be of the same type*/84);
+      compile_error_reading_skip(Clino, /*CLINO and BACKCLINO readings must be of the same type*/84);
       return 0;
    }
 
@@ -1040,7 +1069,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 if (backctype != CTYPE_OMIT && (clin > 0) == (backclin > 0)) {
 	    /* TRANSLATORS: We've been told the foresight and backsight are
 	     * both "UP", or that they're both "DOWN". */
-	    compile_error_skip(/*Plumbed CLINO and BACKCLINO readings can't be in the same direction*/92);
+	    compile_error_reading_skip(Clino, /*Plumbed CLINO and BACKCLINO readings can't be in the same direction*/92);
 	    return 0;
 	 }
 	 dz = (clin > (real)0.0) ? tape : -tape;
@@ -1061,7 +1090,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       if (fNoComp) {
 	 /* TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 	  * survey stations. */
-	 compile_error_skip(/*Compass reading may not be omitted except on plumbed legs*/14);
+	 compile_error_reading_skip(Comp, /*Compass reading may not be omitted except on plumbed legs*/14);
 	 return 0;
       }
       if (tape == (real)0.0) {
@@ -1536,6 +1565,7 @@ data_normal(void)
        }
        case Count:
 	  VAL(FrCount) = VAL(ToCount);
+	  LOC(FrCount) = LOC(ToCount);
 	  read_reading(ToCount, fFalse);
 	  fTopofil = fTrue;
 	  break;
@@ -1569,6 +1599,7 @@ data_normal(void)
 	  break;
        case Depth:
 	  VAL(FrDepth) = VAL(ToDepth);
+	  LOC(FrDepth) = LOC(ToDepth);
 	  read_reading(ToDepth, fFalse);
 	  break;
        case DepthChange:
@@ -1653,8 +1684,10 @@ data_normal(void)
 	     int r;
 	     int save_flags;
 	     int implicit_splay;
-	     if (fTopofil)
+	     if (fTopofil) {
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
+		LOC(Tape) = LOC(ToCount);
+	     }
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
@@ -1698,7 +1731,7 @@ data_normal(void)
 		   VAR(Tape) = VAR(BackTape);
 		}
 	     } else if (VAL(Tape) == HUGE_REAL) {
-		compile_error(/*Tape reading may not be omitted*/94);
+		compile_error_reading(Tape, /*Tape reading may not be omitted*/94);
 		goto inferred_equate;
 	     }
 	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
@@ -1743,6 +1776,7 @@ data_normal(void)
 	  /* ordering may omit clino reading, so set up default here */
 	  /* this is also used if clino reading is the omit character */
 	  VAL(Clino) = VAL(BackClino) = 0;
+	  LOC(Clino) = LOC(BackClino) = -1;
 
 	  inferred_equate:
 
@@ -1774,7 +1808,10 @@ data_normal(void)
 		fr = to;
 		to = t;
 	     }
-	     if (fTopofil) VAL(Tape) = VAL(ToCount) - VAL(FrCount);
+	     if (fTopofil) {
+		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
+		LOC(Tape) = LOC(ToCount);
+	     }
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
 	      * works for STYLE_NORMAL (both remain 0) */
@@ -1814,7 +1851,7 @@ data_normal(void)
 		   VAR(Tape) = VAR(BackTape);
 		}
 	     } else if (VAL(Tape) == HUGE_REAL) {
-		compile_error(/*Tape reading may not be omitted*/94);
+		compile_error_reading(Tape, /*Tape reading may not be omitted*/94);
 		process_eol();
 		return;
 	     }
