@@ -130,7 +130,7 @@ class DXF : public ExportFilter {
     explicit DXF(double text_height_)
 	: to_close(0), text_height(text_height_) { pending[0] = '\0'; }
     const int * passes() const;
-    bool fopen(const char *fnm_out);
+    bool fopen(const wxString& fnm_out);
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
@@ -154,10 +154,10 @@ DXF::passes() const
 }
 
 bool
-DXF::fopen(const char *fnm_out)
+DXF::fopen(const wxString& fnm_out)
 {
     // DXF gets written as text rather than binary.
-    fh = ::fopen(fnm_out, "w");
+    fh = wxFopen(fnm_out.fn_str(), wxT("w"));
     return (fh != NULL);
 }
 
@@ -1309,9 +1309,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   return false;
    }
 
-   // FIXME: This should really use fn_str() - currently we probably can't
-   // save to a Unicode path on wxmsw.
-   if (!filt->fopen(fnm_out.mb_str())) {
+   if (!filt->fopen(fnm_out)) {
        delete filt;
        return false;
    }

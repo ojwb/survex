@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2005,2012,2013,2014,2015 Olly Betts
+/* Copyright (C) 2005,2012,2013,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #define SURVEX_EXPORTFILTER_H
 
 #include <stdio.h>
+#include "wx.h"
 
 #include "img_hosted.h"
 
@@ -35,8 +36,8 @@ class ExportFilter {
     // FIXME: deal with errors closing file... (safe_fclose?)
     virtual ~ExportFilter() { if (fh) fclose(fh); }
     virtual const int * passes() const;
-    virtual bool fopen(const char *fnm_out) {
-	fh = ::fopen(fnm_out, "wb");
+    virtual bool fopen(const wxString& fnm_out) {
+	fh = wxFopen(fnm_out.fn_str(), wxT("wb"));
 	return (fh != NULL);
     }
     virtual void header(const char *, const char *, time_t,
