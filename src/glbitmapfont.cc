@@ -119,7 +119,7 @@ BitmapFont::init_extra_chars() const
 {
     int fd = wxOpen(font_file,
 #ifdef __WXMSW__
-	    _O_RDONLY|_O_SEQUENTIAL,
+	    _O_RDONLY|_O_SEQUENTIAL|_O_BINARY,
 #else
 	    O_RDONLY,
 #endif
