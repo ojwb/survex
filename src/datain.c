@@ -121,33 +121,33 @@ error_list_parent_files(void)
    }
 }
 
-void
-compile_error(int en, ...)
+static void
+compile_v_report(int severity, int en, va_list ap)
 {
    int col = 0;
-   va_list ap;
-   va_start(ap, en);
    error_list_parent_files();
    if (en < 0) {
       en = -en;
       if (file.fh) col = ftell(file.fh) - file.lpos;
    }
-   v_report(1, file.filename, file.line, col, en, ap);
+   v_report(severity, file.filename, file.line, col, en, ap);
+}
+
+void
+compile_error(int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   compile_v_report(1, en, ap);
    va_end(ap);
 }
 
 void
 compile_error_skip(int en, ...)
 {
-   int col = 0;
    va_list ap;
    va_start(ap, en);
-   error_list_parent_files();
-   if (en < 0) {
-      en = -en;
-      if (file.fh) col = ftell(file.fh) - file.lpos;
-   }
-   v_report(1, file.filename, file.line, col, en, ap);
+   compile_v_report(1, en, ap);
    va_end(ap);
    skipline();
 }
@@ -187,15 +187,9 @@ compile_error_token(int en)
 void
 compile_warning(int en, ...)
 {
-   int col = 0;
    va_list ap;
    va_start(ap, en);
-   error_list_parent_files();
-   if (en < 0) {
-      en = -en;
-      if (file.fh) col = ftell(file.fh) - file.lpos;
-   }
-   v_report(0, file.filename, file.line, col, en, ap);
+   compile_v_report(0, en, ap);
    va_end(ap);
 }
 
