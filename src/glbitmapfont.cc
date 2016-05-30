@@ -117,11 +117,13 @@ inline void call_lists(GLsizei n, const GLvoid * lists)
 void
 BitmapFont::init_extra_chars() const
 {
+    int fd = wxOpen(font_file,
 #ifdef __WXMSW__
-    int fd = _wopen(font_file.fn_str(), _O_RDONLY|_O_SEQUENTIAL);
+	    _O_RDONLY|_O_SEQUENTIAL,
 #else
-    int fd = open(font_file.mb_str(), O_RDONLY);
+	    O_RDONLY,
 #endif
+	    0);
 
     int data_len = 0;
     unsigned char * data = NULL;
