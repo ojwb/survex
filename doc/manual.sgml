@@ -1821,7 +1821,14 @@ can be specified (useful for overnight or multi-day surveying trips).
 
 <Para>
 The *declination command is the modern way to specify magnetic declinations in
-Survex (prior to 1.2.22, *calibrate declination was used instead).
+Survex.  Prior to 1.2.22, *calibrate declination was used instead.  If you
+use a mixture of *calibrate declination and *declination, they interact in
+the natural way - whichever was set most recently is used for each compass
+reading (taking into account survey scope).  We don't generally recommend
+mixing the two, but it's useful to understand how they interact if you want to
+combine datasets using the old and new commands, and perhaps if you have a
+large existing dataset and want to migrate it without having to change
+everything at once.
 </Para>
 
 <Para>
