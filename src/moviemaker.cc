@@ -245,7 +245,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 #ifndef HAVE_AVCODEC_ENCODE_VIDEO2
     outbuf = NULL;
     if (!(oc->oformat->flags & AVFMT_RAWPICTURE)) {
-	outbuf = (unsigned char *)malloc(OUTBUF_SIZE);
+	outbuf = (unsigned char *)av_malloc(OUTBUF_SIZE);
 	if (!outbuf) {
 	    averrno = AVERROR(ENOMEM);
 	    return false;
@@ -276,7 +276,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     frame->width = c->width;
     frame->height = c->height;
 
-    pixels = (unsigned char *)malloc(width * height * 6);
+    pixels = (unsigned char *)av_malloc(width * height * 6);
     if (!pixels) {
 	averrno = AVERROR(ENOMEM);
 	return false;
@@ -534,9 +534,9 @@ MovieMaker::release()
     if (frame) {
 	av_frame_free(&frame);
     }
-    free(pixels);
+    av_free(pixels);
     pixels = NULL;
-    free(outbuf);
+    av_free(outbuf);
     outbuf = NULL;
     av_free(sws_ctx);
     sws_ctx = NULL;
