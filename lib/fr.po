@@ -750,7 +750,7 @@ msgstr "Les mesures de CLINO et BACKCLINO doivent être du même type"
 #: ../src/datain.c:1043
 #: n:92
 msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
-msgstr ""
+msgstr "Les lectures verticales CLINO et BACKCLINO peuvent être dans la même direction"
 
 #: ../src/readval.c:526
 #: n:86
@@ -1473,13 +1473,13 @@ msgstr "spécifier la version du format de fichier 3d en sortie"
 #: ../src/extend.c:466
 #: n:90
 msgid ".espec file to control extending"
-msgstr ""
+msgstr "fichier .espec pour contrôler l'extension"
 
 #. TRANSLATORS: --help output for extend --show-breaks option
 #: ../src/extend.c:468
 #: n:91
 msgid "show breaks with surface survey legs in output"
-msgstr ""
+msgstr "affiche les coupures avec les visées de surface en sortie"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
