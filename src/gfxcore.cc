@@ -3727,6 +3727,15 @@ void GfxCore::SetColourBy(int colour_by) {
 
 bool GfxCore::ExportMovie(const wxString & fnm)
 {
+    FILE* fh = wxFopen(fnm.fn_str(), wxT("w"));
+    if (fh == NULL) {
+	wxGetApp().ReportError(wxString::Format(wmsg(/*Failed to open output file “%s”*/47), fnm.c_str()));
+	return false;
+    }
+
+    wxString ext;
+    wxFileName::SplitPath(fnm, NULL, NULL, NULL, &ext, wxPATH_NATIVE);
+
     int width;
     int height;
     GetSize(&width, &height);
@@ -3736,9 +3745,8 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
     movie = new MovieMaker();
 
-    // FIXME: This should really use fn_str() - currently we probably can't
-    // save to a Unicode path on wxmsw.
-    if (!movie->Open(fnm.mb_str(), width, height)) {
+    // movie takes ownership of fh.
+    if (!movie->Open(fh, ext.utf8_str(), width, height)) {
 	wxGetApp().ReportError(wxString(movie->get_error_string(), wxConvUTF8));
 	delete movie;
 	movie = NULL;

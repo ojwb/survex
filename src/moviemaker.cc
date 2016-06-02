@@ -147,10 +147,28 @@ MovieMaker::MovieMaker()
 #endif
 }
 
-bool MovieMaker::Open(const char *fnm, int width, int height)
+static int
+write_packet(void *opaque, uint8_t *buf, int buf_size) {
+    FILE * fh = (FILE*)opaque;
+    size_t res = fwrite(buf, 1, buf_size, fh);
+    return res > 0 ? res : -1;
+}
+
+#define MAX_EXTENSION_LEN 8
+
+bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 {
 #ifdef WITH_LIBAV
-    AVOutputFormat * fmt = av_guess_format(NULL, fnm, NULL);
+    fh_to_close = fh;
+
+    AVOutputFormat * fmt = NULL;
+    char dummy_filename[MAX_EXTENSION_LEN + 3] = "x.";
+    if (strlen(ext) <= MAX_EXTENSION_LEN) {
+	strcpy(dummy_filename + 2, ext);
+	// Pass "x." + extension to av_guess_format() to avoid having to deal
+	// with wide character filenames.
+	fmt = av_guess_format(NULL, dummy_filename, NULL);
+    }
     if (!fmt) {
 	// We couldn't deduce the output format from file extension so default
 	// to MPEG.
@@ -159,6 +177,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	    averrno = MOVIE_NO_SUITABLE_FORMAT;
 	    return false;
 	}
+	strcpy(dummy_filename + 2, "mpg");
     }
     if (fmt->video_codec == AV_CODEC_ID_NONE) {
 	averrno = MOVIE_AUDIO_ONLY;
@@ -172,11 +191,7 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	return false;
     }
     oc->oformat = fmt;
-    if (strlen(fnm) >= sizeof(oc->filename)) {
-	averrno = MOVIE_FILENAME_TOO_LONG;
-	return false;
-    }
-    strcpy(oc->filename, fnm);
+    strcpy(oc->filename, dummy_filename);
 
     /* find the video encoder */
     AVCodec *codec = avcodec_find_encoder(fmt->video_codec);
@@ -296,9 +311,12 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     }
 
     if (!(fmt->flags & AVFMT_NOFILE)) {
-	retval = avio_open(&oc->pb, fnm, AVIO_FLAG_WRITE);
-	if (retval < 0) {
-	    averrno = retval;
+	const int buf_size = 8192;
+	void * buf = av_malloc(buf_size);
+	oc->pb = avio_alloc_context(static_cast<uint8_t*>(buf), buf_size, 1,
+				    fh, NULL, write_packet, NULL);
+	if (!oc->pb) {
+	    averrno = AVERROR(ENOMEM);
 	    return false;
 	}
     }
@@ -317,7 +335,8 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
     averrno = 0;
     return true;
 #else
-    (void)fnm;
+    (void)fh;
+    (void)ext;
     (void)width;
     (void)height;
     return false;
@@ -549,13 +568,17 @@ MovieMaker::release()
 	}
 
 	if (!(oc->oformat->flags & AVFMT_NOFILE)) {
-	    // Close the output file.
-	    avio_close(oc->pb);
+	    // Release the AVIOContext.
+	    av_free(oc->pb);
 	}
 
 	// Free the stream.
 	av_free(oc);
 	oc = NULL;
+    }
+    if (fh_to_close) {
+	fclose(fh_to_close);
+	fh_to_close = NULL;
     }
 }
 #endif
@@ -600,8 +623,6 @@ MovieMaker::get_error_string() const
 	case MOVIE_FILENAME_TOO_LONG:
 	    return "Filename too long";
     }
-    return "Unknown error";
-#else
-    return "Movie generation support code not present";
 #endif
+    return "Unknown error";
 }

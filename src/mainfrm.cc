@@ -2572,6 +2572,7 @@ void MainFrm::OnPresStop(wxCommandEvent&)
 
 void MainFrm::OnPresExportMovie(wxCommandEvent&)
 {
+#ifdef WITH_LIBAV
     AvenAllowOnTop ontop(this);
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
@@ -2585,6 +2586,9 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
 	// Error is reported by GfxCore.
 	(void)m_Gfx->ExportMovie(dlg.GetPath());
     }
+#else
+    wxGetApp().ReportError(wxT("Movie generation support code not present"));
+#endif
 }
 
 PresentationMark MainFrm::GetPresMark(int which)
