@@ -203,11 +203,19 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
      * of which frame timestamps are represented. For fixed-fps content,
      * timebase should be 1/framerate and timestamp increments should be
      * identical to 1. */
+#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(55, 44, 0)
+    // Old way, which now causes deprecation warnings.
     c->time_base.den = 25; // Frames per second.
     c->time_base.num = 1;
+#else
+    video_st->time_base.den = 25; // Frames per second.
+    video_st->time_base.num = 1;
+    c->time_base = video_st->time_base;
+#endif
     c->gop_size = 12; /* emit one intra frame every twelve frames at most */
     c->pix_fmt = AV_PIX_FMT_YUV420P;
     c->rc_buffer_size = c->bit_rate * 4; // Enough for 4 seconds
+    c->rc_max_rate = c->bit_rate * 2;
     // B frames are backwards predicted - they can improve compression,
     // but may slow encoding and decoding.
     // if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
@@ -263,6 +271,10 @@ bool MovieMaker::Open(const char *fnm, int width, int height)
 	// hardcoding AV_PIX_FMT_YUV420P.
 	abort();
     }
+
+    frame->format = c->pix_fmt;
+    frame->width = c->width;
+    frame->height = c->height;
 
     pixels = (unsigned char *)malloc(width * height * 6);
     if (!pixels) {
@@ -444,6 +456,7 @@ MovieMaker::Close()
 	    int got_packet;
 	    av_init_packet(&pkt);
 	    pkt.data = NULL;
+	    pkt.size = 0;
 
 	    int ret = avcodec_encode_video2(c, &pkt, NULL, &got_packet);
 	    if (ret < 0) {
