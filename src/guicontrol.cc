@@ -1102,7 +1102,10 @@ void GUIControl::OnCancelDistLineUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnKeyPress(wxKeyEvent &e)
 {
-    if (!m_View->HasData()) {
+    if (!m_View->HasData() ||
+	(e.GetModifiers() &~ (wxMOD_CONTROL|wxMOD_SHIFT))) {
+	// Pass on the event if there's no survey data, or if any modifier keys
+	// other than Ctrl and Shift are pressed.
 	e.Skip();
 	return;
     }
