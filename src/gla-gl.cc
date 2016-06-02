@@ -419,7 +419,7 @@ void GLACanvas::FirstShow()
     if (!m_Font.load(path)) {
 	// FIXME: do something better.
 	// We have this message available: Error in format of font file “%s”
-	fprintf(stderr, "Couldn't load font.\n");
+	fprintf(stderr, "Failed to parse compiled-in font data\n");
 	exit(1);
     }
 
