@@ -947,6 +947,153 @@ svxPrintDlg::RecalcBounds()
 	    }
 	}
     }
+
+    if ((m_layout.show_mask & XSECT) &&
+	(m_layout.tilt == 0.0 || m_layout.tilt == 90.0 || m_layout.tilt == -90.0)) {
+	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
+	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
+	for ( ; trav != tend; ++trav) {
+	    XSect prev_pt_v;
+	    Vector3 last_right(1.0, 0.0, 0.0);
+
+	    vector<XSect>::const_iterator i = trav->begin();
+	    vector<XSect>::size_type segment = 0;
+	    while (i != trav->end()) {
+		// get the coordinates of this vertex
+		const XSect & pt_v = *i++;
+		if (m_layout.tilt == 0.0) {
+		    Double u = pt_v.GetU();
+		    Double d = pt_v.GetD();
+
+		    if (u >= 0 || d >= 0) {
+			double x = pt_v.GetX();
+			double y = pt_v.GetY();
+			double z = pt_v.GetZ();
+			double X = x * COS - y * SIN;
+			double Y = z * COST - (x * SIN + y * COS) * SINT;
+
+			if (X > m_layout.xMax) m_layout.xMax = X;
+			if (X < m_layout.xMin) m_layout.xMin = X;
+			double U = Y + max(0.0, pt_v.GetU());
+			if (U > m_layout.yMax) m_layout.yMax = U;
+			double D = Y - max(0.0, pt_v.GetD());
+			if (D < m_layout.yMin) m_layout.yMin = D;
+		    }
+		} else {
+		    // More complex, and this duplicates the algorithm from
+		    // PlotLR() - we should try to share that, maybe via a
+		    // template.
+		    Vector3 right;
+
+		    const Vector3 up_v(0.0, 0.0, 1.0);
+
+		    if (segment == 0) {
+			assert(i != trav->end());
+			// first segment
+
+			// get the coordinates of the next vertex
+			const XSect & next_pt_v = *i;
+
+			// calculate vector from this pt to the next one
+			Vector3 leg_v = next_pt_v - pt_v;
+
+			// obtain a vector in the LRUD plane
+			right = leg_v * up_v;
+			if (right.magnitude() == 0) {
+			    right = last_right;
+			} else {
+			    last_right = right;
+			}
+		    } else if (segment + 1 == trav->size()) {
+			// last segment
+
+			// Calculate vector from the previous pt to this one.
+			Vector3 leg_v = pt_v - prev_pt_v;
+
+			// Obtain a horizontal vector in the LRUD plane.
+			right = leg_v * up_v;
+			if (right.magnitude() == 0) {
+			    right = Vector3(last_right.GetX(), last_right.GetY(), 0.0);
+			} else {
+			    last_right = right;
+			}
+		    } else {
+			assert(i != trav->end());
+			// Intermediate segment.
+
+			// Get the coordinates of the next vertex.
+			const XSect & next_pt_v = *i;
+
+			// Calculate vectors from this vertex to the
+			// next vertex, and from the previous vertex to
+			// this one.
+			Vector3 leg1_v = pt_v - prev_pt_v;
+			Vector3 leg2_v = next_pt_v - pt_v;
+
+			// Obtain horizontal vectors perpendicular to
+			// both legs, then normalise and average to get
+			// a horizontal bisector.
+			Vector3 r1 = leg1_v * up_v;
+			Vector3 r2 = leg2_v * up_v;
+			r1.normalise();
+			r2.normalise();
+			right = r1 + r2;
+			if (right.magnitude() == 0) {
+			    // This is the "mid-pitch" case...
+			    right = last_right;
+			}
+			last_right = right;
+		    }
+
+		    // Scale to unit vectors in the LRUD plane.
+		    right.normalise();
+
+		    Double l = pt_v.GetL();
+		    Double r = pt_v.GetR();
+
+		    if (l >= 0 || r >= 0) {
+			// Get the x and y coordinates of the survey station
+			double pt_X = pt_v.GetX() * COS - pt_v.GetY() * SIN;
+			double pt_Y = pt_v.GetX() * SIN + pt_v.GetY() * COS;
+
+			double X, Y;
+			if (l >= 0) {
+			    // Get the x and y coordinates of the end of the left arrow
+			    Vector3 p = pt_v - right * l;
+			    X = p.GetX() * COS - p.GetY() * SIN;
+			    Y = (p.GetX() * SIN + p.GetY() * COS);
+			} else {
+			    X = pt_X;
+			    Y = pt_Y;
+			}
+			if (X > m_layout.xMax) m_layout.xMax = X;
+			if (X < m_layout.xMin) m_layout.xMin = X;
+			if (Y > m_layout.yMax) m_layout.yMax = Y;
+			if (Y < m_layout.yMin) m_layout.yMin = Y;
+
+			if (r >= 0) {
+			    // Get the x and y coordinates of the end of the right arrow
+			    Vector3 p = pt_v + right * r;
+			    X = p.GetX() * COS - p.GetY() * SIN;
+			    Y = (p.GetX() * SIN + p.GetY() * COS);
+			} else {
+			    X = pt_X;
+			    Y = pt_Y;
+			}
+			if (X > m_layout.xMax) m_layout.xMax = X;
+			if (X < m_layout.xMin) m_layout.xMin = X;
+			if (Y > m_layout.yMax) m_layout.yMax = Y;
+			if (Y < m_layout.yMin) m_layout.yMin = Y;
+		    }
+
+		    prev_pt_v = pt_v;
+
+		    ++segment;
+		}
+	    }
+	}
+    }
+
     if (m_layout.show_mask & SURF) {
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
