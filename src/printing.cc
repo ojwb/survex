@@ -41,7 +41,6 @@
 #include <float.h>
 #include <limits.h>
 
-#include "debug.h" /* for SVX_ASSERT */
 #include "export.h"
 #include "filelist.h"
 #include "filename.h"
@@ -1406,7 +1405,7 @@ svxPrintout::next_page(int *pstate, char **q, int pageLim)
    if (*pstate > 0) {
       /* doing a range */
       (*pstate)++;
-      SVX_ASSERT(*p == '-');
+      wxASSERT(*p == '-');
       p++;
       while (isspace((unsigned char)*p)) p++;
       if (sscanf(p, "%u%n", &page, &c) > 0) {
@@ -1819,7 +1818,7 @@ svxPrintout::check_intersection(long x_p, long y_p)
       double v = (double)(x_p - xpPageWidth) / (x_p - x_t);
       return v >= 0 && v <= 1;
    }
-   SVX_ASSERT(mask_t & L);
+   wxASSERT(mask_t & L);
    {
       double v = (double)x_p / (x_p - x_t);
       return v >= 0 && v <= 1;

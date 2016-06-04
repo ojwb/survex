@@ -4,7 +4,7 @@
 //  Include wxWidgets headers.
 //
 //  Copyright (C) 2000,2001,2002 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2005,2006,2007,2008 Olly Betts
+//  Copyright (C) 2001,2003,2005,2006,2007,2008,2015 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 # error We support building with wxWidgets 2.8.0 or newer
 #endif
 
+#include <wx/debug.h>
 #include <wx/splitter.h>
 #include <wx/treectrl.h>
 #include <wx/dnd.h>

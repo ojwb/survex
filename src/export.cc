@@ -538,7 +538,7 @@ find_name(const img_point *p)
       char data[sizeof(int) * 3];
       int x[3];
    } u;
-   SVX_ASSERT(p);
+   wxASSERT(p);
 
    u.x[0] = (int)(p->x * 100);
    u.x[1] = (int)(p->y * 100);
