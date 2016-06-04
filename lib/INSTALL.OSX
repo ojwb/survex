@@ -10,7 +10,10 @@ The programs alongside Aven.app need to be run from the command-line (open
 Terminal.app):
 
  * extend produces extended elevations - this is probably the most useful of
-   these command line tools.
+   these command line tools.  Since version 1.2.27 you can produce simple
+   extended elevations from Aven using the "Extended Elevation" function.
+   However the command line tool allows you to specify a spec file to control
+   how the survey is extended, which you can't currently do via Aven.
 
  * cad3d turns .3d files into various formats, but Aven's "Export" function
    can do almost everything cad3d can, plus some extra formats.  The main

@@ -249,7 +249,7 @@ mv Survex/share/survex/images Survex/Aven.app/Contents/Resources/
 mv Survex/share/survex/unifont.pixelfont Survex/Aven.app/Contents/Resources/
 ln Survex/share/survex/*.msg Survex/Aven.app/Contents/Resources/
 mv Survex/aven Survex/Aven.app/Contents/MacOS/
-ln Survex/cavern Survex/Aven.app/Contents/MacOS/
+ln Survex/cavern Survex/extend Survex/Aven.app/Contents/MacOS/
 rm -rf Survex/share/applications Survex/share/icons Survex/share/mime-info
 mkdir Survex/share/survex/proj
 cp -p PROJINSTALL/share/proj/epsg PROJINSTALL/share/proj/esri Survex/share/survex/proj
