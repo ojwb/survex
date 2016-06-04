@@ -55,15 +55,24 @@
 # Mac OS X support "fat" binaries which contain code for more than one
 # processor, but the wxWidgets build system doesn't seem to allow creating
 # these, so we have to choose what processor family to build for.  By default
-# we use -arch x86_64 which produces a build which will only work on 64-bit
-# Intel Macs, but that's probably all machines modern enough to worry about.
+# we build for the architecture of the version of OS X the build machine is
+# running, which on a modern Mac will be x86_64, producing a build which will
+# only work on 64-bit Intel Macs (but that's probably all machines modern
+# enough to worry about).
 #
-# If you want a build which also works on older 32 bit Intel Macs, then run
-# this script passing i386 on the command line, like so:
+# You can specify an arch explicitly on the command-line, e.g. to force a
+# build for 64-bit Intel Macs:
+#
+#   ./buildmacosx.sh x86_64
+#
+# Or if you want a build which also works on older 32 bit Intel Macs, then run
+# this script passing i386 on the command line, like so (assuming your compiler
+# supports this):
 #
 #   ./buildmacosx.sh i386
 #
-# Or to build for much older machines with a Power PC processor, use:
+# Or to build for much older machines with a Power PC processor, use (again
+# assuming your compiler supports this):
 #
 #   ./buildmacosx.sh ppc
 
@@ -100,7 +109,11 @@ while [ "$#" != 0 ] ; do
   esac
 done
 
-arch_flags='-arch '${1:-x86_64}
+arch=$1
+if [ -z "$arch" ] ; then
+  arch=`uname -m`
+fi
+arch_flags="-arch $arch"
 
 # UDBZ means the resultant disk image will only open on OS X 10.4 or above.
 # UDZO works on 10.1 and later, but is larger,  UDCO works on 10.0 as well,
