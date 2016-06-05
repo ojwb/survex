@@ -1,7 +1,7 @@
 /* hpgl.cc
  * Export from Aven as HPGL.
  */
-/* Copyright (C) 1993-2003,2005,2010,2014,2015 Olly Betts
+/* Copyright (C) 1993-2003,2005,2010,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ void HPGL::header(const char *, const char *, time_t,
 }
 
 void
-HPGL::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPending)
+HPGL::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPending)
 {
    if (fPending) {
       fprintf(fh, "PU%ld,%ld;", long(p1->x - x_org), long(p1->y - y_org));

@@ -2,7 +2,7 @@
  * Export from Aven as KML.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 2012,2013,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ void KML::header(const char * title, const char *, time_t,
 }
 
 void
-KML::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPendingMove)
+KML::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPendingMove)
 {
     if (fPendingMove) {
 	if (!in_linestring) {

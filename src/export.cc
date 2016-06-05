@@ -134,7 +134,7 @@ class DXF : public ExportFilter {
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
-    void line(const img_point *, const img_point *, bool, bool);
+    void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void xsect(const img_point *, double, double, double);
@@ -283,8 +283,9 @@ DXF::header(const char *, const char *, time_t,
 }
 
 void
-DXF::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
+DXF::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
+   bool fSurface = (flags & SURF);
    (void)fPendingMove; /* unused */
    fprintf(fh, "0\nLINE\n");
    fprintf(fh, fSurface ? "8\nSurface\n" : "8\nCentreLine\n"); /* Layer */
@@ -404,7 +405,7 @@ class Skencil : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
     void start_pass(int layer);
-    void line(const img_point *, const img_point *, bool, bool);
+    void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void footer();
@@ -435,9 +436,9 @@ Skencil::start_pass(int layer)
 }
 
 void
-Skencil::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
+Skencil::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   (void)fSurface; /* unused */
+   (void)flags; /* unused */
    if (fPendingMove) {
        fprintf(fh, "b()\n");
        fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p1->x * factor, p1->y * factor, 0.0);
@@ -572,7 +573,7 @@ class SVG : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
     void start_pass(int layer);
-    void line(const img_point *, const img_point *, bool, bool);
+    void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void xsect(const img_point *, double, double, double);
@@ -650,9 +651,9 @@ SVG::start_pass(int layer)
 }
 
 void
-SVG::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
+SVG::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   (void)fSurface; /* unused */
+   (void)flags; /* unused */
    if (fPendingMove) {
        if (to_close) {
 	   fputs(to_close, fh);
@@ -764,7 +765,7 @@ class PLT : public ExportFilter {
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
-    void line(const img_point *, const img_point *, bool, bool);
+    void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void footer();
 };
@@ -799,9 +800,9 @@ PLT::header(const char *title, const char *, time_t,
 }
 
 void
-PLT::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
+PLT::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   (void)fSurface; /* unused */
+   (void)flags; /* unused */
    if (fPendingMove) {
        /* Survex is E, N, Alt - PLT file is N, E, Alt */
        fprintf(fh, "M %.3f %.3f %.3f ",
@@ -872,7 +873,7 @@ class EPS : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
     void start_pass(int layer);
-    void line(const img_point *, const img_point *, bool, bool);
+    void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void cross(const img_point *, bool);
     void xsect(const img_point *, double, double, double);
@@ -1143,9 +1144,9 @@ EPS::start_pass(int layer)
 }
 
 void
-EPS::line(const img_point *p1, const img_point *p, bool fSurface, bool fPendingMove)
+EPS::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   (void)fSurface; /* unused */
+   (void)flags; /* unused */
    if (fPendingMove) {
        fprintf(fh, "%.2f %.2f M\n", p1->x, p1->y);
    }
@@ -1429,8 +1430,12 @@ Export(const wxString &fnm_out, const wxString &title,
 	  trav = mainfrm->traverses_begin();
 	  tend = mainfrm->traverses_end();
 	  for ( ; trav != tend; ++trav) {
-	     if (trav->isSplay && (show_mask & SPLAYS) == 0) {
-		 continue;
+	     unsigned flags = 0;
+	     if (trav->isSplay) {
+		 if ((show_mask & SPLAYS) == 0) {
+		     continue;
+		 }
+		 flags = SPLAYS;
 	     }
 	     assert(trav->size() > 1);
 	     vector<PointInfo>::const_iterator pos = trav->begin();
@@ -1457,7 +1462,7 @@ Export(const wxString &fnm_out, const wxString &title,
 #ifdef DEBUG_CAD3D
 		     printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
-		     filt->line(&p1, &p, false, fPendingMove);
+		     filt->line(&p1, &p, flags, fPendingMove);
 		     fPendingMove = 0;
 		 }
 		 p1 = p;
@@ -1468,8 +1473,12 @@ Export(const wxString &fnm_out, const wxString &title,
 	  trav = mainfrm->surface_traverses_begin();
 	  tend = mainfrm->surface_traverses_end();
 	  for ( ; trav != tend; ++trav) {
-	     if (trav->isSplay && (show_mask & SPLAYS) == 0) {
-		 continue;
+	     unsigned flags = 0;
+	     if (trav->isSplay) {
+		 if ((show_mask & SPLAYS) == 0) {
+		     continue;
+		 }
+		 flags = SURF|SPLAYS;
 	     }
 	     assert(trav->size() > 1);
 	     vector<PointInfo>::const_iterator pos = trav->begin();
@@ -1497,7 +1506,7 @@ Export(const wxString &fnm_out, const wxString &title,
 #ifdef DEBUG_CAD3D
 		     printf("surface line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
-		     filt->line(&p1, &p, true, fPendingMove);
+		     filt->line(&p1, &p, flags, fPendingMove);
 		     fPendingMove = 0;
 		 }
 		 p1 = p;

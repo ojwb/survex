@@ -2,7 +2,7 @@
  * Export from Aven as JSON.
  */
 
-/* Copyright (C) 2015 Olly Betts
+/* Copyright (C) 2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ class JSON : public ExportFilter {
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
-    void line(const img_point *, const img_point *, bool, bool);
+    void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void footer();
 };

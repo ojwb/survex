@@ -127,7 +127,7 @@ void GPX::header(const char * title, const char *, time_t datestamp_numeric,
 }
 
 void
-GPX::line(const img_point *p1, const img_point *p, bool /*fSurface*/, bool fPendingMove)
+GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPendingMove)
 {
     if (fPendingMove) {
 	if (in_trkseg) {
