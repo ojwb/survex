@@ -20,6 +20,7 @@
 
 #include "wx.h"
 #include <wx/dialog.h>
+#include <wx/spinctrl.h>
 
 #include <time.h>
 
@@ -80,7 +81,7 @@ class svxPrintDlg : public wxDialog {
 	void OnElevation(wxCommandEvent&);
 	void OnPlanUpdate(wxUpdateUIEvent& e);
 	void OnElevationUpdate(wxUpdateUIEvent& e);
-	void OnChangeSpin(wxSpinEvent& event);
+	void OnChangeSpin(wxSpinDoubleEvent& event);
 	void OnChange(wxCommandEvent& event);
 	void OnCancel(wxCommandEvent& event);
  private:

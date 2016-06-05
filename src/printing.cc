@@ -227,8 +227,8 @@ BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_CHOICE(svx_FORMAT, svxPrintDlg::OnChange)
     EVT_TEXT(svx_SCALE, svxPrintDlg::OnChange)
     EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
-    EVT_SPINCTRL(svx_BEARING, svxPrintDlg::OnChangeSpin)
-    EVT_SPINCTRL(svx_TILT, svxPrintDlg::OnChangeSpin)
+    EVT_SPINCTRLDOUBLE(svx_BEARING, svxPrintDlg::OnChangeSpin)
+    EVT_SPINCTRLDOUBLE(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(wxID_PRINT, svxPrintDlg::OnPrint)
     EVT_BUTTON(svx_EXPORT, svxPrintDlg::OnExport)
     EVT_BUTTON(wxID_CANCEL, svxPrintDlg::OnCancel)
@@ -791,7 +791,7 @@ svxPrintDlg::OnElevationUpdate(wxUpdateUIEvent& e) {
 }
 
 void
-svxPrintDlg::OnChangeSpin(wxSpinEvent& e) {
+svxPrintDlg::OnChangeSpin(wxSpinDoubleEvent& e) {
     SomethingChanged(e.GetId());
 }
 
