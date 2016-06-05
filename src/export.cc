@@ -1252,6 +1252,25 @@ class UseNumericCLocale {
     }
 };
 
+static void
+transform_point(const Point& pos, const Vector3* pre_offset,
+		double COS, double SIN, double COST, double SINT,
+		img_point* p)
+{
+    double x = pos.GetX();
+    double y = pos.GetY();
+    double z = pos.GetZ();
+    if (pre_offset) {
+	x += pre_offset->GetX();
+	y += pre_offset->GetY();
+	z += pre_offset->GetZ();
+    }
+    p->x = x * COS - y * SIN;
+    double tmp = x * SIN + y * COS;
+    p->y = z * COST - tmp * SINT;
+    p->z = z * SINT + tmp * COST;
+}
+
 bool
 Export(const wxString &fnm_out, const wxString &title,
        const wxString &datestamp, time_t datestamp_numeric,
@@ -1264,9 +1283,11 @@ Export(const wxString &fnm_out, const wxString &title,
    UseNumericCLocale dummy;
    int fPendingMove = 0;
    img_point p, p1;
-   double s = 0, c = 0;
    const int *pass;
-   bool elevation = (tilt == 0.0);
+   double SIN = sin(rad(pan));
+   double COS = cos(rad(pan));
+   double SINT = sin(rad(tilt));
+   double COST = cos(rad(tilt));
 
    grid = grid_;
    marker_size = marker_size_;
@@ -1317,9 +1338,9 @@ Export(const wxString &fnm_out, const wxString &title,
        return false;
    }
 
-   if (elevation) {
-      s = sin(rad(pan));
-      c = cos(rad(pan));
+   const Vector3* pre_offset = NULL;
+   if (show_mask & FULL_COORDS) {
+	pre_offset = &mainfrm->GetOffset();
    }
 
    /* Get bounding box */
@@ -1335,17 +1356,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	vector<PointInfo>::const_iterator pos = trav->begin();
 	vector<PointInfo>::const_iterator end = trav->end();
 	for ( ; pos != end; ++pos) {
-	    p.x = pos->GetX();
-	    p.y = pos->GetY();
-	    p.z = pos->GetZ();
-
-	    if (elevation) {
-		double xnew = p.x * c - p.y * s;
-		double znew = - p.x * s - p.y * c;
-		p.y = p.z;
-		p.z = znew;
-		p.x = xnew;
-	    }
+	    transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
 
 	    if (p.x < min_x) min_x = p.x;
 	    if (p.x > max_x) max_x = p.x;
@@ -1359,17 +1370,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
 	list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
-	    p.x = (*pos)->GetX();
-	    p.y = (*pos)->GetY();
-	    p.z = (*pos)->GetZ();
-
-	    if (elevation) {
-		double xnew = p.x * c - p.y * s;
-		double znew = - p.x * s - p.y * c;
-		p.y = p.z;
-		p.z = znew;
-		p.x = xnew;
-	    }
+	    transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 
 	    if (p.x < min_x) min_x = p.x;
 	    if (p.x > max_x) max_x = p.x;
@@ -1395,10 +1396,8 @@ Export(const wxString &fnm_out, const wxString &title,
 
    double x_offset, y_offset, z_offset;
    if (show_mask & FULL_COORDS) {
-       // Full coordinates.
-       x_offset = mainfrm->GetOffset().GetX();
-       y_offset = mainfrm->GetOffset().GetY();
-       z_offset = mainfrm->GetOffset().GetZ();
+       // Full coordinates - offset is applied before rotations.
+       x_offset = y_offset = z_offset = 0.0;
    } else if (show_mask & CENTRED) {
        // Centred.
        x_offset = (min_x + max_x) * -0.5;
@@ -1443,16 +1442,10 @@ Export(const wxString &fnm_out, const wxString &title,
 	     vector<PointInfo>::const_iterator pos = trav->begin();
 	     vector<PointInfo>::const_iterator end = trav->end();
 	     for ( ; pos != end; ++pos) {
-		 p.x = pos->GetX() + x_offset;
-		 p.y = pos->GetY() + y_offset;
-		 p.z = pos->GetZ() + z_offset;
-		 if (elevation) {
-		     double xnew = p.x * c - p.y * s;
-		     double znew = - p.x * s - p.y * c;
-		     p.y = p.z;
-		     p.z = znew;
-		     p.x = xnew;
-		 }
+		 transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
+		 p.x += x_offset;
+		 p.y += y_offset;
+		 p.z += z_offset;
 
 		 if (pos == trav->begin()) {
 		     // First point is move...
@@ -1486,17 +1479,10 @@ Export(const wxString &fnm_out, const wxString &title,
 	     vector<PointInfo>::const_iterator pos = trav->begin();
 	     vector<PointInfo>::const_iterator end = trav->end();
 	     for ( ; pos != end; ++pos) {
-		 p.x = pos->GetX() + x_offset;
-		 p.y = pos->GetY() + y_offset;
-		 p.z = pos->GetZ() + z_offset;
-
-		 if (elevation) {
-		     double xnew = p.x * c - p.y * s;
-		     double znew = - p.x * s - p.y * c;
-		     p.y = p.z;
-		     p.z = znew;
-		     p.x = xnew;
-		 }
+		 transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
+		 p.x += x_offset;
+		 p.y += y_offset;
+		 p.z += z_offset;
 
 		 if (pos == trav->begin()) {
 		     // First point is move...
@@ -1519,17 +1505,11 @@ Export(const wxString &fnm_out, const wxString &title,
 	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
 	  list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
-	      p.x = (*pos)->GetX() + x_offset;
-	      p.y = (*pos)->GetY() + y_offset;
-	      p.z = (*pos)->GetZ() + z_offset;
+	      transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
+	      p.x += x_offset;
+	      p.y += y_offset;
+	      p.z += z_offset;
 
-	      if (elevation) {
-		  double xnew = p.x * c - p.y * s;
-		  double znew = - p.x * s - p.y * c;
-		  p.y = p.z;
-		  p.z = znew;
-		  p.x = xnew;
-	      }
 #ifdef DEBUG_CAD3D
 	      printf("label '%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
 #endif
@@ -1556,6 +1536,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	  }
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {
+	  bool elevation = (tilt == 0.0);
 	  list<vector<XSect> >::const_iterator tube = mainfrm->tubes_begin();
 	  list<vector<XSect> >::const_iterator tube_end = mainfrm->tubes_end();
 	  for ( ; tube != tube_end; ++tube) {
@@ -1563,16 +1544,12 @@ Export(const wxString &fnm_out, const wxString &title,
 	      vector<XSect>::const_iterator end = tube->end();
 	      for ( ; pos != end; ++pos) {
 		  const XSect & xs = *pos;
-		  p.x = xs.GetX() + x_offset;
-		  p.y = xs.GetY() + y_offset;
-		  p.z = xs.GetZ() + z_offset;
+		  transform_point(xs, pre_offset, COS, SIN, COST, SINT, &p);
+		  p.x += x_offset;
+		  p.y += y_offset;
+		  p.z += z_offset;
 
 		  if (elevation) {
-		      double xnew = p.x * c - p.y * s;
-		      double znew = - p.x * s - p.y * c;
-		      p.y = p.z;
-		      p.z = znew;
-		      p.x = xnew;
 		      if (pass_mask & XSECT)
 			  filt->xsect(&p, 90, xs.GetU(), xs.GetD());
 		      if (pass_mask & WALL1)
@@ -1582,14 +1559,16 @@ Export(const wxString &fnm_out, const wxString &title,
 		      if (pass_mask & PASG)
 			  filt->passage(&p, 90, xs.GetU(), xs.GetD());
 		  } else {
+		      // Should only be enabled in plan or elevation mode.
+		      double angle = pan + xs.get_right_bearing();
 		      if (pass_mask & XSECT)
-			  filt->xsect(&p, xs.get_right_bearing() + 180, xs.GetL(), xs.GetR());
+			  filt->xsect(&p, angle + 180, xs.GetL(), xs.GetR());
 		      if (pass_mask & WALL1)
-			  filt->wall(&p, xs.get_right_bearing() + 180, xs.GetL());
+			  filt->wall(&p, angle + 180, xs.GetL());
 		      if (pass_mask & WALL2)
-			  filt->wall(&p, xs.get_right_bearing(), xs.GetR());
+			  filt->wall(&p, angle, xs.GetR());
 		      if (pass_mask & PASG)
-			  filt->passage(&p, xs.get_right_bearing() + 180, xs.GetL(), xs.GetR());
+			  filt->passage(&p, angle + 180, xs.GetL(), xs.GetR());
 		  }
 	      }
 	      filt->tube_end();
