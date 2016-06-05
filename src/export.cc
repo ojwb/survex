@@ -653,12 +653,14 @@ SVG::start_pass(int layer)
 void
 SVG::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   (void)flags; /* unused */
+   bool splay = (flags & SPLAYS);
    if (fPendingMove) {
        if (to_close) {
 	   fputs(to_close, fh);
        }
-       fprintf(fh, "<path d=\"M%.3f %.3f", p1->x * factor, p1->y * -factor);
+       fprintf(fh, "<path ");
+       if (splay) fprintf(fh, "stroke=\"grey\" stroke-width=\"0.1px\" ");
+       fprintf(fh, "d=\"M%.3f %.3f", p1->x * factor, p1->y * -factor);
    }
    fprintf(fh, "L%.3f %.3f", p->x * factor, p->y * -factor);
    to_close = "\"/>\n";
