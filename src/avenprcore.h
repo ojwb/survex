@@ -22,6 +22,7 @@
 #define survex_included_avenprcore_h
 
 #include <wx.h>
+#include "export.h"
 
 /* 1:<DEFAULT_SCALE> is the default scale */
 #define DEFAULT_SCALE 500
@@ -61,6 +62,13 @@ public:
 #endif
     void pick_scale(int x, int y);
     void pages_required();
+    int get_effective_show_mask() const {
+	int result = show_mask;
+	if (view != PLAN && view != ELEV) {
+	    result &= ~(XSECT|WALLS|PASG);
+	}
+	return result;
+    }
 };
 
 #endif

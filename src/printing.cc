@@ -715,7 +715,8 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 	try {
 	    if (!Export(dlg.GetPath(), m_layout.title,
 			m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
-			m_layout.rot, m_layout.tilt, m_layout.show_mask,
+			m_layout.rot, m_layout.tilt,
+			m_layout.get_effective_show_mask(),
 			export_format(format_idx), input_projection.utf8_str(),
 			grid, text_height, marker_size, m_layout.Scale)) {
 		wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
@@ -925,11 +926,12 @@ svxPrintDlg::RecalcBounds()
     double SINT = sin(rad(m_layout.tilt));
     double COST = cos(rad(m_layout.tilt));
 
-    if (m_layout.show_mask & LEGS) {
+    int show_mask = m_layout.get_effective_show_mask();
+    if (show_mask & LEGS) {
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
-	    if (trav->isSplay && !(m_layout.show_mask & SPLAYS))
+	    if (trav->isSplay && !(show_mask & SPLAYS))
 		continue;
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
@@ -947,7 +949,7 @@ svxPrintDlg::RecalcBounds()
 	}
     }
 
-    if ((m_layout.show_mask & XSECT) &&
+    if ((show_mask & XSECT) &&
 	(m_layout.tilt == 0.0 || m_layout.tilt == 90.0 || m_layout.tilt == -90.0)) {
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
 	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
@@ -1093,11 +1095,11 @@ svxPrintDlg::RecalcBounds()
 	}
     }
 
-    if (m_layout.show_mask & SURF) {
+    if (show_mask & SURF) {
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
-	    if (trav->isSplay && !(m_layout.show_mask & SPLAYS))
+	    if (trav->isSplay && !(show_mask & SPLAYS))
 		continue;
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
@@ -1114,13 +1116,13 @@ svxPrintDlg::RecalcBounds()
 	    }
 	}
     }
-    if (m_layout.show_mask & (LABELS|STNS)) {
+    if (show_mask & (LABELS|STNS)) {
 	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
 	while (label != mainfrm->GetLabelsEnd()) {
 	    double x = (*label)->GetX();
 	    double y = (*label)->GetY();
 	    double z = (*label)->GetZ();
-	    if ((m_layout.show_mask & SURF) || (*label)->IsUnderground()) {
+	    if ((show_mask & SURF) || (*label)->IsUnderground()) {
 		double X = x * COS - y * SIN;
 		if (X > m_layout.xMax) m_layout.xMax = X;
 		if (X < m_layout.xMin) m_layout.xMin = X;
@@ -1610,12 +1612,13 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     const double Sc = 1000 / l->Scale;
 
-    if (l->show_mask & LEGS) {
+    int show_mask = l->get_effective_show_mask();
+    if (show_mask & LEGS) {
 	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->traverses_end();
 	for ( ; trav != tend; ++trav) {
 	    if (trav->isSplay) {
-		if (!(l->show_mask & SPLAYS))
+		if (!(show_mask & SPLAYS))
 		    continue;
 		pdc->SetPen(*pen_splay);
 	    } else {
@@ -1640,7 +1643,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if ((l->show_mask & XSECT) &&
+    if ((show_mask & XSECT) &&
 	(l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
 	pdc->SetPen(*pen_splay);
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
@@ -1655,12 +1658,12 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (l->show_mask & SURF) {
+    if (show_mask & SURF) {
 	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
 	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
 	for ( ; trav != tend; ++trav) {
 	    if (trav->isSplay) {
-		if (!(l->show_mask & SPLAYS))
+		if (!(show_mask & SPLAYS))
 		    continue;
 		pdc->SetPen(*pen_splay);
 	    } else {
@@ -1685,24 +1688,24 @@ svxPrintout::OnPrintPage(int pageNum) {
 	}
     }
 
-    if (l->show_mask & (LABELS|STNS)) {
-	if (l->show_mask & LABELS) SetFont(font_labels);
+    if (show_mask & (LABELS|STNS)) {
+	if (show_mask & LABELS) SetFont(font_labels);
 	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
 	while (label != mainfrm->GetLabelsEnd()) {
 	    double px = (*label)->GetX();
 	    double py = (*label)->GetY();
 	    double pz = (*label)->GetZ();
-	    if ((l->show_mask & SURF) || (*label)->IsUnderground()) {
+	    if ((show_mask & SURF) || (*label)->IsUnderground()) {
 		double X = px * COS - py * SIN;
 		double Y = pz * COST - (px * SIN + py * COS) * SINT;
 		long xnew, ynew;
 		xnew = (long)((X * Sc + l->xOrg) * l->scX);
 		ynew = (long)((Y * Sc + l->yOrg) * l->scY);
-		if (l->show_mask & STNS) {
+		if (show_mask & STNS) {
 		    pdc->SetPen(*pen_cross);
 		    DrawCross(xnew, ynew);
 		}
-		if (l->show_mask & LABELS) {
+		if (show_mask & LABELS) {
 		    pdc->SetTextForeground(colour_labels);
 		    MoveTo(xnew, ynew);
 		    WriteString((*label)->GetText());
