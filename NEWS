@@ -1,6 +1,4 @@
-up to: 513935e0536fa24e5cb10b443a0e915c3e201112
-
-Changes in 1.2.27 (2016-05-29):
+Changes in 1.2.27 (2016-06-06):
 
 * aven:
 
@@ -12,12 +10,12 @@ Changes in 1.2.27 (2016-05-29):
     the same machinery as the --survey= command line option, but that will
     probably change in the future).
 
-  + Any currect sub-survey restriction (from the --survey= command line
-    option or the new UI described above) is now shown in brackets after the
-    survey tree root.
+  + If there's a sub-survey restriction (from the --survey= command line
+    option or the new UI described above) it is now shown in brackets after
+    the survey tree root.
 
-  + When reloading a survey, preserve the current view position rather
-    than recentring.
+  + When reloading a survey, preserve the current view position (previously
+    the view was recentred).
 
   + When reloading a survey, actually preserve the current scale factor
     (this was meant to happen, but the adjustment was applied in the
@@ -27,26 +25,50 @@ Changes in 1.2.27 (2016-05-29):
     extended elevations for simple cases without having to use the command
     line.  Suggested by Fleur Loveridge.
 
-  + Check modifier keys when processing key presses.  If Shift, Control, Alt,
-    etc are pressed along with Function keys, Escape, Delete, Space, Return,
-    etc, then don't process the key press.  Reported by Владимир Георгиев.
+  + Don't process key presses if accompanied by an unexpected modifier key.
+    In particular, this means that aven no longer interferes with Alt+<function
+    key> (which is typically handled by the desktop) and Alt+<letter> (which is
+    typically a menu short cut).  Reported by Владимир Георгиев.
 
   + Reduce file loading time by ~5%.  The station name compare function was
     something of a hot spot, and optimising it yielded a nice improvement.
 
-  + Allow splay legs to be disabled in when printing and exporting.
-    Mostly addresses #60 (when enabled, splays just export as normal
-    legs but ought to be distinguished in formats which provide an
-    appropriate way to do so).
+  + Allow splay legs to be disabled in when printing and exporting.  Mostly
+    addresses #60.
+
+  + SVG export now shows splay legs thinner and in grey.  See #60.
+
+  + Fix export of rotated plans and tilted elevations - previously plans were
+    always aligned with North up, and elevations which weren't exactly side on
+    were exported as plans.  Reported by Stuart Bennett.
+
+  + Fix offset bounding box for exported elevations.
+
+  + In print/export dialog the bearing value now wraps if you scroll up past
+    360 or down past 0.
+
+  + Fix greying out of LRUD-based controls in the print/export dialog when the
+    view is tilted (i.e. not plan or elevation).  This stopped working in
+    1.2.18 when the pan and tilt spin controls were changed from integer- to
+    real-valued ones.
 
   + Printouts now show LRUD as pale grey arrows from the station they are
     measured from.  Based on patch from Michael Sargent.  Closes #65.
 
-Use utf8_str() instead of mb_str() to get UTF-8
-- user visible effect(s)?
+  + Take LRUD into account for printout size.  Fixes #72, reported by Erin
+    Lynch.
 
-  + Update movie export code for compatibility with the ever shifting
-    libav/ffmpeg API (AVPicture and related functions are now deprecated).
+  + Update movie export code to work with latest version of FFmpeg.
+
+  + Make "Show Log" a toggle, so you can click on the button to take a look at
+    the log, and a second click returns you to the survey view.
+
+  + (Microsoft Windows version): Open the font file in binary mode - it looks
+    like we were lucky and the font file (or at least its current version)
+    would have loaded OK in text mode despite being binary data.
+
+  + (Microsoft Windows version): Exporting to files with non-ASCII filenames
+    should now work.
 
 * cavern:
 
@@ -68,10 +90,15 @@ Use utf8_str() instead of mb_str() to get UTF-8
   + *begin with an invalid prefix could cause a crash in some cases.  Fixed
     by patch from Colin Watson.
 
+  + Report column locations for errors to do with readings.
+
 * Merge translation updates from Jean-Marc.
 
 * img library: Better document which members can be set when writing.
   Highlighted by email query about use of img API from Владимир Георгиев.
+
+* Document how *declination interacts with *calibrate declination if both are
+  used in the same dataset.
 
 * doc/3dformat.htm: Update details of how changes to the current label buffer
   are encoded to reflect changes in v8.  Reported by Angus Sawyer.
