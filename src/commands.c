@@ -41,7 +41,7 @@
 #include "readval.h"
 #include "str.h"
 
-//// Extracted from proj.4 projects (yuck, but grass also does this):
+/*** Extracted from proj.4 projects (yuck, but grass also does this): */
 struct DERIVS {
     double x_l, x_p; /* derivatives of x for lambda-phi */
     double y_l, y_p; /* derivatives of y for lambda-phi */
@@ -58,7 +58,7 @@ struct FACTORS {
 };
 
 int pj_factors(projLP, projPJ *, double, struct FACTORS *);
-////
+/***/
 
 static projPJ proj_wgs84;
 
