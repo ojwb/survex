@@ -2694,7 +2694,7 @@ msgstr "&Captura de Ecrã..."
 #: ../src/mainfrm.cc:797
 #: n:247
 msgid "E&xtended Elevation..."
-msgstr "Perfil &Retificado..."
+msgstr "Perfil Retifica&do..."
 
 #: ../src/mainfrm.cc:793
 #: n:382

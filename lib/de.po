@@ -2686,7 +2686,7 @@ msgstr "&Seite einrichten..."
 #: ../src/mainfrm.cc:792
 #: n:201
 msgid "&Screenshot..."
-msgstr "Bildschirm&abzug..."
+msgstr "&Bildschirmabzug..."
 
 #. TRANSLATORS: In the "File" menu - c.f. n:191
 #: ../src/mainfrm.cc:797

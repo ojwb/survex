@@ -2685,7 +2685,7 @@ msgstr "&Screenshot..."
 #: ../src/mainfrm.cc:797
 #: n:247
 msgid "E&xtended Elevation..."
-msgstr "Elevasi &Diperpanjang..."
+msgstr "Elevasi Di&perpanjang..."
 
 #: ../src/mainfrm.cc:793
 #: n:382
