@@ -1,9 +1,12 @@
-survex (1.2.26-2) UNRELEASED; urgency=medium
+survex (1.2.27-1) unstable; urgency=medium
 
-  * Use https for survex.com links.
-  * Note conformance with "Standards-Version: 3.9.8".
+  * New upstream release
+    + Fixes uninitialised variable which was causing FTBFS on hurd via
+      testsuite failure.  Closes: #821195.  Thanks to Colin Watson for patch.
+  * debian/control: Note conformance with "Standards-Version: 3.9.8".
+  * Use https for links to survex.com.
 
- -- Olly Betts <olly@survex.com>  Sat, 02 Apr 2016 18:33:23 +1300
+ -- Olly Betts <olly@survex.com>  Fri, 10 Jun 2016 23:19:44 +0100
 
 survex (1.2.26-1) unstable; urgency=medium
 
