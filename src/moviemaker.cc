@@ -147,12 +147,14 @@ MovieMaker::MovieMaker()
 #endif
 }
 
+#ifdef WITH_LIBAV
 static int
 write_packet(void *opaque, uint8_t *buf, int buf_size) {
     FILE * fh = (FILE*)opaque;
     size_t res = fwrite(buf, 1, buf_size, fh);
     return res > 0 ? res : -1;
 }
+#endif
 
 #define MAX_EXTENSION_LEN 8
 
