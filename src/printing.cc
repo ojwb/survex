@@ -870,7 +870,8 @@ svxPrintDlg::SomethingChanged(int control_id) {
 }
 
 void
-svxPrintDlg::LayoutToUI(){
+svxPrintDlg::LayoutToUI()
+{
 //    m_blanks->SetValue(m_layout.SkipBlank);
     if (m_layout.view != layout::EXTELEV) {
 	m_tilt->SetValue(m_layout.tilt);
@@ -891,7 +892,8 @@ svxPrintDlg::LayoutToUI(){
 }
 
 void
-svxPrintDlg::UIToLayout(){
+svxPrintDlg::UIToLayout()
+{
 //    m_layout.SkipBlank = m_blanks->IsChecked();
 
     if (m_layout.view != layout::EXTELEV && m_tilt) {
