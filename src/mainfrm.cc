@@ -2610,9 +2610,8 @@ void MainFrm::RestrictTo(const wxString & survey)
 	}
 	new_prefix += survey;
     }
-    // FIXME: Be more efficient to reload the processed data rather rather than
-    // potentially reprocessing.
-    if (!LoadData(m_File, new_prefix))
+    // Reload the processed data rather rather than potentially reprocessing.
+    if (!LoadData(m_FileProcessed, new_prefix))
 	return;
     InitialiseAfterLoad(m_File, new_prefix);
 }
