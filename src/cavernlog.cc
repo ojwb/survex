@@ -372,7 +372,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 	    }
 	    case wxT('c'): {
 		wxString l;
-		if (colon2 >= href.size())
+		if (colon2 >= href.size() - 1)
 		    l = wxT("0");
 		else
 		    l = escape_for_shell(href.substr(colon2 + 1));
