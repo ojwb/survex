@@ -444,19 +444,21 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     wxStaticText* label;
     label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
-    if (scales[0].empty()) {
-	if (printing) {
-	    /* TRANSLATORS: used in the scale drop down selector in the print
-	     * dialog the implicit meaning is "choose a suitable scale to fit
-	     * the plot on a single page", but we need something shorter */
-	    scales[0].assign(wmsg(/*One page*/258));
-	} else {
-	    scales[0].assign(wxT("1000"));
-	}
+    if (printing && scales[0].empty()) {
+	/* TRANSLATORS: used in the scale drop down selector in the print
+	 * dialog the implicit meaning is "choose a suitable scale to fit
+	 * the plot on a single page", but we need something shorter */
+	scales[0].assign(wmsg(/*One page*/258));
     }
-    m_scale = new wxComboBox(this, svx_SCALE, scales[0], wxDefaultPosition,
-			     wxDefaultSize, sizeof(scales) / sizeof(scales[0]),
-			     scales);
+    wxString default_scale = printing ? scales[0] : wxString(wxT("1000"));
+    const wxString* scale_list = scales;
+    size_t n_scales = sizeof(scales) / sizeof(scales[0]);
+    if (!printing) {
+	++scale_list;
+	--n_scales;
+    }
+    m_scale = new wxComboBox(this, svx_SCALE, default_scale, wxDefaultPosition,
+			     wxDefaultSize, n_scales, scale_list);
     m_scalebox = new wxBoxSizer(wxHORIZONTAL);
     m_scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
     m_scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
@@ -878,16 +880,11 @@ svxPrintDlg::LayoutToUI()
 	m_bearing->SetValue(m_layout.rot);
     }
 
-    // Do this last as it causes an OnChange message which calls UIToLayout
-    if (m_scale) {
-	if (m_layout.Scale != 0) {
-	    wxString temp;
-	    temp << m_layout.Scale;
-	    m_scale->SetValue(temp);
-	} else {
-	    if (scales[0].empty()) scales[0].assign(wmsg(/*One page*/258));
-	    m_scale->SetValue(scales[0]);
-	}
+    if (m_scale && m_layout.Scale != 0) {
+	// Do this last as it causes an OnChange message which calls UIToLayout
+	wxString temp;
+	temp << m_layout.Scale;
+	m_scale->SetValue(temp);
     }
 }
 
