@@ -856,8 +856,8 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	RecalcBounds();
 
 	if (m_scale) {
-	    (m_scale->GetValue()).ToDouble(&(m_layout.Scale));
-	    if (m_layout.Scale == 0.0) {
+	    if (!(m_scale->GetValue()).ToDouble(&(m_layout.Scale)) ||
+		m_layout.Scale == 0.0) {
 		m_layout.pick_scale(1, 1);
 	    }
 	}

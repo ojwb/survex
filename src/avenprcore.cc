@@ -1,6 +1,6 @@
 /* avenprcore.cc
  * Printer independent parts of Survex printer drivers
- * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 1993-2002,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
  * Copyright (C) 2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -113,6 +113,10 @@ layout::pages_required() {
 void
 layout::pick_scale(int x, int y)
 {
+   pagesX = x;
+   pagesY = y;
+   pages = x * y;
+
    double Sc_x, Sc_y;
    /*    pagesY = ceil((image_dy+allow)/PaperDepth)
     * so (image_dy+allow)/PaperDepth <= pagesY < (image_dy+allow)/PaperDepth+1
