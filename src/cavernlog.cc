@@ -549,7 +549,8 @@ bad_utf8:
 			    // Check for column number.
 			    while (++i < cur.size() - 2 &&
 			       cur[i] >= wxT('0') && cur[i] <= wxT('9')) { }
-			    if (i > colon + 1 && cur[i] == wxT(':') ) {
+			    bool have_column = (i > colon + 1 && cur[i] == wxT(':'));
+			    if (have_column) {
 				colon = i;
 			    } else {
 				// If there's no colon, include a trailing ':'
@@ -569,6 +570,8 @@ bad_utf8:
 			    size_t offset = colon + tag.size();
 			    cur.insert(offset, wxT("</a>"));
 			    offset += 4 + 2;
+
+			    if (!have_column) --offset;
 
 			    static const wxString & error_marker = wmsg(/*error*/93) + ":";
 			    static const wxString & warning_marker = wmsg(/*warning*/4) + ":";
