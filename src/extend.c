@@ -478,6 +478,55 @@ static struct help_msg help[] = {
    {0, 0, 0}
 };
 
+static point *
+pick_start_stn(void)
+{
+   point * best = NULL;
+   double zMax = -DBL_MAX;
+   point *p;
+
+   /* Start at the highest entrance with some legs attached. */
+   for (p = headpoint.next; p != NULL; p = p->next) {
+      if (p->order > 0 && p->p.z > zMax) {
+	 const stn *s;
+	 for (s = p->stns; s; s = s->next) {
+	    if (s->flags & img_SFLAG_ENTRANCE) {
+	       zMax = p->p.z;
+	       return p;
+	    }
+	 }
+      }
+   }
+   if (best) return best;
+
+   /* If no entrances with legs, start at the highest 1-node. */
+   for (p = headpoint.next; p != NULL; p = p->next) {
+      if (p->order == 1 && p->p.z > zMax) {
+	 best = p;
+	 zMax = p->p.z;
+      }
+   }
+   if (best) return best;
+
+   /* of course we may have no 1-nodes... */
+   for (p = headpoint.next; p != NULL; p = p->next) {
+      if (p->order != 0 && p->p.z > zMax) {
+	 best = p;
+	 zMax = p->p.z;
+      }
+   }
+   if (best) return best;
+
+   /* There are no legs - just pick the highest station... */
+   for (p = headpoint.next; p != NULL; p = p->next) {
+      if (p->p.z > zMax) {
+	 best = p;
+	 zMax = p->p.z;
+      }
+   }
+   return best;
+}
+
 int
 main(int argc, char **argv)
 {
@@ -486,8 +535,6 @@ main(int argc, char **argv)
    img_point pt;
    int result;
    point *fr = NULL, *to;
-   double zMax = -DBL_MAX;
-   point *p;
    const char *survey = NULL;
    const char *specfile = NULL;
    img *pimg;
@@ -591,50 +638,9 @@ main(int argc, char **argv)
    }
 
    if (start == NULL) {
-      /* *start wasn't specified in specfile.
-       *
-       * Start at the highest entrance with some legs attached.
-       */
-      for (p = headpoint.next; p != NULL; p = p->next) {
-	 if (p->order > 0 && p->p.z > zMax) {
-	    const stn *s;
-	    for (s = p->stns; s; s = s->next) {
-	       if (s->flags & img_SFLAG_ENTRANCE) {
-		  start = p;
-		  zMax = p->p.z;
-		  break;
-	       }
-	    }
-	 }
-      }
-      if (start == NULL) {
-	 /* If no entrances with legs, start at the highest 1-node. */
-	 for (p = headpoint.next; p != NULL; p = p->next) {
-	    if (p->order == 1 && p->p.z > zMax) {
-	       start = p;
-	       zMax = p->p.z;
-	    }
-	 }
-	 /* of course we may have no 1-nodes... */
-	 if (start == NULL) {
-	    for (p = headpoint.next; p != NULL; p = p->next) {
-	       if (p->order != 0 && p->p.z > zMax) {
-		  start = p;
-		  zMax = p->p.z;
-	       }
-	    }
-	    if (start == NULL) {
-	       /* There are no legs - just pick the highest station... */
-	       for (p = headpoint.next; p != NULL; p = p->next) {
-		  if (p->p.z > zMax) {
-		     start = p;
-		     zMax = p->p.z;
-		  }
-	       }
-	       if (!start) fatalerror(/*No survey data*/43);
-	    }
-	 }
-      }
+      /* *start wasn't specified in specfile. */
+      start = pick_start_stn();
+      if (!start) fatalerror(/*No survey data*/43);
    }
 
    /* TRANSLATORS: for extend:
