@@ -339,6 +339,10 @@ static const int msg_filetype[] = {
     /*SVG files*/417
 };
 
+// We discriminate as "One Page" isn't valid for exporting.
+static wxString default_scale_print;
+static wxString default_scale_export;
+
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & cs_proj,
 			 const wxString & datestamp, time_t datestamp_numeric,
@@ -450,7 +454,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	 * the plot on a single page", but we need something shorter */
 	scales[0].assign(wmsg(/*One page*/258));
     }
-    wxString default_scale = printing ? scales[0] : wxString(wxT("1000"));
+    wxString default_scale;
+    if (printing) {
+	default_scale = default_scale_print;
+	if (default_scale.empty()) default_scale = scales[0];
+    } else {
+	default_scale = default_scale_export;
+	if (default_scale.empty()) default_scale = wxT("1000");
+    }
     const wxString* scale_list = scales;
     size_t n_scales = sizeof(scales) / sizeof(scales[0]);
     if (!printing) {
@@ -802,6 +813,13 @@ svxPrintDlg::OnChangeSpin(wxSpinDoubleEvent& e) {
 
 void
 svxPrintDlg::OnChange(wxCommandEvent& e) {
+    if (e.GetId() == svx_SCALE) {
+	default_scale_print = m_scale->GetValue();
+	if (default_scale_print != scales[0]) {
+	    // Don't store "One Page" for use when exporting.
+	    default_scale_export = default_scale_print;
+	}
+    }
     SomethingChanged(e.GetId());
 }
 
