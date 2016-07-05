@@ -26,6 +26,7 @@
 class GPX : public ExportFilter {
     projPJ pj_input, pj_output;
     bool in_trkseg;
+    const char * trk_name;
   public:
     explicit GPX(const char * input_datum);
     ~GPX();

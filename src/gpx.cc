@@ -64,7 +64,7 @@ html_escape(FILE *fh, const char *s)
 }
 
 GPX::GPX(const char * input_datum)
-    : pj_input(NULL), pj_output(NULL), in_trkseg(false)
+    : pj_input(NULL), pj_output(NULL), in_trkseg(false), trk_name(NULL)
 {
     if (!(pj_input = pj_init_plus(input_datum))) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
@@ -84,6 +84,7 @@ GPX::~GPX()
 	pj_free(pj_input);
     if (pj_output)
 	pj_free(pj_output);
+    free((void*)trk_name);
 }
 
 const int *
@@ -108,6 +109,7 @@ void GPX::header(const char * title, const char *, time_t datestamp_numeric,
 	fputs("<name>", fh);
 	html_escape(fh, title);
 	fputs("</name>\n", fh);
+	trk_name = strdup(title);
     }
     if (datestamp_numeric != time_t(-1)) {
 	struct tm * tm = gmtime(&datestamp_numeric);
@@ -133,7 +135,13 @@ GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 	if (in_trkseg) {
 	    fputs("</trkseg><trkseg>\n", fh);
 	} else {
-	    fputs("<trk><trkseg>\n", fh);
+	    fputs("<trk>", fh);
+	    if (trk_name) {
+		fputs("<name>", fh);
+		html_escape(fh, trk_name);
+		fputs("</name>", fh);
+	    }
+	    fputs("<trkseg>\n", fh);
 	    in_trkseg = true;
 	}
 	double X = p1->x, Y = p1->y, Z = p1->z;
