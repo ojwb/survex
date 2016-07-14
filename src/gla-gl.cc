@@ -160,6 +160,53 @@ string GetGLSystemDescription()
     return info;
 }
 
+static bool
+glpoint_sprite_works()
+{
+    // Point sprites provide an easy, fast way for us to draw crosses by
+    // texture mapping GL points.
+    //
+    // If we have OpenGL >= 2.0 then we definitely have GL_POINT_SPRITE.
+    // Otherwise see if we have the GL_ARB_point_sprite or GL_NV_point_sprite
+    // extensions.
+    //
+    // The symbolic constants GL_POINT_SPRITE, GL_POINT_SPRITE_ARB, and
+    // GL_POINT_SPRITE_NV all give the same number so it doesn't matter
+    // which we use.
+    static bool glpoint_sprite = false;
+    static bool checked = false;
+    if (!checked) {
+	float maxSize = 0.0f;
+	glGetFloatv(GL_POINT_SIZE_MAX, &maxSize);
+	if (maxSize >= 8) {
+	    glpoint_sprite = (atoi((const char *)glGetString(GL_VERSION)) >= 2);
+	    if (!glpoint_sprite) {
+		const char * p = (const char *)glGetString(GL_EXTENSIONS);
+		while (true) {
+		    size_t l = 0;
+		    if (memcmp(p, "GL_ARB_point_sprite", 19) == 0) {
+			l = 19;
+		    } else if (memcmp(p, "GL_NV_point_sprite", 18) == 0) {
+			l = 18;
+		    }
+		    if (l) {
+			p += l;
+			if (*p == '\0' || *p == ' ') {
+			    glpoint_sprite = true;
+			    break;
+			}
+		    }
+		    p = strchr(p + 1, ' ');
+		    if (!p) break;
+		    ++p;
+		}
+	    }
+	}
+	checked = true;
+    }
+    return glpoint_sprite;
+}
+
 static void
 log_gl_error(const wxChar * str, GLenum error_code)
 {
@@ -462,45 +509,8 @@ void GLACanvas::FirstShow()
 	CHECK_GL_ERROR("FirstShow", "glPointSize");
     }
 
-    // Point sprites provide an easy, fast way for us to draw crosses by
-    // texture mapping GL points.
-    //
-    // If we have OpenGL >= 2.0 then we definitely have GL_POINT_SPRITE.
-    // Otherwise see if we have the GL_ARB_point_sprite or GL_NV_point_sprite
-    // extensions.
-    //
-    // The symbolic constants GL_POINT_SPRITE, GL_POINT_SPRITE_ARB, and
-    // GL_POINT_SPRITE_NV all give the same number so it doesn't matter
-    // which we use.
     if (cross_method == UNKNOWN) {
-	bool glpoint_sprite = false;
-	float maxSize = 0.0f;
-	glGetFloatv(GL_POINT_SIZE_MAX, &maxSize);
-	if (maxSize >= 8) {
-	    glpoint_sprite = (atoi((const char *)glGetString(GL_VERSION)) >= 2);
-	    if (!glpoint_sprite) {
-		const char * p = (const char *)glGetString(GL_EXTENSIONS);
-		while (true) {
-		    size_t l = 0;
-		    if (memcmp(p, "GL_ARB_point_sprite", 19) == 0) {
-			l = 19;
-		    } else if (memcmp(p, "GL_NV_point_sprite", 18) == 0) {
-			l = 18;
-		    }
-		    if (l) {
-			p += l;
-			if (*p == '\0' || *p == ' ') {
-			    glpoint_sprite = true;
-			    break;
-			}
-		    }
-		    p = strchr(p + 1, ' ');
-		    if (!p) break;
-		    ++p;
-		}
-	    }
-	}
-	cross_method = glpoint_sprite ? SPRITE : LINES;
+	cross_method = glpoint_sprite_works() ? SPRITE : LINES;
 	save_hints = true;
     }
 
