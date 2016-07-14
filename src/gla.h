@@ -121,6 +121,7 @@ class GLACanvas : public wxGLCanvas {
     GLUquadric* m_Quadric;
 
     GLuint m_Texture;
+    GLuint m_BlobTexture;
     GLuint m_CrossTexture;
 
     Double alpha;

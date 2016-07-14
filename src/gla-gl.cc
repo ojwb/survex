@@ -499,7 +499,7 @@ void GLACanvas::FirstShow()
 	    point_size_range[1] >= BLOB_DIAMETER) {
 	    blob_method = POINT;
 	} else {
-	    blob_method = LINES;
+	    blob_method = glpoint_sprite_works() ? SPRITE : LINES;
 	}
 	save_hints = true;
     }
@@ -536,6 +536,35 @@ void GLACanvas::FirstShow()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_WRAP_T");
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, 8, 8, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)crossteximage);
+	CHECK_GL_ERROR("FirstShow", "glTexImage2D");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MAG_FILTER");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MIN_FILTER");
+    }
+
+    if (blob_method == SPRITE) {
+	glGenTextures(1, &m_BlobTexture);
+	CHECK_GL_ERROR("FirstShow", "glGenTextures");
+	glBindTexture(GL_TEXTURE_2D, m_BlobTexture);
+	CHECK_GL_ERROR("FirstShow", "glBindTexture");
+	// Image for drawing blobs using texture mapped point sprites.
+	const unsigned char blobteximage[128] = {
+#define o 0,0
+#define I 255,255
+	    BLOB_TEXTURE
+#undef o
+#undef I
+	};
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	CHECK_GL_ERROR("FirstShow", "glPixelStorei");
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	CHECK_GL_ERROR("FirstShow", "glTexEnvi");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_WRAP_S");
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_WRAP_T");
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, 8, 8, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, (GLvoid *)blobteximage);
 	CHECK_GL_ERROR("FirstShow", "glTexImage2D");
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	CHECK_GL_ERROR("FirstShow", "glTexParameteri GL_TEXTURE_MAG_FILTER");
@@ -1141,7 +1170,23 @@ void GLACanvas::PlaceIndicatorVertex(glaCoord x, glaCoord y)
 void GLACanvas::BeginBlobs()
 {
     // Commence drawing of a set of blobs.
-    if (blob_method == POINT) {
+    if (blob_method == SPRITE) {
+	glPushAttrib(GL_ENABLE_BIT|GL_POINT_BIT);
+	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
+	glBindTexture(GL_TEXTURE_2D, m_BlobTexture);
+	CHECK_GL_ERROR("BeginBlobs", "glBindTexture");
+	glEnable(GL_ALPHA_TEST);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_ALPHA_TEST");
+	glPointSize(8);
+	CHECK_GL_ERROR("BeginBlobs", "glPointSize");
+	glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
+	CHECK_GL_ERROR("BeginBlobs", "glTexEnvi GL_POINT_SPRITE");
+	glEnable(GL_TEXTURE_2D);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_TEXTURE_2D");
+	glEnable(GL_POINT_SPRITE);
+	CHECK_GL_ERROR("BeginBlobs", "glEnable GL_POINT_SPRITE");
+	glBegin(GL_POINTS);
+    } else if (blob_method == POINT) {
 	glPushAttrib(GL_ENABLE_BIT);
 	CHECK_GL_ERROR("BeginBlobs", "glPushAttrib");
 	glEnable(GL_ALPHA_TEST);
@@ -1163,7 +1208,7 @@ void GLACanvas::EndBlobs()
 {
     // Finish drawing of a set of blobs.
     glEnd();
-    if (blob_method == POINT) {
+    if (blob_method != LINES) {
 	CHECK_GL_ERROR("EndBlobs", "glEnd GL_POINTS");
     } else {
 	CHECK_GL_ERROR("EndBlobs", "glEnd GL_LINES");
@@ -1174,7 +1219,7 @@ void GLACanvas::EndBlobs()
 
 void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 {
-    if (blob_method == POINT) {
+    if (blob_method != LINES) {
 	// Draw a marker.
 	PlaceVertex(x, y, z);
     } else {
@@ -1208,7 +1253,7 @@ void GLACanvas::DrawBlob(glaCoord x, glaCoord y, glaCoord z)
 
 void GLACanvas::DrawBlob(glaCoord x, glaCoord y)
 {
-    if (blob_method == POINT) {
+    if (blob_method != LINES) {
 	// Draw a marker.
 	PlaceVertex(x, y, 0);
     } else {
