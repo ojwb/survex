@@ -75,6 +75,26 @@ using namespace std;
 
 const int BLOB_DIAMETER = 5;
 
+#define BLOB_TEXTURE \
+	    o, o, o, o, o, o, o, o,\
+	    o, o, o, o, o, o, o, o,\
+	    o, o, I, I, I, o, o, o,\
+	    o, I, I, I, I, I, o, o,\
+	    o, I, I, I, I, I, o, o,\
+	    o, I, I, I, I, I, o, o,\
+	    o, o, I, I, I, o, o, o,\
+	    o, o, o, o, o, o, o, o
+
+#define CROSS_TEXTURE \
+	    o, o, o, o, o, o, o, o,\
+	    I, o, o, o, o, o, I, o,\
+	    o, I, o, o, o, I, o, o,\
+	    o, o, I, o, I, o, o, o,\
+	    o, o, o, I, o, o, o, o,\
+	    o, o, I, o, I, o, o, o,\
+	    o, I, o, o, o, I, o, o,\
+	    I, o, o, o, o, o, I, o
+
 static bool opengl_initialised = false;
 
 string GetGLSystemDescription()
@@ -491,14 +511,11 @@ void GLACanvas::FirstShow()
 	CHECK_GL_ERROR("FirstShow", "glBindTexture");
 	// Cross image for drawing crosses using texture mapped point sprites.
 	const unsigned char crossteximage[128] = {
-	      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0,
-	      0,  0,255,255,  0,  0,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
-	      0,  0,  0,  0,255,255,  0,  0,255,255,  0,  0,  0,  0,  0,  0,
-	      0,  0,  0,  0,  0,  0,255,255,  0,  0,  0,  0,  0,  0,  0,  0,
-	      0,  0,  0,  0,255,255,  0,  0,255,255,  0,  0,  0,  0,  0,  0,
-	      0,  0,255,255,  0,  0,  0,  0,  0,  0,255,255,  0,  0,  0,  0,
-	    255,255,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,255,255,  0,  0
+#define o 0,0
+#define I 255,255
+	    CROSS_TEXTURE
+#undef o
+#undef I
 	};
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	CHECK_GL_ERROR("FirstShow", "glPixelStorei");
@@ -618,14 +635,7 @@ void GLACanvas::StartDrawing()
 	static const unsigned char expected_cross[64 * 3] = {
 #define o 0,0,0
 #define I 255,255,255
-	    o, o, o, o, o, o, o, o,
-	    I, o, o, o, o, o, I, o,
-	    o, I, o, o, o, I, o, o,
-	    o, o, I, o, I, o, o, o,
-	    o, o, o, I, o, o, o, o,
-	    o, o, I, o, I, o, o, o,
-	    o, I, o, o, o, I, o, o,
-	    I, o, o, o, o, o, I, o
+	    CROSS_TEXTURE
 #undef o
 #undef I
 	};
@@ -645,14 +655,7 @@ void GLACanvas::StartDrawing()
 	static const unsigned char expected_blob[64 * 3] = {
 #define o 0,0,0
 #define I 255,255,255
-	    o, o, o, o, o, o, o, o,
-	    o, o, o, o, o, o, o, o,
-	    o, o, I, I, I, o, o, o,
-	    o, I, I, I, I, I, o, o,
-	    o, I, I, I, I, I, o, o,
-	    o, I, I, I, I, I, o, o,
-	    o, o, I, I, I, o, o, o,
-	    o, o, o, o, o, o, o, o
+	    BLOB_TEXTURE
 #undef o
 #undef I
 	};
@@ -1544,7 +1547,7 @@ bool GLACanvas::CheckVisualFidelity(const unsigned char * target) const
 	glReadBuffer(GL_BACK);
 	CHECK_GL_ERROR("FirstShow", "glReadBuffer");
     }
-    glReadPixels(x_size / 2 - 3, y_size / 2 - 4, 8, 8,
+    glReadPixels(x_size / 2 - 4, y_size / 2 - 5, 8, 8,
 		 GL_RGB, GL_UNSIGNED_BYTE, (GLvoid *)pixels);
     CHECK_GL_ERROR("CheckVisualFidelity", "glReadPixels");
     if (double_buffered) {
