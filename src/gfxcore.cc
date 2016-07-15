@@ -406,18 +406,22 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    DrawList(LIST_GRID);
 	}
 
+	DrawList(LIST_BLOBS);
+
+	if (m_Crosses) {
+	    DrawList(LIST_CROSSES);
+	}
+
 	if (m_Terrain) {
+	    // This is needed if blobs and/or crosses are drawn using lines -
+	    // otherwise the terrain doesn't appear when they are enabled.
+	    SetDataTransform();
+
 	    // We don't want to be able to see the terrain through itself, so
 	    // do a "Z-prepass" - plot the terrain once only updating the
 	    // Z-buffer, then again with Z-clipping only plotting where the
 	    // depth matches the value in the Z-buffer.
 	    DrawListZPrepass(LIST_TERRAIN);
-	}
-
-	DrawList(LIST_BLOBS);
-
-	if (m_Crosses) {
-	    DrawList(LIST_CROSSES);
 	}
 
 	SetIndicatorTransform();
