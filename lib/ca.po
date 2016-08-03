@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
+"PO-Revision-Date: 2016-06-12 08:34:00 +0000\n"
 "Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "&Orientació"
 #: ../src/mainfrm.cc:963
 #: n:213
 msgid "&View"
-msgstr "&Veure"
+msgstr "&Visualitza"
 
 #: ../src/mainfrm.cc:965
 #: n:214
@@ -55,7 +55,7 @@ msgstr "&Presentació"
 #: ../src/cmdline.c:168
 #: n:49
 msgid "Usage"
-msgstr "Forma d’ús"
+msgstr "Utilització"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
