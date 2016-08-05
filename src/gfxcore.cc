@@ -3731,7 +3731,7 @@ void GfxCore::SetColourBy(int colour_by) {
 
 bool GfxCore::ExportMovie(const wxString & fnm)
 {
-    FILE* fh = wxFopen(fnm.fn_str(), wxT("w"));
+    FILE* fh = wxFopen(fnm.fn_str(), wxT("wb"));
     if (fh == NULL) {
 	wxGetApp().ReportError(wxString::Format(wmsg(/*Failed to open output file “%s”*/47), fnm.c_str()));
 	return false;
