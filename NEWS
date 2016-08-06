@@ -1,3 +1,55 @@
+Changes in 1.2.28 (2016-08-06):
+
+* aven:
+
+  + Include LRUD in printout/export of extended elevations, broken by
+    improvements to export of tilted elevations in 1.2.27.  Reported by Anthony
+    Day.
+
+  + Name <trk> tags in GPX output, so Garmin GPS units name the imported track
+    usefully.  Reported by Anthony Day.
+
+  + Remember scale from previous print or export operation in the same run of
+    aven.  Suggested by Stuart Bennett.
+
+  + Fix colouring of error/warning without column in cavern log window.
+
+  + Fix click on error/warning without column in cavern log window.
+
+  + Avoid special "1000" scale entry when exporting.
+
+  + Show 1 page when "One Page" selected.
+
+  + Reload processed data when restricting view.  Fixes failure when
+    restricting view on data just processed via aven.  Spotted by Andrew
+    Atkinson and myself.
+
+  + Don't hide blobs and crosses behind terrain.  Reported by Jenny Black.
+
+  + Fix rendering of crosses using point sprites.  The texture being used was
+    misaligned relative to the image used for the visual fidelity check, so the
+    check always failed and point sprites would never be used.  Where point
+    sprites are supported, they're probably the fastest option - on my netbook
+    this change improves FPS by ~6 fold when displaying crosses for a large
+    survey.
+
+  + Support drawing blobs using point sprites.  About 5 times faster than using
+    lines on my netbook.
+
+  + Recheck how best to draw crosses and blobs on the first run after Survex
+    is upgraded (or downgraded) as the rendering code may have changed (we
+    already recheck when the OpenGL hardware or driver changes).
+
+  + (Microsoft Windows version): Fix corrupted exported movie files.  1.2.27
+    changed the movie export code to allow writing to files with non-ASCII
+    characters in the names, but the new code failed to open the file in binary
+    mode, leading to corrupt output.  Fixes #81, reported by Erin Lynch.
+
+* Fix to build without FFmpeg/libav, broken by changes in 1.2.27.  Reported by
+  James Begley.
+
+* Merge catalan translation updates from Adolfo Jayme.
+
 Changes in 1.2.27 (2016-06-06):
 
 * aven:
