@@ -413,15 +413,17 @@ void GLACanvas::FirstShow()
     CHECK_GL_ERROR("FirstShow", "glViewport");
 
     save_hints = false;
+
     vendor = wxString((const char *)glGetString(GL_VENDOR), wxConvUTF8);
     renderer = wxString((const char *)glGetString(GL_RENDERER), wxConvUTF8);
-    wxConfigBase * cfg = wxConfigBase::Get();
     {
+	wxConfigBase * cfg = wxConfigBase::Get();
 	wxString s;
-	if (cfg->Read(wxT("opengl_vendor"), &s, wxString()) && s == vendor &&
+	if (cfg->Read(wxT("opengl_survex"), &s, wxString()) && s == wxT(VERSION) &&
+	    cfg->Read(wxT("opengl_vendor"), &s, wxString()) && s == vendor &&
 	    cfg->Read(wxT("opengl_renderer"), &s, wxString()) && s == renderer) {
-	    // The vendor and renderer are the same as the values we have cached,
-	    // so use the hints we have cached.
+	    // The survex version, vendor and renderer are the same as those
+	    // we cached hints for, so use those hints.
 	    int v;
 	    if (cfg->Read(wxT("blob_method"), &v, 0) &&
 		(v == POINT || v == LINES)) {
@@ -705,6 +707,7 @@ void GLACanvas::StartDrawing()
     }
 
     wxConfigBase * cfg = wxConfigBase::Get();
+    cfg->Write(wxT("opengl_survex"), wxT(VERSION));
     cfg->Write(wxT("opengl_vendor"), vendor);
     cfg->Write(wxT("opengl_renderer"), renderer);
     cfg->Write(wxT("blob_method"), blob_method);
