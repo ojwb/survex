@@ -124,7 +124,7 @@ for file in $TESTS ; do
     *)
       read header < "$realfile"
       set dummy $header
-      while shift && [ -n "$1" ]: ; do
+      while shift && [ -n "$1" ] ; do
 	case $1 in
 	  pos=*) pos=`expr "$1" : 'pos=\(.*\)'` ;;
 	  warn=*) warn=`expr "$1" : 'warn=\(.*\)'` ;;
