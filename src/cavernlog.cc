@@ -239,7 +239,9 @@ wxString get_command_path(const wxChar * command_name)
 }
 
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
-    : wxHtmlWindow(parent), mainfrm(mainfrm_), cavern_out(NULL),
+    : wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+		   wxHW_DEFAULT_STYLE|wxHW_NO_SELECTION),
+      mainfrm(mainfrm_), cavern_out(NULL),
       link_count(0), end(buf), init_done(false), survey(survey_)
 #ifdef CAVERNLOG_USE_THREADS
       , thread(NULL)
