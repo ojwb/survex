@@ -1,4 +1,4 @@
-Changes in 1.2.28 (2016-08-06):
+Changes in 1.2.28 (2016-08-18):
 
 * aven:
 
@@ -49,6 +49,12 @@ Changes in 1.2.28 (2016-08-06):
   James Begley.
 
 * Merge catalan translation updates from Adolfo Jayme.
+
+* (Microsoft Windows version): Map LANG_CHINESE to zh_CN not zh so Chinese
+  messages get used automatically.
+
+* cavern.tst: Remove random : from after ] - dash ignores the extra character,
+  but it causes this test to fail if /bin/sh is a different shell (e.g. bash).
 
 Changes in 1.2.27 (2016-06-06):
 
