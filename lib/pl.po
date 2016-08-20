@@ -1800,7 +1800,7 @@ msgstr "Au&toobrót\tSpace"
 #: ../src/mainfrm.cc:815
 #: n:234
 msgid "&Reverse Direction"
-msgstr "Odwróć kierunki"
+msgstr "&Odwróć kierunki"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:3902
@@ -1834,7 +1834,7 @@ msgstr "Na &zachód"
 #: ../src/mainfrm.cc:823
 #: n:248
 msgid "&Plan View"
-msgstr "&Widok planu"
+msgstr "Widok p&lanu"
 
 #: ../src/gfxcore.cc:3926
 #: ../src/mainfrm.cc:824
@@ -1845,7 +1845,7 @@ msgstr "Prze&krój"
 #: ../src/mainfrm.cc:826
 #: n:254
 msgid "Restore De&fault View"
-msgstr "Przywróć &domyślny widok"
+msgstr "Przywróć do&myślny widok"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
@@ -1974,13 +1974,13 @@ msgstr "&Nazwy punktów\tCtrl+N"
 #: ../src/mainfrm.cc:845
 #: n:346
 msgid "Passage &Tubes\tCtrl+T"
-msgstr "Obrys korytarzy\tCtrl+T"
+msgstr "Obrys korytar&zy\tCtrl+T"
 
 #. TRANSLATORS: Toggles drawing the surface of the Earth
 #: ../src/mainfrm.cc:847
 #: n:449
 msgid "Terr&ain"
-msgstr "Ter&en"
+msgstr "Te&ren"
 
 #: ../src/mainfrm.cc:848
 #: n:271
@@ -1990,7 +1990,7 @@ msgstr "&Krzyże\tCtrl+X"
 #: ../src/mainfrm.cc:849
 #: n:297
 msgid "&Grid\tCtrl+G"
-msgstr "Siatka\tCtrl+G"
+msgstr "&Siatka\tCtrl+G"
 
 #: ../src/mainfrm.cc:850
 #: n:318
@@ -2002,19 +2002,19 @@ msgstr "&Pudełko\tCtrl+B"
 #: ../src/mainfrm.cc:854
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
-msgstr "Odcinki podziemn&e\tCtrl+L"
+msgstr "Od&cinki podziemn\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/mainfrm.cc:857
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "Odcinki powierzchniowe\tCtrl+F"
+msgstr "O&dcinki powierzchniowe\tCtrl+F"
 
 #: ../src/mainfrm.cc:873
 #: n:273
 msgid "&Overlapping Names"
-msgstr "Nakładaj &nazwy"
+msgstr "Nakłada&j nazwy"
 
 #: ../src/mainfrm.cc:882
 #: n:450
@@ -2034,7 +2034,7 @@ msgstr "Podświetl punkty &ustalone"
 #: ../src/mainfrm.cc:887
 #: n:296
 msgid "Highlight E&xported Points"
-msgstr "Podświetl wye&ksportowane punkty"
+msgstr "Podświetl w&yeksportowane punkty"
 
 #: ../src/printing.cc:525
 #: n:418
@@ -2054,12 +2054,12 @@ msgstr "&Wyeksportowane punkty"
 #: ../src/mainfrm.cc:892
 #: n:237
 msgid "&Perspective"
-msgstr "&Perspektywa"
+msgstr "Perspektyw&a"
 
 #: ../src/mainfrm.cc:894
 #: n:238
 msgid "Textured &Walls"
-msgstr "Teksturuj ściany"
+msgstr "&Teksturuj ściany"
 
 #. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
 #. using that term instead if it gives a better translation which most
@@ -2067,14 +2067,14 @@ msgstr "Teksturuj ściany"
 #: ../src/mainfrm.cc:898
 #: n:239
 msgid "Fade Distant Ob&jects"
-msgstr "Przyciemnij dalekie &Obiekty"
+msgstr "Przyciemnij dalekie Ob&iekty"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/mainfrm.cc:901
 #: n:298
 msgid "Smoot&hed Survey Legs"
-msgstr "Wygładzone odcinki pomiarowe"
+msgstr "&Wygładzone odcinki pomiarowe"
 
 #: ../src/mainfrm.cc:907
 #: ../src/mainfrm.cc:914
@@ -2092,7 +2092,7 @@ msgstr "Koloruj po &Głębokości"
 #: ../src/mainfrm.cc:877
 #: n:293
 msgid "Colour by D&ate"
-msgstr "Koloruj po &Dacie"
+msgstr "Koloruj po Da&cie"
 
 #: ../src/gfxcore.cc:3965
 #: ../src/mainfrm.cc:878
@@ -2124,14 +2124,14 @@ msgstr "&Kompas"
 #: ../src/mainfrm.cc:943
 #: n:275
 msgid "C&linometer"
-msgstr "&Klinometr"
+msgstr "Kli&nometr"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:946
 #: n:276
 msgid "Colour &Key"
-msgstr "Objaśnienie &kolorów"
+msgstr "&Objaśnienie kolorów"
 
 #: ../src/mainfrm.cc:947
 #: n:277
@@ -2216,7 +2216,7 @@ msgstr "Otwórz &prezentację..."
 #: ../src/mainfrm.cc:831
 #: n:313
 msgid "&Save Presentation"
-msgstr "Zapisz prezentację"
+msgstr "&Zapisz prezentację"
 
 #: ../src/mainfrm.cc:832
 #: n:314
@@ -2233,7 +2233,7 @@ msgstr "&Oznacz"
 #: ../src/mainfrm.cc:837
 #: n:316
 msgid "Pla&y"
-msgstr "&Odtwarzaj"
+msgstr "O&dtwarzaj"
 
 #: ../src/mainfrm.cc:838
 #: n:317
@@ -2349,7 +2349,7 @@ msgstr "Możesz przeglądać tylko jeden plik 3d"
 #: ../src/mainfrm.cc:949
 #: n:337
 msgid "&Side Panel"
-msgstr "&Panel boczny"
+msgstr "Panel &boczny"
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
@@ -2816,7 +2816,7 @@ msgstr "&Przyciemnij"
 #: ../src/mainfrm.cc:869
 #: n:409
 msgid "&Show"
-msgstr "&Pokaż"
+msgstr "Po&każ"
 
 #: ../src/extend.c:525
 #: n:105
@@ -3178,7 +3178,7 @@ msgstr "wyjście w formacie SVG"
 #: ../src/mainfrm.cc:918
 #: n:347
 #~ msgid "&Preferences..."
-#~ msgstr "Preferencje..."
+#~ msgstr "&Preferencje..."
 
 #: n:348
 #~ msgid "Draw passage walls"
