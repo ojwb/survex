@@ -117,7 +117,7 @@ error_list_parent_files(void)
 }
 
 static void
-show_line(int col)
+show_line(int col, int width)
 {
    /* Rewind to beginning of line. */
    long cur_pos = ftell(file.fh);
@@ -134,8 +134,13 @@ show_line(int col)
 
    /* If we have a location in the line for the error, indicate it. */
    if (col) {
+      col -= width;
       while (--col) PUTC(' ', STDERR);
       PUTC('^', STDERR);
+      while (width > 1) {
+	 PUTC('~', STDERR);
+	 --width;
+      }
       fputnl(STDERR);
    }
 
@@ -143,6 +148,8 @@ show_line(int col)
    if (fseek(file.fh, cur_pos, SEEK_SET) == -1)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 }
+
+static int caret_width = 0;
 
 static void
 compile_v_report(int severity, int en, va_list ap)
@@ -155,7 +162,7 @@ compile_v_report(int severity, int en, va_list ap)
    }
    v_report(severity, file.filename, file.line, col, en, ap);
    if (file.fh)
-      show_line(col);
+      show_line(col, caret_width);
 }
 
 void
@@ -230,8 +237,14 @@ compile_error_token(int en)
       s_catchar(&p, &len, (char)ch);
       nextch();
    }
-   compile_error(en, p ? p : "");
-   osfree(p);
+   if (p) {
+      caret_width = strlen(p);
+      compile_error(en, p);
+      caret_width = 0;
+      osfree(p);
+   } else {
+      compile_error(en, "");
+   }
 }
 
 void
