@@ -117,7 +117,7 @@ error_list_parent_files(void)
 }
 
 static void
-show_line(void)
+show_line(int col)
 {
    /* Rewind to beginning of line. */
    long cur_pos = ftell(file.fh);
@@ -131,6 +131,13 @@ show_line(void)
       PUTC(c, STDERR);
    }
    fputnl(STDERR);
+
+   /* If we have a location in the line for the error, indicate it. */
+   if (col) {
+      while (--col) PUTC(' ', STDERR);
+      PUTC('^', STDERR);
+      fputnl(STDERR);
+   }
 
    /* Revert to where we were. */
    if (fseek(file.fh, cur_pos, SEEK_SET) == -1)
@@ -148,7 +155,7 @@ compile_v_report(int severity, int en, va_list ap)
    }
    v_report(severity, file.filename, file.line, col, en, ap);
    if (file.fh)
-      show_line();
+      show_line(col);
 }
 
 void
