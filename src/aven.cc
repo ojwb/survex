@@ -478,10 +478,7 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
     }
 
     char buf[1024];
-    if(severity == -1)
-        vsnprintf(buf, sizeof(buf), "%s", ap);
-    else
-        vsnprintf(buf, sizeof(buf), msg(en), ap);
+    vsnprintf(buf, sizeof(buf), msg(en), ap);
     m += wxString(buf, wxConvUTF8);
     if (wxTheApp == NULL) {
 	// We haven't initialised the Aven app object yet.

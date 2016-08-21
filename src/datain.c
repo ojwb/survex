@@ -116,50 +116,25 @@ error_list_parent_files(void)
    }
 }
 
-void v_report_line_contents(const char *filename, unsigned line, ...);
-
-
-void
-v_report_line_contents(const char *filename, unsigned line, ...)
+static void
+show_line(void)
 {
-   va_list ap;
-   va_start(ap, line);
-   v_report(-1, filename, line, 0, 0, ap);
-   va_end(ap);
+   /* Rewind to beginning of line. */
+   long cur_pos = ftell(file.fh);
+   if (cur_pos < 0 || fseek(file.fh, file.lpos, SEEK_SET) == -1)
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
-}
-
-char *get_line_contents();
-
-char*
-get_line_contents()
-{
-#define MAX_REPORTING_WIDTH 80
-   filepos fp_stored;
-   filepos fp;
-   static char line[MAX_REPORTING_WIDTH + 1];
-   int p = 0;
-   
-   /* Rewind to beginning of line */
-   get_pos(&fp_stored);
-   
-   fp.ch = '\n';
-   fp.offset = file.lpos;
-   set_pos(&fp);
-   
-   /* Read the line until EOL */
-   while((p < MAX_REPORTING_WIDTH) && (!feof(file.fh)))
-   {
-      nextch();
-      if(isEol(ch)) break;
-      line[p++] = ch;
+   /* Read the whole line and write it out. */
+   while (!feof(file.fh)) {
+      int c = GETC(file.fh);
+      if (isEol(c)) break;
+      PUTC(c, STDERR);
    }
-   line[p++] = 0;
-   
-   /* Revert to where we were */
-   set_pos(&fp_stored);
-   
-   return line;
+   fputnl(STDERR);
+
+   /* Revert to where we were. */
+   if (fseek(file.fh, cur_pos, SEEK_SET) == -1)
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 }
 
 static void
@@ -171,9 +146,9 @@ compile_v_report(int severity, int en, va_list ap)
       en = -en;
       if (file.fh) col = ftell(file.fh) - file.lpos;
    }
-   if(file.fh)
-      v_report_line_contents(file.filename, file.line, get_line_contents());
    v_report(severity, file.filename, file.line, col, en, ap);
+   if (file.fh)
+      show_line();
 }
 
 void

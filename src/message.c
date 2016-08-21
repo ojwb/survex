@@ -1218,28 +1218,19 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
       /* TRANSLATORS: Indicates a warning message e.g.:
        * "spoon.svx:12: warning: *prefix is deprecated" */
       level = msg(/*warning*/4);
-   } else if (severity > 0) {
+   } else {
       /* TRANSLATORS: Indicates an error message e.g.:
        * "spoon.svx:13:4: error: Field may not be omitted" */
       level = msg(/*error*/93);
    }
+   fputs(level, STDERR);
+   fputs(": ", STDERR);
 
-   if(severity == -1)
-      vfprintf(STDERR, "%s", ap);
-   else
-   {
-      fputs(level, STDERR);
-      fputs(": ", STDERR);
-      vfprintf(STDERR, msg(en), ap);
-   }
-   
+   vfprintf(STDERR, msg(en), ap);
    fputnl(STDERR);
 #endif
 
    switch (severity) {
-    case -1:
-      /* Just reporting line contents! */ 
-      break;
     case 0:
       msg_warnings++;
       break;
