@@ -1,6 +1,7 @@
-; pos=fail error=3
+; pos=fail error=4
 ; The two lines below used to cause a segfault (fixed in 1.2.7)
 *include ; comment
 *include
 *include "not terminated
+*include "nonexistent_file"
 *fix 1 reference 0 0 0

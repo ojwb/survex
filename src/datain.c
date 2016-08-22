@@ -171,10 +171,8 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
 {
    int col = 0;
    error_list_parent_files();
-   if (en < 0) {
-      en = -en;
-      if (fpos >= file.lpos) col = fpos - file.lpos - caret_width;
-   }
+   if (fpos >= file.lpos)
+      col = fpos - file.lpos - caret_width;
    v_report(severity, file.filename, file.line, col, en, ap);
    if (col)
       show_line(col, caret_width);
@@ -183,7 +181,15 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
 static void
 compile_v_report(int severity, int en, va_list ap)
 {
-   compile_v_report_fpos(severity, file.fh ? ftell(file.fh) : -1, en, ap);
+   if (en < 0) {
+      en = -en;
+      if (file.fh) {
+	 compile_v_report_fpos(severity, ftell(file.fh), en, ap);
+	 return;
+      }
+   }
+   error_list_parent_files();
+   v_report(severity, file.filename, file.line, 0, en, ap);
 }
 
 void
@@ -242,7 +248,28 @@ compile_error_pfx(const prefix * pfx, int en, ...)
 }
 
 void
-compile_error_token(int en)
+compile_error_token(int en, ...)
+{
+   va_list ap;
+   char *p = NULL;
+   int len = 0;
+   va_start(ap, en);
+   skipblanks();
+   while (!isBlank(ch) && !isEol(ch)) {
+      s_catchar(&p, &len, (char)ch);
+      nextch();
+   }
+   if (p) {
+      caret_width = strlen(p);
+      osfree(p);
+   }
+   compile_v_report(1, -en, ap);
+   caret_width = 0;
+   va_end(ap);
+}
+
+void
+compile_error_token_show(int en)
 {
    char *p = NULL;
    int len = 0;
@@ -253,12 +280,23 @@ compile_error_token(int en)
    }
    if (p) {
       caret_width = strlen(p);
-      compile_error(en, p);
+      compile_error(-en, p);
       caret_width = 0;
       osfree(p);
    } else {
-      compile_error(en, "");
+      compile_error(-en, "");
    }
+}
+
+static void
+compile_error_string(const char * s, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   caret_width = strlen(s);
+   compile_v_report(1, en, ap);
+   va_end(ap);
+   caret_width = 0;
 }
 
 void
@@ -486,7 +524,7 @@ data_file(const char *pth, const char *fnm)
       }
 
       if (fh == NULL) {
-	 compile_error(-/*Couldn’t open file “%s”*/24, fnm);
+	 compile_error_string(fnm, -/*Couldn’t open file “%s”*/24, fnm);
 	 return;
       }
 
@@ -1620,7 +1658,7 @@ data_normal(void)
 	  read_reading(r, fTrue);
 	  if (VAL(r) == HUGE_REAL) {
 	     if (!isOmit(ch)) {
-		compile_error_token(-/*Expecting numeric field, found “%s”*/9);
+		compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
 		/* Avoid also warning about omitted tape reading. */
 		VAL(r) = 0;
 	     } else {
@@ -1654,7 +1692,7 @@ data_normal(void)
 	  if (VAL(r) == HUGE_REAL) {
 	     VAL(r) = handle_plumb(p_ctype);
 	     if (VAL(r) != HUGE_REAL) break;
-	     compile_error_token(-/*Expecting numeric field, found “%s”*/9);
+	     compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
 	     skipline();
 	     process_eol();
 	     return;
@@ -1999,7 +2037,7 @@ data_passage(void)
 	 read_reading(r, fTrue);
 	 if (VAL(r) == HUGE_REAL) {
 	    if (!isOmit(ch)) {
-	       compile_error_token(-/*Expecting numeric field, found “%s”*/9);
+	       compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
 	    } else {
 	       nextch();
 	    }

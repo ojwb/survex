@@ -1,26 +1,70 @@
 ./csbad.svx:2: error: Station "1" fixed before CS command first used
-./csbad.svx:3:4: error: Unknown coordinate system
-./csbad.svx:4:4: error: Unknown coordinate system
-./csbad.svx:5:4: error: Unknown coordinate system
+./csbad.svx:3:5: error: Unknown coordinate system
+ *cs EPSG:-1
+     ^~~~~~~
+./csbad.svx:4:5: error: Unknown coordinate system
+ *cs ERSI:1234
+     ^~~~~~~~~
+./csbad.svx:5:5: error: Unknown coordinate system
+ *cs EUR79Z31
+     ^~~~~~~~
 ./csbad.svx:6:11: error: End of line not blank
-./csbad.svx:7:4: error: Unknown coordinate system
-./csbad.svx:8:4: error: Unknown coordinate system
-./csbad.svx:9:4: error: Unknown coordinate system
-./csbad.svx:10:4: error: Unknown coordinate system
-./csbad.svx:11:4: error: Unknown coordinate system
-./csbad.svx:12:4: error: Unknown coordinate system
-./csbad.svx:13:4: error: Unknown coordinate system
-./csbad.svx:14:4: error: Unknown coordinate system
-./csbad.svx:15:4: error: Unknown coordinate system
-./csbad.svx:16:4: error: Unknown coordinate system
-./csbad.svx:17:4: error: Unknown coordinate system
-./csbad.svx:18:4: error: Unknown coordinate system
-./csbad.svx:19:4: error: Unknown coordinate system
-./csbad.svx:20:4: error: Invalid coordinate system: unknown projection id
-./csbad.svx:21:4: error: Unknown coordinate system
-./csbad.svx:22:4: error: Coordinate system unsuitable for output
-./csbad.svx:23:4: error: Coordinate system unsuitable for output
-./csbad.svx:24:4: error: Coordinate system unsuitable for output
+ *cs IJTSK 03
+           ^
+./csbad.svx:7:5: error: Unknown coordinate system
+ *cs IJTSK04
+     ^~~~~~~
+./csbad.svx:8:5: error: Unknown coordinate system
+ *cs IJTSK99
+     ^~~~~~~
+./csbad.svx:9:5: error: Unknown coordinate system
+ *cs IJTSK3
+     ^~~~~~
+./csbad.svx:10:5: error: Unknown coordinate system
+ *cs IJTSK032
+     ^~~~~~~~
+./csbad.svx:11:5: error: Unknown coordinate system
+ *cs IJTSK03a
+     ^~~~~~~~
+./csbad.svx:12:5: error: Unknown coordinate system
+ *cs lat-lat
+     ^~~~~~~
+./csbad.svx:13:5: error: Unknown coordinate system
+ *cs Long-LONG
+     ^~~~~~~~~
+./csbad.svx:14:5: error: Unknown coordinate system
+ *cs OSGB:ZZ
+     ^~~~~~~
+./csbad.svx:15:5: error: Unknown coordinate system
+ *cs OSGB:HI
+     ^~~~~~~
+./csbad.svx:16:5: error: Unknown coordinate system
+ *cs S-LONG
+     ^~~~~~
+./csbad.svx:17:5: error: Unknown coordinate system
+ *cs UTM0
+     ^~~~
+./csbad.svx:18:5: error: Unknown coordinate system
+ *cs UTM61N
+     ^~~~~~
+./csbad.svx:19:5: error: Unknown coordinate system
+ *cs UTM61S
+     ^~~~~~
+./csbad.svx:20:12: error: Invalid coordinate system: unknown projection id
+ *cs custom "+proj=ection"
+            ^~~~~~~~~~~~~~
+./csbad.svx:21:9: error: Unknown coordinate system
+ *cs out lat-long
+         ^~~~~~~~
+./csbad.svx:22:9: error: Coordinate system unsuitable for output
+ *cs out long-lat
+         ^~~~~~~~
+./csbad.svx:23:9: error: Coordinate system unsuitable for output
+ *cs out jtsk
+         ^~~~
+./csbad.svx:24:9: error: Coordinate system unsuitable for output
+ *cs out jtsk03
+         ^~~~~~
 ./csbad.svx:29: error: Failed to convert coordinates: latitude or longitude exceeded limits
 
 Removing trailing traverses...

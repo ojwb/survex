@@ -1,12 +1,30 @@
-./cmd_set_bad.svx:5:17: error: Expecting numeric field, found " reference"
+./cmd_set_bad.svx:5:7: error: Expecting numeric field, found " reference"
+ *fix^1 reference^0^0^0 ; error
+       ^~~~~~~~~~
 ./cmd_set_bad.svx:11:1: error: End of line not blank
+ ; comment ; error
+ ^
 ./cmd_set_bad.svx:13:1: error: End of line not blank
-./cmd_set_bad.svx:20:23: error: Expecting numeric field, found ".0"
-./cmd_set_bad.svx:22:22: error: Expecting numeric field, found "+1.0"
+ *end ; error
+ ^
+./cmd_set_bad.svx:20:21: error: Expecting numeric field, found ".0"
+ *fix+(2)+reference+1.0+2/0+3 ; error
+                     ^~
+./cmd_set_bad.svx:22:18: error: Expecting numeric field, found "+1.0"
+ *fix&3&reference&+1.0&2&3 ; error
+                  ^~~~
 ./cmd_set_bad.svx:28:12: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
-./cmd_set_bad.svx:31:10: error: Expecting numeric field, found "-"
+ *equate foo.1 1 ; error
+            ^
+./cmd_set_bad.svx:31:9: error: Expecting numeric field, found "-"
+ 1 2 100 - down ; error
+         ^
 ./cmd_set_bad.svx:34:6: error: Unknown character class "FormFeed"
+ *set FormFeed = ; error
+      ^~~~~~~~
 ./cmd_set_bad.svx:35:6: warning: ROOT is deprecated
+ *set ROOT $
+      ^~~~
 
 Removing trailing traverses...
 

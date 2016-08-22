@@ -116,7 +116,8 @@ read_prefix(unsigned pfx_flags)
 	     * the leg to it is a splay.
 	     */
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
-	       compile_error(-/*Can't have a leg between two anonymous stations*/3);
+	       set_pos(&here);
+	       compile_error_token(/*Can't have a leg between two anonymous stations*/3);
 	       LONGJMP(file.jbSkipLine);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -131,7 +132,8 @@ read_prefix(unsigned pfx_flags)
 	       prefix * pfx;
 anon_wall_station:
 	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
-		  compile_error(-/*Can't have a leg between two anonymous stations*/3);
+		  set_pos(&here);
+		  compile_error_token(/*Can't have a leg between two anonymous stations*/3);
 		  LONGJMP(file.jbSkipLine);
 	       }
 	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -148,7 +150,8 @@ anon_wall_station:
 		   * which isn't refindable).
 		   */
 		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
-		     compile_error(-/*Can't have a leg between two anonymous stations*/3);
+		     set_pos(&here);
+		     compile_error_token(/*Can't have a leg between two anonymous stations*/3);
 		     LONGJMP(file.jbSkipLine);
 		  }
 		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
@@ -381,7 +384,7 @@ read_number(bool f_optional)
    if (isOmit(ch_old)) {
       compile_error(-/*Field may not be omitted*/8);
    } else {
-      compile_error_token(-/*Expecting numeric field, found “%s”*/9);
+      compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
@@ -429,7 +432,7 @@ read_numeric_multi_or_omit(int *p_n_readings)
    real v = read_numeric_multi(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
-	 compile_error_token(-/*Expecting numeric field, found “%s”*/9);
+	 compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
 	 LONGJMP(file.jbSkipLine);
 	 return 0.0; /* for brain-fried compilers */
       }
@@ -445,7 +448,7 @@ read_uint_internal(int errmsg, const filepos *fp)
    unsigned int n = 0;
    if (!isdigit(ch)) {
       if (fp) set_pos(fp);
-      compile_error_token(-errmsg);
+      compile_error_token_show(errmsg);
       LONGJMP(file.jbSkipLine);
    }
    while (isdigit(ch)) {

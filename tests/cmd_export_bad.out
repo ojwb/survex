@@ -1,5 +1,9 @@
 ./cmd_export_bad.svx:6:9: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
+ *export *
+         ^
 ./cmd_export_bad.svx:7:11: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+ *export 1 =
+           ^
 
 Removing trailing traverses...
 

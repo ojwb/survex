@@ -1,3 +1,5 @@
 In file included from ./badinc2.svx:3:
-./badinc.svx:3:26: error: Couldn't open file "nonexistent_file"
+./badinc.svx:3:10: error: Couldn't open file "nonexistent_file"
+ *include nonexistent_file
+          ^~~~~~~~~~~~~~~~
 cavern: error: No survey data

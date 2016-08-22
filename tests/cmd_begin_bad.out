@@ -1,10 +1,24 @@
 ./cmd_begin_bad.svx:5:8: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
+ *begin *
+        ^
 ./cmd_begin_bad.svx:7:8: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
+ *begin .0
+        ^
 ./cmd_begin_bad.svx:8:6: error: Character "(" not allowed in station name (use *SET NAMES to set allowed characters)
+ *end (
+      ^
 ./cmd_begin_bad.svx:10:6: error: Character "+" not allowed in station name (use *SET NAMES to set allowed characters)
+ *end +_
+      ^
 ./cmd_begin_bad.svx:11:8: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
-./cmd_begin_bad.svx:12:7: error: Matching BEGIN command has no survey name
+ *begin =
+        ^
+./cmd_begin_bad.svx:12:6: error: Matching BEGIN command has no survey name
+ *end a
+      ^
 ./cmd_begin_bad.svx:14:6: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+ *end =
+      ^
 
 Removing trailing traverses...
 

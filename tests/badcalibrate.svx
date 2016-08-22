@@ -1,8 +1,8 @@
 ; pos=fail error=4
 *fix 1 reference 0 0 0
 ; A scale factor of 0 isn't sensible
-*calibrate compass 1.0 0
-*calibrate clino backclino -0.5 0
+*calibrate compass 1.0 000
+*calibrate clino backclino -0.5 0.0
 *calibrate tape 0 0
 ; Can't calibrate angles and lengths together
 *calibrate tape compass 1 1

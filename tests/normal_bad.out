@@ -1,6 +1,12 @@
 ./normal_bad.svx:4:5: error: Tape reading may not be omitted
+ 1 2 - 000 0
+     ^
 ./normal_bad.svx:5:10: error: Compass reading may not be omitted except on plumbed legs
+ 2 3 1.00 - 0
+          ^
 ./normal_bad.svx:6:3: error: Character "*" not allowed in station name (use *SET NAMES to set allowed characters)
+ 2 * 1.00 000 0
+   ^
 
 Removing trailing traverses...
 

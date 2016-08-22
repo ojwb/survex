@@ -1,9 +1,21 @@
 ./anonstnbad.svx:2:6: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
+ *fix . 1 2 3
+      ^
 ./anonstnbad.svx:3:6: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
+ *fix .. 2 3 4
+      ^
 ./anonstnbad.svx:4:6: error: Character "." not allowed in station name (use *SET NAMES to set allowed characters)
-./anonstnbad.svx:6:6: error: Can't have a leg between two anonymous stations
-./anonstnbad.svx:7:7: error: Can't have a leg between two anonymous stations
-./anonstnbad.svx:8:5: error: Can't have a leg between two anonymous stations
+ *fix ... 3 4 5
+      ^
+./anonstnbad.svx:6:3: error: Can't have a leg between two anonymous stations
+ . ... 10.00 123 -01
+   ^~~
+./anonstnbad.svx:7:5: error: Can't have a leg between two anonymous stations
+ ... .. 0.91 359 +67
+     ^~
+./anonstnbad.svx:8:4: error: Can't have a leg between two anonymous stations
+ .. .   1.23 321 -21
+    ^
 
 Removing trailing traverses...
 

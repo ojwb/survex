@@ -1,9 +1,21 @@
-./bad_units_factor.svx:3:14: error: *UNITS factor must be non-zero
-./bad_units_factor.svx:4:17: error: *UNITS factor must be non-zero
-./bad_units_factor.svx:5:15: error: *UNITS factor must be non-zero
-./bad_units_factor.svx:6:15: error: *UNITS factor must be non-zero
-./bad_units_factor.svx:7:18: error: *UNITS factor must be non-zero
-./bad_units_factor.svx:8:19: error: *UNITS factor must be non-zero
+./bad_units_factor.svx:3:13: error: *UNITS factor must be non-zero
+ *units tape 0 feet
+             ^
+./bad_units_factor.svx:4:16: error: *UNITS factor must be non-zero
+ *units compass 000 degrees
+                ^~~
+./bad_units_factor.svx:5:14: error: *UNITS factor must be non-zero
+ *units clino 0.0 grads
+              ^~~
+./bad_units_factor.svx:6:14: error: *UNITS factor must be non-zero
+ *units depth .0 metres
+              ^~
+./bad_units_factor.svx:7:17: error: *UNITS factor must be non-zero
+ *units altitude 0 yards
+                 ^
+./bad_units_factor.svx:8:18: error: *UNITS factor must be non-zero
+ *units backclino 0 percent
+                  ^
 
 Removing trailing traverses...
 

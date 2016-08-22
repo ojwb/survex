@@ -14,7 +14,11 @@
 ./cmd_datebad2.svx:17: warning: Invalid month
 ./cmd_datebad2.svx:18: warning: Invalid month
 ./cmd_datebad2.svx:19:28: error: End of date range is before the start
+ *date 1984.01.02-1984.01.01
+                            ^
 ./cmd_datebad2.svx:20:14: error: End of date range is before the start
+ *date 71-1970
+              ^
 ./cmd_datebad2.svx:21: warning: Invalid year (< 1900 or > 2078)
 ./cmd_datebad2.svx:22: warning: Invalid year (< 1900 or > 2078)
 ./cmd_datebad2.svx:23: warning: Invalid year (< 1900 or > 2078)

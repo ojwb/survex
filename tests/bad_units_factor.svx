@@ -1,8 +1,8 @@
 ; pos=fail error=6
 *fix 1 reference 0 0 0
 *units tape 0 feet
-*units compass 0 degrees
-*units clino 0 grads
-*units depth 0 metres
+*units compass 000 degrees
+*units clino 0.0 grads
+*units depth .0 metres
 *units altitude 0 yards
 *units backclino 0 percent

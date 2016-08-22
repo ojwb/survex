@@ -636,7 +636,7 @@ cmd_prefix(void)
    if (prefix_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * http://en.wikipedia.org/wiki/Deprecation */
-      compile_warning(-/**prefix is deprecated - use *begin and *end instead*/6);
+      compile_warning_buffer(-/**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
 	 compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
    }
@@ -717,6 +717,7 @@ cmd_end(void)
 {
    settings *pcsParent;
    prefix *survey, *begin_survey;
+   filepos fp;
 
    pcsParent = pcs->next;
 
@@ -741,11 +742,13 @@ cmd_end(void)
    if (isEol(ch) || isComm(ch)) {
       survey = NULL;
    } else {
+      get_pos(&fp);
       survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
    }
 
    if (survey != begin_survey) {
       if (survey) {
+	 set_pos(&fp);
 	 if (!begin_survey) {
 	    /* TRANSLATORS: Used when a BEGIN command has no survey, but the
 	     * END command does, e.g.:
@@ -753,12 +756,13 @@ cmd_end(void)
 	     * *begin
 	     * 1 2 10.00 178 -01
 	     * *end entrance      <--[Message given here] */
-	    compile_error_skip(-/*Matching BEGIN command has no survey name*/36);
+	    compile_error_token(/*Matching BEGIN command has no survey name*/36);
 	 } else {
 	    /* TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 	     * same <survey> if it’s given at all */
-	    compile_error_skip(-/*Survey name doesn’t match BEGIN*/193);
+	    compile_error_token(/*Survey name doesn’t match BEGIN*/193);
 	 }
+	 skipline();
       } else {
 	 /* TRANSLATORS: Used when a BEGIN command has a survey name, but the
 	  * END command omits it, e.g.:
@@ -1505,6 +1509,7 @@ cmd_units(void)
    unsigned long qmask;
    unsigned long m; /* mask with bit x set to indicate quantity x specified */
    real factor;
+   filepos fp;
 
    qmask = get_qlist(BIT(Q_POS)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
 
@@ -1514,13 +1519,16 @@ cmd_units(void)
       return;
    }
 
+   get_pos(&fp);
    factor = read_numeric(fTrue);
    if (factor == 0.0) {
+      set_pos(&fp);
       /* TRANSLATORS: error message given by "*units tape 0 feet" - it’s
        * meaningless to say your tape is marked in "0 feet" (but you might
        * measure distance by counting knots on a diving line, and tie them
        * every "2 feet"). */
-      compile_error_skip(-/**UNITS factor must be non-zero*/200);
+      compile_error_token(/**UNITS factor must be non-zero*/200);
+      skipline();
       return;
    }
 
@@ -1547,6 +1555,7 @@ cmd_calibrate(void)
    real sc, z;
    unsigned long qmask, m;
    int quantity;
+   filepos fp;
 
    qmask = get_qlist(BIT(Q_POS)|BIT(Q_PLUMB)|BIT(Q_LEVEL));
    if (!qmask) return; /* error already reported */
@@ -1566,6 +1575,7 @@ cmd_calibrate(void)
    }
 
    z = read_numeric(fFalse);
+   get_pos(&fp);
    sc = read_numeric(fTrue);
    if (sc == HUGE_REAL) {
       if (isalpha(ch)) {
@@ -1592,15 +1602,19 @@ cmd_calibrate(void)
    if (sc == HUGE_REAL) sc = (real)1.0;
    /* check for declination scale */
    if (TSTBIT(qmask, Q_DECLINATION) && sc != 1.0) {
+      set_pos(&fp);
       /* TRANSLATORS: DECLINATION is a built-in keyword, so best not to
        * translate */
-      compile_error_skip(-/*Scale factor must be 1.0 for DECLINATION*/40);
+      compile_error_token(/*Scale factor must be 1.0 for DECLINATION*/40);
+      skipline();
       return;
    }
    if (sc == 0.0) {
+      set_pos(&fp);
       /* TRANSLATORS: If the scale factor for an instrument is zero, then any
        * reading would be mapped to zero, which doesn't make sense. */
-      compile_error_skip(-/*Scale factor must be non-zero*/391);
+      compile_error_token(/*Scale factor must be non-zero*/391);
+      skipline();
       return;
    }
    for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1) {
@@ -1865,6 +1879,7 @@ cmd_cs(void)
    get_token();
    if (strcmp(ucbuffer, "OUT") == 0) {
       output = fTrue;
+      get_pos(&fp);
       get_token();
    }
    cs = match_tok(cs_tab, TABSIZE(cs_tab));
@@ -1873,6 +1888,7 @@ cmd_cs(void)
 	 break;
       case CS_CUSTOM:
 	 ok_for_output = MAYBE;
+	 get_pos(&fp);
 	 read_string(&proj_str, &proj_str_len);
 	 cs_sub = 0;
 	 break;
@@ -1969,7 +1985,8 @@ cmd_cs(void)
    }
    if (cs_sub == INT_MIN || isalnum(ch)) {
       set_pos(&fp);
-      compile_error_skip(-/*Unknown coordinate system*/434);
+      compile_error_token(/*Unknown coordinate system*/434);
+      skipline();
       return;
    }
    /* Actually handle the cs */
@@ -2044,14 +2061,16 @@ cmd_cs(void)
    if (!proj_str) {
       /* printf("CS %d:%d\n", (int)cs, cs_sub); */
       set_pos(&fp);
-      compile_error_skip(-/*Unknown coordinate system*/434);
+      compile_error_token(/*Unknown coordinate system*/434);
+      skipline();
       return;
    }
 
    if (output) {
       if (ok_for_output == NO) {
 	 set_pos(&fp);
-	 compile_error_skip(-/*Coordinate system unsuitable for output*/435);
+	 compile_error_token(/*Coordinate system unsuitable for output*/435);
+	 skipline();
 	 return;
       }
 
@@ -2064,12 +2083,15 @@ cmd_cs(void)
 	 projPJ pj = pj_init_plus(proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_error_skip(-/*Invalid coordinate system: %s*/443,
-			       pj_strerrno(pj_errno));
+	    compile_error_token(/*Invalid coordinate system: %s*/443,
+				pj_strerrno(pj_errno));
+	    skipline();
 	    return;
 	 }
 	 if (ok_for_output == MAYBE && pj_is_latlong(pj)) {
-	    compile_error_skip(-/*Coordinate system unsuitable for output*/435);
+	    set_pos(&fp);
+	    compile_error_token(/*Coordinate system unsuitable for output*/435);
+	    skipline();
 	    return;
 	 }
 	 if (proj_out) {
@@ -2089,8 +2111,9 @@ cmd_cs(void)
 	 pj = pj_init_plus(proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_error_skip(-/*Invalid coordinate system: %s*/443,
-			       pj_strerrno(pj_errno));
+	    compile_error_token(/*Invalid coordinate system: %s*/443,
+				pj_strerrno(pj_errno));
+	    skipline();
 	    return;
 	 }
       }

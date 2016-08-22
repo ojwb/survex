@@ -1,10 +1,24 @@
-./cmd_sd_bad.svx:4:16: error: Expecting numeric field, found "metres"
+./cmd_sd_bad.svx:4:10: error: Expecting numeric field, found "metres"
+ *sd tape metres
+          ^~~~~~
 ./cmd_sd_bad.svx:5:15: error: Unknown units "furlongs"
+ *sd tape 0.05 furlongs
+               ^~~~~~~~
 ./cmd_sd_bad.svx:6:15: error: Unknown units "furlongs"
+ *sd tape 0.05 furlongs per fortnight
+               ^~~~~~~~
 ./cmd_sd_bad.svx:7:5: error: Unknown quantity "tripe"
-./cmd_sd_bad.svx:8:15: error: Expecting numeric field, found "tripe"
+ *sd tripe 0.9 feet
+     ^~~~~
+./cmd_sd_bad.svx:8:10: error: Expecting numeric field, found "tripe"
+ *sd tape tripe 0.9 feet
+          ^~~~~
 ./cmd_sd_bad.svx:9:22: error: Invalid units "meters" for quantity
+ *sd tape compass 0.4 meters
+                      ^~~~~~
 ./cmd_sd_bad.svx:10:5: error: Unknown quantity ""
+ *sd 0.9 feet
+     ^
 
 Removing trailing traverses...
 

@@ -1,6 +1,12 @@
-./badcalibrate.svx:4:25: error: Scale factor must be non-zero
-./badcalibrate.svx:5:34: error: Scale factor must be non-zero
-./badcalibrate.svx:6:20: error: Scale factor must be non-zero
+./badcalibrate.svx:4:24: error: Scale factor must be non-zero
+ *calibrate compass 1.0 000
+                        ^~~
+./badcalibrate.svx:5:33: error: Scale factor must be non-zero
+ *calibrate clino backclino -0.5 0.0
+                                 ^~~
+./badcalibrate.svx:6:19: error: Scale factor must be non-zero
+ *calibrate tape 0 0
+                   ^
 ./badcalibrate.svx:8: error: Can't calibrate angular and length quantities together
 
 Removing trailing traverses...

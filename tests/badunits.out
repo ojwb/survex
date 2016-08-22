@@ -1,15 +1,39 @@
 ./badunits.svx:3:15: error: Unknown units "FURLONGS"
+ *units length FURLONGS
+               ^~~~~~~~
 ./badunits.svx:4:29: error: Unknown units "Radians"
+ *units compass 0.0174532925 Radians
+                             ^~~~~~~
 ./badunits.svx:5:16: error: Invalid units "METRES" for quantity
+ *units compass METRES
+                ^~~~~~
 ./badunits.svx:6:19: error: Invalid units "Degrees" for quantity
+ *units tape clino Degrees
+                   ^~~~~~~
 ./badunits.svx:7:23: error: Invalid units "Metres" for quantity
+ *units tape clino 0.1 Metres
+                       ^~~~~~
 ./badunits.svx:8:8: error: Unknown quantity "Anemometer"
+ *units Anemometer Knots
+        ^~~~~~~~~~
 ./badunits.svx:10:16: error: End of line not blank
+ *units DEFault MeterS
+                ^
 ./badunits.svx:11:16: error: End of line not blank
+ *units DEFault 1.0 MeterS
+                ^
 ./badunits.svx:12:13: error: Unknown units "DEFault"
+ *units Tape DEFault MeterS
+             ^~~~~~~
 ./badunits.svx:13:13: error: Unknown units "DEFault"
+ *units Tape DEFault
+             ^~~~~~~
 ./badunits.svx:14:16: error: End of line not blank
+ *units DEFault Tape
+                ^
 ./badunits.svx:15:16: error: End of line not blank
+ *units DEFault Tape Feet
+                ^
 
 Removing trailing traverses...
 

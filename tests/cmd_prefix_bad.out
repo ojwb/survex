@@ -1,5 +1,9 @@
-./cmd_prefix_bad.svx:3:8: warning: *prefix is deprecated - use *begin and *end instead
+./cmd_prefix_bad.svx:3:2: warning: *prefix is deprecated - use *begin and *end instead
+ *prefix
+  ^~~~~~
 ./cmd_prefix_bad.svx:3:8: error: Expecting survey name
+ *prefix
+        ^
 
 Removing trailing traverses...
 

@@ -1,4 +1,6 @@
 ./cmd_entrance_bad.svx:3:10: error: Expecting station name
+ *entrance
+          ^
 
 Removing trailing traverses...
 

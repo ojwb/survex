@@ -1,6 +1,12 @@
 ./bad_units_qlist.svx:3:8: error: Unknown instrument "position"
+ *units position metres
+        ^~~~~~~~
 ./bad_units_qlist.svx:4:8: error: Unknown instrument "plumb"
+ *units plumb metres
+        ^~~~~
 ./bad_units_qlist.svx:5:8: error: Unknown instrument "level"
+ *units level metres
+        ^~~~~
 
 Removing trailing traverses...
 

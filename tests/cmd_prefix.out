@@ -1,4 +1,6 @@
-./cmd_prefix.svx:5:8: warning: *prefix is deprecated - use *begin and *end instead
+./cmd_prefix.svx:5:2: warning: *prefix is deprecated - use *begin and *end instead
+ *prefix wibble
+  ^~~~~~
 
 Removing trailing traverses...
 

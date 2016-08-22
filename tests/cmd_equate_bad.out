@@ -1,5 +1,9 @@
 ./cmd_equate_bad.svx:5:11: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+ *equate 1 =
+           ^
 ./cmd_equate_bad.svx:6:13: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
+ *equate 1 2 =
+             ^
 
 Removing trailing traverses...
 
