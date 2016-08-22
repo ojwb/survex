@@ -121,6 +121,7 @@ show_line(int col, int width)
 {
    /* Rewind to beginning of line. */
    long cur_pos = ftell(file.fh);
+   int tabs = 0;
    if (cur_pos < 0 || fseek(file.fh, file.lpos, SEEK_SET) == -1)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
@@ -129,6 +130,7 @@ show_line(int col, int width)
    while (!feof(file.fh)) {
       int c = GETC(file.fh);
       if (isEol(c)) break;
+      if (c == '\t') ++tabs;
       PUTC(c, STDERR);
    }
    fputnl(STDERR);
@@ -137,7 +139,19 @@ show_line(int col, int width)
    if (col) {
       col -= width;
       PUTC(' ', STDERR);
-      while (--col) PUTC(' ', STDERR);
+      if (tabs == 0) {
+	 while (--col) PUTC(' ', STDERR);
+      } else {
+	 /* Copy tabs from line, replacing other characters with spaces - this
+	  * means that the caret should line up correctly. */
+	 if (fseek(file.fh, file.lpos, SEEK_SET) == -1)
+	    fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+	 while (--col) {
+	    int c = GETC(file.fh);
+	    if (c != '\t') c = ' ';
+	    PUTC(c, STDERR);
+	 }
+      }
       PUTC('^', STDERR);
       while (width > 1) {
 	 PUTC('~', STDERR);
