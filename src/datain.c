@@ -137,7 +137,6 @@ show_line(int col, int width)
 
    /* If we have a location in the line for the error, indicate it. */
    if (col) {
-      col -= width;
       PUTC(' ', STDERR);
       if (tabs == 0) {
 	 while (--col) PUTC(' ', STDERR);
@@ -168,17 +167,23 @@ show_line(int col, int width)
 static int caret_width = 0;
 
 static void
-compile_v_report(int severity, int en, va_list ap)
+compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
 {
    int col = 0;
    error_list_parent_files();
    if (en < 0) {
       en = -en;
-      if (file.fh) col = ftell(file.fh) - file.lpos;
+      if (fpos >= file.lpos) col = fpos - file.lpos - caret_width;
    }
    v_report(severity, file.filename, file.line, col, en, ap);
-   if (file.fh)
+   if (col)
       show_line(col, caret_width);
+}
+
+static void
+compile_v_report(int severity, int en, va_list ap)
+{
+   compile_v_report_fpos(severity, file.fh ? ftell(file.fh) : -1, en, ap);
 }
 
 void
@@ -204,11 +209,8 @@ static void
 compile_error_reading(reading r, int en, ...)
 {
    va_list ap;
-   int col = 0;
    va_start(ap, en);
-   error_list_parent_files();
-   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos;
-   v_report(1, file.filename, file.line, col, en, ap);
+   compile_v_report_fpos(1, LOC(r), en, ap);
    va_end(ap);
 }
 
@@ -216,11 +218,7 @@ static void
 compile_error_reading_skip(reading r, int en, ...)
 {
    va_list ap;
-   int col = 0;
-   va_start(ap, en);
-   error_list_parent_files();
-   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos;
-   v_report(1, file.filename, file.line, col, en, ap);
+   compile_v_report_fpos(1, LOC(r), en, ap);
    va_end(ap);
    skipline();
 }
