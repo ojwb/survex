@@ -130,7 +130,7 @@ compile_v_report(int severity, int en, va_list ap)
    error_list_parent_files();
    if (en < 0) {
       en = -en;
-      if (file.fh) col = ftell(file.fh) - file.lpos + 1;
+      if (file.fh) col = ftell(file.fh) - file.lpos;
    }
    v_report(severity, file.filename, file.line, col, en, ap);
 }
@@ -161,7 +161,7 @@ compile_error_reading(reading r, int en, ...)
    int col = 0;
    va_start(ap, en);
    error_list_parent_files();
-   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos + 1;
+   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos;
    v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
 }
@@ -173,7 +173,7 @@ compile_error_reading_skip(reading r, int en, ...)
    int col = 0;
    va_start(ap, en);
    error_list_parent_files();
-   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos + 1;
+   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos;
    v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
    skipline();
@@ -299,7 +299,7 @@ process_eol(void)
       }
       if (ch == '\n') eolchar = ch;
    }
-   file.lpos = ftell(file.fh);
+   file.lpos = ftell(file.fh) - 1;
 }
 
 static bool
