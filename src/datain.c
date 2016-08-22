@@ -264,6 +264,40 @@ compile_error_token(int en)
 }
 
 void
+compile_error_buffer(int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   caret_width = strlen(buffer);
+   compile_v_report(1, en, ap);
+   va_end(ap);
+   caret_width = 0;
+}
+
+void
+compile_error_buffer_skip(int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   caret_width = strlen(buffer);
+   compile_v_report(1, en, ap);
+   va_end(ap);
+   caret_width = 0;
+   skipline();
+}
+
+void
+compile_warning_buffer(int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   caret_width = strlen(buffer);
+   compile_v_report(0, en, ap);
+   va_end(ap);
+   caret_width = 0;
+}
+
+void
 compile_warning(int en, ...)
 {
    va_list ap;
@@ -1577,9 +1611,7 @@ data_normal(void)
 	     fRev = fTrue;
 	     break;
 	   default:
-	     file.lpos += strlen(buffer);
-	     compile_error_skip(-/*Found “%s”, expecting “F” or “B”*/131,
-				buffer);
+	     compile_error_buffer_skip(-/*Found “%s”, expecting “F” or “B”*/131, buffer);
 	     process_eol();
 	     return;
 	  }

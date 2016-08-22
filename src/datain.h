@@ -66,3 +66,6 @@ void compile_error_at(const char * file, unsigned line, int en, ...);
 void compile_error_pfx(const prefix * pfx, int en, ...);
 
 void compile_error_token(int en);
+void compile_error_buffer(int en, ...);
+void compile_error_buffer_skip(int en, ...);
+void compile_warning_buffer(int en, ...);
