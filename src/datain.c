@@ -125,6 +125,7 @@ show_line(int col, int width)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
    /* Read the whole line and write it out. */
+   PUTC(' ', STDERR);
    while (!feof(file.fh)) {
       int c = GETC(file.fh);
       if (isEol(c)) break;
@@ -135,6 +136,7 @@ show_line(int col, int width)
    /* If we have a location in the line for the error, indicate it. */
    if (col) {
       col -= width;
+      PUTC(' ', STDERR);
       while (--col) PUTC(' ', STDERR);
       PUTC('^', STDERR);
       while (width > 1) {
