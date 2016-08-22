@@ -470,6 +470,9 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	log_txt.append((const char *)end, n);
 	end += n;
 
+	wxString source_line;
+	const wxChar * highlight = NULL;
+
 	const unsigned char * p = buf;
 
 	while (p != end) {
@@ -532,6 +535,36 @@ bad_utf8:
 		    break;
 		case '\n': {
 		    if (cur.empty()) continue;
+		    if (cur[0] == ' ') {
+			if (source_line.empty()) {
+			    // Source line shown for context.  Store it so we
+			    // can use the caret line to highlight it.
+			    swap(source_line, cur);
+			} else {
+			    size_t caret = cur.rfind('^');
+			    if (caret != wxString::npos) {
+				size_t tilde = cur.rfind('~');
+				if (tilde == wxString::npos || tilde < caret) {
+				    tilde = caret;
+				}
+				cur = "&nbsp;";
+				// FIXME: Need to count each & entity as one character...
+				cur.append(source_line, 1, caret - 1);
+				cur.append("<b>");
+				cur.append(highlight ? highlight : wxT("<span \"color:green\">"));
+				cur.append(source_line, caret, tilde + 1 - caret);
+				cur.append("</span></b>");
+				cur.append(source_line, tilde + 1, wxString::npos);
+			    } else {
+				swap(cur, source_line);
+			    }
+			    cur += "<br>\n";
+			    AppendToPage(cur);
+			    cur.clear();
+			    source_line.clear();
+			}
+			continue;
+		    }
 #ifndef __WXMSW__
 		    size_t colon = cur.find(':');
 #else
@@ -580,14 +613,18 @@ bad_utf8:
 
 			    if (cur.substr(offset, error_marker.size()) == error_marker) {
 				// Show "error" marker in red.
-				cur.insert(offset, wxT("<span style=\"color:red\">"));
+				highlight = wxT("<span style=\"color:red\">");
+				cur.insert(offset, highlight);
 				offset += 24 + error_marker.size() - 1;
 				cur.insert(offset, wxT("</span>"));
 			    } else if (cur.substr(offset, warning_marker.size()) == warning_marker) {
 				// Show "warning" marker in orange.
-				cur.insert(offset, wxT("<span style=\"color:orange\">"));
+				highlight = wxT("<span style=\"color:orange\">");
+				cur.insert(offset, highlight);
 				offset += 27 + warning_marker.size() - 1;
 				cur.insert(offset, wxT("</span>"));
+			    } else {
+				highlight = NULL;
 			    }
 
 			    ++link_count;
