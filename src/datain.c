@@ -92,13 +92,6 @@ set_pos(const filepos *fp)
 }
 
 static void
-push_back(int c)
-{
-   if (c != EOF && ungetc(c, file.fh) == EOF)
-      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
-}
-
-static void
 report_parent(parse * p) {
     if (p->parent)
 	report_parent(p->parent);
@@ -1630,10 +1623,10 @@ data_normal(void)
        }
        case CompassDATFlags:
 	  if (ch == '#') {
+	     filepos fp;
+	     get_pos(&fp);
 	     nextch();
 	     if (ch == '|') {
-		filepos fp;
-		get_pos(&fp);
 		nextch();
 		while (ch >= 'A' && ch <= 'Z') {
 		   compass_dat_flags |= BIT(ch - 'A');
@@ -1651,12 +1644,9 @@ data_normal(void)
 		} else {
 		   compass_dat_flags = 0;
 		   set_pos(&fp);
-		   push_back('|');
-		   ch = '#';
 		}
 	     } else {
-		push_back(ch);
-		ch = '#';
+		set_pos(&fp);
 	     }
 	  }
 	  break;
