@@ -130,7 +130,7 @@ compile_v_report(int severity, int en, va_list ap)
    error_list_parent_files();
    if (en < 0) {
       en = -en;
-      if (file.fh) col = ftell(file.fh) - file.lpos;
+      if (file.fh) col = ftell(file.fh) - file.lpos + 1;
    }
    v_report(severity, file.filename, file.line, col, en, ap);
 }
@@ -161,7 +161,7 @@ compile_error_reading(reading r, int en, ...)
    int col = 0;
    va_start(ap, en);
    error_list_parent_files();
-   if (LOC(r) > file.lpos) col = LOC(r) - file.lpos;
+   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos + 1;
    v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
 }
@@ -173,7 +173,7 @@ compile_error_reading_skip(reading r, int en, ...)
    int col = 0;
    va_start(ap, en);
    error_list_parent_files();
-   if (LOC(r) > file.lpos) col = LOC(r) - file.lpos;
+   if (LOC(r) >= file.lpos) col = LOC(r) - file.lpos + 1;
    v_report(1, file.filename, file.line, col, en, ap);
    va_end(ap);
    skipline();
@@ -276,13 +276,6 @@ skipline(void)
 }
 
 static void
-process_bol(void)
-{
-   nextch();
-   skipblanks();
-}
-
-static void
 process_eol(void)
 {
    int eolchar;
@@ -302,7 +295,6 @@ process_eol(void)
    while (ch != EOF) {
       nextch();
       if (ch == eolchar || !isEol(ch)) {
-	 push_back(ch);
 	 break;
       }
       if (ch == '\n') eolchar = ch;
@@ -313,7 +305,7 @@ process_eol(void)
 static bool
 process_non_data_line(void)
 {
-   process_bol();
+   skipblanks();
 
    if (isData(ch)) return fFalse;
 
@@ -383,7 +375,6 @@ nextch_handling_eol(void)
    nextch();
    while (ch != EOF && isEol(ch)) {
       process_eol();
-      nextch();
    }
 }
 
@@ -429,6 +420,7 @@ data_file(const char *pth, const char *fnm)
       file.line = 1;
       file.lpos = 0;
       file.reported_where = fFalse;
+      nextch();
    }
 
    using_data_file(file.filename);
@@ -524,7 +516,6 @@ data_file(const char *pth, const char *fnm)
 	    CompassDATFlags, IgnoreAll
 	 };
 	 /* <Cave name> */
-	 process_bol();
 	 skipline();
 	 process_eol();
 	 /* SURVEY NAME: <Short name> */
@@ -597,19 +588,15 @@ data_file(const char *pth, const char *fnm)
 	 skipline();
 	 process_eol();
 	 /* BLANK LINE */
-	 process_bol();
 	 skipline();
 	 process_eol();
 	 /* heading line */
-	 process_bol();
 	 skipline();
 	 process_eol();
 	 /* BLANK LINE */
-	 process_bol();
 	 skipline();
 	 process_eol();
 	 while (!feof(file.fh)) {
-	    process_bol();
 	    if (ch == '\x0c') {
 	       nextch();
 	       process_eol();
@@ -1379,10 +1366,9 @@ data_cartesian(void)
 	 fMulti = fTrue;
 	 while (1) {
 	    process_eol();
-	    process_bol();
+	    skipblanks();
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
-	       push_back(ch);
 	       return;
 	    }
 	 }
@@ -1398,7 +1384,7 @@ data_cartesian(void)
 	 }
 	 do {
 	    process_eol();
-	    process_bol();
+	    skipblanks();
 	 } while (isComm(ch));
 	 goto again;
        default: BUG("Unknown reading in ordering");
@@ -1783,10 +1769,9 @@ data_normal(void)
 	  fMulti = fTrue;
 	  while (1) {
 	      process_eol();
-	      process_bol();
+	      skipblanks();
 	      if (isData(ch)) break;
 	      if (!isComm(ch)) {
-		 push_back(ch);
 		 return;
 	      }
 	  }
@@ -1890,7 +1875,7 @@ data_normal(void)
 	  }
 	  do {
 	     process_eol();
-	     process_bol();
+	     skipblanks();
 	  } while (isComm(ch));
 	  goto again;
        default:
@@ -2026,10 +2011,9 @@ data_nosurvey(void)
 	 if (ordering[1] == End) {
 	    do {
 	       process_eol();
-	       process_bol();
+	       skipblanks();
 	    } while (isComm(ch));
 	    if (!isData(ch)) {
-	       push_back(ch);
 	       return;
 	    }
 	    goto again;
@@ -2037,10 +2021,9 @@ data_nosurvey(void)
 	 fMulti = fTrue;
 	 while (1) {
 	    process_eol();
-	    process_bol();
+	    skipblanks();
 	    if (isData(ch)) break;
 	    if (!isComm(ch)) {
-	       push_back(ch);
 	       return;
 	    }
 	 }
@@ -2056,7 +2039,7 @@ data_nosurvey(void)
 	 }
 	 do {
 	    process_eol();
-	    process_bol();
+	    skipblanks();
 	 } while (isComm(ch));
 	 goto again;
        default: BUG("Unknown reading in ordering");
