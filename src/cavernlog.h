@@ -49,6 +49,8 @@ class CavernLogWindow : public wxHtmlWindow {
 
     wxProcess * cavern_out;
     wxString cur;
+    wxString source_line;
+    const wxChar * highlight;
     int link_count;
     unsigned char buf[1024];
     unsigned char * end;

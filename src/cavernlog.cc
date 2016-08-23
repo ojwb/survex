@@ -241,7 +241,7 @@ wxString get_command_path(const wxChar * command_name)
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
     : wxHtmlWindow(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 		   wxHW_DEFAULT_STYLE|wxHW_NO_SELECTION),
-      mainfrm(mainfrm_), cavern_out(NULL),
+      mainfrm(mainfrm_), cavern_out(NULL), highlight(NULL),
       link_count(0), end(buf), init_done(false), survey(survey_)
 #ifdef CAVERNLOG_USE_THREADS
       , thread(NULL)
@@ -470,9 +470,6 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	log_txt.append((const char *)end, n);
 	end += n;
 
-	wxString source_line;
-	const wxChar * highlight = NULL;
-
 	const unsigned char * p = buf;
 
 	while (p != end) {
@@ -556,6 +553,10 @@ bad_utf8:
 				cur.append("</span></b>");
 				cur.append(source_line, tilde + 1, wxString::npos);
 			    } else {
+				// No caret in second line - just output both.
+				source_line.replace(0, 1, "&nbsp;");
+				source_line += "<br>\n&nbsp;";
+				source_line.append(cur, 1, wxString::npos);
 				swap(cur, source_line);
 			    }
 			    cur += "<br>\n";
@@ -564,6 +565,15 @@ bad_utf8:
 			    source_line.clear();
 			}
 			continue;
+		    }
+
+		    if (!source_line.empty()) {
+			// Previous line was a source line without column info
+			// so just show it.
+			source_line.replace(0, 1, "&nbsp;");
+			source_line += "<br>\n";
+			AppendToPage(source_line);
+			source_line.clear();
 		    }
 #ifndef __WXMSW__
 		    size_t colon = cur.find(':');
@@ -685,9 +695,22 @@ bad_utf8:
 	return;
     }
 
+    if (!source_line.empty()) {
+	// Previous line was a source line without column info
+	// so just show it.
+	source_line.replace(0, 1, "&nbsp;");
+	source_line += "<br>\n";
+	AppendToPage(source_line);
+	source_line.clear();
+    }
+
     if (e.len <= 0 && buf != end) {
 	// Truncated UTF-8 sequence.
 	cur += badutf8_html;
+    }
+    if (!cur.empty()) {
+	cur += "<br>\n";
+	AppendToPage("<hr>" + cur);
     }
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
