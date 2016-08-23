@@ -1,33 +1,59 @@
-./calibrate_clino.svx:8:15: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:9:15: warning: Clino reading over 90dg (absolute value)
  2 w 10.00 090 91
                ^~
-./calibrate_clino.svx:9:15: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:10:15: warning: Clino reading over 90dg (absolute value)
  2 x 10.00 090 -91
                ^~~
-./calibrate_clino.svx:10:15: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:11:15: warning: Clino reading over 90dg (absolute value)
  2 y 10.00 090 181
                ^~~
-./calibrate_clino.svx:11:15: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:12:15: warning: Clino reading over 90dg (absolute value)
  2 z 10.00 090 366
                ^~~
-./calibrate_clino.svx:18:16: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:19:16: warning: Clino reading over 90dg (absolute value)
  2 w_ 10.00 090 181
                 ^~~
-./calibrate_clino.svx:19:16: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:20:16: warning: Clino reading over 90dg (absolute value)
  2 x_ 10.00 090 -1
                 ^~
-./calibrate_clino.svx:26:17: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:27:17: warning: Clino reading over 90dg (absolute value)
  2 w__ 10.00 090 -1
                  ^~
-./calibrate_clino.svx:27:17: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:28:17: warning: Clino reading over 90dg (absolute value)
  2 x__ 10.00 090 181
                  ^~~
+./calibrate_clino.svx:38:15: warning: Clino reading over 90dg (absolute value)
+ 2 w 10.00 090 -91
+               ^~~
+./calibrate_clino.svx:39:15: warning: Clino reading over 90dg (absolute value)
+ 2 x 10.00 090 91
+               ^~
+./calibrate_clino.svx:40:15: warning: Clino reading over 90dg (absolute value)
+ 2 y 10.00 090 -181
+               ^~~~
+./calibrate_clino.svx:41:15: warning: Clino reading over 90dg (absolute value)
+ 2 z 10.00 090 -366
+               ^~~~
+./calibrate_clino.svx:48:16: warning: Clino reading over 90dg (absolute value)
+ 2 w_ 10.00 090 -1
+                ^~
+./calibrate_clino.svx:49:16: warning: Clino reading over 90dg (absolute value)
+ 2 x_ 10.00 090 181
+                ^~~
+./calibrate_clino.svx:56:17: warning: Clino reading over 90dg (absolute value)
+ 2 w__ 10.00 090 181
+                 ^~~
+./calibrate_clino.svx:57:17: warning: Clino reading over 90dg (absolute value)
+ 2 x__ 10.00 090 -1
+                 ^~
 
 Removing trailing traverses...
 
 Concatenating traverses...
 
 Simplifying network...
+
+Solving one equation...
 
 Solving one equation...
 
@@ -39,16 +65,17 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 18 survey stations, joined by 20 legs.
-There are 3 loops.
-Total length of survey legs =  200.00m ( 191.58m adjusted)
-Total plan length of survey legs =   50.99m
-Total vertical length of survey legs =  151.21m
-Vertical range = 20.00m (from u at 10.00m to d__ at -10.00m)
-North-South range = 10.00m (from 2__ at 10.00m to 1 at 0.00m)
-East-West range = 19.94m (from z at 9.95m to y at -10.00m)
-  13 1-nodes.
-   3 2-nodes.
-   1 6-node.
-   1 15-node.
-There were 8 warning(s).
+Survey contains 36 survey stations, joined by 40 legs.
+There are 6 loops.
+Survey has 2 connected components.
+Total length of survey legs =  400.00m ( 383.16m adjusted)
+Total plan length of survey legs =  101.98m
+Total vertical length of survey legs =  302.42m
+Vertical range = 20.00m (from b.u at 10.00m to b.d__ at -10.00m)
+North-South range = 10.00m (from b.2__ at 10.00m to f.1 at 0.00m)
+East-West range = 19.94m (from b.z at 9.95m to b.y at -10.00m)
+  26 1-nodes.
+   6 2-nodes.
+   2 6-nodes.
+   2 15-nodes.
+There were 16 warning(s).

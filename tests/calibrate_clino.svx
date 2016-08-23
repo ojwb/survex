@@ -1,4 +1,5 @@
-; pos=yes warn=8
+; pos=yes warn=16
+*begin f
 *fix 1 0 0 0
 1 2 10.00 000 00
 1 u 10.00 090 +90
@@ -25,3 +26,33 @@
 ; these should warn
 2 w__ 10.00 090 -1
 2 x__ 10.00 090 181
+*end f
+*begin b
+*data normal from to tape compass backclino
+*fix 1 0 0 0
+1 2 10.00 000 00
+1 u 10.00 090 -90
+2 u 10.00 090 -90
+2 d 10.00 090 +90
+; these should warn
+2 w 10.00 090 -91
+2 x 10.00 090 91
+2 y 10.00 090 -181
+2 z 10.00 090 -366
+*calibrate backclino 90
+1 2_ 10.00 000 90
+1 u_ 10.00 090 0
+2 u_ 10.00 090 0
+2 d_ 10.00 090 180
+; these should warn
+2 w_ 10.00 090 -1
+2 x_ 10.00 090 181
+*calibrate backclino 90 -1
+1 2__ 10.00 000 90
+1 u__ 10.00 090 180
+2 u__ 10.00 090 180
+2 d__ 10.00 090 0
+; these should warn
+2 w__ 10.00 090 181
+2 x__ 10.00 090 -1
+*end b

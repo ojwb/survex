@@ -1070,6 +1070,58 @@ handle_compass(real *p_var)
    return comp;
 }
 
+static real
+handle_clino(q_quantity q, reading r, real val, bool percent, clino_type *p_ctype)
+{
+   bool range_0_180;
+   real z;
+   real diff_from_abs90;
+   val *= pcs->units[q];
+   /* percentage scale */
+   if (percent) val = atan(val);
+   /* We want to warn if there's a reading which it would be impossible
+    * to have read from the instrument (e.g. on a -90 to 90 degree scale
+    * you can't read "96" (it's probably a typo for "69").  However, the
+    * gradient reading from a topofil is typically in the range 0 to 180,
+    * with 90 being horizontal.
+    *
+    * Really we should allow the valid range to be specified, but for now
+    * we infer it from the zero error - if this is within 45 degrees of
+    * 90 then we assume the range is 0 to 180.
+    */
+   z = pcs->z[q];
+   range_0_180 = (z > M_PI_4 && z < 3*M_PI_4);
+   diff_from_abs90 = fabs(val) - M_PI_2;
+   if (diff_from_abs90 > EPSILON) {
+      if (!range_0_180) {
+	 int clino_units = get_angle_units(q);
+	 const char * units = get_units_string(clino_units);
+	 real right_angle = M_PI_2 / get_units_factor(clino_units);
+	 /* FIXME: different message for BackClino? */
+	 /* TRANSLATORS: %.f%s will be replaced with a right angle in the
+	  * units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
+	  * value" means the reading ignoring the sign (so it might be
+	  * < -90° or > 90°. */
+	 compile_warning_reading(r, /*Clino reading over %.f%s (absolute value)*/51,
+				 right_angle, units);
+      }
+   } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
+	      diff_from_abs90 >= -EPSILON) {
+      *p_ctype = CTYPE_INFERPLUMB;
+   }
+   if (range_0_180 && *p_ctype != CTYPE_INFERPLUMB) {
+      /* FIXME: Warning message not ideal... */
+      if (val < 0.0 || val - M_PI > EPSILON) {
+	 int clino_units = get_angle_units(q);
+	 const char * units = get_units_string(clino_units);
+	 real right_angle = M_PI_2 / get_units_factor(clino_units);
+	 compile_warning_reading(r, /*Clino reading over %.f%s (absolute value)*/51,
+				 right_angle, units);
+      }
+   }
+   return val;
+}
+
 static int
 process_normal(prefix *fr, prefix *to, bool fToFirst,
 	       clino_type ctype, clino_type backctype)
@@ -1095,72 +1147,13 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    fNoComp = handle_comp_units();
 
    if (ctype == CTYPE_READING) {
-      bool range_0_180;
-      real z;
-      real diff_from_abs90;
-      clin *= pcs->units[Q_GRADIENT];
-      /* percentage scale */
-      if (pcs->f_clino_percent) clin = atan(clin);
-      /* We want to warn if there's a reading which it would be impossible
-       * to have read from the instrument (e.g. on a -90 to 90 degree scale
-       * you can't read "96" (it's probably a typo for "69").  However, the
-       * gradient reading from a topofil is typically in the range 0 to 180,
-       * with 90 being horizontal.
-       *
-       * Really we should allow the valid range to be specified, but for now
-       * we infer it from the zero error - if this is within 45 degrees of
-       * 90 then we assume the range is 0 to 180.
-       */
-      z = pcs->z[Q_GRADIENT];
-      range_0_180 = (z > M_PI_4 && z < 3*M_PI_4);
-      diff_from_abs90 = fabs(clin) - M_PI_2;
-      if (diff_from_abs90 > EPSILON) {
-	 if (!range_0_180) {
-	    int clino_units = get_angle_units(Q_GRADIENT);
-	    const char * units = get_units_string(clino_units);
-	    real right_angle = M_PI_2 / get_units_factor(clino_units);
-	    /* TRANSLATORS: %.f%s will be replaced with a right angle in the
-	     * units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
-	     * value" means the reading ignoring the sign (so it might be
-	     * < -90° or > 90°. */
-	    compile_warning_reading(Clino, /*Clino reading over %.f%s (absolute value)*/51,
-				    right_angle, units);
-	 }
-      } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		 diff_from_abs90 >= -EPSILON) {
-	 ctype = CTYPE_INFERPLUMB;
-      }
-      if (range_0_180 && ctype != CTYPE_INFERPLUMB) {
-	 /* FIXME: Warning message not ideal... */
-	 if (clin < 0.0 || clin - M_PI > EPSILON) {
-	    int clino_units = get_angle_units(Q_GRADIENT);
-	    const char * units = get_units_string(clino_units);
-	    real right_angle = M_PI_2 / get_units_factor(clino_units);
-	    compile_warning_reading(Clino, /*Clino reading over %.f%s (absolute value)*/51,
-				    right_angle, units);
-	 }
-      }
+      clin = handle_clino(Q_GRADIENT, Clino, clin,
+			  pcs->f_clino_percent, &ctype);
    }
 
    if (backctype == CTYPE_READING) {
-      backclin *= pcs->units[Q_BACKGRADIENT];
-      /* percentage scale */
-      if (pcs->f_backclino_percent) backclin = atan(backclin);
-      /* FIXME: Add range_0_180 handling here too */
-      if (ctype != CTYPE_READING) {
-	 real diff_from_abs90 = fabs(backclin) - M_PI_2;
-	 if (diff_from_abs90 > EPSILON) {
-	    /* FIXME: different message for BackClino? */
-	    int clino_units = get_angle_units(Q_BACKGRADIENT);
-	    const char * units = get_units_string(clino_units);
-	    real right_angle = M_PI_2 / get_units_factor(clino_units);
-	    compile_warning_reading(BackClino, /*Clino reading over %.f%s (absolute value)*/51,
-				    right_angle, units);
-	 } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
-		    diff_from_abs90 >= -EPSILON) {
-	    backctype = CTYPE_INFERPLUMB;
-	 }
-      }
+      backclin = handle_clino(Q_BACKGRADIENT, BackClino, backclin,
+			      pcs->f_backclino_percent, &backctype);
    }
 
    /* un-infer the plumb if the backsight was just a reading */
