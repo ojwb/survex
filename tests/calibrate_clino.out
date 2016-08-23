@@ -1,11 +1,27 @@
-./calibrate_clino.svx:8: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:9: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:10: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:11: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:18: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:19: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:26: warning: Clino reading over 90dg (absolute value)
-./calibrate_clino.svx:27: warning: Clino reading over 90dg (absolute value)
+./calibrate_clino.svx:8:15: warning: Clino reading over 90dg (absolute value)
+ 2 w 10.00 090 91
+               ^~
+./calibrate_clino.svx:9:15: warning: Clino reading over 90dg (absolute value)
+ 2 x 10.00 090 -91
+               ^~~
+./calibrate_clino.svx:10:15: warning: Clino reading over 90dg (absolute value)
+ 2 y 10.00 090 181
+               ^~~
+./calibrate_clino.svx:11:15: warning: Clino reading over 90dg (absolute value)
+ 2 z 10.00 090 366
+               ^~~
+./calibrate_clino.svx:18:16: warning: Clino reading over 90dg (absolute value)
+ 2 w_ 10.00 090 181
+                ^~~
+./calibrate_clino.svx:19:16: warning: Clino reading over 90dg (absolute value)
+ 2 x_ 10.00 090 -1
+                ^~
+./calibrate_clino.svx:26:17: warning: Clino reading over 90dg (absolute value)
+ 2 w__ 10.00 090 -1
+                 ^~
+./calibrate_clino.svx:27:17: warning: Clino reading over 90dg (absolute value)
+ 2 x__ 10.00 090 181
+                 ^~~
 
 Removing trailing traverses...
 

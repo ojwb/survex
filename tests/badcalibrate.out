@@ -8,6 +8,7 @@
  *calibrate tape 0 0
                    ^
 ./badcalibrate.svx:8: error: Can't calibrate angular and length quantities together
+ *calibrate tape compass 1 1
 
 Removing trailing traverses...
 

@@ -1,5 +1,7 @@
 ./dotinsurvey.svx:4: warning: Separator in survey name
+ *begin 106.1
 ./dotinsurvey.svx:11: warning: Separator in survey name
+ *begin 106.2
 
 Removing trailing traverses...
 

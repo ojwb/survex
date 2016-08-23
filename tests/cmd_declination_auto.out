@@ -1,5 +1,7 @@
 ./cmd_declination_auto.svx:11: warning: No survey date specified - using 0 for magnetic declination
+ 1 2 10.00 320 -06
 ./cmd_declination_auto.svx:27: warning: No survey date specified - using 0 for magnetic declination
+ 2 3 2.0 123 -66
 
 Removing trailing traverses...
 

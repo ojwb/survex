@@ -1,18 +1,33 @@
 ./cmd_datebad2.svx:4: warning: Invalid year (< 1900 or > 2078)
+ *date 1899.12.31
 ./cmd_datebad2.svx:5: warning: Invalid year (< 1900 or > 2078)
+ *date 1899.12.31
 ./cmd_datebad2.svx:6: warning: Invalid year (< 1900 or > 2078)
+ *date 1899.12
 ./cmd_datebad2.svx:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899
 ./cmd_datebad2.svx:8: warning: Invalid year (< 1900 or > 2078)
+ *date 1800
 ./cmd_datebad2.svx:9: warning: Invalid year (< 1900 or > 2078)
+ *date 1700.12.01
 ./cmd_datebad2.svx:10: warning: Invalid year (< 1900 or > 2078)
+ *date 100.01.01
 ./cmd_datebad2.svx:11: warning: Invalid year (< 1900 or > 2078)
+ *date 1899.02.03
 ./cmd_datebad2.svx:12: warning: Invalid year (< 1900 or > 2078)
+ *date 999.9.9
 ./cmd_datebad2.svx:13: warning: Invalid month
+ *date 1984.13.01
 ./cmd_datebad2.svx:14: warning: Invalid month
+ *date 1984.13.31
 ./cmd_datebad2.svx:15: warning: Invalid day of the month
+ *date 1984.01.00
 ./cmd_datebad2.svx:16: warning: Invalid month
+ *date 1984.00.12
 ./cmd_datebad2.svx:17: warning: Invalid month
+ *date 1984.00
 ./cmd_datebad2.svx:18: warning: Invalid month
+ *date 1984.13
 ./cmd_datebad2.svx:19:28: error: End of date range is before the start
  *date 1984.01.02-1984.01.01
                             ^
@@ -20,10 +35,15 @@
  *date 71-1970
               ^
 ./cmd_datebad2.svx:21: warning: Invalid year (< 1900 or > 2078)
+ *date 2079.01.01
 ./cmd_datebad2.svx:22: warning: Invalid year (< 1900 or > 2078)
+ *date 2079.12.31
 ./cmd_datebad2.svx:23: warning: Invalid year (< 1900 or > 2078)
+ *date 2099.06
 ./cmd_datebad2.svx:24: warning: Invalid year (< 1900 or > 2078)
+ *date 3033
 ./cmd_datebad2.svx:25: warning: Invalid year (< 1900 or > 2078)
+ *date 11974.02.03
 
 Removing trailing traverses...
 

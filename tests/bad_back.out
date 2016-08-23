@@ -12,7 +12,7 @@
               ^
 ./bad_back.svx:10:14: error: CLINO and BACKCLINO readings must be of the same type
  1 C 1.0 000  -89 -   Up
-              ^
+              ^~~
 ./bad_back.svx:11:14: error: CLINO and BACKCLINO readings must be of the same type
  1 D 1.0  -   Down -  30
               ^

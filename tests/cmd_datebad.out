@@ -1,40 +1,77 @@
 ./cmd_datebad.svx:4: warning: Invalid day of the month
+ *date 1900.02.29
 ./cmd_datebad.svx:5: warning: Invalid day of the month
+ *date 1975.01.32
 ./cmd_datebad.svx:6: warning: Invalid day of the month
+ *date 1975.02.29
 ./cmd_datebad.svx:7: warning: Invalid day of the month
+ *date 1975.03.32
 ./cmd_datebad.svx:8: warning: Invalid day of the month
+ *date 1975.04.31
 ./cmd_datebad.svx:9: warning: Invalid day of the month
+ *date 1975.05.32
 ./cmd_datebad.svx:10: warning: Invalid day of the month
+ *date 1975.06.31
 ./cmd_datebad.svx:11: warning: Invalid day of the month
+ *date 1975.07.32
 ./cmd_datebad.svx:12: warning: Invalid day of the month
+ *date 1975.08.32
 ./cmd_datebad.svx:13: warning: Invalid day of the month
+ *date 1975.09.31
 ./cmd_datebad.svx:14: warning: Invalid day of the month
+ *date 1975.10.32
 ./cmd_datebad.svx:15: warning: Invalid day of the month
+ *date 1975.11.31
 ./cmd_datebad.svx:16: warning: Invalid day of the month
+ *date 1975.12.32
 ./cmd_datebad.svx:17: warning: Invalid day of the month
+ *date 1976.02.30
 ./cmd_datebad.svx:18: warning: Invalid day of the month
+ *date 1976.03.32
 ./cmd_datebad.svx:19: warning: Invalid day of the month
+ *date 1976.04.31
 ./cmd_datebad.svx:20: warning: Invalid day of the month
+ *date 1976.05.32
 ./cmd_datebad.svx:21: warning: Invalid day of the month
+ *date 1976.06.31
 ./cmd_datebad.svx:22: warning: Invalid day of the month
+ *date 1976.07.32
 ./cmd_datebad.svx:23: warning: Invalid day of the month
+ *date 1976.08.32
 ./cmd_datebad.svx:24: warning: Invalid day of the month
+ *date 1976.09.31
 ./cmd_datebad.svx:25: warning: Invalid day of the month
+ *date 1976.10.32
 ./cmd_datebad.svx:26: warning: Invalid day of the month
+ *date 1976.11.31
 ./cmd_datebad.svx:27: warning: Invalid day of the month
+ *date 1976.12.32
 ./cmd_datebad.svx:28: warning: Invalid day of the month
+ *date 2000.01.32
 ./cmd_datebad.svx:29: warning: Invalid day of the month
+ *date 2000.02.30
 ./cmd_datebad.svx:30: warning: Invalid day of the month
+ *date 2000.03.32
 ./cmd_datebad.svx:31: warning: Invalid day of the month
+ *date 2000.04.31
 ./cmd_datebad.svx:32: warning: Invalid day of the month
+ *date 2000.05.32
 ./cmd_datebad.svx:33: warning: Invalid day of the month
+ *date 2000.06.31
 ./cmd_datebad.svx:34: warning: Invalid day of the month
+ *date 2000.07.32
 ./cmd_datebad.svx:35: warning: Invalid day of the month
+ *date 2000.08.32
 ./cmd_datebad.svx:36: warning: Invalid day of the month
+ *date 2000.09.31
 ./cmd_datebad.svx:37: warning: Invalid day of the month
+ *date 2000.10.32
 ./cmd_datebad.svx:38: warning: Invalid day of the month
+ *date 2000.11.31
 ./cmd_datebad.svx:39: warning: Invalid day of the month
+ *date 2000.12.32
 ./cmd_datebad.svx:40: warning: Invalid day of the month
+ *date 2000.01.32
 
 Removing trailing traverses...
 
