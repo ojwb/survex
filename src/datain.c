@@ -66,6 +66,8 @@ static real variance[Fr - 1];
 #define VAR(N) variance[(N)-1]
 static long location[Fr - 1];
 #define LOC(N) location[(N)-1]
+static int location_width[Fr - 1];
+#define WID(N) location_width[(N)-1]
 
 /* style functions */
 static void data_normal(void);
@@ -174,8 +176,7 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
    if (fpos >= file.lpos)
       col = fpos - file.lpos - caret_width;
    v_report(severity, file.filename, file.line, col, en, ap);
-   if (col)
-      show_line(col, caret_width);
+   if (file.fh) show_line(col, caret_width);
 }
 
 static void
@@ -190,6 +191,7 @@ compile_v_report(int severity, int en, va_list ap)
    }
    error_list_parent_files();
    v_report(severity, file.filename, file.line, 0, en, ap);
+   if (file.fh) show_line(0, caret_width);
 }
 
 void
@@ -212,11 +214,24 @@ compile_error_skip(int en, ...)
 }
 
 static void
+compile_warning_reading(reading r, int en, ...)
+{
+   va_list ap;
+   va_start(ap, en);
+   caret_width = WID(r);
+   compile_v_report_fpos(0, LOC(r) + caret_width, en, ap);
+   caret_width = 0;
+   va_end(ap);
+}
+
+static void
 compile_error_reading(reading r, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   compile_v_report_fpos(1, LOC(r), en, ap);
+   caret_width = WID(r);
+   compile_v_report_fpos(1, LOC(r) + caret_width, en, ap);
+   caret_width = 0;
    va_end(ap);
 }
 
@@ -224,7 +239,9 @@ static void
 compile_error_reading_skip(reading r, int en, ...)
 {
    va_list ap;
-   compile_v_report_fpos(1, LOC(r), en, ap);
+   caret_width = WID(r);
+   compile_v_report_fpos(1, LOC(r) + caret_width, en, ap);
+   caret_width = 0;
    va_end(ap);
    skipline();
 }
@@ -468,6 +485,7 @@ read_reading(reading r, bool f_optional)
    }
    LOC(r) = ftell(file.fh);
    VAL(r) = read_numeric_multi(f_optional, &n_readings);
+   WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }
@@ -479,6 +497,7 @@ read_bearing_or_omit(reading r)
    q_quantity q = Q_NULL;
    LOC(r) = ftell(file.fh);
    VAL(r) = read_numeric_multi_or_omit(&n_readings);
+   WID(r) = ftell(file.fh) - LOC(r);
    switch (r) {
       case Comp: q = Q_BEARING; break;
       case BackComp: q = Q_BACKBEARING; break;
@@ -971,7 +990,7 @@ handle_comp_units(void)
       if (VAL(Comp) < (real)0.0 || VAL(Comp) - M_PI * 2.0 > EPSILON) {
 	 /* TRANSLATORS: Suspicious means something like 410 degrees or -20
 	  * degrees */
-	 compile_warning(/*Suspicious compass reading*/59);
+	 compile_warning_reading(Comp, /*Suspicious compass reading*/59);
 	 VAL(Comp) = mod2pi(VAL(Comp));
       }
    }
@@ -980,7 +999,7 @@ handle_comp_units(void)
       VAL(BackComp) *= pcs->units[Q_BACKBEARING];
       if (VAL(BackComp) < (real)0.0 || VAL(BackComp) - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
-	 compile_warning(/*Suspicious compass reading*/59);
+	 compile_warning_reading(BackComp, /*Suspicious compass reading*/59);
 	 VAL(BackComp) = mod2pi(VAL(BackComp));
       }
    }
@@ -1070,7 +1089,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
       /* TRANSLATE different message for topofil? */
-      compile_warning(/*Negative adjusted tape reading*/79);
+      compile_warning_reading(Tape, /*Negative adjusted tape reading*/79);
    }
 
    fNoComp = handle_comp_units();
@@ -1665,13 +1684,14 @@ data_normal(void)
 		nextch();
 	     }
 	  } else if (VAL(r) < (real)0.0) {
-	     compile_warning(-/*Negative tape reading*/60);
+	     compile_warning_reading(r, /*Negative tape reading*/60);
 	  }
 	  break;
        }
        case Count:
 	  VAL(FrCount) = VAL(ToCount);
 	  LOC(FrCount) = LOC(ToCount);
+	  WID(FrCount) = WID(ToCount);
 	  read_reading(ToCount, fFalse);
 	  fTopofil = fTrue;
 	  break;
@@ -1706,6 +1726,7 @@ data_normal(void)
        case Depth:
 	  VAL(FrDepth) = VAL(ToDepth);
 	  LOC(FrDepth) = LOC(ToDepth);
+	  WID(FrDepth) = WID(ToDepth);
 	  read_reading(ToDepth, fFalse);
 	  break;
        case DepthChange:
@@ -1790,6 +1811,7 @@ data_normal(void)
 	     if (fTopofil) {
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 		LOC(Tape) = LOC(ToCount);
+		WID(Tape) = WID(ToCount);
 	     }
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
@@ -1880,6 +1902,7 @@ data_normal(void)
 	  /* this is also used if clino reading is the omit character */
 	  VAL(Clino) = VAL(BackClino) = 0;
 	  LOC(Clino) = LOC(BackClino) = -1;
+	  WID(Clino) = WID(BackClino) = 0;
 
 	  inferred_equate:
 
@@ -1913,6 +1936,7 @@ data_normal(void)
 	     if (fTopofil) {
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 		LOC(Tape) = LOC(ToCount);
+		WID(Tape) = WID(ToCount);
 	     }
 	     /* Note: frdepth == todepth test works regardless of fDepthChange
 	      * (frdepth always zero, todepth is change of depth) and also
