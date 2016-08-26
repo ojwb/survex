@@ -563,16 +563,19 @@ cmd_set(void)
 }
 
 static void
-check_reentry(prefix *survey)
+check_reentry(prefix *survey, const filepos* fpos_ptr)
 {
    /* Don't try to check "*prefix \" or "*begin \" */
    if (!survey->up) return;
    if (TSTBIT(survey->sflags, SFLAGS_PREFIX_ENTERED)) {
       static int reenter_depr_count = 0;
+      filepos fp_tmp;
 
       if (reenter_depr_count >= 5)
 	 return;
 
+      get_pos(&fp_tmp);
+      set_pos(fpos_ptr);
       /* TRANSLATORS: The first of two warnings given when a survey which has
        * already been completed is reentered.  This example file crawl.svx:
        *
@@ -590,7 +593,8 @@ check_reentry(prefix *survey)
        *
        * If you're unsure what "deprecated" means, see:
        * http://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN, /*Reentering an existing survey is deprecated*/29);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Reentering an existing survey is deprecated*/29);
+      set_pos(&fp_tmp);
       /* TRANSLATORS: The second of two warnings given when a survey which has
        * already been completed is reentered.  This example file crawl.svx:
        *
@@ -630,6 +634,7 @@ cmd_prefix(void)
 {
    static int prefix_depr_count = 0;
    prefix *survey;
+   filepos fp;
    /* Issue warning first, so "*prefix \" warns first that *prefix is
     * deprecated and then that ROOT is...
     */
@@ -640,9 +645,10 @@ cmd_prefix(void)
       if (++prefix_depr_count == 5)
 	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
    }
+   get_pos(&fp);
    survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
    pcs->Prefix = survey;
-   check_reentry(survey);
+   check_reentry(survey, &fp);
 }
 #endif
 
@@ -682,10 +688,13 @@ cmd_begin(void)
    skipblanks();
    pcs->begin_survey = NULL;
    if (!isEol(ch) && !isComm(ch)) {
-      prefix *survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
+      filepos fp;
+      prefix *survey;
+      get_pos(&fp);
+      survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
       pcs->begin_survey = survey;
       pcs->Prefix = survey;
-      check_reentry(survey);
+      check_reentry(survey, &fp);
       f_export_ok = fTrue;
    }
 }
