@@ -866,23 +866,28 @@ cmd_fix(void)
 	 compile_diagnostic(DIAG_ERR, /*The output projection is set but the input projection isn't*/438);
       }
 
+      get_pos(&fp);
       sdx = read_numeric(fTrue);
       if (sdx <= 0) {
-	  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
+	  set_pos(&fp);
+	  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
 	  return;
       }
       if (sdx != HUGE_REAL) {
 	 real sdy, sdz;
 	 real cxy = 0, cyz = 0, czx = 0;
+	 get_pos(&fp);
 	 sdy = read_numeric(fTrue);
 	 if (sdy == HUGE_REAL) {
 	    /* only one variance given */
 	    sdy = sdz = sdx;
 	 } else {
 	    if (sdy <= 0) {
-	       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
+	       set_pos(&fp);
+	       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
 	       return;
 	    }
+	    get_pos(&fp);
 	    sdz = read_numeric(fTrue);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
@@ -890,7 +895,8 @@ cmd_fix(void)
 	       sdy = sdx;
 	    } else {
 	       if (sdz <= 0) {
-		  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
+		  set_pos(&fp);
+		  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
 		  return;
 	       }
 	       cxy = read_numeric(fTrue);
@@ -1022,19 +1028,22 @@ cmd_equate(void)
 {
    prefix *name1, *name2;
    bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
+   filepos fp;
 
+   get_pos(&fp);
    name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
    while (fTrue) {
       name2 = name1;
       skipblanks();
       if (isEol(ch) || isComm(ch)) {
 	 if (fOnlyOneStn) {
+	    set_pos(&fp);
 	    /* TRANSLATORS: EQUATE is a command name, so shouldn’t be
 	     * translated.
 	     *
 	     * Here "station" is a survey station, not a train station.
 	     */
-	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Only one station in EQUATE command*/33);
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Only one station in EQUATE command*/33);
 	 }
 	 return;
       }

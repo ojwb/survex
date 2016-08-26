@@ -62,8 +62,9 @@ void skipline(void);
 #define DIAG_SKIP	0x08
 #define DIAG_BUF	0x10
 #define DIAG_TOKEN	0x20
-#define DIAG_NUM	0x40
+#define DIAG_UINT	0x40
 #define DIAG_DATE	0x80
+#define DIAG_NUM	0x100
 
 #define DIAG_WARN	0x00
 #define DIAG_ERR	0x01

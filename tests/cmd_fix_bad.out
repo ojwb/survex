@@ -28,96 +28,96 @@
 ./cmd_fix_bad.svx:12:19: error: Expecting numeric field, found "test"
  *fix Er reference test
                    ^~~~
-./cmd_fix_bad.svx:14:32: error: Standard deviation must be positive
+./cmd_fix_bad.svx:14:31: error: Standard deviation must be positive
  *fix W1 reference 123 456 789 0
-                                ^
-./cmd_fix_bad.svx:15:32: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:15:31: error: Standard deviation must be positive
  *fix W2 reference 123 456 789 0 0
-                                ^
-./cmd_fix_bad.svx:16:32: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:16:31: error: Standard deviation must be positive
  *fix W3 reference 123 456 789 0 0 0
-                                ^
-./cmd_fix_bad.svx:17:34: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:17:32: error: Standard deviation must be positive
  *fix W1m reference 123 456 789 -1
-                                  ^
-./cmd_fix_bad.svx:18:34: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:18:32: error: Standard deviation must be positive
  *fix W2m reference 123 456 789 -1 -1
-                                  ^
-./cmd_fix_bad.svx:19:34: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:19:32: error: Standard deviation must be positive
  *fix W3m reference 123 456 789 -1 -1 -1
-                                  ^
-./cmd_fix_bad.svx:20:34: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:20:32: error: Standard deviation must be positive
  *fix W1o reference 123 456 789 -1 0
-                                  ^
-./cmd_fix_bad.svx:21:33: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:21:32: error: Standard deviation must be positive
  *fix W2o reference 123 456 789 0 -1
-                                 ^
-./cmd_fix_bad.svx:22:33: error: Standard deviation must be positive
+                                ^
+./cmd_fix_bad.svx:22:32: error: Standard deviation must be positive
  *fix W3o reference 123 456 789 0 -1 -1
-                                 ^
-./cmd_fix_bad.svx:23:34: error: Standard deviation must be positive
+                                ^
+./cmd_fix_bad.svx:23:32: error: Standard deviation must be positive
  *fix W4o reference 123 456 789 -1 0 -1
-                                  ^
-./cmd_fix_bad.svx:24:34: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:24:32: error: Standard deviation must be positive
  *fix W5o reference 123 456 789 -1 -1 0
-                                  ^
-./cmd_fix_bad.svx:25:33: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:25:32: error: Standard deviation must be positive
  *fix W6o reference 123 456 789 0 0 -1
-                                 ^
-./cmd_fix_bad.svx:26:33: error: Standard deviation must be positive
+                                ^
+./cmd_fix_bad.svx:26:32: error: Standard deviation must be positive
  *fix W7o reference 123 456 789 0 -1 0
-                                 ^
-./cmd_fix_bad.svx:27:34: error: Standard deviation must be positive
+                                ^
+./cmd_fix_bad.svx:27:32: error: Standard deviation must be positive
  *fix W8o reference 123 456 789 -1 0 0
-                                  ^
-./cmd_fix_bad.svx:28:32: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:28:31: error: Standard deviation must be positive
  *fix X1 reference 123 456 789 0 0.1
-                                ^
-./cmd_fix_bad.svx:29:36: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:29:35: error: Standard deviation must be positive
  *fix X2 reference 123 456 789 0.1 0
-                                    ^
-./cmd_fix_bad.svx:30:36: error: Standard deviation must be positive
+                                   ^
+./cmd_fix_bad.svx:30:32: error: Standard deviation must be positive
  *fix X1m reference 123 456 789 -0.1 0.1
-                                    ^
-./cmd_fix_bad.svx:31:40: error: Standard deviation must be positive
+                                ^~~~
+./cmd_fix_bad.svx:31:36: error: Standard deviation must be positive
  *fix X2m reference 123 456 789 0.1 -0.1
-                                        ^
-./cmd_fix_bad.svx:32:32: error: Standard deviation must be positive
+                                    ^~~~
+./cmd_fix_bad.svx:32:31: error: Standard deviation must be positive
  *fix Y1 reference 123 456 789 0 0.1 0.1
-                                ^
-./cmd_fix_bad.svx:33:36: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:33:35: error: Standard deviation must be positive
  *fix Y2 reference 123 456 789 0.1 0 0.1
-                                    ^
-./cmd_fix_bad.svx:34:40: error: Standard deviation must be positive
+                                   ^
+./cmd_fix_bad.svx:34:39: error: Standard deviation must be positive
  *fix Y3 reference 123 456 789 0.1 0.1 0
-                                        ^
-./cmd_fix_bad.svx:35:32: error: Standard deviation must be positive
+                                       ^
+./cmd_fix_bad.svx:35:31: error: Standard deviation must be positive
  *fix Y4 reference 123 456 789 0 0 0.1
-                                ^
-./cmd_fix_bad.svx:36:32: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:36:31: error: Standard deviation must be positive
  *fix Y5 reference 123 456 789 0 0.1 0
-                                ^
-./cmd_fix_bad.svx:37:36: error: Standard deviation must be positive
+                               ^
+./cmd_fix_bad.svx:37:35: error: Standard deviation must be positive
  *fix Y6 reference 123 456 789 0.1 0 0
-                                    ^
-./cmd_fix_bad.svx:38:34: error: Standard deviation must be positive
+                                   ^
+./cmd_fix_bad.svx:38:32: error: Standard deviation must be positive
  *fix Y1m reference 123 456 789 -1 0.1 0.1
-                                  ^
-./cmd_fix_bad.svx:39:38: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:39:36: error: Standard deviation must be positive
  *fix Y2m reference 123 456 789 0.1 -1 0.1
-                                      ^
-./cmd_fix_bad.svx:40:42: error: Standard deviation must be positive
+                                    ^~
+./cmd_fix_bad.svx:40:40: error: Standard deviation must be positive
  *fix Y3m reference 123 456 789 0.1 0.1 -1
-                                          ^
-./cmd_fix_bad.svx:41:34: error: Standard deviation must be positive
+                                        ^~
+./cmd_fix_bad.svx:41:32: error: Standard deviation must be positive
  *fix Y4m reference 123 456 789 -1 -1 0.1
-                                  ^
-./cmd_fix_bad.svx:42:34: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:42:32: error: Standard deviation must be positive
  *fix Y5m reference 123 456 789 -1 0.1 -1
-                                  ^
-./cmd_fix_bad.svx:43:38: error: Standard deviation must be positive
+                                ^~
+./cmd_fix_bad.svx:43:36: error: Standard deviation must be positive
  *fix Y6m reference 123 456 789 0.1 -1 -1
-                                      ^
+                                    ^~
 
 Removing trailing traverses...
 

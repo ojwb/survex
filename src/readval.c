@@ -519,7 +519,7 @@ read_date(int *py, int *pm, int *pd)
    if (y < 100) y += 1900;
    if (y < 1900 || y > 2078) {
       set_pos(&fp_date);
-      compile_diagnostic(DIAG_WARN|DIAG_NUM, /*Invalid year (< 1900 or > 2078)*/58);
+      compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
       LONGJMP(file.jbSkipLine);
       return; /* for brain-fried compilers */
    }
@@ -530,7 +530,7 @@ read_date(int *py, int *pm, int *pd)
       m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
       if (m < 1 || m > 12) {
 	 set_pos(&fp);
-	 compile_diagnostic(DIAG_WARN|DIAG_NUM, /*Invalid month*/86);
+	 compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
 	 return; /* for brain-fried compilers */
       }
@@ -541,7 +541,7 @@ read_date(int *py, int *pm, int *pd)
 	 if (d < 1 || d > last_day(y, m)) {
 	    set_pos(&fp);
 	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
-	    compile_diagnostic(DIAG_WARN|DIAG_NUM, /*Invalid day of the month*/87);
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */
 	 }

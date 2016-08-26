@@ -4,6 +4,9 @@
 ./cmd_equate_bad.svx:6:13: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
  *equate 1 2 =
              ^
+./cmd_equate_bad.svx:9:9: error: Only one station in EQUATE command
+ *equate foo
+         ^~~
 
 Removing trailing traverses...
 
@@ -27,4 +30,4 @@ Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    2 1-nodes.
    2 2-nodes.
-There were 0 warning(s) and 2 error(s) - no output files produced.
+There were 0 warning(s) and 3 error(s) - no output files produced.

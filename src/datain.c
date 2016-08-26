@@ -209,7 +209,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_TOKEN|DIAG_NUM|DIAG_DATE)) {
+   if (diag_flags & (DIAG_TOKEN|DIAG_UINT|DIAG_DATE|DIAG_NUM)) {
       char *p = NULL;
       int len = 0;
       skipblanks();
@@ -218,13 +218,30 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    s_catchar(&p, &len, (char)ch);
 	    nextch();
 	 }
-      } else if (diag_flags & DIAG_NUM) {
+      } else if (diag_flags & DIAG_UINT) {
 	 while (isdigit(ch)) {
 	    s_catchar(&p, &len, (char)ch);
 	    nextch();
 	 }
-      } else {
+      } else if (diag_flags & DIAG_DATE) {
 	 while (isdigit(ch) || ch == '.') {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+      } else {
+	 if (isMinus(ch) || isPlus(ch)) {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+	 while (isdigit(ch)) {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+	 if (isDecimal(ch)) {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+	 while (isdigit(ch)) {
 	    s_catchar(&p, &len, (char)ch);
 	    nextch();
 	 }
