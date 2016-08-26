@@ -1,7 +1,9 @@
-./dotinsurvey.svx:4: warning: Separator in survey name
- *begin 106.1
-./dotinsurvey.svx:11: warning: Separator in survey name
+./dotinsurvey.svx:4:11: warning: Separator in survey name
+ *begin 106.top
+           ^
+./dotinsurvey.svx:11:11: warning: Separator in survey name
  *begin 106.2
+           ^
 
 Removing trailing traverses...
 
@@ -23,9 +25,9 @@ Survey has 3 connected components.
 Total length of survey legs =   15.00m (  15.00m adjusted)
 Total plan length of survey legs =   15.00m
 Total vertical length of survey legs =    0.09m
-Vertical range = 2.09m (from 106.2.1 at 2.09m to 106.1.1 at 0.00m)
-North-South range = 12.92m (from 106.1.1 at 10.00m to 106.2.1 at -2.92m)
-East-West range = 2.00m (from 106.2.2 at 2.00m to 106.1.1 at 0.00m)
+Vertical range = 2.09m (from 106.2.1 at 2.09m to 106.top.1 at 0.00m)
+North-South range = 12.92m (from 106.top.1 at 10.00m to 106.2.1 at -2.92m)
+East-West range = 2.00m (from 106.2.2 at 2.00m to 106.top.1 at 0.00m)
    1 0-node.
    4 1-nodes.
 There were 2 warning(s).

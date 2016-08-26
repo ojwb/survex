@@ -1,10 +1,10 @@
 ; pos=no warn=2
 ; In 1.0.9 this gave a bogus warning:
-; cavern: warning: Station `106.1' referred to by *entrance or *export but never used
-*begin 106.1
+; cavern: warning: Station `106.top' referred to by *entrance or *export but never used
+*begin 106.top
 *fix 0 0 0 0
 0 1 10.00 000 00
-*end 106.1
+*end 106.top
 *begin 106
 *fix 3 reference 3 3 3
 *end 106

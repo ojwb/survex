@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ read_prefix(unsigned pfx_flags)
    bool fNew;
    bool fImplicitPrefix = fTrue;
    int depth = -1;
+   filepos fp_firstsep;
 
    skipblanks();
 #ifndef NO_DEPRECATED
@@ -95,6 +96,7 @@ read_prefix(unsigned pfx_flags)
       if (!isNames(ch)) {
 	 if (!isSep(ch)) return ptr;
 	 /* Allow optional SEPARATOR after ROOT */
+	 get_pos(&fp_firstsep);
 	 nextch();
       }
       fImplicitPrefix = fFalse;
@@ -189,7 +191,10 @@ anon_wall_station:
 	 }
 	 nextch();
       }
-      if (isSep(ch)) fImplicitPrefix = fFalse;
+      if (isSep(ch)) {
+	 fImplicitPrefix = fFalse;
+	 get_pos(&fp_firstsep);
+      }
       if (i == 0) {
 	 osfree(name);
 	 if (!f_optional) {
@@ -276,6 +281,7 @@ anon_wall_station:
       }
       depth++;
       f_optional = fFalse; /* disallow after first level */
+      if (isSep(ch)) get_pos(&fp_firstsep);
    } while (isSep(ch));
    if (name) osfree(name);
 
@@ -336,7 +342,11 @@ anon_wall_station:
 #endif
    }
    if (!fImplicitPrefix && (pfx_flags & PFX_WARN_SEPARATOR)) {
-      compile_diagnostic(DIAG_WARN, /*Separator in survey name*/392);
+      filepos fp_tmp;
+      get_pos(&fp_tmp);
+      set_pos(&fp_firstsep);
+      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Separator in survey name*/392);
+      set_pos(&fp_tmp);
    }
    return ptr;
 }
