@@ -343,8 +343,8 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
        * "survey stations".
        *
        * %s is replaced by the name of the station. */
-      compile_error(/*Survey leg with same station (“%s”) at both ends - typing error?*/50,
-		    sprint_prefix(to_name));
+      compile_diagnostic(DIAG_ERR, /*Survey leg with same station (“%s”) at both ends - typing error?*/50,
+			 sprint_prefix(to_name));
       return;
    }
    if (fToFirst) {
@@ -446,8 +446,8 @@ process_equate(prefix *name1, prefix *name2)
       /* catch something like *equate "fred fred" */
       /* TRANSLATORS: Here "station" is a survey station, not a train station.
        */
-      compile_warning(/*Station “%s” equated to itself*/13,
-		      sprint_prefix(name1));
+      compile_diagnostic(DIAG_WARN, /*Station “%s” equated to itself*/13,
+			 sprint_prefix(name1));
       return;
    }
    stn1 = StnFromPfx(name1);
@@ -461,8 +461,8 @@ process_equate(prefix *name1, prefix *name2)
 	    int d;
 	    for (d = 2; d >= 0; d--) {
 	       if (name1->pos->p[d] != name2->pos->p[d]) {
-		  compile_error(/*Tried to equate two non-equal fixed stations: “%s” and “%s”*/52,
-				s, sprint_prefix(name2));
+		  compile_diagnostic(DIAG_ERR, /*Tried to equate two non-equal fixed stations: “%s” and “%s”*/52,
+				     s, sprint_prefix(name2));
 		  osfree(s);
 		  return;
 	       }
@@ -472,8 +472,8 @@ process_equate(prefix *name1, prefix *name2)
 	     * *fix a 1 2 3
 	     * *fix b 1 2 3
 	     * *equate a b */
-	    compile_warning(/*Equating two equal fixed points: “%s” and “%s”*/53,
-			    s, sprint_prefix(name2));
+	    compile_diagnostic(DIAG_WARN, /*Equating two equal fixed points: “%s” and “%s”*/53,
+			       s, sprint_prefix(name2));
 	    osfree(s);
 	 }
 

@@ -180,57 +180,47 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
 }
 
 static void
-compile_v_report(int severity, int en, va_list ap)
+compile_v_report(int diag_flags, int en, va_list ap)
 {
-   if (en < 0) {
-      en = -en;
+   int severity = (diag_flags & DIAG_SEVERITY_MASK);
+   if (diag_flags & (DIAG_COL|DIAG_BUF)) {
       if (file.fh) {
+	 if (diag_flags & DIAG_BUF) caret_width = strlen(buffer);
 	 compile_v_report_fpos(severity, ftell(file.fh), en, ap);
+	 if (diag_flags & DIAG_BUF) caret_width = 0;
+	 if (diag_flags & DIAG_SKIP) skipline();
 	 return;
       }
    }
    error_list_parent_files();
    v_report(severity, file.filename, file.line, 0, en, ap);
-   if (file.fh) show_line(0, caret_width);
+   if (file.fh) {
+      if (diag_flags & DIAG_BUF) {
+	 show_line(0, strlen(buffer));
+      } else {
+	 show_line(0, caret_width);
+      }
+   }
+   if (diag_flags & DIAG_SKIP) skipline();
 }
 
 void
-compile_error(int en, ...)
+compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   compile_v_report(1, en, ap);
-   va_end(ap);
-}
-
-void
-compile_error_skip(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   compile_v_report(1, en, ap);
-   va_end(ap);
-   skipline();
-}
-
-static void
-compile_warning_reading(reading r, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   caret_width = WID(r);
-   compile_v_report_fpos(0, LOC(r) + caret_width, en, ap);
-   caret_width = 0;
+   compile_v_report(diag_flags, en, ap);
    va_end(ap);
 }
 
 static void
-compile_error_reading(reading r, int en, ...)
+compile_diagnostic_reading(int diag_flags, reading r, int en, ...)
 {
    va_list ap;
+   int severity = (diag_flags & DIAG_SEVERITY_MASK);
    va_start(ap, en);
    caret_width = WID(r);
-   compile_v_report_fpos(1, LOC(r) + caret_width, en, ap);
+   compile_v_report_fpos(severity, LOC(r) + caret_width, en, ap);
    caret_width = 0;
    va_end(ap);
 }
@@ -247,25 +237,27 @@ compile_error_reading_skip(reading r, int en, ...)
 }
 
 void
-compile_error_at(const char * filename, unsigned line, int en, ...)
+compile_diagnostic_at(int diag_flags, const char * filename, unsigned line, int en, ...)
 {
    va_list ap;
+   int severity = (diag_flags & DIAG_SEVERITY_MASK);
    va_start(ap, en);
-   v_report(1, filename, line, 0, en, ap);
+   v_report(severity, filename, line, 0, en, ap);
    va_end(ap);
 }
 
 void
-compile_error_pfx(const prefix * pfx, int en, ...)
+compile_diagnostic_pfx(int diag_flags, const prefix * pfx, int en, ...)
 {
    va_list ap;
+   int severity = (diag_flags & DIAG_SEVERITY_MASK);
    va_start(ap, en);
-   v_report(1, pfx->filename, pfx->line, 0, en, ap);
+   v_report(severity, pfx->filename, pfx->line, 0, en, ap);
    va_end(ap);
 }
 
 void
-compile_error_token(int en, ...)
+compile_diagnostic_token(int diag_flags, int en, ...)
 {
    va_list ap;
    char *p = NULL;
@@ -280,13 +272,13 @@ compile_error_token(int en, ...)
       caret_width = strlen(p);
       osfree(p);
    }
-   compile_v_report(1, -en, ap);
+   compile_v_report(diag_flags|DIAG_COL, en, ap);
    caret_width = 0;
    va_end(ap);
 }
 
 void
-compile_error_token_show(int en)
+compile_diagnostic_token_show(int diag_flags, int en)
 {
    char *p = NULL;
    int len = 0;
@@ -297,11 +289,11 @@ compile_error_token_show(int en)
    }
    if (p) {
       caret_width = strlen(p);
-      compile_error(-en, p);
+      compile_diagnostic(diag_flags|DIAG_COL, en, p);
       caret_width = 0;
       osfree(p);
    } else {
-      compile_error(-en, "");
+      compile_diagnostic(DIAG_ERR|DIAG_COL, en, "");
    }
 }
 
@@ -311,70 +303,9 @@ compile_error_string(const char * s, int en, ...)
    va_list ap;
    va_start(ap, en);
    caret_width = strlen(s);
-   compile_v_report(1, en, ap);
+   compile_v_report(DIAG_ERR|DIAG_COL, en, ap);
    va_end(ap);
    caret_width = 0;
-}
-
-void
-compile_error_buffer(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   caret_width = strlen(buffer);
-   compile_v_report(1, en, ap);
-   va_end(ap);
-   caret_width = 0;
-}
-
-void
-compile_error_buffer_skip(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   caret_width = strlen(buffer);
-   compile_v_report(1, en, ap);
-   va_end(ap);
-   caret_width = 0;
-   skipline();
-}
-
-void
-compile_warning_buffer(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   caret_width = strlen(buffer);
-   compile_v_report(0, en, ap);
-   va_end(ap);
-   caret_width = 0;
-}
-
-void
-compile_warning(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   compile_v_report(0, en, ap);
-   va_end(ap);
-}
-
-void
-compile_warning_at(const char * filename, unsigned line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(0, filename, line, 0, en, ap);
-   va_end(ap);
-}
-
-void
-compile_warning_pfx(const prefix * pfx, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(0, pfx->filename, pfx->line, 0, en, ap);
-   va_end(ap);
 }
 
 /* This function makes a note where to put output files */
@@ -422,7 +353,8 @@ process_eol(void)
    skipblanks();
 
    if (!isEol(ch)) {
-      if (!isComm(ch)) compile_error(-/*End of line not blank*/15);
+      if (!isComm(ch))
+	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*End of line not blank*/15);
       skipline();
    }
 
@@ -543,7 +475,7 @@ data_file(const char *pth, const char *fnm)
       }
 
       if (fh == NULL) {
-	 compile_error_string(fnm, -/*Couldn’t open file “%s”*/24, fnm);
+	 compile_error_string(fnm, /*Couldn’t open file “%s”*/24, fnm);
 	 return;
       }
 
@@ -805,9 +737,9 @@ data_file(const char *pth, const char *fnm)
 		     } else {
 			if (x != POS(stn, 0) || y != POS(stn, 1) ||
 			    z != POS(stn, 2)) {
-			   compile_error(/*Station already fixed or equated to a fixed point*/46);
+			   compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
 			} else {
-			   compile_warning(/*Station already fixed at the same coordinates*/55);
+			   compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
 			}
 		     }
 		     while (ch != ']' && ch != EOF) nextch_handling_eol();
@@ -977,7 +909,7 @@ warn_readings_differ(int msgno, real diff, int units)
       }
    }
    strcpy(p, get_units_string(units));
-   compile_warning(msgno, buf);
+   compile_diagnostic(DIAG_WARN, msgno, buf);
 }
 
 static bool
@@ -990,7 +922,7 @@ handle_comp_units(void)
       if (VAL(Comp) < (real)0.0 || VAL(Comp) - M_PI * 2.0 > EPSILON) {
 	 /* TRANSLATORS: Suspicious means something like 410 degrees or -20
 	  * degrees */
-	 compile_warning_reading(Comp, /*Suspicious compass reading*/59);
+	 compile_diagnostic_reading(DIAG_WARN, Comp, /*Suspicious compass reading*/59);
 	 VAL(Comp) = mod2pi(VAL(Comp));
       }
    }
@@ -999,7 +931,7 @@ handle_comp_units(void)
       VAL(BackComp) *= pcs->units[Q_BACKBEARING];
       if (VAL(BackComp) < (real)0.0 || VAL(BackComp) - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
-	 compile_warning_reading(BackComp, /*Suspicious compass reading*/59);
+	 compile_diagnostic_reading(DIAG_WARN, BackComp, /*Suspicious compass reading*/59);
 	 VAL(BackComp) = mod2pi(VAL(BackComp));
       }
    }
@@ -1022,7 +954,7 @@ handle_compass(real *p_var)
       declination = pcs->declination;
    } else {
       if (!pcs->meta || pcs->meta->days1 == -1) {
-	  compile_warning(/*No survey date specified - using 0 for magnetic declination*/304);
+	  compile_diagnostic(DIAG_WARN, /*No survey date specified - using 0 for magnetic declination*/304);
 	  declination = 0;
       } else {
 	  int avg_days = (pcs->meta->days1 + pcs->meta->days2) / 2;
@@ -1102,8 +1034,8 @@ handle_clino(q_quantity q, reading r, real val, bool percent, clino_type *p_ctyp
 	  * units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
 	  * value" means the reading ignoring the sign (so it might be
 	  * < -90° or > 90°. */
-	 compile_warning_reading(r, /*Clino reading over %.f%s (absolute value)*/51,
-				 right_angle, units);
+	 compile_diagnostic_reading(DIAG_WARN, r, /*Clino reading over %.f%s (absolute value)*/51,
+				    right_angle, units);
       }
    } else if (TSTBIT(pcs->infer, INFER_PLUMBS) &&
 	      diff_from_abs90 >= -EPSILON) {
@@ -1115,8 +1047,8 @@ handle_clino(q_quantity q, reading r, real val, bool percent, clino_type *p_ctyp
 	 int clino_units = get_angle_units(q);
 	 const char * units = get_units_string(clino_units);
 	 real right_angle = M_PI_2 / get_units_factor(clino_units);
-	 compile_warning_reading(r, /*Clino reading over %.f%s (absolute value)*/51,
-				 right_angle, units);
+	 compile_diagnostic_reading(DIAG_WARN, r, /*Clino reading over %.f%s (absolute value)*/51,
+				    right_angle, units);
       }
    }
    return val;
@@ -1141,7 +1073,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
       /* TRANSLATE different message for topofil? */
-      compile_warning_reading(Tape, /*Negative adjusted tape reading*/79);
+      compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative adjusted tape reading*/79);
    }
 
    fNoComp = handle_comp_units();
@@ -1181,7 +1113,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	    /* TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 	     * (a weight on a string).  So the problem here is that the leg is
 	     * vertical, so a compass reading has no meaning! */
-	    compile_warning(/*Compass reading given on plumbed leg*/21);
+	    compile_diagnostic(DIAG_WARN, /*Compass reading given on plumbed leg*/21);
 	 }
       }
 
@@ -1355,7 +1287,7 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
-      compile_warning(/*Negative adjusted tape reading*/79);
+      compile_diagnostic(DIAG_WARN, /*Negative adjusted tape reading*/79);
    }
 
    /* check if tape is less than depth change */
@@ -1366,7 +1298,7 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
        * It could be a gross error (e.g. the decimal point is missing from the
        * depth gauge reading) or it could just be due to random error on a near
        * vertical leg */
-      compile_warning(/*Tape reading is less than change in depth*/62);
+      compile_diagnostic(DIAG_WARN, /*Tape reading is less than change in depth*/62);
    }
 
    if (tape == (real)0.0 && dz == 0.0) {
@@ -1551,7 +1483,7 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
-      compile_warning(/*Negative adjusted tape reading*/79);
+      compile_diagnostic(DIAG_WARN, /*Negative adjusted tape reading*/79);
    }
 
    if (VAL(Comp) == HUGE_REAL && VAL(BackComp) == HUGE_REAL) {
@@ -1659,7 +1591,7 @@ data_normal(void)
 	     fRev = fTrue;
 	     break;
 	   default:
-	     compile_error_buffer_skip(-/*Found “%s”, expecting “F” or “B”*/131, buffer);
+	     compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “F” or “B”*/131, buffer);
 	     process_eol();
 	     return;
 	  }
@@ -1670,14 +1602,14 @@ data_normal(void)
 	  read_reading(r, fTrue);
 	  if (VAL(r) == HUGE_REAL) {
 	     if (!isOmit(ch)) {
-		compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
+		compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 		/* Avoid also warning about omitted tape reading. */
 		VAL(r) = 0;
 	     } else {
 		nextch();
 	     }
 	  } else if (VAL(r) < (real)0.0) {
-	     compile_warning_reading(r, /*Negative tape reading*/60);
+	     compile_diagnostic_reading(DIAG_WARN, r, /*Negative tape reading*/60);
 	  }
 	  break;
        }
@@ -1705,7 +1637,7 @@ data_normal(void)
 	  if (VAL(r) == HUGE_REAL) {
 	     VAL(r) = handle_plumb(p_ctype);
 	     if (VAL(r) != HUGE_REAL) break;
-	     compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
+	     compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 	     skipline();
 	     process_eol();
 	     return;
@@ -1849,7 +1781,7 @@ data_normal(void)
 		   VAR(Tape) = VAR(BackTape);
 		}
 	     } else if (VAL(Tape) == HUGE_REAL) {
-		compile_error_reading(Tape, /*Tape reading may not be omitted*/94);
+		compile_diagnostic_reading(DIAG_ERR, Tape, /*Tape reading may not be omitted*/94);
 		goto inferred_equate;
 	     }
 	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
@@ -1970,7 +1902,7 @@ data_normal(void)
 		   VAR(Tape) = VAR(BackTape);
 		}
 	     } else if (VAL(Tape) == HUGE_REAL) {
-		compile_error_reading(Tape, /*Tape reading may not be omitted*/94);
+		compile_diagnostic_reading(DIAG_ERR, Tape, /*Tape reading may not be omitted*/94);
 		process_eol();
 		return;
 	     }
@@ -2054,7 +1986,7 @@ data_passage(void)
 	 read_reading(r, fTrue);
 	 if (VAL(r) == HUGE_REAL) {
 	    if (!isOmit(ch)) {
-	       compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
+	       compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 	    } else {
 	       nextch();
 	    }

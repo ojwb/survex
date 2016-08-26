@@ -82,13 +82,13 @@ read_prefix(unsigned pfx_flags)
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!(pfx_flags & PFX_ALLOW_ROOT)) {
-	 compile_error(-/*ROOT is deprecated*/25);
+	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*ROOT is deprecated*/25);
 	 LONGJMP(file.jbSkipLine);
       }
       if (root_depr_count < 5) {
-	 compile_warning(-/*ROOT is deprecated*/25);
+	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
-	    compile_warning(/*Further uses of this deprecated feature will not be reported*/95);
+	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
       }
       nextch();
       ptr = root;
@@ -117,7 +117,7 @@ read_prefix(unsigned pfx_flags)
 	     */
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 	       set_pos(&here);
-	       compile_error_token(/*Can't have a leg between two anonymous stations*/3);
+	       compile_diagnostic_token(DIAG_ERR, /*Can't have a leg between two anonymous stations*/3);
 	       LONGJMP(file.jbSkipLine);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -133,7 +133,7 @@ read_prefix(unsigned pfx_flags)
 anon_wall_station:
 	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		  set_pos(&here);
-		  compile_error_token(/*Can't have a leg between two anonymous stations*/3);
+		  compile_diagnostic_token(DIAG_ERR, /*Can't have a leg between two anonymous stations*/3);
 		  LONGJMP(file.jbSkipLine);
 	       }
 	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -151,7 +151,7 @@ anon_wall_station:
 		   */
 		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		     set_pos(&here);
-		     compile_error_token(/*Can't have a leg between two anonymous stations*/3);
+		     compile_diagnostic_token(DIAG_ERR, /*Can't have a leg between two anonymous stations*/3);
 		     LONGJMP(file.jbSkipLine);
 		  }
 		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
@@ -195,13 +195,13 @@ anon_wall_station:
 	 if (!f_optional) {
 	    if (isEol(ch)) {
 	       if (fSurvey) {
-		  compile_error(-/*Expecting survey name*/89);
+		  compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting survey name*/89);
 	       } else {
-		  compile_error(-/*Expecting station name*/28);
+		  compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
 	       }
 	    } else {
 	       /* TRANSLATORS: Here "station" is a survey station, not a train station. */
-	       compile_error(-/*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
 	    }
 	    LONGJMP(file.jbSkipLine);
 	 }
@@ -297,8 +297,8 @@ anon_wall_station:
 	  * Here "survey" is a "cave map" rather than list of questions - it should be
 	  * translated to the terminology that cavers using the language would use.
 	  */
-	 compile_error(/*“%s” can’t be both a station and a survey*/27,
-		       sprint_prefix(ptr));
+	 compile_diagnostic(DIAG_ERR, /*“%s” can’t be both a station and a survey*/27,
+			    sprint_prefix(ptr));
       }
       if (!fSurvey && TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
    }
@@ -322,11 +322,11 @@ anon_wall_station:
       s = osstrdup(sprint_prefix(survey));
       p = sprint_prefix(ptr);
       if (survey->filename) {
-	 compile_error_pfx(survey,
-			   /*Station “%s” not exported from survey “%s”*/26,
-			   p, s);
+	 compile_diagnostic_pfx(DIAG_ERR, survey,
+				/*Station “%s” not exported from survey “%s”*/26,
+				p, s);
       } else {
-	 compile_error(/*Station “%s” not exported from survey “%s”*/26, p, s);
+	 compile_diagnostic(DIAG_ERR, /*Station “%s” not exported from survey “%s”*/26, p, s);
       }
       osfree(s);
 #if 0
@@ -336,7 +336,7 @@ anon_wall_station:
 #endif
    }
    if (!fImplicitPrefix && (pfx_flags & PFX_WARN_SEPARATOR)) {
-      compile_warning(/*Separator in survey name*/392);
+      compile_diagnostic(DIAG_WARN, /*Separator in survey name*/392);
    }
    return ptr;
 }
@@ -382,9 +382,9 @@ read_number(bool f_optional)
    }
 
    if (isOmit(ch_old)) {
-      compile_error(-/*Field may not be omitted*/8);
+      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
    } else {
-      compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
@@ -432,7 +432,7 @@ read_numeric_multi_or_omit(int *p_n_readings)
    real v = read_numeric_multi(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
-	 compile_error_token_show(/*Expecting numeric field, found “%s”*/9);
+	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 	 LONGJMP(file.jbSkipLine);
 	 return 0.0; /* for brain-fried compilers */
       }
@@ -448,7 +448,7 @@ read_uint_internal(int errmsg, const filepos *fp)
    unsigned int n = 0;
    if (!isdigit(ch)) {
       if (fp) set_pos(fp);
-      compile_error_token_show(errmsg);
+      compile_diagnostic_token_show(DIAG_ERR, errmsg);
       LONGJMP(file.jbSkipLine);
    }
    while (isdigit(ch)) {
@@ -476,7 +476,7 @@ read_string(char **pstr, int *plen)
       nextch();
       while (1) {
 	 if (isEol(ch)) {
-	    compile_error(-/*Missing \"*/69);
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Missing \"*/69);
 	    LONGJMP(file.jbSkipLine);
 	 }
 
@@ -491,7 +491,7 @@ read_string(char **pstr, int *plen)
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
 	    if (!*pstr || !(*pstr)[0]) {
-	       compile_error(-/*Expecting string field*/121);
+	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting string field*/121);
 	       LONGJMP(file.jbSkipLine);
 	    }
 	    return;
@@ -518,7 +518,7 @@ read_date(int *py, int *pm, int *pd)
    /* Two digit year is 19xx. */
    if (y < 100) y += 1900;
    if (y < 1900 || y > 2078) {
-      compile_warning(/*Invalid year (< 1900 or > 2078)*/58);
+      compile_diagnostic(DIAG_WARN, /*Invalid year (< 1900 or > 2078)*/58);
       LONGJMP(file.jbSkipLine);
       return; /* for brain-fried compilers */
    }
@@ -526,7 +526,7 @@ read_date(int *py, int *pm, int *pd)
       nextch();
       m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
       if (m < 1 || m > 12) {
-	 compile_warning(/*Invalid month*/86);
+	 compile_diagnostic(DIAG_WARN, /*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
 	 return; /* for brain-fried compilers */
       }
@@ -535,7 +535,7 @@ read_date(int *py, int *pm, int *pd)
 	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
 	 if (d < 1 || d > last_day(y, m)) {
 	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
-	    compile_warning(/*Invalid day of the month*/87);
+	    compile_diagnostic(DIAG_WARN, /*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */
 	 }

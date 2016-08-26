@@ -57,16 +57,19 @@ void data_file(const char *pth, const char *fnm);
 
 void skipline(void);
 
-void compile_warning(int en, ...);
-void compile_warning_at(const char * file, unsigned line, int en, ...);
-void compile_warning_pfx(const prefix * pfx, int en, ...);
-void compile_error(int en, ...);
-void compile_error_skip(int en, ...);
-void compile_error_at(const char * file, unsigned line, int en, ...);
-void compile_error_pfx(const prefix * pfx, int en, ...);
+#define DIAG_SEVERITY_MASK 0x03
+#define DIAG_COL	0x04
+#define DIAG_SKIP	0x08
+#define DIAG_BUF	0x10
 
-void compile_error_token(int en, ...);
-void compile_error_token_show(int en);
-void compile_error_buffer(int en, ...);
-void compile_error_buffer_skip(int en, ...);
-void compile_warning_buffer(int en, ...);
+#define DIAG_WARN	0x00
+#define DIAG_ERR	0x01
+
+void compile_diagnostic(int flags, int en, ...);
+
+void compile_diagnostic_at(int flags, const char * file, unsigned line, int en, ...);
+void compile_diagnostic_pfx(int flags, const prefix * pfx, int en, ...);
+
+void compile_diagnostic_token(int flags, int en, ...);
+void compile_diagnostic_token_show(int flags, int en);
+void compile_diagnostic_buffer(int flags, int en, ...);

@@ -111,7 +111,7 @@ check_node(prefix *p)
 		 */
 	       msgno = /*Reference to station “%s” from non-existent survey “%s”*/286;
 	    }
-	    compile_error_pfx(where, msgno, sprint_prefix(p), s);
+	    compile_diagnostic_pfx(DIAG_ERR, where, msgno, sprint_prefix(p), s);
 	    osfree(s);
 	 }
       }
