@@ -1,0 +1,46 @@
+./cmd_date.svx:76:12: warning: Date is in the future!
+ *date 1900-2078
+            ^~~~
+./cmd_date.svx:77:7: warning: Date is in the future!
+ *date 2078.12.31
+       ^~~~~~~~~~
+./cmd_date.svx:78:7: warning: Date is in the future!
+ *date 2078.06
+       ^~~~~~~
+./cmd_date.svx:79:7: warning: Date is in the future!
+ *date 2078
+       ^~~~
+./cmd_date.svx:80:18: warning: Date is in the future!
+ *date 2016.08.25-2078.12.31 ; long survey trip!
+                  ^~~~~~~~~~
+./cmd_date.svx:82:7: warning: Date is in the future!
+ *date 2078.12.01-2078.12.31
+       ^~~~~~~~~~
+./cmd_date.svx:82:18: warning: Date is in the future!
+ *date 2078.12.01-2078.12.31
+                  ^~~~~~~~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.05m
+Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
+North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
+East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
+   2 1-nodes.
+There were 7 warning(s).

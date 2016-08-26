@@ -1,4 +1,4 @@
-; pos=no warn=4
+; pos=no warn=7
 ; valid dates:
 *begin
 *date 00.01.01
@@ -77,6 +77,9 @@
 *date 2078.12.31
 *date 2078.06
 *date 2078
+*date 2016.08.25-2078.12.31 ; long survey trip!
+; And this should generate two
+*date 2078.12.01-2078.12.31
 
 *fix 1 0 0 0
 1 2 1.0 020 -03

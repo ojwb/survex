@@ -61,6 +61,9 @@ void skipline(void);
 #define DIAG_COL	0x04
 #define DIAG_SKIP	0x08
 #define DIAG_BUF	0x10
+#define DIAG_TOKEN	0x20
+#define DIAG_NUM	0x40
+#define DIAG_DATE	0x80
 
 #define DIAG_WARN	0x00
 #define DIAG_ERR	0x01
@@ -70,6 +73,5 @@ void compile_diagnostic(int flags, int en, ...);
 void compile_diagnostic_at(int flags, const char * file, unsigned line, int en, ...);
 void compile_diagnostic_pfx(int flags, const prefix * pfx, int en, ...);
 
-void compile_diagnostic_token(int flags, int en, ...);
 void compile_diagnostic_token_show(int flags, int en);
 void compile_diagnostic_buffer(int flags, int en, ...);

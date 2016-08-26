@@ -756,11 +756,11 @@ cmd_end(void)
 	     * *begin
 	     * 1 2 10.00 178 -01
 	     * *end entrance      <--[Message given here] */
-	    compile_diagnostic_token(DIAG_ERR, /*Matching BEGIN command has no survey name*/36);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Matching BEGIN command has no survey name*/36);
 	 } else {
 	    /* TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 	     * same <survey> if it’s given at all */
-	    compile_diagnostic_token(DIAG_ERR, /*Survey name doesn’t match BEGIN*/193);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Survey name doesn’t match BEGIN*/193);
 	 }
 	 skipline();
       } else {
@@ -1530,7 +1530,7 @@ cmd_units(void)
        * meaningless to say your tape is marked in "0 feet" (but you might
        * measure distance by counting knots on a diving line, and tie them
        * every "2 feet"). */
-      compile_diagnostic_token(DIAG_ERR, /**UNITS factor must be non-zero*/200);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /**UNITS factor must be non-zero*/200);
       skipline();
       return;
    }
@@ -1608,7 +1608,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: DECLINATION is a built-in keyword, so best not to
        * translate */
-      compile_diagnostic_token(DIAG_ERR, /*Scale factor must be 1.0 for DECLINATION*/40);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be 1.0 for DECLINATION*/40);
       skipline();
       return;
    }
@@ -1616,7 +1616,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: If the scale factor for an instrument is zero, then any
        * reading would be mapped to zero, which doesn't make sense. */
-      compile_diagnostic_token(DIAG_ERR, /*Scale factor must be non-zero*/391);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be non-zero*/391);
       skipline();
       return;
    }
@@ -1988,7 +1988,7 @@ cmd_cs(void)
    }
    if (cs_sub == INT_MIN || isalnum(ch)) {
       set_pos(&fp);
-      compile_diagnostic_token(DIAG_ERR, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2064,7 +2064,7 @@ cmd_cs(void)
    if (!proj_str) {
       /* printf("CS %d:%d\n", (int)cs, cs_sub); */
       set_pos(&fp);
-      compile_diagnostic_token(DIAG_ERR, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2072,7 +2072,7 @@ cmd_cs(void)
    if (output) {
       if (ok_for_output == NO) {
 	 set_pos(&fp);
-	 compile_diagnostic_token(DIAG_ERR, /*Coordinate system unsuitable for output*/435);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
 	 skipline();
 	 return;
       }
@@ -2086,14 +2086,14 @@ cmd_cs(void)
 	 projPJ pj = pj_init_plus(proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_diagnostic_token(DIAG_ERR, /*Invalid coordinate system: %s*/443,
-				pj_strerrno(pj_errno));
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
+			       pj_strerrno(pj_errno));
 	    skipline();
 	    return;
 	 }
 	 if (ok_for_output == MAYBE && pj_is_latlong(pj)) {
 	    set_pos(&fp);
-	    compile_diagnostic_token(DIAG_ERR, /*Coordinate system unsuitable for output*/435);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
 	    skipline();
 	    return;
 	 }
@@ -2114,8 +2114,8 @@ cmd_cs(void)
 	 pj = pj_init_plus(proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_diagnostic_token(DIAG_ERR, /*Invalid coordinate system: %s*/443,
-				     pj_strerrno(pj_errno));
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
+			       pj_strerrno(pj_errno));
 	    skipline();
 	    return;
 	 }
@@ -2270,17 +2270,21 @@ cmd_date(void)
     int year, month, day;
     int days1, days2;
     bool implicit_range = fFalse;
+    filepos fp, fp2;
 
+    get_pos(&fp);
     read_date(&year, &month, &day);
     days1 = days_since_1900(year, month ? month : 1, day ? day : 1);
 
     if (days1 > current_days_since_1900) {
-	compile_diagnostic(DIAG_WARN|DIAG_COL, /*Date is in the future!*/80);
+	set_pos(&fp);
+	compile_diagnostic(DIAG_WARN|DIAG_DATE, /*Date is in the future!*/80);
     }
 
     skipblanks();
     if (ch == '-') {
 	nextch();
+	get_pos(&fp2);
 	read_date(&year, &month, &day);
     } else {
 	if (month && day) {
@@ -2295,11 +2299,13 @@ cmd_date(void)
     days2 = days_since_1900(year, month, day);
 
     if (!implicit_range && days2 > current_days_since_1900) {
-	compile_diagnostic(DIAG_WARN|DIAG_COL, /*Date is in the future!*/80);
+	set_pos(&fp2);
+	compile_diagnostic(DIAG_WARN|DIAG_DATE, /*Date is in the future!*/80);
     }
 
     if (days2 < days1) {
-	compile_diagnostic(DIAG_ERR|DIAG_COL, /*End of date range is before the start*/81);
+	set_pos(&fp);
+	compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*End of date range is before the start*/81);
 	int tmp = days1;
 	days1 = days2;
 	days2 = tmp;

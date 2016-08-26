@@ -209,7 +209,35 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   compile_v_report(diag_flags, en, ap);
+   if (diag_flags & (DIAG_TOKEN|DIAG_NUM|DIAG_DATE)) {
+      char *p = NULL;
+      int len = 0;
+      skipblanks();
+      if (diag_flags & DIAG_TOKEN) {
+	 while (!isBlank(ch) && !isEol(ch)) {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+      } else if (diag_flags & DIAG_NUM) {
+	 while (isdigit(ch)) {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+      } else {
+	 while (isdigit(ch) || ch == '.') {
+	    s_catchar(&p, &len, (char)ch);
+	    nextch();
+	 }
+      }
+      if (p) {
+	 caret_width = strlen(p);
+	 osfree(p);
+      }
+      compile_v_report(diag_flags|DIAG_COL, en, ap);
+      caret_width = 0;
+   } else {
+      compile_v_report(diag_flags, en, ap);
+   }
    va_end(ap);
 }
 
@@ -253,27 +281,6 @@ compile_diagnostic_pfx(int diag_flags, const prefix * pfx, int en, ...)
    int severity = (diag_flags & DIAG_SEVERITY_MASK);
    va_start(ap, en);
    v_report(severity, pfx->filename, pfx->line, 0, en, ap);
-   va_end(ap);
-}
-
-void
-compile_diagnostic_token(int diag_flags, int en, ...)
-{
-   va_list ap;
-   char *p = NULL;
-   int len = 0;
-   va_start(ap, en);
-   skipblanks();
-   while (!isBlank(ch) && !isEol(ch)) {
-      s_catchar(&p, &len, (char)ch);
-      nextch();
-   }
-   if (p) {
-      caret_width = strlen(p);
-      osfree(p);
-   }
-   compile_v_report(diag_flags|DIAG_COL, en, ap);
-   caret_width = 0;
    va_end(ap);
 }
 

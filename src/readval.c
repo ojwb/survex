@@ -117,7 +117,7 @@ read_prefix(unsigned pfx_flags)
 	     */
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 	       set_pos(&here);
-	       compile_diagnostic_token(DIAG_ERR, /*Can't have a leg between two anonymous stations*/3);
+	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
 	       LONGJMP(file.jbSkipLine);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -133,7 +133,7 @@ read_prefix(unsigned pfx_flags)
 anon_wall_station:
 	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		  set_pos(&here);
-		  compile_diagnostic_token(DIAG_ERR, /*Can't have a leg between two anonymous stations*/3);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
 		  LONGJMP(file.jbSkipLine);
 	       }
 	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -151,7 +151,7 @@ anon_wall_station:
 		   */
 		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		     set_pos(&here);
-		     compile_diagnostic_token(DIAG_ERR, /*Can't have a leg between two anonymous stations*/3);
+		     compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
 		     LONGJMP(file.jbSkipLine);
 		  }
 		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
@@ -509,33 +509,39 @@ extern void
 read_date(int *py, int *pm, int *pd)
 {
    int y = 0, m = 0, d = 0;
-   filepos fp;
+   filepos fp_date;
 
    skipblanks();
 
-   get_pos(&fp);
-   y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
+   get_pos(&fp_date);
+   y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
    /* Two digit year is 19xx. */
    if (y < 100) y += 1900;
    if (y < 1900 || y > 2078) {
-      compile_diagnostic(DIAG_WARN, /*Invalid year (< 1900 or > 2078)*/58);
+      set_pos(&fp_date);
+      compile_diagnostic(DIAG_WARN|DIAG_NUM, /*Invalid year (< 1900 or > 2078)*/58);
       LONGJMP(file.jbSkipLine);
       return; /* for brain-fried compilers */
    }
    if (ch == '.') {
+      filepos fp;
       nextch();
-      m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
+      get_pos(&fp);
+      m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
       if (m < 1 || m > 12) {
-	 compile_diagnostic(DIAG_WARN, /*Invalid month*/86);
+	 set_pos(&fp);
+	 compile_diagnostic(DIAG_WARN|DIAG_NUM, /*Invalid month*/86);
 	 LONGJMP(file.jbSkipLine);
 	 return; /* for brain-fried compilers */
       }
       if (ch == '.') {
 	 nextch();
-	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp);
+	 get_pos(&fp);
+	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
 	 if (d < 1 || d > last_day(y, m)) {
+	    set_pos(&fp);
 	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
-	    compile_diagnostic(DIAG_WARN, /*Invalid day of the month*/87);
+	    compile_diagnostic(DIAG_WARN|DIAG_NUM, /*Invalid day of the month*/87);
 	    LONGJMP(file.jbSkipLine);
 	    return; /* for brain-fried compilers */
 	 }
