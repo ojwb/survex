@@ -826,23 +826,23 @@ cmd_fix(void)
    }
    if (x == HUGE_REAL) {
       if (pcs->proj || proj_out) {
-	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Coordinates can't be omitted when coordinate system has been specified*/439);
+	 compile_diagnostic(DIAG_ERR|DIAG_COL|DIAG_SKIP, /*Coordinates can't be omitted when coordinate system has been specified*/439);
 	 return;
       }
 
       if (fix_name == name_omit_already) {
-	 compile_diagnostic(DIAG_WARN, /*Same station fixed twice with no coordinates*/61);
+	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*Same station fixed twice with no coordinates*/61);
 	 return;
       }
 
       /* TRANSLATORS: " *fix a " gives this message: */
-      compile_diagnostic(DIAG_WARN, /*FIX command with no coordinates - fixing at (0,0,0)*/54);
+      compile_diagnostic(DIAG_WARN|DIAG_COL, /*FIX command with no coordinates - fixing at (0,0,0)*/54);
 
       if (name_omit_already) {
 	 /* TRANSLATORS: Emitted after second and subsequent "FIX command with
 	  * no coordinates - fixing at (0,0,0)" warnings.
 	  */
-	 compile_diagnostic_at(DIAG_ERR,
+	 compile_diagnostic_at(DIAG_ERR|DIAG_COL,
 			       name_omit_already_filename,
 			       name_omit_already_line,
 			       /*Already had FIX command with no coordinates for station “%s”*/441,
