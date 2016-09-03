@@ -34,14 +34,14 @@ badinc2.out badinc2.svx\
 badinc3.out badinc3.svx\
 badinc4.out badinc4.svx\
 export.svx export2.svx\
-singlefix.svx singlefix.pos singlereffix.svx singlereffix.pos\
+singlefix.svx singlefix.out singlefix.pos singlereffix.svx singlereffix.pos\
 singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\
 includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
-cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.pos cmd_solve.svx cmd_solve.pos\
+cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.pos\
 cmd_entrance.svx\
 stnsurvey1.svx stnsurvey2.svx\
 tapelessthandepth.svx longname.svx\
