@@ -509,11 +509,11 @@ cmd_set(void)
 	  * *equate \foo.7 1
 	  *
 	  * If you're unsure what "deprecated" means, see:
-	  * http://en.wikipedia.org/wiki/Deprecation */
+	  * https://en.wikipedia.org/wiki/Deprecation */
 	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	     /* TRANSLATORS: If you're unsure what "deprecated" means, see:
-	      * http://en.wikipedia.org/wiki/Deprecation */
+	      * https://en.wikipedia.org/wiki/Deprecation */
 	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
       }
    }
@@ -592,7 +592,7 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        * crawl.svx:1: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
-       * http://en.wikipedia.org/wiki/Deprecation */
+       * https://en.wikipedia.org/wiki/Deprecation */
       compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Reentering an existing survey is deprecated*/29);
       set_pos(&fp_tmp);
       /* TRANSLATORS: The second of two warnings given when a survey which has
@@ -611,14 +611,14 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        * crawl.svx:1: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
-       * http://en.wikipedia.org/wiki/Deprecation */
+       * https://en.wikipedia.org/wiki/Deprecation */
       compile_diagnostic_pfx(DIAG_WARN, survey, /*Originally entered here*/30);
       if (++reenter_depr_count == 5) {
 	 /* After we've warned about 5 uses of the same deprecated feature, we
 	  * give up for the rest of the current processing run.
 	  *
 	  * If you're unsure what "deprecated" means, see:
-	  * http://en.wikipedia.org/wiki/Deprecation */
+	  * https://en.wikipedia.org/wiki/Deprecation */
 	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
       }
    } else {
@@ -640,7 +640,7 @@ cmd_prefix(void)
     */
    if (prefix_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
-       * http://en.wikipedia.org/wiki/Deprecation */
+       * https://en.wikipedia.org/wiki/Deprecation */
       compile_diagnostic(DIAG_WARN|DIAG_BUF, /**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
 	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
@@ -1716,7 +1716,7 @@ cmd_default(void)
 
    if (default_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
-       * http://en.wikipedia.org/wiki/Deprecation */
+       * https://en.wikipedia.org/wiki/Deprecation */
       compile_diagnostic(DIAG_WARN|DIAG_COL, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
 	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);

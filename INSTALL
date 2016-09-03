@@ -13,7 +13,7 @@ are usually split into runtime and development, usually with the same
 name but with a -dev or -devel or similar suffix on the latter - you'll
 need both to build Survex).
 
-Otherwise download the source code from http://www.wxwidgets.org/ and
+Otherwise download the source code from https://wxwidgets.org/ and
 follow their build instructions.  IMPORTANT: You must enable OpenGL
 support by adding --with-opengl to the configure command line, and
 you probably want to use --enable-unicode too.

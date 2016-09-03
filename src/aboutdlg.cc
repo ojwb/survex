@@ -100,7 +100,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     wxString licence_str;
     /* TRANSLATORS: Summary paragraph for the GPLv2 - there are translations for
      * some languages here:
-     * http://www.gnu.org/licenses/old-licenses/gpl-2.0-translations.html */
+     * https://www.gnu.org/licenses/old-licenses/gpl-2.0-translations.html */
     wxString l(wmsg(/*This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version.*/219));
     wxClientDC dc(this);
     dc.SetFont(this->GetFont());

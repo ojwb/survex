@@ -3048,7 +3048,7 @@ int GfxCore::GetDepthColour(Double z) const
     // tubes, so just clamp the value to 0.
     if (z <= 0) return 0;
     // We seem to get rounding differences causing z to sometimes exceed z_ext
-    // by a small amount here (see: http://trac.survex.com/ticket/26) and it
+    // by a small amount here (see: https://trac.survex.com/ticket/26) and it
     // can certainly be true for passage tubes, so just clamp the value.
     if (z >= z_ext) return GetNumColourBands() - 1;
     return int(z / z_ext * (GetNumColourBands() - 1));

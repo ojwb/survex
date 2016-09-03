@@ -116,7 +116,7 @@ msgid "In file included from %s:%u:\n"
 msgstr "V súbore vloženom z %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
-#. http://en.wikipedia.org/wiki/Deprecation
+#. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:622
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
@@ -222,7 +222,7 @@ msgid "Too many errors - giving up"
 msgstr "Príliš mnoho chýb, koniec"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
-#. http://en.wikipedia.org/wiki/Deprecation
+#. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:1673
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
@@ -792,7 +792,7 @@ msgid "Couldn’t write file “%s”"
 msgstr "Súbor “%s” sa nedá zapísať"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
-#. http://en.wikipedia.org/wiki/Deprecation
+#. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:500
 #: ../src/commands.c:601
 #: ../src/commands.c:624
@@ -3007,7 +3007,7 @@ msgstr "Zrušené: %s"
 #. crawl.svx:1: Originally entered here
 #.
 #. If you're unsure what "deprecated" means, see:
-#. http://en.wikipedia.org/wiki/Deprecation
+#. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:576
 #: n:29
 #, fuzzy
@@ -3030,7 +3030,7 @@ msgstr "Opakované vloženie existujúcej úrovne prefixu nie je povolené"
 #. crawl.svx:1: Originally entered here
 #.
 #. If you're unsure what "deprecated" means, see:
-#. http://en.wikipedia.org/wiki/Deprecation
+#. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:594
 #: n:30
 msgid "Originally entered here"
@@ -3042,7 +3042,7 @@ msgstr "Pôvodne vložené sem"
 #. *equate \foo.7 1
 #.
 #. If you're unsure what "deprecated" means, see:
-#. http://en.wikipedia.org/wiki/Deprecation
+#. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:496
 #: ../src/readval.c:85
 #: ../src/readval.c:89

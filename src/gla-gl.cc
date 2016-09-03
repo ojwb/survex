@@ -314,7 +314,7 @@ bool GLAList::need_to_generate() {
 	// probably a infinite loop in the lazy list mechanism.
 	assert(gl_list < 1000);
     }
-    // http://www.opengl.org/resources/faq/technical/displaylist.htm advises:
+    // https://www.opengl.org/resources/faq/technical/displaylist.htm advises:
     //
     // "Stay away from GL_COMPILE_AND_EXECUTE mode. Instead, create the
     // list using GL_COMPILE mode, then execute it with glCallList()."

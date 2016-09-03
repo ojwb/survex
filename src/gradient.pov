@@ -1,5 +1,5 @@
 /* color_map file created by the GIMP */
-/* http://www.gimp.org/               */
+/* https://www.gimp.org/              */
 color_map {
 	[0.000000 color rgbt <0.236267, 0.265919, 1.000000, 0.000000>]
 	[0.164434 color rgbt <0.236267, 0.476027, 0.853163, 0.000000>]
