@@ -1,4 +1,20 @@
-Changes in 1.2.28 (2016-08-18):
+Changes in 1.2.28 (2016-09-07):
+
+* cavern:
+
+  + Show the contents of the line after error and warning messages while
+    processing survey data, and indicate the region of the line in many cases
+    in the same style that compilers such as GCC and clang use (using the
+    column number we already have, plus new width information).  Based on a
+    patch from Mateusz Golicz.
+
+  + Add column and width information for many more error and warning messages.
+
+  + Fix column for "Separator in survey name" warning.
+
+  + Improve warnings when using a backclino with range 0-180 degrees (reusing
+    the same machinery we already have for a forward clino with range 0-180
+    degrees).
 
 * aven:
 
@@ -12,9 +28,16 @@ Changes in 1.2.28 (2016-08-18):
   + Remember scale from previous print or export operation in the same run of
     aven.  Suggested by Stuart Bennett.
 
+  + Convert range indication below shown line to a highlight on that region
+    of the line in cavern log window.
+
   + Fix colouring of error/warning without column in cavern log window.
 
   + Fix click on error/warning without column in cavern log window.
+
+  + Disable selection of text in cavern log window - you can't currently copy
+    it to the clipboard, so until that's implemented it seems better to disable
+    the ability to select it.  Reported by Wookey.
 
   + Avoid special "1000" scale entry when exporting.
 
@@ -48,6 +71,9 @@ Changes in 1.2.28 (2016-08-18):
 * Fix to build without FFmpeg/libav, broken by changes in 1.2.27.  Reported by
   James Begley.
 
+* The Polish translation is now very close to being complete, thanks to a
+  substantial update from Mateusz Golicz.
+
 * Merge catalan translation updates from Adolfo Jayme.
 
 * (Microsoft Windows version): Map LANG_CHINESE to zh_CN not zh so Chinese
@@ -55,6 +81,12 @@ Changes in 1.2.28 (2016-08-18):
 
 * cavern.tst: Remove random : from after ] - dash ignores the extra character,
   but it causes this test to fail if /bin/sh is a different shell (e.g. bash).
+
+* cavern.tst: Add expected output for more testcases.
+
+* Remove unwanted execute bit from some testcase data.
+
+* Use https for more URLs which support it.
 
 Changes in 1.2.27 (2016-06-06):
 
