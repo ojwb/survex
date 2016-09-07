@@ -680,11 +680,20 @@ bad_utf8:
 		    cur += wxT("&#22;");
 		    continue;
 		default:
+#ifdef wxUSE_UNICODE
+		    cur += wxChar(ch);
+#else
+		    // This approach means that highlighting of "error" or
+		    // "warning" won't work in translations where they contain
+		    // non-ASCII characters, but wxWidgets >= 3.0 in always
+		    // Unicode, so this corner case is already very uncommon,
+		    // and will become irrelevant with time.
 		    if (ch >= 128) {
 			cur += wxString::Format(wxT("&#%u;"), ch);
 		    } else {
 			cur += (char)ch;
 		    }
+#endif
 	    }
 	}
 
