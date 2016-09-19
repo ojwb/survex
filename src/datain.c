@@ -274,6 +274,7 @@ static void
 compile_error_reading_skip(reading r, int en, ...)
 {
    va_list ap;
+   va_start(ap, en);
    caret_width = WID(r);
    compile_v_report_fpos(1, LOC(r) + caret_width, en, ap);
    caret_width = 0;
