@@ -347,8 +347,7 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 
 unsigned char * MovieMaker::GetBuffer() const {
 #ifdef WITH_LIBAV
-    AVCodecContext * c = video_st->codec;
-    return pixels + c->height * c->width * 3;
+    return pixels + GetWidth() * GetHeight() * 3;
 #else
     return NULL;
 #endif
