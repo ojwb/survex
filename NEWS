@@ -1,4 +1,4 @@
-Changes in 1.2.28 (2016-09-07):
+Changes in 1.2.28 (2016-09-24):
 
 * cavern:
 
@@ -35,6 +35,12 @@ Changes in 1.2.28 (2016-09-07):
 
   + Fix click on error/warning without column in cavern log window.
 
+  + Fix highlight of translations of "error" or "warning" containing non-ASCII
+    characters.  This fix for this only works with a Unicode build of
+    wxWidgets, but as of wxWidgets 3.0, all builds are Unicode, so this
+    shouldn't be much of a problem as wxWidgets 2.x is close to obsolete now.
+    Reported by Mateusz Golicz.
+
   + Disable selection of text in cavern log window - you can't currently copy
     it to the clipboard, so until that's implemented it seems better to disable
     the ability to select it.  Reported by Wookey.
@@ -62,6 +68,21 @@ Changes in 1.2.28 (2016-09-07):
   + Recheck how best to draw crosses and blobs on the first run after Survex
     is upgraded (or downgraded) as the rendering code may have changed (we
     already recheck when the OpenGL hardware or driver changes).
+
+  + Change "MPEG" export to be MPEG4 (.mp4) rather than MPEG1 (.mpg).
+    MPEG4 produces smaller output of higher quality, and should be widely
+    supported these days.  And I can't get the MPEG1 output to work without
+    buffer underflows, resulting in a file which doesn't play without
+    glitches.
+
+  + Add OGG video to the list of formats - it's more compact than the others
+    we currently list, though slower to write.
+
+  + Fix export to movie formats for which libav/FFmpeg needs to seek the file
+    being written.  This was broken by changes in 1.2.27.
+
+  + Overhaul movie export for the current FFmpeg API, fixing deprecation
+    warnings when building against a recent version.
 
   + (Microsoft Windows version): Fix corrupted exported movie files.  1.2.27
     changed the movie export code to allow writing to files with non-ASCII
