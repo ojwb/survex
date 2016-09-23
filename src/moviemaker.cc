@@ -101,6 +101,12 @@ write_packet(void *opaque, uint8_t *buf, int buf_size) {
     size_t res = fwrite(buf, 1, buf_size, fh);
     return res > 0 ? res : -1;
 }
+
+static int64_t
+seek_stream(void *opaque, int64_t offset, int whence) {
+    FILE * fh = (FILE*)opaque;
+    return fseek(fh, offset, whence);
+}
 #endif
 
 #define MAX_EXTENSION_LEN 8
@@ -230,7 +236,7 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 	const int buf_size = 8192;
 	void * buf = av_malloc(buf_size);
 	oc->pb = avio_alloc_context(static_cast<uint8_t*>(buf), buf_size, 1,
-				    fh, NULL, write_packet, NULL);
+				    fh, NULL, write_packet, seek_stream);
 	if (!oc->pb) {
 	    averrno = AVERROR(ENOMEM);
 	    return false;
