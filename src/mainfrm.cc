@@ -2580,7 +2580,7 @@ void MainFrm::OnPresExportMovie(wxCommandEvent&)
     wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
     wxFileDialog dlg(this, wmsg(/*Export Movie*/331), wxString(),
 		     baseleaf + wxT(".mp4"),
-		     wxT("MPEG|*.mp4|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf"),
+		     wxT("MPEG|*.mp4|OGG|*.ogv|AVI|*.avi|QuickTime|*.mov|WMV|*.wmv;*.asf"),
 		     wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
 	// Error is reported by GfxCore.
