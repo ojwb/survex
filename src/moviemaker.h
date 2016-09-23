@@ -26,6 +26,7 @@
 
 #include <stdio.h>
 
+struct AVCodecContext;
 struct AVFormatContext;
 struct AVStream;
 struct AVFrame;
@@ -37,18 +38,20 @@ class MovieMaker {
     AVFormatContext *oc;
     AVStream *video_st;
 # ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    int out_size;
+    int out_size; // Legacy-only.
 # endif
+    AVCodecContext *context;
     AVFrame *frame;
-    unsigned char *outbuf;
+    unsigned char *outbuf; // Legacy-only.
 # ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    AVPicture *out;
+    AVPicture *out; // Legacy-only.
 # endif
     unsigned char *pixels;
     SwsContext *sws_ctx;
     int averrno;
     FILE* fh_to_close;
 
+    int encode_frame(AVFrame* frame);
     void release();
 #endif
 

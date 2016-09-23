@@ -65,74 +65,21 @@ extern "C" {
 # include <libavformat/avformat.h>
 # include <libswscale/swscale.h>
 }
-# ifndef AV_PKT_FLAG_KEY
-#  define AV_PKT_FLAG_KEY PKT_FLAG_KEY
-# endif
-# ifndef HAVE_AV_GUESS_FORMAT
-#  define av_guess_format guess_format
-# endif
-# ifndef HAVE_AVIO_OPEN
-#  define avio_open url_fopen
-# endif
-# ifndef HAVE_AVIO_CLOSE
-#  define avio_close url_fclose
-# endif
-# ifndef HAVE_AV_FRAME_ALLOC
-static inline AVFrame * av_frame_alloc() {
-    return avcodec_alloc_frame();
-}
-# endif
-# ifndef HAVE_AV_FRAME_FREE
-#  ifdef HAVE_AVCODEC_FREE_FRAME
-static inline void av_frame_free(AVFrame ** frame) {
-    avcodec_free_frame(frame);
-}
-#  else
-static inline void av_frame_free(AVFrame ** frame) {
-    free((*frame)->data[0]);
-    free(*frame);
-    *frame = NULL;
-}
-#  endif
-# endif
-# ifndef HAVE_AVCODEC_OPEN2
-// We always pass NULL for OPTS below.
-#  define avcodec_open2(CTX, CODEC, OPTS) avcodec_open(CTX, CODEC)
-# endif
-# ifndef HAVE_AVFORMAT_NEW_STREAM
-// We always pass NULL for CODEC below.
-#  define avformat_new_stream(S, CODEC) av_new_stream(S, 0)
-# endif
-# if !HAVE_DECL_AVMEDIA_TYPE_VIDEO
-#  define AVMEDIA_TYPE_VIDEO CODEC_TYPE_VIDEO
-# endif
-# if !HAVE_DECL_AV_CODEC_ID_NONE
-#  define AV_CODEC_ID_NONE CODEC_ID_NONE
-# endif
-# if !HAVE_DECL_AV_PIX_FMT_RGB24
-#  define AV_PIX_FMT_RGB24 PIX_FMT_RGB24
-# endif
-# if !HAVE_DECL_AV_PIX_FMT_YUV420P
-#  define AV_PIX_FMT_YUV420P PIX_FMT_YUV420P
-# endif
-# ifndef AVIO_FLAG_WRITE
-#  define AVIO_FLAG_WRITE URL_WRONLY
-# endif
+#endif
 
+#if defined WITH_LIBAV && LIBAVCODEC_VERSION_MAJOR >= 57
+
+#ifdef WITH_LIBAV
 enum {
     MOVIE_NO_SUITABLE_FORMAT = 1,
     MOVIE_AUDIO_ONLY,
     MOVIE_FILENAME_TOO_LONG
 };
-
-# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-const int OUTBUF_SIZE = 200000;
-# endif
 #endif
 
 MovieMaker::MovieMaker()
 #ifdef WITH_LIBAV
-    : oc(0), video_st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0), averrno(0)
+    : oc(0), video_st(0), context(0), frame(0), pixels(0), sws_ctx(0), averrno(0)
 #endif
 {
 #ifdef WITH_LIBAV
@@ -163,37 +110,25 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 #ifdef WITH_LIBAV
     fh_to_close = fh;
 
-    AVOutputFormat * fmt = NULL;
+    /* Allocate the output media context. */
     char dummy_filename[MAX_EXTENSION_LEN + 3] = "x.";
+    oc = NULL;
     if (strlen(ext) <= MAX_EXTENSION_LEN) {
-	strcpy(dummy_filename + 2, ext);
-	// Pass "x." + extension to av_guess_format() to avoid having to deal
+	// Use "x." + extension for format detection to avoid having to deal
 	// with wide character filenames.
-	fmt = av_guess_format(NULL, dummy_filename, NULL);
+	strcpy(dummy_filename + 2, ext);
+	avformat_alloc_output_context2(&oc, NULL, NULL, dummy_filename);
     }
-    if (!fmt) {
-	// We couldn't deduce the output format from file extension so default
-	// to MPEG.
-	fmt = av_guess_format("mpeg", NULL, NULL);
-	if (!fmt) {
-	    averrno = MOVIE_NO_SUITABLE_FORMAT;
-	    return false;
-	}
-	strcpy(dummy_filename + 2, "mpg");
+    if (!oc) {
+	averrno = MOVIE_NO_SUITABLE_FORMAT;
+	return false;
     }
+
+    AVOutputFormat * fmt = oc->oformat;
     if (fmt->video_codec == AV_CODEC_ID_NONE) {
 	averrno = MOVIE_AUDIO_ONLY;
 	return false;
     }
-
-    /* Allocate the output media context. */
-    oc = avformat_alloc_context();
-    if (!oc) {
-	averrno = AVERROR(ENOMEM);
-	return false;
-    }
-    oc->oformat = fmt;
-    strcpy(oc->filename, dummy_filename);
 
     /* find the video encoder */
     AVCodec *codec = avcodec_find_encoder(fmt->video_codec);
@@ -204,71 +139,42 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
     }
 
     // Add the video stream.
-    video_st = avformat_new_stream(oc, codec);
+    video_st = avformat_new_stream(oc, NULL);
     if (!video_st) {
 	averrno = AVERROR(ENOMEM);
 	return false;
     }
 
-    // Set sample parameters.
-    AVCodecContext *c = video_st->codec;
-    c->bit_rate = 400000;
-    /* Resolution must be a multiple of two. */
-    c->width = width;
-    c->height = height;
-    /* timebase: This is the fundamental unit of time (in seconds) in terms
-     * of which frame timestamps are represented. For fixed-fps content,
-     * timebase should be 1/framerate and timestamp increments should be
-     * identical to 1. */
-#if LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(55, 44, 0)
-    // Old way, which now causes deprecation warnings.
-    c->time_base.den = 25; // Frames per second.
-    c->time_base.num = 1;
-#else
+    context = avcodec_alloc_context3(codec);
+    context->codec_id = fmt->video_codec;
+    context->width = width;
+    context->height = height;
     video_st->time_base.den = 25; // Frames per second.
     video_st->time_base.num = 1;
-    c->time_base = video_st->time_base;
-#endif
-    c->gop_size = 12; /* emit one intra frame every twelve frames at most */
-    c->pix_fmt = AV_PIX_FMT_YUV420P;
-    c->rc_buffer_size = c->bit_rate * 4; // Enough for 4 seconds
-    c->rc_max_rate = c->bit_rate * 2;
-    // B frames are backwards predicted - they can improve compression,
-    // but may slow encoding and decoding.
-    // if (c->codec_id == AV_CODEC_ID_MPEG2VIDEO) {
-    //     c->max_b_frames = 2;
-    // }
+    context->time_base = video_st->time_base;
+    context->bit_rate = width * height * (4 * 0.07) * context->time_base.den / context->time_base.num;
+    context->bit_rate_tolerance = context->bit_rate;
+    context->global_quality = 4;
+    context->rc_buffer_size = 2 * 1024 * 1024;
+    context->rc_max_rate = context->bit_rate * 8;
+    context->gop_size = 50; /* Twice the framerate */
+    context->pix_fmt = AV_PIX_FMT_YUV420P;
+    if (context->has_b_frames) {
+	// B frames are backwards predicted - they can improve compression,
+	// but may slow encoding and decoding.
+	context->max_b_frames = 4;
+    }
 
     /* Some formats want stream headers to be separate. */
     if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-	c->flags |= CODEC_FLAG_GLOBAL_HEADER;
+	context->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
     int retval;
-#ifndef HAVE_AVFORMAT_WRITE_HEADER
-    // Set the output parameters (must be done even if no parameters).
-    retval = av_set_parameters(oc, NULL);
+    retval = avcodec_open2(context, codec, NULL);
     if (retval < 0) {
 	averrno = retval;
 	return false;
     }
-#endif
-
-    retval = avcodec_open2(c, NULL, NULL);
-    if (retval < 0) {
-	averrno = retval;
-	return false;
-    }
-
-#ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    outbuf = NULL;
-    if (!(oc->oformat->flags & AVFMT_RAWPICTURE)) {
-	outbuf = (unsigned char *)av_malloc(OUTBUF_SIZE);
-	if (!outbuf) {
-	    averrno = AVERROR(ENOMEM);
-	    return false;
-	}
-    }
-#endif
 
     /* Allocate the encoded raw picture. */
     frame = av_frame_alloc();
@@ -276,22 +182,30 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 	averrno = AVERROR(ENOMEM);
 	return false;
     }
-    retval = av_image_alloc(frame->data, frame->linesize,
-			    c->width, c->height, c->pix_fmt, 1);
+
+    frame->format = context->pix_fmt;
+    frame->width = width;
+    frame->height = height;
+    frame->pts = 0;
+
+    retval = av_frame_get_buffer(frame, 32);
     if (retval < 0) {
 	averrno = retval;
 	return false;
     }
 
-    if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
+    if (frame->format != AV_PIX_FMT_YUV420P) {
 	// FIXME need to allocate another frame for this case if we stop
 	// hardcoding AV_PIX_FMT_YUV420P.
 	abort();
     }
 
-    frame->format = c->pix_fmt;
-    frame->width = c->width;
-    frame->height = c->height;
+    /* copy the stream parameters to the muxer */
+    retval = avcodec_parameters_from_context(video_st->codecpar, context);
+    if (retval < 0) {
+	averrno = retval;
+	return false;
+    }
 
     pixels = (unsigned char *)av_malloc(width * height * 6);
     if (!pixels) {
@@ -300,11 +214,11 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
     }
 
     // Show the format we've ended up with (for debug purposes).
-    // av_dump_format(oc, 0, fnm, 1);
+    // av_dump_format(oc, 0, dummy_filename, 1);
 
     av_free(sws_ctx);
     sws_ctx = sws_getContext(width, height, AV_PIX_FMT_RGB24,
-			     width, height, c->pix_fmt, SWS_BICUBIC,
+			     width, height, context->pix_fmt, SWS_BICUBIC,
 			     NULL, NULL, NULL);
     if (sws_ctx == NULL) {
 	fprintf(stderr, "Cannot initialize the conversion context!\n");
@@ -324,11 +238,7 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
     }
 
     // Write the stream header, if any.
-#ifdef HAVE_AVFORMAT_WRITE_HEADER
     retval = avformat_write_header(oc, NULL);
-#else
-    retval = av_write_header(oc);
-#endif
     if (retval < 0) {
 	averrno = retval;
 	return false;
@@ -356,8 +266,7 @@ unsigned char * MovieMaker::GetBuffer() const {
 int MovieMaker::GetWidth() const {
 #ifdef WITH_LIBAV
     assert(video_st);
-    AVCodecContext *c = video_st->codec;
-    return c->width;
+    return video_st->codecpar->width;
 #else
     return 0;
 #endif
@@ -366,27 +275,60 @@ int MovieMaker::GetWidth() const {
 int MovieMaker::GetHeight() const {
 #ifdef WITH_LIBAV
     assert(video_st);
-    AVCodecContext *c = video_st->codec;
-    return c->height;
+    return video_st->codecpar->height;
 #else
     return 0;
 #endif
 }
 
+#ifdef WITH_LIBAV
+// Call with frame=NULL when done.
+int
+MovieMaker::encode_frame(AVFrame* frame_or_null)
+{
+    int ret = avcodec_send_frame(context, frame_or_null);
+    if (ret < 0) return ret;
+
+    AVPacket *pkt = av_packet_alloc();
+    pkt->size = 0;
+    while ((ret = avcodec_receive_packet(context, pkt)) == 0) {
+	// Rescale output packet timestamp values from codec to stream timebase.
+	av_packet_rescale_ts(pkt, context->time_base, video_st->time_base);
+	pkt->stream_index = video_st->index;
+
+	// Write the compressed frame to the media file.
+	ret = av_interleaved_write_frame(oc, pkt);
+	if (ret < 0) {
+	    av_packet_free(&pkt);
+	    release();
+	    return ret;
+	}
+    }
+    av_packet_free(&pkt);
+    return 0;
+}
+#endif
+
 bool MovieMaker::AddFrame()
 {
 #ifdef WITH_LIBAV
-    AVCodecContext * c = video_st->codec;
+    int ret = av_frame_make_writable(frame);
+    if (ret < 0) {
+	averrno = ret;
+	return false;
+    }
 
-    if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
+    enum AVPixelFormat pix_fmt = context->pix_fmt;
+
+    if (pix_fmt != AV_PIX_FMT_YUV420P) {
 	// FIXME convert...
 	abort();
     }
 
-    int len = 3 * c->width;
+    int len = 3 * GetWidth();
     {
 	// Flip image vertically
-	int h = c->height;
+	int h = GetHeight();
 	unsigned char * src = pixels + h * len;
 	unsigned char * dest = src - len;
 	while (h--) {
@@ -395,68 +337,21 @@ bool MovieMaker::AddFrame()
 	    dest -= len;
 	}
     }
-    sws_scale(sws_ctx, &pixels, &len, 0, c->height, frame->data, frame->linesize);
+    sws_scale(sws_ctx, &pixels, &len, 0, GetHeight(),
+	      frame->data, frame->linesize);
 
     if (oc->oformat->flags & AVFMT_RAWPICTURE) {
 	abort();
     }
 
-    // Encode this frame.
-#ifdef HAVE_AVCODEC_ENCODE_VIDEO2
-    AVPacket pkt;
-    int got_packet;
-    av_init_packet(&pkt);
-    pkt.data = NULL;
+    ++frame->pts;
 
-    int ret = avcodec_encode_video2(c, &pkt, frame, &got_packet);
+    // Encode this frame.
+    ret = encode_frame(frame);
     if (ret < 0) {
 	averrno = ret;
 	return false;
     }
-    if (got_packet && pkt.size) {
-	// Write the compressed frame to the media file.
-	if (pkt.pts != int64_t(AV_NOPTS_VALUE)) {
-	    pkt.pts = av_rescale_q(pkt.pts,
-				   c->time_base, video_st->time_base);
-	}
-	if (pkt.dts != int64_t(AV_NOPTS_VALUE)) {
-	    pkt.dts = av_rescale_q(pkt.dts,
-				   c->time_base, video_st->time_base);
-	}
-	pkt.stream_index = video_st->index;
-
-	/* Write the compressed frame to the media file. */
-	ret = av_interleaved_write_frame(oc, &pkt);
-	if (ret < 0) {
-	    averrno = ret;
-	    return false;
-	}
-    }
-#else
-    out_size = avcodec_encode_video(c, outbuf, OUTBUF_SIZE, frame);
-    // outsize == 0 means that this frame has been buffered, so there's nothing
-    // to write yet.
-    if (out_size) {
-	// Write the compressed frame to the media file.
-	AVPacket pkt;
-	av_init_packet(&pkt);
-
-	if (c->coded_frame->pts != (int64_t)AV_NOPTS_VALUE)
-	    pkt.pts = av_rescale_q(c->coded_frame->pts, c->time_base, video_st->time_base);
-	if (c->coded_frame->key_frame)
-	    pkt.flags |= AV_PKT_FLAG_KEY;
-	pkt.stream_index = video_st->index;
-	pkt.data = outbuf;
-	pkt.size = out_size;
-
-	/* Write the compressed frame to the media file. */
-	int ret = av_interleaved_write_frame(oc, &pkt);
-	if (ret < 0) {
-	    averrno = ret;
-	    return false;
-	}
-    }
-#endif
 #endif
     return true;
 }
@@ -466,73 +361,12 @@ MovieMaker::Close()
 {
 #ifdef WITH_LIBAV
     if (video_st && averrno == 0) {
-	// No more frames to compress.  The codec may have a few frames
-	// buffered if we're using B frames, so write those too.
-	AVCodecContext * c = video_st->codec;
-
-#ifdef HAVE_AVCODEC_ENCODE_VIDEO2
-	while (1) {
-	    AVPacket pkt;
-	    int got_packet;
-	    av_init_packet(&pkt);
-	    pkt.data = NULL;
-	    pkt.size = 0;
-
-	    int ret = avcodec_encode_video2(c, &pkt, NULL, &got_packet);
-	    if (ret < 0) {
-		release();
-		averrno = ret;
-		return false;
-	    }
-	    if (!got_packet) break;
-	    if (!pkt.size) continue;
-
-	    // Write the compressed frame to the media file.
-	    if (pkt.pts != int64_t(AV_NOPTS_VALUE)) {
-		pkt.pts = av_rescale_q(pkt.pts,
-				       c->time_base, video_st->time_base);
-	    }
-	    if (pkt.dts != int64_t(AV_NOPTS_VALUE)) {
-		pkt.dts = av_rescale_q(pkt.dts,
-				       c->time_base, video_st->time_base);
-	    }
-	    pkt.stream_index = video_st->index;
-
-	    /* Write the compressed frame to the media file. */
-	    ret = av_interleaved_write_frame(oc, &pkt);
-	    if (ret < 0) {
-		release();
-		averrno = ret;
-		return false;
-	    }
+	// Flush out any remaining data.
+	int ret = encode_frame(NULL);
+	if (ret < 0) {
+	    averrno = ret;
+	    return false;
 	}
-#else
-	while (out_size) {
-	    out_size = avcodec_encode_video(c, outbuf, OUTBUF_SIZE, NULL);
-	    if (out_size) {
-		// Write the compressed frame to the media file.
-		AVPacket pkt;
-		av_init_packet(&pkt);
-
-		if (c->coded_frame->pts != (int64_t)AV_NOPTS_VALUE)
-		    pkt.pts = av_rescale_q(c->coded_frame->pts, c->time_base, video_st->time_base);
-		if (c->coded_frame->key_frame)
-		    pkt.flags |= AV_PKT_FLAG_KEY;
-		pkt.stream_index = video_st->index;
-		pkt.data = outbuf;
-		pkt.size = out_size;
-
-		/* write the compressed frame in the media file */
-		int ret = av_interleaved_write_frame(oc, &pkt);
-		if (ret < 0) {
-		    release();
-		    averrno = ret;
-		    return false;
-		}
-	    }
-	}
-#endif
-
 	av_write_trailer(oc);
     }
 
@@ -545,38 +379,18 @@ MovieMaker::Close()
 void
 MovieMaker::release()
 {
-    if (video_st) {
-	// Close codec.
-	avcodec_close(video_st->codec);
-	video_st = NULL;
-    }
-
-    if (frame) {
-	av_frame_free(&frame);
-    }
+    // Close codec.
+    avcodec_free_context(&context);
+    av_frame_free(&frame);
     av_free(pixels);
     pixels = NULL;
-    av_free(outbuf);
-    outbuf = NULL;
-    av_free(sws_ctx);
+    sws_freeContext(sws_ctx);
     sws_ctx = NULL;
 
-    if (oc) {
-	// Free the streams.
-	for (size_t i = 0; i < oc->nb_streams; ++i) {
-	    av_freep(&oc->streams[i]->codec);
-	    av_freep(&oc->streams[i]);
-	}
+    // Free the stream.
+    avformat_free_context(oc);
+    oc = NULL;
 
-	if (!(oc->oformat->flags & AVFMT_NOFILE)) {
-	    // Release the AVIOContext.
-	    av_free(oc->pb);
-	}
-
-	// Free the stream.
-	av_free(oc);
-	oc = NULL;
-    }
     if (fh_to_close) {
 	fclose(fh_to_close);
 	fh_to_close = NULL;
@@ -627,3 +441,9 @@ MovieMaker::get_error_string() const
 #endif
     return "Unknown error";
 }
+
+#else
+
+#include "moviemaker-legacy.cc"
+
+#endif
