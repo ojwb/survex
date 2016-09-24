@@ -67,7 +67,8 @@ extern "C" {
 }
 #endif
 
-#if defined WITH_LIBAV && LIBAVCODEC_VERSION_MAJOR >= 57
+// Handle the "no libav/FFmpeg" case in this file.
+#if !defined WITH_LIBAV || LIBAVCODEC_VERSION_MAJOR >= 57
 
 #ifdef WITH_LIBAV
 enum {
