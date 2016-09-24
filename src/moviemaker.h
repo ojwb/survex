@@ -20,6 +20,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef moviemaker_h
+#define moviemaker_h
+
 #ifndef PACKAGE
 # error config.h must be included first in each C++ source file
 #endif
@@ -66,3 +69,5 @@ public:
     ~MovieMaker();
     const char * get_error_string() const;
 };
+
+#endif
