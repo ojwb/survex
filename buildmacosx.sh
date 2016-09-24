@@ -20,14 +20,14 @@
 #   ./buildmacosx.sh
 #
 # This will automatically download and temporarily install wxWidgets,
-# PROJ.4 and libav in subdirectories of the source tree (this script is smart
+# PROJ.4 and FFmpeg in subdirectories of the source tree (this script is smart
 # enough not to re-download or re-build these if it already has).
 #
-# If you already have wxWidgets, PROJ.4 and/or libav installed permanently,
+# If you already have wxWidgets, PROJ.4 and/or FFmpeg installed permanently,
 # you can disable these by passing one or more extra options - e.g. to build
 # none of them, use:
 #
-#   ./buildmacosx.sh --no-install-wx --no-install-proj --no-install-libav
+#   ./buildmacosx.sh --no-install-wx --no-install-proj --no-install-ffmpeg
 #
 # If wxWidgets is installed somewhere such that wx-config isn't on your
 # PATH you need to indicate where wx-config is by running this script
@@ -80,7 +80,7 @@ set -e
 
 install_wx=yes
 install_proj=yes
-install_libav=yes
+install_ffmpeg=yes
 while [ "$#" != 0 ] ; do
   case $1 in
     --no-install-wx)
@@ -91,12 +91,12 @@ while [ "$#" != 0 ] ; do
       install_proj=no
       shift
       ;;
-    --no-install-libav)
-      install_libav=no
+    --no-install-ffmpeg)
+      install_ffmpeg=no
       shift
       ;;
     --help|-h)
-      echo "Usage: $0 [--no-install-wx] [--no-install-proj] [ppc|i386|x86_86]"
+      echo "Usage: $0 [--no-install-wx] [--no-install-proj] [--no-install-ffmpeg] [ppc|i386|x86_86]"
       exit 0
       ;;
     -*)
@@ -126,8 +126,8 @@ WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
 PROJ_VERSION=4.8.0
 PROJ_SHA256=2db2dbf0fece8d9880679154e0d6d1ce7c694dd8e08b4d091028093d87a9d1b5
 
-LIBAV_VERSION=11.4
-LIBAV_SHA256=0b7dabc2605f3a254ee410bb4b1a857945696aab495fe21b34c3b6544ff5d525
+FFMPEG_VERSION=3.1.3
+FFMPEG_SHA256=f8575c071e2a64437aeb70c8c030b385cddbe0b5cde20c9b18a6def840128822
 
 if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
   if test -x WXINSTALL/bin/wx-config ; then
@@ -188,33 +188,33 @@ if [ "$install_proj" != no ] ; then
   fi
 fi
 
-if [ "$install_libav" != no ] ; then
-  if test -f LIBAVINSTALL/include/libavcodec/avcodec.h ; then
+if [ "$install_ffmpeg" != no ] ; then
+  if test -f FFMPEGINSTALL/include/libavcodec/avcodec.h ; then
     :
   else
-    prefix=`pwd`/LIBAVINSTALL
-    libavtarball=libav-$LIBAV_VERSION.tar.xz
-    test -f "$libavtarball" || \
-      curl -O "http://libav.org/releases/$libavtarball"
-    if echo "$LIBAV_SHA256  $libavtarball" | shasum -a256 -c ; then
+    prefix=`pwd`/FFMPEGINSTALL
+    ffmpegtarball=ffmpeg-$FFMPEG_VERSION.tar.xz
+    test -f "$ffmpegtarball" || \
+      curl -O "https://ffmpeg.org/releases/$ffmpegtarball"
+    if echo "$FFMPEG_SHA256  $ffmpegtarball" | shasum -a256 -c ; then
       : # OK
     else
-      echo "Checksum of downloaded file '$libavtarball' is incorrect, aborting."
+      echo "Checksum of downloaded file '$ffmpegtarball' is incorrect, aborting."
       exit 1
     fi
-    echo "+++ Extracting $libavtarball"
-    test -d "libav-$LIBAV_VERSION" || tar xf "$libavtarball"
-    test -d "libav-$LIBAV_VERSION/BUILD" || mkdir "libav-$LIBAV_VERSION/BUILD"
-    cd "libav-$LIBAV_VERSION/BUILD"
-    LIBAV_CONFIGURE_OPTS='--disable-shared --disable-programs --disable-network --disable-bsfs --disable-protocols --disable-devices'
+    echo "+++ Extracting $ffmpegtarball"
+    test -d "ffmpeg-$FFMPEG_VERSION" || tar xf "$ffmpegtarball"
+    test -d "ffmpeg-$FFMPEG_VERSION/BUILD" || mkdir "ffmpeg-$FFMPEG_VERSION/BUILD"
+    cd "ffmpeg-$FFMPEG_VERSION/BUILD"
+    FFMPEG_CONFIGURE_OPTS='--disable-shared --disable-programs --disable-network --disable-bsfs --disable-protocols --disable-devices'
     # We don't need to decode video, but disabling these causes a link failure
     # when linking aven:
     # --disable-decoders --disable-demuxers
     if ! nasm -hf|grep -q macho64 ; then
       # nasm needs to support macho64, at least for x86_64 builds.
-      LIBAV_CONFIGURE_OPTS="$LIBAV_CONFIGURE_OPTS --disable-yasm"
+      FFMPEG_CONFIGURE_OPTS="$FFMPEG_CONFIGURE_OPTS --disable-yasm"
     fi
-    ../configure --prefix="$prefix" --cc="$CC" $LIBAV_CONFIGURE_OPTS
+    ../configure --prefix="$prefix" --cc="$CC" $FFMPEG_CONFIGURE_OPTS
     make -s
     make -s install
     cd ../..
@@ -231,7 +231,7 @@ WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
 D=`pwd`/Survex
 T=`pwd`/macosxtmp
-PKG_CONFIG_PATH=`pwd`/PROJINSTALL/lib/pkgconfig:`pwd`/LIBAVINSTALL/lib/pkgconfig
+PKG_CONFIG_PATH=`pwd`/PROJINSTALL/lib/pkgconfig:`pwd`/FFMPEGINSTALL/lib/pkgconfig
 export PKG_CONFIG_PATH
 ./configure --prefix="$D" --bindir="$D" --mandir="$T" \
     WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX"
