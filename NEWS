@@ -1,3 +1,19 @@
+Changes in 1.2.29 (2016-09-27):
+
+* aven:
+
+  + Fix SVG output with non-ASCII characters (the charset in the SVG file
+    is now set to UTF-8 not ISO-8859-1).
+
+  + (Microsoft Windows version): Fix error dialog on startup in pre-built
+    version.
+
+* Manual: Add link to TerrainData wiki page.  Omission highlighted by Erin
+  Lynch and "detrito".
+
+* Fix to build without FFmpeg/libav and with older versions, broken by changes
+  in 1.2.28.  Reported by James Begley.
+
 Changes in 1.2.28 (2016-09-24):
 
 * cavern:
