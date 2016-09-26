@@ -1743,18 +1743,9 @@ void GfxCore::SetHereFromTree(const LabelInfo * p)
     m_Parent->ShowInfo(m_here, m_there);
 }
 
-void GfxCore::SetHere()
-{
-    if (!m_here) return;
-    bool line_active = MeasuringLineActive();
-    const LabelInfo * old = m_here;
-    m_here = NULL;
-    if (line_active || MeasuringLineActive())
-	RefreshLine(old, m_there, m_here);
-}
-
 void GfxCore::SetHere(const LabelInfo *p)
 {
+    if (p == m_here) return;
     bool line_active = MeasuringLineActive();
     const LabelInfo * old = m_here;
     m_here = p;
@@ -1762,16 +1753,9 @@ void GfxCore::SetHere(const LabelInfo *p)
 	RefreshLine(old, m_there, m_here);
 }
 
-void GfxCore::SetThere()
-{
-    if (!m_there) return;
-    const LabelInfo * old = m_there;
-    m_there = NULL;
-    RefreshLine(m_here, old, m_there);
-}
-
 void GfxCore::SetThere(const LabelInfo * p)
 {
+    if (p == m_there) return;
     const LabelInfo * old = m_there;
     m_there = p;
     RefreshLine(m_here, old, m_there);

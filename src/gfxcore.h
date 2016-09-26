@@ -345,10 +345,8 @@ public:
 
     void SetHereFromTree(const LabelInfo * p);
 
-    void SetHere();
-    void SetHere(const LabelInfo * p);
-    void SetThere();
-    void SetThere(const LabelInfo * p);
+    void SetHere(const LabelInfo * p = NULL);
+    void SetThere(const LabelInfo * p = NULL);
 
     void CentreOn(const Point &p);
 
