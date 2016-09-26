@@ -3641,7 +3641,9 @@ achieved like so:
 <Sect2><Title>Add surface topography</Title>
 
 <Para>Survex 1.2.18 added support for loading terrain data and rendering it as
-a transparent surface.
+a transparent surface.  Currently the main documentation for this is maintained
+as a <ulink url="https://trac.survex.com/wiki/TerrainData">wiki page</ulink>
+as this allows us to update it between releases.
 </Para>
 
 <Para>
