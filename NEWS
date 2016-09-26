@@ -6,7 +6,7 @@ Changes in 1.2.29 (2016-09-27):
     is now set to UTF-8 not ISO-8859-1).
 
   + (Microsoft Windows version): Fix error dialog on startup in pre-built
-    version.
+    version.  Reported by Brian Clipstone.
 
 * Manual: Add link to TerrainData wiki page.  Omission highlighted by Erin
   Lynch and "detrito".
