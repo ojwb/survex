@@ -601,7 +601,7 @@ SVG::header(const char * title, const char *, time_t,
    const double SVG_MARGIN = 5.0; // In units of "unit".
    htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
    for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
-   fprintf(fh, "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+   fprintf(fh, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
    double width = (max_x - min_x) * factor + SVG_MARGIN * 2;
    double height = (max_y - min_y) * factor + SVG_MARGIN * 2;
    fprintf(fh, "<svg version=\"1.1\" baseProfile=\"full\"\n"
