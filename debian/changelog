@@ -1,3 +1,12 @@
+survex (1.2.29-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Fixes "dash-ism" in testsuite which was causing a FTBFS when /bin/sh
+      was bash (highlighted by reproducible builds).
+    + Fixes deprecation warnings with latest FFmpeg package.
+
+ -- Olly Betts <olly@survex.com>  Wed, 28 Sep 2016 10:47:09 +1300
+
 survex (1.2.27-1) unstable; urgency=medium
 
   * New upstream release
