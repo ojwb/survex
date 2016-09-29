@@ -813,7 +813,7 @@ svxPrintDlg::OnChangeSpin(wxSpinDoubleEvent& e) {
 
 void
 svxPrintDlg::OnChange(wxCommandEvent& e) {
-    if (e.GetId() == svx_SCALE) {
+    if (e.GetId() == svx_SCALE && m_scale) {
 	default_scale_print = m_scale->GetValue();
 	if (default_scale_print != scales[0]) {
 	    // Don't store "One Page" for use when exporting.
