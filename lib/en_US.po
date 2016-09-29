@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-07-03 06:35:00 +0000\n"
+"PO-Revision-Date: 2016-09-29 05:38:46 +0000\n"
 "Last-Translator: Olly Betts <olly@survex.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1532,6 +1532,14 @@ msgstr "Select a terrain file to view"
 #: n:452
 msgid "Terrain files"
 msgstr "Terrain files"
+
+#. TRANSLATORS: Aven shows a circle of terrain covering the area
+#. of the survey plus a bit, but the terrain data file didn't
+#. contain any data inside that circle.
+#: ../src/gfxcore.cc:2858
+#: n:161
+msgid "No terrain data near area of survey"
+msgstr "No terrain data near area of survey"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the

@@ -1533,6 +1533,14 @@ msgstr "Sélectionner un fichier de surface à visualiser"
 msgid "Terrain files"
 msgstr "Fichiers de surface"
 
+#. TRANSLATORS: Aven shows a circle of terrain covering the area
+#. of the survey plus a bit, but the terrain data file didn't
+#. contain any data inside that circle.
+#: ../src/gfxcore.cc:2858
+#: n:161
+msgid "No terrain data near area of survey"
+msgstr ""
+
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
 #. language would use.

@@ -2728,11 +2728,32 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
     ++n_tris;
 }
 
+// Like wxBusyCursor, but you can cancel it early.
+class AvenBusyCursor {
+    bool active;
+
+  public:
+    AvenBusyCursor() : active(true) {
+	wxBeginBusyCursor();
+    }
+
+    void stop() {
+	if (active) {
+	    active = false;
+	    wxEndBusyCursor();
+	}
+    }
+
+    ~AvenBusyCursor() {
+	stop();
+    }
+};
+
 void GfxCore::DrawTerrain()
 {
     if (!dem) return;
 
-    wxBusyCursor hourglass;
+    AvenBusyCursor hourglass;
 
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
@@ -2740,12 +2761,18 @@ void GfxCore::DrawTerrain()
     static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
     if (!pj_in) {
 	ToggleTerrain();
+	delete [] dem;
+	dem = NULL;
+	hourglass.stop();
 	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
 	return;
     }
     static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
     if (!pj_out) {
 	ToggleTerrain();
+	delete [] dem;
+	dem = NULL;
+	hourglass.stop();
 	error(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
 	return;
     }
@@ -2849,6 +2876,17 @@ void GfxCore::DrawTerrain()
     }
     EndTriangles();
     SetAlpha(1.0);
+    if (n_tris == 0) {
+	ToggleTerrain();
+	delete [] dem;
+	dem = NULL;
+	hourglass.stop();
+	/* TRANSLATORS: Aven shows a circle of terrain covering the area
+	 * of the survey plus a bit, but the terrain data file didn't
+	 * contain any data inside that circle.
+	 */
+	error(/*No terrain data near area of survey*/161);
+    }
 }
 
 // Plot blobs.
