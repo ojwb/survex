@@ -124,10 +124,10 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 	if (!data) {
 	    // Root:
 	    wxMenu menu;
-	    /* TRANSLATORS: In aven's survey tree, right-clicking on a survey
-	     * name gives a pop-up menu and this is an option.  It reloads the
-	     * current survey file with the view restricted to the survey
-	     * clicked upon.
+	    /* TRANSLATORS: In aven's survey tree, right-clicking on the root
+	     * gives a pop-up menu and this is an option (but only enabled if
+	     * the view is restricted to a subsurvey). It reloads the current
+	     * survey file with the who survey visible.
 	     */
 	    menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
 	    if (m_Parent->GetSurvey().empty())
