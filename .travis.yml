@@ -14,13 +14,10 @@ before_install:
   - if test "$TRAVIS_OS_NAME" = osx ; then echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc ; fi
 script:
   - autoreconf -fiv
-  - if test "$TRAVIS_OS_NAME" = osx ; then wget http://unifoundry.com/pub/unifont-9.0.02/font-builds/unifont-9.0.02.hex.gz && gunzip unifont-9.0.02.hex.gz && mv unifont-9.0.02.hex lib/unifont.hex ; fi
+  - if test "$TRAVIS_OS_NAME" = osx ; then V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]\+\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | tar --strip-components=1 --skip-old-files -xf - ; fi
   - test "$TRAVIS_OS_NAME" = osx || ./configure
   - test "$TRAVIS_OS_NAME" = osx || make
   - test "$TRAVIS_OS_NAME" = osx || make check
-  - test "$TRAVIS_OS_NAME" != osx || touch doc/3dtopos.1 doc/aven.1 doc/cad3d.1 doc/cavern.1 doc/diffpos.1 doc/extend.1 doc/sorterr.1
-  - test "$TRAVIS_OS_NAME" != osx || mkdir -p doc/manual
-  - test "$TRAVIS_OS_NAME" != osx || touch doc/manual.pdf doc/manual.txt doc/manual/stampfile
   - test "$TRAVIS_OS_NAME" != osx || ./buildmacosx.sh
 branches:
   only:
