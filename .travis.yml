@@ -15,7 +15,7 @@ before_install:
   - if test "$TRAVIS_OS_NAME" = osx ; then echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc ; fi
 script:
   - autoreconf -fiv
-  - if test "$TRAVIS_OS_NAME" = osx ; then V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]\+\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; fi
+  - if test "$TRAVIS_OS_NAME" = osx ; then V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; echo "V=[$V]" ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; fi
   - test "$TRAVIS_OS_NAME" = osx || ./configure
   - test "$TRAVIS_OS_NAME" = osx || make
   - test "$TRAVIS_OS_NAME" = osx || make check
