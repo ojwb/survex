@@ -29,6 +29,7 @@
 class KML : public ExportFilter {
     projPJ pj_input, pj_output;
     bool in_linestring;
+    bool in_wall;
     std::vector<Vector3> psg;
   public:
     explicit KML(const char * input_datum);
@@ -39,6 +40,8 @@ class KML : public ExportFilter {
 		double, double, double);
     void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
+    void xsect(const img_point *, double, double, double);
+    void wall(const img_point *, double, double);
     void passage(const img_point *, double, double, double);
     void tube_end();
     void footer();
