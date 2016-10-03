@@ -3,5 +3,6 @@
 <!entity man.cad3d SYSTEM "cad3d.sgml">
 <!entity man.cavern SYSTEM "cavern.sgml">
 <!entity man.diffpos SYSTEM "diffpos.sgml">
+<!entity man.dump3d SYSTEM "dump3d.sgml">
 <!entity man.extend SYSTEM "extend.sgml">
 <!entity man.sorterr SYSTEM "sorterr.sgml">

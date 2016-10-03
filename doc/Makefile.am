@@ -2,11 +2,11 @@
 
 pkgdocdir = @PKGDOCDIR@
 
-other_mans = cad3d.1 cavern.1 diffpos.1 extend.1 sorterr.1 3dtopos.1 \
+other_mans = cad3d.1 cavern.1 diffpos.1 dump3d.1 extend.1 sorterr.1 3dtopos.1 \
  aven.1
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml\
- diffpos.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml
+ diffpos.sgml dump3d.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml
 
 manual_alt = manual.txt manual.pdf
 
@@ -18,7 +18,7 @@ EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
  man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
- man_diffpos.sgml man_extend.sgml man_sorterr.sgml\
+ man_diffpos.sgml man_dump3d.sgml man_extend.sgml man_sorterr.sgml\
  news2html.pl
 
 NEWS.htm: ../NEWS news2html.pl
@@ -47,6 +47,10 @@ cavern.1: $(srcdir)/cavern.sgml $(srcdir)/man_cavern.sgml $(srcdir)/survex.ent
 
 diffpos.1: $(srcdir)/diffpos.sgml $(srcdir)/man_diffpos.sgml $(srcdir)/survex.ent
 	$(DOCBOOK2MAN) $(srcdir)/man_diffpos.sgml
+	rm -f manpage.links manpage.refs
+
+dump3d.1: $(srcdir)/dump3d.sgml $(srcdir)/man_dump3d.sgml $(srcdir)/survex.ent
+	$(DOCBOOK2MAN) $(srcdir)/man_dump3d.sgml
 	rm -f manpage.links manpage.refs
 
 extend.1: $(srcdir)/extend.sgml $(srcdir)/man_extend.sgml $(srcdir)/survex.ent

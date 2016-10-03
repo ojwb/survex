@@ -48,6 +48,7 @@ Output version information and exit.
 \fBcad3d\fP\fB(1)\fP, 
 \fBcavern\fP\fB(1)\fP, 
 \fBdiffpos\fP\fB(1)\fP, 
+\fBdump3d\fP\fB(1)\fP, 
 \fBextend\fP\fB(1)\fP, 
 \fBsorterr\fP\fB(1)\fP.
 .SH AUTHOR

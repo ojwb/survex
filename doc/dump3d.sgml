@@ -1,0 +1,34 @@
+<refmeta>
+<refentrytitle>dump3d</refentrytitle>
+<manvolnum>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname>dump3d</refname>
+<refpurpose>dump <filename>.3d</filename> file contents in textual format
+</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis>
+<command>dump3d</command>
+<arg choice="opt">--survey=SURVEY</arg>
+<arg choice="opt">--rewind</arg>
+<arg choice="opt">--show-dates</arg>
+<arg choice="req">PROCESSED_SURVEY_DATA_FILE</arg>
+</cmdsynopsis>
+</refsynopsisdiv>
+  
+<refsect1><title>Description</title>
+
+<Para>
+Dump out the entries in a processed survey data file - useful for debugging,
+and also provides a textual format which is fairly easy to parse if you want
+to write a simple script to pull out informations from a file.
+</Para>
+
+<Para>
+Note that this tool can actually be used to dump any format the "img" library
+can read, not just Survex <filename>.3d</filename> files.
+</Para>
+</refsect1>
