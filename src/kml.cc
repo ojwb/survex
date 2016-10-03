@@ -88,7 +88,9 @@ KML::~KML()
 const int *
 KML::passes() const
 {
-    static const int default_passes[] = { LABELS|ENTS|FIXES|EXPORTS, LEGS|SURF, 0 };
+    static const int default_passes[] = {
+	PASG, LEGS|SURF, LABELS|ENTS|FIXES|EXPORTS, 0
+    };
     return default_passes;
 }
 
@@ -141,6 +143,55 @@ KML::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
     Y = deg(Y);
     // %.8f is at worst just over 1mm.
     fprintf(fh, "%.8f,%.8f,%.2f\n", X, Y, Z);
+}
+
+void
+KML::passage(const img_point *p, double angle, double d1, double d2)
+{
+    double s = sin(rad(angle));
+    double c = cos(rad(angle));
+
+    // Draw along one side and push the other onto a stack, then at the end pop
+    // the stack and write out those points to give one polygon, fewer points,
+    // and a smaller file.
+    double x1 = p->x + c * d1;
+    double y1 = p->y + s * d1;
+    double z1 = p->z;
+    pj_transform(pj_input, pj_output, 1, 1, &x1, &y1, &z1);
+    x1 = deg(x1);
+    y1 = deg(y1);
+
+    double x2 = p->x - c * d2;
+    double y2 = p->y - s * d2;
+    double z2 = p->z;
+    pj_transform(pj_input, pj_output, 1, 1, &x2, &y2, &z2);
+    x2 = deg(x2);
+    y2 = deg(y2);
+
+    if (psg.empty()) {
+	fprintf(fh, "<Placemark><name></name><Polygon><altitudeMode>absolute</altitudeMode>"
+		    "<outerBoundaryIs><LinearRing><coordinates>\n");
+    }
+    // NB - order of vertices should be anti-clockwise in a KML file, so go
+    // along the right wall now, and put the left wall points on a stack to
+    // come back along at the end.
+    fprintf(fh, "%.8f,%.8f,%.8f\n", x2, y2, z2);
+    psg.push_back(Vector3(x1, y1, z1));
+}
+
+void
+KML::tube_end()
+{
+    if (psg.empty()) return;
+
+    vector<Vector3>::const_reverse_iterator i;
+    for (i = psg.rbegin(); i != psg.rend(); ++i) {
+	fprintf(fh, "%.8f,%.8f,%.8f\n", i->GetX(), i->GetY(), i->GetZ());
+    }
+    psg.clear();
+    fprintf(fh, "</coordinates></LinearRing></outerBoundaryIs>"
+		"</Polygon></Placemark>\n");
+
 }
 
 void

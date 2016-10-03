@@ -22,9 +22,14 @@
 
 #include <proj_api.h>
 
+#include "vector3.h"
+
+#include <vector>
+
 class KML : public ExportFilter {
     projPJ pj_input, pj_output;
     bool in_linestring;
+    std::vector<Vector3> psg;
   public:
     explicit KML(const char * input_datum);
     ~KML();
@@ -34,5 +39,7 @@ class KML : public ExportFilter {
 		double, double, double);
     void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
+    void passage(const img_point *, double, double, double);
+    void tube_end();
     void footer();
 };
