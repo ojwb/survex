@@ -1,3 +1,11 @@
+survex (1.2.30-1) unstable; urgency=medium
+
+  * New upstream release
+    + Adds man page for dump3d which should make lintian happier.
+  * debian/rules: Enable bindnow and pie hardening flags.
+
+ -- Olly Betts <olly@survex.com>  Tue, 04 Oct 2016 11:38:27 +1300
+
 survex (1.2.29-1) unstable; urgency=medium
 
   * New upstream release:

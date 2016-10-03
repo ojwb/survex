@@ -15,6 +15,7 @@ debian/tmp/usr/share/man/man1/3dtopos.1
 debian/tmp/usr/share/man/man1/cad3d.1
 debian/tmp/usr/share/man/man1/cavern.1
 debian/tmp/usr/share/man/man1/diffpos.1
+debian/tmp/usr/share/man/man1/dump3d.1
 debian/tmp/usr/share/man/man1/extend.1
 debian/tmp/usr/share/man/man1/sorterr.1
 debian/tmp/usr/share/man/man7/survex.7
