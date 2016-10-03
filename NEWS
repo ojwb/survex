@@ -1,3 +1,21 @@
+Changes in 1.2.30 (2016-10-03):
+
+* aven:
+
+  + (Microsoft Windows version): Fix crash when trying to print or export
+    (probably introduced in 1.2.28).  Reported by Brian Clipstone.
+
+  + Report error if terrain file contains no terrain data in area of survey.
+    Suggested by detrito.
+
+  + Errors when writing an export file were reported with the wrong filename
+    - the .3d file, not the filename we were trying to write to.
+
+  + Export to KML now supports exporting passages, walls and cross-sections.
+    Addresses the remainder of ticket #4.
+
+* Add man page for dump3d.
+
 Changes in 1.2.29 (2016-09-27):
 
 * aven:
