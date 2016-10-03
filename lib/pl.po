@@ -907,7 +907,7 @@ msgstr "Północ"
 #: ../src/printing.cc:1256
 #: n:116
 msgid "Elevation on"
-msgstr "Przekrój zrzutowany na "
+msgstr "Przekrój zrzutowany na"
 
 #: ../src/printing.cc:515
 #: n:117
@@ -1277,13 +1277,13 @@ msgstr "Przekrój rozwinięty"
 #: ../src/cavern.c:416
 #: n:172
 msgid "Survey contains 1 survey station,"
-msgstr "Pomiar zawiera 1 punkt "
+msgstr "Pomiar zawiera 1 punkt"
 
 #: ../src/cavern.c:418
 #: n:173
 #, c-format
 msgid "Survey contains %ld survey stations,"
-msgstr "Pomiar zawiera %ld punktów "
+msgstr "Pomiar zawiera %ld punktów"
 
 #: ../src/cavern.c:422
 #: n:174
