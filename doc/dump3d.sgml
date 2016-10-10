@@ -24,7 +24,7 @@
 <Para>
 Dump out the entries in a processed survey data file - useful for debugging,
 and also provides a textual format which is fairly easy to parse if you want
-to write a simple script to pull out informations from a file.
+to write a simple script to pull out information from a file.
 </Para>
 
 <Para>
