@@ -2498,7 +2498,18 @@ GfxCore::parse_hgt_filename(const wxString & lc_name)
 size_t
 GfxCore::parse_hdr(wxInputStream & is, unsigned long & skipbytes)
 {
-    unsigned long nbits = 0;
+    // ESRI docs say NBITS defaults to 8.
+    unsigned long nbits = 8;
+    // ESRI docs say NBANDS defaults to 1.
+    unsigned long nbands = 1;
+    unsigned long bandrowbytes = 0;
+    unsigned long totalrowbytes = 0;
+    // ESRI docs say ULXMAP defaults to 0.
+    o_x = 0.0;
+    // ESRI docs say ULYMAP defaults to NROWS - 1.
+    o_y = HUGE_VAL;
+    // ESRI docs say XDIM and YDIM default to 1.
+    step_x = step_y = 1.0;
     while (!is.Eof()) {
 	wxString line;
 	int ch;
@@ -2513,17 +2524,18 @@ if (v == line.npos || !(COND)) { \
 err += wxT("Unexpected value for " X); \
 }
 	wxString err;
-	unsigned long dummy;
 	if (false) {
 	// I = little-endian; M = big-endian
 	CHECK("BYTEORDER", (bigendian = (line[v] == 'M')) || line[v] == 'I')
+	// ESRI docs say LAYOUT defaults to BIL if not specified.
 	CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
 	CHECK("NROWS", line.substr(v).ToCULong(&dem_height))
 	CHECK("NCOLS", line.substr(v).ToCULong(&dem_width))
-	CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
+	// ESRI docs say NBANDS defaults to 1 if not specified.
+	CHECK("NBANDS", line.substr(v).ToCULong(&nbands) && nbands == 1)
 	CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
-	//: BANDROWBYTES   7202
-	//: TOTALROWBYTES  7202
+	CHECK("BANDROWBYTES", line.substr(v).ToCULong(&bandrowbytes))
+	CHECK("TOTALROWBYTES", line.substr(v).ToCULong(&totalrowbytes))
 	// PIXELTYPE is a GDAL extension, so may not be present.
 	CHECK("PIXELTYPE", line.substr(v) == wxT("SIGNEDINT"))
 	CHECK("ULXMAP", line.substr(v).ToCDouble(&o_x))
@@ -2537,10 +2549,23 @@ err += wxT("Unexpected value for " X); \
 	    wxMessageBox(err);
 	}
     }
-    if (nbits == 0) {
-	wxMessageBox("NBITS not specified");
+    if (o_y == HUGE_VAL) {
+	o_y = dem_height - 1;
     }
-    return ((nbits + 7) / 8) * dem_width * dem_height;
+    if (bandrowbytes != 0) {
+	if (nbits * dem_width != bandrowbytes * 8) {
+	    wxMessageBox("BANDROWBYTES setting indicates unused bits after each band - not currently supported");
+	}
+    }
+    if (totalrowbytes != 0) {
+	// This is the ESRI default for BIL, for BIP it would be
+	// nbands * bandrowbytes.
+	if (nbands * nbits * dem_width != totalrowbytes * 8) {
+	    wxMessageBox("TOTALROWBYTES setting indicates unused bits after "
+			 "each row - not currently supported");
+	}
+    }
+    return ((nbits * dem_width + 7) / 8) * dem_height;
 }
 
 bool
