@@ -2518,8 +2518,8 @@ err += wxT("Unexpected value for " X); \
 	// I = little-endian; M = big-endian
 	CHECK("BYTEORDER", (bigendian = (line[v] == 'M')) || line[v] == 'I')
 	CHECK("LAYOUT", line.substr(v) == wxT("BIL"))
-	CHECK("NROWS", line.substr(v).ToCULong(&dem_width))
-	CHECK("NCOLS", line.substr(v).ToCULong(&dem_height))
+	CHECK("NROWS", line.substr(v).ToCULong(&dem_height))
+	CHECK("NCOLS", line.substr(v).ToCULong(&dem_width))
 	CHECK("NBANDS", line.substr(v).ToCULong(&dummy) && dummy == 1)
 	CHECK("NBITS", line.substr(v).ToCULong(&nbits) && nbits == 16)
 	//: BANDROWBYTES   7202
