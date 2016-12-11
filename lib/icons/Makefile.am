@@ -93,7 +93,7 @@ iconsets = Aven.iconset.zip\
 	3d.iconset.zip err.iconset.zip plt.iconset.zip pos.iconset.zip\
 	svx.iconset.zip
 
-MAINTAINERCLEANFILES = $(iconsets)
+MAINTAINERCLEANFILES = $(iconsets) $(rcdata_files)
 
 BUILT_SOURCES = aven-icons.rc $(rcdata_files)
 

@@ -2498,7 +2498,7 @@ GfxCore::parse_hgt_filename(const wxString & lc_name)
 size_t
 GfxCore::parse_hdr(wxInputStream & is, unsigned long & skipbytes)
 {
-    unsigned long nbits;
+    unsigned long nbits = 0;
     while (!is.Eof()) {
 	wxString line;
 	int ch;
@@ -2536,6 +2536,9 @@ err += wxT("Unexpected value for " X); \
 	if (!err.empty()) {
 	    wxMessageBox(err);
 	}
+    }
+    if (nbits == 0) {
+	wxMessageBox("NBITS not specified");
     }
     return ((nbits + 7) / 8) * dem_width * dem_height;
 }
