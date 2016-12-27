@@ -338,7 +338,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     // wxString cmd = wxT("gedit -b $f +$l:$c $f");
     // wxString cmd = wxT("x-terminal-emulator -e emacs +$l $f");
     // wxString cmd = wxT("x-terminal-emulator -e nano +$l $f");
-    // wxString cmd = wxT("x-terminal-emulator -e jed -g $l $f");
+    // wxString cmd = wxT("x-terminal-emulator -e jed $f -g $l");
 #endif
     wxChar * p = wxGetenv(wxT("SURVEXEDITOR"));
     if (p) {
