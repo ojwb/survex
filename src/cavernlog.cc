@@ -42,6 +42,25 @@
 
 #include <wx/process.h>
 
+#define GVIM_COMMAND "gvim +'call cursor($l,$c)' $f"
+#define VIM_COMMAND "x-terminal-emulator -e vim +'call cursor($l,$c)' $f"
+#define GEDIT_COMMAND "gedit $f +$l:$c"
+// Pluma currently ignores the column, but include it assuming some future
+// version will add support.
+#define PLUMA_COMMAND "pluma +$l:$c $f"
+#define EMACS_COMMAND "x-terminal-emulator -e emacs +$l:$c $f"
+#define NANO_COMMAND "x-terminal-emulator -e nano +$l,$c $f"
+#define JED_COMMAND "x-terminal-emulator -e jed $f -g $l"
+#define KATE_COMMAND "kate -l $l -c $c $f"
+
+#ifdef __WXMSW__
+# define DEFAULT_EDITOR_COMMAND "notepad $f"
+#elif defined __WXMAC__
+# define DEFAULT_EDITOR_COMMAND "open -t $f"
+#else
+# define DEFAULT_EDITOR_COMMAND VIM_COMMAND
+#endif
+
 enum { LOG_REPROCESS = 1234, LOG_SAVE = 1235 };
 
 static const wxString badutf8_html(
@@ -329,22 +348,41 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     size_t colon = href.rfind(wxT(':'), colon2 - 1);
     if (colon == wxString::npos)
 	return;
-#ifdef __WXMSW__
-    wxString cmd = wxT("notepad $f");
-#elif defined __WXMAC__
-    wxString cmd = wxT("open -t $f");
-#else
-    wxString cmd = wxT("x-terminal-emulator -e vim +'call cursor($l,$c)' $f");
-    // wxString cmd = wxT("gedit -b $f +$l:$c $f");
-    // wxString cmd = wxT("x-terminal-emulator -e emacs +$l:$c $f");
-    // wxString cmd = wxT("x-terminal-emulator -e nano +$l,$c $f");
-    // wxString cmd = wxT("x-terminal-emulator -e jed $f -g $l");
-#endif
+    wxString cmd;
     wxChar * p = wxGetenv(wxT("SURVEXEDITOR"));
     if (p) {
 	cmd = p;
 	if (!cmd.find(wxT("$f"))) {
 	    cmd += wxT(" $f");
+	}
+    } else {
+	p = wxGetenv(wxT("VISUAL"));
+	if (!p) p = wxGetenv(wxT("EDITOR"));
+	if (!p) {
+	    cmd = wxT(DEFAULT_EDITOR_COMMAND);
+	} else {
+	    cmd = p;
+	    if (cmd == "gvim") {
+		cmd = wxT(GVIM_COMMAND);
+	    } else if (cmd == "vim") {
+		cmd = wxT(VIM_COMMAND);
+	    } else if (cmd == "gedit") {
+		cmd = wxT(GEDIT_COMMAND);
+	    } else if (cmd == "pluma") {
+		cmd = wxT(PLUMA_COMMAND);
+	    } else if (cmd == "emacs") {
+		cmd = wxT(EMACS_COMMAND);
+	    } else if (cmd == "nano") {
+		cmd = wxT(NANO_COMMAND);
+	    } else if (cmd == "jed") {
+		cmd = wxT(JED_COMMAND);
+	    } else if (cmd == "kate") {
+		cmd = wxT(KATE_COMMAND);
+	    } else {
+		// Escape any $.
+		cmd.Replace(wxT("$"), wxT("$$"));
+		cmd += wxT(" $f");
+	    }
 	}
     }
     size_t i = 0;
