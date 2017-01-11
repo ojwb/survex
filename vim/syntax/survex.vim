@@ -7,7 +7,7 @@
 " Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code.  Since updated for version 1.1.8.
 "
 " Copyright (C) 2005 David Loeffler
-" Copyright (C) 2006,2016 Olly Betts
+" Copyright (C) 2006,2016,2017 Olly Betts
 "
 " This program is free software; you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -90,8 +90,8 @@ syn keyword svxVarDeprecated contained     root
 
 syn keyword svxCmd contained nextgroup=svxQty skipwhite units
 syn keyword svxUnit contained           yards feet metric metres meters
-syn keyword svxUnit contained           deg degrees grads mils percent percentage
-syn keyword svxUnit contained           deg degrees grads mils minutes
+syn keyword svxUnit contained           degs degrees grads mils minutes
+syn keyword svxUnit contained           percent percentage
 
 syn keyword svxCmd contained nextgroup=svxRef skipwhite fix
 syn keyword svxRef contained		reference
