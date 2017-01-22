@@ -665,6 +665,37 @@ void GUIControl::OnShowSplaysFadedUpdate(wxUpdateUIEvent& cmd)
     cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_SHOW_FADED);
 }
 
+void GUIControl::OnHideDupes() {
+    m_View->SetDupesMode(DUPES_HIDE);
+}
+
+void GUIControl::OnShowDupesNormal() {
+    m_View->SetDupesMode(DUPES_SHOW_NORMAL);
+}
+
+void GUIControl::OnShowDupesDashed() {
+    m_View->SetDupesMode(DUPES_SHOW_DASHED);
+}
+
+void GUIControl::OnDupesUpdate(wxUpdateUIEvent& cmd) {
+    cmd.Enable(m_View->HasData() && m_View->HasDupes());
+}
+
+void GUIControl::OnHideDupesUpdate(wxUpdateUIEvent& cmd) {
+    cmd.Enable(m_View->HasData() && m_View->HasDupes());
+    cmd.Check(m_View->ShowingDupesMode() == DUPES_HIDE);
+}
+
+void GUIControl::OnShowDupesNormalUpdate(wxUpdateUIEvent& cmd) {
+    cmd.Enable(m_View->HasData() && m_View->HasDupes());
+    cmd.Check(m_View->ShowingDupesMode() == DUPES_SHOW_NORMAL);
+}
+
+void GUIControl::OnShowDupesDashedUpdate(wxUpdateUIEvent& cmd) {
+    cmd.Enable(m_View->HasData() && m_View->HasDupes());
+    cmd.Check(m_View->ShowingDupesMode() == DUPES_SHOW_DASHED);
+}
+
 void GUIControl::OnMoveEast()
 {
     m_View->TurnCaveTo(90.0);

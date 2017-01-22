@@ -108,6 +108,12 @@ enum {
       SPLAYS_SHOW_NORMAL,
 };
 
+enum {
+      DUPES_HIDE,
+      DUPES_SHOW_DASHED,
+      DUPES_SHOW_NORMAL,
+};
+
 // It's pointless to redraw the screen as often as we can on a fast machine,
 // since the display hardware will only update so many times per second.
 // This is the maximum framerate we'll redraw at.
@@ -180,6 +186,7 @@ private:
     bool m_Crosses;
     bool m_Legs;
     int m_Splays;
+    int m_Dupes;
     bool m_Names;
     bool m_Scalebar;
     bool m_ColourKey;
@@ -436,11 +443,13 @@ public:
 
     bool HasUndergroundLegs() const;
     bool HasSplays() const;
+    bool HasDupes() const;
     bool HasSurfaceLegs() const;
     bool HasTubes() const;
 
     bool ShowingUndergroundLegs() const { return m_Legs; }
     int ShowingSplaysMode() const { return m_Splays; }
+    int ShowingDupesMode() const { return m_Dupes; }
     bool ShowingSurfaceLegs() const { return m_Surface; }
 
     bool ShowingColourKey() const { return m_ColourKey; }
@@ -459,6 +468,12 @@ public:
     }
     void SetSplaysMode(int mode) {
 	m_Splays = mode;
+	UpdateBlobs();
+	InvalidateList(LIST_UNDERGROUND_LEGS);
+	ForceRefresh();
+    }
+    void SetDupesMode(int mode) {
+	m_Dupes = mode;
 	UpdateBlobs();
 	InvalidateList(LIST_UNDERGROUND_LEGS);
 	ForceRefresh();

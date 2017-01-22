@@ -95,6 +95,10 @@ enum {
     menu_SPLAYS_HIDE,
     menu_SPLAYS_SHOW_FADED,
     menu_SPLAYS_SHOW_NORMAL,
+    menu_VIEW_DUPES,
+    menu_DUPES_HIDE,
+    menu_DUPES_SHOW_DASHED,
+    menu_DUPES_SHOW_NORMAL,
     menu_VIEW_SHOW_CROSSES,
     menu_VIEW_SHOW_NAMES,
     menu_VIEW_SHOW_SURFACE,
@@ -174,10 +178,11 @@ class traverse : public vector<PointInfo> {
   public:
     int n_legs;
     bool isSplay;
+    bool isDupe;
     double length;
     double E, H, V;
 
-    traverse() : n_legs(0), isSplay(false), length(0), E(-1), H(-1), V(-1) { }
+ traverse() : n_legs(0), isSplay(false), isDupe(false), length(0), E(-1), H(-1), V(-1) { }
 };
 
 class MainFrm : public wxFrame {
@@ -201,6 +206,7 @@ class MainFrm : public wxFrame {
     int m_NumHighlighted;
     bool m_HasUndergroundLegs;
     bool m_HasSplays;
+    bool m_HasDupes;
     bool m_HasSurfaceLegs;
     bool m_HasErrorInformation;
     wxSplitterWindow* m_Splitter;
@@ -355,6 +361,10 @@ public:
     void OnHideSplaysUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHideSplaysUpdate(event); }
     void OnShowSplaysNormalUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysNormalUpdate(event); }
     void OnShowSplaysFadedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSplaysFadedUpdate(event); }
+    void OnDupesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDupesUpdate(event); }
+    void OnHideDupesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnHideDupesUpdate(event); }
+    void OnShowDupesNormalUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowDupesNormalUpdate(event); }
+    void OnShowDupesDashedUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowDupesDashedUpdate(event); }
     void OnShowSurfaceUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowSurfaceUpdate(event); }
     void OnMoveEastUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveEastUpdate(event); }
     void OnMoveNorthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnMoveNorthUpdate(event); }
@@ -397,6 +407,9 @@ public:
     void OnHideSplays(wxCommandEvent&) { if (m_Control) m_Control->OnHideSplays(); }
     void OnShowSplaysNormal(wxCommandEvent&) { if (m_Control) m_Control->OnShowSplaysNormal(); }
     void OnShowSplaysFaded(wxCommandEvent&) { if (m_Control) m_Control->OnShowSplaysFaded(); }
+    void OnHideDupes(wxCommandEvent&) { if (m_Control) m_Control->OnHideDupes(); }
+    void OnShowDupesNormal(wxCommandEvent&) { if (m_Control) m_Control->OnShowDupesNormal(); }
+    void OnShowDupesDashed(wxCommandEvent&) { if (m_Control) m_Control->OnShowDupesDashed(); }
     void OnShowSurface(wxCommandEvent&) { if (m_Control) m_Control->OnShowSurface(); }
     void OnMoveEast(wxCommandEvent&) { if (m_Control) m_Control->OnMoveEast(); }
     void OnMoveNorth(wxCommandEvent&) { if (m_Control) m_Control->OnMoveNorth(); }
@@ -468,6 +481,7 @@ public:
 
     bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
     bool HasSplays() const { return m_HasSplays; }
+    bool HasDupes() const { return m_HasDupes; }
     bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
     bool HasTubes() const { return !tubes.empty(); }
     bool HasErrorInformation() const { return m_HasErrorInformation; }

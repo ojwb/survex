@@ -83,6 +83,9 @@ public:
     void OnHideSplays();
     void OnShowSplaysNormal();
     void OnShowSplaysFaded();
+    void OnHideDupes();
+    void OnShowDupesNormal();
+    void OnShowDupesDashed();
     void OnShowSurface();
     void OnMoveEast();
     void OnMoveNorth();
@@ -136,6 +139,10 @@ public:
     void OnHideSplaysUpdate(wxUpdateUIEvent&);
     void OnShowSplaysNormalUpdate(wxUpdateUIEvent&);
     void OnShowSplaysFadedUpdate(wxUpdateUIEvent&);
+    void OnDupesUpdate(wxUpdateUIEvent&);
+    void OnHideDupesUpdate(wxUpdateUIEvent&);
+    void OnShowDupesNormalUpdate(wxUpdateUIEvent&);
+    void OnShowDupesDashedUpdate(wxUpdateUIEvent&);
     void OnShowSurfaceUpdate(wxUpdateUIEvent&);
     void OnMoveEastUpdate(wxUpdateUIEvent&);
     void OnMoveNorthUpdate(wxUpdateUIEvent&);

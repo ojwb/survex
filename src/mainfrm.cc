@@ -571,6 +571,9 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_SPLAYS_HIDE, MainFrm::OnHideSplays)
     EVT_MENU(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormal)
     EVT_MENU(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFaded)
+    EVT_MENU(menu_DUPES_HIDE, MainFrm::OnHideDupes)
+    EVT_MENU(menu_DUPES_SHOW_NORMAL, MainFrm::OnShowDupesNormal)
+    EVT_MENU(menu_DUPES_SHOW_DASHED, MainFrm::OnShowDupesDashed)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
     EVT_MENU(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrances)
     EVT_MENU(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPts)
@@ -625,6 +628,10 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_SPLAYS_HIDE, MainFrm::OnHideSplaysUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormalUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFadedUpdate)
+    EVT_UPDATE_UI(menu_VIEW_DUPES, MainFrm::OnDupesUpdate)
+    EVT_UPDATE_UI(menu_DUPES_HIDE, MainFrm::OnHideDupesUpdate)
+    EVT_UPDATE_UI(menu_DUPES_SHOW_NORMAL, MainFrm::OnShowDupesNormalUpdate)
+    EVT_UPDATE_UI(menu_DUPES_SHOW_DASHED, MainFrm::OnShowDupesDashedUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrancesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPtsUpdate)
@@ -727,7 +734,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_Gfx(NULL), m_Log(NULL),
     m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0),
-    m_HasUndergroundLegs(false), m_HasSplays(false), m_HasSurfaceLegs(false),
+    m_HasUndergroundLegs(false), m_HasSplays(false), m_HasDupes(false), m_HasSurfaceLegs(false),
     m_HasErrorInformation(false), m_IsExtendedElevation(false),
     pending_find(false), fullscreen_showing_menus(false)
 #ifdef PREFDLG
@@ -873,6 +880,12 @@ void MainFrm::CreateMenuBar()
      * splay legs are shown the same as other legs. */
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*&Show*/409));
     viewmenu->Append(menu_VIEW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
+
+    wxMenu* dupemenu = new wxMenu;
+    dupemenu->AppendCheckItem(menu_DUPES_HIDE, "Hide");
+    dupemenu->AppendCheckItem(menu_DUPES_SHOW_DASHED, "Dashed");
+    dupemenu->AppendCheckItem(menu_DUPES_SHOW_NORMAL, "Normal");
+    viewmenu->Append(menu_VIEW_DUPES, "Duplicate legs", dupemenu);
 
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
@@ -1134,6 +1147,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     m_NumEntrances = 0;
     m_HasUndergroundLegs = false;
     m_HasSplays = false;
+    m_HasDupes = false;
     m_HasSurfaceLegs = false;
     m_HasErrorInformation = false;
 
@@ -1174,6 +1188,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     img_point prev_pt = {0,0,0};
     bool current_polyline_is_surface = false;
     bool current_polyline_is_splay = false;
+    bool current_polyline_is_dupe = false;
     bool pending_move = false;
     // When a traverse is split between surface and underground, we split it
     // into contiguous traverses of each, but we need to track these so we can
@@ -1220,13 +1235,17 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 
 		if (survey->flags & img_FLAG_SPLAY)
 		    m_HasSplays = true;
+		if (survey->flags & img_FLAG_DUPLICATE)
+		    m_HasDupes = true;
 		bool is_surface = (survey->flags & img_FLAG_SURFACE);
 		bool is_splay = (survey->flags & img_FLAG_SPLAY);
+		bool is_dupe = (survey->flags & img_FLAG_DUPLICATE);
 		if (!is_surface) {
 		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
 		    if (pt.z > depthmax) depthmax = pt.z;
 		}
-		if (pending_move || current_polyline_is_surface != is_surface || current_polyline_is_splay != is_splay) {
+		if (pending_move || current_polyline_is_surface != is_surface
+		    || current_polyline_is_splay != is_splay || current_polyline_is_dupe != is_dupe) {
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
 		    }
@@ -1242,6 +1261,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 			traverses.push_back(traverse());
 			current_traverse = &traverses.back();
 			current_traverse->isSplay = is_splay;
+			current_traverse->isDupe = is_dupe;
 			++n_traverses;
 			// The previous point was at a surface->ug transition.
 			if (current_polyline_is_surface) {
@@ -1252,6 +1272,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 
 		    current_polyline_is_surface = is_surface;
 		    current_polyline_is_splay = is_splay;
+		    current_polyline_is_dupe = is_dupe;
 
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if

@@ -133,6 +133,7 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_Crosses(false),
     m_Legs(true),
     m_Splays(SPLAYS_SHOW_FADED),
+    m_Dupes(DUPES_SHOW_DASHED),
     m_Names(false),
     m_Scalebar(true),
     m_ColourKey(true),
@@ -318,6 +319,11 @@ bool GfxCore::HasUndergroundLegs() const
 bool GfxCore::HasSplays() const
 {
     return m_Parent->HasSplays();
+}
+
+bool GfxCore::HasDupes() const
+{
+    return m_Parent->HasDupes();
 }
 
 bool GfxCore::HasSurfaceLegs() const
@@ -2428,9 +2434,26 @@ void GfxCore::GenerateDisplayList()
 	trav = m_Parent->traverses_begin();
     }
 
+    if (m_Dupes == DUPES_SHOW_DASHED) {
+        EnableDashedLines();
+	while (trav != tend) {
+	    if ((*trav).isDupe)
+		(this->*AddPoly)(*trav);
+	    ++trav;
+	}
+	DisableDashedLines();
+	trav = m_Parent->traverses_begin();
+    }
+
     while (trav != tend) {
-	if (m_Splays == SPLAYS_SHOW_NORMAL || !(*trav).isSplay)
-	    (this->*AddPoly)(*trav);
+      if ( ((*trav).isSplay && m_Splays == SPLAYS_SHOW_NORMAL)
+	   || ((*trav).isDupe && m_Dupes == DUPES_SHOW_NORMAL)
+	   || (!(*trav).isSplay && !(*trav).isDupe) )
+	(this->*AddPoly)(*trav);
+
+      //if (m_Splays == SPLAYS_SHOW_NORMAL || !(*trav).isSplay)
+      //	    (this->*AddPoly)(*trav);
+
 	++trav;
     }
 }
