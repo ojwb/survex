@@ -2813,6 +2813,11 @@ msgstr ""
 msgid "Spla&y Legs"
 msgstr ""
 
+#: ../src/mainfrm.cc:892
+#: n:251
+msgid "&Duplicate Legs"
+msgstr ""
+
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
 #. splay legs are not shown.
 #: ../src/mainfrm.cc:867
@@ -2826,6 +2831,14 @@ msgstr ""
 #: ../src/mainfrm.cc:871
 #: n:408
 msgid "&Fade"
+msgstr ""
+
+#. TRANSLATORS: Item in the "Duplicate Legs" submenu - if this is selected,
+#. aven will show duplicate legs with dashed lines (rather than the same as
+#. other legs "Show" or not shown "Hide").
+#: ../src/mainfrm.cc:890
+#: n:250
+msgid "&Dashed"
 msgstr ""
 
 #. TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,

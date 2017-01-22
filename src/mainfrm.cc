@@ -883,10 +883,13 @@ void MainFrm::CreateMenuBar()
     viewmenu->Append(menu_VIEW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
 
     wxMenu* dupemenu = new wxMenu;
-    dupemenu->AppendCheckItem(menu_DUPES_HIDE, "Hide");
-    dupemenu->AppendCheckItem(menu_DUPES_SHOW_DASHED, "Dashed");
-    dupemenu->AppendCheckItem(menu_DUPES_SHOW_NORMAL, "Normal");
-    viewmenu->Append(menu_VIEW_DUPES, "Duplicate legs", dupemenu);
+    dupemenu->AppendCheckItem(menu_DUPES_HIDE, wmsg(/*&Hide*/407));
+    /* TRANSLATORS: Item in the "Duplicate Legs" submenu - if this is selected,
+     * aven will show duplicate legs with dashed lines (rather than the same as
+     * other legs "Show" or not shown "Hide"). */
+    dupemenu->AppendCheckItem(menu_DUPES_SHOW_DASHED, wmsg(/*&Dashed*/250));
+    dupemenu->AppendCheckItem(menu_DUPES_SHOW_NORMAL, wmsg(/*&Show*/409));
+    viewmenu->Append(menu_VIEW_DUPES, wmsg(/*&Duplicate Legs*/251), dupemenu);
 
     viewmenu->AppendSeparator();
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_OVERLAPPING_NAMES, wmsg(/*&Overlapping Names*/273));
