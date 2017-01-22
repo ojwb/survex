@@ -132,8 +132,8 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     m_SwitchingTo(0),
     m_Crosses(false),
     m_Legs(true),
-    m_Splays(SPLAYS_SHOW_FADED),
-    m_Dupes(DUPES_SHOW_DASHED),
+    m_Splays(SHOW_FADED),
+    m_Dupes(SHOW_DASHED),
     m_Names(false),
     m_Scalebar(true),
     m_ColourKey(true),
@@ -2423,7 +2423,7 @@ void GfxCore::GenerateDisplayList()
     list<traverse>::const_iterator trav = m_Parent->traverses_begin();
     list<traverse>::const_iterator tend = m_Parent->traverses_end();
 
-    if (m_Splays == SPLAYS_SHOW_FADED) {
+    if (m_Splays == SHOW_FADED) {
 	SetAlpha(0.4);
 	while (trav != tend) {
 	    if ((*trav).isSplay)
@@ -2434,7 +2434,7 @@ void GfxCore::GenerateDisplayList()
 	trav = m_Parent->traverses_begin();
     }
 
-    if (m_Dupes == DUPES_SHOW_DASHED) {
+    if (m_Dupes == SHOW_DASHED) {
 	EnableDashedLines();
 	while (trav != tend) {
 	    if ((*trav).isDupe)
@@ -2446,8 +2446,8 @@ void GfxCore::GenerateDisplayList()
     }
 
     while (trav != tend) {
-	if (((*trav).isSplay && m_Splays == SPLAYS_SHOW_NORMAL) ||
-	    ((*trav).isDupe && m_Dupes == DUPES_SHOW_NORMAL) ||
+	if (((*trav).isSplay && m_Splays == SHOW_NORMAL) ||
+	    ((*trav).isDupe && m_Dupes == SHOW_NORMAL) ||
 	    (!(*trav).isSplay && !(*trav).isDupe))
 	    (this->*AddPoly)(*trav);
 	++trav;

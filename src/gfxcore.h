@@ -103,15 +103,10 @@ enum {
 };
 
 enum {
-      SPLAYS_HIDE,
-      SPLAYS_SHOW_FADED,
-      SPLAYS_SHOW_NORMAL,
-};
-
-enum {
-      DUPES_HIDE,
-      DUPES_SHOW_DASHED,
-      DUPES_SHOW_NORMAL,
+    SHOW_HIDE,
+    SHOW_DASHED,
+    SHOW_FADED,
+    SHOW_NORMAL,
 };
 
 // It's pointless to redraw the screen as often as we can on a fast machine,

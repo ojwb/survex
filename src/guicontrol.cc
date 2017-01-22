@@ -629,17 +629,17 @@ void GUIControl::OnShowSurveyLegsUpdate(wxUpdateUIEvent& cmd)
 
 void GUIControl::OnHideSplays()
 {
-    m_View->SetSplaysMode(SPLAYS_HIDE);
+    m_View->SetSplaysMode(SHOW_HIDE);
 }
 
 void GUIControl::OnShowSplaysNormal()
 {
-    m_View->SetSplaysMode(SPLAYS_SHOW_NORMAL);
+    m_View->SetSplaysMode(SHOW_NORMAL);
 }
 
 void GUIControl::OnShowSplaysFaded()
 {
-    m_View->SetSplaysMode(SPLAYS_SHOW_FADED);
+    m_View->SetSplaysMode(SHOW_FADED);
 }
 
 void GUIControl::OnSplaysUpdate(wxUpdateUIEvent& cmd)
@@ -650,31 +650,31 @@ void GUIControl::OnSplaysUpdate(wxUpdateUIEvent& cmd)
 void GUIControl::OnHideSplaysUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasSplays());
-    cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_HIDE);
+    cmd.Check(m_View->ShowingSplaysMode() == SHOW_HIDE);
 }
 
 void GUIControl::OnShowSplaysNormalUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasSplays());
-    cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_SHOW_NORMAL);
+    cmd.Check(m_View->ShowingSplaysMode() == SHOW_NORMAL);
 }
 
 void GUIControl::OnShowSplaysFadedUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData() && m_View->HasSplays());
-    cmd.Check(m_View->ShowingSplaysMode() == SPLAYS_SHOW_FADED);
+    cmd.Check(m_View->ShowingSplaysMode() == SHOW_FADED);
 }
 
 void GUIControl::OnHideDupes() {
-    m_View->SetDupesMode(DUPES_HIDE);
+    m_View->SetDupesMode(SHOW_HIDE);
 }
 
 void GUIControl::OnShowDupesNormal() {
-    m_View->SetDupesMode(DUPES_SHOW_NORMAL);
+    m_View->SetDupesMode(SHOW_NORMAL);
 }
 
 void GUIControl::OnShowDupesDashed() {
-    m_View->SetDupesMode(DUPES_SHOW_DASHED);
+    m_View->SetDupesMode(SHOW_DASHED);
 }
 
 void GUIControl::OnDupesUpdate(wxUpdateUIEvent& cmd) {
@@ -683,17 +683,17 @@ void GUIControl::OnDupesUpdate(wxUpdateUIEvent& cmd) {
 
 void GUIControl::OnHideDupesUpdate(wxUpdateUIEvent& cmd) {
     cmd.Enable(m_View->HasData() && m_View->HasDupes());
-    cmd.Check(m_View->ShowingDupesMode() == DUPES_HIDE);
+    cmd.Check(m_View->ShowingDupesMode() == SHOW_HIDE);
 }
 
 void GUIControl::OnShowDupesNormalUpdate(wxUpdateUIEvent& cmd) {
     cmd.Enable(m_View->HasData() && m_View->HasDupes());
-    cmd.Check(m_View->ShowingDupesMode() == DUPES_SHOW_NORMAL);
+    cmd.Check(m_View->ShowingDupesMode() == SHOW_NORMAL);
 }
 
 void GUIControl::OnShowDupesDashedUpdate(wxUpdateUIEvent& cmd) {
     cmd.Enable(m_View->HasData() && m_View->HasDupes());
-    cmd.Check(m_View->ShowingDupesMode() == DUPES_SHOW_DASHED);
+    cmd.Check(m_View->ShowingDupesMode() == SHOW_DASHED);
 }
 
 void GUIControl::OnMoveEast()
