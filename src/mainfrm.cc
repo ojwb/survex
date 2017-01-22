@@ -734,7 +734,8 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_Gfx(NULL), m_Log(NULL),
     m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
     m_NumHighlighted(0),
-    m_HasUndergroundLegs(false), m_HasSplays(false), m_HasDupes(false), m_HasSurfaceLegs(false),
+    m_HasUndergroundLegs(false),
+    m_HasSplays(false), m_HasDupes(false), m_HasSurfaceLegs(false),
     m_HasErrorInformation(false), m_IsExtendedElevation(false),
     pending_find(false), fullscreen_showing_menus(false)
 #ifdef PREFDLG
@@ -1244,8 +1245,10 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
 		    if (pt.z > depthmax) depthmax = pt.z;
 		}
-		if (pending_move || current_polyline_is_surface != is_surface
-		    || current_polyline_is_splay != is_splay || current_polyline_is_dupe != is_dupe) {
+		if (pending_move ||
+		    current_polyline_is_surface != is_surface ||
+		    current_polyline_is_splay != is_splay ||
+		    current_polyline_is_dupe != is_dupe) {
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
 		    }

@@ -2435,7 +2435,7 @@ void GfxCore::GenerateDisplayList()
     }
 
     if (m_Dupes == DUPES_SHOW_DASHED) {
-        EnableDashedLines();
+	EnableDashedLines();
 	while (trav != tend) {
 	    if ((*trav).isDupe)
 		(this->*AddPoly)(*trav);
@@ -2446,14 +2446,10 @@ void GfxCore::GenerateDisplayList()
     }
 
     while (trav != tend) {
-      if ( ((*trav).isSplay && m_Splays == SPLAYS_SHOW_NORMAL)
-	   || ((*trav).isDupe && m_Dupes == DUPES_SHOW_NORMAL)
-	   || (!(*trav).isSplay && !(*trav).isDupe) )
-	(this->*AddPoly)(*trav);
-
-      //if (m_Splays == SPLAYS_SHOW_NORMAL || !(*trav).isSplay)
-      //	    (this->*AddPoly)(*trav);
-
+	if (((*trav).isSplay && m_Splays == SPLAYS_SHOW_NORMAL) ||
+	    ((*trav).isDupe && m_Dupes == DUPES_SHOW_NORMAL) ||
+	    (!(*trav).isSplay && !(*trav).isDupe))
+	    (this->*AddPoly)(*trav);
 	++trav;
     }
 }
