@@ -569,11 +569,13 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_ORIENT_DEFAULTS, MainFrm::OnDefaults)
     EVT_MENU(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegs)
     EVT_MENU(menu_SPLAYS_HIDE, MainFrm::OnHideSplays)
-    EVT_MENU(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormal)
+    EVT_MENU(menu_SPLAYS_SHOW_DASHED, MainFrm::OnShowSplaysDashed)
     EVT_MENU(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFaded)
+    EVT_MENU(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormal)
     EVT_MENU(menu_DUPES_HIDE, MainFrm::OnHideDupes)
-    EVT_MENU(menu_DUPES_SHOW_NORMAL, MainFrm::OnShowDupesNormal)
     EVT_MENU(menu_DUPES_SHOW_DASHED, MainFrm::OnShowDupesDashed)
+    EVT_MENU(menu_DUPES_SHOW_FADED, MainFrm::OnShowDupesFaded)
+    EVT_MENU(menu_DUPES_SHOW_NORMAL, MainFrm::OnShowDupesNormal)
     EVT_MENU(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrosses)
     EVT_MENU(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrances)
     EVT_MENU(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPts)
@@ -626,12 +628,14 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_VIEW_SHOW_LEGS, MainFrm::OnShowSurveyLegsUpdate)
     EVT_UPDATE_UI(menu_VIEW_SPLAYS, MainFrm::OnSplaysUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_HIDE, MainFrm::OnHideSplaysUpdate)
-    EVT_UPDATE_UI(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormalUpdate)
+    EVT_UPDATE_UI(menu_SPLAYS_SHOW_DASHED, MainFrm::OnShowSplaysDashedUpdate)
     EVT_UPDATE_UI(menu_SPLAYS_SHOW_FADED, MainFrm::OnShowSplaysFadedUpdate)
+    EVT_UPDATE_UI(menu_SPLAYS_SHOW_NORMAL, MainFrm::OnShowSplaysNormalUpdate)
     EVT_UPDATE_UI(menu_VIEW_DUPES, MainFrm::OnDupesUpdate)
     EVT_UPDATE_UI(menu_DUPES_HIDE, MainFrm::OnHideDupesUpdate)
-    EVT_UPDATE_UI(menu_DUPES_SHOW_NORMAL, MainFrm::OnShowDupesNormalUpdate)
     EVT_UPDATE_UI(menu_DUPES_SHOW_DASHED, MainFrm::OnShowDupesDashedUpdate)
+    EVT_UPDATE_UI(menu_DUPES_SHOW_FADED, MainFrm::OnShowDupesFadedUpdate)
+    EVT_UPDATE_UI(menu_DUPES_SHOW_NORMAL, MainFrm::OnShowDupesNormalUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_CROSSES, MainFrm::OnShowCrossesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_ENTRANCES, MainFrm::OnShowEntrancesUpdate)
     EVT_UPDATE_UI(menu_VIEW_SHOW_FIXED_PTS, MainFrm::OnShowFixedPtsUpdate)
@@ -870,24 +874,24 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_SURFACE, wmsg(/*&Surface Survey Legs\tCtrl+F*/291));
 
     wxMenu* splaymenu = new wxMenu;
-    /* TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
-     * splay legs are not shown. */
+    /* TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
+     * this is selected, such legs are not shown. */
     splaymenu->AppendCheckItem(menu_SPLAYS_HIDE, wmsg(/*&Hide*/407));
-    /* TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
-     * aven will show splay legs with less bright colours (rather than the
-     * same as other legs "Show" or not shown "Hide"). */
+    /* TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
+     * this is selected, aven will show such legs with dashed lines. */
+    splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_DASHED, wmsg(/*&Dashed*/250));
+    /* TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
+     * this is selected, aven will show such legs with less bright colours. */
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_FADED, wmsg(/*&Fade*/408));
-    /* TRANSLATORS: Item in the "Splay Legs" submenu - if this is selected,
-     * splay legs are shown the same as other legs. */
+    /* TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
+     * this is selected, such legs are shown the same as other legs. */
     splaymenu->AppendCheckItem(menu_SPLAYS_SHOW_NORMAL, wmsg(/*&Show*/409));
     viewmenu->Append(menu_VIEW_SPLAYS, wmsg(/*Spla&y Legs*/406), splaymenu);
 
     wxMenu* dupemenu = new wxMenu;
     dupemenu->AppendCheckItem(menu_DUPES_HIDE, wmsg(/*&Hide*/407));
-    /* TRANSLATORS: Item in the "Duplicate Legs" submenu - if this is selected,
-     * aven will show duplicate legs with dashed lines (rather than the same as
-     * other legs "Show" or not shown "Hide"). */
     dupemenu->AppendCheckItem(menu_DUPES_SHOW_DASHED, wmsg(/*&Dashed*/250));
+    dupemenu->AppendCheckItem(menu_DUPES_SHOW_FADED, wmsg(/*&Fade*/408));
     dupemenu->AppendCheckItem(menu_DUPES_SHOW_NORMAL, wmsg(/*&Show*/409));
     viewmenu->Append(menu_VIEW_DUPES, wmsg(/*&Duplicate Legs*/251), dupemenu);
 
@@ -1174,15 +1178,15 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     int datemax = -1;
     complete_dateinfo = true;
 
-    traverses.clear();
-    surface_traverses.clear();
+    for (unsigned f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
+	traverses[f].clear();
+    }
     tubes.clear();
 
     // Ultimately we probably want different types (subclasses perhaps?) for
     // underground and surface data, so we don't need to store LRUD for surface
     // stuff.
     traverse * current_traverse = NULL;
-    traverse * current_surface_traverse = NULL;
     vector<XSect> * current_tube = NULL;
 
     map<wxString, LabelInfo *> labelmap;
@@ -1191,16 +1195,15 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     int result;
     img_point prev_pt = {0,0,0};
     bool current_polyline_is_surface = false;
-    bool current_polyline_is_splay = false;
-    bool current_polyline_is_dupe = false;
+    int current_flags = 0;
     bool pending_move = false;
-    // When a traverse is split between surface and underground, we split it
-    // into contiguous traverses of each, but we need to track these so we can
-    // assign the error statistics to all of them.  So we keep counts of how
-    // many surface_traverses and traverses we've generated for the current
-    // traverse.
-    size_t n_traverses = 0;
-    size_t n_surface_traverses = 0;
+    // When legs within a traverse have different surface/splay/duplicate
+    // flags, we split it into contiguous traverses of each flag combination,
+    // but we need to track these so we can assign the error statistics to all
+    // of them.  So we keep counts of how many of each combination we've
+    // generated for the current traverse.
+    size_t n_traverses[8];
+    memset(n_traverses, 0, sizeof(n_traverses));
     do {
 #if 0
 	if (++items % 200 == 0) {
@@ -1214,7 +1217,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 	result = img_read_item(survey, &pt);
 	switch (result) {
 	    case img_MOVE:
-		n_traverses = n_surface_traverses = 0;
+		memset(n_traverses, 0, sizeof(n_traverses));
 		pending_move = true;
 		prev_pt = pt;
 		break;
@@ -1237,48 +1240,44 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 		    complete_dateinfo = false;
 		}
 
-		if (survey->flags & img_FLAG_SPLAY)
-		    m_HasSplays = true;
-		if (survey->flags & img_FLAG_DUPLICATE)
-		    m_HasDupes = true;
-		bool is_surface = (survey->flags & img_FLAG_SURFACE);
-		bool is_splay = (survey->flags & img_FLAG_SPLAY);
-		bool is_dupe = (survey->flags & img_FLAG_DUPLICATE);
+		int flags = survey->flags &
+		    (img_FLAG_SURFACE|img_FLAG_SPLAY|img_FLAG_DUPLICATE);
+		bool is_surface = (flags & img_FLAG_SURFACE);
+		bool is_splay = (flags & img_FLAG_SPLAY);
+		bool is_dupe = (flags & img_FLAG_DUPLICATE);
+
 		if (!is_surface) {
 		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
 		    if (pt.z > depthmax) depthmax = pt.z;
 		}
+		if (is_splay)
+		    m_HasSplays = true;
+		if (is_dupe)
+		    m_HasDupes = true;
 		if (pending_move ||
-		    current_polyline_is_surface != is_surface ||
-		    current_polyline_is_splay != is_splay ||
-		    current_polyline_is_dupe != is_dupe) {
+		    current_flags != flags) {
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
 		    }
 
+		    ++n_traverses[flags];
 		    // Start new traverse (surface or underground).
 		    if (is_surface) {
 			m_HasSurfaceLegs = true;
-			surface_traverses.push_back(traverse());
-			current_surface_traverse = &surface_traverses.back();
-			++n_surface_traverses;
 		    } else {
 			m_HasUndergroundLegs = true;
-			traverses.push_back(traverse());
-			current_traverse = &traverses.back();
-			current_traverse->isSplay = is_splay;
-			current_traverse->isDupe = is_dupe;
-			++n_traverses;
 			// The previous point was at a surface->ug transition.
 			if (current_polyline_is_surface) {
 			    if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
 			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
 			}
 		    }
+		    traverses[flags].push_back(traverse());
+		    current_traverse = &traverses[flags].back();
+		    current_traverse->flags = survey->flags;
 
 		    current_polyline_is_surface = is_surface;
-		    current_polyline_is_splay = is_splay;
-		    current_polyline_is_dupe = is_dupe;
+		    current_flags = flags;
 
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if
@@ -1293,18 +1292,10 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 			if (prev_pt.z > zmax) zmax = prev_pt.z;
 		    }
 
-		    if (is_surface) {
-			current_surface_traverse->push_back(PointInfo(prev_pt));
-		    } else {
-			current_traverse->push_back(PointInfo(prev_pt));
-		    }
+		    current_traverse->push_back(PointInfo(prev_pt));
 		}
 
-		if (is_surface) {
-		    current_surface_traverse->push_back(PointInfo(pt, date));
-		} else {
-		    current_traverse->push_back(PointInfo(pt, date));
-		}
+		current_traverse->push_back(PointInfo(pt, date));
 
 		prev_pt = pt;
 		pending_move = false;
@@ -1412,28 +1403,20 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 		    break;
 		}
 		m_HasErrorInformation = true;
-		list<traverse>::reverse_iterator t;
-		t = surface_traverses.rbegin();
-		while (n_surface_traverses) {
-		    assert(t != surface_traverses.rend());
-		    t->n_legs = survey->n_legs;
-		    t->length = survey->length;
-		    t->E = survey->E;
-		    t->H = survey->H;
-		    t->V = survey->V;
-		    --n_surface_traverses;
-		    ++t;
-		}
-		t = traverses.rbegin();
-		while (n_traverses) {
-		    assert(t != traverses.rend());
-		    t->n_legs = survey->n_legs;
-		    t->length = survey->length;
-		    t->E = survey->E;
-		    t->H = survey->H;
-		    t->V = survey->V;
-		    --n_traverses;
-		    ++t;
+		for (size_t f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
+		    list<traverse>::reverse_iterator t = traverses[f].rbegin();
+		    size_t n = n_traverses[f];
+		    n_traverses[f] = 0;
+		    while (n) {
+			assert(t != traverses[f].rend());
+			t->n_legs = survey->n_legs;
+			t->length = survey->length;
+			t->E = survey->E;
+			t->H = survey->H;
+			t->V = survey->V;
+			--n;
+			++t;
+		    }
 		}
 		break;
 	    }
@@ -1505,7 +1488,14 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 	return false;
     }
 
-    if (traverses.empty() && surface_traverses.empty()) {
+    if (traverses[0].empty() &&
+	traverses[1].empty() &&
+	traverses[2].empty() &&
+	traverses[3].empty() &&
+	traverses[4].empty() &&
+	traverses[5].empty() &&
+	traverses[6].empty() &&
+	traverses[7].empty()) {
 	// No legs, so get survey extents from stations
 	list<LabelInfo*>::const_iterator i;
 	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
@@ -1778,26 +1768,17 @@ void MainFrm::CentreDataset(const Vector3 & vmin)
 
     m_Offsets = vmin + (m_Ext * 0.5);
 
-    list<traverse>::iterator t = traverses.begin();
-    while (t != traverses.end()) {
-	assert(t->size() > 1);
-	vector<PointInfo>::iterator pos = t->begin();
-	while (pos != t->end()) {
-	    Point & point = *pos++;
-	    point -= m_Offsets;
+    for (unsigned f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
+	list<traverse>::iterator t = traverses[f].begin();
+	while (t != traverses[f].end()) {
+	    assert(t->size() > 1);
+	    vector<PointInfo>::iterator pos = t->begin();
+	    while (pos != t->end()) {
+		Point & point = *pos++;
+		point -= m_Offsets;
+	    }
+	    ++t;
 	}
-	++t;
-    }
-
-    t = surface_traverses.begin();
-    while (t != surface_traverses.end()) {
-	assert(t->size() > 1);
-	vector<PointInfo>::iterator pos = t->begin();
-	while (pos != t->end()) {
-	    Point & point = *pos++;
-	    point -= m_Offsets;
-	}
-	++t;
     }
 
     list<vector<XSect> >::iterator i = tubes.begin();

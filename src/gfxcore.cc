@@ -2366,13 +2366,13 @@ void GfxCore::GenerateList(unsigned int l)
 	    DrawLengthKey();
 	    break;
 	case LIST_UNDERGROUND_LEGS:
-	    GenerateDisplayList();
+	    GenerateDisplayList(0);
 	    break;
 	case LIST_TUBES:
 	    GenerateDisplayListTubes();
 	    break;
 	case LIST_SURFACE_LEGS:
-	    GenerateDisplayListSurface();
+	    GenerateDisplayList(true);
 	    break;
 	case LIST_BLOBS:
 	    GenerateBlobsDisplayList();
@@ -2417,40 +2417,72 @@ void GfxCore::ToggleSmoothShading()
     ForceRefresh();
 }
 
-void GfxCore::GenerateDisplayList()
+void GfxCore::GenerateDisplayList(bool surface)
 {
-    // Generate the display list for the underground legs.
-    list<traverse>::const_iterator trav = m_Parent->traverses_begin();
-    list<traverse>::const_iterator tend = m_Parent->traverses_end();
+    unsigned surf_or_not = surface ? img_FLAG_SURFACE : 0;
+    // Generate the display list for the surface or underground legs.
+    for (int f = 0; f != 8; ++f) {
+	if ((f & img_FLAG_SURFACE) != surf_or_not) continue;
+	const unsigned SHOW_DASHED_AND_FADED = unsigned(-1);
+	unsigned style = SHOW_NORMAL;
+	if ((f & img_FLAG_SPLAY) && m_Splays != SHOW_NORMAL) {
+	    style = m_Splays;
+	} else if (f & img_FLAG_DUPLICATE) {
+	    style = m_Dupes;
+	}
+	if (f & img_FLAG_SURFACE) {
+	    if (style == SHOW_FADED) {
+		style = SHOW_DASHED_AND_FADED;
+	    } else {
+		style = SHOW_DASHED;
+	    }
+	}
 
-    if (m_Splays == SHOW_FADED) {
-	SetAlpha(0.4);
+	switch (style) {
+	    case SHOW_HIDE:
+		continue;
+	    case SHOW_FADED:
+		SetAlpha(0.4);
+		break;
+	    case SHOW_DASHED:
+		EnableDashedLines();
+		break;
+	    case SHOW_DASHED_AND_FADED:
+		SetAlpha(0.4);
+		EnableDashedLines();
+		break;
+	}
+
+	void (GfxCore::* add_poly)(const traverse&);
+	if (surface) {
+	    if (m_ColourBy == COLOUR_BY_ERROR) {
+		add_poly = &GfxCore::AddPolylineError;
+	    } else {
+		add_poly = &GfxCore::AddPolyline;
+	    }
+	} else {
+	    add_poly = AddPoly;
+	}
+
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f);
+	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
 	while (trav != tend) {
-	    if ((*trav).isSplay)
-		(this->*AddPoly)(*trav);
+	    (this->*add_poly)(*trav);
 	    ++trav;
 	}
-	SetAlpha(1.0);
-	trav = m_Parent->traverses_begin();
-    }
 
-    if (m_Dupes == SHOW_DASHED) {
-	EnableDashedLines();
-	while (trav != tend) {
-	    if ((*trav).isDupe)
-		(this->*AddPoly)(*trav);
-	    ++trav;
+	switch (style) {
+	    case SHOW_FADED:
+		SetAlpha(1.0);
+		break;
+	    case SHOW_DASHED:
+		DisableDashedLines();
+		break;
+	    case SHOW_DASHED_AND_FADED:
+		DisableDashedLines();
+		SetAlpha(1.0);
+		break;
 	}
-	DisableDashedLines();
-	trav = m_Parent->traverses_begin();
-    }
-
-    while (trav != tend) {
-	if (((*trav).isSplay && m_Splays == SHOW_NORMAL) ||
-	    ((*trav).isDupe && m_Dupes == SHOW_NORMAL) ||
-	    (!(*trav).isSplay && !(*trav).isDupe))
-	    (this->*AddPoly)(*trav);
-	++trav;
     }
 }
 
@@ -2465,31 +2497,18 @@ void GfxCore::GenerateDisplayListTubes()
     }
 }
 
-void GfxCore::GenerateDisplayListSurface()
-{
-    // Generate the display list for the surface legs.
-    EnableDashedLines();
-    list<traverse>::const_iterator trav = m_Parent->surface_traverses_begin();
-    list<traverse>::const_iterator tend = m_Parent->surface_traverses_end();
-    while (trav != tend) {
-	if (m_ColourBy == COLOUR_BY_ERROR) {
-	    AddPolylineError(*trav);
-	} else {
-	    AddPolyline(*trav);
-	}
-	++trav;
-    }
-    DisableDashedLines();
-}
-
 void GfxCore::GenerateDisplayListShadow()
 {
     SetColour(col_BLACK);
-    list<traverse>::const_iterator trav = m_Parent->traverses_begin();
-    list<traverse>::const_iterator tend = m_Parent->traverses_end();
-    while (trav != tend) {
-	AddPolylineShadow(*trav);
-	++trav;
+    for (int f = 0; f != 8; ++f) {
+	// Only include underground legs in the shadow.
+	if ((f & img_FLAG_SURFACE) != 0) continue;
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f);
+	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
+	while (trav != tend) {
+	    AddPolylineShadow(*trav);
+	    ++trav;
+	}
     }
 }
 

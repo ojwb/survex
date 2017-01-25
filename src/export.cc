@@ -1347,24 +1347,31 @@ Export(const wxString &fnm_out, const wxString &title,
    double min_x, min_y, min_z, max_x, max_y, max_z;
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
-   list<traverse>::const_iterator trav = mainfrm->traverses_begin();
-   list<traverse>::const_iterator tend = mainfrm->traverses_end();
-   for ( ; trav != tend; ++trav) {
-	if (trav->isSplay && (show_mask & SPLAYS) == 0) {
-	    continue;
-	}
-	vector<PointInfo>::const_iterator pos = trav->begin();
-	vector<PointInfo>::const_iterator end = trav->end();
-	for ( ; pos != end; ++pos) {
-	    transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
+   for (int f = 0; f != 8; ++f) {
+       if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+	   // Not showing traverse because of surface/underground status.
+	   continue;
+       }
+       if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
+	   // Not showing because it's a splay.
+	   continue;
+       }
+       list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
+       list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+       for ( ; trav != tend; ++trav) {
+	    vector<PointInfo>::const_iterator pos = trav->begin();
+	    vector<PointInfo>::const_iterator end = trav->end();
+	    for ( ; pos != end; ++pos) {
+		transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
 
-	    if (p.x < min_x) min_x = p.x;
-	    if (p.x > max_x) max_x = p.x;
-	    if (p.y < min_y) min_y = p.y;
-	    if (p.y > max_y) max_y = p.y;
-	    if (p.z < min_z) min_z = p.z;
-	    if (p.z > max_z) max_z = p.z;
-	}
+		if (p.x < min_x) min_x = p.x;
+		if (p.x > max_x) max_x = p.x;
+		if (p.y < min_y) min_y = p.y;
+		if (p.y > max_y) max_y = p.y;
+		if (p.z < min_z) min_z = p.z;
+		if (p.z > max_z) max_z = p.z;
+	    }
+       }
    }
    {
 	list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
@@ -1427,79 +1434,46 @@ Export(const wxString &fnm_out, const wxString &title,
       if (!pass_mask)
 	  continue;
       filt->start_pass(*pass);
-      if (pass_mask & LEGS) {
-	  trav = mainfrm->traverses_begin();
-	  tend = mainfrm->traverses_end();
-	  for ( ; trav != tend; ++trav) {
-	     unsigned flags = 0;
-	     if (trav->isSplay) {
-		 if ((show_mask & SPLAYS) == 0) {
-		     continue;
-		 }
-		 flags = SPLAYS;
-	     }
-	     assert(trav->size() > 1);
-	     vector<PointInfo>::const_iterator pos = trav->begin();
-	     vector<PointInfo>::const_iterator end = trav->end();
-	     for ( ; pos != end; ++pos) {
-		 transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
-		 p.x += x_offset;
-		 p.y += y_offset;
-		 p.z += z_offset;
+      if (pass_mask & (LEGS|SURF)) {
+	  for (int f = 0; f != 8; ++f) {
+	      if ((pass_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+		  // Not showing traverse because of surface/underground status.
+		  continue;
+	      }
+	      if ((f & img_FLAG_SPLAY) && (pass_mask & SPLAYS) == 0) {
+		  // Not showing because it's a splay.
+		  continue;
+	      }
+	      unsigned flags = pass_mask & (SURF|SPLAYS);
+	      list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
+	      list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+	      for ( ; trav != tend; ++trav) {
+		  assert(trav->size() > 1);
+		  vector<PointInfo>::const_iterator pos = trav->begin();
+		  vector<PointInfo>::const_iterator end = trav->end();
+		  for ( ; pos != end; ++pos) {
+		      transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
+		      p.x += x_offset;
+		      p.y += y_offset;
+		      p.z += z_offset;
 
-		 if (pos == trav->begin()) {
-		     // First point is move...
+		      if (pos == trav->begin()) {
+			  // First point is move...
 #ifdef DEBUG_CAD3D
-		     printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
+			  printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
 #endif
-		     fPendingMove = 1;
-		 } else {
+			  fPendingMove = 1;
+		      } else {
 #ifdef DEBUG_CAD3D
-		     printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
+			  printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
 #endif
-		     filt->line(&p1, &p, flags, fPendingMove);
-		     fPendingMove = 0;
-		 }
-		 p1 = p;
-	     }
-	 }
-      }
-      if (pass_mask & SURF) {
-	  trav = mainfrm->surface_traverses_begin();
-	  tend = mainfrm->surface_traverses_end();
-	  for ( ; trav != tend; ++trav) {
-	     unsigned flags = 0;
-	     if (trav->isSplay) {
-		 if ((show_mask & SPLAYS) == 0) {
-		     continue;
-		 }
-		 flags = SURF|SPLAYS;
-	     }
-	     assert(trav->size() > 1);
-	     vector<PointInfo>::const_iterator pos = trav->begin();
-	     vector<PointInfo>::const_iterator end = trav->end();
-	     for ( ; pos != end; ++pos) {
-		 transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
-		 p.x += x_offset;
-		 p.y += y_offset;
-		 p.z += z_offset;
-
-		 if (pos == trav->begin()) {
-		     // First point is move...
-#ifdef DEBUG_CAD3D
-		     printf("surface move to %9.2f %9.2f %9.2f\n",x,y,z);
-#endif
-		     fPendingMove = 1;
-		 } else {
-#ifdef DEBUG_CAD3D
-		     printf("surface line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
-#endif
-		     filt->line(&p1, &p, flags, fPendingMove);
-		     fPendingMove = 0;
-		 }
-		 p1 = p;
-	     }
-	 }
+			  filt->line(&p1, &p, flags, fPendingMove);
+			  fPendingMove = 0;
+		      }
+		      p1 = p;
+		  }
+	      }
+	  }
       }
       if (pass_mask & (STNS|LABELS|ENTS|FIXES|EXPORTS)) {
 	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();

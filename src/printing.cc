@@ -948,23 +948,31 @@ svxPrintDlg::RecalcBounds()
 
     int show_mask = m_layout.get_effective_show_mask();
     if (show_mask & LEGS) {
-	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
-	list<traverse>::const_iterator tend = mainfrm->traverses_end();
-	for ( ; trav != tend; ++trav) {
-	    if (trav->isSplay && !(show_mask & SPLAYS))
+	for (int f = 0; f != 8; ++f) {
+	    if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+		// Not showing traverse because of surface/underground status.
 		continue;
-	    vector<PointInfo>::const_iterator pos = trav->begin();
-	    vector<PointInfo>::const_iterator end = trav->end();
-	    for ( ; pos != end; ++pos) {
-		double x = pos->GetX();
-		double y = pos->GetY();
-		double z = pos->GetZ();
-		double X = x * COS - y * SIN;
-		if (X > m_layout.xMax) m_layout.xMax = X;
-		if (X < m_layout.xMin) m_layout.xMin = X;
-		double Y = z * COST - (x * SIN + y * COS) * SINT;
-		if (Y > m_layout.yMax) m_layout.yMax = Y;
-		if (Y < m_layout.yMin) m_layout.yMin = Y;
+	    }
+	    if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
+		// Not showing because it's a splay.
+		continue;
+	    }
+	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
+	    list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+	    for ( ; trav != tend; ++trav) {
+		vector<PointInfo>::const_iterator pos = trav->begin();
+		vector<PointInfo>::const_iterator end = trav->end();
+		for ( ; pos != end; ++pos) {
+		    double x = pos->GetX();
+		    double y = pos->GetY();
+		    double z = pos->GetZ();
+		    double X = x * COS - y * SIN;
+		    if (X > m_layout.xMax) m_layout.xMax = X;
+		    if (X < m_layout.xMin) m_layout.xMin = X;
+		    double Y = z * COST - (x * SIN + y * COS) * SINT;
+		    if (Y > m_layout.yMax) m_layout.yMax = Y;
+		    if (Y < m_layout.yMin) m_layout.yMin = Y;
+		}
 	    }
 	}
     }
@@ -1115,27 +1123,6 @@ svxPrintDlg::RecalcBounds()
 	}
     }
 
-    if (show_mask & SURF) {
-	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
-	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
-	for ( ; trav != tend; ++trav) {
-	    if (trav->isSplay && !(show_mask & SPLAYS))
-		continue;
-	    vector<PointInfo>::const_iterator pos = trav->begin();
-	    vector<PointInfo>::const_iterator end = trav->end();
-	    for ( ; pos != end; ++pos) {
-		double x = pos->GetX();
-		double y = pos->GetY();
-		double z = pos->GetZ();
-		double X = x * COS - y * SIN;
-		if (X > m_layout.xMax) m_layout.xMax = X;
-		if (X < m_layout.xMin) m_layout.xMin = X;
-		double Y = z * COST - (x * SIN + y * COS) * SINT;
-		if (Y > m_layout.yMax) m_layout.yMax = Y;
-		if (Y < m_layout.yMin) m_layout.yMin = Y;
-	    }
-	}
-    }
     if (show_mask & (LABELS|STNS)) {
 	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
 	while (label != mainfrm->GetLabelsEnd()) {
@@ -1633,31 +1620,41 @@ svxPrintout::OnPrintPage(int pageNum) {
     const double Sc = 1000 / l->Scale;
 
     int show_mask = l->get_effective_show_mask();
-    if (show_mask & LEGS) {
-	list<traverse>::const_iterator trav = mainfrm->traverses_begin();
-	list<traverse>::const_iterator tend = mainfrm->traverses_end();
-	for ( ; trav != tend; ++trav) {
-	    if (trav->isSplay) {
-		if (!(show_mask & SPLAYS))
-		    continue;
+    if (show_mask & (LEGS|SURF)) {
+	for (int f = 0; f != 8; ++f) {
+	    if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+		// Not showing traverse because of surface/underground status.
+		continue;
+	    }
+	    if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
+		// Not showing because it's a splay.
+		continue;
+	    }
+	    if (f & img_FLAG_SPLAY) {
 		pdc->SetPen(*pen_splay);
+	    } else if (f & img_FLAG_SURFACE) {
+		pdc->SetPen(*pen_surface_leg);
 	    } else {
 		pdc->SetPen(*pen_leg);
 	    }
-	    vector<PointInfo>::const_iterator pos = trav->begin();
-	    vector<PointInfo>::const_iterator end = trav->end();
-	    for ( ; pos != end; ++pos) {
-		double x = pos->GetX();
-		double y = pos->GetY();
-		double z = pos->GetZ();
-		double X = x * COS - y * SIN;
-		double Y = z * COST - (x * SIN + y * COS) * SINT;
-		long px = (long)((X * Sc + l->xOrg) * l->scX);
-		long py = (long)((Y * Sc + l->yOrg) * l->scY);
-		if (pos == trav->begin()) {
-		    MoveTo(px, py);
-		} else {
-		    DrawTo(px, py);
+	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
+	    list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+	    for ( ; trav != tend; ++trav) {
+		vector<PointInfo>::const_iterator pos = trav->begin();
+		vector<PointInfo>::const_iterator end = trav->end();
+		for ( ; pos != end; ++pos) {
+		    double x = pos->GetX();
+		    double y = pos->GetY();
+		    double z = pos->GetZ();
+		    double X = x * COS - y * SIN;
+		    double Y = z * COST - (x * SIN + y * COS) * SINT;
+		    long px = (long)((X * Sc + l->xOrg) * l->scX);
+		    long py = (long)((Y * Sc + l->yOrg) * l->scY);
+		    if (pos == trav->begin()) {
+			MoveTo(px, py);
+		    } else {
+			DrawTo(px, py);
+		    }
 		}
 	    }
 	}
@@ -1674,36 +1671,6 @@ svxPrintout::OnPrintPage(int pageNum) {
 	    } else {
 		// m_layout.tilt is 90.0 or -90.0 due to check above.
 		PlotLR(*trav);
-	    }
-	}
-    }
-
-    if (show_mask & SURF) {
-	list<traverse>::const_iterator trav = mainfrm->surface_traverses_begin();
-	list<traverse>::const_iterator tend = mainfrm->surface_traverses_end();
-	for ( ; trav != tend; ++trav) {
-	    if (trav->isSplay) {
-		if (!(show_mask & SPLAYS))
-		    continue;
-		pdc->SetPen(*pen_splay);
-	    } else {
-		pdc->SetPen(*pen_surface_leg);
-	    }
-	    vector<PointInfo>::const_iterator pos = trav->begin();
-	    vector<PointInfo>::const_iterator end = trav->end();
-	    for ( ; pos != end; ++pos) {
-		double x = pos->GetX();
-		double y = pos->GetY();
-		double z = pos->GetZ();
-		double X = x * COS - y * SIN;
-		double Y = z * COST - (x * SIN + y * COS) * SINT;
-		long px = (long)((X * Sc + l->xOrg) * l->scX);
-		long py = (long)((Y * Sc + l->yOrg) * l->scY);
-		if (pos == trav->begin()) {
-		    MoveTo(px, py);
-		} else {
-		    DrawTo(px, py);
-		}
 	    }
 	}
     }

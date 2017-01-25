@@ -280,9 +280,8 @@ private:
     void SkinPassage(vector<XSect> & centreline, bool draw = true);
 
     virtual void GenerateList(unsigned int l);
-    void GenerateDisplayList();
+    void GenerateDisplayList(bool surface);
     void GenerateDisplayListTubes();
-    void GenerateDisplayListSurface();
     void DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Vector3 & c);
     void DrawTerrain();
     void GenerateDisplayListShadow();
@@ -464,12 +463,14 @@ public:
     void SetSplaysMode(int mode) {
 	m_Splays = mode;
 	UpdateBlobs();
+	InvalidateList(LIST_SURFACE_LEGS);
 	InvalidateList(LIST_UNDERGROUND_LEGS);
 	ForceRefresh();
     }
     void SetDupesMode(int mode) {
 	m_Dupes = mode;
 	UpdateBlobs();
+	InvalidateList(LIST_SURFACE_LEGS);
 	InvalidateList(LIST_UNDERGROUND_LEGS);
 	ForceRefresh();
     }
