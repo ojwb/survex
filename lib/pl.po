@@ -384,13 +384,13 @@ msgstr "Nie można pominąć współrzędnych jeśli wskazano układ współrzę
 
 #: ../src/commands.c:1664
 #: n:301
-msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
-msgstr "Należy wskazać wejściowy układ współrzędnych dla '*DECLINATION AUTO'"
+msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
+msgstr "Należy wskazać wejściowy układ współrzędnych dla “*DECLINATION AUTO”"
 
 #: ../src/commands.c:1656
 #: n:309
-msgid "Expected number or 'AUTO'"
-msgstr "Spodziewałem się liczby lub 'AUTO'"
+msgid "Expected number or “AUTO”"
+msgstr "Spodziewałem się liczby lub “AUTO”"
 
 #: ../src/datain.c:982
 #: n:304

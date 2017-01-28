@@ -1653,7 +1653,7 @@ cmd_declination(void)
     if (v == HUGE_REAL) {
 	get_token_no_blanks();
 	if (strcmp(ucbuffer, "AUTO") != 0) {
-	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or 'AUTO'*/309);
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or “AUTO”*/309);
 	    return;
 	}
 	/* *declination auto X Y Z */
@@ -1661,7 +1661,7 @@ cmd_declination(void)
 	real y = read_numeric(fFalse);
 	real z = read_numeric(fFalse);
 	if (!pcs->proj) {
-	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for '*DECLINATION AUTO'*/301);
+	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
 	    return;
 	}
 	if (!proj_wgs84) {

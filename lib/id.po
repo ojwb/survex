@@ -384,13 +384,13 @@ msgstr "Koordinat tidak dapat diabaikan saat sistem koordinat yang telah ditentu
 
 #: ../src/commands.c:1664
 #: n:301
-msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
-msgstr "Masukan sistem koordinat ada harus dicantumkan untuk '*DECLINATION AUTO'"
+msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
+msgstr "Masukan sistem koordinat ada harus dicantumkan untuk “*DECLINATION AUTO”"
 
 #: ../src/commands.c:1656
 #: n:309
-msgid "Expected number or 'AUTO'"
-msgstr "Angka yang diharapkan atau 'AUTO'"
+msgid "Expected number or “AUTO”"
+msgstr "Angka yang diharapkan atau “AUTO”"
 
 #: ../src/datain.c:982
 #: n:304

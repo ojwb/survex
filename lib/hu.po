@@ -387,12 +387,12 @@ msgstr "A koordináták nem elhagyhatók, ha a koordináta rendszer meghatározo
 
 #: ../src/commands.c:1664
 #: n:301
-msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
+msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
 msgstr ""
 
 #: ../src/commands.c:1656
 #: n:309
-msgid "Expected number or 'AUTO'"
+msgid "Expected number or “AUTO”"
 msgstr ""
 
 #: ../src/datain.c:982

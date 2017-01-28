@@ -384,13 +384,13 @@ msgstr "Coordinates can't be omitted when coordinate system has been specified"
 
 #: ../src/commands.c:1664
 #: n:301
-msgid "Input coordinate system must be specified for '*DECLINATION AUTO'"
-msgstr "Input coordinate system must be specified for '*DECLINATION AUTO'"
+msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
+msgstr "Input coordinate system must be specified for “*DECLINATION AUTO”"
 
 #: ../src/commands.c:1656
 #: n:309
-msgid "Expected number or 'AUTO'"
-msgstr "Expected number or 'AUTO'"
+msgid "Expected number or “AUTO”"
+msgstr "Expected number or “AUTO”"
 
 #: ../src/datain.c:982
 #: n:304
