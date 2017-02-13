@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014,2015,2016 Olly Betts
+# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014,2015,2016,2017 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ testdir=`(cd "$testdir" && pwd)`
  cmd_calibrate cmd_declination cmd_declination_auto cmd_declination_conv\
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
- declination.dat ignore.dat backread.dat nomeasure.dat\
+ declination.dat ignore.dat backread.dat nomeasure.dat noteam.dat\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
@@ -134,16 +134,17 @@ for file in $TESTS ; do
       ;;
   esac
 
+  basefile=$srcdir/$file
   case $file in
   *.*)
     input="./$file"
-    posfile="$srcdir"/`echo "$file"|sed 's/\.[^.]*$/.pos/'`
-    dxffile="$srcdir"/`echo "$file"|sed 's/\.[^.]*$/.dxf/'` ;;
+    basefile=`echo "$basefile"|sed 's/\.[^.]*$//'` ;;
   *)
-    input="./$file.svx"
-    posfile="$srcdir/$file.pos"
-    dxffile="$srcdir/$file.dxf" ;;
+    input="./$file.svx" ;;
   esac
+  outfile=$basefile.out
+  posfile=$basefile.pos
+  dxffile=$basefile.dxf
   rm -f tmp.*
   pwd=`pwd`
   cd "$srcdir"
@@ -237,13 +238,12 @@ for file in $TESTS ; do
     echo "Bad value for pos: '$pos'" ; exit 1 ;;
   esac
 
-  out=$srcdir/$file.out
-  if test -f "$out" ; then
+  if test -f "$outfile" ; then
     # Check output is as expected.
     if test -n "$VERBOSE" ; then
-      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$out" - || exit 1
+      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$outfile" - || exit 1
     else
-      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$out" - || exit 1
+      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$outfile" - || exit 1
     fi
   fi
   rm -f tmp.*

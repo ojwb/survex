@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015,2016,2017 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -653,7 +653,6 @@ data_file(const char *pth, const char *fnm)
 	 skipline();
 	 process_eol();
 	 /* <Survey team> */
-	 nextch();
 	 skipline();
 	 process_eol();
 	 /* DECLINATION: 1.00  FORMAT: DDDDLUDRADLN  CORRECTIONS: 2.00 3.00 4.00 */

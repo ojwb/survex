@@ -1,0 +1,25 @@
+Survey has no fixed points. Therefore I've fixed GX1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    0.52m (   0.52m adjusted)
+Total plan length of survey legs =    0.52m
+Total vertical length of survey legs =    0.02m
+Vertical range = 0.02m (from GX1 at 0.00m to GX2 at -0.02m)
+North-South range = 0.51m (from GX2 at 0.51m to GX1 at 0.00m)
+East-West range = 0.10m (from GX2 at 0.10m to GX1 at 0.00m)
+   2 1-nodes.
