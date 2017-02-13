@@ -289,7 +289,7 @@ CavernLogWindow::stop_thread()
     // it's not going to cause issues, and it's all the wxProcess API seems to
     // allow us to do.  If we don't kill the subprocess, we need to wait for it
     // to write out some output - there seems to be no way to do the equivalent
-    // of select() with a timeout on a a wxInputStream.
+    // of select() with a timeout on a wxInputStream.
     //
     // The only alternative to this seems to be to do:
     //
