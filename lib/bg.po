@@ -2406,8 +2406,8 @@ msgstr ""
 #: ../src/mainfrm.cc:2424
 #: n:341
 #, fuzzy, c-format
-msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
-msgstr "%s: %s, Разстояние %.2f%s, Brd %03d%s"
+msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s"
+msgstr "%s: %s, Разстояние %.2f%s, Brd %03.1f%s"
 
 #. TRANSLATORS: tickable menu item in View menu.
 #.
@@ -2611,7 +2611,7 @@ msgstr "∞"
 #: ../src/mainfrm.cc:2310
 #: n:374
 #, c-format
-msgid "%s: H %.2f%s, Brg %03d%s"
+msgid "%s: H %.2f%s, Brg %03.1f%s"
 msgstr ""
 
 #. TRANSLATORS: "V" is short for "Vertical"

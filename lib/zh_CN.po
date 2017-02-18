@@ -2403,7 +2403,7 @@ msgstr "横%.2f%s, 垂直 %.2f%s"
 #: ../src/mainfrm.cc:2424
 #: n:341
 #, c-format
-msgid "%s: %s, Dist %.2f%s, Brg %03d%s"
+msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s"
 msgstr ""
 
 #. TRANSLATORS: tickable menu item in View menu.
@@ -2608,7 +2608,7 @@ msgstr "∞"
 #: ../src/mainfrm.cc:2310
 #: n:374
 #, c-format
-msgid "%s: H %.2f%s, Brg %03d%s"
+msgid "%s: H %.2f%s, Brg %03.1f%s"
 msgstr ""
 
 #. TRANSLATORS: "V" is short for "Vertical"

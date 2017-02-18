@@ -2281,9 +2281,8 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 
 	wxString from_str;
 	/* TRANSLATORS: Used in Aven:
-	 * From <stationname>
-	 * H: 123.45m V: 234.56m
-	 * Dist: 456.78m  Brg: 200 */
+	 * From <stationname>: H 12.24m, Brg 234.5°
+	 */
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
 	int brg_unit;
 	if (m_Gfx->GetDegrees()) {
@@ -2307,9 +2306,9 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	}
 	/* TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 	 * in Compass bearing) */
-	t.Printf(wmsg(/*%s: H %.2f%s, Brg %03d%s*/374),
+	t.Printf(wmsg(/*%s: H %.2f%s, Brg %03.1f%s*/374),
 		 from_str.c_str(), dh, wmsg(units).c_str(),
-		 int(brg), wmsg(brg_unit).c_str());
+		 brg, wmsg(brg_unit).c_str());
     }
 
     UpdateStatusBar();
@@ -2421,9 +2420,9 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	wxString & d = dist_text;
 	/* TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 	 * in Compass bearing) */
-	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03d%s*/341),
+	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03.1f%s*/341),
 		 from_str.c_str(), hv_str.c_str(),
-		 dr, len_unit.c_str(), int(brg), wmsg(brg_unit).c_str());
+		 dr, len_unit.c_str(), brg, wmsg(brg_unit).c_str());
     } else {
 	dist_text = wxString();
 	m_Gfx->SetThere();
