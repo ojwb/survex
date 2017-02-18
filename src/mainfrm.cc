@@ -2289,12 +2289,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	    brg_unit = /*°*/344;
 	} else {
 	    brg *= 400.0 / 360.0;
-	    /* TRANSLATORS: alternative angle units (400 grad = 360 degrees =
-	     * full circle).  Try to make this as short as sensibly possible.
-	     *
-	     * E.g. in Italian and Spanish we use "g.cent." rather than
-	     * "gradi quattrocentesimali"/"grados centesimales" */
-	    brg_unit = /*grad*/345;
+	    brg_unit = /*ᵍ*/345;
 	}
 
 	int units;
@@ -2415,7 +2410,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	    brg_unit = /*°*/344;
 	} else {
 	    brg *= 400.0 / 360.0;
-	    brg_unit = /*grad*/345;
+	    brg_unit = /*ᵍ*/345;
 	}
 	wxString & d = dist_text;
 	/* TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as

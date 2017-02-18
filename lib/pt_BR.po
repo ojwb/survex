@@ -2385,9 +2385,7 @@ msgid "%.2f E, %.2f N"
 msgstr "%.2f L, %.2f N"
 
 #. TRANSLATORS: Used in Aven:
-#. From <stationname>
-#. H: 123.45m V: 234.56m
-#. Dist: 456.78m  Brg: 200
+#. From <stationname>: H 12.24m, Brg 234.5°
 #: ../src/mainfrm.cc:2287
 #: ../src/mainfrm.cc:2337
 #: ../src/mainfrm.cc:2399
@@ -2578,20 +2576,9 @@ msgstr "°"
 #: ../src/gfxcore.cc:775
 #: ../src/gfxcore.cc:865
 #: ../src/gfxcore.cc:1182
-#: n:76
+#: n:345
 msgid "ᵍ"
 msgstr "ᵍ"
-
-#. TRANSLATORS: alternative angle units (400 grad = 360 degrees =
-#. full circle).  Try to make this as short as sensibly possible.
-#.
-#. E.g. in Italian and Spanish we use "g.cent." rather than
-#. "gradi quattrocentesimali"/"grados centesimales"
-#: ../src/mainfrm.cc:2298
-#: ../src/mainfrm.cc:2419
-#: n:345
-msgid "grad"
-msgstr "grados"
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45
 #. degrees = 50 grad).

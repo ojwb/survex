@@ -820,7 +820,6 @@ fr:612 Erreur de lecture &agrave; la ligne %i du fichier de sp&eacute;cification
 it:612 Errore di lettura alla linea %i del file di specifiche
 #
 #. TRANSLATORS: %c is “x”, “y” or “z”
-#: n:76
 #, c-format
 msgid "Solving to find %c coordinates"
 ca "Resolent per trobar coordenades %c"
@@ -1243,3 +1242,21 @@ id "tampilan persentase kemajuan"
 it "mostra la percentuale di progresso"
 ru "отображать ход выполнения задачи в процентах"
 sk "zobraz postup v percento"
+
+msgid "grad"
+bg "град"
+ca "g.cent"
+de "Neugrad"
+de_CH "Neugrad"
+en_US "grad"
+es "g.cent."
+fr "grade"
+id "grad"
+it "g.cent."
+pl "grad"
+pt "grados"
+pt_BR "grados"
+ro "gr.cent"
+ru "град"
+sk "grády"
+zh_CN "梯度"

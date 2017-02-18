@@ -772,7 +772,7 @@ void GfxCore::Draw2dIndicators()
 	    value = int(m_PanAngle * 200.0 / 180.0);
 	    /* TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 	     * circle). */
-	    brg_unit = /*ᵍ*/76;
+	    brg_unit = /*ᵍ*/345;
 	}
 	str.Printf(wxT("%03d"), value);
 	str += wmsg(brg_unit);
@@ -862,7 +862,7 @@ void GfxCore::Draw2dIndicators()
 		width = triple_zero_width;
 		angle = int(m_TiltAngle * 200.0 / 180.0);
 		str = angle ? wxString::Format(wxT("%+04d"), angle) : wxT("000");
-		unit = /*ᵍ*/76;
+		unit = /*ᵍ*/345;
 	    }
 
 	    int sign_offset = 0;
@@ -1179,7 +1179,7 @@ void GfxCore::DrawGradientKey()
     // Use fixed colours for each gradient so it's directly visually comparable
     // between surveys.
     num_bands = GetNumColourBands();
-    wxString units = wmsg(m_Degrees ? /*°*/344 : /*ᵍ*/76);
+    wxString units = wmsg(m_Degrees ? /*°*/344 : /*ᵍ*/345);
     for (int band = 0; band < num_bands; ++band) {
 	double gradient = double(band) / (num_bands - 1);
 	if (m_Degrees) {
