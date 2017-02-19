@@ -2399,11 +2399,12 @@ msgid "H %.2f%s, V %.2f%s"
 msgstr "H %.2f%s, V %.2f%s"
 
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
-#. in Compass bearing)
-#: ../src/mainfrm.cc:2424
+#. in Compass bearing) and "Grd" for "Gradient" (the slope angle
+#. measured by the clino)
+#: ../src/mainfrm.cc:2448
 #: n:341
-#, c-format
-msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s"
+#, fuzzy, c-format
+msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s"
 msgstr "%s: %s, Vzd %.2f%s, Azim %03.1f%s"
 
 #. TRANSLATORS: tickable menu item in View menu.

@@ -2389,6 +2389,8 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
 
+	Double grd = deg(atan2(delta.GetZ(), d_horiz));
+
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
 
@@ -2412,12 +2414,42 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	    brg *= 400.0 / 360.0;
 	    brg_unit = /*ᵍ*/345;
 	}
+	int grd_unit;
+	wxString grd_str;
+	if (m_Gfx->GetPercent()) {
+	    if (grd > 89.99) {
+		grd = 1000000;
+	    } else if (grd < -89.99) {
+		grd = -1000000;
+	    } else {
+		grd = int(100 * tan(rad(grd)));
+	    }
+	    if (grd > 99999 || grd < -99999) {
+		grd_str = grd > 0 ? wxT("+") : wxT("-");
+		/* TRANSLATORS: infinity symbol - used for the percentage gradient on
+		 * vertical angles. */
+		grd_str += wmsg(/*∞*/431);
+	    }
+	    grd_unit = /*%*/96;
+	} else if (m_Gfx->GetDegrees()) {
+	    grd_unit = /*°*/344;
+	} else {
+	    grd *= 400.0 / 360.0;
+	    grd_unit = /*ᵍ*/345;
+	}
+	if (grd_str.empty()) {
+	    grd_str.Printf(wxT("%+02.1f%s"), grd, wmsg(grd_unit).c_str());
+	}
+
 	wxString & d = dist_text;
 	/* TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
-	 * in Compass bearing) */
-	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03.1f%s*/341),
+	 * in Compass bearing) and "Grd" for "Gradient" (the slope angle
+	 * measured by the clino) */
+	d.Printf(wmsg(/*%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s*/341),
 		 from_str.c_str(), hv_str.c_str(),
-		 dr, len_unit.c_str(), brg, wmsg(brg_unit).c_str());
+		 dr, len_unit.c_str(),
+		 brg, wmsg(brg_unit).c_str(),
+		 grd_str.c_str());
     } else {
 	dist_text = wxString();
 	m_Gfx->SetThere();
