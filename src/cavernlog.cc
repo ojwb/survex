@@ -588,7 +588,9 @@ bad_utf8:
 				cur.append(highlight ? highlight : wxT("<span \"color:green\">"));
 				cur.append(source_line, caret, tilde + 1 - caret);
 				cur.append("</span></b>");
-				cur.append(source_line, tilde + 1, wxString::npos);
+				if (tilde + 1 < source_line.size()) {
+				    cur.append(source_line, tilde + 1, wxString::npos);
+				}
 			    } else {
 				// No caret in second line - just output both.
 				source_line.replace(0, 1, "&nbsp;");
