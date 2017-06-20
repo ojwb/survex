@@ -69,7 +69,7 @@ testdir=`(cd "$testdir" && pwd)`
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
  cs csbad csbadsdfix cslonglat omitfixaroundsolve repeatreading\
- mixedeols\
+ mixedeols utf8bom\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.

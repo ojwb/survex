@@ -1,0 +1,6 @@
+﻿*date 9999.1.1 ; pos=no warn=1
+; This file starts with the dumb UTF-8 "BOM".
+;
+; Generate a warning on the first line to make sure caret debugging skips
+; over it when showing the context.
+*fix 1 reference 0 0 0

@@ -519,6 +519,16 @@ data_file(const char *pth, const char *fnm)
       file.lpos = 0;
       file.reported_where = fFalse;
       nextch();
+      if (fmt == FMT_SVX && ch == 0xef) {
+	 /* Maybe a UTF-8 "BOM" - skip if so. */
+	 if (nextch() == 0xbb && nextch() == 0xbf) {
+	    nextch();
+	    file.lpos = 3;
+	 } else {
+	    rewind(fh);
+	    ch = 0xef;
+	 }
+      }
    }
 
    using_data_file(file.filename);
