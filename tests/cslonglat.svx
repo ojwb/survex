@@ -5,3 +5,5 @@
 *cs out UTM33
 *cs LONG-LAT
 *fix 1 reference 13.5 47.5 1623
+*cs out UTM60S
+*fix 2 reference +70.738907 +39.993570 1100
