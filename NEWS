@@ -1,3 +1,75 @@
+up to: a7dfc9e6886db6888341f7e51763c8e180316848
+
+* aven:
+
+  + Use superscript 'g' symbol instead of word 'grads' in status bar.  This
+    conserves the limited space available, and we already do this in the
+    compass and clino indicators so it's more consistent too.
+
+  + Show one decimal place on measure line bearing.  Pointed out by Benedikt
+    Hallinger on the therion list, though I'm sure this has been asked for
+    before by others.
+
+  + Show gradient of the measuring line when both ends are stations.
+
+  + Allow selection of text in cavern log window.  Selection was disabled in
+    1.2.28 because it seemed you couldn't actually copy selected text to the
+    clipboard, but retesting this now actually works fine for me, both with
+    current git master with the change reverted, and with code just before the
+    original change.
+
+  + More robust parsing of cavern output - cleanly context highlighting which
+    extends beyond the end of the line.
+
+  + Allow showing duplicate legs as dashed lines or hiding them entirely,
+    with dashed now being the default.  Implemented by Patrick Warren.
+
+  + Also allow "Dashed" for splays and "Faded" for duplicate legs.
+
+  + Check environment variables VISUAL and EDITOR when looking for editor to
+    use when a warning or error is clicked on in the cavern log window.
+    Suggested by Wookey.
+
+    The specified editor may have a GUI or need to run in a terminal, so it
+    seems we have to special case each editor supported.  This also means we
+    can pass extra options needed to position the cursor on the
+    appropriate line/column.
+    Currently these editors are supported:
+    gvim, vim, gedit, pluma, emacs, nano, jed, kate
+
+  + Fix handling of non-square terrain data files - the X and Y dimensions were
+    swapped.  Reported by detrito.
+
+  + Improve .hdr file parsing:
+    Use documented defaults for more values.  And where we only support
+    a subset of values (or a particular value) check for files which
+    don't fall in the support subset in more cases.
+    Report error if NBITS not specified in .hdr
+
+* cavern:
+
+  + (Mac OS X and Microsoft Windows versions): Build with newer version of
+    PROJ library which fixes buggy handling of *fix with lat-long coordinates.
+    Reported by Ross Davidson.
+
+  + Fix cavern to handle Compass .DAT with no survey team.  Previously this
+    resulted in the bogus error: Expecting numeric field, found "FROM"
+    Reported by Erin Lynch.
+
+  + Handle UTF-8 "BOM" at start of .svx files.  Unicode doesn't recommend its
+    use, but Microsoft stuff seems to like to create files with it in, and the
+    error cavern currently reports for such files is very confusing, so it
+    seems best to just handle it.  Reported by Rob Eavis.
+
+  + Change a couple of messages to use double quotes for consistency with all
+    other messages.
+
+* Fix errors in documentation of *units: "DEG" should be "DEGS", and
+  "MINUTES" has been supported for ages but wasn't documented.  Reported by
+  Footleg.
+
+* Fix typo in dump3d documentation.
+
 Changes in 1.2.30 (2016-10-03):
 
 * aven:
