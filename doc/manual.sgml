@@ -1387,7 +1387,7 @@ the axes point East and North.  Supported since Survex 1.2.15.</Para>
 <Para>IJTSK03 for a variant of IJTSK.  Supported since Survex 1.2.15.</Para>
 
 <Para>JTSK for the Czechoslovak S-JTSK system.  The axes on this point West
-and South, so it's not support as an output coordinate system.
+and South, so it's not supported as an output coordinate system.
 Supported since Survex 1.2.16.</Para>
 
 <Para>JTSK03 for a variant of JTSK.  Supported since Survex 1.2.16.</Para>
