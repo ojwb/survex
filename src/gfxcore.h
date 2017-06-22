@@ -260,11 +260,14 @@ private:
     size_t n_tris;
 
     void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
-    void PlaceVertexWithColour(const Vector3 & v, GLint tex_x, GLint tex_y,
+    void PlaceVertexWithColour(const Vector3 & v,
+			       glaTexCoord tex_x, glaTexCoord tex_y,
 			       Double factor);
     void SetDepthColour(Double z, Double factor);
     void PlaceVertexWithDepthColour(const Vector3 & v, Double factor = 1.0);
-    void PlaceVertexWithDepthColour(const Vector3 & v, GLint tex_x, GLint tex_y, Double factor);
+    void PlaceVertexWithDepthColour(const Vector3 & v,
+				    glaTexCoord tex_x, glaTexCoord tex_y,
+				    Double factor);
 
     void SetColourFrom01(double how_far, Double factor);
 

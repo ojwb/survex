@@ -3360,8 +3360,8 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
+    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
@@ -3396,8 +3396,8 @@ void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
+    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
@@ -3454,8 +3454,8 @@ void GfxCore::AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
+    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
@@ -3515,8 +3515,8 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    int w = int(ceil(((b - a).magnitude() + (d - c).magnitude()) / 2));
-    int h = int(ceil(((b - c).magnitude() + (d - a).magnitude()) / 2));
+    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
+    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
