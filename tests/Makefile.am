@@ -126,4 +126,5 @@ cslonglat.out cslonglat.svx\
 omitfixaroundsolve.out omitfixaroundsolve.svx\
 repeatreading.svx repeatreading.out repeatreading.pos\
 mixedeols.out mixedeols.svx\
-utf8bom.out utf8bom.svx
+utf8bom.out utf8bom.svx\
+nonewlineateof.out nonewlineateof.svx

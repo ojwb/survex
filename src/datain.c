@@ -129,8 +129,9 @@ show_line(int col, int width)
 
    /* Read the whole line and write it out. */
    PUTC(' ', STDERR);
-   while (!feof(file.fh)) {
+   while (1) {
       int c = GETC(file.fh);
+      /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
       if (c == '\t') ++tabs;
       PUTC(c, STDERR);
@@ -611,7 +612,7 @@ data_file(const char *pth, const char *fnm)
 #endif
 
    if (fmt == FMT_DAT) {
-      while (!feof(file.fh) && !ferror(file.fh)) {
+      while (ch != EOF && !ferror(file.fh)) {
 	 static reading compass_order[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
 	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
@@ -703,7 +704,7 @@ data_file(const char *pth, const char *fnm)
 	 /* BLANK LINE */
 	 skipline();
 	 process_eol();
-	 while (!feof(file.fh)) {
+	 while (ch != EOF) {
 	    if (ch == '\x0c') {
 	       nextch();
 	       process_eol();
@@ -722,7 +723,7 @@ data_file(const char *pth, const char *fnm)
       }
    } else if (fmt == FMT_MAK) {
       nextch_handling_eol();
-      while (!feof(file.fh) && !ferror(file.fh)) {
+      while (ch != EOF && !ferror(file.fh)) {
 	 if (ch == '#') {
 	    /* include a file */
 	    int ch_store;
@@ -807,7 +808,7 @@ data_file(const char *pth, const char *fnm)
 	 pcs = pcsParent;
       }
    } else {
-      while (!feof(file.fh) && !ferror(file.fh)) {
+      while (ch != EOF && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
 	    f_export_ok = fFalse;
 	    switch (pcs->style) {

@@ -1,0 +1,2 @@
+; pos=no warn=0
+*fix 1 reference 0 0 0
