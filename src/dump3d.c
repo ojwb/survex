@@ -173,6 +173,11 @@ main(int argc, char **argv)
 	  case img_BAD:
 	    img_close(pimg);
 	    fatalerror(img_error2msg(img_error()), fnm);
+	    /* fatalerror() won't return, but the compiler can't tell that and
+	     * may warn about dropping through into the next case without a
+	     * "break;" here.
+	     */
+	    break;
 	  case img_STOP:
 	    printf("STOP\n");
 	    break;
