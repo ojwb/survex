@@ -3126,6 +3126,29 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
     }
 }
 
+void GfxCore::SplitPolyAcrossBands(vector<vector<Vector3>>& splits,
+				   int band, int band2,
+				   const Vector3 &p, const Vector3 &q)
+{
+    const int step = (band < band2) ? 1 : -1;
+    for (int i = band; i != band2; i += step) {
+	const Double z = GetDepthBoundaryBetweenBands(i, i + step);
+
+	// Find the intersection point of the line p -> q
+	// with the plane parallel to the xy-plane with z-axis intersection z.
+	assert(q.GetZ() - p.GetZ() != 0.0);
+
+	const Double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
+//	assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
+
+	const Double x = p.GetX() + t * (q.GetX() - p.GetX());
+	const Double y = p.GetY() + t * (q.GetY() - p.GetY());
+
+	splits[i].push_back(Vector3(x, y, z));
+	splits[i + step].push_back(Vector3(x, y, z));
+    }
+}
+
 int GfxCore::GetDepthColour(Double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
@@ -3237,29 +3260,48 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     c_band = min(max(c_band, 0), GetNumColourBands());
     d_band = GetDepthColour(d.GetZ());
     d_band = min(max(d_band, 0), GetNumColourBands());
-    // All this splitting is incorrect - we need to make a separate polygon
-    // for each depth band...
     glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
     glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
-    BeginPolygon();
-////    PlaceNormal(normal);
-    PlaceVertexWithDepthColour(a, 0, 0, factor);
-    if (a_band != b_band) {
-	SplitLineAcrossBands(a_band, b_band, a, b, factor);
+    int min_band = min(min(a_band, b_band), min(c_band, d_band));
+    int max_band = max(max(a_band, b_band), max(c_band, d_band));
+    if (min_band == max_band) {
+	// Simple case - the polygon is entirely within one band.
+	BeginPolygon();
+////	PlaceNormal(normal);
+	PlaceVertexWithDepthColour(a, 0, 0, factor);
+	PlaceVertexWithDepthColour(b, w, 0, factor);
+	PlaceVertexWithDepthColour(c, w, h, factor);
+	PlaceVertexWithDepthColour(d, 0, h, factor);
+	EndPolygon();
+    } else {
+	// We need to make a separate polygon for each depth band...
+	// FIXME: texture coordinates
+	vector<vector<Vector3>> splits;
+	splits.resize(max_band + 1);
+	splits[a_band].push_back(a);
+	if (a_band != b_band) {
+	    SplitPolyAcrossBands(splits, a_band, b_band, a, b);
+	}
+	splits[b_band].push_back(b);
+	if (b_band != c_band) {
+	    SplitPolyAcrossBands(splits, b_band, c_band, b, c);
+	}
+	splits[c_band].push_back(c);
+	if (c_band != d_band) {
+	    SplitPolyAcrossBands(splits, c_band, d_band, c, d);
+	}
+	splits[d_band].push_back(d);
+	if (d_band != a_band) {
+	    SplitPolyAcrossBands(splits, d_band, a_band, d, a);
+	}
+	for (int band = min_band; band <= max_band; ++band) {
+	    BeginPolygon();
+	    for (auto&& v3 : splits[band]) {
+		PlaceVertexWithDepthColour(v3, factor);
+	    }
+	    EndPolygon();
+	}
     }
-    PlaceVertexWithDepthColour(b, w, 0, factor);
-    if (b_band != c_band) {
-	SplitLineAcrossBands(b_band, c_band, b, c, factor);
-    }
-    PlaceVertexWithDepthColour(c, w, h, factor);
-    if (c_band != d_band) {
-	SplitLineAcrossBands(c_band, d_band, c, d, factor);
-    }
-    PlaceVertexWithDepthColour(d, 0, h, factor);
-    if (d_band != a_band) {
-	SplitLineAcrossBands(d_band, a_band, d, a, factor);
-    }
-    EndPolygon();
 }
 
 void GfxCore::SetColourFromDate(int date, Double factor)
