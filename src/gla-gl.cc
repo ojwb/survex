@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014,2015 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2017 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -1159,7 +1159,7 @@ void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z,
 #ifdef GLA_DEBUG
     m_Vertices++;
 #endif
-    glTexCoord2i(tex_x, tex_y);
+    glTexCoord2f(tex_x, tex_y);
     glVertex3d(x, y, z);
 }
 

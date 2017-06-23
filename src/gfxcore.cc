@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -3126,9 +3126,11 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
     }
 }
 
-void GfxCore::SplitPolyAcrossBands(vector<vector<Vector3>>& splits,
+void GfxCore::SplitPolyAcrossBands(vector<vector<Split> >& splits,
 				   int band, int band2,
-				   const Vector3 &p, const Vector3 &q)
+				   const Vector3 &p, const Vector3 &q,
+				   glaTexCoord ptx, glaTexCoord pty,
+				   glaTexCoord w, glaTexCoord h)
 {
     const int step = (band < band2) ? 1 : -1;
     for (int i = band; i != band2; i += step) {
@@ -3143,9 +3145,12 @@ void GfxCore::SplitPolyAcrossBands(vector<vector<Vector3>>& splits,
 
 	const Double x = p.GetX() + t * (q.GetX() - p.GetX());
 	const Double y = p.GetY() + t * (q.GetY() - p.GetY());
+	glaTexCoord tx = ptx, ty = pty;
+	if (w) tx += t * w;
+	if (h) ty += t * h;
 
-	splits[i].push_back(Vector3(x, y, z));
-	splits[i + step].push_back(Vector3(x, y, z));
+	splits[i].push_back(Split(Vector3(x, y, z), tx, ty));
+	splits[i + step].push_back(Split(Vector3(x, y, z), tx, ty));
     }
 }
 
@@ -3234,8 +3239,8 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
-    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
     PlaceVertexWithColour(a, 0, 0, factor);
@@ -3260,8 +3265,8 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     c_band = min(max(c_band, 0), GetNumColourBands());
     d_band = GetDepthColour(d.GetZ());
     d_band = min(max(d_band, 0), GetNumColourBands());
-    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
-    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     int min_band = min(min(a_band, b_band), min(c_band, d_band));
     int max_band = max(max(a_band, b_band), max(c_band, d_band));
     if (min_band == max_band) {
@@ -3275,29 +3280,28 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 	EndPolygon();
     } else {
 	// We need to make a separate polygon for each depth band...
-	// FIXME: texture coordinates
-	vector<vector<Vector3>> splits;
+	vector<vector<Split> > splits;
 	splits.resize(max_band + 1);
-	splits[a_band].push_back(a);
+	splits[a_band].push_back(Split(a, 0, 0));
 	if (a_band != b_band) {
-	    SplitPolyAcrossBands(splits, a_band, b_band, a, b);
+	    SplitPolyAcrossBands(splits, a_band, b_band, a, b, 0, 0, w, 0);
 	}
-	splits[b_band].push_back(b);
+	splits[b_band].push_back(Split(b, w, 0));
 	if (b_band != c_band) {
-	    SplitPolyAcrossBands(splits, b_band, c_band, b, c);
+	    SplitPolyAcrossBands(splits, b_band, c_band, b, c, w, 0, 0, h);
 	}
-	splits[c_band].push_back(c);
+	splits[c_band].push_back(Split(c, w, h));
 	if (c_band != d_band) {
-	    SplitPolyAcrossBands(splits, c_band, d_band, c, d);
+	    SplitPolyAcrossBands(splits, c_band, d_band, c, d, w, h, -w, 0);
 	}
-	splits[d_band].push_back(d);
+	splits[d_band].push_back(Split(d, 0, h));
 	if (d_band != a_band) {
-	    SplitPolyAcrossBands(splits, d_band, a_band, d, a);
+	    SplitPolyAcrossBands(splits, d_band, a_band, d, a, 0, h, 0, -h);
 	}
 	for (int band = min_band; band <= max_band; ++band) {
 	    BeginPolygon();
-	    for (auto&& v3 : splits[band]) {
-		PlaceVertexWithDepthColour(v3, factor);
+	    for (auto&& item : splits[band]) {
+		PlaceVertexWithDepthColour(item.vec, item.tx, item.ty, factor);
 	    }
 	    EndPolygon();
 	}
@@ -3360,8 +3364,8 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
-    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
@@ -3396,8 +3400,8 @@ void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
-    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
@@ -3454,8 +3458,8 @@ void GfxCore::AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
-    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);
@@ -3515,8 +3519,8 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
     Double factor = dot(normal, light) * .3 + .7;
-    glaTexCoord w(ceil(((b - a).magnitude() + (d - c).magnitude()) * .5));
-    glaTexCoord h(ceil(((b - c).magnitude() + (d - a).magnitude()) * .5));
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
     BeginQuadrilaterals();
 ////    PlaceNormal(normal);

@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2016,2017 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -107,6 +107,14 @@ enum {
     SHOW_DASHED,
     SHOW_FADED,
     SHOW_NORMAL,
+};
+
+struct Split {
+    Vector3 vec;
+    glaCoord tx, ty;
+
+    Split(const Vector3& vec_, glaCoord tx_, glaCoord ty_)
+	: vec(vec_), tx(tx_), ty(ty_) { }
 };
 
 // It's pointless to redraw the screen as often as we can on a fast machine,
@@ -547,9 +555,11 @@ public:
     void SplitLineAcrossBands(int band, int band2,
 			      const Vector3 &p, const Vector3 &q,
 			      Double factor = 1.0);
-    void SplitPolyAcrossBands(vector<vector<Vector3>>& splits,
+    void SplitPolyAcrossBands(vector<vector<Split> >& splits,
 			      int band, int band2,
-			      const Vector3 &p, const Vector3 &q);
+			      const Vector3 &p, const Vector3 &q,
+			      glaTexCoord ptx, glaTexCoord pty,
+			      glaTexCoord w, glaTexCoord h);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddPolyline(const traverse & centreline);

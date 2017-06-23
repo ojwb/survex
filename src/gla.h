@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012,2014 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012,2014,2017 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ string GetGLSystemDescription();
 
 typedef Double glaCoord;
 
-typedef GLint glaTexCoord;
+typedef GLfloat glaTexCoord;
 
 // Colours for drawing.  Don't reorder these!
 enum gla_colour {
