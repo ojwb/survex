@@ -544,6 +544,9 @@ public:
     void SplitLineAcrossBands(int band, int band2,
 			      const Vector3 &p, const Vector3 &q,
 			      Double factor = 1.0);
+    void SplitPolyAcrossBands(vector<vector<Vector3>>& splits,
+			      int band, int band2,
+			      const Vector3 &p, const Vector3 &q);
     int GetDepthColour(Double z) const;
     Double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddPolyline(const traverse & centreline);
