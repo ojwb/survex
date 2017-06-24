@@ -613,12 +613,12 @@ data_file(const char *pth, const char *fnm)
 
    if (fmt == FMT_DAT) {
       while (ch != EOF && !ferror(file.fh)) {
-	 static reading compass_order[] = {
+	 static const reading compass_order[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
 	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
 	    CompassDATFlags, IgnoreAll
 	 };
-	 static reading compass_order_backsights[] = {
+	 static const reading compass_order_backsights[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
 	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
 	    CompassDATBackComp, CompassDATBackClino,
@@ -878,7 +878,7 @@ handle_plumb(clino_type *p_ctype)
    typedef enum {
       CLINO_NULL=-1, CLINO_UP, CLINO_DOWN, CLINO_LEVEL
    } clino_tok;
-   static sztok clino_tab[] = {
+   static const sztok clino_tab[] = {
       {"D",     CLINO_DOWN},
       {"DOWN",  CLINO_DOWN},
       {"H",     CLINO_LEVEL},
@@ -887,7 +887,7 @@ handle_plumb(clino_type *p_ctype)
       {"UP",    CLINO_UP},
       {NULL,    CLINO_NULL}
    };
-   static real clinos[] = {(real)M_PI_2, (real)(-M_PI_2), (real)0.0};
+   static const real clinos[] = {(real)M_PI_2, (real)(-M_PI_2), (real)0.0};
    clino_tok tok;
 
    skipblanks();
@@ -1431,7 +1431,7 @@ data_cartesian(void)
 
    reading first_stn = End;
 
-   reading *ordering;
+   const reading *ordering;
 
    again:
 
@@ -1570,7 +1570,7 @@ data_normal(void)
    bool fDepthChange;
    unsigned long compass_dat_flags = 0;
 
-   reading *ordering;
+   const reading *ordering;
 
    VAL(Tape) = VAL(BackTape) = HUGE_REAL;
    VAL(Comp) = VAL(BackComp) = HUGE_REAL;
@@ -1612,7 +1612,7 @@ data_normal(void)
 	  typedef enum {
 	     DIR_NULL=-1, DIR_FORE, DIR_BACK
 	  } dir_tok;
-	  static sztok dir_tab[] = {
+	  static const sztok dir_tab[] = {
 	     {"B",     DIR_BACK},
 	     {"F",     DIR_FORE},
 	  };
@@ -2008,7 +2008,7 @@ static void
 data_passage(void)
 {
    prefix *stn = NULL;
-   reading *ordering;
+   const reading *ordering;
 
    for (ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
@@ -2079,7 +2079,7 @@ data_nosurvey(void)
 
    reading first_stn = End;
 
-   reading *ordering;
+   const reading *ordering;
 
    again:
 

@@ -702,9 +702,9 @@ cmd_begin(void)
 extern void
 free_settings(settings *p) {
    /* don't free default ordering or ordering used by parent */
-   reading *order = p->ordering;
+   const reading *order = p->ordering;
    if (order != default_order && (!p->next || order != p->next->ordering))
-      osfree(order);
+      osfree((reading*)order);
 
    /* free Translate if not used by parent */
    if (!p->next || p->Translate != p->next->Translate)
@@ -1515,7 +1515,7 @@ cmd_data(void)
    /* don't free default ordering or ordering used by parent */
    if (pcs->ordering != default_order &&
        !(pcs->next && pcs->next->ordering == pcs->ordering))
-      osfree(pcs->ordering);
+      osfree((reading*)pcs->ordering);
 
    pcs->style = style;
    pcs->ordering = new_order;
