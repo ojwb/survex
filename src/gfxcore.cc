@@ -2366,7 +2366,7 @@ void GfxCore::GenerateList(unsigned int l)
 	    DrawLengthKey();
 	    break;
 	case LIST_UNDERGROUND_LEGS:
-	    GenerateDisplayList(0);
+	    GenerateDisplayList(false);
 	    break;
 	case LIST_TUBES:
 	    GenerateDisplayListTubes();
