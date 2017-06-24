@@ -1392,8 +1392,10 @@ Supported since Survex 1.2.16.</Para>
 
 <Para>JTSK03 for a variant of JTSK.  Supported since Survex 1.2.16.</Para>
 
-<Para>LONG-LAT for longitude/latitude.  The WGS84 datum is assumed.  Supported
-since Survex 1.2.15.</Para>
+<Para>LONG-LAT for longitude/latitude.  The WGS84 datum is assumed.
+NB <command>*fix</command> expects the coordinates in the order x,y,z which
+means longitude (i.e. E/W), then latitude (i.e. N/S), then altitude.
+Supported since Survex 1.2.15.</Para>
 
 <Para>OSGB: followed by a two letter code for the UK Ordnance Survey National
 Grid.  The first letter should be 'H', 'N', 'O', 'S' or 'T'; the second any
