@@ -1475,7 +1475,11 @@ of this, please see: http://expo.survex.com/handbook/survey/coord.htm
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><Para>*data &lt;style&gt; &lt;ordering&gt;</Para></listitem>
+<listitem>
+<Para>*data &lt;style&gt; &lt;ordering&gt;</Para>
+<Para>*data</Para>
+</listitem>
+
 <!-- BACKCOMPASS BACKCLINO -->
 </VarListEntry>
 
@@ -1530,6 +1534,13 @@ for a foresight or "B" for a backsight.
 In NORMAL, DIVING, and CYLPOLAR data styles, TAPE may be replaced by
 FROMCOUNT/TOCOUNT (or COUNT in interleaved data) to allow processing of surveys
 performed with a Topofil instead of a tape.
+</Para>
+
+<Para>
+In Survex 1.2.31 and later, you can use <command>*data</command> without any
+arguments to keep the currently set data style, but resetting any state.  This
+is useful when you're entering passage tubes with branches - see the description
+of the "PASSAGE" style below.
 </Para>
 
 <VariableList>
@@ -1709,6 +1720,28 @@ to allow a free-form text description to be given):
 1  0.1 2.3 8.0 1.4  Sticking out point on left wall
 2  0.0 1.9 9.0 0.5  Point on left wall
 3  1.0 0.7 9.0 0.8  Highest point of boulder
+</programlisting>
+
+Each <command>*data passage</command> data block describes a single continuous
+tube - to break a tube or to enter a side passage you need to have a second
+block.  With Survex 1.2.30 and older, you had to repeat the entire
+<command>*data passage</command> line to start a new tube, but in Survex 1.2.31
+and later, you can just use <command>*data</command> without any arguments.
+</Para>
+
+<Para>
+For example here the main passage is 1-2-3 and a side passage is 2-4:
+
+<programlisting>
+*data passage station left right up down ignoreall
+1  0.1 2.3 8.0 1.4  Sticking out point on left wall
+2  0.0 1.9 9.0 0.5  Point on left wall opposite side passage
+3  1.0 0.7 9.0 0.8  Highest point of boulder
+; If you're happy to require Survex 1.2.31 or later, you can just use
+; "*data" here instead.
+*data passage station left right up down ignoreall
+2  0.3 0.2 9.0 0.5
+4  0.0 0.5 6.5 1.5  Fossil on left wall
 </programlisting>
 </Para>
 </listitem>

@@ -1260,6 +1260,7 @@ cmd_data(void)
    reading *new_order, d;
    unsigned long mUsed = 0;
    char *style_name;
+   int old_style = pcs->style;
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
@@ -1277,6 +1278,13 @@ cmd_data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
+      if (!buffer[0]) {
+	 /* "*data" reinitialises the current style - for *data passage that
+	  * breaks the passage.
+	  */
+	 style = old_style;
+	 goto reinit_style;
+      }
       /* TRANSLATORS: e.g. trying to refer to an invalid FNORD data style */
       compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Data style “%s” unknown*/65, buffer);
       return;
@@ -1514,6 +1522,7 @@ cmd_data(void)
 
    osfree(style_name);
 
+reinit_style:
    if (style == STYLE_PASSAGE) {
       lrudlist * new_psg = osnew(lrudlist);
       new_psg->tube = NULL;
