@@ -1916,7 +1916,7 @@ But if you have a survey of a cave which isn't connected to any known fixed
 points then you'll need to handle it this way, either fixing an entrance
 to some arbitrary coordinates (probably (0,0,0)) or letting Survex pick a
 station as the origin.  If the survey was all done in a short enough period
-of time that the magentic declination won't have changed significantly, you
+of time that the magnetic declination won't have changed significantly, you
 can just ignore it and Grid North in the implicit coordinate system will be
 Magnetic North at the time of the survey.  If you want to correct for magnetic
 declination, you can't use *declination auto because the IGRF model needs the
