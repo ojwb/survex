@@ -2,7 +2,11 @@
 use strict;
 
 open O, '<', $ARGV[0] or die $!;
-open N, '<', "lib/survex-$ARGV[0]" or die $!;
+if ($ARGV[1] eq '-') {
+    *N = *STDIN;
+} else {
+    open N, '<', $ARGV[1] or die $!;
+}
 
 my $fuzzy = 0;
 my $diff = 0;

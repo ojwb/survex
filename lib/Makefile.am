@@ -57,8 +57,7 @@ launchpad-diff:
 	for po in $(po_files) ; do \
 	    lpo="lib/survex-$$po" ;\
 	    [ -r "$$lpo" ] || continue ;\
-	    perl -i ./unlaunchpad-po "$$lpo" ;\
-	    ./launchpad-merge-po "$$po" > "lib/$$po" ;\
+	    perl ./unlaunchpad-po "$$lpo" | ./launchpad-merge-po "$$po" - > "lib/$$po" ;\
 	    if ! diff -q "$$po" "lib/$$po" ; then \
 		echo "Edit changes for $$po ? (Y/n/q)" ;\
 		read ;\
