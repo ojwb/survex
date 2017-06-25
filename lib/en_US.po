@@ -2398,6 +2398,7 @@ msgstr "H %.2f%s, V %.2f%s"
 #. measured by the clino)
 #: ../src/mainfrm.cc:2448
 #: n:341
+#, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s"
 msgstr "%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s"
 
