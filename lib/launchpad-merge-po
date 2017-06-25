@@ -41,9 +41,9 @@ while (1) {
 	next;
     }
 
-    if ($o eq "#~ $n") {
+    if (substr($o, 0, 3) eq '#~ ' && substr($n, 0, 3) ne '#~ ') {
 	print ' ' if $diff;
-	print $o;
+	print "#~ $n";
 	$n = $o = undef;
 	next;
     }
