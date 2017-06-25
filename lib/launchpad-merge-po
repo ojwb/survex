@@ -63,6 +63,13 @@ while (1) {
 	next;
     }
 
+    if ($o =~ /(^"Last-Translator: .*<).*?(>.*\n)/ && $n eq "$1Unknown$2") {
+	print ' ' if $diff;
+	print $o;
+	$n = $o = undef;
+	next;
+    }
+
     if ($o eq "\n") {
 	print '+' if $diff;
 	print $n;
