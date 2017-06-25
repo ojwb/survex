@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016 Olly Betts
+ * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016,2017 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -538,7 +538,7 @@ main(int argc, char **argv)
    const char *survey = NULL;
    const char *specfile = NULL;
    img *pimg;
-   int have_xsect = 0;
+   int xsections = 0;
 
    msg_init(argv);
 
@@ -611,7 +611,8 @@ main(int argc, char **argv)
 	 fatalerror(img_error2msg(img_error()), fnm_in);
 	 break;
       case img_XSECT:
-	 have_xsect = 1;
+      case img_XSECT_END:
+	 ++xsections;
 	 break;
       }
    } while (result != img_STOP);
@@ -653,7 +654,7 @@ main(int argc, char **argv)
    /* Only does single connected component currently. */
    do_stn(start, 0.0, NULL, ERIGHT, 0);
 
-   if (have_xsect) {
+   if (xsections) {
       img_rewind(pimg);
       /* Read ahead on pimg before writing pimg_out so we find out if an
        * img_XSECT_END comes next. */
@@ -661,14 +662,15 @@ main(int argc, char **argv)
       int flags = 0;
       do {
 	 result = img_read_item(pimg, &pt);
-	 if (result == img_XSECT || result == img_XSECT_END) {
-	    if (label) {
-	       if (result == img_XSECT_END)
-		  flags |= img_XFLAG_END;
-	       img_write_item(pimg_out, img_XSECT, flags, label, 0, 0, 0);
-	       osfree(label);
-	       label = NULL;
-	    }
+	 if (result != img_XSECT && result != img_XSECT_END)
+	    continue;
+	 --xsections;
+	 if (label) {
+	    if (result == img_XSECT_END)
+	       flags |= img_XFLAG_END;
+	    img_write_item(pimg_out, img_XSECT, flags, label, 0, 0, 0);
+	    osfree(label);
+	    label = NULL;
 	 }
 	 if (result == img_XSECT) {
 	    label = osstrdup(pimg->label);
@@ -678,7 +680,7 @@ main(int argc, char **argv)
 	    pimg_out->u = pimg->u;
 	    pimg_out->d = pimg->d;
 	 }
-      } while (result != img_STOP);
+      } while (xsections && result != img_STOP);
    }
 
    (void)img_close(pimg);
