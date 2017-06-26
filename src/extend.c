@@ -739,37 +739,41 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 	 if (!try_all && l->prefix != prefix) {
 	    continue;
 	 }
+	 int break_flag;
+	 point *p2;
 	 if (l->to == p) {
-	    if (l->broken & BREAK_TO) continue;
-	    lp->next = l->next;
-	    /* adjust direction of extension if necessary */
-	    dir = adjust_direction(dir, l->to->dir);
-	    dir = adjust_direction(dir, l->dir);
-
-	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	    if (dir == ELEFT) dX = -dX;
-	    img_write_item(pimg_out, img_MOVE, 0, NULL, X + dX, 0, l->fr->p.z);
-	    img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
-			   X, 0, l->to->p.z);
-	    l->fDone = 1;
-	    do_stn(l->fr, X + dX, l->prefix, dir, (l->broken & BREAK_FR));
-	    l = lp;
+	    break_flag = BREAK_TO;
+	    p2 = l->fr;
 	 } else if (l->fr == p) {
-	    if (l->broken & BREAK_FR) continue;
-	    lp->next = l->next;
-	    /* adjust direction of extension if necessary */
-	    dir = adjust_direction(dir, l->fr->dir);
-	    dir = adjust_direction(dir, l->dir);
-
-	    dX = hypot(l->fr->p.x - l->to->p.x, l->fr->p.y - l->to->p.y);
-	    if (dir == ELEFT) dX = -dX;
-	    img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, l->fr->p.z);
-	    img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
-			   X + dX, 0, l->to->p.z);
-	    l->fDone = 1;
-	    do_stn(l->to, X + dX, l->prefix, dir, (l->broken & BREAK_TO));
-	    l = lp;
+	    break_flag = BREAK_FR;
+	    p2 = l->to;
+	 } else {
+	    continue;
 	 }
+	 if (l->broken & break_flag) continue;
+	 lp->next = l->next;
+	 /* adjust direction of extension if necessary */
+	 dir = adjust_direction(dir, p->dir);
+	 dir = adjust_direction(dir, l->dir);
+
+	 double dx = p2->p.x - p->p.x;
+	 double dy = p2->p.y - p->p.y;
+	 dX = hypot(dx, dy);
+	 double X2 = X;
+	 if (dir == ELEFT) {
+	     X2 -= dX;
+	 } else {
+	     X2 += dX;
+	 }
+
+	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, p->p.z);
+	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
+			X2, 0, p2->p.z);
+
+	 l->fDone = 1;
+	 /* l->broken doesn't have break_flag set as we checked that above. */
+	 do_stn(p2, X2, l->prefix, dir, l->broken);
+	 l = lp;
       }
    }
 }
