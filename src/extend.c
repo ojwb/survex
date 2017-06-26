@@ -45,6 +45,11 @@ typedef struct stn {
    const struct stn *next;
 } stn;
 
+typedef struct splay {
+   struct POINT *pt;
+   struct splay *next;
+} splay;
+
 typedef struct POINT {
    img_point p;
    double X;
@@ -53,6 +58,7 @@ typedef struct POINT {
    char dir;
    char fDone;
    char fBroken;
+   splay *splays;
    struct POINT *next;
 } point;
 
@@ -75,7 +81,7 @@ typedef struct LEG {
 #define ERIGHT 0x02
 #define ESWAP  0x04
 
-static point headpoint = {{0, 0, 0}, 0, NULL, 0, 0, 0, 0, NULL};
+static point headpoint = {{0, 0, 0}, 0, NULL, 0, 0, 0, 0, NULL, NULL};
 
 static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
@@ -83,7 +89,7 @@ static img *pimg_out;
 
 static int show_breaks = 0;
 
-static void do_stn(point *, double, const char *, int, int);
+static void do_stn(point *, double, const char *, int, int, double);
 
 typedef struct pfx {
    const char *label;
@@ -133,6 +139,7 @@ find_point(const img_point *pt)
    p->dir = 0;
    p->fDone = 0;
    p->fBroken = 0;
+   p->splays = NULL;
    p->next = headpoint.next;
    headpoint.next = p;
    return p;
@@ -538,7 +545,7 @@ main(int argc, char **argv)
    const char *survey = NULL;
    const char *specfile = NULL;
    img *pimg;
-   int xsections = 0;
+   int xsections = 0, splays = 0;
 
    msg_init(argv);
 
@@ -598,8 +605,13 @@ main(int argc, char **argv)
 	    break;
 	 }
 	 to = find_point(&pt);
-	 if (!(pimg->flags & (img_FLAG_SURFACE|img_FLAG_SPLAY)))
-	    add_leg(fr, to, pimg->label, pimg->flags);
+	 if (!(pimg->flags & img_FLAG_SURFACE)) {
+	    if (pimg->flags & img_FLAG_SPLAY) {
+	       ++splays;
+	    } else {
+	       add_leg(fr, to, pimg->label, pimg->flags);
+	    }
+	 }
 	 fr = to;
 	 break;
       case img_LABEL:
@@ -616,6 +628,50 @@ main(int argc, char **argv)
 	 break;
       }
    } while (result != img_STOP);
+
+   if (splays) {
+      img_rewind(pimg);
+      fr = NULL;
+      do {
+	 result = img_read_item(pimg, &pt);
+	 switch (result) {
+	 case img_MOVE:
+	    fr = find_point(&pt);
+	    break;
+	 case img_LINE:
+	    if (!fr) {
+	       result = img_BAD;
+	       break;
+	    }
+	    to = find_point(&pt);
+	    if (!(pimg->flags & img_FLAG_SURFACE)) {
+	       if (pimg->flags & img_FLAG_SPLAY) {
+		  splay *sp = osmalloc(ossizeof(splay));
+		  --splays;
+		  if (fr->order) {
+		     if (to->order == 0) {
+			sp->pt = to;
+			sp->next = fr->splays;
+			fr->splays = sp;
+		     } else {
+			printf("Splay without a dead end from %s to %s\n", fr->stns->label, to->stns->label);
+			osfree(sp);
+		     }
+		  } else if (to->order) {
+		     sp->pt = fr;
+		     sp->next = to->splays;
+		     to->splays = sp;
+		  } else {
+		     printf("Isolated splay from %s to %s\n", fr->stns->label, to->stns->label);
+		     osfree(sp);
+		  }
+	       }
+	    }
+	    fr = to;
+	    break;
+	 }
+      } while (splays && result != img_STOP);
+   }
 
    desc = osstrdup(pimg->title);
 
@@ -652,7 +708,7 @@ main(int argc, char **argv)
    pimg_out = img_open_write(fnm_out, desc, img_FFLAG_EXTENDED);
 
    /* Only does single connected component currently. */
-   do_stn(start, 0.0, NULL, ERIGHT, 0);
+   do_stn(start, 0.0, NULL, ERIGHT, 0, HUGE_VAL);
 
    if (xsections) {
       img_rewind(pimg);
@@ -702,17 +758,60 @@ static int adjust_direction(int dir, int by) {
 }
 
 static void
-do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
+do_splays(point *p, double X, int dir, double b)
+{
+   const splay *sp;
+   double a;
+   double C, S;
+
+   if (!p->splays || b == HUGE_VAL) return;
+
+   if (dir == ELEFT) {
+       a = -M_PI_2 - b;
+   } else {
+       a = M_PI_2 - b;
+   }
+   C = cos(a);
+   S = sin(a);
+   for (sp = p->splays; sp; sp = sp->next) {
+      double x = X;
+      double z = p->p.z;
+      img_write_item(pimg_out, img_MOVE, 0, NULL, x, 0, z);
+
+      double dx = sp->pt->p.x - p->p.x;
+      double dy = sp->pt->p.y - p->p.y;
+      double dz = sp->pt->p.z - p->p.z;
+
+      double tmp = dx * C + dy * S;
+      dy = dy * C - dx * S;
+      dx = tmp;
+
+      img_write_item(pimg_out, img_LINE, img_FLAG_SPLAY, NULL, x + dx, dy, z + dz);
+   }
+   p->splays = NULL;
+}
+
+static void
+do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
 {
    leg *l, *lp;
    double dX;
    const stn *s;
    int odir = dir;
    int try_all;
+   int order = p->order;
+
+   if (b != HUGE_VAL) {
+      /* If this isn't the first point, the leg we came in on is already dealt
+       * with.
+       */
+      --order;
+   }
 
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
    }
+
    if (show_breaks && p->X != HUGE_VAL && p->X != X) {
       /* Draw "surface" leg between broken stations. */
       img_write_item(pimg_out, img_MOVE, 0, NULL, p->X, 0, p->p.z);
@@ -720,6 +819,13 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
    }
    p->X = X;
    if (labOnly || p->fBroken) {
+      return;
+   }
+
+   do_splays(p, X, dir, b);
+
+   if (order == 0) {
+      /* We've reached a dead end. */
       return;
    }
 
@@ -758,13 +864,18 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 double dx = p2->p.x - p->p.x;
 	 double dy = p2->p.y - p->p.y;
+	 // Bearing in radians.
+	 double bearing = atan2(dx, dy);
 	 dX = hypot(dx, dy);
 	 double X2 = X;
 	 if (dir == ELEFT) {
-	     X2 -= dX;
+	    X2 -= dX;
 	 } else {
-	     X2 += dX;
+	    X2 += dX;
 	 }
+
+	 /* In case we didn't already... */
+	 do_splays(p, X, dir, bearing);
 
 	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, p->p.z);
 	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
@@ -772,8 +883,9 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly)
 
 	 l->fDone = 1;
 	 /* l->broken doesn't have break_flag set as we checked that above. */
-	 do_stn(p2, X2, l->prefix, dir, l->broken);
+	 do_stn(p2, X2, l->prefix, dir, l->broken, bearing);
 	 l = lp;
+	 if (--order == 0) return;
       }
    }
 }
