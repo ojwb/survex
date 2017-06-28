@@ -2057,12 +2057,12 @@ msgstr "Otwory"
 #: ../src/printing.cc:551
 #: n:419
 msgid "Fixed Points"
-msgstr "&Punkty ustalone"
+msgstr "Punkty ustalone"
 
 #: ../src/printing.cc:555
 #: n:420
 msgid "Exported Stations"
-msgstr "&Wyeksportowane punkty"
+msgstr "Wyeksportowane punkty"
 
 #: ../src/mainfrm.cc:918
 #: n:237
