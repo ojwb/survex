@@ -822,10 +822,10 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
       return;
    }
 
-   do_splays(p, X, dir, b);
 
    if (order == 0) {
       /* We've reached a dead end. */
+      do_splays(p, X, dir, b);
       return;
    }
 
@@ -874,8 +874,11 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
 	    X2 += dX;
 	 }
 
-	 /* In case we didn't already... */
-	 do_splays(p, X, dir, bearing);
+	 if (p->splays) {
+	    double avg = atan2(sin(b) + sin(bearing),
+			       cos(b) + cos(bearing));
+	    do_splays(p, X, dir, avg);
+	 }
 
 	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, p->p.z);
 	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
