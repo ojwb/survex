@@ -2802,7 +2802,7 @@ msgstr "Visées l&atérales"
 #: ../src/mainfrm.cc:896
 #: n:251
 msgid "&Duplicate Legs"
-msgstr ""
+msgstr "&Dupliquer les visées"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are not shown.
@@ -2826,7 +2826,7 @@ msgstr "&Obscurcir"
 #: ../src/mainfrm.cc:893
 #: n:250
 msgid "&Dashed"
-msgstr ""
+msgstr "&En pointillés"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are shown the same as other legs.
