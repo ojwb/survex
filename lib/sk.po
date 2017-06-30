@@ -2110,13 +2110,14 @@ msgstr "Farba podľa &hļbky"
 #: ../src/mainfrm.cc:903
 #: n:293
 msgid "Colour by D&ate"
-msgstr "Farna podľa &dátumu"
+msgstr "Farba podľa &dátumu"
 
 #: ../src/gfxcore.cc:4102
 #: ../src/mainfrm.cc:904
 #: n:289
+#, fuzzy
 msgid "Colour by &Error"
-msgstr ""
+msgstr "Farba podľa &chyby"
 
 #: ../src/gfxcore.cc:4103
 #: ../src/mainfrm.cc:905
@@ -2127,12 +2128,14 @@ msgstr ""
 #: ../src/gfxcore.cc:4104
 #: ../src/mainfrm.cc:906
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Farba podľa dļž&ka"
 
 #: n:448
+#, fuzzy
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Farba podľa &merania"
 
 #: ../src/mainfrm.cc:968
 #: n:274
@@ -2405,7 +2408,7 @@ msgstr "H %.2f%s, V %.2f%s"
 #: n:341
 #, fuzzy, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s"
-msgstr "%s: %s, Vzd %.2f%s, Azim %03.1f%s"
+msgstr "%s: %s, Vzd %.2f%s, Azim %03.1f%s, Sklon %s"
 
 #. TRANSLATORS: tickable menu item in View menu.
 #.

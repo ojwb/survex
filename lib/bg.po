@@ -1239,9 +1239,9 @@ msgstr ""
 #. printout.
 #: ../src/printing.cc:1979
 #: n:244
-#, c-format
+#, fuzzy, c-format
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "Разгънат вертикален план 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1274,7 +1274,7 @@ msgstr "Профил Азимут %s, Наклон %s"
 #: ../src/printing.cc:1273
 #: n:191
 msgid "Extended elevation"
-msgstr ""
+msgstr "Разгънат вертикален план"
 
 #: ../src/cavern.c:416
 #: n:172
@@ -1907,7 +1907,7 @@ msgstr "Една страница"
 #: ../src/printing.cc:496
 #: n:259
 msgid "Bearing"
-msgstr ""
+msgstr "Азимут"
 
 #: ../src/printing.cc:543
 #: n:260
@@ -2532,8 +2532,9 @@ msgstr " Инча"
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4048
 #: n:387
+#, fuzzy
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&Скрий Компас"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:4066

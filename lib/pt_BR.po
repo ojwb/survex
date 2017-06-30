@@ -2119,7 +2119,7 @@ msgstr "Colorir de acordo com &Data"
 #: n:289
 #, fuzzy
 msgid "Colour by &Error"
-msgstr "Colorir de acordo com Err&os"
+msgstr "Colorir de acordo com &Erros"
 
 #: ../src/gfxcore.cc:4103
 #: ../src/mainfrm.cc:905
@@ -2130,12 +2130,14 @@ msgstr ""
 #: ../src/gfxcore.cc:4104
 #: ../src/mainfrm.cc:906
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Colorir de acordo com Desen&volvimento"
 
 #: n:448
+#, fuzzy
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Colorir de acordo com &Topografia"
 
 #: ../src/mainfrm.cc:968
 #: n:274
@@ -2535,20 +2537,23 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4048
 #: n:387
+#, fuzzy
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&Esconder Bússola"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:4066
 #: n:384
+#, fuzzy
 msgid "&Hide Clino"
-msgstr ""
+msgstr "&Esconder Clinômetro"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:4086
 #: n:385
+#, fuzzy
 msgid "&Hide scale bar"
-msgstr ""
+msgstr "&Esconder barra de escala"
 
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour

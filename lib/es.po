@@ -2117,23 +2117,26 @@ msgstr "Colorear por &Fecha"
 #: n:289
 #, fuzzy
 msgid "Colour by &Error"
-msgstr "Color por E&rror"
+msgstr "Colorear por &Error"
 
 #: ../src/gfxcore.cc:4103
 #: ../src/mainfrm.cc:905
 #: n:85
+#, fuzzy
 msgid "Colour by &Gradient"
-msgstr ""
+msgstr "Colorear por &Gradiente"
 
 #: ../src/gfxcore.cc:4104
 #: ../src/mainfrm.cc:906
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Colorear por &Longitud"
 
 #: n:448
+#, fuzzy
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Colorear por &Topografia"
 
 #: ../src/mainfrm.cc:968
 #: n:274

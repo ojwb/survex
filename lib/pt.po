@@ -2534,20 +2534,23 @@ msgstr ""
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4048
 #: n:387
+#, fuzzy
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&Esconder Bússola"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:4066
 #: n:384
+#, fuzzy
 msgid "&Hide Clino"
-msgstr ""
+msgstr "&Esconder Clinômetro"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:4086
 #: n:385
+#, fuzzy
 msgid "&Hide scale bar"
-msgstr ""
+msgstr "&Esconder Barra de escala"
 
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour

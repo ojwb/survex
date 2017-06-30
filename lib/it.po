@@ -2037,7 +2037,7 @@ msgstr "Nomi &Sovrapposti"
 #: n:450
 #, fuzzy
 msgid "Co&lour by"
-msgstr "Colour by (&z)"
+msgstr "Color&i secondo"
 
 #: ../src/mainfrm.cc:911
 #: n:294
@@ -2047,12 +2047,12 @@ msgstr "Marca gli Ing&ressi"
 #: ../src/mainfrm.cc:912
 #: n:295
 msgid "Highlight &Fixed Points"
-msgstr "Marca i Punti f&issi"
+msgstr "Marca i &punti fissi"
 
 #: ../src/mainfrm.cc:913
 #: n:296
 msgid "Highlight E&xported Points"
-msgstr "Marca i p&unti Esportati"
+msgstr "Marca i p&unti esportati"
 
 #: ../src/printing.cc:547
 #: n:418
@@ -2109,31 +2109,35 @@ msgstr "Colori secondo &profonditá"
 #: ../src/gfxcore.cc:4101
 #: ../src/mainfrm.cc:903
 #: n:293
+#, fuzzy
 msgid "Colour by D&ate"
-msgstr "Coloure per &Data"
+msgstr "Colori secondo &Data"
 
 #: ../src/gfxcore.cc:4102
 #: ../src/mainfrm.cc:904
 #: n:289
 #, fuzzy
 msgid "Colour by &Error"
-msgstr "Colore di &Error"
+msgstr "Colori secondo &Errore"
 
 #: ../src/gfxcore.cc:4103
 #: ../src/mainfrm.cc:905
 #: n:85
+#, fuzzy
 msgid "Colour by &Gradient"
-msgstr ""
+msgstr "Colori secondo &Scivolo"
 
 #: ../src/gfxcore.cc:4104
 #: ../src/mainfrm.cc:906
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr ""
+msgstr "Colori secondo &Lunghezza"
 
 #: n:448
+#, fuzzy
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Colori secondo &Topografia"
 
 #: ../src/mainfrm.cc:968
 #: n:274

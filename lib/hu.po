@@ -924,7 +924,7 @@ msgstr ""
 #: ../src/printing.cc:517
 #: n:285
 msgid "&Elevation"
-msgstr ""
+msgstr "&Hossz-metszet"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. neither from directly above nor from directly below.  It is
@@ -939,7 +939,7 @@ msgstr ""
 #: ../src/mainfrm.cc:173
 #: n:118
 msgid "Elevation"
-msgstr ""
+msgstr "Hossz-metszet"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. from directly above.
@@ -1245,9 +1245,9 @@ msgstr ""
 #. printout.
 #: ../src/printing.cc:1979
 #: n:244
-#, c-format
+#, fuzzy, c-format
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "Kifejtett hossz-metszet-szelvény 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1279,9 +1279,8 @@ msgstr "Keresztmetszet nézete %s, dőlése %s"
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printing.cc:1273
 #: n:191
-#, fuzzy
 msgid "Extended elevation"
-msgstr "Vetített keresztmetszet"
+msgstr "Kifejtett hossz-metszet-szelvény"
 
 #: ../src/cavern.c:416
 #: n:172
@@ -2144,7 +2143,7 @@ msgstr ""
 #: ../src/mainfrm.cc:968
 #: n:274
 msgid "&Compass"
-msgstr ""
+msgstr "&Kompasz"
 
 #: ../src/mainfrm.cc:969
 #: n:275
@@ -2155,8 +2154,9 @@ msgstr ""
 #. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:972
 #: n:276
+#, fuzzy
 msgid "Colour &Key"
-msgstr ""
+msgstr "&Colour Key"
 
 #: ../src/mainfrm.cc:973
 #: n:277

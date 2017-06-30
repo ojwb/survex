@@ -1238,9 +1238,9 @@ msgstr ""
 #. printout.
 #: ../src/printing.cc:1979
 #: n:244
-#, c-format
+#, fuzzy, c-format
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "Profil longitudinal 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -2128,17 +2128,19 @@ msgstr ""
 #: ../src/gfxcore.cc:4104
 #: ../src/mainfrm.cc:906
 #: n:82
+#, fuzzy
 msgid "Colour by &Length"
-msgstr "Colour b&y Length"
+msgstr "Culori in functie de &Lungimea"
 
 #: n:448
+#, fuzzy
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Culori in functie de &Topografia"
 
 #: ../src/mainfrm.cc:968
 #: n:274
 msgid "&Compass"
-msgstr "&Busola"
+msgstr "&Busolă"
 
 #: ../src/mainfrm.cc:969
 #: n:275
@@ -2532,20 +2534,23 @@ msgstr "in"
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4048
 #: n:387
+#, fuzzy
 msgid "&Hide Compass"
-msgstr ""
+msgstr "&Ascunde Busolă"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
 #: ../src/gfxcore.cc:4066
 #: n:384
+#, fuzzy
 msgid "&Hide Clino"
-msgstr ""
+msgstr "&Ascunde Clinometru"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
 #: ../src/gfxcore.cc:4086
 #: n:385
+#, fuzzy
 msgid "&Hide scale bar"
-msgstr ""
+msgstr "&Ascunde bara de control a &scarii"
 
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
@@ -3313,7 +3318,7 @@ msgstr ""
 
 #: n:371
 #~ msgid "Display compass"
-#~ msgstr "Afiseaza busola"
+#~ msgstr "Afiseaza busolă"
 
 #: n:372
 #~ msgid "Display clinometer"

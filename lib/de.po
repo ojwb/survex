@@ -2116,14 +2116,14 @@ msgstr "Farbe je nach &Datum"
 #: n:289
 #, fuzzy
 msgid "Colour by &Error"
-msgstr "Anhand Fehle&rn einfärben"
+msgstr "Farbe je nach &Fehlern"
 
 #: ../src/gfxcore.cc:4103
 #: ../src/mainfrm.cc:905
 #: n:85
 #, fuzzy
 msgid "Colour by &Gradient"
-msgstr "Farbe je nach Grad&ient"
+msgstr "Farbe je nach &Gefälle"
 
 #: ../src/gfxcore.cc:4104
 #: ../src/mainfrm.cc:906
@@ -2133,8 +2133,9 @@ msgid "Colour by &Length"
 msgstr "Farbe je nach &Länge"
 
 #: n:448
+#, fuzzy
 msgid "Colour by &Survey"
-msgstr ""
+msgstr "Farbe je nach &Vermessung"
 
 #: ../src/mainfrm.cc:968
 #: n:274
@@ -2554,7 +2555,7 @@ msgstr "Maßstab &verstecken"
 #: ../src/gfxcore.cc:4109
 #: n:386
 msgid "&Hide colour key"
-msgstr "Farbsc&hlüssel verstecken"
+msgstr "Farbschlüssel &verstecken"
 
 #. TRANSLATORS: degree symbol - probably should be translated to
 #. itself.
