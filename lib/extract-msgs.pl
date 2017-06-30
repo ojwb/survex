@@ -56,8 +56,9 @@ while (<ARGV>) {
 		print STDERR "Different TRANSLATOR comments for message #$msgno\n";
 		print STDERR "${$uses[$msgno]}[0]: $comment{$msgno}\n";
 		print STDERR "$ARGV:$.: $translator_comment\n";
+	    } else {
+		$comment{$msgno} = $translator_comment;
 	    }
-	    $comment{$msgno} = $translator_comment;
 	    undef $translator_comment;
 	}
 	push @{$uses[$msgno]}, "$ARGV:$.";
