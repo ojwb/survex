@@ -826,7 +826,10 @@ void MainFrm::CreateMenuBar()
 
     wxMenu* rotmenu = new wxMenu;
     /* TRANSLATORS: "Rotation" menu.  The accelerators must be different within
-     * this group.  Tickable menu item which toggles auto rotation */
+     * this group.  Tickable menu item which toggles auto rotation.
+     * Please don't translate "Space" - that's the shortcut key to use which
+     * wxWidgets needs to parse and it should then handle translating.
+     */
     rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*Au&to-Rotate\tSpace*/231));
     rotmenu->AppendSeparator();
     rotmenu->Append(menu_ROTATION_REVERSE, wmsg(/*&Reverse Direction*/234));
@@ -913,6 +916,10 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SHOW_EXPORTED_PTS, wmsg(/*Highlight E&xported Points*/296));
     viewmenu->AppendSeparator();
 #else
+    /* TRANSLATORS: Please don't translate "Escape" - that's the shortcut key
+     * to use which wxWidgets needs to parse and it should then handle
+     * translating.
+     */
     viewmenu-> Append(menu_VIEW_CANCEL_DIST_LINE, wmsg(/*&Cancel Measuring Line\tEscape*/281));
 #endif
     viewmenu->AppendCheckItem(menu_VIEW_PERSPECTIVE, wmsg(/*&Perspective*/237));
