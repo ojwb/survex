@@ -44,6 +44,7 @@
 
 #define GVIM_COMMAND "gvim +'call cursor($l,$c)' $f"
 #define VIM_COMMAND "x-terminal-emulator -e vim +'call cursor($l,$c)' $f"
+#define NVIM_COMMAND "x-terminal-emulator -e nvim +'call cursor($l,$c)' $f"
 #define GEDIT_COMMAND "gedit $f +$l:$c"
 // Pluma currently ignores the column, but include it assuming some future
 // version will add support.
@@ -365,6 +366,8 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 		cmd = wxT(GVIM_COMMAND);
 	    } else if (cmd == "vim") {
 		cmd = wxT(VIM_COMMAND);
+	    } else if (cmd == "nvim") {
+		cmd = wxT(NVIM_COMMAND);
 	    } else if (cmd == "gedit") {
 		cmd = wxT(GEDIT_COMMAND);
 	    } else if (cmd == "pluma") {
