@@ -1306,6 +1306,10 @@ void GLACanvas::BeginCrosses()
 	glPushAttrib(GL_TRANSFORM_BIT|GL_VIEWPORT_BIT|GL_ENABLE_BIT);
 	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib 2");
 	SetIndicatorTransform();
+	// Align line drawing to pixel centres to get pixel-perfect rendering
+	// (graphics card and driver bugs aside).
+	glTranslated(-0.5, -0.5, 0);
+	CHECK_GL_ERROR("BeginCrosses", "glTranslated");
 	glEnable(GL_DEPTH_TEST);
 	CHECK_GL_ERROR("BeginCrosses", "glEnable GL_DEPTH_TEST");
 	glBegin(GL_LINES);
@@ -1343,10 +1347,12 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 	// cross arms to avoid uneven crosses.
 	X = rint(X);
 	Y = rint(Y);
+	// Need to extend lines by an extra pixel (which shouldn't get drawn by
+	// the diamond-exit rule).
 	PlaceVertex(X - 3, Y - 3, Z);
-	PlaceVertex(X + 3, Y + 3, Z);
+	PlaceVertex(X + 4, Y + 4, Z);
 	PlaceVertex(X - 3, Y + 3, Z);
-	PlaceVertex(X + 3, Y - 3, Z);
+	PlaceVertex(X + 4, Y - 4, Z);
     }
 #ifdef GLA_DEBUG
     m_Vertices++;
