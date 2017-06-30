@@ -426,7 +426,7 @@ void GLACanvas::FirstShow()
 	    // we cached hints for, so use those hints.
 	    int v;
 	    if (cfg->Read(wxT("blob_method"), &v, 0) &&
-		(v == POINT || v == LINES)) {
+		(v == SPRITE || v == POINT || v == LINES)) {
 		// How to draw blobs.
 		blob_method = v;
 	    }
