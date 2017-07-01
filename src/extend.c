@@ -89,7 +89,7 @@ static img *pimg_out;
 
 static int show_breaks = 0;
 
-static void do_stn(point *, double, const char *, int, int, double);
+static void do_stn(point *, double, const char *, int, int, double, double);
 
 typedef struct pfx {
    const char *label;
@@ -708,7 +708,7 @@ main(int argc, char **argv)
    pimg_out = img_open_write(fnm_out, desc, img_FFLAG_EXTENDED);
 
    /* Only does single connected component currently. */
-   do_stn(start, 0.0, NULL, ERIGHT, 0, HUGE_VAL);
+   do_stn(start, 0.0, NULL, ERIGHT, 0, 0.0, 0.0);
 
    if (xsections) {
       img_rewind(pimg);
@@ -758,18 +758,25 @@ static int adjust_direction(int dir, int by) {
 }
 
 static void
-do_splays(point *p, double X, int dir, double b)
+do_splays(point *p, double X, int dir, double tdx, double tdy)
 {
    const splay *sp;
    double a;
    double C, S;
 
-   if (!p->splays || b == HUGE_VAL) return;
+   if (!p->splays) return;
 
+   if (tdx == 0 && tdy == 0) {
+       /* Two adjacent plumbs, or a pair of legs that exactly cancel. */
+       return;
+   }
+
+   /* Bearing in radians. */
+   a = atan2(tdx, tdy);
    if (dir == ELEFT) {
-       a = -M_PI_2 - b;
+       a = -M_PI_2 - a;
    } else {
-       a = M_PI_2 - b;
+       a = M_PI_2 - a;
    }
    C = cos(a);
    S = sin(a);
@@ -792,7 +799,8 @@ do_splays(point *p, double X, int dir, double b)
 }
 
 static void
-do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
+do_stn(point *p, double X, const char *prefix, int dir, int labOnly,
+       double odx, double ody)
 {
    leg *l, *lp;
    double dX;
@@ -800,13 +808,6 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
    int odir = dir;
    int try_all;
    int order = p->order;
-
-   if (b != HUGE_VAL) {
-      /* If this isn't the first point, the leg we came in on is already dealt
-       * with.
-       */
-      --order;
-   }
 
    for (s = p->stns; s; s = s->next) {
       img_write_item(pimg_out, img_LABEL, s->flags, s->label, X, 0, p->p.z);
@@ -825,7 +826,7 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
 
    if (order == 0) {
       /* We've reached a dead end. */
-      do_splays(p, X, dir, b);
+      do_splays(p, X, dir, odx, ody);
       return;
    }
 
@@ -864,8 +865,6 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
 
 	 double dx = p2->p.x - p->p.x;
 	 double dy = p2->p.y - p->p.y;
-	 // Bearing in radians.
-	 double bearing = atan2(dx, dy);
 	 dX = hypot(dx, dy);
 	 double X2 = X;
 	 if (dir == ELEFT) {
@@ -875,18 +874,19 @@ do_stn(point *p, double X, const char *prefix, int dir, int labOnly, double b)
 	 }
 
 	 if (p->splays) {
-	    double avg = atan2(sin(b) + sin(bearing),
-			       cos(b) + cos(bearing));
-	    do_splays(p, X, dir, avg);
+	    do_splays(p, X, dir, odx + dx, ody + dy);
 	 }
 
 	 img_write_item(pimg_out, img_MOVE, 0, NULL, X, 0, p->p.z);
 	 img_write_item(pimg_out, img_LINE, l->flags, l->prefix,
 			X2, 0, p2->p.z);
 
+	 /* We arrive at p2 via a leg, so that's one down right away. */
+	 --p2->order;
+
 	 l->fDone = 1;
 	 /* l->broken doesn't have break_flag set as we checked that above. */
-	 do_stn(p2, X2, l->prefix, dir, l->broken, bearing);
+	 do_stn(p2, X2, l->prefix, dir, l->broken, dx, dy);
 	 l = lp;
 	 if (--order == 0) return;
       }
