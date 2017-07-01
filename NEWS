@@ -1,4 +1,4 @@
-up to: a7dfc9e6886db6888341f7e51763c8e180316848
+Changes in 1.2.31 (2017-07-01):
 
 * aven:
 
@@ -18,39 +18,59 @@ up to: a7dfc9e6886db6888341f7e51763c8e180316848
     current git master with the change reverted, and with code just before the
     original change.
 
-  + More robust parsing of cavern output - cleanly context highlighting which
-    extends beyond the end of the line.
+  + More robust parsing of cavern output (cleanly handle context highlighting
+    which extends beyond the end of the line).
 
   + Allow showing duplicate legs as dashed lines or hiding them entirely,
     with dashed now being the default.  Implemented by Patrick Warren.
 
   + Also allow "Dashed" for splays and "Faded" for duplicate legs.
 
-  + Check environment variables VISUAL and EDITOR when looking for editor to
-    use when a warning or error is clicked on in the cavern log window.
-    Suggested by Wookey.
+  + Splay legs in surface data are also shown faded.
 
-    The specified editor may have a GUI or need to run in a terminal, so it
-    seems we have to special case each editor supported.  This also means we
-    can pass extra options needed to position the cursor on the
-    appropriate line/column.
-    Currently these editors are supported:
-    gvim, vim, gedit, pluma, emacs, nano, jed, kate
+  + Check environment variables VISUAL and EDITOR when looking for editor to
+    use when a warning or error is clicked on in the cavern log window.  The
+    specified editor may have a GUI or need to run in a terminal, so we have to
+    special-case each editor supported, and that means we can pass extra
+    options needed to position the cursor on the appropriate line/column.
+    Currently these editors are supported: gvim, nvim, vim, gedit, pluma,
+    emacs, nano, jed, kate.  Suggested by Wookey.
 
   + Fix handling of non-square terrain data files - the X and Y dimensions were
     swapped.  Reported by detrito.
 
-  + Improve .hdr file parsing:
-    Use documented defaults for more values.  And where we only support
-    a subset of values (or a particular value) check for files which
-    don't fall in the support subset in more cases.
-    Report error if NBITS not specified in .hdr
+  + Improve parsing of DEM data with .hdr file.  Use documented defaults for
+    more values, and where we only support a subset of values (or a particular
+    value) check for unsupported values in more cases.
+
+  + When colouring by depth, fix colouring and texturing of polygons which
+    cross depth bands.  The previous problems were most obvious with high
+    chambers and long legs down deep pitches, especially in for surveys without
+    much vertical range.
+
+  + Support for drawing blobs using point sprites was added in 1.2.28,
+    but caching that this worked wasn't hooked up properly so the test to
+    see if this worked would happen at the start of each run.  This is now
+    cached as intended which should reduce start up time a little when blobs
+    are drawn in this way.
+
+  + Fix drawing of crosses with lines.  This is a fall-back case which is
+    rarely used as most OpenGL setups will handle a better method, but it was
+    resulting in crosses with a four-pixel square in the centre - now the
+    centre should be a single pixel.
 
 * cavern:
 
+  + Allow *data with no arguments to reset the current style - useful for
+    entering passage data where there are side passages.
+
+  + Fix hang processing file without newline at end.  This bug was introduced
+    by changes in 1.2.28.  Reported by Mark Brown.
+
   + (Mac OS X and Microsoft Windows versions): Build with newer version of
     PROJ library which fixes buggy handling of *fix with lat-long coordinates.
-    Reported by Ross Davidson.
+    Also add a testcase to the testsuite to alert users building for themselves
+    with an affected PROJ version on any platform.  Reported by Ross Davidson.
 
   + Fix cavern to handle Compass .DAT with no survey team.  Previously this
     resulted in the bogus error: Expecting numeric field, found "FROM"
@@ -64,11 +84,37 @@ up to: a7dfc9e6886db6888341f7e51763c8e180316848
   + Change a couple of messages to use double quotes for consistency with all
     other messages.
 
+* extend:
+
+  + Now runs a bit faster.
+
+  + Splays are now carried over the extended survey.  The current handling
+    is simplistic, but should do a good enough job to be more useful than
+    discarding splays.  The splays at each station are all rotated together
+    based on the bearing between the stations either side of the current one
+    along the first path extended through that station.  This nicely handles
+    dead ends and the situation at the top or bottom of a pitch, and should
+    tend to pick an angle close to the passage orientation along a traverse.
+    It's weakest at junctions.  Feedback (especially examples which could
+    be handled better) most welcome.
+
+* French translation is now up to date again, thanks to Jean-Marc.
+
+* Remove erroneous menu shortcut markers from Polish translations.
+
+* Fill in some missing translations in several languages by using message
+  translations from therion.
+
+* Add note to *fix documentation to clarify the coordinate order with *cs
+  long-lat.  Issue raised by Ross Davidson.
+
 * Fix errors in documentation of *units: "DEG" should be "DEGS", and
   "MINUTES" has been supported for ages but wasn't documented.  Reported by
   Footleg.
 
-* Fix typo in dump3d documentation.
+* Fix a few typos in the documentation.
+
+* Fix compilation warning with recent GCC.
 
 Changes in 1.2.30 (2016-10-03):
 
