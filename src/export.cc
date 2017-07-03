@@ -1268,7 +1268,7 @@ transform_point(const Point& pos, const Vector3* pre_offset,
     p->x = x * COS - y * SIN;
     double tmp = x * SIN + y * COS;
     p->y = z * COST - tmp * SINT;
-    p->z = z * SINT + tmp * COST;
+    p->z = -(z * SINT + tmp * COST);
 }
 
 bool
