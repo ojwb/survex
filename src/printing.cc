@@ -265,6 +265,8 @@ static wxString scales[] = {
     wxT("100000")
 };
 
+// The order of these arrays must match export_format in export.h.
+
 static wxString formats[] = {
     wxT("DXF"),
     wxT("EPS"),
