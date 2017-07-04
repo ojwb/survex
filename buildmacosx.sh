@@ -229,9 +229,10 @@ fi
 # Force static linking so the user doesn't need to install wxWidgets.
 WX_CONFIG=$WX_CONFIG' --static'
 rm -rf *.dmg Survex macosxtmp
-D=`pwd`/Survex
-T=`pwd`/macosxtmp
-PKG_CONFIG_PATH=`pwd`/PROJINSTALL/lib/pkgconfig:`pwd`/FFMPEGINSTALL/lib/pkgconfig
+C=`pwd`
+D=$C/Survex
+T=$C/macosxtmp
+PKG_CONFIG_PATH=$C/PROJINSTALL/lib/pkgconfig:$C/FFMPEGINSTALL/lib/pkgconfig
 export PKG_CONFIG_PATH
 ./configure --prefix="$D" --bindir="$D" --mandir="$T" \
     WX_CONFIG="$WX_CONFIG" CC="$CC" CXX="$CXX"
