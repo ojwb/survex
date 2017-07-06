@@ -530,6 +530,10 @@ public:
     bool DisplayingTerrain() const { return m_Terrain; }
     void ToggleTerrain();
     void ToggleFatFinger();
+    void ToggleTextured() {
+	GLACanvas::ToggleTextured();
+	ForceRefresh();
+    }
 
     bool GetMetric() const { return m_Metric; }
     bool GetDegrees() const { return m_Degrees; }
