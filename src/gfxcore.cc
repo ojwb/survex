@@ -2303,11 +2303,13 @@ int GfxCore::GetNumExportedPts() const
 
 void GfxCore::ToggleTerrain()
 {
-    ToggleFlag(&m_Terrain);
-    if (m_Terrain && !dem) {
+    if (!m_Terrain && !dem) {
+	// OnOpenTerrain() calls us if a file is selected.
 	wxCommandEvent dummy;
 	m_Parent->OnOpenTerrain(dummy);
+	return;
     }
+    ToggleFlag(&m_Terrain);
 }
 
 void GfxCore::ToggleFatFinger()
