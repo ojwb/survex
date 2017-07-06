@@ -419,6 +419,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 
 	if (m_Terrain) {
+	    // Disable texturing while drawing terrain.
+	    bool texturing = GetTextured();
+	    if (texturing) GLACanvas::ToggleTextured();
+
 	    // This is needed if blobs and/or crosses are drawn using lines -
 	    // otherwise the terrain doesn't appear when they are enabled.
 	    SetDataTransform();
@@ -428,6 +432,8 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    // Z-buffer, then again with Z-clipping only plotting where the
 	    // depth matches the value in the Z-buffer.
 	    DrawListZPrepass(LIST_TERRAIN);
+
+	    if (texturing) GLACanvas::ToggleTextured();
 	}
 
 	SetIndicatorTransform();
