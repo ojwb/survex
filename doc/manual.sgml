@@ -2251,10 +2251,11 @@ stations.
 
 <Para>
 By default cavern will warn about stations which have been FIX-ed but
-not used otherwise.  This is unhelpful if you want to include a
-standard file of benchmarks, some of which won't be used.
-In this sort of situation, specify "REFERENCE" after the station name
-in the FIX command to suppress this warning for a particular station.
+not used otherwise, as this might be due to a typo in the station
+name.  This is unhelpful if you want to include a standard file of benchmarks,
+some of which won't be used.  In this sort of situation, specify "REFERENCE"
+after the station name in the FIX command to suppress this warning for a
+particular station.
 </Para>
 
 <Note><Para>
