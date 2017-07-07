@@ -2243,6 +2243,16 @@ order is cov(x,y) cov(y,z) cov(z,x).
 </Para>
 
 <Para>
+If you've specified a coordinate system (see <command>*cs</command>) then
+that determines the meaning of X, Y and Z (if you want to specify the
+units for altitude, note that using a PROJ string containing
+<command>+vunits</command> allows this - e.g. <command>+vunits=us-ft</command>
+for US survey feet).  If you don't specify a coordinate system, then the
+coordinates must be in metres.  The standard deviations must always be
+in metres (and the covariances in metres squared).
+</Para>
+
+<Para>
 You can fix as many stations as you like - just use a *fix command for each
 one.  Cavern will check that all stations are connected to
 at least one fixed point so that co-ordinates can be calculated for all

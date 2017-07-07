@@ -68,7 +68,7 @@ testdir=`(cd "$testdir" && pwd)`
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
- cs csbad csbadsdfix cslonglat omitfixaroundsolve repeatreading\
+ cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof\
 "}}
 

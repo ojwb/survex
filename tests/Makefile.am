@@ -122,6 +122,7 @@ reenterlots.out reenterlots.svx\
 cs.out cs.pos cs.svx\
 csbad.out csbad.svx\
 csbadsdfix.out csbadsdfix.svx\
+csfeet.out csfeet.pos csfeet.svx\
 cslonglat.out cslonglat.svx\
 omitfixaroundsolve.out omitfixaroundsolve.svx\
 repeatreading.svx repeatreading.out repeatreading.pos\
