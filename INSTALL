@@ -18,8 +18,9 @@ follow their build instructions.  IMPORTANT: You must enable OpenGL
 support by adding --with-opengl to the configure command line, and
 you probably want to use --enable-unicode too.
 
-You'll also need a working C and C++ compiler, and also the OpenGL development
-libraries if these aren't pulled in by installing wxWidgets.
+You'll also need a working C and C++ compiler (with support for C++11), and
+also the OpenGL development libraries if these aren't pulled in by installing
+wxWidgets.
 
 Then at a shell prompt, enter the following commands:
 

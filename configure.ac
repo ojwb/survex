@@ -69,6 +69,9 @@ AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
+dnl Probe for any options needed to enable C++11 support.
+AX_CXX_COMPILE_STDCXX_11
+
 AM_PROG_CC_C_O
 
 AC_LANG_C
