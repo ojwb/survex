@@ -1743,7 +1743,7 @@ svxPrintout::OnBeginPrinting() {
     pen_cross = new wxPen(colour_cross);
     pen_leg = new wxPen(colour_leg);
     pen_surface_leg = new wxPen(colour_surface_leg);
-    pen_splay = new wxPen(wxColour(192, 192, 192));
+    pen_splay = new wxPen(wxColour(128, 128, 128));
 
     m_layout->scX = 1;
     m_layout->scY = 1;
