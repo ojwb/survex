@@ -1,3 +1,52 @@
+Changes in 1.2.32 (2017-07-08):
+
+* aven:
+
+  + Make splays on printouts a darker shade of grey.  Reported by Erin Lynch
+    and Anthony Day.
+
+  + In export formats which include 3 dimensions (DXF, PLT, GPX, KML, JSON,
+    POS), the value in the Z dimension was negated.  Bug introduced by fixes
+    for export of rotated plans and tilted elevations in 1.2.27.  Reported by
+    Erin Lynch in #89.
+
+  + Ignore viewing angles for export formats which work in 3D.  When the
+    rotation and tilt controls are hidden in the export dialog we were still
+    using their values to transform the data, so if you set them with for one
+    export format which support them, then switched to an export format which
+    doesn't, you'd get bogus coordinates in the exported file.  Bug probably
+    introduced in 1.2.27 by fixes for exports of rotated plans and tilted
+    elevations.
+
+  + Fix exporting to skencil and Survex .pos formats.  When aven's export to
+    .pos was added in 1.2.19, the ordering didn't match up and since then .pos
+    export has produced skencil files and vice versa.
+
+  + Don't leave terrain on if loading terrain data fails.  Previously if you
+    clicked the terrain icon (or via the menu) with no terrain loaded, but no
+    terrain got loaded (e.g. because the survey data lacks an explicit
+    coordinate system, or because the file failed to load, or because you
+    cancelled the dialog) then the terrain icon/menu item was still changed to
+    "on".
+
+  + Disable texturing while drawing terrain.  Previously the terrain got a bit
+    darker when "Textured Walls" were enabled.
+
+  + Force a refresh when "Textured Walls" are enabled or disabled.  Previously
+    the display wouldn't update right away.
+
+* Manual:
+
+  + Document how to specify fixed point altitude in feet.
+
+  + Explain why *fix warns about unused fixed points
+
+* Building from source now requires a compiler with decent support for C++11.
+  If you're using GCC, then GCC 4.7 should suffice.  This should not be an
+  onerous requirement - e.g. Debian wheezy and Ubuntu trusty both have a recent
+  enough GCC.  If special options are needed, these should get probed for and
+  automatically.  Fixes building 1.2.31 with GCC < 6, reported by Wookey.
+
 Changes in 1.2.31 (2017-07-01):
 
 * aven:
