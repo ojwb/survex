@@ -17,6 +17,7 @@ matrix:
             - libglu1-mesa-dev
             - libx11-dev
             - libxext-dev
+            - ghostscript
             - netpbm
             - x11proto-core-dev
             - liblocale-po-perl
