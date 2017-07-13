@@ -1,25 +1,46 @@
+dist: trusty
 language: cpp
-compiler:
-  - gcc
-os:
-  - linux
-  - osx
-before_install:
-  - test "$TRAVIS_OS_NAME" != linux || sudo apt-get -qq update
-  - test "$TRAVIS_OS_NAME" != linux || sudo apt-get -qq install libwxgtk3.0-dev libavcodec-dev libavformat-dev libproj-dev libswscale-dev mesa-common-dev libglu1-mesa-dev libx11-dev libxext-dev x11proto-core-dev liblocale-po-perl unifont sgmltools-lite jadetex docbook-utils w3m
-  - test "$TRAVIS_OS_NAME" != osx || brew update
-  - test "$TRAVIS_OS_NAME" != osx || brew install netpbm
-  - test "$TRAVIS_OS_NAME" != osx || brew install gnu-tar
-  - test "$TRAVIS_OS_NAME" != osx || sudo cpan -T -i local::lib < /dev/null
-  - test "$TRAVIS_OS_NAME" != osx || sudo cpan -I -T -i Locale::PO < /dev/null
-  - if test "$TRAVIS_OS_NAME" = osx ; then echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc ; fi
-script:
-  - autoreconf -fiv
-  - test "$TRAVIS_OS_NAME" = osx || ./configure
-  - test "$TRAVIS_OS_NAME" = osx || make
-  - test "$TRAVIS_OS_NAME" = osx || make check
-  - if test "$TRAVIS_OS_NAME" = osx ; then V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile ; fi
-  - test "$TRAVIS_OS_NAME" != osx || ./buildmacosx.sh
+matrix:
+  include:
+    - compiler: gcc
+      os: linux
+      sudo: false
+      addons:
+        apt:
+          packages:
+            - libwxgtk3.0-dev
+            - libavcodec-dev
+            - libavformat-dev
+            - libproj-dev
+            - libswscale-dev
+            - mesa-common-dev
+            - libglu1-mesa-dev
+            - libx11-dev
+            - libxext-dev
+            - x11proto-core-dev
+            - liblocale-po-perl
+            - unifont
+            - sgmltools-lite
+            - jadetex
+            - docbook-utils
+            - w3m
+      script:
+        - autoreconf -fiv
+        - ./configure
+        - make
+        - make check
+    - os: osx
+      before_install:
+        - brew update
+        - brew install netpbm
+        - brew install gnu-tar
+        - sudo cpan -T -i local::lib < /dev/null
+        - sudo cpan -I -T -i Locale::PO < /dev/null
+        - echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
+      script:
+        - autoreconf -fiv
+        - V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
+        - ./buildmacosx.sh
 branches:
   only:
     - master
