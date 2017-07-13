@@ -120,8 +120,8 @@ arch_flags="-arch $arch"
 # but is larger still.
 dmg_format=UDBZ
 
-WX_VERSION=3.0.2
-WX_SHA256=346879dc554f3ab8d6da2704f651ecb504a22e9d31c17ef5449b129ed711585d
+WX_VERSION=3.0.3.1
+WX_SHA256=f94d4d2713a7ba2778677e2c26c61ac8f6e4be711bde6f88747662d093d899bc
 
 PROJ_VERSION=4.9.3
 PROJ_SHA256=6984542fea333488de5c82eea58d699e4aff4b359200a9971537cd7e047185f7
@@ -134,9 +134,9 @@ if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
     :
   else
     prefix=`pwd`/WXINSTALL
-    wxtarball=wxWidgets-$WX_VERSION.tar.bz2
+    wxtarball=v$WX_VERSION.tar.gz
     test -f "$wxtarball" || \
-      curl -L -O "http://downloads.sourceforge.net/project/wxwindows/$WX_VERSION/$wxtarball"
+      curl -L -O "https://github.com/wxWidgets/wxWidgets/archive/$wxtarball"
     if echo "$WX_SHA256  $wxtarball" | shasum -a256 -c ; then
       : # OK
     else
