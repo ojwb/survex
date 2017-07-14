@@ -1,6 +1,6 @@
 /* printing.cc */
 /* Aven printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2017 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1748,10 +1748,12 @@ svxPrintout::OnBeginPrinting() {
     m_layout->scX = 1;
     m_layout->scY = 1;
 
-    font_labels = new wxFont(fontsize_labels, wxDEFAULT, wxNORMAL, wxNORMAL,
+    font_labels = new wxFont(fontsize_labels, wxFONTFAMILY_DEFAULT,
+			     wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
 			     false, wxString(fontname_labels, wxConvUTF8),
 			     wxFONTENCODING_ISO8859_1);
-    font_default = new wxFont(fontsize, wxDEFAULT, wxNORMAL, wxNORMAL,
+    font_default = new wxFont(fontsize, wxFONTFAMILY_DEFAULT,
+			      wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
 			      false, wxString(fontname, wxConvUTF8),
 			      wxFONTENCODING_ISO8859_1);
 }
@@ -2037,7 +2039,8 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
     const wxChar * footer_sep = wxT("    ");
     int fontsize_footer = fontsize_labels;
     wxFont * font_footer;
-    font_footer = new wxFont(fontsize_footer, wxDEFAULT, wxNORMAL, wxNORMAL,
+    font_footer = new wxFont(fontsize_footer, wxFONTFAMILY_DEFAULT,
+			     wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL,
 			     false, wxString(fontname_labels, wxConvUTF8),
 			     wxFONTENCODING_UTF8);
     font_footer->Scale(font_scaling_x);
