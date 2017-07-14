@@ -442,8 +442,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	}
 	m_format->SetSelection(current_format);
 	wxBoxSizer* formatbox = new wxBoxSizer(wxHORIZONTAL);
-	formatbox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-	formatbox->Add(m_format, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+	formatbox->Add(label, 0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
+	formatbox->Add(m_format, 0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
 
 	v1->Add(formatbox, 0, wxALIGN_LEFT|wxALL, 0);
     }
@@ -473,8 +473,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     m_scale = new wxComboBox(this, svx_SCALE, default_scale, wxDefaultPosition,
 			     wxDefaultSize, n_scales, scale_list);
     m_scalebox = new wxBoxSizer(wxHORIZONTAL);
-    m_scalebox->Add(label, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
-    m_scalebox->Add(m_scale, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_scalebox->Add(label, 0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
+    m_scalebox->Add(m_scale, 0, wxALIGN_CENTRE_VERTICAL|wxALL, 5);
 
     m_viewbox->Add(m_scalebox, 0, wxALIGN_LEFT|wxALL, 0);
 
@@ -496,20 +496,20 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
 	wxStaticText * brg_label, * tilt_label;
 	brg_label = new wxStaticText(this, -1, wmsg(/*Bearing*/259));
-	anglebox->Add(brg_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+	anglebox->Add(brg_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	// wSP_WRAP means that you can scroll past 360 to 0, and vice versa.
 	m_bearing = new wxSpinCtrlDouble(this, svx_BEARING, wxEmptyString,
 		wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_WRAP);
 	m_bearing->SetRange(0.0, 360.0);
 	m_bearing->SetDigits(ANGLE_DP);
-	anglebox->Add(m_bearing, 0, wxALIGN_CENTER|wxALL, 5);
+	anglebox->Add(m_bearing, 0, wxALIGN_CENTRE|wxALL, 5);
 	/* TRANSLATORS: Used in the print dialog: */
 	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
-	anglebox->Add(tilt_label, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxALL, 5);
+	anglebox->Add(tilt_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	m_tilt = new wxSpinCtrlDouble(this, svx_TILT);
 	m_tilt->SetRange(-90.0, 90.0);
 	m_tilt->SetDigits(ANGLE_DP);
-	anglebox->Add(m_tilt, 0, wxALIGN_CENTER|wxALL, 5);
+	anglebox->Add(m_tilt, 0, wxALIGN_CENTRE|wxALL, 5);
 
 	m_viewbox->Add(anglebox, 0, wxALIGN_LEFT|wxALL, 0);
 
