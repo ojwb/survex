@@ -3946,7 +3946,7 @@ static wxCursor
 make_cursor(const unsigned char * bits, const unsigned char * mask,
 	    int hotx, int hoty)
 {
-#if defined __WXMSW__ || defined __WXMAC__
+#ifndef __WXGTK2__
 # ifdef __WXMAC__
     // The default Mac cursor is black with a white edge, so
     // invert our custom cursors to match.
