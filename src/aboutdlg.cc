@@ -155,7 +155,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
 #ifdef __WXGTK__
 # if defined __WXGTK3__
 	wxT(" (GTK+ 3)\n");
-# elif defined __WXGTK26__
+# elif defined __WXGTK20__
 	wxT(" (GTK+ 2)\n");
 # elif defined __WXGTK12__
 	wxT(" (GTK+ 1.2)\n");
