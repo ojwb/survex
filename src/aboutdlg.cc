@@ -4,7 +4,7 @@
 //  About box handling for Aven.
 //
 //  Copyright (C) 2001-2003 Mark R. Shinwell.
-//  Copyright (C) 2001,2002,2003,2004,2005,2006,2010,2014,2015 Olly Betts
+//  Copyright (C) 2001,2002,2003,2004,2005,2006,2010,2014,2015,2017 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
 			     wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY),
 	      1, wxLEFT | wxRIGHT | wxEXPAND, 20);
 
-    vert->Add(10, 5, 0, wxALIGN_BOTTOM | wxTOP, 5);
+    vert->Add(10, 5, 0, wxTOP, 5);
 
     wxBoxSizer* bottom = new wxBoxSizer(wxHORIZONTAL);
     bottom->Add(5, 5, 1);
