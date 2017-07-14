@@ -153,14 +153,12 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
     info += wxT("\nBuilt with ") wxVERSION_STRING
 #endif
 #ifdef __WXGTK__
-# if defined __WXGTK26__
-	wxT(" (GTK+ >= 2.6)\n");
-# elif defined __WXGTK24__
-	wxT(" (GTK+ >= 2.4)\n");
-# elif defined __WXGTK20__
-	wxT(" (GTK+ >= 2.0)\n");
+# if defined __WXGTK3__
+	wxT(" (GTK+ 3)\n");
+# elif defined __WXGTK26__
+	wxT(" (GTK+ 2)\n");
 # elif defined __WXGTK12__
-	wxT(" (GTK+ >= 1.2)\n");
+	wxT(" (GTK+ 1.2)\n");
 # else
 	wxT(" (GTK+ < 1.2)\n");
 # endif
