@@ -499,7 +499,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	anglebox->Add(brg_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	// wSP_WRAP means that you can scroll past 360 to 0, and vice versa.
 	m_bearing = new wxSpinCtrlDouble(this, svx_BEARING, wxEmptyString,
-		wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS|wxSP_WRAP);
+		wxDefaultPosition, wxDefaultSize,
+		wxSP_ARROW_KEYS|wxALIGN_RIGHT|wxSP_WRAP);
 	m_bearing->SetRange(0.0, 360.0);
 	m_bearing->SetDigits(ANGLE_DP);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTRE|wxALL, 5);
