@@ -632,7 +632,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	wxTextCtrl * proj_edit = new wxTextCtrl(this, svx_PROJ, m_layout.cs_proj,
 						wxDefaultPosition, wxDefaultSize,
 						style);
-	h2->Add(proj_edit, 1, wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL, 5);
+	h2->Add(proj_edit, 1, wxALL|wxEXPAND, 5);
 	v1->Add(h2, 0, wxALIGN_LEFT|wxEXPAND, 5);
     }
 
@@ -646,11 +646,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL);
-    h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    h3->Add(but, 0, wxALL, 5);
     if (printing) {
 #ifdef AVEN_PRINT_PREVIEW
 	but = new wxButton(this, wxID_PREVIEW);
-	h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+	h3->Add(but, 0, wxALL, 5);
 	but = new wxButton(this, wxID_PRINT);
 #else
 	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print...*/400));
@@ -661,7 +661,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export...*/230));
     }
     but->SetDefault();
-    h3->Add(but, 0, wxALIGN_RIGHT|wxALL, 5);
+    h3->Add(but, 0, wxALL, 5);
     v1->Add(h3, 0, wxALIGN_RIGHT|wxALL, 5);
 
     SetAutoLayout(true);
