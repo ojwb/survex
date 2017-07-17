@@ -3946,7 +3946,13 @@ static wxCursor
 make_cursor(const unsigned char * bits, const unsigned char * mask,
 	    int hotx, int hoty)
 {
-#ifndef __WXGTK20__
+#if defined __WXGTK__ && !defined __WXGTK3__
+    // Use this code for GTK < 3 only - it doesn't work properly with GTK3
+    // (reported and should be fixed in wxWidgets 3.0.4 and 3.1.1, see:
+    // https://trac.wxwidgets.org/ticket/17916)
+    return wxCursor((const char *)bits, 32, 32, hotx, hoty,
+		    (const char *)mask, wxBLACK, wxWHITE);
+#else
 # ifdef __WXMAC__
     // The default Mac cursor is black with a white edge, so
     // invert our custom cursors to match.
@@ -3963,9 +3969,6 @@ make_cursor(const unsigned char * bits, const unsigned char * mask,
     cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, hotx);
     cursor_image.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, hoty);
     return wxCursor(cursor_image);
-#else
-    return wxCursor((const char *)bits, 32, 32, hotx, hoty,
-		    (const char *)mask, wxBLACK, wxWHITE);
 #endif
 }
 
