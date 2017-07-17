@@ -166,7 +166,7 @@ KML::xsect(const img_point *p, double angle, double d1, double d2)
     y2 = deg(y2);
 
     fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
-    fprintf(fh, "%.8f,%.8f,%.8f %.8f,%.8f,%.8f", x1, y1, z1, x2, y2, z2);
+    fprintf(fh, "%.8f,%.8f,%.2f %.8f,%.8f,%.2f", x1, y1, z1, x2, y2, z2);
     fputs("</coordinates></LineString></Placemark>\n", fh);
 }
 
@@ -187,7 +187,7 @@ KML::wall(const img_point *p, double angle, double d)
 	fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
 	in_wall = true;
     }
-    fprintf(fh, "%.8f,%.8f,%.8f\n", x, y, z);
+    fprintf(fh, "%.8f,%.8f,%.2f\n", x, y, z);
 }
 
 void
@@ -220,7 +220,7 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     // NB - order of vertices should be anti-clockwise in a KML file, so go
     // along the right wall now, and put the left wall points on a stack to
     // come back along at the end.
-    fprintf(fh, "%.8f,%.8f,%.8f\n", x2, y2, z2);
+    fprintf(fh, "%.8f,%.8f,%.2f\n", x2, y2, z2);
     psg.push_back(Vector3(x1, y1, z1));
 }
 
@@ -230,7 +230,7 @@ KML::tube_end()
     if (!psg.empty()) {
 	vector<Vector3>::const_reverse_iterator i;
 	for (i = psg.rbegin(); i != psg.rend(); ++i) {
-	    fprintf(fh, "%.8f,%.8f,%.8f\n", i->GetX(), i->GetY(), i->GetZ());
+	    fprintf(fh, "%.8f,%.8f,%.2f\n", i->GetX(), i->GetY(), i->GetZ());
 	}
 	psg.clear();
 	fputs("</coordinates></LinearRing></outerBoundaryIs>"
