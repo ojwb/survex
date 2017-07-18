@@ -1,7 +1,7 @@
 /* kml.h
  * Export from Aven as KML.
  */
-/* Copyright (C) 2005,2013,2014,2015,2016 Olly Betts
+/* Copyright (C) 2005,2013,2014,2015,2016,2017 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ class KML : public ExportFilter {
     void header(const char *, const char *, time_t,
 		double, double, double,
 		double, double, double);
+    void start_pass(int pass);
     void line(const img_point *, const img_point *, unsigned, bool);
     void label(const img_point *, const char *, bool, int);
     void xsect(const img_point *, double, double, double);

@@ -2,7 +2,7 @@
  * Export from Aven as KML.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 2012,2013,2014,2015,2016,2017 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,6 +117,15 @@ void KML::header(const char * title, const char *, time_t,
     // FIXME: does KML allow bounds?
     // NB Lat+long bounds are not necessarily the same as the bounds in survex
     // coords translated to WGS84 lat+long...
+}
+
+void
+KML::start_pass(int pass)
+{
+    if (in_linestring) {
+	fputs("</coordinates></LineString></MultiGeometry></Placemark>\n", fh);
+	in_linestring = false;
+    }
 }
 
 void
