@@ -120,7 +120,7 @@ void KML::header(const char * title, const char *, time_t,
 }
 
 void
-KML::start_pass(int pass)
+KML::start_pass(int)
 {
     if (in_linestring) {
 	fputs("</coordinates></LineString></MultiGeometry></Placemark>\n", fh);
