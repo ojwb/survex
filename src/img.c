@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005,2006,2010,2011,2013,2014 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010,2011,2013,2014,2017 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,7 +446,7 @@ img_open_survey(const char *fnm, const char *survey)
 	    memcpy(pimg->survey, survey, len);
 	    /* Set title to leaf survey name */
 	    pimg->survey[len] = '\0';
-	    p = strchr(pimg->survey, '.');
+	    p = strrchr(pimg->survey, '.');
 	    if (p) p++; else p = pimg->survey;
 	    pimg->title = my_strdup(p);
 	    if (!pimg->title) {
