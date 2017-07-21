@@ -363,6 +363,47 @@ check_label_space(img *pimg, size_t len)
    return 1;
 }
 
+/* Check if a station name should be included. */
+static int
+stn_included(img *pimg)
+{
+    if (!pimg->survey_len) return 1;
+    size_t l = pimg->survey_len;
+    const char *s = pimg->label_buf;
+    if (strncmp(pimg->survey, s, l + 1) != 0) {
+	return 0;
+    }
+    pimg->label += l + 1;
+    return 1;
+}
+
+/* Check if a survey name should be included. */
+static int
+survey_included(img *pimg)
+{
+    if (!pimg->survey_len) return 1;
+    size_t l = pimg->survey_len;
+    const char *s = pimg->label_buf;
+    if (strncmp(pimg->survey, s, l) != 0 ||
+	!(s[l] == '.' || s[l] == '\0')) {
+       return 0;
+    }
+    pimg->label += l;
+    /* skip the dot if there */
+    if (*pimg->label) pimg->label++;
+    return 1;
+}
+
+/* Check if a survey name in a buffer should be included.
+ *
+ * For "foreign" formats which just have one level of surveys.
+ */
+static int
+buf_included(img *pimg, const char *buf, size_t len)
+{
+    return pimg->survey_len == len && strncmp(buf, pimg->survey, len) == 0;
+}
+
 #define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
 			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
 			my_strcasecmp((F) + (L) - LITLEN(E), E) == 0)
@@ -523,8 +564,7 @@ plt_file:
 	    }
 	    len = 0;
 	    while (line[len] > 32) ++len;
-	    if (pimg->survey_len != len ||
-		memcmp(line, pimg->survey, len) != 0) {
+	    if (!buf_included(pimg, line, len)) {
 	       osfree(line);
 	       continue;
 	    }
@@ -1298,15 +1338,8 @@ img_read_item_new(img *pimg, img_point *p)
 		      pimg->u = get32(pimg->fh) / 100.0;
 		      pimg->d = get32(pimg->fh) / 100.0;
 		  }
-		  if (pimg->survey_len) {
-		      size_t l = pimg->survey_len;
-		      const char *s = pimg->label_buf;
-		      if (strncmp(pimg->survey, s, l + 1) != 0) {
-			  return img_XSECT_END;
-		      }
-		      pimg->label += l;
-		      /* skip the dot if there */
-		      if (*pimg->label) pimg->label++;
+		  if (!stn_included(pimg)) {
+		      return img_XSECT_END;
 		  }
 		  /* If this is the last cross-section in this passage, set
 		   * pending so we return img_XSECT_END next time. */
@@ -1332,17 +1365,10 @@ img_read_item_new(img *pimg, img_point *p)
 
       result = img_LABEL;
 
-      if (pimg->survey_len) {
-	 size_t l = pimg->survey_len;
-	 const char *s = pimg->label_buf;
-	 if (strncmp(pimg->survey, s, l + 1) != 0) {
-	    if (!skip_coord(pimg->fh)) return img_BAD;
-	    pimg->pending = 0;
-	    goto again3;
-	 }
-	 pimg->label += l;
-	 /* skip the dot if there */
-	 if (*pimg->label) pimg->label++;
+      if (!stn_included(pimg)) {
+	 if (!skip_coord(pimg->fh)) return img_BAD;
+	 pimg->pending = 0;
+	 goto again3;
       }
 
       pimg->flags = (int)opt & 0x7f;
@@ -1351,18 +1377,10 @@ img_read_item_new(img *pimg, img_point *p)
 
       result = img_LINE;
 
-      if (pimg->survey_len) {
-	 size_t l = pimg->survey_len;
-	 const char *s = pimg->label_buf;
-	 if (strncmp(pimg->survey, s, l) != 0 ||
-	     !(s[l] == '.' || s[l] == '\0')) {
-	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
-	    pimg->pending = 15;
-	    goto again3;
-	 }
-	 pimg->label += l;
-	 /* skip the dot if there */
-	 if (*pimg->label) pimg->label++;
+      if (!survey_included(pimg)) {
+	 if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	 pimg->pending = 15;
+	 goto again3;
       }
 
       if (pimg->pending) {
@@ -1552,15 +1570,8 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		      img_errno = IMG_READERROR;
 		      return img_BAD;
 		  }
-		  if (pimg->survey_len) {
-		      size_t l = pimg->survey_len;
-		      const char *s = pimg->label_buf;
-		      if (strncmp(pimg->survey, s, l + 1) != 0) {
-			  return img_XSECT_END;
-		      }
-		      pimg->label += l;
-		      /* skip the dot if there */
-		      if (*pimg->label) pimg->label++;
+		  if (!stn_included(pimg)) {
+		      return img_XSECT_END;
 		  }
 		  /* If this is the last cross-section in this passage, set
 		   * pending so we return img_XSECT_END next time. */
@@ -1596,17 +1607,10 @@ img_read_item_v3to7(img *pimg, img_point *p)
 
       result = img_LABEL;
 
-      if (pimg->survey_len) {
-	 size_t l = pimg->survey_len;
-	 const char *s = pimg->label_buf;
-	 if (strncmp(pimg->survey, s, l + 1) != 0) {
-	    if (!skip_coord(pimg->fh)) return img_BAD;
-	    pimg->pending = 0;
-	    goto again3;
-	 }
-	 pimg->label += l;
-	 /* skip the dot if there */
-	 if (*pimg->label) pimg->label++;
+      if (!stn_included(pimg)) {
+	  if (!skip_coord(pimg->fh)) return img_BAD;
+	  pimg->pending = 0;
+	  goto again3;
       }
 
       pimg->flags = (int)opt & 0x3f;
@@ -1616,18 +1620,10 @@ img_read_item_v3to7(img *pimg, img_point *p)
 
       result = img_LINE;
 
-      if (pimg->survey_len) {
-	 size_t l = pimg->survey_len;
-	 const char *s = pimg->label_buf;
-	 if (strncmp(pimg->survey, s, l) != 0 ||
-	     !(s[l] == '.' || s[l] == '\0')) {
-	    if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
-	    pimg->pending = 15;
-	    goto again3;
-	 }
-	 pimg->label += l;
-	 /* skip the dot if there */
-	 if (*pimg->label) pimg->label++;
+      if (!survey_included(pimg)) {
+	  if (!read_coord(pimg->fh, &(pimg->mv))) return img_BAD;
+	  pimg->pending = 15;
+	  goto again3;
       }
 
       if (pimg->pending) {
@@ -1781,10 +1777,8 @@ img_read_item_ancient(img *pimg, img_point *p)
 
    if (!read_coord(pimg->fh, &pt)) return img_BAD;
 
-   if (result == img_LABEL && pimg->survey_len) {
-      if (strncmp(pimg->label, pimg->survey, pimg->survey_len + 1) != 0)
-	 goto again;
-      pimg->label += pimg->survey_len + 1;
+   if (result == img_LABEL && !stn_included(pimg)) {
+       goto again;
    }
 
    done:
@@ -1891,10 +1885,8 @@ img_read_item_ascii(img *pimg, img_point *p)
 	 return img_BAD;
       }
 
-      if (result == img_LABEL && pimg->survey_len) {
-	 if (strncmp(pimg->label, pimg->survey, pimg->survey_len + 1) != 0)
-	    goto ascii_again;
-	 pimg->label += pimg->survey_len + 1;
+      if (result == img_LABEL && !stn_included(pimg)) {
+	  goto ascii_again;
       }
 
       return result;
@@ -1953,11 +1945,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 
       if (pimg->label[0] == '\\') pimg->label++;
 
-      if (pimg->survey_len) {
-	 size_t l = pimg->survey_len + 1;
-	 if (strncmp(pimg->survey, pimg->label, l) != 0) goto againpos;
-	 pimg->label += l;
-      }
+      if (!stn_included(pimg)) goto againpos;
 
       return img_LABEL;
    } else if (pimg->version == VERSION_COMPASS_PLT) {
