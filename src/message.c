@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1165,6 +1165,18 @@ msg_proj_finder(const char * file)
 }
 #endif
 
+/* Return message if messages available, else a fallback value. */
+static const char *
+msg_opt(int en, const char * fallback)
+{
+   /* NB can't use SVX_ASSERT here! */
+   if (!msg_array || en <= 0 || en >= num_msgs) {
+      return fallback;
+   }
+
+   return msg_array[en];
+}
+
 const char *
 msg(int en)
 {
@@ -1217,11 +1229,11 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    if (severity == 0) {
       /* TRANSLATORS: Indicates a warning message e.g.:
        * "spoon.svx:12: warning: *prefix is deprecated" */
-      level = msg(/*warning*/4);
+      level = msg_opt(/*warning*/4, "warning");
    } else {
       /* TRANSLATORS: Indicates an error message e.g.:
        * "spoon.svx:13:4: error: Field may not be omitted" */
-      level = msg(/*error*/93);
+      level = msg_opt(/*error*/93, "error");
    }
    fputs(level, STDERR);
    fputs(": ", STDERR);
