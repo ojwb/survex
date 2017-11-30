@@ -160,6 +160,15 @@ if [ -z "${WX_CONFIG+set}" ] && [ "$install_wx" != no ] ; then
   WX_CONFIG=`pwd`/WXINSTALL/bin/wx-config
 fi
 
+[ -n "${WX_CONFIG}" ] || WX_CONFIG=`which wx-config 2>/dev/null`
+if [ -z "${WX_CONFIG}" ] ; then
+  echo "wx-config not found in PATH."
+  echo
+  echo "If wxWidgets is installed, you can specify its location by setting environment variable WX_CONFIG:"
+  echo
+  echo "WX_CONFIG=/opt/bin/wx-config sh ./buildmacosx.sh"
+  exit 1
+fi
 CC=`$WX_CONFIG --cc`
 CXX=`$WX_CONFIG --cxx`
 
