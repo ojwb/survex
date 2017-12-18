@@ -69,7 +69,7 @@ AM_CFLAGS += $(PROJ_CFLAGS)
 
 aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
-aven_LDFLAGS = $(WX_LDFLAGS)
+aven_LDFLAGS =
 
 if MACOSX
 # Aven must always be built into an application bundle to work correctly.

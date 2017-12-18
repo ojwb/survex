@@ -175,11 +175,6 @@ AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
 dnl The Debian mingw-w64 packages lack GL/glext.h; Mac OS X has OpenGL/glext.h.
 AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [#include <GL/gl.h>])
 
-dnl Older wx-config didn't support --ldflags (2.6.3 doesn't), and neither do
-dnl newer ones (3.0.1 doesn't) but presumably some in between did - error goes
-dnl to stderr, with nothing to stdout, so just ignore stderr.
-WX_LDFLAGS=`$WX_CONFIG --ldflags "$wx_libs" 2> /dev/null`
-AC_SUBST(WX_LDFLAGS)
 WX_CFLAGS=`$WX_CONFIG --cflags "$wx_libs"`
 AC_SUBST(WX_CFLAGS)
 WX_CXXFLAGS=`$WX_CONFIG --cxxflags "$wx_libs"`
