@@ -42,7 +42,10 @@ matrix:
       script:
         - autoreconf -fiv
         - V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
-        - ./buildmacosx.sh
+#        - ./buildmacosx.sh
+        - ./configure
+        - make
+        - make check
 branches:
   only:
     - master
