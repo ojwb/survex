@@ -29,6 +29,20 @@ HACKING: doc/HACKING.htm
 TODO: doc/TODO.htm
 	w3m -dump doc/TODO.htm > TODO
 
+# Create Aven.app for macOS - run as e.g.:
+# make create-aven-app APP_PATH=Aven.app
+create-aven-app:
+	mkdir -p '$(APP_PATH)/Contents/MacOS' '$(APP_PATH)/Contents/Resources'
+	cp lib/Info.plist '$(APP_PATH)/Contents'
+	printf APPLAVEN > '$(APP_PATH)/Contents/PkgInfo'
+	for zip in lib/icons/*.iconset.zip ; do \
+	  set -e; \
+	  unzip -d '$(APP_PATH)/Contents/Resources' "$$zip"; \
+	  i=`echo "$$zip"|sed 's!.*/\(.*\)\.zip$$!\1!'`; \
+	  iconutil --convert icns '$(APP_PATH)/Contents/Resources/'"$$i"; \
+	  rm -rf '$(APP_PATH)/Contents/Resources/'"$i"; \
+	done
+
 mingw : all mingw_iss
 
 mingw_iss : survex.iss

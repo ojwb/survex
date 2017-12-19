@@ -250,9 +250,7 @@ make install
 #mv Survex/survex Survex/Survex
 
 # Construct the Aven application bundle.
-mkdir -p Survex/Aven.app/Contents/MacOS Survex/Aven.app/Contents/Resources
-cp lib/Info.plist Survex/Aven.app/Contents
-printf APPLAVEN > Survex/Aven.app/Contents/PkgInfo
+make create-aven-app APP_PATH=Survex/Aven.app
 mv Survex/share/doc/survex Survex/Docs
 rmdir Survex/share/doc
 mv Survex/share/survex/images Survex/Aven.app/Contents/Resources/
@@ -265,14 +263,6 @@ mkdir Survex/share/survex/proj
 cp -p PROJINSTALL/share/proj/epsg PROJINSTALL/share/proj/esri Survex/share/survex/proj
 mkdir Survex/Aven.app/Contents/Resources/proj
 ln Survex/share/survex/proj/* Survex/Aven.app/Contents/Resources/proj
-
-# Create .icns files in the bundle's "Resources" directory.
-for zip in lib/icons/*.iconset.zip ; do
-  unzip -d Survex/Aven.app/Contents/Resources "$zip"
-  i=`echo "$zip"|sed 's!.*/\(.*\)\.zip$!\1!'`
-  iconutil --convert icns "Survex/Aven.app/Contents/Resources/$i"
-  rm -rf "Survex/Aven.app/Contents/Resources/$i"
-done
 
 size=`du -s Survex|sed 's/[^0-9].*//'`
 # Allow 1500 extra sectors for various overheads (1000 wasn't enough).
