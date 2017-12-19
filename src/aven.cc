@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016,2017 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@
 #include <config.h>
 #endif
 
+#define MSG_SETUP_PROJ_SERACH_PATH 1
+
 #include "aven.h"
 #include "log.h"
 #include "mainfrm.h"
@@ -42,10 +44,6 @@
 // wxDisplay was added in wx 2.5; but it may not be built for mingw (because
 // the header seems to be missing).
 #include <wx/display.h>
-#endif
-
-#if defined __WXMAC__ || defined __WXMSW__
-#include <proj_api.h>
 #endif
 
 #ifdef __WXMSW__
@@ -160,7 +158,6 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
     }
 
     msg_init(utf8_argv);
-    pj_set_finder(msg_proj_finder);
     select_charset(CHARSET_UTF8);
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.
@@ -193,9 +190,6 @@ int main(int argc, char **argv)
     // Call msg_init() and start processing the command line first so that
     // we can respond to --help and --version even without an X display.
     msg_init(argv);
-#ifdef __WXMAC__
-    pj_set_finder(msg_proj_finder);
-#endif
     select_charset(CHARSET_UTF8);
     /* Want --version and decent --help output, which cmdline does for us.
      * wxCmdLine is much less good.

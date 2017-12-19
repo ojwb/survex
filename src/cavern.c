@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014,2015,2016,2017 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+#define MSG_SETUP_PROJ_SERACH_PATH 1
 
 #include <limits.h>
 #include <stdlib.h>
@@ -167,10 +169,6 @@ main(int argc, char **argv)
    setvbuf(stdout, NULL, _IOLBF, 0);
 
    msg_init(argv);
-
-#if OS_WIN32 || OS_UNIX_MACOSX
-   pj_set_finder(msg_proj_finder);
-#endif
 
    pcs = osnew(settings);
    pcs->next = NULL;

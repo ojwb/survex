@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2003,2005,2010,2015 Olly Betts
+ * Copyright (C) 1998-2003,2005,2010,2015,2017 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,24 @@ extern "C" {
 #include "osdepend.h"
 #include "osalloc.h"
 
+/* Define MSG_SETUP_PROJ_SERACH_PATH before including this header to enable the
+ * hooks to setup proj4's search path to be relative to the executable if this
+ * is a relocatable install.
+ */
+#ifdef MSG_SETUP_PROJ_SERACH_PATH
+/* We only support relocatable builds on these platforms. */
+# if OS_WIN32 || OS_UNIX_MACOSX
+#  include <proj_api.h>
+#  define msg_init(ARGV) do {\
+	if (msg_init_(ARGV)) pj_set_finder(msg_proj_finder_);\
+    } while (0)
+# endif
+#endif
+
+#ifndef msg_init
+# define msg_init(ARGV) msg_init_(ARGV)
+#endif
+
 #define STDERR stdout
 
 #define CHARSET_BAD        -1
@@ -50,8 +68,15 @@ extern const char *msg_lang;
  * be just the language code.  Otherwise it's NULL.  e.g. "en" */
 extern const char *msg_lang2;
 
-void msg_init(char *const *argv);
-const char * msg_proj_finder(const char * file);
+/* Not intended for direct use - use msg_init() instead, optionally defining
+ * MSG_SETUP_PROJ_SERACH_PATH.
+ */
+int msg_init_(char *const *argv);
+
+/* Not intended for direct use - use msg_init() instead, optionally defining
+ * MSG_SETUP_PROJ_SERACH_PATH.
+ */
+const char * msg_proj_finder_(const char * file);
 
 const char *msg_cfgpth(void);
 const char *msg_exepth(void);

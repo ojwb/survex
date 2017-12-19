@@ -72,9 +72,7 @@ aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
 
 if MACOSX
-# Aven must always be built into an application bundle to work correctly.
-aven_CFLAGS += -DMACOSX_BUNDLE
-aven_CXXFLAGS += -DMACOSX_BUNDLE
+# FIXME: It looks like modern wx-config should give us this...
 aven_LDFLAGS += -framework OpenGL
 endif
 

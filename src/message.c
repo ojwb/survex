@@ -888,10 +888,13 @@ msg_appname(void)
    return appname_copy;
 }
 
-void
-msg_init(char * const *argv)
+int
+msg_init_(char * const *argv)
 {
    char *p;
+#if OS_UNIX_MACOSX
+   int msg_macosx_relocatable = 0;
+#endif
    SVX_ASSERT(argv);
 
    /* Point to argv[0] itself so we report a more helpful error if the
@@ -918,16 +921,7 @@ msg_init(char * const *argv)
    }
    if (argv[0]) {
       exe_pth = path_from_fnm(argv[0]);
-#ifdef MACOSX_BUNDLE
-      /* If we're being built into a bundle, always look relative to
-       * the path to the binary. */
-#ifdef AVEN
-      /* Aven is packaged as an application, so we must look inside there. */
-      pth_cfg_files = use_path(exe_pth, "../Resources");
-#else
-      pth_cfg_files = use_path(exe_pth, "share/survex");
-#endif
-#elif OS_UNIX && defined DATADIR && defined PACKAGE
+#if OS_UNIX && defined DATADIR && defined PACKAGE
       bool free_pth = fFalse;
       char *pth = getenv("srcdir");
       if (!pth || !pth[0]) {
@@ -937,20 +931,25 @@ msg_init(char * const *argv)
       if (pth[0]) {
 	 struct stat buf;
 #if OS_UNIX_MACOSX
+# ifndef AVEN
 	 /* On MacOS X the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
 	 p = use_path(pth, "share/survex/en.msg");
 	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "share/survex");
+	    msg_macosx_relocatable = 1;
 	    goto macosx_got_msg;
 	 }
 	 osfree(p);
-	 /* The cavern which aven runs is a hardlinked copy alongside
-	  * the aven binary.
+# endif
+	 /* In the diskimage package, this case is used for aven, and for
+	  * the hardlinked copies of cavern and extend alongside the aven
+	  * binary, which are the ones which aven runs.
 	  */
 	 p = use_path(pth, "../Resources/en.msg");
 	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "../Resources");
+	    msg_macosx_relocatable = 1;
 	    goto macosx_got_msg;
 	 }
 	 osfree(p);
@@ -1149,11 +1148,18 @@ macosx_got_msg:
 #endif
 
    select_charset(default_charset());
+
+   // Return 1 if this is a relocatable install, 0 otherwise.
+#if OS_UNIX_MACOSX
+   return msg_macosx_relocatable;
+#else
+   return OS_WIN32;
+#endif
 }
 
 #if OS_WIN32 || OS_UNIX_MACOSX
 const char *
-msg_proj_finder(const char * file)
+msg_proj_finder_(const char * file)
 {
     static char * r = NULL;
     static int r_len = 0;
