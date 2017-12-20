@@ -34,8 +34,12 @@ matrix:
     - os: osx
       before_install:
         - brew update
-        - brew install netpbm
+        - brew install ffmpeg
+        - brew install gettext
         - brew install gnu-tar
+        - brew install netpbm
+        - brew install proj
+        - brew install wxmac
         - sudo cpan -T -i local::lib < /dev/null
         - sudo cpan -I -T -i Locale::PO < /dev/null
         - echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
