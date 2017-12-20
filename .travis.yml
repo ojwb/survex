@@ -50,7 +50,10 @@ matrix:
 #        - ./buildmacosx.sh
         - ./configure
         - make
+        - sed -i 's/\(^PROGS=.* \)aven"/\1"/'
         - make check
+        - src/aven --version
+        - src/aven --help
 branches:
   only:
     - master
