@@ -50,7 +50,7 @@ matrix:
 #        - ./buildmacosx.sh
         - ./configure
         - make
-        - sed -i 's/\(^PROGS=.* \)aven"/\1"/'
+        - sed -i 's/\(^PROGS=.* \)aven"/\1"/' tests/smoke.tst
         - make check
         - src/aven --version
         - src/aven --help
