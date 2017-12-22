@@ -228,6 +228,12 @@ PKG_CHECK_MODULES([PROJ], [proj], [
 AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
 
+dnl Check for misc utilities.
+AC_PATH_PROG([XPMTOPPM],[xpmtoppm])
+AS_IF([test "$XPMTOPPM" = ""],[
+  AC_MSG_ERROR([xpmtoppm is required])
+])
+
 dnl Checks for header files.
 AC_HEADER_STDC
 dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
