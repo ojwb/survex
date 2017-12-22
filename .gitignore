@@ -32,6 +32,7 @@ doc/manual.txt
 doc/sorterr.1
 doc/survex.7
 install-sh
+INSTALL
 lib/Info.plist
 lib/Makefile
 lib/Makefile.in
@@ -85,6 +86,7 @@ survex.iss
 survex.spec
 survex-*.*.*.tar.gz
 survex-*.*.*
+test-driver
 tests/Makefile
 tests/Makefile.in
 vim/Makefile
