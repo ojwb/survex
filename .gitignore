@@ -32,6 +32,7 @@ doc/manual.txt
 doc/sorterr.1
 doc/survex.7
 install-sh
+INSTALL
 lib/Info.plist
 lib/Makefile
 lib/Makefile.in
