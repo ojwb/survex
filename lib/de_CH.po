@@ -2387,7 +2387,7 @@ msgstr "&Seitliches Kontrollfeld"
 #: n:338
 #, c-format
 msgid "%.2f E, %.2f N"
-msgstr "%.2f H, %.2f R"
+msgstr "%.2f R, %.2f H"
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>: H 12.24m, Brg 234.5°
