@@ -1396,7 +1396,7 @@ msgstr "Nama Survei yang dihilangkan dari END"
 #: ../src/pos.cc:59
 #: n:195
 msgid "( Easting, Northing, Altitude )"
-msgstr "(Timur, Utara, Ketinggian)"
+msgstr "( Timur,   Utara,  Ketinggian )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
 #: ../src/aboutdlg.cc:180
