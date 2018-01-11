@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017,2018 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -90,6 +90,9 @@ static const gla_colour TEXT_COLOUR = col_GREEN;
 static const gla_colour HERE_COLOUR = col_WHITE;
 static const gla_colour NAME_COLOUR = col_GREEN;
 static const gla_colour SEL_COLOUR = col_WHITE;
+// Used with colour by date for legs without date information and with colour
+// by error for legs not in a loop.
+static const gla_colour NODATA_COLOUR = col_LIGHT_GREY_2;
 
 // Number of entries across and down the hit-test grid:
 #define HITTEST_SIZE 20
@@ -1034,16 +1037,9 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
     if (!units.empty()) y += KEY_BLOCK_HEIGHT;
 
     if (!other.empty()) {
-	DrawShadedRectangle(GetSurfacePen(), GetSurfacePen(), left, y,
-		KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
-	SetColour(col_BLACK);
-	BeginPolyline();
-	PlaceIndicatorVertex(left, y);
-	PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, y);
-	PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, y + KEY_BLOCK_HEIGHT);
-	PlaceIndicatorVertex(left, y + KEY_BLOCK_HEIGHT);
-	PlaceIndicatorVertex(left, y);
-	EndPolyline();
+	DrawRectangle(NODATA_COLOUR, col_BLACK,
+		      left, y,
+		      KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
 	y += KEY_BLOCK_HEIGHT * 2;
     }
 
@@ -3322,7 +3318,7 @@ void GfxCore::SetColourFromDate(int date, Double factor)
 
     if (date == -1) {
 	// Undated.
-	SetColour(col_WHITE, factor);
+	SetColour(NODATA_COLOUR, factor);
 	return;
     }
 
@@ -3392,7 +3388,7 @@ void GfxCore::SetColourFromError(double E, Double factor)
     // Set the drawing colour based on an error value.
 
     if (E < 0) {
-	SetColour(col_WHITE, factor);
+	SetColour(NODATA_COLOUR, factor);
 	return;
     }
 

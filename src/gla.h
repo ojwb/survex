@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012,2014,2017 Olly Betts
+//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012,2014,2017,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ public:
     void BeginCrosses();
     void EndCrosses();
 
-    void DrawRectangle(gla_colour edge, gla_colour fill,
+    void DrawRectangle(gla_colour fill, gla_colour edge,
 		       glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
     void DrawShadedRectangle(const GLAPen & fill_bot, const GLAPen & fill_top,
 			     glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
