@@ -2377,9 +2377,9 @@ msgstr "Panel &boczny"
 #: ../src/mainfrm.cc:2276
 #: ../src/mainfrm.cc:2380
 #: n:338
-#, c-format
+#, fuzzy, c-format
 msgid "%.2f E, %.2f N"
-msgstr "%.2f E, %.2f N"
+msgstr "%.2f W, %.2f P"
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>: H 12.24m, Brg 234.5°

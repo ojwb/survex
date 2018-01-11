@@ -2378,9 +2378,9 @@ msgstr ""
 #: ../src/mainfrm.cc:2276
 #: ../src/mainfrm.cc:2380
 #: n:338
-#, c-format
+#, fuzzy, c-format
 msgid "%.2f E, %.2f N"
-msgstr ""
+msgstr "%.2f Α, %.2f Β"
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>: H 12.24m, Brg 234.5°
@@ -2648,7 +2648,7 @@ msgstr ""
 #: ../src/mainfrm.cc:255
 #: n:378
 msgid "Easting"
-msgstr ""
+msgstr "Ανατολικά"
 
 #: ../src/mainfrm.cc:256
 #: n:379

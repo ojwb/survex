@@ -1397,7 +1397,7 @@ msgstr "Имя топосъемки указано в BEGIN, но отсутст
 #: ../src/pos.cc:59
 #: n:195
 msgid "( Easting, Northing, Altitude )"
-msgstr "( Easting, Northing, Высота   )"
+msgstr "(Востосное,Северное, Высота   )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
 #: ../src/aboutdlg.cc:180
@@ -2383,7 +2383,7 @@ msgstr "&Боковая панель"
 #: n:338
 #, c-format
 msgid "%.2f E, %.2f N"
-msgstr "%.2f E, %.2f N"
+msgstr "%.2f В, %.2f С"
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>: H 12.24m, Brg 234.5°
