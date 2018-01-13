@@ -1171,6 +1171,7 @@ msg_proj_finder_(const char * file)
 }
 #endif
 
+#ifndef AVEN
 /* Return message if messages available, else a fallback value. */
 static const char *
 msg_opt(int en, const char * fallback)
@@ -1182,6 +1183,7 @@ msg_opt(int en, const char * fallback)
 
    return msg_array[en];
 }
+#endif
 
 const char *
 msg(int en)
