@@ -569,7 +569,13 @@ msgstr "Stasiun “%s” ditetapkan sebelum perintah CS pertama kali digunakan"
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "*EXPORT harus segera mengikuti “*BEGIN <SURVEY>”"
 
-#: ../src/readval.c:532
+#. TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918
+#: ../src/readval.c:531
+#: n:76
+msgid "Assuming 2 digit year is %d"
+msgstr ""
+
+#: ../src/readval.c:535
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr "Tahun tidak valid (< 1900 or > 2078)"

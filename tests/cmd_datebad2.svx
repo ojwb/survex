@@ -1,4 +1,4 @@
-; pos=fail warn=20 error=2
+; pos=fail warn=21 error=2
 ; invalid dates:
 *begin
 *date 1899.12.31

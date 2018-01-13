@@ -1,3 +1,45 @@
+./cmd_date.svx:4:7: warning: Assuming 2 digit year is 1900
+ *date 00.01.01
+       ^~
+./cmd_date.svx:5:7: warning: Assuming 2 digit year is 1900
+ *date 00.01
+       ^~
+./cmd_date.svx:6:7: warning: Assuming 2 digit year is 1900
+ *date 00.02
+       ^~
+./cmd_date.svx:7:7: warning: Assuming 2 digit year is 1900
+ *date 00
+       ^~
+./cmd_date.svx:14:7: warning: Assuming 2 digit year is 1902
+ *date 02.01.01
+       ^~
+./cmd_date.svx:15:7: warning: Assuming 2 digit year is 1902
+ *date 02.01
+       ^~
+./cmd_date.svx:16:7: warning: Assuming 2 digit year is 1902
+ *date 02.02
+       ^~
+./cmd_date.svx:17:7: warning: Assuming 2 digit year is 1902
+ *date 02
+       ^~
+./cmd_date.svx:24:7: warning: Assuming 2 digit year is 1969
+ *date 69.12.31
+       ^~
+./cmd_date.svx:28:7: warning: Assuming 2 digit year is 1970
+ *date 70.01.01
+       ^~
+./cmd_date.svx:29:7: warning: Assuming 2 digit year is 1970
+ *date 70.01
+       ^~
+./cmd_date.svx:30:7: warning: Assuming 2 digit year is 1970
+ *date 70.02
+       ^~
+./cmd_date.svx:31:7: warning: Assuming 2 digit year is 1970
+ *date 70
+       ^~
+./cmd_date.svx:32:7: warning: Assuming 2 digit year is 1999
+ *date 99.12.31
+       ^~
 ./cmd_date.svx:76:12: warning: Date is in the future!
  *date 1900-2078
             ^~~~
@@ -43,4 +85,4 @@ Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
 North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
 East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
    2 1-nodes.
-There were 7 warning(s).
+There were 21 warning(s).

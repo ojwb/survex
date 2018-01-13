@@ -1,6 +1,6 @@
 /* date.c
  * Routines for date handling
- * Copyright (C) 2010,2015 Olly Betts
+ * Copyright (C) 2010,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,14 @@ is_leap_year(int year)
     return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
 }
 
-static int lastday[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-
-int
+unsigned int
 last_day(int year, int month)
 {
+    static const unsigned char lastday[13] = {
+	0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
     SVX_ASSERT(month >= 1 && month <= 12);
-    return (month == 2 && is_leap_year(year)) ? 29 : lastday[month - 1];
+    return (month == 2 && is_leap_year(year)) ? 29 : lastday[month];
 }
 
 int

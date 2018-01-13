@@ -46,6 +46,9 @@
 ./cmd_datebad2.svx:19:7: error: End of date range is before the start
  *date 1984.01.02-1984.01.01
        ^~~~~~~~~~~~~~~~~~~~~
+./cmd_datebad2.svx:20:7: warning: Assuming 2 digit year is 1971
+ *date 71-1970
+       ^~
 ./cmd_datebad2.svx:20:7: error: End of date range is before the start
  *date 71-1970
        ^~~~~~~
@@ -88,4 +91,4 @@ Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
 North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
 East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
    2 1-nodes.
-There were 20 warning(s) and 2 error(s) - no output files produced.
+There were 21 warning(s) and 2 error(s) - no output files produced.

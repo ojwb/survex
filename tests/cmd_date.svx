@@ -1,4 +1,4 @@
-; pos=no warn=7
+; pos=no warn=21
 ; valid dates:
 *begin
 *date 00.01.01

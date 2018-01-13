@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -518,7 +518,7 @@ read_string(char **pstr, int *plen)
 extern void
 read_date(int *py, int *pm, int *pd)
 {
-   int y = 0, m = 0, d = 0;
+   unsigned int y = 0, m = 0, d = 0;
    filepos fp_date;
 
    skipblanks();
@@ -526,7 +526,15 @@ read_date(int *py, int *pm, int *pd)
    get_pos(&fp_date);
    y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
    /* Two digit year is 19xx. */
-   if (y < 100) y += 1900;
+   if (y < 100) {
+      filepos fp_save;
+      get_pos(&fp_save);
+      y += 1900;
+      set_pos(&fp_date);
+      /* TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918 */
+      compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Assuming 2 digit year is %d*/76, y);
+      set_pos(&fp_save);
+   }
    if (y < 1900 || y > 2078) {
       set_pos(&fp_date);
       compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);

@@ -1,6 +1,6 @@
 /* date.h
  * Routines for date handling
- * Copyright (C) 2010,2015 Olly Betts
+ * Copyright (C) 2010,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ extern "C" {
 extern int is_leap_year(int year);
 
 /* Return last day for given month of given year. */
-int last_day(int year, int month);
+unsigned int last_day(int year, int month);
 
 int days_since_1900(int y, int m, int d);
 
