@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2011,2012,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2004,2011,2012,2013,2014,2015,2016,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 
     /* Some formats want stream headers to be separate. */
     if (oc->oformat->flags & AVFMT_GLOBALHEADER)
-	context->flags |= CODEC_FLAG_GLOBAL_HEADER;
+	context->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
 
     int retval;
     retval = avcodec_open2(context, codec, NULL);
@@ -346,10 +346,6 @@ bool MovieMaker::AddFrame()
     }
     sws_scale(sws_ctx, &pixels, &len, 0, GetHeight(),
 	      frame->data, frame->linesize);
-
-    if (oc->oformat->flags & AVFMT_RAWPICTURE) {
-	abort();
-    }
 
     ++frame->pts;
 
