@@ -187,6 +187,10 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 			      BLUES[pen] / 255.0);
     }
 
+    TogglePerspective();
+#ifndef STEREO_BUFFERS
+    SetColourBy(COLOUR_BY_NONE);
+#endif
     timer.Start();
 }
 
@@ -386,8 +390,23 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	// Clear the background.
 	Clear();
 
+    for (m_Eye = 0; m_Eye < 2; m_Eye++) { // (0 for left eye, 1 for right)
 	// Set up model transformation matrix.
 	SetDataTransform();
+
+#ifndef STEREO_BUFFERS
+	if (m_Eye) {
+	    // Clear alpha and the depth buffer.
+	    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
+	    Clear();
+
+	    // Right is green and blue.
+	    glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+	} else {
+	    // Left is red.
+	    glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+	}
+#endif
 
 	if (m_Legs || m_Tubes) {
 	    if (m_Tubes) {
@@ -546,7 +565,12 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		EndBlobs();
 	    }
 	}
+    }
 
+#ifndef STEREO_BUFFERS
+	// Reset colour mask.
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+#endif
 	FinishDrawing();
     } else {
 	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));

@@ -356,6 +356,9 @@ END_EVENT_TABLE()
 static const int wx_gl_window_attribs[] = {
     WX_GL_DOUBLEBUFFER,
     WX_GL_RGBA,
+#ifdef STEREO_BUFFERS
+    WX_GL_STEREO,
+#endif
     WX_GL_DEPTH_SIZE, 16,
     0
 };
@@ -658,6 +661,13 @@ void GLACanvas::StartDrawing()
     // Prepare for a redraw operation.
 
     ctx.SetCurrent(*this);
+#ifdef STEREO_BUFFERS
+    if (m_Eye != 1) {
+        glDrawBuffer(GL_BACK_LEFT);
+    } else {
+        glDrawBuffer(GL_BACK_RIGHT);
+    }
+#endif
     glDepthMask(GL_TRUE);
 
     if (!save_hints) return;
@@ -772,12 +782,18 @@ void GLACanvas::SetDataTransform()
 
     double aspect = double(y_size) / double(x_size);
 
+    // 0.1 for mono, camera.focallength / 5 for stereo ?
     Double near_plane = 1.0;
     if (m_Perspective) {
-	Double lr = near_plane * tan(rad(25.0));
+	const double APERTURE = 50.0;
+	const double FOCAL_LEN = 70.0;
+	const double EYE_SEP = FOCAL_LEN / 20.0;
+	Double stereo_adj = 0.5 * EYE_SEP * near_plane / FOCAL_LEN;
+	Double lr = near_plane * tan(rad(APERTURE * 0.5));
 	Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
 	Double tb = lr * aspect;
-	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
+	if (m_Eye == 0) stereo_adj = -stereo_adj;
+	glFrustum(-lr + stereo_adj, lr + stereo_adj, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
 	near_plane = 0.0;

@@ -281,6 +281,9 @@ bool Aven::OnInit()
     const int wx_gl_attribs[] = {
 	WX_GL_DOUBLEBUFFER,
 	WX_GL_RGBA,
+#ifdef STEREO_BUFFERS
+	WX_GL_STEREO,
+#endif
 	0
     };
     if (!InitGLVisual(wx_gl_attribs)) {

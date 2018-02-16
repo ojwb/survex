@@ -154,6 +154,9 @@ class GLACanvas : public wxGLCanvas {
 
     bool CheckVisualFidelity(const unsigned char * target) const;
 
+protected:
+    int m_Eye;
+
 public:
     GLACanvas(wxWindow* parent, int id);
     ~GLACanvas();
