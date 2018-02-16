@@ -187,7 +187,6 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 			      BLUES[pen] / 255.0);
     }
 
-    TogglePerspective();
 #ifndef STEREO_BUFFERS
     SetColourBy(COLOUR_BY_NONE);
 #endif
@@ -1507,7 +1506,7 @@ void GfxCore::DefaultParameters()
     m_Grid = false;
     m_BoundingBox = false;
     m_Tubes = false;
-    if (GetPerspective()) TogglePerspective();
+    if (!GetPerspective()) TogglePerspective();
 
     // Set the initial scale.
     SetScale(initial_scale);
