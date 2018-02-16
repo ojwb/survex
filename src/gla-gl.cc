@@ -782,12 +782,13 @@ void GLACanvas::SetDataTransform()
 
     double aspect = double(y_size) / double(x_size);
 
-    // 0.1 for mono, camera.focallength / 5 for stereo ?
+    // 0.1 for mono?
     Double near_plane = 1.0;
     if (m_Perspective) {
 	const double APERTURE = 50.0;
 	const double FOCAL_LEN = 70.0;
 	const double EYE_SEP = FOCAL_LEN / 20.0;
+	near_plane = FOCAL_LEN / 5.0;
 	Double stereo_adj = 0.5 * EYE_SEP * near_plane / FOCAL_LEN;
 	Double lr = near_plane * tan(rad(APERTURE * 0.5));
 	Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
