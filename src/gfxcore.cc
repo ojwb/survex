@@ -1214,9 +1214,6 @@ void GfxCore::DrawLengthKey()
 
 void GfxCore::DrawScaleBar()
 {
-    // Draw the scalebar.
-    if (GetPerspective()) return;
-
     // Calculate how many metres of survey are currently displayed across the
     // screen.
     Double across_screen = SurveyUnitsAcrossViewport();
@@ -3040,7 +3037,7 @@ void GfxCore::DrawIndicators()
     }
 
     // Draw scalebar.
-    if (m_Scalebar) {
+    if (m_Scalebar && !GetPerspective()) {
 	DrawList2D(LIST_SCALE_BAR, 0, 0, 0);
     }
 }
