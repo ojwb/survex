@@ -384,12 +384,21 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    FirstShow();
 	}
 
+#ifndef STEREO_BUFFERS
 	StartDrawing();
 
 	// Clear the background.
 	Clear();
+#endif
 
     for (m_Eye = 0; m_Eye < 2; m_Eye++) { // (0 for left eye, 1 for right)
+#ifdef STEREO_BUFFERS
+	StartDrawing();
+
+	// Clear the background.
+	Clear();
+#endif
+
 	// Set up model transformation matrix.
 	SetDataTransform();
 
