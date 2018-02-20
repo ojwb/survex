@@ -784,10 +784,10 @@ void GLACanvas::SetDataTransform()
 
     // 0.1 for mono?
     Double near_plane = 1.0;
+    const double APERTURE = 50.0;
+    const double FOCAL_LEN = 70.0;
+    const double EYE_SEP = FOCAL_LEN / 20.0;
     if (m_Perspective) {
-	const double APERTURE = 50.0;
-	const double FOCAL_LEN = 70.0;
-	const double EYE_SEP = FOCAL_LEN / 20.0;
 	near_plane = FOCAL_LEN / 5.0;
 	Double stereo_adj = 0.5 * EYE_SEP * near_plane / FOCAL_LEN;
 	Double lr = near_plane * tan(rad(APERTURE * 0.5));
@@ -819,6 +819,8 @@ void GLACanvas::SetDataTransform()
     CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
+    CHECK_GL_ERROR("SetDataTransform", "glRotated");
+    glTranslated(m_Eye ? -0.5 * EYE_SEP : 0.5 * EYE_SEP, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     glRotated(-m_Tilt, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
