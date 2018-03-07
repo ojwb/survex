@@ -573,7 +573,7 @@ msgstr "*EXPORT doit suivre immédiatement « *BEGIN <SURVEY> »"
 #: ../src/readval.c:531
 #: n:76
 msgid "Assuming 2 digit year is %d"
-msgstr ""
+msgstr "En supposant que l'année à deux chiffres est %d"
 
 #: ../src/readval.c:535
 #: n:58
