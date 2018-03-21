@@ -88,10 +88,10 @@ fi
 # Regression test - aven in 1.2.6 segfaulted here:
 echo "SURVEXLANG= LANG=nosuch aven"
 if test -n "$VERBOSE"; then
-  SURVEXLANG= LANG=nosuch $vgrun "$testdir/../src/aven"
+  SURVEXLANG= LANG=nosuch $vgrun "$testdir/../src/aven" --help
   exitcode=$?
 else
-  SURVEXLANG= LANG=nosuch $vgrun "$testdir/../src/aven" >/dev/null
+  SURVEXLANG= LANG=nosuch $vgrun "$testdir/../src/aven" --help >/dev/null
   exitcode=$?
 fi 2>/dev/null
 if [ -n "$VALGRIND" ] ; then
@@ -102,7 +102,7 @@ if [ -n "$VALGRIND" ] ; then
   fi
   rm "$vg_log"
 fi
-[ "$exitcode" = 255 ] || exit 1
+[ "$exitcode" = 0 ] || exit 1
 
 test -n "$VERBOSE" && echo "Test passed"
 exit 0
