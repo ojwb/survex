@@ -52,9 +52,15 @@ matrix:
         - ./configure
         - make
         - perl -i -pe 's/(^PROGS=.* )aven"/$1"/' tests/smoke.tst
-        - make check
+#        - make check
+        - cd tests && env VERBOSE=1 ./cavern.tst
+        - cd tests && env VERBOSE=1 ./diffpos.tst
+        - cd tests && env VERBOSE=1 ./extend.tst
+        - cd tests && env VERBOSE=1 ./3dtopost.tst
         - src/aven --version
         - src/aven --help
+        - cd tests && env VERBOSE=1 ./smoke.tst
+        - cd tests && env VERBOSE=1 ./aven.tst
 branches:
   only:
     - master
