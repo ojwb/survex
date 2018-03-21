@@ -180,7 +180,8 @@ for file in $TESTS ; do
       exit 1
     fi
   fi
-  nan=`sed 's/.*\<[Nn]a[Nn]m\?\>.*/x/p;d' tmp.out`
+  # m* would ideally be m\? but Apple's stone-age sed doesn't support \?.
+  nan=`sed 's/.*\<[Nn]a[Nn]m*\>.*/x/p;d' tmp.out`
   if test -n "$nan" ; then
     exit 1
   fi
@@ -239,11 +240,11 @@ for file in $TESTS ; do
   esac
 
   if test -f "$outfile" ; then
-    # Check output is as expected.
+    # Check output is as expected, working around Apple's stone-age sed.
     if test -n "$VERBOSE" ; then
-      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$outfile" - || exit 1
+      sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$outfile" - || exit 1
     else
-      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$outfile" - || exit 1
+      sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$outfile" - || exit 1
     fi
   fi
   rm -f tmp.*
