@@ -98,6 +98,11 @@ for file in $TESTS ; do
     *) realfile=$file.svx ;;
   esac
 
+  if [ x"$file" = xONELEG ] && [ -f "ONELEG.SVX" ] ; then
+    echo "Case insensitive filing system - skipping ONELEG testcase"
+    continue
+  fi
+
   if [ -n "$realfile" ] && [ ! -r "$realfile" ] ; then
     echo "Warning: don't know how to run test '$file' - skipping it"
     continue
