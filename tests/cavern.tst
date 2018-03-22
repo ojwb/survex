@@ -180,9 +180,10 @@ for file in $TESTS ; do
       exit 1
     fi
   fi
-  # m* would ideally be m\? but Apple's stone-age sed doesn't support \?.
-  nan=`sed 's/.*\<[Nn]a[Nn]m*\>.*/x/p;d' tmp.out`
-  if test -n "$nan" ; then
+  # Fail if nan, NaN, etc in output (which might be followed by m for metres or
+  # s for seconds).
+  if egrep -q '(^|[^A-Za-z0-9])nan[ms]?($|[^A-Za-z0-9])' tmp.out ; then
+    echo "Not-a-number appears in output"
     exit 1
   fi
 
