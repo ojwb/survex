@@ -1,3 +1,106 @@
+Changes in 1.2.33 (2018-03-22):
+
+* aven:
+
+  + Reliably disable scale bar in perspective view.  This is supposed to happen
+    (because the scale across the screen varies in perspective view) but
+    actually the scale bar stayed around until an update was forced for another
+    reason.  Spotted thanks to Pedro Silva Pinto.
+
+  + Make "no date"/"not in loop" colour grey.  The white was a bit bright and
+    made it harder to see the legs that had colours.  The grey now used is
+    within the brightness range of the other colours.  Fixes #94, reported by
+    Erin Lynch.
+
+  + Fix KML export - exporting both survey legs and station names resulted in a
+    malformed KML file.  This bug was introduced in 1.2.30 when support for
+    exporting passages and walls was added.  Reported by Erin Lynch in #90.
+
+  + Consistently use 2 decimal places for altitude in KML output.  Some places
+    used 8 decimal places which is appropriate for lat and long, but clearly
+    overkill for an altitude in metres and increases the file size
+    unnecessarily.
+
+  + Right-align bearing widget in print/export dialog.  The change to allow the
+    value to wrap round from 360 to 0 in 1.2.27 inadvertently made this control
+    left-aligned (due to incorrect wxWidgets documentation of the default style
+    for this control).
+
+  + (Unix version): Work around wxWidgets bug so that custom cursors work
+    under GTK3.
+
+  + (Unix version): Update GTK version reporting - report GTK3, and don't
+    bother to report subversions of GTK2 (it seems to be fairly arbitrary
+    which subversions wxWidgets defines constants for).
+
+  + Update code to work without warnings when using wxWidgets 3.1.0 (the
+    current development version).
+
+  + Make movie export code compatible with upcoming FFmpeg 3.5 release.
+    It should still work with the older versions that worked before this
+    change.  Reported by James Cowgill in https://bugs.debian.org/888334
+
+* cavern:
+
+  + Warn about 2 digit years.  We can't change the assumption that these are
+    19xx without risking breaking existing datasets, but the further we get
+    into this century, the more likely such an assumption is to catch someone
+    out.  The warning can easily be quashed by explicitly adding the assumed
+    "19".
+
+* The Spanish translation is now up to date once more, thanks to updates from
+  Evaristo Quiroga.
+
+* Merge French translation updates from Jean-Marc.
+
+* Fix transposed German Northing and Easting labels.  Fixes #95, reported by
+  milosch.
+
+* Fill in missing translations of "Easting", "Northing", "E" and "N" for
+  Bulgarian, Greek, Hungarian, Polish and Russian based on other existing
+  translated messages.
+
+* Align .pos file headings better with columns of coordinates below for
+  Indonesian and Polish.
+
+* Fix handling of the message string "error" before messages loaded.  If
+  there's an error loading messages, we need this message to report it.
+  Reported by Martin Sluka.
+
+* Fix a few compiler warnings.
+
+* img library: Fix extracting leaf survey name for survey title.  When there
+  are three or more levels of survey, we were taking everything after the first
+  dot rather than everything after the last dot.
+
+* Fix problems with testsuite on macOS:
+
+  + cavern.tst: Skip "ONELEG" testcase on case-insensitive filing systems
+    - this test isn't meaningful unless the filing system is case-sensitive,
+    but happens to fail if it isn't.
+
+  + cavern.tst: Workaround limitations of Apple's sed.
+
+  + aven.tst: Fix not to hang on macOS.
+
+  + smoke.tst: Remove aven testcases which duplicate those in aven.tst.
+
+* Clean up handling of support files in relocatable installs - this is now
+  detected at run time on macOS.
+
+* Split out macOS Aven.app creation into a make rule so it can be easily used
+  by the homebrew formula.
+
+* buildmacosx.sh:
+
+  + Fix when WX_CONFIG not specified - this was giving a confusing error like:
+    ./buildmacosx.sh: line 163: --cc: command not found
+
+  + Use wxWidgets 3.0.4.
+
+* Stop checking wx-config --ldflags as this option was removed in wxWidgets 2.6
+  and we currently require 2.8 or newer.
+
 Changes in 1.2.32 (2017-07-08):
 
 * aven:
