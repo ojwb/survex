@@ -1149,7 +1149,7 @@ macosx_got_msg:
 
    select_charset(default_charset());
 
-   // Return 1 if this is a relocatable install, 0 otherwise.
+   /* Return 1 if this is a relocatable install, 0 otherwise. */
 #if OS_UNIX_MACOSX
    return msg_macosx_relocatable;
 #else
