@@ -63,16 +63,11 @@ mingw_iss : survex.iss
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*
 	cp doc/manual/*.png iss_tmp/manual
 	cp $(extra_bin) iss_tmp
-	for d in /usr/i586-mingw32msvc/share/locale /usr/share/locale ; do \
-	  if test -d "$d" ; then \
-	    for f in "$d"/locale/*/LC_MESSAGES/wxstd.mo ; do \
-	      a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$!\1!'`; \
-	      mkdir iss_tmp/$$a; \
-	      cp "$$f" iss_tmp/$$a; \
-	      echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' ; \
-	    done; \
-	    break; \
-	  fi \
+	for f in "`$(WX_CONFIG) --prefix`"/share/locale/*/LC_MESSAGES/wxstd.mo ; do \
+	  a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$!\1!'`; \
+	  mkdir iss_tmp/$$a; \
+	  cp "$$f" iss_tmp/$$a; \
+	  echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' ; \
 	done > iss_tmp/i18nfiles.iss
 	cp lib/*.isl iss_tmp
 	mkdir iss_tmp/proj
