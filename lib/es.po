@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: survex\n"
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
-"PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
-"Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
+"PO-Revision-Date: 2018-03-24 22:05:08 +0000\n"
+"Last-Translator: Evaristo Quiroga <eqr@ecgracia.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -177,7 +177,7 @@ msgstr "Estación “%s” igualada a si misma"
 #: ../src/datain.c:1181
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
-msgstr "La lectura de la brújula no se puede omitir excepto en tiradas a plomo"
+msgstr "La lectura de la brújula no se puede omitir excepto en visuales a plomo"
 
 #: ../src/datain.c:1819
 #: ../src/datain.c:1940
@@ -1055,7 +1055,7 @@ msgstr "Encontrado “%s”, esperando “F” o “B”"
 #: n:132
 #, c-format
 msgid "Total length of survey legs = %7.2f%s (%7.2f%s adjusted)"
-msgstr "Longitud total de las tiradas de topografia = %7.2f%s (%7.2f%s corregido)"
+msgstr "Longitud total de las visuales de la topografia = %7.2f%s (%7.2f%s corregido)"
 
 #: ../src/cavern.c:448
 #: n:133
@@ -1067,7 +1067,7 @@ msgstr "Longitud total en proyección horizontal = %7.2f%s"
 #: n:134
 #, c-format
 msgid "Total vertical length of survey legs = %7.2f%s"
-msgstr "Longitud vertical total de las tiradas de topografia = %7.2f%s"
+msgstr "Longitud vertical total de las visuales de la topografia = %7.2f%s"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
 #: ../src/cavern.c:458
@@ -1128,7 +1128,7 @@ msgstr "Tiempo utilizado %5.2fs (%5.2fs tiempo CPU)"
 #: n:145
 #, c-format
 msgid "Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). "
-msgstr "Longitud original %6.2fm (%3d tiradas), reducidos %6.2fm (%5.2fm/tirada). "
+msgstr "Longitud original %6.2fm (%3d visuales), reducidos %6.2fm (%5.2fm/visual). "
 
 #: ../src/netskel.c:750
 #: n:146
@@ -1300,7 +1300,7 @@ msgstr " unidas por 1 tirada."
 #: n:175
 #, c-format
 msgid " joined by %ld legs."
-msgstr " unidas por %ld tiradas."
+msgstr " unidas por %ld visuales."
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
 #: ../src/listpos.c:185
@@ -1532,7 +1532,7 @@ msgstr "Acerca de %s"
 #: ../src/mainfrm.cc:2025
 #: n:451
 msgid "Select a terrain file to view"
-msgstr "Selecciona un archivo de terreno para ver"
+msgstr "Selecciona un archivo de terreno para visualizar"
 
 #: ../src/mainfrm.cc:2019
 #: n:452
@@ -2030,7 +2030,7 @@ msgstr "Visuales S&ubterráneas\tCtrl+L"
 #: ../src/mainfrm.cc:877
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
-msgstr "Tiradas de t&opografia de superficie\tCtrl+F"
+msgstr "Visuales de t&opografia de superficie\tCtrl+F"
 
 #: ../src/mainfrm.cc:902
 #: n:273
@@ -2835,7 +2835,7 @@ msgstr "&Oculta"
 #: ../src/mainfrm.cc:897
 #: n:408
 msgid "&Fade"
-msgstr "D&escolorarse"
+msgstr "D&escolorada"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, aven will show such legs with dashed lines.
