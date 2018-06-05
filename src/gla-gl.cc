@@ -784,7 +784,12 @@ void GLACanvas::SetDataTransform()
 	assert(m_Scale != 0.0);
 	Double lr = m_VolumeDiameter / m_Scale * 0.5;
 	Double far_plane = m_VolumeDiameter + near_plane;
-	Double tb = lr * aspect;
+	Double tb = lr;
+	if (aspect >= 1.0) {
+	    tb *= aspect;
+	} else {
+	    lr /= aspect;
+	}
 	glOrtho(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
     }
@@ -1538,7 +1543,11 @@ Double GLACanvas::SurveyUnitsAcrossViewport() const
 
     assert(m_Scale != 0.0);
     list_flags |= INVALIDATE_ON_SCALE;
-    return m_VolumeDiameter / m_Scale;
+    Double result = m_VolumeDiameter / m_Scale;
+    if (y_size < x_size) {
+	result = result * x_size / y_size;
+    }
+    return result;
 }
 
 void GLACanvas::ToggleSmoothShading()
