@@ -263,20 +263,13 @@ img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 			    const char *filename,
 			    const char *survey);
 
-/* Open a .3d file for output
+/* Open a .3d file for output with no specified coordinate system
  *
- * fnm is the filename
+ * This is a very thin wrapper around img_open_write_cs() which passes NULL for
+ * cs, provided for compatibility with the API provided before support for
+ * coordinate systems was added.
  *
- * title is the title
- *
- * flags contains a bitwise-or of any file-wide flags - currently only one
- * is available: img_FFLAG_EXTENDED.  (The third parameter used to be
- * 'fBinary', but has been ignored for many years, so the parameter has
- * been repurposed for flags - for this reason, img.c deliberately ignores bit
- * 1 being set, but callers should be written/updated not to set it).
- *
- * Returns pointer to an img struct or NULL for error (check img_error()
- * for details)
+ * See img_open_write_cs() for documentation.
  */
 #define img_open_write(F, T, S) img_open_write_cs(F, T, NULL, S)
 
@@ -286,7 +279,8 @@ img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
  *
  * title is the title
  *
- * cs is a PROJ4 string describing the coordinate system (or NULL)
+ * cs is a PROJ4 string describing the coordinate system (or NULL to not
+ * specify a coordinate system).
  *
  * flags contains a bitwise-or of any file-wide flags - currently only one
  * is available: img_FFLAG_EXTENDED.
@@ -296,6 +290,31 @@ img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
  */
 img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
 		       int flags);
+
+/* Write a .3d file to a stream
+ *
+ * stream is a FILE* open on the stream (can be NULL which will give error
+ * IMG_FILENOTFOUND so you don't need to handle that case specially).  The
+ * stream should be opened for writing in binary mode.
+ *
+ * close_func is a function to call to close the stream (most commonly
+ * fclose, or pclose if the stream was opened using popen()) or NULL if
+ * the caller wants to take care of closing the stream.
+ *
+ * title is the title
+ *
+ * cs is a PROJ4 string describing the coordinate system (or NULL to not
+ * specify a coordinate system).
+ *
+ * flags contains a bitwise-or of any file-wide flags - currently only one
+ * is available: img_FFLAG_EXTENDED.
+ *
+ * Returns pointer to an img struct or NULL for error (check img_error()
+ * for details).  Any close function specified is called on error (unless
+ * stream is NULL).
+ */
+img *img_write_stream(FILE *stream, int (*close_func)(FILE*),
+		      const char *title, const char * cs, int flags);
 
 /* Read an item from a .3d file
  *

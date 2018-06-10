@@ -950,39 +950,46 @@ img_rewind(img *pimg)
 }
 
 img *
-img_open_write_cs(const char *fnm, const char *title, const char * cs, int flags)
+img_open_write_cs(const char *fnm, const char *title, const char *cs, int flags)
+{
+   if (fDirectory(fnm)) {
+      img_errno = IMG_DIRECTORY;
+      return NULL;
+   }
+
+   return img_write_stream(fopen(fnm, "wb"), fclose, title, cs, flags);
+}
+
+img *
+img_write_stream(FILE *stream, int (*close_func)(FILE*),
+		 const char *title, const char *cs, int flags)
 {
    time_t tm;
    img *pimg;
 
-   if (fDirectory(fnm)) {
-      img_errno = IMG_DIRECTORY;
+   if (stream == NULL) {
+      img_errno = IMG_FILENOTFOUND;
       return NULL;
    }
 
    pimg = osnew(img);
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
+      if (close_func) close_func(stream);
       return NULL;
    }
 
+   pimg->fh = stream;
+   pimg->close_func = close_func;
    pimg->buf_len = 257;
    pimg->label_buf = (char *)xosmalloc(pimg->buf_len);
    if (!pimg->label_buf) {
+      if (pimg->close_func) pimg->close_func(pimg->fh);
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
       return NULL;
    }
 
-   pimg->fh = fopen(fnm, "wb");
-   if (!pimg->fh) {
-      osfree(pimg->label_buf);
-      osfree(pimg);
-      img_errno = IMG_CANTOPENOUT;
-      return NULL;
-   }
-
-   pimg->close_func = fclose;
    pimg->filename_opened = NULL;
 
    /* Output image file header */
