@@ -133,7 +133,12 @@ typedef struct {
    double length;
    double E, H, V;
 
-   /* The filename actually opened (e.g. may have ".3d" added): */
+   /* The filename actually opened (e.g. may have ".3d" added).
+    *
+    * This is only set if img opened the filename - if an existing stream
+    * is used (via img_read_stream() or similar) then this member will be
+    * NULL.
+    */
    char * filename_opened;
 
    /* Non-zero if reading an extended elevation: */
@@ -145,6 +150,7 @@ typedef struct {
 
    /* All other members are for internal use only: */
    FILE *fh;          /* file handle of image file */
+   int (*close_func)(FILE*);
    char *label_buf;
    size_t buf_len;
    size_t label_len;
@@ -206,6 +212,57 @@ extern unsigned int img_output_version;
  */
 img *img_open_survey(const char *fnm, const char *survey);
 
+/* Read survey data from an existing stream.
+ *
+ * stream is a FILE* open on the stream (can be NULL which will give error
+ * IMG_FILENOTFOUND so you don't need to handle that case specially).  The
+ * stream should be opened for reading in binary mode and positioned at the
+ * start of the survey data file.
+ *
+ * close_func is a function to call to close the stream (most commonly
+ * fclose, or pclose if the stream was opened using popen()) or NULL if
+ * the caller wants to take care of closing the stream.
+ *
+ * filename is used to determine the format based on the file extension,
+ * and also the leafname with the extension removed is used for the survey
+ * title for formats which don't support a title or when no title is
+ * specified.  If you're not interested in default titles, you can just
+ * pass the extension including a leading "." - e.g. ".3d".  May not be
+ * NULL.
+ *
+ * Returns pointer to an img struct or NULL on error.  Any close function
+ * specified is called on error (unless stream is NULL).
+ */
+#define img_read_stream(S, C, F) img_read_stream_survey((S), (C), (F), NULL)
+
+/* Open a .3d file for reading from an existing stream.
+ *
+ * stream is a FILE* open on the stream (can be NULL which will give error
+ * IMG_FILENOTFOUND so you don't need to handle that case specially).  The
+ * stream should be opened for reading in binary mode and positioned at the
+ * start of the survey data file.
+ *
+ * close_func is a function to call to close the stream (most commonly
+ * fclose, or pclose if the stream was opened using popen()) or NULL if
+ * the caller wants to take care of closing the stream.
+ *
+ * filename is used to determine the format based on the file extension,
+ * and also the leafname with the extension removed is used for the survey
+ * title for formats which don't support a title or when no title is
+ * specified.  If you're not interested in default titles, you can just
+ * pass the extension including a leading "." - e.g. ".3d".  filename must
+ * not be NULL.
+ *
+ * survey points to a survey name to restrict reading to (or NULL for all
+ * survey data in the file)
+ *
+ * Returns pointer to an img struct or NULL on error.  Any close function
+ * specified is called on error.
+ */
+img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
+			    const char *filename,
+			    const char *survey);
+
 /* Open a .3d file for output
  *
  * fnm is the filename
@@ -230,6 +287,7 @@ img *img_open_survey(const char *fnm, const char *survey);
  * title is the title
  *
  * cs is a PROJ4 string describing the coordinate system (or NULL)
+ *
  * flags contains a bitwise-or of any file-wide flags - currently only one
  * is available: img_FFLAG_EXTENDED.
  *

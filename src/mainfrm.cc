@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -1143,7 +1143,10 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 #endif
 
     // Load the processed survey data.
-    img* survey = img_open_survey(file.utf8_str(), prefix.utf8_str());
+    img* survey = img_read_stream_survey(wxFopen(file, wxT("rb")),
+					 fclose,
+					 file.c_str(),
+					 prefix.utf8_str());
     if (!survey) {
 	wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
 	wxGetApp().ReportError(m);
