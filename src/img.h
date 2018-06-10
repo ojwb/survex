@@ -1,6 +1,6 @@
 /* img.h
  * Header file for routines to read and write Survex ".3d" image files
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013,2014,2016
+ * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013,2014,2016,2018
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -188,22 +188,30 @@ extern unsigned int img_output_version;
 #define IMG_VERSION_MAX 8
 
 /* Open a .3d file for reading
+ *
  * fnm is the filename
+ *
  * Returns pointer to an img struct or NULL
  */
 #define img_open(F) img_open_survey((F), NULL)
 
 /* Open a .3d file for reading
+ *
  * fnm is the filename
- * Returns pointer to an img struct or NULL
+ *
  * survey points to a survey name to restrict reading to (or NULL for all
  * survey data in the file)
+ *
+ * Returns pointer to an img struct or NULL
  */
 img *img_open_survey(const char *fnm, const char *survey);
 
 /* Open a .3d file for output
+ *
  * fnm is the filename
+ *
  * title is the title
+ *
  * flags contains a bitwise-or of any file-wide flags - currently only one
  * is available: img_FFLAG_EXTENDED.  (The third parameter used to be
  * 'fBinary', but has been ignored for many years, so the parameter has
@@ -216,8 +224,11 @@ img *img_open_survey(const char *fnm, const char *survey);
 #define img_open_write(F, T, S) img_open_write_cs(F, T, NULL, S)
 
 /* Open a .3d file for output in a specified coordinate system
+ *
  * fnm is the filename
+ *
  * title is the title
+ *
  * cs is a PROJ4 string describing the coordinate system (or NULL)
  * flags contains a bitwise-or of any file-wide flags - currently only one
  * is available: img_FFLAG_EXTENDED.
@@ -229,29 +240,43 @@ img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
 		       int flags);
 
 /* Read an item from a .3d file
+ *
  * pimg is a pointer to an img struct returned by img_open()
+ *
  * coordinates are returned in p
+ *
  * flags and label name are returned in fields in pimg
+ *
  * Returns img_XXXX as #define-d above
  */
 int img_read_item(img *pimg, img_point *p);
 
 /* Write a item to a .3d file
+ *
  * pimg is a pointer to an img struct returned by img_open_write()
+ *
  * code is one of the img_XXXX #define-d above
+ *
  * flags is the leg, station, or xsect flags
  * (meaningful for img_LINE, img_LABEL, and img_XSECT respectively)
+ *
  * s is the label (only meaningful for img_LABEL)
+ *
  * x, y, z are the coordinates
  */
 void img_write_item(img *pimg, int code, int flags, const char *s,
 		    double x, double y, double z);
 
 /* Write error information for the current traverse
+ *
  * n_legs is the number of legs in the traverse
+ *
  * length is the traverse length (in m)
+ *
  * E is the ratio of the observed misclosure to the theoretical one
+ *
  * H is the ratio of the observed horizontal misclosure to the theoretical one
+ *
  * V is the ratio of the observed vertical misclosure to the theoretical one
  */
 void img_write_errors(img *pimg, int n_legs, double length,
@@ -259,15 +284,19 @@ void img_write_errors(img *pimg, int n_legs, double length,
 
 /* rewind a .3d file opened for reading so the data can be read in
  * several passes
+ *
  * pimg is a pointer to an img struct returned by img_open()
+ *
  * Returns: non-zero for success, zero for error (check img_error() for
  *   details)
  */
 int img_rewind(img *pimg);
 
 /* Close a .3d file
+ *
  * pimg is a pointer to an img struct returned by img_open() or
  *   img_open_write()
+ *
  * Returns: non-zero for success, zero for error (check img_error() for
  *   details)
  */
@@ -281,6 +310,7 @@ typedef enum {
 } img_errcode;
 
 /* Read the error code
+ *
  * If img_open(), img_open_survey() or img_open_write() returns NULL, or
  * img_rewind() or img_close() returns 0, or img_read_item() returns img_BAD
  * then you can call this function to discover why.
