@@ -1,5 +1,16 @@
 /* img.h
- * Header file for routines to read and write Survex ".3d" image files
+ * Header file for routines to read and write processed survey data files
+ *
+ * These routines support reading processed survey data in a variety of formats
+ * - currently:
+ *
+ * - Survex ".3d" image files
+ * - Survex ".pos" files
+ * - Compass Plot files (".plt" and ".plf")
+ * - CMAP XYZ files (".sht", ".adj", ".una", ".xyz")
+ *
+ * Writing Survex ".3d" image files is supported.
+ *
  * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013,2014,2016,2018
  *
  * This program is free software; you can redistribute it and/or modify
@@ -193,7 +204,7 @@ extern unsigned int img_output_version;
 /* Maximum supported value for img_output_version: */
 #define IMG_VERSION_MAX 8
 
-/* Open a .3d file for reading
+/* Open a processed survey data file for reading
  *
  * fnm is the filename
  *
@@ -201,7 +212,7 @@ extern unsigned int img_output_version;
  */
 #define img_open(F) img_open_survey((F), NULL)
 
-/* Open a .3d file for reading
+/* Open a processed survey data file for reading
  *
  * fnm is the filename
  *
@@ -316,7 +327,7 @@ img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
 img *img_write_stream(FILE *stream, int (*close_func)(FILE*),
 		      const char *title, const char * cs, int flags);
 
-/* Read an item from a .3d file
+/* Read an item from a processed survey data file
  *
  * pimg is a pointer to an img struct returned by img_open()
  *
@@ -359,8 +370,9 @@ void img_write_item(img *pimg, int code, int flags, const char *s,
 void img_write_errors(img *pimg, int n_legs, double length,
 		      double E, double H, double V);
 
-/* rewind a .3d file opened for reading so the data can be read in
- * several passes
+/* rewind a processed survey data file opened for reading
+ *
+ * This is useful if you want to read the data in several passes.
  *
  * pimg is a pointer to an img struct returned by img_open()
  *
@@ -369,7 +381,7 @@ void img_write_errors(img *pimg, int n_legs, double length,
  */
 int img_rewind(img *pimg);
 
-/* Close a .3d file
+/* Close a processed survey data file
  *
  * pimg is a pointer to an img struct returned by img_open() or
  *   img_open_write()
