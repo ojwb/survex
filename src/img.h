@@ -50,7 +50,7 @@ extern "C" {
 # define img_LABEL  3
 # define img_XSECT  4
 # define img_XSECT_END 5
-/* Loop closure information for the *preceeding* traverse (img_MOVE + one or
+/* Loop closure information for the *preceding* traverse (img_MOVE + one or
  * more img_LINEs). */
 # define img_ERROR_INFO 6
 
@@ -212,7 +212,7 @@ extern unsigned int img_output_version;
  */
 img *img_open_survey(const char *fnm, const char *survey);
 
-/* Read survey data from an existing stream.
+/* Read processed survey data from an existing stream.
  *
  * stream is a FILE* open on the stream (can be NULL which will give error
  * IMG_FILENOTFOUND so you don't need to handle that case specially).  The
@@ -235,7 +235,7 @@ img *img_open_survey(const char *fnm, const char *survey);
  */
 #define img_read_stream(S, C, F) img_read_stream_survey((S), (C), (F), NULL)
 
-/* Open a .3d file for reading from an existing stream.
+/* Read processed survey data from an existing stream.
  *
  * stream is a FILE* open on the stream (can be NULL which will give error
  * IMG_FILENOTFOUND so you don't need to handle that case specially).  The
