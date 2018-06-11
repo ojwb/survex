@@ -222,9 +222,7 @@ class MainFrm : public wxFrame {
     // Processed version of data - same as m_File if m_File is processed data.
     wxString m_FileProcessed;
     wxString m_Survey;
-public: // FIXME for m_cs_proj
     wxString m_Title, m_cs_proj, m_DateStamp;
-private:
     time_t m_DateStamp_numeric;
     wxChar separator; // character separating survey levels (often '.')
     Vector3 m_Offsets;
@@ -501,6 +499,8 @@ public:
     const Vector3 & GetOffset() const { return m_Offsets; }
 
     wxChar GetSeparator() const { return separator; }
+
+    const wxString& GetCSProj() const { return m_cs_proj; }
 
     list<traverse>::const_iterator traverses_begin(unsigned flags) const {
 	if (flags >= sizeof(traverses)) return traverses[0].end();

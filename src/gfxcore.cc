@@ -2687,7 +2687,7 @@ GfxCore::read_bil(wxInputStream & is, size_t size, unsigned long skipbytes)
 
 bool GfxCore::LoadDEM(const wxString & file)
 {
-    if (m_Parent->m_cs_proj.empty()) {
+    if (m_Parent->GetCSProj().empty()) {
 	wxMessageBox(wxT("No coordinate system specified in survey data"));
 	return false;
     }
@@ -2836,13 +2836,13 @@ void GfxCore::DrawTerrain()
 	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
 	return;
     }
-    static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
+    static projPJ pj_out = pj_init_plus(m_Parent->GetCSProj().c_str());
     if (!pj_out) {
 	ToggleTerrain();
 	delete [] dem;
 	dem = NULL;
 	hourglass.stop();
-	error(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
+	error(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->GetCSProj().c_str());
 	return;
     }
     n_tris = 0;
