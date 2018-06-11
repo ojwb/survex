@@ -461,9 +461,6 @@ public:
     bool ShowingSidePanel();
 
     const Vector3 & GetExtent() const { return m_Ext; }
-    Double GetXExtent() const { return m_Ext.GetX(); }
-    Double GetYExtent() const { return m_Ext.GetY(); }
-    Double GetZExtent() const { return m_Ext.GetZ(); }
 
     Double GetDepthExtent() const { return m_DepthExt; }
     Double GetDepthMin() const { return m_DepthMin; }

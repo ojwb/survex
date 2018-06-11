@@ -246,9 +246,10 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_TERRAIN);
 
     // Set diameter of the viewing volume.
-    double cave_diameter = sqrt(sqrd(m_Parent->GetXExtent()) +
-				sqrd(m_Parent->GetYExtent()) +
-				sqrd(m_Parent->GetZExtent()));
+    auto ext = m_Parent->GetExtent();
+    double cave_diameter = sqrt(sqrd(ext.GetX()) +
+				sqrd(ext.GetY()) +
+				sqrd(ext.GetZ()));
 
     // Allow for terrain.
     double diameter = max(1000.0 * 2, cave_diameter * 2);
@@ -626,11 +627,12 @@ void GfxCore::DrawGrid()
 
     Double grid_size = size_snap * 0.1;
     Double edge = grid_size * 2.0;
-    Double grid_z = -m_Parent->GetZExtent() * 0.5 - grid_size;
-    Double left = -m_Parent->GetXExtent() * 0.5 - edge;
-    Double right = m_Parent->GetXExtent() * 0.5 + edge;
-    Double bottom = -m_Parent->GetYExtent() * 0.5 - edge;
-    Double top = m_Parent->GetYExtent() * 0.5 + edge;
+    auto ext = m_Parent->GetExtent();
+    Double grid_z = -ext.GetZ() * 0.5 - grid_size;
+    Double left = -ext.GetX() * 0.5 - edge;
+    Double right = ext.GetX() * 0.5 + edge;
+    Double bottom = -ext.GetY() * 0.5 - edge;
+    Double top = ext.GetY() * 0.5 + edge;
     int count_x = (int) ceil((right - left) / grid_size);
     int count_y = (int) ceil((top - bottom) / grid_size);
     Double actual_right = left + count_x*grid_size;
@@ -3201,7 +3203,7 @@ void GfxCore::AddPolyline(const traverse & centreline)
 void GfxCore::AddPolylineShadow(const traverse & centreline)
 {
     BeginPolyline();
-    const double z = -0.5 * m_Parent->GetZExtent();
+    const double z = -0.5 * m_Parent->GetExtent().GetZ();
     vector<PointInfo>::const_iterator i = centreline.begin();
     PlaceVertex(i->GetX(), i->GetY(), z);
     ++i;
