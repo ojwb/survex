@@ -27,6 +27,7 @@
 
 class Model;
 
+// Order here needs to match order of extension array in export.cc.
 typedef enum {
     FMT_DXF,
     FMT_EPS,
@@ -37,8 +38,11 @@ typedef enum {
     FMT_PLT,
     FMT_SK,
     FMT_POS,
-    FMT_SVG
+    FMT_SVG,
+    FMT_MAX_PLUS_ONE_
 } export_format;
+
+extern const char * const extension[];
 
 #define LEGS		0x00000001
 #define SURF		0x00000002

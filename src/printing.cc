@@ -304,19 +304,6 @@ static const unsigned format_info[] = {
     LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
 };
 
-static const char * extension[] = {
-    ".dxf",
-    ".eps",
-    ".gpx",
-    ".hpgl",
-    ".json",
-    ".kml",
-    ".plt",
-    ".sk",
-    ".pos",
-    ".svg"
-};
-
 static const int msg_filetype[] = {
     /*DXF files*/411,
     /*EPS files*/412,

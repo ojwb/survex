@@ -71,6 +71,10 @@ aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
 
+cad3d_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
+cad3d_LDFLAGS =
+cad3d_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS)
+
 if MACOSX
 # FIXME: It looks like modern wx-config should give us this...
 aven_LDFLAGS += -framework OpenGL
@@ -84,8 +88,9 @@ sorterr_SOURCES = sorterr.c $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
-cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c \
- $(COMMONSRC)
+cad3d_SOURCES = cad3d.cc model.cc export.cc namecompare.cc \
+		useful.c hash.c img_hosted.c \
+		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 

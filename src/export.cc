@@ -68,6 +68,23 @@
 
 #define SQRT_2		1.41421356237309504880168872420969
 
+// Order here needs to match order of export_format enum in export.h.
+const char * const extension[] = {
+    ".dxf",
+    ".eps",
+    ".gpx",
+    ".hpgl",
+    ".json",
+    ".kml",
+    ".plt",
+    ".sk",
+    ".pos",
+    ".svg"
+};
+
+static_assert(sizeof(extension) == FMT_MAX_PLUS_ONE_ * sizeof(extension[0]),
+	      "extension[] matches enum export_format");
+
 static void
 html_escape(FILE *fh, const char *s)
 {
