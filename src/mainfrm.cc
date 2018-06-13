@@ -736,11 +736,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
     m_SashPosition(-1),
     m_Gfx(NULL), m_Log(NULL),
-    m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
-    m_NumHighlighted(0),
-    m_HasUndergroundLegs(false),
-    m_HasSplays(false), m_HasDupes(false), m_HasSurfaceLegs(false),
-    m_HasErrorInformation(false), m_IsExtendedElevation(false),
     pending_find(false), fullscreen_showing_menus(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
@@ -1132,7 +1127,7 @@ void MainFrm::CreateSidePanel()
     m_Splitter->Initialize(m_Gfx);
 }
 
-bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
+bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
     // and prepare the data for drawing.
@@ -1142,20 +1137,58 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     timer.Start();
 #endif
 
+    int err_msg_code = Model::Load(file, prefix);
+    if (err_msg_code) {
+	wxString m = wxString::Format(wmsg(err_msg_code), file.c_str());
+	wxGetApp().ReportError(m);
+	return false;
+    }
+
+    // Update window title.
+    SetTitle(GetSurveyTitle() + " - " APP_NAME);
+
+    // Sort the labels ready for filling the tree.
+    m_Labels.sort(LabelCmp(GetSeparator()));
+
+    // Fill the tree of stations and prefixes.
+    wxString root_name = wxFileNameFromPath(file);
+    if (!prefix.empty()) {
+	root_name += " (";
+	root_name += prefix;
+	root_name += ")";
+    }
+    FillTree(root_name);
+
+    // Sort labels so that entrances are displayed in preference,
+    // then fixed points, then exported points, then other points.
+    //
+    // Also sort by leaf name so that we'll tend to choose labels
+    // from different surveys, rather than labels from surveys which
+    // are earlier in the list.
+    m_Labels.sort(LabelPlotCmp(GetSeparator()));
+
+    if (!m_FindBox->GetValue().empty()) {
+	// Highlight any stations matching the current search.
+	DoFind();
+    }
+
+    m_FileProcessed = file;
+
+    return true;
+}
+
+int Model::Load(const wxString& file, const wxString& prefix)
+{
     // Load the processed survey data.
     img* survey = img_read_stream_survey(wxFopen(file, wxT("rb")),
 					 fclose,
 					 file.c_str(),
 					 prefix.utf8_str());
     if (!survey) {
-	wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
+	return img_error2msg(img_error());
     }
 
     m_IsExtendedElevation = survey->is_extended_elevation;
-
-    m_Tree->DeleteAllItems();
 
     // Create a list of all the leg vertices, counting them and finding the
     // extent of the survey at the same time.
@@ -1444,10 +1477,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 
 		img_close(survey);
 
-		wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
-		wxGetApp().ReportError(m);
-
-		return false;
+		return img_error2msg(img_error());
 	    }
 
 	    default:
@@ -1466,7 +1496,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     if (current_tube && current_tube->size() <= 1)
 	tubes.resize(tubes.size() - 1);
 
-    separator = survey->separator;
+    m_separator = survey->separator;
     m_Title = wxString(survey->title, wxConvUTF8);
     m_DateStamp_numeric = survey->datestamp_numeric;
     if (survey->cs) {
@@ -1493,9 +1523,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 
     // Check we've actually loaded some legs or stations!
     if (!m_HasUndergroundLegs && !m_HasSurfaceLegs && m_Labels.empty()) {
-	wxString m = wxString::Format(wmsg(/*No survey data in 3d file “%s”*/202), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
+	return (/*No survey data in 3d file “%s”*/202);
     }
 
     if (traverses[0].empty() &&
@@ -1531,44 +1559,14 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
 	m_DepthExt = 0;
     } else {
 	m_DepthExt = depthmax - m_DepthMin;
-	m_DepthMin -= m_Offsets.GetZ();
+	m_DepthMin -= GetOffset().GetZ();
     }
 
 #if 0
     printf("time to load = %.3f\n", (double)timer.Time());
 #endif
 
-    // Update window title.
-    SetTitle(m_Title + " - " APP_NAME);
-
-    // Sort the labels ready for filling the tree.
-    m_Labels.sort(LabelCmp(separator));
-
-    // Fill the tree of stations and prefixes.
-    wxString root_name = wxFileNameFromPath(file);
-    if (!prefix.empty()) {
-	root_name += " (";
-	root_name += prefix;
-	root_name += ")";
-    }
-    FillTree(root_name);
-
-    // Sort labels so that entrances are displayed in preference,
-    // then fixed points, then exported points, then other points.
-    //
-    // Also sort by leaf name so that we'll tend to choose labels
-    // from different surveys, rather than labels from surveys which
-    // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp(separator));
-
-    if (!m_FindBox->GetValue().empty()) {
-	// Highlight any stations matching the current search.
-	DoFind();
-    }
-
-    m_FileProcessed = file;
-
-    return true;
+    return 0; // OK
 }
 
 #if 0
@@ -1644,6 +1642,8 @@ MainFrm::FixLRUD(traverse & centreline)
 
 void MainFrm::FillTree(const wxString & root_name)
 {
+    m_Tree->DeleteAllItems();
+
     // Create the root of the tree.
     wxTreeItemId treeroot = m_Tree->AddRoot(root_name);
 
@@ -1651,6 +1651,7 @@ void MainFrm::FillTree(const wxString & root_name)
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix;
     wxTreeItemId current_id = treeroot;
+    const wxChar separator = GetSeparator();
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
@@ -1772,11 +1773,11 @@ void MainFrm::FillTree(const wxString & root_name)
     m_Tree->SetEnabled();
 }
 
-void MainFrm::CentreDataset(const Vector3 & vmin)
+void Model::CentreDataset(const Vector3& vmin)
 {
     // Centre the dataset around the origin.
 
-    m_Offsets = vmin + (m_Ext * 0.5);
+    m_Offset = vmin + (m_Ext * 0.5);
 
     for (unsigned f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
 	list<traverse>::iterator t = traverses[f].begin();
@@ -1785,7 +1786,7 @@ void MainFrm::CentreDataset(const Vector3 & vmin)
 	    vector<PointInfo>::iterator pos = t->begin();
 	    while (pos != t->end()) {
 		Point & point = *pos++;
-		point -= m_Offsets;
+		point -= m_Offset;
 	    }
 	    ++t;
 	}
@@ -1797,7 +1798,7 @@ void MainFrm::CentreDataset(const Vector3 & vmin)
 	vector<XSect>::iterator pos = i->begin();
 	while (pos != i->end()) {
 	    Point & point = *pos++;
-	    point -= m_Offsets;
+	    point -= m_Offset;
 	}
 	++i;
     }
@@ -1805,7 +1806,7 @@ void MainFrm::CentreDataset(const Vector3 & vmin)
     list<LabelInfo*>::iterator lpos = m_Labels.begin();
     while (lpos != m_Labels.end()) {
 	Point & point = **lpos++;
-	point -= m_Offsets;
+	point -= m_Offset;
     }
 }
 
@@ -2008,7 +2009,7 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
 {
     if (!m_Gfx) return;
 
-    if (m_cs_proj.empty()) {
+    if (GetCSProj().empty()) {
 	wxMessageBox(wxT("No coordinate system specified in survey data"));
 	return;
     }
@@ -2091,12 +2092,14 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 
 void MainFrm::OnPrint(wxCommandEvent&)
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
+    m_Gfx->OnPrint(m_File, GetSurveyTitle(),
+		   GetDateStampString(), GetDateStamp(), GetCSProj());
 }
 
 void MainFrm::PrintAndExit()
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj, true);
+    m_Gfx->OnPrint(m_File, GetSurveyTitle(),
+		   GetDateStampString(), GetDateStamp(), GetCSProj(), true);
 }
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
@@ -2109,7 +2112,8 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
 void MainFrm::OnExport(wxCommandEvent&)
 {
-    m_Gfx->OnExport(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
+    m_Gfx->OnExport(m_File, GetSurveyTitle(),
+		    GetDateStampString(), GetDateStamp(), GetCSProj());
 }
 
 void MainFrm::OnExtend(wxCommandEvent&)
@@ -2283,8 +2287,9 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
     wxString & t = distfree_text;
     t = wxString();
     if (m_Gfx->ShowingMeasuringLine() && there) {
-	Vector3 delta(x - m_Offsets.GetX() - there->GetX(),
-		      y - m_Offsets.GetY() - there->GetY(), 0);
+	auto offset = GetOffset();
+	Vector3 delta(x - offset.GetX() - there->GetX(),
+		      y - offset.GetY() - there->GetY(), 0);
 	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
 	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
@@ -2335,7 +2340,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
     wxString & t = distfree_text;
     t = wxString();
     if (m_Gfx->ShowingMeasuringLine() && there) {
-	Double dz = z - m_Offsets.GetZ() - there->GetZ();
+	Double dz = z - GetOffset().GetZ() - there->GetZ();
 
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
@@ -2366,7 +2371,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	return;
     }
 
-    Vector3 v = *here + m_Offsets;
+    Vector3 v = *here + GetOffset();
     wxString & s = here_text;
     Double x = v.GetX();
     Double y = v.GetY();
@@ -2650,7 +2655,7 @@ void MainFrm::RestrictTo(const wxString & survey)
     if (!survey.empty()) {
 	if (!m_Survey.empty()) {
 	    new_prefix = m_Survey;
-	    new_prefix += separator;
+	    new_prefix += GetSeparator();
 	}
 	new_prefix += survey;
     }
@@ -2849,7 +2854,7 @@ void MainFrm::DoFind()
 	m_NumHighlighted = found;
 
 	// Re-sort so highlighted points get names in preference
-	if (found) m_Labels.sort(LabelPlotCmp(separator));
+	if (found) m_Labels.sort(LabelPlotCmp(GetSeparator()));
     }
 
     m_Gfx->UpdateBlobs();
