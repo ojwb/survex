@@ -440,12 +440,6 @@ void Aven::ReportError(const wxString& msg)
     dlg.ShowModal();
 }
 
-wxString
-wmsg(int msg_no)
-{
-    return wxString::FromUTF8(msg(msg_no));
-}
-
 const wxString &
 wmsg_cfgpth()
 {

@@ -40,6 +40,7 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 
 #ifdef __cplusplus
 
+#include "message.h"
 #include "wx.h"
 
 #include <string>
@@ -72,7 +73,9 @@ string_format(const char * fmt, ...)
 }
 
 // wmsg is the unicode version of msg.
-wxString wmsg(int msg_no);
+inline wxString wmsg(int msg_no) {
+    return wxString::FromUTF8(msg(msg_no));
+}
 
 const wxString & wmsg_cfgpth();
 
