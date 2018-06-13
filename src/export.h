@@ -62,6 +62,10 @@ typedef enum {
 #define FULL_COORDS	0x00040000
 #define SPLAYS		0x00080000
 
+#define DEFAULT_GRID_SPACING 100 // metres
+#define DEFAULT_TEXT_HEIGHT 0.6
+#define DEFAULT_MARKER_SIZE 0.8
+
 bool Export(const wxString &fnm_out, const wxString &title,
 	    const wxString &datestamp,
 	    const Model& model,

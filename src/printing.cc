@@ -485,12 +485,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_viewbox->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
-    /* FIXME:
-     * svx_GRID, // double - spacing, default: 100m
-     * svx_TEXT_HEIGHT, // default 0.6
-     * svx_MARKER_SIZE // default 0.8
-     */
-
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
 	wxStaticText * brg_label, * tilt_label;
@@ -725,9 +719,10 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
 	wxString input_projection = ((wxTextCtrl*)FindWindow(svx_PROJ))->GetValue();
-	double grid = 100; // metres
-	double text_height = 0.6;
-	double marker_size = 0.8;
+	/* FIXME: Set up a way for the user to specify these: */
+	double grid = DEFAULT_GRID_SPACING; // metres
+	double text_height = DEFAULT_TEXT_HEIGHT;
+	double marker_size = DEFAULT_MARKER_SIZE;
 
 	try {
 	    const wxString& export_fnm = dlg.GetPath();
