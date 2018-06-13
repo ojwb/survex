@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2004,2005,2012,2014,2015 Olly Betts
+/* Copyright (C) 2004,2005,2012,2014,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,7 @@
 
 #include "wx.h"
 
-#include <time.h>
-
-class MainFrm;
+class Model;
 
 typedef enum {
     FMT_DXF,
@@ -65,8 +63,8 @@ typedef enum {
 #define SPLAYS		0x00080000
 
 bool Export(const wxString &fnm_out, const wxString &title,
-	    const wxString &datestamp, time_t datestamp_numeric,
-	    const MainFrm * mainfrm,
+	    const wxString &datestamp,
+	    const Model& model,
 	    double pan, double tilt, int show_mask, export_format format,
 	    const char * input_projection,
 	    double grid_, double text_height_, double marker_size_,

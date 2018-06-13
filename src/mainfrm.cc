@@ -2093,13 +2093,13 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 void MainFrm::OnPrint(wxCommandEvent&)
 {
     m_Gfx->OnPrint(m_File, GetSurveyTitle(),
-		   GetDateStampString(), GetDateStamp(), GetCSProj());
+		   GetDateString(), GetCSProj());
 }
 
 void MainFrm::PrintAndExit()
 {
     m_Gfx->OnPrint(m_File, GetSurveyTitle(),
-		   GetDateStampString(), GetDateStamp(), GetCSProj(), true);
+		   GetDateString(), GetCSProj(), true);
 }
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
@@ -2113,7 +2113,7 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 void MainFrm::OnExport(wxCommandEvent&)
 {
     m_Gfx->OnExport(m_File, GetSurveyTitle(),
-		    GetDateStampString(), GetDateStamp(), GetCSProj());
+		    GetDateString(), GetCSProj());
 }
 
 void MainFrm::OnExtend(wxCommandEvent&)

@@ -3900,13 +3900,12 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
 void
 GfxCore::OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp, time_t datestamp_numeric,
+		 const wxString &datestamp,
 		 const wxString &cs_proj,
 		 bool close_after_print)
 {
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, cs_proj,
-			datestamp, datestamp_numeric,
+    p = new svxPrintDlg(m_Parent, filename, title, cs_proj, datestamp,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Splays,
 			m_Tubes, m_Entrances, m_FixedPts, m_ExportedPts,
@@ -3916,7 +3915,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 
 void
 GfxCore::OnExport(const wxString &filename, const wxString &title,
-		  const wxString &datestamp, time_t datestamp_numeric,
+		  const wxString &datestamp,
 		  const wxString &cs_proj)
 {
     // Fill in "right_bearing" for each cross-section.
@@ -3928,8 +3927,7 @@ GfxCore::OnExport(const wxString &filename, const wxString &title,
     }
 
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, cs_proj,
-			datestamp, datestamp_numeric,
+    p = new svxPrintDlg(m_Parent, filename, title, cs_proj, datestamp,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Splays,
 			m_Tubes, m_Entrances, m_FixedPts, m_ExportedPts,

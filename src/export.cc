@@ -1273,8 +1273,8 @@ transform_point(const Point& pos, const Vector3* pre_offset,
 
 bool
 Export(const wxString &fnm_out, const wxString &title,
-       const wxString &datestamp, time_t datestamp_numeric,
-       const MainFrm * mainfrm,
+       const wxString &datestamp,
+       const Model& model,
        double pan, double tilt, int show_mask, export_format format,
        const char * input_projection,
        double grid_, double text_height, double marker_size_,
@@ -1320,7 +1320,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_POS:
-	   filt = new POS(mainfrm->GetSeparator());
+	   filt = new POS(model.GetSeparator());
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_SK:
@@ -1340,7 +1340,7 @@ Export(const wxString &fnm_out, const wxString &title,
 
    const Vector3* pre_offset = NULL;
    if (show_mask & FULL_COORDS) {
-	pre_offset = &mainfrm->GetOffset();
+	pre_offset = &(model.GetOffset());
    }
 
    /* Get bounding box */
@@ -1356,8 +1356,8 @@ Export(const wxString &fnm_out, const wxString &title,
 	   // Not showing because it's a splay.
 	   continue;
        }
-       list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
-       list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+       list<traverse>::const_iterator trav = model.traverses_begin(f);
+       list<traverse>::const_iterator tend = model.traverses_end(f);
        for ( ; trav != tend; ++trav) {
 	    vector<PointInfo>::const_iterator pos = trav->begin();
 	    vector<PointInfo>::const_iterator end = trav->end();
@@ -1374,8 +1374,8 @@ Export(const wxString &fnm_out, const wxString &title,
        }
    }
    {
-	list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
-	list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
+	list<LabelInfo*>::const_iterator pos = model.GetLabels();
+	list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
 	    transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 
@@ -1424,7 +1424,7 @@ Export(const wxString &fnm_out, const wxString &title,
    max_z += z_offset;
 
    /* Header */
-   filt->header(title.utf8_str(), datestamp.utf8_str(), datestamp_numeric,
+   filt->header(title.utf8_str(), datestamp.utf8_str(), model.GetDateStamp(),
 		min_x, min_y, min_z, max_x, max_y, max_z);
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
@@ -1445,8 +1445,8 @@ Export(const wxString &fnm_out, const wxString &title,
 		  continue;
 	      }
 	      unsigned flags = pass_mask & (SURF|SPLAYS);
-	      list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
-	      list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+	      list<traverse>::const_iterator trav = model.traverses_begin(f);
+	      list<traverse>::const_iterator tend = model.traverses_end(f);
 	      for ( ; trav != tend; ++trav) {
 		  assert(trav->size() > 1);
 		  vector<PointInfo>::const_iterator pos = trav->begin();
@@ -1476,8 +1476,8 @@ Export(const wxString &fnm_out, const wxString &title,
 	  }
       }
       if (pass_mask & (STNS|LABELS|ENTS|FIXES|EXPORTS)) {
-	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
-	  list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
+	  list<LabelInfo*>::const_iterator pos = model.GetLabels();
+	  list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
 	      transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 	      p.x += x_offset;
@@ -1511,8 +1511,8 @@ Export(const wxString &fnm_out, const wxString &title,
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
-	  list<vector<XSect> >::const_iterator tube = mainfrm->tubes_begin();
-	  list<vector<XSect> >::const_iterator tube_end = mainfrm->tubes_end();
+	  list<vector<XSect> >::const_iterator tube = model.tubes_begin();
+	  list<vector<XSect> >::const_iterator tube_end = model.tubes_end();
 	  for ( ; tube != tube_end; ++tube) {
 	      vector<XSect>::const_iterator pos = tube->begin();
 	      vector<XSect>::const_iterator end = tube->end();

@@ -221,19 +221,18 @@ class Model {
 
     Vector3 m_Offset;
 
-  protected:
-    const wxString& GetSurveyTitle() const { return m_Title; }
-
-    const wxString& GetDateStampString() const { return m_DateStamp; }
-
-    time_t GetDateStamp() const { return m_DateStamp_numeric; }
-
-    void CentreDataset(const Vector3& vmin);
-
   public:
     int Load(const wxString& file, const wxString& prefix);
 
+    void CentreDataset(const Vector3& vmin);
+
     const Vector3& GetExtent() const { return m_Ext; }
+
+    const wxString& GetSurveyTitle() const { return m_Title; }
+
+    const wxString& GetDateString() const { return m_DateStamp; }
+
+    time_t GetDateStamp() const { return m_DateStamp_numeric; }
 
     Double GetDepthExtent() const { return m_DepthExt; }
     Double GetDepthMin() const { return m_DepthMin; }

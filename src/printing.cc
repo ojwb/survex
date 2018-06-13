@@ -347,7 +347,7 @@ static wxString default_scale_export;
 
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 const wxString & title, const wxString & cs_proj,
-			 const wxString & datestamp, time_t datestamp_numeric,
+			 const wxString & datestamp,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool splays, bool tubes, bool ents, bool fixes,
@@ -388,7 +388,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	show_mask |= EXPORTS;
     m_layout.show_mask = show_mask;
     m_layout.datestamp = datestamp;
-    m_layout.datestamp_numeric = datestamp_numeric;
     m_layout.rot = angle;
     m_layout.title = title;
     m_layout.cs_proj = cs_proj;
@@ -742,7 +741,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		tilt = m_layout.tilt;
 	    }
 	    if (!Export(export_fnm, m_layout.title,
-			m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
+			m_layout.datestamp, *mainfrm,
 			rot, tilt, m_layout.get_effective_show_mask(),
 			export_format(format_idx), input_projection.utf8_str(),
 			grid, text_height, marker_size, m_layout.Scale)) {

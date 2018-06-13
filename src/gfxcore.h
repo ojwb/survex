@@ -600,11 +600,11 @@ public:
     void SetColourBy(int colour_by);
     bool ExportMovie(const wxString & fnm);
     void OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp, time_t datestamp_numeric,
+		 const wxString &datestamp,
 		 const wxString &cs_proj,
 		 bool close_after_print = false);
     void OnExport(const wxString &filename, const wxString &title,
-		  const wxString &datestamp, time_t datestamp_numeric,
+		  const wxString &datestamp,
 		  const wxString &cs_proj);
     void UpdateCursor(GfxCore::cursor new_cursor);
     bool MeasuringLineActive() const;

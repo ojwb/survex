@@ -44,7 +44,6 @@ public:
     wxString title;
     wxString cs_proj;
     wxString datestamp;
-    time_t datestamp_numeric;
     double Scale;
     double rot, tilt;
     enum {PLAN, ELEV, TILT, EXTELEV} view;
