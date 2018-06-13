@@ -1,6 +1,5 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY man.aven SYSTEM "aven.sgml">
-<!ENTITY man.3dtopos SYSTEM "3dtopos.sgml">
 <!ENTITY man.cad3d SYSTEM "cad3d.sgml">
 <!ENTITY man.cavern SYSTEM "cavern.sgml">
 <!ENTITY man.diffpos SYSTEM "diffpos.sgml">
@@ -640,10 +639,6 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="aven">
 <?dbhtml filename="aven.htm">
 &man.aven;
-</refentry>
-<refentry id="x3dtopos">
-<?dbhtml filename="3dtopos.htm">
-&man.3dtopos;
 </refentry>
 <refentry id="cad3d">
 <?dbhtml filename="cad3d.htm">

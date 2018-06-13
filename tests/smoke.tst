@@ -25,7 +25,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 DISPLAY=
 export DISPLAY
 
-PROGS="cad3d cavern diffpos extend sorterr 3dtopos aven"
+PROGS="cad3d cavern diffpos extend sorterr aven"
 
 vgrun=
 vg_error=123

@@ -24,7 +24,34 @@
 <para>
 Cad3d can currently output DXF, Skencil, or SVG files for import into CAD
 packages.  It can also produce Compass .plt files, which are primarily intended
-for importing into Carto, but can also be used with Compass itself.
+for importing into Carto, but can also be used with Compass itself, and a number
+of other formats (POS, ...).
 </para>
+
+<refsect2>
+<title>POS Format</title>
+
+<Para>
+The POS format is a Survex-specific format containing a
+list of stations with coordinates (ordered x,y,z [East, North,
+Up]) and complete names.
+</Para>
+
+<Para>
+The stations are sorted by name such that numbers occur in the correct order
+(so ``2'' before ``10'').  Numbers with a prefix and/or suffix are sorted by the
+number part first, so you'd get:
+</Para>
+
+<screen>040.sv8
+040.sv8a
+040.sv8b
+040.sv8c
+040.sv9
+040.sv10
+040.sv11
+40_entrance_tag
+40b_entrance_tag</screen>
+</refsect2>
 
 </refsect1>

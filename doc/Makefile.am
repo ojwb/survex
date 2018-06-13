@@ -2,11 +2,11 @@
 
 pkgdocdir = @PKGDOCDIR@
 
-other_mans = cad3d.1 cavern.1 diffpos.1 dump3d.1 extend.1 sorterr.1 3dtopos.1 \
+other_mans = cad3d.1 cavern.1 diffpos.1 dump3d.1 extend.1 sorterr.1 \
  aven.1
 
 manual_sources = manual.sgml cad3d.sgml cavern.sgml\
- diffpos.sgml dump3d.sgml extend.sgml sorterr.sgml 3dtopos.sgml aven.sgml
+ diffpos.sgml dump3d.sgml extend.sgml sorterr.sgml aven.sgml
 
 manual_alt = manual.txt manual.pdf
 
@@ -17,7 +17,7 @@ EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
  custom.dsl survex.ent\
  caution.png note.png\
  $(manual_sources) $(other_mans)\
- man_3dtopos.sgml man_aven.sgml man_cad3d.sgml man_cavern.sgml\
+ man_aven.sgml man_cad3d.sgml man_cavern.sgml\
  man_diffpos.sgml man_dump3d.sgml man_extend.sgml man_sorterr.sgml\
  news2html.pl
 
@@ -59,10 +59,6 @@ extend.1: $(srcdir)/extend.sgml $(srcdir)/man_extend.sgml $(srcdir)/survex.ent
 
 sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.ent
 	$(DOCBOOK2MAN) $(srcdir)/man_sorterr.sgml
-	rm -f manpage.links manpage.refs
-
-3dtopos.1: $(srcdir)/3dtopos.sgml $(srcdir)/man_3dtopos.sgml $(srcdir)/survex.ent
-	$(DOCBOOK2MAN) $(srcdir)/man_3dtopos.sgml
 	rm -f manpage.links manpage.refs
 
 install-data-local: manual

@@ -25,7 +25,7 @@ FINDENTRANCES =
 EXTRA_PROGRAMS =\
 	aven dump3d findentrances
 # FIXME: base_progs in top level Makefile.am needs updating if this is
-bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
+bin_PROGRAMS = cad3d cavern diffpos extend sorterr dump3d \
  aven $(OSPROGS) $(FINDENTRANCES)
 
 check_PROGRAMS = imgtest
@@ -83,8 +83,6 @@ endif
 diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
-3dtopos_SOURCES = 3dtopos.c namecmp.c img_hosted.c useful.c \
- $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
@@ -104,7 +102,6 @@ all_sources = \
 	$(dump3d_SOURCES) \
 	$(diffpos_SOURCES) \
 	$(sorterr_SOURCES) \
-	$(3dtopos_SOURCES) \
 	$(extend_SOURCES) \
 	$(cad3d_SOURCES) \
 	$(findentrances_SOURCES)

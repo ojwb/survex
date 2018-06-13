@@ -15,7 +15,6 @@ config.status
 config.sub
 configure
 depcomp
-doc/3dtopos.1
 doc/Makefile
 doc/Makefile.in
 doc/NEWS.htm
@@ -67,7 +66,6 @@ src/*.o
 src/.deps/
 src/Makefile
 src/Makefile.in
-src/3dtopos
 src/aven
 src/avenpal.h
 src/cad3d

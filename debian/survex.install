@@ -4,14 +4,12 @@ debian/tmp/usr/share/survex/bcra3.svx
 debian/tmp/usr/share/survex/bcra5.svx
 debian/tmp/usr/share/survex/*.msg
 debian/tmp/usr/share/mime
-debian/tmp/usr/bin/3dtopos
 debian/tmp/usr/bin/cad3d
 debian/tmp/usr/bin/cavern
 debian/tmp/usr/bin/diffpos
 debian/tmp/usr/bin/dump3d
 debian/tmp/usr/bin/extend
 debian/tmp/usr/bin/sorterr
-debian/tmp/usr/share/man/man1/3dtopos.1
 debian/tmp/usr/share/man/man1/cad3d.1
 debian/tmp/usr/share/man/man1/cavern.1
 debian/tmp/usr/share/man/man1/diffpos.1

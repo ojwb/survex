@@ -24,10 +24,6 @@ Terminal.app):
    cavern from the command line.  As with cad3d, the main reason to run cavern
    directly is for use in scripts.
 
- * 3dtopos converts a .3d file to a .pos file.  In Survex 1.2.19 and later,
-   aven can export .pos files, so the main benefit of 3dtopos is that it can
-   be easily used in scripts.
-
  * diffpos compares the positions of stations in two .3d, .pos, etc files.
 
  * sorterr sorts a .err file by a specified field.
