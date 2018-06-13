@@ -7,7 +7,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
- pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h\
+ pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h model.h printing.h\
  avenprcore.h img2aven.h thgeomag.h thgeomagdata.h\
  moviemaker-legacy.cc
 
@@ -38,7 +38,7 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  $(COMMONSRC)
 cavern_LDADD = $(PROJ_LIBS)
 
-aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
+aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
  namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
  glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
  cavernlog.cc avenprcore.cc printing.cc buttontaghandler.cc pos.cc \
