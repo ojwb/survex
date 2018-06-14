@@ -199,7 +199,6 @@ main(int argc, char **argv)
 	       model.GetDateString(),
 	       model,
 	       pan, tilt, show_mask, format,
-	       model.GetCSProj(),
 	       grid, text_height, marker_size,
 	       scale)) {
       fatalerror(/*Couldn’t write file “%s”*/402, fnm_out);

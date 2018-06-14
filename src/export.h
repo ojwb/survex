@@ -74,7 +74,6 @@ bool Export(const wxString &fnm_out, const wxString &title,
 	    const wxString &datestamp,
 	    const Model& model,
 	    double pan, double tilt, int show_mask, export_format format,
-	    const char * input_projection,
 	    double grid_, double text_height_, double marker_size_,
 	    double scale);
 

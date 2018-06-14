@@ -42,7 +42,6 @@ public:
     bool Cutlines;
     bool Legend;
     wxString title;
-    wxString cs_proj;
     wxString datestamp;
     double Scale;
     double rot, tilt;

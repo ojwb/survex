@@ -1285,7 +1285,6 @@ Export(const wxString &fnm_out, const wxString &title,
        const wxString &datestamp,
        const Model& model,
        double pan, double tilt, int show_mask, export_format format,
-       const char * input_projection,
        double grid_, double text_height, double marker_size_,
        double scale)
 {
@@ -1310,7 +1309,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   filt = new EPS(scale);
 	   break;
        case FMT_GPX:
-	   filt = new GPX(input_projection);
+	   filt = new GPX(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_HPGL:
@@ -1321,7 +1320,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   filt = new JSON;
 	   break;
        case FMT_KML:
-	   filt = new KML(input_projection);
+	   filt = new KML(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_PLT:
