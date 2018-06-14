@@ -43,13 +43,13 @@ Show summary of options.
 Output version information and exit.
 .SH SEE ALSO
 \fBThe Survex Manual\fP (located in \fI@PKGDOCDIR_EXPANDED@\fP),
-\fBaven\fP\fB(1)\fP, 
-\fBcad3d\fP\fB(1)\fP, 
-\fBcavern\fP\fB(1)\fP, 
-\fBdiffpos\fP\fB(1)\fP, 
-\fBdump3d\fP\fB(1)\fP, 
-\fBextend\fP\fB(1)\fP, 
-\fBsorterr\fP\fB(1)\fP.
+\fBaven\fP\fB(1)\fP,
+\fBcavern\fP\fB(1)\fP,
+\fBdiffpos\fP\fB(1)\fP,
+\fBdump3d\fP\fB(1)\fP,
+\fBextend\fP\fB(1)\fP,
+\fBsorterr\fP\fB(1)\fP,
+\fBsurvexport\fP\fB(1)\fP.
 .SH AUTHOR
 This manual page was written by Wookey <wookey@survex.com> and
 Olly Betts <olly@survex.com>

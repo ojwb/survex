@@ -33,7 +33,7 @@ testdir=`(cd "$testdir" && pwd)`
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
-: ${CAD3D="$testdir"/../src/cad3d}
+: ${SURVEXPORT="$testdir"/../src/survexport}
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
@@ -85,7 +85,7 @@ if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
   DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
-  CAD3D="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAD3D"
+  SURVEXPORT="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $SURVEXPORT"
 fi
 
 for file in $TESTS ; do
@@ -213,10 +213,10 @@ for file in $TESTS ; do
     ;;
   dxf)
     if test -n "$VERBOSE" ; then
-      $CAD3D tmp.3d tmp.dxf
+      $SURVEXPORT tmp.3d tmp.dxf
       exitcode=$?
     else
-      $CAD3D tmp.3d tmp.dxf > /dev/null
+      $SURVEXPORT tmp.3d tmp.dxf > /dev/null
       exitcode=$?
     fi
     if [ -n "$VALGRIND" ] ; then

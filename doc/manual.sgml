@@ -1,11 +1,11 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY man.aven SYSTEM "aven.sgml">
-<!ENTITY man.cad3d SYSTEM "cad3d.sgml">
 <!ENTITY man.cavern SYSTEM "cavern.sgml">
 <!ENTITY man.diffpos SYSTEM "diffpos.sgml">
 <!ENTITY man.dump3d SYSTEM "dump3d.sgml">
 <!ENTITY man.extend SYSTEM "extend.sgml">
 <!ENTITY man.sorterr SYSTEM "sorterr.sgml">
+<!ENTITY man.survexport SYSTEM "survexport.sgml">
 ]>
 
 <!--
@@ -640,10 +640,6 @@ file is looked for with the appropriate extension appended.  So
 <?dbhtml filename="aven.htm">
 &man.aven;
 </refentry>
-<refentry id="cad3d">
-<?dbhtml filename="cad3d.htm">
-&man.cad3d;
-</refentry>
 <refentry id="diffpos">
 <?dbhtml filename="diffpos.htm">
 &man.diffpos;
@@ -655,6 +651,10 @@ file is looked for with the appropriate extension appended.  So
 <refentry id="sorterr">
 <?dbhtml filename="sorterr.htm">
 &man.sorterr;
+</refentry>
+<refentry id="survexport">
+<?dbhtml filename="survexport.htm">
+&man.survexport;
 </refentry>
 
 </Sect2>

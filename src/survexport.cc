@@ -1,6 +1,5 @@
-/* cad3d.cc
- * Converts a .3d file to CAD-like formats (DXF, Skencil, SVG) and also Compass
- * PLT.
+/* survexport.cc
+ * Convert a processed survey data file to another format.
  */
 
 /* Copyright (C) 1994-2004,2008,2010,2011,2013,2014,2018 Olly Betts

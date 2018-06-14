@@ -28,7 +28,7 @@ test -n "$*" && VERBOSE=1
 test -x "$testdir"/../src/cavern || testdir=.
 
 : ${DIFFPOS="$testdir"/../src/diffpos}
-: ${CAD3D="$testdir"/../src/cad3d}
+: ${SURVEXPORT="$testdir"/../src/survexport}
 
 : ${TESTS=${*:-"pos.pos v0 v0b v1 v2 v3"}}
 
@@ -36,7 +36,7 @@ vg_error=123
 vg_log=vg.log
 if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
-  CAD3D="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAD3D"
+  SURVEXPORT="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $SURVEXPORT"
   DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
 fi
 
@@ -47,7 +47,7 @@ for file in $TESTS ; do
   *) input="$srcdir/$file.3d" ;;
   esac
   rm -f tmp.pos diffpos.tmp
-  $CAD3D "$input" tmp.pos
+  $SURVEXPORT "$input" tmp.pos
   exitcode=$?
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then

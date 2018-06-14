@@ -14,7 +14,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
 LDADD = $(LIBOBJS)
 
 # FIXME: mingw_progs in top level Makefile.am needs keeping in step with this
-bin_PROGRAMS = cad3d cavern diffpos extend sorterr dump3d aven
+bin_PROGRAMS = cavern diffpos dump3d extend sorterr survexport aven
 
 check_PROGRAMS = imgtest
 
@@ -55,9 +55,9 @@ aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
 
-cad3d_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
-cad3d_LDFLAGS =
-cad3d_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS)
+survexport_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
+survexport_LDFLAGS =
+survexport_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS)
 
 if MACOSX
 # FIXME: It looks like modern wx-config should give us this...
@@ -70,7 +70,7 @@ sorterr_SOURCES = sorterr.c $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
-cad3d_SOURCES = cad3d.cc model.cc export.cc namecompare.cc \
+survexport_SOURCES = survexport.cc model.cc export.cc namecompare.cc \
 		useful.c hash.c img_hosted.c \
 		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
@@ -87,7 +87,7 @@ all_sources = \
 	$(diffpos_SOURCES) \
 	$(sorterr_SOURCES) \
 	$(extend_SOURCES) \
-	$(cad3d_SOURCES)
+	$(survexport_SOURCES)
 
 ../lib/survex.pox: $(all_sources) ../lib/extract-msgs.pl
 	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox

@@ -18,7 +18,7 @@ extra_txt = lib/*.svx
 extra_files = $(extra_bin) $(extra_txt)
 
 # FIXME: need to keep in step with bin_PROGRAMS in src/Makefile.am
-mingw_progs = cad3d cavern diffpos extend sorterr dump3d aven
+mingw_progs = cavern diffpos dump3d extend sorterr survexport aven
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS

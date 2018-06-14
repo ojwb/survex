@@ -1,17 +1,18 @@
 <refmeta>
-<refentrytitle>cad3d</refentrytitle>
+<refentrytitle>survexport</refentrytitle>
 <manvolnum>1</manvolnum>
 </refmeta>
 
 <refnamediv>
-<refname>cad3d</refname>
-<refpurpose>convert a <Application>Survex</Application> <filename>.3d</filename> file into formats which can be read by CAD and drawing packages
+<refname>survexport</refname>
+<refpurpose>convert a processed survey data file (such as a <Application>Survex</Application> <filename>.3d</filename> file)
+to another format.
 </refpurpose>
 </refnamediv>
 
 <refsynopsisdiv>
 <cmdsynopsis>
-<command>cad3d</command>
+<command>survexport</command>
 <arg choice="opt">options</arg>
 <arg choice="req">.3d file</arg>
 <arg choice="opt">output file</arg>
@@ -22,10 +23,16 @@
 <!-- FIXME: more info (opts, etc) -->
 
 <para>
-Cad3d can currently output DXF, Skencil, or SVG files for import into CAD
-packages.  It can also produce Compass .plt files, which are primarily intended
-for importing into Carto, but can also be used with Compass itself, and a number
-of other formats (POS, ...).
+The input formats supports are all those supported by Survex's "img"
+library - Survex .3d, Survex .pos, Compass PLT and CMAP XYZ files.
+</para>
+
+<para>
+Currently the output formats supported are
+DXF, EPS (Encapsulated PostScript), GPX, HPGL for plotters, JSON, KML,
+Survex POS files, Skencil, and SVG.
+Also survexport can produce Compass .plt files, which are primarily intended
+for importing into Carto, but can also be used with Compass itself.
 </para>
 
 <refsect2>
