@@ -1453,15 +1453,12 @@ Export(const wxString &fnm_out, const wxString &title,
       filt->start_pass(*pass);
       if (pass_mask & (LEGS|SURF)) {
 	  for (int f = 0; f != 8; ++f) {
-	      if ((pass_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+	      unsigned flags = (f & img_FLAG_SURFACE) ? SURF : LEGS;
+	      if ((pass_mask & flags) == 0) {
 		  // Not showing traverse because of surface/underground status.
 		  continue;
 	      }
-	      if ((f & img_FLAG_SPLAY) && (pass_mask & SPLAYS) == 0) {
-		  // Not showing because it's a splay.
-		  continue;
-	      }
-	      unsigned flags = pass_mask & (SURF|SPLAYS);
+	      if (f & img_FLAG_SPLAY) flags |= SPLAYS;
 	      list<traverse>::const_iterator trav = model.traverses_begin(f);
 	      list<traverse>::const_iterator tend = model.traverses_end(f);
 	      for ( ; trav != tend; ++trav) {
