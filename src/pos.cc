@@ -56,6 +56,8 @@ POS::passes() const
 void POS::header(const char *, const char *, time_t,
 		 double, double, double, double, double, double)
 {
+    /* TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
+     * (or at least the columns) are in the same place */
     fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fh);
 }
 
