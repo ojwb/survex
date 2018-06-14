@@ -13,12 +13,8 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
 
 LDADD = $(LIBOBJS)
 
-# dump3d is a test program
-EXTRA_PROGRAMS =\
-	aven dump3d
-# FIXME: base_progs in top level Makefile.am needs updating if this is
-bin_PROGRAMS = cad3d cavern diffpos extend sorterr dump3d \
- aven
+# FIXME: mingw_progs in top level Makefile.am needs keeping in step with this
+bin_PROGRAMS = cad3d cavern diffpos extend sorterr dump3d aven
 
 check_PROGRAMS = imgtest
 

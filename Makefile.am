@@ -17,8 +17,8 @@ extra_bin = lib/*.msg\
 extra_txt = lib/*.svx
 extra_files = $(extra_bin) $(extra_txt)
 
-# FIXME: need to keep in step with src/Makefile.am
-base_progs = cad3d cavern diffpos extend sorterr dump3d
+# FIXME: need to keep in step with bin_PROGRAMS in src/Makefile.am
+mingw_progs = cad3d cavern diffpos extend sorterr dump3d aven
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS
@@ -54,7 +54,7 @@ mingw_iss : survex.iss
 	cd doc && cp @HTMLFILES@ ../iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
-	for f in $(base_progs) aven ; do cp src/$$f.exe iss_tmp ; done
+	for f in $(mingw_progs) ; do cp src/$$f.exe iss_tmp ; done
 	cp lib/icons/*.ico lib/images/*.png iss_tmp
 	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mkdir iss_tmp/manual
