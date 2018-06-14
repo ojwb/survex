@@ -3078,7 +3078,6 @@ msgstr ""
 msgid "show survey date information (if present)"
 msgstr ""
 
-#: ../src/findentrances.cc:111
 #: ../src/gfxcore.cc:2833
 #: ../src/gpx.cc:70
 #: ../src/kml.cc:69
@@ -3087,26 +3086,12 @@ msgstr ""
 msgid "Failed to initialise input coordinate system “%s”"
 msgstr ""
 
-#: ../src/findentrances.cc:114
 #: ../src/gfxcore.cc:2842
 #: ../src/gpx.cc:75
 #: ../src/kml.cc:74
 #: n:288
 #, c-format
 msgid "Failed to initialise output coordinate system “%s”"
-msgstr ""
-
-#: ../src/findentrances.cc:169
-#: n:388
-msgid "-d PROJ_DATUM 3D_FILE"
-msgstr ""
-
-#. TRANSLATORS: The PROJ library is used to do coordinate transformations
-#. (https://trac.osgeo.org/proj/) - the user passes a string to tell PROJ
-#. what the input datum is.
-#: ../src/findentrances.cc:160
-#: n:389
-msgid "input datum as string to pass to PROJ"
 msgstr ""
 
 #. TRANSLATORS: The PROJ library is used to do coordinate

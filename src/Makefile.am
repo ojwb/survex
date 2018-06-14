@@ -14,19 +14,11 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
 LDADD = $(LIBOBJS)
 
 # dump3d is a test program
-#
-# findentrances is mostly superceded by aven's GPX export, so is disabled
-# by default, and will be removed entirely at some point.  To build and
-# install it, pass "FINDENTRANCES=findentrances" as an argument to make
-# like so:
-#     make FINDENTRANCES=findentrances
-#     sudo make install FINDENTRANCES=findentrances
-FINDENTRANCES =
 EXTRA_PROGRAMS =\
-	aven dump3d findentrances
+	aven dump3d
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cad3d cavern diffpos extend sorterr dump3d \
- aven $(OSPROGS) $(FINDENTRANCES)
+ aven $(OSPROGS)
 
 check_PROGRAMS = imgtest
 
@@ -50,10 +42,6 @@ aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
 
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
  $(COMMONSRC)
-
-findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
- $(COMMONSRC)
-findentrances_LDADD = $(PROJ_LIBS)
 
 if WIN32
 aven_LDADD = avenrc.o $(LIBOBJS) $(LIBAV_LIBS) $(WX_LIBS) $(PROJ_LIBS)
@@ -103,8 +91,7 @@ all_sources = \
 	$(diffpos_SOURCES) \
 	$(sorterr_SOURCES) \
 	$(extend_SOURCES) \
-	$(cad3d_SOURCES) \
-	$(findentrances_SOURCES)
+	$(cad3d_SOURCES)
 
 ../lib/survex.pox: $(all_sources) ../lib/extract-msgs.pl
 	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox
