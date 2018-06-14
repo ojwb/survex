@@ -124,8 +124,6 @@ Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app
 Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: string; ValueData: """{app}\cad3d.exe"" --dxf ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: string; ValueData: """{app}\3dtopos.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
@@ -139,3 +137,6 @@ Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{ap
 Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+; Remove old menu items which can now be better achieved via Aven.
+Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: none; Flags: deletekey
+Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: none; Flags: deletekey
