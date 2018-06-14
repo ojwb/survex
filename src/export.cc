@@ -186,13 +186,13 @@ DXF::header(const char *, const char *, time_t,
    fprintf(fh, "0\nSECTION\n"
 	       "2\nHEADER\n");
    fprintf(fh, "9\n$EXTMIN\n"); /* lower left corner of drawing */
-   fprintf(fh, "10\n%#-.6f\n", min_x); /* x */
-   fprintf(fh, "20\n%#-.6f\n", min_y); /* y */
-   fprintf(fh, "30\n%#-.6f\n", min_z); /* min z */
+   fprintf(fh, "10\n%#-.2f\n", min_x); /* x */
+   fprintf(fh, "20\n%#-.2f\n", min_y); /* y */
+   fprintf(fh, "30\n%#-.2f\n", min_z); /* min z */
    fprintf(fh, "9\n$EXTMAX\n"); /* upper right corner of drawing */
-   fprintf(fh, "10\n%#-.6f\n", max_x); /* x */
-   fprintf(fh, "20\n%#-.6f\n", max_y); /* y */
-   fprintf(fh, "30\n%#-.6f\n", max_z); /* max z */
+   fprintf(fh, "10\n%#-.2f\n", max_x); /* x */
+   fprintf(fh, "20\n%#-.2f\n", max_y); /* y */
+   fprintf(fh, "30\n%#-.2f\n", max_z); /* max z */
    fprintf(fh, "9\n$PDMODE\n70\n3\n"); /* marker style as CROSS */
    fprintf(fh, "9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
    fprintf(fh, "0\nENDSEC\n");
