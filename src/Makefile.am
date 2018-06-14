@@ -18,7 +18,7 @@ EXTRA_PROGRAMS =\
 	aven dump3d
 # FIXME: base_progs in top level Makefile.am needs updating if this is
 bin_PROGRAMS = cad3d cavern diffpos extend sorterr dump3d \
- aven $(OSPROGS)
+ aven
 
 check_PROGRAMS = imgtest
 

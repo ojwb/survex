@@ -97,16 +97,6 @@ AC_CHECK_LIB(m, sqrt)
 
 AC_PATH_XTRA
 
-OSPROGS=
-dnl AC_MSG_CHECKING([for OS-specific programs to build])
-dnl if test yes = "$mswindows"; then
-dnl   OSPROGS=
-dnl elif test yes = "$macosx"; then
-dnl   OSPROGS=
-dnl fi
-dnl AC_MSG_RESULT([${OSPROGS:-none}])
-AC_SUBST([OSPROGS])
-
 dnl The wxWidgets libraries we need:
 wx_libs="core,gl,html"
 
