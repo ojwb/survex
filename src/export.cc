@@ -20,8 +20,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-/* #define DEBUG_CAD3D */
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
@@ -269,9 +267,6 @@ DXF::header(const char *, const char *, time_t,
       double x, y;
       x = floor(min_x / grid) * grid + grid;
       y = floor(min_y / grid) * grid + grid;
-#ifdef DEBUG_CAD3D
-      printf("x_min: %f  y_min: %f\n", x, y);
-#endif
       while (x < max_x) {
 	 /* horizontal line */
 	 fprintf(fh, "0\nLINE\n");
@@ -1117,9 +1112,6 @@ EPS::header(const char *title, const char *, time_t,
       double x, y;
       x = floor(min_x / grid) * grid + grid;
       y = floor(min_y / grid) * grid + grid;
-#ifdef DEBUG_CAD3D
-      printf("x_min: %f  y_min: %f\n", x, y);
-#endif
       while (x < max_x) {
 	 /* horizontal line */
 	 fprintf(fh, "0\nLINE\n");
@@ -1473,14 +1465,8 @@ Export(const wxString &fnm_out, const wxString &title,
 
 		      if (pos == trav->begin()) {
 			  // First point is move...
-#ifdef DEBUG_CAD3D
-			  printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
-#endif
 			  fPendingMove = 1;
 		      } else {
-#ifdef DEBUG_CAD3D
-			  printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
-#endif
 			  filt->line(&p1, &p, flags, fPendingMove);
 			  fPendingMove = 0;
 		      }
@@ -1498,9 +1484,6 @@ Export(const wxString &fnm_out, const wxString &title,
 	      p.y += y_offset;
 	      p.z += z_offset;
 
-#ifdef DEBUG_CAD3D
-	      printf("label '%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
-#endif
 	      int type = 0;
 	      if ((pass_mask & ENTS) && (*pos)->IsEntrance()) {
 		  type = ENTS;
