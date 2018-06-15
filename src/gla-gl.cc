@@ -812,7 +812,7 @@ void GLACanvas::SetDataTransform()
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
     if (m_Perspective) {
-	glTranslated(0.0, m_Eye ? -0.5 * EYE_SEP : 0.5 * EYE_SEP, -near_plane);
+	glTranslated(0.0, 0.0, -near_plane);
     } else {
 	glTranslated(0.0, 0.0, -0.5 * m_VolumeDiameter);
     }
@@ -820,6 +820,10 @@ void GLACanvas::SetDataTransform()
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
+    if (m_Perspective) {
+	glTranslated(m_Eye ? -0.5 * EYE_SEP : 0.5 * EYE_SEP, 0.0, 0.0);
+	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+    }
     glRotated(-m_Tilt, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     glRotated(m_Pan, 0.0, 0.0, 1.0);
