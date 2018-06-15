@@ -1172,6 +1172,11 @@ msgstr ""
 msgid "Scale"
 msgstr ""
 
+#: ../src/survexport.cc:120
+#: n:217
+msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
+msgstr ""
+
 #: ../src/cmdline.c:194
 #: n:157
 #, c-format
@@ -1264,6 +1269,11 @@ msgstr ""
 msgid "Elevation facing %s"
 msgstr ""
 
+#: ../src/survexport.cc:121
+#: n:462
+msgid "plan view (equivalent to --tilt=-90)"
+msgstr ""
+
 #. TRANSLATORS: This is used on printouts of tilted elevations, with
 #. the first %s replaced by something like "123°", and the second by
 #. something like "-45°".  The bearing is the direction we’re
@@ -1272,6 +1282,11 @@ msgstr ""
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
+msgstr ""
+
+#: ../src/survexport.cc:122
+#: n:463
+msgid "elevation view (equivalent to --tilt=0)"
 msgstr ""
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
@@ -1904,6 +1919,11 @@ msgstr ""
 msgid "Bearing"
 msgstr ""
 
+#: ../src/survexport.cc:121
+#: n:460
+msgid "bearing (90, 90d, 100g all mean 90°)"
+msgstr ""
+
 #: ../src/printing.cc:511
 #: n:260
 msgid "Station Names"
@@ -1926,9 +1946,19 @@ msgstr ""
 msgid "Cross-sections"
 msgstr ""
 
+#: ../src/survexport.cc:129
+#: n:469
+msgid "cross-sections"
+msgstr ""
+
 #: ../src/printing.cc:532
 #: n:394
 msgid "Walls"
+msgstr ""
+
+#: ../src/survexport.cc:130
+#: n:470
+msgid "walls"
 msgstr ""
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
@@ -1939,9 +1969,19 @@ msgstr ""
 msgid "Passages"
 msgstr ""
 
+#: ../src/survexport.cc:131
+#: n:471
+msgid "passages"
+msgstr ""
+
 #: ../src/printing.cc:543
 #: n:421
 msgid "Origin in centre"
+msgstr ""
+
+#: ../src/survexport.cc:132
+#: n:472
+msgid "origin in centre"
 msgstr ""
 
 #: ../src/printing.cc:547
@@ -1949,10 +1989,20 @@ msgstr ""
 msgid "Full coordinates"
 msgstr ""
 
+#: ../src/survexport.cc:133
+#: n:473
+msgid "full coordinates"
+msgstr ""
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:473
 #: n:263
 msgid "Tilt angle"
+msgstr ""
+
+#: ../src/survexport.cc:122
+#: n:461
+msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
 msgstr ""
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
@@ -2024,6 +2074,11 @@ msgstr ""
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr ""
 
+#: ../src/survexport.cc:122
+#: n:464
+msgid "surface survey legs"
+msgstr ""
+
 #: ../src/mainfrm.cc:886
 #: n:273
 msgid "&Overlapping Names"
@@ -2054,14 +2109,29 @@ msgstr ""
 msgid "Entrances"
 msgstr ""
 
+#: ../src/survexport.cc:126
+#: n:466
+msgid "entrances"
+msgstr ""
+
 #: ../src/printing.cc:519
 #: n:419
 msgid "Fixed Points"
 msgstr ""
 
+#: ../src/survexport.cc:127
+#: n:467
+msgid "fixed points"
+msgstr ""
+
 #: ../src/printing.cc:523
 #: n:420
 msgid "Exported Stations"
+msgstr ""
+
+#: ../src/survexport.cc:128
+#: n:468
+msgid "exported stations"
 msgstr ""
 
 #: ../src/mainfrm.cc:909
@@ -2806,6 +2876,11 @@ msgstr ""
 #: ../src/printing.cc:503
 #: n:406
 msgid "Spla&y Legs"
+msgstr ""
+
+#: ../src/survexport.cc:123
+#: n:465
+msgid "splay legs"
 msgstr ""
 
 #: ../src/mainfrm.cc:883
