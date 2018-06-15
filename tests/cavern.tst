@@ -213,10 +213,10 @@ for file in $TESTS ; do
     ;;
   dxf)
     if test -n "$VERBOSE" ; then
-      $SURVEXPORT tmp.3d tmp.dxf
+      $SURVEXPORT --surface-legs tmp.3d tmp.dxf
       exitcode=$?
     else
-      $SURVEXPORT tmp.3d tmp.dxf > /dev/null
+      $SURVEXPORT --surface-legs tmp.3d tmp.dxf > /dev/null
       exitcode=$?
     fi
     if [ -n "$VALGRIND" ] ; then
