@@ -73,7 +73,7 @@ main(int argc, char **argv)
 	{"plan", no_argument, 0, OPT_PLAN},
 	{"elevation", no_argument, 0, OPT_ELEV},
 	{"no-legs", no_argument, 0, OPT_LEGS},
-	{"no-surface-legs", no_argument, 0, OPT_SURF},
+	{"surface-legs", no_argument, 0, OPT_SURF},
 	{"splays", no_argument, 0, OPT_SPLAYS},
 	{"no-crosses", no_argument, 0, OPT_CROSSES},
 	{"no-station-names", no_argument, 0, OPT_LABELS},
