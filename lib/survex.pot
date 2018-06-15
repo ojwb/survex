@@ -3154,11 +3154,41 @@ msgstr ""
 msgid "produce DXF output"
 msgstr ""
 
+#: ../src/survexport.cc:103
+#: n:454
+msgid "produce EPS output"
+msgstr ""
+
+#: ../src/survexport.cc:104
+#: n:455
+msgid "produce GPX output"
+msgstr ""
+
+#: ../src/survexport.cc:105
+#: n:456
+msgid "produce HPGL output"
+msgstr ""
+
+#: ../src/survexport.cc:106
+#: n:457
+msgid "produce JSON output"
+msgstr ""
+
+#: ../src/survexport.cc:107
+#: n:458
+msgid "produce KML output"
+msgstr ""
+
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated.
 #: ../src/survexport.cc:105
 #: n:158
 msgid "produce Skencil output"
+msgstr ""
+
+#: ../src/survexport.cc:121
+#: n:459
+msgid "produce Survex POS output"
 msgstr ""
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
@@ -3171,6 +3201,16 @@ msgstr ""
 #: ../src/survexport.cc:109
 #: n:160
 msgid "produce SVG output"
+msgstr ""
+
+#: ../src/survexport.cc:183
+#: n:252
+msgid "Export format not specified and not known from output file extension"
+msgstr ""
+
+#: ../src/survexport.cc:188
+#: n:253
+msgid "Export format not specified"
 msgstr ""
 
 #, c-format

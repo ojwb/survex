@@ -67,21 +67,43 @@
 #define SQRT_2		1.41421356237309504880168872420969
 
 // Order here needs to match order of export_format enum in export.h.
-const char * const extension[] = {
-    ".dxf",
-    ".eps",
-    ".gpx",
-    ".hpgl",
-    ".json",
-    ".kml",
-    ".plt",
-    ".sk",
-    ".pos",
-    ".svg"
+
+const format_info export_format_info[] = {
+    { ".dxf", /*DXF files*/411,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS },
+    { ".eps", /*EPS files*/412,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS },
+    { ".gpx", /*GPX files*/413,
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D },
+    /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
+     * on a (usually large) sheet of paper using a pen mounted in a motorised
+     * mechanism. */
+    { ".hpgl", /*HPGL for plotters*/414,
+      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED },
+    { ".json", /*JSON files*/445,
+      LEGS|SPLAYS|CENTRED|EXPORT_3D },
+    { ".kml", /*KML files*/444,
+      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D },
+    /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
+     * so should not be translated:
+     * http://www.fountainware.com/compass/
+     * http://www.psc-cavers.org/carto/ */
+    { ".plt", /*Compass PLT for use with Carto*/415,
+      LABELS|LEGS|SURF|SPLAYS },
+    /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
+     * translated: http://www.skencil.org/ */
+    { ".sk", /*Skencil files*/416,
+      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE },
+    /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
+     * file extension, so neither should be translated. */
+    { ".pos", /*Survex pos files*/166,
+      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D },
+    { ".svg", /*SVG files*/417,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE },
 };
 
-static_assert(sizeof(extension) == FMT_MAX_PLUS_ONE_ * sizeof(extension[0]),
-	      "extension[] matches enum export_format");
+static_assert(sizeof(export_format_info) == FMT_MAX_PLUS_ONE_ * sizeof(export_format_info[0]),
+	      "export_format_info[] matches enum export_format");
 
 static void
 html_escape(FILE *fh, const char *s)

@@ -39,16 +39,12 @@
 #include "str.h"
 #include "useful.h"
 
-/* default to DXF */
-#define FMT_DEFAULT FMT_DXF
-
 int
 main(int argc, char **argv)
 {
    double pan = 0;
    double tilt = -90.0;
-   export_format format;
-   bool format_set = false;
+   export_format format = FMT_MAX_PLUS_ONE_;
    int show_mask = 0;
    const char *survey = NULL;
    double grid = 0.0; /* grid spacing (or 0 for no grid) */
@@ -62,7 +58,7 @@ main(int argc, char **argv)
    show_mask |= LEGS;
    show_mask |= SURF;
 
-   /* TRANSLATE */
+   const int OPT_FMT_BASE = 20000;
    static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required, 2 options_*); int *flag; int val */
 	{"survey", required_argument, 0, 's'},
@@ -74,20 +70,23 @@ main(int argc, char **argv)
 	{"marker-size", required_argument, 0, 'm'},
 	{"elevation", required_argument, 0, 'e'},
 	{"reduction", required_argument, 0, 'r'},
-	{"dxf", no_argument, 0, 'D'},
-	{"skencil", no_argument, 0, 'S'},
-	{"plt", no_argument, 0, 'P'},
-	{"svg", no_argument, 0, 'V'},
+	{"dxf", no_argument, 0, OPT_FMT_BASE + FMT_DXF},
+	{"eps", no_argument, 0, OPT_FMT_BASE + FMT_EPS},
+	{"gpx", no_argument, 0, OPT_FMT_BASE + FMT_GPX},
+	{"hpgl", no_argument, 0, OPT_FMT_BASE + FMT_HPGL},
+	{"json", no_argument, 0, OPT_FMT_BASE + FMT_JSON},
+	{"kml", no_argument, 0, OPT_FMT_BASE + FMT_KML},
+	{"plt", no_argument, 0, OPT_FMT_BASE + FMT_PLT},
+	{"skencil", no_argument, 0, OPT_FMT_BASE + FMT_SK},
+	{"pos", no_argument, 0, OPT_FMT_BASE + FMT_POS},
+	{"svg", no_argument, 0, OPT_FMT_BASE + FMT_SVG},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
-	/* Old name for --skencil: */
-	{"sketch", no_argument, 0, 'S'},
 	{0,0,0,0}
    };
 
 #define short_opts "s:cnlg::t:m:e:r:DSPV"
 
-   /* TRANSLATE */
    static struct help_msg help[] = {
 	/*			<-- */
 	{HLP_ENCODELONG(0),   /*only load the sub-survey with this prefix*/199, 0},
@@ -100,13 +99,19 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(7),   /*produce an elevation view*/103, 0},
 	{HLP_ENCODELONG(8),   /*factor to scale down by (default %s)*/155, "500"},
 	{HLP_ENCODELONG(9),   /*produce DXF output*/156, 0},
-	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
-	 * translated. */
-	{HLP_ENCODELONG(10),  /*produce Skencil output*/158, 0},
+	{HLP_ENCODELONG(10),  /*produce EPS output*/454, 0},
+	{HLP_ENCODELONG(11),  /*produce GPX output*/455, 0},
+	{HLP_ENCODELONG(12),  /*produce HPGL output*/456, 0},
+	{HLP_ENCODELONG(13),  /*produce JSON output*/457, 0},
+	{HLP_ENCODELONG(14),  /*produce KML output*/458, 0},
 	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 	 * so should not be translated. */
-	{HLP_ENCODELONG(11),  /*produce Compass PLT output for Carto*/159, 0},
-	{HLP_ENCODELONG(12),  /*produce SVG output*/160, 0},
+	{HLP_ENCODELONG(15),  /*produce Compass PLT output for Carto*/159, 0},
+	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
+	 * translated. */
+	{HLP_ENCODELONG(16),  /*produce Skencil output*/158, 0},
+	{HLP_ENCODELONG(17),  /*produce Survex POS output*/459, 0},
+	{HLP_ENCODELONG(18),  /*produce SVG output*/160, 0},
 	{0, 0, 0}
    };
 
@@ -145,49 +150,42 @@ main(int argc, char **argv)
        case 'm': /* Marker size */
 	 marker_size = cmdline_double_arg();
 	 break;
-       case 'D':
-	 format = FMT_DXF;
-	 format_set = true;
-	 break;
-       case 'S':
-	 format = FMT_SK;
-	 format_set = true;
-	 break;
-       case 'P':
-	 format = FMT_PLT;
-	 format_set = true;
-	 break;
-       case 'V':
-	 format = FMT_SVG;
-	 format_set = true;
-	 break;
        case 's':
 	 survey = optarg;
 	 break;
+       default:
+	 if (opt >= OPT_FMT_BASE && opt < OPT_FMT_BASE + FMT_MAX_PLUS_ONE_) {
+	     format = export_format(opt - OPT_FMT_BASE);
+	 }
       }
    }
 
    const char* fnm_in = argv[optind++];
    const char* fnm_out = argv[optind];
    if (fnm_out) {
-      if (!format_set) {
-	 size_t i;
+      if (format == FMT_MAX_PLUS_ONE_) {
+	 // Select format based on extension.
 	 size_t len = strlen(fnm_out);
-	 format = FMT_DEFAULT;
-	 for (i = 0; i < FMT_MAX_PLUS_ONE_; ++i) {
-	    size_t l = strlen(extension[i]);
+	 for (size_t i = 0; i < FMT_MAX_PLUS_ONE_; ++i) {
+	    const auto& info = export_format_info[i];
+	    size_t l = strlen(info.extension);
 	    if (len > l + 1 &&
-		strcasecmp(fnm_out + len - l, extension[i]) == 0) {
+		strcasecmp(fnm_out + len - l, info.extension) == 0) {
 	       format = export_format(i);
 	       break;
 	    }
 	 }
+	 if (format == FMT_MAX_PLUS_ONE_) {
+	    fatalerror(/*Export format not specified and not known from output file extension*/252);
+	 }
       }
    } else {
+      if (format == FMT_MAX_PLUS_ONE_) {
+	 fatalerror(/*Export format not specified*/253);
+      }
       char *baseleaf = baseleaf_from_fnm(fnm_in);
-      if (!format_set) format = FMT_DEFAULT;
       /* note : memory allocated by fnm_out gets leaked in this case... */
-      fnm_out = add_ext(baseleaf, extension[format]);
+      fnm_out = add_ext(baseleaf, export_format_info[format].extension);
       osfree(baseleaf);
    }
 

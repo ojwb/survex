@@ -42,7 +42,13 @@ typedef enum {
     FMT_MAX_PLUS_ONE_
 } export_format;
 
-extern const char * const extension[];
+struct format_info {
+    const char* extension;
+    int msg_filetype;
+    unsigned mask;
+};
+
+extern const format_info export_format_info[];
 
 #define LEGS		0x00000001
 #define SURF		0x00000002

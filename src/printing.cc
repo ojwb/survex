@@ -278,42 +278,8 @@ static wxString formats[] = {
     wxT("SVG")
 };
 
-static const unsigned format_info[] = {
-    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
-    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS,
-    LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED,
-    LEGS|SPLAYS|CENTRED|EXPORT_3D,
-    LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF|SPLAYS,
-    LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE,
-    LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
-    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
-};
-
-static const int msg_filetype[] = {
-    /*DXF files*/411,
-    /*EPS files*/412,
-    /*GPX files*/413,
-    /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
-     * on a (usually large) sheet of paper using a pen mounted in a motorised
-     * mechanism. */
-    /*HPGL for plotters*/414,
-    /*JSON files*/445,
-    /*KML files*/444,
-    /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
-     * so should not be translated:
-     * http://www.fountainware.com/compass/
-     * http://www.psc-cavers.org/carto/ */
-    /*Compass PLT for use with Carto*/415,
-    /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
-     * translated: http://www.skencil.org/ */
-    /*Skencil files*/416,
-    /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
-     * file extension, so neither should be translated. */
-    /*Survex pos files*/166,
-    /*SVG files*/417
-};
+static_assert(sizeof(formats) == FMT_MAX_PLUS_ONE_ * sizeof(formats[0]),
+	      "formats[] matches enum export_format");
 
 // We discriminate as "One Page" isn't valid for exporting.
 static wxString default_scale_print;
@@ -645,11 +611,12 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxString leaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &leaf, NULL, wxPATH_NATIVE);
     unsigned format_idx = ((wxChoice*)FindWindow(svx_FORMAT))->GetSelection();
-    leaf += wxString::FromUTF8(extension[format_idx]);
+    const auto& info = export_format_info[format_idx];
+    leaf += wxString::FromUTF8(info.extension);
 
-    wxString filespec = wmsg(msg_filetype[format_idx]);
+    wxString filespec = wmsg(info.msg_filetype);
     filespec += wxT("|*");
-    filespec += wxString::FromUTF8(extension[format_idx]);
+    filespec += wxString::FromUTF8(info.extension);
     filespec += wxT("|");
     filespec += wmsg(/*All files*/208);
     filespec += wxT("|");
@@ -667,7 +634,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 
 	try {
 	    const wxString& export_fnm = dlg.GetPath();
-	    unsigned mask = format_info[format_idx];
+	    unsigned mask = info.mask;
 	    double rot, tilt;
 	    if (mask & EXPORT_3D) {
 		rot = 0.0;
@@ -783,7 +750,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	// Update the shown/hidden fields for the newly selected export filter.
 	int new_filter_idx = m_format->GetSelection();
 	if (new_filter_idx != wxNOT_FOUND) {
-	    unsigned mask = format_info[new_filter_idx];
+	    unsigned mask = export_format_info[new_filter_idx].mask;
 	    static const struct { int id; unsigned mask; } controls[] = {
 		{ svx_LEGS, LEGS },
 		{ svx_SURFACE, SURF },
