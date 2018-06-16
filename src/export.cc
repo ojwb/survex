@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -70,36 +70,46 @@
 
 const format_info export_format_info[] = {
     { ".dxf", /*DXF files*/411,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS },
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
+      LABELS|LEGS|STNS },
     { ".eps", /*EPS files*/412,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS },
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS,
+      LABELS|LEGS|STNS },
     { ".gpx", /*GPX files*/413,
-      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D },
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+      LABELS },
     /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
      * on a (usually large) sheet of paper using a pen mounted in a motorised
      * mechanism. */
     { ".hpgl", /*HPGL for plotters*/414,
-      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED },
+      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED,
+      LABELS|LEGS|STNS },
     { ".json", /*JSON files*/445,
-      LEGS|SPLAYS|CENTRED|EXPORT_3D },
+      LEGS|SPLAYS|CENTRED|EXPORT_3D,
+      LEGS },
     { ".kml", /*KML files*/444,
-      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D },
+      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+      LABELS|LEGS },
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:
      * http://www.fountainware.com/compass/
      * http://www.psc-cavers.org/carto/ */
     { ".plt", /*Compass PLT for use with Carto*/415,
-      LABELS|LEGS|SURF|SPLAYS },
+      LABELS|LEGS|SURF|SPLAYS,
+      LABELS|LEGS },
     /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
      * translated: http://www.skencil.org/ */
     { ".sk", /*Skencil files*/416,
-      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE },
+      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE,
+      LABELS|LEGS|STNS },
     /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
      * file extension, so neither should be translated. */
     { ".pos", /*Survex pos files*/166,
-      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D },
+      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
+      LABELS },
     { ".svg", /*SVG files*/417,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE },
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE,
+      LABELS|LEGS|STNS },
 };
 
 static_assert(sizeof(export_format_info) == FMT_MAX_PLUS_ONE_ * sizeof(export_format_info[0]),
@@ -1322,6 +1332,8 @@ Export(const wxString &fnm_out, const wxString &title,
    grid = grid_;
    marker_size = marker_size_;
 
+   // Do we need to calculate min and max for each dimension?
+   bool need_bounds = true;
    ExportFilter * filt;
    switch (format) {
        case FMT_DXF:
@@ -1333,10 +1345,13 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_GPX:
 	   filt = new GPX(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_HPGL:
 	   filt = new HPGL;
 	   // factor = POINTS_PER_MM * 1000.0 / scale;
+	   // HPGL doesn't use the bounds itself, but they are needed to set
+	   // the origin to the centre of lower left.
 	   break;
        case FMT_JSON:
 	   filt = new JSON;
@@ -1344,6 +1359,7 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_KML:
 	   filt = new KML(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_PLT:
 	   filt = new PLT;
@@ -1352,6 +1368,7 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_POS:
 	   filt = new POS(model.GetSeparator());
 	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_SK:
 	   filt = new Skencil(scale);
@@ -1377,33 +1394,33 @@ Export(const wxString &fnm_out, const wxString &title,
    double min_x, min_y, min_z, max_x, max_y, max_z;
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
-   for (int f = 0; f != 8; ++f) {
-       if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
-	   // Not showing traverse because of surface/underground status.
-	   continue;
-       }
-       if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
-	   // Not showing because it's a splay.
-	   continue;
-       }
-       list<traverse>::const_iterator trav = model.traverses_begin(f);
-       list<traverse>::const_iterator tend = model.traverses_end(f);
-       for ( ; trav != tend; ++trav) {
-	    vector<PointInfo>::const_iterator pos = trav->begin();
-	    vector<PointInfo>::const_iterator end = trav->end();
-	    for ( ; pos != end; ++pos) {
-		transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
-
-		if (p.x < min_x) min_x = p.x;
-		if (p.x > max_x) max_x = p.x;
-		if (p.y < min_y) min_y = p.y;
-		if (p.y > max_y) max_y = p.y;
-		if (p.z < min_z) min_z = p.z;
-		if (p.z > max_z) max_z = p.z;
+   if (need_bounds) {
+	for (int f = 0; f != 8; ++f) {
+	    if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+		// Not showing traverse because of surface/underground status.
+		continue;
 	    }
-       }
-   }
-   {
+	    if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
+		// Not showing because it's a splay.
+		continue;
+	    }
+	    list<traverse>::const_iterator trav = model.traverses_begin(f);
+	    list<traverse>::const_iterator tend = model.traverses_end(f);
+	    for ( ; trav != tend; ++trav) {
+		vector<PointInfo>::const_iterator pos = trav->begin();
+		vector<PointInfo>::const_iterator end = trav->end();
+		for ( ; pos != end; ++pos) {
+		    transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
+
+		    if (p.x < min_x) min_x = p.x;
+		    if (p.x > max_x) max_x = p.x;
+		    if (p.y < min_y) min_y = p.y;
+		    if (p.y > max_y) max_y = p.y;
+		    if (p.z < min_z) min_z = p.z;
+		    if (p.z > max_z) max_z = p.z;
+		}
+	    }
+	}
 	list<LabelInfo*>::const_iterator pos = model.GetLabels();
 	list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
@@ -1416,16 +1433,17 @@ Export(const wxString &fnm_out, const wxString &title,
 	    if (p.z < min_z) min_z = p.z;
 	    if (p.z > max_z) max_z = p.z;
 	}
+
+	if (grid > 0) {
+	    min_x -= grid / 2;
+	    max_x += grid / 2;
+	    min_y -= grid / 2;
+	    max_y += grid / 2;
+	}
    }
 
-   if (grid > 0) {
-      min_x -= grid / 2;
-      max_x += grid / 2;
-      min_y -= grid / 2;
-      max_y += grid / 2;
-   }
-
-   /* handle empty file gracefully */
+   /* Handle empty file and gracefully, and also zero for the !need_bounds
+    * case. */
    if (min_x > max_x) {
       min_x = min_y = min_z = 0;
       max_x = max_y = max_z = 0;
@@ -1446,12 +1464,14 @@ Export(const wxString &fnm_out, const wxString &title,
        y_offset = -min_y;
        z_offset = -min_z;
    }
-   min_x += x_offset;
-   max_x += x_offset;
-   min_y += y_offset;
-   max_y += y_offset;
-   min_z += z_offset;
-   max_z += z_offset;
+   if (need_bounds) {
+	min_x += x_offset;
+	max_x += x_offset;
+	min_y += y_offset;
+	max_y += y_offset;
+	min_z += z_offset;
+	max_z += z_offset;
+   }
 
    /* Header */
    filt->header(title.utf8_str(), datestamp.utf8_str(), model.GetDateStamp(),

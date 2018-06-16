@@ -46,6 +46,8 @@ struct format_info {
     const char* extension;
     int msg_filetype;
     unsigned mask;
+    // Defaults for survexport (aven defaults to what is currently shown).
+    unsigned defaults;
 };
 
 extern const format_info export_format_info[];

@@ -1929,9 +1929,19 @@ msgstr ""
 msgid "Station Names"
 msgstr ""
 
+#: ../src/survexport.cc:95
+#: n:475
+msgid "station names"
+msgstr ""
+
 #: ../src/printing.cc:507
 #: n:261
 msgid "Crosses"
+msgstr ""
+
+#: ../src/survexport.cc:94
+#: n:474
+msgid "crosses"
 msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
@@ -1939,6 +1949,11 @@ msgstr ""
 #: ../src/printing.cc:493
 #: n:262
 msgid "Underground Survey Legs"
+msgstr ""
+
+#: ../src/survexport.cc:96
+#: n:476
+msgid "underground survey legs"
 msgstr ""
 
 #: ../src/printing.cc:527
@@ -3180,26 +3195,6 @@ msgstr ""
 msgid "Coordinate projection"
 msgstr ""
 
-#: ../src/survexport.cc:94
-#: n:100
-msgid "do not generate station markers"
-msgstr ""
-
-#: ../src/survexport.cc:95
-#: n:101
-msgid "do not generate station labels"
-msgstr ""
-
-#: ../src/survexport.cc:96
-#: n:102
-msgid "do not generate survey legs"
-msgstr ""
-
-#: ../src/survexport.cc:100
-#: n:103
-msgid "produce an elevation view"
-msgstr ""
-
 #: ../src/survexport.cc:97
 #: n:148
 #, c-format
@@ -3216,12 +3211,6 @@ msgstr ""
 #: n:152
 #, c-format
 msgid "station marker size (default %s)"
-msgstr ""
-
-#: ../src/survexport.cc:101
-#: n:155
-#, c-format
-msgid "factor to scale down by (default %s)"
 msgstr ""
 
 #: ../src/survexport.cc:102
@@ -3286,6 +3275,11 @@ msgstr ""
 #: ../src/survexport.cc:188
 #: n:253
 msgid "Export format not specified"
+msgstr ""
+
+#: ../src/survexport.cc:133
+#: n:155
+msgid "include items exported by default"
 msgstr ""
 
 #, c-format

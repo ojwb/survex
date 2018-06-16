@@ -39,6 +39,10 @@
 #include "str.h"
 #include "useful.h"
 
+#include <string>
+
+using namespace std;
+
 int
 main(int argc, char **argv)
 {
@@ -52,17 +56,12 @@ main(int argc, char **argv)
    double marker_size = DEFAULT_MARKER_SIZE; /* for station markers */
    double scale = 500.0;
 
-   /* Defaults */
-   show_mask |= STNS;
-   show_mask |= LABELS;
-   show_mask |= LEGS;
-
    const int OPT_FMT_BASE = 20000;
    enum {
        OPT_SCALE = 0x100, OPT_BEARING, OPT_TILT, OPT_PLAN, OPT_ELEV,
        OPT_LEGS, OPT_SURF, OPT_SPLAYS, OPT_CROSSES, OPT_LABELS, OPT_ENTS,
        OPT_FIXES, OPT_EXPORTS, OPT_XSECT, OPT_WALLS, OPT_PASG,
-       OPT_CENTRED, OPT_FULL_COORDS
+       OPT_CENTRED, OPT_FULL_COORDS, OPT_DEFAULTS
    };
    static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required, 2 options_*); int *flag; int val */
@@ -72,11 +71,11 @@ main(int argc, char **argv)
 	{"tilt", required_argument, 0, OPT_TILT},
 	{"plan", no_argument, 0, OPT_PLAN},
 	{"elevation", no_argument, 0, OPT_ELEV},
-	{"no-legs", no_argument, 0, OPT_LEGS},
+	{"legs", no_argument, 0, OPT_LEGS},
 	{"surface-legs", no_argument, 0, OPT_SURF},
 	{"splays", no_argument, 0, OPT_SPLAYS},
-	{"no-crosses", no_argument, 0, OPT_CROSSES},
-	{"no-station-names", no_argument, 0, OPT_LABELS},
+	{"crosses", no_argument, 0, OPT_CROSSES},
+	{"station-names", no_argument, 0, OPT_LABELS},
 	{"entrances", no_argument, 0, OPT_ENTS},
 	{"fixes", no_argument, 0, OPT_FIXES},
 	{"exports", no_argument, 0, OPT_EXPORTS},
@@ -85,6 +84,7 @@ main(int argc, char **argv)
 	{"passages", no_argument, 0, OPT_PASG},
 	{"origin-in-centre", no_argument, 0, OPT_CENTRED},
 	{"full-coordinates", no_argument, 0, OPT_FULL_COORDS},
+	{"defaults", no_argument, 0, OPT_DEFAULTS},
 	{"grid", optional_argument, 0, 'g'},
 	{"text-height", required_argument, 0, 't'},
 	{"marker-size", required_argument, 0, 'm'},
@@ -117,11 +117,11 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(3),   /*tilt (45, 45d, 50g, 100% all mean 45°)*/461, 0},
 	{HLP_ENCODELONG(4),   /*plan view (equivalent to --tilt=-90)*/462, 0},
 	{HLP_ENCODELONG(5),   /*elevation view (equivalent to --tilt=0)*/463, 0},
-	{HLP_ENCODELONG(6),   /*do not generate survey legs*/102, 0},
+	{HLP_ENCODELONG(6),   /*underground survey legs*/476, 0},
 	{HLP_ENCODELONG(7),   /*surface survey legs*/464, 0},
 	{HLP_ENCODELONG(8),   /*splay legs*/465, 0},
-	{HLP_ENCODELONG(9),   /*do not generate station markers*/100, 0},
-	{HLP_ENCODELONG(10),  /*do not generate station labels*/101, 0},
+	{HLP_ENCODELONG(9),   /*station markers*/474, 0},
+	{HLP_ENCODELONG(10),  /*station labels*/475, 0},
 	{HLP_ENCODELONG(11),  /*entrances*/466, 0},
 	{HLP_ENCODELONG(12),  /*fixed points*/467, 0},
 	{HLP_ENCODELONG(13),  /*exported stations*/468, 0},
@@ -130,72 +130,81 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(16),  /*passages*/471, 0},
 	{HLP_ENCODELONG(17),  /*origin in centre*/472, 0},
 	{HLP_ENCODELONG(18),  /*full coordinates*/473, 0},
-
-	{HLP_ENCODELONG(19),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING)},
-	{HLP_ENCODELONG(20),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT)},
-	{HLP_ENCODELONG(21),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE)},
-	{HLP_ENCODELONG(22),  /*produce DXF output*/156, 0},
-	{HLP_ENCODELONG(23),  /*produce EPS output*/454, 0},
-	{HLP_ENCODELONG(24),  /*produce GPX output*/455, 0},
-	{HLP_ENCODELONG(25),  /*produce HPGL output*/456, 0},
-	{HLP_ENCODELONG(26),  /*produce JSON output*/457, 0},
-	{HLP_ENCODELONG(27),  /*produce KML output*/458, 0},
+	{HLP_ENCODELONG(19),  /*include items exported by default*/155, 0},
+	{HLP_ENCODELONG(20),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING)},
+	{HLP_ENCODELONG(21),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT)},
+	{HLP_ENCODELONG(22),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE)},
+	{HLP_ENCODELONG(23),  /*produce DXF output*/156, 0},
+	{HLP_ENCODELONG(24),  /*produce EPS output*/454, 0},
+	{HLP_ENCODELONG(25),  /*produce GPX output*/455, 0},
+	{HLP_ENCODELONG(26),  /*produce HPGL output*/456, 0},
+	{HLP_ENCODELONG(27),  /*produce JSON output*/457, 0},
+	{HLP_ENCODELONG(28),  /*produce KML output*/458, 0},
 	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 	 * so should not be translated. */
-	{HLP_ENCODELONG(28),  /*produce Compass PLT output for Carto*/159, 0},
+	{HLP_ENCODELONG(29),  /*produce Compass PLT output for Carto*/159, 0},
 	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
 	 * translated. */
-	{HLP_ENCODELONG(29),  /*produce Skencil output*/158, 0},
-	{HLP_ENCODELONG(30),  /*produce Survex POS output*/459, 0},
-	{HLP_ENCODELONG(31),  /*produce SVG output*/160, 0},
+	{HLP_ENCODELONG(30),  /*produce Skencil output*/158, 0},
+	{HLP_ENCODELONG(31),  /*produce Survex POS output*/459, 0},
+	{HLP_ENCODELONG(32),  /*produce SVG output*/160, 0},
 	{0, 0, 0}
    };
 
    msg_init(argv);
 
-   cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
+   string optmap[sizeof(show_mask) * CHAR_BIT];
+
+   int long_index;
+   bool always_include_defaults = false;
+   cmdline_init(argc, argv, short_opts, long_opts, &long_index, help, 1, 2);
    while (1) {
+      long_index = -1;
       int opt = cmdline_getopt();
       if (opt == EOF) break;
+      int bit = 0;
       switch (opt) {
        case OPT_LEGS:
-	 show_mask &= ~LEGS;
+	 bit = LEGS;
 	 break;
        case OPT_SURF:
-	 show_mask |= SURF;
+	 bit = SURF;
 	 break;
        case OPT_SPLAYS:
-	 show_mask |= SPLAYS;
+	 bit = SPLAYS;
 	 break;
        case OPT_CROSSES:
-	 show_mask &= ~STNS;
+	 bit = STNS;
 	 break;
        case OPT_LABELS:
-	 show_mask &= ~LABELS;
+	 bit = LABELS;
 	 break;
        case OPT_ENTS:
-	 show_mask |= SPLAYS;
+	 bit = ENTS;
 	 break;
        case OPT_FIXES:
-	 show_mask |= FIXES;
+	 bit = FIXES;
 	 break;
        case OPT_EXPORTS:
-	 show_mask |= EXPORTS;
+	 bit = EXPORTS;
 	 break;
        case OPT_XSECT:
-	 show_mask |= XSECT;
+	 bit = XSECT;
 	 break;
        case OPT_WALLS:
-	 show_mask |= WALLS;
+	 bit = WALLS;
 	 break;
        case OPT_PASG:
-	 show_mask |= PASG;
+	 bit = PASG;
 	 break;
        case OPT_CENTRED:
-	 show_mask |= CENTRED;
+	 bit = CENTRED;
 	 break;
        case OPT_FULL_COORDS:
-	 show_mask |= FULL_COORDS;
+	 bit = FULL_COORDS;
+	 break;
+       case OPT_DEFAULTS:
+	 always_include_defaults = true;
 	 break;
        case 'g': /* Grid */
 	 if (optarg) {
@@ -203,6 +212,7 @@ main(int argc, char **argv)
 	 } else {
 	    grid = (double)DEFAULT_GRID_SPACING;
 	 }
+	 bit = GRID;
 	 break;
        case OPT_SCALE: {
 	 char* colon = strchr(optarg, ':');
@@ -217,13 +227,16 @@ main(int argc, char **argv)
 	     /* --scale=1:1000 => 1:1000 => scale = 1000 */
 	     optarg += 2;
 	     scale = cmdline_double_arg();
+	     optarg -= 2;
 	 } else {
 	     /* --scale=2:1000 => 1:500 => scale = 500 */
 	     *colon = '\0';
 	     scale = cmdline_double_arg();
 	     optarg = colon + 1;
 	     scale = cmdline_double_arg() / scale;
+	     *colon = ':';
 	 }
+	 bit = SCALE;
 	 break;
        }
        case OPT_BEARING: {
@@ -238,11 +251,15 @@ main(int argc, char **argv)
 		     optarg[len - 1] = '\0';
 		     break;
 	     }
+	     pan = cmdline_double_arg();
+	     optarg[len - 1] = ch;
+	 } else {
+	     pan = cmdline_double_arg();
 	 }
-	 pan = cmdline_double_arg();
 	 if (units == 'g') {
 	     pan *= 0.9;
 	 }
+	 bit = EXPORT_3D;
 	 break;
        }
        case OPT_TILT: {
@@ -258,26 +275,34 @@ main(int argc, char **argv)
 		     optarg[len - 1] = '\0';
 		     break;
 	     }
+	     tilt = cmdline_double_arg();
+	     optarg[len - 1] = ch;
+	 } else {
+	     tilt = cmdline_double_arg();
 	 }
-	 tilt = cmdline_double_arg();
 	 if (units == 'g') {
 	     tilt *= 0.9;
 	 } else if (units == '%') {
 	     tilt = deg(atan(tilt * 0.01));
 	 }
+	 bit = EXPORT_3D;
 	 break;
        }
        case OPT_PLAN:
 	 tilt = -90.0;
+	 bit = EXPORT_3D;
 	 break;
        case OPT_ELEV:
 	 tilt = 0.0;
+	 bit = EXPORT_3D;
 	 break;
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
+	 bit = TEXT_HEIGHT;
 	 break;
        case 'm': /* Marker size */
 	 marker_size = cmdline_double_arg();
+	 bit = MARKER_SIZE;
 	 break;
        case 's':
 	 survey = optarg;
@@ -286,6 +311,36 @@ main(int argc, char **argv)
 	 if (opt >= OPT_FMT_BASE && opt < OPT_FMT_BASE + FMT_MAX_PLUS_ONE_) {
 	     format = export_format(opt - OPT_FMT_BASE);
 	 }
+      }
+      if (bit) {
+	  show_mask |= bit;
+	  int i = 0;
+	  while (((bit >> i) & 1) == 0) ++i;
+
+	  if (!optmap[i].empty()) optmap[i] += ' ';
+
+	  // Reconstruct what the command line option was.
+	  if (long_index < 0) {
+	      optmap[i] += '-';
+	      optmap[i] += char(opt);
+	      if (optarg) {
+		  if (optarg == argv[optind - 1]) {
+		      optmap[i] += ' ';
+		  }
+		  optmap[i] += optarg;
+	      }
+	  } else {
+	      optmap[i] += "--";
+	      optmap[i] += long_opts[long_index].name;
+	      if (optarg) {
+		  if (optarg == argv[optind - 1]) {
+		      optmap[i] += ' ';
+		  } else {
+		      optmap[i] += '=';
+		  }
+		  optmap[i] += optarg;
+	      }
+	  }
       }
    }
 
@@ -316,6 +371,35 @@ main(int argc, char **argv)
       /* note : memory allocated by fnm_out gets leaked in this case... */
       fnm_out = add_ext(baseleaf, export_format_info[format].extension);
       osfree(baseleaf);
+   }
+
+   const auto& format_info_mask = export_format_info[format].mask;
+   unsigned not_allowed = show_mask &~ format_info_mask;
+   if (not_allowed) {
+       printf("warning: The following options are not supported for this export format and will be ignored:\n");
+       int i = 0;
+       int bit = 1;
+       while (not_allowed) {
+	   if (not_allowed & bit) {
+	       // E.g. --walls maps to two bits in show_mask, but the options
+	       // are only put on the least significant in such cases.
+	       if (!optmap[i].empty())
+		   printf("%s\n", optmap[i].c_str());
+	       not_allowed &= ~bit;
+	   }
+	   ++i;
+	   bit <<= 1;
+       }
+       show_mask &= format_info_mask;
+   }
+
+   if (always_include_defaults || show_mask == 0) {
+       show_mask |= export_format_info[format].defaults;
+   }
+
+   if (!(format_info_mask & EXPORT_3D)) {
+       pan = 0.0;
+       tilt = -90.0;
    }
 
    Model model;
