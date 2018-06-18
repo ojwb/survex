@@ -1171,6 +1171,11 @@ msgstr "OPTION"
 msgid "Scale"
 msgstr "Merítko"
 
+#: ../src/survexport.cc:120
+#: n:217
+msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
+msgstr ""
+
 #: ../src/cmdline.c:194
 #: n:157
 #, c-format
@@ -1263,6 +1268,11 @@ msgstr "Mapa, %s v hlavičke"
 msgid "Elevation facing %s"
 msgstr "Bočný pohľad v smere %s"
 
+#: ../src/survexport.cc:121
+#: n:462
+msgid "plan view (equivalent to --tilt=-90)"
+msgstr ""
+
 #. TRANSLATORS: This is used on printouts of tilted elevations, with
 #. the first %s replaced by something like "123°", and the second by
 #. something like "-45°".  The bearing is the direction we’re
@@ -1272,6 +1282,11 @@ msgstr "Bočný pohľad v smere %s"
 #, c-format
 msgid "Elevation facing %s, tilted %s"
 msgstr "Bočný pohľad v smere %s, pootočený o %s"
+
+#: ../src/survexport.cc:122
+#: n:463
+msgid "elevation view (equivalent to --tilt=0)"
+msgstr ""
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printing.cc:1217
@@ -1905,15 +1920,30 @@ msgstr "Jednu stránku"
 msgid "Bearing"
 msgstr "Azimut"
 
+#: ../src/survexport.cc:121
+#: n:460
+msgid "bearing (90, 90d, 100g all mean 90°)"
+msgstr ""
+
 #: ../src/printing.cc:511
 #: n:260
 msgid "Station Names"
 msgstr "Mená bodov"
 
+#: ../src/survexport.cc:95
+#: n:475
+msgid "station names"
+msgstr ""
+
 #: ../src/printing.cc:507
 #: n:261
 msgid "Crosses"
 msgstr "Krížiky"
+
+#: ../src/survexport.cc:94
+#: n:474
+msgid "crosses"
+msgstr ""
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1922,15 +1952,30 @@ msgstr "Krížiky"
 msgid "Underground Survey Legs"
 msgstr "Zámery pod povrchom"
 
+#: ../src/survexport.cc:96
+#: n:476
+msgid "underground survey legs"
+msgstr ""
+
 #: ../src/printing.cc:527
 #: n:393
 msgid "Cross-sections"
+msgstr ""
+
+#: ../src/survexport.cc:129
+#: n:469
+msgid "cross-sections"
 msgstr ""
 
 #: ../src/printing.cc:532
 #: n:394
 msgid "Walls"
 msgstr "Steny"
+
+#: ../src/survexport.cc:130
+#: n:470
+msgid "walls"
+msgstr ""
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
@@ -1940,9 +1985,19 @@ msgstr "Steny"
 msgid "Passages"
 msgstr "Chodby"
 
+#: ../src/survexport.cc:131
+#: n:471
+msgid "passages"
+msgstr ""
+
 #: ../src/printing.cc:543
 #: n:421
 msgid "Origin in centre"
+msgstr ""
+
+#: ../src/survexport.cc:132
+#: n:472
+msgid "origin in centre"
 msgstr ""
 
 #: ../src/printing.cc:547
@@ -1950,11 +2005,21 @@ msgstr ""
 msgid "Full coordinates"
 msgstr ""
 
+#: ../src/survexport.cc:133
+#: n:473
+msgid "full coordinates"
+msgstr ""
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:473
 #: n:263
 msgid "Tilt angle"
 msgstr "Náklon"
+
+#: ../src/survexport.cc:122
+#: n:461
+msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
+msgstr ""
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
@@ -2026,6 +2091,11 @@ msgstr "Zámery &pod povrchom\tCtrl+L"
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Zámery &na povrchu\tCtrl+F"
 
+#: ../src/survexport.cc:122
+#: n:464
+msgid "surface survey legs"
+msgstr ""
+
 #: ../src/mainfrm.cc:886
 #: n:273
 msgid "&Overlapping Names"
@@ -2057,15 +2127,30 @@ msgstr "Zvýrazniť e&xportované body"
 msgid "Entrances"
 msgstr "Vchody"
 
+#: ../src/survexport.cc:126
+#: n:466
+msgid "entrances"
+msgstr ""
+
 #: ../src/printing.cc:519
 #: n:419
 msgid "Fixed Points"
 msgstr "Fixné body"
 
+#: ../src/survexport.cc:127
+#: n:467
+msgid "fixed points"
+msgstr ""
+
 #: ../src/printing.cc:523
 #: n:420
 msgid "Exported Stations"
 msgstr "Exportované body"
+
+#: ../src/survexport.cc:128
+#: n:468
+msgid "exported stations"
+msgstr ""
 
 #: ../src/mainfrm.cc:909
 #: n:237
@@ -2816,6 +2901,11 @@ msgstr ""
 msgid "Spla&y Legs"
 msgstr "Splay Legs (&z)"
 
+#: ../src/survexport.cc:123
+#: n:465
+msgid "splay legs"
+msgstr ""
+
 #: ../src/mainfrm.cc:883
 #: n:251
 msgid "&Duplicate Legs"
@@ -3114,26 +3204,6 @@ msgstr "Zlyhal pokus o inicializáciu výstupného súradnicového systému “%
 msgid "Coordinate projection"
 msgstr ""
 
-#: ../src/survexport.cc:94
-#: n:100
-msgid "do not generate station markers"
-msgstr "negenerovať symboly bodov"
-
-#: ../src/survexport.cc:95
-#: n:101
-msgid "do not generate station labels"
-msgstr "negenerovať popisky bodov"
-
-#: ../src/survexport.cc:96
-#: n:102
-msgid "do not generate survey legs"
-msgstr "negenerovať zámery"
-
-#: ../src/survexport.cc:100
-#: n:103
-msgid "produce an elevation view"
-msgstr "vytvoriť bočný pohľad"
-
 #: ../src/survexport.cc:97
 #: n:148
 #, c-format
@@ -3152,16 +3222,35 @@ msgstr "veľkosť textu pre popisky bodov (defaultne %sm)"
 msgid "station marker size (default %s)"
 msgstr "veľkosť symbolu bodu (defaultne %sm)"
 
-#: ../src/survexport.cc:101
-#: n:155
-#, c-format
-msgid "factor to scale down by (default %s)"
-msgstr "koeficient pre zmenšenie o (defaultne %sm)"
-
 #: ../src/survexport.cc:102
 #: n:156
 msgid "produce DXF output"
 msgstr "vygenerovať formát DXF"
+
+#: ../src/survexport.cc:103
+#: n:454
+msgid "produce EPS output"
+msgstr ""
+
+#: ../src/survexport.cc:104
+#: n:455
+msgid "produce GPX output"
+msgstr ""
+
+#: ../src/survexport.cc:105
+#: n:456
+msgid "produce HPGL output"
+msgstr ""
+
+#: ../src/survexport.cc:106
+#: n:457
+msgid "produce JSON output"
+msgstr ""
+
+#: ../src/survexport.cc:107
+#: n:458
+msgid "produce KML output"
+msgstr ""
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated.
@@ -3169,6 +3258,11 @@ msgstr "vygenerovať formát DXF"
 #: n:158
 msgid "produce Skencil output"
 msgstr "vygenerovať formát Skencil"
+
+#: ../src/survexport.cc:121
+#: n:459
+msgid "produce Survex POS output"
+msgstr ""
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated.
@@ -3181,6 +3275,22 @@ msgstr "vygenerovať formát Compass PLT pre Carto"
 #: n:160
 msgid "produce SVG output"
 msgstr "vygenerovať formát SVG"
+
+#: ../src/survexport.cc:183
+#: n:252
+msgid "Export format not specified and not known from output file extension"
+msgstr ""
+
+#: ../src/survexport.cc:188
+#: n:253
+msgid "Export format not specified"
+msgstr ""
+
+#: ../src/survexport.cc:133
+#: n:155
+#, fuzzy
+msgid "include items exported by default"
+msgstr "koeficient pre zmenšenie o (defaultne %sm)"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
