@@ -1930,7 +1930,7 @@ msgstr "Nazwy punktów"
 #: ../src/survexport.cc:95
 #: n:475
 msgid "station names"
-msgstr ""
+msgstr "nazwy punktów"
 
 #: ../src/printing.cc:507
 #: n:261
@@ -1940,7 +1940,7 @@ msgstr "Krzyże"
 #: ../src/survexport.cc:94
 #: n:474
 msgid "crosses"
-msgstr ""
+msgstr "krzyże"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1952,7 +1952,7 @@ msgstr "Odcinki podziemne"
 #: ../src/survexport.cc:96
 #: n:476
 msgid "underground survey legs"
-msgstr ""
+msgstr "odcinki podziemne"
 
 #: ../src/printing.cc:527
 #: n:393
@@ -1962,7 +1962,7 @@ msgstr "Przekroje"
 #: ../src/survexport.cc:129
 #: n:469
 msgid "cross-sections"
-msgstr ""
+msgstr "przekroje"
 
 #: ../src/printing.cc:532
 #: n:394
@@ -1972,7 +1972,7 @@ msgstr "Ściany"
 #: ../src/survexport.cc:130
 #: n:470
 msgid "walls"
-msgstr ""
+msgstr "ściany"
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
@@ -1985,7 +1985,7 @@ msgstr "Obrys korytarzy"
 #: ../src/survexport.cc:131
 #: n:471
 msgid "passages"
-msgstr ""
+msgstr "obrys korytarzy"
 
 #: ../src/printing.cc:543
 #: n:421
@@ -1995,7 +1995,7 @@ msgstr "Zero na środku"
 #: ../src/survexport.cc:132
 #: n:472
 msgid "origin in centre"
-msgstr ""
+msgstr "zero na środku"
 
 #: ../src/printing.cc:547
 #: n:422
@@ -2005,7 +2005,7 @@ msgstr "Pełne współrzędne"
 #: ../src/survexport.cc:133
 #: n:473
 msgid "full coordinates"
-msgstr ""
+msgstr "pełne współrzędne"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:473
@@ -2090,7 +2090,7 @@ msgstr "O&dcinki powierzchniowe\tCtrl+F"
 #: ../src/survexport.cc:122
 #: n:464
 msgid "surface survey legs"
-msgstr ""
+msgstr "odcinki powierzchniowe"
 
 #: ../src/mainfrm.cc:886
 #: n:273
@@ -2125,7 +2125,7 @@ msgstr "Otwory"
 #: ../src/survexport.cc:126
 #: n:466
 msgid "entrances"
-msgstr ""
+msgstr "otwory"
 
 #: ../src/printing.cc:519
 #: n:419
@@ -2135,7 +2135,7 @@ msgstr "Punkty ustalone"
 #: ../src/survexport.cc:127
 #: n:467
 msgid "fixed points"
-msgstr ""
+msgstr "punkty ustalone"
 
 #: ../src/printing.cc:523
 #: n:420
@@ -2145,7 +2145,7 @@ msgstr "Wyeksportowane punkty"
 #: ../src/survexport.cc:128
 #: n:468
 msgid "exported stations"
-msgstr ""
+msgstr "wyeksportowane punkty"
 
 #: ../src/mainfrm.cc:909
 #: n:237
@@ -2894,7 +2894,7 @@ msgstr "Domiary &boczne"
 #: ../src/survexport.cc:123
 #: n:465
 msgid "splay legs"
-msgstr ""
+msgstr "domiary boczne"
 
 #: ../src/mainfrm.cc:883
 #: n:251
@@ -3220,27 +3220,27 @@ msgstr "wyjście w formacie DXF"
 #: ../src/survexport.cc:103
 #: n:454
 msgid "produce EPS output"
-msgstr ""
+msgstr "wyjście w formacie EPS"
 
 #: ../src/survexport.cc:104
 #: n:455
 msgid "produce GPX output"
-msgstr ""
+msgstr "wyjście w formacie GPX"
 
 #: ../src/survexport.cc:105
 #: n:456
 msgid "produce HPGL output"
-msgstr ""
+msgstr "wyjście w formacie HPGL"
 
 #: ../src/survexport.cc:106
 #: n:457
 msgid "produce JSON output"
-msgstr ""
+msgstr "wyjście w formacie JSON"
 
 #: ../src/survexport.cc:107
 #: n:458
 msgid "produce KML output"
-msgstr ""
+msgstr "wyjście w formacie KML"
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated.
@@ -3252,7 +3252,7 @@ msgstr "wyjście w formacie Skencil"
 #: ../src/survexport.cc:121
 #: n:459
 msgid "produce Survex POS output"
-msgstr ""
+msgstr "wyjście w formacie Survex POS"
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated.
@@ -3278,9 +3278,8 @@ msgstr ""
 
 #: ../src/survexport.cc:133
 #: n:155
-#, fuzzy
 msgid "include items exported by default"
-msgstr "współczynnik podskalowania (domyślnie %s)"
+msgstr ""
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
