@@ -3281,9 +3281,8 @@ msgstr ""
 
 #: ../src/survexport.cc:133
 #: n:155
-#, fuzzy
 msgid "include items exported by default"
-msgstr "коэффициент масштаба с округлением вниз (по умолчанию %s)"
+msgstr ""
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"

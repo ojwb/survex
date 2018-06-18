@@ -3277,9 +3277,8 @@ msgstr "Export format not specified"
 
 #: ../src/survexport.cc:133
 #: n:155
-#, fuzzy
 msgid "include items exported by default"
-msgstr "factor to scale down by (default %s)"
+msgstr "include items exported by default"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"

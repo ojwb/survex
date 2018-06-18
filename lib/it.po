@@ -3288,9 +3288,8 @@ msgstr ""
 
 #: ../src/survexport.cc:133
 #: n:155
-#, fuzzy
 msgid "include items exported by default"
-msgstr "fattore di scala (predefinito %s)"
+msgstr ""
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
