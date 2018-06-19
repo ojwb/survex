@@ -187,9 +187,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 			      BLUES[pen] / 255.0);
     }
 
-#ifndef STEREO_BUFFERS
-    SetColourBy(COLOUR_BY_NONE);
-#endif
+    if (stereo_mode == STEREO_ANAGLYPH) {
+	SetColourBy(COLOUR_BY_NONE);
+    }
     timer.Start();
 }
 
@@ -378,44 +378,46 @@ void GfxCore::OnPaint(wxPaintEvent&)
     // Get a graphics context.
     wxPaintDC dc(this);
 
-    if (m_HaveData) {
-	// Make sure we're initialised.
-	bool first_time = !m_DoneFirstShow;
-	if (first_time) {
-	    FirstShow();
+    if (!m_HaveData) {
+	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
+	dc.Clear();
+	return;
+    }
+
+    // Make sure we're initialised.
+    bool first_time = !m_DoneFirstShow;
+    if (first_time) {
+	FirstShow();
+    }
+
+    int n_Eyes = (stereo_mode ? 2 : 1);
+    // 0 for left eye, 1 for right.
+    for (m_Eye = 0; m_Eye < n_Eyes; m_Eye++) {
+	if (m_Eye == 0 || stereo_mode != STEREO_ANAGLYPH) {
+	    StartDrawing();
+
+	    if (m_Eye == 0 || stereo_mode != STEREO_2UP) {
+		// Clear the background.
+		Clear();
+	    }
 	}
 
-#ifndef STEREO_BUFFERS
-	StartDrawing();
+	if (stereo_mode == STEREO_ANAGLYPH) {
+	    if (m_Eye) {
+		// Clear alpha and the depth buffer.
+		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
+		Clear();
 
-	// Clear the background.
-	Clear();
-#endif
-
-    for (m_Eye = 0; m_Eye < 2; m_Eye++) { // (0 for left eye, 1 for right)
-#ifdef STEREO_BUFFERS
-	StartDrawing();
-
-	// Clear the background.
-	Clear();
-#endif
+		// Right is green and blue.
+		glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+	    } else {
+		// Left is red.
+		glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+	    }
+	}
 
 	// Set up model transformation matrix.
 	SetDataTransform();
-
-#ifndef STEREO_BUFFERS
-	if (m_Eye) {
-	    // Clear alpha and the depth buffer.
-	    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
-	    Clear();
-
-	    // Right is green and blue.
-	    glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
-	} else {
-	    // Left is red.
-	    glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
-	}
-#endif
 
 	if (m_Legs || m_Tubes) {
 	    if (m_Tubes) {
@@ -576,15 +578,11 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
     }
 
-#ifndef STEREO_BUFFERS
+    if (stereo_mode == STEREO_ANAGLYPH) {
 	// Reset colour mask.
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-#endif
-	FinishDrawing();
-    } else {
-	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
-	dc.Clear();
     }
+    FinishDrawing();
 }
 
 void GfxCore::DrawBoundingBox()

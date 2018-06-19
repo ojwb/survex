@@ -99,6 +99,8 @@ static bool opengl_initialised = false;
 
 static bool double_buffered = false;
 
+static stereo_mode_type stereo_mode_static = STEREO_MONO;
+
 static const int* wx_gl_attribs = NULL;
 
 bool
@@ -107,9 +109,14 @@ GLACanvas::check_visual()
     static const int wx_gl_attribs_full[] = {
 	WX_GL_DOUBLEBUFFER,
 	WX_GL_RGBA,
-#ifdef STEREO_BUFFERS
+	WX_GL_DEPTH_SIZE, 16,
+	0
+    };
+
+    static const int wx_gl_stereo_attribs_full[] = {
+	WX_GL_DOUBLEBUFFER,
+	WX_GL_RGBA,
 	WX_GL_STEREO,
-#endif
 	WX_GL_DEPTH_SIZE, 16,
 	0
     };
@@ -117,7 +124,11 @@ GLACanvas::check_visual()
     // Use a double-buffered visual if available, as it will give much smoother
     // animation.
     double_buffered = true;
-    wx_gl_attribs = wx_gl_attribs_full;
+    if (stereo_mode_static == STEREO_BUFFERS) {
+       wx_gl_attribs = wx_gl_stereo_attribs_full;
+    } else {
+       wx_gl_attribs = wx_gl_attribs_full;
+    }
     if (!IsDisplaySupported(wx_gl_attribs)) {
 	++wx_gl_attribs;
 	if (!IsDisplaySupported(wx_gl_attribs)) {
@@ -126,6 +137,11 @@ GLACanvas::check_visual()
 	double_buffered = false;
     }
     return true;
+}
+
+void GLACanvas::SetStereoMode(stereo_mode_type mode)
+{
+    stereo_mode_static = mode;
 }
 
 string GetGLSystemDescription()
@@ -389,7 +405,7 @@ GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wx_gl_attribs, wxDefaultPosition,
 		 wxDefaultSize, wxWANTS_CHARS),
       ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
-      x_size(0), y_size(0)
+      x_size(0), y_size(0), stereo_mode(stereo_mode_static)
 {
     // Constructor.
 
@@ -682,13 +698,13 @@ void GLACanvas::StartDrawing()
     // Prepare for a redraw operation.
 
     ctx.SetCurrent(*this);
-#ifdef STEREO_BUFFERS
-    if (m_Eye != 1) {
-        glDrawBuffer(GL_BACK_LEFT);
-    } else {
-        glDrawBuffer(GL_BACK_RIGHT);
+    if (stereo_mode == STEREO_BUFFERS) {
+	if (m_Eye != 1) {
+	    glDrawBuffer(GL_BACK_LEFT);
+	} else {
+	    glDrawBuffer(GL_BACK_RIGHT);
+	}
     }
-#endif
     glDepthMask(GL_TRUE);
 
     if (!save_hints) return;
@@ -795,13 +811,24 @@ void GLACanvas::PlaceNormal(const Vector3 &v)
 
 void GLACanvas::SetDataTransform()
 {
+    double aspect = double(y_size) / double(x_size);
+    if (stereo_mode == STEREO_2UP) {
+	aspect *= 2;
+	// Set viewport.
+	if (m_Eye == 0) {
+	    glViewport(0, 0, x_size / 2, y_size);
+	    CHECK_GL_ERROR("SetDataTransform", "glViewport");
+	} else {
+	    glViewport(x_size / 2, 0, x_size / 2, y_size);
+	    CHECK_GL_ERROR("SetDataTransform", "glViewport");
+	}
+    }
+
     // Set projection.
     glMatrixMode(GL_PROJECTION);
     CHECK_GL_ERROR("SetDataTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetDataTransform", "glLoadIdentity");
-
-    double aspect = double(y_size) / double(x_size);
 
     // 0.1 for mono?
     Double near_plane = 1.0;
@@ -810,11 +837,14 @@ void GLACanvas::SetDataTransform()
     const double EYE_SEP = FOCAL_LEN / 20.0;
     if (m_Perspective) {
 	near_plane = FOCAL_LEN / 5.0;
-	Double stereo_adj = 0.5 * EYE_SEP * near_plane / FOCAL_LEN;
+	Double stereo_adj = 0.0;
 	Double lr = near_plane * tan(rad(APERTURE * 0.5));
 	Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
 	Double tb = lr * aspect;
-	if (m_Eye == 0) stereo_adj = -stereo_adj;
+	if (stereo_mode) {
+	    stereo_adj = 0.5 * EYE_SEP * near_plane / FOCAL_LEN;
+	    if (m_Eye == 0) stereo_adj = -stereo_adj;
+	}
 	glFrustum(-lr + stereo_adj, lr + stereo_adj, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
@@ -846,7 +876,7 @@ void GLACanvas::SetDataTransform()
     // Get axes the correct way around (z upwards, y into screen)
     glRotated(-90.0, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
-    if (m_Perspective) {
+    if (stereo_mode && m_Perspective) {
 	glTranslated(m_Eye ? -0.5 * EYE_SEP : 0.5 * EYE_SEP, 0.0, 0.0);
 	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
     }
@@ -941,7 +971,11 @@ void GLACanvas::SetIndicatorTransform()
     CHECK_GL_ERROR("SetIndicatorTransform", "glMatrixMode");
     glLoadIdentity();
     CHECK_GL_ERROR("SetIndicatorTransform", "glLoadIdentity (2)");
-    gluOrtho2D(0, x_size, 0, y_size);
+    if (stereo_mode == STEREO_2UP) {
+	gluOrtho2D(0, x_size / 2, 0, y_size);
+    } else {
+	gluOrtho2D(0, x_size, 0, y_size);
+    }
     CHECK_GL_ERROR("SetIndicatorTransform", "gluOrtho2D");
 
     // No modelview transform.

@@ -45,6 +45,10 @@ typedef Double glaCoord;
 
 typedef GLfloat glaTexCoord;
 
+enum stereo_mode_type {
+    STEREO_MONO = 0, STEREO_ANAGLYPH, STEREO_2UP, STEREO_BUFFERS
+};
+
 // Colours for drawing.  Don't reorder these!
 enum gla_colour {
     col_BLACK = 0,
@@ -160,11 +164,15 @@ class GLACanvas : public wxGLCanvas {
 protected:
     int m_Eye;
 
+    const stereo_mode_type& stereo_mode;
+
 public:
     GLACanvas(wxWindow* parent, int id);
     ~GLACanvas();
 
     static bool check_visual();
+
+    static void SetStereoMode(stereo_mode_type mode);
 
     void FirstShow();
 
@@ -292,7 +300,11 @@ public:
 
     void PolygonOffset(bool on) const;
 
-    int GetXSize() const { list_flags |= INVALIDATE_ON_X_RESIZE; return x_size; }
+    int GetXSize() const {
+	list_flags |= INVALIDATE_ON_X_RESIZE;
+	return (stereo_mode == STEREO_2UP ? x_size / 2 : x_size);
+    }
+
     int GetYSize() const { list_flags |= INVALIDATE_ON_Y_RESIZE; return y_size; }
 
     void OnSize(wxSizeEvent & event);

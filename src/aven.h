@@ -31,9 +31,6 @@
 #define APP_NAME wxT("Aven")
 #define APP_ABOUT_IMAGE wxT("aven-about.png")
 
-// Comment out for stereo in one window via coloured glasses.
-//#define STEREO_BUFFERS
-
 extern
 #ifdef __cplusplus
  "C"
