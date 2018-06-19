@@ -1951,7 +1951,7 @@ msgstr "Keresztek"
 #: ../src/survexport.cc:94
 #: n:474
 msgid "crosses"
-msgstr ""
+msgstr "keresztek"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -2072,7 +2072,7 @@ msgstr ""
 #: ../src/mainfrm.cc:852
 #: n:271
 msgid "&Crosses\tCtrl+X"
-msgstr ""
+msgstr "&Keresztek\tCtrl+X"
 
 #: ../src/mainfrm.cc:853
 #: n:297
@@ -3233,27 +3233,27 @@ msgstr "DXF kimenet készítése"
 #: ../src/survexport.cc:103
 #: n:454
 msgid "produce EPS output"
-msgstr ""
+msgstr "EPS kimenet készítése"
 
 #: ../src/survexport.cc:104
 #: n:455
 msgid "produce GPX output"
-msgstr ""
+msgstr "GPX kimenet készítése"
 
 #: ../src/survexport.cc:105
 #: n:456
 msgid "produce HPGL output"
-msgstr ""
+msgstr "HPGL kimenet készítése"
 
 #: ../src/survexport.cc:106
 #: n:457
 msgid "produce JSON output"
-msgstr ""
+msgstr "JSON kimenet készítése"
 
 #: ../src/survexport.cc:107
 #: n:458
 msgid "produce KML output"
-msgstr ""
+msgstr "KML kimenet készítése"
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated.
@@ -3264,8 +3264,9 @@ msgstr "Skencil kimenet készítése"
 
 #: ../src/survexport.cc:121
 #: n:459
+#, fuzzy
 msgid "produce Survex POS output"
-msgstr ""
+msgstr "Survex POS kimenet készítése"
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated.

@@ -1933,7 +1933,7 @@ msgstr "Mená bodov"
 #: ../src/survexport.cc:95
 #: n:475
 msgid "station names"
-msgstr ""
+msgstr "mená bodov"
 
 #: ../src/printing.cc:507
 #: n:261
@@ -1943,7 +1943,7 @@ msgstr "Krížiky"
 #: ../src/survexport.cc:94
 #: n:474
 msgid "crosses"
-msgstr ""
+msgstr "krížiky"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1955,7 +1955,7 @@ msgstr "Zámery pod povrchom"
 #: ../src/survexport.cc:96
 #: n:476
 msgid "underground survey legs"
-msgstr ""
+msgstr "zámery pod povrchom"
 
 #: ../src/printing.cc:527
 #: n:393
@@ -1975,7 +1975,7 @@ msgstr "Steny"
 #: ../src/survexport.cc:130
 #: n:470
 msgid "walls"
-msgstr ""
+msgstr "steny"
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
@@ -1988,7 +1988,7 @@ msgstr "Chodby"
 #: ../src/survexport.cc:131
 #: n:471
 msgid "passages"
-msgstr ""
+msgstr "chodby"
 
 #: ../src/printing.cc:543
 #: n:421
@@ -2094,7 +2094,7 @@ msgstr "Zámery &na povrchu\tCtrl+F"
 #: ../src/survexport.cc:122
 #: n:464
 msgid "surface survey legs"
-msgstr ""
+msgstr "zámery na povrchu"
 
 #: ../src/mainfrm.cc:886
 #: n:273
@@ -2130,7 +2130,7 @@ msgstr "Vchody"
 #: ../src/survexport.cc:126
 #: n:466
 msgid "entrances"
-msgstr ""
+msgstr "vchody"
 
 #: ../src/printing.cc:519
 #: n:419
@@ -2140,7 +2140,7 @@ msgstr "Fixné body"
 #: ../src/survexport.cc:127
 #: n:467
 msgid "fixed points"
-msgstr ""
+msgstr "fixné body"
 
 #: ../src/printing.cc:523
 #: n:420
@@ -2150,7 +2150,7 @@ msgstr "Exportované body"
 #: ../src/survexport.cc:128
 #: n:468
 msgid "exported stations"
-msgstr ""
+msgstr "exportované body"
 
 #: ../src/mainfrm.cc:909
 #: n:237
@@ -2904,7 +2904,7 @@ msgstr "Splay Legs (&z)"
 #: ../src/survexport.cc:123
 #: n:465
 msgid "splay legs"
-msgstr ""
+msgstr "splay legs"
 
 #: ../src/mainfrm.cc:883
 #: n:251
@@ -3230,27 +3230,27 @@ msgstr "vygenerovať formát DXF"
 #: ../src/survexport.cc:103
 #: n:454
 msgid "produce EPS output"
-msgstr ""
+msgstr "vygenerovať formát EPS"
 
 #: ../src/survexport.cc:104
 #: n:455
 msgid "produce GPX output"
-msgstr ""
+msgstr "vygenerovať formát GPX"
 
 #: ../src/survexport.cc:105
 #: n:456
 msgid "produce HPGL output"
-msgstr ""
+msgstr "vygenerovať formát HPGL"
 
 #: ../src/survexport.cc:106
 #: n:457
 msgid "produce JSON output"
-msgstr ""
+msgstr "vygenerovať formát JSON"
 
 #: ../src/survexport.cc:107
 #: n:458
 msgid "produce KML output"
-msgstr ""
+msgstr "vygenerovať formát KML"
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated.
@@ -3262,7 +3262,7 @@ msgstr "vygenerovať formát Skencil"
 #: ../src/survexport.cc:121
 #: n:459
 msgid "produce Survex POS output"
-msgstr ""
+msgstr "vygenerovať formát Survex POS"
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated.

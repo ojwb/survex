@@ -1945,7 +1945,7 @@ msgstr "Кръстчета"
 #: ../src/survexport.cc:94
 #: n:474
 msgid "crosses"
-msgstr ""
+msgstr "кръстчета"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1977,7 +1977,7 @@ msgstr "Стени"
 #: ../src/survexport.cc:130
 #: n:470
 msgid "walls"
-msgstr ""
+msgstr "стени"
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
@@ -2131,7 +2131,7 @@ msgstr "Входове"
 #: ../src/survexport.cc:126
 #: n:466
 msgid "entrances"
-msgstr ""
+msgstr "входове"
 
 #: ../src/printing.cc:519
 #: n:419

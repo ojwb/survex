@@ -1934,7 +1934,7 @@ msgstr "Numele punctelor de statie"
 #: ../src/survexport.cc:95
 #: n:475
 msgid "station names"
-msgstr ""
+msgstr "numele punctelor de statie"
 
 #: ../src/printing.cc:507
 #: n:261
@@ -1944,7 +1944,7 @@ msgstr "Cruci"
 #: ../src/survexport.cc:94
 #: n:474
 msgid "crosses"
-msgstr ""
+msgstr "cruci"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -1956,7 +1956,7 @@ msgstr "Portiuni subterane ale topografiei"
 #: ../src/survexport.cc:96
 #: n:476
 msgid "underground survey legs"
-msgstr ""
+msgstr "portiuni subterane ale topografiei"
 
 #: ../src/printing.cc:527
 #: n:393
@@ -1966,7 +1966,7 @@ msgstr "Sectiuni transversale"
 #: ../src/survexport.cc:129
 #: n:469
 msgid "cross-sections"
-msgstr ""
+msgstr "sectiuni transversale"
 
 #: ../src/printing.cc:532
 #: n:394
@@ -1976,7 +1976,7 @@ msgstr "Pereti"
 #: ../src/survexport.cc:130
 #: n:470
 msgid "walls"
-msgstr ""
+msgstr "pereti"
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
@@ -1989,7 +1989,7 @@ msgstr "Pasaje"
 #: ../src/survexport.cc:131
 #: n:471
 msgid "passages"
-msgstr ""
+msgstr "pasaje"
 
 #: ../src/printing.cc:543
 #: n:421
@@ -2094,7 +2094,7 @@ msgstr "Portiuni de &suprafata ale topografiei\tCtrl+F"
 #: ../src/survexport.cc:122
 #: n:464
 msgid "surface survey legs"
-msgstr ""
+msgstr "portiuni de suprafata ale topografiei"
 
 #: ../src/mainfrm.cc:886
 #: n:273
@@ -2130,7 +2130,7 @@ msgstr "Intrarile"
 #: ../src/survexport.cc:126
 #: n:466
 msgid "entrances"
-msgstr ""
+msgstr "intrarile"
 
 #: ../src/printing.cc:519
 #: n:419
@@ -2140,7 +2140,7 @@ msgstr "Punctele Fixe"
 #: ../src/survexport.cc:127
 #: n:467
 msgid "fixed points"
-msgstr ""
+msgstr "punctele fixe"
 
 #: ../src/printing.cc:523
 #: n:420
@@ -2150,7 +2150,7 @@ msgstr "Punctele Exportate"
 #: ../src/survexport.cc:128
 #: n:468
 msgid "exported stations"
-msgstr ""
+msgstr "punctele exportate"
 
 #: ../src/mainfrm.cc:909
 #: n:237
