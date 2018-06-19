@@ -111,8 +111,6 @@ enum {
 	svx_ENTS,
 	svx_FIXES,
 	svx_EXPORTS,
-	svx_PROJ_LABEL,
-	svx_PROJ,
 	svx_GRID,
 	svx_TEXT_HEIGHT,
 	svx_MARKER_SIZE,
@@ -280,74 +278,16 @@ static wxString formats[] = {
     wxT("SVG")
 };
 
-#if 0
-static wxString projs[] = {
-    /* CUCC Austria: */
-    wxT("+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"),
-    /* British grid SD (Yorkshire): */
-    wxT("+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=100000 +y_0=-500000 +ellps=airy +towgs84=375,-111,431,0,0,0,0"),
-    /* British full grid reference: */
-    wxT("+proj=tmerc +lat_0=49d +lon_0=-2d +k=0.999601 +x_0=400000 +y_0=-100000 +ellps=airy +towgs84=375,-111,431,0,0,0,0")
-};
-#endif
-
-static const unsigned format_info[] = {
-    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
-    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS,
-    LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED,
-    LEGS|SPLAYS|CENTRED|EXPORT_3D,
-    LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
-    LABELS|LEGS|SURF|SPLAYS,
-    LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE,
-    LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
-    LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE
-};
-
-static const char * extension[] = {
-    ".dxf",
-    ".eps",
-    ".gpx",
-    ".hpgl",
-    ".json",
-    ".kml",
-    ".plt",
-    ".sk",
-    ".pos",
-    ".svg"
-};
-
-static const int msg_filetype[] = {
-    /*DXF files*/411,
-    /*EPS files*/412,
-    /*GPX files*/413,
-    /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
-     * on a (usually large) sheet of paper using a pen mounted in a motorised
-     * mechanism. */
-    /*HPGL for plotters*/414,
-    /*JSON files*/445,
-    /*KML files*/444,
-    /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
-     * so should not be translated:
-     * http://www.fountainware.com/compass/
-     * http://www.psc-cavers.org/carto/ */
-    /*Compass PLT for use with Carto*/415,
-    /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
-     * translated: http://www.skencil.org/ */
-    /*Skencil files*/416,
-    /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
-     * file extension, so neither should be translated. */
-    /*Survex pos files*/166,
-    /*SVG files*/417
-};
+static_assert(sizeof(formats) == FMT_MAX_PLUS_ONE_ * sizeof(formats[0]),
+	      "formats[] matches enum export_format");
 
 // We discriminate as "One Page" isn't valid for exporting.
 static wxString default_scale_print;
 static wxString default_scale_export;
 
 svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
-			 const wxString & title, const wxString & cs_proj,
-			 const wxString & datestamp, time_t datestamp_numeric,
+			 const wxString & title,
+			 const wxString & datestamp,
 			 double angle, double tilt_angle,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool splays, bool tubes, bool ents, bool fixes,
@@ -388,10 +328,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	show_mask |= EXPORTS;
     m_layout.show_mask = show_mask;
     m_layout.datestamp = datestamp;
-    m_layout.datestamp_numeric = datestamp_numeric;
     m_layout.rot = angle;
     m_layout.title = title;
-    m_layout.cs_proj = cs_proj;
     if (mainfrm->IsExtendedElevation()) {
 	m_layout.view = layout::EXTELEV;
 	if (m_layout.rot != 0.0 && m_layout.rot != 180.0) m_layout.rot = 0;
@@ -418,9 +356,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
      * legs" "stations" "names" etc checkboxes in the "what to print" dialog.
      * "Elements" isn’t a good name for this but nothing better has yet come to
      * mind! */
-    wxBoxSizer* v3 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
-    wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* h3 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
+    wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     if (!printing) {
 	wxStaticText* label;
@@ -486,12 +423,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_viewbox->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
-    /* FIXME:
-     * svx_GRID, // double - spacing, default: 100m
-     * svx_TEXT_HEIGHT, // default 0.6
-     * svx_MARKER_SIZE // default 0.8
-     */
-
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
 	wxStaticText * brg_label, * tilt_label;
@@ -525,61 +456,61 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
      * "survey stations". */
-    v3->Add(new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262),
+    v2->Add(new wxCheckBox(this, svx_LEGS, wmsg(/*Underground Survey Legs*/262),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LEGS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
     /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
      * "survey stations". */
-    v3->Add(new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403),
+    v2->Add(new wxCheckBox(this, svx_SURFACE, wmsg(/*Sur&face Survey Legs*/403),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, SURF)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_SPLAYS, wmsg(/*Spla&y Legs*/406),
+    v2->Add(new wxCheckBox(this, svx_SPLAYS, wmsg(/*Spla&y Legs*/406),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, SPLAYS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261),
+    v2->Add(new wxCheckBox(this, svx_STATIONS, wmsg(/*Crosses*/261),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, STNS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260),
+    v2->Add(new wxCheckBox(this, svx_NAMES, wmsg(/*Station Names*/260),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, LABELS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_ENTS, wmsg(/*Entrances*/418),
+    v2->Add(new wxCheckBox(this, svx_ENTS, wmsg(/*Entrances*/418),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, ENTS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_FIXES, wmsg(/*Fixed Points*/419),
+    v2->Add(new wxCheckBox(this, svx_FIXES, wmsg(/*Fixed Points*/419),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, FIXES)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_EXPORTS, wmsg(/*Exported Stations*/420),
+    v2->Add(new wxCheckBox(this, svx_EXPORTS, wmsg(/*Exported Stations*/420),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, EXPORTS)),
 	    0, wxALIGN_LEFT|wxALL, 2);
-    v3->Add(new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393),
+    v2->Add(new wxCheckBox(this, svx_XSECT, wmsg(/*Cross-sections*/393),
 			   wxDefaultPosition, wxDefaultSize, 0,
 			   BitValidator(&m_layout.show_mask, XSECT)),
 	    0, wxALIGN_LEFT|wxALL, 2);
     if (!printing) {
-	v3->Add(new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394),
+	v2->Add(new wxCheckBox(this, svx_WALLS, wmsg(/*Walls*/394),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, WALLS)),
 		0, wxALIGN_LEFT|wxALL, 2);
 	// TRANSLATORS: Label for checkbox which controls whether there's a
 	// layer in the exported file (for formats such as DXF and SVG)
 	// containing polygons for the inside of cave passages).
-	v3->Add(new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395),
+	v2->Add(new wxCheckBox(this, svx_PASSAGES, wmsg(/*Passages*/395),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, PASG)),
 		0, wxALIGN_LEFT|wxALL, 2);
-	v3->Add(new wxCheckBox(this, svx_CENTRED, wmsg(/*Origin in centre*/421),
+	v2->Add(new wxCheckBox(this, svx_CENTRED, wmsg(/*Origin in centre*/421),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, CENTRED)),
 		0, wxALIGN_LEFT|wxALL, 2);
-	v3->Add(new wxCheckBox(this, svx_FULLCOORDS, wmsg(/*Full coordinates*/422),
+	v2->Add(new wxCheckBox(this, svx_FULLCOORDS, wmsg(/*Full coordinates*/422),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, FULL_COORDS)),
 		0, wxALIGN_LEFT|wxALL, 2);
@@ -587,55 +518,25 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     if (printing) {
 	/* TRANSLATORS: used in the print dialog - controls drawing lines
 	 * around each page */
-	v3->Add(new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264),
+	v2->Add(new wxCheckBox(this, svx_BORDERS, wmsg(/*Page Borders*/264),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       wxGenericValidator(&m_layout.Border)),
 		0, wxALIGN_LEFT|wxALL, 2);
 	/* TRANSLATORS: will be used in the print dialog - check this to print
 	 * blank pages (otherwise they’ll be skipped to save paper) */
 //	m_blanks = new wxCheckBox(this, svx_BLANKS, wmsg(/*Blank Pages*/266));
-//	v3->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
+//	v2->Add(m_blanks, 0, wxALIGN_LEFT|wxALL, 2);
 	/* TRANSLATORS: As in the legend on a map.  Used in the print dialog -
 	 * controls drawing the box at the lower left with survey name, view
 	 * angles, etc */
-	v3->Add(new wxCheckBox(this, svx_LEGEND, wmsg(/*Legend*/265),
+	v2->Add(new wxCheckBox(this, svx_LEGEND, wmsg(/*Legend*/265),
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       wxGenericValidator(&m_layout.Legend)),
 		0, wxALIGN_LEFT|wxALL, 2);
     }
 
-    h1->Add(v3, 0, wxALIGN_LEFT|wxALL, 5);
+    h1->Add(v2, 0, wxALIGN_LEFT|wxALL, 5);
     h1->Add(m_viewbox, 0, wxALIGN_LEFT|wxLEFT, 5);
-
-    if (!printing) {
-	/* TRANSLATORS: The PROJ library is used to do coordinate
-	 * transformations (https://trac.osgeo.org/proj/) - if the .3d file
-	 * doesn't contain details of the coordinate projection in use, the
-	 * user must specify it here for export formats which need to know it
-	 * (e.g. GPX).
-	 */
-	h2->Add(new wxStaticText(this, svx_PROJ_LABEL, wmsg(/*Coordinate projection*/440)),
-		0, wxLEFT|wxALIGN_CENTRE_VERTICAL, 5);
-	long style = 0;
-	if (!m_layout.cs_proj.empty()) {
-	    // If the input file specified the coordinate system, don't let the
-	    // user mess with it.
-	    style = wxTE_READONLY;
-	} else {
-#if 0 // FIXME: Is it a good idea to save this?
-	    wxConfigBase * cfg = wxConfigBase::Get();
-	    wxString input_projection;
-	    cfg->Read(wxT("input_projection"), &input_projection);
-	    if (!input_projection.empty())
-		proj_edit.SetValue(input_projection);
-#endif
-	}
-	wxTextCtrl * proj_edit = new wxTextCtrl(this, svx_PROJ, m_layout.cs_proj,
-						wxDefaultPosition, wxDefaultSize,
-						style);
-	h2->Add(proj_edit, 1, wxALL|wxEXPAND, 5);
-	v1->Add(h2, 0, wxALIGN_LEFT|wxEXPAND, 5);
-    }
 
     v1->Add(h1, 0, wxALIGN_LEFT|wxALL, 5);
 
@@ -647,11 +548,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 
     wxButton * but;
     but = new wxButton(this, wxID_CANCEL);
-    h3->Add(but, 0, wxALL, 5);
+    h2->Add(but, 0, wxALL, 5);
     if (printing) {
 #ifdef AVEN_PRINT_PREVIEW
 	but = new wxButton(this, wxID_PREVIEW);
-	h3->Add(but, 0, wxALL, 5);
+	h2->Add(but, 0, wxALL, 5);
 	but = new wxButton(this, wxID_PRINT);
 #else
 	but = new wxButton(this, wxID_PRINT, wmsg(/*&Print...*/400));
@@ -662,8 +563,8 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	but = new wxButton(this, svx_EXPORT, wmsg(/*&Export...*/230));
     }
     but->SetDefault();
-    h3->Add(but, 0, wxALL, 5);
-    v1->Add(h3, 0, wxALIGN_RIGHT|wxALL, 5);
+    h2->Add(but, 0, wxALL, 5);
+    v1->Add(h2, 0, wxALIGN_RIGHT|wxALL, 5);
 
     SetAutoLayout(true);
     SetSizer(v1);
@@ -710,11 +611,12 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxString leaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &leaf, NULL, wxPATH_NATIVE);
     unsigned format_idx = ((wxChoice*)FindWindow(svx_FORMAT))->GetSelection();
-    leaf += wxString::FromUTF8(extension[format_idx]);
+    const auto& info = export_format_info[format_idx];
+    leaf += wxString::FromUTF8(info.extension);
 
-    wxString filespec = wmsg(msg_filetype[format_idx]);
+    wxString filespec = wmsg(info.msg_filetype);
     filespec += wxT("|*");
-    filespec += wxString::FromUTF8(extension[format_idx]);
+    filespec += wxString::FromUTF8(info.extension);
     filespec += wxT("|");
     filespec += wmsg(/*All files*/208);
     filespec += wxT("|");
@@ -725,14 +627,14 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
     wxFileDialog dlg(this, wmsg(/*Export as:*/401), wxString(), leaf,
 		     filespec, wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
     if (dlg.ShowModal() == wxID_OK) {
-	wxString input_projection = ((wxTextCtrl*)FindWindow(svx_PROJ))->GetValue();
-	double grid = 100; // metres
-	double text_height = 0.6;
-	double marker_size = 0.8;
+	/* FIXME: Set up a way for the user to specify these: */
+	double grid = DEFAULT_GRID_SPACING; // metres
+	double text_height = DEFAULT_TEXT_HEIGHT;
+	double marker_size = DEFAULT_MARKER_SIZE;
 
 	try {
 	    const wxString& export_fnm = dlg.GetPath();
-	    unsigned mask = format_info[format_idx];
+	    unsigned mask = info.mask;
 	    double rot, tilt;
 	    if (mask & EXPORT_3D) {
 		rot = 0.0;
@@ -742,9 +644,9 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		tilt = m_layout.tilt;
 	    }
 	    if (!Export(export_fnm, m_layout.title,
-			m_layout.datestamp, m_layout.datestamp_numeric, mainfrm,
+			m_layout.datestamp, *mainfrm,
 			rot, tilt, m_layout.get_effective_show_mask(),
-			export_format(format_idx), input_projection.utf8_str(),
+			export_format(format_idx),
 			grid, text_height, marker_size, m_layout.Scale)) {
 		wxString m = wxString::Format(wmsg(/*Couldn’t write file “%s”*/402).c_str(),
 					      export_fnm.c_str());
@@ -848,7 +750,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	// Update the shown/hidden fields for the newly selected export filter.
 	int new_filter_idx = m_format->GetSelection();
 	if (new_filter_idx != wxNOT_FOUND) {
-	    unsigned mask = format_info[new_filter_idx];
+	    unsigned mask = export_format_info[new_filter_idx].mask;
 	    static const struct { int id; unsigned mask; } controls[] = {
 		{ svx_LEGS, LEGS },
 		{ svx_SURFACE, SURF },
@@ -863,8 +765,6 @@ svxPrintDlg::SomethingChanged(int control_id) {
 		{ svx_EXPORTS, EXPORTS },
 		{ svx_CENTRED, CENTRED },
 		{ svx_FULLCOORDS, FULL_COORDS },
-		{ svx_PROJ_LABEL, PROJ },
-		{ svx_PROJ, PROJ },
 	    };
 	    static unsigned n_controls = sizeof(controls) / sizeof(controls[0]);
 	    for (unsigned i = 0; i != n_controls; ++i) {

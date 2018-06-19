@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-# Survex test suite - 3dtopos tests
-# Copyright (C) 1999-2003,2005,2010,2012 Olly Betts
+# Survex test suite - 3d to pos tests
+# Copyright (C) 1999-2003,2005,2010,2012,2018 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ test -n "$*" && VERBOSE=1
 test -x "$testdir"/../src/cavern || testdir=.
 
 : ${DIFFPOS="$testdir"/../src/diffpos}
-: ${TDTOPOS="$testdir"/../src/3dtopos}
+: ${SURVEXPORT="$testdir"/../src/survexport}
 
 : ${TESTS=${*:-"pos.pos v0 v0b v1 v2 v3"}}
 
@@ -36,7 +36,7 @@ vg_error=123
 vg_log=vg.log
 if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
-  TDTOPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $TDTOPOS"
+  SURVEXPORT="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $SURVEXPORT"
   DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
 fi
 
@@ -47,7 +47,7 @@ for file in $TESTS ; do
   *) input="$srcdir/$file.3d" ;;
   esac
   rm -f tmp.pos diffpos.tmp
-  $TDTOPOS "$input" tmp.pos
+  $SURVEXPORT "$input" tmp.pos
   exitcode=$?
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then

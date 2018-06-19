@@ -33,7 +33,7 @@ testdir=`(cd "$testdir" && pwd)`
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
-: ${CAD3D="$testdir"/../src/cad3d}
+: ${SURVEXPORT="$testdir"/../src/survexport}
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
@@ -85,7 +85,7 @@ if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
   DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
-  CAD3D="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAD3D"
+  SURVEXPORT="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $SURVEXPORT"
 fi
 
 for file in $TESTS ; do
@@ -97,6 +97,11 @@ for file in $TESTS ; do
     *.*) realfile=$file ;;
     *) realfile=$file.svx ;;
   esac
+
+  if [ x"$file" = xONELEG ] && [ -f "ONELEG.SVX" ] ; then
+    echo "Case insensitive filing system - skipping ONELEG testcase"
+    continue
+  fi
 
   if [ -n "$realfile" ] && [ ! -r "$realfile" ] ; then
     echo "Warning: don't know how to run test '$file' - skipping it"
@@ -180,8 +185,10 @@ for file in $TESTS ; do
       exit 1
     fi
   fi
-  nan=`sed 's/.*\<[Nn]a[Nn]m\?\>.*/x/p;d' tmp.out`
-  if test -n "$nan" ; then
+  # Fail if nan, NaN, etc in output (which might be followed by m for metres or
+  # s for seconds).
+  if egrep -q '(^|[^A-Za-z0-9])nan[ms]?($|[^A-Za-z0-9])' tmp.out ; then
+    echo "Not-a-number appears in output"
     exit 1
   fi
 
@@ -206,10 +213,10 @@ for file in $TESTS ; do
     ;;
   dxf)
     if test -n "$VERBOSE" ; then
-      $CAD3D tmp.3d tmp.dxf
+      $SURVEXPORT --defaults --surface-legs tmp.3d tmp.dxf
       exitcode=$?
     else
-      $CAD3D tmp.3d tmp.dxf > /dev/null
+      $SURVEXPORT --defaults --surface-legs tmp.3d tmp.dxf > /dev/null
       exitcode=$?
     fi
     if [ -n "$VALGRIND" ] ; then
@@ -239,11 +246,11 @@ for file in $TESTS ; do
   esac
 
   if test -f "$outfile" ; then
-    # Check output is as expected.
+    # Check output is as expected, working around Apple's stone-age sed.
     if test -n "$VERBOSE" ; then
-      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$outfile" - || exit 1
+      sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$outfile" - || exit 1
     else
-      sed '1,/^Copyright/d;/^\(CPU t\|T\)ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$outfile" - || exit 1
+      sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$outfile" - || exit 1
     fi
   fi
   rm -f tmp.*

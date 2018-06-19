@@ -7,26 +7,14 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
  cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
- pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h printing.h\
+ pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h model.h printing.h\
  avenprcore.h img2aven.h thgeomag.h thgeomagdata.h\
  moviemaker-legacy.cc
 
 LDADD = $(LIBOBJS)
 
-# dump3d is a test program
-#
-# findentrances is mostly superceded by aven's GPX export, so is disabled
-# by default, and will be removed entirely at some point.  To build and
-# install it, pass "FINDENTRANCES=findentrances" as an argument to make
-# like so:
-#     make FINDENTRANCES=findentrances
-#     sudo make install FINDENTRANCES=findentrances
-FINDENTRANCES =
-EXTRA_PROGRAMS =\
-	aven dump3d findentrances
-# FIXME: base_progs in top level Makefile.am needs updating if this is
-bin_PROGRAMS = cad3d cavern diffpos extend sorterr 3dtopos dump3d \
- aven $(OSPROGS) $(FINDENTRANCES)
+# FIXME: mingw_progs in top level Makefile.am needs keeping in step with this
+bin_PROGRAMS = cavern diffpos dump3d extend sorterr survexport aven
 
 check_PROGRAMS = imgtest
 
@@ -38,7 +26,7 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  $(COMMONSRC)
 cavern_LDADD = $(PROJ_LIBS)
 
-aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
+aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
  namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
  glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
  cavernlog.cc avenprcore.cc printing.cc buttontaghandler.cc pos.cc \
@@ -51,10 +39,6 @@ aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc vector3.cc aboutdlg.cc \
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
  $(COMMONSRC)
 
-findentrances_SOURCES = findentrances.cc img_hosted.c useful.c \
- $(COMMONSRC)
-findentrances_LDADD = $(PROJ_LIBS)
-
 if WIN32
 aven_LDADD = avenrc.o $(LIBOBJS) $(LIBAV_LIBS) $(WX_LIBS) $(PROJ_LIBS)
 
@@ -62,7 +46,7 @@ avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
 	pwd=`pwd` && cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir "$$pwd/../lib/icons" -o "$$pwd/avenrc.o" aven.rc
 
 else
-aven_LDADD = $(LIBOBJS) $(AVEN_LIBS) $(WX_LIBS) $(PROJ_LIBS) $(LIBAV_LIBS)
+aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS) $(LIBAV_LIBS)
 endif
 
 AM_CFLAGS += $(PROJ_CFLAGS)
@@ -70,6 +54,10 @@ AM_CFLAGS += $(PROJ_CFLAGS)
 aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
+
+survexport_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
+survexport_LDFLAGS =
+survexport_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS)
 
 if MACOSX
 # FIXME: It looks like modern wx-config should give us this...
@@ -79,13 +67,12 @@ endif
 diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 sorterr_SOURCES = sorterr.c $(COMMONSRC)
-3dtopos_SOURCES = 3dtopos.c namecmp.c img_hosted.c useful.c \
- $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
-cad3d_SOURCES = cad3d.c useful.c img_hosted.c hash.c \
- $(COMMONSRC)
+survexport_SOURCES = survexport.cc model.cc export.cc namecompare.cc \
+		useful.c hash.c img_hosted.c \
+		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 
@@ -99,10 +86,8 @@ all_sources = \
 	$(dump3d_SOURCES) \
 	$(diffpos_SOURCES) \
 	$(sorterr_SOURCES) \
-	$(3dtopos_SOURCES) \
 	$(extend_SOURCES) \
-	$(cad3d_SOURCES) \
-	$(findentrances_SOURCES)
+	$(survexport_SOURCES)
 
 ../lib/survex.pox: $(all_sources) ../lib/extract-msgs.pl
 	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox

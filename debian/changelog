@@ -1,3 +1,14 @@
+survex (1.2.33-1) unstable; urgency=medium
+
+  * New upstream release
+    + Adds compatibility with upcoming FFmpeg 3.5 release (Closes: #888334)
+  * Build with GTK3 version of wxWidgets 3.0.
+  * debian/control: Mark conformance with policy 4.1.3 - changes:
+    + debian/control: Update section from "extra" to "optional" - "extra" was
+      deprecated by policy version 4.0.1.
+
+ -- Olly Betts <olly@survex.com>  Thu, 22 Mar 2018 16:17:47 +1300
+
 survex (1.2.32-1) unstable; urgency=medium
 
   * New upstream release

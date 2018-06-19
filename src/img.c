@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2004,2005,2006,2010,2011,2013,2014,2017 Olly Betts
+ * Copyright (C) 1993-2004,2005,2006,2010,2011,2013,2014,2017,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -412,34 +412,55 @@ img *
 img_open_survey(const char *fnm, const char *survey)
 {
    img *pimg;
-   size_t len;
-   char buf[LITLEN(FILEID) + 9];
-   int ch;
+   FILE *fh;
+   char* filename_opened = NULL;
 
    if (fDirectory(fnm)) {
       img_errno = IMG_DIRECTORY;
       return NULL;
    }
 
+   fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", &filename_opened);
+   pimg = img_read_stream_survey(fh, fclose, filename_opened, survey);
+   if (pimg) {
+       pimg->filename_opened = filename_opened;
+   } else {
+       osfree(filename_opened);
+   }
+   return pimg;
+}
+
+img *
+img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
+		       const char *fnm,
+		       const char *survey)
+{
+   img *pimg;
+   size_t len;
+   char buf[LITLEN(FILEID) + 9];
+   int ch;
+
+   if (stream == NULL) {
+      img_errno = IMG_FILENOTFOUND;
+      return NULL;
+   }
+
    pimg = osnew(img);
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
+      if (close_func) close_func(stream);
       return NULL;
    }
+
+   pimg->fh = stream;
+   pimg->close_func = close_func;
 
    pimg->buf_len = 257;
    pimg->label_buf = (char *)xosmalloc(pimg->buf_len);
    if (!pimg->label_buf) {
+      if (pimg->close_func) pimg->close_func(pimg->fh);
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
-      return NULL;
-   }
-
-   pimg->fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", &(pimg->filename_opened));
-   if (pimg->fh == NULL) {
-      osfree(pimg->label_buf);
-      osfree(pimg);
-      img_errno = IMG_FILENOTFOUND;
       return NULL;
    }
 
@@ -447,6 +468,7 @@ img_open_survey(const char *fnm, const char *survey)
    img_errno = IMG_NONE;
 
    pimg->flags = 0;
+   pimg->filename_opened = NULL;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
    /* for VERSION_COMPASS_PLT, 0 value indicates we haven't
@@ -821,7 +843,7 @@ v03d:
       osfree(pimg->cs);
       osfree(pimg->datestamp);
       osfree(pimg->filename_opened);
-      fclose(pimg->fh);
+      if (pimg->close_func) pimg->close_func(pimg->fh);
       osfree(pimg);
       return NULL;
    }
@@ -928,35 +950,43 @@ img_rewind(img *pimg)
 }
 
 img *
-img_open_write_cs(const char *fnm, const char *title, const char * cs, int flags)
+img_open_write_cs(const char *fnm, const char *title, const char *cs, int flags)
+{
+   if (fDirectory(fnm)) {
+      img_errno = IMG_DIRECTORY;
+      return NULL;
+   }
+
+   return img_write_stream(fopen(fnm, "wb"), fclose, title, cs, flags);
+}
+
+img *
+img_write_stream(FILE *stream, int (*close_func)(FILE*),
+		 const char *title, const char *cs, int flags)
 {
    time_t tm;
    img *pimg;
 
-   if (fDirectory(fnm)) {
-      img_errno = IMG_DIRECTORY;
+   if (stream == NULL) {
+      img_errno = IMG_FILENOTFOUND;
       return NULL;
    }
 
    pimg = osnew(img);
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
+      if (close_func) close_func(stream);
       return NULL;
    }
 
+   pimg->fh = stream;
+   pimg->close_func = close_func;
    pimg->buf_len = 257;
    pimg->label_buf = (char *)xosmalloc(pimg->buf_len);
    if (!pimg->label_buf) {
+      if (pimg->close_func) pimg->close_func(pimg->fh);
       osfree(pimg);
       img_errno = IMG_OUTOFMEMORY;
-      return NULL;
-   }
-
-   pimg->fh = fopen(fnm, "wb");
-   if (!pimg->fh) {
-      osfree(pimg->label_buf);
-      osfree(pimg);
-      img_errno = IMG_CANTOPENOUT;
       return NULL;
    }
 
@@ -2729,7 +2759,8 @@ img_close(img *pimg)
 	    }
 	 }
 	 if (ferror(pimg->fh)) result = 0;
-	 if (fclose(pimg->fh)) result = 0;
+	 if (pimg->close_func && pimg->close_func(pimg->fh))
+	     result = 0;
 	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
       }
       osfree(pimg->label_buf);

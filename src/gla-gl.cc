@@ -97,6 +97,37 @@ const int BLOB_DIAMETER = 5;
 
 static bool opengl_initialised = false;
 
+static bool double_buffered = false;
+
+static const int* wx_gl_attribs = NULL;
+
+bool
+GLACanvas::check_visual()
+{
+    static const int wx_gl_attribs_full[] = {
+	WX_GL_DOUBLEBUFFER,
+	WX_GL_RGBA,
+#ifdef STEREO_BUFFERS
+	WX_GL_STEREO,
+#endif
+	WX_GL_DEPTH_SIZE, 16,
+	0
+    };
+
+    // Use a double-buffered visual if available, as it will give much smoother
+    // animation.
+    double_buffered = true;
+    wx_gl_attribs = wx_gl_attribs_full;
+    if (!IsDisplaySupported(wx_gl_attribs)) {
+	++wx_gl_attribs;
+	if (!IsDisplaySupported(wx_gl_attribs)) {
+	    return false;
+	}
+	double_buffered = false;
+    }
+    return true;
+}
+
 string GetGLSystemDescription()
 {
     // If OpenGL isn't initialised we may get a SEGV from glGetString.
@@ -353,19 +384,9 @@ BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
     EVT_SIZE(GLACanvas::OnSize)
 END_EVENT_TABLE()
 
-static const int wx_gl_window_attribs[] = {
-    WX_GL_DOUBLEBUFFER,
-    WX_GL_RGBA,
-#ifdef STEREO_BUFFERS
-    WX_GL_STEREO,
-#endif
-    WX_GL_DEPTH_SIZE, 16,
-    0
-};
-
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
-    : wxGLCanvas(parent, id, wx_gl_window_attribs, wxDefaultPosition,
+    : wxGLCanvas(parent, id, wx_gl_attribs, wxDefaultPosition,
 		 wxDefaultSize, wxWANTS_CHARS),
       ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
       x_size(0), y_size(0)
@@ -801,7 +822,12 @@ void GLACanvas::SetDataTransform()
 	assert(m_Scale != 0.0);
 	Double lr = m_VolumeDiameter / m_Scale * 0.5;
 	Double far_plane = m_VolumeDiameter + near_plane;
-	Double tb = lr * aspect;
+	Double tb = lr;
+	if (aspect >= 1.0) {
+	    tb *= aspect;
+	} else {
+	    lr /= aspect;
+	}
 	glOrtho(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glOrtho");
     }
@@ -1559,7 +1585,11 @@ Double GLACanvas::SurveyUnitsAcrossViewport() const
 
     assert(m_Scale != 0.0);
     list_flags |= INVALIDATE_ON_SCALE;
-    return m_VolumeDiameter / m_Scale;
+    Double result = m_VolumeDiameter / m_Scale;
+    if (y_size < x_size) {
+	result = result * x_size / y_size;
+    }
+    return result;
 }
 
 void GLACanvas::ToggleSmoothShading()

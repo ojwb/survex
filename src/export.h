@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2004,2005,2012,2014,2015 Olly Betts
+/* Copyright (C) 2004,2005,2012,2014,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,9 @@
 
 #include "wx.h"
 
-#include <time.h>
+class Model;
 
-class MainFrm;
-
+// Order here needs to match order of extension array in export.cc.
 typedef enum {
     FMT_DXF,
     FMT_EPS,
@@ -39,8 +38,19 @@ typedef enum {
     FMT_PLT,
     FMT_SK,
     FMT_POS,
-    FMT_SVG
+    FMT_SVG,
+    FMT_MAX_PLUS_ONE_
 } export_format;
+
+struct format_info {
+    const char* extension;
+    int msg_filetype;
+    unsigned mask;
+    // Defaults for survexport (aven defaults to what is currently shown).
+    unsigned defaults;
+};
+
+extern const format_info export_format_info[];
 
 #define LEGS		0x00000001
 #define SURF		0x00000002
@@ -64,11 +74,14 @@ typedef enum {
 #define FULL_COORDS	0x00040000
 #define SPLAYS		0x00080000
 
+#define DEFAULT_GRID_SPACING 100 // metres
+#define DEFAULT_TEXT_HEIGHT 0.6
+#define DEFAULT_MARKER_SIZE 0.8
+
 bool Export(const wxString &fnm_out, const wxString &title,
-	    const wxString &datestamp, time_t datestamp_numeric,
-	    const MainFrm * mainfrm,
+	    const wxString &datestamp,
+	    const Model& model,
 	    double pan, double tilt, int show_mask, export_format format,
-	    const char * input_projection,
 	    double grid_, double text_height_, double marker_size_,
 	    double scale);
 

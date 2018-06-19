@@ -249,9 +249,10 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_TERRAIN);
 
     // Set diameter of the viewing volume.
-    double cave_diameter = sqrt(sqrd(m_Parent->GetXExtent()) +
-				sqrd(m_Parent->GetYExtent()) +
-				sqrd(m_Parent->GetZExtent()));
+    auto ext = m_Parent->GetExtent();
+    double cave_diameter = sqrt(sqrd(ext.GetX()) +
+				sqrd(ext.GetY()) +
+				sqrd(ext.GetZ()));
 
     // Allow for terrain.
     double diameter = max(1000.0 * 2, cave_diameter * 2);
@@ -658,11 +659,12 @@ void GfxCore::DrawGrid()
 
     Double grid_size = size_snap * 0.1;
     Double edge = grid_size * 2.0;
-    Double grid_z = -m_Parent->GetZExtent() * 0.5 - grid_size;
-    Double left = -m_Parent->GetXExtent() * 0.5 - edge;
-    Double right = m_Parent->GetXExtent() * 0.5 + edge;
-    Double bottom = -m_Parent->GetYExtent() * 0.5 - edge;
-    Double top = m_Parent->GetYExtent() * 0.5 + edge;
+    auto ext = m_Parent->GetExtent();
+    Double grid_z = -ext.GetZ() * 0.5 - grid_size;
+    Double left = -ext.GetX() * 0.5 - edge;
+    Double right = ext.GetX() * 0.5 + edge;
+    Double bottom = -ext.GetY() * 0.5 - edge;
+    Double top = ext.GetY() * 0.5 + edge;
     int count_x = (int) ceil((right - left) / grid_size);
     int count_y = (int) ceil((top - bottom) / grid_size);
     Double actual_right = left + count_x*grid_size;
@@ -1246,9 +1248,6 @@ void GfxCore::DrawLengthKey()
 
 void GfxCore::DrawScaleBar()
 {
-    // Draw the scalebar.
-    if (GetPerspective()) return;
-
     // Calculate how many metres of survey are currently displayed across the
     // screen.
     Double across_screen = SurveyUnitsAcrossViewport();
@@ -2720,7 +2719,7 @@ GfxCore::read_bil(wxInputStream & is, size_t size, unsigned long skipbytes)
 
 bool GfxCore::LoadDEM(const wxString & file)
 {
-    if (m_Parent->m_cs_proj.empty()) {
+    if (m_Parent->GetCSProj().empty()) {
 	wxMessageBox(wxT("No coordinate system specified in survey data"));
 	return false;
     }
@@ -2869,13 +2868,13 @@ void GfxCore::DrawTerrain()
 	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
 	return;
     }
-    static projPJ pj_out = pj_init_plus(m_Parent->m_cs_proj.c_str());
+    static projPJ pj_out = pj_init_plus(m_Parent->GetCSProj().c_str());
     if (!pj_out) {
 	ToggleTerrain();
 	delete [] dem;
 	dem = NULL;
 	hourglass.stop();
-	error(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->m_cs_proj.c_str());
+	error(/*Failed to initialise output coordinate system “%s”*/288, (const char *)m_Parent->GetCSProj().c_str());
 	return;
     }
     n_tris = 0;
@@ -3072,7 +3071,7 @@ void GfxCore::DrawIndicators()
     }
 
     // Draw scalebar.
-    if (m_Scalebar) {
+    if (m_Scalebar && !GetPerspective()) {
 	DrawList2D(LIST_SCALE_BAR, 0, 0, 0);
     }
 }
@@ -3236,7 +3235,7 @@ void GfxCore::AddPolyline(const traverse & centreline)
 void GfxCore::AddPolylineShadow(const traverse & centreline)
 {
     BeginPolyline();
-    const double z = -0.5 * m_Parent->GetZExtent();
+    const double z = -0.5 * m_Parent->GetExtent().GetZ();
     vector<PointInfo>::const_iterator i = centreline.begin();
     PlaceVertex(i->GetX(), i->GetY(), z);
     ++i;
@@ -3933,13 +3932,11 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 
 void
 GfxCore::OnPrint(const wxString &filename, const wxString &title,
-		 const wxString &datestamp, time_t datestamp_numeric,
-		 const wxString &cs_proj,
+		 const wxString &datestamp,
 		 bool close_after_print)
 {
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, cs_proj,
-			datestamp, datestamp_numeric,
+    p = new svxPrintDlg(m_Parent, filename, title, datestamp,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Splays,
 			m_Tubes, m_Entrances, m_FixedPts, m_ExportedPts,
@@ -3949,8 +3946,7 @@ GfxCore::OnPrint(const wxString &filename, const wxString &title,
 
 void
 GfxCore::OnExport(const wxString &filename, const wxString &title,
-		  const wxString &datestamp, time_t datestamp_numeric,
-		  const wxString &cs_proj)
+		  const wxString &datestamp)
 {
     // Fill in "right_bearing" for each cross-section.
     list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
@@ -3961,8 +3957,7 @@ GfxCore::OnExport(const wxString &filename, const wxString &title,
     }
 
     svxPrintDlg * p;
-    p = new svxPrintDlg(m_Parent, filename, title, cs_proj,
-			datestamp, datestamp_numeric,
+    p = new svxPrintDlg(m_Parent, filename, title, datestamp,
 			m_PanAngle, m_TiltAngle,
 			m_Names, m_Crosses, m_Legs, m_Surface, m_Splays,
 			m_Tubes, m_Entrances, m_FixedPts, m_ExportedPts,

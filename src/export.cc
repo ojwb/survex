@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,8 +19,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
-/* #define DEBUG_CAD3D */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -67,6 +65,55 @@
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
 #define SQRT_2		1.41421356237309504880168872420969
+
+// Order here needs to match order of export_format enum in export.h.
+
+const format_info export_format_info[] = {
+    { ".dxf", /*DXF files*/411,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
+      LABELS|LEGS|STNS },
+    { ".eps", /*EPS files*/412,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS,
+      LABELS|LEGS|STNS },
+    { ".gpx", /*GPX files*/413,
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+      LABELS },
+    /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
+     * on a (usually large) sheet of paper using a pen mounted in a motorised
+     * mechanism. */
+    { ".hpgl", /*HPGL for plotters*/414,
+      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED,
+      LABELS|LEGS|STNS },
+    { ".json", /*JSON files*/445,
+      LEGS|SPLAYS|CENTRED|EXPORT_3D,
+      LEGS },
+    { ".kml", /*KML files*/444,
+      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+      LABELS|LEGS },
+    /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
+     * so should not be translated:
+     * http://www.fountainware.com/compass/
+     * http://www.psc-cavers.org/carto/ */
+    { ".plt", /*Compass PLT for use with Carto*/415,
+      LABELS|LEGS|SURF|SPLAYS,
+      LABELS|LEGS },
+    /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
+     * translated: http://www.skencil.org/ */
+    { ".sk", /*Skencil files*/416,
+      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE,
+      LABELS|LEGS|STNS },
+    /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
+     * file extension, so neither should be translated. */
+    { ".pos", /*Survex pos files*/166,
+      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
+      LABELS },
+    { ".svg", /*SVG files*/417,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE,
+      LABELS|LEGS|STNS },
+};
+
+static_assert(sizeof(export_format_info) == FMT_MAX_PLUS_ONE_ * sizeof(export_format_info[0]),
+	      "export_format_info[] matches enum export_format");
 
 static void
 html_escape(FILE *fh, const char *s)
@@ -169,13 +216,13 @@ DXF::header(const char *, const char *, time_t,
    fprintf(fh, "0\nSECTION\n"
 	       "2\nHEADER\n");
    fprintf(fh, "9\n$EXTMIN\n"); /* lower left corner of drawing */
-   fprintf(fh, "10\n%#-.6f\n", min_x); /* x */
-   fprintf(fh, "20\n%#-.6f\n", min_y); /* y */
-   fprintf(fh, "30\n%#-.6f\n", min_z); /* min z */
+   fprintf(fh, "10\n%#-.2f\n", min_x); /* x */
+   fprintf(fh, "20\n%#-.2f\n", min_y); /* y */
+   fprintf(fh, "30\n%#-.2f\n", min_z); /* min z */
    fprintf(fh, "9\n$EXTMAX\n"); /* upper right corner of drawing */
-   fprintf(fh, "10\n%#-.6f\n", max_x); /* x */
-   fprintf(fh, "20\n%#-.6f\n", max_y); /* y */
-   fprintf(fh, "30\n%#-.6f\n", max_z); /* max z */
+   fprintf(fh, "10\n%#-.2f\n", max_x); /* x */
+   fprintf(fh, "20\n%#-.2f\n", max_y); /* y */
+   fprintf(fh, "30\n%#-.2f\n", max_z); /* max z */
    fprintf(fh, "9\n$PDMODE\n70\n3\n"); /* marker style as CROSS */
    fprintf(fh, "9\n$PDSIZE\n40\n%6.2f\n", marker_size); /* marker size */
    fprintf(fh, "0\nENDSEC\n");
@@ -252,9 +299,6 @@ DXF::header(const char *, const char *, time_t,
       double x, y;
       x = floor(min_x / grid) * grid + grid;
       y = floor(min_y / grid) * grid + grid;
-#ifdef DEBUG_CAD3D
-      printf("x_min: %f  y_min: %f\n", x, y);
-#endif
       while (x < max_x) {
 	 /* horizontal line */
 	 fprintf(fh, "0\nLINE\n");
@@ -1100,9 +1144,6 @@ EPS::header(const char *title, const char *, time_t,
       double x, y;
       x = floor(min_x / grid) * grid + grid;
       y = floor(min_y / grid) * grid + grid;
-#ifdef DEBUG_CAD3D
-      printf("x_min: %f  y_min: %f\n", x, y);
-#endif
       while (x < max_x) {
 	 /* horizontal line */
 	 fprintf(fh, "0\nLINE\n");
@@ -1273,10 +1314,9 @@ transform_point(const Point& pos, const Vector3* pre_offset,
 
 bool
 Export(const wxString &fnm_out, const wxString &title,
-       const wxString &datestamp, time_t datestamp_numeric,
-       const MainFrm * mainfrm,
+       const wxString &datestamp,
+       const Model& model,
        double pan, double tilt, int show_mask, export_format format,
-       const char * input_projection,
        double grid_, double text_height, double marker_size_,
        double scale)
 {
@@ -1292,6 +1332,8 @@ Export(const wxString &fnm_out, const wxString &title,
    grid = grid_;
    marker_size = marker_size_;
 
+   // Do we need to calculate min and max for each dimension?
+   bool need_bounds = true;
    ExportFilter * filt;
    switch (format) {
        case FMT_DXF:
@@ -1301,27 +1343,32 @@ Export(const wxString &fnm_out, const wxString &title,
 	   filt = new EPS(scale);
 	   break;
        case FMT_GPX:
-	   filt = new GPX(input_projection);
+	   filt = new GPX(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_HPGL:
 	   filt = new HPGL;
 	   // factor = POINTS_PER_MM * 1000.0 / scale;
+	   // HPGL doesn't use the bounds itself, but they are needed to set
+	   // the origin to the centre of lower left.
 	   break;
        case FMT_JSON:
 	   filt = new JSON;
 	   break;
        case FMT_KML:
-	   filt = new KML(input_projection);
+	   filt = new KML(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_PLT:
 	   filt = new PLT;
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_POS:
-	   filt = new POS(mainfrm->GetSeparator());
+	   filt = new POS(model.GetSeparator());
 	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_SK:
 	   filt = new Skencil(scale);
@@ -1340,42 +1387,42 @@ Export(const wxString &fnm_out, const wxString &title,
 
    const Vector3* pre_offset = NULL;
    if (show_mask & FULL_COORDS) {
-	pre_offset = &mainfrm->GetOffset();
+	pre_offset = &(model.GetOffset());
    }
 
    /* Get bounding box */
    double min_x, min_y, min_z, max_x, max_y, max_z;
    min_x = min_y = min_z = HUGE_VAL;
    max_x = max_y = max_z = -HUGE_VAL;
-   for (int f = 0; f != 8; ++f) {
-       if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
-	   // Not showing traverse because of surface/underground status.
-	   continue;
-       }
-       if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
-	   // Not showing because it's a splay.
-	   continue;
-       }
-       list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
-       list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
-       for ( ; trav != tend; ++trav) {
-	    vector<PointInfo>::const_iterator pos = trav->begin();
-	    vector<PointInfo>::const_iterator end = trav->end();
-	    for ( ; pos != end; ++pos) {
-		transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
-
-		if (p.x < min_x) min_x = p.x;
-		if (p.x > max_x) max_x = p.x;
-		if (p.y < min_y) min_y = p.y;
-		if (p.y > max_y) max_y = p.y;
-		if (p.z < min_z) min_z = p.z;
-		if (p.z > max_z) max_z = p.z;
+   if (need_bounds) {
+	for (int f = 0; f != 8; ++f) {
+	    if ((show_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+		// Not showing traverse because of surface/underground status.
+		continue;
 	    }
-       }
-   }
-   {
-	list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
-	list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
+	    if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
+		// Not showing because it's a splay.
+		continue;
+	    }
+	    list<traverse>::const_iterator trav = model.traverses_begin(f);
+	    list<traverse>::const_iterator tend = model.traverses_end(f);
+	    for ( ; trav != tend; ++trav) {
+		vector<PointInfo>::const_iterator pos = trav->begin();
+		vector<PointInfo>::const_iterator end = trav->end();
+		for ( ; pos != end; ++pos) {
+		    transform_point(*pos, pre_offset, COS, SIN, COST, SINT, &p);
+
+		    if (p.x < min_x) min_x = p.x;
+		    if (p.x > max_x) max_x = p.x;
+		    if (p.y < min_y) min_y = p.y;
+		    if (p.y > max_y) max_y = p.y;
+		    if (p.z < min_z) min_z = p.z;
+		    if (p.z > max_z) max_z = p.z;
+		}
+	    }
+	}
+	list<LabelInfo*>::const_iterator pos = model.GetLabels();
+	list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
 	    transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 
@@ -1386,16 +1433,17 @@ Export(const wxString &fnm_out, const wxString &title,
 	    if (p.z < min_z) min_z = p.z;
 	    if (p.z > max_z) max_z = p.z;
 	}
+
+	if (grid > 0) {
+	    min_x -= grid / 2;
+	    max_x += grid / 2;
+	    min_y -= grid / 2;
+	    max_y += grid / 2;
+	}
    }
 
-   if (grid > 0) {
-      min_x -= grid / 2;
-      max_x += grid / 2;
-      min_y -= grid / 2;
-      max_y += grid / 2;
-   }
-
-   /* handle empty file gracefully */
+   /* Handle empty file and gracefully, and also zero for the !need_bounds
+    * case. */
    if (min_x > max_x) {
       min_x = min_y = min_z = 0;
       max_x = max_y = max_z = 0;
@@ -1416,15 +1464,17 @@ Export(const wxString &fnm_out, const wxString &title,
        y_offset = -min_y;
        z_offset = -min_z;
    }
-   min_x += x_offset;
-   max_x += x_offset;
-   min_y += y_offset;
-   max_y += y_offset;
-   min_z += z_offset;
-   max_z += z_offset;
+   if (need_bounds) {
+	min_x += x_offset;
+	max_x += x_offset;
+	min_y += y_offset;
+	max_y += y_offset;
+	min_z += z_offset;
+	max_z += z_offset;
+   }
 
    /* Header */
-   filt->header(title.utf8_str(), datestamp.utf8_str(), datestamp_numeric,
+   filt->header(title.utf8_str(), datestamp.utf8_str(), model.GetDateStamp(),
 		min_x, min_y, min_z, max_x, max_y, max_z);
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */
@@ -1436,17 +1486,14 @@ Export(const wxString &fnm_out, const wxString &title,
       filt->start_pass(*pass);
       if (pass_mask & (LEGS|SURF)) {
 	  for (int f = 0; f != 8; ++f) {
-	      if ((pass_mask & (f & img_FLAG_SURFACE) ? SURF : LEGS) == 0) {
+	      unsigned flags = (f & img_FLAG_SURFACE) ? SURF : LEGS;
+	      if ((pass_mask & flags) == 0) {
 		  // Not showing traverse because of surface/underground status.
 		  continue;
 	      }
-	      if ((f & img_FLAG_SPLAY) && (pass_mask & SPLAYS) == 0) {
-		  // Not showing because it's a splay.
-		  continue;
-	      }
-	      unsigned flags = pass_mask & (SURF|SPLAYS);
-	      list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
-	      list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
+	      if (f & img_FLAG_SPLAY) flags |= SPLAYS;
+	      list<traverse>::const_iterator trav = model.traverses_begin(f);
+	      list<traverse>::const_iterator tend = model.traverses_end(f);
 	      for ( ; trav != tend; ++trav) {
 		  assert(trav->size() > 1);
 		  vector<PointInfo>::const_iterator pos = trav->begin();
@@ -1459,14 +1506,8 @@ Export(const wxString &fnm_out, const wxString &title,
 
 		      if (pos == trav->begin()) {
 			  // First point is move...
-#ifdef DEBUG_CAD3D
-			  printf("move to %9.2f %9.2f %9.2f\n",x,y,z);
-#endif
 			  fPendingMove = 1;
 		      } else {
-#ifdef DEBUG_CAD3D
-			  printf("line to %9.2f %9.2f %9.2f\n", p.x, p.y, p.z);
-#endif
 			  filt->line(&p1, &p, flags, fPendingMove);
 			  fPendingMove = 0;
 		      }
@@ -1476,17 +1517,14 @@ Export(const wxString &fnm_out, const wxString &title,
 	  }
       }
       if (pass_mask & (STNS|LABELS|ENTS|FIXES|EXPORTS)) {
-	  list<LabelInfo*>::const_iterator pos = mainfrm->GetLabels();
-	  list<LabelInfo*>::const_iterator end = mainfrm->GetLabelsEnd();
+	  list<LabelInfo*>::const_iterator pos = model.GetLabels();
+	  list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
 	      transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 	      p.x += x_offset;
 	      p.y += y_offset;
 	      p.z += z_offset;
 
-#ifdef DEBUG_CAD3D
-	      printf("label '%s' at %9.2f %9.2f %9.2f\n",(*pos)->GetText(),x,y,z);
-#endif
 	      int type = 0;
 	      if ((pass_mask & ENTS) && (*pos)->IsEntrance()) {
 		  type = ENTS;
@@ -1511,8 +1549,8 @@ Export(const wxString &fnm_out, const wxString &title,
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
-	  list<vector<XSect> >::const_iterator tube = mainfrm->tubes_begin();
-	  list<vector<XSect> >::const_iterator tube_end = mainfrm->tubes_end();
+	  list<vector<XSect> >::const_iterator tube = model.tubes_begin();
+	  list<vector<XSect> >::const_iterator tube_end = model.tubes_end();
 	  for ( ; tube != tube_end; ++tube) {
 	      vector<XSect>::const_iterator pos = tube->begin();
 	      vector<XSect>::const_iterator end = tube->end();

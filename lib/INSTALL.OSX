@@ -15,22 +15,17 @@ Terminal.app):
    However the command line tool allows you to specify a spec file to control
    how the survey is extended, which you can't currently do via Aven.
 
- * cad3d turns .3d files into various formats, but Aven's "Export" function
-   can do almost everything cad3d can, plus some extra formats.  The main
-   benefit of cad3d is that it can be easily used in scripts.
-
  * cavern processes survey data, but since version 1.2.3 you can process .svx
    files by simply opening them with Aven.app, so you no longer need to run
-   cavern from the command line.  As with cad3d, the main reason to run cavern
-   directly is for use in scripts.
-
- * 3dtopos converts a .3d file to a .pos file.  In Survex 1.2.19 and later,
-   aven can export .pos files, so the main benefit of 3dtopos is that it can
-   be easily used in scripts.
+   cavern from the command line.  The main reason to run cavern directly is for
+   use in scripts.
 
  * diffpos compares the positions of stations in two .3d, .pos, etc files.
 
  * sorterr sorts a .err file by a specified field.
+
+ * survexport provides access to Aven's "Export" functionality from the command
+   line which can be useful in scripts.
 
  * dump3d dumps out a list of the items in a .3d file - it's mainly useful for
    debugging.

@@ -10,13 +10,12 @@
 <refsect1><Title>See Also</Title>
 
 <Para>
-<citerefentry><refentrytitle>3dtopos</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
-<citerefentry><refentrytitle>cad3d</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
 <citerefentry><refentrytitle>cavern</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
 <citerefentry><refentrytitle>diffpos</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
 <citerefentry><refentrytitle>dump3d</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
 <citerefentry><refentrytitle>extend</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
-<citerefentry><refentrytitle>sorterr</refentrytitle><manvolnum>1</manvolnum></citerefentry>
+<citerefentry><refentrytitle>sorterr</refentrytitle><manvolnum>1</manvolnum></citerefentry>,
+<citerefentry><refentrytitle>survexport</refentrytitle><manvolnum>1</manvolnum></citerefentry>
 </Para>
 
 </refsect1>

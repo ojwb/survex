@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -98,17 +98,6 @@
 #endif
 
 using namespace std;
-
-const static int img2aven_tab[] = {
-#include "img2aven.h"
-};
-
-inline int
-img2aven(int flags)
-{
-    flags &= (sizeof(img2aven_tab) / sizeof(img2aven_tab[0]) - 1);
-    return img2aven_tab[flags];
-}
 
 class AvenSplitterWindow : public wxSplitterWindow {
     MainFrm *parent;
@@ -736,11 +725,6 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
     m_SashPosition(-1),
     m_Gfx(NULL), m_Log(NULL),
-    m_NumEntrances(0), m_NumFixedPts(0), m_NumExportedPts(0),
-    m_NumHighlighted(0),
-    m_HasUndergroundLegs(false),
-    m_HasSplays(false), m_HasDupes(false), m_HasSurfaceLegs(false),
-    m_HasErrorInformation(false), m_IsExtendedElevation(false),
     pending_find(false), fullscreen_showing_menus(false)
 #ifdef PREFDLG
     , m_PrefsDlg(NULL)
@@ -1132,7 +1116,7 @@ void MainFrm::CreateSidePanel()
     m_Splitter->Initialize(m_Gfx);
 }
 
-bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
+bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
 {
     // Load survey data from file, centre the dataset around the origin,
     // and prepare the data for drawing.
@@ -1142,404 +1126,18 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     timer.Start();
 #endif
 
-    // Load the processed survey data.
-    img* survey = img_open_survey(file.utf8_str(), prefix.utf8_str());
-    if (!survey) {
-	wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
+    int err_msg_code = Model::Load(file, prefix);
+    if (err_msg_code) {
+	wxString m = wxString::Format(wmsg(err_msg_code), file.c_str());
 	wxGetApp().ReportError(m);
 	return false;
     }
-
-    m_IsExtendedElevation = survey->is_extended_elevation;
-
-    m_Tree->DeleteAllItems();
-
-    // Create a list of all the leg vertices, counting them and finding the
-    // extent of the survey at the same time.
-
-    m_NumFixedPts = 0;
-    m_NumExportedPts = 0;
-    m_NumEntrances = 0;
-    m_HasUndergroundLegs = false;
-    m_HasSplays = false;
-    m_HasDupes = false;
-    m_HasSurfaceLegs = false;
-    m_HasErrorInformation = false;
-
-    // FIXME: discard existing presentation? ask user about saving if we do!
-
-    // Delete any existing list entries.
-    m_Labels.clear();
-
-    Double xmin = DBL_MAX;
-    Double xmax = -DBL_MAX;
-    Double ymin = DBL_MAX;
-    Double ymax = -DBL_MAX;
-    Double zmin = DBL_MAX;
-    Double zmax = -DBL_MAX;
-
-    m_DepthMin = DBL_MAX;
-    Double depthmax = -DBL_MAX;
-
-    m_DateMin = INT_MAX;
-    int datemax = -1;
-    complete_dateinfo = true;
-
-    for (unsigned f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
-	traverses[f].clear();
-    }
-    tubes.clear();
-
-    // Ultimately we probably want different types (subclasses perhaps?) for
-    // underground and surface data, so we don't need to store LRUD for surface
-    // stuff.
-    traverse * current_traverse = NULL;
-    vector<XSect> * current_tube = NULL;
-
-    map<wxString, LabelInfo *> labelmap;
-    list<LabelInfo*>::const_iterator last_mapped_label = m_Labels.begin();
-
-    int result;
-    img_point prev_pt = {0,0,0};
-    bool current_polyline_is_surface = false;
-    int current_flags = 0;
-    bool pending_move = false;
-    // When legs within a traverse have different surface/splay/duplicate
-    // flags, we split it into contiguous traverses of each flag combination,
-    // but we need to track these so we can assign the error statistics to all
-    // of them.  So we keep counts of how many of each combination we've
-    // generated for the current traverse.
-    size_t n_traverses[8];
-    memset(n_traverses, 0, sizeof(n_traverses));
-    do {
-#if 0
-	if (++items % 200 == 0) {
-	    long pos = ftell(survey->fh);
-	    int progress = int((double(pos) / double(file_size)) * 100.0);
-	    // SetProgress(progress);
-	}
-#endif
-
-	img_point pt;
-	result = img_read_item(survey, &pt);
-	switch (result) {
-	    case img_MOVE:
-		memset(n_traverses, 0, sizeof(n_traverses));
-		pending_move = true;
-		prev_pt = pt;
-		break;
-
-	    case img_LINE: {
-		// Update survey extents.
-		if (pt.x < xmin) xmin = pt.x;
-		if (pt.x > xmax) xmax = pt.x;
-		if (pt.y < ymin) ymin = pt.y;
-		if (pt.y > ymax) ymax = pt.y;
-		if (pt.z < zmin) zmin = pt.z;
-		if (pt.z > zmax) zmax = pt.z;
-
-		int date = survey->days1;
-		if (date != -1) {
-		    date += (survey->days2 - date) / 2;
-		    if (date < m_DateMin) m_DateMin = date;
-		    if (date > datemax) datemax = date;
-		} else {
-		    complete_dateinfo = false;
-		}
-
-		int flags = survey->flags &
-		    (img_FLAG_SURFACE|img_FLAG_SPLAY|img_FLAG_DUPLICATE);
-		bool is_surface = (flags & img_FLAG_SURFACE);
-		bool is_splay = (flags & img_FLAG_SPLAY);
-		bool is_dupe = (flags & img_FLAG_DUPLICATE);
-
-		if (!is_surface) {
-		    if (pt.z < m_DepthMin) m_DepthMin = pt.z;
-		    if (pt.z > depthmax) depthmax = pt.z;
-		}
-		if (is_splay)
-		    m_HasSplays = true;
-		if (is_dupe)
-		    m_HasDupes = true;
-		if (pending_move ||
-		    current_flags != flags) {
-		    if (!current_polyline_is_surface && current_traverse) {
-			//FixLRUD(*current_traverse);
-		    }
-
-		    ++n_traverses[flags];
-		    // Start new traverse (surface or underground).
-		    if (is_surface) {
-			m_HasSurfaceLegs = true;
-		    } else {
-			m_HasUndergroundLegs = true;
-			// The previous point was at a surface->ug transition.
-			if (current_polyline_is_surface) {
-			    if (prev_pt.z < m_DepthMin) m_DepthMin = prev_pt.z;
-			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
-			}
-		    }
-		    traverses[flags].push_back(traverse());
-		    current_traverse = &traverses[flags].back();
-		    current_traverse->flags = survey->flags;
-
-		    current_polyline_is_surface = is_surface;
-		    current_flags = flags;
-
-		    if (pending_move) {
-			// Update survey extents.  We only need to do this if
-			// there's a pending move, since for a surface <->
-			// underground transition, we'll already have handled
-			// this point.
-			if (prev_pt.x < xmin) xmin = prev_pt.x;
-			if (prev_pt.x > xmax) xmax = prev_pt.x;
-			if (prev_pt.y < ymin) ymin = prev_pt.y;
-			if (prev_pt.y > ymax) ymax = prev_pt.y;
-			if (prev_pt.z < zmin) zmin = prev_pt.z;
-			if (prev_pt.z > zmax) zmax = prev_pt.z;
-		    }
-
-		    current_traverse->push_back(PointInfo(prev_pt));
-		}
-
-		current_traverse->push_back(PointInfo(pt, date));
-
-		prev_pt = pt;
-		pending_move = false;
-		break;
-	    }
-
-	    case img_LABEL: {
-		wxString s(survey->label, wxConvUTF8);
-		if (s.empty()) {
-		    // If label isn't valid UTF-8 then this conversion will
-		    // give an empty string.  In this case, assume that the
-		    // label is CP1252 (the Microsoft superset of ISO8859-1).
-		    static wxCSConv ConvCP1252(wxFONTENCODING_CP1252);
-		    s = wxString(survey->label, ConvCP1252);
-		    if (s.empty()) {
-			// Or if that doesn't work (ConvCP1252 doesn't like
-			// strings with some bytes in) let's just go for
-			// ISO8859-1.
-			s = wxString(survey->label, wxConvISO8859_1);
-		    }
-		}
-		int flags = img2aven(survey->flags);
-		LabelInfo* label = new LabelInfo(pt, s, flags);
-		if (label->IsEntrance()) {
-		    m_NumEntrances++;
-		}
-		if (label->IsFixedPt()) {
-		    m_NumFixedPts++;
-		}
-		if (label->IsExportedPt()) {
-		    m_NumExportedPts++;
-		}
-		m_Labels.push_back(label);
-		break;
-	    }
-
-	    case img_XSECT: {
-		if (!current_tube) {
-		    // Start new current_tube.
-		    tubes.push_back(vector<XSect>());
-		    current_tube = &tubes.back();
-		}
-
-		LabelInfo * lab;
-		wxString label(survey->label, wxConvUTF8);
-		map<wxString, LabelInfo *>::const_iterator p;
-		p = labelmap.find(label);
-		if (p != labelmap.end()) {
-		    lab = p->second;
-		} else {
-		    // Initialise labelmap lazily - we may have no
-		    // cross-sections.
-		    list<LabelInfo*>::const_iterator i;
-		    if (labelmap.empty()) {
-			i = m_Labels.begin();
-		    } else {
-			i = last_mapped_label;
-			++i;
-		    }
-		    while (i != m_Labels.end() && (*i)->GetText() != label) {
-			labelmap[(*i)->GetText()] = *i;
-			++i;
-		    }
-		    last_mapped_label = i;
-		    if (i == m_Labels.end()) {
-			// Unattached cross-section - ignore for now.
-			printf("unattached cross-section\n");
-			if (current_tube->size() <= 1)
-			    tubes.resize(tubes.size() - 1);
-			current_tube = NULL;
-			if (!m_Labels.empty())
-			    --last_mapped_label;
-			break;
-		    }
-		    lab = *i;
-		    labelmap[label] = lab;
-		}
-
-		int date = survey->days1;
-		if (date != -1) {
-		    date += (survey->days2 - date) / 2;
-		    if (date < m_DateMin) m_DateMin = date;
-		    if (date > datemax) datemax = date;
-		}
-
-		current_tube->push_back(XSect(*lab, date, survey->l, survey->r, survey->u, survey->d));
-		break;
-	    }
-
-	    case img_XSECT_END:
-		// Finish off current_tube.
-		// If there's only one cross-section in the tube, just
-		// discard it for now.  FIXME: we should handle this
-		// when we come to skinning the tubes.
-		if (current_tube && current_tube->size() <= 1)
-		    tubes.resize(tubes.size() - 1);
-		current_tube = NULL;
-		break;
-
-	    case img_ERROR_INFO: {
-		if (survey->E == 0.0) {
-		    // Currently cavern doesn't spot all articulating traverses
-		    // so we assume that any traverse with no error isn't part
-		    // of a loop.  FIXME: fix cavern!
-		    break;
-		}
-		m_HasErrorInformation = true;
-		for (size_t f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
-		    list<traverse>::reverse_iterator t = traverses[f].rbegin();
-		    size_t n = n_traverses[f];
-		    n_traverses[f] = 0;
-		    while (n) {
-			assert(t != traverses[f].rend());
-			t->n_legs = survey->n_legs;
-			t->length = survey->length;
-			t->E = survey->E;
-			t->H = survey->H;
-			t->V = survey->V;
-			--n;
-			++t;
-		    }
-		}
-		break;
-	    }
-
-	    case img_BAD: {
-		m_Labels.clear();
-
-		// FIXME: Do we need to reset all these? - Olly
-		m_NumFixedPts = 0;
-		m_NumExportedPts = 0;
-		m_NumEntrances = 0;
-		m_HasUndergroundLegs = false;
-		m_HasSplays = false;
-		m_HasSurfaceLegs = false;
-
-		img_close(survey);
-
-		wxString m = wxString::Format(wmsg(img_error2msg(img_error())), file.c_str());
-		wxGetApp().ReportError(m);
-
-		return false;
-	    }
-
-	    default:
-		break;
-	}
-    } while (result != img_STOP);
-
-    if (!current_polyline_is_surface && current_traverse) {
-	//FixLRUD(*current_traverse);
-    }
-
-    // Finish off current_tube.
-    // If there's only one cross-section in the tube, just
-    // discard it for now.  FIXME: we should handle this
-    // when we come to skinning the tubes.
-    if (current_tube && current_tube->size() <= 1)
-	tubes.resize(tubes.size() - 1);
-
-    separator = survey->separator;
-    m_Title = wxString(survey->title, wxConvUTF8);
-    m_DateStamp_numeric = survey->datestamp_numeric;
-    if (survey->cs) {
-	m_cs_proj = wxString(survey->cs, wxConvUTF8);
-    } else {
-	m_cs_proj = wxString();
-    }
-    if (strcmp(survey->datestamp, "?") == 0) {
-	/* TRANSLATORS: used a processed survey with no processing date/time info */
-	m_DateStamp = wmsg(/*Date and time not available.*/108);
-    } else if (survey->datestamp[0] == '@') {
-	const struct tm * tm = localtime(&m_DateStamp_numeric);
-	char buf[256];
-	/* TRANSLATORS: This is the date format string used to timestamp .3d
-	 * files internally.  Probably best to keep it the same for all
-	 * translations. */
-	strftime(buf, 256, msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107), tm);
-	m_DateStamp = wxString(buf, wxConvUTF8);
-    }
-    if (m_DateStamp.empty()) {
-	m_DateStamp = wxString(survey->datestamp, wxConvUTF8);
-    }
-    img_close(survey);
-
-    // Check we've actually loaded some legs or stations!
-    if (!m_HasUndergroundLegs && !m_HasSurfaceLegs && m_Labels.empty()) {
-	wxString m = wxString::Format(wmsg(/*No survey data in 3d file “%s”*/202), file.c_str());
-	wxGetApp().ReportError(m);
-	return false;
-    }
-
-    if (traverses[0].empty() &&
-	traverses[1].empty() &&
-	traverses[2].empty() &&
-	traverses[3].empty() &&
-	traverses[4].empty() &&
-	traverses[5].empty() &&
-	traverses[6].empty() &&
-	traverses[7].empty()) {
-	// No legs, so get survey extents from stations
-	list<LabelInfo*>::const_iterator i;
-	for (i = m_Labels.begin(); i != m_Labels.end(); ++i) {
-	    if ((*i)->GetX() < xmin) xmin = (*i)->GetX();
-	    if ((*i)->GetX() > xmax) xmax = (*i)->GetX();
-	    if ((*i)->GetY() < ymin) ymin = (*i)->GetY();
-	    if ((*i)->GetY() > ymax) ymax = (*i)->GetY();
-	    if ((*i)->GetZ() < zmin) zmin = (*i)->GetZ();
-	    if ((*i)->GetZ() > zmax) zmax = (*i)->GetZ();
-	}
-    }
-
-    m_Ext.assign(xmax - xmin, ymax - ymin, zmax - zmin);
-
-    if (datemax < m_DateMin) m_DateMin = datemax;
-    m_DateExt = datemax - m_DateMin;
-
-    // Centre the dataset around the origin.
-    CentreDataset(Vector3(xmin, ymin, zmin));
-
-    if (depthmax < m_DepthMin) {
-	m_DepthMin = 0;
-	m_DepthExt = 0;
-    } else {
-	m_DepthExt = depthmax - m_DepthMin;
-	m_DepthMin -= m_Offsets.GetZ();
-    }
-
-#if 0
-    printf("time to load = %.3f\n", (double)timer.Time());
-#endif
 
     // Update window title.
-    SetTitle(m_Title + " - " APP_NAME);
+    SetTitle(GetSurveyTitle() + " - " APP_NAME);
 
     // Sort the labels ready for filling the tree.
-    m_Labels.sort(LabelCmp(separator));
+    m_Labels.sort(LabelCmp(GetSeparator()));
 
     // Fill the tree of stations and prefixes.
     wxString root_name = wxFileNameFromPath(file);
@@ -1556,7 +1154,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString & prefix)
     // Also sort by leaf name so that we'll tend to choose labels
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp(separator));
+    m_Labels.sort(LabelPlotCmp(GetSeparator()));
 
     if (!m_FindBox->GetValue().empty()) {
 	// Highlight any stations matching the current search.
@@ -1641,6 +1239,8 @@ MainFrm::FixLRUD(traverse & centreline)
 
 void MainFrm::FillTree(const wxString & root_name)
 {
+    m_Tree->DeleteAllItems();
+
     // Create the root of the tree.
     wxTreeItemId treeroot = m_Tree->AddRoot(root_name);
 
@@ -1648,6 +1248,7 @@ void MainFrm::FillTree(const wxString & root_name)
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix;
     wxTreeItemId current_id = treeroot;
+    const wxChar separator = GetSeparator();
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
@@ -1767,43 +1368,6 @@ void MainFrm::FillTree(const wxString & root_name)
 
     m_Tree->Expand(treeroot);
     m_Tree->SetEnabled();
-}
-
-void MainFrm::CentreDataset(const Vector3 & vmin)
-{
-    // Centre the dataset around the origin.
-
-    m_Offsets = vmin + (m_Ext * 0.5);
-
-    for (unsigned f = 0; f != sizeof(traverses) / sizeof(traverses[0]); ++f) {
-	list<traverse>::iterator t = traverses[f].begin();
-	while (t != traverses[f].end()) {
-	    assert(t->size() > 1);
-	    vector<PointInfo>::iterator pos = t->begin();
-	    while (pos != t->end()) {
-		Point & point = *pos++;
-		point -= m_Offsets;
-	    }
-	    ++t;
-	}
-    }
-
-    list<vector<XSect> >::iterator i = tubes.begin();
-    while (i != tubes.end()) {
-	assert(i->size() > 1);
-	vector<XSect>::iterator pos = i->begin();
-	while (pos != i->end()) {
-	    Point & point = *pos++;
-	    point -= m_Offsets;
-	}
-	++i;
-    }
-
-    list<LabelInfo*>::iterator lpos = m_Labels.begin();
-    while (lpos != m_Labels.end()) {
-	Point & point = **lpos++;
-	point -= m_Offsets;
-    }
 }
 
 void MainFrm::OnMRUFile(wxCommandEvent& event)
@@ -2005,7 +1569,7 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
 {
     if (!m_Gfx) return;
 
-    if (m_cs_proj.empty()) {
+    if (GetCSProj().empty()) {
 	wxMessageBox(wxT("No coordinate system specified in survey data"));
 	return;
     }
@@ -2088,12 +1652,12 @@ void MainFrm::OnFilePreferences(wxCommandEvent&)
 
 void MainFrm::OnPrint(wxCommandEvent&)
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
+    m_Gfx->OnPrint(m_File, GetSurveyTitle(), GetDateString());
 }
 
 void MainFrm::PrintAndExit()
 {
-    m_Gfx->OnPrint(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj, true);
+    m_Gfx->OnPrint(m_File, GetSurveyTitle(), GetDateString(), true);
 }
 
 void MainFrm::OnPageSetup(wxCommandEvent&)
@@ -2106,7 +1670,7 @@ void MainFrm::OnPageSetup(wxCommandEvent&)
 
 void MainFrm::OnExport(wxCommandEvent&)
 {
-    m_Gfx->OnExport(m_File, m_Title, m_DateStamp, m_DateStamp_numeric, m_cs_proj);
+    m_Gfx->OnExport(m_File, GetSurveyTitle(), GetDateString());
 }
 
 void MainFrm::OnExtend(wxCommandEvent&)
@@ -2280,8 +1844,9 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
     wxString & t = distfree_text;
     t = wxString();
     if (m_Gfx->ShowingMeasuringLine() && there) {
-	Vector3 delta(x - m_Offsets.GetX() - there->GetX(),
-		      y - m_Offsets.GetY() - there->GetY(), 0);
+	auto offset = GetOffset();
+	Vector3 delta(x - offset.GetX() - there->GetX(),
+		      y - offset.GetY() - there->GetY(), 0);
 	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
 	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
@@ -2332,7 +1897,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
     wxString & t = distfree_text;
     t = wxString();
     if (m_Gfx->ShowingMeasuringLine() && there) {
-	Double dz = z - m_Offsets.GetZ() - there->GetZ();
+	Double dz = z - GetOffset().GetZ() - there->GetZ();
 
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
@@ -2363,7 +1928,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	return;
     }
 
-    Vector3 v = *here + m_Offsets;
+    Vector3 v = *here + GetOffset();
     wxString & s = here_text;
     Double x = v.GetX();
     Double y = v.GetY();
@@ -2647,7 +2212,7 @@ void MainFrm::RestrictTo(const wxString & survey)
     if (!survey.empty()) {
 	if (!m_Survey.empty()) {
 	    new_prefix = m_Survey;
-	    new_prefix += separator;
+	    new_prefix += GetSeparator();
 	}
 	new_prefix += survey;
     }
@@ -2846,7 +2411,7 @@ void MainFrm::DoFind()
 	m_NumHighlighted = found;
 
 	// Re-sort so highlighted points get names in preference
-	if (found) m_Labels.sort(LabelPlotCmp(separator));
+	if (found) m_Labels.sort(LabelPlotCmp(GetSeparator()));
     }
 
     m_Gfx->UpdateBlobs();

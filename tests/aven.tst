@@ -34,11 +34,12 @@ if [ -n "$VALGRIND" ] ; then
 fi
 
 # Regression test - aven in 1.2.6 segfaulted.
+echo "SURVEXLANG=nosuch aven --help"
 if test -n "$VERBOSE"; then
-  DISPLAY= SURVEXLANG=nosuch $AVEN
+  DISPLAY= SURVEXLANG=nosuch $AVEN --help
   exitcode=$?
 else
-  DISPLAY= SURVEXLANG=nosuch $AVEN > /dev/null 2>&1
+  DISPLAY= SURVEXLANG=nosuch $AVEN --help > /dev/null 2>&1
   exitcode=$?
 fi
 if [ -n "$VALGRIND" ] ; then
@@ -52,11 +53,12 @@ fi
 [ "$exitcode" = 1 ] || exit 1
 
 # Regression test - aven in 1.2.6 segfaulted.
+echo "SURVEXLANG= LANG=nosuch aven --help"
 if test -n "$VERBOSE"; then
-  DISPLAY= SURVEXLANG= LANG=nosuch $AVEN
+  DISPLAY= SURVEXLANG= LANG=nosuch $AVEN --help
   exitcode=$?
 else
-  DISPLAY= SURVEXLANG= LANG=nosuch $AVEN > /dev/null 2>&1
+  DISPLAY= SURVEXLANG= LANG=nosuch $AVEN --help > /dev/null 2>&1
   exitcode=$?
 fi
 if [ -n "$VALGRIND" ] ; then
@@ -67,7 +69,7 @@ if [ -n "$VALGRIND" ] ; then
   fi
   rm "$vg_log"
 fi
-[ "$exitcode" = 255 ] || exit 1
+[ "$exitcode" = 0 ] || exit 1
 
 test -n "$VERBOSE" && echo "Test passed"
 exit 0

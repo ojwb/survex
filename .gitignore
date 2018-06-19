@@ -15,13 +15,12 @@ config.status
 config.sub
 configure
 depcomp
-doc/3dtopos.1
 doc/Makefile
 doc/Makefile.in
 doc/NEWS.htm
 doc/OLDNEWS.htm
 doc/aven.1
-doc/cad3d.1
+doc/survexport.1
 doc/cavern.1
 doc/diffpos.1
 doc/extend.1
@@ -67,10 +66,8 @@ src/*.o
 src/.deps/
 src/Makefile
 src/Makefile.in
-src/3dtopos
 src/aven
 src/avenpal.h
-src/cad3d
 src/cavern
 src/diffpos
 src/dump3d
@@ -78,6 +75,7 @@ src/extend
 src/img2aven.h
 src/imgtest
 src/sorterr
+src/survexport
 src/thgeomagdata.h
 src/z_getopt.c
 stamp-h1

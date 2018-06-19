@@ -37,6 +37,7 @@
 #include "img_hosted.h"
 #include "labelinfo.h"
 #include "message.h"
+#include "model.h"
 #include "vector3.h"
 #include "aven.h"
 //#include "prefsdlg.h"
@@ -143,75 +144,15 @@ enum {
     listctrl_PRES
 };
 
-class PointInfo : public Point {
-    int date;
-
-public:
-    PointInfo() : Point(), date(-1) { }
-    explicit PointInfo(const img_point & pt) : Point(pt), date(-1) { }
-    PointInfo(const img_point & pt, int date_) : Point(pt), date(date_) { }
-    PointInfo(const Point & p, int date_) : Point(p), date(date_) { }
-    int GetDate() const { return date; }
-};
-
-class XSect : public PointInfo {
-    friend class MainFrm;
-    Double l, r, u, d;
-    Double right_bearing;
-
-public:
-    XSect() : PointInfo(), l(0), r(0), u(0), d(0), right_bearing(0) { }
-    XSect(const Point &p, int date_,
-	  Double l_, Double r_, Double u_, Double d_)
-	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
-    Double GetL() const { return l; }
-    Double GetR() const { return r; }
-    Double GetU() const { return u; }
-    Double GetD() const { return d; }
-    Double get_right_bearing() const { return right_bearing; }
-    void set_right_bearing(Double right_bearing_) {
-	right_bearing = right_bearing_;
-    }
-};
-
 class AvenPresList;
 
-class traverse : public vector<PointInfo> {
-  public:
-    int n_legs;
-    // Bitmask of img_FLAG_SURFACE, img_FLAG_SPLAY and img_FLAG_DUPLICATE.
-    int flags;
-    double length;
-    double E, H, V;
-
-    traverse()
-	: n_legs(0), flags(0),
-	  length(0), E(-1), H(-1), V(-1) { }
-};
-
-class MainFrm : public wxFrame {
+class MainFrm : public wxFrame, public Model {
     wxFileHistory m_history;
     int m_SashPosition;
     bool was_showing_sidepanel_before_fullscreen;
-    list<traverse> traverses[8];
-    list<vector<XSect> > tubes;
-    list<LabelInfo*> m_Labels;
-    Vector3 m_Ext;
-    Double m_DepthMin, m_DepthExt;
-    int m_DateMin, m_DateExt;
-    bool complete_dateinfo;
     GfxCore* m_Gfx;
     wxWindow* m_Log;
     GUIControl* m_Control;
-    int m_NumEntrances;
-    int m_NumFixedPts;
-    int m_NumExportedPts;
-    int m_NumHighlighted;
-    bool m_HasUndergroundLegs;
-    bool m_HasSplays;
-    bool m_HasDupes;
-    bool m_HasSurfaceLegs;
-    bool m_HasErrorInformation;
     wxSplitterWindow* m_Splitter;
     AvenTreeCtrl* m_Tree;
     wxTextCtrl* m_FindBox;
@@ -222,17 +163,11 @@ class MainFrm : public wxFrame {
     // Processed version of data - same as m_File if m_File is processed data.
     wxString m_FileProcessed;
     wxString m_Survey;
-public: // FIXME for m_cs_proj
-    wxString m_Title, m_cs_proj, m_DateStamp;
-private:
-    time_t m_DateStamp_numeric;
-    wxChar separator; // character separating survey levels (often '.')
-    Vector3 m_Offsets;
 
     // Strings for status bar reporting of distances.
     wxString here_text, coords_text, dist_text, distfree_text;
 
-    bool m_IsExtendedElevation;
+    int m_NumHighlighted = 0;
     bool pending_find;
 
     bool fullscreen_showing_menus;
@@ -244,7 +179,6 @@ private:
     void FillTree(const wxString & root_name);
     bool ProcessSVXFile(const wxString & file);
 //    void FixLRUD(traverse & centreline);
-    void CentreDataset(const Vector3 & vmin);
 
     void CreateMenuBar();
     void MakeToolBar();
@@ -341,7 +275,9 @@ public:
     }
     void OnPrintUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
     void OnExportUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_File.empty()); }
-    void OnExtendUpdate(wxUpdateUIEvent &ui) { ui.Enable(!m_IsExtendedElevation); }
+    void OnExtendUpdate(wxUpdateUIEvent &ui) {
+	ui.Enable(!IsExtendedElevation());
+    }
 
     // temporary bodges until event handling problem is sorted out:
     void OnDefaultsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnDefaultsUpdate(event); }
@@ -460,18 +396,6 @@ public:
     void ToggleSidePanel();
     bool ShowingSidePanel();
 
-    const Vector3 & GetExtent() const { return m_Ext; }
-    Double GetXExtent() const { return m_Ext.GetX(); }
-    Double GetYExtent() const { return m_Ext.GetY(); }
-    Double GetZExtent() const { return m_Ext.GetZ(); }
-
-    Double GetDepthExtent() const { return m_DepthExt; }
-    Double GetDepthMin() const { return m_DepthMin; }
-
-    bool HasCompleteDateInfo() const { return complete_dateinfo; }
-    int GetDateExtent() const { return m_DateExt; }
-    int GetDateMin() const { return m_DateMin; }
-
     void SelectTreeItem(const LabelInfo* label) {
 	if (label->tree_id.IsOk())
 	    m_Tree->SelectItem(label->tree_id);
@@ -481,79 +405,11 @@ public:
 
     void ClearTreeSelection();
 
-    int GetNumFixedPts() const { return m_NumFixedPts; }
-    int GetNumExportedPts() const { return m_NumExportedPts; }
-    int GetNumEntrances() const { return m_NumEntrances; }
-    int GetNumHighlightedPts() const { return m_NumHighlighted; }
-
-    bool HasUndergroundLegs() const { return m_HasUndergroundLegs; }
-    bool HasSplays() const { return m_HasSplays; }
-    bool HasDupes() const { return m_HasDupes; }
-    bool HasSurfaceLegs() const { return m_HasSurfaceLegs; }
-    bool HasTubes() const { return !tubes.empty(); }
-    bool HasErrorInformation() const { return m_HasErrorInformation; }
-
-    bool IsExtendedElevation() const { return m_IsExtendedElevation; }
-
     void ClearCoords();
     void SetCoords(const Vector3 &v);
     const LabelInfo * GetTreeSelection() const;
     void SetCoords(Double x, Double y, const LabelInfo * there);
     void SetAltitude(Double z, const LabelInfo * there);
-
-    const Vector3 & GetOffset() const { return m_Offsets; }
-
-    wxChar GetSeparator() const { return separator; }
-
-    list<traverse>::const_iterator traverses_begin(unsigned flags) const {
-	if (flags >= sizeof(traverses)) return traverses[0].end();
-	return traverses[flags].begin();
-    }
-
-    list<traverse>::const_iterator traverses_end(unsigned flags) const {
-	if (flags >= sizeof(traverses)) flags = 0;
-	return traverses[flags].end();
-    }
-
-    list<vector<XSect> >::const_iterator tubes_begin() const {
-	return tubes.begin();
-    }
-
-    list<vector<XSect> >::const_iterator tubes_end() const {
-	return tubes.end();
-    }
-
-    list<vector<XSect> >::iterator tubes_begin() {
-	return tubes.begin();
-    }
-
-    list<vector<XSect> >::iterator tubes_end() {
-	return tubes.end();
-    }
-
-    list<LabelInfo*>::const_iterator GetLabels() const {
-	return m_Labels.begin();
-    }
-
-    list<LabelInfo*>::const_iterator GetLabelsEnd() const {
-	return m_Labels.end();
-    }
-
-    list<LabelInfo*>::const_reverse_iterator GetRevLabels() const {
-	return m_Labels.rbegin();
-    }
-
-    list<LabelInfo*>::const_reverse_iterator GetRevLabelsEnd() const {
-	return m_Labels.rend();
-    }
-
-    list<LabelInfo*>::iterator GetLabelsNC() {
-	return m_Labels.begin();
-    }
-
-    list<LabelInfo*>::iterator GetLabelsNCEnd() {
-	return m_Labels.end();
-    }
 
     void ShowInfo(const LabelInfo *here = NULL, const LabelInfo *there = NULL);
     void DisplayTreeInfo(const wxTreeItemData* data = NULL);
@@ -565,6 +421,8 @@ public:
     void RestrictTo(const wxString & survey);
 
     wxString GetSurvey() const { return m_Survey; }
+
+    int GetNumHighlightedPts() const { return m_NumHighlighted; }
 
 private:
     DECLARE_EVENT_TABLE()

@@ -21,6 +21,9 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+#ifndef gla_h
+#define gla_h
+
 #include <string>
 #include <vector>
 
@@ -161,6 +164,8 @@ public:
     GLACanvas(wxWindow* parent, int id);
     ~GLACanvas();
 
+    static bool check_visual();
+
     void FirstShow();
 
     void Clear();
@@ -297,3 +302,5 @@ public:
 private:
     DECLARE_EVENT_TABLE()
 };
+
+#endif

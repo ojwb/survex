@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script
 dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
 dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
-AC_INIT([survex], [1.2.32], [https://trac.survex.com/])
+AC_INIT([survex], [1.2.34], [https://trac.survex.com/])
 AM_INIT_AUTOMAKE([1.5 gnu -Wall -Wportability -Werror])
 RELEASE=1
 
@@ -96,16 +96,6 @@ AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 AC_CHECK_LIB(m, sqrt)
 
 AC_PATH_XTRA
-
-OSPROGS=
-dnl AC_MSG_CHECKING([for OS-specific programs to build])
-dnl if test yes = "$mswindows"; then
-dnl   OSPROGS=
-dnl elif test yes = "$macosx"; then
-dnl   OSPROGS=
-dnl fi
-dnl AC_MSG_RESULT([${OSPROGS:-none}])
-AC_SUBST([OSPROGS])
 
 dnl The wxWidgets libraries we need:
 wx_libs="core,gl,html"

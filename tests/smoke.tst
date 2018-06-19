@@ -25,7 +25,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 DISPLAY=
 export DISPLAY
 
-PROGS="cad3d cavern diffpos extend sorterr 3dtopos aven"
+PROGS="cavern diffpos extend sorterr survexport aven"
 
 vgrun=
 vg_error=123
@@ -63,46 +63,6 @@ for p in ${PROGS}; do
     [ "$exitcode" = 0 ] || exit 1
   done
 done
-
-: ${AVEN="$testdir"/../src/aven}
-
-# Regression test - aven in 1.2.6 segfaulted here:
-echo "SURVEXLANG=nosuch aven"
-if test -n "$VERBOSE"; then
-  SURVEXLANG=nosuch $vgrun "$testdir/../src/aven"
-  exitcode=$?
-else
-  SURVEXLANG=nosuch $vgrun "$testdir/../src/aven" >/dev/null
-  exitcode=$?
-fi 2>/dev/null
-if [ -n "$VALGRIND" ] ; then
-  if [ $exitcode = "$vg_error" ] ; then
-    cat "$vg_log"
-    rm "$vg_log"
-    exit 1
-  fi
-  rm "$vg_log"
-fi
-[ "$exitcode" = 1 ] || exit 1
-
-# Regression test - aven in 1.2.6 segfaulted here:
-echo "SURVEXLANG= LANG=nosuch aven"
-if test -n "$VERBOSE"; then
-  SURVEXLANG= LANG=nosuch $vgrun "$testdir/../src/aven"
-  exitcode=$?
-else
-  SURVEXLANG= LANG=nosuch $vgrun "$testdir/../src/aven" >/dev/null
-  exitcode=$?
-fi 2>/dev/null
-if [ -n "$VALGRIND" ] ; then
-  if [ $exitcode = "$vg_error" ] ; then
-    cat "$vg_log"
-    rm "$vg_log"
-    exit 1
-  fi
-  rm "$vg_log"
-fi
-[ "$exitcode" = 255 ] || exit 1
 
 test -n "$VERBOSE" && echo "Test passed"
 exit 0

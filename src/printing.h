@@ -61,8 +61,8 @@ class svxPrintDlg : public wxDialog {
 	void SomethingChanged(int control_id);
  public:
 	svxPrintDlg(MainFrm* parent, const wxString & filename,
-		    const wxString & title, const wxString & cs_proj,
-		    const wxString & datestamp, time_t datestamp_numeric,
+		    const wxString & title,
+		    const wxString & datestamp,
 		    double angle, double tilt_angle,
 		    bool labels, bool crosses, bool legs, bool surf,
 		    bool splays, bool tubes, bool ents, bool fixes,
