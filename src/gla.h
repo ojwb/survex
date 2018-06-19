@@ -161,6 +161,8 @@ class GLACanvas : public wxGLCanvas {
 
     bool CheckVisualFidelity(const unsigned char * target) const;
 
+    void Clear();
+
 protected:
     int m_Eye;
 
@@ -176,7 +178,6 @@ public:
 
     void FirstShow();
 
-    void Clear();
     void StartDrawing();
     void FinishDrawing();
 

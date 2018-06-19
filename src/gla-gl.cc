@@ -699,13 +699,35 @@ void GLACanvas::StartDrawing()
 
     ctx.SetCurrent(*this);
     if (stereo_mode == STEREO_BUFFERS) {
-	if (m_Eye != 1) {
+	if (m_Eye == 0) {
 	    glDrawBuffer(GL_BACK_LEFT);
 	} else {
 	    glDrawBuffer(GL_BACK_RIGHT);
 	}
     }
     glDepthMask(GL_TRUE);
+
+    if (m_Eye == 0) {
+	// Clear the background.
+	Clear();
+
+	if (stereo_mode == STEREO_ANAGLYPH) {
+	    // Left is red.
+	    glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
+	}
+    } else {
+	if (stereo_mode == STEREO_ANAGLYPH) {
+	    // Clear alpha and the depth buffer.
+	    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
+	    Clear();
+
+	    // Right is green and blue.
+	    glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
+	} else if (stereo_mode != STEREO_2UP) {
+	    // Clear the background.
+	    Clear();
+	}
+    }
 
     if (!save_hints) return;
 
@@ -735,7 +757,6 @@ void GLACanvas::StartDrawing()
 
     if (blob_method != LINES) {
 	SetColour(col_WHITE);
-	Clear();
 	SetDataTransform();
 	BeginBlobs();
 	DrawBlob(-m_Translation.GetX(), -m_Translation.GetY(), -m_Translation.GetZ());
@@ -751,6 +772,7 @@ void GLACanvas::StartDrawing()
 	    blob_method = LINES;
 	    save_hints = true;
 	}
+	Clear();
     }
 
     wxConfigBase * cfg = wxConfigBase::Get();
@@ -1005,6 +1027,14 @@ void GLACanvas::SetIndicatorTransform()
 void GLACanvas::FinishDrawing()
 {
     // Complete a redraw operation.
+    if (stereo_mode != STEREO_MONO && m_Eye == 0) {
+	return;
+    }
+
+    if (stereo_mode == STEREO_ANAGLYPH) {
+	// Reset colour mask.
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    }
 
     if (double_buffered) {
 	SwapBuffers();

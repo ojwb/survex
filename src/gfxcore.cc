@@ -390,31 +390,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	FirstShow();
     }
 
-    int n_Eyes = (stereo_mode ? 2 : 1);
+    int n_Eyes = (stereo_mode == STEREO_MONO ? 1 : 2);
     // 0 for left eye, 1 for right.
     for (m_Eye = 0; m_Eye < n_Eyes; m_Eye++) {
-	if (m_Eye == 0 || stereo_mode != STEREO_ANAGLYPH) {
-	    StartDrawing();
-
-	    if (m_Eye == 0 || stereo_mode != STEREO_2UP) {
-		// Clear the background.
-		Clear();
-	    }
-	}
-
-	if (stereo_mode == STEREO_ANAGLYPH) {
-	    if (m_Eye) {
-		// Clear alpha and the depth buffer.
-		glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
-		Clear();
-
-		// Right is green and blue.
-		glColorMask(GL_FALSE, GL_TRUE, GL_TRUE, GL_TRUE);
-	    } else {
-		// Left is red.
-		glColorMask(GL_TRUE, GL_FALSE, GL_FALSE, GL_TRUE);
-	    }
-	}
+	StartDrawing();
 
 	// Set up model transformation matrix.
 	SetDataTransform();
@@ -576,13 +555,9 @@ void GfxCore::OnPaint(wxPaintEvent&)
 		EndBlobs();
 	    }
 	}
-    }
 
-    if (stereo_mode == STEREO_ANAGLYPH) {
-	// Reset colour mask.
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	FinishDrawing();
     }
-    FinishDrawing();
 }
 
 void GfxCore::DrawBoundingBox()
