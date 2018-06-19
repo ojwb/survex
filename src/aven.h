@@ -81,11 +81,9 @@ const wxString & wmsg_cfgpth();
 
 class MainFrm;
 
-extern bool double_buffered;
-
 class wxPageSetupDialogData;
 
-class Aven : public wxGLApp {
+class Aven : public wxApp {
     MainFrm * m_Frame;
     // This must be a pointer, otherwise it gets initialised too early and
     // we get a segfault on MS Windows when it tries to look up paper

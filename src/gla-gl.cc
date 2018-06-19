@@ -97,6 +97,34 @@ const int BLOB_DIAMETER = 5;
 
 static bool opengl_initialised = false;
 
+static bool double_buffered = false;
+
+static const int* wx_gl_attribs = NULL;
+
+bool
+GLACanvas::check_visual()
+{
+    static const int wx_gl_attribs_full[] = {
+	WX_GL_DOUBLEBUFFER,
+	WX_GL_RGBA,
+	WX_GL_DEPTH_SIZE, 16,
+	0
+    };
+
+    // Use a double-buffered visual if available, as it will give much smoother
+    // animation.
+    double_buffered = true;
+    wx_gl_attribs = wx_gl_attribs_full;
+    if (!IsDisplaySupported(wx_gl_attribs)) {
+	++wx_gl_attribs;
+	if (!IsDisplaySupported(wx_gl_attribs)) {
+	    return false;
+	}
+	double_buffered = false;
+    }
+    return true;
+}
+
 string GetGLSystemDescription()
 {
     // If OpenGL isn't initialised we may get a SEGV from glGetString.
@@ -353,16 +381,9 @@ BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
     EVT_SIZE(GLACanvas::OnSize)
 END_EVENT_TABLE()
 
-static const int wx_gl_window_attribs[] = {
-    WX_GL_DOUBLEBUFFER,
-    WX_GL_RGBA,
-    WX_GL_DEPTH_SIZE, 16,
-    0
-};
-
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
-    : wxGLCanvas(parent, id, wx_gl_window_attribs, wxDefaultPosition,
+    : wxGLCanvas(parent, id, wx_gl_attribs, wxDefaultPosition,
 		 wxDefaultSize, wxWANTS_CHARS),
       ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
       x_size(0), y_size(0)

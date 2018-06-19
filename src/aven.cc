@@ -29,6 +29,7 @@
 
 #include "aven.h"
 #include "log.h"
+#include "gla.h"
 #include "mainfrm.h"
 
 #include "cmdline.h"
@@ -49,8 +50,6 @@
 #ifdef __WXMSW__
 #include <windows.h>
 #endif
-
-bool double_buffered = false;
 
 static const struct option long_opts[] = {
     /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -275,24 +274,13 @@ bool Aven::OnInit()
 	}
     }
 
-    // Use a double-buffered visual if available, as it will give much smoother
-    // animation.
-    double_buffered = true;
-    const int wx_gl_attribs[] = {
-	WX_GL_DOUBLEBUFFER,
-	WX_GL_RGBA,
-	0
-    };
-    if (!InitGLVisual(wx_gl_attribs)) {
-	if (!InitGLVisual(wx_gl_attribs + 1)) {
-	    wxString m;
-	    /* TRANSLATORS: %s will be replaced with "Aven" currently (and
-	     * perhaps by "Survex" or other things in future). */
-	    m.Printf(wmsg(/*This version of %s requires OpenGL to work, but it isn’t available.*/405), APP_NAME);
-	    wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
-	    exit(1);
-	}
-	double_buffered = false;
+    if (!GLACanvas::check_visual()) {
+	wxString m;
+	/* TRANSLATORS: %s will be replaced with "Aven" currently (and
+	 * perhaps by "Survex" or other things in future). */
+	m.Printf(wmsg(/*This version of %s requires OpenGL to work, but it isn’t available.*/405), APP_NAME);
+	wxMessageBox(m, APP_NAME, wxOK | wxCENTRE | wxICON_EXCLAMATION);
+	exit(1);
     }
 
     wxImage::AddHandler(new wxPNGHandler);
