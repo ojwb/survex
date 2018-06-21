@@ -57,14 +57,13 @@
 #include <stack>
 #include <vector>
 
-#ifdef __WXMSW__
-#define TOOL(x) wxBitmap(wxT(#x), wxBITMAP_TYPE_PNG_RESOURCE)
-#else
 // XPM files declare the array as static, but we also want it to be const too.
 // This avoids a compiler warning, and also means the data can go in a
 // read-only page and be shared between processes.
 #define static static const
+#ifndef __WXMSW__
 #include "../lib/icons/aven.xpm"
+#endif
 #include "../lib/icons/log.xpm"
 #include "../lib/icons/open.xpm"
 #include "../lib/icons/open_pres.xpm"
@@ -94,7 +93,10 @@
 #include "../lib/icons/survey_tree.xpm"
 #include "../lib/icons/pres_tree.xpm"
 #undef static
-#define TOOL(x) wxBITMAP(x)
+#ifdef __WXMSW__
+# define TOOL(x) wxBitmap(x##_xpm)
+#else
+# define TOOL(x) wxBITMAP(x)
 #endif
 
 using namespace std;
