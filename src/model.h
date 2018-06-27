@@ -75,10 +75,27 @@ class traverse : public vector<PointInfo> {
     int flags;
     double length;
     double E, H, V;
+    wxString name;
 
-    traverse()
+    explicit
+    traverse(const char* name_)
 	: n_legs(0), flags(0),
-	  length(0), E(-1), H(-1), V(-1) { }
+	  length(0), E(-1), H(-1), V(-1),
+	  name(name_, wxConvUTF8) {
+	if (name.empty() && !name_[0]) {
+	    // If name isn't valid UTF-8 then this conversion will
+	    // give an empty string.  In this case, assume that the
+	    // label is CP1252 (the Microsoft superset of ISO8859-1).
+	    static wxCSConv ConvCP1252(wxFONTENCODING_CP1252);
+	    name = wxString(name_, ConvCP1252);
+	    if (name.empty()) {
+		// Or if that doesn't work (ConvCP1252 doesn't like
+		// strings with some bytes in) let's just go for
+		// ISO8859-1.
+		name = wxString(name_, wxConvISO8859_1);
+	    }
+	}
+    }
 };
 
 /// Cave model.

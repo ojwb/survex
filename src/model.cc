@@ -108,6 +108,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
     img_point prev_pt = {0,0,0};
     bool current_polyline_is_surface = false;
     int current_flags = 0;
+    string current_label;
     bool pending_move = false;
     // When legs within a traverse have different surface/splay/duplicate
     // flags, we split it into contiguous traverses of each flag combination,
@@ -167,7 +168,8 @@ int Model::Load(const wxString& file, const wxString& prefix)
 		if (is_dupe)
 		    m_HasDupes = true;
 		if (pending_move ||
-		    current_flags != flags) {
+		    current_flags != flags ||
+		    current_label != survey->label) {
 		    if (!current_polyline_is_surface && current_traverse) {
 			//FixLRUD(*current_traverse);
 		    }
@@ -184,12 +186,13 @@ int Model::Load(const wxString& file, const wxString& prefix)
 			    if (prev_pt.z > depthmax) depthmax = prev_pt.z;
 			}
 		    }
-		    traverses[flags].push_back(traverse());
+		    traverses[flags].push_back(traverse(survey->label));
 		    current_traverse = &traverses[flags].back();
 		    current_traverse->flags = survey->flags;
 
 		    current_polyline_is_surface = is_surface;
 		    current_flags = flags;
+		    current_label = survey->label;
 
 		    if (pending_move) {
 			// Update survey extents.  We only need to do this if
