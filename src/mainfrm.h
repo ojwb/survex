@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -139,6 +139,9 @@ enum {
     menu_CTL_CANCEL_DIST_LINE,
     menu_SURVEY_RESTRICT,
     menu_SURVEY_SHOW_ALL,
+    menu_SURVEY_HIDE,
+    menu_SURVEY_SHOW,
+    menu_SURVEY_HIDE_SIBLINGS,
     textctrl_FIND,
     button_HIDE,
     listctrl_PRES
@@ -413,7 +416,7 @@ public:
 
     void ShowInfo(const LabelInfo *here = NULL, const LabelInfo *there = NULL);
     void DisplayTreeInfo(const wxTreeItemData* data = NULL);
-    void TreeItemSelected(const wxTreeItemData* data, bool zoom);
+    void TreeItemSelected(const wxTreeItemData* data);
     PresentationMark GetPresMark(int which);
     bool Animating() const { return m_Gfx && m_Gfx->Animating(); }
 
@@ -423,6 +426,14 @@ public:
     wxString GetSurvey() const { return m_Survey; }
 
     int GetNumHighlightedPts() const { return m_NumHighlighted; }
+
+    const AvenTreeCtrl* GetTreeFilter() const { return m_Tree->GetFilter(); }
+
+    // Used when the tree filters change.  FIXME: Overkill?
+    void ForceFullRedraw() {
+	m_Gfx->InvalidateAllLists();
+	m_Gfx->ForceRefresh();
+    }
 
 private:
     DECLARE_EVENT_TABLE()

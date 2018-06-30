@@ -857,6 +857,7 @@ svxPrintDlg::RecalcBounds()
     double SINT = sin(rad(m_layout.tilt));
     double COST = cos(rad(m_layout.tilt));
 
+    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
     int show_mask = m_layout.get_effective_show_mask();
     if (show_mask & LEGS) {
 	for (int f = 0; f != 8; ++f) {
@@ -871,6 +872,8 @@ svxPrintDlg::RecalcBounds()
 	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
 	    list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
 	    for ( ; trav != tend; ++trav) {
+		if (filter && !filter->CheckVisible(trav->name))
+		    continue;
 		vector<PointInfo>::const_iterator pos = trav->begin();
 		vector<PointInfo>::const_iterator end = trav->end();
 		for ( ; pos != end; ++pos) {
@@ -893,7 +896,7 @@ svxPrintDlg::RecalcBounds()
 	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
 	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
-	    XSect prev_pt_v;
+	    const XSect* prev_pt_v = NULL;
 	    Vector3 last_right(1.0, 0.0, 0.0);
 
 	    vector<XSect>::const_iterator i = trav->begin();
@@ -906,6 +909,9 @@ svxPrintDlg::RecalcBounds()
 		    Double d = pt_v.GetD();
 
 		    if (u >= 0 || d >= 0) {
+			if (filter && !filter->CheckVisible(pt_v.GetLabel()))
+			    continue;
+
 			double x = pt_v.GetX();
 			double y = pt_v.GetY();
 			double z = pt_v.GetZ();
@@ -948,7 +954,7 @@ svxPrintDlg::RecalcBounds()
 			// last segment
 
 			// Calculate vector from the previous pt to this one.
-			Vector3 leg_v = pt_v - prev_pt_v;
+			Vector3 leg_v = pt_v - *prev_pt_v;
 
 			// Obtain a horizontal vector in the LRUD plane.
 			right = leg_v * up_v;
@@ -967,7 +973,7 @@ svxPrintDlg::RecalcBounds()
 			// Calculate vectors from this vertex to the
 			// next vertex, and from the previous vertex to
 			// this one.
-			Vector3 leg1_v = pt_v - prev_pt_v;
+			Vector3 leg1_v = pt_v - *prev_pt_v;
 			Vector3 leg2_v = next_pt_v - pt_v;
 
 			// Obtain horizontal vectors perpendicular to
@@ -992,41 +998,43 @@ svxPrintDlg::RecalcBounds()
 		    Double r = pt_v.GetR();
 
 		    if (l >= 0 || r >= 0) {
-			// Get the x and y coordinates of the survey station
-			double pt_X = pt_v.GetX() * COS - pt_v.GetY() * SIN;
-			double pt_Y = pt_v.GetX() * SIN + pt_v.GetY() * COS;
+			if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
+			    // Get the x and y coordinates of the survey station
+			    double pt_X = pt_v.GetX() * COS - pt_v.GetY() * SIN;
+			    double pt_Y = pt_v.GetX() * SIN + pt_v.GetY() * COS;
 
-			double X, Y;
-			if (l >= 0) {
-			    // Get the x and y coordinates of the end of the left arrow
-			    Vector3 p = pt_v - right * l;
-			    X = p.GetX() * COS - p.GetY() * SIN;
-			    Y = (p.GetX() * SIN + p.GetY() * COS);
-			} else {
-			    X = pt_X;
-			    Y = pt_Y;
-			}
-			if (X > m_layout.xMax) m_layout.xMax = X;
-			if (X < m_layout.xMin) m_layout.xMin = X;
-			if (Y > m_layout.yMax) m_layout.yMax = Y;
-			if (Y < m_layout.yMin) m_layout.yMin = Y;
+			    double X, Y;
+			    if (l >= 0) {
+				// Get the x and y coordinates of the end of the left arrow
+				Vector3 p = pt_v.GetPoint() - right * l;
+				X = p.GetX() * COS - p.GetY() * SIN;
+				Y = (p.GetX() * SIN + p.GetY() * COS);
+			    } else {
+				X = pt_X;
+				Y = pt_Y;
+			    }
+			    if (X > m_layout.xMax) m_layout.xMax = X;
+			    if (X < m_layout.xMin) m_layout.xMin = X;
+			    if (Y > m_layout.yMax) m_layout.yMax = Y;
+			    if (Y < m_layout.yMin) m_layout.yMin = Y;
 
-			if (r >= 0) {
-			    // Get the x and y coordinates of the end of the right arrow
-			    Vector3 p = pt_v + right * r;
-			    X = p.GetX() * COS - p.GetY() * SIN;
-			    Y = (p.GetX() * SIN + p.GetY() * COS);
-			} else {
-			    X = pt_X;
-			    Y = pt_Y;
+			    if (r >= 0) {
+				// Get the x and y coordinates of the end of the right arrow
+				Vector3 p = pt_v.GetPoint() + right * r;
+				X = p.GetX() * COS - p.GetY() * SIN;
+				Y = (p.GetX() * SIN + p.GetY() * COS);
+			    } else {
+				X = pt_X;
+				Y = pt_Y;
+			    }
+			    if (X > m_layout.xMax) m_layout.xMax = X;
+			    if (X < m_layout.xMin) m_layout.xMin = X;
+			    if (Y > m_layout.yMax) m_layout.yMax = Y;
+			    if (Y < m_layout.yMin) m_layout.yMin = Y;
 			}
-			if (X > m_layout.xMax) m_layout.xMax = X;
-			if (X < m_layout.xMin) m_layout.xMin = X;
-			if (Y > m_layout.yMax) m_layout.yMax = Y;
-			if (Y < m_layout.yMin) m_layout.yMin = Y;
 		    }
 
-		    prev_pt_v = pt_v;
+		    prev_pt_v = &pt_v;
 
 		    ++segment;
 		}
@@ -1035,8 +1043,11 @@ svxPrintDlg::RecalcBounds()
     }
 
     if (show_mask & (LABELS|STNS)) {
-	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
-	while (label != mainfrm->GetLabelsEnd()) {
+	for (auto label = mainfrm->GetLabels();
+	     label != mainfrm->GetLabelsEnd();
+	     ++label) {
+	    if (filter && !filter->CheckVisible((*label)->GetText()))
+		continue;
 	    double x = (*label)->GetX();
 	    double y = (*label)->GetY();
 	    double z = (*label)->GetZ();
@@ -1048,7 +1059,6 @@ svxPrintDlg::RecalcBounds()
 		if (Y > m_layout.yMax) m_layout.yMax = Y;
 		if (Y < m_layout.yMin) m_layout.yMin = Y;
 	    }
-	    ++label;
 	}
     }
 }
@@ -1530,6 +1540,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     const double Sc = 1000 / l->Scale;
 
+    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
     int show_mask = l->get_effective_show_mask();
     if (show_mask & (LEGS|SURF)) {
 	for (int f = 0; f != 8; ++f) {
@@ -1551,6 +1562,8 @@ svxPrintout::OnPrintPage(int pageNum) {
 	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
 	    list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
 	    for ( ; trav != tend; ++trav) {
+		if (filter && !filter->CheckVisible(trav->name))
+		    continue;
 		vector<PointInfo>::const_iterator pos = trav->begin();
 		vector<PointInfo>::const_iterator end = trav->end();
 		for ( ; pos != end; ++pos) {
@@ -1588,8 +1601,11 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     if (show_mask & (LABELS|STNS)) {
 	if (show_mask & LABELS) SetFont(font_labels);
-	list<LabelInfo*>::const_iterator label = mainfrm->GetLabels();
-	while (label != mainfrm->GetLabelsEnd()) {
+	for (auto label = mainfrm->GetLabels();
+	     label != mainfrm->GetLabelsEnd();
+	     ++label) {
+	    if (filter && !filter->CheckVisible((*label)->GetText()))
+		continue;
 	    double px = (*label)->GetX();
 	    double py = (*label)->GetY();
 	    double pz = (*label)->GetZ();
@@ -1609,7 +1625,6 @@ svxPrintout::OnPrintPage(int pageNum) {
 		    WriteString((*label)->GetText());
 		}
 	    }
-	    ++label;
 	}
     }
 
@@ -1992,8 +2007,9 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 void
 svxPrintout::PlotLR(const vector<XSect> & centreline)
 {
+    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
     assert(centreline.size() > 1);
-    XSect prev_pt_v;
+    const XSect* prev_pt_v = NULL;
     Vector3 last_right(1.0, 0.0, 0.0);
 
     const double Sc = 1000 / m_layout->Scale;
@@ -2031,7 +2047,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    // last segment
 
 	    // Calculate vector from the previous pt to this one.
-	    Vector3 leg_v = pt_v - prev_pt_v;
+	    Vector3 leg_v = pt_v - *prev_pt_v;
 
 	    // Obtain a horizontal vector in the LRUD plane.
 	    right = leg_v * up_v;
@@ -2050,7 +2066,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to
 	    // this one.
-	    Vector3 leg1_v = pt_v - prev_pt_v;
+	    Vector3 leg1_v = pt_v - *prev_pt_v;
 	    Vector3 leg2_v = next_pt_v - pt_v;
 
 	    // Obtain horizontal vectors perpendicular to
@@ -2075,68 +2091,70 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	Double r = pt_v.GetR();
 
 	if (l >= 0 || r >= 0) {
-	    // Get the x and y coordinates of the survey station
-	    double pt_X = pt_v.GetX() * COS - pt_v.GetY() * SIN;
-	    double pt_Y = pt_v.GetX() * SIN + pt_v.GetY() * COS;
-	    long pt_x = (long)((pt_X * Sc + m_layout->xOrg) * m_layout->scX);
-	    long pt_y = (long)((pt_Y * Sc + m_layout->yOrg) * m_layout->scY);
+	    if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
+		// Get the x and y coordinates of the survey station
+		double pt_X = pt_v.GetX() * COS - pt_v.GetY() * SIN;
+		double pt_Y = pt_v.GetX() * SIN + pt_v.GetY() * COS;
+		long pt_x = (long)((pt_X * Sc + m_layout->xOrg) * m_layout->scX);
+		long pt_y = (long)((pt_Y * Sc + m_layout->yOrg) * m_layout->scY);
 
-	    // Calculate dimensions for the right arrow
-	    double COSR = right.GetX();
-	    double SINR = right.GetY();
-	    long CROSS_MAJOR = (COSR + SINR) * PWX_CROSS_SIZE;
-	    long CROSS_MINOR = (COSR - SINR) * PWX_CROSS_SIZE;
+		// Calculate dimensions for the right arrow
+		double COSR = right.GetX();
+		double SINR = right.GetY();
+		long CROSS_MAJOR = (COSR + SINR) * PWX_CROSS_SIZE;
+		long CROSS_MINOR = (COSR - SINR) * PWX_CROSS_SIZE;
 
-	    if (l >= 0) {
-		// Get the x and y coordinates of the end of the left arrow
-		Vector3 p = pt_v - right * l;
-		double X = p.GetX() * COS - p.GetY() * SIN;
-		double Y = (p.GetX() * SIN + p.GetY() * COS);
-		long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
-		long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
+		if (l >= 0) {
+		    // Get the x and y coordinates of the end of the left arrow
+		    Vector3 p = pt_v.GetPoint() - right * l;
+		    double X = p.GetX() * COS - p.GetY() * SIN;
+		    double Y = (p.GetX() * SIN + p.GetY() * COS);
+		    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+		    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 
-		// Draw the arrow stem
-		MoveTo(pt_x, pt_y);
-		DrawTo(x, y);
+		    // Draw the arrow stem
+		    MoveTo(pt_x, pt_y);
+		    DrawTo(x, y);
 
-		// Rotate the arrow by the page rotation
-		long dx1 = (+CROSS_MINOR) * COS - (+CROSS_MAJOR) * SIN;
-		long dy1 = (+CROSS_MINOR) * SIN + (+CROSS_MAJOR) * COS;
-		long dx2 = (+CROSS_MAJOR) * COS - (-CROSS_MINOR) * SIN;
-		long dy2 = (+CROSS_MAJOR) * SIN + (-CROSS_MINOR) * COS;
+		    // Rotate the arrow by the page rotation
+		    long dx1 = (+CROSS_MINOR) * COS - (+CROSS_MAJOR) * SIN;
+		    long dy1 = (+CROSS_MINOR) * SIN + (+CROSS_MAJOR) * COS;
+		    long dx2 = (+CROSS_MAJOR) * COS - (-CROSS_MINOR) * SIN;
+		    long dy2 = (+CROSS_MAJOR) * SIN + (-CROSS_MINOR) * COS;
 
-		// Draw the arrow
-		MoveTo(x + dx1, y + dy1);
-		DrawTo(x, y);
-		DrawTo(x + dx2, y + dy2);
-	    }
+		    // Draw the arrow
+		    MoveTo(x + dx1, y + dy1);
+		    DrawTo(x, y);
+		    DrawTo(x + dx2, y + dy2);
+		}
 
-	    if (r >= 0) {
-		// Get the x and y coordinates of the end of the right arrow
-		Vector3 p = pt_v + right * r;
-		double X = p.GetX() * COS - p.GetY() * SIN;
-		double Y = (p.GetX() * SIN + p.GetY() * COS);
-		long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
-		long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
+		if (r >= 0) {
+		    // Get the x and y coordinates of the end of the right arrow
+		    Vector3 p = pt_v.GetPoint() + right * r;
+		    double X = p.GetX() * COS - p.GetY() * SIN;
+		    double Y = (p.GetX() * SIN + p.GetY() * COS);
+		    long x = (long)((X * Sc + m_layout->xOrg) * m_layout->scX);
+		    long y = (long)((Y * Sc + m_layout->yOrg) * m_layout->scY);
 
-		// Draw the arrow stem
-		MoveTo(pt_x, pt_y);
-		DrawTo(x, y);
+		    // Draw the arrow stem
+		    MoveTo(pt_x, pt_y);
+		    DrawTo(x, y);
 
-		// Rotate the arrow by the page rotation
-		long dx1 = (-CROSS_MINOR) * COS - (-CROSS_MAJOR) * SIN;
-		long dy1 = (-CROSS_MINOR) * SIN + (-CROSS_MAJOR) * COS;
-		long dx2 = (-CROSS_MAJOR) * COS - (+CROSS_MINOR) * SIN;
-		long dy2 = (-CROSS_MAJOR) * SIN + (+CROSS_MINOR) * COS;
+		    // Rotate the arrow by the page rotation
+		    long dx1 = (-CROSS_MINOR) * COS - (-CROSS_MAJOR) * SIN;
+		    long dy1 = (-CROSS_MINOR) * SIN + (-CROSS_MAJOR) * COS;
+		    long dx2 = (-CROSS_MAJOR) * COS - (+CROSS_MINOR) * SIN;
+		    long dy2 = (-CROSS_MAJOR) * SIN + (+CROSS_MINOR) * COS;
 
-		// Draw the arrow
-		MoveTo(x + dx1, y + dy1);
-		DrawTo(x, y);
-		DrawTo(x + dx2, y + dy2);
+		    // Draw the arrow
+		    MoveTo(x + dx1, y + dy1);
+		    DrawTo(x, y);
+		    DrawTo(x + dx2, y + dy2);
+		}
 	    }
 	}
 
-	prev_pt_v = pt_v;
+	prev_pt_v = &pt_v;
 
 	++segment;
     }
@@ -2145,6 +2163,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 void
 svxPrintout::PlotUD(const vector<XSect> & centreline)
 {
+    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
     assert(centreline.size() > 1);
     const double Sc = 1000 / m_layout->Scale;
 
@@ -2157,8 +2176,11 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	Double d = pt_v.GetD();
 
 	if (u >= 0 || d >= 0) {
+	    if (filter && !filter->CheckVisible(pt_v.GetLabel()))
+		continue;
+
 	    // Get the coordinates of the survey point
-	    Vector3 p = pt_v;
+	    Vector3 p = pt_v.GetPoint();
 	    double SIN = sin(rad(m_layout->rot));
 	    double COS = cos(rad(m_layout->rot));
 	    double X = p.GetX() * COS - p.GetY() * SIN;

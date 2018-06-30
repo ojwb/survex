@@ -2041,13 +2041,16 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     }
 }
 
-void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
+void MainFrm::TreeItemSelected(const wxTreeItemData* item)
 {
     const TreeData* data = static_cast<const TreeData*>(item);
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
-	if (zoom) m_Gfx->CentreOn(*label);
-	m_Gfx->SetThere(label);
+	if (m_Gfx->GetThere() == label) {
+	    m_Gfx->CentreOn(*label);
+	} else {
+	    m_Gfx->SetThere(label);
+	}
 	dist_text = wxString();
 	// FIXME: Need to update dist_text (From ... etc)
 	// But we don't currently know where "here" is at this point in the
@@ -2055,19 +2058,22 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
     } else {
 	dist_text = wxString();
 	m_Gfx->SetThere();
-    }
-    if (!data) {
-	// Must be the root.
-	m_FindBox->SetValue(wxString());
-	if (zoom) {
-	    wxCommandEvent dummy;
-	    OnDefaults(dummy);
-	}
-    } else if (data && !data->IsStation()) {
-	m_FindBox->SetValue(data->GetSurvey() + wxT(".*"));
-	if (zoom) {
-	    wxCommandEvent dummy;
-	    OnGotoFound(dummy);
+	if (!data) {
+	    // Must be the root.
+	    if (m_FindBox->GetValue().empty()) {
+		wxCommandEvent dummy;
+		OnDefaults(dummy);
+	    } else {
+		m_FindBox->SetValue(wxString());
+	    }
+	} else {
+	    wxString search_string = data->GetSurvey() + wxT(".*");
+	    if (m_FindBox->GetValue() == search_string) {
+		wxCommandEvent dummy;
+		OnGotoFound(dummy);
+	    } else {
+		m_FindBox->SetValue(search_string);
+	    }
 	}
     }
     UpdateStatusBar();

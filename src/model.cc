@@ -296,7 +296,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
 		    if (date > datemax) datemax = date;
 		}
 
-		current_tube->push_back(XSect(*lab, date, survey->l, survey->r, survey->u, survey->d));
+		current_tube->emplace_back(lab, date, survey->l, survey->r, survey->u, survey->d);
 		break;
 	    }
 
@@ -458,17 +458,6 @@ void Model::CentreDataset(const Vector3& vmin)
 	    }
 	    ++t;
 	}
-    }
-
-    list<vector<XSect> >::iterator i = tubes.begin();
-    while (i != tubes.end()) {
-	assert(i->size() > 1);
-	vector<XSect>::iterator pos = i->begin();
-	while (pos != i->end()) {
-	    Point & point = *pos++;
-	    point -= m_Offset;
-	}
-	++i;
     }
 
     list<LabelInfo*>::iterator lpos = m_Labels.begin();

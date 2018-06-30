@@ -4,7 +4,7 @@
 //  Handlers for events relating to the display of a survey.
 //
 //  Copyright (C) 2000-2002,2005 Mark R. Shinwell
-//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001,2003,2004,2005,2006,2011,2012,2014,2015,2016,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ void GUIControl::HandleScaleRotate(wxPoint point)
     // Handle a mouse movement during scale/rotate mode.
 
     // wxGTK (at least) fails to update the cursor while dragging.
-    m_View->UpdateCursor(GfxCore::CURSOR_ZOOM_ROTATE);
+    //m_View->UpdateCursor(GfxCore::CURSOR_ZOOM_ROTATE);
 
     int dx, dy;
     int threshold;
@@ -353,10 +353,12 @@ void GUIControl::OnLButtonDown(wxMouseEvent& event)
 	    m_ScaleRotateLock = lock_NONE;
 	}
 
+#if 0
 	// We need to release and recapture for the cursor to update (noticed
 	// with wxGTK).
 	if (dragging != NO_DRAG) m_View->ReleaseMouse();
-	m_View->CaptureMouse();
+#endif
+	if (dragging == NO_DRAG) m_View->CaptureMouse();
 
 	dragging = LEFT_DRAG;
     }
@@ -415,9 +417,10 @@ void GUIControl::OnMButtonDown(wxMouseEvent& event)
 		m_View->UnsetZoomBox();
 	    // We need to release and recapture for the cursor to update
 	    // (noticed with wxGTK).
-	    m_View->ReleaseMouse();
+//	    m_View->ReleaseMouse();
+	} else {
+	    m_View->CaptureMouse();
 	}
-	m_View->CaptureMouse();
 	dragging = MIDDLE_DRAG;
     }
 }
@@ -461,9 +464,10 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 		m_View->UnsetZoomBox();
 	    // We need to release and recapture for the cursor to update
 	    // (noticed with wxGTK).
-	    m_View->ReleaseMouse();
+	//    m_View->ReleaseMouse();
+	} else {
+	    m_View->CaptureMouse();
 	}
-	m_View->CaptureMouse();
 	dragging = RIGHT_DRAG;
     }
 }

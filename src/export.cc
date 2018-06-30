@@ -1547,6 +1547,8 @@ Export(const wxString &fnm_out, const wxString &title,
 		  filt->cross(&p, f_surface);
 	  }
       }
+      // FIXME: Need to tree filter - need to be able to get it from a Model
+      // object (not just a MainFrm.
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
 	  list<vector<XSect> >::const_iterator tube = model.tubes_begin();
@@ -1556,7 +1558,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	      vector<XSect>::const_iterator end = tube->end();
 	      for ( ; pos != end; ++pos) {
 		  const XSect & xs = *pos;
-		  transform_point(xs, pre_offset, COS, SIN, COST, SINT, &p);
+		  transform_point(xs.GetPoint(), pre_offset, COS, SIN, COST, SINT, &p);
 		  p.x += x_offset;
 		  p.y += y_offset;
 		  p.z += z_offset;

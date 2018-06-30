@@ -48,16 +48,17 @@ public:
     int GetDate() const { return date; }
 };
 
-class XSect : public PointInfo {
+class XSect {
     friend class MainFrm;
+    const LabelInfo* stn;
+    int date;
     double l, r, u, d;
     double right_bearing;
 
 public:
-    XSect() : PointInfo(), l(0), r(0), u(0), d(0), right_bearing(0) { }
-    XSect(const Point &p, int date_,
+    XSect(const LabelInfo* stn_, int date_,
 	  double l_, double r_, double u_, double d_)
-	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
+	: stn(stn_), date(date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
     double GetL() const { return l; }
     double GetR() const { return r; }
     double GetU() const { return u; }
@@ -66,7 +67,18 @@ public:
     void set_right_bearing(double right_bearing_) {
 	right_bearing = right_bearing_;
     }
+    int GetDate() const { return date; }
+    wxString GetLabel() const { return stn->GetText(); }
+    const Point& GetPoint() const { return *stn; }
+    double GetX() const { return stn->GetX(); }
+    double GetY() const { return stn->GetY(); }
+    double GetZ() const { return stn->GetZ(); }
+    friend Vector3 operator-(const XSect& a, const XSect& b);
 };
+
+inline Vector3 operator-(const XSect& a, const XSect& b) {
+    return *(a.stn) - *(b.stn);
+}
 
 class traverse : public vector<PointInfo> {
   public:

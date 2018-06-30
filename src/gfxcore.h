@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2016,2017 Olly Betts
+//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2016,2017,2018 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -359,6 +359,8 @@ public:
 
     void SetHere(const LabelInfo * p = NULL);
     void SetThere(const LabelInfo * p = NULL);
+
+    const LabelInfo* GetThere() const { return m_there; }
 
     void CentreOn(const Point &p);
 

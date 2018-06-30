@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2006 Olly Betts
+//  Copyright (C) 2002,2006,2018 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 #define aventreectrl_h
 
 #include "wx.h"
+#include <set>
 
 class MainFrm;
 class LabelInfo;
@@ -50,6 +51,8 @@ class AvenTreeCtrl : public wxTreeCtrl {
     wxColour m_BackgroundColour;
     bool m_SelValid;
     const TreeData* menu_data;
+    wxTreeItemId menu_item;
+    std::set<wxString, std::greater<wxString>> filters;
 
 public:
     AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent);
@@ -65,12 +68,21 @@ public:
     void OnMenu(wxTreeEvent& e);
 
     void OnRestrict(wxCommandEvent& e);
+    void OnHide(wxCommandEvent& e);
+    void OnShow(wxCommandEvent& e);
+    void OnHideSiblings(wxCommandEvent& e);
+    void OnStateClick(wxTreeEvent& e);
 
     bool GetSelectionData(wxTreeItemData**) const;
 
     void SetHere(wxTreeItemId pos);
 
     void DeleteAllItems();
+
+    const AvenTreeCtrl* GetFilter() const {
+	return filters.empty() ? NULL : this;
+    }
+    bool CheckVisible(const wxString& name) const;
 
 private:
     DECLARE_EVENT_TABLE()
