@@ -1554,7 +1554,6 @@ Export(const wxString &fnm_out, const wxString &title,
 		  filt->cross(&p, f_surface);
 	  }
       }
-      // FIXME: Need to apply filter object here and elsewhere.
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
 	  list<vector<XSect>>::const_iterator tube = model.tubes_begin();
@@ -1562,8 +1561,17 @@ Export(const wxString &fnm_out, const wxString &title,
 	  for ( ; tube != tube_end; ++tube) {
 	      vector<XSect>::const_iterator pos = tube->begin();
 	      vector<XSect>::const_iterator end = tube->end();
+	      size_t visible = 0;
 	      for ( ; pos != end; ++pos) {
 		  const XSect & xs = *pos;
+		  // This handling isn't right if two or more non-contiguous
+		  // sections of a tube are what's visible.  This also means
+		  // we can get one entry long tubes.  FIXME Keep a pending
+		  // tube.
+		  if (filter && !filter->CheckVisible(xs.GetLabel()))
+		      continue;
+
+		  ++visible;
 		  transform_point(xs.GetPoint(), pre_offset, COS, SIN, COST, SINT, &p);
 		  p.x += x_offset;
 		  p.y += y_offset;
@@ -1591,7 +1599,9 @@ Export(const wxString &fnm_out, const wxString &title,
 			  filt->passage(&p, angle + 180, xs.GetL(), xs.GetR());
 		  }
 	      }
-	      filt->tube_end();
+	      if (visible > 0) {
+		  filt->tube_end();
+	      }
 	  }
       }
    }
