@@ -1425,6 +1425,9 @@ Export(const wxString &fnm_out, const wxString &title,
 	list<LabelInfo*>::const_iterator pos = model.GetLabels();
 	list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
+	    if (filter && !filter->CheckVisible((*pos)->GetText()))
+		continue;
+
 	    transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 
 	    if (p.x < min_x) min_x = p.x;
@@ -1521,6 +1524,9 @@ Export(const wxString &fnm_out, const wxString &title,
 	  list<LabelInfo*>::const_iterator pos = model.GetLabels();
 	  list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
+	      if (filter && !filter->CheckVisible((*pos)->GetText()))
+		  continue;
+
 	      transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 	      p.x += x_offset;
 	      p.y += y_offset;
