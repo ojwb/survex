@@ -466,3 +466,21 @@ void Model::CentreDataset(const Vector3& vmin)
 	point -= m_Offset;
     }
 }
+
+bool
+SurveyFilter::CheckVisible(const wxString& name) const
+{
+    auto it = filters.lower_bound(name);
+    if (it == filters.end()) {
+	// There's no filter <= name so name is excluded.
+	return false;
+    }
+    if (*it == name) {
+	// Exact match.
+	return true;
+    }
+    // Check if a survey prefixing name is visible.
+    if (name.StartsWith(*it) && name[it->size()] == separator)
+	return true;
+    return false;
+}

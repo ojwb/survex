@@ -31,6 +31,7 @@
 
 #include <ctime>
 #include <list>
+#include <set>
 #include <vector>
 
 using namespace std;
@@ -110,6 +111,26 @@ class traverse : public vector<PointInfo> {
     }
 };
 
+class SurveyFilter {
+    std::set<wxString, std::greater<wxString>> filters;
+    wxChar separator = 0;
+
+  public:
+    SurveyFilter() {}
+
+    void add(const wxString& survey) { filters.insert(survey); }
+
+    void remove(const wxString& survey) { filters.erase(survey); }
+
+    void clear() { filters.clear(); }
+
+    bool empty() const { return filters.empty(); }
+
+    void SetSeparator(wxChar separator_) { separator = separator_; }
+
+    bool CheckVisible(const wxString& name) const;
+};
+
 /// Cave model.
 class Model {
     list<traverse> traverses[8];
@@ -181,9 +202,30 @@ class Model {
 
     const Vector3& GetOffset() const { return m_Offset; }
 
-    list<traverse>::const_iterator traverses_begin(unsigned flags) const {
+    list<traverse>::const_iterator
+    traverses_begin(unsigned flags, const SurveyFilter* filter) const {
 	if (flags >= sizeof(traverses)) return traverses[0].end();
-	return traverses[flags].begin();
+	auto it = traverses[flags].begin();
+	if (filter) {
+	    while (it != traverses[flags].end() &&
+		   !filter->CheckVisible(it->name)) {
+		++it;
+	    }
+	}
+	return it;
+    }
+
+    list<traverse>::const_iterator
+    traverses_next(unsigned flags, const SurveyFilter* filter,
+		   list<traverse>::const_iterator it) const {
+	++it;
+	if (filter) {
+	    while (it != traverses[flags].end() &&
+		   !filter->CheckVisible(it->name)) {
+		++it;
+	    }
+	}
+	return it;
     }
 
     list<traverse>::const_iterator traverses_end(unsigned flags) const {

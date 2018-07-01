@@ -55,6 +55,7 @@ main(int argc, char **argv)
    double text_height = DEFAULT_TEXT_HEIGHT; /* for station labels */
    double marker_size = DEFAULT_MARKER_SIZE; /* for station markers */
    double scale = 500.0;
+   SurveyFilter* filter = NULL;
 
    const int OPT_FMT_BASE = 20000;
    enum {
@@ -305,7 +306,15 @@ main(int argc, char **argv)
 	 bit = MARKER_SIZE;
 	 break;
        case 's':
-	 survey = optarg;
+	 if (survey) {
+	     if (!filter) {
+		 filter = new SurveyFilter();
+		 filter->add(survey);
+	     }
+	     filter->add(optarg);
+	 } else {
+	     survey = optarg;
+	 }
 	 break;
        default:
 	 if (opt >= OPT_FMT_BASE && opt < OPT_FMT_BASE + FMT_MAX_PLUS_ONE_) {
@@ -343,6 +352,10 @@ main(int argc, char **argv)
 	  }
       }
    }
+
+   // A single --survey is handled by img at load-time.  Multiple --survey are
+   // handled via a SurveyFilter at export time.
+   if (filter) survey = NULL;
 
    const char* fnm_in = argv[optind++];
    const char* fnm_out = argv[optind];
@@ -405,10 +418,11 @@ main(int argc, char **argv)
    Model model;
    int err = model.Load(fnm_in, survey);
    if (err) fatalerror(err, fnm_in);
+   if (filter) filter->SetSeparator(model.GetSeparator());
 
    if (!Export(fnm_out, model.GetSurveyTitle(),
 	       model.GetDateString(),
-	       model,
+	       model, filter,
 	       pan, tilt, show_mask, format,
 	       grid, text_height, marker_size,
 	       scale)) {

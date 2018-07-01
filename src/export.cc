@@ -1316,6 +1316,7 @@ bool
 Export(const wxString &fnm_out, const wxString &title,
        const wxString &datestamp,
        const Model& model,
+       const SurveyFilter* filter,
        double pan, double tilt, int show_mask, export_format format,
        double grid_, double text_height, double marker_size_,
        double scale)
@@ -1404,9 +1405,9 @@ Export(const wxString &fnm_out, const wxString &title,
 		// Not showing because it's a splay.
 		continue;
 	    }
-	    list<traverse>::const_iterator trav = model.traverses_begin(f);
+	    list<traverse>::const_iterator trav = model.traverses_begin(f, filter);
 	    list<traverse>::const_iterator tend = model.traverses_end(f);
-	    for ( ; trav != tend; ++trav) {
+	    for ( ; trav != tend; trav = model.traverses_next(f, filter, trav)) {
 		vector<PointInfo>::const_iterator pos = trav->begin();
 		vector<PointInfo>::const_iterator end = trav->end();
 		for ( ; pos != end; ++pos) {
@@ -1492,9 +1493,9 @@ Export(const wxString &fnm_out, const wxString &title,
 		  continue;
 	      }
 	      if (f & img_FLAG_SPLAY) flags |= SPLAYS;
-	      list<traverse>::const_iterator trav = model.traverses_begin(f);
+	      list<traverse>::const_iterator trav = model.traverses_begin(f, filter);
 	      list<traverse>::const_iterator tend = model.traverses_end(f);
-	      for ( ; trav != tend; ++trav) {
+	      for ( ; trav != tend; trav = model.traverses_next(f, filter, trav)) {
 		  assert(trav->size() > 1);
 		  vector<PointInfo>::const_iterator pos = trav->begin();
 		  vector<PointInfo>::const_iterator end = trav->end();
@@ -1547,8 +1548,7 @@ Export(const wxString &fnm_out, const wxString &title,
 		  filt->cross(&p, f_surface);
 	  }
       }
-      // FIXME: Need to tree filter - need to be able to get it from a Model
-      // object (not just a MainFrm.
+      // FIXME: Need to apply filter object here and elsewhere.
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
 	  list<vector<XSect> >::const_iterator tube = model.tubes_begin();

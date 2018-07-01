@@ -1,6 +1,6 @@
 /* printing.cc */
 /* Aven printing code */
-/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2017 Olly Betts
+/* Copyright (C) 1993-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2017,2018 Olly Betts
  * Copyright (C) 2001,2004 Philip Underwood
  *
  * This program is free software; you can redistribute it and/or modify
@@ -644,7 +644,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		tilt = m_layout.tilt;
 	    }
 	    if (!Export(export_fnm, m_layout.title,
-			m_layout.datestamp, *mainfrm,
+			m_layout.datestamp, *mainfrm, mainfrm->GetTreeFilter(),
 			rot, tilt, m_layout.get_effective_show_mask(),
 			export_format(format_idx),
 			grid, text_height, marker_size, m_layout.Scale)) {
@@ -857,7 +857,7 @@ svxPrintDlg::RecalcBounds()
     double SINT = sin(rad(m_layout.tilt));
     double COST = cos(rad(m_layout.tilt));
 
-    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
+    const SurveyFilter* filter = mainfrm->GetTreeFilter();
     int show_mask = m_layout.get_effective_show_mask();
     if (show_mask & LEGS) {
 	for (int f = 0; f != 8; ++f) {
@@ -869,11 +869,9 @@ svxPrintDlg::RecalcBounds()
 		// Not showing because it's a splay.
 		continue;
 	    }
-	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
+	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f, filter);
 	    list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
-	    for ( ; trav != tend; ++trav) {
-		if (filter && !filter->CheckVisible(trav->name))
-		    continue;
+	    for ( ; trav != tend; trav = mainfrm->traverses_next(f, filter, trav)) {
 		vector<PointInfo>::const_iterator pos = trav->begin();
 		vector<PointInfo>::const_iterator end = trav->end();
 		for ( ; pos != end; ++pos) {
@@ -1540,7 +1538,7 @@ svxPrintout::OnPrintPage(int pageNum) {
 
     const double Sc = 1000 / l->Scale;
 
-    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
+    const SurveyFilter* filter = mainfrm->GetTreeFilter();
     int show_mask = l->get_effective_show_mask();
     if (show_mask & (LEGS|SURF)) {
 	for (int f = 0; f != 8; ++f) {
@@ -1559,11 +1557,9 @@ svxPrintout::OnPrintPage(int pageNum) {
 	    } else {
 		pdc->SetPen(*pen_leg);
 	    }
-	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f);
+	    list<traverse>::const_iterator trav = mainfrm->traverses_begin(f, filter);
 	    list<traverse>::const_iterator tend = mainfrm->traverses_end(f);
-	    for ( ; trav != tend; ++trav) {
-		if (filter && !filter->CheckVisible(trav->name))
-		    continue;
+	    for ( ; trav != tend; trav = mainfrm->traverses_next(f, filter, trav)) {
 		vector<PointInfo>::const_iterator pos = trav->begin();
 		vector<PointInfo>::const_iterator end = trav->end();
 		for ( ; pos != end; ++pos) {
@@ -2007,7 +2003,7 @@ svxPrintout::NewPage(int pg, int pagesX, int pagesY)
 void
 svxPrintout::PlotLR(const vector<XSect> & centreline)
 {
-    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
+    const SurveyFilter* filter = mainfrm->GetTreeFilter();
     assert(centreline.size() > 1);
     const XSect* prev_pt_v = NULL;
     Vector3 last_right(1.0, 0.0, 0.0);
@@ -2163,7 +2159,7 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 void
 svxPrintout::PlotUD(const vector<XSect> & centreline)
 {
-    const AvenTreeCtrl* filter = mainfrm->GetTreeFilter();
+    const SurveyFilter* filter = mainfrm->GetTreeFilter();
     assert(centreline.size() > 1);
     const double Sc = 1000 / m_layout->Scale;
 

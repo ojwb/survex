@@ -254,7 +254,8 @@ void AvenTreeCtrl::DeleteAllItems()
     m_LastItem = wxTreeItemId();
     m_SelValid = false;
     wxTreeCtrl::DeleteAllItems();
-    filters.clear();
+    filter.clear();
+    filter.SetSeparator(m_Parent->GetSeparator());
 }
 
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
@@ -305,7 +306,7 @@ void AvenTreeCtrl::OnHide(wxCommandEvent& e)
     // Hide should be disabled unless the item is explicitly shown.
     wxASSERT(GetItemState(menu_item) == STATE_VISIBLE);
     SetItemState(menu_item, STATE_NONE);
-    filters.erase(menu_data->GetSurvey());
+    filter.remove(menu_data->GetSurvey());
 #if 0
     Freeze();
     // Show siblings if not already shown or hidden.
@@ -332,7 +333,7 @@ void AvenTreeCtrl::OnShow(wxCommandEvent& e)
     wxASSERT(GetItemState(menu_item) != STATE_VISIBLE);
     Freeze();
     SetItemState(menu_item, STATE_VISIBLE);
-    filters.insert(menu_data->GetSurvey());
+    filter.add(menu_data->GetSurvey());
     // Hide siblings if not already shown or hidden.
     wxTreeItemId i = menu_item;
     while ((i = GetPrevSibling(i)).IsOk()) {
@@ -354,18 +355,18 @@ void AvenTreeCtrl::OnHideSiblings(wxCommandEvent& e)
     wxASSERT(menu_data);
     Freeze();
     SetItemState(menu_item, STATE_VISIBLE);
-    filters.insert(menu_data->GetSurvey());
+    filter.add(menu_data->GetSurvey());
 
     wxTreeItemId i = menu_item;
     while ((i = GetPrevSibling(i)).IsOk()) {
 	const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
-	filters.erase(data->GetSurvey());
+	filter.remove(data->GetSurvey());
 	SetItemState(i, STATE_NONE);
     }
     i = menu_item;
     while ((i = GetNextSibling(i)).IsOk()) {
 	const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
-	filters.erase(data->GetSurvey());
+	filter.remove(data->GetSurvey());
 	SetItemState(i, STATE_NONE);
     }
     Thaw();
@@ -377,29 +378,12 @@ void AvenTreeCtrl::OnStateClick(wxTreeEvent& e)
     auto item = e.GetItem();
     const TreeData* data = static_cast<const TreeData*>(GetItemData(item));
     if (GetItemState(item) == STATE_VISIBLE) {
-	filters.erase(data->GetSurvey());
+	filter.remove(data->GetSurvey());
 	SetItemState(item, STATE_NONE);
     } else {
-	filters.insert(data->GetSurvey());
+	filter.add(data->GetSurvey());
 	SetItemState(item, STATE_VISIBLE);
     }
     e.Skip();
     m_Parent->ForceFullRedraw();
-}
-
-bool AvenTreeCtrl::CheckVisible(const wxString& name) const
-{
-    auto it = filters.lower_bound(name);
-    if (it == filters.end()) {
-	// There's no filter <= name so name is excluded.
-	return false;
-    }
-    if (*it == name) {
-	// Exact match.
-	return true;
-    }
-    // Check if a survey prefixing name is visible.
-    if (name.StartsWith(*it) && name[it->size()] == m_Parent->GetSeparator())
-	return true;
-    return false;
 }

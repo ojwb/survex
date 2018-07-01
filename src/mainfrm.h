@@ -427,7 +427,7 @@ public:
 
     int GetNumHighlightedPts() const { return m_NumHighlighted; }
 
-    const AvenTreeCtrl* GetTreeFilter() const { return m_Tree->GetFilter(); }
+    const SurveyFilter* GetTreeFilter() const { return m_Tree->GetFilter(); }
 
     // Used when the tree filters change.  FIXME: Overkill?
     void ForceFullRedraw() {

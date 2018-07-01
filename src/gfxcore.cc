@@ -935,7 +935,7 @@ void GfxCore::NattyDrawNames()
 
     memset((void*) m_LabelGrid, 0, buffer_size);
 
-    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
 	if (!((m_Surface && (*label)->IsSurface()) ||
@@ -993,7 +993,7 @@ void GfxCore::NattyDrawNames()
 
 void GfxCore::SimpleDrawNames()
 {
-    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
@@ -1787,7 +1787,7 @@ void GfxCore::CreateHitTestGrid()
 	}
     }
 
-    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     // Fill the grid.
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
@@ -2393,7 +2393,7 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_CROSSES: {
 	    BeginCrosses();
 	    SetColour(col_LIGHT_GREY);
-	    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+	    const SurveyFilter* filter = m_Parent->GetTreeFilter();
 	    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
 	    while (pos != m_Parent->GetLabelsEnd()) {
 		const LabelInfo* label = *pos++;
@@ -2480,13 +2480,12 @@ void GfxCore::GenerateDisplayList(bool surface)
 	    add_poly = AddPoly;
 	}
 
-	const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
-	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f);
+	const SurveyFilter* filter = m_Parent->GetTreeFilter();
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f, filter);
 	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
 	while (trav != tend) {
-	    if (!filter || filter->CheckVisible(trav->name))
-		(this->*add_poly)(*trav);
-	    ++trav;
+	    (this->*add_poly)(*trav);
+	    trav = m_Parent->traverses_next(f, filter, trav);
 	}
 
 	switch (style) {
@@ -2517,17 +2516,16 @@ void GfxCore::GenerateDisplayListTubes()
 
 void GfxCore::GenerateDisplayListShadow()
 {
-    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     SetColour(col_BLACK);
     for (int f = 0; f != 8; ++f) {
 	// Only include underground legs in the shadow.
 	if ((f & img_FLAG_SURFACE) != 0) continue;
-	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f);
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f, filter);
 	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
 	while (trav != tend) {
-	    if (!filter || filter->CheckVisible(trav->name))
-		AddPolylineShadow(*trav);
-	    ++trav;
+	    AddPolylineShadow(*trav);
+	    trav = m_Parent->traverses_next(f, filter, trav);
 	}
     }
 }
@@ -2983,7 +2981,7 @@ void GfxCore::GenerateBlobsDisplayList()
 	return;
 
     // Plot blobs.
-    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     gla_colour prev_col = col_BLACK; // not a colour used for blobs
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     BeginBlobs();
@@ -3558,7 +3556,7 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
 void
 GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 {
-    const AvenTreeCtrl* filter = m_Parent->GetTreeFilter();
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     assert(centreline.size() > 1);
     Vector3 U[4];
     XSect* prev_pt_v = NULL;

@@ -26,7 +26,8 @@
 #define aventreectrl_h
 
 #include "wx.h"
-#include <set>
+
+#include "model.h"
 
 class MainFrm;
 class LabelInfo;
@@ -52,7 +53,8 @@ class AvenTreeCtrl : public wxTreeCtrl {
     bool m_SelValid;
     const TreeData* menu_data;
     wxTreeItemId menu_item;
-    std::set<wxString, std::greater<wxString>> filters;
+
+    SurveyFilter filter;
 
 public:
     AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent);
@@ -79,10 +81,9 @@ public:
 
     void DeleteAllItems();
 
-    const AvenTreeCtrl* GetFilter() const {
-	return filters.empty() ? NULL : this;
+    const SurveyFilter* GetFilter() const {
+	return filter.empty() ? NULL : &filter;
     }
-    bool CheckVisible(const wxString& name) const;
 
 private:
     DECLARE_EVENT_TABLE()
