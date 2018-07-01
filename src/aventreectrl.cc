@@ -38,47 +38,49 @@ enum { STATE_NONE = 0, STATE_VISIBLE };
 /* XPM */
 static const char *none_xpm[] = {
 /* columns rows colors chars-per-pixel */
-"15 15 1 1",
+"15 15 2 1",
+". c #000000",
 "  c None",
 /* pixels */
 "               ",
 "               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
-"               ",
+" ............  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" ............  ",
 "               "
 };
 
 /* XPM */
 static const char *visible_xpm[] = {
 /* columns rows colors chars-per-pixel */
-"15 15 2 1",
+"15 15 3 1",
+". c #000000",
 "X c #007F28",
 "  c None",
 /* pixels */
 "               ",
-"             XX",
-"            XXX",
-"           XXXX",
-"          XXXX ",
-"         XXXX  ",
-"        XXXX   ",
-"XX     XXXX    ",
-"XXX   XXXX     ",
-"XXXX XXXX      ",
-" XXXXXXX       ",
-"  XXXXX        ",
-"   XXX         ",
-"    X          ",
+"               ",
+" ............XX",
+" .          XXX",
+" .         XXXX",
+" .        XXXX ",
+" .       XXXX  ",
+" .      XXXX.  ",
+" . XX  XXXX .  ",
+" . XXXXXXX  .  ",
+" .  XXXXX   .  ",
+" .   XXX    .  ",
+" .    X     .  ",
+" ............  ",
 "               "
 };
 
