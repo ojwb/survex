@@ -1561,17 +1561,25 @@ Export(const wxString &fnm_out, const wxString &title,
 	  for ( ; tube != tube_end; ++tube) {
 	      vector<XSect>::const_iterator pos = tube->begin();
 	      vector<XSect>::const_iterator end = tube->end();
-	      size_t visible = 0;
+	      size_t active_tube_len = 0;
 	      for ( ; pos != end; ++pos) {
 		  const XSect & xs = *pos;
-		  // This handling isn't right if two or more non-contiguous
-		  // sections of a tube are what's visible.  This also means
-		  // we can get one entry long tubes.  FIXME Keep a pending
-		  // tube.
-		  if (filter && !filter->CheckVisible(xs.GetLabel()))
+		  // FIXME: This filtering can create tubes containing a single
+		  // cross-section, which otherwise don't exist in aven (the
+		  // Model class currently filters them out).  Perhaps we
+		  // should just always include these - a single set of LRUD
+		  // measurements is useful even if a single cross-section
+		  // 3D tube perhaps isn't.
+		  if (filter && !filter->CheckVisible(xs.GetLabel())) {
+		      // Close any active tube.
+		      if (active_tube_len > 0) {
+			  active_tube_len = 0;
+			  filt->tube_end();
+		      }
 		      continue;
+		  }
 
-		  ++visible;
+		  ++active_tube_len;
 		  transform_point(xs.GetPoint(), pre_offset, COS, SIN, COST, SINT, &p);
 		  p.x += x_offset;
 		  p.y += y_offset;
@@ -1599,7 +1607,7 @@ Export(const wxString &fnm_out, const wxString &title,
 			  filt->passage(&p, angle + 180, xs.GetL(), xs.GetR());
 		  }
 	      }
-	      if (visible > 0) {
+	      if (active_tube_len > 0) {
 		  filt->tube_end();
 	      }
 	  }
