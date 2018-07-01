@@ -59,7 +59,7 @@ class AvenTreeCtrl : public wxTreeCtrl {
 public:
     AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent);
 
-    void SetEnabled(bool enabled = true);
+    void SetEnabled(bool enabled = true) { m_Enabled = enabled; }
     void UnselectAll();
 
     void OnMouseMove(wxMouseEvent& event);

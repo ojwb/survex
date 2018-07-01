@@ -112,18 +112,19 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 {
-    if (m_Enabled && !m_Parent->Animating()) {
-	int flags;
-	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
-	if (!(flags & TREE_MASK)) {
-	    pos = wxTreeItemId();
-	}
-	if (pos == m_LastItem) return;
-	if (pos.IsOk()) {
-	    m_Parent->DisplayTreeInfo(GetItemData(pos));
-	} else {
-	    m_Parent->DisplayTreeInfo();
-	}
+    if (!m_Enabled || m_Parent->Animating())
+	return;
+
+    int flags;
+    wxTreeItemId pos = HitTest(event.GetPosition(), flags);
+    if (!(flags & TREE_MASK)) {
+	pos = wxTreeItemId();
+    }
+    if (pos == m_LastItem) return;
+    if (pos.IsOk()) {
+	m_Parent->DisplayTreeInfo(GetItemData(pos));
+    } else {
+	m_Parent->DisplayTreeInfo();
     }
 }
 
@@ -150,11 +151,6 @@ void AvenTreeCtrl::OnLeaveWindow(wxMouseEvent&)
     m_Parent->DisplayTreeInfo();
 }
 
-void AvenTreeCtrl::SetEnabled(bool enabled)
-{
-    m_Enabled = enabled;
-}
-
 void AvenTreeCtrl::OnSelChanged(wxTreeEvent& e)
 {
     m_SelValid = true;
@@ -169,58 +165,58 @@ void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
 
 void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 {
-    if (m_Enabled) {
-	const TreeData* data = static_cast<const TreeData*>(GetItemData(e.GetItem()));
-	menu_data = data;
-	menu_item = e.GetItem();
-	if (!data) {
-	    // Root:
-	    wxMenu menu;
-	    /* TRANSLATORS: In aven's survey tree, right-clicking on the root
-	     * gives a pop-up menu and this is an option (but only enabled if
-	     * the view is restricted to a subsurvey). It reloads the current
-	     * survey file with the who survey visible.
-	     */
-	    menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
-	    if (m_Parent->GetSurvey().empty())
-		menu.Enable(menu_SURVEY_SHOW_ALL, false);
-	    PopupMenu(&menu);
-	} else if (data->GetLabel()) {
-	    // Station: name is data->GetLabel()->GetText()
-	} else {
-	    // Survey:
-	    wxMenu menu;
-	    /* TRANSLATORS: In aven's survey tree, right-clicking on a survey
-	     * name gives a pop-up menu and this is an option.  It reloads the
-	     * current survey file with the view restricted to the survey
-	     * clicked upon.
-	     */
-	    menu.Append(menu_SURVEY_RESTRICT, wmsg(/*Hide others*/246));
-	    menu.AppendSeparator();
-	    menu.Append(menu_SURVEY_HIDE, wmsg(/*&Hide*/407));
-	    menu.Append(menu_SURVEY_SHOW, wmsg(/*&Show*/409));
-	    menu.Append(menu_SURVEY_HIDE_SIBLINGS, wmsg(/*Hide si&blings*/388));
-	    switch (GetItemState(menu_item)) {
-		case STATE_VISIBLE: // Currently shown.
-		    menu.Enable(menu_SURVEY_SHOW, false);
-		    break;
+    if (!m_Enabled) return;
+
+    const TreeData* data = static_cast<const TreeData*>(GetItemData(e.GetItem()));
+    menu_data = data;
+    menu_item = e.GetItem();
+    if (!data) {
+	// Root:
+	wxMenu menu;
+	/* TRANSLATORS: In aven's survey tree, right-clicking on the root
+	 * gives a pop-up menu and this is an option (but only enabled if
+	 * the view is restricted to a subsurvey). It reloads the current
+	 * survey file with the who survey visible.
+	 */
+	menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
+	if (m_Parent->GetSurvey().empty())
+	    menu.Enable(menu_SURVEY_SHOW_ALL, false);
+	PopupMenu(&menu);
+    } else if (data->GetLabel()) {
+	// Station: name is data->GetLabel()->GetText()
+    } else {
+	// Survey:
+	wxMenu menu;
+	/* TRANSLATORS: In aven's survey tree, right-clicking on a survey
+	 * name gives a pop-up menu and this is an option.  It reloads the
+	 * current survey file with the view restricted to the survey
+	 * clicked upon.
+	 */
+	menu.Append(menu_SURVEY_RESTRICT, wmsg(/*Hide others*/246));
+	menu.AppendSeparator();
+	menu.Append(menu_SURVEY_HIDE, wmsg(/*&Hide*/407));
+	menu.Append(menu_SURVEY_SHOW, wmsg(/*&Show*/409));
+	menu.Append(menu_SURVEY_HIDE_SIBLINGS, wmsg(/*Hide si&blings*/388));
+	switch (GetItemState(menu_item)) {
+	    case STATE_VISIBLE: // Currently shown.
+		menu.Enable(menu_SURVEY_SHOW, false);
+		break;
 #if 0
-		case STATE_HIDDEN: // Currently hidden.
-		    menu.Enable(menu_SURVEY_RESTRICT, false);
-		    menu.Enable(menu_SURVEY_HIDE, false);
-		    menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
-		    break;
+	    case STATE_HIDDEN: // Currently hidden.
+		menu.Enable(menu_SURVEY_RESTRICT, false);
+		menu.Enable(menu_SURVEY_HIDE, false);
+		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
+		break;
 #endif
-		case STATE_NONE:
-		    menu.Enable(menu_SURVEY_HIDE, false);
-		    menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
-		    break;
-	    }
-	    PopupMenu(&menu);
+	    case STATE_NONE:
+		menu.Enable(menu_SURVEY_HIDE, false);
+		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
+		break;
 	}
-	menu_data = NULL;
-	e.Skip();
+	PopupMenu(&menu);
     }
+    menu_data = NULL;
+    e.Skip();
 }
 
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data) const
