@@ -891,8 +891,8 @@ svxPrintDlg::RecalcBounds()
 
     if ((show_mask & XSECT) &&
 	(m_layout.tilt == 0.0 || m_layout.tilt == 90.0 || m_layout.tilt == -90.0)) {
-	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
-	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
+	list<vector<XSect>>::const_iterator trav = mainfrm->tubes_begin();
+	list<vector<XSect>>::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
 	    const XSect* prev_pt_v = NULL;
 	    Vector3 last_right(1.0, 0.0, 0.0);
@@ -1583,8 +1583,8 @@ svxPrintout::OnPrintPage(int pageNum) {
     if ((show_mask & XSECT) &&
 	(l->tilt == 0.0 || l->tilt == 90.0 || l->tilt == -90.0)) {
 	pdc->SetPen(*pen_splay);
-	list<vector<XSect> >::const_iterator trav = mainfrm->tubes_begin();
-	list<vector<XSect> >::const_iterator tend = mainfrm->tubes_end();
+	list<vector<XSect>>::const_iterator trav = mainfrm->tubes_begin();
+	list<vector<XSect>>::const_iterator tend = mainfrm->tubes_end();
 	for ( ; trav != tend; ++trav) {
 	    if (l->tilt == 0.0) {
 		PlotUD(*trav);

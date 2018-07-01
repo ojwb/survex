@@ -2506,8 +2506,8 @@ void GfxCore::GenerateDisplayList(bool surface)
 void GfxCore::GenerateDisplayListTubes()
 {
     // Generate the display list for the tubes.
-    list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
-    list<vector<XSect> >::iterator tend = m_Parent->tubes_end();
+    list<vector<XSect>>::iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect>>::iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
 	SkinPassage(*trav);
 	++trav;
@@ -3147,7 +3147,7 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
     }
 }
 
-void GfxCore::SplitPolyAcrossBands(vector<vector<Split> >& splits,
+void GfxCore::SplitPolyAcrossBands(vector<vector<Split>>& splits,
 				   int band, int band2,
 				   const Vector3 &p, const Vector3 &q,
 				   glaTexCoord ptx, glaTexCoord pty,
@@ -3301,7 +3301,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 	EndPolygon();
     } else {
 	// We need to make a separate polygon for each depth band...
-	vector<vector<Split> > splits;
+	vector<vector<Split>> splits;
 	splits.resize(max_band + 1);
 	splits[a_band].push_back(Split(a, 0, 0));
 	if (a_band != b_band) {
@@ -3941,8 +3941,8 @@ GfxCore::OnExport(const wxString &filename, const wxString &title,
 		  const wxString &datestamp)
 {
     // Fill in "right_bearing" for each cross-section.
-    list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
-    list<vector<XSect> >::iterator tend = m_Parent->tubes_end();
+    list<vector<XSect>>::iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect>>::iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
 	SkinPassage(*trav, false);
 	++trav;

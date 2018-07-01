@@ -561,7 +561,7 @@ public:
     void SplitLineAcrossBands(int band, int band2,
 			      const Vector3 &p, const Vector3 &q,
 			      Double factor = 1.0);
-    void SplitPolyAcrossBands(vector<vector<Split> >& splits,
+    void SplitPolyAcrossBands(vector<vector<Split>>& splits,
 			      int band, int band2,
 			      const Vector3 &p, const Vector3 &q,
 			      glaTexCoord ptx, glaTexCoord pty,

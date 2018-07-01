@@ -910,7 +910,7 @@ PLT::footer(void)
 class EPS : public ExportFilter {
     double factor;
     bool first;
-    vector<pair<double, double> > psg;
+    vector<pair<double, double>> psg;
   public:
     explicit EPS(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
@@ -1260,7 +1260,7 @@ void
 EPS::tube_end()
 {
     if (!psg.empty()) {
-	vector<pair<double, double> >::const_reverse_iterator i;
+	vector<pair<double, double>>::const_reverse_iterator i;
 	for (i = psg.rbegin(); i != psg.rend(); ++i) {
 	    fprintf(fh, "%.2f %.2f L\n", i->first, i->second);
 	}
@@ -1551,8 +1551,8 @@ Export(const wxString &fnm_out, const wxString &title,
       // FIXME: Need to apply filter object here and elsewhere.
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
-	  list<vector<XSect> >::const_iterator tube = model.tubes_begin();
-	  list<vector<XSect> >::const_iterator tube_end = model.tubes_end();
+	  list<vector<XSect>>::const_iterator tube = model.tubes_begin();
+	  list<vector<XSect>>::const_iterator tube_end = model.tubes_end();
 	  for ( ; tube != tube_end; ++tube) {
 	      vector<XSect>::const_iterator pos = tube->begin();
 	      vector<XSect>::const_iterator end = tube->end();

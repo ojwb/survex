@@ -233,19 +233,19 @@ class Model {
 	return traverses[flags].end();
     }
 
-    list<vector<XSect> >::const_iterator tubes_begin() const {
+    list<vector<XSect>>::const_iterator tubes_begin() const {
 	return tubes.begin();
     }
 
-    list<vector<XSect> >::const_iterator tubes_end() const {
+    list<vector<XSect>>::const_iterator tubes_end() const {
 	return tubes.end();
     }
 
-    list<vector<XSect> >::iterator tubes_begin() {
+    list<vector<XSect>>::iterator tubes_begin() {
 	return tubes.begin();
     }
 
-    list<vector<XSect> >::iterator tubes_end() {
+    list<vector<XSect>>::iterator tubes_end() {
 	return tubes.end();
     }
 
