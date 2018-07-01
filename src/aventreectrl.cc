@@ -162,11 +162,9 @@ void AvenTreeCtrl::OnSelChanged(wxTreeEvent& e)
 
 void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
 {
-    if (m_Enabled) {
-	m_Parent->TreeItemSelected(GetItemData(e.GetItem()));
-	// Need to skip to allow double-clicking to work on wxMSW >= 2.8.11.
-// FIXME:	e.Skip();
-    }
+    if (!m_Enabled) return;
+
+    m_Parent->TreeItemSelected(GetItemData(e.GetItem()));
 }
 
 void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
