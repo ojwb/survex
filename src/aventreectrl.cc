@@ -29,6 +29,10 @@
 #include "aventreectrl.h"
 #include "mainfrm.h"
 
+#include <stack>
+
+using namespace std;
+
 enum { STATE_NONE = 0, STATE_VISIBLE };
 
 /* XPM */
@@ -106,6 +110,147 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     img_list->Add(wxBitmap(none_xpm));
     img_list->Add(wxBitmap(visible_xpm));
     AssignStateImageList(img_list);
+}
+
+void AvenTreeCtrl::FillTree(const wxString& root_name)
+{
+    Freeze();
+    m_Enabled = false;
+    m_LastItem = wxTreeItemId();
+    m_SelValid = false;
+    DeleteAllItems();
+
+    const wxChar separator = m_Parent->GetSeparator();
+    filter.clear();
+    filter.SetSeparator(separator);
+
+    // Create the root of the tree.
+    wxTreeItemId treeroot = AddRoot(root_name);
+
+    // Fill the tree of stations and prefixes.
+    stack<wxTreeItemId> previous_ids;
+    wxString current_prefix;
+    wxTreeItemId current_id = treeroot;
+
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    while (pos != m_Parent->GetLabelsEnd()) {
+	LabelInfo* label = *pos++;
+
+	if (label->IsAnon()) continue;
+
+	// Determine the current prefix.
+	wxString prefix = label->GetText().BeforeLast(separator);
+
+	// Determine if we're still on the same prefix.
+	if (prefix == current_prefix) {
+	    // no need to fiddle with branches...
+	}
+	// If not, then see if we've descended to a new prefix.
+	else if (prefix.length() > current_prefix.length() &&
+		 prefix.StartsWith(current_prefix) &&
+		 (prefix[current_prefix.length()] == separator ||
+		  current_prefix.empty())) {
+	    // We have, so start as many new branches as required.
+	    int current_prefix_length = current_prefix.length();
+	    current_prefix = prefix;
+	    size_t next_dot = current_prefix_length;
+	    if (!next_dot) --next_dot;
+	    do {
+		size_t prev_dot = next_dot + 1;
+
+		// Extract the next bit of prefix.
+		next_dot = prefix.find(separator, prev_dot + 1);
+
+		wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
+		assert(!bit.empty());
+
+		// Add the current tree ID to the stack.
+		previous_ids.push(current_id);
+
+		// Append the new item to the tree and set this as the current branch.
+		current_id = AppendItem(current_id, bit);
+		SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
+	    } while (next_dot != wxString::npos);
+	}
+	// Otherwise, we must have moved up, and possibly then down again.
+	else {
+	    size_t count = 0;
+	    bool ascent_only = (prefix.length() < current_prefix.length() &&
+				current_prefix.StartsWith(prefix) &&
+				(current_prefix[prefix.length()] == separator ||
+				 prefix.empty()));
+	    if (!ascent_only) {
+		// Find out how much of the current prefix and the new prefix
+		// are the same.
+		// Note that we require a match of a whole number of parts
+		// between dots!
+		size_t n = min(prefix.length(), current_prefix.length());
+		size_t i;
+		for (i = 0; i < n && prefix[i] == current_prefix[i]; ++i) {
+		    if (prefix[i] == separator) count = i + 1;
+		}
+	    } else {
+		count = prefix.length() + 1;
+	    }
+
+	    // Extract the part of the current prefix after the bit (if any)
+	    // which has matched.
+	    // This gives the prefixes to ascend over.
+	    wxString prefixes_ascended = current_prefix.substr(count);
+
+	    // Count the number of prefixes to ascend over.
+	    int num_prefixes = prefixes_ascended.Freq(separator);
+
+	    // Reverse up over these prefixes.
+	    for (int i = 1; i <= num_prefixes; i++) {
+		previous_ids.pop();
+	    }
+	    current_id = previous_ids.top();
+	    previous_ids.pop();
+
+	    if (!ascent_only) {
+		// Add branches for this new part.
+		size_t next_dot = count - 1;
+		do {
+		    size_t prev_dot = next_dot + 1;
+
+		    // Extract the next bit of prefix.
+		    next_dot = prefix.find(separator, prev_dot + 1);
+
+		    wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
+		    assert(!bit.empty());
+
+		    // Add the current tree ID to the stack.
+		    previous_ids.push(current_id);
+
+		    // Append the new item to the tree and set this as the current branch.
+		    current_id = AppendItem(current_id, bit);
+		    SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
+		} while (next_dot != wxString::npos);
+	    }
+
+	    current_prefix = prefix;
+	}
+
+	// Now add the leaf.
+	wxString bit = label->GetText().AfterLast(separator);
+	assert(!bit.empty());
+	wxTreeItemId id = AppendItem(current_id, bit);
+	SetItemData(id, new TreeData(label));
+	label->tree_id = id;
+	// Set the colour for an item in the survey tree.
+	if (label->IsEntrance()) {
+	    // Entrances are green (like entrance blobs).
+	    SetItemTextColour(id, wxColour(0, 255, 40));
+	} else if (label->IsSurface()) {
+	    // Surface stations are dark green.
+	    SetItemTextColour(id, wxColour(49, 158, 79));
+	}
+    }
+
+    Expand(treeroot);
+    m_Enabled = true;
+    Thaw();
 }
 
 #define TREE_MASK (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMRIGHT)
@@ -240,16 +385,6 @@ void AvenTreeCtrl::UnselectAll()
 {
     m_SelValid = false;
     wxTreeCtrl::UnselectAll();
-}
-
-void AvenTreeCtrl::DeleteAllItems()
-{
-    m_Enabled = false;
-    m_LastItem = wxTreeItemId();
-    m_SelValid = false;
-    wxTreeCtrl::DeleteAllItems();
-    filter.clear();
-    filter.SetSeparator(m_Parent->GetSeparator());
 }
 
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)

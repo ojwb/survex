@@ -59,7 +59,8 @@ class AvenTreeCtrl : public wxTreeCtrl {
 public:
     AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent);
 
-    void SetEnabled(bool enabled = true) { m_Enabled = enabled; }
+    void FillTree(const wxString& root_name);
+
     void UnselectAll();
 
     void OnMouseMove(wxMouseEvent& event);
@@ -78,8 +79,6 @@ public:
     bool GetSelectionData(wxTreeItemData**) const;
 
     void SetHere(wxTreeItemId pos);
-
-    void DeleteAllItems();
 
     const SurveyFilter* GetFilter() const {
 	return filter.empty() ? NULL : &filter;

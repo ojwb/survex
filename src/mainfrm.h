@@ -179,7 +179,6 @@ class MainFrm : public wxFrame, public Model {
     PrefsDlg* m_PrefsDlg;
 #endif
 
-    void FillTree(const wxString & root_name);
     bool ProcessSVXFile(const wxString & file);
 //    void FixLRUD(traverse & centreline);
 
