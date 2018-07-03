@@ -1,3 +1,65 @@
+Changes in 1.2.35 (2018-07-03):
+
+* aven:
+
+  + Viewing can now be restricted to multiple surveys.  Use the right-button
+    menu on a survey in the survey tree and select "Show" to enable checkboxes
+    for that survey and all its siblings.  Only the selected surveys are shown
+    on screen, printed and exported.
+
+  + Don't open a survey when its name is double clicked.  This was happening
+    due to code added to "allow double-clicking to work on wxMSW >= 2.8.11".
+    However, reverting that change still seems to allow double-clicking to work
+    on both wxMSW and wxGTK, but fixes the unwanted additional opening of the
+    survey.
+
+  + Pick initial survey scaling based on whichever of the window width or
+    height gives the smaller scale.  Previously we always used the window
+    width, which can result in parts of the cave being outside the initial
+    view.  Reported by Wookey.
+
+  + Drop ability to specify a PROJ string in the export dialog.  This was added
+    to allow exporting to formats such as GPX before we added support for
+    specifying the projection in .svx files, and that support is now mature.
+
+  + DXF export now uses 2 decimal places (was 6) for the bounding box, for
+    consistency with the precision used for coordinates.
+
+  + Fix handling of surface flag during export.  In formats which discriminate,
+    legs could previously have got assigned the wrong status.
+
+  + Fix bug which probably prevented aven starting when OpenGL double buffering
+    is unavailable.  This is unlikely to affect any common configurations.
+
+  + (Microsoft Windows version): Fix loading of 3d files with non-ASCII
+    filenames.  Issue reported by Matic.
+
+  + (Microsoft Windows version): Fix incorrect display of some toolbar icons.
+    Probably broken since 1.2.17.
+
+* survexport: New command-line export program which uses aven's export code.
+  Replaces 3dtopos, cad3d and findentrances, since it can do all that these
+  tools could do, plus much more.
+
+* Merge more Spanish i18n updates from Evaristo Quiroga.
+
+* Minor updates to various other translations.
+
+* img library:
+
+  + Now supports reading from and writing to an existing FILE*.
+
+  + Improve API documentation.
+
+* (Microsoft Windows version): Fix packaging to include wxWidgets translation
+  files like it was supposed to, which fixes a few missing translations.  This
+  was probably broken by changes in 1.2.8.  Reported by Evaristo Quiroga.
+
+* (Microsoft Windows version): Drop two options from explorer bindings.
+  "Convert to DXF" and "Convert for hand plotting" have both been supported via
+  aven for a while, and that's a more useful way to access them as you can
+  control what gets exported.
+
 Changes in 1.2.34 (2018-03-24):
 
 * aven:
