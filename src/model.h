@@ -31,6 +31,7 @@
 
 #include <ctime>
 #include <list>
+#include <set>
 #include <vector>
 
 using namespace std;
@@ -48,16 +49,17 @@ public:
     int GetDate() const { return date; }
 };
 
-class XSect : public PointInfo {
+class XSect {
     friend class MainFrm;
+    const LabelInfo* stn;
+    int date;
     double l, r, u, d;
     double right_bearing;
 
 public:
-    XSect() : PointInfo(), l(0), r(0), u(0), d(0), right_bearing(0) { }
-    XSect(const Point &p, int date_,
+    XSect(const LabelInfo* stn_, int date_,
 	  double l_, double r_, double u_, double d_)
-	: PointInfo(p, date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
+	: stn(stn_), date(date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
     double GetL() const { return l; }
     double GetR() const { return r; }
     double GetU() const { return u; }
@@ -66,7 +68,18 @@ public:
     void set_right_bearing(double right_bearing_) {
 	right_bearing = right_bearing_;
     }
+    int GetDate() const { return date; }
+    wxString GetLabel() const { return stn->GetText(); }
+    const Point& GetPoint() const { return *stn; }
+    double GetX() const { return stn->GetX(); }
+    double GetY() const { return stn->GetY(); }
+    double GetZ() const { return stn->GetZ(); }
+    friend Vector3 operator-(const XSect& a, const XSect& b);
 };
+
+inline Vector3 operator-(const XSect& a, const XSect& b) {
+    return *(a.stn) - *(b.stn);
+}
 
 class traverse : public vector<PointInfo> {
   public:
@@ -75,10 +88,47 @@ class traverse : public vector<PointInfo> {
     int flags;
     double length;
     double E, H, V;
+    wxString name;
 
-    traverse()
+    explicit
+    traverse(const char* name_)
 	: n_legs(0), flags(0),
-	  length(0), E(-1), H(-1), V(-1) { }
+	  length(0), E(-1), H(-1), V(-1),
+	  name(name_, wxConvUTF8) {
+	if (name.empty() && !name_[0]) {
+	    // If name isn't valid UTF-8 then this conversion will
+	    // give an empty string.  In this case, assume that the
+	    // label is CP1252 (the Microsoft superset of ISO8859-1).
+	    static wxCSConv ConvCP1252(wxFONTENCODING_CP1252);
+	    name = wxString(name_, ConvCP1252);
+	    if (name.empty()) {
+		// Or if that doesn't work (ConvCP1252 doesn't like
+		// strings with some bytes in) let's just go for
+		// ISO8859-1.
+		name = wxString(name_, wxConvISO8859_1);
+	    }
+	}
+    }
+};
+
+class SurveyFilter {
+    std::set<wxString, std::greater<wxString>> filters;
+    wxChar separator = 0;
+
+  public:
+    SurveyFilter() {}
+
+    void add(const wxString& survey) { filters.insert(survey); }
+
+    void remove(const wxString& survey) { filters.erase(survey); }
+
+    void clear() { filters.clear(); }
+
+    bool empty() const { return filters.empty(); }
+
+    void SetSeparator(wxChar separator_) { separator = separator_; }
+
+    bool CheckVisible(const wxString& name) const;
 };
 
 /// Cave model.
@@ -152,9 +202,30 @@ class Model {
 
     const Vector3& GetOffset() const { return m_Offset; }
 
-    list<traverse>::const_iterator traverses_begin(unsigned flags) const {
+    list<traverse>::const_iterator
+    traverses_begin(unsigned flags, const SurveyFilter* filter) const {
 	if (flags >= sizeof(traverses)) return traverses[0].end();
-	return traverses[flags].begin();
+	auto it = traverses[flags].begin();
+	if (filter) {
+	    while (it != traverses[flags].end() &&
+		   !filter->CheckVisible(it->name)) {
+		++it;
+	    }
+	}
+	return it;
+    }
+
+    list<traverse>::const_iterator
+    traverses_next(unsigned flags, const SurveyFilter* filter,
+		   list<traverse>::const_iterator it) const {
+	++it;
+	if (filter) {
+	    while (it != traverses[flags].end() &&
+		   !filter->CheckVisible(it->name)) {
+		++it;
+	    }
+	}
+	return it;
     }
 
     list<traverse>::const_iterator traverses_end(unsigned flags) const {
@@ -162,19 +233,19 @@ class Model {
 	return traverses[flags].end();
     }
 
-    list<vector<XSect> >::const_iterator tubes_begin() const {
+    list<vector<XSect>>::const_iterator tubes_begin() const {
 	return tubes.begin();
     }
 
-    list<vector<XSect> >::const_iterator tubes_end() const {
+    list<vector<XSect>>::const_iterator tubes_end() const {
 	return tubes.end();
     }
 
-    list<vector<XSect> >::iterator tubes_begin() {
+    list<vector<XSect>>::iterator tubes_begin() {
 	return tubes.begin();
     }
 
-    list<vector<XSect> >::iterator tubes_end() {
+    list<vector<XSect>>::iterator tubes_end() {
 	return tubes.end();
     }
 

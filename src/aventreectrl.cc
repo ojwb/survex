@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003,2005,2006,2016 Olly Betts
+//  Copyright (C) 2001-2003,2005,2006,2016,2018 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,61 @@
 #include "aventreectrl.h"
 #include "mainfrm.h"
 
+#include <stack>
+
+using namespace std;
+
+enum { STATE_NONE = 0, STATE_VISIBLE };
+
+/* XPM */
+static const char *none_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 2 1",
+". c #000000",
+"  c None",
+/* pixels */
+"               ",
+"               ",
+" ............  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" .          .  ",
+" ............  ",
+"               "
+};
+
+/* XPM */
+static const char *visible_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 3 1",
+". c #000000",
+"X c #007F28",
+"  c None",
+/* pixels */
+"               ",
+"               ",
+" ............XX",
+" .          XXX",
+" .         XXXX",
+" .        XXXX ",
+" .       XXXX  ",
+" .      XXXX.  ",
+" . XX  XXXX .  ",
+" . XXXXXXX  .  ",
+" .  XXXXX   .  ",
+" .   XXX    .  ",
+" .    X     .  ",
+" ............  ",
+"               "
+};
+
 BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_MOTION(AvenTreeCtrl::OnMouseMove)
     EVT_LEAVE_WINDOW(AvenTreeCtrl::OnLeaveWindow)
@@ -38,6 +93,10 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_TREE_ITEM_MENU(-1, AvenTreeCtrl::OnMenu)
     EVT_MENU(menu_SURVEY_SHOW_ALL, AvenTreeCtrl::OnRestrict)
     EVT_MENU(menu_SURVEY_RESTRICT, AvenTreeCtrl::OnRestrict)
+    EVT_MENU(menu_SURVEY_HIDE, AvenTreeCtrl::OnHide)
+    EVT_MENU(menu_SURVEY_SHOW, AvenTreeCtrl::OnShow)
+    EVT_MENU(menu_SURVEY_HIDE_SIBLINGS, AvenTreeCtrl::OnHideSiblings)
+    EVT_TREE_STATE_IMAGE_CLICK(-1, AvenTreeCtrl::OnStateClick)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
@@ -49,24 +108,170 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     m_SelValid(false),
     menu_data(NULL)
 {
+    wxImageList* img_list = new wxImageList(15, 15, 2);
+    img_list->Add(wxBitmap(none_xpm));
+    img_list->Add(wxBitmap(visible_xpm));
+    AssignStateImageList(img_list);
+}
+
+void AvenTreeCtrl::FillTree(const wxString& root_name)
+{
+    Freeze();
+    m_Enabled = false;
+    m_LastItem = wxTreeItemId();
+    m_SelValid = false;
+    DeleteAllItems();
+
+    const wxChar separator = m_Parent->GetSeparator();
+    filter.clear();
+    filter.SetSeparator(separator);
+
+    // Create the root of the tree.
+    wxTreeItemId treeroot = AddRoot(root_name);
+
+    // Fill the tree of stations and prefixes.
+    stack<wxTreeItemId> previous_ids;
+    wxString current_prefix;
+    wxTreeItemId current_id = treeroot;
+
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    while (pos != m_Parent->GetLabelsEnd()) {
+	LabelInfo* label = *pos++;
+
+	if (label->IsAnon()) continue;
+
+	// Determine the current prefix.
+	wxString prefix = label->GetText().BeforeLast(separator);
+
+	// Determine if we're still on the same prefix.
+	if (prefix == current_prefix) {
+	    // no need to fiddle with branches...
+	}
+	// If not, then see if we've descended to a new prefix.
+	else if (prefix.length() > current_prefix.length() &&
+		 prefix.StartsWith(current_prefix) &&
+		 (prefix[current_prefix.length()] == separator ||
+		  current_prefix.empty())) {
+	    // We have, so start as many new branches as required.
+	    int current_prefix_length = current_prefix.length();
+	    current_prefix = prefix;
+	    size_t next_dot = current_prefix_length;
+	    if (!next_dot) --next_dot;
+	    do {
+		size_t prev_dot = next_dot + 1;
+
+		// Extract the next bit of prefix.
+		next_dot = prefix.find(separator, prev_dot + 1);
+
+		wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
+		assert(!bit.empty());
+
+		// Add the current tree ID to the stack.
+		previous_ids.push(current_id);
+
+		// Append the new item to the tree and set this as the current branch.
+		current_id = AppendItem(current_id, bit);
+		SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
+	    } while (next_dot != wxString::npos);
+	}
+	// Otherwise, we must have moved up, and possibly then down again.
+	else {
+	    size_t count = 0;
+	    bool ascent_only = (prefix.length() < current_prefix.length() &&
+				current_prefix.StartsWith(prefix) &&
+				(current_prefix[prefix.length()] == separator ||
+				 prefix.empty()));
+	    if (!ascent_only) {
+		// Find out how much of the current prefix and the new prefix
+		// are the same.
+		// Note that we require a match of a whole number of parts
+		// between dots!
+		size_t n = min(prefix.length(), current_prefix.length());
+		size_t i;
+		for (i = 0; i < n && prefix[i] == current_prefix[i]; ++i) {
+		    if (prefix[i] == separator) count = i + 1;
+		}
+	    } else {
+		count = prefix.length() + 1;
+	    }
+
+	    // Extract the part of the current prefix after the bit (if any)
+	    // which has matched.
+	    // This gives the prefixes to ascend over.
+	    wxString prefixes_ascended = current_prefix.substr(count);
+
+	    // Count the number of prefixes to ascend over.
+	    int num_prefixes = prefixes_ascended.Freq(separator);
+
+	    // Reverse up over these prefixes.
+	    for (int i = 1; i <= num_prefixes; i++) {
+		previous_ids.pop();
+	    }
+	    current_id = previous_ids.top();
+	    previous_ids.pop();
+
+	    if (!ascent_only) {
+		// Add branches for this new part.
+		size_t next_dot = count - 1;
+		do {
+		    size_t prev_dot = next_dot + 1;
+
+		    // Extract the next bit of prefix.
+		    next_dot = prefix.find(separator, prev_dot + 1);
+
+		    wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
+		    assert(!bit.empty());
+
+		    // Add the current tree ID to the stack.
+		    previous_ids.push(current_id);
+
+		    // Append the new item to the tree and set this as the current branch.
+		    current_id = AppendItem(current_id, bit);
+		    SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
+		} while (next_dot != wxString::npos);
+	    }
+
+	    current_prefix = prefix;
+	}
+
+	// Now add the leaf.
+	wxString bit = label->GetText().AfterLast(separator);
+	assert(!bit.empty());
+	wxTreeItemId id = AppendItem(current_id, bit);
+	SetItemData(id, new TreeData(label));
+	label->tree_id = id;
+	// Set the colour for an item in the survey tree.
+	if (label->IsEntrance()) {
+	    // Entrances are green (like entrance blobs).
+	    SetItemTextColour(id, wxColour(0, 255, 40));
+	} else if (label->IsSurface()) {
+	    // Surface stations are dark green.
+	    SetItemTextColour(id, wxColour(49, 158, 79));
+	}
+    }
+
+    Expand(treeroot);
+    m_Enabled = true;
+    Thaw();
 }
 
 #define TREE_MASK (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMRIGHT)
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 {
-    if (m_Enabled && !m_Parent->Animating()) {
-	int flags;
-	wxTreeItemId pos = HitTest(event.GetPosition(), flags);
-	if (!(flags & TREE_MASK)) {
-	    pos = wxTreeItemId();
-	}
-	if (pos == m_LastItem) return;
-	if (pos.IsOk()) {
-	    m_Parent->DisplayTreeInfo(GetItemData(pos));
-	} else {
-	    m_Parent->DisplayTreeInfo();
-	}
+    if (!m_Enabled || m_Parent->Animating())
+	return;
+
+    int flags;
+    wxTreeItemId pos = HitTest(event.GetPosition(), flags);
+    if (!(flags & TREE_MASK)) {
+	pos = wxTreeItemId();
+    }
+    if (pos == m_LastItem) return;
+    if (pos.IsOk()) {
+	m_Parent->DisplayTreeInfo(GetItemData(pos));
+    } else {
+	m_Parent->DisplayTreeInfo();
     }
 }
 
@@ -93,62 +298,72 @@ void AvenTreeCtrl::OnLeaveWindow(wxMouseEvent&)
     m_Parent->DisplayTreeInfo();
 }
 
-void AvenTreeCtrl::SetEnabled(bool enabled)
+void AvenTreeCtrl::OnSelChanged(wxTreeEvent&)
 {
-    m_Enabled = enabled;
-}
-
-void AvenTreeCtrl::OnSelChanged(wxTreeEvent& e)
-{
-    if (m_Enabled) {
-	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), false);
-    }
-
     m_SelValid = true;
 }
 
 void AvenTreeCtrl::OnItemActivated(wxTreeEvent& e)
 {
-    if (m_Enabled) {
-	m_Parent->TreeItemSelected(GetItemData(e.GetItem()), true);
-	// Need to skip to allow double-clicking to work on wxMSW >= 2.8.11.
-	e.Skip();
-    }
+    if (!m_Enabled) return;
+
+    m_Parent->TreeItemSelected(GetItemData(e.GetItem()));
 }
 
 void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 {
-    if (m_Enabled) {
-	const TreeData* data = static_cast<const TreeData*>(GetItemData(e.GetItem()));
-	menu_data = data;
-	if (!data) {
-	    // Root:
-	    wxMenu menu;
-	    /* TRANSLATORS: In aven's survey tree, right-clicking on the root
-	     * gives a pop-up menu and this is an option (but only enabled if
-	     * the view is restricted to a subsurvey). It reloads the current
-	     * survey file with the who survey visible.
-	     */
-	    menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
-	    if (m_Parent->GetSurvey().empty())
-		menu.Enable(menu_SURVEY_SHOW_ALL, false);
-	    PopupMenu(&menu);
-	} else if (data->GetLabel()) {
-	    // Station: name is data->GetLabel()->GetText()
-	} else {
-	    // Survey:
-	    wxMenu menu;
-	    /* TRANSLATORS: In aven's survey tree, right-clicking on a survey
-	     * name gives a pop-up menu and this is an option.  It reloads the
-	     * current survey file with the view restricted to the survey
-	     * clicked upon.
-	     */
-	    menu.Append(menu_SURVEY_RESTRICT, wmsg(/*Hide others*/246));
-	    PopupMenu(&menu);
+    if (!m_Enabled) return;
+
+    const TreeData* data = static_cast<const TreeData*>(GetItemData(e.GetItem()));
+    menu_data = data;
+    menu_item = e.GetItem();
+    if (!data) {
+	// Root:
+	wxMenu menu;
+	/* TRANSLATORS: In aven's survey tree, right-clicking on the root
+	 * gives a pop-up menu and this is an option (but only enabled if
+	 * the view is restricted to a subsurvey). It reloads the current
+	 * survey file with the who survey visible.
+	 */
+	menu.Append(menu_SURVEY_SHOW_ALL, wmsg(/*Show all*/245));
+	if (m_Parent->GetSurvey().empty())
+	    menu.Enable(menu_SURVEY_SHOW_ALL, false);
+	PopupMenu(&menu);
+    } else if (data->GetLabel()) {
+	// Station: name is data->GetLabel()->GetText()
+    } else {
+	// Survey:
+	wxMenu menu;
+	/* TRANSLATORS: In aven's survey tree, right-clicking on a survey
+	 * name gives a pop-up menu and this is an option.  It reloads the
+	 * current survey file with the view restricted to the survey
+	 * clicked upon.
+	 */
+	menu.Append(menu_SURVEY_RESTRICT, wmsg(/*Hide others*/246));
+	menu.AppendSeparator();
+	//menu.Append(menu_SURVEY_HIDE, wmsg(/*&Hide*/407));
+	menu.Append(menu_SURVEY_SHOW, wmsg(/*&Show*/409));
+	//menu.Append(menu_SURVEY_HIDE_SIBLINGS, wmsg(/*Hide si&blings*/388));
+	switch (GetItemState(menu_item)) {
+	    case STATE_VISIBLE: // Currently shown.
+		menu.Enable(menu_SURVEY_SHOW, false);
+		break;
+#if 0
+	    case STATE_HIDDEN: // Currently hidden.
+		menu.Enable(menu_SURVEY_RESTRICT, false);
+		menu.Enable(menu_SURVEY_HIDE, false);
+		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
+		break;
+	    case STATE_NONE:
+		menu.Enable(menu_SURVEY_HIDE, false);
+		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
+		break;
+#endif
 	}
-	menu_data = NULL;
-	e.Skip();
+	PopupMenu(&menu);
     }
+    menu_data = NULL;
+    e.Skip();
 }
 
 bool AvenTreeCtrl::GetSelectionData(wxTreeItemData** data) const
@@ -174,14 +389,6 @@ void AvenTreeCtrl::UnselectAll()
     wxTreeCtrl::UnselectAll();
 }
 
-void AvenTreeCtrl::DeleteAllItems()
-{
-    m_Enabled = false;
-    m_LastItem = wxTreeItemId();
-    m_SelValid = false;
-    wxTreeCtrl::DeleteAllItems();
-}
-
 void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 {
     switch (e.GetKeyCode()) {
@@ -199,8 +406,9 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 			Expand(id);
 		    }
 		} else {
-		    // If on a station, centre on it.
-		    m_Parent->TreeItemSelected(GetItemData(id), true);
+		    // If on a station, centre on it by selecting it twice.
+		    m_Parent->TreeItemSelected(GetItemData(id));
+		    m_Parent->TreeItemSelected(GetItemData(id));
 		}
 	    }
 	    break;
@@ -217,8 +425,96 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
     }
 }
 
-void AvenTreeCtrl::OnRestrict(wxCommandEvent& e)
+void AvenTreeCtrl::OnRestrict(wxCommandEvent&)
 {
     m_Parent->RestrictTo(menu_data ? menu_data->GetSurvey() : wxString());
+}
+
+void AvenTreeCtrl::OnHide(wxCommandEvent&)
+{
+    // Shouldn't be available for the root item.
+    wxASSERT(menu_data);
+    // Hide should be disabled unless the item is explicitly shown.
+    wxASSERT(GetItemState(menu_item) == STATE_VISIBLE);
+    SetItemState(menu_item, STATE_NONE);
+    filter.remove(menu_data->GetSurvey());
+#if 0
+    Freeze();
+    // Show siblings if not already shown or hidden.
+    wxTreeItemId i = menu_item;
+    while ((i = GetPrevSibling(i)).IsOk()) {
+	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
+	    SetItemState(i, 1);
+    }
+    i = menu_item;
+    while ((i = GetNextSibling(i)).IsOk()) {
+	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
+	    SetItemState(i, 1);
+    }
+    Thaw();
+#endif
+    m_Parent->ForceFullRedraw();
+}
+
+void AvenTreeCtrl::OnShow(wxCommandEvent&)
+{
+    // Shouldn't be available for the root item.
+    wxASSERT(menu_data);
+    // Show should be disabled for an explicitly shown item.
+    wxASSERT(GetItemState(menu_item) != STATE_VISIBLE);
+    Freeze();
+    SetItemState(menu_item, STATE_VISIBLE);
+    filter.add(menu_data->GetSurvey());
+    // Hide siblings if not already shown or hidden.
+    wxTreeItemId i = menu_item;
+    while ((i = GetPrevSibling(i)).IsOk()) {
+	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
+	    SetItemState(i, STATE_NONE);
+    }
+    i = menu_item;
+    while ((i = GetNextSibling(i)).IsOk()) {
+	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
+	    SetItemState(i, STATE_NONE);
+    }
+    Thaw();
+    m_Parent->ForceFullRedraw();
+}
+
+void AvenTreeCtrl::OnHideSiblings(wxCommandEvent&)
+{
+    // Shouldn't be available for the root item.
+    wxASSERT(menu_data);
+    Freeze();
+    SetItemState(menu_item, STATE_VISIBLE);
+    filter.add(menu_data->GetSurvey());
+
+    wxTreeItemId i = menu_item;
+    while ((i = GetPrevSibling(i)).IsOk()) {
+	const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
+	filter.remove(data->GetSurvey());
+	SetItemState(i, STATE_NONE);
+    }
+    i = menu_item;
+    while ((i = GetNextSibling(i)).IsOk()) {
+	const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
+	filter.remove(data->GetSurvey());
+	SetItemState(i, STATE_NONE);
+    }
+    Thaw();
+    m_Parent->ForceFullRedraw();
+}
+
+void AvenTreeCtrl::OnStateClick(wxTreeEvent& e)
+{
+    auto item = e.GetItem();
+    const TreeData* data = static_cast<const TreeData*>(GetItemData(item));
+    if (GetItemState(item) == STATE_VISIBLE) {
+	filter.remove(data->GetSurvey());
+	SetItemState(item, STATE_NONE);
+    } else {
+	filter.add(data->GetSurvey());
+	SetItemState(item, STATE_VISIBLE);
+    }
     e.Skip();
+    m_Parent->ForceFullRedraw();
 }

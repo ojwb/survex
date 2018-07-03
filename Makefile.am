@@ -64,7 +64,7 @@ mingw_iss : survex.iss
 	cp doc/manual/*.png iss_tmp/manual
 	cp $(extra_bin) iss_tmp
 	for f in "`$(WX_CONFIG) --prefix`"/share/locale/*/LC_MESSAGES/wxstd.mo ; do \
-	  a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$!\1!'`; \
+	  a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$$!\1!'`; \
 	  mkdir iss_tmp/$$a; \
 	  cp "$$f" iss_tmp/$$a; \
 	  echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' ; \

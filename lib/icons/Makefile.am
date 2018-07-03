@@ -31,14 +31,6 @@ xpm_files = \
 	survey_tree.xpm \
 	pres_tree.xpm
 
-# These ".rcdata" files are PNGs, but we end up with a loop of implicit rules
-# if we call them ".png", and the .rc file doesn't care about the extension.
-rcdata_files = $(xpm_files:.xpm=.rcdata)
-
-aven-icons.rc: Makefile.am
-	perl -e 'for (@ARGV) { /(.*)\.rcdata$$/ and $$1 ne "aven" and print "$$1 RCDATA $$_\n" }' \
-	  $(rcdata_files) > aven-icons.rc
-
 EXTRA_DIST = \
 	3d.svg err.svg plt.svg pos.svg svx.svg \
 	3d.png err.png plt.png pos.png svx.png
@@ -86,21 +78,14 @@ SUFFIXES = .ico .png .svg .iconset.zip .xpm
 .xpm.ico:
 	$(SHELL) $(srcdir)/xpm2winicon $< $@
 
-.xpm.rcdata:
-	$(SHELL) $(srcdir)/xpm2png $< $@
-
 iconsets = Aven.iconset.zip\
 	3d.iconset.zip err.iconset.zip plt.iconset.zip pos.iconset.zip\
 	svx.iconset.zip
 
-MAINTAINERCLEANFILES = $(iconsets) $(rcdata_files)
-
-BUILT_SOURCES = aven-icons.rc $(rcdata_files)
+MAINTAINERCLEANFILES = $(iconsets)
 
 EXTRA_DIST += png2winicon png2iconsetzip svg2iconsetzip\
-	aven-icons.rc\
 	$(xpm_files)\
-	$(rcdata_files)\
 	aven.ico\
 	3d.ico err.ico plt.ico pos.ico svx.ico\
 	$(iconsets)

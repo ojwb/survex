@@ -60,7 +60,6 @@ lib/icons/Makefile.in
 lib/icons/*.ico
 lib/icons/*.iconset.zip
 lib/icons/*.rcdata
-lib/icons/aven-icons.rc
 missing
 src/*.o
 src/.deps/

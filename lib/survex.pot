@@ -2727,6 +2727,11 @@ msgstr ""
 msgid "Hide others"
 msgstr ""
 
+#: ../src/aventreectrl.cc:235
+#: n:388
+msgid "Hide si&blings"
+msgstr ""
+
 #: ../src/mainfrm.cc:244
 #: n:378
 msgid "Easting"
