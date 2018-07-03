@@ -298,7 +298,7 @@ void AvenTreeCtrl::OnLeaveWindow(wxMouseEvent&)
     m_Parent->DisplayTreeInfo();
 }
 
-void AvenTreeCtrl::OnSelChanged(wxTreeEvent& e)
+void AvenTreeCtrl::OnSelChanged(wxTreeEvent&)
 {
     m_SelValid = true;
 }
@@ -425,12 +425,12 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
     }
 }
 
-void AvenTreeCtrl::OnRestrict(wxCommandEvent& e)
+void AvenTreeCtrl::OnRestrict(wxCommandEvent&)
 {
     m_Parent->RestrictTo(menu_data ? menu_data->GetSurvey() : wxString());
 }
 
-void AvenTreeCtrl::OnHide(wxCommandEvent& e)
+void AvenTreeCtrl::OnHide(wxCommandEvent&)
 {
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
@@ -456,7 +456,7 @@ void AvenTreeCtrl::OnHide(wxCommandEvent& e)
     m_Parent->ForceFullRedraw();
 }
 
-void AvenTreeCtrl::OnShow(wxCommandEvent& e)
+void AvenTreeCtrl::OnShow(wxCommandEvent&)
 {
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
@@ -480,7 +480,7 @@ void AvenTreeCtrl::OnShow(wxCommandEvent& e)
     m_Parent->ForceFullRedraw();
 }
 
-void AvenTreeCtrl::OnHideSiblings(wxCommandEvent& e)
+void AvenTreeCtrl::OnHideSiblings(wxCommandEvent&)
 {
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
