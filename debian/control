@@ -9,6 +9,7 @@ Build-Depends: debhelper (>= 9), libx11-dev, libxext-dev, x11proto-core-dev,
     libwxgtk3.0-gtk3-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev,
     pkg-config
 Homepage: https://survex.com/
+Testsuite: autopkgtest
 
 Package: survex
 Architecture: any
