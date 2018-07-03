@@ -341,9 +341,9 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 	 */
 	menu.Append(menu_SURVEY_RESTRICT, wmsg(/*Hide others*/246));
 	menu.AppendSeparator();
-	menu.Append(menu_SURVEY_HIDE, wmsg(/*&Hide*/407));
+	//menu.Append(menu_SURVEY_HIDE, wmsg(/*&Hide*/407));
 	menu.Append(menu_SURVEY_SHOW, wmsg(/*&Show*/409));
-	menu.Append(menu_SURVEY_HIDE_SIBLINGS, wmsg(/*Hide si&blings*/388));
+	//menu.Append(menu_SURVEY_HIDE_SIBLINGS, wmsg(/*Hide si&blings*/388));
 	switch (GetItemState(menu_item)) {
 	    case STATE_VISIBLE: // Currently shown.
 		menu.Enable(menu_SURVEY_SHOW, false);
