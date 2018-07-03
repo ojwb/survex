@@ -53,8 +53,6 @@
 #include <cstdlib>
 #include <float.h>
 #include <functional>
-#include <map>
-#include <stack>
 #include <vector>
 
 // XPM files declare the array as static, but we also want it to be const too.
@@ -1148,7 +1146,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
 	root_name += prefix;
 	root_name += ")";
     }
-    FillTree(root_name);
+    m_Tree->FillTree(root_name);
 
     // Sort labels so that entrances are displayed in preference,
     // then fixed points, then exported points, then other points.
@@ -1238,139 +1236,6 @@ MainFrm::FixLRUD(traverse & centreline)
     }
 }
 #endif
-
-void MainFrm::FillTree(const wxString & root_name)
-{
-    m_Tree->DeleteAllItems();
-
-    // Create the root of the tree.
-    wxTreeItemId treeroot = m_Tree->AddRoot(root_name);
-
-    // Fill the tree of stations and prefixes.
-    stack<wxTreeItemId> previous_ids;
-    wxString current_prefix;
-    wxTreeItemId current_id = treeroot;
-    const wxChar separator = GetSeparator();
-
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
-	LabelInfo* label = *pos++;
-
-	if (label->IsAnon()) continue;
-
-	// Determine the current prefix.
-	wxString prefix = label->GetText().BeforeLast(separator);
-
-	// Determine if we're still on the same prefix.
-	if (prefix == current_prefix) {
-	    // no need to fiddle with branches...
-	}
-	// If not, then see if we've descended to a new prefix.
-	else if (prefix.length() > current_prefix.length() &&
-		 prefix.StartsWith(current_prefix) &&
-		 (prefix[current_prefix.length()] == separator ||
-		  current_prefix.empty())) {
-	    // We have, so start as many new branches as required.
-	    int current_prefix_length = current_prefix.length();
-	    current_prefix = prefix;
-	    size_t next_dot = current_prefix_length;
-	    if (!next_dot) --next_dot;
-	    do {
-		size_t prev_dot = next_dot + 1;
-
-		// Extract the next bit of prefix.
-		next_dot = prefix.find(separator, prev_dot + 1);
-
-		wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
-		assert(!bit.empty());
-
-		// Add the current tree ID to the stack.
-		previous_ids.push(current_id);
-
-		// Append the new item to the tree and set this as the current branch.
-		current_id = m_Tree->AppendItem(current_id, bit);
-		m_Tree->SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
-	    } while (next_dot != wxString::npos);
-	}
-	// Otherwise, we must have moved up, and possibly then down again.
-	else {
-	    size_t count = 0;
-	    bool ascent_only = (prefix.length() < current_prefix.length() &&
-				current_prefix.StartsWith(prefix) &&
-				(current_prefix[prefix.length()] == separator ||
-				 prefix.empty()));
-	    if (!ascent_only) {
-		// Find out how much of the current prefix and the new prefix
-		// are the same.
-		// Note that we require a match of a whole number of parts
-		// between dots!
-		size_t n = min(prefix.length(), current_prefix.length());
-		size_t i;
-		for (i = 0; i < n && prefix[i] == current_prefix[i]; ++i) {
-		    if (prefix[i] == separator) count = i + 1;
-		}
-	    } else {
-		count = prefix.length() + 1;
-	    }
-
-	    // Extract the part of the current prefix after the bit (if any)
-	    // which has matched.
-	    // This gives the prefixes to ascend over.
-	    wxString prefixes_ascended = current_prefix.substr(count);
-
-	    // Count the number of prefixes to ascend over.
-	    int num_prefixes = prefixes_ascended.Freq(separator);
-
-	    // Reverse up over these prefixes.
-	    for (int i = 1; i <= num_prefixes; i++) {
-		previous_ids.pop();
-	    }
-	    current_id = previous_ids.top();
-	    previous_ids.pop();
-
-	    if (!ascent_only) {
-		// Add branches for this new part.
-		size_t next_dot = count - 1;
-		do {
-		    size_t prev_dot = next_dot + 1;
-
-		    // Extract the next bit of prefix.
-		    next_dot = prefix.find(separator, prev_dot + 1);
-
-		    wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
-		    assert(!bit.empty());
-
-		    // Add the current tree ID to the stack.
-		    previous_ids.push(current_id);
-
-		    // Append the new item to the tree and set this as the current branch.
-		    current_id = m_Tree->AppendItem(current_id, bit);
-		    m_Tree->SetItemData(current_id, new TreeData(prefix.substr(0, next_dot)));
-		} while (next_dot != wxString::npos);
-	    }
-
-	    current_prefix = prefix;
-	}
-
-	// Now add the leaf.
-	wxString bit = label->GetText().AfterLast(separator);
-	assert(!bit.empty());
-	wxTreeItemId id = m_Tree->AppendItem(current_id, bit);
-	m_Tree->SetItemData(id, new TreeData(label));
-	label->tree_id = id;
-	// Set the colour for an item in the survey tree.
-	if (label->IsEntrance()) {
-	    // Entrances are green (like entrance blobs).
-	    m_Tree->SetItemTextColour(id, wxColour(0, 255, 40));
-	} else if (label->IsSurface()) {
-	    // Surface stations are dark green.
-	    m_Tree->SetItemTextColour(id, wxColour(49, 158, 79));
-	}
-    }
-
-    m_Tree->Expand(treeroot);
-    m_Tree->SetEnabled();
-}
 
 void MainFrm::OnMRUFile(wxCommandEvent& event)
 {
@@ -2041,13 +1906,16 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     }
 }
 
-void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
+void MainFrm::TreeItemSelected(const wxTreeItemData* item)
 {
     const TreeData* data = static_cast<const TreeData*>(item);
     if (data && data->IsStation()) {
 	const LabelInfo* label = data->GetLabel();
-	if (zoom) m_Gfx->CentreOn(*label);
-	m_Gfx->SetThere(label);
+	if (m_Gfx->GetThere() == label) {
+	    m_Gfx->CentreOn(*label);
+	} else {
+	    m_Gfx->SetThere(label);
+	}
 	dist_text = wxString();
 	// FIXME: Need to update dist_text (From ... etc)
 	// But we don't currently know where "here" is at this point in the
@@ -2055,19 +1923,22 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item, bool zoom)
     } else {
 	dist_text = wxString();
 	m_Gfx->SetThere();
-    }
-    if (!data) {
-	// Must be the root.
-	m_FindBox->SetValue(wxString());
-	if (zoom) {
-	    wxCommandEvent dummy;
-	    OnDefaults(dummy);
-	}
-    } else if (data && !data->IsStation()) {
-	m_FindBox->SetValue(data->GetSurvey() + wxT(".*"));
-	if (zoom) {
-	    wxCommandEvent dummy;
-	    OnGotoFound(dummy);
+	if (!data) {
+	    // Must be the root.
+	    if (m_FindBox->GetValue().empty()) {
+		wxCommandEvent dummy;
+		OnDefaults(dummy);
+	    } else {
+		m_FindBox->SetValue(wxString());
+	    }
+	} else {
+	    wxString search_string = data->GetSurvey() + wxT(".*");
+	    if (m_FindBox->GetValue() == search_string) {
+		wxCommandEvent dummy;
+		OnGotoFound(dummy);
+	    } else {
+		m_FindBox->SetValue(search_string);
+	    }
 	}
     }
     UpdateStatusBar();

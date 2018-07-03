@@ -910,7 +910,7 @@ PLT::footer(void)
 class EPS : public ExportFilter {
     double factor;
     bool first;
-    vector<pair<double, double> > psg;
+    vector<pair<double, double>> psg;
   public:
     explicit EPS(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
@@ -1260,7 +1260,7 @@ void
 EPS::tube_end()
 {
     if (!psg.empty()) {
-	vector<pair<double, double> >::const_reverse_iterator i;
+	vector<pair<double, double>>::const_reverse_iterator i;
 	for (i = psg.rbegin(); i != psg.rend(); ++i) {
 	    fprintf(fh, "%.2f %.2f L\n", i->first, i->second);
 	}
@@ -1316,6 +1316,7 @@ bool
 Export(const wxString &fnm_out, const wxString &title,
        const wxString &datestamp,
        const Model& model,
+       const SurveyFilter* filter,
        double pan, double tilt, int show_mask, export_format format,
        double grid_, double text_height, double marker_size_,
        double scale)
@@ -1404,9 +1405,9 @@ Export(const wxString &fnm_out, const wxString &title,
 		// Not showing because it's a splay.
 		continue;
 	    }
-	    list<traverse>::const_iterator trav = model.traverses_begin(f);
+	    list<traverse>::const_iterator trav = model.traverses_begin(f, filter);
 	    list<traverse>::const_iterator tend = model.traverses_end(f);
-	    for ( ; trav != tend; ++trav) {
+	    for ( ; trav != tend; trav = model.traverses_next(f, filter, trav)) {
 		vector<PointInfo>::const_iterator pos = trav->begin();
 		vector<PointInfo>::const_iterator end = trav->end();
 		for ( ; pos != end; ++pos) {
@@ -1424,6 +1425,9 @@ Export(const wxString &fnm_out, const wxString &title,
 	list<LabelInfo*>::const_iterator pos = model.GetLabels();
 	list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	for ( ; pos != end; ++pos) {
+	    if (filter && !filter->CheckVisible((*pos)->GetText()))
+		continue;
+
 	    transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 
 	    if (p.x < min_x) min_x = p.x;
@@ -1492,9 +1496,9 @@ Export(const wxString &fnm_out, const wxString &title,
 		  continue;
 	      }
 	      if (f & img_FLAG_SPLAY) flags |= SPLAYS;
-	      list<traverse>::const_iterator trav = model.traverses_begin(f);
+	      list<traverse>::const_iterator trav = model.traverses_begin(f, filter);
 	      list<traverse>::const_iterator tend = model.traverses_end(f);
-	      for ( ; trav != tend; ++trav) {
+	      for ( ; trav != tend; trav = model.traverses_next(f, filter, trav)) {
 		  assert(trav->size() > 1);
 		  vector<PointInfo>::const_iterator pos = trav->begin();
 		  vector<PointInfo>::const_iterator end = trav->end();
@@ -1520,6 +1524,9 @@ Export(const wxString &fnm_out, const wxString &title,
 	  list<LabelInfo*>::const_iterator pos = model.GetLabels();
 	  list<LabelInfo*>::const_iterator end = model.GetLabelsEnd();
 	  for ( ; pos != end; ++pos) {
+	      if (filter && !filter->CheckVisible((*pos)->GetText()))
+		  continue;
+
 	      transform_point(**pos, pre_offset, COS, SIN, COST, SINT, &p);
 	      p.x += x_offset;
 	      p.y += y_offset;
@@ -1549,14 +1556,31 @@ Export(const wxString &fnm_out, const wxString &title,
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {
 	  bool elevation = (tilt == 0.0);
-	  list<vector<XSect> >::const_iterator tube = model.tubes_begin();
-	  list<vector<XSect> >::const_iterator tube_end = model.tubes_end();
+	  list<vector<XSect>>::const_iterator tube = model.tubes_begin();
+	  list<vector<XSect>>::const_iterator tube_end = model.tubes_end();
 	  for ( ; tube != tube_end; ++tube) {
 	      vector<XSect>::const_iterator pos = tube->begin();
 	      vector<XSect>::const_iterator end = tube->end();
+	      size_t active_tube_len = 0;
 	      for ( ; pos != end; ++pos) {
 		  const XSect & xs = *pos;
-		  transform_point(xs, pre_offset, COS, SIN, COST, SINT, &p);
+		  // FIXME: This filtering can create tubes containing a single
+		  // cross-section, which otherwise don't exist in aven (the
+		  // Model class currently filters them out).  Perhaps we
+		  // should just always include these - a single set of LRUD
+		  // measurements is useful even if a single cross-section
+		  // 3D tube perhaps isn't.
+		  if (filter && !filter->CheckVisible(xs.GetLabel())) {
+		      // Close any active tube.
+		      if (active_tube_len > 0) {
+			  active_tube_len = 0;
+			  filt->tube_end();
+		      }
+		      continue;
+		  }
+
+		  ++active_tube_len;
+		  transform_point(xs.GetPoint(), pre_offset, COS, SIN, COST, SINT, &p);
 		  p.x += x_offset;
 		  p.y += y_offset;
 		  p.z += z_offset;
@@ -1583,7 +1607,9 @@ Export(const wxString &fnm_out, const wxString &title,
 			  filt->passage(&p, angle + 180, xs.GetL(), xs.GetR());
 		  }
 	      }
-	      filt->tube_end();
+	      if (active_tube_len > 0) {
+		  filt->tube_end();
+	      }
 	  }
       }
    }

@@ -30,6 +30,7 @@
 #include <float.h>
 
 #include "aven.h"
+#include "aventreectrl.h"
 #include "date.h"
 #include "filename.h"
 #include "gfxcore.h"
@@ -934,6 +935,7 @@ void GfxCore::NattyDrawNames()
 
     memset((void*) m_LabelGrid, 0, buffer_size);
 
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
 	if (!((m_Surface && (*label)->IsSurface()) ||
@@ -943,6 +945,8 @@ void GfxCore::NattyDrawNames()
 	    // (last case is for stns with no legs attached)
 	    continue;
 	}
+	if (filter && !filter->CheckVisible((*label)->GetText()))
+	    continue;
 
 	double x, y, z;
 
@@ -989,6 +993,7 @@ void GfxCore::NattyDrawNames()
 
 void GfxCore::SimpleDrawNames()
 {
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
@@ -999,6 +1004,8 @@ void GfxCore::SimpleDrawNames()
 	    // (last case is for stns with no legs attached)
 	    continue;
 	}
+	if (filter && !filter->CheckVisible((*label)->GetText()))
+	    continue;
 
 	double x, y, z;
 	Transform(**label, &x, &y, &z);
@@ -1780,6 +1787,7 @@ void GfxCore::CreateHitTestGrid()
 	}
     }
 
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     // Fill the grid.
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     list<LabelInfo*>::const_iterator end = m_Parent->GetLabelsEnd();
@@ -1793,6 +1801,8 @@ void GfxCore::CreateHitTestGrid()
 	    // (last case is for stns with no legs attached)
 	    continue;
 	}
+	if (filter && !filter->CheckVisible(label->GetText()))
+	    continue;
 
 	// Calculate screen coordinates.
 	double cx, cy, cz;
@@ -2383,6 +2393,7 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_CROSSES: {
 	    BeginCrosses();
 	    SetColour(col_LIGHT_GREY);
+	    const SurveyFilter* filter = m_Parent->GetTreeFilter();
 	    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
 	    while (pos != m_Parent->GetLabelsEnd()) {
 		const LabelInfo* label = *pos++;
@@ -2391,7 +2402,9 @@ void GfxCore::GenerateList(unsigned int l)
 		    (m_Legs && label->IsUnderground()) ||
 		    (!label->IsSurface() && !label->IsUnderground())) {
 		    // Check if this station should be displayed
-		    // (last case is for stns with no legs attached)
+		    // (last case above is for stns with no legs attached)
+		    if (filter && !filter->CheckVisible(label->GetText()))
+			continue;
 		    DrawCross(label->GetX(), label->GetY(), label->GetZ());
 		}
 	    }
@@ -2467,11 +2480,12 @@ void GfxCore::GenerateDisplayList(bool surface)
 	    add_poly = AddPoly;
 	}
 
-	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f);
+	const SurveyFilter* filter = m_Parent->GetTreeFilter();
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f, filter);
 	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
 	while (trav != tend) {
 	    (this->*add_poly)(*trav);
-	    ++trav;
+	    trav = m_Parent->traverses_next(f, filter, trav);
 	}
 
 	switch (style) {
@@ -2492,8 +2506,8 @@ void GfxCore::GenerateDisplayList(bool surface)
 void GfxCore::GenerateDisplayListTubes()
 {
     // Generate the display list for the tubes.
-    list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
-    list<vector<XSect> >::iterator tend = m_Parent->tubes_end();
+    list<vector<XSect>>::iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect>>::iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
 	SkinPassage(*trav);
 	++trav;
@@ -2502,15 +2516,16 @@ void GfxCore::GenerateDisplayListTubes()
 
 void GfxCore::GenerateDisplayListShadow()
 {
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     SetColour(col_BLACK);
     for (int f = 0; f != 8; ++f) {
 	// Only include underground legs in the shadow.
 	if ((f & img_FLAG_SURFACE) != 0) continue;
-	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f);
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f, filter);
 	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
 	while (trav != tend) {
 	    AddPolylineShadow(*trav);
-	    ++trav;
+	    trav = m_Parent->traverses_next(f, filter, trav);
 	}
     }
 }
@@ -2966,6 +2981,7 @@ void GfxCore::GenerateBlobsDisplayList()
 	return;
 
     // Plot blobs.
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     gla_colour prev_col = col_BLACK; // not a colour used for blobs
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     BeginBlobs();
@@ -2985,6 +3001,8 @@ void GfxCore::GenerateBlobsDisplayList()
 	    // (last case is for stns with no legs attached)
 	    continue;
 	}
+	if (filter && !filter->CheckVisible(label->GetText()))
+	    continue;
 
 	gla_colour col;
 
@@ -3129,7 +3147,7 @@ void GfxCore::SplitLineAcrossBands(int band, int band2,
     }
 }
 
-void GfxCore::SplitPolyAcrossBands(vector<vector<Split> >& splits,
+void GfxCore::SplitPolyAcrossBands(vector<vector<Split>>& splits,
 				   int band, int band2,
 				   const Vector3 &p, const Vector3 &q,
 				   glaTexCoord ptx, glaTexCoord pty,
@@ -3283,7 +3301,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 	EndPolygon();
     } else {
 	// We need to make a separate polygon for each depth band...
-	vector<vector<Split> > splits;
+	vector<vector<Split>> splits;
 	splits.resize(max_band + 1);
 	splits[a_band].push_back(Split(a, 0, 0));
 	if (a_band != b_band) {
@@ -3538,9 +3556,10 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
 void
 GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 {
+    const SurveyFilter* filter = m_Parent->GetTreeFilter();
     assert(centreline.size() > 1);
     Vector3 U[4];
-    XSect prev_pt_v;
+    XSect* prev_pt_v = NULL;
     Vector3 last_right(1.0, 0.0, 0.0);
 
 //  FIXME: it's not simple to set the colour of a tube based on error...
@@ -3586,7 +3605,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	    // last segment
 
 	    // Calculate vector from the previous pt to this one.
-	    Vector3 leg_v = pt_v - prev_pt_v;
+	    Vector3 leg_v = pt_v - *prev_pt_v;
 
 	    // Obtain a horizontal vector in the LRUD plane.
 	    right = leg_v * up_v;
@@ -3613,7 +3632,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	    // Calculate vectors from this vertex to the
 	    // next vertex, and from the previous vertex to
 	    // this one.
-	    Vector3 leg1_v = pt_v - prev_pt_v;
+	    Vector3 leg1_v = pt_v - *prev_pt_v;
 	    Vector3 leg2_v = next_pt_v - pt_v;
 
 	    // Obtain horizontal vectors perpendicular to
@@ -3642,7 +3661,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		up.normalise();
 		Vector3 vec = up - right;
 		for (int orient = 0; orient <= 3; ++orient) {
-		    Vector3 tmp = U[orient] - prev_pt_v;
+		    Vector3 tmp = U[orient] - prev_pt_v->GetPoint();
 		    tmp.normalise();
 		    Double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
@@ -3668,7 +3687,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		shift = 0;
 		maxdotp = 0;
 		for (int j = 0; j <= 3; ++j) {
-		    Vector3 tmp = U[j] - prev_pt_v;
+		    Vector3 tmp = U[j] - *prev_pt_v;
 		    tmp.normalise();
 		    Double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
@@ -3681,7 +3700,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 		    shift = 0;
 		    maxdotp = 0;
 		    for (int j = 0; j <= 3; ++j) {
-			Vector3 tmp = U[j] - prev_pt_v;
+			Vector3 tmp = U[j] - *prev_pt_v;
 			tmp.normalise();
 			Double dotp = dot(vec, tmp);
 			printf("    %d : %.8f\n", j, dotp);
@@ -3706,32 +3725,37 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 
 	// Produce coordinates of the corners of the LRUD "plane".
 	Vector3 v[4];
-	v[0] = pt_v - right * l + up * u;
-	v[1] = pt_v + right * r + up * u;
-	v[2] = pt_v + right * r - up * d;
-	v[3] = pt_v - right * l - up * d;
+	v[0] = pt_v.GetPoint() - right * l + up * u;
+	v[1] = pt_v.GetPoint() + right * r + up * u;
+	v[2] = pt_v.GetPoint() + right * r - up * d;
+	v[3] = pt_v.GetPoint() - right * l - up * d;
 
 	if (draw) {
-	    const Vector3 & delta = pt_v - prev_pt_v;
-	    static_length_hack = delta.magnitude();
-	    static_gradient_hack = delta.gradient();
 	    if (segment > 0) {
-		(this->*AddQuad)(v[0], v[1], U[1], U[0]);
-		(this->*AddQuad)(v[2], v[3], U[3], U[2]);
-		(this->*AddQuad)(v[1], v[2], U[2], U[1]);
-		(this->*AddQuad)(v[3], v[0], U[0], U[3]);
+		if (!filter || (filter->CheckVisible(pt_v.GetLabel()) &&
+				filter->CheckVisible(prev_pt_v->GetLabel()))) {
+		    const Vector3 & delta = pt_v - *prev_pt_v;
+		    static_length_hack = delta.magnitude();
+		    static_gradient_hack = delta.gradient();
+		    (this->*AddQuad)(v[0], v[1], U[1], U[0]);
+		    (this->*AddQuad)(v[2], v[3], U[3], U[2]);
+		    (this->*AddQuad)(v[1], v[2], U[2], U[1]);
+		    (this->*AddQuad)(v[3], v[0], U[0], U[3]);
+		}
 	    }
 
 	    if (cover_end) {
-		if (segment == 0) {
-		    (this->*AddQuad)(v[0], v[1], v[2], v[3]);
-		} else {
-		    (this->*AddQuad)(v[3], v[2], v[1], v[0]);
+		if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
+		    if (segment == 0) {
+			(this->*AddQuad)(v[0], v[1], v[2], v[3]);
+		    } else {
+			(this->*AddQuad)(v[3], v[2], v[1], v[0]);
+		    }
 		}
 	    }
 	}
 
-	prev_pt_v = pt_v;
+	prev_pt_v = &pt_v;
 	U[0] = v[0];
 	U[1] = v[1];
 	U[2] = v[2];
@@ -3917,8 +3941,8 @@ GfxCore::OnExport(const wxString &filename, const wxString &title,
 		  const wxString &datestamp)
 {
     // Fill in "right_bearing" for each cross-section.
-    list<vector<XSect> >::iterator trav = m_Parent->tubes_begin();
-    list<vector<XSect> >::iterator tend = m_Parent->tubes_end();
+    list<vector<XSect>>::iterator trav = m_Parent->tubes_begin();
+    list<vector<XSect>>::iterator tend = m_Parent->tubes_end();
     while (trav != tend) {
 	SkinPassage(*trav, false);
 	++trav;

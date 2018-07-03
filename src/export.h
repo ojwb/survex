@@ -26,6 +26,7 @@
 #include "wx.h"
 
 class Model;
+class SurveyFilter;
 
 // Order here needs to match order of extension array in export.cc.
 typedef enum {
@@ -81,6 +82,7 @@ extern const format_info export_format_info[];
 bool Export(const wxString &fnm_out, const wxString &title,
 	    const wxString &datestamp,
 	    const Model& model,
+	    const SurveyFilter* filter,
 	    double pan, double tilt, int show_mask, export_format format,
 	    double grid_, double text_height_, double marker_size_,
 	    double scale);
