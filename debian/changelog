@@ -5,8 +5,9 @@ survex (1.2.35-1) UNRELEASED; urgency=medium
   * debian/copyright: Update for 2018.
   * Add autopkgtest which runs upstream cavern.tst using installed cavern,
     diffpos and survexport binaries.
+  * Fix assertion introduced by this upstream release: fix-wx-assertion.patch
 
- -- Olly Betts <olly@survex.com>  Tue, 03 Jul 2018 15:54:03 +1200
+ -- Olly Betts <olly@survex.com>  Tue, 03 Jul 2018 16:24:30 +1200
 
 survex (1.2.33-1) unstable; urgency=medium
 
