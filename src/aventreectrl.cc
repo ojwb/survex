@@ -354,11 +354,11 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 		menu.Enable(menu_SURVEY_HIDE, false);
 		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
 		break;
-#endif
 	    case STATE_NONE:
 		menu.Enable(menu_SURVEY_HIDE, false);
 		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
 		break;
+#endif
 	}
 	PopupMenu(&menu);
     }
