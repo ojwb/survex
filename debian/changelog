@@ -1,3 +1,11 @@
+survex (1.2.35-1) UNRELEASED; urgency=medium
+
+  * New upstream release.
+  * debian/control: Mark conformance with policy 4.1.4.
+  * debian/copyright: Update for 2018.
+
+ -- Olly Betts <olly@survex.com>  Tue, 03 Jul 2018 15:54:03 +1200
+
 survex (1.2.33-1) unstable; urgency=medium
 
   * New upstream release
@@ -925,4 +933,3 @@ survex (0.99.3) unstable; urgency=low
   * New release
 
  -- Wookey <wookey@survex.com>  Fri, 05 Oct 2001 01:04:36 +0100
-
