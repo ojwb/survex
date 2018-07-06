@@ -64,10 +64,7 @@ class BitmapFont {
 
     BitmapFont() : gllist_base(0), extra_data(0), extra_chars(0) { }
 
-    ~BitmapFont() {
-	if (gllist_base)
-	    glDeleteLists(gllist_base, BITMAPFONT_MAX_CHAR);
-    }
+    ~BitmapFont();
 
     bool load(const wxString & font_file);
 

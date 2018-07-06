@@ -57,6 +57,11 @@ msgstr "&Presentasi"
 msgid "Usage"
 msgstr "Penggunaan"
 
+#: ../src/gla-gl.c:228
+#: n:389
+msgid "Out of memory"
+msgstr "Kehabisan memori"
+
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
 #: ../src/message.c:76

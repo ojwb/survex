@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011,2012,2013,2014,2015 Olly Betts
+//  Copyright (C) 2011,2012,2013,2014,2015,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "glbitmapfont.h"
 
 #include "aventypes.h"
+#include "gllogerror.h"
 #include "useful.h"
 #include "wx.h"
 
@@ -41,15 +42,11 @@ using namespace std;
 
 #include "../lib/preload_font.h"
 
-#define CHECK_GL_ERROR(M, F) do { \
-    GLenum error_code_ = glGetError(); \
-    if (error_code_ != GL_NO_ERROR) { \
-	wxLogError(wxT(__FILE__ ":" STRING(__LINE__) ": OpenGL error: %s " \
-		   "(call " F " in method " M ")"), \
-		   wxString((const char *)gluErrorString(error_code_), \
-			    wxConvUTF8).c_str()); \
-    } \
-} while (0)
+BitmapFont::~BitmapFont() {
+    if (!gllist_base) return;
+    glDeleteLists(gllist_base, BITMAPFONT_MAX_CHAR);
+    CHECK_GL_ERROR("BitmapFont::~BitmapFont", "glDeleteLists");
+}
 
 bool
 BitmapFont::load(const wxString & font_file_)
@@ -58,6 +55,7 @@ BitmapFont::load(const wxString & font_file_)
 
     if (!gllist_base) {
 	gllist_base = glGenLists(BITMAPFONT_MAX_CHAR);
+	CHECK_GL_ERROR("BitmapFont::load", "glGenLists");
     }
 
     const unsigned char * p = fontdata_preloaded;

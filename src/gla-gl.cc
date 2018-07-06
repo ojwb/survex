@@ -32,6 +32,7 @@
 
 #include "aven.h"
 #include "gla.h"
+#include "gllogerror.h"
 #include "message.h"
 #include "useful.h"
 
@@ -95,7 +96,8 @@ const int BLOB_DIAMETER = 5;
 	    o, I, o, o, o, I, o, o,\
 	    I, o, o, o, o, o, I, o
 
-static bool opengl_initialised = false;
+// Declared in gllogerror.h.
+bool opengl_initialised = false;
 
 static bool double_buffered = false;
 
@@ -235,26 +237,38 @@ glpoint_sprite_works()
     return glpoint_sprite;
 }
 
-static void
+void
 log_gl_error(const wxChar * str, GLenum error_code)
 {
-    const char * e = reinterpret_cast<const char *>(gluErrorString(error_code));
-    wxLogError(str, wxString(e, wxConvUTF8).c_str());
+    wxString msg;
+    switch (error_code) {
+	case GL_INVALID_ENUM:
+	    msg = "Invalid OpenGL enumerated value";
+	    break;
+	case GL_INVALID_VALUE:
+	    msg = "Invalid OpenGL numeric argument value";
+	    break;
+	case GL_INVALID_OPERATION:
+	    msg = "Invalid OpenGL operation";
+	    break;
+	case GL_INVALID_FRAMEBUFFER_OPERATION:
+	    msg = "Invalid OpenGL framebuffer operation";
+	    break;
+	case GL_OUT_OF_MEMORY:
+	    msg = wmsg(/*Out of memory*/389);
+	    break;
+	case GL_STACK_UNDERFLOW:
+	    msg = "OpenGL stack underflow";
+	    break;
+	case GL_STACK_OVERFLOW:
+	    msg = "OpenGL stack overflow";
+	    break;
+	default:
+	    msg.Format("Unknown OpenGL error code: %d", int(error_code));
+	    break;
+    }
+    wxLogError(str, msg);
 }
-
-// Important: CHECK_GL_ERROR must not be called within a glBegin()/glEnd() pair
-//            (thus it must not be called from BeginLines(), etc., or within a
-//             BeginLines()/EndLines() block etc.)
-#define CHECK_GL_ERROR(M, F) do { \
-    if (!opengl_initialised) { \
-	wxLogError(wxT(__FILE__ ":" STRING(__LINE__) ": OpenGL not initialised before (call " F " in method " M ")")); \
-    } \
-    GLenum error_code_ = glGetError(); \
-    if (error_code_ != GL_NO_ERROR) { \
-	log_gl_error(wxT(__FILE__ ":" STRING(__LINE__) ": OpenGL error: %s " \
-			 "(call " F " in method " M ")"), error_code_); \
-    } \
-} while (0)
 
 //
 //  GLAPen

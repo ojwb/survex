@@ -57,6 +57,11 @@ msgstr "演示文档(&P)"
 msgid "Usage"
 msgstr "使用"
 
+#: ../src/gla-gl.c:228
+#: n:389
+msgid "Out of memory"
+msgstr "内存耗尽"
+
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
 #: ../src/message.c:76

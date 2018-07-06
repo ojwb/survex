@@ -57,6 +57,11 @@ msgstr "Pre&zentácia"
 msgid "Usage"
 msgstr "Použitie"
 
+#: ../src/gla-gl.c:228
+#: n:389
+msgid "Out of memory"
+msgstr "Nedostatok pamäte"
+
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
 #: ../src/message.c:76
