@@ -255,7 +255,9 @@ void AvenTreeCtrl::FillTree(const wxString& root_name)
     Thaw();
 }
 
-#define TREE_MASK (wxTREE_HITTEST_ONITEMLABEL | wxTREE_HITTEST_ONITEMRIGHT)
+constexpr auto TREE_MASK = wxTREE_HITTEST_ONITEMLABEL |
+			   wxTREE_HITTEST_ONITEMRIGHT |
+			   wxTREE_HITTEST_ONITEMSTATEICON;
 
 void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
 {
