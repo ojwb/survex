@@ -1439,7 +1439,7 @@ void GLACanvas::DrawRectangle(gla_colour fill, gla_colour edge,
 	PlaceIndicatorVertex(x0 + w, y0 + h);
 	PlaceIndicatorVertex(x0, y0 + h);
 	PlaceIndicatorVertex(x0, y0);
-	EndLines();
+	EndPolyline();
     }
 }
 
