@@ -33,10 +33,35 @@
 
 using namespace std;
 
-enum { STATE_NONE = 0, STATE_VISIBLE };
+// STATE_BLANK is used for stations which are siblings of surveys which have
+// select checkboxes.
+enum { STATE_BLANK = 0, STATE_OFF, STATE_ON };
 
 /* XPM */
-static const char *none_xpm[] = {
+static const char *blank_xpm[] = {
+/* columns rows colors chars-per-pixel */
+"15 15 1 1",
+"  c None",
+/* pixels */
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               ",
+"               "
+};
+
+/* XPM */
+static const char *off_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "15 15 2 1",
 ". c #000000",
@@ -60,7 +85,7 @@ static const char *none_xpm[] = {
 };
 
 /* XPM */
-static const char *visible_xpm[] = {
+static const char *on_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "15 15 3 1",
 ". c #000000",
@@ -109,8 +134,9 @@ AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     menu_data(NULL)
 {
     wxImageList* img_list = new wxImageList(15, 15, 2);
-    img_list->Add(wxBitmap(none_xpm));
-    img_list->Add(wxBitmap(visible_xpm));
+    img_list->Add(wxBitmap(blank_xpm));
+    img_list->Add(wxBitmap(off_xpm));
+    img_list->Add(wxBitmap(on_xpm));
     AssignStateImageList(img_list);
 }
 
@@ -347,7 +373,7 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 	menu.Append(menu_SURVEY_SHOW, wmsg(/*&Show*/409));
 	//menu.Append(menu_SURVEY_HIDE_SIBLINGS, wmsg(/*Hide si&blings*/388));
 	switch (GetItemState(menu_item)) {
-	    case STATE_VISIBLE: // Currently shown.
+	    case STATE_ON: // Currently shown.
 		menu.Enable(menu_SURVEY_SHOW, false);
 		break;
 #if 0
@@ -356,7 +382,7 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 		menu.Enable(menu_SURVEY_HIDE, false);
 		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
 		break;
-	    case STATE_NONE:
+	    case STATE_OFF:
 		menu.Enable(menu_SURVEY_HIDE, false);
 		menu.Enable(menu_SURVEY_HIDE_SIBLINGS, false);
 		break;
@@ -437,8 +463,8 @@ void AvenTreeCtrl::OnHide(wxCommandEvent&)
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
     // Hide should be disabled unless the item is explicitly shown.
-    wxASSERT(GetItemState(menu_item) == STATE_VISIBLE);
-    SetItemState(menu_item, STATE_NONE);
+    wxASSERT(GetItemState(menu_item) == STATE_ON);
+    SetItemState(menu_item, STATE_OFF);
     filter.remove(menu_data->GetSurvey());
 #if 0
     Freeze();
@@ -462,21 +488,28 @@ void AvenTreeCtrl::OnShow(wxCommandEvent&)
 {
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
+    auto old_state = GetItemState(menu_item);
     // Show should be disabled for an explicitly shown item.
-    wxASSERT(GetItemState(menu_item) != STATE_VISIBLE);
+    wxASSERT(old_state != STATE_ON);
     Freeze();
-    SetItemState(menu_item, STATE_VISIBLE);
+    SetItemState(menu_item, STATE_ON);
     filter.add(menu_data->GetSurvey());
-    // Hide siblings if not already shown or hidden.
-    wxTreeItemId i = menu_item;
-    while ((i = GetPrevSibling(i)).IsOk()) {
-	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
-	    SetItemState(i, STATE_NONE);
-    }
-    i = menu_item;
-    while ((i = GetNextSibling(i)).IsOk()) {
-	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
-	    SetItemState(i, STATE_NONE);
+    if (old_state == wxTREE_ITEMSTATE_NONE) {
+	// Hide siblings if not already shown or hidden.
+	wxTreeItemId i = menu_item;
+	while ((i = GetPrevSibling(i)).IsOk()) {
+	    if (GetItemState(i) == wxTREE_ITEMSTATE_NONE) {
+		const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
+		SetItemState(i, data->IsStation() ? STATE_BLANK : STATE_OFF);
+	    }
+	}
+	i = menu_item;
+	while ((i = GetNextSibling(i)).IsOk()) {
+	    if (GetItemState(i) == wxTREE_ITEMSTATE_NONE) {
+		const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
+		SetItemState(i, data->IsStation() ? STATE_BLANK : STATE_OFF);
+	    }
+	}
     }
     Thaw();
     m_Parent->ForceFullRedraw();
@@ -487,20 +520,20 @@ void AvenTreeCtrl::OnHideSiblings(wxCommandEvent&)
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
     Freeze();
-    SetItemState(menu_item, STATE_VISIBLE);
+    SetItemState(menu_item, STATE_ON);
     filter.add(menu_data->GetSurvey());
 
     wxTreeItemId i = menu_item;
     while ((i = GetPrevSibling(i)).IsOk()) {
 	const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
 	filter.remove(data->GetSurvey());
-	SetItemState(i, STATE_NONE);
+	SetItemState(i, data->IsStation() ? STATE_BLANK : STATE_OFF);
     }
     i = menu_item;
     while ((i = GetNextSibling(i)).IsOk()) {
 	const TreeData* data = static_cast<const TreeData*>(GetItemData(i));
 	filter.remove(data->GetSurvey());
-	SetItemState(i, STATE_NONE);
+	SetItemState(i, data->IsStation() ? STATE_BLANK : STATE_OFF);
     }
     Thaw();
     m_Parent->ForceFullRedraw();
@@ -510,12 +543,19 @@ void AvenTreeCtrl::OnStateClick(wxTreeEvent& e)
 {
     auto item = e.GetItem();
     const TreeData* data = static_cast<const TreeData*>(GetItemData(item));
-    if (GetItemState(item) == STATE_VISIBLE) {
-	filter.remove(data->GetSurvey());
-	SetItemState(item, STATE_NONE);
-    } else {
-	filter.add(data->GetSurvey());
-	SetItemState(item, STATE_VISIBLE);
+    switch (GetItemState(item)) {
+	case STATE_BLANK:
+	    // Click on blank state icon for a station - let the tree handle
+	    // this in the same way as a click on the label.
+	    return;
+	case STATE_ON:
+	    filter.remove(data->GetSurvey());
+	    SetItemState(item, STATE_OFF);
+	    break;
+	case STATE_OFF:
+	    filter.add(data->GetSurvey());
+	    SetItemState(item, STATE_ON);
+	    break;
     }
     e.Skip();
     m_Parent->ForceFullRedraw();
