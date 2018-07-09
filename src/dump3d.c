@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002,2006,2011,2012,2013,2014,2015 Olly Betts
+/* Copyright (C) 2001,2002,2006,2011,2012,2013,2014,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@ main(int argc, char **argv)
 	    if (pimg->flags & img_SFLAG_EXPORTED) printf(" EXPORTED");
 	    if (pimg->flags & img_SFLAG_FIXED) printf(" FIXED");
 	    if (pimg->flags & img_SFLAG_ANON) printf(" ANON");
+	    if (pimg->flags & img_SFLAG_WALL) printf(" WALL");
 	    printf("\n");
 	    break;
 	  case img_XSECT:
