@@ -29,11 +29,11 @@ extern "C" {
 #include "osdepend.h"
 #include "osalloc.h"
 
-/* Define MSG_SETUP_PROJ_SERACH_PATH before including this header to enable the
+/* Define MSG_SETUP_PROJ__PATH before including this header to enable the
  * hooks to setup proj4's search path to be relative to the executable if this
  * is a relocatable install.
  */
-#ifdef MSG_SETUP_PROJ_SERACH_PATH
+#ifdef MSG_SETUP_PROJ_SEARCH_PATH
 /* We only support relocatable builds on these platforms. */
 # if OS_WIN32 || OS_UNIX_MACOSX
 #  include <proj_api.h>
@@ -69,12 +69,12 @@ extern const char *msg_lang;
 extern const char *msg_lang2;
 
 /* Not intended for direct use - use msg_init() instead, optionally defining
- * MSG_SETUP_PROJ_SERACH_PATH.
+ * MSG_SETUP_PROJ_SEARCH_PATH.
  */
 int msg_init_(char *const *argv);
 
 /* Not intended for direct use - use msg_init() instead, optionally defining
- * MSG_SETUP_PROJ_SERACH_PATH.
+ * MSG_SETUP_PROJ_SEARCH_PATH.
  */
 const char * msg_proj_finder_(const char * file);
 

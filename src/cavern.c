@@ -21,7 +21,7 @@
 #include <config.h>
 #endif
 
-#define MSG_SETUP_PROJ_SERACH_PATH 1
+#define MSG_SETUP_PROJ_SEARCH_PATH 1
 
 #include <limits.h>
 #include <stdlib.h>
