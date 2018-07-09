@@ -420,13 +420,19 @@ main(int argc, char **argv)
    if (err) fatalerror(err, fnm_in);
    if (filter) filter->SetSeparator(model.GetSeparator());
 
-   if (!Export(fnm_out, model.GetSurveyTitle(),
-	       model.GetDateString(),
-	       model, filter,
-	       pan, tilt, show_mask, format,
-	       grid, text_height, marker_size,
-	       scale)) {
-      fatalerror(/*Couldn’t write file “%s”*/402, fnm_out);
+   try {
+       if (!Export(fnm_out, model.GetSurveyTitle(),
+		   model.GetDateString(),
+		   model, filter,
+		   pan, tilt, show_mask, format,
+		   grid, text_height, marker_size,
+		   scale)) {
+	  fatalerror(/*Couldn’t write file “%s”*/402, fnm_out);
+       }
+   } catch (const wxString & m) {
+       wxFprintf(stderr, wxT("%s: %s: %s\n"),
+		 msg_appname(), wmsg(/*error*/93), m);
    }
+
    return 0;
 }
