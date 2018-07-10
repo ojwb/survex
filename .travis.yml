@@ -47,7 +47,7 @@ matrix:
         - echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
       script:
         - autoreconf -fiv
-        - V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; mv -f doc/cad3d.1 doc/survexport.1; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
+        - V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
 #        - ./buildmacosx.sh
         - ./configure
         - make
