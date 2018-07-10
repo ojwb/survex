@@ -38,8 +38,7 @@ matrix:
         - brew install gettext
         - brew install gnu-tar
         - brew install netpbm
-        # proj 5.0.0 has a bug which breaks our testsuite
-        # - brew upgrade proj
+        - brew upgrade proj
         - brew install wxmac
         - brew link --force gettext
         - sudo cpan -T -i local::lib < /dev/null
