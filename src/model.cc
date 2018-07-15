@@ -467,6 +467,56 @@ void Model::CentreDataset(const Vector3& vmin)
     }
 }
 
+void
+SurveyFilter::add(const wxString& name)
+{
+    auto it = filters.lower_bound(name);
+    if (it != filters.end()) {
+	// It's invalid to add a survey which is already present.
+	assert(*it != name);
+	// Check if a survey prefixing name is visible.
+	if (name.StartsWith(*it) && name[it->size()] == separator) {
+	    redundant_filters.insert(name);
+	    return;
+	}
+    }
+    while (it != filters.begin()) {
+	--it;
+	const wxString& s = *it;
+	if (s.size() <= name.size()) break;
+	if (s.StartsWith(name) && s[name.size()] == separator) {
+	    redundant_filters.insert(s);
+	    it = filters.erase(it);
+	}
+    }
+    filters.insert(name);
+}
+
+void
+SurveyFilter::remove(const wxString& name)
+{
+    if (filters.erase(name) == 0) {
+	redundant_filters.erase(name);
+	return;
+    }
+    if (redundant_filters.empty()) {
+	return;
+    }
+    auto it = redundant_filters.upper_bound(name);
+    while (it != redundant_filters.begin()) {
+	--it;
+	// Check if a survey prefixed by name should be made visible.
+	const wxString& s = *it;
+	if (s.size() <= name.size()) {
+	    break;
+	}
+	if (!(s.StartsWith(name) && s[name.size()] == separator))
+	    break;
+	filters.insert(s);
+	it = redundant_filters.erase(it);
+    }
+}
+
 bool
 SurveyFilter::CheckVisible(const wxString& name) const
 {

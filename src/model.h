@@ -113,16 +113,17 @@ class traverse : public vector<PointInfo> {
 
 class SurveyFilter {
     std::set<wxString, std::greater<wxString>> filters;
+    std::set<wxString, std::greater<wxString>> redundant_filters;
     wxChar separator = 0;
 
   public:
     SurveyFilter() {}
 
-    void add(const wxString& survey) { filters.insert(survey); }
+    void add(const wxString& survey);
 
-    void remove(const wxString& survey) { filters.erase(survey); }
+    void remove(const wxString& survey);
 
-    void clear() { filters.clear(); }
+    void clear() { filters.clear(); redundant_filters.clear(); }
 
     bool empty() const { return filters.empty(); }
 
