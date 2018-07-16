@@ -719,7 +719,7 @@ bad_utf8:
 		    cur += wxT("&amp;");
 		    break;
 		case '"':
-		    cur += wxT("&#22;");
+		    cur += wxT("&#34;");
 		    continue;
 		default:
 #ifdef wxUSE_UNICODE
