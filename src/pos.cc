@@ -1,7 +1,7 @@
 /* pos.cc
  * Export from Aven as Survex .pos.
  */
-/* Copyright (C) 2001,2002,2011,2013,2014,2015 Olly Betts
+/* Copyright (C) 2001,2002,2011,2013,2014,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ POS::~POS()
 {
     vector<pos_label*>::const_iterator i;
     for (i = todo.begin(); i != todo.end(); ++i) {
-	delete [] *i;
+	free(*i);
     }
     todo.clear();
 }
@@ -65,7 +65,9 @@ void
 POS::label(const img_point *p, const char *s, bool /*fSurface*/, int /*type*/)
 {
     size_t len = strlen(s);
-    pos_label * l = (pos_label*)new char[offsetof(pos_label, name) + len + 1];
+    pos_label * l = (pos_label*)malloc(offsetof(pos_label, name) + len + 1);
+    if (l == NULL)
+	throw std::bad_alloc();
     l->x = p->x;
     l->y = p->y;
     l->z = p->z;
