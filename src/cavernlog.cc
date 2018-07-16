@@ -768,7 +768,7 @@ bad_utf8:
      * allows the user to save the log to a file. */
     AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
 				  (int)LOG_SAVE,
-				  wmsg(/*Save Log*/446).c_str()));
+				  wmsg(/*&Save Log*/446).c_str()));
     wxEndBusyCursor();
     delete cavern_out;
     cavern_out = NULL;
@@ -778,12 +778,12 @@ bad_utf8:
 	 * causes the survey data to be reprocessed. */
 	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d name=\"%s\">"),
 				      (int)LOG_REPROCESS,
-				      wmsg(/*Reprocess*/184).c_str()));
+				      wmsg(/*&Reprocess*/184).c_str()));
 	return;
     }
     AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
 				  (int)LOG_REPROCESS,
-				  wmsg(/*Reprocess*/184).c_str()));
+				  wmsg(/*&Reprocess*/184).c_str()));
     AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
     Update();
     init_done = false;

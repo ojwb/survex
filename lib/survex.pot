@@ -1347,7 +1347,7 @@ msgstr ""
 #. allows the user to save the log to a file.
 #: ../src/cavernlog.cc:771
 #: n:446
-msgid "Save Log"
+msgid "&Save Log"
 msgstr ""
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
@@ -1355,7 +1355,7 @@ msgstr ""
 #: ../src/cavernlog.cc:781
 #: ../src/cavernlog.cc:786
 #: n:184
-msgid "Reprocess"
+msgid "&Reprocess"
 msgstr ""
 
 #: ../src/cmdline.c:242

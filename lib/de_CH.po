@@ -1346,16 +1346,16 @@ msgstr "Netzwerk hat %ld zusammenhängende Teile."
 #. allows the user to save the log to a file.
 #: ../src/cavernlog.cc:771
 #: n:446
-msgid "Save Log"
-msgstr "Protokoll Speichern"
+msgid "&Save Log"
+msgstr "&Protokoll Speichern"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
 #: ../src/cavernlog.cc:781
 #: ../src/cavernlog.cc:786
 #: n:184
-msgid "Reprocess"
-msgstr "Neu berechnen"
+msgid "&Reprocess"
+msgstr "&Neu berechnen"
 
 #: ../src/cmdline.c:242
 #: ../src/cmdline.c:261
