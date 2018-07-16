@@ -2018,6 +2018,16 @@ msgstr ""
 msgid "full coordinates"
 msgstr ""
 
+#: ../src/printing.cc:548
+#: n:477
+msgid "Clamp to ground"
+msgstr ""
+
+#: ../src/survexport.cc:134
+#: n:478
+msgid "clamp to ground"
+msgstr ""
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:473
 #: n:263

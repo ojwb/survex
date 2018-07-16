@@ -62,7 +62,8 @@ html_escape(FILE *fh, const char *s)
     }
 }
 
-KML::KML(const char * input_datum)
+KML::KML(const char * input_datum, bool clamp_to_ground_)
+    : clamp_to_ground(clamp_to_ground_)
 {
     if (!(pj_input = pj_init_plus(input_datum))) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
@@ -137,7 +138,11 @@ KML::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 	} else {
 	    fputs("</coordinates></LineString>\n", fh);
 	}
-	fputs("<LineString><altitudeMode>absolute</altitudeMode><coordinates>\n", fh);
+	if (clamp_to_ground) {
+	    fputs("<LineString><coordinates>\n", fh);
+	} else {
+	    fputs("<LineString><altitudeMode>absolute</altitudeMode><coordinates>\n", fh);
+	}
 	double X = p1->x, Y = p1->y, Z = p1->z;
 	pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
 	X = deg(X);
@@ -173,7 +178,11 @@ KML::xsect(const img_point *p, double angle, double d1, double d2)
     x2 = deg(x2);
     y2 = deg(y2);
 
-    fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
+    if (clamp_to_ground) {
+	fputs("<Placemark><name></name><LineString><coordinates>", fh);
+    } else {
+	fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
+    }
     fprintf(fh, "%.8f,%.8f,%.2f %.8f,%.8f,%.2f", x1, y1, z1, x2, y2, z2);
     fputs("</coordinates></LineString></Placemark>\n", fh);
 }
@@ -192,7 +201,11 @@ KML::wall(const img_point *p, double angle, double d)
     y = deg(y);
 
     if (!in_wall) {
-	fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
+	if (clamp_to_ground) {
+	    fputs("<Placemark><name></name><LineString><coordinates>", fh);
+	} else {
+	    fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
+	}
 	in_wall = true;
     }
     fprintf(fh, "%.8f,%.8f,%.2f\n", x, y, z);
@@ -222,8 +235,13 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     y2 = deg(y2);
 
     if (psg.empty()) {
-	fprintf(fh, "<Placemark><name></name><Polygon><altitudeMode>absolute</altitudeMode>"
-		    "<outerBoundaryIs><LinearRing><coordinates>\n");
+	if (clamp_to_ground) {
+	    fputs("<Placemark><name></name><Polygon>"
+		  "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
+	} else {
+	    fputs("<Placemark><name></name><Polygon><altitudeMode>absolute</altitudeMode>"
+		  "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
+	}
     }
     // NB - order of vertices should be anti-clockwise in a KML file, so go
     // along the right wall now, and put the left wall points on a stack to

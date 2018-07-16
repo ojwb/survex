@@ -62,7 +62,7 @@ main(int argc, char **argv)
        OPT_SCALE = 0x100, OPT_BEARING, OPT_TILT, OPT_PLAN, OPT_ELEV,
        OPT_LEGS, OPT_SURF, OPT_SPLAYS, OPT_CROSSES, OPT_LABELS, OPT_ENTS,
        OPT_FIXES, OPT_EXPORTS, OPT_XSECT, OPT_WALLS, OPT_PASG,
-       OPT_CENTRED, OPT_FULL_COORDS, OPT_DEFAULTS
+       OPT_CENTRED, OPT_FULL_COORDS, OPT_CLAMP_TO_GROUND, OPT_DEFAULTS
    };
    static const struct option long_opts[] = {
 	/* const char *name; int has_arg (0 no_argument, 1 required, 2 options_*); int *flag; int val */
@@ -85,6 +85,7 @@ main(int argc, char **argv)
 	{"passages", no_argument, 0, OPT_PASG},
 	{"origin-in-centre", no_argument, 0, OPT_CENTRED},
 	{"full-coordinates", no_argument, 0, OPT_FULL_COORDS},
+	{"clamp-to-ground", no_argument, 0, OPT_CLAMP_TO_GROUND},
 	{"defaults", no_argument, 0, OPT_DEFAULTS},
 	{"grid", optional_argument, 0, 'g'},
 	{"text-height", required_argument, 0, 't'},
@@ -131,24 +132,25 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(16),  /*passages*/471, 0},
 	{HLP_ENCODELONG(17),  /*origin in centre*/472, 0},
 	{HLP_ENCODELONG(18),  /*full coordinates*/473, 0},
-	{HLP_ENCODELONG(19),  /*include items exported by default*/155, 0},
-	{HLP_ENCODELONG(20),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING)},
-	{HLP_ENCODELONG(21),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT)},
-	{HLP_ENCODELONG(22),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE)},
-	{HLP_ENCODELONG(23),  /*produce DXF output*/156, 0},
-	{HLP_ENCODELONG(24),  /*produce EPS output*/454, 0},
-	{HLP_ENCODELONG(25),  /*produce GPX output*/455, 0},
-	{HLP_ENCODELONG(26),  /*produce HPGL output*/456, 0},
-	{HLP_ENCODELONG(27),  /*produce JSON output*/457, 0},
-	{HLP_ENCODELONG(28),  /*produce KML output*/458, 0},
+	{HLP_ENCODELONG(19),  /*clamp to ground*/478, 0},
+	{HLP_ENCODELONG(20),  /*include items exported by default*/155, 0},
+	{HLP_ENCODELONG(21),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING)},
+	{HLP_ENCODELONG(22),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT)},
+	{HLP_ENCODELONG(23),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE)},
+	{HLP_ENCODELONG(24),  /*produce DXF output*/156, 0},
+	{HLP_ENCODELONG(25),  /*produce EPS output*/454, 0},
+	{HLP_ENCODELONG(26),  /*produce GPX output*/455, 0},
+	{HLP_ENCODELONG(27),  /*produce HPGL output*/456, 0},
+	{HLP_ENCODELONG(29),  /*produce JSON output*/457, 0},
+	{HLP_ENCODELONG(29),  /*produce KML output*/458, 0},
 	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 	 * so should not be translated. */
-	{HLP_ENCODELONG(29),  /*produce Compass PLT output for Carto*/159, 0},
+	{HLP_ENCODELONG(30),  /*produce Compass PLT output for Carto*/159, 0},
 	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
 	 * translated. */
-	{HLP_ENCODELONG(30),  /*produce Skencil output*/158, 0},
-	{HLP_ENCODELONG(31),  /*produce Survex POS output*/459, 0},
-	{HLP_ENCODELONG(32),  /*produce SVG output*/160, 0},
+	{HLP_ENCODELONG(31),  /*produce Skencil output*/158, 0},
+	{HLP_ENCODELONG(32),  /*produce Survex POS output*/459, 0},
+	{HLP_ENCODELONG(33),  /*produce SVG output*/160, 0},
 	{0, 0, 0}
    };
 
@@ -203,6 +205,9 @@ main(int argc, char **argv)
 	 break;
        case OPT_FULL_COORDS:
 	 bit = FULL_COORDS;
+	 break;
+       case OPT_CLAMP_TO_GROUND:
+	 bit = CLAMP_TO_GROUND;
 	 break;
        case OPT_DEFAULTS:
 	 always_include_defaults = true;

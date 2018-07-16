@@ -74,6 +74,7 @@ extern const format_info export_format_info[];
 #define SCALE		0x00020000
 #define FULL_COORDS	0x00040000
 #define SPLAYS		0x00080000
+#define CLAMP_TO_GROUND	0x00100000
 
 #define DEFAULT_GRID_SPACING 100 // metres
 #define DEFAULT_TEXT_HEIGHT 0.6

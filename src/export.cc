@@ -88,7 +88,7 @@ const format_info export_format_info[] = {
       LEGS|SPLAYS|CENTRED|EXPORT_3D,
       LEGS },
     { ".kml", /*KML files*/444,
-      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D|CLAMP_TO_GROUND,
       LABELS|LEGS },
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:
@@ -1357,11 +1357,13 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_JSON:
 	   filt = new JSON;
 	   break;
-       case FMT_KML:
-	   filt = new KML(model.GetCSProj().c_str());
+       case FMT_KML: {
+	   bool clamp_to_ground = (show_mask & CLAMP_TO_GROUND);
+	   filt = new KML(model.GetCSProj().c_str(), clamp_to_ground);
 	   show_mask |= FULL_COORDS;
 	   need_bounds = false;
 	   break;
+       }
        case FMT_PLT:
 	   filt = new PLT;
 	   show_mask |= FULL_COORDS;

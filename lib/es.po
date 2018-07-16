@@ -2012,6 +2012,16 @@ msgstr "Coordenadas completas"
 msgid "full coordinates"
 msgstr "coordenadas completas"
 
+#: ../src/printing.cc:548
+#: n:477
+msgid "Clamp to ground"
+msgstr "Pegar al suelo"
+
+#: ../src/survexport.cc:134
+#: n:478
+msgid "clamp to ground"
+msgstr "pegar al suelo"
+
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:473
 #: n:263

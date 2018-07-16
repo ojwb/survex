@@ -115,7 +115,8 @@ enum {
 	svx_TEXT_HEIGHT,
 	svx_MARKER_SIZE,
 	svx_CENTRED,
-	svx_FULLCOORDS
+	svx_FULLCOORDS,
+	svx_CLAMP_TO_GROUND
 };
 
 class BitValidator : public wxValidator {
@@ -514,6 +515,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			       wxDefaultPosition, wxDefaultSize, 0,
 			       BitValidator(&m_layout.show_mask, FULL_COORDS)),
 		0, wxALIGN_LEFT|wxALL, 2);
+	v2->Add(new wxCheckBox(this, svx_CLAMP_TO_GROUND, wmsg(/*Clamp to ground*/477),
+			       wxDefaultPosition, wxDefaultSize, 0,
+			       BitValidator(&m_layout.show_mask, CLAMP_TO_GROUND)),
+		0, wxALIGN_LEFT|wxALL, 2);
     }
     if (printing) {
 	/* TRANSLATORS: used in the print dialog - controls drawing lines
@@ -765,6 +770,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 		{ svx_EXPORTS, EXPORTS },
 		{ svx_CENTRED, CENTRED },
 		{ svx_FULLCOORDS, FULL_COORDS },
+		{ svx_CLAMP_TO_GROUND, CLAMP_TO_GROUND },
 	    };
 	    static unsigned n_controls = sizeof(controls) / sizeof(controls[0]);
 	    for (unsigned i = 0; i != n_controls; ++i) {
