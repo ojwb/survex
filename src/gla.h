@@ -205,6 +205,8 @@ public:
     void EndTriangles();
     void BeginPolyline();
     void EndPolyline();
+    void BeginPolyloop();
+    void EndPolyloop();
     void BeginPolygon();
     void EndPolygon();
     void BeginBlobs();

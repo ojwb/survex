@@ -224,6 +224,7 @@ private:
     LabelInfo temp_here;
     const LabelInfo * m_here;
     const LabelInfo * m_there;
+    wxString highlighted_survey;
 
     wxStopWatch timer;
     long base_tilt_time;
@@ -354,6 +355,17 @@ public:
     void ForceRefresh();
 
     void RefreshLine(const Point* a, const Point* b, const Point* c);
+
+    void SetHereSurvey(const wxString& survey) {
+	if (survey != highlighted_survey) {
+	    highlighted_survey = survey;
+	    ForceRefresh();
+	}
+    }
+
+    void HighlightSurvey();
+
+    void ZoomToSurvey(const wxString& survey);
 
     void SetHereFromTree(const LabelInfo * p);
 

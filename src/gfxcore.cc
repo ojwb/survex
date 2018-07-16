@@ -454,6 +454,10 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    }
 	}
 
+	if (!highlighted_survey.empty()) {
+	    HighlightSurvey();
+	}
+
 	if (m_HitTestDebug) {
 	    // Show the hit test grid bucket sizes...
 	    SetColour(m_HitTestGridValid ? col_LIGHT_GREY : col_DARK_GREY);
@@ -1751,10 +1755,128 @@ void GfxCore::RefreshLine(const Point *a, const Point *b, const Point *c)
 #endif
 }
 
+void GfxCore::HighlightSurvey()
+{
+    SurveyFilter filter;
+    filter.add(highlighted_survey);
+    filter.SetSeparator(m_Parent->GetSeparator());
+
+    double x_min = HUGE_VAL, x_max = -HUGE_VAL;
+    double y_min = HUGE_VAL, y_max = -HUGE_VAL;
+    double xpy_min = HUGE_VAL, xpy_max = -HUGE_VAL;
+    double xmy_min = HUGE_VAL, xmy_max = -HUGE_VAL;
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    double x_tot = 0, y_tot = 0;
+    size_t c = 0;
+    while (pos != m_Parent->GetLabelsEnd()) {
+	const LabelInfo* label = *pos++;
+	if (!filter.CheckVisible(label->GetText()))
+	    continue;
+
+	double x, y, z;
+	Transform(*label, &x, &y, &z);
+	if (x < x_min) x_min = x;
+	if (x > x_max) x_max = x;
+	if (y < y_min) y_min = y;
+	if (y > y_max) y_max = y;
+	double xpy = x + y;
+	if (xpy < xpy_min) xpy_min = xpy;
+	if (xpy > xpy_max) xpy_max = xpy;
+	double xmy = x - y;
+	if (xmy < xmy_min) xmy_min = xmy;
+	if (xmy > xmy_max) xmy_max = xmy;
+	x_tot += x;
+	y_tot += y;
+	++c;
+    }
+    for (int f = 0; f != 8; ++f) {
+	list<traverse>::const_iterator trav = m_Parent->traverses_begin(f, &filter);
+	list<traverse>::const_iterator tend = m_Parent->traverses_end(f);
+	while (trav != tend) {
+	    for (auto&& p : *trav) {
+		double x, y, z;
+		Transform(p, &x, &y, &z);
+		if (x < x_min) x_min = x;
+		if (x > x_max) x_max = x;
+		if (y < y_min) y_min = y;
+		if (y > y_max) y_max = y;
+		double xpy = x + y;
+		if (xpy < xpy_min) xpy_min = xpy;
+		if (xpy > xpy_max) xpy_max = xpy;
+		double xmy = x - y;
+		if (xmy < xmy_min) xmy_min = xmy;
+		if (xmy > xmy_max) xmy_max = xmy;
+		x_tot += x;
+		y_tot += y;
+		++c;
+	    }
+	    trav = m_Parent->traverses_next(f, &filter, trav);
+	}
+    }
+
+    if (c == 0) return;
+
+    // Minimum margin around survey.
+    const double M = 4.0;
+    // X/Y component when M measured diagonally.
+    const double D = M * sqrt(2.0) / 2.0;
+
+    SetColour(col_WHITE);
+    BeginPolyloop();
+    PlaceIndicatorVertex(xmy_max + y_min, y_min - M);
+    PlaceIndicatorVertex(xmy_max + y_min + D, y_min - D);
+    PlaceIndicatorVertex(x_max + D, x_max - xmy_max - D);
+    PlaceIndicatorVertex(x_max + M, x_max - xmy_max);
+    PlaceIndicatorVertex(x_max + M, xpy_max - x_max);
+    PlaceIndicatorVertex(x_max + D, xpy_max - x_max + D);
+    PlaceIndicatorVertex(xpy_max - y_max + D, y_max + D);
+    PlaceIndicatorVertex(xpy_max - y_max, y_max + M);
+    PlaceIndicatorVertex(xmy_min + y_max, y_max + M);
+    PlaceIndicatorVertex(xmy_min + y_max - D, y_max + D);
+    PlaceIndicatorVertex(x_min - D, x_min - xmy_min + D);
+    PlaceIndicatorVertex(x_min - M, x_min - xmy_min);
+    PlaceIndicatorVertex(x_min - M, xpy_min - x_min);
+    PlaceIndicatorVertex(x_min - D, xpy_min - x_min - D);
+    PlaceIndicatorVertex(xpy_min - y_min - D, y_min - D);
+    PlaceIndicatorVertex(xpy_min - y_min, y_min - M);
+    EndPolyloop();
+}
+
+void GfxCore::ZoomToSurvey(const wxString& survey) {
+    SurveyFilter filter;
+    filter.add(survey);
+    filter.SetSeparator(m_Parent->GetSeparator());
+
+    Double xmin = DBL_MAX;
+    Double xmax = -DBL_MAX;
+    Double ymin = DBL_MAX;
+    Double ymax = -DBL_MAX;
+    Double zmin = DBL_MAX;
+    Double zmax = -DBL_MAX;
+
+    list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
+    while (pos != m_Parent->GetLabelsEnd()) {
+	LabelInfo* label = *pos++;
+
+	if (!filter.CheckVisible(label->GetText()))
+	    continue;
+
+	if (label->GetX() < xmin) xmin = label->GetX();
+	if (label->GetX() > xmax) xmax = label->GetX();
+	if (label->GetY() < ymin) ymin = label->GetY();
+	if (label->GetY() > ymax) ymax = label->GetY();
+	if (label->GetZ() < zmin) zmin = label->GetZ();
+	if (label->GetZ() > zmax) zmax = label->GetZ();
+    }
+
+    SetViewTo(xmin, xmax, ymin, ymax, zmin, zmax);
+}
+
 void GfxCore::SetHereFromTree(const LabelInfo * p)
 {
     SetHere(p);
     m_Parent->ShowInfo(m_here, m_there);
+    SetHereSurvey(wxString());
 }
 
 void GfxCore::SetHere(const LabelInfo *p)

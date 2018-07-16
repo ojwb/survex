@@ -297,7 +297,13 @@ void AvenTreeCtrl::OnMouseMove(wxMouseEvent& event)
     }
     if (pos == m_LastItem) return;
     if (pos.IsOk()) {
-	m_Parent->DisplayTreeInfo(GetItemData(pos));
+	const TreeData* data = static_cast<const TreeData*>(GetItemData(pos));
+	m_Parent->DisplayTreeInfo(data);
+	if (data && !data->IsStation()) {
+	    // For stations, MainFrm calls back to SetHere(), but for surveys
+	    // we need to do that ourselves.
+	    SetHere(pos);
+	}
     } else {
 	m_Parent->DisplayTreeInfo();
     }

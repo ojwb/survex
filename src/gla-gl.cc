@@ -1166,6 +1166,21 @@ void GLACanvas::EndPolyline()
     CHECK_GL_ERROR("EndPolyline", "glEnd GL_LINE_STRIP");
 }
 
+void GLACanvas::BeginPolyloop()
+{
+    // Commence drawing of a polyloop.
+
+    glBegin(GL_LINE_LOOP);
+}
+
+void GLACanvas::EndPolyloop()
+{
+    // Finish drawing of a polyloop.
+
+    glEnd();
+    CHECK_GL_ERROR("EndPolyloop", "glEnd GL_LINE_LOOP");
+}
+
 void GLACanvas::BeginPolygon()
 {
     // Commence drawing of a polygon.

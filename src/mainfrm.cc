@@ -1899,11 +1899,17 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
 {
     const TreeData* data = static_cast<const TreeData*>(item);
-    if (data && data->IsStation()) {
-	m_Gfx->SetHereFromTree(data->GetLabel());
-    } else {
-	ShowInfo();
+    if (data) {
+	if (data->IsStation()) {
+	    m_Gfx->SetHereFromTree(data->GetLabel());
+	} else {
+	    m_Gfx->SetHereSurvey(data->GetSurvey());
+	    ShowInfo();
+	}
+	return;
     }
+    m_Gfx->SetHereSurvey(wxString());
+    ShowInfo();
 }
 
 void MainFrm::TreeItemSelected(const wxTreeItemData* item)
@@ -1925,20 +1931,10 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item)
 	m_Gfx->SetThere();
 	if (!data) {
 	    // Must be the root.
-	    if (m_FindBox->GetValue().empty()) {
-		wxCommandEvent dummy;
-		OnDefaults(dummy);
-	    } else {
-		m_FindBox->SetValue(wxString());
-	    }
+	    wxCommandEvent dummy;
+	    OnDefaults(dummy);
 	} else {
-	    wxString search_string = data->GetSurvey() + wxT(".*");
-	    if (m_FindBox->GetValue() == search_string) {
-		wxCommandEvent dummy;
-		OnGotoFound(dummy);
-	    } else {
-		m_FindBox->SetValue(search_string);
-	    }
+	    m_Gfx->ZoomToSurvey(data->GetSurvey());
 	}
     }
     UpdateStatusBar();
