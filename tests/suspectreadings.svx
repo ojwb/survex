@@ -1,0 +1,3 @@
+; pos=no warn=4
+*fix 1 reference 0 0 0
+1 2 -0.10 361 -91
