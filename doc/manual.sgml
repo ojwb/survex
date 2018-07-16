@@ -379,8 +379,9 @@ Icons are installed for <filename>.svx</filename>, <filename>.3d</filename>, <fi
 Compass Plot files (<filename>.plt</filename> and <filename>.plf</filename>)
 (which Survex can read). <!-- FIXME XYZ -->
 Double-clicking on a <filename>.svx</filename> file loads it for editing.  To process it to
-produce a <filename>.3d</filename> file, right click and choose "Process" from the menu.
-Double-clicking the resultant <filename>.3d</filename> file views it in aven.
+produce a <filename>.3d</filename> file, right click and choose "Process" from
+the menu - this runs aven to process the <filename>.svx</filename> file and
+automatically load the resultant <filename>.3d</filename> file.
 All the <Application>Survex</Application> file types can be right clicked on to give a menu of
 possible actions.  
 </Para>
@@ -408,7 +409,7 @@ possible actions.
   </VarListEntry>
   <VarListEntry><Term>Print</Term>
   <ListItem><Para>
-  Send to the printer
+  Print the file via Aven
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Extend</Term>
@@ -418,12 +419,18 @@ possible actions.
   </VarListEntry>
   <VarListEntry><Term>Convert to DXF</Term>
   <ListItem><Para>
-  Convert to a DXF file (suitable for importing into many CAD packages)
+  This entry used to be provided to allow converting to a DXF file (suitable
+  for importing into many CAD packages) but this functionality is now available
+  from inside Aven with the ability to control what is exported, and this entry
+  was dropped in 1.2.35.
   </Para></ListItem>
   </VarListEntry>
   <VarListEntry><Term>Convert for hand plotting</Term>
   <ListItem><Para>
-  Produce a <filename>.pos</filename> file listing all the stations and their coordinates
+  This entry used to be provided to allow converting to a <filename>.pos</filename> file
+  listing all the stations and their coordinates, but this functionality is now
+  available from inside Aven with the ability to control what is exported. and
+  this entry was dropped in 1.2.35.
   </Para></ListItem>
   </VarListEntry>
   </VariableList>
@@ -616,7 +623,7 @@ norm on UNIX).
 <Sect2><Title>Filenames on the Command Line</Title>
 
 <Para>Filenames with spaces can be processed (provided your operating system
-supports them - UNIX does, and so do recent versions of Microsoft
+supports them - UNIX does, and so do modern versions of Microsoft
 Windows).  You need to enclose the filename in quotes like so:
 <userinput>cavern "Spider Cave"</userinput>
 </Para>
