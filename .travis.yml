@@ -1,5 +1,8 @@
 dist: trusty
 language: cpp
+env:
+  global:
+    - HOMEBREW_PACKAGES='ffmpeg gettext gnu-tar netpbm proj wxmac'
 matrix:
   include:
     - compiler: gcc
@@ -34,40 +37,60 @@ matrix:
     - os: osx
       before_install:
         - brew update
-        - brew install ffmpeg
-        - brew install gettext
-        - brew install gnu-tar
-        - brew install netpbm
-        - brew upgrade proj
-        - brew install wxmac
+        # "brew install" unhelpfully errors out if any package listed is
+        # already installed and up-to-date, but travis change what's installed
+        # by default from time to time so it's brittle to just filter out those
+        # installed by default from the list we need.  So we ignore the exit
+        # status from "brew install", then check that "brew list --versions"
+        # says all the packages requested are installed.
+        - brew install $HOMEBREW_PACKAGES || true
+        - brew list --versions $HOMEBREW_PACKAGES
         - brew link --force gettext
         - sudo cpan -T -i local::lib < /dev/null
         - sudo cpan -I -T -i Locale::PO < /dev/null
         - echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
+      script:
+        - autoreconf -fiv
+        - V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
+#        - ./buildmacosx.sh
+        - ./configure
+        - make
+        - make check VERBOSE=1
     - os: osx
       osx_image: xcode9.4
       before_install:
         - brew update
-        - brew install ffmpeg
-        - brew install gettext
-        - brew install gnu-tar
-        - brew install netpbm
-        - brew upgrade proj
-        - brew install wxmac
+        # "brew install" unhelpfully errors out if any package listed is
+        # already installed and up-to-date, but travis change what's installed
+        # by default from time to time so it's brittle to just filter out those
+        # installed by default from the list we need.  So we ignore the exit
+        # status from "brew install", then check that "brew list --versions"
+        # says all the packages requested are installed.
+        - brew install $HOMEBREW_PACKAGES || true
+        - brew list --versions $HOMEBREW_PACKAGES
         - brew link --force gettext
         - sudo cpan -T -i local::lib < /dev/null
         - sudo cpan -I -T -i Locale::PO < /dev/null
         - echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
+      script:
+        - autoreconf -fiv
+        - V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
+#        - ./buildmacosx.sh
+        - ./configure
+        - make
+        - make check VERBOSE=1
     - os: osx
       osx_image: xcode6.4
       before_install:
         - brew update
-        - brew install ffmpeg
-        - brew install gettext
-        - brew install gnu-tar
-        - brew install netpbm
-        - brew upgrade proj
-        - brew install wxmac
+        # "brew install" unhelpfully errors out if any package listed is
+        # already installed and up-to-date, but travis change what's installed
+        # by default from time to time so it's brittle to just filter out those
+        # installed by default from the list we need.  So we ignore the exit
+        # status from "brew install", then check that "brew list --versions"
+        # says all the packages requested are installed.
+        - brew install $HOMEBREW_PACKAGES || true
+        - brew list --versions $HOMEBREW_PACKAGES
         - brew link --force gettext
         - sudo cpan -T -i local::lib < /dev/null
         - sudo cpan -I -T -i Locale::PO < /dev/null
