@@ -1,5 +1,5 @@
 /* pos.cc
- * Export from Aven as Survex .pos.
+ * Export from Aven as Survex .pos or .csv.
  */
 /* Copyright (C) 2001,2002,2011,2013,2014,2015,2018 Olly Betts
  *
@@ -37,6 +37,35 @@
 
 using namespace std;
 
+static void
+csv_quote(const char* s, FILE* fh)
+{
+    size_t i = 0;
+    while (true) {
+	switch (s[i]) {
+	    case '\0':
+		fputs(s, fh);
+		return;
+	    case ',':
+	    case '"':
+	    case '\r':
+	    case '\n':
+		break;
+	}
+	++i;
+    }
+    PUTC('"', fh);
+    fwrite(s, i, 1, fh);
+    while (s[i]) {
+	// Double up any " in the string to escape them.
+	if (s[i] == '"')
+	    PUTC(s[i], fh);
+	PUTC(s[i], fh);
+	++i;
+    }
+    PUTC('"', fh);
+}
+
 POS::~POS()
 {
     vector<pos_label*>::const_iterator i;
@@ -56,9 +85,22 @@ POS::passes() const
 void POS::header(const char *, const char *, time_t,
 		 double, double, double, double, double, double)
 {
-    /* TRANSLATORS: Heading line for .pos file.  Please try to ensure the “,”s
-     * (or at least the columns) are in the same place */
-    fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fh);
+    if (csv) {
+	bool comma = false;
+	for (int msgno : { /*Easting*/378,
+			   /*Northing*/379,
+			   /*Altitude*/335,
+			   /*Station Name*/100 }) {
+	    if (comma) PUTC(',', fh);
+	    csv_quote(msg(msgno), fh);
+	    comma = true;
+	}
+	PUTC('\n', fh);
+    } else {
+	/* TRANSLATORS: Heading line for .pos file.  Please try to ensure the
+	 * “,”s (or at least the columns) are in the same place */
+	fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fh);
+    }
 }
 
 void
@@ -92,7 +134,13 @@ POS::footer()
     sort(todo.begin(), todo.end(), pos_label_ptr_cmp(separator));
     vector<pos_label*>::const_iterator i;
     for (i = todo.begin(); i != todo.end(); ++i) {
-	fprintf(fh, "(%8.2f, %8.2f, %8.2f ) %s\n",
-		(*i)->x, (*i)->y, (*i)->z, (*i)->name);
+	if (csv) {
+	    fprintf(fh, "%.2f,%.2f,%.2f,", (*i)->x, (*i)->y, (*i)->z);
+	    csv_quote((*i)->name, fh);
+	    PUTC('\n', fh);
+	} else {
+	    fprintf(fh, "(%8.2f, %8.2f, %8.2f ) %s\n",
+		    (*i)->x, (*i)->y, (*i)->z, (*i)->name);
+	}
     }
 }

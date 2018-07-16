@@ -1613,6 +1613,11 @@ msgstr ""
 msgid "Compass DAT and MAK files"
 msgstr ""
 
+#: ../src/export.cc:72
+#: n:101
+msgid "CSV files"
+msgstr ""
+
 #: ../src/printing.cc:295
 #: n:411
 msgid "DXF files"
@@ -1927,6 +1932,11 @@ msgstr ""
 #: ../src/survexport.cc:121
 #: n:460
 msgid "bearing (90, 90d, 100g all mean 90°)"
+msgstr ""
+
+#: ../src/pos.cc:93
+#: n:100
+msgid "Station Name"
 msgstr ""
 
 #: ../src/printing.cc:511
@@ -3231,6 +3241,11 @@ msgstr ""
 #: n:152
 #, c-format
 msgid "station marker size (default %s)"
+msgstr ""
+
+#: ../src/survexport.cc:141
+#: n:102
+msgid "produce CSV output"
 msgstr ""
 
 #: ../src/survexport.cc:102

@@ -90,6 +90,7 @@ main(int argc, char **argv)
 	{"grid", optional_argument, 0, 'g'},
 	{"text-height", required_argument, 0, 't'},
 	{"marker-size", required_argument, 0, 'm'},
+	{"csv", no_argument, 0, OPT_FMT_BASE + FMT_CSV},
 	{"dxf", no_argument, 0, OPT_FMT_BASE + FMT_DXF},
 	{"eps", no_argument, 0, OPT_FMT_BASE + FMT_EPS},
 	{"gpx", no_argument, 0, OPT_FMT_BASE + FMT_GPX},
@@ -137,20 +138,21 @@ main(int argc, char **argv)
 	{HLP_ENCODELONG(21),  /*generate grid (default %sm)*/148, STRING(DEFAULT_GRID_SPACING)},
 	{HLP_ENCODELONG(22),  /*station labels text height (default %s)*/149, STRING(DEFAULT_TEXT_HEIGHT)},
 	{HLP_ENCODELONG(23),  /*station marker size (default %s)*/152, STRING(DEFAULT_MARKER_SIZE)},
-	{HLP_ENCODELONG(24),  /*produce DXF output*/156, 0},
-	{HLP_ENCODELONG(25),  /*produce EPS output*/454, 0},
-	{HLP_ENCODELONG(26),  /*produce GPX output*/455, 0},
-	{HLP_ENCODELONG(27),  /*produce HPGL output*/456, 0},
+	{HLP_ENCODELONG(24),  /*produce CSV output*/102, 0},
+	{HLP_ENCODELONG(25),  /*produce DXF output*/156, 0},
+	{HLP_ENCODELONG(26),  /*produce EPS output*/454, 0},
+	{HLP_ENCODELONG(27),  /*produce GPX output*/455, 0},
+	{HLP_ENCODELONG(28),  /*produce HPGL output*/456, 0},
 	{HLP_ENCODELONG(29),  /*produce JSON output*/457, 0},
-	{HLP_ENCODELONG(29),  /*produce KML output*/458, 0},
+	{HLP_ENCODELONG(30),  /*produce KML output*/458, 0},
 	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 	 * so should not be translated. */
-	{HLP_ENCODELONG(30),  /*produce Compass PLT output for Carto*/159, 0},
+	{HLP_ENCODELONG(31),  /*produce Compass PLT output for Carto*/159, 0},
 	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
 	 * translated. */
-	{HLP_ENCODELONG(31),  /*produce Skencil output*/158, 0},
-	{HLP_ENCODELONG(32),  /*produce Survex POS output*/459, 0},
-	{HLP_ENCODELONG(33),  /*produce SVG output*/160, 0},
+	{HLP_ENCODELONG(32),  /*produce Skencil output*/158, 0},
+	{HLP_ENCODELONG(33),  /*produce Survex POS output*/459, 0},
+	{HLP_ENCODELONG(34),  /*produce SVG output*/160, 0},
 	{0, 0, 0}
    };
 

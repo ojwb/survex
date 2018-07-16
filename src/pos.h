@@ -1,8 +1,8 @@
 /* pos.h
- * Export from Aven as Survex .pos.
+ * Export from Aven as Survex .pos or .csv.
  */
 
-/* Copyright (C) 2005,2013,2014,2015 Olly Betts
+/* Copyright (C) 2005,2013,2014,2015,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,10 @@ class POS : public ExportFilter {
 
     char separator;
 
+    bool csv;
+
   public:
-    explicit POS(char separator_) : separator(separator_) { }
+    POS(char separator_, bool csv_) : separator(separator_), csv(csv_) { }
     ~POS();
     const int * passes() const;
     void header(const char *, const char *, time_t,

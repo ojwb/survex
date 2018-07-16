@@ -69,6 +69,9 @@
 // Order here needs to match order of export_format enum in export.h.
 
 const format_info export_format_info[] = {
+    { ".csv", /*CSV files*/101,
+      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
+      LABELS },
     { ".dxf", /*DXF files*/411,
       LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
       LABELS|LEGS|STNS },
@@ -1337,6 +1340,11 @@ Export(const wxString &fnm_out, const wxString &title,
    bool need_bounds = true;
    ExportFilter * filt;
    switch (format) {
+       case FMT_CSV:
+	   filt = new POS(model.GetSeparator(), true);
+	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
+	   break;
        case FMT_DXF:
 	   filt = new DXF(text_height);
 	   break;
@@ -1369,7 +1377,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_POS:
-	   filt = new POS(model.GetSeparator());
+	   filt = new POS(model.GetSeparator(), false);
 	   show_mask |= FULL_COORDS;
 	   need_bounds = false;
 	   break;
