@@ -2,7 +2,7 @@
  * Export from Aven as KML.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013,2014,2015,2016,2017 Olly Betts
+ * Copyright (C) 2012,2013,2014,2015,2016,2017,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,6 @@ html_escape(FILE *fh, const char *s)
 }
 
 KML::KML(const char * input_datum)
-    : pj_input(NULL), pj_output(NULL), in_linestring(false), in_wall(false)
 {
     if (!(pj_input = pj_init_plus(input_datum))) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);

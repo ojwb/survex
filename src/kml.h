@@ -1,7 +1,7 @@
 /* kml.h
  * Export from Aven as KML.
  */
-/* Copyright (C) 2005,2013,2014,2015,2016,2017 Olly Betts
+/* Copyright (C) 2005,2013,2014,2015,2016,2017,2018 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 #include <vector>
 
 class KML : public ExportFilter {
-    projPJ pj_input, pj_output;
-    bool in_linestring;
-    bool in_wall;
+    projPJ pj_input = NULL, pj_output = NULL;
+    bool in_linestring = false;
+    bool in_wall = false;
     std::vector<Vector3> psg;
   public:
     explicit KML(const char * input_datum);
