@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016,2017 Olly Betts
+//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016,2017,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -240,7 +240,7 @@ bool Aven::OnInit()
 	// pointer to it!
     }
 
-    wxString survey;
+    const char* opt_survey = NULL;
     bool print_and_exit = false;
 
     while (true) {
@@ -253,7 +253,14 @@ bool Aven::OnInit()
 	}
 	if (opt == EOF) break;
 	if (opt == 's') {
-	    survey = wxString(optarg, wxConvUTF8);
+	    if (opt_survey != NULL) {
+		// FIXME: Not a helpful error, but this is temporary until
+		// we actually hook up support for specifying multiple
+		// --survey options properly here.
+		cmdline_syntax();
+		exit(1);
+	    }
+	    opt_survey = optarg;
 	}
 	if (opt == 'p') {
 	    print_and_exit = true;
@@ -340,7 +347,8 @@ bool Aven::OnInit()
     }
 
     if (utf8_argv[optind]) {
-	m_Frame->OpenFile(fnm, survey);
+	if (!opt_survey) opt_survey = "";
+	m_Frame->OpenFile(fnm, wxString(opt_survey, wxConvUTF8));
     }
 
     if (print_and_exit) {
