@@ -4,7 +4,7 @@
 //  Cave survey model.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -114,7 +114,9 @@ class traverse : public vector<PointInfo> {
 class SurveyFilter {
     std::set<wxString, std::greater<wxString>> filters;
     std::set<wxString, std::greater<wxString>> redundant_filters;
-    wxChar separator = 0;
+    // Default to the Survex standard separator - then a filter created before
+    // the survey separator is known is likely to not need rebuilding.
+    wxChar separator = '.';
 
   public:
     SurveyFilter() {}
@@ -127,7 +129,7 @@ class SurveyFilter {
 
     bool empty() const { return filters.empty(); }
 
-    void SetSeparator(wxChar separator_) { separator = separator_; }
+    void SetSeparator(wxChar separator_);
 
     bool CheckVisible(const wxString& name) const;
 };

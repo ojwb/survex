@@ -517,6 +517,31 @@ SurveyFilter::remove(const wxString& name)
     }
 }
 
+void
+SurveyFilter::SetSeparator(wxChar separator_)
+{
+    if (separator_ == separator) return;
+
+    separator = separator_;
+
+    if (filters.empty()) {
+	return;
+    }
+
+    // Move aside all the filters already set and re-add() them so they get
+    // split into redundant_filters appropriately.
+    std::set<wxString, std::greater<wxString>> old_filters;
+    std::set<wxString, std::greater<wxString>> old_redundant_filters;
+    swap(filters, old_filters);
+    swap(redundant_filters, old_redundant_filters);
+    for (auto& s : filters) {
+	add(s);
+    }
+    for (auto& s : redundant_filters) {
+	add(s);
+    }
+}
+
 bool
 SurveyFilter::CheckVisible(const wxString& name) const
 {
