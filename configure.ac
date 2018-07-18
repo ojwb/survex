@@ -11,7 +11,7 @@ AC_SUBST(RELEASE)
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([src/aven.cc])
 
-COPYRIGHT_MSG="Copyright (C) 1990-2017 Olly Betts"
+COPYRIGHT_MSG="Copyright (C) 1990-2018 Olly Betts"
 AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2003,2005,2006 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, ["$COPYRIGHT_MSG"], [Copyright Message])
