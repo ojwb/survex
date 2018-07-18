@@ -5,11 +5,11 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  labelinfo.h listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h\
  netbits.h netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
- glbitmapfont.h guicontrol.h gla.h gpx.h moviemaker.h exportfilter.h hpgl.h\
- cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h json.h log.h mainfrm.h\
- pos.h vector3.h wx.h aventypes.h aventreectrl.h export.h model.h printing.h\
- avenprcore.h img2aven.h thgeomag.h thgeomagdata.h\
- moviemaker-legacy.cc
+ glbitmapfont.h gllogerror.h guicontrol.h gla.h gpx.h moviemaker.h\
+ exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h\
+ json.h log.h mainfrm.h pos.h vector3.h wx.h aventypes.h aventreectrl.h\
+ export.h model.h printing.h avenprcore.h img2aven.h thgeomag.h\
+ thgeomagdata.h moviemaker-legacy.cc
 
 LDADD = $(LIBOBJS)
 
