@@ -1,3 +1,65 @@
+Changes in 1.2.36 (2018-07-18):
+
+* aven:
+
+  + Add support for exporting as a CSV (Comma-Separated Values) file.
+
+  + Support exporting KML with altitude mode "clamp to ground".  In this mode,
+    the altitude in the data is ignored and it's rendered on the surface of the
+    terrain.  This is useful if your KML viewer renders the terrain as opaque
+    so underground data isn't visible.  Rendering cave passages on the surface
+    isn't great, but is better than not being able to see them at all.  This
+    option may also be helpful if you want to see where to look on the surface
+    for new entrances.
+
+  + Highlight surveys with a white loop as the mouse is moved over them in
+    the survey tree.  This is akin to how we highlight a station with a
+    white ring, and allows restoring "double-click survey in tree to zoom"
+    which temporarily required a quadruple-click in 1.2.35.
+
+  + Only show checkboxes in the survey tree for surveys not stations.
+
+  + Fix wxWidgets assertion if the user tried to select additional surveys
+    to show via the right-click menu.
+
+  + Fix multiple survey filtering when both a parent and child survey are
+    selected.  In this case it makes most sense to show all child surveys of
+    the parent, but we actually showed a slightly arbitrary subset of the
+    child surveys of the parent.
+
+  + The checkbox area in the survey tree is now included in the area which
+    is considered by mouse-over updates such as highlighting the station or
+    survey.
+
+  + Fix display of double quotes in cavern log window (they were being replaced
+    with control character 0x16 due to a typo in the code).
+
+  + Add shortcuts to buttons in cavern log window.
+
+  + Eliminate use of gluErrorString() function which eliminates some
+    deprecation warnings when building on macOS.
+
+  + Reject multiple --survey command line options for now (only the last has
+    been used for a long time, but now we actually support multiple survey
+    filtering this matters more).
+
+* survexport:
+
+  + Report a useful error when trying to convert a .3d file without coordinate
+    system information to GPS.  Reported by Mark Shinwell.
+
+  + Handle multiple redundant --survey command line options correctly.
+
+* dump3d: Report station flag "WALL", which was added in 1.2.7.
+
+* Minor translation updates.
+
+* Update manual for Microsoft Windows changes.
+
+* tests/: Add test coverage for warnings about suspect readings
+
+* Fix warning when compiling with clang.
+
 Changes in 1.2.35 (2018-07-03):
 
 * aven:
