@@ -3,13 +3,12 @@ Section: science
 Priority: optional
 Maintainer: Olly Betts <olly@survex.com>
 Uploaders: Wookey <wookey@debian.org>
-Standards-Version: 4.1.4
+Standards-Version: 4.1.5
 Build-Depends: debhelper (>= 9), libx11-dev, libxext-dev, x11proto-core-dev,
     libavcodec-dev, libavformat-dev, libproj-dev, libswscale-dev,
     libwxgtk3.0-gtk3-dev, mesa-common-dev, libglu1-mesa-dev, autotools-dev,
     pkg-config
 Homepage: https://survex.com/
-Testsuite: autopkgtest
 
 Package: survex
 Architecture: any

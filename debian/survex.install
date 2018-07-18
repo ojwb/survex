@@ -9,13 +9,11 @@ debian/tmp/usr/bin/diffpos
 debian/tmp/usr/bin/dump3d
 debian/tmp/usr/bin/extend
 debian/tmp/usr/bin/sorterr
-debian/tmp/usr/bin/survexport
 debian/tmp/usr/share/man/man1/cavern.1
 debian/tmp/usr/share/man/man1/diffpos.1
 debian/tmp/usr/share/man/man1/dump3d.1
 debian/tmp/usr/share/man/man1/extend.1
 debian/tmp/usr/share/man/man1/sorterr.1
-debian/tmp/usr/share/man/man1/survexport.1
 debian/tmp/usr/share/man/man7/survex.7
 debian/tmp/usr/share/doc/survex
 vim/ftdetect/survex.vim usr/share/vim/addons/ftdetect

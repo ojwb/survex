@@ -1,2 +1,3 @@
 # reencode is a PostScript command, not a misspelling of "re-encode".
 survex-aven binary: spelling-error-in-binary usr/bin/aven reencode re-encode
+survex-aven binary: spelling-error-in-binary usr/bin/survexport reencode re-encode
