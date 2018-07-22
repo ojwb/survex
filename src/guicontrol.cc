@@ -559,6 +559,15 @@ void GUIControl::OnColourByLength()
     }
 }
 
+void GUIControl::OnColourBySurvey()
+{
+    if (m_View->ColouringBy() == COLOUR_BY_SURVEY) {
+	m_View->SetColourBy(COLOUR_BY_NONE);
+    } else {
+	m_View->SetColourBy(COLOUR_BY_SURVEY);
+    }
+}
+
 void GUIControl::OnColourByUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData());
@@ -592,6 +601,12 @@ void GUIControl::OnColourByLengthUpdate(wxUpdateUIEvent& cmd)
 {
     cmd.Enable(m_View->HasData());
     cmd.Check(m_View->ColouringBy() == COLOUR_BY_LENGTH);
+}
+
+void GUIControl::OnColourBySurveyUpdate(wxUpdateUIEvent& cmd)
+{
+    cmd.Enable(m_View->HasData());
+    cmd.Check(m_View->ColouringBy() == COLOUR_BY_SURVEY);
 }
 
 void GUIControl::OnShowCrosses()

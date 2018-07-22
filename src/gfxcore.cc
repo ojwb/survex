@@ -34,6 +34,7 @@
 #include "date.h"
 #include "filename.h"
 #include "gfxcore.h"
+#include "hash.h"
 #include "mainfrm.h"
 #include "message.h"
 #include "useful.h"
@@ -3166,6 +3167,10 @@ void GfxCore::DrawIndicators()
 		key_list = LIST_GRADIENT_KEY; break;
 	    case COLOUR_BY_LENGTH:
 		key_list = LIST_LENGTH_KEY; break;
+#if 0 // FIXME Key for survey colours?
+	    case COLOUR_BY_SURVEY:
+		key_list = LIST_SURVEY_KEY; break;
+#endif
 	}
 	if (key_list != LIST_LIMIT_) {
 	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X,
@@ -3625,6 +3630,31 @@ void GfxCore::SetColourFromLength(double length, Double factor)
     SetColourFrom01(how_far, factor);
 }
 
+void GfxCore::SetColourFromSurvey(const wxString& survey)
+{
+    // Set the drawing colour based on hash of name.
+    int hash = hash_string(survey.utf8_str());
+    wxImage::HSVValue hsv((hash & 0xff) / 256.0, (((hash >> 8) & 0x7f) | 0x80) / 256.0, 0.9);
+    wxImage::RGBValue rgb = wxImage::HSVtoRGB(hsv);
+    GLAPen pen;
+    pen.SetColour(rgb.red / 256.0, rgb.green / 256.0, rgb.blue / 256.0);
+    SetColour(pen);
+}
+
+void GfxCore::SetColourFromSurveyStation(const wxString& name, Double factor)
+{
+    // Set the drawing colour based on hash of survey name.
+    const char* p = name.utf8_str();
+    const char* q = strrchr(p, m_Parent->GetSeparator());
+    size_t len = q ? (q - p) : strlen(p);
+    int hash = hash_data(p, len);
+    wxImage::HSVValue hsv((hash & 0xff) / 256.0, (((hash >> 8) & 0x7f) | 0x80) / 256.0, 0.9);
+    wxImage::RGBValue rgb = wxImage::HSVtoRGB(hsv);
+    GLAPen pen;
+    pen.SetColour(rgb.red / 256.0, rgb.green / 256.0, rgb.blue / 256.0);
+    SetColour(pen, factor);
+}
+
 void GfxCore::SetColourFrom01(double how_far, Double factor)
 {
     double b;
@@ -3675,6 +3705,42 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
     EndQuadrilaterals();
 }
 
+void GfxCore::AddPolylineSurvey(const traverse & centreline)
+{
+    SetColourFromSurvey(centreline.name);
+    vector<PointInfo>::const_iterator i, prev_i;
+    i = centreline.begin();
+    prev_i = i;
+    while (++i != centreline.end()) {
+	BeginPolyline();
+	PlaceVertex(*prev_i);
+	PlaceVertex(*i);
+	prev_i = i;
+	EndPolyline();
+    }
+}
+
+static const wxString* static_survey_hack;
+
+void GfxCore::AddQuadrilateralSurvey(const Vector3 &a, const Vector3 &b,
+				     const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginQuadrilaterals();
+////    PlaceNormal(normal);
+    SetColourFromSurveyStation(*static_survey_hack, factor);
+    PlaceVertex(a, 0, 0);
+    PlaceVertex(b, w, 0);
+    PlaceVertex(c, w, h);
+    PlaceVertex(d, 0, h);
+    EndQuadrilaterals();
+}
+
 void
 GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 {
@@ -3698,6 +3764,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 
 	const Vector3 up_v(0.0, 0.0, 1.0);
 
+	static_survey_hack = &(pt_v.GetLabel());
 	if (segment == 0) {
 	    assert(i != centreline.end());
 	    // first segment
@@ -3999,6 +4066,10 @@ void GfxCore::SetColourBy(int colour_by) {
 	    AddQuad = &GfxCore::AddQuadrilateralLength;
 	    AddPoly = &GfxCore::AddPolylineLength;
 	    break;
+	case COLOUR_BY_SURVEY:
+	    AddQuad = &GfxCore::AddQuadrilateralSurvey;
+	    AddPoly = &GfxCore::AddPolylineSurvey;
+	    break;
 	default: // case COLOUR_BY_NONE:
 	    AddQuad = &GfxCore::AddQuadrilateral;
 	    AddPoly = &GfxCore::AddPolyline;
@@ -4250,6 +4321,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_COLOUR_BY_ERROR, wmsg(/*Colour by &Error*/289));
 	menu.AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
 	menu.AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
+	menu.AppendCheckItem(menu_COLOUR_BY_SURVEY, wmsg(/*Colour by &Survey*/448));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the colour key.
 	 * The "Colour Key" is the thing in aven showing which colour
