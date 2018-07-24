@@ -69,7 +69,7 @@ public:
 	right_bearing = right_bearing_;
     }
     int GetDate() const { return date; }
-    wxString GetLabel() const { return stn->GetText(); }
+    const wxString& GetLabel() const { return stn->GetText(); }
     const Point& GetPoint() const { return *stn; }
     double GetX() const { return stn->GetX(); }
     double GetY() const { return stn->GetY(); }

@@ -93,6 +93,7 @@ enum {
     COLOUR_BY_ERROR,
     COLOUR_BY_GRADIENT,
     COLOUR_BY_LENGTH,
+    COLOUR_BY_SURVEY,
     COLOUR_BY_LIMIT_ // Leave this last.
 };
 
@@ -284,6 +285,8 @@ private:
     void SetColourFromError(double E, Double factor);
     void SetColourFromGradient(double angle, Double factor);
     void SetColourFromLength(double len, Double factor);
+    void SetColourFromSurvey(const wxString& survey);
+    void SetColourFromSurveyStation(const wxString& survey, Double factor);
 
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
@@ -586,6 +589,7 @@ public:
     void AddPolylineError(const traverse & centreline);
     void AddPolylineGradient(const traverse & centreline);
     void AddPolylineLength(const traverse & centreline);
+    void AddPolylineSurvey(const traverse & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
     void AddPolylineShadow(const traverse & centreline);
@@ -598,7 +602,9 @@ public:
     void AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
 				  const Vector3 &c, const Vector3 &d);
     void AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
-			        const Vector3 &c, const Vector3 &d);
+				const Vector3 &c, const Vector3 &d);
+    void AddQuadrilateralSurvey(const Vector3 &a, const Vector3 &b,
+				const Vector3 &c, const Vector3 &d);
     void MoveViewer(double forward, double up, double right);
 
     void (GfxCore::* AddQuad)(const Vector3 &a, const Vector3 &b,
