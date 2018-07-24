@@ -2966,7 +2966,7 @@ have been formed by the extensions.
 
 <VarListEntry><Term>Syntax</Term>
 
-<listitem><Para>*team &lt;person&gt; &lt;role&gt;...</Para></listitem>
+<listitem><Para>*team &lt;person&gt; [&lt;role&gt;...]</Para></listitem>
 
 </VarListEntry>
 
@@ -2994,8 +2994,9 @@ have been formed by the extensions.
 <VarListEntry><Term>Description</Term>
 
 <listitem><Para>
-*team specifies the people involved in a survey and what role they
-filled during that trip.
+*team specifies the people involved in a survey and optionally what role or
+roles they filled during that trip.  Unless the person is only identified by
+one name you need to put double quotes around their name.
 </Para></listitem>
 
 </VarListEntry>
