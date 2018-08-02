@@ -177,6 +177,13 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 #else
 int main(int argc, char **argv)
 {
+#ifdef __WXGTK3__
+    // Currently wxGLCanvas doesn't work under Wayland, and the code segfaults.
+    // https://trac.wxwidgets.org/ticket/17702
+    // Setting GDK_BACKEND=x11 is the recommended workaround, and it seems to
+    // work to set it here.
+    setenv("GDK_BACKEND", "x11", 1);
+#endif
 #ifdef __WXMAC__
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
     // wx ignores for us, but in wxApp::Initialize() which hasn't been
