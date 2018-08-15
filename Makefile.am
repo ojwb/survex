@@ -40,7 +40,7 @@ create-aven-app:
 	  unzip -d '$(APP_PATH)/Contents/Resources' "$$zip"; \
 	  i=`echo "$$zip"|sed 's!.*/\(.*\)\.zip$$!\1!'`; \
 	  iconutil --convert icns '$(APP_PATH)/Contents/Resources/'"$$i"; \
-	  rm -rf '$(APP_PATH)/Contents/Resources/'"$i"; \
+	  rm -rf '$(APP_PATH)/Contents/Resources/'"$$i"; \
 	done
 
 mingw : all mingw_iss
