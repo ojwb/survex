@@ -2932,7 +2932,7 @@ msgstr "Zwischen zwei anonymen Messpunkten kann keine Messstrecke sein"
 #: ../src/printing.cc:471
 #: n:406
 msgid "Spla&y Legs"
-msgstr "Hilfslinien (splay)"
+msgstr "&Hilfslinien (splay)"
 
 #: ../src/survexport.cc:125
 #: n:465
@@ -2942,7 +2942,7 @@ msgstr "Hilfslinien (splay)"
 #: ../src/mainfrm.cc:883
 #: n:251
 msgid "&Duplicate Legs"
-msgstr "Doppelte Messstrecken"
+msgstr "&Doppelte Messstrecken"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are not shown.
@@ -2959,7 +2959,7 @@ msgstr "&Verstecken"
 #: ../src/mainfrm.cc:881
 #: n:408
 msgid "&Fade"
-msgstr "Dunsteffe&kt"
+msgstr "&Dunsteffekt"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, aven will show such legs with dashed lines.
@@ -2967,7 +2967,7 @@ msgstr "Dunsteffe&kt"
 #: ../src/mainfrm.cc:880
 #: n:250
 msgid "&Dashed"
-msgstr "Gestrichelt"
+msgstr "&Gestrichelt"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are shown the same as other legs.
