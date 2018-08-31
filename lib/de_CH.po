@@ -2932,17 +2932,17 @@ msgstr "Zwischen zwei anonymen Messpunkten kann keine Messstrecke sein"
 #: ../src/printing.cc:471
 #: n:406
 msgid "Spla&y Legs"
-msgstr "Messstrecken spre&izen"
+msgstr "Hilfslinien (splay)"
 
 #: ../src/survexport.cc:125
 #: n:465
 msgid "splay legs"
-msgstr "Messstrecken spreizen"
+msgstr "Hilfslinien (splay)"
 
 #: ../src/mainfrm.cc:883
 #: n:251
 msgid "&Duplicate Legs"
-msgstr ""
+msgstr "Doppelte Messstrecken"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are not shown.
@@ -2967,7 +2967,7 @@ msgstr "Dunsteffe&kt"
 #: ../src/mainfrm.cc:880
 #: n:250
 msgid "&Dashed"
-msgstr ""
+msgstr "Gestrichelt"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are shown the same as other legs.
