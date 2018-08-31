@@ -1505,6 +1505,10 @@ Export(const wxString &fnm_out, const wxString &title,
 		  // Not showing traverse because of surface/underground status.
 		  continue;
 	      }
+	      if ((f & img_FLAG_SPLAY) && (show_mask & SPLAYS) == 0) {
+		  // Not showing because it's a splay.
+		  continue;
+	      }
 	      if (f & img_FLAG_SPLAY) flags |= SPLAYS;
 	      list<traverse>::const_iterator trav = model.traverses_begin(f, filter);
 	      list<traverse>::const_iterator tend = model.traverses_end(f);
