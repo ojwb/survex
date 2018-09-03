@@ -83,6 +83,8 @@ Source: "manual\*.*"; DestDir: "{app}\manual"
 Source: "proj\*.*"; DestDir: "{app}\proj"
 ; Generate iss file for including the wxstd.mo files
 #include "i18nfiles.iss"
+; Also install survexport.exe as 3dtopos.exe so existing Tunnel releases work.
+Source: "survexport.exe"; DestDir: "{app}"; DestName: "3dtopos.exe"
 
 ; FIXME This should be translated (think there's a standard custommessage)
 ;[Run]
