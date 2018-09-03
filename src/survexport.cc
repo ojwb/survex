@@ -57,6 +57,15 @@ main(int argc, char **argv)
    double scale = 500.0;
    SurveyFilter* filter = NULL;
 
+   {
+       /* Default to .pos output if installed as 3dtopos. */
+       char* progname = baseleaf_from_fnm(argv[0]);
+       if (strcasecmp(progname, "3dtopos") == 0) {
+	   format = FMT_POS;
+       }
+       osfree(progname);
+   }
+
    const int OPT_FMT_BASE = 20000;
    enum {
        OPT_SCALE = 0x100, OPT_BEARING, OPT_TILT, OPT_PLAN, OPT_ELEV,
