@@ -16,6 +16,12 @@ LDADD = $(LIBOBJS)
 # FIXME: mingw_progs in top level Makefile.am needs keeping in step with this
 bin_PROGRAMS = cavern diffpos dump3d extend sorterr survexport aven
 
+install-exec-hook:
+	ln $(DESTDIR)$(bindir)/survexport$(EXEEXT) \
+	   $(DESTDIR)$(bindir)/3dtopos$(EXEEXT) || \
+	    cp -p $(DESTDIR)$(bindir)/survexport$(EXEEXT) \
+		  $(DESTDIR)$(bindir)/3dtopos$(EXEEXT)
+
 check_PROGRAMS = imgtest
 
 COMMONSRC = cmdline.c message.c str.c filename.c osdepend.c z_getopt.c getopt1.c
