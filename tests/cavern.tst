@@ -59,7 +59,7 @@ testdir=`(cd "$testdir" && pwd)`
  omitclino back back2 bad_back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  bad_units_qlist\
- percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
+ percent_gradient leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
  cmd_calibrate cmd_declination cmd_declination_auto cmd_declination_conv\
  lech level 2fixbug dot17 3dcorner\
