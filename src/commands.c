@@ -691,7 +691,7 @@ cmd_begin(void)
       filepos fp;
       prefix *survey;
       get_pos(&fp);
-      survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
+      survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
       pcs->begin_survey = survey;
       pcs->Prefix = survey;
       check_reentry(survey, &fp);
