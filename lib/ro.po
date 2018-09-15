@@ -1387,6 +1387,11 @@ msgstr "Astept “DUPLICATE”, “SPLAY”, sau “SURFACE”"
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "Astept “NOT”, “DUPLICATE”, “SPLAY” sau “SURFACE”"
 
+#: ../src/datain.c:757
+#: n:103
+msgid "Expecting “F” or “M”"
+msgstr "Astept “F” sau “M”"
+
 #: ../src/listpos.c:82
 #: n:190
 #, c-format

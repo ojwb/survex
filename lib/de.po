@@ -1387,6 +1387,11 @@ msgstr "»DUPLICATE«, »SPLAY« oder »SURFACE« erwartet"
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
 msgstr "»NOT«, »DUPLICATE«, »SPLAY« oder »SURFACE« erwartet"
 
+#: ../src/datain.c:757
+#: n:103
+msgid "Expecting “F” or “M”"
+msgstr "»F« oder »M« erwartet"
+
 #: ../src/listpos.c:82
 #: n:190
 #, c-format

@@ -65,6 +65,7 @@ testdir=`(cd "$testdir" && pwd)`
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
  declination.dat ignore.dat backread.dat nomeasure.dat noteam.dat\
+ fixfeet.mak\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
@@ -119,6 +120,11 @@ for file in $TESTS ; do
     *.dat)
       # .dat files can't start with a comment.  All the current .dat tests
       # have the same settings.
+      pos=yes
+      warn=0
+      ;;
+    *.mak)
+      # All the current .mak tests have the same settings.
       pos=yes
       warn=0
       ;;

@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015,2016,2017 Olly Betts
+ * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -722,7 +722,6 @@ data_file(const char *pth, const char *fnm)
 	 pcs = pcsParent;
       }
    } else if (fmt == FMT_MAK) {
-      nextch_handling_eol();
       while (ch != EOF && !ferror(file.fh)) {
 	 if (ch == '#') {
 	    /* include a file */
@@ -746,8 +745,17 @@ data_file(const char *pth, const char *fnm)
 		     /* fixed pt */
 		     node *stn;
 		     real x, y, z;
+		     bool in_feet = fFalse;
 		     name->sflags |= BIT(SFLAGS_FIXED);
 		     nextch_handling_eol();
+		     if (ch == 'F' || ch == 'f') {
+			in_feet = fTrue;
+			nextch_handling_eol();
+		     } else if (ch == 'M' || ch == 'm') {
+			nextch_handling_eol();
+		     } else {
+			compile_diagnostic(DIAG_ERR, /*Expecting “F” or “M”*/103);
+		     }
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
@@ -763,6 +771,11 @@ data_file(const char *pth, const char *fnm)
 			nextch_handling_eol();
 		     }
 		     z = read_numeric(fFalse);
+		     if (in_feet) {
+			x *= METRES_PER_FOOT;
+			y *= METRES_PER_FOOT;
+			z *= METRES_PER_FOOT;
+		     }
 		     stn = StnFromPfx(name);
 		     if (!fixed(stn)) {
 			POS(stn, 0) = x;
@@ -784,7 +797,7 @@ data_file(const char *pth, const char *fnm)
 		     }
 		  } else {
 		     /* FIXME: link station - ignore for now */
-		     /* FIXME: perhaps issue warning? */
+		     /* FIXME: perhaps issue warning?  Other station names can be "reused", which is problematic... */
 		  }
 		  while (ch != ',' && ch != ';' && ch != EOF)
 		     nextch_handling_eol();
