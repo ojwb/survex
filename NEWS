@@ -1,3 +1,50 @@
+Changes in 1.2.37 (2018-11-18):
+
+* aven:
+
+  + Add basic "Colour by Survey" feature.  The colours used aren't currently
+    controllable.
+
+  + Fix export of splays.  Patch from Thomas Holder.
+
+  + Fix KML export to avoid invalid geometry when a tube intersects itself.
+    Patch from Robert Jones.
+
+  + (Unix version): Fix to work under Wayland by forcing the x11 GDK backend
+    for now.  This is a workaround until wxWidgets OpenGL support is updated
+    to work under Wayland.  Reported by Philip Balister.
+
+* cavern: Improve handling of Compass MAK files:
+
+  + Handle fixed point coordinates in feet - previously the units were
+    ignored and the coordinates assumed to be in metres.
+
+  + Previously the first byte in a MAK file was being ignored.  Typically
+    MAK files start with a comment, and since cavern currently ignores lines
+    that start with characters it doesn't understand the meaning of this
+    would often go unnoticed.
+
+* survexport:
+
+  + Fix exporting of passages, walls and cross-sections by running the code
+    aven uses to decide how much to rotate each cross-section.  Previously all
+    cross-sections were aligned West-East.  Reported by Robert Jones.
+
+  + Default to .pos output if the program name is 3dtopos, and install a second
+    copy (or hardlink under Unix) as 3dtopos.  This provides compatibility with
+    current releases of Tunnel.  Reported by Becka Lawson, Wookey and
+    Stephen Crabtree.
+
+* Fix some German translations.  Patch from Thomas Holder.
+
+* (MacOS X version): Fix aven-create-app to not delete converted icons.
+  Typo spotted by Robert Jones.
+
+* Improve documentation for *team.  Document the requirement to quote names
+  unless a person is identified by just one name.  Document that the roles are
+  optional, as that information may not have been recorded, and to align with
+  therion's team command.
+
 Changes in 1.2.36 (2018-07-18):
 
 * aven:
