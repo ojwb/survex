@@ -201,7 +201,6 @@ KML::wall(const img_point *p, double angle, double d)
     y = deg(y);
 
     if (!in_wall) {
-	wall_start = Vector3(x, y, z);
 	if (clamp_to_ground) {
 	    fputs("<Placemark><name></name><LineString><coordinates>", fh);
 	} else {
@@ -274,8 +273,6 @@ KML::tube_end()
 	in_passage = false;
     }
     if (in_wall) {
-	// Draw back to the starting position.
-	fprintf(fh, "%.8f,%.8f,%.2f\n", wall_start.GetX(), wall_start.GetY(), wall_start.GetZ());
 	fputs("</coordinates></LineString></Placemark>\n", fh);
 	in_wall = false;
     }

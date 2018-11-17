@@ -32,7 +32,7 @@ class KML : public ExportFilter {
     bool in_wall = false;
     bool in_passage = false;
     bool clamp_to_ground;
-    Vector3 v2, v1, wall_start;
+    Vector3 v1, v2;
   public:
     KML(const char * input_datum, bool clamp_to_ground_);
     ~KML();
