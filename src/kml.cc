@@ -217,9 +217,6 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     double s = sin(rad(angle));
     double c = cos(rad(angle));
 
-    // Draw along one side and push the other onto a stack, then at the end pop
-    // the stack and write out those points to give one polygon, fewer points,
-    // and a smaller file.
     double x1 = p->x + c * d1;
     double y1 = p->y + s * d1;
     double z1 = p->z;
@@ -234,33 +231,46 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     x2 = deg(x2);
     y2 = deg(y2);
 
-    if (psg.empty()) {
+    // Define each passage as a multigeometry comprising of one quadrilateral
+    // per section.  This prevents invalid geometry (such as self-intersecting
+    // polygons) being created.
+
+    if (!in_passage){
+	in_passage = true;
+	fputs("<Placemark><name></name><MultiGeometry>\n", fh);
+    } else {
 	if (clamp_to_ground) {
-	    fputs("<Placemark><name></name><Polygon>"
+	    fputs("<Polygon>"
 		  "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
 	} else {
-	    fputs("<Placemark><name></name><Polygon><altitudeMode>absolute</altitudeMode>"
+	    fputs("<Polygon><altitudeMode>absolute</altitudeMode>"
 		  "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
 	}
+
+	// Draw anti-clockwise around the ring.
+	fprintf(fh, "%.8f,%.8f,%.2f\n", v2.GetX(), v2.GetY(), v2.GetZ());
+	fprintf(fh, "%.8f,%.8f,%.2f\n", v1.GetX(), v1.GetY(), v1.GetZ());
+
+	fprintf(fh, "%.8f,%.8f,%.2f\n", x1, y1, z1);
+	fprintf(fh, "%.8f,%.8f,%.2f\n", x2, y2, z2);
+
+	// Close the ring.
+	fprintf(fh, "%.8f,%.8f,%.2f\n", v2.GetX(), v2.GetY(), v2.GetZ());
+
+	fputs("</coordinates></LinearRing></outerBoundaryIs>"
+	      "</Polygon>\n", fh);
     }
-    // NB - order of vertices should be anti-clockwise in a KML file, so go
-    // along the right wall now, and put the left wall points on a stack to
-    // come back along at the end.
-    fprintf(fh, "%.8f,%.8f,%.2f\n", x2, y2, z2);
-    psg.push_back(Vector3(x1, y1, z1));
+
+    v2 = Vector3(x2, y2, z2);
+    v1 = Vector3(x1, y1, z1);
 }
 
 void
 KML::tube_end()
 {
-    if (!psg.empty()) {
-	vector<Vector3>::const_reverse_iterator i;
-	for (i = psg.rbegin(); i != psg.rend(); ++i) {
-	    fprintf(fh, "%.8f,%.8f,%.2f\n", i->GetX(), i->GetY(), i->GetZ());
-	}
-	psg.clear();
-	fputs("</coordinates></LinearRing></outerBoundaryIs>"
-	      "</Polygon></Placemark>\n", fh);
+    if (in_passage){
+	fputs("</MultiGeometry></Placemark>\n", fh);
+	in_passage = false;
     }
     if (in_wall) {
 	fputs("</coordinates></LineString></Placemark>\n", fh);

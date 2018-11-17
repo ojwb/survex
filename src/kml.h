@@ -30,8 +30,9 @@ class KML : public ExportFilter {
     projPJ pj_input = NULL, pj_output = NULL;
     bool in_linestring = false;
     bool in_wall = false;
+    bool in_passage = false;
     bool clamp_to_ground;
-    std::vector<Vector3> psg;
+    Vector3 v1, v2;
   public:
     KML(const char * input_datum, bool clamp_to_ground_);
     ~KML();
