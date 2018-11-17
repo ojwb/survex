@@ -201,13 +201,13 @@ KML::wall(const img_point *p, double angle, double d)
     y = deg(y);
 
     if (!in_wall) {
-        wall_start=Vector3(x,y,z);
-        if (clamp_to_ground) {
-            fputs("<Placemark><name></name><LineString><coordinates>", fh);
-        } else {
-            fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
-        }
-        in_wall = true;
+	wall_start = Vector3(x, y, z);
+	if (clamp_to_ground) {
+	    fputs("<Placemark><name></name><LineString><coordinates>", fh);
+	} else {
+	    fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
+	}
+	in_wall = true;
     }
     fprintf(fh, "%.8f,%.8f,%.2f\n", x, y, z);
 }
@@ -232,55 +232,52 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     x2 = deg(x2);
     y2 = deg(y2);
 
-    //Define each passage as a multigeometry comprising of one rectangular
-    //polygon per section. This prevents invalid geometry (such as
-    //self-intersecting polygons) being created.
+    // Define each passage as a multigeometry comprising of one quadrilateral
+    // per section.  This prevents invalid geometry (such as self-intersecting
+    // polygons) being created.
 
     if (!in_passage){
-        in_passage = true;
-        fputs("<Placemark><name></name><MultiGeometry>\n", fh);
+	in_passage = true;
+	fputs("<Placemark><name></name><MultiGeometry>\n", fh);
+    } else {
+	if (clamp_to_ground) {
+	    fputs("<Polygon>"
+		  "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
+	} else {
+	    fputs("<Polygon><altitudeMode>absolute</altitudeMode>"
+		  "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
+	}
+
+	// Draw anti-clockwise around the ring.
+	fprintf(fh, "%.8f,%.8f,%.2f\n", v2.GetX(), v2.GetY(), v2.GetZ());
+	fprintf(fh, "%.8f,%.8f,%.2f\n", v1.GetX(), v1.GetY(), v1.GetZ());
+
+	fprintf(fh, "%.8f,%.8f,%.2f\n", x1, y1, z1);
+	fprintf(fh, "%.8f,%.8f,%.2f\n", x2, y2, z2);
+
+	// Close the ring.
+	fprintf(fh, "%.8f,%.8f,%.2f\n", v2.GetX(), v2.GetY(), v2.GetZ());
+
+	fputs("</coordinates></LinearRing></outerBoundaryIs>"
+	      "</Polygon>\n", fh);
     }
 
-    else {
-        if (clamp_to_ground) {
-            fputs("<Polygon>"
-              "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
-        }
-        else {
-            fputs("<Polygon><altitudeMode>absolute</altitudeMode>"
-              "<outerBoundaryIs><LinearRing><coordinates>\n", fh);
-        }
-
-        //draw anti-clockwise around the ring
-        fprintf(fh, "%.8f,%.8f,%.2f\n", v2.GetX(), v2.GetY(), v2.GetZ());
-        fprintf(fh, "%.8f,%.8f,%.2f\n", v1.GetX(), v1.GetY(), v1.GetZ());
-
-        fprintf(fh, "%.8f,%.8f,%.2f\n", x1, y1, z1);
-        fprintf(fh, "%.8f,%.8f,%.2f\n", x2, y2, z2);
-
-        //close the ring
-        fprintf(fh, "%.8f,%.8f,%.2f\n", v2.GetX(), v2.GetY(), v2.GetZ());
-
-        fputs("</coordinates></LinearRing></outerBoundaryIs>"
-          "</Polygon>\n", fh);
-    }
-
-    v2=Vector3(x2, y2, z2);
-    v1=Vector3(x1, y1, z1);
+    v2 = Vector3(x2, y2, z2);
+    v1 = Vector3(x1, y1, z1);
 }
 
 void
 KML::tube_end()
 {
     if (in_passage){
-        fputs("</MultiGeometry></Placemark>\n", fh);
-        in_passage = false;
+	fputs("</MultiGeometry></Placemark>\n", fh);
+	in_passage = false;
     }
     if (in_wall) {
-        //draw back to the starting position
-        fprintf(fh, "%.8f,%.8f,%.2f\n", wall_start.GetX(), wall_start.GetY(), wall_start.GetZ());
-        fputs("</coordinates></LineString></Placemark>\n", fh);
-        in_wall = false;
+	// Draw back to the starting position.
+	fprintf(fh, "%.8f,%.8f,%.2f\n", wall_start.GetX(), wall_start.GetY(), wall_start.GetZ());
+	fputs("</coordinates></LineString></Placemark>\n", fh);
+	in_wall = false;
     }
 }
 
