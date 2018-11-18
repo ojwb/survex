@@ -563,7 +563,7 @@ Model::do_prepare_tubes() const
 		    up = up_v;
 
 		    // Rotate pitch section to minimise the
-		    // "tortional stress" - FIXME: use
+		    // "torsional stress" - FIXME: use
 		    // triangles instead of rectangles?
 		    int shift = 0;
 		    double maxdotp = 0;

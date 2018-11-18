@@ -3840,7 +3840,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 		up = up_v;
 
 		// Rotate pitch section to minimise the
-		// "tortional stress" - FIXME: use
+		// "torsional stress" - FIXME: use
 		// triangles instead of rectangles?
 		int shift = 0;
 		Double maxdotp = 0;
