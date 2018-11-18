@@ -14,15 +14,15 @@ Changes in 1.2.37 (2018-11-18):
     for now.  This is a workaround until wxWidgets OpenGL support is updated
     to work under Wayland.  Reported by Philip Balister.
 
-* cavern: Improve handling of Compass MAK files:
+* cavern:
 
-  + Handle fixed point coordinates in feet - previously the units were
-    ignored and the coordinates assumed to be in metres.
+  + Compass MAK files: Handle fixed point coordinates in feet - previously the
+    units were ignored and the coordinates assumed to be in metres.
 
-  + Previously the first byte in a MAK file was being ignored.  Typically
-    MAK files start with a comment, and since cavern currently ignores lines
-    that start with characters it doesn't understand the meaning of this
-    would often go unnoticed.
+  + Previously the first byte in a MAK file was ignored.  Typically MAK files
+    start with a comment, and since cavern currently ignores lines that start
+    with characters it doesn't understand the meaning of, this bug would often
+    go unnoticed.
 
 * survexport:
 
