@@ -647,6 +647,9 @@ Model::do_prepare_tubes() const
 	    U[2] = v[2];
 	    U[3] = v[3];
 
+	    // FIXME: Store rather than recomputing on each draw?
+	    (void)cover_end;
+
 	    pt_v.set_right_bearing(deg(atan2(right.GetY(), right.GetX())));
 
 	    ++segment;
