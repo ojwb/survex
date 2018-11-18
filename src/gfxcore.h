@@ -292,7 +292,7 @@ private:
     void DrawTick(int angle_cw);
     void DrawArrow(gla_colour col1, gla_colour col2);
 
-    void SkinPassage(vector<XSect> & centreline, bool draw = true);
+    void SkinPassage(vector<XSect> & centreline);
 
     virtual void GenerateList(unsigned int l);
     void GenerateDisplayList(bool surface);

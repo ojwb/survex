@@ -29,6 +29,7 @@
 #include "model.h"
 
 #include "img_hosted.h"
+#include "useful.h"
 
 #include <cfloat>
 #include <map>
@@ -464,6 +465,192 @@ void Model::CentreDataset(const Vector3& vmin)
     while (lpos != m_Labels.end()) {
 	Point & point = **lpos++;
 	point -= m_Offset;
+    }
+}
+
+void
+Model::do_prepare_tubes() const
+{
+    // Fill in "right_bearing" for each cross-section.
+    for (auto&& tube : tubes) {
+	assert(tube.size() > 1);
+	Vector3 U[4];
+	XSect* prev_pt_v = NULL;
+	Vector3 last_right(1.0, 0.0, 0.0);
+
+	vector<XSect>::iterator i = tube.begin();
+	vector<XSect>::size_type segment = 0;
+	while (i != tube.end()) {
+	    // get the coordinates of this vertex
+	    XSect & pt_v = *i++;
+
+	    bool cover_end = false;
+
+	    Vector3 right, up;
+
+	    const Vector3 up_v(0.0, 0.0, 1.0);
+
+	    if (segment == 0) {
+		assert(i != tube.end());
+		// first segment
+
+		// get the coordinates of the next vertex
+		const XSect & next_pt_v = *i;
+
+		// calculate vector from this pt to the next one
+		Vector3 leg_v = next_pt_v - pt_v;
+
+		// obtain a vector in the LRUD plane
+		right = leg_v * up_v;
+		if (right.magnitude() == 0) {
+		    right = last_right;
+		    // Obtain a second vector in the LRUD plane,
+		    // perpendicular to the first.
+		    //up = right * leg_v;
+		    up = up_v;
+		} else {
+		    last_right = right;
+		    up = up_v;
+		}
+
+		cover_end = true;
+	    } else if (segment + 1 == tube.size()) {
+		// last segment
+
+		// Calculate vector from the previous pt to this one.
+		Vector3 leg_v = pt_v - *prev_pt_v;
+
+		// Obtain a horizontal vector in the LRUD plane.
+		right = leg_v * up_v;
+		if (right.magnitude() == 0) {
+		    right = Vector3(last_right.GetX(), last_right.GetY(), 0.0);
+		    // Obtain a second vector in the LRUD plane,
+		    // perpendicular to the first.
+		    //up = right * leg_v;
+		    up = up_v;
+		} else {
+		    last_right = right;
+		    up = up_v;
+		}
+
+		cover_end = true;
+	    } else {
+		assert(i != tube.end());
+		// Intermediate segment.
+
+		// Get the coordinates of the next vertex.
+		const XSect & next_pt_v = *i;
+
+		// Calculate vectors from this vertex to the
+		// next vertex, and from the previous vertex to
+		// this one.
+		Vector3 leg1_v = pt_v - *prev_pt_v;
+		Vector3 leg2_v = next_pt_v - pt_v;
+
+		// Obtain horizontal vectors perpendicular to
+		// both legs, then normalise and average to get
+		// a horizontal bisector.
+		Vector3 r1 = leg1_v * up_v;
+		Vector3 r2 = leg2_v * up_v;
+		r1.normalise();
+		r2.normalise();
+		right = r1 + r2;
+		if (right.magnitude() == 0) {
+		    // This is the "mid-pitch" case...
+		    right = last_right;
+		}
+		if (r1.magnitude() == 0) {
+		    up = up_v;
+
+		    // Rotate pitch section to minimise the
+		    // "tortional stress" - FIXME: use
+		    // triangles instead of rectangles?
+		    int shift = 0;
+		    double maxdotp = 0;
+
+		    // Scale to unit vectors in the LRUD plane.
+		    right.normalise();
+		    up.normalise();
+		    Vector3 vec = up - right;
+		    for (int orient = 0; orient <= 3; ++orient) {
+			Vector3 tmp = U[orient] - prev_pt_v->GetPoint();
+			tmp.normalise();
+			double dotp = dot(vec, tmp);
+			if (dotp > maxdotp) {
+			    maxdotp = dotp;
+			    shift = orient;
+			}
+		    }
+		    if (shift) {
+			if (shift != 2) {
+			    Vector3 temp(U[0]);
+			    U[0] = U[shift];
+			    U[shift] = U[2];
+			    U[2] = U[shift ^ 2];
+			    U[shift ^ 2] = temp;
+			} else {
+			    swap(U[0], U[2]);
+			    swap(U[1], U[3]);
+			}
+		    }
+#if 0
+		    // Check that the above code actually permuted
+		    // the vertices correctly.
+		    shift = 0;
+		    maxdotp = 0;
+		    for (int j = 0; j <= 3; ++j) {
+			Vector3 tmp = U[j] - *prev_pt_v;
+			tmp.normalise();
+			double dotp = dot(vec, tmp);
+			if (dotp > maxdotp) {
+			    maxdotp = dotp + 1e-6; // Add small tolerance to stop 45 degree offset cases being flagged...
+			    shift = j;
+			}
+		    }
+		    if (shift) {
+			printf("New shift = %d!\n", shift);
+			shift = 0;
+			maxdotp = 0;
+			for (int j = 0; j <= 3; ++j) {
+			    Vector3 tmp = U[j] - *prev_pt_v;
+			    tmp.normalise();
+			    double dotp = dot(vec, tmp);
+			    printf("    %d : %.8f\n", j, dotp);
+			}
+		    }
+#endif
+		} else {
+		    up = up_v;
+		}
+		last_right = right;
+	    }
+
+	    // Scale to unit vectors in the LRUD plane.
+	    right.normalise();
+	    up.normalise();
+
+	    double l = fabs(pt_v.GetL());
+	    double r = fabs(pt_v.GetR());
+	    double u = fabs(pt_v.GetU());
+	    double d = fabs(pt_v.GetD());
+
+	    // Produce coordinates of the corners of the LRUD "plane".
+	    Vector3 v[4];
+	    v[0] = pt_v.GetPoint() - right * l + up * u;
+	    v[1] = pt_v.GetPoint() + right * r + up * u;
+	    v[2] = pt_v.GetPoint() + right * r - up * d;
+	    v[3] = pt_v.GetPoint() - right * l - up * d;
+
+	    prev_pt_v = &pt_v;
+	    U[0] = v[0];
+	    U[1] = v[1];
+	    U[2] = v[2];
+	    U[3] = v[3];
+
+	    pt_v.set_right_bearing(deg(atan2(right.GetY(), right.GetX())));
+
+	    ++segment;
+	}
     }
 }
 

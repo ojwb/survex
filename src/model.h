@@ -137,7 +137,7 @@ class SurveyFilter {
 /// Cave model.
 class Model {
     list<traverse> traverses[8];
-    list<vector<XSect>> tubes;
+    mutable list<vector<XSect>> tubes;
 
   public: // FIXME
     list<LabelInfo*> m_Labels;
@@ -156,6 +156,7 @@ class Model {
     bool m_HasSurfaceLegs = false;
     bool m_HasErrorInformation = false;
     bool m_IsExtendedElevation = false;
+    mutable bool m_TubesPrepared = false;
 
     // Character separating survey levels (often '.')
     wxChar m_separator;
@@ -165,6 +166,8 @@ class Model {
     time_t m_DateStamp_numeric;
 
     Vector3 m_Offset;
+
+    void do_prepare_tubes() const;
 
   public:
     int Load(const wxString& file, const wxString& prefix);
@@ -237,6 +240,7 @@ class Model {
     }
 
     list<vector<XSect>>::const_iterator tubes_begin() const {
+	prepare_tubes();
 	return tubes.begin();
     }
 
@@ -245,6 +249,7 @@ class Model {
     }
 
     list<vector<XSect>>::iterator tubes_begin() {
+	prepare_tubes();
 	return tubes.begin();
     }
 
@@ -274,6 +279,13 @@ class Model {
 
     list<LabelInfo*>::iterator GetLabelsNCEnd() {
 	return m_Labels.end();
+    }
+
+    void prepare_tubes() const {
+	if (!m_TubesPrepared) {
+	    do_prepare_tubes();
+	    m_TubesPrepared = true;
+	}
     }
 };
 

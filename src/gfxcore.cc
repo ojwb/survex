@@ -3742,7 +3742,7 @@ void GfxCore::AddQuadrilateralSurvey(const Vector3 &a, const Vector3 &b,
 }
 
 void
-GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
+GfxCore::SkinPassage(vector<XSect> & centreline)
 {
     const SurveyFilter* filter = m_Parent->GetTreeFilter();
     assert(centreline.size() > 1);
@@ -3919,27 +3919,25 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	v[2] = pt_v.GetPoint() + right * r - up * d;
 	v[3] = pt_v.GetPoint() - right * l - up * d;
 
-	if (draw) {
-	    if (segment > 0) {
-		if (!filter || (filter->CheckVisible(pt_v.GetLabel()) &&
-				filter->CheckVisible(prev_pt_v->GetLabel()))) {
-		    const Vector3 & delta = pt_v - *prev_pt_v;
-		    static_length_hack = delta.magnitude();
-		    static_gradient_hack = delta.gradient();
-		    (this->*AddQuad)(v[0], v[1], U[1], U[0]);
-		    (this->*AddQuad)(v[2], v[3], U[3], U[2]);
-		    (this->*AddQuad)(v[1], v[2], U[2], U[1]);
-		    (this->*AddQuad)(v[3], v[0], U[0], U[3]);
-		}
+	if (segment > 0) {
+	    if (!filter || (filter->CheckVisible(pt_v.GetLabel()) &&
+			    filter->CheckVisible(prev_pt_v->GetLabel()))) {
+		const Vector3 & delta = pt_v - *prev_pt_v;
+		static_length_hack = delta.magnitude();
+		static_gradient_hack = delta.gradient();
+		(this->*AddQuad)(v[0], v[1], U[1], U[0]);
+		(this->*AddQuad)(v[2], v[3], U[3], U[2]);
+		(this->*AddQuad)(v[1], v[2], U[2], U[1]);
+		(this->*AddQuad)(v[3], v[0], U[0], U[3]);
 	    }
+	}
 
-	    if (cover_end) {
-		if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
-		    if (segment == 0) {
-			(this->*AddQuad)(v[0], v[1], v[2], v[3]);
-		    } else {
-			(this->*AddQuad)(v[3], v[2], v[1], v[0]);
-		    }
+	if (cover_end) {
+	    if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
+		if (segment == 0) {
+		    (this->*AddQuad)(v[0], v[1], v[2], v[3]);
+		} else {
+		    (this->*AddQuad)(v[3], v[2], v[1], v[0]);
 		}
 	    }
 	}
@@ -3949,8 +3947,6 @@ GfxCore::SkinPassage(vector<XSect> & centreline, bool draw)
 	U[1] = v[1];
 	U[2] = v[2];
 	U[3] = v[3];
-
-	pt_v.set_right_bearing(deg(atan2(right.GetY(), right.GetX())));
 
 	++segment;
     }
@@ -4133,14 +4129,6 @@ void
 GfxCore::OnExport(const wxString &filename, const wxString &title,
 		  const wxString &datestamp)
 {
-    // Fill in "right_bearing" for each cross-section.
-    list<vector<XSect>>::iterator trav = m_Parent->tubes_begin();
-    list<vector<XSect>>::iterator tend = m_Parent->tubes_end();
-    while (trav != tend) {
-	SkinPassage(*trav, false);
-	++trav;
-    }
-
     svxPrintDlg * p;
     p = new svxPrintDlg(m_Parent, filename, title, datestamp,
 			m_PanAngle, m_TiltAngle,
