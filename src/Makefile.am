@@ -22,6 +22,9 @@ install-exec-hook:
 	    cp -p $(DESTDIR)$(bindir)/survexport$(EXEEXT) \
 		  $(DESTDIR)$(bindir)/3dtopos$(EXEEXT)
 
+uninstall-hook:
+	rm -f $(DESTDIR)$(bindir)/3dtopos$(EXEEXT)
+
 check_PROGRAMS = imgtest
 
 COMMONSRC = cmdline.c message.c str.c filename.c osdepend.c z_getopt.c getopt1.c
