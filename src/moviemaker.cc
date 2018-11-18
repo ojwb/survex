@@ -87,9 +87,10 @@ MovieMaker::MovieMaker()
     static bool initialised_ffmpeg = false;
     if (initialised_ffmpeg) return;
 
-    // FIXME: register only the codec(s) we want to use...
+#if LIBAVCODEC_VERSION_MAJOR < 58
     avcodec_register_all();
     av_register_all();
+#endif
 
     initialised_ffmpeg = true;
 #endif

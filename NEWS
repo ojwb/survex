@@ -14,6 +14,9 @@ Changes in 1.2.37 (2018-11-18):
     for now.  This is a workaround until wxWidgets OpenGL support is updated
     to work under Wayland.  Reported by Philip Balister.
 
+  + Fix warnings about using deprecated functions when building movie export
+    code using FFmpeg 4.0.
+
 * cavern:
 
   + Compass MAK files: Handle fixed point coordinates in feet - previously the
