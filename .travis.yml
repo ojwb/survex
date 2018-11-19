@@ -56,7 +56,9 @@ matrix:
         - make
         - make check VERBOSE=1
     - os: osx
-      osx_image: xcode7.3
+      # xcode6.4 fails trying to build ffmpeg (didn't note how).
+      # xcode7.3 times out building ffmpeg 4.1.
+      osx_image: xcode8
       before_install:
         - brew update
         # "brew install" unhelpfully errors out if any package listed is
