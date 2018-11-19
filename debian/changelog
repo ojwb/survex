@@ -1,3 +1,13 @@
+survex (1.2.37-1) unstable; urgency=medium
+
+  * New upstream release
+  * debian/control: Mark conformance with policy 4.2.1.
+  * debian/compat,debian/control: Update to dh compat level 10.
+  * debian/upstream/signing-key.asc: Replace deprecated
+    debian/upstream-signing-key.pgp.
+
+ -- Olly Betts <olly@survex.com>  Mon, 19 Nov 2018 14:02:22 +1300
+
 survex (1.2.36-1) unstable; urgency=medium
 
   * New upstream release

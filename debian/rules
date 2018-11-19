@@ -4,3 +4,7 @@ export DEB_BUILD_MAINT_OPTIONS=hardening=+bindnow,+pie
 
 %:
 	dh $@
+
+# Upstream "make check" isn't currently safe to run with parallel make.
+override_dh_auto_test:
+	dh_auto_test --no-parallel
