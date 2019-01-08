@@ -13,7 +13,8 @@ Packager: Olly Betts <olly@survex.com>
 # dependencies instead:
 #BuildRequires: wxGTK-devel >= 2.8.0, proj-devel
 #Requires: wxGTK >= 2.8.0, proj, proj-epsg
-BuildRequires: wxGTK3-devel, proj-devel
+# Fedora have removed gcc from the default build environment so explicitly list it here
+BuildRequires: wxGTK3-devel, proj-devel, gcc-g++
 Requires: wxGTK3, proj, proj-epsg
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
