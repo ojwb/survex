@@ -31,8 +31,8 @@
 # include <wx/wx.h>
 #endif
 
-#if !wxCHECK_VERSION(2,8,0)
-# error We support building with wxWidgets 2.8.0 or newer
+#if !wxCHECK_VERSION(3,0,0)
+# error We support building with wxWidgets 3.0.0 or newer
 #endif
 
 #include <wx/debug.h>

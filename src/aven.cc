@@ -238,11 +238,7 @@ bool Aven::OnInit()
 	wxString msg_lang_str(msg_lang, wxConvUTF8);
 	const char *lang = msg_lang2 ? msg_lang2 : msg_lang;
 	wxString lang_str(lang, wxConvUTF8);
-#if wxCHECK_VERSION(2,9,0)
 	loc->Init(msg_lang_str, lang_str, msg_lang_str);
-#else
-	loc->Init(msg_lang_str, lang_str, msg_lang_str, true, true);
-#endif
 	// The existence of the wxLocale object is enough - no need to keep a
 	// pointer to it!
     }
@@ -438,7 +434,6 @@ void Aven::ReportError(const wxString& msg)
 	wxMessageBox(msg, APP_NAME, wxOK | wxICON_ERROR);
 	return;
     }
-    AvenAllowOnTop ontop(m_Frame);
     wxMessageDialog dlg(m_Frame, msg, APP_NAME, wxOK | wxICON_ERROR);
     dlg.ShowModal();
 }

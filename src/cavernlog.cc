@@ -308,11 +308,7 @@ CavernLogWindow::stop_thread()
 	wxCriticalSectionLocker enter(thread_lock);
 	if (thread) {
 	    wxThreadError res;
-#if wxCHECK_VERSION(2,9,2)
 	    res = thread->Delete(NULL, wxTHREAD_WAIT_BLOCK);
-#else
-	    res = thread->Delete();
-#endif
 	    if (res != wxTHREAD_NO_ERROR) {
 		// FIXME
 	    }
@@ -822,7 +818,6 @@ CavernLogWindow::OnSave(wxCommandEvent &)
 {
     wxString filelog(filename, 0, filename.length() - 3);
     filelog += wxT("log");
-    AvenAllowOnTop ontop(mainfrm);
 #ifdef __WXMOTIF__
     wxString ext(wxT("*.log"));
 #else

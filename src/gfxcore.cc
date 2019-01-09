@@ -2776,7 +2776,6 @@ GfxCore::read_bil(wxInputStream & is, size_t size, unsigned long skipbytes)
 	}
     }
 
-#if wxCHECK_VERSION(2,9,5)
     if (!is.ReadAll(dem, size)) {
 	if (know_size) {
 	    // FIXME: On __WXMSW__ currently we fail to
@@ -2788,26 +2787,6 @@ GfxCore::read_bil(wxInputStream & is, size_t size, unsigned long skipbytes)
 	}
 	size = is.LastRead();
     }
-#else
-    char * p = reinterpret_cast<char *>(dem);
-    while (size) {
-	is.Read(p, size);
-	size_t c = is.LastRead();
-	if (c == 0) {
-	    if (!know_size) {
-		size = DEFAULT_HGT_SIZE - size;
-		if (size)
-		    break;
-	    }
-	    delete [] dem;
-	    dem = NULL;
-	    wxMessageBox(wxT("Failed to read terrain data"));
-	    return false;
-	}
-	p += c;
-	size -= c;
-    }
-#endif
 
     if (dem_width == 0 && dem_height == 0) {
 	dem_width = dem_height = sqrt(size / 2);

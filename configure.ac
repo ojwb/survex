@@ -175,11 +175,7 @@ save_CFLAGS=$CFLAGS
 CFLAGS="$CFLAGS $WX_CFLAGS"
 AC_CHECK_SIZEOF([wxChar], [], [
   #include <wx/defs.h>
-  #if wxCHECK_VERSION(2,9,0)
   #include <wx/chartype.h>
-  #else
-  #include <wx/wxchar.h>
-  #endif
 ])
 CFLAGS=$save_CFLAGS
 

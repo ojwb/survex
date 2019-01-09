@@ -356,7 +356,6 @@ class AvenPresList : public wxListCtrl {
 	void Save(bool use_default_name) {
 	    wxString fnm = filename;
 	    if (!use_default_name || force_save_as) {
-		AvenAllowOnTop ontop(mainfrm);
 #ifdef __WXMOTIF__
 		wxString ext(wxT("*.fly"));
 #else
@@ -1384,7 +1383,6 @@ void MainFrm::HideLog(wxWindow * log_window)
 
 void MainFrm::OnOpen(wxCommandEvent&)
 {
-    AvenAllowOnTop ontop(this);
 #ifdef __WXMOTIF__
     wxString filetypes = wxT("*.3d");
 #else
@@ -1484,7 +1482,6 @@ void MainFrm::OnShowLog(wxCommandEvent&)
 
 void MainFrm::OnScreenshot(wxCommandEvent&)
 {
-    AvenAllowOnTop ontop(this);
     wxString baseleaf;
     wxFileName::SplitPath(m_File, NULL, NULL, &baseleaf, NULL, wxPATH_NATIVE);
     /* TRANSLATORS: title of the save screenshot dialog */
@@ -1551,7 +1548,6 @@ void MainFrm::OnExtend(wxCommandEvent&)
     }
     output += wxT("_extend.3d");
     {
-	AvenAllowOnTop ontop(this);
 #ifdef __WXMOTIF__
 	wxString ext(wxT("*.3d"));
 #else
@@ -1592,7 +1588,6 @@ void MainFrm::OnExtend(wxCommandEvent&)
 void MainFrm::OnQuit(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
-	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	/* TRANSLATORS: and the question in that box */
 	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
@@ -1627,7 +1622,6 @@ void MainFrm::OnClose(wxCloseEvent&)
 
 void MainFrm::OnAbout(wxCommandEvent&)
 {
-    AvenAllowOnTop ontop(this);
 #ifdef __WXMAC__
     // GetIcon() returns an invalid wxIcon under OS X.
     AboutDlg dlg(this, wxICON(aven));
@@ -1946,7 +1940,6 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item)
 void MainFrm::OnPresNew(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
-	AvenAllowOnTop ontop(this);
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
 			 wmsg(/*Modified Presentation*/326),
@@ -1962,7 +1955,6 @@ void MainFrm::OnPresNew(wxCommandEvent&)
 
 void MainFrm::OnPresOpen(wxCommandEvent&)
 {
-    AvenAllowOnTop ontop(this);
     if (m_PresList->Modified()) {
 	// FIXME: better to ask "Do you want to save your changes?" and offer [Save] [Discard] [Cancel]
 	if (wxMessageBox(wmsg(/*The current presentation has been modified.  Abandon unsaved changes?*/327),
@@ -2051,7 +2043,6 @@ void MainFrm::OnPresStop(wxCommandEvent&)
 void MainFrm::OnPresExportMovie(wxCommandEvent&)
 {
 #ifdef WITH_LIBAV
-    AvenAllowOnTop ontop(this);
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
     wxString baseleaf;

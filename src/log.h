@@ -24,9 +24,5 @@ class MyLogWindow : public wxLogWindow {
   public:
     MyLogWindow();
   protected:
-#if wxCHECK_VERSION(2,9,0)
     void DoLogText(const wxString & msg);
-#else
-    void DoLogString(const wxChar *msg, time_t timestamp);
-#endif
 };

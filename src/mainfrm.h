@@ -441,31 +441,4 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-// Older wxGTK loses pop-up dialogs under the always-on-top, maximised window.
-// Not sure when this got fixed, but wx 2.8.10 definitely works properly on
-// Debian squeeze.
-//
-// To work around this issue, create this object on the stack, and it will
-// temporarily un-fullscreen the window while the dialog as a workaround.
-class AvenAllowOnTop {
-#if defined __WXGTK__ && !wxCHECK_VERSION(2,8,10)
-	MainFrm * mainfrm;
-    public:
-	explicit AvenAllowOnTop(MainFrm * mainfrm_) {
-	    if (mainfrm_ && mainfrm_->IsFullScreen()) {
-		mainfrm = mainfrm_;
-		mainfrm->ViewFullScreen();
-	    } else {
-		mainfrm = 0;
-	    }
-	}
-	~AvenAllowOnTop() {
-	    if (mainfrm) mainfrm->ViewFullScreen();
-	}
-#else
-    public:
-	AvenAllowOnTop(MainFrm *) { }
-#endif
-};
-
 #endif

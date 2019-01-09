@@ -35,7 +35,6 @@ MyLogWindow::MyLogWindow()
 {
 }
 
-#if wxCHECK_VERSION(2,9,0)
 void MyLogWindow::DoLogText(const wxString & msg) {
     if (first) {
 	wxLogWindow::DoLogText(wxString(GetGLSystemDescription().c_str(), wxConvUTF8));
@@ -44,13 +43,3 @@ void MyLogWindow::DoLogText(const wxString & msg) {
     wxLogWindow::DoLogText(msg);
     Show();
 }
-#else
-void MyLogWindow::DoLogString(const wxChar *msg, time_t timestamp) {
-    if (first) {
-	wxLogWindow::DoLogString(wxString(GetGLSystemDescription().c_str(), wxConvUTF8), timestamp);
-	first = false;
-    }
-    wxLogWindow::DoLogString(msg, timestamp);
-    Show();
-}
-#endif

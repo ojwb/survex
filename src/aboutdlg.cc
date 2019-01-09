@@ -142,16 +142,12 @@ AboutDlg::AboutDlg(wxWindow* parent, const wxIcon & app_icon) :
 	      0, wxLEFT | wxRIGHT, 20);
 
     info = wxGetOsDescription();
-#if wxCHECK_VERSION(2,9,2)
     info += wxT("\n");
     wxString version = wxGetLibraryVersionInfo().GetVersionString();
     info += version;
     if (version != wxVERSION_STRING)
 	info += wxT(" (built with ") wxVERSION_STRING wxT(")");
     info +=
-#else
-    info += wxT("\nBuilt with ") wxVERSION_STRING
-#endif
 #ifdef __WXGTK__
 # if defined __WXGTK3__
 	wxT(" (GTK+ 3)\n");

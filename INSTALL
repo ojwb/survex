@@ -7,7 +7,7 @@ prepackaged versions of Survex.
 
 Otherwise building from source is very easy.  First of all, you need
 to make sure you have the required libraries installed.  The main
-dependency is wxWidgets 2.8 or later - if there's a suitable wxWidgets
+dependency is wxWidgets 3.0 or later - if there's a suitable wxWidgets
 package for your platform, then just use that (note: library packages
 are usually split into runtime and development, usually with the same
 name but with a -dev or -devel or similar suffix on the latter - you'll
