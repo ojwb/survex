@@ -56,9 +56,8 @@ matrix:
         - make
         - make check VERBOSE=1
     - os: osx
-      # xcode6.4 fails trying to build ffmpeg (didn't note how).
-      # xcode7.3 times out building ffmpeg 4.1.
-      osx_image: xcode8
+      # xcode8 is rejected by homebrew as too old
+      osx_image: xcode8.3
       before_install:
         - brew update
         # "brew install" unhelpfully errors out if any package listed is
