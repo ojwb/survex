@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2003,2006,2011,2013,2014,2015 Olly Betts
+ * Copyright (C) 1992-2003,2006,2011,2013,2014,2015,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
 #include "validate.h" /* for compile_error */
+#include <math.h>
 
 #define THRESHOLD (REAL_EPSILON * 1000) /* 100 was too small */
 
@@ -56,9 +57,7 @@ static void check_var(/*const*/ var *v) {
    int i;
 
    for (i = 0; i < 3; i++) {
-      char buf[32];
-      sprintf(buf, "%6.3f", v[i]);
-      if (strstr(buf, "NaN") || strstr(buf, "nan"))
+      if (isnan(v[i])
 	 printf("*** NaN!!!\n"), bad = 1;
    }
    if (bad) print_var(v);
@@ -76,9 +75,7 @@ static void check_var(/*const*/ var *v) {
 
    for (i = 0; i < 3; i++) {
       for (j = 0; j < 3; j++) {
-	 char buf[32];
-	 sprintf(buf, "%6.3f", V(i, j));
-	 if (strstr(buf, "NaN") || strstr(buf, "nan"))
+	 if (isnan(V(i, j)))
 	    printf("*** NaN!!!\n"), bad = 1, ok = 1;
 	 if (V(i, j) != 0.0) ok = 1;
       }
@@ -123,9 +120,7 @@ static void check_svar(/*const*/ svar *v) {
 #endif
 
    for (i = 0; i < 6; i++) {
-      char buf[32];
-      sprintf(buf, "%6.3f", (*v)[i]);
-      if (strstr(buf, "NaN") || strstr(buf, "nan"))
+      if (isnan((*v)[i]))
 	 printf("*** NaN!!!\n"), bad = 1, ok = 1;
       if ((*v)[i] != 0.0) ok = 1;
    }
@@ -159,9 +154,7 @@ static void check_d(/*const*/ delta *d) {
    int i;
 
    for (i = 0; i < 3; i++) {
-      char buf[32];
-      sprintf(buf, "%6.3f", (*d)[i]);
-      if (strstr(buf, "NaN") || strstr(buf, "nan"))
+      if (isnan((*d)[i]))
 	 printf("*** NaN!!!\n"), bad = 1;
    }
 
