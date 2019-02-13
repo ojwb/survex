@@ -45,7 +45,9 @@ class MovieMaker {
 # endif
     AVCodecContext *context;
     AVFrame *frame;
+# if LIBAVCODEC_VERSION_MAJOR < 57
     unsigned char *outbuf; // Legacy-only.
+# endif
 # ifndef HAVE_AVCODEC_ENCODE_VIDEO2
     AVPicture *out; // Legacy-only.
 # endif
