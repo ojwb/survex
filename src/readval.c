@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -494,6 +494,10 @@ read_string(char **pstr, int *plen)
 
 	 s_catchar(pstr, plen, ch);
 	 nextch();
+      }
+      if (!*pstr) {
+	 /* Return empty string for "", not NULL. */
+	 s_catchar(pstr, plen, '\0');
       }
       nextch();
    } else {

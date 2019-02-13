@@ -4,10 +4,13 @@
 ./badinc4.svx:4:9: error: Expecting string field
  *include
          ^
-./badinc4.svx:5:25: error: Missing "
+./badinc4.svx:6:12: error: Couldn't open file ""
+ *include ""
+            ^
+./badinc4.svx:7:25: error: Missing "
  *include "not terminated
                          ^
-./badinc4.svx:6:12: error: Couldn't open file "nonexistent_file"
+./badinc4.svx:8:12: error: Couldn't open file "nonexistent_file"
  *include "nonexistent_file"
             ^~~~~~~~~~~~~~~~
 
@@ -31,4 +34,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 0 warning(s) and 4 error(s) - no output files produced.
+There were 0 warning(s) and 5 error(s) - no output files produced.
