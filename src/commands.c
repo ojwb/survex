@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -364,7 +364,7 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"METERS",	  UNITS_METRES },
 	{"METRES",	  UNITS_METRES },
 	{"METRIC",	  UNITS_METRES },
-	{"MILS",	  UNITS_GRADS },
+	{"MILS",	  UNITS_DEPRECATED_ALIAS_FOR_GRADS },
 	{"MINUTES",	  UNITS_MINUTES },
 	{"PERCENT",	  UNITS_PERCENT },
 	{"PERCENTAGE",    UNITS_PERCENT },
@@ -377,6 +377,18 @@ get_units(unsigned long qmask, bool percent_ok)
    if (units == UNITS_NULL) {
       compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown units “%s”*/35, buffer);
       return UNITS_NULL;
+   }
+   /* Survex has long misdefined "mils" as an alias for "grads", of which
+    * there are 400 in a circle.  There are several definitions of "mils"
+    * with a circle containing 2000π SI milliradians, 6400 NATO mils, 6000
+    * Warsaw Pact mils, and 6300 Swedish streck, and they aren't in common
+    * use by cave surveyors, so we now just warn if mils are used.
+    */
+   if (units == UNITS_DEPRECATED_ALIAS_FOR_GRADS) {
+      compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP,
+			 /*Units “%s” are deprecated, assuming “grads” - see manual for details*/479,
+			 buffer);
+      units = UNITS_GRADS;
    }
    if (units == UNITS_PERCENT && percent_ok &&
        !(qmask & ~(BIT(Q_GRADIENT)|BIT(Q_BACKGRADIENT)))) {

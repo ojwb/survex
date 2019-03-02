@@ -347,6 +347,12 @@ msgstr "Quantité « %s » inconnue"
 msgid "Unknown units “%s”"
 msgstr "Unité « %s » inconnue"
 
+#: ../src/commands.c:389
+#: n:479
+#, c-format
+msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
+msgstr ""
+
 #: ../src/commands.c:2018
 #: ../src/commands.c:2094
 #: n:434

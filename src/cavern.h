@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016,2019 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -107,7 +107,8 @@ typedef enum {
 /* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
    UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
-   UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC
+   UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC,
+   UNITS_DEPRECATED_ALIAS_FOR_GRADS
 } u_units;
 
 /* don't reorder these values!  They need to match with img.h too */

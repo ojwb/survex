@@ -1,4 +1,4 @@
-; pos=no warn=0
+; pos=no warn=1
 *fix 1 reference 0 0 0 ; so there's some survey data
 
 *sd tape 0.15 metres

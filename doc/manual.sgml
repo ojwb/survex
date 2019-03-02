@@ -3179,17 +3179,46 @@ in YARDS|FEET|METRIC|METRES|METERS (default: METRES)
 </Para>
 
 <Para>CLINO/GRADIENT, BACKCLINO/BACKGRADIENT
-in DEGS|DEGREES|GRADS|MILS|MINUTES|PERCENT|PERCENTAGE (default: DEGREES)
+in DEGS|DEGREES|GRADS|MINUTES|PERCENT|PERCENTAGE (default: DEGREES)
 </Para>
 
 <Para>COMPASS/BEARING, BACKCOMPASS/BACKBEARING, DECLINATION
-in DEGS|DEGREES|GRADS|MILS|MINUTES (default: DEGREES)
+in DEGS|DEGREES|GRADS|MINUTES (default: DEGREES)
 </Para>
 
-<Para>(360 degrees = 400 grads (also known as Mils))
+<Para>(360 degrees = 400 grads)
+</Para>
+
+<Para>
+Survex has long support MILS as an alias for GRADS.  However, this seems to
+be a bogus definition of a "mil" which is unique to Survex (except that Therion
+has since copied it) - there are several different definitions of a "mil" but
+they vary from 6000 to 6400 in a full circle, not 400.  Because of this we
+deprecated MILS in Survex 1.2.38 - you can still process data which uses them
+but you'll now get a warning, and we recommend you update your data.
+</Para>
+
+<Para>
+For example, if your data uses
+
+<programlisting>
+*units compass mils</programlisting>
+
+then you need to determine what the intended units actually are.  If there
+are 400 in a full circle, then instead use this (which will work with older
+Survex versions too):
+
+<programlisting>
+*units compass grads</programlisting>
+
+If the units are actually mils, you can specify that in terms of degrees.
+For example, for NATO mils (6400 in a full circle) you can use this (which
+also works with older Survex versions):
+
+<programlisting>
+*units compass 0.05625 degrees</programlisting>
 </Para>
 </listitem>
-
 </VarListEntry>
 
 <!-- <VarListEntry><Term>Caveats </Term> </VarListEntry> -->

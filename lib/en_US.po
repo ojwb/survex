@@ -347,6 +347,12 @@ msgstr "Unknown quantity “%s”"
 msgid "Unknown units “%s”"
 msgstr "Unknown units “%s”"
 
+#: ../src/commands.c:389
+#: n:479
+#, c-format
+msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
+msgstr "Units “%s” are deprecated, assuming “grads” - see manual for details"
+
 #: ../src/commands.c:2018
 #: ../src/commands.c:2094
 #: n:434
