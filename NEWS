@@ -1,3 +1,32 @@
+Changes in 1.2.38 (2019-03-02):
+
+* cavern:
+
+  + Deprecate MILS as angular units.  Survex has long support MILS as an alias
+    for GRADS.  However, this seems to be a bogus definition of a "mil" which
+    is unique to Survex (except that Therion has since copied it) - there are
+    several different definitions of a "mil" but they vary from 6000 to 6400 in
+    a full circle, not 400.  Reported by Andy Edwards.
+
+  + Fix segfault for *include "".  This isn't useful, but shouldn't crash.  It
+    now reports "file not found" instead.
+
+  + Use isnan() to check for not-a-number.  This is cleaner, more robust and
+    more efficient than formatting the number as a string and checking for
+    "NaN" or "nan" in the result.
+
+* Avoid unused variable warning when compiling from source with modern ffmpeg.
+
+* Drop support for wxWidgets < 3.0.  3.0.0 was released over 5 years ago and
+  should be easily available everywhere by now.  I'm no longer easily able to
+  test with wxWidgets 2.8, and this allows a significant amount of cruft to be
+  removed.
+
+* (Linux version): survex.spec: Fedora have removed gcc from the default build
+  environment so need to explicitly list it in the BuildRequires tag.  See
+  https://fedoraproject.org/wiki/Changes/Remove_GCC_from_BuildRoot for more
+  information.  Patch from James Begley.
+
 Changes in 1.2.37 (2018-11-18):
 
 * aven:
