@@ -29,7 +29,7 @@ library - Survex .3d, Survex .pos, Compass PLT and CMAP XYZ files.
 
 <para>
 Currently the output formats supported are
-DXF, EPS (Encapsulated PostScript), GPX, HPGL for plotters, JSON, KML,
+CSV, DXF, EPS (Encapsulated PostScript), GPX, HPGL for plotters, JSON, KML,
 Survex POS files, Skencil, and SVG.
 Also survexport can produce Compass .plt files, which are primarily intended
 for importing into Carto, but can also be used with Compass itself.
