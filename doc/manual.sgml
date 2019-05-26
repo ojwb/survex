@@ -1847,7 +1847,7 @@ can be specified (useful for overnight or multi-day surveying trips).
 <VarListEntry><Term>Syntax</Term>
 
 <listitem>
-<Para>*declination &lt;auto&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;</Para>
+<Para>*declination auto &lt;x&gt; &lt;y&gt; &lt;z&gt;</Para>
 <Para>*declination &lt;declination&gt; &lt;units&gt;</Para>
 </listitem>
 
