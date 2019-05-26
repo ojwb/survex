@@ -1,7 +1,7 @@
 /* hpgl.cc
  * Export from Aven as HPGL.
  */
-/* Copyright (C) 1993-2003,2005,2010,2014,2015,2016 Olly Betts
+/* Copyright (C) 1993-2003,2005,2010,2014,2015,2016,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,20 +133,20 @@ HPGL::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 	    case '\xB0':
 #ifdef HPGL_USE_UC
 		/* draw a degree sign */
-		fputs(HPGL_EOL";UC1.25,7.5,99,.25,0,.125,-.25,0,-.5,"
+		fputs(HPGL_EOL ";UC1.25,7.5,99,.25,0,.125,-.25,0,-.5,"
 		      "-.125,-.25,-.25,0,-.125,.25,0,.5,.125,.25;LB", fh);
 #else
 		/* KLUDGE: this prints the degree sign if the plotter supports
 		 * extended chars or a space if not, since we tried to redefine
 		 * space.  Nifty, eh? */
-		fputs(HPGL_SO" "HPGL_SI, fh);
+		fputs(HPGL_SO " " HPGL_SI, fh);
 #endif
 		break;
 	    case '\xA9':
 #ifdef HPGL_USE_UC
 		/* (C) needs two chars to look right! */
 		/* This bit does the circle of the (C) symbol: */
-		fputs(HPGL_EOL";", fh);
+		fputs(HPGL_EOL ";", fh);
 		if (fNewLines) PUTC('\n', fh);
 		fputs("UC2,3.5,99,0,1,0.125,1,0.25,.75,0.375,.75,"
 		      ".5,.5,.625,.25,.75,.25,.75,0,.75,-.25,.625,-.25,"
@@ -163,7 +163,7 @@ HPGL::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 		if (fNewLines) PUTC('\n', fh);
 		fputs("LB", fh);
 #else
-		fputs(HPGL_SO"(C)"HPGL_SI, fh);
+		fputs(HPGL_SO "(C)" HPGL_SI, fh);
 #endif
 		break;
 	    default:
@@ -171,7 +171,7 @@ HPGL::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 	}
 	s++;
     }
-    fputs(HPGL_EOL";", fh);
+    fputs(HPGL_EOL ";", fh);
     if (fNewLines) PUTC('\n', fh);
 }
 
