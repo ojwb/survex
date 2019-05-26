@@ -2040,12 +2040,12 @@ msgstr "Vollständige Koordinaten"
 #: ../src/printing.cc:519
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Befestigt am Boden"
 
 #: ../src/survexport.cc:136
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "Befestigt am Boden"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441
