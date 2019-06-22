@@ -944,6 +944,9 @@ void GfxCore::NattyDrawNames()
     const SurveyFilter* filter = m_Parent->GetTreeFilter();
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
+	if (m_Splays == SHOW_HIDE && (*label)->IsSplayEnd())
+	    continue;
+
 	if (!((m_Surface && (*label)->IsSurface()) ||
 	      (m_Legs && (*label)->IsUnderground()) ||
 	      (!(*label)->IsSurface() && !(*label)->IsUnderground()))) {
@@ -1003,6 +1006,9 @@ void GfxCore::SimpleDrawNames()
     // Draw all station names, without worrying about overlaps
     list<LabelInfo*>::const_iterator label = m_Parent->GetLabels();
     for ( ; label != m_Parent->GetLabelsEnd(); ++label) {
+	if (m_Splays == SHOW_HIDE && (*label)->IsSplayEnd())
+	    continue;
+
 	if (!((m_Surface && (*label)->IsSurface()) ||
 	      (m_Legs && (*label)->IsUnderground()) ||
 	      (!(*label)->IsSurface() && !(*label)->IsUnderground()))) {
@@ -1918,6 +1924,9 @@ void GfxCore::CreateHitTestGrid()
     while (pos != end) {
 	LabelInfo* label = *pos++;
 
+	if (m_Splays == SHOW_HIDE && label->IsSplayEnd())
+	    continue;
+
 	if (!((m_Surface && label->IsSurface()) ||
 	      (m_Legs && label->IsUnderground()) ||
 	      (!label->IsSurface() && !label->IsUnderground()))) {
@@ -1925,6 +1934,7 @@ void GfxCore::CreateHitTestGrid()
 	    // (last case is for stns with no legs attached)
 	    continue;
 	}
+
 	if (filter && !filter->CheckVisible(label->GetText()))
 	    continue;
 
@@ -2522,6 +2532,9 @@ void GfxCore::GenerateList(unsigned int l)
 	    while (pos != m_Parent->GetLabelsEnd()) {
 		const LabelInfo* label = *pos++;
 
+		if (m_Splays == SHOW_HIDE && label->IsSplayEnd())
+		    continue;
+
 		if ((m_Surface && label->IsSurface()) ||
 		    (m_Legs && label->IsUnderground()) ||
 		    (!label->IsSurface() && !label->IsUnderground())) {
@@ -3096,6 +3109,9 @@ void GfxCore::GenerateBlobsDisplayList()
 	// which takes priority over fixed point
 	// highlighting, which in turn takes priority over exported
 	// point highlighting.
+
+	if (m_Splays == SHOW_HIDE && label->IsSplayEnd())
+	    continue;
 
 	if (!((m_Surface && label->IsSurface()) ||
 	      (m_Legs && label->IsUnderground()) ||

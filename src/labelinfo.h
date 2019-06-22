@@ -96,6 +96,11 @@ public:
     bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED) != 0; }
     bool IsAnon() const { return (flags & LFLAG_NOT_ANON) == 0; }
     bool IsWall() const { return (flags & LFLAG_NOT_WALL) == 0; }
+    // This should really also return true for non-anonymous splay ends, and not
+    // return true for anonymous stations in other situations, but the .3d
+    // format doesn't tell us this information currently, and it's not trivial
+    // to rediscover.
+    bool IsSplayEnd() const { return IsAnon(); }
 };
 
 #endif

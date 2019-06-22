@@ -493,6 +493,8 @@ public:
 	UpdateBlobs();
 	InvalidateList(LIST_SURFACE_LEGS);
 	InvalidateList(LIST_UNDERGROUND_LEGS);
+	InvalidateList(LIST_CROSSES);
+	m_HitTestGridValid = false;
 	ForceRefresh();
     }
     void SetDupesMode(int mode) {
