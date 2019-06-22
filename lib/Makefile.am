@@ -36,6 +36,9 @@ dist_pkgdata_DATA = bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 appsdir = $(datadir)/applications
 dist_apps_DATA = survex-aven.desktop
 
+gtksourceviewdir = $(datadir)/gtksourceview-3.0/language-specs
+dist_gtksourceview_DATA = survex.lang
+
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
 
