@@ -29,7 +29,7 @@ extern "C" {
 #include "osdepend.h"
 #include "osalloc.h"
 
-/* Define MSG_SETUP_PROJ__PATH before including this header to enable the
+/* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
  * hooks to setup proj4's search path to be relative to the executable if this
  * is a relocatable install.
  */
