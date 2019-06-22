@@ -213,6 +213,8 @@ PKG_CHECK_MODULES([PROJ], [proj], [
 ])
 AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
+dnl Check for new-style PROJ header.
+AC_CHECK_HEADERS([proj.h])
 
 dnl Checks for header files.
 AC_HEADER_STDC

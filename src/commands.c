@@ -26,6 +26,15 @@
 #include <stddef.h> /* for offsetof */
 #include <string.h>
 
+#ifdef HAVE_PROJ_H
+/* Work around broken check in proj.h:
+ * https://github.com/OSGeo/PROJ/issues/1523
+ */
+# ifndef PROJ_H
+#  include <proj.h>
+# endif
+#endif
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include <proj_api.h>
 
 #include "cavern.h"
@@ -1706,11 +1715,19 @@ cmd_declination(void)
 	/* Invalidate cached declination. */
 	pcs->declination = HUGE_REAL;
 	{
+#ifdef HAVE_PROJ_H
+	    PJ_COORD lp;
+	    lp.lp.lam = x;
+	    lp.lp.phi = y;
+	    PJ_FACTORS factors = proj_factors(proj_out, lp);
+	    pcs->convergence = factors.meridian_convergence;
+#else
 	    projLP lp = { x, y };
 	    struct FACTORS factors;
 	    memset(&factors, 0, sizeof(factors));
 	    pj_factors(lp, proj_out, 0.0, &factors);
 	    pcs->convergence = factors.conv;
+#endif
 	}
     } else {
 	/* *declination D UNITS */

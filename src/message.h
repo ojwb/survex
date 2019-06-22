@@ -36,6 +36,7 @@ extern "C" {
 #ifdef MSG_SETUP_PROJ_SEARCH_PATH
 /* We only support relocatable builds on these platforms. */
 # if OS_WIN32 || OS_UNIX_MACOSX
+#  define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #  include <proj_api.h>
 #  define msg_init(ARGV) do {\
 	if (msg_init_(ARGV)) pj_set_finder(msg_proj_finder_);\

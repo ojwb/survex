@@ -33,6 +33,15 @@
 #include <math.h>
 #include <float.h>
 
+#ifdef HAVE_PROJ_H
+/* Work around broken check in proj.h:
+ * https://github.com/OSGeo/PROJ/issues/1523
+ */
+# ifndef PROJ_H
+#  include <proj.h>
+# endif
+#endif
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include <proj_api.h>
 
 #include "img_hosted.h"

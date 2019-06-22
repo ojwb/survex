@@ -47,6 +47,7 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
+#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include <proj_api.h>
 
 const unsigned long DEFAULT_HGT_DIM = 3601;
