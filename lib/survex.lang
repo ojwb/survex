@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Authors: Philip Withnall
+ Copyright © 2018 Philip Withnall <philip@tecnocode.co.uk>
+
+ GtkSourceView is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ GtkSourceView is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with this library; if not, see <http://www.gnu.org/licenses/>.
+ 
+ Reference: https://survex.com/docs/manual/datafile.htm
+-->
+<language id="survex" name="Survex" version="2.0" _section="Source">
+  <metadata>
+    <property name="mimetypes">text/x-survex</property>
+    <property name="globs">*.svx</property>
+    <property name="line-comment-start">;</property>
+  </metadata>
+
+  <styles>
+    <style id="comment" name="Comment" map-to="def:comment"/>
+    <style id="error" name="Error" map-to="def:error"/>
+    <style id="literal" name="Literal" map-to="def:string"/>
+    <style id="command" name="Command" map-to="def:statement"/>
+    <style id="parameter" name="Parameter" map-to="def:type"/>
+    <style id="identifier" name="Identifier" map-to="def:identifier"/>
+    <style id="number" name="Number" map-to="def:decimal"/>
+  </styles>
+
+  <default-regex-options case-sensitive="false"/>
+
+  <definitions>
+
+    <define-regex id="survey-name">[a-zA-Z0-9_\-\.]+</define-regex>
+    <define-regex id="station-name">[a-zA-Z0-9_\-\.]+</define-regex>
+    <define-regex id="date">[0-9]+(?:\.[0-9]+(?:\.[0-9+])?)?(?:\-[0-9]+(?:\.[0-9]+(?:\.[0-9+])?)?)?</define-regex>
+    <define-regex id="number" extended="true">
+      [-+]?[0-9]+\.[0-9]*|
+      [-+]?[0-9]+|
+      [-+]?[0-9]*\.[0-9]+
+    </define-regex>
+    <define-regex id="string" extended="true">
+      (?:[^\s"]+)|
+      (?:"[^"]*")
+    </define-regex>
+
+    <define-regex id="data-style" extended="true">
+      default|
+      normal|
+      diving|
+      cartesian|
+      topofil|
+      cylpolar|
+      nosurvey|
+      passage
+    </define-regex>
+
+    <define-regex id="data-instruments" extended="true">
+      from|
+      to|
+      tape|
+      compass|
+      clino|
+      backcompass|
+      backclino|
+      station|
+      direction|
+      fromdepth|
+      todepth|
+      depthchange|
+      northing|
+      easting|
+      altitude|
+      newline|
+      left|
+      right|
+      up|
+      down|
+      ignoreall|
+      ignore|
+      length|
+      bearing|
+      gradient|
+      count
+    </define-regex>
+
+    <define-regex id="coordinate-system" extended="true">
+      custom|
+      epsg|
+      esri|
+      eur79z30|
+      ijtsk|
+      ijtsk03|
+      jtsk|
+      jtsk03|
+      long-lat|
+      osgb|
+      s-merc|
+      utm
+    </define-regex>
+
+    <!-- FIXME: Should this be the same list as data-instruments? -->
+    <define-regex id="quantity" extended="true">
+      tape|
+      length|
+      backtape|
+      backlength|
+      compass|
+      bearing|
+      backcompass|
+      backbearing|
+      clino|
+      gradient|
+      backclino|
+      backgradient|
+      counter|
+      count|
+      depth|
+      declination|
+      dx|
+      easting|
+      dy|
+      northing|
+      dz|
+      altitude|
+      left|
+      right|
+      up|
+      ceiling|
+      down|
+      floor|
+      level|
+      plumb|
+      position
+    </define-regex>
+
+    <!-- FIXME: Should this be the same list as data-instruments? -->
+    <define-regex id="calibrate-quantity" extended="true">
+      tape|
+      compass|
+      clino|
+      counter|
+      depth|
+      declination|
+      x|
+      y|
+      z
+    </define-regex>
+
+    <define-regex id="unit" extended="true">
+      default|
+      yards|
+      feet|
+      metric|
+      meters|
+      metres|
+      degs|
+      degrees|
+      grads|
+      mils|
+      minutes|
+      percentage|
+      percent
+    </define-regex>
+
+    <define-regex id="set-item" extended="true">
+      blank|
+      comment|
+      decimal|
+      eol|
+      keyword|
+      minus|
+      names|
+      omit|
+      plus|
+      root|
+      separator
+    </define-regex>
+
+    <context id="string" style-ref="literal" end-at-line-end="true">
+      <start>"</start>
+      <end>"</end>
+    </context>
+
+    <context id="numeric" style-ref="number">
+      <match>(\%{number})</match>
+    </context>
+
+    <context id="station-name" style-ref="number">
+      <match>(\%{station-name})</match>
+    </context>
+
+    <context id="line-comment" style-ref="comment" end-at-line-end="true">
+      <start>;</start>
+      <include>
+        <context ref="def:in-line-comment"/>
+      </include>
+    </context>
+
+    <context id="alias-command">
+      <match>^\s*(\*alias)\s+(station)\s+(\%{station-name})(?:\s+(\%{station-name}))?</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="begin-command">
+      <match>^\s*(\*begin)(?:\s+(\%{survey-name}))?</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="calibrate-command">
+      <match>^\s*(\*calibrate)(?:(?:((?:\s+(?:\%{calibrate-quantity}))+)\s+(\%{number})(?:\s+(\%{unit}))?(?:\s+(\%{number}))?)|\s+(default))</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="number"/>
+        <context sub-pattern="4" style-ref="parameter"/>
+        <context sub-pattern="5" style-ref="number"/>
+        <context sub-pattern="6" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="case-command">
+      <match>^\s*(\*case)\s+(preserve|toupper|tolower)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="copyright-command">
+      <match>^\s*(\*copyright)\s+(\%{date})\s+(.+)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="number"/>
+      </include>
+    </context>
+
+    <context id="cs-command">
+      <match>^\s*(\*cs)(?:\s+(out))?\s+(\%{coordinate-system})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="data-command">
+      <match>^\s*(\*data)\s+(\%{data-style})((?:\s+(?:\%{data-instruments}))*)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="date-command">
+      <match>^\s*(\*date)\s+(\%{date})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="number"/>
+      </include>
+    </context>
+
+    <context id="declination-command">
+      <match>^\s*(\*declination)\s+(?:(auto)|(?:(\%{number})\s+(\%{unit})))</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="number"/>
+        <context sub-pattern="4" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="default-command">
+      <match>^\s*(\*default)\s+(all|calibrate|data|units)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="end-command">
+      <match>^\s*(\*end)(?:\s+(\%{survey-name}))?</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="entrance-command">
+      <match>^\s*(\*entrance)\s+(\%{station-name})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="equate-command">
+      <match>^\s*(\*equate)\s+(\%{station-name})((?:\s+(?:\%{station-name}))+)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+        <context sub-pattern="3" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="export-command">
+      <match>^\s*(\*export)((?:\s+(?:\%{station-name}))+)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="fix-command">
+      <match>^\s*(\*fix)\s+(\%{station-name})(\s+reference)?</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+        <context sub-pattern="3" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="flags-command">
+      <match>^\s*(\*flags)((?:(?:\s+not)?\s+(?:duplicate|splay|surface))+)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="include-command">
+      <match>^\s*(\*include)\s+(\%{string})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="literal"/>
+      </include>
+    </context>
+
+    <context id="infer-command">
+      <match>^\s*(\*infer)\s+(plumbs|equates|exports)\s+(on|off)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="instrument-command">
+      <match>^\s*(\*instrument)\s+([a-z]+)\s+(\%{string})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+        <context sub-pattern="3" style-ref="literal"/>
+      </include>
+    </context>
+
+    <context id="prefix-command">
+      <match>^\s*(\*prefix)\s+(\%{survey-name})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="ref-command">
+      <match>^\s*(\*ref)\s+(\%{string})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="literal"/>
+      </include>
+    </context>
+
+    <context id="require-command">
+      <match>^\s*(\*require)\s+(\%{string})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="literal"/>
+      </include>
+    </context>
+
+    <context id="sd-command">
+      <match>^\s*(\*sd)((?:\s+(?:\%{quantity}))+)\s+(\%{number})\s+(\%{unit})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="number"/>
+        <context sub-pattern="4" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="set-command">
+      <match>^\s*(\*set)\s+(\%{set-item})\s+(.+)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="literal"/>
+      </include>
+    </context>
+
+    <context id="solve-command">
+      <match>^\s*(\*solve)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+      </include>
+    </context>
+
+    <context id="team-command">
+      <match>^\s*(\*team)\s+(\%{string})((?:\s+(?:[a-z]+))+)</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="literal"/>
+        <context sub-pattern="3" style-ref="identifier"/>
+      </include>
+    </context>
+
+    <context id="title-command">
+      <match>^\s*(\*title)\s+(\%{string})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="literal"/>
+      </include>
+    </context>
+
+    <context id="truncate-command">
+      <match>^\s*(\*truncate)\s+(?:(\%{number})|(off))</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="number"/>
+        <context sub-pattern="3" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="units-command">
+      <match>^\s*(\*units)((?:\s+(?:\%{quantity}))+)(?:\s+(\%{number}))?\s+(\%{unit})</match>
+      <include>
+        <context sub-pattern="1" style-ref="command"/>
+        <context sub-pattern="2" style-ref="parameter"/>
+        <context sub-pattern="3" style-ref="number"/>
+        <context sub-pattern="4" style-ref="parameter"/>
+      </include>
+    </context>
+
+    <context id="survex">
+      <include>
+        <context ref="string"/>
+        <context ref="numeric"/>
+        <context ref="station-name"/>
+        <context ref="line-comment"/>
+        <context ref="alias-command"/>
+        <context ref="begin-command"/>
+        <context ref="calibrate-command"/>
+        <context ref="case-command"/>
+        <context ref="copyright-command"/>
+        <context ref="cs-command"/>
+        <context ref="data-command"/>
+        <context ref="date-command"/>
+        <context ref="declination-command"/>
+        <context ref="default-command"/>
+        <context ref="end-command"/>
+        <context ref="entrance-command"/>
+        <context ref="equate-command"/>
+        <context ref="export-command"/>
+        <context ref="fix-command"/>
+        <context ref="flags-command"/>
+        <context ref="include-command"/>
+        <context ref="infer-command"/>
+        <context ref="instrument-command"/>
+        <context ref="prefix-command"/>
+        <context ref="ref-command"/>
+        <context ref="require-command"/>
+        <context ref="sd-command"/>
+        <context ref="set-command"/>
+        <context ref="solve-command"/>
+        <context ref="team-command"/>
+        <context ref="title-command"/>
+        <context ref="truncate-command"/>
+        <context ref="units-command"/>
+      </include>
+    </context>
+
+  </definitions>
+</language>
