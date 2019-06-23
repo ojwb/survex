@@ -69,6 +69,11 @@ Name: "zh_TW"; MessagesFile: "ChineseTraditional.isl"
 Name: "{app}\manual"
 Name: "{app}\images"
 
+; Remove any cad3d.exe from a previous install - it has now been replaced
+; by survexport.exe.
+[InstallDelete]
+Type: files; Name: "{app}\cad3d.exe"
+
 [Files]
 Source: "*.exe"; DestDir: "{app}"
 ; mingwm10.dll only needed if we use threads
