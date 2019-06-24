@@ -65,7 +65,7 @@
 ./csbad.svx:24:9: error: Coordinate system unsuitable for output
  *cs out jtsk03
          ^~~~~~
-./csbad.svx:29: error: Failed to convert coordinates: latitude or longitude exceeded limits
+./csbad.svx:31: error: Failed to convert coordinates: latitude or longitude exceeded limits
  *fix 2 reference 179 -89 1000
 
 Removing trailing traverses...

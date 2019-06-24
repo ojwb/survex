@@ -22,8 +22,11 @@
 *cs out long-lat
 *cs out jtsk
 *cs out jtsk03
-; PROJ.4 should fail to convert a point near the South pole to OSGB - check
-; that cavern relays the error usefully.
-*cs out osgb:ha
+; Check that an error from PROJ is usefully relayed by cavern.  PROJ >= 6 uses
+; a more accurate conversion for default for tmerc which works for the whole
+; world, so we specify +approx to force the old conversion to be used.  Older
+; PROJ doesn't understand +approx but appears to just ignore unrecognised
+; options.
+*cs out custom "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=0 +y_0=0 +ellps=airy +datum=OSGB36 +units=m +no_defs +approx"
 *cs long-lat
 *fix 2 reference 179 -89 1000
