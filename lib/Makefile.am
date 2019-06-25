@@ -39,6 +39,9 @@ dist_apps_DATA = survex-aven.desktop
 gtksourceviewdir = $(datadir)/gtksourceview-3.0/language-specs
 dist_gtksourceview_DATA = survex.lang
 
+projdatadir = $(datadir)/proj
+dist_projdata_DATA = proj/esri
+
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
 

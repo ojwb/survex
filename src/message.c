@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017 Olly Betts
+ * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -888,7 +888,7 @@ msg_appname(void)
    return appname_copy;
 }
 
-int
+void
 msg_init_(char * const *argv)
 {
    char *p;
@@ -1148,28 +1148,21 @@ macosx_got_msg:
 #endif
 
    select_charset(default_charset());
-
-   /* Return 1 if this is a relocatable install, 0 otherwise. */
-#if OS_UNIX_MACOSX
-   return msg_macosx_relocatable;
-#else
-   return OS_WIN32;
-#endif
 }
 
-#if OS_WIN32 || OS_UNIX_MACOSX
 const char *
 msg_proj_finder_(const char * file)
 {
+    struct stat sb;
     static char * r = NULL;
     static int r_len = 0;
     s_zero(&r);
     s_cat(&r, &r_len, pth_cfg_files);
     s_cat(&r, &r_len, "/proj/");
     s_cat(&r, &r_len, file);
+    if (stat(r, &sb) < 0) return NULL;
     return r;
 }
-#endif
 
 #ifndef AVEN
 /* Return message if messages available, else a fallback value. */

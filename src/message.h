@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2003,2005,2010,2015,2017 Olly Betts
+ * Copyright (C) 1998-2003,2005,2010,2015,2017,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,18 +30,15 @@ extern "C" {
 #include "osalloc.h"
 
 /* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
- * hooks to setup proj4's search path to be relative to the executable if this
- * is a relocatable install.
+ * hooks to setup proj4's search path to look for data files we bundle.
  */
 #ifdef MSG_SETUP_PROJ_SEARCH_PATH
-/* We only support relocatable builds on these platforms. */
-# if OS_WIN32 || OS_UNIX_MACOSX
-#  define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#  include <proj_api.h>
-#  define msg_init(ARGV) do {\
-	if (msg_init_(ARGV)) pj_set_finder(msg_proj_finder_);\
+# define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
+# include <proj_api.h>
+# define msg_init(ARGV) do {\
+	msg_init_(ARGV); \
+	pj_set_finder(msg_proj_finder_); \
     } while (0)
-# endif
 #endif
 
 #ifndef msg_init
@@ -72,7 +69,7 @@ extern const char *msg_lang2;
 /* Not intended for direct use - use msg_init() instead, optionally defining
  * MSG_SETUP_PROJ_SEARCH_PATH.
  */
-int msg_init_(char *const *argv);
+void msg_init_(char *const *argv);
 
 /* Not intended for direct use - use msg_init() instead, optionally defining
  * MSG_SETUP_PROJ_SEARCH_PATH.

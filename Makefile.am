@@ -71,7 +71,7 @@ mingw_iss : survex.iss
 	done > iss_tmp/i18nfiles.iss
 	cp lib/*.isl iss_tmp
 	mkdir iss_tmp/proj
-	cp -p /usr/${host}/share/proj/epsg /usr/${host}/share/proj/esri iss_tmp/proj
+	cp -p /usr/${host}/share/proj/epsg lib/proj/esri iss_tmp/proj
 	: # Also need to reduce colour depth it appears:
 	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
 	DISPLAY= wine "c:/Program Files/Inno Setup 5/ISCC.exe" iss_tmp/survex.iss
