@@ -3241,7 +3241,7 @@ msgid "Failed to initialise output coordinate system “%s”"
 msgstr ""
 
 #. TRANSLATORS: The PROJ library is used to do coordinate
-#. transformations (https://trac.osgeo.org/proj/) - if the .3d file
+#. transformations (https://proj.org/) - if the .3d file
 #. doesn't contain details of the coordinate projection in use, the
 #. user must specify it here for export formats which need to know it
 #. (e.g. GPX).

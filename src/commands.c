@@ -51,7 +51,7 @@
 #include "str.h"
 
 #ifndef HAVE_PROJ_H
-/*** Extracted from proj.4 projects.h (yuck, but grass also does this): */
+/*** Extracted from PROJ 4.x projects.h (yuck, but grass also does this): */
 struct DERIVS {
     double x_l, x_p; /* derivatives of x for lambda-phi */
     double y_l, y_p; /* derivatives of y for lambda-phi */

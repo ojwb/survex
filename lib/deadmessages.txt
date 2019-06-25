@@ -1293,7 +1293,7 @@ fr "données (chaine de caractères) à passer à PROJ"
 id "masukan datum sebagai string untuk lolos ke PROJ"
 it "Immetti il datum come stringa da passare a PROJ"
 pl "wejściowy układ współrzędnych jako ciąg parametrów dla PROJ"
-ru "входной датум в виде названия датума из библиотеки PROJ (см. https://trac.osgeo.org/proj/)"
+ru "входной датум в виде названия датума из библиотеки PROJ (см. https://proj.org/)"
 sk "Vložiť dátum ako text pre PROJ"
 
 msgid "do not generate station labels"

@@ -1,7 +1,7 @@
 ; pos=no warn=0
 ; Initial *cs support failed to convert latitude and longitude to radians,
-; which PROJ.4 requires, so coordinate systems using them didn't work
-; until Survex 1.2.21.  This is a regression test for that bug.
+; which PROJ requires, so coordinate systems using them didn't work until
+; Survex 1.2.21.  This is a regression test for that bug.
 *cs out UTM33
 *cs LONG-LAT
 *fix 1 reference 13.5 47.5 1623

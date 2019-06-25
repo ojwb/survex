@@ -20,10 +20,10 @@
 #   ./buildmacosx.sh
 #
 # This will automatically download and temporarily install wxWidgets,
-# PROJ.4 and FFmpeg in subdirectories of the source tree (this script is smart
+# PROJ and FFmpeg in subdirectories of the source tree (this script is smart
 # enough not to re-download or re-build these if it already has).
 #
-# If you already have wxWidgets, PROJ.4 and/or FFmpeg installed permanently,
+# If you already have wxWidgets, PROJ and/or FFmpeg installed permanently,
 # you can disable these by passing one or more extra options - e.g. to build
 # none of them, use:
 #
