@@ -1,3 +1,11 @@
+survex (1.2.39-1) experimental; urgency=medium
+
+  * Upload to experimental due to release freeze.
+  * New upstream release:
+    + Work around bug with where esri data file is installed.
+
+ -- Olly Betts <olly@survex.com>  Sat, 29 Jun 2019 15:08:52 +1200
+
 survex (1.2.38-1) unstable; urgency=medium
 
   * New upstream release
