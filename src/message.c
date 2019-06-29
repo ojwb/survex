@@ -49,8 +49,9 @@
 # include <windows.h>
 #elif OS_UNIX
 # include <sys/types.h>
-# include <sys/stat.h>
 #endif
+
+#include <sys/stat.h>
 
 /* For funcs which want to be immune from messing around with different
  * calling conventions */
