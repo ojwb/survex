@@ -71,12 +71,7 @@ fDirectory(const char *fnm)
        || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
 #endif
        ) return 1;
-#ifdef HAVE_LSTAT
-   /* On Unix, dereference any symlinks we might encounter */
-   if (lstat(fnm, &buf) != 0) return 0;
-#else
    if (stat(fnm, &buf) != 0) return 0;
-#endif
 #ifdef S_ISDIR
    /* POSIX way */
    return S_ISDIR(buf.st_mode);

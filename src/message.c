@@ -936,7 +936,7 @@ msg_init_(char * const *argv)
 	 /* On MacOS X the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
 	 p = use_path(pth, "share/survex/en.msg");
-	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
+	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "share/survex");
 	    msg_macosx_relocatable = 1;
 	    goto macosx_got_msg;
@@ -948,7 +948,7 @@ msg_init_(char * const *argv)
 	  * binary, which are the ones which aven runs.
 	  */
 	 p = use_path(pth, "../Resources/en.msg");
-	 if (lstat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
+	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "../Resources");
 	    msg_macosx_relocatable = 1;
 	    goto macosx_got_msg;
@@ -960,7 +960,7 @@ msg_init_(char * const *argv)
 	  * support files - this allows us to test binaries in the build
 	  * tree easily. */
 	 p = use_path(pth, "../lib/en.msg");
-	 if (lstat(p, &buf) == 0) {
+	 if (stat(p, &buf) == 0) {
 #ifdef S_ISREG
 	    /* POSIX way */
 	    if (S_ISREG(buf.st_mode)) {
