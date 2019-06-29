@@ -1,3 +1,54 @@
+Changes in 1.2.39 (2019-06-29):
+
+* Support versions 5.x and 6.x of the PROJ library we use for handling
+  conversions between coordinate systems.  Reported by Bas Couwenberg
+  in #102, by Richard Knapp in #103 and by Martin Sluka in email.
+
+* (Unix and Mac OS versions): When checking if something is a file or if it is
+  a directory, we no longer treat a symlink as being neither, but instead
+  return an answer based on what the symlink points to.
+
+* aven:
+
+  + Improve handling of hidden splay ends.  Previously, hidden splay ends still
+    served as "targets" for snapping the mouse pointer to, and still got
+    crosses when crosses were enabled.  We don't have a handy flag for "this is
+    the outer end of a splay" and computing that on demand isn't so easy to do,
+    so for now we use the "anonymous station" flag so at least these cases now
+    behave properly for splays to anonymous stations (which is likely to be
+    what people with huge numbers of splays from disto-x, etc are using).  This
+    does mean that anonymous stations on continuation passages will incorrectly
+    also be off when splays are hidden, but that seems an OK trade-off for now
+    and a definite improvement over the previous situation.  The snapping of
+    the mouse pointer was reported by Frank Tully in #105.
+
+  + Fix typo in export UI (CVS should be CSV).
+
+* Documentation:
+
+  + Add CSV to documented list of survexport output formats.
+
+  + Fix *declination syntax synopsis - "auto" is a literal string, not a
+    placeholder.
+
+  + Update PROJ project name and website - the name is now "PROJ" (all caps and
+    no ".4" suffix) and the website is now: https://proj.org/
+
+* Install gtksourceview-3.0 language file so .svx files now get syntax
+  highlighting in gedit and other GtkSourceView-based editors.  Patch
+  from Philip Withnall.  Fixes #98.
+
+* (Microsoft Windows version): The Survex installer doesn't uninstall the old
+  version when you upgrade, but just overwrites it with the new version.  In
+  1.2.35 cad3d.exe was replaced with survexport.exe, but a user upgrading from
+  an older version would still have cad3d.exe from that old version.  We now
+  remove any old cad3d.exe left over from a previous install in the same
+  location to avoid confusion.
+
+* Add a few more message translations.
+
+* Fix warnings when built with a C++11 compiler.
+
 Changes in 1.2.38 (2019-03-02):
 
 * cavern:
