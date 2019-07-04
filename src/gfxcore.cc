@@ -4254,7 +4254,10 @@ bool GfxCore::HandleRClick(wxPoint point)
 	 * Degrees are the angular measurement where there are 360 in a full
 	 * circle. */
 	menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
+	menu.Bind(wxEVT_COMMAND_MENU_SELECTED,
+		  [&](wxEvent& e) {
+		      m_Parent->GetEventHandler()->ProcessEvent(e);
+		  });
 	PopupMenu(&menu);
 	return true;
     }
@@ -4277,7 +4280,10 @@ bool GfxCore::HandleRClick(wxPoint point)
 	 * Show the tilt of the survey as a percentage gradient (100% = 45
 	 * degrees = 50 grad). */
 	menu.AppendCheckItem(menu_CTL_PERCENT, wmsg(/*&Percent*/430));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
+	menu.Bind(wxEVT_COMMAND_MENU_SELECTED,
+		  [&](wxEvent& e) {
+		      m_Parent->GetEventHandler()->ProcessEvent(e);
+		  });
 	PopupMenu(&menu);
 	return true;
     }
@@ -4292,7 +4298,10 @@ bool GfxCore::HandleRClick(wxPoint point)
 	 * "Metric" here means metres, km, etc (rather than feet, miles, etc)
 	 */
 	menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
+	menu.Bind(wxEVT_COMMAND_MENU_SELECTED,
+		  [&](wxEvent& e) {
+		      m_Parent->GetEventHandler()->ProcessEvent(e);
+		  });
 	PopupMenu(&menu);
 	return true;
     }
@@ -4315,7 +4324,10 @@ bool GfxCore::HandleRClick(wxPoint point)
 	    menu.AppendCheckItem(menu_CTL_METRIC, wmsg(/*&Metric*/342));
 	else if (m_ColourBy == COLOUR_BY_GRADIENT)
 	    menu.AppendCheckItem(menu_CTL_DEGREES, wmsg(/*&Degrees*/343));
-	menu.Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&wxEvtHandler::ProcessEvent, NULL, m_Parent->GetEventHandler());
+	menu.Bind(wxEVT_COMMAND_MENU_SELECTED,
+		  [&](wxEvent& e) {
+		      m_Parent->GetEventHandler()->ProcessEvent(e);
+		  });
 	PopupMenu(&menu);
 	return true;
     }
