@@ -1,3 +1,9 @@
+survex (1.2.39-2) experimental; urgency=medium
+
+  * Package new gtksourceview syntax file for .svx files.
+
+ -- Olly Betts <olly@survex.com>  Sun, 30 Jun 2019 09:33:57 +1200
+
 survex (1.2.39-1) experimental; urgency=medium
 
   * Upload to experimental due to release freeze.
