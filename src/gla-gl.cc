@@ -1416,19 +1416,23 @@ void GLACanvas::DrawCross(glaCoord x, glaCoord y, glaCoord z)
 
 void GLACanvas::DrawRing(glaCoord x, glaCoord y)
 {
-    // Draw an unfilled circle
-    const Double radius = 4;
-    assert(m_Quadric);
-    glMatrixMode(GL_MODELVIEW);
-    CHECK_GL_ERROR("DrawRing", "glMatrixMode");
-    glPushMatrix();
-    CHECK_GL_ERROR("DrawRing", "glPushMatrix");
-    glTranslated(x, y, 0.0);
-    CHECK_GL_ERROR("DrawRing", "glTranslated");
-    gluDisk(m_Quadric, radius - 1.0, radius, 12, 1);
-    CHECK_GL_ERROR("DrawRing", "gluDisk");
-    glPopMatrix();
-    CHECK_GL_ERROR("DrawRing", "glPopMatrix");
+    // Draw an unfilled circle of radius 4
+
+    // Round to integers to get an even ring.
+    x = rint(x);
+    y = rint(y);
+
+    glBegin(GL_LINE_LOOP);
+    PlaceIndicatorVertex(x + 3.5, y - 1.5);
+    PlaceIndicatorVertex(x + 1.5, y - 3.5);
+    PlaceIndicatorVertex(x - 1.5, y - 3.5);
+    PlaceIndicatorVertex(x - 3.5, y - 1.5);
+    PlaceIndicatorVertex(x - 3.5, y + 1.5);
+    PlaceIndicatorVertex(x - 1.5, y + 3.5);
+    PlaceIndicatorVertex(x + 1.5, y + 3.5);
+    PlaceIndicatorVertex(x + 3.5, y + 1.5);
+    glEnd();
+    CHECK_GL_ERROR("DrawRing", "glEnd GL_LINE_LOOP");
 }
 
 void GLACanvas::DrawRectangle(gla_colour fill, gla_colour edge,
