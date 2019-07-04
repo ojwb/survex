@@ -1,3 +1,12 @@
+survex (1.2.40-1) unstable; urgency=medium
+
+  * Upload to unstable as buster release cutoff has passed.
+  * New upstream release.
+    + Drop workaround for bug with where esri data file is installed as now
+      fixed upstream.
+
+ -- Olly Betts <olly@survex.com>  Fri, 05 Jul 2019 10:33:29 +1200
+
 survex (1.2.39-2) experimental; urgency=medium
 
   * Package new gtksourceview syntax file for .svx files.
