@@ -1,3 +1,17 @@
+Changes in 1.2.40 (2019-07-04):
+
+* aven: Draw the measuring line ring with an even shape.  Previously the exact
+  shape of the ring varied slightly depending on the exact coordinates, which
+  could be visually distracting once you noticed it.
+
+* We were casting a function pointer with a bool return type to the same type
+  but with a void return type.  In practice this probably works fine on most
+  platforms, but it's undefined behaviour and also gives a compiler warning
+  with some compilers.
+
+* Fix bug introduce in 1.2.39 with where the "esri" data file for PROJ is
+  installed.
+
 Changes in 1.2.39 (2019-06-29):
 
 * Support versions 5.x and 6.x of the PROJ library we use for handling
