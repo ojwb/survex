@@ -70,11 +70,19 @@ sudo apt-get install mingw-w64-i686-dev
 
 <p>
 I then install the various libraries by compiling from source.  For wxWidgets
-3.0.1, I configure, build and install with:
+3.0.4, I apply a
+<a href="https://survex.com/software/wxWidgets-3.0.4.patch">patch</a> to
+disable a pointless and annoying compiler ABI check (with this check
+aven stops working each time my cross compiler package is upgraded to
+a new GCC version; without it everything works fine).
+</p>
+
+<p>
+Then I configure, build and install with:
 </p>
 
 <pre>
-./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --enable-display --disable-threads --disable-shared host_alias=i686-w64-mingw32 --disable-tls
+./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --enable-display --disable-shared host_alias=i686-w64-mingw32
 make
 sudo make install
 </pre>
