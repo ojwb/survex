@@ -1,3 +1,16 @@
+Changes in 1.2.41 (2019-07-10):
+
+* aven:
+
+  + (Microsoft Windows version): Fix error on startup in the pre-built version
+    of 1.2.39 and 1.2.40.  This is a recurrence of the same issue as affected
+    1.2.33 - this time I've patched out the unnecessary check in wxWidgets
+    which causes this problem so it shouldn't recur again.  Reported by
+    Brian Clipstone.
+
+  + (macOS version): Add work around for crash on macOS 10.14 (not fully tested
+    as I don't have access to a Mac).  Hopefully fixed #101, reported by floho.
+
 Changes in 1.2.40 (2019-07-04):
 
 * aven: Draw the measuring line ring with an even shape.  Previously the exact
