@@ -375,24 +375,8 @@ void GfxCore::OnPaint(wxPaintEvent&)
 {
     // Redraw the window.
 
-#ifdef __WXMAC__
-    // Attempt to work around wxPaintDC assertion failure on macOS 10.14:
-    // https://trac.survex.com/ticket/101
-    bool reenable_assertions = false;
-    if (MacGetCGContextRef() == NULL && wxTheAssertHandler != NULL) {
-	wxTheAssertHandler = NULL;
-	reenable_assertions = true;
-    }
-#endif
-
     // Get a graphics context.
     wxPaintDC dc(this);
-
-#ifdef __WXMAC__
-    if (reenable_assertions) {
-	wxSetDefaultAssertHandler();
-    }
-#endif
 
     if (m_HaveData) {
 	// Make sure we're initialised.
