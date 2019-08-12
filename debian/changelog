@@ -1,3 +1,14 @@
+survex (1.2.41-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    + No changes relevant for Debian, but might as well update while uploading
+      to fix a packaging problem.
+  * debian/survex-aven.install: Package 3dtopos compatibility link.  Thanks to
+    San Wenham for reporting.
+  * debian/control: Mark conformance with policy 4.4.0.
+
+ -- Olly Betts <olly@survex.com>  Fri, 19 Jul 2019 10:31:25 +1200
+
 survex (1.2.40-1) unstable; urgency=medium
 
   * Upload to unstable as buster release cutoff has passed.
