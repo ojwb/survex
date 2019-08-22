@@ -63,10 +63,6 @@ public:
     Vector3& operator/=(double);
     Vector3& operator+=(const Vector3&);
     Vector3& operator-=(const Vector3&);
-    Vector3& operator=(const Vector3& o) {
-	x = o.x; y = o.y; z = o.z;
-	return *this;
-    }
 
     friend Vector3 operator*(double, const Vector3&);
     friend Vector3 operator*(const Vector3& v, double f) {
