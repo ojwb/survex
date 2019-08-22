@@ -1075,7 +1075,7 @@ void MainFrm::CreateSidePanel()
 
     m_Notebook = new wxNotebook(m_Splitter, 400, wxDefaultPosition,
 				wxDefaultSize,
-				wxBK_BOTTOM | wxBK_LEFT);
+				wxBK_BOTTOM);
     m_Notebook->Show(false);
 
     wxPanel * panel = new wxPanel(m_Notebook);
