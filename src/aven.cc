@@ -181,8 +181,13 @@ int main(int argc, char **argv)
     // Currently wxGLCanvas doesn't work under Wayland, and the code segfaults.
     // https://trac.wxwidgets.org/ticket/17702
     // Setting GDK_BACKEND=x11 is the recommended workaround, and it seems to
-    // work to set it here.
+    // work to set it here.  GTK2 doesn't support Wayland, so doesn't need
+    // this.
     setenv("GDK_BACKEND", "x11", 1);
+    // FIXME: The OpenGL code needs work before scaling on hidpi displays will
+    // work usefully, so for now disable such scaling (which simulates how
+    // things are when using GTK2).
+    setenv("GDK_SCALE", "1", 1);
 #endif
 #ifdef __WXMAC__
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
