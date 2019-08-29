@@ -1053,6 +1053,14 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
 
     key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN;
     key_lowerleft[m_ColourBy].y = bottom;
+    switch (m_ColourBy) {
+	case COLOUR_BY_ERROR:
+	case COLOUR_BY_H_ERROR:
+	case COLOUR_BY_V_ERROR:
+	    key_lowerleft[COLOUR_BY_ERROR] = key_lowerleft[m_ColourBy];
+	    key_lowerleft[COLOUR_BY_H_ERROR] = key_lowerleft[m_ColourBy];
+	    key_lowerleft[COLOUR_BY_V_ERROR] = key_lowerleft[m_ColourBy];
+    }
 
     int y = bottom;
     if (!units.empty()) y += KEY_BLOCK_HEIGHT;
@@ -2608,10 +2616,14 @@ void GfxCore::GenerateDisplayList(bool surface)
 
 	void (GfxCore::* add_poly)(const traverse&);
 	if (surface) {
-	    if (m_ColourBy == COLOUR_BY_ERROR) {
-		add_poly = &GfxCore::AddPolylineError;
-	    } else {
-		add_poly = &GfxCore::AddPolyline;
+	    switch (m_ColourBy) {
+		case COLOUR_BY_ERROR:
+		case COLOUR_BY_H_ERROR:
+		case COLOUR_BY_V_ERROR:
+		    add_poly = &GfxCore::AddPolylineError;
+		    break;
+		default:
+		    add_poly = &GfxCore::AddPolyline;
 	    }
 	} else {
 	    add_poly = AddPoly;
@@ -3158,6 +3170,8 @@ void GfxCore::DrawIndicators()
 	    case COLOUR_BY_DATE:
 		key_list = LIST_DATE_KEY; break;
 	    case COLOUR_BY_ERROR:
+	    case COLOUR_BY_H_ERROR:
+	    case COLOUR_BY_V_ERROR:
 		key_list = LIST_ERROR_KEY; break;
 	    case COLOUR_BY_GRADIENT:
 		key_list = LIST_GRADIENT_KEY; break;
@@ -3560,7 +3574,7 @@ void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
 void GfxCore::AddPolylineError(const traverse & centreline)
 {
     BeginPolyline();
-    SetColourFromError(centreline.E, 1.0);
+    SetColourFromError(centreline.errors[error_type], 1.0);
     vector<PointInfo>::const_iterator i;
     for(i = centreline.begin(); i != centreline.end(); ++i) {
 	PlaceVertex(*i);
@@ -4047,6 +4061,8 @@ void GfxCore::SetColourBy(int colour_by) {
 	    AddPoly = &GfxCore::AddPolylineDate;
 	    break;
 	case COLOUR_BY_ERROR:
+	case COLOUR_BY_H_ERROR:
+	case COLOUR_BY_V_ERROR:
 	    AddQuad = &GfxCore::AddQuadrilateralError;
 	    AddPoly = &GfxCore::AddPolylineError;
 	    break;
@@ -4065,6 +4081,18 @@ void GfxCore::SetColourBy(int colour_by) {
 	default: // case COLOUR_BY_NONE:
 	    AddQuad = &GfxCore::AddQuadrilateral;
 	    AddPoly = &GfxCore::AddPolyline;
+	    break;
+    }
+
+    switch (colour_by) {
+	case COLOUR_BY_ERROR:
+	    error_type = traverse::ERROR_3D;
+	    break;
+	case COLOUR_BY_H_ERROR:
+	    error_type = traverse::ERROR_H;
+	    break;
+	case COLOUR_BY_V_ERROR:
+	    error_type = traverse::ERROR_V;
 	    break;
     }
 
@@ -4312,6 +4340,8 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
 	menu.AppendCheckItem(menu_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
 	menu.AppendCheckItem(menu_COLOUR_BY_ERROR, wmsg(/*Colour by &Error*/289));
+	menu.AppendCheckItem(menu_COLOUR_BY_H_ERROR, wmsg(/*Colour by &Horizontal Error*/480));
+	menu.AppendCheckItem(menu_COLOUR_BY_V_ERROR, wmsg(/*Colour by &Vertical Error*/481));
 	menu.AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
 	menu.AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 	menu.AppendCheckItem(menu_COLOUR_BY_SURVEY, wmsg(/*Colour by &Survey*/448));

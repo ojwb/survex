@@ -91,6 +91,8 @@ enum {
     COLOUR_BY_DEPTH,
     COLOUR_BY_DATE,
     COLOUR_BY_ERROR,
+    COLOUR_BY_H_ERROR,
+    COLOUR_BY_V_ERROR,
     COLOUR_BY_GRADIENT,
     COLOUR_BY_LENGTH,
     COLOUR_BY_SURVEY,
@@ -199,6 +201,7 @@ private:
     bool m_Clino;
     bool m_Tubes;
     int m_ColourBy;
+    int error_type;
 
     bool m_HaveData;
     bool m_HaveTerrain;

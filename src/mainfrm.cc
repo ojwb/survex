@@ -573,6 +573,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(menu_COLOUR_BY_DEPTH, MainFrm::OnColourByDepth)
     EVT_MENU(menu_COLOUR_BY_DATE, MainFrm::OnColourByDate)
     EVT_MENU(menu_COLOUR_BY_ERROR, MainFrm::OnColourByError)
+    EVT_MENU(menu_COLOUR_BY_H_ERROR, MainFrm::OnColourByHError)
+    EVT_MENU(menu_COLOUR_BY_V_ERROR, MainFrm::OnColourByVError)
     EVT_MENU(menu_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradient)
     EVT_MENU(menu_COLOUR_BY_LENGTH, MainFrm::OnColourByLength)
     EVT_MENU(menu_COLOUR_BY_SURVEY, MainFrm::OnColourBySurvey)
@@ -636,6 +638,8 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_COLOUR_BY_DEPTH, MainFrm::OnColourByDepthUpdate)
     EVT_UPDATE_UI(menu_COLOUR_BY_DATE, MainFrm::OnColourByDateUpdate)
     EVT_UPDATE_UI(menu_COLOUR_BY_ERROR, MainFrm::OnColourByErrorUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_H_ERROR, MainFrm::OnColourByHErrorUpdate)
+    EVT_UPDATE_UI(menu_COLOUR_BY_V_ERROR, MainFrm::OnColourByVErrorUpdate)
     EVT_UPDATE_UI(menu_COLOUR_BY_GRADIENT, MainFrm::OnColourByGradientUpdate)
     EVT_UPDATE_UI(menu_COLOUR_BY_LENGTH, MainFrm::OnColourByLengthUpdate)
     EVT_UPDATE_UI(menu_COLOUR_BY_SURVEY, MainFrm::OnColourBySurveyUpdate)
@@ -890,6 +894,8 @@ void MainFrm::CreateMenuBar()
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_DEPTH, wmsg(/*Colour by &Depth*/292));
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_DATE, wmsg(/*Colour by D&ate*/293));
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_ERROR, wmsg(/*Colour by &Error*/289));
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_H_ERROR, wmsg(/*Colour by &Horizontal Error*/480));
+    colourbymenu->AppendCheckItem(menu_COLOUR_BY_V_ERROR, wmsg(/*Colour by &Vertical Error*/481));
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
     colourbymenu->AppendCheckItem(menu_COLOUR_BY_SURVEY, wmsg(/*Colour by &Survey*/448));

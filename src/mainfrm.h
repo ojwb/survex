@@ -124,6 +124,8 @@ enum {
     menu_COLOUR_BY_DEPTH,
     menu_COLOUR_BY_DATE,
     menu_COLOUR_BY_ERROR,
+    menu_COLOUR_BY_H_ERROR,
+    menu_COLOUR_BY_V_ERROR,
     menu_COLOUR_BY_GRADIENT,
     menu_COLOUR_BY_LENGTH,
     menu_COLOUR_BY_SURVEY,
@@ -291,6 +293,8 @@ public:
     void OnColourByDepthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDepthUpdate(event); }
     void OnColourByDateUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByDateUpdate(event); }
     void OnColourByErrorUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByErrorUpdate(event); }
+    void OnColourByHErrorUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByHErrorUpdate(event); }
+    void OnColourByVErrorUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByVErrorUpdate(event); }
     void OnColourByGradientUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByGradientUpdate(event); }
     void OnColourByLengthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByLengthUpdate(event); }
     void OnColourBySurveyUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourBySurveyUpdate(event); }
@@ -341,6 +345,8 @@ public:
     void OnColourByDepth(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDepth(); }
     void OnColourByDate(wxCommandEvent&) { if (m_Control) m_Control->OnColourByDate(); }
     void OnColourByError(wxCommandEvent&) { if (m_Control) m_Control->OnColourByError(); }
+    void OnColourByHError(wxCommandEvent&) { if (m_Control) m_Control->OnColourByHError(); }
+    void OnColourByVError(wxCommandEvent&) { if (m_Control) m_Control->OnColourByVError(); }
     void OnColourByGradient(wxCommandEvent&) { if (m_Control) m_Control->OnColourByGradient(); }
     void OnColourByLength(wxCommandEvent&) { if (m_Control) m_Control->OnColourByLength(); }
     void OnColourBySurvey(wxCommandEvent&) { if (m_Control) m_Control->OnColourBySurvey(); }

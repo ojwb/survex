@@ -83,18 +83,16 @@ inline Vector3 operator-(const XSect& a, const XSect& b) {
 
 class traverse : public vector<PointInfo> {
   public:
-    int n_legs;
+    int n_legs = 0;
     // Bitmask of img_FLAG_SURFACE, img_FLAG_SPLAY and img_FLAG_DUPLICATE.
-    int flags;
-    double length;
-    double E, H, V;
+    int flags = 0;
+    double length = 0.0;
+    enum { ERROR_3D = 0, ERROR_H = 1, ERROR_V = 2 };
+    double errors[3] = {0, 0, 0};
     wxString name;
 
     explicit
-    traverse(const char* name_)
-	: n_legs(0), flags(0),
-	  length(0), E(-1), H(-1), V(-1),
-	  name(name_, wxConvUTF8) {
+    traverse(const char* name_) : name(name_, wxConvUTF8) {
 	if (name.empty() && !name_[0]) {
 	    // If name isn't valid UTF-8 then this conversion will
 	    // give an empty string.  In this case, assume that the

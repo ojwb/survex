@@ -2235,6 +2235,18 @@ msgstr ""
 msgid "Colour by &Error"
 msgstr ""
 
+#: ../src/gfxcore.cc:4250
+#: ../src/mainfrm.cc:902
+#: n:480
+msgid "Colour by &Horizontal Error"
+msgstr ""
+
+#: ../src/gfxcore.cc:4250
+#: ../src/mainfrm.cc:903
+#: n:481
+msgid "Colour by &Vertical Error"
+msgstr ""
+
 #: ../src/gfxcore.cc:4251
 #: ../src/mainfrm.cc:892
 #: n:85

@@ -327,9 +327,9 @@ int Model::Load(const wxString& file, const wxString& prefix)
 			assert(t != traverses[f].rend());
 			t->n_legs = survey->n_legs;
 			t->length = survey->length;
-			t->E = survey->E;
-			t->H = survey->H;
-			t->V = survey->V;
+			t->errors[traverse::ERROR_3D] = survey->E;
+			t->errors[traverse::ERROR_H] = survey->H;
+			t->errors[traverse::ERROR_V] = survey->V;
 			--n;
 			++t;
 		    }

@@ -75,6 +75,8 @@ public:
     void OnColourByDepth();
     void OnColourByDate();
     void OnColourByError();
+    void OnColourByHError();
+    void OnColourByVError();
     void OnColourByGradient();
     void OnColourByLength();
     void OnColourBySurvey();
@@ -133,6 +135,8 @@ public:
     void OnColourByDepthUpdate(wxUpdateUIEvent&);
     void OnColourByDateUpdate(wxUpdateUIEvent&);
     void OnColourByErrorUpdate(wxUpdateUIEvent&);
+    void OnColourByHErrorUpdate(wxUpdateUIEvent&);
+    void OnColourByVErrorUpdate(wxUpdateUIEvent&);
     void OnColourByGradientUpdate(wxUpdateUIEvent&);
     void OnColourByLengthUpdate(wxUpdateUIEvent&);
     void OnColourBySurveyUpdate(wxUpdateUIEvent&);
