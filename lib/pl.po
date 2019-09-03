@@ -2237,13 +2237,13 @@ msgstr "Koloruj po &Błędzie"
 #: ../src/mainfrm.cc:897
 #: n:480
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Koloruj po Błędzie Po&ziomym"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Koloruj po Błędzie &Pionowym"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899

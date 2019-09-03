@@ -2245,14 +2245,16 @@ msgstr "Color per &Error"
 #: ../src/gfxcore.cc:4343
 #: ../src/mainfrm.cc:897
 #: n:480
+#, fuzzy
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Color per &Horizontal Error"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
+#, fuzzy
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Color per &Vertical Error"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899

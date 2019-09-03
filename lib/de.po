@@ -2242,13 +2242,13 @@ msgstr "Farbe je nach &Fehlern"
 #: ../src/mainfrm.cc:897
 #: n:480
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Farbe je nach &horizontalen Fehlern"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Farbe je nach &vertikalen Fehlern"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899
@@ -2269,7 +2269,7 @@ msgstr "Farbe je nach &Länge"
 #: n:448
 #, fuzzy
 msgid "Colour by &Survey"
-msgstr "Farbe je nach &Vermessung"
+msgstr "Farbe je nach Verme&ssung"
 
 #: ../src/mainfrm.cc:967
 #: n:274

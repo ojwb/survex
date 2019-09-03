@@ -2244,13 +2244,13 @@ msgstr "Colori secondo &Errore"
 #: ../src/mainfrm.cc:897
 #: n:480
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Colori secondo Errore &Orizzontale"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Colori secondo Errore &Verticale"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899

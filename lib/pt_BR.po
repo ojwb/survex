@@ -2246,14 +2246,16 @@ msgstr "Colorir de acordo com &Erros"
 #: ../src/gfxcore.cc:4343
 #: ../src/mainfrm.cc:897
 #: n:480
+#, fuzzy
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Colorir de acordo com Erros &Horizontal"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
+#, fuzzy
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Colorir de acordo com Erros &Vertical"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899
@@ -2266,7 +2268,7 @@ msgstr ""
 #: n:82
 #, fuzzy
 msgid "Colour by &Length"
-msgstr "Colorir de acordo com Desen&volvimento"
+msgstr "Colorir de acordo com Desenvo&lvimento"
 
 #: ../src/gfxcore.cc:4347
 #: ../src/mainfrm.cc:901

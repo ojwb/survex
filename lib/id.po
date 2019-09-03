@@ -2237,13 +2237,13 @@ msgstr "Warna menurut &Eror"
 #: ../src/mainfrm.cc:897
 #: n:480
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Warna menurut Eror &horisontal"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Warna menurut Eror &vertikal"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899

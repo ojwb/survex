@@ -2231,19 +2231,19 @@ msgstr "Couleur par &date"
 #: ../src/mainfrm.cc:896
 #: n:289
 msgid "Colour by &Error"
-msgstr "Couleur par err&eur"
+msgstr "Couleur par &erreur"
 
 #: ../src/gfxcore.cc:4343
 #: ../src/mainfrm.cc:897
 #: n:480
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Couleur par erreur &horizontal"
 
 #: ../src/gfxcore.cc:4344
 #: ../src/mainfrm.cc:898
 #: n:481
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Couleur par erreur &vertical"
 
 #: ../src/gfxcore.cc:4345
 #: ../src/mainfrm.cc:899
