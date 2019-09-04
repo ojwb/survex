@@ -52,14 +52,14 @@ int name_cmp(const wxString &a, const wxString &b, int separator) {
 	 while (eb != b.size() && u_digit(b[eb])) eb++;
 
 	 /* shorter sorts first */
-	 res = (ea - sa) - (eb - sb);
+	 res = int(ea - sa) - int(eb - sb);
 	 /* same length, all digits, so character value compare sorts
 	  * numerically */
 	 for (size_t j = sa; !res && j != ea; ++j) {
-	    res = a[j] - b[j - sa + sb];
+	    res = int(a[j]) - int(b[j - sa + sb]);
 	 }
 	 /* more leading zeros sorts first */
-	 if (!res) res = sb - sa;
+	 if (!res) res = int(sb) - int(sa);
 	 if (res) return res;
 
 	 /* if numbers match, sort by suffix */
