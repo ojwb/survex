@@ -893,8 +893,8 @@ void
 msg_init_(char * const *argv)
 {
    char *p;
-#if OS_UNIX_MACOSX
-   int msg_macosx_relocatable = 0;
+#if OS_UNIX_MACOS
+   int msg_macos_relocatable = 0;
 #endif
    SVX_ASSERT(argv);
 
@@ -931,15 +931,15 @@ msg_init_(char * const *argv)
       }
       if (pth[0]) {
 	 struct stat buf;
-#if OS_UNIX_MACOSX
+#if OS_UNIX_MACOS
 # ifndef AVEN
-	 /* On MacOS X the programs may be installed anywhere, with the
+	 /* On macOS the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
 	 p = use_path(pth, "share/survex/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "share/survex");
-	    msg_macosx_relocatable = 1;
-	    goto macosx_got_msg;
+	    msg_macos_relocatable = 1;
+	    goto macos_got_msg;
 	 }
 	 osfree(p);
 # endif
@@ -950,8 +950,8 @@ msg_init_(char * const *argv)
 	 p = use_path(pth, "../Resources/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "../Resources");
-	    msg_macosx_relocatable = 1;
-	    goto macosx_got_msg;
+	    msg_macos_relocatable = 1;
+	    goto macos_got_msg;
 	 }
 	 osfree(p);
 #endif
@@ -974,7 +974,7 @@ msg_init_(char * const *argv)
 #endif
 	 }
 #if defined(__GNUC__) && defined(__APPLE_CC__)
-macosx_got_msg:
+macos_got_msg:
 #endif
 	 osfree(p);
       }

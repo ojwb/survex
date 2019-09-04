@@ -1,5 +1,5 @@
-Installing Survex on Mac OS X
-=============================
+Installing Survex on macOS
+==========================
 
 Next to the INSTALL file that you are currently reading is the Survex folder.
 To install, just drag this folder to your Applications folder (you will need to
@@ -30,12 +30,12 @@ Terminal.app):
  * dump3d dumps out a list of the items in a .3d file - it's mainly useful for
    debugging.
 
-Known shortcomings specific to the Mac OS X version of Survex
-=============================================================
+Known shortcomings specific to the macOS version of Survex
+==========================================================
 
 These could be reproduced with Survex 1.2.19 when built using wxWidgets 3.0.2:
 
- * On OS X, usually you can push the mouse pointer against the top of the
+ * On macOS, usually you can push the mouse pointer against the top of the
    screen to get the menu bar to appear, but this doesn't seem to work for
    aven.  As a workaround, aven detects if you're trying to do this and
    drops out of full-screen mode, which isn't perfect but beats being stuck

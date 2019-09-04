@@ -802,7 +802,7 @@ void MainFrm::CreateMenuBar()
     // this separator.
     filemenu->AppendSeparator();
 #else
-    // We suppress the "Help" menu under OS X as it would otherwise end up as
+    // We suppress the "Help" menu under macOS as it would otherwise end up as
     // an empty menu, but we need to add the "About" menu item somewhere.  It
     // really doesn't matter where as wxWidgets will move it to the "Apple"
     // menu.
@@ -926,13 +926,13 @@ void MainFrm::CreateMenuBar()
     viewmenu->AppendCheckItem(menu_VIEW_SMOOTH_LINES, wmsg(/*Smoot&hed Survey Legs*/298));
     viewmenu->AppendSeparator();
 #ifdef __WXMAC__
-    // F11 on OS X is used by the desktop (for speaker volume and/or window
-    // navigation).  The standard OS X shortcut for full screen mode is
+    // F11 on macOS is used by the desktop (for speaker volume and/or window
+    // navigation).  The standard macOS shortcut for full screen mode is
     // Ctrl-Command-F which in wxWidgets terms is RawCtrl+Ctrl+F.
     wxString wxmac_fullscreen = wmsg(/*Full Screen &Mode\tF11*/356);
     wxmac_fullscreen.Replace(wxT("\tF11"), wxT("\tRawCtrl+Ctrl+F"), false);
     viewmenu->AppendCheckItem(menu_VIEW_FULLSCREEN, wxmac_fullscreen);
-    // FIXME: On OS X, the standard wording here is "Enter Full Screen" and
+    // FIXME: On macOS, the standard wording here is "Enter Full Screen" and
     // "Exit Full Screen", depending whether we are in full screen mode or not,
     // and this isn't a checked menu item.
 #else
@@ -1629,7 +1629,7 @@ void MainFrm::OnClose(wxCloseEvent&)
 void MainFrm::OnAbout(wxCommandEvent&)
 {
 #ifdef __WXMAC__
-    // GetIcon() returns an invalid wxIcon under OS X.
+    // GetIcon() returns an invalid wxIcon under macOS.
     AboutDlg dlg(this, wxICON(aven));
 #else
     AboutDlg dlg(this, GetIcon());
@@ -2372,7 +2372,7 @@ bool MainFrm::ShowingSidePanel()
 
 void MainFrm::ViewFullScreen() {
 #ifdef __WXMAC__
-    // On OS X, wxWidgets doesn't currently hide the toolbar or statusbar in
+    // On macOS, wxWidgets doesn't currently hide the toolbar or statusbar in
     // full screen mode (last checked with 3.0.2), but it is easy to do
     // ourselves.
     if (!IsFullScreen()) {
@@ -2409,7 +2409,7 @@ void MainFrm::FullScreenModeShowMenus(bool show)
     if (!IsFullScreen() || show == fullscreen_showing_menus)
 	return;
 #ifdef __WXMAC__
-    // On OS X, enabling the menu bar while in full
+    // On macOS, enabling the menu bar while in full
     // screen mode doesn't have any effect, so instead
     // make moving the mouse to the top of the screen
     // drop us out of full screen mode for now.

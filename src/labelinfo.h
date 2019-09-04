@@ -30,7 +30,7 @@
 #include "vector3.h"
 #include "wx.h"
 
-// Mac OS X headers pollute the global namespace with generic names like
+// macOS headers pollute the global namespace with generic names like
 // "class Point", which clashes with our "class Point".  So for __WXMAC__
 // put our class in a namespace and define Point as a macro.
 #ifdef __WXMAC__

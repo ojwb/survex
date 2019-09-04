@@ -51,7 +51,7 @@ using namespace std;
 #include <time.h>
 
 #ifdef __WXMAC__
-// Currently on OS X, we force use of a generic toolbar, which needs to be put
+// Currently on macOS, we force use of a generic toolbar, which needs to be put
 // in a sizer.
 # define USING_GENERIC_TOOLBAR
 #endif

@@ -25,7 +25,7 @@ extern "C" {
 #endif
 
 /* Duplicate these from getopt.h to avoid problems
- * with trying to compile getopt.h with C++ on MacOS X */
+ * with trying to compile getopt.h with C++ on macOS */
 #ifndef no_argument
 /* These values are definitely correct since getopt.h says 0, 1, 2 work */
 # define no_argument            0

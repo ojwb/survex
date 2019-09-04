@@ -867,7 +867,7 @@ v03d:
       if (errno == 0 && *p == '\0')
 	 pimg->datestamp_numeric = v;
       /* FIXME: We're assuming here that the C time_t epoch is 1970, which is
-       * true for Unix-like systems, Mac OS X and Windows, but isn't guaranteed
+       * true for Unix-like systems, macOS and Windows, but isn't guaranteed
        * by ISO C.
        */
    } else {

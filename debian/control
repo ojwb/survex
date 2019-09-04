@@ -17,7 +17,7 @@ Recommends: survex-aven (= ${binary:Version})
 Suggests: vim-addon-manager
 Description: cave surveying and mapping software
  A software suite to process, view, and print cave survey data.  Survex
- is cross-platform (Linux, Unix, Mac OS X, Microsoft Windows).  It has
+ is cross-platform (Linux, Unix, macOS, Microsoft Windows).  It has
  been translated into many languages.  It can deal with extremely large and
  complex datasets and can read survey data from many sources.
 

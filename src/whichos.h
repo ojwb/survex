@@ -23,9 +23,9 @@
 #if (defined(unix) || defined(UNIX))
 # define OS_UNIX 1
 #elif defined(__GNUC__) && defined(__APPLE_CC__)
-/* MacOS X is Unix for most purposes. */
+/* macOS is Unix for most purposes. */
 # define OS_UNIX 1
-# define OS_UNIX_MACOSX 1
+# define OS_UNIX_MACOS 1
 #endif
 
 #if !OS_UNIX
@@ -38,8 +38,8 @@
 # define OS_UNIX 0
 #endif
 
-#ifndef OS_UNIX_MACOSX
-# define OS_UNIX_MACOSX 0
+#ifndef OS_UNIX_MACOS
+# define OS_UNIX_MACOS 0
 #endif
 
 #ifndef OS_WIN32

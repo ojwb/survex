@@ -68,7 +68,7 @@ survexport_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
 survexport_LDFLAGS =
 survexport_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS)
 
-if MACOSX
+if MACOS
 # FIXME: It looks like modern wx-config should give us this...
 aven_LDFLAGS += -framework OpenGL
 endif

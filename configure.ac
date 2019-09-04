@@ -82,9 +82,9 @@ AC_EXEEXT
 AC_OBJEXT
 
 mswindows=no
-macosx=no
+macos=no
 case $host_os in
-darwin*) macosx=yes ;;
+darwin*) macos=yes ;;
 *mingw*|*cygwin*|windows*) mswindows=yes ;;
 esac
 
@@ -105,7 +105,7 @@ AC_ARG_VAR(WX_CONFIG, [wxWidgets configuration script to use to build Aven])
 : ${WX_CONFIG="$WXCONFIG"}
 
 AM_CONDITIONAL(WIN32, [test yes = "$mswindows"])
-AM_CONDITIONAL(MACOSX, [test yes = "$macosx"])
+AM_CONDITIONAL(MACOS, [test yes = "$macos"])
 
 if test -n "$WX_CONFIG" ; then
   dnl WX_CONFIG specified - sanity check the value
@@ -116,7 +116,7 @@ if test -n "$WX_CONFIG" ; then
     AC_MSG_ERROR(['$WX_CONFIG --libs --cflags --cxxflags "$wx_libs"' does not work, bailing out])
   fi
 else
-  if test yes = "$macosx" ; then
+  if test yes = "$macos" ; then
     wxdef=__WXMAC__
   elif test yes = "$mswindows" ; then
     wxdef=__WXMSW__
@@ -160,9 +160,9 @@ dnl We use functions from libGL so always link -lGL explicitly if it's
 dnl present.
 AC_CHECK_LIB([GL], [glPushMatrix], [WX_LIBS="$WX_LIBS -lGL"], [], [$WX_LIBS])
 AC_SUBST(WX_LIBS)
-dnl Mac OS X has OpenGL/gl.h.
+dnl macOS has OpenGL/gl.h.
 AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
-dnl The Debian mingw-w64 packages lack GL/glext.h; Mac OS X has OpenGL/glext.h.
+dnl The Debian mingw-w64 packages lack GL/glext.h; macOS has OpenGL/glext.h.
 AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [#include <GL/gl.h>])
 
 WX_CFLAGS=`$WX_CONFIG --cflags "$wx_libs"`
