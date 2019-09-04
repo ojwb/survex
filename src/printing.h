@@ -26,10 +26,8 @@
 
 #include "avenprcore.h"
 
-// The libgnomeprint and GtkPrint dialogs provide their own preview, as does
-// macOS.
-#if !(defined wxUSE_LIBGNOMEPRINT && wxUSE_LIBGNOMEPRINT) && \
-    !(defined wxUSE_GTKPRINT && wxUSE_GTKPRINT) && \
+// The GtkPrint dialog provides its own preview, as does macOS.
+#if !(defined wxUSE_GTKPRINT && wxUSE_GTKPRINT) && \
     !defined __WXMAC__
 # define AVEN_PRINT_PREVIEW
 #endif
