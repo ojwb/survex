@@ -2,7 +2,7 @@
  * Export from Aven as KML.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012,2013,2014,2015,2016,2017,2018 Olly Betts
+ * Copyright (C) 2012,2013,2014,2015,2016,2017,2018,2019 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,15 +165,15 @@ KML::xsect(const img_point *p, double angle, double d1, double d2)
     double s = sin(rad(angle));
     double c = cos(rad(angle));
 
-    double x1 = p->x + c * d1;
-    double y1 = p->y + s * d1;
+    double x1 = p->x + s * d1;
+    double y1 = p->y + c * d1;
     double z1 = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &x1, &y1, &z1);
     x1 = deg(x1);
     y1 = deg(y1);
 
-    double x2 = p->x - c * d2;
-    double y2 = p->y - s * d2;
+    double x2 = p->x - s * d2;
+    double y2 = p->y - c * d2;
     double z2 = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &x2, &y2, &z2);
     x2 = deg(x2);
@@ -194,8 +194,8 @@ KML::wall(const img_point *p, double angle, double d)
     double s = sin(rad(angle));
     double c = cos(rad(angle));
 
-    double x = p->x + c * d;
-    double y = p->y + s * d;
+    double x = p->x + s * d;
+    double y = p->y + c * d;
     double z = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &x, &y, &z);
     x = deg(x);
@@ -218,15 +218,15 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     double s = sin(rad(angle));
     double c = cos(rad(angle));
 
-    double x1 = p->x + c * d1;
-    double y1 = p->y + s * d1;
+    double x1 = p->x + s * d1;
+    double y1 = p->y + c * d1;
     double z1 = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &x1, &y1, &z1);
     x1 = deg(x1);
     y1 = deg(y1);
 
-    double x2 = p->x - c * d2;
-    double y2 = p->y - s * d2;
+    double x2 = p->x - s * d2;
+    double y2 = p->y - c * d2;
     double z2 = p->z;
     pj_transform(pj_input, pj_output, 1, 1, &x2, &y2, &z2);
     x2 = deg(x2);

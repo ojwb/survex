@@ -4,7 +4,7 @@
 //  Cave survey model.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
+//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -650,7 +650,7 @@ Model::do_prepare_tubes() const
 	    // FIXME: Store rather than recomputing on each draw?
 	    (void)cover_end;
 
-	    pt_v.set_right_bearing(deg(atan2(right.GetY(), right.GetX())));
+	    pt_v.set_right_bearing(deg(atan2(right.GetX(), right.GetY())));
 
 	    ++segment;
 	}

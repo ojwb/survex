@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
+/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -375,11 +375,11 @@ DXF::xsect(const img_point *p, double angle, double d1, double d2)
    double c = cos(rad(angle));
    fprintf(fh, "0\nLINE\n");
    fprintf(fh, "8\nCross-sections\n"); /* Layer */
-   fprintf(fh, "10\n%6.2f\n", p->x + c * d1);
-   fprintf(fh, "20\n%6.2f\n", p->y + s * d1);
+   fprintf(fh, "10\n%6.2f\n", p->x + s * d1);
+   fprintf(fh, "20\n%6.2f\n", p->y + c * d1);
    fprintf(fh, "30\n%6.2f\n", p->z);
-   fprintf(fh, "11\n%6.2f\n", p->x - c * d2);
-   fprintf(fh, "21\n%6.2f\n", p->y - s * d2);
+   fprintf(fh, "11\n%6.2f\n", p->x - s * d2);
+   fprintf(fh, "21\n%6.2f\n", p->y - c * d2);
    fprintf(fh, "31\n%6.2f\n", p->z);
 }
 
@@ -396,8 +396,8 @@ DXF::wall(const img_point *p, double angle, double d)
    double c = cos(rad(angle));
    fprintf(fh, "0\nVERTEX\n");
    fprintf(fh, "8\nWalls\n"); /* Layer */
-   fprintf(fh, "10\n%6.2f\n", p->x + c * d);
-   fprintf(fh, "20\n%6.2f\n", p->y + s * d);
+   fprintf(fh, "10\n%6.2f\n", p->x + s * d);
+   fprintf(fh, "20\n%6.2f\n", p->y + c * d);
    fprintf(fh, "30\n%6.2f\n", p->z);
 }
 
@@ -408,10 +408,10 @@ DXF::passage(const img_point *p, double angle, double d1, double d2)
    fprintf(fh, "8\nPassages\n"); /* Layer */
    double s = sin(rad(angle));
    double c = cos(rad(angle));
-   double x1 = p->x + c * d1;
-   double y1 = p->y + s * d1;
-   double x2 = p->x - c * d2;
-   double y2 = p->y - s * d2;
+   double x1 = p->x + s * d1;
+   double y1 = p->y + c * d1;
+   double x2 = p->x - s * d2;
+   double y2 = p->y - c * d2;
    if (*pending) {
        fputs(pending, fh);
        fprintf(fh, "12\n%6.2f\n22\n%6.2f\n32\n%6.2f\n"
@@ -743,8 +743,8 @@ SVG::xsect(const img_point *p, double angle, double d1, double d2)
    double s = sin(rad(angle));
    double c = cos(rad(angle));
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3f\"/>\n",
-	   (p->x + c * d1) * factor, (p->y + s * d1) * -factor,
-	   (p->x - c * d2) * factor, (p->y - s * d2) * -factor);
+	   (p->x + s * d1) * factor, (p->y + c * d1) * -factor,
+	   (p->x - s * d2) * factor, (p->y - c * d2) * -factor);
 }
 
 void
@@ -758,7 +758,7 @@ SVG::wall(const img_point *p, double angle, double d)
    }
    double s = sin(rad(angle));
    double c = cos(rad(angle));
-   fprintf(fh, "%.3f %.3f", (p->x + c * d) * factor, (p->y + s * d) * -factor);
+   fprintf(fh, "%.3f %.3f", (p->x + s * d) * factor, (p->y + c * d) * -factor);
 }
 
 void
@@ -766,10 +766,10 @@ SVG::passage(const img_point *p, double angle, double d1, double d2)
 {
    double s = sin(rad(angle));
    double c = cos(rad(angle));
-   double x1 = (p->x + c * d1) * factor;
-   double y1 = (p->y + s * d1) * -factor;
-   double x2 = (p->x - c * d2) * factor;
-   double y2 = (p->y - s * d2) * -factor;
+   double x1 = (p->x + s * d1) * factor;
+   double y1 = (p->y + c * d1) * -factor;
+   double x2 = (p->x - s * d2) * factor;
+   double y2 = (p->y - c * d2) * -factor;
    if (*pending) {
        fputs(pending, fh);
        fprintf(fh, "L%.3f %.3fL%.3f %.3fZ\"/>\n", x2, y2, x1, y1);
@@ -1232,8 +1232,8 @@ EPS::xsect(const img_point *p, double angle, double d1, double d2)
     double s = sin(rad(angle));
     double c = cos(rad(angle));
     fprintf(fh, "%.2f %.2f M %.2f %.2f R\n",
-	    p->x - c * d2, p->y - s * d2,
-	    c * (d1 + d2), s * (d1 + d2));
+	    p->x - s * d2, p->y - c * d2,
+	    s * (d1 + d2), c * (d1 + d2));
 }
 
 void
@@ -1241,7 +1241,7 @@ EPS::wall(const img_point *p, double angle, double d)
 {
     double s = sin(rad(angle));
     double c = cos(rad(angle));
-    fprintf(fh, "%.2f %.2f %c\n", p->x + c * d, p->y + s * d, first ? 'M' : 'L');
+    fprintf(fh, "%.2f %.2f %c\n", p->x + s * d, p->y + c * d, first ? 'M' : 'L');
     first = false;
 }
 
@@ -1250,10 +1250,10 @@ EPS::passage(const img_point *p, double angle, double d1, double d2)
 {
     double s = sin(rad(angle));
     double c = cos(rad(angle));
-    double x1 = p->x + c * d1;
-    double y1 = p->y + s * d1;
-    double x2 = p->x - c * d2;
-    double y2 = p->y - s * d2;
+    double x1 = p->x + s * d1;
+    double y1 = p->y + c * d1;
+    double x2 = p->x - s * d2;
+    double y2 = p->y - c * d2;
     fprintf(fh, "%.2f %.2f %c\n", x1, y1, first ? 'P' : 'L');
     first = false;
     psg.push_back(make_pair(x2, y2));
@@ -1610,7 +1610,7 @@ Export(const wxString &fnm_out, const wxString &title,
 			  filt->passage(&p, 90, xs.GetU(), xs.GetD());
 		  } else {
 		      // Should only be enabled in plan or elevation mode.
-		      double angle = pan + xs.get_right_bearing();
+		      double angle = xs.get_right_bearing() - pan;
 		      if (pass_mask & XSECT)
 			  filt->xsect(&p, angle + 180, xs.GetL(), xs.GetR());
 		      if (pass_mask & WALL1)
