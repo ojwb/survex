@@ -35,8 +35,8 @@ if test x"$rel" = xyes ; then
   autoreconf --force -i
   mv INSTALL.keep INSTALL
   ./configure CC=gcc CXX=g++
-  # Don't error out on new GCC8 warning for now.
-  make CFLAGS='-Werror' CXXFLAGS='-Werror -Wno-error=cast-function-type'
+  # Don't error out on new GCC8 and GCC9 warnings for now.
+  make CFLAGS='-Werror' CXXFLAGS='-Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers'
   VALGRIND=valgrind make distcheck VERBOSE=1
 else
   make dist
