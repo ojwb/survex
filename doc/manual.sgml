@@ -337,6 +337,18 @@ from source.
 
 </Sect3>
 
+<Sect3><Title>macOS</Title>
+
+<Para>
+The easiest way to install a recent release of Survex on macOS is by using
+the Homebrew package manager. If you don't already use Homebrew, you'll
+need to install it first.  See the
+<ulink url="https://survex.com/download.html?platform=macosx">macOS
+download page on the website</ulink> for installation instructions.
+</Para>
+
+</Sect3>
+
 <Sect3><Title>Microsoft Windows</Title>
 
 <Para>
@@ -563,6 +575,76 @@ new or changed messages are occasionally required.  Contact us for details
 if you're interested.</Para>
 
 </Sect3>
+
+</Sect2>
+
+<Sect2><Title>Using <Application>Survex</Application></Title>
+
+<Para>
+Most common tasks can now be accomplished through Aven - processing survey
+data, viewing the processed data, printing, exporting to other formats,
+and producing simple extended elevations.
+</Para>
+
+<Para>
+A few tasks still require you to use the command line.  And some functionality
+is available both via aven and from the command line, which allows it to be
+scripted.
+</Para>
+
+<Para>
+The command line programs that come with Survex are:
+</Para>
+
+<VariableList>
+
+<VarListEntry><Term>extend</Term>
+    <listitem><Para>
+	Produces extended elevations - this is probably the most useful of
+	these command line tools.  Since version 1.2.27 you can produce simple
+	extended elevations from Aven using the "Extended Elevation" function.
+	However the command line tool allows you to specify a spec file to
+	control how the survey is extended, which you can't currently do via
+	Aven.
+    </Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>diffpos</Term>
+    <listitem><Para>
+	Compares the positions of stations in two .3d, .pos, etc files.
+    </Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>sorterr</Term>
+    <listitem><Para>
+	 Sorts a .err file by a specified field.
+    </Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>survexport</Term>
+    <listitem><Para>
+	Provides access to Aven's "Export" functionality from the command line,
+	which can be useful in scripts.
+    </Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>cavern</Term>
+    <listitem><Para>
+	Processes survey data, but since version 1.2.3 you can process .svx
+	files by simply opening them with Aven, so you no longer need to run
+	cavern from the command line.  The main reason to run cavern directly
+	is for use in scripts.
+    </Para></listitem>
+</VarListEntry>
+
+<VarListEntry><Term>dump3d</Term>
+    <listitem><Para>
+	Dumps out a list of the items in a .3d file - it's mainly useful for
+	debugging.
+    </Para></listitem>
+</VarListEntry>
+
+</VariableList>
 
 </Sect2>
 

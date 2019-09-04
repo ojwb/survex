@@ -26,8 +26,7 @@ EXTRA_DIST = survex.pot $(po_files)\
  Bulgarian.isl\
  ChineseSimplified.isl ChineseTraditional.isl\
  EnglishBritish.isl Indonesian.isl Romanian.isl Slovak.isl\
- make-pixel-font preload_font.h\
- INSTALL.OSX
+ make-pixel-font preload_font.h
 
 MAINTAINERCLEANFILES = $(msg_files) unifont.pixelfont preload_font.h
 
