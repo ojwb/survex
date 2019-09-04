@@ -9,8 +9,7 @@ SUBDIRS = . lib src doc tests
 DIST_SUBDIRS = $(SUBDIRS) vim
 
 EXTRA_DIST = TODO OLDNEWS\
- desc.txt desc-aven.txt survex.spec\
- buildmacosx.sh
+ desc.txt desc-aven.txt survex.spec
 
 extra_bin = lib/*.msg\
  lib/unifont.pixelfont
