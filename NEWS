@@ -1,3 +1,38 @@
+Changes in 1.2.42 (2019-09-04):
+
+* aven:
+
+  + Allow colouring by horizontal or vertical error.
+
+  + (Unix version): Disable scaling for HiDPI displays with GTK3.  The OpenGL
+    code needs work before this will work usefully, so just disable for now
+    (which simulates how things are when using GTK2).
+
+  + (Unix version): Fix orientation of notebook tabs when build with wxWidgets
+    3.1 development versions.  We want horizontal tab orientation, but were
+    passing a weird flag combination which now results in vertical tab
+    orientation.
+
+* When exporting to a format where we support rotation in the horizontal
+  plane (such as SVG), the rotation was incorrectly applied to cross section
+  data (except for the default rotation of zero).  Fixes #108, reported by
+  Richard Knapp.
+
+* Add a section to the manual covering the command line tools, and what you
+  might still need to use them for.
+
+* Fix compiler warning when building from source with GCC 9.
+
+* Consistently refer to macOS not OS X - Apple have renamed it yet again.
+
+* (macOS version): Revert the workaround for the crash on macOS 10.14.  The
+  bug we were working around is fixed in git ready for wxWidgets 3.0.5 and
+  there's a backported fix in the homebrew wxmac 3.0.4-2 package, which is how
+  we now recommend people install on a Mac.  Closes #101, reported by floho.
+
+* (macOS version): Remove buildmacosx.sh script since installing from homebrew
+  is now the recommended approach.
+
 Changes in 1.2.41 (2019-07-10):
 
 * aven:
