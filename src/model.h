@@ -88,7 +88,7 @@ class traverse : public vector<PointInfo> {
     int flags = 0;
     double length = 0.0;
     enum { ERROR_3D = 0, ERROR_H = 1, ERROR_V = 2 };
-    double errors[3] = {0, 0, 0};
+    double errors[3] = {-1, -1, -1};
     wxString name;
 
     explicit
