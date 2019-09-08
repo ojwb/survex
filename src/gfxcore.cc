@@ -3576,7 +3576,7 @@ void GfxCore::AddPolylineError(const traverse & centreline)
     BeginPolyline();
     SetColourFromError(centreline.errors[error_type], 1.0);
     vector<PointInfo>::const_iterator i;
-    for(i = centreline.begin(); i != centreline.end(); ++i) {
+    for (i = centreline.begin(); i != centreline.end(); ++i) {
 	PlaceVertex(*i);
     }
     EndPolyline();
