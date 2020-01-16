@@ -167,10 +167,10 @@ class Model {
 
     void do_prepare_tubes() const;
 
+    void CentreDataset(const Vector3& vmin);
+
   public:
     int Load(const wxString& file, const wxString& prefix);
-
-    void CentreDataset(const Vector3& vmin);
 
     const Vector3& GetExtent() const { return m_Ext; }
 
