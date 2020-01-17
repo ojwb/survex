@@ -1333,7 +1333,7 @@ Export(const wxString &fnm_out, const wxString &title,
    double SINT = sin(rad(tilt));
    double COST = cos(rad(tilt));
 
-   grid = grid_;
+   grid = (show_mask & GRID) ? grid_ : 0.0;
    marker_size = marker_size_;
 
    // Do we need to calculate min and max for each dimension?
