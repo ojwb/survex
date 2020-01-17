@@ -3500,23 +3500,17 @@ void GfxCore::SetColourFromDate(int date, Double factor)
 void GfxCore::AddPolylineDate(const traverse & centreline)
 {
     BeginPolyline();
-    vector<PointInfo>::const_iterator i, prev_i;
-    i = centreline.begin();
+    auto i = centreline.begin();
     int date = i->GetDate();
     SetColourFromDate(date, 1.0);
     PlaceVertex(*i);
-    prev_i = i;
     while (++i != centreline.end()) {
 	int newdate = i->GetDate();
 	if (newdate != date) {
-	    EndPolyline();
-	    BeginPolyline();
 	    date = newdate;
 	    SetColourFromDate(date, 1.0);
-	    PlaceVertex(*prev_i);
 	}
 	PlaceVertex(*i);
-	prev_i = i;
     }
     EndPolyline();
 }
@@ -3582,8 +3576,7 @@ void GfxCore::AddPolylineError(const traverse & centreline)
 {
     BeginPolyline();
     SetColourFromError(centreline.errors[error_type], 1.0);
-    vector<PointInfo>::const_iterator i;
-    for (i = centreline.begin(); i != centreline.end(); ++i) {
+    for (auto i = centreline.begin(); i != centreline.end(); ++i) {
 	PlaceVertex(*i);
     }
     EndPolyline();
@@ -3602,17 +3595,16 @@ void GfxCore::SetColourFromGradient(double gradient, Double factor)
 
 void GfxCore::AddPolylineGradient(const traverse & centreline)
 {
-    vector<PointInfo>::const_iterator i, prev_i;
-    i = centreline.begin();
-    prev_i = i;
+    BeginPolyline();
+    auto i = centreline.begin();
+    auto prev_i = i;
+    PlaceVertex(*i);
     while (++i != centreline.end()) {
-	BeginPolyline();
 	SetColourFromGradient((*i - *prev_i).gradient(), 1.0);
-	PlaceVertex(*prev_i);
 	PlaceVertex(*i);
 	prev_i = i;
-	EndPolyline();
     }
+    EndPolyline();
 }
 
 static double static_gradient_hack; // FIXME
@@ -3688,17 +3680,16 @@ void GfxCore::SetColourFrom01(double how_far, Double factor)
 
 void GfxCore::AddPolylineLength(const traverse & centreline)
 {
-    vector<PointInfo>::const_iterator i, prev_i;
-    i = centreline.begin();
-    prev_i = i;
+    BeginPolyline();
+    auto i = centreline.begin();
+    auto prev_i = i;
+    PlaceVertex(*i);
     while (++i != centreline.end()) {
-	BeginPolyline();
 	SetColourFromLength((*i - *prev_i).magnitude(), 1.0);
-	PlaceVertex(*prev_i);
 	PlaceVertex(*i);
 	prev_i = i;
-	EndPolyline();
     }
+    EndPolyline();
 }
 
 static double static_length_hack; // FIXME
@@ -3724,17 +3715,12 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
 
 void GfxCore::AddPolylineSurvey(const traverse & centreline)
 {
+    BeginPolyline();
     SetColourFromSurvey(centreline.name);
-    vector<PointInfo>::const_iterator i, prev_i;
-    i = centreline.begin();
-    prev_i = i;
-    while (++i != centreline.end()) {
-	BeginPolyline();
-	PlaceVertex(*prev_i);
+    for (auto i = centreline.begin(); i != centreline.end(); ++i) {
 	PlaceVertex(*i);
-	prev_i = i;
-	EndPolyline();
     }
+    EndPolyline();
 }
 
 static const wxString* static_survey_hack;
