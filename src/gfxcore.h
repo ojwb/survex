@@ -96,6 +96,7 @@ enum {
     COLOUR_BY_GRADIENT,
     COLOUR_BY_LENGTH,
     COLOUR_BY_SURVEY,
+    COLOUR_BY_STYLE,
     COLOUR_BY_LIMIT_ // Leave this last.
 };
 
@@ -595,6 +596,7 @@ public:
     void AddPolylineGradient(const traverse & centreline);
     void AddPolylineLength(const traverse & centreline);
     void AddPolylineSurvey(const traverse & centreline);
+    void AddPolylineStyle(const traverse & centreline);
     void AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 			  const Vector3 &c, const Vector3 &d);
     void AddPolylineShadow(const traverse & centreline);

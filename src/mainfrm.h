@@ -129,6 +129,7 @@ enum {
     menu_COLOUR_BY_GRADIENT,
     menu_COLOUR_BY_LENGTH,
     menu_COLOUR_BY_SURVEY,
+    menu_COLOUR_BY_STYLE,
     menu_IND_COMPASS,
     menu_IND_CLINO,
     menu_IND_COLOUR_KEY,
@@ -298,6 +299,7 @@ public:
     void OnColourByGradientUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByGradientUpdate(event); }
     void OnColourByLengthUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByLengthUpdate(event); }
     void OnColourBySurveyUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourBySurveyUpdate(event); }
+    void OnColourByStyleUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnColourByStyleUpdate(event); }
     void OnShowCrossesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowCrossesUpdate(event); }
     void OnShowEntrancesUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowEntrancesUpdate(event); }
     void OnShowFixedPtsUpdate(wxUpdateUIEvent& event) { if (m_Control) m_Control->OnShowFixedPtsUpdate(event); }
@@ -350,6 +352,7 @@ public:
     void OnColourByGradient(wxCommandEvent&) { if (m_Control) m_Control->OnColourByGradient(); }
     void OnColourByLength(wxCommandEvent&) { if (m_Control) m_Control->OnColourByLength(); }
     void OnColourBySurvey(wxCommandEvent&) { if (m_Control) m_Control->OnColourBySurvey(); }
+    void OnColourByStyle(wxCommandEvent&) { if (m_Control) m_Control->OnColourByStyle(); }
     void OnShowCrosses(wxCommandEvent&) { if (m_Control) m_Control->OnShowCrosses(); }
     void OnShowEntrances(wxCommandEvent&) { if (m_Control) m_Control->OnShowEntrances(); }
     void OnShowFixedPts(wxCommandEvent&) { if (m_Control) m_Control->OnShowFixedPts(); }

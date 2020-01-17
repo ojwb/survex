@@ -86,6 +86,8 @@ class traverse : public vector<PointInfo> {
     int n_legs = 0;
     // Bitmask of img_FLAG_SURFACE, img_FLAG_SPLAY and img_FLAG_DUPLICATE.
     int flags = 0;
+    // An img_STYLE_* value.
+    int style = 0;
     double length = 0.0;
     enum { ERROR_3D = 0, ERROR_H = 1, ERROR_V = 2 };
     double errors[3] = {-1, -1, -1};

@@ -2622,6 +2622,9 @@ void GfxCore::GenerateDisplayList(bool surface)
 		case COLOUR_BY_V_ERROR:
 		    add_poly = &GfxCore::AddPolylineError;
 		    break;
+		case COLOUR_BY_STYLE:
+		    add_poly = &GfxCore::AddPolylineStyle;
+		    break;
 		default:
 		    add_poly = &GfxCore::AddPolyline;
 	    }
@@ -3180,6 +3183,10 @@ void GfxCore::DrawIndicators()
 #if 0 // FIXME Key for survey colours?
 	    case COLOUR_BY_SURVEY:
 		key_list = LIST_SURVEY_KEY; break;
+#endif
+#if 0 // FIXME Key for style colours?
+	    case COLOUR_BY_STYLE:
+		key_list = LIST_STYLE_KEY; break;
 #endif
 	}
 	if (key_list != LIST_LIMIT_) {
@@ -3751,6 +3758,48 @@ void GfxCore::AddQuadrilateralSurvey(const Vector3 &a, const Vector3 &b,
     EndQuadrilaterals();
 }
 
+void GfxCore::AddPolylineStyle(const traverse & centreline)
+{
+    BeginPolyline();
+    static const gla_colour style_colours[] = {
+	NODATA_COLOUR, // img_STYLE_UNKNOWN
+	col_GREEN, // img_STYLE_NORMAL
+	col_BLUE, // img_STYLE_DIVING
+	col_YELLOW, // img_STYLE_CARTESIAN
+	col_TURQUOISE, // img_STYLE_CYLPOLAR
+	col_RED // img_STYLE_NOSURVEY
+    };
+    SetColour(style_colours[centreline.style + 1]);
+//    SetColourFromStyle(centreline.style);
+    for (auto i = centreline.begin(); i != centreline.end(); ++i) {
+	PlaceVertex(*i);
+    }
+    EndPolyline();
+}
+
+#if 0
+static int static_style_hack;
+
+void GfxCore::AddQuadrilateralStyle(const Vector3 &a, const Vector3 &b,
+				    const Vector3 &c, const Vector3 &d)
+{
+    Vector3 normal = (a - c) * (d - b);
+    normal.normalise();
+    Double factor = dot(normal, light) * .3 + .7;
+    glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
+    glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
+    // FIXME: should plot triangles instead to avoid rendering glitches.
+    BeginQuadrilaterals();
+////    PlaceNormal(normal);
+    SetColourFromSurveyStation(*static_survey_hack, factor);
+    PlaceVertex(a, 0, 0);
+    PlaceVertex(b, w, 0);
+    PlaceVertex(c, w, h);
+    PlaceVertex(d, 0, h);
+    EndQuadrilaterals();
+}
+#endif
+
 void
 GfxCore::SkinPassage(vector<XSect> & centreline)
 {
@@ -4078,6 +4127,11 @@ void GfxCore::SetColourBy(int colour_by) {
 	    AddQuad = &GfxCore::AddQuadrilateralSurvey;
 	    AddPoly = &GfxCore::AddPolylineSurvey;
 	    break;
+	case COLOUR_BY_STYLE:
+	    // FIXME: support quad colouring by style
+	    AddQuad = &GfxCore::AddQuadrilateral;
+	    AddPoly = &GfxCore::AddPolylineStyle;
+	    break;
 	default: // case COLOUR_BY_NONE:
 	    AddQuad = &GfxCore::AddQuadrilateral;
 	    AddPoly = &GfxCore::AddPolyline;
@@ -4345,6 +4399,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	menu.AppendCheckItem(menu_COLOUR_BY_GRADIENT, wmsg(/*Colour by &Gradient*/85));
 	menu.AppendCheckItem(menu_COLOUR_BY_LENGTH, wmsg(/*Colour by &Length*/82));
 	menu.AppendCheckItem(menu_COLOUR_BY_SURVEY, wmsg(/*Colour by &Survey*/448));
+	menu.AppendCheckItem(menu_COLOUR_BY_STYLE, wmsg(/*Colour by St&yle*/482));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the colour key.
 	 * The "Colour Key" is the thing in aven showing which colour

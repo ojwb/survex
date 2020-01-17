@@ -2265,6 +2265,12 @@ msgstr ""
 msgid "Colour by &Survey"
 msgstr ""
 
+#: ../src/gfxcore.cc:4386
+#: ../src/mainfrm.cc:902
+#: n:482
+msgid "Colour by St&yle"
+msgstr ""
+
 #: ../src/mainfrm.cc:967
 #: n:274
 msgid "&Compass"

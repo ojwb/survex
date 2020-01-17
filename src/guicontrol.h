@@ -80,6 +80,7 @@ public:
     void OnColourByGradient();
     void OnColourByLength();
     void OnColourBySurvey();
+    void OnColourByStyle();
     void OnShowCrosses();
     void OnShowStationNames();
     void OnShowSurveyLegs();
@@ -140,6 +141,7 @@ public:
     void OnColourByGradientUpdate(wxUpdateUIEvent&);
     void OnColourByLengthUpdate(wxUpdateUIEvent&);
     void OnColourBySurveyUpdate(wxUpdateUIEvent&);
+    void OnColourByStyleUpdate(wxUpdateUIEvent&);
     void OnShowCrossesUpdate(wxUpdateUIEvent&);
     void OnShowStationNamesUpdate(wxUpdateUIEvent&);
     void OnShowSurveyLegsUpdate(wxUpdateUIEvent&);
