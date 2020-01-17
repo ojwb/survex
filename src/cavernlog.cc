@@ -583,10 +583,12 @@ bad_utf8:
 				cur = "&nbsp;";
 				// FIXME: Need to count each & entity as one character...
 				cur.append(source_line, 1, caret - 1);
-				cur.append("<b>");
-				cur.append(highlight ? highlight : wxT("<span \"color:green\">"));
-				cur.append(source_line, caret, tilde + 1 - caret);
-				cur.append("</span></b>");
+				if (caret < source_line.size()) {
+				    cur.append("<b>");
+				    cur.append(highlight ? highlight : wxT("<span \"color:green\">"));
+				    cur.append(source_line, caret, tilde + 1 - caret);
+				    cur.append("</span></b>");
+				}
 				if (tilde + 1 < source_line.size()) {
 				    cur.append(source_line, tilde + 1, wxString::npos);
 				}
