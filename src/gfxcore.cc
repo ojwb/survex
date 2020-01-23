@@ -239,6 +239,7 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_ERROR_KEY);
     InvalidateList(LIST_GRADIENT_KEY);
     InvalidateList(LIST_LENGTH_KEY);
+    InvalidateList(LIST_STYLE_KEY);
     InvalidateList(LIST_UNDERGROUND_LEGS);
     InvalidateList(LIST_TUBES);
     InvalidateList(LIST_SURFACE_LEGS);
@@ -1239,6 +1240,63 @@ void GfxCore::DrawLengthKey()
     }
 
     DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
+}
+
+static const gla_colour style_colours[] = {
+    NODATA_COLOUR, // img_STYLE_UNKNOWN
+    col_GREEN, // img_STYLE_NORMAL
+    col_BLUE, // img_STYLE_DIVING
+    col_YELLOW, // img_STYLE_CARTESIAN
+    col_MAGENTA, // img_STYLE_CYLPOLAR
+    col_RED // img_STYLE_NOSURVEY
+};
+
+// FIXME: Translate
+static const char* style_names[] = {
+    "Unknown",
+    "Normal",
+    "Diving",
+    "Cartesian",
+    "Cyl-Polar",
+    "No Survey"
+};
+
+void GfxCore::DrawStyleKey()
+{
+    int num_bands = sizeof(style_names) / sizeof(style_names[0]);
+    int total_block_height = KEY_BLOCK_HEIGHT * (2 * num_bands - 1);
+
+    const int bottom = -total_block_height;
+
+    int size = 0;
+    for (int band = 0; band < num_bands; ++band) {
+	int x;
+	GetTextExtent(style_names[band], &x, NULL);
+	if (x > size) size = x;
+    }
+
+    int left = -KEY_BLOCK_WIDTH - size;
+
+    key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft[m_ColourBy].y = bottom;
+
+    int y = bottom;
+    for (int band = 0; band < num_bands; ++band) {
+	DrawRectangle(style_colours[band], col_BLACK,
+		      left, y,
+		      KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
+	y += KEY_BLOCK_HEIGHT * 2;
+    }
+
+    SetColour(TEXT_COLOUR);
+
+    y = bottom;
+    left += KEY_BLOCK_WIDTH + 5;
+
+    for (int band = 0; band < num_bands; ++band) {
+	DrawIndicatorText(left, y, style_names[band]);
+	y += KEY_BLOCK_HEIGHT * 2;
+    }
 }
 
 void GfxCore::DrawScaleBar()
@@ -2520,6 +2578,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_LENGTH_KEY:
 	    DrawLengthKey();
 	    break;
+	case LIST_STYLE_KEY:
+	    DrawStyleKey();
+	    break;
 	case LIST_UNDERGROUND_LEGS:
 	    GenerateDisplayList(false);
 	    break;
@@ -3184,10 +3245,8 @@ void GfxCore::DrawIndicators()
 	    case COLOUR_BY_SURVEY:
 		key_list = LIST_SURVEY_KEY; break;
 #endif
-#if 0 // FIXME Key for style colours?
 	    case COLOUR_BY_STYLE:
 		key_list = LIST_STYLE_KEY; break;
-#endif
 	}
 	if (key_list != LIST_LIMIT_) {
 	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X,
@@ -3747,14 +3806,6 @@ void GfxCore::AddQuadrilateralSurvey(const Vector3 &a, const Vector3 &b,
 void GfxCore::AddPolylineStyle(const traverse & centreline)
 {
     BeginPolyline();
-    static const gla_colour style_colours[] = {
-	NODATA_COLOUR, // img_STYLE_UNKNOWN
-	col_GREEN, // img_STYLE_NORMAL
-	col_BLUE, // img_STYLE_DIVING
-	col_YELLOW, // img_STYLE_CARTESIAN
-	col_TURQUOISE, // img_STYLE_CYLPOLAR
-	col_RED // img_STYLE_NOSURVEY
-    };
     SetColour(style_colours[centreline.style + 1]);
 //    SetColourFromStyle(centreline.style);
     for (auto i = centreline.begin(); i != centreline.end(); ++i) {

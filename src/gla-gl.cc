@@ -328,6 +328,7 @@ const ColourTriple COLOURS[] = {
     { 255, 255, 0 },   // yellow
     { 255, 0, 0 },     // red
     { 40, 40, 255 },   // blue
+    { 255, 0, 255 },   // magenta
 };
 
 bool GLAList::need_to_generate() {

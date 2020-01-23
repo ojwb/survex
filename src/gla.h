@@ -60,6 +60,7 @@ enum gla_colour {
     col_YELLOW,
     col_RED,
     col_BLUE,
+    col_MAGENTA,
     col_LAST // must be the last entry here
 };
 

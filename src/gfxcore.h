@@ -141,6 +141,7 @@ class GfxCore : public GLACanvas {
 	LIST_ERROR_KEY,
 	LIST_GRADIENT_KEY,
 	LIST_LENGTH_KEY,
+	LIST_STYLE_KEY,
 	LIST_UNDERGROUND_LEGS,
 	LIST_TUBES,
 	LIST_SURFACE_LEGS,
@@ -318,6 +319,7 @@ private:
     void DrawErrorKey();
     void DrawGradientKey();
     void DrawLengthKey();
+    void DrawStyleKey();
     void DrawCompass();
     void DrawClino();
     void DrawClinoBack();
