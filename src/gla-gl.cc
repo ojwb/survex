@@ -313,8 +313,8 @@ struct ColourTriple {
     unsigned char r, g, b;
 };
 
-// These must be in the same order as the entries in COLOURS[] below.
-const ColourTriple COLOURS[] = {
+// Order must match that in enum gla_colour[] in gla.h.
+static const ColourTriple COLOURS[] = {
     { 0, 0, 0 },       // black
     { 100, 100, 100 }, // grey
     { 180, 180, 180 }, // light grey
