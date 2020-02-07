@@ -4413,9 +4413,9 @@ Tue Jun 04 12:37:03 GMT 2013  Olly Betts <olly@survex.com>
 
 	* doc/manual.sgml,lib/survex.pot,src/,tests/Makefile.am,
 	  tests/cavern.tst: Add more anonymous station types - a double
-	  separator ('..' by default) is an anoymous wall point at the end
+	  separator ('..' by default) is an anonymous wall point at the end
 	  of an implicit splay (c.f. '.' being a non-wall point), and
-	  a triple separator ('...' by default) is an anoymous point (with
+	  a triple separator ('...' by default) is an anonymous point (with
 	  nothing special about the leg).  New *alias command allows '-' to be
 	  mapped to '..' to match pocket topo conventions.  3d file format now
 	  support a 'WALL' station flag.

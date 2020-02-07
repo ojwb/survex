@@ -1959,8 +1959,8 @@ Changes in 1.2.7 (2013-07-27):
   separator characters - with the default separator of '.', that means '.',
   '..', and '...' are anonymous stations.  Single separator ('.' by default)
   is an anonymous non-wall point, double separator ('..' by default)
-  is an anoymous wall point at the end of an implicit splay), and triple
-  separator ('...' by default) is an anoymous point (with nothing special about
+  is an anonymous wall point at the end of an implicit splay), and triple
+  separator ('...' by default) is an anonymous point (with nothing special about
   the leg).  A new *alias command allows '-' to be mapped to '..' for
   compatibility with pocket topo: *alias station - ..
 

@@ -899,12 +899,12 @@ An anonymous non-wall point at the end of an implicit splay.
 
 <VarListEntry><Term>Double separator ('..' by default)</Term>
 <ListItem><Para>
-An anoymous wall point at the end of an implicit splay.
+An anonymous wall point at the end of an implicit splay.
 </Para></ListItem></VarListEntry>
 
 <VarListEntry><Term>Triple separator ('...' by default)</Term>
 <ListItem><Para>
-an anoymous point with no implicit flags on the leg (intended for cases like
+an anonymous point with no implicit flags on the leg (intended for cases like
 a disto leg along a continuing passage).
 </Para></ListItem></VarListEntry>
 </VariableList>
