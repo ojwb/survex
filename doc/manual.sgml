@@ -1967,7 +1967,9 @@ of each survey and at the specified representative location (given in the
 current input coordinate system, as set with *cs).  Survex 1.2.27 and
 later also automatically correct for grid convergence (the difference between
 Grid North and True North) when *declination auto is in use, based on the same
-specified representative location.
+specified representative location.  A revised version of the IGRF model is
+usually issued every 5 years - Survex 1.2.43 updated to using version 13 in
+early 2020.
 </Para>
 
 <Para>
