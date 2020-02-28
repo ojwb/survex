@@ -1,3 +1,26 @@
+Changes in 1.2.43 (2020-02-28):
+
+* cavern: Update to use v13 of the IGRF model for calculating declinations.
+  This was issued in December 2019 and should give slightly more accurate
+  declinations for surveys made since 2010.
+
+* aven:
+
+  + Fix colouring of "not in loop" when colouring by error.  1.2.42 introduced
+    a bug where surveys not in a loop were coloured as if they had zero error.
+    Fixes #111, reported by Bruce Mutton.
+
+  + Fix handling of grid in export.  The grid was always getting enabled
+    (probably since 1.2.8) even for formats which don't support exporting with
+    a grid.  This resulted in the bounding box being set wrongly for some
+    formats such as SVG, as reported by Richard Knapp on the mailing list.
+
+  + When showing errors processing the survey data we'd previously crash if
+    cavern incorrectly reported an error as being in a column off the end of
+    the line - now we just ignore the error column in this case.
+
+  + Support colouring by survey style ("normal", "diving", "nosurvey", etc).
+
 Changes in 1.2.42 (2019-09-04):
 
 * aven:
