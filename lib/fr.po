@@ -1185,7 +1185,7 @@ msgstr "Échelle"
 #: ../src/survexport.cc:127
 #: n:217
 msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
-msgstr ""
+msgstr "échelle (50, 0,02, 1:50 et 2:100 tous signifient 1:50)"
 
 #: ../src/cmdline.c:194
 #: n:157
@@ -1282,7 +1282,7 @@ msgstr "Coupe projetée azimut %s"
 #: ../src/survexport.cc:130
 #: n:462
 msgid "plan view (equivalent to --tilt=-90)"
-msgstr ""
+msgstr "vue en plan (équivalent à --tilt=-90)"
 
 #. TRANSLATORS: This is used on printouts of tilted elevations, with
 #. the first %s replaced by something like "123°", and the second by
@@ -1297,7 +1297,7 @@ msgstr "Coupe projetée azimut %s, tournée de %s"
 #: ../src/survexport.cc:131
 #: n:463
 msgid "elevation view (equivalent to --tilt=0)"
-msgstr ""
+msgstr "vue en élévation (équivalent à --tilt=0)"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printing.cc:1199
@@ -1942,7 +1942,7 @@ msgstr "Azimut"
 #: ../src/survexport.cc:128
 #: n:460
 msgid "bearing (90, 90d, 100g all mean 90°)"
-msgstr ""
+msgstr "azimut (90, 90d, 100g, tous signifient 90°)"
 
 #: ../src/pos.cc:93
 #: n:100
@@ -2053,7 +2053,7 @@ msgstr "Angle de basculement"
 #: ../src/survexport.cc:129
 #: n:461
 msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
-msgstr ""
+msgstr "inclinaison (45, 45d, 50g, 100% tous signifient 45°)"
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
@@ -3334,17 +3334,17 @@ msgstr "produire une sortie SVG"
 #: ../src/survexport.cc:392
 #: n:252
 msgid "Export format not specified and not known from output file extension"
-msgstr ""
+msgstr "Format d'exportation non spécifié et inconnu de l'extension du fichier de sortie"
 
 #: ../src/survexport.cc:397
 #: n:253
 msgid "Export format not specified"
-msgstr ""
+msgstr "Format d'exportation non spécifié"
 
 #: ../src/survexport.cc:146
 #: n:155
 msgid "include items exported by default"
-msgstr ""
+msgstr "inclure les éléments exportés par défaut"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
