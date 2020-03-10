@@ -124,10 +124,15 @@ main(int argc, char **argv)
    static struct help_msg help[] = {
 	/*			<-- */
 	{HLP_ENCODELONG(0),   /*only load the sub-survey with this prefix*/199, 0},
+	/* TRANSLATORS: These example input values should not be translated. */
 	{HLP_ENCODELONG(1),   /*scale (50, 0.02, 1:50 and 2:100 all mean 1:50)*/217, 0},
+	/* TRANSLATORS: These example input values should not be translated. */
 	{HLP_ENCODELONG(2),   /*bearing (90, 90d, 100g all mean 90°)*/460, 0},
+	/* TRANSLATORS: These example input values should not be translated. */
 	{HLP_ENCODELONG(3),   /*tilt (45, 45d, 50g, 100% all mean 45°)*/461, 0},
+	/* TRANSLATORS: Don't translate example command line option --tilt=-90 */
 	{HLP_ENCODELONG(4),   /*plan view (equivalent to --tilt=-90)*/462, 0},
+	/* TRANSLATORS: Don't translate example command line option --tilt=0 */
 	{HLP_ENCODELONG(5),   /*elevation view (equivalent to --tilt=0)*/463, 0},
 	{HLP_ENCODELONG(6),   /*underground survey legs*/476, 0},
 	{HLP_ENCODELONG(7),   /*surface survey legs*/464, 0},
