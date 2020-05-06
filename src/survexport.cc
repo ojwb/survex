@@ -2,7 +2,7 @@
  * Convert a processed survey data file to another format.
  */
 
-/* Copyright (C) 1994-2004,2008,2010,2011,2013,2014,2018 Olly Betts
+/* Copyright (C) 1994-2004,2008,2010,2011,2013,2014,2018,2020 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,6 +39,7 @@
 #include "str.h"
 #include "useful.h"
 
+#include <iostream>
 #include <string>
 
 using namespace std;
@@ -451,8 +452,12 @@ main(int argc, char **argv)
 	  fatalerror(/*Couldn’t write file “%s”*/402, fnm_out);
        }
    } catch (const wxString & m) {
-       wxFprintf(stderr, wxT("%s: %s: %s\n"),
-		 msg_appname(), wmsg(/*error*/93), m);
+       wxString r = msg_appname();
+       r += ": ";
+       r += wmsg(/*error*/93);
+       r += ": ";
+       r += m;
+       wcerr << r.c_str() << '\n';
    }
 
    return 0;
