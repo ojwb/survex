@@ -2272,7 +2272,7 @@ msgstr "Couleur par &topographie"
 #: ../src/mainfrm.cc:904
 #: n:482
 msgid "Colour by St&yle"
-msgstr ""
+msgstr "Couleur par st&yle"
 
 #: ../src/mainfrm.cc:970
 #: n:274
@@ -2777,7 +2777,7 @@ msgstr "Présentation"
 #: ../src/aventreectrl.cc:362
 #: n:245
 msgid "Show all"
-msgstr "Tout montrer"
+msgstr "Tout afficher"
 
 #. TRANSLATORS: In aven's survey tree, right-clicking on a survey
 #. name gives a pop-up menu and this is an option.  It reloads the
@@ -2786,7 +2786,7 @@ msgstr "Tout montrer"
 #: ../src/aventreectrl.cc:376
 #: n:246
 msgid "Hide others"
-msgstr "Cacher les autres"
+msgstr "Masquer les autres"
 
 #: ../src/aventreectrl.cc:380
 #: n:388
@@ -2822,7 +2822,7 @@ msgstr "&Ouvrir...\tCtrl+O"
 #: ../src/mainfrm.cc:790
 #: n:453
 msgid "Open &Terrain..."
-msgstr "Ouverture d’un &terrain..."
+msgstr "Ouvrir un &terrain..."
 
 #: ../src/mainfrm.cc:791
 #: n:144
