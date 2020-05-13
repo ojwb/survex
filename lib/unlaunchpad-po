@@ -4,7 +4,7 @@ use strict;
 $/ = "\n\n";
 $_ = <>;
 s/^"X-Launchpad-Export-Date: .*\\n"\n//m;
-s/^"X-Generator: Launchpad \(build \d+\)\\n"\n//m;
+s/^"X-Generator: Launchpad \(build \w+\)\\n"\n//m;
 s/^("PO(?:-Revision|T-Creation)-Date: \d+-\d+-\d+ \d+:\d+)(.*)$/$1:00 $2/mg;
 print;
 
