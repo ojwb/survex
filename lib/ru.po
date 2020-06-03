@@ -188,9 +188,8 @@ msgstr "Азимут не может быть пропущен за исключ
 #: ../src/datain.c:1832
 #: ../src/datain.c:1953
 #: n:94
-#, fuzzy
 msgid "Tape reading may not be omitted"
-msgstr "Длинна замера не может быть пропущено"
+msgstr "Значение длинны не может отсутствовать"
 
 #: ../src/datain.c:383
 #: ../src/extend.c:461
@@ -352,7 +351,7 @@ msgstr "Неизвестная единица измерения “%s”"
 #: n:479
 #, c-format
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
-msgstr ""
+msgstr "Единица измерения “%s” считается устаревшей, используйте “grads” - подробности в руководстве пользователя"
 
 #: ../src/commands.c:2049
 #: ../src/commands.c:2125
@@ -398,17 +397,17 @@ msgstr "Координаты не могут быть пропущены есл�
 #: ../src/commands.c:1696
 #: n:301
 msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
-msgstr ""
+msgstr "Система координат должна быть определена перед использованием “*DECLINATION AUTO”"
 
 #: ../src/commands.c:1688
 #: n:309
 msgid "Expected number or “AUTO”"
-msgstr ""
+msgstr "Ожидается число или “AUTO”"
 
 #: ../src/datain.c:1005
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
-msgstr ""
+msgstr "Дата съёмки не указана - использовано магнитное склонение 0"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -587,7 +586,7 @@ msgstr "Команда *EXPORT должна следовать непосред�
 #: n:76
 #, c-format
 msgid "Assuming 2 digit year is %d"
-msgstr ""
+msgstr "Для года, указанного 2 цифрами использую значение %d"
 
 #: ../src/readval.c:544
 #: n:58
@@ -774,7 +773,7 @@ msgstr "Значения CLINO и BACKCLINO должны иметь одинак
 #: ../src/datain.c:1173
 #: n:92
 msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
-msgstr ""
+msgstr "У вертикальных замеров CLINO и BACKCLINO не могут совпадать"
 
 #: ../src/readval.c:555
 #: n:86
@@ -1187,7 +1186,7 @@ msgstr "Масштаб"
 #: ../src/survexport.cc:128
 #: n:217
 msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
-msgstr ""
+msgstr "масштаб (50, 0.02, 1:50 и 2:100 - все это равно 1:50)"
 
 #: ../src/cmdline.c:194
 #: n:157
@@ -1209,9 +1208,9 @@ msgstr "%d/%d"
 #. "2015-06-09 12:40:44").
 #: ../src/printing.cc:1956
 #: n:167
-#, fuzzy, c-format
+#, c-format
 msgid "Processed: %s"
-msgstr "Обработана на %s"
+msgstr "Обработано: %s"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a plan view and what the viewing angle is.
@@ -1222,7 +1221,7 @@ msgstr "Обработана на %s"
 #: n:233
 #, c-format
 msgid "↑%s 1:%.0f"
-msgstr ""
+msgstr "↑%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an elevation view and what the viewing angle
@@ -1234,7 +1233,7 @@ msgstr ""
 #: n:235
 #, c-format
 msgid "%s↔%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a tilted elevation view and what the viewing
@@ -1247,7 +1246,7 @@ msgstr ""
 #: n:236
 #, c-format
 msgid "%s↔%s ∡%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s ∡%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an extended elevation view.  Aven will replace
@@ -1262,7 +1261,7 @@ msgstr ""
 #: n:244
 #, c-format
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "Разрез 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1285,7 +1284,7 @@ msgstr "Разрез-проекция, направление взгляда - �
 #: ../src/survexport.cc:134
 #: n:462
 msgid "plan view (equivalent to --tilt=-90)"
-msgstr ""
+msgstr "план (эквивалентно --tilt=-90)"
 
 #. TRANSLATORS: This is used on printouts of tilted elevations, with
 #. the first %s replaced by something like "123°", and the second by
@@ -1301,7 +1300,7 @@ msgstr "Разрез-проекция, направление взгляда  - 
 #: ../src/survexport.cc:136
 #: n:463
 msgid "elevation view (equivalent to --tilt=0)"
-msgstr ""
+msgstr "разрез (эквивалентно --tilt=0)"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printing.cc:1199
@@ -1435,7 +1434,7 @@ msgstr "Имя топосъемки указано в BEGIN, но отсутст
 #: ../src/pos.cc:102
 #: n:195
 msgid "( Easting, Northing, Altitude )"
-msgstr "(Востосное,Северное, Высота   )"
+msgstr "( На Восток, На Север, Вверх )"
 
 #. TRANSLATORS: bpp is "Bits Per Pixel"
 #: ../src/aboutdlg.cc:174
@@ -1516,13 +1515,13 @@ msgstr "указать версию формата в котором будет 
 #: ../src/extend.c:482
 #: n:90
 msgid ".espec file to control extending"
-msgstr ""
+msgstr "файл .espec для управления разверткой"
 
 #. TRANSLATORS: --help output for extend --show-breaks option
 #: ../src/extend.c:484
 #: n:91
 msgid "show breaks with surface survey legs in output"
-msgstr ""
+msgstr "отображать разрывы нитки на разрезе развертке с помощью линий поверхностной съемки"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
@@ -1577,7 +1576,7 @@ msgstr "Файлы рельефа поверхности"
 #: ../src/gfxcore.cc:3164
 #: n:161
 msgid "No terrain data near area of survey"
-msgstr ""
+msgstr "Нет данных о поверхности над районом подземной съемки"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1947,12 +1946,12 @@ msgstr "Азимут"
 #: ../src/survexport.cc:130
 #: n:460
 msgid "bearing (90, 90d, 100g all mean 90°)"
-msgstr ""
+msgstr "азимут (90, 90d, 100g - все это равно 90°)"
 
 #: ../src/pos.cc:93
 #: n:100
 msgid "Station Name"
-msgstr ""
+msgstr "Имя Пикета"
 
 #: ../src/printing.cc:479
 #: n:260
@@ -2042,12 +2041,12 @@ msgstr "полные координаты"
 #: ../src/printing.cc:519
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Прикрепить к поверхности"
 
 #: ../src/survexport.cc:150
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "прикрепить к поверхности"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441
@@ -2059,7 +2058,7 @@ msgstr "Угол наклона"
 #: ../src/survexport.cc:132
 #: n:461
 msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
-msgstr ""
+msgstr "угол наклона (45, 45d, 50g, 100% - все это равно 45°)"
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
@@ -2098,9 +2097,8 @@ msgstr "&Объемные ходы\tCtrl+T"
 #. TRANSLATORS: Toggles drawing the surface of the Earth
 #: ../src/mainfrm.cc:858
 #: n:449
-#, fuzzy
 msgid "Terr&ain"
-msgstr "Рел&ьеф"
+msgstr "П&оверхность"
 
 #: ../src/mainfrm.cc:859
 #: n:271
@@ -2144,7 +2142,7 @@ msgstr "П&ерекрывающиеся надписи"
 #: ../src/mainfrm.cc:906
 #: n:450
 msgid "Co&lour by"
-msgstr ""
+msgstr "&Цвет по"
 
 #: ../src/mainfrm.cc:909
 #: n:294
@@ -2169,7 +2167,7 @@ msgstr "Входы"
 #: ../src/survexport.cc:142
 #: n:466
 msgid "entrances"
-msgstr ""
+msgstr "входы"
 
 #: ../src/printing.cc:487
 #: n:419
@@ -2179,7 +2177,7 @@ msgstr "Фиксированные точки"
 #: ../src/survexport.cc:143
 #: n:467
 msgid "fixed points"
-msgstr ""
+msgstr "фиксированные точки"
 
 #: ../src/printing.cc:491
 #: n:420
@@ -2232,12 +2230,11 @@ msgstr "Раскраска по &глубине"
 #: ../src/mainfrm.cc:897
 #: n:293
 msgid "Colour by D&ate"
-msgstr "Раскраска по &дате"
+msgstr "Раскраска по д&ате"
 
 #: ../src/gfxcore.cc:4433
 #: ../src/mainfrm.cc:898
 #: n:289
-#, fuzzy
 msgid "Colour by &Error"
 msgstr "Раскраска по &ошибкам на кольцах"
 
@@ -2245,18 +2242,17 @@ msgstr "Раскраска по &ошибкам на кольцах"
 #: ../src/mainfrm.cc:899
 #: n:480
 msgid "Colour by &Horizontal Error"
-msgstr ""
+msgstr "Раскраска по гори&зонтальной компоненте в ошибках"
 
 #: ../src/gfxcore.cc:4435
 #: ../src/mainfrm.cc:900
 #: n:481
 msgid "Colour by &Vertical Error"
-msgstr ""
+msgstr "Раскраска по &вертикальной компоненте в ошибках"
 
 #: ../src/gfxcore.cc:4436
 #: ../src/mainfrm.cc:901
 #: n:85
-#, fuzzy
 msgid "Colour by &Gradient"
 msgstr "Раскраска по &уклону хода"
 
@@ -2264,7 +2260,7 @@ msgstr "Раскраска по &уклону хода"
 #: ../src/mainfrm.cc:902
 #: n:82
 msgid "Colour by &Length"
-msgstr "Раскрашивать по &Длине"
+msgstr "Раскраска по &длине"
 
 #: ../src/gfxcore.cc:4438
 #: ../src/mainfrm.cc:903
@@ -2276,7 +2272,7 @@ msgstr "Раскраска по &топо-съемке"
 #: ../src/mainfrm.cc:904
 #: n:482
 msgid "Colour by St&yle"
-msgstr ""
+msgstr "Цвет по &стилю"
 
 #: ../src/mainfrm.cc:970
 #: n:274
@@ -2551,9 +2547,9 @@ msgstr "Проложение%.2f%s, Перепад %.2f%s"
 #. measured by the clino)
 #: ../src/mainfrm.cc:1893
 #: n:341
-#, fuzzy, c-format
+#, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s"
-msgstr "%s: %s, Расстояние %.2f%s, Азимут %03.1f%s, Уклону хода %s"
+msgstr "%s: %s, Дл %.2f%s, Аз %03.1f%s, Угл %s"
 
 #. TRANSLATORS: tickable menu item in View menu.
 #.
@@ -2790,12 +2786,12 @@ msgstr "Показать все"
 #: ../src/aventreectrl.cc:376
 #: n:246
 msgid "Hide others"
-msgstr ""
+msgstr "Скрыть остальные"
 
 #: ../src/aventreectrl.cc:380
 #: n:388
 msgid "Hide si&blings"
-msgstr ""
+msgstr "Скрыть остальные на &этом уровне"
 
 #: ../src/mainfrm.cc:244
 #: ../src/pos.cc:90
@@ -2973,7 +2969,7 @@ msgstr "вспомогательные замеры"
 #: ../src/mainfrm.cc:890
 #: n:251
 msgid "&Duplicate Legs"
-msgstr ""
+msgstr "&Дублирующиеся Замеры"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are not shown.
@@ -2998,7 +2994,7 @@ msgstr "Пониженная &яркость"
 #: ../src/mainfrm.cc:887
 #: n:250
 msgid "&Dashed"
-msgstr ""
+msgstr "Пун&ктир"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are shown the same as other legs.
@@ -3349,17 +3345,17 @@ msgstr "создавать SVG"
 #: ../src/survexport.cc:397
 #: n:252
 msgid "Export format not specified and not known from output file extension"
-msgstr ""
+msgstr "Формат экспорта не указан и его невозможно определить по расширению файла"
 
 #: ../src/survexport.cc:402
 #: n:253
 msgid "Export format not specified"
-msgstr ""
+msgstr "Формат экспорта не указан"
 
 #: ../src/survexport.cc:151
 #: n:155
 msgid "include items exported by default"
-msgstr ""
+msgstr "включены элементы, экспортируемые по умолчанию"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
