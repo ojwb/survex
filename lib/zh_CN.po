@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: olly@survex.com\n"
 "POT-Creation-Date: 1999-08-26 12:23:58 +0000\n"
 "PO-Revision-Date: 2014-01-15 22:05:08 +0000\n"
-"Last-Translator: Olly Betts <olly@survex.com>\n"
+"Last-Translator: Qingqing Li <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -66,17 +66,17 @@ msgstr "内存耗尽"
 #. was trying to allocate space for.
 #: ../src/message.c:77
 #: n:1
-#, fuzzy, c-format
+#, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
-msgstr "内存耗尽 (%lu 字节)"
+msgstr "内存耗尽（不足 %lu 字节）"
 
 #. TRANSLATORS: %s will be replaced by the filename that we were trying
 #. to read when we ran out of memory.
 #: ../src/img_hosted.c:34
 #: n:38
-#, fuzzy, c-format
+#, c-format
 msgid "Out of memory trying to read file “%s”"
-msgstr "内存耗尽: “%s”"
+msgstr "试图读取文件“%s”时内存不足"
 
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
@@ -91,7 +91,7 @@ msgstr "内存耗尽: “%s”"
 #: n:2
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
-msgstr ""
+msgstr "处理此测量数据需要Survex %s 或以上版本。"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
@@ -133,7 +133,7 @@ msgstr ""
 #: n:7
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
-msgstr ""
+msgstr "站名中不允许使用字符“%c”（使用 *SET NAMES 设置允许使用的字符）"
 
 #: ../src/readval.c:395
 #: n:8
@@ -161,16 +161,15 @@ msgstr ""
 #: ../src/debug.h:47
 #: ../src/matrix.c:352
 #: n:11
-#, fuzzy
 msgid "Bug in program detected! Please report this to the authors"
-msgstr "发生了一个内部错误! 请将报告发送给程序维护人员"
+msgstr "检测到程序错误！请将此报告给作者"
 
 #: ../src/commands.c:2428
 #: ../src/extend.c:456
 #: n:12
-#, fuzzy, c-format
+#, c-format
 msgid "Unknown command “%s”"
-msgstr "未知命令 “%s”"
+msgstr "未知的命令 “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:442
@@ -184,13 +183,13 @@ msgstr ""
 #: ../src/datain.c:1194
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
-msgstr ""
+msgstr "除了垂直测量段，方位数据不可省略"
 
 #: ../src/datain.c:1832
 #: ../src/datain.c:1953
 #: n:94
 msgid "Tape reading may not be omitted"
-msgstr ""
+msgstr "距离数据不可胜路"
 
 #: ../src/datain.c:383
 #: ../src/extend.c:461
@@ -202,7 +201,7 @@ msgstr ""
 #: n:16
 #, c-format
 msgid "There were %d warning(s)."
-msgstr ""
+msgstr "有 %d 条警告。"
 
 #. TRANSLATORS: %s is replaced by the command we attempted to run.
 #: ../src/cavernlog.cc:431
@@ -230,14 +229,14 @@ msgstr "读文件出错"
 #: ../src/message.c:1254
 #: n:19
 msgid "Too many errors - giving up"
-msgstr ""
+msgstr "错误太多 - 放弃"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:1760
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
-msgstr ""
+msgstr "不推荐*DEFAULT - 使用带DEFAULT参数的*CALIBRATE/DATA/SD/UNITS代替"
 
 #. TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 #. (a weight on a string).  So the problem here is that the leg is
@@ -250,12 +249,12 @@ msgstr ""
 #: ../src/commands.c:761
 #: n:22
 msgid "END with no matching BEGIN in this file"
-msgstr ""
+msgstr "此文件中END没有匹配的BEGIN"
 
 #: ../src/datain.c:859
 #: n:23
 msgid "BEGIN with no matching END in this file"
-msgstr ""
+msgstr "此文件中BEGIN没有匹配的END"
 
 #. TRANSLATORS: A station must be exported out of each level it is in, so
 #. this would give "Station “\outer.inner.1” not exported from survey
@@ -358,27 +357,27 @@ msgstr ""
 #: ../src/commands.c:2125
 #: n:434
 msgid "Unknown coordinate system"
-msgstr ""
+msgstr "未知坐标系"
 
 #: ../src/commands.c:2147
 #: ../src/commands.c:2175
 #: n:443
 #, c-format
 msgid "Invalid coordinate system: %s"
-msgstr ""
+msgstr "无效坐标系：%s"
 
 #: ../src/commands.c:2133
 #: ../src/commands.c:2154
 #: n:435
 msgid "Coordinate system unsuitable for output"
-msgstr ""
+msgstr "坐标系不适合输出"
 
 #: ../src/commands.c:893
 #: ../src/commands.c:1710
 #: n:436
 #, c-format
 msgid "Failed to convert coordinates: %s"
-msgstr ""
+msgstr "转换坐标失败：%s"
 
 #: ../src/commands.c:896
 #: n:437
@@ -398,7 +397,7 @@ msgstr ""
 #: ../src/commands.c:1696
 #: n:301
 msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
-msgstr ""
+msgstr "必须为“*DECLINATION AUTO”指定输入坐标系"
 
 #: ../src/commands.c:1688
 #: n:309
