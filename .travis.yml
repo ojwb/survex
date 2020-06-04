@@ -1,5 +1,6 @@
 dist: trusty
 language: cpp
+cache: ccache
 matrix:
   include:
     - compiler: gcc
@@ -32,10 +33,12 @@ matrix:
         - make
         - make check VERBOSE=1
     - os: osx
+      env: "PATH=/usr/local/opt/ccache/libexec:${PATH}"
       addons:
         homebrew:
           update: true
           packages:
+            - ccache
             - ffmpeg
             - gettext
             - gnu-tar
@@ -56,10 +59,12 @@ matrix:
     - os: osx
       # xcode8 is rejected by homebrew as too old
       osx_image: xcode8.3
+      env: "PATH=/usr/local/opt/ccache/libexec:${PATH}"
       addons:
         homebrew:
           update: true
           packages:
+            - ccache
             - ffmpeg
             - gettext
             - gnu-tar
