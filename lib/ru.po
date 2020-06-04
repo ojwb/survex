@@ -2142,12 +2142,12 @@ msgstr "П&ерекрывающиеся надписи"
 #: ../src/mainfrm.cc:906
 #: n:450
 msgid "Co&lour by"
-msgstr "&Цвет по"
+msgstr "&Раскраска по"
 
 #: ../src/mainfrm.cc:909
 #: n:294
 msgid "Highlight &Entrances"
-msgstr "Подсветить в&ходы"
+msgstr "Подсветить &входы"
 
 #: ../src/mainfrm.cc:910
 #: n:295
@@ -2205,20 +2205,20 @@ msgstr "Текстурированные &стены"
 #: ../src/mainfrm.cc:926
 #: n:239
 msgid "Fade Distant Ob&jects"
-msgstr "Затенять отдаленные об&ъекты"
+msgstr "&Затенять отдаленные объекты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/mainfrm.cc:929
 #: n:298
 msgid "Smoot&hed Survey Legs"
-msgstr "Сглажи&вать линии"
+msgstr "Сглаживать &линии"
 
 #: ../src/mainfrm.cc:935
 #: ../src/mainfrm.cc:942
 #: n:356
 msgid "Full Screen &Mode\tF11"
-msgstr "Полноэкранный ре&жим\tF11"
+msgstr "Полноэкранный &режим\tF11"
 
 #: ../src/gfxcore.cc:4431
 #: ../src/mainfrm.cc:896
@@ -2272,7 +2272,7 @@ msgstr "Раскраска по &топо-съемке"
 #: ../src/mainfrm.cc:904
 #: n:482
 msgid "Colour by St&yle"
-msgstr "Цвет по &стилю"
+msgstr "Раскраска по &стилю"
 
 #: ../src/mainfrm.cc:970
 #: n:274
