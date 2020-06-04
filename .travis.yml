@@ -1,8 +1,5 @@
 dist: trusty
 language: cpp
-env:
-  global:
-    - HOMEBREW_PACKAGES='ffmpeg gettext gnu-tar netpbm proj wxmac'
 matrix:
   include:
     - compiler: gcc
@@ -35,16 +32,17 @@ matrix:
         - make
         - make check VERBOSE=1
     - os: osx
+      addons:
+        homebrew:
+          update: true
+          packages:
+            - ffmpeg
+            - gettext
+            - gnu-tar
+            - netpbm
+            - proj
+            - wxmac
       before_install:
-        - brew update
-        # "brew install" unhelpfully errors out if any package listed is
-        # already installed and up-to-date, but travis change what's installed
-        # by default from time to time so it's brittle to just filter out those
-        # installed by default from the list we need.  So we ignore the exit
-        # status from "brew install", then check that "brew list --versions"
-        # says all the packages requested are installed.
-        - brew install $HOMEBREW_PACKAGES || true
-        - brew list --versions $HOMEBREW_PACKAGES
         - brew link --force gettext
         - sudo cpan -T -i local::lib < /dev/null
         - sudo cpan -I -T -i Locale::PO < /dev/null
@@ -58,16 +56,17 @@ matrix:
     - os: osx
       # xcode8 is rejected by homebrew as too old
       osx_image: xcode8.3
+      addons:
+        homebrew:
+          update: true
+          packages:
+            - ffmpeg
+            - gettext
+            - gnu-tar
+            - netpbm
+            - proj
+            - wxmac
       before_install:
-        - brew update
-        # "brew install" unhelpfully errors out if any package listed is
-        # already installed and up-to-date, but travis change what's installed
-        # by default from time to time so it's brittle to just filter out those
-        # installed by default from the list we need.  So we ignore the exit
-        # status from "brew install", then check that "brew list --versions"
-        # says all the packages requested are installed.
-        - brew install $HOMEBREW_PACKAGES || true
-        - brew list --versions $HOMEBREW_PACKAGES
         - brew link --force gettext
         - sudo cpan -T -i local::lib < /dev/null
         - sudo cpan -I -T -i Locale::PO < /dev/null
