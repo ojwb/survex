@@ -1744,7 +1744,7 @@ A CYLPOLAR style survey is very similar to a diving survey, except that the tape
 is always measured horizontally rather than along the slope of the leg.
 
 <programlisting>
-*data cypolar from to tape compass fromdepth todepth
+*data cylpolar from to tape compass fromdepth todepth
 1 2 9.45 311 -13.3 -19.0</programlisting>
 
 <programlisting>
