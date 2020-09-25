@@ -282,7 +282,7 @@ main(int argc, char **argv)
 	 if (units == 'g') {
 	     pan *= 0.9;
 	 }
-	 bit = EXPORT_3D;
+	 bit = ORIENTABLE;
 	 break;
        }
        case OPT_TILT: {
@@ -308,16 +308,16 @@ main(int argc, char **argv)
 	 } else if (units == '%') {
 	     tilt = deg(atan(tilt * 0.01));
 	 }
-	 bit = EXPORT_3D;
+	 bit = ORIENTABLE;
 	 break;
        }
        case OPT_PLAN:
 	 tilt = -90.0;
-	 bit = EXPORT_3D;
+	 bit = ORIENTABLE;
 	 break;
        case OPT_ELEV:
 	 tilt = 0.0;
-	 bit = EXPORT_3D;
+	 bit = ORIENTABLE;
 	 break;
        case 't': /* Text height */
 	 text_height = cmdline_double_arg();
@@ -432,7 +432,7 @@ main(int argc, char **argv)
        show_mask |= export_format_info[format].defaults;
    }
 
-   if (!(format_info_mask & EXPORT_3D)) {
+   if (!(format_info_mask & ORIENTABLE)) {
        pan = 0.0;
        tilt = -90.0;
    }

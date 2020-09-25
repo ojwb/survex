@@ -70,48 +70,48 @@
 
 const format_info export_format_info[] = {
     { ".csv", /*CSV files*/101,
-      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
+      LABELS|ENTS|FIXES|EXPORTS,
       LABELS },
     { ".dxf", /*DXF files*/411,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|GRID|FULL_COORDS|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".eps", /*EPS files*/412,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".gpx", /*GPX files*/413,
-      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D,
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS|PROJ,
       LABELS },
     /* TRANSLATORS: Here "plotter" refers to a machine which draws a printout
      * on a (usually large) sheet of paper using a pen mounted in a motorised
      * mechanism. */
     { ".hpgl", /*HPGL for plotters*/414,
-      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED,
+      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".json", /*JSON files*/445,
-      LEGS|SPLAYS|CENTRED|EXPORT_3D,
+      LEGS|SPLAYS|CENTRED,
       LEGS },
     { ".kml", /*KML files*/444,
-      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|EXPORT_3D|CLAMP_TO_GROUND,
+      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|CLAMP_TO_GROUND,
       LABELS|LEGS },
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:
      * http://www.fountainware.com/compass/
      * http://www.psc-cavers.org/carto/ */
     { ".plt", /*Compass PLT for use with Carto*/415,
-      LABELS|LEGS|SURF|SPLAYS,
+      LABELS|LEGS|SURF|SPLAYS|ORIENTABLE,
       LABELS|LEGS },
     /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
      * translated: http://www.skencil.org/ */
     { ".sk", /*Skencil files*/416,
-      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE|ORIENTABLE,
       LABELS|LEGS|STNS },
     /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
      * file extension, so neither should be translated. */
     { ".pos", /*Survex pos files*/166,
-      LABELS|ENTS|FIXES|EXPORTS|EXPORT_3D,
+      LABELS|ENTS|FIXES|EXPORTS,
       LABELS },
     { ".svg", /*SVG files*/417,
-      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE|ORIENTABLE,
       LABELS|LEGS|STNS },
 };
 

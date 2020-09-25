@@ -642,12 +642,12 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 	    const wxString& export_fnm = dlg.GetPath();
 	    unsigned mask = info.mask;
 	    double rot, tilt;
-	    if (mask & EXPORT_3D) {
-		rot = 0.0;
-		tilt = -90.0;
-	    } else {
+	    if (mask & ORIENTABLE) {
 		rot = m_layout.rot;
 		tilt = m_layout.tilt;
+	    } else {
+		rot = 0.0;
+		tilt = -90.0;
 	    }
 	    if (!Export(export_fnm, m_layout.title,
 			m_layout.datestamp, *mainfrm, mainfrm->GetTreeFilter(),
@@ -779,7 +779,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 		if (control) control->Show(mask & controls[i].mask);
 	    }
 	    m_scalebox->Show(bool(mask & SCALE));
-	    m_viewbox->Show(!bool(mask & EXPORT_3D));
+	    m_viewbox->Show(bool(mask & ORIENTABLE));
 	    GetSizer()->Layout();
 	    if (control_id == svx_FORMAT) {
 		wxConfigBase * cfg = wxConfigBase::Get();
