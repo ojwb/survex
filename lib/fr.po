@@ -2791,7 +2791,7 @@ msgstr "Masquer les autres"
 #: ../src/aventreectrl.cc:380
 #: n:388
 msgid "Hide si&blings"
-msgstr "Cacher la fratrie"
+msgstr "Cacher la &fratrie"
 
 #: ../src/mainfrm.cc:244
 #: ../src/pos.cc:90
