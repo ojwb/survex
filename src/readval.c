@@ -437,14 +437,37 @@ read_numeric_multi(bool f_optional, int *p_n_readings)
 
 /* read numeric expr or omit (return HUGE_REAL); else longjmp */
 extern real
-read_numeric_multi_or_omit(int *p_n_readings)
+read_bearing_multi_or_omit(int *p_n_readings)
 {
    real v = read_numeric_multi(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
-	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-	 LONGJMP(file.jbSkipLine);
-	 return 0.0; /* for brain-fried compilers */
+	 /* Handle case where bearings are in Quadrants. TODO rely on UNITS; we assume degrees */
+	 switch (ch) {
+		case 'e': case 'E': v = 90; nextch(); break;
+		case 'w': case 'W': v = 270; nextch(); break;
+		case 's': case 'S': v = 180; nextch(); break;
+		case 'n': case 'N': v = 0; nextch(); break;
+		default:
+		    compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+	            LONGJMP(file.jbSkipLine);
+	            return 0.0; /* for brain-fried compilers */
+	 }
+	 real r = read_number(fTrue);
+	 if (r != HUGE_REAL) {
+		 if (!v) {
+                    if (ch == 'w' || ch == 'W') v = 360 - r;
+		    else v = r;
+		 } else if (v == 180) {
+		    if (ch == 'w' || ch == 'W') v = v + r;
+		    else v = v - r;
+		 } else { /* if v=270 or v=90, then r should be HUGE_REAL */
+                    /* TODO more accurate error */
+		    compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+	            LONGJMP(file.jbSkipLine);
+	            return 0.0; /* for brain-fried compilers */
+		 }
+	 }
       }
       nextch();
    }

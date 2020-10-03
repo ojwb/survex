@@ -454,7 +454,7 @@ read_bearing_or_omit(reading r)
    int n_readings;
    q_quantity q = Q_NULL;
    LOC(r) = ftell(file.fh);
-   VAL(r) = read_numeric_multi_or_omit(&n_readings);
+   VAL(r) = read_bearing_multi_or_omit(&n_readings);
    WID(r) = ftell(file.fh) - LOC(r);
    switch (r) {
       case Comp: q = Q_BEARING; break;
