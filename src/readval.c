@@ -441,7 +441,7 @@ read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
    real v = read_numeric_multi(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
-      if (!isOmit(ch) && f_quadrants == fTrue) {
+      if (!isOmit(ch) && f_quadrants) {
          const int quad = 90;
          /* Handle case where bearings are in Quadrants. TODO rely on UNITS; we assume degrees */
 	 switch (ch) {
