@@ -380,9 +380,9 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"MINUTES",	  UNITS_MINUTES },
 	{"PERCENT",	  UNITS_PERCENT },
 	{"PERCENTAGE",    UNITS_PERCENT },
-	{"YARDS",	  UNITS_YARDS },
-	{"QUADS",	  UNITS_QUADRANTS },
 	{"QUADRANTS",	  UNITS_QUADRANTS },
+	{"QUADS",	  UNITS_QUADRANTS },
+	{"YARDS",	  UNITS_YARDS },
 	{NULL,		  UNITS_NULL }
    };
    int units;
