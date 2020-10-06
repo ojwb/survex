@@ -401,6 +401,64 @@ read_number(bool f_optional)
 }
 
 extern real
+read_quadrant(bool f_optional)
+{
+  const int quad = 90;
+  filepos fp;
+  get_pos(&fp);
+  int ch_old;
+  ch_old = ch;
+  real v = 0;
+  /* Handle case where bearings are in Quadrants.*/
+  switch (ch) {
+         case 'e': case 'E': v = quad * 1; nextch(); break;
+         case 'w': case 'W': v = quad * 3; nextch(); break;
+         case 's': case 'S': v = quad * 2; nextch(); break;
+         case 'n': case 'N': v = 0; nextch(); break;
+         default:
+                 /*TODO better error */
+                 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+                 LONGJMP(file.jbSkipLine);
+                 return 0.0; /* for brain-fried compilers */
+  }
+  real r = read_number(fTrue);
+  if (r != HUGE_REAL && r <= quad) {
+     if (ch == 'e' || ch == 'E') {
+        if ( v == quad * 2) /* south half */
+           v = v - r;
+        else if (!v)
+           v = r;
+     } else if (ch == 'w' || ch == 'W') {
+        if ( v == quad * 2)
+           v = v + r;
+        else if (!v)
+           v = quad * 4 - r;
+     } else {
+        /*TODO better error */
+        compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+        LONGJMP(file.jbSkipLine);
+        return 0.0; /* for brain-fried compilers */
+     }
+     nextch();
+     return v;
+   }
+   /* TODO implement interface more like read_numeric_multi */
+   /* didn't read a valid quadrant.  If it's optional, reset filepos & return */
+   set_pos(&fp);
+   if (f_optional) {
+      return HUGE_REAL;
+   }
+   if (isOmit(ch_old)) {
+      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+   } else {
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+   }
+   LONGJMP(file.jbSkipLine);
+   return 0.0; /* for brain-fried compilers */
+
+}
+
+extern real
 read_numeric(bool f_optional)
 {
    skipblanks();
@@ -439,45 +497,23 @@ read_numeric_multi(bool f_optional, int *p_n_readings)
 extern real
 read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
-   real v = read_numeric_multi(fTrue, p_n_readings);
-   if (v == HUGE_REAL) {
-      if (!isOmit(ch) && f_quadrants) {
-         const int quad = 90;
-         /* Handle case where bearings are in Quadrants. TODO rely on UNITS; we assume degrees */
-	 switch (ch) {
-                case 'e': case 'E': v = quad * 1; nextch(); break;
-                case 'w': case 'W': v = quad * 3; nextch(); break;
-                case 's': case 'S': v = quad * 2; nextch(); break;
-                case 'n': case 'N': v = 0; nextch(); break;
-                default:
-                        compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-                        LONGJMP(file.jbSkipLine);
-                        return 0.0; /* for brain-fried compilers */
-         }
-         real r = read_number(fTrue);
-         if (r != HUGE_REAL) {
-            if (!v) {
-               if (ch == 'w' || ch == 'W') v = quad * 4 - r;
-               else v = r;
-            } else if (v == quad * 2) {
-               if (ch == 'w' || ch == 'W') v = v + r;
-               else v = v - r;
-            } else { /* if v=270 or v=90, then r should be HUGE_REAL */
-                    /* TODO more accurate error */
-                    compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-                    LONGJMP(file.jbSkipLine);
-                    return 0.0; /* for brain-fried compilers */
-            }
-         }
-      } else if (!isOmit(ch)) {
-         compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-         LONGJMP(file.jbSkipLine);
-         return 0.0; /* for brain-fried compilers */
+  real v;
+  if (!isOmit(ch) && f_quadrants) {
+     v = read_quadrant(fTrue);
+  } else {
+     v = read_numeric_multi(fTrue, p_n_readings);
+  }
+  if (v == HUGE_REAL) {
+     if (!isOmit(ch)) {
+        compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+        LONGJMP(file.jbSkipLine);
+        return 0.0; /* for brain-fried compilers */
       }
       nextch();
    }
    return v;
 }
+
 
 /* Don't skip blanks, variable error code */
 static unsigned int
