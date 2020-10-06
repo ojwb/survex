@@ -441,6 +441,8 @@ read_quadrant(bool f_optional)
      }
      nextch();
      return v;
+   } else if ( r == HUGE_REAL ) {
+     return v;
    }
    /* TODO implement interface more like read_numeric_multi */
    /* didn't read a valid quadrant.  If it's optional, reset filepos & return */
