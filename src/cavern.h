@@ -116,8 +116,8 @@ typedef enum {
 /* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
    UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
-   UNITS_DEGS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES, UNITS_MAC,
-   UNITS_DEPRECATED_ALIAS_FOR_GRADS
+   UNITS_DEGS, UNITS_QUADRANTS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES,
+   UNITS_MAC, UNITS_DEPRECATED_ALIAS_FOR_GRADS
 } u_units;
 
 /* don't reorder these values!  They need to match with img.h too */
@@ -321,6 +321,8 @@ typedef struct Settings {
    unsigned int Truncate;
    bool f_clino_percent;
    bool f_backclino_percent;
+   bool f_bearing_quadrants;
+   bool f_backbearing_quadrants;
    bool dash_for_anon_wall_station;
    unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;

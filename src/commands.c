@@ -172,6 +172,7 @@ default_units(settings *s)
 	 s->units[quantity] = (real)1.0; /* metres */
    }
    s->f_clino_percent = s->f_backclino_percent = fFalse;
+   s->f_bearing_quadrants = s->f_backbearing_quadrants = fFalse;
 }
 
 void
@@ -334,7 +335,7 @@ static const sztok cmd_tab[] = {
 /* ordering must be the same as the units enum */
 const real factor_tab[] = {
    1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
-   (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
+   (M_PI/180.0), (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
 };
 
 const int units_to_msgno[] = {
@@ -380,6 +381,8 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"PERCENT",	  UNITS_PERCENT },
 	{"PERCENTAGE",    UNITS_PERCENT },
 	{"YARDS",	  UNITS_YARDS },
+	{"QUADS",	  UNITS_QUADRANTS },
+	{"QUADRANTS",	  UNITS_QUADRANTS },
 	{NULL,		  UNITS_NULL }
    };
    int units;
@@ -403,6 +406,10 @@ get_units(unsigned long qmask, bool percent_ok)
    }
    if (units == UNITS_PERCENT && percent_ok &&
        !(qmask & ~(BIT(Q_GRADIENT)|BIT(Q_BACKGRADIENT)))) {
+      return units;
+   }
+   if (units == UNITS_QUADRANTS &&
+       !(qmask & ~(BIT(Q_BEARING)|BIT(Q_BACKBEARING)))) {
       return units;
    }
    if (((qmask & LEN_QMASK) && !TSTBIT(LEN_UMASK, units)) ||
@@ -1591,6 +1598,13 @@ cmd_units(void)
       pcs->f_clino_percent = (units == UNITS_PERCENT);
    if (TSTBIT(qmask, Q_BACKGRADIENT))
       pcs->f_backclino_percent = (units == UNITS_PERCENT);
+
+   if (TSTBIT(qmask, Q_BEARING)) {
+      pcs->f_bearing_quadrants = (units == UNITS_QUADRANTS);
+   }
+   if (TSTBIT(qmask, Q_BACKBEARING)) {
+      pcs->f_backbearing_quadrants = (units == UNITS_QUADRANTS);
+   }
 
    if (factor == HUGE_REAL) {
       factor = factor_tab[units];
