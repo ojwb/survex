@@ -442,11 +442,12 @@ read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
    real v = read_numeric_multi(fTrue, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch) && f_quadrants == fTrue) {
+         const int quad = 90;
          /* Handle case where bearings are in Quadrants. TODO rely on UNITS; we assume degrees */
 	 switch (ch) {
-                case 'e': case 'E': v = 90; nextch(); break;
-                case 'w': case 'W': v = 270; nextch(); break;
-                case 's': case 'S': v = 180; nextch(); break;
+                case 'e': case 'E': v = quad * 1; nextch(); break;
+                case 'w': case 'W': v = quad * 3; nextch(); break;
+                case 's': case 'S': v = quad * 2; nextch(); break;
                 case 'n': case 'N': v = 0; nextch(); break;
                 default:
                         compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -456,9 +457,9 @@ read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
          real r = read_number(fTrue);
          if (r != HUGE_REAL) {
             if (!v) {
-               if (ch == 'w' || ch == 'W') v = 360 - r;
+               if (ch == 'w' || ch == 'W') v = quad * 4 - r;
                else v = r;
-            } else if (v == 180) {
+            } else if (v == quad * 2) {
                if (ch == 'w' || ch == 'W') v = v + r;
                else v = v - r;
             } else { /* if v=270 or v=90, then r should be HUGE_REAL */
