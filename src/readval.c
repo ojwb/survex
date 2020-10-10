@@ -417,14 +417,13 @@ read_quadrant(bool f_optional)
          case 'n': case 'N': v = 0; nextch(); break;
          default:
                  /*TODO better error */
-                if (f_optional) {
-                        return HUGE_REAL;
-                }
-                if (isOmit(ch_old)) {
+                if (f_optional && !isOmit(ch_old)) {
+                	compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+		}
+                if (!f_optional && isOmit(ch_old)) {
                         compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
-                } else {
-                        compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
                 }
+		if (f_optional) return HUGE_REAL;
                 LONGJMP(file.jbSkipLine);
                 return 0.0; /* for brain-fried compilers */
   }
@@ -441,6 +440,7 @@ read_quadrant(bool f_optional)
         else if (!v)
            v = quad * 4 - r;
      } else {
+   	set_pos(&fp);
         /*TODO better error */
         compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
         LONGJMP(file.jbSkipLine);
@@ -451,13 +451,13 @@ read_quadrant(bool f_optional)
    } else if ( r == HUGE_REAL ) {
      return v;
    } else {
+   	set_pos(&fp);
 	/* TODO r > quad; suspcious */
         compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
         LONGJMP(file.jbSkipLine);
         return 0.0; /* for brain-fried compilers */
    }
    /* didn't read a valid quadrant.  If it's optional, reset filepos & return */
-   set_pos(&fp);
    if (f_optional) {
       return HUGE_REAL;
    }

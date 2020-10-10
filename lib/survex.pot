@@ -3487,3 +3487,13 @@ msgstr ""
 #: n:373
 #~ msgid "Display side panel"
 #~ msgstr ""
+
+#: readval.c:421
+#: readval.c:443
+#: readval.c:453
+#: readval.c:465
+#: n:590
+#, c-format
+msgid "Expecting quadrant bearing, found “%s”"
+msgstr ""
+
