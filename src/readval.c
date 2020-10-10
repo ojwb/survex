@@ -417,9 +417,16 @@ read_quadrant(bool f_optional)
          case 'n': case 'N': v = 0; nextch(); break;
          default:
                  /*TODO better error */
-                 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
-                 LONGJMP(file.jbSkipLine);
-                 return 0.0; /* for brain-fried compilers */
+                if (f_optional) {
+                        return HUGE_REAL;
+                }
+                if (isOmit(ch_old)) {
+                        compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+                } else {
+                        compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+                }
+                LONGJMP(file.jbSkipLine);
+                return 0.0; /* for brain-fried compilers */
   }
   real r = read_number(fTrue);
   if (r != HUGE_REAL && r <= quad) {
@@ -479,10 +486,11 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 
    skipblanks();
    if (!isOpen(ch)) {
+      real r = 0;
       if (!f_quadrants)
-          real r = read_number(f_optional);
+          r = read_number(f_optional);
       else
-          real r = read_quadrants(f_optional);
+          r = read_quadrant(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -493,7 +501,7 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
       if (! f_quadrants)
           tot += read_number(fFalse);
       else
-          tot += read_quadrants(fFalse);
+          tot += read_quadrant(fFalse);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));
