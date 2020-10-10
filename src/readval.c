@@ -417,7 +417,7 @@ read_quadrant(bool f_optional)
          case 'n': case 'N': v = 0; nextch(); break;
          default:
                  /*TODO better error */
-                 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+                 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
                  LONGJMP(file.jbSkipLine);
                  return 0.0; /* for brain-fried compilers */
   }
@@ -435,7 +435,7 @@ read_quadrant(bool f_optional)
            v = quad * 4 - r;
      } else {
         /*TODO better error */
-        compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+        compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
         LONGJMP(file.jbSkipLine);
         return 0.0; /* for brain-fried compilers */
      }
@@ -443,8 +443,12 @@ read_quadrant(bool f_optional)
      return v;
    } else if ( r == HUGE_REAL ) {
      return v;
+   } else {
+	/* TODO r > quad; suspcious */
+        compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+        LONGJMP(file.jbSkipLine);
+        return 0.0; /* for brain-fried compilers */
    }
-   /* TODO implement interface more like read_numeric_multi */
    /* didn't read a valid quadrant.  If it's optional, reset filepos & return */
    set_pos(&fp);
    if (f_optional) {
@@ -453,7 +457,7 @@ read_quadrant(bool f_optional)
    if (isOmit(ch_old)) {
       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
    } else {
-      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
@@ -468,14 +472,17 @@ read_numeric(bool f_optional)
 }
 
 extern real
-read_numeric_multi(bool f_optional, int *p_n_readings)
+read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 {
    size_t n_readings = 0;
    real tot = (real)0.0;
 
    skipblanks();
    if (!isOpen(ch)) {
-      real r = read_number(f_optional);
+      if (!f_quadrants)
+          real r = read_number(f_optional);
+      else
+          real r = read_quadrants(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -483,7 +490,10 @@ read_numeric_multi(bool f_optional, int *p_n_readings)
 
    skipblanks();
    do {
-      tot += read_number(fFalse);
+      if (! f_quadrants)
+          tot += read_number(fFalse);
+      else
+          tot += read_quadrants(fFalse);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));
@@ -500,11 +510,7 @@ extern real
 read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
   real v;
-  if (!isOmit(ch) && f_quadrants) {
-     v = read_quadrant(fTrue);
-  } else {
-     v = read_numeric_multi(fTrue, p_n_readings);
-  }
+  v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
   if (v == HUGE_REAL) {
      if (!isOmit(ch)) {
         compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);

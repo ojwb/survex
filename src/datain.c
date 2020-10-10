@@ -442,7 +442,8 @@ read_reading(reading r, bool f_optional)
 	BUG("Unexpected case");
    }
    LOC(r) = ftell(file.fh);
-   VAL(r) = read_numeric_multi(f_optional, &n_readings);
+   /* since we don't handle bearings in read_readings, it's never quadrant */
+   VAL(r) = read_numeric_multi(f_optional, fFalse, &n_readings);
    WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
