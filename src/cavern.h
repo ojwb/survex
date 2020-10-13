@@ -115,9 +115,9 @@ typedef enum {
 
 /* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
-   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
+   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS, UNITS_INCHES,
    UNITS_DEGS, UNITS_QUADRANTS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES,
-   UNITS_MAC, UNITS_DEPRECATED_ALIAS_FOR_GRADS
+   UNITS_MAC, UNITS_DEPRECATED_ALIAS_FOR_GRADS, UNITS_FEETINCHES
 } u_units;
 
 /* don't reorder these values!  They need to match with img.h too */

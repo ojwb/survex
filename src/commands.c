@@ -334,7 +334,7 @@ static const sztok cmd_tab[] = {
 
 /* ordering must be the same as the units enum */
 const real factor_tab[] = {
-   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
+   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0), (METRES_PER_FOOT/12),
    (M_PI/180.0), (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
 };
 
@@ -372,7 +372,9 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"DEGREES",       UNITS_DEGS },
 	{"DEGS",	  UNITS_DEGS },
 	{"FEET",	  UNITS_FEET },
+	{"FEETINCHES",    UNITS_FEETINCHES },
 	{"GRADS",	  UNITS_GRADS },
+	{"INCHES",        UNITS_INCHES },
 	{"METERS",	  UNITS_METRES },
 	{"METRES",	  UNITS_METRES },
 	{"METRIC",	  UNITS_METRES },
