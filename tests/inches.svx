@@ -1,0 +1,5 @@
+*units tape inches
+*units backtape meters
+
+*data normal to from tape backtape compass
+a b 39 1 0

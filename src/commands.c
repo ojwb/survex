@@ -329,7 +329,7 @@ static const sztok cmd_tab[] = {
 };
 
 /* masks for units which are length and angles respectively */
-#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS))
+#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS) | BIT(UNITS_INCHES) | BIT(UNITS_FEETINCHES))
 #define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
 
 /* ordering must be the same as the units enum */
@@ -342,6 +342,7 @@ const int units_to_msgno[] = {
     /*m*/424,
     /*ft*/428,
     -1, /* yards */
+    -1, /* inches? */
     /*°*/344,
     /*ᵍ*/345,
     /*%*/96,
