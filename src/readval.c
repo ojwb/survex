@@ -400,6 +400,41 @@ read_number(bool f_optional)
    return 0.0; /* for brain-fried compilers */
 }
 
+static real
+read_footinch(bool f_optional)
+{
+   bool fPositive, fDigits = fFalse;
+   real n = (real)0.0;
+   real m = (real)0.0;
+   filepos fp;
+   int ch_old;
+
+   get_pos(&fp);
+   ch_old = ch;
+   fPositive = !isMinus(ch);
+   if (isSign(ch)) nextch();
+
+   while (isdigit(ch)) {
+      n = n * (real)10.0 + (char)(ch - '0');
+      nextch();
+      fDigits = fTrue;
+   }
+
+   if (isDecimal(ch)) {
+      nextch();
+      while (isdigit(ch)) {
+        m = m * (real)10.0 + (char)(ch - '0');
+      }
+   if (m >= 12){
+      /* suspicious m */
+   }
+   n = n*12 + m
+
+   }
+
+  
+}
+
 extern real
 read_quadrant(bool f_optional)
 {
