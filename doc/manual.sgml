@@ -1606,20 +1606,43 @@ by preference.
 There are two variants of each style - interleaved and non-interleaved.
 Non-interleaved is "one line per leg", interleaved has a line for the data
 shared between two legs (e.g. STATION=FROM/TO, DEPTH=FROMDEPTH/TODEPTH,
-COUNT=FROMCOUNT/TOCOUNT).  Note that not all interleavable readings have to
-be interleaved - for example:
+COUNT=FROMCOUNT/TOCOUNT).  Note that not all readings that can be shared
+have to be, for example here the to/from station name is shared but the
+depth gauge readings aren't:
 
 <programlisting>
 *data diving station newline fromdepth compass tape todepth</programlisting>
 
 In addition, interleaved data can have a DIRECTION reading, which can be "F"
-for a foresight or "B" for a backsight.
+for a foresight or "B" for a backsight (meaning the direction of the leg is
+reversed).
 </Para>
 
 <Para>
-In NORMAL, DIVING, and CYLPOLAR data styles, TAPE may be replaced by
-FROMCOUNT/TOCOUNT (or COUNT in interleaved data) to allow processing of surveys
-performed with a Topofil instead of a tape.
+In interleaved data, a blank line (one which contains only characters which
+are set as BLANK) ends the current traverse so can be used to handle
+branches in the survey, e.g.:
+<programlisting>
+*data station newline tape compass clino
+
+1
+    9.34   087   -05
+2
+    ; single leg up unexplored side passage
+    4.30   002	  +06
+3
+
+2
+    ; and back to the main package
+    6.29   093	  -02
+4</programlisting>
+</Para>
+
+<Para>
+In data styles which include a TAPE reading (i.e. NORMAL, DIVING, and CYLPOLAR
+data styles), TAPE may be replaced by FROMCOUNT/TOCOUNT (or COUNT in
+interleaved data) to allow processing of surveys performed with a Topofil
+instead of a tape.
 </Para>
 
 <Para>
