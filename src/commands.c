@@ -1279,18 +1279,14 @@ cmd_data(void)
 
 #define m_multi (BIT(Station) | BIT(Count) | BIT(Depth))
 
-   int style, k = 0, kMac;
-   reading *new_order, d;
+   int style, k = 0;
+   reading d;
    unsigned long mUsed = 0;
-   char *style_name;
    int old_style = pcs->style;
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
    pcs->style = STYLE_IGNORE;
-
-   kMac = 6; /* minimum for NORMAL style */
-   new_order = osmalloc(kMac * sizeof(reading));
 
    get_token();
    style = match_tok(styletab, TABSIZE(styletab));
@@ -1329,7 +1325,9 @@ cmd_data(void)
    }
 #endif
 
-   style_name = osstrdup(buffer);
+   int kMac = 6; /* minimum for NORMAL style */
+   reading *new_order = osmalloc(kMac * sizeof(reading));
+   char *style_name = osstrdup(buffer);
    do {
       filepos fp;
       get_pos(&fp);
