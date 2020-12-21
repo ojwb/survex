@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS = smoke.tst diffpos.tst cavern.tst extend.tst 3dtopos.tst aven.tst
+TESTS = smoke.tst diffpos.tst cavern.tst extend.tst 3dtopos.tst aven.tst imgtest.tst
 
 EXTRA_DIST = compare.tst $(TESTS)\
 beginroot.svx beginroot.out\
@@ -132,3 +132,7 @@ utf8bom.out utf8bom.svx\
 nonewlineateof.out nonewlineateof.svx\
 suspectreadings.out suspectreadings.svx\
 cmd_data_default.svx
+
+EXTRA_DIST +=\
+imgtest_simple.svx\
+imgtest_survey.svx
