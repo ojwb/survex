@@ -422,7 +422,8 @@ img_open_survey(const char *fnm, const char *survey)
 
    fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", &filename_opened);
    pimg = img_read_stream_survey(fh, fclose,
-       filename_opened ? filename_opened : fnm, survey);
+				 filename_opened ? filename_opened : fnm,
+				 survey);
    if (pimg) {
        pimg->filename_opened = filename_opened;
    } else {
