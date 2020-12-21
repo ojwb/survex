@@ -1301,7 +1301,7 @@ cmd_data(void)
 	 /* "*data" reinitialises the current style - for *data passage that
 	  * breaks the passage.
 	  */
-	 style = old_style;
+	 pcs->style = style = old_style;
 	 goto reinit_style;
       }
       /* TRANSLATORS: e.g. trying to refer to an invalid FNORD data style */

@@ -1646,10 +1646,12 @@ instead of a tape.
 </Para>
 
 <Para>
-In Survex 1.2.31 and later, you can use <command>*data</command> without any
+In Survex 1.2.44 and later, you can use <command>*data</command> without any
 arguments to keep the currently set data style, but resetting any state.  This
 is useful when you're entering passage tubes with branches - see the description
-of the "PASSAGE" style below.
+of the "PASSAGE" style below.  (This feature was originally added in 1.2.31,
+but was buggy until 1.2.44 - any data up to the next <command>*data</command>
+gets quietly ignored).
 </Para>
 
 <VariableList>
