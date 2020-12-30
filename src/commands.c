@@ -342,6 +342,7 @@ const int units_to_msgno[] = {
     /*m*/424,
     /*ft*/428,
     -1, /* yards */
+    /*°*/344, /* quadrants */
     /*°*/344,
     /*ᵍ*/345,
     /*%*/96,
