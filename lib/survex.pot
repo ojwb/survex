@@ -3496,4 +3496,3 @@ msgstr ""
 #, c-format
 msgid "Expecting quadrant bearing, found “%s”"
 msgstr ""
-

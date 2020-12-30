@@ -456,14 +456,16 @@ read_bearing_or_omit(reading r)
    bool quadrants = fFalse;
    q_quantity q = Q_NULL;
    switch (r) {
-      case Comp: q = Q_BEARING;
-                 if (pcs->f_bearing_quadrants)
-                         quadrants = fTrue;
-                 break;
-      case BackComp: q = Q_BACKBEARING;
-                 if (pcs->f_backbearing_quadrants)
-                         quadrants = fTrue;
-                 break;
+      case Comp:
+	q = Q_BEARING;
+	if (pcs->f_bearing_quadrants)
+	   quadrants = fTrue;
+	break;
+      case BackComp:
+	q = Q_BACKBEARING;
+	if (pcs->f_backbearing_quadrants)
+	   quadrants = fTrue;
+	break;
       default:
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
