@@ -1,6 +1,6 @@
 /* imgtest.c */
 /* Test img in unhosted mode */
-/* Copyright (C) 2014 Olly Betts
+/* Copyright (C) 2014,2020 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,18 +29,24 @@ int
 main(int argc, char **argv)
 {
     char *fnm;
+    char *survey;
     img *pimg;
     unsigned long c_stations = 0;
     unsigned long c_legs = 0;
 
-    if (argc != 2) {
-	fprintf(stderr, "Syntax: %s 3DFILE\n", argv[0]);
+    if (argc < 2 || argc > 3) {
+	fprintf(stderr, "Syntax: %s 3DFILE [SURVEY]\n", argv[0]);
 	return 1;
     }
 
     fnm = argv[1];
+    survey = argv[2];
 
-    pimg = img_open(fnm);
+    if (survey) {
+	pimg = img_open_survey(fnm, survey);
+    } else {
+	pimg = img_open(fnm);
+    }
     if (!pimg) {
 	fprintf(stderr, "%s: Failed to open '%s' (error code %d)\n",
 		argv[0], fnm, (int)img_error());

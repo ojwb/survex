@@ -438,59 +438,59 @@ read_footinch(bool f_optional)
 extern real
 read_quadrant(bool f_optional)
 {
-  const int quad = 90;
-  filepos fp;
-  get_pos(&fp);
-  int ch_old;
-  ch_old = ch;
-  real v = 0;
-  /* Handle case where bearings are in Quadrants.*/
-  switch (ch) {
-         case 'e': case 'E': v = quad * 1; nextch(); break;
-         case 'w': case 'W': v = quad * 3; nextch(); break;
-         case 's': case 'S': v = quad * 2; nextch(); break;
-         case 'n': case 'N': v = 0; nextch(); break;
-         default:
-                 /*TODO better error */
-                if (f_optional && !isOmit(ch_old)) {
-                	compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
-		}
-                if (!f_optional && isOmit(ch_old)) {
-                        compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
-                }
-		if (f_optional) return HUGE_REAL;
-                LONGJMP(file.jbSkipLine);
-                return 0.0; /* for brain-fried compilers */
-  }
-  real r = read_number(fTrue);
-  if (r != HUGE_REAL && r <= quad) {
-     if (ch == 'e' || ch == 'E') {
-        if ( v == quad * 2) /* south half */
-           v = v - r;
-        else if (!v)
-           v = r;
-     } else if (ch == 'w' || ch == 'W') {
-        if ( v == quad * 2)
-           v = v + r;
-        else if (!v)
-           v = quad * 4 - r;
-     } else {
-   	set_pos(&fp);
-        /*TODO better error */
-        compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
-        LONGJMP(file.jbSkipLine);
-        return 0.0; /* for brain-fried compilers */
-     }
-     nextch();
-     return v;
-   } else if ( r == HUGE_REAL ) {
-     return v;
+   const int quad = 90;
+   filepos fp;
+   get_pos(&fp);
+   int ch_old;
+   ch_old = ch;
+   real v = 0;
+   /* Handle case where bearings are in Quadrants.*/
+   switch (ch) {
+      case 'e': case 'E': v = quad * 1; nextch(); break;
+      case 'w': case 'W': v = quad * 3; nextch(); break;
+      case 's': case 'S': v = quad * 2; nextch(); break;
+      case 'n': case 'N': v = 0; nextch(); break;
+      default:
+	 /*TODO better error */
+	 if (f_optional && !isOmit(ch_old)) {
+	    compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+	 }
+	 if (!f_optional && isOmit(ch_old)) {
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+	 }
+	 if (f_optional) return HUGE_REAL;
+	 LONGJMP(file.jbSkipLine);
+	 return 0.0; /* for brain-fried compilers */
+   }
+   real r = read_number(fTrue);
+   if (r != HUGE_REAL && r <= quad) {
+      if (ch == 'e' || ch == 'E') {
+	 if (v == quad * 2) /* south half */
+	    v = v - r;
+	 else if (!v)
+	    v = r;
+      } else if (ch == 'w' || ch == 'W') {
+	 if (v == quad * 2)
+	    v = v + r;
+	 else if (!v)
+	    v = quad * 4 - r;
+      } else {
+	 set_pos(&fp);
+	 /*TODO better error */
+	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+	 LONGJMP(file.jbSkipLine);
+	 return 0.0; /* for brain-fried compilers */
+      }
+      nextch();
+      return v;
+   } else if (r == HUGE_REAL) {
+      return v;
    } else {
-   	set_pos(&fp);
-	/* TODO r > quad; suspcious */
-        compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
-        LONGJMP(file.jbSkipLine);
-        return 0.0; /* for brain-fried compilers */
+      set_pos(&fp);
+      /* TODO r > quad; suspcious */
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
    }
    /* didn't read a valid quadrant.  If it's optional, reset filepos & return */
    if (f_optional) {
@@ -499,11 +499,10 @@ read_quadrant(bool f_optional)
    if (isOmit(ch_old)) {
       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
    } else {
-      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
-
 }
 
 extern real
@@ -533,10 +532,10 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 
    skipblanks();
    do {
-      if (! f_quadrants)
-          tot += read_number(fFalse);
+      if (!f_quadrants)
+	 tot += read_number(fFalse);
       else
-          tot += read_quadrant(fFalse);
+	 tot += read_quadrant(fFalse);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));
@@ -552,19 +551,18 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 extern real
 read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
-  real v;
-  v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
-  if (v == HUGE_REAL) {
-     if (!isOmit(ch)) {
-        compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-        LONGJMP(file.jbSkipLine);
-        return 0.0; /* for brain-fried compilers */
+   real v;
+   v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
+   if (v == HUGE_REAL) {
+      if (!isOmit(ch)) {
+	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+	 LONGJMP(file.jbSkipLine);
+	 return 0.0; /* for brain-fried compilers */
       }
       nextch();
    }
    return v;
 }
-
 
 /* Don't skip blanks, variable error code */
 static unsigned int
