@@ -418,7 +418,7 @@ read_quadrant(bool f_optional)
       default:
 	 /*TODO better error */
 	 if (f_optional && !isOmit(ch_old)) {
-	    compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+	    compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
 	 }
 	 if (!f_optional && isOmit(ch_old)) {
 	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
@@ -442,7 +442,7 @@ read_quadrant(bool f_optional)
       } else {
 	 set_pos(&fp);
 	 /*TODO better error */
-	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
 	 LONGJMP(file.jbSkipLine);
 	 return 0.0; /* for brain-fried compilers */
       }
@@ -453,7 +453,7 @@ read_quadrant(bool f_optional)
    } else {
       set_pos(&fp);
       /* TODO r > quad; suspcious */
-      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       LONGJMP(file.jbSkipLine);
       return 0.0; /* for brain-fried compilers */
    }
@@ -464,7 +464,7 @@ read_quadrant(bool f_optional)
    if (isOmit(ch_old)) {
       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
    } else {
-      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/590);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
    }
    LONGJMP(file.jbSkipLine);
    return 0.0; /* for brain-fried compilers */
