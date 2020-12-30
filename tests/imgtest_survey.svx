@@ -1,0 +1,8 @@
+*fix 1 0 0 0
+*equate 1 foo.1 svy.1
+*begin foo
+1 2 10.00 000 00
+*end foo
+*begin svy
+1 2 10.00 - DOWN
+*end svy

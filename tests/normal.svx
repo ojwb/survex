@@ -6,4 +6,5 @@
 
 *data normal tape compass clino to from
 1.00 180 0 4 3
+*data
 1.00 270 0 5 4
