@@ -25,6 +25,7 @@
 #include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
+#include "commands.h" /* For match_tok(), etc */
 #include "date.h"
 #include "debug.h"
 #include "filename.h"
@@ -353,17 +354,19 @@ anon_wall_station:
 
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
 static real
-read_number(bool f_optional)
+read_number(bool f_optional, bool f_unsigned)
 {
-   bool fPositive, fDigits = fFalse;
+   bool fPositive = fTrue, fDigits = fFalse;
    real n = (real)0.0;
    filepos fp;
    int ch_old;
 
    get_pos(&fp);
    ch_old = ch;
-   fPositive = !isMinus(ch);
-   if (isSign(ch)) nextch();
+   if (!f_unsigned) {
+      fPositive = !isMinus(ch);
+      if (isSign(ch)) nextch();
+   }
 
    while (isdigit(ch)) {
       n = n * (real)10.0 + (char)(ch - '0');
@@ -400,81 +403,101 @@ read_number(bool f_optional)
    return 0.0; /* for brain-fried compilers */
 }
 
-extern real
+static real
 read_quadrant(bool f_optional)
 {
+   enum {
+      POINT_N = 0,
+      POINT_E = 1,
+      POINT_S = 2,
+      POINT_W = 3,
+      POINT_NONE = -1
+   };
+   static const sztok pointtab[] = {
+	{"E", POINT_E },
+	{"N", POINT_N },
+	{"S", POINT_S },
+	{"W", POINT_W },
+	{NULL, POINT_NONE }
+   };
+   static const sztok pointewtab[] = {
+	{"E", POINT_E },
+	{"W", POINT_W },
+	{NULL, POINT_NONE }
+   };
+   if (f_optional && isOmit(ch)) {
+      nextch();
+      return HUGE_REAL;
+   }
    const int quad = 90;
    filepos fp;
    get_pos(&fp);
-   int ch_old;
-   ch_old = ch;
-   real v = 0;
-   /* Handle case where bearings are in Quadrants.*/
-   switch (ch) {
-      case 'e': case 'E': v = quad * 1; nextch(); break;
-      case 'w': case 'W': v = quad * 3; nextch(); break;
-      case 's': case 'S': v = quad * 2; nextch(); break;
-      case 'n': case 'N': v = 0; nextch(); break;
-      default:
-	 /*TODO better error */
-	 if (f_optional && !isOmit(ch_old)) {
-	    compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
-	 }
-	 if (!f_optional && isOmit(ch_old)) {
-	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
-	 }
-	 if (f_optional) return HUGE_REAL;
-	 LONGJMP(file.jbSkipLine);
-	 return 0.0; /* for brain-fried compilers */
-   }
-   real r = read_number(fTrue);
-   if (r != HUGE_REAL && r <= quad) {
-      if (ch == 'e' || ch == 'E') {
-	 if (v == quad * 2) /* south half */
-	    v = v - r;
-	 else if (!v)
-	    v = r;
-      } else if (ch == 'w' || ch == 'W') {
-	 if (v == quad * 2)
-	    v = v + r;
-	 else if (!v)
-	    v = quad * 4 - r;
-      } else {
-	 set_pos(&fp);
-	 /*TODO better error */
-	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
-	 LONGJMP(file.jbSkipLine);
-	 return 0.0; /* for brain-fried compilers */
-      }
-      nextch();
-      return v;
-   } else if (r == HUGE_REAL) {
-      return v;
-   } else {
+   get_token_no_blanks();
+   int first_point = match_tok(pointtab, TABSIZE(pointtab));
+   if (first_point == POINT_NONE) {
       set_pos(&fp);
-      /* TODO r > quad; suspcious */
+      if (isOmit(ch)) {
+	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+      }
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       LONGJMP(file.jbSkipLine);
       return 0.0; /* for brain-fried compilers */
    }
-   /* didn't read a valid quadrant.  If it's optional, reset filepos & return */
-   if (f_optional) {
-      return HUGE_REAL;
+   real r = read_number(fTrue, fTrue);
+   if (r == HUGE_REAL) {
+      if (isSign(ch) || isDecimal(ch)) {
+	 /* Give better errors for S-0E, N+10W, N.E, etc. */
+	 set_pos(&fp);
+	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+	 LONGJMP(file.jbSkipLine);
+	 return 0.0; /* for brain-fried compilers */
+      }
+      /* N, S, E or W. */
+      return first_point * quad;
    }
-   if (isOmit(ch_old)) {
-      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
-   } else {
+   if (first_point == POINT_E || first_point == POINT_W) {
+      set_pos(&fp);
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
    }
-   LONGJMP(file.jbSkipLine);
-   return 0.0; /* for brain-fried compilers */
+
+   if (r > quad) {
+      set_pos(&fp);
+      /* FIXME r > quad; suspicious? warning? */
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+
+   get_token_no_blanks();
+   int second_point = match_tok(pointewtab, TABSIZE(pointewtab));
+   if (second_point == POINT_NONE) {
+      set_pos(&fp);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+
+   if (first_point == POINT_N) {
+      if (second_point == POINT_W) {
+	 r = quad * 4 - r;
+      }
+   } else {
+      if (second_point == POINT_W) {
+	 r += quad * 2;
+      } else {
+	 r = quad * 2 - r;
+      }
+   }
+   return r;
 }
 
 extern real
 read_numeric(bool f_optional)
 {
    skipblanks();
-   return read_number(f_optional);
+   return read_number(f_optional, fFalse);
 }
 
 extern real
@@ -487,9 +510,9 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    if (!isOpen(ch)) {
       real r = 0;
       if (!f_quadrants)
-          r = read_number(f_optional);
+	  r = read_number(f_optional, fFalse);
       else
-          r = read_quadrant(f_optional);
+	  r = read_quadrant(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -498,7 +521,7 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    skipblanks();
    do {
       if (!f_quadrants)
-	 tot += read_number(fFalse);
+	 tot += read_number(fFalse, fFalse);
       else
 	 tot += read_quadrant(fFalse);
       ++n_readings;

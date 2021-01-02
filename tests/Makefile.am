@@ -63,6 +63,7 @@ normal_bad.svx normal_bad.out\
 normignall.svx normignall.pos\
 nosurv.svx nosurv.pos nosurv.out\
 quadrant_bearing.svx quadrant_bearing.pos\
+bad_quadrant_bearing.svx bad_quadrant_bearing.out\
 cmd_flags.svx bad_cmd_flags.svx\
 plumb.svx plumb.pos\
 cmd_begin_bad.svx cmd_begin_bad.out\
