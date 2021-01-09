@@ -426,7 +426,6 @@ read_quadrant(bool f_optional)
 	{NULL, POINT_NONE }
    };
    if (f_optional && isOmit(ch)) {
-      nextch();
       return HUGE_REAL;
    }
    const int quad = 90;
