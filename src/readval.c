@@ -426,13 +426,10 @@ read_footinch(bool f_optional)
         m = m * (real)10.0 + (char)(ch - '0');
       }
    if (m >= 12){
+      compile_diagnostic_token_show(DIAG_ERR, /*Suspicious foot.inch value “%s”*/485);
       /* suspicious m */
    }
    n = n*12 + m
-
-   }
-
-  
 }
 
 extern real
