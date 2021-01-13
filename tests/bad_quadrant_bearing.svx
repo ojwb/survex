@@ -1,0 +1,18 @@
+; pos=fail warn=0 error=14
+*fix a reference 0 0 0
+*units compass quadrants
+*data normal from to tape compass clino
+a b 10.0 X 0
+a e 40.0 E12E 0
+a f 10.0 E12N 0
+a g 13.0 S99E 0
+a h 05.0 N12N 0
+a i 12.0 N999999999999E 0
+a j 23.0 NE 0
+a k 23.0 SW 0
+a l 23.0 SX 0
+a m 23.0 S-E 0
+a n 23.0 S.E 0
+a p 23.0 S90.1E 0
+a q 23.0 S-0E 0
+a r 23.0 45 0

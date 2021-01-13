@@ -41,7 +41,6 @@ enum {
 prefix *read_prefix(unsigned flags);
 
 real read_numeric(bool f_optional);
-real read_quadrant(bool f_optional);
 real read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings);
 real read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings);
 
