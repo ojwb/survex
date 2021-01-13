@@ -432,7 +432,8 @@ read_footinch(bool f_optional)
       compile_diagnostic_token_show(DIAG_ERR, /*Suspicious foot.inch value “%s”*/485);
       /* suspicious m */
    }
-   n = n*12 + m
+   n = n*12 + m;
+   return n;
 }
 
 static real
