@@ -1,0 +1,67 @@
+./bad_quadrant_bearing.svx:5:10: error: Expecting quadrant bearing, found "X"
+ a b 10.0 X 0
+          ^
+./bad_quadrant_bearing.svx:6:10: error: Expecting quadrant bearing, found "E12E"
+ a e 40.0 E12E 0
+          ^~~~
+./bad_quadrant_bearing.svx:7:10: error: Expecting quadrant bearing, found "E12N"
+ a f 10.0 E12N 0
+          ^~~~
+./bad_quadrant_bearing.svx:8:10: error: Suspicious compass reading
+ a g 13.0 S99E 0
+          ^~~~
+./bad_quadrant_bearing.svx:9:10: error: Expecting quadrant bearing, found "N12N"
+ a h 05.0 N12N 0
+          ^~~~
+./bad_quadrant_bearing.svx:10:10: error: Suspicious compass reading
+ a i 12.0 N999999999999E 0
+          ^~~~~~~~~~~~~~
+./bad_quadrant_bearing.svx:11:10: error: Expecting quadrant bearing, found "NE"
+ a j 23.0 NE 0
+          ^~
+./bad_quadrant_bearing.svx:12:10: error: Expecting quadrant bearing, found "SW"
+ a k 23.0 SW 0
+          ^~
+./bad_quadrant_bearing.svx:13:10: error: Expecting quadrant bearing, found "SX"
+ a l 23.0 SX 0
+          ^~
+./bad_quadrant_bearing.svx:14:10: error: Expecting quadrant bearing, found "S-E"
+ a m 23.0 S-E 0
+          ^~~
+./bad_quadrant_bearing.svx:15:10: error: Expecting quadrant bearing, found "S.E"
+ a n 23.0 S.E 0
+          ^~~
+./bad_quadrant_bearing.svx:16:10: error: Suspicious compass reading
+ a p 23.0 S90.1E 0
+          ^~~~~~
+./bad_quadrant_bearing.svx:17:10: error: Expecting quadrant bearing, found "S-0E"
+ a q 23.0 S-0E 0
+          ^~~~
+./bad_quadrant_bearing.svx:18:10: error: Expecting quadrant bearing, found "45"
+ a r 23.0 45 0
+          ^~
+./bad_quadrant_bearing.svx:19:10: error: Expecting quadrant bearing, found "S99X"
+ a s 34.0 S99X 0
+          ^~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 15 error(s) - no output files produced.

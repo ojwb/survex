@@ -442,7 +442,8 @@ read_reading(reading r, bool f_optional)
 	BUG("Unexpected case");
    }
    LOC(r) = ftell(file.fh);
-   VAL(r) = read_numeric_multi(f_optional, &n_readings);
+   /* since we don't handle bearings in read_readings, it's never quadrant */
+   VAL(r) = read_numeric_multi(f_optional, fFalse, &n_readings);
    WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
@@ -452,17 +453,26 @@ static void
 read_bearing_or_omit(reading r)
 {
    int n_readings;
+   bool quadrants = fFalse;
    q_quantity q = Q_NULL;
-   LOC(r) = ftell(file.fh);
-   VAL(r) = read_numeric_multi_or_omit(&n_readings);
-   WID(r) = ftell(file.fh) - LOC(r);
    switch (r) {
-      case Comp: q = Q_BEARING; break;
-      case BackComp: q = Q_BACKBEARING; break;
+      case Comp:
+	q = Q_BEARING;
+	if (pcs->f_bearing_quadrants)
+	   quadrants = fTrue;
+	break;
+      case BackComp:
+	q = Q_BACKBEARING;
+	if (pcs->f_backbearing_quadrants)
+	   quadrants = fTrue;
+	break;
       default:
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
+   LOC(r) = ftell(file.fh);
+   VAL(r) = read_bearing_multi_or_omit(quadrants, &n_readings);
+   WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }

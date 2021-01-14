@@ -3292,10 +3292,19 @@ in DEGS|DEGREES|GRADS|MINUTES|PERCENT|PERCENTAGE (default: DEGREES)
 </Para>
 
 <Para>COMPASS/BEARING, BACKCOMPASS/BACKBEARING, DECLINATION
-in DEGS|DEGREES|GRADS|MINUTES (default: DEGREES)
+in DEGS|DEGREES|GRADS|MINUTES|QUADS|QUADRANTS (default: DEGREES)
 </Para>
 
 <Para>(360 degrees = 400 grads)
+</Para>
+
+<Para>
+QUADRANTS are a style of bearing used predominantly in land survey, and occasionally
+in survey with handheld instruments. All bearings are N or S, a numeric from 0 to
+90, followed by E or W. For example S34E to refer to 146 degrees, or 34 degrees in
+the SE quadrant. In this format, exact cardinal directions may be simply alphabetic.
+E.g. N is equivalent to N0E and E is equivalent to N90E. This unit was added in Survex
+1.2.44.
 </Para>
 
 <Para>

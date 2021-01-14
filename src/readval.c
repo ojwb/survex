@@ -25,6 +25,7 @@
 #include <stddef.h> /* for offsetof */
 
 #include "cavern.h"
+#include "commands.h" /* For match_tok(), etc */
 #include "date.h"
 #include "debug.h"
 #include "filename.h"
@@ -353,17 +354,19 @@ anon_wall_station:
 
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
 static real
-read_number(bool f_optional)
+read_number(bool f_optional, bool f_unsigned)
 {
-   bool fPositive, fDigits = fFalse;
+   bool fPositive = fTrue, fDigits = fFalse;
    real n = (real)0.0;
    filepos fp;
    int ch_old;
 
    get_pos(&fp);
    ch_old = ch;
-   fPositive = !isMinus(ch);
-   if (isSign(ch)) nextch();
+   if (!f_unsigned) {
+      fPositive = !isMinus(ch);
+      if (isSign(ch)) nextch();
+   }
 
    while (isdigit(ch)) {
       n = n * (real)10.0 + (char)(ch - '0');
@@ -400,22 +403,114 @@ read_number(bool f_optional)
    return 0.0; /* for brain-fried compilers */
 }
 
+static real
+read_quadrant(bool f_optional)
+{
+   enum {
+      POINT_N = 0,
+      POINT_E = 1,
+      POINT_S = 2,
+      POINT_W = 3,
+      POINT_NONE = -1
+   };
+   static const sztok pointtab[] = {
+	{"E", POINT_E },
+	{"N", POINT_N },
+	{"S", POINT_S },
+	{"W", POINT_W },
+	{NULL, POINT_NONE }
+   };
+   static const sztok pointewtab[] = {
+	{"E", POINT_E },
+	{"W", POINT_W },
+	{NULL, POINT_NONE }
+   };
+   if (f_optional && isOmit(ch)) {
+      return HUGE_REAL;
+   }
+   const int quad = 90;
+   filepos fp;
+   get_pos(&fp);
+   get_token_no_blanks();
+   int first_point = match_tok(pointtab, TABSIZE(pointtab));
+   if (first_point == POINT_NONE) {
+      set_pos(&fp);
+      if (isOmit(ch)) {
+	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+      }
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+   real r = read_number(fTrue, fTrue);
+   if (r == HUGE_REAL) {
+      if (isSign(ch) || isDecimal(ch)) {
+	 /* Give better errors for S-0E, N+10W, N.E, etc. */
+	 set_pos(&fp);
+	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+	 LONGJMP(file.jbSkipLine);
+	 return 0.0; /* for brain-fried compilers */
+      }
+      /* N, S, E or W. */
+      return first_point * quad;
+   }
+   if (first_point == POINT_E || first_point == POINT_W) {
+      set_pos(&fp);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+
+   get_token_no_blanks();
+   int second_point = match_tok(pointewtab, TABSIZE(pointewtab));
+   if (second_point == POINT_NONE) {
+      set_pos(&fp);
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+
+   if (r > quad) {
+      set_pos(&fp);
+      compile_diagnostic_token_show(DIAG_ERR|DIAG_COL, /*Suspicious compass reading*/59);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+
+   if (first_point == POINT_N) {
+      if (second_point == POINT_W) {
+	 r = quad * 4 - r;
+      }
+   } else {
+      if (second_point == POINT_W) {
+	 r += quad * 2;
+      } else {
+	 r = quad * 2 - r;
+      }
+   }
+   return r;
+}
+
 extern real
 read_numeric(bool f_optional)
 {
    skipblanks();
-   return read_number(f_optional);
+   return read_number(f_optional, fFalse);
 }
 
 extern real
-read_numeric_multi(bool f_optional, int *p_n_readings)
+read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 {
    size_t n_readings = 0;
    real tot = (real)0.0;
 
    skipblanks();
    if (!isOpen(ch)) {
-      real r = read_number(f_optional);
+      real r = 0;
+      if (!f_quadrants)
+	  r = read_number(f_optional, fFalse);
+      else
+	  r = read_quadrant(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -423,7 +518,10 @@ read_numeric_multi(bool f_optional, int *p_n_readings)
 
    skipblanks();
    do {
-      tot += read_number(fFalse);
+      if (!f_quadrants)
+	 tot += read_number(fFalse, fFalse);
+      else
+	 tot += read_quadrant(fFalse);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));
@@ -437,9 +535,10 @@ read_numeric_multi(bool f_optional, int *p_n_readings)
 
 /* read numeric expr or omit (return HUGE_REAL); else longjmp */
 extern real
-read_numeric_multi_or_omit(int *p_n_readings)
+read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
-   real v = read_numeric_multi(fTrue, p_n_readings);
+   real v;
+   v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
 	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);

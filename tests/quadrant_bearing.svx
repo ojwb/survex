@@ -1,0 +1,21 @@
+; pos=yes warn=0
+*units compass quadrants
+*data normal from to tape compass clino
+a b 10.0 N 0
+b c 30.0 S51W 0
+c d 20.0 N12E 0
+d e 40.0 E 0
+e f 10.0 S17E 0
+f g 13.0 N73W 0
+g h 05.0 S8E 0
+h i 12.0 W 0
+i j 23.0 S 0
+a 1 10.0 n 0
+a 2 10.0 s 0
+a 3 10.0 e 0
+a 4 10.0 w 0
+a 5 10.0 n45e 0
+a 6 10.0 s45w 0
+a 7 10.0 N45w 0
+a 8 10.0 s45E 0
+a pit 23.0 - down
