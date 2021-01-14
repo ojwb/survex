@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=14
+; pos=fail warn=0 error=15
 *fix a reference 0 0 0
 *units compass quadrants
 *data normal from to tape compass clino
@@ -16,3 +16,4 @@ a n 23.0 S.E 0
 a p 23.0 S90.1E 0
 a q 23.0 S-0E 0
 a r 23.0 45 0
+a s 34.0 S99X 0

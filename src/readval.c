@@ -461,19 +461,18 @@ read_quadrant(bool f_optional)
       return 0.0; /* for brain-fried compilers */
    }
 
-   if (r > quad) {
-      set_pos(&fp);
-      /* FIXME r > quad; suspicious? warning? */
-      compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
-      LONGJMP(file.jbSkipLine);
-      return 0.0; /* for brain-fried compilers */
-   }
-
    get_token_no_blanks();
    int second_point = match_tok(pointewtab, TABSIZE(pointewtab));
    if (second_point == POINT_NONE) {
       set_pos(&fp);
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
+      LONGJMP(file.jbSkipLine);
+      return 0.0; /* for brain-fried compilers */
+   }
+
+   if (r > quad) {
+      set_pos(&fp);
+      compile_diagnostic_token_show(DIAG_ERR|DIAG_COL, /*Suspicious compass reading*/59);
       LONGJMP(file.jbSkipLine);
       return 0.0; /* for brain-fried compilers */
    }

@@ -7,13 +7,13 @@
 ./bad_quadrant_bearing.svx:7:10: error: Expecting quadrant bearing, found "E12N"
  a f 10.0 E12N 0
           ^~~~
-./bad_quadrant_bearing.svx:8:10: error: Expecting quadrant bearing, found "S99E"
+./bad_quadrant_bearing.svx:8:10: error: Suspicious compass reading
  a g 13.0 S99E 0
           ^~~~
 ./bad_quadrant_bearing.svx:9:10: error: Expecting quadrant bearing, found "N12N"
  a h 05.0 N12N 0
           ^~~~
-./bad_quadrant_bearing.svx:10:10: error: Expecting quadrant bearing, found "N999999999999E"
+./bad_quadrant_bearing.svx:10:10: error: Suspicious compass reading
  a i 12.0 N999999999999E 0
           ^~~~~~~~~~~~~~
 ./bad_quadrant_bearing.svx:11:10: error: Expecting quadrant bearing, found "NE"
@@ -31,7 +31,7 @@
 ./bad_quadrant_bearing.svx:15:10: error: Expecting quadrant bearing, found "S.E"
  a n 23.0 S.E 0
           ^~~
-./bad_quadrant_bearing.svx:16:10: error: Expecting quadrant bearing, found "S90.1E"
+./bad_quadrant_bearing.svx:16:10: error: Suspicious compass reading
  a p 23.0 S90.1E 0
           ^~~~~~
 ./bad_quadrant_bearing.svx:17:10: error: Expecting quadrant bearing, found "S-0E"
@@ -40,6 +40,9 @@
 ./bad_quadrant_bearing.svx:18:10: error: Expecting quadrant bearing, found "45"
  a r 23.0 45 0
           ^~
+./bad_quadrant_bearing.svx:19:10: error: Expecting quadrant bearing, found "S99X"
+ a s 34.0 S99X 0
+          ^~~~
 
 Removing trailing traverses...
 
@@ -61,4 +64,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 0 warning(s) and 14 error(s) - no output files produced.
+There were 0 warning(s) and 15 error(s) - no output files produced.
