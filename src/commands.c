@@ -343,6 +343,7 @@ const int units_to_msgno[] = {
     /*ft*/428,
     -1, /* yards */
     -1, /* inches */
+    -1, /* footinches */
     /*°*/344, /* quadrants */
     /*°*/344,
     /*ᵍ*/345,
@@ -1613,6 +1614,9 @@ cmd_units(void)
       /* so that we don't have an enormous if list, we check for UNITS first,
        * and set the len_footinches flag for all of them that are lengths */
       pcs->len_footinches = (pcs->len_footinches | (LEN_QMASK & qmask ) );
+   }
+   else {
+      pcs->len_footinches = (pcs->len_footinches & ~(LEN_QMASK & qmask ) );
    }
 
    if (factor == HUGE_REAL) {
