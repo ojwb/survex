@@ -1,4 +1,4 @@
-; pos=fail error=12
+; pos=fail error=13
 *fix 1 reference 0 0 0
 *units length FURLONGS
 *units compass 0.0174532925 Radians
@@ -14,3 +14,4 @@
 *units DEFault Tape
 *units DEFault Tape Feet
 *units tape feet
+*units left degrees
