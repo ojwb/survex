@@ -532,7 +532,7 @@ read_numeric(bool f_optional)
 }
 
 extern real
-read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
+read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches int *p_n_readings)
 {
    size_t n_readings = 0;
    real tot = (real)0.0;
@@ -540,10 +540,12 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    skipblanks();
    if (!isOpen(ch)) {
       real r = 0;
-      if (!f_quadrants)
-	  r = read_number(f_optional, fFalse);
+      if (!f_quadrants & !f_footinches)
+         r = read_number(f_optional, fFalse);
+      else if (!f_footinches)
+         r = read_quadrant(f_optional);
       else
-	  r = read_quadrant(f_optional);
+         r = read_footinch(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -551,10 +553,12 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 
    skipblanks();
    do {
-      if (!f_quadrants)
-	 tot += read_number(fFalse, fFalse);
+      if (!f_quadrants & !f_footinches)
+         tot += read_number(fFalse, fFalse);
+      else if (!f_footinches)
+         tot += read_quadrant(fFalse);
       else
-	 tot += read_quadrant(fFalse);
+         tot += read_footinch(f_optional);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));

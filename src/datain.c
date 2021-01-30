@@ -421,6 +421,7 @@ read_reading(reading r, bool f_optional)
 {
    int n_readings;
    q_quantity q;
+   bool footinches = fFalse;
    switch (r) {
       case Tape: q = Q_LENGTH; break;
       case BackTape: q = Q_BACKLENGTH; break;
@@ -441,9 +442,12 @@ read_reading(reading r, bool f_optional)
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
+   if (TSTBIT(pcs->len_footinches, q)) {
+      footinches = fTrue;
+   }
    LOC(r) = ftell(file.fh);
    /* since we don't handle bearings in read_readings, it's never quadrant */
-   VAL(r) = read_numeric_multi(f_optional, fFalse, &n_readings);
+   VAL(r) = read_numeric_multi(f_optional, fFalse, footinches, &n_readings);
    WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
