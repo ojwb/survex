@@ -428,6 +428,7 @@ read_footinch(bool f_optional)
       while (isdigit(ch)) {
         m = m * (real)10.0 + (char)(ch - '0');
       }
+   }
    if (m >= 12){
       compile_diagnostic_token_show(DIAG_ERR, /*Suspicious foot.inch value “%s”*/485);
       /* suspicious m */
@@ -532,7 +533,7 @@ read_numeric(bool f_optional)
 }
 
 extern real
-read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches int *p_n_readings)
+read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches, int *p_n_readings)
 {
    size_t n_readings = 0;
    real tot = (real)0.0;
@@ -575,7 +576,7 @@ extern real
 read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
    real v;
-   v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
+   v = read_numeric_multi(fTrue, f_quadrants, fFalse, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
 	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);

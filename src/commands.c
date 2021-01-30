@@ -1608,7 +1608,7 @@ cmd_units(void)
       pcs->f_backbearing_quadrants = (units == UNITS_QUADRANTS);
    }
 
-   if (units == UNITS_FOOTINCHES) {
+   if (units == UNITS_FEETINCHES) {
       /* so that we don't have an enormous if list, we check for UNITS first,
        * and set the len_footinches flag for all of them that are lengths */
       pcs->len_footinches = (pcs->len_footinches | (LEN_QMASK & qmask ) );
