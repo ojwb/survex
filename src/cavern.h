@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016,2019 Olly Betts
+ * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016,2019,2021 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -108,7 +108,8 @@ typedef enum {
 
 /* masks for quantities which are length and angles respectively */
 #define LEN_QMASK (BIT(Q_LENGTH) | BIT(Q_BACKLENGTH) | BIT(Q_DEPTH) |\
-   BIT(Q_DX) | BIT(Q_DY) | BIT(Q_DZ) | BIT(Q_POS) | BIT(Q_COUNT))
+   BIT(Q_DX) | BIT(Q_DY) | BIT(Q_DZ) | BIT(Q_POS) | BIT(Q_COUNT) |\
+   BIT(Q_LEFT) | BIT(Q_RIGHT) | BIT(Q_UP) | BIT(Q_DOWN))
 #define ANG_QMASK (BIT(Q_BEARING) | BIT(Q_BACKBEARING) |\
    BIT(Q_GRADIENT) | BIT(Q_BACKGRADIENT) | BIT(Q_PLUMB) | BIT(Q_LEVEL) |\
    BIT(Q_DECLINATION))

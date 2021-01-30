@@ -34,6 +34,9 @@
 ./badunits.svx:15:16: error: End of line not blank
  *units DEFault Tape Feet
                 ^
+./badunits.svx:17:13: error: Invalid units "degrees" for quantity
+ *units left degrees
+             ^~~~~~~
 
 Removing trailing traverses...
 
@@ -55,4 +58,4 @@ Total length of survey legs =    0.00ft (   0.00ft adjusted)
 Total plan length of survey legs =    0.00ft
 Total vertical length of survey legs =    0.00ft
    1 0-node.
-There were 0 warning(s) and 12 error(s) - no output files produced.
+There were 0 warning(s) and 13 error(s) - no output files produced.
