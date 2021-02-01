@@ -112,10 +112,18 @@ for file in $TESTS ; do
 
   echo "$file"
 
-  # how many warnings to expect
+  # how many warnings to expect (or empty not to check)
   warn=
-  # how many errors to expect
+
+  # how many errors to expect (or empty not to check)
   error=
+
+  # One of:
+  # yes : diffpos 3D file output with <testcase_name>.pos
+  # no : Check that a 3D file is produced, but not positions in it
+  # fail : Check that a 3D file is NOT produced
+  # dxf : Convert to DXF with survexport and compare with <testcase_name>.dxf
+  pos=
 
   case $file in
     *.dat)
