@@ -1,8 +1,12 @@
-up to: 6c5e9acfb39162ee2c0c78f1dac12340b12e7196
-
-Changes in 1.2.43 (2020-12-??):
+Changes in 1.2.44 (2021-02-09):
 
 * cavern:
+
+  * Add support for quadrant bearings (e.g. N30E).  Patch from echarlie.
+
+  * Report error if angle units are specified for passage dimension.
+    Previously "*units left degrees" and similar were incorrectly quietly
+    accepted.  Spotted by echarlie.
 
   * Fix *data with no parameters to keep the current style and reset any state
     as documented.  Previously it actually instead ignored any survey data
@@ -23,6 +27,9 @@ Changes in 1.2.43 (2020-12-??):
 
 * img library: Fix img_open() when used in other programs.  Patch from Thomas
   Holder.
+
+* configure: Add wx-config-gtk3 to WX_CONFIG search for Arch Linux.  Patch
+  from Thomas Holder.
 
 * Improve documentation of interleaved data.  Most notably, we now document
   that a blank line breaks the current traverse.
