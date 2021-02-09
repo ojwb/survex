@@ -14,7 +14,7 @@ tmp=`echo "$out"|sed 's/\.zip$//'`
 rm -rf "$tmp"
 mkdir "$tmp"
 for r in 16 32 128 256 512 ; do
-  inkscape -w "$r" -h "$r" -e "$tmp/icon_${r}x${r}.png" "$in"
+  inkscape -w "$r" -h "$r" --export-filename="$tmp/icon_${r}x${r}.png" "$in"
 done
 for r in 16 128 256 ; do
   d=`expr $r + $r`
@@ -22,7 +22,7 @@ for r in 16 128 256 ; do
 done
 for r in 32 512 ; do
   d=`expr $r + $r`
-  inkscape -w "$d" -h "$d" -e "$tmp/icon_${r}x${r}@2x.png" "$in"
+  inkscape -w "$d" -h "$d" --export-filename="$tmp/icon_${r}x${r}@2x.png" "$in"
 done
 rm -f "$out"
 zip --move -r "$out" "$tmp"
