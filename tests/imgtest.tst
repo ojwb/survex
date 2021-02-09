@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - test using img library non-hosted
-# Copyright (C) 2020 Olly Betts
+# Copyright (C) 2020,2021 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,13 +27,17 @@ test -n "$*" && VERBOSE=1
 
 test -x "$testdir"/../src/cavern || testdir=.
 
+# Make testdir absolute, so we can cd before running cavern to get a consistent
+# path in diagnostic messages.
+testdir=`(cd "$testdir" && pwd)`
+
 : ${CAVERN="$testdir"/../src/cavern}
 : ${IMGTEST="$testdir"/../src/imgtest}
 
 : ${TESTS=${*:-"simple survey"}}
 
 vg_error=123
-vg_log=vg.log
+vg_log=$testdir/vg.log
 if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
@@ -44,11 +48,12 @@ for test in $TESTS ; do
   echo $test
   file=imgtest_$test
   rm -f "$file.3d" "$file.err" cavern.tmp imgtest.tmp
-  $CAVERN "$file.svx" > cavern.tmp 2>&1
+  pwd=`pwd`
+  cd "$srcdir"
+  srcdir=. $CAVERN "$file.svx" --output="$pwd/$file" > "$pwd/cavern.tmp" 2>&1
   exitcode=$?
-  if test -n "$VERBOSE" ; then
-    cat cavern.tmp
-  fi
+  cd "$pwd"
+  test -n "$VERBOSE" && cat cavern.tmp
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
       cat "$vg_log"
