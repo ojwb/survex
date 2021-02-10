@@ -70,11 +70,11 @@ sudo apt-get install mingw-w64-i686-dev
 
 <p>
 I then install the various libraries by compiling from source.  For wxWidgets
-3.0.4, I apply a
-<a href="https://survex.com/software/wxWidgets-3.0.4.patch">patch</a> to
-disable a pointless and annoying compiler ABI check (with this check
-aven stops working each time my cross compiler package is upgraded to
-a new GCC version; without it everything works fine).
+3.0.5, I apply a
+<a href="https://survex.com/software/wxWidgets-3.0.5.patch">patch</a> to
+fix a compiler error and disable a pointless and annoying compiler ABI check
+(with this check aven stops working each time my cross compiler package is
+upgraded to a new GCC version; without it everything works fine).
 </p>
 
 <p>
