@@ -1,3 +1,29 @@
+Changes in 1.2.45 (2021-03-09):
+
+* Avoid undefined signed shifts in 3d file handling.  Survex itself is only
+  affected on big-endian platforms (so most Linux machine, Microsoft Windows,
+  and current Macs are all OK), but this also affects the img library on all
+  platforms when used in standalone mode as it is in other programs.  Fixes
+  #119, reported by Matěj Plch.
+
+* aven:
+
+  + When reading cavern output for the log window, we need special handling
+    for the case when a chunk of output ends mid-way through a UTF-8
+    sequence.  Previously we lost the first byte of the sequence in this
+    case (and would then show it as an invalid character), but now it is
+    handled correctly.  In practice, most of the cavern log output is ASCII so
+    it's quite possible nobody's ever actually hit this.
+
+* testsuite:
+
+  + Suppress reports of leaks on exit from the LeakSanitiser debugging tool.
+    We know we don't release all memory explicitly on exit since doing so would
+    mean extra work for no reason as the OS reclaims all memory when the
+    process exits.
+
+* Convert OLDNEWS encoding from ISO-8859-1 to UTF-8.
+
 Changes in 1.2.44 (2021-02-10):
 
 * aven:
