@@ -46,6 +46,7 @@
 # ifdef HAVE_STDINT_H
 #  include <stdint.h>
 #  define INT32_T int32_t
+#  define UINT32_T uint32_t
 # else
 #  include <limits.h>
 #  if INT_MAX >= 2147483647
