@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2011,2012,2014,2015,2016 Olly Betts
+ * Copyright (C) 2005-2021 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,7 +509,7 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	const unsigned char * p = buf;
 
 	while (p != end) {
-	    int ch = *p++;
+	    int ch = *p;
 	    if (ch >= 0x80) {
 		// Decode multi-byte UTF-8 sequence.
 		if (ch < 0xc0) {
@@ -517,11 +517,11 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		    goto bad_utf8;
 		} else if (ch < 0xe0) {
 		    /* 2 byte sequence */
-		    if (p == end) {
+		    if (end - p < 2) {
 			// Incomplete UTF-8 sequence - try to read more.
 			break;
 		    }
-		    int ch1 = *p++;
+		    int ch1 = *++p;
 		    if ((ch1 & 0xc0) != 0x80) {
 			// Invalid UTF-8 sequence.
 			goto bad_utf8;
@@ -529,17 +529,17 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		    ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
 		} else if (ch < 0xf0) {
 		    /* 3 byte sequence */
-		    if (end - p <= 1) {
+		    if (end - p < 3) {
 			// Incomplete UTF-8 sequence - try to read more.
 			break;
 		    }
-		    int ch1 = *p++;
+		    int ch1 = *++p;
 		    ch = ((ch & 0x1f) << 12) | ((ch1 & 0x3f) << 6);
 		    if ((ch1 & 0xc0) != 0x80) {
 			// Invalid UTF-8 sequence.
 			goto bad_utf8;
 		    }
-		    int ch2 = *p++;
+		    int ch2 = *++p;
 		    if ((ch2 & 0xc0) != 0x80) {
 			// Invalid UTF-8 sequence.
 			goto bad_utf8;
@@ -550,6 +550,7 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		    goto bad_utf8;
 		}
 	    }
+	    ++p;
 
 	    if (false) {
 bad_utf8:
