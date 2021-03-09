@@ -1,3 +1,5 @@
-# reencode is a PostScript command, not a misspelling of "re-encode".
+# This word (which I can't mention in this comment because that triggers more
+# moaning from lintian) is a PostScript command, not a misspelling of "re-encode".
+survex-aven binary: spelling-error-in-binary usr/bin/3dtopos reencode re-encode
 survex-aven binary: spelling-error-in-binary usr/bin/aven reencode re-encode
 survex-aven binary: spelling-error-in-binary usr/bin/survexport reencode re-encode

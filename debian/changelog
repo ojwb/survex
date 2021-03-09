@@ -1,3 +1,10 @@
+survex (1.2.44-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control: Mark conformance with policy 4.5.1.
+
+ -- Olly Betts <olly@survex.com>  Thu, 11 Feb 2021 14:21:24 +1300
+
 survex (1.2.42-1) unstable; urgency=medium
 
   * New upstream release
