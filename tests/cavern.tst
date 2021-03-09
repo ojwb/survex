@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2004,2005,2006,2010,2012,2013,2014,2015,2016,2017 Olly Betts
+# Copyright (C) 1999-2021 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -80,6 +80,12 @@ LC_ALL=C
 export LC_ALL
 SURVEXLANG=en
 export SURVEXLANG
+
+# Suppress checking for leaks on exit if we're build with lsan - we don't
+# generally waste effort to free all allocations as the OS will reclaim
+# memory on exit.
+LSAN_OPTIONS=leak_check_at_exit=0
+export LSAN_OPTIONS
 
 vg_error=123
 vg_log=$testdir/vg.log

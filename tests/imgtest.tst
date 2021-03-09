@@ -36,6 +36,12 @@ testdir=`(cd "$testdir" && pwd)`
 
 : ${TESTS=${*:-"simple survey"}}
 
+# Suppress checking for leaks on exit if we're build with lsan - we don't
+# generally waste effort to free all allocations as the OS will reclaim
+# memory on exit.
+LSAN_OPTIONS=leak_check_at_exit=0
+export LSAN_OPTIONS
+
 vg_error=123
 vg_log=$testdir/vg.log
 if [ -n "$VALGRIND" ] ; then

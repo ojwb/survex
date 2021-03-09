@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - smoke tests
-# Copyright (C) 1999-2003,2005,2011,2012,2014 Olly Betts
+# Copyright (C) 1999-2021 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,6 +26,12 @@ DISPLAY=
 export DISPLAY
 
 PROGS="cavern diffpos extend sorterr survexport aven"
+
+# Suppress checking for leaks on exit if we're build with lsan - we don't
+# generally waste effort to free all allocations as the OS will reclaim
+# memory on exit.
+LSAN_OPTIONS=leak_check_at_exit=0
+export LSAN_OPTIONS
 
 vgrun=
 vg_error=123

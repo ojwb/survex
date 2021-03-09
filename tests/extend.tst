@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - extend tests
-# Copyright (C) 1999-2003,2010,2012 Olly Betts
+# Copyright (C) 1999-2021 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,6 +32,12 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
 : ${TESTS=${*:-"extend extend2names eswap eswap-break"}}
+
+# Suppress checking for leaks on exit if we're build with lsan - we don't
+# generally waste effort to free all allocations as the OS will reclaim
+# memory on exit.
+LSAN_OPTIONS=leak_check_at_exit=0
+export LSAN_OPTIONS
 
 vg_error=123
 vg_log=vg.log
