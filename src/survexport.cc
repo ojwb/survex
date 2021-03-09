@@ -413,7 +413,7 @@ main(int argc, char **argv)
    if (not_allowed) {
        printf("warning: The following options are not supported for this export format and will be ignored:\n");
        int i = 0;
-       int bit = 1;
+       unsigned bit = 1;
        while (not_allowed) {
 	   if (not_allowed & bit) {
 	       // E.g. --walls maps to two bits in show_mask, but the options
