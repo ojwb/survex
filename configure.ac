@@ -237,7 +237,9 @@ choke me
 
 dnl Check for 16-bit and 32-bit integer types.
 AC_TYPE_INT16_T
+AC_TYPE_UINT16_T
 AC_TYPE_INT32_T
+AC_TYPE_UINT32_T
 
 dnl Checks for library functions.
 AC_FUNC_STRFTIME

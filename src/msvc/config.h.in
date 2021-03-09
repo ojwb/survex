@@ -40,8 +40,14 @@
 /* signed 16 bit integer type */
 typedef __int16 int16_t;
 
+/* unsigned 16 bit integer type */
+typedef unsigned __int16 uint16_t;
+
 /* signed 32 bit integer type */
 typedef __int32 int32_t;
+
+/* unsigned 32 bit integer type */
+typedef unsigned __int32 uint32_t;
 #endif
 
 /* strcasecmp define for systems which call it something else */
