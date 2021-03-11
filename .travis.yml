@@ -23,8 +23,6 @@ matrix:
             - x11proto-core-dev
             - liblocale-po-perl
             - unifont
-            - sgmltools-lite
-            - jadetex
             - docbook-utils
             - w3m
       script:

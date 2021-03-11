@@ -289,39 +289,8 @@ strcasecmp)
   AC_MSG_RESULT([$strcasecmp]) ;;
 esac
 
-AC_MSG_CHECKING(for sgmltools v2 or v3)
-if test : != "$SGMLTOOLS" ; then
-  : ${SGMLTOOLS=sgmltools}
-  case `(exec 2>&5 ; $SGMLTOOLS --version)` in
-  *" version 3"*)
-    AC_MSG_RESULT([$SGMLTOOLS]) ;;
-  *" version 2"*)
-    AC_MSG_RESULT([$SGMLTOOLS]) ;;
-  *)
-    SGMLTOOLS="$MISSING sgmltools"
-    AC_MSG_RESULT(not found) ;;
-  esac
-else
-  AC_MSG_RESULT([$SGMLTOOLS])
-fi
-AC_SUBST(SGMLTOOLS)
-AC_ARG_VAR(SGMLTOOLS, [sgmltools command])
-
-AC_MSG_CHECKING(for docbook2man)
-if test : != "$DOCBOOK2MAN" ; then
-  : ${DOCBOOK2MAN=docbook2man}
-  $DOCBOOK2MAN 2> /dev/null
-  if test $? = 1 ; then
-    AC_MSG_RESULT([$DOCBOOK2MAN])
-  else
-    DOCBOOK2MAN="$MISSING docbook2man"
-    AC_MSG_RESULT([not found])
-  fi
-else
-  AC_MSG_RESULT([$DOCBOOK2MAN])
-fi
-AC_SUBST(DOCBOOK2MAN)
-AC_ARG_VAR(DOCBOOK2MAN, [docbook2man command])
+AC_PATH_PROG([JW], [jw], [$MISSING jw])
+AC_ARG_VAR([JW], [jw from docbook-utils/docbook-tools])
 
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
