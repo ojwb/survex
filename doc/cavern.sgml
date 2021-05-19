@@ -154,7 +154,7 @@ flags associated with them.
 
 </refsect2>
 
-<refsect2><Title><filename>.err</filename> - loop closure statistics (%age errors, etc)</Title>
+<refsect2><Title><filename>.err</filename> - loop closure statistics (percentage errors, etc)</Title>
 
 <Para>This file contains statistics about each traverse in the survey
 which is part of a loop. It includes various statistics for each
