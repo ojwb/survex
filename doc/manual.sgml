@@ -1623,7 +1623,7 @@ In interleaved data, a blank line (one which contains only characters which
 are set as BLANK) ends the current traverse so can be used to handle
 branches in the survey, e.g.:
 <programlisting>
-*data station newline tape compass clino
+*data normal station newline tape compass clino
 
 1
     9.34   087   -05
