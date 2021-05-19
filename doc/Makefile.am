@@ -85,15 +85,15 @@ maintainer-clean-local:
 
 manual: manual/stampfile
 manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.ac
-	$(JW) --backend=html --dsl='custom.dsl#html' manual.sgml
+	$(JW) --backend html --dsl 'custom.dsl#html' manual.sgml
 	cp caution.png note.png manual
 	touch manual/stampfile
 
 manual.txt: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend=txt manual.sgml
+	$(JW) --backend txt manual.sgml
 
 manual.pdf: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend=ps manual.sgml
+	$(JW) --backend ps manual.sgml
 	ps2pdf manual.ps manual.pdf
 	rm manual.ps
 
@@ -101,13 +101,13 @@ manual.pdf: $(manual_sources) survex.ent ../configure.ac
 # (ho ho)
 
 manual.html: $(manual_sources) custom.dsl survex.ent ../configure.ac
-	$(JW) --backend=onehtml --dsl='custom.dsl#onehtml' manual.sgml
+	$(JW) --backend html --dsl 'custom.dsl#onehtml' manual.sgml > manual.html
 
 manual.rtf: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend=rtf manual.sgml
+	$(JW) --backend rtf manual.sgml
 
 manual.ps: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend=ps manual.sgml
+	$(JW) --backend ps manual.sgml
 
 CLEANFILES = usr
 
