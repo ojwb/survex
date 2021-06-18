@@ -295,8 +295,8 @@ img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
  *
  * cs is a string describing the coordinate system, suitable for passing to
  * PROJ (or NULL to not specify a coordinate system).  For a coordinate system
- * with an EPSG, "EPSG:" followed by the code number is the recommended way
- * to specify this.
+ * with an assigned EPSG code number, "EPSG:" followed by the code number is
+ * the recommended way to specify this.
  *
  * flags contains a bitwise-or of any file-wide flags - currently only one
  * is available: img_FFLAG_EXTENDED.

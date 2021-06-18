@@ -201,7 +201,7 @@ AC_SUBST([LIBAV_LIBS])
 AC_SUBST([LIBAV_CFLAGS])
 
 dnl Check for PROJ.
-PKG_CHECK_MODULES([PROJ], [proj >= 5], [
+PKG_CHECK_MODULES([PROJ], [proj >= 8.2.0], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
   dnl found.  proj_create() was added in PROJ 5.

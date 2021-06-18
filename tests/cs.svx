@@ -29,4 +29,4 @@
 *fix 1 reference 36000 83000 1600
 ; regression test - until 1.2.21, *fix with sds ignored the coordinate system
 *cs UTM33N
-*fix 2 reference 410848.11 5281938.82 1646.82 10 10 30
+*fix 2 reference 410848.11 5281938.82 1600.00 10 10 30

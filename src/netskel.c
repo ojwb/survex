@@ -99,7 +99,7 @@ solve_network(void /*node *stnlist*/)
    ptrTrail = NULL;
    dump_network();
 
-   if (first_solve && !pcs->proj && !proj_out) {
+   if (first_solve && !pcs->proj_str && !proj_str_out) {
       /* If we haven't already solved to find some station positions, and
        * there's no specified coordinate system, then check if there are any
        * fixed points, and if there aren't, invent one at (0,0,0).

@@ -857,7 +857,7 @@ v03d:
 		       // Allow +no_defs to be omitted as it seems to not
 		       // actually do anything with recent PROJ - cavern always
 		       // included it, but other software generating 3d files
-		       // may not have.
+		       // may not.
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
 			   int i;
 			   cs = cs + 6;

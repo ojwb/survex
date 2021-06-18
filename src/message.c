@@ -890,7 +890,7 @@ msg_appname(void)
 }
 
 void
-msg_init_(char * const *argv)
+msg_init(char * const *argv)
 {
    char *p;
 #if OS_UNIX_MACOS
@@ -1149,20 +1149,6 @@ macos_got_msg:
 #endif
 
    select_charset(default_charset());
-}
-
-const char *
-msg_proj_finder_(const char * file)
-{
-    struct stat sb;
-    static char * r = NULL;
-    static int r_len = 0;
-    s_zero(&r);
-    s_cat(&r, &r_len, pth_cfg_files);
-    s_cat(&r, &r_len, "/proj/");
-    s_cat(&r, &r_len, file);
-    if (stat(r, &sb) < 0) return NULL;
-    return r;
 }
 
 #ifndef AVEN

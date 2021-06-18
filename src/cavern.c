@@ -21,8 +21,6 @@
 #include <config.h>
 #endif
 
-#define MSG_SETUP_PROJ_SEARCH_PATH 1
-
 #include <limits.h>
 #include <stdlib.h>
 #include <time.h>
@@ -64,7 +62,6 @@ prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
 bool fExportUsed = fFalse;
-projPJ proj_out = NULL;
 char * proj_str_out = NULL;
 
 FILE *fhErrStat = NULL;
@@ -152,6 +149,12 @@ pause_on_exit(void)
 
 int current_days_since_1900;
 
+static void discarding_proj_logger(void *ctx, int level, const char *message) {
+    (void)ctx;
+    (void)level;
+    (void)message;
+}
+
 extern CDECL int
 main(int argc, char **argv)
 {
@@ -168,13 +171,16 @@ main(int argc, char **argv)
    /* Always buffer by line for aven's benefit. */
    setvbuf(stdout, NULL, _IOLBF, 0);
 
+   /* Prevent stderr spew from PROJ. */
+   proj_log_func(PJ_DEFAULT_CTX, NULL, discarding_proj_logger);
+
    msg_init(argv);
 
    pcs = osnew(settings);
    pcs->next = NULL;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
    pcs->meta = NULL;
-   pcs->proj = NULL;
+   pcs->proj_str = NULL;
    pcs->declination = HUGE_REAL;
    pcs->convergence = 0.0;
 

@@ -29,22 +29,6 @@ extern "C" {
 #include "osdepend.h"
 #include "osalloc.h"
 
-/* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
- * hooks to setup PROJ's search path to look for data files we bundle.
- */
-#ifdef MSG_SETUP_PROJ_SEARCH_PATH
-# define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-# include <proj_api.h>
-# define msg_init(ARGV) do {\
-	msg_init_(ARGV); \
-	pj_set_finder(msg_proj_finder_); \
-    } while (0)
-#endif
-
-#ifndef msg_init
-# define msg_init(ARGV) msg_init_(ARGV)
-#endif
-
 #define STDERR stdout
 
 #define CHARSET_BAD        -1
@@ -66,15 +50,7 @@ extern const char *msg_lang;
  * be just the language code.  Otherwise it's NULL.  e.g. "en" */
 extern const char *msg_lang2;
 
-/* Not intended for direct use - use msg_init() instead, optionally defining
- * MSG_SETUP_PROJ_SEARCH_PATH.
- */
-void msg_init_(char *const *argv);
-
-/* Not intended for direct use - use msg_init() instead, optionally defining
- * MSG_SETUP_PROJ_SEARCH_PATH.
- */
-const char * msg_proj_finder_(const char * file);
+void msg_init(char *const *argv);
 
 const char *msg_cfgpth(void);
 const char *msg_exepth(void);

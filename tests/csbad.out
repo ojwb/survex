@@ -50,7 +50,7 @@
 ./csbad.svx:19:5: error: Unknown coordinate system
  *cs UTM61S
      ^~~~~~
-./csbad.svx:20:12: error: Invalid coordinate system: unknown projection id
+./csbad.svx:20:12: error: Invalid coordinate system: Invalid value for an argument
  *cs custom "+proj=ection"
             ^~~~~~~~~~~~~~
 ./csbad.svx:21:9: error: Unknown coordinate system
@@ -71,7 +71,7 @@
 ./csbad.svx:26:9: error: Coordinate system unsuitable for output
  *cs out ESRI:104305
          ^~~~~~~~~~~
-./csbad.svx:34: error: Failed to convert coordinates: latitude or longitude exceeded limits
+./csbad.svx:34: error: Failed to convert coordinates: Point outside of projection domain
  *fix 2 reference 179 -89 1000
 
 Removing trailing traverses...
