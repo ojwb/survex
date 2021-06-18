@@ -47,8 +47,7 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 const unsigned long DEFAULT_HGT_DIM = 3601;
 const unsigned long DEFAULT_HGT_SIZE = sqrd(DEFAULT_HGT_DIM) * 2;
@@ -3033,18 +3032,12 @@ void GfxCore::DrawTerrain()
 
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
-#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
-    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
-    if (!pj_in) {
-	ToggleTerrain();
-	delete [] dem;
-	dem = NULL;
-	hourglass.stop();
-	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
-	return;
-    }
-    static projPJ pj_out = pj_init_plus(m_Parent->GetCSProj().c_str());
-    if (!pj_out) {
+#define WGS84_DATUM_STRING "EPSG:4326"
+    static PJ* pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+					   WGS84_DATUM_STRING,
+					   m_Parent->GetCSProj().c_str(),
+					   NULL);
+    if (!pj) {
 	ToggleTerrain();
 	delete [] dem;
 	dem = NULL;
@@ -3058,7 +3051,7 @@ void GfxCore::DrawTerrain()
     const Vector3 & off = m_Parent->GetOffset();
     vector<Vector3> prevcol(dem_height + 1);
     for (size_t x = 0; x < dem_width; ++x) {
-	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
+	double X_ = proj_torad(o_x + x * step_x);
 	Vector3 prev;
 	for (size_t y = 0; y < dem_height; ++y) {
 	    unsigned short elev = dem[x + y * dem_width];
@@ -3080,8 +3073,13 @@ void GfxCore::DrawTerrain()
 		pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
 	    } else {
 		double X = X_;
-		double Y = (o_y - y * step_y) * DEG_TO_RAD;
-		pj_transform(pj_in, pj_out, 1, 1, &X, &Y, &Z);
+		double Y = proj_torad(o_y - y * step_y);
+		size_t r = proj_trans_generic(pj, PJ_FWD,
+					      &X, 0, 1,
+					      &Y, 0, 1,
+					      &Z, 0, 1,
+					      NULL, 0, 0);
+		(void)r; // FIXME report errors
 		pt = Vector3(X, Y, Z) - off;
 		double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
 		if (dist_2 > r_sqrd) {

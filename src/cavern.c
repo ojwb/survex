@@ -21,8 +21,6 @@
 #include <config.h>
 #endif
 
-#define MSG_SETUP_PROJ_SEARCH_PATH 1
-
 #include <limits.h>
 #include <stdlib.h>
 #include <time.h>
@@ -64,7 +62,7 @@ prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
 bool fExportUsed = fFalse;
-projPJ proj_out = NULL;
+PJ* proj_out = NULL;
 char * proj_str_out = NULL;
 
 FILE *fhErrStat = NULL;

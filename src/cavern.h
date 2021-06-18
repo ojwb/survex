@@ -33,16 +33,7 @@
 #include <math.h>
 #include <float.h>
 
-#ifdef HAVE_PROJ_H
-/* Work around broken check in proj.h:
- * https://github.com/OSGeo/PROJ/issues/1523
- */
-# ifndef PROJ_H
-#  include <proj.h>
-# endif
-#endif
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 #include "img_hosted.h"
 #include "useful.h"
@@ -338,7 +329,7 @@ typedef struct Settings {
    const reading *ordering;
    int begin_lineno; /* 0 means no block started in this file */
    int flags;
-   projPJ proj;
+   PJ* proj;
    /* Location at which we calculate the declination if
     * z[Q_DECLINATION] == HUGE_REAL. */
    real dec_x, dec_y, dec_z;
@@ -357,7 +348,7 @@ extern prefix *root;
 extern prefix *anon_list;
 extern node *stnlist;
 extern unsigned long optimize;
-extern projPJ proj_out;
+extern PJ* proj_out;
 extern char * proj_str_out;
 
 extern char *survey_title;

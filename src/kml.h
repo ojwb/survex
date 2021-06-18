@@ -20,15 +20,14 @@
 
 #include "exportfilter.h"
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 #include "vector3.h"
 
 #include <vector>
 
 class KML : public ExportFilter {
-    projPJ pj_input = NULL, pj_output = NULL;
+    PJ* pj = NULL;
     bool in_linestring = false;
     bool in_wall = false;
     bool in_passage = false;
