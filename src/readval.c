@@ -404,6 +404,40 @@ read_number(bool f_optional, bool f_unsigned)
 }
 
 static real
+read_footinch(bool f_optional)
+{
+   bool fPositive, fDigits = fFalse;
+   real n = (real)0.0;
+   real m = (real)0.0;
+   filepos fp;
+   int ch_old;
+
+   get_pos(&fp);
+   ch_old = ch;
+   fPositive = !isMinus(ch);
+   if (isSign(ch)) nextch();
+
+   while (isdigit(ch)) {
+      n = n * (real)10.0 + (char)(ch - '0');
+      nextch();
+      fDigits = fTrue;
+   }
+
+   if (isDecimal(ch)) {
+      nextch();
+      while (isdigit(ch)) {
+        m = m * (real)10.0 + (char)(ch - '0');
+      }
+   }
+   if (m >= 12){
+      compile_diagnostic_token_show(DIAG_ERR, /*Suspicious foot.inch value “%s”*/485);
+      /* suspicious m */
+   }
+   n = n*12 + m;
+   return n;
+}
+
+static real
 read_quadrant(bool f_optional)
 {
    enum {
@@ -499,7 +533,7 @@ read_numeric(bool f_optional)
 }
 
 extern real
-read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
+read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches, int *p_n_readings)
 {
    size_t n_readings = 0;
    real tot = (real)0.0;
@@ -507,10 +541,12 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    skipblanks();
    if (!isOpen(ch)) {
       real r = 0;
-      if (!f_quadrants)
-	  r = read_number(f_optional, fFalse);
+      if (!f_quadrants & !f_footinches)
+         r = read_number(f_optional, fFalse);
+      else if (!f_footinches)
+         r = read_quadrant(f_optional);
       else
-	  r = read_quadrant(f_optional);
+         r = read_footinch(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -518,10 +554,12 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 
    skipblanks();
    do {
-      if (!f_quadrants)
-	 tot += read_number(fFalse, fFalse);
+      if (!f_quadrants & !f_footinches)
+         tot += read_number(fFalse, fFalse);
+      else if (!f_footinches)
+         tot += read_quadrant(fFalse);
       else
-	 tot += read_quadrant(fFalse);
+         tot += read_footinch(f_optional);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));
@@ -538,7 +576,7 @@ extern real
 read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
    real v;
-   v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
+   v = read_numeric_multi(fTrue, f_quadrants, fFalse, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
 	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
