@@ -449,6 +449,15 @@ void GUIControl::OnMButtonUp(wxMouseEvent& event)
 void GUIControl::OnRButtonDown(wxMouseEvent& event)
 {
     if (m_View->HasData()) {
+	if (dragging != NO_DRAG) {
+	    if (m_LastDrag == drag_ZOOM)
+		m_View->UnsetZoomBox();
+	    // We need to release and recapture for the cursor to update
+	    // (noticed with wxGTK).
+	    m_View->ReleaseMouse();
+	    dragging = NO_DRAG;
+	}
+
 	if (m_View->HandleRClick(event.GetPosition()))
 	    return;
 
@@ -456,13 +465,6 @@ void GUIControl::OnRButtonDown(wxMouseEvent& event)
 
 	m_View->UpdateCursor(GfxCore::CURSOR_DRAGGING_HAND);
 
-	if (dragging != NO_DRAG) {
-	    if (m_LastDrag == drag_ZOOM)
-		m_View->UnsetZoomBox();
-	    // We need to release and recapture for the cursor to update
-	    // (noticed with wxGTK).
-	    m_View->ReleaseMouse();
-	}
 	m_View->CaptureMouse();
 	dragging = RIGHT_DRAG;
     }
