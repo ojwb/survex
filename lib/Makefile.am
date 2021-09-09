@@ -35,8 +35,11 @@ dist_pkgdata_DATA = bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 appsdir = $(datadir)/applications
 dist_apps_DATA = survex-aven.desktop
 
-gtksourceviewdir = $(datadir)/gtksourceview-3.0/language-specs
-dist_gtksourceview_DATA = survex.lang
+gtksourceview3dir = $(datadir)/gtksourceview-3.0/language-specs
+dist_gtksourceview3_DATA = survex.lang
+
+gtksourceview4dir = $(datadir)/gtksourceview-4/language-specs
+dist_gtksourceview4_DATA = survex.lang
 
 projdatadir = $(pkgdatadir)/proj
 dist_projdata_DATA = proj/esri

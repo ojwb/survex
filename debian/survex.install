@@ -1,4 +1,4 @@
-debian/tmp/usr/share/gtksourceview-3.0/language-specs/
+debian/tmp/usr/share/gtksourceview-*/language-specs/
 debian/tmp/usr/share/icons/hicolor/32x32/mimetypes/
 debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/
 debian/tmp/usr/share/survex/bcra3.svx
