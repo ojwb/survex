@@ -72,6 +72,7 @@ testdir=`(cd "$testdir" && pwd)`
  cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  quadrant_bearing bad_quadrant_bearing\
+ gpxexport kmlexport\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
