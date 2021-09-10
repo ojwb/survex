@@ -342,11 +342,11 @@ typedef struct Settings {
    /* Location at which we calculate the declination if
     * z[Q_DECLINATION] == HUGE_REAL. */
    real dec_x, dec_y, dec_z;
-   /* Cached auto-declination, or HUGE_REAL for no cached value.  Only
-    * meaningful if date1 != -1.
+   /* Cached auto-declination in radians, or HUGE_REAL for no cached value.
+    * Only meaningful if date1 != -1.
     */
    real declination;
-   /* Grid convergence. */
+   /* Grid convergence in radians. */
    real convergence;
    meta_data * meta;
 } settings;
