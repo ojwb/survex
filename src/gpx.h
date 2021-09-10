@@ -21,13 +21,12 @@
 
 #include "exportfilter.h"
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 class GPX : public ExportFilter {
-    projPJ pj_input, pj_output;
-    bool in_trkseg;
-    const char * trk_name;
+    PJ* pj = NULL;
+    bool in_trkseg = false;
+    const char * trk_name = NULL;
   public:
     explicit GPX(const char * input_datum);
     ~GPX();

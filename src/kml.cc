@@ -32,8 +32,7 @@
 #include <math.h>
 
 #include "useful.h"
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 #include "aven.h"
 #include "message.h"
@@ -63,27 +62,28 @@ html_escape(FILE *fh, const char *s)
     }
 }
 
+static void discarding_proj_logger(void *, int, const char *) { }
+
 KML::KML(const char * input_datum, bool clamp_to_ground_)
     : clamp_to_ground(clamp_to_ground_)
 {
-    if (!(pj_input = pj_init_plus(input_datum))) {
+    /* Prevent stderr spew from PROJ. */
+    proj_log_func(PJ_DEFAULT_CTX, nullptr, discarding_proj_logger);
+
+    pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+				input_datum, WGS84_DATUM_STRING,
+				NULL);
+    if (!pj) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
 	m = wxString::Format(m.c_str(), input_datum);
-	throw m;
-    }
-    if (!(pj_output = pj_init_plus(WGS84_DATUM_STRING))) {
-	wxString m = wmsg(/*Failed to initialise output coordinate system “%s”*/288);
-	m = wxString::Format(m.c_str(), WGS84_DATUM_STRING);
 	throw m;
     }
 }
 
 KML::~KML()
 {
-    if (pj_input)
-	pj_free(pj_input);
-    if (pj_output)
-	pj_free(pj_output);
+    if (pj)
+	proj_destroy(pj);
 }
 
 const int *
@@ -144,63 +144,83 @@ KML::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 	} else {
 	    fputs("<LineString><altitudeMode>absolute</altitudeMode><coordinates>\n", fh);
 	}
-	double X = p1->x, Y = p1->y, Z = p1->z;
-	pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
-	X = deg(X);
-	Y = deg(Y);
+
+	PJ_COORD coord = {p1->x, p1->y, p1->z, HUGE_VAL};
+	coord = proj_trans(pj, PJ_FWD, coord);
+	if (coord.xyzt.x == HUGE_VAL ||
+	    coord.xyzt.y == HUGE_VAL ||
+	    coord.xyzt.z == HUGE_VAL) {
+	    // FIXME report errors
+	}
 	// %.8f is at worst just over 1mm.
-	fprintf(fh, "%.8f,%.8f,%.2f\n", X, Y, Z);
+	fprintf(fh, "%.8f,%.8f,%.2f\n",
+		coord.xyzt.x,
+		coord.xyzt.y,
+		coord.xyzt.z);
     }
-    double X = p->x, Y = p->y, Z = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
-    X = deg(X);
-    Y = deg(Y);
+
+    PJ_COORD coord = {p->x, p->y, p->z, HUGE_VAL};
+    coord = proj_trans(pj, PJ_FWD, coord);
+    if (coord.xyzt.x == HUGE_VAL ||
+	coord.xyzt.y == HUGE_VAL ||
+	coord.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
     // %.8f is at worst just over 1mm.
-    fprintf(fh, "%.8f,%.8f,%.2f\n", X, Y, Z);
+    fprintf(fh, "%.8f,%.8f,%.2f\n",
+	    coord.xyzt.x,
+	    coord.xyzt.y,
+	    coord.xyzt.z);
 }
 
 void
 KML::xsect(const img_point *p, double angle, double d1, double d2)
 {
-    double s = sin(rad(angle));
-    double c = cos(rad(angle));
-
-    double x1 = p->x + s * d1;
-    double y1 = p->y + c * d1;
-    double z1 = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &x1, &y1, &z1);
-    x1 = deg(x1);
-    y1 = deg(y1);
-
-    double x2 = p->x - s * d2;
-    double y2 = p->y - c * d2;
-    double z2 = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &x2, &y2, &z2);
-    x2 = deg(x2);
-    y2 = deg(y2);
-
     if (clamp_to_ground) {
 	fputs("<Placemark><name></name><LineString><coordinates>", fh);
     } else {
 	fputs("<Placemark><name></name><LineString><altitudeMode>absolute</altitudeMode><coordinates>", fh);
     }
-    fprintf(fh, "%.8f,%.8f,%.2f %.8f,%.8f,%.2f", x1, y1, z1, x2, y2, z2);
+
+    double s = sin(rad(angle));
+    double c = cos(rad(angle));
+
+    {
+	PJ_COORD coord = {p->x + s * d1, p->y + c * d1, p->z, HUGE_VAL};
+	coord = proj_trans(pj, PJ_FWD, coord);
+	if (coord.xyzt.x == HUGE_VAL ||
+	    coord.xyzt.y == HUGE_VAL ||
+	    coord.xyzt.z == HUGE_VAL) {
+	    // FIXME report errors
+	}
+	// %.8f is at worst just over 1mm.
+	fprintf(fh, "%.8f,%.8f,%.2f ",
+		coord.xyzt.x,
+		coord.xyzt.y,
+		coord.xyzt.z);
+    }
+
+    {
+	PJ_COORD coord = {p->x - s * d2, p->y - c * d2, p->z, HUGE_VAL};
+	coord = proj_trans(pj, PJ_FWD, coord);
+	if (coord.xyzt.x == HUGE_VAL ||
+	    coord.xyzt.y == HUGE_VAL ||
+	    coord.xyzt.z == HUGE_VAL) {
+	    // FIXME report errors
+	}
+	// %.8f is at worst just over 1mm.
+	fprintf(fh, "%.8f,%.8f,%.2f\n",
+		coord.xyzt.x,
+		coord.xyzt.y,
+		coord.xyzt.z);
+    }
+
     fputs("</coordinates></LineString></Placemark>\n", fh);
 }
 
 void
 KML::wall(const img_point *p, double angle, double d)
 {
-    double s = sin(rad(angle));
-    double c = cos(rad(angle));
-
-    double x = p->x + s * d;
-    double y = p->y + c * d;
-    double z = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &x, &y, &z);
-    x = deg(x);
-    y = deg(y);
-
     if (!in_wall) {
 	if (clamp_to_ground) {
 	    fputs("<Placemark><name></name><LineString><coordinates>", fh);
@@ -209,7 +229,22 @@ KML::wall(const img_point *p, double angle, double d)
 	}
 	in_wall = true;
     }
-    fprintf(fh, "%.8f,%.8f,%.2f\n", x, y, z);
+
+    double s = sin(rad(angle));
+    double c = cos(rad(angle));
+
+    PJ_COORD coord = {p->x + s * d, p->y + c * d, p->z, HUGE_VAL};
+    coord = proj_trans(pj, PJ_FWD, coord);
+    if (coord.xyzt.x == HUGE_VAL ||
+	coord.xyzt.y == HUGE_VAL ||
+	coord.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
+    // %.8f is at worst just over 1mm.
+    fprintf(fh, "%.8f,%.8f,%.2f\n",
+	    coord.xyzt.x,
+	    coord.xyzt.y,
+	    coord.xyzt.z);
 }
 
 void
@@ -218,19 +253,27 @@ KML::passage(const img_point *p, double angle, double d1, double d2)
     double s = sin(rad(angle));
     double c = cos(rad(angle));
 
-    double x1 = p->x + s * d1;
-    double y1 = p->y + c * d1;
-    double z1 = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &x1, &y1, &z1);
-    x1 = deg(x1);
-    y1 = deg(y1);
+    PJ_COORD coord1 = {p->x + s * d1, p->y + c * d1, p->z, HUGE_VAL};
+    coord1 = proj_trans(pj, PJ_FWD, coord1);
+    if (coord1.xyzt.x == HUGE_VAL ||
+	coord1.xyzt.y == HUGE_VAL ||
+	coord1.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
+    double x1 = coord1.xyzt.x;
+    double y1 = coord1.xyzt.y;
+    double z1 = coord1.xyzt.z;
 
-    double x2 = p->x - s * d2;
-    double y2 = p->y - c * d2;
-    double z2 = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &x2, &y2, &z2);
-    x2 = deg(x2);
-    y2 = deg(y2);
+    PJ_COORD coord2 = {p->x - s * d2, p->y - c * d2, p->z, HUGE_VAL};
+    coord2 = proj_trans(pj, PJ_FWD, coord2);
+    if (coord2.xyzt.x == HUGE_VAL ||
+	coord2.xyzt.y == HUGE_VAL ||
+	coord2.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
+    double x2 = coord2.xyzt.x;
+    double y2 = coord2.xyzt.y;
+    double z2 = coord2.xyzt.z;
 
     // Define each passage as a multigeometry comprising of one quadrilateral
     // per section.  This prevents invalid geometry (such as self-intersecting
@@ -282,12 +325,18 @@ KML::tube_end()
 void
 KML::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
 {
-    double X = p->x, Y = p->y, Z = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
-    X = deg(X);
-    Y = deg(Y);
+    PJ_COORD coord = {p->x, p->y, p->z, HUGE_VAL};
+    coord = proj_trans(pj, PJ_FWD, coord);
+    if (coord.xyzt.x == HUGE_VAL ||
+	coord.xyzt.y == HUGE_VAL ||
+	coord.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
     // %.8f is at worst just over 1mm.
-    fprintf(fh, "<Placemark><Point><coordinates>%.8f,%.8f,%.2f</coordinates></Point><name>", X, Y, Z);
+    fprintf(fh, "<Placemark><Point><coordinates>%.8f,%.8f,%.2f</coordinates></Point><name>",
+	    coord.xyzt.x,
+	    coord.xyzt.y,
+	    coord.xyzt.z);
     html_escape(fh, s);
     fputs("</name>", fh);
     // Add a "pin" symbol with colour matching what aven shows.

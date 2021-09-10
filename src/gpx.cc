@@ -33,15 +33,14 @@
 #include <math.h>
 
 #include "useful.h"
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 #include "aven.h"
 #include "message.h"
 
 using namespace std;
 
-#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
+#define WGS84_DATUM_STRING "EPSG:4326"
 
 static void
 html_escape(FILE *fh, const char *s)
@@ -64,27 +63,34 @@ html_escape(FILE *fh, const char *s)
     }
 }
 
+static void discarding_proj_logger(void *, int, const char *) { }
+
 GPX::GPX(const char * input_datum)
-    : pj_input(NULL), pj_output(NULL), in_trkseg(false), trk_name(NULL)
 {
-    if (!(pj_input = pj_init_plus(input_datum))) {
+    /* Prevent stderr spew from PROJ. */
+    proj_log_func(PJ_DEFAULT_CTX, nullptr, discarding_proj_logger);
+
+    pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+				input_datum, WGS84_DATUM_STRING,
+				NULL);
+
+    // Normalise the output order so x is longitude and y latitude - by default
+    // new PROJ has them switched for EPSG:4326 which just seems confusing.
+    PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+    proj_destroy(pj);
+    pj = pj_norm;
+
+    if (!pj) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
 	m = wxString::Format(m.c_str(), input_datum);
-	throw m;
-    }
-    if (!(pj_output = pj_init_plus(WGS84_DATUM_STRING))) {
-	wxString m = wmsg(/*Failed to initialise output coordinate system “%s”*/288);
-	m = wxString::Format(m.c_str(), WGS84_DATUM_STRING);
 	throw m;
     }
 }
 
 GPX::~GPX()
 {
-    if (pj_input)
-	pj_free(pj_input);
-    if (pj_output)
-	pj_free(pj_output);
+    if (pj)
+	proj_destroy(pj);
     free((void*)trk_name);
 }
 
@@ -145,30 +151,49 @@ GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 	    fputs("<trkseg>\n", fh);
 	    in_trkseg = true;
 	}
-	double X = p1->x, Y = p1->y, Z = p1->z;
-	pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
-	X = deg(X);
-	Y = deg(Y);
+	PJ_COORD coord = {p1->x, p1->y, p1->z, HUGE_VAL};
+	coord = proj_trans(pj, PJ_FWD, coord);
+	if (coord.xyzt.x == HUGE_VAL ||
+	    coord.xyzt.y == HUGE_VAL ||
+	    coord.xyzt.z == HUGE_VAL) {
+	    // FIXME report errors
+	}
 	// %.8f is at worst just over 1mm.
-	fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n", X, Y, Z);
+	fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n",
+		coord.xyzt.x,
+		coord.xyzt.y,
+		coord.xyzt.z);
     }
-    double X = p->x, Y = p->y, Z = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
-    X = deg(X);
-    Y = deg(Y);
+
+    PJ_COORD coord = {p->x, p->y, p->z, HUGE_VAL};
+    coord = proj_trans(pj, PJ_FWD, coord);
+    if (coord.xyzt.x == HUGE_VAL ||
+	coord.xyzt.y == HUGE_VAL ||
+	coord.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
     // %.8f is at worst just over 1mm.
-    fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n", X, Y, Z);
+    fprintf(fh, "<trkpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele></trkpt>\n",
+	    coord.xyzt.x,
+	    coord.xyzt.y,
+	    coord.xyzt.z);
 }
 
 void
 GPX::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
 {
-    double X = p->x, Y = p->y, Z = p->z;
-    pj_transform(pj_input, pj_output, 1, 1, &X, &Y, &Z);
-    X = deg(X);
-    Y = deg(Y);
+    PJ_COORD coord = {p->x, p->y, p->z, HUGE_VAL};
+    coord = proj_trans(pj, PJ_FWD, coord);
+    if (coord.xyzt.x == HUGE_VAL ||
+	coord.xyzt.y == HUGE_VAL ||
+	coord.xyzt.z == HUGE_VAL) {
+	// FIXME report errors
+    }
     // %.8f is at worst just over 1mm.
-    fprintf(fh, "<wpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele><name>", X, Y, Z);
+    fprintf(fh, "<wpt lon=\"%.8f\" lat=\"%.8f\"><ele>%.2f</ele><name>",
+	    coord.xyzt.x,
+	    coord.xyzt.y,
+	    coord.xyzt.z);
     html_escape(fh, s);
     fputs("</name>", fh);
     // Add a "pin" symbol with colour matching what aven shows.
