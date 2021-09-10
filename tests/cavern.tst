@@ -272,7 +272,6 @@ for file in $TESTS ; do
     else
       cmp -s "$expectedfile" "$tmpfile" || exit 1
     fi
-    rm "$tmpfile"
     ;;
   no)
     test -f tmp.3d || exit 1 ;;
