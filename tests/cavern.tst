@@ -129,6 +129,8 @@ for file in $TESTS ; do
   # no : Check that a 3D file is produced, but not positions in it
   # fail : Check that a 3D file is NOT produced
   # dxf : Convert to DXF with survexport and compare with <testcase_name>.dxf
+  # gpx : Convert to GPX with survexport and compare with <testcase_name>.gpx
+  # kml : Convert to KML with survexport and compare with <testcase_name>.kml
   pos=
 
   case $file in
@@ -148,6 +150,7 @@ for file in $TESTS ; do
       pos=fail
       ;;
     *)
+      survexportopts=
       read header < "$realfile"
       set dummy $header
       while shift && [ -n "$1" ] ; do
@@ -155,6 +158,9 @@ for file in $TESTS ; do
 	  pos=*) pos=`expr "$1" : 'pos=\(.*\)'` ;;
 	  warn=*) warn=`expr "$1" : 'warn=\(.*\)'` ;;
 	  error=*) error=`expr "$1" : 'error=\(.*\)'` ;;
+	  survexportopt=*)
+	    survexportopts="$survexportopts "`expr "$1" : 'survexportopt=\(.*\)'`
+	    ;;
 	esac
       done
       ;;
@@ -170,7 +176,6 @@ for file in $TESTS ; do
   esac
   outfile=$basefile.out
   posfile=$basefile.pos
-  dxffile=$basefile.dxf
   rm -f tmp.*
   pwd=`pwd`
   cd "$srcdir"
@@ -232,12 +237,15 @@ for file in $TESTS ; do
     fi
     [ "$exitcode" = 0 ] || exit 1
     ;;
-  dxf)
+  dxf|gpx|kml)
+    # $pos gives us the file extension here.
+    expectedfile=$basefile.$pos
+    tmpfile=tmp.$pos
     if test -n "$VERBOSE" ; then
-      $SURVEXPORT --defaults --surface-legs tmp.3d tmp.dxf
+      $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile"
       exitcode=$?
     else
-      $SURVEXPORT --defaults --surface-legs tmp.3d tmp.dxf > /dev/null
+      $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile" > /dev/null
       exitcode=$?
     fi
     if [ -n "$VALGRIND" ] ; then
@@ -249,11 +257,22 @@ for file in $TESTS ; do
       rm "$vg_log"
     fi
     [ "$exitcode" = 0 ] || exit 1
+
+    # Normalise exported file if required.
+    case $pos in
+      gpx)
+	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,' < "$tmpfile" > tmp.tmp
+	mv tmp.tmp "$tmpfile"
+	;;
+    esac
+
     if test -n "$VERBOSE" ; then
-      diff "$dxffile" tmp.dxf || exit 1
+      diff "$expectedfile" "$tmpfile" || exit 1
     else
-      cmp -s "$dxffile" tmp.dxf || exit 1
-    fi ;;
+      cmp -s "$expectedfile" "$tmpfile" || exit 1
+    fi
+    rm "$tmpfile"
+    ;;
   no)
     test -f tmp.3d || exit 1 ;;
   fail)

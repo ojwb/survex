@@ -133,7 +133,9 @@ mixedeols.out mixedeols.svx\
 utf8bom.out utf8bom.svx\
 nonewlineateof.out nonewlineateof.svx\
 suspectreadings.out suspectreadings.svx\
-cmd_data_default.svx
+cmd_data_default.svx\
+gpxexport.gpx gpxexport.svx\
+kmlexport.kml kmlexport.svx
 
 EXTRA_DIST +=\
 imgtest_simple.svx\

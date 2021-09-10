@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document><name>kmlexport</name>
+<Style id="fix"><IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/red-blank.png</href></Icon></IconStyle></Style>
+<Style id="exp"><IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href></Icon></IconStyle></Style>
+<Style id="ent"><IconStyle><Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href></Icon></IconStyle></Style>
+<Placemark><MultiGeometry>
+<LineString><altitudeMode>absolute</altitudeMode><coordinates>
+174.77670004,-41.27839998,30.00
+174.77788868,-41.27842294,21.28
+</coordinates></LineString></MultiGeometry></Placemark>
+<Placemark><Point><coordinates>174.77788868,-41.27842294,21.28</coordinates></Point><name>e</name></Placemark>
+<Placemark><Point><coordinates>174.77670004,-41.27839998,30.00</coordinates></Point><name>bh</name></Placemark>
+</Document></kml>

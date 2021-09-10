@@ -1,0 +1,4 @@
+; pos=gpx warn=0
+*cs long-lat
+*cs out UTM60S
+*fix bh reference 174.7767 -41.2784 30
