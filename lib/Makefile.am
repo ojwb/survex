@@ -41,9 +41,6 @@ dist_gtksourceview3_DATA = survex.lang
 gtksourceview4dir = $(datadir)/gtksourceview-4/language-specs
 dist_gtksourceview4_DATA = survex.lang
 
-projdatadir = $(pkgdatadir)/proj
-dist_projdata_DATA = proj/esri
-
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
 
