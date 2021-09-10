@@ -47,8 +47,7 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 const unsigned long DEFAULT_HGT_DIM = 3601;
 const unsigned long DEFAULT_HGT_SIZE = sqrd(DEFAULT_HGT_DIM) * 2;
@@ -3025,6 +3024,8 @@ class AvenBusyCursor {
     }
 };
 
+static void discarding_proj_logger(void *, int, const char *) { }
+
 void GfxCore::DrawTerrain()
 {
     if (!dem) return;
@@ -3033,18 +3034,26 @@ void GfxCore::DrawTerrain()
 
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
-#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
-    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
-    if (!pj_in) {
-	ToggleTerrain();
-	delete [] dem;
-	dem = NULL;
-	hourglass.stop();
-	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
-	return;
+
+    /* Prevent stderr spew from PROJ. */
+    proj_log_func(PJ_DEFAULT_CTX, nullptr, discarding_proj_logger);
+
+#define WGS84_DATUM_STRING "EPSG:4326"
+
+    PJ* pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+				    WGS84_DATUM_STRING,
+				    m_Parent->GetCSProj().c_str(),
+				    NULL);
+
+    if (pj) {
+	// Normalise the output order so x is longitude and y latitude - by default
+	// new PROJ has them switched for EPSG:4326 which just seems confusing.
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	proj_destroy(pj);
+	pj = pj_norm;
     }
-    static projPJ pj_out = pj_init_plus(m_Parent->GetCSProj().c_str());
-    if (!pj_out) {
+
+    if (!pj) {
 	ToggleTerrain();
 	delete [] dem;
 	dem = NULL;
@@ -3058,7 +3067,7 @@ void GfxCore::DrawTerrain()
     const Vector3 & off = m_Parent->GetOffset();
     vector<Vector3> prevcol(dem_height + 1);
     for (size_t x = 0; x < dem_width; ++x) {
-	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
+	PJ_COORD coord = {o_x + x * step_x, 0.0, 0.0, HUGE_VAL};
 	Vector3 prev;
 	for (size_t y = 0; y < dem_height; ++y) {
 	    unsigned short elev = dem[x + y * dem_width];
@@ -3079,13 +3088,20 @@ void GfxCore::DrawTerrain()
 	    if (Z == nodata_value) {
 		pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
 	    } else {
-		double X = X_;
-		double Y = (o_y - y * step_y) * DEG_TO_RAD;
-		pj_transform(pj_in, pj_out, 1, 1, &X, &Y, &Z);
-		pt = Vector3(X, Y, Z) - off;
-		double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
-		if (dist_2 > r_sqrd) {
+		coord.xyzt.y = o_y - y * step_y;
+		coord.xyzt.z = Z;
+		PJ_COORD r = proj_trans(pj, PJ_FWD, coord);
+		if (r.xyzt.x == HUGE_VAL ||
+		    r.xyzt.y == HUGE_VAL ||
+		    r.xyzt.z == HUGE_VAL) {
 		    pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+		    // FIXME report?
+		} else {
+		    pt = Vector3(r.xyzt.x, r.xyzt.y, r.xyzt.z) - off;
+		    double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
+		    if (dist_2 > r_sqrd) {
+			pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+		    }
 		}
 	    }
 	    if (x > 0 && y > 0) {
@@ -3163,6 +3179,8 @@ void GfxCore::DrawTerrain()
 	 */
 	error(/*No terrain data near area of survey*/161);
     }
+
+    proj_destroy(pj);
 }
 
 // Plot blobs.
