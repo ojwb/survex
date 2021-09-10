@@ -65,7 +65,13 @@
 ./csbad.svx:24:9: error: Coordinate system unsuitable for output
  *cs out jtsk03
          ^~~~~~
-./csbad.svx:32: error: Failed to convert coordinates: latitude or longitude exceeded limits
+./csbad.svx:25:9: error: Coordinate system unsuitable for output
+ *cs out EPSG:4326
+         ^~~~~~~~~
+./csbad.svx:26:9: error: Coordinate system unsuitable for output
+ *cs out ESRI:104305
+         ^~~~~~~~~~~
+./csbad.svx:34: error: Failed to convert coordinates: latitude or longitude exceeded limits
  *fix 2 reference 179 -89 1000
 
 Removing trailing traverses...
@@ -89,4 +95,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    2 0-nodes.
-There were 0 warning(s) and 24 error(s) - no output files produced.
+There were 0 warning(s) and 26 error(s) - no output files produced.
