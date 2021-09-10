@@ -39,7 +39,7 @@
 
 using namespace std;
 
-#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
+#define WGS84_DATUM_STRING "EPSG:4326"
 
 static void
 html_escape(FILE *fh, const char *s)
@@ -73,6 +73,16 @@ KML::KML(const char * input_datum, bool clamp_to_ground_)
     pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
 				input_datum, WGS84_DATUM_STRING,
 				NULL);
+
+    if (pj) {
+	// Normalise the output order so x is longitude and y latitude - by
+	// default new PROJ has them switched for EPSG:4326 which just seems
+	// confusing.
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	proj_destroy(pj);
+	pj = pj_norm;
+    }
+
     if (!pj) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
 	m = wxString::Format(m.c_str(), input_datum);
