@@ -833,7 +833,42 @@ v03d:
 	    */
 	   size_t real_len = strlen(title);
 	   if (real_len != title_len) {
-	       pimg->cs = my_strdup(title + real_len + 1);
+	       char * cs = title + real_len + 1;
+	       if (memcmp(cs, "+init=", 6) == 0) {
+		   /* PROJ 5 and later don't handle +init=esri:<number> but
+		    * that's what cavern used to put in .3d files for
+		    * coordinate systems specified using ESRI codes.  We parse
+		    * and convert the strings cavern used to generate and
+		    * convert to the form ESRI:<number> which is still
+		    * understood.
+		    *
+		    * PROJ 6 and later don't recognise +init=epsg:<number>
+		    * by default and don't apply datum shift terms in some
+		    * cases, so we also convert these to the form
+		    * EPSG:<number>.
+		    */
+		   char * p = cs + 6;
+		   if (p[4] == ':' && isdigit((unsigned char)p[5]) &&
+		       ((memcmp(p, "epsg", 4) == 0 || memcmp(p, "esri", 4) == 0))) {
+		       p = p + 6;
+		       while (isdigit((unsigned char)*p)) {
+			   ++p;
+		       }
+		       // Allow +no_defs to be omitted as it seems to not
+		       // actually do anything with recent PROJ - cavern always
+		       // included it, but other software generating 3d files
+		       // may not have.
+		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
+			   int i;
+			   cs = cs + 6;
+			   for (i = 0; i < 4; ++i) {
+			       cs[i] = toupper(cs[i]);
+			   }
+			   *p = '\0';
+		       }
+		   }
+	       }
+	       pimg->cs = my_strdup(cs);
 	   }
        }
        if (!pimg->title) {
