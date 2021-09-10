@@ -30,7 +30,7 @@ extern "C" {
 #include "osalloc.h"
 
 /* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
- * hooks to setup proj4's search path to look for data files we bundle.
+ * hooks to setup PROJ's search path to look for data files we bundle.
  */
 #ifdef MSG_SETUP_PROJ_SEARCH_PATH
 # define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1

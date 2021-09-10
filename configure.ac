@@ -200,22 +200,20 @@ PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
 AC_SUBST([LIBAV_LIBS])
 AC_SUBST([LIBAV_CFLAGS])
 
-dnl Check for PROJ4
-PKG_CHECK_MODULES([PROJ], [proj], [
+dnl Check for PROJ.
+PKG_CHECK_MODULES([PROJ], [proj >= 5], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
-  dnl found.
-  AC_CHECK_LIB([proj], [pj_init_plus], [
+  dnl found.  proj_create() was added in PROJ 5.
+  AC_CHECK_LIB([proj], [proj_create], [
       PROJ_LIBS=-lproj
       PROJ_CFLAGS=
     ], [
-      AC_MSG_ERROR([PROJ4 required for coordinate transformations])
+      AC_MSG_ERROR([PROJ required for coordinate transformations])
     ])
 ])
 AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
-dnl Check for new-style PROJ header.
-AC_CHECK_HEADERS([proj.h])
 
 dnl Checks for header files.
 AC_HEADER_STDC

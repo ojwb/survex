@@ -33,13 +33,11 @@
 #include <math.h>
 #include <float.h>
 
-#ifdef HAVE_PROJ_H
-/* Work around broken check in proj.h:
+/* Work around broken check in proj.h with PROJ 5.x:
  * https://github.com/OSGeo/PROJ/issues/1523
  */
-# ifndef PROJ_H
-#  include <proj.h>
-# endif
+#ifndef PROJ_H
+# include <proj.h>
 #endif
 #define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include <proj_api.h>

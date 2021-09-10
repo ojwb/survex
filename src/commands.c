@@ -26,13 +26,11 @@
 #include <stddef.h> /* for offsetof */
 #include <string.h>
 
-#ifdef HAVE_PROJ_H
-/* Work around broken check in proj.h:
+/* Work around broken check in proj.h with PROJ 5.x:
  * https://github.com/OSGeo/PROJ/issues/1523
  */
-# ifndef PROJ_H
-#  include <proj.h>
-# endif
+#ifndef PROJ_H
+# include <proj.h>
 #endif
 #define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
 #include <proj_api.h>
@@ -49,27 +47,6 @@
 #include "out.h"
 #include "readval.h"
 #include "str.h"
-
-#ifndef HAVE_PROJ_H
-/*** Extracted from PROJ 4.x projects.h (yuck, but grass also does this): */
-struct DERIVS {
-    double x_l, x_p; /* derivatives of x for lambda-phi */
-    double y_l, y_p; /* derivatives of y for lambda-phi */
-};
-
-struct FACTORS {
-    struct DERIVS der;
-    double h, k;	/* meridinal, parallel scales */
-    double omega, thetap;	/* angular distortion, theta prime */
-    double conv;	/* convergence */
-    double s;		/* areal scale factor */
-    double a, b;	/* max-min scale error */
-    int code;		/* info as to analytics, see following */
-};
-
-int pj_factors(projLP, projPJ *, double, struct FACTORS *);
-/***/
-#endif
 
 static projPJ proj_wgs84;
 
@@ -1730,19 +1707,11 @@ cmd_declination(void)
 	/* Invalidate cached declination. */
 	pcs->declination = HUGE_REAL;
 	{
-#ifdef HAVE_PROJ_H
 	    PJ_COORD lp;
 	    lp.lp.lam = x;
 	    lp.lp.phi = y;
 	    PJ_FACTORS factors = proj_factors(proj_out, lp);
 	    pcs->convergence = factors.meridian_convergence;
-#else
-	    projLP lp = { x, y };
-	    struct FACTORS factors;
-	    memset(&factors, 0, sizeof(factors));
-	    pj_factors(lp, proj_out, 0.0, &factors);
-	    pcs->convergence = factors.conv;
-#endif
 	}
     } else {
 	/* *declination D UNITS */

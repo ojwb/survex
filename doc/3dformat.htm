@@ -55,8 +55,9 @@ can be omitted along with the separating zero byte before them.
  <ul>
   <li>Survey title: Human readable description of the data in the file.
 There's no length limit on this string.
-  <li>Coordinate system: PROJ4 string describing the coordinate
-system in use.
+  <li>Coordinate system: string describing the coordinate system in use
+which can be passed to PROJ.  For a coordinate system with an EPSG code
+<code>EPSG:</code> followed by the code number can be used.
  </ul>
 <li> Timestamp: A string consisting of an '@' followed by a count of
 seconds since the start of 1970 in UTC ("Unix time_t") as a string

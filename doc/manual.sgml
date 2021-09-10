@@ -1451,7 +1451,7 @@ deviations specified also didn't work until 1.2.21.
 The currently supported coordinate systems are:
 </Para>
 
-<Para>CUSTOM followed by a PROJ4 string (like in the example above).</Para>
+<Para>CUSTOM followed by a PROJ string (like in the example above).</Para>
 
 <Para>EPSG: followed by a positive integer code.  EPSG codes cover most
 coordinate systems in use, and PROJ supports many of these.  The website
