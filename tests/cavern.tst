@@ -199,15 +199,15 @@ for file in $TESTS ; do
     test $exitcode = 0 || exit 1
   fi
   if test -n "$warn" ; then
-    w=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp.out`
-    if test x"$w" != x"$warn" ; then
+    w=`sed '$!d;s/^There were \([0-9]*\).*/\1/p;d' tmp.out`
+    if test x"${w:-0}" != x"$warn" ; then
       test -n "$VERBOSE" && echo "Got $w warnings, expected $warn"
       exit 1
     fi
   fi
   if test -n "$error" ; then
-    e=`sed '$!d;s/^There were .* and \([0-9][0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp.out`
-    if test x"$e" != x"$error" ; then
+    e=`sed '$!d;s/^There were .* and \([0-9][0-9]*\).*/\1/p;d' tmp.out`
+    if test x"${e:-0}" != x"$error" ; then
       test -n "$VERBOSE" && echo "Got $e errors, expected $error"
       exit 1
     fi
