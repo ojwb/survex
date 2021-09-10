@@ -25,8 +25,6 @@
 #include <config.h>
 #endif
 
-#define MSG_SETUP_PROJ_SEARCH_PATH 1
-
 #include "aven.h"
 #include "log.h"
 #include "gla.h"
