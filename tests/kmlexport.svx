@@ -1,0 +1,5 @@
+; pos=kml warn=0
+*cs long-lat
+*cs out UTM60S
+*fix bh 174.7767 -41.2784 30
+bh e 100 090 -5
