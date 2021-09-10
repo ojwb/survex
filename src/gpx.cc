@@ -74,11 +74,14 @@ GPX::GPX(const char * input_datum)
 				input_datum, WGS84_DATUM_STRING,
 				NULL);
 
-    // Normalise the output order so x is longitude and y latitude - by default
-    // new PROJ has them switched for EPSG:4326 which just seems confusing.
-    PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
-    proj_destroy(pj);
-    pj = pj_norm;
+    if (pj) {
+	// Normalise the output order so x is longitude and y latitude - by
+	// default new PROJ has them switched for EPSG:4326 which just seems
+	// confusing.
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	proj_destroy(pj);
+	pj = pj_norm;
+    }
 
     if (!pj) {
 	wxString m = wmsg(/*Failed to initialise input coordinate system “%s”*/287);
