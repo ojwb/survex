@@ -1724,9 +1724,9 @@ cmd_declination(void)
 	    return;
 	}
 	pcs->z[Q_DECLINATION] = HUGE_REAL;
-	pcs->dec_x = x;
-	pcs->dec_y = y;
-	pcs->dec_z = z;
+	pcs->dec_lat = y;
+	pcs->dec_lon = x;
+	pcs->dec_alt = z;
 	/* Invalidate cached declination. */
 	pcs->declination = HUGE_REAL;
 	{
