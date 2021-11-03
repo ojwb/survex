@@ -867,6 +867,41 @@ v03d:
 			   *p = '\0';
 		       }
 		   }
+	       } else if (memcmp(cs, "+proj=", 6) == 0) {
+		   /* Convert S_MERC and UTM proj strings which cavern used
+		    * to generate to their corresponding EPSG:<number> codes.
+		    */
+		   char * p = cs + 6;
+		   if (memcmp(p, "utm +ellps=WGS84 +datum=WGS84 +units=m +zone=", 45) == 0) {
+		       int n = 0;
+		       p += 45;
+		       while (isdigit((unsigned char)*p)) {
+			   n = n * 10 + (*p - '0');
+			   ++p;
+		       }
+		       if (memcmp(p, " +south", 7) == 0) {
+			   p += 7;
+			   n += 32700;
+		       } else {
+			   n += 32600;
+		       }
+		       // Allow +no_defs to be omitted as it seems to not
+		       // actually do anything with recent PROJ - cavern always
+		       // included it, but other software generating 3d files
+		       // may not have.
+		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
+			   sprintf(cs, "EPSG:%d", n);
+		       }
+		   } else if (memcmp(p, "merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null", 89) == 0) {
+		       p = p + 89;
+		       // Allow +no_defs to be omitted as it seems to not
+		       // actually do anything with recent PROJ - cavern always
+		       // included it, but other software generating 3d files
+		       // may not have.
+		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
+			   strcpy(cs, "EPSG:3857");
+		       }
+		   }
 	       }
 	       pimg->cs = my_strdup(cs);
 	   }
