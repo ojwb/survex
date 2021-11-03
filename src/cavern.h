@@ -338,8 +338,12 @@ typedef struct Settings {
    int flags;
    projPJ proj;
    /* Location at which we calculate the declination if
-    * z[Q_DECLINATION] == HUGE_REAL. */
-   real dec_x, dec_y, dec_z;
+    * z[Q_DECLINATION] == HUGE_REAL.
+    *
+    * Latitude and longitude are in radians; altitude is in metres above the
+    * ellipsoid.
+    */
+   real dec_lat, dec_lon, dec_alt;
    /* Cached auto-declination in radians, or HUGE_REAL for no cached value.
     * Only meaningful if date1 != -1.
     */

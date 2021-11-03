@@ -1018,7 +1018,7 @@ handle_compass(real *p_var)
 	  int avg_days = (pcs->meta->days1 + pcs->meta->days2) / 2;
 	  double dat = julian_date_from_days_since_1900(avg_days);
 	  /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
-	  declination = thgeomag(pcs->dec_y, pcs->dec_x, pcs->dec_z, dat);
+	  declination = thgeomag(pcs->dec_lat, pcs->dec_lon, pcs->dec_alt, dat);
       }
       declination -= pcs->convergence;
       /* We cache the calculated declination as the calculation is relatively
