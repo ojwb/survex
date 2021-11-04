@@ -43,8 +43,16 @@ already covered).
 <P>You'll need automake 1.5 or later (earlier versions don't support
 per-executable CFLAGS; 1.6 has been tested and works, but wasn't a
 very stable release - automake 1.6.1 is a better bet)
-and autoconf 2.50 or later (autoconf 2.52, 2.53 and 2.64 have all
+and autoconf 2.50 or later (autoconf 2.52, 2.53, 2.64 and 2.71 have all
 been used successfully).
+
+<p>The wxWidgets library is used for aven's UI.  Currently >= 3.0.0 is
+supported.
+
+<p>The PROJ library is used for coordinate conversions.  Currently >= 8.2.0 is
+supported.
+
+<P>The Perl Locale::PO module is used for process message translation files.
 
 <P>For building the documentation you'll need docbook-utils (also
 known as docbook-tools) and w3m.
@@ -54,7 +62,7 @@ known as docbook-tools) and w3m.
 <P>On Debian, you can install the required packages using:
 
 <pre>
-sudo apt-get install autoconf automake inkscape netpbm docbook-utils w3m unifont
+sudo apt-get install autoconf automake liblocale-po-perl libproj-dev libwxgtk3.0-gtk3-dev inkscape netpbm docbook-utils w3m unifont
 </pre>
 
 <H2>Building on Non-Unix Platforms</H2>
