@@ -1,3 +1,57 @@
+up to: 1ed5c4e6888925e9f39f9e954411d7192ee30ecf
+
+Changes in 1.4.0 (2021-11-04):
+
+* New release series to mark that Survex now uses the new PROJ API, and
+  requires PROJ >= 8.2.0.  Survex 1.2.x will continue to support PROJ < 8
+  (and won't support newer PROJ versions).  PROJ 8.0.x and 8.1.x aren't
+  supported by Survex.
+
+  Due to these changes, PROJ will now convert directly between coordinate
+  systems where it knows how to, instead of always converting via WGS84.
+  This means conversions may now be more accurate in some cases, and you may
+  notice station coordinates changing - these should be for the better.
+
+  Also, the vertical datum is now taken into account automatically, and
+  terrain data now aligns much better vertically with surveys.
+
+  Fixes #102, reported by Bas Couwenberg.
+
+* aven: Clicking and holding the left mouse button on the compass or clino,
+  then (while still holding) clicking the right button no longer causes a
+  wxWidgets assertion to fail.  Reported by echarlie.
+
+* img library: Rewrite certain proj strings when reading 3d files for
+  better compatibility with newer PROJ versions, where use of proj
+  strings is strongly discouraged.
+
+  `+init=epsg:` followed by a code number is rewritten to `EPSG:`.
+
+  `+init=esri:` followed by a code number is rewritten to `ESRI:`.
+
+  The proj strings which cavern used to put in 3d files for `S-MERC` and UTM
+  zones are rewritten to `EPSG:` follow by the appropriate code number.
+
+* Also install survex.lang for gtksourceview 4. Fixes #125, reported by Martin
+  Green.
+
+* Fix missing data style in interleaved example in manual.  Reported by
+  echarlie.
+
+* Use jw from docbook-utils instead of sgmltools-lite to process the manual.
+  The sgmltools-lite homepage says it's no longer being developed, and suggests
+  docbook-tools (which Debian packages as docbook-utils) as a replacement.
+
+* doc/HACKING.htm: Update Debian packages to install
+
+* Add simple tests for GPX and KML export.
+
+* Expand cavern testcase csbad.
+
+* cavern.tst: Parse warning/error counts more robustly.  Previously we'd get
+  confused if the final line just contained an integer, e.g. if we end listing
+  stations not attached to a fixed point.
+
 Changes in 1.2.45 (2021-03-09):
 
 * Avoid undefined signed shifts in 3d file handling.  Survex itself is only
