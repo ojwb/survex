@@ -1,6 +1,6 @@
-up to: 1ed5c4e6888925e9f39f9e954411d7192ee30ecf
+up to: cccc545e42412c10d490e43a00555fb9ece3c271
 
-Changes in 1.4.0 (2021-11-04):
+Changes in 1.4.0 (2021-11-05):
 
 * New release series to mark that Survex now uses the new PROJ API, and
   requires PROJ >= 7.2.0.  Survex 1.2.x will continue to support PROJ < 8
