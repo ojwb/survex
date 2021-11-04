@@ -204,8 +204,8 @@ dnl Check for PROJ.
 PKG_CHECK_MODULES([PROJ], [proj >= 8.2.0], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
-  dnl found.  proj_create() was added in PROJ 5.
-  AC_CHECK_LIB([proj], [proj_create], [
+  dnl found.  proj_trans_bounds() was added in PROJ 8.2.0.
+  AC_CHECK_LIB([proj], [proj_trans_bounds], [
       PROJ_LIBS=-lproj
       PROJ_CFLAGS=
     ], [
