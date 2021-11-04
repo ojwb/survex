@@ -200,8 +200,8 @@ PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
 AC_SUBST([LIBAV_LIBS])
 AC_SUBST([LIBAV_CFLAGS])
 
-dnl Check for PROJ4
-PKG_CHECK_MODULES([PROJ], [proj], [
+dnl Check for PROJ.
+PKG_CHECK_MODULES([PROJ], [proj < 8], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
   dnl found.
@@ -209,7 +209,7 @@ PKG_CHECK_MODULES([PROJ], [proj], [
       PROJ_LIBS=-lproj
       PROJ_CFLAGS=
     ], [
-      AC_MSG_ERROR([PROJ4 required for coordinate transformations])
+      AC_MSG_ERROR([PROJ required for coordinate transformations])
     ])
 ])
 AC_SUBST([PROJ_LIBS])
