@@ -5,7 +5,7 @@ Changes in 1.4.0 (2021-11-04):
 * New release series to mark that Survex now uses the new PROJ API, and
   requires PROJ >= 8.2.0.  Survex 1.2.x will continue to support PROJ < 8
   (and won't support newer PROJ versions).  PROJ 8.0.x and 8.1.x aren't
-  supported by Survex.
+  supported by Survex.  Fixes #102, reported by Bas Couwenberg.
 
   Due to these changes, PROJ will now convert directly between coordinate
   systems where it knows how to, instead of always converting via WGS84.
@@ -13,9 +13,7 @@ Changes in 1.4.0 (2021-11-04):
   notice station coordinates changing - these should be for the better.
 
   Also, the vertical datum is now taken into account automatically, and
-  terrain data now aligns much better vertically with surveys.
-
-  Fixes #102, reported by Bas Couwenberg.
+  terrain data now aligns much better vertically with surveys.  Fixes #56.
 
 * aven: Clicking and holding the left mouse button on the compass or clino,
   then (while still holding) clicking the right button no longer causes a
