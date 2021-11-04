@@ -201,11 +201,11 @@ AC_SUBST([LIBAV_LIBS])
 AC_SUBST([LIBAV_CFLAGS])
 
 dnl Check for PROJ.
-PKG_CHECK_MODULES([PROJ], [proj >= 8.2.0], [
+PKG_CHECK_MODULES([PROJ], [proj >= 7.2.0], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
-  dnl found.  proj_trans_bounds() was added in PROJ 8.2.0.
-  AC_CHECK_LIB([proj], [proj_trans_bounds], [
+  dnl found.  We need proj_crs_get_datum_ensemble() which was added in 7.2.0.
+  AC_CHECK_LIB([proj], [proj_crs_get_datum_ensemble], [
       PROJ_LIBS=-lproj
       PROJ_CFLAGS=
     ], [

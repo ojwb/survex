@@ -27,6 +27,11 @@
 #include <string.h>
 
 #include <proj.h>
+#if PROJ_VERSION_MAJOR < 8 || \
+    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
+// Needed for proj_factors workaround
+# include <proj_experimental.h>
+#endif
 
 #include "cavern.h"
 #include "commands.h"
@@ -1753,6 +1758,45 @@ cmd_declination(void)
 	    PJ_COORD lp;
 	    lp.lp.lam = lon;
 	    lp.lp.phi = lat;
+#if PROJ_VERSION_MAJOR < 8 || \
+    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
+	    // Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
+	    // cases we need (e.g. a CRS specified as "EPSG:<number>").
+	    switch (proj_get_type(pj)) {
+		case PJ_TYPE_PROJECTED_CRS: {
+		    // If it is a projected CRS, then compute the factors on the conversion
+		    // associated to it. We need to start from a temporary geographic CRS
+		    // using the same datum as the one of the projected CRS, and with
+		    // input coordinates being in longitude, latitude order in radian,
+		    // to be consistent with the expectations of the lp input parameter.
+
+		    PJ * geodetic_crs = proj_get_source_crs(PJ_DEFAULT_CTX, pj);
+		    if (!geodetic_crs)
+			break;
+		    PJ * datum = proj_crs_get_datum(PJ_DEFAULT_CTX, geodetic_crs);
+		    PJ * datum_ensemble = proj_crs_get_datum_ensemble(PJ_DEFAULT_CTX, geodetic_crs);
+		    PJ * cs = proj_create_ellipsoidal_2D_cs(
+			PJ_DEFAULT_CTX, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Radian", 1.0);
+		    PJ * temp = proj_create_geographic_crs_from_datum(
+			PJ_DEFAULT_CTX, "unnamed crs", datum ? datum : datum_ensemble,
+			cs);
+		    proj_destroy(datum);
+		    proj_destroy(datum_ensemble);
+		    proj_destroy(cs);
+		    proj_destroy(geodetic_crs);
+		    PJ * newOp = proj_create_crs_to_crs_from_pj(PJ_DEFAULT_CTX, temp, pj, NULL, NULL);
+		    proj_destroy(temp);
+		    if (!newOp) {
+			break;
+		    }
+		    proj_destroy(pj);
+		    pj = newOp;
+		    break;
+		}
+		default:
+		    break;
+	    }
+#endif
 	    PJ_FACTORS factors = proj_factors(pj, lp);
 	    pcs->convergence = factors.meridian_convergence;
 	    proj_destroy(pj);

@@ -3,9 +3,9 @@ up to: 1ed5c4e6888925e9f39f9e954411d7192ee30ecf
 Changes in 1.4.0 (2021-11-04):
 
 * New release series to mark that Survex now uses the new PROJ API, and
-  requires PROJ >= 8.2.0.  Survex 1.2.x will continue to support PROJ < 8
-  (and won't support newer PROJ versions).  PROJ 8.0.x and 8.1.x aren't
-  supported by Survex.  Fixes #102, reported by Bas Couwenberg.
+  requires PROJ >= 7.2.0.  Survex 1.2.x will continue to support PROJ < 8
+  (and won't support newer PROJ versions).  Fixes #102, reported by Bas
+  Couwenberg.
 
   Due to these changes, PROJ will now convert directly between coordinate
   systems where it knows how to, instead of always converting via WGS84.

@@ -176,6 +176,7 @@ for file in $TESTS ; do
     input="./$file.svx" ;;
   esac
   outfile=$basefile.out
+  outfile2=$basefile.altout
   posfile=$basefile.pos
   rm -f tmp.*
   pwd=`pwd`
@@ -286,11 +287,18 @@ for file in $TESTS ; do
   esac
 
   if test -f "$outfile" ; then
-    # Check output is as expected, working around Apple's stone-age sed.
-    if test -n "$VERBOSE" ; then
-      sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|diff "$outfile" - || exit 1
+    # Version and time used info from output, working around Apple's stone-age
+    # sed.
+    sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out > tmp.out2
+    mv tmp.out2 tmp.out
+    # Check output is as expected.
+    if cmp -s "$outfile" tmp.out ; then
+      : # Matches.
+    elif [ -f "$outfile2" ] && cmp -s "$outfile2" tmp.out ; then
+      : # Matches alternative output (e.g. due to older PROJ).
     else
-      sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out|cmp -s "$outfile" - || exit 1
+      test -z "$VERBOSE" || diff "$outfile" tmp.out
+      exit 1
     fi
   fi
   rm -f tmp.*

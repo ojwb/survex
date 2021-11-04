@@ -1,0 +1,98 @@
+./csbad.svx:2: error: Station "1" fixed before CS command first used
+./csbad.svx:3:5: error: Unknown coordinate system
+ *cs EPSG:-1
+     ^~~~~~~
+./csbad.svx:4:5: error: Unknown coordinate system
+ *cs ERSI:1234
+     ^~~~~~~~~
+./csbad.svx:5:5: error: Unknown coordinate system
+ *cs EUR79Z31
+     ^~~~~~~~
+./csbad.svx:6:11: error: End of line not blank
+ *cs IJTSK 03
+           ^
+./csbad.svx:7:5: error: Unknown coordinate system
+ *cs IJTSK04
+     ^~~~~~~
+./csbad.svx:8:5: error: Unknown coordinate system
+ *cs IJTSK99
+     ^~~~~~~
+./csbad.svx:9:5: error: Unknown coordinate system
+ *cs IJTSK3
+     ^~~~~~
+./csbad.svx:10:5: error: Unknown coordinate system
+ *cs IJTSK032
+     ^~~~~~~~
+./csbad.svx:11:5: error: Unknown coordinate system
+ *cs IJTSK03a
+     ^~~~~~~~
+./csbad.svx:12:5: error: Unknown coordinate system
+ *cs lat-lat
+     ^~~~~~~
+./csbad.svx:13:5: error: Unknown coordinate system
+ *cs Long-LONG
+     ^~~~~~~~~
+./csbad.svx:14:5: error: Unknown coordinate system
+ *cs OSGB:ZZ
+     ^~~~~~~
+./csbad.svx:15:5: error: Unknown coordinate system
+ *cs OSGB:HI
+     ^~~~~~~
+./csbad.svx:16:5: error: Unknown coordinate system
+ *cs S-LONG
+     ^~~~~~
+./csbad.svx:17:5: error: Unknown coordinate system
+ *cs UTM0
+     ^~~~
+./csbad.svx:18:5: error: Unknown coordinate system
+ *cs UTM61N
+     ^~~~~~
+./csbad.svx:19:5: error: Unknown coordinate system
+ *cs UTM61S
+     ^~~~~~
+./csbad.svx:20:12: error: Invalid coordinate system: unknown projection id
+ *cs custom "+proj=ection"
+            ^~~~~~~~~~~~~~
+./csbad.svx:21:9: error: Unknown coordinate system
+ *cs out lat-long
+         ^~~~~~~~
+./csbad.svx:22:9: error: Coordinate system unsuitable for output
+ *cs out long-lat
+         ^~~~~~~~
+./csbad.svx:23:9: error: Coordinate system unsuitable for output
+ *cs out jtsk
+         ^~~~
+./csbad.svx:24:9: error: Coordinate system unsuitable for output
+ *cs out jtsk03
+         ^~~~~~
+./csbad.svx:25:9: error: Coordinate system unsuitable for output
+ *cs out EPSG:4326
+         ^~~~~~~~~
+./csbad.svx:26:9: error: Coordinate system unsuitable for output
+ *cs out ESRI:104305
+         ^~~~~~~~~~~
+./csbad.svx:34: error: Failed to convert coordinates: latitude or longitude exceeded limits
+ *fix 2 reference 179 -89 1000
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 0 legs.
+There are 0 loops.
+Survey has 2 connected components.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   2 0-nodes.
+There were 0 warning(s) and 26 error(s) - no output files produced.
