@@ -85,7 +85,8 @@ maintainer-clean-local:
 
 manual: manual/stampfile
 manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.ac
-	$(JW) --backend html --dsl 'custom.dsl#html' manual.sgml
+	rm -rf manual
+	$(JW) --backend html --dsl 'custom.dsl#html' --output manual manual.sgml
 	cp caution.png note.png manual
 	touch manual/stampfile
 
