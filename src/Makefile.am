@@ -116,8 +116,10 @@ avenpal.h: $(srcdir)/gdtconvert $(srcdir)/gradient.pov
 img2aven.h: $(srcdir)/gen_img2aven
 	$(srcdir)/gen_img2aven > tmp-img2aven.h && mv tmp-img2aven.h img2aven.h
 
+PYTHON := python3
+
 thgeomagdata.h: $(srcdir)/igrf2c.py $(srcdir)/igrf13coeffs.txt
-	python $(srcdir)/igrf2c.py $(srcdir)/igrf13coeffs.txt
+	$(PYTHON) $(srcdir)/igrf2c.py $(srcdir)/igrf13coeffs.txt
 	mv ../thgeomagdata.h .
 
 MAINTAINERCLEANFILES =\
