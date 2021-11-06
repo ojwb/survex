@@ -262,7 +262,7 @@ for file in $TESTS ; do
     # Normalise exported file if required.
     case $pos in
       gpx)
-	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,' < "$tmpfile" > tmp.tmp
+	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,;s,survex [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*,survex REDACTED,' < "$tmpfile" > tmp.tmp
 	mv tmp.tmp "$tmpfile"
 	;;
     esac
