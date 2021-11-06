@@ -26,8 +26,8 @@ suffix on the development one.  You'll need both to build Survex.
   also the OpenGL development libraries if these aren't pulled in by installing
   wxWidgets.
 
-* Version 5.0 or later of the PROJ library is needed for coordinate conversion
-  functionality.
+* Version 7.2.0 or later of the PROJ library is needed for coordinate
+  conversion functionality.
 
 * Optionally, FFMPEG is used if available to implement Aven's movie export
   feature.  If not available this feature is disabled.

@@ -1,6 +1,4 @@
-up to: cccc545e42412c10d490e43a00555fb9ece3c271
-
-Changes in 1.4.0 (2021-11-05):
+Changes in 1.4.0 (2021-11-06):
 
 * New release series to mark that Survex now uses the new PROJ API, and
   requires PROJ >= 7.2.0.  Survex 1.2.x will continue to support PROJ < 8
@@ -27,8 +25,8 @@ Changes in 1.4.0 (2021-11-05):
 
   `+init=esri:` followed by a code number is rewritten to `ESRI:`.
 
-  The proj strings which cavern used to put in 3d files for `S-MERC` and UTM
-  zones are rewritten to `EPSG:` follow by the appropriate code number.
+  The proj strings which cavern used to put in 3d files for UTM zones and
+  S-MERC are rewritten to `EPSG:` follow by the appropriate code number.
 
 * Also install survex.lang for gtksourceview 4. Fixes #125, reported by Martin
   Green.
@@ -41,6 +39,8 @@ Changes in 1.4.0 (2021-11-05):
   docbook-tools (which Debian packages as docbook-utils) as a replacement.
 
 * doc/HACKING.htm: Update Debian packages to install
+
+* doc/HACKING.htm: Update details of setting up mingw cross-build environment.
 
 * Add simple tests for GPX and KML export.
 

@@ -82,7 +82,7 @@ joining it, e.g. at a T-junction. And so on.
 
 <article Status="draft" id="index">
  <articleinfo>
-  <Title><Application>Survex</Application> <!--VERSION-->1.2.45 Manual</Title>
+  <Title><Application>Survex</Application> <!--VERSION-->1.4.0 Manual</Title>
   <AuthorGroup>
    <Author>
     <FirstName>Olly</FirstName>
@@ -128,7 +128,7 @@ manual.
 
 <Para><Application>Survex</Application> is a multi-platform open-source cave surveying
 package.
-Version 1.2 runs on UNIX, Microsoft Windows, and macOS.
+Versions 1.2 and later run on UNIX, Microsoft Windows, and macOS.
 We're investigating support for phones and tablets.
 </Para>
 
