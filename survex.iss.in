@@ -85,7 +85,6 @@ Source: "*.png"; DestDir: "{app}\images"
 Source: "*.msg"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
 Source: "manual\*.*"; DestDir: "{app}\manual"
-Source: "proj\*.*"; DestDir: "{app}\proj"
 ; Generate iss file for including the wxstd.mo files
 #include "i18nfiles.iss"
 ; Also install survexport.exe as 3dtopos.exe so existing Tunnel releases work.
