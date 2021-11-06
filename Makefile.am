@@ -66,7 +66,7 @@ mingw_iss : survex.iss
 	  a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$$!\1!'`; \
 	  mkdir iss_tmp/$$a; \
 	  cp "$$f" iss_tmp/$$a; \
-	  echo 'Source: "'"$$a"'\wxstd.mo"; DestDir: "{app}\'"$$a"'"' ; \
+	  printf 'Source: "%s\\wxstd.mo"; DestDir: "{app}\\%s"\n' "$$a" "$$a"; \
 	done > iss_tmp/i18nfiles.iss
 	cp lib/*.isl iss_tmp
 	mkdir iss_tmp/proj

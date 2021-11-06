@@ -92,7 +92,7 @@ PKG_CONFIG_PATH=$cross_pkg_config_path \
 PKG_CONFIG_LIBDIR=$cross_pkg_config_path \
   ./configure --host="$host" --build="$build_platform" WX_CONFIG="$wxc" \
       CC="$CC" CXX="$CXX" CXXFLAGS="-g -O2 -fno-strict-aliasing -Werror" \
-      LDFLAGS='-s -static'
+      LDFLAGS='-s -static' LIBS='-lsqlite3 -lstdc++'
 make CFLAGS='-g -O2 -Werror'
 make mingw_iss
 PATH=$SAVE_PATH
