@@ -29,7 +29,7 @@
 #include <proj.h>
 #if PROJ_VERSION_MAJOR < 8 || \
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
-// Needed for proj_factors workaround
+/* Needed for proj_factors workaround */
 # include <proj_experimental.h>
 #endif
 
@@ -886,9 +886,10 @@ cmd_fix(void)
 						proj_str_out,
 						NULL);
 	     if (transform) {
-		// Normalise the output order so x is longitude and y latitude - by
-		// default new PROJ has them switched for EPSG:4326 which just seems
-		// confusing.
+		/* Normalise the output order so x is longitude and y latitude - by
+		 * default new PROJ has them switched for EPSG:4326 which just seems
+		 * confusing.
+		 */
 		PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
 							       transform);
 		proj_destroy(transform);
@@ -913,7 +914,7 @@ cmd_fix(void)
 	 if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
 	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
 			       proj_errno_string(proj_errno(transform)));
-	    // Set dummy values which are finite.
+	    /* Set dummy values which are finite. */
 	    x = y = z = 0;
 	 }
       } else if (pcs->proj_str) {
@@ -1731,9 +1732,10 @@ cmd_declination(void)
 					       WGS84_DATUM_STRING,
 					       NULL);
 	if (transform) {
-	    // Normalise the output order so x is longitude and y latitude - by
-	    // default new PROJ has them switched for EPSG:4326 which just seems
-	    // confusing.
+	    /* Normalise the output order so x is longitude and y latitude - by
+	     * default new PROJ has them switched for EPSG:4326 which just seems
+	     * confusing.
+	     */
 	    PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
 							   transform);
 	    proj_destroy(transform);
@@ -1755,7 +1757,7 @@ cmd_declination(void)
 	if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
 	   compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
 			      proj_errno_string(proj_errno(transform)));
-	   // Set dummy values which are finite.
+	   /* Set dummy values which are finite. */
 	   x = y = z = 0;
 	}
 	proj_destroy(transform);
@@ -1774,15 +1776,17 @@ cmd_declination(void)
 	    lp.lp.phi = lat;
 #if PROJ_VERSION_MAJOR < 8 || \
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
-	    // Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
-	    // cases we need (e.g. a CRS specified as "EPSG:<number>").
+	    /* Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
+	     * cases we need (e.g. a CRS specified as "EPSG:<number>").
+	     */
 	    switch (proj_get_type(pj)) {
 		case PJ_TYPE_PROJECTED_CRS: {
-		    // If it is a projected CRS, then compute the factors on the conversion
-		    // associated to it. We need to start from a temporary geographic CRS
-		    // using the same datum as the one of the projected CRS, and with
-		    // input coordinates being in longitude, latitude order in radian,
-		    // to be consistent with the expectations of the lp input parameter.
+		    /* If it is a projected CRS, then compute the factors on the conversion
+		     * associated to it. We need to start from a temporary geographic CRS
+		     * using the same datum as the one of the projected CRS, and with
+		     * input coordinates being in longitude, latitude order in radian,
+		     * to be consistent with the expectations of the lp input parameter.
+		     */
 
 		    PJ * geodetic_crs = proj_get_source_crs(PJ_DEFAULT_CTX, pj);
 		    if (!geodetic_crs)

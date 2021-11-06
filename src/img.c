@@ -854,10 +854,11 @@ v03d:
 		       while (isdigit((unsigned char)*p)) {
 			   ++p;
 		       }
-		       // Allow +no_defs to be omitted as it seems to not
-		       // actually do anything with recent PROJ - cavern always
-		       // included it, but other software generating 3d files
-		       // may not.
+		       /* Allow +no_defs to be omitted as it seems to not
+			* actually do anything with recent PROJ - cavern always
+			* included it, but other software generating 3d files
+			* may not.
+			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
 			   int i;
 			   cs = cs + 6;
@@ -885,19 +886,21 @@ v03d:
 		       } else {
 			   n += 32600;
 		       }
-		       // Allow +no_defs to be omitted as it seems to not
-		       // actually do anything with recent PROJ - cavern always
-		       // included it, but other software generating 3d files
-		       // may not have.
+		       /* Allow +no_defs to be omitted as it seems to not
+			* actually do anything with recent PROJ - cavern always
+			* included it, but other software generating 3d files
+			* may not have.
+			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
 			   sprintf(cs, "EPSG:%d", n);
 		       }
 		   } else if (memcmp(p, "merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null", 89) == 0) {
 		       p = p + 89;
-		       // Allow +no_defs to be omitted as it seems to not
-		       // actually do anything with recent PROJ - cavern always
-		       // included it, but other software generating 3d files
-		       // may not have.
+		       /* Allow +no_defs to be omitted as it seems to not
+			* actually do anything with recent PROJ - cavern always
+			* included it, but other software generating 3d files
+			* may not have.
+			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
 			   strcpy(cs, "EPSG:3857");
 		       }
