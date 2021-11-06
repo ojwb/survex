@@ -705,27 +705,42 @@ cmd_begin(void)
    }
 }
 
-extern void
-free_settings(settings *p) {
+static void
+invalidate_pj_cached(void)
+{
+    /* Invalidate the cached PJ. */
+    if (pj_cached) {
+	proj_destroy(pj_cached);
+	pj_cached = NULL;
+    }
+}
+
+void pop_settings()
+{
+   settings * p = pcs;
+   pcs = pcs->next;
+   SVX_ASSERT(pcs);
+
+   if (p->proj_str != pcs->proj_str) {
+       if (!p->proj_str || !pcs->proj_str ||
+	   strcmp(p->proj_str, pcs->proj_str) != 0) {
+	   invalidate_pj_cached();
+       }
+       /* free proj_str if not used by parent */
+       osfree(p->proj_str);
+   }
+
    /* don't free default ordering or ordering used by parent */
-   const reading *order = p->ordering;
-   if (order != default_order && (!p->next || order != p->next->ordering))
-      osfree((reading*)order);
+   if (p->ordering != default_order && p->ordering != pcs->ordering)
+      osfree((reading*)p->ordering);
 
    /* free Translate if not used by parent */
-   if (!p->next || p->Translate != p->next->Translate)
+   if (!pcs || p->Translate != pcs->Translate)
       osfree(p->Translate - 1);
 
    /* free meta if not used by parent, or in this block */
-   if (p->meta && (!p->next || p->meta != p->next->meta) && p->meta->ref_count == 0)
+   if (p->meta && p->meta != pcs->meta && p->meta->ref_count == 0)
        osfree(p->meta);
-
-   /* free proj_str if not used by parent, or as the output projection */
-   if (p->proj_str &&
-       (!p->next || p->proj_str != p->next->proj_str) &&
-       p->proj_str != proj_str_out) {
-       osfree(p->proj_str);
-   }
 
    osfree(p);
 }
@@ -733,14 +748,11 @@ free_settings(settings *p) {
 static void
 cmd_end(void)
 {
-   settings *pcsParent;
    prefix *survey, *begin_survey;
    filepos fp;
 
-   pcsParent = pcs->next;
-
    if (pcs->begin_lineno == 0) {
-      if (pcsParent == NULL) {
+      if (pcs->next == NULL) {
 	 /* more ENDs than BEGINs */
 	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching BEGIN*/192);
       } else {
@@ -751,9 +763,7 @@ cmd_end(void)
 
    begin_survey = pcs->begin_survey;
 
-   SVX_ASSERT(pcsParent);
-   free_settings(pcs);
-   pcs = pcsParent;
+   pop_settings();
 
    /* note need to read using root *before* BEGIN */
    skipblanks();
@@ -869,18 +879,23 @@ cmd_fix(void)
       z = read_numeric(fFalse);
 
       if (pcs->proj_str && proj_str_out) {
-	 PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+	 PJ *transform = pj_cached;
+	 if (!transform) {
+	     transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
 						pcs->proj_str,
 						proj_str_out,
 						NULL);
-	 if (transform) {
-	    // Normalise the output order so x is longitude and y latitude - by
-	    // default new PROJ has them switched for EPSG:4326 which just seems
-	    // confusing.
-	    PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
-							   transform);
-	    proj_destroy(transform);
-	    transform = pj_norm;
+	     if (transform) {
+		// Normalise the output order so x is longitude and y latitude - by
+		// default new PROJ has them switched for EPSG:4326 which just seems
+		// confusing.
+		PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+							       transform);
+		proj_destroy(transform);
+		transform = pj_norm;
+	     }
+
+	     pj_cached = transform;
 	 }
 
 	 if (proj_angular_input(transform, PJ_FWD)) {
@@ -901,7 +916,6 @@ cmd_fix(void)
 	    // Set dummy values which are finite.
 	    x = y = z = 0;
 	 }
-	 proj_destroy(transform);
       } else if (pcs->proj_str) {
 	 compile_diagnostic(DIAG_ERR, /*The input projection is set but the output projection isn't*/437);
       } else if (proj_str_out) {
@@ -2205,40 +2219,57 @@ cmd_cs(void)
 	 return;
       }
 
-      /* If the output projection is already set, we still need to create the
-       * projection object for a custom projection, so we can report errors.
-       * But if the string is identical, we know it's valid.
-       */
-      if (!proj_str_out ||
-	  (ok_for_output == MAYBE && strcmp(proj_str, proj_str_out) != 0)) {
-	 PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
-	 if (!pj) {
-	    set_pos(&fp);
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
-			       proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
-	    skipline();
-	    return;
-	 }
-	 if (ok_for_output == MAYBE) {
-	    int type = proj_get_type(pj);
-	    if (type == PJ_TYPE_GEOGRAPHIC_2D_CRS ||
-		type == PJ_TYPE_GEOGRAPHIC_3D_CRS) {
-	       set_pos(&fp);
-	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
-	       skipline();
-	       return;
-	    }
-	 }
-	 if (proj_str_out) {
-	    osfree(proj_str);
-	 } else {
-	    proj_str_out = proj_str;
-	 }
+      if (proj_str_out && strcmp(proj_str, proj_str_out) == 0) {
+	  /* Same as the output cs that's already set, so nothing to do. */
+	  osfree(proj_str);
+	  return;
+      }
+
+      if (ok_for_output == MAYBE) {
+	  /* We only actually create the transformation from input to output when
+	   * we need it, but for a custom proj string or EPSG/ESRI code we need
+	   * to check that the specified coordinate system is valid and also if
+	   * it's suitable for output so we need to test creating it here.
+	   */
+	  PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
+	  if (!pj) {
+	      set_pos(&fp);
+	      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
+				 proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
+	      skipline();
+	      osfree(proj_str);
+	      return;
+	  }
+	  int type = proj_get_type(pj);
+	  if (type == PJ_TYPE_GEOGRAPHIC_2D_CRS ||
+	      type == PJ_TYPE_GEOGRAPHIC_3D_CRS) {
+	      set_pos(&fp);
+	      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
+	      skipline();
+	      osfree(proj_str);
+	      return;
+	  }
+      }
+
+      if (proj_str_out) {
+	  /* If the output cs is already set, subsequent attempts to set it
+	   * are silently ignored (so you can combine two datasets and set
+	   * the output cs to use before you include either).
+	   */
+	  osfree(proj_str);
+      } else {
+	  proj_str_out = proj_str;
       }
    } else {
       if (proj_str_out && strcmp(proj_str, proj_str_out) == 0) {
-	 /* Same as the current output projection. */
-      } else {
+	 /* Same as the current output projection, so valid for input. */
+      } else if (pcs->proj_str && strcmp(proj_str, pcs->proj_str) == 0) {
+	 /* Same as the current input projection, so nothing to do! */
+	 return;
+      } else if (ok_for_output == MAYBE) {
+	 /* (ok_for_output == MAYBE) also happens to indicate whether we need
+	  * to check that the coordinate system is valid for input.
+	  */
 	 PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
@@ -2250,12 +2281,12 @@ cmd_cs(void)
 	 proj_destroy(pj);
       }
 
-      /* Free proj if not used by parent, or as the output projection. */
+      /* Free current input proj_str if not used by parent. */
       settings * p = pcs;
-      if (p->proj_str && (!p->next || p->proj_str != p->next->proj_str))
-	 if (p->proj_str != proj_str_out)
-	    osfree(p->proj_str);
+      if (!p->next || p->proj_str != p->next->proj_str)
+	 osfree(p->proj_str);
       p->proj_str = proj_str;
+      invalidate_pj_cached();
    }
 }
 

@@ -353,6 +353,7 @@ extern prefix *anon_list;
 extern node *stnlist;
 extern unsigned long optimize;
 extern char * proj_str_out;
+extern PJ * pj_cached;
 
 extern char *survey_title;
 extern int survey_title_len;

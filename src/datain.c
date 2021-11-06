@@ -724,13 +724,8 @@ data_file(const char *pth, const char *fnm)
 	 }
 	 clear_last_leg();
       }
-      {
-	 settings *pcsParent = pcs->next;
-	 SVX_ASSERT(pcsParent);
-	 pcs->ordering = NULL;
-	 free_settings(pcs);
-	 pcs = pcsParent;
-      }
+      pcs->ordering = NULL; /* Avoid free() of static array. */
+      pop_settings();
    } else if (fmt == FMT_MAK) {
       while (ch != EOF && !ferror(file.fh)) {
 	 if (ch == '#') {
@@ -824,12 +819,7 @@ data_file(const char *pth, const char *fnm)
 	    nextch_handling_eol();
 	 }
       }
-      {
-	 settings *pcsParent = pcs->next;
-	 SVX_ASSERT(pcsParent);
-	 free_settings(pcs);
-	 pcs = pcsParent;
-      }
+      pop_settings();
    } else {
       while (ch != EOF && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
@@ -869,10 +859,7 @@ data_file(const char *pth, const char *fnm)
 		    /*BEGIN with no matching END in this file*/23);
       /* Implicitly close any unclosed BEGINs from this file */
       do {
-	 settings *pcsParent = pcs->next;
-	 SVX_ASSERT(pcsParent);
-	 free_settings(pcs);
-	 pcs = pcsParent;
+	  pop_settings();
       } while (pcs->begin_lineno);
    }
 

@@ -32,7 +32,7 @@ void default_all(settings *s);
 void default_units(settings *s);
 void default_calib(settings *s);
 
-void free_settings(settings *p);
+void pop_settings(void);
 
 void copy_on_write_meta(settings *s);
 

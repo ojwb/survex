@@ -63,6 +63,7 @@ long cLegs, cStns;
 long cComponents;
 bool fExportUsed = fFalse;
 char * proj_str_out = NULL;
+PJ * pj_cached = NULL;
 
 FILE *fhErrStat = NULL;
 img *pimg = NULL;
