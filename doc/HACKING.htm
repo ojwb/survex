@@ -96,19 +96,33 @@ sudo make install
 </pre>
 
 <p>
-For PROJ 4.8.0:
+For sqlite (needed by PROJ):
 </p>
 
 <pre>
+wget https://www.sqlite.org/2021/sqlite-autoconf-3360000.tar.gz
+tar xvf sqlite-autoconf-3360000.tar.gz
 mkdir BUILD
 cd BUILD
-../configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --disable-shared host_alias=i686-w64-mingw32
+../configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --disable-shared --disable-fts4 --disable-fts5 --disable-json1 --disable-rtree host_alias=i686-w64-mingw32
 make
 sudo make install
 </pre>
 
 <p>
-For libav 10.3:
+For PROJ 8.2.0 (TIFF apparently useful for some grids, but would also need libtiff):
+</p>
+
+<pre>
+mkdir BUILD
+cd BUILD
+../configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --disable-shared host_alias=i686-w64-mingw32 --without-curl --disable-tiff
+make
+sudo make install
+</pre>
+
+<p>
+For ffmpeg 4.4.1:
 </p>
 
 <pre>
@@ -136,35 +150,16 @@ packages).
 
 <H3>Packages Needed</H3>
 
-<P>On Debian, the commands to install wine vary depending on the architecture
-you're running - to check this use:
-
-<pre>
-dpkg-architecture -qDEB_HOST_GNU_CPU
-</pre>
-
-<H4>For i386</H4>
+<P>On Debian unstable/testing:
 
 <pre>
 sudo apt-get install wine wx3.0-i18n
 </pre>
 
-<H4>For x86_64</H4>
-
-<P>You'll need to enable multi-arch and install the i386 packages of wine:
-
-<pre>
-sudo dpkg --add-architecture i386
-sudo apt-get update
-sudo apt-get install wine wine-bin:i386 wx3.0-i18n
-</pre>
-
-<H4>Common</H4>
-
 <P>And then run:
 
 <pre>
-wine ~/Downloads/isetup-5.5.3.exe
+wine ~/Downloads/isetup-5.5.6.exe
 </pre>
 
 <H3>Translations</H3>
