@@ -1367,8 +1367,10 @@ cmd_data(void)
       if (!TSTBIT(mask_all[style], d)) {
 	 /* TRANSLATORS: a data "style" is something like NORMAL, DIVING, etc.
 	  * a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
-	  * neither style nor reading is a keyword in the program This error
-	  * complains about a depth gauge reading in normal style, for example
+	  * style.  Neither "style" nor "reading" is a keyword in the program.
+	  *
+	  * This error complains about a "DEPTH" gauge reading in "NORMAL"
+	  * style, for example.
 	  */
 	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
