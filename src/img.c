@@ -833,7 +833,26 @@ v03d:
 	    */
 	   size_t real_len = strlen(title);
 	   if (real_len != title_len) {
-	       pimg->cs = my_strdup(title + real_len + 1);
+	       char * cs = title + real_len + 1;
+	       if (memcmp(cs, "EPSG:", 5) == 0 || memcmp(cs, "ESRI:", 5) == 0) {
+		   /* Convert EPSG:<number> and ESRI:<number> (which Survex
+		    * 1.4.0 and later generate in 3d files when the coordinate
+		    * system has an EPSG or ESRI code) to a proj string for
+		    * older proj.
+		    */
+		   size_t len = strlen(cs);
+		   pimg->cs = malloc(len + 6 + 9 + 1);
+		   if (pimg->cs) {
+		       size_t i = 0;
+		       strcpy(pimg->cs, "+init=");
+		       do {
+			   pimg->cs[i + 6] = tolower(cs[i]);
+		       } while (cs[++i]);
+		       strcpy(pimg->cs + i + 6, " +no_defs");
+		   }
+	       } else {
+		   pimg->cs = my_strdup(cs);
+	       }
 	   }
        }
        if (!pimg->title) {
