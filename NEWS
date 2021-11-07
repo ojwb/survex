@@ -1,3 +1,57 @@
+up to: 94dc7d35599e63900632a8a5fd910d0d88da160e
+
+commit 08f6fd713ea19b8cd8c77da2c793f93ae65d6a51
+Author: Olly Betts <olly@survex.com>
+Date:   Sun Nov 7 16:08:55 2021 +1300
+
+    cavern.tst: Fix for srcdir != builddir
+
+    Previously files for testcases weren't found, and tests were skipped
+    with a warning.  Fix to find the files, and make not finding them an
+    error.
+
+    (cherry picked from commit a69860fd12557bc423b2bd6aad595e9928986be2)
+
+commit 99b5fda0e16e5ec947cc898af566b19b1aa2c907
+Author: Olly Betts <olly@survex.com>
+Date:   Sun Nov 7 12:13:51 2021 +1300
+
+    Fix testsuite failures due to version change
+
+    (cherry picked from commit 24f2d99afccb806e25b2ba86b2f0771fc349be79)
+
+Changes in 1.2.46 (2021-11-07):
+
+* 1.2.46 includes all changes from 1.4.0 and 1.4.1 except for those related
+  to supporting PROJ 8.  Survex 1.2.x will continue to support PROJ < 8
+  (and won't support newer PROJ versions), while 1.4.x requires PROJ >= 7.2.
+
+* aven: Clicking and holding the left mouse button on the compass or clino,
+  then (while still holding) clicking the right button no longer causes a
+  wxWidgets assertion to fail.  Reported by echarlie.
+
+* Also install survex.lang for gtksourceview 4. Fixes #125, reported by Martin
+  Green.
+
+* Fix missing data style in interleaved example in manual.  Reported by
+  echarlie.
+
+* Use jw from docbook-utils instead of sgmltools-lite to process the manual.
+  The sgmltools-lite homepage says it's no longer being developed, and suggests
+  docbook-tools (which Debian packages as docbook-utils) as a replacement.
+
+* doc/HACKING.htm: Update Debian packages to install
+
+* doc/HACKING.htm: Update details of setting up mingw cross-build environment.
+
+* Add simple tests for GPX and KML export.
+
+* Expand cavern testcase csbad.
+
+* cavern.tst: Parse warning/error counts more robustly.  Previously we'd get
+  confused if the final line just contained an integer, e.g. if we end listing
+  stations not attached to a fixed point.
+
 Changes in 1.2.45 (2021-03-09):
 
 * Avoid undefined signed shifts in 3d file handling.  Survex itself is only
