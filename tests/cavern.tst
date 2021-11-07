@@ -103,8 +103,8 @@ for file in $TESTS ; do
       # ONELEG tests that we don't apply special handling to command line
       # arguments, only those in *include.
       realfile= ;;
-    *.*) realfile=$file ;;
-    *) realfile=$file.svx ;;
+    *.*) realfile=$srcdir/$file ;;
+    *) realfile=$srcdir/$file.svx ;;
   esac
 
   if [ x"$file" = xONELEG ] && [ -f "ONELEG.SVX" ] ; then
@@ -113,8 +113,8 @@ for file in $TESTS ; do
   fi
 
   if [ -n "$realfile" ] && [ ! -r "$realfile" ] ; then
-    echo "Warning: don't know how to run test '$file' - skipping it"
-    continue
+    echo "Don't know how to run test '$file'"
+    exit 1
   fi
 
   echo "$file"
