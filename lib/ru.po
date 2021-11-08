@@ -93,6 +93,13 @@ msgstr "Возникла нехватка памяти при чтении фа�
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Для обработки данных этой топо-съемки требуется Survex версии %s и старше."
 
+#. TRANSLATORS: Indicates a informational message e.g.:
+#. "spoon.svx:12: info: Declination: [...]"
+#: ../src/message.c:1221
+#: n:485
+msgid "info"
+msgstr ""
+
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:467
@@ -408,6 +415,18 @@ msgstr "Ожидается число или “AUTO”"
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
 msgstr "Дата съёмки не указана - использовано магнитное склонение 0"
+
+#. TRANSLATORS: This message gives information about the range of
+#. declination values and the grid convergence value calculated for
+#. each "*declination auto ..." command.
+#.
+#. The first %s will be replaced by the declination range (or single
+#. value), and %.1f%s by the grid convergence angle.
+#: ../src/commands.c:743
+#: n:484
+#, c-format
+msgid "Declination: %s, grid convergence: %.1f%s"
+msgstr ""
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:

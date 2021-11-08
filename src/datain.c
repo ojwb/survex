@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2003,2005,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018 Olly Betts
+ * Copyright (C) 1991-2022 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -167,6 +167,33 @@ show_line(int col, int width)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 }
 
+char*
+grab_line(void)
+{
+   /* Rewind to beginning of line. */
+   long cur_pos = ftell(file.fh);
+   char *p = NULL;
+   int len = 0;
+   if (cur_pos < 0 || fseek(file.fh, file.lpos, SEEK_SET) == -1)
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+
+   /* Read the whole line into a string. */
+   while (1) {
+      int c = GETC(file.fh);
+      /* Note: isEol() is true for EOF */
+      if (isEol(c)) break;
+      s_catchar(&p, &len, (char)c);
+   }
+
+   /* Revert to where we were. */
+   if (fseek(file.fh, cur_pos, SEEK_SET) == -1) {
+      free(p);
+      fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+   }
+
+   return p;
+}
+
 static int caret_width = 0;
 
 static void
@@ -288,7 +315,7 @@ compile_error_reading_skip(reading r, int en, ...)
    va_list ap;
    va_start(ap, en);
    caret_width = WID(r);
-   compile_v_report_fpos(1, LOC(r) + caret_width, en, ap);
+   compile_v_report_fpos(DIAG_ERR, LOC(r) + caret_width, en, ap);
    caret_width = 0;
    va_end(ap);
    skipline();
@@ -1017,6 +1044,14 @@ handle_compass(real *p_var)
 	  double dat = julian_date_from_days_since_1900(avg_days);
 	  /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
 	  declination = thgeomag(pcs->dec_lat, pcs->dec_lon, pcs->dec_alt, dat);
+	  if (declination < pcs->min_declination) {
+	      pcs->min_declination = declination;
+	      pcs->min_declination_days = avg_days;
+	  }
+	  if (declination > pcs->max_declination) {
+	      pcs->max_declination = declination;
+	      pcs->max_declination_days = avg_days;
+	  }
       }
       declination -= pcs->convergence;
       /* We cache the calculated declination as the calculation is relatively

@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017,2019 Olly Betts
+ * Copyright (C) 1993-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1214,14 +1214,22 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    }
    fputs(": ", STDERR);
 
-   if (severity == 0) {
+   switch (severity) {
+    case DIAG_INFO:
+      /* TRANSLATORS: Indicates a informational message e.g.:
+       * "spoon.svx:12: info: Declination: [...]" */
+      level = msg_opt(/*info*/485, "info");
+      break;
+    case DIAG_WARN:
       /* TRANSLATORS: Indicates a warning message e.g.:
        * "spoon.svx:12: warning: *prefix is deprecated" */
       level = msg_opt(/*warning*/4, "warning");
-   } else {
+      break;
+    default:
       /* TRANSLATORS: Indicates an error message e.g.:
        * "spoon.svx:13:4: error: Field may not be omitted" */
       level = msg_opt(/*error*/93, "error");
+      break;
    }
    fputs(level, STDERR);
    fputs(": ", STDERR);
@@ -1231,70 +1239,34 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
 #endif
 
    switch (severity) {
-    case 0:
+    case DIAG_WARN:
       msg_warnings++;
       break;
-    case 1:
+    case DIAG_ERR:
       msg_errors++;
       if (msg_errors == 50)
 	 fatalerror_in_file(fnm, 0, /*Too many errors - giving up*/19);
       break;
-    case 2:
+    case DIAG_FATAL:
       exit(EXIT_FAILURE);
    }
 }
 
 void
-warning(int en, ...)
+diag(int severity, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(0, NULL, 0, 0, en, ap);
+   v_report(severity, NULL, 0, 0, en, ap);
    va_end(ap);
 }
 
 void
-error(int en, ...)
+diag_in_file(int severity, const char *fnm, int line, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(1, NULL, 0, 0, en, ap);
-   va_end(ap);
-}
-
-void
-fatalerror(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(2, NULL, 0, 0, en, ap);
-   va_end(ap);
-}
-
-void
-warning_in_file(const char *fnm, int line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(0, fnm, line, 0, en, ap);
-   va_end(ap);
-}
-
-void
-error_in_file(const char *fnm, int line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(1, fnm, line, 0, en, ap);
-   va_end(ap);
-}
-
-void
-fatalerror_in_file(const char *fnm, int line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(2, fnm, line, 0, en, ap);
+   v_report(severity, fnm, line, 0, en, ap);
    va_end(ap);
 }
 

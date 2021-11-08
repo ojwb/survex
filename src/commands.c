@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2019 Olly Betts
+ * Copyright (C) 1991-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -715,34 +715,84 @@ invalidate_pj_cached(void)
     }
 }
 
-void pop_settings()
+void
+report_declination(settings *p)
 {
-   settings * p = pcs;
-   pcs = pcs->next;
-   SVX_ASSERT(pcs);
+    if (p->min_declination <= p->max_declination) {
+	int y, m, d;
+	char range[128];
+	const char* deg_sign = msg(/*°*/344);
+	ymd_from_days_since_1900(p->min_declination_days, &y, &m, &d);
+	snprintf(range, sizeof(range),
+		 "%.1f%s @ %04d-%02d-%02d",
+		 deg(p->min_declination), deg_sign, y, m, d);
+	if (p->min_declination_days != p->max_declination_days) {
+	    size_t len = strlen(range);
+	    ymd_from_days_since_1900(p->max_declination_days, &y, &m, &d);
+	    snprintf(range + len, sizeof(range) - len,
+		     " / %.1f%s @ %04d-%02d-%02d",
+		     deg(p->max_declination), deg_sign, y, m, d);
+	}
+	/* TRANSLATORS: This message gives information about the range of
+	 * declination values and the grid convergence value calculated for
+	 * each "*declination auto ..." command.
+	 *
+	 * The first %s will be replaced by the declination range (or single
+	 * value), and %.1f%s by the grid convergence angle.
+	 */
+	compile_diagnostic_at(DIAG_INFO|DIAG_COL, p->dec_filename, p->dec_line,
+			      /*Declination: %s, grid convergence: %.1f%s*/484,
+			      range,
+			      deg(p->convergence), deg_sign);
+	PUTC(' ', STDERR);
+	fputs(p->dec_context, STDERR);
+	fputnl(STDERR);
+	free(p->dec_context);
+	p->dec_context = NULL;
+    }
+}
 
-   if (p->proj_str != pcs->proj_str) {
-       if (!p->proj_str || !pcs->proj_str ||
-	   strcmp(p->proj_str, pcs->proj_str) != 0) {
-	   invalidate_pj_cached();
-       }
-       /* free proj_str if not used by parent */
-       osfree(p->proj_str);
-   }
+void
+pop_settings(void)
+{
+    settings * p = pcs;
+    pcs = pcs->next;
 
-   /* don't free default ordering or ordering used by parent */
-   if (p->ordering != default_order && p->ordering != pcs->ordering)
-      osfree((reading*)p->ordering);
+    SVX_ASSERT(pcs);
 
-   /* free Translate if not used by parent */
-   if (!pcs || p->Translate != pcs->Translate)
-      osfree(p->Translate - 1);
+    if (pcs->dec_lat != p->dec_lat ||
+	pcs->dec_lon != p->dec_lon ||
+	pcs->dec_alt != p->dec_alt) {
+	report_declination(p);
+    } else {
+	pcs->min_declination_days = p->min_declination_days;
+	pcs->max_declination_days = p->max_declination_days;
+	pcs->min_declination = p->min_declination;
+	pcs->max_declination = p->max_declination;
+    }
 
-   /* free meta if not used by parent, or in this block */
-   if (p->meta && p->meta != pcs->meta && p->meta->ref_count == 0)
-       osfree(p->meta);
+    if (p->proj_str != pcs->proj_str) {
+	if (!p->proj_str || !pcs->proj_str ||
+	    strcmp(p->proj_str, pcs->proj_str) != 0) {
+	    invalidate_pj_cached();
+	}
+	/* free proj_str if not used by parent */
+	osfree(p->proj_str);
+    }
 
-   osfree(p);
+    /* don't free default ordering or ordering used by parent */
+    if (p->ordering != default_order && p->ordering != pcs->ordering)
+	osfree((reading*)p->ordering);
+
+    /* free Translate if not used by parent */
+    if (p->Translate != pcs->Translate)
+	osfree(p->Translate - 1);
+
+    /* free meta if not used by parent, or in this block */
+    if (p->meta && p->meta != pcs->meta && p->meta->ref_count == 0)
+	osfree(p->meta);
+
+    osfree(p);
 }
 
 static void
@@ -1763,12 +1813,18 @@ cmd_declination(void)
 	   x = y = z = 0;
 	}
 	proj_destroy(transform);
+
+	report_declination(pcs);
+
 	double lon = rad(x);
 	double lat = rad(y);
 	pcs->z[Q_DECLINATION] = HUGE_REAL;
 	pcs->dec_lat = lat;
 	pcs->dec_lon = lon;
 	pcs->dec_alt = z;
+	pcs->dec_filename = file.filename;
+	pcs->dec_line = file.line;
+	pcs->dec_context = grab_line();
 	/* Invalidate cached declination. */
 	pcs->declination = HUGE_REAL;
 	{

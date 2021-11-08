@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2003,2005,2010,2015,2017,2019 Olly Betts
+ * Copyright (C) 1998-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,15 +59,27 @@ const char *msg_appname(void);
 /* Return the message string corresponding to number en */
 const char *msg(int en);
 
+/* These need to fit within DIAG_SEVERITY_MASK defined in datain.h. */
+#define DIAG_INFO	0x00
+#define DIAG_WARN	0x01
+#define DIAG_ERR	0x02
+#define DIAG_FATAL	0x03
+
 void v_report(int severity, const char *fnm, int line, int col, int en, va_list ap);
 
-void warning(int en, ...);
-void error(int en, ...);
-void fatalerror(int en, ...);
+void diag(int severity, int en, ...);
 
-void warning_in_file(const char *fnm, int line, int en, ...);
-void error_in_file(const char *fnm, int line, int en, ...);
-void fatalerror_in_file(const char *fnm, int line, int en, ...);
+#define information(...) diag(DIAG_INFO, __VA_ARGS__)
+#define warning(...) diag(DIAG_WARN, __VA_ARGS__)
+#define error(...) diag(DIAG_ERR, __VA_ARGS__)
+#define fatalerror(...) diag(DIAG_FATAL, __VA_ARGS__)
+
+void diag_in_file(int severity, const char *fnm, int line, int en, ...);
+
+#define information_in_file(...) diag_in_file(DIAG_INFO, __VA_ARGS__)
+#define warning_in_file(...) diag_in_file(DIAG_WARN, __VA_ARGS__)
+#define error_in_file(...) diag_in_file(DIAG_ERR, __VA_ARGS__)
+#define fatalerror_in_file(...) diag_in_file(DIAG_FATAL, __VA_ARGS__)
 
 int select_charset(int charset_code);
 

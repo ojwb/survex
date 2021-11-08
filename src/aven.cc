@@ -461,7 +461,7 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
 	m += wxT(": ");
     }
 
-    if (severity == 0) {
+    if (severity == DIAG_WARN) {
 	m += wmsg(/*warning*/4);
 	m += wxT(": ");
     }

@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016,2019,2021 Olly Betts
+ * Copyright (C) 1991-2022 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -341,6 +341,12 @@ typedef struct Settings {
     * Only meaningful if date1 != -1.
     */
    real declination;
+   double min_declination, max_declination;
+   int min_declination_days, max_declination_days;
+   const char* dec_filename;
+   int dec_line;
+   /* Copy of the text of the `*declination auto ...` line (malloced). */
+   char* dec_context;
    /* Grid convergence in radians. */
    real convergence;
    meta_data * meta;

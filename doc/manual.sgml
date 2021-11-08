@@ -2031,6 +2031,19 @@ refindable location, though it can be if you prefer.
 </Para>
 
 <Para>
+For each *declination auto command cavern will (since Survex 1.4.2) report
+the range of calculated declination values and the dates at which the ends of
+the range were obtained, and also the grid convergence (which doesn't vary with
+time).  This appears in the log - if you processed the data with aven you can
+view this by using "File->View Log".  It looks like this:
+</Para>
+
+<programlisting>
+/home/ol/1623.svx:20: info: Declination: -0.4° @ 1977-07-02 / 3.8° @ 2018-07-21, grid convergence: -0.9°
+ *declination auto 36670.37 83317.43 1903.97
+</programlisting>
+
+<Para>
 You might wonder why Survex needs a representative location instead of
 calculating the magnetic declination and grid convergence for the actual
 position of each survey station.  The reason is that we need to adjust the

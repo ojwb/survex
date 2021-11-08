@@ -1,6 +1,6 @@
 /* commands.h
  * Header file for code for directives
- * Copyright (C) 1994-2003,2014,2015 Olly Betts
+ * Copyright (C) 1994-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ void default_units(settings *s);
 void default_calib(settings *s);
 
 void pop_settings(void);
+void report_declination(settings *p);
 
 void copy_on_write_meta(settings *s);
 

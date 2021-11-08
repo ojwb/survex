@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014,2015,2016,2017 Olly Betts
+ * Copyright (C) 1991-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,6 +184,14 @@ main(int argc, char **argv)
    pcs->proj_str = NULL;
    pcs->declination = HUGE_REAL;
    pcs->convergence = 0.0;
+   pcs->dec_filename = NULL;
+   pcs->dec_line = 0;
+   pcs->dec_context = NULL;
+   pcs->dec_lat = HUGE_VAL;
+   pcs->dec_lon = HUGE_VAL;
+   pcs->dec_alt = HUGE_VAL;
+   pcs->min_declination = HUGE_VAL;
+   pcs->max_declination = -HUGE_VAL;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);
@@ -334,6 +342,8 @@ main(int argc, char **argv)
    }
 
    validate();
+
+   report_declination(pcs);
 
    solve_network(/*stnlist*/); /* Find coordinates of all points */
    validate();

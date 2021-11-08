@@ -1,7 +1,7 @@
 /* datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1994-2002,2005,2010,2012,2014 Olly Betts
+ * Copyright (C) 1994-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@
 #endif
 
 #include <stdio.h> /* for FILE */
+
+#include "message.h" /* for DIAG_WARN, etc */
 
 typedef struct parse {
    FILE *fh;
@@ -57,6 +59,14 @@ void data_file(const char *pth, const char *fnm);
 
 void skipline(void);
 
+/* Read the current line into a string.
+ *
+ * The string is allocated with malloc() the caller is responsible for calling
+ * free().
+ */
+char* grab_line(void);
+
+/* The severity values are defined in message.h. */
 #define DIAG_SEVERITY_MASK 0x03
 #define DIAG_COL	0x04
 #define DIAG_SKIP	0x08
@@ -66,9 +76,6 @@ void skipline(void);
 #define DIAG_DATE	0x80
 #define DIAG_NUM	0x100
 #define DIAG_STRING	0x200
-
-#define DIAG_WARN	0x00
-#define DIAG_ERR	0x01
 
 void compile_diagnostic(int flags, int en, ...);
 

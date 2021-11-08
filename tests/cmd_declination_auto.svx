@@ -37,4 +37,6 @@
 ; changed, only when the date changed.
 *declination auto 0490600 5282000 1234
 1 2a 50.0 000 0
+*date 2000.12.26
+1 2b 10.0 090 0
 *end d
