@@ -1,3 +1,17 @@
+Changes in 1.4.1 (2021-11-08):
+
+* This release should work with any PROJ version >= 6.2.0.
+
+* cavern.tst: Fix to actually run tests when building outside the source
+  tree.  Previously files for testcases weren't found, and tests were skipped
+  with a warning, which lead to 1.4.0 being released with two failing testcase.
+  Fix to find the files, and make not finding them an error.
+
+* cavern.tst: Fix testcases gpxexport and require_fail which were failing
+  in 1.4.0.
+
+* 3dformat.htm: Document that coordinate system can be ESRI:<number>.
+
 Changes in 1.4.0 (2021-11-06):
 
 * New release series to mark that Survex now uses the new PROJ API, and
