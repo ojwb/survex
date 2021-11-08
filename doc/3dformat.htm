@@ -57,7 +57,9 @@ can be omitted along with the separating zero byte before them.
 There's no length limit on this string.
   <li>Coordinate system: string describing the coordinate system in use
 which can be passed to PROJ.  For a coordinate system with an EPSG code
-<code>EPSG:</code> followed by the code number can be used.
+<code>EPSG:</code> followed by the code number can be used (we recommend
+using this if an EPSG code exists).  Similarly, an ESRI code can be specified
+with <code>ESRI:</code> followed by the code number.
  </ul>
 <li> Timestamp: A string consisting of an '@' followed by a count of
 seconds since the start of 1970 in UTC ("Unix time_t") as a string
