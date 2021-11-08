@@ -1794,14 +1794,25 @@ cmd_declination(void)
 		    if (!geodetic_crs)
 			break;
 		    PJ * datum = proj_crs_get_datum(PJ_DEFAULT_CTX, geodetic_crs);
-		    PJ * datum_ensemble = proj_crs_get_datum_ensemble(PJ_DEFAULT_CTX, geodetic_crs);
+#if PROJ_VERSION_MAJOR == 8 || \
+    (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
+		    /* PROJ 7.2.0 upgraded to EPSG 10.x which added the concept
+		     * of a datum ensemble, and this version of PROJ also added
+		     * an API to deal with these.
+		     *
+		     * If we're using PROJ < 7.2.0 then its EPSG database won't
+		     * have datum ensembles, so we don't need any code to handle
+		     * them.
+		     */
+		    if (!datum) {
+			datum = proj_crs_get_datum_ensemble(PJ_DEFAULT_CTX, geodetic_crs);
+		    }
+#endif
 		    PJ * cs = proj_create_ellipsoidal_2D_cs(
 			PJ_DEFAULT_CTX, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Radian", 1.0);
 		    PJ * temp = proj_create_geographic_crs_from_datum(
-			PJ_DEFAULT_CTX, "unnamed crs", datum ? datum : datum_ensemble,
-			cs);
+			PJ_DEFAULT_CTX, "unnamed crs", datum, cs);
 		    proj_destroy(datum);
-		    proj_destroy(datum_ensemble);
 		    proj_destroy(cs);
 		    proj_destroy(geodetic_crs);
 		    PJ * newOp = proj_create_crs_to_crs_from_pj(PJ_DEFAULT_CTX, temp, pj, NULL, NULL);

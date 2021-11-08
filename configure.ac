@@ -201,11 +201,12 @@ AC_SUBST([LIBAV_LIBS])
 AC_SUBST([LIBAV_CFLAGS])
 
 dnl Check for PROJ.
-PKG_CHECK_MODULES([PROJ], [proj >= 7.2.0], [
+PKG_CHECK_MODULES([PROJ], [proj >= 6.2.0], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
-  dnl found.  We need proj_crs_get_datum_ensemble() which was added in 7.2.0.
-  AC_CHECK_LIB([proj], [proj_crs_get_datum_ensemble], [
+  dnl found.  We need proj_create_crs_to_crs_from_pj() which was added in
+  dnl 6.2.0.
+  AC_CHECK_LIB([proj], [proj_create_crs_to_crs_from_pj], [
       PROJ_LIBS=-lproj
       PROJ_CFLAGS=
     ], [
