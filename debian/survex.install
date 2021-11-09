@@ -4,7 +4,6 @@ debian/tmp/usr/share/icons/hicolor/scalable/mimetypes/
 debian/tmp/usr/share/survex/bcra3.svx
 debian/tmp/usr/share/survex/bcra5.svx
 debian/tmp/usr/share/survex/*.msg
-debian/tmp/usr/share/survex/proj/
 debian/tmp/usr/share/mime
 debian/tmp/usr/bin/cavern
 debian/tmp/usr/bin/diffpos
