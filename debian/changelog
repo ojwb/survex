@@ -1,3 +1,11 @@
+survex (1.2.45-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Fixes undefined behaviour in shifts of signed values
+    + Fixes UTF-8 handling bug
+
+ -- Olly Betts <olly@survex.com>  Tue, 09 Mar 2021 16:21:35 +1300
+
 survex (1.2.44-1) unstable; urgency=medium
 
   * New upstream release.
