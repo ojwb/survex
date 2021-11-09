@@ -1,0 +1,40 @@
+commit 24f2d99afccb806e25b2ba86b2f0771fc349be79
+Author: Olly Betts <olly@survex.com>
+Date:   Sun Nov 7 12:13:51 2021 +1300
+
+    Fix testsuite failures due to version change
+
+diff --git a/tests/cavern.tst b/tests/cavern.tst
+index b0a7696e..6d26ef01 100755
+--- a/tests/cavern.tst
++++ b/tests/cavern.tst
+@@ -263,7 +263,7 @@ for file in $TESTS ; do
+     # Normalise exported file if required.
+     case $pos in
+       gpx)
+-	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,' < "$tmpfile" > tmp.tmp
++	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,;s,survex [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*,survex REDACTED,' < "$tmpfile" > tmp.tmp
+ 	mv tmp.tmp "$tmpfile"
+ 	;;
+     esac
+diff --git a/tests/gpxexport.gpx b/tests/gpxexport.gpx
+index fd0c838d..024cbad0 100644
+--- a/tests/gpxexport.gpx
++++ b/tests/gpxexport.gpx
+@@ -1,5 +1,5 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+-<gpx version="1.0" creator="survex 1.2.45 (aven) - https://survex.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/0" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
++<gpx version="1.0" creator="survex REDACTED (aven) - https://survex.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/0" xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
+ <name>gpxexport</name>
+ <time>REDACTED</time>
+ <wpt lon="174.77670004" lat="-41.27839998"><ele>30.00</ele><name>bh</name></wpt>
+diff --git a/tests/require_fail.svx b/tests/require_fail.svx
+index dce7368a..5ceec929 100644
+--- a/tests/require_fail.svx
++++ b/tests/require_fail.svx
+@@ -1,4 +1,4 @@
+ ; pos=fail
+ ; require a version later than the current one
+-*require 1.3
++*require 1.5
+ *fix a reference 0 0 0
