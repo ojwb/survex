@@ -363,8 +363,8 @@ extern long cLegs, cStns, cComponents;
 extern FILE *fhErrStat;
 extern img *pimg;
 extern real totadj, total, totplan, totvert;
-extern real min[3], max[3];
-extern prefix *pfxHi[3], *pfxLo[3];
+extern real min[6], max[6];
+extern prefix *pfxHi[6], *pfxLo[6];
 extern bool fQuiet; /* just show brief summary + errors */
 extern bool fMute; /* just show errors */
 extern bool fSuppress; /* only output 3d file */

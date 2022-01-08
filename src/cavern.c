@@ -76,8 +76,8 @@ static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */
 nosurveylink *nosurveyhead;
 
 real totadj, total, totplan, totvert;
-real min[3], max[3];
-prefix *pfxHi[3], *pfxLo[3];
+real min[6], max[6];
+prefix *pfxHi[6], *pfxLo[6];
 
 char *survey_title = NULL;
 int survey_title_len;
@@ -204,7 +204,10 @@ main(int argc, char **argv)
    for (d = 0; d <= 2; d++) {
       min[d] = HUGE_REAL;
       max[d] = -HUGE_REAL;
+      min[d + 3] = HUGE_REAL;
+      max[d + 3] = -HUGE_REAL;
       pfxHi[d] = pfxLo[d] = NULL;
+      pfxHi[d + 3] = pfxLo[d + 3] = NULL;
    }
 
    /* at least one argument must be given */
@@ -405,6 +408,11 @@ do_range(int d, int msgno, real length_factor, const char * units)
    printf(msg(msgno), hi - lo, units, pfx_hi, hi, units, pfx_lo, lo, units);
    osfree(pfx_hi);
    putnl();
+
+   // Range without anonymous stations at offset 3
+   if (d < 3 && (pfxHi[d] != pfxHi[d + 3] || pfxLo[d] != pfxLo[d + 3])) {
+      do_range(d + 3, msgno, length_factor, units);
+   }
 }
 
 static void
