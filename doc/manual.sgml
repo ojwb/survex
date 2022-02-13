@@ -1818,7 +1818,7 @@ leg and you can ignore the extra station.  You can also define tubes
 along unsurveyed passages, akin to "nosurvey" legs in the centreline
 data.</Para>
 
-<Para>This means that you need to split off side passages into seperate
+<Para>This means that you need to split off side passages into separate
 tubes, and hence separate sections of passage data, starting with
 a new *data command.</Para>
 
