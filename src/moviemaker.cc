@@ -60,6 +60,7 @@
 
 #ifdef WITH_LIBAV
 extern "C" {
+# include <libavcodec/avcodec.h>
 # include <libavutil/imgutils.h>
 # include <libavutil/mathematics.h>
 # include <libavformat/avformat.h>
@@ -132,14 +133,14 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 	return false;
     }
 
-    AVOutputFormat * fmt = oc->oformat;
+    auto fmt = oc->oformat;
     if (fmt->video_codec == AV_CODEC_ID_NONE) {
 	averrno = MOVIE_AUDIO_ONLY;
 	return false;
     }
 
     /* find the video encoder */
-    AVCodec *codec = avcodec_find_encoder(fmt->video_codec);
+    auto codec = avcodec_find_encoder(fmt->video_codec);
     if (!codec) {
 	// FIXME : Erm - internal ffmpeg library problem?
 	averrno = AVERROR(ENOMEM);
