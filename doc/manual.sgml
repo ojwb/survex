@@ -1442,8 +1442,22 @@ processed survey data to be specified.
 </Para>
 
 <Para>
+The "input" coordinate system is set with <command>*cs</command> and you can
+change it between fixed points if you have some fixed points in different
+coordinate systems to others.
+</Para>
+
+<Para>
+The "output" coordinate system is set with <command>*cs out</command> and is
+what the survey data is processed in and the coordinate system used for
+resultant <command>.3d</command> file. The output coordinate system must be
+in metres with axis order (East, North, Up), so for example
+<command>*cs out long-lat</command> isn't valid.
+</Para>
+
+<Para>
 *cs was added in Survex 1.2.14, but handling of fixed points specified with
-latitude and longitude didn't work until 1.2.21.  And *fix with standard
+latitude and longitude didn't work until 1.2.21.  Also *fix with standard
 deviations specified also didn't work until 1.2.21.
 </Para>
 
