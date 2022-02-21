@@ -409,7 +409,7 @@ do_range(int d, int msgno, real length_factor, const char * units)
    osfree(pfx_hi);
    putnl();
 
-   // Range without anonymous stations at offset 3
+   /* Range without anonymous stations at offset 3. */
    if (d < 3 && (pfxHi[d] != pfxHi[d + 3] || pfxLo[d] != pfxLo[d + 3])) {
       do_range(d + 3, msgno, length_factor, units);
    }

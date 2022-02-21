@@ -940,7 +940,7 @@ replace_trailing_travs(void)
 	    }
 	 }
 
-	 // Range without anonymous stations at offset 3
+	 /* Range without anonymous stations at offset 3. */
 	 if (!TSTBIT(stn1->name->sflags, SFLAGS_ANON)) {
 	    for (d = 0; d < 3; d++) {
 	       if (POS(stn1, d) < min[d + 3]) {
