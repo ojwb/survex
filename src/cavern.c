@@ -201,13 +201,10 @@ main(int argc, char **argv)
    cLegs = cStns = cComponents = 0;
    totadj = total = totplan = totvert = 0.0;
 
-   for (d = 0; d <= 2; d++) {
+   for (d = 0; d < 6; d++) {
       min[d] = HUGE_REAL;
       max[d] = -HUGE_REAL;
-      min[d + 3] = HUGE_REAL;
-      max[d + 3] = -HUGE_REAL;
       pfxHi[d] = pfxLo[d] = NULL;
-      pfxHi[d + 3] = pfxLo[d + 3] = NULL;
    }
 
    /* at least one argument must be given */
