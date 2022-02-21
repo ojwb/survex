@@ -939,6 +939,20 @@ replace_trailing_travs(void)
 	       pfxHi[d] = stn1->name;
 	    }
 	 }
+
+	 /* Range without anonymous stations at offset 3. */
+	 if (!TSTBIT(stn1->name->sflags, SFLAGS_ANON)) {
+	    for (d = 0; d < 3; d++) {
+	       if (POS(stn1, d) < min[d + 3]) {
+		  min[d + 3] = POS(stn1, d);
+		  pfxLo[d + 3] = stn1->name;
+	       }
+	       if (POS(stn1, d) > max[d + 3]) {
+		  max[d + 3] = POS(stn1, d);
+		  pfxHi[d + 3] = stn1->name;
+	       }
+	    }
+	 }
       }
 
       d = stn1->name->shape;
