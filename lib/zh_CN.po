@@ -1400,6 +1400,15 @@ msgstr "应为“NOT”、“DUPLICATE”、“SPLAY”或“SURFACE”"
 msgid "Expecting “F” or “M”"
 msgstr "应为“F”或“M”"
 
+#: readval.c:421
+#: readval.c:443
+#: readval.c:453
+#: readval.c:465
+#: n:483
+#, c-format
+msgid "Expecting quadrant bearing, found “%s”"
+msgstr ""
+
 #: ../src/listpos.c:82
 #: n:190
 #, c-format

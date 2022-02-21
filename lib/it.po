@@ -1401,6 +1401,15 @@ msgstr "Atteso “NOT”, “DUPLICATE”, “SPLAY” o “SURFACE”"
 msgid "Expecting “F” or “M”"
 msgstr "Atteso “F” o “M”"
 
+#: readval.c:421
+#: readval.c:443
+#: readval.c:453
+#: readval.c:465
+#: n:483
+#, c-format
+msgid "Expecting quadrant bearing, found “%s”"
+msgstr ""
+
 #: ../src/listpos.c:82
 #: n:190
 #, c-format
