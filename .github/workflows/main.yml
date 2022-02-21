@@ -25,49 +25,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
+            gettext \
             libwxgtk3.0-gtk3-dev \
-            libavcodec-dev \
-            libavformat-dev \
-            libproj-dev \
-            libswscale-dev \
-            mesa-common-dev \
-            libglu1-mesa-dev \
-            libx11-dev \
-            libxext-dev \
-            ghostscript \
-            netpbm \
-            x11proto-core-dev \
-            liblocale-po-perl \
-            unifont \
-            docbook-utils \
-            w3m
-    - name: bootstrap source tree
-      run: autoreconf -fiv
-    - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
-    - name: make
-      run: make -j2
-    - name: Run tests
-      run: make check VERBOSE=1
-    - name: Check generated files are in .gitignore
-      # grep '^' passes through all input while giving a non-zero exit status
-      # if that input is empty.
-      run: git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
-
-  linux-gtk2:
-    runs-on: 'ubuntu-18.04'
-    steps:
-    - name: Check out repository code
-      uses: actions/checkout@v2
-    - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: linux-gtk2
-    - name: Install package dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install \
-            libwxgtk3.0-dev \
             libavcodec-dev \
             libavformat-dev \
             libproj-dev \
@@ -119,7 +78,6 @@ jobs:
         brew link --force gettext
         sudo cpan -T -i local::lib < /dev/null
         sudo cpan -I -T -i Locale::PO < /dev/null
-        echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
@@ -127,7 +85,10 @@ jobs:
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
     - name: make
-      run: make -j3
+      run: |
+        eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+        env|sort
+        make -j3
     - name: Run tests
       run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
@@ -160,7 +121,6 @@ jobs:
         brew link --force gettext
         sudo cpan -T -i local::lib < /dev/null
         sudo cpan -I -T -i Locale::PO < /dev/null
-        echo '[ $SHLVL -eq 1 ] && eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"' >> ~/.bashrc
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
@@ -168,7 +128,10 @@ jobs:
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
     - name: make
-      run: make -j3
+      run: |
+        eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+        env|sort
+        make -j3
     - name: Run tests
       run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
