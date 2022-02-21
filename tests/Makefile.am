@@ -33,6 +33,7 @@ badinc.out badinc.svx\
 badinc2.out badinc2.svx\
 badinc3.out badinc3.svx\
 badinc4.out badinc4.svx\
+badinc5.mak badinc5.out\
 export.svx export2.svx\
 singlefix.svx singlefix.out singlefix.pos singlereffix.svx singlereffix.pos\
 singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\

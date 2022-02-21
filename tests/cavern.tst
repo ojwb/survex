@@ -47,7 +47,7 @@ testdir=`(cd "$testdir" && pwd)`
  begin_no_end end_no_begin end_no_begin_nest require_fail\
  exporterr1 exporterr2 exporterr3 exporterr4 exporterr5\
  exporterr1b exporterr2b exporterr3b exporterr6 exporterr6b\
- hanging_cpt badinc badinc2 badinc3 badinc4 nonexistent_file ONELEG\
+ hanging_cpt badinc badinc2 badinc3 badinc4 badinc5.mak nonexistent_file ONELEG\
  stnsurvey1 stnsurvey2\
  tapelessthandepth longname chinabug chinabug2\
  multinormal multinormignall multidiving multicylpolar multicartesian\

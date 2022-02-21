@@ -1,0 +1,31 @@
+./badinc5.mak:3:2: error: Couldn't open file "nosuchfile.dat"
+ #nosuchfile.dat,
+  ^~~~~~~~~~~~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+./badinc5.mak:4: warning: Unused fixed point "GX1"
+
+Calculating statistics...
+
+Survey contains 3 survey stations, joined by 1 leg.
+There are 0 loops.
+Survey has 2 connected components.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from C2 at 1234.56m to C2 at 1234.56m)
+North-South range = 1.00m (from C2 at 21.47m to C1 at 20.47m)
+East-West range = 0.00m (from C2 at 10.23m to C2 at 10.23m)
+   1 0-node.
+   2 1-nodes.
+There were 1 warning(s) and 1 error(s) - no output files produced.
