@@ -25,6 +25,48 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
+            libwxgtk3.0-gtk3-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libproj-dev \
+            libswscale-dev \
+            mesa-common-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            ghostscript \
+            netpbm \
+            x11proto-core-dev \
+            liblocale-po-perl \
+            unifont \
+            docbook-utils \
+            w3m
+    - name: bootstrap source tree
+      run: autoreconf -fiv
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+
+  linux-gtk2:
+    runs-on: 'ubuntu-18.04'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: linux-gtk2
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
             libwxgtk3.0-dev \
             libavcodec-dev \
             libavformat-dev \
@@ -66,11 +108,8 @@ jobs:
     - name: Install package dependencies
       run: |
         brew update
-        # libabw seems to have gone?
-        # Workaround collision from mono package to something else.
-        # mono seems to collide with a different version of mono?
-        # tesseract worker fails to build: /usr/local/Cellar/tesseract/5.0.1/include/tesseract/baseapi.h:21:12: fatal error: 'config_auto.h' file not found
         brew install \
+            automake \
             ffmpeg \
             gettext \
             gnu-tar \
@@ -110,11 +149,8 @@ jobs:
     - name: Install package dependencies
       run: |
         brew update
-        # libabw seems to have gone?
-        # Workaround collision from mono package to something else.
-        # mono seems to collide with a different version of mono?
-        # tesseract worker fails to build: /usr/local/Cellar/tesseract/5.0.1/include/tesseract/baseapi.h:21:12: fatal error: 'config_auto.h' file not found
         brew install \
+            automake \
             ffmpeg \
             gettext \
             gnu-tar \
