@@ -1,3 +1,22 @@
+up to: 9559a6f1bc0faef879430917068173dc3a9a2f04
+
+Changes in 1.4.2 (2022-02-??):
+
+* aven: Fix to be compatible with FFmpeg 5.0.
+
+* Improve docs for *cs and *declination.
+
+* cavern: The error a bad `*cs custom` command now handles highlighting the
+  quoted string properly.
+
+* cavern: Include errors in Compass .mak files now report the error in the line
+  where the included filename is actually specified.
+
+* cavern.tst: Add test coverage for warnings for *entrance and *export with
+  a station which doesn't exist otherwise.
+
+* Chinese translation updates from Qingqing Li.
+
 Changes in 1.4.1 (2021-11-08):
 
 * This release should work with any PROJ version >= 6.2.0.
