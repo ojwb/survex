@@ -119,14 +119,14 @@ msgstr "错误"
 #: n:5
 #, c-format
 msgid "In file included from %s:%u:\n"
-msgstr ""
+msgstr "在文件中包括 %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:667
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
-msgstr ""
+msgstr "*prefix已弃用 - 请改用*begin和*end"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:209
@@ -138,7 +138,7 @@ msgstr "站名中不允许使用字符“%c”（使用 *SET NAMES 设置允许�
 #: ../src/readval.c:395
 #: n:8
 msgid "Field may not be omitted"
-msgstr ""
+msgstr "字段不能省略"
 
 #: ../src/datain.c:1653
 #: ../src/datain.c:1688
@@ -149,13 +149,13 @@ msgstr ""
 #: n:9
 #, c-format
 msgid "Expecting numeric field, found “%s”"
-msgstr ""
+msgstr "需要数字字段，找到“%s”"
 
 #: ../src/commands.c:1879
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
-msgstr ""
+msgstr "找到“%s”，需要“PRESERVE”、“TOUPPER”、“TOLOWER”"
 
 #: ../src/debug.h:45
 #: ../src/debug.h:47
@@ -176,7 +176,7 @@ msgstr "未知的命令 “%s”"
 #: n:13
 #, c-format
 msgid "Station “%s” equated to itself"
-msgstr ""
+msgstr "站“%s”等同于它自身"
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
@@ -195,7 +195,7 @@ msgstr "距离数据不可胜路"
 #: ../src/extend.c:461
 #: n:15
 msgid "End of line not blank"
-msgstr ""
+msgstr "行尾不为空"
 
 #: ../src/cavern.c:382
 #: n:16
@@ -224,7 +224,7 @@ msgstr "命令 “%s” 执行失败"
 #: ../src/sorterr.c:240
 #: n:18
 msgid "Error reading file"
-msgstr "读文件出错"
+msgstr "读取文件时发生错误"
 
 #: ../src/message.c:1254
 #: n:19
@@ -244,7 +244,7 @@ msgstr "不推荐*DEFAULT - 使用带DEFAULT参数的*CALIBRATE/DATA/SD/UNITS代
 #: ../src/datain.c:1164
 #: n:21
 msgid "Compass reading given on plumbed leg"
-msgstr ""
+msgstr "垂直测量段上的罗盘读数"
 
 #: ../src/commands.c:761
 #: n:22
@@ -278,7 +278,7 @@ msgstr "此文件中BEGIN没有匹配的END"
 #: n:26
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
-msgstr ""
+msgstr "站“%s”未从测量“%s”中导出"
 
 #. TRANSLATORS: This error occurs if there's an attempt to
 #. export a station from a survey which doesn't actually exist.
@@ -289,7 +289,7 @@ msgstr ""
 #: n:286
 #, c-format
 msgid "Reference to station “%s” from non-existent survey “%s”"
-msgstr ""
+msgstr "站“%s”引用自不存在的测量“%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #.
@@ -299,7 +299,7 @@ msgstr ""
 #: n:27
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
-msgstr ""
+msgstr "“%s”不能既是一个测站又是一个测量"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/extend.c:259
@@ -310,19 +310,19 @@ msgstr ""
 #: ../src/readval.c:205
 #: n:28
 msgid "Expecting station name"
-msgstr ""
+msgstr "需要站名"
 
 #: ../src/commands.c:2215
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
-msgstr ""
+msgstr "找到“%s”，需要“EQUATES”、“EXPORTS”或“PLUMBS”"
 
 #: ../src/commands.c:2221
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
-msgstr ""
+msgstr "找到“%s”，需要“ON”或“OFF”"
 
 #. TRANSLATORS: EQUATE is a command name, so shouldn’t be
 #. translated.
@@ -331,7 +331,7 @@ msgstr ""
 #: ../src/commands.c:1078
 #: n:33
 msgid "Only one station in EQUATE command"
-msgstr ""
+msgstr "EQUATE命令中只有一个站"
 
 #. TRANSLATORS: A "quantity" is something measured like "LENGTH",
 #. "BEARING", "ALTITUDE", etc.
@@ -339,19 +339,19 @@ msgstr ""
 #: n:34
 #, c-format
 msgid "Unknown quantity “%s”"
-msgstr ""
+msgstr "未知量“%s”"
 
 #: ../src/commands.c:389
 #: n:35
 #, c-format
 msgid "Unknown units “%s”"
-msgstr ""
+msgstr "未知单位“%s”"
 
 #: ../src/commands.c:400
 #: n:479
 #, c-format
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
-msgstr ""
+msgstr "单位“%s”已弃用，假定为“grads”-有关详细信息，请参阅手册"
 
 #: ../src/commands.c:2049
 #: ../src/commands.c:2125
@@ -382,17 +382,17 @@ msgstr "转换坐标失败：%s"
 #: ../src/commands.c:896
 #: n:437
 msgid "The input projection is set but the output projection isn't"
-msgstr ""
+msgstr "设置了输入投影，但未设置输出投影"
 
 #: ../src/commands.c:898
 #: n:438
 msgid "The output projection is set but the input projection isn't"
-msgstr ""
+msgstr "设置了输出投影，但未设置输入投影"
 
 #: ../src/commands.c:852
 #: n:439
 msgid "Coordinates can't be omitted when coordinate system has been specified"
-msgstr ""
+msgstr "指定坐标系后，坐标不能省略"
 
 #: ../src/commands.c:1696
 #: n:301
@@ -402,12 +402,12 @@ msgstr "必须为“*DECLINATION AUTO”指定输入坐标系"
 #: ../src/commands.c:1688
 #: n:309
 msgid "Expected number or “AUTO”"
-msgstr ""
+msgstr "需要数字或“AUTO”"
 
 #: ../src/datain.c:1005
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
-msgstr ""
+msgstr "未指定测量日期-使用0作为磁偏角"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -418,7 +418,7 @@ msgstr ""
 #: ../src/commands.c:791
 #: n:36
 msgid "Matching BEGIN command has no survey name"
-msgstr ""
+msgstr "匹配的BEGIN命令没有测量名称"
 
 #. TRANSLATORS: Note: In English you talk about the *units* of a single
 #. measurement, but the correct term in other languages may be singular.
@@ -426,52 +426,52 @@ msgstr ""
 #: n:37
 #, c-format
 msgid "Invalid units “%s” for quantity"
-msgstr ""
+msgstr "量的单位“%s”无效"
 
 #: ../src/commands.c:477
 #: n:39
 #, c-format
 msgid "Unknown instrument “%s”"
-msgstr ""
+msgstr "未知工具“%s”"
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
 #: ../src/commands.c:1661
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
-msgstr ""
+msgstr "DECLINATION的比例因子必须为1.0"
 
 #. TRANSLATORS: If the scale factor for an instrument is zero, then any
 #. reading would be mapped to zero, which doesn't make sense.
 #: ../src/commands.c:1669
 #: n:391
 msgid "Scale factor must be non-zero"
-msgstr ""
+msgstr "比例因子必须为非零"
 
 #: ../src/commands.c:1778
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
-msgstr ""
+msgstr "未知设置“%s”"
 
 #: ../src/commands.c:522
 #: n:42
 #, c-format
 msgid "Unknown character class “%s”"
-msgstr ""
+msgstr "未知字符类“%s”"
 
 #: ../src/extend.c:700
 #: ../src/netskel.c:93
 #: n:43
 msgid "No survey data"
-msgstr ""
+msgstr "无测量数据"
 
 #: ../src/filename.c:52
 #: ../src/img_hosted.c:39
 #: n:44
 #, c-format
 msgid "Filename “%s” refers to directory"
-msgstr ""
+msgstr "文件名“%s”引用了目录"
 
 #. TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
 #. cavern will issue this error if there are any sections of the survey
@@ -479,13 +479,13 @@ msgstr ""
 #: ../src/netartic.c:387
 #: n:45
 msgid "Survey not all connected to fixed stations"
-msgstr ""
+msgstr "测量并非全部连接到固定站"
 
 #: ../src/commands.c:1008
 #: ../src/datain.c:788
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
-msgstr ""
+msgstr "站已经固定或等同到一个固定点"
 
 #: ../src/cavern.c:287
 #: ../src/filename.c:55
@@ -494,7 +494,7 @@ msgstr ""
 #: n:47
 #, c-format
 msgid "Failed to open output file “%s”"
-msgstr ""
+msgstr "无法打开输出文件“%s”"
 
 #: ../src/commands.c:905
 #: ../src/commands.c:919
@@ -502,7 +502,7 @@ msgstr ""
 #: ../src/commands.c:1833
 #: n:48
 msgid "Standard deviation must be positive"
-msgstr ""
+msgstr "标准偏差必须是正数"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
@@ -512,7 +512,7 @@ msgstr ""
 #: n:50
 #, c-format
 msgid "Survey leg with same station (“%s”) at both ends - typing error?"
-msgstr ""
+msgstr "测量段的两端有同一个站(“%s”)—输入错误?"
 
 #. TRANSLATORS: %.f%s will be replaced with a right angle in the
 #. units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
@@ -523,13 +523,13 @@ msgstr ""
 #: n:51
 #, c-format
 msgid "Clino reading over %.f%s (absolute value)"
-msgstr ""
+msgstr "倾角读数超过 %.f%s（绝对值）"
 
 #: ../src/netbits.c:457
 #: n:52
 #, c-format
 msgid "Tried to equate two non-equal fixed stations: “%s” and “%s”"
-msgstr ""
+msgstr "尝试等同两个不相等的固定站“%s”和“%s”"
 
 #. TRANSLATORS: "equal" as in:
 #.
@@ -540,20 +540,20 @@ msgstr ""
 #: n:53
 #, c-format
 msgid "Equating two equal fixed points: “%s” and “%s”"
-msgstr ""
+msgstr "等同两个相等的固定点：“%s”和“%s”"
 
 #. TRANSLATORS: " *fix a " gives this message:
 #: ../src/commands.c:862
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
-msgstr ""
+msgstr "FIX命令没有坐标—固定在 (0,0,0)"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
 #: ../src/commands.c:1012
 #: ../src/datain.c:790
 #: n:55
 msgid "Station already fixed at the same coordinates"
-msgstr ""
+msgstr "站已经固定在同一坐标"
 
 #. TRANSLATORS: Emitted after second and subsequent "FIX command with
 #. no coordinates - fixing at (0,0,0)" warnings.
@@ -561,13 +561,13 @@ msgstr ""
 #: n:441
 #, c-format
 msgid "Already had FIX command with no coordinates for station “%s”"
-msgstr ""
+msgstr "站“%s”已经有FIX命令但没有坐标"
 
 #: ../src/commands.c:1932
 #: n:442
 #, c-format
 msgid "Station “%s” fixed before CS command first used"
-msgstr ""
+msgstr "在首次使用CS命令前，站“%s”已固定"
 
 #. TRANSLATORS: The *EXPORT command is only valid just after *BEGIN
 #. <SURVEY>, so this would generate this error:
@@ -586,12 +586,12 @@ msgstr ""
 #: n:76
 #, c-format
 msgid "Assuming 2 digit year is %d"
-msgstr ""
+msgstr "假设两位数年份为%d"
 
 #: ../src/readval.c:544
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
-msgstr ""
+msgstr "无效年份（<1900 或 >2078）"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
@@ -599,17 +599,17 @@ msgstr ""
 #: ../src/datain.c:982
 #: n:59
 msgid "Suspicious compass reading"
-msgstr ""
+msgstr "可疑的罗盘读数"
 
 #: ../src/datain.c:1660
 #: n:60
 msgid "Negative tape reading"
-msgstr ""
+msgstr "负的皮尺读数"
 
 #: ../src/commands.c:857
 #: n:61
 msgid "Same station fixed twice with no coordinates"
-msgstr ""
+msgstr "同一个站点固定两次，无坐标"
 
 #. TRANSLATORS: This means that the data fed in said this.
 #.
@@ -619,7 +619,7 @@ msgstr ""
 #: ../src/datain.c:1349
 #: n:62
 msgid "Tape reading is less than change in depth"
-msgstr ""
+msgstr "皮尺读数小于深度变化"
 
 #. TRANSLATORS: a data "style" is something like NORMAL, DIVING, etc.
 #. a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
@@ -629,21 +629,21 @@ msgstr ""
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
-msgstr ""
+msgstr "不允许读取“%s”为“%s”数据样式"
 
 #. TRANSLATORS: i.e. not enough readings for the style.
 #: ../src/commands.c:1532
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
-msgstr ""
+msgstr "数据样式“%s”的读数太少"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
 #: ../src/commands.c:1312
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
-msgstr ""
+msgstr "未知的数据样式“%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #.
@@ -658,7 +658,7 @@ msgstr ""
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
-msgstr ""
+msgstr "站“%s”已导出"
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
@@ -666,13 +666,13 @@ msgstr ""
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
-msgstr ""
+msgstr "重复读取“%s”"
 
 #: ../src/commands.c:1038
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
-msgstr ""
+msgstr "未知的标志“%s”"
 
 #: ../src/readval.c:489
 #: n:69
@@ -684,38 +684,38 @@ msgstr "已丢失 \""
 #: n:70
 #, c-format
 msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
-msgstr ""
+msgstr "站“%s”只引用了一次，并且有明确的测量名称—输入错误？"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train
 #. station.
 #: ../src/netartic.c:405
 #: n:71
 msgid "The following survey stations are not attached to a fixed point:"
-msgstr ""
+msgstr "下列测量站未连接到固定点："
 
 #: ../src/netskel.c:138
 #: n:72
 #, c-format
 msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
-msgstr ""
+msgstr "测量没有固定点。 因此，我将%s固定在 (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
 #: ../src/netskel.c:961
 #: n:73
 #, c-format
 msgid "Unused fixed point “%s”"
-msgstr ""
+msgstr "未使用的固定点“%s”"
 
 #: ../src/matrix.c:123
 #: n:74
 msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr ""
+msgstr "通过归约法解网络-无联立方程式可解。"
 
 #: ../src/matrix.c:134
 #: n:75
 #, c-format
 msgid "Solving %d simultaneous equations"
-msgstr ""
+msgstr "解%d联立方程"
 
 #. TRANSLATORS: This is an error from the *DATA command.  It
 #. means that a reading (which will appear where %s is isn't
@@ -726,30 +726,30 @@ msgstr ""
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
-msgstr ""
+msgstr "读取“%s”与以前的读取重复"
 
 #: ../src/matrix.c:132
 #: n:78
 msgid "Solving one equation"
-msgstr ""
+msgstr "解一个方程"
 
 #: ../src/datain.c:1124
 #: ../src/datain.c:1338
 #: ../src/datain.c:1534
 #: n:79
 msgid "Negative adjusted tape reading"
-msgstr ""
+msgstr "负调整距离读数"
 
 #: ../src/commands.c:2339
 #: ../src/commands.c:2361
 #: n:80
 msgid "Date is in the future!"
-msgstr ""
+msgstr "日期在未来！"
 
 #: ../src/commands.c:2366
 #: n:81
 msgid "End of date range is before the start"
-msgstr ""
+msgstr "结束日期范围在开始日期之前"
 
 #. TRANSLATORS: e.g. the user specifies a passage cross-section at
 #. station "entrance.27", but there is no station "entrance.27" in
@@ -758,7 +758,7 @@ msgstr ""
 #: n:83
 #, c-format
 msgid "Cross section specified at non-existent station “%s”"
-msgstr ""
+msgstr "在不存在的站“%s”处指定的横截面"
 
 #. TRANSLATORS: In data with backsights, the user has tried to give a
 #. plumb for the foresight and a clino reading for the backsight, or
@@ -766,36 +766,36 @@ msgstr ""
 #: ../src/datain.c:1148
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
-msgstr ""
+msgstr "倾角和后视倾角的读数必须是同一类型"
 
 #. TRANSLATORS: We've been told the foresight and backsight are
 #. both "UP", or that they're both "DOWN".
 #: ../src/datain.c:1173
 #: n:92
 msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
-msgstr ""
+msgstr "垂直的倾角和后视倾角度数不能在同一方向"
 
 #: ../src/readval.c:555
 #: n:86
 msgid "Invalid month"
-msgstr ""
+msgstr "无效的月份"
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
 #: ../src/readval.c:566
 #: n:87
 msgid "Invalid day of the month"
-msgstr ""
+msgstr "无效的日期号数"
 
 #: ../src/cavern.c:236
 #: n:88
 #, c-format
 msgid "3d file format versions %d to %d supported"
-msgstr ""
+msgstr "支持%d到%d的3d文件格式版本"
 
 #: ../src/readval.c:203
 #: n:89
 msgid "Expecting survey name"
-msgstr ""
+msgstr "需要测量名称"
 
 #: ../src/datain.c:504
 #: ../src/extend.c:685
@@ -812,7 +812,7 @@ msgstr "无法打开文件 “%s”"
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
-msgstr ""
+msgstr "无法写入文件“%s”"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -824,7 +824,7 @@ msgstr ""
 #: ../src/readval.c:92
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
-msgstr ""
+msgstr "不会报告此已弃用功能的进一步使用"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "0.12m" or "0.2ft".
@@ -833,7 +833,7 @@ msgstr ""
 #: n:97
 #, c-format
 msgid "TAPE reading and BACKTAPE reading disagree by %s"
-msgstr ""
+msgstr "%s的距离读取和后视距离读取不一致"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
@@ -841,7 +841,7 @@ msgstr ""
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
-msgstr ""
+msgstr "%s的方位读数和后视方位读数不一致"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
@@ -849,13 +849,13 @@ msgstr ""
 #: n:99
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s"
-msgstr ""
+msgstr "%s的倾角读数和后视倾角读数不一致"
 
 #: ../src/commands.c:1323
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
-msgstr ""
+msgstr "“*data %s %c …”已弃用-请改用“*data %s …”"
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
@@ -863,7 +863,7 @@ msgstr ""
 #: n:106
 #, c-format
 msgid "Bad 3d image file “%s”"
-msgstr ""
+msgstr "错误的3d图像文件“%s”"
 
 #. TRANSLATORS: This is the date format string used to timestamp .3d
 #. files internally.  Probably best to keep it the same for all
@@ -873,19 +873,19 @@ msgstr ""
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
-msgstr ""
+msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
 #: ../src/model.cc:386
 #: n:108
 msgid "Date and time not available."
-msgstr ""
+msgstr "日期和时间不可用。"
 
 #: ../src/img_hosted.c:40
 #: n:109
-#, fuzzy, c-format
+#, c-format
 msgid "Error reading from file “%s”"
-msgstr "读文件出错: “%s”"
+msgstr "读取文件“%s”时出错"
 
 #: ../src/cavernlog.cc:837
 #: ../src/filename.c:79
@@ -893,9 +893,9 @@ msgstr "读文件出错: “%s”"
 #: ../src/mainfrm.cc:374
 #: ../src/mainfrm.cc:1511
 #: n:110
-#, fuzzy, c-format
+#, c-format
 msgid "Error writing to file “%s”"
-msgstr "写入文件出错: “%s”"
+msgstr "写入文件“%s”时出错"
 
 #: ../src/filename.c:82
 #: n:111
@@ -906,13 +906,13 @@ msgstr "写入文件出错"
 #: n:113
 #, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
-msgstr ""
+msgstr "有%d个警告和%d个错误-未生成输出文件。"
 
 #: ../src/img_hosted.c:42
 #: n:114
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
-msgstr ""
+msgstr "文件“%s”的格式比此程序所能理解的要新"
 
 #: ../src/printing.cc:1145
 #: n:115
@@ -923,17 +923,17 @@ msgstr "北"
 #: ../src/printing.cc:1170
 #: n:116
 msgid "Elevation on"
-msgstr ""
+msgstr "仰角"
 
 #: ../src/printing.cc:451
 #: n:117
 msgid "P&lan view"
-msgstr ""
+msgstr "平面图(&L)"
 
 #: ../src/printing.cc:453
 #: n:285
 msgid "&Elevation"
-msgstr ""
+msgstr "立面(&E)"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. neither from directly above nor from directly below.  It is
@@ -947,9 +947,8 @@ msgstr ""
 #: ../src/gfxcore.cc:2157
 #: ../src/mainfrm.cc:162
 #: n:118
-#, fuzzy
 msgid "Elevation"
-msgstr "坡度"
+msgstr "立面"
 
 #. TRANSLATORS: Label used for "clino" in Aven when the view is
 #. from directly above.
@@ -972,19 +971,18 @@ msgstr "计划"
 #: ../src/gfxcore.cc:835
 #: ../src/gfxcore.cc:2154
 #: n:433
-#, fuzzy
 msgid "Kiwi Plan"
-msgstr "新西兰计划"
+msgstr "仰视平面"
 
 #: ../src/cavern.c:341
 #: n:120
 msgid "Calculating statistics"
-msgstr ""
+msgstr "正在计算统计数据"
 
 #: ../src/readval.c:508
 #: n:121
 msgid "Expecting string field"
-msgstr ""
+msgstr "应为字符串字段"
 
 #: ../src/cmdline.c:212
 #: n:122
@@ -1013,7 +1011,7 @@ msgstr "文件"
 #: ../src/netskel.c:180
 #: n:125
 msgid "Removing trailing traverses"
-msgstr ""
+msgstr "删除尾部导线"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by
 #. toporobot: "sequence" for the English "traverse", which makes sense
@@ -1023,7 +1021,7 @@ msgstr ""
 #: ../src/netskel.c:239
 #: n:126
 msgid "Concatenating traverses"
-msgstr ""
+msgstr "串联导线"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by
 #. toporobot: "sequence" for the English "traverse", which makes sense
@@ -1033,7 +1031,7 @@ msgstr ""
 #: ../src/netskel.c:437
 #: n:127
 msgid "Calculating traverses"
-msgstr ""
+msgstr "计算导线"
 
 #. TRANSLATORS: In French, Eric chose to use the terminology used by
 #. toporobot: "sequence" for the English "traverse", which makes sense
@@ -1045,48 +1043,48 @@ msgstr ""
 #: ../src/netskel.c:782
 #: n:128
 msgid "Calculating trailing traverses"
-msgstr ""
+msgstr "计算尾部导线"
 
 #: ../src/network.c:82
 #: n:129
 msgid "Simplifying network"
-msgstr ""
+msgstr "简化网络"
 
 #: ../src/network.c:540
 #: n:130
 msgid "Calculating network"
-msgstr ""
+msgstr "计算网络"
 
 #: ../src/datain.c:1642
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
-msgstr ""
+msgstr "找到“%s”，应为“F”或“B”"
 
 #: ../src/cavern.c:443
 #: n:132
 #, c-format
 msgid "Total length of survey legs = %7.2f%s (%7.2f%s adjusted)"
-msgstr ""
+msgstr "测量段的总长度 = %7.2f%s (%7.2f%s 调整过的)"
 
 #: ../src/cavern.c:446
 #: n:133
 #, c-format
 msgid "Total plan length of survey legs = %7.2f%s"
-msgstr ""
+msgstr "测量段的总平面长度 = %7.2f%s"
 
 #: ../src/cavern.c:449
 #: n:134
 #, c-format
 msgid "Total vertical length of survey legs = %7.2f%s"
-msgstr ""
+msgstr "测量段的总垂直长度 = %7.2f%s"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
 #: ../src/cavern.c:456
 #: n:135
 #, c-format
 msgid "Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
-msgstr ""
+msgstr "垂直范围 = %4.2f%s（从%s位于%4.2f%s处到%s位于%4.2f%s处）"
 
 #. TRANSLATORS: c.f. previous message
 #: ../src/cavern.c:459
@@ -1105,48 +1103,48 @@ msgstr ""
 #: ../src/cavern.c:428
 #: n:138
 msgid "There is 1 loop."
-msgstr ""
+msgstr "有一个环路"
 
 #: ../src/cavern.c:430
 #: n:139
 #, c-format
 msgid "There are %ld loops."
-msgstr ""
+msgstr "有%ld个环路"
 
 #: ../src/cavern.c:363
 #: n:140
 #, c-format
 msgid "CPU time used %5.2fs"
-msgstr ""
+msgstr "CPU使用时间%5.2fs"
 
 #: ../src/cavern.c:366
 #: n:141
 #, c-format
 msgid "Time used %5.2fs"
-msgstr ""
+msgstr "使用时间%5.2fs"
 
 #: ../src/cavern.c:368
 #: n:142
 msgid "Time used unavailable"
-msgstr ""
+msgstr "使用时间不可用"
 
 #: ../src/cavern.c:371
 #: n:143
 #, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
-msgstr ""
+msgstr "使用时间%5.2fs（%5.2fs CPU时间）"
 
 #: ../src/netskel.c:747
 #: n:145
 #, c-format
 msgid "Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). "
-msgstr ""
+msgstr "原始长度%6.2fm（%3d个段），移动了%6.2fm（%5.2fm/段）。 "
 
 #: ../src/netskel.c:750
 #: n:146
 #, c-format
 msgid "Error %6.2f%%"
-msgstr ""
+msgstr "误差 %6.2f%%"
 
 #. TRANSLATORS: Here N/A means "Not Applicable" -- it means the
 #. traverse has zero length, so error per metre is meaningless.
@@ -1156,7 +1154,7 @@ msgstr ""
 #: ../src/netskel.c:757
 #: n:147
 msgid "Error    N/A"
-msgstr ""
+msgstr "误差    不适用（导线长度为0）"
 
 #. TRANSLATORS: description of --help option
 #: ../src/cmdline.c:138
@@ -1188,20 +1186,20 @@ msgstr "比例尺"
 #: ../src/survexport.cc:128
 #: n:217
 msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
-msgstr ""
+msgstr "比例（50、 0.02、1:50 和 2:100 均为 1:50）"
 
 #: ../src/cmdline.c:194
 #: n:157
 #, c-format
 msgid "Try “%s --help” for more information.\n"
-msgstr ""
+msgstr "请尝试“%s --help”获取更多信息。\n"
 
 #. TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
 #: ../src/printing.cc:1915
 #: n:232
 #, c-format
 msgid "%d/%d"
-msgstr ""
+msgstr "%d/%d"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate that
 #. the date which follows is the date that the survey data was processed.
@@ -1212,7 +1210,7 @@ msgstr ""
 #: n:167
 #, c-format
 msgid "Processed: %s"
-msgstr ""
+msgstr "已处理：%s"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a plan view and what the viewing angle is.
@@ -1263,7 +1261,7 @@ msgstr ""
 #: n:244
 #, c-format
 msgid "Extended 1:%.0f"
-msgstr ""
+msgstr "扩展1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
@@ -1271,7 +1269,7 @@ msgstr ""
 #: n:168
 #, c-format
 msgid "Plan view, %s up page"
-msgstr ""
+msgstr "平面图，纸上%s"
 
 #. TRANSLATORS: This is used on printouts of elevations, with %s
 #. replaced by something like "123°".  The bearing is the direction
@@ -1280,13 +1278,13 @@ msgstr ""
 #: n:169
 #, c-format
 msgid "Elevation facing %s"
-msgstr ""
+msgstr "立面，面朝%s"
 
 #. TRANSLATORS: Don't translate example command line option --tilt=-90
 #: ../src/survexport.cc:134
 #: n:462
 msgid "plan view (equivalent to --tilt=-90)"
-msgstr ""
+msgstr "平面图 (equivalent to --tilt=-90)"
 
 #. TRANSLATORS: This is used on printouts of tilted elevations, with
 #. the first %s replaced by something like "123°", and the second by
@@ -1296,41 +1294,41 @@ msgstr ""
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
-msgstr ""
+msgstr "立面朝向%s，倾斜%s"
 
 #. TRANSLATORS: Don't translate example command line option --tilt=0
 #: ../src/survexport.cc:136
 #: n:463
 msgid "elevation view (equivalent to --tilt=0)"
-msgstr ""
+msgstr "立面图(equivalent to --tilt=0)"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
 #: ../src/printing.cc:1199
 #: n:191
 msgid "Extended elevation"
-msgstr ""
+msgstr "立面展开图"
 
 #: ../src/cavern.c:414
 #: n:172
 msgid "Survey contains 1 survey station,"
-msgstr ""
+msgstr "测量包含1个测量站，"
 
 #: ../src/cavern.c:416
 #: n:173
 #, c-format
 msgid "Survey contains %ld survey stations,"
-msgstr ""
+msgstr "测量包含%ld个测量站，"
 
 #: ../src/cavern.c:420
 #: n:174
 msgid " joined by 1 leg."
-msgstr ""
+msgstr " 由1条测量段连接。"
 
 #: ../src/cavern.c:422
 #: n:175
 #, c-format
 msgid " joined by %ld legs."
-msgstr ""
+msgstr " 由%ld条测量段连接。"
 
 #. TRANSLATORS: node/nodes as in:  "Survey has 1 2-node and 2 3-nodes."
 #: ../src/listpos.c:185
@@ -1351,7 +1349,7 @@ msgstr "节点"
 #: n:178
 #, c-format
 msgid "Survey has %ld connected components."
-msgstr ""
+msgstr "测量有%ld个连接的组件。"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. allows the user to save the log to a file.
@@ -1366,59 +1364,59 @@ msgstr "保存日志(&S)"
 #: ../src/cavernlog.cc:784
 #: n:184
 msgid "&Reprocess"
-msgstr ""
+msgstr "重新处理(&R)"
 
 #: ../src/cmdline.c:242
 #: ../src/cmdline.c:261
 #: n:185
 #, c-format
 msgid "numeric argument “%s” out of range"
-msgstr ""
+msgstr "数值参数“%s”超出范围"
 
 #: ../src/cmdline.c:244
 #: n:186
 #, c-format
 msgid "argument “%s” not an integer"
-msgstr ""
+msgstr "参数“%s”不是整数"
 
 #: ../src/cmdline.c:263
 #: n:187
 #, c-format
 msgid "argument “%s” not a number"
-msgstr ""
+msgstr "参数“%s”不是数字"
 
 #: ../src/commands.c:1052
 #: n:188
 msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
-msgstr ""
+msgstr "应为“DUPLICATE”、“SPLAY”或“SURFACE”"
 
 #: ../src/commands.c:1054
 #: n:189
 msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
-msgstr ""
+msgstr "应为“NOT”、“DUPLICATE”、“SPLAY”或“SURFACE”"
 
 #: ../src/datain.c:757
 #: n:103
 msgid "Expecting “F” or “M”"
-msgstr ""
+msgstr "应为“F”或“M”"
 
 #: ../src/listpos.c:82
 #: n:190
 #, c-format
 msgid "Station “%s” referred to by *entrance or *export but never used"
-msgstr ""
+msgstr "测量站“%s”由 *entrance 或 *export 引用，但从未使用"
 
 #: ../src/commands.c:759
 #: n:192
 msgid "No matching BEGIN"
-msgstr ""
+msgstr "没有匹配BEGIN"
 
 #. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 #. same <survey> if it’s given at all
 #: ../src/commands.c:795
 #: n:193
 msgid "Survey name doesn’t match BEGIN"
-msgstr ""
+msgstr "测量名称与BEGIN不匹配"
 
 #. TRANSLATORS: Used when a BEGIN command has a survey name, but the
 #. END command omits it, e.g.:
@@ -1429,7 +1427,7 @@ msgstr ""
 #: ../src/commands.c:805
 #: n:194
 msgid "Survey name omitted from END"
-msgstr ""
+msgstr "调查名称被从END处省略"
 
 #. TRANSLATORS: Heading line for .pos file.  Please try to ensure the
 #. “,”s (or at least the columns) are in the same place
@@ -1443,13 +1441,13 @@ msgstr "( 向东,    向北,     海拔     )"
 #: n:196
 #, c-format
 msgid "Display Depth: %d bpp"
-msgstr ""
+msgstr "显示深度：%d bpp(每像素位数)"
 
 #. TRANSLATORS: appended to previous message if the display is colour
 #: ../src/aboutdlg.cc:176
 #: n:197
 msgid " (colour)"
-msgstr ""
+msgstr " （彩色）"
 
 #: ../src/readval.c:531
 #: ../src/readval.c:552
@@ -1457,7 +1455,7 @@ msgstr ""
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
-msgstr ""
+msgstr "需要日期，发现“%s”"
 
 #. TRANSLATORS: --help output for --survey option.
 #.
@@ -1469,61 +1467,61 @@ msgstr ""
 #: ../src/survexport.cc:126
 #: n:199
 msgid "only load the sub-survey with this prefix"
-msgstr ""
+msgstr "仅加载具有此前缀的子测量"
 
 #. TRANSLATORS: --help output for aven --print option
 #: ../src/aven.cc:72
 #: n:119
 msgid "print and exit (requires a 3d file)"
-msgstr ""
+msgstr "打印并退出（需要3d文件）"
 
 #. TRANSLATORS: --help output for cavern --output option
 #: ../src/cavern.c:121
 #: n:162
 msgid "set location for output files"
-msgstr ""
+msgstr "设置输出文件的位置"
 
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:123
 #: n:163
 msgid "only show brief summary (-qq for errors only)"
-msgstr ""
+msgstr "仅显示简要摘要（-qq仅用于错误）"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:125
 #: n:164
 msgid "do not create .err file"
-msgstr ""
+msgstr "不创建.err文件"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
 #: ../src/cavern.c:127
 #: n:165
 msgid "turn warnings into errors"
-msgstr ""
+msgstr "将警告转换为错误"
 
 #. TRANSLATORS: --help output for cavern --log option
 #: ../src/cavern.c:129
 #: n:170
 msgid "log output to .log file"
-msgstr ""
+msgstr "日志输出到.log文件"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
 #: ../src/cavern.c:131
 #: n:171
 msgid "specify the 3d file format version to output"
-msgstr ""
+msgstr "指定要输出的3d文件格式版本"
 
 #. TRANSLATORS: --help output for extend --specfile option
 #: ../src/extend.c:482
 #: n:90
 msgid ".espec file to control extending"
-msgstr ""
+msgstr "用.espec文件来控制扩展"
 
 #. TRANSLATORS: --help output for extend --show-breaks option
 #: ../src/extend.c:484
 #: n:91
 msgid "show breaks with surface survey legs in output"
-msgstr ""
+msgstr "使用输出中的地面测量段显示中断"
 
 #. TRANSLATORS: error message given by "*units tape 0 feet" - it’s
 #. meaningless to say your tape is marked in "0 feet" (but you might
@@ -1532,13 +1530,13 @@ msgstr ""
 #: ../src/commands.c:1583
 #: n:200
 msgid "*UNITS factor must be non-zero"
-msgstr ""
+msgstr "*UNITS 因子必须为非零"
 
 #: ../src/model.cc:403
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
-msgstr ""
+msgstr "3d文件“%s”中没有测量数据"
 
 #. TRANSLATORS: Used in aven above the compass indicator at the lower
 #. right of the display, with a bearing below "Facing".  This indicates the
@@ -1565,12 +1563,12 @@ msgstr "关于%s"
 #: ../src/mainfrm.cc:1466
 #: n:451
 msgid "Select a terrain file to view"
-msgstr ""
+msgstr "选择要查看的地形文件"
 
 #: ../src/mainfrm.cc:1460
 #: n:452
 msgid "Terrain files"
-msgstr ""
+msgstr "地形文件"
 
 #. TRANSLATORS: Aven shows a circle of terrain covering the area
 #. of the survey plus a bit, but the terrain data file didn't
@@ -1578,7 +1576,7 @@ msgstr ""
 #: ../src/gfxcore.cc:3164
 #: n:161
 msgid "No terrain data near area of survey"
-msgstr ""
+msgstr "测量区域附近无地形数据"
 
 #. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
 #. - it should be translated to the terminology that cavers using the
@@ -1588,7 +1586,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1437
 #: n:206
 msgid "Select a survey file to view"
-msgstr ""
+msgstr "选择要查看的测量文件"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
@@ -1612,7 +1610,7 @@ msgstr "全部文件"
 #: ../src/mainfrm.cc:1411
 #: n:229
 msgid "All survey files"
-msgstr ""
+msgstr "所有测量文件"
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
@@ -1626,7 +1624,7 @@ msgstr "Survex svx 文件"
 #: ../src/mainfrm.cc:1425
 #: n:330
 msgid "Compass DAT and MAK files"
-msgstr ""
+msgstr "Compass DAT 和 MAK 文件"
 
 #: ../src/export.cc:72
 #: n:101
@@ -1654,7 +1652,7 @@ msgstr "GPS 文件"
 #: ../src/export.cc:87
 #: n:414
 msgid "HPGL for plotters"
-msgstr ""
+msgstr "绘图仪用HPGL"
 
 #: ../src/export.cc:93
 #: n:444
@@ -1812,7 +1810,7 @@ msgstr ""
 #: ../src/commands.c:1415
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
-msgstr ""
+msgstr "NEWLINE前只能有STATION、DEPTH和COUNT"
 
 #. TRANSLATORS: e.g.
 #.
@@ -1936,34 +1934,34 @@ msgstr ""
 #: ../src/printing.cc:396
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "一页"
 
 #: ../src/mainfrm.cc:158
 #: ../src/printing.cc:431
 #: n:259
 msgid "Bearing"
-msgstr ""
+msgstr "方位"
 
 #. TRANSLATORS: These example input values should not be translated.
 #: ../src/survexport.cc:130
 #: n:460
 msgid "bearing (90, 90d, 100g all mean 90°)"
-msgstr ""
+msgstr "方位 (90, 90d, 100g 均为 90°)"
 
 #: ../src/pos.cc:93
 #: n:100
 msgid "Station Name"
-msgstr ""
+msgstr "站名"
 
 #: ../src/printing.cc:479
 #: n:260
 msgid "Station Names"
-msgstr ""
+msgstr "站名"
 
 #: ../src/survexport.cc:141
 #: n:475
 msgid "station labels"
-msgstr ""
+msgstr "站标签"
 
 #: ../src/printing.cc:475
 #: n:261
@@ -1972,41 +1970,40 @@ msgstr "格点"
 
 #: ../src/survexport.cc:140
 #: n:474
-#, fuzzy
 msgid "station markers"
-msgstr "格点"
+msgstr "站标志"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: ../src/printing.cc:461
 #: n:262
 msgid "Underground Survey Legs"
-msgstr ""
+msgstr "地下测量段"
 
 #: ../src/survexport.cc:137
 #: n:476
 msgid "underground survey legs"
-msgstr ""
+msgstr "地下测量段"
 
 #: ../src/printing.cc:495
 #: n:393
 msgid "Cross-sections"
-msgstr ""
+msgstr "截面"
 
 #: ../src/survexport.cc:145
 #: n:469
 msgid "cross-sections"
-msgstr ""
+msgstr "截面"
 
 #: ../src/printing.cc:500
 #: n:394
 msgid "Walls"
-msgstr ""
+msgstr "墙"
 
 #: ../src/survexport.cc:146
 #: n:470
 msgid "walls"
-msgstr ""
+msgstr "墙"
 
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
@@ -2014,12 +2011,12 @@ msgstr ""
 #: ../src/printing.cc:507
 #: n:395
 msgid "Passages"
-msgstr ""
+msgstr "通道"
 
 #: ../src/survexport.cc:147
 #: n:471
 msgid "passages"
-msgstr ""
+msgstr "通道"
 
 #: ../src/printing.cc:511
 #: n:421
@@ -2034,41 +2031,41 @@ msgstr ""
 #: ../src/printing.cc:515
 #: n:422
 msgid "Full coordinates"
-msgstr ""
+msgstr "全坐标"
 
 #: ../src/survexport.cc:149
 #: n:473
 msgid "full coordinates"
-msgstr ""
+msgstr "全坐标"
 
 #: ../src/printing.cc:519
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "贴着地面"
 
 #: ../src/survexport.cc:150
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "贴着地面"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441
 #: n:263
 msgid "Tilt angle"
-msgstr ""
+msgstr "倾角"
 
 #. TRANSLATORS: These example input values should not be translated.
 #: ../src/survexport.cc:132
 #: n:461
 msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
-msgstr ""
+msgstr "倾斜角（45, 45d, 50g, 100% 均等同于 45°）"
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
 #: ../src/printing.cc:527
 #: n:264
 msgid "Page Borders"
-msgstr ""
+msgstr "页面边框"
 
 #. TRANSLATORS: As in the legend on a map.  Used in the print dialog -
 #. controls drawing the box at the lower left with survey name, view
@@ -2083,7 +2080,7 @@ msgstr "图例"
 #: ../src/printing.cc:533
 #: n:266
 msgid "Blank Pages"
-msgstr ""
+msgstr "空白页"
 
 #. TRANSLATORS: Items in the "View" menu:
 #: ../src/mainfrm.cc:854
@@ -2135,7 +2132,7 @@ msgstr ""
 #: ../src/survexport.cc:138
 #: n:464
 msgid "surface survey legs"
-msgstr ""
+msgstr "地表测量段"
 
 #: ../src/mainfrm.cc:893
 #: n:273
@@ -2165,32 +2162,32 @@ msgstr ""
 #: ../src/printing.cc:483
 #: n:418
 msgid "Entrances"
-msgstr ""
+msgstr "入口"
 
 #: ../src/survexport.cc:142
 #: n:466
 msgid "entrances"
-msgstr ""
+msgstr "入口"
 
 #: ../src/printing.cc:487
 #: n:419
 msgid "Fixed Points"
-msgstr ""
+msgstr "固定点"
 
 #: ../src/survexport.cc:143
 #: n:467
 msgid "fixed points"
-msgstr ""
+msgstr "固定点"
 
 #: ../src/printing.cc:491
 #: n:420
 msgid "Exported Stations"
-msgstr ""
+msgstr "导出站"
 
 #: ../src/survexport.cc:144
 #: n:468
 msgid "exported stations"
-msgstr ""
+msgstr "导出站"
 
 #: ../src/mainfrm.cc:920
 #: n:237
@@ -2370,22 +2367,22 @@ msgstr "%s：选项无效 -- %c\n"
 #: ../src/mainfrm.cc:840
 #: n:311
 msgid "&New Presentation"
-msgstr ""
+msgstr "新演示文档(&N)"
 
 #: ../src/mainfrm.cc:841
 #: n:312
 msgid "&Open Presentation..."
-msgstr ""
+msgstr "打开演示文档...(&O)"
 
 #: ../src/mainfrm.cc:842
 #: n:313
 msgid "&Save Presentation"
-msgstr ""
+msgstr "保存演示文档(&S)"
 
 #: ../src/mainfrm.cc:843
 #: n:314
 msgid "Sa&ve Presentation As..."
-msgstr ""
+msgstr "保存演示文档为...(&V)"
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
 #: ../src/mainfrm.cc:846
@@ -2407,7 +2404,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2059
 #: n:331
 msgid "Export Movie"
-msgstr ""
+msgstr "导出视频"
 
 #: ../src/cavernlog.cc:830
 #: ../src/mainfrm.cc:365
@@ -2420,7 +2417,7 @@ msgstr "选择输出文件名"
 #: ../src/mainfrm.cc:1981
 #: n:320
 msgid "Aven presentations"
-msgstr ""
+msgstr "Aven演示文档"
 
 #. TRANSLATORS: title of the save screenshot dialog
 #: ../src/mainfrm.cc:1497
@@ -2432,13 +2429,13 @@ msgstr "保存截图"
 #: ../src/mainfrm.cc:1979
 #: n:322
 msgid "Select a presentation to open"
-msgstr ""
+msgstr "选择打开一个演示文档"
 
 #: ../src/mainfrm.cc:436
 #: n:323
 #, c-format
 msgid "Error in format of presentation file “%s”"
-msgstr ""
+msgstr "演示文档“%s”的格式错误"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
@@ -2460,7 +2457,7 @@ msgstr "CMAP XYZ 打开"
 #: ../src/mainfrm.cc:1970
 #: n:326
 msgid "Modified Presentation"
-msgstr ""
+msgstr "修改演示文档"
 
 #. TRANSLATORS: and the question in that box
 #: ../src/mainfrm.cc:1602
@@ -2468,7 +2465,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1969
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
-msgstr ""
+msgstr "当前演示文档已被修改。要放弃未保存的更改吗？"
 
 #: ../src/mainfrm.cc:2293
 #: ../src/mainfrm.cc:2304
@@ -2938,7 +2935,7 @@ msgstr " 秒 (0 = 自动; *6 = 6 times 自动)"
 #: n:405
 #, c-format
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
-msgstr ""
+msgstr "此版本的%s运行需要的OpenGL不可用。"
 
 #: ../src/readval.c:348
 #: n:392
@@ -3385,7 +3382,7 @@ msgstr ""
 
 #: n:349
 #~ msgid "Estimate LRUD readings based on heuristics"
-#~ msgstr ""
+#~ msgstr "基于启发法估计左右上下读数"
 
 #: n:350
 #~ msgid "Mark survey stations with crosses"
@@ -3393,11 +3390,11 @@ msgstr ""
 
 #: n:351
 #~ msgid "Highlight stations marked as entrances"
-#~ msgstr ""
+#~ msgstr "突出显示标记为入口的站"
 
 #: n:352
 #~ msgid "Highlight stations marked as fixed points"
-#~ msgstr ""
+#~ msgstr "突出显示标记为固定点的站"
 
 #: n:353
 #~ msgid "Highlight stations which are exported"
@@ -3405,31 +3402,31 @@ msgstr ""
 
 #: n:354
 #~ msgid "Mark survey stations with their names"
-#~ msgstr ""
+#~ msgstr "使用站名标记测量站"
 
 #: n:355
 #~ msgid "Allow names to overlap on the display (faster)"
-#~ msgstr ""
+#~ msgstr "允许名称在显示时重叠（更快）"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: n:357
 #~ msgid "Display underground survey legs"
-#~ msgstr ""
+#~ msgstr "显示地下测量段"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
 #: n:358
 #~ msgid "Display surface survey legs"
-#~ msgstr ""
+#~ msgstr "显示地表测量段"
 
 #: n:359
 #~ msgid "Colour surface surveys by depth"
-#~ msgstr ""
+#~ msgstr "地表颜色按深度渲染"
 
 #: n:360
 #~ msgid "Draw surface legs with dashed lines"
-#~ msgstr ""
+#~ msgstr "使用虚线画地表测量段"
 
 #: n:361
 #~ msgid "Draw a grid"
@@ -3437,19 +3434,19 @@ msgstr ""
 
 #: n:362
 #~ msgid "metric units"
-#~ msgstr ""
+#~ msgstr "公制单位"
 
 #. TRANSLATORS: Miles, Feet, Inches, etc.  What they call "English units" in
 #. the USA (rather confusingly now that England has largely gone metric!)
 #: n:363
 #~ msgid "imperial units"
-#~ msgstr ""
+#~ msgstr "英制单位"
 
 #. TRANSLATORS: Degrees are the angular measurement where there are 360 in a
 #. full circle.
 #: n:364
 #~ msgid "degrees (°)"
-#~ msgstr ""
+#~ msgstr "度（°）"
 
 #. TRANSLATORS: Grads are the angular measurement where there are 400 in a
 #. full circle.
@@ -3463,7 +3460,7 @@ msgstr ""
 
 #: n:367
 #~ msgid "Display angles in"
-#~ msgstr ""
+#~ msgstr "角度显示为"
 
 #. TRANSLATORS: reverses the sense of the mouse controls
 #: n:368
@@ -3472,15 +3469,15 @@ msgstr ""
 
 #: n:369
 #~ msgid "Display scale bar"
-#~ msgstr ""
+#~ msgstr "显示比例尺"
 
 #: n:370
 #~ msgid "Display depth bar"
-#~ msgstr ""
+#~ msgstr "显示深度栏"
 
 #: n:371
 #~ msgid "Display compass"
-#~ msgstr ""
+#~ msgstr "显示罗盘"
 
 #: n:372
 #~ msgid "Display clinometer"
@@ -3488,4 +3485,4 @@ msgstr ""
 
 #: n:373
 #~ msgid "Display side panel"
-#~ msgstr ""
+#~ msgstr "显示侧面板"
