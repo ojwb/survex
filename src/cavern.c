@@ -395,6 +395,19 @@ main(int argc, char **argv)
 static void
 do_range(int d, int msgno, real length_factor, const char * units)
 {
+   if (d < 3) {
+      /* If the bound including anonymous stations is at an anonymous station
+       * but the bound only considering named stations is the same, use the
+       * named station for the anonymous bound too.
+       */
+      if (TSTBIT(pfxHi[d]->sflags, SFLAGS_ANON) && max[d] == max[d + 3]) {
+	 pfxHi[d] = pfxHi[d + 3];
+      }
+      if (TSTBIT(pfxLo[d]->sflags, SFLAGS_ANON) && min[d] == min[d + 3]) {
+	 pfxLo[d] = pfxLo[d + 3];
+      }
+   }
+
    /* sprint_prefix uses a single buffer, so to report two stations in one
     * message we need to make a temporary copy of the string for one of them.
     */
