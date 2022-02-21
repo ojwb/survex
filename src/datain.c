@@ -751,6 +751,12 @@ data_file(const char *pth, const char *fnm)
 	       s_catchar(&dat_fnm, &dat_fnm_len, (char)ch);
 	       nextch_handling_eol();
 	    }
+	    if (dat_fnm) {
+	       ch_store = ch;
+	       data_file(dat_pth, dat_fnm);
+	       ch = ch_store;
+	       osfree(dat_fnm);
+	    }
 	    while (ch != ';' && ch != EOF) {
 	       prefix *name;
 	       nextch_handling_eol();
@@ -818,12 +824,6 @@ data_file(const char *pth, const char *fnm)
 		  while (ch != ',' && ch != ';' && ch != EOF)
 		     nextch_handling_eol();
 	       }
-	    }
-	    if (dat_fnm) {
-	       ch_store = ch;
-	       data_file(dat_pth, dat_fnm);
-	       ch = ch_store;
-	       osfree(dat_fnm);
 	    }
 	 } else {
 	    /* FIXME: also check for % and $ later */
