@@ -253,6 +253,17 @@ compile_diagnostic(int diag_flags, int en, ...)
       }
       compile_v_report(diag_flags|DIAG_COL, en, ap);
       caret_width = 0;
+   } else if (diag_flags & DIAG_STRING) {
+      char *p = NULL;
+      int alloced = 0;
+      skipblanks();
+      caret_width = ftell(file.fh);
+      read_string(&p, &alloced);
+      osfree(p);
+      /* We want to include any quotes, so can't use strlen(p). */
+      caret_width = ftell(file.fh) - caret_width;
+      compile_v_report(diag_flags|DIAG_COL, en, ap);
+      caret_width = 0;
    } else {
       compile_v_report(diag_flags, en, ap);
    }

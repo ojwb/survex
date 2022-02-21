@@ -2147,7 +2147,7 @@ cmd_cs(void)
    }
    if (cs_sub == INT_MIN || isalnum(ch)) {
       set_pos(&fp);
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2223,7 +2223,7 @@ cmd_cs(void)
    if (!proj_str) {
       /* printf("CS %d:%d\n", (int)cs, cs_sub); */
       set_pos(&fp);
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2231,7 +2231,7 @@ cmd_cs(void)
    if (output) {
       if (ok_for_output == NO) {
 	 set_pos(&fp);
-	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
+	 compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Coordinate system unsuitable for output*/435);
 	 skipline();
 	 return;
       }
@@ -2251,7 +2251,7 @@ cmd_cs(void)
 	  PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	  if (!pj) {
 	      set_pos(&fp);
-	      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
+	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
 				 proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
 	      skipline();
 	      osfree(proj_str);
@@ -2261,7 +2261,7 @@ cmd_cs(void)
 	  if (type == PJ_TYPE_GEOGRAPHIC_2D_CRS ||
 	      type == PJ_TYPE_GEOGRAPHIC_3D_CRS) {
 	      set_pos(&fp);
-	      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
+	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Coordinate system unsuitable for output*/435);
 	      skipline();
 	      osfree(proj_str);
 	      return;
@@ -2290,7 +2290,7 @@ cmd_cs(void)
 	 PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
+	    compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
 			       proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
 	    skipline();
 	    return;

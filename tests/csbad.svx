@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=26
+; pos=fail warn=0 error=27
 *fix 1 reference 0 0 0
 *cs EPSG:-1
 *cs ERSI:1234
@@ -18,6 +18,7 @@
 *cs UTM61N
 *cs UTM61S
 *cs custom "+proj=ection"
+*cs custom "+proj=ection +with +spaces"
 *cs out lat-long
 *cs out long-lat
 *cs out jtsk
