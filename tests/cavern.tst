@@ -141,8 +141,13 @@ for file in $TESTS ; do
       pos=yes
       warn=0
       ;;
+    badinc5.mak)
+      pos=fail
+      warn=1
+      error=1
+      ;;
     *.mak)
-      # All the current .mak tests have the same settings.
+      # All the other .mak tests have the same settings.
       pos=yes
       warn=0
       ;;
