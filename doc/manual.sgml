@@ -1471,7 +1471,7 @@ The currently supported coordinate systems are:
 <Para>EPSG: followed by a positive integer code.  EPSG codes cover most
 coordinate systems in use, and PROJ supports many of these.  The website
 <ulink url="https://epsg.io/">https://epsg.io/</ulink> is a useful resource for
-finding the EPSG code you want.  For example, <code>EPSG:4167</code> is
+finding the EPSG code you want.  For example, <command>EPSG:4167</command> is
 NZGD2000.  Supported since Survex 1.2.15.</Para>
 
 <Para>ESRI: followed by a positive integer code.  ESRI codes are used by
@@ -1499,7 +1499,7 @@ Supported since Survex 1.2.15.</Para>
 
 <Para>OSGB: followed by a two letter code for the UK Ordnance Survey National
 Grid.  The first letter should be 'H', 'N', 'O', 'S' or 'T'; the second any
-letter except 'I'.  For example, <code>OSGB:SD</code>.
+letter except 'I'.  For example, <command>OSGB:SD</command>.
 Supported since Survex 1.2.15.</Para>
 
 <Para>S-MERC for the "Web Mercator" spherical mercator projection, used by
