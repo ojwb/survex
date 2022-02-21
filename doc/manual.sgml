@@ -1156,8 +1156,9 @@ and the corresponding *end should have the same survey name.
 
 <Para>
 *calibrate is used to specify instrument calibrations, via a zero error
-and a scale factor.  By default, the zero error is 0.0 and the scale
-factor 1.0 for all quantities.
+and an optional scale factor (which defaults to 1.0 if not specified).
+Without an explicit calibration the zero error is 0.0 and the scale factor is
+1.0.
 </Para>
 
 <Para>
@@ -1470,7 +1471,8 @@ The currently supported coordinate systems are:
 <Para>EPSG: followed by a positive integer code.  EPSG codes cover most
 coordinate systems in use, and PROJ supports many of these.  The website
 <ulink url="https://epsg.io/">https://epsg.io/</ulink> is a useful resource for
-finding the EPSG code you want.  Supported since Survex 1.2.15.</Para>
+finding the EPSG code you want.  For example, <code>EPSG:4167</code> is
+NZGD2000.  Supported since Survex 1.2.15.</Para>
 
 <Para>ESRI: followed by a positive integer code.  ESRI codes are used by
 ArcGIS to specify coordinate systems (in a similar way to EPSG codes), and PROJ
@@ -1484,7 +1486,7 @@ the axes point East and North.  Supported since Survex 1.2.15.</Para>
 
 <Para>IJTSK03 for a variant of IJTSK.  Supported since Survex 1.2.15.</Para>
 
-<Para>JTSK for the Czechoslovak S-JTSK system.  The axes on this point West
+<Para>JTSK for the Czechoslovak S-JTSK system.  Its axes point West
 and South, so it's not supported as an output coordinate system.
 Supported since Survex 1.2.16.</Para>
 
@@ -1497,7 +1499,8 @@ Supported since Survex 1.2.15.</Para>
 
 <Para>OSGB: followed by a two letter code for the UK Ordnance Survey National
 Grid.  The first letter should be 'H', 'N', 'O', 'S' or 'T'; the second any
-letter except 'I'.  Supported since Survex 1.2.15.</Para>
+letter except 'I'.  For example, <code>OSGB:SD</code>.
+Supported since Survex 1.2.15.</Para>
 
 <Para>S-MERC for the "Web Mercator" spherical mercator projection, used by
 online map sites like OpenStreetMap, Google maps, Bing maps, etc.  Supported
@@ -1509,9 +1512,9 @@ since Survex 1.2.15.
 
 <Para>
 By default, Survex works in an unspecified coordinate system (and this was the
-only option before *cs was added).  However, it's useful for coordinate system
-which the processed survey data is in to be specified if you want to use the
-processed data in ways which required knowing the coordinate system (such as
+only option before *cs was added).  However, it's useful for the coordinate
+system which the processed survey data is in to be specified if you want to use
+the processed data in ways which required knowing the coordinate system (such as
 exporting a list of entrances for use in a GPS).  You can now do this by using
 "*cs out".
 </Para>
@@ -1980,7 +1983,14 @@ can be specified (useful for overnight or multi-day surveying trips).
 
 <Para>
 The *declination command is the modern way to specify magnetic declinations in
-Survex.  Prior to 1.2.22, *calibrate declination was used instead.  If you
+Survex.  Magnetic declination is the difference between Magnetic North and True
+North.  It varies over time as the Earth's magnetic field moves, and also with
+location.  Compass bearings are measured relative to Magnetic North - adding the
+magnetic declination gives bearings relative to True North.
+</Para>
+
+<Para>
+Prior to 1.2.22, *calibrate declination was used instead.  If you
 use a mixture of *calibrate declination and *declination, they interact in
 the natural way - whichever was set most recently is used for each compass
 reading (taking into account survey scope).  We don't generally recommend
@@ -1991,24 +2001,33 @@ everything at once.
 </Para>
 
 <Para>
-Magnetic declination is the difference between Magnetic North and True North.
-It varies both with location and over time.  Compass bearings are measured
-relative to Magnetic North - adding the magnetic declination gives bearings
-relative to True North.
+Note that the value specified uses the conventional sign for magnetic
+declination, unlike the old *calibrate declination which needed a value with
+the opposite sign (because *calibrate specifies a zero error), so take care
+when updating old data, or if you're used to the semantics of *calibrate
+declination.
 </Para>
 
 <Para>
 If you have specified the output coordinate system (using *cs out) then you can
 use *declination auto (and we recommend that you do).  This is supported since
 Survex 1.2.21 and automatically calculates magnetic declinations based on the
-IGRF (International Geomagnetic Reference Field) model for the specified date
-of each survey and at the specified representative location (given in the
-current input coordinate system, as set with *cs).  Survex 1.2.27 and
-later also automatically correct for grid convergence (the difference between
-Grid North and True North) when *declination auto is in use, based on the same
-specified representative location.  A revised version of the IGRF model is
-usually issued every 5 years - Survex 1.2.43 updated to using version 13 in
+IGRF (International Geomagnetic Reference Field) model.  A revised version of
+the IGRF model is usually issued every 5 years, and calculates values using a
+model based on observations for years before it is issued, and on predictions
+for 5 years after it is issued.  Survex 1.2.43 updated to using version 13 in
 early 2020.
+</Para>
+
+<Para>
+The IGRF model takes a date and a location as inputs. Survex uses the
+specified date of the survey, and uses the "x y z" coordinates specified
+in the *declination auto command as the location in the current input
+coordinate system (as set by *cs).  Most users can just specify a single
+representative location somewhere in the area of the cave.  If you're
+not sure what to use pick some coordinates roughly in the middle of
+the bounding box of the cave - it doesn't need to be a fixed point or a known
+refindable location, though it can be if you prefer.
 </Para>
 
 <Para>
@@ -2020,8 +2039,15 @@ locations.  Both magnetic declination and grid convergence don't generally vary
 significantly over the area of a typical cave system - if you are mapping a
 very large cave system, or caves over a wide area, or are working close to a
 magnetic pole or where the output coordinate system is rather distorted, then
-you can specify *declination auto several times with different locations - the
-one currently in effect is used for each survey leg.
+you can specify *declination auto several times with different representative
+locations for different areas of the cave system - the one currently in effect
+is used for each survey leg.
+</Para>
+
+<Para>
+Survex 1.2.27 and later also automatically correct for grid convergence (the
+difference between Grid North and True North) when *declination auto is in use,
+based on the same specified representative location.
 </Para>
 
 <Para>
@@ -2048,14 +2074,6 @@ declination, you can't use *declination auto because the IGRF model needs the
 real world coordinates, but you can specify literal declination values for each
 survey using *declination &lt;declination&gt; &lt;units&gt;.  Then Grid North
 in the implicit coordinate system is True North.
-</Para>
-
-<Para>
-Note that the value specified uses the conventional sign for magnetic
-declination, unlike the old *calibrate declination which needed a value with
-the opposite sign (because *calibrate specifies a zero error), so take care
-when updating old data, or if you're used to the semantics of *calibrate
-declination.
 </Para>
 
 </listitem>
