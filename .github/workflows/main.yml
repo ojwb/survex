@@ -63,7 +63,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: linux
+        key: valgrind
     - name: Install package dependencies
       run: |
         sudo apt-get update
