@@ -131,7 +131,6 @@ jobs:
     - name: make
       run: |
         eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-        env|sort
         make -j3
     - name: Run tests
       run: make check VERBOSE=1
@@ -174,7 +173,6 @@ jobs:
     - name: make
       run: |
         eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-        env|sort
         make -j3
     - name: Run tests
       run: make check VERBOSE=1
