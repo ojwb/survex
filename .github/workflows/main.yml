@@ -56,7 +56,9 @@ jobs:
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
-      run: git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
   valgrind:
     runs-on: 'ubuntu-20.04'
@@ -100,7 +102,9 @@ jobs:
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
-      run: git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
   macos:
     runs-on: 'macos-latest'
@@ -142,6 +146,7 @@ jobs:
       # if that input is empty.
       run: |
         #find . \( -name 'config.guess~' -o -name 'config.sub~' -o -name 'install-sh~' \) -delete
+        printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
   macos10-15:
@@ -184,4 +189,5 @@ jobs:
       # if that input is empty.
       run: |
         #find . \( -name 'config.guess~' -o -name 'config.sub~' -o -name 'install-sh~' \) -delete
+        printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
