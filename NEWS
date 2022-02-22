@@ -1,4 +1,4 @@
-up to: 9559a6f1bc0faef879430917068173dc3a9a2f04
+up to: af3d72a4707a2d7c888f037379b3b54f83cc8674
 
 Changes in 1.4.2 (2022-02-??):
 
@@ -6,14 +6,24 @@ Changes in 1.4.2 (2022-02-??):
 
 * Improve docs for *cs and *declination.
 
-* cavern: The error a bad `*cs custom` command now handles highlighting the
-  quoted string properly.
+* cavern: Fix "*declination auto" not to crash when built with PROJ < 8.1.0.
+  Bug introduced in 1.4.0.
+
+* cavern: If any of the N-S, E-W or U-D ranges includes an anonymous station
+  then also report the range in that direction excluding anonymous stations.
+  Patch from Thomas Holder.
+
+* cavern: The error from a bad `*cs custom` command now highlights the quoted
+  string properly.
 
 * cavern: Include errors in Compass .mak files now report the error in the line
   where the included filename is actually specified.
 
 * cavern.tst: Add test coverage for warnings for *entrance and *export with
   a station which doesn't exist otherwise.
+
+* aven.tst: Skip one testcase on macos as it seems to hang, at least when
+  running on the Continuous Integration system.
 
 * Chinese translation updates from Qingqing Li.
 
