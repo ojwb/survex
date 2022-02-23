@@ -110,6 +110,61 @@ jobs:
         printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
+  linux-latest:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: linux-latest
+    - name: Install package dependencies
+      run: |
+        more /etc/apt/sources.list /etc/apt/sources.list.d/*|cat
+        sudo apt-get update
+        sudo apt-get purge mysql-client mysql-server
+        sudo apt-get dist-upgrade
+        sudo apt-get install update-manager libio-pty-perl
+        # `do-release-upgrade` fails (trying to run `screen` it seems) if stdin
+        # isn't a tty so fake one for it using the Perl IO::Pty module.
+        perl -ne '/use blib|clone_winsize_from/ or print' /usr/share/doc/libio-pty-perl/examples/try > $HOME/try
+        perl $HOME/try sudo do-release-upgrade -d --mode=server
+        sudo apt-get install \
+            gettext \
+            libwxgtk3.0-gtk3-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libproj-dev \
+            libswscale-dev \
+            mesa-common-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            ghostscript \
+            netpbm \
+            x11proto-core-dev \
+            liblocale-po-perl \
+            unifont \
+            docbook-utils \
+            w3m
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+
   macos:
     runs-on: 'macos-latest'
     steps:
