@@ -46,7 +46,9 @@ jobs:
             docbook-utils \
             w3m
     - name: bootstrap source tree
-      run: autoreconf -fiv
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
     - name: make
@@ -92,7 +94,9 @@ jobs:
             w3m
         sudo apt-get install valgrind
     - name: bootstrap source tree
-      run: autoreconf -fiv
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
     - name: make
@@ -132,6 +136,7 @@ jobs:
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
+        git checkout INSTALL
         V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
@@ -175,6 +180,7 @@ jobs:
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
+        git checkout INSTALL
         V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
