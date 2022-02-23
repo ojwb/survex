@@ -145,7 +145,7 @@ jobs:
         eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
         make -j3
     - name: Run tests
-      run: make -Ctests check VERBOSE=1
+      run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
@@ -189,7 +189,7 @@ jobs:
         eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
         make -j3
     - name: Run tests
-      run: make -Ctests check VERBOSE=1
+      run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
