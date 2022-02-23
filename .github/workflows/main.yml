@@ -43,6 +43,7 @@ jobs:
             x11proto-core-dev \
             liblocale-po-perl \
             unifont \
+            docbook \
             docbook-utils \
             w3m
     - name: bootstrap source tree
@@ -90,6 +91,7 @@ jobs:
             x11proto-core-dev \
             liblocale-po-perl \
             unifont \
+            docbook \
             docbook-utils \
             w3m
         sudo apt-get install valgrind
@@ -129,7 +131,8 @@ jobs:
         # `do-release-upgrade` fails (trying to run `screen` it seems) if stdin
         # isn't a tty so fake one for it using the Perl IO::Pty module.
         perl -ne '/use blib|clone_winsize_from/ or print' /usr/share/doc/libio-pty-perl/examples/try > $HOME/try
-        perl $HOME/try sudo do-release-upgrade -d --mode=server
+        # Run in home directory so logs, etc don't end up in source tree.
+        cd "$HOME" && perl ./try sudo do-release-upgrade -d --mode=server
         sudo apt-get install \
             gettext \
             libwxgtk3.0-gtk3-dev \
@@ -146,6 +149,7 @@ jobs:
             x11proto-core-dev \
             liblocale-po-perl \
             unifont \
+            docbook \
             docbook-utils \
             w3m
     - name: bootstrap source tree
@@ -162,93 +166,5 @@ jobs:
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
       run: |
-        printf '%s\n' .ccache > ".git/info/exclude"
-        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
-
-  macos:
-    runs-on: 'macos-latest'
-    steps:
-    - name: Check out repository code
-      uses: actions/checkout@v2
-    - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: macos
-    - name: Install package dependencies
-      run: |
-        brew update
-        brew install \
-            automake \
-            ffmpeg \
-            gettext \
-            gnu-tar \
-            netpbm \
-            proj \
-            wxwidgets
-        brew link --force gettext
-        sudo cpan -T -i local::lib < /dev/null
-        sudo cpan -I -T -i Locale::PO < /dev/null
-    - name: bootstrap source tree
-      run: |
-        autoreconf -fiv
-        git checkout INSTALL
-        V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
-    - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
-    - name: make
-      run: |
-        eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-        make -j3
-    - name: Run tests
-      run: make check VERBOSE=1
-    - name: Check generated files are in .gitignore
-      # grep '^' passes through all input while giving a non-zero exit status
-      # if that input is empty.
-      run: |
-        #find . \( -name 'config.guess~' -o -name 'config.sub~' -o -name 'install-sh~' \) -delete
-        printf '%s\n' .ccache > ".git/info/exclude"
-        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
-
-  macos10-15:
-    runs-on: 'macos-10.15'
-    steps:
-    - name: Check out repository code
-      uses: actions/checkout@v2
-    - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: macos10-15
-    - name: Install package dependencies
-      run: |
-        brew update
-        brew install \
-            automake \
-            ffmpeg \
-            gettext \
-            gnu-tar \
-            netpbm \
-            proj \
-            wxwidgets
-        brew link --force gettext
-        sudo cpan -T -i local::lib < /dev/null
-        sudo cpan -I -T -i Locale::PO < /dev/null
-    - name: bootstrap source tree
-      run: |
-        autoreconf -fiv
-        git checkout INSTALL
-        V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files -zxf - ; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
-    - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
-    - name: make
-      run: |
-        eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
-        make -j3
-    - name: Run tests
-      run: make check VERBOSE=1
-    - name: Check generated files are in .gitignore
-      # grep '^' passes through all input while giving a non-zero exit status
-      # if that input is empty.
-      run: |
-        #find . \( -name 'config.guess~' -o -name 'config.sub~' -o -name 'install-sh~' \) -delete
         printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
