@@ -136,6 +136,7 @@ nonewlineateof.out nonewlineateof.svx\
 suspectreadings.out suspectreadings.svx\
 cmd_data_default.svx\
 gpxexport.gpx gpxexport.svx\
+jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx
 
 EXTRA_DIST +=\

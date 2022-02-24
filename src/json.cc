@@ -1,7 +1,7 @@
 /* json.cc
  * Export from Aven as JSON.
  */
-/* Copyright (C) 2015,2016 Olly Betts
+/* Copyright (C) 2015,2016,2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,9 +54,8 @@ JSON::header(const char * title, const char *, time_t datestamp_numeric,
 	fprintf("date: %ld,\n", (long)datestamp_numeric);
     }
 #endif
-    fprintf(fh, "var p = [%.2f,%.2f,%.2f,%.2f,%.2f,%.2f]\n",
+    fprintf(fh, "{\"bounds\":[%.2f,%.2f,%.2f,%.2f,%.2f,%.2f],\n\"traverses\":[\n",
 	    min_x, min_z, min_y, max_x, max_z, max_y);
-    fputs("var groups = [\n", fh);
 }
 
 void
@@ -87,5 +86,5 @@ JSON::footer()
 {
     if (in_segment)
 	fputs("]\n", fh);
-    fputs("];\n", fh);
+    fputs("]}\n", fh);
 }
