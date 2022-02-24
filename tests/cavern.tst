@@ -72,7 +72,7 @@ testdir=`(cd "$testdir" && pwd)`
  cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  quadrant_bearing bad_quadrant_bearing\
- gpxexport kmlexport\
+ gpxexport jsonexport kmlexport\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
@@ -131,6 +131,7 @@ for file in $TESTS ; do
   # fail : Check that a 3D file is NOT produced
   # dxf : Convert to DXF with survexport and compare with <testcase_name>.dxf
   # gpx : Convert to GPX with survexport and compare with <testcase_name>.gpx
+  # json : Convert to JSON with survexport and compare with <testcase_name>.json
   # kml : Convert to KML with survexport and compare with <testcase_name>.kml
   pos=
 
@@ -244,7 +245,7 @@ for file in $TESTS ; do
     fi
     [ "$exitcode" = 0 ] || exit 1
     ;;
-  dxf|gpx|kml)
+  dxf|gpx|json|kml)
     # $pos gives us the file extension here.
     expectedfile=$basefile.$pos
     tmpfile=tmp.$pos
