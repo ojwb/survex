@@ -904,12 +904,9 @@ cmd_fix(void)
 	 return;
       }
 
-      /* TRANSLATORS: " *fix a " gives this message: */
-      compile_diagnostic(DIAG_WARN|DIAG_COL, /*FIX command with no coordinates - fixing at (0,0,0)*/54);
-
       if (name_omit_already) {
-	 /* TRANSLATORS: Emitted after second and subsequent "FIX command with
-	  * no coordinates - fixing at (0,0,0)" warnings.
+	 /* TRANSLATORS: Emitted after second and subsequent "FIX" command
+	  * with no coordinates.
 	  */
 	 compile_diagnostic_at(DIAG_ERR|DIAG_COL,
 			       name_omit_already_filename,
@@ -917,6 +914,9 @@ cmd_fix(void)
 			       /*Already had FIX command with no coordinates for station “%s”*/441,
 			       sprint_prefix(name_omit_already));
       } else {
+	 /* TRANSLATORS: " *fix a " gives this message: */
+	 compile_diagnostic(DIAG_INFO|DIAG_COL, /*FIX command with no coordinates - fixing at (0,0,0)*/54);
+
 	 name_omit_already = fix_name;
 	 name_omit_already_filename = file.filename;
 	 name_omit_already_line = file.line;

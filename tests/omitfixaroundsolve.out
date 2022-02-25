@@ -1,4 +1,4 @@
-./omitfixaroundsolve.svx:4:7: warning: FIX command with no coordinates - fixing at (0,0,0)
+./omitfixaroundsolve.svx:4:7: info: FIX command with no coordinates - fixing at (0,0,0)
  *fix a
        ^
 
@@ -13,9 +13,6 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./omitfixaroundsolve.svx:6:7: warning: FIX command with no coordinates - fixing at (0,0,0)
- *fix b
-       ^
 ./omitfixaroundsolve.svx:4: error: Already had FIX command with no coordinates for station "a"
 
 Removing trailing traverses...
@@ -42,4 +39,4 @@ Vertical range = 4.64m (from 0 at 2.49m to 1 at -2.15m)
 North-South range = 121.11m (from 1 at 121.11m to a at 0.00m)
 East-West range = 21.36m (from 1 at 21.36m to a at 0.00m)
    4 1-nodes.
-There were 2 warning(s) and 1 error(s) - no output files produced.
+There were 0 warning(s) and 1 error(s) - no output files produced.

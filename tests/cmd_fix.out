@@ -1,5 +1,5 @@
-./cmd_fix.svx:2:18: warning: FIX command with no coordinates - fixing at (0,0,0)
- *fix A reference ; generates a warning
+./cmd_fix.svx:2:18: info: FIX command with no coordinates - fixing at (0,0,0)
+ *fix A reference ; generates an info diagnostic
                   ^
 
 Removing trailing traverses...
@@ -23,4 +23,3 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    6 0-nodes.
-There were 1 warning(s).

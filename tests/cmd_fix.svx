@@ -1,5 +1,5 @@
-; pos=yes warn=1
-*fix A reference ; generates a warning
+; pos=yes warn=0
+*fix A reference ; generates an info diagnostic
 *fix B reference 0 0 0
 *fix C reference 0 0 0 1.0
 *fix D reference 0 0 0 1.0 2.0
