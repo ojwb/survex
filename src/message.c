@@ -509,7 +509,7 @@ add_unicode(int charset, unsigned char *p, int value)
        case 0x0160: value = 0x8a; break; /* Scaron */
        case 0x0152: value = 0x8c; break; /* OElig */
        case 0x017d: value = 0x8e; break; /* Zcaron */
-       case 0x2019: value = 0x92; break; /* lsquo */
+       case 0x2019: value = 0x92; break; /* rsquo */
        case 0x201c: value = 0x93; break; /* ldquo */
        case 0x201d: value = 0x94; break; /* rdquo */
        case 0x0161: value = 0x9a; break; /* scaron */
@@ -517,23 +517,23 @@ add_unicode(int charset, unsigned char *p, int value)
        case 0x017e: value = 0x9e; break; /* zcaron */
 #if 0
        /* there are a few other obscure ones we don't currently need */
-       case 0x20ac: value = 0x80; break;
-       case 0x201a: value = 0x82; break;
-       case 0x0192: value = 0x83; break;
-       case 0x201e: value = 0x84; break;
-       case 0x2020: value = 0x86; break;
-       case 0x2021: value = 0x87; break;
-       case 0x02c6: value = 0x88; break;
-       case 0x2030: value = 0x89; break;
-       case 0x2039: value = 0x8b; break;
-       case 0x2018: value = 0x91; break;
-       case 0x2022: value = 0x95; break;
-       case 0x2013: value = 0x96; break;
-       case 0x2014: value = 0x97; break;
-       case 0x02dc: value = 0x98; break;
-       case 0x2122: value = 0x99; break;
-       case 0x203a: value = 0x9b; break;
-       case 0x0178: value = 0x9f; break;
+       case 0x20ac: value = 0x80; break; /* euro */
+       case 0x201a: value = 0x82; break; /* sbquo */
+       case 0x0192: value = 0x83; break; /* fnof */
+       case 0x201e: value = 0x84; break; /* bdquo */
+       case 0x2020: value = 0x86; break; /* dagger */
+       case 0x2021: value = 0x87; break; /* Dagger */
+       case 0x02c6: value = 0x88; break; /* circ */
+       case 0x2030: value = 0x89; break; /* permil */
+       case 0x2039: value = 0x8b; break; /* lsaquo */
+       case 0x2018: value = 0x91; break; /* lsquo */
+       case 0x2022: value = 0x95; break; /* bull */
+       case 0x2013: value = 0x96; break; /* ndash */
+       case 0x2014: value = 0x97; break; /* mdash */
+       case 0x02dc: value = 0x98; break; /* tilde */
+       case 0x2122: value = 0x99; break; /* trade */
+       case 0x203a: value = 0x9b; break; /* rsaquo */
+       case 0x0178: value = 0x9f; break; /* Yuml */
 #endif
       }
       if (value < 0x100) {
