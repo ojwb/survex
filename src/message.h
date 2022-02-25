@@ -87,4 +87,20 @@ int select_charset(int charset_code);
 }
 #endif
 
+/* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
+ * hooks to setup proj's search path to be relative to the executable if this
+ * is a relocatable install.
+ */
+#ifdef MSG_SETUP_PROJ_SEARCH_PATH
+/* We only need this on these platforms. */
+# if OS_WIN32
+#  include <proj.h>
+#  define msg_init(ARGV) do {\
+	(msg_init)(ARGV); \
+	const char* msg_init_proj_path = msg_cfgpth();\
+	proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &msg_init_proj_path);\
+    } while (0)
+# endif
+#endif
+
 #endif /* MESSAGE_H */

@@ -21,6 +21,8 @@
 #include <config.h>
 #endif
 
+#define MSG_SETUP_PROJ_SEARCH_PATH 1
+
 #include <limits.h>
 #include <stdlib.h>
 #include <time.h>

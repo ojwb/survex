@@ -23,9 +23,13 @@ msg_files = $(po_files:.po=.msg) en.msg
 
 EXTRA_DIST = survex.pot $(po_files)\
  po-to-msg.pl checkshortcut.pl extract-msgs.pl\
- Bulgarian.isl\
- ChineseSimplified.isl ChineseTraditional.isl\
- EnglishBritish.isl Indonesian.isl Romanian.isl Slovak.isl\
+ ChineseSimplified.isl\
+ ChineseTraditional.isl\
+ EnglishBritish.isl\
+ Greek.isl\
+ Hungarian.isl\
+ Indonesian.isl\
+ Romanian.isl\
  make-pixel-font preload_font.h
 
 MAINTAINERCLEANFILES = $(msg_files) unifont.pixelfont preload_font.h

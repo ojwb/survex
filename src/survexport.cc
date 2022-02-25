@@ -24,6 +24,8 @@
 #include <config.h>
 #endif
 
+#define MSG_SETUP_PROJ_SEARCH_PATH 1
+
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

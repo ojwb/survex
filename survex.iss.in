@@ -1,9 +1,7 @@
 ; @configure_input@
 [Setup]
 AppName=@PRETTYPACKAGE@
-; AppVerName not required by InnoSetup >= 5.3.10
-AppVerName=@PRETTYPACKAGE@ @VERSION@
-DefaultDirName={pf32}\@PRETTYPACKAGE@
+DefaultDirName={autopf}\@PRETTYPACKAGE@
 DefaultGroupName=@PRETTYPACKAGE@
 OutputBaseFilename=@PACKAGE@-win32-@VERSION@
 ; FIXME translate this!
@@ -35,33 +33,29 @@ TimeStampsInUTC=yes
 ; SignedUninstaller ???
 ; If upgrading, default to the language selected last time.
 UsePreviousLanguage=yes
-; If upgrading, install to the same location and use the same start menu folder.
-DisableDirPage=auto
-DisableProgramGroupPage=auto
-; Disable the "welcome" page of the wizard.
-DisableWelcomePage=yes
+WizardStyle=modern
 
 [Languages]
 ; Official translations:
+Name: "bg"; MessagesFile: "compiler:Languages/Bulgarian.isl"
 Name: "ca"; MessagesFile: "compiler:Languages/Catalan.isl"
 Name: "cs"; MessagesFile: "compiler:Languages/Czech.isl"
 Name: "de"; MessagesFile: "compiler:Languages/German.isl"
 Name: "en"; MessagesFile: "compiler:Default.isl"
-Name: "el"; MessagesFile: "compiler:Languages/Greek.isl"
 Name: "es"; MessagesFile: "compiler:Languages/Spanish.isl"
 Name: "fr"; MessagesFile: "compiler:Languages/French.isl"
-Name: "hu"; MessagesFile: "compiler:Languages/Hungarian.isl"
 Name: "it"; MessagesFile: "compiler:Languages/Italian.isl"
 Name: "pl"; MessagesFile: "compiler:Languages/Polish.isl"
 Name: "pt"; MessagesFile: "compiler:Languages/Portuguese.isl"
 Name: "pt_br"; MessagesFile: "compiler:Languages/BrazilianPortuguese.isl"
 Name: "ru"; MessagesFile: "compiler:Languages/Russian.isl"
+Name: "sk"; MessagesFile: "compiler:Languages/Slovak.isl"
 ; Unofficial:
-Name: "bg"; MessagesFile: "Bulgarian.isl"
+Name: "el"; MessagesFile: "Greek.isl"
 Name: "en_gb"; MessagesFile: "EnglishBritish.isl"
+Name: "hu"; MessagesFile: "Hungarian.isl"
 Name: "id"; MessagesFile: "Indonesian.isl"
 Name: "ro"; MessagesFile: "Romanian.isl"
-Name: "sk"; MessagesFile: "Slovak.isl"
 Name: "zh_CN"; MessagesFile: "ChineseSimplified.isl"
 Name: "zh_TW"; MessagesFile: "ChineseTraditional.isl"
 
@@ -76,14 +70,13 @@ Type: files; Name: "{app}\cad3d.exe"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
-; mingwm10.dll only needed if we use threads
-;Source: "*.dll"; DestDir: "{app}"
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.pixelfont"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\images"
 Source: "*.msg"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
+Source: "proj.db"; DestDir: "{app}"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; Generate iss file for including the wxstd.mo files
 #include "i18nfiles.iss"
@@ -111,47 +104,47 @@ OutputLog=Output Log
 
 [Registry]
 ; Support for loading Compass Plot files
-Root: HKCR; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"
-Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"
-Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "{cm:CompassPlotFile}"
-Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
-Root: HKCR; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\.plt"; ValueType: string; ValueData: "CompassPlotFile"
+Root: HKA; Subkey: "Software\Classes\.plf"; ValueType: string; ValueData: "CompassPlotFile"
+Root: HKA; Subkey: "Software\Classes\CompassPlotFile"; ValueType: string; ValueData: "{cm:CompassPlotFile}"
+Root: HKA; Subkey: "Software\Classes\CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
+Root: HKA; Subkey: "Software\Classes\CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
 ; Support for loading CMAP XYZ files
-Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"
-Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "{cm:CMapProcessedData}"
-;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
-Root: HKCR; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\.xyz"; ValueType: string; ValueData: "CMAP.XYZ"
+Root: HKA; Subkey: "Software\Classes\CMAP.XYZ"; ValueType: string; ValueData: "{cm:CMapProcessedData}"
+;Root: HKA; Subkey: "Software\Classes\CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
+Root: HKA; Subkey: "Software\Classes\CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
 ;
-Root: HKCR; Subkey: ".svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "{cm:SurvexRawSurveyData}"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey
-Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey
-Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-;Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "{cm:SurvexProcessedData}"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "{cm:SurvexLoopClosureErrors}"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "{cm:SurvexStationPositions}"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "{cm:OutputLog}"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.svx"; ValueType: string; ValueData: "survex.source"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.3d"; ValueType: string; ValueData: "survex.bin"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\.log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.source"; ValueType: string; ValueData: "{cm:SurvexRawSurveyData}"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.source\shell\Open"; ValueType: none; Flags: deletekey
+Root: HKA; Subkey: "Software\Classes\survex.source\shell\Process"; ValueType: none; Flags: deletekey
+Root: HKA; Subkey: "Software\Classes\survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+;Root: HKA; Subkey: "Software\Classes\survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.bin"; ValueType: string; ValueData: "{cm:SurvexProcessedData}"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error"; ValueType: string; ValueData: "{cm:SurvexLoopClosureErrors}"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\shell\Sort by Horizontal Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -h ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.pos"; ValueType: string; ValueData: "{cm:SurvexStationPositions}"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.log"; ValueType: string; ValueData: "{cm:OutputLog}"; Flags: uninsdeletevalue
+Root: HKA; Subkey: "Software\Classes\survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 ; Remove old menu items which can now be better achieved via Aven.
-Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: none; Flags: deletekey
-Root: HKCR; Subkey: "survex.bin\shell\Convert for hand plotting\command"; ValueType: none; Flags: deletekey
+Root: HKA; Subkey: "Software\Classes\survex.bin\shell\Convert to DXF\command"; ValueType: none; Flags: deletekey
+Root: HKA; Subkey: "Software\Classes\survex.bin\shell\Convert for hand plotting\command"; ValueType: none; Flags: deletekey

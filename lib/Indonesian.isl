@@ -1,15 +1,9 @@
-; *** Inno Setup version 5.5.3+ Indonesian messages ***
+﻿; *** Inno Setup version 6.1.0+ Indonesian messages ***
 ;
-; Untuk mendownload terjemahan kontribusi-pengguna dari file ini, buka:
+; Untuk mengunduh terjemahan kontribusi-pengguna dari berkas ini, buka:
 ;   http://www.jrsoftware.org/files/istrans/
-;
-; Alih bahasa oleh: Muchammad Ulil Wafa (wmuchammadulil@yahoo.co.id)
-;   http://muchammadulilwafa.blogspot.com/ 
-;	http://mozaik-tkj.blogspot.com/
-;
-; Catatan: Ketika menerjemahkan teks ini, jangan masukkan titik (.) di akhir
-; pesan tersebut, karena di Inno Setup akan otomatis memasukkan titik. 
-; (menambahkan titik bisa menampilkan dua titik.)
+; 
+; Alih bahasa oleh: MozaikTM (mozaik.tm@gmail.com)
 
 [LangOptions]
 LanguageName=Bahasa Indonesia
@@ -17,271 +11,333 @@ LanguageID=$0421
 LanguageCodePage=0
 
 [Messages]
-SetupAppTitle=Install
+SetupAppTitle=Instalasi
 SetupWindowTitle=Instalasi - %1
-UninstallAppTitle=Hapus
-UninstallAppFullTitle=Hapus %1
+UninstallAppTitle=Pelepas
+UninstallAppFullTitle=Pelepasan %1
 
 InformationTitle=Informasi
 ConfirmTitle=Konfirmasi
-ErrorTitle=Kesalahan
+ErrorTitle=Galat
 
-SetupLdrStartupMessage=Program akan memasang %1. Apakah anda ingin melanjutkan?
-LdrCannotCreateTemp=Tidak bisa membuat berkas sementara. Instalasi dibatalkan
-LdrCannotExecTemp=Tidak bisa mengeksekusi file dalam folder sementara. Instalasi dibatalkan
+SetupLdrStartupMessage=Kami akan memasang %1. Teruskan?
+LdrCannotCreateTemp=Tidak dapat membuat berkas sementara. Batal memasang
+LdrCannotExecTemp=Tidak dapat menjalankan berkas di direktori sementara. Batal memasang
 
-LastErrorMessage=%1.%n%nKesalahan %2: %3
-SetupFileMissing=Berkas %1 rusak dalam folder instalasi. Harap cek masalah atau salin berkas terbaru dari program ini
-SetupFileCorrupt=Berkas instalasi rusak. Harap salin berkas program terbaru
-SetupFileCorruptOrWrongVer=Berkas instalasi rusak, atau tidak cocok dengan versi instalasi ini. Harap cek masalah atau salin berkas terbaru dari program ini
-InvalidParameter=Parameter tidak sah di baris perintah:%n%n%1
-SetupAlreadyRunning=Program instalasi sedang berjalan.
-WindowsVersionNotSupported=Program ini tidak mendukung versi Windows yang ada di konputer anda
-WindowsServicePackRequired=Program ini membutuhkan %1 Service Pack %2 atau yang terbaru
-NotOnThisPlatform=Program ini tidak dapat berjalan di %1
-OnlyOnThisPlatform=Program ini harus dijalankan di %1
-OnlyOnTheseArchitectures=Program ini hanya bisa di pasang di versi Windows yang di desain untuk arsitektur prosesor:%n%n%1
-MissingWOW64APIs=Versi Windows yang anda gunakan secara fungsional tidak memiliki permintaan oleh Program Instalasi untuk jalan di instalasi 64-bit. Untuk mengkoreksi masalah ini, harap pasang Service Pack %1
-WinVersionTooLowError=Program ini membutuhkan %1 versi %2 atau yang terbaru
-WinVersionTooHighError=Program ini tidak dapat di pasang di %1 versi %2 atau yang terbaru
-AdminPrivilegesRequired=Anda harus masuk sebagai Administrator ketika memasang program ini
-PowerUserPrivilegesRequired=Anda harus masuk sebagai Administrator atau sebagai anggota dari grup Power Users ketika memasang program ini
-SetupAppRunningError=Program mendeteksi %1 sedang berjalan.%n%nHarap tutup semuanya sekarang, lalu klik OK untuk melanjutkan, atau Cancel untuk keluar
-UninstallAppRunningError=Penghapus program mendeteksi %1 sedang berjalan.%n%nHarap tutup semuanya sekarang, lalu klik OK untuk melanjutkan, atau Cancel untuk keluar
+LastErrorMessage=%1.%n%nGalat %2: %3
+SetupFileMissing=Berkas %1 hilang dari direktori instalasi. Silakan koreksi masalah atau dapatkan salinan program yang baru.
+SetupFileCorrupt=Berkas pemandu telah rusak. Silakan dapatkan salinan program yang baru.
+SetupFileCorruptOrWrongVer=Berkas pemandu telah rusak, atau tidak cocok dengan versi pemandu ini. Silakan koreksi masalah atau dapatkan salinan program yang baru.
+InvalidParameter=Parameter tak sah terdapat pada baris perintah: %n%n%1
+SetupAlreadyRunning=Pemandu sudah berjalan.
+WindowsVersionNotSupported=Program ini tidak mendukung versi Windows yang berjalan pada komputer Anda.
+WindowsServicePackRequired=Program ini memerlukan %1 Service Pack %2 atau yang terbaru.
+NotOnThisPlatform=Program ini tidak akan berjalan pada %1.
+OnlyOnThisPlatform=Program ini harus dijalankan pada %1.
+OnlyOnTheseArchitectures=Program ini hanya bisa dipasang pada versi Windows yang didesain untuk arsitektur prosesor berikut:%n%n%1
+WinVersionTooLowError=Program ini memerlukan %1 versi %2 atau yang terbaru.
+WinVersionTooHighError=Program ini tidak dapat dipasang pada %1 versi %2 atau yang terbaru.
+AdminPrivilegesRequired=Anda harus masuk sebagai seorang administrator saat memasang program ini.
+PowerUserPrivilegesRequired=Anda harus masuk sebagai seorang administrator atau anggota grup Power Users saat memasang program ini.
+SetupAppRunningError=Kami mendeteksi bahwa %1 sedang berjalan.%n%nSilakan tutup semua instansi bersangkutan, lalu klik OK untuk meneruskan, atau Cancel untuk keluar.
+UninstallAppRunningError=Pelepas mendeteksi bahwa %1 sedang berjalan.%n%nSilakan tutup semua instansi bersangkutan, lalu klik OK untuk meneruskan, atau Cancel untuk keluar.
 
-ErrorCreatingDir=Tidak dapat membuat direktori "%1"
+;Inno6
+PrivilegesRequiredOverrideTitle=Pilih Mode Instalasi
+PrivilegesRequiredOverrideInstruction=Pilih mode instalasi
+PrivilegesRequiredOverrideText1=%1 bisa dipasang untuk semua pengguna (perlu izin administratif), atau hanya Anda.
+PrivilegesRequiredOverrideText2=%1 bisa dipasang hanya untuk Anda, atau semua pengguna (perlu izin administratif).
+PrivilegesRequiredOverrideAllUsers=Pasang untuk &semua pengguna
+PrivilegesRequiredOverrideAllUsersRecommended=Pasang untuk &semua pengguna (disarankan)
+PrivilegesRequiredOverrideCurrentUser=Pasang &hanya untuk saya
+PrivilegesRequiredOverrideCurrentUserRecommended=Pasang &hanya untuk saya (disarankan)
+;Inno6
+
+ErrorCreatingDir=Kami tidak dapat membuat direktori "%1"
 ErrorTooManyFilesInDir=Tidak dapat membuat berkas di direktori "%1" karena berisi terlalu banyak berkas
 
-ExitSetupTitle=Tutup instalasi
-ExitSetupMessage=Pemasangan tidak lengkap. Jika anda keluar sekarang, program tidak akan terpasang.%n%nAnda dapat menjalankan instalasi kembali di lain waktu untuk melengkapi instalasi.%n%nKeluar dari instalasi?
-AboutSetupMenuItem=&Tentang instalasi...
-AboutSetupTitle=Tentang instalasi
-AboutSetupMessage=%1 versi %2%n%3%n%n%1 halaman awal:%n%4
+ExitSetupTitle=Keluar Pemandu
+ExitSetupMessage=Instalasi tidak lengkap. Bila Anda keluar sekarang, program takkan terpasang.%n%nAnda bisa menjalankan Pemandu lagi lain kali untuk melengkapinya.%n%nKeluar?
+AboutSetupMenuItem=&Tentang Pemandu...
+AboutSetupTitle=Tentang Pemandu
+AboutSetupMessage=%1 versi %2%n%3%n%n%1 laman beranda:%n%4
 AboutSetupNote=
 TranslatorNote=
 
-ButtonBack=< &Kembali
-ButtonNext=&Lanjut >
+ButtonBack=&Kembali
+ButtonNext=&Maju
 ButtonInstall=&Pasang
-ButtonOK=OK
-ButtonCancel=&Batal
+ButtonOK=Oke
+ButtonCancel=Batal
 ButtonYes=&Ya
-ButtonYesToAll=Ya &semua
+ButtonYesToAll=Y&a semuanya
 ButtonNo=&Tidak
-ButtonNoToAll=T&idak semua
+ButtonNoToAll=T&idak semuanya
 ButtonFinish=&Selesai
-ButtonBrowse=&Jelajahi...
-ButtonWizardBrowse=J&elajahi...
-ButtonNewFolder=&Buat folder baru
+ButtonBrowse=&Cari...
+ButtonWizardBrowse=C&ari...
+ButtonNewFolder=&Buat Map Baru
 
-SelectLanguageTitle=Pilih Bahasa Instalasi
-SelectLanguageLabel=Pilih bahasa untuk di gunakan pada proses instalasi:
+SelectLanguageTitle=Pilih Bahasa Pemandu
+SelectLanguageLabel=Pilih bahasa untuk digunakan ketika memasang.
 
-ClickNext=Klik Lanjut untuk melanjutkan, atau Batal untuk keluar dari instalasi
+ClickNext=Klik Maju untuk meneruskan, atau Batal untuk keluar.
 BeveledLabel=
-BrowseDialogTitle=Cari Folder
-BrowseDialogLabel=Pilih folder pada daftar di bawah, lalu klik OK
-NewFolderName=Folder Baru
+BrowseDialogTitle=Cari Map
+BrowseDialogLabel=Pilih map dari daftar berikut, lalu klik OK.
+NewFolderName=Map Baru
 
-WelcomeLabel1=Selamat datang di instalasi [name]
-WelcomeLabel2=Program ini akan memasang [name/ver] di komputer anda.%n%nDisarankan untuk menutup semua aplikasi yang sedang berjalan sebelum melanjutkan
+WelcomeLabel1=Selamat datang di Pemandu Instalasi [name]
+WelcomeLabel2=Kami akan memasang [name/ver] pada komputer Anda.%n%nDisarankan untuk menutup semua aplikasi lainnya sebelum meneruskan.
 
-WizardPassword=Sandi
-PasswordLabel1=Instalasi ini di lindungi kata sandi
-PasswordLabel3=Harap masukkan kata sandi, lalu klik Lanjut untuk melanjutkan. Kata sandi bersifat case-sensitive
-PasswordEditLabel=&Sandi:
-IncorrectPassword=Sandi yang anda masukkan tidak cocok. Silahkan coba lagi
+WizardPassword=Kata Sandi
+PasswordLabel1=Instalasi ini dilindungi kata sandi.
+PasswordLabel3=Silakan masukkan kata sandi, lalu klik Maju untuk meneruskan. Kata sandi bersifat sensitif-kapitalisasi.
+PasswordEditLabel=&Kata Sandi:
+IncorrectPassword=Kata sandi yang Anda masukkan salah. Silakan coba lagi.
 
-WizardLicense=Perjanjian persetujuan
-LicenseLabel=Harap baca informasi penting ini sebelum melanjutkan
-LicenseLabel3=Harap baca perjanjian persetujuan ini. Anda harus menyetujui peraturan dari perjanjian ini sebelum melanjutkan
-LicenseAccepted=Saya &setuju
-LicenseNotAccepted=Saya &tidak setuju
+WizardLicense=Kesepakatan Lisensi
+LicenseLabel=Silakan baca informasi berikut sebelum meneruskan.
+LicenseLabel3=Silakan baca Kesepakatan Lisensi berikut. Anda harus setuju dengan syarat dari kesepakatan ini sebelum meneruskan instalasi.
+LicenseAccepted=Saya &setujui kesepakatan ini
+LicenseNotAccepted=Saya &tidak setuju kesepakatan ini
 
 WizardInfoBefore=Informasi
-InfoBeforeLabel=Harap baca informasi penting ini sebelum melanjutkan
-InfoBeforeClickLabel=Jika anda siap untuk melanjutkan pemasangan, klik Lanjut
+InfoBeforeLabel=Silakan baca informasi penting berikut sebelum meneruskan.
+InfoBeforeClickLabel=Saat Anda siap meneruskan instalasi, klik Maju.
 WizardInfoAfter=Informasi
-InfoAfterLabel=Harap baca informasi penting ini sebelum melanjutkan
-InfoAfterClickLabel=Jika anda siap untuk melanjutkan pemasangan, klik Lanjut
+InfoAfterLabel=Silakan baca informasi penting berikut sebelum meneruskan.
+InfoAfterClickLabel=Saat Anda siap meneruskan instalasi, klik Maju.
 
-WizardUserInfo=Informasi pengguna
-UserInfoDesc=Harap masukkan informasi anda
-UserInfoName=&Nama pengguna:
+WizardUserInfo=Informasi Pengguna
+UserInfoDesc=Silakan masukkan informasi Anda.
+UserInfoName=&Nama Pengguna:
 UserInfoOrg=&Organisasi:
-UserInfoSerial=&Nomor Serial:
-UserInfoNameRequired=Anda harus menuliskan nama
+UserInfoSerial=&Nomor Seri:
+UserInfoNameRequired=Wajib memasukkan nama.
 
-WizardSelectDir=Pilih lokasi tujuan
-SelectDirDesc=Dimanakah [name] akan di pasang?
-SelectDirLabel3=Instalasi akan memasang [name] kedalam folder yang diberikan
-SelectDirBrowseLabel=Untuk melanjutkan, klik Lanjut. Jika anda ingin memilih folder yang lain, klik Jelajahi
-DiskSpaceMBLabel=Di butuhkan ruang bebas sebesar [mb] MB
-CannotInstallToNetworkDrive=Program tidak dapat memasang di drive jaringan
-CannotInstallToUNCPath=Program tidak dapat memasang ke lokasi UNC
-InvalidPath=Anda harus memasukkan lokasi lengkap dengan drive; contoh:%n%nC:\APP%n%natau lokasi UNC di form:%n%n\\server\share
-InvalidDrive=Drive atau UNC yang anda pilih tidak ada atau tidak dapat di akses. Harap pilih yang lain
-DiskSpaceWarningTitle=Ruang bebas tidak cukup
-DiskSpaceWarning=Program membutuhkan ruang bebas sebesar %1 KB untuk memasang, tapi drive yang dipilih hanya tersedia sebesar %2 KB.%n%nApakah anda ingin melanjutkan?
-DirNameTooLong=Nama folder terlalu panjang
-InvalidDirName=Nama folder tidak sah
-BadDirName32=Nama folder tidak dapat di isi dengan karakter:%n%n%1
-DirExistsTitle=Folder sudah ada
-DirExists=Folder:%n%n%1%n%nsudah ada. Apakah anda ingin memasang di folder tersebut?
-DirDoesntExistTitle=Folder tidak ada
-DirDoesntExist=Folder:%n%n%1%n%ntidak ada. Apakah anda ingin membuat folder tersebut?
+WizardSelectDir=Pilih Lokasi Tujuan
+SelectDirDesc=Di manakah [name] sebaiknya dipasang?
+SelectDirLabel3=Kami akan memasang [name] ke dalam map berikut.
+SelectDirBrowseLabel=Untuk meneruskan, klik Maju. Bila Anda ingin memilih map lain, klik Cari.
+;Inno6
+DiskSpaceGBLabel=Diperlukan sedikitnya [gb] GB ruang bebas.
+;Inno6
+DiskSpaceMBLabel=Diperlukan sedikitnya [mb] MB ruang bebas.
+CannotInstallToNetworkDrive=Kami tidak bisa memasang ke diska jaringan.
+CannotInstallToUNCPath=Kami tidak bisa memasang ke alamat UNC.
+InvalidPath=Anda wajib memasukkan alamat lengkap dengan huruf diska; contohnya:%n%nC:\APP%n%natau alamat UNC dalam bentuk:%n%n\\server\share
+InvalidDrive=Diska atau alamat UNC yang Anda pilih tidak ada atau tidak dapat diakses. Silakan pilih yang lain.
+DiskSpaceWarningTitle=Ruang Bebas Tidak Cukup
+DiskSpaceWarning=Kami memerlukan sedikitnya %1 KB ruang bebas untuk memasang, namun diska yang Anda pilih hanya memiliki %2 KB tersedia.%n%nMaju terus?
+DirNameTooLong=Nama map atau alamat terlalu panjang.
+InvalidDirName=Nama map tidak sah.
+BadDirName32=Nama map dilarang berisi karakter-karakter berikut:%n%n%1
+DirExistsTitle=Map Sudah Ada
+DirExists=Map:%n%n%1%n%nsudah ada. Tetap pasang di map tersebut?
+DirDoesntExistTitle=Map Tidak Ada
+DirDoesntExist=Map:%n%n%1%n%ntidak ada. Buat map?
 
 WizardSelectComponents=Pilih Komponen
-SelectComponentsDesc=Komponen manakah yang akan di pasang?
-SelectComponentsLabel2=Pilih komponen yang ingin anda pasang; hapus komponen yang tidak ingin anda pasang. Klik Lanjut jika anda siap untuk melanjutkan
+SelectComponentsDesc=Komponen mana sajakah yang sebaiknya dipasang?
+SelectComponentsLabel2=Centang komponen yang Anda inginkan; batalkan centang dari komponen yang tidak Anda inginkan. Klik Maju saat Anda siap meneruskan.
 FullInstallation=Instalasi penuh
-
 CompactInstallation=Instalasi padat
-CustomInstallation=Instalasi lain
-NoUninstallWarningTitle=Komponen sudah ada
-NoUninstallWarning=Program mendeteksi komponen ini sudah terpasang di komputer anda:%n%n%1%n%nTidak memilih komponen tersebut tidak akan menghapus mereka.%n%nApakah anda ingin memasangnya juga?
+CustomInstallation=Instalasi kustom
+NoUninstallWarningTitle=Komponen Terpasang
+NoUninstallWarning=Kami mendeteksi bahwa komponen berikut telah terpasang pada komputer Anda:%n%n%1%n%nMembatalkan pilihan atas komponen berikut bukan berarti melepasnya.%n%nMaju terus?
 ComponentSize1=%1 KB
 ComponentSize2=%1 MB
-ComponentsDiskSpaceMBLabel=Pilihan tersebut membutuhkan ruang bebas sebesar [mb] MB
+;Inno6
+ComponentsDiskSpaceGBLabel=Pilihan saat ini memerlukan sedikitnya [gb] GB ruang bebas.
+;Inno6
+ComponentsDiskSpaceMBLabel=Pilihan saat ini memerlukan sedikitnya [mb] MB ruang bebas.
 
-WizardSelectTasks=Pilih perintah tambahan
-SelectTasksDesc=Perintah tambahan manakah yang akan dilakukan?
-SelectTasksLabel2=Pilih perintah tambahan yang ingin anda lakukan ketika memasang [name], lalu klik Lanjut
+WizardSelectTasks=Pilih Tugas Tambahan
+SelectTasksDesc=Tugas tambahan mana sajakah yang sebaiknya dijalankan?
+SelectTasksLabel2=Pilih tugas tambahan yang Anda ingin kami jalankan ketika memasang [name], lalu klik Maju.
 
-WizardSelectProgramGroup=Pilih folder Start Menu
-SelectStartMenuFolderDesc=Dimanakah lokasi jalan pintas program akan dibuat?
-SelectStartMenuFolderLabel3=Program instalasi akan membuat jalan pintas program di folder Start Menu
-SelectStartMenuFolderBrowseLabel=Untuk melanjutkan, klik Lanjut. Jika anda ingin memilih folder yang lain, klik Jelajahi
-MustEnterGroupName=Anda harus memasukkan nama folder
-GroupNameTooLong=Nama folder atau lokasi terlalu panjang
-InvalidGroupName=Nama folder tidak sah
-BadGroupName=Nama folder tidak dapat di isi dengan karakter:%n%n%1
-NoProgramGroupCheck2=&Jangan buat folder Start Menu
+WizardSelectProgramGroup=Pilih Map Menu Start
+SelectStartMenuFolderDesc=Di manakah sebaiknya kami letakkan pintasan program?
+SelectStartMenuFolderLabel3=Kami akan membuat pintasan program di map Menu Start berikut.
+SelectStartMenuFolderBrowseLabel=Untuk meneruskan, klik Maju. Bila Anda ingin memilih map lain, klik Cari.
+MustEnterGroupName=Anda wajib memasukkan nama map.
+GroupNameTooLong=Nama map atau alamat terlalu panjang.
+InvalidGroupName=Nama map tidak sah.
+BadGroupName=Nama map dilarang berisi karakter-karakter berikut:%n%n%1
+NoProgramGroupCheck2=&Jangan buat map Menu Start
 
-WizardReady=Siap untuk memasang
-ReadyLabel1=Instalasi sekarang siap untuk memulai pemasangan [name] di komputer anda
-ReadyLabel2a=Klik Pasang untuk melanjutkan pemasangan, atau klik Kembali jika anda ingin melihat ulang atau mengubah pengaturan
-ReadyLabel2b=Klik Pasang untuk melanjutkan pemasangan
-ReadyMemoUserInfo=Informasi pemakai:
-ReadyMemoDir=Folder Tujuan:
-ReadyMemoType=Tipe pemasangan:
+WizardReady=Siap Memasang
+ReadyLabel1=Kami siap untuk memulai instalasi [name] pada komputer Anda.
+ReadyLabel2a=Klik Pasang untuk meneruskan instalasi, atau klik Kembali bila Anda ingin menilik atau mengubah setelan.
+ReadyLabel2b=Klik Pasang untuk meneruskan instalasi.
+ReadyMemoUserInfo=Informasi pengguna:
+ReadyMemoDir=Lokasi tujuan:
+ReadyMemoType=Tipe instalasi:
 ReadyMemoComponents=Komponen terpilih:
-ReadyMemoGroup=Folder Start Menu:
-ReadyMemoTasks=Perintah tambahan:
+ReadyMemoGroup=Map Menu Start:
+ReadyMemoTasks=Tugas Tambahan:
 
-WizardPreparing=Bersiap untuk memasang
-PreparingDesc=Bersiap untuk memasang [name] di komputer anda
-PreviousInstallNotCompleted=Pemasangan/penghapusan sebelumnya tidak lengkap. Anda mungkin harus memulai ulang komputer anda untuk melengkapi pemasangan tersebut.%n%nSetelah memulai ulang komputer anda, jalankan kembali instalasi untuk melengkapi pemasangan [name]
-CannotContinue=Tidak dapat melanjutkan. Harap klik Tutup untuk menutup aplikasi
-ApplicationsFound=Aplikasi lain sedang menggunakan berkas yang akan di perbarui oleh program. Di sarankan anda mengijinkan program untuk menutup aplikasi tersebut secara otomatis
-ApplicationsFound2=Aplikasi lain sedang menggunakan berkas yang akan di perbarui oleh program. Di sarankan anda mengijinkan program untuk menutup aplikasi tersebut secara otomatis. Setelah instalasi lengkap, program akan berusaha memulai ulang aplikasi tersebut
+;Inno6
+DownloadingLabel=Mengunduh berkas tambahan...
+ButtonStopDownload=&Setop Unduhan
+StopDownload=Anda yakin ingin berhenti mengunduh?
+ErrorDownloadAborted=Unduhan dibatalkan
+ErrorDownloadFailed=Gagal mengunduh: %1 %2
+ErrorDownloadSizeFailed=Gagal mendapatkan ukuran: %1 %2
+ErrorFileHash1=Ceksum berkas gagal: %1
+ErrorFileHash2=Ceksum berkas tidak sah: seharusnya %1, yang kami dapatkan %2
+ErrorProgress=Langkah tidak sah: %1 dari %2
+ErrorFileSize=Ukuran berkas tidak sah: seharusnya %1, yang kami dapatkan %2
+;Inno6
+
+WizardPreparing=Bersiap Memasang
+PreparingDesc=Kami sedang bersiap memasang [name] pada komputer Anda.
+PreviousInstallNotCompleted=Instalasi/pelepasan dari program sebelumnya tidak lengkap. Anda perlu memulai ulang komputer untuk melengkapinya nanti.%n%nSetelah itu, jalankan Pemandu kembali untuk melengkapi instalasi [name].
+CannotContinue=Kami tidak bisa meneruskan. Klik Batal untuk keluar.
+ApplicationsFound=Aplikasi berikut tengah memakai berkas-berkas yang perlu kami perbarui. Disarankan agar Anda mengizinkan kami untuk menutupnya secara otomatis.
+ApplicationsFound2=Aplikasi berikut tengah memakai berkas-berkas yang perlu kami perbarui. Disarankan agar Anda mengizinkan kami untuk menutupnya secara otomatis. Selengkapnya memasang, kami akan berusaha memulai ulang aplikasi-aplikasi tersebut.
 CloseApplications=&Otomatis tutup aplikasi
 DontCloseApplications=&Jangan tutup aplikasi
-ErrorCloseApplications=Tidak dapat menutup semua aplikasi. Disarankan untuk menutup semua aplikasi yang menggunakan berkas dari program yang akan dipasang
+ErrorCloseApplications=Kami tidak dapat menutup semua aplikasi secara otomatis. Disarankan agar Anda menutup semua aplikasi yang memakai berkas-berkas yang perlu kami perbarui sebelum meneruskan.
+;Inno6
+PrepareToInstallNeedsRestart=Kami perlu memulai ulang komputer Anda. Setelah itu, jalankan Pemandu kembali untuk melengkapi pemasangan [name].%n%nMulai ulang sekarang?
+;Inno6
 
 WizardInstalling=Memasang
-InstallingLabel=Silahkan tunggu sementara Instalasi memsang [name] di komputer anda
+InstallingLabel=Silakan tunggu selagi kami memasang [name] pada komputer Anda.
 
-FinishedHeadingLabel=Mengakhiri pemasangan [name]
-FinishedLabelNoIcons=Berhasil memasang [name] di komputer anda
-FinishedLabel=Berhasil memasang [name] di komputer anda. Aplikasi tersebut dapat di jalankan dengan memilih ikon yang terpasang
-ClickFinish=Klik Selesai untuk mengakhiri pemasangan
-FinishedRestartLabel=Untuk melengkapi pemasangan [name], instalasi harus memulai ulang komputer anda. Apakah anda setuju untuk memulai ulang sekarang?
-FinishedRestartMessage=Untuk melengkapi pemasangan [name], instalasi harus memulai ulang komputer anda.%n%nApakah anda setuju untuk memulai ulang sekarang?
-ShowReadmeCheck=Ya, Saya setuju untuk melihat berkas README
-YesRadio=&Ya, mulai ulang sekarang
-NoRadio=&Tidak, Saya akan memulai ulang komputer di lain waktu
+FinishedHeadingLabel=Mengakhiri Instalasi [name]
+FinishedLabelNoIcons=Kami telah selesai memasang [name] pada komputer Anda.
+FinishedLabel=Kami telah selesai memasang [name] pada komputer Anda. Aplikasi tersebut bisa dijalankan dengan cara memilih pintasan yang terpasang.
+ClickFinish=Klik Selesai untuk menutup instalasi.
+FinishedRestartLabel=Demi melengkapi instalasi [name], kami perlu memulai ulang komputer Anda. Lakukan sekarang?
+FinishedRestartMessage=Demi melengkapi instalasi [name], kami perlu memulai ulang komputer Anda.%n%nLakukan sekarang?
+ShowReadmeCheck=Ya, saya ingin melihat berkas README
+YesRadio=&Ya, mulai ulang komputer sekarang
+NoRadio=&Tidak, saya akan memulai ulang komputer nanti
 RunEntryExec=Jalankan %1
 RunEntryShellExec=Lihat %1
 
-ChangeDiskTitle=Instalasi membutuhkan disk lanjutan
-SelectDiskLabel2=Harap masukan disk lanjutan %1 lalu klik OK.%n%nJika berkas dalam disk dapat ditemukan di folder lain dapat di tampilkan di bawah, tulis lokasi yang benar atau klik Jelajahi
-PathLabel=&Path:
-FileNotInDir2=Berkas "%1" tidak dapat ditemukan di "%2". Harap masukkan disk yang benar atau pilih folder lain
-SelectDirectoryLabel=Harap tulis lokasi lebih spesifik
+ChangeDiskTitle=Kami Memerlukan Diska Sambungan
+SelectDiskLabel2=Silakan masukkan Diska %1 dan klik OK.%n%nBila berkas-berkas di dalam diska ini dapat ditemukan di map lain selain yang ditampilkan di bawah, masukkan alamat yang benar atau klik Cari.
+PathLabel=&Alamat:
+FileNotInDir2=Berkas "%1" tidak dapat ditemukan di "%2". Silakan masukkan diska yang benar atau pilih map lain.
+SelectDirectoryLabel=Silakan tentukan lokasi diska berikutnya.
 
-SetupAborted=Instalasi tidak lengkap.%n%nHarap cari kesalahan dan jalankan Instalasi kembali
-EntryAbortRetryIgnore=Klik Retry untuk mencoba lagi, Ignore untuk memproses di lain waktu, atau Abort untuk membatalkan instalasi
+SetupAborted=Instalasi tidak lengkap.%n%nSilakan koreksi masalah dan jalankan Pemandu kembali.
+;Inno6
+AbortRetryIgnoreSelectAction=Pilih tindakan
+AbortRetryIgnoreRetry=&Coba lagi
+AbortRetryIgnoreIgnore=&Abaikan galat dan teruskan
+AbortRetryIgnoreCancel=Batalkan pemasangan
+;Inno6
 
 StatusClosingApplications=Menutup aplikasi...
 StatusCreateDirs=Membuat direktori...
 StatusExtractFiles=Mengekstrak berkas...
-StatusCreateIcons=Membuat jalan pintas...
-StatusCreateIniEntries=Membuat INI entri...
-StatusCreateRegistryEntries=Membuat entri registry...
+StatusCreateIcons=Membuat pintasan...
+StatusCreateIniEntries=Membuat catatan INI...
+StatusCreateRegistryEntries=Membuat catatan Registry...
 StatusRegisterFiles=Meregistrasi berkas...
-StatusSavingUninstall=Menyimpan informasi pelepasan...
-StatusRunProgram=Mengakhiri pemasangan...
-StatusRestartingApplications=Memulai ulang aplikasi...
-StatusRollback=Memutar kembali perubahan...
+StatusSavingUninstall=Menyimpan informasi pelepas...
+StatusRunProgram=Mengakhiri instalasi...
+StatusRestartingApplications=Menjalankan ulang aplikasi...
+StatusRollback=Membatalkan perubahan...
 
-ErrorInternal2=Kesalahan dari dalam: %1
+ErrorInternal2=Galat internal: %1
 ErrorFunctionFailedNoCode=%1 gagal
 ErrorFunctionFailed=%1 gagal; kode %2
 ErrorFunctionFailedWithMessage=%1 gagal; kode %2.%n%3
 ErrorExecutingProgram=Tidak dapat mengeksekusi berkas:%n%1
 
-ErrorRegOpenKey=Gagal membuka registry key:%n%1\%2
-ErrorRegCreateKey=Gagal membuat registry key:%n%1\%2
-ErrorRegWriteKey=Gagal menulis registry key:%n%1\%2
+ErrorRegOpenKey=Galat membuka kunci Registry:%n%1\%2
+ErrorRegCreateKey=Galat membuat kunci Registry:%n%1\%2
+ErrorRegWriteKey=Galat menulis kunci Registry:%n%1\%2
 
-ErrorIniEntry=Tidak dapat membuat daftar INI pada berkas "%1"
+ErrorIniEntry=Galat membuat catatan INI dalam berkas "%1".
 
-FileAbortRetryIgnore=Klik Retry untuk mencoba lagi, Ignore untuk abaikan berkas (tidak di sarankan), atau Abort untuk membatalkan pemasangan
-FileAbortRetryIgnore2=Klik Retry untuk mencoba lagi, Ignore untuk memproses di lain waktu (tidak di sarankan), atau Abort untuk membatalkan pemasangan
-SourceIsCorrupted=Berkas sumber rusak
-SourceDoesntExist=Berkas sumber "%1" tidak ada
-ExistingFileReadOnly=Berkas yang ada di setel menjadi read-only.%n%Klik Retry untuk menghapus atribusi read-only dan coba lagi, Ignore untuk abaikan berkas, atau Abort untuk membatalkan pemasangan
-ErrorReadingExistingDest=Terjadi kesalahan ketika mencoba membaca berkas:
-FileExists=Berkas sudah ada.%n%nApakah anda ingin menimpa berkas tersebut?
-ExistingFileNewer=Berkas yang lebih baru dari pemasangan yang lain mencoba memasang. Direkomendasikan untuk tetap mempertahankan berkas tersebut.%n%nApakah anda ingin mempertahankan berkas tersebut?
-ErrorChangingAttr=Terjadi kesalahan ketika mencoba mengubah atribusi berkas:
-ErrorCreatingTemp=Terjadi kesalahan ketika mencoba membuat berkas di lokasi:
-ErrorReadingSource=Terjadi kesalahan ketika mencoba membaca berkas sumber:
-ErrorCopying=Terjadi kesalahan ketika mencoba menyalin berkas:
-ErrorReplacingExistingFile=Terjadi kesalahan ketika mencoba menimpa berkas:
+;Inno6
+FileAbortRetryIgnoreSkipNotRecommended=&Lewati berkas ini (tidak disarankan)
+FileAbortRetryIgnoreIgnoreNotRecommended=&Abaikan galat dan teruskan (tidak disarankan)
+;Inno6
+
+SourceIsCorrupted=Berkas asal telah rusak
+SourceDoesntExist=Berkas asal "%1" tidak ada
+
+;Inno6
+ExistingFileReadOnly2=Berkas yang sudah ada tidak bisa ditimpa karena telah ditandai hanya-baca.
+ExistingFileReadOnlyRetry=&Hapus atribut hanya-baca dan coba lagi
+ExistingFileReadOnlyKeepExisting=&Pertahankan berkas yang sudah ada
+ErrorReadingExistingDest=Terjadi galat saat berusaha membaca berkas yang sudah ada:
+FileExistsSelectAction=Pilih tindakan
+FileExists2=Berkas sudah ada.
+FileExistsOverwriteExisting=&Timpa berkas yang sudah ada
+FileExistsKeepExisting=&Pertahankan berkas yang sudah ada
+FileExistsOverwriteOrKeepAll=&Lakukan ini untuk konflik (bentrok) berikutnya
+ExistingFileNewerSelectAction=Pilih tindakan
+ExistingFileNewer2=Berkas yang sudah ada lebih baru dari yang akan kami coba pasang.
+ExistingFileNewerOverwriteExisting=&Timpa berkas yang sudah ada
+ExistingFileNewerKeepExisting=&Pertahankan berkas yang sudah ada (disarankan)
+ExistingFileNewerOverwriteOrKeepAll=&Lakukan ini untuk konflik (bentrok) berikutnya
+;Inno6
+ErrorReadingExistingDest=Terjadi galat saat berusaha membaca berkas yang sudah ada:
+ErrorChangingAttr=Terjadi galat saat berusaha mengubah atribusi berkas yang sudah ada:
+ErrorCreatingTemp=Terjadi galat saat berusaha membuat berkas di direktori tujuan:
+ErrorReadingSource=Terjadi galat saat berusaha membaca berkas asal:
+ErrorCopying=Terjadi galat saat berusaha menyalin berkas:
+ErrorReplacingExistingFile=Terjadi galat saat berusaha menimpa berkas yang sudah ada:
 ErrorRestartReplace=RestartReplace gagal:
-ErrorRenamingTemp=Kesalahan terjadi ketika mencoba untuk merubah nama berkas di lokasi tujuan:
-ErrorRegisterServer=Tidak dapat meregistrasi berkas DLL/OCX: %1
-ErrorRegSvr32Failed=RegSvr32 gagal dengan kode %1
-ErrorRegisterTypeLib=Tidak dapat meregistrasi type library: %1
+ErrorRenamingTemp=Terjadi galat saat berusaha mengubah nama berkas di direktori tujuan:
+ErrorRegisterServer=Tidak dapat meregistrasi DLL/OCX: %1
+ErrorRegSvr32Failed=RegSvr32 gagal dengan kode akhir %1
+ErrorRegisterTypeLib=Tidak dapat meregistrasi berkas referensi: %1
 
-ErrorOpeningReadme=Kesalahan ketika membuka berkas README
-ErrorRestartingComputer=Program Instalasi tidak dapat memulai ulang komputer. Harap lakukan secara manual
+;Inno6
+UninstallDisplayNameMark=%1 (%2)
+UninstallDisplayNameMarks=%1 (%2, %3)
+UninstallDisplayNameMark32Bit=32-bita
+UninstallDisplayNameMark64Bit=64-bita
+UninstallDisplayNameMarkAllUsers=Semua pengguna
+UninstallDisplayNameMarkCurrentUser=Pengguna saat ini
+;Inno6
 
-UninstallNotFound=Berkas "%1" tidak ada. Tidak dapat melepas
-UninstallOpenError=Berkas "%1" tidak dapat di jalankan. Tidak dapat melepas
-UninstallUnsupportedVer=Berkas log "%1" dalam format yang tidak cocok dengan versi pelepasan ini. Tidak dapat melepas
-UninstallUnknownEntry=Entri tidak di ketahui (%1) di temukan di catatan pelepasan
-ConfirmUninstall=Apakah anda yakin ingin menghapus %1 beserta semua komponennya?
-UninstallOnlyOnWin64=Pemasangan ini hanya dapat di lepas pada Windows versi 64-bit
-OnlyAdminCanUninstall=Pemasangan ini hanya bisa di lepas oleh pengguna dengan hak Administrator
-UninstallStatusLabel=Silahkan tunggu sementara %1 di hapus dari komputer anda
-UninstalledAll=%1 berhasil di hapus dari komputer anda
-UninstalledMost=Pelepasan %1 lengkap.%n%nBeberapa berkas tidak dapat di hapus. Berkas tersebut dapat dihapus secara manual
-UninstalledAndNeedsRestart=Untuk melengkapi proses pelepasan %1, komputer anda harus di mulai ulang. %n%nApakah anda setuju untuk mulai ulang sekarang?
-UninstallDataCorrupted=Berkas "%1" rusak. Tidak dapat di hapus
+ErrorOpeningReadme=Terjadi galat saat berusaha membuka berkas README.
+ErrorRestartingComputer=Kami gagal memulai ulang komputer. Silakan lakukan secara manual.
 
-ConfirmDeleteSharedFileTitle=Hapus berbagi berkas?
-ConfirmDeleteSharedFile2=Sistem menunjukan file berbagi berkas sedang di pakai oleh program lain. Apakah anda yakin untuk melepas file berbagi berkas?%n%nJika program lain sedang memakai berkas ini dan berkas ini di hapus, program tersebut dapat tidak berfungsi. Jika anda tidak yakin, pilih No
-SharedFileNameLabel=Nama Berkas:
+UninstallNotFound=Berkas "%1" tidak ada. Tidak bisa melepas
+UninstallOpenError=Berkas "%1" tidak dapat dibuka. Tidak bisa melepas
+UninstallUnsupportedVer=Berkas catatan pelepas "%1" tidak dalam format yang kami kenali. Tidak bisa melepas
+UninstallUnknownEntry=Entri tak dikenal (%1) ditemukan dalam catatan pelepas
+ConfirmUninstall=Anda yakin ingin melepas %1 beserta semua komponennya?
+UninstallOnlyOnWin64=Instalasi ini hanya bisa dilepas pada Windows 64-bita.
+OnlyAdminCanUninstall=Instalasi ini hanya bisa dilepas oleh pengguna dengan izin administratif.
+UninstallStatusLabel=Silakan tunggu selagi %1 dihapus dari komputer Anda.
+UninstalledAll=%1 berhasil dihapus dari komputer Anda.
+UninstalledMost=Selesai melepas %1.%n%nBeberapa elemen tidak dapat dihapus. Anda bisa menghapusnya secara manual.
+UninstalledAndNeedsRestart=Untuk melengkapi pelepasan %1, komputer Anda perlu dimulai ulang.%n%nMulai ulang sekarang?
+UninstallDataCorrupted=Berkas "%1" rusak. Tidak bisa melepas
+
+ConfirmDeleteSharedFileTitle=Hapus Berkas Bersama?
+ConfirmDeleteSharedFile2=Sistem mengindikasi bahwa berkas bersama di bawah ini tidak lagi dipakai oleh program mana pun. Apa Anda ingin agar kami menghapusnya?%n%nBila masih ada program yang memakainya dan berkas ini dihapus, program tersebut dapat tidak berfungsi dengan semestinya. Bila Anda ragu, pilih No. Membiarkan berkas ini pada sistem Anda takkan membahayakan.
+SharedFileNameLabel=Nama berkas:
 SharedFileLocationLabel=Lokasi:
-WizardUninstalling=Status pelepasan
+WizardUninstalling=Status Pelepasan
 StatusUninstalling=Melepas %1...
 
-ShutdownBlockReasonInstallingApp=Memasang %1
-ShutdownBlockReasonUninstallingApp=Melepas %1
+ShutdownBlockReasonInstallingApp=Memasang %1.
+ShutdownBlockReasonUninstallingApp=Melepas %1.
 
 [CustomMessages]
 NameAndVersion=%1 versi %2
-AdditionalIcons=Ikon tambahan:
-CreateDesktopIcon=Buat sebuah ikon di &Desktop
-CreateQuickLaunchIcon=Buat sebuah ikon di &Quick Launch
+AdditionalIcons=Pintasan tambahan:
+CreateDesktopIcon=Buat pintasan &desktop
+CreateQuickLaunchIcon=Buat pintasan Pelontar &Cepat
 ProgramOnTheWeb=%1 di Web
 UninstallProgram=Lepas %1
-LaunchProgram=&Jalankan %1
-AssocFileExtension=%1 &asosiasikan dengan berkas berekstensi %2
-AssocingFileExtension=%1 asosiasikan dengan berkas berekstensi %2
+LaunchProgram=Jalankan %1
+AssocFileExtension=&Kaitkan %1 dengan ekstensi berkas %2
+AssocingFileExtension=Mengaitkan %1 dengan ekstensi berkas %2...
 AutoStartProgramGroupDescription=Startup:
-AutoStartProgram=Otomatis menjalankan %1
-AddonHostProgramNotFound=%1 tidak ada di lokasi yang anda pilih.%n%nApakah anda ingin melanjutkan?
+AutoStartProgram=Otomatis jalankan %1
+AddonHostProgramNotFound=%1 tidak dapat ditemukan di map yang Anda pilih.%n%nMaju terus?

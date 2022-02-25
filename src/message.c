@@ -890,7 +890,7 @@ msg_appname(void)
 }
 
 void
-msg_init(char * const *argv)
+(msg_init)(char * const *argv)
 {
    char *p;
 #if OS_UNIX_MACOS
