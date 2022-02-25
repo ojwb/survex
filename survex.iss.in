@@ -100,16 +100,25 @@ Name: "{group}\Aven"; Filename: "{app}\aven.exe"; Comment: "View processed surve
 Name: "{group}\Documentation"; Filename: "{app}\index.htm"; Comment: "View the documentation for Survex"
 Name: "{group}\{cm:UninstallProgram,@PRETTYPACKAGE@}"; Filename: "{uninstallexe}"
 
+[CustomMessages]
+CompassPlotFile=Compass Plot File
+CMapProcessedData=CMAP Processed Data
+SurvexRawSurveyData=Survex Raw Survey Data
+SurvexProcessedData=Survex Processed Data
+SurvexLoopClosureErrors=Survex Loop Closure Errors
+SurvexStationPositions=Survex Station Positions
+OutputLog=Output Log
+
 [Registry]
 ; Support for loading Compass Plot files
 Root: HKCR; Subkey: ".plt"; ValueType: string; ValueData: "CompassPlotFile"
 Root: HKCR; Subkey: ".plf"; ValueType: string; ValueData: "CompassPlotFile"
-Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "Compass Plot File"
+Root: HKCR; Subkey: "CompassPlotFile"; ValueType: string; ValueData: "{cm:CompassPlotFile}"
 Root: HKCR; Subkey: "CompassPlotFile\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
 Root: HKCR; Subkey: "CompassPlotFile\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
 ; Support for loading CMAP XYZ files
 Root: HKCR; Subkey: ".xyz"; ValueType: string; ValueData: "CMAP.XYZ"
-Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "CMAP Processed Data"
+Root: HKCR; Subkey: "CMAP.XYZ"; ValueType: string; ValueData: "{cm:CMapProcessedData}"
 ;Root: HKCR; Subkey: "CMAP.XYZ\DefaultIcon"; ValueType: string; ValueData:"{app}\plt.ico"
 Root: HKCR; Subkey: "CMAP.XYZ\shell\Open with Aven\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletekey
 ;
@@ -118,19 +127,19 @@ Root: HKCR; Subkey: ".3d"; ValueType: string; ValueData: "survex.bin"; Flags: un
 Root: HKCR; Subkey: ".err"; ValueType: string; ValueData: "survex.error"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: ".pos"; ValueType: string; ValueData: "survex.pos"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: ".log"; ValueType: string; ValueData: "survex.log"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "Survex Raw Survey Data"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "survex.source"; ValueType: string; ValueData: "{cm:SurvexRawSurveyData}"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\DefaultIcon"; ValueType: string; ValueData: "{app}\svx.ico"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\shell\Open"; ValueType: none; Flags: deletekey
 Root: HKCR; Subkey: "survex.source\shell\Process"; ValueType: none; Flags: deletekey
 Root: HKCR; Subkey: "survex.source\shell\Open in Notepad\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 ;Root: HKCR; Subkey: "survex.source\shell\Open in SvxEdit\command"; ValueType: string; ValueData: """{app}\editwrap.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.source\shell\Process\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "Survex Processed Data"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "survex.bin"; ValueType: string; ValueData: "{cm:SurvexProcessedData}"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin\DefaultIcon"; ValueType: string; ValueData:"{app}\3d.ico"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin\shell\Open\command"; ValueType: string; ValueData: """{app}\aven.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin\shell\Print\command"; ValueType: string; ValueData: """{app}\aven.exe"" --print ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.bin\shell\Extend\command"; ValueType: string; ValueData: """{app}\extend.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "Survex Loop Closure Errors"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "survex.error"; ValueType: string; ValueData: "{cm:SurvexLoopClosureErrors}"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\DefaultIcon"; ValueType: string; ValueData: "{app}\err.ico"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\shell\Sort by Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r ""%1"""; Flags: uninsdeletevalue
@@ -138,10 +147,10 @@ Root: HKCR; Subkey: "survex.error\shell\Sort by Horizontal Error\command"; Value
 Root: HKCR; Subkey: "survex.error\shell\Sort by Vertical Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -v ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\shell\Sort by Percentage Error\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -p ""%1"""; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.error\shell\Sort by Error per Leg\command"; ValueType: string; ValueData: """{app}\sorterr.exe"" -r -l ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "Survex Station Positions"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "survex.pos"; ValueType: string; ValueData: "{cm:SurvexStationPositions}"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.pos\DefaultIcon"; ValueType: string; ValueData: "{app}\pos.ico"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.pos\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "Output Log"; Flags: uninsdeletevalue
+Root: HKCR; Subkey: "survex.log"; ValueType: string; ValueData: "{cm:OutputLog}"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "survex.log\shell\Open\command"; ValueType: string; ValueData: """notepad.exe"" ""%1"""; Flags: uninsdeletevalue
 ; Remove old menu items which can now be better achieved via Aven.
 Root: HKCR; Subkey: "survex.bin\shell\Convert to DXF\command"; ValueType: none; Flags: deletekey
