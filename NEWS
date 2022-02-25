@@ -54,6 +54,10 @@ Changes in 1.4.2 (2022-02-25):
 
 * Chinese translation updates from Qingqing Li.
 
+* Building from source now requires a compiler with support for C99.  C99
+  seems to be universally supported by compilers now so we don't expect this to
+  inconvenience anyone.
+
 Changes in 1.4.1 (2021-11-08):
 
 * This release should work with any PROJ version >= 6.2.0.
