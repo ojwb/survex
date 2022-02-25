@@ -1029,20 +1029,9 @@ macos_got_msg:
 #endif
 #if OS_WIN32
 	 /* GetUserDefaultUILanguage() requires Microsoft Windows 2000 or
-	  * newer.  For older versions, we use GetUserDefaultLCID().
+	  * newer, but we don't support anything earlier than Vista.
 	  */
-	 {
-	    HMODULE win32 = GetModuleHandle(TEXT("kernel32.dll"));
-	    FARPROC f = GetProcAddress(win32, "GetUserDefaultUILanguage");
-	    if (f) {
-	       typedef LANGID (WINAPI *func_GetUserDefaultUILanguage)(void);
-	       func_GetUserDefaultUILanguage g;
-	       g = (func_GetUserDefaultUILanguage)f;
-	       locid = g();
-	    } else {
-	       locid = GetUserDefaultLCID();
-	    }
-	 }
+	 locid = GetUserDefaultUILanguage();
 	 if (locid) {
 	    WORD langid = LANGIDFROMLCID(locid);
 	    switch (PRIMARYLANGID(langid)) {
