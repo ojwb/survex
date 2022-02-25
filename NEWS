@@ -1,6 +1,4 @@
-up to: af3d72a4707a2d7c888f037379b3b54f83cc8674
-
-Changes in 1.4.2 (2022-02-??):
+Changes in 1.4.2 (2022-02-25):
 
 * aven: Fix to be compatible with FFmpeg 5.0.
 
@@ -9,6 +7,11 @@ Changes in 1.4.2 (2022-02-??):
 * cavern: Fix "*declination auto" not to crash when built with PROJ < 8.1.0.
   Bug introduced in 1.4.0.
 
+* cavern: For each `*declination auto` command cavern now reports an "info"
+  message showing the range of calculated declination values and the dates at
+  which the ends of the range were obtained, and also the grid convergence
+  (which doesn't vary with time).  Fixes #92, reported by Rob Eavis.
+
 * cavern: If any of the N-S, E-W or U-D ranges includes an anonymous station
   then also report the range in that direction excluding anonymous stations.
   Patch from Thomas Holder.
@@ -16,14 +19,38 @@ Changes in 1.4.2 (2022-02-??):
 * cavern: The error from a bad `*cs custom` command now highlights the quoted
   string properly.
 
+* cavern: "FIX command with no coordinates - fixing at (0,0,0)" is now an
+  "info" rather than a "warning".  It's not really reporting a problem and the
+  ability to omit the coordinates is a deliberate feature.  It is useful for
+  the user to know where the "*fix" without coordinates is if they want to
+  change the survey to be in real coordinates, so an "info" diagnostic is a
+  good fit.  This also means aven will no longer stay on the log view after
+  processing a dataset which fixes without coordinates.
+
+* cavern: If "*fix" is used twice with no coordinates we no longer say
+  "FIX command with no coordinates - fixing at (0,0,0)" right before:
+
+  error: Already had FIX command with no coordinates for station "x"
+
 * cavern: Include errors in Compass .mak files now report the error in the line
   where the included filename is actually specified.
 
 * cavern.tst: Add test coverage for warnings for *entrance and *export with
   a station which doesn't exist otherwise.
 
+* aven/survexport: Change JSON export to be valid JSON.  This means the output
+  has changed incompatibly, but it wasn't valid JSON before which suggests
+  nobody was actually successfully using it. Fixes #128, reported by Pawczak.
+
 * aven.tst: Skip one testcase on macos as it seems to hang, at least when
   running on the Continuous Integration system.
+
+* (Microsoft Windows version): The installer is now generated with a much
+  newer version of Innosetup.  Most notably, it now supports installing as a
+  non-admin user.
+
+* (Microsoft Windows version): The coordinate system database for PROJ is
+  now included so "*cs" now works (broken since 1.4.0).
 
 * Chinese translation updates from Qingqing Li.
 
