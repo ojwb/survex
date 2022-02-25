@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005-2021 Olly Betts
+ * Copyright (C) 2005-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -260,11 +260,8 @@ wxString get_command_path(const wxChar * command_name)
 
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
     : wxHtmlWindow(parent),
-      mainfrm(mainfrm_), cavern_out(NULL), highlight(NULL),
-      link_count(0), end(buf), init_done(false), survey(survey_)
-#ifdef CAVERNLOG_USE_THREADS
-      , thread(NULL)
-#endif
+      mainfrm(mainfrm_),
+      end(buf), survey(survey_)
 {
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
@@ -452,6 +449,7 @@ CavernLogWindow::process(const wxString &file)
     SetFocus();
     filename = file;
 
+    info_count = 0;
     link_count = 0;
     cur.resize(0);
     log_txt.resize(0);
@@ -586,7 +584,7 @@ bad_utf8:
 				cur.append(source_line, 1, caret - 1);
 				if (caret < source_line.size()) {
 				    cur.append("<b>");
-				    cur.append(highlight ? highlight : wxT("<span \"color:green\">"));
+				    cur.append(highlight ? highlight : wxT("<span \"color:blue\">"));
 				    cur.append(source_line, caret, tilde + 1 - caret);
 				    cur.append("</span></b>");
 				}
@@ -661,6 +659,7 @@ bad_utf8:
 
 			    static const wxString & error_marker = wmsg(/*error*/93) + ":";
 			    static const wxString & warning_marker = wmsg(/*warning*/4) + ":";
+			    static const wxString & info_marker = wmsg(/*info*/485) + ":";
 
 			    if (cur.substr(offset, error_marker.size()) == error_marker) {
 				// Show "error" marker in red.
@@ -673,6 +672,13 @@ bad_utf8:
 				highlight = wxT("<span style=\"color:orange\">");
 				cur.insert(offset, highlight);
 				offset += 27 + warning_marker.size() - 1;
+				cur.insert(offset, wxT("</span>"));
+			    } else if (cur.substr(offset, info_marker.size()) == info_marker) {
+				// Show "info" marker in blue.
+				++info_count;
+				highlight = wxT("<span style=\"color:blue\">");
+				cur.insert(offset, highlight);
+				offset += 25 + info_marker.size() - 1;
 				cur.insert(offset, wxT("</span>"));
 			    } else {
 				highlight = NULL;
@@ -795,7 +801,8 @@ bad_utf8:
 	}
     }
 
-    if (link_count == 0) {
+    // Don't stay on log if there there are only "info" diagnostics.
+    if (link_count == info_count) {
 	wxCommandEvent dummy;
 	OnOK(dummy);
     }
