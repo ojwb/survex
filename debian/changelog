@@ -1,3 +1,17 @@
+survex (1.4.2-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Supports FFmpeg 5.0 (Closes: #1004811)
+    + debian/control: Relax libproj-dev dependency to (>= 6.2.0) since that's
+      what this upstream release supports (just to aid backporting).
+  * debian/survex-aven.lintian-overrides: Update chasing Lintian warning
+    message format changes.
+  * debian/source/include-binaries: Remove file as only entry was for
+    "debian/upstream-signing-key.pgp" which was replaced with an ASCII
+    armoured version in 1.2.37-1.
+
+ -- Olly Betts <olly@survex.com>  Sun, 27 Feb 2022 09:15:08 +1300
+
 survex (1.4.1-1) unstable; urgency=medium
 
   * New upstream release.
