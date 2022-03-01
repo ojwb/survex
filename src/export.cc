@@ -333,9 +333,16 @@ void
 DXF::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
    bool fSurface = (flags & SURF);
+   bool fSplay = (flags & SPLAYS);
    (void)fPendingMove; /* unused */
    fprintf(fh, "0\nLINE\n");
-   fprintf(fh, fSurface ? "8\nSurface\n" : "8\nCentreLine\n"); /* Layer */
+   if fSurface { /* select layer */
+      fprintf(fh, "8\nSurface\n" );
+   } else if fSplay {
+      fprintf(fh, "8\nSplay\n");
+   } else {
+      fprintf(fh, "8\nCentreLine\n");
+   }
    fprintf(fh, "10\n%6.2f\n", p1->x);
    fprintf(fh, "20\n%6.2f\n", p1->y);
    fprintf(fh, "30\n%6.2f\n", p1->z);
