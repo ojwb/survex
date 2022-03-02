@@ -240,11 +240,11 @@ class AvenPresList : public wxListCtrl {
 			 wxLC_REPORT|wxLC_VIRTUAL),
 	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false),
 	      force_save_as(true)
-	    {
-		InsertColumn(0, wmsg(/*Easting*/378));
-		InsertColumn(1, wmsg(/*Northing*/379));
-		InsertColumn(2, wmsg(/*Altitude*/335));
-	    }
+	{
+	    InsertColumn(0, wmsg(/*Easting*/378));
+	    InsertColumn(1, wmsg(/*Northing*/379));
+	    InsertColumn(2, wmsg(/*Altitude*/335));
+	}
 
 	void OnBeginLabelEdit(wxListEvent& event) {
 	    event.Veto(); // No editting allowed
@@ -704,7 +704,7 @@ class DnDFile : public wxFileDropTarget {
     public:
 	explicit DnDFile(MainFrm *parent) : m_Parent(parent) { }
 	virtual bool OnDropFiles(wxCoord, wxCoord,
-			const wxArrayString &filenames);
+				 const wxArrayString &filenames);
 
     private:
 	MainFrm * m_Parent;
