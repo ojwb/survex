@@ -15,9 +15,6 @@
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 /* #undef size_t */
 
-/* Define if you have the ANSI C header files.  */
-#define STDC_HEADERS
-
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 

@@ -217,7 +217,7 @@ AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
 
 dnl Checks for header files.
-AC_HEADER_STDC
+
 dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
 AC_CHECK_HEADERS(limits.h string.h setjmp.h sys/select.h)
 
