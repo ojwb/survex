@@ -71,6 +71,24 @@ Dashed
 49
 -1.25
 0
+LTYPE
+2
+DOT
+70
+64
+3
+Dotted
+72
+65
+73
+2
+40
+1
+49
+0
+49
+1
+0
 ENDTAB
 0
 TABLE
@@ -139,6 +157,16 @@ SurfaceLabels
 6
 CONTINUOUS
 0
+LAYER
+2
+Splays
+70
+64
+62
+5
+6
+DOT
+0
 ENDTAB
 0
 ENDSEC
@@ -178,102 +206,6 @@ Surface
   2.90
 31
   0.77
-0
-TEXT
-8
-SurfaceLabels
-10
-  1.94
-20
-  2.90
-30
-  0.77
-40
-  0.60
-1
-b.3
-0
-POINT
-8
-SurfaceStations
-10
-  1.94
-20
-  2.90
-30
-  0.77
-0
-TEXT
-8
-SurfaceLabels
-10
-  0.00
-20
-  0.74
-30
-  0.00
-40
-  0.60
-1
-b.2
-0
-POINT
-8
-SurfaceStations
-10
-  0.00
-20
-  0.74
-30
-  0.00
-0
-TEXT
-8
-SurfaceLabels
-10
-  0.00
-20
-  0.74
-30
-  0.00
-40
-  0.60
-1
-a.2
-0
-POINT
-8
-SurfaceStations
-10
-  0.00
-20
-  0.74
-30
-  0.00
-0
-TEXT
-8
-SurfaceLabels
-10
-  8.51
-20
-  0.00
-30
-  4.16
-40
-  0.60
-1
-a.1
-0
-POINT
-8
-SurfaceStations
-10
-  8.51
-20
-  0.00
-30
-  4.16
 000
 ENDSEC
 000
