@@ -98,7 +98,7 @@ msgstr "Para procesar estos datos topográficos se requiere la versión %s de Su
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "info"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
@@ -107,7 +107,7 @@ msgstr ""
 #: ../src/message.c:1234
 #: n:4
 msgid "warning"
-msgstr "alerta"
+msgstr "aviso"
 
 #. TRANSLATORS: Indicates an error message e.g.:
 #. "spoon.svx:13:4: error: Field may not be omitted"
