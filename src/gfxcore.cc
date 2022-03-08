@@ -557,8 +557,17 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	FinishDrawing();
     } else {
+#ifdef __WXMAC__
+	if (!m_DoneFirstShow) {
+	    FirstShow();
+	}
+	StartDrawing();
+	ClearNative();
+	FinishDrawing();
+#else
 	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
 	dc.Clear();
+#endif
     }
 }
 

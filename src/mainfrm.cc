@@ -769,6 +769,11 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
 #endif
+
+#ifdef __WXMAC__
+    m_Gfx->ForceRefresh();
+    m_Gfx->Show(true);
+#endif
 }
 
 void MainFrm::CreateMenuBar()
