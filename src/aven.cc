@@ -178,12 +178,20 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 int main(int argc, char **argv)
 {
 #ifdef __WXGTK3__
-    // Currently wxGLCanvas doesn't work under Wayland, and the code segfaults.
-    // https://trac.wxwidgets.org/ticket/17702
+# if !(wxUSE_GLCANVAS_EGL-0)
+    // The GLX-based wxGLCanvas doesn't work under Wayland, and the code
+    // segfaults: https://trac.wxwidgets.org/ticket/17702
+    //
+    // Therefore we force X11 unless we're using the EGL-based wxGLCanvas
+    // (which was added in wxWidgets 3.1.5 and hasn't been backported to
+    // 3.0.x).
+    //
     // Setting GDK_BACKEND=x11 is the recommended workaround, and it seems to
     // work to set it here.  GTK2 doesn't support Wayland, so doesn't need
     // this.
     setenv("GDK_BACKEND", "x11", 1);
+# endif
+
     // FIXME: The OpenGL code needs work before scaling on hidpi displays will
     // work usefully, so for now disable such scaling (which simulates how
     // things are when using GTK2).
