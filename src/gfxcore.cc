@@ -1492,7 +1492,9 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (centre) {
 	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
-	    WarpPointer(GetXSize() / 2, GetYSize() / 2);
+	    int w, h;
+	    GetClientSize(&w, &h);
+	    WarpPointer(w / 2, h / 2);
 	    SetThere(best);
 	    m_Parent->SelectTreeItem(best);
 	}
@@ -4232,9 +4234,8 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     wxString ext;
     wxFileName::SplitPath(fnm, NULL, NULL, NULL, &ext, wxPATH_NATIVE);
 
-    int width;
-    int height;
-    GetSize(&width, &height);
+    int width = GetXSize();
+    int height = GetYSize();
     // Round up to next multiple of 2 (required by ffmpeg).
     width += (width & 1);
     height += (height & 1);

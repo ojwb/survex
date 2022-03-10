@@ -191,12 +191,8 @@ int main(int argc, char **argv)
     // this.
     setenv("GDK_BACKEND", "x11", 1);
 # endif
-
-    // FIXME: The OpenGL code needs work before scaling on hidpi displays will
-    // work usefully, so for now disable such scaling (which simulates how
-    // things are when using GTK2).
-    setenv("GDK_SCALE", "1", 1);
 #endif
+
 #ifdef __WXMAC__
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
     // wx ignores for us, but in wxApp::Initialize() which hasn't been
