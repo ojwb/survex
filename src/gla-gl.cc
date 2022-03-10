@@ -143,7 +143,8 @@ string GetGLSystemDescription()
     info += (const char*)glGetString(GL_VENDOR);
     info += '\n';
     info += (const char*)glGetString(GL_RENDERER);
-#if defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__
+#if !(wxUSE_GLCANVAS_EGL-0) && \
+    (defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__)
     info += string_format("\nGLX %0.1f\n", wxGLCanvas::GetGLXVersion() * 0.1);
 #else
     info += '\n';
