@@ -143,6 +143,8 @@ class GLACanvas : public wxGLCanvas {
     int x_size;
     int y_size;
 
+    double content_scale_factor = 1.0;
+
     vector<GLAList> drawing_lists;
 
     enum {
@@ -167,6 +169,7 @@ public:
     void FirstShow();
 
     void Clear();
+    void ClearNative();
     void StartDrawing();
     void FinishDrawing();
 
@@ -298,6 +301,11 @@ public:
     void OnSize(wxSizeEvent & event);
 
     glaCoord GetVolumeDiameter() const { return m_VolumeDiameter; }
+
+    void ScaleMouseEvent(wxMouseEvent& e) const {
+	e.SetX(e.GetX() * content_scale_factor);
+	e.SetY(e.GetY() * content_scale_factor);
+    }
 
 private:
     DECLARE_EVENT_TABLE()

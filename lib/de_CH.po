@@ -98,7 +98,7 @@ msgstr "Zum Verarbeiten dieser Vermessungsdaten ist Survex-Version %s oder neuer
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "Information"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"

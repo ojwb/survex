@@ -143,7 +143,8 @@ string GetGLSystemDescription()
     info += (const char*)glGetString(GL_VENDOR);
     info += '\n';
     info += (const char*)glGetString(GL_RENDERER);
-#if defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__
+#if !(wxUSE_GLCANVAS_EGL-0) && \
+    (defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__)
     info += string_format("\nGLX %0.1f\n", wxGLCanvas::GetGLXVersion() * 0.1);
 #else
     info += '\n';
@@ -432,8 +433,12 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
+    content_scale_factor = GetContentScaleFactor();
+
     // Update our record of the client area size and centre.
     GetClientSize(&x_size, &y_size);
+    x_size *= content_scale_factor;
+    y_size *= content_scale_factor;
     if (x_size < 1) x_size = 1;
     if (y_size < 1) y_size = 1;
 
@@ -619,6 +624,22 @@ void GLACanvas::Clear()
     CHECK_GL_ERROR("Clear", "glClear");
 }
 
+void GLACanvas::ClearNative()
+{
+    // Clear the canvas to the native background colour.
+
+    wxColour background_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME);
+    glClearColor(background_colour.Red() / 255.,
+		 background_colour.Green() / 255.,
+		 background_colour.Blue() / 255.,
+		 1.0);
+    CHECK_GL_ERROR("ClearNative", "glClearColor");
+    glClear(GL_COLOR_BUFFER_BIT);
+    CHECK_GL_ERROR("ClearNative", "glClear");
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    CHECK_GL_ERROR("ClearNative", "glClearColor (2)");
+}
+
 void GLACanvas::SetScale(Double scale)
 {
     if (scale != m_Scale) {
@@ -633,23 +654,26 @@ void GLACanvas::SetScale(Double scale)
 
 void GLACanvas::OnSize(wxSizeEvent & event)
 {
+    content_scale_factor = GetContentScaleFactor();
+
     wxSize size = event.GetSize();
 
+    auto new_w = size.GetWidth() * content_scale_factor;
+    auto new_h = size.GetHeight() * content_scale_factor;
+    // The width and height go to zero when the panel is dragged right
+    // across so we clamp them to be at least 1 to avoid problems.
+    if (new_w < 1) new_w = 1;
+    if (new_h < 1) new_h = 1;
     unsigned int mask = 0;
-    if (size.GetWidth() != x_size) mask |= INVALIDATE_ON_X_RESIZE;
-    if (size.GetHeight() != y_size) mask |= INVALIDATE_ON_Y_RESIZE;
+    if (new_w != x_size) mask |= INVALIDATE_ON_X_RESIZE;
+    if (new_h != y_size) mask |= INVALIDATE_ON_Y_RESIZE;
     if (mask) {
+	x_size = new_w;
+	y_size = new_h;
 	vector<GLAList>::iterator i;
 	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
 	    i->invalidate_if(mask);
 	}
-
-	// The width and height go to zero when the panel is dragged right
-	// across so we clamp them to be at least 1 to avoid problems.
-	x_size = size.GetWidth();
-	y_size = size.GetHeight();
-	if (x_size < 1) x_size = 1;
-	if (y_size < 1) y_size = 1;
     }
 
     event.Skip();

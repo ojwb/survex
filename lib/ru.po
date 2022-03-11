@@ -98,7 +98,7 @@ msgstr "Для обработки данных этой топо-съемки т
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "инфо"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
