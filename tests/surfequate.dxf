@@ -206,6 +206,102 @@ Surface
   2.90
 31
   0.77
+0
+TEXT
+8
+SurfaceLabels
+10
+  1.94
+20
+  2.90
+30
+  0.77
+40
+  0.60
+1
+b.3
+0
+POINT
+8
+SurfaceStations
+10
+  1.94
+20
+  2.90
+30
+  0.77
+0
+TEXT
+8
+SurfaceLabels
+10
+  0.00
+20
+  0.74
+30
+  0.00
+40
+  0.60
+1
+b.2
+0
+POINT
+8
+SurfaceStations
+10
+  0.00
+20
+  0.74
+30
+  0.00
+0
+TEXT
+8
+SurfaceLabels
+10
+  0.00
+20
+  0.74
+30
+  0.00
+40
+  0.60
+1
+a.2
+0
+POINT
+8
+SurfaceStations
+10
+  0.00
+20
+  0.74
+30
+  0.00
+0
+TEXT
+8
+SurfaceLabels
+10
+  8.51
+20
+  0.00
+30
+  4.16
+40
+  0.60
+1
+a.1
+0
+POINT
+8
+SurfaceStations
+10
+  8.51
+20
+  0.00
+30
+  4.16
 000
 ENDSEC
 000
