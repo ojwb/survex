@@ -19,8 +19,49 @@ to another format.
 </cmdsynopsis>
 </refsynopsisdiv>
   
+<refsect1><title>Options</title>
+
+<para><option>-s, --survey=SURVEY</option> only load the sub-survey with this prefix</para>
+<para><option>--scale=SCALE</option> scale (50, 0.02, 1:50 and 2:100 all mean 1:50)</para>
+<para><option>--bearing=BEARING</option> bearing (90, 90d, 100g all mean 90°)</para>
+<para><option>--tilt=TILT</option> tilt (45, 45d, 50g, 100% all mean 45°)</para>
+<para><option>--plan	</option> plan view (equivalent to --tilt=-90)</para>
+<para><option>--elevation</option> elevation view (equivalent to --tilt=0)</para>
+<para><option>--legs	</option> underground survey legs</para>
+<para><option>--surface-legs</option> surface survey legs</para>
+<para><option>--splays	</option> splay legs</para>
+<para><option>--crosses	</option> station markers</para>
+<para><option>--station-names	</option> station labels</para>
+<para><option>--entrances	</option> entrances</para>
+<para><option>--fixes	</option>		fixed points</para>
+<para><option>--exports</option> exported stations</para>
+<para><option>--cross-sections</option> cross-sections</para>
+<para><option>--walls		</option> walls</para>
+<para><option>--passages	</option> passages</para>
+<para><option>--origin-in-centre</option> origin in centre</para>
+<para><option>--full-coordinates</option> full coordinates</para>
+<para><option>--clamp-to-ground</option> clamp to ground</para>
+<para><option>--defaults</option> include items exported by default</para>
+<para><option>-g, --grid[=GRID]</option> generate grid (default 100m)</para>
+<para><option>-t, --text-height=TEXT-HEIGHT</option> station labels text height (default 0.6)</para>
+<para><option>-m, --marker-size=MARKER-SIZE</option> station marker size (default 0.8)</para>
+<para><option>--csv	</option> produce CSV output</para>
+<para><option>--dxf	</option> produce DXF output</para>
+<para><option>--eps	</option> produce EPS output</para>
+<para><option>--gpx	</option> produce GPX output</para>
+<para><option>--hpgl	</option> produce HPGL output</para>
+<para><option>--json	</option> produce JSON output</para>
+<para><option>--kml	</option> produce KML output</para>
+<para><option>--plt	</option> produce Compass PLT output for Carto</para>
+<para><option>--skencil</option> produce Skencil output</para>
+<para><option>--pos</option> produce Survex POS output</para>
+<para><option>--svg</option> produce SVG output</para>
+<para><option>--help</option> display short help and exit</para>
+<para><option>--version</option> output version information and exit</para>
+
+</refsect1>
+
 <refsect1><title>Description</title>
-<!-- FIXME: more info (opts, etc) -->
 
 <para>
 The input formats supports are all those supported by Survex's "img"
@@ -59,6 +100,16 @@ number part first, so you'd get:
 040.sv11
 40_entrance_tag
 40b_entrance_tag</screen>
+</refsect2>
+
+<refsect2><title>DXF Export</title>
+
+<para>
+DXF export seperates Splays, Surface legs, Surface points, survey legs,
+and survey stations onto separate layers. Splays will export dotted, and surface
+legs dashed. This is not configurable.
+</para>
+
 </refsect2>
 
 </refsect1>
