@@ -774,6 +774,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     m_Gfx->ForceRefresh();
     m_Gfx->Show(true);
 #endif
+    m_Gfx->SetFocus();
 }
 
 void MainFrm::CreateMenuBar()
