@@ -346,23 +346,23 @@ DXF::header(const char *, const char *, time_t,
 void
 DXF::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   bool fSurface = (flags & SURF);
-   bool fSplay = (flags & SPLAYS);
-   (void)fPendingMove; /* unused */
-   fprintf(fh, "0\nLINE\n");
-   if (fSurface) { /* select layer */
-      fprintf(fh, "8\nSurface\n" );
-   } else if (fSplay) {
-      fprintf(fh, "8\nSplays\n");
-   } else {
-      fprintf(fh, "8\nCentreLine\n");
-   }
-   fprintf(fh, "10\n%6.2f\n", p1->x);
-   fprintf(fh, "20\n%6.2f\n", p1->y);
-   fprintf(fh, "30\n%6.2f\n", p1->z);
-   fprintf(fh, "11\n%6.2f\n", p->x);
-   fprintf(fh, "21\n%6.2f\n", p->y);
-   fprintf(fh, "31\n%6.2f\n", p->z);
+    bool fSurface = (flags & SURF);
+    bool fSplay = (flags & SPLAYS);
+    (void)fPendingMove; /* unused */
+    fprintf(fh, "0\nLINE\n");
+    if (fSurface) { /* select layer */
+	fprintf(fh, "8\nSurface\n" );
+    } else if (fSplay) {
+	fprintf(fh, "8\nSplays\n");
+    } else {
+	fprintf(fh, "8\nCentreLine\n");
+    }
+    fprintf(fh, "10\n%6.2f\n", p1->x);
+    fprintf(fh, "20\n%6.2f\n", p1->y);
+    fprintf(fh, "30\n%6.2f\n", p1->z);
+    fprintf(fh, "11\n%6.2f\n", p->x);
+    fprintf(fh, "21\n%6.2f\n", p->y);
+    fprintf(fh, "31\n%6.2f\n", p->z);
 }
 
 void
