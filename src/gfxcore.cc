@@ -73,7 +73,7 @@ const unsigned int QUANTISE_FACTOR = 2;
 #include "avenpal.h"
 
 static const int INDICATOR_BOX_SIZE = 60;
-static const int INDICATOR_GAP = 2;
+static const int INDICATOR_GAP = 8;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
@@ -676,7 +676,7 @@ int GfxCore::GetClinoOffset() const
 {
     int result = INDICATOR_OFFSET_X;
     if (m_Compass) {
-	result += 6 + GetCompassWidth() + INDICATOR_GAP;
+	result += GetCompassWidth() + INDICATOR_GAP;
     }
     return result;
 }
