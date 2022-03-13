@@ -85,7 +85,7 @@ static const int KEY_BLOCK_WIDTH = 20;
 static const int KEY_BLOCK_HEIGHT = 16;
 static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
-static const int SCALE_BAR_OFFSET_Y = 12;
+static const int SCALE_BAR_OFFSET_Y = 8;
 static const int SCALE_BAR_HEIGHT = 12;
 
 static const gla_colour TEXT_COLOUR = col_GREEN;
@@ -1350,7 +1350,7 @@ void GfxCore::DrawScaleBar()
     m_ScaleBarWidth = size;
 
     // Draw it...
-    const int end_y = SCALE_BAR_OFFSET_Y + SCALE_BAR_HEIGHT;
+    const int end_y = SCALE_BAR_OFFSET_Y + GetFontSize();
     int interval = size / 10;
 
     gla_colour col = col_WHITE;
@@ -2229,10 +2229,13 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
     // bar.
     if (!ShowingScaleBar()) return false;
 
-    return (point.x >= SCALE_BAR_OFFSET_X &&
-	    point.x <= SCALE_BAR_OFFSET_X + m_ScaleBarWidth &&
-	    point.y <= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
-	    point.y >= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
+    wxCoord y = point.y - (GetYSize() - SCALE_BAR_OFFSET_Y - GetFontSize());
+    if (y > SCALE_BAR_HEIGHT || y < 0) return false;
+
+    wxCoord x = point.x - SCALE_BAR_OFFSET_X;
+    if (x > m_ScaleBarWidth || x < 0) return false;
+
+    return true;
 }
 
 bool GfxCore::PointWithinColourKey(wxPoint point) const
