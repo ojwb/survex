@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2017,2018 Olly Betts
+//  Copyright (C) 2003-2022 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -526,7 +526,7 @@ void GLACanvas::FirstShow()
     wxString path = wmsg_cfgpth();
     path += wxCONFIG_PATH_SEPARATOR;
     path += wxT("unifont.pixelfont");
-    if (!m_Font.load(path)) {
+    if (!m_Font.load(path, GetContentScaleFactor() >= 2)) {
 	// FIXME: do something better.
 	// We have this message available: Error in format of font file “%s”
 	fprintf(stderr, "Failed to parse compiled-in font data\n");
