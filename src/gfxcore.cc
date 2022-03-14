@@ -2229,7 +2229,7 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
     // bar.
     if (!ShowingScaleBar()) return false;
 
-    wxCoord y = point.y - (GetYSize() - SCALE_BAR_OFFSET_Y - GetFontSize());
+    wxCoord y = (GetYSize() - SCALE_BAR_OFFSET_Y - GetFontSize()) - point.y;
     if (y > SCALE_BAR_HEIGHT || y < 0) return false;
 
     wxCoord x = point.x - SCALE_BAR_OFFSET_X;
