@@ -190,8 +190,8 @@ jobs:
             proj \
             wxwidgets
         brew link --force gettext
-        sudo cpan -T -i local::lib < /dev/null
-        sudo cpan -I -T -i Locale::PO < /dev/null
+        cpan -T -i local::lib < /dev/null
+        cpan -I -T -i Locale::PO < /dev/null
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
