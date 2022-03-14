@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+inkscape --version > /dev/null || { echo "Error: Inkscape needed to generate macos iconset files"; exit 1; }
+
 case $1 in
   -*) in=./$1 ;;
   *) in=$1 ;;
