@@ -105,7 +105,7 @@ number part first, so you'd get:
 <refsect2><title>DXF Export</title>
 
 <para>
-DXF export seperates Splays, Surface legs, Surface points, survey legs,
+DXF export separates Splays, Surface legs, Surface points, survey legs,
 and survey stations onto separate layers. Splays will export dotted, and surface
 legs dashed. This is not configurable.
 </para>
