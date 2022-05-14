@@ -28,6 +28,8 @@
 	<string>Licensed under the GNU General Public License version 2 or later.
 @COPYRIGHT_MSG@
 @AVEN_COPYRIGHT_MSG@</string>
+	<key>NSPrincipalClass</key>
+	<string>wxNSApplication</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
