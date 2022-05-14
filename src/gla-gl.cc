@@ -643,9 +643,8 @@ void GLACanvas::ClearNative()
 void GLACanvas::SetScale(Double scale)
 {
     if (scale != m_Scale) {
-	vector<GLAList>::iterator i;
-	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	    i->invalidate_if(INVALIDATE_ON_SCALE);
+	for (auto & i : drawing_lists) {
+	    i.invalidate_if(INVALIDATE_ON_SCALE);
 	}
 
 	m_Scale = scale;
@@ -670,9 +669,8 @@ void GLACanvas::OnSize(wxSizeEvent & event)
     if (mask) {
 	x_size = new_w;
 	y_size = new_h;
-	vector<GLAList>::iterator i;
-	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	    i->invalidate_if(mask);
+	for (auto& i : drawing_lists) {
+	    i.invalidate_if(mask);
 	}
     }
 
