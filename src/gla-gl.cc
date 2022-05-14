@@ -395,6 +395,9 @@ bool GLAList::DrawList() const {
 
 BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
     EVT_SIZE(GLACanvas::OnSize)
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+    EVT_MOVE(GLACanvas::OnMove)
+#endif
 END_EVENT_TABLE()
 
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
@@ -433,7 +436,9 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
-    content_scale_factor = GetContentScaleFactor();
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+    content_scale_factor = wxGLCanvas::GetContentScaleFactor();
+#endif
 
     // Update our record of the client area size and centre.
     GetClientSize(&x_size, &y_size);
@@ -526,7 +531,7 @@ void GLACanvas::FirstShow()
     wxString path = wmsg_cfgpth();
     path += wxCONFIG_PATH_SEPARATOR;
     path += wxT("unifont.pixelfont");
-    if (!m_Font.load(path, GetContentScaleFactor() >= 2)) {
+    if (!m_Font.load(path, content_scale_factor >= 2)) {
 	// FIXME: do something better.
 	// We have this message available: Error in format of font file “%s”
 	fprintf(stderr, "Failed to parse compiled-in font data\n");
@@ -651,9 +656,28 @@ void GLACanvas::SetScale(Double scale)
     }
 }
 
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+void GLACanvas::UpdateContentScaleFactor()
+{
+    double new_content_scale_factor = wxGLCanvas::GetContentScaleFactor();
+    if (new_content_scale_factor == content_scale_factor) return;
+
+    content_scale_factor = new_content_scale_factor;
+    for (auto& i : drawing_lists) {
+	i.invalidate_if(INVALIDATE_ON_HIDPI);
+    }
+}
+
+void GLACanvas::OnMove(wxMoveEvent & event)
+{
+    UpdateContentScaleFactor();
+    event.Skip();
+}
+#endif
+
 void GLACanvas::OnSize(wxSizeEvent & event)
 {
-    content_scale_factor = GetContentScaleFactor();
+    UpdateContentScaleFactor();
 
     wxSize size = event.GetSize();
 

@@ -143,7 +143,11 @@ class GLACanvas : public wxGLCanvas {
     int x_size;
     int y_size;
 
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
     double content_scale_factor = 1.0;
+#else
+    static constexpr unsigned content_scale_factor = 1;
+#endif
 
     vector<GLAList> drawing_lists;
 
@@ -151,8 +155,9 @@ class GLACanvas : public wxGLCanvas {
 	INVALIDATE_ON_SCALE = 1,
 	INVALIDATE_ON_X_RESIZE = 2,
 	INVALIDATE_ON_Y_RESIZE = 4,
-	NEVER_CACHE = 8,
-	CACHED = 16
+	INVALIDATE_ON_HIDPI = 8,
+	NEVER_CACHE = 16,
+	CACHED = 32
     };
     mutable unsigned int list_flags;
 
@@ -295,8 +300,33 @@ public:
 
     void PolygonOffset(bool on) const;
 
-    int GetXSize() const { list_flags |= INVALIDATE_ON_X_RESIZE; return x_size; }
-    int GetYSize() const { list_flags |= INVALIDATE_ON_Y_RESIZE; return y_size; }
+    int GetXSize() const {
+	list_flags |= INVALIDATE_ON_X_RESIZE;
+	return x_size;
+    }
+
+    int GetYSize() const {
+	list_flags |= INVALIDATE_ON_Y_RESIZE;
+	return y_size;
+    }
+
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+    double GetContentScaleFactor() const {
+	list_flags |= INVALIDATE_ON_HIDPI;
+	return content_scale_factor;
+    }
+
+    void UpdateContentScaleFactor();
+    void OnMove(wxMoveEvent & event);
+#else
+    // wxWindow::GetContentScaleFactor() will always return 1.0, so arrange
+    // things so it's a compile-time constant the compiler can optimise away.
+    //
+    // Dummy parameter here avoids an error due to mismatched return type
+    // compared to the wxWidgets method.
+    unsigned GetContentScaleFactor(bool = false) const { return 1; }
+    void UpdateContentScaleFactor() { }
+#endif
 
     void OnSize(wxSizeEvent & event);
 
