@@ -598,7 +598,7 @@ msgstr "在首次使用CS命令前，站“%s”已固定"
 #: ../src/commands.c:2442
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
-msgstr ""
+msgstr "*EXPORT必须紧跟着“*BEGIN <SURVEY>”"
 
 #. TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918
 #: ../src/readval.c:539
@@ -1694,7 +1694,7 @@ msgstr "KML 文件"
 #: ../src/export.cc:100
 #: n:415
 msgid "Compass PLT for use with Carto"
-msgstr ""
+msgstr "与Carto一起使用的Compass PLT"
 
 #. TRANSLATORS: "Skencil" is the name of a software package, so should not be
 #. translated: http://www.skencil.org/
@@ -1734,7 +1734,7 @@ msgstr "日志文件"
 #: ../src/aboutdlg.cc:90
 #: n:209
 msgid "Survey visualisation tool"
-msgstr ""
+msgstr "测量可视化工具"
 
 #. TRANSLATORS: Summary paragraph for the GPLv2 - there are translations for
 #. some languages here:
@@ -1742,20 +1742,20 @@ msgstr ""
 #: ../src/aboutdlg.cc:104
 #: n:219
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
-msgstr ""
+msgstr "本程序是自由软件；您可以根据自由软件基金会发布的GNU通用公共许可证的条款重新发布和/或修改它；许可证的第2版或（由您选择）任何更高版本。"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:265
 #: n:218
 msgid "FILE1 FILE2 [THRESHOLD]"
-msgstr ""
+msgstr "文件1 文件2 [阈值]"
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:267
 #: n:255
 #, c-format
 msgid "FILE1 and FILE2 can be .pos or .3d files\nTHRESHOLD is the max. ignorable change along any axis in metres (default %s)"
-msgstr ""
+msgstr "文件1和文件2可以是.pos或.3d文件\n阈值为延任何轴可忽略的改变的最大值，单位“米”(默认 %s)"
 
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:553
@@ -1793,7 +1793,7 @@ msgstr "取消隐藏"
 #: ../src/gfxcore.cc:1205
 #: n:290
 msgid "Not in loop"
-msgstr ""
+msgstr "不在环路中"
 
 #. TRANSLATORS: error from:
 #.
@@ -1819,7 +1819,7 @@ msgstr ""
 #: ../src/commands.c:1488
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
-msgstr ""
+msgstr "交错的读数，但没有NEWLINE"
 
 #. TRANSLATORS: caused by e.g.
 #.
@@ -1830,7 +1830,7 @@ msgstr ""
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
-msgstr ""
+msgstr "必须在NEWLINE前读取“%s”"
 
 #. TRANSLATORS: e.g.
 #.
@@ -1846,12 +1846,12 @@ msgstr "NEWLINE前只能有STATION、DEPTH和COUNT"
 #: ../src/commands.c:1626
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
-msgstr ""
+msgstr "无法同时校准角度和长度量"
 
 #: ../src/commands.c:697
 #: n:397
 msgid "Bad *alias command"
-msgstr ""
+msgstr "错误的*alias命令"
 
 #. TRANSLATORS: %s will be replaced by the application name ("Aven"
 #. currently)
@@ -1859,7 +1859,7 @@ msgstr ""
 #: n:228
 #, c-format
 msgid "%s Error Log"
-msgstr ""
+msgstr "%s错误日志"
 
 #. TRANSLATORS: The text on the action button in the "Export" settings
 #. dialog
@@ -1954,7 +1954,7 @@ msgstr "导出格式"
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
-msgstr ""
+msgstr "%d页（%dx%d）"
 
 #. TRANSLATORS: used in the scale drop down selector in the print
 #. dialog the implicit meaning is "choose a suitable scale to fit
@@ -2850,7 +2850,7 @@ msgstr "打开(&O)...\tCtrl+O"
 #: ../src/mainfrm.cc:790
 #: n:453
 msgid "Open &Terrain..."
-msgstr ""
+msgstr "打开地形...(&T)"
 
 #: ../src/mainfrm.cc:791
 #: n:144

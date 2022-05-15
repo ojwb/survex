@@ -426,7 +426,7 @@ msgstr "Дата съёмки не указана - использовано м�
 #: n:484
 #, c-format
 msgid "Declination: %s, grid convergence: %.1f%s"
-msgstr ""
+msgstr "Магнитное склонение: %s, сближение меридианов: %.1f%s"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
@@ -1426,7 +1426,7 @@ msgstr "Ожидается “F” или “M”"
 #: n:483
 #, c-format
 msgid "Expecting quadrant bearing, found “%s”"
-msgstr ""
+msgstr "Ожидается румб (quadrant), получено “%s”"
 
 #: ../src/listpos.c:82
 #: n:190
