@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2021 Olly Betts
+ * Copyright (C) 1993-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1101,7 +1101,20 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
    }
    PUTC('\n', pimg->fh);
 
-   tm = time(NULL);
+   if (getenv("SOURCE_DATE_EPOCH")) {
+      /* Support reproducible builds which create .3d files by not embedding a
+       * timestamp if SOURCE_DATE_EPOCH is set.  We don't bother trying to
+       * parse the timestamp as it is simpler and seems cleaner to just not
+       * embed a timestamp at all given the 3d file format already provides
+       * a way not to.
+       *
+       * See https://reproducible-builds.org/docs/source-date-epoch/
+       */
+      tm = (time_t)-1;
+   } else {
+      tm = time(NULL);
+   }
+
    if (tm == (time_t)-1) {
       fputsnl(TIMENA, pimg->fh);
    } else if (pimg->version <= 7) {
