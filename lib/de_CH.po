@@ -3001,7 +3001,7 @@ msgstr "&Hilfslinien (splay)"
 #: ../src/survexport.cc:139
 #: n:465
 msgid "splay legs"
-msgstr "&Hilfslinien (splay)"
+msgstr "Hilfslinien (splay)"
 
 #: ../src/mainfrm.cc:890
 #: n:251
