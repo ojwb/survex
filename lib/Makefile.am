@@ -63,7 +63,7 @@ generate-todo:
 launchpad-diff:
 	rm -rf lib
 	mkdir lib
-	cd lib && tar --strip-components=1 -xf ../launchpad-export.tar.gz
+	cd lib && tar --strip-components=2 -xf ../launchpad-export.tar.gz
 	for po in $(po_files) ; do \
 	    lpo="lib/survex-$$po" ;\
 	    [ -r "$$lpo" ] || continue ;\
