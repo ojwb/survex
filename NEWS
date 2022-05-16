@@ -1,9 +1,8 @@
-up to: 1934ef6ac8f1faa05e3b793700bac96bd154e32d
+up to: 49a4c8a2143200be16f31cb51e1ec23034f3cfba
 
-Changes in 1.4.3 (2022-03-??):
+Changes in 1.4.3 (2022-05-??):
 
-    Make HiDPI scaling work for wxGTK
-    Scale indicators and fonts on HiDPI displays
+* aven: Much improved support for HiDPI monitors on all platforms.
 
 * aven: When started without a file make sure the window has focus so menu
   accelerators and shortcuts work without clicking on the window.
@@ -14,14 +13,18 @@ Changes in 1.4.3 (2022-03-??):
 * Improved survexport man page to include command line options and a short
   note about DXF export.  Patch from echarlie.
 
-* aven: Fix handling of EGL-based wxGLCanvas (which wxGTK 3.1.5 has).  Fix
-  a build failure and don't force X11 (as the EGL-based wxGLCanvas works
-  on Wayland).
+* Minor translation updates.
 
-* Minor translation updates for: ca de de_CH es fr id it pl ru
+* (Unix version): aven: Fix handling of EGL-based wxGLCanvas (which wxGTK 3.1.5
+  has).  Fix a build failure and don't force X11 (as the EGL-based wxGLCanvas
+  works on Wayland).
 
 * (MacOS version): aven: Fix hang on startup without a file.  Fixes #120,
   reported by Enrico Fratnik.
+
+* img library: Support reproducible builds which create .3d files by not
+  embedding a timestamp if environment variable SOURCE_DATE_EPOCH is set.
+  Requested by Martin Budaj.
 
 Changes in 1.4.2 (2022-02-25):
 
