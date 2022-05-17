@@ -1,3 +1,9 @@
+survex (1.4.2-2) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Olly Betts <olly@survex.com>  Wed, 18 May 2022 11:20:53 +1200
+
 survex (1.4.2-1) unstable; urgency=medium
 
   * New upstream release.
