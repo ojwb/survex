@@ -229,8 +229,6 @@ public:
 			     glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
     void DrawCircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
-    void DrawTriangle(gla_colour edge, gla_colour fill,
-		      const Vector3 &p0, const Vector3 &p1, const Vector3 &p2);
 
     void DrawBlob(glaCoord x, glaCoord y, glaCoord z);
     void DrawBlob(glaCoord x, glaCoord y);

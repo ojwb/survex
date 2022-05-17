@@ -685,8 +685,8 @@ int GfxCore::GetClinoOffset() const
 void GfxCore::DrawTick(int angle_cw)
 {
     auto f = GetContentScaleFactor();
-    const wxCoord length1 = INDICATOR_RADIUS * f;
-    const wxCoord length0 = length1 + TICK_LENGTH * f;
+    auto length0 = (INDICATOR_RADIUS + TICK_LENGTH) * f;
+    auto length1 = INDICATOR_RADIUS * f;
     const Double theta = rad(angle_cw);
     auto s = sin(theta);
     auto c = cos(theta);
@@ -701,13 +701,29 @@ void GfxCore::DrawTick(int angle_cw)
 
 void GfxCore::DrawArrow(gla_colour col1, gla_colour col2) {
     auto f = GetContentScaleFactor();
-    Vector3 p1(0, INDICATOR_RADIUS * f, 0);
-    Vector3 p2(INDICATOR_RADIUS/2 * f, INDICATOR_RADIUS*-.866025404 * f, 0); // 150deg
-    Vector3 p3(-INDICATOR_RADIUS/2 * f, INDICATOR_RADIUS*-.866025404 * f, 0); // 210deg
-    Vector3 pc(0, 0, 0);
+    glaCoord r = INDICATOR_RADIUS * f;
+    glaCoord x = r * .5;
+    glaCoord y = r * -.866025404;
 
-    DrawTriangle(col_LIGHT_GREY, col1, p2, p1, pc);
-    DrawTriangle(col_LIGHT_GREY, col2, p3, p1, pc);
+    BeginTriangles();
+    SetColour(col1);
+    PlaceIndicatorVertex(x, y);
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, 0);
+    SetColour(col2);
+    PlaceIndicatorVertex(-x, y);
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, 0);
+    EndTriangles();
+    BeginPolyline();
+    glBegin(GL_LINE_STRIP);
+    PlaceIndicatorVertex(0, 0);
+    PlaceIndicatorVertex(x, y);
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, 0);
+    PlaceIndicatorVertex(-x, y);
+    PlaceIndicatorVertex(0, r);
+    EndPolyline();
 }
 
 void GfxCore::DrawCompass() {
@@ -735,10 +751,11 @@ void GfxCore::DrawClinoBack() {
 	DrawTick(angle);
     }
 
-    SetColour(col_GREY);
-    auto r = INDICATOR_RADIUS * GetContentScaleFactor();
+    SetColour(col_RED);
+    glaCoord r = INDICATOR_RADIUS * GetContentScaleFactor();
     PlaceIndicatorVertex(0, r);
     PlaceIndicatorVertex(0, -r);
+    SetColour(col_GREY);
     PlaceIndicatorVertex(0, 0);
     PlaceIndicatorVertex(r, 0);
 

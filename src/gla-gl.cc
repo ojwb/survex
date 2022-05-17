@@ -1577,28 +1577,6 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
     CHECK_GL_ERROR("DrawSemicircle", "glPopMatrix");
 }
 
-void
-GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill,
-			const Vector3 &p0, const Vector3 &p1, const Vector3 &p2)
-{
-    // Draw a filled triangle with an edge.
-
-    SetColour(fill);
-    BeginTriangles();
-    PlaceIndicatorVertex(p0.GetX(), p0.GetY());
-    PlaceIndicatorVertex(p1.GetX(), p1.GetY());
-    PlaceIndicatorVertex(p2.GetX(), p2.GetY());
-    EndTriangles();
-
-    SetColour(edge);
-    glBegin(GL_LINE_STRIP);
-    PlaceIndicatorVertex(p0.GetX(), p0.GetY());
-    PlaceIndicatorVertex(p1.GetX(), p1.GetY());
-    PlaceIndicatorVertex(p2.GetX(), p2.GetY());
-    glEnd();
-    CHECK_GL_ERROR("DrawTriangle", "glEnd GL_LINE_STRIP");
-}
-
 void GLACanvas::EnableDashedLines()
 {
     // Enable dashed lines, and start drawing in them.
