@@ -1,6 +1,4 @@
-up to: 49a4c8a2143200be16f31cb51e1ec23034f3cfba
-
-Changes in 1.4.3 (2022-05-??):
+Changes in 1.4.3 (2022-05-17):
 
 * aven: Much improved support for HiDPI monitors on all platforms.
 
@@ -21,6 +19,8 @@ Changes in 1.4.3 (2022-05-??):
 
 * (MacOS version): aven: Fix hang on startup without a file.  Fixes #120,
   reported by Enrico Fratnik.
+
+* (Microsoft Windows version): Now using wxWidgets 3.1.6 (was 3.0.5).
 
 * img library: Support reproducible builds which create .3d files by not
   embedding a timestamp if environment variable SOURCE_DATE_EPOCH is set.
