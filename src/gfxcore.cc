@@ -751,11 +751,10 @@ void GfxCore::DrawClinoBack() {
 	DrawTick(angle);
     }
 
-    SetColour(col_RED);
+    SetColour(col_GREY);
     glaCoord r = INDICATOR_RADIUS * GetContentScaleFactor();
     PlaceIndicatorVertex(0, r);
     PlaceIndicatorVertex(0, -r);
-    SetColour(col_GREY);
     PlaceIndicatorVertex(0, 0);
     PlaceIndicatorVertex(r, 0);
 
