@@ -90,9 +90,17 @@ Then I configure, build and install with:
 </p>
 
 <pre>
-./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --enable-display --disable-shared host_alias=i686-w64-mingw32
+./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --without-libtiff --enable-display --disable-shared host_alias=i686-w64-mingw32 DOCBOOK_TO_MAN="xmlto man --skip-validation"
 make
 sudo make install
+</pre>
+
+<p>With wxWidgets 3.1.6, there's a linking problem with aven if libtiff isn't
+disabled, and Survex doesn't use it so it's simplest to just disable it:
+</p>
+
+<pre>
+/usr/bin/i686-w64-mingw32-ld: /usr/i686-w64-mingw32/lib/libwxtiff-3.1-i686-w64-mingw32.a(wxtiff_tif_dirinfo.o):tif_dirinfo.c:(.text+0x80d): undefined reference to `_TIFF_snprintf_f'
 </pre>
 
 <p>
