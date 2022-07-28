@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001,2002,2006,2011,2012,2013,2014,2015,2018 Olly Betts
+/* Copyright (C) 2001-2022 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,12 +37,13 @@ static const struct option long_opts[] = {
    {"survey", required_argument, 0, 's'},
    {"rewind", no_argument, 0, 'r'},
    {"show-dates", no_argument, 0, 'd'},
+   {"legs", no_argument, 0, 'l'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "rds:"
+#define short_opts "rdls:"
 
 static struct help_msg help[] = {
 /*				<-- */
@@ -50,6 +51,7 @@ static struct help_msg help[] = {
    /* TRANSLATORS: --help output for dump3d --rewind option */
    {HLP_ENCODELONG(1),	      /*rewind file and read it a second time*/204, 0},
    {HLP_ENCODELONG(2),	      /*show survey date information (if present)*/396, 0},
+   {HLP_ENCODELONG(3),	      /*convert MOVE and LINE into LEG*/486, 0},
    {0, 0, 0}
 };
 
@@ -59,10 +61,12 @@ main(int argc, char **argv)
    char *fnm;
    img *pimg;
    img_point pt;
+   img_point from = { 0.0, 0.0, 0.0 };
    int code;
    const char *survey = NULL;
    bool fRewind = fFalse;
    bool show_dates = fFalse;
+   bool make_legs = fFalse;
 
    msg_init(argv);
 
@@ -73,6 +77,7 @@ main(int argc, char **argv)
       if (opt == 's') survey = optarg;
       if (opt == 'r') fRewind = fTrue;
       if (opt == 'd') show_dates = fTrue;
+      if (opt == 'l') make_legs = fTrue;
    }
    fnm = argv[optind];
 
@@ -102,10 +107,22 @@ main(int argc, char **argv)
 	 code = img_read_item(pimg, &pt);
 	 switch (code) {
 	  case img_MOVE:
-	    printf("MOVE %.2f %.2f %.2f\n", pt.x, pt.y, pt.z);
+	    if (make_legs) {
+	       from = pt;
+	    } else {
+	       printf("MOVE %.2f %.2f %.2f\n", pt.x, pt.y, pt.z);
+	    }
 	    break;
 	  case img_LINE:
-	    printf("LINE %.2f %.2f %.2f [%s]", pt.x, pt.y, pt.z, pimg->label);
+	    if (make_legs) {
+	       printf("LEG %.2f %.2f %.2f %.2f %.2f %.2f [%s]",
+		      from.x, from.y, from.z,
+		      pt.x, pt.y, pt.z, pimg->label);
+	       from = pt;
+	    } else {
+	       printf("LINE %.2f %.2f %.2f [%s]",
+		      pt.x, pt.y, pt.z, pimg->label);
+	    }
 	    switch (pimg->style) {
 		case img_STYLE_UNKNOWN:
 		    break;

@@ -15,6 +15,7 @@
 <arg choice="opt">--survey=SURVEY</arg>
 <arg choice="opt">--rewind</arg>
 <arg choice="opt">--show-dates</arg>
+<arg choice="opt">--legs</arg>
 <arg choice="req">PROCESSED_SURVEY_DATA_FILE</arg>
 </cmdsynopsis>
 </refsynopsisdiv>
