@@ -1,3 +1,9 @@
+survex (1.4.3-2) unstable; urgency=medium
+
+  * debian/control: Switch to use wxwidgets3.2.
+
+ -- Olly Betts <olly@survex.com>  Mon, 12 Sep 2022 10:10:05 +1200
+
 survex (1.4.3-1) unstable; urgency=medium
 
   * New upstream release.
