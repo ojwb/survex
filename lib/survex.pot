@@ -3318,6 +3318,11 @@ msgstr ""
 msgid "station marker size (default %s)"
 msgstr ""
 
+#: ../src/survexport.cc:159
+#: n:487
+msgid "produce Survex 3d output"
+msgstr ""
+
 #: ../src/survexport.cc:155
 #: n:102
 msgid "produce CSV output"

@@ -30,6 +30,7 @@ class SurveyFilter;
 
 // Order here needs to match order of extension array in export.cc.
 typedef enum {
+    FMT_3D,
     FMT_CSV,
     FMT_DXF,
     FMT_EPS,

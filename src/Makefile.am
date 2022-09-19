@@ -6,10 +6,10 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  netbits.h netskel.h network.h osalloc.h\
  osdepend.h ostypes.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h gllogerror.h guicontrol.h gla.h gpx.h moviemaker.h\
- exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h gfxcore.h\
- json.h log.h mainfrm.h pos.h vector3.h wx.h aventypes.h aventreectrl.h\
- export.h model.h printing.h avenprcore.h img2aven.h thgeomag.h\
- thgeomagdata.h moviemaker-legacy.cc
+ export3d.h exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h\
+ gfxcore.h json.h log.h mainfrm.h pos.h vector3.h wx.h aventypes.h\
+ aventreectrl.h export.h model.h printing.h avenprcore.h img2aven.h\
+ thgeomag.h thgeomagdata.h moviemaker-legacy.cc
 
 LDADD = $(LIBOBJS)
 
@@ -36,7 +36,7 @@ cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
 cavern_LDADD = $(PROJ_LIBS)
 
 aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
- namecompare.cc aventreectrl.cc export.cc guicontrol.cc gla-gl.cc \
+ namecompare.cc aventreectrl.cc export.cc export3d.cc guicontrol.cc gla-gl.cc \
  glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
  cavernlog.cc avenprcore.cc printing.cc buttontaghandler.cc pos.cc \
  date.c img_hosted.c useful.c hash.c \
@@ -79,8 +79,8 @@ sorterr_SOURCES = sorterr.c $(COMMONSRC)
 extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
-survexport_SOURCES = survexport.cc model.cc export.cc namecompare.cc \
-		useful.c hash.c img_hosted.c \
+survexport_SOURCES = survexport.cc model.cc export.cc export3d.cc \
+		namecompare.cc useful.c hash.c img_hosted.c \
 		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c

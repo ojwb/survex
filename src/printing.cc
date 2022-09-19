@@ -267,6 +267,7 @@ static wxString scales[] = {
 // The order of these arrays must match export_format in export.h.
 
 static wxString formats[] = {
+    wxT("Survex 3d"),
     wxT("CSV"),
     wxT("DXF"),
     wxT("EPS"),

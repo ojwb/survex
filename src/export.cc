@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2004,2005,2006,2008,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
+/* Copyright (C) 1994-2022 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -28,6 +28,7 @@
 
 #include "wx.h"
 #include <wx/utils.h>
+#include "export3d.h"
 #include "exportfilter.h"
 #include "gpx.h"
 #include "hpgl.h"
@@ -69,6 +70,9 @@
 // Order here needs to match order of export_format enum in export.h.
 
 const format_info export_format_info[] = {
+    { ".3d", /*Survex 3d files*/207,
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS, /* FIXME: expand... */
+      LABELS|LEGS|SURF|SPLAYS|ENTS|FIXES|EXPORTS },
     { ".csv", /*CSV files*/101,
       LABELS|ENTS|FIXES|EXPORTS,
       LABELS },
@@ -1361,6 +1365,11 @@ Export(const wxString &fnm_out, const wxString &title,
    bool need_bounds = true;
    ExportFilter * filt;
    switch (format) {
+       case FMT_3D:
+	   filt = new Export3D(model.GetSeparator());
+	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
+	   break;
        case FMT_CSV:
 	   filt = new POS(model.GetSeparator(), true);
 	   show_mask |= FULL_COORDS;
