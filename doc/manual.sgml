@@ -1162,13 +1162,43 @@ Without an explicit calibration the zero error is 0.0 and the scale factor is
 </Para>
 
 <Para>
-&lt;quantity&gt; is one of TAPE|COMPASS|CLINO|COUNTER|DEPTH|DECLINATION|X|Y|Z
+&lt;quantity list&gt; is one or more of:
 </Para>
 
+<informaltable frame="all">
+<tgroup cols="2">
+<thead>
+<row><entry>Quantity</entry><entry>Aliases</entry></row>
+</thead>
+<tbody>
+<row><entry>LENGTH</entry><entry>TAPE</entry></row>
+<row><entry>BEARING</entry><entry>COMPASS</entry></row>
+<row><entry>GRADIENT</entry><entry>CLINO</entry></row>
+<row><entry>BACKLENGTH</entry><entry>BACKTAPE</entry></row>
+<row><entry>BACKBEARING</entry><entry>BACKCOMPASS</entry></row>
+<row><entry>BACKGRADIENT</entry><entry>BACKCLINO</entry></row>
+<row><entry>COUNT</entry><entry>COUNTER</entry></row>
+<row><entry>LEFT</entry><entry></entry></row>
+<row><entry>RIGHT</entry><entry></entry></row>
+<row><entry>UP</entry><entry>CEILING</entry></row>
+<row><entry>DOWN</entry><entry>FLOOR</entry></row>
+<row><entry>DEPTH</entry><entry></entry></row>
+<row><entry>DECLINATION</entry><entry></entry></row>
+<row><entry>EASTING</entry><entry>DX</entry></row>
+<row><entry>NORTHING</entry><entry>DY</entry></row>
+<row><entry>ALTITUDE</entry><entry>DZ</entry></row>
+<row><entry>DECLINATION</entry><entry></entry></row>
+</tbody>
+</tgroup>
+</informaltable>
+
 <Para>
-Several quantities can be given in &lt;quantity list&gt; - the specified
-calibration will be applied to each of them.
+The specified calibration is applied to each quantity in the list, which
+is handy if you use the same instrument to measure several things, for
+example:
 </Para>
+
+<programlisting>*calibrate left right up down +0.1</programlisting>
 
 <Para>
 You need to be careful about the sign of the ZeroError.  Survex follows
