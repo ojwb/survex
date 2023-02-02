@@ -190,7 +190,9 @@ void AvenTreeCtrl::FillTree(const wxString& root_name)
 		next_dot = prefix.find(separator, prev_dot + 1);
 
 		wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
-		assert(!bit.empty());
+		// Sigh, therion can produce files with empty components in
+		// station names!
+		// assert(!bit.empty());
 
 		// Add the current tree ID to the stack.
 		previous_ids.push(current_id);
@@ -246,7 +248,9 @@ void AvenTreeCtrl::FillTree(const wxString& root_name)
 		    next_dot = prefix.find(separator, prev_dot + 1);
 
 		    wxString bit = prefix.substr(prev_dot, next_dot - prev_dot);
-		    assert(!bit.empty());
+		    // Sigh, therion can produce files with empty components in
+		    // station names!
+		    // assert(!bit.empty());
 
 		    // Add the current tree ID to the stack.
 		    previous_ids.push(current_id);
@@ -262,7 +266,9 @@ void AvenTreeCtrl::FillTree(const wxString& root_name)
 
 	// Now add the leaf.
 	wxString bit = label->GetText().AfterLast(separator);
-	assert(!bit.empty());
+	// Sigh, therion can produce files with empty components in station
+	// names!
+	// assert(!bit.empty());
 	wxTreeItemId id = AppendItem(current_id, bit);
 	SetItemData(id, new TreeData(label));
 	label->tree_id = id;
