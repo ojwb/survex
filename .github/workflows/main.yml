@@ -213,15 +213,15 @@ jobs:
         printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
-  macos10-15:
-    runs-on: 'macos-10.15'
+  macos11:
+    runs-on: 'macos-11'
     steps:
     - name: Check out repository code
       uses: actions/checkout@v2
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: macos10-15
+        key: macos11
     - name: Install package dependencies
       run: |
         brew update
