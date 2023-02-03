@@ -81,6 +81,7 @@ class svxPrintDlg : public wxDialog {
 	void OnElevationUpdate(wxUpdateUIEvent& e);
 	void OnChangeSpin(wxSpinDoubleEvent& event);
 	void OnChange(wxCommandEvent& event);
+	void OnChangeScale(wxCommandEvent& event);
 	void OnCancel(wxCommandEvent& event);
  private:
 	DECLARE_EVENT_TABLE()

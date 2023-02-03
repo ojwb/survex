@@ -224,8 +224,8 @@ class svxPrintout : public wxPrintout {
 
 BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_CHOICE(svx_FORMAT, svxPrintDlg::OnChange)
-    EVT_TEXT(svx_SCALE, svxPrintDlg::OnChange)
-    EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
+    EVT_TEXT(svx_SCALE, svxPrintDlg::OnChangeScale)
+    EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChangeScale)
     EVT_SPINCTRLDOUBLE(svx_BEARING, svxPrintDlg::OnChangeSpin)
     EVT_SPINCTRLDOUBLE(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(wxID_PRINT, svxPrintDlg::OnPrint)
@@ -261,7 +261,8 @@ static wxString scales[] = {
     wxT("10000"),
     wxT("25000"),
     wxT("50000"),
-    wxT("100000")
+    wxT("100000"),
+    wxT("...")
 };
 
 // The order of these arrays must match export_format in export.h.
@@ -284,7 +285,7 @@ static wxString formats[] = {
 static_assert(sizeof(formats) == FMT_MAX_PLUS_ONE_ * sizeof(formats[0]),
 	      "formats[] matches enum export_format");
 
-// We discriminate as "One Page" isn't valid for exporting.
+// We discriminate as "One page" isn't valid for exporting.
 static wxString default_scale_print;
 static wxString default_scale_export;
 
@@ -736,10 +737,19 @@ svxPrintDlg::OnChangeSpin(wxSpinDoubleEvent& e) {
 
 void
 svxPrintDlg::OnChange(wxCommandEvent& e) {
-    if (e.GetId() == svx_SCALE && m_scale) {
-	default_scale_print = m_scale->GetValue();
+    SomethingChanged(e.GetId());
+}
+
+void
+svxPrintDlg::OnChangeScale(wxCommandEvent& e) {
+    wxString value = m_scale->GetValue();
+    if (value == "...") {
+	m_scale->SetValue("");
+	m_scale->SetFocus();
+    } else {
+	default_scale_print = value;
 	if (default_scale_print != scales[0]) {
-	    // Don't store "One Page" for use when exporting.
+	    // Don't store "One page" for use when exporting.
 	    default_scale_export = default_scale_print;
 	}
     }
