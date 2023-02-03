@@ -1,3 +1,12 @@
+survex (1.4.4-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Drop cherry-picked patch: fix-clino-red-line.patch
+    + Drop cherry-picked patch: fix-cavern-tst.patch
+  * debian/control: Mark conformance with policy 4.6.2.
+
+ -- Olly Betts <olly@survex.com>  Fri, 03 Feb 2023 16:02:13 +1300
+
 survex (1.4.3-2) unstable; urgency=medium
 
   * debian/control: Switch to use wxwidgets3.2.
