@@ -1,3 +1,45 @@
+Changes in 1.4.4 (2023-02-03):
+
+* aven: Fix red line in clino background to be grey (this was introduced in
+  1.4.3 and was a debugging change accidentally left in).
+
+* aven: Accept weird .3d files from Therion which have empty components in
+  station names.  That's not really valid by Survex's definition of station
+  names, but it's not very helpful to reject such files, so just disable the
+  checks that were rejecting this.
+
+  The result is empty entries in the survey tree, but I don't see what we can
+  really do that's better than that.
+
+  Reported by Vasily Vl. Suhachev.
+
+* aven: Make it more obvious you can enter a custom scale by adding a "..."
+  entry to the scale combobox - selecting this clears the value and gives focus
+  to the combo box text entry. This control has always supported clicking to
+  enter a custom scale, but there wasn't really any indication that this was
+  possible before.  Partly addresses #132, reported by Eric C. Landgraf.
+
+* aven: Force export window to resize when the export format is changed as
+  different controls are shown depending on the export format.
+
+* aven: Right-align tilt spin control value in print/export dialog to match the
+  bearing spin control.
+
+* aven,survexport: Add ability to export as Survex 3d which is useful as you
+  can filter to a subset of surveys, filter out splays, convert from other
+  formats the img library can read, etc.  This feature is a bit rough and ready
+  currently but please report issues.
+
+* dump3d: Add --legs option which converts MOVE and LINE to a single LEG line
+  per leg with the from and to coordinates.  Tools which parse dump3d output
+  should find this easier to process as it avoids having to track a "current
+  position".
+
+* Update manual to have a complete list of quantities which *calibrate accepts.
+  Reported by echarlie
+
+* cavern.tst: Fix testsuite to work with SOURCE_DATE_EPOCH set.
+
 Changes in 1.4.3 (2022-05-17):
 
 * aven: Much improved support for HiDPI monitors on all platforms.
