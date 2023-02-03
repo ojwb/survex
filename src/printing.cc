@@ -441,7 +441,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	/* TRANSLATORS: Used in the print dialog: */
 	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-	m_tilt = new wxSpinCtrlDouble(this, svx_TILT);
+	m_tilt = new wxSpinCtrlDouble(this, svx_TILT, wxEmptyString,
+		wxDefaultPosition, wxDefaultSize,
+		wxSP_ARROW_KEYS|wxALIGN_RIGHT);
 	m_tilt->SetRange(-90.0, 90.0);
 	m_tilt->SetDigits(ANGLE_DP);
 	anglebox->Add(m_tilt, 0, wxALIGN_CENTRE|wxALL, 5);
