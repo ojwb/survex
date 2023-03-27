@@ -795,7 +795,7 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	    m_viewbox->Show(bool(mask & ORIENTABLE));
 	    GetSizer()->Layout();
 	    // Force the window to resize to match the updated layout.
-	    SetSizerAndFit(GetSizer());
+	    if (control_id) SetSizerAndFit(GetSizer());
 	    if (control_id == svx_FORMAT) {
 		wxConfigBase * cfg = wxConfigBase::Get();
 		cfg->Write(wxT("export_format"), formats[new_filter_idx]);
