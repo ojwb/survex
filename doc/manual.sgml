@@ -4143,21 +4143,44 @@ it'll work!
 One point to note (this tripped us up!): station names in DAT files are
 case sensitive and so Survex reads DAT files with the equivalent of
 <command>*case preserve</command>.  The default in SVX files is
-<command>*case lower</command>.  So this won't work:
+<command>*case lower</command>.  So this won't work
 
 <programlisting>
 *fix CE1 0 0 0
 *include datfilewhichusesCE1.dat</programlisting>
 
-Because the CE1 in the *fix is actually interpreted as ce1.  This is
-what you have to do:
+because the CE1 in the *fix is actually interpreted as ce1.  The solution
+is to turn on preserving of case while you fix the point like so:
 
 <programlisting>
 *begin
 *case preserve
 *fix CE1 0 0 0
+*end
+*include datfilewhichusesCE1.dat</programlisting>
+
+If you want to be able to refer to the fixed point from Survex data too
+then you can add in a *equate to achieve that:
+
+<programlisting>
+*begin
+*case preserve
+*fix CE1 0 0 0
+*equate CE1 ce1
+*end
 *include datfilewhichusesCE1.dat
-*end</programlisting>
+*include svxfilewhichusesce1.svx</programlisting>
+
+Or if you're just wanting to link a Compass survey to a Survex one, you
+can use a *equate with *case preserve on:
+
+<programlisting>
+*begin
+*case preserve
+*equate CE1 ce1
+*end
+*include datfilewhichusesCE1.dat
+*include svxfilewhichusesce1.svx</programlisting>
 </Para>
 
 </Sect1>
