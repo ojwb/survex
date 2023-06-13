@@ -1385,6 +1385,8 @@ void GLACanvas::BeginCrosses()
 {
     // Plot crosses.
     if (cross_method == SPRITE) {
+	list_flags |= NEVER_CACHE;
+	SetDataTransform();
 	glPushAttrib(GL_ENABLE_BIT|GL_POINT_BIT);
 	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
