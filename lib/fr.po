@@ -426,7 +426,7 @@ msgstr "La date de topographie n'est pas spécifiée - utilise 0 pour la déclin
 #: n:484
 #, c-format
 msgid "Declination: %s, grid convergence: %.1f%s"
-msgstr ""
+msgstr "Déclinaison : %s, convergence méridienne : %.1f%s"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
