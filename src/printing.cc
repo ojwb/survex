@@ -742,6 +742,8 @@ svxPrintDlg::OnChange(wxCommandEvent& e) {
 
 void
 svxPrintDlg::OnChangeScale(wxCommandEvent& e) {
+    // Seems to be needed on macOS.
+    if (!m_scale) return;
     wxString value = m_scale->GetValue();
     if (value == "...") {
 	m_scale->SetValue("");
