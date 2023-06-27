@@ -574,8 +574,8 @@ msgstr "Commande FIX sans coordonnées - fixée à (0,0,0)"
 msgid "Station already fixed at the same coordinates"
 msgstr "Station déjà fixée aux même coordonnées"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX command with
-#. no coordinates - fixing at (0,0,0)" warnings.
+#. TRANSLATORS: Emitted after second and subsequent "FIX" command
+#. with no coordinates.
 #: ../src/commands.c:871
 #: n:441
 #, c-format
@@ -3268,6 +3268,11 @@ msgstr "rembobiner le fichier et le lire une seconde fois"
 msgid "show survey date information (if present)"
 msgstr "afficher la date de la topographie (si présente)"
 
+#: ../src/dump3d.c:54
+#: n:486
+msgid "convert MOVE and LINE into LEG"
+msgstr ""
+
 #: ../src/gfxcore.cc:3043
 #: ../src/gpx.cc:71
 #: ../src/kml.cc:70
@@ -3310,6 +3315,11 @@ msgstr "hauteur du texte dans les étiquettes station (%s par défaut)"
 #, c-format
 msgid "station marker size (default %s)"
 msgstr "taille des marqueurs station (%s par défaut)"
+
+#: ../src/survexport.cc:159
+#: n:487
+msgid "produce Survex 3d output"
+msgstr "produire une sortie 3d Survex"
 
 #: ../src/survexport.cc:155
 #: n:102

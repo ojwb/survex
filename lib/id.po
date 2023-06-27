@@ -574,8 +574,8 @@ msgstr "Perintah FIX tanpa koordinat - menetapkan pada (0,0,0)"
 msgid "Station already fixed at the same coordinates"
 msgstr "Stasiun yang sudah ditetapkan pada koordinat yang sama"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX command with
-#. no coordinates - fixing at (0,0,0)" warnings.
+#. TRANSLATORS: Emitted after second and subsequent "FIX" command
+#. with no coordinates.
 #: ../src/commands.c:871
 #: n:441
 #, c-format
@@ -3269,6 +3269,11 @@ msgstr "memutar mundur berkas dan membacanya untuk kedua kalinya"
 msgid "show survey date information (if present)"
 msgstr "Menampilkan informasi tanggal survei (jika ada)"
 
+#: ../src/dump3d.c:54
+#: n:486
+msgid "convert MOVE and LINE into LEG"
+msgstr ""
+
 #: ../src/gfxcore.cc:3043
 #: ../src/gpx.cc:71
 #: ../src/kml.cc:70
@@ -3311,6 +3316,11 @@ msgstr "station labels text height (baku %s)"
 #, c-format
 msgid "station marker size (default %s)"
 msgstr "Ukuran penanda stasiun (baku %s)"
+
+#: ../src/survexport.cc:159
+#: n:487
+msgid "produce Survex 3d output"
+msgstr "menghasilkan keluaran Survex 3d"
 
 #: ../src/survexport.cc:155
 #: n:102

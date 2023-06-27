@@ -574,8 +574,8 @@ msgstr "FIX命令没有坐标—固定在 (0,0,0)"
 msgid "Station already fixed at the same coordinates"
 msgstr "站已经固定在同一坐标"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX command with
-#. no coordinates - fixing at (0,0,0)" warnings.
+#. TRANSLATORS: Emitted after second and subsequent "FIX" command
+#. with no coordinates.
 #: ../src/commands.c:871
 #: n:441
 #, c-format
@@ -3269,6 +3269,11 @@ msgstr ""
 msgid "show survey date information (if present)"
 msgstr ""
 
+#: ../src/dump3d.c:54
+#: n:486
+msgid "convert MOVE and LINE into LEG"
+msgstr ""
+
 #: ../src/gfxcore.cc:3043
 #: ../src/gpx.cc:71
 #: ../src/kml.cc:70
@@ -3310,6 +3315,11 @@ msgstr ""
 #: n:152
 #, c-format
 msgid "station marker size (default %s)"
+msgstr ""
+
+#: ../src/survexport.cc:159
+#: n:487
+msgid "produce Survex 3d output"
 msgstr ""
 
 #: ../src/survexport.cc:155

@@ -574,8 +574,8 @@ msgstr "Команда FIX без указания координат - выпо
 msgid "Station already fixed at the same coordinates"
 msgstr "Пикет с таким именем уже зафиксирован с такими же координатами"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX command with
-#. no coordinates - fixing at (0,0,0)" warnings.
+#. TRANSLATORS: Emitted after second and subsequent "FIX" command
+#. with no coordinates.
 #: ../src/commands.c:871
 #: n:441
 #, c-format
@@ -3268,6 +3268,11 @@ msgstr "повторно перечитать файл"
 msgid "show survey date information (if present)"
 msgstr "отображать информацию о датах топо-съемок (если она присутствует)"
 
+#: ../src/dump3d.c:54
+#: n:486
+msgid "convert MOVE and LINE into LEG"
+msgstr ""
+
 #: ../src/gfxcore.cc:3043
 #: ../src/gpx.cc:71
 #: ../src/kml.cc:70
@@ -3310,6 +3315,11 @@ msgstr "высота текста для подписей имен пикето�
 #, c-format
 msgid "station marker size (default %s)"
 msgstr "размер значка пикета (по умолчанию %s)"
+
+#: ../src/survexport.cc:159
+#: n:487
+msgid "produce Survex 3d output"
+msgstr "создавать Survex 3d"
 
 #: ../src/survexport.cc:155
 #: n:102
