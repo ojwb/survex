@@ -1,11 +1,9 @@
-up to: 3eee2e595ae5706d15395a735b1f4e6a50126594
-
-Changes in 1.4.5 (2023-0?-??):
+Changes in 1.4.5 (2023-06-29):
 
 * aven: Fix rendering of crosses when drawn as sprites.  Reported by echarlie.
 
 * (macOS version): aven: Fix crash in export dialog.  Fixes #133, reported by
-  rixyane.
+  rixyane.  Thanks to Wookey for testing.
 
 * manual: Expand docs on connecting to Compass data.
 
