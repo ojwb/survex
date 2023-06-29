@@ -1,0 +1,113 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push, or for pull requests against master
+  push:
+    paths-ignore:
+      - NEWS
+  pull_request:
+    branches: [ RELEASE/1.2 ]
+    paths-ignore:
+      - NEWS
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: 'ubuntu-20.04'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: linux
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            gettext \
+            libwxgtk3.0-gtk3-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libproj-dev \
+            libswscale-dev \
+            mesa-common-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            ghostscript \
+            netpbm \
+            x11proto-core-dev \
+            liblocale-po-perl \
+            unifont \
+            docbook \
+            docbook-utils \
+            w3m
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+
+  valgrind:
+    runs-on: 'ubuntu-20.04'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: valgrind
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            gettext \
+            libwxgtk3.0-gtk3-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libproj-dev \
+            libswscale-dev \
+            mesa-common-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            ghostscript \
+            netpbm \
+            x11proto-core-dev \
+            liblocale-po-perl \
+            unifont \
+            docbook \
+            docbook-utils \
+            w3m
+        sudo apt-get install valgrind
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: VALGRIND=valgrind make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
