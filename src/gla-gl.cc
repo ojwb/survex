@@ -395,7 +395,7 @@ bool GLAList::DrawList() const {
 
 BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
     EVT_SIZE(GLACanvas::OnSize)
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
     EVT_MOVE(GLACanvas::OnMove)
 #endif
 END_EVENT_TABLE()
@@ -436,7 +436,7 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
     content_scale_factor = wxGLCanvas::GetContentScaleFactor();
 #endif
 
@@ -656,7 +656,7 @@ void GLACanvas::SetScale(Double scale)
     }
 }
 
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
 void GLACanvas::UpdateContentScaleFactor()
 {
     double new_content_scale_factor = wxGLCanvas::GetContentScaleFactor();
