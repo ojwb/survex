@@ -26,15 +26,21 @@ suffix on the development one.  You'll need both to build Survex.
   also the OpenGL development libraries if these aren't pulled in by installing
   wxWidgets.
 
+* autoconf and automake are required to generate the build system files.
+
 * Version 7.2.0 or later of the PROJ library is needed for coordinate
   conversion functionality.
 
 * Optionally, FFMPEG is used if available to implement Aven's movie export
   feature.  If not available this feature is disabled.
 
+* For a more detailed list of build dependencies, see the file
+  'doc/HACKING.htm' or visit https://survex.com/cvs.html.
+
 Then at a shell prompt, unpack the source code, cd into the directory, and
 enter the following commands:
 
+autoreconf -i
 ./configure
 make
 make install
