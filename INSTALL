@@ -5,9 +5,15 @@ If you are using Debian Linux or Ubuntu Linux or a distribution based
 on one of these, you will find it easier to install one of the
 prepackaged versions of Survex.
 
-Otherwise you'll need to build from source.  First of all, you need to make
-sure you have the required libraries installed.  Where possible it's usually
-easier to install these using your Linux distribution's package manager.
+Otherwise you'll need to build from source.  These instructions assume you're
+building from released tar archive - if you want to build from by checking out
+code from the git repository then you'll need additional tools installed,
+documented at: https://survex.com/cvs.html
+
+First of all, you need to make sure you have the required libraries installed.
+Where possible it's usually easier to install these using your Linux
+distribution's package manager.
+
 Note that C/C++ library packages are usually split into runtime and
 development, usually with similar names but with a -dev or -devel or similar
 suffix on the development one.  You'll need both to build Survex.
