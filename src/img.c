@@ -2343,18 +2343,13 @@ write_coord(FILE *fh, double x, double y, double z)
 {
    SVX_ASSERT(fh);
    /* Output in cm */
-   static INT32_T X_, Y_, Z_;
    INT32_T X = my_lround(x * 100.0);
    INT32_T Y = my_lround(y * 100.0);
    INT32_T Z = my_lround(z * 100.0);
 
-   X_ -= X;
-   Y_ -= Y;
-   Z_ -= Z;
    put32(X, fh);
    put32(Y, fh);
    put32(Z, fh);
-   X_ = X; Y_ = Y; Z_ = Z;
 }
 
 static int

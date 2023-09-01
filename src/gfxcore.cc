@@ -1880,7 +1880,6 @@ void GfxCore::HighlightSurvey()
     double xpy_min = HUGE_VAL, xpy_max = -HUGE_VAL;
     double xmy_min = HUGE_VAL, xmy_max = -HUGE_VAL;
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-    double x_tot = 0, y_tot = 0;
     size_t c = 0;
     while (pos != m_Parent->GetLabelsEnd()) {
 	const LabelInfo* label = *pos++;
@@ -1899,8 +1898,6 @@ void GfxCore::HighlightSurvey()
 	double xmy = x - y;
 	if (xmy < xmy_min) xmy_min = xmy;
 	if (xmy > xmy_max) xmy_max = xmy;
-	x_tot += x;
-	y_tot += y;
 	++c;
     }
     for (int f = 0; f != 8; ++f) {
@@ -1920,8 +1917,6 @@ void GfxCore::HighlightSurvey()
 		double xmy = x - y;
 		if (xmy < xmy_min) xmy_min = xmy;
 		if (xmy > xmy_max) xmy_max = xmy;
-		x_tot += x;
-		y_tot += y;
 		++c;
 	    }
 	    trav = m_Parent->traverses_next(f, &filter, trav);
