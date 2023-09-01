@@ -3107,7 +3107,7 @@ void GfxCore::DrawTerrain()
     const Vector3 & off = m_Parent->GetOffset();
     vector<Vector3> prevcol(dem_height + 1);
     for (size_t x = 0; x < dem_width; ++x) {
-	PJ_COORD coord = {o_x + x * step_x, 0.0, 0.0, HUGE_VAL};
+	PJ_COORD coord{{o_x + x * step_x, 0.0, 0.0, HUGE_VAL}};
 	Vector3 prev;
 	for (size_t y = 0; y < dem_height; ++y) {
 	    unsigned short elev = dem[x + y * dem_width];

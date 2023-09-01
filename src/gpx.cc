@@ -154,7 +154,7 @@ GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 	    fputs("<trkseg>\n", fh);
 	    in_trkseg = true;
 	}
-	PJ_COORD coord = {p1->x, p1->y, p1->z, HUGE_VAL};
+	PJ_COORD coord{{p1->x, p1->y, p1->z, HUGE_VAL}};
 	coord = proj_trans(pj, PJ_FWD, coord);
 	if (coord.xyzt.x == HUGE_VAL ||
 	    coord.xyzt.y == HUGE_VAL ||
@@ -168,7 +168,7 @@ GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 		coord.xyzt.z);
     }
 
-    PJ_COORD coord = {p->x, p->y, p->z, HUGE_VAL};
+    PJ_COORD coord{{p->x, p->y, p->z, HUGE_VAL}};
     coord = proj_trans(pj, PJ_FWD, coord);
     if (coord.xyzt.x == HUGE_VAL ||
 	coord.xyzt.y == HUGE_VAL ||
@@ -185,7 +185,7 @@ GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 void
 GPX::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
 {
-    PJ_COORD coord = {p->x, p->y, p->z, HUGE_VAL};
+    PJ_COORD coord{{p->x, p->y, p->z, HUGE_VAL}};
     coord = proj_trans(pj, PJ_FWD, coord);
     if (coord.xyzt.x == HUGE_VAL ||
 	coord.xyzt.y == HUGE_VAL ||

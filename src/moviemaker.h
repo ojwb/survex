@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2010,2011,2013,2014,2016 Olly Betts
+//  Copyright (C) 2004,2010,2011,2013,2014,2016,2023 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -36,20 +36,28 @@ struct AVFrame;
 struct AVPicture;
 struct SwsContext;
 
+#ifdef WITH_LIBAV
+extern "C" {
+// To get LIBAVCODEC_VERSION_MAJOR defined:
+# include <libavcodec/avcodec.h>
+}
+#endif
+
 class MovieMaker {
 #ifdef WITH_LIBAV
     AVFormatContext *oc;
     AVStream *video_st;
-# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
+# if LIBAVCODEC_VERSION_MAJOR < 57
+#  ifndef HAVE_AVCODEC_ENCODE_VIDEO2
     int out_size; // Legacy-only.
+#  endif
 # endif
     AVCodecContext *context;
     AVFrame *frame;
 # if LIBAVCODEC_VERSION_MAJOR < 57
+#  ifndef HAVE_AVCODEC_ENCODE_VIDEO2
     unsigned char *outbuf; // Legacy-only.
-# endif
-# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    AVPicture *out; // Legacy-only.
+#  endif
 # endif
     unsigned char *pixels;
     SwsContext *sws_ctx;
