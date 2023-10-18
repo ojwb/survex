@@ -3405,8 +3405,9 @@ Survex versions too):
 *units compass grads</programlisting>
 
 If the units are actually mils, you can specify that in terms of degrees.
-For example, for NATO mils (6400 in a full circle) you can use this (which
-also works with older Survex versions):
+For example, for NATO mils (6400 in a full circle) one mil is 360/6400
+degrees, and 360/6400=0.05625 so you can use this (which also works with older
+Survex versions):
 
 <programlisting>
 *units compass 0.05625 degrees</programlisting>
