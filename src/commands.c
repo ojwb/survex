@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2022 Olly Betts
+ * Copyright (C) 1991-2023 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,6 @@
 #include <string.h>
 
 #include <proj.h>
-#if PROJ_VERSION_MAJOR < 8 || \
-    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
-/* Needed for proj_factors workaround */
-# include <proj_experimental.h>
-#endif
 
 #include "cavern.h"
 #include "commands.h"
@@ -769,6 +764,7 @@ pop_settings(void)
 	pcs->max_declination_days = p->max_declination_days;
 	pcs->min_declination = p->min_declination;
 	pcs->max_declination = p->max_declination;
+	pcs->convergence = p->convergence;
     }
 
     if (p->proj_str != pcs->proj_str) {
@@ -1827,80 +1823,8 @@ cmd_declination(void)
 	pcs->dec_context = grab_line();
 	/* Invalidate cached declination. */
 	pcs->declination = HUGE_REAL;
-	{
-	    // PJ_DEFAULT_CTX is really just NULL, but PROJ < 8.1.0
-	    // dereferences the context without a NULL check inside
-	    // proj_create_ellipsoidal_2D_cs() so create a context
-	    // temporarily to avoid a segmentation fault.
-	    PJ_CONTEXT * ctx = PJ_DEFAULT_CTX;
-#if PROJ_VERSION_MAJOR < 8 || \
-    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 1)
-	    ctx = proj_context_create();
-#endif
-
-	    PJ *pj = proj_create(ctx, proj_str_out);
-	    PJ_COORD lp;
-	    lp.lp.lam = lon;
-	    lp.lp.phi = lat;
-#if PROJ_VERSION_MAJOR < 8 || \
-    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
-	    /* Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
-	     * cases we need (e.g. a CRS specified as "EPSG:<number>").
-	     */
-	    switch (proj_get_type(pj)) {
-		case PJ_TYPE_PROJECTED_CRS: {
-		    /* If it is a projected CRS, then compute the factors on the conversion
-		     * associated to it. We need to start from a temporary geographic CRS
-		     * using the same datum as the one of the projected CRS, and with
-		     * input coordinates being in longitude, latitude order in radian,
-		     * to be consistent with the expectations of the lp input parameter.
-		     */
-
-		    PJ * geodetic_crs = proj_get_source_crs(ctx, pj);
-		    if (!geodetic_crs)
-			break;
-		    PJ * datum = proj_crs_get_datum(ctx, geodetic_crs);
-#if PROJ_VERSION_MAJOR == 8 || \
-    (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
-		    /* PROJ 7.2.0 upgraded to EPSG 10.x which added the concept
-		     * of a datum ensemble, and this version of PROJ also added
-		     * an API to deal with these.
-		     *
-		     * If we're using PROJ < 7.2.0 then its EPSG database won't
-		     * have datum ensembles, so we don't need any code to handle
-		     * them.
-		     */
-		    if (!datum) {
-			datum = proj_crs_get_datum_ensemble(ctx, geodetic_crs);
-		    }
-#endif
-		    PJ * cs = proj_create_ellipsoidal_2D_cs(
-			ctx, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Radian", 1.0);
-		    PJ * temp = proj_create_geographic_crs_from_datum(
-			ctx, "unnamed crs", datum, cs);
-		    proj_destroy(datum);
-		    proj_destroy(cs);
-		    proj_destroy(geodetic_crs);
-		    PJ * newOp = proj_create_crs_to_crs_from_pj(ctx, temp, pj, NULL, NULL);
-		    proj_destroy(temp);
-		    if (newOp) {
-			proj_destroy(pj);
-			pj = newOp;
-		    }
-		    break;
-		}
-		default:
-		    break;
-	    }
-#endif
-	    PJ_FACTORS factors = proj_factors(pj, lp);
-	    pcs->convergence = factors.meridian_convergence;
-	    proj_destroy(pj);
-#if PROJ_VERSION_MAJOR < 8 || \
-    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 1)
-	    proj_context_destroy(ctx);
-#endif
-	}
+	/* Invalidate cached grid convergence. */
+	pcs->convergence = HUGE_REAL;
     } else {
 	/* *declination D UNITS */
 	int units = get_units(BIT(Q_DECLINATION), fFalse);

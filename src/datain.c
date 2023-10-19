@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2022 Olly Betts
+ * Copyright (C) 1991-2023 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,6 +39,11 @@
 #include "out.h"
 #include "str.h"
 #include "thgeomag.h"
+#if PROJ_VERSION_MAJOR < 8 || \
+    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
+/* Needed for proj_factors workaround */
+# include <proj_experimental.h>
+#endif
 
 #define EPSILON (REAL_EPSILON * 1000)
 
@@ -1021,6 +1026,105 @@ handle_comp_units(void)
    return fNoComp;
 }
 
+static real compute_convergence(real lon, real lat) {
+    // PROJ < 8.1.0 dereferences the context without a NULL check inside
+    // proj_create_ellipsoidal_2D_cs() but PJ_DEFAULT_CTX is really just
+    // NULL so for affected PROJ versions we create a context temporarily to
+    // avoid a segmentation fault.
+    PJ_CONTEXT * ctx = PJ_DEFAULT_CTX;
+#if PROJ_VERSION_MAJOR < 8 || \
+    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 1)
+    ctx = proj_context_create();
+#endif
+
+    if (!proj_str_out) {
+	compile_diagnostic(DIAG_ERR, /*Output coordinate system not set*/488);
+	return 0.0;
+    }
+    PJ *pj;
+    if (pj_cached && strcmp(proj_str_out, pcs->proj_str) == 0) {
+	/* Output cs is the same as the input cs. */
+	pj = pj_cached;
+    } else {
+	pj = proj_create(ctx, proj_str_out);
+    }
+    PJ_COORD lp;
+    lp.lp.lam = lon;
+    lp.lp.phi = lat;
+#if PROJ_VERSION_MAJOR < 8 || \
+    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
+    /* Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
+     * cases we need (e.g. a CRS specified as "EPSG:<number>").
+     */
+    switch (proj_get_type(pj)) {
+	case PJ_TYPE_PROJECTED_CRS: {
+	    /* If it is a projected CRS, then compute the factors on the conversion
+	     * associated to it. We need to start from a temporary geographic CRS
+	     * using the same datum as the one of the projected CRS, and with
+	     * input coordinates being in longitude, latitude order in radian,
+	     * to be consistent with the expectations of the lp input parameter.
+	     */
+
+	    PJ * geodetic_crs = proj_get_source_crs(ctx, pj);
+	    if (!geodetic_crs)
+		break;
+	    PJ * datum = proj_crs_get_datum(ctx, geodetic_crs);
+#if PROJ_VERSION_MAJOR == 8 || \
+    (PROJ_VERSION_MAJOR == 7 && PROJ_VERSION_MINOR >= 2)
+	    /* PROJ 7.2.0 upgraded to EPSG 10.x which added the concept
+	     * of a datum ensemble, and this version of PROJ also added
+	     * an API to deal with these.
+	     *
+	     * If we're using PROJ < 7.2.0 then its EPSG database won't
+	     * have datum ensembles, so we don't need any code to handle
+	     * them.
+	     */
+	    if (!datum) {
+		datum = proj_crs_get_datum_ensemble(ctx, geodetic_crs);
+	    }
+#endif
+	    PJ * cs = proj_create_ellipsoidal_2D_cs(
+		ctx, PJ_ELLPS2D_LONGITUDE_LATITUDE, "Radian", 1.0);
+	    PJ * temp = proj_create_geographic_crs_from_datum(
+		ctx, "unnamed crs", datum, cs);
+	    proj_destroy(datum);
+	    proj_destroy(cs);
+	    proj_destroy(geodetic_crs);
+	    PJ * newOp = proj_create_crs_to_crs_from_pj(ctx, temp, pj, NULL, NULL);
+	    proj_destroy(temp);
+	    if (newOp) {
+		if (pj != pj_cached) proj_destroy(pj);
+		pj = newOp;
+	    }
+	    break;
+	}
+	default:
+	    break;
+    }
+#endif
+#if PROJ_VERSION_MAJOR < 9 || \
+    (PROJ_VERSION_MAJOR == 9 && PROJ_VERSION_MINOR < 3)
+    if (pj) {
+	/* In PROJ < 9.3.0 proj_factors() returns a grid convergence which is
+	 * off by 90° for a projected coordinate system with northing/easting
+	 * axis order.  We can't copy over the fix for this in PROJ 9.3.0's
+	 * proj_factors() since it uses non-public PROJ functions, but
+	 * normalising the output order here works too.
+	 */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	if (pj != pj_cached) proj_destroy(pj);
+	pj = pj_norm;
+    }
+#endif
+    PJ_FACTORS factors = proj_factors(pj, lp);
+    if (pj != pj_cached) proj_destroy(pj);
+#if PROJ_VERSION_MAJOR < 8 || \
+    (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 1)
+    proj_context_destroy(ctx);
+#endif
+    return factors.meridian_convergence;
+}
+
 static real
 handle_compass(real *p_var)
 {
@@ -1052,6 +1156,13 @@ handle_compass(real *p_var)
 	      pcs->max_declination = declination;
 	      pcs->max_declination_days = avg_days;
 	  }
+      }
+      if (pcs->convergence == HUGE_REAL) {
+	  /* Compute the convergence lazily.  It only depends on the output
+	   * coordinate system so we can cache it for reuse to apply to
+	   * a declination value for a different date.
+	   */
+	  pcs->convergence = compute_convergence(pcs->dec_lon, pcs->dec_lat);
       }
       declination -= pcs->convergence;
       /* We cache the calculated declination as the calculation is relatively

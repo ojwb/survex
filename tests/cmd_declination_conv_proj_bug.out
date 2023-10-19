@@ -1,0 +1,26 @@
+./cmd_declination_conv_proj_bug.svx:9: info: Declination: -3.5dg @ 2005-12-15, grid convergence: 0.8dg
+ *declination auto 97480 72608 225
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =   25.00m (  25.00m adjusted)
+Total plan length of survey legs =   25.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 2 at 225.00m to 2 at 225.00m)
+North-South range = 24.93m (from 2 at 6000582.56m to 1 at 6000557.63m)
+East-West range = 1.87m (from 1 at 562696.24m to 2 at 562694.37m)
+   2 1-nodes.

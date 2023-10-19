@@ -105,6 +105,7 @@ cmd_calibrate.svx cmd_calibrate.out cmd_calibrate.pos\
 cmd_declination.svx cmd_declination.out cmd_declination.pos\
 cmd_declination_auto.svx cmd_declination_auto.out cmd_declination_auto.pos\
 cmd_declination_conv.out cmd_declination_conv.pos cmd_declination_conv.svx\
+cmd_declination_conv_proj_bug.out cmd_declination_conv_proj_bug.pos cmd_declination_conv_proj_bug.svx\
 unconnected-bug.svx unconnected-bug.out\
 eswap.svx eswap.espec eswapx.3d\
 eswap-break.svx eswap-break.espec eswap-breakx.3d\
