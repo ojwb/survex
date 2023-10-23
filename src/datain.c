@@ -1041,13 +1041,7 @@ static real compute_convergence(real lon, real lat) {
 	compile_diagnostic(DIAG_ERR, /*Output coordinate system not set*/488);
 	return 0.0;
     }
-    PJ *pj;
-    if (pj_cached && strcmp(proj_str_out, pcs->proj_str) == 0) {
-	/* Output cs is the same as the input cs. */
-	pj = pj_cached;
-    } else {
-	pj = proj_create(ctx, proj_str_out);
-    }
+    PJ * pj = proj_create(ctx, proj_str_out);
     PJ_COORD lp;
     lp.lp.lam = lon;
     lp.lp.phi = lat;
@@ -1093,7 +1087,7 @@ static real compute_convergence(real lon, real lat) {
 	    PJ * newOp = proj_create_crs_to_crs_from_pj(ctx, temp, pj, NULL, NULL);
 	    proj_destroy(temp);
 	    if (newOp) {
-		if (pj != pj_cached) proj_destroy(pj);
+		proj_destroy(pj);
 		pj = newOp;
 	    }
 	    break;
@@ -1112,12 +1106,12 @@ static real compute_convergence(real lon, real lat) {
 	 * normalising the output order here works too.
 	 */
 	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
-	if (pj != pj_cached) proj_destroy(pj);
+	proj_destroy(pj);
 	pj = pj_norm;
     }
 #endif
     PJ_FACTORS factors = proj_factors(pj, lp);
-    if (pj != pj_cached) proj_destroy(pj);
+    proj_destroy(pj);
 #if PROJ_VERSION_MAJOR < 8 || \
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 1)
     proj_context_destroy(ctx);
