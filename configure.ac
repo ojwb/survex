@@ -224,7 +224,6 @@ AC_CHECK_HEADERS(limits.h string.h setjmp.h sys/select.h)
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
-AC_TYPE_SIGNAL
 
 dnl check if CLOCKS_PER_SEC is defined by time.h (as ANSI says it should be)
 dnl if it isn't, assume it is 1000000, as it is on SunOS 4
