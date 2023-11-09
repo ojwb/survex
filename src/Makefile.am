@@ -48,14 +48,13 @@ aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
  $(COMMONSRC)
 
+aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS) $(LIBAV_LIBS)
+
 if WIN32
-aven_LDADD = avenrc.o $(LIBOBJS) $(LIBAV_LIBS) $(WX_LIBS) $(PROJ_LIBS)
+aven_LDADD += avenrc.o
 
 avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
 	cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir '$(abs_top_builddir)/lib/icons' -o '$(abs_builddir)/avenrc.o' aven.rc
-
-else
-aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS) $(LIBAV_LIBS)
 endif
 
 AM_CFLAGS += $(PROJ_CFLAGS)
