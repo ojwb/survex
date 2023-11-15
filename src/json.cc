@@ -33,7 +33,7 @@ using namespace std;
 const int *
 JSON::passes() const
 {
-    static const int default_passes[] = { LEGS, 0 };
+    static const int default_passes[] = { LEGS|SURF, 0 };
     return default_passes;
 }
 

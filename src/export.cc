@@ -92,10 +92,10 @@ const format_info export_format_info[] = {
       LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".json", /*JSON files*/445,
-      LEGS|SPLAYS|CENTRED,
+      LEGS|SURF|SPLAYS|CENTRED,
       LEGS },
     { ".kml", /*KML files*/444,
-      LABELS|LEGS|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|CLAMP_TO_GROUND,
+      LABELS|LEGS|SURF|SPLAYS|PASG|XSECT|WALLS|ENTS|FIXES|EXPORTS|PROJ|CLAMP_TO_GROUND,
       LABELS|LEGS },
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:
