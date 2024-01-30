@@ -409,6 +409,11 @@ msgstr "A koordináták nem elhagyhatók, ha a koordináta rendszer meghatározo
 msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
 msgstr ""
 
+#: ../src/datain.c:1041
+#: n:488
+msgid "Output coordinate system not set"
+msgstr ""
+
 #: ../src/commands.c:1688
 #: n:309
 msgid "Expected number or “AUTO”"
@@ -579,8 +584,8 @@ msgstr "Rögzítés parancs koordináták nélkül - rögzítés (0,0,0) ban"
 msgid "Station already fixed at the same coordinates"
 msgstr "Már van rögzítve ezeken a koordinátákon állomás"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX" command
-#. with no coordinates.
+#. TRANSLATORS: Emitted after second and subsequent "FIX command with
+#. no coordinates - fixing at (0,0,0)" warnings.
 #: ../src/commands.c:871
 #: n:441
 #, c-format

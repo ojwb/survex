@@ -406,6 +406,11 @@ msgstr "Координаты не могут быть пропущены есл�
 msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
 msgstr "Система координат должна быть определена перед использованием “*DECLINATION AUTO”"
 
+#: ../src/datain.c:1041
+#: n:488
+msgid "Output coordinate system not set"
+msgstr ""
+
 #: ../src/commands.c:1688
 #: n:309
 msgid "Expected number or “AUTO”"
@@ -574,8 +579,8 @@ msgstr "Команда FIX без указания координат - выпо
 msgid "Station already fixed at the same coordinates"
 msgstr "Пикет с таким именем уже зафиксирован с такими же координатами"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX" command
-#. with no coordinates.
+#. TRANSLATORS: Emitted after second and subsequent "FIX command with
+#. no coordinates - fixing at (0,0,0)" warnings.
 #: ../src/commands.c:871
 #: n:441
 #, c-format

@@ -406,6 +406,11 @@ msgstr "指定坐标系后，坐标不能省略"
 msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
 msgstr "必须为“*DECLINATION AUTO”指定输入坐标系"
 
+#: ../src/datain.c:1041
+#: n:488
+msgid "Output coordinate system not set"
+msgstr ""
+
 #: ../src/commands.c:1688
 #: n:309
 msgid "Expected number or “AUTO”"
@@ -574,8 +579,8 @@ msgstr "FIX命令没有坐标—固定在 (0,0,0)"
 msgid "Station already fixed at the same coordinates"
 msgstr "站已经固定在同一坐标"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX" command
-#. with no coordinates.
+#. TRANSLATORS: Emitted after second and subsequent "FIX command with
+#. no coordinates - fixing at (0,0,0)" warnings.
 #: ../src/commands.c:871
 #: n:441
 #, c-format

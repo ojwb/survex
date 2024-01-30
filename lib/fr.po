@@ -406,6 +406,11 @@ msgstr "Les coordonnées ne peut être omises quand le système de coordonnées 
 msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
 msgstr "Le système de coordonnées en entrée doit être spécifié pour « *DECLINATION AUTO »"
 
+#: ../src/datain.c:1041
+#: n:488
+msgid "Output coordinate system not set"
+msgstr ""
+
 #: ../src/commands.c:1688
 #: n:309
 msgid "Expected number or “AUTO”"
@@ -574,8 +579,8 @@ msgstr "Commande FIX sans coordonnées - fixée à (0,0,0)"
 msgid "Station already fixed at the same coordinates"
 msgstr "Station déjà fixée aux même coordonnées"
 
-#. TRANSLATORS: Emitted after second and subsequent "FIX" command
-#. with no coordinates.
+#. TRANSLATORS: Emitted after second and subsequent "FIX command with
+#. no coordinates - fixing at (0,0,0)" warnings.
 #: ../src/commands.c:871
 #: n:441
 #, c-format
