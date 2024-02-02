@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-TESTS = smoke.tst diffpos.tst cavern.tst extend.tst 3dtopos.tst aven.tst imgtest.tst
+TESTS = smoke.tst diffpos.tst cavern.tst extend.tst 3dtopos.tst aven.tst imgtest.tst dump3d.tst
 
 EXTRA_DIST = compare.tst $(TESTS)\
 beginroot.svx beginroot.out\
@@ -143,3 +143,6 @@ kmlexport.kml kmlexport.svx
 EXTRA_DIST +=\
 imgtest_simple.svx\
 imgtest_survey.svx
+
+EXTRA_DIST +=\
+pre1970.plt

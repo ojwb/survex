@@ -2136,6 +2136,58 @@ skip_to_N:
 	       pimg->label = pimg->label_buf;
 	       memcpy(pimg->label, line, len);
 	       pimg->label[len] = '\0';
+	       /* Handle the survey date. */
+	       while (line[len] && line[len] <= 32) ++len;
+	       if (line[len] == 'D') {
+		  struct tm tm;
+		  memset(&tm, 0, sizeof(tm));
+		  unsigned long v;
+		  q = line + len + 1;
+		  /* NB Order is Month Day Year order. */
+		  v = strtoul(q, &q, 10);
+		  if (v < 1 || v > 12)
+		     goto bad_plt_date;
+		  tm.tm_mon = v - 1;
+
+		  v = strtoul(q, &q, 10);
+		  if (v < 1 || v > 31)
+		     goto bad_plt_date;
+		  tm.tm_mday = v;
+
+		  v = strtoul(q, &q, 10);
+		  if (v == ULONG_MAX)
+		     goto bad_plt_date;
+		  if (v < 1900) {
+		     /* "The Year is expected to be the full year like 1994 not
+		      * 94", but "expected to" != "must" so treat a two digit
+		      * year as 19xx.
+		      */
+		     v += 1900;
+		  }
+		  tm.tm_year = v - 1900;
+		  /* We have no indication of what timezone this date is
+		   * in.  It's probably local time for whoever processed the
+		   * data, so just assume noon in UTC, which is at least fairly
+		   * central in the possibilities.
+		   */
+		  tm.tm_hour = 12;
+		  {
+		     time_t datestamp = mktime_with_tz(&tm, "");
+#if IMG_API_VERSION == 0
+		     pimg->date1 = pimg->date2 = datestamp;
+#else /* IMG_API_VERSION == 1 */
+		     pimg->days1 = (datestamp - TIME_T_1900) / SECS_PER_DAY;
+		     pimg->days2 = pimg->days1;
+#endif
+		  }
+	       } else {
+bad_plt_date:
+#if IMG_API_VERSION == 0
+		  pimg->date1 = pimg->date2 = 0;
+#else /* IMG_API_VERSION == 1 */
+		  pimg->days1 = pimg->days2 = -1;
+#endif
+	       }
 	       osfree(line);
 	       break;
 	    case 'M': case 'D': {
