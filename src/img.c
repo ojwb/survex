@@ -2260,8 +2260,11 @@ bad_plt_date:
 		*/
 	       while (*q && *q <= ' ') q++;
 	       if (*q == 'P') {
-		   if (sscanf(q + 1, "%lf%lf%lf%lf",
-			      &pimg->l, &pimg->r, &pimg->u, &pimg->d) != 4) {
+		   int bytes_used;
+		   ++q;
+		   if (sscanf(q, "%lf%lf%lf%lf%n",
+			      &pimg->l, &pimg->r, &pimg->u, &pimg->d,
+			      &bytes_used) != 4) {
 		       osfree(line);
 		       if (ferror(pimg->fh)) {
 			   img_errno = IMG_READERROR;
@@ -2274,11 +2277,21 @@ bad_plt_date:
 		   pimg->r *= METRES_PER_FOOT;
 		   pimg->u *= METRES_PER_FOOT;
 		   pimg->d *= METRES_PER_FOOT;
+		   q += bytes_used;
 	       } else {
 		   pimg->l = pimg->r = pimg->u = pimg->d = -1;
 	       }
-	       osfree(line);
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
+	       while (*q && *q <= ' ') q++;
+	       if (*q == 'I') {
+		   double distance_from_entrance;
+		   if (sscanf(q + 1, "%lf", &distance_from_entrance) == 1 &&
+		       distance_from_entrance == 0.0) {
+		       /* Infer an entrance. */
+		       pimg->flags |= img_SFLAG_ENTRANCE;
+		   }
+	       }
+	       osfree(line);
 	       if (fpos != -1) {
 		  fseek(pimg->fh, fpos, SEEK_SET);
 	       } else {
