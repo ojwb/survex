@@ -1,6 +1,6 @@
 /* img.c
  * Routines for reading and writing Survex ".3d" image files
- * Copyright (C) 1993-2022 Olly Betts
+ * Copyright (C) 1993-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -301,6 +301,15 @@ static img_errcode img_errno = IMG_NONE;
 #define VERSION_CMAP_STATION	-3
 #define VERSION_COMPASS_PLT	-2
 #define VERSION_SURVEX_POS	-1
+
+/* Days from start of 1900 to start of 1970. */
+#define DAYS_1900 25567
+
+/* Start of 1900 in time_t with standard Unix epoch of start of 1970. */
+#define TIME_T_1900 -2208988800L
+
+/* Seconds in a day. */
+#define SECS_PER_DAY 86400L
 
 static char *
 my_strdup(const char *str)
@@ -1409,7 +1418,7 @@ img_read_item_new(img *pimg, img_point *p)
 	      case 0x11: { /* Single date */
 		  int days1 = (int)getu16(pimg->fh);
 #if IMG_API_VERSION == 0
-		  pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
+		  pimg->date2 = pimg->date1 = (days1 - DAYS_1900) * SECS_PER_DAY;
 #else /* IMG_API_VERSION == 1 */
 		  pimg->days2 = pimg->days1 = days1;
 #endif
@@ -1419,8 +1428,8 @@ img_read_item_new(img *pimg, img_point *p)
 		  int days1 = (int)getu16(pimg->fh);
 		  int days2 = days1 + GETC(pimg->fh) + 1;
 #if IMG_API_VERSION == 0
-		  pimg->date1 = (days1 - 25567) * 86400;
-		  pimg->date2 = (days2 - 25567) * 86400;
+		  pimg->date1 = (days1 - DAYS_1900) * SECS_PER_DAY;
+		  pimg->date2 = (days2 - DAYS_1900) * SECS_PER_DAY;
 #else /* IMG_API_VERSION == 1 */
 		  pimg->days1 = days1;
 		  pimg->days2 = days2;
@@ -1431,8 +1440,8 @@ img_read_item_new(img *pimg, img_point *p)
 		  int days1 = (int)getu16(pimg->fh);
 		  int days2 = (int)getu16(pimg->fh);
 #if IMG_API_VERSION == 0
-		  pimg->date1 = (days1 - 25567) * 86400;
-		  pimg->date2 = (days2 - 25567) * 86400;
+		  pimg->date1 = (days1 - DAYS_1900) * SECS_PER_DAY;
+		  pimg->date2 = (days2 - DAYS_1900) * SECS_PER_DAY;
 #else /* IMG_API_VERSION == 1 */
 		  pimg->days1 = days1;
 		  pimg->days2 = days2;
@@ -1586,7 +1595,8 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		      pimg->date2 = pimg->date1 = date1;
 #else /* IMG_API_VERSION == 1 */
 		      if (date1 != 0) {
-			  pimg->days2 = pimg->days1 = (date1 / 86400) + 25567;
+			  pimg->days1 = (date1 - TIME_T_1900) / SECS_PER_DAY;
+			  pimg->days2 = pimg->days1;
 		      } else {
 			  pimg->days2 = pimg->days1 = -1;
 		      }
@@ -1594,7 +1604,8 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  } else {
 		      int days1 = (int)getu16(pimg->fh);
 #if IMG_API_VERSION == 0
-		      pimg->date2 = pimg->date1 = (days1 - 25567) * 86400;
+		      pimg->date1 = (days1 - DAYS_1900) * SECS_PER_DAY;
+		      pimg->date2 = pimg->date1;
 #else /* IMG_API_VERSION == 1 */
 		      pimg->days2 = pimg->days1 = days1;
 #endif
@@ -1608,15 +1619,15 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		      pimg->date1 = date1;
 		      pimg->date2 = date2;
 #else /* IMG_API_VERSION == 1 */
-		      pimg->days1 = (date1 / 86400) + 25567;
-		      pimg->days2 = (date2 / 86400) + 25567;
+		      pimg->days1 = (date1 - TIME_T_1900) / SECS_PER_DAY;
+		      pimg->days2 = (date2 - TIME_T_1900) / SECS_PER_DAY;
 #endif
 		  } else {
 		      int days1 = (int)getu16(pimg->fh);
 		      int days2 = days1 + GETC(pimg->fh) + 1;
 #if IMG_API_VERSION == 0
-		      pimg->date1 = (days1 - 25567) * 86400;
-		      pimg->date2 = (days2 - 25567) * 86400;
+		      pimg->date1 = (days1 - DAYS_1900) * SECS_PER_DAY;
+		      pimg->date2 = (days2 - DAYS_1900) * SECS_PER_DAY;
 #else /* IMG_API_VERSION == 1 */
 		      pimg->days1 = days1;
 		      pimg->days2 = days2;
@@ -1654,8 +1665,8 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		      return img_BAD;
 		  }
 #if IMG_API_VERSION == 0
-		  pimg->date1 = (days1 - 25567) * 86400;
-		  pimg->date2 = (days2 - 25567) * 86400;
+		  pimg->date1 = (days1 - DAYS_1900) * SECS_PER_DAY;
+		  pimg->date2 = (days2 - DAYS_1900) * SECS_PER_DAY;
 #else /* IMG_API_VERSION == 1 */
 		  pimg->days1 = days1;
 		  pimg->days2 = days2;
@@ -2483,22 +2494,22 @@ img_write_item_date_new(img *pimg)
 	} else {
 	    PUTC(0x11, pimg->fh);
 #if IMG_API_VERSION == 0
-	    put16(pimg->date1 / 86400 + 25567, pimg->fh);
+	    put16((pimg->date1 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
 #else /* IMG_API_VERSION == 1 */
 	    put16(pimg->days1, pimg->fh);
 #endif
 	}
     } else {
 #if IMG_API_VERSION == 0
-	int diff = (pimg->date2 - pimg->date1) / 86400;
+	int diff = (pimg->date2 - pimg->date1) / SECS_PER_DAY;
 	if (diff > 0 && diff <= 256) {
 	    PUTC(0x12, pimg->fh);
-	    put16(pimg->date1 / 86400 + 25567, pimg->fh);
+	    put16((pimg->date1 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
 	    PUTC(diff - 1, pimg->fh);
 	} else {
 	    PUTC(0x13, pimg->fh);
-	    put16(pimg->date1 / 86400 + 25567, pimg->fh);
-	    put16(pimg->date2 / 86400 + 25567, pimg->fh);
+	    put16((pimg->date1 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
+	    put16((pimg->date2 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
 	}
 #else /* IMG_API_VERSION == 1 */
 	int diff = pimg->days2 - pimg->days1;
@@ -2547,7 +2558,7 @@ img_write_item_date(img *pimg)
 #if IMG_API_VERSION == 0
 	    put32(pimg->date1, pimg->fh);
 #else /* IMG_API_VERSION == 1 */
-	    put32((pimg->days1 - 25567) * 86400, pimg->fh);
+	    put32((pimg->days1 - DAYS_1900) * SECS_PER_DAY, pimg->fh);
 #endif
 	} else {
 	    if (unset) {
@@ -2555,7 +2566,7 @@ img_write_item_date(img *pimg)
 	    } else {
 		PUTC(0x20, pimg->fh);
 #if IMG_API_VERSION == 0
-		put16(pimg->date1 / 86400 + 25567, pimg->fh);
+		put16((pimg->date1 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
 #else /* IMG_API_VERSION == 1 */
 		put16(pimg->days1, pimg->fh);
 #endif
@@ -2568,20 +2579,20 @@ img_write_item_date(img *pimg)
 	    put32(pimg->date1, pimg->fh);
 	    put32(pimg->date2, pimg->fh);
 #else /* IMG_API_VERSION == 1 */
-	    put32((pimg->days1 - 25567) * 86400, pimg->fh);
-	    put32((pimg->days2 - 25567) * 86400, pimg->fh);
+	    put32((pimg->days1 - DAYS_1900) * SECS_PER_DAY, pimg->fh);
+	    put32((pimg->days2 - DAYS_1900) * SECS_PER_DAY, pimg->fh);
 #endif
 	} else {
 #if IMG_API_VERSION == 0
-	    int diff = (pimg->date2 - pimg->date1) / 86400;
+	    int diff = (pimg->date2 - pimg->date1) / SECS_PER_DAY;
 	    if (diff > 0 && diff <= 256) {
 		PUTC(0x21, pimg->fh);
-		put16(pimg->date1 / 86400 + 25567, pimg->fh);
+		put16((pimg->date1 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
 		PUTC(diff - 1, pimg->fh);
 	    } else {
 		PUTC(0x23, pimg->fh);
-		put16(pimg->date1 / 86400 + 25567, pimg->fh);
-		put16(pimg->date2 / 86400 + 25567, pimg->fh);
+		put16((pimg->date1 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
+		put16((pimg->date2 - TIME_T_1900) / SECS_PER_DAY, pimg->fh);
 	    }
 #else /* IMG_API_VERSION == 1 */
 	    int diff = pimg->days2 - pimg->days1;
