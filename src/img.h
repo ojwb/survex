@@ -188,7 +188,9 @@ typedef struct {
    int version;
    char *survey;
    size_t survey_len;
-   int pending; /* for old style text format files and survey filtering */
+   /* Used to track state in various ways depending on the format, and also for
+    * filtering by survey. */
+   int pending;
    img_point mv;
 #if IMG_API_VERSION == 0
    time_t olddate1, olddate2;

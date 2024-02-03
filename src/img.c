@@ -302,6 +302,13 @@ static img_errcode img_errno = IMG_NONE;
 #define VERSION_COMPASS_PLT	-2
 #define VERSION_SURVEX_POS	-1
 
+/* Flags bitwise-or-ed into pending to track XSECTs. */
+#define PENDING_XSECT_END	0x100
+#define PENDING_HAD_XSECT	0x001 // Only for VERSION_COMPASS_PLT
+#define PENDING_MOVE		0x002 // Only for VERSION_COMPASS_PLT
+#define PENDING_LINE		0x004 // Only for VERSION_COMPASS_PLT
+#define PENDING_XSECT		0x008 // Only for VERSION_COMPASS_PLT
+
 /* Days from start of 1900 to start of 1970. */
 #define DAYS_1900 25567
 
@@ -539,8 +546,9 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
       pimg->survey_len = len;
    }
 
-   /* [VERSION_COMPASS_PLT, VERSION_CMAP_STATION, VERSION_CMAP_SHOT] pending
-    * IMG_LINE or IMG_MOVE - both have 4 added.
+   /* [VERSION_COMPASS_PLT] bitwise-or of PENDING_* values, or -1.
+    * [VERSION_CMAP_STATION, VERSION_CMAP_SHOT] pending IMG_LINE or IMG_MOVE -
+    * both have 4 added.
     * [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE
@@ -1381,7 +1389,7 @@ img_read_item_new(img *pimg, img_point *p)
    int opt;
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
    if (pimg->pending >= 0x40) {
-      if (pimg->pending == 256) {
+      if (pimg->pending == PENDING_XSECT_END) {
 	 pimg->pending = 0;
 	 return img_XSECT_END;
       }
@@ -1476,7 +1484,7 @@ img_read_item_new(img *pimg, img_point *p)
 		  /* If this is the last cross-section in this passage, set
 		   * pending so we return img_XSECT_END next time. */
 		  if (pimg->flags & 0x01) {
-		      pimg->pending = 256;
+		      pimg->pending = PENDING_XSECT_END;
 		      pimg->flags &= ~0x01;
 		  }
 		  return img_XSECT;
@@ -1537,7 +1545,7 @@ img_read_item_v3to7(img *pimg, img_point *p)
    int result;
    int opt;
    pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
-   if (pimg->pending == 256) {
+   if (pimg->pending == PENDING_XSECT_END) {
       pimg->pending = 0;
       return img_XSECT_END;
    }
@@ -1710,7 +1718,7 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  /* If this is the last cross-section in this passage, set
 		   * pending so we return img_XSECT_END next time. */
 		  if (pimg->flags & 0x01) {
-		      pimg->pending = 256;
+		      pimg->pending = PENDING_XSECT_END;
 		      pimg->flags &= ~0x01;
 		  }
 		  return img_XSECT;
@@ -2084,16 +2092,28 @@ img_read_item_ascii(img *pimg, img_point *p)
       return img_LABEL;
    } else if (pimg->version == VERSION_COMPASS_PLT) {
       /* Compass .plt file */
-      if (pimg->pending > 0) {
+      if ((pimg->pending & ~PENDING_HAD_XSECT) > 0) {
 	 /* -1 signals we've entered the first survey we want to
 	  * read, and need to fudge lots if the first action is 'D'...
 	  */
-	 /* pending MOVE or LINE */
-	 int r = pimg->pending - 4;
-	 pimg->pending = 0;
 	 pimg->flags = 0;
+	 if (pimg->pending & PENDING_XSECT_END) {
+	     /* pending XSECT_END */
+	     pimg->pending &= ~PENDING_XSECT_END;
+	     return img_XSECT_END;
+	 }
+	 if (pimg->pending & PENDING_XSECT) {
+	     /* pending XSECT */
+	     pimg->pending &= ~PENDING_XSECT;
+	     return img_XSECT;
+	 }
 	 pimg->label[pimg->label_len] = '\0';
-	 return r;
+	 if (pimg->pending & PENDING_LINE) {
+	     pimg->pending &= ~PENDING_LINE;
+	     return img_LINE;
+	 }
+	 pimg->pending &= ~PENDING_MOVE;
+	 return img_MOVE;
       }
 
       while (1) {
@@ -2104,10 +2124,20 @@ img_read_item_ascii(img *pimg, img_point *p)
 
 	 switch (ch) {
 	    case '\x1a': case EOF: /* Don't insist on ^Z at end of file */
+	       if (pimg->pending == PENDING_HAD_XSECT) {
+		   ungetc('\x1a', pimg->fh);
+		   pimg->pending = 0;
+		   return img_XSECT_END;
+	       }
 	       return img_STOP;
 	    case 'X': case 'F': case 'S':
 	       /* bounding boX (marks end of survey), Feature survey, or
 		* new Section - skip to next survey */
+	       if (pimg->pending == PENDING_HAD_XSECT) {
+		   ungetc(ch, pimg->fh);
+		   pimg->pending = 0;
+		   return img_XSECT_END;
+	       }
 	       if (pimg->survey) return img_STOP;
 skip_to_N:
 	       while (1) {
@@ -2190,7 +2220,12 @@ bad_plt_date:
 	       }
 	       osfree(line);
 	       break;
-	    case 'M': case 'D': {
+	    case 'M':
+	       if (pimg->pending == PENDING_HAD_XSECT) {
+		   pimg->pending = PENDING_XSECT_END;
+	       }
+	       /* FALLTHRU */
+	    case 'D': {
 	       /* Move or Draw */
 	       long fpos = -1;
 	       if (pimg->survey && pimg->label_len == 0) {
@@ -2199,18 +2234,20 @@ bad_plt_date:
 		   */
 		  goto skip_to_N;
 	       }
-	       if (ch == 'D' && pimg->pending == -1) {
-		  if (pimg->survey) {
-		     fpos = ftell(pimg->fh) - 1;
-		     fseek(pimg->fh, pimg->start, SEEK_SET);
-		     ch = GETC(pimg->fh);
-		     pimg->pending = 0;
-		  } else {
-		     /* If a file actually has a 'D' before any 'M', then
-		      * pretend the 'D' is an 'M' - one of the examples
-		      * in the docs was like this! */
-		     ch = 'M';
-		  }
+	       if (pimg->pending == -1) {
+		   pimg->pending = 0;
+		   if (ch == 'D') {
+		       if (pimg->survey) {
+			   fpos = ftell(pimg->fh) - 1;
+			   fseek(pimg->fh, pimg->start, SEEK_SET);
+			   ch = GETC(pimg->fh);
+		       } else {
+			   /* If a file actually has a 'D' before any 'M', then
+			    * pretend the 'D' is an 'M' - one of the examples
+			    * in the docs was like this! */
+			   ch = 'M';
+		       }
+		   }
 	       }
 	       line = getline_alloc(pimg->fh);
 	       if (!line) {
@@ -2277,9 +2314,17 @@ bad_plt_date:
 		   pimg->r *= METRES_PER_FOOT;
 		   pimg->u *= METRES_PER_FOOT;
 		   pimg->d *= METRES_PER_FOOT;
+		   if (pimg->l >= 0 || pimg->r >= 0 || pimg->u >= 0 || pimg->d >= 0) {
+		       pimg->pending |= PENDING_XSECT | PENDING_HAD_XSECT;
+		   } else if (pimg->pending == PENDING_HAD_XSECT) {
+		       pimg->pending = PENDING_XSECT_END;
+		   }
 		   q += bytes_used;
 	       } else {
 		   pimg->l = pimg->r = pimg->u = pimg->d = -1;
+		   if (pimg->pending == PENDING_HAD_XSECT) {
+		       pimg->pending = PENDING_XSECT_END;
+		   }
 	       }
 	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
 	       while (*q && *q <= ' ') q++;
@@ -2295,7 +2340,7 @@ bad_plt_date:
 	       if (fpos != -1) {
 		  fseek(pimg->fh, fpos, SEEK_SET);
 	       } else {
-		  pimg->pending = (ch == 'M' ? img_MOVE : img_LINE) + 4;
+		  pimg->pending |= (ch == 'M' ? PENDING_MOVE : PENDING_LINE);
 	       }
 	       return img_LABEL;
 	    }
