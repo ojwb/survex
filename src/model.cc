@@ -4,7 +4,7 @@
 //  Cave survey model.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -728,10 +728,10 @@ SurveyFilter::SetSeparator(wxChar separator_)
     std::set<wxString, std::greater<wxString>> old_redundant_filters;
     swap(filters, old_filters);
     swap(redundant_filters, old_redundant_filters);
-    for (auto& s : filters) {
+    for (auto& s : old_filters) {
 	add(s);
     }
-    for (auto& s : redundant_filters) {
+    for (auto& s : old_redundant_filters) {
 	add(s);
     }
 }
