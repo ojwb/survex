@@ -1,5 +1,5 @@
-./cmd_declination_conv_proj_bug.svx:9: info: Declination: -3.5dg @ 2005-12-15, grid convergence: 0.8dg
- *declination auto 97480 72608 225
+./cmd_declination_conv_proj_bug.svx:16: info: Declination: -3.5dg @ 2005-12-15, grid convergence: 0.8dg
+ *declination auto 562696.24 6000557.63 225
 
 Removing trailing traverses...
 
