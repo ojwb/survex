@@ -107,7 +107,7 @@ typedef enum {
 
 /* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
-   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
+   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS, UNITS_INCHES, UNITS_FEETINCHES,
    UNITS_DEGS, UNITS_QUADRANTS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES,
    UNITS_MAC, UNITS_DEPRECATED_ALIAS_FOR_GRADS
 } u_units;
@@ -316,6 +316,7 @@ typedef struct Settings {
    bool f_bearing_quadrants;
    bool f_backbearing_quadrants;
    bool dash_for_anon_wall_station;
+   unsigned long len_footinches; /* argument that this could be an array of Q_MAC, but bitbashing is easier??? */
    unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;
    int style;
