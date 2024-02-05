@@ -19,7 +19,9 @@ jobs:
     runs-on: 'ubuntu-20.04'
     steps:
     - name: Check out repository code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
@@ -67,7 +69,9 @@ jobs:
     runs-on: 'ubuntu-20.04'
     steps:
     - name: Check out repository code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
@@ -116,7 +120,9 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
     - name: Check out repository code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
@@ -173,7 +179,9 @@ jobs:
     runs-on: 'macos-latest'
     steps:
     - name: Check out repository code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
