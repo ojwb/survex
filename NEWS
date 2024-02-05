@@ -1,54 +1,29 @@
-up to: 148902bb839bd74e535b5f724deee6a87ecd9cb6
+up to: 566f5b86e5669286ec48111f315a5d4735a95ddb
 
 Changes in 1.4.6 (2024-02-??):
 
-* doc/TODO.htm: Update.
+* aven,survexport: Enable export of surface legs for KML and JSON.  Currently
+  surface and underground legs aren't differentiated in these export formats
+  when both are enabled.
 
-* img library:
+* aven,survexport: Fix survey filtering when reading Compass PLT files.
 
-  + Improve Compass PLT support:
-    [img] Read LRUD data for Compass PLT
+* Update build system to eliminate use of obsolete autotools macros.
 
-    [img] Infer img_SFLAG_ENTRANCE for Compass PLT
-    Compass PLT files don't include station flags, but they do have a
-    "Distance From Entrance" field for each station and it seems reasonable
-    to infer the entrance flag for stations where this is present and zero.
+* cavern:
 
-    [img] Read survey dates from Compass PLT files
-    The test coverage for this also serves as a regression test for the
-    recent fix for rounding timestamps before 1970.
+  + Workaround bug in PROJ < 9.3.0 with projected coordinate systems with
+    northing/easting axis order (such as EPSG:3042) which results in the grid
+    convergence being wrong by about 90°.  Reported by Patrick Warren on the
+    mailing list.
 
-  + Improve time_t conversion to days-since-1900
-    C signed integer division rounds towards zero, so previously
-    timestamps before 1970 would get rounded to the end of the day instead
-    of the start, so aside from midnight would end up one day later.
-    Now we offset before division so rounding is consistently to the start
-    of the day.
-    This only affects cases where we need to convert from time_t to
-    days-since-1900, and only for timestamps before 1970.
+  + If *declination auto was used before *cs out we would incorrectly calculate
+    the grid convergence as 0.  We now handle this case correctly by
+    calculating lazily when we first read a compass reading, and report an
+    error if the output coordinate system hasn't been set by then.
 
-* aven,survexport: Enable export of surface legs for KML and JSON.
-  Currently surface and underground legs aren't differentiated in
-  these export formats if both are enabled.
-
-    Replace used of obsolete AC_LANG_C macro
-    Remove unused and obsolete AC_TYPE_SIGNAL macro
-    We haven't used the RETSIGTYPE macro this defines since
-    9d1503de894514c0e1285a314b7c5126b0f046be.
-
-* cavern: Fix two grid convergence bugs.
-    One is due to a bug in PROJ < 9.3.0 with projected coordinate systems
-    with northing/easting axis order (such as EPSG:3042) which results in
-    the grid convergence being wrong by 90°.  We now work around this
-    problem if building with an affected PROJ version.  Reported by
-    Patrick Warren on the mailing list.
-    The other is that we weren't checking the output coordinate system
-    was set before calculating the convergence, which resulted in a
-    grid convergence of 0° being used if *declination auto was used
-    before *cs out.  We now handle this case correctly, and the
-    convergence is now calculated lazily which happens when we read a
-    compass reading, and gives an error if the output coordinate system
-    hasn't been set by then.
+* aven: Fix OpenGL scaling on high DPI displays with wxWidgets 3.0. Reported by
+  Philip Balister.
 
 * manual: Improve NATO mils example.
 
@@ -57,10 +32,23 @@ Changes in 1.4.6 (2024-02-??):
 * INSTALL: Add a link to the instructions for building from git.  Reported by
   Andrew Northall in https://github.com/ojwb/survex/pull/13
 
-* aven: Fix OpenGL scaling on high DPI displays with wxWidgets 3.0.
-  Reported by Philip Balister.
+* doc/TODO.htm: Update.
 
 * Fix compilation warnings from newer compiler versions.
+
+* img library:
+
+  + Improve Compass PLT support: Survey dates are now handled; LRUD data is now
+    translated to img_XSECT and img_XSECT_END; We now infer img_SFLAG_ENTRANCE
+    for stations where the "Distance From Entrance" field is present and zero.
+
+  + Fix bug handling timestamps before 1970.  In C signed integer division
+    rounds towards zero, which previously resulted in timestamps before 1970
+    getting rounded to the end of the day instead of the start when converting
+    them to a count of days so they'd be off by one day unless the time was
+    midnight.  This affected reading v3-v7 format 3d files with IMG_API_VERSION
+    set to 1 and writing v8 format 3d files with IMG_API_VERSION set to 0 (the
+    default).
 
 Changes in 1.4.5 (2023-06-29):
 
