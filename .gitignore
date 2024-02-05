@@ -7,12 +7,14 @@ aclocal.m4
 autom4te.cache/
 compile
 config.guess
+config.guess~
 config.h
 config.h.in
 config.h.in~
 config.log
 config.status
 config.sub
+config.sub~
 configure
 depcomp
 doc/Makefile
@@ -32,6 +34,7 @@ doc/manual.txt
 doc/sorterr.1
 doc/survex.7
 install-sh
+install-sh~
 lib/Info.plist
 lib/Makefile
 lib/Makefile.in
