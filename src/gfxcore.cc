@@ -2256,7 +2256,7 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
 
     auto f = GetContentScaleFactor();
     wxCoord y = (GetYSize() - SCALE_BAR_OFFSET_Y * f - GetFontSize()) - point.y;
-    if (y > SCALE_BAR_HEIGHT * f || y < 0) return false;
+    if (y > wxCoord(SCALE_BAR_HEIGHT * f) || y < 0) return false;
 
     wxCoord x = point.x - SCALE_BAR_OFFSET_X * f;
     if (x > m_ScaleBarWidth || x < 0) return false;

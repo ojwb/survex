@@ -327,10 +327,10 @@ public:
 #else
     // wxWindow::GetContentScaleFactor() will always return 1.0, so arrange
     // things so it's a compile-time constant the compiler can optimise away.
-    //
-    // Dummy parameter here avoids an error due to mismatched return type
-    // compared to the wxWidgets method.
-    unsigned GetContentScaleFactor(bool = false) const { return 1; }
+    // Use a macro so we can return unsigned instead of double without a lot
+    // of pain from trying to override a virtual method while changing the
+    // return type.
+# define GetContentScaleFactor() 1u
     void UpdateContentScaleFactor() { }
 #endif
 
