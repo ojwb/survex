@@ -34,6 +34,8 @@ Changes in 1.4.6 (2024-02-??):
 
 * doc/TODO.htm: Update.
 
+* (Microsoft Windows version): Now using wxWidgets 3.2.4 (was 3.1.6).
+
 * Fix compilation warnings from newer compiler versions.
 
 * img library:
