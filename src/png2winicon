@@ -1,7 +1,0 @@
-#!/bin/sh
-t=/tmp/png2winicon.$$
-pngtopnm "$1" > $t.pnm
-#pngtopnm -alpha "$1" | pgmtopbm -threshold | convert -negate pbm:- pbm:$t.pbm
-pngtopnm -alpha "$1" | pgmtopbm -threshold > $t.pbm
-ppmtowinicon -andppms $t.pnm $t.pbm > "$2" 
-rm $t.pnm $t.pbm

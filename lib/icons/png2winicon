@@ -1,8 +1,6 @@
 #!/bin/sh
 set -e
 t=.tmp.$$
-pngtopnm "$1" > "$t.pnm"
-pngtopnm -alpha "$1" | pgmtopbm -threshold > "$t.pbm"
-pnmcomp -alpha="$t.pbm" "$t.pnm" "$t.pbm" "$t.2.pnm"
-ppmtowinicon -andppms "$t.2.pnm" "$t.pbm" > "$2"
-rm "$t.pnm" "$t.pbm" "$t.2.pnm"
+pngtopam -alphapam "$1" > "$t.pam"
+pamtowinicon -truetransparent "$t.pam" > "$2"
+rm "$t.pam"

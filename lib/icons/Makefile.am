@@ -75,8 +75,8 @@ SUFFIXES = .ico .png .svg .iconset.zip .xpm
 .png.ico:
 	$(SHELL) $(srcdir)/png2winicon $< $@
 
-.xpm.ico:
-	$(SHELL) $(srcdir)/xpm2winicon $< $@
+.xpm.png:
+	$(SHELL) $(srcdir)/xpm2png $< $@
 
 iconsets = Aven.iconset.zip\
 	3d.iconset.zip err.iconset.zip plt.iconset.zip pos.iconset.zip\
