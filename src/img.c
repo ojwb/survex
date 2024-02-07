@@ -630,7 +630,7 @@ plt_file:
 	    fseek(pimg->fh, pimg->start, SEEK_SET);
 	    return pimg;
 	  }
-	  case 'M': case 'D':
+	  case 'M': case 'D': case 'd':
 	    pimg->start = ftell(pimg->fh) - 1;
 	    break;
 	 }
@@ -2093,8 +2093,8 @@ img_read_item_ascii(img *pimg, img_point *p)
    } else if (pimg->version == VERSION_COMPASS_PLT) {
       /* Compass .plt file */
       if ((pimg->pending & ~PENDING_HAD_XSECT) > 0) {
-	 /* -1 signals we've entered the first survey we want to
-	  * read, and need to fudge lots if the first action is 'D'...
+	 /* -1 signals we've entered the first survey we want to read, and
+	  * need to fudge lots if the first action is 'D' or 'd'...
 	  */
 	 pimg->flags = 0;
 	 if (pimg->pending & PENDING_XSECT_END) {
@@ -2225,7 +2225,8 @@ bad_plt_date:
 		   pimg->pending = PENDING_XSECT_END;
 	       }
 	       /* FALLTHRU */
-	    case 'D': {
+	    case 'D':
+	    case 'd': {
 	       /* Move or Draw */
 	       long fpos = -1;
 	       if (pimg->survey && pimg->label_len == 0) {
@@ -2236,15 +2237,16 @@ bad_plt_date:
 	       }
 	       if (pimg->pending == -1) {
 		   pimg->pending = 0;
-		   if (ch == 'D') {
+		   if (ch != 'M') {
 		       if (pimg->survey) {
 			   fpos = ftell(pimg->fh) - 1;
 			   fseek(pimg->fh, pimg->start, SEEK_SET);
 			   ch = GETC(pimg->fh);
 		       } else {
-			   /* If a file actually has a 'D' before any 'M', then
-			    * pretend the 'D' is an 'M' - one of the examples
-			    * in the docs was like this! */
+			   /* If a file actually has a 'D' or 'd' before any
+			    * 'M', then pretend the action is 'M' - one of the
+			    * examples in the docs was like this!
+			    */
 			   ch = 'M';
 		       }
 		   }
