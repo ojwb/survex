@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+t=.tmp.$$
 xpmtoppm -alphaout="$t.pbm" "$1" > "$t.pnm"
 pnmcomp -alpha="$t.pbm" "$t.pnm" "$t.pbm" "$t.2.pnm"
 pnmtopng -alpha "$t.pbm" "$t.2.pnm" > "$2"
