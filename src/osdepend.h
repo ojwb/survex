@@ -49,8 +49,4 @@
 bool fAbsoluteFnm(const char *fnm);
 bool fDirectory(const char *fnm);
 
-# ifndef HAVE_DIFFTIME
-#  define difftime(A, B) ((B)-(A))
-# endif
-
 #endif /* !OSDEPEND_H */

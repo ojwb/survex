@@ -50,9 +50,6 @@ typedef unsigned __int32 uint32_t;
 /* strcasecmp define for systems which call it something else */
 #define strcasecmp stricmp
 
-/* Define if you have the difftime function.  */
-#define HAVE_DIFFTIME 1
-
 /* Define if you have the mktime function.  */
 #define HAVE_MKTIME 1
 

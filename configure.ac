@@ -254,9 +254,6 @@ dnl check for strcasecmp here as well as below - this one is to get
 dnl HAVE_STRCASECMP defined if appropriate (for img.c)
 AC_CHECK_FUNCS([popen getpwuid lround strcasecmp hypot mmap])
 
-dnl difftime seems to be an ANSI invention
-AC_CHECK_FUNCS(difftime)
-
 dnl Much faster than using getc()/putc(), at least on Linux.
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
 
