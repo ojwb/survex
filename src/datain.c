@@ -668,12 +668,12 @@ data_file(const char *pth, const char *fnm)
       while (ch != EOF && !ferror(file.fh)) {
 	 static const reading compass_order[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
-	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
+	    CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 static const reading compass_order_backsights[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
-	    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
+	    CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
 	 };
