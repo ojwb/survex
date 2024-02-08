@@ -233,24 +233,18 @@ add_ext(const char *fnm, const char *ext)
 {
    char * fnmNew;
    int len, len_total;
-#ifdef FNM_SEP_EXT
    bool fAddSep = fFalse;
-#endif
 
    len = strlen(fnm);
    len_total = len + strlen(ext) + 1;
-#ifdef FNM_SEP_EXT
    if (ext[0] != FNM_SEP_EXT) {
       fAddSep = fTrue;
       len_total++;
    }
-#endif
 
    fnmNew = osmalloc(len_total);
    strcpy(fnmNew, fnm);
-#ifdef FNM_SEP_EXT
    if (fAddSep) fnmNew[len++] = FNM_SEP_EXT;
-#endif
    strcpy(fnmNew + len, ext);
    return fnmNew;
 }
