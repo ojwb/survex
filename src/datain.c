@@ -747,10 +747,15 @@ data_file(const char *pth, const char *fnm)
 	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse));
 	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse));
 	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(fFalse);
-	 } else {
-	    pcs->z[Q_BEARING] = 0;
-	    pcs->z[Q_GRADIENT] = 0;
-	    pcs->z[Q_LENGTH] = 0;
+
+	    /* get_token() only reads alphas so we must check for '2' here. */
+	    get_token();
+	    if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
+		nextch(); /* 2 */
+		nextch(); /* : */
+		pcs->z[Q_BACKBEARING] = -rad(read_numeric(fFalse));
+		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(fFalse));
+	    }
 	 }
 	 skipline();
 	 process_eol();
