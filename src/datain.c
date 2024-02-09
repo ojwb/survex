@@ -728,9 +728,15 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 pcs->ordering = compass_order;
 	 if (strcmp(buffer, "FORMAT") == 0) {
+	    /* This documents the format in the original survey notebook - we
+	     * don't need to fully parse it to be able to parse the survey data
+	     * in the file, which gets converted to a fixed order and units.
+	     */
+	    size_t buffer_len;
 	    nextch(); /* : */
 	    get_token();
-	    if (strlen(buffer) >= 12 && buffer[11] == 'B') {
+	    buffer_len = strlen(buffer);
+	    if (buffer_len >= 12 && buffer[buffer_len >= 15 ? 13 : 11] == 'B') {
 	       /* We have backsights for compass and clino */
 	       pcs->ordering = compass_order_backsights;
 	    }
