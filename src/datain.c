@@ -746,7 +746,7 @@ data_file(const char *pth, const char *fnm)
 	    nextch(); /* : */
 	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse));
 	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse));
-	    pcs->z[Q_LENGTH] = -read_numeric(fFalse);
+	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(fFalse);
 	 } else {
 	    pcs->z[Q_BEARING] = 0;
 	    pcs->z[Q_GRADIENT] = 0;

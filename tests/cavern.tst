@@ -65,7 +65,7 @@ testdir=`(cd "$testdir" && pwd)`
  cmd_declination_conv_proj_bug\
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
- declination.dat ignore.dat backread.dat nomeasure.dat noteam.dat\
+ corrections.dat ignore.dat backread.dat nomeasure.dat noteam.dat\
  fixfeet.mak\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
