@@ -1,4 +1,4 @@
-up to: 566f5b86e5669286ec48111f315a5d4735a95ddb
+up to: 069ae98a919f2c0ef48c2ff85149088c919d5f7e
 
 Changes in 1.4.6 (2024-02-??):
 
@@ -22,6 +22,21 @@ Changes in 1.4.6 (2024-02-??):
     calculating lazily when we first read a compass reading, and report an
     error if the output coordinate system hasn't been set by then.
 
+  + Surveys in Compass DAT files which indicate a depth gauge was used for
+    azimuth readings are now marked as STYLE_DIVING in the 3d file.
+
+  + We now parse the "CORRECTIONS2" field in newer format Compass DAT files
+    which specifies corrections for backbearing and backazimuth.  Previously
+    cavern ignored this field.
+
+  + The tape correction in Compass DAT files is now handled correctly.  The
+    specified value is in feet, but cavern was incorrectly treating it as
+    being in metres.
+
+  + We now handle newer format Compass DAT files with a 15 character "FORMAT:"
+    specification.  Previously cavern wouldn't detect when there were backsights
+    in this case.
+
 * aven: Fix OpenGL scaling on high DPI displays with wxWidgets 3.0. Reported by
   Philip Balister.
 
@@ -38,11 +53,17 @@ Changes in 1.4.6 (2024-02-??):
 
 * Fix compilation warnings from newer compiler versions.
 
+* The source code now assumes difftime() is available since it was standardised
+  in C89 and we're not aware of any current platforms which lack it.
+
 * img library:
 
   + Improve Compass PLT support: Survey dates are now handled; LRUD data is now
     translated to img_XSECT and img_XSECT_END; We now infer img_SFLAG_ENTRANCE
     for stations where the "Distance From Entrance" field is present and zero.
+    The shot flags field in newer format PLT files is now translated to
+    img_FLAG_DUPLICATE and img_FLAG_SPLAY; the 'd' plot command is now
+    supported.
 
   + Fix bug handling timestamps before 1970.  In C signed integer division
     rounds towards zero, which previously resulted in timestamps before 1970
