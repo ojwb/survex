@@ -1369,8 +1369,9 @@ cmd_data(void)
 
    if (style == STYLE_UNKNOWN) {
       if (!buffer[0]) {
-	 /* "*data" reinitialises the current style - for *data passage that
-	  * breaks the passage.
+	 /* "*data" without arguments reinitialises the current style - useful
+	  * when using *data passage as it provides a way to break the passage
+	  * tube without having to repeat the full *data passage command.
 	  */
 	 pcs->style = style = old_style;
 	 goto reinit_style;
