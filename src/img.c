@@ -308,6 +308,7 @@ static img_errcode img_errno = IMG_NONE;
 #define PENDING_MOVE		0x002 // Only for VERSION_COMPASS_PLT
 #define PENDING_LINE		0x004 // Only for VERSION_COMPASS_PLT
 #define PENDING_XSECT		0x008 // Only for VERSION_COMPASS_PLT
+#define PENDING_FLAGS_SHIFT	9 // Only for VERSION_COMPASS_PLT
 
 /* Days from start of 1900 to start of 1970. */
 #define DAYS_1900 25567
@@ -2109,7 +2110,8 @@ img_read_item_ascii(img *pimg, img_point *p)
 	 }
 	 pimg->label[pimg->label_len] = '\0';
 	 if (pimg->pending & PENDING_LINE) {
-	     pimg->pending &= ~PENDING_LINE;
+	     pimg->flags = (pimg->pending >> PENDING_FLAGS_SHIFT);
+	     pimg->pending &= ((1 << PENDING_FLAGS_SHIFT) - 1) & ~PENDING_LINE;
 	     return img_LINE;
 	 }
 	 pimg->pending &= ~PENDING_MOVE;
@@ -2228,6 +2230,7 @@ bad_plt_date:
 	    case 'D':
 	    case 'd': {
 	       /* Move or Draw */
+	       unsigned shot_flags = 0;
 	       long fpos = -1;
 	       if (pimg->survey && pimg->label_len == 0) {
 		  /* We're only holding onto this line in case the first line
@@ -2332,17 +2335,37 @@ bad_plt_date:
 	       while (*q && *q <= ' ') q++;
 	       if (*q == 'I') {
 		   double distance_from_entrance;
-		   if (sscanf(q + 1, "%lf", &distance_from_entrance) == 1 &&
+		   int bytes_used = 0;
+		   ++q;
+		   if (sscanf(q, "%lf%n",
+			      &distance_from_entrance, &bytes_used) == 1 &&
 		       distance_from_entrance == 0.0) {
 		       /* Infer an entrance. */
 		       pimg->flags |= img_SFLAG_ENTRANCE;
+		   }
+		   q += bytes_used;
+		   while (*q && *q <= ' ') q++;
+	       }
+	       if (*q == 'F') {
+		   /* "Shot Flags". */
+		   while (isalpha((unsigned char)*++q)) {
+		       switch (*q) {
+			 case 'L':
+			   shot_flags |= img_FLAG_DUPLICATE;
+			   break;
+			 case 'S':
+			   shot_flags |= img_FLAG_SPLAY;
+			   break;
+		       }
 		   }
 	       }
 	       osfree(line);
 	       if (fpos != -1) {
 		  fseek(pimg->fh, fpos, SEEK_SET);
+	       } else if (ch == 'M') {
+		  pimg->pending |= PENDING_MOVE;
 	       } else {
-		  pimg->pending |= (ch == 'M' ? PENDING_MOVE : PENDING_LINE);
+		  pimg->pending |= PENDING_LINE | (shot_flags << PENDING_FLAGS_SHIFT);
 	       }
 	       return img_LABEL;
 	    }
