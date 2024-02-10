@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2021 Olly Betts
+# Copyright (C) 1999-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ testdir=`(cd "$testdir" && pwd)`
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}
+: ${DUMP3D="$testdir"/../src/dump3d}
 : ${SURVEXPORT="$testdir"/../src/survexport}
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
@@ -100,6 +101,7 @@ if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
   DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
+  DUMP3D="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DUMP3D"
   SURVEXPORT="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $SURVEXPORT"
 fi
 
@@ -142,9 +144,13 @@ for file in $TESTS ; do
   pos=
 
   case $file in
+    backread.dat)
+      pos=dump
+      warn=0
+      ;;
     *.dat)
       # .dat files can't start with a comment.  All the current .dat tests
-      # have the same settings.
+      # except one have the same settings.
       pos=yes
       warn=0
       ;;
@@ -193,7 +199,7 @@ for file in $TESTS ; do
   rm -f tmp.*
   pwd=`pwd`
   cd "$srcdir"
-  srcdir=. $CAVERN "$input" --output="$pwd/tmp" > "$pwd/tmp.out"
+  srcdir=. SOURCE_DATE_EPOCH=1 $CAVERN "$input" --output="$pwd/tmp" > "$pwd/tmp.out"
   exitcode=$?
   cd "$pwd"
   test -n "$VERBOSE" && cat tmp.out
@@ -250,6 +256,27 @@ for file in $TESTS ; do
       rm "$vg_log"
     fi
     [ "$exitcode" = 0 ] || exit 1
+    ;;
+  dump)
+    expectedfile=$basefile.dump
+    tmpfile=tmp.dump
+    $DUMP3D --show-dates --legs tmp.3d > "$tmpfile"
+    exitcode=$?
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
+    [ "$exitcode" = 0 ] || exit 1
+
+    if test -n "$VERBOSE" ; then
+      diff "$expectedfile" "$tmpfile" || exit 1
+    else
+      cmp -s "$expectedfile" "$tmpfile" || exit 1
+    fi
     ;;
   dxf|gpx|json|kml)
     # $pos gives us the file extension here.

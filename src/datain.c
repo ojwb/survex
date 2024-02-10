@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2023 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -603,7 +603,7 @@ data_file(const char *pth, const char *fnm)
       default_units(pcs);
       default_calib(pcs);
 
-      pcs->style = STYLE_NORMAL;
+      pcs->recorded_style = pcs->style = STYLE_NORMAL;
       pcs->units[Q_LENGTH] = METRES_PER_FOOT;
       t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
 
@@ -736,6 +736,10 @@ data_file(const char *pth, const char *fnm)
 	    nextch(); /* : */
 	    get_token();
 	    buffer_len = strlen(buffer);
+	    if (buffer_len >= 4 && buffer[3] == 'W') {
+		/* Original "Inclination Units" were "Depth Gauge". */
+		pcs->recorded_style = STYLE_DIVING;
+	    }
 	    if (buffer_len >= 12 && buffer[buffer_len >= 15 ? 13 : 11] == 'B') {
 	       /* We have backsights for compass and clino */
 	       pcs->ordering = compass_order_backsights;

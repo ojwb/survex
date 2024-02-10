@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2023 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ static reading default_order[] = { Fr, To, Tape, Comp, Clino, End };
 static void
 default_style(settings *s)
 {
-   s->style = STYLE_NORMAL;
+   s->recorded_style = s->style = STYLE_NORMAL;
    s->ordering = default_order;
    s->dash_for_anon_wall_station = fFalse;
 }
@@ -1357,7 +1357,7 @@ cmd_data(void)
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
-   pcs->style = STYLE_IGNORE;
+   pcs->recorded_style = pcs->style = STYLE_IGNORE;
 
    get_token();
    style = match_tok(styletab, TABSIZE(styletab));
@@ -1373,7 +1373,7 @@ cmd_data(void)
 	  * when using *data passage as it provides a way to break the passage
 	  * tube without having to repeat the full *data passage command.
 	  */
-	 pcs->style = style = old_style;
+	 pcs->recorded_style = pcs->style = style = old_style;
 	 goto reinit_style;
       }
       /* TRANSLATORS: e.g. trying to refer to an invalid FNORD data style */
@@ -1612,7 +1612,7 @@ cmd_data(void)
        !(pcs->next && pcs->next->ordering == pcs->ordering))
       osfree((reading*)pcs->ordering);
 
-   pcs->style = style;
+   pcs->recorded_style = pcs->style = style;
    pcs->ordering = new_order;
 
    osfree(style_name);

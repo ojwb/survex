@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2003,2006,2011,2013,2014,2015,2019 Olly Betts
+ * Copyright (C) 1992-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -304,7 +304,7 @@ addleg_(node *fr, node *to,
    leg2->l.reverse = i;
    leg->l.reverse = j | FLAG_DATAHERE | leg_flags;
 
-   leg->l.flags = pcs->flags | (pcs->style << FLAGS_STYLE_BIT0);
+   leg->l.flags = pcs->flags | (pcs->recorded_style << FLAGS_STYLE_BIT0);
    leg->meta = pcs->meta;
    if (pcs->meta) ++pcs->meta->ref_count;
 
@@ -546,7 +546,7 @@ freeleg(node **stnptr)
    leg->v[0] = leg->v[1] = leg->v[2] = (real)0.0;
 #endif
    leg->l.reverse = 1 | FLAG_DATAHERE | FLAG_FAKE;
-   leg->l.flags = pcs->flags | (pcs->style << FLAGS_STYLE_BIT0);
+   leg->l.flags = pcs->flags | (pcs->recorded_style << FLAGS_STYLE_BIT0);
 
    leg2->l.to = oldstn;
    leg2->l.reverse = 0;

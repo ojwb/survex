@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2022 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -318,7 +318,13 @@ typedef struct Settings {
    bool dash_for_anon_wall_station;
    unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;
+   /* STYLE_xxx value to process data as. */
    int style;
+   /* STYLE_xxx value to put in 3d file (different for Compass DAT diving
+    * data, as the data in the DAT file is always presented in the format
+    * tape,compass,clino even if that isn't how it was really measured).
+    */
+   int recorded_style;
    prefix *Prefix;
    prefix *begin_survey; /* used to check BEGIN and END match */
    short *Translate; /* if short is >= 16 bits, which ANSI requires */
