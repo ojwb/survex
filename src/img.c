@@ -2281,20 +2281,21 @@ bad_plt_date:
 	       ++q;
 	       len = 0;
 	       while (q[len] > ' ') ++len;
-	       q[len] = '\0';
-	       len += 2; /* ' ' and '\0' */
-	       if (!check_label_space(pimg, pimg->label_len + len)) {
+	       /* Add 2 for ' ' before and terminating '\0'. */
+	       if (!check_label_space(pimg, pimg->label_len + len + 2)) {
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
 	       pimg->label = pimg->label_buf;
 	       if (pimg->label_len) {
 		   pimg->label[pimg->label_len] = ' ';
-		   memcpy(pimg->label + pimg->label_len + 1, q, len - 1);
+		   memcpy(pimg->label + pimg->label_len + 1, q, len);
+		   pimg->label[pimg->label_len + 1 + len] = '\0';
 	       } else {
-		   memcpy(pimg->label, q, len - 1);
+		   memcpy(pimg->label, q, len);
+		   pimg->label[len] = '\0';
 	       }
-	       q += len - 1;
+	       q += len;
 	       /* Now read LRUD.  Technically, this is optional but virtually
 		* all PLT files have it (with dummy negative values if no LRUD
 		* was measured) and some versions of Compass can't read PLT
