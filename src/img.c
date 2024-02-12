@@ -577,8 +577,7 @@ plt_file:
       /* Spaces aren't legal in Compass station names, but dots are, so
        * use space as the level separator */
       pimg->separator = ' ';
-      pimg->start = 0;
-      if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
+      pimg->start = -1;
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
 	 img_errno = IMG_OUTOFMEMORY;
@@ -591,18 +590,48 @@ plt_file:
 	    fseek(pimg->fh, -1, SEEK_CUR);
 	    /* FALL THRU */
 	  case EOF:
-	    pimg->start = ftell(pimg->fh);
+	    if (pimg->start < 0) {
+	       pimg->start = ftell(pimg->fh);
+	    } else {
+	       fseek(pimg->fh, pimg->start, SEEK_SET);
+	    }
+	    if (!pimg->title || !pimg->title[0]) {
+	       osfree(pimg->title);
+	       pimg->title = baseleaf_from_fnm(fnm);
+	    }
 	    return pimg;
+	  case 'S':
+	    /* "Section" - in the case where we aren't filtering by survey
+	     * (i.e. pimg->survey == NULL): if there's only one non-empty
+	     * section name specified, we use it as the title.
+	     */
+	    if (pimg->survey == NULL && (!pimg->title || pimg->title[0])) {
+	       char *line = getline_alloc(pimg->fh);
+	       if (line[0]) {
+		  if (pimg->title) {
+		     if (strcmp(pimg->title, line) != 0) {
+			/* Two different non-empty section names found. */
+			pimg->title[0] = '\0';
+		     }
+		     osfree(line);
+		  } else {
+		     pimg->title = line;
+		  }
+	       } else {
+		  osfree(line);
+	       }
+	       continue;
+	    }
+	    break;
 	  case 'N': {
 	    char *line, *q;
+	    if (pimg->start >= 0) break;
 	    fpos = ftell(pimg->fh) - 1;
 	    if (!pimg->survey) {
-	       /* FIXME : if there's only one survey in the file, it'd be nice
-		* to use its description as the title here...
-		*/
-	       ungetc('N', pimg->fh);
+	       /* We're not filtering by survey so just note down the file
+		* offset for the first N command. */
 	       pimg->start = fpos;
-	       return pimg;
+	       break;
 	    }
 	    line = getline_alloc(pimg->fh);
 	    if (!line) {
@@ -612,6 +641,7 @@ plt_file:
 	    len = 0;
 	    while (line[len] > 32) ++len;
 	    if (!buf_included(pimg, line, len)) {
+	       /* Not the survey we are looking for. */
 	       osfree(line);
 	       continue;
 	    }
@@ -627,13 +657,9 @@ plt_file:
 		img_errno = IMG_OUTOFMEMORY;
 		goto error;
 	    }
-	    if (!pimg->start) pimg->start = fpos;
-	    fseek(pimg->fh, pimg->start, SEEK_SET);
-	    return pimg;
+	    pimg->start = fpos;
+	    continue;
 	  }
-	  case 'M': case 'D': case 'd':
-	    pimg->start = ftell(pimg->fh) - 1;
-	    break;
 	 }
 	 while (ch != '\n' && ch != '\r') {
 	    ch = GETC(pimg->fh);
