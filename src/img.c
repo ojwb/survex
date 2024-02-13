@@ -423,7 +423,7 @@ survey_included(img *pimg)
 static int
 buf_included(img *pimg, const char *buf, size_t len)
 {
-    return pimg->survey_len == len && strncmp(buf, pimg->survey, len) == 0;
+    return pimg->survey_len == len && memcmp(buf, pimg->survey, len) == 0;
 }
 
 #define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
