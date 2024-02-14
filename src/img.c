@@ -2222,6 +2222,10 @@ skip_to_N:
 		      */
 		     v += 1900;
 		  }
+		  if (v == 1901 && tm.tm_mday == 1 && tm.tm_mon == 0) {
+		     /* Compass uses 1/1/1 or 1/1/1901 for "date unknown". */
+		     goto bad_plt_date;
+		  }
 		  tm.tm_year = v - 1900;
 		  /* We have no indication of what timezone this date is
 		   * in.  It's probably local time for whoever processed the
