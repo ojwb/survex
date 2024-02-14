@@ -527,8 +527,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 	    char *p;
 	    pimg->survey = (char *)xosmalloc(len + 2);
 	    if (!pimg->survey) {
-	       img_errno = IMG_OUTOFMEMORY;
-	       goto error;
+	       goto out_of_memory_error;
 	    }
 	    memcpy(pimg->survey, survey, len);
 	    /* Set title to leaf survey name */
@@ -537,8 +536,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 	    if (p) p++; else p = pimg->survey;
 	    pimg->title = my_strdup(p);
 	    if (!pimg->title) {
-	       img_errno = IMG_OUTOFMEMORY;
-	       goto error;
+	       goto out_of_memory_error;
 	    }
 	    pimg->survey[len] = '.';
 	    pimg->survey[len + 1] = '\0';
@@ -563,8 +561,7 @@ pos_file:
       if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
+	 goto out_of_memory_error;
       }
       pimg->start = 0;
       return pimg;
@@ -580,8 +577,7 @@ plt_file:
       pimg->start = -1;
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
+	 goto out_of_memory_error;
       }
       while (1) {
 	 ch = GETC(pimg->fh);
@@ -635,8 +631,7 @@ plt_file:
 	    }
 	    line = getline_alloc(pimg->fh);
 	    if (!line) {
-	       img_errno = IMG_OUTOFMEMORY;
-	       goto error;
+	       goto out_of_memory_error;
 	    }
 	    len = 0;
 	    while (line[len] > 32) ++len;
@@ -654,8 +649,7 @@ plt_file:
 	    }
 	    osfree(line);
 	    if (!pimg->title) {
-		img_errno = IMG_OUTOFMEMORY;
-		goto error;
+		goto out_of_memory_error;
 	    }
 	    pimg->start = fpos;
 	    continue;
@@ -684,8 +678,7 @@ xyz_file:
       pimg->separator = ' ';
       line = getline_alloc(pimg->fh);
       if (!line) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
+	 goto out_of_memory_error;
       }
       /* There doesn't seem to be a spec for what happens after 1999 with cmap
        * files, so this code allows for:
@@ -776,13 +769,11 @@ bad_cmap_date:
       if (len <= 2) pimg->title = baseleaf_from_fnm(fnm);
       osfree(line);
       if (!pimg->datestamp || !pimg->title) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
+	 goto out_of_memory_error;
       }
       line = getline_alloc(pimg->fh);
       if (!line) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
+	 goto out_of_memory_error;
       }
       if (line[0] != ' ' || (line[1] != 'S' && line[1] != 'O')) {
 	 img_errno = IMG_BADFORMAT;
@@ -796,8 +787,7 @@ bad_cmap_date:
       osfree(line);
       line = getline_alloc(pimg->fh);
       if (!line) {
-	 img_errno = IMG_OUTOFMEMORY;
-	 goto error;
+	 goto out_of_memory_error;
       }
       if (line[0] != ' ' || line[1] != '-') {
 	 img_errno = IMG_BADFORMAT;
@@ -961,8 +951,9 @@ v03d:
    }
    pimg->datestamp = getline_alloc(pimg->fh);
    if (!pimg->title || !pimg->datestamp) {
+out_of_memory_error:
       img_errno = IMG_OUTOFMEMORY;
-      error:
+error:
       osfree(pimg->title);
       osfree(pimg->cs);
       osfree(pimg->datestamp);
