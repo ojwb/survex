@@ -704,8 +704,11 @@ data_file(const char *pth, const char *fnm)
 	     /* Note: Larry says a 2 digit year is always 19XX */
 	     if (year < 100) year += 1900;
 
+	     /* Compass uses 1901-01-01 when no date was specified. */
+	     if (year == 1901 && day == 1 && month == 1) goto compass_dat_no_date;
 	     pcs->meta->days1 = pcs->meta->days2 = days_since_1900(year, month, day);
 	 } else {
+compass_dat_no_date:
 	     pcs->meta->days1 = pcs->meta->days2 = -1;
 	 }
 	 pcs->declination = HUGE_REAL;
