@@ -2319,7 +2319,7 @@ bad_plt_date:
 	       q += len;
 	       /* Now read LRUD.  Technically, this is optional but virtually
 		* all PLT files have it (with dummy negative values if no LRUD
-		* was measured) and some versions of Compass can't read PLT
+		* was recorded) and some versions of Compass can't read PLT
 		* files without it!
 		*/
 	       while (*q && *q <= ' ') q++;
