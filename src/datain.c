@@ -50,7 +50,8 @@
 #define var(I) (pcs->Var[(I)])
 
 /* true if x is not-a-number value in Compass (999.0 or -999.0)    */
-/* Compass uses 999.0 but understands Karst data which used -999.0 */
+/* Compass uses -999.0 but understands Karst data which used 999.0
+ * (information from Larry Fish via Simeon Warner). */
 #define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
 
 int ch;
