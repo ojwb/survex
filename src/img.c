@@ -305,11 +305,11 @@ static img_errcode img_errno = IMG_NONE;
 
 /* Flags bitwise-or-ed into pending to track XSECTs. */
 #define PENDING_XSECT_END	0x100
-#define PENDING_HAD_XSECT	0x001 // Only for VERSION_COMPASS_PLT
-#define PENDING_MOVE		0x002 // Only for VERSION_COMPASS_PLT
-#define PENDING_LINE		0x004 // Only for VERSION_COMPASS_PLT
-#define PENDING_XSECT		0x008 // Only for VERSION_COMPASS_PLT
-#define PENDING_FLAGS_SHIFT	9 // Only for VERSION_COMPASS_PLT
+#define PENDING_HAD_XSECT	0x001 /* Only for VERSION_COMPASS_PLT */
+#define PENDING_MOVE		0x002 /* Only for VERSION_COMPASS_PLT */
+#define PENDING_LINE		0x004 /* Only for VERSION_COMPASS_PLT */
+#define PENDING_XSECT		0x008 /* Only for VERSION_COMPASS_PLT */
+#define PENDING_FLAGS_SHIFT	9 /* Only for VERSION_COMPASS_PLT */
 
 /* Days from start of 1900 to start of 1970. */
 #define DAYS_1900 25567
