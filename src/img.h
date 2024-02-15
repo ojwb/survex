@@ -198,6 +198,8 @@ typedef struct {
    int olddays1, olddays2;
 #endif
    int oldstyle;
+   /* Pointer to extra data reading some formats requires. */
+   void *data;
 } img;
 
 /* Which version of the file format to output (defaults to newest) */

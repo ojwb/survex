@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <locale.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -319,6 +320,139 @@ static img_errcode img_errno = IMG_NONE;
 /* Seconds in a day. */
 #define SECS_PER_DAY 86400L
 
+static unsigned
+hash_data(const char *s, unsigned len)
+{
+    /* djb2 hash but with an initial value of zero. */
+    unsigned h = 0;
+    while (len) {
+	unsigned char c = (unsigned char)*s++;
+	h = ((h << 5) + h) + c;
+	--len;
+    }
+    return h;
+}
+
+struct compass_station {
+    struct compass_station *next;
+    unsigned char flags;
+    unsigned char len;
+    char name[1];
+};
+
+/* On the first pass, at the start of each survey we run through all the
+ * hash table entries that exist and set this flag.
+ *
+ * If this flag is set when we add flags to an existing station we
+ * know it appears in multiple surveys and can infer img_SFLAG_EXPORTED.
+ */
+#define COMPASS_SFLAG_DIFFERENT_SURVEY 0x80
+
+#define COMPASS_SFLAG_MASK 0x7f
+
+/* How many hash buckets to use (must be a power of 2).
+ *
+ * Each bucket is a linked list so this doesn't limit how many entries we can
+ * store, but should be sized based on a plausible estimate of how many
+ * different stations we're likely to see in a single PLT file.
+ */
+#define HASH_BUCKETS 0x2000U
+
+static void*
+compass_plt_allocate_hash(void)
+{
+    struct compass_station_name** htab = xosmalloc(HASH_BUCKETS * sizeof(struct compass_station_name*));
+    if (htab) {
+	unsigned i;
+	for (i = 0; i < HASH_BUCKETS; ++i) 
+	    htab[i] = NULL;
+    }
+    return htab;
+}
+
+static int
+compass_plt_update_station(img *pimg, const char *name, int name_len,
+			   unsigned flags)
+{
+    struct compass_station *p;
+    struct compass_station **htab = (struct compass_station**)pimg->data;
+    htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
+    for (p = *htab; p; p = p->next) {
+	if (p->len == name_len) {
+	    if (memcmp(name, p->name, name_len) == 0) {
+		p->flags |= flags;
+		if (p->flags & COMPASS_SFLAG_DIFFERENT_SURVEY)
+		    p->flags |= img_SFLAG_EXPORTED;
+		return 0;
+	    }
+	}
+    }
+    p = malloc(offsetof(struct compass_station, name) + name_len);
+    if (!p) return -1;
+    /* We don't seem to get a reliable indication of surface vs
+     * underground so we assume underground.
+     */
+    p->flags = flags | img_SFLAG_UNDERGROUND;
+    p->len = name_len;
+    memcpy(p->name, name, name_len);
+    p->next = *htab;
+    *htab = p;
+    return 0;
+}
+
+static void
+compass_plt_new_survey(img *pimg)
+{
+    struct compass_station **htab = (struct compass_station**)pimg->data;
+    int i = HASH_BUCKETS;
+    while (--i) {
+	struct compass_station *p;
+	for (p = *htab; p; p = p->next) {
+	    p->flags |= COMPASS_SFLAG_DIFFERENT_SURVEY;
+	} 
+	++htab;
+    }
+}
+
+static void
+compass_plt_free_data(img *pimg)
+{
+    struct compass_station **htab = (struct compass_station**)pimg->data;
+    int i = HASH_BUCKETS;
+    while (--i) {
+	struct compass_station *p = *htab;
+	while (p) {
+	    struct compass_station *next = p->next;
+	    osfree(p);
+	    p = next;
+	}
+	++htab;
+    }
+    osfree(pimg->data);
+    pimg->data = NULL;
+}
+
+static unsigned
+compass_plt_get_station_flags(img *pimg, const char *name)
+{
+    struct compass_station *p;
+    struct compass_station **htab = (struct compass_station**)pimg->data;
+    int name_len = strlen(name);
+    htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
+    for (p = *htab; p; p = p->next) {
+	if (p->len == name_len) {
+	    if (memcmp(name, p->name, name_len) == 0) {
+		if (p->flags & COMPASS_SFLAG_DIFFERENT_SURVEY) {
+		    p->flags &= ~COMPASS_SFLAG_DIFFERENT_SURVEY;
+		    return p->flags;
+		}
+		return -1;
+	    }
+	}
+    }
+    return -1;
+}
+
 static char *
 my_strdup(const char *str)
 {
@@ -493,6 +627,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 
    pimg->flags = 0;
    pimg->filename_opened = NULL;
+   pimg->data = NULL;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
    /* for VERSION_COMPASS_PLT, 0 value indicates we haven't
@@ -579,6 +714,15 @@ plt_file:
       if (!pimg->datestamp) {
 	 goto out_of_memory_error;
       }
+      pimg->data = compass_plt_allocate_hash();
+      if (!pimg->data) {
+	 goto out_of_memory_error;
+      }
+
+      /* Read through the whole file first, recording any station flags
+       * (pimg->data), finding where to start reading data from (pimg->start),
+       * and deciding what to report for "title".
+       */
       while (1) {
 	 ch = GETC(pimg->fh);
 	 switch (ch) {
@@ -621,6 +765,7 @@ plt_file:
 	    break;
 	  case 'N': {
 	    char *line, *q;
+	    compass_plt_new_survey(pimg);
 	    if (pimg->start >= 0) break;
 	    fpos = ftell(pimg->fh) - 1;
 	    if (!pimg->survey) {
@@ -652,6 +797,108 @@ plt_file:
 		goto out_of_memory_error;
 	    }
 	    pimg->start = fpos;
+	    continue;
+	  }
+	  case 'M':
+	  case 'D':
+	  case 'd': {
+	    /* Move or Draw */
+	    char *line, *q, *name;
+	    unsigned station_flags = 0;
+	    int name_len;
+
+	    line = getline_alloc(pimg->fh);
+	    if (!line) {
+	       goto out_of_memory_error;
+	    }
+
+	    /* Find station name. */
+	    q = strchr(line, 'S');
+	    if (!q) {
+	       osfree(line);
+	       /* Leave reporting error to second pass for consistency. */
+	       continue;
+	    }
+	    name = q + 1;
+	    name_len = 0;
+	    while (name[name_len] > ' ') ++name_len;
+	    if (name_len > 255) {
+	       /* The spec says "up to 12 characters", we allow up to 255. */
+	       osfree(line);
+	       img_errno = IMG_BADFORMAT;
+	       goto error;
+	    }
+
+	    /* Check for the "distance from entrance" field. */
+	    q = strchr(name + name_len, 'I');
+	    if (q) {
+		double distance_from_entrance;
+		int bytes_used = 0;
+		++q;
+		if (sscanf(q, "%lf%n",
+			   &distance_from_entrance, &bytes_used) == 1 &&
+		    distance_from_entrance == 0.0) {
+		    /* Infer an entrance. */
+		    station_flags |= img_SFLAG_ENTRANCE;
+		}
+		q += bytes_used;
+		while (*q && *q <= ' ') q++;
+	    } else {
+		q = strchr(name + name_len, 'F');
+	    }
+
+	    if (q && *q == 'F') {
+		/* "Shot Flags". */
+		while (isalpha((unsigned char)*++q)) {
+		    if (*q == 'S') {
+			/* The format specification says «The shot is a "splay"
+			 * shot, which is a shot from a station to the wall to
+			 * define the passage shape.» so we set the wall flag
+			 * for the to station.
+			 */
+			station_flags |= img_SFLAG_WALL;
+			goto done_with_shot_flags;
+		    }
+		}
+done_with_shot_flags: ;
+	    }
+
+	    if (compass_plt_update_station(pimg, name, name_len,
+					   station_flags) < 0) {
+		goto out_of_memory_error;
+	    }
+
+	    osfree(line);
+	    continue;
+	  }
+	  case 'P': {
+	    /* Fixed point. */
+	    char *line, *q, *name;
+	    int name_len;
+
+	    line = getline_alloc(pimg->fh);
+	    if (!line) {
+	       goto out_of_memory_error;
+	    }
+	    q = line;
+	    while (*q && *q <= ' ') q++;
+	    name = q;
+	    name_len = 0;
+	    while (name[name_len] > ' ') ++name_len;
+
+	    if (name_len > 255) {
+	       /* The spec says "up to 12 characters", we allow up to 255. */
+	       osfree(line);
+	       img_errno = IMG_BADFORMAT;
+	       goto error;
+	    }
+
+	    if (compass_plt_update_station(pimg, name, name_len,
+					   img_SFLAG_FIXED) < 0) {
+		goto out_of_memory_error;
+	    }
+
+	    osfree(line);
 	    continue;
 	  }
 	 }
@@ -1106,6 +1353,7 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
    }
 
    pimg->filename_opened = NULL;
+   pimg->data = NULL;
 
    /* Output image file header */
    fputs("Survex 3D Image File\n", pimg->fh); /* file identifier string */
@@ -2169,6 +2417,7 @@ skip_to_N:
 	       }
 	       /* FALLTHRU */
 	    case 'N':
+	       compass_plt_new_survey(pimg);
 	       line = getline_alloc(pimg->fh);
 	       if (!line) {
 		  img_errno = IMG_OUTOFMEMORY;
@@ -2353,19 +2602,11 @@ bad_plt_date:
 		       pimg->pending = PENDING_XSECT_END;
 		   }
 	       }
-	       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
 	       while (*q && *q <= ' ') q++;
 	       if (*q == 'I') {
-		   double distance_from_entrance;
-		   int bytes_used = 0;
-		   ++q;
-		   if (sscanf(q, "%lf%n",
-			      &distance_from_entrance, &bytes_used) == 1 &&
-		       distance_from_entrance == 0.0) {
-		       /* Infer an entrance. */
-		       pimg->flags |= img_SFLAG_ENTRANCE;
-		   }
-		   q += bytes_used;
+		   /* Skip distance from entrance. */
+		   do ++q; while (*q && *q <= ' ');
+		   while (*q > ' ') q++;
 		   while (*q && *q <= ' ') q++;
 	       }
 	       if (*q == 'F') {
@@ -2383,12 +2624,30 @@ bad_plt_date:
 	       }
 	       osfree(line);
 	       if (fpos != -1) {
-		  fseek(pimg->fh, fpos, SEEK_SET);
-	       } else if (ch == 'M') {
-		  pimg->pending |= PENDING_MOVE;
-	       } else {
-		  pimg->pending |= PENDING_LINE | (shot_flags << PENDING_FLAGS_SHIFT);
+		   fseek(pimg->fh, fpos, SEEK_SET);
 	       }
+
+	       {
+		   const char *name = pimg->label + pimg->label_len + 1;
+		   pimg->flags = compass_plt_get_station_flags(pimg, name);
+	       }
+
+	       if (pimg->flags < 0) {
+		   pimg->flags = shot_flags;
+		   /* We've already emitted img_LABEL for this station. */
+		   if (ch == 'M') {
+		       return img_MOVE;
+		   }
+		   return img_LINE;
+	       }
+	       if (fpos == -1) {
+		   if (ch == 'M') {
+		       pimg->pending |= PENDING_MOVE;
+		   } else {
+		       pimg->pending |= PENDING_LINE | (shot_flags << PENDING_FLAGS_SHIFT);
+		   }
+	       }
+
 	       return img_LABEL;
 	    }
 	    default:
@@ -3018,6 +3277,15 @@ img_close(img *pimg)
 	 if (pimg->close_func && pimg->close_func(pimg->fh))
 	     result = 0;
 	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;
+      }
+      if (pimg->data) {
+	  switch (pimg->version) {
+	    case VERSION_COMPASS_PLT:
+	      compass_plt_free_data(pimg);
+	      break;
+	    default:
+	      osfree(pimg->data);
+	  }
       }
       osfree(pimg->label_buf);
       osfree(pimg->filename_opened);
