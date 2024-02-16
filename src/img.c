@@ -634,7 +634,7 @@ compass_plt_open(img *pimg)
 		} else {
 		    utm_zone = 32700 - utm_zone;
 		}
-		pimg->cs = osmalloc(11);
+		pimg->cs = (char*)xosmalloc(11);
 		if (!pimg->cs) {
 		    return IMG_OUTOFMEMORY;
 		}
