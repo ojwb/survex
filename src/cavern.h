@@ -88,7 +88,17 @@ typedef enum {
 } q_quantity;
 
 typedef enum {
-   INFER_NULL = -1, INFER_EQUATES, INFER_EXPORTS, INFER_PLUMBS, INFER_SUBSURVEYS
+   INFER_NULL = -1,
+   INFER_EQUATES,
+   INFER_EXPORTS,
+   INFER_PLUMBS,
+   INFER_SUBSURVEYS,
+   /* In Compass DAT files a dummy zero-length leg from a station to itself is
+    * used to provide a place to specify LRUD for the start or end of a
+    * traverse (depending if dimensions are measured at the from or to
+    * station), so we shouldn't warn about equating a station to itself.
+    */
+   INFER_EQUATES_SELF_OK
 } infer_what;
 
 /* unsigned long to cope with 16-bit int-s */

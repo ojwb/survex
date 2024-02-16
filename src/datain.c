@@ -624,7 +624,10 @@ data_file(const char *pth, const char *fnm)
       pcs->Translate = t;
       pcs->Case = OFF;
       pcs->Truncate = INT_MAX;
-      pcs->infer = BIT(INFER_EQUATES)|BIT(INFER_EXPORTS)|BIT(INFER_PLUMBS);
+      pcs->infer = BIT(INFER_EQUATES)|
+		   BIT(INFER_EQUATES_SELF_OK)|
+		   BIT(INFER_EXPORTS)|
+		   BIT(INFER_PLUMBS);
    } else if (fmt == FMT_MAK) {
       short *t;
       int i;
@@ -1960,7 +1963,8 @@ data_normal(void)
 		 (VAL(Tape) == (real)0.0 || VAL(Tape) == HUGE_REAL) &&
 		 (VAL(BackTape) == (real)0.0 || VAL(BackTape) == HUGE_REAL) &&
 		 VAL(FrDepth) == VAL(ToDepth)) {
-		process_equate(fr, to);
+		if (!TSTBIT(pcs->infer, INFER_EQUATES_SELF_OK) || fr != to)
+		   process_equate(fr, to);
 		goto inferred_equate;
 	     }
 	     if (fRev) {
@@ -2085,7 +2089,8 @@ data_normal(void)
 		 (VAL(Tape) == (real)0.0 || VAL(Tape) == HUGE_REAL) &&
 		 (VAL(BackTape) == (real)0.0 || VAL(BackTape) == HUGE_REAL) &&
 		 VAL(FrDepth) == VAL(ToDepth)) {
-		process_equate(fr, to);
+		if (!TSTBIT(pcs->infer, INFER_EQUATES_SELF_OK) || fr != to)
+		   process_equate(fr, to);
 		process_eol();
 		return;
 	     }

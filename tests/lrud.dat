@@ -1,0 +1,15 @@
+Cave of the dimensioned passage
+SURVEY NAME: PASSAGEWAY
+SURVEY DATE: 1 1 1901
+SURVEY TEAM: 
+ 
+DECLINATION:    0.00  FORMAT: DMMDLRUDLAD
+
+    FROM       TO   LENGTH  BEARING      INC     LEFT       UP     DOWN    RIGHT   FLAGS  COMMENTS
+
+     AA1      AA2    37.10    45.00    -6.00    29.00    32.00     5.00     8.00
+     AA2      AA3    34.56    56.00   -11.00    19.00    24.00     5.00     7.00
+     AA3      AA4    20.66    53.00   -13.00    13.00    26.00     5.00     9.00
+     AA4      AA5    36.65    48.00   -10.00     8.00    29.00     5.00    12.00
+     AA5      AA5     0.00     0.00     0.00    12.99    25.00     5.00     6.00
+

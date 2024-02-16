@@ -93,7 +93,8 @@ percent_gradient.svx percent_gradient.pos\
 dotinsurvey.svx dotinsurvey.out\
 2fixbug.svx leandroclino.svx leandroclino.pos lowsd.svx revdir.svx revdir.pos\
 gettokennullderef.svx lech.svx level.svx level.pos\
-corrections.dat corrections.pos ignore.dat ignore.pos backread.dat backread.dump\
+backread.dat backread.dump corrections.dat corrections.pos\
+ignore.dat ignore.pos lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
 fixfeet.mak fixfeet.pos\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
