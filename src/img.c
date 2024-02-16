@@ -588,6 +588,212 @@ img_open_survey(const char *fnm, const char *survey)
    return pimg;
 }
 
+static int
+compass_plt_open(img *pimg, const char* fnm)
+{
+    long fpos;
+    pimg->version = VERSION_COMPASS_PLT;
+    /* Spaces aren't legal in Compass station names, but dots are, so
+     * use space as the level separator */
+    pimg->separator = ' ';
+    pimg->start = -1;
+    pimg->datestamp = my_strdup(TIMENA);
+    if (!pimg->datestamp) {
+	return IMG_OUTOFMEMORY;
+    }
+    pimg->data = compass_plt_allocate_hash();
+    if (!pimg->data) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* Read through the whole file first, recording any station flags
+     * (pimg->data), finding where to start reading data from (pimg->start),
+     * and deciding what to report for "title".
+     */
+    while (1) {
+	int ch = GETC(pimg->fh);
+	switch (ch) {
+	  case '\x1a':
+	    fseek(pimg->fh, -1, SEEK_CUR);
+	    /* FALL THRU */
+	  case EOF:
+	    if (pimg->start < 0) {
+		pimg->start = ftell(pimg->fh);
+	    } else {
+		fseek(pimg->fh, pimg->start, SEEK_SET);
+	    }
+	    if (!pimg->title || !pimg->title[0]) {
+		osfree(pimg->title);
+		pimg->title = baseleaf_from_fnm(fnm);
+	    }
+	    return 0;
+	  case 'S':
+	    /* "Section" - in the case where we aren't filtering by survey
+	     * (i.e. pimg->survey == NULL): if there's only one non-empty
+	     * section name specified, we use it as the title.
+	     */
+	    if (pimg->survey == NULL && (!pimg->title || pimg->title[0])) {
+		char *line = getline_alloc(pimg->fh);
+		if (line[0]) {
+		    if (pimg->title) {
+			if (strcmp(pimg->title, line) != 0) {
+			    /* Two different non-empty section names found. */
+			    pimg->title[0] = '\0';
+			}
+			osfree(line);
+		    } else {
+			pimg->title = line;
+		    }
+		} else {
+		    osfree(line);
+		}
+		continue;
+	    }
+	    break;
+	  case 'N': {
+	      char *line, *q;
+	      size_t len;
+	      compass_plt_new_survey(pimg);
+	      if (pimg->start >= 0) break;
+	      fpos = ftell(pimg->fh) - 1;
+	      if (!pimg->survey) {
+		  /* We're not filtering by survey so just note down the file
+		   * offset for the first N command. */
+		  pimg->start = fpos;
+		  break;
+	      }
+	      line = getline_alloc(pimg->fh);
+	      if (!line) {
+		  return IMG_OUTOFMEMORY;
+	      }
+	      len = 0;
+	      while (line[len] > 32) ++len;
+	      if (!buf_included(pimg, line, len)) {
+		  /* Not the survey we are looking for. */
+		  osfree(line);
+		  continue;
+	      }
+	      q = strchr(line + len, 'C');
+	      if (q && q[1]) {
+		  osfree(pimg->title);
+		  pimg->title = my_strdup(q + 1);
+	      } else if (!pimg->title) {
+		  pimg->title = my_strdup(pimg->label);
+	      }
+	      osfree(line);
+	      if (!pimg->title) {
+		  return IMG_OUTOFMEMORY;
+	      }
+	      pimg->start = fpos;
+	      continue;
+	  }
+	  case 'M':
+	  case 'D':
+	  case 'd': {
+	      /* Move or Draw */
+	      char *line, *q, *name;
+	      unsigned station_flags = 0;
+	      int name_len;
+
+	      line = getline_alloc(pimg->fh);
+	      if (!line) {
+		  return IMG_OUTOFMEMORY;
+	      }
+
+	      /* Find station name. */
+	      q = strchr(line, 'S');
+	      if (!q) {
+		  osfree(line);
+		  /* Leave reporting error to second pass for consistency. */
+		  continue;
+	      }
+	      name = q + 1;
+	      name_len = 0;
+	      while (name[name_len] > ' ') ++name_len;
+	      if (name_len > 255) {
+		  /* The spec says "up to 12 characters", we allow up to 255. */
+		  osfree(line);
+		  return IMG_BADFORMAT;
+	      }
+
+	      /* Check for the "distance from entrance" field. */
+	      q = strchr(name + name_len, 'I');
+	      if (q) {
+		  double distance_from_entrance;
+		  int bytes_used = 0;
+		  ++q;
+		  if (sscanf(q, "%lf%n",
+			     &distance_from_entrance, &bytes_used) == 1 &&
+		      distance_from_entrance == 0.0) {
+		      /* Infer an entrance. */
+		      station_flags |= img_SFLAG_ENTRANCE;
+		  }
+		  q += bytes_used;
+		  while (*q && *q <= ' ') q++;
+	      } else {
+		  q = strchr(name + name_len, 'F');
+	      }
+
+	      if (q && *q == 'F') {
+		  /* "Shot Flags". */
+		  while (isalpha((unsigned char)*++q)) {
+		      if (*q == 'S') {
+			  /* The format specification says «The shot is a "splay"
+			   * shot, which is a shot from a station to the wall to
+			   * define the passage shape.» so we set the wall flag
+			   * for the to station.
+			   */
+			  station_flags |= img_SFLAG_WALL;
+			  goto done_with_shot_flags;
+		      }
+		  }
+done_with_shot_flags: ;
+	      }
+
+	      if (compass_plt_update_station(pimg, name, name_len,
+					     station_flags) < 0) {
+		  return IMG_OUTOFMEMORY;
+	      }
+
+	      osfree(line);
+	      continue;
+	  }
+	  case 'P': {
+	      /* Fixed point. */
+	      char *line, *q, *name;
+	      int name_len;
+
+	      line = getline_alloc(pimg->fh);
+	      if (!line) {
+		  return IMG_OUTOFMEMORY;
+	      }
+	      q = line;
+	      while (*q && *q <= ' ') q++;
+	      name = q;
+	      name_len = 0;
+	      while (name[name_len] > ' ') ++name_len;
+
+	      if (name_len > 255) {
+		  /* The spec says "up to 12 characters", we allow up to 255. */
+		  osfree(line);
+		  return IMG_BADFORMAT;
+	      }
+
+	      if (compass_plt_update_station(pimg, name, name_len,
+					     img_SFLAG_FIXED) < 0) {
+		  return IMG_OUTOFMEMORY;
+	      }
+
+	      osfree(line);
+	      continue;
+	  }
+	}
+	while (ch != '\n' && ch != '\r') {
+	    ch = GETC(pimg->fh);
+	}
+    }
+}
+
 img *
 img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 		       const char *fnm,
@@ -703,209 +909,14 @@ pos_file:
    }
 
    if (has_ext(fnm, len, EXT_PLT) || has_ext(fnm, len, EXT_PLF)) {
-      long fpos;
+       int result;
 plt_file:
-      pimg->version = VERSION_COMPASS_PLT;
-      /* Spaces aren't legal in Compass station names, but dots are, so
-       * use space as the level separator */
-      pimg->separator = ' ';
-      pimg->start = -1;
-      pimg->datestamp = my_strdup(TIMENA);
-      if (!pimg->datestamp) {
-	 goto out_of_memory_error;
-      }
-      pimg->data = compass_plt_allocate_hash();
-      if (!pimg->data) {
-	 goto out_of_memory_error;
-      }
-
-      /* Read through the whole file first, recording any station flags
-       * (pimg->data), finding where to start reading data from (pimg->start),
-       * and deciding what to report for "title".
-       */
-      while (1) {
-	 ch = GETC(pimg->fh);
-	 switch (ch) {
-	  case '\x1a':
-	    fseek(pimg->fh, -1, SEEK_CUR);
-	    /* FALL THRU */
-	  case EOF:
-	    if (pimg->start < 0) {
-	       pimg->start = ftell(pimg->fh);
-	    } else {
-	       fseek(pimg->fh, pimg->start, SEEK_SET);
-	    }
-	    if (!pimg->title || !pimg->title[0]) {
-	       osfree(pimg->title);
-	       pimg->title = baseleaf_from_fnm(fnm);
-	    }
-	    return pimg;
-	  case 'S':
-	    /* "Section" - in the case where we aren't filtering by survey
-	     * (i.e. pimg->survey == NULL): if there's only one non-empty
-	     * section name specified, we use it as the title.
-	     */
-	    if (pimg->survey == NULL && (!pimg->title || pimg->title[0])) {
-	       char *line = getline_alloc(pimg->fh);
-	       if (line[0]) {
-		  if (pimg->title) {
-		     if (strcmp(pimg->title, line) != 0) {
-			/* Two different non-empty section names found. */
-			pimg->title[0] = '\0';
-		     }
-		     osfree(line);
-		  } else {
-		     pimg->title = line;
-		  }
-	       } else {
-		  osfree(line);
-	       }
-	       continue;
-	    }
-	    break;
-	  case 'N': {
-	    char *line, *q;
-	    compass_plt_new_survey(pimg);
-	    if (pimg->start >= 0) break;
-	    fpos = ftell(pimg->fh) - 1;
-	    if (!pimg->survey) {
-	       /* We're not filtering by survey so just note down the file
-		* offset for the first N command. */
-	       pimg->start = fpos;
-	       break;
-	    }
-	    line = getline_alloc(pimg->fh);
-	    if (!line) {
-	       goto out_of_memory_error;
-	    }
-	    len = 0;
-	    while (line[len] > 32) ++len;
-	    if (!buf_included(pimg, line, len)) {
-	       /* Not the survey we are looking for. */
-	       osfree(line);
-	       continue;
-	    }
-	    q = strchr(line + len, 'C');
-	    if (q && q[1]) {
-		osfree(pimg->title);
-		pimg->title = my_strdup(q + 1);
-	    } else if (!pimg->title) {
-		pimg->title = my_strdup(pimg->label);
-	    }
-	    osfree(line);
-	    if (!pimg->title) {
-		goto out_of_memory_error;
-	    }
-	    pimg->start = fpos;
-	    continue;
-	  }
-	  case 'M':
-	  case 'D':
-	  case 'd': {
-	    /* Move or Draw */
-	    char *line, *q, *name;
-	    unsigned station_flags = 0;
-	    int name_len;
-
-	    line = getline_alloc(pimg->fh);
-	    if (!line) {
-	       goto out_of_memory_error;
-	    }
-
-	    /* Find station name. */
-	    q = strchr(line, 'S');
-	    if (!q) {
-	       osfree(line);
-	       /* Leave reporting error to second pass for consistency. */
-	       continue;
-	    }
-	    name = q + 1;
-	    name_len = 0;
-	    while (name[name_len] > ' ') ++name_len;
-	    if (name_len > 255) {
-	       /* The spec says "up to 12 characters", we allow up to 255. */
-	       osfree(line);
-	       img_errno = IMG_BADFORMAT;
-	       goto error;
-	    }
-
-	    /* Check for the "distance from entrance" field. */
-	    q = strchr(name + name_len, 'I');
-	    if (q) {
-		double distance_from_entrance;
-		int bytes_used = 0;
-		++q;
-		if (sscanf(q, "%lf%n",
-			   &distance_from_entrance, &bytes_used) == 1 &&
-		    distance_from_entrance == 0.0) {
-		    /* Infer an entrance. */
-		    station_flags |= img_SFLAG_ENTRANCE;
-		}
-		q += bytes_used;
-		while (*q && *q <= ' ') q++;
-	    } else {
-		q = strchr(name + name_len, 'F');
-	    }
-
-	    if (q && *q == 'F') {
-		/* "Shot Flags". */
-		while (isalpha((unsigned char)*++q)) {
-		    if (*q == 'S') {
-			/* The format specification says «The shot is a "splay"
-			 * shot, which is a shot from a station to the wall to
-			 * define the passage shape.» so we set the wall flag
-			 * for the to station.
-			 */
-			station_flags |= img_SFLAG_WALL;
-			goto done_with_shot_flags;
-		    }
-		}
-done_with_shot_flags: ;
-	    }
-
-	    if (compass_plt_update_station(pimg, name, name_len,
-					   station_flags) < 0) {
-		goto out_of_memory_error;
-	    }
-
-	    osfree(line);
-	    continue;
-	  }
-	  case 'P': {
-	    /* Fixed point. */
-	    char *line, *q, *name;
-	    int name_len;
-
-	    line = getline_alloc(pimg->fh);
-	    if (!line) {
-	       goto out_of_memory_error;
-	    }
-	    q = line;
-	    while (*q && *q <= ' ') q++;
-	    name = q;
-	    name_len = 0;
-	    while (name[name_len] > ' ') ++name_len;
-
-	    if (name_len > 255) {
-	       /* The spec says "up to 12 characters", we allow up to 255. */
-	       osfree(line);
-	       img_errno = IMG_BADFORMAT;
-	       goto error;
-	    }
-
-	    if (compass_plt_update_station(pimg, name, name_len,
-					   img_SFLAG_FIXED) < 0) {
-		goto out_of_memory_error;
-	    }
-
-	    osfree(line);
-	    continue;
-	  }
-	 }
-	 while (ch != '\n' && ch != '\r') {
-	    ch = GETC(pimg->fh);
-	 }
-      }
+       result = compass_plt_open(pimg, fnm);
+       if (result) {
+	   img_errno = result;
+	   goto error;
+       }
+       return pimg;
    }
 
    /* Although these are often referred to as "CMAP .XYZ files", it seems
