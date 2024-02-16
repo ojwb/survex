@@ -453,6 +453,8 @@ compass_plt_get_station_flags(img *pimg, const char *name)
     return -1;
 }
 
+#define COMPASS_DATUM_WGS84 1
+
 static char *
 my_strdup(const char *str)
 {
@@ -591,7 +593,10 @@ img_open_survey(const char *fnm, const char *survey)
 static int
 compass_plt_open(img *pimg)
 {
+    int utm_zone = 0;
+    int datum = 0;
     long fpos;
+
     pimg->version = VERSION_COMPASS_PLT;
     /* Spaces aren't legal in Compass station names, but dots are, so
      * use space as the level separator */
@@ -622,6 +627,20 @@ compass_plt_open(img *pimg)
 	    } else {
 		fseek(pimg->fh, pimg->start, SEEK_SET);
 	    }
+
+	    if (datum && utm_zone && abs(utm_zone) <= 60) {
+		if (utm_zone > 0) {
+		    utm_zone = 32600 + utm_zone;
+		} else {
+		    utm_zone = 32700 - utm_zone;
+		}
+		pimg->cs = osmalloc(11);
+		if (!pimg->cs) {
+		    return IMG_OUTOFMEMORY;
+		}
+		sprintf(pimg->cs, "EPSG:%d", utm_zone);
+	    }
+
 	    return 0;
 	  case 'S':
 	    /* "Section" - in the case where we aren't filtering by survey
@@ -778,6 +797,60 @@ done_with_shot_flags: ;
 	      if (compass_plt_update_station(pimg, name, name_len,
 					     img_SFLAG_FIXED) < 0) {
 		  return IMG_OUTOFMEMORY;
+	      }
+
+	      osfree(line);
+	      continue;
+	  }
+	  case 'G': {
+	      /* UTM Zone - 1 to 60 for North, -1 to -60 for South. */
+	      char *line = getline_alloc(pimg->fh);
+	      char *p = line;
+	      long v = strtol(p, &p, 10);
+	      if (v < -60 || v > 60 || v == 0 || *p > ' ') {
+		  osfree(line);
+		  continue;
+	      }
+	      if (utm_zone && utm_zone != v) {
+		  /* More than one UTM zone specified. */
+		  /* FIXME: We could handle this by reprojecting, but then we'd
+		   * need access to PROJ from img.
+		   */
+		  utm_zone = 99;
+	      } else {
+		  utm_zone = v;
+	      }
+	      osfree(line);
+	      continue;
+	  }
+	  case 'O': {
+	      /* Datum. */
+	      int new_datum;
+	      char *line = getline_alloc(pimg->fh);
+	      if (utm_zone == 99) {
+		  osfree(line);
+		  continue;
+	      }
+
+	      /* FIXME: Handle other datums */
+	      /* Also seen: North American 1927 */
+	      /* Other valid values from docs:
+	       * North American 1983
+	       * An old changelog entry suggests at least 24 datums are
+	       * supported.
+	       */
+	      if (strcmp(line, "WGS 1984") == 0) {
+		  new_datum = COMPASS_DATUM_WGS84;
+	      } else {
+		  utm_zone = 99;
+		  osfree(line);
+		  continue;
+	      }
+
+	      if (datum == 0) {
+		  datum = new_datum;
+	      } else if (datum != new_datum) {
+		  utm_zone = 99;
 	      }
 
 	      osfree(line);
