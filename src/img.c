@@ -589,7 +589,7 @@ img_open_survey(const char *fnm, const char *survey)
 }
 
 static int
-compass_plt_open(img *pimg, const char* fnm)
+compass_plt_open(img *pimg)
 {
     long fpos;
     pimg->version = VERSION_COMPASS_PLT;
@@ -621,10 +621,6 @@ compass_plt_open(img *pimg, const char* fnm)
 		pimg->start = ftell(pimg->fh);
 	    } else {
 		fseek(pimg->fh, pimg->start, SEEK_SET);
-	    }
-	    if (!pimg->title || !pimg->title[0]) {
-		osfree(pimg->title);
-		pimg->title = baseleaf_from_fnm(fnm);
 	    }
 	    return 0;
 	  case 'S':
@@ -795,7 +791,7 @@ done_with_shot_flags: ;
 }
 
 static int
-cmap_xyz_open(img *pimg, const char* fnm)
+cmap_xyz_open(img *pimg)
 {
     size_t len;
     char *line = getline_alloc(pimg->fh);
@@ -880,9 +876,7 @@ cmap_xyz_open(img *pimg, const char* fnm)
     }
 bad_cmap_date:
     if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
-		LITLEN("  Cave Survey Data Processed by CMAP ")) == 0) {
-	len = 0;
-    } else {
+		LITLEN("  Cave Survey Data Processed by CMAP ")) != 0) {
 	if (len > 45) {
 	    line[45] = '\0';
 	    len = 45;
@@ -893,7 +887,6 @@ bad_cmap_date:
 	    pimg->title = my_strdup(line + 2);
 	}
     }
-    if (len <= 2) pimg->title = baseleaf_from_fnm(fnm);
     osfree(line);
     if (!pimg->datestamp || !pimg->title) {
 	return IMG_OUTOFMEMORY;
@@ -1028,24 +1021,23 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    if (has_ext(fnm, len, EXT_SVX_POS)) {
 pos_file:
       pimg->version = VERSION_SURVEX_POS;
-      if (!pimg->survey) pimg->title = baseleaf_from_fnm(fnm);
       pimg->datestamp = my_strdup(TIMENA);
       if (!pimg->datestamp) {
 	 goto out_of_memory_error;
       }
       pimg->start = 0;
-      return pimg;
+      goto successful_return;
    }
 
    if (has_ext(fnm, len, EXT_PLT) || has_ext(fnm, len, EXT_PLF)) {
        int result;
 plt_file:
-       result = compass_plt_open(pimg, fnm);
+       result = compass_plt_open(pimg);
        if (result) {
 	   img_errno = result;
 	   goto error;
        }
-       return pimg;
+       goto successful_return;
    }
 
    /* Although these are often referred to as "CMAP .XYZ files", it seems
@@ -1060,12 +1052,12 @@ plt_file:
        has_ext(fnm, len, "xyz")) {
        int result;
 xyz_file:
-       result = cmap_xyz_open(pimg, fnm);
+       result = cmap_xyz_open(pimg);
        if (result) {
 	   img_errno = result;
 	   goto error;
        }
-       return pimg;
+       goto successful_return;
    }
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
@@ -1129,7 +1121,8 @@ v03d:
    {
        size_t title_len;
        char * title = getline_alloc_len(pimg->fh, &title_len);
-       if (pimg->version == 8 && title) {
+       if (!title) goto out_of_memory_error;
+       if (pimg->version == 8) {
 	   /* We sneak in an extra field after a zero byte here, containing the
 	    * specified coordinate system (if any).  Older readers will just
 	    * not see it (which is fine), and this trick avoids us having to
@@ -1220,7 +1213,7 @@ v03d:
        }
    }
    pimg->datestamp = getline_alloc(pimg->fh);
-   if (!pimg->title || !pimg->datestamp) {
+   if (!pimg->datestamp) {
 out_of_memory_error:
       img_errno = IMG_OUTOFMEMORY;
 error:
@@ -1236,7 +1229,7 @@ error:
    if (pimg->version >= 8) {
       int flags = GETC(pimg->fh);
       if (flags & img_FFLAG_EXTENDED) pimg->is_extended_elevation = 1;
-   } else {
+   } else if (pimg->title) {
       len = strlen(pimg->title);
       if (len > 11 && strcmp(pimg->title + len - 11, " (extended)") == 0) {
 	  pimg->title[len - 11] = '\0';
@@ -1302,6 +1295,12 @@ bad_3d_date:
 
    pimg->start = ftell(pimg->fh);
 
+successful_return:
+   /* If no title from another source, default to the base leafname. */
+   if (!pimg->title || !pimg->title[0]) {
+       osfree(pimg->title);
+       pimg->title = baseleaf_from_fnm(fnm);
+   }
    return pimg;
 }
 
