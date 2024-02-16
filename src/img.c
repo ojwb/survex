@@ -364,7 +364,7 @@ compass_plt_allocate_hash(void)
     struct compass_station_name** htab = xosmalloc(HASH_BUCKETS * sizeof(struct compass_station_name*));
     if (htab) {
 	unsigned i;
-	for (i = 0; i < HASH_BUCKETS; ++i) 
+	for (i = 0; i < HASH_BUCKETS; ++i)
 	    htab[i] = NULL;
     }
     return htab;
@@ -409,7 +409,7 @@ compass_plt_new_survey(img *pimg)
 	struct compass_station *p;
 	for (p = *htab; p; p = p->next) {
 	    p->flags |= COMPASS_SFLAG_DIFFERENT_SURVEY;
-	} 
+	}
 	++htab;
     }
 }
