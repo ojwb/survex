@@ -794,6 +794,135 @@ done_with_shot_flags: ;
     }
 }
 
+static int
+cmap_xyz_open(img *pimg, const char* fnm)
+{
+    size_t len;
+    char *line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+
+    /* Spaces aren't legal in CMAP station names, but dots are, so
+     * use space as the level separator. */
+    pimg->separator = ' ';
+
+    /* There doesn't seem to be a spec for what happens after 1999 with cmap
+     * files, so this code allows for:
+     *  * 21xx -> xx (up to 2150)
+     *  * 21xx -> 1xx (up to 2199)
+     *  * full year being specified instead of 2 digits
+     */
+    len = strlen(line);
+    if (len > 59) {
+	/* Don't just truncate at column 59, allow for a > 2 digit year. */
+	char * p = strstr(line + len, "Page");
+	if (p) {
+	    while (p > line && p[-1] == ' ')
+		--p;
+	    *p = '\0';
+	    len = p - line;
+	} else {
+	    line[59] = '\0';
+	}
+    }
+    if (len > 45) {
+	/* YY/MM/DD HH:MM */
+	struct tm tm;
+	unsigned long v;
+	char * p;
+	pimg->datestamp = my_strdup(line + 45);
+	p = pimg->datestamp;
+	v = strtoul(p, &p, 10);
+	if (v <= 50) {
+	    /* In the absence of a spec for cmap files, assume <= 50 means 21st
+	     * century. */
+	    v += 2000;
+	} else if (v < 200) {
+	    /* Map 100-199 to 21st century. */
+	    v += 1900;
+	}
+	if (v == ULONG_MAX || *p++ != '/')
+	    goto bad_cmap_date;
+	tm.tm_year = v - 1900;
+	v = strtoul(p, &p, 10);
+	if (v < 1 || v > 12 || *p++ != '/')
+	    goto bad_cmap_date;
+	tm.tm_mon = v - 1;
+	v = strtoul(p, &p, 10);
+	if (v < 1 || v > 31 || *p++ != ' ')
+	    goto bad_cmap_date;
+	tm.tm_mday = v;
+	v = strtoul(p, &p, 10);
+	if (v >= 24 || *p++ != ':')
+	    goto bad_cmap_date;
+	tm.tm_hour = v;
+	v = strtoul(p, &p, 10);
+	if (v >= 60)
+	    goto bad_cmap_date;
+	tm.tm_min = v;
+	if (*p == ':') {
+	    v = strtoul(p + 1, &p, 10);
+	    if (v > 60)
+		goto bad_cmap_date;
+	    tm.tm_sec = v;
+	} else {
+	    tm.tm_sec = 0;
+	}
+	tm.tm_isdst = 0;
+	/* We have no indication of what timezone this timestamp is in.  It's
+	 * probably local time for whoever processed the data, so just assume
+	 * UTC, which is at least fairly central in the possibilities.
+	 */
+	pimg->datestamp_numeric = mktime_with_tz(&tm, "");
+    } else {
+	pimg->datestamp = my_strdup(TIMENA);
+    }
+bad_cmap_date:
+    if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
+		LITLEN("  Cave Survey Data Processed by CMAP ")) == 0) {
+	len = 0;
+    } else {
+	if (len > 45) {
+	    line[45] = '\0';
+	    len = 45;
+	}
+	while (len > 2 && line[len - 1] == ' ') --len;
+	if (len > 2) {
+	    line[len] = '\0';
+	    pimg->title = my_strdup(line + 2);
+	}
+    }
+    if (len <= 2) pimg->title = baseleaf_from_fnm(fnm);
+    osfree(line);
+    if (!pimg->datestamp || !pimg->title) {
+	return IMG_OUTOFMEMORY;
+    }
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+    if (line[0] != ' ' || (line[1] != 'S' && line[1] != 'O')) {
+	return IMG_BADFORMAT;
+    }
+    if (line[1] == 'S') {
+	pimg->version = VERSION_CMAP_STATION;
+    } else {
+	pimg->version = VERSION_CMAP_SHOT;
+    }
+    osfree(line);
+    line = getline_alloc(pimg->fh);
+    if (!line) {
+	return IMG_OUTOFMEMORY;
+    }
+    if (line[0] != ' ' || line[1] != '-') {
+	return IMG_BADFORMAT;
+    }
+    osfree(line);
+    pimg->start = ftell(pimg->fh);
+    return 0;
+}
+
 img *
 img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 		       const char *fnm,
@@ -929,131 +1058,14 @@ plt_file:
        has_ext(fnm, len, "adj") ||
        has_ext(fnm, len, "una") ||
        has_ext(fnm, len, "xyz")) {
-      char *line;
+       int result;
 xyz_file:
-      /* Spaces aren't legal in CMAP station names, but dots are, so
-       * use space as the level separator. */
-      pimg->separator = ' ';
-      line = getline_alloc(pimg->fh);
-      if (!line) {
-	 goto out_of_memory_error;
-      }
-      /* There doesn't seem to be a spec for what happens after 1999 with cmap
-       * files, so this code allows for:
-       *  * 21xx -> xx (up to 2150)
-       *  * 21xx -> 1xx (up to 2199)
-       *  * full year being specified instead of 2 digits
-       */
-      len = strlen(line);
-      if (len > 59) {
-	 /* Don't just truncate at column 59, allow for a > 2 digit year. */
-	 char * p = strstr(line + len, "Page");
-	 if (p) {
-	    while (p > line && p[-1] == ' ')
-	       --p;
-	    *p = '\0';
-	    len = p - line;
-	 } else {
-	    line[59] = '\0';
-	 }
-      }
-      if (len > 45) {
-	 /* YY/MM/DD HH:MM */
-	 struct tm tm;
-	 unsigned long v;
-	 char * p;
-	 pimg->datestamp = my_strdup(line + 45);
-	 p = pimg->datestamp;
-	 v = strtoul(p, &p, 10);
-	 if (v <= 50) {
-	    /* In the absence of a spec for cmap files, assume <= 50 means 21st
-	     * century. */
-	    v += 2000;
-	 } else if (v < 200) {
-	    /* Map 100-199 to 21st century. */
-	    v += 1900;
-	 }
-	 if (v == ULONG_MAX || *p++ != '/')
-	    goto bad_cmap_date;
-	 tm.tm_year = v - 1900;
-	 v = strtoul(p, &p, 10);
-	 if (v < 1 || v > 12 || *p++ != '/')
-	    goto bad_cmap_date;
-	 tm.tm_mon = v - 1;
-	 v = strtoul(p, &p, 10);
-	 if (v < 1 || v > 31 || *p++ != ' ')
-	    goto bad_cmap_date;
-	 tm.tm_mday = v;
-	 v = strtoul(p, &p, 10);
-	 if (v >= 24 || *p++ != ':')
-	    goto bad_cmap_date;
-	 tm.tm_hour = v;
-	 v = strtoul(p, &p, 10);
-	 if (v >= 60)
-	    goto bad_cmap_date;
-	 tm.tm_min = v;
-	 if (*p == ':') {
-	    v = strtoul(p + 1, &p, 10);
-	    if (v > 60)
-	       goto bad_cmap_date;
-	    tm.tm_sec = v;
-	 } else {
-	    tm.tm_sec = 0;
-	 }
-	 tm.tm_isdst = 0;
-	 /* We have no indication of what timezone this timestamp is in.  It's
-	  * probably local time for whoever processed the data, so just assume
-	  * UTC, which is at least fairly central in the possibilities.
-	  */
-	 pimg->datestamp_numeric = mktime_with_tz(&tm, "");
-      } else {
-	 pimg->datestamp = my_strdup(TIMENA);
-      }
-bad_cmap_date:
-      if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
-		  LITLEN("  Cave Survey Data Processed by CMAP ")) == 0) {
-	 len = 0;
-      } else {
-	 if (len > 45) {
-	    line[45] = '\0';
-	    len = 45;
-	 }
-	 while (len > 2 && line[len - 1] == ' ') --len;
-	 if (len > 2) {
-	    line[len] = '\0';
-	    pimg->title = my_strdup(line + 2);
-	 }
-      }
-      if (len <= 2) pimg->title = baseleaf_from_fnm(fnm);
-      osfree(line);
-      if (!pimg->datestamp || !pimg->title) {
-	 goto out_of_memory_error;
-      }
-      line = getline_alloc(pimg->fh);
-      if (!line) {
-	 goto out_of_memory_error;
-      }
-      if (line[0] != ' ' || (line[1] != 'S' && line[1] != 'O')) {
-	 img_errno = IMG_BADFORMAT;
-	 goto error;
-      }
-      if (line[1] == 'S') {
-	 pimg->version = VERSION_CMAP_STATION;
-      } else {
-	 pimg->version = VERSION_CMAP_SHOT;
-      }
-      osfree(line);
-      line = getline_alloc(pimg->fh);
-      if (!line) {
-	 goto out_of_memory_error;
-      }
-      if (line[0] != ' ' || line[1] != '-') {
-	 img_errno = IMG_BADFORMAT;
-	 goto error;
-      }
-      osfree(line);
-      pimg->start = ftell(pimg->fh);
-      return pimg;
+       result = cmap_xyz_open(pimg, fnm);
+       if (result) {
+	   img_errno = result;
+	   goto error;
+       }
+       return pimg;
    }
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
