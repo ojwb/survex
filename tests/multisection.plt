@@ -1,6 +1,11 @@
 Z    -129.26    319.44    -94.30    439.00   -130.05    126.30  I 1357.3
 G31
 OWGS 1984
+SFAKE SURFACE SURVEY
+NZSURF D 01 01 2001 CFake Surface
+M   131.0   -66.2   -75.0  SS1  P    0.0    0.0    0.0    0.0
+d   133.5   -68.2   -80.0  SS2  P    0.0    0.0    0.0    0.0 FL
+D   123.5   -70.2   -87.1  SZ6  P    0.0    0.0    0.0    0.0 FPL
 SFAKE CAVE
 NZ+ D 1 1 1 CFake Passage
 M   123.5   -70.2   -87.1  SZ6  P    1.5    1.0    0.5    0.5  I    0.0

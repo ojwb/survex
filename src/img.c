@@ -389,10 +389,7 @@ compass_plt_update_station(img *pimg, const char *name, int name_len,
     }
     p = malloc(offsetof(struct compass_station, name) + name_len);
     if (!p) return -1;
-    /* We don't seem to get a reliable indication of surface vs
-     * underground so we assume underground.
-     */
-    p->flags = flags | img_SFLAG_UNDERGROUND;
+    p->flags = flags;
     p->len = name_len;
     memcpy(p->name, name, name_len);
     p->next = *htab;
@@ -432,12 +429,11 @@ compass_plt_free_data(img *pimg)
     pimg->data = NULL;
 }
 
-static unsigned
-compass_plt_get_station_flags(img *pimg, const char *name)
+static int
+compass_plt_get_station_flags(img *pimg, const char *name, int name_len)
 {
     struct compass_station *p;
     struct compass_station **htab = (struct compass_station**)pimg->data;
-    int name_len = strlen(name);
     htab += hash_data(name, name_len) & (HASH_BUCKETS - 1U);
     for (p = *htab; p; p = p->next) {
 	if (p->len == name_len) {
@@ -446,7 +442,7 @@ compass_plt_get_station_flags(img *pimg, const char *name)
 		    p->flags &= ~COMPASS_SFLAG_DIFFERENT_SURVEY;
 		    return p->flags;
 		}
-		return -1;
+		return p->flags | INT_MIN;
 	    }
 	}
     }
@@ -596,6 +592,8 @@ compass_plt_open(img *pimg)
     int utm_zone = 0;
     int datum = 0;
     long fpos;
+    char *from = NULL;
+    int from_len = 0;
 
     pimg->version = VERSION_COMPASS_PLT;
     /* Spaces aren't legal in Compass station names, but dots are, so
@@ -636,11 +634,12 @@ compass_plt_open(img *pimg)
 		}
 		pimg->cs = (char*)xosmalloc(11);
 		if (!pimg->cs) {
-		    return IMG_OUTOFMEMORY;
+		    goto out_of_memory_error;
 		}
 		sprintf(pimg->cs, "EPSG:%d", utm_zone);
 	    }
 
+	    osfree(from);
 	    return 0;
 	  case 'S':
 	    /* "Section" - in the case where we aren't filtering by survey
@@ -649,6 +648,9 @@ compass_plt_open(img *pimg)
 	     */
 	    if (pimg->survey == NULL && (!pimg->title || pimg->title[0])) {
 		char *line = getline_alloc(pimg->fh);
+		if (!line) {
+		    goto out_of_memory_error;
+		}
 		if (line[0]) {
 		    if (pimg->title) {
 			if (strcmp(pimg->title, line) != 0) {
@@ -679,7 +681,7 @@ compass_plt_open(img *pimg)
 	      }
 	      line = getline_alloc(pimg->fh);
 	      if (!line) {
-		  return IMG_OUTOFMEMORY;
+		  goto out_of_memory_error;
 	      }
 	      len = 0;
 	      while (line[len] > 32) ++len;
@@ -697,7 +699,7 @@ compass_plt_open(img *pimg)
 	      }
 	      osfree(line);
 	      if (!pimg->title) {
-		  return IMG_OUTOFMEMORY;
+		  goto out_of_memory_error;
 	      }
 	      pimg->start = fpos;
 	      continue;
@@ -706,28 +708,31 @@ compass_plt_open(img *pimg)
 	  case 'D':
 	  case 'd': {
 	      /* Move or Draw */
-	      char *line, *q, *name;
+	      int command = ch;
+	      char *q, *name;
 	      unsigned station_flags = 0;
 	      int name_len;
-
-	      line = getline_alloc(pimg->fh);
-	      if (!line) {
-		  return IMG_OUTOFMEMORY;
-	      }
+	      int not_plotted = (command == 'd');
 
 	      /* Find station name. */
-	      q = strchr(line, 'S');
-	      if (!q) {
-		  osfree(line);
+	      do { ch = GETC(pimg->fh); } while (ch >= ' ' && ch != 'S');
+
+	      if (ch != 'S') {
 		  /* Leave reporting error to second pass for consistency. */
-		  continue;
+		  break;
 	      }
-	      name = q + 1;
+
+	      name = getline_alloc(pimg->fh);
+	      if (!name) {
+		  goto out_of_memory_error;
+	      }
+
 	      name_len = 0;
 	      while (name[name_len] > ' ') ++name_len;
 	      if (name_len > 255) {
 		  /* The spec says "up to 12 characters", we allow up to 255. */
-		  osfree(line);
+		  osfree(name);
+		  osfree(from);
 		  return IMG_BADFORMAT;
 	      }
 
@@ -752,25 +757,48 @@ compass_plt_open(img *pimg)
 	      if (q && *q == 'F') {
 		  /* "Shot Flags". */
 		  while (isalpha((unsigned char)*++q)) {
-		      if (*q == 'S') {
+		      switch (*q) {
+			case 'S':
 			  /* The format specification says «The shot is a "splay"
 			   * shot, which is a shot from a station to the wall to
 			   * define the passage shape.» so we set the wall flag
 			   * for the to station.
 			   */
 			  station_flags |= img_SFLAG_WALL;
-			  goto done_with_shot_flags;
+			  break;
+			case 'P':
+			  not_plotted = 1;
+			  break;
 		      }
 		  }
-done_with_shot_flags: ;
+	      }
+
+	      /* Shot flag P (which is also implied by command d) is "Exclude
+	       * this shot from plotting", but the use suggested in the Compass
+	       * docs is for surface data, and they "[do] not support passage
+	       * modeling".
+	       *
+	       * Even if it's actually being used for a different purpose,
+	       * Survex programs don't show surface legs by default so the end
+	       * effect is at least to not plot as intended.
+	       */
+	      if (command != 'M') {
+		  int surface_or_not = not_plotted ? img_SFLAG_SURFACE
+						   : img_SFLAG_UNDERGROUND;
+		  station_flags |= surface_or_not;
+		  if (compass_plt_update_station(pimg, from, from_len,
+						 surface_or_not) < 0) {
+		      goto out_of_memory_error;
+		  }
 	      }
 
 	      if (compass_plt_update_station(pimg, name, name_len,
 					     station_flags) < 0) {
-		  return IMG_OUTOFMEMORY;
+		  goto out_of_memory_error;
 	      }
-
-	      osfree(line);
+	      osfree(from);
+	      from = name;
+	      from_len = name_len;
 	      continue;
 	  }
 	  case 'P': {
@@ -780,7 +808,7 @@ done_with_shot_flags: ;
 
 	      line = getline_alloc(pimg->fh);
 	      if (!line) {
-		  return IMG_OUTOFMEMORY;
+		  goto out_of_memory_error;
 	      }
 	      q = line;
 	      while (*q && *q <= ' ') q++;
@@ -791,12 +819,13 @@ done_with_shot_flags: ;
 	      if (name_len > 255) {
 		  /* The spec says "up to 12 characters", we allow up to 255. */
 		  osfree(line);
+		  osfree(from);
 		  return IMG_BADFORMAT;
 	      }
 
 	      if (compass_plt_update_station(pimg, name, name_len,
 					     img_SFLAG_FIXED) < 0) {
-		  return IMG_OUTOFMEMORY;
+		  goto out_of_memory_error;
 	      }
 
 	      osfree(line);
@@ -827,6 +856,9 @@ done_with_shot_flags: ;
 	      /* Datum. */
 	      int new_datum;
 	      char *line = getline_alloc(pimg->fh);
+	      if (!line) {
+		  goto out_of_memory_error;
+	      }
 	      if (utm_zone == 99) {
 		  osfree(line);
 		  continue;
@@ -861,6 +893,9 @@ done_with_shot_flags: ;
 	    ch = GETC(pimg->fh);
 	}
     }
+out_of_memory_error:
+    osfree(from);
+    return IMG_OUTOFMEMORY;
 }
 
 static int
@@ -2595,7 +2630,7 @@ bad_plt_date:
 	    case 'D':
 	    case 'd': {
 	       /* Move or Draw */
-	       unsigned shot_flags = 0;
+	       unsigned shot_flags = (ch == 'd' ? img_FLAG_SURFACE : 0);
 	       long fpos = -1;
 	       if (pimg->survey && pimg->label_len == 0) {
 		  /* We're only holding onto this line in case the first line
@@ -2651,6 +2686,7 @@ bad_plt_date:
 		  img_errno = IMG_OUTOFMEMORY;
 		  return img_BAD;
 	       }
+	       pimg->flags = compass_plt_get_station_flags(pimg, q, len);
 	       pimg->label = pimg->label_buf;
 	       if (pimg->label_len) {
 		   pimg->label[pimg->label_len] = ' ';
@@ -2661,6 +2697,7 @@ bad_plt_date:
 		   pimg->label[len] = '\0';
 	       }
 	       q += len;
+
 	       /* Now read LRUD.  Technically, this is optional but virtually
 		* all PLT files have it (with dummy negative values if no LRUD
 		* was recorded) and some versions of Compass can't read PLT
@@ -2681,11 +2718,12 @@ bad_plt_date:
 		       }
 		       return img_BAD;
 		   }
-		   pimg->l *= METRES_PER_FOOT;
-		   pimg->r *= METRES_PER_FOOT;
-		   pimg->u *= METRES_PER_FOOT;
-		   pimg->d *= METRES_PER_FOOT;
-		   if (pimg->l >= 0 || pimg->r >= 0 || pimg->u >= 0 || pimg->d >= 0) {
+		   if ((pimg->flags & img_SFLAG_UNDERGROUND) &&
+		       (pimg->l >= 0 || pimg->r >= 0 || pimg->u >= 0 || pimg->d >= 0)) {
+		       pimg->l *= METRES_PER_FOOT;
+		       pimg->r *= METRES_PER_FOOT;
+		       pimg->u *= METRES_PER_FOOT;
+		       pimg->d *= METRES_PER_FOOT;
 		       pimg->pending |= PENDING_XSECT | PENDING_HAD_XSECT;
 		   } else if (pimg->pending == PENDING_HAD_XSECT) {
 		       pimg->pending = PENDING_XSECT_END;
@@ -2705,7 +2743,10 @@ bad_plt_date:
 		   while (*q && *q <= ' ') q++;
 	       }
 	       if (*q == 'F') {
-		   /* "Shot Flags". */
+		   /* "Shot Flags".  Defined flags we currently ignore here:
+		    * C: "Do not adjust this shot when closing loops."
+		    * X: "you will never see this flag in a plot file."
+		    */
 		   while (isalpha((unsigned char)*++q)) {
 		       switch (*q) {
 			 case 'L':
@@ -2714,17 +2755,27 @@ bad_plt_date:
 			 case 'S':
 			   shot_flags |= img_FLAG_SPLAY;
 			   break;
+			 case 'P':
+			   /* P is "Exclude this shot from plotting", but the
+			    * use suggested in the Compass docs is for surface
+			    * data, and they "[do] not support passage
+			    * modeling".
+			    *
+			    * Even if it's actually being used for a different
+			    * purpose, Survex programs don't show surface legs
+			    * by default so matches fairly well.
+			    */
+			   shot_flags |= img_FLAG_SURFACE;
+			   break;
 		       }
 		   }
+	       }
+	       if (shot_flags & img_FLAG_SURFACE) {
+		   /* Suppress passage? */
 	       }
 	       osfree(line);
 	       if (fpos != -1) {
 		   fseek(pimg->fh, fpos, SEEK_SET);
-	       }
-
-	       {
-		   const char *name = pimg->label + pimg->label_len + 1;
-		   pimg->flags = compass_plt_get_station_flags(pimg, name);
 	       }
 
 	       if (pimg->flags < 0) {
