@@ -700,7 +700,7 @@ cmd_begin(void)
    }
 }
 
-static void
+void
 invalidate_pj_cached(void)
 {
     /* Invalidate the cached PJ. */

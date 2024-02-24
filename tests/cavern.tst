@@ -67,7 +67,7 @@ testdir=`(cd "$testdir" && pwd)`
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
  backread.dat corrections.dat ignore.dat lrud.dat nomeasure.dat noteam.dat\
- fixfeet.mak\
+ fixfeet.mak utm.mak\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
@@ -144,7 +144,7 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat)
+    backread.dat|utm.mak)
       pos=dump
       warn=0
       ;;

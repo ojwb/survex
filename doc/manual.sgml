@@ -4255,6 +4255,13 @@ can use a *equate with *case preserve on:
 
 <ItemizedList>
     <ListItem><Para>
+	Survex handles the UTM zone and datum provided the datum is
+	"WGS 1984".  Other datums could be handled, but the mapping
+	to EPSG code is less simple.  Also it seems Compass supports at least
+	24 datums but it doesn't document all the strings it uses for them.
+	Please let us know if support for more datums would be useful to you.
+    </Para></ListItem>
+    <ListItem><Para>
 	Link stations are ignored.  These have two uses in Compass.  They were
 	a way to allow processing large surveys on computers from last century
 	which had limited memory.  Survex can easily handle even the largest
@@ -4304,8 +4311,6 @@ the MAK version you can change the A16 equate to:
     <ListItem><Para>
 	The following commands (and any other unknown commands) are currently
 	ignored:
-	    $ (UTM zone),
-	    & (Datum),
 	    @ (Data about location to calculate declination at),
 	    % (Convergence angle (file-level)),
 	    * (Convergence angle (non file-level)),

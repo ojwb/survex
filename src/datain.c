@@ -54,6 +54,8 @@
  * (information from Larry Fish via Simeon Warner). */
 #define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
 
+#define COMPASS_DATUM_WGS84 1
+
 int ch;
 
 typedef enum {
@@ -792,8 +794,12 @@ compass_dat_no_date:
       pcs->ordering = NULL; /* Avoid free() of static array. */
       pop_settings();
    } else if (fmt == FMT_MAK) {
+      int datum = 0;
+      int utm_zone = 0;
+
       while (ch != EOF && !ferror(file.fh)) {
-	 if (ch == '#') {
+	 switch (ch) {
+	  case '#': {
 	    /* include a file */
 	    int ch_store;
 	    char *dat_pth = path_from_fnm(file.filename);
@@ -879,9 +885,69 @@ compass_dat_no_date:
 		     nextch_handling_eol();
 	       }
 	    }
-	 } else {
-	    /* FIXME: also check for % and $ later */
+	    break;
+	  }
+	  case '$':
+	    /* UTM zone */
+	    nextch();
+	    skipblanks();
+	    {
+		bool minus = (ch == '-');
+		if (ch == '-' || ch == '+') nextch();
+		utm_zone = read_uint();
+		if (minus) utm_zone = -utm_zone;
+	    }
+	    skipblanks();
+	    if (ch == ';') nextch();
+
+update_proj_str:
+	    if (!pcs->next || pcs->proj_str != pcs->next->proj_str)
+		osfree(pcs->proj_str);
+	    pcs->proj_str = NULL;
+	    if (datum && utm_zone && abs(utm_zone) <= 60) {
+		/* Set up coordinate system. */
+		pcs->proj_str = osmalloc(32);
+		if (utm_zone > 0) {
+		    sprintf(pcs->proj_str, "EPSG:%d", 32600 + utm_zone);
+		} else {
+		    sprintf(pcs->proj_str, "EPSG:%d", 32700 - utm_zone);
+		}
+		if (!proj_str_out) {
+		    proj_str_out = osstrdup(pcs->proj_str);
+		}
+	    }
+	    invalidate_pj_cached();
+	    break;
+	  case '&': {
+	    /* Datum */
+	    char *p = NULL;
+	    int len = 0;
+	    nextch();
+	    skipblanks();
+	    while (ch != ';') {
+		s_catchar(&p, &len, (char)ch);
+		nextch();
+	    }
+	    if (ch == ';') nextch();
+	    /* Strip trailing whitespace. */
+	    while (len && isBlank((unsigned char)p[len - 1])) --len;
+	    /* FIXME: Handle other datums */
+	    /* Also seen: North American 1927 */
+	    /* Other valid values from docs:
+	     * North American 1983
+	     * An old changelog entry suggests at least 24 datums are
+	     * supported.
+	     */
+	    if (strcmp(p, "WGS 1984") == 0) {
+		datum = COMPASS_DATUM_WGS84;
+	    } else {
+		datum = 0;
+	    }
+	    goto update_proj_str;
+	  }
+	  default:
 	    nextch_handling_eol();
+	    break;
 	 }
       }
       pop_settings();
