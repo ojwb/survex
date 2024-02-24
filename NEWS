@@ -1210,7 +1210,7 @@ Changes in 1.2.27 (2016-06-06):
     with different coordinates.  Previously if the date stayed the same,
     a previously cached declination for the old coordinates was used.
 
-  + Fix check for end of version number array in *required.   We would check up
+  + Fix check for end of version number array in *require.  We would check up
     to 12 version components, the last 9 being bogus.  In practice, *require is
     only likely to be used with up to three components, so this wouldn't be an
     issue.
