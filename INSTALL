@@ -27,9 +27,9 @@ the corresponding runtime package too.
   follow their build instructions.  IMPORTANT: You must enable OpenGL
   support by adding --with-opengl to the configure command line.
 
-* You'll also need a working C and C++ compiler (with support for C++11), and
-  also the OpenGL development libraries if these aren't pulled in by installing
-  wxWidgets.
+* You'll also need a working C and C++ compiler (with support for C99 and
+  C++11), and also the OpenGL development libraries if these aren't pulled in
+  by installing wxWidgets.
 
 * Version 7.2.0 or later of the PROJ library is needed for coordinate
   conversion functionality.
