@@ -1,4 +1,4 @@
-up to: 069ae98a919f2c0ef48c2ff85149088c919d5f7e
+up to: 06d52d5a6035179b753111474010268a0e59cd12
 
 Changes in 1.4.6 (2024-02-??):
 
@@ -22,25 +22,48 @@ Changes in 1.4.6 (2024-02-??):
     calculating lazily when we first read a compass reading, and report an
     error if the output coordinate system hasn't been set by then.
 
-  + Surveys in Compass DAT files which indicate a depth gauge was used for
-    azimuth readings are now marked as STYLE_DIVING in the 3d file.
+  + Compass DAT files:
 
-  + We now parse the "CORRECTIONS2" field in newer format Compass DAT files
-    which specifies corrections for backbearing and backazimuth.  Previously
-    cavern ignored this field.
+    - Surveys which indicate a depth gauge was used for azimuth readings are
+      now marked as STYLE_DIVING in the 3d file.
 
-  + The tape correction in Compass DAT files is now handled correctly.  The
-    specified value is in feet, but cavern was incorrectly treating it as
-    being in metres.
+    - We now parse the "CORRECTIONS2" field in newer format Compass DAT files
+      which specifies corrections for backbearing and backazimuth.  Previously
+      cavern ignored this field.
 
-  + We now handle newer format Compass DAT files with a 15 character "FORMAT:"
-    specification.  Previously cavern wouldn't detect when there were backsights
-    in this case.
+    - The tape correction in Compass DAT files is now handled correctly.  The
+      specified value is in feet, but cavern was incorrectly treating it as
+      being in metres.
+
+    - We now handle the newer 15 character "FORMAT:" encoding.  Previously
+      cavern wouldn't detect when there were backsights in this case.
+
+    - We now treat survey date January 1st 1901 as "no date specified" since
+      this is the date Compass stores in this situation, and it seems very
+      unlikely to occur in real data.
+
+    - In Compass DAT files a dummy zero-length leg from a station to itself is
+      used to provide a place to specify LRUD for the start or end of a
+      traverse (depending if dimensions are measured at the from or to
+      station), and so we no longer issue a warning about equating a station to
+      itself for DAT files.
+
+  + Compass MAK files:
+
+    - Use specified datum and UTM zone.  Currently only datum "WGS 1984" is
+      handled here. Other datums could be handled, but the mapping to EPSG code
+      is less simple.  Also it seems Compass supports at least 24 datums but it
+      doesn't document all the strings it uses for them. Please let us know if
+      support for more datums would be useful to you.
 
 * aven: Fix OpenGL scaling on high DPI displays with wxWidgets 3.0. Reported by
   Philip Balister.
 
-* manual: Improve NATO mils example.
+* manual:
+
+  + Document Compass support in detail.
+
+  + Improve NATO mils example.
 
 * INSTALL: Clean up text re -dev packages
 
@@ -58,13 +81,6 @@ Changes in 1.4.6 (2024-02-??):
 
 * img library:
 
-  + Improve Compass PLT support: Survey dates are now handled; LRUD data is now
-    translated to img_XSECT and img_XSECT_END; We now infer img_SFLAG_ENTRANCE
-    for stations where the "Distance From Entrance" field is present and zero.
-    The shot flags field in newer format PLT files is now translated to
-    img_FLAG_DUPLICATE and img_FLAG_SPLAY; the 'd' plot command is now
-    supported.
-
   + Fix bug handling timestamps before 1970.  In C signed integer division
     rounds towards zero, which previously resulted in timestamps before 1970
     getting rounded to the end of the day instead of the start when converting
@@ -72,6 +88,67 @@ Changes in 1.4.6 (2024-02-??):
     midnight.  This affected reading v3-v7 format 3d files with IMG_API_VERSION
     set to 1 and writing v8 format 3d files with IMG_API_VERSION set to 0 (the
     default).
+
+  + Improve Compass PLT support (many of these are Compass features added
+    since Survex's support for Compass was originally added):
+
+    - Survey dates are now handled fully.  We treat survey date January 1st
+      1901 as "no date specified" since this is the date Compass stores in this
+      situation, and it seems very unlikely to occur in real data.
+
+    - LRUD data is now translated to img_XSECT and img_XSECT_END.
+
+    - We now infer img_SFLAG_ENTRANCE for stations where the "Distance From
+      Entrance" field is present and zero.
+
+    - The shot flag L is now translated to img_FLAG_DUPLICATE.
+
+    - The shot flag S is now translated to img_FLAG_SPLAY.  A station at the
+      far end of a shot flagged S gets img_SFLAG_WALL set since the Compass PLT
+      format specification says:
+
+	  The shot is a "splay" shot, which is a shot from a station to the
+	  wall to define the passage shape.
+
+    - The shot flag P is now interpreted as marking surface data.  This flag
+      is described as "Exclude this shot from plotting", but the use suggested
+      in the Compass docs is for surface data, and legs flagged with it "[do]
+      not support passage modeling".  Even if it's actually being used for a
+      different purpose, Survex programs don't show surface legs by default so
+      the end effect is at least to not plot as intended.
+
+    - The d plot command is now supported (previously img failed to parse
+      PLT files using this command) - it's like D but implies the P shot flag.
+
+    - If a PLT file only uses one datum and it is "WGS 1984" then the UTM zone
+      is converted to the appropriate EPSG code and this is reported as the
+      coordinate system.  Other datums could be handled, but the mapping to
+      EPSG code is less simple.  Also it seems Compass supports at least
+      24 datums but it doesn't document all the strings it uses for them.
+      Files with multiple datums could be handled too, but we'd need to convert
+      coordinates to a common coordinate system in the img library, which would
+      need it to depend on PROJ.  Please let us know if support for more and/or
+      mixed datums would be useful to you.
+
+    - Duplicate img_LABEL items are no longer returned - this used to happen
+      for stations where more than two shots met within a single survey.
+
+    - We now infer img_SFLAG_EXPORTED for any station that appears in more
+      than one survey in the PLT file.
+
+    - We now set flag img_SFLAG_FIXED for any station which is listed as
+      a fixed point in the PLT file.
+
+    - If there's only one non-empty section name in a PLT file and we aren't
+      filtering by survey, we now report that section name as the title.  If
+      there are multiple different non-empty section names, we still report the
+      basename of the file as before.  If we're filtering by survey, we report
+      the comment for that survey as before.
+
+    - Fix bug handling PLT with omitted LRUD.  The format specification
+      documents that LRUD may be omitted, though it seems Compass never
+      actually omits it and at least some versions of Compass failed to handle
+      it being omitted too.
 
 Changes in 1.4.5 (2023-06-29):
 
