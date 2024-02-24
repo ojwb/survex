@@ -21,7 +21,7 @@
 # define OSDEPEND_H
 
 # include "whichos.h"
-# include "ostypes.h"
+# include <stdbool.h>
 
 /* Characters with special meaning in filenames.  FNM_SEP_LEV and FNM_SEP_EXT
  * are required; FNM_SEP_DRV and FNM_SEP_LEV2 needn't be defined.

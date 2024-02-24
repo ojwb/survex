@@ -82,7 +82,7 @@ default_style(settings *s)
 {
    s->recorded_style = s->style = STYLE_NORMAL;
    s->ordering = default_order;
-   s->dash_for_anon_wall_station = fFalse;
+   s->dash_for_anon_wall_station = false;
 }
 
 static void
@@ -141,8 +141,8 @@ default_units(settings *s)
       else
 	 s->units[quantity] = (real)1.0; /* metres */
    }
-   s->f_clino_percent = s->f_backclino_percent = fFalse;
-   s->f_bearing_quadrants = s->f_backbearing_quadrants = fFalse;
+   s->f_clino_percent = s->f_backclino_percent = false;
+   s->f_bearing_quadrants = s->f_backbearing_quadrants = false;
 }
 
 void
@@ -696,7 +696,7 @@ cmd_begin(void)
       pcs->begin_survey = survey;
       pcs->Prefix = survey;
       check_reentry(survey, &fp);
-      f_export_ok = fTrue;
+      f_export_ok = true;
    }
 }
 
@@ -883,11 +883,11 @@ cmd_fix(void)
       if (*ucbuffer) set_pos(&fp);
    }
 
-   x = read_numeric(fTrue);
+   x = read_numeric(true);
    if (x == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */
-      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse);
+      if (!isEol(ch) && !isComm(ch)) x = read_numeric(false);
    }
    if (x == HUGE_REAL) {
       if (pcs->proj_str || proj_str_out) {
@@ -921,8 +921,8 @@ cmd_fix(void)
       x = y = z = (real)0.0;
    } else {
       real sdx;
-      y = read_numeric(fFalse);
-      z = read_numeric(fFalse);
+      y = read_numeric(false);
+      z = read_numeric(false);
 
       if (pcs->proj_str && proj_str_out) {
 	 PJ *transform = pj_cached;
@@ -970,7 +970,7 @@ cmd_fix(void)
       }
 
       get_pos(&fp);
-      sdx = read_numeric(fTrue);
+      sdx = read_numeric(true);
       if (sdx <= 0) {
 	  set_pos(&fp);
 	  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
@@ -980,7 +980,7 @@ cmd_fix(void)
 	 real sdy, sdz;
 	 real cxy = 0, cyz = 0, czx = 0;
 	 get_pos(&fp);
-	 sdy = read_numeric(fTrue);
+	 sdy = read_numeric(true);
 	 if (sdy == HUGE_REAL) {
 	    /* only one variance given */
 	    sdy = sdz = sdx;
@@ -991,7 +991,7 @@ cmd_fix(void)
 	       return;
 	    }
 	    get_pos(&fp);
-	    sdz = read_numeric(fTrue);
+	    sdz = read_numeric(true);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
@@ -1002,11 +1002,11 @@ cmd_fix(void)
 		  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
 		  return;
 	       }
-	       cxy = read_numeric(fTrue);
+	       cxy = read_numeric(true);
 	       if (cxy != HUGE_REAL) {
 		  /* covariances given */
-		  cyz = read_numeric(fFalse);
-		  czx = read_numeric(fFalse);
+		  cyz = read_numeric(false);
+		  czx = read_numeric(false);
 	       } else {
 		  cxy = 0;
 	       }
@@ -1093,8 +1093,8 @@ cmd_flags(void)
 	{"SURFACE",   FLAGS_SURFACE },
 	{NULL,	      FLAGS_UNKNOWN }
    };
-   bool fNot = fFalse;
-   bool fEmpty = fTrue;
+   bool fNot = false;
+   bool fEmpty = true;
    while (1) {
       int flag;
       get_token();
@@ -1102,18 +1102,18 @@ cmd_flags(void)
        * some non-letter junk which is better reported later */
       if (!buffer[0]) break;
 
-      fEmpty = fFalse;
+      fEmpty = false;
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
 	 compile_diagnostic(DIAG_ERR|DIAG_BUF, /*FLAG “%s” unknown*/68, buffer);
 	 /* Recover from “*FLAGS NOT BOGUS SURFACE” by ignoring "NOT BOGUS" */
-	 fNot = fFalse;
+	 fNot = false;
       } else if (flag == FLAGS_NOT) {
-	 fNot = fTrue;
+	 fNot = true;
       } else if (fNot) {
 	 pcs->flags &= ~BIT(flag);
-	 fNot = fFalse;
+	 fNot = false;
       } else {
 	 pcs->flags |= BIT(flag);
       }
@@ -1130,12 +1130,12 @@ static void
 cmd_equate(void)
 {
    prefix *name1, *name2;
-   bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
+   bool fOnlyOneStn = true; /* to trap eg *equate entrance.6 */
    filepos fp;
 
    get_pos(&fp);
    name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
-   while (fTrue) {
+   while (true) {
       name2 = name1;
       skipblanks();
       if (isEol(ch) || isComm(ch)) {
@@ -1153,7 +1153,7 @@ cmd_equate(void)
 
       name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
       process_equate(name1, name2);
-      fOnlyOneStn = fFalse;
+      fOnlyOneStn = false;
    }
 }
 
@@ -1199,7 +1199,7 @@ cmd_export(void)
 {
    prefix *pfx;
 
-   fExportUsed = fTrue;
+   fExportUsed = true;
    do {
       int depth = 0;
       pfx = read_prefix(PFX_STATION|PFX_NEW);
@@ -1452,32 +1452,32 @@ cmd_data(void)
 	 } else {
 	    /* Check for previously listed readings which are incompatible
 	     * with this one - e.g. Count vs FrCount */
-	    bool fBad = fFalse;
+	    bool fBad = false;
 	    switch (d) {
 	     case Station:
-	       if (mUsed & (BIT(Fr) | BIT(To))) fBad = fTrue;
+	       if (mUsed & (BIT(Fr) | BIT(To))) fBad = true;
 	       break;
 	     case Fr: case To:
-	       if (TSTBIT(mUsed, Station)) fBad = fTrue;
+	       if (TSTBIT(mUsed, Station)) fBad = true;
 	       break;
 	     case Count:
 	       if (mUsed & (BIT(FrCount) | BIT(ToCount) | BIT(Tape)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case FrCount: case ToCount:
 	       if (mUsed & (BIT(Count) | BIT(Tape)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case Depth:
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(DepthChange)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case FrDepth: case ToDepth:
-	       if (mUsed & (BIT(Depth) | BIT(DepthChange))) fBad = fTrue;
+	       if (mUsed & (BIT(Depth) | BIT(DepthChange))) fBad = true;
 	       break;
 	     case DepthChange:
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Depth)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case Newline:
 	       if (mUsed & ~m_multi) {
@@ -1645,7 +1645,7 @@ cmd_units(void)
    }
 
    get_pos(&fp);
-   factor = read_numeric(fTrue);
+   factor = read_numeric(true);
    if (factor == 0.0) {
       set_pos(&fp);
       /* TRANSLATORS: error message given by "*units tape 0 feet" - it’s
@@ -1657,7 +1657,7 @@ cmd_units(void)
       return;
    }
 
-   units = get_units(qmask, fTrue);
+   units = get_units(qmask, true);
    if (units == UNITS_NULL) return;
    if (TSTBIT(qmask, Q_GRADIENT))
       pcs->f_clino_percent = (units == UNITS_PERCENT);
@@ -1706,17 +1706,17 @@ cmd_calibrate(void)
       return;
    }
 
-   z = read_numeric(fFalse);
+   z = read_numeric(false);
    get_pos(&fp);
-   sc = read_numeric(fTrue);
+   sc = read_numeric(true);
    if (sc == HUGE_REAL) {
       if (isalpha(ch)) {
-	 int units = get_units(qmask, fFalse);
+	 int units = get_units(qmask, false);
 	 if (units == UNITS_NULL) {
 	    return;
 	 }
 	 z *= factor_tab[units];
-	 sc = read_numeric(fTrue);
+	 sc = read_numeric(true);
 	 if (sc == HUGE_REAL) {
 	    sc = (real)1.0;
 	 } else {
@@ -1760,7 +1760,7 @@ cmd_calibrate(void)
 static void
 cmd_declination(void)
 {
-    real v = read_numeric(fTrue);
+    real v = read_numeric(true);
     if (v == HUGE_REAL) {
 	get_token_no_blanks();
 	if (strcmp(ucbuffer, "AUTO") != 0) {
@@ -1768,9 +1768,9 @@ cmd_declination(void)
 	    return;
 	}
 	/* *declination auto X Y Z */
-	real x = read_numeric(fFalse);
-	real y = read_numeric(fFalse);
-	real z = read_numeric(fFalse);
+	real x = read_numeric(false);
+	real y = read_numeric(false);
+	real z = read_numeric(false);
 	if (!pcs->proj_str) {
 	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
 	    return;
@@ -1828,7 +1828,7 @@ cmd_declination(void)
 	pcs->convergence = HUGE_REAL;
     } else {
 	/* *declination D UNITS */
-	int units = get_units(BIT(Q_DECLINATION), fFalse);
+	int units = get_units(BIT(Q_DECLINATION), false);
 	if (units == UNITS_NULL) {
 	    return;
 	}
@@ -1923,12 +1923,12 @@ cmd_sd(void)
       default_grade(pcs);
       return;
    }
-   sd = read_numeric(fFalse);
+   sd = read_numeric(false);
    if (sd <= (real)0.0) {
       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
       return;
    }
-   units = get_units(qmask, fFalse);
+   units = get_units(qmask, false);
    if (units == UNITS_NULL) return;
 
    sd *= factor_tab[units];
@@ -1944,7 +1944,7 @@ cmd_title(void)
    if (!fExplicitTitle && pcs->Prefix == root) {
        /* If we don't have an explicit title yet, and we're currently in the
 	* root prefix, use this title explicitly. */
-      fExplicitTitle = fTrue;
+      fExplicitTitle = true;
       read_string(&survey_title, &survey_title_len);
    } else {
       /* parse and throw away this title (but still check rest of line) */
@@ -2015,12 +2015,12 @@ cmd_cs(void)
    cs_class cs;
    int cs_sub = INT_MIN;
    filepos fp;
-   bool output = fFalse;
+   bool output = false;
    enum { YES, NO, MAYBE } ok_for_output = YES;
-   static bool had_cs = fFalse;
+   static bool had_cs = false;
 
    if (!had_cs) {
-      had_cs = fTrue;
+      had_cs = true;
       if (first_fix_name) {
 	 compile_diagnostic_at(DIAG_ERR,
 			       first_fix_filename, first_fix_line,
@@ -2034,7 +2034,7 @@ cmd_cs(void)
     * will give token "UTM". */
    get_token();
    if (strcmp(ucbuffer, "OUT") == 0) {
-      output = fTrue;
+      output = true;
       get_pos(&fp);
       get_token();
    }
@@ -2337,7 +2337,7 @@ cmd_infer(void)
 
    if (on) {
       pcs->infer |= BIT(setting);
-      if (setting == INFER_EXPORTS) fExportUsed = fTrue;
+      if (setting == INFER_EXPORTS) fExportUsed = true;
    } else {
       pcs->infer &= ~BIT(setting);
    }
@@ -2440,7 +2440,7 @@ cmd_date(void)
 {
     int year, month, day;
     int days1, days2;
-    bool implicit_range = fFalse;
+    bool implicit_range = false;
     filepos fp, fp2;
 
     get_pos(&fp);
@@ -2462,7 +2462,7 @@ cmd_date(void)
 	    days2 = days1;
 	    goto read;
 	}
-	implicit_range = fTrue;
+	implicit_range = true;
     }
 
     if (month == 0) month = 12;
@@ -2578,7 +2578,7 @@ handle_command(void)
       break;
     default:
       /* NB: additional handling for "*begin <survey>" in cmd_begin */
-      f_export_ok = fFalse;
+      f_export_ok = false;
       break;
    }
 

@@ -63,9 +63,9 @@ check_fixed(void)
 extern bool
 validate(void)
 {
-   bool fOk = fTrue;
-   if (!validate_prefix_tree()) fOk = fFalse;
-   if (!validate_station_list()) fOk = fFalse;
+   bool fOk = true;
+   if (!validate_prefix_tree()) fOk = false;
+   if (!validate_station_list()) fOk = false;
    if (fOk) puts("*** Data structures passed consistency checks");
    else puts("*** Data structures FAILED consistency checks");
    return fOk;
@@ -74,22 +74,22 @@ validate(void)
 static bool
 validate_prefix_tree(void)
 {
-   bool fOk = fTrue;
+   bool fOk = true;
    if (root->up != NULL) {
       printf("*** root->up == %p\n", root->up);
-      fOk = fFalse;
+      fOk = false;
    }
    if (root->right != NULL) {
       printf("*** root->right == %p\n", root->right);
-      fOk = fFalse;
+      fOk = false;
    }
    if (root->stn != NULL) {
       printf("*** root->stn == %p\n", root->stn);
-      fOk = fFalse;
+      fOk = false;
    }
    if (root->pos != NULL) {
       printf("*** root->pos == %p\n", root->pos);
-      fOk = fFalse;
+      fOk = false;
    }
    fOk &= validate_prefix_subtree(root);
    return fOk;
@@ -98,7 +98,7 @@ validate_prefix_tree(void)
 static bool
 validate_prefix_subtree(prefix *pfx)
 {
-   bool fOk = fTrue;
+   bool fOk = true;
    prefix *pfx2;
    pfx2 = pfx->down;
    /* this happens now, as nodes are freed after solving */
@@ -108,7 +108,7 @@ validate_prefix_subtree(prefix *pfx)
 	 printf("*** Leaf prefix '");
 	 print_prefix(pfx);
 	 printf("' has no station attached\n");
-	 fOk = fFalse;
+	 fOk = false;
       }
       return fOk;
    }
@@ -121,7 +121,7 @@ validate_prefix_subtree(prefix *pfx)
 	 printf("' ->stn->name is '");
 	 print_prefix(pfx2->stn->name);
 	 printf("'\n");
-	 fOk = fFalse;
+	 fOk = false;
       }
       if (pfx2->up != pfx) {
 	 printf("*** Prefix '");
@@ -129,7 +129,7 @@ validate_prefix_subtree(prefix *pfx)
 	 printf("' ->up is '");
 	 print_prefix(pfx);
 	 printf("'\n");
-	 fOk = fFalse;
+	 fOk = false;
       }
       fOk &= validate_prefix_subtree(pfx2);
       pfx2 = pfx2->right;
@@ -140,14 +140,14 @@ validate_prefix_subtree(prefix *pfx)
 static bool
 validate_station_list(void)
 {
-   bool fOk = fTrue;
+   bool fOk = true;
    node *stn, *stn2;
    int d, d2;
 
    SVX_ASSERT(!stnlist || !stnlist->prev);
    /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
    for (stn = stnlist; stn; stn = stn->next) {
-      bool fGap = fFalse;
+      bool fGap = false;
 #if 0
       printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
 #endif
@@ -155,13 +155,13 @@ validate_station_list(void)
       SVX_ASSERT(stn->next == NULL || stn->next->prev == stn);
       for (d = 0; d <= 2; d++) {
 	 if (!stn->leg[d]) {
-	    fGap = fTrue;
+	    fGap = true;
 	 } else {
 	    if (fGap) {
 	       printf("*** Station '");
 	       print_prefix(stn->name);
 	       printf("', leg %d is used, but an earlier leg isn't\n", d);
-	       fOk = fFalse;
+	       fOk = false;
 	    }
 	    stn2 = stn->leg[d]->l.to;
 	    SVX_ASSERT(stn2);
@@ -172,7 +172,7 @@ validate_station_list(void)
 	       printf("' has status %d and connects to '", stn->status);
 	       print_prefix(stn2->name);
 	       printf("' which has status %d\n", stn2->status);
-	       fOk = fFalse;
+	       fOk = false;
 	    }
 #endif
 	    d2 = reverse_leg_dirn(stn->leg[d]);
@@ -187,13 +187,13 @@ validate_station_list(void)
 		  printf("', leg %d doesn't reciprocate from station '", d);
 		  print_prefix(stn2->name);
 		  printf("'\n");
-		  fOk = fFalse;
+		  fOk = false;
 	       }
 	    } else if (stn2->leg[d2]->l.to == NULL) {
 	       printf("*** Station '");
 	       print_prefix(stn2->name);
 	       printf("' [%p], leg %d points to NULL\n", stn2, d2);
-	       fOk = fFalse;
+	       fOk = false;
 	    } else if (stn2->leg[d2]->l.to!=stn) {
 	       /* fine iff stn is at the disconnected end of a fragment */
 	       node *s;
@@ -207,7 +207,7 @@ validate_station_list(void)
 		  printf("' to station '");
 		  print_prefix(stn2->leg[d2]->l.to->name);
 		  printf("'\n");
-		  fOk = fFalse;
+		  fOk = false;
 	       }
 	    } else if ((data_here(stn->leg[d]) != 0) ^
 		       (data_here(stn2->leg[d2]) == 0)) {
@@ -219,7 +219,7 @@ validate_station_list(void)
 		  printf("' - data on both legs\n");
 	       else
 		  printf("' - data on neither leg\n");
-	       fOk = fFalse;
+	       fOk = false;
 	    }
 	    if (data_here(stn->leg[d])) {
 	       int i;
@@ -229,7 +229,7 @@ validate_station_list(void)
 		     print_prefix(stn->name);
 		     printf("', leg %d, d[%d] = %g\n",
 			    d, i, (double)(stn->leg[d]->d[i]));
-		     fOk = fFalse;
+		     fOk = false;
 		  }
 	    }
 	 }
@@ -242,7 +242,7 @@ validate_station_list(void)
 	       print_prefix(stn->name);
 	       printf("' fixed at coords (%f,%f,%f)\n",
 		      POS(stn, 0), POS(stn, 1), POS(stn, 2) );
-	       fOk = fFalse;
+	       fOk = false;
 	    }
 	 }
 

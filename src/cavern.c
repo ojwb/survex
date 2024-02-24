@@ -63,17 +63,17 @@ prefix *root;
 prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
-bool fExportUsed = fFalse;
+bool fExportUsed = false;
 char * proj_str_out = NULL;
 PJ * pj_cached = NULL;
 
 FILE *fhErrStat = NULL;
 img *pimg = NULL;
-bool fQuiet = fFalse; /* just show brief summary + errors */
-bool fMute = fFalse; /* just show errors */
-bool fSuppress = fFalse; /* only output 3d file */
-static bool fLog = fFalse; /* stdout to .log file */
-static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */
+bool fQuiet = false; /* just show brief summary + errors */
+bool fMute = false; /* just show errors */
+bool fSuppress = false; /* only output 3d file */
+static bool fLog = false; /* stdout to .log file */
+static bool f_warnings_are_errors = false; /* turn warnings into errors */
 
 nosurveylink *nosurveyhead;
 
@@ -84,7 +84,7 @@ prefix *pfxHi[6], *pfxLo[6];
 char *survey_title = NULL;
 int survey_title_len;
 
-bool fExplicitTitle = fFalse;
+bool fExplicitTitle = false;
 
 char *fnm_output_base = NULL;
 int fnm_output_base_is_dir = 0;
@@ -271,7 +271,7 @@ main(int argc, char **argv)
 	    if (islower((unsigned char)c)) optimize |= BITA(c);
 	 break;
        case 1:
-	 fLog = fTrue;
+	 fLog = true;
 	 break;
 #if OS_WIN32
        case 2:

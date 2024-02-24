@@ -82,7 +82,7 @@ cmp_pname(const void *a, const void *b)
 }
 
 static station **htab;
-static bool fChanged = fFalse;
+static bool fChanged = false;
 
 static added *added_list = NULL;
 static OSSIZE_T c_added = 0;
@@ -126,7 +126,7 @@ tree_remove(const char *name, const img_point *pt)
    station **prev;
    station *p;
    station **found = NULL;
-   bool was_close_enough = fFalse;
+   bool was_close_enough = false;
 
    for (prev = &htab[v]; *prev; prev = &((*prev)->next)) {
       if (strcmp((*prev)->name, name) == 0) {
@@ -137,7 +137,7 @@ tree_remove(const char *name, const img_point *pt)
 	  */
 	 if (close_enough(pt, &((*prev)->pt))) {
 	    found = prev;
-	    was_close_enough = fTrue;
+	    was_close_enough = true;
 	 } else if (!was_close_enough) {
 	    found = prev;
 	 }
@@ -150,7 +150,7 @@ tree_remove(const char *name, const img_point *pt)
       add->next = added_list;
       added_list = add;
       c_added++;
-      fChanged = fTrue;
+      fChanged = true;
       return;
    }
 
@@ -162,7 +162,7 @@ tree_remove(const char *name, const img_point *pt)
 	     pt->z - (*found)->pt.z,
 	     name);
       putnl();
-      fChanged = fTrue;
+      fChanged = true;
    }
 
    osfree((*found)->name);
@@ -219,7 +219,7 @@ tree_check(void)
       printf(msg(/*Deleted: %s*/502), names[i]);
       putnl();
    }
-   return fTrue;
+   return true;
 }
 
 static int

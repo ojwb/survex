@@ -380,7 +380,7 @@ articulate(void)
        * stations which aren't connected, so we report it as an error
        * and die after listing them...
        */
-      bool fNotAttached = fFalse;
+      bool fNotAttached = false;
       /* TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
        * cavern will issue this error if there are any sections of the survey
        * network which are hanging. */
@@ -399,7 +399,7 @@ articulate(void)
 	 /* SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON)); */
 	 if (stn->name->ident) {
 	    if (!fNotAttached) {
-	       fNotAttached = fTrue;
+	       fNotAttached = true;
 	       /* TRANSLATORS: Here "station" is a survey station, not a train
 		* station. */
 	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));

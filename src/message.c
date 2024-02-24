@@ -711,7 +711,7 @@ static const char *pth_cfg_files = "";
 static int num_msgs = 0;
 static char **msg_array = NULL;
 
-static bool msg_lang_explicit = fFalse;
+static bool msg_lang_explicit = false;
 const char *msg_lang = NULL;
 const char *msg_lang2 = NULL;
 
@@ -923,11 +923,11 @@ void
    if (argv[0]) {
       exe_pth = path_from_fnm(argv[0]);
 #if OS_UNIX && defined DATADIR && defined PACKAGE
-      bool free_pth = fFalse;
+      bool free_pth = false;
       char *pth = getenv("srcdir");
       if (!pth || !pth[0]) {
 	 pth = path_from_fnm(argv[0]);
-	 free_pth = fTrue;
+	 free_pth = true;
       }
       if (pth[0]) {
 	 struct stat buf;
@@ -1006,9 +1006,9 @@ macos_got_msg:
    fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
-   msg_lang_explicit = fTrue;
+   msg_lang_explicit = true;
    if (!msg_lang || !*msg_lang) {
-      msg_lang_explicit = fFalse;
+      msg_lang_explicit = false;
       msg_lang = getenv("LC_ALL");
    }
    if (!msg_lang || !*msg_lang) {

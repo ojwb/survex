@@ -76,7 +76,7 @@ read_prefix(unsigned pfx_flags)
    size_t name_len = 32;
    size_t i;
    bool fNew;
-   bool fImplicitPrefix = fTrue;
+   bool fImplicitPrefix = true;
    int depth = -1;
    filepos fp_firstsep;
 
@@ -100,7 +100,7 @@ read_prefix(unsigned pfx_flags)
 	 get_pos(&fp_firstsep);
 	 nextch();
       }
-      fImplicitPrefix = fFalse;
+      fImplicitPrefix = false;
 #else
    if (0) {
 #endif
@@ -170,7 +170,7 @@ anon_wall_station:
    i = 0;
    name = NULL;
    do {
-      fNew = fFalse;
+      fNew = false;
       if (name == NULL) {
 	 /* Need a new name buffer */
 	 name = osmalloc(name_len);
@@ -193,7 +193,7 @@ anon_wall_station:
 	 nextch();
       }
       if (isSep(ch)) {
-	 fImplicitPrefix = fFalse;
+	 fImplicitPrefix = false;
 	 get_pos(&fp_firstsep);
       }
       if (i == 0) {
@@ -236,7 +236,7 @@ anon_wall_station:
 	 if (fSuspectTypo && !fImplicitPrefix)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
-	 fNew = fTrue;
+	 fNew = true;
       } else {
 	 /* Use caching to speed up adding an increasing sequence to a
 	  * large survey */
@@ -275,13 +275,13 @@ anon_wall_station:
 	    if (fSuspectTypo && !fImplicitPrefix)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
-	    fNew = fTrue;
+	    fNew = true;
 	 }
 	 cached_survey = back_ptr;
 	 cached_station = ptr;
       }
       depth++;
-      f_optional = fFalse; /* disallow after first level */
+      f_optional = false; /* disallow after first level */
       if (isSep(ch)) get_pos(&fp_firstsep);
    } while (isSep(ch));
    if (name) osfree(name);
@@ -356,7 +356,7 @@ anon_wall_station:
 static real
 read_number(bool f_optional, bool f_unsigned)
 {
-   bool fPositive = fTrue, fDigits = fFalse;
+   bool fPositive = true, fDigits = false;
    real n = (real)0.0;
    filepos fp;
    int ch_old;
@@ -371,7 +371,7 @@ read_number(bool f_optional, bool f_unsigned)
    while (isdigit(ch)) {
       n = n * (real)10.0 + (char)(ch - '0');
       nextch();
-      fDigits = fTrue;
+      fDigits = true;
    }
 
    if (isDecimal(ch)) {
@@ -380,7 +380,7 @@ read_number(bool f_optional, bool f_unsigned)
       while (isdigit(ch)) {
 	 mult *= (real).1;
 	 n += (char)(ch - '0') * mult;
-	 fDigits = fTrue;
+	 fDigits = true;
 	 nextch();
       }
    }
@@ -442,7 +442,7 @@ read_quadrant(bool f_optional)
       LONGJMP(file.jbSkipLine);
       return 0.0; /* for brain-fried compilers */
    }
-   real r = read_number(fTrue, fTrue);
+   real r = read_number(true, true);
    if (r == HUGE_REAL) {
       if (isSign(ch) || isDecimal(ch)) {
 	 /* Give better errors for S-0E, N+10W, N.E, etc. */
@@ -495,7 +495,7 @@ extern real
 read_numeric(bool f_optional)
 {
    skipblanks();
-   return read_number(f_optional, fFalse);
+   return read_number(f_optional, false);
 }
 
 extern real
@@ -508,7 +508,7 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    if (!isOpen(ch)) {
       real r = 0;
       if (!f_quadrants)
-	  r = read_number(f_optional, fFalse);
+	  r = read_number(f_optional, false);
       else
 	  r = read_quadrant(f_optional);
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
@@ -519,9 +519,9 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    skipblanks();
    do {
       if (!f_quadrants)
-	 tot += read_number(fFalse, fFalse);
+	 tot += read_number(false, false);
       else
-	 tot += read_quadrant(fFalse);
+	 tot += read_quadrant(false);
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));
@@ -538,7 +538,7 @@ extern real
 read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 {
    real v;
-   v = read_numeric_multi(fTrue, f_quadrants, p_n_readings);
+   v = read_numeric_multi(true, f_quadrants, p_n_readings);
    if (v == HUGE_REAL) {
       if (!isOmit(ch)) {
 	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);

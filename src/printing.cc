@@ -601,7 +601,7 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 #if 0
 	po.scan_for_blank_pages = true;
 	for (int page = 1; page <= m_layout->pages; ++page) {
-	    po.fBlankPage = fTrue;
+	    po.fBlankPage = true;
 	    po.OnPrintPage(page);
 	    // FIXME: Do something with po.fBlankPage
 	}
@@ -1402,13 +1402,13 @@ svxPrintout::drawticks(int tsize, int x, int y)
    long i;
    int s = tsize * 4;
    int o = s / 8;
-   bool fAtCorner = fFalse;
+   bool fAtCorner = false;
    pdc->SetPen(*pen_frame);
    if (x == 0 && m_layout->Border) {
       /* solid left border */
       MoveTo(clip.x_min, clip.y_min);
       DrawTo(clip.x_min, clip.y_max);
-      fAtCorner = fTrue;
+      fAtCorner = true;
    } else {
       if (x > 0 || y > 0) {
 	 MoveTo(clip.x_min, clip.y_min);
@@ -1426,7 +1426,7 @@ svxPrintout::drawticks(int tsize, int x, int y)
       if (x > 0 || y < m_layout->pagesY - 1) {
 	 MoveTo(clip.x_min, clip.y_max - tsize);
 	 DrawTo(clip.x_min, clip.y_max);
-	 fAtCorner = fTrue;
+	 fAtCorner = true;
       }
    }
 
@@ -1434,7 +1434,7 @@ svxPrintout::drawticks(int tsize, int x, int y)
       /* solid top border */
       if (!fAtCorner) MoveTo(clip.x_min, clip.y_max);
       DrawTo(clip.x_max, clip.y_max);
-      fAtCorner = fTrue;
+      fAtCorner = true;
    } else {
       if (y < m_layout->pagesY - 1 || x > 0) {
 	 if (!fAtCorner) MoveTo(clip.x_min, clip.y_max);
@@ -1452,9 +1452,9 @@ svxPrintout::drawticks(int tsize, int x, int y)
       if (y < m_layout->pagesY - 1 || x < m_layout->pagesX - 1) {
 	 MoveTo(clip.x_max - tsize, clip.y_max);
 	 DrawTo(clip.x_max, clip.y_max);
-	 fAtCorner = fTrue;
+	 fAtCorner = true;
       } else {
-	 fAtCorner = fFalse;
+	 fAtCorner = false;
       }
    }
 
@@ -1462,7 +1462,7 @@ svxPrintout::drawticks(int tsize, int x, int y)
       /* solid right border */
       if (!fAtCorner) MoveTo(clip.x_max, clip.y_max);
       DrawTo(clip.x_max, clip.y_min);
-      fAtCorner = fTrue;
+      fAtCorner = true;
    } else {
       if (x < m_layout->pagesX - 1 || y < m_layout->pagesY - 1) {
 	 if (!fAtCorner) MoveTo(clip.x_max, clip.y_max);
@@ -1480,9 +1480,9 @@ svxPrintout::drawticks(int tsize, int x, int y)
       if (x < m_layout->pagesX - 1 || y > 0) {
 	 MoveTo(clip.x_max, clip.y_min + tsize);
 	 DrawTo(clip.x_max, clip.y_min);
-	 fAtCorner = fTrue;
+	 fAtCorner = true;
       } else {
-	 fAtCorner = fFalse;
+	 fAtCorner = false;
       }
    }
 
@@ -1784,7 +1784,7 @@ svxPrintout::DrawTo(long x, long y)
     if (!scan_for_blank_pages) {
 	pdc->DrawLine(x_p, y_p, x_t, y_t);
     } else {
-	if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
+	if (check_intersection(x_p, y_p)) fBlankPage = false;
     }
 }
 
@@ -1806,7 +1806,7 @@ svxPrintout::DrawCross(long x, long y)
 	   x - PWX_CROSS_SIZE < clip.x_max) ||
 	  (y + PWX_CROSS_SIZE > clip.y_min &&
 	   y - PWX_CROSS_SIZE < clip.y_max)) {
-	 fBlankPage = fFalse;
+	 fBlankPage = false;
       }
    }
 }
@@ -1826,7 +1826,7 @@ svxPrintout::WriteString(const wxString & s)
 	pdc->GetTextExtent(s, &w, &h);
 	if ((y_t + h > 0 && y_t - h < clip.y_max - clip.y_min) ||
 	    (x_t < clip.x_max - clip.x_min && x_t + w > 0)) {
-	    fBlankPage = fFalse;
+	    fBlankPage = false;
 	}
     }
     pdc->SetUserScale(xsc, ysc);

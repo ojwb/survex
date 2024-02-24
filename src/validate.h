@@ -21,6 +21,8 @@
 #ifndef VALIDATE_H
 #define VALIDATE_H
 
+#include <stdbool.h>
+
 #include "debug.h"
 #include "cavern.h"
 

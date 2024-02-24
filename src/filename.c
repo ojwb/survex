@@ -197,7 +197,7 @@ use_path(const char *pth, const char *lf)
 {
    char *fnm;
    int len, len_total;
-   bool fAddSep = fFalse;
+   bool fAddSep = false;
 
    len = strlen(pth);
    len_total = len + strlen(lf) + 1;
@@ -210,7 +210,7 @@ use_path(const char *pth, const char *lf)
 #ifdef FNM_SEP_DRV
 	 if (pth[len - 1] != FNM_SEP_DRV) {
 #endif
-	    fAddSep = fTrue;
+	    fAddSep = true;
 	    len_total++;
 #ifdef FNM_SEP_DRV
 	 }
@@ -233,12 +233,12 @@ add_ext(const char *fnm, const char *ext)
 {
    char * fnmNew;
    int len, len_total;
-   bool fAddSep = fFalse;
+   bool fAddSep = false;
 
    len = strlen(fnm);
    len_total = len + strlen(ext) + 1;
    if (ext[0] != FNM_SEP_EXT) {
-      fAddSep = fTrue;
+      fAddSep = true;
       len_total++;
    }
 

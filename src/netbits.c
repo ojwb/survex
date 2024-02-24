@@ -922,8 +922,8 @@ fZeros(/*const*/ svar *v) {
    int i;
 
    check_svar(v);
-   for (i = 0; i < 6; i++) if ((*v)[i] != 0.0) return fFalse;
+   for (i = 0; i < 6; i++) if ((*v)[i] != 0.0) return false;
 
-   return fTrue;
+   return true;
 #endif
 }

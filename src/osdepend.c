@@ -49,7 +49,7 @@ fAbsoluteFnm(const char *fnm)
 
 #endif
 
-/* fDirectory( fnm ) returns fTrue if fnm is a directory; fFalse if fnm is a
+/* fDirectory( fnm ) returns true if fnm is a directory; false if fnm is a
  * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
  * NB If fnm has a trailing directory separator (e.g. “/” or “/home/olly/”
  * then it's assumed to be a directory even if it doesn't exist (as is an

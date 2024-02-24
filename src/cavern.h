@@ -26,6 +26,7 @@
 
 /* #define NO_COVARIANCES 1 */
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -403,9 +404,9 @@ extern bool fSuppress; /* only output 3d file */
 #if EXPLICIT_FIXED_FLAG
 # define pfx_fixed(N) ((N)->pos->fFixed)
 # define pos_fixed(P) ((P)->fFixed)
-# define fix(S) (S)->name->pos->fFixed = (char)fTrue
-# define fixpos(P) (P)->fFixed = (char)fTrue
-# define unfix(S) (S)->name->pos->fFixed = (char)fFalse
+# define fix(S) (S)->name->pos->fFixed = (char)true
+# define fixpos(P) (P)->fFixed = (char)true
+# define unfix(S) (S)->name->pos->fFixed = (char)false
 #else
 # define pfx_fixed(N) ((N)->pos->p[0] != UNFIXED_VAL)
 # define pos_fixed(P) ((P)->p[0] != UNFIXED_VAL)

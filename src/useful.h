@@ -95,8 +95,6 @@
 # endif
 #endif
 
-#include "ostypes.h"
-
 #define putnl() putchar('\n')    /* print a newline char */
 #define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */
 /* print a line followed by a newline char to a file */

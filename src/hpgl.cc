@@ -43,8 +43,8 @@
 static long xpPageWidth, ypPageDepth;
 
 static long x_org = 0, y_org = 0;
-static bool fNewLines = fTrue;
-static bool fOriginInCentre = fFalse;
+static bool fNewLines = true;
+static bool fOriginInCentre = false;
 
 /* Check if this line intersects the current page */
 /* Initialise HPGL routines. */

@@ -64,7 +64,7 @@ typedef enum {
 
 /* Don't explicitly initialise as we can't set the jmp_buf - this has
  * static scope so will be initialised like this anyway */
-parse file /* = { NULL, NULL, 0, fFalse, NULL } */ ;
+parse file /* = { NULL, NULL, 0, false, NULL } */ ;
 
 bool f_export_ok;
 
@@ -107,7 +107,7 @@ report_parent(parse * p) {
 	report_parent(p->parent);
     /* Force re-report of include tree for further errors in
      * parent files */
-    p->reported_where = fFalse;
+    p->reported_where = false;
     /* TRANSLATORS: %s is replaced by the filename of the parent file, and %u
      * by the line number in that file.  Your translation should also contain
      * %s:%u so that automatic parsing of error messages to determine the file
@@ -122,7 +122,7 @@ error_list_parent_files(void)
       report_parent(file.parent);
       /* Suppress reporting of full include tree for further errors
        * in this file */
-      file.reported_where = fTrue;
+      file.reported_where = true;
    }
 }
 
@@ -450,7 +450,7 @@ process_non_data_line(void)
 {
    skipblanks();
 
-   if (isData(ch)) return fFalse;
+   if (isData(ch)) return false;
 
    if (isKeywd(ch)) {
       nextch();
@@ -459,7 +459,7 @@ process_non_data_line(void)
 
    process_eol();
 
-   return fTrue;
+   return true;
 }
 
 static void
@@ -489,7 +489,7 @@ read_reading(reading r, bool f_optional)
    }
    LOC(r) = ftell(file.fh);
    /* since we don't handle bearings in read_readings, it's never quadrant */
-   VAL(r) = read_numeric_multi(f_optional, fFalse, &n_readings);
+   VAL(r) = read_numeric_multi(f_optional, false, &n_readings);
    WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
@@ -499,18 +499,18 @@ static void
 read_bearing_or_omit(reading r)
 {
    int n_readings;
-   bool quadrants = fFalse;
+   bool quadrants = false;
    q_quantity q = Q_NULL;
    switch (r) {
       case Comp:
 	q = Q_BEARING;
 	if (pcs->f_bearing_quadrants)
-	   quadrants = fTrue;
+	   quadrants = true;
 	break;
       case BackComp:
 	q = Q_BACKBEARING;
 	if (pcs->f_backbearing_quadrants)
-	   quadrants = fTrue;
+	   quadrants = true;
 	break;
       default:
 	q = Q_NULL; /* Suppress compiler warning */;
@@ -574,7 +574,7 @@ data_file(const char *pth, const char *fnm)
       file.filename = filename;
       file.line = 1;
       file.lpos = 0;
-      file.reported_where = fFalse;
+      file.reported_where = false;
       nextch();
       if (fmt == FMT_SVX && ch == 0xef) {
 	 /* Maybe a UTF-8 "BOM" - skip if so. */
@@ -732,7 +732,7 @@ compass_dat_no_date:
 	 get_token();
 	 nextch(); /* : */
 	 skipblanks();
-	 pcs->z[Q_DECLINATION] = -read_numeric(fFalse);
+	 pcs->z[Q_DECLINATION] = -read_numeric(false);
 	 pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
 	 get_token();
 	 pcs->ordering = compass_order;
@@ -757,17 +757,17 @@ compass_dat_no_date:
 	 }
 	 if (strcmp(buffer, "CORRECTIONS") == 0) {
 	    nextch(); /* : */
-	    pcs->z[Q_BEARING] = -rad(read_numeric(fFalse));
-	    pcs->z[Q_GRADIENT] = -rad(read_numeric(fFalse));
-	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(fFalse);
+	    pcs->z[Q_BEARING] = -rad(read_numeric(false));
+	    pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
+	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
 
 	    /* get_token() only reads alphas so we must check for '2' here. */
 	    get_token();
 	    if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
 		nextch(); /* 2 */
 		nextch(); /* : */
-		pcs->z[Q_BACKBEARING] = -rad(read_numeric(fFalse));
-		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(fFalse));
+		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
+		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
 	    }
 	 }
 	 skipline();
@@ -827,11 +827,11 @@ compass_dat_no_date:
 		     /* fixed pt */
 		     node *stn;
 		     real x, y, z;
-		     bool in_feet = fFalse;
+		     bool in_feet = false;
 		     name->sflags |= BIT(SFLAGS_FIXED);
 		     nextch_handling_eol();
 		     if (ch == 'F' || ch == 'f') {
-			in_feet = fTrue;
+			in_feet = true;
 			nextch_handling_eol();
 		     } else if (ch == 'M' || ch == 'm') {
 			nextch_handling_eol();
@@ -842,17 +842,17 @@ compass_dat_no_date:
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
 		     }
-		     x = read_numeric(fFalse);
+		     x = read_numeric(false);
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
 		     }
-		     y = read_numeric(fFalse);
+		     y = read_numeric(false);
 		     while (!isdigit(ch) && ch != '+' && ch != '-' &&
 			    ch != '.' && ch != ']' && ch != EOF) {
 			nextch_handling_eol();
 		     }
-		     z = read_numeric(fFalse);
+		     z = read_numeric(false);
 		     if (in_feet) {
 			x *= METRES_PER_FOOT;
 			y *= METRES_PER_FOOT;
@@ -954,7 +954,7 @@ update_proj_str:
    } else {
       while (ch != EOF && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
-	    f_export_ok = fFalse;
+	    f_export_ok = false;
 	    switch (pcs->style) {
 	     case STYLE_NORMAL:
 	     case STYLE_DIVING:
@@ -983,7 +983,7 @@ update_proj_str:
 
    /* don't allow *BEGIN at the end of a file, then *EXPORT in the
     * including file */
-   f_export_ok = fFalse;
+   f_export_ok = false;
 
    if (pcs->begin_lineno) {
       error_in_file(file.filename, pcs->begin_lineno,
@@ -1091,9 +1091,9 @@ warn_readings_differ(int msgno, real diff, int units)
 static bool
 handle_comp_units(void)
 {
-   bool fNoComp = fTrue;
+   bool fNoComp = true;
    if (VAL(Comp) != HUGE_REAL) {
-      fNoComp = fFalse;
+      fNoComp = false;
       VAL(Comp) *= pcs->units[Q_BEARING];
       if (VAL(Comp) < (real)0.0 || VAL(Comp) - M_PI * 2.0 > EPSILON) {
 	 /* TRANSLATORS: Suspicious means something like 410 degrees or -20
@@ -1103,7 +1103,7 @@ handle_comp_units(void)
       }
    }
    if (VAL(BackComp) != HUGE_REAL) {
-      fNoComp = fFalse;
+      fNoComp = false;
       VAL(BackComp) *= pcs->units[Q_BACKBEARING];
       if (VAL(BackComp) < (real)0.0 || VAL(BackComp) - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
@@ -1676,7 +1676,7 @@ data_cartesian(void)
 {
    prefix *fr = NULL, *to = NULL;
 
-   bool fMulti = fFalse;
+   bool fMulti = false;
 
    reading first_stn = End;
 
@@ -1701,7 +1701,7 @@ data_cartesian(void)
 	 first_stn = To;
 	 break;
        case Dx: case Dy: case Dz:
-	 read_reading(*ordering, fFalse);
+	 read_reading(*ordering, false);
 	 break;
        case Ignore:
 	 skipword(); break;
@@ -1713,7 +1713,7 @@ data_cartesian(void)
 	    if (!process_cartesian(fr, to, first_stn == To))
 	       skipline();
 	 }
-	 fMulti = fTrue;
+	 fMulti = true;
 	 while (1) {
 	    process_eol();
 	    skipblanks();
@@ -1813,7 +1813,7 @@ data_normal(void)
    prefix *fr = NULL, *to = NULL;
    reading first_stn = End;
 
-   bool fTopofil = fFalse, fMulti = fFalse;
+   bool fTopofil = false, fMulti = false;
    bool fRev;
    clino_type ctype, backctype;
    bool fDepthChange;
@@ -1827,9 +1827,9 @@ data_normal(void)
    VAL(FrDepth) = VAL(ToDepth) = 0;
    VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = HUGE_REAL;
 
-   fRev = fFalse;
+   fRev = false;
    ctype = backctype = CTYPE_OMIT;
-   fDepthChange = fFalse;
+   fDepthChange = false;
 
    /* ordering may omit clino reading, so set up default here */
    /* this is also used if clino reading is the omit character */
@@ -1872,7 +1872,7 @@ data_normal(void)
 	   case DIR_FORE:
 	     break;
 	   case DIR_BACK:
-	     fRev = fTrue;
+	     fRev = true;
 	     break;
 	   default:
 	     compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “F” or “B”*/131, buffer);
@@ -1883,7 +1883,7 @@ data_normal(void)
        }
        case Tape: case BackTape: {
 	  reading r = *ordering;
-	  read_reading(r, fTrue);
+	  read_reading(r, true);
 	  if (VAL(r) == HUGE_REAL) {
 	     if (!isOmit(ch)) {
 		compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -1901,15 +1901,15 @@ data_normal(void)
 	  VAL(FrCount) = VAL(ToCount);
 	  LOC(FrCount) = LOC(ToCount);
 	  WID(FrCount) = WID(ToCount);
-	  read_reading(ToCount, fFalse);
-	  fTopofil = fTrue;
+	  read_reading(ToCount, false);
+	  fTopofil = true;
 	  break;
        case FrCount:
-	  read_reading(FrCount, fFalse);
+	  read_reading(FrCount, false);
 	  break;
        case ToCount:
-	  read_reading(ToCount, fFalse);
-	  fTopofil = fTrue;
+	  read_reading(ToCount, false);
+	  fTopofil = true;
 	  break;
        case Comp: case BackComp:
 	  read_bearing_or_omit(*ordering);
@@ -1917,7 +1917,7 @@ data_normal(void)
        case Clino: case BackClino: {
 	  reading r = *ordering;
 	  clino_type * p_ctype = (r == Clino ? &ctype : &backctype);
-	  read_reading(r, fTrue);
+	  read_reading(r, true);
 	  if (VAL(r) == HUGE_REAL) {
 	     VAL(r) = handle_plumb(p_ctype);
 	     if (VAL(r) != HUGE_REAL) break;
@@ -1930,18 +1930,18 @@ data_normal(void)
 	  break;
        }
        case FrDepth: case ToDepth:
-	  read_reading(*ordering, fFalse);
+	  read_reading(*ordering, false);
 	  break;
        case Depth:
 	  VAL(FrDepth) = VAL(ToDepth);
 	  LOC(FrDepth) = LOC(ToDepth);
 	  WID(FrDepth) = WID(ToDepth);
-	  read_reading(ToDepth, fFalse);
+	  read_reading(ToDepth, false);
 	  break;
        case DepthChange:
-	  fDepthChange = fTrue;
+	  fDepthChange = true;
 	  VAL(FrDepth) = 0;
-	  read_reading(ToDepth, fFalse);
+	  read_reading(ToDepth, false);
 	  break;
        case CompassDATComp:
 	  read_bearing_or_omit(Comp);
@@ -1961,7 +1961,7 @@ data_normal(void)
 	     r = BackClino;
 	     p_ctype = &backctype;
 	  }
-	  read_reading(r, fFalse);
+	  read_reading(r, false);
 	  if (is_compass_NaN(VAL(r))) {
 	     VAL(r) = HUGE_REAL;
 	     *p_ctype = CTYPE_OMIT;
@@ -1974,7 +1974,7 @@ data_normal(void)
        case CompassDATUp: case CompassDATDown: {
 	  /* FIXME: need to actually make use of these entries! */
 	  reading actual = Left + (*ordering - CompassDATLeft);
-	  read_reading(actual, fFalse);
+	  read_reading(actual, false);
 	  if (VAL(actual) < 0) VAL(actual) = HUGE_REAL;
 	  break;
        }
@@ -2104,9 +2104,9 @@ data_normal(void)
 	     }
 	  }
 
-	  fRev = fFalse;
+	  fRev = false;
 	  ctype = backctype = CTYPE_OMIT;
-	  fDepthChange = fFalse;
+	  fDepthChange = false;
 
 	  /* ordering may omit clino reading, so set up default here */
 	  /* this is also used if clino reading is the omit character */
@@ -2116,7 +2116,7 @@ data_normal(void)
 
 	  inferred_equate:
 
-	  fMulti = fTrue;
+	  fMulti = true;
 	  while (1) {
 	      process_eol();
 	      skipblanks();
@@ -2269,7 +2269,7 @@ data_passage(void)
 	 break;
        case Left: case Right: case Up: case Down: {
 	 reading r = *ordering;
-	 read_reading(r, fTrue);
+	 read_reading(r, true);
 	 if (VAL(r) == HUGE_REAL) {
 	    if (!isOmit(ch)) {
 	       compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -2326,7 +2326,7 @@ data_nosurvey(void)
 {
    prefix *fr = NULL, *to = NULL;
 
-   bool fMulti = fFalse;
+   bool fMulti = false;
 
    reading first_stn = End;
 
@@ -2370,7 +2370,7 @@ data_nosurvey(void)
 	    }
 	    goto again;
 	 }
-	 fMulti = fTrue;
+	 fMulti = true;
 	 while (1) {
 	    process_eol();
 	    skipblanks();
