@@ -922,15 +922,18 @@ update_proj_str:
 	    /* Datum */
 	    char *p = NULL;
 	    int len = 0;
+	    int datum_len = 0;
+	    int c = 0;
 	    nextch();
 	    skipblanks();
-	    while (ch != ';') {
+	    while (ch != ';' && !isEol(ch)) {
 		s_catchar(&p, &len, (char)ch);
+		++c;
+		/* Ignore trailing blanks. */
+		if (!isBlank(ch)) datum_len = c;
 		nextch();
 	    }
 	    if (ch == ';') nextch();
-	    /* Strip trailing whitespace. */
-	    while (len && isBlank((unsigned char)p[len - 1])) --len;
 	    /* FIXME: Handle other datums */
 	    /* Also seen: North American 1927 */
 	    /* Other valid values from docs:
@@ -938,11 +941,13 @@ update_proj_str:
 	     * An old changelog entry suggests at least 24 datums are
 	     * supported.
 	     */
-	    if (strcmp(p, "WGS 1984") == 0) {
+#define EQ(S) datum_len == LITLEN(S) && memcmp(p, S, LITLEN(S)) == 0
+	    if (EQ("WGS 1984")) {
 		datum = COMPASS_DATUM_WGS84;
 	    } else {
 		datum = 0;
 	    }
+	    osfree(p);
 	    goto update_proj_str;
 	  }
 	  default:
