@@ -144,7 +144,7 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|utm.mak)
+    backread.dat|folder.mak|utm.mak)
       pos=dump
       warn=0
       ;;

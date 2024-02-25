@@ -97,6 +97,7 @@ backread.dat backread.dump corrections.dat corrections.pos\
 ignore.dat ignore.pos lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
 fixfeet.mak fixfeet.pos\
+folder.mak subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
 utm.mak utm.dump\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
 nosurveyhanging.svx nosurveyhanging.out\

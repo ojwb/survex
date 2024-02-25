@@ -4314,8 +4314,7 @@ the MAK version you can change the A16 equate to:
 	    @ (Data about location to calculate declination at),
 	    % (Convergence angle (file-level)),
 	    * (Convergence angle (non file-level)),
-	    ! (Project parameters),
-	    [ (Nested folders)
+	    ! (Project parameters)
     </Para></ListItem>
 </ItemizedList>
 </Para>

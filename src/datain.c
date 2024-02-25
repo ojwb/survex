@@ -796,13 +796,18 @@ compass_dat_no_date:
    } else if (fmt == FMT_MAK) {
       int datum = 0;
       int utm_zone = 0;
+      char *path = path_from_fnm(file.filename);
+      int path_len = strlen(path);
+      struct mak_folder {
+	  struct mak_folder *next;
+	  int len;
+      } *folder_stack = NULL;
 
       while (ch != EOF && !ferror(file.fh)) {
 	 switch (ch) {
 	  case '#': {
 	    /* include a file */
 	    int ch_store;
-	    char *dat_pth = path_from_fnm(file.filename);
 	    char *dat_fnm = NULL;
 	    int dat_fnm_len;
 	    nextch_handling_eol();
@@ -813,7 +818,7 @@ compass_dat_no_date:
 	    }
 	    if (dat_fnm) {
 	       ch_store = ch;
-	       data_file(dat_pth, dat_fnm);
+	       data_file(path, dat_fnm);
 	       ch = ch_store;
 	       osfree(dat_fnm);
 	    }
@@ -950,12 +955,47 @@ update_proj_str:
 	    osfree(p);
 	    goto update_proj_str;
 	  }
+	  case '[': {
+	    // Enter subdirectory.
+	    struct mak_folder *p = folder_stack;
+	    folder_stack = osnew(struct mak_folder);
+	    folder_stack->next = p;
+	    folder_stack->len = strlen(path);
+	    if (path[0])
+		s_catchar(&path, &path_len, FNM_SEP_LEV);
+	    nextch();
+	    while (ch != ';' && !isEol(ch)) {
+		if (ch == '\\') {
+		    ch = FNM_SEP_LEV;
+		}
+		s_catchar(&path, &path_len, (char)ch);
+		nextch();
+	    }
+	    if (ch == ';') nextch();
+	    break;
+	  }
+	  case ']': {
+	    // Leave subdirectory.
+	    struct mak_folder *p = folder_stack;
+	    if (folder_stack == NULL) {
+		// FIXME: Report?
+		break;
+	    }
+	    path[folder_stack->len] = '\0';
+	    folder_stack = folder_stack->next;
+	    osfree(p);
+	    nextch();
+	    skipblanks();
+	    if (ch == ';') nextch();
+	    break;
+	  }
 	  default:
 	    nextch_handling_eol();
 	    break;
 	 }
       }
       pop_settings();
+      osfree(path);
    } else {
       while (ch != EOF && !ferror(file.fh)) {
 	 if (!process_non_data_line()) {
