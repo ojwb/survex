@@ -2763,7 +2763,8 @@ bad_plt_date:
 			    *
 			    * Even if it's actually being used for a different
 			    * purpose, Survex programs don't show surface legs
-			    * by default so matches fairly well.
+			    * by default so img_FLAG_SURFACE matches fairly
+			    * well.
 			    */
 			   shot_flags |= img_FLAG_SURFACE;
 			   break;
