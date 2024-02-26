@@ -97,6 +97,7 @@ typedef enum {
     * used to provide a place to specify LRUD for the start or end of a
     * traverse (depending if dimensions are measured at the from or to
     * station), so we shouldn't warn about equating a station to itself.
+    * This should be set *as well as* INFER_EQUATES.
     */
    INFER_EQUATES_SELF_OK
 } infer_what;
