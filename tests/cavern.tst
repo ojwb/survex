@@ -144,9 +144,13 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|flags.dat|folder.mak|utm.mak)
+    backread.dat|flags.dat|folder.mak)
       pos=dump
       warn=0
+      ;;
+    utm.mak)
+      pos=dump
+      warn=1
       ;;
     *.dat)
       # .dat files can't start with a comment.  All the other .dat tests

@@ -533,6 +533,20 @@ nextch_handling_eol(void)
    }
 }
 
+static char *
+compass_utm_proj_str(int datum, int utm_zone)
+{
+    char *proj_str = osmalloc(32);
+    // We only support WGS84 currently.
+    (void)datum;
+    if (utm_zone > 0) {
+	sprintf(proj_str, "EPSG:%d", 32600 + utm_zone);
+    } else {
+	sprintf(proj_str, "EPSG:%d", 32700 - utm_zone);
+    }
+    return proj_str;
+}
+
 #define LITLEN(S) (sizeof(S"") - 1)
 #define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
 			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
@@ -605,6 +619,7 @@ data_file(const char *pth, const char *fnm)
       pcs = pcsNew;
       default_units(pcs);
       default_calib(pcs);
+      pcs->z[Q_DECLINATION] = HUGE_REAL;
 
       pcs->recorded_style = pcs->style = STYLE_NORMAL;
       pcs->units[Q_LENGTH] = METRES_PER_FOOT;
@@ -732,8 +747,12 @@ compass_dat_no_date:
 	 get_token();
 	 nextch(); /* : */
 	 skipblanks();
-	 pcs->z[Q_DECLINATION] = -read_numeric(false);
-	 pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+	 if (pcs->dec_filename == NULL) {
+	     pcs->z[Q_DECLINATION] = -read_numeric(false);
+	     pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+	 } else {
+	     (void)read_numeric(false);
+	 }
 	 get_token();
 	 pcs->ordering = compass_order;
 	 if (strcmp(buffer, "FORMAT") == 0) {
@@ -796,6 +815,10 @@ compass_dat_no_date:
    } else if (fmt == FMT_MAK) {
       int datum = 0;
       int utm_zone = 0;
+      real base_x = 0.0, base_y = 0.0, base_z = 0.0;
+      int base_utm_zone = 0;
+      unsigned int base_line = 0;
+      long base_lpos = 0;
       char *path = path_from_fnm(file.filename);
       int path_len = strlen(path);
       struct mak_folder {
@@ -817,6 +840,20 @@ compass_dat_no_date:
 	       nextch_handling_eol();
 	    }
 	    if (dat_fnm) {
+	       if (base_utm_zone) {
+		   // Process the previous @ command using the datum from &.
+		   char *proj_str = compass_utm_proj_str(datum, base_utm_zone);
+		   // Temporarily reset line and lpos so dec_context and
+		   // dec_line refer to the @ command.
+		   unsigned saved_line = file.line;
+		   file.line = base_line;
+		   long saved_lpos = file.lpos;
+		   file.lpos = base_lpos;
+		   set_declination_location(base_x, base_y, base_z, proj_str);
+		   file.line = saved_line;
+		   file.lpos = saved_lpos;
+		   osfree(proj_str);
+	       }
 	       ch_store = ch;
 	       data_file(path, dat_fnm);
 	       ch = ch_store;
@@ -906,14 +943,10 @@ update_proj_str:
 	    pcs->proj_str = NULL;
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
 		/* Set up coordinate system. */
-		pcs->proj_str = osmalloc(32);
-		if (utm_zone > 0) {
-		    sprintf(pcs->proj_str, "EPSG:%d", 32600 + utm_zone);
-		} else {
-		    sprintf(pcs->proj_str, "EPSG:%d", 32700 - utm_zone);
-		}
+		char *proj_str = compass_utm_proj_str(datum, utm_zone);
+		pcs->proj_str = proj_str;
 		if (!proj_str_out) {
-		    proj_str_out = osstrdup(pcs->proj_str);
+		    proj_str_out = osstrdup(proj_str);
 		}
 	    }
 	    invalidate_pj_cached();
@@ -981,6 +1014,45 @@ update_proj_str:
 	    osfree(p);
 	    nextch();
 	    skipblanks();
+	    if (ch == ';') nextch_handling_eol();
+	    break;
+	  }
+	  case '@': {
+	    /* "Base Location" to calculate magnetic declination at:
+	     * UTM East, UTM North, Elevation, UTM Zone, Convergence Angle
+	     * The first three are in metres.
+	     */
+	    nextch();
+	    real easting = read_numeric(false);
+	    skipblanks();
+	    if (ch != ',') break;
+	    nextch();
+	    real northing = read_numeric(false);
+	    skipblanks();
+	    if (ch != ',') break;
+	    nextch();
+	    real elevation = read_numeric(false);
+	    skipblanks();
+	    if (ch != ',') break;
+	    nextch();
+	    int zone = read_int(-60, 60);
+	    skipblanks();
+	    if (ch != ',') break;
+	    nextch();
+	    real convergence_angle = read_numeric(false);
+	    /* We've now read them all successfully so store them.  The Compass
+	     * documentation gives an example which specifies the datum *AFTER*
+	     * the base location, so we need to convert lazily.
+	     */
+	    base_x = easting;
+	    base_y = northing;
+	    base_z = elevation;
+	    base_utm_zone = zone;
+	    base_line = file.line;
+	    base_lpos = file.lpos;
+	    // We ignore the stored UTM grid convergence angle since we get
+	    // this from PROJ.
+	    (void)convergence_angle;
 	    if (ch == ';') nextch_handling_eol();
 	    break;
 	  }

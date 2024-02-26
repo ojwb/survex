@@ -4250,7 +4250,7 @@ can use a *equate with *case preserve on:
 </Para>
 
 <Para>
-    Survex understands basic MAK file features.  Known current limitations and
+    Survex understands most MAK file features.  Known current limitations and
     assumptions:
 
 <ItemizedList>
@@ -4309,9 +4309,14 @@ the MAK version you can change the A16 equate to:
     </Para></ListItem>
 
     <ListItem><Para>
+	The @ command which specifes a base location to calculate magnetic
+	declinations at is handled, provided the specified datum is WGS 1984.
+	The UTM convergence angle specified as part of this command is ignored
+	as Survex knows how to calculate it.
+    </Para></ListItem>
+    <ListItem><Para>
 	The following commands (and any other unknown commands) are currently
 	ignored:
-	    @ (Data about location to calculate declination at),
 	    % (Convergence angle (file-level)),
 	    * (Convergence angle (non file-level)),
 	    ! (Project parameters)

@@ -748,6 +748,62 @@ report_declination(settings *p)
 }
 
 void
+set_declination_location(real x, real y, real z, const char *proj_str)
+{
+    /* Convert to WGS84 lat long. */
+    PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+					   proj_str,
+					   WGS84_DATUM_STRING,
+					   NULL);
+    if (transform) {
+	/* Normalise the output order so x is longitude and y latitude - by
+	 * default new PROJ has them switched for EPSG:4326 which just seems
+	 * confusing.
+	 */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+						       transform);
+	proj_destroy(transform);
+	transform = pj_norm;
+    }
+
+    if (proj_angular_input(transform, PJ_FWD)) {
+	/* Input coordinate system expects radians. */
+	x = rad(x);
+	y = rad(y);
+    }
+
+    PJ_COORD coord = {{x, y, z, HUGE_VAL}};
+    coord = proj_trans(transform, PJ_FWD, coord);
+    x = coord.xyzt.x;
+    y = coord.xyzt.y;
+    z = coord.xyzt.z;
+
+    if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
+       compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
+			  proj_errno_string(proj_errno(transform)));
+       /* Set dummy values which are finite. */
+       x = y = z = 0;
+    }
+    proj_destroy(transform);
+
+    report_declination(pcs);
+
+    double lon = rad(x);
+    double lat = rad(y);
+    pcs->z[Q_DECLINATION] = HUGE_REAL;
+    pcs->dec_lat = lat;
+    pcs->dec_lon = lon;
+    pcs->dec_alt = z;
+    pcs->dec_filename = file.filename;
+    pcs->dec_line = file.line;
+    pcs->dec_context = grab_line();
+    /* Invalidate cached declination. */
+    pcs->declination = HUGE_REAL;
+    /* Invalidate cached grid convergence. */
+    pcs->convergence = HUGE_REAL;
+}
+
+void
 pop_settings(void)
 {
     settings * p = pcs;
@@ -1775,57 +1831,7 @@ cmd_declination(void)
 	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
 	    return;
 	}
-	/* Convert to WGS84 lat long. */
-	PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
-					       pcs->proj_str,
-					       WGS84_DATUM_STRING,
-					       NULL);
-	if (transform) {
-	    /* Normalise the output order so x is longitude and y latitude - by
-	     * default new PROJ has them switched for EPSG:4326 which just seems
-	     * confusing.
-	     */
-	    PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
-							   transform);
-	    proj_destroy(transform);
-	    transform = pj_norm;
-	}
-
-	if (proj_angular_input(transform, PJ_FWD)) {
-	    /* Input coordinate system expects radians. */
-	    x = rad(x);
-	    y = rad(y);
-	}
-
-	PJ_COORD coord = {{x, y, z, HUGE_VAL}};
-	coord = proj_trans(transform, PJ_FWD, coord);
-	x = coord.xyzt.x;
-	y = coord.xyzt.y;
-	z = coord.xyzt.z;
-
-	if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
-	   compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
-			      proj_errno_string(proj_errno(transform)));
-	   /* Set dummy values which are finite. */
-	   x = y = z = 0;
-	}
-	proj_destroy(transform);
-
-	report_declination(pcs);
-
-	double lon = rad(x);
-	double lat = rad(y);
-	pcs->z[Q_DECLINATION] = HUGE_REAL;
-	pcs->dec_lat = lat;
-	pcs->dec_lon = lon;
-	pcs->dec_alt = z;
-	pcs->dec_filename = file.filename;
-	pcs->dec_line = file.line;
-	pcs->dec_context = grab_line();
-	/* Invalidate cached declination. */
-	pcs->declination = HUGE_REAL;
-	/* Invalidate cached grid convergence. */
-	pcs->convergence = HUGE_REAL;
+	set_declination_location(x, y, z, pcs->proj_str);
     } else {
 	/* *declination D UNITS */
 	int units = get_units(BIT(Q_DECLINATION), false);
