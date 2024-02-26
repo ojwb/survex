@@ -26,7 +26,6 @@ extern "C" {
 
 #include <stdarg.h>
 
-#include "osdepend.h"
 #include "osalloc.h"
 
 #define STDERR stdout

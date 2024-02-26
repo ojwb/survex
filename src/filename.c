@@ -22,6 +22,7 @@
 
 #include "filename.h"
 #include "debug.h"
+#include "whichos.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -377,3 +378,62 @@ filename_delete_output(void)
       osfree(p);
    }
 }
+
+#if OS_WIN32
+
+/* NB "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
+bool
+fAbsoluteFnm(const char *fnm)
+{
+   /* <drive letter>: or \<path> or /<path>
+    * or \\<host>\... or //<host>/... */
+   unsigned char ch = (unsigned char)*fnm;
+   return ch == '/' || ch == '\\' ||
+       (ch && fnm[1] == ':' && (ch | 32) >= 'a' && (ch | 32) <= 'z');
+}
+
+#elif OS_UNIX
+
+bool
+fAbsoluteFnm(const char *fnm)
+{
+   return (fnm[0] == '/');
+}
+
+#endif
+
+/* fDirectory( fnm ) returns true if fnm is a directory; false if fnm is a
+ * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
+ * NB If fnm has a trailing directory separator (e.g. “/” or “/home/olly/”
+ * then it's assumed to be a directory even if it doesn't exist (as is an
+ * empty string).
+ */
+
+#if OS_UNIX || OS_WIN32
+
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <stdio.h>
+
+bool
+fDirectory(const char *fnm)
+{
+   struct stat buf;
+   if (!fnm[0] || fnm[strlen(fnm) - 1] == FNM_SEP_LEV
+#ifdef FNM_SEP_LEV2
+       || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
+#endif
+       ) return 1;
+   if (stat(fnm, &buf) != 0) return 0;
+#ifdef S_ISDIR
+   /* POSIX way */
+   return S_ISDIR(buf.st_mode);
+#else
+   /* BSD way */
+   return ((buf.st_mode & S_IFMT) == S_IFDIR);
+#endif
+}
+
+#else
+# error Unknown OS
+#endif
