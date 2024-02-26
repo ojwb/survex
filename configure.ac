@@ -357,6 +357,13 @@ AH_BOTTOM(
 #else
 # define PUTC(C, F) putc(C, F)
 #endif
+
+#ifndef __cplusplus
+/* C23 added bool, false and true as keywords - let's emulate that and
+ * avoid every C file which uses these needing to include <stdbool.h>.
+ */
+# include <stdbool.h>
+#endif
 ])
 
 AC_CONFIG_FILES([

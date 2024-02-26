@@ -24,8 +24,6 @@
 extern "C" {
 #endif
 
-#include <stdbool.h>
-
 #include "useful.h"
 #include "whichos.h"
 

@@ -26,7 +26,6 @@
 
 /* #define NO_COVARIANCES 1 */
 
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

@@ -22,7 +22,6 @@
 # include <setjmp.h>
 #endif
 
-#include <stdbool.h>
 #include <stdio.h> /* for FILE */
 
 #include "message.h" /* for DIAG_WARN, etc */
