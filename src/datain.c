@@ -898,7 +898,7 @@ compass_dat_no_date:
 	    skipblanks();
 	    utm_zone = read_int(-60, 60);
 	    skipblanks();
-	    if (ch == ';') nextch();
+	    if (ch == ';') nextch_handling_eol();
 
 update_proj_str:
 	    if (!pcs->next || pcs->proj_str != pcs->next->proj_str)
@@ -933,7 +933,7 @@ update_proj_str:
 		if (!isBlank(ch)) datum_len = c;
 		nextch();
 	    }
-	    if (ch == ';') nextch();
+	    if (ch == ';') nextch_handling_eol();
 	    /* FIXME: Handle other datums */
 	    /* Also seen: North American 1927 */
 	    /* Other valid values from docs:
@@ -966,7 +966,7 @@ update_proj_str:
 		s_catchar(&path, &path_len, (char)ch);
 		nextch();
 	    }
-	    if (ch == ';') nextch();
+	    if (ch == ';') nextch_handling_eol();
 	    break;
 	  }
 	  case ']': {
@@ -981,7 +981,7 @@ update_proj_str:
 	    osfree(p);
 	    nextch();
 	    skipblanks();
-	    if (ch == ';') nextch();
+	    if (ch == ';') nextch_handling_eol();
 	    break;
 	  }
 	  default:
