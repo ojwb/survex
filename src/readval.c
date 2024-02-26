@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -572,6 +572,50 @@ read_uint(void)
 {
    skipblanks();
    return read_uint_internal(/*Expecting numeric field, found “%s”*/9, NULL);
+}
+
+extern int
+read_int(int min_val, int max_val)
+{
+    bool negated = false;
+    skipblanks();
+    unsigned n = 0;
+    filepos fp;
+
+    get_pos(&fp);
+    negated = isMinus(ch);
+    unsigned limit = negated ? -(unsigned)min_val : (unsigned)max_val;
+    if (isSign(ch)) nextch();
+
+    if (!isdigit(ch)) {
+bad_value:
+	set_pos(&fp);
+	/* TRANSLATORS: The first %d will be replaced by the (inclusive) lower
+	 * bound and the second by the (inclusive) upper bound, for example:
+	 * Expecting integer in range -60 to 60
+	 */
+	compile_diagnostic(DIAG_ERR|DIAG_NUM, /*Expecting integer in range %d to %d*/489);
+	LONGJMP(file.jbSkipLine);
+    }
+
+    while (isdigit(ch)) {
+	unsigned old_n = n;
+	n = n * 10 + (char)(ch - '0');
+	if (n > limit || n < old_n) {
+	    goto bad_value;
+	}
+	nextch();
+    }
+    if (isDecimal(ch)) goto bad_value;
+
+    if (negated) {
+	if (n > (unsigned)INT_MAX) {
+	    // Avoid unportable casting.
+	    return INT_MIN;
+	}
+	return -(int)n;
+    }
+    return (int)n;
 }
 
 extern void

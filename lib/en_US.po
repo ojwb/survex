@@ -158,6 +158,15 @@ msgstr "Field may not be omitted"
 msgid "Expecting numeric field, found “%s”"
 msgstr "Expecting numeric field, found “%s”"
 
+#. TRANSLATORS: The first %d will be replaced by the (inclusive) lower
+#. bound and the second by the (inclusive) upper bound, for example:
+#. Expecting integer in range -60 to 60
+#: ../src/readval.c:593
+#: n:489
+#, c-format
+msgid "Expecting integer in range %d to %d"
+msgstr "Expecting integer in range %d to %d"
+
 #: ../src/commands.c:1879
 #: n:10
 #, c-format

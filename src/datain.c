@@ -896,12 +896,7 @@ compass_dat_no_date:
 	    /* UTM zone */
 	    nextch();
 	    skipblanks();
-	    {
-		bool minus = (ch == '-');
-		if (ch == '-' || ch == '+') nextch();
-		utm_zone = read_uint();
-		if (minus) utm_zone = -utm_zone;
-	    }
+	    utm_zone = read_int(-60, 60);
 	    skipblanks();
 	    if (ch == ';') nextch();
 
