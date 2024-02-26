@@ -66,7 +66,7 @@ testdir=`(cd "$testdir" && pwd)`
  cmd_declination_conv_proj_bug\
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
- backread.dat corrections.dat ignore.dat lrud.dat nomeasure.dat noteam.dat\
+ backread.dat corrections.dat flags.dat lrud.dat nomeasure.dat noteam.dat\
  fixfeet.mak utm.mak\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
@@ -144,13 +144,13 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|folder.mak|utm.mak)
+    backread.dat|flags.dat|folder.mak|utm.mak)
       pos=dump
       warn=0
       ;;
     *.dat)
-      # .dat files can't start with a comment.  All the current .dat tests
-      # except one have the same settings.
+      # .dat files can't start with a comment.  All the other .dat tests
+      # have the same settings.
       pos=yes
       warn=0
       ;;

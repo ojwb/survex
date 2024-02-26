@@ -2027,12 +2027,15 @@ data_normal(void)
 		nextch();
 		while (ch >= 'A' && ch <= 'Z') {
 		   compass_dat_flags |= BIT(ch - 'A');
-		   /* We currently understand:
+		   /* Flags we handle:
 		    *   L (exclude from length)
+		    *   S (splay)
+		    *   P (no plot) (mapped to FLAG_SURFACE)
 		    *   X (exclude data)
-		    * FIXME: but should also handle at least some of:
-		    *   C (no adjustment) (set all (co)variances to 0?)
-		    *   P (no plot) (new flag in 3d for "hidden by default"?)
+		    * FIXME: Defined flags we currently ignore:
+		    *   C (no adjustment) (set all (co)variances to 0?  Then
+		    *	  we need to handle a loop of such legs or a traverse
+		    *	  of such legs between two fixed points...)
 		    */
 		   nextch();
 		}
@@ -2237,6 +2240,24 @@ data_normal(void)
 	     save_flags = pcs->flags;
 	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
+	     }
+	     if ((compass_dat_flags & BIT('S' - 'A'))) {
+		/* 'S' means "splay".  It's currently only documented as part
+		 * of the PLT file format, but the flags are the same and so
+		 * it seems it must be supported in DAT files too.
+		 */
+		pcs->flags |= BIT(FLAGS_SPLAY);
+	     }
+	     if ((compass_dat_flags & BIT('P' - 'A'))) {
+		/* 'P' means "Exclude this shot from plotting", but the use
+		 * suggested in the Compass docs is for surface data, and legs
+		 * with this flag "[do] not support passage modeling".
+		 *
+		 * Even if it's actually being used for a different
+		 * purpose, Survex programs don't show surface legs
+		 * by default so FLAGS_SURFACE matches fairly well.
+		 */
+		pcs->flags |= BIT(FLAGS_SURFACE);
 	     }
 	     if ((compass_dat_flags & BIT('L' - 'A'))) {
 		/* 'L' means "exclude from length" - map this to Survex's

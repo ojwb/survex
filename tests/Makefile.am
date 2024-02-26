@@ -94,7 +94,7 @@ dotinsurvey.svx dotinsurvey.out\
 2fixbug.svx leandroclino.svx leandroclino.pos lowsd.svx revdir.svx revdir.pos\
 gettokennullderef.svx lech.svx level.svx level.pos\
 backread.dat backread.dump corrections.dat corrections.pos\
-ignore.dat ignore.pos lrud.dat lrud.out lrud.pos\
+flags.dat flags.dump lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
 fixfeet.mak fixfeet.pos\
 folder.mak subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
