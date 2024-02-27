@@ -44,7 +44,9 @@
 # include "useful.h"
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
-# ifdef HAVE_STDINT_H
+# if defined HAVE_STDINT_H || \
+     (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
+     (defined __cplusplus && __cplusplus >= 201103L)
 #  include <stdint.h>
 #  define INT32_T int32_t
 #  define UINT32_T uint32_t
