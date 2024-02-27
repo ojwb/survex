@@ -67,31 +67,6 @@
 #define MM_PER_INCH 25.4 /* exact value */
 #define METRES_PER_FOOT 0.3048 /* exact value */
 
-/* DJGPP needs these: */
-
-#ifndef EXIT_FAILURE
-# define EXIT_FAILURE 1
-#endif /* !EXIT_FAILURE */
-
-#ifndef EXIT_SUCCESS
-# define EXIT_SUCCESS 0
-#endif /* !EXIT_SUCCESS */
-
-#ifndef SEEK_SET
-# define SEEK_SET 0
-# define SEEK_CUR 1
-# define SEEK_END 2
-#endif /* !SEEK_SET */
-
-/* Older UNIX libraries and DJGPP libraries have HUGE instead of HUGE_VAL */
-#ifndef HUGE_VAL
-# ifdef HUGE
-#  define HUGE_VAL HUGE
-# else
-#  error Neither HUGE_VAL nor HUGE is defined
-# endif
-#endif
-
 #define putnl() putchar('\n')    /* print a newline char */
 #define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */
 /* print a line followed by a newline char to a file */
