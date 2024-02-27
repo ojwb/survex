@@ -6,9 +6,6 @@
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
 
-/* Define if you have the strftime function.  */
-#define HAVE_STRFTIME 1
-
 /* Define if you have the vprintf function.  */
 #define HAVE_VPRINTF 1
 

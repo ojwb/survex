@@ -240,10 +240,6 @@ AC_TYPE_INT32_T
 AC_TYPE_UINT32_T
 
 dnl Checks for library functions.
-AC_FUNC_STRFTIME
-if test yes != "$ac_cv_func_strftime"; then
-  AC_LIBOBJ(strftime)
-fi
 AC_FUNC_VPRINTF
 dnl Check if there's a declaration of lround().  Below we also check for
 dnl lround() with AC_CHECK_FUNCS, which just checks if it can be linked
