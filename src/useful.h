@@ -23,10 +23,7 @@
 
 #include <config.h>
 
-#if HAVE_STDINT_H
-# include <stdint.h>
-#endif
-
+#include <stdint.h>
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
