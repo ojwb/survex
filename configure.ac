@@ -239,8 +239,6 @@ AC_TYPE_UINT16_T
 AC_TYPE_INT32_T
 AC_TYPE_UINT32_T
 
-dnl Checks for library functions.
-AC_FUNC_VPRINTF
 dnl Check if there's a declaration of lround().  Below we also check for
 dnl lround() with AC_CHECK_FUNCS, which just checks if it can be linked
 dnl against.  Some platforms are missing a prototype for lround(), so
