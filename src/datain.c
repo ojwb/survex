@@ -779,6 +779,15 @@ data_file(const char *pth, const char *fnm)
 	    pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
 	    get_token();
 	 }
+
+#if 0
+	 // FIXME Parse once we handle discovery dates...
+	 if (strcmp(buffer, "DISCOVERY") == 0 && ch == ':') {
+	    // Discovery date, e.g. DISCOVERY: 2 28 2024
+	    nextch(); /* : */
+	    int days = read_compass_date_as_days_since_1900();
+	 }
+#endif
 	 skipline();
 	 process_eol();
 	 /* BLANK LINE */
