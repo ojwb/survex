@@ -865,7 +865,10 @@ compass_dat_no_date:
 		     node *stn;
 		     real x, y, z;
 		     bool in_feet = false;
-		     name->sflags |= BIT(SFLAGS_FIXED);
+		     // Compass treats these fixed points as entrances
+		     // ("distance from entrance" in a .DAT file counts from
+		     // 0.0 at these points) so we do too.
+		     name->sflags |= BIT(SFLAGS_FIXED) | BIT(SFLAGS_ENTRANCE);
 		     nextch_handling_eol();
 		     if (ch == 'F' || ch == 'f') {
 			in_feet = true;
