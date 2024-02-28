@@ -759,20 +759,22 @@ compass_dat_no_date:
 	    }
 	    get_token();
 	 }
-	 if (strcmp(buffer, "CORRECTIONS") == 0) {
+
+	 if (strcmp(buffer, "CORRECTIONS") == 0 && ch == ':') {
 	    nextch(); /* : */
 	    pcs->z[Q_BEARING] = -rad(read_numeric(false));
 	    pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
-
-	    /* get_token() only reads alphas so we must check for '2' here. */
 	    get_token();
-	    if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
-		nextch(); /* 2 */
-		nextch(); /* : */
-		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
-		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
-	    }
+	 }
+
+	 /* get_token() only reads alphas so we must check for '2' here. */
+	 if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
+	    nextch(); /* 2 */
+	    nextch(); /* : */
+	    pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
+	    pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
+	    get_token();
 	 }
 	 skipline();
 	 process_eol();
