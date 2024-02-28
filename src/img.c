@@ -1,5 +1,6 @@
 /* img.c
- * Routines for reading and writing Survex ".3d" image files
+ * Routines for reading and writing processed survey data files
+ *
  * Copyright (C) 1993-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify

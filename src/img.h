@@ -1,5 +1,5 @@
 /* img.h
- * Header file for routines to read and write processed survey data files
+ * Routines for reading and writing processed survey data files
  *
  * These routines support reading processed survey data in a variety of formats
  * - currently:
