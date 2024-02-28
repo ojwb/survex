@@ -2746,10 +2746,10 @@ bad_plt_date:
 		   }
 		   if ((pimg->flags & img_SFLAG_UNDERGROUND) &&
 		       (pimg->l >= 0 || pimg->r >= 0 || pimg->u >= 0 || pimg->d >= 0)) {
-		       pimg->l *= METRES_PER_FOOT;
-		       pimg->r *= METRES_PER_FOOT;
-		       pimg->u *= METRES_PER_FOOT;
-		       pimg->d *= METRES_PER_FOOT;
+		       if (pimg->l >= 0) pimg->l *= METRES_PER_FOOT; else pimg->l = -1;
+		       if (pimg->r >= 0) pimg->r *= METRES_PER_FOOT; else pimg->r = -1;
+		       if (pimg->u >= 0) pimg->u *= METRES_PER_FOOT; else pimg->u = -1;
+		       if (pimg->d >= 0) pimg->d *= METRES_PER_FOOT; else pimg->d = -1;
 		       pimg->pending |= PENDING_XSECT | PENDING_HAD_XSECT;
 		   } else if (pimg->pending == PENDING_HAD_XSECT) {
 		       pimg->pending = PENDING_XSECT_END;
