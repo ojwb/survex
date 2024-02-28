@@ -2619,18 +2619,32 @@ use the deprecated *prefix command.
 is resolved relative to the directory which the parent file is in
 (just as relative HTML links do).  Cavern will try adding a <filename>.svx</filename>
 extension, and will also try translating "\" to "/".
-And as a last
-resort, it will try a lower case version of the filename (so if you
-use Unix and someone sends you a DOS/Windows dataset with mismatched
-case, unzip it with "unzip -L" and UNIX cavern will process it).
 </Para>
 
 <Para>
-The depth to which you can nest
-include files may be limited by the operating system
-you use.  Usually the limit is fairly high (>30), but if you want to be able to
-process your dataset with <Application>Survex</Application> on any supported platform, it
-would be prudent not to go overboard with nested include files.
+To help users wanting to take a dataset from on a platform where filenames
+are case-insenstive and process it on a platform where filenames are
+case-sensitive, if the file isn't found cavern will try a few variations of the
+case.  First it will try all lower case (in Survex 1.4.5 and older this was
+the only case variant tried), then all lower case except with the first
+character of the leafname upper case, and finally all upper case.  These
+different variants are only tried if the case as given doesn't match
+so there's no overhead in the normal situation.
+</Para>
+
+<Para>
+One specific trick this enables which is worth noting is that if you're using
+Unix and someone sends you a DOS/Windows dataset with mismatched filename case,
+you can unzip it using <command>unzip -L</command> to unpack all the filenames
+in lower case and UNIX cavern should successfully process it.
+</Para>
+
+<Para>
+The depth to which you can nest include files may be limited by the operating
+system you use.  Usually the limit is fairly high (>30), but if you want to be
+able to process your dataset with <Application>Survex</Application> on any
+supported platform, it would be prudent not to go overboard with deeply nested
+include files.
 </Para>
 </listitem>
 </VarListEntry>

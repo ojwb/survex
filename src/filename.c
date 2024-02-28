@@ -310,32 +310,54 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
    FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, fnmUsed);
    if (fh == NULL) {
 #if OS_UNIX
-      int f_changed = 0;
-      char *fnm_trans, *p;
-      fnm_trans = osstrdup(fnm);
-      for (p = fnm_trans; *p; p++) {
+      bool changed = false;
+      char *fnm_trans = osstrdup(fnm);
+      for (char *p = fnm_trans; *p; p++) {
 	 switch (*p) {
 	 case '\\': /* swap a backslash to a forward slash */
 	    *p = '/';
-	    f_changed = 1;
+	    changed = true;
 	    break;
 	 }
       }
-      if (f_changed)
+      if (changed)
 	 fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
 
-      /* as a last ditch measure, try lowercasing the filename */
+      /* To help users process data that originated on a case-insensitive
+       * filing system, try lowercasing the filename if not found.
+       */
       if (fh == NULL) {
-	 f_changed = 0;
-	 for (p = fnm_trans; *p ; p++) {
+	 bool had_lower = false;
+	 changed = false;
+	 for (char *p = fnm_trans; *p ; p++) {
 	    unsigned char ch = *p;
 	    if (isupper(ch)) {
 	       *p = tolower(ch);
-	       f_changed = 1;
+	       changed = true;
+	    } else if (islower(ch)) {
+	       had_lower = true;
 	    }
 	 }
-	 if (f_changed)
+	 if (changed)
 	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
+
+	 /* If that fails, try upper casing the initial character of the leaf. */
+	 if (fh == NULL) {
+	    char *leaf = strrchr(fnm_trans, '/');
+	    leaf = (leaf ? leaf + 1 : fnm_trans);
+	    if (islower(*leaf)) {
+	       *leaf = toupper(*leaf);
+	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
+	    }
+	    if (fh == NULL && had_lower) {
+	       /* Finally, try upper casing the filename if it wasn't all
+		* upper case to start with. */
+	       for (char *p = fnm_trans; *p ; p++) {
+		  *p = toupper((unsigned char)*p);
+	       }
+	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
+	    }
+	 }
       }
       osfree(fnm_trans);
 #endif
