@@ -55,6 +55,21 @@
  * (information from Larry Fish via Simeon Warner). */
 #define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
 
+static int
+read_compass_date_as_days_since_1900(void)
+{
+    /* NB order is *month* *day* year */
+    int month = read_uint();
+    int day = read_uint();
+    int year = read_uint();
+    /* Note: Larry says a 2 digit year is always 19XX */
+    if (year < 100) year += 1900;
+
+    /* Compass uses 1901-01-01 when no date was specified. */
+    if (year == 1901 && day == 1 && month == 1) return -1;
+
+    return days_since_1900(year, month, day);
+}
 int ch;
 
 typedef enum {
@@ -699,22 +714,10 @@ data_file(const char *pth, const char *fnm)
 	 get_token();
 	 copy_on_write_meta(pcs);
 	 if (ch == ':') {
-	     int year, month, day;
-
 	     nextch();
-
-	     /* NB order is *month* *day* year */
-	     month = read_uint();
-	     day = read_uint();
-	     year = read_uint();
-	     /* Note: Larry says a 2 digit year is always 19XX */
-	     if (year < 100) year += 1900;
-
-	     /* Compass uses 1901-01-01 when no date was specified. */
-	     if (year == 1901 && day == 1 && month == 1) goto compass_dat_no_date;
-	     pcs->meta->days1 = pcs->meta->days2 = days_since_1900(year, month, day);
+	     int days = read_compass_date_as_days_since_1900();
+	     pcs->meta->days1 = pcs->meta->days2 = days;
 	 } else {
-compass_dat_no_date:
 	     pcs->meta->days1 = pcs->meta->days2 = -1;
 	 }
 	 pcs->declination = HUGE_REAL;
