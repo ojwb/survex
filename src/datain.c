@@ -28,6 +28,7 @@
 #include "debug.h"
 #include "cavern.h"
 #include "date.h"
+#include "img.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -53,8 +54,6 @@
 /* Compass uses -999.0 but understands Karst data which used 999.0
  * (information from Larry Fish via Simeon Warner). */
 #define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
-
-#define COMPASS_DATUM_WGS84 1
 
 int ch;
 
@@ -533,20 +532,6 @@ nextch_handling_eol(void)
    }
 }
 
-static char *
-compass_utm_proj_str(int datum, int utm_zone)
-{
-    char *proj_str = osmalloc(32);
-    // We only support WGS84 currently.
-    (void)datum;
-    if (utm_zone > 0) {
-	sprintf(proj_str, "EPSG:%d", 32600 + utm_zone);
-    } else {
-	sprintf(proj_str, "EPSG:%d", 32700 - utm_zone);
-    }
-    return proj_str;
-}
-
 #define LITLEN(S) (sizeof(S"") - 1)
 #define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
 			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
@@ -842,17 +827,27 @@ compass_dat_no_date:
 	    if (dat_fnm) {
 	       if (base_utm_zone) {
 		   // Process the previous @ command using the datum from &.
-		   char *proj_str = compass_utm_proj_str(datum, base_utm_zone);
-		   // Temporarily reset line and lpos so dec_context and
-		   // dec_line refer to the @ command.
-		   unsigned saved_line = file.line;
-		   file.line = base_line;
-		   long saved_lpos = file.lpos;
-		   file.lpos = base_lpos;
-		   set_declination_location(base_x, base_y, base_z, proj_str);
-		   file.line = saved_line;
-		   file.lpos = saved_lpos;
-		   osfree(proj_str);
+		   char *proj_str = img_compass_utm_proj_str(datum, base_utm_zone);
+		   if (proj_str) {
+		       // Temporarily reset line and lpos so dec_context and
+		       // dec_line refer to the @ command.
+		       unsigned saved_line = file.line;
+		       file.line = base_line;
+		       long saved_lpos = file.lpos;
+		       file.lpos = base_lpos;
+		       set_declination_location(base_x, base_y, base_z,
+						proj_str);
+		       file.line = saved_line;
+		       file.lpos = saved_lpos;
+		       if (!pcs->proj_str) {
+			   pcs->proj_str = proj_str;
+			   if (!proj_str_out) {
+			       proj_str_out = osstrdup(proj_str);
+			   }
+		       } else {
+			   osfree(proj_str);
+		       }
+		   }
 	       }
 	       ch_store = ch;
 	       data_file(path, dat_fnm);
@@ -943,10 +938,12 @@ update_proj_str:
 	    pcs->proj_str = NULL;
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
 		/* Set up coordinate system. */
-		char *proj_str = compass_utm_proj_str(datum, utm_zone);
-		pcs->proj_str = proj_str;
-		if (!proj_str_out) {
-		    proj_str_out = osstrdup(proj_str);
+		char *proj_str = img_compass_utm_proj_str(datum, utm_zone);
+		if (proj_str) {
+		    pcs->proj_str = proj_str;
+		    if (!proj_str_out) {
+			proj_str_out = osstrdup(proj_str);
+		    }
 		}
 	    }
 	    invalidate_pj_cached();
@@ -967,19 +964,7 @@ update_proj_str:
 		nextch();
 	    }
 	    if (ch == ';') nextch_handling_eol();
-	    /* FIXME: Handle other datums */
-	    /* Also seen: North American 1927 */
-	    /* Other valid values from docs:
-	     * North American 1983
-	     * An old changelog entry suggests at least 24 datums are
-	     * supported.
-	     */
-#define EQ(S) datum_len == LITLEN(S) && memcmp(p, S, LITLEN(S)) == 0
-	    if (EQ("WGS 1984")) {
-		datum = COMPASS_DATUM_WGS84;
-	    } else {
-		datum = 0;
-	    }
+	    datum = img_parse_compass_datum_string(p, datum_len);
 	    osfree(p);
 	    goto update_proj_str;
 	  }

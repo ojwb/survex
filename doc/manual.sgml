@@ -4255,11 +4255,21 @@ can use a *equate with *case preserve on:
 
 <ItemizedList>
     <ListItem><Para>
-	Survex handles the UTM zone and datum provided the datum is
-	"WGS 1984".  Other datums could be handled, but the mapping
-	to EPSG code is less simple.  Also it seems Compass supports at least
-	24 datums but it doesn't document all the strings it uses for them.
-	Please let us know if support for more datums would be useful to you.
+	Survex handles the UTM zone and datum provided the combination can be
+	expressed as an EPSG code. Example Compass files we've seen use "North
+	American 1927" outside of where it's defined for use, presumably because
+	some users fail to change the datum from Compass' default. To enable
+	reading such files we return a PROJ4 string of the form "+proj=utm ..."
+	for "North American 1927" and "North American 1983" for UTM zones which
+	don't have an EPSG code. Please let us know if support for additional
+	cases which aren't currently supported would be useful to you.
+    </Para></ListItem>
+    <ListItem><Para>
+	The @ command which specifes a base location to calculate magnetic
+	declinations at is handled, provided the datum and UTM zone are
+	supported (see previous bullet point). The UTM convergence angle
+	specified as part of this command is ignored as Survex knows how to
+	calculate it.
     </Para></ListItem>
     <ListItem><Para>
 	Link stations are ignored.  These have two uses in Compass.  They were
@@ -4308,12 +4318,6 @@ the MAK version you can change the A16 equate to:
 *equate file1.A16 file2.A16 file3.A16</programlisting>
     </Para></ListItem>
 
-    <ListItem><Para>
-	The @ command which specifes a base location to calculate magnetic
-	declinations at is handled, provided the specified datum is WGS 1984.
-	The UTM convergence angle specified as part of this command is ignored
-	as Survex knows how to calculate it.
-    </Para></ListItem>
     <ListItem><Para>
 	The following commands (and any other unknown commands) are currently
 	ignored:
@@ -4388,15 +4392,15 @@ Compass .PLT files without much extra work.)
 	Stations listed as fixed points are flagged as fixed points.
     </Para></ListItem>
     <ListItem><Para>
-	If a PLT file only uses one datum and it is "WGS 1984" then the UTM
-	zone is converted to the appropriate EPSG code and this is reported as
-	the coordinate system.  Other datums could be handled, but the mapping
-	to EPSG code is less simple.  Also it seems Compass supports at least
-	24 datums but it doesn't document all the strings it uses for them.
+	If a PLT file only uses one datum and UTM zone combination and it is
+	supported (the same combinations are supported as for MAK files) then
+	they are converted to the appropriate EPSG code or PROJ4 string and this
+	is reported as the coordinate system.  Please let us know if support for
+	additional cases which aren't currently supported would be useful to you.
 	Files with multiple datums could be handled too, but we'd need to convert
 	coordinates to a common coordinate system in the img library, which would
-	need it to depend on PROJ.  Please let us know if support for more and/or
-	mixed datums would be useful to you.
+	need it to depend on PROJ.  Please let us know if support for mixed
+	datums would be useful to you.
     </Para></ListItem>
 </ItemizedList>
 </Para>

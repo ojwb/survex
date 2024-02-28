@@ -452,8 +452,6 @@ compass_plt_get_station_flags(img *pimg, const char *name, int name_len)
     return -1;
 }
 
-#define COMPASS_DATUM_WGS84 1
-
 static char *
 my_strdup(const char *str)
 {
@@ -593,7 +591,7 @@ static int
 compass_plt_open(img *pimg)
 {
     int utm_zone = 0;
-    int datum = 0;
+    int datum = img_DATUM_UNKNOWN;
     long fpos;
     char *from = NULL;
     int from_len = 0;
@@ -630,16 +628,53 @@ compass_plt_open(img *pimg)
 	    }
 
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
-		if (utm_zone > 0) {
-		    utm_zone = 32600 + utm_zone;
-		} else {
-		    utm_zone = 32700 - utm_zone;
+		/* Map to an EPSG code where we can. */
+		const char* template = "EPSG:%d";
+		int value = 0;
+		switch (datum) {
+		  case img_DATUM_NAD27:
+		    if (utm_zone < 0) {
+			template = "+proj=utm +zone=%d +datum=NAD27 +south +units=m +no_defs +type=crs";
+			value = -utm_zone;
+		    } else if (utm_zone <= 23) {
+			value = 26700 + utm_zone;
+		    } else if (utm_zone < 59) {
+			template = "+proj=utm +zone=%d +datum=NAD27 +units=m +no_defs +type=crs";
+			value = utm_zone;
+		    } else {
+			value = 3311 + utm_zone;
+		    }
+		    break;
+		  case img_DATUM_NAD83:
+		    if (utm_zone < 0) {
+			template = "+proj=utm +zone=%d +datum=NAD83 +south +units=m +no_defs +type=crs";
+			value = -utm_zone;
+		    } else if (utm_zone <= 23) {
+			value = 26900 + utm_zone;
+		    } else if (utm_zone == 24) {
+			value = 9712;
+		    } else if (utm_zone < 59) {
+			template = "+proj=utm +zone=%d +datum=NAD83 +units=m +no_defs +type=crs";
+			value = utm_zone;
+		    } else {
+			value = 3313 + utm_zone;
+		    }
+		    break;
+		  case img_DATUM_WGS84:
+		    if (utm_zone > 0) {
+			value = 32600 + utm_zone;
+		    } else {
+			value = 32700 - utm_zone;
+		    }
+		    break;
 		}
-		pimg->cs = (char*)xosmalloc(11);
-		if (!pimg->cs) {
-		    goto out_of_memory_error;
+		if (value) {
+		    pimg->cs = (char*)xosmalloc(strlen(template) + 4);
+		    if (!pimg->cs) {
+			goto out_of_memory_error;
+		    }
+		    sprintf(pimg->cs, template, value);
 		}
-		sprintf(pimg->cs, "EPSG:%d", utm_zone);
 	    }
 
 	    osfree(from);
@@ -867,22 +902,10 @@ compass_plt_open(img *pimg)
 		  continue;
 	      }
 
-	      /* FIXME: Handle other datums */
-	      /* Also seen: North American 1927 */
-	      /* Other valid values from docs:
-	       * North American 1983
-	       * An old changelog entry suggests at least 24 datums are
-	       * supported.
-	       */
-	      if (strcmp(line, "WGS 1984") == 0) {
-		  new_datum = COMPASS_DATUM_WGS84;
-	      } else {
+	      new_datum = img_parse_compass_datum_string(line, strlen(line));
+	      if (new_datum == img_DATUM_UNKNOWN) {
 		  utm_zone = 99;
-		  osfree(line);
-		  continue;
-	      }
-
-	      if (datum == 0) {
+	      } else if (datum == img_DATUM_UNKNOWN) {
 		  datum = new_datum;
 	      } else if (datum != new_datum) {
 		  utm_zone = 99;
@@ -3442,4 +3465,150 @@ img_close(img *pimg)
       osfree(pimg);
    }
    return result;
+}
+
+img_datum
+img_parse_compass_datum_string(const char *s, size_t len)
+{
+#define EQ(S) len == LITLEN(S) && memcmp(s, S, LITLEN(S)) == 0
+    /* First check the three which seem to be commonly used in Compass data. */
+    if (EQ("WGS 1984"))
+	return img_DATUM_WGS84;
+    if (EQ("North American 1927"))
+	return img_DATUM_NAD27;
+    if (EQ("North American 1983"))
+	return img_DATUM_NAD83;
+
+    if (EQ("Adindan"))
+	return img_DATUM_ADINDAN;
+    if (EQ("Arc 1950"))
+	return img_DATUM_ARC1950;
+    if (EQ("Arc 1960"))
+	return img_DATUM_ARC1960;
+    if (EQ("Cape"))
+	return img_DATUM_CAPE;
+    if (EQ("European 1950"))
+	return img_DATUM_EUROPEAN1950;
+    if (EQ("Geodetic 1949"))
+	return img_DATUM_NZGD49;
+    if (EQ("Hu Tzu Shan"))
+	return img_DATUM_HUTZUSHAN1950;
+    if (EQ("Indian"))
+	return img_DATUM_INDIAN1960;
+    if (EQ("Tokyo"))
+	return img_DATUM_TOKYO;
+    if (EQ("WGS 1972"))
+	return img_DATUM_WGS72;
+
+    return img_DATUM_UNKNOWN;
+}
+
+char *
+img_compass_utm_proj_str(img_datum datum, int utm_zone)
+{
+    int epsg_code = 0;
+    const char* proj4_datum = NULL;
+
+    switch (datum) {
+      case img_DATUM_UNKNOWN:
+	break;
+      case img_DATUM_ADINDAN:
+	if (utm_zone >= 35 && utm_zone <= 38)
+	    epsg_code = 20100 + utm_zone;
+	break;
+      case img_DATUM_ARC1950:
+	if (utm_zone >= -36 && utm_zone <= -34)
+	    epsg_code = 20900 - utm_zone;
+	break;
+      case img_DATUM_ARC1960:
+	if (utm_zone >= -37 && utm_zone <= -35)
+	    epsg_code = 21000 - utm_zone;
+	break;
+      case img_DATUM_CAPE:
+	if (utm_zone >= -36 && utm_zone <= -34)
+	    epsg_code = 22200 - utm_zone;
+	break;
+      case img_DATUM_EUROPEAN1950:
+	if (utm_zone >= 28 && utm_zone <= 38)
+	    epsg_code = 23000 + utm_zone;
+	break;
+      case img_DATUM_NZGD49:
+	if (utm_zone >= 58)
+	    epsg_code = 27200 + utm_zone;
+	break;
+      case img_DATUM_HUTZUSHAN1950:
+	if (utm_zone == 51)
+	    epsg_code = 3829;
+	break;
+      case img_DATUM_INDIAN1960:
+	if (utm_zone >= 48 && utm_zone <= 49)
+	    epsg_code = 3100 + utm_zone;
+	break;
+      case img_DATUM_NAD27:
+	if (utm_zone > 0 && utm_zone <= 23)
+	    epsg_code = 26700 + utm_zone;
+	else if (utm_zone >= 59)
+	    epsg_code = 3311 + utm_zone;
+	else
+	    proj4_datum = "NAD27";
+	break;
+      case img_DATUM_NAD83:
+	if (utm_zone > 0 && utm_zone <= 23)
+	    epsg_code = 26900 + utm_zone;
+	else if (utm_zone == 24)
+	    epsg_code = 9712;
+	else if (utm_zone >= 59)
+	    epsg_code = 3313 + utm_zone;
+	else
+	    proj4_datum = "NAD83";
+	break;
+      case img_DATUM_TOKYO:
+	if (utm_zone >= 51 && utm_zone <= 55)
+	    epsg_code = 3041 + utm_zone;
+	break;
+      case img_DATUM_WGS72:
+	if (utm_zone > 0)
+	    epsg_code = 32200 + utm_zone;
+	else
+	    epsg_code = 32300 - utm_zone;
+	break;
+      case img_DATUM_WGS84:
+	if (utm_zone > 0)
+	    epsg_code = 32600 + utm_zone;
+	else
+	    epsg_code = 32700 - utm_zone;
+	break;
+    }
+
+    if (epsg_code) {
+	char *proj_str = xosmalloc(11);
+	if (!proj_str) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return NULL;
+	}
+	sprintf(proj_str, "EPSG:%d", epsg_code);
+	return proj_str;
+    }
+
+    if (proj4_datum) {
+	char *proj_str;
+	size_t len = strlen(proj4_datum) + 52 + 2 + 1;
+	const char *south = "";
+	if (utm_zone < 0) {
+	    utm_zone = -utm_zone;
+	    south = "+south ";
+	    len += 7;
+	}
+	proj_str = xosmalloc(len);
+	if (!proj_str) {
+	    img_errno = IMG_OUTOFMEMORY;
+	    return NULL;
+	}
+	sprintf(proj_str,
+		"+proj=utm +zone=%d %s+datum=%s +units=m +no_defs +type=crs",
+		utm_zone, south, proj4_datum);
+	return proj_str;
+    }
+
+    return NULL;
 }

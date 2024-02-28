@@ -11,7 +11,7 @@
  *
  * Writing Survex ".3d" image files is supported.
  *
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013,2014,2016,2018
+ * Copyright (C) Olly Betts 1993-2024
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -416,6 +416,63 @@ typedef enum {
  * then you can call this function to discover why.
  */
 img_errcode img_error(void);
+
+/* Datum codes returned by img_parse_compass_datum_string().
+ *
+ * We currently don't handle the following, which appear in the datum list
+ * in Compass, but there don't seem to be any EPSG codes for UTM with any
+ * of these:
+ *
+ *   Australian 1966
+ *   Australian 1984
+ *   Camp Area Astro (Antarctica only)
+ *   European 1979
+ *   Hong Kong 1963
+ *   Oman
+ *   Ordnance Survey 1936
+ *   Pulkovo 1942
+ *   South American 1956
+ *   South American 1969
+ */
+typedef enum {
+    img_DATUM_UNKNOWN = 0,
+    img_DATUM_ADINDAN,
+    img_DATUM_ARC1950,
+    img_DATUM_ARC1960,
+    img_DATUM_CAPE,
+    img_DATUM_EUROPEAN1950,
+    img_DATUM_NZGD49,
+    img_DATUM_HUTZUSHAN1950,
+    img_DATUM_INDIAN1960,
+    img_DATUM_NAD27,
+    img_DATUM_NAD83,
+    img_DATUM_TOKYO,
+    img_DATUM_WGS72,
+    img_DATUM_WGS84
+} img_datum;
+
+/* Parse a Compass datum string and return an img_datum code. */
+img_datum img_parse_compass_datum_string(const char *s, size_t len);
+
+/* Return a CRS string to pass to PROJ from an img_datum and UTM zone.
+ *
+ * utm_zone can be between -60 and -1 (Southern Hemisphere), or 1 and 60
+ * (Northern Hemisphere).
+ *
+ * Where possible a string of the form "EPSG:1234" is returned.
+ *
+ * Example Compass files we've seen use "North American 1927" outside of where
+ * it's defined for use, presumably because some users fail to change the datum
+ * from Compass' default.  To enable reading such files we return a PROJ4
+ * string of the form "+proj=utm ..." for "North American 1927" and "North
+ * American 1983" for UTM zones which don't have an EPSG code.
+ *
+ * If no mapping is known NULL is returned.
+ *
+ * The returned value is allocated with malloc() and the caller is responsible
+ * for calling free().
+ */
+char *img_compass_utm_proj_str(img_datum datum, int utm_zone);
 
 #ifdef __cplusplus
 }
