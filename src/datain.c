@@ -756,9 +756,15 @@ data_file(const char *pth, const char *fnm)
 		/* Original "Inclination Units" were "Depth Gauge". */
 		pcs->recorded_style = STYLE_DIVING;
 	    }
-	    if (buffer_len >= 12 && buffer[buffer_len >= 15 ? 13 : 11] == 'B') {
-	       /* We have backsights for compass and clino */
-	       pcs->ordering = compass_order_backsights;
+	    if (buffer_len >= 12) {
+	       char backsight_type = buffer[buffer_len >= 15 ? 13 : 11];
+	       // B means redundant backsight; C means redundant backsights
+	       // but displayed "corrected" (i.e. reversed to make visually
+	       // comparing easier).
+	       if (backsight_type == 'B' || backsight_type == 'C') {
+		  /* We have backsights for compass and clino */
+		  pcs->ordering = compass_order_backsights;
+	       }
 	    }
 	    get_token();
 	 }
