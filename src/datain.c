@@ -2322,10 +2322,7 @@ data_normal(void)
 		pcs->flags |= BIT(FLAGS_SPLAY);
 	     }
 	     if ((compass_dat_flags & BIT('S' - 'A'))) {
-		/* 'S' means "splay".  It's currently only documented as part
-		 * of the PLT file format, but the flags are the same and so
-		 * it seems it must be supported in DAT files too.
-		 */
+		/* 'S' means "splay". */
 		pcs->flags |= BIT(FLAGS_SPLAY);
 	     }
 	     if ((compass_dat_flags & BIT('P' - 'A'))) {
