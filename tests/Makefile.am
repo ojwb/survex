@@ -95,6 +95,7 @@ dotinsurvey.svx dotinsurvey.out\
 gettokennullderef.svx lech.svx level.svx level.pos\
 backread.dat backread.dump corrections.dat corrections.pos\
 depthguage.dat depthguage.dump\
+karstcompat.dat karstcompat.dump\
 flags.dat flags.dump lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
 fixfeet.mak fixfeet.pos\
