@@ -771,8 +771,8 @@ data_file(const char *pth, const char *fnm)
 
 	 if (strcmp(buffer, "CORRECTIONS") == 0 && ch == ':') {
 	    nextch(); /* : */
-	    pcs->z[Q_BEARING] = -rad(read_numeric(false));
-	    pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
+	    pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
+	    pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
 	    get_token();
 	 }
