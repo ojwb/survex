@@ -66,7 +66,8 @@ testdir=`(cd "$testdir" && pwd)`
  cmd_declination_conv_proj_bug\
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
- backread.dat corrections.dat flags.dat lrud.dat nomeasure.dat noteam.dat\
+ backread.dat corrections.dat depthguage.dat flags.dat lrud.dat nomeasure.dat\
+ noteam.dat\
  fixfeet.mak utm.mak\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
@@ -144,7 +145,7 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|flags.dat|folder.mak)
+    backread.dat|depthguage.dat|flags.dat|folder.mak)
       pos=dump
       warn=0
       ;;
