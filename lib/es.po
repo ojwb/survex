@@ -1659,6 +1659,13 @@ msgstr "Archivos Survex svx"
 msgid "Compass DAT and MAK files"
 msgstr "Archivos Compass DAT y MAK"
 
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave
+#. surveying package, so should not be translated
+#: ../src/mainfrm.cc:1425
+#: n:491
+msgid "Compass CLP files"
+msgstr "Archivos Compass CLP"
+
 #: ../src/export.cc:72
 #: n:101
 msgid "CSV files"

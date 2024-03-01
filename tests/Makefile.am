@@ -93,7 +93,9 @@ percent_gradient.svx percent_gradient.pos\
 dotinsurvey.svx dotinsurvey.out\
 2fixbug.svx leandroclino.svx leandroclino.pos lowsd.svx revdir.svx revdir.pos\
 gettokennullderef.svx lech.svx level.svx level.pos\
-backread.dat backread.dump corrections.dat corrections.pos\
+backread.dat backread.dump\
+clptest.dat clptest.clp clptest.dump\
+corrections.dat corrections.pos\
 depthguage.dat depthguage.dump\
 karstcompat.dat karstcompat.dump\
 flags.dat flags.dump lrud.dat lrud.out lrud.pos\

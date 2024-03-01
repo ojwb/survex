@@ -4148,10 +4148,11 @@ which you can then inspect with a text editor.
 <?dbhtml filename="compass.htm">
 
 <Para>
-Survex can read Compass survey data - both raw data (.DAT and .MAK
-files) and processed survey data (.PLT and .PLF files).  Survex 1.4.6
-made significant improvements to this support so we recommend using
-this version or newer if you're working with Compass data.
+Survex can read Compass survey data - it supports survey data files and
+project files (.DAT and .MAK files), closed data files (.CLP), and processed
+survey data (.PLT and .PLF files). Survex 1.4.6 made significant improvements to
+this support so we recommend using this version or newer if you're working with
+Compass data.
 </Para>
 
 <Sect2><Title>Compass .DAT support</Title>
@@ -4341,6 +4342,37 @@ the MAK version you can change the A16 equate to:
     </Para></ListItem>
 </ItemizedList>
 </Para>
+</Sect2>
+
+<Sect2><Title>Compass .CLP support</Title>
+<Para>
+A Compass .CLP file contains raw survey data after adjusting for loop closure.
+The actual format is otherwise identical to a Compass .DAT file, and Survex
+1.4.6 and later support processing a .CLP file with cavern or aven as if it
+were a .svx file (the extra support is to recognise the .CLP extension, and
+to not apply the instrument corrections a second time).
+</Para>
+
+<Para>
+You can even use <command>*include compassfile.clp</command> in a
+<filename>.svx</filename> file and it'll work, which allows combining
+separate cave survey projects maintained in Survex and Compass.
+</Para>
+
+<Para>
+Usually it is preferable to process the survey data without loop closure
+adjustments (i.e. .DAT) so that when new data is added errors get
+distributed appropriately across old and new data, but it might be
+useful to use the .CLP file if you want to keep existing stations at the same
+adjusted positions, for example to be able to draw extensions on an existing
+drawn-up survey which was processed with Compass.
+</Para>
+
+<Para>
+Another possible reason to use the data from a .CLP file is if that's all
+you have because the original .DAT file has been lost.
+</Para>
+</Sect2>
 
 <Sect2><Title>Compass .PLF/.PLT support</Title>
 <Para>

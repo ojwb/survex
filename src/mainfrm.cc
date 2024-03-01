@@ -1283,7 +1283,8 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
     if (file.length() > 4 && file[file.length() - 4] == '.') {
 	wxString ext(file, file.length() - 3, 3);
 	ext.MakeLower();
-	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak")) {
+	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak") ||
+	    ext == wxT("clp")) {
 	    CavernLogWindow * log = new CavernLogWindow(this, survey, m_Splitter);
 	    wxWindow * win = m_Splitter->GetWindow1();
 	    m_Splitter->ReplaceWindow(win, log);
@@ -1402,12 +1403,13 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxString filetypes = wxT("*.3d");
 #else
     wxString filetypes;
-    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.adj;*.sht;*.una;*.xyz"
-		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.ADJ;*.SHT;*.UNA;*.XYZ")
+    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.clp;*.adj;*.sht;*.una;*.xyz"
+		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.CLP;*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|*.3d" CASE("*.3D")
 		     "|%s|*.svx" CASE("*.SVX")
 		     "|%s|*.plt;*.plf" CASE("*.PLT;*.PLF")
 		     "|%s|*.dat;*.mak" CASE("*.DAT;*.MAK")
+		     "|%s|*.clp" CASE("*.CLP")
 		     "|%s|*.adj;*.sht;*.una;*.xyz" CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
 		     /* TRANSLATORS: Here "survey" is a "cave map" rather than
@@ -1429,6 +1431,10 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		      * surveying package, so should not be translated
 		      */
 		     wmsg(/*Compass DAT and MAK files*/330).c_str(),
+		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Compass CLP files*/491).c_str(),
 		     /* TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 		      * package, so don’t translate it. */
 		     wmsg(/*CMAP XYZ files*/325).c_str(),

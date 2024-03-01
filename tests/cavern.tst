@@ -69,6 +69,7 @@ testdir=`(cd "$testdir" && pwd)`
  backread.dat corrections.dat depthguage.dat flags.dat karstcompat.dat\
  lrud.dat nomeasure.dat noteam.dat\
  fixfeet.mak utm.mak\
+ clptest.dat clptest.clp\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
@@ -145,7 +146,7 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|depthguage.dat|flags.dat|karstcompat.dat|folder.mak)
+    backread.dat|clptest.dat|clptest.clp|depthguage.dat|flags.dat|karstcompat.dat|folder.mak)
       pos=dump
       warn=0
       ;;

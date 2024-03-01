@@ -50,10 +50,22 @@
 
 #define var(I) (pcs->Var[(I)])
 
-/* true if x is not-a-number value in Compass (999.0 or -999.0)    */
-/* Compass uses -999.0 but understands Karst data which used 999.0
- * (information from Larry Fish via Simeon Warner). */
-#define is_compass_NaN(x) ( fabs(fabs(x)-999.0) <  EPSILON )
+/* Test for a not-a-number value in Compass data (999.0 or -999.0).
+ *
+ * Compass itself uses -999.0 but reportedly understands Karst data which used
+ * 999.0 (information from Larry Fish via Simeon Warner in 2004).  However
+ * testing with Compass in early 2024 it seems 999.0 is treated like any other
+ * reading.
+ *
+ * When "corrected" backsights are specified in FORMAT, Compass seems to write
+ * out -999 with the correction applied to the CLP file.
+ *
+ * Valid readings should be 0 to 360 for the compass and -90 to 90 for the
+ * clino, and the correction should have absolute value < 360, so we test for
+ * any reading with an absolute value greater than 999 - 360 = 639, which is
+ * well outside the valid range.
+ */
+#define is_compass_NaN(x) (fabs(x) > (999.0 - 360.0))
 
 static int
 read_compass_date_as_days_since_1900(void)
@@ -556,7 +568,7 @@ data_file(const char *pth, const char *fnm)
 {
    int begin_lineno_store;
    parse file_store;
-   volatile enum {FMT_SVX, FMT_DAT, FMT_MAK} fmt = FMT_SVX;
+   volatile enum {FMT_SVX, FMT_DAT, FMT_CLP, FMT_MAK} fmt = FMT_SVX;
 
    {
       char *filename;
@@ -576,8 +588,15 @@ data_file(const char *pth, const char *fnm)
       }
 
       len = strlen(filename);
+      // Compass .clp is the same format as .dat, but contains loop-closed
+      // data.  This might be useful to read if you want to keep existing
+      // stations at the same adjusted positions, for example to be able to
+      // draw extensions on an existing drawn-up survey.  Or if you managed
+      // to lose the original .dat but still have the .clp.
       if (has_ext(filename, len, "dat")) {
 	 fmt = FMT_DAT;
+      } else if (has_ext(filename, len, "clp")) {
+	 fmt = FMT_CLP;
       } else if (has_ext(filename, len, "mak")) {
 	 fmt = FMT_MAK;
       }
@@ -607,7 +626,7 @@ data_file(const char *pth, const char *fnm)
    begin_lineno_store = pcs->begin_lineno;
    pcs->begin_lineno = 0;
 
-   if (fmt == FMT_DAT) {
+   if (fmt == FMT_DAT || fmt == FMT_CLP) {
       short *t;
       int i;
       settings *pcsNew;
@@ -685,7 +704,7 @@ data_file(const char *pth, const char *fnm)
    }
 #endif
 
-   if (fmt == FMT_DAT) {
+   if (fmt == FMT_DAT || fmt == FMT_CLP) {
       while (ch != EOF && !ferror(file.fh)) {
 	 static const reading compass_order[] = {
 	    Fr, To, Tape, CompassDATComp, CompassDATClino,
@@ -769,25 +788,30 @@ data_file(const char *pth, const char *fnm)
 	    get_token();
 	 }
 
-	 if (strcmp(buffer, "CORRECTIONS") == 0 && ch == ':') {
-	    nextch(); /* : */
-	    pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
-	    pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
-	    pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
-	    get_token();
-	 }
+	 // CORRECTIONS and CORRECTIONS2 have already been applied to data in
+	 // the CLP file.
+	 if (fmt != FMT_CLP) {
+	     if (strcmp(buffer, "CORRECTIONS") == 0 && ch == ':') {
+		nextch(); /* : */
+		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
+		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
+		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
+		get_token();
+	     }
 
-	 /* get_token() only reads alphas so we must check for '2' here. */
-	 if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
-	    nextch(); /* 2 */
-	    nextch(); /* : */
-	    pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
-	    pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
-	    get_token();
+	     /* get_token() only reads alphas so we must check for '2' here. */
+	     if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
+		nextch(); /* 2 */
+		nextch(); /* : */
+		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
+		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
+		get_token();
+	     }
 	 }
 
 #if 0
 	 // FIXME Parse once we handle discovery dates...
+	 // NB: Need to skip unread CORRECTIONS* for the FMT_CLP case.
 	 if (strcmp(buffer, "DISCOVERY") == 0 && ch == ':') {
 	    // Discovery date, e.g. DISCOVERY: 2 28 2024
 	    nextch(); /* : */
