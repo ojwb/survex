@@ -158,6 +158,15 @@ msgstr "Поле не может быть пропущено"
 msgid "Expecting numeric field, found “%s”"
 msgstr "Ожидается числовое значение, но вместо него получено “%s”"
 
+#. TRANSLATORS: The first %d will be replaced by the (inclusive) lower
+#. bound and the second by the (inclusive) upper bound, for example:
+#. Expecting integer in range -60 to 60
+#: ../src/readval.c:593
+#: n:489
+#, c-format
+msgid "Expecting integer in range %d to %d"
+msgstr ""
+
 #: ../src/commands.c:1879
 #: n:10
 #, c-format
