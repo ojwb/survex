@@ -3509,6 +3509,9 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
     int epsg_code = 0;
     const char* proj4_datum = NULL;
 
+    if (utm_zone < -60 || utm_zone > 60 || utm_zone == 0)
+	return NULL;
+
     switch (datum) {
       case img_DATUM_UNKNOWN:
 	break;
