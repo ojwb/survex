@@ -1,0 +1,15 @@
+; pos=plt survexportopt=--surface-legs survexportopt=--splays warn=0
+*cs long-lat
+*cs out UTM60S
+*fix bh 174.7767 -41.2784 30
+bh 1 100 090 -5
+1  2 100 180 -5
+*begin
+*flags surface
+2  3 100 270 -5
+2  .  90 000 -5
+3  ..  90 000 -5
+*end
+2  5 100 090 -5
+*flags splay
+5  6  90 180 -5

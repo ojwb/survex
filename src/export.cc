@@ -876,7 +876,6 @@ PLT::header(const char *title, const char *, time_t,
 void
 PLT::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
-   (void)flags; /* unused */
    if (fPendingMove) {
        /* Survex is E, N, Alt - PLT file is N, E, Alt */
        fprintf(fh, "M %.3f %.3f %.3f ",
@@ -888,7 +887,14 @@ PLT::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending
    fprintf(fh, "D %.3f %.3f %.3f ",
 	   p->y / METRES_PER_FOOT, p->x / METRES_PER_FOOT, p->z / METRES_PER_FOOT);
    /* dummy passage dimensions are required to avoid compass bug */
-   fprintf(fh, "S%s P -9 -9 -9 -9\r\n", find_name_plt(p));
+   fprintf(fh, "S%s P -9 -9 -9 -9", find_name_plt(p));
+   if (flags & (SURF|SPLAYS)) {
+       fprintf(fh, " #|");
+       if (flags & SURF) PUTC('P', fh);
+       if (flags & SPLAYS) PUTC('S', fh);
+       PUTC('#', fh);
+   }
+   fprintf(fh, "\r\n");
 }
 
 const char *
