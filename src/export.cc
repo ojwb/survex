@@ -902,6 +902,24 @@ PLT::find_name_plt(const img_point *p)
 {
     const char * s = find_name(p);
     escaped.resize(0);
+    if (*s == '\0') {
+	// Anonymous station - generate a name based on the coordinates as
+	// that's at least reproducible.  We start it with "%+" or "%-" since
+	// escape any % in a real station name below, but only insert %
+	// followed by two hex digits.  We encode the coordinates in
+	// centimetres with the sign encoded as - or + followed by the absolute
+	// value in hex.
+	int x = int(p->x * 100.0);
+	int y = int(p->y * 100.0);
+	int z = int(p->z * 100.0);
+	char buf[64];
+	snprintf(buf, sizeof(buf), "%%%c%x%c%x%c%x",
+		 (x < 0 ? '-' : '+'), abs(x),
+		 (y < 0 ? '-' : '+'), abs(y),
+		 (z < 0 ? '-' : '+'), abs(z));
+	escaped = buf;
+	return escaped.c_str();
+    }
 
     // PLT format can't handle spaces or control characters, so escape them
     // like in URLs (an arbitrary choice of escaping, but at least a familiar
