@@ -1408,7 +1408,8 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     "|%s|*.3d" CASE("*.3D")
 		     "|%s|*.svx" CASE("*.SVX")
 		     "|%s|*.plt;*.plf" CASE("*.PLT;*.PLF")
-		     "|%s|*.dat;*.mak" CASE("*.DAT;*.MAK")
+		     "|%s|*.mak" CASE("*.MAK")
+		     "|%s|*.dat" CASE("*.DAT")
 		     "|%s|*.clp" CASE("*.CLP")
 		     "|%s|*.adj;*.sht;*.una;*.xyz" CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
@@ -1430,7 +1431,11 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
 		      * surveying package, so should not be translated
 		      */
-		     wmsg(/*Compass DAT and MAK files*/330).c_str(),
+		     wmsg(/*Compass MAK files*/330).c_str(),
+		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Compass DAT files*/490).c_str(),
 		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
 		      * surveying package, so should not be translated
 		      */

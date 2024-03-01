@@ -1668,7 +1668,14 @@ msgstr ""
 #. surveying package, so should not be translated
 #: ../src/mainfrm.cc:1425
 #: n:330
-msgid "Compass DAT and MAK files"
+msgid "Compass MAK files"
+msgstr ""
+
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave
+#. surveying package, so should not be translated
+#: ../src/mainfrm.cc:1425
+#: n:490
+msgid "Compass DAT files"
 msgstr ""
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave

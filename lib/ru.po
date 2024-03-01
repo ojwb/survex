@@ -1665,8 +1665,15 @@ msgstr "Survex svx файлы"
 #. surveying package, so should not be translated
 #: ../src/mainfrm.cc:1425
 #: n:330
-msgid "Compass DAT and MAK files"
-msgstr "DAT и MAK файлы Compass"
+msgid "Compass MAK files"
+msgstr "Compass MAK файлы"
+
+#. TRANSLATORS: "Compass" as in Larry Fish’s cave
+#. surveying package, so should not be translated
+#: ../src/mainfrm.cc:1425
+#: n:490
+msgid "Compass DAT files"
+msgstr "Compass DAT файлы"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
