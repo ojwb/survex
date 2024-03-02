@@ -146,7 +146,8 @@ cmd_data_default.svx\
 gpxexport.gpx gpxexport.svx\
 jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx\
-pltexport.plt pltexport.svx
+pltexport.plt pltexport.svx\
+svgexport.svg svgexport.svx
 
 EXTRA_DIST +=\
 imgtest_simple.svx\

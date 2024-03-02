@@ -30,6 +30,6 @@ class JSON : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
+    void label(const img_point *, const wxString&, bool, int);
     void footer();
 };

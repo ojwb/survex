@@ -77,8 +77,9 @@ Export3D::line(const img_point* p1, const img_point* p, unsigned flags, bool fPe
 }
 
 void
-Export3D::label(const img_point* p, const char* s, bool fSurface, int type)
+Export3D::label(const img_point* p, const wxString& str, bool fSurface, int type)
 {
+    const char* s = str.utf8_str();
     // FIXME: flags here aren't quite right.
     int flags = (fSurface ? img_SFLAG_SURFACE : img_SFLAG_UNDERGROUND);
     switch (type) {

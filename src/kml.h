@@ -42,7 +42,7 @@ class KML : public ExportFilter {
 		double, double, double);
     void start_pass(int pass);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
+    void label(const img_point *, const wxString&, bool, int);
     void xsect(const img_point *, double, double, double);
     void wall(const img_point *, double, double);
     void passage(const img_point *, double, double, double);

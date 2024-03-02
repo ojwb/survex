@@ -183,8 +183,9 @@ GPX::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPen
 }
 
 void
-GPX::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
+GPX::label(const img_point *p, const wxString& str, bool /*fSurface*/, int type)
 {
+    const char* s = str.utf8_str();
     PJ_COORD coord{{p->x, p->y, p->z, HUGE_VAL}};
     coord = proj_trans(pj, PJ_FWD, coord);
     if (coord.xyzt.x == HUGE_VAL ||

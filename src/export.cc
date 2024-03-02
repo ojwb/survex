@@ -189,8 +189,8 @@ class DXF : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void cross(const img_point *, bool);
+    void label(const img_point *, const wxString&, bool, int);
+    void cross(const img_point *, const wxString&, bool);
     void xsect(const img_point *, double, double, double);
     void wall(const img_point *, double, double);
     void passage(const img_point *, double, double, double);
@@ -370,9 +370,10 @@ DXF::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending
 }
 
 void
-DXF::label(const img_point *p, const char *s, bool fSurface, int)
+DXF::label(const img_point *p, const wxString& str, bool fSurface, int)
 {
    /* write station label to dxf file */
+   const char* s = str.utf8_str();
    fprintf(fh, "0\nTEXT\n");
    fprintf(fh, fSurface ? "8\nSurfaceLabels\n" : "8\nLabels\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p->x);
@@ -383,7 +384,7 @@ DXF::label(const img_point *p, const char *s, bool fSurface, int)
 }
 
 void
-DXF::cross(const img_point *p, bool fSurface)
+DXF::cross(const img_point *p, const wxString&, bool fSurface)
 {
    /* write station marker to dxf file */
    fprintf(fh, "0\nPOINT\n");
@@ -478,8 +479,8 @@ class Skencil : public ExportFilter {
 		double max_x, double max_y, double max_z);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void cross(const img_point *, bool);
+    void label(const img_point *, const wxString&, bool, int);
+    void cross(const img_point *, const wxString&, bool);
     void footer();
 };
 
@@ -519,8 +520,9 @@ Skencil::line(const img_point *p1, const img_point *p, unsigned flags, bool fPen
 }
 
 void
-Skencil::label(const img_point *p, const char *s, bool fSurface, int)
+Skencil::label(const img_point *p, const wxString& str, bool fSurface, int)
 {
+   const char* s = str.utf8_str();
    (void)fSurface; /* unused */
    fprintf(fh, "fp((0,0,0))\n");
    fprintf(fh, "le()\n");
@@ -536,7 +538,7 @@ Skencil::label(const img_point *p, const char *s, bool fSurface, int)
 }
 
 void
-Skencil::cross(const img_point *p, bool fSurface)
+Skencil::cross(const img_point *p, const wxString&, bool fSurface)
 {
    (void)fSurface; /* unused */
    fprintf(fh, "b()\n");
@@ -646,8 +648,8 @@ class SVG : public ExportFilter {
 		double max_x, double max_y, double max_z);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void cross(const img_point *, bool);
+    void label(const img_point *, const wxString&, bool, int);
+    void cross(const img_point *, const wxString&, bool);
     void xsect(const img_point *, double, double, double);
     void wall(const img_point *, double, double);
     void passage(const img_point *, double, double, double);
@@ -739,8 +741,9 @@ SVG::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending
 }
 
 void
-SVG::label(const img_point *p, const char *s, bool fSurface, int)
+SVG::label(const img_point *p, const wxString& str, bool fSurface, int)
 {
+   const char* s = str.utf8_str();
    (void)fSurface; /* unused */
    fprintf(fh, "<text transform=\"translate(%.3f %.3f)\">",
 	   p->x * factor, p->y * -factor);
@@ -750,11 +753,12 @@ SVG::label(const img_point *p, const char *s, bool fSurface, int)
 }
 
 void
-SVG::cross(const img_point *p, bool fSurface)
+SVG::cross(const img_point *p, const wxString& str, bool fSurface)
 {
+   const char* s = str.utf8_str();
    (void)fSurface; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
-	   find_name(p), p->x * factor, p->y * -factor, marker_size * SQRT_2);
+	   s, p->x * factor, p->y * -factor, marker_size * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
 	   p->x * factor - marker_size, p->y * -factor - marker_size,
 	   p->x * factor + marker_size, p->y * -factor + marker_size,
@@ -840,7 +844,7 @@ class PLT : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
+    void label(const img_point *, const wxString&, bool, int);
     void footer();
 };
 
@@ -943,8 +947,9 @@ PLT::find_name_plt(const img_point *p)
 }
 
 void
-PLT::label(const img_point *p, const char *s, bool fSurface, int)
+PLT::label(const img_point *p, const wxString& str, bool fSurface, int)
 {
+   const char* s = str.utf8_str();
    (void)fSurface; /* unused */
    set_name(p, s);
 }
@@ -972,8 +977,8 @@ class EPS : public ExportFilter {
 		double max_x, double max_y, double max_z);
     void start_pass(int layer);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void cross(const img_point *, bool);
+    void label(const img_point *, const wxString&, bool, int);
+    void cross(const img_point *, const wxString&, bool);
     void xsect(const img_point *, double, double, double);
     void wall(const img_point *, double, double);
     void passage(const img_point *, double, double, double);
@@ -1249,8 +1254,9 @@ EPS::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending
 }
 
 void
-EPS::label(const img_point *p, const char *s, bool /*fSurface*/, int)
+EPS::label(const img_point *p, const wxString& str, bool /*fSurface*/, int)
 {
+   const char* s = str.utf8_str();
    fprintf(fh, "%.2f %.2f M\n", p->x, p->y);
    PUTC('(', fh);
    while (*s) {
@@ -1269,7 +1275,7 @@ EPS::label(const img_point *p, const char *s, bool /*fSurface*/, int)
 }
 
 void
-EPS::cross(const img_point *p, bool fSurface)
+EPS::cross(const img_point *p, const wxString&, bool fSurface)
 {
    (void)fSurface; /* unused */
    fprintf(fh, "%.2f %.2f X\n", p->x, p->y);
@@ -1615,11 +1621,11 @@ Export(const wxString &fnm_out, const wxString &title,
 	       * layer */
 	      bool f_surface = !(*pos)->IsUnderground();
 	      if (type) {
-		  const wxString & text = (*pos)->GetText();
-		  filt->label(&p, text.utf8_str(), f_surface, type);
+		  filt->label(&p, (*pos)->GetText(), f_surface, type);
 	      }
-	      if (pass_mask & STNS)
-		  filt->cross(&p, f_surface);
+	      if (pass_mask & STNS) {
+		  filt->cross(&p, (*pos)->GetText(), f_surface);
+	      }
 	  }
       }
       if (pass_mask & (XSECT|WALLS|PASG)) {

@@ -44,6 +44,6 @@ class POS : public ExportFilter {
     void header(const char *, const char *, time_t,
 		double, double, double,
 		double, double, double);
-    void label(const img_point *, const char *, bool, int);
+    void label(const img_point *, const wxString&, bool, int);
     void footer();
 };

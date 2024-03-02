@@ -76,7 +76,7 @@ testdir=`(cd "$testdir" && pwd)`
  cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  quadrant_bearing bad_quadrant_bearing\
- gpxexport jsonexport kmlexport pltexport\
+ gpxexport jsonexport kmlexport pltexport svgexport\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
@@ -144,6 +144,7 @@ for file in $TESTS ; do
   # json : Convert to JSON with survexport and compare with <testcase_name>.json
   # kml : Convert to KML with survexport and compare with <testcase_name>.kml
   # plt : Convert to PLT with survexport and compare with <testcase_name>.plt
+  # svg : Convert to SVG with survexport and compare with <testcase_name>.svg
   pos=
 
   case $file in
@@ -285,7 +286,7 @@ for file in $TESTS ; do
       cmp -s "$expectedfile" "$tmpfile" || exit 1
     fi
     ;;
-  dxf|gpx|json|kml|plt)
+  dxf|gpx|json|kml|plt|svg)
     # $pos gives us the file extension here.
     expectedfile=$basefile.$pos
     tmpfile=tmp.$pos

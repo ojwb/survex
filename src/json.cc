@@ -74,10 +74,9 @@ JSON::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPe
 }
 
 void
-JSON::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
+JSON::label(const img_point *p, const wxString&, bool /*fSurface*/, int type)
 {
     (void)p;
-    (void)s;
     (void)type;
 }
 

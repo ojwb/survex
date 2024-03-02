@@ -39,6 +39,6 @@ class Export3D : public ExportFilter {
 		double, double, double,
 		double, double, double);
     void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
+    void label(const img_point *, const wxString&, bool, int);
     void footer();
 };
