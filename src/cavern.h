@@ -193,6 +193,7 @@ typedef enum {
     * so can have enum values >= 32 because we only use a
     * bitmask for those readings used in commands.c.
     */
+   CompassDATFr, CompassDATTo,
    CompassDATComp, CompassDATClino, CompassDATBackComp, CompassDATBackClino,
    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
    CompassDATFlags
@@ -463,5 +464,7 @@ typedef struct lrudlist {
 extern lrudlist * model;
 
 extern lrud ** next_lrud;
+
+extern char output_separator;
 
 #endif /* CAVERN_H */

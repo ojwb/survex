@@ -47,3 +47,6 @@ typedef struct { const char *sz; int tok; } sztok;
 int match_tok(const sztok *tab, int tab_size);
 
 #define TABSIZE(T) ((sizeof(T) / sizeof(sztok)) - 1)
+
+void scan_compass_station_name(prefix *stn);
+void update_output_separator(void);

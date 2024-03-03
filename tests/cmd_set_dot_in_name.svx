@@ -1,0 +1,9 @@
+; pos=dump warn=0
+*set separator !
+*set names _-.
+
+*begin pull4
+1       2       1.0     0.0     0.0
+2       2.1     1.0     90.0    0.0
+2.1     2.2     1.0     180.0   0.0
+*end pull4

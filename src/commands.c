@@ -92,28 +92,18 @@ default_prefix(settings *s)
 }
 
 static void
-default_translate(settings *s)
+init_default_translate_map(short * t)
 {
    int i;
-   short *t;
-   if (s->next && s->next->Translate == s->Translate) {
-      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-      memcpy(t - 1, s->Translate - 1, sizeof(short) * 257);
-      s->Translate = t;
-   }
-/*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
-   t = s->Translate;
-   memset(t - 1, 0, sizeof(short) * 257);
-   for (i = '0'; i <= '9'; i++) t[i] = SPECIAL_NAMES;
-   for (i = 'A'; i <= 'Z'; i++) t[i] = SPECIAL_NAMES;
-   for (i = 'a'; i <= 'z'; i++) t[i] = SPECIAL_NAMES;
+   for (i = '0'; i <= '9'; i++) t[i] |= SPECIAL_NAMES;
+   for (i = 'A'; i <= 'Z'; i++) t[i] |= SPECIAL_NAMES;
+   for (i = 'a'; i <= 'z'; i++) t[i] |= SPECIAL_NAMES;
 
    t['\t'] |= SPECIAL_BLANK;
    t[' '] |= SPECIAL_BLANK;
    t[','] |= SPECIAL_BLANK;
    t[';'] |= SPECIAL_COMMENT;
    t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
-   t[EOF] |= SPECIAL_EOL;
    t['\n'] |= SPECIAL_EOL;
    t['\r'] |= SPECIAL_EOL;
    t['*'] |= SPECIAL_KEYWORD;
@@ -129,6 +119,84 @@ default_translate(settings *s)
    t['{'] |= SPECIAL_OPEN;
    t['}'] |= SPECIAL_CLOSE;
 #endif
+}
+
+static void
+default_translate(settings *s)
+{
+   if (s->next && s->next->Translate == s->Translate) {
+      /* We're currently using the same character translation map as our parent
+       * scope so allocate a new one before we modify it.
+       */
+      s->Translate = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+   } else {
+/*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
+   }
+   s->Translate[EOF] = SPECIAL_EOL;
+   memset(s->Translate, 0, sizeof(short) * 256);
+   init_default_translate_map(s->Translate);
+}
+
+/* Flag anything used in SPECIAL_* cumulatively to help us pick a suitable
+ * separator to use in the .3d file. */
+static short separator_map[256];
+
+void
+scan_compass_station_name(prefix *stn)
+{
+    /* We only need to scan the leaf station name - any survey hierarchy above
+     * that must have been set up in .svx files for which we update
+     * separator_map via cmd_set() plus adding the defaults in
+     * find_output_separator().
+     */
+    for (const char *p = stn->ident; *p; ++p) {
+	separator_map[(unsigned char)*p] |= SPECIAL_NAMES;
+    }
+}
+
+static char
+find_output_separator(void)
+{
+    // Fast path to handle most common cases where we'd pick '.'.
+    if ((separator_map['.'] & SPECIAL_NAMES) == 0) {
+	return '.';
+    }
+
+    static bool added_defaults = false;
+    if (!added_defaults) {
+	/* Add the default settings to separator_map. */
+	init_default_translate_map(separator_map);
+	added_defaults = true;
+    }
+
+    /* 30 punctuation characters plus space to try arranged in a sensible order
+     * of decreasing preference (these are all the ASCII punctuation characters
+     * excluding '_' and '-' since those are allowed in names by default so are
+     * poor choices for the separator).
+     */
+    int best = -1;
+    for (const char *p = "./:;,!|\\ ~+*^='`\"#$%&?@<>()[]{}"; *p; ++p) {
+	unsigned char candidate = *p;
+	int mask = separator_map[candidate];
+	switch (mask & (SPECIAL_SEPARATOR|SPECIAL_NAMES)) {
+	    case SPECIAL_SEPARATOR:
+		/* A character which is set as a separator character at some
+		 * point but never set as a name character is perfect.
+		 */
+		return candidate;
+	    case 0:
+		/* A character which is never set as either a separator
+		 * character or a name character is a reasonable option.
+		 */
+		if (best < 0) best = candidate;
+		break;
+	}
+    }
+    if (best < 0) {
+	/* Argh, no plausible choice!  Just return the default for now. */
+	return '.';
+    }
+    return best;
 }
 
 void
@@ -537,8 +605,9 @@ cmd_set(void)
 
    /* now set this flag for all specified chars */
    while (!isEol(ch)) {
+      int char_to_set;
       if (!isalnum(ch)) {
-	 pcs->Translate[ch] |= mask;
+	 char_to_set = ch;
       } else if (tolower(ch) == 'x') {
 	 int hex;
 	 filepos fp;
@@ -555,12 +624,22 @@ cmd_set(void)
 	    break;
 	 }
 	 hex = hex << 4 | (isdigit(ch) ? ch - '0' : tolower(ch) - 'a');
-	 pcs->Translate[hex] |= mask;
+	 char_to_set = hex;
       } else {
 	 break;
       }
+      pcs->Translate[char_to_set] |= mask;
+      separator_map[char_to_set] |= mask;
       nextch();
    }
+
+   output_separator = find_output_separator();
+}
+
+void
+update_output_separator(void)
+{
+   output_separator = find_output_separator();
 }
 
 static void

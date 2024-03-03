@@ -74,6 +74,7 @@ cmd_fix_bad.svx cmd_fix_bad.out\
 cmd_sd.svx cmd_sd_bad.svx cmd_sd_bad.out\
 cmd_set.svx cmd_set.pos\
 cmd_set_bad.svx cmd_set_bad.out\
+cmd_set_dot_in_name.svx cmd_set_dot_in_name.dump\
 unusedstation.svx exportnakedbegin.svx\
 oldestyle.svx\
 pos.pos v0.3d v0b.3d v1.3d v2.3d v3.3d\

@@ -1257,14 +1257,16 @@ v03d:
        char * title = getline_alloc_len(pimg->fh, &title_len);
        if (!title) goto out_of_memory_error;
        if (pimg->version == 8) {
-	   /* We sneak in an extra field after a zero byte here, containing the
-	    * specified coordinate system (if any).  Older readers will just
-	    * not see it (which is fine), and this trick avoids us having to
-	    * bump the 3d format version.
+	   /* We sneak in extra fields after a zero byte here, containing the
+	    * specified coordinate system (if any) and the level separator
+	    * character.  Older readers will just not see these fields (which
+	    * is OK), and this trick avoids us having to bump the 3d format
+	    * version.
 	    */
 	   size_t real_len = strlen(title);
 	   if (real_len != title_len) {
 	       char * cs = title + real_len + 1;
+	       real_len += strlen(cs) + 1;
 	       if (memcmp(cs, "+init=", 6) == 0) {
 		   /* PROJ 5 and later don't handle +init=esri:<number> but
 		    * that's what cavern used to put in .3d files for
@@ -1337,7 +1339,11 @@ v03d:
 		       }
 		   }
 	       }
-	       pimg->cs = my_strdup(cs);
+	       if (cs[0]) pimg->cs = my_strdup(cs);
+	   }
+
+	   if (real_len != title_len) {
+	       pimg->separator = title[real_len + 1];
 	   }
        }
        if (!pimg->title) {
@@ -1511,6 +1517,8 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
    pimg->filename_opened = NULL;
    pimg->data = NULL;
 
+   pimg->separator = (flags & 0x100) ? (flags >> 9) : '.';
+
    /* Output image file header */
    fputs("Survex 3D Image File\n", pimg->fh); /* file identifier string */
    if (img_output_version < 2) {
@@ -1529,14 +1537,20 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
       if (len < 11 || strcmp(title + len - 11, " (extended)") != 0)
 	 fputs(" (extended)", pimg->fh);
    }
-   if (pimg->version == 8 && cs && *cs) {
-      /* We sneak in an extra field after a zero byte here, containing the
-       * specified coordinate system (if any).  Older readers will just not
-       * see it (which is fine), and this trick avoids us having to bump the
-       * 3d format version.
+   if (pimg->version == 8 && ((cs && *cs) || pimg->separator != '.')) {
+      /* We sneak in extra fields after a zero byte here, containing the
+       * specified coordinate system (if any) and the separator character
+       * if it isn't the default of '.'.  Older readers will just not see
+       * these (which is fine for the coordinate system, and not very
+       * problematic for the separator), and this trick avoids us having to
+       * bump the 3d format version.
        */
       PUTC('\0', pimg->fh);
-      fputs(cs, pimg->fh);
+      if (cs && *cs) fputs(cs, pimg->fh);
+      if (pimg->separator != '.') {
+	  PUTC('\0', pimg->fh);
+	  PUTC(pimg->separator, pimg->fh);
+      }
    }
    PUTC('\n', pimg->fh);
 

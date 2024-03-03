@@ -81,6 +81,7 @@ extern "C" {
 
 /* File-wide flags */
 # define img_FFLAG_EXTENDED 0x80
+# define img_FFLAG_SEPARATOR(CH) (((((int)CH) & 0xff) << 9) | 0x100)
 
 /* When writing img_XSECT, img_XFLAG_END in pimg->flags means this is the last
  * img_XSECT in this tube:
@@ -302,8 +303,12 @@ img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
  * with an assigned EPSG code number, "EPSG:" followed by the code number is
  * the recommended way to specify this.
  *
- * flags contains a bitwise-or of any file-wide flags - currently only one
- * is available: img_FFLAG_EXTENDED.
+ * flags contains a bitwise-or of any file-wide flags - currently these are
+ * available:
+ *
+ * img_FFLAG_EXTENDED : this is an extended elevation
+ * img_FFLAG_SEPARATOR(CHARACTER) : specify the separator character
+ *		(default: '.')
  *
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details)
@@ -328,8 +333,12 @@ img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
  * with an EPSG, "EPSG:" followed by the code number is the recommended way
  * to specify this.
  *
- * flags contains a bitwise-or of any file-wide flags - currently only one
- * is available: img_FFLAG_EXTENDED.
+ * flags contains a bitwise-or of any file-wide flags - currently these are
+ * available:
+ *
+ * img_FFLAG_EXTENDED : this is an extended elevation
+ * img_FFLAG_SEPARATOR(CHARACTER) : specify the separator character
+ *		(default: '.')
  *
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details).  Any close function specified is called on error (unless

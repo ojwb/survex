@@ -1,5 +1,9 @@
 ; pos=yes warn=0
 *begin
+; This should be enough to hint the output separator
+*set separator :
+*end
+*begin
 *set blank ^
 *fix^1^reference^0^0^0
 *end

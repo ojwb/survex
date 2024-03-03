@@ -549,6 +549,38 @@ read_bearing_or_omit(reading r)
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
 }
 
+// Set up settings for reading Compass DAT or MAK.
+static void
+initialise_common_compass_settings(void)
+{
+    short *t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+    int i;
+    t[EOF] = SPECIAL_EOL;
+    memset(t, 0, sizeof(short) * 33);
+    for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+    t[127] = 0;
+    for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+    t['\t'] |= SPECIAL_BLANK;
+    t[' '] |= SPECIAL_BLANK;
+    t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
+    t['\n'] |= SPECIAL_EOL;
+    t['\r'] |= SPECIAL_EOL;
+    t['.'] |= SPECIAL_DECIMAL;
+    t['-'] |= SPECIAL_MINUS;
+    t['+'] |= SPECIAL_PLUS;
+
+    settings *pcsNew = osnew(settings);
+    *pcsNew = *pcs; /* copy contents */
+    pcsNew->begin_lineno = 0;
+    pcsNew->Translate = t;
+    pcsNew->Case = OFF;
+    pcsNew->Truncate = INT_MAX;
+    pcsNew->next = pcs;
+    pcs = pcsNew;
+
+    update_output_separator();
+}
+
 /* For reading Compass MAK files which have a freeform syntax */
 static void
 nextch_handling_eol(void)
@@ -627,73 +659,32 @@ data_file(const char *pth, const char *fnm)
    pcs->begin_lineno = 0;
 
    if (fmt == FMT_DAT || fmt == FMT_CLP) {
-      short *t;
-      int i;
-      settings *pcsNew;
-
-      pcsNew = osnew(settings);
-      *pcsNew = *pcs; /* copy contents */
-      pcsNew->begin_lineno = 0;
-      pcsNew->next = pcs;
-      pcs = pcsNew;
+      initialise_common_compass_settings();
       default_units(pcs);
       default_calib(pcs);
       pcs->z[Q_DECLINATION] = HUGE_REAL;
 
       pcs->recorded_style = pcs->style = STYLE_NORMAL;
       pcs->units[Q_LENGTH] = METRES_PER_FOOT;
-      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-
-      t[EOF] = SPECIAL_EOL;
-      memset(t, 0, sizeof(short) * 33);
-      for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
-      t[127] = 0;
-      for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
-      t['\t'] |= SPECIAL_BLANK;
-      t[' '] |= SPECIAL_BLANK;
-      t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
-      t['\n'] |= SPECIAL_EOL;
-      t['\r'] |= SPECIAL_EOL;
-      t['.'] |= SPECIAL_DECIMAL;
-      t['-'] |= SPECIAL_MINUS;
-      t['+'] |= SPECIAL_PLUS;
-      pcs->Translate = t;
-      pcs->Case = OFF;
-      pcs->Truncate = INT_MAX;
       pcs->infer = BIT(INFER_EQUATES)|
 		   BIT(INFER_EQUATES_SELF_OK)|
 		   BIT(INFER_EXPORTS)|
 		   BIT(INFER_PLUMBS);
+      /* We need to update separator_map so we don't pick a separator character
+       * which occurs in a station name.  However Compass DAT allows everything
+       * >= ASCII char 33 except 127 in station names so if we just added all
+       * the valid station name characters we'd always pick space as the
+       * separator for any dataset which included a DAT file, yet in practice
+       * '.' is never used in any of the sample DAT files I've seen.  So
+       * instead we scan the characters actually used in station names when we
+       * process CompassDATFr and CompassDATTo fields.
+       */
    } else if (fmt == FMT_MAK) {
-      short *t;
-      int i;
-      settings *pcsNew;
-
-      pcsNew = osnew(settings);
-      *pcsNew = *pcs; /* copy contents */
-      pcsNew->begin_lineno = 0;
-      pcsNew->next = pcs;
-      pcs = pcsNew;
-
-      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-
-      t[EOF] = SPECIAL_EOL;
-      memset(t, 0, sizeof(short) * 33);
-      for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
-      t[127] = 0;
-      for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+      initialise_common_compass_settings();
+      short *t = pcs->Translate;
+      // In a Compass MAK file a station name can't contain these three
+      // characters due to how the syntax works.
       t['['] = t[','] = t[';'] = 0;
-      t['\t'] |= SPECIAL_BLANK;
-      t[' '] |= SPECIAL_BLANK;
-      t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
-      t['\n'] |= SPECIAL_EOL;
-      t['\r'] |= SPECIAL_EOL;
-      t['.'] |= SPECIAL_DECIMAL;
-      t['-'] |= SPECIAL_MINUS;
-      t['+'] |= SPECIAL_PLUS;
-      pcs->Translate = t;
-      pcs->Case = OFF;
-      pcs->Truncate = INT_MAX;
    }
 
 #ifdef HAVE_SETJMP_H
@@ -707,12 +698,12 @@ data_file(const char *pth, const char *fnm)
    if (fmt == FMT_DAT || fmt == FMT_CLP) {
       while (ch != EOF && !ferror(file.fh)) {
 	 static const reading compass_order[] = {
-	    Fr, To, Tape, CompassDATComp, CompassDATClino,
+	    CompassDATFr, CompassDATTo, Tape, CompassDATComp, CompassDATClino,
 	    CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	    CompassDATFlags, IgnoreAll
 	 };
 	 static const reading compass_order_backsights[] = {
-	    Fr, To, Tape, CompassDATComp, CompassDATClino,
+	    CompassDATFr, CompassDATTo, Tape, CompassDATComp, CompassDATClino,
 	    CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
@@ -903,6 +894,7 @@ data_file(const char *pth, const char *fnm)
 	       nextch_handling_eol();
 	       name = read_prefix(PFX_STATION|PFX_OPT);
 	       if (name) {
+		  scan_compass_station_name(name);
 		  skipblanks();
 		  if (ch == '[') {
 		     /* fixed pt */
@@ -1995,6 +1987,14 @@ data_normal(void)
        case To:
 	  to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	  if (first_stn == End) first_stn = To;
+	  break;
+       case CompassDATFr:
+	  fr = read_prefix(PFX_STATION);
+	  scan_compass_station_name(fr);
+	  break;
+       case CompassDATTo:
+	  to = read_prefix(PFX_STATION);
+	  scan_compass_station_name(to);
 	  break;
        case Station:
 	  fr = to;

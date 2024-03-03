@@ -598,7 +598,7 @@ fprint_prefix(FILE *fh, const prefix *ptr)
    }
    if (ptr->up != NULL) {
       fprint_prefix(fh, ptr->up);
-      if (ptr->up->up != NULL) fputc('.', fh);
+      if (ptr->up->up != NULL) fputc(output_separator, fh);
       SVX_ASSERT(ptr->ident);
       fputs(ptr->ident, fh);
    }
@@ -613,14 +613,16 @@ sprint_prefix_(const prefix *ptr)
    OSSIZE_T len = 1;
    if (ptr->up != NULL) {
       SVX_ASSERT(ptr->ident);
-      len = sprint_prefix_(ptr->up) + strlen(ptr->ident);
+      len = sprint_prefix_(ptr->up);
+      char *p = buffer + len - 1;
       if (ptr->up->up != NULL) len++;
+      len += strlen(ptr->ident);
       if (len > buffer_len) {
 	 buffer = osrealloc(buffer, len);
 	 buffer_len = len;
       }
-      if (ptr->up->up != NULL) strcat(buffer, ".");
-      strcat(buffer, ptr->ident);
+      if (ptr->up->up != NULL) *p++ = output_separator;
+      strcpy(p, ptr->ident);
    }
    return len;
 }
