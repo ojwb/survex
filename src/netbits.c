@@ -614,7 +614,7 @@ sprint_prefix_(const prefix *ptr)
    if (ptr->up != NULL) {
       SVX_ASSERT(ptr->ident);
       len = sprint_prefix_(ptr->up);
-      char *p = buffer + len - 1;
+      OSSIZE_T end = len - 1;
       if (ptr->up->up != NULL) len++;
       len += strlen(ptr->ident);
       if (len > buffer_len) {
@@ -622,7 +622,7 @@ sprint_prefix_(const prefix *ptr)
 	 buffer_len = len;
       }
       if (ptr->up->up != NULL) *p++ = output_separator;
-      strcpy(p, ptr->ident);
+      strcpy(buffer + end, ptr->ident);
    }
    return len;
 }
