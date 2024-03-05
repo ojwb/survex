@@ -125,10 +125,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         show-progress: false
-    - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         apt-get update
@@ -151,6 +147,10 @@ jobs:
             docbook \
             docbook-utils \
             w3m
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
