@@ -57,7 +57,7 @@ jobs:
     - name: make
       run: make -j2
     - name: Run tests
-      run: make check VERBOSE=1
+      run: cd tests && ./cavern.tst
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
