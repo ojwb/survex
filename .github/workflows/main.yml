@@ -128,7 +128,7 @@ jobs:
     - name: Install package dependencies
       run: |
         apt-get update
-        apt-get install \
+        apt-get install -y \
             gettext \
             libwxgtk3.2-dev \
             libavcodec-dev \
