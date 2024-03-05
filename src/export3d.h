@@ -27,12 +27,15 @@
 
 class Export3D : public ExportFilter {
   private:
+    wxString cs;
     char separator;
 
     img* pimg = nullptr;
 
   public:
-    Export3D(char separator_) : separator(separator_) { }
+    Export3D(const wxString cs_, char separator_)
+	: cs(cs_), separator(separator_) { }
+
     ~Export3D();
     const int * passes() const;
     void header(const char *, const char *, time_t,

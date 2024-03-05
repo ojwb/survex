@@ -55,8 +55,8 @@ Export3D::passes() const
 void Export3D::header(const char* title, const char *, time_t,
 		      double, double, double, double, double, double)
 {
-    // FIXME: cs?
-    pimg = img_write_stream(fh, NULL, title, NULL,
+    pimg = img_write_stream(fh, NULL, title,
+			    cs.empty() ? NULL : (const char*)cs.utf8_str(),
 			    img_FFLAG_SEPARATOR(separator));
 }
 

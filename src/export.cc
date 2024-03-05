@@ -1396,7 +1396,7 @@ Export(const wxString &fnm_out, const wxString &title,
    ExportFilter * filt;
    switch (format) {
        case FMT_3D:
-	   filt = new Export3D(model.GetSeparator());
+	   filt = new Export3D(model.GetCSProj(), model.GetSeparator());
 	   show_mask |= FULL_COORDS;
 	   need_bounds = false;
 	   break;
