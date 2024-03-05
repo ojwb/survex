@@ -53,7 +53,7 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -O2 -g'
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Wno-deprecated-copy -Werror -O2 -g'
     - name: make
       run: make -j2
     - name: Run tests
