@@ -591,10 +591,6 @@ nextch_handling_eol(void)
    }
 }
 
-#define LITLEN(S) (sizeof(S"") - 1)
-#define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
-			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
-			strcasecmp((F) + (L) - LITLEN(E), E) == 0)
 extern void
 data_file(const char *pth, const char *fnm)
 {
@@ -620,17 +616,24 @@ data_file(const char *pth, const char *fnm)
       }
 
       len = strlen(filename);
-      // Compass .clp is the same format as .dat, but contains loop-closed
-      // data.  This might be useful to read if you want to keep existing
-      // stations at the same adjusted positions, for example to be able to
-      // draw extensions on an existing drawn-up survey.  Or if you managed
-      // to lose the original .dat but still have the .clp.
-      if (has_ext(filename, len, "dat")) {
-	 fmt = FMT_DAT;
-      } else if (has_ext(filename, len, "clp")) {
-	 fmt = FMT_CLP;
-      } else if (has_ext(filename, len, "mak")) {
-	 fmt = FMT_MAK;
+      if (len > 4 && filename[len - 4] == FNM_SEP_EXT) {
+	  char ext[3];
+	  for (int i = 0; i <3; ++i) {
+	      ext[i] = tolower((unsigned char)filename[len - 3 + i]);
+	  }
+	  // Compass .clp is the same format as .dat, but contains
+	  // loop-closed data.  This might be useful to read if you want to
+	  // keep existing stations at the same adjusted positions, for
+	  // example to be able to draw extensions on an existing drawn-up
+	  // survey.  Or if you managed to lose the original .dat but still
+	  // have the .clp.
+	  if (memcmp(ext, "dat", 3) == 0) {
+	     fmt = FMT_DAT;
+	  } else if (memcmp(ext, "clp", 3) == 0) {
+	     fmt = FMT_CLP;
+	  } else if (memcmp(ext, "mak", 3) == 0) {
+	     fmt = FMT_MAK;
+	  }
       }
 
       file_store = file;
