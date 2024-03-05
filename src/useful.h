@@ -88,6 +88,11 @@
 # define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
 # define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)
 
+# ifdef __clang__
+// These inline functions aren't used by every file which includes this header.
+#  pragma clang diagnostic push
+#  pragma clang diagnostic ignored "-Wunused-function"
+# endif
 static inline int16_t get16(FILE *fh) {
     int16_t w;
     if (fread(&w, 2, 1, fh) == 0) {
@@ -107,6 +112,9 @@ static inline int32_t get32(FILE *fh) {
     }
     return w;
 }
+# ifdef __clang__
+#  pragma clang diagnostic pop
+# endif
 #else
 void useful_put16(int16_t, FILE *);
 void useful_put32(int32_t, FILE *);
