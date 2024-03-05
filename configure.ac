@@ -244,39 +244,12 @@ dnl lround() with AC_CHECK_FUNCS, which just checks if it can be linked
 dnl against.  Some platforms are missing a prototype for lround(), so
 dnl both checks are useful.
 AC_CHECK_DECLS([lround], [], [], [[#include <math.h>]])
-dnl check for strcasecmp here as well as below - this one is to get
-dnl HAVE_STRCASECMP defined if appropriate (for img.c)
-AC_CHECK_FUNCS([popen getpwuid lround strcasecmp hypot mmap])
+AC_CHECK_FUNCS([popen getpwuid lround hypot mmap])
 
 dnl Much faster than using getc()/putc(), at least on Linux.
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
 
 AC_CHECK_FUNCS([setenv unsetenv])
-
-dnl try to find a case-insensitive compare
-
-strcasecmp=no
-dnl The order of these tests is important.
-AC_CHECK_FUNC(strcasecmp, [strcasecmp=strcasecmp])
-if test no = "$strcasecmp"; then
-  AC_CHECK_FUNC(stricmp, [strcasecmp=stricmp])
-fi
-if test no = "$strcasecmp"; then
-  AC_CHECK_FUNC(strcmpi, [strcasecmp=strcmpi])
-fi
-
-AC_MSG_CHECKING([how to compare strings ignoring case])
-case $strcasecmp in
-no)
-  AC_LIBOBJ(strcasecmp)
-  AC_MSG_RESULT([using own implementation of strcasecmp]) ;;
-strcasecmp)
-  AC_MSG_RESULT([strcasecmp]) ;;
-*)
-  AC_DEFINE_UNQUOTED(strcasecmp, "$strcasecmp",
-    [strcasecmp define for systems which call it something else])
-  AC_MSG_RESULT([$strcasecmp]) ;;
-esac
 
 AC_PATH_PROG([JW], [jw], [$MISSING jw])
 AC_ARG_VAR([JW], [jw from docbook-utils/docbook-tools])

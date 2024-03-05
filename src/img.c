@@ -63,7 +63,6 @@
 # endif
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
-# define EXT_SVX_POS "pos"
 # define FNM_SEP_EXT '.'
 # define METRES_PER_FOOT 0.3048 /* exact value */
 # define xosmalloc(L) malloc((L))
@@ -273,29 +272,14 @@ my_lround(double x) {
 }
 #endif
 
-/* portable case insensitive string compare */
-#if defined(strcasecmp) || defined(HAVE_STRCASECMP)
-# define my_strcasecmp strcasecmp
-#else
-static int my_strcasecmp(const char *s1, const char *s2) {
-   unsigned char c1, c2;
-   do {
-      c1 = *s1++;
-      c2 = *s2++;
-   } while (c1 && toupper(c1) == toupper(c2));
-   /* now calculate real difference */
-   return c1 - c2;
-}
-#endif
-
 unsigned int img_output_version = IMG_VERSION_MAX;
 
 static img_errcode img_errno = IMG_NONE;
 
 #define FILEID "Survex 3D Image File"
 
-#define EXT_PLT "plt"
-#define EXT_PLF "plf"
+/* Encode extension into integer for fast testing. */
+#define EXT3(C1, C2, C3) (((C3) << 16) | ((C2) << 8) | (C1))
 
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
@@ -558,10 +542,6 @@ buf_included(img *pimg, const char *buf, size_t len)
 {
     return pimg->survey_len == len && memcmp(buf, pimg->survey, len) == 0;
 }
-
-#define has_ext(F,L,E) ((L) > LITLEN(E) + 1 &&\
-			(F)[(L) - LITLEN(E) - 1] == FNM_SEP_EXT &&\
-			my_strcasecmp((F) + (L) - LITLEN(E), E) == 0)
 
 img *
 img_open_survey(const char *fnm, const char *survey)
@@ -1059,6 +1039,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    size_t len;
    char buf[LITLEN(FILEID) + 9];
    int ch;
+   UINT32_T ext;
 
    if (stream == NULL) {
       img_errno = IMG_FILENOTFOUND;
@@ -1152,18 +1133,29 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    pimg->pending = 0;
 
    len = strlen(fnm);
-   if (has_ext(fnm, len, EXT_SVX_POS)) {
-pos_file:
-      pimg->version = VERSION_SURVEX_POS;
-      pimg->datestamp = my_strdup(TIMENA);
-      if (!pimg->datestamp) {
-	 goto out_of_memory_error;
-      }
-      pimg->start = 0;
-      goto successful_return;
+   /* Currently only 3 character extensions are tested below. */
+   ext = 0;
+   if (len > 4 && fnm[len - 4] == '.') {
+       /* Read extension and pack into ext. */
+       int i;
+       for (i = 1; i < 4; ++i) {
+	   unsigned char ext_ch = fnm[len - i];
+	   ext = (ext << 8) | tolower(ext_ch);
+       }
    }
+   switch (ext) {
+     case EXT3('p', 'o', 's'): /* Survex .pos */
+pos_file:
+       pimg->version = VERSION_SURVEX_POS;
+       pimg->datestamp = my_strdup(TIMENA);
+       if (!pimg->datestamp) {
+	   goto out_of_memory_error;
+       }
+       pimg->start = 0;
+       goto successful_return;
 
-   if (has_ext(fnm, len, EXT_PLT) || has_ext(fnm, len, EXT_PLF)) {
+     case EXT3('p', 'l', 't'): /* Compass .plt */
+     case EXT3('p', 'l', 'f'): /* Compass .plf */ {
        int result;
 plt_file:
        result = compass_plt_open(pimg);
@@ -1172,18 +1164,18 @@ plt_file:
 	   goto error;
        }
        goto successful_return;
-   }
+     }
 
-   /* Although these are often referred to as "CMAP .XYZ files", it seems
-    * that actually, the extension .XYZ isn't used, rather .SHT (shot
-    * variant, produced by CMAP v16 and later), .UNA (unadjusted) and
-    * .ADJ (adjusted) extensions are.  Since img has long checked for
-    * .XYZ, we continue to do so in case anyone is relying on it.
-    */
-   if (has_ext(fnm, len, "sht") ||
-       has_ext(fnm, len, "adj") ||
-       has_ext(fnm, len, "una") ||
-       has_ext(fnm, len, "xyz")) {
+     /* Although these are often referred to as "CMAP .XYZ files", it seems
+      * that actually, the extension .XYZ isn't used, rather .SHT (shot
+      * variant, produced by CMAP v16 and later), .UNA (unadjusted) and .ADJ
+      * (adjusted) extensions are.  Since img has long checked for .XYZ, we
+      * continue to do so in case anyone is relying on it.
+      */
+     case EXT3('s', 'h', 't'): /* CMAP .sht */
+     case EXT3('a', 'd', 'j'): /* CMAP .adj */
+     case EXT3('u', 'n', 'a'): /* CMAP .una */
+     case EXT3('x', 'y', 'z'): /* CMAP .xyz */ {
        int result;
 xyz_file:
        result = cmap_xyz_open(pimg);
@@ -1192,6 +1184,7 @@ xyz_file:
 	   goto error;
        }
        goto successful_return;
+     }
    }
 
    if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||

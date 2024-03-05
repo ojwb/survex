@@ -38,9 +38,6 @@ typedef __int32 int32_t;
 typedef unsigned __int32 uint32_t;
 #endif
 
-/* strcasecmp define for systems which call it something else */
-#define strcasecmp stricmp
-
 /* Define if you have the mktime function.  */
 #define HAVE_MKTIME 1
 
