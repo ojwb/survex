@@ -25,7 +25,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: linux
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         sudo apt-get update
@@ -53,7 +53,7 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -O2 -g'
     - name: make
       run: make -j2
     - name: Run tests
@@ -75,7 +75,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: valgrind
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         sudo apt-get update
@@ -126,7 +126,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: linux-latest
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         more /etc/apt/sources.list /etc/apt/sources.list.d/*|cat
@@ -139,6 +139,56 @@ jobs:
         perl -ne '/use blib|clone_winsize_from/ or print' /usr/share/doc/libio-pty-perl/examples/try > $HOME/try
         # Run in home directory so logs, etc don't end up in source tree.
         cd "$HOME" && perl ./try sudo do-release-upgrade -d --mode=server
+        sudo apt-get install \
+            gettext \
+            libwxgtk3.2-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libproj-dev \
+            libswscale-dev \
+            mesa-common-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            ghostscript \
+            netpbm \
+            x11proto-core-dev \
+            liblocale-po-perl \
+            unifont \
+            docbook \
+            docbook-utils \
+            w3m
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -O2 -g'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: cd tests && ./cavern.tst longname
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+
+  clang-sanitisiers:
+    runs-on: 'ubuntu-latest'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
         sudo apt-get install \
             gettext \
             libwxgtk3.0-gtk3-dev \
@@ -163,11 +213,23 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
+      run: |
+        # We use clang here because (at least currently) it supports a few
+        # extra sanitiser checks compared to GCC.
+        export CC='ccache clang'
+        export CXX='ccache clang++'
+        export CFLAGS='-Wall -W -Werror'
+        # float-divide-by-zero, nullability and unsigned-overflow aren't
+        # undefined behaviour checks, but they catch for things we don't expect
+        # our code to do.
+        export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Werror'
+        ./configure
     - name: make
       run: make -j2
-    - name: Run tests
+    - name: Run longname test
       run: cd tests && ./cavern.tst longname
+    - name: Run tests
+      run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
