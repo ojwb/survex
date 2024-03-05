@@ -116,8 +116,10 @@ jobs:
         printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
-  linux-latest:
+  # Debian stable has wxWidgets 3.2.
+  debian-stable:
     runs-on: 'ubuntu-latest'
+    container: debian:stable
     steps:
     - name: Check out repository code
       uses: actions/checkout@v4
@@ -129,17 +131,8 @@ jobs:
         key: ${{ github.job }}
     - name: Install package dependencies
       run: |
-        more /etc/apt/sources.list /etc/apt/sources.list.d/*|cat
-        sudo apt-get update
-        sudo apt-get purge mysql-client mysql-server
-        sudo apt-get dist-upgrade
-        sudo apt-get install update-manager libio-pty-perl
-        # `do-release-upgrade` fails (trying to run `screen` it seems) if stdin
-        # isn't a tty so fake one for it using the Perl IO::Pty module.
-        perl -ne '/use blib|clone_winsize_from/ or print' /usr/share/doc/libio-pty-perl/examples/try > $HOME/try
-        # Run in home directory so logs, etc don't end up in source tree.
-        cd "$HOME" && perl ./try sudo do-release-upgrade -d --mode=server
-        sudo apt-get install \
+        apt-get update
+        apt-get install \
             gettext \
             libwxgtk3.2-dev \
             libavcodec-dev \
@@ -167,7 +160,7 @@ jobs:
     - name: make
       run: make -j2
     - name: Run tests
-      run: cd tests && ./cavern.tst longname
+      run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
