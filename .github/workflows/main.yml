@@ -116,6 +116,60 @@ jobs:
         printf '%s\n' .ccache > ".git/info/exclude"
         git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
+  # Debian stable has wxWidgets 3.2.
+  debian-stable:
+    runs-on: 'ubuntu-latest'
+    container: debian:stable
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
+    - name: Install package dependencies
+      run: |
+        apt-get update
+        apt-get install -y \
+            autoconf \
+            automake \
+            gettext \
+            libwxgtk3.2-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libproj-dev \
+            libswscale-dev \
+            mesa-common-dev \
+            libglu1-mesa-dev \
+            libx11-dev \
+            libxext-dev \
+            ghostscript \
+            netpbm \
+            x11proto-core-dev \
+            liblocale-po-perl \
+            unifont \
+            docbook \
+            docbook-utils \
+            w3m
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+
   linux-latest:
     runs-on: 'ubuntu-latest'
     steps:
