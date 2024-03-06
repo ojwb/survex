@@ -225,14 +225,6 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
-dnl check if CLOCKS_PER_SEC is defined by time.h (as ANSI says it should be)
-dnl if it isn't, assume it is 1000000, as it is on SunOS 4
-AC_TRY_COMPILE([#include <time.h>],[
-#ifndef CLOCKS_PER_SEC
-choke me
-#endif
-], , AC_DEFINE(CLOCKS_PER_SEC, 1000000, [For old systems which don't define it themselves]))
-
 dnl Check for 16-bit and 32-bit integer types.
 AC_TYPE_INT16_T
 AC_TYPE_UINT16_T
