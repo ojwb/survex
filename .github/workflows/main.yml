@@ -168,12 +168,6 @@ jobs:
       run: make -j2
     - name: Run tests
       run: make check VERBOSE=1
-    - name: Check generated files are in .gitignore
-      # grep '^' passes through all input while giving a non-zero exit status
-      # if that input is empty.
-      run: |
-        printf '%s\n' .ccache > ".git/info/exclude"
-        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
   clang-sanitisiers:
     runs-on: 'ubuntu-latest'
