@@ -155,6 +155,6 @@ imgtest_simple.svx\
 imgtest_survey.svx
 
 EXTRA_DIST +=\
-multisection.plt \
-multisurvey.plt \
-pre1970.plt
+multisection.plt multisection.dump\
+multisurvey.plt multisurvey.dump\
+pre1970.plt pre1970.dump
