@@ -36,7 +36,7 @@ struct AVFrame;
 struct AVPicture;
 struct SwsContext;
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 extern "C" {
 // To get LIBAVCODEC_VERSION_MAJOR defined:
 # include <libavcodec/avcodec.h>
@@ -44,7 +44,7 @@ extern "C" {
 #endif
 
 class MovieMaker {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     AVFormatContext *oc;
     AVStream *video_st;
 # if LIBAVCODEC_VERSION_MAJOR < 57

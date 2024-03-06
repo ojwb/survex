@@ -180,13 +180,13 @@ AC_CHECK_SIZEOF([wxChar], [], [
 ])
 CFLAGS=$save_CFLAGS
 
-dnl Check for libav (FIXME: does our code still work with ffmpeg?)
-PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
-  AC_DEFINE([WITH_LIBAV], [1], [Use libav for movie export])
+dnl Check for FFmpeg libraries.
+PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libswscale libavutil], [
+  AC_DEFINE([WITH_FFMPEG], [1], [Use FFmpeg for movie export])
   save_CXXFLAGS=$CXXFLAGS
   save_LIBS=$LIBS
-  CFLAGS="$CFLAGS $LIBAV_CFLAGS"
-  LIBS="$LIBS $LIBAV_LIBS"
+  CFLAGS="$CFLAGS $FFMPEG_CFLAGS"
+  LIBS="$LIBS $FFMPEG_LIBS"
   AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_free_frame avcodec_open2 avformat_new_stream av_frame_alloc av_frame_free])
   AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
   AC_CHECK_DECLS([AV_CODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
@@ -197,8 +197,8 @@ PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
 ], [
   dnl Build without movie export feature.
 ])
-AC_SUBST([LIBAV_LIBS])
-AC_SUBST([LIBAV_CFLAGS])
+AC_SUBST([FFMPEG_LIBS])
+AC_SUBST([FFMPEG_CFLAGS])
 
 dnl Check for PROJ.
 PKG_CHECK_MODULES([PROJ], [proj >= 6.2.0], [

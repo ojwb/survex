@@ -48,7 +48,7 @@ aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
  $(COMMONSRC)
 
-aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS) $(LIBAV_LIBS)
+aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS) $(FFMPEG_LIBS)
 
 if WIN32
 aven_LDADD += avenrc.o
@@ -60,7 +60,7 @@ endif
 AM_CFLAGS += $(PROJ_CFLAGS)
 
 aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
-aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(LIBAV_CFLAGS) $(WX_CXXFLAGS)
+aven_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(FFMPEG_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
 
 survexport_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)

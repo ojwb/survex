@@ -2068,7 +2068,7 @@ void MainFrm::OnPresStop(wxCommandEvent&)
 
 void MainFrm::OnPresExportMovie(wxCommandEvent&)
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
     wxString baseleaf;

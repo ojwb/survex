@@ -58,7 +58,7 @@
 
 #include "moviemaker.h"
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 extern "C" {
 # include <libavcodec/avcodec.h>
 # include <libavutil/imgutils.h>
@@ -68,10 +68,10 @@ extern "C" {
 }
 #endif
 
-// Handle the "no libav/FFmpeg" case in this file.
-#if !defined WITH_LIBAV || LIBAVCODEC_VERSION_MAJOR >= 57
+// Handle the "no FFmpeg" case in this file.
+#if !defined WITH_FFMPEG || LIBAVCODEC_VERSION_MAJOR >= 57
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 enum {
     MOVIE_NO_SUITABLE_FORMAT = 1,
     MOVIE_AUDIO_ONLY,
@@ -80,11 +80,11 @@ enum {
 #endif
 
 MovieMaker::MovieMaker()
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     : oc(0), video_st(0), context(0), frame(0), pixels(0), sws_ctx(0), averrno(0)
 #endif
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     static bool initialised_ffmpeg = false;
     if (initialised_ffmpeg) return;
 
@@ -97,7 +97,7 @@ MovieMaker::MovieMaker()
 #endif
 }
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 static int
 write_packet(void *opaque, uint8_t *buf, int buf_size) {
     FILE * fh = (FILE*)opaque;
@@ -116,7 +116,7 @@ seek_stream(void *opaque, int64_t offset, int whence) {
 
 bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     fh_to_close = fh;
 
     /* Allocate the output media context. */
@@ -265,7 +265,7 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 }
 
 unsigned char * MovieMaker::GetBuffer() const {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     return pixels + GetWidth() * GetHeight() * 3;
 #else
     return NULL;
@@ -273,7 +273,7 @@ unsigned char * MovieMaker::GetBuffer() const {
 }
 
 int MovieMaker::GetWidth() const {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     assert(video_st);
     return video_st->codecpar->width;
 #else
@@ -282,7 +282,7 @@ int MovieMaker::GetWidth() const {
 }
 
 int MovieMaker::GetHeight() const {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     assert(video_st);
     return video_st->codecpar->height;
 #else
@@ -290,7 +290,7 @@ int MovieMaker::GetHeight() const {
 #endif
 }
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 // Call with frame=NULL when done.
 int
 MovieMaker::encode_frame(AVFrame* frame_or_null)
@@ -320,7 +320,7 @@ MovieMaker::encode_frame(AVFrame* frame_or_null)
 
 bool MovieMaker::AddFrame()
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     int ret = av_frame_make_writable(frame);
     if (ret < 0) {
 	averrno = ret;
@@ -364,7 +364,7 @@ bool MovieMaker::AddFrame()
 bool
 MovieMaker::Close()
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     if (video_st && averrno == 0) {
 	// Flush out any remaining data.
 	int ret = encode_frame(NULL);
@@ -380,7 +380,7 @@ MovieMaker::Close()
     return true;
 }
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 void
 MovieMaker::release()
 {
@@ -405,7 +405,7 @@ MovieMaker::release()
 
 MovieMaker::~MovieMaker()
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     release();
 #endif
 }
@@ -413,7 +413,7 @@ MovieMaker::~MovieMaker()
 const char *
 MovieMaker::get_error_string() const
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     switch (averrno) {
 	case AVERROR(EIO):
 	    return "I/O error";
