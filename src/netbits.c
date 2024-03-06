@@ -621,8 +621,9 @@ sprint_prefix_(const prefix *ptr)
 	 buffer = osrealloc(buffer, len);
 	 buffer_len = len;
       }
+      char *p = buffer + end;
       if (ptr->up->up != NULL) *p++ = output_separator;
-      strcpy(buffer + end, ptr->ident);
+      strcpy(p, ptr->ident);
    }
    return len;
 }
