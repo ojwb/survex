@@ -1,14 +1,4 @@
-up to: 06d52d5a6035179b753111474010268a0e59cd12
-
-Changes in 1.4.6 (2024-02-??):
-
-* aven,survexport: Enable export of surface legs for KML and JSON.  Currently
-  surface and underground legs aren't differentiated in these export formats
-  when both are enabled.
-
-* aven,survexport: Fix survey filtering when reading Compass PLT files.
-
-* Update build system to eliminate use of obsolete autotools macros.
+Changes in 1.4.6 (2024-03-07):
 
 * cavern:
 
@@ -22,14 +12,35 @@ Changes in 1.4.6 (2024-02-??):
     calculating lazily when we first read a compass reading, and report an
     error if the output coordinate system hasn't been set by then.
 
+  + When opening a file, cavern has fallback handling if the file isn't found
+    to help people processing datasets from platforms with case-insensitive
+    file systems.  Previously cavern would fold the filename to lowercase and
+    retry.  Now if this fails, it will also try the lower case version but
+    with the initial character of the leaf in upper case, and finally folding
+    the whole specified filename to upper case.
+
+  + Dynamically pick a suitable level separator character and store it in .3d
+    file, instead of it being hard-coded to '.' (we still use '.' unless it
+    has been *set as a "name" character, or for Compass DAT/MAK files unless it
+    has been used in a station name).  This is a step towards addressing the
+    situations raised by Thomas Holder in https://github.com/ojwb/survex/pull/4
+    and https://github.com/ojwb/survex/pull/5 .
+
   + Compass DAT files:
+
+    - The shot flag S is now understood to indicate a splay.
+
+    - The shot flag P is now interpreted as marking surface data.  This flag
+      is described as "Exclude this shot from plotting", but the use suggested
+      in the Compass docs is for surface data, and legs flagged with it "[do]
+      not support passage modeling".  Even if it's actually being used for a
+      different purpose, Survex programs don't show surface legs by default so
+      the end effect is at least to not plot as intended.
 
     - Surveys which indicate a depth gauge was used for azimuth readings are
       now marked as STYLE_DIVING in the 3d file.
 
-    - We now parse the "CORRECTIONS2" field in newer format Compass DAT files
-      which specifies corrections for backbearing and backazimuth.  Previously
-      cavern ignored this field.
+    - Compass and clino corrections are now implemented for backsights.
 
     - The tape correction in Compass DAT files is now handled correctly.  The
       specified value is in feet, but cavern was incorrectly treating it as
@@ -50,34 +61,61 @@ Changes in 1.4.6 (2024-02-??):
 
   + Compass MAK files:
 
+    - The base location command is now understood.  This is how Compass
+      specifies a location to calculate magnetic declination at, and we
+      now handle this like Survex's native "*declination auto X Y Z".
+
     - Use specified datum and UTM zone.  Currently only datum "WGS 1984" is
       handled here. Other datums could be handled, but the mapping to EPSG code
       is less simple.  Also it seems Compass supports at least 24 datums but it
       doesn't document all the strings it uses for them. Please let us know if
       support for more datums would be useful to you.
 
-* aven: Fix OpenGL scaling on high DPI displays with wxWidgets 3.0. Reported by
-  Philip Balister.
+    - Folder commands are now understood.
 
-* manual:
+    - Flag fixed stations as entrances.  Experimentation with Compass shows
+      this is how it treats them ("distance from entrance" in a .DAT file
+      counts from 0 at these points).
 
-  + Document Compass support in detail.
+  + We now support reading Compass CLP files.  These are very like DAT files,
+    except they contain loop-closed data.  You might find this useful if you
+    want to keep existing stations at the same adjusted positions Compass gave
+    (for example to be able to draw extensions on an existing drawn-up survey),
+    or if the original DAT file has been lost but you still have the CLP file.
 
-  + Improve NATO mils example.
+* aven:
 
-* INSTALL: Clean up text re -dev packages
+  + Fix OpenGL scaling on high DPI displays with wxWidgets 3.0. Reported by
+    Philip Balister.
 
-* INSTALL: Add a link to the instructions for building from git.  Reported by
-  Andrew Northall in https://github.com/ojwb/survex/pull/13
+  + Split the filters for DAT and MAK files in the File->Open drop down list.
+    It seems more likely you'd want to see one type or the other, not both
+    together.
 
-* doc/TODO.htm: Update.
+* aven/survexport:
 
-* (Microsoft Windows version): Now using wxWidgets 3.2.4 (was 3.1.6).
+  + Fix survey filtering when reading Compass PLT files.
 
-* Fix compilation warnings from newer compiler versions.
+  + .json,.kml: Enable export of surface legs.  Currently surface and
+    underground legs aren't differentiated in these export formats when both
+    are enabled.
 
-* The source code now assumes difftime() is available since it was standardised
-  in C89 and we're not aware of any current platforms which lack it.
+  + .3d: The coordinate system is now set.
+
+  + .svg: Equated stations now get their correct names in the id attribute
+    of <circle> tags.  Previously one of the names would be repeated for
+    all of a set of equated stations.
+
+  + .plt:
+
+    - Anonymous stations previously resulted in an empty name in the PLT
+      file.  This isn't explicitly disallowed by the PLT format description,
+      but Compass' viewer gives an error for such lines.  Now we invent names
+      by encoding the station coordinates which should be unique.
+
+    - The S shot flag is now set for splays, and the P shot flag (hide from
+      plotting) is set for surface legs (which matches the use suggested in the
+      Compass docs).
 
 * img library:
 
@@ -149,6 +187,33 @@ Changes in 1.4.6 (2024-02-??):
       documents that LRUD may be omitted, though it seems Compass never
       actually omits it and at least some versions of Compass failed to handle
       it being omitted too.
+
+* (Microsoft Windows version): Now using wxWidgets 3.2.4 (was 3.1.6).
+
+* manual:
+
+  + Document Compass support in detail.
+
+  + Improve NATO mils example.
+
+* INSTALL:
+
+  + Add a link to the instructions for building from git.  Reported by Andrew
+    Northall in https://github.com/ojwb/survex/pull/13
+
+  + Document the requirement for a C99 compiler for building from source.
+    We made this a requirement in 1.4.2, but only noted it in NEWS.
+
+* doc/TODO.htm: Update.
+
+* Replace references to "libav" with "FFmpeg" since the libav project seems to
+  now be defunct, and we've always supported using either.
+
+* Update build system to eliminate use of obsolete autotools macros and drop
+  probes for features that we can safely assume now we require a C99 compiler
+  and workarounds for obsolete platforms.
+
+* Fix compilation warnings from newer compiler versions.
 
 Changes in 1.4.5 (2023-06-29):
 
