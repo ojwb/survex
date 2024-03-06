@@ -131,6 +131,7 @@ jobs:
         apt-get install -y \
             autoconf \
             automake \
+            pkg-config \
             gettext \
             libwxgtk3.2-dev \
             libavcodec-dev \
