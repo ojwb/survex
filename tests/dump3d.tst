@@ -49,7 +49,7 @@ for file in $TESTS ; do
   case $file in
   *.*)
     input="$srcdir/$file"
-    expect=`echo "$file"|sed 's/\.[^.]*$//'`.dump
+    expect=$srcdir/`echo "$file"|sed 's/\.[^.]*$//'`.dump
     ;;
   *)
     input="$srcdir/$file.3d"
