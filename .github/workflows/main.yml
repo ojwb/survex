@@ -215,7 +215,7 @@ jobs:
         # float-divide-by-zero, nullability and unsigned-overflow aren't
         # undefined behaviour checks, but they catch for things we don't expect
         # our code to do.
-        export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Wno-deprecated-copy-with-user-provided-copy -Werror'
+        export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Wno-deprecated-copy-with-user-provided-copy -Wno-shadow -Werror'
         ./configure
     - name: make
       run: make -j2
