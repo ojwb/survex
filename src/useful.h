@@ -88,6 +88,9 @@
 # define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
 # define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)
 
+# ifdef __GNUC__
+__attribute__((unused))
+# endif
 static inline int16_t get16(FILE *fh) {
     int16_t w;
     if (fread(&w, 2, 1, fh) == 0) {
@@ -98,6 +101,9 @@ static inline int16_t get16(FILE *fh) {
     return w;
 }
 
+# ifdef __GNUC__
+__attribute__((unused))
+# endif
 static inline int32_t get32(FILE *fh) {
     int32_t w;
     if (fread(&w, 4, 1, fh) == 0) {
