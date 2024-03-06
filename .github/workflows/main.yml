@@ -54,6 +54,16 @@ jobs:
         git checkout INSTALL
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
 
   linux-valgrind:
     runs-on: 'ubuntu-22.04'
@@ -98,7 +108,7 @@ jobs:
     - name: make
       run: make -j2
     - name: Run tests
-      run: make check VALGRIND=valgrind VERBOSE=1
+      run: VALGRIND=valgrind make check VERBOSE=1
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
@@ -211,8 +221,51 @@ jobs:
         ./configure
     - name: make
       run: make -j2
-    - name: Run longname test
-      run: cd tests && ./cavern.tst longname
+    - name: Run tests
+      run: make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+
+  macos:
+    runs-on: 'macos-latest'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Install package dependencies
+      run: |
+        brew update
+        brew install \
+            automake \
+            ffmpeg \
+            gettext \
+            gnu-tar \
+            netpbm \
+            proj \
+            wxwidgets
+        brew link --force gettext
+        cpan -T -i local::lib < /dev/null
+        cpan -I -T -i Locale::PO < /dev/null
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+        V=`sed -e 's/^AC_INIT[^,]*, *\[\([^]]*\)\].*/\1/p;d' configure.ac` ; curl https://survex.com/software/$V/survex-$V.tar.gz | gtar --strip-components=1 --skip-old-files --wildcards -zxf - '*/lib' '*/doc'; ls -lrt lib ; touch lib/unifont.pixelfont lib/preload_font.h; echo ; ls -lrt doc; touch doc/*.1 doc/manual.txt doc/manual.pdf doc/manual/stampfile
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: |
+        eval "$(perl -I$HOME/perl5/lib/perl5 -Mlocal::lib)"
+        make -j3
     - name: Run tests
       run: make check VERBOSE=1
     - name: Check generated files are in .gitignore
