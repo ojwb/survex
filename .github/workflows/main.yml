@@ -156,8 +156,9 @@ jobs:
         key: ${{ github.job }}
     - name: bootstrap source tree
       run: |
+        ln INSTALL INSTALL-save
         autoreconf -fiv
-        git checkout INSTALL
+        mv -f INSTALL-save INSTALL
     - name: configure
       run: ./configure CC='ccache gcc' CXX='ccache g++'
     - name: make
