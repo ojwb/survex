@@ -53,7 +53,7 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Werror -O2 -g' CXXFLAGS='-Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
     - name: make
       run: make -j2
     - name: Run tests
@@ -104,7 +104,7 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Werror -O2 -g' CXXFLAGS='-Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
     - name: make
       run: make -j2
     - name: Run tests
@@ -158,7 +158,7 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -O2 -g'
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Werror -O2 -g' CXXFLAGS='-Werror -O2 -g'
     - name: make
       run: make -j2
     - name: Run tests
@@ -216,8 +216,8 @@ jobs:
         # float-divide-by-zero, nullability and unsigned-overflow aren't
         # undefined behaviour checks, but they catch for things we don't expect
         # our code to do.
-        export CFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Werror'
-        export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Wno-deprecated-copy-with-user-provided-copy -Wno-shadow -Werror'
+        export CFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Werror'
+        export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wno-deprecated-copy-with-user-provided-copy -Wno-shadow -Werror'
         ./configure
     - name: make
       run: make -j2
@@ -243,6 +243,9 @@ jobs:
         key: ${{ github.job }}
     - name: Install package dependencies
       run: |
+        # Workaround apparent homebrew bug 2024-03-05
+        rm -f /usr/local/bin/2to3-3.* /usr/local/bin/idle3.* /usr/local/bin/pydoc3.* /usr/local/bin/python3.* /usr/local/bin/python3.*-config
+        rm -f /usr/local/bin/2to3 /usr/local/bin/idle3 /usr/local/bin/pydoc3 /usr/local/bin/python3 /usr/local/bin/python3-config
         brew update
         brew install \
             automake \
