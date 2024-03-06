@@ -53,20 +53,10 @@ jobs:
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Wno-deprecated-copy -Werror -O2 -g'
-    - name: make
-      run: make -j2
-    - name: Run tests
-      run: cd tests && ./cavern.tst longname
-    - name: Check generated files are in .gitignore
-      # grep '^' passes through all input while giving a non-zero exit status
-      # if that input is empty.
-      run: |
-        printf '%s\n' .ccache > ".git/info/exclude"
-        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
 
-  valgrind:
-    runs-on: 'ubuntu-20.04'
+  linux-valgrind:
+    runs-on: 'ubuntu-22.04'
     steps:
     - name: Check out repository code
       uses: actions/checkout@v4
@@ -80,6 +70,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
+            valgrind \
             gettext \
             libwxgtk3.0-gtk3-dev \
             libavcodec-dev \
@@ -98,17 +89,16 @@ jobs:
             docbook \
             docbook-utils \
             w3m
-        sudo apt-get install valgrind
     - name: bootstrap source tree
       run: |
         autoreconf -fiv
         git checkout INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
+      run: ./configure CC='ccache gcc' CXX='ccache g++' CFLAGS='-Wall -W -Werror -O2 -g' CXXFLAGS='-Wall -W -Werror -Wno-error=cast-function-type -Wno-error=deprecated-copy -Wno-error=ignored-qualifiers -O2 -g'
     - name: make
       run: make -j2
     - name: Run tests
-      run: cd tests && VALGRIND=valgrind ./cavern.tst longname
+      run: make check VALGRIND=valgrind VERBOSE=1
     - name: Check generated files are in .gitignore
       # grep '^' passes through all input while giving a non-zero exit status
       # if that input is empty.
@@ -213,10 +203,10 @@ jobs:
         # extra sanitiser checks compared to GCC.
         export CC='ccache clang'
         export CXX='ccache clang++'
-        export CFLAGS='-Wall -W -Werror'
         # float-divide-by-zero, nullability and unsigned-overflow aren't
         # undefined behaviour checks, but they catch for things we don't expect
         # our code to do.
+        export CFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Werror'
         export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer -Wall -W -Wno-deprecated-copy-with-user-provided-copy -Wno-shadow -Werror'
         ./configure
     - name: make
