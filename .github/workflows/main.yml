@@ -25,7 +25,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: linux
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         sudo apt-get update
@@ -75,7 +75,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: valgrind
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         sudo apt-get update
@@ -126,7 +126,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: linux-latest
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         more /etc/apt/sources.list /etc/apt/sources.list.d/*|cat
@@ -185,7 +185,7 @@ jobs:
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: macos
+        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
         brew update
