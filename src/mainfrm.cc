@@ -216,7 +216,7 @@ private:
 // Write a value without trailing zeros after the decimal point.
 static void write_double(double d, FILE * fh) {
     char buf[64];
-    sprintf(buf, "%.21f", d);
+    snprintf(buf, sizeof(buf), "%.21f", d);
     char * p = strchr(buf, ',');
     if (p) *p = '.';
     size_t l = strlen(buf);

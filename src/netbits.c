@@ -637,7 +637,7 @@ sprint_prefix(const prefix *ptr)
       /* We release the stations, so ptr->stn is NULL late on, so we can't
        * use that to print "anonymous station surveyed from somesurvey.12"
        * here.  FIXME */
-      sprintf(buffer, "anonymous station");
+      strcpy(buffer, "anonymous station");
       /* FIXME: if ident is set, show it? */
       return buffer;
    }

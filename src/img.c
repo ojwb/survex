@@ -38,6 +38,8 @@
 #ifdef IMG_HOSTED
 # define INT32_T int32_t
 # define UINT32_T uint32_t
+# define SNPRINTF snprintf
+# define SNPRINTF_2ARGS(BUF, LEN) BUF, LEN
 # include "debug.h"
 # include "filelist.h"
 # include "filename.h"
@@ -60,6 +62,16 @@
 #   define INT32_T long
 #   define UINT32_T unsigned long
 #  endif
+# endif
+# if defined HAVE_SNPRINTF || \
+     (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
+     (defined __cplusplus && __cplusplus >= 201103L)
+#  define SNPRINTF snprintf
+#  define SNPRINTF_2ARGS(BUF, LEN) BUF, LEN
+# else
+/* The buffer passed should always be large enough. */
+#  define SNPRINTF sprintf
+#  define SNPRINTF_2ARGS(BUF, LEN) BUF
 # endif
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
@@ -649,11 +661,12 @@ compass_plt_open(img *pimg)
 		    break;
 		}
 		if (value) {
-		    pimg->cs = (char*)xosmalloc(strlen(template) + 4);
+		    size_t len = strlen(template) + 4;
+		    pimg->cs = (char*)xosmalloc(len);
 		    if (!pimg->cs) {
 			goto out_of_memory_error;
 		    }
-		    sprintf(pimg->cs, template, value);
+		    SNPRINTF(SNPRINTF_2ARGS(pimg->cs, len), template, value);
 		}
 	    }
 
@@ -1318,7 +1331,10 @@ v03d:
 			* may not have.
 			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
-			   sprintf(cs, "EPSG:%d", n);
+			   /* There are at least 45 bytes (see memcmp above)
+			    * which is ample for EPSG: plus an integer.
+			    */
+			   SNPRINTF(SNPRINTF_2ARGS(cs, 45), "EPSG:%d", n);
 		       }
 		   } else if (memcmp(p, "merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null", 89) == 0) {
 		       p = p + 89;
@@ -3596,7 +3612,7 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
 	    img_errno = IMG_OUTOFMEMORY;
 	    return NULL;
 	}
-	sprintf(proj_str, "EPSG:%d", epsg_code);
+	SNPRINTF(SNPRINTF_2ARGS(proj_str, 11), "EPSG:%d", epsg_code);
 	return proj_str;
     }
 
@@ -3614,9 +3630,9 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
 	    img_errno = IMG_OUTOFMEMORY;
 	    return NULL;
 	}
-	sprintf(proj_str,
-		"+proj=utm +zone=%d %s+datum=%s +units=m +no_defs +type=crs",
-		utm_zone, south, proj4_datum);
+	SNPRINTF(SNPRINTF_2ARGS(proj_str, len),
+		 "+proj=utm +zone=%d %s+datum=%s +units=m +no_defs +type=crs",
+		 utm_zone, south, proj4_datum);
 	return proj_str;
     }
 

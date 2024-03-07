@@ -2239,11 +2239,11 @@ cmd_cs(void)
 	 break;
       case CS_EPSG:
 	 proj_str = osmalloc(32);
-	 sprintf(proj_str, "EPSG:%d", cs_sub);
+	 snprintf(proj_str, 32, "EPSG:%d", cs_sub);
 	 break;
       case CS_ESRI:
 	 proj_str = osmalloc(32);
-	 sprintf(proj_str, "ESRI:%d", cs_sub);
+	 snprintf(proj_str, 32, "ESRI:%d", cs_sub);
 	 break;
       case CS_EUR:
 	 proj_str = osstrdup("+proj=utm +zone=30 +ellps=intl +towgs84=-86,-98,-119,0,0,0,0 +no_defs");
@@ -2283,7 +2283,10 @@ cmd_cs(void)
 	 int x = 14 - (cs_sub % 25);
 	 int y = (cs_sub / 25) - 20;
 	 proj_str = osmalloc(160);
-	 sprintf(proj_str, "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=%d +y_0=%d +ellps=airy +datum=OSGB36 +units=m +no_defs", x * 100000, y * 100000);
+	 snprintf(proj_str, 160,
+		  "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 "
+		  "+x_0=%d +y_0=%d +ellps=airy +datum=OSGB36 +units=m +no_defs",
+		  x * 100000, y * 100000);
 	 break;
       }
       case CS_S_MERC:
@@ -2292,9 +2295,9 @@ cmd_cs(void)
       case CS_UTM:
 	 proj_str = osmalloc(32);
 	 if (cs_sub > 0) {
-	    sprintf(proj_str, "EPSG:%d", 32600 + cs_sub);
+	    snprintf(proj_str, 32, "EPSG:%d", 32600 + cs_sub);
 	 } else {
-	    sprintf(proj_str, "EPSG:%d", 32700 - cs_sub);
+	    snprintf(proj_str, 32, "EPSG:%d", 32700 - cs_sub);
 	 }
 	 break;
    }

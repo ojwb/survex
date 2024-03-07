@@ -445,10 +445,11 @@ DXF::passage(const img_point *p, double angle, double d1, double d2)
 		   x1, y1, p->z,
 		   x2, y2, p->z);
    }
-   sprintf(pending, "10\n%6.2f\n20\n%6.2f\n30\n%6.2f\n"
-		    "11\n%6.2f\n21\n%6.2f\n31\n%6.2f\n",
-		    x1, y1, p->z,
-		    x2, y2, p->z);
+   snprintf(pending, sizeof(pending),
+	    "10\n%6.2f\n20\n%6.2f\n30\n%6.2f\n"
+	    "11\n%6.2f\n21\n%6.2f\n31\n%6.2f\n",
+	    x1, y1, p->z,
+	    x2, y2, p->z);
 }
 
 void
@@ -803,7 +804,8 @@ SVG::passage(const img_point *p, double angle, double d1, double d2)
        fputs(pending, fh);
        fprintf(fh, "L%.3f %.3fL%.3f %.3fZ\"/>\n", x2, y2, x1, y1);
    }
-   sprintf(pending, "<path d=\"M%.3f %.3fL%.3f %.3f", x1, y1, x2, y2);
+   snprintf(pending, sizeof(pending),
+	    "<path d=\"M%.3f %.3fL%.3f %.3f", x1, y1, x2, y2);
 }
 
 void

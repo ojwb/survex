@@ -1212,7 +1212,7 @@ warn_readings_differ(int msgno, real diff, int units)
    char buf[64];
    char *p;
    diff /= get_units_factor(units);
-   sprintf(buf, "%.2f", fabs(diff));
+   snprintf(buf, sizeof(buf), "%.2f", fabs(diff));
    for (p = buf; *p; ++p) {
       if (*p == '.') {
 	 char *z = p;
