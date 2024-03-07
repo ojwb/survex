@@ -99,7 +99,7 @@ msgstr "Legalább %s verzió szükséges a feladat végrehajtásához."
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "információ"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"

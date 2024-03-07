@@ -98,7 +98,7 @@ msgstr "Para processar estes dados é necessária a versão %s (ou posterior) do
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "informação"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"

@@ -98,7 +98,7 @@ msgstr "处理此测量数据需要Survex %s 或以上版本。"
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "信息"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"

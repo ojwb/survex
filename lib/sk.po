@@ -98,7 +98,7 @@ msgstr "Pre spracovanie týchto dát je potrebná verzia Survexu %s alebo novši
 #: ../src/message.c:1221
 #: n:485
 msgid "info"
-msgstr ""
+msgstr "info"
 
 #. TRANSLATORS: Indicates a warning message e.g.:
 #. "spoon.svx:12: warning: *prefix is deprecated"
