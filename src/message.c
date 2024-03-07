@@ -892,9 +892,6 @@ void
 (msg_init)(char * const *argv)
 {
    char *p;
-#if OS_UNIX_MACOS
-   int msg_macos_relocatable = 0;
-#endif
    SVX_ASSERT(argv);
 
    /* Point to argv[0] itself so we report a more helpful error if the
@@ -937,7 +934,6 @@ void
 	 p = use_path(pth, "share/survex/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "share/survex");
-	    msg_macos_relocatable = 1;
 	    goto macos_got_msg;
 	 }
 	 osfree(p);
@@ -949,7 +945,6 @@ void
 	 p = use_path(pth, "../Resources/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
 	    pth_cfg_files = use_path(pth, "../Resources");
-	    msg_macos_relocatable = 1;
 	    goto macos_got_msg;
 	 }
 	 osfree(p);
