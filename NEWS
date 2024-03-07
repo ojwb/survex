@@ -65,11 +65,17 @@ Changes in 1.4.6 (2024-03-07):
       specifies a location to calculate magnetic declination at, and we
       now handle this like Survex's native "*declination auto X Y Z".
 
-    - Use specified datum and UTM zone.  Currently only datum "WGS 1984" is
-      handled here. Other datums could be handled, but the mapping to EPSG code
-      is less simple.  Also it seems Compass supports at least 24 datums but it
-      doesn't document all the strings it uses for them. Please let us know if
-      support for more datums would be useful to you.
+    - Survex uses the specified UTM zone and datum provided the combination can
+      be expressed as an EPSG code (lack of any EPSG codes for a datum suggests
+      it's obsolete; lack of a code for a particular datum+zone combination
+      suggests the zone is outside of the defined area of use of the datum).
+      Example Compass files we've seen use "North American 1927" outside of
+      where it's defined for use, presumably because some users fail to change
+      the datum from Compass' default.  To enable reading such files we return
+      a PROJ4 string of the form "+proj=utm ..." for "North American 1927" and
+      "North American 1983" for UTM zones which don't have an EPSG code.
+      Please let us know if support for additional cases which aren't currently
+      supported would be useful to you.
 
     - Folder commands are now understood.
 
