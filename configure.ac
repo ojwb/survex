@@ -244,8 +244,24 @@ AC_CHECK_FUNCS([setenv unsetenv])
 AC_PATH_PROG([JW], [jw], [$MISSING jw])
 AC_ARG_VAR([JW], [jw from docbook-utils/docbook-tools])
 
+AC_ARG_ENABLE([werror],
+  [AS_HELP_STRING([--enable-werror], [enable treating compiler warnings as errors [default=maintainer-mode]])],
+  [case ${enableval} in
+    yes|no) ;;
+  *) AC_MSG_ERROR([bad value ${enableval} for --enable-werror]) ;;
+  esac],
+  [enable_werror=no])
+
+dnl Put -Werror or equivalent in its own make variable so that it can easily
+dnl be overridden by `make WERROR=` if needed during development (e.g. if
+dnl you want to get a full list of compile warnings to fix rather than
+dnl stopping at the first file with warnings).
+WERROR=
+AC_SUBST([WERROR])
+
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
+  WERROR=-Werror
   if test yes = "$cross_compiling"; then
 dnl    AM_CFLAGS="$AM_CFLAGS -Werror -Wall -Wunused -Wpointer-arith\
 dnl      -Wwrite-strings -Wcast-align"
@@ -266,6 +282,10 @@ dnl to disable it for mingw builds.
 fi
 AC_SUBST(AM_CFLAGS)
 AC_SUBST(AM_CXXFLAGS)
+
+if test x$enable_werror != xyes; then
+  WERROR=
+fi
 
 dnl See if large file support is available.  Survex is unlikely to need to
 dnl process files > 2GB in size, but LFS is also needed for stat() to work

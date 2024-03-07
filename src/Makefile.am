@@ -1,5 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
+# Allow easy overriding via: make WERROR=
+AM_CFLAGS += $(WERROR)
+AM_CXXFLAGS += $(WERROR)
+
 noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h kml.h\
  labelinfo.h listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h\
