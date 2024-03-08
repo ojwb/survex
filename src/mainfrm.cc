@@ -1284,7 +1284,7 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 	wxString ext(file, file.length() - 3, 3);
 	ext.MakeLower();
 	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak") ||
-	    ext == wxT("clp")) {
+	    ext == wxT("clp") || ext == wxT("srv") || ext == wxT("wpj")) {
 	    CavernLogWindow * log = new CavernLogWindow(this, survey, m_Splitter);
 	    wxWindow * win = m_Splitter->GetWindow1();
 	    m_Splitter->ReplaceWindow(win, log);
@@ -1411,6 +1411,7 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     "|%s|*.mak" CASE("*.MAK")
 		     "|%s|*.dat" CASE("*.DAT")
 		     "|%s|*.clp" CASE("*.CLP")
+		     // FIXME Walls srv and wpj
 		     "|%s|*.adj;*.sht;*.una;*.xyz" CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
 		     /* TRANSLATORS: Here "survey" is a "cave map" rather than

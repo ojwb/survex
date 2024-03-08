@@ -247,7 +247,7 @@ default_all(settings *s)
 char *buffer = NULL;
 static int buf_len;
 
-static char *ucbuffer = NULL;
+char *ucbuffer = NULL;
 
 /* read token */
 extern void

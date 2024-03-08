@@ -40,6 +40,7 @@ void set_declination_location(real x, real y, real z, const char *proj_str);
 void copy_on_write_meta(settings *s);
 
 extern char *buffer;
+extern char *ucbuffer;
 void get_token(void);
 void get_token_no_blanks(void);
 

@@ -1051,6 +1051,164 @@ update_proj_str:
 }
 
 static void
+data_file_walls_srv(void)
+{
+    short *t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+    int i;
+    t[EOF] = SPECIAL_EOL;
+    memset(t, 0, sizeof(short) * 33);
+    // "Unprefixed names can have a maximum of eight characters and must not
+    // contain any colons, semicolons, commas, pound signs (#), or embedded
+    // tabs or spaces.  In order to avoid possible problems when printing or
+    // when exporting data to other programs, you are encouraged to restrict
+    // names in new surveys to numbers with alphabetic prefixes or suffixes
+    // (e.g., BR123)."
+    //
+    // We assume other control characters aren't allowed either (so nothing
+    // < 32 and not 127), but allow all top-bit-set characters.
+    for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+    t[127] = 0;
+    for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+    t[':'] = 0;
+    t[';'] = SPECIAL_COMMENT;
+    t[','] = 0;
+    //t['#'] = SPECIAL_COMMAND;
+    t['\t'] |= SPECIAL_BLANK;
+    t[' '] |= SPECIAL_BLANK;
+    t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
+    t['\n'] |= SPECIAL_EOL;
+    t['\r'] |= SPECIAL_EOL;
+    t['.'] |= SPECIAL_DECIMAL;
+    t['-'] |= SPECIAL_MINUS;
+    t['+'] |= SPECIAL_PLUS;
+
+    settings *pcsNew = osnew(settings);
+    *pcsNew = *pcs; /* copy contents */
+    pcsNew->begin_lineno = 0;
+    pcsNew->Translate = t;
+    pcsNew->Case = OFF;
+    // Spec says "maximum of eight characters" - we currently allow arbitrarily
+    // many.
+    pcsNew->Truncate = INT_MAX;
+    pcsNew->next = pcs;
+    pcs = pcsNew;
+
+    // FIXME: We need to update the separator_map to reflect what can be
+    // SPECIAL_NAMES.  Or should we use the Compass approach and base this
+    // on what's actually used?  The first approach would pick the separator
+    // from {':', ';', ',', '#', space}; the latter would pick '.' if
+    // the documentation station naming recommendations were followed.
+    update_output_separator();
+
+    default_units(pcs);
+    default_calib(pcs);
+    // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
+
+    pcs->recorded_style = pcs->style = STYLE_NORMAL;
+    pcs->infer = BIT(INFER_EQUATES) | // FIXME?
+		 BIT(INFER_EQUATES_SELF_OK) | // FIXME?
+		 BIT(INFER_EXPORTS) | // FIXME?
+		 BIT(INFER_PLUMBS); // FIXME?
+    /* We need to update separator_map so we don't pick a separator character
+     * which occurs in a station name.  However Compass DAT allows everything
+     * >= ASCII char 33 except 127 in station names so if we just added all
+     * the valid station name characters we'd always pick space as the
+     * separator for any dataset which included a DAT file, yet in practice
+     * '.' is never used in any of the sample DAT files I've seen.  So
+     * instead we scan the characters actually used in station names when we
+     * process CompassDATFr and CompassDATTo fields. (FIXME)
+     */
+
+#ifdef HAVE_SETJMP_H
+    /* errors in nested functions can longjmp here */
+    if (setjmp(file.jbSkipLine)) {
+	skipline();
+	process_eol();
+    }
+#endif
+
+    reading data_order[] = {
+	CompassDATFr, CompassDATTo, Tape, CompassDATComp, CompassDATClino,
+// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
+	IgnoreAll
+    };
+    pcs->ordering = data_order;
+    while (ch != EOF && !ferror(file.fh)) {
+	skipblanks();
+	if (ch != '#') {
+	    if (ch == ';') {
+		skipline();
+		process_eol();
+	    } else {
+		data_normal();
+	    }
+	    continue;
+	}
+
+	// Directive:
+	nextch();
+	if (ch == '[') {
+	    // FIXME Skip to line with corresponding #] (can be nested!)
+	}
+	get_token();
+	if (strcmp(ucbuffer, "UNITS") == 0) {
+    //pcs->declination = HUGE_REAL;
+//	if (pcs->dec_filename == NULL) {
+//	    pcs->z[Q_DECLINATION] = -read_numeric(false);
+//	    pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+//	} else {
+//	    (void)read_numeric(false);
+//	}
+
+
+//		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
+//		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
+//		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
+
+	    /* Original "Inclination Units" were "Depth Gauge". */
+	    //pcs->recorded_style = STYLE_DIVING;
+	    skipline();
+	} else if (strcmp(ucbuffer, "DATE") == 0) {
+	    int year = read_uint();
+	    skipblanks();
+	    nextch();
+	    int month = read_uint();
+	    skipblanks();
+	    nextch();
+	    int day = read_uint();
+
+	    // FIXME:
+	    // "While some date formats common in the U.S. (mm/dd/yy,
+	    // mm-dd-yyyy, etc.) are accepted by the program, it is recommended
+	    // that you use the above form.  It is an international standard
+	    // (ISO 8601) and is less likely to be misinterpreted by anyone
+	    // viewing the data." ... sigh
+	
+	    copy_on_write_meta(pcs);
+	    int days = days_since_1900(year, month, day);
+	    pcs->meta->days1 = pcs->meta->days2 = days;
+	} else if (strcmp(ucbuffer, "FIX") == 0) {
+	    skipline();
+	} else if (strcmp(ucbuffer, "FLAG") == 0) {
+	    skipline();
+	} else if (strcmp(ucbuffer, "NOTE") == 0) {
+	    skipline();
+	} else if (strcmp(ucbuffer, "SEG") == 0) {
+	    skipline();
+	} else {
+	    // FIXME it's a "directive" in Walls-speak.
+	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+	}
+	process_eol();
+    }
+
+    clear_last_leg();
+
+    pcs->ordering = NULL; /* Avoid free() of static array. */
+    pop_settings();
+}
+
+static void
 data_file_survex(void)
 {
     int begin_lineno_store = pcs->begin_lineno;
@@ -1185,7 +1343,7 @@ data_file(const char *pth, const char *fnm)
        break;
      case EXT3('s', 'r', 'v'):
        // Walls survey data.
-       // FIXME
+       data_file_walls_srv();
        break;
      case EXT3('w', 'p', 'j'):
        // Walls project file.
