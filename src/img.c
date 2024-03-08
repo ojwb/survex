@@ -71,7 +71,7 @@
 # else
 /* The buffer passed should always be large enough. */
 #  define SNPRINTF sprintf
-#  define SNPRINTF_2ARGS(BUF, LEN) BUF
+#  define SNPRINTF_2ARGS(BUF, LEN) BUF,
 # endif
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
