@@ -848,9 +848,8 @@ data_file_compass_mak(void)
 		  osfree(dat_fnm);
 	      }
 	      while (ch != ';' && ch != EOF) {
-		  prefix *name;
 		  nextch_handling_eol();
-		  name = read_prefix(PFX_STATION|PFX_OPT);
+		  prefix *name = read_prefix(PFX_STATION|PFX_OPT);
 		  if (name) {
 		      scan_compass_station_name(name);
 		      skipblanks();
@@ -1167,7 +1166,8 @@ data_file_walls_srv(void)
 
 	    /* Original "Inclination Units" were "Depth Gauge". */
 	    //pcs->recorded_style = STYLE_DIVING;
-	    skipline();
+	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+	    //skipline();
 	} else if (strcmp(ucbuffer, "DATE") == 0) {
 	    int year = read_uint();
 	    skipblanks();
@@ -1183,18 +1183,85 @@ data_file_walls_srv(void)
 	    // that you use the above form.  It is an international standard
 	    // (ISO 8601) and is less likely to be misinterpreted by anyone
 	    // viewing the data." ... sigh
-	
+
 	    copy_on_write_meta(pcs);
 	    int days = days_since_1900(year, month, day);
 	    pcs->meta->days1 = pcs->meta->days2 = days;
 	} else if (strcmp(ucbuffer, "FIX") == 0) {
-	    skipline();
+	    prefix *name = read_prefix(PFX_STATION);
+	    // FIXME: e.g. `#Units order=NEU` can change the order here.
+	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
+	    // Or E/S instead of W/N.
+	    real x = read_numeric(false);
+	    if (ch == 'F' || ch == 'f') {
+		x *= METRES_PER_FOOT;
+		nextch();
+	    } else if (ch == 'M' || ch == 'm') {
+		nextch();
+	    } else {
+		x *= pcs->units[Q_LENGTH];
+	    }
+
+	    real y = read_numeric(false);
+	    if (ch == 'F' || ch == 'f') {
+		y *= METRES_PER_FOOT;
+		nextch();
+	    } else if (ch == 'M' || ch == 'm') {
+		nextch();
+	    } else {
+		y *= pcs->units[Q_LENGTH];
+	    }
+
+	    real z = read_numeric(false);
+	    if (ch == 'F' || ch == 'f') {
+		z *= METRES_PER_FOOT;
+		nextch();
+	    } else if (ch == 'M' || ch == 'm') {
+		nextch();
+	    } else {
+		z *= pcs->units[Q_LENGTH];
+	    }
+
+	    skipblanks();
+	    if (ch == '(') {
+		// Optional variance override.  FIXME parse and use
+		// E.g. `(R5,?)` specifies horizontal and vertical so:
+		// `R5` means 5m RMS horizontal error
+		// `?` specifies no elevations were obtained - infinite variance.
+		// `*` means ... same as `?`
+		// <non-negative number> means treat as compass and tape vector of that length (in length units from #units)
+		// `` (empty) means don't override that one
+		// no comma e.g. `(R5)` means apply to both h and v
+		do {
+		    nextch();
+		} while (!isEol(ch) && ch != ')');
+		if (ch == ')') {
+		    nextch();
+		    skipblanks();
+		}
+	    }
+
+	    // FIXME: Actually fix.
+	    (void)name;
+	    (void)x;
+	    (void)y;
+	    (void)z;
+
+	    if (ch == '/') {
+		// Station note - ignore for now.
+		skipline();
+	    }
+#if 0
 	} else if (strcmp(ucbuffer, "FLAG") == 0) {
 	    skipline();
+#endif
 	} else if (strcmp(ucbuffer, "NOTE") == 0) {
+	    // A text note attached to a station - ignore for now.
 	    skipline();
+#if 0
 	} else if (strcmp(ucbuffer, "SEG") == 0) {
 	    skipline();
+#endif
 	} else {
 	    // FIXME it's a "directive" in Walls-speak.
 	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
