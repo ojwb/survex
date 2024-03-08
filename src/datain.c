@@ -1135,7 +1135,7 @@ data_file_walls_srv(void)
     while (ch != EOF && !ferror(file.fh)) {
 	skipblanks();
 	if (ch != '#') {
-	    if (ch == ';') {
+	    if (ch == ';' || isEol(ch)) {
 		skipline();
 		process_eol();
 	    } else {
