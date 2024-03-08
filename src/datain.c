@@ -1170,9 +1170,6 @@ next_line:
 	    //pcs->recorded_style = STYLE_DIVING;
 	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 	    //skipline();
-	} else if (strcmp(ucbuffer, "SEG") == 0) {
-	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
-	    //skipline();
 	} else if (strcmp(ucbuffer, "DATE") == 0) {
 	    int year = read_uint();
 	    skipblanks();
@@ -1263,7 +1260,7 @@ next_line:
 	    // stations and apply the flag.
 	    skipblanks();
 
-	    if (ch == '/') {
+	    if (ch == '/' || ch == '\\') {
 		printf("Default flag\n");
 		// FIXME: Handle.
 		skipline();
@@ -1272,11 +1269,12 @@ next_line:
 		get_pos(&fp);
 		// Only / is documented, but real world examples have \ and
 		// checking the Walls source it supports \ too.
-		while (ch != '/' || ch != '\\') {
+		while (ch != '/' && ch != '\\') {
 		    if (isComm(ch) || isEol(ch)) {
 			// FIXME: This "can optionally follow the list of
 			// station names" but what does it mean if it's
 			// missing?
+			printf("No flag in #Flag!\n");
 			process_eol();
 			goto next_line;
 		    }
@@ -1291,7 +1289,6 @@ next_line:
 		    get_token();
 		    if (strcmp(ucbuffer, "ENTRANCE") == 0) {
 			station_flags |= BIT(SFLAGS_ENTRANCE);
-			printf("*");
 		    } else {
 			if (!printed) {
 			    printed = true;
@@ -1302,20 +1299,14 @@ next_line:
 		}
 		if (printed) printf("\n");
 		if (station_flags) {
-		    // Go back and read stations.
+		    // Go back and read stations and apply the flags.
 		    filepos fp_end;
 		    get_pos(&fp_end);
 		    set_pos(&fp);
-		    while (isNames(ch)) {
+		    while (ch != '/' && ch != '\\') {
 			prefix *name = read_prefix(PFX_STATION);
-			printf(" ");
-			fprint_prefix(stdout, name);
 			name->sflags |= station_flags;
 			skipblanks();
-		    }
-		    printf("\n");
-		    if (ch != '/' && ch != '\\') {
-			printf("*** Parse error in #Fix\n"); // FIXME
 		    }
 		    set_pos(&fp_end);
 		}
@@ -1323,10 +1314,9 @@ next_line:
 	} else if (strcmp(ucbuffer, "NOTE") == 0) {
 	    // A text note attached to a station - ignore for now.
 	    skipline();
-#if 0
 	} else if (strcmp(ucbuffer, "SEG") == 0) {
+	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 	    skipline();
-#endif
 	} else {
 	    // FIXME it's a "directive" in Walls-speak.
 	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
