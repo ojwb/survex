@@ -1183,6 +1183,14 @@ data_file(const char *pth, const char *fnm)
        // Compass project file.
        data_file_compass_mak();
        break;
+     case EXT3('s', 'r', 'v'):
+       // Walls survey data.
+       // FIXME
+       break;
+     case EXT3('w', 'p', 'j'):
+       // Walls project file.
+       // FIXME
+       break;
      default:
        // Native Survex data.
        data_file_survex();
