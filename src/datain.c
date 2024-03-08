@@ -1103,6 +1103,7 @@ data_file_walls_srv(void)
     default_calib(pcs);
     // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
 
+    pcs->dash_for_anon_wall_station = true;
     pcs->recorded_style = pcs->style = STYLE_NORMAL;
     pcs->infer = BIT(INFER_EQUATES) | // FIXME?
 		 BIT(INFER_EQUATES_SELF_OK) | // FIXME?
@@ -1127,12 +1128,13 @@ data_file_walls_srv(void)
 #endif
 
     reading data_order[] = {
-	CompassDATFr, CompassDATTo, Tape, CompassDATComp, CompassDATClino,
+	Fr, To, Tape, Comp, Clino,
 // FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	IgnoreAll
     };
     pcs->ordering = data_order;
     while (ch != EOF && !ferror(file.fh)) {
+next_line:
 	skipblanks();
 	if (ch != '#') {
 	    if (ch == ';' || isEol(ch)) {
@@ -1166,7 +1168,10 @@ data_file_walls_srv(void)
 
 	    /* Original "Inclination Units" were "Depth Gauge". */
 	    //pcs->recorded_style = STYLE_DIVING;
-	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+	    //skipline();
+	} else if (strcmp(ucbuffer, "SEG") == 0) {
+	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 	    //skipline();
 	} else if (strcmp(ucbuffer, "DATE") == 0) {
 	    int year = read_uint();
@@ -1251,10 +1256,70 @@ data_file_walls_srv(void)
 		// Station note - ignore for now.
 		skipline();
 	    }
-#if 0
-	} else if (strcmp(ucbuffer, "FLAG") == 0) {
-	    skipline();
-#endif
+	} else if (strcmp(ucbuffer, "F") == 0 || strcmp(ucbuffer, "FLAG") == 0) {
+	    // The flag comes after a list of stations, so to avoid having to
+	    // store a list of the stations we note the position, scan ahead
+	    // and parse the flag, then come back and actually parse the
+	    // stations and apply the flag.
+	    skipblanks();
+
+	    if (ch == '/') {
+		printf("Default flag\n");
+		// FIXME: Handle.
+		skipline();
+	    } else {
+		filepos fp;
+		get_pos(&fp);
+		// Only / is documented, but real world examples have \ and
+		// checking the Walls source it supports \ too.
+		while (ch != '/' || ch != '\\') {
+		    if (isComm(ch) || isEol(ch)) {
+			// FIXME: This "can optionally follow the list of
+			// station names" but what does it mean if it's
+			// missing?
+			process_eol();
+			goto next_line;
+		    }
+		    nextch();
+		}
+		nextch();
+		int station_flags = 0;
+		bool printed = false;
+		while (1) {
+		    skipblanks();
+		    if (isComm(ch) || isEol(ch)) break;
+		    get_token();
+		    if (strcmp(ucbuffer, "ENTRANCE") == 0) {
+			station_flags |= BIT(SFLAGS_ENTRANCE);
+			printf("*");
+		    } else {
+			if (!printed) {
+			    printed = true;
+			    printf("*** Unknown flags:");
+			}
+			printf(" %s", buffer);
+		    }
+		}
+		if (printed) printf("\n");
+		if (station_flags) {
+		    // Go back and read stations.
+		    filepos fp_end;
+		    get_pos(&fp_end);
+		    set_pos(&fp);
+		    while (isNames(ch)) {
+			prefix *name = read_prefix(PFX_STATION);
+			printf(" ");
+			fprint_prefix(stdout, name);
+			name->sflags |= station_flags;
+			skipblanks();
+		    }
+		    printf("\n");
+		    if (ch != '/' && ch != '\\') {
+			printf("*** Parse error in #Fix\n"); // FIXME
+		    }
+		    set_pos(&fp_end);
+		}
+	    }
 	} else if (strcmp(ucbuffer, "NOTE") == 0) {
 	    // A text note attached to a station - ignore for now.
 	    skipline();
