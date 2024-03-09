@@ -51,3 +51,5 @@ int read_int(int min_val, int max_val);
 void read_string(char **pstr, int *plen);
 
 void read_date(int *py, int *pm, int *pd);
+
+void read_walls_srv_date(int *py, int *pm, int *pd);

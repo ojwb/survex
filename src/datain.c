@@ -1171,21 +1171,8 @@ next_line:
 	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 	    //skipline();
 	} else if (strcmp(ucbuffer, "DATE") == 0) {
-	    int year = read_uint();
-	    skipblanks();
-	    nextch();
-	    int month = read_uint();
-	    skipblanks();
-	    nextch();
-	    int day = read_uint();
-
-	    // FIXME:
-	    // "While some date formats common in the U.S. (mm/dd/yy,
-	    // mm-dd-yyyy, etc.) are accepted by the program, it is recommended
-	    // that you use the above form.  It is an international standard
-	    // (ISO 8601) and is less likely to be misinterpreted by anyone
-	    // viewing the data." ... sigh
-
+	    int year, month, day;
+	    read_walls_srv_date(&year, &month, &day);
 	    copy_on_write_meta(pcs);
 	    int days = days_since_1900(year, month, day);
 	    pcs->meta->days1 = pcs->meta->days2 = days;

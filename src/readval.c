@@ -716,3 +716,80 @@ read_date(int *py, int *pm, int *pd)
    if (pm) *pm = m;
    if (pd) *pd = d;
 }
+
+extern void
+read_walls_srv_date(int *py, int *pm, int *pd)
+{
+    skipblanks();
+
+    filepos fp_date;
+    get_pos(&fp_date);
+    unsigned y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    int separator = -2;
+    if (ch == '-' || ch == '/') {
+	separator = ch;
+	nextch();
+    }
+    filepos fp_month;
+    get_pos(&fp_month);
+    unsigned m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    if (ch == separator) {
+	nextch();
+    }
+    filepos fp_day;
+    get_pos(&fp_day);
+    unsigned d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+
+    filepos fp_year;
+    if (y < 100) {
+	// Walls recommends ISO 8601 date format (yyyy-mm-dd and seemingly the
+	// non-standard variant yyyy/mm/dd), but also accepts "some date formats
+	// common in the U.S. (mm/dd/yy, mm-dd-yyyy, etc.)"
+	unsigned tmp = y;
+	y = d;
+	fp_year = fp_day;
+	d = m;
+	fp_day = fp_month;
+	m = tmp;
+	fp_month = fp_date;
+
+	if (y < 100) {
+	    // FIXME: Are all 2 digit years 19xx?
+	    y += 1900;
+
+	    filepos fp_save;
+	    get_pos(&fp_save);
+	    set_pos(&fp_year);
+	    /* TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918 */
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Assuming 2 digit year is %d*/76, y);
+	    set_pos(&fp_save);
+	}
+    } else {
+	if (y < 1900 || y > 2078) {
+	    set_pos(&fp_date);
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
+	    LONGJMP(file.jbSkipLine);
+	    return; /* for brain-fried compilers */
+	}
+	fp_year = fp_date;
+    }
+
+    if (m < 1 || m > 12) {
+	set_pos(&fp_month);
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
+	LONGJMP(file.jbSkipLine);
+	return; /* for brain-fried compilers */
+    }
+
+    if (d < 1 || d > last_day(y, m)) {
+	set_pos(&fp_day);
+	/* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
+	LONGJMP(file.jbSkipLine);
+	return; /* for brain-fried compilers */
+    }
+
+    if (py) *py = y;
+    if (pm) *pm = m;
+    if (pd) *pd = d;
+}
