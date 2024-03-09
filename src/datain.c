@@ -1230,11 +1230,22 @@ next_line:
 		}
 	    }
 
-	    // FIXME: Actually fix.
-	    (void)name;
-	    (void)x;
-	    (void)y;
-	    (void)z;
+	    name->sflags |= BIT(SFLAGS_FIXED);
+	    node *stn = StnFromPfx(name);
+	    if (!fixed(stn)) {
+		POS(stn, 0) = x;
+		POS(stn, 1) = y;
+		POS(stn, 2) = z;
+		fix(stn);
+	    } else {
+		if (x != POS(stn, 0) ||
+		    y != POS(stn, 1) ||
+		    z != POS(stn, 2)) {
+		    compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
+		} else {
+		    compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
+		}
+	    }
 
 	    if (ch == '/') {
 		// Station note - ignore for now.
