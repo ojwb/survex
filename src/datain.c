@@ -1128,7 +1128,7 @@ data_file_walls_srv(void)
 #endif
 
     reading data_order[] = {
-	Fr, To, WallsSRVTape, WallsSRVComp, WallsSRVClino,
+	WallsSRVFr, To, WallsSRVTape, WallsSRVComp, WallsSRVClino,
 // FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	IgnoreAll
     };
@@ -2487,6 +2487,8 @@ data_normal(void)
 	  }
 	  break;
        case WallsSRVFr:
+	  // Walls SRV is always From then To.
+	  first_stn = Fr;
 	  fr = read_prefix(PFX_STATION|PFX_ANON);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
