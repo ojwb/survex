@@ -2488,26 +2488,39 @@ data_normal(void)
 	  break;
        case WallsSRVComp: {
 	  skipblanks();
-	  bool quadrants = (ch == 'N' || ch == 'S' || ch == 'n' || ch == 's');
-	  LOC(Comp) = ftell(file.fh);
-	  VAL(Comp) = read_bearing_multi_or_omit(quadrants, NULL);
-	  WID(Comp) = ftell(file.fh) - LOC(Comp);
-	  VAR(Comp) = var(Q_BEARING);
-	  if (ch == '/') {
-	      nextch();
-	      quadrants = (ch == 'N' || ch == 'S' || ch == 'n' || ch == 's');
+	  if (ch != '/') {
+	      bool quadrants = isalpha(ch);
+	      LOC(Comp) = ftell(file.fh);
+	      VAL(Comp) = read_bearing_multi_or_omit(quadrants, NULL);
+	      WID(Comp) = ftell(file.fh) - LOC(Comp);
+	      VAR(Comp) = var(Q_BEARING);
+	  } else {
+	      VAL(Comp) = HUGE_REAL;
+	  }
+	  if (ch == '/' && !isBlank(nextch())) {
+	      bool quadrants = isalpha(ch);
 	      LOC(BackComp) = ftell(file.fh);
 	      VAL(BackComp) = read_bearing_multi_or_omit(quadrants, NULL);
 	      WID(BackComp) = ftell(file.fh) - LOC(BackComp);
 	      VAR(BackComp) = var(Q_BACKBEARING);
+	  } else {
+	      VAL(BackComp) = HUGE_REAL;
 	  }
 	  break;
        }
        case WallsSRVClino: {
-	  read_reading(Clino, false);
-	  if (ch == '/') {
-	      nextch();
+	  skipblanks();
+	  if (ch != '/') {
+	      read_reading(Clino, false);
+	      ctype = CTYPE_READING;
+	  } else {
+	      VAL(Clino) = HUGE_REAL;
+	  }
+	  if (ch == '/' && !isBlank(nextch())) {
 	      read_reading(BackClino, false);
+	      backctype = CTYPE_READING;
+	  } else {
+	      VAL(BackClino) = HUGE_REAL;
 	  }
 	  break;
        }
