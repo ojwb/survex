@@ -1128,7 +1128,7 @@ data_file_walls_srv(void)
 #endif
 
     reading data_order[] = {
-	Fr, To, Tape, WallsSRVComp, WallsSRVClino,
+	Fr, To, WallsSRVTape, WallsSRVComp, WallsSRVClino,
 // FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	IgnoreAll
     };
@@ -2484,6 +2484,32 @@ data_normal(void)
 	     } else {
 		set_pos(&fp);
 	     }
+	  }
+	  break;
+       case WallsSRVTape:
+	  LOC(Tape) = ftell(file.fh);
+	  VAL(Tape) = read_numeric(true);
+	  WID(Tape) = ftell(file.fh) - LOC(Tape);
+	  VAR(Tape) = var(Q_LENGTH);
+	  if (VAL(Tape) == HUGE_REAL) {
+	      if (!isOmit(ch)) {
+		  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		  /* Avoid also warning about omitted tape reading. */
+		  VAL(Tape) = 0;
+	      } else {
+		  nextch();
+	      }
+	  } else {
+	      if (VAL(Tape) < (real)0.0)
+		  compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative tape reading*/60);
+	      switch (ch) {
+		case 'F': case 'f':
+		  VAL(Tape) *= METRES_PER_FOOT;
+		  /* FALLTHRU */
+		case 'M': case 'm':
+		  VAL(Tape) /= pcs->units[Q_LENGTH];
+		  nextch();
+	      }
 	  }
 	  break;
        case WallsSRVComp: {
