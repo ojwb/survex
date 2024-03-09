@@ -2486,6 +2486,16 @@ data_normal(void)
 	     }
 	  }
 	  break;
+       case WallsSRVFr:
+	  fr = read_prefix(PFX_STATION|PFX_ANON);
+	  skipblanks();
+	  if (ch == '*' || ch == '<') {
+	      // Isolated LRUD.  Ignore for now.
+	      skipline();
+	      process_eol();
+	      return;
+	  }
+	  break;
        case WallsSRVTape:
 	  LOC(Tape) = ftell(file.fh);
 	  VAL(Tape) = read_numeric(true);
