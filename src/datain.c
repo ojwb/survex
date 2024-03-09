@@ -1128,7 +1128,7 @@ data_file_walls_srv(void)
 #endif
 
     reading data_order[] = {
-	Fr, To, Tape, Comp, Clino,
+	Fr, To, Tape, WallsSRVComp, WallsSRVClino,
 // FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	IgnoreAll
     };
@@ -2499,6 +2499,31 @@ data_normal(void)
 	     }
 	  }
 	  break;
+       case WallsSRVComp: {
+	  skipblanks();
+	  bool quadrants = (ch == 'N' || ch == 'S' || ch == 'n' || ch == 's');
+	  LOC(Comp) = ftell(file.fh);
+	  VAL(Comp) = read_bearing_multi_or_omit(quadrants, NULL);
+	  WID(Comp) = ftell(file.fh) - LOC(Comp);
+	  VAR(Comp) = var(Q_BEARING);
+	  if (ch == '/') {
+	      nextch();
+	      quadrants = (ch == 'N' || ch == 'S' || ch == 'n' || ch == 's');
+	      LOC(BackComp) = ftell(file.fh);
+	      VAL(BackComp) = read_bearing_multi_or_omit(quadrants, NULL);
+	      WID(BackComp) = ftell(file.fh) - LOC(BackComp);
+	      VAR(BackComp) = var(Q_BACKBEARING);
+	  }
+	  break;
+       }
+       case WallsSRVClino: {
+	  read_reading(Clino, false);
+	  if (ch == '/') {
+	      nextch();
+	      read_reading(BackClino, false);
+	  }
+	  break;
+       }
        case Ignore:
 	  skipword(); break;
        case IgnoreAllAndNewLine:

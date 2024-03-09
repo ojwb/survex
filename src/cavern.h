@@ -196,7 +196,9 @@ typedef enum {
    CompassDATFr, CompassDATTo,
    CompassDATComp, CompassDATClino, CompassDATBackComp, CompassDATBackClino,
    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
-   CompassDATFlags
+   CompassDATFlags,
+
+   WallsSRVComp, WallsSRVClino
 } reading;
 
 /* if IgnoreAll is >= 32, the compiler will choke on this */
