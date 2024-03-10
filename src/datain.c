@@ -1151,7 +1151,27 @@ next_line:
 	// Directive:
 	nextch();
 	if (ch == '[') {
-	    // FIXME Skip to line with corresponding #] (can be nested!)
+	    // "Commented out" data.
+	    skipline();
+	    process_eol();
+
+	    int depth = 1;
+	    while (depth && !isEol(ch)) {
+		skipblanks();
+		if (ch == '#') {
+		    nextch();
+		    depth += (ch == '[') - (ch == ']');
+		}
+		skipline();
+		process_eol();
+	    }
+	    if (depth) {
+		// FIXME Report unclosed `#[`.
+	    }
+	    goto next_line;
+	}
+	if (ch == ']') {
+	    // FIXME Report excess `#]`.
 	}
 	get_token();
 	if (strcmp(ucbuffer, "UNITS") == 0) {
