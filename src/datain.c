@@ -1142,8 +1142,10 @@ next_line:
 	    if (ch == ';' || isEol(ch)) {
 		skipline();
 		process_eol();
-	    } else {
+	    } else if (pcs->style == STYLE_NORMAL) {
 		data_normal();
+	    } else {
+		data_cartesian();
 	    }
 	    continue;
 	}
@@ -1156,7 +1158,7 @@ next_line:
 	    process_eol();
 
 	    int depth = 1;
-	    while (depth && !isEol(ch)) {
+	    while (depth && ch != EOF) {
 		skipblanks();
 		if (ch == '#') {
 		    nextch();
@@ -1175,6 +1177,109 @@ next_line:
 	}
 	get_token();
 	if (strcmp(ucbuffer, "UNITS") == 0) {
+	    skipblanks();
+	    while (!isEol(ch)) {
+		get_token();
+		if (strcmp(ucbuffer, "METERS") == 0) {
+		    pcs->units[Q_LENGTH] =
+			pcs->units[Q_DX] =
+			pcs->units[Q_DY] =
+			pcs->units[Q_DZ] = 1.0;
+		} else if (strcmp(ucbuffer, "FEET") == 0) {
+		    pcs->units[Q_LENGTH] =
+			pcs->units[Q_DX] =
+			pcs->units[Q_DY] =
+			pcs->units[Q_DZ] = METRES_PER_FOOT;
+		} else if (strcmp(ucbuffer, "D") == 0) {
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			if (strcmp(ucbuffer, "METERS") == 0) {
+			    pcs->units[Q_LENGTH] = 1.0;
+			} else if (strcmp(ucbuffer, "FEET") == 0) {
+			    pcs->units[Q_LENGTH] = METRES_PER_FOOT;
+			} else {
+			    // FIXME: Error?
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		} else if (strcmp(ucbuffer, "S") == 0) {
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			if (strcmp(ucbuffer, "METERS") == 0) {
+			    pcs->units[Q_DX] =
+			    pcs->units[Q_DY] =
+			    pcs->units[Q_DZ] = 1.0;
+			} else if (strcmp(ucbuffer, "FEET") == 0) {
+			    pcs->units[Q_DX] =
+			    pcs->units[Q_DY] =
+			    pcs->units[Q_DZ] = METRES_PER_FOOT;
+			} else {
+			    // FIXME: Error?
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		} else if (strcmp(ucbuffer, "FEET") == 0) {
+		    pcs->units[Q_LENGTH] =
+			pcs->units[Q_DX] =
+			pcs->units[Q_DY] =
+			pcs->units[Q_DZ] = METRES_PER_FOOT;
+		} else if (strcmp(ucbuffer, "ORDER") == 0) {
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			int r = 2;
+			for (const char *p = ucbuffer; *p && r < 5; ++p) {
+			    switch (*p) {
+			      case 'D':
+				data_order[r++] = WallsSRVTape;
+				break;
+			      case 'A':
+				data_order[r++] = WallsSRVComp;
+				break;
+			      case 'V':
+				data_order[r++] = WallsSRVClino;
+				break;
+			      case 'E':
+				data_order[r++] = Dx;
+				break;
+			      case 'N':
+				data_order[r++] = Dy;
+				break;
+			      case 'U':
+				data_order[r++] = Dz;
+				break;
+			      default:
+				// FIXME: Error?
+				;
+			    }
+			}
+			data_order[r] = IgnoreAll;
+		    } else {
+			// FIXME: Error?
+		    }
+		} else if (strcmp(ucbuffer, "RECT") == 0) {
+		    pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
+		} else if (strcmp(ucbuffer, "CT") == 0) {
+		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
+		} else if (strcmp(ucbuffer, "PREFIX") == 0) {
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			(void)read_prefix(PFX_SURVEY);
+			// FIXME: Handle.
+		    } else {
+			// FIXME: Anything to do?
+		    }
+		} else {
+		    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+		}
     //pcs->declination = HUGE_REAL;
 //	if (pcs->dec_filename == NULL) {
 //	    pcs->z[Q_DECLINATION] = -read_numeric(false);
@@ -1190,8 +1295,9 @@ next_line:
 
 	    /* Original "Inclination Units" were "Depth Gauge". */
 	    //pcs->recorded_style = STYLE_DIVING;
-	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 	    //skipline();
+		skipblanks();
+	    }
 	} else if (strcmp(ucbuffer, "DATE") == 0) {
 	    int year, month, day;
 	    read_walls_srv_date(&year, &month, &day);
@@ -2204,6 +2310,21 @@ data_cartesian(void)
        case Dx: case Dy: case Dz:
 	 read_reading(*ordering, false);
 	 break;
+       case WallsSRVFr:
+	  // Walls SRV is always From then To.
+	  first_stn = Fr;
+	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
+	  skipblanks();
+	  if (ch == '*' || ch == '<') {
+	      // Isolated LRUD.  Ignore for now.
+	      skipline();
+	      process_eol();
+	      return;
+	  }
+	  break;
+       case WallsSRVTo:
+	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
+	  break;
        case Ignore:
 	 skipword(); break;
        case IgnoreAllAndNewLine:
