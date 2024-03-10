@@ -2731,6 +2731,7 @@ data_normal(void)
 	      LOC(Clino) = ftell(file.fh);
 	      VAL(Clino) = read_numeric_multi(true, false, &n_readings);
 	      if (VAL(Clino) == HUGE_REAL) {
+		  VAL(Clino) = 0.0;
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
 		  }
@@ -2747,6 +2748,7 @@ data_normal(void)
 	      LOC(BackClino) = ftell(file.fh);
 	      VAL(BackClino) = read_numeric_multi(true, false, &n_readings);
 	      if (VAL(BackClino) == HUGE_REAL) {
+		  VAL(BackClino) = 0.0;
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
 		  }
