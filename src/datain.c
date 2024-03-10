@@ -1289,6 +1289,16 @@ next_line:
 		    } else {
 			// FIXME: Anything to do?
 		    }
+		} else if (strcmp(ucbuffer, "LRUD") == 0) {
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			(void)read_prefix(PFX_SURVEY);
+			// We currently ignore LRUD, so can also ignore the
+			// settings for it.
+		    } else {
+			// FIXME: Anything to do?
+		    }
 		} else {
 		    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 		}
