@@ -1448,8 +1448,11 @@ next_line:
 	} else if (strcmp(ucbuffer, "NOTE") == 0) {
 	    // A text note attached to a station - ignore for now.
 	    skipline();
-	} else if (strcmp(ucbuffer, "SEG") == 0) {
-	    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+	} else if (strcmp(ucbuffer, "SEG") == 0 ||
+		   strcmp(ucbuffer, "S") == 0 ||
+		   strcmp(ucbuffer, "SEGMENT") == 0) {
+	    // "Segments are optional and have no affect on the compilation of
+	    // survey data" so ignore for now.
 	    skipline();
 	} else {
 	    // FIXME it's a "directive" in Walls-speak.
