@@ -1415,6 +1415,14 @@ next_line:
 		    get_token();
 		    if (strcmp(ucbuffer, "ENTRANCE") == 0) {
 			station_flags |= BIT(SFLAGS_ENTRANCE);
+		    } else if (strcmp(ucbuffer, "LOWER") == 0 ||
+			strcmp(ucbuffer, "SPRING") == 0 ||
+			strcmp(ucbuffer, "SUMP") == 0 ||
+			strcmp(ucbuffer, "UPPER") == 0) {
+			// Walls flags seem to be arbitrary strings.  To
+			// capture ones we can usefully map based on real-world
+			// usage, for now we report unknown ones and maintain a
+			// list of those we've seen but don't have a use for.
 		    } else {
 			if (!printed) {
 			    printed = true;
