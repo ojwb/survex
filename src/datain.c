@@ -1264,6 +1264,18 @@ next_line:
 		    } else {
 			// FIXME: Error?
 		    }
+		} else if (strcmp(ucbuffer, "DECL") == 0) {
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+    //pcs->declination = HUGE_REAL;
+//	if (pcs->dec_filename == NULL) {
+			pcs->z[Q_DECLINATION] = -read_numeric(false);
+			pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+//	} else {
+//	    (void)read_numeric(false);
+//	}
+		    }
 		} else if (strcmp(ucbuffer, "RECT") == 0) {
 		    pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
 		} else if (strcmp(ucbuffer, "CT") == 0) {
@@ -1280,15 +1292,6 @@ next_line:
 		} else {
 		    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 		}
-    //pcs->declination = HUGE_REAL;
-//	if (pcs->dec_filename == NULL) {
-//	    pcs->z[Q_DECLINATION] = -read_numeric(false);
-//	    pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
-//	} else {
-//	    (void)read_numeric(false);
-//	}
-
-
 //		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
 //		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 //		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);

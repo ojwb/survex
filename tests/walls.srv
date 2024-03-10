@@ -14,12 +14,12 @@ X1 X2 5 12 13
 #]
 #s bar
 U0 *1,2,3,4*
-#units feet
+#units feet decl=0.0
 #date 1972/02/29
 :U1 U2 10.1m N79E/S79W -26/26 *15 25 4 3*
-#units meters
+#units meters decl=-3
 #Date 8/04/1973
-U2 U3 33.14f N79E/-- -26/ *15 25 4 3*
+U2 U3 33.14f N82E/-- -26/ *15 25 4 3*
 U3 <1 2 3 4>
 #segment splays
 U3 - 1.0 --- +90
