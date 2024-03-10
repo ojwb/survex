@@ -1077,6 +1077,9 @@ data_file_walls_srv(void)
     t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
     t['\n'] |= SPECIAL_EOL;
     t['\r'] |= SPECIAL_EOL;
+    t['-'] |= SPECIAL_OMIT;
+    t['-'] |= SPECIAL_ANON;
+    t[':'] |= SPECIAL_SEPARATOR;
     t['.'] |= SPECIAL_DECIMAL;
     t['-'] |= SPECIAL_MINUS;
     t['+'] |= SPECIAL_PLUS;
@@ -1103,12 +1106,11 @@ data_file_walls_srv(void)
     default_calib(pcs);
     // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
 
-    pcs->dash_for_anon_wall_station = true;
     pcs->recorded_style = pcs->style = STYLE_NORMAL;
     pcs->infer = BIT(INFER_EQUATES) | // FIXME?
 		 BIT(INFER_EQUATES_SELF_OK) | // FIXME?
 		 BIT(INFER_EXPORTS) | // FIXME?
-		 BIT(INFER_PLUMBS); // FIXME?
+		 BIT(INFER_PLUMBS);
     /* We need to update separator_map so we don't pick a separator character
      * which occurs in a station name.  However Compass DAT allows everything
      * >= ASCII char 33 except 127 in station names so if we just added all
@@ -2515,12 +2517,13 @@ data_normal(void)
 	  WID(Tape) = ftell(file.fh) - LOC(Tape);
 	  VAR(Tape) = var(Q_LENGTH);
 	  if (VAL(Tape) == HUGE_REAL) {
-	      if (!isOmit(ch)) {
+	      // Walls expects 2 or more - for an omitted value.
+	      if (ch != '-' || nextch() != '-') {
 		  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 		  /* Avoid also warning about omitted tape reading. */
 		  VAL(Tape) = 0;
 	      } else {
-		  nextch();
+		  while (nextch() == '-') { }
 	      }
 	  } else {
 	      if (VAL(Tape) < (real)0.0)
@@ -2541,6 +2544,12 @@ data_normal(void)
 	      bool quadrants = isalpha(ch);
 	      LOC(Comp) = ftell(file.fh);
 	      VAL(Comp) = read_bearing_multi_or_omit(quadrants, NULL);
+	      if (VAL(Comp) == HUGE_REAL) {
+		  if (ch != '-') {
+		      // FIXME: Walls expects two or more '-' for an omitted reading.
+		  }
+		  while (ch == '-') nextch();
+	      }
 	      WID(Comp) = ftell(file.fh) - LOC(Comp);
 	      VAR(Comp) = var(Q_BEARING);
 	  } else {
@@ -2550,6 +2559,12 @@ data_normal(void)
 	      bool quadrants = isalpha(ch);
 	      LOC(BackComp) = ftell(file.fh);
 	      VAL(BackComp) = read_bearing_multi_or_omit(quadrants, NULL);
+	      if (VAL(BackComp) == HUGE_REAL) {
+		  if (ch != '-') {
+		      // FIXME: Walls expects two or more '-' for an omitted reading.
+		  }
+		  while (ch == '-') nextch();
+	      }
 	      WID(BackComp) = ftell(file.fh) - LOC(BackComp);
 	      VAR(BackComp) = var(Q_BACKBEARING);
 	  } else {
@@ -2560,13 +2575,33 @@ data_normal(void)
        case WallsSRVClino: {
 	  skipblanks();
 	  if (ch != '/') {
-	      read_reading(Clino, false);
+	      int n_readings;
+	      LOC(Clino) = ftell(file.fh);
+	      VAL(Clino) = read_numeric_multi(true, false, &n_readings);
+	      if (VAL(Clino) == HUGE_REAL) {
+		  if (ch != '-') {
+		      // FIXME: Walls expects two or more '-' for an omitted reading.
+		  }
+		  while (ch == '-') nextch();
+	      }
+	      WID(Clino) = ftell(file.fh) - LOC(Clino);
+	      VAR(Clino) = var(Q_BEARING);
 	      ctype = CTYPE_READING;
 	  } else {
 	      VAL(Clino) = HUGE_REAL;
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
-	      read_reading(BackClino, false);
+	      int n_readings;
+	      LOC(BackClino) = ftell(file.fh);
+	      VAL(BackClino) = read_numeric_multi(true, false, &n_readings);
+	      if (VAL(BackClino) == HUGE_REAL) {
+		  if (ch != '-') {
+		      // FIXME: Walls expects two or more '-' for an omitted reading.
+		  }
+		  while (ch == '-') nextch();
+	      }
+	      WID(BackClino) = ftell(file.fh) - LOC(BackClino);
+	      VAR(BackClino) = var(Q_BACKBEARING);
 	      backctype = CTYPE_READING;
 	  } else {
 	      VAL(BackClino) = HUGE_REAL;
