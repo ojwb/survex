@@ -81,6 +81,9 @@ read_prefix(unsigned pfx_flags)
    filepos fp_firstsep;
 
    skipblanks();
+   if ((pfx_flags & PFX_WALLS_SRV)) {
+       if (isSep(ch)) nextch();
+   }
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!(pfx_flags & PFX_ALLOW_ROOT)) {

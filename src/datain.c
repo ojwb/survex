@@ -1130,7 +1130,7 @@ data_file_walls_srv(void)
 #endif
 
     reading data_order[] = {
-	WallsSRVFr, To, WallsSRVTape, WallsSRVComp, WallsSRVClino,
+	WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
 // FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	IgnoreAll
     };
@@ -1179,7 +1179,7 @@ next_line:
 	    int days = days_since_1900(year, month, day);
 	    pcs->meta->days1 = pcs->meta->days2 = days;
 	} else if (strcmp(ucbuffer, "FIX") == 0) {
-	    prefix *name = read_prefix(PFX_STATION);
+	    prefix *name = read_prefix(PFX_STATION|PFX_WALLS_SRV);
 	    // FIXME: e.g. `#Units order=NEU` can change the order here.
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
@@ -1304,7 +1304,7 @@ next_line:
 		    get_pos(&fp_end);
 		    set_pos(&fp);
 		    while (ch != '/' && ch != '\\') {
-			prefix *name = read_prefix(PFX_STATION);
+			prefix *name = read_prefix(PFX_STATION|PFX_WALLS_SRV);
 			name->sflags |= station_flags;
 			skipblanks();
 		    }
@@ -2502,7 +2502,7 @@ data_normal(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_prefix(PFX_STATION|PFX_ANON);
+	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -2510,6 +2510,9 @@ data_normal(void)
 	      process_eol();
 	      return;
 	  }
+	  break;
+       case WallsSRVTo:
+	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
 	  break;
        case WallsSRVTape:
 	  LOC(Tape) = ftell(file.fh);
