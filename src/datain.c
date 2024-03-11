@@ -1093,6 +1093,8 @@ typedef enum {
     WALLS_UNITS_OPT_PREFIX,
     WALLS_UNITS_OPT_RECT,
     WALLS_UNITS_OPT_S,
+    WALLS_UNITS_OPT_TYPEAB,
+    WALLS_UNITS_OPT_TYPEVB,
     WALLS_UNITS_OPT_UV,
     WALLS_UNITS_OPT_UVH,
     WALLS_UNITS_OPT_UVV,
@@ -1120,6 +1122,8 @@ static const sztok walls_units_opt_tab[] = {
     {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
     {"RECT",	WALLS_UNITS_OPT_RECT},
     {"S",	WALLS_UNITS_OPT_S},
+    {"TYPEAB",	WALLS_UNITS_OPT_TYPEAB},
+    {"TYPEVB",	WALLS_UNITS_OPT_TYPEVB},
     {"UV",	WALLS_UNITS_OPT_UV},
     {"UVH",	WALLS_UNITS_OPT_UVH},
     {"UVV",	WALLS_UNITS_OPT_UVV},
@@ -1556,6 +1560,66 @@ next_line:
 			(void)read_prefix(PFX_SURVEY);
 			// We currently ignore LRUD, so can also ignore the
 			// settings for it.
+		    } else {
+			// FIXME: Anything to do?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_TYPEAB:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			if (ucbuffer[0] == 'N') {
+			    pcs->z[Q_BACKBEARING] = 0.0;
+			} else if (ucbuffer[0] == 'C') {
+			    pcs->z[Q_BACKBEARING] = M_PI;
+			} else {
+			    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+			}
+			nextch();
+			if (ch == ',') {
+			    nextch();
+			    // FIXME: Use threshold value.
+			    (void)read_numeric(false);
+			    nextch();
+			    if (ch == ',') {
+				nextch();
+				if (ch == 'X') {
+				    nextch();
+				    // FIXME: Only use foresight (but check backsight).
+				}
+			    }
+			}
+		    } else {
+			// FIXME: Anything to do?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_TYPEVB:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			if (ucbuffer[0] == 'N') {
+			    pcs->sc[Q_BACKGRADIENT] = 1.0;
+			} else if (ucbuffer[0] == 'C') {
+			    pcs->sc[Q_BACKGRADIENT] = -1.0;
+			} else {
+			    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+			}
+			nextch();
+			if (ch == ',') {
+			    nextch();
+			    // FIXME: Use threshold value.
+			    (void)read_numeric(false);
+			    nextch();
+			    if (ch == ',') {
+				nextch();
+				if (ch == 'X') {
+				    nextch();
+				    // FIXME: Only use foresight (but check backsight).
+				}
+			    }
+			}
 		    } else {
 			// FIXME: Anything to do?
 		    }
