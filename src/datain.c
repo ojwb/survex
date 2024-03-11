@@ -1077,6 +1077,12 @@ typedef enum {
     WALLS_UNITS_OPT_D,
     WALLS_UNITS_OPT_DECL,
     WALLS_UNITS_OPT_FEET,
+    WALLS_UNITS_OPT_INCA,
+    WALLS_UNITS_OPT_INCAB,
+    WALLS_UNITS_OPT_INCD,
+    WALLS_UNITS_OPT_INCH,
+    WALLS_UNITS_OPT_INCV,
+    WALLS_UNITS_OPT_INCVB,
     WALLS_UNITS_OPT_LRUD,
     WALLS_UNITS_OPT_METERS,
     WALLS_UNITS_OPT_ORDER,
@@ -1091,6 +1097,12 @@ static const sztok walls_units_opt_tab[] = {
     {"D",	WALLS_UNITS_OPT_D},
     {"DECL",	WALLS_UNITS_OPT_DECL},
     {"FEET",	WALLS_UNITS_OPT_FEET},
+    {"INCA",	WALLS_UNITS_OPT_INCA},
+    {"INCAB",	WALLS_UNITS_OPT_INCAB},
+    {"INCD",	WALLS_UNITS_OPT_INCD},
+    {"INCH",	WALLS_UNITS_OPT_INCH},
+    {"INCV",	WALLS_UNITS_OPT_INCV},
+    {"INCVB",	WALLS_UNITS_OPT_INCVB},
     {"LRUD",	WALLS_UNITS_OPT_LRUD},
     {"METERS",	WALLS_UNITS_OPT_METERS},
     {"ORDER",	WALLS_UNITS_OPT_ORDER},
@@ -1236,6 +1248,9 @@ next_line:
 	    skipblanks();
 	    while (!isEol(ch)) {
 		get_token();
+		if (!buffer[0] && isComm(ch)) {
+		    break;
+		}
 		switch (match_tok(walls_units_opt_tab,
 				  TABSIZE(walls_units_opt_tab))) {
 		  case WALLS_UNITS_OPT_METERS:
@@ -1333,6 +1348,56 @@ next_line:
 //	} else {
 //	    (void)read_numeric(false);
 //	}
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_INCA:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			pcs->z[Q_BEARING] = -read_numeric(false);
+			// FIXME: Handle angle units
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_INCAB:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			pcs->z[Q_BACKBEARING] = -read_numeric(false);
+			// FIXME: Handle angle units
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_INCD:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			pcs->z[Q_LENGTH] = -read_numeric(false);
+			// FIXME: Handle length units
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_INCH:
+		    skipblanks();
+		    if (ch == '=') {
+			// FIXME: Actually apply this correction.
+			compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+			nextch();
+			(void)read_numeric(false);
+			// FIXME: Handle length units
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_INCV:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			pcs->z[Q_GRADIENT] = -read_numeric(false);
+			// FIXME: Handle angle units
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_INCVB:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			pcs->z[Q_BACKGRADIENT] = -read_numeric(false);
+			// FIXME: Handle angle units
 		    }
 		    break;
 		  case WALLS_UNITS_OPT_RECT:
