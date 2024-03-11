@@ -1064,12 +1064,16 @@ static const sztok walls_cmd_tab[] = {
     {"DATE",	WALLS_CMD_DATE},
     {"F",	WALLS_CMD_FLAG}, // Abbreviated form.
     {"FIX",	WALLS_CMD_FIX},
+    {"F",	WALLS_CMD_FLAG}, // Abbreviated form.
     {"FLAG",	WALLS_CMD_FLAG},
+    {"N",	WALLS_CMD_NOTE}, // Abbreviated form.
     {"NOTE",	WALLS_CMD_NOTE},
+    {"P",	WALLS_CMD_PREFIX}, // Abbreviated form.
     {"PREFIX",	WALLS_CMD_PREFIX},
     {"S",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEG",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEGMENT",	WALLS_CMD_SEGMENT},
+    {"U",	WALLS_CMD_UNITS}, // Abbreviated form.
     {"UNITS",	WALLS_CMD_UNITS},
     {NULL,	WALLS_CMD_NULL}
 };
