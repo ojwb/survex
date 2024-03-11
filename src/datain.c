@@ -1509,6 +1509,10 @@ next_line:
 			    printf("*** Unknown flags:");
 			}
 			printf(" %s", buffer);
+			if (!buffer[0]) {
+			    printf("%c", ch);
+			    nextch();
+			}
 		    }
 		}
 		if (printed) printf("\n");
