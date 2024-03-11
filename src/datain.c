@@ -1077,6 +1077,7 @@ static const sztok walls_cmd_tab[] = {
 typedef enum {
     WALLS_UNITS_OPT_A,
     WALLS_UNITS_OPT_AB,
+    WALLS_UNITS_OPT_CASE,
     WALLS_UNITS_OPT_CT,
     WALLS_UNITS_OPT_D,
     WALLS_UNITS_OPT_DECL,
@@ -1093,6 +1094,7 @@ typedef enum {
     WALLS_UNITS_OPT_PREFIX,
     WALLS_UNITS_OPT_RECT,
     WALLS_UNITS_OPT_S,
+    WALLS_UNITS_OPT_TAPE,
     WALLS_UNITS_OPT_TYPEAB,
     WALLS_UNITS_OPT_TYPEVB,
     WALLS_UNITS_OPT_UV,
@@ -1104,12 +1106,16 @@ typedef enum {
 } walls_units_opt;
 
 static const sztok walls_units_opt_tab[] = {
+    // FIXME: $name=
     {"A",	WALLS_UNITS_OPT_A},
     {"AB",	WALLS_UNITS_OPT_AB},
+    {"CASE",	WALLS_UNITS_OPT_CASE},
     {"CT",	WALLS_UNITS_OPT_CT},
     {"D",	WALLS_UNITS_OPT_D},
     {"DECL",	WALLS_UNITS_OPT_DECL},
     {"FEET",	WALLS_UNITS_OPT_FEET},
+    // FIXME: FLAG=, FLAG
+    // FIXME: GRID=
     {"INCA",	WALLS_UNITS_OPT_INCA},
     {"INCAB",	WALLS_UNITS_OPT_INCAB},
     {"INCD",	WALLS_UNITS_OPT_INCD},
@@ -1118,10 +1124,19 @@ static const sztok walls_units_opt_tab[] = {
     {"INCVB",	WALLS_UNITS_OPT_INCVB},
     {"LRUD",	WALLS_UNITS_OPT_LRUD},
     {"METERS",	WALLS_UNITS_OPT_METERS},
+    // FIXME: NOTE=
+    {"O",	WALLS_UNITS_OPT_ORDER}, // Abbreviated form.
     {"ORDER",	WALLS_UNITS_OPT_ORDER},
     {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
+    {"PREFIX1",	WALLS_UNITS_OPT_PREFIX}, // Alias.
+    // FIXME: PREFIX2=
+    // FIXME: PREFIX3=
     {"RECT",	WALLS_UNITS_OPT_RECT},
+    // FIXME: RESET
+    // FIXME: RESTORE
     {"S",	WALLS_UNITS_OPT_S},
+    // FIXME: SAVE
+    {"TAPE",	WALLS_UNITS_OPT_TAPE},
     {"TYPEAB",	WALLS_UNITS_OPT_TYPEAB},
     {"TYPEVB",	WALLS_UNITS_OPT_TYPEVB},
     {"UV",	WALLS_UNITS_OPT_UV},
@@ -1540,6 +1555,32 @@ next_line:
 			pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
 		    }
 		    break;
+		  case WALLS_UNITS_OPT_CASE:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			// FIXME: This isn't quite right as in Walls the case
+			// setting doesn't apply to the prefix part, only the
+			// leaf survey name.
+			switch (ucbuffer[0]) {
+			  case 'L':
+			    pcs->Case = LOWER;
+			    break;
+			  case 'U':
+			    pcs->Case = UPPER;
+			    break;
+			  case 'M':
+			    pcs->Case = OFF;
+			    break;
+			  default:
+			    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+			    break;
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		    break;
 		  case WALLS_UNITS_OPT_CT:
 		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
 		    break;
@@ -1560,6 +1601,16 @@ next_line:
 			(void)read_prefix(PFX_SURVEY);
 			// We currently ignore LRUD, so can also ignore the
 			// settings for it.
+		    } else {
+			// FIXME: Anything to do?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_TAPE:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			/* FIXME: Implement different taping methods? */
 		    } else {
 			// FIXME: Anything to do?
 		    }
