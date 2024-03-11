@@ -81,16 +81,13 @@ read_prefix(unsigned pfx_flags)
    filepos fp_firstsep;
 
    skipblanks();
-   if ((pfx_flags & PFX_WALLS_SRV)) {
-       if (isSep(ch)) nextch();
-   }
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!(pfx_flags & PFX_ALLOW_ROOT)) {
 	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*ROOT is deprecated*/25);
 	 LONGJMP(file.jbSkipLine);
       }
-      if (root_depr_count < 5) {
+      if (!(pfx_flags & PFX_NO_WARN_ROOT) && root_depr_count < 5) {
 	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);

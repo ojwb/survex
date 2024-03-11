@@ -34,8 +34,9 @@ enum {
     PFX_ANON = 32,
     /* */
     PFX_NEW = 64,
-    /* Use Walls SRV prefix rules. */
-    PFX_WALLS_SRV = 128,
+    /* Don't warn about uses of "root". */
+    PFX_NO_WARN_ROOT = 128,
+    PFX_ROOT = PFX_ALLOW_ROOT | PFX_NO_WARN_ROOT,
     /* Read a station? */
     PFX_STATION = 0
 };

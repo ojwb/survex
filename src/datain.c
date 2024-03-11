@@ -1054,6 +1054,7 @@ typedef enum {
     WALLS_CMD_FLAG,
     WALLS_CMD_FIX,
     WALLS_CMD_NOTE,
+    WALLS_CMD_PREFIX,
     WALLS_CMD_SEGMENT,
     WALLS_CMD_UNITS,
     WALLS_CMD_NULL = -1
@@ -1065,6 +1066,7 @@ static const sztok walls_cmd_tab[] = {
     {"FIX",	WALLS_CMD_FIX},
     {"FLAG",	WALLS_CMD_FLAG},
     {"NOTE",	WALLS_CMD_NOTE},
+    {"PREFIX",	WALLS_CMD_PREFIX},
     {"S",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEG",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEGMENT",	WALLS_CMD_SEGMENT},
@@ -1146,7 +1148,7 @@ data_file_walls_srv(void)
     t['\r'] |= SPECIAL_EOL;
     t['-'] |= SPECIAL_OMIT;
     t['-'] |= SPECIAL_ANON;
-    t[':'] |= SPECIAL_SEPARATOR;
+    t[':'] |= SPECIAL_SEPARATOR|SPECIAL_ROOT;
     t['.'] |= SPECIAL_DECIMAL;
     t['-'] |= SPECIAL_MINUS;
     t['+'] |= SPECIAL_PLUS;
@@ -1450,7 +1452,7 @@ next_line:
 	    break;
 	  }
 	  case WALLS_CMD_FIX: {
-	    prefix *name = read_prefix(PFX_STATION|PFX_WALLS_SRV);
+	    prefix *name = read_prefix(PFX_STATION|PFX_ROOT);
 	    // FIXME: e.g. `#Units order=NEU` can change the order here.
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
@@ -1587,7 +1589,7 @@ next_line:
 		    get_pos(&fp_end);
 		    set_pos(&fp);
 		    while (!isWallsSlash(ch)) {
-			prefix *name = read_prefix(PFX_STATION|PFX_WALLS_SRV);
+			prefix *name = read_prefix(PFX_STATION|PFX_ROOT);
 			name->sflags |= station_flags;
 			skipblanks();
 		    }
@@ -1596,6 +1598,10 @@ next_line:
 	    }
 	    break;
 	  }
+	  case WALLS_CMD_PREFIX:
+	    pcs->Prefix = read_prefix(PFX_SURVEY|PFX_ROOT|PFX_OPT);
+	    if (!pcs->Prefix) pcs->Prefix = root;
+	    break;
 	  case WALLS_CMD_NOTE:
 	    // A text note attached to a station - ignore for now.
 	    skipline();
@@ -2458,11 +2464,11 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	 fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
+	 fr = read_prefix(PFX_STATION|PFX_ROOT);
 	 if (first_stn == End) first_stn = Fr;
 	 break;
        case To:
-	 to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
+	 to = read_prefix(PFX_STATION|PFX_ROOT);
 	 if (first_stn == End) first_stn = To;
 	 break;
        case Station:
@@ -2476,7 +2482,7 @@ data_cartesian(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
+	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -2486,7 +2492,7 @@ data_cartesian(void)
 	  }
 	  break;
        case WallsSRVTo:
-	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
+	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
 	  break;
        case Ignore:
 	 skipword(); break;
@@ -2806,7 +2812,7 @@ data_normal(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
+	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -2816,7 +2822,7 @@ data_normal(void)
 	  }
 	  break;
        case WallsSRVTo:
-	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_WALLS_SRV);
+	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
 	  break;
        case WallsSRVTape:
 	  LOC(Tape) = ftell(file.fh);
