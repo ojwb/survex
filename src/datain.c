@@ -1049,6 +1049,57 @@ update_proj_str:
     osfree(path);
 }
 
+typedef enum {
+    WALLS_CMD_DATE,
+    WALLS_CMD_FLAG,
+    WALLS_CMD_FIX,
+    WALLS_CMD_NOTE,
+    WALLS_CMD_SEGMENT,
+    WALLS_CMD_UNITS,
+    WALLS_CMD_NULL = -1
+} walls_cmd;
+
+static const sztok walls_cmd_tab[] = {
+    {"DATE",	WALLS_CMD_DATE},
+    {"F",	WALLS_CMD_FLAG}, // Abbreviated form.
+    {"FIX",	WALLS_CMD_FIX},
+    {"FLAG",	WALLS_CMD_FLAG},
+    {"NOTE",	WALLS_CMD_NOTE},
+    {"S",	WALLS_CMD_SEGMENT}, // Abbreviated form.
+    {"SEG",	WALLS_CMD_SEGMENT}, // Abbreviated form.
+    {"SEGMENT",	WALLS_CMD_SEGMENT},
+    {"UNITS",	WALLS_CMD_UNITS},
+    {NULL,	WALLS_CMD_NULL}
+};
+
+typedef enum {
+    WALLS_UNITS_OPT_CT,
+    WALLS_UNITS_OPT_D,
+    WALLS_UNITS_OPT_DECL,
+    WALLS_UNITS_OPT_FEET,
+    WALLS_UNITS_OPT_LRUD,
+    WALLS_UNITS_OPT_METERS,
+    WALLS_UNITS_OPT_ORDER,
+    WALLS_UNITS_OPT_PREFIX,
+    WALLS_UNITS_OPT_RECT,
+    WALLS_UNITS_OPT_S,
+    WALLS_UNITS_OPT_NULL = -1
+} walls_units_opt;
+
+static const sztok walls_units_opt_tab[] = {
+    {"CT",	WALLS_UNITS_OPT_CT},
+    {"D",	WALLS_UNITS_OPT_D},
+    {"DECL",	WALLS_UNITS_OPT_DECL},
+    {"FEET",	WALLS_UNITS_OPT_FEET},
+    {"LRUD",	WALLS_UNITS_OPT_LRUD},
+    {"METERS",	WALLS_UNITS_OPT_METERS},
+    {"ORDER",	WALLS_UNITS_OPT_ORDER},
+    {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
+    {"RECT",	WALLS_UNITS_OPT_RECT},
+    {"S",	WALLS_UNITS_OPT_S},
+    {NULL,	WALLS_UNITS_OPT_NULL}
+};
+
 static void
 data_file_walls_srv(void)
 {
@@ -1176,21 +1227,26 @@ next_line:
 	    // FIXME Report excess `#]`.
 	}
 	get_token();
-	if (strcmp(ucbuffer, "UNITS") == 0) {
+	switch (match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab))) {
+	  case WALLS_CMD_UNITS:
 	    skipblanks();
 	    while (!isEol(ch)) {
 		get_token();
-		if (strcmp(ucbuffer, "METERS") == 0) {
+		switch (match_tok(walls_units_opt_tab,
+				  TABSIZE(walls_units_opt_tab))) {
+		  case WALLS_UNITS_OPT_METERS:
 		    pcs->units[Q_LENGTH] =
 			pcs->units[Q_DX] =
 			pcs->units[Q_DY] =
 			pcs->units[Q_DZ] = 1.0;
-		} else if (strcmp(ucbuffer, "FEET") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_FEET:
 		    pcs->units[Q_LENGTH] =
 			pcs->units[Q_DX] =
 			pcs->units[Q_DY] =
 			pcs->units[Q_DZ] = METRES_PER_FOOT;
-		} else if (strcmp(ucbuffer, "D") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_D:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1205,7 +1261,8 @@ next_line:
 		    } else {
 			// FIXME: Error?
 		    }
-		} else if (strcmp(ucbuffer, "S") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_S:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1224,12 +1281,8 @@ next_line:
 		    } else {
 			// FIXME: Error?
 		    }
-		} else if (strcmp(ucbuffer, "FEET") == 0) {
-		    pcs->units[Q_LENGTH] =
-			pcs->units[Q_DX] =
-			pcs->units[Q_DY] =
-			pcs->units[Q_DZ] = METRES_PER_FOOT;
-		} else if (strcmp(ucbuffer, "ORDER") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_ORDER:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1264,7 +1317,8 @@ next_line:
 		    } else {
 			// FIXME: Error?
 		    }
-		} else if (strcmp(ucbuffer, "DECL") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_DECL:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1276,11 +1330,14 @@ next_line:
 //	    (void)read_numeric(false);
 //	}
 		    }
-		} else if (strcmp(ucbuffer, "RECT") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_RECT:
 		    pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
-		} else if (strcmp(ucbuffer, "CT") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_CT:
 		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
-		} else if (strcmp(ucbuffer, "PREFIX") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_PREFIX:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1289,7 +1346,8 @@ next_line:
 		    } else {
 			// FIXME: Anything to do?
 		    }
-		} else if (strcmp(ucbuffer, "LRUD") == 0) {
+		    break;
+		  case WALLS_UNITS_OPT_LRUD:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1299,8 +1357,10 @@ next_line:
 		    } else {
 			// FIXME: Anything to do?
 		    }
-		} else {
+		    break;
+		  case WALLS_UNITS_OPT_NULL:
 		    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+		    break;
 		}
 //		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
 //		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
@@ -1311,13 +1371,16 @@ next_line:
 	    //skipline();
 		skipblanks();
 	    }
-	} else if (strcmp(ucbuffer, "DATE") == 0) {
+	    break;
+	  case WALLS_CMD_DATE: {
 	    int year, month, day;
 	    read_walls_srv_date(&year, &month, &day);
 	    copy_on_write_meta(pcs);
 	    int days = days_since_1900(year, month, day);
 	    pcs->meta->days1 = pcs->meta->days2 = days;
-	} else if (strcmp(ucbuffer, "FIX") == 0) {
+	    break;
+	  }
+	  case WALLS_CMD_FIX: {
 	    prefix *name = read_prefix(PFX_STATION|PFX_WALLS_SRV);
 	    // FIXME: e.g. `#Units order=NEU` can change the order here.
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
@@ -1392,7 +1455,9 @@ next_line:
 		// Station note - ignore for now.
 		skipline();
 	    }
-	} else if (strcmp(ucbuffer, "F") == 0 || strcmp(ucbuffer, "FLAG") == 0) {
+	    break;
+	  }
+	  case WALLS_CMD_FLAG: {
 	    // The flag comes after a list of stations, so to avoid having to
 	    // store a list of the stations we note the position, scan ahead
 	    // and parse the flag, then come back and actually parse the
@@ -1458,18 +1523,21 @@ next_line:
 		    set_pos(&fp_end);
 		}
 	    }
-	} else if (strcmp(ucbuffer, "NOTE") == 0) {
+	    break;
+	  }
+	  case WALLS_CMD_NOTE:
 	    // A text note attached to a station - ignore for now.
 	    skipline();
-	} else if (strcmp(ucbuffer, "SEG") == 0 ||
-		   strcmp(ucbuffer, "S") == 0 ||
-		   strcmp(ucbuffer, "SEGMENT") == 0) {
+	    break;
+	  case WALLS_CMD_SEGMENT:
 	    // "Segments are optional and have no affect on the compilation of
 	    // survey data" so ignore for now.
 	    skipline();
-	} else {
+	    break;
+	  case WALLS_CMD_NULL:
 	    // FIXME it's a "directive" in Walls-speak.
 	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+	    break;
 	}
 	process_eol();
     }
