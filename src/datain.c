@@ -1757,6 +1757,15 @@ next_line:
 	    copy_on_write_meta(pcs);
 	    int days = days_since_1900(year, month, day);
 	    pcs->meta->days1 = pcs->meta->days2 = days;
+	    skipblanks();
+	    if (!isEol(ch) && !isComm(ch)) {
+		// Walls seems to ignore anything after the date so make this a
+		// warning not an error so we can process existing Walls
+		// datasets (e.g. the Mammoth dataset reportedly has `#Date
+		// 1978-07-01\`.
+		compile_diagnostic(DIAG_WARN|DIAG_COL, /*End of line not blank*/15);
+		skipline();
+	    }
 	    break;
 	  }
 	  case WALLS_CMD_FIX: {
