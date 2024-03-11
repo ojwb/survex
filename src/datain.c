@@ -1228,6 +1228,9 @@ next_line:
 	    } else if (pcs->style == STYLE_NORMAL) {
 		data_normal();
 	    } else {
+		// Set up Dz in case it's omitted.
+		VAL(Dz) = 0.0;
+		VAR(Dz) = 10.0;
 		data_cartesian();
 	    }
 	    continue;
