@@ -26,6 +26,7 @@
 #include <errno.h>
 #include <limits.h>
 #include <locale.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +40,6 @@
 # define INT32_T int32_t
 # define UINT32_T uint32_t
 # define SNPRINTF snprintf
-# define SNPRINTF_2ARGS(BUF, LEN) BUF, LEN
 # include "debug.h"
 # include "filelist.h"
 # include "filename.h"
@@ -63,15 +63,21 @@
 #   define UINT32_T unsigned long
 #  endif
 # endif
-# if defined HAVE_SNPRINTF || \
+# if 0 /*defined HAVE_SNPRINTF || \
      (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
-     (defined __cplusplus && __cplusplus >= 201103L)
+     (defined __cplusplus && __cplusplus >= 201103L) */
 #  define SNPRINTF snprintf
-#  define SNPRINTF_2ARGS(BUF, LEN) BUF, LEN
 # else
-/* The buffer passed should always be large enough. */
-#  define SNPRINTF sprintf
-#  define SNPRINTF_2ARGS(BUF, LEN) BUF,
+#  define SNPRINTF my_snprintf
+static int my_snprintf(char *s, size_t size, const char *format, ...) {
+    int result;
+    va_list ap;
+    va_start(ap, format);
+    (void)size; /* The buffer passed should always be large enough. */
+    result = vsprintf(s, format, ap);
+    va_end(ap);
+    return result;
+}
 # endif
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
@@ -666,7 +672,7 @@ compass_plt_open(img *pimg)
 		    if (!pimg->cs) {
 			goto out_of_memory_error;
 		    }
-		    SNPRINTF(SNPRINTF_2ARGS(pimg->cs, len), template, value);
+		    SNPRINTF(pimg->cs, len, template, value);
 		}
 	    }
 
@@ -1334,7 +1340,7 @@ v03d:
 			   /* There are at least 45 bytes (see memcmp above)
 			    * which is ample for EPSG: plus an integer.
 			    */
-			   SNPRINTF(SNPRINTF_2ARGS(cs, 45), "EPSG:%d", n);
+			   SNPRINTF(cs, 45, "EPSG:%d", n);
 		       }
 		   } else if (memcmp(p, "merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null", 89) == 0) {
 		       p = p + 89;
@@ -3612,7 +3618,7 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
 	    img_errno = IMG_OUTOFMEMORY;
 	    return NULL;
 	}
-	SNPRINTF(SNPRINTF_2ARGS(proj_str, 11), "EPSG:%d", epsg_code);
+	SNPRINTF(proj_str, 11, "EPSG:%d", epsg_code);
 	return proj_str;
     }
 
@@ -3630,7 +3636,7 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
 	    img_errno = IMG_OUTOFMEMORY;
 	    return NULL;
 	}
-	SNPRINTF(SNPRINTF_2ARGS(proj_str, len),
+	SNPRINTF(proj_str, len,
 		 "+proj=utm +zone=%d %s+datum=%s +units=m +no_defs +type=crs",
 		 utm_zone, south, proj4_datum);
 	return proj_str;
