@@ -1075,6 +1075,8 @@ static const sztok walls_cmd_tab[] = {
 };
 
 typedef enum {
+    WALLS_UNITS_OPT_A,
+    WALLS_UNITS_OPT_AB,
     WALLS_UNITS_OPT_CT,
     WALLS_UNITS_OPT_D,
     WALLS_UNITS_OPT_DECL,
@@ -1091,10 +1093,17 @@ typedef enum {
     WALLS_UNITS_OPT_PREFIX,
     WALLS_UNITS_OPT_RECT,
     WALLS_UNITS_OPT_S,
+    WALLS_UNITS_OPT_UV,
+    WALLS_UNITS_OPT_UVH,
+    WALLS_UNITS_OPT_UVV,
+    WALLS_UNITS_OPT_V,
+    WALLS_UNITS_OPT_VB,
     WALLS_UNITS_OPT_NULL = -1
 } walls_units_opt;
 
 static const sztok walls_units_opt_tab[] = {
+    {"A",	WALLS_UNITS_OPT_A},
+    {"AB",	WALLS_UNITS_OPT_AB},
     {"CT",	WALLS_UNITS_OPT_CT},
     {"D",	WALLS_UNITS_OPT_D},
     {"DECL",	WALLS_UNITS_OPT_DECL},
@@ -1111,6 +1120,11 @@ static const sztok walls_units_opt_tab[] = {
     {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
     {"RECT",	WALLS_UNITS_OPT_RECT},
     {"S",	WALLS_UNITS_OPT_S},
+    {"UV",	WALLS_UNITS_OPT_UV},
+    {"UVH",	WALLS_UNITS_OPT_UVH},
+    {"UVV",	WALLS_UNITS_OPT_UVV},
+    {"V",	WALLS_UNITS_OPT_V},
+    {"VB",	WALLS_UNITS_OPT_VB},
     {NULL,	WALLS_UNITS_OPT_NULL}
 };
 
@@ -1283,6 +1297,102 @@ next_line:
 			// FIXME: Error?
 		    }
 		    break;
+		  case WALLS_UNITS_OPT_A:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			if (strcmp(ucbuffer, "DEGREES") == 0) {
+			    pcs->units[Q_BEARING] = M_PI / 180.0;
+			} else if (strcmp(ucbuffer, "GRADS") == 0) {
+			    pcs->units[Q_BEARING] = M_PI / 200.0;
+			} else if (strcmp(ucbuffer, "MILS") == 0 ||
+				   strcmp(ucbuffer, "MILLS") == 0) {
+			    // Only MILS seems to be in the docs, but MILLS is
+			    // used by the "Kaua North Maze" sample data that
+			    // comes with Walls.
+			    pcs->units[Q_BEARING] = M_PI / 3200.0;
+			} else {
+			    // FIXME: Error?
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_AB:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			if (strcmp(ucbuffer, "DEGREES") == 0) {
+			    pcs->units[Q_BACKBEARING] = M_PI / 180.0;
+			} else if (strcmp(ucbuffer, "GRADS") == 0) {
+			    pcs->units[Q_BACKBEARING] = M_PI / 200.0;
+			} else if (strcmp(ucbuffer, "MILS") == 0 ||
+				   strcmp(ucbuffer, "MILLS") == 0) {
+			    // Only MILS seems to be in the docs, but MILLS is
+			    // used by the "Kaua North Maze" sample data that
+			    // comes with Walls.
+			    pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
+			} else {
+			    // FIXME: Error?
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_V:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			pcs->f_clino_percent = false;
+			if (strcmp(ucbuffer, "DEGREES") == 0) {
+			    pcs->units[Q_GRADIENT] = M_PI / 180.0;
+			} else if (strcmp(ucbuffer, "GRADS") == 0) {
+			    pcs->units[Q_GRADIENT] = M_PI / 200.0;
+			} else if (strcmp(ucbuffer, "MILS") == 0 ||
+				   strcmp(ucbuffer, "MILLS") == 0) {
+			    // Only MILS seems to be in the docs, but MILLS is
+			    // used by the "Kaua North Maze" sample data that
+			    // comes with Walls.
+			    pcs->units[Q_GRADIENT] = M_PI / 3200.0;
+			} else if (strcmp(ucbuffer, "PERCENT") == 0) {
+			    pcs->units[Q_GRADIENT] = 0.01;
+			    pcs->f_clino_percent = true;
+			} else {
+			    // FIXME: Error?
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_VB:
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			get_token();
+			pcs->f_backclino_percent = false;
+			if (strcmp(ucbuffer, "DEGREES") == 0) {
+			    pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
+			} else if (strcmp(ucbuffer, "GRADS") == 0) {
+			    pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
+			} else if (strcmp(ucbuffer, "MILS") == 0 ||
+				   strcmp(ucbuffer, "MILLS") == 0) {
+			    // Only MILS seems to be in the docs, but MILLS is
+			    // used by the "Kaua North Maze" sample data that
+			    // comes with Walls.
+			    pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
+			} else if (strcmp(ucbuffer, "PERCENT") == 0) {
+			    pcs->units[Q_BACKGRADIENT] = 0.01;
+			    pcs->f_backclino_percent = true;
+			} else {
+			    // FIXME: Error?
+			}
+		    } else {
+			// FIXME: Error?
+		    }
+		    break;
 		  case WALLS_UNITS_OPT_S:
 		    skipblanks();
 		    if (ch == '=') {
@@ -1304,6 +1414,13 @@ next_line:
 		    }
 		    break;
 		  case WALLS_UNITS_OPT_ORDER:
+		    // FIXME: Only valid combinations are:
+		    //
+		    // DAV DVA ADV AVD VDA VAD DA AD
+		    // ENU EUN NEU NUE UEN UNE EN NE
+		    //
+		    // We should vet these, or could just have pre-canned order
+		    // arrays, with the right one selected by a token lookup.
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
@@ -1403,7 +1520,18 @@ next_line:
 		    }
 		    break;
 		  case WALLS_UNITS_OPT_RECT:
-		    pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
+		    // There are two different RECT options, one with a
+		    // parameter and one without!
+		    skipblanks();
+		    if (ch == '=') {
+			// FIXME: This seems to be a bearing to rotate
+			// cartesian data by, which we don't currently support.
+			//compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+			nextch();
+			(void)read_numeric(false);
+		    } else {
+			pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
+		    }
 		    break;
 		  case WALLS_UNITS_OPT_CT:
 		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
@@ -1412,8 +1540,8 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			(void)read_prefix(PFX_SURVEY);
-			// FIXME: Handle.
+			pcs->Prefix = read_prefix(PFX_SURVEY|PFX_ROOT|PFX_OPT);
+			if (!pcs->Prefix) pcs->Prefix = root;
 		    } else {
 			// FIXME: Anything to do?
 		    }
@@ -1425,6 +1553,19 @@ next_line:
 			(void)read_prefix(PFX_SURVEY);
 			// We currently ignore LRUD, so can also ignore the
 			// settings for it.
+		    } else {
+			// FIXME: Anything to do?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_UV:
+		  case WALLS_UNITS_OPT_UVH:
+		  case WALLS_UNITS_OPT_UVV:
+		    // Scale factors for variances (with horizontal-only and
+		    // vertical-only variants).  FIXME: Actually apply these!
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			(void)read_numeric(false);
 		    } else {
 			// FIXME: Anything to do?
 		    }
@@ -1485,6 +1626,8 @@ next_line:
 	    } else {
 		z *= pcs->units[Q_LENGTH];
 	    }
+
+	    // FIXME: Data order here is set by e.g. #Units order=NEU
 
 	    skipblanks();
 	    if (ch == '(') {
