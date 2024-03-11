@@ -1100,6 +1100,10 @@ static const sztok walls_units_opt_tab[] = {
     {NULL,	WALLS_UNITS_OPT_NULL}
 };
 
+// Walls seems to only document `/` but based on real-world use also allows
+// `\`.  FIXME: Check for each situation.
+static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
+
 static void
 data_file_walls_srv(void)
 {
@@ -1451,7 +1455,7 @@ next_line:
 		}
 	    }
 
-	    if (ch == '/') {
+	    if (isWallsSlash(ch)) {
 		// Station note - ignore for now.
 		skipline();
 	    }
@@ -1464,16 +1468,14 @@ next_line:
 	    // stations and apply the flag.
 	    skipblanks();
 
-	    if (ch == '/' || ch == '\\') {
+	    if (isWallsSlash(ch)) {
 		printf("Default flag\n");
 		// FIXME: Handle.
 		skipline();
 	    } else {
 		filepos fp;
 		get_pos(&fp);
-		// Only / is documented, but real world examples have \ and
-		// checking the Walls source it supports \ too.
-		while (ch != '/' && ch != '\\') {
+		while (!isWallsSlash(ch)) {
 		    if (isComm(ch) || isEol(ch)) {
 			// FIXME: This "can optionally follow the list of
 			// station names" but what does it mean if it's
@@ -1515,7 +1517,7 @@ next_line:
 		    filepos fp_end;
 		    get_pos(&fp_end);
 		    set_pos(&fp);
-		    while (ch != '/' && ch != '\\') {
+		    while (!isWallsSlash(ch)) {
 			prefix *name = read_prefix(PFX_STATION|PFX_WALLS_SRV);
 			name->sflags |= station_flags;
 			skipblanks();
