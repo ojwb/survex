@@ -2682,9 +2682,12 @@ data_normal(void)
        case WallsSRVTape:
 	  LOC(Tape) = ftell(file.fh);
 	  VAL(Tape) = read_numeric(true);
-	  WID(Tape) = ftell(file.fh) - LOC(Tape);
-	  VAR(Tape) = var(Q_LENGTH);
 	  if (VAL(Tape) == HUGE_REAL) {
+	      if (ch == 'i' || ch == 'I') {
+		  // Length specified in inches only, e.g. `i6` is 6 inches.
+		  VAL(Tape) = 0.0;
+		  goto inches_only;
+	      }
 	      // Walls expects 2 or more - for an omitted value.
 	      if (ch != '-' || nextch() != '-') {
 		  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -2697,6 +2700,14 @@ data_normal(void)
 	      if (VAL(Tape) < (real)0.0)
 		  compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative tape reading*/60);
 	      switch (ch) {
+		case 'I': case 'i':
+inches_only:
+		  nextch();
+		  if (isdigit(ch)) {
+		      real inches = read_numeric(false);
+		      VAL(Tape) += inches / 12.0;
+		  }
+		  /* FALLTHRU */
 		case 'F': case 'f':
 		  VAL(Tape) *= METRES_PER_FOOT;
 		  /* FALLTHRU */
@@ -2705,6 +2716,8 @@ data_normal(void)
 		  nextch();
 	      }
 	  }
+	  WID(Tape) = ftell(file.fh) - LOC(Tape);
+	  VAR(Tape) = var(Q_LENGTH);
 	  break;
        case WallsSRVComp: {
 	  skipblanks();
