@@ -2790,6 +2790,8 @@ data_normal(void)
 	  if (first_stn == End) first_stn = To;
 	  break;
        case CompassDATFr:
+	  // Compass DAT is always From then To.
+	  first_stn = Fr;
 	  fr = read_prefix(PFX_STATION);
 	  scan_compass_station_name(fr);
 	  break;
