@@ -1093,7 +1093,10 @@ typedef enum {
     WALLS_UNITS_OPT_ORDER,
     WALLS_UNITS_OPT_PREFIX,
     WALLS_UNITS_OPT_RECT,
+    WALLS_UNITS_OPT_RESET,
+    WALLS_UNITS_OPT_RESTORE,
     WALLS_UNITS_OPT_S,
+    WALLS_UNITS_OPT_SAVE,
     WALLS_UNITS_OPT_TAPE,
     WALLS_UNITS_OPT_TYPEAB,
     WALLS_UNITS_OPT_TYPEVB,
@@ -1132,10 +1135,10 @@ static const sztok walls_units_opt_tab[] = {
     // FIXME: PREFIX2=
     // FIXME: PREFIX3=
     {"RECT",	WALLS_UNITS_OPT_RECT},
-    // FIXME: RESET
-    // FIXME: RESTORE
+    {"RESET",	WALLS_UNITS_OPT_RESET},
+    {"RESTORE",	WALLS_UNITS_OPT_RESTORE},
     {"S",	WALLS_UNITS_OPT_S},
-    // FIXME: SAVE
+    {"SAVE",	WALLS_UNITS_OPT_SAVE},
     {"TAPE",	WALLS_UNITS_OPT_TAPE},
     {"TYPEAB",	WALLS_UNITS_OPT_TYPEAB},
     {"TYPEVB",	WALLS_UNITS_OPT_TYPEVB},
@@ -1152,12 +1155,12 @@ static const sztok walls_units_opt_tab[] = {
 static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
 
 static void
-data_file_walls_srv(void)
+walls_srv_initialise_settings(void)
 {
+    settings *pcsNew = osnew(settings);
+    *pcsNew = *pcs; /* copy contents */
+
     short *t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-    int i;
-    t[EOF] = SPECIAL_EOL;
-    memset(t, 0, sizeof(short) * 33);
     // "Unprefixed names can have a maximum of eight characters and must not
     // contain any colons, semicolons, commas, pound signs (#), or embedded
     // tabs or spaces.  In order to avoid possible problems when printing or
@@ -1167,6 +1170,9 @@ data_file_walls_srv(void)
     //
     // We assume other control characters aren't allowed either (so nothing
     // < 32 and not 127), but allow all top-bit-set characters.
+    t[EOF] = SPECIAL_EOL;
+    memset(t, 0, sizeof(short) * 33);
+    int i;
     for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
     t[127] = 0;
     for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
@@ -1185,17 +1191,40 @@ data_file_walls_srv(void)
     t['.'] |= SPECIAL_DECIMAL;
     t['-'] |= SPECIAL_MINUS;
     t['+'] |= SPECIAL_PLUS;
-
-    settings *pcsNew = osnew(settings);
-    *pcsNew = *pcs; /* copy contents */
-    pcsNew->begin_lineno = 0;
     pcsNew->Translate = t;
-    pcsNew->Case = OFF;
+
+    pcsNew->begin_lineno = 0;
     // Spec says "maximum of eight characters" - we currently allow arbitrarily
     // many.
     pcsNew->Truncate = INT_MAX;
     pcsNew->next = pcs;
+    pcsNew->infer = BIT(INFER_EQUATES) | // FIXME?
+		    BIT(INFER_EQUATES_SELF_OK) | // FIXME?
+		    BIT(INFER_EXPORTS) | // FIXME?
+		    BIT(INFER_PLUMBS);
     pcs = pcsNew;
+}
+
+static void
+walls_srv_reset(void)
+{
+    pcs->Case = OFF;
+
+    default_units(pcs);
+    default_calib(pcs);
+    // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
+
+    pcs->recorded_style = pcs->style = STYLE_NORMAL;
+}
+
+static void
+data_file_walls_srv(void)
+{
+    // This is volatile to protect it from setjmp/longjmp.
+    volatile int walls_units_save_count = 0;
+
+    walls_srv_initialise_settings();
+    walls_srv_reset();
 
     // FIXME: We need to update the separator_map to reflect what can be
     // SPECIAL_NAMES.  Or should we use the Compass approach and base this
@@ -1204,15 +1233,6 @@ data_file_walls_srv(void)
     // the documentation station naming recommendations were followed.
     update_output_separator();
 
-    default_units(pcs);
-    default_calib(pcs);
-    // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
-
-    pcs->recorded_style = pcs->style = STYLE_NORMAL;
-    pcs->infer = BIT(INFER_EQUATES) | // FIXME?
-		 BIT(INFER_EQUATES_SELF_OK) | // FIXME?
-		 BIT(INFER_EXPORTS) | // FIXME?
-		 BIT(INFER_PLUMBS);
     /* We need to update separator_map so we don't pick a separator character
      * which occurs in a station name.  However Compass DAT allows everything
      * >= ASCII char 33 except 127 in station names so if we just added all
@@ -1688,6 +1708,31 @@ next_line:
 			// FIXME: Anything to do?
 		    }
 		    break;
+		  case WALLS_UNITS_OPT_RESET:
+		    // FIXME: This should be processed before other arguments!
+		    walls_srv_reset();
+		    break;
+		  case WALLS_UNITS_OPT_RESTORE: {
+		    // FIXME: Should this be processed before other arguments?
+		    if (walls_units_save_count == 0) {
+			// FIXME: RESTORE ... SAVE
+			compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
+			break;
+		    }
+		    --walls_units_save_count;
+		    pop_settings();
+		    break;
+		  }
+		  case WALLS_UNITS_OPT_SAVE: {
+		    // FIXME: This should be processed before other arguments!
+		    settings *pcsNew = osnew(settings);
+		    *pcsNew = *pcs; /* copy contents */
+		    pcsNew->begin_lineno = file.line;
+		    pcsNew->next = pcs;
+		    pcs = pcsNew;
+		    ++walls_units_save_count;
+		    break;
+		  }
 		  case WALLS_UNITS_OPT_NULL:
 		    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 		    break;
