@@ -23,6 +23,8 @@ U2 U3 33i1.6 N82E/-- -26/ *15 25 4 3*
 U3 U4 30.14f /N90E /02 *1 2 3 2*
 U4 U5 i11 /N90E /02 *1 2 3 2*
 U3 <1 2 3 4>
+; odd apparently undocumented variant of a LRUD-only data line
+U3 ZZ9 <1 2 3 4>
 #segment splays
 U3 - 1.0 --- +90
 U3 -- 1.0 ---- -90

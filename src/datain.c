@@ -3001,6 +3001,14 @@ data_cartesian(void)
 	  break;
        case WallsSRVTo:
 	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
+	  skipblanks();
+	  if (ch == '*' || ch == '<') {
+	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
+	      // for now.
+	      skipline();
+	      process_eol();
+	      return;
+	  }
 	  break;
        case Ignore:
 	 skipword(); break;
@@ -3333,6 +3341,14 @@ data_normal(void)
 	  break;
        case WallsSRVTo:
 	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
+	  skipblanks();
+	  if (ch == '*' || ch == '<') {
+	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
+	      // for now.
+	      skipline();
+	      process_eol();
+	      return;
+	  }
 	  break;
        case WallsSRVTape:
 	  LOC(Tape) = ftell(file.fh);
