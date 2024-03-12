@@ -1066,10 +1066,19 @@ static walls_macro **walls_macros = NULL;
 static void
 walls_set_macro(const char *name, char *val)
 {
+    //printf("MACRO: $|%s|=\"%s\":\n", name, val);
     if (!walls_macros) {
 	walls_macros = osmalloc(WALLS_MACRO_HASH_SIZE * ossizeof(walls_macro*));
 	for (size_t i = 0; i < WALLS_MACRO_HASH_SIZE; i++)
 	    walls_macros[i] = NULL;
+	// FIXME: At what point do we free macros?  You can define them in the
+	// WPJ it seems, so they can't be cleared after each .srv, though they
+	// could be reset to the state before that file).  Docs don't seem to
+	// say anything.  We ought to clear after each WPJ (or before for a
+	// lazy releasing?) at least as carrying between separate datasets
+	// doesn't make much sense, though given you can't reference an
+	// undefined macro in practice it makes no difference for a valid
+	// dataset except the overhead of having more macros around.
     }
 
     unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
@@ -1340,6 +1349,7 @@ next_line:
 	}
 
 	// Directive:
+	int leading_blanks = ftell(file.fh) - file.lpos - 1;
 	nextch();
 	if (ch == '[') {
 	    // "Commented out" data.
@@ -1364,13 +1374,85 @@ next_line:
 	if (ch == ']') {
 	    // FIXME Report excess `#]`.
 	}
+	skipblanks();
+	int blanks_after_hash = ftell(file.fh) - file.lpos - leading_blanks - 2;
 	get_token();
 	walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
+	parse file_store;
+	volatile int ch_store;
+	char *line = NULL;
+	int line_len = 0;
 	if (directive != WALLS_CMD_FIX && directive != WALLS_CMD_NULL) {
-	    // Expand macros $(foo) in rest of line.
-	    if (0) {
-		const char *name = "foo";
-		walls_get_macro(name);
+	    bool seen_macros = false;
+	    // Recreate the start of the line for error reporting.
+	    // FIXME: This will change tabs to a single space...
+	    if (leading_blanks)
+		s_catn(&line, &line_len, leading_blanks, ' ');
+	    s_catchar(&line, &line_len, '#');
+	    if (blanks_after_hash)
+		s_catn(&line, &line_len, blanks_after_hash, ' ');
+	    s_cat(&line, &line_len, buffer);
+
+	    filepos fp_args;
+	    get_pos(&fp_args);
+
+	    // Expand macros such as $(foo) in rest of line.
+	    while (!isEol(ch)) {
+		if (ch != '$') {
+		    s_catchar(&line, &line_len, ch);
+		    nextch();
+		    continue;
+		}
+		nextch();
+		if (ch != '(') {
+		    s_catchar(&line, &line_len, '$');
+		    continue;
+		}
+		nextch();
+		// Read name of macro onto the end of line, then replace it
+		// with the value of the macro.
+		int macro_start = strlen(line);
+		while (!isEol(ch) && ch != ')') {
+		    s_catchar(&line, &line_len, ch);
+		    nextch();
+		}
+		nextch();
+		const char *macro = walls_get_macro(line + macro_start);
+		if (macro) {
+		    line[macro_start] = '\0';
+		    s_cat(&line, &line_len, macro);
+		} else {
+		    // FIXME: report proper error.
+		    printf("Macro %s not defined\n", line + macro_start);
+		    line[macro_start] = '\0';
+		}
+		seen_macros = true;
+	    }
+
+	    if (seen_macros) {
+		//printf("MACRO EXPANSION <%s>\n", line);
+		// Read from the buffered macro-expanded line instead of the
+		// file.
+		file_store = file;
+		ch_store = ch;
+#ifdef HAVE_FMEMOPEN
+		file.fh = fmemopen(line, strlen(line), "rb");
+#else
+		file.fh = tmpfile();
+		if (!file.fh) {
+		    // FIXME: Report failure to create temporary file.
+		}
+		fwrite(line, strlen(line), 1, file.fh);
+#endif
+		fseek(file.fh, fp_args.offset - file.lpos, SEEK_SET);
+		ch = (unsigned char)line[fp_args.offset - file.lpos - 1];
+		file.lpos = 0;
+	    } else {
+		//printf("no macros seen in <%s>\n", line);
+		// No macros seen so rewind and read directly from the file.
+		osfree(line);
+		line = NULL;
+		set_pos(&fp_args);
 	    }
 	}
 
@@ -1812,18 +1894,25 @@ next_line:
 			filepos fp;
 			get_pos(&fp);
 			nextch();
-			get_word();
-			if (buffer[0]) {
+			char *name = NULL;
+			int name_len = 0;
+			while (!isEol(ch) && !isBlank(ch) && ch != '=') {
+			    s_catchar(&name, &name_len, ch);
+			    nextch();
+			}
+			if (name) {
 			    skipblanks();
 			    if (ch != '=') {
 				// Set an empty value.
-				walls_set_macro(buffer, NULL);
+				walls_set_macro(name, NULL);
 			    } else {
+				nextch();
 				char *val = NULL;
 				int len;
 				read_string(&val, &len);
-				walls_set_macro(buffer, val);
+				walls_set_macro(name, val);
 			    }
+			    osfree(name);
 			    break;
 			}
 			set_pos(&fp);
@@ -2026,6 +2115,15 @@ next_line:
 	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 	    break;
 	}
+
+	if (line != NULL) {
+	    // Revert to reading from the file.
+	    fclose(file.fh);
+	    osfree(line);
+	    file = file_store;
+	    ch = ch_store;
+	}
+
 	process_eol();
     }
 

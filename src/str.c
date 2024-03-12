@@ -69,3 +69,23 @@ s_catchar(char **pstr, int *plen, char ch)
    (*pstr)[len] = ch;
    (*pstr)[len + 1] = '\0';
 }
+
+void
+s_catn(char **pstr, int *plen, int n, char ch)
+{
+   int new_len = n + 1; /* extra 1 for nul */
+   int len = 0;
+
+   if (*pstr) {
+      len = strlen(*pstr);
+      new_len += len;
+   }
+
+   if (!*pstr || new_len > *plen) {
+      *plen = (new_len + 32) & ~3;
+      *pstr = osrealloc(*pstr, *plen);
+   }
+
+   memset(*pstr + len, ch, n);
+   (*pstr + len)[n] = '\0';
+}

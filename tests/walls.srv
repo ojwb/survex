@@ -14,10 +14,10 @@ X1 X2 5 12 13
 #]
 #s bar
 U0 *1,2,3,4*
-#units feet decl=0.0
+#units feet decl=0.0 $foo_bar1="meters decl"
 #date 1972/02/29
 :U1 U2 10.1m N79E/S79W -26/26 *15 25 4 3*
-#units meters decl=-3 LRUD=F:UDLR
+#units $(foo_bar1)=-3 LRUD=F:UDLR
 #Date 8/04/1973
 U2 U3 33i1.6 N82E/-- -26/ *15 25 4 3*
 U3 U4 30.14f /N90E /02 *1 2 3 2*

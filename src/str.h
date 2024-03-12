@@ -25,6 +25,9 @@ void s_catlen(char **pstr, int *plen, const char *s, int s_len);
 /* append a character */
 void s_catchar(char **pstr, int *plen, char /*ch*/);
 
+/* append n copies of a character */
+void s_catn(char **pstr, int *plen, int n, char /*ch*/);
+
 /* truncate string to zero length */
 #define s_zero(P) do { \
 	char **s_zero__P = (P); \
