@@ -283,7 +283,7 @@ get_token_no_blanks(void)
 }
 
 /* read word */
-static void
+void
 get_word(void)
 {
    s_zero(&buffer);

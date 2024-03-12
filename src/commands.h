@@ -44,6 +44,8 @@ extern char *ucbuffer;
 void get_token(void);
 void get_token_no_blanks(void);
 
+void get_word(void);
+
 typedef struct { const char *sz; int tok; } sztok;
 int match_tok(const sztok *tab, int tab_size);
 

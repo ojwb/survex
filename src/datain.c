@@ -28,6 +28,7 @@
 #include "debug.h"
 #include "cavern.h"
 #include "date.h"
+#include "hash.h"
 #include "img.h"
 #include "filename.h"
 #include "message.h"
@@ -1049,6 +1050,65 @@ update_proj_str:
     osfree(path);
 }
 
+// We don't expect a huge number of macros, and this doesn't limit how many we
+// can handle, only at what point access time stops being O(1).
+#define WALLS_MACRO_HASH_SIZE 0x100
+
+typedef struct walls_macro {
+    struct walls_macro *next;
+    char *name;
+    char *value;
+} walls_macro;
+
+static walls_macro **walls_macros = NULL;
+
+// Takes ownership of value.  Passing NULL for value sets empty string.
+static void
+walls_set_macro(const char *name, char *val)
+{
+    if (!walls_macros) {
+	walls_macros = osmalloc(WALLS_MACRO_HASH_SIZE * ossizeof(walls_macro*));
+	for (size_t i = 0; i < WALLS_MACRO_HASH_SIZE; i++)
+	    walls_macros[i] = NULL;
+    }
+
+    unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
+    walls_macro *p = walls_macros[h];
+    while (p) {
+	if (strcmp(p->name, name) == 0) {
+	    // Update existing definition of macro.
+	    osfree(p->value);
+	    p->value = val;
+	    return;
+	}
+	p = p->next;
+    }
+
+    walls_macro *entry = osnew(walls_macro);
+    entry->name = osstrdup(name);
+    entry->value = val;
+    entry->next = walls_macros[h];
+    walls_macros[h] = entry;
+}
+
+// Returns NULL if not set.
+static const char*
+walls_get_macro(const char *name)
+{
+    if (!walls_macros) return NULL;
+
+    unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
+    walls_macro *p = walls_macros[h];
+    while (p) {
+	if (strcmp(p->name, name) == 0) {
+	    return p->value ? p->value : "";
+	}
+	p = p->next;
+    }
+
+    return NULL;
+}
+
 typedef enum {
     WALLS_CMD_DATE,
     WALLS_CMD_FLAG,
@@ -1305,7 +1365,16 @@ next_line:
 	    // FIXME Report excess `#]`.
 	}
 	get_token();
-	switch (match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab))) {
+	walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
+	if (directive != WALLS_CMD_FIX && directive != WALLS_CMD_NULL) {
+	    // Expand macros $(foo) in rest of line.
+	    if (0) {
+		const char *name = "foo";
+		walls_get_macro(name);
+	    }
+	}
+
+	switch (directive) {
 	  case WALLS_CMD_UNITS:
 	    skipblanks();
 	    while (!isEol(ch)) {
@@ -1738,7 +1807,29 @@ next_line:
 		    break;
 		  }
 		  case WALLS_UNITS_OPT_NULL:
-		    compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+		    if (ucbuffer[0] == '\0' && ch == '$') {
+			// Macro definition.
+			filepos fp;
+			get_pos(&fp);
+			nextch();
+			get_word();
+			if (buffer[0]) {
+			    skipblanks();
+			    if (ch != '=') {
+				// Set an empty value.
+				walls_set_macro(buffer, NULL);
+			    } else {
+				char *val = NULL;
+				int len;
+				read_string(&val, &len);
+				walls_set_macro(buffer, val);
+			    }
+			    break;
+			}
+			set_pos(&fp);
+			buffer[0] = '\0';
+		    }
+		    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
 		    break;
 		}
 //		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));

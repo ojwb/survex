@@ -33,8 +33,8 @@ check_PROGRAMS = imgtest
 
 COMMONSRC = cmdline.c message.c str.c filename.c z_getopt.c getopt1.c
 
-cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
- network.c readval.c matrix.c img_hosted.c netbits.c useful.c \
+cavern_SOURCES = cavern.c date.c commands.c datain.c hash.c listpos.c \
+ netskel.c network.c readval.c matrix.c img_hosted.c netbits.c useful.c \
  validate.c netartic.c thgeomag.c \
  $(COMMONSRC)
 cavern_LDADD = $(PROJ_LIBS)
