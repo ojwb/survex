@@ -1060,17 +1060,20 @@ typedef struct walls_macro {
     char *value;
 } walls_macro;
 
+// Macros set in the WPJ persist, but those set in an SRV only apply for that
+// SRV so we keep a table for each and check the SRV first.
+static walls_macro **walls_macros_wpj = NULL;
 static walls_macro **walls_macros = NULL;
 
 // Takes ownership of value.  Passing NULL for value sets empty string.
 static void
-walls_set_macro(const char *name, char *val)
+walls_set_macro(walls_macro ***table, const char *name, char *val)
 {
     //printf("MACRO: $|%s|=\"%s\":\n", name, val);
-    if (!walls_macros) {
-	walls_macros = osmalloc(WALLS_MACRO_HASH_SIZE * ossizeof(walls_macro*));
+    if (!*table) {
+	*table = osmalloc(WALLS_MACRO_HASH_SIZE * ossizeof(walls_macro*));
 	for (size_t i = 0; i < WALLS_MACRO_HASH_SIZE; i++)
-	    walls_macros[i] = NULL;
+	    (*table)[i] = NULL;
 	// FIXME: At what point do we free macros?  You can define them in the
 	// WPJ it seems, so they can't be cleared after each .srv, though they
 	// could be reset to the state before that file).  Docs don't seem to
@@ -1082,7 +1085,7 @@ walls_set_macro(const char *name, char *val)
     }
 
     unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
-    walls_macro *p = walls_macros[h];
+    walls_macro *p = (*table)[h];
     while (p) {
 	if (strcmp(p->name, name) == 0) {
 	    // Update existing definition of macro.
@@ -1096,18 +1099,18 @@ walls_set_macro(const char *name, char *val)
     walls_macro *entry = osnew(walls_macro);
     entry->name = osstrdup(name);
     entry->value = val;
-    entry->next = walls_macros[h];
-    walls_macros[h] = entry;
+    entry->next = (*table)[h];
+    (*table)[h] = entry;
 }
 
 // Returns NULL if not set.
 static const char*
-walls_get_macro(const char *name)
+walls_get_macro(walls_macro ***table, const char *name)
 {
     if (!walls_macros) return NULL;
 
     unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
-    walls_macro *p = walls_macros[h];
+    walls_macro *p = (*table)[h];
     while (p) {
 	if (strcmp(p->name, name) == 0) {
 	    return p->value ? p->value : "";
@@ -1417,7 +1420,12 @@ next_line:
 		    nextch();
 		}
 		nextch();
-		const char *macro = walls_get_macro(line + macro_start);
+		const char *macro = walls_get_macro(&walls_macros,
+						    line + macro_start);
+		if (!macro) {
+		    macro = walls_get_macro(&walls_macros_wpj,
+					    line + macro_start);
+		}
 		if (macro) {
 		    line[macro_start] = '\0';
 		    s_cat(&line, &line_len, macro);
@@ -1904,13 +1912,13 @@ next_line:
 			    skipblanks();
 			    if (ch != '=') {
 				// Set an empty value.
-				walls_set_macro(name, NULL);
+				walls_set_macro(&walls_macros, name, NULL);
 			    } else {
 				nextch();
 				char *val = NULL;
 				int len;
 				read_string(&val, &len);
-				walls_set_macro(name, val);
+				walls_set_macro(&walls_macros, name, val);
 			    }
 			    osfree(name);
 			    break;
