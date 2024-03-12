@@ -63,9 +63,9 @@
 #   define UINT32_T unsigned long
 #  endif
 # endif
-# if 0 /*defined HAVE_SNPRINTF || \
+# if defined HAVE_SNPRINTF || \
      (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
-     (defined __cplusplus && __cplusplus >= 201103L) */
+     (defined __cplusplus && __cplusplus >= 201103L)
 #  define SNPRINTF snprintf
 # else
 #  define SNPRINTF my_snprintf
