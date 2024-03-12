@@ -3434,39 +3434,46 @@ inches_only:
        }
        case WallsSRVClino: {
 	  skipblanks();
+	  LOC(Clino) = ftell(file.fh);
 	  if (ch != '/') {
 	      int n_readings;
-	      LOC(Clino) = ftell(file.fh);
 	      VAL(Clino) = read_numeric_multi(true, false, &n_readings);
 	      if (VAL(Clino) == HUGE_REAL) {
-		  VAL(Clino) = 0.0;
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
 		  }
 		  while (ch == '-') nextch();
+		  ctype = CTYPE_OMIT;
+	      } else {
+		  ctype = CTYPE_READING;
 	      }
 	      WID(Clino) = ftell(file.fh) - LOC(Clino);
-	      VAR(Clino) = var(Q_BEARING);
-	      ctype = CTYPE_READING;
+	      VAR(Clino) = var(Q_GRADIENT);
 	  } else {
 	      VAL(Clino) = HUGE_REAL;
+	      WID(Clino) = 0;
+	      ctype = CTYPE_OMIT;
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
 	      int n_readings;
 	      LOC(BackClino) = ftell(file.fh);
 	      VAL(BackClino) = read_numeric_multi(true, false, &n_readings);
 	      if (VAL(BackClino) == HUGE_REAL) {
-		  VAL(BackClino) = 0.0;
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
 		  }
 		  while (ch == '-') nextch();
+		  backctype = CTYPE_OMIT;
+	      } else {
+		  backctype = CTYPE_READING;
 	      }
 	      WID(BackClino) = ftell(file.fh) - LOC(BackClino);
-	      VAR(BackClino) = var(Q_BACKBEARING);
-	      backctype = CTYPE_READING;
+	      VAR(BackClino) = var(Q_BACKGRADIENT);
 	  } else {
+	      LOC(BackClino) = ftell(file.fh);
 	      VAL(BackClino) = HUGE_REAL;
+	      WID(BackClino) = 0;
+	      backctype = CTYPE_OMIT;
 	  }
 	  break;
        }
