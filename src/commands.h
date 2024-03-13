@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "str.h"
+
 int get_length_units(int quantity);
 int get_angle_units(int quantity);
 
@@ -39,7 +41,7 @@ void set_declination_location(real x, real y, real z, const char *proj_str);
 
 void copy_on_write_meta(settings *s);
 
-extern char *buffer;
+extern string token;
 void get_token(void);
 void get_token_no_blanks(void);
 

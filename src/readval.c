@@ -619,9 +619,9 @@ bad_value:
 }
 
 extern void
-read_string(char **pstr, int *plen)
+read_string(string *pstr)
 {
-   s_zero(pstr);
+   s_clear(pstr);
 
    skipblanks();
    if (ch == '\"') {
@@ -635,19 +635,15 @@ read_string(char **pstr, int *plen)
 
 	 if (ch == '\"') break;
 
-	 s_catchar(pstr, plen, ch);
+	 s_catchar(pstr, ch);
 	 nextch();
-      }
-      if (!*pstr) {
-	 /* Return empty string for "", not NULL. */
-	 s_catchar(pstr, plen, '\0');
       }
       nextch();
    } else {
       /* Unquoted string */
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
-	    if (!*pstr || !(*pstr)[0]) {
+	    if (s_empty(pstr)) {
 	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting string field*/121);
 	       LONGJMP(file.jbSkipLine);
 	    }
@@ -656,7 +652,7 @@ read_string(char **pstr, int *plen)
 
 	 if (isBlank(ch)) break;
 
-	 s_catchar(pstr, plen, ch);
+	 s_catchar(pstr, ch);
 	 nextch();
       }
    }

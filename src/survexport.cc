@@ -39,7 +39,6 @@
 #include "filename.h"
 #include "img_hosted.h"
 #include "message.h"
-#include "str.h"
 #include "useful.h"
 
 #include <iostream>

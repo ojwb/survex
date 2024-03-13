@@ -206,8 +206,7 @@ grab_line(void)
 {
    /* Rewind to beginning of line. */
    long cur_pos = ftell(file.fh);
-   char *p = NULL;
-   int len = 0;
+   string p = S_INIT;
    if (cur_pos < 0 || fseek(file.fh, file.lpos, SEEK_SET) == -1)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
@@ -216,16 +215,16 @@ grab_line(void)
       int c = GETC(file.fh);
       /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
-      s_catchar(&p, &len, (char)c);
+      s_catchar(&p, c);
    }
 
    /* Revert to where we were. */
    if (fseek(file.fh, cur_pos, SEEK_SET) == -1) {
-      free(p);
+      s_free(&p);
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
    }
 
-   return p;
+   return s_steal(&p);
 }
 
 static int caret_width = 0;
@@ -247,7 +246,7 @@ compile_v_report(int diag_flags, int en, va_list ap)
    int severity = (diag_flags & DIAG_SEVERITY_MASK);
    if (diag_flags & (DIAG_COL|DIAG_BUF)) {
       if (file.fh) {
-	 if (diag_flags & DIAG_BUF) caret_width = strlen(buffer);
+	 if (diag_flags & DIAG_BUF) caret_width = s_len(&token);
 	 compile_v_report_fpos(severity, ftell(file.fh), en, ap);
 	 if (diag_flags & DIAG_BUF) caret_width = 0;
 	 if (diag_flags & DIAG_SKIP) skipline();
@@ -258,7 +257,7 @@ compile_v_report(int diag_flags, int en, va_list ap)
    v_report(severity, file.filename, file.line, 0, en, ap);
    if (file.fh) {
       if (diag_flags & DIAG_BUF) {
-	 show_line(0, strlen(buffer));
+	 show_line(0, s_len(&token));
       } else {
 	 show_line(0, caret_width);
       }
@@ -272,56 +271,54 @@ compile_diagnostic(int diag_flags, int en, ...)
    va_list ap;
    va_start(ap, en);
    if (diag_flags & (DIAG_TOKEN|DIAG_UINT|DIAG_DATE|DIAG_NUM)) {
-      char *p = NULL;
-      int len = 0;
+      string p = S_INIT;
       skipblanks();
       if (diag_flags & DIAG_TOKEN) {
 	 while (!isBlank(ch) && !isEol(ch)) {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
       } else if (diag_flags & DIAG_UINT) {
 	 while (isdigit(ch)) {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
       } else if (diag_flags & DIAG_DATE) {
 	 while (isdigit(ch) || ch == '.') {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
       } else {
 	 if (isMinus(ch) || isPlus(ch)) {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
 	 while (isdigit(ch)) {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
 	 if (isDecimal(ch)) {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
 	 while (isdigit(ch)) {
-	    s_catchar(&p, &len, (char)ch);
+	    s_catchar(&p, (char)ch);
 	    nextch();
 	 }
       }
-      if (p) {
-	 caret_width = strlen(p);
-	 osfree(p);
+      if (!s_empty(&p)) {
+	 caret_width = s_len(&p);
+	 s_free(&p);
       }
       compile_v_report(diag_flags|DIAG_COL, en, ap);
       caret_width = 0;
    } else if (diag_flags & DIAG_STRING) {
-      char *p = NULL;
-      int alloced = 0;
+      string p = S_INIT;
       skipblanks();
       caret_width = ftell(file.fh);
-      read_string(&p, &alloced);
-      osfree(p);
-      /* We want to include any quotes, so can't use strlen(p). */
+      read_string(&p);
+      s_free(&p);
+      /* We want to include any quotes, so can't use s_len(&p). */
       caret_width = ftell(file.fh) - caret_width;
       compile_v_report(diag_flags|DIAG_COL, en, ap);
       caret_width = 0;
@@ -378,18 +375,17 @@ compile_diagnostic_pfx(int diag_flags, const prefix * pfx, int en, ...)
 void
 compile_diagnostic_token_show(int diag_flags, int en)
 {
-   char *p = NULL;
-   int len = 0;
+   string p = S_INIT;
    skipblanks();
    while (!isBlank(ch) && !isEol(ch)) {
-      s_catchar(&p, &len, (char)ch);
+      s_catchar(&p, (char)ch);
       nextch();
    }
-   if (p) {
-      caret_width = strlen(p);
+   if (!s_empty(&p)) {
+      caret_width = s_len(&p);
       compile_diagnostic(diag_flags|DIAG_COL, en, p);
       caret_width = 0;
-      osfree(p);
+      s_free(&p);
    } else {
       compile_diagnostic(DIAG_ERR|DIAG_COL, en, "");
    }
@@ -680,21 +676,20 @@ data_file_compass_dat_or_clp(bool is_clp)
 	}
 	get_token();
 	pcs->ordering = compass_order;
-	if (strcmp(buffer, "FORMAT") == 0) {
+	if (S_EQ(&token, "FORMAT")) {
 	    /* This documents the format in the original survey notebook - we
 	     * don't need to fully parse it to be able to parse the survey data
 	     * in the file, which gets converted to a fixed order and units.
 	     */
-	    size_t buffer_len;
 	    nextch(); /* : */
 	    get_token();
-	    buffer_len = strlen(buffer);
-	    if (buffer_len >= 4 && buffer[3] == 'W') {
+	    size_t token_len = s_len(&token);
+	    if (token_len >= 4 && s_str(&token)[3] == 'W') {
 		/* Original "Inclination Units" were "Depth Gauge". */
 		pcs->recorded_style = STYLE_DIVING;
 	    }
-	    if (buffer_len >= 12) {
-		char backsight_type = buffer[buffer_len >= 15 ? 13 : 11];
+	    if (token_len >= 12) {
+		char backsight_type = s_str(&token)[token_len >= 15 ? 13 : 11];
 		// B means redundant backsight; C means redundant backsights
 		// but displayed "corrected" (i.e. reversed to make visually
 		// comparing easier).
@@ -709,7 +704,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	// CORRECTIONS and CORRECTIONS2 have already been applied to data in
 	// the CLP file.
 	if (!is_clp) {
-	    if (strcmp(buffer, "CORRECTIONS") == 0 && ch == ':') {
+	    if (S_EQ(&token, "CORRECTIONS") && ch == ':') {
 		nextch(); /* : */
 		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
 		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
@@ -718,7 +713,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	    }
 
 	    /* get_token() only reads alphas so we must check for '2' here. */
-	    if (strcmp(buffer, "CORRECTIONS") == 0 && ch == '2') {
+	    if (S_EQ(&token, "CORRECTIONS") && ch == '2') {
 		nextch(); /* 2 */
 		nextch(); /* : */
 		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
@@ -730,7 +725,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 #if 0
 	// FIXME Parse once we handle discovery dates...
 	// NB: Need to skip unread CORRECTIONS* for the `is_clp` case.
-	if (strcmp(buffer, "DISCOVERY") == 0 && ch == ':') {
+	if (S_EQ(&token, "DISCOVERY") && ch == ':') {
 	    // Discovery date, e.g. DISCOVERY: 2 28 2024
 	    nextch(); /* : */
 	    int days = read_compass_date_as_days_since_1900();
@@ -796,8 +791,8 @@ data_file_compass_mak(void)
     int base_utm_zone = 0;
     unsigned int base_line = 0;
     long base_lpos = 0;
-    char *path = path_from_fnm(file.filename);
-    int path_len = strlen(path);
+    string path = S_INIT;
+    s_donate(&path, path_from_fnm(file.filename));
     struct mak_folder {
 	struct mak_folder *next;
 	int len;
@@ -808,15 +803,14 @@ data_file_compass_mak(void)
 	  case '#': {
 	      /* include a file */
 	      int ch_store;
-	      char *dat_fnm = NULL;
-	      int dat_fnm_len;
+	      string dat_fnm = S_INIT;
 	      nextch_handling_eol();
 	      while (ch != ',' && ch != ';' && ch != EOF) {
 		  while (isEol(ch)) process_eol();
-		  s_catchar(&dat_fnm, &dat_fnm_len, (char)ch);
+		  s_catchar(&dat_fnm, (char)ch);
 		  nextch_handling_eol();
 	      }
-	      if (dat_fnm) {
+	      if (!s_empty(&dat_fnm)) {
 		  if (base_utm_zone) {
 		      // Process the previous @ command using the datum from &.
 		      char *proj_str = img_compass_utm_proj_str(datum,
@@ -843,9 +837,9 @@ data_file_compass_mak(void)
 		      }
 		  }
 		  ch_store = ch;
-		  data_file(path, dat_fnm);
+		  data_file(s_str(&path), s_str(&dat_fnm));
 		  ch = ch_store;
-		  osfree(dat_fnm);
+		  s_free(&dat_fnm);
 	      }
 	      while (ch != ';' && ch != EOF) {
 		  prefix *name;
@@ -950,22 +944,21 @@ update_proj_str:
 	    break;
 	  case '&': {
 	      /* Datum */
-	      char *p = NULL;
-	      int len = 0;
+	      string p = S_INIT;
 	      int datum_len = 0;
 	      int c = 0;
 	      nextch();
 	      skipblanks();
 	      while (ch != ';' && !isEol(ch)) {
-		  s_catchar(&p, &len, (char)ch);
+		  s_catchar(&p, (char)ch);
 		  ++c;
 		  /* Ignore trailing blanks. */
 		  if (!isBlank(ch)) datum_len = c;
 		  nextch();
 	      }
 	      if (ch == ';') nextch_handling_eol();
-	      datum = img_parse_compass_datum_string(p, datum_len);
-	      osfree(p);
+	      datum = img_parse_compass_datum_string(s_str(&p), datum_len);
+	      s_free(&p);
 	      goto update_proj_str;
 	  }
 	  case '[': {
@@ -973,15 +966,15 @@ update_proj_str:
 	      struct mak_folder *p = folder_stack;
 	      folder_stack = osnew(struct mak_folder);
 	      folder_stack->next = p;
-	      folder_stack->len = strlen(path);
-	      if (path[0])
-		  s_catchar(&path, &path_len, FNM_SEP_LEV);
+	      folder_stack->len = s_len(&path);
+	      if (!s_empty(&path))
+		  s_catchar(&path, FNM_SEP_LEV);
 	      nextch();
 	      while (ch != ';' && !isEol(ch)) {
 		  if (ch == '\\') {
 		      ch = FNM_SEP_LEV;
 		  }
-		  s_catchar(&path, &path_len, (char)ch);
+		  s_catchar(&path, (char)ch);
 		  nextch();
 	      }
 	      if (ch == ';') nextch_handling_eol();
@@ -994,7 +987,7 @@ update_proj_str:
 		  // FIXME: Report?
 		  break;
 	      }
-	      path[folder_stack->len] = '\0';
+	      s_truncate(&path, folder_stack->len);
 	      folder_stack = folder_stack->next;
 	      osfree(p);
 	      nextch();
@@ -1047,7 +1040,7 @@ update_proj_str:
 	}
     }
     pop_settings();
-    osfree(path);
+    s_free(&path);
 }
 
 static void
@@ -2078,7 +2071,7 @@ data_normal(void)
 	     fRev = true;
 	     break;
 	   default:
-	     compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “F” or “B”*/131, buffer);
+	     compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “F” or “B”*/131, s_str(&token));
 	     process_eol();
 	     return;
 	  }
