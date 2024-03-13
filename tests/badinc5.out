@@ -1,4 +1,4 @@
-./badinc5.mak:3:2: error: Couldn't open file "nosuchfile.dat"
+./badinc5.mak:4:2: error: Couldn't open file "nosuchfile.dat"
  #nosuchfile.dat,
   ^~~~~~~~~~~~~~
 
@@ -13,7 +13,7 @@ Calculating network...
 Calculating traverses...
 
 Calculating trailing traverses...
-./badinc5.mak:4: warning: Unused fixed point "GX1"
+./badinc5.mak:5: warning: Unused fixed point "GX1"
 
 Calculating statistics...
 

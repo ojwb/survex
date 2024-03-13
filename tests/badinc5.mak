@@ -1,3 +1,4 @@
+/ pos=fail warn=1 error=1 /
 #backread.dat,
 C1 [m,10.23,20.47,1234.56];
 #nosuchfile.dat,

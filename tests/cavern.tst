@@ -149,27 +149,13 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|clptest.dat|clptest.clp|depthguage.dat|flags.dat|karstcompat.dat|folder.mak)
+    backread.dat|clptest.dat|clptest.clp|depthguage.dat|flags.dat|karstcompat.dat)
       pos=dump
       warn=0
-      ;;
-    utm.mak)
-      pos=dump
-      warn=1
       ;;
     *.dat)
       # .dat files can't start with a comment.  All the other .dat tests
       # have the same settings.
-      pos=yes
-      warn=0
-      ;;
-    badinc5.mak)
-      pos=fail
-      warn=1
-      error=1
-      ;;
-    *.mak)
-      # All the other .mak tests have the same settings.
       pos=yes
       warn=0
       ;;
