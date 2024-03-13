@@ -1226,6 +1226,34 @@ static const sztok walls_units_opt_tab[] = {
     {NULL,	WALLS_UNITS_OPT_NULL}
 };
 
+#define WALLS_ORDER_CT(R1,R2,R3) ((R1) | ((R2) << 8) | ((R3) << 16))
+#define WALLS_ORDER_RECT(R1,R2,R3) ((R1) | ((R2) << 8) | ((R3) << 16) | (1 << 24))
+
+// Here we rely on the integer values of the reading codes used fitting in
+// a byte so assert that is the case.
+typedef int compiletimeassert_order_byte_encoding_ok[
+    (WallsSRVTape|WallsSRVComp|WallsSRVClino|Dx|Dy|Dz) < 0x100 ? 1 : -1];
+
+static const sztok walls_order_tab[] = {
+    {"AD",	WALLS_ORDER_CT(WallsSRVComp, WallsSRVTape, 0)},
+    {"ADV",	WALLS_ORDER_CT(WallsSRVComp, WallsSRVTape, WallsSRVClino)},
+    {"AVD",	WALLS_ORDER_CT(WallsSRVComp, WallsSRVClino, WallsSRVTape)},
+    {"DA",	WALLS_ORDER_CT(WallsSRVTape, WallsSRVComp, 0)},
+    {"DAV",	WALLS_ORDER_CT(WallsSRVTape, WallsSRVComp, WallsSRVClino)},
+    {"DVA",	WALLS_ORDER_CT(WallsSRVTape, WallsSRVClino, WallsSRVComp)},
+    {"EN",	WALLS_ORDER_RECT(Dx, Dy, 0)},
+    {"ENU",	WALLS_ORDER_RECT(Dx, Dy, Dz)},
+    {"EUN",	WALLS_ORDER_RECT(Dx, Dz, Dy)},
+    {"NE",	WALLS_ORDER_RECT(Dy, Dx, 0)},
+    {"NEU",	WALLS_ORDER_RECT(Dy, Dx, Dz)},
+    {"NUE",	WALLS_ORDER_RECT(Dy, Dz, Dx)},
+    {"UEN",	WALLS_ORDER_RECT(Dz, Dx, Dy)},
+    {"UNE",	WALLS_ORDER_RECT(Dz, Dy, Dx)},
+    {"VAD",	WALLS_ORDER_CT(WallsSRVClino, WallsSRVComp, WallsSRVTape)},
+    {"VDA",	WALLS_ORDER_CT(WallsSRVClino, WallsSRVTape, WallsSRVComp)},
+    {NULL,	-1}
+};
+
 // Walls seems to only document `/` but based on real-world use also allows
 // `\`.  FIXME: Check for each situation.
 static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
@@ -1327,12 +1355,17 @@ data_file_walls_srv(void)
     }
 #endif
 
-    reading data_order[] = {
+    reading data_order_ct[] = {
 	WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
 // FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
 	IgnoreAll
     };
-    pcs->ordering = data_order;
+    reading data_order_rect[] = {
+	WallsSRVFr, WallsSRVTo, Dx, Dy, Dz,
+// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
+	IgnoreAll
+    };
+    pcs->ordering = data_order_ct;
     while (ch != EOF && !ferror(file.fh)) {
 next_line:
 	skipblanks();
@@ -1619,44 +1652,30 @@ next_line:
 		    }
 		    break;
 		  case WALLS_UNITS_OPT_ORDER:
-		    // FIXME: Only valid combinations are:
-		    //
-		    // DAV DVA ADV AVD VDA VAD DA AD
-		    // ENU EUN NEU NUE UEN UNE EN NE
-		    //
-		    // We should vet these, or could just have pre-canned order
-		    // arrays, with the right one selected by a token lookup.
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
 			get_token();
-			int r = 2;
-			for (const char *p = ucbuffer; *p && r < 5; ++p) {
-			    switch (*p) {
-			      case 'D':
-				data_order[r++] = WallsSRVTape;
-				break;
-			      case 'A':
-				data_order[r++] = WallsSRVComp;
-				break;
-			      case 'V':
-				data_order[r++] = WallsSRVClino;
-				break;
-			      case 'E':
-				data_order[r++] = Dx;
-				break;
-			      case 'N':
-				data_order[r++] = Dy;
-				break;
-			      case 'U':
-				data_order[r++] = Dz;
-				break;
-			      default:
-				// FIXME: Error?
-				;
-			    }
+			int order = match_tok(walls_order_tab,
+					      TABSIZE(walls_order_tab));
+			if (order < 0) {
+			    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Data style “%s” unknown*/65, buffer);
+			    break;
 			}
-			data_order[r] = IgnoreAll;
+			reading* p;
+			if (order & (1 << 24)) {
+			    order &= ((1 << 24) - 1);
+			    // "RECT" order.
+			    p = data_order_rect + 2;
+			} else {
+			    // "CT" order.
+			    p = data_order_ct + 2;
+			}
+			while (order) {
+			    *p++ = (order & 0xff);
+			    order >>= 8;
+			}
+			*p = IgnoreAll;
 		    } else {
 			// FIXME: Error?
 		    }
@@ -1736,6 +1755,7 @@ next_line:
 			(void)read_numeric(false);
 		    } else {
 			pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
+			pcs->ordering = data_order_rect;
 		    }
 		    break;
 		  case WALLS_UNITS_OPT_CASE:
@@ -1766,6 +1786,7 @@ next_line:
 		    break;
 		  case WALLS_UNITS_OPT_CT:
 		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
+		    pcs->ordering = data_order_ct;
 		    break;
 		  case WALLS_UNITS_OPT_PREFIX:
 		    skipblanks();
@@ -1957,41 +1978,35 @@ next_line:
 	    break;
 	  }
 	  case WALLS_CMD_FIX: {
+	    real coords[3];
 	    prefix *name = read_prefix(PFX_STATION|PFX_ROOT);
-	    // FIXME: e.g. `#Units order=NEU` can change the order here.
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
-	    real x = read_numeric(false);
-	    if (ch == 'F' || ch == 'f') {
-		x *= METRES_PER_FOOT;
-		nextch();
-	    } else if (ch == 'M' || ch == 'm') {
-		nextch();
-	    } else {
-		x *= pcs->units[Q_LENGTH];
-	    }
 
-	    real y = read_numeric(false);
-	    if (ch == 'F' || ch == 'f') {
-		y *= METRES_PER_FOOT;
-		nextch();
-	    } else if (ch == 'M' || ch == 'm') {
-		nextch();
-	    } else {
-		y *= pcs->units[Q_LENGTH];
-	    }
+	    for (int i = 0; i < 3; ++i) {
+		// The order of the coordinates is specified by data_order_rect.
+		int compiletimeassert_dxdydz[Dy - Dx == 1 && Dz - Dy == 1 ? 1 : -1];
+		(void)compiletimeassert_dxdydz;
+		int dim = data_order_rect[i + 2] - Dx;
+		if ((unsigned)dim > 2) {
+		    // FIXME: Survex doesn't currently support horizontal-only
+		    // fixes.
+		    coords[2] = 0.0;
+		    break;
+		}
 
-	    real z = read_numeric(false);
-	    if (ch == 'F' || ch == 'f') {
-		z *= METRES_PER_FOOT;
-		nextch();
-	    } else if (ch == 'M' || ch == 'm') {
-		nextch();
-	    } else {
-		z *= pcs->units[Q_LENGTH];
-	    }
+		real coord = read_numeric(false);
+		if (ch == 'F' || ch == 'f') {
+		    coord *= METRES_PER_FOOT;
+		    nextch();
+		} else if (ch == 'M' || ch == 'm') {
+		    nextch();
+		} else {
+		    coord *= pcs->units[Q_LENGTH];
+		}
 
-	    // FIXME: Data order here is set by e.g. #Units order=NEU
+		coords[dim] = coord;
+	    }
 
 	    skipblanks();
 	    if (ch == '(') {
@@ -2015,14 +2030,14 @@ next_line:
 	    name->sflags |= BIT(SFLAGS_FIXED);
 	    node *stn = StnFromPfx(name);
 	    if (!fixed(stn)) {
-		POS(stn, 0) = x;
-		POS(stn, 1) = y;
-		POS(stn, 2) = z;
+		POS(stn, 0) = coords[0];
+		POS(stn, 1) = coords[1];
+		POS(stn, 2) = coords[2];
 		fix(stn);
 	    } else {
-		if (x != POS(stn, 0) ||
-		    y != POS(stn, 1) ||
-		    z != POS(stn, 2)) {
+		if (coords[0] != POS(stn, 0) ||
+		    coords[1] != POS(stn, 1) ||
+		    coords[2] != POS(stn, 2)) {
 		    compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
 		} else {
 		    compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
