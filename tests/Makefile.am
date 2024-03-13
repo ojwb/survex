@@ -41,6 +41,7 @@ includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\
+cmd_alias_bad.svx cmd_alias_bad.out\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
 cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.pos\
 cmd_entrance.svx\

@@ -1,0 +1,13 @@
+; pos=fail warn=0 error=4
+*fix 1 0 0 0
+; This '-' is an actual station
+1 - 1.00 090 0
+; typo
+*alias statoin - ..
+; invalid 2nd parameter
+*alias station _
+; invalid 2nd parameter
+*alias station = ..
+; invalid 3rd parameter
+*alias station - ...
+1 - 1.01 091 1

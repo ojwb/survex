@@ -734,18 +734,24 @@ cmd_alias(void)
     * *alias station -
     */
    get_token();
-   if (!S_EQ(&uctoken, "STATION"))
-      goto bad;
+   if (!S_EQ(&uctoken, "STATION")) {
+       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Bad *alias command*/397);
+       return;
+   }
+   filepos fp;
+   get_pos(&fp);
    get_word();
    if (!S_EQ(&word, "-"))
-      goto bad;
+      goto bad_word;
+   get_pos(&fp);
    get_word();
    if (!s_empty(&word) && !S_EQ(&word, ".."))
-      goto bad;
+      goto bad_word;
    pcs->dash_for_anon_wall_station = !s_empty(&word);
    return;
-bad:
-   compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Bad *alias command*/397);
+bad_word:
+   set_pos(&fp);
+   compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_WORD, /*Bad *alias command*/397);
 }
 
 static void
