@@ -1257,7 +1257,8 @@ handle_plumb(clino_type *p_ctype)
 }
 
 static void
-warn_readings_differ(int msgno, real diff, int units)
+warn_readings_differ(int msgno, real diff, int units,
+		     reading r_fore, reading r_back)
 {
    char buf[64];
    char *p;
@@ -1274,7 +1275,9 @@ warn_readings_differ(int msgno, real diff, int units)
       }
    }
    strcpy(p, get_units_string(units));
-   compile_diagnostic(DIAG_WARN, msgno, buf);
+   // FIXME: Highlight r_fore too.
+   (void)r_fore;
+   compile_diagnostic_reading(DIAG_WARN, r_back, msgno, buf);
 }
 
 static bool
@@ -1460,7 +1463,7 @@ handle_compass(real *p_var)
 	    /* TRANSLATORS: %s is replaced by the amount the readings disagree
 	     * by, e.g. "2.5°" or "3ᵍ". */
 	    warn_readings_differ(/*COMPASS reading and BACKCOMPASS reading disagree by %s*/98,
-				 diff, get_angle_units(Q_BEARING));
+				 diff, get_angle_units(Q_BEARING), Comp, BackComp);
 	 }
 	 comp = (comp / compvar + backcomp / VAR(BackComp));
 	 compvar = (compvar + VAR(BackComp)) / 4;
@@ -1648,7 +1651,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 		  /* TRANSLATORS: %s is replaced by the amount the readings disagree
 		   * by, e.g. "2.5°" or "3ᵍ". */
 		  warn_readings_differ(/*CLINO reading and BACKCLINO reading disagree by %s*/99,
-				       clin + backclin, get_angle_units(Q_GRADIENT));
+				       clin + backclin, get_angle_units(Q_GRADIENT), Clino, BackClino);
 	       }
 	       clin = (clin / var_clin - backclin / VAR(BackClino));
 	       var_clin = (var_clin + VAR(BackClino)) / 4;
@@ -2258,7 +2261,7 @@ data_normal(void)
 		      /* TRANSLATORS: %s is replaced by the amount the readings disagree
 		       * by, e.g. "0.12m" or "0.2ft". */
 		      warn_readings_differ(/*TAPE reading and BACKTAPE reading disagree by %s*/97,
-					   diff, get_length_units(Q_LENGTH));
+					   diff, get_length_units(Q_LENGTH), Tape, BackTape);
 		   }
 		   VAL(Tape) = VAL(Tape) / VAR(Tape) + VAL(BackTape) / VAR(BackTape);
 		   VAR(Tape) = (VAR(Tape) + VAR(BackTape)) / 4;
@@ -2380,7 +2383,7 @@ data_normal(void)
 		      /* TRANSLATORS: %s is replaced by the amount the readings disagree
 		       * by, e.g. "0.12m" or "0.2ft". */
 		      warn_readings_differ(/*TAPE reading and BACKTAPE reading disagree by %s*/97,
-					   diff, get_length_units(Q_LENGTH));
+					   diff, get_length_units(Q_LENGTH), Tape, BackTape);
 		   }
 		   VAL(Tape) = VAL(Tape) / VAR(Tape) + VAL(BackTape) / VAR(BackTape);
 		   VAR(Tape) = (VAR(Tape) + VAR(BackTape)) / 4;
