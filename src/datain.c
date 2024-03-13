@@ -271,45 +271,42 @@ compile_diagnostic(int diag_flags, int en, ...)
    va_list ap;
    va_start(ap, en);
    if (diag_flags & (DIAG_TOKEN|DIAG_UINT|DIAG_DATE|DIAG_NUM)) {
-      string p = S_INIT;
+      int len = 0;
       skipblanks();
       if (diag_flags & DIAG_TOKEN) {
 	 while (!isBlank(ch) && !isEol(ch)) {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
       } else if (diag_flags & DIAG_UINT) {
 	 while (isdigit(ch)) {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
       } else if (diag_flags & DIAG_DATE) {
 	 while (isdigit(ch) || ch == '.') {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
       } else {
 	 if (isMinus(ch) || isPlus(ch)) {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
 	 while (isdigit(ch)) {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
 	 if (isDecimal(ch)) {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
 	 while (isdigit(ch)) {
-	    s_catchar(&p, (char)ch);
+	    ++len;
 	    nextch();
 	 }
       }
-      if (!s_empty(&p)) {
-	 caret_width = s_len(&p);
-	 s_free(&p);
-      }
+      caret_width = len;
       compile_v_report(diag_flags|DIAG_COL, en, ap);
       caret_width = 0;
    } else if (diag_flags & DIAG_STRING) {
