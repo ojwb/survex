@@ -1280,12 +1280,15 @@ warn_readings_differ(int msgno, real diff, int units,
    compile_diagnostic_reading(DIAG_WARN, r_back, msgno, buf);
 }
 
-static bool
+// If one (or both) compass readings are given, return Comp or BackComp
+// so we can report plumb legs with compass readings.  If neither are,
+// return End.
+static reading
 handle_comp_units(void)
 {
-   bool fNoComp = true;
+   reading which_comp = End;
    if (VAL(Comp) != HUGE_REAL) {
-      fNoComp = false;
+      which_comp = Comp;
       VAL(Comp) *= pcs->units[Q_BEARING];
       if (VAL(Comp) < (real)0.0 || VAL(Comp) - M_PI * 2.0 > EPSILON) {
 	 /* TRANSLATORS: Suspicious means something like 410 degrees or -20
@@ -1295,7 +1298,7 @@ handle_comp_units(void)
       }
    }
    if (VAL(BackComp) != HUGE_REAL) {
-      fNoComp = false;
+      if (which_comp == End) which_comp = BackComp;
       VAL(BackComp) *= pcs->units[Q_BACKBEARING];
       if (VAL(BackComp) < (real)0.0 || VAL(BackComp) - M_PI * 2.0 > EPSILON) {
 	 /* FIXME: different message for BackComp? */
@@ -1303,7 +1306,7 @@ handle_comp_units(void)
 	 VAL(BackComp) = mod2pi(VAL(BackComp));
       }
    }
-   return fNoComp;
+   return which_comp;
 }
 
 static real compute_convergence(real lon, real lat) {
@@ -1544,15 +1547,13 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    real cxy, cyz, czx;
 #endif
 
-   bool fNoComp;
-
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
       /* TRANSLATE different message for topofil? */
       compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative adjusted tape reading*/79);
    }
 
-   fNoComp = handle_comp_units();
+   reading comp_given = handle_comp_units();
 
    if (ctype == CTYPE_READING) {
       clin = handle_clino(Q_GRADIENT, Clino, clin,
@@ -1580,16 +1581,15 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    if (ctype == CTYPE_PLUMB || ctype == CTYPE_INFERPLUMB ||
        backctype == CTYPE_PLUMB || backctype == CTYPE_INFERPLUMB) {
       /* plumbed */
-      if (!fNoComp) {
+      if (comp_given != End) {
 	 if (ctype == CTYPE_PLUMB ||
 	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
 	     backctype == CTYPE_PLUMB ||
 	     (backctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
-	    /* FIXME: Different message for BackComp? */
 	    /* TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 	     * (a weight on a string).  So the problem here is that the leg is
 	     * vertical, so a compass reading has no meaning! */
-	    compile_diagnostic(DIAG_WARN, /*Compass reading given on plumbed leg*/21);
+	    compile_diagnostic_reading(DIAG_WARN, comp_given, /*Compass reading given on plumbed leg*/21);
 	 }
       }
 
@@ -1616,7 +1616,7 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
        * or CTYPE_OMIT */
       /* clino */
       real L2, cosG, LcosG, cosG2, sinB, cosB, dx2, dy2, dz2, v, V;
-      if (fNoComp) {
+      if (comp_given == End) {
 	 /* TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 	  * survey stations. */
 	 compile_error_reading_skip(Comp, /*Compass reading may not be omitted except on plumbed legs*/14);
