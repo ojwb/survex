@@ -59,7 +59,7 @@ multinormalbad.svx multibug.svx\
 cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\
 cartes.svx cartes.pos cartes.out\
-diving.svx diving.pos\
+diving.svx diving.pos diving.out\
 cylpolar.svx cylpolar.pos\
 normal.svx normal.pos\
 normal_bad.svx normal_bad.out\

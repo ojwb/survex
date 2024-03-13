@@ -1763,7 +1763,7 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
-      compile_diagnostic(DIAG_WARN, /*Negative adjusted tape reading*/79);
+      compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative adjusted tape reading*/79);
    }
 
    /* check if tape is less than depth change */
@@ -1774,7 +1774,7 @@ process_diving(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
        * It could be a gross error (e.g. the decimal point is missing from the
        * depth gauge reading) or it could just be due to random error on a near
        * vertical leg */
-      compile_diagnostic(DIAG_WARN, /*Tape reading is less than change in depth*/62);
+      compile_diagnostic_reading(DIAG_WARN, Tape, /*Tape reading is less than change in depth*/62);
    }
 
    if (tape == (real)0.0 && dz == 0.0) {
@@ -1959,7 +1959,7 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 
    /* adjusted tape is negative -- probably the calibration is wrong */
    if (tape < (real)0.0) {
-      compile_diagnostic(DIAG_WARN, /*Negative adjusted tape reading*/79);
+      compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative adjusted tape reading*/79);
    }
 
    if (VAL(Comp) == HUGE_REAL && VAL(BackComp) == HUGE_REAL) {
