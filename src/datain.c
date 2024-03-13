@@ -1129,12 +1129,14 @@ static const sztok walls_cmd_tab[] = {
     {"DATE",	WALLS_CMD_DATE},
     {"F",	WALLS_CMD_FLAG}, // Abbreviated form.
     {"FIX",	WALLS_CMD_FIX},
-    {"F",	WALLS_CMD_FLAG}, // Abbreviated form.
     {"FLAG",	WALLS_CMD_FLAG},
     {"N",	WALLS_CMD_NOTE}, // Abbreviated form.
     {"NOTE",	WALLS_CMD_NOTE},
     {"P",	WALLS_CMD_PREFIX}, // Abbreviated form.
     {"PREFIX",	WALLS_CMD_PREFIX},
+    {"PREFIX1",	WALLS_CMD_PREFIX}, // Alias.
+    // FIXME: PREFIX2
+    // FIXME: PREFIX3
     {"S",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEG",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEGMENT",	WALLS_CMD_SEGMENT},
@@ -1188,6 +1190,7 @@ static const sztok walls_units_opt_tab[] = {
     {"CT",	WALLS_UNITS_OPT_CT},
     {"D",	WALLS_UNITS_OPT_D},
     {"DECL",	WALLS_UNITS_OPT_DECL},
+    {"F",	WALLS_UNITS_OPT_FEET}, // Abbreviated form.
     {"FEET",	WALLS_UNITS_OPT_FEET},
     {"FLAG",	WALLS_UNITS_OPT_FLAG},
     // FIXME: GRID=
@@ -1198,10 +1201,12 @@ static const sztok walls_units_opt_tab[] = {
     {"INCV",	WALLS_UNITS_OPT_INCV},
     {"INCVB",	WALLS_UNITS_OPT_INCVB},
     {"LRUD",	WALLS_UNITS_OPT_LRUD},
+    {"M",	WALLS_UNITS_OPT_METERS}, // Abbreviated form.
     {"METERS",	WALLS_UNITS_OPT_METERS},
     {"NOTE",	WALLS_UNITS_OPT_NOTE},
     {"O",	WALLS_UNITS_OPT_ORDER}, // Abbreviated form.
     {"ORDER",	WALLS_UNITS_OPT_ORDER},
+    {"P",	WALLS_UNITS_OPT_PREFIX}, // Abbreviated form.
     {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
     {"PREFIX1",	WALLS_UNITS_OPT_PREFIX}, // Alias.
     // FIXME: PREFIX2=
