@@ -1792,23 +1792,26 @@ next_line:
 		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
 		    pcs->ordering = data_order_ct;
 		    break;
-		  case WALLS_UNITS_OPT_PREFIX:
+		  case WALLS_UNITS_OPT_PREFIX: {
+		    char *new_prefix = NULL;
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			pcs->Prefix = read_prefix(PFX_SURVEY|PFX_ROOT|PFX_OPT);
-			if (!pcs->Prefix) pcs->Prefix = root;
-		    } else {
-			// FIXME: Anything to do?
+			new_prefix = read_walls_prefix();
 		    }
+		    osfree(walls_prefix);
+		    walls_prefix = new_prefix;
 		    break;
 		  case WALLS_UNITS_OPT_LRUD:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			(void)read_prefix(PFX_SURVEY);
 			// We currently ignore LRUD, so can also ignore the
 			// settings for it.
+			char *val = NULL;
+			int len;
+			read_string(&val, &len);
+			osfree(val);
 		    } else {
 			// FIXME: Anything to do?
 		    }
@@ -1999,7 +2002,7 @@ next_line:
 	  }
 	  case WALLS_CMD_FIX: {
 	    real coords[3];
-	    prefix *name = read_prefix(PFX_STATION|PFX_ROOT);
+	    prefix *name = read_walls_station(walls_prefix, false);
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
 
@@ -2131,7 +2134,7 @@ next_line:
 		    get_pos(&fp_end);
 		    set_pos(&fp);
 		    while (!isWallsSlash(ch)) {
-			prefix *name = read_prefix(PFX_STATION|PFX_ROOT);
+			prefix *name = read_walls_station(walls_prefix, false);
 			name->sflags |= station_flags;
 			skipblanks();
 		    }
@@ -2140,10 +2143,12 @@ next_line:
 	    }
 	    break;
 	  }
-	  case WALLS_CMD_PREFIX:
-	    pcs->Prefix = read_prefix(PFX_SURVEY|PFX_ROOT|PFX_OPT);
-	    if (!pcs->Prefix) pcs->Prefix = root;
+	  case WALLS_CMD_PREFIX: {
+	    char *new_prefix = read_walls_prefix();
+	    osfree(walls_prefix);
+	    walls_prefix = new_prefix;
 	    break;
+	  }
 	  case WALLS_CMD_NOTE:
 	    // A text note attached to a station - ignore for now.
 	    skipline();
@@ -3038,7 +3043,7 @@ data_cartesian(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
+	  fr = read_walls_station(walls_prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -3048,7 +3053,7 @@ data_cartesian(void)
 	  }
 	  break;
        case WallsSRVTo:
-	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
+	  to = read_walls_station(walls_prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
@@ -3378,7 +3383,7 @@ data_normal(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
+	  fr = read_walls_station(walls_prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -3388,7 +3393,7 @@ data_normal(void)
 	  }
 	  break;
        case WallsSRVTo:
-	  to = read_prefix(PFX_STATION|PFX_ANON|PFX_ROOT);
+	  to = read_walls_station(walls_prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.  Ignore

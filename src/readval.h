@@ -43,6 +43,10 @@ enum {
 
 prefix *read_prefix(unsigned flags);
 
+char *read_walls_prefix(void);
+
+prefix *read_walls_station(const char* prefix, bool anon_allowed);
+
 real read_numeric(bool f_optional);
 real read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings);
 real read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings);
