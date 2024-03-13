@@ -1120,6 +1120,7 @@ typedef enum {
     WALLS_CMD_NOTE,
     WALLS_CMD_PREFIX,
     WALLS_CMD_SEGMENT,
+    WALLS_CMD_SYMBOL,
     WALLS_CMD_UNITS,
     WALLS_CMD_NULL = -1
 } walls_cmd;
@@ -1137,6 +1138,8 @@ static const sztok walls_cmd_tab[] = {
     {"S",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEG",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEGMENT",	WALLS_CMD_SEGMENT},
+    {"SYM",	WALLS_CMD_SYMBOL},
+    {"SYMBOL",	WALLS_CMD_SYMBOL},
     {"U",	WALLS_CMD_UNITS}, // Abbreviated form.
     {"UNITS",	WALLS_CMD_UNITS},
     {NULL,	WALLS_CMD_NULL}
@@ -2143,6 +2146,11 @@ next_line:
 	  case WALLS_CMD_SEGMENT:
 	    // "Segments are optional and have no affect on the compilation of
 	    // survey data" so ignore for now.
+	    skipline();
+	    break;
+	  case WALLS_CMD_SYMBOL:
+	    // Now to draw symbols.  Not really appropriate here as this is
+	    // presentation information, so we just ignore it.
 	    skipline();
 	    break;
 	  case WALLS_CMD_NULL:
