@@ -73,7 +73,7 @@ char* grab_line(void);
 // Call skipline() after reporting the diagnostic:
 #define DIAG_SKIP	0x08
 // Set caret_width to s_len(&token):
-#define DIAG_BUF	0x10
+#define DIAG_TOKEN	0x10
 // The following codes say to parse and discard a value from the current file
 // position - caret_width is set to its length:
 #define DIAG_WORD	0x20	// Span of non-blanks.

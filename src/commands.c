@@ -420,7 +420,7 @@ get_units(unsigned long qmask, bool percent_ok)
    get_token();
    units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown units “%s”*/35,
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown units “%s”*/35,
 			 s_str(&token));
       return UNITS_NULL;
    }
@@ -431,7 +431,7 @@ get_units(unsigned long qmask, bool percent_ok)
     * use by cave surveyors, so we now just warn if mils are used.
     */
    if (units == UNITS_DEPRECATED_ALIAS_FOR_GRADS) {
-      compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP,
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP,
 			 /*Units “%s” are deprecated, assuming “grads” - see manual for details*/479,
 			 s_str(&token));
       units = UNITS_GRADS;
@@ -449,7 +449,7 @@ get_units(unsigned long qmask, bool percent_ok)
       /* TRANSLATORS: Note: In English you talk about the *units* of a single
        * measurement, but the correct term in other languages may be singular.
        */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Invalid units “%s” for quantity*/37, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Invalid units “%s” for quantity*/37, s_str(&token));
       return UNITS_NULL;
    }
    return units;
@@ -513,7 +513,7 @@ get_qlist(unsigned long mask_bad)
       if (tok == Q_NULL) break;
       qmask |= BIT(tok);
       if (qmask & mask_bad) {
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown instrument “%s”*/39, s_str(&token));
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown instrument “%s”*/39, s_str(&token));
 	 return 0;
       }
    }
@@ -521,7 +521,7 @@ get_qlist(unsigned long mask_bad)
    if (qmask == 0) {
       /* TRANSLATORS: A "quantity" is something measured like "LENGTH",
        * "BEARING", "ALTITUDE", etc. */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown quantity “%s”*/34, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown quantity “%s”*/34, s_str(&token));
    } else {
       set_pos(&fp);
    }
@@ -558,7 +558,7 @@ cmd_set(void)
    mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown character class “%s”*/42,
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown character class “%s”*/42,
 			 s_str(&token));
       return;
    }
@@ -573,7 +573,7 @@ cmd_set(void)
 	  *
 	  * If you're unsure what "deprecated" means, see:
 	  * https://en.wikipedia.org/wiki/Deprecation */
-	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*ROOT is deprecated*/25);
+	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	     /* TRANSLATORS: If you're unsure what "deprecated" means, see:
 	      * https://en.wikipedia.org/wiki/Deprecation */
@@ -715,7 +715,7 @@ cmd_prefix(void)
    if (prefix_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_BUF, /**prefix is deprecated - use *begin and *end instead*/6);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
 	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
    }
@@ -1235,7 +1235,7 @@ cmd_flags(void)
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF, /*FLAG “%s” unknown*/68,
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*FLAG “%s” unknown*/68,
 			    s_str(&token));
 	 /* Recover from “*FLAGS NOT BOGUS SURFACE” by ignoring "NOT BOGUS" */
 	 fNot = false;
@@ -1250,9 +1250,9 @@ cmd_flags(void)
    }
 
    if (fNot) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
    } else if (fEmpty) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
    }
 }
 
@@ -1507,7 +1507,7 @@ cmd_data(void)
 	 goto reinit_style;
       }
       /* TRANSLATORS: e.g. trying to refer to an invalid FNORD data style */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
       return;
    }
 
@@ -1518,7 +1518,7 @@ cmd_data(void)
    if (isOmit(ch)) {
       static int data_depr_count = 0;
       if (data_depr_count < 5) {
-	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
+	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
 			    s_str(&token), ch, s_str(&token));
 	 if (++data_depr_count == 5)
 	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
@@ -1549,7 +1549,7 @@ cmd_data(void)
 	  * This error complains about a "DEPTH" gauge reading in "NORMAL"
 	  * style, for example.
 	  */
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
 			    s_str(&token), style_name);
 	 osfree(style_name);
@@ -1562,7 +1562,7 @@ cmd_data(void)
 	  * *data diving station newline depth tape compass
 	  *
 	  * ("depth" needs to occur before "newline"). */
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” must occur before NEWLINE*/225, s_str(&token));
 	 osfree(style_name);
 	 osfree(new_order);
@@ -1575,7 +1575,7 @@ cmd_data(void)
 	 if (TSTBIT(mUsed, d)) {
 	    /* TRANSLATORS: complains about a situation like trying to define
 	     * two from stations per leg */
-	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Duplicate reading “%s”*/67, s_str(&token));
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Duplicate reading “%s”*/67, s_str(&token));
 	    osfree(style_name);
 	    osfree(new_order);
 	    return;
@@ -1614,7 +1614,7 @@ cmd_data(void)
 		  /* TRANSLATORS: e.g.
 		   *
 		   * *data normal from to tape newline compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1623,7 +1623,7 @@ cmd_data(void)
 		  /* TRANSLATORS: error from:
 		   *
 		   * *data normal newline from to tape compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1639,7 +1639,7 @@ cmd_data(void)
 		* valid as the list of readings has already included the same
 		* reading, or an equivalent one (e.g. you can't have both
 		* DEPTH and DEPTHCHANGE together). */
-	       compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
+	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
 				  s_str(&token));
 	       osfree(style_name);
 	       osfree(new_order);
@@ -1664,7 +1664,7 @@ cmd_data(void)
       /* TRANSLATORS: error from:
        *
        * *data normal from to tape compass clino newline */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1950,7 +1950,7 @@ cmd_default(void)
       default_units(pcs);
       break;
     default:
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown setting “%s”*/41,
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown setting “%s”*/41,
 			 s_str(&token));
    }
 }
@@ -2051,7 +2051,7 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10, s_str(&token));
    }
 }
 
@@ -2409,13 +2409,13 @@ cmd_infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == INFER_NULL) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, s_str(&token));
       return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “ON” or “OFF”*/32, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “ON” or “OFF”*/32, s_str(&token));
       return;
    }
 
@@ -2621,7 +2621,7 @@ handle_command(void)
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
       return;
    }
 

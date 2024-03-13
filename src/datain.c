@@ -244,11 +244,11 @@ static void
 compile_v_report(int diag_flags, int en, va_list ap)
 {
    int severity = (diag_flags & DIAG_SEVERITY_MASK);
-   if (diag_flags & (DIAG_COL|DIAG_BUF)) {
+   if (diag_flags & (DIAG_COL|DIAG_TOKEN)) {
       if (file.fh) {
-	 if (diag_flags & DIAG_BUF) caret_width = s_len(&token);
+	 if (diag_flags & DIAG_TOKEN) caret_width = s_len(&token);
 	 compile_v_report_fpos(severity, ftell(file.fh), en, ap);
-	 if (diag_flags & DIAG_BUF) caret_width = 0;
+	 if (diag_flags & DIAG_TOKEN) caret_width = 0;
 	 if (diag_flags & DIAG_SKIP) skipline();
 	 return;
       }
@@ -256,7 +256,7 @@ compile_v_report(int diag_flags, int en, va_list ap)
    error_list_parent_files();
    v_report(severity, file.filename, file.line, 0, en, ap);
    if (file.fh) {
-      if (diag_flags & DIAG_BUF) {
+      if (diag_flags & DIAG_TOKEN) {
 	 show_line(0, s_len(&token));
       } else {
 	 show_line(0, caret_width);
@@ -2068,7 +2068,7 @@ data_normal(void)
 	     fRev = true;
 	     break;
 	   default:
-	     compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “F” or “B”*/131, s_str(&token));
+	     compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “F” or “B”*/131, s_str(&token));
 	     process_eol();
 	     return;
 	  }
