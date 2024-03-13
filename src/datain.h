@@ -68,14 +68,19 @@ char* grab_line(void);
 
 /* The severity values are defined in message.h. */
 #define DIAG_SEVERITY_MASK 0x03
+// Report column number based of the current file position.
 #define DIAG_COL	0x04
+// Call skipline() after reporting the diagnostic:
 #define DIAG_SKIP	0x08
+// Set caret_width to s_len(&token):
 #define DIAG_BUF	0x10
-#define DIAG_TOKEN	0x20
-#define DIAG_UINT	0x40
-#define DIAG_DATE	0x80
-#define DIAG_NUM	0x100
-#define DIAG_STRING	0x200
+// The following codes say to parse and discard a value from the current file
+// position - caret_width is set to its length:
+#define DIAG_WORD	0x20	// Span of non-blanks.
+#define DIAG_UINT	0x40	// Span of digits.
+#define DIAG_DATE	0x80	// Span of digits and full stops.
+#define DIAG_NUM	0x100	// Real number.
+#define DIAG_STRING	0x200	// Possibly quoted string value.
 
 void compile_diagnostic(int flags, int en, ...);
 
