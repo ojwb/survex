@@ -1150,6 +1150,7 @@ typedef enum {
     WALLS_UNITS_OPT_D,
     WALLS_UNITS_OPT_DECL,
     WALLS_UNITS_OPT_FEET,
+    WALLS_UNITS_OPT_FLAG,
     WALLS_UNITS_OPT_INCA,
     WALLS_UNITS_OPT_INCAB,
     WALLS_UNITS_OPT_INCD,
@@ -1158,6 +1159,7 @@ typedef enum {
     WALLS_UNITS_OPT_INCVB,
     WALLS_UNITS_OPT_LRUD,
     WALLS_UNITS_OPT_METERS,
+    WALLS_UNITS_OPT_NOTE,
     WALLS_UNITS_OPT_ORDER,
     WALLS_UNITS_OPT_PREFIX,
     WALLS_UNITS_OPT_RECT,
@@ -1184,7 +1186,7 @@ static const sztok walls_units_opt_tab[] = {
     {"D",	WALLS_UNITS_OPT_D},
     {"DECL",	WALLS_UNITS_OPT_DECL},
     {"FEET",	WALLS_UNITS_OPT_FEET},
-    // FIXME: FLAG=, FLAG
+    {"FLAG",	WALLS_UNITS_OPT_FLAG},
     // FIXME: GRID=
     {"INCA",	WALLS_UNITS_OPT_INCA},
     {"INCAB",	WALLS_UNITS_OPT_INCAB},
@@ -1194,7 +1196,7 @@ static const sztok walls_units_opt_tab[] = {
     {"INCVB",	WALLS_UNITS_OPT_INCVB},
     {"LRUD",	WALLS_UNITS_OPT_LRUD},
     {"METERS",	WALLS_UNITS_OPT_METERS},
-    // FIXME: NOTE=
+    {"NOTE",	WALLS_UNITS_OPT_NOTE},
     {"O",	WALLS_UNITS_OPT_ORDER}, // Abbreviated form.
     {"ORDER",	WALLS_UNITS_OPT_ORDER},
     {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
@@ -1496,8 +1498,11 @@ next_line:
 		if (!buffer[0] && isComm(ch)) {
 		    break;
 		}
-		switch (match_tok(walls_units_opt_tab,
-				  TABSIZE(walls_units_opt_tab))) {
+		// Assign to typed variable so we get a warning if we are
+		// missing a case below.
+		walls_units_opt opt = match_tok(walls_units_opt_tab,
+						TABSIZE(walls_units_opt_tab));
+		switch (opt) {
 		  case WALLS_UNITS_OPT_METERS:
 		    pcs->units[Q_LENGTH] =
 			pcs->units[Q_DX] =
@@ -1881,6 +1886,22 @@ next_line:
 			(void)read_numeric(false);
 		    } else {
 			// FIXME: Anything to do?
+		    }
+		    break;
+		  case WALLS_UNITS_OPT_FLAG:
+		  case WALLS_UNITS_OPT_NOTE:
+		    // Currently ignored.
+		    // FIXME: FLAG= ought to get mapped like #FLAG.
+		    skipblanks();
+		    if (ch == '=') {
+			nextch();
+			char *val = NULL;
+			int len;
+			read_string(&val, &len);
+			osfree(val);
+		    } else {
+			// FIXME: FLAG alone clears the default flag name.
+			// FIXME: Anything to do for NOTE?  Error?
 		    }
 		    break;
 		  case WALLS_UNITS_OPT_RESET:
