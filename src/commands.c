@@ -1004,8 +1004,9 @@ cmd_fix(void)
    static const char * name_omit_already_filename = NULL;
    static unsigned int name_omit_already_line;
    real x, y, z;
-   filepos fp;
+   filepos fp_stn, fp;
 
+   get_pos(&fp_stn);
    fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
 
@@ -1210,12 +1211,15 @@ cmd_fix(void)
       return;
    }
 
+   get_pos(&fp);
+   set_pos(&fp_stn);
    if (x != POS(stn, 0) || y != POS(stn, 1) || z != POS(stn, 2)) {
-      compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
-      return;
+       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Station already fixed or equated to a fixed point*/46);
+   } else {
+       /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
+       compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
    }
-   /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
-   compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
+   set_pos(&fp);
 }
 
 static void
@@ -1903,12 +1907,19 @@ cmd_declination(void)
 	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or “AUTO”*/309);
 	    return;
 	}
+	filepos fp_auto;
+	get_pos(&fp_auto);
+
 	/* *declination auto X Y Z */
 	real x = read_numeric(false);
 	real y = read_numeric(false);
 	real z = read_numeric(false);
 	if (!pcs->proj_str) {
-	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
+	    filepos fp;
+	    get_pos(&fp);
+	    set_pos(&fp_auto);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
+	    set_pos(&fp);
 	    return;
 	}
 	set_declination_location(x, y, z, pcs->proj_str);

@@ -26,7 +26,8 @@ require_fail.svx\
 extend.svx extendx.3d\
 revcomplist.svx\
 exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
-exporterr6.svx exporterr1b.svx exporterr2b.svx exporterr3b.svx exporterr6b.svx\
+exporterr6.svx exporterr1b.svx exporterr1b.out exporterr2b.svx\
+exporterr3b.svx exporterr6b.svx\
 hanging_cpt.svx\
 self_loop.svx self_eq_loop.svx\
 badinc.out badinc.svx\
@@ -113,6 +114,7 @@ cmd_date.svx cmd_date.out cmd_datebad.svx cmd_datebad.out cmd_datebad2.svx cmd_d
 cmd_calibrate.svx cmd_calibrate.out cmd_calibrate.pos\
 cmd_declination.svx cmd_declination.out cmd_declination.pos\
 cmd_declination_auto.svx cmd_declination_auto.out cmd_declination_auto.pos\
+cmd_declination_auto_bad.svx cmd_declination_auto_bad.out\
 cmd_declination_conv.out cmd_declination_conv.pos cmd_declination_conv.svx\
 cmd_declination_conv_proj_bug.out cmd_declination_conv_proj_bug.pos cmd_declination_conv_proj_bug.svx\
 unconnected-bug.svx unconnected-bug.out\
