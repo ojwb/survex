@@ -1074,14 +1074,6 @@ walls_set_macro(walls_macro ***table, const char *name, char *val)
 	*table = osmalloc(WALLS_MACRO_HASH_SIZE * ossizeof(walls_macro*));
 	for (size_t i = 0; i < WALLS_MACRO_HASH_SIZE; i++)
 	    (*table)[i] = NULL;
-	// FIXME: At what point do we free macros?  You can define them in the
-	// WPJ it seems, so they can't be cleared after each .srv, though they
-	// could be reset to the state before that file).  Docs don't seem to
-	// say anything.  We ought to clear after each WPJ (or before for a
-	// lazy releasing?) at least as carrying between separate datasets
-	// doesn't make much sense, though given you can't reference an
-	// undefined macro in practice it makes no difference for a valid
-	// dataset except the overhead of having more macros around.
     }
 
     unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
@@ -1185,7 +1177,6 @@ typedef enum {
 } walls_units_opt;
 
 static const sztok walls_units_opt_tab[] = {
-    // FIXME: $name=
     {"A",	WALLS_UNITS_OPT_A},
     {"AB",	WALLS_UNITS_OPT_AB},
     {"CASE",	WALLS_UNITS_OPT_CASE},
