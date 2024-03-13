@@ -161,7 +161,8 @@ for file in $TESTS ; do
       warn=0
       ;;
     nonexistent_file*|ONELEG)
-      # We exit before the error count.
+      # These testcase files don't exist (or for ONELEG exist with a different
+      # case).  They all have the same settings.
       pos=fail
       ;;
     *)
