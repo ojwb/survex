@@ -270,10 +270,10 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_TOKEN|DIAG_UINT|DIAG_DATE|DIAG_NUM)) {
+   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD)) {
       int len = 0;
       skipblanks();
-      if (diag_flags & DIAG_TOKEN) {
+      if (diag_flags & DIAG_WORD) {
 	 while (!isBlank(ch) && !isEol(ch)) {
 	    ++len;
 	    nextch();

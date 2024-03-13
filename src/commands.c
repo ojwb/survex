@@ -667,7 +667,7 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        *
        * If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Reentering an existing survey is deprecated*/29);
+      compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Reentering an existing survey is deprecated*/29);
       set_pos(&fp_tmp);
       /* TRANSLATORS: The second of two warnings given when a survey which has
        * already been completed is reentered.  This example file crawl.svx:
@@ -959,11 +959,11 @@ cmd_end(void)
 	     * *begin
 	     * 1 2 10.00 178 -01
 	     * *end entrance      <--[Message given here] */
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Matching BEGIN command has no survey name*/36);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Matching BEGIN command has no survey name*/36);
 	 } else {
 	    /* TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 	     * same <survey> if it’s given at all */
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Survey name doesn’t match BEGIN*/193);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Survey name doesn’t match BEGIN*/193);
 	 }
 	 skipline();
       } else {
@@ -1276,7 +1276,7 @@ cmd_equate(void)
 	     *
 	     * Here "station" is a survey station, not a train station.
 	     */
-	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Only one station in EQUATE command*/33);
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_WORD, /*Only one station in EQUATE command*/33);
 	 }
 	 return;
       }
@@ -1782,7 +1782,7 @@ cmd_units(void)
        * meaningless to say your tape is marked in "0 feet" (but you might
        * measure distance by counting knots on a diving line, and tie them
        * every "2 feet"). */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /**UNITS factor must be non-zero*/200);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /**UNITS factor must be non-zero*/200);
       skipline();
       return;
    }
@@ -1867,7 +1867,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: DECLINATION is a built-in keyword, so best not to
        * translate */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be 1.0 for DECLINATION*/40);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Scale factor must be 1.0 for DECLINATION*/40);
       skipline();
       return;
    }
@@ -1875,7 +1875,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: If the scale factor for an instrument is zero, then any
        * reading would be mapped to zero, which doesn't make sense. */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be non-zero*/391);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Scale factor must be non-zero*/391);
       skipline();
       return;
    }
@@ -2559,7 +2559,7 @@ cmd_date(void)
 
     if (days2 < days1) {
 	set_pos(&fp);
-	compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*End of date range is before the start*/81);
+	compile_diagnostic(DIAG_ERR|DIAG_WORD, /*End of date range is before the start*/81);
 	int tmp = days1;
 	days1 = days2;
 	days2 = tmp;

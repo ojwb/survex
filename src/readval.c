@@ -120,7 +120,7 @@ read_prefix(unsigned pfx_flags)
 	     */
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 	       set_pos(&here);
-	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
+	       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/3);
 	       LONGJMP(file.jbSkipLine);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -136,7 +136,7 @@ read_prefix(unsigned pfx_flags)
 anon_wall_station:
 	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		  set_pos(&here);
-		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
+		  compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/3);
 		  LONGJMP(file.jbSkipLine);
 	       }
 	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -154,7 +154,7 @@ anon_wall_station:
 		   */
 		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		     set_pos(&here);
-		     compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
+		     compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/3);
 		     LONGJMP(file.jbSkipLine);
 		  }
 		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
