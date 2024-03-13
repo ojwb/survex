@@ -1,7 +1,7 @@
-In file included from ./utm.mak:5:
+In file included from ./utm.mak:6:
 ./backread.dat:22: warning: No survey date specified - using 0 for magnetic declination
   C1 B1 3.281 90 1 1 1 1 1 270 -1
-./utm.mak:1: info: Declination: 22.1dg @ 1986-10-13 / 22.4dg @ 1999-12-01, grid convergence: -6.4dg
+./utm.mak:2: info: Declination: 22.1dg @ 1986-10-13 / 22.4dg @ 1999-12-01, grid convergence: -6.4dg
  @1314000.0,5428000.0,50.0,-60,0.0;
 
 Removing trailing traverses...
