@@ -841,6 +841,8 @@ data_file_compass_mak(void)
 	      while (ch != ';' && ch != EOF) {
 		  prefix *name;
 		  nextch_handling_eol();
+		  filepos fp_name;
+		  get_pos(&fp_name);
 		  name = read_prefix(PFX_STATION|PFX_OPT);
 		  if (name) {
 		      scan_compass_station_name(name);
@@ -862,7 +864,7 @@ data_file_compass_mak(void)
 			  } else if (ch == 'M' || ch == 'm') {
 			      nextch_handling_eol();
 			  } else {
-			      compile_diagnostic(DIAG_ERR, /*Expecting “F” or “M”*/103);
+			      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “F” or “M”*/103);
 			  }
 			  while (!isdigit(ch) && ch != '+' && ch != '-' &&
 				 ch != '.' && ch != ']' && ch != EOF) {
@@ -891,13 +893,17 @@ data_file_compass_mak(void)
 			      POS(stn, 2) = z;
 			      fix(stn);
 			  } else {
+			      filepos fp;
+			      get_pos(&fp);
+			      set_pos(&fp_name);
 			      if (x != POS(stn, 0) ||
 				  y != POS(stn, 1) ||
 				  z != POS(stn, 2)) {
-				  compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
+				  compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Station already fixed or equated to a fixed point*/46);
 			      } else {
-				  compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
+				  compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
 			      }
+			      set_pos(&fp);
 			  }
 			  while (ch != ']' && ch != EOF) nextch_handling_eol();
 			  if (ch == ']') {

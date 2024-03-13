@@ -69,6 +69,7 @@ testdir=`(cd "$testdir" && pwd)`
  unconnected-bug\
  backread.dat corrections.dat depthguage.dat flags.dat karstcompat.dat\
  lrud.dat nomeasure.dat noteam.dat\
+ badmak.mak\
  fixfeet.mak utm.mak\
  clptest.dat clptest.clp\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
