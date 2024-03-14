@@ -245,10 +245,9 @@ default_all(settings *s)
    default_flags(s);
 }
 
-char *buffer = NULL;
-static int buf_len;
+string token = S_INIT;
 
-char *ucbuffer = NULL;
+string uctoken = S_INIT;
 
 /* read token */
 extern void
@@ -261,41 +260,33 @@ get_token(void)
 extern void
 get_token_no_blanks(void)
 {
-   int i = -1;
-
-   s_zero(&buffer);
-   osfree(ucbuffer);
+   s_clear(&token);
+   s_clear(&uctoken);
    while (isalpha(ch)) {
-      s_catchar(&buffer, &buf_len, (char)ch);
+      s_catchar(&token, ch);
+      s_catchar(&uctoken, toupper(ch));
       nextch();
    }
 
-   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
-
-   ucbuffer = osmalloc(buf_len);
-   do {
-      i++;
-      ucbuffer[i] = toupper(buffer[i]);
-   } while (buffer[i]);
 #if 0
-   printf("get_token_no_blanks() got “%s”\n", buffer);
+   printf("get_token_no_blanks() got “%s”\n", s_str(&token));
 #endif
 }
+
+static string word = S_INIT;
 
 /* read word */
 void
 get_word(void)
 {
-   s_zero(&buffer);
+   s_clear(&word);
    skipblanks();
    while (!isBlank(ch) && !isEol(ch)) {
-      s_catchar(&buffer, &buf_len, (char)ch);
+      s_catchar(&word, ch);
       nextch();
    }
-
-   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
 #if 0
-   printf("get_word() got “%s”\n", buffer);
+   printf("get_word() got “%s”\n", s_str(&word));
 #endif
 }
 
@@ -307,12 +298,13 @@ match_tok(const sztok *tab, int tab_size)
 {
    int a = 0, b = tab_size - 1, c;
    int r;
+   const char* tok = s_str(&uctoken);
    assert(tab_size > 0); /* catch empty table */
 /*  printf("[%d,%d]",a,b); */
    while (a <= b) {
       c = (unsigned)(a + b) / 2;
 /*     printf(" %d",c); */
-      r = strcmp(tab[c].sz, ucbuffer);
+      r = strcmp(tab[c].sz, tok);
       if (r == 0) return tab[c].tok; /* match */
       if (r < 0)
 	 a = c + 1;
@@ -429,7 +421,8 @@ get_units(unsigned long qmask, bool percent_ok)
    get_token();
    units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown units “%s”*/35, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown units “%s”*/35,
+			 s_str(&token));
       return UNITS_NULL;
    }
    /* Survex has long misdefined "mils" as an alias for "grads", of which
@@ -439,9 +432,9 @@ get_units(unsigned long qmask, bool percent_ok)
     * use by cave surveyors, so we now just warn if mils are used.
     */
    if (units == UNITS_DEPRECATED_ALIAS_FOR_GRADS) {
-      compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP,
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP,
 			 /*Units “%s” are deprecated, assuming “grads” - see manual for details*/479,
-			 buffer);
+			 s_str(&token));
       units = UNITS_GRADS;
    }
    if (units == UNITS_PERCENT && percent_ok &&
@@ -457,7 +450,7 @@ get_units(unsigned long qmask, bool percent_ok)
       /* TRANSLATORS: Note: In English you talk about the *units* of a single
        * measurement, but the correct term in other languages may be singular.
        */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Invalid units “%s” for quantity*/37, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Invalid units “%s” for quantity*/37, s_str(&token));
       return UNITS_NULL;
    }
    return units;
@@ -521,7 +514,7 @@ get_qlist(unsigned long mask_bad)
       if (tok == Q_NULL) break;
       qmask |= BIT(tok);
       if (qmask & mask_bad) {
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown instrument “%s”*/39, buffer);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown instrument “%s”*/39, s_str(&token));
 	 return 0;
       }
    }
@@ -529,7 +522,7 @@ get_qlist(unsigned long mask_bad)
    if (qmask == 0) {
       /* TRANSLATORS: A "quantity" is something measured like "LENGTH",
        * "BEARING", "ALTITUDE", etc. */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown quantity “%s”*/34, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown quantity “%s”*/34, s_str(&token));
    } else {
       set_pos(&fp);
    }
@@ -571,7 +564,8 @@ cmd_set(void)
    mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown character class “%s”*/42, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown character class “%s”*/42,
+			 s_str(&token));
       return;
    }
 
@@ -585,7 +579,7 @@ cmd_set(void)
 	  *
 	  * If you're unsure what "deprecated" means, see:
 	  * https://en.wikipedia.org/wiki/Deprecation */
-	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*ROOT is deprecated*/25);
+	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	     /* TRANSLATORS: If you're unsure what "deprecated" means, see:
 	      * https://en.wikipedia.org/wiki/Deprecation */
@@ -674,26 +668,26 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        *
        * Would lead to:
        *
-       * crawl.svx:4: Reentering an existing survey is deprecated
+       * crawl.svx:4:8: Reentering an existing survey is deprecated
        * crawl.svx:1: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Reentering an existing survey is deprecated*/29);
+      compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Reentering an existing survey is deprecated*/29);
       set_pos(&fp_tmp);
       /* TRANSLATORS: The second of two warnings given when a survey which has
        * already been completed is reentered.  This example file crawl.svx:
        *
-       * *begin crawl
-       * 1 2 9.45 234 -01 # <- second warning here
+       * *begin crawl     ; <- second warning here
+       * 1 2 9.45 234 -01
        * *end crawl
-       * *begin crawl     # <- first warning here
+       * *begin crawl     ; <- first warning here
        * 2 3 7.67 223 -03
        * *end crawl
        *
        * Would lead to:
        *
-       * crawl.svx:3: Reentering an existing survey is deprecated
+       * crawl.svx:4:8: Reentering an existing survey is deprecated
        * crawl.svx:1: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
@@ -727,7 +721,7 @@ cmd_prefix(void)
    if (prefix_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_BUF, /**prefix is deprecated - use *begin and *end instead*/6);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
 	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
    }
@@ -746,18 +740,24 @@ cmd_alias(void)
     * *alias station -
     */
    get_token();
-   if (strcmp(ucbuffer, "STATION") != 0)
-      goto bad;
+   if (!S_EQ(&uctoken, "STATION")) {
+       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Bad *alias command*/397);
+       return;
+   }
+   filepos fp;
+   get_pos(&fp);
    get_word();
-   if (strcmp(buffer, "-") != 0)
-      goto bad;
+   if (!S_EQ(&word, "-"))
+      goto bad_word;
+   get_pos(&fp);
    get_word();
-   if (*buffer && strcmp(buffer, "..") != 0)
-      goto bad;
-   pcs->dash_for_anon_wall_station = (*buffer != '\0');
+   if (!s_empty(&word) && !S_EQ(&word, ".."))
+      goto bad_word;
+   pcs->dash_for_anon_wall_station = !s_empty(&word);
    return;
-bad:
-   compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Bad *alias command*/397);
+bad_word:
+   set_pos(&fp);
+   compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_WORD, /*Bad *alias command*/397);
 }
 
 static void
@@ -971,11 +971,11 @@ cmd_end(void)
 	     * *begin
 	     * 1 2 10.00 178 -01
 	     * *end entrance      <--[Message given here] */
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Matching BEGIN command has no survey name*/36);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Matching BEGIN command has no survey name*/36);
 	 } else {
 	    /* TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 	     * same <survey> if it’s given at all */
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Survey name doesn’t match BEGIN*/193);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Survey name doesn’t match BEGIN*/193);
 	 }
 	 skipline();
       } else {
@@ -1010,18 +1010,19 @@ cmd_fix(void)
    static const char * name_omit_already_filename = NULL;
    static unsigned int name_omit_already_line;
    real x, y, z;
-   filepos fp;
+   filepos fp_stn, fp;
 
+   get_pos(&fp_stn);
    fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
    fix_name->sflags |= BIT(SFLAGS_FIXED);
 
    get_pos(&fp);
    get_token();
-   if (strcmp(ucbuffer, "REFERENCE") == 0) {
+   if (S_EQ(&uctoken, "REFERENCE")) {
       /* suppress "unused fixed point" warnings for this station */
       fix_name->sflags |= BIT(SFLAGS_USED);
    } else {
-      if (*ucbuffer) set_pos(&fp);
+      if (!s_empty(&uctoken)) set_pos(&fp);
    }
 
    x = read_numeric(true);
@@ -1216,12 +1217,15 @@ cmd_fix(void)
       return;
    }
 
+   get_pos(&fp);
+   set_pos(&fp_stn);
    if (x != POS(stn, 0) || y != POS(stn, 1) || z != POS(stn, 2)) {
-      compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
-      return;
+       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Station already fixed or equated to a fixed point*/46);
+   } else {
+       /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
+       compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
    }
-   /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
-   compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
+   set_pos(&fp);
 }
 
 static void
@@ -1239,15 +1243,16 @@ cmd_flags(void)
    while (1) {
       int flag;
       get_token();
-      /* If buffer is empty, it could mean end of line, or maybe
+      /* If token is empty, it could mean end of line, or maybe
        * some non-letter junk which is better reported later */
-      if (!buffer[0]) break;
+      if (s_empty(&token)) break;
 
       fEmpty = false;
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF, /*FLAG “%s” unknown*/68, buffer);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*FLAG “%s” unknown*/68,
+			    s_str(&token));
 	 /* Recover from “*FLAGS NOT BOGUS SURFACE” by ignoring "NOT BOGUS" */
 	 fNot = false;
       } else if (flag == FLAGS_NOT) {
@@ -1261,9 +1266,9 @@ cmd_flags(void)
    }
 
    if (fNot) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
    } else if (fEmpty) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
    }
 }
 
@@ -1287,7 +1292,7 @@ cmd_equate(void)
 	     *
 	     * Here "station" is a survey station, not a train station.
 	     */
-	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Only one station in EQUATE command*/33);
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_WORD, /*Only one station in EQUATE command*/33);
 	 }
 	 return;
       }
@@ -1509,7 +1514,7 @@ cmd_data(void)
    }
 
    if (style == STYLE_UNKNOWN) {
-      if (!buffer[0]) {
+      if (s_empty(&token)) {
 	 /* "*data" without arguments reinitialises the current style - useful
 	  * when using *data passage as it provides a way to break the passage
 	  * tube without having to repeat the full *data passage command.
@@ -1518,7 +1523,7 @@ cmd_data(void)
 	 goto reinit_style;
       }
       /* TRANSLATORS: e.g. trying to refer to an invalid FNORD data style */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Data style “%s” unknown*/65, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
       return;
    }
 
@@ -1529,8 +1534,8 @@ cmd_data(void)
    if (isOmit(ch)) {
       static int data_depr_count = 0;
       if (data_depr_count < 5) {
-	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
-			    buffer, ch, buffer);
+	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
+			    s_str(&token), ch, s_str(&token));
 	 if (++data_depr_count == 5)
 	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
       }
@@ -1540,7 +1545,7 @@ cmd_data(void)
 
    int kMac = 6; /* minimum for NORMAL style */
    reading *new_order = osmalloc(kMac * sizeof(reading));
-   char *style_name = osstrdup(buffer);
+   char *style_name = s_steal(&token);
    do {
       filepos fp;
       get_pos(&fp);
@@ -1560,9 +1565,9 @@ cmd_data(void)
 	  * This error complains about a "DEPTH" gauge reading in "NORMAL"
 	  * style, for example.
 	  */
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
-			    buffer, style_name);
+			    s_str(&token), style_name);
 	 osfree(style_name);
 	 osfree(new_order);
 	 return;
@@ -1573,8 +1578,8 @@ cmd_data(void)
 	  * *data diving station newline depth tape compass
 	  *
 	  * ("depth" needs to occur before "newline"). */
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
-			    /*Reading “%s” must occur before NEWLINE*/225, buffer);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			    /*Reading “%s” must occur before NEWLINE*/225, s_str(&token));
 	 osfree(style_name);
 	 osfree(new_order);
 	 return;
@@ -1586,7 +1591,7 @@ cmd_data(void)
 	 if (TSTBIT(mUsed, d)) {
 	    /* TRANSLATORS: complains about a situation like trying to define
 	     * two from stations per leg */
-	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Duplicate reading “%s”*/67, buffer);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Duplicate reading “%s”*/67, s_str(&token));
 	    osfree(style_name);
 	    osfree(new_order);
 	    return;
@@ -1625,7 +1630,7 @@ cmd_data(void)
 		  /* TRANSLATORS: e.g.
 		   *
 		   * *data normal from to tape newline compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1634,7 +1639,7 @@ cmd_data(void)
 		  /* TRANSLATORS: error from:
 		   *
 		   * *data normal newline from to tape compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1650,8 +1655,8 @@ cmd_data(void)
 		* valid as the list of readings has already included the same
 		* reading, or an equivalent one (e.g. you can't have both
 		* DEPTH and DEPTHCHANGE together). */
-	       compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
-					 buffer);
+	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
+				  s_str(&token));
 	       osfree(style_name);
 	       osfree(new_order);
 	       return;
@@ -1675,7 +1680,7 @@ cmd_data(void)
       /* TRANSLATORS: error from:
        *
        * *data normal from to tape compass clino newline */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1793,7 +1798,7 @@ cmd_units(void)
        * meaningless to say your tape is marked in "0 feet" (but you might
        * measure distance by counting knots on a diving line, and tie them
        * every "2 feet"). */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /**UNITS factor must be non-zero*/200);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /**UNITS factor must be non-zero*/200);
       skipline();
       return;
    }
@@ -1878,7 +1883,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: DECLINATION is a built-in keyword, so best not to
        * translate */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be 1.0 for DECLINATION*/40);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Scale factor must be 1.0 for DECLINATION*/40);
       skipline();
       return;
    }
@@ -1886,7 +1891,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: If the scale factor for an instrument is zero, then any
        * reading would be mapped to zero, which doesn't make sense. */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be non-zero*/391);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Scale factor must be non-zero*/391);
       skipline();
       return;
    }
@@ -1904,16 +1909,23 @@ cmd_declination(void)
     real v = read_numeric(true);
     if (v == HUGE_REAL) {
 	get_token_no_blanks();
-	if (strcmp(ucbuffer, "AUTO") != 0) {
+	if (!S_EQ(&uctoken, "AUTO")) {
 	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or “AUTO”*/309);
 	    return;
 	}
+	filepos fp_auto;
+	get_pos(&fp_auto);
+
 	/* *declination auto X Y Z */
 	real x = read_numeric(false);
 	real y = read_numeric(false);
 	real z = read_numeric(false);
 	if (!pcs->proj_str) {
-	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
+	    filepos fp;
+	    get_pos(&fp);
+	    set_pos(&fp_auto);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
+	    set_pos(&fp);
 	    return;
 	}
 	set_declination_location(x, y, z, pcs->proj_str);
@@ -1961,7 +1973,8 @@ cmd_default(void)
       default_units(pcs);
       break;
     default:
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown setting “%s”*/41, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown setting “%s”*/41,
+			 s_str(&token));
    }
 }
 #endif
@@ -1969,8 +1982,8 @@ cmd_default(void)
 static void
 cmd_include(void)
 {
-   char *pth, *fnm = NULL;
-   int fnm_len;
+   char *pth = NULL;
+   string fnm = S_INIT;
 #ifndef NO_DEPRECATED
    prefix *root_store;
 #endif
@@ -1978,7 +1991,7 @@ cmd_include(void)
 
    pth = path_from_fnm(file.filename);
 
-   read_string(&fnm, &fnm_len);
+   read_string(&fnm);
 
 #ifndef NO_DEPRECATED
    /* Since *begin / *end nesting cannot cross file boundaries we only
@@ -1989,7 +2002,7 @@ cmd_include(void)
 #endif
    ch_store = ch;
 
-   data_file(pth, fnm);
+   data_file(pth, s_str(&fnm));
 
 #ifndef NO_DEPRECATED
    root = root_store; /* and restore root */
@@ -2036,12 +2049,11 @@ cmd_title(void)
        /* If we don't have an explicit title yet, and we're currently in the
 	* root prefix, use this title explicitly. */
       fExplicitTitle = true;
-      read_string(&survey_title, &survey_title_len);
+      read_string(&survey_title);
    } else {
       /* parse and throw away this title (but still check rest of line) */
-      char *s = NULL;
-      int len;
-      read_string(&s, &len);
+      string s = S_INIT;
+      read_string(&s);
       s_free(&s);
    }
 }
@@ -2062,7 +2074,7 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10, s_str(&token));
    }
 }
 
@@ -2101,8 +2113,7 @@ static const sztok cs_tab[] = {
 static void
 cmd_cs(void)
 {
-   char * proj_str = NULL;
-   int proj_str_len;
+   char *proj_str = NULL;
    cs_class cs;
    int cs_sub = INT_MIN;
    filepos fp;
@@ -2124,7 +2135,7 @@ cmd_cs(void)
    /* Note get_token() only accepts letters - it'll stop at digits so "UTM12"
     * will give token "UTM". */
    get_token();
-   if (strcmp(ucbuffer, "OUT") == 0) {
+   if (S_EQ(&uctoken, "OUT")) {
       output = true;
       get_pos(&fp);
       get_token();
@@ -2136,7 +2147,9 @@ cmd_cs(void)
       case CS_CUSTOM:
 	 ok_for_output = MAYBE;
 	 get_pos(&fp);
-	 read_string(&proj_str, &proj_str_len);
+	 string str = S_INIT;
+	 read_string(&str);
+	 proj_str = s_steal(&str);
 	 cs_sub = 0;
 	 break;
       case CS_EPSG: case CS_ESRI:
@@ -2209,7 +2222,7 @@ cmd_cs(void)
 	 if (ch == '-') {
 	    nextch();
 	    get_token_no_blanks();
-	    if (strcmp(ucbuffer, "MERC") == 0) {
+	    if (S_EQ(&uctoken, "MERC")) {
 	       cs_sub = 0;
 	    }
 	 }
@@ -2419,13 +2432,13 @@ cmd_infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == INFER_NULL) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, s_str(&token));
       return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “ON” or “OFF”*/32, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “ON” or “OFF”*/32, s_str(&token));
       return;
    }
 
@@ -2446,8 +2459,8 @@ cmd_truncate(void)
    get_pos(&fp);
 
    get_token();
-   if (strcmp(ucbuffer, "OFF") != 0) {
-      if (*ucbuffer) set_pos(&fp);
+   if (!S_EQ(&uctoken, "OFF")) {
+      if (!s_empty(&uctoken)) set_pos(&fp);
       truncate_at = read_uint();
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
@@ -2458,9 +2471,8 @@ static void
 cmd_ref(void)
 {
    /* Just syntax check for now. */
-   char *ref = NULL;
-   int ref_len;
-   read_string(&ref, &ref_len);
+   string ref = S_INIT;
+   read_string(&ref);
    s_free(&ref);
 }
 
@@ -2570,7 +2582,7 @@ cmd_date(void)
 
     if (days2 < days1) {
 	set_pos(&fp);
-	compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*End of date range is before the start*/81);
+	compile_diagnostic(DIAG_ERR|DIAG_WORD, /*End of date range is before the start*/81);
 	int tmp = days1;
 	days1 = days2;
 	days2 = tmp;
@@ -2632,7 +2644,7 @@ handle_command(void)
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
       return;
    }
 

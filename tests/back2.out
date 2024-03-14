@@ -1,15 +1,21 @@
-./back2.svx:4: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+./back2.svx:4:18: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 2a 10.00 001.5 178.5 01 01
-./back2.svx:5: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+                  ^~~~~
+./back2.svx:5:18: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 2b 10.00 358.5 181.5 01 01
-./back2.svx:15: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+                  ^~~~~
+./back2.svx:15:18: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 3a 10.00 001.5 188.5 01 01
-./back2.svx:16: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+                  ^~~~~
+./back2.svx:16:18: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 3b 10.00 358.5 191.5 01 01
-./back2.svx:21: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+                  ^~~~~
+./back2.svx:21:18: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 4a 10.00 011.5 178.5 01 01
-./back2.svx:22: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
+                  ^~~~~
+./back2.svx:22:18: warning: COMPASS reading and BACKCOMPASS reading disagree by 3dg
  1 4b 10.00 008.5 181.5 01 01
+                  ^~~~~
 
 Removing trailing traverses...
 

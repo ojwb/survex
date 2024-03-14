@@ -1,0 +1,37 @@
+./cmd_alias_bad.svx:6:8: error: Bad *alias command
+ *alias statoin - ..
+        ^~~~~~~
+./cmd_alias_bad.svx:8:16: error: Bad *alias command
+ *alias station _
+                ^
+./cmd_alias_bad.svx:10:16: error: Bad *alias command
+ *alias station = ..
+                ^
+./cmd_alias_bad.svx:12:18: error: Bad *alias command
+ *alias station - ...
+                  ^~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.01m
+Vertical range = 0.01m (from - at 0.01m to 1 at 0.00m)
+North-South range = 0.01m (from 1 at 0.00m to - at -0.01m)
+East-West range = 1.00m (from - at 1.00m to 1 at 0.00m)
+   2 1-nodes.
+There were 0 warning(s) and 4 error(s) - no output files produced.

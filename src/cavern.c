@@ -80,8 +80,7 @@ real totadj, total, totplan, totvert;
 real min[6], max[6];
 prefix *pfxHi[6], *pfxLo[6];
 
-char *survey_title = NULL;
-int survey_title_len;
+string survey_title = S_INIT;
 
 bool fExplicitTitle = false;
 
@@ -330,11 +329,14 @@ main(int argc, char **argv)
       const char *fnm = argv[optind];
 
       if (!fExplicitTitle) {
-	 char *lf;
-	 lf = baseleaf_from_fnm(fnm);
-	 if (survey_title) s_catchar(&survey_title, &survey_title_len, ' ');
-	 s_cat(&survey_title, &survey_title_len, lf);
-	 osfree(lf);
+	  char *lf = baseleaf_from_fnm(fnm);
+	  if (s_empty(&survey_title)) {
+	      s_donate(&survey_title, lf);
+	  } else {
+	      s_catchar(&survey_title, ' ');
+	      s_cat(&survey_title, lf);
+	      osfree(lf);
+	  }
       }
 
       /* Select defaults settings */

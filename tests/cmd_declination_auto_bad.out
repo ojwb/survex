@@ -1,0 +1,36 @@
+./cmd_declination_auto_bad.svx:4: error: The output projection is set but the input projection isn't
+ *fix 1 0410600 5282000 1234
+./cmd_declination_auto_bad.svx:5:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
+ *declination auto 0410600 5282000 1234
+              ^~~~
+./cmd_declination_auto_bad.svx:34:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
+ *declination auto 0490600 5282000 1234
+              ^~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 13 survey stations, joined by 12 legs.
+There are 0 loops.
+Total length of survey legs =  175.23m ( 175.23m adjusted)
+Total plan length of survey legs =  171.98m
+Total vertical length of survey legs =    5.00m
+Vertical range = 4.87m (from a.1 at 1234.00m to c.3 at 1229.13m)
+North-South range = 107.62m (from d.2 at 5282107.62m to a.1 at 5282000.00m)
+East-West range = 10.00m (from d.2b at 410603.61m to d.2a at 410593.61m)
+   6 1-nodes.
+   4 2-nodes.
+   2 3-nodes.
+   1 4-node.
+There were 0 warning(s) and 3 error(s) - no output files produced.

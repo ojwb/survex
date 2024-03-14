@@ -26,7 +26,8 @@ require_fail.svx\
 extend.svx extendx.3d\
 revcomplist.svx\
 exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
-exporterr6.svx exporterr1b.svx exporterr2b.svx exporterr3b.svx exporterr6b.svx\
+exporterr6.svx exporterr1b.svx exporterr1b.out exporterr2b.svx\
+exporterr3b.svx exporterr6b.svx\
 hanging_cpt.svx\
 self_loop.svx self_eq_loop.svx\
 badinc.out badinc.svx\
@@ -41,6 +42,7 @@ includecomment.svx reenterwarn.svx\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\
+cmd_alias_bad.svx cmd_alias_bad.out\
 cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
 cmd_case.svx cmd_case.pos cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.pos\
 cmd_entrance.svx\
@@ -57,7 +59,7 @@ multinormalbad.svx multibug.svx\
 cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\
 cartes.svx cartes.pos cartes.out\
-diving.svx diving.pos\
+diving.svx diving.pos diving.out\
 cylpolar.svx cylpolar.pos\
 normal.svx normal.pos\
 normal_bad.svx normal_bad.out\
@@ -101,6 +103,7 @@ depthguage.dat depthguage.dump\
 karstcompat.dat karstcompat.dump\
 flags.dat flags.dump lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
+badmak.mak badmak.out\
 fixfeet.mak fixfeet.pos\
 folder.mak subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
 utm.mak utm.out utm.dump\
@@ -113,6 +116,7 @@ cmd_date.svx cmd_date.out cmd_datebad.svx cmd_datebad.out cmd_datebad2.svx cmd_d
 cmd_calibrate.svx cmd_calibrate.out cmd_calibrate.pos\
 cmd_declination.svx cmd_declination.out cmd_declination.pos\
 cmd_declination_auto.svx cmd_declination_auto.out cmd_declination_auto.pos\
+cmd_declination_auto_bad.svx cmd_declination_auto_bad.out\
 cmd_declination_conv.out cmd_declination_conv.pos cmd_declination_conv.svx\
 cmd_declination_conv_proj_bug.out cmd_declination_conv_proj_bug.pos cmd_declination_conv_proj_bug.svx\
 unconnected-bug.svx unconnected-bug.out\

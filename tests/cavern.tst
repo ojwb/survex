@@ -38,8 +38,8 @@ testdir=`(cd "$testdir" && pwd)`
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
- lengthunits angleunits cmd_alias cmd_truncate cmd_case cmd_fix cmd_solve\
- cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_fix_bad cmd_set\
+ lengthunits angleunits cmd_alias cmd_alias_bad cmd_truncate cmd_case cmd_fix\
+ cmd_solve cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_fix_bad cmd_set\
  cmd_set_bad cmd_set_dot_in_name\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
@@ -63,12 +63,13 @@ testdir=`(cd "$testdir" && pwd)`
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
  nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
- cmd_calibrate cmd_declination cmd_declination_auto cmd_declination_conv\
- cmd_declination_conv_proj_bug\
+ cmd_calibrate cmd_declination cmd_declination_auto cmd_declination_auto_bad\
+ cmd_declination_conv cmd_declination_conv_proj_bug\
  lech level 2fixbug dot17 3dcorner\
  unconnected-bug\
  backread.dat corrections.dat depthguage.dat flags.dat karstcompat.dat\
  lrud.dat nomeasure.dat noteam.dat\
+ badmak.mak\
  fixfeet.mak utm.mak\
  clptest.dat clptest.clp\
  walls.srv\

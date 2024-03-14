@@ -55,7 +55,7 @@ unsigned int read_uint(void);
 
 int read_int(int min_val, int max_val);
 
-void read_string(char **pstr, int *plen);
+void read_string(string *pstr);
 
 void read_date(int *py, int *pm, int *pd);
 

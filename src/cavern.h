@@ -36,6 +36,7 @@
 #include <proj.h>
 
 #include "img_hosted.h"
+#include "str.h"
 #include "useful.h"
 
 /* Set EXPLICIT_FIXED_FLAG to 1 to force an explicit fixed flag to be used
@@ -382,8 +383,7 @@ extern unsigned long optimize;
 extern char * proj_str_out;
 extern PJ * pj_cached;
 
-extern char *survey_title;
-extern int survey_title_len;
+extern string survey_title;
 
 extern bool fExplicitTitle;
 extern long cLegs, cStns, cComponents;

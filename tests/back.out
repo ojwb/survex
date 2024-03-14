@@ -1,7 +1,9 @@
-./back.svx:16: warning: CLINO reading and BACKCLINO reading disagree by 4grd
+./back.svx:16:21: warning: CLINO reading and BACKCLINO reading disagree by 4grd
  1 Y 10 000  -   02  02
-./back.svx:17: warning: CLINO reading and BACKCLINO reading disagree by 2.5grd
+                     ^~
+./back.svx:17:23: warning: CLINO reading and BACKCLINO reading disagree by 2.5grd
  1 Z 10 000  -  -01.25 -01.25
+                       ^~~~~~
 
 Removing trailing traverses...
 
