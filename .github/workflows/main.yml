@@ -171,22 +171,23 @@ jobs:
 
   clang-sanitisers:
     runs-on: 'ubuntu-latest'
+    container: debian:stable
     steps:
     - name: Check out repository code
       uses: actions/checkout@v4
       with:
         show-progress: false
-    - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: ${{ github.job }}
     - name: Install package dependencies
       run: |
-        sudo apt-get update
-        sudo apt-get install \
-            clang-15 \
+        apt-get update
+        apt-get install -y \
+            autoconf \
+            automake \
+            clang-16 \
+            make \
+            pkg-config \
             gettext \
-            libwxgtk3.0-gtk3-dev \
+            libwxgtk3.2-dev \
             libavcodec-dev \
             libavformat-dev \
             libproj-dev \
@@ -203,16 +204,21 @@ jobs:
             docbook \
             docbook-utils \
             w3m
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
     - name: bootstrap source tree
       run: |
+        ln INSTALL INSTALL-save
         autoreconf -fiv
-        git checkout INSTALL
+        mv -f INSTALL-save INSTALL
     - name: configure
       run: |
         # We use clang here because (at least currently) it supports a few
         # extra sanitiser checks compared to GCC.
-        export CC='ccache clang-15'
-        export CXX='ccache clang++-15'
+        export CC='ccache clang'
+        export CXX='ccache clang++'
         # float-divide-by-zero, nullability and unsigned-overflow aren't
         # undefined behaviour checks, but they catch for things we don't expect
         # our code to do.
