@@ -217,8 +217,8 @@ jobs:
       run: |
         # We use clang here because (at least currently) it supports a few
         # extra sanitiser checks compared to GCC.
-        export CC='ccache clang'
-        export CXX='ccache clang++'
+        export CC='ccache clang-16'
+        export CXX='ccache clang++-16'
         # float-divide-by-zero, nullability and unsigned-overflow aren't
         # undefined behaviour checks, but they catch for things we don't expect
         # our code to do.
