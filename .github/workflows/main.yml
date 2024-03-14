@@ -169,7 +169,7 @@ jobs:
     - name: Run tests
       run: make check VERBOSE=1
 
-  clang-sanitisiers:
+  clang-sanitisers:
     runs-on: 'ubuntu-latest'
     steps:
     - name: Check out repository code
