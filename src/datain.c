@@ -987,7 +987,7 @@ update_proj_str:
 	      // Leave subdirectory.
 	      struct mak_folder *p = folder_stack;
 	      if (folder_stack == NULL) {
-		  // FIXME: Report?
+		  // FIXME: Error?  Check what Compass does.
 		  break;
 	      }
 	      s_truncate(&path, folder_stack->len);
@@ -1042,6 +1042,14 @@ update_proj_str:
 	    break;
 	}
     }
+
+    while (folder_stack) {
+	// FIXME: Error?  Check what Compass does.
+	struct mak_folder *next = folder_stack->next;
+	osfree(folder_stack);
+	folder_stack = next;
+    }
+
     pop_settings();
     s_free(&path);
 }
