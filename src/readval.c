@@ -419,19 +419,20 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    s_catchar(&component, ch);
 	    nextch();
 	}
-	printf("component = '%s'\n", s_str(&component));
+	//printf("component = '%s'\n", s_str(&component));
 	if (ch == ':') {
 	    nextch();
 
 	    if (++explicit_prefix_levels > 3) {
+		// FIXME Make this a proper error
 		printf("too many prefix levels\n");
 		s_free(&component);
-		// FIXME free w_prefix
+		for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
 		LONGJMP(file.jbSkipLine);
 	    }
 
 	    if (!s_empty(&component)) {
-		printf("w_prefix[%d] = '%s'\n", explicit_prefix_levels - 1, s_str(&component));
+		// printf("w_prefix[%d] = '%s'\n", explicit_prefix_levels - 1, s_str(&component));
 		w_prefix[explicit_prefix_levels - 1] = s_steal(&component);
 	    }
 
@@ -442,7 +443,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	if (s_empty(&component)) {
 	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
 	    s_free(&component);
-	    // FIXME free w_prefix
+	    for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
 	    LONGJMP(file.jbSkipLine);
 	}
 	int len = s_len(&component);
@@ -467,14 +468,14 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    const char *name;
 	    int sflag = BIT(SFLAGS_SURVEY);
 	    if (i == 3) {
-		name = p; // FIXME: Sort out not to leak p.  Also could steal.
+		name = p;
 		sflag = 0;
 	    } else {
-		if (i < 3 - explicit_prefix_levels)
+		if (i < 3 - explicit_prefix_levels) {
 		    name = walls_prefix[i];
-		else {
+		} else {
 		    name = w_prefix[i - (3 - explicit_prefix_levels)]; // FIXME: Could steal wprefix[i].
-		printf("using w_prefix[%d] = '%s'\n", i - (3 - explicit_prefix_levels), w_prefix[i]);
+		//printf("using w_prefix[%d] = '%s'\n", i - (3 - explicit_prefix_levels), w_prefix[i]);
 		}
 
 		if (name == NULL) {
@@ -496,7 +497,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    if (ptr == NULL) {
 		/* Special case first time around at each level */
 		ptr = osnew(prefix);
-		ptr->ident = osstrdup(name);
+		ptr->ident = (i < 3 ? osstrdup(name) : name);
+		name = NULL;
 		ptr->right = ptr->down = NULL;
 		ptr->pos = NULL;
 		ptr->shape = 0;
@@ -525,7 +527,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		    /* ie we got to one that was higher, or the end */
 		    prefix *newptr;
 		    newptr = osnew(prefix);
-		    newptr->ident = osstrdup(name);
+		    newptr->ident = (i < 3 ? osstrdup(name) : name);
+		    name = NULL;
 		    if (ptrPrev == NULL)
 			back_ptr->down = newptr;
 		    else
@@ -549,11 +552,13 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		cached_survey = back_ptr;
 		cached_station = ptr;
 	    }
+	    if (name == p) osfree(p);
 	}
 
-	// FIXME free w_prefix
-	fprint_prefix(stdout, ptr);
-	fputnl(stdout);
+	// fprint_prefix(stdout, ptr); fputnl(stdout);
+
+	for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+
 	return ptr;
     }
 }
