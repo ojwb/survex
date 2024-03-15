@@ -870,14 +870,18 @@ read_uint(void)
 extern int
 read_int(int min_val, int max_val)
 {
-    bool negated = false;
     skipblanks();
     unsigned n = 0;
     filepos fp;
 
     get_pos(&fp);
-    negated = isMinus(ch);
-    unsigned limit = negated ? -(unsigned)min_val : (unsigned)max_val;
+    bool negated = isMinus(ch);
+    unsigned limit;
+    if (negated) {
+	limit = (unsigned)(min_val == INT_MIN ? INT_MIN : -min_val);
+    } else {
+	limit = (unsigned)max_val;
+    }
     if (isSign(ch)) nextch();
 
     if (!isdigit(ch)) {
