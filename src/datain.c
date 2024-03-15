@@ -1819,7 +1819,7 @@ next_line:
 			nextch();
 			new_prefix = read_walls_prefix();
 		    }
-		    int i = (int)opt - (int)WALLS_UNITS_OPT_PREFIX;
+		    int i = (int)WALLS_UNITS_OPT_PREFIX3 - (int)opt;
 		    if (walls_prefix[i] != saved_walls_prefix[i]) {
 			osfree(walls_prefix[i]);
 		    }
@@ -2167,7 +2167,7 @@ next_line:
 	  case WALLS_CMD_PREFIX2:
 	  case WALLS_CMD_PREFIX3: {
 	    char *new_prefix = read_walls_prefix();
-	    int i = (int)directive - (int)WALLS_CMD_PREFIX;
+	    int i = (int)WALLS_CMD_PREFIX - (int)directive;
 	    if (walls_prefix[i] != saved_walls_prefix[i]) {
 		osfree(walls_prefix[i]);
 	    }

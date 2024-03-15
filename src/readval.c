@@ -419,233 +419,142 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    s_catchar(&component, ch);
 	    nextch();
 	}
-	if (ch != ':') {
-	    // component is the station name itself.
-	    if (s_empty(&component)) {
-		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
+	printf("component = '%s'\n", s_str(&component));
+	if (ch == ':') {
+	    nextch();
+
+	    if (++explicit_prefix_levels > 3) {
+		printf("too many prefix levels\n");
 		s_free(&component);
 		// FIXME free w_prefix
 		LONGJMP(file.jbSkipLine);
 	    }
-	    int len = s_len(&component);
-	    char *p = s_steal(&component);
-	    // Apply case treatment.
-	    switch (pcs->Case) {
-	      case LOWER:
-		for (int i = 0; i < len; ++i)
-		    p[i] = tolower((unsigned char)p[i]);
-		break;
-	      case UPPER:
-		for (int i = 0; i < len; ++i)
-		    p[i] = toupper((unsigned char)p[i]);
-		break;
-	      case OFF:
-		// Avoid unhandled enum warning.
-		break;
+
+	    if (!s_empty(&component)) {
+		printf("w_prefix[%d] = '%s'\n", explicit_prefix_levels - 1, s_str(&component));
+		w_prefix[explicit_prefix_levels - 1] = s_steal(&component);
 	    }
-	    (void)walls_prefix;
-	    // FIXME resolve walls_prefix, w_prefix and explicit_prefix_levels.
-#if 0
-   i = 0;
-   name = NULL;
-   do {
-      fNew = false;
-      if (name == NULL) {
-	 /* Need a new name buffer */
-	 name = osmalloc(name_len);
-      }
-      /* i==0 iff this is the first pass */
-      if (i) {
-	 i = 0;
-	 nextch();
-      }
-      while (isNames(ch)) {
-	 if (i < pcs->Truncate) {
-	    /* truncate name */
-	    name[i++] = (pcs->Case == LOWER ? tolower(ch) :
-			 (pcs->Case == OFF ? ch : toupper(ch)));
-	    if (i >= name_len) {
-	       name_len = name_len + name_len;
-	       name = osrealloc(name, name_len);
-	    }
-	 }
-	 nextch();
-      }
-      if (isSep(ch)) {
-	 fImplicitPrefix = false;
-	 get_pos(&fp_firstsep);
-      }
-      if (i == 0) {
-	 osfree(name);
-	 if (!f_optional) {
-	    if (isEol(ch)) {
-	       if (fSurvey) {
-		  compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting survey name*/89);
-	       } else {
-		  compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
-	       }
+
+	    continue;
+	}
+
+	// component is the station name itself.
+	if (s_empty(&component)) {
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
+	    s_free(&component);
+	    // FIXME free w_prefix
+	    LONGJMP(file.jbSkipLine);
+	}
+	int len = s_len(&component);
+	char *p = s_steal(&component);
+	// Apply case treatment.
+	switch (pcs->Case) {
+	  case LOWER:
+	    for (int i = 0; i < len; ++i)
+		p[i] = tolower((unsigned char)p[i]);
+	    break;
+	  case UPPER:
+	    for (int i = 0; i < len; ++i)
+		p[i] = toupper((unsigned char)p[i]);
+	    break;
+	  case OFF:
+	    // Avoid unhandled enum warning.
+	    break;
+	}
+
+	prefix *ptr = root;
+	for (int i = 0; i < 4; ++i) {
+	    const char *name;
+	    int sflag = BIT(SFLAGS_SURVEY);
+	    if (i == 3) {
+		name = p; // FIXME: Sort out not to leak p.  Also could steal.
+		sflag = 0;
 	    } else {
-	       /* TRANSLATORS: Here "station" is a survey station, not a train station. */
-	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+		if (i < 3 - explicit_prefix_levels)
+		    name = walls_prefix[i];
+		else {
+		    name = w_prefix[i - (3 - explicit_prefix_levels)]; // FIXME: Could steal wprefix[i].
+		printf("using w_prefix[%d] = '%s'\n", i - (3 - explicit_prefix_levels), w_prefix[i]);
+		}
+
+		if (name == NULL) {
+		    // FIXME: This means :X::Y is treated as the same as
+		    // ::X:Y but is that right?  Walls docs don't really
+		    // say.  Need to test (and is they're different then
+		    // probably use a character not valid in Walls station
+		    // names for the empty prefix level (e.g. space or
+		    // `#`).
+		    //
+		    // Also, does Walls allow :::X as a station and
+		    // ::X:Y which would mean X is a station and survey?
+		    // If so, we probably want to keep every empty level.
+		    continue;
+		}
 	    }
-	    LONGJMP(file.jbSkipLine);
-	 }
-	 return (prefix *)NULL;
-      }
-
-      name[i++] = '\0';
-
-      back_ptr = ptr;
-      ptr = ptr->down;
-      if (ptr == NULL) {
-	 /* Special case first time around at each level */
-	 name = osrealloc(name, i);
-	 ptr = osnew(prefix);
-	 ptr->ident = name;
-	 name = NULL;
-	 ptr->right = ptr->down = NULL;
-	 ptr->pos = NULL;
-	 ptr->shape = 0;
-	 ptr->stn = NULL;
-	 ptr->up = back_ptr;
-	 ptr->filename = file.filename;
-	 ptr->line = file.line;
-	 ptr->min_export = ptr->max_export = 0;
-	 ptr->sflags = BIT(SFLAGS_SURVEY);
-	 if (fSuspectTypo && !fImplicitPrefix)
-	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
-	 back_ptr->down = ptr;
-	 fNew = true;
-      } else {
-	 /* Use caching to speed up adding an increasing sequence to a
-	  * large survey */
-	 static prefix *cached_survey = NULL, *cached_station = NULL;
-	 prefix *ptrPrev = NULL;
-	 int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
-	 if (cached_survey == back_ptr) {
-	    cmp = strcmp(cached_station->ident, name);
-	    if (cmp <= 0) ptr = cached_station;
-	 }
-	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
-	    ptrPrev = ptr;
-	    ptr = ptr->right;
-	 }
-	 if (cmp) {
-	    /* ie we got to one that was higher, or the end */
-	    prefix *newptr;
-	    name = osrealloc(name, i);
-	    newptr = osnew(prefix);
-	    newptr->ident = name;
-	    name = NULL;
-	    if (ptrPrev == NULL)
-	       back_ptr->down = newptr;
-	    else
-	       ptrPrev->right = newptr;
-	    newptr->right = ptr;
-	    newptr->down = NULL;
-	    newptr->pos = NULL;
-	    newptr->shape = 0;
-	    newptr->stn = NULL;
-	    newptr->up = back_ptr;
-	    newptr->filename = file.filename;
-	    newptr->line = file.line;
-	    newptr->min_export = newptr->max_export = 0;
-	    newptr->sflags = BIT(SFLAGS_SURVEY);
-	    if (fSuspectTypo && !fImplicitPrefix)
-	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
-	    ptr = newptr;
-	    fNew = true;
-	 }
-	 cached_survey = back_ptr;
-	 cached_station = ptr;
-      }
-      depth++;
-      f_optional = false; /* disallow after first level */
-      if (isSep(ch)) get_pos(&fp_firstsep);
-   } while (isSep(ch));
-   if (name) osfree(name);
-
-   /* don't warn about a station that is referred to twice */
-   if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
-
-   if (fNew) {
-      /* fNew means SFLAGS_SURVEY is currently set */
-      SVX_ASSERT(TSTBIT(ptr->sflags, SFLAGS_SURVEY));
-      if (!fSurvey) {
-	 ptr->sflags &= ~BIT(SFLAGS_SURVEY);
-	 if (TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
-      }
-   } else {
-      /* check that the same name isn't being used for a survey and station */
-      if (fSurvey ^ TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
-	 /* TRANSLATORS: Here "station" is a survey station, not a train station.
-	  *
-	  * Here "survey" is a "cave map" rather than list of questions - it should be
-	  * translated to the terminology that cavers using the language would use.
-	  */
-	 compile_diagnostic(DIAG_ERR, /*“%s” can’t be both a station and a survey*/27,
-			    sprint_prefix(ptr));
-      }
-      if (!fSurvey && TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;
-   }
-
-   /* check the export level */
-#if 0
-   printf("R min %d max %d depth %d pfx %s\n",
-	  ptr->min_export, ptr->max_export, depth, sprint_prefix(ptr));
-#endif
-   if (ptr->min_export == 0 || ptr->min_export == USHRT_MAX) {
-      if (depth > ptr->max_export) ptr->max_export = depth;
-   } else if (ptr->max_export < depth) {
-      prefix *survey = ptr;
-      char *s;
-      const char *p;
-      int level;
-      for (level = ptr->max_export + 1; level; level--) {
-	 survey = survey->up;
-	 SVX_ASSERT(survey);
-      }
-      s = osstrdup(sprint_prefix(survey));
-      p = sprint_prefix(ptr);
-      if (survey->filename) {
-	 compile_diagnostic_pfx(DIAG_ERR, survey,
-				/*Station “%s” not exported from survey “%s”*/26,
-				p, s);
-      } else {
-	 compile_diagnostic(DIAG_ERR, /*Station “%s” not exported from survey “%s”*/26, p, s);
-      }
-      osfree(s);
-#if 0
-      printf(" *** pfx %s warning not exported enough depth %d "
-	     "ptr->max_export %d\n", sprint_prefix(ptr),
-	     depth, ptr->max_export);
-#endif
-   }
-   if (!fImplicitPrefix && (pfx_flags & PFX_WARN_SEPARATOR)) {
-      filepos fp_tmp;
-      get_pos(&fp_tmp);
-      set_pos(&fp_firstsep);
-      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Separator in survey name*/392);
-      set_pos(&fp_tmp);
-   }
-   return ptr;
-#endif
-	    // FIXME free w_prefix
-	    return NULL; // FIXME
+	    prefix *back_ptr = ptr;
+	    ptr = ptr->down;
+	    if (ptr == NULL) {
+		/* Special case first time around at each level */
+		ptr = osnew(prefix);
+		ptr->ident = osstrdup(name);
+		ptr->right = ptr->down = NULL;
+		ptr->pos = NULL;
+		ptr->shape = 0;
+		ptr->stn = NULL;
+		ptr->up = back_ptr;
+		ptr->filename = file.filename; // FIXME: Or location of #Prefix, etc for it?
+		ptr->line = file.line; // FIXME: Or location of #Prefix, etc for it?
+		ptr->min_export = ptr->max_export = 0;
+		ptr->sflags = sflag;
+		back_ptr->down = ptr;
+	    } else {
+		/* Use caching to speed up adding an increasing sequence to a
+		 * large survey */
+		static prefix *cached_survey = NULL, *cached_station = NULL;
+		prefix *ptrPrev = NULL;
+		int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
+		if (cached_survey == back_ptr) {
+		    cmp = strcmp(cached_station->ident, name);
+		    if (cmp <= 0) ptr = cached_station;
+		}
+		while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+		    ptrPrev = ptr;
+		    ptr = ptr->right;
+		}
+		if (cmp) {
+		    /* ie we got to one that was higher, or the end */
+		    prefix *newptr;
+		    newptr = osnew(prefix);
+		    newptr->ident = osstrdup(name);
+		    if (ptrPrev == NULL)
+			back_ptr->down = newptr;
+		    else
+			ptrPrev->right = newptr;
+		    newptr->right = ptr;
+		    newptr->down = NULL;
+		    newptr->pos = NULL;
+		    newptr->shape = 0;
+		    newptr->stn = NULL;
+		    newptr->up = back_ptr;
+		    newptr->filename = file.filename; // FIXME
+		    newptr->line = file.line;
+		    newptr->min_export = newptr->max_export = 0;
+		    newptr->sflags = sflag;
+		    ptr = newptr;
+		} else {
+		    if ((ptr->sflags & sflag) == 0) {
+			// FIXME diagnostic?
+		    }
+		}
+		cached_survey = back_ptr;
+		cached_station = ptr;
+	    }
 	}
 
-	if (++explicit_prefix_levels > 3) {
-	    printf("too many prefix levels\n");
-	    s_free(&component);
-	    // FIXME free w_prefix
-	    LONGJMP(file.jbSkipLine);
-	}
-
-	if (!s_empty(&component)) {
-	    w_prefix[explicit_prefix_levels - 1] = s_steal(&component);
-	} else {
-	    s_free(&component);
-	}
+	// FIXME free w_prefix
+	fprint_prefix(stdout, ptr);
+	fputnl(stdout);
+	return ptr;
     }
 }
 
