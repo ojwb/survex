@@ -345,8 +345,8 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	 if (fh == NULL) {
 	    char *leaf = strrchr(fnm_trans, '/');
 	    leaf = (leaf ? leaf + 1 : fnm_trans);
-	    if (islower(*leaf)) {
-	       *leaf = toupper(*leaf);
+	    if (islower((unsigned char)*leaf)) {
+	       *leaf = toupper((unsigned char)*leaf);
 	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
 	    }
 	    if (fh == NULL && had_lower) {
