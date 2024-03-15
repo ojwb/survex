@@ -1288,7 +1288,7 @@ walls_srv_initialise_settings(void)
     t[':'] = 0;
     t[';'] = SPECIAL_COMMENT;
     t[','] = 0;
-    //t['#'] = SPECIAL_COMMAND;
+    t['#'] = 0;
     t['\t'] |= SPECIAL_BLANK;
     t[' '] |= SPECIAL_BLANK;
     t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
