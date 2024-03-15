@@ -71,6 +71,7 @@ jobs:
         export CFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer'
         export CXXFLAGS='-fsanitize=address,undefined,float-divide-by-zero,local-bounds,nullability,unsigned-integer-overflow -fsanitize-address-use-after-scope -fsanitize-recover=all -g -O2 -fno-omit-frame-pointer'
         ./configure || { cat config.log; exit 1; }
+        cat config.log
     - name: make
       run: make -j2
     - name: Run tests
