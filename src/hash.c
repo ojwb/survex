@@ -25,6 +25,9 @@
 /* some (preferably prime) number for the hashing function */
 #define HASH_PRIME 29363
 
+#ifdef __clang__
+[[clang::no_sanitize("unsigned-integer-overflow")]]
+#endif
 int
 hash_string(const char *p)
 {
@@ -35,6 +38,9 @@ hash_string(const char *p)
    return hash;
 }
 
+#ifdef __clang__
+[[clang::no_sanitize("unsigned-integer-overflow")]]
+#endif
 int
 hash_lc_string(const char *p)
 {
@@ -45,6 +51,9 @@ hash_lc_string(const char *p)
    return hash;
 }
 
+#ifdef __clang__
+[[clang::no_sanitize("unsigned-integer-overflow")]]
+#endif
 int
 hash_data(const char *p, size_t len)
 {
