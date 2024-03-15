@@ -1297,7 +1297,10 @@ walls_srv_initialise_settings(void)
     for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
     t[':'] = 0;
     t[';'] = SPECIAL_COMMENT;
-    t[','] = 0;
+    // FIXME: `,` seems to be treated like a space everywhere, except that
+    // right after a directive name a comma instead gives a warning suggesting
+    // a parse error in a different directive.
+    t[','] = SPECIAL_BLANK;
     t['#'] = 0;
     t['\t'] |= SPECIAL_BLANK;
     t[' '] |= SPECIAL_BLANK;
