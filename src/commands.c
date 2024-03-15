@@ -2480,7 +2480,7 @@ cmd_require(void)
    skipblanks();
    get_pos(&fp);
    while (1) {
-      int diff = *ver++ - read_uint();
+      int diff = (int)*ver++ - (int)read_uint();
       if (diff > 0) break;
       if (diff < 0) {
 	 size_t i, len;
