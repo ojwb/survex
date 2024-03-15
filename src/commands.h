@@ -45,6 +45,8 @@ extern string token;
 extern string uctoken;
 void get_token(void);
 void get_token_no_blanks(void);
+// Read a token as defined in Walls format.
+void get_token_walls(void);
 
 void get_word(void);
 

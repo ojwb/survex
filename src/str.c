@@ -41,7 +41,7 @@ s_catlen(string* pstr, const char *s, int s_len)
 }
 
 void
-s_catn(string *pstr, int n, char c);
+s_catn(string *pstr, int n, char c)
 {
    if (pstr->capacity - pstr->len < n)
        s_expand_(pstr, n);

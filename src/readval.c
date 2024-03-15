@@ -355,110 +355,97 @@ anon_wall_station:
 char *
 read_walls_prefix(void)
 {
+    string name = S_INIT;
+    skipblanks();
+    if (!isNames(ch))
+	return NULL;
+    do {
+	s_catchar(&name, ch);
+	nextch();
+    } while (isNames(ch));
+    return s_steal(&name);
 }
 
 prefix *
-read_walls_station(const char* prefix, bool anon_allowed)
+read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 {
-   bool f_optional = !!(pfx_flags & PFX_OPT);
-   bool fSurvey = !!(pfx_flags & PFX_SURVEY);
-   bool fSuspectTypo = !!(pfx_flags & PFX_SUSPECT_TYPO);
-   prefix *back_ptr, *ptr;
-   char *name;
-   size_t name_len = 32;
-   size_t i;
-   bool fNew;
-   bool fImplicitPrefix = true;
-   int depth = -1;
-   filepos fp_firstsep;
+//    bool f_optional = false; //!!(pfx_flags & PFX_OPT);
+//    bool fSuspectTypo = false; //!!(pfx_flags & PFX_SUSPECT_TYPO);
+//    prefix *back_ptr, *ptr;
+    string component = S_INIT;
+//    size_t i;
+//    bool fNew;
+//    bool fImplicitPrefix = true;
+//    int depth = -1;
+//    filepos fp_firstsep;
 
-   skipblanks();
-#ifndef NO_DEPRECATED
-   if (isRoot(ch)) {
-      if (!(pfx_flags & PFX_ALLOW_ROOT)) {
-	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*ROOT is deprecated*/25);
-	 LONGJMP(file.jbSkipLine);
-      }
-      if (!(pfx_flags & PFX_NO_WARN_ROOT) && root_depr_count < 5) {
-	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*ROOT is deprecated*/25);
-	 if (++root_depr_count == 5)
-	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
-      }
-      nextch();
-      ptr = root;
-      if (!isNames(ch)) {
-	 if (!isSep(ch)) return ptr;
-	 /* Allow optional SEPARATOR after ROOT */
-	 get_pos(&fp_firstsep);
-	 nextch();
-      }
-      fImplicitPrefix = false;
-#else
-   if (0) {
-#endif
-   } else {
-      if ((pfx_flags & PFX_ANON) &&
-	  (isAnon(ch) || (pcs->dash_for_anon_wall_station && ch == '-'))) {
-	 int first_ch = ch;
-	 filepos here;
-	 get_pos(&here);
-	 nextch();
-	 if (isBlank(ch) || isEol(ch)) {
-	    if (!isAnon(first_ch))
-	       goto anon_wall_station;
-	    /* A single anon alone ('.' by default) is an anonymous
-	     * station which is on a point inside the passage and implies
-	     * the leg to it is a splay.
-	     */
+    filepos fp;
+    get_pos(&fp);
+
+    skipblanks();
+    if (anon_allowed && ch == '-') {
+	// - or -- is an anonymous wall point in a shot, but #Fix they seem to
+	// just be treated as ordinary station names.
+	// FIXME: Issue warning for such a useless station?
+	//
+	// Not yet checked, but you can presumably use - and -- as a prefix
+	// (FIXME check this).
+	nextch();
+	int dashes = 1;
+	if (ch == '-') {
+	    ++dashes;
+	    nextch();
+	}
+	if (!isNames(ch) && ch != ':') {
+	    // An anonymous station implies the leg it is on is a splay.
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
-	       set_pos(&here);
-	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
-	       LONGJMP(file.jbSkipLine);
+		set_pos(&fp);
+		// Walls also rejects this case.
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
+		LONGJMP(file.jbSkipLine);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
-	    return new_anon_station();
-	 }
-	 if (isAnon(first_ch) && ch == first_ch) {
-	    nextch();
-	    if (isBlank(ch) || isEol(ch)) {
-	       /* A double anon ('..' by default) is an anonymous station
-		* which is on the wall and implies the leg to it is a splay.
-		*/
-	       prefix * pfx;
-anon_wall_station:
-	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
-		  set_pos(&here);
-		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
-		  LONGJMP(file.jbSkipLine);
-	       }
-	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
-	       pfx = new_anon_station();
-	       pfx->sflags |= BIT(SFLAGS_WALL);
-	       return pfx;
-	    }
-	    if (ch == first_ch) {
-	       nextch();
-	       if (isBlank(ch) || isEol(ch)) {
-		  /* A triple anon ('...' by default) is an anonymous
-		   * station, but otherwise not handled specially (e.g. for
-		   * a single leg down an unexplored side passage to a station
-		   * which isn't refindable).
-		   */
-		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
-		     set_pos(&here);
-		     compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
-		     LONGJMP(file.jbSkipLine);
-		  }
-		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
-		  return new_anon_station();
-	       }
-	    }
-	 }
-	 set_pos(&here);
-      }
-      ptr = pcs->Prefix;
-   }
+	    prefix *pfx = new_anon_station();
+	    pfx->sflags |= BIT(SFLAGS_WALL);
+	    return pfx;
+	}
+	s_catn(&component, dashes, '-');
+    }
 
+    char *w_prefix[3] = { NULL, NULL, NULL };
+    int explicit_prefix_levels = 0;
+    while (true) {
+	while (isNames(ch)) {
+	    s_catchar(&component, ch);
+	    nextch();
+	}
+	if (ch != ':') {
+	    // component is the station name itself.
+	    if (s_empty(&component)) {
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
+		s_free(&component);
+		// FIXME free w_prefix
+		LONGJMP(file.jbSkipLine);
+	    }
+	    int len = s_len(&component);
+	    char *p = s_steal(&component);
+	    // Apply case treatment.
+	    switch (pcs->Case) {
+	      case LOWER:
+		for (int i = 0; i < len; ++i)
+		    p[i] = tolower((unsigned char)p[i]);
+		break;
+	      case UPPER:
+		for (int i = 0; i < len; ++i)
+		    p[i] = toupper((unsigned char)p[i]);
+		break;
+	      case OFF:
+		// Avoid unhandled enum warning.
+		break;
+	    }
+	    (void)walls_prefix;
+	    // FIXME resolve walls_prefix, w_prefix and explicit_prefix_levels.
+#if 0
    i = 0;
    name = NULL;
    do {
@@ -642,7 +629,24 @@ anon_wall_station:
       set_pos(&fp_tmp);
    }
    return ptr;
-    
+#endif
+	    // FIXME free w_prefix
+	    return NULL; // FIXME
+	}
+
+	if (++explicit_prefix_levels > 3) {
+	    printf("too many prefix levels\n");
+	    s_free(&component);
+	    // FIXME free w_prefix
+	    LONGJMP(file.jbSkipLine);
+	}
+
+	if (!s_empty(&component)) {
+	    w_prefix[explicit_prefix_levels - 1] = s_steal(&component);
+	} else {
+	    s_free(&component);
+	}
+    }
 }
 
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */

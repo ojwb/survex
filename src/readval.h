@@ -43,9 +43,11 @@ enum {
 
 prefix *read_prefix(unsigned flags);
 
+// Read a sequence of NAMES characters.  Returns NULL if none.
+// Caller is responsible for calling osfree() on the returned value.
 char *read_walls_prefix(void);
 
-prefix *read_walls_station(const char* prefix, bool anon_allowed);
+prefix *read_walls_station(char * const walls_prefix[3], bool anon_allowed);
 
 real read_numeric(bool f_optional);
 real read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings);

@@ -1054,6 +1054,9 @@ update_proj_str:
     s_free(&path);
 }
 
+// The current values of the three prefix levels Walls supports.
+static char* walls_prefix[3] = { NULL, NULL, NULL };
+
 // We don't expect a huge number of macros, and this doesn't limit how many we
 // can handle, only at what point access time stops being O(1).
 #define WALLS_MACRO_HASH_SIZE 0x100
@@ -1069,9 +1072,10 @@ typedef struct walls_macro {
 static walls_macro **walls_macros_wpj = NULL;
 static walls_macro **walls_macros = NULL;
 
-// Takes ownership of value.  Passing NULL for value sets empty string.
+// Takes ownership of the contents of p_name and of value.
+// Passing NULL for value sets empty string.
 static void
-walls_set_macro(walls_macro ***table, const char *name, char *val)
+walls_set_macro(walls_macro ***table, string *p_name, char *val)
 {
     //printf("MACRO: $|%s|=\"%s\":\n", name, val);
     if (!*table) {
@@ -1080,11 +1084,13 @@ walls_set_macro(walls_macro ***table, const char *name, char *val)
 	    (*table)[i] = NULL;
     }
 
-    unsigned h = hash_string(name) & (WALLS_MACRO_HASH_SIZE - 1);
+    unsigned h = hash_data(s_str(p_name), s_len(p_name)) &
+		 (WALLS_MACRO_HASH_SIZE - 1);
     walls_macro *p = (*table)[h];
     while (p) {
-	if (strcmp(p->name, name) == 0) {
+	if (s_eq(p_name, p->name)) {
 	    // Update existing definition of macro.
+	    s_free(p_name);
 	    osfree(p->value);
 	    p->value = val;
 	    return;
@@ -1093,7 +1099,7 @@ walls_set_macro(walls_macro ***table, const char *name, char *val)
     }
 
     walls_macro *entry = osnew(walls_macro);
-    entry->name = osstrdup(name);
+    entry->name = s_steal(p_name);
     entry->value = val;
     entry->next = (*table)[h];
     (*table)[h] = entry;
@@ -1123,6 +1129,8 @@ typedef enum {
     WALLS_CMD_FIX,
     WALLS_CMD_NOTE,
     WALLS_CMD_PREFIX,
+    WALLS_CMD_PREFIX2,
+    WALLS_CMD_PREFIX3,
     WALLS_CMD_SEGMENT,
     WALLS_CMD_SYMBOL,
     WALLS_CMD_UNITS,
@@ -1139,8 +1147,8 @@ static const sztok walls_cmd_tab[] = {
     {"P",	WALLS_CMD_PREFIX}, // Abbreviated form.
     {"PREFIX",	WALLS_CMD_PREFIX},
     {"PREFIX1",	WALLS_CMD_PREFIX}, // Alias.
-    // FIXME: PREFIX2
-    // FIXME: PREFIX3
+    {"PREFIX2",	WALLS_CMD_PREFIX2},
+    {"PREFIX3",	WALLS_CMD_PREFIX3},
     {"S",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEG",	WALLS_CMD_SEGMENT}, // Abbreviated form.
     {"SEGMENT",	WALLS_CMD_SEGMENT},
@@ -1171,6 +1179,8 @@ typedef enum {
     WALLS_UNITS_OPT_NOTE,
     WALLS_UNITS_OPT_ORDER,
     WALLS_UNITS_OPT_PREFIX,
+    WALLS_UNITS_OPT_PREFIX2,
+    WALLS_UNITS_OPT_PREFIX3,
     WALLS_UNITS_OPT_RECT,
     WALLS_UNITS_OPT_RESET,
     WALLS_UNITS_OPT_RESTORE,
@@ -1213,8 +1223,8 @@ static const sztok walls_units_opt_tab[] = {
     {"P",	WALLS_UNITS_OPT_PREFIX}, // Abbreviated form.
     {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
     {"PREFIX1",	WALLS_UNITS_OPT_PREFIX}, // Alias.
-    // FIXME: PREFIX2=
-    // FIXME: PREFIX3=
+    {"PREFIX2",	WALLS_UNITS_OPT_PREFIX2},
+    {"PREFIX3",	WALLS_UNITS_OPT_PREFIX3},
     {"RECT",	WALLS_UNITS_OPT_RECT},
     {"RESET",	WALLS_UNITS_OPT_RESET},
     {"RESTORE",	WALLS_UNITS_OPT_RESTORE},
@@ -1332,6 +1342,11 @@ data_file_walls_srv(void)
     // This is volatile to protect it from setjmp/longjmp.
     volatile int walls_units_save_count = 0;
 
+    // We need to roll back prefix changes from the SRV when included from a
+    // WPJ.
+    char* saved_walls_prefix[3];
+    *saved_walls_prefix = *walls_prefix;
+
     walls_srv_initialise_settings();
     walls_srv_reset();
 
@@ -1417,7 +1432,7 @@ next_line:
 	}
 	skipblanks();
 	int blanks_after_hash = ftell(file.fh) - file.lpos - leading_blanks - 2;
-	get_token();
+	get_token_walls();
 	walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
 	parse file_store;
 	volatile int ch_store;
@@ -1505,7 +1520,7 @@ next_line:
 	  case WALLS_CMD_UNITS:
 	    skipblanks();
 	    while (!isEol(ch)) {
-		get_token();
+		get_token_walls();
 		if (s_empty(&token) && isComm(ch)) {
 		    break;
 		}
@@ -1530,7 +1545,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			if (S_EQ(&uctoken, "METERS")) {
 			    pcs->units[Q_LENGTH] = 1.0;
 			} else if (S_EQ(&uctoken, "FEET")) {
@@ -1546,7 +1561,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			if (S_EQ(&uctoken, "DEGREES")) {
 			    pcs->units[Q_BEARING] = M_PI / 180.0;
 			} else if (S_EQ(&uctoken, "GRADS")) {
@@ -1568,7 +1583,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			if (S_EQ(&uctoken, "DEGREES")) {
 			    pcs->units[Q_BACKBEARING] = M_PI / 180.0;
 			} else if (S_EQ(&uctoken, "GRADS")) {
@@ -1590,7 +1605,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			pcs->f_clino_percent = false;
 			if (S_EQ(&uctoken, "DEGREES")) {
 			    pcs->units[Q_GRADIENT] = M_PI / 180.0;
@@ -1616,7 +1631,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			pcs->f_backclino_percent = false;
 			if (S_EQ(&uctoken, "DEGREES")) {
 			    pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
@@ -1642,7 +1657,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			if (S_EQ(&uctoken, "METERS")) {
 			    pcs->units[Q_DX] =
 			    pcs->units[Q_DY] =
@@ -1662,7 +1677,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			int order = match_tok(walls_order_tab,
 					      TABSIZE(walls_order_tab));
 			if (order < 0) {
@@ -1769,7 +1784,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			// FIXME: This isn't quite right as in Walls the case
 			// setting doesn't apply to the prefix part, only the
 			// leaf survey name.
@@ -1795,26 +1810,31 @@ next_line:
 		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
 		    pcs->ordering = data_order_ct;
 		    break;
-		  case WALLS_UNITS_OPT_PREFIX: {
+		  case WALLS_UNITS_OPT_PREFIX:
+		  case WALLS_UNITS_OPT_PREFIX2:
+		  case WALLS_UNITS_OPT_PREFIX3: {
 		    char *new_prefix = NULL;
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
 			new_prefix = read_walls_prefix();
 		    }
-		    osfree(walls_prefix);
-		    walls_prefix = new_prefix;
+		    int i = (int)opt - (int)WALLS_UNITS_OPT_PREFIX;
+		    if (walls_prefix[i] != saved_walls_prefix[i]) {
+			osfree(walls_prefix[i]);
+		    }
+		    walls_prefix[i] = new_prefix;
 		    break;
+		  }
 		  case WALLS_UNITS_OPT_LRUD:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
 			// We currently ignore LRUD, so can also ignore the
 			// settings for it.
-			char *val = NULL;
-			int len;
-			read_string(&val, &len);
-			osfree(val);
+			string val = S_INIT;
+			read_string(&val);
+			s_free(&val);
 		    } else {
 			// FIXME: Anything to do?
 		    }
@@ -1823,7 +1843,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			/* FIXME: Implement different taping methods? */
 		    } else {
 			// FIXME: Anything to do?
@@ -1833,7 +1853,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			if (s_str(&uctoken)[0] == 'N') {
 			    pcs->z[Q_BACKBEARING] = 0.0;
 			} else if (s_str(&uctoken)[0] == 'C') {
@@ -1863,7 +1883,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			get_token();
+			get_token_walls();
 			if (s_str(&uctoken)[0] == 'N') {
 			    pcs->sc[Q_BACKGRADIENT] = 1.0;
 			} else if (s_str(&uctoken)[0] == 'C') {
@@ -1909,10 +1929,9 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			char *val = NULL;
-			int len;
-			read_string(&val, &len);
-			osfree(val);
+			string val = S_INIT;
+			read_string(&val);
+			s_free(&val);
 		    } else {
 			// FIXME: FLAG alone clears the default flag name.
 			// FIXME: Anything to do for NOTE?  Error?
@@ -1949,27 +1968,25 @@ next_line:
 			filepos fp;
 			get_pos(&fp);
 			nextch();
-			char *name = NULL;
-			int name_len = 0;
+			string name = S_INIT;
 			while (!isEol(ch) && !isBlank(ch) && ch != '=') {
-			    s_catchar(&name, &name_len, ch);
+			    s_catchar(&name, ch);
 			    nextch();
 			}
-			if (name) {
+			if (!s_empty(&name)) {
 			    skipblanks();
 			    if (ch != '=') {
 				// Set an empty value.
-				walls_set_macro(&walls_macros, name, NULL);
+				walls_set_macro(&walls_macros, &name, NULL);
 			    } else {
 				nextch();
-				char *val = NULL;
-				int len;
-				read_string(&val, &len);
-				walls_set_macro(&walls_macros, name, val);
+				string val = S_INIT;
+				read_string(&val);
+				walls_set_macro(&walls_macros, &name, s_steal(&val));
 			    }
-			    osfree(name);
 			    break;
 			}
+			s_free(&name);
 			set_pos(&fp);
 			s_clear(&token);
 		    }
@@ -2107,7 +2124,7 @@ next_line:
 		while (1) {
 		    skipblanks();
 		    if (isComm(ch) || isEol(ch)) break;
-		    get_token();
+		    get_token_walls();
 		    if (S_EQ(&uctoken, "ENTRANCE")) {
 			station_flags |= BIT(SFLAGS_ENTRANCE);
 		    } else if (S_EQ(&uctoken, "LOWER") ||
@@ -2146,10 +2163,15 @@ next_line:
 	    }
 	    break;
 	  }
-	  case WALLS_CMD_PREFIX: {
+	  case WALLS_CMD_PREFIX:
+	  case WALLS_CMD_PREFIX2:
+	  case WALLS_CMD_PREFIX3: {
 	    char *new_prefix = read_walls_prefix();
-	    osfree(walls_prefix);
-	    walls_prefix = new_prefix;
+	    int i = (int)directive - (int)WALLS_CMD_PREFIX;
+	    if (walls_prefix[i] != saved_walls_prefix[i]) {
+		osfree(walls_prefix[i]);
+	    }
+	    walls_prefix[i] = new_prefix;
 	    break;
 	  }
 	  case WALLS_CMD_NOTE:
@@ -2184,6 +2206,13 @@ next_line:
     }
 
     clear_last_leg();
+
+    for (int i = 0; i < 3; ++i) {
+	if (walls_prefix[i] != saved_walls_prefix[i]) {
+	    osfree(walls_prefix[i]);
+	    walls_prefix[i] = saved_walls_prefix[i];
+	}
+    }
 
     pcs->ordering = NULL; /* Avoid free() of static array. */
     pop_settings();

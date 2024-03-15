@@ -273,6 +273,19 @@ get_token_no_blanks(void)
 #endif
 }
 
+extern void
+get_token_walls(void)
+{
+   skipblanks();
+   s_clear(&token);
+   s_clear(&uctoken);
+   while (isalnum(ch)) {
+      s_catchar(&token, ch);
+      s_catchar(&uctoken, toupper(ch));
+      nextch();
+   }
+}
+
 static string word = S_INIT;
 
 /* read word */
