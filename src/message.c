@@ -237,9 +237,10 @@ default_charset(void)
 
 	 if (only_digit) goto iso;
 
-	 switch (tolower(chset[0])) {
+	 switch (tolower((unsigned char)chset[0])) {
 	  case 'i':
-	    if (tolower(chset[1]) == 's' && tolower(chset[2]) == 'o') {
+	    if (tolower((unsigned char)chset[1]) == 's' &&
+		tolower((unsigned char)chset[2]) == 'o') {
 	       chset += 3;
 	       iso:
 	       if (strncmp(chset, "8859", 4) == 0) {
@@ -256,7 +257,8 @@ default_charset(void)
 	    }
 	    break;
 	  case 'u':
-	    if (tolower(chset[1]) == 't' && tolower(chset[2]) == 'f') {
+	    if (tolower((unsigned char)chset[1]) == 't' &&
+		tolower((unsigned char)chset[2]) == 'f') {
 	       chset += 3;
 	       while (chset < p && *chset && !isdigit((unsigned char)*chset))
 		  chset++;
@@ -905,7 +907,7 @@ void
    p = leaf_from_fnm(argv[0]);
    appname_copy = p;
    while (*p) {
-      *p = tolower(*p);
+      *p = tolower((unsigned char)*p);
       ++p;
    }
 #endif

@@ -218,7 +218,7 @@ done:
     }
     while (p < s.size()) {
 	// Exclude a few safe characters which are common in filenames
-	if (!isalnum(s[p]) && strchr("/._-", s[p]) == NULL) {
+	if (!isalnum((unsigned char)s[p]) && strchr("/._-", s[p]) == NULL) {
 	    s.insert(p, 1, wxT('\\'));
 	    ++p;
 	}

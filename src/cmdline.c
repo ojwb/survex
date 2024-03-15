@@ -112,7 +112,7 @@ cmdline_help(void)
 
 	    putchar('=');
 
-	    for (p = longopt; *p ; p++) putchar(toupper(*p));
+	    for (p = longopt; *p ; p++) putchar((unsigned char)toupper(*p));
 
 	    if (o->has_arg == optional_argument) putchar(']');
 	 }

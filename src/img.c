@@ -511,10 +511,11 @@ static int
 check_label_space(img *pimg, size_t len)
 {
    if (len > pimg->buf_len) {
+      size_t label_offset = pimg->label - pimg->label_buf;
       char *b = (char *)xosrealloc(pimg->label_buf, len);
       if (!b) return 0;
-      pimg->label = (pimg->label - pimg->label_buf) + b;
       pimg->label_buf = b;
+      pimg->label = b + label_offset;
       pimg->buf_len = len;
    }
    return 1;
