@@ -439,6 +439,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    continue;
 	}
 
+	// printf("explicit_prefix_levels=%d %s:%s:%s\n", explicit_prefix_levels, w_prefix[0], w_prefix[1], w_prefix[2]);
+
 	// component is the station name itself.
 	if (s_empty(&component)) {
 	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
@@ -472,10 +474,11 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		sflag = 0;
 	    } else {
 		if (i < 3 - explicit_prefix_levels) {
-		    name = walls_prefix[i];
+		    name = walls_prefix[2 - i];
+		    // printf("using walls_prefix[%d] = '%s'\n", 2 - i, name);
 		} else {
 		    name = w_prefix[i - (3 - explicit_prefix_levels)]; // FIXME: Could steal wprefix[i].
-		//printf("using w_prefix[%d] = '%s'\n", i - (3 - explicit_prefix_levels), w_prefix[i]);
+		    // printf("using w_prefix[%d] = '%s'\n", i - (3 - explicit_prefix_levels), name);
 		}
 
 		if (name == NULL) {
