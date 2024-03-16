@@ -1348,7 +1348,7 @@ data_file_walls_srv(void)
     // We need to roll back prefix changes from the SRV when included from a
     // WPJ.
     char* saved_walls_prefix[3];
-    *saved_walls_prefix = *walls_prefix;
+    memcpy(saved_walls_prefix, walls_prefix, sizeof(saved_walls_prefix));
 
     walls_srv_initialise_settings();
     walls_srv_reset();
