@@ -474,7 +474,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		sflag = 0;
 	    } else {
 		if (i < 3 - explicit_prefix_levels) {
-		    name = walls_prefix[2 - i];
+		    name = walls_prefix[i];
 		    // printf("using walls_prefix[%d] = '%s'\n", 2 - i, name);
 		} else {
 		    name = w_prefix[i - (3 - explicit_prefix_levels)]; // FIXME: Could steal wprefix[i].

@@ -2170,7 +2170,7 @@ next_line:
 	  case WALLS_CMD_PREFIX2:
 	  case WALLS_CMD_PREFIX3: {
 	    char *new_prefix = read_walls_prefix();
-	    int i = (int)WALLS_CMD_PREFIX - (int)directive;
+	    int i = (int)WALLS_CMD_PREFIX3 - (int)directive;
 	    if (walls_prefix[i] != saved_walls_prefix[i]) {
 		osfree(walls_prefix[i]);
 	    }
