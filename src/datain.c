@@ -3548,7 +3548,7 @@ inches_only:
 	      int n_readings;
 	      LOC(BackClino) = ftell(file.fh);
 	      real val = read_numeric_multi(true, false, &n_readings);
-	      if (VAL(BackClino) == HUGE_REAL) {
+	      if (val == HUGE_REAL) {
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
 		  }
