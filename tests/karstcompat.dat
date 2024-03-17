@@ -9,6 +9,7 @@ DECLINATION: 0 FORMAT: DDDDLRUDLADB CORRECTIONS: 1.00 2.00 0.20
 
  C1 C2 3.081 999 -2 1 1 1 1 179 999   Reportedly Karst uses 999 for "no value" which Compass accepts for compatibility
  C1 C3 3.081 359 999 1 1 1 1 999 -2   Though testing with Compass in early 2024, 999 doesn't seem to work...
+ C3 c4 3.081 090 999 1 1 1 1 270 999
 
 Cave
 SURVEY NAME: C
