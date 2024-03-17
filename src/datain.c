@@ -3371,7 +3371,7 @@ data_normal(void)
 	  }
 	  read_reading(r, false);
 	  if (is_compass_NaN(VAL(r))) {
-	     VAL(r) = HUGE_REAL;
+	     VAL(r) = 0;
 	     *p_ctype = CTYPE_OMIT;
 	  } else {
 	     *p_ctype = CTYPE_READING;
