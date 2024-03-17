@@ -3520,8 +3520,8 @@ inches_only:
 	  LOC(Clino) = ftell(file.fh);
 	  if (ch != '/') {
 	      int n_readings;
-	      VAL(Clino) = read_numeric_multi(true, false, &n_readings);
-	      if (VAL(Clino) == HUGE_REAL) {
+	      real val = read_numeric_multi(true, false, &n_readings);
+	      if (val == HUGE_REAL) {
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
 		  }
@@ -3529,18 +3529,18 @@ inches_only:
 		  ctype = CTYPE_OMIT;
 	      } else {
 		  ctype = CTYPE_READING;
+		  VAL(Clino) = val;
 	      }
 	      WID(Clino) = ftell(file.fh) - LOC(Clino);
 	      VAR(Clino) = var(Q_GRADIENT);
 	  } else {
-	      VAL(Clino) = HUGE_REAL;
 	      WID(Clino) = 0;
 	      ctype = CTYPE_OMIT;
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
 	      int n_readings;
 	      LOC(BackClino) = ftell(file.fh);
-	      VAL(BackClino) = read_numeric_multi(true, false, &n_readings);
+	      real val = read_numeric_multi(true, false, &n_readings);
 	      if (VAL(BackClino) == HUGE_REAL) {
 		  if (ch != '-') {
 		      // FIXME: Walls expects two or more '-' for an omitted reading.
@@ -3549,12 +3549,12 @@ inches_only:
 		  backctype = CTYPE_OMIT;
 	      } else {
 		  backctype = CTYPE_READING;
+		  VAL(BackClino) = val;
 	      }
 	      WID(BackClino) = ftell(file.fh) - LOC(BackClino);
 	      VAR(BackClino) = var(Q_BACKGRADIENT);
 	  } else {
 	      LOC(BackClino) = ftell(file.fh);
-	      VAL(BackClino) = HUGE_REAL;
 	      WID(BackClino) = 0;
 	      backctype = CTYPE_OMIT;
 	  }
