@@ -2217,6 +2217,13 @@ next_line:
 	}
     }
 
+    while (walls_units_save_count) {
+	// FIXME: Walls quietly allows SAVE without a corresponding RESTORE, but
+	// probably worth at least a warning here.
+	pop_settings();
+	--walls_units_save_count;
+    }
+
     pcs->ordering = NULL; /* Avoid free() of static array. */
     pop_settings();
 }
