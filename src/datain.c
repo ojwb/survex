@@ -1054,9 +1054,6 @@ update_proj_str:
     s_free(&path);
 }
 
-// The current values of the three prefix levels Walls supports.
-static char* walls_prefix[3] = { NULL, NULL, NULL };
-
 // We don't expect a huge number of macros, and this doesn't limit how many we
 // can handle, only at what point access time stops being O(1).
 #define WALLS_MACRO_HASH_SIZE 0x100
@@ -1068,9 +1065,25 @@ typedef struct walls_macro {
 } walls_macro;
 
 // Macros set in the WPJ persist, but those set in an SRV only apply for that
-// SRV so we keep a table for each and check the SRV first.
+// SRV so we keep a table for each and when expanding them in the SRV we use
+// a definition from the SRV file in preference to one from the WPJ file.
+//
+// Definitions actually also get added to walls_macros, but we swap the tables
+// around both before and after processing an SRV file (and we clear the
+// table from the SRV file at the end of the file).
+//
+// Testing with Walls, macro definitions are NOT affected by SAVE, RESTORE or
+// RESET.
 static walls_macro **walls_macros_wpj = NULL;
 static walls_macro **walls_macros = NULL;
+
+static void
+walls_swap_macro_tables()
+{
+    walls_macro **tmp = walls_macros_wpj;
+    walls_macros_wpj = walls_macros;
+    walls_macros = tmp;
+}
 
 // Takes ownership of the contents of p_name and of value.
 // Passing NULL for value sets empty string.
@@ -1273,12 +1286,98 @@ static const sztok walls_order_tab[] = {
 // `\`.  FIXME: Check for each situation.
 static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
 
+// Walls-specific options.  Options which Survex has a direct equivalent of
+// are stored in the `settings` struct instead.
+typedef struct walls_options {
+    // The current values of the three prefix levels Walls supports.
+    // NULL for any level not currently set (all NULL by default).
+    char* prefix[3];
+
+    // Data order for CT legs.
+    reading data_order_ct[6];
+
+    // Data order for RECT legs (also used for #Fix coordinate order).
+    reading data_order_rect[6];
+
+    // Is this from SAVE in .OPTIONS / #Units?
+    bool explicit;
+
+    struct walls_options *next;
+} walls_options;
+
+static walls_options* p_walls_options;
+
+static const walls_options walls_options_default = {
+    // prefix[3]
+    { NULL, NULL, NULL },
+
+    // data_order_ct[6]
+    {
+	WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
+// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
+	IgnoreAll
+    },
+
+    // data_order_rect[6]
+    {
+	WallsSRVFr, WallsSRVTo, Dx, Dy, Dz,
+// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
+	IgnoreAll
+    },
+
+    // explicit
+    false,
+
+    // next
+    NULL
+};
+
 static void
-walls_srv_initialise_settings(void)
+push_walls_options(void)
 {
     settings *pcsNew = osnew(settings);
     *pcsNew = *pcs; /* copy contents */
+    pcsNew->begin_lineno = file.line;
+    pcsNew->next = pcs;
+    pcs = pcsNew;
 
+    // Walls-specific settings.
+    walls_options *new_options = osnew(walls_options);
+    if (!p_walls_options) {
+	*new_options = walls_options_default;
+    } else {
+	*new_options = *p_walls_options; /* copy contents */
+	// There's only 3 prefix levels and typically only one seems to be
+	// actually set so just copy the strings rather than trying to do
+	// copy-on-write.
+	for (int i = 0; i < 3; ++i) {
+	    if (new_options->prefix[i])
+		new_options->prefix[i] = osstrdup(new_options->prefix[i]);
+	}
+    }
+
+    new_options->next = p_walls_options;
+    p_walls_options = new_options;
+}
+
+static void
+pop_walls_options(void)
+{
+    pcs->ordering = NULL; /* Avoid free() of static array. */
+    pop_settings();
+    walls_options *p = p_walls_options;
+    p_walls_options = p_walls_options->next;
+    for (int i = 0; i < 3; ++i) {
+	osfree(p->prefix[i]);
+    }
+}
+
+static void
+walls_initialise_settings(void)
+{
+    push_walls_options();
+
+    // Generic settings.
     short *t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
     // "Unprefixed names can have a maximum of eight characters and must not
     // contain any colons, semicolons, commas, pound signs (#), or embedded
@@ -1291,10 +1390,9 @@ walls_srv_initialise_settings(void)
     // < 32 and not 127), but allow all top-bit-set characters.
     t[EOF] = SPECIAL_EOL;
     memset(t, 0, sizeof(short) * 33);
-    int i;
-    for (i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
+    for (int i = 33; i < 127; i++) t[i] = SPECIAL_NAMES;
     t[127] = 0;
-    for (i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
+    for (int i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
     t[':'] = 0;
     t[';'] = SPECIAL_COMMENT;
     // FIXME: `,` seems to be treated like a space everywhere, except that
@@ -1313,23 +1411,23 @@ walls_srv_initialise_settings(void)
     t['.'] |= SPECIAL_DECIMAL;
     t['-'] |= SPECIAL_MINUS;
     t['+'] |= SPECIAL_PLUS;
-    pcsNew->Translate = t;
+    pcs->Translate = t;
 
-    pcsNew->begin_lineno = 0;
+    pcs->begin_lineno = 0;
     // Spec says "maximum of eight characters" - we currently allow arbitrarily
     // many.
-    pcsNew->Truncate = INT_MAX;
-    pcsNew->next = pcs;
-    pcsNew->infer = BIT(INFER_EQUATES) | // FIXME?
-		    BIT(INFER_EQUATES_SELF_OK) | // FIXME?
-		    BIT(INFER_EXPORTS) | // FIXME?
-		    BIT(INFER_PLUMBS);
-    pcs = pcsNew;
+    pcs->Truncate = INT_MAX;
+    pcs->infer = BIT(INFER_EQUATES) | // FIXME?
+		 BIT(INFER_EQUATES_SELF_OK) | // FIXME?
+		 BIT(INFER_EXPORTS) | // FIXME?
+		 BIT(INFER_PLUMBS);
 }
 
 static void
-walls_srv_reset(void)
+walls_reset(void)
 {
+    // "[S]et all parameters (including the current name prefix) to their
+    // defaults" but not the segment.  We currently ignore the segment anyway.
     pcs->Case = OFF;
 
     default_units(pcs);
@@ -1337,21 +1435,505 @@ walls_srv_reset(void)
     // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
 
     pcs->recorded_style = pcs->style = STYLE_NORMAL;
+    pcs->ordering = p_walls_options->data_order_ct;
+
+    for (int i = 0; i < 3; ++i) {
+	osfree(p_walls_options->prefix[i]);
+    }
+    *p_walls_options = walls_options_default;
+}
+
+static void
+parse_options(void)
+{
+    skipblanks();
+    while (!isEol(ch)) {
+	get_token_walls();
+	if (s_empty(&token) && isComm(ch)) {
+	    break;
+	}
+	// Assign to typed variable so we get a warning if we are
+	// missing a case below.
+	walls_units_opt opt = match_tok(walls_units_opt_tab,
+					TABSIZE(walls_units_opt_tab));
+	switch (opt) {
+	  case WALLS_UNITS_OPT_METERS:
+	    pcs->units[Q_LENGTH] =
+		pcs->units[Q_DX] =
+		pcs->units[Q_DY] =
+		pcs->units[Q_DZ] = 1.0;
+	    break;
+	  case WALLS_UNITS_OPT_FEET:
+	    pcs->units[Q_LENGTH] =
+		pcs->units[Q_DX] =
+		pcs->units[Q_DY] =
+		pcs->units[Q_DZ] = METRES_PER_FOOT;
+	    break;
+	  case WALLS_UNITS_OPT_D:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		if (S_EQ(&uctoken, "METERS")) {
+		    pcs->units[Q_LENGTH] = 1.0;
+		} else if (S_EQ(&uctoken, "FEET")) {
+		    pcs->units[Q_LENGTH] = METRES_PER_FOOT;
+		} else {
+		    // FIXME: Error?
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_A:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		if (S_EQ(&uctoken, "DEGREES")) {
+		    pcs->units[Q_BEARING] = M_PI / 180.0;
+		} else if (S_EQ(&uctoken, "GRADS")) {
+		    pcs->units[Q_BEARING] = M_PI / 200.0;
+		} else if (S_EQ(&uctoken, "MILS") ||
+			   S_EQ(&uctoken, "MILLS")) {
+		    // Only MILS seems to be in the docs, but MILLS is
+		    // used by the "Kaua North Maze" sample data that
+		    // comes with Walls.
+		    pcs->units[Q_BEARING] = M_PI / 3200.0;
+		} else {
+		    // FIXME: Error?
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_AB:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		if (S_EQ(&uctoken, "DEGREES")) {
+		    pcs->units[Q_BACKBEARING] = M_PI / 180.0;
+		} else if (S_EQ(&uctoken, "GRADS")) {
+		    pcs->units[Q_BACKBEARING] = M_PI / 200.0;
+		} else if (S_EQ(&uctoken, "MILS") ||
+			   S_EQ(&uctoken, "MILLS")) {
+		    // Only MILS seems to be in the docs, but MILLS is
+		    // used by the "Kaua North Maze" sample data that
+		    // comes with Walls.
+		    pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
+		} else {
+		    // FIXME: Error?
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_V:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		pcs->f_clino_percent = false;
+		if (S_EQ(&uctoken, "DEGREES")) {
+		    pcs->units[Q_GRADIENT] = M_PI / 180.0;
+		} else if (S_EQ(&uctoken, "GRADS")) {
+		    pcs->units[Q_GRADIENT] = M_PI / 200.0;
+		} else if (S_EQ(&uctoken, "MILS") ||
+			   S_EQ(&uctoken, "MILLS")) {
+		    // Only MILS seems to be in the docs, but MILLS is
+		    // used by the "Kaua North Maze" sample data that
+		    // comes with Walls.
+		    pcs->units[Q_GRADIENT] = M_PI / 3200.0;
+		} else if (S_EQ(&uctoken, "PERCENT")) {
+		    pcs->units[Q_GRADIENT] = 0.01;
+		    pcs->f_clino_percent = true;
+		} else {
+		    // FIXME: Error?
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_VB:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		pcs->f_backclino_percent = false;
+		if (S_EQ(&uctoken, "DEGREES")) {
+		    pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
+		} else if (S_EQ(&uctoken, "GRADS")) {
+		    pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
+		} else if (S_EQ(&uctoken, "MILS") ||
+			   S_EQ(&uctoken, "MILLS")) {
+		    // Only MILS seems to be in the docs, but MILLS is
+		    // used by the "Kaua North Maze" sample data that
+		    // comes with Walls.
+		    pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
+		} else if (S_EQ(&uctoken, "PERCENT")) {
+		    pcs->units[Q_BACKGRADIENT] = 0.01;
+		    pcs->f_backclino_percent = true;
+		} else {
+		    // FIXME: Error?
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_S:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		if (S_EQ(&uctoken, "METERS")) {
+		    pcs->units[Q_DX] =
+		    pcs->units[Q_DY] =
+		    pcs->units[Q_DZ] = 1.0;
+		} else if (S_EQ(&uctoken, "FEET")) {
+		    pcs->units[Q_DX] =
+		    pcs->units[Q_DY] =
+		    pcs->units[Q_DZ] = METRES_PER_FOOT;
+		} else {
+		    // FIXME: Error?
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_ORDER:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		int order = match_tok(walls_order_tab,
+				      TABSIZE(walls_order_tab));
+		if (order < 0) {
+		    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
+		    break;
+		}
+		reading* p;
+		if (order & (1 << 24)) {
+		    order &= ((1 << 24) - 1);
+		    // "RECT" order.
+		    p = p_walls_options->data_order_rect + 2;
+		} else {
+		    // "CT" order.
+		    p = p_walls_options->data_order_ct + 2;
+		}
+		while (order) {
+		    *p++ = (order & 0xff);
+		    order >>= 8;
+		}
+		*p = IgnoreAll;
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_DECL:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+//pcs->declination = HUGE_REAL;
+//	if (pcs->dec_filename == NULL) {
+		pcs->z[Q_DECLINATION] = -read_numeric(false);
+		pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+//	} else {
+//	    (void)read_numeric(false);
+//	}
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_INCA:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		pcs->z[Q_BEARING] = -rad(read_numeric(false));
+		// FIXME: Handle angle units
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_INCAB:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
+		// FIXME: Handle angle units
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_INCD:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		pcs->z[Q_LENGTH] = -read_numeric(false);
+		// FIXME: Handle length units
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_INCH:
+	    skipblanks();
+	    if (ch == '=') {
+		// FIXME: Actually apply this correction.
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		nextch();
+		(void)read_numeric(false);
+		// FIXME: Handle length units
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_INCV:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
+		// FIXME: Handle angle units
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_INCVB:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
+		// FIXME: Handle angle units
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_RECT:
+	    // There are two different RECT options, one with a
+	    // parameter and one without!
+	    skipblanks();
+	    if (ch == '=') {
+		// FIXME: This seems to be a bearing to rotate
+		// cartesian data by, which we don't currently support.
+		//compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		nextch();
+		(void)read_numeric(false);
+	    } else {
+		pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
+		pcs->ordering = p_walls_options->data_order_rect;
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_CASE:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		switch (s_str(&uctoken)[0]) {
+		  case 'L':
+		    pcs->Case = LOWER;
+		    break;
+		  case 'U':
+		    pcs->Case = UPPER;
+		    break;
+		  case 'M':
+		    pcs->Case = OFF;
+		    break;
+		  default:
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		    break;
+		}
+	    } else {
+		// FIXME: Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_CT:
+	    pcs->recorded_style = pcs->style = STYLE_NORMAL;
+	    pcs->ordering = p_walls_options->data_order_ct;
+	    break;
+	  case WALLS_UNITS_OPT_PREFIX:
+	  case WALLS_UNITS_OPT_PREFIX2:
+	  case WALLS_UNITS_OPT_PREFIX3: {
+	    char *new_prefix = NULL;
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		new_prefix = read_walls_prefix();
+	    }
+	    int i = (int)WALLS_UNITS_OPT_PREFIX3 - (int)opt;
+	    osfree(p_walls_options->prefix[i]);
+	    p_walls_options->prefix[i] = new_prefix;
+	    break;
+	  }
+	  case WALLS_UNITS_OPT_LRUD:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		// We currently ignore LRUD, so can also ignore the
+		// settings for it.
+		string val = S_INIT;
+		read_string(&val);
+		s_free(&val);
+	    } else {
+		// FIXME: Anything to do?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_TAPE:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		/* FIXME: Implement different taping methods? */
+	    } else {
+		// FIXME: Anything to do?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_TYPEAB:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		if (s_str(&uctoken)[0] == 'N') {
+		    pcs->z[Q_BACKBEARING] = 0.0;
+		} else if (s_str(&uctoken)[0] == 'C') {
+		    pcs->z[Q_BACKBEARING] = M_PI;
+		} else {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		}
+		nextch();
+		if (ch == ',') {
+		    nextch();
+		    // FIXME: Use threshold value.
+		    (void)read_numeric(false);
+		    nextch();
+		    if (ch == ',') {
+			nextch();
+			if (ch == 'X') {
+			    nextch();
+			    // FIXME: Only use foresight (but check backsight).
+			}
+		    }
+		}
+	    } else {
+		// FIXME: Anything to do?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_TYPEVB:
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		get_token_walls();
+		if (s_str(&uctoken)[0] == 'N') {
+		    pcs->sc[Q_BACKGRADIENT] = 1.0;
+		} else if (s_str(&uctoken)[0] == 'C') {
+		    pcs->sc[Q_BACKGRADIENT] = -1.0;
+		} else {
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		}
+		nextch();
+		if (ch == ',') {
+		    nextch();
+		    // FIXME: Use threshold value.
+		    (void)read_numeric(false);
+		    nextch();
+		    if (ch == ',') {
+			nextch();
+			if (ch == 'X') {
+			    nextch();
+			    // FIXME: Only use foresight (but check backsight).
+			}
+		    }
+		}
+	    } else {
+		// FIXME: Anything to do?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_UV:
+	  case WALLS_UNITS_OPT_UVH:
+	  case WALLS_UNITS_OPT_UVV:
+	    // Scale factors for variances (with horizontal-only and
+	    // vertical-only variants).  FIXME: Actually apply these!
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		(void)read_numeric(false);
+	    } else {
+		// FIXME: Anything to do?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_FLAG:
+	  case WALLS_UNITS_OPT_NOTE:
+	    // Currently ignored.
+	    // FIXME: FLAG= ought to get mapped like #FLAG.
+	    skipblanks();
+	    if (ch == '=') {
+		nextch();
+		string val = S_INIT;
+		read_string(&val);
+		s_free(&val);
+	    } else {
+		// FIXME: FLAG alone clears the default flag name.
+		// FIXME: Anything to do for NOTE?  Error?
+	    }
+	    break;
+	  case WALLS_UNITS_OPT_RESET:
+	    // FIXME: This should be processed before other arguments!
+	    walls_reset();
+	    break;
+	  case WALLS_UNITS_OPT_RESTORE: {
+	    // FIXME: Should this be processed before other arguments?
+	    if (!p_walls_options->explicit) {
+		// FIXME: RESTORE ... SAVE
+		compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
+		break;
+	    }
+	    pop_walls_options();
+	    break;
+	  }
+	  case WALLS_UNITS_OPT_SAVE: {
+	    // FIXME: This should be processed before other arguments!
+	    push_walls_options();
+	    p_walls_options->explicit = true;
+	    break;
+	  }
+	  case WALLS_UNITS_OPT_NULL:
+	    if (s_str(&uctoken)[0] == '\0' && ch == '$') {
+		// Macro definition.
+		filepos fp;
+		get_pos(&fp);
+		nextch();
+		string name = S_INIT;
+		while (!isEol(ch) && !isBlank(ch) && ch != '=') {
+		    s_catchar(&name, ch);
+		    nextch();
+		}
+		if (!s_empty(&name)) {
+		    skipblanks();
+		    if (ch != '=') {
+			// Set an empty value.
+			walls_set_macro(&walls_macros, &name, NULL);
+		    } else {
+			nextch();
+			string val = S_INIT;
+			read_string(&val);
+			walls_set_macro(&walls_macros, &name, s_steal(&val));
+		    }
+		    break;
+		}
+		s_free(&name);
+		set_pos(&fp);
+		s_clear(&token);
+	    }
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	    break;
+	}
+//		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
+//		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
+//		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
+
+    /* Original "Inclination Units" were "Depth Gauge". */
+    //pcs->recorded_style = STYLE_DIVING;
+    //skipline();
+	skipblanks();
+    }
 }
 
 static void
 data_file_walls_srv(void)
 {
-    // This is volatile to protect it from setjmp/longjmp.
-    volatile int walls_units_save_count = 0;
+    // FIXME: Do any of these variables need to be volatile to protect them
+    // from longjmp()?  GCC isn't warning about them...
 
-    // We need to roll back prefix changes from the SRV when included from a
-    // WPJ.
-    char* saved_walls_prefix[3];
-    memcpy(saved_walls_prefix, walls_prefix, sizeof(saved_walls_prefix));
-
-    walls_srv_initialise_settings();
-    walls_srv_reset();
+    bool standalone = (p_walls_options == NULL);
+    if (standalone) {
+	// We're being included standalone rather than from a WPJ file.
+	walls_initialise_settings();
+	walls_reset();
+    }
 
     // FIXME: We need to update the separator_map to reflect what can be
     // SPECIAL_NAMES.  Or should we use the Compass approach and base this
@@ -1378,17 +1960,11 @@ data_file_walls_srv(void)
     }
 #endif
 
-    reading data_order_ct[] = {
-	WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
-// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
-	IgnoreAll
-    };
-    reading data_order_rect[] = {
-	WallsSRVFr, WallsSRVTo, Dx, Dy, Dz,
-// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
-	IgnoreAll
-    };
-    pcs->ordering = data_order_ct;
+    if (pcs->style == STYLE_NORMAL)
+	pcs->ordering = p_walls_options->data_order_ct;
+    else
+	pcs->ordering = p_walls_options->data_order_rect;
+
     while (ch != EOF && !ferror(file.fh)) {
 next_line:
 	skipblanks();
@@ -1521,490 +2097,7 @@ next_line:
 
 	switch (directive) {
 	  case WALLS_CMD_UNITS:
-	    skipblanks();
-	    while (!isEol(ch)) {
-		get_token_walls();
-		if (s_empty(&token) && isComm(ch)) {
-		    break;
-		}
-		// Assign to typed variable so we get a warning if we are
-		// missing a case below.
-		walls_units_opt opt = match_tok(walls_units_opt_tab,
-						TABSIZE(walls_units_opt_tab));
-		switch (opt) {
-		  case WALLS_UNITS_OPT_METERS:
-		    pcs->units[Q_LENGTH] =
-			pcs->units[Q_DX] =
-			pcs->units[Q_DY] =
-			pcs->units[Q_DZ] = 1.0;
-		    break;
-		  case WALLS_UNITS_OPT_FEET:
-		    pcs->units[Q_LENGTH] =
-			pcs->units[Q_DX] =
-			pcs->units[Q_DY] =
-			pcs->units[Q_DZ] = METRES_PER_FOOT;
-		    break;
-		  case WALLS_UNITS_OPT_D:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			if (S_EQ(&uctoken, "METERS")) {
-			    pcs->units[Q_LENGTH] = 1.0;
-			} else if (S_EQ(&uctoken, "FEET")) {
-			    pcs->units[Q_LENGTH] = METRES_PER_FOOT;
-			} else {
-			    // FIXME: Error?
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_A:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			if (S_EQ(&uctoken, "DEGREES")) {
-			    pcs->units[Q_BEARING] = M_PI / 180.0;
-			} else if (S_EQ(&uctoken, "GRADS")) {
-			    pcs->units[Q_BEARING] = M_PI / 200.0;
-			} else if (S_EQ(&uctoken, "MILS") ||
-				   S_EQ(&uctoken, "MILLS")) {
-			    // Only MILS seems to be in the docs, but MILLS is
-			    // used by the "Kaua North Maze" sample data that
-			    // comes with Walls.
-			    pcs->units[Q_BEARING] = M_PI / 3200.0;
-			} else {
-			    // FIXME: Error?
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_AB:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			if (S_EQ(&uctoken, "DEGREES")) {
-			    pcs->units[Q_BACKBEARING] = M_PI / 180.0;
-			} else if (S_EQ(&uctoken, "GRADS")) {
-			    pcs->units[Q_BACKBEARING] = M_PI / 200.0;
-			} else if (S_EQ(&uctoken, "MILS") ||
-				   S_EQ(&uctoken, "MILLS")) {
-			    // Only MILS seems to be in the docs, but MILLS is
-			    // used by the "Kaua North Maze" sample data that
-			    // comes with Walls.
-			    pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
-			} else {
-			    // FIXME: Error?
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_V:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			pcs->f_clino_percent = false;
-			if (S_EQ(&uctoken, "DEGREES")) {
-			    pcs->units[Q_GRADIENT] = M_PI / 180.0;
-			} else if (S_EQ(&uctoken, "GRADS")) {
-			    pcs->units[Q_GRADIENT] = M_PI / 200.0;
-			} else if (S_EQ(&uctoken, "MILS") ||
-				   S_EQ(&uctoken, "MILLS")) {
-			    // Only MILS seems to be in the docs, but MILLS is
-			    // used by the "Kaua North Maze" sample data that
-			    // comes with Walls.
-			    pcs->units[Q_GRADIENT] = M_PI / 3200.0;
-			} else if (S_EQ(&uctoken, "PERCENT")) {
-			    pcs->units[Q_GRADIENT] = 0.01;
-			    pcs->f_clino_percent = true;
-			} else {
-			    // FIXME: Error?
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_VB:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			pcs->f_backclino_percent = false;
-			if (S_EQ(&uctoken, "DEGREES")) {
-			    pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
-			} else if (S_EQ(&uctoken, "GRADS")) {
-			    pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
-			} else if (S_EQ(&uctoken, "MILS") ||
-				   S_EQ(&uctoken, "MILLS")) {
-			    // Only MILS seems to be in the docs, but MILLS is
-			    // used by the "Kaua North Maze" sample data that
-			    // comes with Walls.
-			    pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
-			} else if (S_EQ(&uctoken, "PERCENT")) {
-			    pcs->units[Q_BACKGRADIENT] = 0.01;
-			    pcs->f_backclino_percent = true;
-			} else {
-			    // FIXME: Error?
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_S:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			if (S_EQ(&uctoken, "METERS")) {
-			    pcs->units[Q_DX] =
-			    pcs->units[Q_DY] =
-			    pcs->units[Q_DZ] = 1.0;
-			} else if (S_EQ(&uctoken, "FEET")) {
-			    pcs->units[Q_DX] =
-			    pcs->units[Q_DY] =
-			    pcs->units[Q_DZ] = METRES_PER_FOOT;
-			} else {
-			    // FIXME: Error?
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_ORDER:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			int order = match_tok(walls_order_tab,
-					      TABSIZE(walls_order_tab));
-			if (order < 0) {
-			    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
-			    break;
-			}
-			reading* p;
-			if (order & (1 << 24)) {
-			    order &= ((1 << 24) - 1);
-			    // "RECT" order.
-			    p = data_order_rect + 2;
-			} else {
-			    // "CT" order.
-			    p = data_order_ct + 2;
-			}
-			while (order) {
-			    *p++ = (order & 0xff);
-			    order >>= 8;
-			}
-			*p = IgnoreAll;
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_DECL:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-    //pcs->declination = HUGE_REAL;
-//	if (pcs->dec_filename == NULL) {
-			pcs->z[Q_DECLINATION] = -read_numeric(false);
-			pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
-//	} else {
-//	    (void)read_numeric(false);
-//	}
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_INCA:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			pcs->z[Q_BEARING] = -rad(read_numeric(false));
-			// FIXME: Handle angle units
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_INCAB:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
-			// FIXME: Handle angle units
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_INCD:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			pcs->z[Q_LENGTH] = -read_numeric(false);
-			// FIXME: Handle length units
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_INCH:
-		    skipblanks();
-		    if (ch == '=') {
-			// FIXME: Actually apply this correction.
-			compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-			nextch();
-			(void)read_numeric(false);
-			// FIXME: Handle length units
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_INCV:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
-			// FIXME: Handle angle units
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_INCVB:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
-			// FIXME: Handle angle units
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_RECT:
-		    // There are two different RECT options, one with a
-		    // parameter and one without!
-		    skipblanks();
-		    if (ch == '=') {
-			// FIXME: This seems to be a bearing to rotate
-			// cartesian data by, which we don't currently support.
-			//compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-			nextch();
-			(void)read_numeric(false);
-		    } else {
-			pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
-			pcs->ordering = data_order_rect;
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_CASE:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			// FIXME: This isn't quite right as in Walls the case
-			// setting doesn't apply to the prefix part, only the
-			// leaf survey name.
-			switch (s_str(&uctoken)[0]) {
-			  case 'L':
-			    pcs->Case = LOWER;
-			    break;
-			  case 'U':
-			    pcs->Case = UPPER;
-			    break;
-			  case 'M':
-			    pcs->Case = OFF;
-			    break;
-			  default:
-			    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-			    break;
-			}
-		    } else {
-			// FIXME: Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_CT:
-		    pcs->recorded_style = pcs->style = STYLE_NORMAL;
-		    pcs->ordering = data_order_ct;
-		    break;
-		  case WALLS_UNITS_OPT_PREFIX:
-		  case WALLS_UNITS_OPT_PREFIX2:
-		  case WALLS_UNITS_OPT_PREFIX3: {
-		    char *new_prefix = NULL;
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			new_prefix = read_walls_prefix();
-		    }
-		    int i = (int)WALLS_UNITS_OPT_PREFIX3 - (int)opt;
-		    if (walls_prefix[i] != saved_walls_prefix[i]) {
-			osfree(walls_prefix[i]);
-		    }
-		    walls_prefix[i] = new_prefix;
-		    break;
-		  }
-		  case WALLS_UNITS_OPT_LRUD:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			// We currently ignore LRUD, so can also ignore the
-			// settings for it.
-			string val = S_INIT;
-			read_string(&val);
-			s_free(&val);
-		    } else {
-			// FIXME: Anything to do?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_TAPE:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			/* FIXME: Implement different taping methods? */
-		    } else {
-			// FIXME: Anything to do?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_TYPEAB:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			if (s_str(&uctoken)[0] == 'N') {
-			    pcs->z[Q_BACKBEARING] = 0.0;
-			} else if (s_str(&uctoken)[0] == 'C') {
-			    pcs->z[Q_BACKBEARING] = M_PI;
-			} else {
-			    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-			}
-			nextch();
-			if (ch == ',') {
-			    nextch();
-			    // FIXME: Use threshold value.
-			    (void)read_numeric(false);
-			    nextch();
-			    if (ch == ',') {
-				nextch();
-				if (ch == 'X') {
-				    nextch();
-				    // FIXME: Only use foresight (but check backsight).
-				}
-			    }
-			}
-		    } else {
-			// FIXME: Anything to do?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_TYPEVB:
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			get_token_walls();
-			if (s_str(&uctoken)[0] == 'N') {
-			    pcs->sc[Q_BACKGRADIENT] = 1.0;
-			} else if (s_str(&uctoken)[0] == 'C') {
-			    pcs->sc[Q_BACKGRADIENT] = -1.0;
-			} else {
-			    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-			}
-			nextch();
-			if (ch == ',') {
-			    nextch();
-			    // FIXME: Use threshold value.
-			    (void)read_numeric(false);
-			    nextch();
-			    if (ch == ',') {
-				nextch();
-				if (ch == 'X') {
-				    nextch();
-				    // FIXME: Only use foresight (but check backsight).
-				}
-			    }
-			}
-		    } else {
-			// FIXME: Anything to do?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_UV:
-		  case WALLS_UNITS_OPT_UVH:
-		  case WALLS_UNITS_OPT_UVV:
-		    // Scale factors for variances (with horizontal-only and
-		    // vertical-only variants).  FIXME: Actually apply these!
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			(void)read_numeric(false);
-		    } else {
-			// FIXME: Anything to do?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_FLAG:
-		  case WALLS_UNITS_OPT_NOTE:
-		    // Currently ignored.
-		    // FIXME: FLAG= ought to get mapped like #FLAG.
-		    skipblanks();
-		    if (ch == '=') {
-			nextch();
-			string val = S_INIT;
-			read_string(&val);
-			s_free(&val);
-		    } else {
-			// FIXME: FLAG alone clears the default flag name.
-			// FIXME: Anything to do for NOTE?  Error?
-		    }
-		    break;
-		  case WALLS_UNITS_OPT_RESET:
-		    // FIXME: This should be processed before other arguments!
-		    walls_srv_reset();
-		    break;
-		  case WALLS_UNITS_OPT_RESTORE: {
-		    // FIXME: Should this be processed before other arguments?
-		    if (walls_units_save_count == 0) {
-			// FIXME: RESTORE ... SAVE
-			compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
-			break;
-		    }
-		    --walls_units_save_count;
-		    pop_settings();
-		    break;
-		  }
-		  case WALLS_UNITS_OPT_SAVE: {
-		    // FIXME: This should be processed before other arguments!
-		    settings *pcsNew = osnew(settings);
-		    *pcsNew = *pcs; /* copy contents */
-		    pcsNew->begin_lineno = file.line;
-		    pcsNew->next = pcs;
-		    pcs = pcsNew;
-		    ++walls_units_save_count;
-		    break;
-		  }
-		  case WALLS_UNITS_OPT_NULL:
-		    if (s_str(&uctoken)[0] == '\0' && ch == '$') {
-			// Macro definition.
-			filepos fp;
-			get_pos(&fp);
-			nextch();
-			string name = S_INIT;
-			while (!isEol(ch) && !isBlank(ch) && ch != '=') {
-			    s_catchar(&name, ch);
-			    nextch();
-			}
-			if (!s_empty(&name)) {
-			    skipblanks();
-			    if (ch != '=') {
-				// Set an empty value.
-				walls_set_macro(&walls_macros, &name, NULL);
-			    } else {
-				nextch();
-				string val = S_INIT;
-				read_string(&val);
-				walls_set_macro(&walls_macros, &name, s_steal(&val));
-			    }
-			    break;
-			}
-			s_free(&name);
-			set_pos(&fp);
-			s_clear(&token);
-		    }
-		    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-		    break;
-		}
-//		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
-//		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
-//		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
-
-	    /* Original "Inclination Units" were "Depth Gauge". */
-	    //pcs->recorded_style = STYLE_DIVING;
-	    //skipline();
-		skipblanks();
-	    }
+	    parse_options();
 	    break;
 	  case WALLS_CMD_DATE: {
 	    int year, month, day;
@@ -2025,7 +2118,7 @@ next_line:
 	  }
 	  case WALLS_CMD_FIX: {
 	    real coords[3];
-	    prefix *name = read_walls_station(walls_prefix, false);
+	    prefix *name = read_walls_station(p_walls_options->prefix, false);
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
 
@@ -2033,7 +2126,7 @@ next_line:
 		// The order of the coordinates is specified by data_order_rect.
 		int compiletimeassert_dxdydz[Dy - Dx == 1 && Dz - Dy == 1 ? 1 : -1];
 		(void)compiletimeassert_dxdydz;
-		int dim = data_order_rect[i + 2] - Dx;
+		int dim = p_walls_options->data_order_rect[i + 2] - Dx;
 		if ((unsigned)dim > 2) {
 		    // FIXME: Survex doesn't currently support horizontal-only
 		    // fixes.
@@ -2130,24 +2223,39 @@ next_line:
 		    get_token_walls();
 		    if (S_EQ(&uctoken, "ENTRANCE")) {
 			station_flags |= BIT(SFLAGS_ENTRANCE);
+		    } else if (S_EQ(&uctoken, "FIX")) {
+			station_flags |= BIT(SFLAGS_FIXED);
 		    } else if (S_EQ(&uctoken, "LOWER") ||
+			S_EQ(&uctoken, "LEAD") ||
 			S_EQ(&uctoken, "SPRING") ||
+			S_EQ(&uctoken, "RESURGENCE") ||
+			S_EQ(&uctoken, "RISING") ||
+			S_EQ(&uctoken, "SINK") ||
+			S_EQ(&uctoken, "SWALLET") ||
 			S_EQ(&uctoken, "SUMP") ||
-			S_EQ(&uctoken, "UPPER")) {
+			S_EQ(&uctoken, "SHAFT") ||
+			S_EQ(&uctoken, "UPPER") ||
+			S_EQ(&uctoken, "CAVE") ||
+			S_EQ(&uctoken, "GPS") || // -> FIXED flag?
+			S_EQ(&uctoken, "SURVEYED") ||
+			S_EQ(&uctoken, "BATS") ||
+			S_EQ(&uctoken, "MYOTIS") ||
+			S_EQ(&uctoken, "VELIFER") ||
+			S_EQ(&uctoken, "GATED") ||
+			S_EQ(&uctoken, "0") ||
+			S_EQ(&uctoken, "LOCATION")) {
 			// Walls flags seem to be arbitrary strings.  To
 			// capture ones we can usefully map based on real-world
 			// usage, for now we report unknown ones and maintain a
 			// list of those we've seen but don't have a use for.
+		    } else if (s_empty(&token)) {
+			nextch();
 		    } else {
 			if (!printed) {
 			    printed = true;
 			    printf("*** Unknown flags:");
 			}
 			printf(" %s", s_str(&token));
-			if (s_empty(&token)) {
-			    printf("%c", ch);
-			    nextch();
-			}
 		    }
 		}
 		if (printed) printf("\n");
@@ -2156,11 +2264,19 @@ next_line:
 		    filepos fp_end;
 		    get_pos(&fp_end);
 		    set_pos(&fp);
+		    // It seems / and \ can't be used in #flag station names?
+		    // FIXME: Need to actually test this with Walls.
+		    int save_translate_slash = pcs->Translate['/'];
+		    int save_translate_bslash = pcs->Translate['\\'];
+		    pcs->Translate['/'] = 0;
+		    pcs->Translate['\\'] = 0;
 		    while (!isWallsSlash(ch)) {
-			prefix *name = read_walls_station(walls_prefix, false);
+			prefix *name = read_walls_station(p_walls_options->prefix, false);
 			name->sflags |= station_flags;
 			skipblanks();
 		    }
+		    pcs->Translate['/'] = save_translate_slash;
+		    pcs->Translate['\\'] = save_translate_bslash;
 		    set_pos(&fp_end);
 		}
 	    }
@@ -2171,10 +2287,8 @@ next_line:
 	  case WALLS_CMD_PREFIX3: {
 	    char *new_prefix = read_walls_prefix();
 	    int i = (int)WALLS_CMD_PREFIX3 - (int)directive;
-	    if (walls_prefix[i] != saved_walls_prefix[i]) {
-		osfree(walls_prefix[i]);
-	    }
-	    walls_prefix[i] = new_prefix;
+	    osfree(p_walls_options->prefix[i]);
+	    p_walls_options->prefix[i] = new_prefix;
 	    break;
 	  }
 	  case WALLS_CMD_NOTE:
@@ -2210,22 +2324,318 @@ next_line:
 
     clear_last_leg();
 
-    for (int i = 0; i < 3; ++i) {
-	if (walls_prefix[i] != saved_walls_prefix[i]) {
-	    osfree(walls_prefix[i]);
-	    walls_prefix[i] = saved_walls_prefix[i];
+    if (walls_macros) {
+	// Clear all macros set in this SRV file.
+	for (unsigned i = 0; i < WALLS_MACRO_HASH_SIZE; ++i) {
+	    walls_macro *p = walls_macros[i];
+	    while (p) {
+		walls_macro *to_free = p;
+		p = p->next;
+		osfree(to_free);
+	    }
+	    walls_macros[i] = NULL;
 	}
     }
 
-    while (walls_units_save_count) {
+    while (p_walls_options->explicit) {
 	// FIXME: Walls quietly allows SAVE without a corresponding RESTORE, but
 	// probably worth at least a warning here.
-	pop_settings();
-	--walls_units_save_count;
+	pop_walls_options();
+    }
+    if (standalone) pop_walls_options();
+}
+
+typedef enum {
+    WALLS_WPJ_CMD_BOOK,
+    WALLS_WPJ_CMD_ENDBOOK,
+    WALLS_WPJ_CMD_NAME,
+    WALLS_WPJ_CMD_OPTIONS,
+    WALLS_WPJ_CMD_PATH,
+    WALLS_WPJ_CMD_REF,
+    WALLS_WPJ_CMD_STATUS,
+    WALLS_WPJ_CMD_SURVEY,
+    WALLS_WPJ_CMD_NULL = -1
+} walls_wpj_cmd;
+
+static const sztok walls_wpj_cmd_tab[] = {
+    {"BOOK",	WALLS_WPJ_CMD_BOOK},
+    {"ENDBOOK",	WALLS_WPJ_CMD_ENDBOOK},
+    {"NAME",	WALLS_WPJ_CMD_NAME},
+    {"OPTIONS",	WALLS_WPJ_CMD_OPTIONS},
+    {"PATH",	WALLS_WPJ_CMD_PATH},
+    {"REF",	WALLS_WPJ_CMD_REF},
+    {"STATUS",	WALLS_WPJ_CMD_STATUS},
+    {"SURVEY",	WALLS_WPJ_CMD_SURVEY},
+    {NULL,	WALLS_WPJ_CMD_NULL}
+};
+
+static struct {
+    real x, y, z;
+    int zone;
+} walls_ref;
+
+static void
+data_file_walls_wpj(void)
+{
+    // FIXME: Do any of these variables need to be volatile to protect them
+    // from longjmp()?  GCC isn't warning about them...
+    char *pth = path_from_fnm(file.filename);
+
+    walls_initialise_settings();
+    walls_reset();
+
+    // FIXME: We need to update the separator_map to reflect what can be
+    // SPECIAL_NAMES.  Or should we use the Compass approach and base this
+    // on what's actually used?  The first approach would pick the separator
+    // from {':', ';', ',', '#', space}; the latter would pick '.' if
+    // the documentation station naming recommendations were followed.
+    update_output_separator();
+
+    /* We need to update separator_map so we don't pick a separator character
+     * which occurs in a station name.  However Compass DAT allows everything
+     * >= ASCII char 33 except 127 in station names so if we just added all
+     * the valid station name characters we'd always pick space as the
+     * separator for any dataset which included a DAT file, yet in practice
+     * '.' is never used in any of the sample DAT files I've seen.  So
+     * instead we scan the characters actually used in station names when we
+     * process CompassDATFr and CompassDATTo fields. (FIXME)
+     */
+
+#ifdef HAVE_SETJMP_H
+    /* errors in nested functions can longjmp here */
+    if (setjmp(file.jbSkipLine)) {
+	skipline();
+	process_eol();
+    }
+#endif
+
+    int status = -1;
+    string name = S_INIT;
+    string path = S_INIT;
+
+    walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
+    walls_ref.zone = 0;
+
+    while (ch != EOF && !ferror(file.fh)) {
+//next_line:
+	skipblanks();
+	if (ch == ';') {
+	    // Comment line.
+	    skipline();
+	    continue;
+	}
+
+	if (ch != '.') {
+	    // FIXME Error?  Warning?
+	    skipline();
+	    process_eol();
+	    continue;
+	}
+
+	nextch();
+	get_token_no_blanks();
+	walls_wpj_cmd tok = match_tok(walls_wpj_cmd_tab,
+				      TABSIZE(walls_wpj_cmd_tab));
+	switch (tok) {
+	  case WALLS_WPJ_CMD_BOOK:
+	    skipline();
+	    process_eol();
+	  case WALLS_WPJ_CMD_ENDBOOK:
+	  case WALLS_WPJ_CMD_SURVEY:
+	    // Process the current entry.
+
+	    // status is a decimal integer which is a bitmap of flags.
+	    // Meanings mostly cribbed from dewalls:
+#define WALLS_WPJ_STATUS_TYPE_BOOK			0x0001
+#define WALLS_WPJ_STATUS_NAME_DEFINES_SEGMENT		0x0008
+#define WALLS_WPJ_STATUS_FEET				0x0010
+#define WALLS_WPJ_STATUS_REFERENCE_UNSPECIFIED		0x0040
+#define WALLS_WPJ_STATUS_DECLINATION_AUTO_NO		0x0100
+#define WALLS_WPJ_STATUS_DECLINATION_AUTO_YES		0x0200
+#define WALLS_WPJ_STATUS_UTM_GPS_NO			0x0400
+#define WALLS_WPJ_STATUS_UTM_GPS_YES			0x0800
+	    // Preserve vertical shot orientation:
+	    //   2^12: 1 = no
+	    //   2^13: 1 = yes
+	    // Preserve vertical shot length:
+	    //   2^14: 1 = no
+	    //   2^15: 1 = yes
+#define WALLS_WPJ_STATUS_TYPE_OTHER			0x10000
+
+	    if ((status & (WALLS_WPJ_STATUS_TYPE_OTHER |
+			   WALLS_WPJ_STATUS_TYPE_BOOK)) == 0 &&
+		!s_empty(&name)) {
+		// Include SRV file.
+		printf("+++ %s %s .SRV :%s:%s:%s\n", s_str(&path), s_str(&name),
+		       p_walls_options->prefix[0] ? p_walls_options->prefix[0] : "",
+		       p_walls_options->prefix[1] ? p_walls_options->prefix[1] : "",
+		       p_walls_options->prefix[2] ? p_walls_options->prefix[2] : "");
+		char *filename;
+		FILE *fh = fopen_portable(s_str(&path), s_str(&name), "srv", "rb", &filename);
+		if (fh == NULL)
+		    fh = fopen_portable(s_str(&path), s_str(&name), "SRV", "rb", &filename);
+
+		if (fh == NULL) {
+		    compile_diagnostic(DIAG_ERR, /*Couldn’t open file “%s”*/24, s_str(&name));
+		    goto srv_not_found;
+		}
+
+		{
+		    parse file_store = file;
+		    int ch_store = ch;
+		    if (file.fh) file.parent = &file_store;
+		    file.fh = fh;
+		    file.filename = filename;
+		    file.line = 1;
+		    file.lpos = 0;
+		    file.reported_where = false;
+		    nextch();
+
+		    using_data_file(file.filename);
+
+		    push_walls_options();
+		    walls_swap_macro_tables();
+		    data_file_walls_srv();
+		    walls_swap_macro_tables();
+		    pop_walls_options();
+	
+		    if (ferror(file.fh))
+			fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+
+		    (void)fclose(file.fh);
+
+		    /* don't free this - it may be pointed to by prefix.file */
+		    /* osfree(file.filename); */
+
+		    file = file_store;
+		    ch = ch_store;
+		}
+
+srv_not_found:
+		status = -1;
+		s_clear(&name);
+		//s_clear(&path);
+		walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
+		walls_ref.zone = 0;
+	    }
+
+	    // FIXME: Handle ENDBOOK and/or SURVEY
+	    skipline();
+	    break;
+	  case WALLS_WPJ_CMD_OPTIONS:
+	    parse_options();
+	    break;
+	  case WALLS_WPJ_CMD_PATH: {
+	    if (!s_empty(&path)) {
+		// FIXME: PATH already set
+		s_clear(&path);
+	    }
+	    skipblanks();
+	    // Start from the location of this WPJ.
+	    s_cat(&path, pth);
+	    while (!isEol(ch)) {
+		if (ch == '\\') {
+		    ch = FNM_SEP_LEV;
+		}
+		s_catchar(&path, ch);
+		nextch();
+	    }
+	    //printf("PATH: %s\n", s_str(&path));
+	    break;
+	  }
+	  case WALLS_WPJ_CMD_REF:
+	    walls_ref.y = read_numeric(false);
+	    walls_ref.x = read_numeric(false);
+	    walls_ref.zone = read_int(-60, 60);
+
+	    // Ignore pre-computed convergence as we compute that for ourselves.
+	    (void)read_numeric(false);
+
+	    walls_ref.z = read_numeric(false);
+
+	    // Ignore currently unknown field.
+	    //
+	    // This is 6 for the "Polygon" tutorial, 4 for Kaua North Maze, and
+	    // mostly 2 (but sometimes 0) for Thailand, so perhaps it's a
+	    // bitmask and 0x04 West of the meridian?  The longitude doesn't
+	    // have a sign so something must say.  Probably another bit is the
+	    // sign of the latitude but I don't have a Southern Hemisphere
+	    // example.  0x02 varies, even within Thailand, but unclear what
+	    // it means.
+	    //
+	    // We use the UTM coordinates so if so can safely ignore the
+	    // lat/long sign bits at least.
+	    (void)printf("REF unknown field %u\n", read_uint());
+
+	    // Ignore same location in lat/long.
+	    (void)read_numeric(false);
+	    (void)read_numeric(false);
+	    (void)read_numeric(false);
+	    (void)read_numeric(false);
+	    (void)read_numeric(false);
+	    (void)read_numeric(false);
+
+	    // Ignore what seems to be an integer index for the datum.
+	    // 27 "WGS 1984" (Thailand.wpj)
+	    (void)printf("REF datum index %u (?)\n", read_uint());
+
+	    string datum_str = S_INIT;
+	    read_string(&datum_str);
+	    int datum = img_parse_compass_datum_string(s_str(&datum_str),
+						       s_len(&datum_str));
+	    if (datum == 0) {
+		printf("*** FAILED TO PARSE DATUM '%s'\n", s_str(&datum_str));
+	    }
+	    s_free(&datum_str);
+
+	    if (datum && walls_ref.zone && abs(walls_ref.zone) <= 60) {
+		char *proj_str = img_compass_utm_proj_str(datum,
+							  walls_ref.zone);
+#if 0
+		unsigned saved_line = file.line;
+		file.line = base_line;
+		long saved_lpos = file.lpos;
+		file.lpos = base_lpos;
+#endif
+		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
+					 proj_str);
+#if 0
+		file.line = saved_line;
+		file.lpos = saved_lpos;
+#endif
+		if (!pcs->proj_str) {
+		    pcs->proj_str = proj_str;
+		    if (!proj_str_out) {
+			proj_str_out = osstrdup(proj_str);
+		    }
+		} else {
+		    osfree(proj_str);
+		}
+	    }
+	    break;
+	  case WALLS_WPJ_CMD_STATUS:
+	    status = read_uint();
+	    break;
+	  case WALLS_WPJ_CMD_NAME:
+	    if (!s_empty(&name)) {
+		// FIXME: NAME already set
+		s_clear(&name);
+	    }
+	    skipblanks();
+	    while (!isEol(ch)) {
+		s_catchar(&name, ch);
+		nextch();
+	    }
+	    break;
+	  case WALLS_WPJ_CMD_NULL:
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	}
+	process_eol();
     }
 
-    pcs->ordering = NULL; /* Avoid free() of static array. */
-    pop_settings();
+    osfree(pth);
+
+    pop_walls_options();
 }
 
 static void
@@ -2367,7 +2777,7 @@ data_file(const char *pth, const char *fnm)
        break;
      case EXT3('w', 'p', 'j'):
        // Walls project file.
-       // FIXME
+       data_file_walls_wpj();
        break;
      default:
        // Native Survex data.
@@ -3088,7 +3498,7 @@ data_cartesian(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_walls_station(walls_prefix, true);
+	  fr = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -3098,7 +3508,7 @@ data_cartesian(void)
 	  }
 	  break;
        case WallsSRVTo:
-	  to = read_walls_station(walls_prefix, true);
+	  to = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
@@ -3428,7 +3838,7 @@ data_normal(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_walls_station(walls_prefix, true);
+	  fr = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.  Ignore for now.
@@ -3438,7 +3848,7 @@ data_normal(void)
 	  }
 	  break;
        case WallsSRVTo:
-	  to = read_walls_station(walls_prefix, true);
+	  to = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
