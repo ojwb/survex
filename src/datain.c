@@ -1722,7 +1722,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			pcs->z[Q_BEARING] = -read_numeric(false);
+			pcs->z[Q_BEARING] = -rad(read_numeric(false));
 			// FIXME: Handle angle units
 		    }
 		    break;
@@ -1730,7 +1730,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			pcs->z[Q_BACKBEARING] = -read_numeric(false);
+			pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
 			// FIXME: Handle angle units
 		    }
 		    break;
@@ -1756,7 +1756,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			pcs->z[Q_GRADIENT] = -read_numeric(false);
+			pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 			// FIXME: Handle angle units
 		    }
 		    break;
@@ -1764,7 +1764,7 @@ next_line:
 		    skipblanks();
 		    if (ch == '=') {
 			nextch();
-			pcs->z[Q_BACKGRADIENT] = -read_numeric(false);
+			pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
 			// FIXME: Handle angle units
 		    }
 		    break;
