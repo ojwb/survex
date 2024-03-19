@@ -2412,6 +2412,8 @@ data_file_walls_wpj(void)
     int status = -1;
     string name = S_INIT;
     string path = S_INIT;
+    // Start from the location of this WPJ.
+    s_cat(&path, pth);
 
     walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
     walls_ref.zone = 0;
