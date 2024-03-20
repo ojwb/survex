@@ -2555,19 +2555,20 @@ srv_not_found:
 
 	    walls_ref.z = read_numeric(false);
 
-	    // Ignore currently unknown field.
+	    // Ignore field which seems to be a bitmask.
 	    //
-	    // This is 6 for the "Polygon" tutorial, 4 for Kaua North Maze, and
-	    // mostly 2 (but sometimes 0) for Thailand, so perhaps it's a
-	    // bitmask and 0x04 West of the meridian?  The longitude doesn't
-	    // have a sign so something must say.  Probably another bit is the
-	    // sign of the latitude but I don't have a Southern Hemisphere
-	    // example.  0x02 varies, even within Thailand, but unclear what
-	    // it means.
+	    // From experimenting with Walls32.exe and looking at the saved
+	    // .wpj file contents, the bottom two bits (mask 0x03) seem to
+	    // encode the format (d/dm/dms) that the Walls32.exe UI uses to
+	    // display/enter lat/long.
 	    //
-	    // We use the UTM coordinates so if so can safely ignore the
-	    // lat/long sign bits at least.
-	    (void)printf("REF unknown field %u\n", read_uint());
+	    // Bit 0x04 seems to be "West of meridian?" and bit 0x08 seems
+	    // to be "South of equator?" (and the lat and long seem to be
+	    // stored without signs).
+	    //
+	    // Other bits seem to be unused so it seems we can safely ignore
+	    // this field.
+	    (void)read_uint();
 
 	    // Ignore same location in lat/long.
 	    (void)read_numeric(false);
