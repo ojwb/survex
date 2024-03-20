@@ -2586,7 +2586,19 @@ srv_not_found:
 	    int datum = img_parse_compass_datum_string(s_str(&datum_str),
 						       s_len(&datum_str));
 	    if (datum == 0) {
-		printf("*** FAILED TO PARSE DATUM '%s'\n", s_str(&datum_str));
+		// Walls has different name strings to Compass for some datums.
+		if (S_EQ(&datum_str, "NAD27 CONUS"))
+		    // FIXME Assuming this is right.  Walls seems to have 6
+		    // variant NAD27 datums, not sure what's going on.
+		    datum = img_DATUM_NAD27;
+		else if (S_EQ(&datum_str, "NAD83"))
+		    datum = img_DATUM_NAD83;
+		else if (S_EQ(&datum_str, "Geodetic Datum `49"))
+		    datum = img_DATUM_NZGD49;
+		else if (S_EQ(&datum_str, "Hu-Tzu-Shan"))
+		    datum = img_DATUM_HUTZUSHAN1950;
+		else
+		    printf("*** FAILED TO PARSE DATUM '%s'\n", s_str(&datum_str));
 	    }
 	    s_free(&datum_str);
 
