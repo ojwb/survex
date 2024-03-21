@@ -2497,6 +2497,7 @@ data_file_walls_wpj(void)
 	  case WALLS_WPJ_CMD_BOOK:
 	    skipline();
 	    process_eol();
+	    break;
 	  case WALLS_WPJ_CMD_ENDBOOK:
 	  case WALLS_WPJ_CMD_SURVEY:
 	    // Process the current entry.
