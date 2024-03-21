@@ -2231,7 +2231,7 @@ next_line:
 	    skipblanks();
 
 	    if (isWallsSlash(ch)) {
-		printf("Default flag\n");
+		//printf("Default flag\n");
 		// FIXME: Handle.
 		skipline();
 	    } else {
@@ -2242,7 +2242,8 @@ next_line:
 			// FIXME: This "can optionally follow the list of
 			// station names" but what does it mean if it's
 			// missing?
-			printf("No flag in #Flag!\n");
+			//printf("No flag in #Flag!\n");
+			//show_line(ftell(file.fh) - file.lpos, 0);
 			process_eol();
 			goto next_line;
 		    }
@@ -2502,10 +2503,12 @@ data_file_walls_wpj(void)
 			   WALLS_WPJ_STATUS_TYPE_BOOK)) == 0 &&
 		!s_empty(&name)) {
 		// Include SRV file.
+#if 0
 		printf("+++ %s %s .SRV :%s:%s:%s\n", s_str(&path), s_str(&name),
 		       p_walls_options->prefix[0] ? p_walls_options->prefix[0] : "",
 		       p_walls_options->prefix[1] ? p_walls_options->prefix[1] : "",
 		       p_walls_options->prefix[2] ? p_walls_options->prefix[2] : "");
+#endif
 		char *filename;
 		FILE *fh = fopen_portable(s_str(&path), s_str(&name), "srv", "rb", &filename);
 		if (fh == NULL)
@@ -2612,9 +2615,9 @@ srv_not_found:
 	    (void)read_numeric(false);
 	    (void)read_numeric(false);
 
-	    // Ignore what seems to be an integer index for the datum.
-	    // 27 "WGS 1984" (Thailand.wpj)
-	    (void)printf("REF datum index %u (?)\n", read_uint());
+	    // Ignore integer index for the datum (e.g. 27 for "WGS 1984".  The
+	    // string names seem more likely to have not changed over time.
+	    (void)read_uint();
 
 	    string datum_str = S_INIT;
 	    read_string(&datum_str);
