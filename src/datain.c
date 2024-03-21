@@ -2239,11 +2239,20 @@ next_line:
 		get_pos(&fp);
 		while (!isWallsSlash(ch)) {
 		    if (isComm(ch) || isEol(ch)) {
-			// FIXME: This "can optionally follow the list of
-			// station names" but what does it mean if it's
-			// missing?
-			//printf("No flag in #Flag!\n");
-			//show_line(ftell(file.fh) - file.lpos, 0);
+			// The flag name is not required (it "can *optionally*
+			// follow the list of station names" (my emphasis).
+			// Elsewhere the docs say:
+			//
+			//   Another automatically assigned list item is
+			//   "{Unnamed Flag}", which is present only if
+			//   stations appear on a #Flag directive without a
+			//   name parameter -- for example, "#FLAG A1 A2 A3".
+			//   There's really no reason to have any of those,
+			//   although Walls has always allowed them.
+			//
+			// These seem to occur in real data, but we ignore
+			// unknown flag names, so it seems reasonable to just
+			// ignore these too.  Or maybe we should warn?  FIXME
 			process_eol();
 			goto next_line;
 		    }
