@@ -2663,18 +2663,8 @@ srv_not_found:
 	    if (datum && walls_ref.zone && abs(walls_ref.zone) <= 60) {
 		char *proj_str = img_compass_utm_proj_str(datum,
 							  walls_ref.zone);
-#if 0
-		unsigned saved_line = file.line;
-		file.line = base_line;
-		long saved_lpos = file.lpos;
-		file.lpos = base_lpos;
-#endif
 		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
 					 proj_str);
-#if 0
-		file.line = saved_line;
-		file.lpos = saved_lpos;
-#endif
 		if (!pcs->proj_str) {
 		    pcs->proj_str = proj_str;
 		    if (!proj_str_out) {
