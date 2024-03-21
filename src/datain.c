@@ -1210,48 +1210,53 @@ typedef enum {
     WALLS_UNITS_OPT_NULL = -1
 } walls_units_opt;
 
+// The aliases AZIMUTH, DISTANCE and VERTICAL don't seem to be documented.
+// They were found from `strings Walls32.exe` and then testing.
 static const sztok walls_units_opt_tab[] = {
-    {"A",	WALLS_UNITS_OPT_A},
-    {"AB",	WALLS_UNITS_OPT_AB},
-    {"CASE",	WALLS_UNITS_OPT_CASE},
-    {"CT",	WALLS_UNITS_OPT_CT},
-    {"D",	WALLS_UNITS_OPT_D},
-    {"DECL",	WALLS_UNITS_OPT_DECL},
-    {"F",	WALLS_UNITS_OPT_FEET}, // Abbreviated form.
-    {"FEET",	WALLS_UNITS_OPT_FEET},
-    {"FLAG",	WALLS_UNITS_OPT_FLAG},
+    {"A",		WALLS_UNITS_OPT_A},
+    {"AB",		WALLS_UNITS_OPT_AB},
+    {"AZIMUTH",		WALLS_UNITS_OPT_A}, // Alias (undocumented).
+    {"CASE",		WALLS_UNITS_OPT_CASE},
+    {"CT",		WALLS_UNITS_OPT_CT},
+    {"D",		WALLS_UNITS_OPT_D},
+    {"DECL",		WALLS_UNITS_OPT_DECL},
+    {"DISTANCE",	WALLS_UNITS_OPT_D}, // Alias (undocumented).
+    {"F",		WALLS_UNITS_OPT_FEET}, // Abbreviated form.
+    {"FEET",		WALLS_UNITS_OPT_FEET},
+    {"FLAG",		WALLS_UNITS_OPT_FLAG},
     // FIXME: GRID=
-    {"INCA",	WALLS_UNITS_OPT_INCA},
-    {"INCAB",	WALLS_UNITS_OPT_INCAB},
-    {"INCD",	WALLS_UNITS_OPT_INCD},
-    {"INCH",	WALLS_UNITS_OPT_INCH},
-    {"INCV",	WALLS_UNITS_OPT_INCV},
-    {"INCVB",	WALLS_UNITS_OPT_INCVB},
-    {"LRUD",	WALLS_UNITS_OPT_LRUD},
-    {"M",	WALLS_UNITS_OPT_METERS}, // Abbreviated form.
-    {"METERS",	WALLS_UNITS_OPT_METERS},
-    {"NOTE",	WALLS_UNITS_OPT_NOTE},
-    {"O",	WALLS_UNITS_OPT_ORDER}, // Abbreviated form.
-    {"ORDER",	WALLS_UNITS_OPT_ORDER},
-    {"P",	WALLS_UNITS_OPT_PREFIX}, // Abbreviated form.
-    {"PREFIX",	WALLS_UNITS_OPT_PREFIX},
-    {"PREFIX1",	WALLS_UNITS_OPT_PREFIX}, // Alias.
-    {"PREFIX2",	WALLS_UNITS_OPT_PREFIX2},
-    {"PREFIX3",	WALLS_UNITS_OPT_PREFIX3},
-    {"RECT",	WALLS_UNITS_OPT_RECT},
-    {"RESET",	WALLS_UNITS_OPT_RESET},
-    {"RESTORE",	WALLS_UNITS_OPT_RESTORE},
-    {"S",	WALLS_UNITS_OPT_S},
-    {"SAVE",	WALLS_UNITS_OPT_SAVE},
-    {"TAPE",	WALLS_UNITS_OPT_TAPE},
-    {"TYPEAB",	WALLS_UNITS_OPT_TYPEAB},
-    {"TYPEVB",	WALLS_UNITS_OPT_TYPEVB},
-    {"UV",	WALLS_UNITS_OPT_UV},
-    {"UVH",	WALLS_UNITS_OPT_UVH},
-    {"UVV",	WALLS_UNITS_OPT_UVV},
-    {"V",	WALLS_UNITS_OPT_V},
-    {"VB",	WALLS_UNITS_OPT_VB},
-    {NULL,	WALLS_UNITS_OPT_NULL}
+    {"INCA",		WALLS_UNITS_OPT_INCA},
+    {"INCAB",		WALLS_UNITS_OPT_INCAB},
+    {"INCD",		WALLS_UNITS_OPT_INCD},
+    {"INCH",		WALLS_UNITS_OPT_INCH},
+    {"INCV",		WALLS_UNITS_OPT_INCV},
+    {"INCVB",		WALLS_UNITS_OPT_INCVB},
+    {"LRUD",		WALLS_UNITS_OPT_LRUD},
+    {"M",		WALLS_UNITS_OPT_METERS}, // Abbreviated form.
+    {"METERS",		WALLS_UNITS_OPT_METERS},
+    {"NOTE",		WALLS_UNITS_OPT_NOTE},
+    {"O",		WALLS_UNITS_OPT_ORDER}, // Abbreviated form.
+    {"ORDER",		WALLS_UNITS_OPT_ORDER},
+    {"P",		WALLS_UNITS_OPT_PREFIX}, // Abbreviated form.
+    {"PREFIX",		WALLS_UNITS_OPT_PREFIX},
+    {"PREFIX1",		WALLS_UNITS_OPT_PREFIX}, // Alias.
+    {"PREFIX2",		WALLS_UNITS_OPT_PREFIX2},
+    {"PREFIX3",		WALLS_UNITS_OPT_PREFIX3},
+    {"RECT",		WALLS_UNITS_OPT_RECT},
+    {"RESET",		WALLS_UNITS_OPT_RESET},
+    {"RESTORE",		WALLS_UNITS_OPT_RESTORE},
+    {"S",		WALLS_UNITS_OPT_S},
+    {"SAVE",		WALLS_UNITS_OPT_SAVE},
+    {"TAPE",		WALLS_UNITS_OPT_TAPE},
+    {"TYPEAB",		WALLS_UNITS_OPT_TYPEAB},
+    {"TYPEVB",		WALLS_UNITS_OPT_TYPEVB},
+    {"UV",		WALLS_UNITS_OPT_UV},
+    {"UVH",		WALLS_UNITS_OPT_UVH},
+    {"UVV",		WALLS_UNITS_OPT_UVV},
+    {"V",		WALLS_UNITS_OPT_V},
+    {"VB",		WALLS_UNITS_OPT_VB},
+    {"VERTICAL",	WALLS_UNITS_OPT_V}, // Alias (undocumented).
+    {NULL,		WALLS_UNITS_OPT_NULL}
 };
 
 #define WALLS_ORDER_CT(R1,R2,R3) ((R1) | ((R2) << 8) | ((R3) << 16))
@@ -1474,9 +1479,12 @@ parse_options(void)
 	    if (ch == '=') {
 		nextch();
 		get_token_walls();
-		if (S_EQ(&uctoken, "METERS")) {
+		// From testing it seems Walls only checks the initial letter - e.g.
+		// "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
+		// but "X" gives an error.
+		if (s_str(&uctoken)[0] == 'M') {
 		    pcs->units[Q_LENGTH] = 1.0;
-		} else if (S_EQ(&uctoken, "FEET")) {
+		} else if (s_str(&uctoken)[0] == 'F') {
 		    pcs->units[Q_LENGTH] = METRES_PER_FOOT;
 		} else {
 		    // FIXME: Error?
@@ -1586,11 +1594,14 @@ parse_options(void)
 	    if (ch == '=') {
 		nextch();
 		get_token_walls();
-		if (S_EQ(&uctoken, "METERS")) {
+		// From testing it seems Walls only checks the initial letter - e.g.
+		// "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
+		// but "X" gives an error.
+		if (s_str(&uctoken)[0] == 'M') {
 		    pcs->units[Q_DX] =
 		    pcs->units[Q_DY] =
 		    pcs->units[Q_DZ] = 1.0;
-		} else if (S_EQ(&uctoken, "FEET")) {
+		} else if (s_str(&uctoken)[0] == 'F') {
 		    pcs->units[Q_DX] =
 		    pcs->units[Q_DY] =
 		    pcs->units[Q_DZ] = METRES_PER_FOOT;
