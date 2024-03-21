@@ -2122,6 +2122,7 @@ next_line:
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
 
+	    enum { UNKNOWN, LATLONG, UTM } format = UNKNOWN;
 	    for (int i = 0; i < 3; ++i) {
 		// The order of the coordinates is specified by data_order_rect.
 		int compiletimeassert_dxdydz[Dy - Dx == 1 && Dz - Dy == 1 ? 1 : -1];
@@ -2134,14 +2135,38 @@ next_line:
 		    break;
 		}
 
-		real coord = read_numeric(false);
-		if (ch == 'F' || ch == 'f') {
-		    coord *= METRES_PER_FOOT;
-		    nextch();
-		} else if (ch == 'M' || ch == 'm') {
-		    nextch();
+		real coord;
+		skipblanks();
+		int upper_ch = toupper(ch);
+		if (dim == 2 || format == UTM || strchr("NWES", upper_ch) == NULL) {
+		    // Read as a distance if this is the altitude, or we've already
+		    // seen a distance for x or y, or if the coordinate doesn't
+		    // start with a compass point letter.
+		    coord = read_numeric(false);
+		    if (ch == 'F' || ch == 'f') {
+			coord *= METRES_PER_FOOT;
+			nextch();
+		    } else if (ch == 'M' || ch == 'm') {
+			nextch();
+		    } else {
+			coord *= pcs->units[Q_LENGTH];
+		    }
+		    if (dim != 2) format = UTM;
 		} else {
-		    coord *= pcs->units[Q_LENGTH];
+		    // Set negate if S or W.
+		    bool negate = ((upper_ch & 3) == 3);
+		    bool e_or_w = ((upper_ch & 5) == 5);
+		    if (dim == e_or_w) {
+			compile_diagnostic(DIAG_ERR|DIAG_COL,
+					   e_or_w ?
+					   /*Expecting “N” or “S”*/492:
+					   /*Expecting “E” or “W”*/493);
+		    }
+		    nextch();
+		    coord = read_number(false, true);
+		    if (negate) coord = -coord;
+
+		    format = LATLONG;
 		}
 
 		coords[dim] = coord;
@@ -2164,6 +2189,15 @@ next_line:
 		    nextch();
 		    skipblanks();
 		}
+	    }
+
+	    // FIXME: Convert coordinates based on the current coordinate system
+	    // set by .REF in the wpj.
+	    if (format == LATLONG) {
+		// FIXME: Temporary hack, just scale degrees to give
+		// approximate metres.
+		coords[0] *= 55649.7 * cos(rad(coords[1]));
+		coords[1] *= 55473.1;
 	    }
 
 	    name->sflags |= BIT(SFLAGS_FIXED);

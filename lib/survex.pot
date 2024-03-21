@@ -1435,6 +1435,16 @@ msgstr ""
 msgid "Expecting “F” or “M”"
 msgstr ""
 
+#: ../src/datain.c:2150
+#: n:492
+msgid "Expecting “N” or “S”"
+msgstr ""
+
+#: ../src/datain.c:2160
+#: n:493
+msgid "Expecting “E” or “W”"
+msgstr ""
+
 #: readval.c:421
 #: readval.c:443
 #: readval.c:453

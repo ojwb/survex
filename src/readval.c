@@ -567,7 +567,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 }
 
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
-static real
+real
 read_number(bool f_optional, bool f_unsigned)
 {
    bool fPositive = true, fDigits = false;
