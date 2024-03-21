@@ -617,7 +617,7 @@ read_number(bool f_optional, bool f_unsigned)
    return 0.0; /* for brain-fried compilers */
 }
 
-static real
+real
 read_quadrant(bool f_optional)
 {
    enum {
