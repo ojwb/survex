@@ -2547,7 +2547,17 @@ data_file_walls_wpj(void)
 		    fh = fopen_portable(s_str(&path), s_str(&name), "SRV", "rb", &filename);
 
 		if (fh == NULL) {
-		    compile_diagnostic(DIAG_ERR, /*Couldn’t open file “%s”*/24, s_str(&name));
+		    if (!fDirectory(s_str(&path))) {
+			// Walls appears to quietly ignore file is the
+			// directory does not exist, but it seems worth
+			// warning about at least.
+			//
+			// FIXME: This should take case into account like
+			// opening the file does.
+			compile_diagnostic(DIAG_WARN, /*Couldn’t open file “%s”*/24, s_str(&name));
+		    } else {
+			compile_diagnostic(DIAG_ERR, /*Couldn’t open file “%s”*/24, s_str(&name));
+		    }
 		    goto srv_not_found;
 		}
 
