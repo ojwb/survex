@@ -1507,15 +1507,15 @@ parse_options(void)
 	    if (ch == '=') {
 		nextch();
 		get_token_walls();
-		if (S_EQ(&uctoken, "DEGREES")) {
+		// It seems Walls only checks the initial letter.
+		if (s_str(&uctoken)[0] == 'D') {
+		    // Degrees.
 		    pcs->units[Q_BEARING] = M_PI / 180.0;
-		} else if (S_EQ(&uctoken, "GRADS")) {
+		} else if (s_str(&uctoken)[0] == 'G') {
+		    // Grads.
 		    pcs->units[Q_BEARING] = M_PI / 200.0;
-		} else if (S_EQ(&uctoken, "MILS") ||
-			   S_EQ(&uctoken, "MILLS")) {
-		    // Only MILS seems to be in the docs, but MILLS is
-		    // used by the "Kaua North Maze" sample data that
-		    // comes with Walls.
+		} else if (s_str(&uctoken)[0] == 'M') {
+		    // Mils.
 		    pcs->units[Q_BEARING] = M_PI / 3200.0;
 		} else {
 		    // FIXME: Error?
@@ -1529,15 +1529,15 @@ parse_options(void)
 	    if (ch == '=') {
 		nextch();
 		get_token_walls();
-		if (S_EQ(&uctoken, "DEGREES")) {
+		// It seems Walls only checks the initial letter.
+		if (s_str(&uctoken)[0] == 'D') {
+		    // Degrees.
 		    pcs->units[Q_BACKBEARING] = M_PI / 180.0;
-		} else if (S_EQ(&uctoken, "GRADS")) {
+		} else if (s_str(&uctoken)[0] == 'G') {
+		    // Grads.
 		    pcs->units[Q_BACKBEARING] = M_PI / 200.0;
-		} else if (S_EQ(&uctoken, "MILS") ||
-			   S_EQ(&uctoken, "MILLS")) {
-		    // Only MILS seems to be in the docs, but MILLS is
-		    // used by the "Kaua North Maze" sample data that
-		    // comes with Walls.
+		} else if (s_str(&uctoken)[0] == 'M') {
+		    // Mils.
 		    pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
 		} else {
 		    // FIXME: Error?
@@ -1552,15 +1552,15 @@ parse_options(void)
 		nextch();
 		get_token_walls();
 		pcs->f_clino_percent = false;
-		if (S_EQ(&uctoken, "DEGREES")) {
+		// It seems Walls only checks the initial letter.
+		if (s_str(&uctoken)[0] == 'D') {
+		    // Degrees.
 		    pcs->units[Q_GRADIENT] = M_PI / 180.0;
-		} else if (S_EQ(&uctoken, "GRADS")) {
+		} else if (s_str(&uctoken)[0] == 'G') {
+		    // Grads.
 		    pcs->units[Q_GRADIENT] = M_PI / 200.0;
-		} else if (S_EQ(&uctoken, "MILS") ||
-			   S_EQ(&uctoken, "MILLS")) {
-		    // Only MILS seems to be in the docs, but MILLS is
-		    // used by the "Kaua North Maze" sample data that
-		    // comes with Walls.
+		} else if (s_str(&uctoken)[0] == 'M') {
+		    // Mils.
 		    pcs->units[Q_GRADIENT] = M_PI / 3200.0;
 		} else if (S_EQ(&uctoken, "PERCENT")) {
 		    pcs->units[Q_GRADIENT] = 0.01;
@@ -1578,15 +1578,15 @@ parse_options(void)
 		nextch();
 		get_token_walls();
 		pcs->f_backclino_percent = false;
-		if (S_EQ(&uctoken, "DEGREES")) {
+		// It seems Walls only checks the initial letter.
+		if (s_str(&uctoken)[0] == 'D') {
+		    // Degrees.
 		    pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
-		} else if (S_EQ(&uctoken, "GRADS")) {
+		} else if (s_str(&uctoken)[0] == 'G') {
+		    // Grads.
 		    pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
-		} else if (S_EQ(&uctoken, "MILS") ||
-			   S_EQ(&uctoken, "MILLS")) {
-		    // Only MILS seems to be in the docs, but MILLS is
-		    // used by the "Kaua North Maze" sample data that
-		    // comes with Walls.
+		} else if (s_str(&uctoken)[0] == 'M') {
+		    // Mils.
 		    pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
 		} else if (S_EQ(&uctoken, "PERCENT")) {
 		    pcs->units[Q_BACKGRADIENT] = 0.01;

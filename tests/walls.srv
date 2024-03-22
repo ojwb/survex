@@ -1,9 +1,10 @@
 ; pos=dump warn=0 dummycrprotection=
-#u o=EUN
+#u o=EUN v=g
 #Fix U0 0 1 0
 #seg foo
 #date 2024-03-09
-U0 U1  5.4 203 +45
+U0 U1  5.4 203 +50
+#units v=d
 #[
 U1 X1 3 4 5
 #[
