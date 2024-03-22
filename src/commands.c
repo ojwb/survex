@@ -823,6 +823,8 @@ report_declination(settings *p)
 	fputnl(STDERR);
 	free(p->dec_context);
 	p->dec_context = NULL;
+	p->min_declination = HUGE_VAL;
+	p->max_declination = -HUGE_VAL;
     }
 }
 
