@@ -2159,9 +2159,9 @@ next_line:
 		skipblanks();
 		int upper_ch = toupper(ch);
 		if (dim == 2 || format == UTM || strchr("NWES", upper_ch) == NULL) {
-		    // Read as a distance if this is the altitude, or we've already
-		    // seen a distance for x or y, or if the coordinate doesn't
-		    // start with a compass point letter.
+		    // Read as a distance if this is the altitude, or we've
+		    // already seen a distance for x or y, or if the coordinate
+		    // doesn't start with a compass point letter.
 		    coord = read_numeric(false);
 		    if (ch == 'F' || ch == 'f') {
 			coord *= METRES_PER_FOOT;
