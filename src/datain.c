@@ -280,7 +280,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD)) {
+   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL)) {
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
@@ -298,6 +298,14 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    ++len;
 	    nextch();
 	 }
+      } else if (diag_flags & DIAG_TAIL) {
+	 int len_last_nonblank = len;
+	 while (!isComm(ch) && !isEol(ch)) {
+	    ++len;
+	    if (!isBlank(ch)) len_last_nonblank = len;
+	    nextch();
+	 }
+	 len = len_last_nonblank;
       } else {
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
@@ -2474,6 +2482,9 @@ data_file_walls_wpj(void)
 #endif
 
     int status = -1;
+    long name_lpos = -1;
+    unsigned name_lineno = 0;
+    filepos fp_name;
     string name = S_INIT;
     string path = S_INIT;
     // Start from the location of this WPJ.
@@ -2547,6 +2558,14 @@ data_file_walls_wpj(void)
 		    fh = fopen_portable(s_str(&path), s_str(&name), "SRV", "rb", &filename);
 
 		if (fh == NULL) {
+		    // Report the diagnostic at the location of the ".NAME".
+		    unsigned save_line = file.line;
+		    long save_lpos = file.lpos;
+		    filepos fp;
+		    get_pos(&fp);
+		    set_pos(&fp_name);
+		    file.lpos = name_lpos;
+		    file.line = name_lineno;
 		    if (!fDirectory(s_str(&path))) {
 			// Walls appears to quietly ignore file is the
 			// directory does not exist, but it seems worth
@@ -2554,10 +2573,13 @@ data_file_walls_wpj(void)
 			//
 			// FIXME: This should take case into account like
 			// opening the file does.
-			compile_diagnostic(DIAG_WARN, /*Couldn’t open file “%s”*/24, s_str(&name));
+			compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
 		    } else {
-			compile_diagnostic(DIAG_ERR, /*Couldn’t open file “%s”*/24, s_str(&name));
+			compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
 		    }
+		    set_pos(&fp);
+		    file.line = save_line;
+		    file.lpos = save_lpos;
 		    goto srv_not_found;
 		}
 
@@ -2708,6 +2730,9 @@ srv_not_found:
 		s_clear(&name);
 	    }
 	    skipblanks();
+	    get_pos(&fp_name);
+	    name_lpos = file.lpos;
+	    name_lineno = file.line;
 	    while (!isEol(ch)) {
 		s_catchar(&name, ch);
 		nextch();
