@@ -86,7 +86,16 @@ read_compass_date_as_days_since_1900(void)
 int ch;
 
 typedef enum {
-    CTYPE_OMIT, CTYPE_READING, CTYPE_PLUMB, CTYPE_INFERPLUMB, CTYPE_HORIZ
+    // Clino omitted.  VAL() should be set to 0.0.
+    CTYPE_OMIT,
+    // An actual clino reading.
+    CTYPE_READING,
+    // An explicit plumb (U/D/UP/DOWN/+V/-V for reading).
+    CTYPE_PLUMB,
+    // An inferred plumb (+90 or -90 and *infer plumbs).
+    CTYPE_INFERPLUMB,
+    // An explicit horizontal leg (H/LEVEL for reading).
+    CTYPE_HORIZ
 } clino_type;
 
 /* Don't explicitly initialise as we can't set the jmp_buf - this has

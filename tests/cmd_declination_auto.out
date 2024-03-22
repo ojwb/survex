@@ -4,7 +4,7 @@
  2 3 2.0 123 -66
 ./cmd_declination_auto.svx:6: info: Declination: 1.7dg @ 2000-12-25, grid convergence: -0.9dg
  *declination auto 0410600 5282000 1234
-./cmd_declination_auto.svx:38: info: Declination: 1.7dg @ 2000-12-25 / 2.0dg @ 2000-12-26, grid convergence: -0.1dg
+./cmd_declination_auto.svx:39: info: Declination: 2.0dg @ 2000-12-26 / 2.0dg @ 2000-12-27, grid convergence: -0.1dg
  *declination auto 0490600 5282000 1234
 
 Removing trailing traverses...

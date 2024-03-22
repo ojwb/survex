@@ -2761,10 +2761,11 @@ bad_plt_date:
 		*/
 	       while (*q && *q <= ' ') q++;
 	       if (*q == 'P') {
+		   double dim[4];
 		   int bytes_used;
 		   ++q;
 		   if (sscanf(q, "%lf%lf%lf%lf%n",
-			      &pimg->l, &pimg->r, &pimg->u, &pimg->d,
+			      &dim[0], &dim[1], &dim[2], &dim[3],
 			      &bytes_used) != 4) {
 		       osfree(line);
 		       if (ferror(pimg->fh)) {
@@ -2774,19 +2775,43 @@ bad_plt_date:
 		       }
 		       return img_BAD;
 		   }
-		   if ((pimg->flags & img_SFLAG_UNDERGROUND) &&
-		       (pimg->l >= 0 || pimg->r >= 0 || pimg->u >= 0 || pimg->d >= 0)) {
-		       if (pimg->l >= 0) pimg->l *= METRES_PER_FOOT; else pimg->l = -1;
-		       if (pimg->r >= 0) pimg->r *= METRES_PER_FOOT; else pimg->r = -1;
-		       if (pimg->u >= 0) pimg->u *= METRES_PER_FOOT; else pimg->u = -1;
-		       if (pimg->d >= 0) pimg->d *= METRES_PER_FOOT; else pimg->d = -1;
-		       pimg->pending |= PENDING_XSECT | PENDING_HAD_XSECT;
-		   } else if (pimg->pending == PENDING_HAD_XSECT) {
-		       pimg->pending = PENDING_XSECT_END;
-		   }
 		   q += bytes_used;
+
+		   // No cross-sections for surface data.
+		   if ((pimg->flags & img_SFLAG_UNDERGROUND)) {
+		       int have_xsect = 0;
+		       int i;
+		       for (i = 0; i < 4; ++i) {
+			   // The PLT format specification says 'Values less
+			   // than zero are considered to be missing or
+			   // “Passage.”' but Compass has an (apparently
+			   // undocumented) extra check here for compatibility
+			   // with data that was originally entered in Karst
+			   // which uses 999 instead.
+			   //
+			   // Larry Fish says the check Compass actually uses
+			   // when processing PLT files is:
+			   //
+			   // if (Left<0) or (Left>900)
+			   if (dim[i] < 0.0 || dim[i] > 900.0) {
+			       dim[i] = -1.0;
+			   } else {
+			       dim[i] *= METRES_PER_FOOT;
+			       have_xsect = 1;
+			   }
+		       }
+		       if (!have_xsect) goto no_xsect;
+		       pimg->l = dim[0];
+		       pimg->r = dim[1];
+		       pimg->u = dim[2];
+		       pimg->d = dim[3];
+		       pimg->pending |= PENDING_XSECT | PENDING_HAD_XSECT;
+		   } else {
+		       goto no_xsect;
+		   }
 	       } else {
-		   pimg->l = pimg->r = pimg->u = pimg->d = -1;
+no_xsect:
+		   pimg->l = pimg->r = pimg->u = pimg->d = -1.0;
 		   if (pimg->pending == PENDING_HAD_XSECT) {
 		       pimg->pending = PENDING_XSECT_END;
 		   }
