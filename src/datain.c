@@ -3551,11 +3551,11 @@ data_cartesian(void)
       skipblanks();
       switch (*ordering) {
        case Fr:
-	 fr = read_prefix(PFX_STATION|PFX_ROOT);
+	 fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	 if (first_stn == End) first_stn = Fr;
 	 break;
        case To:
-	 to = read_prefix(PFX_STATION|PFX_ROOT);
+	 to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 	 if (first_stn == End) first_stn = To;
 	 break;
        case Station:
