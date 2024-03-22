@@ -2514,13 +2514,10 @@ data_file_walls_wpj(void)
 	get_token_no_blanks();
 	walls_wpj_cmd tok = match_tok(walls_wpj_cmd_tab,
 				      TABSIZE(walls_wpj_cmd_tab));
-	switch (tok) {
-	  case WALLS_WPJ_CMD_BOOK:
-	    in_survey = false;
-	    skipline();
-	    break;
-	  case WALLS_WPJ_CMD_SURVEY:
-	  case WALLS_WPJ_CMD_ENDBOOK:
+	if (in_survey &&
+	    (tok == WALLS_WPJ_CMD_SURVEY ||
+	     tok == WALLS_WPJ_CMD_BOOK ||
+	     tok == WALLS_WPJ_CMD_ENDBOOK)) {
 	    // Process the current entry.
 
 	    // status is a decimal integer which is a bitmap of flags.
@@ -2541,91 +2538,111 @@ data_file_walls_wpj(void)
 	    //   2^15: 1 = yes
 #define WALLS_WPJ_STATUS_TYPE_OTHER			0x10000
 
-	    if (in_survey &&
-		(status & (WALLS_WPJ_STATUS_TYPE_OTHER |
-			   WALLS_WPJ_STATUS_TYPE_BOOK)) == 0 &&
-		!s_empty(&name)) {
-		// Include SRV file.
-#if 0
-		printf("+++ %s %s .SRV :%s:%s:%s\n", s_str(&path), s_str(&name),
-		       p_walls_options->prefix[0] ? p_walls_options->prefix[0] : "",
-		       p_walls_options->prefix[1] ? p_walls_options->prefix[1] : "",
-		       p_walls_options->prefix[2] ? p_walls_options->prefix[2] : "");
-#endif
-		char *filename;
-		FILE *fh = fopen_portable(s_str(&path), s_str(&name), "srv", "rb", &filename);
-		if (fh == NULL)
-		    fh = fopen_portable(s_str(&path), s_str(&name), "SRV", "rb", &filename);
-
-		if (fh == NULL) {
-		    // Report the diagnostic at the location of the ".NAME".
-		    unsigned save_line = file.line;
-		    long save_lpos = file.lpos;
-		    filepos fp;
-		    get_pos(&fp);
-		    set_pos(&fp_name);
-		    file.lpos = name_lpos;
-		    file.line = name_lineno;
-		    if (!fDirectory(s_str(&path))) {
-			// Walls appears to quietly ignore file is the
-			// directory does not exist, but it seems worth
-			// warning about at least.
-			//
-			// FIXME: This should take case into account like
-			// opening the file does.
-			compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
-		    } else {
-			compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
-		    }
-		    set_pos(&fp);
-		    file.line = save_line;
-		    file.lpos = save_lpos;
-		    goto srv_not_found;
-		}
-
-		{
-		    parse file_store = file;
-		    int ch_store = ch;
-		    if (file.fh) file.parent = &file_store;
-		    file.fh = fh;
-		    file.filename = filename;
-		    file.line = 1;
-		    file.lpos = 0;
-		    file.reported_where = false;
-		    nextch();
-
-		    using_data_file(file.filename);
-
-		    push_walls_options();
-		    walls_swap_macro_tables();
-		    data_file_walls_srv();
-		    walls_swap_macro_tables();
-		    pop_walls_options();
-	
-		    if (ferror(file.fh))
-			fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
-
-		    (void)fclose(file.fh);
-
-		    /* don't free this - it may be pointed to by prefix.file */
-		    /* osfree(file.filename); */
-
-		    file = file_store;
-		    ch = ch_store;
-		}
-
-srv_not_found:
-		status = -1;
-		s_clear(&name);
-		//s_clear(&path);
-		walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
-		walls_ref.zone = 0;
+	    if ((status & WALLS_WPJ_STATUS_TYPE_OTHER)) {
+		// Attached file of arbitrary type.
+		goto not_srv;
+	    }
+	    if ((status & WALLS_WPJ_STATUS_TYPE_BOOK)) {
+		printf("*** in_survey but TYPE_BOOK\n");
+		goto not_srv;
+	    }
+	    if (s_empty(&name)) {
+		printf("*** in_survey but no/empty NAME\n");
+		goto not_srv;
 	    }
 
-	    in_survey = (tok == WALLS_WPJ_CMD_SURVEY);
+	    // Include SRV file.
+#if 0
+	    printf("+++ %s %s .SRV :%s:%s:%s\n", s_str(&path), s_str(&name),
+		   p_walls_options->prefix[0] ? p_walls_options->prefix[0] : "",
+		   p_walls_options->prefix[1] ? p_walls_options->prefix[1] : "",
+		   p_walls_options->prefix[2] ? p_walls_options->prefix[2] : "");
+#endif
+	    char *filename;
+	    FILE *fh = fopen_portable(s_str(&path), s_str(&name), "srv", "rb", &filename);
+	    if (fh == NULL)
+		fh = fopen_portable(s_str(&path), s_str(&name), "SRV", "rb", &filename);
 
-	    // FIXME: Handle ENDBOOK and/or SURVEY
+	    if (fh == NULL) {
+		// Report the diagnostic at the location of the ".NAME".
+		unsigned save_line = file.line;
+		long save_lpos = file.lpos;
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_name);
+		file.lpos = name_lpos;
+		file.line = name_lineno;
+		if (!fDirectory(s_str(&path))) {
+		    // Walls appears to quietly ignore file is the
+		    // directory does not exist, but it seems worth
+		    // warning about at least.
+		    //
+		    // FIXME: This should take case into account like
+		    // opening the file does.
+		    compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
+		} else {
+		    compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
+		}
+		set_pos(&fp);
+		file.line = save_line;
+		file.lpos = save_lpos;
+		goto srv_not_found;
+	    }
+
+	    {
+		parse file_store = file;
+		int ch_store = ch;
+		if (file.fh) file.parent = &file_store;
+		file.fh = fh;
+		file.filename = filename;
+		file.line = 1;
+		file.lpos = 0;
+		file.reported_where = false;
+		nextch();
+
+		using_data_file(file.filename);
+
+		push_walls_options();
+		walls_swap_macro_tables();
+		data_file_walls_srv();
+		walls_swap_macro_tables();
+		pop_walls_options();
+
+		if (ferror(file.fh))
+		    fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
+
+		(void)fclose(file.fh);
+
+		/* don't free this - it may be pointed to by prefix.file */
+		/* osfree(file.filename); */
+
+		file = file_store;
+		ch = ch_store;
+	    }
+
+srv_not_found:
+	    status = -1;
+	    s_clear(&name);
+	    //s_clear(&path);
+	    walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
+	    walls_ref.zone = 0;
+not_srv:
+	    in_survey = false;
+	}
+
+	switch (tok) {
+	  case WALLS_WPJ_CMD_BOOK:
+	    push_walls_options();
+	    in_survey = false;
 	    skipline();
+	    break;
+	  case WALLS_WPJ_CMD_SURVEY:
+	    in_survey = true;
+	    skipline();
+	    break;
+	  case WALLS_WPJ_CMD_ENDBOOK:
+	    pop_walls_options();
+	    in_survey = false;
 	    break;
 	  case WALLS_WPJ_CMD_OPTIONS:
 	    parse_options();

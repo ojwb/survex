@@ -840,7 +840,8 @@ report_declination(settings *p)
 	PUTC(' ', STDERR);
 	fputs(p->dec_context, STDERR);
 	fputnl(STDERR);
-	free(p->dec_context);
+	if (p->next && p->dec_context != p->next->dec_context)
+	    free(p->dec_context);
 	p->dec_context = NULL;
 	p->min_declination = HUGE_VAL;
 	p->max_declination = -HUGE_VAL;
