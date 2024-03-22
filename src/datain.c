@@ -3973,39 +3973,39 @@ inches_only:
 	  skipblanks();
 	  LOC(Comp) = ftell(file.fh);
 	  if (ch != '/') {
-	      int save_ch = ch;
-	      if (ch == '-' && nextch() == '-') {
-		  while (nextch() == '-') { }
-		  VAL(Comp) = HUGE_REAL;
+	      if (isalpha(ch)) {
+		  VAL(Comp) = read_quadrant(false);
 	      } else {
-		  ch = save_ch;
-		  fseek(file.fh, LOC(Comp), SEEK_SET);
-		  VAL(Comp) = isalpha(ch) ?
-		      read_quadrant(false) :
-		      read_number(false, false);
+		  VAL(Comp) = read_number(true, false);
+		  if (VAL(Comp) == HUGE_REAL) {
+		      // Walls documents two or more `-` for an omitted
+		      // reading, but actually just one works too!
+		      while (nextch() == '-') { }
+		  }
 	      }
 	      WID(Comp) = ftell(file.fh) - LOC(Comp);
 	      VAR(Comp) = var(Q_BEARING);
 	  } else {
+	      // Omitted foresight, e.g. `/123` or `/` (both omitted).
 	      WID(Comp) = 0;
 	      VAL(Comp) = HUGE_REAL;
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
 	      LOC(BackComp) = ftell(file.fh);
-	      int save_ch = ch;
-	      if (ch == '-' && nextch() == '-') {
-		  while (nextch() == '-') { }
-		  VAL(BackComp) = HUGE_REAL;
+	      if (isalpha(ch)) {
+		  VAL(BackComp) = read_quadrant(false);
 	      } else {
-		  ch = save_ch;
-		  fseek(file.fh, LOC(BackComp), SEEK_SET);
-		  VAL(BackComp) = isalpha(ch) ?
-		      read_quadrant(false) :
-		      read_number(false, false);
+		  VAL(BackComp) = read_number(true, false);
+		  if (VAL(BackComp) == HUGE_REAL) {
+		      // Walls documents two or more `-` for an omitted
+		      // reading, but actually just one works too!
+		      while (nextch() == '-') { }
+		  }
 	      }
 	      WID(BackComp) = ftell(file.fh) - LOC(BackComp);
 	      VAR(BackComp) = var(Q_BACKBEARING);
 	  } else {
+	      // Omitted backsight, e.g. `123/` or `/` (both omitted).
 	      WID(BackComp) = 0;
 	      VAL(BackComp) = HUGE_REAL;
 	  }
@@ -4015,40 +4015,37 @@ inches_only:
 	  skipblanks();
 	  LOC(Clino) = ftell(file.fh);
 	  if (ch != '/') {
-	      int save_ch = ch;
-	      if (ch == '-' && nextch() == '-') {
+	      real clin = read_number(true, false);
+	      if (clin == HUGE_REAL) {
+		  // Walls documents two or more `-` for an omitted
+		  // reading, but actually just one works too!
 		  while (nextch() == '-') { }
-		  ctype = CTYPE_OMIT;
 	      } else {
-		  ch = save_ch;
-		  fseek(file.fh, LOC(Clino), SEEK_SET);
+		  VAL(Clino) = clin;
 		  ctype = CTYPE_READING;
-		  VAL(Clino) = read_number(false, false);
 	      }
 	      WID(Clino) = ftell(file.fh) - LOC(Clino);
 	      VAR(Clino) = var(Q_GRADIENT);
 	  } else {
+	      // Omitted foresight, e.g. `/12` or `/` (both omitted).
 	      WID(Clino) = 0;
-	      ctype = CTYPE_OMIT;
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
-	      LOC(BackClino) = ftell(file.fh);
-	      int save_ch = ch;
-	      if (ch == '-' && nextch() == '-') {
+	      real backclin = read_number(true, false);
+	      if (backclin == HUGE_REAL) {
+		  // Walls documents two or more `-` for an omitted
+		  // reading, but actually just one works too!
 		  while (nextch() == '-') { }
-		  backctype = CTYPE_OMIT;
 	      } else {
-		  ch = save_ch;
-		  fseek(file.fh, LOC(BackClino), SEEK_SET);
+		  VAL(BackClino) = backclin;
 		  backctype = CTYPE_READING;
-		  VAL(BackClino) = read_number(false, false);
 	      }
 	      WID(BackClino) = ftell(file.fh) - LOC(BackClino);
 	      VAR(BackClino) = var(Q_BACKGRADIENT);
 	  } else {
+	      // Omitted backsight, e.g. `12/` or `/` (both omitted).
 	      LOC(BackClino) = ftell(file.fh);
 	      WID(BackClino) = 0;
-	      backctype = CTYPE_OMIT;
 	  }
 	  break;
        }
