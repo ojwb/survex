@@ -2482,6 +2482,7 @@ data_file_walls_wpj(void)
     walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
     walls_ref.zone = 0;
 
+    bool in_survey = false;
     while (ch != EOF && !ferror(file.fh)) {
 //next_line:
 	skipblanks();
@@ -2504,10 +2505,11 @@ data_file_walls_wpj(void)
 				      TABSIZE(walls_wpj_cmd_tab));
 	switch (tok) {
 	  case WALLS_WPJ_CMD_BOOK:
+	    in_survey = false;
 	    skipline();
 	    break;
-	  case WALLS_WPJ_CMD_ENDBOOK:
 	  case WALLS_WPJ_CMD_SURVEY:
+	  case WALLS_WPJ_CMD_ENDBOOK:
 	    // Process the current entry.
 
 	    // status is a decimal integer which is a bitmap of flags.
@@ -2528,7 +2530,8 @@ data_file_walls_wpj(void)
 	    //   2^15: 1 = yes
 #define WALLS_WPJ_STATUS_TYPE_OTHER			0x10000
 
-	    if ((status & (WALLS_WPJ_STATUS_TYPE_OTHER |
+	    if (in_survey &&
+		(status & (WALLS_WPJ_STATUS_TYPE_OTHER |
 			   WALLS_WPJ_STATUS_TYPE_BOOK)) == 0 &&
 		!s_empty(&name)) {
 		// Include SRV file.
@@ -2586,6 +2589,8 @@ srv_not_found:
 		walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
 		walls_ref.zone = 0;
 	    }
+
+	    in_survey = (tok == WALLS_WPJ_CMD_SURVEY);
 
 	    // FIXME: Handle ENDBOOK and/or SURVEY
 	    skipline();
