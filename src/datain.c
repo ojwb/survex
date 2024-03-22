@@ -183,7 +183,7 @@ show_line(int col, int width)
    fputnl(STDERR);
 
    /* If we have a location in the line for the error, indicate it. */
-   if (col) {
+   if (col > 0) {
       PUTC(' ', STDERR);
       if (tabs == 0) {
 	 while (--col) PUTC(' ', STDERR);
@@ -4011,6 +4011,7 @@ inches_only:
 	      VAR(BackComp) = var(Q_BACKBEARING);
 	  } else {
 	      // Omitted backsight, e.g. `123/` or `/` (both omitted).
+	      LOC(BackComp) = ftell(file.fh);
 	      WID(BackComp) = 0;
 	      VAL(BackComp) = HUGE_REAL;
 	  }
@@ -4036,6 +4037,7 @@ inches_only:
 	      WID(Clino) = 0;
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
+	      LOC(BackClino) = ftell(file.fh);
 	      real backclin = read_number(true, false);
 	      if (backclin == HUGE_REAL) {
 		  // Walls documents two or more `-` for an omitted
