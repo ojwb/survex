@@ -1139,7 +1139,7 @@ walls_set_macro(walls_macro ***table, string *p_name, char *val)
 static const char*
 walls_get_macro(walls_macro ***table, const char *name, int name_len)
 {
-    if (!walls_macros) return NULL;
+    if (!*table) return NULL;
 
     unsigned h = hash_data(name, name_len) & (WALLS_MACRO_HASH_SIZE - 1);
     walls_macro *p = (*table)[h];
