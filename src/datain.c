@@ -2520,30 +2520,45 @@ data_file_walls_wpj(void)
 	     tok == WALLS_WPJ_CMD_ENDBOOK)) {
 	    // Process the current entry.
 
-	    // status is a decimal integer which is a bitmap of flags.
+	    // .STATUS is a decimal integer which is a bitmap of flags.
 	    // Meanings mostly cribbed from dewalls:
-#define WALLS_WPJ_STATUS_TYPE_BOOK			0x0001
-#define WALLS_WPJ_STATUS_NAME_DEFINES_SEGMENT		0x0008
-#define WALLS_WPJ_STATUS_FEET				0x0010
-#define WALLS_WPJ_STATUS_REFERENCE_UNSPECIFIED		0x0040
-#define WALLS_WPJ_STATUS_DECLINATION_AUTO_NO		0x0100
-#define WALLS_WPJ_STATUS_DECLINATION_AUTO_YES		0x0200
-#define WALLS_WPJ_STATUS_UTM_GPS_NO			0x0400
-#define WALLS_WPJ_STATUS_UTM_GPS_YES			0x0800
-	    // Preserve vertical shot orientation:
-	    //   2^12: 1 = no
-	    //   2^13: 1 = yes
-	    // Preserve vertical shot length:
-	    //   2^14: 1 = no
-	    //   2^15: 1 = yes
-#define WALLS_WPJ_STATUS_TYPE_OTHER			0x10000
+
+	    // Set if a branch is expanded in the UI - we can ignore.
+#define WALLS_WPJ_STATUS_BOOK_OPEN				0x000001
+	    // Detached items are not processed as part of higher level
+	    // items.
+#define WALLS_WPJ_STATUS_DETACHED				0x000002
+	    // 0x000004 appears to be unused/no longer used.  Setting it
+	    // externally in a WPJ file and then loading it into Walls and
+	    // forcing saving clears it.
+#define WALLS_WPJ_STATUS_UNUSED_BIT2				0x000004
+	    // We ignore segments currently so ignore this too.
+#define WALLS_WPJ_STATUS_NAME_DEFINES_SEGMENT			0x000008
+	    // Controls the units used in reporting data - we can ignore.
+#define WALLS_WPJ_STATUS_REVIEW_UNITS_FEET			0x000010
+	    // Comments in dewalls-java suggests this is no longer used.
+#define WALLS_WPJ_STATUS_UNUSED_BIT5				0x000020
+	    // These WALLS_WPJ_STATUS_*_TRISTATE values are (shifted) binary:
+	    // 00 Inherit value from parent
+	    // 01 Off
+	    // 10 On
+	    // 11 <not used>
+#define WALLS_WPJ_STATUS_USE_REFERENCE_TRISTATE			0x0000c0
+#define WALLS_WPJ_STATUS_DECLINATION_AUTO_TRISTATE		0x000300
+#define WALLS_WPJ_STATUS_UTM_GPS_RELATIVE_TRISTATE		0x000c00
+	    // AIUI these just control distributing loop misclosure:
+#define WALLS_WPJ_STATUS_PRESERVE_PLUMB_ORIENTATION_TRISTATE	0x003000
+#define WALLS_WPJ_STATUS_PRESERVE_PLUMB_LENGTH_TRISTATE		0x00c000
+	    // Attached file of arbitrary type (we can just ignore):
+#define WALLS_WPJ_STATUS_TYPE_OTHER				0x010000
+	    // We can ignore these:
+#define WALLS_WPJ_STATUS_EDIT_ON_LAUNCH				0x020000
+#define WALLS_WPJ_STATUS_OPEN_ON_LAUNCH				0x040000
+#define WALLS_WPJ_STATUS_DEFAULT_VIEW_MASK			0x380000
+#define WALLS_WPJ_STATUS_PROCESS_SVG				0x400000
 
 	    if ((status & WALLS_WPJ_STATUS_TYPE_OTHER)) {
 		// Attached file of arbitrary type.
-		goto not_srv;
-	    }
-	    if ((status & WALLS_WPJ_STATUS_TYPE_BOOK)) {
-		printf("*** in_survey but TYPE_BOOK\n");
 		goto not_srv;
 	    }
 	    if (s_empty(&name)) {
