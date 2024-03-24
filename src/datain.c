@@ -2547,17 +2547,10 @@ data_file_walls_wpj(void)
     int detached_nest_level = 0;
     bool in_survey = false;
     while (ch != EOF && !ferror(file.fh)) {
-//next_line:
 	skipblanks();
-	if (ch == ';') {
-	    // Comment line.
-	    skipline();
-	    continue;
-	}
-
 	if (ch != '.') {
-	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, ".", ";");
-	    skipline();
+	    // If the line isn't blank or a comment then process_eol() will
+	    // issue a suitable error.
 	    process_eol();
 	    continue;
 	}
