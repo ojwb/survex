@@ -32,3 +32,9 @@ U6 ZZ8 *1 2 3 4*
 #segment splays
 U3 - 1.0 --- +90
 U3 -- 1.0 ---- -90
+#units typeab=n,4,X
+#units typeab=n,4,x
+#units typeab=n,10
+#units typevb=c,6,X
+#units typevb=c,6,x
+#units typevb=c,1

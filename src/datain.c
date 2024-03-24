@@ -1417,9 +1417,9 @@ walls_initialise_settings(void)
     for (int i = 128; i < 256; i++) t[i] = SPECIAL_NAMES;
     t[':'] = 0;
     t[';'] = SPECIAL_COMMENT;
-    // FIXME: `,` seems to be treated like a space everywhere, except that
-    // right after a directive name a comma instead gives a warning suggesting
-    // a parse error in a different directive.
+    // FIXME: `,` seems to be treated like a space almost everywhere, but right
+    // after a directive name a comma instead gives a warning suggesting a
+    // parse error in a different directive.
     t[','] = SPECIAL_BLANK;
     t['#'] = 0;
     t['\t'] |= SPECIAL_BLANK;
@@ -1812,15 +1812,13 @@ parse_options(void)
 		} else {
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
 		}
-		nextch();
 		if (ch == ',') {
 		    nextch();
 		    // FIXME: Use threshold value.
 		    (void)read_numeric(false);
-		    nextch();
 		    if (ch == ',') {
 			nextch();
-			if (ch == 'X') {
+			if (toupper(ch) == 'X') {
 			    nextch();
 			    // FIXME: Only use foresight (but check backsight).
 			}
@@ -1842,15 +1840,13 @@ parse_options(void)
 		} else {
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
 		}
-		nextch();
 		if (ch == ',') {
 		    nextch();
 		    // FIXME: Use threshold value.
 		    (void)read_numeric(false);
-		    nextch();
 		    if (ch == ',') {
 			nextch();
-			if (ch == 'X') {
+			if (toupper(ch) == 'X') {
 			    nextch();
 			    // FIXME: Only use foresight (but check backsight).
 			}
