@@ -1,6 +1,12 @@
+./walls.srv:5:18: warning: End of line not blank
+ #date 2024-03-09 walls appears to ignore anything here
+                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ./walls.srv:21:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
+./walls.srv:35:14: warning: End of line not blank
+ #prefix test walls appears to ignore anything here
+              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Removing trailing traverses...
 
@@ -28,4 +34,4 @@ East-West range = 17.82m (from U3 at 16.33m to U1 at -1.49m)
    4 1-nodes.
    4 2-nodes.
    1 4-node.
-There were 1 warning(s).
+There were 3 warning(s).

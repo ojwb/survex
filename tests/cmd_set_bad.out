@@ -3,10 +3,10 @@
        ^~~~~~~~~~
 ./cmd_set_bad.svx:11:1: error: End of line not blank
  ; comment ; error
- ^
+ ^~~~~~~~~~~~~~~~~
 ./cmd_set_bad.svx:13:1: error: End of line not blank
  *end ; error
- ^
+ ^~~~~~~~~~~~
 ./cmd_set_bad.svx:20:21: error: Expecting numeric field, found ".0"
  *fix+(2)+reference+1.0+2/0+3 ; error
                      ^~

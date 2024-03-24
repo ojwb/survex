@@ -463,7 +463,7 @@ process_eol(void)
 
    if (!isEol(ch)) {
       if (!isComm(ch))
-	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*End of line not blank*/15);
+	 compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*End of line not blank*/15);
       skipline();
    }
 
@@ -2135,7 +2135,7 @@ next_line:
 		// warning not an error so we can process existing Walls
 		// datasets (e.g. the Mammoth dataset reportedly has `#Date
 		// 1978-07-01\`.
-		compile_diagnostic(DIAG_WARN|DIAG_COL, /*End of line not blank*/15);
+		compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);
 		skipline();
 	    }
 	    break;
@@ -2357,6 +2357,15 @@ next_line:
 	    int i = (int)WALLS_CMD_PREFIX3 - (int)directive;
 	    osfree(p_walls_options->prefix[i]);
 	    p_walls_options->prefix[i] = new_prefix;
+	    skipblanks();
+	    if (!isEol(ch) && !isComm(ch)) {
+		// Walls seems to ignore anything after the prefix so make this a
+		// warning not an error so we can process existing Walls
+		// datasets (e.g. the Mammoth dataset reportedly has `#prefix
+		// 4136 Lucys domes`).
+		compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);
+		skipline();
+	    }
 	    break;
 	  }
 	  case WALLS_CMD_NOTE:

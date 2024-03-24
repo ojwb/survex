@@ -1,8 +1,8 @@
-; pos=dump warn=1 dummycrprotection=
+; pos=dump warn=3 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg foo
-#date 2024-03-09
+#date 2024-03-09 walls appears to ignore anything here
 U0 U1  5.4 203 +50
 #units v=d
 #[
@@ -32,6 +32,7 @@ U6 ZZ8 *1 2 3 4*
 #segment splays
 U3 - 1.0 --- +90
 U3 -- 1.0 ---- -90
+#prefix test walls appears to ignore anything here
 #units typeab=n,4,X
 #units typeab=n,4,x
 #units typeab=n,10
