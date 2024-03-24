@@ -2493,6 +2493,8 @@ data_file_walls_wpj(void)
     walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
     walls_ref.zone = 0;
 
+    int depth = 0;
+    int detached_nest_level = 0;
     bool in_survey = false;
     while (ch != EOF && !ferror(file.fh)) {
 //next_line:
@@ -2514,6 +2516,23 @@ data_file_walls_wpj(void)
 	get_token_no_blanks();
 	walls_wpj_cmd tok = match_tok(walls_wpj_cmd_tab,
 				      TABSIZE(walls_wpj_cmd_tab));
+	if (detached_nest_level) {
+	    switch (tok) {
+	      case WALLS_WPJ_CMD_BOOK:
+		++detached_nest_level;
+		skipline();
+		break;
+	      case WALLS_WPJ_CMD_ENDBOOK:
+		--detached_nest_level;
+		break;
+	      default:
+		// Ignore everything else.
+		skipline();
+		break;
+	    }
+	    process_eol();
+	    continue;
+	}
 	if (in_survey &&
 	    (tok == WALLS_WPJ_CMD_SURVEY ||
 	     tok == WALLS_WPJ_CMD_BOOK ||
@@ -2557,13 +2576,21 @@ data_file_walls_wpj(void)
 #define WALLS_WPJ_STATUS_DEFAULT_VIEW_MASK			0x380000
 #define WALLS_WPJ_STATUS_PROCESS_SVG				0x400000
 
+	    // A quirk is that the root item is flagged with
+	    // WALLS_WPJ_STATUS_DETACHED (seems the flag might be more like
+	    // "don't draw a connecting line left from here").
+	    if ((status & WALLS_WPJ_STATUS_DETACHED) && depth > 0) {
+		// Detached survey.
+		//printf("*** Detached survey\n");
+		goto detached_or_not_srv;
+	    }
 	    if ((status & WALLS_WPJ_STATUS_TYPE_OTHER)) {
 		// Attached file of arbitrary type.
-		goto not_srv;
+		goto detached_or_not_srv;
 	    }
 	    if (s_empty(&name)) {
 		printf("*** in_survey but no/empty NAME\n");
-		goto not_srv;
+		goto detached_or_not_srv;
 	    }
 
 	    // Include SRV file.
@@ -2650,12 +2677,13 @@ srv_not_found:
 	    //s_clear(&path);
 	    walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
 	    walls_ref.zone = 0;
-not_srv:
+detached_or_not_srv:
 	    in_survey = false;
 	}
 
 	switch (tok) {
 	  case WALLS_WPJ_CMD_BOOK:
+	    ++depth;
 	    push_walls_options();
 	    in_survey = false;
 	    skipline();
@@ -2665,6 +2693,11 @@ not_srv:
 	    skipline();
 	    break;
 	  case WALLS_WPJ_CMD_ENDBOOK:
+	    if (depth == 0) {
+		// FIXME: .ENDBOOK  and .BOOK
+		compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
+	    }
+	    --depth;
 	    pop_walls_options();
 	    in_survey = false;
 	    break;
@@ -2764,6 +2797,16 @@ not_srv:
 	    break;
 	  case WALLS_WPJ_CMD_STATUS:
 	    status = read_uint();
+	    // A quirk is that the root item is flagged with
+	    // WALLS_WPJ_STATUS_DETACHED (seems the flag might be more like
+	    // "don't draw a connecting line left from here").
+	    if ((status & WALLS_WPJ_STATUS_DETACHED) && !in_survey && depth > 1) {
+		//printf("Detached book (status %d = 0x%06x)\n", status, status);
+		// Detached BOOK - resume at the corresponding ENDBOOK.
+		s_clear(&name);
+		pop_walls_options();
+		detached_nest_level = 1;
+	    }
 	    break;
 	  case WALLS_WPJ_CMD_NAME:
 	    if (!s_empty(&name)) {
