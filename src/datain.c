@@ -1568,7 +1568,7 @@ parse_options(void)
 		} else if (s_str(&uctoken)[0] == 'M') {
 		    // Mils.
 		    pcs->units[Q_GRADIENT] = M_PI / 3200.0;
-		} else if (S_EQ(&uctoken, "PERCENT")) {
+		} else if (s_str(&uctoken)[0] == 'P') {
 		    pcs->units[Q_GRADIENT] = 0.01;
 		    pcs->f_clino_percent = true;
 		} else {
@@ -1594,7 +1594,7 @@ parse_options(void)
 		} else if (s_str(&uctoken)[0] == 'M') {
 		    // Mils.
 		    pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
-		} else if (S_EQ(&uctoken, "PERCENT")) {
+		} else if (s_str(&uctoken)[0] == 'P') {
 		    pcs->units[Q_BACKGRADIENT] = 0.01;
 		    pcs->f_backclino_percent = true;
 		} else {
