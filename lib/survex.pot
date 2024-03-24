@@ -1420,29 +1420,25 @@ msgstr ""
 msgid "argument “%s” not a number"
 msgstr ""
 
-#: ../src/commands.c:1052
-#: n:188
-msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
-msgstr ""
-
-#: ../src/commands.c:1054
-#: n:189
-msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
+#: ../src/datain.c:2150
+#: n:492
+msgid "Expecting “%s”"
 msgstr ""
 
 #: ../src/datain.c:757
 #: n:103
-msgid "Expecting “F” or “M”"
+msgid "Expecting “%s” or “%s”"
 msgstr ""
 
 #: ../src/datain.c:2150
-#: n:492
-msgid "Expecting “N” or “S”"
+#: ../src/commands.c:1052
+#: n:188
+msgid "Expecting “%s”, “%s”, or “%s”"
 msgstr ""
 
-#: ../src/datain.c:2160
-#: n:493
-msgid "Expecting “E” or “W”"
+#: ../src/commands.c:1054
+#: n:189
+msgid "Expecting “%s”, “%s”, “%s”, or “%s”"
 msgstr ""
 
 #: readval.c:421

@@ -1282,9 +1282,13 @@ cmd_flags(void)
    }
 
    if (fNot) {
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			 /*Expecting “%s”, “%s”, or “%s”*/188,
+			 "DUPLICATE", "SPLAY", "SURFACE");
    } else if (fEmpty) {
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			 /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+			 "NOT", "DUPLICATE", "SPLAY", "SURFACE");
    }
 }
 

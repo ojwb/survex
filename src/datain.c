@@ -881,7 +881,7 @@ data_file_compass_mak(void)
 			  } else if (ch == 'M' || ch == 'm') {
 			      nextch_handling_eol();
 			  } else {
-			      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “F” or “M”*/103);
+			      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 			  }
 			  while (!isdigit(ch) && ch != '+' && ch != '-' &&
 				 ch != '.' && ch != ']' && ch != EOF) {
@@ -1502,10 +1502,11 @@ parse_options(void)
 		} else if (s_str(&uctoken)[0] == 'F') {
 		    pcs->units[Q_LENGTH] = METRES_PER_FOOT;
 		} else {
-		    // FIXME: Error?
+		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
@@ -1524,10 +1525,13 @@ parse_options(void)
 		    // Mils.
 		    pcs->units[Q_BEARING] = M_PI / 3200.0;
 		} else {
-		    // FIXME: Error?
+		    compile_diagnostic(DIAG_ERR|DIAG_COL,
+				       /*Expecting “%s”, “%s”, or “%s”*/188,
+				       "D", "G", "M");
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_AB:
@@ -1546,10 +1550,13 @@ parse_options(void)
 		    // Mils.
 		    pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
 		} else {
-		    // FIXME: Error?
+		    compile_diagnostic(DIAG_ERR|DIAG_COL,
+				       /*Expecting “%s”, “%s”, or “%s”*/188,
+				       "D", "G", "M");
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_V:
@@ -1572,10 +1579,13 @@ parse_options(void)
 		    pcs->units[Q_GRADIENT] = 0.01;
 		    pcs->f_clino_percent = true;
 		} else {
-		    // FIXME: Error?
+		    compile_diagnostic(DIAG_ERR|DIAG_COL,
+				       /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+				       "D", "G", "M", "P");
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_VB:
@@ -1598,10 +1608,13 @@ parse_options(void)
 		    pcs->units[Q_BACKGRADIENT] = 0.01;
 		    pcs->f_backclino_percent = true;
 		} else {
-		    // FIXME: Error?
+		    compile_diagnostic(DIAG_ERR|DIAG_COL,
+				       /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+				       "D", "G", "M", "P");
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_S:
@@ -1621,10 +1634,11 @@ parse_options(void)
 		    pcs->units[Q_DY] =
 		    pcs->units[Q_DZ] = METRES_PER_FOOT;
 		} else {
-		    // FIXME: Error?
+		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_ORDER:
@@ -1653,7 +1667,8 @@ parse_options(void)
 		}
 		*p = IgnoreAll;
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_DECL:
@@ -1667,6 +1682,9 @@ parse_options(void)
 //	} else {
 //	    (void)read_numeric(false);
 //	}
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCA:
@@ -1675,6 +1693,9 @@ parse_options(void)
 		nextch();
 		pcs->z[Q_BEARING] = -rad(read_numeric(false));
 		// FIXME: Handle angle units
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCAB:
@@ -1683,6 +1704,9 @@ parse_options(void)
 		nextch();
 		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
 		// FIXME: Handle angle units
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCD:
@@ -1691,6 +1715,9 @@ parse_options(void)
 		nextch();
 		pcs->z[Q_LENGTH] = -read_numeric(false);
 		// FIXME: Handle length units
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
@@ -1701,6 +1728,9 @@ parse_options(void)
 		nextch();
 		(void)read_numeric(false);
 		// FIXME: Handle length units
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCV:
@@ -1709,6 +1739,9 @@ parse_options(void)
 		nextch();
 		pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 		// FIXME: Handle angle units
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCVB:
@@ -1717,6 +1750,9 @@ parse_options(void)
 		nextch();
 		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
 		// FIXME: Handle angle units
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_RECT:
@@ -1750,11 +1786,14 @@ parse_options(void)
 		    pcs->Case = OFF;
 		    break;
 		  default:
-		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		    compile_diagnostic(DIAG_ERR|DIAG_COL,
+				       /*Expecting “%s”, “%s”, or “%s”*/188,
+				       "L", "M", "U");
 		    break;
 		}
 	    } else {
-		// FIXME: Error?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CT:
@@ -1764,6 +1803,7 @@ parse_options(void)
 	  case WALLS_UNITS_OPT_PREFIX:
 	  case WALLS_UNITS_OPT_PREFIX2:
 	  case WALLS_UNITS_OPT_PREFIX3: {
+	    // PREFIX, etc without a value clear that level of the prefix.
 	    char *new_prefix = NULL;
 	    skipblanks();
 	    if (ch == '=') {
@@ -1779,13 +1819,18 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
+		// Value is F, T, FB, TB or one of those followed
+		// by eg. :UDRL (no spaces around :).  Default is
+		// F:LRUD.
+		//
 		// We currently ignore LRUD, so can also ignore the
 		// settings for it.
 		string val = S_INIT;
 		read_string(&val);
 		s_free(&val);
 	    } else {
-		// FIXME: Anything to do?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_TAPE:
@@ -1794,8 +1839,10 @@ parse_options(void)
 		nextch();
 		get_token_walls();
 		/* FIXME: Implement different taping methods? */
+		/* IT, SS, IS, ST (default is IT). */
 	    } else {
-		// FIXME: Anything to do?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_TYPEAB:
@@ -1808,7 +1855,7 @@ parse_options(void)
 		} else if (s_str(&uctoken)[0] == 'C') {
 		    pcs->z[Q_BACKBEARING] = M_PI;
 		} else {
-		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
 		}
 		if (ch == ',') {
 		    nextch();
@@ -1823,7 +1870,8 @@ parse_options(void)
 		    }
 		}
 	    } else {
-		// FIXME: Anything to do?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_TYPEVB:
@@ -1836,7 +1884,7 @@ parse_options(void)
 		} else if (s_str(&uctoken)[0] == 'C') {
 		    pcs->sc[Q_BACKGRADIENT] = -1.0;
 		} else {
-		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
 		}
 		if (ch == ',') {
 		    nextch();
@@ -1851,7 +1899,8 @@ parse_options(void)
 		    }
 		}
 	    } else {
-		// FIXME: Anything to do?
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_UV:
@@ -2179,10 +2228,8 @@ next_line:
 		    bool negate = ((upper_ch & 3) == 3);
 		    bool e_or_w = ((upper_ch & 5) == 5);
 		    if (dim == e_or_w) {
-			compile_diagnostic(DIAG_ERR|DIAG_COL,
-					   e_or_w ?
-					   /*Expecting “N” or “S”*/492:
-					   /*Expecting “E” or “W”*/493);
+			compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103,
+					   e_or_w ? "N" : "E", e_or_w ? "S" : "W");
 		    }
 		    nextch();
 		    coord = read_number(false, true);
@@ -2509,7 +2556,7 @@ data_file_walls_wpj(void)
 	}
 
 	if (ch != '.') {
-	    // FIXME Error?  Warning?
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, ".", ";");
 	    skipline();
 	    process_eol();
 	    continue;
