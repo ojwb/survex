@@ -4105,6 +4105,12 @@ inches_only:
 	      } else {
 		  VAL(Comp) = read_number(true, false);
 		  if (VAL(Comp) == HUGE_REAL) {
+		      if (ch != '-') {
+			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+			  skipline();
+			  process_eol();
+			  return;
+		      }
 		      // Walls documents two or more `-` for an omitted
 		      // reading, but actually just one works too!
 		      while (nextch() == '-') { }
@@ -4124,6 +4130,12 @@ inches_only:
 	      } else {
 		  VAL(BackComp) = read_number(true, false);
 		  if (VAL(BackComp) == HUGE_REAL) {
+		      if (ch != '-') {
+			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+			  skipline();
+			  process_eol();
+			  return;
+		      }
 		      // Walls documents two or more `-` for an omitted
 		      // reading, but actually just one works too!
 		      while (nextch() == '-') { }
@@ -4145,6 +4157,12 @@ inches_only:
 	  if (ch != '/') {
 	      real clin = read_number(true, false);
 	      if (clin == HUGE_REAL) {
+		  if (ch != '-') {
+		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		      skipline();
+		      process_eol();
+		      return;
+		  }
 		  // Walls documents two or more `-` for an omitted
 		  // reading, but actually just one works too!
 		  while (nextch() == '-') { }
@@ -4162,6 +4180,12 @@ inches_only:
 	      LOC(BackClino) = ftell(file.fh);
 	      real backclin = read_number(true, false);
 	      if (backclin == HUGE_REAL) {
+		  if (ch != '-') {
+		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		      skipline();
+		      process_eol();
+		      return;
+		  }
 		  // Walls documents two or more `-` for an omitted
 		  // reading, but actually just one works too!
 		  while (nextch() == '-') { }
