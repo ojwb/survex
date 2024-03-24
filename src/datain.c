@@ -2587,6 +2587,14 @@ data_file_walls_wpj(void)
 		set_pos(&fp_name);
 		file.lpos = name_lpos;
 		file.line = name_lineno;
+		// Report the resolved path.  FIXME: Maybe we should use
+		// full_file in the fopen_portable() call above so things
+		// align better?
+		string full_file = S_INIT;
+		s_cats(&full_file, &path);
+		s_catchar(&full_file, FNM_SEP_LEV);
+		s_cats(&full_file, &name);
+		s_cat(&full_file, ".SRV");
 		if (!fDirectory(s_str(&path))) {
 		    // Walls appears to quietly ignore file is the
 		    // directory does not exist, but it seems worth
@@ -2594,10 +2602,11 @@ data_file_walls_wpj(void)
 		    //
 		    // FIXME: This should take case into account like
 		    // opening the file does.
-		    compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
+		    compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&full_file));
 		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&name));
+		    compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&full_file));
 		}
+		s_free(&full_file);
 		set_pos(&fp);
 		file.line = save_line;
 		file.lpos = save_lpos;
