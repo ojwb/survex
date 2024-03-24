@@ -3,6 +3,10 @@
 #Fix U0 0 1 0
 #seg foo
 #date 2024-03-09 walls appears to ignore anything here
+#Fix Q0 1 1 1
+; Mammoth reportedly uses "0 0 0" legs between fixed points so we mustn't
+; use INFER_EQUATES.
+Q0 U0  0 0 0 ; Walls treats this like a NOSURVEY leg it seems
 U0 U1  5.4 203 +50
 #units v=d
 #[
