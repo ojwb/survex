@@ -2798,8 +2798,8 @@ detached_or_not_srv:
 	    (void)read_numeric(false);
 	    (void)read_numeric(false);
 
-	    // Ignore integer index for the datum (e.g. 27 for "WGS 1984".  The
-	    // string names seem more likely to have not changed over time.
+	    // Ignore integer index for the datum (e.g. 27 for "WGS 1984").
+	    // The string names seem more likely to have not changed over time.
 	    (void)read_uint();
 
 	    string datum_str = S_INIT;
