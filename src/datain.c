@@ -1392,6 +1392,7 @@ pop_walls_options(void)
     for (int i = 0; i < 3; ++i) {
 	osfree(p->prefix[i]);
     }
+    osfree(p);
 }
 
 static void
