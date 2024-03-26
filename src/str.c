@@ -33,7 +33,7 @@ void s_expand_(string *pstr, int addition) {
 void
 s_catlen(string* pstr, const char *s, int s_len)
 {
-   if (pstr->capacity - pstr->len < s_len)
+   if (pstr->capacity - pstr->len < s_len || s_len == 0)
        s_expand_(pstr, s_len);
    memcpy(pstr->s + pstr->len, s, s_len);
    pstr->len += s_len;
