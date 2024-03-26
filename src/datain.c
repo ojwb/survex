@@ -279,7 +279,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD)) {
+   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL)) {
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
@@ -297,6 +297,14 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    ++len;
 	    nextch();
 	 }
+      } else if (diag_flags & DIAG_TAIL) {
+	 int len_last_nonblank = len;
+	 while (!isComm(ch) && !isEol(ch)) {
+	    ++len;
+	    if (!isBlank(ch)) len_last_nonblank = len;
+	    nextch();
+	 }
+	 len = len_last_nonblank;
       } else {
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
@@ -454,7 +462,7 @@ process_eol(void)
 
    if (!isEol(ch)) {
       if (!isComm(ch))
-	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*End of line not blank*/15);
+	 compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*End of line not blank*/15);
       skipline();
    }
 

@@ -81,6 +81,7 @@ char* grab_line(void);
 #define DIAG_DATE	0x80	// Span of digits and full stops.
 #define DIAG_NUM	0x100	// Real number.
 #define DIAG_STRING	0x200	// Possibly quoted string value.
+#define DIAG_TAIL	0x400	// Rest of the line (not including trailing blanks or comment).
 
 void compile_diagnostic(int flags, int en, ...);
 

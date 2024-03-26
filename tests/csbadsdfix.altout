@@ -10,7 +10,7 @@
      ^~~~~~~~
 ./csbadsdfix.svx:6:11: error: End of line not blank
  *cs IJTSK 03
-           ^
+           ^~
 ./csbadsdfix.svx:7:5: error: Unknown coordinate system
  *cs IJTSK04
      ^~~~~~~
