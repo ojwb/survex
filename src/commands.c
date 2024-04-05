@@ -27,6 +27,9 @@
 #include <string.h>
 
 #include <proj.h>
+#if PROJ_VERSION_MAJOR < 8
+# define proj_context_errno_string(CTX, ERR) proj_errno_string(ERR)
+#endif
 
 #include "cavern.h"
 #include "commands.h"
@@ -861,7 +864,8 @@ set_declination_location(real x, real y, real z, const char *proj_str)
 
     if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
        compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
-			  proj_errno_string(proj_errno(transform)));
+			  proj_context_errno_string(PJ_DEFAULT_CTX,
+						    proj_errno(transform)));
        /* Set dummy values which are finite. */
        x = y = z = 0;
     }
@@ -1097,7 +1101,8 @@ cmd_fix(void)
 
 	 if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
 	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
-			       proj_errno_string(proj_errno(transform)));
+			       proj_context_errno_string(PJ_DEFAULT_CTX,
+							 proj_errno(transform)));
 	    /* Set dummy values which are finite. */
 	    x = y = z = 0;
 	 }
@@ -2349,7 +2354,8 @@ cmd_cs(void)
 	  if (!pj) {
 	      set_pos(&fp);
 	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
-				 proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
+				 proj_context_errno_string(PJ_DEFAULT_CTX,
+							   proj_context_errno(PJ_DEFAULT_CTX)));
 	      skipline();
 	      osfree(proj_str);
 	      return;
@@ -2388,7 +2394,8 @@ cmd_cs(void)
 	 if (!pj) {
 	    set_pos(&fp);
 	    compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
-			       proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
+			       proj_context_errno_string(PJ_DEFAULT_CTX,
+							 proj_context_errno(PJ_DEFAULT_CTX)));
 	    skipline();
 	    return;
 	 }
