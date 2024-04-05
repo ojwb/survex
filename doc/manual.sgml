@@ -2622,7 +2622,7 @@ extension, and will also try translating "\" to "/".
 </Para>
 
 <Para>
-To help users wanting to take a dataset from on a platform where filenames
+To help users wanting to take a dataset from a platform where filenames
 are case-insenstive and process it on a platform where filenames are
 case-sensitive, if the file isn't found cavern will try a few variations of the
 case.  First it will try all lower case (in Survex 1.4.5 and older this was
