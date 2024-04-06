@@ -2350,6 +2350,7 @@ cmd_cs(void)
 	   * to check that the specified coordinate system is valid and also if
 	   * it's suitable for output so we need to test creating it here.
 	   */
+	  proj_errno_reset(NULL);
 	  PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	  if (!pj) {
 	      set_pos(&fp);
@@ -2390,6 +2391,7 @@ cmd_cs(void)
 	 /* (ok_for_output == MAYBE) also happens to indicate whether we need
 	  * to check that the coordinate system is valid for input.
 	  */
+	 proj_errno_reset(NULL);
 	 PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
