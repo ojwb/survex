@@ -305,10 +305,9 @@ are using, so there is a separate section below for each platform.</Para>
 <Sect3><Title>Linux</Title>
 
 <Para>
-We supply pre-compiled versions for x86 Linux machines in RPM format
-(suitable for Redhat, Mandrake, and some other distributions).
-Survex Debian packages are available from Debian mirror sites in
-the usual way.
+Pre-built versions of Survex are available for some Linux distributions.
+See the <ulink url="https://survex.com/download.html?platform=linux">Survex
+for Linux download page</ulink> on our website for up-to-date information.
 </Para>
 
 <Para>
@@ -327,16 +326,6 @@ prompt (or set some a filemanager or graphics shell).
 
 </Sect3>
 
-<Sect3><Title>Other versions of UNIX</Title>
-
-<Para>For other UNIX versions you'll need to get the source code
-and compile it on your system.  Unpack the sources and read
-the file called INSTALL in the top level for details about building
-from source.
-</Para>
-
-</Sect3>
-
 <Sect3><Title>macOS</Title>
 
 <Para>
@@ -345,6 +334,16 @@ the Homebrew package manager. If you don't already use Homebrew, you'll
 need to install it first.  See the
 <ulink url="https://survex.com/download.html?platform=macosx">macOS
 download page on the website</ulink> for installation instructions.
+</Para>
+
+</Sect3>
+
+<Sect3><Title>Other versions of UNIX</Title>
+
+<Para>For other UNIX versions you'll need to get the source code
+and compile it on your system.  Unpack the sources and read
+the file called INSTALL in the top level for details about building
+from source.
 </Para>
 
 </Sect3>

@@ -1,3 +1,59 @@
+Changes in 1.4.7 (2024-04-07):
+
+* cavern:
+
+  + When using *declination auto we report the range of calculated declinations
+    for each location specified.  After doing this we now reset the range
+    information we're tracking.  Previously we'd misreport the range for
+    the second and subsequent locations.
+
+  + Avoid undefined behaviour on handling filename fallback for filenames
+    containing non-ASCII characters.
+
+  + Show context line with relevant item highlighted for more errors and
+    warnings.
+
+  + The dynamic string handling routines are now more efficient.
+
+  + Fix memory leak if a Compass MAK file opens folders it doesn't close.
+
+  + Fix handling of clino-less legs in Compass DAT.  These would cause cavern
+    to fail with a lot of "NaN" messages.  Now they're treated as having a zero
+    clino with a standard deviation based on the leg length, just like in .svx
+    files.
+
+* img library:
+
+  + Compass PLT: Treat LRUD readings > 900 as omitted readings, which matches
+    what Compass does.  Thanks to Larry Fish for clarifying this.
+
+  + Avoid undefined behaviour after realloc().  We were adjusting a pointer
+    within the reallocated block by subtracting the old block address and
+    adding on the new one.  Technically this is undefined behaviour, although
+    in practice it seems likely it'll work and we've not seen misbehaviour due
+    to it.  However it's easy to avoid by calculating the offset before the
+    realloc().
+
+* Portability:
+
+  + Provide prototype for getopt() to avoid warnings with very recent compiler
+    versions.
+
+  + Avoid using sprintf(), which now triggers warnings on some platforms.
+
+* Build system:
+
+  + Add configure --enable-werror option to turn compiler warnings into errors.
+
+* Expand details of Compass MAK CRS support in manual.
+
+* Minor translation updates.
+
+* (Microsoft Windows version): Now uses PROJ 9.3.0 and ships all of the
+  ancillary files that PROJ comes with.  Hoping this fixes use of coordinate
+  system EPSG:3912 failing, which was reported by Peter Mašič but I've not
+  managed to reproduce.
+
 Changes in 1.4.6 (2024-03-07):
 
 * cavern:
