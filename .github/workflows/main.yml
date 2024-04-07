@@ -163,7 +163,7 @@ jobs:
         autoreconf -fiv
         mv -f INSTALL-save INSTALL
     - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
+      run: ./configure --enable-werror CC='ccache gcc' CXX='ccache g++'
     - name: make
       run: make -j2
     - name: Run tests
