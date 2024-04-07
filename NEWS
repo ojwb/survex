@@ -45,7 +45,11 @@ Changes in 1.4.7 (2024-04-07):
 
   + Add configure --enable-werror option to turn compiler warnings into errors.
 
-* Expand details of Compass MAK CRS support in manual.
+* Manual:
+
+  + Expand details of Compass MAK CRS support.
+
+  + Replace very out of date information about binary RPM packages.
 
 * Minor translation updates.
 
