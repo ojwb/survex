@@ -397,7 +397,7 @@ compile_diagnostic_token_show(int diag_flags, int en)
    }
    if (!s_empty(&p)) {
       caret_width = s_len(&p);
-      compile_diagnostic(diag_flags|DIAG_COL, en, p);
+      compile_diagnostic(diag_flags|DIAG_COL, en, s_str(&p));
       caret_width = 0;
       s_free(&p);
    } else {
