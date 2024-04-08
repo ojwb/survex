@@ -1,3 +1,11 @@
+survex (1.4.7-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control: B-D on pkgconf instead of pkg-config.
+  * debian/control: Mark conformance with policy 4.7.0.
+
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 12:55:30 +1200
+
 survex (1.4.4-1) unstable; urgency=medium
 
   * New upstream release:
