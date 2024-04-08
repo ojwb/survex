@@ -1,3 +1,16 @@
+survex (1.4.7-2) unstable; urgency=medium
+
+  * debian/patches/disable-testcase-which-fails-on-i386.patch: Skip pltexport
+    testcase for now because it fails on i386 due to a small numerical
+    difference in the calculated coordinates, presumably due to excess
+    precision.
+  * debian/control: Really mark conformance with policy 4.7.0.
+  * debian/vim-survex.yaml: Fix typo which prevented enabling the vim addon.
+  * debian/README.Debian: Update.
+  * debian/copyright: Update years.
+
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 14:12:11 +1200
+
 survex (1.4.7-1) unstable; urgency=medium
 
   * New upstream release.

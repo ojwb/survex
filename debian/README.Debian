@@ -1,17 +1,17 @@
 Survex for Debian
 -----------------
 
-Overview 
+Overview
 --------
 
 Survex is cave surveying software.  It will process cave survey data entered
-as text to produce .3d files containing centreline data.  It can cope with 
+as text to produce .3d files containing centreline data.  It can cope with
 extremely large datasets, and allows hierarchical arrangement of surveys.
-Data can easily be imported from many other programs, and Compass data can 
-be read natively. 
+Data can easily be imported from many other programs, and Compass data can
+be read natively.
 
 Survex provides a very fast and capable .3d file viewer called aven which
-runs under X in the package survex-aven. 
+runs under X or Wayland which is in the binary package survex-aven.
 
 Sample Data
 -----------
@@ -21,8 +21,8 @@ the Survex website:
 
 https://survex.com/software/sample.tar.gz
 
-Docs
-----
+Documentation
+-------------
 
 The documentation is provided in HTML, text and PDF formats, and is also
 online at:
@@ -36,13 +36,13 @@ https://survex.com/maillist.html
 Vim Support
 -----------
 
-The survex package include vim syntax highlighting for Survex data files,
-but it is not enabled per default. If you want to enable it for your user
-account just execute:
+The survex package includes vim syntax highlighting for Survex data files,
+but this is not enabled per default. If you want to enable it for your user
+account run the following command:
 
     vim-addons install survex
-    
-Similarly, to enable it for all users of this system just execute (as root):
+
+Or to enable it for all users of a system run the following command as root:
 
     vim-addons -w install survex
 
@@ -50,4 +50,4 @@ vim-addons is provided by the vim-addon-manager package, and you can look
 at its manpage for more information.
 
 
- -- Olly Betts <olly@survex.com>  Wed, 18 Mar 2015 03:00:16 +0000
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 01:25:40 +0000
