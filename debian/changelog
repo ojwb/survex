@@ -1,3 +1,11 @@
+survex (1.4.7-3) unstable; urgency=medium
+
+  * debian/patches/fix-s390x-tests.patch: Cherry-pick patch from upstream to
+    fix test failures of s390x (also powerpc and maybe some other
+    architectures).
+
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 16:35:54 +1200
+
 survex (1.4.7-2) unstable; urgency=medium
 
   * debian/patches/disable-testcase-which-fails-on-i386.patch: Skip pltexport
