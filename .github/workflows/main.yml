@@ -36,13 +36,8 @@ jobs:
             libavformat-dev \
             libproj-dev \
             libswscale-dev \
-            mesa-common-dev \
-            libglu1-mesa-dev \
-            libx11-dev \
-            libxext-dev \
             ghostscript \
             netpbm \
-            x11proto-core-dev \
             liblocale-po-perl \
             unifont \
             docbook \
@@ -86,13 +81,8 @@ jobs:
             libavformat-dev \
             libproj-dev \
             libswscale-dev \
-            mesa-common-dev \
-            libglu1-mesa-dev \
-            libx11-dev \
-            libxext-dev \
             ghostscript \
             netpbm \
-            x11proto-core-dev \
             liblocale-po-perl \
             unifont \
             docbook \
@@ -141,13 +131,8 @@ jobs:
             libavformat-dev \
             libproj-dev \
             libswscale-dev \
-            mesa-common-dev \
-            libglu1-mesa-dev \
-            libx11-dev \
-            libxext-dev \
             ghostscript \
             netpbm \
-            x11proto-core-dev \
             liblocale-po-perl \
             unifont \
             docbook \
@@ -190,13 +175,8 @@ jobs:
             libavformat-dev \
             libproj-dev \
             libswscale-dev \
-            mesa-common-dev \
-            libglu1-mesa-dev \
-            libx11-dev \
-            libxext-dev \
             ghostscript \
             netpbm \
-            x11proto-core-dev \
             liblocale-po-perl \
             unifont \
             docbook \
