@@ -471,7 +471,7 @@ img_datum img_parse_compass_datum_string(const char *s, size_t len);
  * Where possible a string of the form "EPSG:1234" is returned.
  *
  * Example Compass files we've seen use "North American 1927" outside of where
- * it's defined for use, presumably because some users fail to change the datum
+ * its defined for use, presumably because some users fail to change the datum
  * from Compass' default.  To enable reading such files we return a PROJ4
  * string of the form "+proj=utm ..." for "North American 1927" and "North
  * American 1983" for UTM zones which don't have an EPSG code.
