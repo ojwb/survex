@@ -34,6 +34,8 @@ TimeStampsInUTC=yes
 ; If upgrading, default to the language selected last time.
 UsePreviousLanguage=yes
 WizardStyle=modern
+; Allow installing without admin rights.
+PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
 ; Official translations:
