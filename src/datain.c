@@ -1610,7 +1610,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 if (ctype == CTYPE_PLUMB ||
 	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
 	     backctype == CTYPE_PLUMB ||
-	     (backctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
+	     (backctype == CTYPE_INFERPLUMB &&
+	      (VAL(BackComp) != 0.0 && VAL(BackComp) != M_PI))) {
 	    /* TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 	     * (a weight on a string).  So the problem here is that the leg is
 	     * vertical, so a compass reading has no meaning! */
