@@ -30,6 +30,8 @@ extern "C" {
 
 #include <stdlib.h>
 
+#include "osdepend.h"
+
 /* OSSIZE_T is to osmalloc, etc what size_t is to malloc, etc */
 #ifndef TOMBSTONES
 # define osfree(p) free((p))

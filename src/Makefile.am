@@ -8,7 +8,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h kml.h\
  labelinfo.h listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h\
  netbits.h netskel.h network.h osalloc.h\
- out.h readval.h str.h useful.h validate.h whichos.h\
+ osdepend.h out.h readval.h str.h useful.h validate.h whichos.h\
  glbitmapfont.h gllogerror.h guicontrol.h gla.h gpx.h moviemaker.h\
  export3d.h exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h\
  gfxcore.h json.h log.h mainfrm.h pos.h vector3.h wx.h aventypes.h\
@@ -31,7 +31,7 @@ uninstall-hook:
 
 check_PROGRAMS = imgtest
 
-COMMONSRC = cmdline.c message.c str.c filename.c z_getopt.c getopt1.c
+COMMONSRC = cmdline.c message.c str.c filename.c osdepend.c z_getopt.c getopt1.c
 
 cavern_SOURCES = cavern.c date.c listpos.c commands.c datain.c netskel.c \
  network.c readval.c matrix.c img_hosted.c netbits.c useful.c \
@@ -86,7 +86,7 @@ survexport_SOURCES = survexport.cc model.cc export.cc export3d.cc \
 		namecompare.cc useful.c hash.c img_hosted.c \
 		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
-#testerr_SOURCES = testerr.c message.c filename.c useful.c
+#testerr_SOURCES = testerr.c message.c filename.c useful.c osdepend.c
 
 imgtest_SOURCES = imgtest.c img.c
 

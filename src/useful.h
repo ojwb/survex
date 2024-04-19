@@ -84,6 +84,8 @@
 #define STRING(X) STRING_(X)
 #define STRING_(X) #X
 
+#include "osdepend.h"
+
 #ifndef WORDS_BIGENDIAN
 # define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
 # define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)

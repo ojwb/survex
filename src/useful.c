@@ -21,6 +21,7 @@
 #endif
 
 #include "useful.h"
+#include "osdepend.h"
 
 #ifdef WORDS_BIGENDIAN
 
