@@ -23,9 +23,7 @@
 # define DEBUG_INVALID 1
 #endif
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "debug.h"
 #include "cavern.h"
