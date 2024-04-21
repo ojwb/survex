@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2011,2012,2013,2014,2015,2016,2018 Olly Betts
+//  Copyright (C) 2004-2024 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -99,7 +99,14 @@ MovieMaker::MovieMaker()
 
 #ifdef WITH_FFMPEG
 static int
-write_packet(void *opaque, uint8_t *buf, int buf_size) {
+write_packet(void *opaque,
+#if LIBAVFORMAT_VERSION_MAJOR < 61
+	     uint8_t *buf,
+#else
+	     const uint8_t *buf,
+#endif
+	     int buf_size)
+{
     FILE * fh = (FILE*)opaque;
     size_t res = fwrite(buf, 1, buf_size, fh);
     return res > 0 ? res : -1;
