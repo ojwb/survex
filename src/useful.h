@@ -21,7 +21,9 @@
 #ifndef USEFUL_H
 #define USEFUL_H
 
-#include <config.h>
+#ifndef PACKAGE
+# error config.h must be included first in each C/C++ source file
+#endif
 
 #include <stdint.h>
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
