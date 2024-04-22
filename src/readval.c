@@ -245,7 +245,7 @@ anon_wall_station:
 	    cmp = strcmp(cached_station->ident, name);
 	    if (cmp <= 0) ptr = cached_station;
 	 }
-	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+	 while (ptr && (cmp = strcmp(ptr->ident, name)) < 0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
