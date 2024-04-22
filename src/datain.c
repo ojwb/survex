@@ -277,7 +277,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL)) {
+   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL|DIAG_FROM_)) {
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
@@ -303,6 +303,8 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    nextch();
 	 }
 	 len = len_last_nonblank;
+      } else if (diag_flags & DIAG_FROM_) {
+	 len = diag_flags >> DIAG_FROM_SHIFT;
       } else {
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
