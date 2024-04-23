@@ -1,3 +1,36 @@
+Changes in 1.4.8 (2024-04-23):
+
+* cavern:
+
+  + The warning for a compass reading on a plumbed leg was already suppressed
+    for a compass or backcompass reading of 0, but is now also suppressed for a
+    backcompass of 180° (or equivalent) which seems to be common in some Compass
+    datasets, but also seems sensible generally.  Thanks to Simeon Warner for
+    sharing some data which triggered such warnings.
+
+  + The error for when a survey and station use the same name is now also
+    emitted in the case where a name was used first for a station, and then as
+    a survey on an explicitly prefixed name.  Closes
+    https://github.com/ojwb/survex/pull/4, reported by Thomas Holder.
+
+  + The error for when a survey and station use the same name now highlights
+    the problematic name within the line shown for context.
+
+  + Fix the reported token string reported by some errors with readings.  This
+    happened to work on at least x86-64 Linux, but the code was invalid and
+    failed on some architectures.
+
+* Fix to build with newer FFmpeg versions.
+
+* (Microsoft Windows version): The installer now offers the choice to install
+  for just the current user, which allows installing Survex without admin
+  rights.
+
+* (Microsoft Windows version): Fix problems with valid coordinate systems being
+  rejected and aven's cavern log window not showing output.  Reported by
+  Peter Mašič, Špela Borko, Răzvan Dumbravă and detrito.  Thanks especially to
+  Špela Borko for a lot of testing to help track down the cause.
+
 Changes in 1.4.7 (2024-04-07):
 
 * cavern:
