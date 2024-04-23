@@ -20,6 +20,7 @@
 
 #include "filename.h"
 #include "debug.h"
+#include "osalloc.h"
 
 #include <ctype.h>
 #include <string.h>

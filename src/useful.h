@@ -29,7 +29,6 @@
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
-#include "osalloc.h"
 
 /* Macro to allow easy building of macros contain multiple statements, such
  * that the likes of “if (x == y) macro1(x); else x = 2;” works properly  */

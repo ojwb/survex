@@ -25,15 +25,6 @@
 #include "export.h" // For LABELS, etc
 #include "img.h"
 
-#include <algorithm>
-#include <stdio.h>
-#include <string.h>
-
-#include "message.h"
-#include "namecompare.h"
-#include "osalloc.h"
-#include "useful.h"
-
 using namespace std;
 
 Export3D::~Export3D()

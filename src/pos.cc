@@ -30,7 +30,6 @@
 
 #include "message.h"
 #include "namecompare.h"
-#include "osalloc.h"
 #include "useful.h"
 
 using namespace std;

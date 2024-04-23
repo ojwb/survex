@@ -37,6 +37,7 @@
 #include "filename.h"
 #include "img_hosted.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 
 #include <iostream>

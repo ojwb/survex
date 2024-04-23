@@ -33,6 +33,7 @@
 #include "json.h"
 #include "kml.h"
 #include "mainfrm.h"
+#include "osalloc.h"
 #include "pos.h"
 
 #include <float.h>

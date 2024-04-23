@@ -32,6 +32,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 
 /* To save memory we should probably use the prefix hash for the prefix on

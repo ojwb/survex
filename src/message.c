@@ -33,7 +33,7 @@
 #include "whichos.h"
 #include "filename.h"
 #include "message.h"
-#include "osdepend.h"
+#include "osalloc.h"
 #include "filelist.h"
 #include "debug.h"
 #include "str.h"

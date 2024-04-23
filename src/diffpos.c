@@ -30,6 +30,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "namecmp.h"
+#include "osalloc.h"
 #include "useful.h"
 
 /* Don't complain if values mismatch by a tiny amount (1e-6m i.e. 0.001mm) */
