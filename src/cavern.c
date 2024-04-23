@@ -38,7 +38,6 @@
 #include "listpos.h"
 #include "netbits.h"
 #include "netskel.h"
-#include "osdepend.h"
 #include "out.h"
 #include "str.h"
 #include "validate.h"

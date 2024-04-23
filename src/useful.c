@@ -19,7 +19,6 @@
 #include <config.h>
 
 #include "useful.h"
-#include "osdepend.h"
 
 #ifdef WORDS_BIGENDIAN
 
@@ -60,4 +59,5 @@ useful_get32(FILE *fh)
    w |= (uint32_t)(GETC(fh) << 24l);
    return (int32_t)w;
 }
+
 #endif
