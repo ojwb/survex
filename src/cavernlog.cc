@@ -25,6 +25,7 @@
 #include "filename.h"
 #include "mainfrm.h"
 #include "message.h"
+#include "osalloc.h"
 
 #include <errno.h>
 #include <stdio.h>
