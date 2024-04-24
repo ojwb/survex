@@ -1,3 +1,96 @@
+Changes in 1.4.8 (2024-04-23):
+
+* cavern:
+
+  + The warning for a compass reading on a plumbed leg was already suppressed
+    for a compass or backcompass reading of 0, but is now also suppressed for a
+    backcompass of 180° (or equivalent) which seems to be common in some Compass
+    datasets, but also seems sensible generally.  Thanks to Simeon Warner for
+    sharing some data which triggered such warnings.
+
+  + The error for when a survey and station use the same name is now also
+    emitted in the case where a name was used first for a station, and then as
+    a survey on an explicitly prefixed name.  Closes
+    https://github.com/ojwb/survex/pull/4, reported by Thomas Holder.
+
+  + The error for when a survey and station use the same name now highlights
+    the problematic name within the line shown for context.
+
+  + Fix the reported token string reported by some errors with readings.  This
+    happened to work on at least x86-64 Linux, but the code was invalid and
+    failed on some architectures.
+
+* Fix to build with newer FFmpeg versions.
+
+* (Microsoft Windows version): The installer now offers the choice to install
+  for just the current user, which allows installing Survex without admin
+  rights.
+
+* (Microsoft Windows version): Fix problems with valid coordinate systems being
+  rejected and aven's cavern log window not showing output.  Reported by
+  Peter Mašič, Špela Borko, Răzvan Dumbravă and detrito.  Thanks especially to
+  Špela Borko for a lot of testing to help track down the cause.
+
+Changes in 1.4.7 (2024-04-07):
+
+* cavern:
+
+  + When using *declination auto we report the range of calculated declinations
+    for each location specified.  After doing this we now reset the range
+    information we're tracking.  Previously we'd misreport the range for
+    the second and subsequent locations.
+
+  + Avoid undefined behaviour on handling filename fallback for filenames
+    containing non-ASCII characters.
+
+  + Show context line with relevant item highlighted for more errors and
+    warnings.
+
+  + The dynamic string handling routines are now more efficient.
+
+  + Fix memory leak if a Compass MAK file opens folders it doesn't close.
+
+  + Fix handling of clino-less legs in Compass DAT.  These would cause cavern
+    to fail with a lot of "NaN" messages.  Now they're treated as having a zero
+    clino with a standard deviation based on the leg length, just like in .svx
+    files.
+
+* img library:
+
+  + Compass PLT: Treat LRUD readings > 900 as omitted readings, which matches
+    what Compass does.  Thanks to Larry Fish for clarifying this.
+
+  + Avoid undefined behaviour after realloc().  We were adjusting a pointer
+    within the reallocated block by subtracting the old block address and
+    adding on the new one.  Technically this is undefined behaviour, although
+    in practice it seems likely it'll work and we've not seen misbehaviour due
+    to it.  However it's easy to avoid by calculating the offset before the
+    realloc().
+
+* Portability:
+
+  + Provide prototype for getopt() to avoid warnings with very recent compiler
+    versions.
+
+  + Avoid using sprintf(), which now triggers warnings on some platforms.
+
+* Build system:
+
+  + Add configure --enable-werror option to turn compiler warnings into errors.
+
+* Manual:
+
+  + Expand details of Compass MAK CRS support.
+
+  + Replace very out of date information about binary RPM packages.
+
+* Minor translation updates.
+
+* (Microsoft Windows version): Now uses PROJ 9.3.0 and ships all of the
+  ancillary files that PROJ comes with.  Hoping this fixes use of coordinate
+  system EPSG:3912 failing, which was reported by Peter Mašič but I've not
+  managed to reproduce.
+
 Changes in 1.4.6 (2024-03-07):
 
 * cavern:
@@ -350,9 +443,9 @@ Changes in 1.4.2 (2022-02-25):
   running on the Continuous Integration system.
 
 * (Microsoft Windows version): The installer is now generated with a much
-  newer version of Innosetup.  Most notably, it now supports installing as a
-  non-admin user.  This also means Microsoft Windows Vista is now the minimum
-  supported version but 2000 and XP are both many years out of support anyway.
+  newer version of Innosetup.  This means Microsoft Windows Vista is now the
+  minimum supported version but 2000 and XP are both many years out of support
+  anyway.
 
 * (Microsoft Windows version): The coordinate system database for PROJ is
   now included so "*cs" now works (broken since 1.4.0).

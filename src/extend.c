@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <float.h>
 #include <stdio.h>
@@ -34,6 +32,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 
 /* To save memory we should probably use the prefix hash for the prefix on

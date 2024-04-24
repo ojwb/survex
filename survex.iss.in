@@ -34,6 +34,8 @@ TimeStampsInUTC=yes
 ; If upgrading, default to the language selected last time.
 UsePreviousLanguage=yes
 WizardStyle=modern
+; Allow installing without admin rights.
+PrivilegesRequiredOverridesAllowed=dialog
 
 [Languages]
 ; Official translations:
@@ -62,6 +64,7 @@ Name: "zh_TW"; MessagesFile: "ChineseTraditional.isl"
 [Dirs]
 Name: "{app}\manual"
 Name: "{app}\images"
+Name: "{app}\proj"
 
 ; Remove any cad3d.exe from a previous install - it has now been replaced
 ; by survexport.exe.
@@ -76,7 +79,7 @@ Source: "*.pixelfont"; DestDir: "{app}"
 Source: "*.png"; DestDir: "{app}\images"
 Source: "*.msg"; DestDir: "{app}"
 Source: "*.htm"; DestDir: "{app}"
-Source: "proj.db"; DestDir: "{app}"
+Source: "proj\*"; DestDir: "{app}\proj"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; Generate iss file for including the wxstd.mo files
 #include "i18nfiles.iss"

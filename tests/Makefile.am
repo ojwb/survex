@@ -149,6 +149,7 @@ utf8bom.out utf8bom.svx\
 nonewlineateof.out nonewlineateof.svx\
 suspectreadings.out suspectreadings.svx\
 cmd_data_default.svx\
+samename.svx\
 gpxexport.gpx gpxexport.svx\
 jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx\

@@ -20,9 +20,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #define MSG_SETUP_PROJ_SEARCH_PATH 1
 
@@ -39,6 +37,7 @@
 #include "filename.h"
 #include "img_hosted.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 
 #include <iostream>

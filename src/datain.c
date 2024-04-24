@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <limits.h>
 #include <stdarg.h>
@@ -280,7 +278,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL)) {
+   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL|DIAG_FROM_)) {
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
@@ -306,6 +304,8 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    nextch();
 	 }
 	 len = len_last_nonblank;
+      } else if (diag_flags & DIAG_FROM_) {
+	 len = diag_flags >> DIAG_FROM_SHIFT;
       } else {
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
@@ -398,7 +398,7 @@ compile_diagnostic_token_show(int diag_flags, int en)
    }
    if (!s_empty(&p)) {
       caret_width = s_len(&p);
-      compile_diagnostic(diag_flags|DIAG_COL, en, p);
+      compile_diagnostic(diag_flags|DIAG_COL, en, s_str(&p));
       caret_width = 0;
       s_free(&p);
    } else {
@@ -3424,7 +3424,8 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 	 if (ctype == CTYPE_PLUMB ||
 	     (ctype == CTYPE_INFERPLUMB && VAL(Comp) != 0.0) ||
 	     backctype == CTYPE_PLUMB ||
-	     (backctype == CTYPE_INFERPLUMB && VAL(BackComp) != 0.0)) {
+	     (backctype == CTYPE_INFERPLUMB &&
+	      (VAL(BackComp) != 0.0 && VAL(BackComp) != M_PI))) {
 	    /* TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 	     * (a weight on a string).  So the problem here is that the leg is
 	     * vertical, so a compass reading has no meaning! */

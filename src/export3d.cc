@@ -18,23 +18,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "export3d.h"
 
 #include "export.h" // For LABELS, etc
 #include "img.h"
-
-#include <algorithm>
-#include <stdio.h>
-#include <string.h>
-
-#include "message.h"
-#include "namecompare.h"
-#include "osalloc.h"
-#include "useful.h"
 
 using namespace std;
 

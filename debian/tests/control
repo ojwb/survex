@@ -1,2 +1,2 @@
-Test-Command: cd tests && env CAVERN=cavern DIFFPOS=diffpos SURVEXPORT=survexport VERBOSE=1 ./cavern.tst
+Test-Command: cd tests && env CAVERN=cavern DIFFPOS=diffpos DUMP3D=dump3d SURVEXPORT=survexport VERBOSE=1 ./cavern.tst
 Restrictions: allow-stderr, rw-build-tree

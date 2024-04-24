@@ -23,9 +23,7 @@
 #define DUMP_NETWORK 1
 #endif
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "validate.h"
 #include "debug.h"

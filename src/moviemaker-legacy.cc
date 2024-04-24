@@ -46,9 +46,7 @@
  * THE SOFTWARE.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #define __STDC_CONSTANT_MACROS
 

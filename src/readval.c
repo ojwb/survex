@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
@@ -78,9 +76,11 @@ read_prefix(unsigned pfx_flags)
    bool fNew;
    bool fImplicitPrefix = true;
    int depth = -1;
+   filepos here;
    filepos fp_firstsep;
 
    skipblanks();
+   get_pos(&here);
 #ifndef NO_DEPRECATED
    if (isRoot(ch)) {
       if (!(pfx_flags & PFX_ALLOW_ROOT)) {
@@ -108,8 +108,6 @@ read_prefix(unsigned pfx_flags)
       if ((pfx_flags & PFX_ANON) &&
 	  (isAnon(ch) || (pcs->dash_for_anon_wall_station && ch == '-'))) {
 	 int first_ch = ch;
-	 filepos here;
-	 get_pos(&here);
 	 nextch();
 	 if (isBlank(ch) || isEol(ch)) {
 	    if (!isAnon(first_ch))
@@ -247,7 +245,7 @@ anon_wall_station:
 	    cmp = strcmp(cached_station->ident, name);
 	    if (cmp <= 0) ptr = cached_station;
 	 }
-	 while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+	 while (ptr && (cmp = strcmp(ptr->ident, name)) < 0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
@@ -282,7 +280,18 @@ anon_wall_station:
       }
       depth++;
       f_optional = false; /* disallow after first level */
-      if (isSep(ch)) get_pos(&fp_firstsep);
+      if (isSep(ch)) {
+	 get_pos(&fp_firstsep);
+	 if (!TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
+	    /* TRANSLATORS: Here "station" is a survey station, not a train station.
+	     *
+	     * Here "survey" is a "cave map" rather than list of questions - it should be
+	     * translated to the terminology that cavers using the language would use.
+	     */
+	    compile_diagnostic(DIAG_ERR|DIAG_FROM(here), /*“%s” can’t be both a station and a survey*/27,
+			       sprint_prefix(ptr));
+	 }
+      }
    } while (isSep(ch));
    if (name) osfree(name);
 
@@ -304,7 +313,7 @@ anon_wall_station:
 	  * Here "survey" is a "cave map" rather than list of questions - it should be
 	  * translated to the terminology that cavers using the language would use.
 	  */
-	 compile_diagnostic(DIAG_ERR, /*“%s” can’t be both a station and a survey*/27,
+	 compile_diagnostic(DIAG_ERR|DIAG_FROM(here), /*“%s” can’t be both a station and a survey*/27,
 			    sprint_prefix(ptr));
       }
       if (!fSurvey && TSTBIT(pcs->infer, INFER_EXPORTS)) ptr->min_export = USHRT_MAX;

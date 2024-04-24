@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +30,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "namecmp.h"
+#include "osalloc.h"
 #include "useful.h"
 
 /* Don't complain if values mismatch by a tiny amount (1e-6m i.e. 0.001mm) */

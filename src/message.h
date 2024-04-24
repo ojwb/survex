@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2022 Olly Betts
+ * Copyright (C) 1998-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ extern "C" {
 
 #include <stdarg.h>
 
-#include "osalloc.h"
+#include "filename.h"
 
 #define STDERR stdout
 
@@ -96,7 +96,7 @@ int select_charset(int charset_code);
 #  include <proj.h>
 #  define msg_init(ARGV) do {\
 	(msg_init)(ARGV); \
-	const char* msg_init_proj_path = msg_cfgpth();\
+	const char* msg_init_proj_path = use_path(msg_cfgpth(), "proj");\
 	proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &msg_init_proj_path);\
     } while (0)
 # endif

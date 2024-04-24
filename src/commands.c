@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 #include <limits.h>
@@ -27,6 +25,9 @@
 #include <string.h>
 
 #include <proj.h>
+#if PROJ_VERSION_MAJOR < 8
+# define proj_context_errno_string(CTX, ERR) proj_errno_string(ERR)
+#endif
 
 #include "cavern.h"
 #include "commands.h"
@@ -881,7 +882,8 @@ set_declination_location(real x, real y, real z, const char *proj_str)
 
     if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
        compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
-			  proj_errno_string(proj_errno(transform)));
+			  proj_context_errno_string(PJ_DEFAULT_CTX,
+						    proj_errno(transform)));
        /* Set dummy values which are finite. */
        x = y = z = 0;
     }
@@ -1117,7 +1119,8 @@ cmd_fix(void)
 
 	 if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
 	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
-			       proj_errno_string(proj_errno(transform)));
+			       proj_context_errno_string(PJ_DEFAULT_CTX,
+							 proj_errno(transform)));
 	    /* Set dummy values which are finite. */
 	    x = y = z = 0;
 	 }
@@ -2369,11 +2372,13 @@ cmd_cs(void)
 	   * to check that the specified coordinate system is valid and also if
 	   * it's suitable for output so we need to test creating it here.
 	   */
+	  proj_errno_reset(NULL);
 	  PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	  if (!pj) {
 	      set_pos(&fp);
 	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
-				 proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
+				 proj_context_errno_string(PJ_DEFAULT_CTX,
+							   proj_context_errno(PJ_DEFAULT_CTX)));
 	      skipline();
 	      osfree(proj_str);
 	      return;
@@ -2408,11 +2413,13 @@ cmd_cs(void)
 	 /* (ok_for_output == MAYBE) also happens to indicate whether we need
 	  * to check that the coordinate system is valid for input.
 	  */
+	 proj_errno_reset(NULL);
 	 PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
 	 if (!pj) {
 	    set_pos(&fp);
 	    compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
-			       proj_errno_string(proj_context_errno(PJ_DEFAULT_CTX)));
+			       proj_context_errno_string(PJ_DEFAULT_CTX,
+							 proj_context_errno(PJ_DEFAULT_CTX)));
 	    skipline();
 	    return;
 	 }

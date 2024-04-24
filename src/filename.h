@@ -67,7 +67,6 @@ void safe_fclose(FILE *f);
 void filename_register_output(const char *fnm);
 void filename_delete_output(void);
 
-bool fAbsoluteFnm(const char *fnm);
 bool fDirectory(const char *fnm);
 
 #ifdef __cplusplus

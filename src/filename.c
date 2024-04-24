@@ -16,12 +16,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "filename.h"
 #include "debug.h"
+#include "osalloc.h"
 #include "whichos.h"
 
 #include <ctype.h>
@@ -36,6 +35,42 @@ typedef struct filelist {
 static filelist *flhead = NULL;
 
 static void filename_register_output_with_fh(const char *fnm, FILE *fh);
+
+/* fDirectory( fnm ) returns true if fnm is a directory; false if fnm is a
+ * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
+ * NB If fnm has a trailing directory separator (e.g. “/” or “/home/olly/”
+ * then it's assumed to be a directory even if it doesn't exist (as is an
+ * empty string).
+ */
+
+#if OS_UNIX || OS_WIN32
+
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <stdio.h>
+
+bool
+fDirectory(const char *fnm)
+{
+   struct stat buf;
+   if (!fnm[0] || fnm[strlen(fnm) - 1] == FNM_SEP_LEV
+#ifdef FNM_SEP_LEV2
+       || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
+#endif
+       ) return 1;
+   if (stat(fnm, &buf) != 0) return 0;
+#ifdef S_ISDIR
+   /* POSIX way */
+   return S_ISDIR(buf.st_mode);
+#else
+   /* BSD way */
+   return ((buf.st_mode & S_IFMT) == S_IFDIR);
+#endif
+}
+
+#else
+# error Unknown OS
+#endif
 
 /* safe_fopen should be used when writing a file
  * fopenWithPthAndExt should be used when reading a file
@@ -250,6 +285,29 @@ add_ext(const char *fnm, const char *ext)
    return fnmNew;
 }
 
+#if OS_WIN32
+
+/* NB "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
+static bool
+fAbsoluteFnm(const char *fnm)
+{
+   /* <drive letter>: or \<path> or /<path>
+    * or \\<host>\... or //<host>/... */
+   unsigned char ch = (unsigned char)*fnm;
+   return ch == '/' || ch == '\\' ||
+       (ch && fnm[1] == ':' && (ch | 32) >= 'a' && (ch | 32) <= 'z');
+}
+
+#elif OS_UNIX
+
+static bool
+fAbsoluteFnm(const char *fnm)
+{
+   return (fnm[0] == '/');
+}
+
+#endif
+
 /* fopen file, found using pth and fnm
  * fnmUsed is used to return filename used to open file (ignored if NULL)
  * or NULL if file didn't open
@@ -260,13 +318,11 @@ fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
 {
    char *fnmFull = NULL;
    FILE *fh = NULL;
-   bool fAbs;
 
-   /* if no pth treat fnm as absolute */
-   fAbs = (pth == NULL || *pth == '\0' || fAbsoluteFnm(fnm));
-
-   /* if appropriate, try it without pth */
-   if (fAbs) {
+   /* Don't try to use pth if it is unset or empty, or if the filename is
+    * already absolute.
+    */
+   if (pth == NULL || *pth == '\0' || fAbsoluteFnm(fnm)) {
       fh = fopen_not_dir(fnm, mode);
       if (fh) {
 	 if (fnmUsed) fnmFull = osstrdup(fnm);
@@ -400,62 +456,3 @@ filename_delete_output(void)
       osfree(p);
    }
 }
-
-#if OS_WIN32
-
-/* NB "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
-bool
-fAbsoluteFnm(const char *fnm)
-{
-   /* <drive letter>: or \<path> or /<path>
-    * or \\<host>\... or //<host>/... */
-   unsigned char ch = (unsigned char)*fnm;
-   return ch == '/' || ch == '\\' ||
-       (ch && fnm[1] == ':' && (ch | 32) >= 'a' && (ch | 32) <= 'z');
-}
-
-#elif OS_UNIX
-
-bool
-fAbsoluteFnm(const char *fnm)
-{
-   return (fnm[0] == '/');
-}
-
-#endif
-
-/* fDirectory( fnm ) returns true if fnm is a directory; false if fnm is a
- * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
- * NB If fnm has a trailing directory separator (e.g. “/” or “/home/olly/”
- * then it's assumed to be a directory even if it doesn't exist (as is an
- * empty string).
- */
-
-#if OS_UNIX || OS_WIN32
-
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <stdio.h>
-
-bool
-fDirectory(const char *fnm)
-{
-   struct stat buf;
-   if (!fnm[0] || fnm[strlen(fnm) - 1] == FNM_SEP_LEV
-#ifdef FNM_SEP_LEV2
-       || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
-#endif
-       ) return 1;
-   if (stat(fnm, &buf) != 0) return 0;
-#ifdef S_ISDIR
-   /* POSIX way */
-   return S_ISDIR(buf.st_mode);
-#else
-   /* BSD way */
-   return ((buf.st_mode & S_IFMT) == S_IFDIR);
-#endif
-}
-
-#else
-# error Unknown OS
-#endif

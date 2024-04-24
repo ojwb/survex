@@ -22,9 +22,7 @@
 # define DEBUG_ARTIC
 #endif
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "debug.h"
 #include "cavern.h"
@@ -390,7 +388,7 @@ articulate(void)
 	  * the same anonymous station can't be referred to more than once),
 	  * and trailing traverses have been removed at this point.
 	  *
-	  * However, we may removed a trailing traverse back to an anonymous
+	  * However, we may remove a trailing traverse back to an anonymous
 	  * station.  FIXME: It's not helpful to fail to point to a station
 	  * in such a case - it would be much nicer to look through the list
 	  * of trailing traverses in such a case to find a relevant traverse

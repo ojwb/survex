@@ -44,6 +44,7 @@
 # include "filelist.h"
 # include "filename.h"
 # include "message.h"
+# include "osalloc.h"
 # include "useful.h"
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else

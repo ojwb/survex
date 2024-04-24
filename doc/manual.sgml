@@ -82,7 +82,7 @@ joining it, e.g. at a T-junction. And so on.
 
 <article Status="draft" id="index">
  <articleinfo>
-  <Title><Application>Survex</Application> <!--VERSION-->1.4.6 Manual</Title>
+  <Title><Application>Survex</Application> <!--VERSION-->1.4.8 Manual</Title>
   <AuthorGroup>
    <Author>
     <FirstName>Olly</FirstName>
@@ -305,10 +305,9 @@ are using, so there is a separate section below for each platform.</Para>
 <Sect3><Title>Linux</Title>
 
 <Para>
-We supply pre-compiled versions for x86 Linux machines in RPM format
-(suitable for Redhat, Mandrake, and some other distributions).
-Survex Debian packages are available from Debian mirror sites in
-the usual way.
+Pre-built versions of Survex are available for some Linux distributions.
+See the <ulink url="https://survex.com/download.html?platform=linux">Survex
+for Linux download page</ulink> on our website for up-to-date information.
 </Para>
 
 <Para>
@@ -327,16 +326,6 @@ prompt (or set some a filemanager or graphics shell).
 
 </Sect3>
 
-<Sect3><Title>Other versions of UNIX</Title>
-
-<Para>For other UNIX versions you'll need to get the source code
-and compile it on your system.  Unpack the sources and read
-the file called INSTALL in the top level for details about building
-from source.
-</Para>
-
-</Sect3>
-
 <Sect3><Title>macOS</Title>
 
 <Para>
@@ -349,14 +338,38 @@ download page on the website</ulink> for installation instructions.
 
 </Sect3>
 
+<Sect3><Title>Other versions of UNIX</Title>
+
+<Para>For other UNIX versions you'll need to get the source code
+and compile it on your system.  Unpack the sources and read
+the file called INSTALL in the top level for details about building
+from source.
+</Para>
+
+</Sect3>
+
 <Sect3><Title>Microsoft Windows</Title>
 
 <Para>
 This version comes packaged with an installation wizard.  Just
 run the downloaded package and it will lead you through the
-installation process.  If you want the file associations to be
-set up for all user, run the installer as administrator, or as a
-user with administrator rights.
+installation process.
+</Para>
+
+<Para>
+Survex 1.4.8 and later support installing for all users (which requires
+administrator rights) or just for the current user (which doesn't).
+If installed for just the current user, other user accounts won't see
+the file associations, menu entries, desktop icons, etc for Survex.
+</Para>
+
+<Para>
+Note that if you have an existing installation the installer will see
+it and try to upgrade it, and if that installation was done with administrator
+rights (which any installation of 1.4.7 or earlier will be) you'll also
+need administrator rights to upgrade.  To change to a non-admin installation
+you need to first uninstall the existing admin install (which will need admin
+rights) then install the new version.
 </Para>
 
 <Para>
@@ -441,7 +454,7 @@ possible actions.
   <ListItem><Para>
   This entry used to be provided to allow converting to a <filename>.pos</filename> file
   listing all the stations and their coordinates, but this functionality is now
-  available from inside Aven with the ability to control what is exported. and
+  available from inside Aven with the ability to control what is exported, and
   this entry was dropped in 1.2.35.
   </Para></ListItem>
   </VarListEntry>
@@ -2622,7 +2635,7 @@ extension, and will also try translating "\" to "/".
 </Para>
 
 <Para>
-To help users wanting to take a dataset from on a platform where filenames
+To help users wanting to take a dataset from a platform where filenames
 are case-insenstive and process it on a platform where filenames are
 case-sensitive, if the file isn't found cavern will try a few variations of the
 case.  First it will try all lower case (in Survex 1.4.5 and older this was

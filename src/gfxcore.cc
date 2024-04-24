@@ -22,9 +22,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 #include <float.h>
@@ -37,6 +35,7 @@
 #include "hash.h"
 #include "mainfrm.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 #include "printing.h"
 #include "guicontrol.h"

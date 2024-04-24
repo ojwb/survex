@@ -3,10 +3,10 @@ Section: science
 Priority: optional
 Maintainer: Olly Betts <olly@survex.com>
 Uploaders: Wookey <wookey@debian.org>
-Standards-Version: 4.6.2
-Build-Depends: debhelper-compat (= 12), libx11-dev, libxext-dev, x11proto-core-dev,
+Standards-Version: 4.7.0
+Build-Depends: debhelper-compat (= 12),
     libavcodec-dev, libavformat-dev, libproj-dev (>= 6.2.0), libswscale-dev,
-    libwxgtk3.2-dev, mesa-common-dev, libglu1-mesa-dev, pkg-config
+    libwxgtk3.2-dev, pkgconf
 Homepage: https://survex.com/
 Rules-Requires-Root: no
 

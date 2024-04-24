@@ -82,6 +82,9 @@ char* grab_line(void);
 #define DIAG_NUM	0x100	// Real number.
 #define DIAG_STRING	0x200	// Possibly quoted string value.
 #define DIAG_TAIL	0x400	// Rest of the line (not including trailing blanks or comment).
+#define DIAG_FROM_	0x800	// Width is from filepos in bits above this one
+#define DIAG_FROM_SHIFT 12
+#define DIAG_FROM(POS)	(DIAG_FROM_ | ((ftell(file.fh) - (POS).offset) << DIAG_FROM_SHIFT))
 
 void compile_diagnostic(int flags, int en, ...);
 

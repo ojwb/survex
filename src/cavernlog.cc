@@ -18,15 +18,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "aven.h"
 #include "cavernlog.h"
 #include "filename.h"
 #include "mainfrm.h"
 #include "message.h"
+#include "osalloc.h"
 
 #include <errno.h>
 #include <stdio.h>
