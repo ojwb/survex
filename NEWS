@@ -443,9 +443,9 @@ Changes in 1.4.2 (2022-02-25):
   running on the Continuous Integration system.
 
 * (Microsoft Windows version): The installer is now generated with a much
-  newer version of Innosetup.  Most notably, it now supports installing as a
-  non-admin user.  This also means Microsoft Windows Vista is now the minimum
-  supported version but 2000 and XP are both many years out of support anyway.
+  newer version of Innosetup.  This means Microsoft Windows Vista is now the
+  minimum supported version but 2000 and XP are both many years out of support
+  anyway.
 
 * (Microsoft Windows version): The coordinate system database for PROJ is
   now included so "*cs" now works (broken since 1.4.0).
