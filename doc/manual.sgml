@@ -454,7 +454,7 @@ possible actions.
   <ListItem><Para>
   This entry used to be provided to allow converting to a <filename>.pos</filename> file
   listing all the stations and their coordinates, but this functionality is now
-  available from inside Aven with the ability to control what is exported. and
+  available from inside Aven with the ability to control what is exported, and
   this entry was dropped in 1.2.35.
   </Para></ListItem>
   </VarListEntry>
