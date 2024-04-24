@@ -6,6 +6,7 @@ In file included from ./doubleinc.svx:3:
 ./cmd_dummy.svx:12:6: warning: Station already fixed at the same coordinates
  *fix no_warnings_please reference 0 0 0
       ^~~~~~~~~~~~~~~~~~
+./cmd_dummy.svx:12: info: Previously fixed or equated here
 
 Removing trailing traverses...
 

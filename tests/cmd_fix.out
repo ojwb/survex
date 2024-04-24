@@ -1,6 +1,18 @@
 ./cmd_fix.svx:2:18: info: FIX command with no coordinates - fixing at (0,0,0)
  *fix A reference ; generates an info diagnostic
                   ^
+./cmd_fix.svx:12:6: warning: Station already fixed at the same coordinates
+ *fix W 0 0 0
+      ^
+./cmd_fix.svx:10: info: Previously fixed or equated here
+./cmd_fix.svx:13:6: warning: Station already fixed at the same coordinates
+ *fix W1 0 0 0
+      ^~
+./cmd_fix.svx:11: info: Previously fixed or equated here
+./cmd_fix.svx:14:6: warning: Station already fixed at the same coordinates
+ *fix W2 0 0 0
+      ^~
+./cmd_fix.svx:11: info: Previously fixed or equated here
 
 Removing trailing traverses...
 
@@ -16,10 +28,13 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 6 survey stations, joined by 0 legs.
+Survey contains 9 survey stations, joined by 2 legs.
 There are 0 loops.
-Survey has 6 connected components.
+Survey has 7 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    6 0-nodes.
+   2 1-nodes.
+   1 2-node.
+There were 3 warning(s).

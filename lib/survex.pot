@@ -522,6 +522,11 @@ msgstr ""
 msgid "Station already fixed or equated to a fixed point"
 msgstr ""
 
+#: ../src/commands.c:1231
+#: n:493
+msgid "Previously fixed or equated here"
+msgstr ""
+
 #: ../src/cavern.c:287
 #: ../src/filename.c:55
 #: ../src/gfxcore.cc:4201

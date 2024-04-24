@@ -1,4 +1,4 @@
-; pos=fail error=40
+; pos=fail error=43
 *fix A 0
 *fix B 0 0
 *fix C 0 0 0 1.0 2.0 3.0 3.14
@@ -44,3 +44,10 @@
 
 ; so we actually have some survey data
 *fix 1 reference 0 0 0
+
+; Test errors
+*fix W 0 0 0
+*equate Wa W Wb
+*fix W 0 0 1
+*fix Wa 0 0 2
+*fix Wb 0 0 3

@@ -221,6 +221,10 @@ typedef struct Prefix {
    struct Node *stn;
    struct Pos *pos;
    const char *ident;
+   // A filename:line where this name was used.  If it's a station used in *fix
+   // then this will be the location of such a *fix, otherwise if it's a
+   // station used in *equate then it's the location of such a *equate.
+   // Otherwise it's the first place it was used.
    const char *filename;
    unsigned int line;
    /* If (min_export == 0) then max_export is max # levels above is this

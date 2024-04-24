@@ -1213,6 +1213,10 @@ cmd_fix(void)
       POS(stn, 1) = y;
       POS(stn, 2) = z;
       fix(stn);
+
+      // Make the station's file:line location reflect this *fix.
+      fix_name->filename = file.filename;
+      fix_name->line = file.line;
       return;
    }
 
@@ -1224,6 +1228,7 @@ cmd_fix(void)
        /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
        compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
    }
+   compile_diagnostic_pfx(DIAG_INFO, fix_name, /*Previously fixed or equated here*/493);
    set_pos(&fp);
 }
 
@@ -1274,17 +1279,21 @@ cmd_flags(void)
 static void
 cmd_equate(void)
 {
-   prefix *name1, *name2;
-   bool fOnlyOneStn = true; /* to trap eg *equate entrance.6 */
    filepos fp;
-
    get_pos(&fp);
-   name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
+   prefix *prev_name = NULL;
+   prefix *name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
    while (true) {
-      name2 = name1;
+      if (!name->stn || !fixed(name->stn)) {
+	  // If the station isn't already fixed, make its file:line location
+	  // reflect this *equate.
+	  name->filename = file.filename;
+	  name->line = file.line;
+      }
       skipblanks();
       if (isEol(ch) || isComm(ch)) {
-	 if (fOnlyOneStn) {
+	 if (prev_name == NULL) {
+	    /* E.g. *equate entrance.6 */
 	    set_pos(&fp);
 	    /* TRANSLATORS: EQUATE is a command name, so shouldn’t be
 	     * translated.
@@ -1296,9 +1305,9 @@ cmd_equate(void)
 	 return;
       }
 
-      name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
-      process_equate(name1, name2);
-      fOnlyOneStn = false;
+      prev_name = name;
+      name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
+      process_equate(name, prev_name);
    }
 }
 
