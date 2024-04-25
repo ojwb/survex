@@ -2732,6 +2732,7 @@ srv_not_found:
 	    walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
 	    walls_ref.zone = 0;
 detached_or_not_srv:
+	    pop_walls_options();
 	    in_survey = false;
 	}
 
@@ -2743,6 +2744,7 @@ detached_or_not_srv:
 	    skipline();
 	    break;
 	  case WALLS_WPJ_CMD_SURVEY:
+	    push_walls_options(); // FIXME: Eliminate redundant push and pop inside data_file_walls_srv()
 	    in_survey = true;
 	    skipline();
 	    break;
