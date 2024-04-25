@@ -3246,8 +3246,8 @@ msgstr ""
 #.
 #. Would lead to:
 #.
-#. crawl.svx:4: Reentering an existing survey is deprecated
-#. crawl.svx:1: Originally entered here
+#. crawl.svx:4: warning: Reentering an existing survey is deprecated
+#. crawl.svx:1: info: Originally entered here
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -3268,8 +3268,8 @@ msgstr ""
 #.
 #. Would lead to:
 #.
-#. crawl.svx:3: Reentering an existing survey is deprecated
-#. crawl.svx:1: Originally entered here
+#. crawl.svx:3: warning: Reentering an existing survey is deprecated
+#. crawl.svx:1: info: Originally entered here
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation

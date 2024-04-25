@@ -1,23 +1,23 @@
 ./reenterlots.svx:7:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:10:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:13:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:16:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:19:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:19: warning: Further uses of this deprecated feature will not be reported
  *begin svy
 
@@ -46,4 +46,4 @@ North-South range = 20.00m (from svy.2 at 10.00m to svy.5 at -10.00m)
 East-West range = 17.32m (from svy.4 at 8.66m to svy.7 at -8.66m)
    8 1-nodes.
    1 8-node.
-There were 11 warning(s).
+There were 6 warning(s).

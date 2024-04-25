@@ -663,8 +663,8 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        *
        * Would lead to:
        *
-       * crawl.svx:4:8: Reentering an existing survey is deprecated
-       * crawl.svx:1: Originally entered here
+       * crawl.svx:4:8: warning: Reentering an existing survey is deprecated
+       * crawl.svx:1: info: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
@@ -682,12 +682,12 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        *
        * Would lead to:
        *
-       * crawl.svx:4:8: Reentering an existing survey is deprecated
-       * crawl.svx:1: Originally entered here
+       * crawl.svx:4:8: warning: Reentering an existing survey is deprecated
+       * crawl.svx:1: info: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic_pfx(DIAG_WARN, survey, /*Originally entered here*/30);
+      compile_diagnostic_pfx(DIAG_INFO, survey, /*Originally entered here*/30);
       if (++reenter_depr_count == 5) {
 	 /* After we've warned about 5 uses of the same deprecated feature, we
 	  * give up for the rest of the current processing run.
