@@ -2557,9 +2557,18 @@ data_file_walls_wpj(void)
     int depth = 0;
     int detached_nest_level = 0;
     bool in_survey = false;
-    while (ch != EOF && !ferror(file.fh)) {
+    while (!ferror(file.fh)) {
+	walls_wpj_cmd tok = WALLS_WPJ_CMD_NULL;
 	skipblanks();
 	if (ch != '.') {
+	    if (ch == EOF) {
+		if (!in_survey) break;
+		// Ensure that a survey at the end of the WPJ file is processed
+		// even if not contained in a book.  Not seen in example data, so
+		// not sure if this is actually valid but this code will just be
+		// unused if it isn't.
+		goto process_entry;
+	    }
 	    // If the line isn't blank or a comment then process_eol() will
 	    // issue a suitable error.
 	    process_eol();
@@ -2568,8 +2577,7 @@ data_file_walls_wpj(void)
 
 	nextch();
 	get_token_no_blanks();
-	walls_wpj_cmd tok = match_tok(walls_wpj_cmd_tab,
-				      TABSIZE(walls_wpj_cmd_tab));
+	tok = match_tok(walls_wpj_cmd_tab, TABSIZE(walls_wpj_cmd_tab));
 	if (detached_nest_level) {
 	    switch (tok) {
 	      case WALLS_WPJ_CMD_BOOK:
@@ -2591,6 +2599,7 @@ data_file_walls_wpj(void)
 	    (tok == WALLS_WPJ_CMD_SURVEY ||
 	     tok == WALLS_WPJ_CMD_BOOK ||
 	     tok == WALLS_WPJ_CMD_ENDBOOK)) {
+process_entry:
 	    // Process the current entry.
 
 	    // .STATUS is a decimal integer which is a bitmap of flags.
@@ -2734,6 +2743,8 @@ srv_not_found:
 detached_or_not_srv:
 	    pop_walls_options();
 	    in_survey = false;
+	    // Exit if at EOF.
+	    if (tok == WALLS_WPJ_CMD_NULL) break;
 	}
 
 	switch (tok) {
