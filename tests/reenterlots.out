@@ -18,7 +18,7 @@
  *begin svy
         ^~~
 ./reenterlots.svx:3: info: Originally entered here
-./reenterlots.svx:19: warning: Further uses of this deprecated feature will not be reported
+./reenterlots.svx:19: info: Further uses of this deprecated feature will not be reported
  *begin svy
 
 Removing trailing traverses...
@@ -46,4 +46,4 @@ North-South range = 20.00m (from svy.2 at 10.00m to svy.5 at -10.00m)
 East-West range = 17.32m (from svy.4 at 8.66m to svy.7 at -8.66m)
    8 1-nodes.
    1 8-node.
-There were 6 warning(s).
+There were 5 warning(s).

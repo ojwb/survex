@@ -90,7 +90,7 @@ read_prefix(unsigned pfx_flags)
       if (root_depr_count < 5) {
 	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
-	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	    compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
       nextch();
       ptr = root;
