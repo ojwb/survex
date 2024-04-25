@@ -1,4 +1,4 @@
-; pos=no warn=6 error=0
+; pos=no warn=5 error=0
 *fix svy.1 0 0 0
 *begin svy
 *export 1

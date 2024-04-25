@@ -578,7 +578,7 @@ cmd_set(void)
 	 if (++root_depr_count == 5)
 	     /* TRANSLATORS: If you're unsure what "deprecated" means, see:
 	      * https://en.wikipedia.org/wiki/Deprecation */
-	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	    compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
    }
 #endif
@@ -694,7 +694,7 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
 	  *
 	  * If you're unsure what "deprecated" means, see:
 	  * https://en.wikipedia.org/wiki/Deprecation */
-	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
    } else {
       survey->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
@@ -718,7 +718,7 @@ cmd_prefix(void)
        * https://en.wikipedia.org/wiki/Deprecation */
       compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
-	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
    }
    get_pos(&fp);
    survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
@@ -1545,7 +1545,7 @@ cmd_data(void)
 	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
 			    s_str(&token), ch, s_str(&token));
 	 if (++data_depr_count == 5)
-	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	    compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
       nextch();
    }
@@ -1965,7 +1965,7 @@ cmd_default(void)
        * https://en.wikipedia.org/wiki/Deprecation */
       compile_diagnostic(DIAG_WARN|DIAG_COL, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
-	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
    }
 
    get_token();
