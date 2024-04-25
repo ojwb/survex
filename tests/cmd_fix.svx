@@ -1,7 +1,14 @@
-; pos=yes warn=0
+; pos=yes warn=3
 *fix A reference ; generates an info diagnostic
 *fix B reference 0 0 0
 *fix C reference 0 0 0 1.0
 *fix D reference 0 0 0 1.0 2.0
 *fix E reference 0 0 0 1.0 2.0 3.0
 *fix F reference 0 0 0 1.0 2.0 3.0 3.14 2.18 1.44
+
+; Test warnings
+*fix W 0 0 0
+*equate W1 W W2
+*fix W 0 0 0
+*fix W1 0 0 0
+*fix W2 0 0 0

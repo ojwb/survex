@@ -522,6 +522,11 @@ msgstr ""
 msgid "Station already fixed or equated to a fixed point"
 msgstr ""
 
+#: ../src/commands.c:1231
+#: n:493
+msgid "Previously fixed or equated here"
+msgstr ""
+
 #: ../src/cavern.c:287
 #: ../src/filename.c:55
 #: ../src/gfxcore.cc:4201
@@ -3247,8 +3252,8 @@ msgstr ""
 #.
 #. Would lead to:
 #.
-#. crawl.svx:4: Reentering an existing survey is deprecated
-#. crawl.svx:1: Originally entered here
+#. crawl.svx:4: warning: Reentering an existing survey is deprecated
+#. crawl.svx:1: info: Originally entered here
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -3269,8 +3274,8 @@ msgstr ""
 #.
 #. Would lead to:
 #.
-#. crawl.svx:3: Reentering an existing survey is deprecated
-#. crawl.svx:1: Originally entered here
+#. crawl.svx:3: warning: Reentering an existing survey is deprecated
+#. crawl.svx:1: info: Originally entered here
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation

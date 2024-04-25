@@ -38,7 +38,8 @@ badinc5.mak badinc5.out\
 export.svx export2.svx\
 singlefix.svx singlefix.out singlefix.pos singlereffix.svx singlereffix.pos\
 singlefixerr.svx singlefixerr.pos singlereffixerr.svx singlereffixerr.pos\
-includecomment.svx reenterwarn.svx\
+includecomment.svx\
+reenterwarn.svx reenterwarn.out\
 angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\

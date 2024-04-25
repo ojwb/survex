@@ -2,10 +2,11 @@ In file included from ./doubleinc.svx:3:
 ./cmd_dummy.svx:2:8: warning: Reentering an existing survey is deprecated
  *begin it_all
         ^~~~~~
-./cmd_dummy.svx:2: warning: Originally entered here
+./cmd_dummy.svx:2: info: Originally entered here
 ./cmd_dummy.svx:12:6: warning: Station already fixed at the same coordinates
  *fix no_warnings_please reference 0 0 0
       ^~~~~~~~~~~~~~~~~~
+./cmd_dummy.svx:12: info: Previously fixed or equated here
 
 Removing trailing traverses...
 
@@ -27,4 +28,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 3 warning(s).
+There were 2 warning(s).

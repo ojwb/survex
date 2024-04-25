@@ -118,6 +118,18 @@
 ./cmd_fix_bad.svx:43:36: error: Standard deviation must be positive
  *fix Y6m reference 123 456 789 0.1 -1 -1
                                     ^~
+./cmd_fix_bad.svx:51:6: error: Station already fixed or equated to a fixed point
+ *fix W 0 0 1
+      ^
+./cmd_fix_bad.svx:49: info: Previously fixed or equated here
+./cmd_fix_bad.svx:52:6: error: Station already fixed or equated to a fixed point
+ *fix Wa 0 0 2
+      ^~
+./cmd_fix_bad.svx:50: info: Previously fixed or equated here
+./cmd_fix_bad.svx:53:6: error: Station already fixed or equated to a fixed point
+ *fix Wb 0 0 3
+      ^~
+./cmd_fix_bad.svx:50: info: Previously fixed or equated here
 
 Removing trailing traverses...
 
@@ -133,10 +145,13 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 1 survey station, joined by 0 legs.
+Survey contains 4 survey stations, joined by 2 legs.
 There are 0 loops.
+Survey has 2 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    1 0-node.
-There were 0 warning(s) and 40 error(s) - no output files produced.
+   2 1-nodes.
+   1 2-node.
+There were 0 warning(s) and 43 error(s) - no output files produced.
