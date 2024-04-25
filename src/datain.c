@@ -909,6 +909,10 @@ data_file_compass_mak(void)
 			      POS(stn, 1) = y;
 			      POS(stn, 2) = z;
 			      fix(stn);
+
+			      // Make the station's file:line location reflect this fix.
+			      name->filename = file.filename;
+			      name->line = file.line;
 			  } else {
 			      filepos fp;
 			      get_pos(&fp);
@@ -921,6 +925,7 @@ data_file_compass_mak(void)
 				  compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
 			      }
 			      set_pos(&fp);
+			      compile_diagnostic_pfx(DIAG_INFO, name, /*Previously fixed or equated here*/493);
 			  }
 			  while (ch != ']' && ch != EOF) nextch_handling_eol();
 			  if (ch == ']') {

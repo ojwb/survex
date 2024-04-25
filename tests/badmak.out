@@ -7,9 +7,11 @@
 ./badmak.mak:4:29: warning: Station already fixed at the same coordinates
  C2 [n,10.23,20.47,1234.56], C3 [m,10.23,20.47,1234.56],
                              ^~
+./badmak.mak:3: info: Previously fixed or equated here
 ./badmak.mak:5:1: error: Station already fixed or equated to a fixed point
  C3 [f,10.23,20.47,1234.56];
  ^~
+./badmak.mak:3: info: Previously fixed or equated here
 
 Removing trailing traverses...
 
