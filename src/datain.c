@@ -2282,6 +2282,10 @@ next_line:
 		POS(stn, 1) = coords[1];
 		POS(stn, 2) = coords[2];
 		fix(stn);
+
+		// Make the station's file:line location reflect this fix.
+		name->filename = file.filename;
+		name->line = file.line;
 	    } else {
 		if (coords[0] != POS(stn, 0) ||
 		    coords[1] != POS(stn, 1) ||
@@ -2290,6 +2294,7 @@ next_line:
 		} else {
 		    compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
 		}
+		compile_diagnostic_pfx(DIAG_INFO, name, /*Previously fixed or equated here*/493);
 	    }
 
 	    if (isWallsSlash(ch)) {
