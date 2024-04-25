@@ -2677,7 +2677,7 @@ data_file_walls_wpj(void)
 		s_cats(&full_file, &name);
 		s_cat(&full_file, ".SRV");
 		if (!fDirectory(s_str(&path))) {
-		    // Walls appears to quietly ignore file is the
+		    // Walls appears to quietly ignore file if the
 		    // directory does not exist, but it seems worth
 		    // warning about at least.
 		    //
