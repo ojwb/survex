@@ -1469,6 +1469,57 @@ walls_reset(void)
     *p_walls_options = walls_options_default;
 }
 
+static real
+read_walls_angle(void)
+{
+    real angle = read_numeric(false);
+    if (isalpha((unsigned char)ch)) {
+	get_token_walls();
+	// It seems Walls only checks the initial letter.
+	// FIXME: This is true for A= - check if it's also the case for
+	// units after a number.
+	if (s_str(&uctoken)[0] == 'D') {
+	    // Degrees.
+	} else if (s_str(&uctoken)[0] == 'G') {
+	    // Grads.
+	    angle *= 180.0 / 200.0;
+	} else if (s_str(&uctoken)[0] == 'M') {
+	    // Mils.
+	    angle *= 180.0 / 3200.0;
+	} else {
+	    compile_diagnostic(DIAG_ERR|DIAG_COL,
+			       /*Expecting “%s”, “%s”, or “%s”*/188,
+			       "D", "G", "M");
+	}
+    } else {
+	// FIXME: We're meant to use the current units for this quantity...
+    }
+    return angle;
+}
+
+static real
+read_walls_distance(void)
+{
+    real distance = read_numeric(false);
+    if (isalpha((unsigned char)ch)) {
+	get_token_walls();
+	// From testing it seems Walls only checks the initial letter - e.g.
+	// "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
+	// but "X" gives an error.
+	if (s_str(&uctoken)[0] == 'M') {
+	    // Metres.
+	} else if (s_str(&uctoken)[0] == 'F') {
+	    // Feet.
+	    distance *= METRES_PER_FOOT;
+	} else {
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+	}
+    } else {
+	// FIXME: We're meant to use the current units for this quantity...
+    }
+    return distance;
+}
+
 static void
 parse_options(void)
 {
@@ -1683,7 +1734,7 @@ parse_options(void)
 		nextch();
 //pcs->declination = HUGE_REAL;
 //	if (pcs->dec_filename == NULL) {
-		pcs->z[Q_DECLINATION] = -read_numeric(false);
+		pcs->z[Q_DECLINATION] = -read_walls_angle();
 		pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
 //	} else {
 //	    (void)read_numeric(false);
@@ -1697,8 +1748,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_BEARING] = -rad(read_numeric(false));
-		// FIXME: Handle angle units
+		pcs->z[Q_BEARING] = -rad(read_walls_angle());
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1708,8 +1758,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
-		// FIXME: Handle angle units
+		pcs->z[Q_BACKBEARING] = -rad(read_walls_angle());
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1719,8 +1768,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_LENGTH] = -read_numeric(false);
-		// FIXME: Handle length units
+		pcs->z[Q_LENGTH] = -read_walls_distance();
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1732,8 +1780,7 @@ parse_options(void)
 		// FIXME: Actually apply this correction.
 		compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
 		nextch();
-		(void)read_numeric(false);
-		// FIXME: Handle length units
+		(void)read_walls_distance();
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1743,8 +1790,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
-		// FIXME: Handle angle units
+		pcs->z[Q_GRADIENT] = -rad(read_walls_angle());
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1754,8 +1800,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
-		// FIXME: Handle angle units
+		pcs->z[Q_BACKGRADIENT] = -rad(read_walls_angle());
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1766,11 +1811,13 @@ parse_options(void)
 	    // parameter and one without!
 	    skipblanks();
 	    if (ch == '=') {
-		// FIXME: This seems to be a bearing to rotate
-		// cartesian data by, which we don't currently support.
-		//compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		// FIXME: A bearing to rotate cartesian data by, which we don't
+		// currently support.  0 means true North (Survex always uses
+		// grid North currently).
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
 		nextch();
-		(void)read_numeric(false);
+		// FIXME: Assuming this allows angle units - test this.
+		(void)read_walls_angle();
 	    } else {
 		pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
 		pcs->ordering = p_walls_options->data_order_rect;
