@@ -382,7 +382,7 @@ articulate(void)
       /* TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
        * cavern will issue this error if there are any sections of the survey
        * network which are hanging. */
-      error(/*Survey not all connected to fixed stations*/45);
+      warning(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
 	 /* Anonymous stations must be at the end of a trailing traverse (since
 	  * the same anonymous station can't be referred to more than once),
@@ -402,10 +402,13 @@ articulate(void)
 		* station. */
 	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	    }
-	    puts(sprint_prefix(stn->name));
+	    printf("%s:%d: %s: ", stn->name->filename, stn->name->line, msg(/*info*/485));
+	    print_prefix(stn->name);
+	    putnl();
 	 }
       }
-      exit(EXIT_FAILURE);
+      //exit(EXIT_FAILURE);
+      stnlist = NULL;
    }
 
    {

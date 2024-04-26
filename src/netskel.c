@@ -785,6 +785,10 @@ replace_trailing_travs(void)
       leg = ptrTrail->join1;
       leg = reverse_leg(leg);
       stn1 = leg->l.to;
+      if (!fixed(stn1)) {
+	  // This happens in a component which wasn't attached to fixed points.
+	  goto skip;
+      }
       i = reverse_leg_dirn(leg);
 #if PRINT_NETBITS
       printf(" Trailing trav ");
@@ -863,6 +867,7 @@ replace_trailing_travs(void)
 	 i = j ^ 1; /* flip direction for other leg of 2 node */
       }
 
+skip:
       ptrOld = ptrTrail;
       ptrTrail = ptrTrail->next;
       osfree(ptrOld);

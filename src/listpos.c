@@ -130,7 +130,7 @@ static int icOrderMac;
 static void
 node_stat(prefix *p)
 {
-   if (p->pos) {
+   if (p->pos && pfx_fixed(p)) {
       int order;
       SVX_ASSERT(pfx_fixed(p));
 
