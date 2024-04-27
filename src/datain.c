@@ -1475,9 +1475,8 @@ read_walls_angle(void)
     real angle = read_numeric(false);
     if (isalpha((unsigned char)ch)) {
 	get_token_walls();
-	// It seems Walls only checks the initial letter.
-	// FIXME: This is true for A= - check if it's also the case for
-	// units after a number.
+	// Only one letter is allowed here.
+	if (s_str(&uctoken)[1] != '\0') goto bad_angle_units;
 	if (s_str(&uctoken)[0] == 'D') {
 	    // Degrees.
 	} else if (s_str(&uctoken)[0] == 'G') {
@@ -1487,6 +1486,7 @@ read_walls_angle(void)
 	    // Mils.
 	    angle *= 180.0 / 3200.0;
 	} else {
+bad_angle_units:
 	    compile_diagnostic(DIAG_ERR|DIAG_COL,
 			       /*Expecting “%s”, “%s”, or “%s”*/188,
 			       "D", "G", "M");
@@ -1503,15 +1503,15 @@ read_walls_distance(void)
     real distance = read_numeric(false);
     if (isalpha((unsigned char)ch)) {
 	get_token_walls();
-	// From testing it seems Walls only checks the initial letter - e.g.
-	// "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
-	// but "X" gives an error.
+	// Only one letter is allowed here.
+	if (s_str(&uctoken)[1] != '\0') goto bad_distance_units;
 	if (s_str(&uctoken)[0] == 'M') {
 	    // Metres.
 	} else if (s_str(&uctoken)[0] == 'F') {
 	    // Feet.
 	    distance *= METRES_PER_FOOT;
 	} else {
+bad_distance_units:
 	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 	}
     } else {
