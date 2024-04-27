@@ -1814,7 +1814,7 @@ parse_options(void)
 		// FIXME: A bearing to rotate cartesian data by, which we don't
 		// currently support.  0 means true North (Survex always uses
 		// grid North currently).
-		compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
 		nextch();
 		// FIXME: Assuming this allows angle units - test this.
 		(void)read_walls_angle();
