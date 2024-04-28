@@ -1470,7 +1470,7 @@ walls_reset(void)
 }
 
 static real
-read_walls_angle(void)
+read_walls_angle(real default_units)
 {
     real angle = read_numeric(false);
     if (isalpha((unsigned char)ch)) {
@@ -1479,12 +1479,13 @@ read_walls_angle(void)
 	if (s_str(&uctoken)[1] != '\0') goto bad_angle_units;
 	if (s_str(&uctoken)[0] == 'D') {
 	    // Degrees.
+	    angle *= M_PI / 180.0;
 	} else if (s_str(&uctoken)[0] == 'G') {
 	    // Grads.
-	    angle *= 180.0 / 200.0;
+	    angle *= M_PI / 200.0;
 	} else if (s_str(&uctoken)[0] == 'M') {
 	    // Mils.
-	    angle *= 180.0 / 3200.0;
+	    angle *= M_PI / 3200.0;
 	} else {
 bad_angle_units:
 	    compile_diagnostic(DIAG_ERR|DIAG_COL,
@@ -1492,13 +1493,13 @@ bad_angle_units:
 			       "D", "G", "M");
 	}
     } else {
-	// FIXME: We're meant to use the current units for this quantity...
+	angle *= default_units;
     }
     return angle;
 }
 
 static real
-read_walls_distance(void)
+read_walls_distance(real default_units)
 {
     real distance = read_numeric(false);
     if (isalpha((unsigned char)ch)) {
@@ -1515,7 +1516,7 @@ bad_distance_units:
 	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 	}
     } else {
-	// FIXME: We're meant to use the current units for this quantity...
+	distance *= default_units;
     }
     return distance;
 }
@@ -1734,8 +1735,7 @@ parse_options(void)
 		nextch();
 //pcs->declination = HUGE_REAL;
 //	if (pcs->dec_filename == NULL) {
-		pcs->z[Q_DECLINATION] = -read_walls_angle();
-		pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+		pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
 //	} else {
 //	    (void)read_numeric(false);
 //	}
@@ -1748,7 +1748,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_BEARING] = -rad(read_walls_angle());
+		pcs->z[Q_BEARING] = -read_walls_angle(pcs->units[Q_BEARING]);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1758,7 +1758,8 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_BACKBEARING] = -rad(read_walls_angle());
+		pcs->z[Q_BACKBEARING] =
+		    -read_walls_angle(pcs->units[Q_BACKBEARING]);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1768,7 +1769,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_LENGTH] = -read_walls_distance();
+		pcs->z[Q_LENGTH] = -read_walls_distance(pcs->units[Q_LENGTH]);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1780,7 +1781,7 @@ parse_options(void)
 		// FIXME: Actually apply this correction.
 		compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
 		nextch();
-		(void)read_walls_distance();
+		(void)read_walls_distance(0.0);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1790,7 +1791,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_GRADIENT] = -rad(read_walls_angle());
+		pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1800,7 +1801,8 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		pcs->z[Q_BACKGRADIENT] = -rad(read_walls_angle());
+		pcs->z[Q_BACKGRADIENT] =
+		    -read_walls_angle(pcs->units[Q_BACKGRADIENT]);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
@@ -1816,8 +1818,7 @@ parse_options(void)
 		// grid North currently).
 		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
 		nextch();
-		// FIXME: Assuming this allows angle units - test this.
-		(void)read_walls_angle();
+		(void)read_walls_angle(M_PI / 180.0);
 	    } else {
 		pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
 		pcs->ordering = p_walls_options->data_order_rect;
