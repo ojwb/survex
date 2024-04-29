@@ -393,8 +393,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 
     skipblanks();
     if (anon_allowed && ch == '-') {
-	// - or -- is an anonymous wall point in a shot, but #Fix they seem to
-	// just be treated as ordinary station names.
+	// - or -- is an anonymous wall point in a shot, but in #Fix they seem
+	// to just be treated as ordinary station names.
 	// FIXME: Issue warning for such a useless station?
 	//
 	// Not yet checked, but you can presumably use - and -- as a prefix
