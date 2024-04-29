@@ -1969,18 +1969,9 @@ data_file_walls_srv(void)
     // SPECIAL_NAMES.  Or should we use the Compass approach and base this
     // on what's actually used?  The first approach would pick the separator
     // from {':', ';', ',', '#', space}; the latter would pick '.' if
-    // the documentation station naming recommendations were followed.
+    // the station naming recommendations in the Walls documentation are
+    // followed.
     update_output_separator();
-
-    /* We need to update separator_map so we don't pick a separator character
-     * which occurs in a station name.  However Compass DAT allows everything
-     * >= ASCII char 33 except 127 in station names so if we just added all
-     * the valid station name characters we'd always pick space as the
-     * separator for any dataset which included a DAT file, yet in practice
-     * '.' is never used in any of the sample DAT files I've seen.  So
-     * instead we scan the characters actually used in station names when we
-     * process CompassDATFr and CompassDATTo fields. (FIXME)
-     */
 
 #ifdef HAVE_SETJMP_H
     /* errors in nested functions can longjmp here */
