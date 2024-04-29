@@ -1434,8 +1434,7 @@ walls_initialise_settings(void)
     t['\n'] |= SPECIAL_EOL;
     t['\r'] |= SPECIAL_EOL;
     t['-'] |= SPECIAL_OMIT;
-    t['-'] |= SPECIAL_ANON;
-    t[':'] |= SPECIAL_SEPARATOR|SPECIAL_ROOT;
+    t[':'] |= SPECIAL_SEPARATOR;
     t['.'] |= SPECIAL_DECIMAL;
     t['-'] |= SPECIAL_MINUS;
     t['+'] |= SPECIAL_PLUS;

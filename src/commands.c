@@ -111,7 +111,6 @@ init_default_translate_map(short * t)
    t['-'] |= SPECIAL_OMIT;
    t['\\'] |= SPECIAL_ROOT;
    t['.'] |= SPECIAL_SEPARATOR;
-   t['.'] |= SPECIAL_ANON;
    t['_'] |= SPECIAL_NAMES;
    t['-'] |= SPECIAL_NAMES; /* Added in 0.97 prerelease 4 */
    t['.'] |= SPECIAL_DECIMAL;
@@ -563,12 +562,7 @@ cmd_set(void)
 #ifndef NO_DEPRECATED
 	{"ROOT",      SPECIAL_ROOT },
 #endif
-	/* For Survex files, the "anon" character is always the same as the
-	 * separator character, but this isn't true for some foreign survey
-	 * data formats (for example, in Walls SRV separator is `:` while
-	 * anon is `-`.
-	 */
-	{"SEPARATOR", SPECIAL_SEPARATOR|SPECIAL_ANON },
+	{"SEPARATOR", SPECIAL_SEPARATOR },
 	{NULL,	      SPECIAL_UNKNOWN }
    };
    int mask;

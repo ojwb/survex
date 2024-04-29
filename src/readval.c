@@ -106,13 +106,13 @@ read_prefix(unsigned pfx_flags)
 #endif
    } else {
       if ((pfx_flags & PFX_ANON) &&
-	  (isAnon(ch) || (pcs->dash_for_anon_wall_station && ch == '-'))) {
+	  (isSep(ch) || (pcs->dash_for_anon_wall_station && ch == '-'))) {
 	 int first_ch = ch;
 	 nextch();
 	 if (isBlank(ch) || isEol(ch)) {
-	    if (!isAnon(first_ch))
+	    if (!isSep(first_ch))
 	       goto anon_wall_station;
-	    /* A single anon alone ('.' by default) is an anonymous
+	    /* A single separator alone ('.' by default) is an anonymous
 	     * station which is on a point inside the passage and implies
 	     * the leg to it is a splay.
 	     */
@@ -124,10 +124,10 @@ read_prefix(unsigned pfx_flags)
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
 	    return new_anon_station();
 	 }
-	 if (isAnon(first_ch) && ch == first_ch) {
+	 if (isSep(first_ch) && ch == first_ch) {
 	    nextch();
 	    if (isBlank(ch) || isEol(ch)) {
-	       /* A double anon ('..' by default) is an anonymous station
+	       /* A double separator ('..' by default) is an anonymous station
 		* which is on the wall and implies the leg to it is a splay.
 		*/
 	       prefix * pfx;
@@ -145,7 +145,7 @@ anon_wall_station:
 	    if (ch == first_ch) {
 	       nextch();
 	       if (isBlank(ch) || isEol(ch)) {
-		  /* A triple anon ('...' by default) is an anonymous
+		  /* A triple separator ('...' by default) is an anonymous
 		   * station, but otherwise not handled specially (e.g. for
 		   * a single leg down an unexplored side passage to a station
 		   * which isn't refindable).
