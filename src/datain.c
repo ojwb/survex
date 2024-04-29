@@ -1203,6 +1203,7 @@ typedef enum {
     WALLS_UNITS_OPT_DECL,
     WALLS_UNITS_OPT_FEET,
     WALLS_UNITS_OPT_FLAG,
+    WALLS_UNITS_OPT_GRID,
     WALLS_UNITS_OPT_INCA,
     WALLS_UNITS_OPT_INCAB,
     WALLS_UNITS_OPT_INCD,
@@ -1246,7 +1247,7 @@ static const sztok walls_units_opt_tab[] = {
     {"F",		WALLS_UNITS_OPT_FEET}, // Abbreviated form.
     {"FEET",		WALLS_UNITS_OPT_FEET},
     {"FLAG",		WALLS_UNITS_OPT_FLAG},
-    // FIXME: GRID=
+    {"GRID",		WALLS_UNITS_OPT_GRID},
     {"INCA",		WALLS_UNITS_OPT_INCA},
     {"INCAB",		WALLS_UNITS_OPT_INCAB},
     {"INCD",		WALLS_UNITS_OPT_INCD},
@@ -1803,9 +1804,18 @@ parse_options(void)
 		pcs->z[Q_BACKGRADIENT] =
 		    -read_walls_angle(pcs->units[Q_BACKGRADIENT]);
 	    } else {
+missing_equals:
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”*/492, "=");
 	    }
+	    break;
+	  case WALLS_UNITS_OPT_GRID:
+	    skipblanks();
+	    if (ch != '=') goto missing_equals;
+	    // FIXME: GRID= not useful with geo-referenced data?
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+	    nextch();
+	    (void)read_walls_angle(M_PI / 180.0);
 	    break;
 	  case WALLS_UNITS_OPT_RECT:
 	    // There are two different RECT options, one with a
