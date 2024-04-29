@@ -1316,8 +1316,8 @@ static const sztok walls_order_tab[] = {
     {NULL,	-1}
 };
 
-// Walls seems to only document `/` but based on real-world use also allows
-// `\`.  FIXME: Check for each situation.
+// In #FLAG Walls seems to only document `/` but based on real-world use also
+// allows `\`.  FIXME: Are there other places that allow `\`?
 static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
 
 // Walls-specific options.  Options which Survex has a direct equivalent of
@@ -2241,8 +2241,8 @@ next_line:
 		compile_diagnostic_pfx(DIAG_INFO, name, /*Previously fixed or equated here*/493);
 	    }
 
-	    if (isWallsSlash(ch)) {
-		// Station note - ignore for now.
+	    if (ch == '/') {
+		// Station note - ignore for now.  Note: Must be '/'.
 		skipline();
 	    }
 	    break;
