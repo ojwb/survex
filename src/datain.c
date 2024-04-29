@@ -1212,7 +1212,6 @@ typedef enum {
     WALLS_UNITS_OPT_INCVB,
     WALLS_UNITS_OPT_LRUD,
     WALLS_UNITS_OPT_METERS,
-    WALLS_UNITS_OPT_NOTE,
     WALLS_UNITS_OPT_ORDER,
     WALLS_UNITS_OPT_PREFIX,
     WALLS_UNITS_OPT_PREFIX2,
@@ -1257,7 +1256,14 @@ static const sztok walls_units_opt_tab[] = {
     {"LRUD",		WALLS_UNITS_OPT_LRUD},
     {"M",		WALLS_UNITS_OPT_METERS}, // Abbreviated form.
     {"METERS",		WALLS_UNITS_OPT_METERS},
-    {"NOTE",		WALLS_UNITS_OPT_NOTE},
+    // The Walls documentation mentions a NOTE option here:
+    //
+    //   Advanced or Seldom Used Parameters  (LRUD=, CASE=, PREFIX=, TAPE=,
+    //   UV=, FLAG=, NOTE=, $name=)
+    //
+    // However the documentation doesn't define it anywhere I can see, and
+    // testing Walls32.exe it does not seem to be implemented either!
+//    {"NOTE",		WALLS_UNITS_OPT_NOTE},
     {"O",		WALLS_UNITS_OPT_ORDER}, // Abbreviated form.
     {"ORDER",		WALLS_UNITS_OPT_ORDER},
     {"P",		WALLS_UNITS_OPT_PREFIX}, // Abbreviated form.
@@ -1535,6 +1541,43 @@ parse_options(void)
 	walls_units_opt opt = match_tok(walls_units_opt_tab,
 					TABSIZE(walls_units_opt_tab));
 	switch (opt) {
+	  case WALLS_UNITS_OPT_D:
+	  case WALLS_UNITS_OPT_A:
+	  case WALLS_UNITS_OPT_AB:
+	  case WALLS_UNITS_OPT_V:
+	  case WALLS_UNITS_OPT_VB:
+	  case WALLS_UNITS_OPT_S:
+	  case WALLS_UNITS_OPT_ORDER:
+	  case WALLS_UNITS_OPT_DECL:
+	  case WALLS_UNITS_OPT_INCA:
+	  case WALLS_UNITS_OPT_INCAB:
+	  case WALLS_UNITS_OPT_INCD:
+	  case WALLS_UNITS_OPT_INCH:
+	  case WALLS_UNITS_OPT_INCV:
+	  case WALLS_UNITS_OPT_INCVB:
+	  case WALLS_UNITS_OPT_GRID:
+	  case WALLS_UNITS_OPT_CASE:
+	  case WALLS_UNITS_OPT_LRUD:
+	  case WALLS_UNITS_OPT_TAPE:
+	  case WALLS_UNITS_OPT_TYPEAB:
+	  case WALLS_UNITS_OPT_TYPEVB:
+	  case WALLS_UNITS_OPT_UV:
+	  case WALLS_UNITS_OPT_UVH:
+	  case WALLS_UNITS_OPT_UVV:
+	    // These options all require an argument, so check for `=` and
+	    // advance past it.
+	    skipblanks();
+	    if (ch != '=') {
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s”*/492, "=");
+		break;
+	    }
+	    nextch();
+	    break;
+	  default:
+	    break;
+	}
+	switch (opt) {
 	  case WALLS_UNITS_OPT_METERS:
 	    pcs->units[Q_LENGTH] =
 		pcs->units[Q_DX] =
@@ -1548,273 +1591,169 @@ parse_options(void)
 		pcs->units[Q_DZ] = METRES_PER_FOOT;
 	    break;
 	  case WALLS_UNITS_OPT_D:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		// From testing it seems Walls only checks the initial letter - e.g.
-		// "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
-		// but "X" gives an error.
-		if (s_str(&uctoken)[0] == 'M') {
-		    pcs->units[Q_LENGTH] = 1.0;
-		} else if (s_str(&uctoken)[0] == 'F') {
-		    pcs->units[Q_LENGTH] = METRES_PER_FOOT;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
-		}
+	    get_token_walls();
+	    // From testing it seems Walls only checks the initial letter - e.g.
+	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
+	    // but "X" gives an error.
+	    if (s_str(&uctoken)[0] == 'M') {
+		pcs->units[Q_LENGTH] = 1.0;
+	    } else if (s_str(&uctoken)[0] == 'F') {
+		pcs->units[Q_LENGTH] = METRES_PER_FOOT;
 	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		// It seems Walls only checks the initial letter.
-		if (s_str(&uctoken)[0] == 'D') {
-		    // Degrees.
-		    pcs->units[Q_BEARING] = M_PI / 180.0;
-		} else if (s_str(&uctoken)[0] == 'G') {
-		    // Grads.
-		    pcs->units[Q_BEARING] = M_PI / 200.0;
-		} else if (s_str(&uctoken)[0] == 'M') {
-		    // Mils.
-		    pcs->units[Q_BEARING] = M_PI / 3200.0;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL,
-				       /*Expecting “%s”, “%s”, or “%s”*/188,
-				       "D", "G", "M");
-		}
+	    get_token_walls();
+	    // It seems Walls only checks the initial letter.
+	    if (s_str(&uctoken)[0] == 'D') {
+		// Degrees.
+		pcs->units[Q_BEARING] = M_PI / 180.0;
+	    } else if (s_str(&uctoken)[0] == 'G') {
+		// Grads.
+		pcs->units[Q_BEARING] = M_PI / 200.0;
+	    } else if (s_str(&uctoken)[0] == 'M') {
+		// Mils.
+		pcs->units[Q_BEARING] = M_PI / 3200.0;
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+				   /*Expecting “%s”, “%s”, or “%s”*/188,
+				   "D", "G", "M");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_AB:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		// It seems Walls only checks the initial letter.
-		if (s_str(&uctoken)[0] == 'D') {
-		    // Degrees.
-		    pcs->units[Q_BACKBEARING] = M_PI / 180.0;
-		} else if (s_str(&uctoken)[0] == 'G') {
-		    // Grads.
-		    pcs->units[Q_BACKBEARING] = M_PI / 200.0;
-		} else if (s_str(&uctoken)[0] == 'M') {
-		    // Mils.
-		    pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL,
-				       /*Expecting “%s”, “%s”, or “%s”*/188,
-				       "D", "G", "M");
-		}
+	    get_token_walls();
+	    // It seems Walls only checks the initial letter.
+	    if (s_str(&uctoken)[0] == 'D') {
+		// Degrees.
+		pcs->units[Q_BACKBEARING] = M_PI / 180.0;
+	    } else if (s_str(&uctoken)[0] == 'G') {
+		// Grads.
+		pcs->units[Q_BACKBEARING] = M_PI / 200.0;
+	    } else if (s_str(&uctoken)[0] == 'M') {
+		// Mils.
+		pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+				   /*Expecting “%s”, “%s”, or “%s”*/188,
+				   "D", "G", "M");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_V:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		pcs->f_clino_percent = false;
-		// It seems Walls only checks the initial letter.
-		if (s_str(&uctoken)[0] == 'D') {
-		    // Degrees.
-		    pcs->units[Q_GRADIENT] = M_PI / 180.0;
-		} else if (s_str(&uctoken)[0] == 'G') {
-		    // Grads.
-		    pcs->units[Q_GRADIENT] = M_PI / 200.0;
-		} else if (s_str(&uctoken)[0] == 'M') {
-		    // Mils.
-		    pcs->units[Q_GRADIENT] = M_PI / 3200.0;
-		} else if (s_str(&uctoken)[0] == 'P') {
-		    pcs->units[Q_GRADIENT] = 0.01;
-		    pcs->f_clino_percent = true;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL,
-				       /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
-				       "D", "G", "M", "P");
-		}
+	    get_token_walls();
+	    pcs->f_clino_percent = false;
+	    // It seems Walls only checks the initial letter.
+	    if (s_str(&uctoken)[0] == 'D') {
+		// Degrees.
+		pcs->units[Q_GRADIENT] = M_PI / 180.0;
+	    } else if (s_str(&uctoken)[0] == 'G') {
+		// Grads.
+		pcs->units[Q_GRADIENT] = M_PI / 200.0;
+	    } else if (s_str(&uctoken)[0] == 'M') {
+		// Mils.
+		pcs->units[Q_GRADIENT] = M_PI / 3200.0;
+	    } else if (s_str(&uctoken)[0] == 'P') {
+		pcs->units[Q_GRADIENT] = 0.01;
+		pcs->f_clino_percent = true;
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+				   "D", "G", "M", "P");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_VB:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		pcs->f_backclino_percent = false;
-		// It seems Walls only checks the initial letter.
-		if (s_str(&uctoken)[0] == 'D') {
-		    // Degrees.
-		    pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
-		} else if (s_str(&uctoken)[0] == 'G') {
-		    // Grads.
-		    pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
-		} else if (s_str(&uctoken)[0] == 'M') {
-		    // Mils.
-		    pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
-		} else if (s_str(&uctoken)[0] == 'P') {
-		    pcs->units[Q_BACKGRADIENT] = 0.01;
-		    pcs->f_backclino_percent = true;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL,
-				       /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
-				       "D", "G", "M", "P");
-		}
+	    get_token_walls();
+	    pcs->f_backclino_percent = false;
+	    // It seems Walls only checks the initial letter.
+	    if (s_str(&uctoken)[0] == 'D') {
+		// Degrees.
+		pcs->units[Q_BACKGRADIENT] = M_PI / 180.0;
+	    } else if (s_str(&uctoken)[0] == 'G') {
+		// Grads.
+		pcs->units[Q_BACKGRADIENT] = M_PI / 200.0;
+	    } else if (s_str(&uctoken)[0] == 'M') {
+		// Mils.
+		pcs->units[Q_BACKGRADIENT] = M_PI / 3200.0;
+	    } else if (s_str(&uctoken)[0] == 'P') {
+		pcs->units[Q_BACKGRADIENT] = 0.01;
+		pcs->f_backclino_percent = true;
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+				   "D", "G", "M", "P");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_S:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		// From testing it seems Walls only checks the initial letter - e.g.
-		// "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
-		// but "X" gives an error.
-		if (s_str(&uctoken)[0] == 'M') {
-		    pcs->units[Q_DX] =
-		    pcs->units[Q_DY] =
-		    pcs->units[Q_DZ] = 1.0;
-		} else if (s_str(&uctoken)[0] == 'F') {
-		    pcs->units[Q_DX] =
-		    pcs->units[Q_DY] =
-		    pcs->units[Q_DZ] = METRES_PER_FOOT;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
-		}
+	    get_token_walls();
+	    // From testing it seems Walls only checks the initial letter - e.g.
+	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
+	    // but "X" gives an error.
+	    if (s_str(&uctoken)[0] == 'M') {
+		pcs->units[Q_DX] =
+		pcs->units[Q_DY] =
+		pcs->units[Q_DZ] = 1.0;
+	    } else if (s_str(&uctoken)[0] == 'F') {
+		pcs->units[Q_DX] =
+		pcs->units[Q_DY] =
+		pcs->units[Q_DZ] = METRES_PER_FOOT;
 	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_ORDER:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		int order = match_tok(walls_order_tab,
-				      TABSIZE(walls_order_tab));
-		if (order < 0) {
-		    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
-		    break;
-		}
-		reading* p;
-		if (order & (1 << 24)) {
-		    order &= ((1 << 24) - 1);
-		    // "RECT" order.
-		    p = p_walls_options->data_order_rect + 2;
-		} else {
-		    // "CT" order.
-		    p = p_walls_options->data_order_ct + 2;
-		}
-		while (order) {
-		    *p++ = (order & 0xff);
-		    order >>= 8;
-		}
-		*p = IgnoreAll;
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+	    get_token_walls();
+	    int order = match_tok(walls_order_tab,
+				  TABSIZE(walls_order_tab));
+	    if (order < 0) {
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
+		break;
 	    }
+	    reading* p;
+	    if (order & (1 << 24)) {
+		order &= ((1 << 24) - 1);
+		// "RECT" order.
+		p = p_walls_options->data_order_rect + 2;
+	    } else {
+		// "CT" order.
+		p = p_walls_options->data_order_ct + 2;
+	    }
+	    while (order) {
+		*p++ = (order & 0xff);
+		order >>= 8;
+	    }
+	    *p = IgnoreAll;
 	    break;
 	  case WALLS_UNITS_OPT_DECL:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
 //pcs->declination = HUGE_REAL;
 //	if (pcs->dec_filename == NULL) {
-		pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
+	    pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
 //	} else {
 //	    (void)read_numeric(false);
 //	}
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCA:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		pcs->z[Q_BEARING] = -read_walls_angle(pcs->units[Q_BEARING]);
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    pcs->z[Q_BEARING] = -read_walls_angle(pcs->units[Q_BEARING]);
 	    break;
 	  case WALLS_UNITS_OPT_INCAB:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		pcs->z[Q_BACKBEARING] =
-		    -read_walls_angle(pcs->units[Q_BACKBEARING]);
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    pcs->z[Q_BACKBEARING] = -read_walls_angle(pcs->units[Q_BACKBEARING]);
 	    break;
 	  case WALLS_UNITS_OPT_INCD:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		pcs->z[Q_LENGTH] = -read_walls_distance(pcs->units[Q_LENGTH]);
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    pcs->z[Q_LENGTH] = -read_walls_distance(pcs->units[Q_LENGTH]);
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
-	    skipblanks();
-	    if (ch == '=') {
-		// FIXME: Actually apply this correction.
-		compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-		nextch();
-		(void)read_walls_distance(0.0);
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    // FIXME: Actually apply this correction.
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	    (void)read_walls_distance(0.0);
 	    break;
 	  case WALLS_UNITS_OPT_INCV:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);
 	    break;
 	  case WALLS_UNITS_OPT_INCVB:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		pcs->z[Q_BACKGRADIENT] =
-		    -read_walls_angle(pcs->units[Q_BACKGRADIENT]);
-	    } else {
-missing_equals:
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    pcs->z[Q_BACKGRADIENT] = -read_walls_angle(pcs->units[Q_BACKGRADIENT]);
 	    break;
 	  case WALLS_UNITS_OPT_GRID:
-	    skipblanks();
-	    if (ch != '=') goto missing_equals;
 	    // FIXME: GRID= not useful with geo-referenced data?
 	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
-	    nextch();
 	    (void)read_walls_angle(M_PI / 180.0);
 	    break;
 	  case WALLS_UNITS_OPT_RECT:
@@ -1834,29 +1773,22 @@ missing_equals:
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CASE:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		switch (s_str(&uctoken)[0]) {
-		  case 'L':
-		    pcs->Case = LOWER;
-		    break;
-		  case 'U':
-		    pcs->Case = UPPER;
-		    break;
-		  case 'M':
-		    pcs->Case = OFF;
-		    break;
-		  default:
-		    compile_diagnostic(DIAG_ERR|DIAG_COL,
-				       /*Expecting “%s”, “%s”, or “%s”*/188,
-				       "L", "M", "U");
-		    break;
-		}
-	    } else {
+	    get_token_walls();
+	    switch (s_str(&uctoken)[0]) {
+	      case 'L':
+		pcs->Case = LOWER;
+		break;
+	      case 'U':
+		pcs->Case = UPPER;
+		break;
+	      case 'M':
+		pcs->Case = OFF;
+		break;
+	      default:
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
+				   /*Expecting “%s”, “%s”, or “%s”*/188,
+				   "L", "M", "U");
+		break;
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CT:
@@ -1878,92 +1810,64 @@ missing_equals:
 	    p_walls_options->prefix[i] = new_prefix;
 	    break;
 	  }
-	  case WALLS_UNITS_OPT_LRUD:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		// Value is F, T, FB, TB or one of those followed
-		// by eg. :UDRL (no spaces around :).  Default is
-		// F:LRUD.
-		//
-		// We currently ignore LRUD, so can also ignore the
-		// settings for it.
-		string val = S_INIT;
-		read_string(&val);
-		s_free(&val);
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	  case WALLS_UNITS_OPT_LRUD: {
+	    // Value is F, T, FB, TB or one of those followed by eg. :UDRL (no
+	    // spaces around :).  Default is F:LRUD.
+	    //
+	    // We currently ignore LRUD, so can also ignore the settings for
+	    // it.
+	    string val = S_INIT;
+	    read_string(&val);
+	    s_free(&val);
 	    break;
+	  }
 	  case WALLS_UNITS_OPT_TAPE:
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		get_token_walls();
-		/* FIXME: Implement different taping methods? */
-		/* IT, SS, IS, ST (default is IT). */
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
-	    }
+	    get_token_walls();
+	    /* FIXME: Implement different taping methods? */
+	    /* IT, SS, IS, ST (default is IT). */
 	    break;
 	  case WALLS_UNITS_OPT_TYPEAB:
-	    skipblanks();
-	    if (ch == '=') {
+	    get_token_walls();
+	    if (s_str(&uctoken)[0] == 'N') {
+		pcs->z[Q_BACKBEARING] = 0.0;
+	    } else if (s_str(&uctoken)[0] == 'C') {
+		pcs->z[Q_BACKBEARING] = M_PI;
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
+	    }
+	    if (ch == ',') {
 		nextch();
-		get_token_walls();
-		if (s_str(&uctoken)[0] == 'N') {
-		    pcs->z[Q_BACKBEARING] = 0.0;
-		} else if (s_str(&uctoken)[0] == 'C') {
-		    pcs->z[Q_BACKBEARING] = M_PI;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
-		}
+		// FIXME: Use threshold value.
+		(void)read_numeric(false);
 		if (ch == ',') {
 		    nextch();
-		    // FIXME: Use threshold value.
-		    (void)read_numeric(false);
-		    if (ch == ',') {
+		    if (toupper(ch) == 'X') {
 			nextch();
-			if (toupper(ch) == 'X') {
-			    nextch();
-			    // FIXME: Only use foresight (but check backsight).
-			}
+			// FIXME: Only use foresight (but check backsight).
 		    }
 		}
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_TYPEVB:
-	    skipblanks();
-	    if (ch == '=') {
+	    get_token_walls();
+	    if (s_str(&uctoken)[0] == 'N') {
+		pcs->sc[Q_BACKGRADIENT] = 1.0;
+	    } else if (s_str(&uctoken)[0] == 'C') {
+		pcs->sc[Q_BACKGRADIENT] = -1.0;
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
+	    }
+	    if (ch == ',') {
 		nextch();
-		get_token_walls();
-		if (s_str(&uctoken)[0] == 'N') {
-		    pcs->sc[Q_BACKGRADIENT] = 1.0;
-		} else if (s_str(&uctoken)[0] == 'C') {
-		    pcs->sc[Q_BACKGRADIENT] = -1.0;
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
-		}
+		// FIXME: Use threshold value.
+		(void)read_numeric(false);
 		if (ch == ',') {
 		    nextch();
-		    // FIXME: Use threshold value.
-		    (void)read_numeric(false);
-		    if (ch == ',') {
+		    if (toupper(ch) == 'X') {
 			nextch();
-			if (toupper(ch) == 'X') {
-			    nextch();
-			    // FIXME: Only use foresight (but check backsight).
-			}
+			// FIXME: Only use foresight (but check backsight).
 		    }
 		}
-	    } else {
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”*/492, "=");
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_UV:
@@ -1971,16 +1875,9 @@ missing_equals:
 	  case WALLS_UNITS_OPT_UVV:
 	    // Scale factors for variances (with horizontal-only and
 	    // vertical-only variants).  FIXME: Actually apply these!
-	    skipblanks();
-	    if (ch == '=') {
-		nextch();
-		(void)read_numeric(false);
-	    } else {
-		// FIXME: Anything to do?
-	    }
+	    (void)read_numeric(false);
 	    break;
 	  case WALLS_UNITS_OPT_FLAG:
-	  case WALLS_UNITS_OPT_NOTE:
 	    // Currently ignored.
 	    // FIXME: FLAG= ought to get mapped like #FLAG.
 	    skipblanks();
@@ -1991,7 +1888,6 @@ missing_equals:
 		s_free(&val);
 	    } else {
 		// FIXME: FLAG alone clears the default flag name.
-		// FIXME: Anything to do for NOTE?  Error?
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_RESET:
