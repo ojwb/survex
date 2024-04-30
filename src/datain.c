@@ -39,6 +39,11 @@
 #include "out.h"
 #include "str.h"
 #include "thgeomag.h"
+
+#include <proj.h>
+#if PROJ_VERSION_MAJOR < 8
+# define proj_context_errno_string(CTX, ERR) proj_errno_string(ERR)
+#endif
 #if PROJ_VERSION_MAJOR < 8 || \
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
 /* Needed for proj_factors workaround */
