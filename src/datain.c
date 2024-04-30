@@ -4123,6 +4123,24 @@ inches_only:
 		      // Walls documents two or more `-` for an omitted
 		      // reading, but actually just one works too!
 		      while (nextch() == '-') { }
+		  } else {
+		      switch (ch) {
+			case 'D': case 'd':
+			  // Degrees.
+			  VAL(Comp) *= M_PI / 180.0 / pcs->units[Q_BEARING];
+			  nextch();
+			  break;
+			case 'G': case 'g':
+			  // Grads.
+			  VAL(Comp) *= M_PI / 200.0 / pcs->units[Q_BEARING];
+			  nextch();
+			  break;
+			case 'M': case 'm':
+			  // Mils.
+			  VAL(Comp) *= M_PI / 3200.0 / pcs->units[Q_BEARING];
+			  nextch();
+			  break;
+		      }
 		  }
 	      }
 	      WID(Comp) = ftell(file.fh) - LOC(Comp);
@@ -4148,6 +4166,24 @@ inches_only:
 		      // Walls documents two or more `-` for an omitted
 		      // reading, but actually just one works too!
 		      while (nextch() == '-') { }
+		  } else {
+		      switch (ch) {
+			case 'D': case 'd':
+			  // Degrees.
+			  VAL(BackComp) *= M_PI / 180.0 / pcs->units[Q_BACKBEARING];
+			  nextch();
+			  break;
+			case 'G': case 'g':
+			  // Grads.
+			  VAL(BackComp) *= M_PI / 200.0 / pcs->units[Q_BACKBEARING];
+			  nextch();
+			  break;
+			case 'M': case 'm':
+			  // Mils.
+			  VAL(BackComp) *= M_PI / 3200.0 / pcs->units[Q_BACKBEARING];
+			  nextch();
+			  break;
+		      }
 		  }
 	      }
 	      WID(BackComp) = ftell(file.fh) - LOC(BackComp);
