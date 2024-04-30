@@ -2234,7 +2234,10 @@ next_line:
 		if (coords[0] != POS(stn, 0) ||
 		    coords[1] != POS(stn, 1) ||
 		    coords[2] != POS(stn, 2)) {
-		    compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
+		    // The equivalent of this is an error for .svx files, but
+		    // Walls explicitly documents that a repeated exact fix
+		    // warns and uses the coordinates of the first fix.
+		    compile_diagnostic(DIAG_WARN, /*Station already fixed or equated to a fixed point*/46);
 		} else {
 		    compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
 		}
