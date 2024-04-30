@@ -483,6 +483,12 @@ img_datum img_parse_compass_datum_string(const char *s, size_t len);
  */
 char *img_compass_utm_proj_str(img_datum datum, int utm_zone);
 
+/* Return EPSG code for geodetic CRS (i.e. long/lat) with datum img_datum.
+ *
+ * Returns -1 for img_DATUM_UNKNOWN.
+ */
+int img_compass_longlat_epsg_code(img_datum datum);
+
 #ifdef __cplusplus
 }
 #endif

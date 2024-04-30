@@ -1076,6 +1076,13 @@ update_proj_str:
     s_free(&path);
 }
 
+// The current Walls reference point and CRS details.
+static struct {
+    real x, y, z;
+    int zone;
+    int img_datum_code;
+} walls_ref = { 0.0, 0.0, 0.0, 0, 0 };
+
 // We don't expect a huge number of macros, and this doesn't limit how many we
 // can handle, only at what point access time stops being O(1).
 #define WALLS_MACRO_HASH_SIZE 0x100
@@ -2210,13 +2217,54 @@ next_line:
 		}
 	    }
 
-	    // FIXME: Convert coordinates based on the current coordinate system
-	    // set by .REF in the wpj.
 	    if (format == LATLONG) {
-		// FIXME: Temporary hack, just scale degrees to give
-		// approximate metres.
-		coords[0] *= 55649.7 * cos(rad(coords[1]));
-		coords[1] *= 55473.1;
+		// Convert coordinates based on the current coordinate system
+		// set by .REF in the wpj.
+		if (walls_ref.img_datum_code && proj_str_out) {
+		    int epsg_code =
+			img_compass_longlat_epsg_code(walls_ref.img_datum_code);
+		    char proj_longlat[32];
+		    snprintf(proj_longlat, sizeof(proj_longlat),
+			     "EPSG:%d", epsg_code);
+		    PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+							   proj_longlat,
+							   proj_str_out,
+							   NULL);
+		    if (transform) {
+			/* Normalise the output order so x is longitude and y
+			 * latitude - by default new PROJ has them switched for
+			 * EPSG:4326 which just seems confusing.
+			 */
+			PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+								       transform);
+			proj_destroy(transform);
+			transform = pj_norm;
+		    }
+
+		    if (proj_angular_input(transform, PJ_FWD)) {
+			/* Input coordinate system expects radians. */
+			coords[0] = rad(coords[0]);
+			coords[1] = rad(coords[1]);
+		    }
+
+		    PJ_COORD coord = {{coords[0], coords[1], coords[2], HUGE_VAL}};
+		    coord = proj_trans(transform, PJ_FWD, coord);
+		    coords[0] = coord.xyzt.x;
+		    coords[1] = coord.xyzt.y;
+		    coords[2] = coord.xyzt.z;
+
+		    if (coords[0] == HUGE_VAL || coords[1] == HUGE_VAL || coords[2] == HUGE_VAL) {
+			compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
+					   proj_context_errno_string(PJ_DEFAULT_CTX,
+								     proj_errno(transform)));
+			/* Set dummy values which are finite. */
+			coords[0] = coords[1] = coords[2] = 0;
+		    }
+		    proj_destroy(transform);
+		} else {
+		    // FIXME: Wrong error message really!
+		    compile_diagnostic(DIAG_ERR, /*The input projection is set but the output projection isn't*/437);
+		}
 	    }
 
 	    name->sflags |= BIT(SFLAGS_FIXED);
@@ -2448,11 +2496,6 @@ static const sztok walls_wpj_cmd_tab[] = {
     {"SURVEY",	WALLS_WPJ_CMD_SURVEY},
     {NULL,	WALLS_WPJ_CMD_NULL}
 };
-
-static struct {
-    real x, y, z;
-    int zone;
-} walls_ref;
 
 static void
 data_file_walls_wpj(void)
@@ -2739,6 +2782,8 @@ detached_or_not_srv:
 	  case WALLS_WPJ_CMD_REF:
 	    walls_ref.y = read_numeric(false);
 	    walls_ref.x = read_numeric(false);
+	    // FIXME: Walls supports UPS zones and uses -61 and 61 to specify
+	    // them.
 	    walls_ref.zone = read_int(-60, 60);
 
 	    // Ignore pre-computed convergence as we compute that for ourselves.
@@ -2808,6 +2853,8 @@ detached_or_not_srv:
 		    osfree(proj_str);
 		}
 	    }
+
+	    walls_ref.img_datum_code = datum;
 	    break;
 	  case WALLS_WPJ_CMD_STATUS:
 	    status = read_uint();

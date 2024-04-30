@@ -3671,3 +3671,39 @@ img_compass_utm_proj_str(img_datum datum, int utm_zone)
 
     return NULL;
 }
+
+int
+img_compass_longlat_epsg_code(img_datum datum)
+{
+    switch (datum) {
+      case img_DATUM_UNKNOWN:
+	break;
+      case img_DATUM_ADINDAN:
+	return 4201;
+      case img_DATUM_ARC1950:
+	return 4209;
+      case img_DATUM_ARC1960:
+	return 4210;
+      case img_DATUM_CAPE:
+	return 4222;
+      case img_DATUM_EUROPEAN1950:
+	return 4230;
+      case img_DATUM_NZGD49:
+	return 4272;
+      case img_DATUM_HUTZUSHAN1950:
+	return 4236;
+      case img_DATUM_INDIAN1960:
+	return 4131;
+      case img_DATUM_NAD27:
+	return 4267;
+      case img_DATUM_NAD83:
+	return 4269;
+      case img_DATUM_TOKYO:
+	return 4301;
+      case img_DATUM_WGS72:
+	return 4322;
+      case img_DATUM_WGS84:
+	return 4326;
+    }
+    return -1;
+}
