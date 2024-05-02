@@ -395,16 +395,19 @@ articulate(void)
 	  * and then report a station name from there.
 	  */
 	 /* SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON)); */
-	 if (stn->name->ident) {
-	    if (!fNotAttached) {
-	       fNotAttached = true;
-	       /* TRANSLATORS: Here "station" is a survey station, not a train
-		* station. */
-	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
+	 if (!TSTBIT(stn->name->sflags, SFLAGS_HANGING)) {
+	    stn->name->sflags |= BIT(SFLAGS_HANGING);
+	    if (stn->name->ident) {
+	       if (!fNotAttached) {
+		  fNotAttached = true;
+		  /* TRANSLATORS: Here "station" is a survey station, not a train
+		   * station. */
+		  puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
+	       }
+	       printf("%s:%d: %s: ", stn->name->filename, stn->name->line, msg(/*info*/485));
+	       print_prefix(stn->name);
+	       putnl();
 	    }
-	    printf("%s:%d: %s: ", stn->name->filename, stn->name->line, msg(/*info*/485));
-	    print_prefix(stn->name);
-	    putnl();
 	 }
       }
       //exit(EXIT_FAILURE);
