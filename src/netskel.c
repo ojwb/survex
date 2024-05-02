@@ -549,7 +549,10 @@ replace_travs(void)
       printf("<%p>[%d]\n", stn2, j);
 #endif
 
-      SVX_ASSERT(fixed(stn1));
+      if (!fixed(stn1)) {
+	  SVX_ASSERT(!fixed(stn2));
+	  goto skip_hanging_traverse;
+      }
       SVX_ASSERT(fixed(stn2));
 
       /* calculate scaling factors for error distribution */
@@ -724,6 +727,7 @@ replace_travs(void)
 	 err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
 		  hTot, hTotTheo, vTot, vTotTheo);
 
+skip_hanging_traverse:
       ptrOld = ptr;
       ptr = ptr->next;
       osfree(ptrOld);
