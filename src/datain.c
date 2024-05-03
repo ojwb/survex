@@ -2424,10 +2424,15 @@ next_line:
 	    }
 	    break;
 	  }
-	  case WALLS_CMD_NOTE:
-	    // A text note attached to a station - ignore for now.
+	  case WALLS_CMD_NOTE: {
+	    // A text note attached to a station - ignore for now except we
+	    // read the station name and flag it to avoid an "unused fixed
+	    // point" warning.
+	    prefix *name = read_walls_station(p_walls_options->prefix, false);
+	    name->sflags |= BIT(SFLAGS_USED);
 	    skipline();
 	    break;
+	  }
 	  case WALLS_CMD_SEGMENT:
 	    // "Segments are optional and have no affect on the compilation of
 	    // survey data" so ignore for now.
