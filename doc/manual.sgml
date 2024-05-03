@@ -2460,11 +2460,13 @@ stations.
 
 <Para>
 By default cavern will warn about stations which have been FIX-ed but
-not used otherwise, as this might be due to a typo in the station
-name.  This is unhelpful if you want to include a standard file of benchmarks,
-some of which won't be used.  In this sort of situation, specify "REFERENCE"
-after the station name in the FIX command to suppress this warning for a
-particular station.
+are not used otherwise, as this might be due to a typo in the station
+name.  Uses in survey data and (since 1.4.9) <command>*entrance</command>
+count for these purposes. This warning is unhelpful if you want to include a
+standard file of benchmarks, some of which won't be used. In this sort of
+situation, specify "REFERENCE" after the station name in the FIX command to
+suppress this warning for a particular station.  It's OK to use "REFERENCE"
+on a station which is used.
 </Para>
 
 <Note><Para>

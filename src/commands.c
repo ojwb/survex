@@ -992,7 +992,7 @@ static void
 cmd_entrance(void)
 {
    prefix *pfx = read_prefix(PFX_STATION);
-   pfx->sflags |= BIT(SFLAGS_ENTRANCE);
+   pfx->sflags |= BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_USED);
 }
 
 static const prefix * first_fix_name = NULL;
