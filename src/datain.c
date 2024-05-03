@@ -2339,7 +2339,8 @@ next_line:
 		    nextch();
 		}
 		nextch();
-		int station_flags = 0;
+		// Suppress "unused fixed point" warnings for stations in #flag.
+		int station_flags = BIT(SFLAGS_USED);
 		bool printed = false;
 		while (1) {
 		    skipblanks();
@@ -2383,26 +2384,25 @@ next_line:
 		    }
 		}
 		if (printed) printf("\n");
-		if (station_flags) {
-		    // Go back and read stations and apply the flags.
-		    filepos fp_end;
-		    get_pos(&fp_end);
-		    set_pos(&fp);
-		    // It seems / and \ can't be used in #flag station names?
-		    // FIXME: Need to actually test this with Walls.
-		    int save_translate_slash = pcs->Translate['/'];
-		    int save_translate_bslash = pcs->Translate['\\'];
-		    pcs->Translate['/'] = 0;
-		    pcs->Translate['\\'] = 0;
-		    while (!isWallsSlash(ch)) {
-			prefix *name = read_walls_station(p_walls_options->prefix, false);
-			name->sflags |= station_flags;
-			skipblanks();
-		    }
-		    pcs->Translate['/'] = save_translate_slash;
-		    pcs->Translate['\\'] = save_translate_bslash;
-		    set_pos(&fp_end);
+
+		// Go back and read stations and apply the flags.
+		filepos fp_end;
+		get_pos(&fp_end);
+		set_pos(&fp);
+		// It seems / and \ can't be used in #flag station names?
+		// FIXME: Need to actually test this with Walls.
+		int save_translate_slash = pcs->Translate['/'];
+		int save_translate_bslash = pcs->Translate['\\'];
+		pcs->Translate['/'] = 0;
+		pcs->Translate['\\'] = 0;
+		while (!isWallsSlash(ch)) {
+		    prefix *name = read_walls_station(p_walls_options->prefix, false);
+		    name->sflags |= station_flags;
+		    skipblanks();
 		}
+		pcs->Translate['/'] = save_translate_slash;
+		pcs->Translate['\\'] = save_translate_bslash;
+		set_pos(&fp_end);
 	    }
 	    break;
 	  }
