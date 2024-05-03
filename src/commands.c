@@ -1356,11 +1356,8 @@ cmd_export(void)
    fExportUsed = true;
    do {
       int depth = 0;
-      pfx = read_prefix(PFX_STATION|PFX_NEW);
-      if (pfx == NULL) {
-	 /* The argument was an existing station. */
-	 /* FIXME */
-      } else {
+      pfx = read_prefix(PFX_STATION);
+      {
 	 prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
 	    depth++;
