@@ -1006,7 +1006,7 @@ static void
 cmd_entrance(void)
 {
    prefix *pfx = read_prefix(PFX_STATION);
-   pfx->sflags |= BIT(SFLAGS_ENTRANCE);
+   pfx->sflags |= BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_USED);
 }
 
 static const prefix * first_fix_name = NULL;
@@ -1374,11 +1374,8 @@ cmd_export(void)
    fExportUsed = true;
    do {
       int depth = 0;
-      pfx = read_prefix(PFX_STATION|PFX_NEW);
-      if (pfx == NULL) {
-	 /* The argument was an existing station. */
-	 /* FIXME */
-      } else {
+      pfx = read_prefix(PFX_STATION);
+      {
 	 prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
 	    depth++;
