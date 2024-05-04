@@ -20,7 +20,7 @@
 extern int root_depr_count;
 
 enum {
-    /* Can the prefix be omitted? */
+    /* Can the prefix be omitted?  If it is, read_prefix() returns NULL. */
     PFX_OPT = 1,
     /* Read a survey? */
     PFX_SURVEY = 2,
@@ -32,8 +32,6 @@ enum {
     PFX_WARN_SEPARATOR = 16,
     /* Anonymous stations OK? */
     PFX_ANON = 32,
-    /* */
-    PFX_NEW = 64,
     /* Read a station? */
     PFX_STATION = 0
 };
