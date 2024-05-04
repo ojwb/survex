@@ -180,7 +180,7 @@ show_line(int col, int width)
    fputnl(STDERR);
 
    /* If we have a location in the line for the error, indicate it. */
-   if (col) {
+   if (col > 0) {
       PUTC(' ', STDERR);
       if (tabs == 0) {
 	 while (--col) PUTC(' ', STDERR);
