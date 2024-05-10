@@ -581,7 +581,6 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		ptr = nl + 1;
 		continue;
 	    }
-	    line_info.emplace_back(ptr);
 	    size_t line_len = nl - ptr - (log_txt[nl - 1] == '\r');
 	    // FIXME: Avoid copy, use string_view?
 	    string cur(log_txt, ptr, line_len);
@@ -597,14 +596,17 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 			if (tilde == wxString::npos || tilde < caret) {
 			    tilde = caret;
 			}
+			line_info.back().colour = line_info[line_info.size() - 2].colour;
 			line_info.back().colour_start = caret;
 			line_info.back().colour_len = tilde - caret + 1;
 			expecting_caret_line = false;
+			ptr = nl + 1;
 			continue;
 		    }
 		}
 		expecting_caret_line = true;
 	    }
+	    line_info.emplace_back(ptr);
 	    line_info.back().len = line_len;
 #ifndef __WXMSW__
 	    size_t colon = cur.find(':');
@@ -668,19 +670,19 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	    SetScrollRate(fsize, fsize);
 	    int width = 144; // FIXME
 	    int height = line_info.size();
-	    SetVirtualSize(width, height);
+	    SetVirtualSize(width, height * fsize);
 	    if (!link_count) {
 		// Auto-scroll until the first diagnostic.
 		int scroll_x = 0, scroll_y = 0;
 		GetViewStart(&scroll_x, &scroll_y);
 		int xs, ys;
 		GetClientSize(&xs, &ys);
-		Scroll(scroll_x, line_info.size() - ys / fsize);
+		Scroll(scroll_x, line_info.size() - ys);
 	    }
 	    ptr = nl + 1;
 	}
 
-	Refresh(); // FIXME: ?
+	Update(); // FIXME: ?
 	return;
     }
 
