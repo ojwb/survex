@@ -26,6 +26,7 @@
 #include <wx/process.h>
 
 #include <string>
+#include <vector>
 
 // We probably want to use a thread if we can - that way we can use a blocking
 // read from cavern rather than busy-waiting via idle events.
@@ -38,7 +39,7 @@ class CavernThread;
 #endif
 class MainFrm;
 
-class CavernLogWindow : public wxHtmlWindow {
+class CavernLogWindow : public wxScrolledWindow {
 #ifdef CAVERNLOG_USE_THREADS
     friend class CavernThread;
 #endif
@@ -48,9 +49,8 @@ class CavernLogWindow : public wxHtmlWindow {
     MainFrm * mainfrm;
 
     wxProcess * cavern_out = nullptr;
-    wxString cur;
-    wxString source_line;
-    const wxChar * highlight = nullptr;
+    size_t ptr = 0;
+    bool expecting_caret_line = false;
     int info_count = 0;
     int link_count = 0;
     unsigned char buf[1024];
@@ -69,6 +69,25 @@ class CavernLogWindow : public wxHtmlWindow {
 
     wxCriticalSection thread_lock;
 #endif
+
+    enum { LOG_NONE, LOG_ERROR, LOG_WARNING, LOG_INFO };
+
+    class LineInfo {
+      public:
+	unsigned start_offset = 0;
+	unsigned len = 0;
+	unsigned link_len = 0;
+	unsigned colour = LOG_NONE;
+	unsigned colour_start = 0;
+	unsigned colour_len = 0;
+
+	LineInfo() { }
+
+	explicit LineInfo(unsigned start_offset_)
+	    : start_offset(start_offset_) { }
+    };
+
+    std::vector<LineInfo> line_info;
 
   public:
     CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent);
@@ -94,7 +113,12 @@ class CavernLogWindow : public wxHtmlWindow {
     void OnIdle(wxIdleEvent &);
 #endif
 
+    void OnPaint(wxPaintEvent &);
+
     void OnEndProcess(wxProcessEvent & e);
+
+    // FIXME: temp hack
+    void AppendToPage(const wxString&) { }
 
     DECLARE_EVENT_TABLE()
 };

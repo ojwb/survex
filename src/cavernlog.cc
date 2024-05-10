@@ -158,10 +158,74 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
     }
 
     event.RequestMore();
-}
+
 #endif
 
-BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
+void
+CavernLogWindow::OnPaint(wxPaintEvent & e)
+{
+    wxPaintDC dc(this);
+    wxFont font = dc.GetFont();
+    wxFont bold_font = font.Bold();
+    wxFont underlined_font = font.Underlined();
+    const wxRegion& region = GetUpdateRegion();
+    const wxRect& rect = region.GetBox();
+    int scroll_x = 0, scroll_y = 0;
+    GetViewStart(&scroll_x, &scroll_y);
+    int fsize = dc.GetFont().GetPixelSize().GetHeight();
+    int limit = min((rect.y + rect.height + fsize - 1) / fsize + scroll_y, int(line_info.size()) - 1);
+    for (int i = max(rect.y / fsize, scroll_y); i <= limit ; ++i) {
+	const LineInfo& info = line_info[i];
+	// Leave a small margin to the left.
+	int x = fsize / 2 - scroll_x * fsize;
+	int y = (i - scroll_y) * fsize;
+	unsigned offset = info.start_offset;
+	unsigned len = info.len;
+	if (info.link_len) {
+	    dc.SetFont(underlined_font);
+	    dc.SetTextForeground(wxColour(255, 0, 255));
+	    std::string link(log_txt, offset, info.link_len);
+	    offset += info.link_len;
+	    len -= info.link_len;
+	    dc.DrawText(link, x, y);
+	    x += dc.GetTextExtent(link).GetWidth();
+	    dc.SetFont(font);
+	}
+	if (info.colour_len) {
+	    dc.SetTextForeground(*wxBLACK);
+	    {
+		size_t s_len = info.start_offset + info.colour_start - offset;
+		std::string s(log_txt, offset, s_len);
+		offset += s_len;
+		len -= s_len;
+		dc.DrawText(s, x, y);
+		x += dc.GetTextExtent(s).GetWidth();
+	    }
+	    switch (info.colour) {
+		case LOG_ERROR:
+		    dc.SetTextForeground(*wxRED);
+		    break;
+		case LOG_WARNING:
+		    dc.SetTextForeground(wxColour(0xf2, 0x8C, 0x28));
+		    break;
+		case LOG_INFO:
+		    dc.SetTextForeground(*wxBLUE);
+		    break;
+	    }
+	    dc.SetFont(bold_font);
+	    std::string d(log_txt, offset, info.colour_len);
+	    offset += info.colour_len;
+	    len -= info.colour_len;
+	    dc.DrawText(d, x, y);
+	    x += dc.GetTextExtent(d).GetWidth();
+	    dc.SetFont(font);
+	}
+	dc.SetTextForeground(*wxBLACK);
+	dc.DrawText(log_txt.substr(offset, len), x, y);
+    }
+}
+
+BEGIN_EVENT_TABLE(CavernLogWindow, wxScrolledWindow)
     EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
     EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
@@ -171,6 +235,7 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxHtmlWindow)
 #else
     EVT_IDLE(CavernLogWindow::OnIdle)
 #endif
+    EVT_PAINT(CavernLogWindow::OnPaint)
     EVT_END_PROCESS(wxID_ANY, CavernLogWindow::OnEndProcess)
 END_EVENT_TABLE()
 
@@ -258,13 +323,15 @@ wxString get_command_path(const wxChar * command_name)
 }
 
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
-    : wxHtmlWindow(parent),
+    : wxScrolledWindow(parent),
       mainfrm(mainfrm_),
       end(buf), survey(survey_)
 {
+#if 0 // FIXME
     int fsize = parent->GetFont().GetPointSize();
     int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
     SetFonts(wxString(), wxString(), sizes);
+#endif
 }
 
 CavernLogWindow::~CavernLogWindow()
@@ -434,7 +501,7 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 void
 CavernLogWindow::process(const wxString &file)
 {
-    SetPage(wxString());
+    // FIXME: Reset saved log
 #ifdef CAVERNLOG_USE_THREADS
     if (thread) stop_thread();
 #endif
@@ -450,8 +517,12 @@ CavernLogWindow::process(const wxString &file)
 
     info_count = 0;
     link_count = 0;
-    cur.resize(0);
     log_txt.resize(0);
+    line_info.resize(0);
+    // Reserve enough that we won't need to grow the allocations in normal cases.
+    log_txt.reserve(16384);
+    line_info.reserve(256);
+    ptr = 0;
 
 #ifdef __WXMSW__
     SetEnvironmentVariable(wxT("SURVEX_UTF8"), wxT("1"));
@@ -499,273 +570,118 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
     if (e.len > 0) {
 	ssize_t n = e.len;
 	if (size_t(n) > sizeof(buf) - (end - buf)) abort();
-	memcpy(end, e.buf, n);
-	log_txt.append((const char *)end, n);
-	end += n;
+	log_txt.append((const char *)e.buf, n);
 
-	const unsigned char * p = buf;
+	// ptr gives the start of the first line we've not yet processed.
 
-	while (p != end) {
-	    int ch = *p;
-	    if (ch >= 0x80) {
-		// Decode multi-byte UTF-8 sequence.
-		if (ch < 0xc0) {
-		    // Invalid UTF-8 sequence.
-		    goto bad_utf8;
-		} else if (ch < 0xe0) {
-		    /* 2 byte sequence */
-		    if (end - p < 2) {
-			// Incomplete UTF-8 sequence - try to read more.
-			break;
-		    }
-		    int ch1 = *++p;
-		    if ((ch1 & 0xc0) != 0x80) {
-			// Invalid UTF-8 sequence.
-			goto bad_utf8;
-		    }
-		    ch = ((ch & 0x1f) << 6) | (ch1 & 0x3f);
-		} else if (ch < 0xf0) {
-		    /* 3 byte sequence */
-		    if (end - p < 3) {
-			// Incomplete UTF-8 sequence - try to read more.
-			break;
-		    }
-		    int ch1 = *++p;
-		    ch = ((ch & 0x1f) << 12) | ((ch1 & 0x3f) << 6);
-		    if ((ch1 & 0xc0) != 0x80) {
-			// Invalid UTF-8 sequence.
-			goto bad_utf8;
-		    }
-		    int ch2 = *++p;
-		    if ((ch2 & 0xc0) != 0x80) {
-			// Invalid UTF-8 sequence.
-			goto bad_utf8;
-		    }
-		    ch |= (ch2 & 0x3f);
-		} else {
-		    // Overlong UTF-8 sequence.
-		    goto bad_utf8;
-		}
-	    }
-	    ++p;
-
-	    if (false) {
-bad_utf8:
-		// Resync to next byte which starts a UTF-8 sequence.
-		while (p != end) {
-		    if (*p < 0x80 || (*p >= 0xc0 && *p < 0xf0)) break;
-		    ++p;
-		}
-		cur += badutf8_html;
+	size_t nl;
+	while ((nl = log_txt.find('\n', ptr)) != std::string::npos) {
+	    if (nl == ptr || (nl - ptr == 1 && log_txt[ptr] == '\r')) {
+		// Don't show empty lines in the window.
+		ptr = nl + 1;
 		continue;
 	    }
-
-	    switch (ch) {
-		case '\r':
-		    // Ignore.
-		    break;
-		case '\n': {
-		    if (cur.empty()) continue;
-		    if (cur[0] == ' ') {
-			if (source_line.empty()) {
-			    // Source line shown for context.  Store it so we
-			    // can use the caret line to highlight it.
-			    swap(source_line, cur);
-			} else {
-			    size_t caret = cur.rfind('^');
-			    if (caret != wxString::npos) {
-				size_t tilde = cur.rfind('~');
-				if (tilde == wxString::npos || tilde < caret) {
-				    tilde = caret;
-				}
-				cur = "&nbsp;";
-				// FIXME: Need to count each & entity as one character...
-				cur.append(source_line, 1, caret - 1);
-				if (caret < source_line.size()) {
-				    cur.append("<b>");
-				    cur.append(highlight ? highlight : wxT("<span \"color:blue\">"));
-				    cur.append(source_line, caret, tilde + 1 - caret);
-				    cur.append("</span></b>");
-				}
-				if (tilde + 1 < source_line.size()) {
-				    cur.append(source_line, tilde + 1, wxString::npos);
-				}
-			    } else {
-				// No caret in second line - just output both.
-				source_line.replace(0, 1, "&nbsp;");
-				source_line += "<br>\n&nbsp;";
-				source_line.append(cur, 1, wxString::npos);
-				swap(cur, source_line);
-			    }
-			    cur += "<br>\n";
-			    AppendToPage(cur);
-			    cur.clear();
-			    source_line.clear();
+	    line_info.emplace_back(ptr);
+	    size_t line_len = nl - ptr - (log_txt[nl - 1] == '\r');
+	    // FIXME: Avoid copy, use string_view?
+	    string cur(log_txt, ptr, line_len);
+	    if (log_txt[ptr] == ' ') {
+		if (expecting_caret_line) {
+		    // FIXME: Check the line is only space, `^` and `~`?
+		    // Otherwise an error without caret info followed
+		    // by an error which contains a '^' gets
+		    // mishandled...
+		    size_t caret = cur.rfind('^');
+		    if (caret != wxString::npos) {
+			size_t tilde = cur.rfind('~');
+			if (tilde == wxString::npos || tilde < caret) {
+			    tilde = caret;
 			}
+			line_info.back().colour_start = caret;
+			line_info.back().colour_len = tilde - caret + 1;
+			expecting_caret_line = false;
 			continue;
 		    }
-
-		    if (!source_line.empty()) {
-			// Previous line was a source line without column info
-			// so just show it.
-			source_line.replace(0, 1, "&nbsp;");
-			source_line += "<br>\n";
-			AppendToPage(source_line);
-			source_line.clear();
-		    }
-#ifndef __WXMSW__
-		    size_t colon = cur.find(':');
-#else
-		    // If the path is "C:\path\to\file.svx" then don't split at the
-		    // : after the drive letter!  FIXME: better to look for ": "?
-		    size_t colon = cur.find(':', 2);
-#endif
-		    if (colon != wxString::npos && colon < cur.size() - 2) {
-			++colon;
-			size_t i = colon;
-			while (i < cur.size() - 2 &&
-			       cur[i] >= wxT('0') && cur[i] <= wxT('9')) {
-			    ++i;
-			}
-			if (i > colon && cur[i] == wxT(':') ) {
-			    colon = i;
-			    // Check for column number.
-			    while (++i < cur.size() - 2 &&
-			       cur[i] >= wxT('0') && cur[i] <= wxT('9')) { }
-			    bool have_column = (i > colon + 1 && cur[i] == wxT(':'));
-			    if (have_column) {
-				colon = i;
-			    } else {
-				// If there's no colon, include a trailing ':'
-				// so that we can unambiguously split the href
-				// value up into filename, line and column.
-				++colon;
-			    }
-			    wxString tag = wxT("<a href=\"");
-			    tag.append(cur, 0, colon);
-			    while (cur[++i] == wxT(' ')) { }
-			    tag += wxT("\" target=\"");
-			    wxString target(cur, i, wxString::npos);
-			    target.Replace(badutf8_html, badutf8);
-			    tag += target;
-			    tag += wxT("\">");
-			    cur.insert(0, tag);
-			    size_t offset = colon + tag.size();
-			    cur.insert(offset, wxT("</a>"));
-			    offset += 4 + 2;
-
-			    if (!have_column) --offset;
-
-			    static const wxString & error_marker = wmsg(/*error*/93) + ":";
-			    static const wxString & warning_marker = wmsg(/*warning*/4) + ":";
-			    static const wxString & info_marker = wmsg(/*info*/485) + ":";
-
-			    if (cur.substr(offset, error_marker.size()) == error_marker) {
-				// Show "error" marker in red.
-				highlight = wxT("<span style=\"color:red\">");
-				cur.insert(offset, highlight);
-				offset += 24 + error_marker.size() - 1;
-				cur.insert(offset, wxT("</span>"));
-			    } else if (cur.substr(offset, warning_marker.size()) == warning_marker) {
-				// Show "warning" marker in orange.
-				highlight = wxT("<span style=\"color:orange\">");
-				cur.insert(offset, highlight);
-				offset += 27 + warning_marker.size() - 1;
-				cur.insert(offset, wxT("</span>"));
-			    } else if (cur.substr(offset, info_marker.size()) == info_marker) {
-				// Show "info" marker in blue.
-				++info_count;
-				highlight = wxT("<span style=\"color:blue\">");
-				cur.insert(offset, highlight);
-				offset += 25 + info_marker.size() - 1;
-				cur.insert(offset, wxT("</span>"));
-			    } else {
-				highlight = NULL;
-			    }
-
-			    ++link_count;
-			}
-		    }
-
-		    // Save the scrollbar positions.
-		    int scroll_x = 0, scroll_y = 0;
-		    GetViewStart(&scroll_x, &scroll_y);
-
-		    cur += wxT("<br>\n");
-		    AppendToPage(cur);
-
-		    if (!link_count) {
-			// Auto-scroll the window until we've reported a
-			// warning or error.
-			int x, y;
-			GetVirtualSize(&x, &y);
-			int xs, ys;
-			GetClientSize(&xs, &ys);
-			y -= ys;
-			int xu, yu;
-			GetScrollPixelsPerUnit(&xu, &yu);
-			Scroll(scroll_x, y / yu);
-		    } else {
-			// Restore the scrollbar positions.
-			Scroll(scroll_x, scroll_y);
-		    }
-
-		    cur.clear();
-		    break;
 		}
-		case '<':
-		    cur += wxT("&lt;");
-		    break;
-		case '>':
-		    cur += wxT("&gt;");
-		    break;
-		case '&':
-		    cur += wxT("&amp;");
-		    break;
-		case '"':
-		    cur += wxT("&#34;");
-		    continue;
-		default:
-#ifdef wxUSE_UNICODE
-		    cur += wxChar(ch);
-#else
-		    // This approach means that highlighting of "error" or
-		    // "warning" won't work in translations where they contain
-		    // non-ASCII characters, but wxWidgets >= 3.0 in always
-		    // Unicode, so this corner case is already very uncommon,
-		    // and will become irrelevant with time.
-		    if (ch >= 128) {
-			cur += wxString::Format(wxT("&#%u;"), ch);
-		    } else {
-			cur += (char)ch;
-		    }
-#endif
+		expecting_caret_line = true;
 	    }
+	    line_info.back().len = line_len;
+#ifndef __WXMSW__
+	    size_t colon = cur.find(':');
+#else
+	    // If the path is "C:\path\to\file.svx" then don't split at the
+	    // : after the drive letter!  FIXME: better to look for ": "?
+	    size_t colon = cur.find(':', 2);
+#endif
+	    if (colon != wxString::npos && colon < cur.size() - 2) {
+		++colon;
+		size_t i = colon;
+		while (i < cur.size() - 2 &&
+		       cur[i] >= '0' && cur[i] <= '9') {
+		    ++i;
+		}
+		if (i > colon && cur[i] == ':' ) {
+		    colon = i;
+		    size_t offset = colon + 2;
+		    // Check for column number.
+		    while (++i < cur.size() - 2 &&
+			   cur[i] >= '0' && cur[i] <= '9') { }
+		    bool have_column = (i > colon + 1 && cur[i] == ':');
+		    if (have_column) {
+			colon = i;
+			offset = colon + 2;
+		    } else {
+			// If there's no column, include a trailing ':'
+			// so that we can unambiguously split the href
+			// value up into filename, line and column.
+			++colon;
+		    }
+		    line_info.back().link_len = colon;
+
+		    static string error_marker = string(msg(/*error*/93)) + ':';
+		    static string warning_marker = string(msg(/*warning*/4)) + ':';
+		    static string info_marker = string(msg(/*info*/485)) + ':';
+
+		    // FIXME: Avoid temporary strings for each compare
+		    if (cur.substr(offset, error_marker.size()) == error_marker) {
+			// Show "error" marker in red.
+			line_info.back().colour = LOG_ERROR;
+			line_info.back().colour_start = offset;
+			line_info.back().colour_len = error_marker.size() - 1;
+		    } else if (cur.substr(offset, warning_marker.size()) == warning_marker) {
+			// Show "warning" marker in orange.
+			line_info.back().colour = LOG_WARNING;
+			line_info.back().colour_start = offset;
+			line_info.back().colour_len = warning_marker.size() - 1;
+		    } else if (cur.substr(offset, info_marker.size()) == info_marker) {
+			// Show "info" marker in blue.
+			++info_count;
+			line_info.back().colour = LOG_INFO;
+			line_info.back().colour_start = offset;
+			line_info.back().colour_len = info_marker.size() - 1;
+		    }
+		    ++link_count;
+		}
+	    }
+
+	    int fsize = GetFont().GetPixelSize().GetHeight();
+	    SetScrollRate(fsize, fsize);
+	    int width = 144; // FIXME
+	    int height = line_info.size();
+	    SetVirtualSize(width, height);
+	    if (!link_count) {
+		// Auto-scroll until the first diagnostic.
+		int scroll_x = 0, scroll_y = 0;
+		GetViewStart(&scroll_x, &scroll_y);
+		int xs, ys;
+		GetClientSize(&xs, &ys);
+		Scroll(scroll_x, line_info.size() - ys / fsize);
+	    }
+	    ptr = nl + 1;
 	}
 
-	size_t left = end - p;
-	end = buf + left;
-	if (left) memmove(buf, p, left);
-	Update();
+	Refresh(); // FIXME: ?
 	return;
-    }
-
-    if (!source_line.empty()) {
-	// Previous line was a source line without column info
-	// so just show it.
-	source_line.replace(0, 1, "&nbsp;");
-	source_line += "<br>\n";
-	AppendToPage(source_line);
-	source_line.clear();
-    }
-
-    if (e.len <= 0 && buf != end) {
-	// Truncated UTF-8 sequence.
-	cur += badutf8_html;
-    }
-    if (!cur.empty()) {
-	cur += "<br>\n";
-	AppendToPage("<hr>" + cur);
     }
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
