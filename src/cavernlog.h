@@ -22,7 +22,6 @@
 #define SURVEX_CAVERNLOG_H
 
 #include "wx.h"
-#include <wx/html/htmlwin.h>
 #include <wx/process.h>
 
 #include <string>
@@ -97,7 +96,7 @@ class CavernLogWindow : public wxScrolledWindow {
     /** Start to process survey data in file. */
     void process(const wxString &file);
 
-    virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
+// FIXME:   virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
 
     void OnReprocess(wxCommandEvent &);
 
@@ -116,9 +115,6 @@ class CavernLogWindow : public wxScrolledWindow {
     void OnPaint(wxPaintEvent &);
 
     void OnEndProcess(wxProcessEvent & e);
-
-    // FIXME: temp hack
-    void AppendToPage(const wxString&) { }
 
     DECLARE_EVENT_TABLE()
 };

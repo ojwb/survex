@@ -158,11 +158,11 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
     }
 
     event.RequestMore();
-
+}
 #endif
 
 void
-CavernLogWindow::OnPaint(wxPaintEvent & e)
+CavernLogWindow::OnPaint(wxPaintEvent&)
 {
     wxPaintDC dc(this);
     wxFont font = dc.GetFont();
@@ -329,8 +329,6 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
 {
 #if 0 // FIXME
     int fsize = parent->GetFont().GetPointSize();
-    int sizes[7] = { fsize, fsize, fsize, fsize, fsize, fsize, fsize };
-    SetFonts(wxString(), wxString(), sizes);
 #endif
 }
 
@@ -396,6 +394,7 @@ CavernLogWindow::OnClose(wxCloseEvent &)
 }
 #endif
 
+#if 0 // FIXME
 void
 CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
 {
@@ -497,11 +496,11 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     m += wxT(')');
     wxGetApp().ReportError(m);
 }
+#endif
 
 void
 CavernLogWindow::process(const wxString &file)
 {
-    // FIXME: Reset saved log
 #ifdef CAVERNLOG_USE_THREADS
     if (thread) stop_thread();
 #endif
@@ -688,9 +687,7 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
      * allows the user to save the log to a file. */
-    AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
-				  (int)LOG_SAVE,
-				  wmsg(/*&Save Log*/446).c_str()));
+    new wxButton(this, LOG_SAVE, wmsg(/*&Save Log*/446));
     wxEndBusyCursor();
     delete cavern_out;
     cavern_out = NULL;
@@ -698,15 +695,14 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	/* Negative length indicates non-zero exit status from cavern. */
 	/* TRANSLATORS: Label for button in aven’s cavern log window which
 	 * causes the survey data to be reprocessed. */
-	AppendToPage(wxString::Format(wxT("<avenbutton default id=%d name=\"%s\">"),
-				      (int)LOG_REPROCESS,
-				      wmsg(/*&Reprocess*/184).c_str()));
+	new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184),
+		     GetVirtualSize() - wxPoint(100, 50));
 	return;
     }
-    AppendToPage(wxString::Format(wxT("<avenbutton id=%d name=\"%s\">"),
-				  (int)LOG_REPROCESS,
-				  wmsg(/*&Reprocess*/184).c_str()));
-    AppendToPage(wxString::Format(wxT("<avenbutton default id=%d>"), (int)wxID_OK));
+    new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184),
+		 GetVirtualSize() - wxPoint(200, 50));
+    (new wxButton(this, wxID_OK, wxString(),
+		  GetVirtualSize() - wxPoint(100, 50)))->SetDefault();
     Update();
     init_done = false;
 
