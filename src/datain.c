@@ -2153,7 +2153,10 @@ data_normal(void)
 	  read_reading(r, true);
 	  if (VAL(r) == HUGE_REAL) {
 	     VAL(r) = handle_plumb(p_ctype);
-	     if (VAL(r) != HUGE_REAL) break;
+	     if (VAL(r) != HUGE_REAL) {
+		WID(r) = ftell(file.fh) - LOC(r);
+		break;
+	     }
 	     compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 	     skipline();
 	     process_eol();
