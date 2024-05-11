@@ -408,10 +408,10 @@ CavernLogWindow::OnMouseMove(wxMouseEvent& e)
     int fsize = GetFont().GetPixelSize().GetHeight();
     int scroll_x = 0, scroll_y = 0;
     GetViewStart(&scroll_x, &scroll_y);
-    int line = (pos.y + scroll_y) / fsize;
+    unsigned line = pos.y / fsize + scroll_y;
     printf("line %d\n", line);
-    unsigned x = pos.x + scroll_x - fsize / 2;
-    if (x <= line_info[line].link_pixel_width) {
+    unsigned x = pos.x + scroll_x * fsize - fsize / 2;
+    if (line < line_info.size() && x <= line_info[line].link_pixel_width) {
 	SetCursor(wxCursor(wxCURSOR_HAND));
     } else {
 	SetCursor(wxNullCursor);
@@ -425,12 +425,12 @@ CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
     int fsize = GetFont().GetPixelSize().GetHeight();
     int scroll_x = 0, scroll_y = 0;
     GetViewStart(&scroll_x, &scroll_y);
-    int line = (pos.y + scroll_y) / fsize;
-    unsigned x = pos.x + scroll_x - fsize / 2;
-    if (x > line_info[line].link_pixel_width)
+    unsigned line = pos.y / fsize + scroll_y;
+    unsigned x = pos.x + scroll_x * fsize - fsize / 2;
+    if (!(line < line_info.size() && x <= line_info[line].link_pixel_width))
 	return;
 
-    printf("Click\n");
+    cout << "Click: " << log_txt.substr(line_info[line].start_offset, line_info[line].link_len) << '\n';
 #if 0
     wxString href = link.GetHref();
     wxString title = link.GetTarget();
