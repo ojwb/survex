@@ -175,7 +175,7 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
     int fsize = dc.GetFont().GetPixelSize().GetHeight();
     int limit = min((rect.y + rect.height + fsize - 1) / fsize + scroll_y, int(line_info.size()) - 1);
     for (int i = max(rect.y / fsize, scroll_y); i <= limit ; ++i) {
-	const LineInfo& info = line_info[i];
+	LineInfo& info = line_info[i];
 	// Leave a small margin to the left.
 	int x = fsize / 2 - scroll_x * fsize;
 	int y = (i - scroll_y) * fsize;
@@ -184,18 +184,21 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
 	if (info.link_len) {
 	    dc.SetFont(underlined_font);
 	    dc.SetTextForeground(wxColour(255, 0, 255));
-	    std::string link(log_txt, offset, info.link_len);
+	    wxString link(&log_txt[offset], info.link_len);
 	    offset += info.link_len;
 	    len -= info.link_len;
 	    dc.DrawText(link, x, y);
-	    x += dc.GetTextExtent(link).GetWidth();
+	    if (info.link_pixel_width == 0) {
+		info.link_pixel_width = dc.GetTextExtent(link).GetWidth();
+	    }
+	    x += info.link_pixel_width;
 	    dc.SetFont(font);
 	}
 	if (info.colour_len) {
 	    dc.SetTextForeground(*wxBLACK);
 	    {
 		size_t s_len = info.start_offset + info.colour_start - offset;
-		std::string s(log_txt, offset, s_len);
+		wxString s(&log_txt[offset], s_len);
 		offset += s_len;
 		len -= s_len;
 		dc.DrawText(s, x, y);
@@ -213,7 +216,7 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
 		    break;
 	    }
 	    dc.SetFont(bold_font);
-	    std::string d(log_txt, offset, info.colour_len);
+	    wxString d(&log_txt[offset], info.colour_len);
 	    offset += info.colour_len;
 	    len -= info.colour_len;
 	    dc.DrawText(d, x, y);
@@ -221,7 +224,7 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
 	    dc.SetFont(font);
 	}
 	dc.SetTextForeground(*wxBLACK);
-	dc.DrawText(log_txt.substr(offset, len), x, y);
+	dc.DrawText(wxString(&log_txt[offset], len), x, y);
     }
 }
 
@@ -236,6 +239,8 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxScrolledWindow)
     EVT_IDLE(CavernLogWindow::OnIdle)
 #endif
     EVT_PAINT(CavernLogWindow::OnPaint)
+    EVT_MOTION(CavernLogWindow::OnMouseMove)
+    EVT_LEFT_UP(CavernLogWindow::OnLinkClicked)
     EVT_END_PROCESS(wxID_ANY, CavernLogWindow::OnEndProcess)
 END_EVENT_TABLE()
 
@@ -327,6 +332,8 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
       mainfrm(mainfrm_),
       end(buf), survey(survey_)
 {
+    AlwaysShowScrollbars(true, true);
+    Update();
 #if 0 // FIXME
     int fsize = parent->GetFont().GetPointSize();
 #endif
@@ -394,10 +401,37 @@ CavernLogWindow::OnClose(wxCloseEvent &)
 }
 #endif
 
-#if 0 // FIXME
 void
-CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
+CavernLogWindow::OnMouseMove(wxMouseEvent& e)
 {
+    const auto& pos = e.GetPosition();
+    int fsize = GetFont().GetPixelSize().GetHeight();
+    int scroll_x = 0, scroll_y = 0;
+    GetViewStart(&scroll_x, &scroll_y);
+    int line = (pos.y + scroll_y) / fsize;
+    printf("line %d\n", line);
+    unsigned x = pos.x + scroll_x - fsize / 2;
+    if (x <= line_info[line].link_pixel_width) {
+	SetCursor(wxCursor(wxCURSOR_HAND));
+    } else {
+	SetCursor(wxNullCursor);
+    }
+}
+
+void
+CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
+{
+    const auto& pos = e.GetPosition();
+    int fsize = GetFont().GetPixelSize().GetHeight();
+    int scroll_x = 0, scroll_y = 0;
+    GetViewStart(&scroll_x, &scroll_y);
+    int line = (pos.y + scroll_y) / fsize;
+    unsigned x = pos.x + scroll_x - fsize / 2;
+    if (x > line_info[line].link_pixel_width)
+	return;
+
+    printf("Click\n");
+#if 0
     wxString href = link.GetHref();
     wxString title = link.GetTarget();
     size_t colon2 = href.rfind(wxT(':'));
@@ -495,8 +529,8 @@ CavernLogWindow::OnLinkClicked(const wxHtmlLinkInfo &link)
     m += wxString(strerror(errno), wxConvUTF8);
     m += wxT(')');
     wxGetApp().ReportError(m);
-}
 #endif
+}
 
 void
 CavernLogWindow::process(const wxString &file)
@@ -681,13 +715,15 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	    ptr = nl + 1;
 	}
 
-	Update(); // FIXME: ?
+	Update();
 	return;
     }
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
      * allows the user to save the log to a file. */
-    new wxButton(this, LOG_SAVE, wmsg(/*&Save Log*/446));
+    auto buttons = new wxBoxSizer(wxHORIZONTAL);
+    buttons->Add(new wxButton(this, LOG_SAVE, wmsg(/*&Save Log*/446)),
+		 0, wxRIGHT | wxBOTTOM, 6);
     wxEndBusyCursor();
     delete cavern_out;
     cavern_out = NULL;
@@ -695,14 +731,18 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	/* Negative length indicates non-zero exit status from cavern. */
 	/* TRANSLATORS: Label for button in aven’s cavern log window which
 	 * causes the survey data to be reprocessed. */
-	new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184),
-		     GetVirtualSize() - wxPoint(100, 50));
-	return;
+	buttons->Add(new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184)),
+		     0, wxRIGHT | wxBOTTOM, 15);
+    } else {
+	buttons->Add(new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184)),
+		     0, wxRIGHT | wxBOTTOM, 6);
+	auto ok_button = new wxButton(this, wxID_OK, wxString());
+	ok_button->SetDefault();
+	buttons->Add(ok_button, 0, wxRIGHT | wxBOTTOM, 15);
     }
-    new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184),
-		 GetVirtualSize() - wxPoint(200, 50));
-    (new wxButton(this, wxID_OK, wxString(),
-		  GetVirtualSize() - wxPoint(100, 50)))->SetDefault();
+    //SetSizer(buttons);
+    if (e.len < 0) return;
+
     Update();
     init_done = false;
 

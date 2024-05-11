@@ -76,6 +76,7 @@ class CavernLogWindow : public wxScrolledWindow {
 	unsigned start_offset = 0;
 	unsigned len = 0;
 	unsigned link_len = 0;
+	unsigned link_pixel_width = 0;
 	unsigned colour = LOG_NONE;
 	unsigned colour_start = 0;
 	unsigned colour_len = 0;
@@ -96,7 +97,9 @@ class CavernLogWindow : public wxScrolledWindow {
     /** Start to process survey data in file. */
     void process(const wxString &file);
 
-// FIXME:   virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
+    void OnMouseMove(wxMouseEvent& e);
+
+    void OnLinkClicked(wxMouseEvent& e);
 
     void OnReprocess(wxCommandEvent &);
 
