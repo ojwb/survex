@@ -1,7 +1,7 @@
 /* cavernlog.cc
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005-2022 Olly Betts
+ * Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,52 +88,6 @@ class CavernOutputEvent : public wxEvent {
     }
 };
 
-#ifdef CAVERNLOG_USE_THREADS
-class CavernThread : public wxThread {
-  protected:
-    virtual ExitCode Entry();
-
-    CavernLogWindow *handler;
-
-    wxInputStream * in;
-
-  public:
-    CavernThread(CavernLogWindow *handler_, wxInputStream * in_)
-	: wxThread(wxTHREAD_DETACHED), handler(handler_), in(in_) { }
-
-    ~CavernThread() {
-	wxCriticalSectionLocker enter(handler->thread_lock);
-	handler->thread = NULL;
-    }
-};
-
-wxThread::ExitCode
-CavernThread::Entry()
-{
-    while (true) {
-	CavernOutputEvent * e = new CavernOutputEvent();
-	in->Read(e->buf, sizeof(e->buf));
-	size_t n = in->LastRead();
-	if (n == 0 || TestDestroy()) {
-	    delete e;
-	    return (wxThread::ExitCode)0;
-	}
-	if (n == 1 && e->buf[0] == '\n') {
-	    // Don't send an event with just a blank line in.
-	    in->Read(e->buf + 1, sizeof(e->buf) - 1);
-	    n += in->LastRead();
-	    if (TestDestroy()) {
-		delete e;
-		return (wxThread::ExitCode)0;
-	    }
-	}
-	e->len = n;
-	handler->QueueEvent(e);
-    }
-}
-
-#else
-
 void
 CavernLogWindow::OnIdle(wxIdleEvent& event)
 {
@@ -142,24 +96,23 @@ CavernLogWindow::OnIdle(wxIdleEvent& event)
     wxInputStream * in = cavern_out->GetInputStream();
 
     if (!in->CanRead()) {
-	// Avoid a tight busy-loop on idle events.
-	wxMilliSleep(10);
+	cout << "!CanRead()\n";
+	return;
     }
-    if (in->CanRead()) {
-	CavernOutputEvent * e = new CavernOutputEvent();
-	in->Read(e->buf, sizeof(e->buf));
-	size_t n = in->LastRead();
-	if (n == 0) {
-	    delete e;
-	    return;
-	}
-	e->len = n;
-	QueueEvent(e);
+
+    CavernOutputEvent * e = new CavernOutputEvent();
+    in->Read(e->buf, sizeof(e->buf));
+    size_t n = in->LastRead();
+    cout << "Read gave " << n << " bytes\n";
+    if (n == 0) {
+	delete e;
+	return;
     }
+    e->len = n;
+    QueueEvent(e);
 
     event.RequestMore();
 }
-#endif
 
 void
 CavernLogWindow::OnPaint(wxPaintEvent&)
@@ -233,11 +186,7 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxScrolledWindow)
     EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
     EVT_COMMAND(wxID_ANY, wxEVT_CAVERN_OUTPUT, CavernLogWindow::OnCavernOutput)
-#ifdef CAVERNLOG_USE_THREADS
-    EVT_CLOSE(CavernLogWindow::OnClose)
-#else
     EVT_IDLE(CavernLogWindow::OnIdle)
-#endif
     EVT_PAINT(CavernLogWindow::OnPaint)
     EVT_MOTION(CavernLogWindow::OnMouseMove)
     EVT_LEFT_UP(CavernLogWindow::OnLinkClicked)
@@ -338,65 +287,11 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
 
 CavernLogWindow::~CavernLogWindow()
 {
-#ifdef CAVERNLOG_USE_THREADS
-    if (thread) stop_thread();
-#endif
     if (cavern_out) {
 	wxEndBusyCursor();
 	cavern_out->Detach();
     }
 }
-
-#ifdef CAVERNLOG_USE_THREADS
-void
-CavernLogWindow::stop_thread()
-{
-    // Killing the subprocess by its pid is theoretically racy, but in practice
-    // it's not going to cause issues, and it's all the wxProcess API seems to
-    // allow us to do.  If we don't kill the subprocess, we need to wait for it
-    // to write out some output - there seems to be no way to do the equivalent
-    // of select() with a timeout on a wxInputStream.
-    //
-    // The only alternative to this seems to be to do:
-    //
-    //     while (!s.CanRead()) {
-    //         if (TestDestroy()) return (wxThread::ExitCode)0;
-    //         wxMilliSleep(N);
-    //     }
-    //
-    // But that makes the log window update sluggishly, and we're using a
-    // worker thread precisely to try to avoid having to do dumb stuff like
-    // this.
-    wxProcess::Kill(cavern_out->GetPid());
-
-    {
-	wxCriticalSectionLocker enter(thread_lock);
-	if (thread) {
-	    wxThreadError res;
-	    res = thread->Delete(NULL, wxTHREAD_WAIT_BLOCK);
-	    if (res != wxTHREAD_NO_ERROR) {
-		// FIXME
-	    }
-	}
-    }
-
-    // Wait for thread to complete.
-    while (true) {
-	{
-	    wxCriticalSectionLocker enter(thread_lock);
-	    if (!thread) break;
-	}
-	wxMilliSleep(1);
-    }
-}
-
-void
-CavernLogWindow::OnClose(wxCloseEvent &)
-{
-    if (thread) stop_thread();
-    Destroy();
-}
-#endif
 
 void
 CavernLogWindow::OnMouseMove(wxMouseEvent& e)
@@ -525,9 +420,6 @@ CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
 void
 CavernLogWindow::process(const wxString &file)
 {
-#ifdef CAVERNLOG_USE_THREADS
-    if (thread) stop_thread();
-#endif
     if (cavern_out) {
 	cavern_out->Detach();
 	cavern_out = NULL;
@@ -574,15 +466,6 @@ CavernLogWindow::process(const wxString &file)
 
     // We want to receive the wxProcessEvent when cavern exits.
     cavern_out->SetNextHandler(this);
-
-#ifdef CAVERNLOG_USE_THREADS
-    thread = new CavernThread(this, cavern_out->GetInputStream());
-    if (thread->Run() != wxTHREAD_NO_ERROR) {
-	wxGetApp().ReportError(wxT("Thread failed to start"));
-	delete thread;
-	thread = NULL;
-    }
-#endif
 }
 
 void

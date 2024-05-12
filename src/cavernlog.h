@@ -1,7 +1,7 @@
 /* cavernlog.h
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005-2022 Olly Betts
+ * Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,22 +27,9 @@
 #include <string>
 #include <vector>
 
-// We probably want to use a thread if we can - that way we can use a blocking
-// read from cavern rather than busy-waiting via idle events.
-#ifdef wxUSE_THREADS
-//# define CAVERNLOG_USE_THREADS
-#endif
-
-#ifdef CAVERNLOG_USE_THREADS
-class CavernThread;
-#endif
 class MainFrm;
 
 class CavernLogWindow : public wxScrolledWindow {
-#ifdef CAVERNLOG_USE_THREADS
-    friend class CavernThread;
-#endif
-
     wxString filename;
 
     MainFrm * mainfrm;
@@ -60,14 +47,6 @@ class CavernLogWindow : public wxScrolledWindow {
     wxString survey;
 
     std::string log_txt;
-
-#ifdef CAVERNLOG_USE_THREADS
-    void stop_thread();
-
-    CavernThread * thread = nullptr;
-
-    wxCriticalSection thread_lock;
-#endif
 
     enum { LOG_NONE, LOG_ERROR, LOG_WARNING, LOG_INFO };
 
@@ -109,11 +88,7 @@ class CavernLogWindow : public wxScrolledWindow {
 
     void OnCavernOutput(wxCommandEvent & e);
 
-#ifdef CAVERNLOG_USE_THREADS
-    void OnClose(wxCloseEvent &);
-#else
     void OnIdle(wxIdleEvent &);
-#endif
 
     void OnPaint(wxPaintEvent &);
 
