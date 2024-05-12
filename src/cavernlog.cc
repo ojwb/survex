@@ -334,9 +334,6 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
 {
     AlwaysShowScrollbars(true, true);
     Update();
-#if 0 // FIXME
-    int fsize = parent->GetFont().GetPointSize();
-#endif
 }
 
 CavernLogWindow::~CavernLogWindow()
