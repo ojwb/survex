@@ -409,7 +409,6 @@ CavernLogWindow::OnMouseMove(wxMouseEvent& e)
     int scroll_x = 0, scroll_y = 0;
     GetViewStart(&scroll_x, &scroll_y);
     unsigned line = pos.y / fsize + scroll_y;
-    printf("line %d\n", line);
     unsigned x = pos.x + scroll_x * fsize - fsize / 2;
     if (line < line_info.size() && x <= line_info[line].link_pixel_width) {
 	SetCursor(wxCursor(wxCURSOR_HAND));
