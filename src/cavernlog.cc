@@ -430,16 +430,17 @@ CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
     if (!(line < line_info.size() && x <= line_info[line].link_pixel_width))
 	return;
 
-    cout << "Click: " << log_txt.substr(line_info[line].start_offset, line_info[line].link_len) << '\n';
-#if 0
-    wxString href = link.GetHref();
-    wxString title = link.GetTarget();
-    size_t colon2 = href.rfind(wxT(':'));
-    if (colon2 == wxString::npos)
-	return;
-    size_t colon = href.rfind(wxT(':'), colon2 - 1);
-    if (colon == wxString::npos)
-	return;
+    const char* cur = &log_txt[line_info[line].start_offset];
+    size_t link_len = line_info[line].link_len;
+    size_t colon = link_len;
+    while (colon > 1 && (unsigned)(cur[--colon] - '0') <= 9) { }
+    size_t colon2 = colon;
+    while (colon > 1 && (unsigned)(cur[--colon] - '0') <= 9) { }
+    if (cur[colon] != ':') {
+	colon = colon2;
+	colon2 = link_len;
+    }
+
     wxString cmd;
     wxChar * p = wxGetenv(wxT("SURVEXEDITOR"));
     if (p) {
@@ -487,29 +488,23 @@ CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
 		cmd.erase(i, 1);
 		break;
 	    case wxT('f'): {
-		wxString f = escape_for_shell(href.substr(0, colon), true);
+		wxString f = escape_for_shell(wxString(cur, colon), true);
 		cmd.replace(i - 1, 2, f);
 		i += f.size() - 1;
 		break;
 	    }
-	    case wxT('t'): {
-		wxString t = escape_for_shell(title);
-		cmd.replace(i - 1, 2, t);
-		i += t.size() - 1;
-		break;
-	    }
 	    case wxT('l'): {
-		wxString l = escape_for_shell(href.substr(colon + 1, colon2 - colon - 1));
+		wxString l = escape_for_shell(wxString(cur + colon + 1, colon2 - colon - 1));
 		cmd.replace(i - 1, 2, l);
 		i += l.size() - 1;
 		break;
 	    }
 	    case wxT('c'): {
 		wxString l;
-		if (colon2 >= href.size() - 1)
+		if (colon2 == link_len)
 		    l = wxT("0");
 		else
-		    l = escape_for_shell(href.substr(colon2 + 1));
+		    l = escape_for_shell(wxString(cur + colon2 + 1, link_len - colon2 - 1));
 		cmd.replace(i - 1, 2, l);
 		i += l.size() - 1;
 		break;
@@ -529,7 +524,6 @@ CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
     m += wxString(strerror(errno), wxConvUTF8);
     m += wxT(')');
     wxGetApp().ReportError(m);
-#endif
 }
 
 void
@@ -641,36 +635,18 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	    }
 	    line_info.emplace_back(ptr);
 	    line_info.back().len = line_len;
-#ifndef __WXMSW__
-	    size_t colon = cur.find(':');
-#else
-	    // If the path is "C:\path\to\file.svx" then don't split at the
-	    // : after the drive letter!  FIXME: better to look for ": "?
-	    size_t colon = cur.find(':', 2);
-#endif
-	    if (colon != wxString::npos && colon < cur.size() - 2) {
-		++colon;
-		size_t i = colon;
-		while (i < cur.size() - 2 &&
-		       cur[i] >= '0' && cur[i] <= '9') {
-		    ++i;
-		}
-		if (i > colon && cur[i] == ':' ) {
-		    colon = i;
-		    // Check for column number.
-		    while (++i < cur.size() - 2 &&
-			   cur[i] >= '0' && cur[i] <= '9') { }
-		    bool have_column = (i > colon + 1 && cur[i] == ':');
-		    if (have_column) {
-			colon = i;
-		    }
-		    line_info.back().link_len = colon;
+	    size_t colon = cur.find(": ");
+	    if (colon != wxString::npos) {
+		size_t link_len = colon;
+		while (colon > 1 && (unsigned)(cur[--colon] - '0') <= 9) { }
+		if (cur[colon] == ':') {
+		    line_info.back().link_len = link_len;
 
 		    static string info_marker = string(msg(/*info*/485)) + ':';
 		    static string warning_marker = string(msg(/*warning*/4)) + ':';
 		    static string error_marker = string(msg(/*error*/93)) + ':';
 
-		    size_t offset = colon + 2;
+		    size_t offset = link_len + 2;
 		    if (cur.compare(offset, info_marker.size(), info_marker) == 0) {
 			// Show "info" marker in blue.
 			++info_count;
