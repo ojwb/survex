@@ -657,43 +657,36 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 		}
 		if (i > colon && cur[i] == ':' ) {
 		    colon = i;
-		    size_t offset = colon + 2;
 		    // Check for column number.
 		    while (++i < cur.size() - 2 &&
 			   cur[i] >= '0' && cur[i] <= '9') { }
 		    bool have_column = (i > colon + 1 && cur[i] == ':');
 		    if (have_column) {
 			colon = i;
-			offset = colon + 2;
-		    } else {
-			// If there's no column, include a trailing ':'
-			// so that we can unambiguously split the href
-			// value up into filename, line and column.
-			++colon;
 		    }
 		    line_info.back().link_len = colon;
 
-		    static string error_marker = string(msg(/*error*/93)) + ':';
-		    static string warning_marker = string(msg(/*warning*/4)) + ':';
 		    static string info_marker = string(msg(/*info*/485)) + ':';
+		    static string warning_marker = string(msg(/*warning*/4)) + ':';
+		    static string error_marker = string(msg(/*error*/93)) + ':';
 
-		    // FIXME: Avoid temporary strings for each compare
-		    if (cur.substr(offset, error_marker.size()) == error_marker) {
-			// Show "error" marker in red.
-			line_info.back().colour = LOG_ERROR;
-			line_info.back().colour_start = offset;
-			line_info.back().colour_len = error_marker.size() - 1;
-		    } else if (cur.substr(offset, warning_marker.size()) == warning_marker) {
-			// Show "warning" marker in orange.
-			line_info.back().colour = LOG_WARNING;
-			line_info.back().colour_start = offset;
-			line_info.back().colour_len = warning_marker.size() - 1;
-		    } else if (cur.substr(offset, info_marker.size()) == info_marker) {
+		    size_t offset = colon + 2;
+		    if (cur.compare(offset, info_marker.size(), info_marker) == 0) {
 			// Show "info" marker in blue.
 			++info_count;
 			line_info.back().colour = LOG_INFO;
 			line_info.back().colour_start = offset;
 			line_info.back().colour_len = info_marker.size() - 1;
+		    } else if (cur.compare(offset, warning_marker.size(), warning_marker) == 0) {
+			// Show "warning" marker in orange.
+			line_info.back().colour = LOG_WARNING;
+			line_info.back().colour_start = offset;
+			line_info.back().colour_len = warning_marker.size() - 1;
+		    } else if (cur.compare(offset, error_marker.size(), error_marker) == 0) {
+			// Show "error" marker in red.
+			line_info.back().colour = LOG_ERROR;
+			line_info.back().colour_start = offset;
+			line_info.back().colour_len = error_marker.size() - 1;
 		    }
 		    ++link_count;
 		}
