@@ -1,5 +1,5 @@
 ./exporterr1b.svx:2: error: Station "outer.inner.1" not exported from survey "outer"
-Survey has no fixed points. Therefore I've fixed outer.inner.1 at (0,0,0)
+./exporterr1b.svx:8: info: Survey has no fixed points. Therefore I've fixed outer.inner.1 at (0,0,0)
 
 Removing trailing traverses...
 

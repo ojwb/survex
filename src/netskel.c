@@ -32,6 +32,7 @@
 #include "debug.h"
 #include "cavern.h"
 #include "commands.h"
+#include "datain.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -134,9 +135,9 @@ solve_network(void /*node *stnlist*/)
 		     "no fixed stns, but we've got a zero node!");
 	 SVX_ASSERT2(stnFirst, "no stations left in net!");
 	 stn = stnFirst;
-	 printf(msg(/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72),
-		sprint_prefix(stn->name));
-	 putnl();
+	 compile_diagnostic_pfx(DIAG_INFO, stn->name,
+				/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72,
+				sprint_prefix(stn->name));
 	 POS(stn,0) = (real)0.0;
 	 POS(stn,1) = (real)0.0;
 	 POS(stn,2) = (real)0.0;

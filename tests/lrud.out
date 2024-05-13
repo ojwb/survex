@@ -1,4 +1,4 @@
-Survey has no fixed points. Therefore I've fixed AA1 at (0,0,0)
+./lrud.dat:10: info: Survey has no fixed points. Therefore I've fixed AA1 at (0,0,0)
 
 Removing trailing traverses...
 
