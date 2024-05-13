@@ -39,8 +39,6 @@ class CavernLogWindow : public wxScrolledWindow {
     bool expecting_caret_line = false;
     int info_count = 0;
     int link_count = 0;
-    unsigned char buf[1024];
-    unsigned char * end;
 
     bool init_done = false;
 

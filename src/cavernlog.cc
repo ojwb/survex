@@ -257,7 +257,7 @@ wxString get_command_path(const wxChar * command_name)
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
     : wxScrolledWindow(parent),
       mainfrm(mainfrm_),
-      end(buf), survey(survey_),
+      survey(survey_),
       timer(this)
 {
 }
