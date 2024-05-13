@@ -46,6 +46,8 @@ class CavernLogWindow : public wxScrolledWindow {
 
     wxString survey;
 
+    wxTimer timer;
+
     std::string log_txt;
 
     enum { LOG_NONE, LOG_ERROR, LOG_WARNING, LOG_INFO };
@@ -88,9 +90,13 @@ class CavernLogWindow : public wxScrolledWindow {
 
     void OnCavernOutput(wxCommandEvent & e);
 
-    void OnIdle(wxIdleEvent &);
+    void CheckForOutput();
 
-    void OnPaint(wxPaintEvent &);
+    void OnIdle(wxIdleEvent&) { CheckForOutput(); }
+
+    void OnTimer(wxTimerEvent&) { CheckForOutput(); }
+
+    void OnPaint(wxPaintEvent&);
 
     void OnEndProcess(wxProcessEvent & e);
 

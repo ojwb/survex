@@ -67,51 +67,31 @@ static const wxString badutf8_html(
     wxT("<span style=\"color:white;background-color:red;\">&#xfffd;</span>"));
 static const wxString badutf8(wxUniChar(0xfffd));
 
-// New event type for passing a chunk of cavern output from the worker thread
-// to the main thread (or from the idle event handler if we're not using
-// threads).
-class CavernOutputEvent;
-
-wxDEFINE_EVENT(wxEVT_CAVERN_OUTPUT, CavernOutputEvent);
-
-class CavernOutputEvent : public wxEvent {
-  public:
-    char buf[1000];
-    int len;
-    CavernOutputEvent() : wxEvent(0, wxEVT_CAVERN_OUTPUT), len(0) { }
-
-    wxEvent * Clone() const {
-	CavernOutputEvent * e = new CavernOutputEvent();
-	e->len = len;
-	if (len > 0) memcpy(e->buf, buf, len);
-	return e;
-    }
-};
+// New event type for signalling cavern output to process.
+wxDEFINE_EVENT(EVT_CAVERN_OUTPUT, wxCommandEvent);
 
 void
-CavernLogWindow::OnIdle(wxIdleEvent& event)
+CavernLogWindow::CheckForOutput()
 {
+    timer.Stop();
     if (cavern_out == NULL) return;
 
     wxInputStream * in = cavern_out->GetInputStream();
 
     if (!in->CanRead()) {
-	cout << "!CanRead()\n";
+	timer.StartOnce();
 	return;
     }
 
-    CavernOutputEvent * e = new CavernOutputEvent();
-    in->Read(e->buf, sizeof(e->buf));
+    size_t real_size = log_txt.size();
+    size_t allow = 1024;
+    log_txt.resize(real_size + allow);
+    in->Read(&log_txt[real_size], allow);
     size_t n = in->LastRead();
-    cout << "Read gave " << n << " bytes\n";
-    if (n == 0) {
-	delete e;
-	return;
+    log_txt.resize(real_size + n);
+    if (n) {
+	QueueEvent(new wxCommandEvent(EVT_CAVERN_OUTPUT));
     }
-    e->len = n;
-    QueueEvent(e);
-
-    event.RequestMore();
 }
 
 void
@@ -141,9 +121,6 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
 	    offset += info.link_len;
 	    len -= info.link_len;
 	    dc.DrawText(link, x, y);
-	    if (info.link_pixel_width == 0) {
-		info.link_pixel_width = dc.GetTextExtent(link).GetWidth();
-	    }
 	    x += info.link_pixel_width;
 	    dc.SetFont(font);
 	}
@@ -185,8 +162,9 @@ BEGIN_EVENT_TABLE(CavernLogWindow, wxScrolledWindow)
     EVT_BUTTON(LOG_REPROCESS, CavernLogWindow::OnReprocess)
     EVT_BUTTON(LOG_SAVE, CavernLogWindow::OnSave)
     EVT_BUTTON(wxID_OK, CavernLogWindow::OnOK)
-    EVT_COMMAND(wxID_ANY, wxEVT_CAVERN_OUTPUT, CavernLogWindow::OnCavernOutput)
+    EVT_COMMAND(wxID_ANY, EVT_CAVERN_OUTPUT, CavernLogWindow::OnCavernOutput)
     EVT_IDLE(CavernLogWindow::OnIdle)
+    EVT_TIMER(wxID_ANY, CavernLogWindow::OnTimer)
     EVT_PAINT(CavernLogWindow::OnPaint)
     EVT_MOTION(CavernLogWindow::OnMouseMove)
     EVT_LEFT_UP(CavernLogWindow::OnLinkClicked)
@@ -279,14 +257,14 @@ wxString get_command_path(const wxChar * command_name)
 CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent)
     : wxScrolledWindow(parent),
       mainfrm(mainfrm_),
-      end(buf), survey(survey_)
+      end(buf), survey(survey_),
+      timer(this)
 {
-    AlwaysShowScrollbars(true, true);
-    Update();
 }
 
 CavernLogWindow::~CavernLogWindow()
 {
+    timer.Stop();
     if (cavern_out) {
 	wxEndBusyCursor();
 	cavern_out->Detach();
@@ -420,6 +398,7 @@ CavernLogWindow::OnLinkClicked(wxMouseEvent& e)
 void
 CavernLogWindow::process(const wxString &file)
 {
+    timer.Stop();
     if (cavern_out) {
 	cavern_out->Detach();
 	cavern_out = NULL;
@@ -438,6 +417,8 @@ CavernLogWindow::process(const wxString &file)
     log_txt.reserve(16384);
     line_info.reserve(256);
     ptr = 0;
+    DestroyChildren();
+    SetVirtualSize(0, 0);
 
 #ifdef __WXMSW__
     SetEnvironmentVariable(wxT("SURVEX_UTF8"), wxT("1"));
@@ -466,130 +447,146 @@ CavernLogWindow::process(const wxString &file)
 
     // We want to receive the wxProcessEvent when cavern exits.
     cavern_out->SetNextHandler(this);
+
+    // Check for output after 500ms if we don't get an idle event sooner.
+    timer.StartOnce(500);
 }
 
 void
-CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
+CavernLogWindow::OnCavernOutput(wxCommandEvent&)
 {
-    CavernOutputEvent & e = (CavernOutputEvent&)e_;
+    // ptr gives the start of the first line we've not yet processed.
 
-    if (e.len > 0) {
-	ssize_t n = e.len;
-	if (size_t(n) > sizeof(buf) - (end - buf)) abort();
-	log_txt.append((const char *)e.buf, n);
-
-	// ptr gives the start of the first line we've not yet processed.
-
-	size_t nl;
-	while ((nl = log_txt.find('\n', ptr)) != std::string::npos) {
-	    if (nl == ptr || (nl - ptr == 1 && log_txt[ptr] == '\r')) {
-		// Don't show empty lines in the window.
-		ptr = nl + 1;
-		continue;
-	    }
-	    size_t line_len = nl - ptr - (log_txt[nl - 1] == '\r');
-	    // FIXME: Avoid copy, use string_view?
-	    string cur(log_txt, ptr, line_len);
-	    if (log_txt[ptr] == ' ') {
-		if (expecting_caret_line) {
-		    // FIXME: Check the line is only space, `^` and `~`?
-		    // Otherwise an error without caret info followed
-		    // by an error which contains a '^' gets
-		    // mishandled...
-		    size_t caret = cur.rfind('^');
-		    if (caret != wxString::npos) {
-			size_t tilde = cur.rfind('~');
-			if (tilde == wxString::npos || tilde < caret) {
-			    tilde = caret;
-			}
-			line_info.back().colour = line_info[line_info.size() - 2].colour;
-			line_info.back().colour_start = caret;
-			line_info.back().colour_len = tilde - caret + 1;
-			expecting_caret_line = false;
-			ptr = nl + 1;
-			continue;
-		    }
-		}
-		expecting_caret_line = true;
-	    }
-	    line_info.emplace_back(ptr);
-	    line_info.back().len = line_len;
-	    size_t colon = cur.find(": ");
-	    if (colon != wxString::npos) {
-		size_t link_len = colon;
-		while (colon > 1 && (unsigned)(cur[--colon] - '0') <= 9) { }
-		if (cur[colon] == ':') {
-		    line_info.back().link_len = link_len;
-
-		    static string info_marker = string(msg(/*info*/485)) + ':';
-		    static string warning_marker = string(msg(/*warning*/4)) + ':';
-		    static string error_marker = string(msg(/*error*/93)) + ':';
-
-		    size_t offset = link_len + 2;
-		    if (cur.compare(offset, info_marker.size(), info_marker) == 0) {
-			// Show "info" marker in blue.
-			++info_count;
-			line_info.back().colour = LOG_INFO;
-			line_info.back().colour_start = offset;
-			line_info.back().colour_len = info_marker.size() - 1;
-		    } else if (cur.compare(offset, warning_marker.size(), warning_marker) == 0) {
-			// Show "warning" marker in orange.
-			line_info.back().colour = LOG_WARNING;
-			line_info.back().colour_start = offset;
-			line_info.back().colour_len = warning_marker.size() - 1;
-		    } else if (cur.compare(offset, error_marker.size(), error_marker) == 0) {
-			// Show "error" marker in red.
-			line_info.back().colour = LOG_ERROR;
-			line_info.back().colour_start = offset;
-			line_info.back().colour_len = error_marker.size() - 1;
-		    }
-		    ++link_count;
-		}
-	    }
-
-	    int fsize = GetFont().GetPixelSize().GetHeight();
-	    SetScrollRate(fsize, fsize);
-	    int width = 144; // FIXME
-	    int height = line_info.size();
-	    SetVirtualSize(width, height * fsize);
-	    if (!link_count) {
-		// Auto-scroll until the first diagnostic.
-		int scroll_x = 0, scroll_y = 0;
-		GetViewStart(&scroll_x, &scroll_y);
-		int xs, ys;
-		GetClientSize(&xs, &ys);
-		Scroll(scroll_x, line_info.size() - ys);
-	    }
+    size_t nl;
+    while ((nl = log_txt.find('\n', ptr)) != std::string::npos) {
+	if (nl == ptr || (nl - ptr == 1 && log_txt[ptr] == '\r')) {
+	    // Don't show empty lines in the window.
 	    ptr = nl + 1;
+	    continue;
+	}
+	size_t line_len = nl - ptr - (log_txt[nl - 1] == '\r');
+	// FIXME: Avoid copy, use string_view?
+	string cur(log_txt, ptr, line_len);
+	if (log_txt[ptr] == ' ') {
+	    if (expecting_caret_line) {
+		// FIXME: Check the line is only space, `^` and `~`?
+		// Otherwise an error without caret info followed
+		// by an error which contains a '^' gets
+		// mishandled...
+		size_t caret = cur.rfind('^');
+		if (caret != wxString::npos) {
+		    size_t tilde = cur.rfind('~');
+		    if (tilde == wxString::npos || tilde < caret) {
+			tilde = caret;
+		    }
+		    line_info.back().colour = line_info[line_info.size() - 2].colour;
+		    line_info.back().colour_start = caret;
+		    line_info.back().colour_len = tilde - caret + 1;
+		    expecting_caret_line = false;
+		    ptr = nl + 1;
+		    continue;
+		}
+	    }
+	    expecting_caret_line = true;
+	}
+	line_info.emplace_back(ptr);
+	line_info.back().len = line_len;
+	size_t colon = cur.find(": ");
+	if (colon != wxString::npos) {
+	    size_t link_len = colon;
+	    while (colon > 1 && (unsigned)(cur[--colon] - '0') <= 9) { }
+	    if (cur[colon] == ':') {
+		line_info.back().link_len = link_len;
+
+		static string info_marker = string(msg(/*info*/485)) + ':';
+		static string warning_marker = string(msg(/*warning*/4)) + ':';
+		static string error_marker = string(msg(/*error*/93)) + ':';
+
+		size_t offset = link_len + 2;
+		if (cur.compare(offset, info_marker.size(), info_marker) == 0) {
+		    // Show "info" marker in blue.
+		    ++info_count;
+		    line_info.back().colour = LOG_INFO;
+		    line_info.back().colour_start = offset;
+		    line_info.back().colour_len = info_marker.size() - 1;
+		} else if (cur.compare(offset, warning_marker.size(), warning_marker) == 0) {
+		    // Show "warning" marker in orange.
+		    line_info.back().colour = LOG_WARNING;
+		    line_info.back().colour_start = offset;
+		    line_info.back().colour_len = warning_marker.size() - 1;
+		} else if (cur.compare(offset, error_marker.size(), error_marker) == 0) {
+		    // Show "error" marker in red.
+		    line_info.back().colour = LOG_ERROR;
+		    line_info.back().colour_start = offset;
+		    line_info.back().colour_len = error_marker.size() - 1;
+		}
+		++link_count;
+	    }
 	}
 
-	Update();
-	return;
+	int fsize = GetFont().GetPixelSize().GetHeight();
+	SetScrollRate(fsize, fsize);
+
+	auto& info = line_info.back();
+	info.link_pixel_width = GetTextExtent(wxString(&log_txt[ptr], info.link_len)).GetWidth();
+	auto rest_pixel_width = GetTextExtent(wxString(&log_txt[ptr + info.link_len], info.len - info.link_len)).GetWidth();
+	int width = max(GetVirtualSize().GetWidth(),
+			int(fsize + info.link_pixel_width + rest_pixel_width));
+	int height = line_info.size();
+	SetVirtualSize(width, height * fsize);
+	if (!link_count) {
+	    // Auto-scroll until the first diagnostic.
+	    int scroll_x = 0, scroll_y = 0;
+	    GetViewStart(&scroll_x, &scroll_y);
+	    int xs, ys;
+	    GetClientSize(&xs, &ys);
+	    Scroll(scroll_x, line_info.size() - ys);
+	}
+	ptr = nl + 1;
+    }
+
+    Update();
+    timer.StartOnce();
+}
+
+void
+CavernLogWindow::OnEndProcess(wxProcessEvent & evt)
+{
+    bool cavern_success = evt.GetExitCode() == 0;
+
+    // Read and process any remaining buffered output.
+    wxInputStream * in = cavern_out->GetInputStream();
+    while (!in->Eof()) {
+	CheckForOutput();
+    }
+    timer.Stop();
+    wxEndBusyCursor();
+
+    delete cavern_out;
+    cavern_out = NULL;
+
+    Freeze();
+    wxSize vsize = GetVirtualSize();
+    wxSize bsize = wxButton::GetDefaultSize(this);
+    int x = vsize.x - 6 - bsize.x;
+    int y = vsize.y - 6 - bsize.y;
+
+    if (cavern_success) {
+	(new wxButton(this, wxID_OK, wxString(), wxPoint(x, y)))->SetDefault();
+	x -= bsize.x + 15;
     }
 
     /* TRANSLATORS: Label for button in aven’s cavern log window which
+     * causes the survey data to be reprocessed. */
+    new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184), wxPoint(x, y));
+    x -= bsize.x + 15;
+
+    /* TRANSLATORS: Label for button in aven’s cavern log window which
      * allows the user to save the log to a file. */
-    auto buttons = new wxBoxSizer(wxHORIZONTAL);
-    buttons->Add(new wxButton(this, LOG_SAVE, wmsg(/*&Save Log*/446)),
-		 0, wxRIGHT | wxBOTTOM, 6);
-    wxEndBusyCursor();
-    delete cavern_out;
-    cavern_out = NULL;
-    if (e.len < 0) {
-	/* Negative length indicates non-zero exit status from cavern. */
-	/* TRANSLATORS: Label for button in aven’s cavern log window which
-	 * causes the survey data to be reprocessed. */
-	buttons->Add(new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184)),
-		     0, wxRIGHT | wxBOTTOM, 15);
-    } else {
-	buttons->Add(new wxButton(this, LOG_REPROCESS, wmsg(/*&Reprocess*/184)),
-		     0, wxRIGHT | wxBOTTOM, 6);
-	auto ok_button = new wxButton(this, wxID_OK, wxString());
-	ok_button->SetDefault();
-	buttons->Add(ok_button, 0, wxRIGHT | wxBOTTOM, 15);
-    }
-    //SetSizer(buttons);
-    if (e.len < 0) return;
+    new wxButton(this, LOG_SAVE, wmsg(/*&Save Log*/446), wxPoint(x, y));
+
+    Thaw();
+    if (!cavern_success) return;
 
     Update();
     init_done = false;
@@ -607,15 +604,6 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent & e_)
 	wxCommandEvent dummy;
 	OnOK(dummy);
     }
-}
-
-void
-CavernLogWindow::OnEndProcess(wxProcessEvent & evt)
-{
-    CavernOutputEvent * e = new CavernOutputEvent();
-    // Zero length indicates successful exit, negative length unsuccessful exit.
-    e->len = (evt.GetExitCode() == 0 ? 0 : -1);
-    QueueEvent(e);
 }
 
 void
