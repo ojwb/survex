@@ -540,7 +540,7 @@ CavernLogWindow::OnCavernOutput(wxCommandEvent&)
 	    GetViewStart(&scroll_x, &scroll_y);
 	    int xs, ys;
 	    GetClientSize(&xs, &ys);
-	    Scroll(scroll_x, line_info.size() - ys);
+	    Scroll(scroll_x, line_info.size() * fsize - ys);
 	}
 	ptr = nl + 1;
     }
