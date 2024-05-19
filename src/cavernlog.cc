@@ -303,6 +303,11 @@ CavernLogWindow::OnMouseMove(wxMouseEvent& e)
     } else {
 	SetCursor(wxNullCursor);
     }
+    if (!Dragging()) {
+	return;
+    }
+    if (line >= line_info.size()) { print "after end\n"; return; }
+    if (x > line_info[line].
 }
 
 void
