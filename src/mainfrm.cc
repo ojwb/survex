@@ -102,7 +102,8 @@ class AvenSplitterWindow : public wxSplitterWindow {
 
     public:
 	explicit AvenSplitterWindow(MainFrm *parent_)
-	    : wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
+	    : wxSplitterWindow(parent_, wxID_ANY,
+			       wxDefaultPosition, wxDefaultSize,
 			       wxSP_3DSASH),
 	      parent(parent_)
 	{
@@ -117,7 +118,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 };
 
 BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
-    EVT_SPLITTER_DCLICK(-1, AvenSplitterWindow::OnSplitterDClick)
+    EVT_SPLITTER_DCLICK(wxID_ANY, AvenSplitterWindow::OnSplitterDClick)
 END_EVENT_TABLE()
 
 class EditMarkDlg : public wxDialog {

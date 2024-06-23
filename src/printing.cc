@@ -294,13 +294,13 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool splays, bool tubes, bool ents, bool fixes,
 			 bool exports, bool printing, bool close_after_)
-	: wxDialog(mainfrm_, -1, wxString(printing ?
-					  /* TRANSLATORS: Title of the print
-					   * dialog */
-					  wmsg(/*Print*/399) :
-					  /* TRANSLATORS: Title of the export
-					   * dialog */
-					  wmsg(/*Export*/383))),
+	: wxDialog(mainfrm_, wxID_ANY,
+		   wxString(printing ? /* TRANSLATORS: Title of the print
+					* dialog */
+				       wmsg(/*Print*/399) :
+				       /* TRANSLATORS: Title of the export
+					* dialog */
+				       wmsg(/*Export*/383))),
 	  m_layout(printing ? wxGetApp().GetPageSetupDialogData() : NULL),
 	  m_File(filename), mainfrm(mainfrm_), close_after(close_after_)
 {
@@ -353,17 +353,17 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
      * and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
      * the "what to print/export" dialog. */
-    m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
+    m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wmsg(/*View*/283)), wxVERTICAL);
     /* TRANSLATORS: Used as a label for the surrounding box for the "survey
      * legs" "stations" "names" etc checkboxes in the "what to print" dialog.
      * "Elements" isn’t a good name for this but nothing better has yet come to
      * mind! */
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wmsg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     if (!printing) {
 	wxStaticText* label;
-	label = new wxStaticText(this, -1, wxString(wmsg(/*Export format*/410)));
+	label = new wxStaticText(this, wxID_ANY, wxString(wmsg(/*Export format*/410)));
 	const size_t n_formats = sizeof(formats) / sizeof(formats[0]);
 	m_format = new wxChoice(this, svx_FORMAT,
 				wxDefaultPosition, wxDefaultSize,
@@ -388,7 +388,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     }
 
     wxStaticText* label;
-    label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
+    label = new wxStaticText(this, wxID_ANY, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
     if (printing && scales[0].empty()) {
 	/* TRANSLATORS: used in the scale drop down selector in the print
 	 * dialog the implicit meaning is "choose a suitable scale to fit
@@ -421,14 +421,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	// Make the dummy string wider than any sane value and use that to
 	// fix the width of the control so the sizers allow space for bigger
 	// page layouts.
-	m_printSize = new wxStaticText(this, -1, wxString::Format(wmsg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
+	m_printSize = new wxStaticText(this, wxID_ANY, wxString::Format(wmsg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
 	m_viewbox->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
 	wxStaticText * brg_label, * tilt_label;
-	brg_label = new wxStaticText(this, -1, wmsg(/*Bearing*/259));
+	brg_label = new wxStaticText(this, wxID_ANY, wmsg(/*Bearing*/259));
 	anglebox->Add(brg_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	// wSP_WRAP means that you can scroll past 360 to 0, and vice versa.
 	m_bearing = new wxSpinCtrlDouble(this, svx_BEARING, wxEmptyString,
@@ -438,7 +438,7 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_bearing->SetDigits(ANGLE_DP);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTRE|wxALL, 5);
 	/* TRANSLATORS: Used in the print dialog: */
-	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
+	tilt_label = new wxStaticText(this, wxID_ANY, wmsg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	m_tilt = new wxSpinCtrlDouble(this, svx_TILT, wxEmptyString,
 		wxDefaultPosition, wxDefaultSize,

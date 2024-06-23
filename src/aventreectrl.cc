@@ -110,20 +110,20 @@ static const char *on_xpm[] = {
 BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_MOTION(AvenTreeCtrl::OnMouseMove)
     EVT_LEAVE_WINDOW(AvenTreeCtrl::OnLeaveWindow)
-    EVT_TREE_SEL_CHANGED(-1, AvenTreeCtrl::OnSelChanged)
-    EVT_TREE_ITEM_ACTIVATED(-1, AvenTreeCtrl::OnItemActivated)
+    EVT_TREE_SEL_CHANGED(wxID_ANY, AvenTreeCtrl::OnSelChanged)
+    EVT_TREE_ITEM_ACTIVATED(wxID_ANY, AvenTreeCtrl::OnItemActivated)
     EVT_CHAR(AvenTreeCtrl::OnKeyPress)
-    EVT_TREE_ITEM_MENU(-1, AvenTreeCtrl::OnMenu)
+    EVT_TREE_ITEM_MENU(wxID_ANY, AvenTreeCtrl::OnMenu)
     EVT_MENU(menu_SURVEY_SHOW_ALL, AvenTreeCtrl::OnRestrict)
     EVT_MENU(menu_SURVEY_RESTRICT, AvenTreeCtrl::OnRestrict)
     EVT_MENU(menu_SURVEY_HIDE, AvenTreeCtrl::OnHide)
     EVT_MENU(menu_SURVEY_SHOW, AvenTreeCtrl::OnShow)
     EVT_MENU(menu_SURVEY_HIDE_SIBLINGS, AvenTreeCtrl::OnHideSiblings)
-    EVT_TREE_STATE_IMAGE_CLICK(-1, AvenTreeCtrl::OnStateClick)
+    EVT_TREE_STATE_IMAGE_CLICK(wxID_ANY, AvenTreeCtrl::OnStateClick)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
-    wxTreeCtrl(window_parent, -1),
+    wxTreeCtrl(window_parent, wxID_ANY),
     m_Parent(parent),
     m_Enabled(false),
     m_LastItem(),
