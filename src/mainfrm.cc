@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -502,6 +502,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 
     EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnOpenTerrain)
+    EVT_MENU(menu_FILE_OVERLAY_GEODATA, MainFrm::OnOverlayGeodata)
     EVT_MENU(menu_FILE_LOG, MainFrm::OnShowLog)
     EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
@@ -602,6 +603,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_FILE_OPEN_TERRAIN, MainFrm::OnOpenTerrainUpdate)
+    EVT_UPDATE_UI(menu_FILE_OVERLAY_GEODATA, MainFrm::OnOverlayGeodataUpdate)
     EVT_UPDATE_UI(menu_FILE_LOG, MainFrm::OnShowLogUpdate)
     EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
@@ -793,6 +795,7 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
      * terrain. */
     filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain...*/453));
+    filemenu->Append(menu_FILE_OVERLAY_GEODATA, wmsg(/*Overlay &Geodata...*/494));
     filemenu->AppendCheckItem(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
@@ -1487,6 +1490,36 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
     }
 }
 
+void MainFrm::OnOverlayGeodata(wxCommandEvent&)
+{
+    if (!m_Gfx) return;
+
+    if (GetCSProj().empty()) {
+	wxMessageBox(wxT("No coordinate system specified in survey data"));
+	return;
+    }
+
+#ifdef __WXMOTIF__
+    wxString filetypes = wxT("*.*");
+#else
+    wxString filetypes;
+    // FIXME: Add more extensions here?
+    filetypes.Printf(wxT("%s|*.gpx;*.kml;*.geojson;*.json;*.shp"
+		       CASE("*.GPX;*.KML;*.GEOJSON;*.JSON;*.SHP")
+		     "|%s|%s"),
+		     wmsg(/*Geodata files*/495).c_str(),
+		     wmsg(/*All files*/208).c_str(),
+		     wxFileSelectorDefaultWildcardStr);
+#endif
+    wxFileDialog dlg(this, wmsg(/*Select a geodata file to overlay*/496),
+		     wxString(), wxString(),
+		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    if (dlg.ShowModal() == wxID_OK) {
+	m_Tree->AddOverlay(dlg.GetPath());
+	m_Gfx->InvalidateOverlays();
+    }
+}
+
 void MainFrm::OnShowLog(wxCommandEvent&)
 {
     if (!m_Log) {
@@ -1924,11 +1957,13 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     if (data) {
 	if (data->IsStation()) {
 	    m_Gfx->SetHereFromTree(data->GetLabel());
-	} else {
+	    return;
+	}
+	if (data->IsSurvey()) {
 	    m_Gfx->SetHereSurvey(data->GetSurvey());
 	    ShowInfo();
+	    return;
 	}
-	return;
     }
     m_Gfx->SetHereSurvey(wxString());
     ShowInfo();
@@ -1955,8 +1990,10 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item)
 	    // Must be the root.
 	    wxCommandEvent dummy;
 	    OnDefaults(dummy);
-	} else {
+	} else if (data->IsSurvey()) {
 	    m_Gfx->ZoomToSurvey(data->GetSurvey());
+	} else {
+	    // FIXME: Click on overlay
 	}
     }
     UpdateStatusBar();
@@ -2111,6 +2148,11 @@ void MainFrm::RestrictTo(const wxString & survey)
 }
 
 void MainFrm::OnOpenTerrainUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_File.empty());
+}
+
+void MainFrm::OnOverlayGeodataUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_File.empty());
 }

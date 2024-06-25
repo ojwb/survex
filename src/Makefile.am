@@ -52,7 +52,7 @@ aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
 dump3d_SOURCES = dump3d.c date.c img_hosted.c useful.c \
  $(COMMONSRC)
 
-aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS) $(FFMPEG_LIBS)
+aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(GDAL_LIBS) $(PROJ_LIBS) $(FFMPEG_LIBS)
 
 if WIN32
 aven_LDADD += avenrc.o

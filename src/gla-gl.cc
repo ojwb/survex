@@ -1241,6 +1241,27 @@ void GLACanvas::EndPolygon()
     CHECK_GL_ERROR("EndPolygon", "glEnd GL_POLYGON");
 }
 
+void GLACanvas::BeginPoints()
+{
+    // Commence drawing points.
+
+    glPushAttrib(GL_POINT_BIT);
+    CHECK_GL_ERROR("BeginPoints", "glPushAttrib");
+    glPointSize(3);
+    CHECK_GL_ERROR("BeginPoints", "glPointSize");
+    glBegin(GL_POINTS);
+}
+
+void GLACanvas::EndPoints()
+{
+    // Finish drawing points.
+
+    glEnd();
+    CHECK_GL_ERROR("EndPoints", "glEnd GL_POINTS");
+    glPopAttrib();
+    CHECK_GL_ERROR("EndPoints", "glPopAttrib");
+}
+
 void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
 {
     // Place a vertex for the current object being drawn.

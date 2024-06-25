@@ -214,6 +214,14 @@ PKG_CHECK_MODULES([PROJ], [proj >= 6.2.0], [
 AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
 
+dnl Check for GDAL.
+PKG_CHECK_MODULES([GDAL], [gdal >= 2.3], [
+], [
+  AC_MSG_ERROR([GDAL required for geodata handling])
+])
+AC_SUBST([GDAL_LIBS])
+AC_SUBST([GDAL_CFLAGS])
+
 dnl Checks for header files.
 
 dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp

@@ -43,6 +43,7 @@ public:
     const LabelInfo* GetLabel() const { return m_Label; }
     const wxString & GetSurvey() const { return survey; }
     bool IsStation() const { return m_Label != NULL; }
+    bool IsSurvey() const { return m_Label == NULL; }
 };
 
 class AvenTreeCtrl : public wxTreeCtrl {
@@ -83,6 +84,14 @@ public:
     const SurveyFilter* GetFilter() const {
 	return filter.empty() ? NULL : &filter;
     }
+
+    void AddOverlay(const wxString& file);
+    void RemoveOverlay(const wxString& file);
+
+    wxTreeItemId FirstOverlay();
+    wxTreeItemId NextOverlay(wxTreeItemId id);
+    wxTreeItemId RemoveOverlay(wxTreeItemId id);
+    const wxString& GetOverlayFilename(wxTreeItemId id);
 
 private:
     DECLARE_EVENT_TABLE()

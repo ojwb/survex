@@ -226,6 +226,8 @@ public:
     void EndPolyloop();
     void BeginPolygon();
     void EndPolygon();
+    void BeginPoints();
+    void EndPoints();
     void BeginBlobs();
     void EndBlobs();
     void BeginCrosses();

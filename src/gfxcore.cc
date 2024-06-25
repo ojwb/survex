@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2022 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,10 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
+#include <gdal/ogrsf_frmts.h>
 #include <proj.h>
+
+#define WGS84_DATUM_STRING "EPSG:4326"
 
 const unsigned long DEFAULT_HGT_DIM = 3601;
 const unsigned long DEFAULT_HGT_SIZE = sqrd(DEFAULT_HGT_DIM) * 2;
@@ -246,6 +249,7 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_GRID);
     InvalidateList(LIST_SHADOW);
     InvalidateList(LIST_TERRAIN);
+    InvalidateList(LIST_OVERLAYS);
 
     // Set diameter of the viewing volume.
     auto ext = m_Parent->GetExtent();
@@ -409,6 +413,8 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    // Draw the surface legs.
 	    DrawList(LIST_SURFACE_LEGS);
 	}
+
+	DrawList(LIST_OVERLAYS);
 
 	if (m_BoundingBox) {
 	    DrawShadowedBoundingBox();
@@ -2664,6 +2670,9 @@ void GfxCore::GenerateList(unsigned int l)
 	case LIST_TERRAIN:
 	    DrawTerrain();
 	    break;
+	case LIST_OVERLAYS:
+	    DrawOverlays();
+	    break;
 	default:
 	    assert(false);
 	    break;
@@ -3042,7 +3051,7 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
     ++n_tris;
 }
 
-// Like wxBusyCursor, but you can cancel it early.
+// Like wxBusyCursor, but you can cancel it early and restart it.
 class AvenBusyCursor {
     bool active;
 
@@ -3055,6 +3064,13 @@ class AvenBusyCursor {
 	if (active) {
 	    active = false;
 	    wxEndBusyCursor();
+	}
+    }
+
+    void restart() {
+	if (!active) {
+	    active = true;
+	    wxBeginBusyCursor();
 	}
     }
 
@@ -3076,8 +3092,6 @@ void GfxCore::DrawTerrain()
 
     /* Prevent stderr spew from PROJ. */
     proj_log_func(PJ_DEFAULT_CTX, nullptr, discarding_proj_logger);
-
-#define WGS84_DATUM_STRING "EPSG:4326"
 
     PJ* pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
 				    WGS84_DATUM_STRING,
@@ -4557,4 +4571,257 @@ void GfxCore::ZoomBoxGo()
     zoombox.unset();
 
     SetScale(GetScale() * factor);
+}
+
+//#define DEBUG_LOAD_OVERLAYS
+
+void GfxCore::DrawOverlays()
+{
+    AvenBusyCursor hourglass;
+
+    SetColour(col_TURQUOISE);
+    GDALAllRegister();
+    CPLSetConfigOption("GPX_ELE_AS_25D", "YES");
+    for (auto it = m_Parent->FirstOverlay(); it.IsOk(); it = m_Parent->NextOverlay(it)) {
+	if (false) {
+erase_overlay:
+	    it = m_Parent->RemoveOverlay(it);
+	    if (!it.IsOk()) break;
+	}
+	const char* p = m_Parent->GetOverlayFilename(it).utf8_str();
+	GDALDataset* poDS = (GDALDataset*)GDALOpenEx(p, GDAL_OF_VECTOR,
+						     NULL, NULL, NULL);
+	if (!poDS) {
+	    hourglass.stop();
+	    wxGetApp().ReportError(wxString::Format(wmsg(/*Couldn’t open file “%s”*/24), p));
+	    hourglass.restart();
+	    goto erase_overlay;
+	}
+
+	const OGRSpatialReference* current_ogrsr = nullptr;
+	PJ* pj = nullptr;
+
+	bool gpx = (strcmp(poDS->GetDriverName(), "GPX") == 0);
+
+	const Vector3 & off = m_Parent->GetOffset();
+
+	auto layer_count = poDS->GetLayerCount();
+#ifdef DEBUG_LOAD_OVERLAYS
+	printf("%d layers\n", (int)layer_count);
+#endif
+	for (int i = 0; i < layer_count; ++i) {
+	    OGRLayer* poLayer = poDS->GetLayer(i);
+	    if (gpx) {
+		// GDAL's GPX driver gives a MultiLineString for each route and
+		// track but also exposes layers with the points from each route
+		// and track separately.  We ignore these points as they are
+		// redundant and not useful to us.
+		const char* layer_name = poLayer->GetName();
+		if (strcmp(layer_name, "route_points") == 0 ||
+		    strcmp(layer_name, "track_points") == 0) {
+		    continue;
+		}
+	    }
+#ifdef DEBUG_LOAD_OVERLAYS
+	    printf("  #%d: %s %ld features\n", i, poLayer->GetName(), (long)poLayer->GetFeatureCount());
+#endif
+	    for (auto& poFeature : poLayer) {
+		OGRGeometry* poGeometry = poFeature->GetGeometryRef();
+		if (!poGeometry) continue;
+
+		const OGRSpatialReference* ogrsr = poGeometry->getSpatialReference();
+		if (!ogrsr) {
+		    hourglass.stop();
+		    // TRANSLATORS: %s is replaced by the name of a geodata
+		    // file, e.g. GPX, KML.
+		    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/24), p));
+		    hourglass.restart();
+		    goto erase_overlay;
+		}
+		if (ogrsr != current_ogrsr) {
+		    current_ogrsr = ogrsr;
+		    char* cs_wkt = nullptr;
+		    auto result = ogrsr->exportToWkt(&cs_wkt);
+		    if (result != OGRERR_NONE) {
+			hourglass.stop();
+			if (result == OGRERR_NOT_ENOUGH_MEMORY) {
+			    wxGetApp().ReportError(wmsg(/*Out of memory*/389));
+			} else {
+			    // TRANSLATORS: %s is replaced by the name of a geodata
+			    // file, e.g. GPX, KML.
+			    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/24), p));
+			}
+			hourglass.restart();
+			goto erase_overlay;
+		    }
+
+		    proj_destroy(pj);
+		    pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+						cs_wkt,
+						m_Parent->GetCSProj().c_str(),
+						NULL);
+		    if (pj) {
+			// Normalise the output order so x is longitude and y latitude - by
+			// default new PROJ has them switched for EPSG:4326 which just seems
+			// confusing.
+			PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+			proj_destroy(pj);
+			pj = pj_norm;
+		    }
+		}
+
+		switch (wkbFlatten(poGeometry->getGeometryType())) {
+		    case wkbPoint: {
+			OGRPoint* poPoint = poGeometry->toPoint();
+			PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+			coord = proj_trans(pj, PJ_FWD, coord);
+			if (coord.xyzt.x == HUGE_VAL ||
+			    coord.xyzt.y == HUGE_VAL ||
+			    coord.xyzt.z == HUGE_VAL) {
+			    // FIXME report errors
+			    double x = coord.xyzt.x;
+			    double y = coord.xyzt.y;
+			    double z = coord.xyzt.z;
+			    printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+			    continue;
+			}
+			double x = coord.xyzt.x - off.GetX();
+			double y = coord.xyzt.y - off.GetY();
+			double z = coord.xyzt.z - off.GetZ();
+			BeginPoints();
+			PlaceVertex(x, y, z);
+			EndPoints();
+			break;
+		    }
+		    case wkbLineString: {
+			OGRLineString* poLineString = poGeometry->toLineString();
+
+			BeginPolyline();
+			for (auto& point : poLineString) {
+			    OGRPoint* poPoint = &point;
+			    PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+			    coord = proj_trans(pj, PJ_FWD, coord);
+			    if (coord.xyzt.x == HUGE_VAL ||
+				coord.xyzt.y == HUGE_VAL ||
+				coord.xyzt.z == HUGE_VAL) {
+				// FIXME report errors
+				double x = coord.xyzt.x;
+				double y = coord.xyzt.y;
+				double z = coord.xyzt.z;
+				printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+				continue;
+			    }
+			    double x = coord.xyzt.x - off.GetX();
+			    double y = coord.xyzt.y - off.GetY();
+			    double z = coord.xyzt.z - off.GetZ();
+			    PlaceVertex(x, y, z);
+			}
+			EndPolyline();
+			break;
+		    }
+		    case wkbMultiLineString: {
+			OGRMultiLineString* poMultiLineString = poGeometry->toMultiLineString();
+			for (auto& poLineString : poMultiLineString) {
+			    BeginPolyline();
+			    for (auto& point : poLineString) {
+				OGRPoint* poPoint = &point;
+				PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+				coord = proj_trans(pj, PJ_FWD, coord);
+				if (coord.xyzt.x == HUGE_VAL ||
+				    coord.xyzt.y == HUGE_VAL ||
+				    coord.xyzt.z == HUGE_VAL) {
+				    // FIXME report errors
+				    double x = coord.xyzt.x;
+				    double y = coord.xyzt.y;
+				    double z = coord.xyzt.z;
+				    printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+				    continue;
+				}
+				double x = coord.xyzt.x - off.GetX();
+				double y = coord.xyzt.y - off.GetY();
+				double z = coord.xyzt.z - off.GetZ();
+				PlaceVertex(x, y, z);
+			    }
+			    EndPolyline();
+			}
+			break;
+		    }
+		    case wkbPolygon: {
+			OGRPolygon* poPolygon = poGeometry->toPolygon();
+			{
+			    for (auto& poRing : poPolygon) {
+#ifdef DEBUG_LOAD_OVERLAYS
+				printf("---Ring---\n");
+#endif
+				BeginPolygon();
+				for (auto& point : poRing) {
+				    OGRPoint* poPoint = &point;
+				    PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+    //				    printf("(%.2f, %.2f, %.2f) -> ", poPoint->getX(), poPoint->getY(), poPoint->getZ());
+				    coord = proj_trans(pj, PJ_FWD, coord);
+				    if (coord.xyzt.x == HUGE_VAL ||
+					coord.xyzt.y == HUGE_VAL ||
+					coord.xyzt.z == HUGE_VAL) {
+					// FIXME report errors
+					double x = coord.xyzt.x;
+					double y = coord.xyzt.y;
+					double z = coord.xyzt.z;
+					printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+					continue;
+				    }
+				    double x = coord.xyzt.x - off.GetX();
+				    double y = coord.xyzt.y - off.GetY();
+				    double z = coord.xyzt.z - off.GetZ();
+    //				    printf("Polygon vertex at (%.3f, %.3f, %.3f)\n", x, y, z);
+				    PlaceVertex(x, y, z);
+				}
+				EndPolygon();
+			    }
+			}
+			break;
+		    }
+		    case wkbMultiPolygon: {
+			OGRMultiPolygon* poMultiPolygon = poGeometry->toMultiPolygon();
+			for (auto& poPolygon : poMultiPolygon) {
+			    for (auto& poRing : poPolygon) {
+#ifdef DEBUG_LOAD_OVERLAYS
+				printf("---Ring---\n");
+#endif
+				BeginPolygon();
+				for (auto& point : poRing) {
+				    OGRPoint* poPoint = &point;
+				    PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+    //				    printf("(%.2f, %.2f, %.2f) -> ", poPoint->getX(), poPoint->getY(), poPoint->getZ());
+				    coord = proj_trans(pj, PJ_FWD, coord);
+				    if (coord.xyzt.x == HUGE_VAL ||
+					coord.xyzt.y == HUGE_VAL ||
+					coord.xyzt.z == HUGE_VAL) {
+					// FIXME report errors
+					double x = coord.xyzt.x;
+					double y = coord.xyzt.y;
+					double z = coord.xyzt.z;
+					printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+					continue;
+				    }
+				    double x = coord.xyzt.x - off.GetX();
+				    double y = coord.xyzt.y - off.GetY();
+				    double z = coord.xyzt.z - off.GetZ();
+    //				    printf("Polygon vertex at (%.3f, %.3f, %.3f)\n", x, y, z);
+				    PlaceVertex(x, y, z);
+				}
+				EndPolygon();
+			    }
+			}
+			break;
+		    }
+		    default:
+			printf("Unhandled wkb type %d\n", (int)wkbFlatten(poGeometry->getGeometryType()));
+		}
+	    }
+	}
+
+	delete poDS;
+
+	proj_destroy(pj);
+    }
 }

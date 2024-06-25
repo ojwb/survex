@@ -123,7 +123,8 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
 END_EVENT_TABLE()
 
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
-    wxTreeCtrl(window_parent, wxID_ANY),
+    wxTreeCtrl(window_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+	       wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT),
     m_Parent(parent),
     m_Enabled(false),
     m_LastItem(),
@@ -150,13 +151,16 @@ void AvenTreeCtrl::FillTree(const wxString& root_name)
     filter.clear();
     filter.SetSeparator(separator);
 
-    // Create the root of the tree.
-    wxTreeItemId treeroot = AddRoot(root_name);
+    // Create the (hidden) real root of the wxTreeCtrl.
+    wxTreeItemId treeroot = AddRoot(wxString());
+
+    // Create the root of the survey tree.
+    wxTreeItemId surveyroot = AppendItem(treeroot, root_name);
 
     // Fill the tree of stations and prefixes.
     stack<wxTreeItemId> previous_ids;
     wxString current_prefix;
-    wxTreeItemId current_id = treeroot;
+    wxTreeItemId current_id = surveyroot;
 
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     while (pos != m_Parent->GetLabelsEnd()) {
@@ -280,7 +284,7 @@ void AvenTreeCtrl::FillTree(const wxString& root_name)
 	}
     }
 
-    Expand(treeroot);
+    Expand(surveyroot);
     m_Enabled = true;
     Thaw();
 }
@@ -356,7 +360,7 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
     menu_data = data;
     menu_item = e.GetItem();
     if (!data) {
-	// Root:
+	// Survey tree root:
 	wxMenu menu;
 	/* TRANSLATORS: In aven's survey tree, right-clicking on the root
 	 * gives a pop-up menu and this is an option (but only enabled if
@@ -367,9 +371,9 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 	if (m_Parent->GetSurvey().empty())
 	    menu.Enable(menu_SURVEY_SHOW_ALL, false);
 	PopupMenu(&menu);
-    } else if (data->GetLabel()) {
+    } else if (data->IsStation()) {
 	// Station: name is data->GetLabel()->GetText()
-    } else {
+    } else if (ItemHasChildren(menu_item)) {
 	// Survey:
 	wxMenu menu;
 	/* TRANSLATORS: In aven's survey tree, right-clicking on a survey
@@ -399,6 +403,8 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 #endif
 	}
 	PopupMenu(&menu);
+    } else {
+	// Overlay - FIXME: menu here?
     }
     menu_data = NULL;
     e.Skip();
@@ -465,7 +471,8 @@ void AvenTreeCtrl::OnKeyPress(wxKeyEvent &e)
 
 void AvenTreeCtrl::OnRestrict(wxCommandEvent&)
 {
-    m_Parent->RestrictTo(menu_data ? menu_data->GetSurvey() : wxString());
+    m_Parent->RestrictTo(menu_data && menu_data->IsSurvey() ? menu_data->GetSurvey() : wxString());
+    // FIXME: Overlays
 }
 
 void AvenTreeCtrl::OnHide(wxCommandEvent&)
@@ -475,6 +482,7 @@ void AvenTreeCtrl::OnHide(wxCommandEvent&)
     // Hide should be disabled unless the item is explicitly shown.
     wxASSERT(GetItemState(menu_item) == STATE_ON);
     SetItemState(menu_item, STATE_OFF);
+    // FIXME: Overlays?
     filter.remove(menu_data->GetSurvey());
 #if 0
     Freeze();
@@ -503,6 +511,7 @@ void AvenTreeCtrl::OnShow(wxCommandEvent&)
     wxASSERT(old_state != STATE_ON);
     Freeze();
     SetItemState(menu_item, STATE_ON);
+    // FIXME: Overlays?
     filter.add(menu_data->GetSurvey());
     if (old_state == wxTREE_ITEMSTATE_NONE) {
 	// Hide siblings if not already shown or hidden.
@@ -530,6 +539,7 @@ void AvenTreeCtrl::OnHideSiblings(wxCommandEvent&)
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
     Freeze();
+    // FIXME: Overlays?
     SetItemState(menu_item, STATE_ON);
     filter.add(menu_data->GetSurvey());
 
@@ -559,14 +569,94 @@ void AvenTreeCtrl::OnStateClick(wxTreeEvent& e)
 	    // this in the same way as a click on the label.
 	    return;
 	case STATE_ON:
-	    filter.remove(data->GetSurvey());
+	    if (!ItemHasChildren(item)) {
+		// Overlay.
+		m_Parent->InvalidateOverlays();
+	    } else {
+		// Survey.
+		if (data) filter.remove(data->GetSurvey());
+	    }
 	    SetItemState(item, STATE_OFF);
 	    break;
 	case STATE_OFF:
-	    filter.add(data->GetSurvey());
+	    if (!ItemHasChildren(item)) {
+		// Overlay.
+		m_Parent->InvalidateOverlays();
+	    } else {
+		// Survey.
+		if (data) filter.add(data->GetSurvey());
+	    }
 	    SetItemState(item, STATE_ON);
 	    break;
     }
     e.Skip();
     m_Parent->ForceFullRedraw();
+}
+
+void AvenTreeCtrl::AddOverlay(const wxString& file)
+{
+    auto id = AppendItem(GetRootItem(), file);
+    SetItemState(id, STATE_ON);
+    SetItemData(id, new TreeData(file));
+}
+
+void AvenTreeCtrl::RemoveOverlay(const wxString& file)
+{
+    // If we add an overlay but fail to load it and remove it again, the
+    // overlay will be the last one, so search from the last one back.
+    for (auto item = GetLastChild(GetRootItem());
+	 item.IsOk();
+	 item = GetPrevSibling(item)) {
+	if (ItemHasChildren(item)) {
+	    // Not an overlay.
+	    continue;
+	}
+	const TreeData* data = static_cast<const TreeData*>(GetItemData(item));
+	if (data->GetSurvey() == file) {
+	    Delete(item);
+	    break;
+	}
+    }
+}
+
+wxTreeItemId AvenTreeCtrl::FirstOverlay()
+{
+    wxTreeItemIdValue cookie;
+    auto item = GetFirstChild(GetRootItem(), cookie);
+    while (item.IsOk() &&
+	   (ItemHasChildren(item) || GetItemState(item) != STATE_ON)) {
+	item = GetNextSibling(item);
+    }
+    return item;
+}
+
+wxTreeItemId AvenTreeCtrl::NextOverlay(wxTreeItemId item)
+{
+    do {
+	item = GetNextSibling(item);
+    } while (item.IsOk() &&
+	     (ItemHasChildren(item) || GetItemState(item) != STATE_ON));
+    return item;
+}
+
+wxTreeItemId AvenTreeCtrl::RemoveOverlay(wxTreeItemId id)
+{
+    wxTreeItemId item = NextOverlay(id);
+    Delete(id);
+    return item;
+}
+
+const wxString& AvenTreeCtrl::GetOverlayFilename(wxTreeItemId item)
+{
+    if (ItemHasChildren(item)) {
+	printf("Has children\n");
+not_an_overlay:
+	printf("not_an_overlay\n");
+	static const wxString empty_string;
+	return empty_string;
+    }
+
+    const TreeData* data = static_cast<const TreeData*>(GetItemData(item));
+    if (!data) goto not_an_overlay;
+    return data->GetSurvey();
 }

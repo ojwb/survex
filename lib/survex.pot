@@ -1614,9 +1614,19 @@ msgstr ""
 msgid "Select a terrain file to view"
 msgstr ""
 
+#: ../src/mainfrm.cc:1512
+#: n:496
+msgid "Select a geodata file to overlay"
+msgstr ""
+
 #: ../src/mainfrm.cc:1460
 #: n:452
 msgid "Terrain files"
+msgstr ""
+
+#: ../src/mainfrm.cc:1508
+#: n:495
+msgid "Geodata files"
 msgstr ""
 
 #. TRANSLATORS: Aven shows a circle of terrain covering the area
@@ -2887,6 +2897,11 @@ msgstr ""
 msgid "Open &Terrain..."
 msgstr ""
 
+#: ../src/mainfrm.cc:790
+#: n:494
+msgid "Overlay &Geodata..."
+msgstr ""
+
 #: ../src/mainfrm.cc:791
 #: n:144
 msgid "Show &Log"
@@ -3322,6 +3337,14 @@ msgstr ""
 #: n:288
 #, c-format
 msgid "Failed to initialise output coordinate system “%s”"
+msgstr ""
+
+#. TRANSLATORS: %s is replaced by the name of a geodata
+#. file, e.g. GPX, KML.
+#: ../src/gfxcore.cc:4617
+#: n:492
+#, c-format
+msgid "File “%s” not georeferenced"
 msgstr ""
 
 #. TRANSLATORS: The PROJ library is used to do coordinate
