@@ -60,7 +60,7 @@ void GUIControl::HandleTilt(wxPoint point)
 
     if (m_ReverseControls != m_View->GetPerspective()) dy = -dy;
 
-    m_View->TiltCave(Double(dy) * 0.36);
+    m_View->TiltCave(dy * 0.36);
 
     m_DragStart = point;
 
@@ -154,7 +154,7 @@ void GUIControl::HandleScaleRotate(wxPoint point)
 	// up/down => scale.
 	if (dy) m_View->SetScale(m_View->GetScale() * pow(1.06, 0.08 * dy));
 	// left/right => rotate.
-	if (dx) m_View->TurnCave(Double(dx) * -0.36);
+	if (dx) m_View->TurnCave(dx * -0.36);
 	if (dx || dy) m_View->ForceRefresh();
     }
 
@@ -179,8 +179,8 @@ void GUIControl::HandleTiltRotate(wxPoint point)
 
     // left/right => rotate, up/down => tilt.
     // Make tilt less sensitive than rotate as that feels better.
-    m_View->TurnCave(Double(dx) * -0.36);
-    m_View->TiltCave(Double(dy) * 0.18);
+    m_View->TurnCave(dx * -0.36);
+    m_View->TiltCave(dy * 0.18);
 
     m_View->ForceRefresh();
 
@@ -204,7 +204,7 @@ void GUIControl::HandleRotate(wxPoint point)
     }
 
     // left/right => rotate.
-    m_View->TurnCave(Double(dx) * -0.36);
+    m_View->TurnCave(dx * -0.36);
 
     m_View->ForceRefresh();
 

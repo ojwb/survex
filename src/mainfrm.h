@@ -425,8 +425,8 @@ public:
     void ClearCoords();
     void SetCoords(const Vector3 &v);
     const LabelInfo * GetTreeSelection() const;
-    void SetCoords(Double x, Double y, const LabelInfo * there);
-    void SetAltitude(Double z, const LabelInfo * there);
+    void SetCoords(double x, double y, const LabelInfo * there);
+    void SetAltitude(double z, const LabelInfo * there);
 
     void ShowInfo(const LabelInfo *here = NULL, const LabelInfo *there = NULL);
     void DisplayTreeInfo(const wxTreeItemData* data = NULL);

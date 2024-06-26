@@ -28,6 +28,4 @@
 #include <GL/glu.h>
 #endif
 
-typedef GLdouble Double;
-
 #endif

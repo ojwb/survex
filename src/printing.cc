@@ -925,8 +925,8 @@ svxPrintDlg::RecalcBounds()
 		// get the coordinates of this vertex
 		const XSect & pt_v = *i++;
 		if (m_layout.tilt == 0.0) {
-		    Double u = pt_v.GetU();
-		    Double d = pt_v.GetD();
+		    double u = pt_v.GetU();
+		    double d = pt_v.GetD();
 
 		    if (u >= 0 || d >= 0) {
 			if (filter && !filter->CheckVisible(pt_v.GetLabel()))
@@ -1014,8 +1014,8 @@ svxPrintDlg::RecalcBounds()
 		    // Scale to unit vectors in the LRUD plane.
 		    right.normalise();
 
-		    Double l = pt_v.GetL();
-		    Double r = pt_v.GetR();
+		    double l = pt_v.GetL();
+		    double r = pt_v.GetR();
 
 		    if (l >= 0 || r >= 0) {
 			if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
@@ -2105,8 +2105,8 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	// Scale to unit vectors in the LRUD plane.
 	right.normalise();
 
-	Double l = pt_v.GetL();
-	Double r = pt_v.GetR();
+	double l = pt_v.GetL();
+	double r = pt_v.GetR();
 
 	if (l >= 0 || r >= 0) {
 	    if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
@@ -2190,8 +2190,8 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	// get the coordinates of this vertex
 	const XSect & pt_v = *i++;
 
-	Double u = pt_v.GetU();
-	Double d = pt_v.GetD();
+	double u = pt_v.GetU();
+	double d = pt_v.GetD();
 
 	if (u >= 0 || d >= 0) {
 	    if (filter && !filter->CheckVisible(pt_v.GetLabel()))

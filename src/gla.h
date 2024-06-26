@@ -41,7 +41,7 @@ string GetGLSystemDescription();
 
 // #define GLA_DEBUG
 
-typedef Double glaCoord;
+typedef GLdouble glaCoord;
 
 typedef GLfloat glaTexCoord;
 
@@ -116,8 +116,8 @@ class GLACanvas : public wxGLCanvas {
     glaCoord m_VolumeDiameter;
 
     // Parameters for plotting data:
-    Double m_Pan, m_Tilt;
-    Double m_Scale;
+    double m_Pan, m_Tilt;
+    double m_Scale;
     Vector3 m_Translation;
 
     BitmapFont m_Font;
@@ -128,7 +128,7 @@ class GLACanvas : public wxGLCanvas {
     GLuint m_BlobTexture;
     GLuint m_CrossTexture;
 
-    Double alpha;
+    double alpha;
 
     bool m_SmoothShading;
     bool m_Textured;
@@ -192,7 +192,7 @@ public:
 
     void DrawList(unsigned int l);
     void DrawListZPrepass(unsigned int l);
-    void DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation);
+    void DrawList2D(unsigned int l, glaCoord x, glaCoord y, double rotation);
     void InvalidateList(unsigned int l) {
 	if (l < drawing_lists.size()) {
 	    // Invalidate any existing cached list.
@@ -268,7 +268,7 @@ public:
 	m_Pan = pan;
 	m_Tilt = tilt;
     }
-    void SetScale(Double);
+    void SetScale(double);
     void SetTranslation(const Vector3 &v) {
 	m_Translation = v;
     }
@@ -280,15 +280,15 @@ public:
     }
     void AddTranslationScreenCoordinates(int dx, int dy);
 
-    bool Transform(const Vector3 & v, double* x_out, double* y_out, double* z_out) const;
-    void ReverseTransform(Double x, Double y, double* x_out, double* y_out, double* z_out) const;
+    bool Transform(const Vector3 & v, glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const;
+    void ReverseTransform(double x, double y, glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const;
 
     int GetFontSize() const { return m_Font.get_font_size(); }
 
     void ToggleSmoothShading();
     bool GetSmoothShading() const { return m_SmoothShading; }
 
-    Double SurveyUnitsAcrossViewport() const;
+    double SurveyUnitsAcrossViewport() const;
 
     void ToggleTextured();
     bool GetTextured() const { return m_Textured; }

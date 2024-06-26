@@ -1193,19 +1193,19 @@ MainFrm::FixLRUD(traverse & centreline)
 {
     assert(centreline.size() > 1);
 
-    Double last_size = 0;
+    double last_size = 0;
     vector<PointInfo>::iterator i = centreline.begin();
     while (i != centreline.end()) {
 	// Get the coordinates of this vertex.
 	Point & pt_v = *i++;
-	Double size;
+	double size;
 
 	if (i != centreline.end()) {
-	    Double h = sqrd(i->GetX() - pt_v.GetX()) +
+	    double h = sqrd(i->GetX() - pt_v.GetX()) +
 		       sqrd(i->GetY() - pt_v.GetY());
-	    Double v = sqrd(i->GetZ() - pt_v.GetZ());
+	    double v = sqrd(i->GetZ() - pt_v.GetZ());
 	    if (h + v > 30.0 * 30.0) {
-		Double scale = 30.0 / sqrt(h + v);
+		double scale = 30.0 / sqrt(h + v);
 		h *= scale;
 		v *= scale;
 	    }
@@ -1225,10 +1225,10 @@ MainFrm::FixLRUD(traverse & centreline)
 	    size = last_size;
 	}
 
-	Double & l = pt_v.l;
-	Double & r = pt_v.r;
-	Double & u = pt_v.u;
-	Double & d = pt_v.d;
+	double & l = pt_v.l;
+	double & r = pt_v.r;
+	double & u = pt_v.u;
+	double & d = pt_v.d;
 
 	if (l == 0 && r == 0 && u == 0 && d == 0) {
 	    l = r = u = d = -size;
@@ -1721,9 +1721,9 @@ void MainFrm::ClearCoords()
 
 void MainFrm::SetCoords(const Vector3 &v)
 {
-    Double x = v.GetX();
-    Double y = v.GetY();
-    Double z = v.GetZ();
+    double x = v.GetX();
+    double y = v.GetY();
+    double z = v.GetZ();
     int units;
     if (m_Gfx->GetMetric()) {
 	units = /*m*/424;
@@ -1753,7 +1753,7 @@ const LabelInfo * MainFrm::GetTreeSelection() const {
     return data->GetLabel();
 }
 
-void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
+void MainFrm::SetCoords(double x, double y, const LabelInfo * there)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
@@ -1769,8 +1769,8 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	auto offset = GetOffset();
 	Vector3 delta(x - offset.GetX() - there->GetX(),
 		      y - offset.GetY() - there->GetY(), 0);
-	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
-	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
+	double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
+	double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
@@ -1803,7 +1803,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
     UpdateStatusBar();
 }
 
-void MainFrm::SetAltitude(Double z, const LabelInfo * there)
+void MainFrm::SetAltitude(double z, const LabelInfo * there)
 {
     double alt = z;
     int units;
@@ -1819,7 +1819,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
     wxString & t = distfree_text;
     t = wxString();
     if (m_Gfx->ShowingMeasuringLine() && there) {
-	Double dz = z - GetOffset().GetZ() - there->GetZ();
+	double dz = z - GetOffset().GetZ() - there->GetZ();
 
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
@@ -1852,9 +1852,9 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 
     Vector3 v = *here + GetOffset();
     wxString & s = here_text;
-    Double x = v.GetX();
-    Double y = v.GetY();
-    Double z = v.GetZ();
+    double x = v.GetX();
+    double y = v.GetY();
+    double z = v.GetZ();
     int units;
     if (m_Gfx->GetMetric()) {
 	units = /*m*/424;
@@ -1875,15 +1875,15 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
     if (m_Gfx->ShowingMeasuringLine() && there) {
 	Vector3 delta = *here - *there;
 
-	Double d_horiz = sqrt(delta.GetX()*delta.GetX() +
+	double d_horiz = sqrt(delta.GetX()*delta.GetX() +
 			      delta.GetY()*delta.GetY());
-	Double dr = delta.magnitude();
-	Double dz = delta.GetZ();
+	double dr = delta.magnitude();
+	double dz = delta.GetZ();
 
-	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
+	double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
 
-	Double grd = deg(atan2(delta.GetZ(), d_horiz));
+	double grd = deg(atan2(delta.GetZ(), d_horiz));
 
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
@@ -2363,12 +2363,12 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
 	return;
     }
 
-    Double xmin = DBL_MAX;
-    Double xmax = -DBL_MAX;
-    Double ymin = DBL_MAX;
-    Double ymax = -DBL_MAX;
-    Double zmin = DBL_MAX;
-    Double zmax = -DBL_MAX;
+    double xmin = DBL_MAX;
+    double xmax = -DBL_MAX;
+    double ymin = DBL_MAX;
+    double ymax = -DBL_MAX;
+    double zmin = DBL_MAX;
+    double zmax = -DBL_MAX;
 
     list<LabelInfo*>::iterator pos = m_Labels.begin();
     while (pos != m_Labels.end()) {
