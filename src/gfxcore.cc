@@ -46,7 +46,7 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
-#include <gdal/ogrsf_frmts.h>
+#include <ogrsf_frmts.h>
 #include <proj.h>
 
 #define WGS84_DATUM_STRING "EPSG:4326"
