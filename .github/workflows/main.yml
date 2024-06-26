@@ -34,6 +34,7 @@ jobs:
             libwxgtk3.0-gtk3-dev \
             libavcodec-dev \
             libavformat-dev \
+            libgdal-dev \
             libproj-dev \
             libswscale-dev \
             ghostscript \
@@ -79,6 +80,7 @@ jobs:
             libwxgtk3.0-gtk3-dev \
             libavcodec-dev \
             libavformat-dev \
+            libgdal-dev \
             libproj-dev \
             libswscale-dev \
             ghostscript \
@@ -129,6 +131,7 @@ jobs:
             libwxgtk3.2-dev \
             libavcodec-dev \
             libavformat-dev \
+            libgdal-dev \
             libproj-dev \
             libswscale-dev \
             ghostscript \
@@ -173,6 +176,7 @@ jobs:
             libwxgtk3.0-gtk3-dev \
             libavcodec-dev \
             libavformat-dev \
+            libgdal-dev \
             libproj-dev \
             libswscale-dev \
             ghostscript \
@@ -219,6 +223,7 @@ jobs:
         brew install \
             automake \
             ffmpeg \
+            gdal \
             gettext \
             gnu-tar \
             netpbm \
