@@ -4634,7 +4634,7 @@ erase_overlay:
 		    hourglass.stop();
 		    // TRANSLATORS: %s is replaced by the name of a geodata
 		    // file, e.g. GPX, KML.
-		    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/24), p));
+		    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p));
 		    hourglass.restart();
 		    goto erase_overlay;
 		}
@@ -4649,7 +4649,7 @@ erase_overlay:
 			} else {
 			    // TRANSLATORS: %s is replaced by the name of a geodata
 			    // file, e.g. GPX, KML.
-			    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/24), p));
+			    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p));
 			}
 			hourglass.restart();
 			goto erase_overlay;
