@@ -1643,12 +1643,12 @@ read_xyz_station_coords(img_point *pt, const char *line)
    char num[12];
    memcpy(num, line + 6, 9);
    num[9] = '\0';
-   pt->x = atof(num) / METRES_PER_FOOT;
+   pt->x = atof(num) * METRES_PER_FOOT;
    memcpy(num, line + 15, 9);
-   pt->y = atof(num) / METRES_PER_FOOT;
+   pt->y = atof(num) * METRES_PER_FOOT;
    memcpy(num, line + 24, 8);
    num[8] = '\0';
-   pt->z = atof(num) / METRES_PER_FOOT;
+   pt->z = atof(num) * METRES_PER_FOOT;
 }
 
 static void
@@ -1657,12 +1657,12 @@ read_xyz_shot_coords(img_point *pt, const char *line)
    char num[12];
    memcpy(num, line + 40, 10);
    num[10] = '\0';
-   pt->x = atof(num) / METRES_PER_FOOT;
+   pt->x = atof(num) * METRES_PER_FOOT;
    memcpy(num, line + 50, 10);
-   pt->y = atof(num) / METRES_PER_FOOT;
+   pt->y = atof(num) * METRES_PER_FOOT;
    memcpy(num, line + 60, 9);
    num[9] = '\0';
-   pt->z = atof(num) / METRES_PER_FOOT;
+   pt->z = atof(num) * METRES_PER_FOOT;
 }
 
 static void
@@ -1671,12 +1671,12 @@ subtract_xyz_shot_deltas(img_point *pt, const char *line)
    char num[12];
    memcpy(num, line + 15, 9);
    num[9] = '\0';
-   pt->x -= atof(num) / METRES_PER_FOOT;
+   pt->x -= atof(num) * METRES_PER_FOOT;
    memcpy(num, line + 24, 8);
    num[8] = '\0';
-   pt->y -= atof(num) / METRES_PER_FOOT;
+   pt->y -= atof(num) * METRES_PER_FOOT;
    memcpy(num, line + 32, 8);
-   pt->z -= atof(num) / METRES_PER_FOOT;
+   pt->z -= atof(num) * METRES_PER_FOOT;
 }
 
 static int

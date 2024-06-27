@@ -29,7 +29,7 @@ test -x "$testdir"/../src/cavern || testdir=.
 
 : ${DUMP3D="$testdir"/../src/dump3d}
 
-: ${TESTS=${*:-"multisection.plt multisurvey.plt pre1970.plt"}}
+: ${TESTS=${*:-"cmap.sht multisection.plt multisurvey.plt pre1970.plt"}}
 
 # Suppress checking for leaks on exit if we're build with lsan - we don't
 # generally waste effort to free all allocations as the OS will reclaim

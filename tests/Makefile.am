@@ -162,6 +162,7 @@ imgtest_simple.svx\
 imgtest_survey.svx
 
 EXTRA_DIST +=\
+cmap.sht cmap.dump\
 multisection.plt multisection.dump\
 multisurvey.plt multisurvey.dump\
 pre1970.plt pre1970.dump

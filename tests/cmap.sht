@@ -1,0 +1,16 @@
+  FAKE CAVE, NOWHERE                         69/12/01 12:00  Page    1
+ Old   New   Type    dX      dY      dZ      East     North     Vert. 
+ -------------------------------------------------------------------- 
+A1     A1            .00     .00     .00       .00       .00      .00
+A1     A2.1        04.00   12.00   -3.00     04.00     12.00    -3.00
+       A2.2   ENTRANCE CHAMBER
+A2.1   A2.2        30.00   40.00   00.00     34.00     52.00    -3.00
+
+              3 Stations
+           63.0 Feet
+           19.2 Meters
+           .012 Miles
+
+   Shot  No. of  Length
+   type  Shots   (feet)
+            2      63.0
