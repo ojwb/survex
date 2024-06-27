@@ -4108,16 +4108,6 @@ These will normally be available via the
 
 </Sect2>
 
-<Sect2><Title>Export data from <Application>Survex</Application></Title>
-
-<Para>See Rosetta Stal in the Related Tools section of the Survex web
-site.  This is a utility written by Taco van Ieperen and Gary Petrie.
-Note though that this only supports a subset of the svx format,
-and only work on Microsoft Windows.  The Survex support is limited
-and doesn't understand the more recently added commands.</Para>
-
-</Sect2>
-
 <Sect2><Title>See errors and warnings that have gone off the screen</Title>
 
 <Para>When you run <Application>Survex</Application> it will process the specified survey data
