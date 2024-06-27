@@ -1222,13 +1222,14 @@ xyz_file:
 	    /* Looks like a CMAP XYZ file. */
 	    goto xyz_file;
 	 } else if (strchr("ZSNF", buf[0])) {
-	    /* Looks like a Compass .plt file ... */
-	    /* Almost certainly it'll start "Z " */
+	    /* Looks like a Compass .plt file (almost certainly it'll start
+	     * "Z " but the other letters are possible too).
+	     */
 	    goto plt_file;
 	 }
       }
       if (buf[0] == '(') {
-	 /* Looks like a Survex .pos file ... */
+	 /* Looks like a Survex .pos file. */
 	 goto pos_file;
       }
       img_errno = IMG_BADFORMAT;
