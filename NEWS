@@ -1,4 +1,4 @@
-up to: 5e3f1960d3b334d14d3dfbd40966c3a8395f1e3a
+up to: 1a6fddc915448c2fc751fd93d166693f8f022052
 
 Changes in 1.4.9 (2024-06-??):
 
@@ -69,6 +69,12 @@ Changes in 1.4.9 (2024-06-??):
     our website was removed in 2015 because Rosetta Stal hadn't been updated
     for 13.5 years at that point.  Now the domain it was available from has
     lapsed and is a domain squatter "for sale" page.
+
+* img library:
+
+  + The coordinates in CMAP data are in feet but we were dividing rather
+    than multiplying by the conversion factor to get metres so all
+    coordinates were about 10.76 times too large.
 
 * Build system:
 
