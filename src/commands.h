@@ -19,6 +19,26 @@
 
 #include "str.h"
 
+/* Fix station if not already fixed.
+ *
+ * Returns:
+ *  0 if not already fixed
+ *  1 if already fixed at the same coordinates
+ * -1 if already fixed but at different coordinates
+ */
+int fix_station(prefix *fix_name, double* coords);
+
+/* Fix station with variance.
+ *
+ * Multiple fixes for the same station are OK.
+ */
+void fix_station_with_variance(prefix *fix_name, double* coords,
+			       real var_x, real var_y, real var_z,
+#ifndef NO_COVARIANCES
+			       real cxy, real cyz, real cza
+#endif
+			      );
+
 int get_length_units(int quantity);
 int get_angle_units(int quantity);
 
@@ -42,8 +62,13 @@ void set_declination_location(real x, real y, real z, const char *proj_str);
 void copy_on_write_meta(settings *s);
 
 extern string token;
+extern string uctoken;
 void get_token(void);
 void get_token_no_blanks(void);
+// Read a token as defined in Walls format.
+void get_token_walls(void);
+
+void get_word(void);
 
 typedef struct { const char *sz; int tok; } sztok;
 int match_tok(const sztok *tab, int tab_size);

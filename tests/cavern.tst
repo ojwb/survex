@@ -72,6 +72,7 @@ testdir=`(cd "$testdir" && pwd)`
  badmak.mak\
  fixfeet.mak utm.mak\
  clptest.dat clptest.clp\
+ walls.srv\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\

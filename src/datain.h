@@ -82,9 +82,12 @@ char* grab_line(void);
 #define DIAG_NUM	0x100	// Real number.
 #define DIAG_STRING	0x200	// Possibly quoted string value.
 #define DIAG_TAIL	0x400	// Rest of the line (not including trailing blanks or comment).
-#define DIAG_FROM_	0x800	// Width is from filepos in bits above this one
+#define DIAG_FROM_	0x800	// The caret_width value is in bits above this one.
 #define DIAG_FROM_SHIFT 12
-#define DIAG_FROM(POS)	(DIAG_FROM_ | ((ftell(file.fh) - (POS).offset) << DIAG_FROM_SHIFT))
+// Specify the caret_width explicitly.
+#define DIAG_WIDTH(W)	(DIAG_FROM_ | ((W) << DIAG_FROM_SHIFT))
+// Specify caret_width to be from filepos POS to the current position.
+#define DIAG_FROM(POS)	DIAG_WIDTH(ftell(file.fh) - (POS).offset)
 
 void compile_diagnostic(int flags, int en, ...);
 

@@ -44,6 +44,69 @@
 
 #define WGS84_DATUM_STRING "EPSG:4326"
 
+int fix_station(prefix *fix_name, double* coords) {
+    fix_name->sflags |= BIT(SFLAGS_FIXED);
+    node *stn = StnFromPfx(fix_name);
+    if (fixed(stn)) {
+	if (coords[0] != POS(stn, 0) ||
+	    coords[1] != POS(stn, 1) ||
+	    coords[2] != POS(stn, 2)) {
+	    return -1;
+	}
+	return 1;
+    }
+
+    POS(stn, 0) = coords[0];
+    POS(stn, 1) = coords[1];
+    POS(stn, 2) = coords[2];
+    fix(stn);
+
+    // Make the station's file:line location reflect where it was fixed.
+    fix_name->filename = file.filename;
+    fix_name->line = file.line;
+    return 0;
+}
+
+void fix_station_with_variance(prefix *fix_name, double* coords,
+			       real var_x, real var_y, real var_z,
+#ifndef NO_COVARIANCES
+			       real cxy, real cyz, real czx
+#endif
+			      )
+{
+    node *stn = StnFromPfx(fix_name);
+    if (!fixed(stn)) {
+	node *fixpt = osnew(node);
+	prefix *name;
+	name = osnew(prefix);
+	name->pos = osnew(pos);
+	name->ident = NULL;
+	name->shape = 0;
+	fixpt->name = name;
+	name->stn = fixpt;
+	name->up = NULL;
+	if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
+	    name->min_export = USHRT_MAX;
+	} else {
+	    name->min_export = 0;
+	}
+	name->max_export = 0;
+	name->sflags = 0;
+	add_stn_to_list(&stnlist, fixpt);
+	POS(fixpt, 0) = coords[0];
+	POS(fixpt, 1) = coords[1];
+	POS(fixpt, 2) = coords[2];
+	fix(fixpt);
+	fixpt->leg[0] = fixpt->leg[1] = fixpt->leg[2] = NULL;
+	addfakeleg(fixpt, stn, 0, 0, 0,
+		   var_x, var_y, var_z
+#ifndef NO_COVARIANCES
+		   , cxy, cyz, czx
+#endif
+		  );
+    }
+}
+
 static void
 default_grade(settings *s)
 {
@@ -247,7 +310,7 @@ default_all(settings *s)
 
 string token = S_INIT;
 
-static string uctoken = S_INIT;
+string uctoken = S_INIT;
 
 /* read token */
 extern void
@@ -273,10 +336,23 @@ get_token_no_blanks(void)
 #endif
 }
 
+extern void
+get_token_walls(void)
+{
+   skipblanks();
+   s_clear(&token);
+   s_clear(&uctoken);
+   while (isalnum(ch)) {
+      s_catchar(&token, ch);
+      s_catchar(&uctoken, toupper(ch));
+      nextch();
+   }
+}
+
 static string word = S_INIT;
 
 /* read word */
-static void
+void
 get_word(void)
 {
    s_clear(&word);
@@ -822,7 +898,8 @@ report_declination(settings *p)
 	PUTC(' ', STDERR);
 	fputs(p->dec_context, STDERR);
 	fputnl(STDERR);
-	free(p->dec_context);
+	if (p->next && p->dec_context != p->next->dec_context)
+	    free(p->dec_context);
 	p->dec_context = NULL;
 	p->min_declination = HUGE_VAL;
 	p->max_declination = -HUGE_VAL;
@@ -939,7 +1016,8 @@ cmd_end(void)
    if (pcs->begin_lineno == 0) {
       if (pcs->next == NULL) {
 	 /* more ENDs than BEGINs */
-	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching BEGIN*/192);
+	 /* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
+	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching %s*/192, "BEGIN");
       } else {
 	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
       }
@@ -1002,17 +1080,14 @@ static unsigned first_fix_line;
 static void
 cmd_fix(void)
 {
-   prefix *fix_name;
-   node *stn = NULL;
    static prefix *name_omit_already = NULL;
    static const char * name_omit_already_filename = NULL;
    static unsigned int name_omit_already_line;
-   real x, y, z;
+   PJ_COORD coord;
    filepos fp_stn, fp;
 
    get_pos(&fp_stn);
-   fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
-   fix_name->sflags |= BIT(SFLAGS_FIXED);
+   prefix *fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 
    get_pos(&fp);
    get_token();
@@ -1023,13 +1098,13 @@ cmd_fix(void)
       if (!s_empty(&uctoken)) set_pos(&fp);
    }
 
-   x = read_numeric(true);
-   if (x == HUGE_REAL) {
+   coord.v[0] = read_numeric(true);
+   if (coord.v[0] == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */
-      if (!isEol(ch) && !isComm(ch)) x = read_numeric(false);
+      if (!isEol(ch) && !isComm(ch)) coord.v[0] = read_numeric(false);
    }
-   if (x == HUGE_REAL) {
+   if (coord.v[0] == HUGE_REAL) {
       if (pcs->proj_str || proj_str_out) {
 	 compile_diagnostic(DIAG_ERR|DIAG_COL|DIAG_SKIP, /*Coordinates can't be omitted when coordinate system has been specified*/439);
 	 return;
@@ -1058,11 +1133,10 @@ cmd_fix(void)
 	 name_omit_already_line = file.line;
       }
 
-      x = y = z = (real)0.0;
+      coord.v[0] = coord.v[1] = coord.v[2] = (real)0.0;
    } else {
-      real sdx;
-      y = read_numeric(false);
-      z = read_numeric(false);
+      coord.v[1] = read_numeric(false);
+      coord.v[2] = read_numeric(false);
 
       if (pcs->proj_str && proj_str_out) {
 	 PJ *transform = pj_cached;
@@ -1087,22 +1161,21 @@ cmd_fix(void)
 
 	 if (proj_angular_input(transform, PJ_FWD)) {
 	    /* Input coordinate system expects radians. */
-	    x = rad(x);
-	    y = rad(y);
+	    coord.v[0] = rad(coord.v[0]);
+	    coord.v[1] = rad(coord.v[1]);
 	 }
 
-	 PJ_COORD coord = {{x, y, z, HUGE_VAL}};
+	 coord.v[4] = HUGE_VAL;
 	 coord = proj_trans(transform, PJ_FWD, coord);
-	 x = coord.xyzt.x;
-	 y = coord.xyzt.y;
-	 z = coord.xyzt.z;
 
-	 if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
+	 if (coord.v[0] == HUGE_VAL ||
+	     coord.v[1] == HUGE_VAL ||
+	     coord.v[2] == HUGE_VAL) {
 	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
 			       proj_context_errno_string(PJ_DEFAULT_CTX,
 							 proj_errno(transform)));
 	    /* Set dummy values which are finite. */
-	    x = y = z = 0;
+	    coord.v[0] = coord.v[1] = coord.v[2] = 0;
 	 }
       } else if (pcs->proj_str) {
 	 compile_diagnostic(DIAG_ERR, /*The input projection is set but the output projection isn't*/437);
@@ -1111,7 +1184,7 @@ cmd_fix(void)
       }
 
       get_pos(&fp);
-      sdx = read_numeric(true);
+      real sdx = read_numeric(true);
       if (sdx <= 0) {
 	  set_pos(&fp);
 	  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
@@ -1153,37 +1226,12 @@ cmd_fix(void)
 	       }
 	    }
 	 }
-	 stn = StnFromPfx(fix_name);
-	 if (!fixed(stn)) {
-	    node *fixpt = osnew(node);
-	    prefix *name;
-	    name = osnew(prefix);
-	    name->pos = osnew(pos);
-	    name->ident = NULL;
-	    name->shape = 0;
-	    fixpt->name = name;
-	    name->stn = fixpt;
-	    name->up = NULL;
-	    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
-	       name->min_export = USHRT_MAX;
-	    } else {
-	       name->min_export = 0;
-	    }
-	    name->max_export = 0;
-	    name->sflags = 0;
-	    add_stn_to_list(&stnlist, fixpt);
-	    POS(fixpt, 0) = x;
-	    POS(fixpt, 1) = y;
-	    POS(fixpt, 2) = z;
-	    fix(fixpt);
-	    fixpt->leg[0] = fixpt->leg[1] = fixpt->leg[2] = NULL;
-	    addfakeleg(fixpt, stn, 0, 0, 0,
-		       sdx * sdx, sdy * sdy, sdz * sdz
+	 fix_station_with_variance(fix_name, coord.v,
+				   sdx * sdx, sdy * sdy, sdz * sdz
 #ifndef NO_COVARIANCES
-		       , cxy, cyz, czx
+				   , cxy, cyz, czx
 #endif
-		       );
-	 }
+				  );
 
 	 if (!first_fix_name) {
 	    /* We track if we've fixed a station yet, and if so what the name
@@ -1207,22 +1255,14 @@ cmd_fix(void)
       first_fix_line = file.line;
    }
 
-   stn = StnFromPfx(fix_name);
-   if (!fixed(stn)) {
-      POS(stn, 0) = x;
-      POS(stn, 1) = y;
-      POS(stn, 2) = z;
-      fix(stn);
-
-      // Make the station's file:line location reflect this *fix.
-      fix_name->filename = file.filename;
-      fix_name->line = file.line;
+   int fix_result = fix_station(fix_name, coord.v);
+   if (fix_result == 0) {
       return;
    }
 
    get_pos(&fp);
    set_pos(&fp_stn);
-   if (x != POS(stn, 0) || y != POS(stn, 1) || z != POS(stn, 2)) {
+   if (fix_result < 0) {
        compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Station already fixed or equated to a fixed point*/46);
    } else {
        /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
@@ -1270,9 +1310,13 @@ cmd_flags(void)
    }
 
    if (fNot) {
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			 /*Expecting “%s”, “%s”, or “%s”*/188,
+			 "DUPLICATE", "SPLAY", "SURFACE");
    } else if (fEmpty) {
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			 /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+			 "NOT", "DUPLICATE", "SPLAY", "SURFACE");
    }
 }
 

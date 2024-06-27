@@ -249,6 +249,8 @@ AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
 
 AC_CHECK_FUNCS([setenv unsetenv])
 
+AC_CHECK_FUNCS([fmemopen])
+
 AC_PATH_PROG([JW], [jw], [$MISSING jw])
 AC_ARG_VAR([JW], [jw from docbook-utils/docbook-tools])
 

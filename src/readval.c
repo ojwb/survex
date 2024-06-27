@@ -361,8 +361,222 @@ anon_wall_station:
    return ptr;
 }
 
+char *
+read_walls_prefix(void)
+{
+    string name = S_INIT;
+    skipblanks();
+    if (!isNames(ch))
+	return NULL;
+    do {
+	s_catchar(&name, ch);
+	nextch();
+    } while (isNames(ch));
+    return s_steal(&name);
+}
+
+prefix *
+read_walls_station(char * const walls_prefix[3], bool anon_allowed)
+{
+//    bool f_optional = false; //!!(pfx_flags & PFX_OPT);
+//    bool fSuspectTypo = false; //!!(pfx_flags & PFX_SUSPECT_TYPO);
+//    prefix *back_ptr, *ptr;
+    string component = S_INIT;
+//    size_t i;
+//    bool fNew;
+//    bool fImplicitPrefix = true;
+//    int depth = -1;
+//    filepos fp_firstsep;
+
+    filepos fp;
+    get_pos(&fp);
+
+    skipblanks();
+    if (anon_allowed && ch == '-') {
+	// - or -- is an anonymous wall point in a shot, but in #Fix they seem
+	// to just be treated as ordinary station names.
+	// FIXME: Issue warning for such a useless station?
+	//
+	// Not yet checked, but you can presumably use - and -- as a prefix
+	// (FIXME check this).
+	nextch();
+	int dashes = 1;
+	if (ch == '-') {
+	    ++dashes;
+	    nextch();
+	}
+	if (!isNames(ch) && ch != ':') {
+	    // An anonymous station implies the leg it is on is a splay.
+	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
+		set_pos(&fp);
+		// Walls also rejects this case.
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
+		LONGJMP(file.jbSkipLine);
+	    }
+	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
+	    prefix *pfx = new_anon_station();
+	    pfx->sflags |= BIT(SFLAGS_WALL);
+	    return pfx;
+	}
+	s_catn(&component, dashes, '-');
+    }
+
+    char *w_prefix[3] = { NULL, NULL, NULL };
+    int explicit_prefix_levels = 0;
+    while (true) {
+	while (isNames(ch)) {
+	    s_catchar(&component, ch);
+	    nextch();
+	}
+	//printf("component = '%s'\n", s_str(&component));
+	if (ch == ':') {
+	    nextch();
+
+	    if (++explicit_prefix_levels > 3) {
+		// FIXME Make this a proper error
+		printf("too many prefix levels\n");
+		s_free(&component);
+		for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+		LONGJMP(file.jbSkipLine);
+	    }
+
+	    if (!s_empty(&component)) {
+		// printf("w_prefix[%d] = '%s'\n", explicit_prefix_levels - 1, s_str(&component));
+		w_prefix[explicit_prefix_levels - 1] = s_steal(&component);
+	    }
+
+	    continue;
+	}
+
+	// printf("explicit_prefix_levels=%d %s:%s:%s\n", explicit_prefix_levels, w_prefix[0], w_prefix[1], w_prefix[2]);
+
+	// component is the station name itself.
+	if (s_empty(&component)) {
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
+	    s_free(&component);
+	    for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+	    LONGJMP(file.jbSkipLine);
+	}
+	int len = s_len(&component);
+	char *p = s_steal(&component);
+	// Apply case treatment.
+	switch (pcs->Case) {
+	  case LOWER:
+	    for (int i = 0; i < len; ++i)
+		p[i] = tolower((unsigned char)p[i]);
+	    break;
+	  case UPPER:
+	    for (int i = 0; i < len; ++i)
+		p[i] = toupper((unsigned char)p[i]);
+	    break;
+	  case OFF:
+	    // Avoid unhandled enum warning.
+	    break;
+	}
+
+	prefix *ptr = root;
+	for (int i = 0; i < 4; ++i) {
+	    const char *name;
+	    int sflag = BIT(SFLAGS_SURVEY);
+	    if (i == 3) {
+		name = p;
+		sflag = 0;
+	    } else {
+		if (i < 3 - explicit_prefix_levels) {
+		    name = walls_prefix[i];
+		    // printf("using walls_prefix[%d] = '%s'\n", 2 - i, name);
+		} else {
+		    name = w_prefix[i - (3 - explicit_prefix_levels)]; // FIXME: Could steal wprefix[i].
+		    // printf("using w_prefix[%d] = '%s'\n", i - (3 - explicit_prefix_levels), name);
+		}
+
+		if (name == NULL) {
+		    // FIXME: This means :X::Y is treated as the same as
+		    // ::X:Y but is that right?  Walls docs don't really
+		    // say.  Need to test (and is they're different then
+		    // probably use a character not valid in Walls station
+		    // names for the empty prefix level (e.g. space or
+		    // `#`).
+		    //
+		    // Also, does Walls allow :::X as a station and
+		    // ::X:Y which would mean X is a station and survey?
+		    // If so, we probably want to keep every empty level.
+		    continue;
+		}
+	    }
+	    prefix *back_ptr = ptr;
+	    ptr = ptr->down;
+	    if (ptr == NULL) {
+		/* Special case first time around at each level */
+		ptr = osnew(prefix);
+		ptr->ident = (i < 3 ? osstrdup(name) : name);
+		name = NULL;
+		ptr->right = ptr->down = NULL;
+		ptr->pos = NULL;
+		ptr->shape = 0;
+		ptr->stn = NULL;
+		ptr->up = back_ptr;
+		ptr->filename = file.filename; // FIXME: Or location of #Prefix, etc for it?
+		ptr->line = file.line; // FIXME: Or location of #Prefix, etc for it?
+		ptr->min_export = ptr->max_export = 0;
+		ptr->sflags = sflag;
+		back_ptr->down = ptr;
+	    } else {
+		/* Use caching to speed up adding an increasing sequence to a
+		 * large survey */
+		static prefix *cached_survey = NULL, *cached_station = NULL;
+		prefix *ptrPrev = NULL;
+		int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
+		if (cached_survey == back_ptr) {
+		    cmp = strcmp(cached_station->ident, name);
+		    if (cmp <= 0) ptr = cached_station;
+		}
+		while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+		    ptrPrev = ptr;
+		    ptr = ptr->right;
+		}
+		if (cmp) {
+		    /* ie we got to one that was higher, or the end */
+		    prefix *newptr;
+		    newptr = osnew(prefix);
+		    newptr->ident = (i < 3 ? osstrdup(name) : name);
+		    name = NULL;
+		    if (ptrPrev == NULL)
+			back_ptr->down = newptr;
+		    else
+			ptrPrev->right = newptr;
+		    newptr->right = ptr;
+		    newptr->down = NULL;
+		    newptr->pos = NULL;
+		    newptr->shape = 0;
+		    newptr->stn = NULL;
+		    newptr->up = back_ptr;
+		    newptr->filename = file.filename; // FIXME
+		    newptr->line = file.line;
+		    newptr->min_export = newptr->max_export = 0;
+		    newptr->sflags = sflag;
+		    ptr = newptr;
+		} else {
+		    if ((ptr->sflags & sflag) == 0) {
+			// FIXME diagnostic?
+		    }
+		}
+		cached_survey = back_ptr;
+		cached_station = ptr;
+	    }
+	    if (name == p) osfree(p);
+	}
+
+	// fprint_prefix(stdout, ptr); fputnl(stdout);
+
+	for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+
+	return ptr;
+    }
+}
+
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
-static real
+real
 read_number(bool f_optional, bool f_unsigned)
 {
    bool fPositive = true, fDigits = false;
@@ -412,7 +626,7 @@ read_number(bool f_optional, bool f_unsigned)
    return 0.0; /* for brain-fried compilers */
 }
 
-static real
+real
 read_quadrant(bool f_optional)
 {
    enum {
@@ -724,4 +938,81 @@ read_date(int *py, int *pm, int *pd)
    if (py) *py = y;
    if (pm) *pm = m;
    if (pd) *pd = d;
+}
+
+extern void
+read_walls_srv_date(int *py, int *pm, int *pd)
+{
+    skipblanks();
+
+    filepos fp_date;
+    get_pos(&fp_date);
+    unsigned y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    int separator = -2;
+    if (ch == '-' || ch == '/') {
+	separator = ch;
+	nextch();
+    }
+    filepos fp_month;
+    get_pos(&fp_month);
+    unsigned m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    if (ch == separator) {
+	nextch();
+    }
+    filepos fp_day;
+    get_pos(&fp_day);
+    unsigned d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+
+    filepos fp_year;
+    if (y < 100) {
+	// Walls recommends ISO 8601 date format (yyyy-mm-dd and seemingly the
+	// non-standard variant yyyy/mm/dd), but also accepts "some date formats
+	// common in the U.S. (mm/dd/yy, mm-dd-yyyy, etc.)"
+	unsigned tmp = y;
+	y = d;
+	fp_year = fp_day;
+	d = m;
+	fp_day = fp_month;
+	m = tmp;
+	fp_month = fp_date;
+
+	if (y < 100) {
+	    // FIXME: Are all 2 digit years 19xx?
+	    y += 1900;
+
+	    filepos fp_save;
+	    get_pos(&fp_save);
+	    set_pos(&fp_year);
+	    /* TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918 */
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Assuming 2 digit year is %d*/76, y);
+	    set_pos(&fp_save);
+	}
+    } else {
+	if (y < 1900 || y > 2078) {
+	    set_pos(&fp_date);
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
+	    LONGJMP(file.jbSkipLine);
+	    return; /* for brain-fried compilers */
+	}
+	fp_year = fp_date;
+    }
+
+    if (m < 1 || m > 12) {
+	set_pos(&fp_month);
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
+	LONGJMP(file.jbSkipLine);
+	return; /* for brain-fried compilers */
+    }
+
+    if (d < 1 || d > last_day(y, m)) {
+	set_pos(&fp_day);
+	/* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
+	LONGJMP(file.jbSkipLine);
+	return; /* for brain-fried compilers */
+    }
+
+    if (py) *py = y;
+    if (pm) *pm = m;
+    if (pd) *pd = d;
 }

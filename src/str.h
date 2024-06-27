@@ -36,6 +36,13 @@ void s_expand_(string *pstr, int addition);
 /* Append a block of text with given length. */
 void s_catlen(string *pstr, const char *s, int s_len);
 
+void s_catn(string *pstr, int n, char c);
+
+/* Append another string. */
+inline void s_cats(string *pstr, const string *s) {
+    s_catlen(pstr, s->s, s->len);
+}
+
 /* Append a C string. */
 inline void s_cat(string *pstr, const char *s) {
     s_catlen(pstr, s, strlen(s));

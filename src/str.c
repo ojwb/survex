@@ -40,6 +40,16 @@ s_catlen(string* pstr, const char *s, int s_len)
    pstr->s[pstr->len] = '\0';
 }
 
+void
+s_catn(string *pstr, int n, char c)
+{
+   if (pstr->capacity - pstr->len < n || n == 0)
+       s_expand_(pstr, n);
+   memset(pstr->s + pstr->len, c, n);
+   pstr->len += n;
+   pstr->s[pstr->len] = '\0';
+}
+
 extern inline void s_cat(string *pstr, const char *s);
 
 extern inline void s_catchar(string *pstr, char c);

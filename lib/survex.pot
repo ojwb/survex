@@ -269,9 +269,11 @@ msgstr ""
 msgid "END with no matching BEGIN in this file"
 msgstr ""
 
+#. TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END or
+#. #[ and #]
 #: ../src/datain.c:859
 #: n:23
-msgid "BEGIN with no matching END in this file"
+msgid "%s with no matching %s in this file"
 msgstr ""
 
 #. TRANSLATORS: A station must be exported out of each level it is in, so
@@ -420,6 +422,11 @@ msgstr ""
 #: ../src/datain.c:1041
 #: n:488
 msgid "Output coordinate system not set"
+msgstr ""
+
+#: ../src/datain.c:3012
+#: n:503
+msgid "Datum “%s” not supported"
 msgstr ""
 
 #: ../src/commands.c:1688
@@ -852,6 +859,11 @@ msgstr ""
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
+msgstr ""
+
+#: ../src/datain.c:2104
+#: n:498
+msgid "Failed to create temporary file"
 msgstr ""
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
@@ -1425,19 +1437,25 @@ msgstr ""
 msgid "argument “%s” not a number"
 msgstr ""
 
-#: ../src/commands.c:1052
-#: n:188
-msgid "Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”"
-msgstr ""
-
-#: ../src/commands.c:1054
-#: n:189
-msgid "Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”"
+#: ../src/datain.c:2150
+#: n:497
+msgid "Expecting “%s”"
 msgstr ""
 
 #: ../src/datain.c:757
 #: n:103
-msgid "Expecting “F” or “M”"
+msgid "Expecting “%s” or “%s”"
+msgstr ""
+
+#: ../src/datain.c:2150
+#: ../src/commands.c:1052
+#: n:188
+msgid "Expecting “%s”, “%s”, or “%s”"
+msgstr ""
+
+#: ../src/commands.c:1054
+#: n:189
+msgid "Expecting “%s”, “%s”, “%s”, or “%s”"
 msgstr ""
 
 #: readval.c:421
@@ -1455,9 +1473,10 @@ msgstr ""
 msgid "Station “%s” referred to by *entrance or *export but never used"
 msgstr ""
 
+#. TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[
 #: ../src/commands.c:759
 #: n:192
-msgid "No matching BEGIN"
+msgid "No matching %s"
 msgstr ""
 
 #. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
@@ -1697,6 +1716,20 @@ msgstr ""
 #: ../src/mainfrm.cc:1425
 #: n:491
 msgid "Compass CLP files"
+msgstr ""
+
+#. TRANSLATORS: "Walls" is David McKenzie's cave surveying package, so should
+#. not be translated
+#: ../src/mainfrm.cc:1450
+#: n:504
+msgid "Walls project files"
+msgstr ""
+
+#. TRANSLATORS: "Walls" is David McKenzie's cave surveying package, so should
+#. not be translated
+#: ../src/mainfrm.cc:1454
+#: n:505
+msgid "Walls survey data files"
 msgstr ""
 
 #: ../src/export.cc:72
@@ -3451,6 +3484,12 @@ msgstr ""
 #: ../src/survexport.cc:151
 #: n:155
 msgid "include items exported by default"
+msgstr ""
+
+#: ../src/datain.c:2169
+#: n:499
+#, c-format
+msgid "Macro “%s” not defined"
 msgstr ""
 
 #, c-format

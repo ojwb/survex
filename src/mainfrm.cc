@@ -1286,7 +1286,7 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
 	wxString ext(file, file.length() - 3, 3);
 	ext.MakeLower();
 	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak") ||
-	    ext == wxT("clp")) {
+	    ext == wxT("clp") || ext == wxT("srv") || ext == wxT("wpj")) {
 	    CavernLogWindow * log = new CavernLogWindow(this, survey, m_Splitter);
 	    wxWindow * win = m_Splitter->GetWindow1();
 	    m_Splitter->ReplaceWindow(win, log);
@@ -1413,6 +1413,8 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     "|%s|*.mak" CASE("*.MAK")
 		     "|%s|*.dat" CASE("*.DAT")
 		     "|%s|*.clp" CASE("*.CLP")
+		     "|%s|*.wpj" CASE("*.WPJ")
+		     "|%s|*.srv" CASE("*.SRV")
 		     "|%s|*.adj;*.sht;*.una;*.xyz" CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
 		     /* TRANSLATORS: Here "survey" is a "cave map" rather than
@@ -1442,6 +1444,14 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		      * surveying package, so should not be translated
 		      */
 		     wmsg(/*Compass CLP files*/491).c_str(),
+		     /* TRANSLATORS: "Walls" is David McKenzie's cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Walls project files*/504).c_str(),
+		     /* TRANSLATORS: "Walls" is David McKenzie's cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Walls survey data files*/505).c_str(),
 		     /* TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 		      * package, so don’t translate it. */
 		     wmsg(/*CMAP XYZ files*/325).c_str(),
