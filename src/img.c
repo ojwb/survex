@@ -1219,7 +1219,7 @@ xyz_file:
       rewind(pimg->fh);
       if (buf[1] == ' ') {
 	 if (buf[0] == ' ') {
-	    /* Looks like a CMAP .xyz file ... */
+	    /* Looks like a CMAP XYZ file. */
 	    goto xyz_file;
 	 } else if (strchr("ZSNF", buf[0])) {
 	    /* Looks like a Compass .plt file ... */
@@ -2885,7 +2885,7 @@ no_xsect:
 	 }
       }
    } else {
-      /* CMAP .xyz file */
+      /* CMAP XYZ file */
       char *line = NULL;
       char *q;
       size_t len;

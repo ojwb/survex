@@ -7,7 +7,8 @@
  * - Survex ".3d" image files
  * - Survex ".pos" files
  * - Compass Plot files (".plt" and ".plf")
- * - CMAP XYZ files (".sht", ".adj", ".una", ".xyz")
+ * - CMAP XYZ files (".sht", ".adj", ".una"; ".xyz" also recognised though
+ *   it seems this is a misunderstanding)
  *
  * Writing Survex ".3d" image files is supported.
  *
@@ -172,8 +173,8 @@ typedef struct {
    int fRead;        /* 1 for reading, 0 for writing */
    long start;
    /* version of file format:
-    *  -4 => CMAP .xyz file, shot format
-    *  -3 => CMAP .xyz file, station format
+    *  -4 => CMAP XYZ file, shot format (.sht)
+    *  -3 => CMAP XYZ file, station format (.adj, .una)
     *  -2 => Compass .plt file
     *  -1 => .pos file
     *   0 => 0.01 ascii
