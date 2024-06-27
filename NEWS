@@ -1,3 +1,79 @@
+up to: 5e3f1960d3b334d14d3dfbd40966c3a8395f1e3a
+
+Changes in 1.4.9 (2024-06-??):
+
+* aven:
+
+  + We now support showing geodata overlays in Aven.  We use the GDAL library
+    to load the data, so this should work for any format which GDAL supports
+    so long as it can be read from the filing system and is geo-referenced
+    vector data - see https://gdal.org/drivers/vector/index.html for a list.
+    Currently the dialog to select a file defaults to showing GPX, KML, GeoJSON
+    and shape files - set the filter to "All Files" to chose other formats.
+
+  + Reimplement display of cavern output.  The old version turned the log into
+    HTML and displayed it using wxHtmlWindow, but that adds a lot of overhead
+    and is especially inefficient if there are many diagnostics - cavern could
+    finish almost instantly yet aven could take many seconds to process the
+    output.  The new version renders directly from the log data.  It should
+    have most of the features from before - the only missing feature I'm
+    currently aware of is that you can't now select and copy text from the log
+    window, which wxHtmlWindow provided for free.  If people miss this feature,
+    we could add it to the new implementation.
+
+* cavern:
+
+  + Add support for processing Walls format survey data (.SRV and .WPJ files).
+    This support is somewhat experimental but at a point where it seems useful
+    to make it easier for people to try out.  See the manual for a list of
+    known shortcomings.  Thanks to Eric C. Landgraf for a lot of testing and
+    encouragement.
+
+  + *entrance now suppresses "Unused fixed point" warning.  This warning is
+    intended to catch typos, which is much less likely for a station named
+    twice.  It's also reasonable to use only *fix and *entrance on a station at
+    the entrance of an unsurveyed cave.
+
+  + Highlight plumbed clino readings fully in diagnostics.  Now the full reading
+    is highlighted instead of just the first character.
+
+  + Report location of previous fix after "already fixed" error/warning.
+
+  + Use "info" diagnostic category for "Originally entered here" message.  This
+    is more logical as the original *begin isn't something to be warned about,
+    only the reentering is.  This was only a warning before because we didn't
+    used to have "info" diagnostics.
+
+  + Use "info" diagnostic category for message about not reporting further
+    uses of a deprecated feature.  Previously this was a warning, but the newer
+    "info" category is more appropriate here.
+
+  + The message about inventing a fixed point is now an "info" diagnostic which
+    allows us to report a location which is where that station is defined,
+    which may be useful to the user.
+
+  + Make highlighting position in error reporting more robust.  We no longer
+    try to highIight if we calculate a negative column offset, when previously
+    we would print billions of spaces.  As far as I know this has never
+    happened in a released version.
+
+* manual:
+
+  + (Microsoft Windows version): Update information about installation
+    with/without admin rights.
+
+  + Mention Compass, Walls and CMAP support in the importing data howto
+    section.
+
+  + Drop mention of Rosetta Stal from the manual.  The referred to link from
+    our website was removed in 2015 because Rosetta Stal hadn't been updated
+    for 13.5 years at that point.  Now the domain it was available from has
+    lapsed and is a domain squatter "for sale" page.
+
+* Build system:
+
+  + The GDAL library is now required to build Survex.
+
 Changes in 1.4.8 (2024-04-23):
 
 * cavern:
