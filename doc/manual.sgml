@@ -4044,8 +4044,9 @@ where the survey legs form a grid.
 <Para><Application>Survex</Application> supports a number of features to help with importing
 existing data.</Para>
 
-<Para>Survey data in Compass, Walls or CMAP format can be processed
-directly.  Processed survey data in Compass or CMAP formats can be viewed.
+<Para>
+Survey data in Compass or Walls format can be processed directly. Processed
+survey data in Compass or CMAP formats can be viewed.
 </Para>
 
 <Para>For other formats, you may be able to read the data by renaming the file to have
