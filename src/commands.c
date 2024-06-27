@@ -1165,7 +1165,7 @@ cmd_fix(void)
 	    coord.v[1] = rad(coord.v[1]);
 	 }
 
-	 coord.v[4] = HUGE_VAL;
+	 coord.v[3] = HUGE_VAL;
 	 coord = proj_trans(transform, PJ_FWD, coord);
 
 	 if (coord.v[0] == HUGE_VAL ||
