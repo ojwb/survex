@@ -4042,7 +4042,15 @@ where the survey legs form a grid.
 <Sect2><Title>Import data from other programs</Title>
 
 <Para><Application>Survex</Application> supports a number of features to help with importing
-existing data. You can specify the ordering of items on a line using *Data
+existing data.</Para>
+
+<Para>Survey data in Compass, Walls or CMAP format can be processed
+directly.  Processed survey data in Compass or CMAP formats can be viewed.
+</Para>
+
+<Para>For other formats, you may be able to read the data by renaming the file to have
+a .svx extension and adding a few Survex commands at the start of the file so Survex
+can read the data which follows.  For example, you can specify the ordering of items on a line using *Data
 (see <Application>Survex</Application> Keywords above), and you can specify the characters used
 to mean different things using *Set (see <Application>Survex</Application> Keywords above).
 </Para>
