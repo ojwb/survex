@@ -642,7 +642,7 @@ data_file_compass_dat_or_clp(bool is_clp)
     default_calib(pcs);
     pcs->z[Q_DECLINATION] = HUGE_REAL;
 
-    pcs->recorded_style = pcs->style = STYLE_NORMAL;
+    pcs->style = STYLE_NORMAL;
     pcs->units[Q_LENGTH] = METRES_PER_FOOT;
     pcs->infer = BIT(INFER_EQUATES) |
 		 BIT(INFER_EQUATES_SELF_OK) |
@@ -683,6 +683,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	pcs->meta->days1 = pcs->meta->days2 = -1;
 	pcs->declination = HUGE_REAL;
 	pcs->ordering = compass_order;
+	pcs->recorded_style = STYLE_NORMAL;
 
 	/* <Cave name> */
 	skipline();
