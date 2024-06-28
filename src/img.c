@@ -389,7 +389,7 @@ compass_plt_update_station(img *pimg, const char *name, int name_len,
 		p->flags |= flags;
 		if (p->flags & COMPASS_SFLAG_DIFFERENT_SURVEY)
 		    p->flags |= img_SFLAG_EXPORTED;
-		return 0;
+		return 1;
 	    }
 	}
     }
@@ -934,6 +934,11 @@ cmap_xyz_open(img *pimg)
 	return IMG_OUTOFMEMORY;
     }
 
+    pimg->data = compass_plt_allocate_hash();
+    if (!pimg->data) {
+	return IMG_OUTOFMEMORY;
+    }
+
     /* Spaces aren't legal in CMAP station names, but dots are, so
      * use space as the level separator. */
     pimg->separator = ' ';
@@ -963,6 +968,10 @@ cmap_xyz_open(img *pimg)
 	unsigned long v;
 	char * p;
 	pimg->datestamp = my_strdup(line + 45);
+	if (!pimg->datestamp) {
+	    osfree(line);
+	    return IMG_OUTOFMEMORY;
+	}
 	p = pimg->datestamp;
 	v = strtoul(p, &p, 10);
 	if (v <= 50) {
@@ -1008,8 +1017,13 @@ cmap_xyz_open(img *pimg)
 	pimg->datestamp_numeric = mktime_with_tz(&tm, "");
     } else {
 	pimg->datestamp = my_strdup(TIMENA);
+	if (!pimg->datestamp) {
+	    osfree(line);
+	    return IMG_OUTOFMEMORY;
+	}
     }
 bad_cmap_date:
+    // The first line either has a survey name or some stock text.
     if (strncmp(line, "  Cave Survey Data Processed by CMAP ",
 		LITLEN("  Cave Survey Data Processed by CMAP ")) != 0) {
 	if (len > 45) {
@@ -1020,12 +1034,13 @@ bad_cmap_date:
 	if (len > 2) {
 	    line[len] = '\0';
 	    pimg->title = my_strdup(line + 2);
+	    if (!pimg->title) {
+		osfree(line);
+		return IMG_OUTOFMEMORY;
+	    }
 	}
     }
     osfree(line);
-    if (!pimg->datestamp || !pimg->title) {
-	return IMG_OUTOFMEMORY;
-    }
     line = getline_alloc(pimg->fh);
     if (!line) {
 	return IMG_OUTOFMEMORY;
@@ -2917,12 +2932,14 @@ no_xsect:
 	 return r;
       }
 
+cmap_xyz_next_line:
       pimg->label = pimg->label_buf;
       do {
 	 osfree(line);
 	 if (feof(pimg->fh)) return img_STOP;
 	 line = getline_alloc(pimg->fh);
 	 if (!line) {
+out_of_memory_error:
 	    img_errno = IMG_OUTOFMEMORY;
 	    return img_BAD;
 	 }
@@ -2941,11 +2958,17 @@ no_xsect:
 	 q = (char *)memchr(pimg->label, ' ', 6);
 	 if (!q) q = pimg->label + 6;
 	 *q = '\0';
+	 int label_len = q - pimg->label;
 
 	 read_xyz_station_coords(p, line);
-
+	 int r = compass_plt_update_station(pimg, pimg->label, label_len, 0);
+	 if (r < 0)
+	     goto out_of_memory_error;
+	 if (r > 0) {
+	     // We've already emitted img_LABEL for this station.
+	     goto cmap_xyz_next_line;
+	 }
 	 /* FIXME: look at prev for lines (line + 32, 5) */
-	 /* FIXME: duplicate stations... */
 	 return img_LABEL;
       } else {
 	 /* Shot variant (VERSION_CMAP_SHOT) */
@@ -2960,34 +2983,70 @@ no_xsect:
 	 q = (char *)memchr(old, ' ', 7);
 	 if (!q) q = old + 7;
 	 *q = '\0';
+	 size_t old_len = q - old;
 
 	 memcpy(new_, line + 7, 7);
 	 q = (char *)memchr(new_, ' ', 7);
 	 if (!q) q = new_ + 7;
 	 *q = '\0';
+	 size_t new_len = q - new_;
 
 	 pimg->flags = img_SFLAG_UNDERGROUND;
 
-	 if (strcmp(old, new_) == 0) {
-	    pimg->pending = img_MOVE + 4;
+	 if (old_len == new_len && memcmp(old, new_, old_len) == 0) {
 	    read_xyz_shot_coords(p, line);
-	    strcpy(pimg->label, new_);
+	    int r = compass_plt_update_station(pimg, new_, new_len, 0);
+	    if (r < 0)
+		goto out_of_memory_error;
+	    if (r > 0) {
+		// We've already emitted img_LABEL for this station.
+		osfree(line);
+		pimg->label[0] = '\0';
+		pimg->flags = 0;
+		return img_MOVE;
+	    }
+	    memcpy(pimg->label, new_, new_len + 1);
 	    osfree(line);
+	    pimg->pending = img_MOVE + 4;
 	    return img_LABEL;
 	 }
 
 	 if (strcmp(old, pimg->label) == 0) {
-	    pimg->pending = img_LINE + 4;
 	    read_xyz_shot_coords(p, line);
-	    strcpy(pimg->label, new_);
+	    int r = compass_plt_update_station(pimg, new_, new_len, 0);
+	    if (r < 0)
+		goto out_of_memory_error;
+	    if (r > 0) {
+		// We've already emitted img_LABEL for this station.
+		osfree(line);
+		pimg->label = pimg->label_buf + strlen(pimg->label_buf);
+		pimg->flags = 0;
+		return img_LINE;
+	    }
+	    memcpy(pimg->label, new_, new_len + 1);
 	    osfree(line);
+	    pimg->pending = img_LINE + 4;
 	    return img_LABEL;
 	 }
 
-	 pimg->pending = img_LABEL + 4;
 	 read_xyz_shot_coords(p, line);
-	 strcpy(pimg->label, new_);
+	 int r = compass_plt_update_station(pimg, new_, new_len, 0);
+	 if (r < 0)
+	     goto out_of_memory_error;
 	 memcpy(pimg->label + 16, line, 70);
+	 if (r > 0) {
+	     // We've already emitted img_LABEL for this station.
+	     osfree(line);
+	     pimg->label = pimg->label_buf + strlen(pimg->label_buf);
+	     pimg->flags = 0;
+	     read_xyz_shot_coords(p, pimg->label_buf + 16);
+	     subtract_xyz_shot_deltas(p, pimg->label_buf + 16);
+	     pimg->pending = img_STOP + 4;
+	     return img_MOVE;
+	 }
+
+	 memcpy(pimg->label, new_, new_len + 1);
+	 pimg->pending = img_LABEL + 4;
 
 	 osfree(line);
 	 return img_LABEL;
