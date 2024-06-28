@@ -26,6 +26,7 @@
 
 #include "aventreectrl.h"
 #include "mainfrm.h"
+#include "osalloc.h"
 
 #include <stack>
 
@@ -595,7 +596,9 @@ void AvenTreeCtrl::OnStateClick(wxTreeEvent& e)
 
 void AvenTreeCtrl::AddOverlay(const wxString& file)
 {
-    auto id = AppendItem(GetRootItem(), file);
+    char* leaf = leaf_from_fnm(file.utf8_str());
+    auto id = AppendItem(GetRootItem(), leaf);
+    osfree(leaf);
     SetItemState(id, STATE_ON);
     SetItemData(id, new TreeData(file));
 }
