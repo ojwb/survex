@@ -2960,7 +2960,6 @@ out_of_memory_error:
 	 *q = '\0';
 	 int label_len = q - pimg->label;
 
-	 read_xyz_station_coords(p, line);
 	 int r = compass_plt_update_station(pimg, pimg->label, label_len, 0);
 	 if (r < 0)
 	     goto out_of_memory_error;
@@ -2968,6 +2967,7 @@ out_of_memory_error:
 	     // We've already emitted img_LABEL for this station.
 	     goto cmap_xyz_next_line;
 	 }
+	 read_xyz_station_coords(p, line);
 	 /* FIXME: look at prev for lines (line + 32, 5) */
 	 return img_LABEL;
       } else {
