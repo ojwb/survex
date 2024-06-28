@@ -652,9 +652,7 @@ wxTreeItemId AvenTreeCtrl::RemoveOverlay(wxTreeItemId id)
 const wxString& AvenTreeCtrl::GetOverlayFilename(wxTreeItemId item)
 {
     if (ItemHasChildren(item)) {
-	printf("Has children\n");
 not_an_overlay:
-	printf("not_an_overlay\n");
 	static const wxString empty_string;
 	return empty_string;
     }
