@@ -1,4 +1,4 @@
-up to: 1a6fddc915448c2fc751fd93d166693f8f022052
+up to: ed3935820580516a7ec7f8be5f9027f4b3341a78
 
 Changes in 1.4.9 (2024-06-??):
 
@@ -28,6 +28,14 @@ Changes in 1.4.9 (2024-06-??):
     to make it easier for people to try out.  See the manual for a list of
     known shortcomings.  Thanks to Eric C. Landgraf for a lot of testing and
     encouragement.
+
+  + Fix bug with Compass DAT diving data.  If a survey uses the depth gauge
+    then since 1.4.6 we set its style to "diving", but we weren't clearing that
+    so all surveys after than in the same DAT file were also set as "diving".
+
+  + When parsing of Compass DAT files we report errors in more cases if the
+    input doesn't conform to the format we expect, rather than potentially
+    quietly misinterpreting the data.
 
   + *entrance now suppresses "Unused fixed point" warning.  This warning is
     intended to catch typos, which is much less likely for a station named
@@ -62,6 +70,9 @@ Changes in 1.4.9 (2024-06-??):
   + (Microsoft Windows version): Update information about installation
     with/without admin rights.
 
+  + Summarise support for reading CMAP data and its assumptions and
+    limitations.
+
   + Mention Compass, Walls and CMAP support in the importing data howto
     section.
 
@@ -75,6 +86,15 @@ Changes in 1.4.9 (2024-06-??):
   + The coordinates in CMAP data are in feet but we were dividing rather
     than multiplying by the conversion factor to get metres so all
     coordinates were about 10.76 times too large.
+
+  + Stations in CMAP "station" variant XYZ files are now flagged as
+    underground (as they always have been for "shot" variant XYZ files).
+
+  + When reading CMAP XYZ files, we no longer emit duplicate img_LABEL for
+    stations in loops.
+
+  + A CMAP XYZ file without a survey title is now handled correctly (this was
+    reporting a bogus "Out of memory" error).
 
 * Build system:
 
