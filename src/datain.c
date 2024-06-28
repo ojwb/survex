@@ -607,6 +607,33 @@ nextch_handling_eol(void)
    }
 }
 
+static bool
+get_token_and_check(const char *expect)
+{
+    get_token();
+    if (s_eq(&token, expect))
+	return true;
+    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Expecting “%s”*/497, expect);
+    return false;
+}
+
+static bool
+check_colon(void)
+{
+    if (ch != ':') {
+	compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s”*/497, ":");
+	return false;
+    }
+    nextch();
+    return true;
+}
+
+static bool
+get_token_and_check_colon(const char *expect)
+{
+    return get_token_and_check(expect) && check_colon();
+}
+
 static void
 data_file_compass_dat_or_clp(bool is_clp)
 {
@@ -651,57 +678,59 @@ data_file_compass_dat_or_clp(bool is_clp)
 	    CompassDATBackComp, CompassDATBackClino,
 	    CompassDATFlags, IgnoreAll
 	};
+
+	copy_on_write_meta(pcs);
+	pcs->meta->days1 = pcs->meta->days2 = -1;
+	pcs->declination = HUGE_REAL;
+	pcs->ordering = compass_order;
+
 	/* <Cave name> */
 	skipline();
 	process_eol();
 	/* SURVEY NAME: <Short name> */
-	get_token();
-	get_token();
-	/* if (ch != ':') ... */
-	nextch();
-	get_token();
+	if (get_token_and_check("SURVEY") &&
+	    get_token_and_check_colon("NAME")) {
+	    // Survey short name currently ignored.
+	    get_token();
+	}
 	skipline();
 	process_eol();
+
 	/* SURVEY DATE: 7 10 79  COMMENT:<Long name> */
-	get_token();
-	get_token();
-	copy_on_write_meta(pcs);
-	if (ch == ':') {
-	    nextch();
+	if (get_token_and_check("SURVEY") &&
+	    get_token_and_check_colon("DATE")) {
 	    int days = read_compass_date_as_days_since_1900();
 	    pcs->meta->days1 = pcs->meta->days2 = days;
-	} else {
-	    pcs->meta->days1 = pcs->meta->days2 = -1;
+	    // Ignore "COMMENT:<Long name>" part for now.
 	}
-	pcs->declination = HUGE_REAL;
 	skipline();
 	process_eol();
 	/* SURVEY TEAM: */
-	get_token();
-	get_token();
-	skipline();
+	if (get_token_and_check("SURVEY") &&
+	    get_token_and_check_colon("TEAM")) {
+	    // Value is on the next line.
+	}
 	process_eol();
 	/* <Survey team> */
 	skipline();
 	process_eol();
 	/* DECLINATION: 1.00  FORMAT: DDDDLUDRADLN  CORRECTIONS: 2.00 3.00 4.00 */
-	get_token();
-	nextch(); /* : */
-	skipblanks();
-	if (pcs->dec_filename == NULL) {
-	    pcs->z[Q_DECLINATION] = -read_numeric(false);
-	    pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
-	} else {
-	    (void)read_numeric(false);
+	if (get_token_and_check_colon("DECLINATION")) {
+	    if (pcs->dec_filename == NULL) {
+		pcs->z[Q_DECLINATION] = -read_numeric(false);
+		pcs->z[Q_DECLINATION] *= pcs->units[Q_DECLINATION];
+	    } else {
+		(void)read_numeric(false);
+	    }
 	}
 	get_token();
 	pcs->ordering = compass_order;
-	if (S_EQ(&token, "FORMAT")) {
+	// "FORMAT" is optional.
+	if (S_EQ(&token, "FORMAT") && check_colon()) {
 	    /* This documents the format in the original survey notebook - we
 	     * don't need to fully parse it to be able to parse the survey data
 	     * in the file, which gets converted to a fixed order and units.
 	     */
-	    nextch(); /* : */
 	    get_token();
 	    size_t token_len = s_len(&token);
 	    if (token_len >= 4 && s_str(&token)[3] == 'W') {
@@ -724,18 +753,21 @@ data_file_compass_dat_or_clp(bool is_clp)
 	// CORRECTIONS and CORRECTIONS2 have already been applied to data in
 	// the CLP file.
 	if (!is_clp) {
-	    if (S_EQ(&token, "CORRECTIONS") && ch == ':') {
-		nextch(); /* : */
+	    if (S_EQ(&token, "CORRECTIONS") && check_colon()) {
 		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
 		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
 		get_token();
 	    }
 
-	    /* get_token() only reads alphas so we must check for '2' here. */
-	    if (S_EQ(&token, "CORRECTIONS") && ch == '2') {
-		nextch(); /* 2 */
-		nextch(); /* : */
+	    /* get_token() only reads alphas so we need special handling for
+	     * CORRECTIONS2 here.
+	     */
+	    if (ch == '2') {
+		s_catchar(&token, ch);
+		nextch();
+	    }
+	    if (S_EQ(&token, "CORRECTIONS2") && check_colon()) {
 		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
 		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
 		get_token();
@@ -745,22 +777,19 @@ data_file_compass_dat_or_clp(bool is_clp)
 #if 0
 	// FIXME Parse once we handle discovery dates...
 	// NB: Need to skip unread CORRECTIONS* for the `is_clp` case.
-	if (S_EQ(&token, "DISCOVERY") && ch == ':') {
+	if (S_EQ(&token, "DISCOVERY") && check_colon()) {
 	    // Discovery date, e.g. DISCOVERY: 2 28 2024
-	    nextch(); /* : */
 	    int days = read_compass_date_as_days_since_1900();
 	}
 #endif
 	skipline();
 	process_eol();
 	/* BLANK LINE */
-	skipline();
 	process_eol();
 	/* heading line */
 	skipline();
 	process_eol();
 	/* BLANK LINE */
-	skipline();
 	process_eol();
 	while (ch != EOF) {
 	    if (ch == '\x0c') {
