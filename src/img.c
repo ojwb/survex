@@ -2968,6 +2968,7 @@ out_of_memory_error:
 	     goto cmap_xyz_next_line;
 	 }
 	 read_xyz_station_coords(p, line);
+	 pimg->flags = img_SFLAG_UNDERGROUND;
 	 /* FIXME: look at prev for lines (line + 32, 5) */
 	 return img_LABEL;
       } else {
