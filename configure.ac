@@ -96,7 +96,7 @@ AC_CHECK_LIB(m, sqrt)
 AC_PATH_XTRA
 
 dnl The wxWidgets libraries we need:
-wx_libs="core,gl,html"
+wx_libs="core,gl"
 
 AC_ARG_VAR(WXCONFIG, [Old name for WX_CONFIG, accepted for compatibility])
 AC_ARG_VAR(WX_CONFIG, [wxWidgets configuration script to use to build Aven])
