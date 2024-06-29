@@ -258,7 +258,7 @@ AC_PATH_PROG([MSGFMT], [msgfmt], [$MISSING msgfmt])
 AC_ARG_VAR([MSGFMT], [msgfmt from gettext])
 
 AC_ARG_ENABLE([werror],
-  [AS_HELP_STRING([--enable-werror], [enable treating compiler warnings as errors [default=maintainer-mode]])],
+  [AS_HELP_STRING([--enable-werror], [enable treating compiler warnings as errors [default=no]])],
   [case ${enableval} in
     yes|no) ;;
   *) AC_MSG_ERROR([bad value ${enableval} for --enable-werror]) ;;
