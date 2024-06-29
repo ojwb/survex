@@ -238,7 +238,6 @@ jobs:
         brew install \
             ffmpeg \
             gdal \
-            gettext \
             gnu-tar \
             proj \
             wxwidgets
