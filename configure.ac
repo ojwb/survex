@@ -254,6 +254,9 @@ AC_CHECK_FUNCS([fmemopen])
 AC_PATH_PROG([JW], [jw], [$MISSING jw])
 AC_ARG_VAR([JW], [jw from docbook-utils/docbook-tools])
 
+AC_PATH_PROG([MSGFMT], [msgfmt], [$MISSING msgfmt])
+AC_ARG_VAR([MSGFMT], [msgfmt from gettext])
+
 AC_ARG_ENABLE([werror],
   [AS_HELP_STRING([--enable-werror], [enable treating compiler warnings as errors [default=maintainer-mode]])],
   [case ${enableval} in
