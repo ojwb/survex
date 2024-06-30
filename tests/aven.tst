@@ -39,31 +39,33 @@ if [ -n "$VALGRIND" ] ; then
   AVEN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $AVEN"
 fi
 
-# This next testcase seems to hang on macos in CI so skip it.
+# This next testcase seems to hang on macos and mingw in CI so skip it.
 # FIXME: Ideally this should work, and it doesn't seem very different to the
 # next testcase which works.
-if [ "`uname -s`" != Darwin ] ; then
-
-# Regression test - aven in 1.2.6 segfaulted.
-echo "SURVEXLANG=nosuch aven --help"
-if test -n "$VERBOSE"; then
-  DISPLAY= SURVEXLANG=nosuch $AVEN --help
-  exitcode=$?
-else
-  DISPLAY= SURVEXLANG=nosuch $AVEN --help > /dev/null 2>&1
-  exitcode=$?
-fi
-if [ -n "$VALGRIND" ] ; then
-  if [ $exitcode = "$vg_error" ] ; then
-    cat "$vg_log"
-    rm "$vg_log"
-    exit 1
-  fi
-  rm "$vg_log"
-fi
-[ "$exitcode" = 1 ] || exit 1
-
-fi
+case `uname -s` in
+  Darwin) ;;
+  MINGW*) ;;
+  *)
+    # Regression test - aven in 1.2.6 segfaulted.
+    echo "SURVEXLANG=nosuch aven --help"
+    if test -n "$VERBOSE"; then
+      DISPLAY= SURVEXLANG=nosuch $AVEN --help
+      exitcode=$?
+    else
+      DISPLAY= SURVEXLANG=nosuch $AVEN --help > /dev/null 2>&1
+      exitcode=$?
+    fi
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
+    [ "$exitcode" = 1 ] || exit 1
+    ;;
+esac
 
 # Regression test - aven in 1.2.6 segfaulted.
 echo "SURVEXLANG= LANG=nosuch aven --help"
