@@ -27,6 +27,18 @@ test -n "$*" && VERBOSE=1
 
 test -x "$testdir"/../src/cavern || testdir=.
 
+case `uname -a` in
+  MINGW*)
+    DIFF='diff --strip-trailing-cr'
+    QUIET_DIFF='diff -q --strip-trailing-cr'
+    ;;
+  *)
+    DIFF=diff
+    # Use cmp when we can as a small optimisation.
+    QUIET_DIFF='cmp -s'
+    ;;
+esac
+
 : ${DIFFPOS="$testdir"/../src/diffpos}
 
 : ${TESTS=${*:-"delatend addatend"}}
@@ -62,9 +74,9 @@ for file in $TESTS ; do
   fi
   if test -n "$VERBOSE" ; then
     cat diffpos.tmp
-    cmp diffpos.tmp "$srcdir/${file}.out" || exit 1
+    $DIFF diffpos.tmp "$srcdir/${file}.out" || exit 1
   else
-    cmp diffpos.tmp "$srcdir/${file}.out" > /dev/null || exit 1
+    $QUIET_DIFF diffpos.tmp "$srcdir/${file}.out" > /dev/null || exit 1
   fi
   rm -f diffpos.tmp
 done
@@ -76,7 +88,7 @@ for args in '' '--survey survey' '--survey survey.xyzzy' '--survey xyzzy' ; do
   if test -n "$VERBOSE" ; then
     cat diffpos.tmp
   fi
-  cmp diffpos.tmp /dev/null > /dev/null || exit 1
+  $QUIET_DIFF diffpos.tmp /dev/null > /dev/null || exit 1
   rm -f diffpos.tmp
 done
 test -n "$VERBOSE" && echo "Test passed"

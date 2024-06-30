@@ -27,6 +27,18 @@ test -n "$*" && VERBOSE=1
 
 test -x "$testdir"/../src/cavern || testdir=.
 
+case `uname -a` in
+  MINGW*)
+    DIFF='diff --strip-trailing-cr'
+    QUIET_DIFF='diff -q --strip-trailing-cr'
+    ;;
+  *)
+    DIFF=diff
+    # Use cmp when we can as a small optimisation.
+    QUIET_DIFF='cmp -s'
+    ;;
+esac
+
 # Make testdir absolute, so we can cd before running cavern to get a consistent
 # path in diagnostic messages.
 testdir=`(cd "$testdir" && pwd)`
@@ -272,9 +284,9 @@ for file in $TESTS ; do
     [ "$exitcode" = 0 ] || exit 1
 
     if test -n "$VERBOSE" ; then
-      diff "$expectedfile" "$tmpfile" || exit 1
+      $DIFF "$expectedfile" "$tmpfile" || exit 1
     else
-      cmp -s "$expectedfile" "$tmpfile" || exit 1
+      $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
     fi
     ;;
   dxf|gpx|json|kml|plt|svg)
@@ -307,9 +319,9 @@ for file in $TESTS ; do
     esac
 
     if test -n "$VERBOSE" ; then
-      diff "$expectedfile" "$tmpfile" || exit 1
+      $DIFF "$expectedfile" "$tmpfile" || exit 1
     else
-      cmp -s "$expectedfile" "$tmpfile" || exit 1
+      $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
     fi
     ;;
   no)
@@ -330,12 +342,12 @@ for file in $TESTS ; do
     sed '1,/^Copyright/d;/^\(CPU \)*[Tt]ime used  *[0-9][0-9.]*s$/d;s!.*/src/\(cavern: \)!\1!' tmp.out > tmp.out2
     mv tmp.out2 tmp.out
     # Check output is as expected.
-    if cmp -s "$outfile" tmp.out ; then
+    if $QUIET_DIFF "$outfile" tmp.out ; then
       : # Matches.
-    elif [ -f "$outfile2" ] && cmp -s "$outfile2" tmp.out ; then
+    elif [ -f "$outfile2" ] && $QUIET_DIFF "$outfile2" tmp.out ; then
       : # Matches alternative output (e.g. due to older PROJ).
     else
-      test -z "$VERBOSE" || diff "$outfile" tmp.out
+      test -z "$VERBOSE" || $DIFF "$outfile" tmp.out
       exit 1
     fi
   fi
