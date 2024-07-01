@@ -909,6 +909,12 @@ void
       *p = tolower((unsigned char)*p);
       ++p;
    }
+#if OS_WIN32
+   /* Remove .exe extension if present. */
+   if (p - appname_copy > 4 && memcmp(p - 4, ".exe", 4) == 0) {
+       p[-4] = '\0';
+   }
+#endif
 #endif
 
    /* shortcut --version so you can check the version number even when the
