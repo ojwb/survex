@@ -247,14 +247,15 @@ mktime_with_tz(struct tm * tm, const char * tz)
 	 * we need to add a multiple of 400.
 	 *
 	 * We require the year to be >= 1901 for 32-bit time_t since the
-	 * oldest representable date in signed 32-bit time_t after this
+	 * oldest representable date in signed 32-bit time_t is in 1901
 	 * so there's no point retrying anything older:
 	 *
 	 *   Fri 13 Dec 1901 20:45:52 UTC
 	 *
-	 * For larger time_t we support any year which fits in an int.  This
-	 * is somewhat dubious before the adoption of the Gregorian calendar
-	 * but it matches what most mktime() implementations seem to do.
+	 * For larger time_t we support any tm_year value which fits in an int.
+	 * This is somewhat dubious before the adoption of the Gregorian
+	 * calendar but it matches what most mktime() implementations seem to
+	 * do.
 	 */
 	int y = tm->tm_year;
 	int y_offset = sizeof(time_t) > 4 ?
