@@ -27,6 +27,7 @@ extern "C" {
 #include <stdarg.h>
 
 #include "filename.h"
+#include "osalloc.h"
 
 #define STDERR stdout
 
@@ -96,8 +97,13 @@ int select_charset(int charset_code);
 #  include <proj.h>
 #  define msg_init(ARGV) do {\
 	(msg_init)(ARGV); \
-	const char* msg_init_proj_path = use_path(msg_cfgpth(), "proj");\
-	proj_context_set_search_paths(PJ_DEFAULT_CTX, 1, &msg_init_proj_path);\
+	char* msg_init_proj_path = use_path(msg_cfgpth(), "proj");\
+	if (fDirectory(msg_init_proj_path)) {\
+	    const char* msg_init_proj_path_const = msg_init_proj_path;\
+	    proj_context_set_search_paths(PJ_DEFAULT_CTX, 1,\
+					  &msg_init_proj_path_const);\
+	}\
+	osfree(msg_init_proj_path);\
     } while (0)
 # endif
 #endif
