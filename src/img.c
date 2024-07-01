@@ -340,19 +340,13 @@ static img_errcode img_errno = IMG_NONE;
 /* Attempt to string paste to ensure we are passed a literal string */
 #define LITLEN(S) (sizeof(S"") - 1)
 
-/* Fake "version numbers" for non-3d formats we can read. */
-#define VERSION_CMAP_SHOT	-4
-#define VERSION_CMAP_STATION	-3
-#define VERSION_COMPASS_PLT	-2
-#define VERSION_SURVEX_POS	-1
-
 /* Flags bitwise-or-ed into pending to track XSECTs. */
 #define PENDING_XSECT_END	0x100
-#define PENDING_HAD_XSECT	0x001 /* Only for VERSION_COMPASS_PLT */
-#define PENDING_MOVE		0x002 /* Only for VERSION_COMPASS_PLT */
-#define PENDING_LINE		0x004 /* Only for VERSION_COMPASS_PLT */
-#define PENDING_XSECT		0x008 /* Only for VERSION_COMPASS_PLT */
-#define PENDING_FLAGS_SHIFT	9 /* Only for VERSION_COMPASS_PLT */
+#define PENDING_HAD_XSECT	0x001 /* Only for IMG_VERSION_COMPASS_PLT */
+#define PENDING_MOVE		0x002 /* Only for IMG_VERSION_COMPASS_PLT */
+#define PENDING_LINE		0x004 /* Only for IMG_VERSION_COMPASS_PLT */
+#define PENDING_XSECT		0x008 /* Only for IMG_VERSION_COMPASS_PLT */
+#define PENDING_FLAGS_SHIFT	9 /* Only for IMG_VERSION_COMPASS_PLT */
 
 /* Days from start of 1900 to start of 1970. */
 #define DAYS_1900 25567
@@ -633,7 +627,7 @@ compass_plt_open(img *pimg)
     char *from = NULL;
     int from_len = 0;
 
-    pimg->version = VERSION_COMPASS_PLT;
+    pimg->version = IMG_VERSION_COMPASS_PLT;
     /* Spaces aren't legal in Compass station names, but dots are, so
      * use space as the level separator */
     pimg->separator = ' ';
@@ -1086,9 +1080,9 @@ bad_cmap_date:
 	return IMG_BADFORMAT;
     }
     if (line[1] == 'S') {
-	pimg->version = VERSION_CMAP_STATION;
+	pimg->version = IMG_VERSION_CMAP_STATION;
     } else {
-	pimg->version = VERSION_CMAP_SHOT;
+	pimg->version = IMG_VERSION_CMAP_SHOT;
     }
     osfree(line);
     line = getline_alloc(pimg->fh);
@@ -1146,9 +1140,9 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    pimg->data = NULL;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
-   /* for VERSION_COMPASS_PLT, 0 value indicates we haven't
+   /* for IMG_VERSION_COMPASS_PLT, 0 value indicates we haven't
     * entered a survey yet */
-   /* for VERSION_CMAP_SHOT, we store the last station here
+   /* for IMG_VERSION_CMAP_SHOT, we store the last station here
     * to detect whether we MOVE or LINE */
    pimg->label_len = 0;
    pimg->label_buf[0] = '\0';
@@ -1196,10 +1190,11 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
       pimg->survey_len = len;
    }
 
-   /* [VERSION_COMPASS_PLT] bitwise-or of PENDING_* values, or -1.
-    * [VERSION_CMAP_STATION, VERSION_CMAP_SHOT] pending IMG_LINE or IMG_MOVE -
-    * both have 4 added.
-    * [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
+   /* [IMG_VERSION_COMPASS_PLT] bitwise-or of PENDING_* values, or -1.
+    * [IMG_VERSION_CMAP_STATION, IMG_VERSION_CMAP_SHOT] pending IMG_LINE or
+    * IMG_MOVE - both have 4 added.
+    * [IMG_VERSION_SURVEX_POS] already skipped heading line, or there wasn't
+    * one.
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE
     */
@@ -1219,7 +1214,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    switch (ext) {
      case EXT3('p', 'o', 's'): /* Survex .pos */
 pos_file:
-       pimg->version = VERSION_SURVEX_POS;
+       pimg->version = IMG_VERSION_SURVEX_POS;
        pimg->datestamp = my_strdup(TIMENA);
        if (!pimg->datestamp) {
 	   goto out_of_memory_error;
@@ -1526,7 +1521,8 @@ img_rewind(img *pimg)
       return 0;
    }
    clearerr(pimg->fh);
-   /* [VERSION_SURVEX_POS] already skipped heading line, or there wasn't one
+   /* [IMG_VERSION_SURVEX_POS] already skipped heading line, or there wasn't
+    * one.
     * [version 0] not in the middle of a 'LINE' command
     * [version >= 3] not in the middle of turning a LINE into a MOVE */
    pimg->pending = 0;
@@ -1534,10 +1530,10 @@ img_rewind(img *pimg)
    img_errno = IMG_NONE;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
-   /* for VERSION_COMPASS_PLT, 0 value indicates we haven't entered a survey
-    * yet */
-   /* for VERSION_CMAP_SHOT, we store the last station here to detect whether
-    * we MOVE or LINE */
+   /* for IMG_VERSION_COMPASS_PLT, 0 value indicates we haven't entered a
+    * survey yet */
+   /* for IMG_VERSION_CMAP_SHOT, we store the last station here to detect
+    * whether we MOVE or LINE */
    pimg->label_len = 0;
    pimg->style = img_STYLE_UNKNOWN;
    return 1;
@@ -2538,7 +2534,7 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       return result;
-   } else if (pimg->version == VERSION_SURVEX_POS) {
+   } else if (pimg->version == IMG_VERSION_SURVEX_POS) {
       /* Survex .pos file */
       int ch;
       size_t off;
@@ -2596,7 +2592,7 @@ img_read_item_ascii(img *pimg, img_point *p)
       if (!stn_included(pimg)) goto againpos;
 
       return img_LABEL;
-   } else if (pimg->version == VERSION_COMPASS_PLT) {
+   } else if (pimg->version == IMG_VERSION_COMPASS_PLT) {
       /* Compass .plt file */
       if ((pimg->pending & ~PENDING_HAD_XSECT) > 0) {
 	 /* -1 signals we've entered the first survey we want to read, and
@@ -2984,7 +2980,7 @@ out_of_memory_error:
       if (line[0] == '\x1a') return img_STOP;
 
       len = strlen(line);
-      if (pimg->version == VERSION_CMAP_STATION) {
+      if (pimg->version == IMG_VERSION_CMAP_STATION) {
 	 /* station variant */
 	 if (len < 37) {
 	    osfree(line);
@@ -3009,7 +3005,7 @@ out_of_memory_error:
 	 /* FIXME: look at prev for lines (line + 32, 5) */
 	 return img_LABEL;
       } else {
-	 /* Shot variant (VERSION_CMAP_SHOT) */
+	 /* Shot variant (IMG_VERSION_CMAP_SHOT) */
 	 char old[8], new_[8];
 	 if (len < 61) {
 	    osfree(line);
@@ -3607,7 +3603,7 @@ img_close(img *pimg)
       }
       if (pimg->data) {
 	  switch (pimg->version) {
-	    case VERSION_COMPASS_PLT:
+	    case IMG_VERSION_COMPASS_PLT:
 	      compass_plt_free_data(pimg);
 	      break;
 	    default:

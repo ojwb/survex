@@ -173,10 +173,10 @@ typedef struct {
    int fRead;        /* 1 for reading, 0 for writing */
    long start;
    /* version of file format:
-    *  -4 => CMAP XYZ file, shot format (.sht)
-    *  -3 => CMAP XYZ file, station format (.adj, .una)
-    *  -2 => Compass .plt file
-    *  -1 => .pos file
+    *  IMG_VERSION_CMAP_SHOT => CMAP XYZ file, shot variant (.sht)
+    *  IMG_VERSION_CMAP_STATION => CMAP XYZ file, station variant (.adj, .una)
+    *  IMG_VERSION_COMPASS_PLT => Compass .plt file
+    *  IMG_VERSION_SURVEX_POS => .pos file
     *   0 => 0.01 ascii
     *   1 => 0.01 binary,
     *   2 => byte actions and flags
@@ -203,6 +203,15 @@ typedef struct {
    /* Pointer to extra data reading some formats requires. */
    void *data;
 } img;
+
+/* Fake "version numbers" for non-3d formats we can read, used in
+ * the version member of the img struct.  These are not valid in
+ * img_output_version.
+ */
+#define IMG_VERSION_CMAP_SHOT		-4
+#define IMG_VERSION_CMAP_STATION	-3
+#define IMG_VERSION_COMPASS_PLT		-2
+#define IMG_VERSION_SURVEX_POS		-1
 
 /* Which version of the file format to output (defaults to newest) */
 extern unsigned int img_output_version;
