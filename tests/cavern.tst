@@ -19,13 +19,21 @@
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
+test -x "$testdir"/../src/cavern || testdir=.
+
+# Make testdir absolute, so we can cd before running cavern to get a consistent
+# path in diagnostic messages.
+testdir=`cd "$testdir" && pwd`
+
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
+if [ -z "$SURVEX_LIB" ] ; then
+  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEX_LIB
+fi
 
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
-
-test -x "$testdir"/../src/cavern || testdir=.
 
 case `uname -a` in
   MINGW*)
@@ -38,10 +46,6 @@ case `uname -a` in
     QUIET_DIFF='cmp -s'
     ;;
 esac
-
-# Make testdir absolute, so we can cd before running cavern to get a consistent
-# path in diagnostic messages.
-testdir=`(cd "$testdir" && pwd)`
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${DIFFPOS="$testdir"/../src/diffpos}

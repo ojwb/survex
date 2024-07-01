@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - test using img library non-hosted
-# Copyright (C) 2020,2021 Olly Betts
+# Copyright (C) 2020-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,17 +19,21 @@
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
-# allow us to run tests standalone more easily
-: ${srcdir="$testdir"}
-
-# force VERBOSE if we're run on a subset of tests
-test -n "$*" && VERBOSE=1
-
 test -x "$testdir"/../src/cavern || testdir=.
 
 # Make testdir absolute, so we can cd before running cavern to get a consistent
 # path in diagnostic messages.
-testdir=`(cd "$testdir" && pwd)`
+testdir=`cd "$testdir" && pwd`
+
+# allow us to run tests standalone more easily
+: ${srcdir="$testdir"}
+if [ -z "$SURVEX_LIB" ] ; then
+  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEX_LIB
+fi
+
+# force VERBOSE if we're run on a subset of tests
+test -n "$*" && VERBOSE=1
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${IMGTEST="$testdir"/../src/imgtest}

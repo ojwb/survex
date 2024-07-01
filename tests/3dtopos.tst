@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - 3d to pos tests
-# Copyright (C) 1999-2021 Olly Betts
+# Copyright (C) 1999-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@ testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
+if [ -z "$SURVEX_LIB" ] ; then
+  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEX_LIB
+fi
 
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1

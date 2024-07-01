@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - smoke tests
-# Copyright (C) 1999-2021 Olly Betts
+# Copyright (C) 1999-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,6 +18,13 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
+
+# allow us to run tests standalone more easily
+: ${srcdir="$testdir"}
+if [ -z "$SURVEX_LIB" ] ; then
+  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEX_LIB
+fi
 
 test -x "$testdir"/../src/cavern || testdir=.
 

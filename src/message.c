@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2022 Olly Betts
+ * Copyright (C) 1993-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -923,24 +923,21 @@ void
       cmdline_version();
       exit(0);
    }
-   if (argv[0]) {
+   char *pth = getenv("SURVEX_LIB");
+   if (pth && pth[0]) {
+      pth_cfg_files = osstrdup(pth);
+   } else if (argv[0]) {
       exe_pth = path_from_fnm(argv[0]);
 #if OS_UNIX && defined DATADIR && defined PACKAGE
-      bool free_pth = false;
-      char *pth = getenv("srcdir");
-      if (!pth || !pth[0]) {
-	 pth = path_from_fnm(argv[0]);
-	 free_pth = true;
-      }
-      if (pth[0]) {
+      if (exe_pth[0]) {
 	 struct stat buf;
 #if OS_UNIX_MACOS
 # ifndef AVEN
 	 /* On macOS the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
-	 p = use_path(pth, "share/survex/en.msg");
+	 p = use_path(exe_pth, "share/survex/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
-	    pth_cfg_files = use_path(pth, "share/survex");
+	    pth_cfg_files = use_path(exe_pth, "share/survex");
 	    goto macos_got_msg;
 	 }
 	 osfree(p);
@@ -949,9 +946,9 @@ void
 	  * the hardlinked copies of cavern and extend alongside the aven
 	  * binary, which are the ones which aven runs.
 	  */
-	 p = use_path(pth, "../Resources/en.msg");
+	 p = use_path(exe_pth, "../Resources/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
-	    pth_cfg_files = use_path(pth, "../Resources");
+	    pth_cfg_files = use_path(exe_pth, "../Resources");
 	    goto macos_got_msg;
 	 }
 	 osfree(p);
@@ -960,17 +957,17 @@ void
 	  * from the program's path exists, and if so look there for
 	  * support files - this allows us to test binaries in the build
 	  * tree easily. */
-	 p = use_path(pth, "../lib/en.msg");
+	 p = use_path(exe_pth, "../lib/en.msg");
 	 if (stat(p, &buf) == 0) {
 #ifdef S_ISREG
 	    /* POSIX way */
 	    if (S_ISREG(buf.st_mode)) {
-	       pth_cfg_files = use_path(pth, "../lib");
+	       pth_cfg_files = use_path(exe_pth, "../lib");
 	    }
 #else
 	    /* BSD way */
 	    if ((buf.st_mode & S_IFMT) == S_IFREG) {
-	       pth_cfg_files = use_path(pth, "../lib");
+	       pth_cfg_files = use_path(exe_pth, "../lib");
 	    }
 #endif
 	 }
@@ -979,8 +976,6 @@ macos_got_msg:
 #endif
 	 osfree(p);
       }
-
-      if (free_pth) osfree(pth);
 #elif OS_WIN32
       DWORD len = 256;
       char *buf = NULL, *modname;
@@ -998,7 +993,7 @@ macos_got_msg:
       osfree(buf);
 #else
       /* Get the path to the support files from argv[0] */
-      pth_cfg_files = path_from_fnm(argv[0]);
+      pth_cfg_files = exe_path;
 #endif
    }
 

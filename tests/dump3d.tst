@@ -21,6 +21,10 @@ testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
+if [ -z "$SURVEX_LIB" ] ; then
+  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEX_LIB
+fi
 
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
