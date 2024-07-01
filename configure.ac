@@ -152,12 +152,16 @@ esac
 WX_LIBS=`$WX_CONFIG --libs "$wx_libs"`
 dnl Needed for nvidia drivers on linux (for some setups anyway).
 AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryVersion, [WX_LIBS="$WX_LIBS -lXxf86vm"], [], [$WX_LIBS])
-dnl We use functions from libGLU so always link -lGLU explicitly if it's
-dnl present.
-AC_CHECK_LIB([GLU], [gluProject], [WX_LIBS="$WX_LIBS -lGLU"], [], [$WX_LIBS])
-dnl We use functions from libGL so always link -lGL explicitly if it's
-dnl present.
-AC_CHECK_LIB([GL], [glPushMatrix], [WX_LIBS="$WX_LIBS -lGL"], [], [$WX_LIBS])
+
+save_LIBS=$LIBS
+dnl Check if we need a library for OpenGL functions.  Usually it's the "GL"
+dnl library, but it's called opengl32 on Microsoft Windows).
+AC_SEARCH_LIBS([glPushMatrix], [GL opengl32], [WX_LIBS="$WX_LIBS $ac_cv_search_glPushMatrix"], [], [$WX_LIBS])
+dnl Check if we need a library for GLU functions.  Usually it's the "GLU"
+dnl library, but it's called glu32 on Microsoft Windows).
+AC_SEARCH_LIBS([gluProject], [GLU glu32], [WX_LIBS="$WX_LIBS $ac_cv_search_gluProject"], [], [$WX_LIBS])
+LIBS=$save_LIBS
+
 AC_SUBST(WX_LIBS)
 dnl macOS has OpenGL/gl.h.
 AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
