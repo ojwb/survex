@@ -10,6 +10,9 @@ manual_sources = manual.sgml cavern.sgml\
 
 manual_alt = manual.txt manual.pdf
 
+HTMLFILES= AUTHORS.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm \
+ 3dformat.htm 3dformat-old.htm
+
 # People can build from git without docbook-utils installed but they won't be
 # able to "make dist", which is arguably a good thing - we don't want tarballs
 # accidentally lacking the documentation.
@@ -29,7 +32,7 @@ OLDNEWS.htm: ../OLDNEWS news2html.pl
 
 MAINTAINERCLEANFILES = $(manual_alt) $(other_mans) NEWS.htm OLDNEWS.htm
 
-pkgdoc_DATA = @HTMLFILES@ $(manual_alt)
+pkgdoc_DATA = $(HTMLFILES) $(manual_alt)
 
 man_MANS = survex.7 $(other_mans)
 

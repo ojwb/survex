@@ -319,9 +319,6 @@ AC_ARG_ENABLE(profiling,
   *) AC_MSG_ERROR(bad value $enableval for --enable-profiling) ;;
 esac])
 
-HTMLFILES="AUTHORS.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm 3dformat.htm 3dformat-old.htm"
-AC_SUBST(HTMLFILES)
-
 EXTRA_TEXT="AUTHORS COPYING NEWS TODO ChangeLog"
 AC_SUBST(EXTRA_TEXT)
 
