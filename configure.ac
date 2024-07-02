@@ -52,11 +52,11 @@ esac
 PKGDOCDIR="$enableval"
 ]
 )
-PKGDOCDIR_EXPANDED=`(
+PKGDOCDIR_EXPANDED=`
  test NONE = "$prefix" && prefix="$ac_default_prefix"
  test NONE = "$exec_prefix" && exec_prefix="$prefix"
  eval echo "$PKGDOCDIR"
-)`
+`
 AC_SUBST(PKGDOCDIR)
 AC_SUBST(PKGDOCDIR_EXPANDED)
 
