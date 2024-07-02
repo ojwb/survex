@@ -27,7 +27,6 @@ EXTRA_DIST = survex.pot $(po_files)\
  ChineseTraditional.isl\
  EnglishBritish.isl\
  Greek.isl\
- Hungarian.isl\
  Indonesian.isl\
  Romanian.isl\
  make-pixel-font preload_font.h
