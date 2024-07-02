@@ -249,3 +249,48 @@ jobs:
     - name: Run tests
       run: |
         make check MSGFMT=: VERBOSE=1
+
+  msys2-ucrt64:
+    runs-on: 'windows-latest'
+    needs: makedist
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: ucrt64
+        install: base-devel
+        pacboy: >-
+          gcc:p
+          ffmpeg:p
+          gdal:p
+          proj:p
+          wxwidgets3.2-msw:p
+          gdb:p
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+        variant: sccache
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: configure
+      run: |
+        PATH=/c/Users/runneradmin/.cargo/bin:$PATH
+        export CC='sccache gcc'
+        export CXX='sccache g++'
+        ./configure
+    - name: make
+      run: |
+        PATH=/c/Users/runneradmin/.cargo/bin:$PATH
+        make -j2
+    - name: Run tests
+      run: |
+        PATH=/c/Users/runneradmin/.cargo/bin:$PATH
+        make check MSGFMT=: VERBOSE=1
