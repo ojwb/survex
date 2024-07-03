@@ -44,21 +44,21 @@ mingw_iss : survex.iss
 	cp survex.iss iss_tmp
 	: # so the installer can display the license
 	cp COPYING iss_tmp/COPYING.txt
-	mv iss_tmp/usr/local/share/doc/survex/*.htm iss_tmp
+	mv iss_tmp$(prefix)/share/doc/survex/*.htm iss_tmp
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	:
 	: # This is identical to survexport.exe - we install under two names
 	: # via the installer so don't need to ship both.
-	rm -f iss_tmp/usr/local/bin/3dtopos.exe
-	mv iss_tmp/usr/local/bin/* iss_tmp
-	mv iss_tmp/usr/local/share/survex/images/* iss_tmp
-	rmdir iss_tmp/usr/local/share/survex/images
-	mv iss_tmp/usr/local/share/survex/* iss_tmp
+	rm -f iss_tmp$(prefix)/bin/3dtopos.exe
+	mv iss_tmp$(prefix)/bin/* iss_tmp
+	mv iss_tmp$(prefix)/share/survex/images/* iss_tmp
+	rmdir iss_tmp$(prefix)/share/survex/images
+	mv iss_tmp$(prefix)/share/survex/* iss_tmp
 	:
 	cp lib/icons/*.ico iss_tmp
 	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
-	mv iss_tmp/usr/local/share/doc/survex/manual iss_tmp
+	mv iss_tmp$(prefix)/share/doc/survex/manual iss_tmp
 	rm -rf iss_tmp/usr
 	: # convert LF to CR+LF
 	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*.htm
