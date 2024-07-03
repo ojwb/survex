@@ -73,6 +73,7 @@ Type: files; Name: "{app}\cad3d.exe"
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"
+Source: "*.dll"; DestDir: "{app}"; Flags: skipifsourcedoesntexist
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.pixelfont"; DestDir: "{app}"

@@ -268,6 +268,7 @@ jobs:
           proj:p
           wxwidgets3.2-msw:p
           gdb:p
+          ntldd:p
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
@@ -294,3 +295,15 @@ jobs:
       run: |
         PATH=/c/Users/runneradmin/.cargo/bin:$PATH
         make check MSGFMT=: VERBOSE=1
+    - name: Run innosetup
+      run: |
+        make mingw_iss RUN_EXE= NTLDD=ntldd PROJ_PREFIX=/ucrt64
+    - uses: actions/upload-artifact@v4
+      with:
+        name: microsoft-windows-installer
+        path: |
+          survex-win32-*.exe
+        # Files are already compressed so don't try to compress again.
+        compression-level: 0
+        retention-days: 1
+        if-no-files-found: error

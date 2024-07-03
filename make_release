@@ -32,66 +32,6 @@ else
   make dist
 fi
 
-# Perform mingw build on a clean unpacked source tree from the release tarball
-# so that (a) we don't need to "make distclean" on the source tree and (b) we
-# ensure that any files required to build the mingw version and installer
-# package are actually shipped in the source tarball.
-tarball=`ls -1t survex-1*.tar.gz|head -n1`
-tardir=`basename "$tarball" .tar.gz`
-rm -rf "$tardir"
-tar xf "$tarball"
-cd "$tardir"
-
-test -n "$build_platform" || build_platform=`sh config.guess`
-SAVE_PATH=$PATH
-for wxc in \
-  /usr/i686-w64-mingw32/lib/wx/config/i686-w64-mingw32-msw-unicode-static-3.2 \
-  /usr/i686-w64-mingw32/lib/wx/config/i686-w64-mingw32-msw-unicode-static-3.1 \
-  /usr/i686-w64-mingw32/lib/wx/config/i686-w64-mingw32-msw-unicode-static-3.0 \
-  /usr/i586-mingw32msvc/lib/wx/config/i586-mingw32msvc-msw-unicode-static-3.0 \
-  "" ; do
-  if test -z "$wxc" ; then
-    echo "wx-config for mingw not found" >&2
-    exit 1
-  fi
-  if test -x "$wxc" ; then
-    CC=`$wxc --cc`
-    CXX=`$wxc --cxx`
-    break
-  fi
-done
-host=mingw
-case $CC in
-  *i686-w64-mingw32-gcc)
-    # debian mingw package
-    host=i686-w64-mingw32
-    ;;
-  *i586-mingw32msvc-gcc)
-    # debian mingw32 package
-    host=i586-mingw32msvc
-    ;;
-  *i386-mingw32msvc-gcc)
-    # debian mingw32 package
-    host=i386-mingw32msvc
-    ;;
-esac
-PATH=/usr/$host/bin:$PATH
-
-# Passing -Werror to configure causes AC_CHECK_FUNCS to fail, so pass it to
-# make instead.
-cross_pkg_config_path=`echo "$wxc"|sed 's,/lib/.*,/lib/pkgconfig,'`
-PKG_CONFIG_PATH=$cross_pkg_config_path \
-PKG_CONFIG_LIBDIR=$cross_pkg_config_path \
-  ./configure --host="$host" --build="$build_platform" WX_CONFIG="$wxc" \
-      CC="$CC" CXX="$CXX" CXXFLAGS="-g -O2 -fno-strict-aliasing -Werror" \
-      LDFLAGS='-s -static' LIBS='-lsqlite3 -lstdc++'
-make CFLAGS='-g -O2 -Werror'
-make mingw_iss
-PATH=$SAVE_PATH
-
-mv survex-win32-*.exe ..
-cd ..
-
 if test x"$rel" = xyes ; then
   rm -rf "$tardir"
 else

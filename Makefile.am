@@ -36,6 +36,10 @@ create-aven-app:
 
 mingw : all mingw_iss
 
+RUN_EXE = DISPLAY= wine
+
+PROJ_PREFIX = /usr/i686-w64-mingw32
+
 mingw_iss : survex.iss
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
@@ -58,17 +62,21 @@ mingw_iss : survex.iss
 	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mv iss_tmp$(prefix)/share/doc/survex/manual iss_tmp
 	rm -rf iss_tmp/usr
-	for f in "`$(WX_CONFIG) --prefix`"/share/locale/*/LC_MESSAGES/wxstd.mo ; do \
-	  a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$$!\1!'`; \
-	  mkdir iss_tmp/$$a; \
-	  cp "$$f" iss_tmp/$$a; \
-	  printf 'Source: "%s\\wxstd.mo"; DestDir: "{app}\\%s"\n' "$$a" "$$a"; \
-	done > iss_tmp/i18nfiles.iss
+	p=$(PWD) ; cd "`$(WX_CONFIG) --prefix`/share/locale" && for d in * ; do \
+	  f=$$d/LC_MESSAGES/wxstd.mo ; \
+	  if [ -f "$$f" ] ; then \
+	    mkdir "$$p/$$d" ; \
+	    cp "$$f" "$$p/$$d" ; \
+	    printf 'Source: "%s\\wxstd.mo"; DestDir: "{app}\\%s"\n' "$$d" "$$d" ; \
+	  fi ; \
+	done > $$p/iss_tmp/i18nfiles.iss
 	cp lib/*.isl iss_tmp
 	: # Also need to reduce colour depth it appears:
 	: # src/png2bmp lib/icons/aven_about.png iss_tmp/logo.bmp
-	cp -a /usr/i686-w64-mingw32/share/proj iss_tmp/proj
-	DISPLAY= wine "c:/Program Files/Inno Setup 6/ISCC.exe" iss_tmp/survex.iss
+	cp -a $(PROJ_PREFIX)/share/proj iss_tmp/proj
+	: # Include required non-system DLLs.
+	[ -z "$(NTLDD)" ] || cp -a $$($(NTLDD) --recursive src/aven.exe 2>/dev/null|sed -n 's!\\!/!g;s!.*msys64\(/ucrt64/bin/[^ ]*\).*!\1!p') iss_tmp
+	$(RUN_EXE) "c:/Program Files (x86)/Inno Setup 6/ISCC.exe" iss_tmp/survex.iss
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp
 
