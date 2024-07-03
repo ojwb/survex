@@ -197,6 +197,11 @@ wxString escape_for_shell(wxString s, bool protect_dash)
     //
     // Thankfully wxExecute passes the command string to CreateProcess(), so
     // at least we don't need to quote for cmd.exe too.
+    if (protect_dash && !s.empty() && s[0u] == '-') {
+	// If the filename starts with a '-', protect it from being
+	// treated as an option by prepending ".\".
+	s.insert(0, wxT(".\\"));
+    }
     if (s.empty() || s.find_first_of(wxT(" \"\t\n\v")) != s.npos) {
 	// Need to quote.
 	s.insert(0, wxT('"'));
