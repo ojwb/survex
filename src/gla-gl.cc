@@ -679,8 +679,8 @@ void GLACanvas::OnSize(wxSizeEvent & event)
 
     wxSize size = event.GetSize();
 
-    auto new_w = size.GetWidth() * content_scale_factor;
-    auto new_h = size.GetHeight() * content_scale_factor;
+    int new_w = size.GetWidth() * content_scale_factor;
+    int new_h = size.GetHeight() * content_scale_factor;
     // The width and height go to zero when the panel is dragged right
     // across so we clamp them to be at least 1 to avoid problems.
     if (new_w < 1) new_w = 1;
