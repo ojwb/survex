@@ -1,6 +1,6 @@
 /* dump3d.c */
 /* Show raw contents of .3d file in text form */
-/* Copyright (C) 2001-2022 Olly Betts
+/* Copyright (C) 2001-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ main(int argc, char **argv)
 
    printf("TITLE \"%s\"\n", pimg->title);
    printf("DATE \"%s\"\n", pimg->datestamp);
-   printf("DATE_NUMERIC %ld\n", pimg->datestamp_numeric);
+   printf("DATE_NUMERIC %lld\n", (long long)pimg->datestamp_numeric);
    if (pimg->cs)
       printf("CS %s\n", pimg->cs);
    printf("VERSION %d\n", pimg->version);
