@@ -45,8 +45,6 @@ mingw_iss : survex.iss
 	: # so the installer can display the license
 	cp COPYING iss_tmp/COPYING.txt
 	mv iss_tmp$(prefix)/share/doc/survex/*.htm iss_tmp
-	: # convert LF to CR+LF
-	perl -p -i -e 's/\n/\r\n/' iss_tmp/*
 	:
 	: # This is identical to survexport.exe - we install under two names
 	: # via the installer so don't need to ship both.
@@ -60,8 +58,6 @@ mingw_iss : survex.iss
 	: # not needed if we build wx without threads: gzip -dc /usr/share/doc/mingw32-runtime/mingwm10.dll.gz > iss_tmp/mingwm10.dll
 	mv iss_tmp$(prefix)/share/doc/survex/manual iss_tmp
 	rm -rf iss_tmp/usr
-	: # convert LF to CR+LF
-	perl -p -i -e 's/\n/\r\n/' iss_tmp/manual/*.htm
 	for f in "`$(WX_CONFIG) --prefix`"/share/locale/*/LC_MESSAGES/wxstd.mo ; do \
 	  a=`echo "$$f"|sed 's!^.*/\([^/]*\)/LC_MESSAGES/wxstd\.mo$$!\1!'`; \
 	  mkdir iss_tmp/$$a; \
