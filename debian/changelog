@@ -1,3 +1,10 @@
+survex (1.4.9-1) unstable; urgency=medium
+
+  * New upstream release.
+    + debian/control: Add B-D on libgdal-dev (new upstream dependency).
+
+ -- Olly Betts <olly@survex.com>  Fri, 05 Jul 2024 08:20:18 +1200
+
 survex (1.4.8-1) unstable; urgency=medium
 
   * New upstream release.
