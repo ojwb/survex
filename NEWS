@@ -1,15 +1,13 @@
-up to: ed3935820580516a7ec7f8be5f9027f4b3341a78
-
-Changes in 1.4.9 (2024-06-??):
+Changes in 1.4.9 (2024-07-04):
 
 * aven:
 
-  + We now support showing geodata overlays in Aven.  We use the GDAL library
-    to load the data, so this should work for any format which GDAL supports
-    so long as it can be read from the filing system and is geo-referenced
-    vector data - see https://gdal.org/drivers/vector/index.html for a list.
-    Currently the dialog to select a file defaults to showing GPX, KML, GeoJSON
-    and shape files - set the filter to "All Files" to chose other formats.
+  + Support showing geodata overlays in Aven.  We use the GDAL library to load
+    the data, so this should work for any format which GDAL supports so long as
+    it can be read from the filing system and is geo-referenced vector data -
+    see https://gdal.org/drivers/vector/index.html for a list.  Currently the
+    dialog to select a file defaults to showing GPX, KML, GeoJSON and shape
+    files - set the filter to "All Files" to chose other formats.
 
   + Reimplement display of cavern output.  The old version turned the log into
     HTML and displayed it using wxHtmlWindow, but that adds a lot of overhead
@@ -20,6 +18,14 @@ Changes in 1.4.9 (2024-06-??):
     currently aware of is that you can't now select and copy text from the log
     window, which wxHtmlWindow provided for free.  If people miss this feature,
     we could add it to the new implementation.
+
+  + (Microsoft Windows version): Clicks in the cavern log window which load
+    files into an editor now protect the filename if it starts with a dash
+    to prevent it being interpreted as a command line option.  We already
+    do this for other platforms, but weren't on Microsoft Windows on the
+    assumption that it isn't needed because the filenames will be fully
+    qualified, but that may not be the case if aven if run by hand from the
+    command line or from some other launcher.
 
 * cavern:
 
@@ -65,6 +71,16 @@ Changes in 1.4.9 (2024-06-??):
     we would print billions of spaces.  As far as I know this has never
     happened in a released version.
 
+  + Error messages which report the program name now remove any ".exe" suffix.
+    This helps the testsuite by making the expected output the same
+    cross-platform, but also seems slightly nicer for users.
+
+* dump3d:
+
+  + The timestamp reported by DATE_NUMERIC is now printed portably.  Previously
+    we were assuming that a time_t is the same size as a long int, which is not
+    true on all platforms.
+
 * manual:
 
   + (Microsoft Windows version): Update information about installation
@@ -96,9 +112,46 @@ Changes in 1.4.9 (2024-06-??):
   + A CMAP XYZ file without a survey title is now handled correctly (this was
     reporting a bogus "Out of memory" error).
 
+  + The img.h header now defines constants IMG_VERSION_SURVEX_POS, etc for the
+    values reported in the version field for non-.3d formats.
+
+  + (Microsoft Windows version): Workaround limitation of Microsoft's C
+    library so we handle dates before 1970 in Compass PLT files, CMAP XYZ
+    files, and older format .3d files.  Previously these were reported
+    as "unknown date".
+
+* We now support overriding the location of support files by setting the
+  SURVEXLIB environment variable.  We no longer look at the srcdir
+  environment variable for this.
+
+* (Microsoft Windows version): The installer is now created automatically
+  on Github actions, which has required a few changes.  It now packages a
+  64-bit build, and is created with Innosetup 6.3.2 which no longer supports
+  Vista.  The installer is also now significantly larger, which is mostly
+  because we now need to include a large number of DLLs, most of which are
+  dependencies of the mingw64 FFmpeg and GDAL packages.
+
+* (Microsoft Windows version): If the directory where we expect the PROJ
+  support files to be does not exist for some reason we now avoid triggering
+  a segmentation fault in PROJ.
+
 * Build system:
 
   + The GDAL library is now required to build Survex.
+
+  + (Microsoft Windows version): The probe for GL and GLU libraries now also
+    checks for Microsoft's non-standard library names.
+
+  + Correct configure --help output for --enable-werror for which the default
+    is actually "no" rather than "maintainer-mode".
+
+* testsuite:
+
+  + aven.tst: Skip a testcase when running on mingw as it seems to hang there.
+    We already skip this testcase on macos for what appears to be the same
+    problem.
+
+  + Fix comparison of output to work on platforms using DOS line endings.
 
 Changes in 1.4.8 (2024-04-23):
 
