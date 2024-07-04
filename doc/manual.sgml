@@ -4658,7 +4658,7 @@ assume 4 digit years are correct, years &lt; 50 are 20xx, and other years get
 </Para>
 
 <Para>
-CMAP XYZ files don't seem to contain any stations flags.  There's a single
+CMAP XYZ files don't seem to contain any station flags.  There's a single
 character "type" which acts as a leg flag of sorts, but it seems the
 meaning is up to the user so we don't try to interpret it.  We assume all
 the data is underground (so all stations get the "underground" flag).
