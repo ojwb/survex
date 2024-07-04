@@ -923,7 +923,7 @@ void
       cmdline_version();
       exit(0);
    }
-   char *pth = getenv("SURVEX_LIB");
+   char *pth = getenv("SURVEXLIB");
    if (pth && pth[0]) {
       pth_cfg_files = osstrdup(pth);
    } else if (argv[0]) {

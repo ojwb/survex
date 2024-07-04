@@ -21,9 +21,9 @@ testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
-if [ -z "$SURVEX_LIB" ] ; then
-  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
-  export SURVEX_LIB
+if [ -z "$SURVEXLIB" ] ; then
+  SURVEXLIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEXLIB
 fi
 
 test -x "$testdir"/../src/cavern || testdir=.

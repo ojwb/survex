@@ -27,9 +27,9 @@ testdir=`cd "$testdir" && pwd`
 
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
-if [ -z "$SURVEX_LIB" ] ; then
-  SURVEX_LIB=`cd "$srcdir/../lib" && pwd`
-  export SURVEX_LIB
+if [ -z "$SURVEXLIB" ] ; then
+  SURVEXLIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEXLIB
 fi
 
 # force VERBOSE if we're run on a subset of tests
