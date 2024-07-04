@@ -49,27 +49,3 @@ s_catn(string *pstr, int n, char c)
    pstr->len += n;
    pstr->s[pstr->len] = '\0';
 }
-
-extern inline void s_cat(string *pstr, const char *s);
-
-extern inline void s_catchar(string *pstr, char c);
-
-extern inline void s_clear(string *pstr);
-
-extern inline void s_truncate(string *pstr, int new_len);
-
-extern inline void s_free(string *pstr);
-
-extern inline char *s_steal(string *pstr);
-
-extern inline void s_donate(string *pstr, char *s);
-
-extern inline int s_len(const string *pstr);
-
-extern inline bool s_empty(const string *pstr);
-
-extern inline const char *s_str(string *pstr);
-
-extern inline bool s_eqlen(const string *pstr, const char *s, int s_len);
-
-extern inline bool s_eq(const string *pstr, const char *s);
