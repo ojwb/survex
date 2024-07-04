@@ -1,10 +1,14 @@
-survex (1.4.7-5) UNRELEASED; urgency=medium
+survex (1.4.8-1) unstable; urgency=medium
 
+  * New upstream release.
+    + Fix to build with newer FFmpeg versions. (Closes: #1072454)
+    + debian/patches/fix-s390x-tests.patch: Drop patch cherry-picked from
+      upstream.
   * debian/control: Remove Build-Depends which are no longer needed (the
     resulting binary packages are bit-for-bit identical before and after this
     change).
 
- -- Olly Betts <olly@survex.com>  Tue, 09 Apr 2024 18:00:54 +1200
+ -- Olly Betts <olly@survex.com>  Mon, 03 Jun 2024 16:40:23 +1200
 
 survex (1.4.7-4) unstable; urgency=medium
 
