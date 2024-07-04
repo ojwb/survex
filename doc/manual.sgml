@@ -4634,7 +4634,7 @@ efforts.
 </Para>
 
 <Sect1><Title>Working with Bob Thrun's CMAP</Title>
-<?dbhtml filename="walls.htm">
+<?dbhtml filename="cmap.htm">
 
 <Para>
 Survex can read CMAP processed survey data, commonly known as CMAP XYZ files.
