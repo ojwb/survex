@@ -4578,9 +4578,6 @@ should be able to write a .svx file to replace your WPJ file - you can use
 	and backsights.
     </Para></ListItem>
     <ListItem><Para>
-	FLAG= is quietly skipped.
-    </Para></ListItem>
-    <ListItem><Para>
 	UV=, UVH= and UVV= are all quietly skipped.
     </Para></ListItem>
     <ListItem><Para>
