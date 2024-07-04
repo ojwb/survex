@@ -69,15 +69,28 @@ sudo apt-get install autoconf automake liblocale-po-perl libproj-dev libwxgtk3.0
 
 <H3>Mingw (Microsoft Windows)</H3>
 
-<P>Currently I build this with a Linux hosted cross-compiler.  I use
-the packaged cross-compiler in the debian testing/unstable distribution:
+<p>Survex can be built in an MSYS2+mingw64 environment - since 1.4.9 the
+pre-built installer for Microsoft Windows is built in such an environment
+by a CI job running on Github Actions.
+</p>
+
+<p>
+It should also be possible to use a Linux-hosted cross-compiler, which is
+how we used to built releases, but this requires cross-building a lot of
+required libraries so we gave up on doing this.  Some notes on this are
+left below in case anyone wants to try.
+</p>
+
+<p>
+I use the packaged cross-compiler in the debian testing/unstable distribution:
+</p>
 
 <pre>
 sudo apt-get install mingw-w64-i686-dev
 </pre>
 
 <p>
-I then install the various libraries by compiling from source.  For wxWidgets
+Then install the various libraries by compiling from source.  For wxWidgets
 I apply a
 <a href="https://survex.com/software/wxWidgets-3.2.4.patch">patch</a> to
 disable a pointless and annoying compiler ABI check
@@ -158,18 +171,25 @@ make
 sudo make install
 </pre>
 
-<P>Building on Windows in a native mingw environment will probably
-require tinkering.  Best bet is probably to install bash and use the
-current configure script.  I'm happy to help if you want to try this,
-and I'll incorporate patches provided they're fairly clean.
+<p>
+You'll also need to install GDAL, which requires a lot of other libraries
+installed to build.  I gave up at this point.
+</p>
 
 <H2>Microsoft Windows Installer Builder</H2>
 
-<P>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
-build the MS Windows Installer.  Survex 1.4.8 was built using InnoSetup
-6.2.2.
+<p>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
+build the MS Windows Installer.  Since 1.4.9 we use the InnoSetup version
+which is pre-installed in the Github CI images.
+</p>
 
-<P>Here are some random notes:
+<p>
+Survex 1.4.8 was built using InnoSetup 6.2.2.
+</p>
+
+<p>
+Here are some random notes on the old cross-building approach:
+</p>
 
 <H3>Packages Needed</H3>
 
