@@ -4547,6 +4547,11 @@ should be able to write a .svx file to replace your WPJ file - you can use
 	Survex station flags) and otherwise ignore FLAG values.
     </Para></ListItem>
     <ListItem><Para>
+        #NOTE is parsed and the station name is marked as "used" (which
+        suppresses the unused fixed point warning) but the note text is
+        currently ignored.
+    </Para></ListItem>
+    <ListItem><Para>
 	We don't currently support all the datum names which Walls does because
 	we haven't managed to find an EPSG code for any UTM zones in some of
 	these datums.  This probably means they're not actually in current
