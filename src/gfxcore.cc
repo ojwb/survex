@@ -1786,7 +1786,7 @@ void GfxCore::Animate()
 	if (m_RotationStep < 0 && diff == 180.0)
 	    diff = -180.0;
 	double step = base_pan - m_PanAngle;
-	double delta = (t - base_pan_time) * 1e-3 * fabs(m_RotationStep);
+	double delta = (t - base_pan_time) * 1e-3 * 60.0;
 	if (diff > 0) {
 	    step += delta;
 	} else {
