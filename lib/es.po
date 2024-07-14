@@ -1833,7 +1833,6 @@ msgstr "Archivos KML"
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated:
 #. http://www.fountainware.com/compass/
-#. http://www.psc-cavers.org/carto/
 #: ../src/export.cc:103
 #: n:415
 msgid "Compass PLT for use with Carto"

@@ -98,8 +98,7 @@ const format_info export_format_info[] = {
       LABELS|LEGS },
     /* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
      * so should not be translated:
-     * http://www.fountainware.com/compass/
-     * http://www.psc-cavers.org/carto/ */
+     * http://www.fountainware.com/compass/ */
     { ".plt", /*Compass PLT for use with Carto*/415,
       LABELS|LEGS|SURF|SPLAYS|ORIENTABLE,
       LABELS|LEGS },
