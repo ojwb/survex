@@ -1902,8 +1902,8 @@ msgstr "PLIK1 oraz PLIK2 mogą być plikami .pos lub .3d\nPRÓG jest maksymalną
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:552
 #: n:267
-msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
-msgstr "WEJŚCIOWY_PLIK_3D [WYJŚCIOWY_PLIK_3D]"
+msgid "INPUT_FILE [OUTPUT_3D_FILE]"
+msgstr "WEJŚCIOWY_PLIK [WYJŚCIOWY_PLIK_3D]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:125
@@ -3320,7 +3320,7 @@ msgstr "posortuj po wielkości błędu na odcinek"
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:59
 #: n:183
-msgid "replace .err file with resorted version"
+msgid "replace .err file with re-sorted version"
 msgstr "zastąp plik .err przesortowaną wersją"
 
 #: ../src/sorterr.c:79

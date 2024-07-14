@@ -56,7 +56,7 @@ static struct help_msg help[] = {
    /* TRANSLATORS: --help output for sorterr --per-leg option */
    {HLP_ENCODELONG(3),        /*sort by error per leg*/182, 0},
    /* TRANSLATORS: --help output for sorterr --replace option */
-   {HLP_ENCODELONG(4),        /*replace .err file with resorted version*/183, 0},
+   {HLP_ENCODELONG(4),        /*replace .err file with re-sorted version*/183, 0},
    {0, 0, 0}
 };
 

@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2023 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,7 @@ main(int argc, char **argv)
       pfxHi[d] = pfxLo[d] = NULL;
    }
 
+   cmdline_set_syntax_message(/*[SURVEY_DATA_FILE]*/269, 0, NULL);
    /* at least one argument must be given */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {

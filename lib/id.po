@@ -1902,8 +1902,8 @@ msgstr "Berkas FILE1 dan FILE2 bisa saja .pos atau .3d\nTHRESHOLD merupakan max.
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:552
 #: n:267
-msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
-msgstr "INPUT_3D_FILE [OUTPUT_3D_FILE]"
+msgid "INPUT_FILE [OUTPUT_3D_FILE]"
+msgstr "INPUT_FILE [OUTPUT_3D_FILE]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:125
@@ -3320,7 +3320,7 @@ msgstr "urutkan berdasarkan kesalahan per kaki"
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:59
 #: n:183
-msgid "replace .err file with resorted version"
+msgid "replace .err file with re-sorted version"
 msgstr "ganti berkas .err dengan versi dipulihkan"
 
 #: ../src/sorterr.c:79

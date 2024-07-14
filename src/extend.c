@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016,2017 Olly Betts
+ * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016,2017,2024 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -549,7 +549,7 @@ main(int argc, char **argv)
    msg_init(argv);
 
    /* TRANSLATORS: Part of extend --help */
-   cmdline_set_syntax_message(/*INPUT_3D_FILE [OUTPUT_3D_FILE]*/267, 0, NULL);
+   cmdline_set_syntax_message(/*INPUT_FILE [OUTPUT_3D_FILE]*/267, 0, NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
       int opt = cmdline_getopt();

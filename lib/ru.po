@@ -1902,8 +1902,8 @@ msgstr "ФАЙЛ1 и ФАЙЛ2 могут быть .pos или .3d файлам�
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:552
 #: n:267
-msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
-msgstr "ВХОДНОЙ_3D_ФАЙЛ [ВЫХОДНОЙ_3D_ФАЙЛ]"
+msgid "INPUT_FILE [OUTPUT_3D_FILE]"
+msgstr "ВХОДНОЙ_ФАЙЛ [ВЫХОДНОЙ_3D_ФАЙЛ]"
 
 #. TRANSLATORS: Part of sorterr --help
 #: ../src/sorterr.c:125
@@ -3319,7 +3319,7 @@ msgstr "сортировать по средней величине ошибки
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:59
 #: n:183
-msgid "replace .err file with resorted version"
+msgid "replace .err file with re-sorted version"
 msgstr "заменить .err файл на пересортированный"
 
 #: ../src/sorterr.c:79

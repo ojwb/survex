@@ -1913,7 +1913,7 @@ msgstr "FÁJL1 és FÁJL2 lehet .pos vagy .3d fájl\nHATÁRÉRTÉK a maximális 
 #. TRANSLATORS: Part of extend --help
 #: ../src/extend.c:552
 #: n:267
-msgid "INPUT_3D_FILE [OUTPUT_3D_FILE]"
+msgid "INPUT_FILE [OUTPUT_3D_FILE]"
 msgstr ""
 
 #. TRANSLATORS: Part of sorterr --help
@@ -3333,7 +3333,7 @@ msgstr ""
 #. TRANSLATORS: --help output for sorterr --replace option
 #: ../src/sorterr.c:59
 #: n:183
-msgid "replace .err file with resorted version"
+msgid "replace .err file with re-sorted version"
 msgstr ""
 
 #: ../src/sorterr.c:79
