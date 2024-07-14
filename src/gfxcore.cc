@@ -1775,8 +1775,7 @@ void GfxCore::Animate()
 	TiltCave(step);
     } else if (m_SwitchingTo) {
 	// Rotate the shortest way around to the destination angle.  If we're
-	// 180 off, we favour turning anticlockwise, as auto-rotation does by
-	// default.
+	// 180 off, we turn the same way auto-rotation would.
 	double target = (m_SwitchingTo - NORTH) * 90;
 	double diff = target - m_PanAngle;
 	diff = fmod(diff, 360);
