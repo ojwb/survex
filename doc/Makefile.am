@@ -119,4 +119,4 @@ check-local:
 	: # Check version number in manual is up-to-date.
 	grep -F '<!--VERSION-->$(VERSION)' '$(srcdir)/manual.sgml'
 	: # Check there aren't duplicate HTML filenames in the manual.
-	grep 'dbhtml filename' $(srcdir)/manual.sgml|sort|uniq -c|awk '$1>1{print;exit 1}'
+	grep 'dbhtml filename' $(srcdir)/manual.sgml|sort|uniq -c|awk '$$1>1{print;exit 1}'
