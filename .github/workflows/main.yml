@@ -43,8 +43,7 @@ jobs:
             netpbm \
             liblocale-po-perl \
             unifont \
-            docbook \
-            docbook-utils \
+            python3-sphinx \
             w3m
     - name: bootstrap source tree
       run: |

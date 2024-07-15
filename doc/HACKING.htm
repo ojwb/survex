@@ -54,15 +54,15 @@ supported.
 
 <P>The Perl Locale::PO module is used for process message translation files.
 
-<P>For building the documentation you'll need docbook-utils (also
-known as docbook-tools) and w3m.
+<P>For building the documentation you'll need sphinx-doc (Debian/Ubuntu package
+<tt>python3-sphinx</tt>) and w3m.
 
 <P>And for building unifont.pixelfont, you'll need unifont installed.
 
 <P>On Debian, you can install the required packages using:
 
 <pre>
-sudo apt-get install autoconf automake liblocale-po-perl libproj-dev libwxgtk3.0-gtk3-dev inkscape netpbm docbook-utils w3m unifont
+sudo apt-get install autoconf automake liblocale-po-perl libproj-dev libwxgtk3.0-gtk3-dev inkscape netpbm python3-sphinx w3m unifont
 </pre>
 
 <H2>Building on Non-Unix Platforms</H2>
@@ -103,7 +103,7 @@ Then I configure, build and install with:
 </p>
 
 <pre>
-./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --enable-display --disable-shared host_alias=i686-w64-mingw32 DOCBOOK_TO_MAN="xmlto man --skip-validation"
+./configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --with-msw --with-opengl --enable-display --disable-shared host_alias=i686-w64-mingw32
 make
 sudo make install
 </pre>

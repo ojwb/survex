@@ -255,8 +255,8 @@ AC_CHECK_FUNCS([setenv unsetenv])
 
 AC_CHECK_FUNCS([fmemopen])
 
-AC_PATH_PROG([JW], [jw], [$MISSING jw])
-AC_ARG_VAR([JW], [jw from docbook-utils/docbook-tools])
+AC_PATH_PROG([SPHINX_BUILD], [sphinx-build], [$MISSING sphinx-build])
+AC_ARG_VAR([SPHINX_BUILD], [sphinx-build from python3-sphinx])
 
 AC_PATH_PROG([MSGFMT], [msgfmt], [$MISSING msgfmt])
 AC_ARG_VAR([MSGFMT], [msgfmt from gettext])
@@ -360,7 +360,7 @@ AH_BOTTOM(
 AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  lib/images/Makefile
- tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.7
+ tests/Makefile vim/Makefile survex.iss doc/index.htm
  survex.spec lib/Info.plist
  ])
 AC_OUTPUT

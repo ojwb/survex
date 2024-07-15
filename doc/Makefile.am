@@ -2,27 +2,35 @@
 
 pkgdocdir = @PKGDOCDIR@
 
-other_mans = cavern.1 diffpos.1 dump3d.1 extend.1 sorterr.1 survexport.1 \
- aven.1
+man_sources = \
+    aven.rst \
+    cavern.rst \
+    diffpos.rst \
+    dump3d.rst \
+    extend.rst \
+    sorterr.rst \
+    survexport.rst \
+    survex.rst
 
-manual_sources = manual.sgml cavern.sgml\
- diffpos.sgml dump3d.sgml extend.sgml sorterr.sgml survexport.sgml aven.sgml
+manual_sources = \
+    index.rst \
+    intro.rst \
+    getstart.rst \
+    cmdline.rst \
+    $(man_sources) \
+    datafile.rst \
+    svxhowto.rst \
+    genhowto.rst \
+    compass.rst \
+    maillist.rst \
+    walls.rst \
+    cmap.rst \
+    future.rst
 
-manual_alt = manual.txt manual.pdf
+manual_alt = manual.pdf
 
 HTMLFILES= AUTHORS.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm \
  3dformat.htm 3dformat-old.htm
-
-# People can build from git without docbook-utils installed but they won't be
-# able to "make dist", which is arguably a good thing - we don't want tarballs
-# accidentally lacking the documentation.
-EXTRA_DIST = $(HTMLFILES) manual $(manual_alt)\
- custom.dsl survex.ent\
- caution.png note.png\
- $(manual_sources) $(other_mans)\
- man_aven.sgml man_cavern.sgml man_diffpos.sgml man_dump3d.sgml \
- man_extend.sgml man_sorterr.sgml man_survexport.sgml\
- news2html.pl
 
 NEWS.htm: ../NEWS news2html.pl
 	./news2html.pl '@PRETTYPACKAGE@ @VERSION@' < ../NEWS > NEWS.htm
@@ -30,93 +38,68 @@ NEWS.htm: ../NEWS news2html.pl
 OLDNEWS.htm: ../OLDNEWS news2html.pl
 	./news2html.pl < ../OLDNEWS > OLDNEWS.htm
 
-MAINTAINERCLEANFILES = $(manual_alt) $(other_mans) NEWS.htm OLDNEWS.htm
+MAINTAINERCLEANFILES = $(manual_alt) NEWS.htm OLDNEWS.htm
 
 pkgdoc_DATA = $(HTMLFILES) $(manual_alt)
 
-man_MANS = survex.7 $(other_mans)
+man_MANS = \
+    aven.1 \
+    cavern.1 \
+    diffpos.1 \
+    dump3d.1 \
+    extend.1 \
+    sorterr.1 \
+    survexport.1 \
+    survex.7
 
-aven.1: $(srcdir)/aven.sgml $(srcdir)/man_aven.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_aven.sgml
-	rm -f manpage.links manpage.refs
+EXTRA_DIST = $(HTMLFILES) manual $(manual_alt) \
+ $(manual_sources) conf.py \
+ $(man_MANS) \
+ news2html.pl
 
-survexport.1: $(srcdir)/survexport.sgml $(srcdir)/man_survexport.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_survexport.sgml
-	rm -f manpage.links manpage.refs
+# Export these as an environment variables for use by conf.py
+export PKGDOCDIR_EXPANDED
+export VERSION
 
-cavern.1: $(srcdir)/cavern.sgml $(srcdir)/man_cavern.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_cavern.sgml
-	rm -f manpage.links manpage.refs
-
-diffpos.1: $(srcdir)/diffpos.sgml $(srcdir)/man_diffpos.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_diffpos.sgml
-	rm -f manpage.links manpage.refs
-
-dump3d.1: $(srcdir)/dump3d.sgml $(srcdir)/man_dump3d.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_dump3d.sgml
-	rm -f manpage.links manpage.refs
-
-extend.1: $(srcdir)/extend.sgml $(srcdir)/man_extend.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_extend.sgml
-	rm -f manpage.links manpage.refs
-
-sorterr.1: $(srcdir)/sorterr.sgml $(srcdir)/man_sorterr.sgml $(srcdir)/survex.ent
-	$(JW) -b man $(srcdir)/man_sorterr.sgml
-	rm -f manpage.links manpage.refs
+$(man_MANS): $(man_sources) ../configure.ac
+	[ -d man.tmp ] || mkdir man.tmp
+	$(SPHINX_BUILD) -b man $(srcdir) man.tmp $<
+	mv man.tmp/*.1 man.tmp/*.7 .
+	rm -rf man.tmp
 
 install-data-local: manual
-	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual
+	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual/_static
 	test ! -d manual -a -d "$(srcdir)/manual" && cd $(srcdir) ; \
-	for p in manual/*.htm manual/*.png ; do \
+	for p in manual/*.htm manual/*.js manual/_static/*.js manual/_static/*.css ; do \
 	  echo " $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$p"; \
 	  $(INSTALL_DATA) $$p $(DESTDIR)$(pkgdocdir)/$$p; \
 	done
 
 uninstall-local:
 	test ! -d manual -a -d "$(srcdir)/manual" && cd $(srcdir) ; \
-	for p in manual/*.htm manual/*.png ; do \
+	for p in manual/*.htm manual/*.js manual/_static/*.js manual/_static/*.css ; do \
 	  echo " rm -f $(DESTDIR)$(pkgdocdir)/$$p"; \
 	  rm -f $(DESTDIR)$(pkgdocdir)/$$p; \
 	done
+	-rmdir $(DESTDIR)$(pkgdocdir)/manual/_static
 	-rmdir $(DESTDIR)$(pkgdocdir)/manual
 
 maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
-# manual, etc depend on configure.ac so they get rebuilt when the
-# version number is bumped
-
-manual: manual/stampfile
-manual/stampfile: $(manual_sources) custom.dsl survex.ent ../configure.ac
+manual: manual/stampfile ../configure.ac
+manual/stampfile: $(manual_sources)
 	rm -rf manual
-	$(JW) --backend html --dsl 'custom.dsl#html' --output manual manual.sgml
-	cp caution.png note.png manual
+	$(SPHINX_BUILD) -b html . manual
 	touch manual/stampfile
 
-manual.txt: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend txt manual.sgml
-
-manual.pdf: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend ps manual.sgml
-	ps2pdf manual.ps manual.pdf
-	rm manual.ps
+manual.pdf: $(manual_sources) ../configure.ac
+	$(SPHINX_BUILD) -M latexpdf $(srcdir) manual.latex
+	mv manual.latex/latex/survex.pdf manual.pdf
+	rm -rf manual.latex
 
 # The rules below aren't used by the build system - they're for "manual" use
 # (ho ho)
 
-manual.html: $(manual_sources) custom.dsl survex.ent ../configure.ac
-	$(JW) --backend html --dsl 'custom.dsl#onehtml' manual.sgml > manual.html
-
-manual.rtf: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend rtf manual.sgml
-
-manual.ps: $(manual_sources) survex.ent ../configure.ac
-	$(JW) --backend ps manual.sgml
-
-CLEANFILES = usr
-
-check-local:
-	: # Check version number in manual is up-to-date.
-	grep -F '<!--VERSION-->$(VERSION)' '$(srcdir)/manual.sgml'
-	: # Check there aren't duplicate HTML filenames in the manual.
-	grep 'dbhtml filename' $(srcdir)/manual.sgml|sort|uniq -c|awk '$$1>1{print;exit 1}'
+manual.html: $(manual_sources) ../configure.ac
+	$(SPHINX_BUILD) -b singlehtml . tmpx
