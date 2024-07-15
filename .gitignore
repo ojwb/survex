@@ -28,9 +28,9 @@ doc/diffpos.1
 doc/dump3d.1
 doc/extend.1
 doc/index.htm
+doc/man.stamp
 doc/manual/
 doc/manual.pdf
-doc/manual.txt
 doc/sorterr.1
 doc/survex.7
 install-sh
