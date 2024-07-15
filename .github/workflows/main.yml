@@ -45,7 +45,7 @@ jobs:
             unifont \
             python3-sphinx \
             latexmk \
-            texlive-latex-recommended \
+            texlive-latex-extra \
             tex-gyre \
             w3m
     - name: bootstrap source tree
