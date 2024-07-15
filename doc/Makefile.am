@@ -62,7 +62,6 @@ export PKGDOCDIR_EXPANDED
 export VERSION
 
 $(man_MANS): $(man_sources) ../configure.ac
-	[ -d man.tmp ] || mkdir man.tmp
 	$(SPHINX_BUILD) -b man $(srcdir) man.tmp $<
 	mv man.tmp/*.1 man.tmp/*.7 .
 	rm -rf man.tmp
