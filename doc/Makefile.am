@@ -54,7 +54,7 @@ man_MANS = \
 
 EXTRA_DIST = $(HTMLFILES) manual $(manual_alt) \
  $(manual_sources) conf.py \
- $(man_MANS) \
+ $(man_MANS) man.stamp \
  news2html.pl
 
 # Export these as an environment variables for use by conf.py
@@ -76,7 +76,7 @@ $(man_MANS): man.stamp
 	  fi; \
 	fi
 
-man.stamp: $(man_sources) $(srcdir)/../configure.ac
+man.stamp: $(man_sources) $(top_srcdir)/configure.ac
 	@rm -f $@-t
 	@touch $@-t
 	$(SPHINX_BUILD) -b man $(srcdir) man.tmp $<
@@ -104,13 +104,12 @@ uninstall-local:
 maintainer-clean-local:
 	rm -rf manual "$(srcdir)/manual"
 
-manual: manual/stampfile ../configure.ac
-manual/stampfile: $(manual_sources)
+manual: $(manual_sources) $(top_srcdir)/configure.ac
 	rm -rf manual
-	$(SPHINX_BUILD) -b html . manual
-	touch manual/stampfile
+	$(SPHINX_BUILD) -b html . manual.tmp
+	mv manual.tmp manual
 
-manual.pdf: $(manual_sources) ../configure.ac
+manual.pdf: $(manual_sources) $(top_srcdir)/configure.ac
 	$(SPHINX_BUILD) -M latexpdf $(srcdir) manual.latex
 	mv manual.latex/latex/survex.pdf manual.pdf
 	rm -rf manual.latex
@@ -118,5 +117,5 @@ manual.pdf: $(manual_sources) ../configure.ac
 # The rules below aren't used by the build system - they're for "manual" use
 # (ho ho)
 
-manual.html: $(manual_sources) ../configure.ac
+manual.html: $(manual_sources) $(top_srcdir)/configure.ac
 	$(SPHINX_BUILD) -b singlehtml . tmpx
