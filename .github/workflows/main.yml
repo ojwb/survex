@@ -46,6 +46,7 @@ jobs:
             python3-sphinx \
             latexmk \
             texlive-latex-recommended \
+            tex-gyre \
             w3m
     - name: bootstrap source tree
       run: |
