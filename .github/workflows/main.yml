@@ -44,6 +44,7 @@ jobs:
             liblocale-po-perl \
             unifont \
             python3-sphinx \
+            latexmk \
             w3m
     - name: bootstrap source tree
       run: |
