@@ -61,10 +61,28 @@ EXTRA_DIST = $(HTMLFILES) manual $(manual_alt) \
 export PKGDOCDIR_EXPANDED
 export VERSION
 
-$(man_MANS): $(man_sources) ../configure.ac
+# Recover from the removal of $@.  A full explanation of this is in the
+# automake manual under the heading "Multiple Outputs".
+$(man_MANS): man.stamp
+	@if test -f $@; then :; else \
+	  trap 'rm -rf man.lock data.stamp' 1 2 13 15; \
+	  if mkdir man.lock 2>/dev/null; then \
+	    rm -f man.stamp; \
+	    $(MAKE) $(AM_MAKEFLAGS) man.stamp; \
+	    result=$$?; rm -rf man.lock; exit $$result; \
+	  else \
+	    while test -d man.lock; do sleep 1; done; \
+	    test -f man.stamp; \
+	  fi; \
+	fi
+
+man.stamp: $(man_sources) $(srcdir)/../configure.ac
+	@rm -f $@-t
+	@touch $@-t
 	$(SPHINX_BUILD) -b man $(srcdir) man.tmp $<
 	mv man.tmp/*.1 man.tmp/*.7 .
 	rm -rf man.tmp
+	@mv -f $@-t $@
 
 install-data-local: manual
 	$(mkinstalldirs) $(DESTDIR)$(pkgdocdir)/manual/_static
