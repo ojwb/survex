@@ -350,3 +350,9 @@ should use the ``cylpolar`` style and use ``*sd`` command to specify very
 low accuracy (high SD) in the depth so that the points will move
 in the vertical plane as required if the end points are fixed or
 the survey is part of a loop.
+
+-------------------------
+Change special characters
+-------------------------
+
+See the ``*set`` command documentation for details, and some examples.

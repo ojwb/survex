@@ -189,10 +189,15 @@ existing data.
 
 Unprocessed survey data in Compass or Walls format can be processed
 directly, and mixed datasets are support to aid combining data from
-different projects, and also migrating data into Survex from another
-format.
+different projects using different software.  This also can help if
+you want to migrate data into Survex from another format as you can
+leave the existing data in its original format and just use Survex
+native format for new data, or if you prefer to convert everything
+to Survex native format it can be done in phases.
 
-Processed survey data in Compass or CMAP formats can be viewed.
+Processed survey data in Compass or CMAP formats can be viewed in
+``aven`` and used with any Survex command line tool which takes
+processed survey data.
 
 For data in formats without explicit support, you may be able to read the data
 by renaming the file to have a ``.svx`` extension and adding a few Survex
@@ -206,12 +211,6 @@ The ``ignore`` and ``ignoreall`` items in the ``*data`` command are often
 particularly useful, e.g. if you have a dataset with LRUD info or
 comments on the ends of lines.
 
--------------------------------
-Changing Meanings of Characters
--------------------------------
-
-See the ``*set`` command documentation for details, and some examples.
-
 -----------------------------------------------------
 See errors and warnings that have gone off the screen
 -----------------------------------------------------
@@ -223,7 +222,7 @@ the survey are displayed. If there are a lot of warnings or
 errors, they can scroll off the screen and it's not always
 possible to scroll back to read them.
 
-The easiest way to see all the text is to use **cavern --log** to
+The easiest way to see all the text is to use ``cavern --log`` to
 redirect output to a ``.log`` file, which you can then inspect
 with a text editor.
 
