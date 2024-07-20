@@ -1,0 +1,27 @@
+./hanging_lrud.svx:4: info: Survey has no fixed points. Therefore I've fixed test.1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+./hanging_lrud.svx:7: error: Cross section specified at non-existent station "test.foo"
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.09m
+Vertical range = 0.09m (from test.1 at 0.00m to test.2 at -0.09m)
+North-South range = 0.86m (from test.2 at 0.86m to test.1 at 0.00m)
+East-West range = 0.50m (from test.2 at 0.50m to test.1 at 0.00m)
+   2 1-nodes.
+There were 0 warning(s) and 1 error(s) - no output files produced.
