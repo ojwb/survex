@@ -384,6 +384,10 @@ articulate(void)
        * network which are hanging. */
       error(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
+	 if (TSTBIT(stn->name->sflags, SFLAGS_HANGING)) {
+	     /* Already reported this name as hanging. */
+	     continue;
+	 }
 	 /* Anonymous stations must be at the end of a trailing traverse (since
 	  * the same anonymous station can't be referred to more than once),
 	  * and trailing traverses have been removed at this point.
@@ -395,6 +399,7 @@ articulate(void)
 	  * and then report a station name from there.
 	  */
 	 /* SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON)); */
+	 stn->name->sflags |= BIT(SFLAGS_HANGING);
 	 if (stn->name->ident) {
 	    if (!fNotAttached) {
 	       fNotAttached = true;
