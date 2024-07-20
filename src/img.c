@@ -242,9 +242,9 @@ mktime_with_tz(struct tm * tm, const char * tz)
 	 * We workaround this to support older years by calling mktime() for a
 	 * date offset such that it's after 1970 (but before 3000 which is the
 	 * highest year Microsoft's mktime() handles, and also before 2038 for
-	 * 32-bit time_t), and that the leap year pattern matches.  For 32-bit
-	 * time_t we just need to add a multiple of 4, but for 64-bit time_t
-	 * we need to add a multiple of 400.
+	 * 32-bit time_t), and such that the leap year pattern matches.  For
+	 * 32-bit time_t we just need to add a multiple of 4, but for 64-bit
+	 * time_t we need to add a multiple of 400.
 	 *
 	 * We require the year to be >= 1901 for 32-bit time_t since the
 	 * oldest representable date in signed 32-bit time_t is in 1901
