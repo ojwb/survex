@@ -141,12 +141,8 @@ static int icOrderMac;
 static void
 node_stat(prefix *p)
 {
-   if (p->pos) {
-      int order;
-      SVX_ASSERT(pfx_fixed(p));
-
-      order = p->shape;
-
+   if (p->pos && pfx_fixed(p)) {
+      int order = p->shape;
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));

@@ -4,6 +4,25 @@ Removing trailing traverses...
 Concatenating traverses...
 
 Simplifying network...
-cavern: error: Survey not all connected to fixed stations
+cavern: warning: Survey not all connected to fixed stations
 The following survey stations are not attached to a fixed point:
 ./hanging_cpt.svx:5: info: 3
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 7 survey stations, joined by 7 legs.
+There is 1 loop.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
+North-South range = 1.00m (from 2 at 1.00m to 1 at 0.00m)
+East-West range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
+   2 1-nodes.
+There were 1 warning(s).
