@@ -1523,11 +1523,14 @@ msgstr "On attendait « %s », « %s », « %s » ou « %s »"
 msgid "Expecting quadrant bearing, found “%s”"
 msgstr ""
 
-#: ../src/listpos.c:80
+#. TRANSLATORS: The first %s is replaced by a station name,
+#. the second %s by "entrance" or "export".
+#: ../src/listpos.c:83
+#: ../src/listpos.c:91
 #: n:190
 #, c-format
-msgid "Station “%s” referred to by *entrance or *export but never used"
-msgstr "La station « %s » est citée dans un *entrance ou *export mais n’est jamais utilisée"
+msgid "Station “%s” referred to by *%s but never used"
+msgstr "La station « %s » est citée dans un *%s mais n’est jamais utilisée"
 
 #. TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[
 #: ../src/commands.c:1020
