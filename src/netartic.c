@@ -402,7 +402,9 @@ articulate(void)
 		* station. */
 	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	    }
-	    puts(sprint_prefix(stn->name));
+	    printf("%s:%d: %s: ", stn->name->filename, stn->name->line, msg(/*info*/485));
+	    print_prefix(stn->name);
+	    putnl();
 	 }
       }
       exit(EXIT_FAILURE);
