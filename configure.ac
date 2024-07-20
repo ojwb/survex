@@ -255,6 +255,9 @@ AC_CHECK_FUNCS([setenv unsetenv])
 
 AC_CHECK_FUNCS([fmemopen])
 
+dnl Microsoft-specific functions which support positional argument specifiers.
+AC_CHECK_FUNCS([_vfprintf_p _vsprintf_p])
+
 AC_PATH_PROG([SPHINX_BUILD], [sphinx-build], [$MISSING sphinx-build])
 AC_ARG_VAR([SPHINX_BUILD], [sphinx-build from python3-sphinx])
 

@@ -1219,7 +1219,13 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    fputs(level, STDERR);
    fputs(": ", STDERR);
 
+#ifdef HAVE__VSPRINTF_P
+   // Microsoft's vfprintf() doesn't support positional argument specifiers,
+   // so we need to use the Microsoft-specific _vfprintf_p().
+   _vfprintf_p(STDERR, msg(en), ap);
+#else
    vfprintf(STDERR, msg(en), ap);
+#endif
    fputnl(STDERR);
 #endif
 

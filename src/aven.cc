@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016,2017,2018 Olly Betts
+//  Copyright (C) 2002-2024 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -471,7 +471,14 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
     }
 
     char buf[1024];
+#ifdef HAVE__VSPRINTF_P
+    // Microsoft's vsnprintf() doesn't support positional argument specifiers,
+    // so we need to use the Microsoft-specific _vsprintf_p() which (despite
+    // its name) takes a buffer size like vsnprintf() does.
+    _vsprintf_p(buf, sizeof(buf), msg(en), ap);
+#else
     vsnprintf(buf, sizeof(buf), msg(en), ap);
+#endif
     m += wxString(buf, wxConvUTF8);
     if (wxTheApp == NULL) {
 	// We haven't initialised the Aven app object yet.
