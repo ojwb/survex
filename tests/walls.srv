@@ -45,3 +45,5 @@ U3 -- 1.0 ---- -90
 #units typevb=c,6,x
 #units typevb=c,1
 #units inch=1 ; regression test
+; Test no warning for values of unsupported options which are the default.
+#units inch=0

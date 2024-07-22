@@ -1644,6 +1644,9 @@ parse_options(void)
 	if (s_empty(&token) && isComm(ch)) {
 	    break;
 	}
+	filepos fp_option;
+	get_pos(&fp_option);
+
 	// Assign to typed variable so we get a warning if we are
 	// missing a case below.
 	walls_units_opt opt = match_tok(walls_units_opt_tab,
@@ -1849,9 +1852,14 @@ parse_options(void)
 	    pcs->z[Q_LENGTH] = -read_walls_distance(pcs->units[Q_LENGTH]);
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
-	    // FIXME: Actually apply this correction.
-	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
-	    (void)read_walls_distance(0.0);
+	    // INCH=0 is what we do anyway, so only warn about non-zero values.
+	    if (read_walls_distance(pcs->units[Q_LENGTH]) != 0.0) {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+		set_pos(&fp);
+	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCV:
 	    pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);

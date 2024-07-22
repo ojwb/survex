@@ -78,8 +78,8 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   is skipped.  If your Walls data specifies a UTM zone then Survex
   will automatically correct for grid convergence.
 
-- The ``INCH=`` option currently gives an "Unknown command" warning, and
-  is skipped.
+- The ``INCH=`` option currently gives an "Unknown command" warning
+  (unless the argument is zero), and is skipped.
 
 - The ``RECT=`` option currently gives an "Unknown command" warning, and
   is skipped (this option specifies how much to orient cartesian

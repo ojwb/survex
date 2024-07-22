@@ -7,9 +7,9 @@
 ./walls.srv:40:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:47:9: warning: Unknown command "inch"
+./walls.srv:47:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
-         ^~~~
+        ^~~~
 
 Removing trailing traverses...
 
