@@ -1,0 +1,7 @@
+./badopts.srv:2:21: error: No matching SAVE
+ #units save restore restore restore ; `restore` without corresponding `save`
+                     ^~~~~~~
+./badopts.srv:2:29: error: No matching SAVE
+ #units save restore restore restore ; `restore` without corresponding `save`
+                             ^~~~~~~
+cavern: error: No survey data

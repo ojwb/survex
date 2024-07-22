@@ -2009,7 +2009,7 @@ parse_options(void)
 	    // FIXME: Should this be processed before other arguments?
 	    if (!p_walls_options->explicit) {
 		/* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
-		compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching %s*/192, "SAVE");
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*No matching %s*/192, "SAVE");
 		break;
 	    }
 	    pop_walls_options();
