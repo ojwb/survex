@@ -1,4 +1,4 @@
-; pos=dump warn=3 dummycrprotection=
+; pos=dump warn=14 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg foo
@@ -7,8 +7,9 @@
 ; Mammoth reportedly uses "0 0 0" legs between fixed points so we mustn't
 ; use INFER_EQUATES.
 Q0 U0  0 0 0 ; Walls treats this like a NOSURVEY leg it seems
-U0 U1  5.4 203d +50D
-#units v=d
+#UNITS CASE=U
+u0 u1  5.4 203d +45D
+#units v=d case=none ; undocumented but unknown "case=" values -> "mixed"
 #[
 U1 X1 3 4 5
 #[
@@ -33,13 +34,37 @@ U4 U5 i11 -/N90E -/02 *1 2 3 2*
 U5 ZZ9 <1 2 3 4>
 U5 U6 1 2/- 3/-
 U6 ZZ8 *1 2 3 4*
+; Regression test: `#` in a station name
+U5 12#4 24.7 123.5 0 <0,0,0,0>
+12#4 &##:S1 12.3 345.6 78 <0,0,0,0>
 #segment splays
 U3 - 1.0 --- +90
 U3 -- 1.0 ---- -90
+#units order=da
+U3   --      7.8     098.7
 #prefix test walls appears to ignore anything here
+#prefix
 #units typeab=n,4,X
 #units typeab=n,4,x
 #units typeab=n,10
 #units typevb=c,6,X
 #units typevb=c,6,x
 #units typevb=c,1
+#units inch=1 ; regression test
+; Test no warning for values of unsupported options which are the default.
+#units inch=0
+; Walls seems to fail to check for junk after parsing a number in these cases:
+#units uv=4gradeb inch=1
+#units uvv=4gradeb inch=1
+#units uvh=4gradeb inch=1
+#units typeab=n,4Q,X inch=1
+#units typevb=c,1.2Q inch=1
+; Test undocumented omission of clino
+#units order=adv
+U5  U7  123 1.00
+#units order=dav
+U7  U8  1.00 123
+; Test explicit clino units (on plumb to check equivalent to 90°).
+U8  U9  1.00 -- 90d
+U9  U10 1.00 -- 100g
+U10 U11 1.00 -- 1600m

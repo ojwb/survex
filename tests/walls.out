@@ -1,12 +1,45 @@
 ./walls.srv:5:18: warning: End of line not blank
  #date 2024-03-09 walls appears to ignore anything here
                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:25:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
+./walls.srv:26:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
-./walls.srv:39:14: warning: End of line not blank
+./walls.srv:45:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./walls.srv:53:8: warning: Unknown command "inch"
+ #units inch=1 ; regression test
+        ^~~~
+./walls.srv:57:12: warning: Ignoring "gradeb"
+ #units uv=4gradeb inch=1
+            ^~~~~~
+./walls.srv:57:19: warning: Unknown command "inch"
+ #units uv=4gradeb inch=1
+                   ^~~~
+./walls.srv:58:13: warning: Ignoring "gradeb"
+ #units uvv=4gradeb inch=1
+             ^~~~~~
+./walls.srv:58:20: warning: Unknown command "inch"
+ #units uvv=4gradeb inch=1
+                    ^~~~
+./walls.srv:59:13: warning: Ignoring "gradeb"
+ #units uvh=4gradeb inch=1
+             ^~~~~~
+./walls.srv:59:20: warning: Unknown command "inch"
+ #units uvh=4gradeb inch=1
+                    ^~~~
+./walls.srv:60:18: warning: Ignoring "Q"
+ #units typeab=n,4Q,X inch=1
+                  ^
+./walls.srv:60:22: warning: Unknown command "inch"
+ #units typeab=n,4Q,X inch=1
+                      ^~~~
+./walls.srv:61:20: warning: Ignoring "Q"
+ #units typevb=c,1.2Q inch=1
+                    ^
+./walls.srv:61:22: warning: Unknown command "inch"
+ #units typevb=c,1.2Q inch=1
+                      ^~~~
 
 Removing trailing traverses...
 
@@ -22,16 +55,17 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 10 survey stations, joined by 9 legs.
+Survey contains 18 survey stations, joined by 17 legs.
 There are 0 loops.
-Total length of survey legs =   36.07m (  37.48m adjusted)
-Total plan length of survey legs =   32.43m
-Total vertical length of survey legs =   13.06m
-Vertical range = 9.85m (from U1 at 4.82m to anonymous station at -5.04m)
-Vertical range = 9.19m (from U1 at 4.82m to U5 at -4.37m)
-North-South range = 4.51m (from Q0 at 1.00m to U1 at -3.51m)
-East-West range = 17.82m (from U3 at 16.33m to U1 at -1.49m)
-   4 1-nodes.
-   5 2-nodes.
+Total length of survey legs =   78.07m (  79.48m adjusted)
+Total plan length of survey legs =   61.69m
+Total vertical length of survey legs =   28.09m
+Vertical range = 12.70m (from &##.S1 at 7.66m to anonymous station at -5.04m)
+Vertical range = 12.03m (from &##.S1 at 7.66m to U8 at -4.37m)
+North-South range = 14.08m (from Q0 at 1.00m to 12#4 at -13.08m)
+East-West range = 29.66m (from 12#4 at 28.16m to U1 at -1.49m)
+   7 1-nodes.
+   9 2-nodes.
    1 4-node.
-There were 3 warning(s).
+   1 5-node.
+There were 14 warning(s).

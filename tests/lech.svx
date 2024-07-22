@@ -1,4 +1,4 @@
-; pos=no warn=0 dummy=crlf
+; pos=no warn=0 dummycrprotection=
 *fix B 0 0 0
 A B 1 0 0
 A C 1 0 0

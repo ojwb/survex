@@ -78,8 +78,8 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   is skipped.  If your Walls data specifies a UTM zone then Survex
   will automatically correct for grid convergence.
 
-- The ``INCH=`` option currently gives an "Unknown command" warning, and
-  is skipped.
+- The ``INCH=`` option currently gives an "Unknown command" warning
+  (unless the argument is zero), and is skipped.
 
 - The ``RECT=`` option currently gives an "Unknown command" warning, and
   is skipped (this option specifies how much to orient cartesian
@@ -104,6 +104,31 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
 - The two UPS zones for the polar regions (specified as UTM zone
   values of -61 and 61 in Walls) are supported with datum WGS84, but
   we do not have any real data to test this support with.
+
+- Walls gives an error if an unprefixed station name is more than 8 characters
+  long, but Survex allows longer names in Walls data.
+
+- Walls documents `The total length of the three prefix components combined,
+  including any embedded colon separators, is 127 characters` but Survex does
+  not enforce any limit.
+
+- In the option ``UNITS=`` the documentation says `CASE = Upper / Lower /
+  Mixed` but it seems actually any string is allowed and if it starts
+  with a letter other than ``U`` or ``L`` then it's treated as ``Mixed``.
+  Since Survex 1.4.10.
+
+- Walls explicitly documents that `Unprefixed names can have a maximum of eight
+  characters and must not contain any colons, semicolons, commas, pound signs
+  (#), or embedded tabs or spaces.` but it actually allows ``#`` in station
+  names (though it can't be used as the first character of the from station
+  name as that will be interpreted as a command.  Since Survex 1.4.10.
+
+- Walls ignores junk after the numeric argument in ``TYPEAB=``, ``TYPEVB=``,
+  ``UV=``, ``UVH=``, and ``UVV=``.  Survex warns and skips the junk.  Since
+  Survex 1.4.10.
+
+- Walls allows the clino reading to be completely omitted with ``ORDER=DAV``
+  and ``ORDER=ADV`` (this seems to be undocumented).  Since Survex 1.4.10.
 
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.

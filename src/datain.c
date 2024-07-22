@@ -1458,6 +1458,10 @@ walls_initialise_settings(void)
     // names in new surveys to numbers with alphabetic prefixes or suffixes
     // (e.g., BR123)."
     //
+    // However in practice, `#` actually seems to be allowed so we allow it.
+    // It still can't be used as the first character of the from station as
+    // there it will be interpreted as introducing a command.
+    //
     // We assume other control characters aren't allowed either (so nothing
     // < 32 and not 127), but allow all top-bit-set characters.
     t[EOF] = SPECIAL_EOL;
@@ -1471,7 +1475,6 @@ walls_initialise_settings(void)
     // after a directive name a comma instead gives a warning suggesting a
     // parse error in a different directive.
     t[','] = SPECIAL_BLANK;
-    t['#'] = 0;
     t['\t'] |= SPECIAL_BLANK;
     t[' '] |= SPECIAL_BLANK;
     t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
@@ -1644,6 +1647,9 @@ parse_options(void)
 	if (s_empty(&token) && isComm(ch)) {
 	    break;
 	}
+	filepos fp_option;
+	get_pos(&fp_option);
+
 	// Assign to typed variable so we get a warning if we are
 	// missing a case below.
 	walls_units_opt opt = match_tok(walls_units_opt_tab,
@@ -1849,9 +1855,14 @@ parse_options(void)
 	    pcs->z[Q_LENGTH] = -read_walls_distance(pcs->units[Q_LENGTH]);
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
-	    // FIXME: Actually apply this correction.
-	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
-	    (void)read_walls_distance(0.0);
+	    // INCH=0 is what we do anyway, so only warn about non-zero values.
+	    if (read_walls_distance(pcs->units[Q_LENGTH]) != 0.0) {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+		set_pos(&fp);
+	    }
 	    break;
 	  case WALLS_UNITS_OPT_INCV:
 	    pcs->z[Q_GRADIENT] = -read_walls_angle(pcs->units[Q_GRADIENT]);
@@ -1882,6 +1893,9 @@ parse_options(void)
 	    break;
 	  case WALLS_UNITS_OPT_CASE:
 	    get_token_walls();
+	    // Walls documents `CASE = Upper / Lower / Mixed` which hints that
+	    // it only actually tests the first character.  It also seems that
+	    // any other character is treated as `Mixed` too.
 	    switch (s_str(&uctoken)[0]) {
 	      case 'L':
 		pcs->Case = LOWER;
@@ -1889,13 +1903,8 @@ parse_options(void)
 	      case 'U':
 		pcs->Case = UPPER;
 		break;
-	      case 'M':
-		pcs->Case = OFF;
-		break;
 	      default:
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”, “%s”, or “%s”*/188,
-				   "L", "M", "U");
+		pcs->Case = OFF;
 		break;
 	    }
 	    break;
@@ -1947,6 +1956,11 @@ parse_options(void)
 		nextch();
 		// FIXME: Use threshold value.
 		(void)read_numeric(false);
+		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+		    // Walls quietly ignores junk after a valid number here.
+		    get_token_walls();
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
+		}
 		if (ch == ',') {
 		    nextch();
 		    if (toupper(ch) == 'X') {
@@ -1969,6 +1983,11 @@ parse_options(void)
 		nextch();
 		// FIXME: Use threshold value.
 		(void)read_numeric(false);
+		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+		    // Walls quietly ignores junk after a valid number here.
+		    get_token_walls();
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
+		}
 		if (ch == ',') {
 		    nextch();
 		    if (toupper(ch) == 'X') {
@@ -1984,6 +2003,11 @@ parse_options(void)
 	    // Scale factors for variances (with horizontal-only and
 	    // vertical-only variants).  FIXME: Actually apply these!
 	    (void)read_numeric(false);
+	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+		// Walls quietly ignores junk after a valid number here.
+		get_token_walls();
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
+	    }
 	    break;
 	  case WALLS_UNITS_OPT_FLAG:
 	    // Default flag to apply to stations in #FIX.
@@ -2003,7 +2027,7 @@ parse_options(void)
 	    // FIXME: Should this be processed before other arguments?
 	    if (!p_walls_options->explicit) {
 		/* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
-		compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching %s*/192, "SAVE");
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*No matching %s*/192, "SAVE");
 		break;
 	    }
 	    pop_walls_options();
@@ -4482,15 +4506,36 @@ inches_only:
 	      real clin = read_number(true, false);
 	      if (clin == HUGE_REAL) {
 		  if (ch != '-') {
-		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-		      skipline();
-		      process_eol();
-		      return;
+		      // Undocumented, but the clino can be omitted with order=dav or order=adv.
+		      if (p_walls_options->data_order_ct[4] != WallsSRVClino) {
+			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+			  skipline();
+			  process_eol();
+			  return;
+		      }
+		  } else {
+		      // Walls documents two or more `-` for an omitted
+		      // reading, but actually just one works too!
+		      while (nextch() == '-') { }
 		  }
-		  // Walls documents two or more `-` for an omitted
-		  // reading, but actually just one works too!
-		  while (nextch() == '-') { }
 	      } else {
+		  switch (ch) {
+		    case 'D': case 'd':
+		      // Degrees.
+		      clin *= M_PI / 180.0 / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		    case 'G': case 'g':
+		      // Grads.
+		      clin *= M_PI / 200.0 / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		    case 'M': case 'm':
+		      // Mils.
+		      clin *= M_PI / 3200.0 / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		  }
 		  VAL(Clino) = clin;
 		  ctype = CTYPE_READING;
 	      }
@@ -4514,6 +4559,23 @@ inches_only:
 		  // reading, but actually just one works too!
 		  while (nextch() == '-') { }
 	      } else {
+		  switch (ch) {
+		    case 'D': case 'd':
+		      // Degrees.
+		      backclin *= M_PI / 180.0 / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		    case 'G': case 'g':
+		      // Grads.
+		      backclin *= M_PI / 200.0 / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		    case 'M': case 'm':
+		      // Mils.
+		      backclin *= M_PI / 3200.0 / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		  }
 		  VAL(BackClino) = backclin;
 		  backctype = CTYPE_READING;
 	      }
