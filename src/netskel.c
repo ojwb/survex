@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1073,4 +1073,29 @@ write_passage_models(void)
       osfree(oldp);
    }
    model = NULL;
+}
+
+node *
+find_non_anon_stn(node *stn)
+{
+    if (TSTBIT(stn->name->sflags, SFLAGS_ANON)) {
+	/* An anonymous stations must be at the end of a trailing traverse
+	 * (since the same anonymous station can't be referred to more
+	 * than once), and trailing traverses have been removed at this
+	 * point.
+	 *
+	 * However, we may remove a hanging trailing traverse back to an
+	 * anonymous station.  It's not helpful to fail to point to a
+	 * station in such a case so we look through the list of trailing
+	 * traverses to find the one which would reattach to this station
+	 * and report a station from that traverse instead.
+	 */
+	for (stackTrail* p = ptrTrail; p; p = p->next) {
+	    linkfor *leg = ptrTrail->join1;
+	    if (reverse_leg(leg)->l.to == stn) {
+		return leg->l.to;
+	    }
+	}
+    }
+    return stn;
 }

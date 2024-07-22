@@ -31,6 +31,7 @@
 #include "message.h"
 #include "netartic.h"
 #include "netbits.h"
+#include "netskel.h"
 #include "matrix.h"
 #include "out.h"
 
@@ -384,31 +385,21 @@ articulate(void)
        * network which are hanging. */
       error(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
-	 if (TSTBIT(stn->name->sflags, SFLAGS_HANGING)) {
+	 prefix *name = find_non_anon_stn(stn)->name;
+	 if (TSTBIT(name->sflags, SFLAGS_HANGING)) {
 	     /* Already reported this name as hanging. */
 	     continue;
 	 }
-	 /* Anonymous stations must be at the end of a trailing traverse (since
-	  * the same anonymous station can't be referred to more than once),
-	  * and trailing traverses have been removed at this point.
-	  *
-	  * However, we may remove a trailing traverse back to an anonymous
-	  * station.  FIXME: It's not helpful to fail to point to a station
-	  * in such a case - it would be much nicer to look through the list
-	  * of trailing traverses in such a case to find a relevant traverse
-	  * and then report a station name from there.
-	  */
-	 /* SVX_ASSERT(!TSTBIT(stn->name->sflags, SFLAGS_ANON)); */
-	 stn->name->sflags |= BIT(SFLAGS_HANGING);
-	 if (stn->name->ident) {
+	 name->sflags |= BIT(SFLAGS_HANGING);
+	 if (name->ident) {
 	    if (!fNotAttached) {
 	       fNotAttached = true;
 	       /* TRANSLATORS: Here "station" is a survey station, not a train
 		* station. */
 	       puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
 	    }
-	    printf("%s:%d: %s: ", stn->name->filename, stn->name->line, msg(/*info*/485));
-	    print_prefix(stn->name);
+	    printf("%s:%d: %s: ", name->filename, name->line, msg(/*info*/485));
+	    print_prefix(name);
 	    putnl();
 	 }
       }

@@ -1,6 +1,6 @@
 /* netskel.h
  * SURVEX Network reduction routines
- * Copyright (C) 1994,2001 Olly Betts
+ * Copyright (C) 1994,2001,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,3 +18,12 @@
  */
 
 void solve_network(void /*node *stnlist*/);
+
+/* Try to find a non-anonymous station which was attached to stn.
+ *
+ * If stn is an anonymous station, this hunts through the removed trailing
+ * traverse list, and if it finds an entry, it returns the first station
+ * along it (which should be non-anonymous but we don't bother to check
+ * currently).
+ */
+node *find_non_anon_stn(node *stn);
