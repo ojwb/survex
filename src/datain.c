@@ -1850,7 +1850,7 @@ parse_options(void)
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
 	    // FIXME: Actually apply this correction.
-	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
 	    (void)read_walls_distance(0.0);
 	    break;
 	  case WALLS_UNITS_OPT_INCV:

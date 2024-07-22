@@ -7,6 +7,9 @@
 ./walls.srv:40:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./walls.srv:47:9: warning: Unknown command "inch"
+ #units inch=1 ; regression test
+         ^~~~
 
 Removing trailing traverses...
 
@@ -34,4 +37,4 @@ East-West range = 17.82m (from U3 at 16.33m to U1 at -1.49m)
    4 1-nodes.
    5 2-nodes.
    1 4-node.
-There were 3 warning(s).
+There were 4 warning(s).

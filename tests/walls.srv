@@ -1,4 +1,4 @@
-; pos=dump warn=3 dummycrprotection=
+; pos=dump warn=4 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg foo
@@ -44,3 +44,4 @@ U3 -- 1.0 ---- -90
 #units typevb=c,6,X
 #units typevb=c,6,x
 #units typevb=c,1
+#units inch=1 ; regression test
