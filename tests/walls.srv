@@ -43,6 +43,7 @@ U3 -- 1.0 ---- -90
 #units order=da
 U3   --      7.8     098.7
 #prefix test walls appears to ignore anything here
+#prefix
 #units typeab=n,4,X
 #units typeab=n,4,x
 #units typeab=n,10
@@ -58,3 +59,8 @@ U3   --      7.8     098.7
 #units uvh=4gradeb inch=1
 #units typeab=n,4Q,X inch=1
 #units typevb=c,1.2Q inch=1
+; Test undocumented omission of clino
+#units order=adv
+U5  U7  123 1.00
+#units order=dav
+U7  U8  1.00 123

@@ -7,37 +7,37 @@
 ./walls.srv:45:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:52:8: warning: Unknown command "inch"
+./walls.srv:53:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
         ^~~~
-./walls.srv:56:12: warning: Ignoring "gradeb"
+./walls.srv:57:12: warning: Ignoring "gradeb"
  #units uv=4gradeb inch=1
             ^~~~~~
-./walls.srv:56:19: warning: Unknown command "inch"
+./walls.srv:57:19: warning: Unknown command "inch"
  #units uv=4gradeb inch=1
                    ^~~~
-./walls.srv:57:13: warning: Ignoring "gradeb"
- #units uvv=4gradeb inch=1
-             ^~~~~~
-./walls.srv:57:20: warning: Unknown command "inch"
- #units uvv=4gradeb inch=1
-                    ^~~~
 ./walls.srv:58:13: warning: Ignoring "gradeb"
- #units uvh=4gradeb inch=1
+ #units uvv=4gradeb inch=1
              ^~~~~~
 ./walls.srv:58:20: warning: Unknown command "inch"
+ #units uvv=4gradeb inch=1
+                    ^~~~
+./walls.srv:59:13: warning: Ignoring "gradeb"
+ #units uvh=4gradeb inch=1
+             ^~~~~~
+./walls.srv:59:20: warning: Unknown command "inch"
  #units uvh=4gradeb inch=1
                     ^~~~
-./walls.srv:59:18: warning: Ignoring "Q"
+./walls.srv:60:18: warning: Ignoring "Q"
  #units typeab=n,4Q,X inch=1
                   ^
-./walls.srv:59:22: warning: Unknown command "inch"
+./walls.srv:60:22: warning: Unknown command "inch"
  #units typeab=n,4Q,X inch=1
                       ^~~~
-./walls.srv:60:20: warning: Ignoring "Q"
+./walls.srv:61:20: warning: Ignoring "Q"
  #units typevb=c,1.2Q inch=1
                     ^
-./walls.srv:60:22: warning: Unknown command "inch"
+./walls.srv:61:22: warning: Unknown command "inch"
  #units typevb=c,1.2Q inch=1
                       ^~~~
 
@@ -55,17 +55,17 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 13 survey stations, joined by 12 legs.
+Survey contains 15 survey stations, joined by 14 legs.
 There are 0 loops.
-Total length of survey legs =   73.07m (  74.48m adjusted)
-Total plan length of survey legs =   59.69m
+Total length of survey legs =   75.07m (  76.48m adjusted)
+Total plan length of survey legs =   61.69m
 Total vertical length of survey legs =   25.09m
 Vertical range = 12.70m (from &##.S1 at 7.66m to anonymous station at -5.04m)
-Vertical range = 12.03m (from &##.S1 at 7.66m to 12#4 at -4.37m)
+Vertical range = 12.03m (from &##.S1 at 7.66m to U8 at -4.37m)
 North-South range = 14.08m (from Q0 at 1.00m to 12#4 at -13.08m)
 East-West range = 29.66m (from 12#4 at 28.16m to U1 at -1.49m)
-   6 1-nodes.
-   5 2-nodes.
-   1 3-node.
+   7 1-nodes.
+   6 2-nodes.
+   1 4-node.
    1 5-node.
 There were 14 warning(s).

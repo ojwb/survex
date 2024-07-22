@@ -4506,14 +4506,18 @@ inches_only:
 	      real clin = read_number(true, false);
 	      if (clin == HUGE_REAL) {
 		  if (ch != '-') {
-		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
-		      skipline();
-		      process_eol();
-		      return;
+		      // Undocumented, but the clino can be omitted with order=dav or order=adv.
+		      if (p_walls_options->data_order_ct[4] != WallsSRVClino) {
+			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+			  skipline();
+			  process_eol();
+			  return;
+		      }
+		  } else {
+		      // Walls documents two or more `-` for an omitted
+		      // reading, but actually just one works too!
+		      while (nextch() == '-') { }
 		  }
-		  // Walls documents two or more `-` for an omitted
-		  // reading, but actually just one works too!
-		  while (nextch() == '-') { }
 	      } else {
 		  VAL(Clino) = clin;
 		  ctype = CTYPE_READING;
