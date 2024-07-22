@@ -40,6 +40,8 @@ U5 12#4 24.7 123.5 0 <0,0,0,0>
 #segment splays
 U3 - 1.0 --- +90
 U3 -- 1.0 ---- -90
+#units order=da
+U3   --      7.8     098.7
 #prefix test walls appears to ignore anything here
 #units typeab=n,4,X
 #units typeab=n,4,x
