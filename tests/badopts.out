@@ -4,4 +4,31 @@
 ./badopts.srv:2:29: error: No matching SAVE
  #units save restore restore restore ; `restore` without corresponding `save`
                              ^~~~~~~
+./badopts.srv:3:10: error: Expecting "F" or "M"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+          ^
+./badopts.srv:3:16: error: Expecting "D", "G", or "M"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+                ^
+./badopts.srv:3:22: error: Expecting "D", "G", or "M"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+                      ^
+./badopts.srv:3:29: error: Expecting "D", "G", or "M"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+                             ^
+./badopts.srv:3:35: error: Expecting "D", "G", "M", or "P"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+                                   ^
+./badopts.srv:3:42: error: Expecting "D", "G", "M", or "P"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+                                          ^
+./badopts.srv:3:48: error: Expecting "F" or "M"
+ #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+                                                ^
+./badopts.srv:4:15: error: Expecting "C" or "N"
+ #units typeab=bad typevb=bad
+               ^
+./badopts.srv:4:26: error: Expecting "C" or "N"
+ #units typeab=bad typevb=bad
+                          ^
 cavern: error: No survey data

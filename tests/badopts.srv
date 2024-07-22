@@ -1,2 +1,4 @@
 ; pos=fail err=3 warn=0 dummycrprotection=
 #units save restore restore restore ; `restore` without corresponding `save`
+#units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
+#units typeab=bad typevb=bad

@@ -1714,7 +1714,12 @@ parse_options(void)
 	    } else if (s_str(&uctoken)[0] == 'F') {
 		pcs->units[Q_LENGTH] = METRES_PER_FOOT;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
@@ -1730,9 +1735,14 @@ parse_options(void)
 		// Mils.
 		pcs->units[Q_BEARING] = M_PI / 3200.0;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
 				   "D", "G", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_AB:
@@ -1748,9 +1758,14 @@ parse_options(void)
 		// Mils.
 		pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
 				   "D", "G", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_V:
@@ -1770,9 +1785,14 @@ parse_options(void)
 		pcs->units[Q_GRADIENT] = 0.01;
 		pcs->f_clino_percent = true;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
 				   "D", "G", "M", "P");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_VB:
@@ -1792,9 +1812,14 @@ parse_options(void)
 		pcs->units[Q_BACKGRADIENT] = 0.01;
 		pcs->f_backclino_percent = true;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
 				   "D", "G", "M", "P");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_S:
@@ -1811,7 +1836,12 @@ parse_options(void)
 		pcs->units[Q_DY] =
 		pcs->units[Q_DZ] = METRES_PER_FOOT;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_ORDER:
@@ -1950,7 +1980,12 @@ parse_options(void)
 	    } else if (s_str(&uctoken)[0] == 'C') {
 		pcs->z[Q_BACKBEARING] = M_PI;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
+		set_pos(&fp);
 	    }
 	    if (ch == ',') {
 		nextch();
@@ -1977,7 +2012,12 @@ parse_options(void)
 	    } else if (s_str(&uctoken)[0] == 'C') {
 		pcs->sc[Q_BACKGRADIENT] = -1.0;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
+		set_pos(&fp);
 	    }
 	    if (ch == ',') {
 		nextch();
