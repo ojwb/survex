@@ -4,10 +4,10 @@
 ./walls.srv:26:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
-./walls.srv:40:14: warning: End of line not blank
+./walls.srv:43:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:47:8: warning: Unknown command "inch"
+./walls.srv:50:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
         ^~~~
 
@@ -25,16 +25,17 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 10 survey stations, joined by 9 legs.
+Survey contains 12 survey stations, joined by 11 legs.
 There are 0 loops.
-Total length of survey legs =   36.07m (  37.48m adjusted)
-Total plan length of survey legs =   32.43m
-Total vertical length of survey legs =   13.06m
-Vertical range = 9.85m (from U1 at 4.82m to anonymous station at -5.04m)
-Vertical range = 9.19m (from U1 at 4.82m to U5 at -4.37m)
-North-South range = 4.51m (from Q0 at 1.00m to U1 at -3.51m)
-East-West range = 17.82m (from U3 at 16.33m to U1 at -1.49m)
-   4 1-nodes.
+Total length of survey legs =   73.07m (  74.48m adjusted)
+Total plan length of survey legs =   59.69m
+Total vertical length of survey legs =   25.09m
+Vertical range = 12.70m (from &##.S1 at 7.66m to anonymous station at -5.04m)
+Vertical range = 12.03m (from &##.S1 at 7.66m to 12#4 at -4.37m)
+North-South range = 14.08m (from Q0 at 1.00m to 12#4 at -13.08m)
+East-West range = 29.66m (from 12#4 at 28.16m to U1 at -1.49m)
+   5 1-nodes.
    5 2-nodes.
+   1 3-node.
    1 4-node.
 There were 4 warning(s).

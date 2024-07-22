@@ -1458,6 +1458,10 @@ walls_initialise_settings(void)
     // names in new surveys to numbers with alphabetic prefixes or suffixes
     // (e.g., BR123)."
     //
+    // However in practice, `#` actually seems to be allowed so we allow it.
+    // It still can't be used as the first character of the from station as
+    // there it will be interpreted as introducing a command.
+    //
     // We assume other control characters aren't allowed either (so nothing
     // < 32 and not 127), but allow all top-bit-set characters.
     t[EOF] = SPECIAL_EOL;
@@ -1471,7 +1475,6 @@ walls_initialise_settings(void)
     // after a directive name a comma instead gives a warning suggesting a
     // parse error in a different directive.
     t[','] = SPECIAL_BLANK;
-    t['#'] = 0;
     t['\t'] |= SPECIAL_BLANK;
     t[' '] |= SPECIAL_BLANK;
     t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */

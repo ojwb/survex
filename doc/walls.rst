@@ -110,6 +110,12 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   with a letter other than ``U`` or ``L`` then it's treated as ``Mixed``.
   Since Survex 1.4.10.
 
+- Walls explicitly documents that `Unprefixed names can have a maximum of eight
+  characters and must not contain any colons, semicolons, commas, pound signs
+  (#), or embedded tabs or spaces.` but it actually allows ``#`` in station
+  names (though it can't be used as the first character of the from station
+  name as that will be interpreted as a command.  Since Survex 1.4.10.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really
