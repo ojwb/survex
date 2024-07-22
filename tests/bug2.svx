@@ -1,4 +1,4 @@
-; pos=no warn=0 dummy=crlf
+; pos=no warn=0 dummycrprotection=
 ; epsilon related value in matrix singularity tests was too small - this
 ; is a boiled down version of the CUCC Austria data which demonstrated the
 ; problem

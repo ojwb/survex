@@ -1,4 +1,4 @@
-; pos=yes warn=0 dummy=crlf
+; pos=yes warn=0 dummycrprotection=
 ; regression test - "first station" used to be B on some platforms (e.g.
 ; x86 Linux) since it depended on the order of evaluation of function
 ; arguments in C, which differs between implementations.
