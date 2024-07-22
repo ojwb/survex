@@ -10,6 +10,36 @@
 ./walls.srv:50:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
         ^~~~
+./walls.srv:54:12: warning: Ignoring "gradeb"
+ #units uv=4gradeb inch=1
+            ^~~~~~
+./walls.srv:54:19: warning: Unknown command "inch"
+ #units uv=4gradeb inch=1
+                   ^~~~
+./walls.srv:55:13: warning: Ignoring "gradeb"
+ #units uvv=4gradeb inch=1
+             ^~~~~~
+./walls.srv:55:20: warning: Unknown command "inch"
+ #units uvv=4gradeb inch=1
+                    ^~~~
+./walls.srv:56:13: warning: Ignoring "gradeb"
+ #units uvh=4gradeb inch=1
+             ^~~~~~
+./walls.srv:56:20: warning: Unknown command "inch"
+ #units uvh=4gradeb inch=1
+                    ^~~~
+./walls.srv:57:18: warning: Ignoring "Q"
+ #units typeab=n,4Q,X inch=1
+                  ^
+./walls.srv:57:22: warning: Unknown command "inch"
+ #units typeab=n,4Q,X inch=1
+                      ^~~~
+./walls.srv:58:20: warning: Ignoring "Q"
+ #units typevb=c,1.2Q inch=1
+                    ^
+./walls.srv:58:22: warning: Unknown command "inch"
+ #units typevb=c,1.2Q inch=1
+                      ^~~~
 
 Removing trailing traverses...
 
@@ -38,4 +68,4 @@ East-West range = 29.66m (from 12#4 at 28.16m to U1 at -1.49m)
    5 2-nodes.
    1 3-node.
    1 4-node.
-There were 4 warning(s).
+There were 14 warning(s).

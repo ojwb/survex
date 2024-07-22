@@ -3554,6 +3554,12 @@ msgstr ""
 msgid "Macro “%s” not defined"
 msgstr ""
 
+#: ../src/datain.c:1999
+#: n:506
+#, c-format
+msgid "Ignoring “%s”"
+msgstr ""
+
 #, c-format
 #~ msgid "Error in format of font file “%s”"
 #~ msgstr ""

@@ -116,6 +116,10 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   names (though it can't be used as the first character of the from station
   name as that will be interpreted as a command.  Since Survex 1.4.10.
 
+- Walls ignores junk after the numeric argument in ``TYPEAB=``, ``TYPEVB=``,
+  ``UV=``, ``UVH=``, and ``UVV=``.  Survex warns and skips the junk.  Since
+  Survex 1.4.10.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really

@@ -1956,6 +1956,11 @@ parse_options(void)
 		nextch();
 		// FIXME: Use threshold value.
 		(void)read_numeric(false);
+		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+		    // Walls quietly ignores junk after a valid number here.
+		    get_token_walls();
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
+		}
 		if (ch == ',') {
 		    nextch();
 		    if (toupper(ch) == 'X') {
@@ -1978,6 +1983,11 @@ parse_options(void)
 		nextch();
 		// FIXME: Use threshold value.
 		(void)read_numeric(false);
+		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+		    // Walls quietly ignores junk after a valid number here.
+		    get_token_walls();
+		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
+		}
 		if (ch == ',') {
 		    nextch();
 		    if (toupper(ch) == 'X') {
@@ -1993,6 +2003,11 @@ parse_options(void)
 	    // Scale factors for variances (with horizontal-only and
 	    // vertical-only variants).  FIXME: Actually apply these!
 	    (void)read_numeric(false);
+	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+		// Walls quietly ignores junk after a valid number here.
+		get_token_walls();
+		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
+	    }
 	    break;
 	  case WALLS_UNITS_OPT_FLAG:
 	    // Default flag to apply to stations in #FIX.
