@@ -105,6 +105,13 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   values of -61 and 61 in Walls) are supported with datum WGS84, but
   we do not have any real data to test this support with.
 
+- Walls gives an error if an unprefixed station name is more than 8 characters
+  long, but Survex allows longer names in Walls data.
+
+- Walls documents `The total length of the three prefix components combined,
+  including any embedded colon separators, is 127 characters` but Survex does
+  not enforce any limit.
+
 - In the option ``UNITS=`` the documentation says `CASE = Upper / Lower /
   Mixed` but it seems actually any string is allowed and if it starts
   with a letter other than ``U`` or ``L`` then it's treated as ``Mixed``.
