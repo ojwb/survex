@@ -8,7 +8,7 @@
 ; use INFER_EQUATES.
 Q0 U0  0 0 0 ; Walls treats this like a NOSURVEY leg it seems
 #UNITS CASE=U
-u0 u1  5.4 203d +50D
+u0 u1  5.4 203d +45D
 #units v=d case=none ; undocumented but unknown "case=" values -> "mixed"
 #[
 U1 X1 3 4 5
@@ -64,3 +64,7 @@ U3   --      7.8     098.7
 U5  U7  123 1.00
 #units order=dav
 U7  U8  1.00 123
+; Test explicit clino units (on plumb to check equivalent to 90°).
+U8  U9  1.00 -- 90d
+U9  U10 1.00 -- 100g
+U10 U11 1.00 -- 1600m

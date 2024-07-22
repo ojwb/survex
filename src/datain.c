@@ -4519,6 +4519,23 @@ inches_only:
 		      while (nextch() == '-') { }
 		  }
 	      } else {
+		  switch (ch) {
+		    case 'D': case 'd':
+		      // Degrees.
+		      clin *= M_PI / 180.0 / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		    case 'G': case 'g':
+		      // Grads.
+		      clin *= M_PI / 200.0 / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		    case 'M': case 'm':
+		      // Mils.
+		      clin *= M_PI / 3200.0 / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		  }
 		  VAL(Clino) = clin;
 		  ctype = CTYPE_READING;
 	      }
@@ -4542,6 +4559,23 @@ inches_only:
 		  // reading, but actually just one works too!
 		  while (nextch() == '-') { }
 	      } else {
+		  switch (ch) {
+		    case 'D': case 'd':
+		      // Degrees.
+		      backclin *= M_PI / 180.0 / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		    case 'G': case 'g':
+		      // Grads.
+		      backclin *= M_PI / 200.0 / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		    case 'M': case 'm':
+		      // Mils.
+		      backclin *= M_PI / 3200.0 / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		  }
 		  VAL(BackClino) = backclin;
 		  backctype = CTYPE_READING;
 	      }
