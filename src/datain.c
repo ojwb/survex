@@ -2107,7 +2107,14 @@ parse_options(void)
 		set_pos(&fp);
 		s_clear(&token);
 	    }
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+	    if (ch == '=') {
+		// Skip over `=` and the rest of the argument so we handle a
+		// typo-ed option name nicely.
+		do {
+		    nextch();
+		} while (!isBlank(ch) && !isComm(ch) && !isEol(ch));
+	    }
 	    break;
 	}
 //		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
