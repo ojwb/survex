@@ -25,10 +25,13 @@
 ./badopts.srv:3:48: error: Expecting "F" or "M"
  #units D=bad a=bad a=bad ab=bad v=bad vb=bad s=bad
                                                 ^
-./badopts.srv:4:15: error: Expecting "C" or "N"
- #units typeab=bad typevb=bad
-               ^
-./badopts.srv:4:26: error: Expecting "C" or "N"
- #units typeab=bad typevb=bad
-                          ^
+./badopts.srv:4:14: error: Data style "bad" unknown
+ #units order=bad typeab=bad typevb=bad
+              ^~~
+./badopts.srv:4:25: error: Expecting "C" or "N"
+ #units order=bad typeab=bad typevb=bad
+                         ^
+./badopts.srv:4:36: error: Expecting "C" or "N"
+ #units order=bad typeab=bad typevb=bad
+                                    ^
 cavern: error: No survey data

@@ -1849,7 +1849,7 @@ parse_options(void)
 	    int order = match_tok(walls_order_tab,
 				  TABSIZE(walls_order_tab));
 	    if (order < 0) {
-		compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Data style “%s” unknown*/65, s_str(&token));
 		break;
 	    }
 	    reading* p;
