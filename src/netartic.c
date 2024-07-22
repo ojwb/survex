@@ -400,6 +400,7 @@ articulate(void)
 	 }
       }
       stnlist = NULL;
+      hanging_surveys = true;
    }
 
    {

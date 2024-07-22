@@ -391,6 +391,7 @@ extern string survey_title;
 
 extern bool fExplicitTitle;
 extern long cLegs, cStns, cComponents;
+extern bool hanging_surveys;
 extern FILE *fhErrStat;
 extern img *pimg;
 extern real totadj, total, totplan, totvert;

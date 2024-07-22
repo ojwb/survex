@@ -60,6 +60,7 @@ prefix *root;
 prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
+bool hanging_surveys = false;
 bool fExportUsed = false;
 char * proj_str_out = NULL;
 PJ * pj_cached = NULL;
@@ -463,20 +464,24 @@ do_stats(void)
 
    putnl();
 
-   if (cLoops == 1) {
-      fputs(msg(/*There is 1 loop.*/138), stdout);
-   } else {
-      printf(msg(/*There are %ld loops.*/139), cLoops);
-   }
+   // FIXME: We potentially need to adjust cComponents if there are hanging
+   // surveys for these statistics to be correct.
+   if (!hanging_surveys) {
+      if (cLoops == 1) {
+	 fputs(msg(/*There is 1 loop.*/138), stdout);
+      } else {
+	 printf(msg(/*There are %ld loops.*/139), cLoops);
+      }
 
-   putnl();
-
-   if (cComponents != 1) {
-      /* TRANSLATORS: "Connected component" in the graph theory sense - it
-       * means there are %ld bits of survey with no connections between them.
-       * This message is only used if there are more than 1. */
-      printf(msg(/*Survey has %ld connected components.*/178), cComponents);
       putnl();
+
+      if (cComponents != 1) {
+	 /* TRANSLATORS: "Connected component" in the graph theory sense - it
+	  * means there are %ld bits of survey with no connections between them.
+	  * This message is only used if there are more than 1. */
+	 printf(msg(/*Survey has %ld connected components.*/178), cComponents);
+	 putnl();
+      }
    }
 
    printf(msg(/*Total length of survey legs = %7.2f%s (%7.2f%s adjusted)*/132),
