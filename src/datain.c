@@ -1882,6 +1882,9 @@ parse_options(void)
 	    break;
 	  case WALLS_UNITS_OPT_CASE:
 	    get_token_walls();
+	    // Walls documents `CASE = Upper / Lower / Mixed` which hints that
+	    // it only actually tests the first character.  It also seems that
+	    // any other character is treated as `Mixed` too.
 	    switch (s_str(&uctoken)[0]) {
 	      case 'L':
 		pcs->Case = LOWER;
@@ -1889,13 +1892,8 @@ parse_options(void)
 	      case 'U':
 		pcs->Case = UPPER;
 		break;
-	      case 'M':
-		pcs->Case = OFF;
-		break;
 	      default:
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s”, “%s”, or “%s”*/188,
-				   "L", "M", "U");
+		pcs->Case = OFF;
 		break;
 	    }
 	    break;

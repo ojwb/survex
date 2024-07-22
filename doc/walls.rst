@@ -105,6 +105,11 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   values of -61 and 61 in Walls) are supported with datum WGS84, but
   we do not have any real data to test this support with.
 
+- In the option ``UNITS=`` the documentation says `CASE = Upper / Lower /
+  Mixed` but it seems actually any string is allowed and if it starts
+  with a letter other than ``U`` or ``L`` then it's treated as ``Mixed``.
+  Since Survex 1.4.10.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really

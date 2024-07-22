@@ -1,10 +1,10 @@
 ./walls.srv:5:18: warning: End of line not blank
  #date 2024-03-09 walls appears to ignore anything here
                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:25:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
+./walls.srv:26:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
-./walls.srv:39:14: warning: End of line not blank
+./walls.srv:40:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

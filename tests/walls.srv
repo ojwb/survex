@@ -7,8 +7,9 @@
 ; Mammoth reportedly uses "0 0 0" legs between fixed points so we mustn't
 ; use INFER_EQUATES.
 Q0 U0  0 0 0 ; Walls treats this like a NOSURVEY leg it seems
-U0 U1  5.4 203d +50D
-#units v=d
+#UNITS CASE=U
+u0 u1  5.4 203d +50D
+#units v=d case=none ; undocumented but unknown "case=" values -> "mixed"
 #[
 U1 X1 3 4 5
 #[
