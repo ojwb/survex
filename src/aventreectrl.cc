@@ -472,26 +472,24 @@ void AvenTreeCtrl::OnHide(wxCommandEvent&)
 {
     // Shouldn't be available for the root item.
     wxASSERT(menu_data);
-    // Hide should be disabled unless the item is explicitly shown.
-    wxASSERT(GetItemState(menu_item) == STATE_ON);
+    // Hide should be disabled if the item is off.
+    wxASSERT(GetItemState(menu_item) != STATE_OFF);
     SetItemState(menu_item, STATE_OFF);
     // FIXME: Overlays?
     filter.remove(menu_data->GetSurvey());
-#if 0
     Freeze();
     // Show siblings if not already shown or hidden.
     wxTreeItemId i = menu_item;
     while ((i = GetPrevSibling(i)).IsOk()) {
 	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
-	    SetItemState(i, 1);
+	    SetItemState(i, STATE_ON);
     }
     i = menu_item;
     while ((i = GetNextSibling(i)).IsOk()) {
 	if (GetItemState(i) == wxTREE_ITEMSTATE_NONE)
-	    SetItemState(i, 1);
+	    SetItemState(i, STATE_ON);
     }
     Thaw();
-#endif
     m_Parent->ForceFullRedraw();
 }
 
