@@ -444,7 +444,7 @@ using_data_file(const char *fnm)
 static void
 skipword(void)
 {
-   while (!isBlank(ch) && !isEol(ch)) nextch();
+   while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) nextch();
 }
 
 extern void
