@@ -664,8 +664,10 @@ SurveyFilter::add(const wxString& name)
 {
     auto it = filters.lower_bound(name);
     if (it != filters.end()) {
-	// It's invalid to add a survey which is already present.
-	assert(*it != name);
+	// name is already present in the filter.
+	if (*it == name) {
+	    return;
+	}
 	// Check if a survey prefixing name is visible.
 	if (name.StartsWith(*it) && name[it->size()] == separator) {
 	    redundant_filters.insert(name);
