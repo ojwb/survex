@@ -2086,7 +2086,7 @@ parse_options(void)
 		get_pos(&fp);
 		nextch();
 		string name = S_INIT;
-		while (!isEol(ch) && !isComm(ch) && !isBlank(ch) && ch != '=') {
+		while (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '=') {
 		    s_catchar(&name, ch);
 		    nextch();
 		}
