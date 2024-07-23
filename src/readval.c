@@ -480,7 +480,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    int sflag = BIT(SFLAGS_SURVEY);
 	    if (i == 3) {
 		name = p;
-		sflag = 0;
+		// Mark stations used with explicit prefix as exported.
+		sflag = explicit_prefix_levels ? BIT(SFLAGS_EXPORTED) : 0;
 	    } else {
 		if (i < 3 - explicit_prefix_levels) {
 		    name = walls_prefix[i];
@@ -557,9 +558,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		    newptr->sflags = sflag;
 		    ptr = newptr;
 		} else {
-		    if ((ptr->sflags & sflag) == 0) {
-			// FIXME diagnostic?
-		    }
+		    ptr->sflags |= sflag;
 		}
 		cached_survey = back_ptr;
 		cached_station = ptr;
