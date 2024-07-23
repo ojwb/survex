@@ -3055,15 +3055,17 @@ detached_or_not_srv:
 	    break;
 	  case WALLS_WPJ_CMD_PATH: {
 	    skipblanks();
-	    if (!s_empty(&p_walls_options->path)) {
-		s_catchar(&p_walls_options->path, FNM_SEP_LEV);
-	    }
-	    while (!isEol(ch)) {
-		if (ch == '\\') {
-		    ch = FNM_SEP_LEV;
+	    if (!isEol(ch)) {
+		if (!s_empty(&p_walls_options->path)) {
+		    s_catchar(&p_walls_options->path, FNM_SEP_LEV);
 		}
-		s_catchar(&p_walls_options->path, ch);
-		nextch();
+		while (!isEol(ch)) {
+		    if (ch == '\\') {
+			ch = FNM_SEP_LEV;
+		    }
+		    s_catchar(&p_walls_options->path, ch);
+		    nextch();
+		}
 	    }
 	    //printf("PATH: %s\n", s_str(&p_walls_options->path));
 	    break;
