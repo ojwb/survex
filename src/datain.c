@@ -287,7 +287,7 @@ compile_diagnostic(int diag_flags, int en, ...)
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
-	 while (!isBlank(ch) && !isEol(ch)) {
+	 while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 	    ++len;
 	    nextch();
 	 }
@@ -397,7 +397,7 @@ compile_diagnostic_token_show(int diag_flags, int en)
 {
    string p = S_INIT;
    skipblanks();
-   while (!isBlank(ch) && !isEol(ch)) {
+   while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
       s_catchar(&p, (char)ch);
       nextch();
    }

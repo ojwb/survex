@@ -1,6 +1,7 @@
-; pos=fail error=3
+; pos=fail error=4
 *fix 1 reference 0 0 0
 1 2 .hello. 100 -90
 2 3 +hello+ 100 -45
 *set omit ?
 3 4 -hello  100 -22.5
+4 5 10.00   100 ;comment
