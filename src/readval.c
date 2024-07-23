@@ -452,10 +452,18 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 
 	// component is the station name itself.
 	if (s_empty(&component)) {
-	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
-	    s_free(&component);
-	    for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
-	    LONGJMP(file.jbSkipLine);
+	    if (explicit_prefix_levels == 0) {
+		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
+		s_free(&component);
+		for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+		LONGJMP(file.jbSkipLine);
+	    }
+	    // Walls allows an empty station name if there's an explicit prefix.
+	    // This seems unlikely to be intended, so warn about it.
+	    compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting station name*/28);
+	    // Use a name with a space in so it can't collide with a real
+	    // Walls station name.
+	    s_cat(&component, "empty name");
 	}
 	int len = s_len(&component);
 	char *p = s_steal(&component);

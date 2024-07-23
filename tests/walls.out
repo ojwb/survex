@@ -40,6 +40,9 @@
 ./walls.srv:61:22: warning: Unknown command "inch"
  #units typevb=c,1.2Q inch=1
                       ^~~~
+./walls.srv:72:11: warning: Expecting station name
+ U11 EMPTY: 1.00 -- 90
+           ^
 
 Removing trailing traverses...
 
@@ -55,17 +58,17 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 18 survey stations, joined by 17 legs.
+Survey contains 19 survey stations, joined by 18 legs.
 There are 0 loops.
-Total length of survey legs =   78.07m (  79.48m adjusted)
+Total length of survey legs =   79.07m (  80.48m adjusted)
 Total plan length of survey legs =   61.69m
-Total vertical length of survey legs =   28.09m
+Total vertical length of survey legs =   29.09m
 Vertical range = 12.70m (from &##.S1 at 7.66m to anonymous station at -5.04m)
 Vertical range = 12.03m (from &##.S1 at 7.66m to U8 at -4.37m)
 North-South range = 14.08m (from Q0 at 1.00m to 12#4 at -13.08m)
 East-West range = 29.66m (from 12#4 at 28.16m to U1 at -1.49m)
    7 1-nodes.
-   9 2-nodes.
+  10 2-nodes.
    1 4-node.
    1 5-node.
-There were 14 warning(s).
+There were 15 warning(s).

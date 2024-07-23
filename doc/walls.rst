@@ -135,6 +135,15 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   is currently applied even if the explicit prefix is empty (e.g. ``:A123``).
   Since Survex 1.4.10.
 
+- Walls allows a station with an explicit prefix to have an empty name,
+  e.g. ``PEP:``.  The Walls documentation doesn't mention this, though it
+  also doesn't explicitly say the name can't be empty.  This quirk seems
+  unlikely to be intentionally used and Survex doesn't allow an empty station
+  name, so we issue a warning and use the name ``empty name`` (which has a
+  space in, so can't collide with a real Walls station name which can't contain
+  a space) - so ``PEP:`` in Walls becomes ``PEP.empty name`` in Survex.
+  Since Survex 1.4.10.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really
