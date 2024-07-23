@@ -54,10 +54,10 @@ U3   --      7.8     098.7
 ; Test no warning for values of unsupported options which are the default.
 #units inch=0
 ; Walls seems to fail to check for junk after parsing a number in these cases:
-#units uv=4gradeb inch=1
+#units uv=4gradeb) inch=1
 #units uvv=4gradeb inch=1
 #units uvh=4gradeb inch=1
-#units typeab=n,4Q,X inch=1
+#units typeab=n,4Q),X inch=1
 #units typevb=c,1.2Q inch=1
 ; Test undocumented omission of clino
 #units order=adv

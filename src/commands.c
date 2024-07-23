@@ -349,20 +349,18 @@ get_token_walls(void)
    }
 }
 
-static string word = S_INIT;
-
 /* read word */
 void
 get_word(void)
 {
-   s_clear(&word);
+   s_clear(&token);
    skipblanks();
    while (!isBlank(ch) && !isEol(ch)) {
-      s_catchar(&word, ch);
+      s_catchar(&token, ch);
       nextch();
    }
 #if 0
-   printf("get_word() got “%s”\n", s_str(&word));
+   printf("get_word() got “%s”\n", s_str(&token));
 #endif
 }
 
@@ -818,13 +816,13 @@ cmd_alias(void)
    filepos fp;
    get_pos(&fp);
    get_word();
-   if (!S_EQ(&word, "-"))
+   if (!S_EQ(&token, "-"))
       goto bad_word;
    get_pos(&fp);
    get_word();
-   if (!s_empty(&word) && !S_EQ(&word, ".."))
+   if (!s_empty(&token) && !S_EQ(&token, ".."))
       goto bad_word;
-   pcs->dash_for_anon_wall_station = !s_empty(&word);
+   pcs->dash_for_anon_wall_station = !s_empty(&token);
    return;
 bad_word:
    set_pos(&fp);

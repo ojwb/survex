@@ -1993,7 +1993,7 @@ parse_options(void)
 		(void)read_numeric(false);
 		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		    // Walls quietly ignores junk after a valid number here.
-		    get_token_walls();
+		    get_word();
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 		}
 		if (ch == ',') {
@@ -2025,7 +2025,7 @@ parse_options(void)
 		(void)read_numeric(false);
 		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		    // Walls quietly ignores junk after a valid number here.
-		    get_token_walls();
+		    get_word();
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 		}
 		if (ch == ',') {
@@ -2045,7 +2045,7 @@ parse_options(void)
 	    (void)read_numeric(false);
 	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		// Walls quietly ignores junk after a valid number here.
-		get_token_walls();
+		get_word();
 		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 	    }
 	    break;
