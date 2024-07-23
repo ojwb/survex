@@ -1370,6 +1370,8 @@ typedef struct walls_options {
     // Flags to apply to stations in #FIX.
     int fix_station_flags;
 
+    string path;
+
     struct walls_options *next;
 } walls_options;
 
@@ -1399,6 +1401,9 @@ static const walls_options walls_options_default = {
     // fix_station_flags
     0,
 
+    // path
+    S_INIT,
+
     // next
     NULL
 };
@@ -1425,6 +1430,10 @@ push_walls_options(void)
 	    if (new_options->prefix[i])
 		new_options->prefix[i] = osstrdup(new_options->prefix[i]);
 	}
+	// Actually copy path.  FIXME: Maybe copy on write?
+	string empty_string = S_INIT;
+	new_options->path = empty_string;
+	s_cats(&new_options->path, &p_walls_options->path);
     }
 
     new_options->next = p_walls_options;
@@ -1441,6 +1450,7 @@ pop_walls_options(void)
     for (int i = 0; i < 3; ++i) {
 	osfree(p->prefix[i]);
     }
+    s_free(&p->path);
     osfree(p);
 }
 
@@ -2805,6 +2815,9 @@ data_file_walls_wpj(void)
      * process CompassDATFr and CompassDATTo fields. (FIXME)
      */
 
+    // Start from the location of this WPJ.
+    s_cat(&p_walls_options->path, pth);
+
 #ifdef HAVE_SETJMP_H
     /* errors in nested functions can longjmp here */
     if (setjmp(file.jbSkipLine)) {
@@ -2818,9 +2831,6 @@ data_file_walls_wpj(void)
     unsigned name_lineno = 0;
     filepos fp_name;
     string name = S_INIT;
-    string path = S_INIT;
-    // Start from the location of this WPJ.
-    s_cat(&path, pth);
 
     walls_ref.x = walls_ref.y = walls_ref.z = HUGE_VAL;
     walls_ref.zone = 0;
@@ -2929,15 +2939,17 @@ process_entry:
 
 	    // Include SRV file.
 #if 0
-	    printf("+++ %s %s .SRV :%s:%s:%s\n", s_str(&path), s_str(&name),
+	    printf("+++ %s %s .SRV :%s:%s:%s\n", s_str(&p_walls_options->path), s_str(&name),
 		   p_walls_options->prefix[0] ? p_walls_options->prefix[0] : "",
 		   p_walls_options->prefix[1] ? p_walls_options->prefix[1] : "",
 		   p_walls_options->prefix[2] ? p_walls_options->prefix[2] : "");
 #endif
 	    char *filename;
-	    FILE *fh = fopen_portable(s_str(&path), s_str(&name), "srv", "rb", &filename);
+	    FILE *fh = fopen_portable(s_str(&p_walls_options->path),
+				      s_str(&name), "srv", "rb", &filename);
 	    if (fh == NULL)
-		fh = fopen_portable(s_str(&path), s_str(&name), "SRV", "rb", &filename);
+		fh = fopen_portable(s_str(&p_walls_options->path),
+				    s_str(&name), "SRV", "rb", &filename);
 
 	    if (fh == NULL) {
 		// Report the diagnostic at the location of the ".NAME".
@@ -2952,11 +2964,11 @@ process_entry:
 		// full_file in the fopen_portable() call above so things
 		// align better?
 		string full_file = S_INIT;
-		s_cats(&full_file, &path);
+		s_cats(&full_file, &p_walls_options->path);
 		s_catchar(&full_file, FNM_SEP_LEV);
 		s_cats(&full_file, &name);
 		s_cat(&full_file, ".SRV");
-		if (!fDirectory(s_str(&path))) {
+		if (!fDirectory(s_str(&p_walls_options->path))) {
 		    // Walls appears to quietly ignore file if the
 		    // directory does not exist, but it seems worth
 		    // warning about at least.
@@ -3042,21 +3054,20 @@ detached_or_not_srv:
 	    parse_options();
 	    break;
 	  case WALLS_WPJ_CMD_PATH: {
-	    if (!s_empty(&path)) {
-		// FIXME: PATH already set
-		s_clear(&path);
-	    }
 	    skipblanks();
-	    // Start from the location of this WPJ.
-	    s_cat(&path, pth);
-	    while (!isEol(ch)) {
-		if (ch == '\\') {
-		    ch = FNM_SEP_LEV;
+	    if (!isEol(ch)) {
+		if (!s_empty(&p_walls_options->path)) {
+		    s_catchar(&p_walls_options->path, FNM_SEP_LEV);
 		}
-		s_catchar(&path, ch);
-		nextch();
+		while (!isEol(ch)) {
+		    if (ch == '\\') {
+			ch = FNM_SEP_LEV;
+		    }
+		    s_catchar(&p_walls_options->path, ch);
+		    nextch();
+		}
 	    }
-	    //printf("PATH: %s\n", s_str(&path));
+	    //printf("PATH: %s\n", s_str(&p_walls_options->path));
 	    break;
 	  }
 	  case WALLS_WPJ_CMD_REF:
