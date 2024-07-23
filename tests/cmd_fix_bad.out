@@ -130,6 +130,13 @@
  *fix Wb 0 0 3
       ^~
 ./cmd_fix_bad.svx:50: info: Previously fixed or equated here
+./cmd_fix_bad.svx:54:8: info: FIX command with no coordinates - fixing at (0,0,0)
+ *fix Wa;comment
+        ^
+./cmd_fix_bad.svx:54:6: warning: Station already fixed at the same coordinates
+ *fix Wa;comment
+      ^~
+./cmd_fix_bad.svx:50: info: Previously fixed or equated here
 
 Removing trailing traverses...
 
@@ -154,4 +161,4 @@ Total vertical length of survey legs =    0.00m
    1 0-node.
    2 1-nodes.
    1 2-node.
-There were 0 warning(s) and 43 error(s) - no output files produced.
+There were 1 warning(s) and 43 error(s) - no output files produced.

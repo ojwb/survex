@@ -109,7 +109,7 @@ read_prefix(unsigned pfx_flags)
 	  (isSep(ch) || (pcs->dash_for_anon_wall_station && ch == '-'))) {
 	 int first_ch = ch;
 	 nextch();
-	 if (isBlank(ch) || isEol(ch)) {
+	 if (isBlank(ch) || isComm(ch) || isEol(ch)) {
 	    if (!isSep(first_ch))
 	       goto anon_wall_station;
 	    /* A single separator alone ('.' by default) is an anonymous
@@ -126,7 +126,7 @@ read_prefix(unsigned pfx_flags)
 	 }
 	 if (isSep(first_ch) && ch == first_ch) {
 	    nextch();
-	    if (isBlank(ch) || isEol(ch)) {
+	    if (isBlank(ch) || isComm(ch) || isEol(ch)) {
 	       /* A double separator ('..' by default) is an anonymous station
 		* which is on the wall and implies the leg to it is a splay.
 		*/
@@ -144,7 +144,7 @@ anon_wall_station:
 	    }
 	    if (ch == first_ch) {
 	       nextch();
-	       if (isBlank(ch) || isEol(ch)) {
+	       if (isBlank(ch) || isComm(ch) || isEol(ch)) {
 		  /* A triple separator ('...' by default) is an anonymous
 		   * station, but otherwise not handled specially (e.g. for
 		   * a single leg down an unexplored side passage to a station

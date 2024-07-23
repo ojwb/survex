@@ -10,12 +10,12 @@
 ./walls.srv:53:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
         ^~~~
-./walls.srv:57:12: warning: Ignoring "gradeb"
- #units uv=4gradeb inch=1
-            ^~~~~~
-./walls.srv:57:19: warning: Unknown command "inch"
- #units uv=4gradeb inch=1
-                   ^~~~
+./walls.srv:57:12: warning: Ignoring "gradeb)"
+ #units uv=4gradeb) inch=1
+            ^~~~~~~
+./walls.srv:57:20: warning: Unknown command "inch"
+ #units uv=4gradeb) inch=1
+                    ^~~~
 ./walls.srv:58:13: warning: Ignoring "gradeb"
  #units uvv=4gradeb inch=1
              ^~~~~~
@@ -28,12 +28,12 @@
 ./walls.srv:59:20: warning: Unknown command "inch"
  #units uvh=4gradeb inch=1
                     ^~~~
-./walls.srv:60:18: warning: Ignoring "Q"
- #units typeab=n,4Q,X inch=1
-                  ^
-./walls.srv:60:22: warning: Unknown command "inch"
- #units typeab=n,4Q,X inch=1
-                      ^~~~
+./walls.srv:60:18: warning: Ignoring "Q)"
+ #units typeab=n,4Q),X inch=1
+                  ^~
+./walls.srv:60:23: warning: Unknown command "inch"
+ #units typeab=n,4Q),X inch=1
+                       ^~~~
 ./walls.srv:61:20: warning: Ignoring "Q"
  #units typevb=c,1.2Q inch=1
                     ^

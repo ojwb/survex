@@ -67,7 +67,7 @@ void get_token(void);
 void get_token_no_blanks(void);
 // Read a token as defined in Walls format.
 void get_token_walls(void);
-
+// Read up to the next BLANK, COMM or end of line.
 void get_word(void);
 
 typedef struct { const char *sz; int tok; } sztok;

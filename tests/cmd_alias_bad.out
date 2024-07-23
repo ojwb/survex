@@ -10,6 +10,12 @@
 ./cmd_alias_bad.svx:12:18: error: Bad *alias command
  *alias station - ...
                   ^~~
+./cmd_alias_bad.svx:15:16: error: Bad *alias command
+ *alias station _; comment
+                ^
+./cmd_alias_bad.svx:16:18: error: Bad *alias command
+ *alias station - ...;comment
+                  ^~~
 
 Removing trailing traverses...
 
@@ -34,4 +40,4 @@ Vertical range = 0.01m (from - at 0.01m to 1 at 0.00m)
 North-South range = 0.01m (from 1 at 0.00m to - at -0.01m)
 East-West range = 1.00m (from - at 1.00m to 1 at 0.00m)
    2 1-nodes.
-There were 0 warning(s) and 4 error(s) - no output files produced.
+There were 0 warning(s) and 6 error(s) - no output files produced.

@@ -4,3 +4,7 @@
 ; 0.99pre7 it would switch to style cylpolar and cause an internal error
 *data cylpolar from to foo
 1 2 3.00 004 05 06
+; Test handling of a comment right after an ignored reading.  Regression
+; test for bug fixed in 1.4.10.
+*data cylpolar from to tape compass depthchange ignore
+1 3 3.00 005 05 06; comment

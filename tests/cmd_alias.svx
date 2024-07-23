@@ -6,5 +6,12 @@
 ; This '-' is an anon station
 1 - 1.00 270 0
 *alias station -
-; An back to the actual one
+; And back to the actual one
 - 2 1.00 180 0
+; Regression test - handling of a comment character after the command.
+*alias station - ..; comment
+; This '-' is an anon station
+2 - 1.00 270 0
+*alias station -; comment
+; And back to the actual one
+- 3 1.00 180 0

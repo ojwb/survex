@@ -287,7 +287,7 @@ compile_diagnostic(int diag_flags, int en, ...)
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
-	 while (!isBlank(ch) && !isEol(ch)) {
+	 while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 	    ++len;
 	    nextch();
 	 }
@@ -397,7 +397,7 @@ compile_diagnostic_token_show(int diag_flags, int en)
 {
    string p = S_INIT;
    skipblanks();
-   while (!isBlank(ch) && !isEol(ch)) {
+   while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
       s_catchar(&p, (char)ch);
       nextch();
    }
@@ -444,7 +444,7 @@ using_data_file(const char *fnm)
 static void
 skipword(void)
 {
-   while (!isBlank(ch) && !isEol(ch)) nextch();
+   while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) nextch();
 }
 
 extern void
@@ -1714,7 +1714,12 @@ parse_options(void)
 	    } else if (s_str(&uctoken)[0] == 'F') {
 		pcs->units[Q_LENGTH] = METRES_PER_FOOT;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
@@ -1730,9 +1735,14 @@ parse_options(void)
 		// Mils.
 		pcs->units[Q_BEARING] = M_PI / 3200.0;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
 				   "D", "G", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_AB:
@@ -1748,9 +1758,14 @@ parse_options(void)
 		// Mils.
 		pcs->units[Q_BACKBEARING] = M_PI / 3200.0;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
 				   "D", "G", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_V:
@@ -1770,9 +1785,14 @@ parse_options(void)
 		pcs->units[Q_GRADIENT] = 0.01;
 		pcs->f_clino_percent = true;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
 				   "D", "G", "M", "P");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_VB:
@@ -1792,9 +1812,14 @@ parse_options(void)
 		pcs->units[Q_BACKGRADIENT] = 0.01;
 		pcs->f_backclino_percent = true;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
 				   "D", "G", "M", "P");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_S:
@@ -1811,7 +1836,12 @@ parse_options(void)
 		pcs->units[Q_DY] =
 		pcs->units[Q_DZ] = METRES_PER_FOOT;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+		set_pos(&fp);
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_ORDER:
@@ -1819,7 +1849,7 @@ parse_options(void)
 	    int order = match_tok(walls_order_tab,
 				  TABSIZE(walls_order_tab));
 	    if (order < 0) {
-		compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Data style “%s” unknown*/65, s_str(&token));
 		break;
 	    }
 	    reading* p;
@@ -1950,7 +1980,12 @@ parse_options(void)
 	    } else if (s_str(&uctoken)[0] == 'C') {
 		pcs->z[Q_BACKBEARING] = M_PI;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
+		set_pos(&fp);
 	    }
 	    if (ch == ',') {
 		nextch();
@@ -1958,7 +1993,7 @@ parse_options(void)
 		(void)read_numeric(false);
 		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		    // Walls quietly ignores junk after a valid number here.
-		    get_token_walls();
+		    get_word();
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 		}
 		if (ch == ',') {
@@ -1977,7 +2012,12 @@ parse_options(void)
 	    } else if (s_str(&uctoken)[0] == 'C') {
 		pcs->sc[Q_BACKGRADIENT] = -1.0;
 	    } else {
+		filepos fp;
+		get_pos(&fp);
+		set_pos(&fp_option);
+		(void)nextch(); // Skip the `=`.
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "C", "N");
+		set_pos(&fp);
 	    }
 	    if (ch == ',') {
 		nextch();
@@ -1985,7 +2025,7 @@ parse_options(void)
 		(void)read_numeric(false);
 		if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		    // Walls quietly ignores junk after a valid number here.
-		    get_token_walls();
+		    get_word();
 		    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 		}
 		if (ch == ',') {
@@ -2005,7 +2045,7 @@ parse_options(void)
 	    (void)read_numeric(false);
 	    if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 		// Walls quietly ignores junk after a valid number here.
-		get_token_walls();
+		get_word();
 		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, s_str(&token));
 	    }
 	    break;
@@ -2046,7 +2086,7 @@ parse_options(void)
 		get_pos(&fp);
 		nextch();
 		string name = S_INIT;
-		while (!isEol(ch) && !isBlank(ch) && ch != '=') {
+		while (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '=') {
 		    s_catchar(&name, ch);
 		    nextch();
 		}
@@ -2067,7 +2107,14 @@ parse_options(void)
 		set_pos(&fp);
 		s_clear(&token);
 	    }
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
+	    if (ch == '=') {
+		// Skip over `=` and the rest of the argument so we handle a
+		// typo-ed option name nicely.
+		do {
+		    nextch();
+		} while (!isBlank(ch) && !isComm(ch) && !isEol(ch));
+	    }
 	    break;
 	}
 //		pcs->z[Q_BACKBEARING] = pcs->z[Q_BEARING] = -rad(read_numeric(false));
