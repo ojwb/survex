@@ -68,3 +68,4 @@ U7  U8  1.00 123
 U8  U9  1.00 -- 90d
 U9  U10 1.00 -- 100g
 U10 U11 1.00 -- 1600m
+#units $emptymacro;followed by a comment
