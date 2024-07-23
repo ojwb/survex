@@ -355,7 +355,7 @@ get_word(void)
 {
    s_clear(&token);
    skipblanks();
-   while (!isBlank(ch) && !isEol(ch)) {
+   while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
       s_catchar(&token, ch);
       nextch();
    }
@@ -813,20 +813,16 @@ cmd_alias(void)
        compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Bad *alias command*/397);
        return;
    }
-   filepos fp;
-   get_pos(&fp);
    get_word();
    if (!S_EQ(&token, "-"))
       goto bad_word;
-   get_pos(&fp);
    get_word();
    if (!s_empty(&token) && !S_EQ(&token, ".."))
       goto bad_word;
    pcs->dash_for_anon_wall_station = !s_empty(&token);
    return;
 bad_word:
-   set_pos(&fp);
-   compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_WORD, /*Bad *alias command*/397);
+   compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Bad *alias command*/397);
 }
 
 static void
