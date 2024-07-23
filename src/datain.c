@@ -3054,12 +3054,10 @@ detached_or_not_srv:
 	    parse_options();
 	    break;
 	  case WALLS_WPJ_CMD_PATH: {
-	    if (!s_empty(&p_walls_options->path)) {
-		s_clear(&p_walls_options->path);
-	    }
 	    skipblanks();
-	    // Start from the location of this WPJ.
-	    s_cat(&p_walls_options->path, pth);
+	    if (!s_empty(&p_walls_options->path)) {
+		s_catchar(&p_walls_options->path, FNM_SEP_LEV);
+	    }
 	    while (!isEol(ch)) {
 		if (ch == '\\') {
 		    ch = FNM_SEP_LEV;
