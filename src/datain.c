@@ -1878,12 +1878,7 @@ parse_options(void)
 	    *p = IgnoreAll;
 	    break;
 	  case WALLS_UNITS_OPT_DECL:
-//pcs->declination = HUGE_REAL;
-//	if (pcs->dec_filename == NULL) {
 	    pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
-//	} else {
-//	    (void)read_numeric(false);
-//	}
 	    break;
 	  case WALLS_UNITS_OPT_INCA:
 	    pcs->z[Q_BEARING] = -read_walls_angle(pcs->units[Q_BEARING]);
@@ -2791,6 +2786,64 @@ static const sztok walls_wpj_cmd_tab[] = {
 static void
 data_file_walls_wpj(void)
 {
+    // .STATUS is a decimal integer which is a bitmap of flags.  Meanings
+    // cribbed from dewalls and from trying Walls32.exe on simple testcases:
+    enum {
+	// Set if a branch is expanded in the UI - we can ignore.
+	WALLS_WPJ_STATUS_BOOK_OPEN = 0x000001,
+	// Detached items are not processed as part of higher level items.
+	WALLS_WPJ_STATUS_DETACHED = 0x000002,
+	// This bit appears to be unused/no longer used.  Setting it by
+	// modifying a WPJ file in a text editor and then loading it into Walls
+	// and forcing saving clears this bit.
+	WALLS_WPJ_STATUS_UNUSED_BIT2 = 0x000004,
+	// We ignore segments currently so ignore this too.
+	WALLS_WPJ_STATUS_NAME_DEFINES_SEGMENT = 0x000008,
+	// Controls the units used in reporting data - we can ignore.
+	WALLS_WPJ_STATUS_REVIEW_UNITS_FEET = 0x000010,
+	// Comments in dewalls-java suggests this is no longer used.
+	WALLS_WPJ_STATUS_UNUSED_BIT5 = 0x000020,
+	// These bits are handled via WALLS_WPF_STATUS_*_SHIFT defined below.
+	WALLS_WPJ_STATUS_TRISTATES_MASK = 0x00ffc0,
+	// Attached file of arbitrary type (we can just ignore):
+	WALLS_WPJ_STATUS_TYPE_OTHER = 0x010000,
+	// We can ignore these:
+	WALLS_WPJ_STATUS_EDIT_ON_LAUNCH = 0x020000,
+	WALLS_WPJ_STATUS_OPEN_ON_LAUNCH = 0x040000,
+	WALLS_WPJ_STATUS_DEFAULT_VIEW_MASK = 0x380000,
+	WALLS_WPJ_STATUS_PROCESS_SVG = 0x400000,
+    };
+
+    // The values of the shifted bits for the tristate values:
+    enum {
+	// - 0b00 Inherit value from parent
+	WALLS_WPJ_TRISTATE_INHERIT = 0,
+	// - 0b01 Off
+	WALLS_WPJ_TRISTATE_OFF = 1,
+	// - 0b10 On
+	WALLS_WPJ_TRISTATE_ON = 2,
+	// - 0b11 <not used>
+    };
+
+    // Shifts to extract these values:
+    //
+    // ((status >> WALLS_WPJ_STATUS_*_SHIFT) & 3)
+    //
+    // should be one of the WALLS_WPJ_TRISTATE_* values above.
+    enum {
+	// Controls whether to use/inherit .REF.
+	WALLS_WPJ_STATUS_USE_REFERENCE_SHIFT = 6,
+	// Whether to calculate declination from .REF locations and #DATE.
+	WALLS_WPJ_STATUS_DECLINATION_AUTO_SHIFT = 8,
+	// Whether to apply grid convergence.  We ignore this as we always
+	// correct for grid convergence when calculating declinations, and
+	// don't if we aren't.
+	WALLS_WPJ_STATUS_UTM_GPS_RELATIVE_SHIFT = 10,
+	// AIUI these just control distributing loop misclosure:
+	WALLS_WPJ_STATUS_PRESERVE_PLUMB_ORIENTATION_SHIFT = 12,
+	WALLS_WPJ_STATUS_PRESERVE_PLUMB_LENGTH_SHIFT = 14,
+    };
+
     // FIXME: Do any of these variables need to be volatile to protect them
     // from longjmp()?  GCC isn't warning about them...
     char *pth = path_from_fnm(file.filename);
@@ -2882,43 +2935,6 @@ data_file_walls_wpj(void)
 	     tok == WALLS_WPJ_CMD_ENDBOOK)) {
 process_entry:
 	    // Process the current entry.
-
-	    // .STATUS is a decimal integer which is a bitmap of flags.
-	    // Meanings mostly cribbed from dewalls:
-
-	    // Set if a branch is expanded in the UI - we can ignore.
-#define WALLS_WPJ_STATUS_BOOK_OPEN				0x000001
-	    // Detached items are not processed as part of higher level
-	    // items.
-#define WALLS_WPJ_STATUS_DETACHED				0x000002
-	    // 0x000004 appears to be unused/no longer used.  Setting it
-	    // externally in a WPJ file and then loading it into Walls and
-	    // forcing saving clears it.
-#define WALLS_WPJ_STATUS_UNUSED_BIT2				0x000004
-	    // We ignore segments currently so ignore this too.
-#define WALLS_WPJ_STATUS_NAME_DEFINES_SEGMENT			0x000008
-	    // Controls the units used in reporting data - we can ignore.
-#define WALLS_WPJ_STATUS_REVIEW_UNITS_FEET			0x000010
-	    // Comments in dewalls-java suggests this is no longer used.
-#define WALLS_WPJ_STATUS_UNUSED_BIT5				0x000020
-	    // These WALLS_WPJ_STATUS_*_TRISTATE values are (shifted) binary:
-	    // 00 Inherit value from parent
-	    // 01 Off
-	    // 10 On
-	    // 11 <not used>
-#define WALLS_WPJ_STATUS_USE_REFERENCE_TRISTATE			0x0000c0
-#define WALLS_WPJ_STATUS_DECLINATION_AUTO_TRISTATE		0x000300
-#define WALLS_WPJ_STATUS_UTM_GPS_RELATIVE_TRISTATE		0x000c00
-	    // AIUI these just control distributing loop misclosure:
-#define WALLS_WPJ_STATUS_PRESERVE_PLUMB_ORIENTATION_TRISTATE	0x003000
-#define WALLS_WPJ_STATUS_PRESERVE_PLUMB_LENGTH_TRISTATE		0x00c000
-	    // Attached file of arbitrary type (we can just ignore):
-#define WALLS_WPJ_STATUS_TYPE_OTHER				0x010000
-	    // We can ignore these:
-#define WALLS_WPJ_STATUS_EDIT_ON_LAUNCH				0x020000
-#define WALLS_WPJ_STATUS_OPEN_ON_LAUNCH				0x040000
-#define WALLS_WPJ_STATUS_DEFAULT_VIEW_MASK			0x380000
-#define WALLS_WPJ_STATUS_PROCESS_SVG				0x400000
 
 	    // A quirk is that the root item is flagged with
 	    // WALLS_WPJ_STATUS_DETACHED (seems the flag might be more like
