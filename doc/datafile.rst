@@ -157,7 +157,9 @@ ALIAS
 -----
 
 Syntax
-   ``*alias station <alias> [<target>]``
+   ``*alias station <alias> <target>``
+
+   ``*alias station <alias>``
 
 Example
    ::
@@ -189,7 +191,9 @@ BEGIN
 -----
 
 Syntax
-   ``*begin [<survey>]``
+   ``*begin <survey>``
+
+   ``*begin``
 
 Example
    ::
@@ -222,9 +226,13 @@ CALIBRATE
 ---------
 
 Syntax
-   ``*calibrate <quantity list> <zero error> [<scale>]``
+   ``*calibrate <quantity list> <zero error>``
 
-   ``*calibrate <quantity list> <zero error> <units> [<scale>]``
+   ``*calibrate <quantity list> <zero error> <scale>``
+
+   ``*calibrate <quantity list> <zero error> <units>``
+
+   ``*calibrate <quantity list> <zero error> <units> <scale>``
 
    ``*calibrate default``
 
@@ -315,7 +323,11 @@ CASE
 ----
 
 Syntax
-   ``*case preserve|toupper|tolower``
+   ``*case preserve``
+
+   ``*case toupper``
+
+   ``*case tolower``
 
 Example
    ::
@@ -367,7 +379,9 @@ CS
 --
 
 Syntax
-   ``*cs [out] <coordinate system>``
+   ``*cs <coordinate system>``
+
+   ``*cs out <coordinate system>``
 
 Example
    ::
@@ -778,7 +792,9 @@ DATE
 ----
 
 Syntax
-   ``*date <year>[.<month>[.<day>]][-<year>[.<month>[.<day>]]]``
+   ``*date <date>``
+
+   ``*date <date1>-<date2>``
 
 Example
    ::
@@ -804,8 +820,12 @@ Description
    ``*date`` specifies the date that the survey was done.  A range of dates can
    be specified (useful for overnight or multi-day surveying trips).
 
-   Dates with just a year are treated as being in the middle of that year.  Dates
-   with a month and year are treated as being in the middle of that month.
+   Dates must be in the order year then month then day, the day or month and day
+   can be omitted.  The separator between components must be ``.``.
+
+   Dates with just a year (e.g. ``2001``) are treated as being in the middle of
+   that year.  Dates with a month and year (e.g. ``2000.10``) are treated as
+   being in the middle of that month.
 
 See Also
    ``*begin``, ``*instrument``, ``*team``
@@ -933,7 +953,9 @@ END
 ---
 
 Syntax
-   ``*end [<survey>]``
+   ``*end <survey>``
+
+   ``*end``
 
 Validity
    valid for closing a block started by ``*begin`` in the same
@@ -1152,11 +1174,17 @@ INFER
 -----
 
 Syntax
-   ``*infer plumbs on|off``
+   ``*infer plumbs on``
 
-   ``*infer equates on|off``
+   ``*infer plumbs off``
 
-   ``*infer exports on|off``
+   ``*infer equates on``
+
+   ``*infer equates off``
+
+   ``*infer exports on``
+
+   ``*infer exports off``
 
 Description
    ``*infer plumbs on`` tells cavern to interpret gradients of ±90 degrees
@@ -1469,7 +1497,9 @@ TRUNCATE
 --------
 
 Syntax
-   ``*truncate <length>|off``
+   ``*truncate <length>``
+
+   ``*truncate off``
 
 Description
    Station names may be of any length in Survex, but some other (mostly older)
