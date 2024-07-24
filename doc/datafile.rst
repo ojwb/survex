@@ -915,11 +915,13 @@ DEFAULT
 -------
 
 Syntax
-   ``*default <settings list>|all``
+   ``*default calibrate``
+
+   ``*default data``
+
+   ``*default units``
 
 Description
-   The valid settings are ``CALIBRATE``, ``DATA``, and ``UNITS``.
-
    ``*default`` restores defaults for given settings.  This command is
    deprecated - you should instead use: ``*calibrate default``, ``*data
    default``, ``*units default``.
