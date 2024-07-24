@@ -1,6 +1,6 @@
-./cmd_fix.svx:2:18: info: FIX command with no coordinates - fixing at (0,0,0)
- *fix A reference ; generates an info diagnostic
-                  ^
+./cmd_fix.svx:2:8: info: FIX command with no coordinates - fixing at (0,0,0)
+ *fix A ; generates an info diagnostic
+        ^
 ./cmd_fix.svx:12:6: warning: Station already fixed at the same coordinates
  *fix W 0 0 0
       ^

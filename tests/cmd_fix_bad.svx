@@ -1,4 +1,4 @@
-; pos=fail error=43
+; pos=fail error=44
 *fix A 0
 *fix B 0 0
 *fix C 0 0 0 1.0 2.0 3.0 3.14
@@ -52,3 +52,6 @@
 *fix Wa 0 0 2
 *fix Wb 0 0 3
 *fix Wa;comment
+
+; Error since Survex 1.4.10:
+*fix Z reference

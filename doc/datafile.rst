@@ -1027,7 +1027,17 @@ FIX
 ---
 
 Syntax
-   ``*fix <station> [reference] [ <x> <y> <z> [ <x std err> <y std err> <z std err> [ <cov(x,y)> <cov(y,z)> <cov(z,x)> ] ] ]``
+   ``*fix <station> [reference] <x> <y> <z>``
+
+   ``*fix <station> [reference] <x> <y> <z> <std err>``
+
+   ``*fix <station> [reference] <x> <y> <z> <horizontal std err> <vertical std err>``
+
+   ``*fix <station> [reference] <x> <y> <z> <x std err> <y std err> <z std err>``
+
+   ``*fix <station> [reference] <x> <y> <z> <x std err> <y std err> <z std err> <cov(x,y)> <cov(y,z)> <cov(z,x)>``
+
+   ``*fix <station>``
 
 Example
    ::
@@ -1041,10 +1051,15 @@ Example
 Description
    ``*fix`` fixes the position of <station> at the given coordinates.  If you
    haven't specified the coordinate system with ``*cs``, you can omit the
-   position and it will default to (0,0,0).  The standard errors default to
-   zero (fix station exactly).  cavern will give an error if you attempt to fix
-   the same survey station twice at different coordinates, or a warning if you
-   fix it twice with matching coordinates.
+   position and it will default to (0,0,0) which provides an easy way to
+   specify a point to arbitrarily fix rather than rely on ``cavern1` picking
+   one (which has the downsides of the choice potentially changing when more
+   survey data is added, and of triggering an "info" message).
+
+   The standard errors default to zero (fix station exactly).  ``cavern`` will
+   give an error if you attempt to fix the same survey station twice at
+   different coordinates, or a warning if you fix it twice with matching
+   coordinates.
 
    You can also specify just one standard error (in which case it is assumed
    equal in X, Y, and Z) or two (in which case the first is taken as the
@@ -1072,6 +1087,10 @@ Description
    specify ``reference`` after the station name in the ``*fix`` command to
    suppress this warning for a particular station.  It's OK to use
    ``reference`` on a station which is used.
+
+   Since Survex 1.4.10 it's an error to specify ``reference`` without
+   coordinates (e.g. ``*fix a reference``) as this usage doesn't really make
+   sense.
 
    .. note:: X is Easting, Y is Northing, and Z is altitude.  This convention
       was chosen since on a map, the horizontal (X) axis is usually East, and

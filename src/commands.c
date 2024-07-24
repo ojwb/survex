@@ -1085,14 +1085,16 @@ cmd_fix(void)
 
    get_pos(&fp);
    get_token();
-   if (S_EQ(&uctoken, "REFERENCE")) {
+   bool reference = S_EQ(&uctoken, "REFERENCE");
+   if (reference) {
       /* suppress "unused fixed point" warnings for this station */
       fix_name->sflags |= BIT(SFLAGS_USED);
    } else {
       if (!s_empty(&uctoken)) set_pos(&fp);
    }
 
-   coord.v[0] = read_numeric(true);
+   // If `REFERENCE` is specified the coordinates can't be omitted.
+   coord.v[0] = read_numeric(!reference);
    if (coord.v[0] == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */

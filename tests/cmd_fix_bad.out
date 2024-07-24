@@ -137,6 +137,9 @@
  *fix Wa;comment
       ^~
 ./cmd_fix_bad.svx:50: info: Previously fixed or equated here
+./cmd_fix_bad.svx:57:17: error: Expecting numeric field, found ""
+ *fix Z reference
+                 ^
 
 Removing trailing traverses...
 
@@ -161,4 +164,4 @@ Total vertical length of survey legs =    0.00m
    1 0-node.
    2 1-nodes.
    1 2-node.
-There were 1 warning(s) and 43 error(s) - no output files produced.
+There were 1 warning(s) and 44 error(s) - no output files produced.
