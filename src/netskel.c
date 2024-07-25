@@ -550,7 +550,10 @@ replace_travs(void)
       printf("<%p>[%d]\n", stn2, j);
 #endif
 
-      SVX_ASSERT(fixed(stn1));
+      if (!fixed(stn1)) {
+	  SVX_ASSERT(!fixed(stn2));
+	  goto skip_hanging_traverse;
+      }
       SVX_ASSERT(fixed(stn2));
 
       /* calculate scaling factors for error distribution */
@@ -725,6 +728,7 @@ replace_travs(void)
 	 err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
 		  hTot, hTotTheo, vTot, vTotTheo);
 
+skip_hanging_traverse:
       ptrOld = ptr;
       ptr = ptr->next;
       osfree(ptrOld);
@@ -786,6 +790,10 @@ replace_trailing_travs(void)
       leg = ptrTrail->join1;
       leg = reverse_leg(leg);
       stn1 = leg->l.to;
+      if (!fixed(stn1)) {
+	  // This happens in a component which wasn't attached to fixed points.
+	  goto skip;
+      }
       i = reverse_leg_dirn(leg);
 #if PRINT_NETBITS
       printf(" Trailing trav ");
@@ -806,7 +814,6 @@ replace_trailing_travs(void)
 	 stn1->leg[j] = stn1->leg[i];
       }
       stn1->leg[i] = ptrTrail->join1;
-      SVX_ASSERT(fixed(stn1));
       img_write_item(pimg, img_MOVE, 0, NULL,
 		     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 
@@ -864,6 +871,7 @@ replace_trailing_travs(void)
 	 i = j ^ 1; /* flip direction for other leg of 2 node */
       }
 
+skip:
       ptrOld = ptrTrail;
       ptrTrail = ptrTrail->next;
       osfree(ptrOld);
@@ -872,8 +880,9 @@ replace_trailing_travs(void)
    /* write out connections with no survey data */
    while (nosurveyhead) {
       nosurveylink *p = nosurveyhead;
-      SVX_ASSERT(fixed(p->fr));
-      SVX_ASSERT(fixed(p->to));
+      if (!fixed(p->fr) || !fixed(p->to)) {
+	  goto skip_nosurvey;
+      }
       if (TSTBIT(p->flags, FLAGS_SURFACE)) {
 	 p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
 	 p->to->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -893,6 +902,7 @@ replace_trailing_travs(void)
       img_write_item(pimg, img_LINE, (p->flags & FLAGS_MASK),
 		     sprint_prefix(p->fr->name->up),
 		     POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
+skip_nosurvey:
       nosurveyhead = p->next;
       osfree(p);
    }

@@ -554,8 +554,10 @@ replace_subnets(void)
 	 leg = ptrRed->join2; leg = reverse_leg(leg);
 	 stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
 
-	 SVX_ASSERT(fixed(stn3));
-	 SVX_ASSERT(fixed(stn4));
+	 if (!fixed(stn3) || !fixed(stn4)) {
+	     SVX_ASSERT(!fixed(stn3) && !fixed(stn4));
+	     goto skip;
+	 }
 	 SVX_ASSERT(data_here(stn3->leg[dirn3]));
       }
 
@@ -565,9 +567,6 @@ replace_subnets(void)
 	 delta e;
 	 linkfor *leg;
 	 int zero;
-
-	 SVX_ASSERT(fixed(stn3));
-	 SVX_ASSERT(fixed(stn4));
 
 	 leg = stn3->leg[dirn3];
 	 stn2 = ptrRed->join1->l.to;
@@ -632,8 +631,6 @@ replace_subnets(void)
 
 	 stn = ptrRed->join1->l.to;
 	 stn2 = ptrRed->join2->l.to;
-	 SVX_ASSERT(fixed(stn3));
-	 SVX_ASSERT(fixed(stn4));
 
 	 dirn = reverse_leg_dirn(ptrRed->join1);
 	 dirn2 = reverse_leg_dirn(ptrRed->join2);
@@ -710,6 +707,10 @@ replace_subnets(void)
 	 dirn[0] = reverse_leg_dirn(leg);
 	 stnZ = stn[0]->leg[dirn[0]]->l.to;
 	 SVX_ASSERT(fixed(stnZ));
+	 if (!fixed(stnZ)) {
+	    SVX_ASSERT(!fixed(stn[0]));
+	    goto skip;
+	 }
 	 stn[1] = stnZ->leg[1]->l.to;
 	 dirn[1] = reverse_leg_dirn(stnZ->leg[1]);
 	 stn[2] = stnZ->leg[2]->l.to;
@@ -764,6 +765,7 @@ replace_subnets(void)
 	 BUG("ptrRed has unknown type");
       }
 
+skip:
       ptrOld = ptrRed;
       ptrRed = ptrRed->next;
       osfree(ptrOld);

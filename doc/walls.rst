@@ -20,9 +20,10 @@ is a problem, you should be able to write a ``.svx`` file to replace your
 WPJ file - you can use ``*include somedata.srv`` to include a Walls
 ``.srv`` from a ``.svx`` file.
 
-- Walls allows hanging surveys, whereas these are currently treated
-  as an error by Survex.  This is probably the current top priority
-  to address.
+- Walls allows hanging surveys, apparently without any complaint, and
+  as a result large Walls datasets are likely to have hanging surveys.
+  A hanging survey used to be an error in Survex but since 1.4.10
+  a hanging survey is warned about and then ignored.
 
 - Survex reports warnings in some suspect situations which Walls
   quietly accepts.  In general this seems helpful, but if there are

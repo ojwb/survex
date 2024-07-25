@@ -544,7 +544,7 @@ msgid "Filename “%s” refers to directory"
 msgstr "Meno súboru “%s” odpovedá adresáru"
 
 #. TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
-#. cavern will issue this error if there are any sections of the survey
+#. cavern will issue this warning if there are any sections of the survey
 #. network which are hanging.
 #: ../src/netartic.c:385
 #: n:45

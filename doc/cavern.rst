@@ -138,12 +138,14 @@ The format of the location data follows that used by the GCC compiler
 so if your text editor can parse errors from GCC then you should be able to set
 it to allow you to jump to the file and line of each error.
 
-The cause of an error is quite often a typing mistake, or your survey data not
-being all attached to fixed points (in this situation, Survex will list some of
-the stations that are not connected).
+One common cause of errors and warnings are typing mistakes.  Another is
+your survey data not being all attached to fixed points (which is a warning
+since Survex 1.4.10, but was an error prior to this; in this situation, Survex
+will list at least one station in each piece of survey data which is not
+connected).
 
-We try to make error messages self-explanatory, but welcome feedback on cases
-where you get an error that seems unclear.
+We try to make error and warning messages self-explanatory, but welcome
+feedback on cases where you get a message which seems unclear.
 
 Generally you want to look at the first reported error first as there
 can be a cascade effect where one error triggers another.  Cavern will stop

@@ -375,15 +375,11 @@ articulate(void)
        */
       check_node_stats();
 
-      /* Actually this error is fatal, but we want to list the survey
-       * stations which aren't connected, so we report it as an error
-       * and die after listing them...
-       */
       bool fNotAttached = false;
       /* TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
-       * cavern will issue this error if there are any sections of the survey
+       * cavern will issue this warning if there are any sections of the survey
        * network which are hanging. */
-      error(/*Survey not all connected to fixed stations*/45);
+      warning(/*Survey not all connected to fixed stations*/45);
       FOR_EACH_STN(stn, stnlist) {
 	 prefix *name = find_non_anon_stn(stn)->name;
 	 if (TSTBIT(name->sflags, SFLAGS_HANGING)) {
@@ -403,7 +399,8 @@ articulate(void)
 	    putnl();
 	 }
       }
-      exit(EXIT_FAILURE);
+      stnlist = NULL;
+      hanging_surveys = true;
    }
 
    {

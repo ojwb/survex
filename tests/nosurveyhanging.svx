@@ -1,4 +1,4 @@
-; pos=fail
+; pos=no warn=1
 ; based on example from alessandro antonelli
 ; caused an assertion to fail with 1.0.35 and earlier
 *begin test

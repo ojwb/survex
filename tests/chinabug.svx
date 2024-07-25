@@ -1,4 +1,4 @@
-; pos=fail
+; pos=no warn=2
 n.g.1 d.u.1 1 0 0
 j.m.1 d.s.1 1 0 0
 e.s.1 h.w.1 1 0 0

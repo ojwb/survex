@@ -29,9 +29,9 @@ The usual arrangement is to have one file which lists all the others that are
 included (e.g., ``161.svx``).  Then ``cavern 161`` will process all your data.
 To just process a section use the filename for that section, e.g.  ``cavern
 dtime`` will process the dreamtime file/section of Kaninchenhöhle.  To help you
-out, if all legs in a survey are connected to one another but the survey has no
-fixed points, cavern will invent a fixed point and print a warning message to
-this effect.
+out, if the survey has no fixed points and you are using Survex's default
+unspecified coordinate system, ``cavern`` will pick a station and fix it at
+(0,0,0) (and print a info message to this effect).
 
 It is up to you what data you put in which files.  You can have one file per
 trip, or per area of the cave, or just one file for the whole cave if you like.
@@ -1133,7 +1133,10 @@ Description
 
    You can fix as many stations as you like - just use a ``*fix`` command for
    each one.  Cavern will check that all stations are connected to at least one
-   fixed point so that co-ordinates can be calculated for all stations.
+   fixed point so that co-ordinates can be calculated for all stations.  If
+   there is unconnected survey data then you'll get a warning (since Survex
+   1.4.10; in earlier versions this was an error) and only the connected data
+   is processed.
 
    By default cavern will warn about stations which have been ``*fix``-ed but
    are not used otherwise, as this might be due to a typo in the station name.

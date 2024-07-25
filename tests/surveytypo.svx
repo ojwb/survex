@@ -1,4 +1,4 @@
-; pos=fail dummycrprotection=
+; pos=fail warn=4 dummycrprotection=
 *begin gps
 *export 1
 *fix 1 66123.45 79123.45 123.45
