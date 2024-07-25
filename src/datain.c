@@ -881,6 +881,7 @@ data_file_compass_mak(void)
 			      if (!proj_str_out) {
 				  proj_str_out = osstrdup(proj_str);
 			      }
+			      pcs->input_convergence = HUGE_REAL;
 			  } else {
 			      osfree(proj_str);
 			  }
@@ -978,6 +979,7 @@ update_proj_str:
 	    if (!pcs->next || pcs->proj_str != pcs->next->proj_str)
 		osfree(pcs->proj_str);
 	    pcs->proj_str = NULL;
+	    pcs->input_convergence = HUGE_REAL;
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
 		/* Set up coordinate system. */
 		char *proj_str = img_compass_utm_proj_str(datum, utm_zone);
@@ -1503,6 +1505,9 @@ walls_initialise_settings(void)
     pcs->Truncate = INT_MAX;
     pcs->infer = BIT(INFER_EXPORTS) | // FIXME?
 		 BIT(INFER_PLUMBS);
+    // Walls cartesian data is aligned to True North.
+    pcs->cartesian_north = TRUE_NORTH;
+    pcs->cartesian_rotation = 0.0;
 }
 
 static void
@@ -1915,12 +1920,10 @@ parse_options(void)
 	    // parameter and one without!
 	    skipblanks();
 	    if (ch == '=') {
-		// FIXME: A bearing to rotate cartesian data by, which we don't
-		// currently support.  0 means true North (Survex always uses
-		// grid North currently).
-		compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Unknown command “%s”*/12, s_str(&token));
 		nextch();
-		(void)read_walls_angle(M_PI / 180.0);
+		// A bearing to rotate cartesian data by, with 0 meaning true
+		// North.
+		pcs->cartesian_rotation = read_walls_angle(M_PI / 180.0);
 	    } else {
 		pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
 		pcs->ordering = p_walls_options->data_order_rect;
@@ -3158,6 +3161,7 @@ detached_or_not_srv:
 		    if (!proj_str_out) {
 			proj_str_out = osstrdup(proj_str);
 		    }
+		    pcs->input_convergence = HUGE_REAL;
 		} else {
 		    osfree(proj_str);
 		}
@@ -3172,6 +3176,7 @@ detached_or_not_srv:
 		    if (!proj_str_out) {
 			proj_str_out = osstrdup(proj_str);
 		    }
+		    pcs->input_convergence = HUGE_REAL;
 		}
 	    }
 
@@ -3489,7 +3494,9 @@ handle_comp_units(void)
    return which_comp;
 }
 
-static real compute_convergence(real lon, real lat) {
+static real
+calculate_convergence(const char *proj_str)
+{
     // PROJ < 8.1.0 dereferences the context without a NULL check inside
     // proj_create_ellipsoidal_2D_cs() but PJ_DEFAULT_CTX is really just
     // NULL so for affected PROJ versions we create a context temporarily to
@@ -3499,15 +3506,10 @@ static real compute_convergence(real lon, real lat) {
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 1)
     ctx = proj_context_create();
 #endif
-
-    if (!proj_str_out) {
-	compile_diagnostic(DIAG_ERR, /*Output coordinate system not set*/488);
-	return 0.0;
-    }
-    PJ * pj = proj_create(ctx, proj_str_out);
+    PJ * pj = proj_create(ctx, proj_str);
     PJ_COORD lp;
-    lp.lp.lam = lon;
-    lp.lp.phi = lat;
+    lp.lp.lam = pcs->dec_lon;
+    lp.lp.phi = pcs->dec_lat;
 #if PROJ_VERSION_MAJOR < 8 || \
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
     /* Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
@@ -3583,51 +3585,88 @@ static real compute_convergence(real lon, real lat) {
 }
 
 static real
+get_convergence(void)
+{
+    if (pcs->convergence == HUGE_REAL) {
+	/* Compute the convergence lazily.  It only depends on the output
+	 * coordinate system so we can cache it for reuse to apply to
+	 * a declination value for a different date.
+	 */
+	if (!proj_str_out) {
+	    compile_diagnostic(DIAG_ERR, /*Output coordinate system not set*/488);
+	    return 0.0;// FIXME cache
+	}
+	pcs->convergence = calculate_convergence(proj_str_out);
+    }
+    return pcs->convergence;
+}
+
+static real
+get_input_convergence(void)
+{
+    if (pcs->input_convergence == HUGE_REAL) {
+	/* Compute the convergence lazily.  It only depends on the input
+	 * coordinate system so we can cache it for reuse.
+	 */
+	if (!pcs->proj_str) {
+	    // TRANSLATORS: %s is replaced by the command that requires it, e.g.
+	    // *DECLINATION AUTO
+	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “%s”*/301,
+			       "*CARTESIAN GRID");
+	    return 0.0;// FIXME cache
+	}
+	pcs->input_convergence = calculate_convergence(pcs->proj_str);
+    }
+    return pcs->input_convergence;
+}
+
+static real
+get_declination(void)
+{
+    real declination;
+    if (pcs->z[Q_DECLINATION] != HUGE_REAL) {
+	declination = -pcs->z[Q_DECLINATION];
+    } else if (pcs->declination != HUGE_REAL) {
+	/* Cached value calculated for a previous compass reading taken on the
+	 * same date.
+	 */
+	declination = pcs->declination;
+    } else {
+	if (!pcs->meta || pcs->meta->days1 == -1) {
+	    compile_diagnostic(DIAG_WARN, /*No survey date specified - using 0 for magnetic declination*/304);
+	    declination = 0;
+	} else {
+	    int avg_days = (pcs->meta->days1 + pcs->meta->days2) / 2;
+	    double dat = julian_date_from_days_since_1900(avg_days);
+	    /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
+	    declination = thgeomag(pcs->dec_lat, pcs->dec_lon, pcs->dec_alt,
+				   dat);
+	    if (declination < pcs->min_declination) {
+		pcs->min_declination = declination;
+		pcs->min_declination_days = avg_days;
+	    }
+	    if (declination > pcs->max_declination) {
+		pcs->max_declination = declination;
+		pcs->max_declination_days = avg_days;
+	    }
+	}
+	declination -= get_convergence();
+	/* We cache the calculated declination as the calculation is relatively
+	 * expensive.  We also cache an "assumed 0" answer so that we only
+	 * warn once per such survey rather than for every line with a compass
+	 * reading. */
+	pcs->declination = declination;
+    }
+    return declination;
+}
+
+static real
 handle_compass(real *p_var)
 {
    real compvar = VAR(Comp);
    real comp = VAL(Comp);
    real backcomp = VAL(BackComp);
-   real declination;
-   if (pcs->z[Q_DECLINATION] != HUGE_REAL) {
-      declination = -pcs->z[Q_DECLINATION];
-   } else if (pcs->declination != HUGE_REAL) {
-      /* Cached value calculated for a previous compass reading taken on the
-       * same date (by the 'else' just below).
-       */
-      declination = pcs->declination;
-   } else {
-      if (!pcs->meta || pcs->meta->days1 == -1) {
-	  compile_diagnostic(DIAG_WARN, /*No survey date specified - using 0 for magnetic declination*/304);
-	  declination = 0;
-      } else {
-	  int avg_days = (pcs->meta->days1 + pcs->meta->days2) / 2;
-	  double dat = julian_date_from_days_since_1900(avg_days);
-	  /* thgeomag() takes (lat, lon, h, dat) - i.e. (y, x, z, date). */
-	  declination = thgeomag(pcs->dec_lat, pcs->dec_lon, pcs->dec_alt, dat);
-	  if (declination < pcs->min_declination) {
-	      pcs->min_declination = declination;
-	      pcs->min_declination_days = avg_days;
-	  }
-	  if (declination > pcs->max_declination) {
-	      pcs->max_declination = declination;
-	      pcs->max_declination_days = avg_days;
-	  }
-      }
-      if (pcs->convergence == HUGE_REAL) {
-	  /* Compute the convergence lazily.  It only depends on the output
-	   * coordinate system so we can cache it for reuse to apply to
-	   * a declination value for a different date.
-	   */
-	  pcs->convergence = compute_convergence(pcs->dec_lon, pcs->dec_lat);
-      }
-      declination -= pcs->convergence;
-      /* We cache the calculated declination as the calculation is relatively
-       * expensive.  We also cache an "assumed 0" answer so that we only
-       * warn once per such survey rather than for every line with a compass
-       * reading. */
-      pcs->declination = declination;
-   }
+   real declination = get_declination();
    if (comp != HUGE_REAL) {
       comp = (comp - pcs->z[Q_BEARING]) * pcs->sc[Q_BEARING];
       comp += declination;
@@ -4036,9 +4075,47 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    real dy = (VAL(Dy) * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    real dz = (VAL(Dz) * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   addlegbyname(fr, to, fToFirst, dx, dy, dz, VAR(Dx), VAR(Dy), VAR(Dz)
+   real rotation = pcs->cartesian_rotation;
+   switch (pcs->cartesian_north) {
+     case GRID_NORTH:
+       if (!proj_str_out && !pcs->proj_str) {
+	   // The default unspecified coordinate system has no grid
+	   // convergence.
+	   break;
+       }
+       rotation += get_input_convergence();
+       rotation -= get_convergence();
+       break;
+     case TRUE_NORTH:
+       if (!proj_str_out && !pcs->proj_str) {
+	   // True north is grid north in the default unspecified coordinate
+	   // system.
+	   break;
+       }
+       rotation -= get_convergence();
+       break;
+     case MAGNETIC_NORTH:
+       rotation += get_declination();
+       break;
+   }
+
+   // Apply rotation.
+   real sinB = sin(rotation);
+   real cosB = cos(rotation);
+   {
+       real new_dx = dx * cosB + dy * sinB;
+       dy = dy * cosB - dx * sinB;
+       dx = new_dx;
+   }
+   real vx = VAR(Dx) * cosB * cosB + VAR(Dy) * sinB * sinB;
+   real vy = VAR(Dy) * cosB * cosB - VAR(Dx) * sinB * sinB;
+   real vz = VAR(Dz);
 #ifndef NO_COVARIANCES
-		, 0, 0, 0
+   real cxy = (VAR(Dx) + VAR(Dy)) * sinB * cosB;
+#endif
+   addlegbyname(fr, to, fToFirst, dx, dy, dz, vx, vy, vz
+#ifndef NO_COVARIANCES
+		, cxy, 0, 0
 #endif
 		);
    return 1;

@@ -81,11 +81,6 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
 - The ``INCH=`` option currently gives an "Unknown command" warning
   (unless the argument is zero), and is skipped.
 
-- The ``RECT=`` option currently gives an "Unknown command" warning, and
-  is skipped (this option specifies how much to orient cartesian
-  style data relative to true North, not to be confused with the
-  unrelated ``RECT`` option without a value which is supported).
-
 - Walls documents allowing a "maximum of eight characters" in
   unprefixed names - we don't bother trying to enforce this
   restriction, but this should not make a difference in valid data.

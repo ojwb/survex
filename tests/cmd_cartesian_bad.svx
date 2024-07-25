@@ -1,0 +1,6 @@
+; pos=fail warn=0 error=4
+*fix 1 reference 0 0 0
+*cartesian fridge
+*cartesian fridge 1.0 degrees
+*cartesian magnetic 0
+*cartesian true degrees

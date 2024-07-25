@@ -436,10 +436,13 @@ msgstr "La projection est définie en sortie mais manque en entrée"
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "Les coordonnées ne peut être omises quand le système de coordonnées est spécifié"
 
+#. TRANSLATORS: %s is replaced by the command that requires it, e.g.
+#. *DECLINATION AUTO
 #: ../src/commands.c:1976
 #: n:301
-msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
-msgstr "Le système de coordonnées en entrée doit être spécifié pour « *DECLINATION AUTO »"
+#, c-format
+msgid "Input coordinate system must be specified for “%s”"
+msgstr "Le système de coordonnées en entrée doit être spécifié pour « %s »"
 
 #: ../src/datain.c:2461
 #: ../src/datain.c:3376

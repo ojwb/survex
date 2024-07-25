@@ -70,3 +70,7 @@ U9  U10 1.00 -- 100g
 U10 U11 1.00 -- 1600m
 #units $emptymacro;followed by a comment
 U11 EMPTY: 1.00 -- 90
+#units order=ENU rect
+U0 U12a 30 40 50
+#units rect=90
+U0 U12b -40 30 50

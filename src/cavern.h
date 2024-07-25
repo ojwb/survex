@@ -375,6 +375,12 @@ typedef struct Settings {
    char* dec_context;
    /* Grid convergence in radians. */
    real convergence;
+   /* Input grid convergence in radians. */
+   real input_convergence;
+   /* Rotation from North for `*data cartesian`. */
+   real cartesian_rotation;
+   /* Which North to use for `*data cartesian`. */
+   enum { TRUE_NORTH, GRID_NORTH, MAGNETIC_NORTH } cartesian_north;
    meta_data * meta;
 } settings;
 

@@ -222,6 +222,61 @@ Description
 See Also
    ``*end``, ``*prefix``
 
+CARTESIAN
+---------
+
+Syntax
+   ``*cartesian grid``
+
+   ``*cartesian magnetic``
+
+   ``*cartesian true``
+
+   ``*cartesian grid <rotation> <units>``
+
+   ``*cartesian magnetic <rotation> <units>``
+
+   ``*cartesian true <rotation> <units>``
+
+Example
+   ::
+
+       *cartesian magnetic
+
+   ::
+
+       *cartesian true 90 degrees
+
+Description
+   ``*cartesian`` specifies which North cartesian data is aligned to, and can
+   optionally specify an extra rotation to apply.  The default is that it's
+   aligned with True North.
+
+   Notes on the different North options:
+
+   ``GRID``
+      North in the current input coordinate system (as set by e.g.  ``*cs
+      UTM30``).  If no input or output coordinate system is set then this is
+      the same as ``TRUE`` since in Survex's default unspecified coordinate
+      system True North is the same as Grid North.
+   ``MAGNETIC``
+      Magnetic North.  If using automatically calculated declinations then
+      this will be calculated at the ``*date`` in effect for each cartesian
+      data reading.
+   ``TRUE``
+      True North.  If no input or output coordinate system is set then
+      this is the same as ``GRID`` since in Survex's default unspecified
+      coordinate system True North is the same as Grid North.
+
+   ``*cartesian`` was added in Survex 1.4.10.  Prior to this cartesian data was
+   documented as aligned with True North, but if an output coordinate system
+   was specified it was actually aligned with this (which was not intended and
+   doesn't really make sense since changing the output coordinate system would
+   rotate cartesian data by the difference in grid convergence).
+
+See Also
+   ``*cs``, ``*data cartesian``, ``*date``, ``*declination``
+
 CALIBRATE
 ---------
 
@@ -690,7 +745,9 @@ Description
 
          .. note:: Cartesian data are relative to **true** North not
             **magnetic** North (i.e. they are unaffected by ``*declination``
-            and ``*calibrate declination``).
+            and ``*calibrate declination``).  In Survex < 1.4.10, if ``*cs``
+            was used then cartesian data were incorrectly interpreted as
+            relative to grid North in the output coordinate system
 
       CYLPOLAR
          A ``CYLPOLAR`` style survey is very similar to a diving survey, except
@@ -958,8 +1015,7 @@ Syntax
    ``*end``
 
 Validity
-   valid for closing a block started by ``*begin`` in the same
-   file.
+   valid for closing a block started by ``*begin`` in the same file.
 
 Description
    Closes a block started by ``*begin``.

@@ -436,10 +436,13 @@ msgstr "Ustalono wyjściowy układ współrzędnych, ale brak instrukcji co do w
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "Nie można pominąć współrzędnych jeśli wskazano układ współrzędnych"
 
+#. TRANSLATORS: %s is replaced by the command that requires it, e.g.
+#. *DECLINATION AUTO
 #: ../src/commands.c:1976
 #: n:301
-msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
-msgstr "Należy wskazać wejściowy układ współrzędnych dla “*DECLINATION AUTO”"
+#, c-format
+msgid "Input coordinate system must be specified for “%s”"
+msgstr "Należy wskazać wejściowy układ współrzędnych dla “%s”"
 
 #: ../src/datain.c:2461
 #: ../src/datain.c:3376

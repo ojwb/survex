@@ -184,6 +184,7 @@ main(int argc, char **argv)
    pcs->proj_str = NULL;
    pcs->declination = HUGE_REAL;
    pcs->convergence = HUGE_REAL;
+   pcs->input_convergence = HUGE_REAL;
    pcs->dec_filename = NULL;
    pcs->dec_line = 0;
    pcs->dec_context = NULL;
@@ -192,6 +193,8 @@ main(int argc, char **argv)
    pcs->dec_alt = HUGE_VAL;
    pcs->min_declination = HUGE_VAL;
    pcs->max_declination = -HUGE_VAL;
+   pcs->cartesian_north = TRUE_NORTH;
+   pcs->cartesian_rotation = 0.0;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);
