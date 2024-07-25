@@ -79,7 +79,7 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   will automatically correct for grid convergence.
 
 - The ``INCH=`` option currently gives an "Unknown command" warning
-  (unless the argument is zero), and is skipped.
+  (unless the argument is zero, since Survex 1.4.10), and is skipped.
 
 - Walls documents allowing a "maximum of eight characters" in
   unprefixed names - we don't bother trying to enforce this
