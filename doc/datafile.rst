@@ -157,7 +157,9 @@ ALIAS
 -----
 
 Syntax
-   ``*alias station <alias> [<target>]``
+   ``*alias station <alias> <target>``
+
+   ``*alias station <alias>``
 
 Example
    ::
@@ -189,7 +191,9 @@ BEGIN
 -----
 
 Syntax
-   ``*begin [<survey>]``
+   ``*begin <survey>``
+
+   ``*begin``
 
 Example
    ::
@@ -218,13 +222,72 @@ Description
 See Also
    ``*end``, ``*prefix``
 
+CARTESIAN
+---------
+
+Syntax
+   ``*cartesian grid``
+
+   ``*cartesian magnetic``
+
+   ``*cartesian true``
+
+   ``*cartesian grid <rotation> <units>``
+
+   ``*cartesian magnetic <rotation> <units>``
+
+   ``*cartesian true <rotation> <units>``
+
+Example
+   ::
+
+       *cartesian magnetic
+
+   ::
+
+       *cartesian true 90 degrees
+
+Description
+   ``*cartesian`` specifies which North cartesian data is aligned to, and can
+   optionally specify an extra rotation to apply.  The default is that it's
+   aligned with True North.
+
+   Notes on the different North options:
+
+   ``GRID``
+      North in the current input coordinate system (as set by e.g.  ``*cs
+      UTM30``).  If no input or output coordinate system is set then this is
+      the same as ``TRUE`` since in Survex's default unspecified coordinate
+      system True North is the same as Grid North.
+   ``MAGNETIC``
+      Magnetic North.  If using automatically calculated declinations then
+      this will be calculated at the ``*date`` in effect for each cartesian
+      data reading.
+   ``TRUE``
+      True North.  If no input or output coordinate system is set then
+      this is the same as ``GRID`` since in Survex's default unspecified
+      coordinate system True North is the same as Grid North.
+
+   ``*cartesian`` was added in Survex 1.4.10.  Prior to this cartesian data was
+   documented as aligned with True North, but if an output coordinate system
+   was specified it was actually aligned with this (which was not intended and
+   doesn't really make sense since changing the output coordinate system would
+   rotate cartesian data by the difference in grid convergence).
+
+See Also
+   ``*cs``, ``*data cartesian``, ``*date``, ``*declination``
+
 CALIBRATE
 ---------
 
 Syntax
-   ``*calibrate <quantity list> <zero error> [<scale>]``
+   ``*calibrate <quantity list> <zero error>``
 
-   ``*calibrate <quantity list> <zero error> <units> [<scale>]``
+   ``*calibrate <quantity list> <zero error> <scale>``
+
+   ``*calibrate <quantity list> <zero error> <units>``
+
+   ``*calibrate <quantity list> <zero error> <units> <scale>``
 
    ``*calibrate default``
 
@@ -315,7 +378,11 @@ CASE
 ----
 
 Syntax
-   ``*case preserve|toupper|tolower``
+   ``*case preserve``
+
+   ``*case toupper``
+
+   ``*case tolower``
 
 Example
    ::
@@ -367,7 +434,9 @@ CS
 --
 
 Syntax
-   ``*cs [out] <coordinate system>``
+   ``*cs <coordinate system>``
+
+   ``*cs out <coordinate system>``
 
 Example
    ::
@@ -676,7 +745,9 @@ Description
 
          .. note:: Cartesian data are relative to **true** North not
             **magnetic** North (i.e. they are unaffected by ``*declination``
-            and ``*calibrate declination``).
+            and ``*calibrate declination``).  In Survex < 1.4.10, if ``*cs``
+            was used then cartesian data were incorrectly interpreted as
+            relative to grid North in the output coordinate system
 
       CYLPOLAR
          A ``CYLPOLAR`` style survey is very similar to a diving survey, except
@@ -778,7 +849,9 @@ DATE
 ----
 
 Syntax
-   ``*date <year>[.<month>[.<day>]][-<year>[.<month>[.<day>]]]``
+   ``*date <date>``
+
+   ``*date <date1>-<date2>``
 
 Example
    ::
@@ -804,8 +877,12 @@ Description
    ``*date`` specifies the date that the survey was done.  A range of dates can
    be specified (useful for overnight or multi-day surveying trips).
 
-   Dates with just a year are treated as being in the middle of that year.  Dates
-   with a month and year are treated as being in the middle of that month.
+   Dates must be in the order year then month then day, the day or month and day
+   can be omitted.  The separator between components must be ``.``.
+
+   Dates with just a year (e.g. ``2001``) are treated as being in the middle of
+   that year.  Dates with a month and year (e.g. ``2000.10``) are treated as
+   being in the middle of that month.
 
 See Also
    ``*begin``, ``*instrument``, ``*team``
@@ -915,11 +992,13 @@ DEFAULT
 -------
 
 Syntax
-   ``*default <settings list>|all``
+   ``*default calibrate``
+
+   ``*default data``
+
+   ``*default units``
 
 Description
-   The valid settings are ``CALIBRATE``, ``DATA``, and ``UNITS``.
-
    ``*default`` restores defaults for given settings.  This command is
    deprecated - you should instead use: ``*calibrate default``, ``*data
    default``, ``*units default``.
@@ -931,11 +1010,12 @@ END
 ---
 
 Syntax
-   ``*end [<survey>]``
+   ``*end <survey>``
+
+   ``*end``
 
 Validity
-   valid for closing a block started by ``*begin`` in the same
-   file.
+   valid for closing a block started by ``*begin`` in the same file.
 
 Description
    Closes a block started by ``*begin``.
@@ -1003,7 +1083,17 @@ FIX
 ---
 
 Syntax
-   ``*fix <station> [reference] [ <x> <y> <z> [ <x std err> <y std err> <z std err> [ <cov(x,y)> <cov(y,z)> <cov(z,x)> ] ] ]``
+   ``*fix <station> [reference] <x> <y> <z>``
+
+   ``*fix <station> [reference] <x> <y> <z> <std err>``
+
+   ``*fix <station> [reference] <x> <y> <z> <horizontal std err> <vertical std err>``
+
+   ``*fix <station> [reference] <x> <y> <z> <x std err> <y std err> <z std err>``
+
+   ``*fix <station> [reference] <x> <y> <z> <x std err> <y std err> <z std err> <cov(x,y)> <cov(y,z)> <cov(z,x)>``
+
+   ``*fix <station>``
 
 Example
    ::
@@ -1017,10 +1107,15 @@ Example
 Description
    ``*fix`` fixes the position of <station> at the given coordinates.  If you
    haven't specified the coordinate system with ``*cs``, you can omit the
-   position and it will default to (0,0,0).  The standard errors default to
-   zero (fix station exactly).  cavern will give an error if you attempt to fix
-   the same survey station twice at different coordinates, or a warning if you
-   fix it twice with matching coordinates.
+   position and it will default to (0,0,0) which provides an easy way to
+   specify a point to arbitrarily fix rather than rely on ``cavern1` picking
+   one (which has the downsides of the choice potentially changing when more
+   survey data is added, and of triggering an "info" message).
+
+   The standard errors default to zero (fix station exactly).  ``cavern`` will
+   give an error if you attempt to fix the same survey station twice at
+   different coordinates, or a warning if you fix it twice with matching
+   coordinates.
 
    You can also specify just one standard error (in which case it is assumed
    equal in X, Y, and Z) or two (in which case the first is taken as the
@@ -1048,6 +1143,10 @@ Description
    specify ``reference`` after the station name in the ``*fix`` command to
    suppress this warning for a particular station.  It's OK to use
    ``reference`` on a station which is used.
+
+   Since Survex 1.4.10 it's an error to specify ``reference`` without
+   coordinates (e.g. ``*fix a reference``) as this usage doesn't really make
+   sense.
 
    .. note:: X is Easting, Y is Northing, and Z is altitude.  This convention
       was chosen since on a map, the horizontal (X) axis is usually East, and
@@ -1150,11 +1249,17 @@ INFER
 -----
 
 Syntax
-   ``*infer plumbs on|off``
+   ``*infer plumbs on``
 
-   ``*infer equates on|off``
+   ``*infer plumbs off``
 
-   ``*infer exports on|off``
+   ``*infer equates on``
+
+   ``*infer equates off``
+
+   ``*infer exports on``
+
+   ``*infer exports off``
 
 Description
    ``*infer plumbs on`` tells cavern to interpret gradients of ±90 degrees
@@ -1467,7 +1572,9 @@ TRUNCATE
 --------
 
 Syntax
-   ``*truncate <length>|off``
+   ``*truncate <length>``
+
+   ``*truncate off``
 
 Description
    Station names may be of any length in Survex, but some other (mostly older)

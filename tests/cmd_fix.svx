@@ -1,5 +1,5 @@
 ; pos=yes warn=3
-*fix A reference ; generates an info diagnostic
+*fix A ; generates an info diagnostic
 *fix B reference 0 0 0
 *fix C reference 0 0 0 1.0
 *fix D reference 0 0 0 1.0 2.0
@@ -12,3 +12,6 @@
 *fix W 0 0 0
 *fix W1 0 0 0
 *fix W2 0 0 0
+
+; Suppress warning that A is unused
+*entrance A

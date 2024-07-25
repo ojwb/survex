@@ -436,10 +436,13 @@ msgstr "Proyeksi keluaran diatur tetapi proyeksi masukan tidak"
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "Koordinat tidak dapat diabaikan saat sistem koordinat yang telah ditentukan"
 
+#. TRANSLATORS: %s is replaced by the command that requires it, e.g.
+#. *DECLINATION AUTO
 #: ../src/commands.c:1976
 #: n:301
-msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
-msgstr "Masukan sistem koordinat ada harus dicantumkan untuk “*DECLINATION AUTO”"
+#, c-format
+msgid "Input coordinate system must be specified for “%s”"
+msgstr "Masukan sistem koordinat ada harus dicantumkan untuk “%s”"
 
 #: ../src/datain.c:2461
 #: ../src/datain.c:3376

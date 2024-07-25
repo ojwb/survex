@@ -389,17 +389,18 @@ match_tok(const sztok *tab, int tab_size)
 }
 
 typedef enum {
-   CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
-   CMD_CS, CMD_DATA, CMD_DATE, CMD_DECLINATION, CMD_DEFAULT, CMD_END,
-   CMD_ENTRANCE, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE,
-   CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REF, CMD_REQUIRE, CMD_SD,
-   CMD_SET, CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
+   CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CARTESIAN, CMD_CASE,
+   CMD_COPYRIGHT, CMD_CS, CMD_DATA, CMD_DATE, CMD_DECLINATION, CMD_DEFAULT,
+   CMD_END, CMD_ENTRANCE, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS,
+   CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REF, CMD_REQUIRE,
+   CMD_SD, CMD_SET, CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
 static const sztok cmd_tab[] = {
      {"ALIAS",     CMD_ALIAS},
      {"BEGIN",     CMD_BEGIN},
      {"CALIBRATE", CMD_CALIBRATE},
+     {"CARTESIAN", CMD_CARTESIAN},
      {"CASE",      CMD_CASE},
      {"COPYRIGHT", CMD_COPYRIGHT},
      {"CS",        CMD_CS},
@@ -953,8 +954,9 @@ set_declination_location(real x, real y, real z, const char *proj_str)
     pcs->dec_context = grab_line();
     /* Invalidate cached declination. */
     pcs->declination = HUGE_REAL;
-    /* Invalidate cached grid convergence. */
+    /* Invalidate cached grid convergence values. */
     pcs->convergence = HUGE_REAL;
+    pcs->input_convergence = HUGE_REAL;
 }
 
 void
@@ -1085,14 +1087,16 @@ cmd_fix(void)
 
    get_pos(&fp);
    get_token();
-   if (S_EQ(&uctoken, "REFERENCE")) {
+   bool reference = S_EQ(&uctoken, "REFERENCE");
+   if (reference) {
       /* suppress "unused fixed point" warnings for this station */
       fix_name->sflags |= BIT(SFLAGS_USED);
    } else {
       if (!s_empty(&uctoken)) set_pos(&fp);
    }
 
-   coord.v[0] = read_numeric(true);
+   // If `REFERENCE` is specified the coordinates can't be omitted.
+   coord.v[0] = read_numeric(!reference);
    if (coord.v[0] == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */
@@ -1946,6 +1950,39 @@ cmd_calibrate(void)
    }
 }
 
+static const sztok north_tab[] = {
+     { "GRID",		GRID_NORTH },
+     { "MAGNETIC",	MAGNETIC_NORTH },
+     { "TRUE",		TRUE_NORTH },
+     { NULL,		-1 }
+};
+
+static void
+cmd_cartesian(void)
+{
+    get_token();
+    int north = match_tok(north_tab, TABSIZE(north_tab));
+    if (north < 0) {
+	compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			   /*Expecting “%s”, “%s”, or “%s”*/188,
+			   "GRID", "MAGNETIC", "TRUE");
+	return;
+    }
+    pcs->cartesian_north = north;
+    pcs->cartesian_rotation = 0.0;
+
+    skipblanks();
+    if (!isEol(ch) && !isComm(ch)) {
+	real rotation = read_numeric(false);
+	// Accept the same units as *declination does.
+	int units = get_units(BIT(Q_DECLINATION), false);
+	if (units == UNITS_NULL) {
+	    return;
+	}
+	pcs->cartesian_rotation = rotation * factor_tab[units];
+    }
+}
+
 static void
 cmd_declination(void)
 {
@@ -1967,7 +2004,10 @@ cmd_declination(void)
 	    filepos fp;
 	    get_pos(&fp);
 	    set_pos(&fp_auto);
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
+	    // TRANSLATORS: %s is replaced by the command that requires it, e.g.
+	    // *DECLINATION AUTO
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Input coordinate system must be specified for “%s”*/301,
+			       "*DECLINATION AUTO");
 	    set_pos(&fp);
 	    return;
 	}
@@ -2011,6 +2051,8 @@ cmd_default(void)
     case CMD_DATA:
       default_style(pcs);
       default_grade(pcs);
+      pcs->cartesian_north = TRUE_NORTH;
+      pcs->cartesian_rotation = 0.0;
       break;
     case CMD_UNITS:
       default_units(pcs);
@@ -2451,6 +2493,7 @@ cmd_cs(void)
       if (!p->next || p->proj_str != p->next->proj_str)
 	 osfree(p->proj_str);
       p->proj_str = proj_str;
+      p->input_convergence = HUGE_REAL;
       invalidate_pj_cached();
    }
 }
@@ -2651,6 +2694,7 @@ static const cmd_fn cmd_funcs[] = {
    cmd_alias,
    cmd_begin,
    cmd_calibrate,
+   cmd_cartesian,
    cmd_case,
    skipline, /*cmd_copyright,*/
    cmd_cs,
@@ -2709,6 +2753,7 @@ handle_command(void)
       break;
     case CMD_ALIAS:
     case CMD_CALIBRATE:
+    case CMD_CARTESIAN:
     case CMD_CASE:
     case CMD_COPYRIGHT:
     case CMD_CS:

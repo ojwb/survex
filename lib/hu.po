@@ -439,9 +439,12 @@ msgstr "A kimeneti projekció beállítva, de a bemeneti NEM!"
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "A koordináták nem elhagyhatók, ha a koordináta rendszer meghatározott"
 
+#. TRANSLATORS: %s is replaced by the command that requires it, e.g.
+#. *DECLINATION AUTO
 #: ../src/commands.c:1976
 #: n:301
-msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
+#, c-format
+msgid "Input coordinate system must be specified for “%s”"
 msgstr ""
 
 #: ../src/datain.c:2461

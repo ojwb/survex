@@ -436,10 +436,13 @@ msgstr "设置了输出投影，但未设置输入投影"
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "指定坐标系后，坐标不能省略"
 
+#. TRANSLATORS: %s is replaced by the command that requires it, e.g.
+#. *DECLINATION AUTO
 #: ../src/commands.c:1976
 #: n:301
-msgid "Input coordinate system must be specified for “*DECLINATION AUTO”"
-msgstr "必须为“*DECLINATION AUTO”指定输入坐标系"
+#, c-format
+msgid "Input coordinate system must be specified for “%s”"
+msgstr "必须为“%s”指定输入坐标系"
 
 #: ../src/datain.c:2461
 #: ../src/datain.c:3376
