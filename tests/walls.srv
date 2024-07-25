@@ -59,13 +59,13 @@ U3   --      7.8     098.7
 #units uvh=4gradeb inch=1
 #units typeab=n,4Q),X inch=1
 #units typevb=c,1.2Q inch=1
-; Test undocumented omission of clino
+; Test omission of clino on splays
 #units order=adv
-U5  U7  123 1.00
+U5  -  123 1.00
 #units order=dav
-U7  U8  1.00 123
+U5  --  1.00 123
 ; Test explicit clino units (on plumb to check equivalent to 90°).
-U8  U9  1.00 -- 90d
+U5  U9  1.00 -- 90d
 U9  U10 1.00 -- 100g
 U10 U11 1.00 -- 1600m
 #units $emptymacro;followed by a comment

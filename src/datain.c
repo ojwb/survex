@@ -4657,8 +4657,11 @@ inches_only:
 	      real clin = read_number(true, false);
 	      if (clin == HUGE_REAL) {
 		  if (ch != '-') {
-		      // Undocumented, but the clino can be omitted with order=dav or order=adv.
-		      if (p_walls_options->data_order_ct[4] != WallsSRVClino) {
+		      if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END) &&
+			  p_walls_options->data_order_ct[4] == WallsSRVClino) {
+			  // The clino can be completely omitted with order=dav
+			  // or order=adv on a leg to/from an anonymous station.
+		      } else {
 			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 			  skipline();
 			  process_eol();

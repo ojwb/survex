@@ -123,7 +123,8 @@ WPJ file - you can use ``*include somedata.srv`` to include a Walls
   Survex 1.4.10.
 
 - Walls allows the clino reading to be completely omitted with ``ORDER=DAV``
-  and ``ORDER=ADV`` (this seems to be undocumented).  Since Survex 1.4.10.
+  and ``ORDER=ADV`` on a "wall shot" (leg to or from an anonymous station).
+  Supported since Survex 1.4.10.
 
 - If a station is used with an explicit Walls prefix (e.g. ``PEP:A123``)
   then it will will be flagged as "exported" in the ``.3d`` file.  This
