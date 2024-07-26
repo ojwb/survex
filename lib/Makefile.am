@@ -60,7 +60,7 @@ generate-todo:
 	cd '$(srcdir)' && ./generate-po-todo $(po_files)
 
 launchpad-upload.tar.bz2: survex.pot $(po_files)
-	cd '$(srcdir)' && tar --transform='s/.*\.po$$/survex-&/' -jcf $@ $^
+	cd '$(srcdir)' && tar --transform='s!^!survex/!' -jcf $@ $^
 	@echo 'Upload $@ to'
 	@echo 'https://translations.launchpad.net/survex/trunk/+translations-upload'
 
