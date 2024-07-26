@@ -1930,6 +1930,16 @@ msgstr ""
 msgid "[SURVEY_FILE]"
 msgstr ""
 
+#. TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+#. - it should be translated to the terminology that cavers using the
+#. language would use.
+#.
+#. Part of cavern --help
+#: ../src/cavern.c:219
+#: n:507
+msgid "[SURVEY_DATA_FILE]"
+msgstr ""
+
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.  Try to keep this fairly short.
 #: ../src/gfxcore.cc:1220

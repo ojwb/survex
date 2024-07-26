@@ -219,7 +219,12 @@ main(int argc, char **argv)
       pfxHi[d] = pfxLo[d] = NULL;
    }
 
-   cmdline_set_syntax_message(/*[SURVEY_DATA_FILE]*/269, 0, NULL);
+   // TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+   // - it should be translated to the terminology that cavers using the
+   // language would use.
+   //
+   // Part of cavern --help
+   cmdline_set_syntax_message(/*[SURVEY_DATA_FILE]*/507, 0, NULL);
    /* at least one argument must be given */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
