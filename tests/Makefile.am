@@ -112,6 +112,7 @@ fixfeet.mak fixfeet.pos\
 folder.mak subdir/cave1a.dat subdir/cave1b.dat subdir/subsubdir/cave2.dat\
 utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
+wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
 badopts.srv badopts.out\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
 nosurveyhanging.svx nosurveyhanging.out\

@@ -91,6 +91,7 @@ esac
  clptest.dat clptest.clp\
  walls.srv\
  badopts.srv\
+ wallsdecl.wpj\
  surfequate passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
@@ -184,6 +185,11 @@ for file in $TESTS ; do
       # These testcase files don't exist (or for ONELEG exist with a different
       # case).  They all have the same settings.
       pos=fail
+      ;;
+    *.wpj)
+      # .wpj files can't start with a comment.
+      pos=dump
+      warn=0
       ;;
     *)
       survexportopts=

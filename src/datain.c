@@ -2321,6 +2321,17 @@ next_line:
 	    copy_on_write_meta(pcs);
 	    int days = days_since_1900(year, month, day);
 	    pcs->meta->days1 = pcs->meta->days2 = days;
+	    // [If there's a .REF] "A #Date directive then becomes equivalent
+	    // to a #Units directive with the single argument DECL=x, where x
+	    // is the declination derived from a model of the Earth's magnetic
+	    // field. The use of this option, however, will not deactivate all
+	    // DECL specifications that might actually appear on #Units
+	    // directive lines. The two methods of specifying declination will
+	    // simply override each other depending on the ordering of
+	    // directives in your files."
+	    if (walls_ref.img_datum_code >= 0) {
+		pcs->z[Q_DECLINATION] = HUGE_REAL;
+	    }
 	    skipblanks();
 	    if (!isEol(ch) && !isComm(ch)) {
 		// Walls seems to ignore anything after the date so make this a
