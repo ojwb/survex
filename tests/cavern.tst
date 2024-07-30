@@ -99,7 +99,7 @@ esac
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  quadrant_bearing bad_quadrant_bearing\
  samename\
- gpxexport jsonexport kmlexport pltexport svgexport\
+ 3dexport gpxexport jsonexport kmlexport pltexport svgexport\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
@@ -162,6 +162,7 @@ for file in $TESTS ; do
   # yes : diffpos 3D file output with <testcase_name>.pos
   # no : Check that a 3D file is produced, but not positions in it
   # fail : Check that a 3D file is NOT produced
+  # 3d : Convert to 3D with survexport, compare dump3d to <testcase_name>.dump
   # dxf : Convert to DXF with survexport and compare with <testcase_name>.dxf
   # gpx : Convert to GPX with survexport and compare with <testcase_name>.gpx
   # json : Convert to JSON with survexport and compare with <testcase_name>.json
@@ -329,6 +330,33 @@ for file in $TESTS ; do
 	mv tmp.tmp "$tmpfile"
 	;;
     esac
+
+    if test -n "$VERBOSE" ; then
+      $DIFF "$expectedfile" "$tmpfile" || exit 1
+    else
+      $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
+    fi
+    ;;
+  3d)
+    expectedfile=$basefile.dump
+    tmpfile=tmp.dump
+    if test -n "$VERBOSE" ; then
+      SOURCE_DATE_EPOCH=1 $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile.3d"
+      exitcode=$?
+    else
+      SOURCE_DATE_EPOCH=1 $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile.3d" > /dev/null
+      exitcode=$?
+    fi
+    $DUMP3D --show-dates --legs "$tmpfile.3d" > "$tmpfile"
+    if [ -n "$VALGRIND" ] ; then
+      if [ $exitcode = "$vg_error" ] ; then
+	cat "$vg_log"
+	rm "$vg_log"
+	exit 1
+      fi
+      rm "$vg_log"
+    fi
+    [ "$exitcode" = 0 ] || exit 1
 
     if test -n "$VERBOSE" ; then
       $DIFF "$expectedfile" "$tmpfile" || exit 1

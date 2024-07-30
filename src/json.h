@@ -1,8 +1,8 @@
-/* js.h
+/* json.h
  * Export from Aven as JSON.
  */
 
-/* Copyright (C) 2015,2016 Olly Betts
+/* Copyright (C) 2015,2016,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,6 @@ class JSON : public ExportFilter {
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
-    void label(const img_point *, const wxString&, bool, int) override;
+    void label(const img_point *, const wxString&, int, int) override;
     void footer() override;
 };

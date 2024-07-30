@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2005,2012,2013,2014,2015,2016 Olly Betts
+/* Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class ExportFilter {
     virtual void start_pass(int);
     virtual void line(const img_point *, const img_point *, unsigned, bool);
     virtual void label(const img_point* p, const wxString& s,
-		       bool fSurface, int type) = 0;
+		       int sflags, int type) = 0;
     virtual void cross(const img_point *, const wxString&, int sflags);
     virtual void xsect(const img_point *, double, double, double);
     virtual void wall(const img_point *, double, double);

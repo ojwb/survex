@@ -2,7 +2,7 @@
  * Export from Aven as Survex .3d.
  */
 
-/* Copyright (C) 2005,2013,2014,2015,2018,2022 Olly Betts
+/* Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,6 @@ class Export3D : public ExportFilter {
 		double, double, double,
 		double, double, double) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
-    void label(const img_point *, const wxString&, bool, int) override;
+    void label(const img_point *, const wxString&, int, int) override;
     void footer() override;
 };

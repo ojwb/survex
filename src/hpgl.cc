@@ -1,7 +1,7 @@
 /* hpgl.cc
  * Export from Aven as HPGL.
  */
-/* Copyright (C) 1993-2003,2005,2010,2014,2015,2016,2019 Olly Betts
+/* Copyright (C) 1993-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ HPGL::cross(const img_point *p, const wxString&, int)
 #undef CS2
 
 void
-HPGL::label(const img_point *p, const wxString& str, bool /*fSurface*/, int)
+HPGL::label(const img_point *p, const wxString& str, int /*sflags*/, int)
 {
     const char* s = str.utf8_str();
     /* LB is a text label, terminated with a ^C */

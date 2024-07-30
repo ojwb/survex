@@ -1,7 +1,7 @@
 /* pos.cc
  * Export from Aven as Survex .pos or .csv.
  */
-/* Copyright (C) 2001,2002,2011,2013,2014,2015,2018 Olly Betts
+/* Copyright (C) 2001-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@ void POS::header(const char *, const char *, time_t,
 }
 
 void
-POS::label(const img_point *p, const wxString& str, bool /*fSurface*/, int /*type*/)
+POS::label(const img_point *p, const wxString& str, int /*sflags*/, int /*type*/)
 {
     const char* s = str.utf8_str();
     size_t len = strlen(s);

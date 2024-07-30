@@ -1,7 +1,7 @@
 /* json.cc
  * Export from Aven as JSON.
  */
-/* Copyright (C) 2015,2016,2022 Olly Betts
+/* Copyright (C) 2015,2016,2022,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ JSON::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPe
 }
 
 void
-JSON::label(const img_point *p, const wxString&, bool /*fSurface*/, int type)
+JSON::label(const img_point *p, const wxString&, int /*sflags*/, int type)
 {
     (void)p;
     (void)type;
