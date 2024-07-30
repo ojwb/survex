@@ -52,14 +52,7 @@ void Export3D::header(const char* title, const char *, time_t,
 void
 Export3D::line(const img_point* p1, const img_point* p, unsigned flags, bool fPendingMove)
 {
-    // FIXME: flags here aren't quite right.
-    int img_flags = 0;
-    if (flags & SURF) {
-	img_flags |= img_FLAG_SURFACE;
-    }
-    if (flags & SPLAYS) {
-	img_flags |= img_FLAG_SPLAY;
-    }
+    int img_flags = (flags & MASK_);
     if (fPendingMove) {
 	img_write_item(pimg, img_MOVE, 0, NULL, p1->x, p1->y, p1->z);
     }
@@ -67,7 +60,7 @@ Export3D::line(const img_point* p1, const img_point* p, unsigned flags, bool fPe
 }
 
 void
-Export3D::label(const img_point* p, const wxString& str, int sflags, int type)
+Export3D::label(const img_point* p, const wxString& str, int sflags, int)
 {
     const char* s = str.utf8_str();
     img_write_item(pimg, img_LABEL, sflags, s, p->x, p->y, p->z);

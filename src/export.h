@@ -3,7 +3,7 @@
  * PLT.
  */
 
-/* Copyright (C) 2004,2005,2012,2014,2015,2018 Olly Betts
+/* Copyright (C) 2004-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #ifndef SURVEX_INCLUDED_EXPORT_H
 #define SURVEX_INCLUDED_EXPORT_H
 
+#include "img_hosted.h"
 #include "wx.h"
 
 class Model;
@@ -55,28 +56,32 @@ struct format_info {
 
 extern const format_info export_format_info[];
 
-#define LEGS		0x00000001
-#define SURF		0x00000002
-#define STNS		0x00000004
-#define LABELS		0x00000008
-#define XSECT		0x00000010
-#define WALL1		0x00000020
-#define WALL2		0x00000040
+// Align flag values with img_FLAG_*.
+#define SURF		img_FLAG_SURFACE
+// img_FLAG_DUPLICATE
+#define SPLAYS		img_FLAG_SPLAY
+#define MASK_ (img_FLAG_SURFACE|img_FLAG_DUPLICATE|img_FLAG_SPLAY)
+static_assert(MASK_ < 0x00000008);
+#define LEGS		0x00000008
+#define STNS		0x00000010
+#define LABELS		0x00000020
+#define XSECT		0x00000040
+#define WALL1		0x00000080
+#define WALL2		0x00000100
 #define WALLS (WALL1|WALL2)
-#define PASG		0x00000080
-#define ORIENTABLE	0x00000100
-#define CENTRED		0x00000200
-#define ENTS		0x00000400
-#define FIXES		0x00000800
-#define EXPORTS		0x00001000
-#define PROJ		0x00002000
-#define GRID		0x00004000
-#define TEXT_HEIGHT	0x00008000
-#define MARKER_SIZE	0x00010000
-#define SCALE		0x00020000
-#define FULL_COORDS	0x00040000
-#define SPLAYS		0x00080000
-#define CLAMP_TO_GROUND	0x00100000
+#define PASG		0x00000200
+#define ORIENTABLE	0x00000400
+#define CENTRED		0x00000800
+#define ENTS		0x00001000
+#define FIXES		0x00002000
+#define EXPORTS		0x00004000
+#define PROJ		0x00008000
+#define GRID		0x00010000
+#define TEXT_HEIGHT	0x00020000
+#define MARKER_SIZE	0x00040000
+#define SCALE		0x00080000
+#define FULL_COORDS	0x00100000
+#define CLAMP_TO_GROUND	0x00200000
 
 #define DEFAULT_GRID_SPACING 100 // metres
 #define DEFAULT_TEXT_HEIGHT 0.6
