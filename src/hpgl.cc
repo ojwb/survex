@@ -108,7 +108,7 @@ HPGL::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPe
 #define CS HPGL_CROSS_SIZE
 #define CS2 (2 * HPGL_CROSS_SIZE)
 void
-HPGL::cross(const img_point *p, const wxString&, bool /*fSurface*/)
+HPGL::cross(const img_point *p, const wxString&, int)
 {
     fprintf(fh, "PU%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
     /* SM plots a symbol at each point, but it isn't very convenient here   */

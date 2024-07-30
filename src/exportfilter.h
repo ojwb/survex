@@ -49,7 +49,7 @@ class ExportFilter {
     virtual void line(const img_point *, const img_point *, unsigned, bool);
     virtual void label(const img_point* p, const wxString& s,
 		       bool fSurface, int type) = 0;
-    virtual void cross(const img_point *, const wxString&, bool);
+    virtual void cross(const img_point *, const wxString&, int sflags);
     virtual void xsect(const img_point *, double, double, double);
     virtual void wall(const img_point *, double, double);
     virtual void passage(const img_point *, double, double, double);
@@ -71,7 +71,7 @@ inline void
 ExportFilter::line(const img_point *, const img_point *, unsigned, bool) { }
 
 inline void
-ExportFilter::cross(const img_point *, const wxString&, bool) { }
+ExportFilter::cross(const img_point *, const wxString&, int) { }
 
 inline void
 ExportFilter::xsect(const img_point *, double, double, double) { }

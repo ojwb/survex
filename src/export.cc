@@ -2,7 +2,7 @@
  * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
  */
 
-/* Copyright (C) 1994-2022 Olly Betts
+/* Copyright (C) 1994-2024 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -188,7 +188,7 @@ class DXF : public ExportFilter {
 		double max_x, double max_y, double max_z) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
     void label(const img_point *, const wxString&, bool, int) override;
-    void cross(const img_point *, const wxString&, bool) override;
+    void cross(const img_point *, const wxString&, int) override;
     void xsect(const img_point *, double, double, double) override;
     void wall(const img_point *, double, double) override;
     void passage(const img_point *, double, double, double) override;
@@ -382,11 +382,14 @@ DXF::label(const img_point *p, const wxString& str, bool fSurface, int)
 }
 
 void
-DXF::cross(const img_point *p, const wxString&, bool fSurface)
+DXF::cross(const img_point *p, const wxString&, int sflags)
 {
+   // Use !UNDERGROUND as the criterion - we want stations where a surface and
+   // underground survey meet to be in the underground layer.
+   bool surface = !(sflags & img_SFLAG_UNDERGROUND);
    /* write station marker to dxf file */
    fprintf(fh, "0\nPOINT\n");
-   fprintf(fh, fSurface ? "8\nSurfaceStations\n" : "8\nStations\n"); /* Layer */
+   fprintf(fh, surface ? "8\nSurfaceStations\n" : "8\nStations\n"); /* Layer */
    fprintf(fh, "10\n%6.2f\n", p->x);
    fprintf(fh, "20\n%6.2f\n", p->y);
    fprintf(fh, "30\n%6.2f\n", p->z);
@@ -479,7 +482,7 @@ class Skencil : public ExportFilter {
     void start_pass(int layer) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
     void label(const img_point *, const wxString&, bool, int) override;
-    void cross(const img_point *, const wxString&, bool) override;
+    void cross(const img_point *, const wxString&, int) override;
     void footer() override;
 };
 
@@ -537,9 +540,9 @@ Skencil::label(const img_point *p, const wxString& str, bool fSurface, int)
 }
 
 void
-Skencil::cross(const img_point *p, const wxString&, bool fSurface)
+Skencil::cross(const img_point *p, const wxString&, int sflags)
 {
-   (void)fSurface; /* unused */
+   (void)sflags; /* unused */
    fprintf(fh, "b()\n");
    fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
 	   p->x * factor - marker_size, p->y * factor - marker_size, 0.0);
@@ -648,7 +651,7 @@ class SVG : public ExportFilter {
     void start_pass(int layer) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
     void label(const img_point *, const wxString&, bool, int) override;
-    void cross(const img_point *, const wxString&, bool) override;
+    void cross(const img_point *, const wxString&, int) override;
     void xsect(const img_point *, double, double, double) override;
     void wall(const img_point *, double, double) override;
     void passage(const img_point *, double, double, double) override;
@@ -752,10 +755,10 @@ SVG::label(const img_point *p, const wxString& str, bool fSurface, int)
 }
 
 void
-SVG::cross(const img_point *p, const wxString& str, bool fSurface)
+SVG::cross(const img_point *p, const wxString& str, int sflags)
 {
    const char* s = str.utf8_str();
-   (void)fSurface; /* unused */
+   (void)sflags; /* unused */
    fprintf(fh, "<circle id=\"%s\" cx=\"%.3f\" cy=\"%.3f\" r=\"%.3f\"/>\n",
 	   s, p->x * factor, p->y * -factor, marker_size * SQRT_2);
    fprintf(fh, "<path d=\"M%.3f %.3fL%.3f %.3fM%.3f %.3fL%.3f %.3f\"/>\n",
@@ -971,7 +974,7 @@ class EPS : public ExportFilter {
     void start_pass(int layer) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
     void label(const img_point *, const wxString&, bool, int) override;
-    void cross(const img_point *, const wxString&, bool) override;
+    void cross(const img_point *, const wxString&, int) override;
     void xsect(const img_point *, double, double, double) override;
     void wall(const img_point *, double, double) override;
     void passage(const img_point *, double, double, double) override;
@@ -1268,9 +1271,9 @@ EPS::label(const img_point *p, const wxString& str, bool /*fSurface*/, int)
 }
 
 void
-EPS::cross(const img_point *p, const wxString&, bool fSurface)
+EPS::cross(const img_point *p, const wxString&, int sflags)
 {
-   (void)fSurface; /* unused */
+   (void)sflags; /* unused */
    fprintf(fh, "%.2f %.2f X\n", p->x, p->y);
 }
 
@@ -1609,6 +1612,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	      } else if (pass_mask & LABELS) {
 		  type = LABELS;
 	      }
+	      int sflags = (*pos)->get_flags();
 	      /* Use !UNDERGROUND as the criterion - we want stations where a
 	       * surface and underground survey meet to be in the underground
 	       * layer */
@@ -1617,7 +1621,7 @@ Export(const wxString &fnm_out, const wxString &title,
 		  filt->label(&p, (*pos)->GetText(), f_surface, type);
 	      }
 	      if (pass_mask & STNS) {
-		  filt->cross(&p, (*pos)->GetText(), f_surface);
+		  filt->cross(&p, (*pos)->GetText(), sflags);
 	      }
 	  }
       }

@@ -29,6 +29,6 @@ class HPGL : public ExportFilter {
 		double, double, double) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
     void label(const img_point *, const wxString&, bool, int) override;
-    void cross(const img_point *, const wxString&, bool) override;
+    void cross(const img_point *, const wxString&, int) override;
     void footer() override;
 };
