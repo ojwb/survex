@@ -25,11 +25,11 @@ class JSON : public ExportFilter {
     bool in_segment;
   public:
     JSON() : in_segment(false) { }
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void footer();
+		double max_x, double max_y, double max_z) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void footer() override;
 };

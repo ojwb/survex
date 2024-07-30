@@ -181,19 +181,19 @@ class DXF : public ExportFilter {
   public:
     explicit DXF(double text_height_)
 	: to_close(0), text_height(text_height_) { pending[0] = '\0'; }
-    const int * passes() const;
-    bool fopen(const wxString& fnm_out);
+    const int * passes() const override;
+    bool fopen(const wxString& fnm_out) override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void cross(const img_point *, const wxString&, bool);
-    void xsect(const img_point *, double, double, double);
-    void wall(const img_point *, double, double);
-    void passage(const img_point *, double, double, double);
-    void tube_end();
-    void footer();
+		double max_x, double max_y, double max_z) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void cross(const img_point *, const wxString&, bool) override;
+    void xsect(const img_point *, double, double, double) override;
+    void wall(const img_point *, double, double) override;
+    void passage(const img_point *, double, double, double) override;
+    void tube_end() override;
+    void footer() override;
 };
 
 const int *
@@ -472,15 +472,15 @@ class Skencil : public ExportFilter {
   public:
     explicit Skencil(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z);
-    void start_pass(int layer);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void cross(const img_point *, const wxString&, bool);
-    void footer();
+		double max_x, double max_y, double max_z) override;
+    void start_pass(int layer) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void cross(const img_point *, const wxString&, bool) override;
+    void footer() override;
 };
 
 const int *
@@ -641,19 +641,19 @@ class SVG : public ExportFilter {
 	  text_height(text_height_) {
 	pending[0] = '\0';
     }
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z);
-    void start_pass(int layer);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void cross(const img_point *, const wxString&, bool);
-    void xsect(const img_point *, double, double, double);
-    void wall(const img_point *, double, double);
-    void passage(const img_point *, double, double, double);
-    void tube_end();
-    void footer();
+		double max_x, double max_y, double max_z) override;
+    void start_pass(int layer) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void cross(const img_point *, const wxString&, bool) override;
+    void xsect(const img_point *, double, double, double) override;
+    void wall(const img_point *, double, double) override;
+    void passage(const img_point *, double, double, double) override;
+    void tube_end() override;
+    void footer() override;
 };
 
 const int *
@@ -841,13 +841,13 @@ class PLT : public ExportFilter {
 
   public:
     PLT() { }
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void footer();
+		double max_x, double max_y, double max_z) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void footer() override;
 };
 
 const int *
@@ -964,19 +964,19 @@ class EPS : public ExportFilter {
   public:
     explicit EPS(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z);
-    void start_pass(int layer);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void cross(const img_point *, const wxString&, bool);
-    void xsect(const img_point *, double, double, double);
-    void wall(const img_point *, double, double);
-    void passage(const img_point *, double, double, double);
-    void tube_end();
-    void footer();
+		double max_x, double max_y, double max_z) override;
+    void start_pass(int layer) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void cross(const img_point *, const wxString&, bool) override;
+    void xsect(const img_point *, double, double, double) override;
+    void wall(const img_point *, double, double) override;
+    void passage(const img_point *, double, double, double) override;
+    void tube_end() override;
+    void footer() override;
 };
 
 const int *

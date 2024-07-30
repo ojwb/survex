@@ -40,10 +40,10 @@ class POS : public ExportFilter {
   public:
     POS(char separator_, bool csv_) : separator(separator_), csv(csv_) { }
     ~POS();
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double, double, double,
-		double, double, double);
-    void label(const img_point *, const wxString&, bool, int);
-    void footer();
+		double, double, double) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void footer() override;
 };

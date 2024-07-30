@@ -36,16 +36,16 @@ class KML : public ExportFilter {
   public:
     KML(const char * input_datum, bool clamp_to_ground_);
     ~KML();
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double, double, double,
-		double, double, double);
-    void start_pass(int pass);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const wxString&, bool, int);
-    void xsect(const img_point *, double, double, double);
-    void wall(const img_point *, double, double);
-    void passage(const img_point *, double, double, double);
-    void tube_end();
-    void footer();
+		double, double, double) override;
+    void start_pass(int pass) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, bool, int) override;
+    void xsect(const img_point *, double, double, double) override;
+    void wall(const img_point *, double, double) override;
+    void passage(const img_point *, double, double, double) override;
+    void tube_end() override;
+    void footer() override;
 };
