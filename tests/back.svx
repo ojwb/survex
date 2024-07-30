@@ -22,5 +22,6 @@
 1 R 10 001.178 198.822 -1.178 -1.178
 
 *data cartesian from to dx dy dz
-; Work around variation in which station is picked for the maximum:
+; Work around variation in which stations are picked for min and max:
+1 min -1 -1 -1
 1 max 9 12 36
