@@ -11,5 +11,9 @@ bh 1 100 090 -5
 3  ..  90 180 -5
 *end
 2  5 100 090 -5
+*begin
 *flags splay
 5  6  90 180 -5
+*end
+*flags duplicate
+5  6a 89 180 -5
