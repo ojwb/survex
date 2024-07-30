@@ -52,14 +52,29 @@ class Point : public Vector3 {
 #define Point svx::Point
 #endif
 
-#define LFLAG_NOT_ANON		0x01
-#define LFLAG_NOT_WALL		0x02
-#define LFLAG_SURFACE		0x04
-#define LFLAG_UNDERGROUND	0x08
-#define LFLAG_EXPORTED		0x10
-#define LFLAG_FIXED		0x20
-#define LFLAG_ENTRANCE		0x40
-#define LFLAG_HIGHLIGHTED	0x80
+// Align LFLAG_* constants with img_SFLAG_* constants where they overlap so
+// that we can just copy those bits when loading a file.
+
+constexpr int LFLAG_SURFACE = img_SFLAG_SURFACE;
+constexpr int LFLAG_UNDERGROUND = img_SFLAG_UNDERGROUND;
+constexpr int LFLAG_ENTRANCE = img_SFLAG_ENTRANCE;
+constexpr int LFLAG_EXPORTED = img_SFLAG_EXPORTED;
+constexpr int LFLAG_FIXED = img_SFLAG_FIXED;
+constexpr int LFLAG_ANON = img_SFLAG_ANON;
+constexpr int LFLAG_WALL = img_SFLAG_WALL;
+
+constexpr int LFLAG_IMG_MASK =
+	LFLAG_SURFACE |
+	LFLAG_UNDERGROUND |
+	LFLAG_ENTRANCE |
+	LFLAG_EXPORTED |
+	LFLAG_FIXED |
+	LFLAG_ANON |
+	LFLAG_WALL;
+
+static_assert(LFLAG_IMG_MASK < 0x80);
+
+constexpr int LFLAG_HIGHLIGHTED	= 0x80;
 
 class LabelInfo : public Point {
     wxString text;
@@ -73,7 +88,7 @@ public:
     LabelInfo(const img_point &pt, const wxString &text_, int flags_)
 	: Point(pt), text(text_), flags(flags_) {
 	if (text.empty())
-	    flags &= ~LFLAG_NOT_ANON;
+	    flags |= LFLAG_ANON;
     }
     const wxString & GetText() const { return text; }
     wxString name_or_anon() const {
@@ -94,8 +109,8 @@ public:
     bool IsUnderground() const { return (flags & LFLAG_UNDERGROUND) != 0; }
     bool IsSurface() const { return (flags & LFLAG_SURFACE) != 0; }
     bool IsHighLighted() const { return (flags & LFLAG_HIGHLIGHTED) != 0; }
-    bool IsAnon() const { return (flags & LFLAG_NOT_ANON) == 0; }
-    bool IsWall() const { return (flags & LFLAG_NOT_WALL) == 0; }
+    bool IsAnon() const { return (flags & LFLAG_ANON) != 0; }
+    bool IsWall() const { return (flags & LFLAG_WALL) != 0; }
     // This should really also return true for non-anonymous splay ends, and not
     // return true for anonymous stations in other situations, but the .3d
     // format doesn't tell us this information currently, and it's not trivial

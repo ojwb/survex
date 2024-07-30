@@ -75,7 +75,6 @@ src/cavern
 src/diffpos
 src/dump3d
 src/extend
-src/img2aven.h
 src/imgtest
 src/sorterr
 src/survexport

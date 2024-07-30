@@ -34,17 +34,6 @@
 
 using namespace std;
 
-const static int img2aven_tab[] = {
-#include "img2aven.h"
-};
-
-inline int
-img2aven(int flags)
-{
-    flags &= (sizeof(img2aven_tab) / sizeof(img2aven_tab[0]) - 1);
-    return img2aven_tab[flags];
-}
-
 int Model::Load(const wxString& file, const wxString& prefix)
 {
     // Load the processed survey data.
@@ -235,7 +224,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
 			s = wxString(survey->label, wxConvISO8859_1);
 		    }
 		}
-		int flags = img2aven(survey->flags);
+		int flags = (survey->flags & LFLAG_IMG_MASK);
 		LabelInfo* label = new LabelInfo(pt, s, flags);
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;

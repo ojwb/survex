@@ -12,7 +12,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  glbitmapfont.h gllogerror.h guicontrol.h gla.h gpx.h moviemaker.h\
  export3d.h exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h\
  gfxcore.h json.h log.h mainfrm.h pos.h vector3.h wx.h aventypes.h\
- aventreectrl.h export.h model.h printing.h avenprcore.h img2aven.h\
+ aventreectrl.h export.h model.h printing.h avenprcore.h\
  thgeomag.h thgeomagdata.h moviemaker-legacy.cc
 
 LDADD = $(LIBOBJS)
@@ -105,19 +105,16 @@ all_sources = \
 	cd $(srcdir)/../lib && ./extract-msgs.pl `echo $(all_sources)|perl -ne 'print "../src/$$_\n" for sort split'|uniq` > survex.pox
 
 EXTRA_DIST = \
- aven.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert gen_img2aven \
+ aven.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert \
  igrf13coeffs.txt igrf2c.py
 
-BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h thgeomagdata.h
+BUILT_SOURCES = z_getopt.c avenpal.h thgeomagdata.h
 
 z_getopt.c: getopt.c gettexttomsg.pl
 	./gettexttomsg.pl `test -f getopt.c || echo '$(srcdir)/'`getopt.c > z_getopt.c~ && mv z_getopt.c~ z_getopt.c
 
 avenpal.h: $(srcdir)/gdtconvert $(srcdir)/gradient.pov
 	$(srcdir)/gdtconvert < $(srcdir)/gradient.pov > tmp-avenpal.h && mv tmp-avenpal.h avenpal.h
-
-img2aven.h: $(srcdir)/gen_img2aven
-	$(srcdir)/gen_img2aven > tmp-img2aven.h && mv tmp-img2aven.h img2aven.h
 
 PYTHON = python3
 
