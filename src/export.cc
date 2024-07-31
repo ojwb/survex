@@ -901,11 +901,10 @@ PLT::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending
    /* dummy passage dimensions are required to avoid compass bug */
    fprintf(fh, "S%s P -9 -9 -9 -9", find_name_plt(p));
    if (flags & (MASK_)) {
-       fprintf(fh, " #|");
+       fprintf(fh, " F");
        if (flags & img_FLAG_DUPLICATE) PUTC('L', fh);
        if (flags & img_FLAG_SURFACE) PUTC('P', fh);
        if (flags & img_FLAG_SPLAY) PUTC('S', fh);
-       PUTC('#', fh);
    }
    fprintf(fh, "\r\n");
 }
