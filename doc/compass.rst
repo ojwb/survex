@@ -196,15 +196,22 @@ that's all you have because the original ``.DAT`` file has been lost!
 Compass .PLF/.PLT support
 -------------------------
 
-A Compass ``.PLT`` file contains processed survey data. The extension
+A Compass ``.PLT`` file contains processed survey data.  The extension
 ``.PLF`` is also used for "special feature files" which have
-essentially the same format. You can load these files with
-``aven`` as if they were .3d files, and similarly for other Survex
-tools which expect a .3d file such as ``survexport``, ``extend``,
-``diffpos``, ``3dtopos`` and ``dump3d``. (This support is actually
-provided by Survex's img library, so other programs which use this
-library should also be able to read Compass ``.PLT`` files without
-much extra work.)
+essentially the same format.
+
+Survex supports both reading and writing these files, each of which
+are documented in separate sections below.
+
+Reading Compass .PLF/.PLT
+=========================
+
+You can load these files with ``aven`` as if they were .3d files, and
+similarly for other Survex tools which expect a .3d file such as
+``survexport``, ``extend``, ``diffpos``, ``3dtopos`` and ``dump3d``.
+(This support is actually provided by Survex's img library, so other
+programs which use this library should also be able to read Compass
+``.PLT`` files without much extra work.)
 
 Survex understands most PLT file features.  Known current
 limitations and assumptions:
@@ -256,3 +263,54 @@ limitations and assumptions:
   coordinates to a common coordinate system in the img library,
   which would need it to depend on PROJ. Please let us know if
   support for mixed datums would be useful to you.
+
+Exporting Compass .PLT
+======================
+
+Survex can also create PLT files via ``aven``'s File->Export feature, and also
+from the command line via ``survexport --plt``.
+
+This export was originally added to allow importing data from Survex into
+Carto.  The principal author of Carto has sadly died and it seems Carto is no
+longer actively developed, but we've left this support in place in case it is
+useful - the generated files can be used with Compass itself for example,
+though they are currently rather crudely structured.  Here are some notes on
+this support:
+
+- The whole Survex survey tree is exported as a single survey.
+
+- Compass station names can't contain spaces, so any spaces (and also ASCII
+  control characters) are in station names are replaced by ``%`` follow by two
+  lowercase hex digits giving the byte value (like the escaping used in URLs).
+  ``%`` itself is also escaped as ``%25``.
+
+- The full Survex station name include survey prefixes is used - no attempt is
+  currently made to shorten station names to fit within the 12 character limit
+  documented for the Compass PLT format.  If you export a single survey the
+  names should be short enough, but exporting the whole of a complex survey
+  project will likely give names longer than 12 characters.
+
+- Anonymous stations are given a name ``%:`` followed by a number starting from
+  one and incrementing for each anonymous station (Compass doesn't allow empty
+  station names, and these invented names can't collide with actual station
+  names).  Since Survex 1.4.10 (1.4.6 implemented support for exporting
+  anonymous stations to PLT, but with names which typically exceeded the
+  documented 12 character limit of the format).
+
+- Passage data is not included in the export (each exported leg has dummy LRUD
+  readings of all ``-9`` which is needed to avoid a bug in some versions of
+  Compass which don't cope with legs without LRUD).
+
+- Survex's "surface" leg flag is mapped to Compass shot flag ``P``.
+  The Compass documentation describes shot flag ``P`` as "Exclude this shot
+  from plotting", but the suggested use for it is for surface data, and shots
+  flagged ``P`` "[do] not support passage modeling".  Since Survex 1.4.10.
+
+- Survex's "splay" leg flag is mapped to Compass shot flag ``S``.  Since Survex
+  1.4.10.
+
+- Survex's "duplicate" leg flag is mapped to Compass shot flag ``L``.  Since
+  Survex 1.4.10.
+
+- The Datum and UTM zone information is not currently set in exported PLT
+  files.
