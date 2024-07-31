@@ -1,3 +1,214 @@
+up to: bbfa6e8aa5d73a31ea3cded502789eb22160bce3
+
+Changes in 1.4.10 (2024-08-??):
+
+* aven:
+
+  + Use a fixed rotation rate for rotating the view to North, South, East or
+    West (shortcut keys `N`, `S`, `E` and `W`).  We were using the same
+    variable rate which auto-rotation does for this case, but really these are
+    just animations to help the user see the change that's happening, so a
+    fixed rate makes more sense (and is what tilting to plan or elevation
+    does).  The new fixed rotation rate for this is double what the default
+    variable rate was, which means the longest rotation (e.g. from S to N)
+    takes 3 seconds rather than 6.
+
+* aven/survexport:
+
+  + Fix syntax of shot flags in PLT export (incorrect since introduced in
+    1.4.6).
+
+  + Map Survex duplicate flag to `L` shot flag in PLT export.
+
+  + Invent shorter names for anonymous stations in PLT export.  The PLT file
+    format documentation says station names can be up to 12 characters, but the
+    ones we generated were longer than this which is liable to trip up
+    consumers of this format that only allow for the specified length.
+    We now generate names using a sequential counter with a two character
+    prefix so they should fit in the 12 character limit for any cave
+    survey.
+
+  + 3D export now includes all leg and station flags.
+
+* cavern:
+
+  + Unconnected survey stations are now handled as a warning, whereas
+    previously this was an error.  This is necessary when processing Walls data
+    where it seems having hanging surveys is the norm, and Walls itself only
+    warns about them.
+
+    The support is also enabled for native Survex data since it allows viewing
+    the connected parts of a survey with missing connections without having to
+    comment out the unconnected parts (and then remember to fully uncomment
+    once connections are surveyed).  Fixes #16, reported by Duncan Collis.
+
+    Currently the component count and loop count are not shown in this case.
+
+  + Avoid multiple reports of an unconnected survey station.  This could happen
+    in some cases where a group of equated stations had more than four legs
+    connected to it.
+
+  + Fix missing report of unconnected survey station.  We aim to report at
+    least one station in every unconnected piece of survey, but if a piece had
+    been simplified to a single station which was anonymous (e.g. a disto splay
+    shot) then we wouldn't report anything for that piece.  Now we find the
+    traverse that was attached to it and report the next station along that
+    traverse.
+
+  + Report file and line location each unconnected survey station.
+
+  + This warning now says either `*entrance` or `*export` depending on which
+    it actually was:
+
+      Station "bar.1" referred to by *entrance or *export but never used
+
+  + Fix several cases of mishandling comments without blanks before them:
+
+    - After an anonymous station.
+
+    - After an ignored reading.  The `ignore` would incorrectly also skip the
+      comment character and any characters which followed up to the next blank
+      or end of line.
+
+    - In a `*alias` command.
+
+    - Diagnostic highlighting could continue into a comment.
+
+  + New `*cartesian` command which supports different orientations of
+    `cartesian` style data.
+
+  + `*fix a reference` (without any coordinates) is now an error.  The
+    `reference` token provides a way to have a list of known fixed points which
+    are not expected to all be currently used, while omitting the coordinates
+    provides a way to specify a point to arbitrarily fix rather than rely on
+    cavern picking one.  Allowing both together doesn't really make sense.
+
+  + Improve check for 180° backclino to suppress the warning about a compass
+    reading on a plumbed leg (introduced in 1.4.8) to allow a small tolerance
+    on the value.  Previously the check wasn't working on x86 Linux for
+    example.
+
+  + Enhancements and fixes to reading Walls WPJ and SRV files:
+
+    - The `RECT=` command is now fully supported.
+
+    - Fix `#DATE` with an active `.REF` to act like `DECL=`.  This matches what
+      the documentation says and what Walls seems to actually do.  Thanks to
+      Erik C. Landgraf and Joe for spotting and analysing this issue.
+
+    - Allow completely omitting the clino on a wall shot (with `ORDER=DAV` or
+      `ORDER=ADV`).  Reported by Eric C. Landgraf.
+
+    - Resolve WPJ `.PATH` relative to innermost containing book.
+
+    - Handle an empty Walls station name.  Walls allows a station with an
+      explicit prefix to have an empty name, e.g. `PEP:`.  The Walls
+      documentation doesn't mention this, though it also doesn't explicitly say
+      the name can't be empty.  This quirk seems unlikely to be intentionally
+      used and Survex doesn't allow an empty station name, so we issue a
+      warning and use the name `empty name` (which has a space in, so can't
+      collide with a real Walls station name which can't contain a space) - so
+      `PEP:` in Walls becomes `PEP.empty name` in Survex.  Reported by Erik C.
+      Landgraf.
+
+    - Flag stations with explicit Walls prefix as exported.  Suggested by Eric
+      C. Landgraf.
+
+    - Fix setting empty Walls macro with a comment right after it.
+
+    - Walls quietly ignores junk after the numeric argument in `TYPEAB=`,
+      `TYPEVB=`, `UV=`, `UVH=`, and `UVV=`.  This seems to be an undocumented
+      feature/bug so Survex emits a warning and skips the junk.  Reported by
+      Eric C. Landgraf.
+
+    - After an unknown Walls option we now process the rest of the line.
+      Previously we were skipping the rest of the line.
+
+    - We no longer skip the rest of the line after a bad Walls `ORDER=` option.
+
+    - Correct the reported column for some Walls option diagnostics.
+
+    - Support explicit units on Walls clino readings.  Reported by Eric C.
+      Landgraf.
+
+    - Allow `#` in Walls station names.  This is explicitly documented as not
+      allowed, but the documentation doesn't match the implementation and `#`
+      is present in some real-world data.  Reported by Eric C. Landgraf.
+
+    - Improve handling of Walls `RESTORE` error.  Highlight the position in the
+      line and don't skip the rest of the line.
+
+    - Don't warn about `INCH=` with a zero argument since that's the one case
+      of it we do handle!
+
+    - Fix not to skip the rest of the line after Walls `INCH=` option.
+      We currently don't support `INCH=` so we warn about it, but we were
+      skipping the rest of the line, then trying to read and discard the
+      argument to `INCH=` which gave an error.  Reported by Eric C. Landgraf.
+
+    - Relax handling of Walls `CASE=`.  It's not documented, but Walls32.exe
+      quietly treats unknown values as "Mixed".  Reported by Eric C. Landgraf.
+
+* dump3d:
+
+
+* documentation:
+
+  + The manual has been converted from DocBook to reStructured Text.  The
+    plaintext-based format is much easier for making changes, and for users the
+    output from sphinx looks nicer and has extra features (like built-in "Quick
+    search" in the HTML output).
+
+    The plain text version of the manual is no longer generated.  Sphinx can
+    produce one but the .rst sources actually seem more readable for anyone
+    wanting to read the manual in plain text.
+
+    The extra targets to generate the manual in RTF and PostScript
+    have been dropped as I doubt they are still used (we stopped
+    providing them on the website years ago).  They could probably be
+    reinstated if there's a demand for them.
+
+  + The conversion was partly automated followed by a full pass over the
+    result fixing issues with the automated conversion.  We took the
+    opportunity to also review the content and update or remove out of
+    date and other incorrect information, and to reorder some of the content.
+
+  + Document PLT export.
+
+  + The HTML version of the 1.4.9 manual was missing the Walls chapter
+    and had messed up paging links around it (due to the new CMAP chapter
+    accidentally also being given the filename `walls.htm`).  Reported by Eric
+    C. Landgraf.
+
+  + Document we don't enforce Walls' station or prefix length limits.
+
+  + Document handling of Walls `#NOTE`.
+
+  + Fix documentation of Walls `FLAG=` which is correctly handled, not skipped.
+
+  + Minor improvements to --help output
+
+* img library:
+
+
+* Build system:
+
+* testsuite:
+
+  + Add testcase for Walls `#units order=da`.
+
+  + Add expected output for more testcases
+
+  + Add testcase for exporting .3d files.
+
+  + Adjust testcases to try to avoid bogus failures due to excess precision
+    on x86 when using 387 FP instructions.
+
+* translations:
+
+  + Diagnostics can now use positional arguments which sometimes allows a
+    more natural word order in the translation.
+
 Changes in 1.4.9 (2024-07-04):
 
 * aven:
