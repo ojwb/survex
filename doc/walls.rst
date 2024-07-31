@@ -3,31 +3,33 @@ David McKenzie's Walls
 ======================
 
 Survex 1.4.9 and later can read Walls unprocessed survey data (``.SRV``
-and ``.WPJ`` files).  The support is currently somewhat experimental, as
-the documentation of the SRV format is incomplete and incorrect in
-places, while the WPJ format seems to be largely undocumented, and
-David is sadly no longer around to ask.
+and ``.WPJ`` files).  Walls is no longer being developed, so the focus of
+support for Walls formats is primarily to help people with existing Walls data
+to migrate.
 
-The current status is that most ``.SRV`` files should process
-individually (but see details below of features which are not
-handled), while there are still some known issues which cause
-problems with some ``.WPJ`` files.
+We've mostly implemented this support based on Walls documentation, but
+unfortunately the documentation of the SRV format sometimes incomplete or
+incorrect, while the WPJ format seems to be largely undocumented.  Sadly
+David is no longer around to ask, but we can at least test actual behaviour
+of ``Walls32.exe`` on example data.
 
-Walls is no longer being developed, so the focus of support for Walls
-formats is primarily to help people with existing Walls data to
-migrate.  If you are in this situation and the incomplete WPJ support
-is a problem, you should be able to write a ``.svx`` file to replace your
-WPJ file - you can use ``*include somedata.srv`` to include a Walls
-``.srv`` from a ``.svx`` file.
+As of 1.4.10, some large Walls datasets can be successfully processed
+(e.g. Mammoth Cave, the Thailand dataset from https://cave-registry.org.uk/,
+and Big Bat Cave).
+
+See below for a list of known limitations.  We've mostly prioritised what
+to implemented based on testing with real-world datasets so commonly used
+features are likely to be handled while more obscure features may not be.
+
+- Survex reports warnings in some suspect situations which Walls
+  quietly accepts.  In general this seems helpful and it flags up
+  what look like genuine problems in existing datasets, but if there are
+  particular instances which are noisy and not useful, let us know.
 
 - Walls allows hanging surveys, apparently without any complaint, and
   as a result large Walls datasets are likely to have hanging surveys.
   A hanging survey used to be an error in Survex but since 1.4.10
   a hanging survey is warned about and then ignored.
-
-- Survex reports warnings in some suspect situations which Walls
-  quietly accepts.  In general this seems helpful, but if there are
-  particular instances which are noisy and not useful, let us know.
 
 - ``#FIX`` - currently Survex does not support horizontal-only or
   vertical only fixes.  These are currently given an SD of 1000m in
