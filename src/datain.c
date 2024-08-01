@@ -50,6 +50,8 @@
 # include <proj_experimental.h>
 #endif
 
+static int process_nosurvey(prefix *fr, prefix *to, bool fToFirst);
+
 #define EPSILON (REAL_EPSILON * 1000)
 
 #define var(I) (pcs->Var[(I)])
