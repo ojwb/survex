@@ -1583,6 +1583,132 @@ bad_distance_units:
     return distance;
 }
 
+static void
+read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
+{
+    // Optional variance override "with no embedded tabs or spaces".
+    // E.g. `(R5,?)` specifies horizontal and vertical so:
+    // `R5` means 5m RMS horizontal error
+    // `?` specifies no elevations were obtained - infinite variance.
+    // `*` seems to mean the same as `?` for a fixed point, but for
+    // a leg it is meant to mean "all vectors in the containing traverse are
+    // floated".
+    // <non-negative number> means treat as compass and tape vector
+    // of that length (in length units from #units)
+    // `` (empty) means don't override that one
+    // no comma e.g. `(R5)` means apply to both h and v
+    nextch();
+    bool rms_h = false;
+    real val_h;
+    if (ch == ',' || ch == ')') {
+	// Use default variance, which is exact for a fixed point.
+	val_h = 0.0;
+    } else if (ch == '?' || ch == '*') {
+	// Infinite variance.  It seems `?` and `*` effectively
+	// mean the same for a fixed point.  We don't really
+	// support this in general but if it's set both
+	// horizontally and vertically we can ignore it, and if
+	// it's set for one we can bodge it with a large value.
+	nextch();
+	val_h = HUGE_REAL;
+    } else {
+	if (ch == 'R' || ch == 'r') {
+	    rms_h = true;
+	    nextch();
+	}
+
+	val_h = read_walls_distance(false, true);
+	if (ch == 'F' || ch == 'f') {
+	    val_h *= METRES_PER_FOOT;
+	    nextch();
+	} else if (ch == 'M' || ch == 'm') {
+	    nextch();
+	} else {
+	    val_h *= pcs->units[Q_LENGTH];
+	}
+    }
+    bool rms_v = rms_h;
+    real val_v = val_h;
+    if (ch == ',') {
+	rms_v = false;
+	nextch();
+	if (ch == ')') {
+	    // Use default variance, which is exact for a fixed point.
+	    val_v = 0.0;
+	} else if (ch == '?' || ch == '*') {
+	    // Infinite variance.  It seems `?` and `*` effectively
+	    // mean the same for a fixed point.  We don't really
+	    // support this in general but if it's set both
+	    // horizontally and vertically we can ignore it, and if
+	    // it's set for one we can bodge it with a large value.
+	    nextch();
+	    val_v = HUGE_REAL;
+	} else {
+	    if (ch == 'R' || ch == 'r') {
+		rms_v = true;
+		nextch();
+	    }
+
+	    val_v = read_number(false, true);
+	    if (ch == 'F' || ch == 'f') {
+		val_v *= METRES_PER_FOOT;
+		nextch();
+	    } else if (ch == 'M' || ch == 'm') {
+		nextch();
+	    } else {
+		val_v *= pcs->units[Q_LENGTH];
+	    }
+	}
+    }
+    if (ch == ')') {
+	nextch();
+    } else {
+	compile_diagnostic(DIAG_ERR|DIAG_COL,
+			   /*Expecting “%s”*/497, ")");
+    }
+
+    if (val_h == 0) {
+	// Use default variance, which is exact for a fixed point.
+    } else if (val_h == HUGE_REAL) {
+	// Infinite variance.  It seems `?` and `*` effectively
+	// mean the same for a fixed point.  We don't really
+	// support this in general but if it's set both
+	// horizontally and vertically we can ignore it, and if
+	// it's set for one we can bodge it with a large value.
+	*p_var_xy = HUGE_REAL;
+    } else if (rms_h) {
+	// "Note that if you make an assignment like (R10), which
+	// is the same as (R10,R10), you won't be giving all three
+	// error components identical variances. The vertical
+	// component in this case would be given variance 10² =
+	// 100, while each horizontal component would be given half
+	// that variance, or 50".
+	*p_var_xy = val_h * val_h / 2.0;
+    } else {
+	// The value is to be treated as the length of a leg to use
+	// the variances of, so this is based on the leg variance
+	// calculations except we don't have any angles here.  Note
+	// that for Survex the leg length does not affect the
+	// variances.
+	*p_var_xy = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
+    }
+    if (val_v < 0.0) {
+	// Use default variance, which is exact for a fixed point.
+    } else if (val_v == HUGE_REAL) {
+	// Infinite variance.
+	*p_var_z = HUGE_REAL;
+    } else if (rms_v) {
+	*p_var_z = val_v * val_v;
+    } else {
+	// The value is to be treated as the length of a leg to use
+	// the variances of, so this is based on the leg variance
+	// calculations except we don't have any angles here.  Note
+	// that for Survex the leg length does not affect the
+	// variances.
+	*p_var_z = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
+    }
+}
+
 // Walls #FLAG values seem to be arbitrary strings - we attempt to infer
 // suitable Survex station flags from a few key words.
 static int parse_walls_flags(bool check_for_quote)
@@ -2398,128 +2524,9 @@ next_line:
 	    real var_xy = 0.0, var_z = 0.0;
 	    skipblanks();
 	    if (ch == '(') {
-		// Optional variance override "with no embedded tabs or spaces".
-		// E.g. `(R5,?)` specifies horizontal and vertical so:
-		// `R5` means 5m RMS horizontal error
-		// `?` specifies no elevations were obtained - infinite variance.
-		// `*` means ... probably the same as `?` for a fixed point.
-		// <non-negative number> means treat as compass and tape vector
-		// of that length (in length units from #units)
-		// `` (empty) means don't override that one
-		// no comma e.g. `(R5)` means apply to both h and v
-		nextch();
-		bool rms_h = false;
-		real val_h;
-		if (ch == ',' || ch == ')') {
-		    // Use default variance, which is exact for a fixed point.
-		    val_h = 0.0;
-		} else if (ch == '?' || ch == '*') {
-		    // Infinite variance.  It seems `?` and `*` effectively
-		    // mean the same for a fixed point.  We don't really
-		    // support this in general but if it's set both
-		    // horizontally and vertically we can ignore it, and if
-		    // it's set for one we can bodge it with a large value.
-		    nextch();
-		    val_h = HUGE_REAL;
-		} else {
-		    if (ch == 'R' || ch == 'r') {
-			rms_h = true;
-			nextch();
-		    }
-
-		    val_h = read_walls_distance(false, true);
-		    if (ch == 'F' || ch == 'f') {
-			val_h *= METRES_PER_FOOT;
-			nextch();
-		    } else if (ch == 'M' || ch == 'm') {
-			nextch();
-		    } else {
-			val_h *= pcs->units[Q_LENGTH];
-		    }
-		}
-		bool rms_v = rms_h;
-		real val_v = val_h;
-		if (ch == ',') {
-		    rms_v = false;
-		    nextch();
-		    if (ch == ')') {
-			// Use default variance, which is exact for a fixed point.
-			val_v = 0.0;
-		    } else if (ch == '?' || ch == '*') {
-			// Infinite variance.  It seems `?` and `*` effectively
-			// mean the same for a fixed point.  We don't really
-			// support this in general but if it's set both
-			// horizontally and vertically we can ignore it, and if
-			// it's set for one we can bodge it with a large value.
-			nextch();
-			val_v = HUGE_REAL;
-		    } else {
-			if (ch == 'R' || ch == 'r') {
-			    rms_v = true;
-			    nextch();
-			}
-
-			val_v = read_number(false, true);
-			if (ch == 'F' || ch == 'f') {
-			    val_v *= METRES_PER_FOOT;
-			    nextch();
-			} else if (ch == 'M' || ch == 'm') {
-			    nextch();
-			} else {
-			    val_v *= pcs->units[Q_LENGTH];
-			}
-		    }
-		}
-		if (ch == ')') {
-		    nextch();
-		    skipblanks();
-		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_COL,
-				       /*Expecting “%s”*/497, ")");
-		}
-
-		if (val_h == 0) {
-		    // Use default variance, which is exact for a fixed point.
-		} else if (val_h == HUGE_REAL) {
-		    // Infinite variance.  It seems `?` and `*` effectively
-		    // mean the same for a fixed point.  We don't really
-		    // support this in general but if it's set both
-		    // horizontally and vertically we can ignore it, and if
-		    // it's set for one we can bodge it with a large value.
-		    var_xy = HUGE_REAL;
-		} else if (rms_h) {
-		    // "Note that if you make an assignment like (R10), which
-		    // is the same as (R10,R10), you won't be giving all three
-		    // error components identical variances. The vertical
-		    // component in this case would be given variance 10² =
-		    // 100, while each horizontal component would be given half
-		    // that variance, or 50".
-		    var_xy = val_h * val_h / 2.0;
-		} else {
-		    // The value is to be treated as the length of a leg to use
-		    // the variances of, so this is based on the leg variance
-		    // calculations except we don't have any angles here.  Note
-		    // that for Survex the leg length does not affect the
-		    // variances.
-		    var_xy = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
-		}
-		if (val_v < 0.0) {
-		    // Use default variance, which is exact for a fixed point.
-		} else if (val_v == HUGE_REAL) {
-		    // Infinite variance.
-		    var_z = HUGE_REAL;
-		} else if (rms_v) {
-		    var_z = val_v * val_v;
-		} else {
-		    // The value is to be treated as the length of a leg to use
-		    // the variances of, so this is based on the leg variance
-		    // calculations except we don't have any angles here.  Note
-		    // that for Survex the leg length does not affect the
-		    // variances.
-		    var_z = var(Q_POS) / 3.0 + var(Q_LENGTH) / 2.0;
-		}
+		read_walls_variance_overrides(&var_xy, &var_z);
 	    }
-
+	    skipblanks();
 	    if (ch == '/') {
 		// Station note - ignore for now.  Note: Must be '/'.
 		skipline();
@@ -4133,20 +4140,24 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 static void
 read_walls_extras(void)
 {
+    real var_xy = -1.0, var_z = -1.0;
     while (true) {
 	skipblanks();
+	if (ch == '(') {
+	    read_walls_variance_overrides(&var_xy, &var_z);
+	    continue;
+	}
+
 	int end = 0;
 	if (ch == '*') {
 	    end = '*';
 	} else if (ch == '<') {
 	    end = '>';
-	} else if (ch == '(') {
-	    end = ')';
 	} else {
 	    return;
 	}
 	while (nextch() != end && !isEol(ch)) {
-	    // FIXME: Process...
+	    // FIXME: Process LRUD.
 	}
 	if (ch == end) {
 	    nextch();
