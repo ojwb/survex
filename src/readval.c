@@ -488,8 +488,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    int sflag = BIT(SFLAGS_SURVEY);
 	    if (i == 3) {
 		name = p;
-		// Mark stations used with explicit prefix as exported.
-		sflag = explicit_prefix_levels ? BIT(SFLAGS_EXPORTED) : 0;
+		sflag = 0;
 	    } else {
 		if (i < 3 - explicit_prefix_levels) {
 		    name = walls_prefix[i];
@@ -568,13 +567,21 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		} else {
 		    ptr->sflags |= sflag;
 		}
+		if (!TSTBIT(ptr->sflags, SFLAGS_SURVEY)) {
+		    ptr->min_export = USHRT_MAX;
+		}
 		cached_survey = back_ptr;
 		cached_station = ptr;
 	    }
 	    if (name == p) osfree(p);
 	}
 
-	// fprint_prefix(stdout, ptr); fputnl(stdout);
+	// Do the equivalent of "*infer exports" for Walls stations with an
+	// explicit prefix.
+	if (ptr->min_export == 0 || ptr->min_export == USHRT_MAX) {
+	    if (explicit_prefix_levels > ptr->max_export)
+		ptr->max_export = explicit_prefix_levels;
+	}
 
 	for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
 

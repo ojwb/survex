@@ -1503,8 +1503,7 @@ walls_initialise_settings(void)
     // Spec says "maximum of eight characters" - we currently allow arbitrarily
     // many.
     pcs->Truncate = INT_MAX;
-    pcs->infer = BIT(INFER_EXPORTS) | // FIXME?
-		 BIT(INFER_PLUMBS);
+    pcs->infer = BIT(INFER_PLUMBS);
     // Walls cartesian data is aligned to True North.
     pcs->cartesian_north = TRUE_NORTH;
     pcs->cartesian_rotation = 0.0;
