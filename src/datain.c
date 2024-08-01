@@ -1503,7 +1503,8 @@ walls_initialise_settings(void)
     // Spec says "maximum of eight characters" - we currently allow arbitrarily
     // many.
     pcs->Truncate = INT_MAX;
-    pcs->infer = BIT(INFER_PLUMBS);
+    pcs->infer = BIT(INFER_EQUATES) |
+		 BIT(INFER_PLUMBS);
     // Walls cartesian data is aligned to True North.
     pcs->cartesian_north = TRUE_NORTH;
     pcs->cartesian_rotation = 0.0;
@@ -3968,10 +3969,6 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    if (VAR(Dy) >= 0) vy = VAR(Dy);
    if (VAR(Dz) >= 0) vz = VAR(Dz);
 
-   if (vx == HUGE_REAL && vy == HUGE_REAL && vz == HUGE_REAL) {
-       return process_nosurvey(fr, to, fToFirst);
-   }
-
 #if DEBUG_DATAIN_1
    printf("Just before addleg, vx = %f\n", vx);
 #endif
@@ -4974,6 +4971,14 @@ inches_only:
 	     if ((compass_dat_flags & BIT('X' - 'A'))) {
 		process_eol();
 		return;
+	     }
+	     if (VAR(Dx) == HUGE_REAL &&
+		 VAR(Dy) == HUGE_REAL &&
+		 VAR(Dz) == HUGE_REAL) {
+		 // Walls variance override of `(?)` or equivalent turns the leg
+		 // into a "nosurvey" leg.
+		 (void)process_nosurvey(fr, to, (first_stn == To));
+		 return;
 	     }
 	     if (fRev) {
 		prefix *t = fr;
