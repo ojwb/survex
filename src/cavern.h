@@ -200,7 +200,11 @@ typedef enum {
    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
    CompassDATFlags,
 
-   WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino
+   WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
+   // Optional pair of readings giving heights above stations on CT surveys.
+   WallsSRVHeights,
+   // Optional delimited LRUD and variance overrides.
+   WallsSRVExtras
 } reading;
 
 /* if IgnoreAll is >= 32, the compiler will choke on this */

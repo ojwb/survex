@@ -1361,10 +1361,10 @@ typedef struct walls_options {
     char* prefix[3];
 
     // Data order for CT legs.
-    reading data_order_ct[6];
+    reading data_order_ct[8];
 
     // Data order for RECT legs (also used for #Fix coordinate order).
-    reading data_order_rect[6];
+    reading data_order_rect[7];
 
     // Is this from SAVE in .OPTIONS / #Units?
     bool explicit;
@@ -1383,18 +1383,16 @@ static const walls_options walls_options_default = {
     // prefix[3]
     { NULL, NULL, NULL },
 
-    // data_order_ct[6]
+    // data_order_ct[8]
     {
 	WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
-// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
-	IgnoreAll
+	WallsSRVHeights, WallsSRVExtras, End
     },
 
-    // data_order_rect[6]
+    // data_order_rect[7]
     {
 	WallsSRVFr, WallsSRVTo, Dx, Dy, Dz,
-// FIXME	CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
-	IgnoreAll
+	WallsSRVExtras, End
     },
 
     // explicit
@@ -1560,24 +1558,27 @@ bad_angle_units:
 }
 
 static real
-read_walls_distance(real default_units)
+read_walls_distance(bool f_optional, real default_units)
 {
-    real distance = read_numeric(false);
-    if (isalpha((unsigned char)ch)) {
-	get_token_walls();
-	// Only one letter is allowed here.
-	if (s_str(&uctoken)[1] != '\0') goto bad_distance_units;
-	if (s_str(&uctoken)[0] == 'M') {
-	    // Metres.
-	} else if (s_str(&uctoken)[0] == 'F') {
-	    // Feet.
-	    distance *= METRES_PER_FOOT;
-	} else {
+    real distance = read_numeric(f_optional);
+    if (distance != HUGE_REAL) {
+	if (isalpha((unsigned char)ch)) {
+	    get_token_walls();
+	    // Only one letter is allowed here.
+	    if (s_str(&uctoken)[1] != '\0') goto bad_distance_units;
+	    if (s_str(&uctoken)[0] == 'M') {
+		// Metres.
+	    } else if (s_str(&uctoken)[0] == 'F') {
+		// Feet.
+		distance *= METRES_PER_FOOT;
+	    } else {
 bad_distance_units:
-	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
+		compile_diagnostic(DIAG_ERR|DIAG_COL,
+				   /*Expecting “%s” or “%s”*/103, "F", "M");
+	    }
+	} else {
+	    distance *= default_units;
 	}
-    } else {
-	distance *= default_units;
     }
     return distance;
 }
@@ -1868,7 +1869,8 @@ parse_options(void)
 		break;
 	    }
 	    reading* p;
-	    if (order & (1 << 24)) {
+	    bool rect = (order & (1 << 24));
+	    if (rect) {
 		order &= ((1 << 24) - 1);
 		// "RECT" order.
 		p = p_walls_options->data_order_rect + 2;
@@ -1880,7 +1882,9 @@ parse_options(void)
 		*p++ = (order & 0xff);
 		order >>= 8;
 	    }
-	    *p = IgnoreAll;
+	    if (!rect) *p++ = WallsSRVHeights;
+	    *p++ = WallsSRVExtras;
+	    *p = End;
 	    break;
 	  case WALLS_UNITS_OPT_DECL:
 	    pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
@@ -1892,11 +1896,11 @@ parse_options(void)
 	    pcs->z[Q_BACKBEARING] = -read_walls_angle(pcs->units[Q_BACKBEARING]);
 	    break;
 	  case WALLS_UNITS_OPT_INCD:
-	    pcs->z[Q_LENGTH] = -read_walls_distance(pcs->units[Q_LENGTH]);
+	    pcs->z[Q_LENGTH] = -read_walls_distance(false, pcs->units[Q_LENGTH]);
 	    break;
 	  case WALLS_UNITS_OPT_INCH:
 	    // INCH=0 is what we do anyway, so only warn about non-zero values.
-	    if (read_walls_distance(pcs->units[Q_LENGTH]) != 0.0) {
+	    if (read_walls_distance(false, pcs->units[Q_LENGTH]) != 0.0) {
 		filepos fp;
 		get_pos(&fp);
 		set_pos(&fp_option);
@@ -2371,15 +2375,7 @@ next_line:
 		    // Read as a distance if this is the altitude, or we've
 		    // already seen a distance for x or y, or if the coordinate
 		    // doesn't start with a compass point letter.
-		    coord = read_numeric(false);
-		    if (ch == 'F' || ch == 'f') {
-			coord *= METRES_PER_FOOT;
-			nextch();
-		    } else if (ch == 'M' || ch == 'm') {
-			nextch();
-		    } else {
-			coord *= pcs->units[Q_LENGTH];
-		    }
+		    coord = read_walls_distance(false, pcs->units[Q_LENGTH]);
 		    if (dim != 2) format = UTM;
 		} else {
 		    // Set negate if S or W.
@@ -2431,7 +2427,7 @@ next_line:
 			nextch();
 		    }
 
-		    val_h = read_number(false, true);
+		    val_h = read_walls_distance(false, true);
 		    if (ch == 'F' || ch == 'f') {
 			val_h *= METRES_PER_FOOT;
 			nextch();
@@ -4133,6 +4129,34 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
+// Read optional LRUD and/or variance overrides.
+static void
+read_walls_extras(void)
+{
+    while (true) {
+	skipblanks();
+	int end = 0;
+	if (ch == '*') {
+	    end = '*';
+	} else if (ch == '<') {
+	    end = '>';
+	} else if (ch == '(') {
+	    end = ')';
+	} else {
+	    return;
+	}
+	while (nextch() != end && !isEol(ch)) {
+	    // FIXME: Process...
+	}
+	if (ch == end) {
+	    nextch();
+	} else {
+	    char as_string[2] = { end, '\0' };
+	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s”*/497, as_string);
+	}
+    }
+}
+
 static void
 data_cartesian(void)
 {
@@ -4187,6 +4211,9 @@ data_cartesian(void)
 	      process_eol();
 	      return;
 	  }
+	  break;
+       case WallsSRVExtras:
+	  read_walls_extras();
 	  break;
        case Ignore:
 	 skipword(); break;
@@ -4754,6 +4781,24 @@ inches_only:
 	  }
 	  break;
        }
+       case WallsSRVHeights: {
+	  real instrument_height = read_walls_distance(true,
+						       pcs->units[Q_LENGTH]);
+	  if (instrument_height != HUGE_REAL) {
+	      real target_height = read_walls_distance(true,
+						       pcs->units[Q_LENGTH]);
+	      // Walls allows for just one height.
+	      if (target_height == HUGE_REAL) target_height = 0.0;
+	      // FIXME: Ideally we'd make use of these, or at least warn if
+	      // they aren't equal...
+	      (void)instrument_height;
+	      (void)target_height;
+	  }
+	  break;
+       }
+       case WallsSRVExtras:
+	  read_walls_extras();
+	  break;
        case Ignore:
 	  skipword(); break;
        case IgnoreAllAndNewLine:
