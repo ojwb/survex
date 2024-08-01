@@ -2315,7 +2315,7 @@ next_line:
 	    } else {
 		// Set up Dz in case it's omitted.
 		VAL(Dz) = 0.0;
-		VAR(Dz) = 10.0;
+		VAR(Dz) = 1e6;
 		data_cartesian();
 	    }
 	    continue;
@@ -3961,6 +3961,16 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
 #endif
       }
    }
+
+   // Apply any Walls variance overrides.
+   if (VAR(Dx) >= 0) vx = VAR(Dx);
+   if (VAR(Dy) >= 0) vy = VAR(Dy);
+   if (VAR(Dz) >= 0) vz = VAR(Dz);
+
+   if (vx == HUGE_REAL && vy == HUGE_REAL && vz == HUGE_REAL) {
+       return process_nosurvey(fr, to, fToFirst);
+   }
+
 #if DEBUG_DATAIN_1
    printf("Just before addleg, vx = %f\n", vx);
 #endif
@@ -4090,6 +4100,10 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    real dy = (VAL(Dy) * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    real dz = (VAL(Dz) * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
+   if (VAR(Dx) == HUGE_REAL && VAR(Dy) == HUGE_REAL && VAR(Dz) == HUGE_REAL) {
+       return process_nosurvey(fr, to, fToFirst);
+   }
+
    real rotation = pcs->cartesian_rotation;
    switch (pcs->cartesian_north) {
      case GRID_NORTH:
@@ -4140,11 +4154,25 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
 static void
 read_walls_extras(void)
 {
-    real var_xy = -1.0, var_z = -1.0;
     while (true) {
 	skipblanks();
 	if (ch == '(') {
+	    real var_xy = HUGE_REAL, var_z = HUGE_REAL;
 	    read_walls_variance_overrides(&var_xy, &var_z);
+	    // For now don't allow 0 variance, make it 1mm instead.  FIXME We
+	    // really should check connectivity before allowing 0.
+	    if (var_xy == 0.0) var_xy = 1e-6;
+	    if (var_z == 0.0) var_z = 1e-6;
+	    // FIXME: We don't currently support legs which only connect in
+	    // some dimensions so give them a high variance for now.
+	    if (var_xy == HUGE_REAL && var_z != HUGE_REAL) {
+		var_xy = 1e6;
+	    } else if (var_z == HUGE_REAL && var_xy != HUGE_REAL) {
+		var_z = 1e6;
+	    }
+	    VAR(Dx) = var_xy;
+	    VAR(Dy) = var_xy;
+	    VAR(Dz) = var_z;
 	    continue;
 	}
 
@@ -4349,6 +4377,11 @@ data_normal(void)
    VAL(FrCount) = VAL(ToCount) = 0;
    VAL(FrDepth) = VAL(ToDepth) = 0;
    VAL(Left) = VAL(Right) = VAL(Up) = VAL(Down) = HUGE_REAL;
+
+   // Initialise variance slots where we store variance overrides.
+   VAR(Dx) = -1.0;
+   VAR(Dy) = -1.0;
+   VAR(Dz) = -1.0;
 
    fRev = false;
    ctype = backctype = CTYPE_OMIT;

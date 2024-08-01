@@ -36,6 +36,17 @@ features are likely to be handled while more obscure features may not be.
   that direction instead, but that is not the same as completely
   decoupling the fix in that direction.
 
+- Variance overrides on survey legs are mostly supported, with the following
+  limitations:
+
+  + An SD of 0 is currently treated as 1mm;
+  + Floating a leg both horizontally and vertically (with ``?``) replaces it
+    with a "nosurvey" leg;
+  + Floating a leg either horizontally or vertically (with ``?``) uses an SD of
+    1000m in that direction instead of actually decoupling the connection;
+  + Floating the traverse containing a leg (with ``*``) currently just floats
+    that leg (so it's the same as ``?``).
+
 - ``#FIX`` - degree:minute:second fixes (e.g. ``W97:43:52.5``) are not
   currently supported.
 
