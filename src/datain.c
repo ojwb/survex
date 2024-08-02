@@ -4160,13 +4160,29 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    return 1;
 }
 
+static void
+read_walls_lrud(void)
+{
+    int end = (ch == '*' ? ch : '>');
+    while (nextch() != end && !isEol(ch)) {
+	// FIXME: Process LRUD.
+    }
+    if (ch == end) {
+	nextch();
+    } else {
+	char as_string[2] = { end, '\0' };
+	compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s”*/497, as_string);
+    }
+}
+
 // Read optional LRUD and/or variance overrides.
 static void
 read_walls_extras(void)
 {
     while (true) {
 	skipblanks();
-	if (ch == '(') {
+	switch (ch) {
+	  case '(':
 	    real var_xy = HUGE_REAL, var_z = HUGE_REAL;
 	    read_walls_variance_overrides(&var_xy, &var_z);
 	    // For now don't allow 0 variance, make it 1mm instead.  FIXME We
@@ -4183,25 +4199,13 @@ read_walls_extras(void)
 	    VAR(Dx) = var_xy;
 	    VAR(Dy) = var_xy;
 	    VAR(Dz) = var_z;
-	    continue;
-	}
-
-	int end = 0;
-	if (ch == '*') {
-	    end = '*';
-	} else if (ch == '<') {
-	    end = '>';
-	} else {
+	    break;
+	  case '*':
+	  case '<':
+	    read_walls_lrud();
+	    break;
+	  default:
 	    return;
-	}
-	while (nextch() != end && !isEol(ch)) {
-	    // FIXME: Process LRUD.
-	}
-	if (ch == end) {
-	    nextch();
-	} else {
-	    char as_string[2] = { end, '\0' };
-	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s”*/497, as_string);
 	}
     }
 }
@@ -4244,8 +4248,8 @@ data_cartesian(void)
 	  fr = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
-	      // Isolated LRUD.  Ignore for now.
-	      skipline();
+	      // Isolated LRUD.
+	      read_walls_lrud();
 	      process_eol();
 	      return;
 	  }
@@ -4254,9 +4258,8 @@ data_cartesian(void)
 	  to = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
-	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
-	      // for now.
-	      skipline();
+	      // Odd apparently undocumented variant of isolated LRUD.
+	      read_walls_lrud();
 	      process_eol();
 	      return;
 	  }
@@ -4595,8 +4598,8 @@ data_normal(void)
 	  fr = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
-	      // Isolated LRUD.  Ignore for now.
-	      skipline();
+	      // Isolated LRUD.
+	      read_walls_lrud();
 	      process_eol();
 	      return;
 	  }
@@ -4605,9 +4608,8 @@ data_normal(void)
 	  to = read_walls_station(p_walls_options->prefix, true);
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
-	      // Odd apparently undocumented variant of isolated LRUD.  Ignore
-	      // for now.
-	      skipline();
+	      // Odd apparently undocumented variant of isolated LRUD.
+	      read_walls_lrud();
 	      process_eol();
 	      return;
 	  }
