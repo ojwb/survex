@@ -6,7 +6,7 @@
 #Fix Q0 1 1 1
 ; Mammoth reportedly uses "0 0 0" legs between fixed points so we mustn't
 ; use INFER_EQUATES.
-Q0 U0  0 0 0 (?); We treat this as a NOSURVEY leg.
+Q0 U0  0 0 0 (?) #segment /Q ; We treat this as a NOSURVEY leg.
 #UNITS CASE=U
 u0 u1  5.4 203d +45D
 #units v=d case=none ; undocumented but unknown "case=" values -> "mixed"
@@ -17,10 +17,10 @@ X2 X3 7 24 25
 X3 X4 9 14 15
 #]
 #date 1970-01-01
-X1 X2 5 12 13
+X1 X2 5 12 13 <1,2,3,4>
 #]
 #s bar
-U1 *1,2,3,4*
+U1 *1,2,3,4* #s /foo
 #units feet decl=0.0 $foo_bar1="meters decl"
 #date 1972/02/29
 :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
@@ -31,7 +31,7 @@ U3 <1 2 3 4>
 U3 U4 30.14f /N90E /02 *1 2 3 2*
 U4 U5 i11 -/N90E -/02 *1 2 3 2*
 ; odd apparently undocumented variants of a LRUD-only data line
-U5 ZZ9 <1 2 3 4>
+U5 ZZ9 <1 2 3 4> #seg /bar
 U5 U6 1 2/- 3/-
 U6 ZZ8 *1 2 3 4*
 ; Regression test: `#` in a station name

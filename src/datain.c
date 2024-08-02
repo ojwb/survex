@@ -4204,6 +4204,21 @@ read_walls_extras(void)
 	  case '<':
 	    read_walls_lrud();
 	    break;
+	  case '#':
+	    // Allow for `#SEG` after a data leg.
+	    skipblanks();
+	    get_token_walls();
+	    walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
+	    if (directive == WALLS_CMD_SEGMENT) {
+		// "Segments are optional and have no affect on the compilation
+		// of survey data" so ignore for now.
+		skipline();
+	    } else {
+		compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN,
+				   /*Expecting “%s”, “%s”, or “%s”*/188,
+				   "S", "SEG", "SEGMENT");
+	    }
+	    return;
 	  default:
 	    return;
 	}
@@ -4249,7 +4264,7 @@ data_cartesian(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.
-	      read_walls_lrud();
+	      read_walls_extras();
 	      process_eol();
 	      return;
 	  }
@@ -4259,7 +4274,7 @@ data_cartesian(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.
-	      read_walls_lrud();
+	      read_walls_extras();
 	      process_eol();
 	      return;
 	  }
@@ -4599,7 +4614,7 @@ data_normal(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.
-	      read_walls_lrud();
+	      read_walls_extras();
 	      process_eol();
 	      return;
 	  }
@@ -4609,7 +4624,7 @@ data_normal(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.
-	      read_walls_lrud();
+	      read_walls_extras();
 	      process_eol();
 	      return;
 	  }
