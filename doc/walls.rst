@@ -22,7 +22,7 @@ to implemented based on testing with real-world datasets so commonly used
 features are likely to be handled while more obscure features may not be.
 
 - Survex reports warnings in some suspect situations which Walls
-  quietly accepts.  In general this seems helpful and it flags up
+  quietly accepts.  In general this seems helpful and they do highlight
   what look like genuine problems in existing datasets, but if there are
   particular instances which are noisy and not useful, let us know.
 
@@ -41,7 +41,8 @@ features are likely to be handled while more obscure features may not be.
 
   + An SD of 0 is currently treated as 1mm;
   + Floating a leg both horizontally and vertically (with ``?``) replaces it
-    with a "nosurvey" leg;
+    with a "nosurvey" leg, which is effectively the same provided both ends
+    of the leg are attached to fixed points.
   + Floating a leg either horizontally or vertically (with ``?``) uses an SD of
     1000m in that direction instead of actually decoupling the connection;
   + Floating the traverse containing a leg (with ``*``) currently just floats
