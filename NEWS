@@ -1,4 +1,4 @@
-up to: bbfa6e8aa5d73a31ea3cded502789eb22160bce3
+up to: c9c8140f5ae1dc23b331a5e5016894e69be1158b
 
 Changes in 1.4.10 (2024-08-??):
 
@@ -149,15 +149,28 @@ Changes in 1.4.10 (2024-08-??):
     - Relax handling of Walls `CASE=`.  It's not documented, but Walls32.exe
       quietly treats unknown values as "Mixed".  Reported by Eric C. Landgraf.
 
+    - Support DM and DMS format for latitude and longitude in Walls `#FIX`,
+      e.g. `W97:43.875` and `W97:43:52.5` .
+
+    - Treat a zero length leg with finite variance like a Survex `*equate`.
+
+    - Apply Walls variance overides to survey legs.
+
+    - The optional instrument and target heights are now parsed, but their
+      values are currently ignored.
+
+    - The delimiters around LRUD data are now parsed, but the LRUD data between
+      them is currently ignored.
+
 * dump3d:
 
 
 * documentation:
 
   + The manual has been converted from DocBook to reStructured Text.  The
-    plaintext-based format is much easier for making changes, and for users the
-    output from sphinx looks nicer and has extra features (like built-in "Quick
-    search" in the HTML output).
+    plain-text format is much easier for making changes, and for users the
+    output from sphinx looks nicer and has extra features (like built-in
+    "Quick search" in the HTML output).
 
     The plain text version of the manual is no longer generated.  Sphinx can
     produce one but the .rst sources actually seem more readable for anyone
