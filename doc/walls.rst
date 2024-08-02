@@ -15,7 +15,13 @@ of ``Walls32.exe`` on example data.
 
 As of 1.4.10, some large Walls datasets can be successfully processed
 (e.g. Mammoth Cave, the Thailand dataset from https://cave-registry.org.uk/,
-and Big Bat Cave).
+and Big Bat Cave).  Behaviour is not identical and station positions after
+loop closure will inevitably be different, but large or apparently systematic
+errors are worth reporting.  An easy way to compare is to export a Shapefile
+from ``Walls32.exe`` (the way to do this is a bit hidden - after processing
+select the `Segments` tab, make sure the whole project is selected, and click
+the `Details / Rpts...` button (towards the upper right).  You can then
+overlay this Shapefile in ``aven`` using `File->Overlay Geodata...`.
 
 See below for a list of known limitations.  We've mostly prioritised what
 to implemented based on testing with real-world datasets so commonly used
@@ -25,6 +31,11 @@ features are likely to be handled while more obscure features may not be.
   quietly accepts.  In general this seems helpful and they do highlight
   what look like genuine problems in existing datasets, but if there are
   particular instances which are noisy and not useful, let us know.
+
+  If you want a way to suppress the "unused fixed point" warning, using the
+  station in a ``#NOTE`` or ``#FLAG`` command counts as a "use" so you
+  can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
+  fixed point.
 
 - Walls allows hanging surveys, apparently without any complaint, and
   as a result large Walls datasets are likely to have hanging surveys.
