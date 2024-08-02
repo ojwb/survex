@@ -48,10 +48,7 @@ features are likely to be handled while more obscure features may not be.
   + Floating the traverse containing a leg (with ``*``) currently just floats
     that leg (so it's the same as ``?``).
 
-- ``#FIX`` - degree:minute:second fixes (e.g. ``W97:43:52.5``) are not
-  currently supported.
-
-- Walls ``FLAG`` values seems to be arbitrary text strings.  We try to
+- Walls ``FLAG`` values seem to be arbitrary text strings.  We try to
   infer appropriate Survex station flags by checking for certain key
   words in that text (currently we map words ``ENTRANCE`` and ``FIX``
   to the corresponding Survex station flags) and otherwise ignore ``FLAG``

@@ -2515,6 +2515,17 @@ next_line:
 		    }
 		    nextch();
 		    coord = read_number(false, true);
+		    if (ch == ':') {
+			// FIXME: This accepts decimals on any component e.g `N40.1:1:1`.
+			nextch();
+			real minutes = read_number(false, true);
+			coord += minutes / 60.0;
+			if (ch == ':') {
+			    nextch();
+			    real seconds = read_number(false, true);
+			    coord += seconds / 3600.0;
+			}
+		    }
 		    if (negate) coord = -coord;
 
 		    format = LATLONG;
