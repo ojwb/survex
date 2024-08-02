@@ -2477,7 +2477,7 @@ next_line:
 	  }
 	  case WALLS_CMD_FIX: {
 	    real coords[3];
-	    filepos fp_stn, fp;
+	    filepos fp_stn;
 	    get_pos(&fp_stn);
 	    prefix *name = read_walls_station(p_walls_options->prefix, false);
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
@@ -2608,6 +2608,7 @@ next_line:
 		// Exact fix.
 		int fix_result = fix_station(name, coords);
 		if (fix_result) {
+		    filepos fp;
 		    get_pos(&fp);
 		    set_pos(&fp_stn);
 		    if (fix_result < 0) {
