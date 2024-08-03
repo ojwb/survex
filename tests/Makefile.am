@@ -114,7 +114,7 @@ utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
 wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
 badopts.srv badopts.out\
-dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos surfequate.svx surfequate.dxf\
+dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos\
 nosurveyhanging.svx nosurveyhanging.out\
 cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
 cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\
@@ -158,6 +158,8 @@ cmd_data_default.svx\
 samename.svx\
 tabinhighlight.out tabinhighlight.svx\
 3dexport.dump 3dexport.svx\
+dxffullcoords.dxf dxffullcoords.svx\
+dxfsurfequate.svx dxfsurfequate.dxf\
 gpxexport.gpx gpxexport.svx\
 jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx\

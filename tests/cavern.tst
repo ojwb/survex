@@ -92,14 +92,16 @@ esac
  walls.srv\
  badopts.srv\
  wallsdecl.wpj\
- surfequate passage hanging_lrud equatenosuchstn surveytypo\
+ passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
  cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  quadrant_bearing bad_quadrant_bearing\
  samename tabinhighlight\
- 3dexport gpxexport jsonexport kmlexport pltexport svgexport\
+ 3dexport \
+ dxffullcoords dxfsurfequate\
+ gpxexport jsonexport kmlexport pltexport svgexport\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
