@@ -4172,10 +4172,6 @@ process_cartesian(prefix *fr, prefix *to, bool fToFirst)
    real dy = (VAL(Dy) * pcs->units[Q_DY] - pcs->z[Q_DY]) * pcs->sc[Q_DY];
    real dz = (VAL(Dz) * pcs->units[Q_DZ] - pcs->z[Q_DZ]) * pcs->sc[Q_DZ];
 
-   if (VAR(Dx) == HUGE_REAL && VAR(Dy) == HUGE_REAL && VAR(Dz) == HUGE_REAL) {
-       return process_nosurvey(fr, to, fToFirst);
-   }
-
    real rotation = pcs->cartesian_rotation;
    switch (pcs->cartesian_north) {
      case GRID_NORTH:
@@ -4380,6 +4376,14 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
+	     if (VAR(Dx) == HUGE_REAL &&
+		 VAR(Dy) == HUGE_REAL &&
+		 VAR(Dz) == HUGE_REAL) {
+		 // Walls variance override of `(?)` or equivalent turns the leg
+		 // into a "nosurvey" leg.
+		 (void)process_nosurvey(fr, to, (first_stn == To));
+		 return;
+	     }
 	     int implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
 	     int save_flags = pcs->flags;
