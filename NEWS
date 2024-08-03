@@ -1,4 +1,4 @@
-up to: c9c8140f5ae1dc23b331a5e5016894e69be1158b
+up to: 83e59ea74b9a0fb09cab7ec9399e0d7ef55bac06
 
 Changes in 1.4.10 (2024-08-??):
 
@@ -77,6 +77,8 @@ Changes in 1.4.10 (2024-08-??):
   + New `*cartesian` command which supports different orientations of
     `cartesian` style data.
 
+  + Anonymous stations are now supported in `cartesian` style data.
+
   + `*fix a reference` (without any coordinates) is now an error.  The
     `reference` token provides a way to have a list of known fixed points which
     are not expected to all be currently used, while omitting the coordinates
@@ -88,9 +90,15 @@ Changes in 1.4.10 (2024-08-??):
     on the value.  Previously the check wasn't working on x86 Linux for
     example.
 
+  + When showing a line as the location of a diagnostic we now render any
+    tab character as a single space which means the `^~~~~` highlight length
+    is now correct even when the highlighted part contains tabs.  This only
+    affects use from a terminal as the highlight was already correctly handled
+    when viewing the log in aven.
+
   + Enhancements and fixes to reading Walls WPJ and SRV files:
 
-    - The `RECT=` command is now fully supported.
+    - The `RECT=` option is now fully supported.
 
     - Fix `#DATE` with an active `.REF` to act like `DECL=`.  This matches what
       the documentation says and what Walls seems to actually do.  Thanks to
@@ -154,13 +162,19 @@ Changes in 1.4.10 (2024-08-??):
 
     - Treat a zero length leg with finite variance like a Survex `*equate`.
 
-    - Apply Walls variance overides to survey legs.
+    - Apply Walls variance overrides to survey legs.
 
     - The optional instrument and target heights are now parsed, but their
       values are currently ignored.
 
     - The delimiters around LRUD data are now parsed, but the LRUD data between
       them is currently ignored.
+
+    - If a `#SEGMENT` value looks like a set of Compass shot flags (i.e. consists
+      only of upper case characters from ``CLPSX``, optionally prefixed with a
+      `/` or `\`) then we interpret them as Compass shot flags (except that `X`
+      is mapped the same way as `L`).  This is apparently a common way to use
+      `#SEGMENT`, and unlikely to be triggered accidentally.
 
 * dump3d:
 
@@ -188,6 +202,8 @@ Changes in 1.4.10 (2024-08-??):
 
   + Document PLT export.
 
+  + Minor improvements to --help output
+
   + The HTML version of the 1.4.9 manual was missing the Walls chapter
     and had messed up paging links around it (due to the new CMAP chapter
     accidentally also being given the filename `walls.htm`).  Reported by Eric
@@ -199,7 +215,9 @@ Changes in 1.4.10 (2024-08-??):
 
   + Fix documentation of Walls `FLAG=` which is correctly handled, not skipped.
 
-  + Minor improvements to --help output
+  + Document how to compare Walls and Survex output via Shapefile.
+
+  + Document how to suppress unused fixed point warning in Walls SRV.
 
 * img library:
 
@@ -214,8 +232,11 @@ Changes in 1.4.10 (2024-08-??):
 
   + Add testcase for exporting .3d files.
 
-  + Adjust testcases to try to avoid bogus failures due to excess precision
-    on x86 when using 387 FP instructions.
+  + Normalise `-0.00` to `0.00` in DXF output before comparing to avoid bogus
+    test failures due to excess precision on x86 when using 387 FP
+    instructions.
+
+  + Add test of DXF export with full coordinates.
 
 * translations:
 
