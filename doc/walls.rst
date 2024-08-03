@@ -20,7 +20,7 @@ loop closure will inevitably be different, but large or apparently systematic
 errors are worth reporting.  An easy way to compare is to export a Shapefile
 from ``Walls32.exe`` (the way to do this is a bit hidden - after processing
 select the `Segments` tab, make sure the whole project is selected, and click
-the `Details / Rpts...` button (towards the upper right).  You can then
+the `Details / Rpts...` button which is towards the upper right).  You can then
 overlay this Shapefile in ``aven`` using `File->Overlay Geodata...`.
 
 See below for a list of known limitations.  We've mostly prioritised what
@@ -120,10 +120,6 @@ features are likely to be handled while more obscure features may not be.
 - The ``INCH=`` option currently gives an "Unknown command" warning
   (unless the argument is zero, since Survex 1.4.10), and is skipped.
 
-- Walls documents allowing a "maximum of eight characters" in
-  unprefixed names - we don't bother trying to enforce this
-  restriction, but this should not make a difference in valid data.
-
 - Walls seems to allow ``\\`` in place of ``/`` in some places (e.g.
   ``#FLAG``).  We aim to support this too, but it doesn't seem to be documented
   so may not currently be supported in the correct places.
@@ -140,7 +136,7 @@ features are likely to be handled while more obscure features may not be.
   we do not have any real data to test this support with.
 
 - Walls gives an error if an unprefixed station name is more than 8 characters
-  long, but Survex allows longer names in Walls data.
+  long but Survex does not enforce this restriction.
 
 - Walls documents `The total length of the three prefix components combined,
   including any embedded colon separators, is 127 characters` but Survex does
@@ -151,11 +147,11 @@ features are likely to be handled while more obscure features may not be.
   with a letter other than ``U`` or ``L`` then it's treated as ``Mixed``.
   Since Survex 1.4.10.
 
-- Walls explicitly documents that `Unprefixed names can have a maximum of eight
-  characters and must not contain any colons, semicolons, commas, pound signs
-  (#), or embedded tabs or spaces.` but it actually allows ``#`` in station
-  names (though it can't be used as the first character of the from station
-  name as that will be interpreted as a command.  Since Survex 1.4.10.
+- Walls explicitly documents that `Unprefixed names [...] must not contain any
+  colons, semicolons, commas, pound signs (#), or embedded tabs or spaces.` but
+  it actually allows ``#`` in station names (though it can't be used as the
+  first character of the from station name as that will be interpreted as a
+  command.  Since Survex 1.4.10.
 
 - Walls ignores junk after the numeric argument in ``TYPEAB=``, ``TYPEVB=``,
   ``UV=``, ``UVH=``, and ``UVV=``.  Survex warns and skips the junk.  Since
