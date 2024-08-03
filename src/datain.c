@@ -4240,7 +4240,7 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
     while (true) {
 	skipblanks();
 	switch (ch) {
-	  case '(':
+	  case '(': {
 	    real var_xy = HUGE_REAL, var_z = HUGE_REAL;
 	    read_walls_variance_overrides(&var_xy, &var_z);
 	    // For now don't allow 0 variance, make it 1mm instead.  FIXME We
@@ -4258,6 +4258,7 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
 	    VAR(Dy) = var_xy;
 	    VAR(Dz) = var_z;
 	    break;
+	  }
 	  case '*':
 	  case '<':
 	    read_walls_lrud();
