@@ -4926,11 +4926,31 @@ inches_only:
        case WallsSRVHeights: {
 	  real instrument_height = read_walls_distance(true,
 						       pcs->units[Q_LENGTH]);
+	  if (instrument_height == HUGE_REAL) {
+	      instrument_height = 0.0;
+	      if (ch == '-') {
+		  // Walls expects 2 or more - for an omitted value.
+		  if (nextch() != '-') {
+		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		  } else {
+		      while (nextch() == '-') { }
+		  }
+	      }
+	  }
 	  if (instrument_height != HUGE_REAL) {
 	      real target_height = read_walls_distance(true,
 						       pcs->units[Q_LENGTH]);
-	      // Walls allows for just one height.
-	      if (target_height == HUGE_REAL) target_height = 0.0;
+	      if (target_height == HUGE_REAL) {
+		  target_height = 0.0;
+		  if (ch == '-') {
+		      // Walls expects 2 or more - for an omitted value.
+		      if (nextch() != '-') {
+			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		      } else {
+			  while (nextch() == '-') { }
+		      }
+		  }
+	      }
 	      // FIXME: Ideally we'd make use of these, or at least warn if
 	      // they aren't equal...
 	      (void)instrument_height;
