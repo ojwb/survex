@@ -98,7 +98,7 @@ esac
  cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  quadrant_bearing bad_quadrant_bearing\
- samename\
+ samename tabinhighlight\
  3dexport gpxexport jsonexport kmlexport pltexport svgexport\
 "}}
 

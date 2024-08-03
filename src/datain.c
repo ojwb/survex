@@ -172,7 +172,6 @@ show_line(int col, int width)
 {
    /* Rewind to beginning of line. */
    long cur_pos = ftell(file.fh);
-   int tabs = 0;
    if (cur_pos < 0 || fseek(file.fh, file.lpos, SEEK_SET) == -1)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
@@ -182,7 +181,9 @@ show_line(int col, int width)
       int c = GETC(file.fh);
       /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
-      if (c == '\t') ++tabs;
+      // Replace tabs with spaces so alignment and length of the `^~~~`
+      // highlight works regardless of the terminal's tab rendering.
+      if (c == '\t') c = ' ';
       PUTC(c, STDERR);
    }
    fputnl(STDERR);
@@ -190,19 +191,7 @@ show_line(int col, int width)
    /* If we have a location in the line for the error, indicate it. */
    if (col > 0) {
       PUTC(' ', STDERR);
-      if (tabs == 0) {
-	 while (--col) PUTC(' ', STDERR);
-      } else {
-	 /* Copy tabs from line, replacing other characters with spaces - this
-	  * means that the caret should line up correctly. */
-	 if (fseek(file.fh, file.lpos, SEEK_SET) == -1)
-	    fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
-	 while (--col) {
-	    int c = GETC(file.fh);
-	    if (c != '\t') c = ' ';
-	    PUTC(c, STDERR);
-	 }
-      }
+      while (--col) PUTC(' ', STDERR);
       PUTC('^', STDERR);
       while (width > 1) {
 	 PUTC('~', STDERR);
@@ -2438,8 +2427,9 @@ next_line:
 	string line = S_INIT;
 	if (directive != WALLS_CMD_FIX && directive != WALLS_CMD_NULL) {
 	    bool seen_macros = false;
-	    // Recreate the start of the line for error reporting.
-	    // FIXME: This will change tabs to a single space...
+	    // Recreate the start of the line for error reporting.  This will
+	    // change each tab to a single space, but we do that anyway in
+	    // show_line().
 	    if (leading_blanks)
 		s_catn(&line, leading_blanks, ' ');
 	    s_catchar(&line, '#');

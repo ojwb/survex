@@ -1,0 +1,2 @@
+; pos=fail warn=0 error=1
+*fix	1	reference	0	0	0	bad	tab
