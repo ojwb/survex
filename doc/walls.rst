@@ -18,10 +18,13 @@ As of 1.4.10, some large Walls datasets can be successfully processed
 and Big Bat Cave).  Behaviour is not identical and station positions after
 loop closure will inevitably be different, but large or apparently systematic
 errors are worth reporting.  An easy way to compare is to export a Shapefile
-from ``Walls32.exe`` (the way to do this is a bit hidden - after processing
-select the `Segments` tab, make sure the whole project is selected, and click
-the `Details / Rpts...` button which is towards the upper right).  You can then
-overlay this Shapefile in ``aven`` using `File->Overlay Geodata...`.
+from ``Walls32.exe`` and overlay it in ``aven``.  The way to export is a bit
+hidden - after processing select the `Segments` tab, make sure the whole
+project is selected, and click the `Details / Rpts...` button which is towards
+the upper right.  Click the `Shapefile...` button in the new dialog box, and
+select what you want to output (e.g. `Vectors`).  Due to limitations in the
+Shapefile format each `Shape Type` selected here exports a separate Shapefile.
+To overlay a Shapefile in ``aven`` using `File->Overlay Geodata...`.
 
 See below for a list of known limitations.  We've mostly prioritised what
 to implemented based on testing with real-world datasets so commonly used
