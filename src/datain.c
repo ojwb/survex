@@ -1374,6 +1374,9 @@ typedef struct walls_options {
     // Flags to apply to stations in #FIX.
     int fix_station_flags;
 
+    // Default Compass-compatible flags to apply to legs.
+    unsigned long compass_dat_flags;
+
     string path;
 
     struct walls_options *next;
@@ -1401,6 +1404,9 @@ static const walls_options walls_options_default = {
     false,
 
     // fix_station_flags
+    0,
+
+    // compass_dat_flags
     0,
 
     // path
@@ -1713,7 +1719,8 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 
 // Walls #FLAG values seem to be arbitrary strings - we attempt to infer
 // suitable Survex station flags from a few key words.
-static int parse_walls_flags(bool check_for_quote)
+static int
+parse_walls_flags(bool check_for_quote)
 {
 //#define DEBUG_WALLS_FLAGS
     int station_flags = 0;
@@ -1780,6 +1787,73 @@ static int parse_walls_flags(bool check_for_quote)
     if (printed) printf("\n");
 #endif
     return station_flags;
+}
+
+static void
+parse_walls_segment(unsigned long* p_compass_dat_flags)
+{
+    *p_compass_dat_flags = 0;
+    const unsigned long valid_compass_dat_flags =
+	BIT('L' - 'A') |
+	BIT('S' - 'A') |
+	BIT('P' - 'A') |
+	BIT('X' - 'A') |
+	BIT('C' - 'A');
+    unsigned long possible_compass_dat_flags = 0;
+    // There's no defined format for #segment as such, but apparently it's
+    // common to set it to Compass DAT flags so if the value looks like a
+    // set of Compass DAT flags we map them to the Survex leg flags.
+    //
+    // Otherwise we ignore the value since "Segments are optional and have no
+    // affect on the compilation of survey data".
+    nextch();
+    if (ch == '/' || ch == '\\') {
+	// Treat absolute path the same as a relative path.
+	nextch();
+    }
+    while (ch >= 'A' && ch <= 'Z') {
+	possible_compass_dat_flags |= BIT(ch - 'A');
+	nextch();
+    }
+    if (isBlank(ch) || isEol(ch) || isComm(ch)) {
+	if ((possible_compass_dat_flags &~ valid_compass_dat_flags) == 0) {
+	    // Compass DAT `X` means exclude the data, but it seems to be used
+	    // in Walls data to mark duplicate data, so we map it to `L`.
+	    if (possible_compass_dat_flags & BIT('X' - 'A')) {
+		possible_compass_dat_flags &= ~BIT('X' - 'A');
+		possible_compass_dat_flags |= BIT('L' - 'A');
+	    }
+	    *p_compass_dat_flags = possible_compass_dat_flags;
+	}
+    }
+    skipline();
+}
+
+static int
+convert_compass_dat_flags(unsigned long compass_dat_flags)
+{
+    int survex_flags = 0;
+    if ((compass_dat_flags & BIT('S' - 'A'))) {
+	/* 'S' means "splay". */
+	survex_flags |= BIT(FLAGS_SPLAY);
+    }
+    if ((compass_dat_flags & BIT('P' - 'A'))) {
+	/* 'P' means "Exclude this shot from plotting", but the use
+	 * suggested in the Compass docs is for surface data, and legs
+	 * with this flag "[do] not support passage modeling".
+	 *
+	 * Even if it's actually being used for a different
+	 * purpose, Survex programs don't show surface legs
+	 * by default so FLAGS_SURFACE matches fairly well.
+	 */
+	survex_flags |= BIT(FLAGS_SURFACE);
+    }
+    if ((compass_dat_flags & BIT('L' - 'A'))) {
+	/* 'L' means "exclude from length" - map this to Survex's
+	 * FLAGS_DUPLICATE. */
+	survex_flags |= BIT(FLAGS_DUPLICATE);
+    }
+    return survex_flags;
 }
 
 static void
@@ -2741,9 +2815,7 @@ next_line:
 	    break;
 	  }
 	  case WALLS_CMD_SEGMENT:
-	    // "Segments are optional and have no affect on the compilation of
-	    // survey data" so ignore for now.
-	    skipline();
+	    parse_walls_segment(&p_walls_options->compass_dat_flags);
 	    break;
 	  case WALLS_CMD_SYMBOL:
 	    // Now to draw symbols.  Not really appropriate here as this is
@@ -4177,7 +4249,7 @@ read_walls_lrud(void)
 
 // Read optional LRUD and/or variance overrides.
 static void
-read_walls_extras(void)
+read_walls_extras(unsigned long* p_compass_dat_flags)
 {
     while (true) {
 	skipblanks();
@@ -4206,13 +4278,12 @@ read_walls_extras(void)
 	    break;
 	  case '#':
 	    // Allow for `#SEG` after a data leg.
+	    nextch();
 	    skipblanks();
 	    get_token_walls();
 	    walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
 	    if (directive == WALLS_CMD_SEGMENT) {
-		// "Segments are optional and have no affect on the compilation
-		// of survey data" so ignore for now.
-		skipline();
+		parse_walls_segment(p_compass_dat_flags);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
@@ -4234,11 +4305,12 @@ data_cartesian(void)
 
    reading first_stn = End;
 
-   const reading *ordering;
+   unsigned long compass_dat_flags = 0;
+   if (p_walls_options) compass_dat_flags = p_walls_options->compass_dat_flags;
 
    again:
 
-   for (ordering = pcs->ordering ; ; ordering++) {
+   for (const reading *ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
@@ -4264,7 +4336,7 @@ data_cartesian(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.
-	      read_walls_extras();
+	      read_walls_extras(&compass_dat_flags);
 	      process_eol();
 	      return;
 	  }
@@ -4274,13 +4346,13 @@ data_cartesian(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.
-	      read_walls_extras();
+	      read_walls_extras(&compass_dat_flags);
 	      process_eol();
 	      return;
 	  }
 	  break;
        case WallsSRVExtras:
-	  read_walls_extras();
+	  read_walls_extras(&compass_dat_flags);
 	  break;
        case Ignore:
 	 skipword(); break;
@@ -4397,8 +4469,7 @@ data_normal(void)
    clino_type ctype, backctype;
    bool fDepthChange;
    unsigned long compass_dat_flags = 0;
-
-   const reading *ordering;
+   if (p_walls_options) compass_dat_flags = p_walls_options->compass_dat_flags;
 
    VAL(Tape) = VAL(BackTape) = HUGE_REAL;
    VAL(Comp) = VAL(BackComp) = HUGE_REAL;
@@ -4425,7 +4496,7 @@ data_normal(void)
     * error in a reading, we might not, so make sure it has been cleared here.
     */
    pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
-   for (ordering = pcs->ordering; ; ordering++) {
+   for (const reading *ordering = pcs->ordering; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
@@ -4614,7 +4685,7 @@ data_normal(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.
-	      read_walls_extras();
+	      read_walls_extras(&compass_dat_flags);
 	      process_eol();
 	      return;
 	  }
@@ -4624,7 +4695,7 @@ data_normal(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.
-	      read_walls_extras();
+	      read_walls_extras(&compass_dat_flags);
 	      process_eol();
 	      return;
 	  }
@@ -4868,7 +4939,7 @@ inches_only:
 	  break;
        }
        case WallsSRVExtras:
-	  read_walls_extras();
+	  read_walls_extras(&compass_dat_flags);
 	  break;
        case Ignore:
 	  skipword(); break;
@@ -4878,8 +4949,6 @@ inches_only:
        case Newline:
 	  if (fr != NULL) {
 	     int r;
-	     int save_flags;
-	     int implicit_splay;
 	     if (fTopofil) {
 		VAL(Tape) = VAL(ToCount) - VAL(FrCount);
 		LOC(Tape) = LOC(ToCount);
@@ -4932,9 +5001,9 @@ inches_only:
 		compile_diagnostic_reading(DIAG_ERR, Tape, /*Tape reading may not be omitted*/94);
 		goto inferred_equate;
 	     }
-	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
+	     int implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
-	     save_flags = pcs->flags;
+	     int save_flags = pcs->flags;
 	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
 	     }
@@ -4994,8 +5063,6 @@ inches_only:
 	  /* fall through */
        case End:
 	  if (!fMulti) {
-	     int save_flags;
-	     int implicit_splay;
 	     /* Compass ignore flag is 'X' */
 	     if ((compass_dat_flags & BIT('X' - 'A'))) {
 		process_eol();
@@ -5063,31 +5130,14 @@ inches_only:
 		process_eol();
 		return;
 	     }
-	     implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
+	     int implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
 	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
-	     save_flags = pcs->flags;
+	     int save_flags = pcs->flags;
 	     if (implicit_splay) {
 		pcs->flags |= BIT(FLAGS_SPLAY);
 	     }
-	     if ((compass_dat_flags & BIT('S' - 'A'))) {
-		/* 'S' means "splay". */
-		pcs->flags |= BIT(FLAGS_SPLAY);
-	     }
-	     if ((compass_dat_flags & BIT('P' - 'A'))) {
-		/* 'P' means "Exclude this shot from plotting", but the use
-		 * suggested in the Compass docs is for surface data, and legs
-		 * with this flag "[do] not support passage modeling".
-		 *
-		 * Even if it's actually being used for a different
-		 * purpose, Survex programs don't show surface legs
-		 * by default so FLAGS_SURFACE matches fairly well.
-		 */
-		pcs->flags |= BIT(FLAGS_SURFACE);
-	     }
-	     if ((compass_dat_flags & BIT('L' - 'A'))) {
-		/* 'L' means "exclude from length" - map this to Survex's
-		 * FLAGS_DUPLICATE. */
-		pcs->flags |= BIT(FLAGS_DUPLICATE);
+	     if (compass_dat_flags) {
+		pcs->flags |= convert_compass_dat_flags(compass_dat_flags);
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:

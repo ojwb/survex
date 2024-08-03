@@ -59,6 +59,22 @@ features are likely to be handled while more obscure features may not be.
   + Floating the traverse containing a leg (with ``*``) currently just floats
     that leg (so it's the same as ``?``).
 
+- Walls ``#SEGMENT`` is apparently in practice commonly set to a set of Compass
+  "shot flags", so if a ``#SEGMENT`` value consists only of letters from the
+  set ``CLPSX`` with an optional leading ``/`` or ``\\`` then we map it to
+  Survex flags like so (since Survex 1.4.10):
+
+  + ``C`` is ignored
+  + ``L`` is mapped to Survex's "duplicate" flag
+  + ``P`` is mapped to Survex's "surface" flag
+  + ``S`` is mapped to Survex's "splay" flag
+  + ``X`` in Compass completely excludes the leg from processing, but it can't
+    in Walls and it seems in practice it's sometimes used in Walls to flag
+    data to just exclude from the surveyed length, so we treat it as an alias
+    for ``L`` and map it to Survex's "duplicate" flag.
+
+  Other values of ``#SEGMENT`` are ignored.
+
 - Walls ``FLAG`` values seem to be arbitrary text strings.  We try to
   infer appropriate Survex station flags by checking for certain key
   words in that text (currently we map words ``ENTRANCE`` and ``FIX``
