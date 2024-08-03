@@ -4386,6 +4386,9 @@ data_cartesian(void)
 	     if (implicit_splay) {
 		 pcs->flags |= BIT(FLAGS_SPLAY);
 	     }
+	     if (compass_dat_flags) {
+		pcs->flags |= convert_compass_dat_flags(compass_dat_flags);
+	     }
 	     process_cartesian(fr, to, first_stn == To);
 	     pcs->flags = save_flags;
 

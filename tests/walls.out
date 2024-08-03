@@ -4,43 +4,43 @@
 ./walls.srv:27:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
-./walls.srv:46:14: warning: End of line not blank
+./walls.srv:47:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:54:8: warning: Unknown command "inch"
+./walls.srv:55:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
         ^~~~
-./walls.srv:58:12: warning: Ignoring "gradeb)"
+./walls.srv:59:12: warning: Ignoring "gradeb)"
  #units uv=4gradeb) inch=1
             ^~~~~~~
-./walls.srv:58:20: warning: Unknown command "inch"
+./walls.srv:59:20: warning: Unknown command "inch"
  #units uv=4gradeb) inch=1
                     ^~~~
-./walls.srv:59:13: warning: Ignoring "gradeb"
- #units uvv=4gradeb inch=1
-             ^~~~~~
-./walls.srv:59:20: warning: Unknown command "inch"
- #units uvv=4gradeb inch=1
-                    ^~~~
 ./walls.srv:60:13: warning: Ignoring "gradeb"
- #units uvh=4gradeb inch=1
+ #units uvv=4gradeb inch=1
              ^~~~~~
 ./walls.srv:60:20: warning: Unknown command "inch"
+ #units uvv=4gradeb inch=1
+                    ^~~~
+./walls.srv:61:13: warning: Ignoring "gradeb"
+ #units uvh=4gradeb inch=1
+             ^~~~~~
+./walls.srv:61:20: warning: Unknown command "inch"
  #units uvh=4gradeb inch=1
                     ^~~~
-./walls.srv:61:18: warning: Ignoring "Q)"
+./walls.srv:62:18: warning: Ignoring "Q)"
  #units typeab=n,4Q),X inch=1
                   ^~
-./walls.srv:61:23: warning: Unknown command "inch"
+./walls.srv:62:23: warning: Unknown command "inch"
  #units typeab=n,4Q),X inch=1
                        ^~~~
-./walls.srv:62:20: warning: Ignoring "Q"
+./walls.srv:63:20: warning: Ignoring "Q"
  #units typevb=c,1.2Q inch=1
                     ^
-./walls.srv:62:22: warning: Unknown command "inch"
+./walls.srv:63:22: warning: Unknown command "inch"
  #units typevb=c,1.2Q inch=1
                       ^~~~
-./walls.srv:73:11: warning: Expecting station name
+./walls.srv:74:11: warning: Expecting station name
  U11 EMPTY: 1.00 -- 90
            ^
 
@@ -61,9 +61,9 @@ Calculating statistics...
 Survey contains 24 survey stations, joined by 22 legs.
 There are 0 loops.
 Survey has 2 connected components.
-Total length of survey legs =  146.82m ( 146.82m adjusted)
-Total plan length of survey legs =  103.82m
-Total vertical length of survey legs =  103.82m
+Total length of survey legs =   83.11m (  83.11m adjusted)
+Total plan length of survey legs =   56.82m
+Total vertical length of survey legs =   57.82m
 Vertical range = 56.04m (from U12b at 51.00m to anonymous station at -5.04m)
 Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
