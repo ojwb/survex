@@ -111,6 +111,9 @@ using the command::
 Support for anonymous stations and for ``*alias station - ..`` was added in
 Survex 1.2.7.
 
+Support for anonymous stations in the ``cartesian`` data style was added in
+Survex 1.4.10.
+
 Numeric fields
 ==============
 

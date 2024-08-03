@@ -8,3 +8,8 @@
 5.0 - down 1 ...;comment
 *alias station - ..
 5.0 - down 1 -;comment
+*data cartesian from to dx dy dz
+1 2 3 3 3
+2 . 1 0 0
+2 .. 0 1 0
+2 ... 0 0 1

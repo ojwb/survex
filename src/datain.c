@@ -4310,15 +4310,19 @@ data_cartesian(void)
 
    again:
 
+   /* We clear these flags in the normal course of events, but if there's an
+    * error in a reading, we might not, so make sure it has been cleared here.
+    */
+   pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
    for (const reading *ordering = pcs->ordering ; ; ordering++) {
       skipblanks();
       switch (*ordering) {
        case Fr:
-	 fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
+	 fr = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	 if (first_stn == End) first_stn = Fr;
 	 break;
        case To:
-	 to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
+	 to = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_ANON);
 	 if (first_stn == End) first_stn = To;
 	 break;
        case Station:
@@ -4361,8 +4365,15 @@ data_cartesian(void)
 	 /* fall through */
        case Newline:
 	 if (fr != NULL) {
-	    if (!process_cartesian(fr, to, first_stn == To))
-	       skipline();
+	     int implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
+	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
+	     int save_flags = pcs->flags;
+	     if (implicit_splay) {
+		 pcs->flags |= BIT(FLAGS_SPLAY);
+	     }
+	     if (!process_cartesian(fr, to, first_stn == To))
+		 skipline();
+	     pcs->flags = save_flags;
 	 }
 	 fMulti = true;
 	 while (1) {
@@ -4379,9 +4390,17 @@ data_cartesian(void)
 	 /* fall through */
        case End:
 	 if (!fMulti) {
-	    process_cartesian(fr, to, first_stn == To);
-	    process_eol();
-	    return;
+	     int implicit_splay = TSTBIT(pcs->flags, FLAGS_IMPLICIT_SPLAY);
+	     pcs->flags &= ~(BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY));
+	     int save_flags = pcs->flags;
+	     if (implicit_splay) {
+		 pcs->flags |= BIT(FLAGS_SPLAY);
+	     }
+	     process_cartesian(fr, to, first_stn == To);
+	     pcs->flags = save_flags;
+
+	     process_eol();
+	     return;
 	 }
 	 do {
 	    process_eol();
