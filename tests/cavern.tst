@@ -325,6 +325,11 @@ for file in $TESTS ; do
 
     # Normalise exported file if required.
     case $pos in
+      dxf)
+	# On x86 excess precision can result in -0.00 for some coordinates.
+	sed 's/-0\.00\>/0.00/g' < "$tmpfile" > tmp.tmp
+	mv tmp.tmp "$tmpfile"
+	;;
       gpx)
 	sed 's,<time>[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]T[0-9][0-9]:[0-9][0-9]:[0-9][0-9]Z</time>,<time>REDACTED</time>,;s,survex [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*,survex REDACTED,' < "$tmpfile" > tmp.tmp
 	mv tmp.tmp "$tmpfile"
