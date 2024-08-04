@@ -4248,7 +4248,8 @@ read_walls_lrud(void)
 	    // Walls seems to quietly ignore junk after LRUD before the next
 	    // blank.
 	    get_word();
-	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, token);
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506,
+			       s_str(&token));
 	}
     } else {
 	char as_string[2] = { end, '\0' };
