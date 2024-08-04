@@ -1557,18 +1557,35 @@ bad_angle_units:
 static real
 read_walls_distance(bool f_optional, real default_units)
 {
-    real distance = read_numeric(f_optional);
+    real distance;
+    if (ch == 'i' || ch == 'I') {
+	// Length specified in inches only, e.g. `i6` is 6 inches.
+	distance = 0.0;
+	goto inches_only;
+    }
+    distance = read_numeric(f_optional);
     if (distance != HUGE_REAL) {
 	if (isalpha((unsigned char)ch)) {
-	    get_token_walls();
+inches_only:
+	    get_token();
 	    // Only one letter is allowed here.
 	    if (s_str(&uctoken)[1] != '\0') goto bad_distance_units;
-	    if (s_str(&uctoken)[0] == 'M') {
+	    switch (s_str(&uctoken)[0]) {
+	      case 'M':
 		// Metres.
-	    } else if (s_str(&uctoken)[0] == 'F') {
+		break;
+	      case 'F':
 		// Feet.
 		distance *= METRES_PER_FOOT;
-	    } else {
+		break;
+	      case 'I':
+		if (isdigit(ch)) {
+		    real inches = read_numeric(false);
+		    distance += inches / 12.0;
+		}
+		distance *= METRES_PER_FOOT;
+		break;
+	      default:
 bad_distance_units:
 		compile_diagnostic(DIAG_ERR|DIAG_COL,
 				   /*Expecting “%s” or “%s”*/103, "F", "M");
@@ -2534,8 +2551,8 @@ next_line:
 		// warning not an error so we can process existing Walls
 		// datasets (e.g. the Mammoth dataset reportedly has `#Date
 		// 1978-07-01\`.
-		compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);
-		skipline();
+		compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
+				   /*End of line not blank*/15);
 	    }
 	    break;
 	  }
@@ -2790,8 +2807,8 @@ next_line:
 		// warning not an error so we can process existing Walls
 		// datasets (e.g. the Mammoth dataset reportedly has `#prefix
 		// 4136 Lucys domes`).
-		compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);
-		skipline();
+		compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
+				   /*End of line not blank*/15);
 	    }
 	    break;
 	  }
@@ -4227,6 +4244,12 @@ read_walls_lrud(void)
     }
     if (ch == end) {
 	nextch();
+	if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+	    // Walls seems to quietly ignore junk after LRUD before the next
+	    // blank.
+	    get_word();
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506, token);
+	}
     } else {
 	char as_string[2] = { end, '\0' };
 	compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s”*/497, as_string);
@@ -4327,7 +4350,13 @@ data_cartesian(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.
+handle_isolated_lrud:
 	      read_walls_extras(&compass_dat_flags);
+	      skipblanks();
+	      if (!isEol(ch) && !isComm(ch)) {
+		  compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
+				     /*End of line not blank*/15);
+	      }
 	      process_eol();
 	      return;
 	  }
@@ -4337,9 +4366,7 @@ data_cartesian(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.
-	      read_walls_extras(&compass_dat_flags);
-	      process_eol();
-	      return;
+	      goto handle_isolated_lrud;
 	  }
 	  break;
        case WallsSRVExtras:
@@ -4702,7 +4729,13 @@ data_normal(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Isolated LRUD.
+handle_isolated_lrud:
 	      read_walls_extras(&compass_dat_flags);
+	      skipblanks();
+	      if (!isEol(ch) && !isComm(ch)) {
+		  compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
+				     /*End of line not blank*/15);
+	      }
 	      process_eol();
 	      return;
 	  }
@@ -4712,9 +4745,7 @@ data_normal(void)
 	  skipblanks();
 	  if (ch == '*' || ch == '<') {
 	      // Odd apparently undocumented variant of isolated LRUD.
-	      read_walls_extras(&compass_dat_flags);
-	      process_eol();
-	      return;
+	      goto handle_isolated_lrud;
 	  }
 	  break;
        case WallsSRVTape:

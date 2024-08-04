@@ -76,7 +76,7 @@ char* grab_line(void);
 #define DIAG_TOKEN	0x10
 // The following codes say to parse and discard a value from the current file
 // position - caret_width is set to its length:
-#define DIAG_WORD	0x20	// Span of non-blanks.
+#define DIAG_WORD	0x20	// Span of non-blanks (and non-comments).
 #define DIAG_UINT	0x40	// Span of digits.
 #define DIAG_DATE	0x80	// Span of digits and full stops.
 #define DIAG_NUM	0x100	// Real number.
