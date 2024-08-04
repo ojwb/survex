@@ -108,6 +108,10 @@ static inline bool s_eq(const string *pstr, const char *s) {
     return strcmp(pstr->s, s) == 0;
 }
 
+static inline bool s_back(const string *pstr) {
+    return pstr->s[pstr->len - 1];
+}
+
 #define S_EQ(PSTR, LITERAL) s_eqlen((PSTR), LITERAL, sizeof(LITERAL "") - 1)
 
 #endif // SURVEX_INCLUDED_STR_H

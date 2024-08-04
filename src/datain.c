@@ -1366,6 +1366,7 @@ typedef struct walls_options {
     // Default Compass-compatible flags to apply to legs.
     unsigned long compass_dat_flags;
 
+    // Current path including trailing directory separator if one is needed.
     string path;
 
     struct walls_options *next;
@@ -3091,7 +3092,6 @@ process_entry:
 		// align better?
 		string full_file = S_INIT;
 		s_cats(&full_file, &p_walls_options->path);
-		s_catchar(&full_file, FNM_SEP_LEV);
 		s_cats(&full_file, &name);
 		s_cat(&full_file, ".SRV");
 		if (!fDirectory(s_str(&p_walls_options->path))) {
@@ -3182,15 +3182,16 @@ detached_or_not_srv:
 	  case WALLS_WPJ_CMD_PATH: {
 	    skipblanks();
 	    if (!isEol(ch)) {
-		if (!s_empty(&p_walls_options->path)) {
-		    s_catchar(&p_walls_options->path, FNM_SEP_LEV);
-		}
 		while (!isEol(ch)) {
 		    if (ch == '\\') {
 			ch = FNM_SEP_LEV;
 		    }
 		    s_catchar(&p_walls_options->path, ch);
 		    nextch();
+		}
+		// Ensure path ends with a directory separator.
+		if (s_back(&p_walls_options->path) != FNM_SEP_LEV) {
+		    s_catchar(&p_walls_options->path, FNM_SEP_LEV);
 		}
 	    }
 	    //printf("PATH: %s\n", s_str(&p_walls_options->path));
