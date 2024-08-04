@@ -71,21 +71,7 @@ OUTPUT
 If there were no errors during processing, cavern produces two
 output files, with the extensions ``.3d`` and ``.err`` (unless
 ``--no-auxiliary-files`` is specified in which case only the ``.3d``
-file is produced):
-
-``.3d``
-   This is a binary file format containing the adjusted survey data and
-   associated meta data.
-``.err``
-   This is a text file which contains statistics about each traverse in the
-   survey which is part of a loop.  It includes various statistics for each
-   traverse, such as the percentage error per leg.  This information is now
-   also present in the ``.3d`` file so you can view the survey coloured by
-   these errors, but the ``.err`` file can still be useful as you can sort
-   it using ``sorterr`` to get a ranked list of the sections of survey with
-   the worst misclosure errors.
-
-.. FIXME: Explain what the statistics in .err mean - or in sorterr page?
+file is produced).
 
 These two files are always created with their respective extensions.  By
 default they are created in the current directory, with the same base filename
@@ -102,6 +88,63 @@ of the first `SURVEY_DATA_FILE`.  If you specify a filename which is not a
 directory (note that it doesn't need to actually exist as a file) then the
 directory this file is in is used, and also the basename of the filename
 is used instead of the basename of the first `SURVEY_DATA_FILE`.
+
+Details of the output files:
+
+``.3d``
+   This is a binary file format containing the adjusted survey data and
+   associated meta data.
+``.err``
+   This is a text file which contains statistics about each traverse in the
+   survey which is part of a loop.  It includes various statistics for each
+   traverse:
+
+   Original length
+      This is the measured length of the traverse (for a "normal" or "diving"
+      survey this is the sum of the tape readings after applying calibration
+      corrections).
+   Number of legs
+      The number of survey legs in the traverse
+   Moved
+      How much one end of the traverse moved by relative to the other after
+      loop closure
+   Moved per leg
+      `Moved` / `Number of legs`
+   Percentage error
+      (`Moved` / `Original length`) as a percentage.  This seems to be a
+      popular measure of how good or bad a misclosure is, but it's a
+      problematic one because a longer traverse will naturally tend to
+      have a lower percentage error so you can't just compare values
+      between traverses.  We recommend using the `E`, `H` and `V` values
+      instead.
+   Error (`E`)
+      This isn't labelled in the `.err` file but is the value on a line by
+      itself.  In ``aven`` it's the value used by `Colour by Error`.  It
+      is `Moved` divided by the standard deviation for the traverse based on
+      the standard errors specified for the instruments.  This tells us how
+      plausible it is that the misclosure is just due to random errors.  It
+      is a number of standard deviations, so the `68-95-99.7 rule
+      <https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule>`__
+      applies - e.g. approximately 99.7% of traverses should have a value of
+      3.0 or less (assuming the specified instrument standard deviations are
+      realistic).
+    Horizontal Error (`H`)
+      This is like `E` but only considers the horizontal component.  In
+      ``aven`` it's the value used by `Colour by Horizontal Error`.  You
+      can identify suspect traverses by looking at `E` and then compare
+      `H` and `V` to see what sort of blunder might explain the misclosure.
+      For example, if `H` is small but `V` is large it could be a clino reading
+      or plumb with an incorrect sign, or a tape blunder on a plumbed leg; if
+      `H` is large but `V` is small it could be a compass blunder, or a tape
+      blunder of a nearly-flat leg.
+    Vertical Error (`V`)
+      This is like `E` but only considers the vertical component.  In
+      ``aven`` it's the value used by `Colour by Vertical Error`.
+
+   This information is now also present in the ``.3d`` file so you can view the
+   survey coloured by these errors, but the ``.err`` file can
+   still be useful as you can sort it using ``sorterr`` to get a ranked list of
+   the sections of survey with the worst misclosure errors.
 
 Cavern also reports a range of statistics at the end of a successful
 run:
