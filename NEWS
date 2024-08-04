@@ -1,4 +1,4 @@
-up to: 83e59ea74b9a0fb09cab7ec9399e0d7ef55bac06
+up to: 56817652c6215de2ae2a018b0159e2f8058c7009
 
 Changes in 1.4.10 (2024-08-??):
 
@@ -199,6 +199,8 @@ Changes in 1.4.10 (2024-08-??):
     result fixing issues with the automated conversion.  We took the
     opportunity to also review the content and update or remove out of
     date and other incorrect information, and to reorder some of the content.
+
+  + Document all the statistics in the `.err` file
 
   + Document PLT export.
 
