@@ -1111,7 +1111,7 @@ Description
    ``*fix`` fixes the position of <station> at the given coordinates.  If you
    haven't specified the coordinate system with ``*cs``, you can omit the
    position and it will default to (0,0,0) which provides an easy way to
-   specify a point to arbitrarily fix rather than rely on ``cavern1` picking
+   specify a point to arbitrarily fix rather than rely on ``cavern`` picking
    one (which has the downsides of the choice potentially changing when more
    survey data is added, and of triggering an "info" message).
 

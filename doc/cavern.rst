@@ -128,7 +128,7 @@ Details of the output files:
       applies - e.g. approximately 99.7% of traverses should have a value of
       3.0 or less (assuming the specified instrument standard deviations are
       realistic).
-    Horizontal Error (`H`)
+   Horizontal Error (`H`)
       This is like `E` but only considers the horizontal component.  In
       ``aven`` it's the value used by `Colour by Horizontal Error`.  You
       can identify suspect traverses by looking at `E` and then compare
@@ -137,7 +137,7 @@ Details of the output files:
       or plumb with an incorrect sign, or a tape blunder on a plumbed leg; if
       `H` is large but `V` is small it could be a compass blunder, or a tape
       blunder of a nearly-flat leg.
-    Vertical Error (`V`)
+   Vertical Error (`V`)
       This is like `E` but only considers the vertical component.  In
       ``aven`` it's the value used by `Colour by Vertical Error`.
 
