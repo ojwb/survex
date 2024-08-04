@@ -1,4 +1,4 @@
-up to: 56817652c6215de2ae2a018b0159e2f8058c7009
+up to: f806e3895923c2df89d250509ac4746d7df82903
 
 Changes in 1.4.10 (2024-08-??):
 
@@ -96,16 +96,17 @@ Changes in 1.4.10 (2024-08-??):
     affects use from a terminal as the highlight was already correctly handled
     when viewing the log in aven.
 
-  + Enhancements and fixes to reading Walls WPJ and SRV files:
+  + Enhancements and fixes to reading Walls WPJ and SRV files (thanks to Eric
+    C. Landgraf and Joe for a lot of great feedback from testing with large
+    datasets):
 
     - The `RECT=` option is now fully supported.
 
     - Fix `#DATE` with an active `.REF` to act like `DECL=`.  This matches what
-      the documentation says and what Walls seems to actually do.  Thanks to
-      Erik C. Landgraf and Joe for spotting and analysing this issue.
+      the documentation says and what Walls seems to actually do.
 
     - Allow completely omitting the clino on a wall shot (with `ORDER=DAV` or
-      `ORDER=ADV`).  Reported by Eric C. Landgraf.
+      `ORDER=ADV`).
 
     - Resolve WPJ `.PATH` relative to innermost containing book.
 
@@ -116,18 +117,15 @@ Changes in 1.4.10 (2024-08-??):
       used and Survex doesn't allow an empty station name, so we issue a
       warning and use the name `empty name` (which has a space in, so can't
       collide with a real Walls station name which can't contain a space) - so
-      `PEP:` in Walls becomes `PEP.empty name` in Survex.  Reported by Erik C.
-      Landgraf.
+      `PEP:` in Walls becomes `PEP.empty name` in Survex.
 
-    - Flag stations with explicit Walls prefix as exported.  Suggested by Eric
-      C. Landgraf.
+    - Flag stations with explicit Walls prefix as exported.
 
     - Fix setting empty Walls macro with a comment right after it.
 
     - Walls quietly ignores junk after the numeric argument in `TYPEAB=`,
       `TYPEVB=`, `UV=`, `UVH=`, and `UVV=`.  This seems to be an undocumented
-      feature/bug so Survex emits a warning and skips the junk.  Reported by
-      Eric C. Landgraf.
+      feature/bug so Survex emits a warning and skips the junk.
 
     - After an unknown Walls option we now process the rest of the line.
       Previously we were skipping the rest of the line.
@@ -136,12 +134,11 @@ Changes in 1.4.10 (2024-08-??):
 
     - Correct the reported column for some Walls option diagnostics.
 
-    - Support explicit units on Walls clino readings.  Reported by Eric C.
-      Landgraf.
+    - Support explicit units on Walls clino readings.
 
     - Allow `#` in Walls station names.  This is explicitly documented as not
       allowed, but the documentation doesn't match the implementation and `#`
-      is present in some real-world data.  Reported by Eric C. Landgraf.
+      is present in some real-world data.
 
     - Improve handling of Walls `RESTORE` error.  Highlight the position in the
       line and don't skip the rest of the line.
@@ -152,10 +149,10 @@ Changes in 1.4.10 (2024-08-??):
     - Fix not to skip the rest of the line after Walls `INCH=` option.
       We currently don't support `INCH=` so we warn about it, but we were
       skipping the rest of the line, then trying to read and discard the
-      argument to `INCH=` which gave an error.  Reported by Eric C. Landgraf.
+      argument to `INCH=` which gave an error.
 
     - Relax handling of Walls `CASE=`.  It's not documented, but Walls32.exe
-      quietly treats unknown values as "Mixed".  Reported by Eric C. Landgraf.
+      quietly treats unknown values as "Mixed".
 
     - Support DM and DMS format for latitude and longitude in Walls `#FIX`,
       e.g. `W97:43.875` and `W97:43:52.5` .
@@ -175,6 +172,8 @@ Changes in 1.4.10 (2024-08-??):
       `/` or `\`) then we interpret them as Compass shot flags (except that `X`
       is mapped the same way as `L`).  This is apparently a common way to use
       `#SEGMENT`, and unlikely to be triggered accidentally.
+
+    - Avoid a doubled directory separator when building Walls path names.
 
 * dump3d:
 
