@@ -376,8 +376,9 @@ read_walls_prefix(void)
 }
 
 prefix *
-read_walls_station(char * const walls_prefix[3], bool anon_allowed)
+read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 {
+    if (p_new) *p_new = false;
 //    bool f_optional = false; //!!(pfx_flags & PFX_OPT);
 //    bool fSuspectTypo = false; //!!(pfx_flags & PFX_SUSPECT_TYPO);
 //    prefix *back_ptr, *ptr;
@@ -416,6 +417,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
 	    prefix *pfx = new_anon_station();
 	    pfx->sflags |= BIT(SFLAGS_WALL);
+	    // An anonymous station is always new.
+	    if (p_new) *p_new = true;
 	    return pfx;
 	}
 	s_catn(&component, dashes, '-');
@@ -516,6 +519,9 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 	    ptr = ptr->down;
 	    if (ptr == NULL) {
 		/* Special case first time around at each level */
+		/* No need to check if we're at the station level - if the
+		 * prefix is new the station must be. */
+		if (p_new) *p_new = true;
 		ptr = osnew(prefix);
 		ptr->ident = (i < 3 ? osstrdup(name) : name);
 		name = NULL;
@@ -545,8 +551,8 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed)
 		}
 		if (cmp) {
 		    /* ie we got to one that was higher, or the end */
-		    prefix *newptr;
-		    newptr = osnew(prefix);
+		    if (p_new) *p_new = true;
+		    prefix *newptr = osnew(prefix);
 		    newptr->ident = (i < 3 ? osstrdup(name) : name);
 		    name = NULL;
 		    if (ptrPrev == NULL)

@@ -2561,7 +2561,8 @@ next_line:
 	    real coords[3];
 	    filepos fp_stn;
 	    get_pos(&fp_stn);
-	    prefix *name = read_walls_station(p_walls_options->prefix, false);
+	    prefix *name = read_walls_station(p_walls_options->prefix,
+					      false, NULL);
 	    // FIXME: can be e.g. `W97:43:52.5    N31:16:45         323f`
 	    // Or E/S instead of W/N.
 
@@ -2786,7 +2787,8 @@ next_line:
 	    pcs->Translate['/'] = 0;
 	    pcs->Translate['\\'] = 0;
 	    while (!isWallsSlash(ch)) {
-		prefix *name = read_walls_station(p_walls_options->prefix, false);
+		prefix *name = read_walls_station(p_walls_options->prefix,
+						  false, NULL);
 		name->sflags |= station_flags;
 		skipblanks();
 	    }
@@ -2817,7 +2819,8 @@ next_line:
 	    // A text note attached to a station - ignore for now except we
 	    // read the station name and flag it to avoid an "unused fixed
 	    // point" warning.
-	    prefix *name = read_walls_station(p_walls_options->prefix, false);
+	    prefix *name = read_walls_station(p_walls_options->prefix,
+					      false, NULL);
 	    name->sflags |= BIT(SFLAGS_USED);
 	    skipline();
 	    break;
@@ -4245,9 +4248,10 @@ read_walls_lrud(void)
     }
     if (ch == end) {
 	nextch();
-	if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+	if (!isBlank(ch) && !isComm(ch) && !isEol(ch) && ch != '#' && ch != '(') {
 	    // Walls seems to quietly ignore junk after LRUD before the next
-	    // blank.
+	    // blank, but allow for a command (#SEG) or variance overrides
+	    // following with no blanks in between.
 	    get_word();
 	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Ignoring “%s”*/506,
 			       s_str(&token));
@@ -4308,6 +4312,59 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
     }
 }
 
+static bool
+read_walls_srv_to(prefix **p_to, unsigned long* p_compass_dat_flags)
+{
+    skipblanks();
+    filepos fp;
+    get_pos(&fp);
+    bool might_be_lrud = (ch == '*' || ch == '<');
+    if (might_be_lrud) {
+	// Isolated LRUD if there's a closing delimiter.  If not then
+	// Walls parses the `*` or `<` as the first character of the `To`
+	// station name.
+	int end = (ch == '*' ? ch : '>');
+	do {
+	    nextch();
+	} while (ch != end && !isComm(ch) && !isEol(ch));
+	bool parse_as_lrud = (ch == end);
+	set_pos(&fp);
+	if (parse_as_lrud) {
+handle_isolated_lrud:
+	    read_walls_extras(p_compass_dat_flags);
+	    skipblanks();
+	    if (!isEol(ch) && !isComm(ch)) {
+		compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
+				   /*End of line not blank*/15);
+	    }
+	    process_eol();
+	    return false;
+	}
+    }
+    bool new;
+    *p_to = read_walls_station(p_walls_options->prefix, true, &new);
+    if (might_be_lrud && new) {
+	// Walls behaviour here means isolated LRUD with a missing
+	// closing delimiter gets quietly misparsed as a survey leg so
+	// we issue a warning unless the affected station was already
+	// known.  Real world example:
+	//
+	// P25      *8 5 15 3.58
+	filepos fp_save;
+	get_pos(&fp_save);
+	set_pos(&fp);
+	compile_diagnostic(DIAG_WARN|DIAG_WORD,
+			   /*Parsing as “to” station but may be isolated LRUD with missing closing delimiter*/508);
+	set_pos(&fp_save);
+    }
+    skipblanks();
+    if (ch == '*' || ch == '<') {
+	// Odd apparently undocumented variant of isolated LRUD.
+	goto handle_isolated_lrud;
+    }
+    return true;
+}
+
 static void
 data_cartesian(void)
 {
@@ -4348,27 +4405,12 @@ data_cartesian(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_walls_station(p_walls_options->prefix, true);
-	  skipblanks();
-	  if (ch == '*' || ch == '<') {
-	      // Isolated LRUD.
-handle_isolated_lrud:
-	      read_walls_extras(&compass_dat_flags);
-	      skipblanks();
-	      if (!isEol(ch) && !isComm(ch)) {
-		  compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
-				     /*End of line not blank*/15);
-	      }
-	      process_eol();
-	      return;
-	  }
+	  fr = read_walls_station(p_walls_options->prefix, true, NULL);
 	  break;
        case WallsSRVTo:
-	  to = read_walls_station(p_walls_options->prefix, true);
-	  skipblanks();
-	  if (ch == '*' || ch == '<') {
-	      // Odd apparently undocumented variant of isolated LRUD.
-	      goto handle_isolated_lrud;
+	  if (!read_walls_srv_to(&to, &compass_dat_flags)) {
+	      // Isolated LRUD so don't try to parse line as a survey leg.
+	      return;
 	  }
 	  break;
        case WallsSRVExtras:
@@ -4727,27 +4769,12 @@ data_normal(void)
        case WallsSRVFr:
 	  // Walls SRV is always From then To.
 	  first_stn = Fr;
-	  fr = read_walls_station(p_walls_options->prefix, true);
-	  skipblanks();
-	  if (ch == '*' || ch == '<') {
-	      // Isolated LRUD.
-handle_isolated_lrud:
-	      read_walls_extras(&compass_dat_flags);
-	      skipblanks();
-	      if (!isEol(ch) && !isComm(ch)) {
-		  compile_diagnostic(DIAG_WARN|DIAG_SKIP|DIAG_TAIL,
-				     /*End of line not blank*/15);
-	      }
-	      process_eol();
-	      return;
-	  }
+	  fr = read_walls_station(p_walls_options->prefix, true, NULL);
 	  break;
        case WallsSRVTo:
-	  to = read_walls_station(p_walls_options->prefix, true);
-	  skipblanks();
-	  if (ch == '*' || ch == '<') {
-	      // Odd apparently undocumented variant of isolated LRUD.
-	      goto handle_isolated_lrud;
+	  if (!read_walls_srv_to(&to, &compass_dat_flags)) {
+	      // Isolated LRUD so don't try to parse line as a survey leg.
+	      return;
 	  }
 	  break;
        case WallsSRVTape:

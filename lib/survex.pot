@@ -3579,6 +3579,11 @@ msgstr ""
 msgid "Ignoring “%s”"
 msgstr ""
 
+#: ../src/datain.c:4385
+#: n:508
+msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
+msgstr ""
+
 #, c-format
 #~ msgid "Error in format of font file “%s”"
 #~ msgstr ""

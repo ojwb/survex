@@ -42,7 +42,9 @@ prefix *read_prefix(unsigned flags);
 // Caller is responsible for calling osfree() on the returned value.
 char *read_walls_prefix(void);
 
-prefix *read_walls_station(char * const walls_prefix[3], bool anon_allowed);
+prefix *read_walls_station(char * const walls_prefix[3],
+			   bool anon_allowed,
+			   bool *p_new);
 
 // Like read_numeric() but doesn't skipblanks() first and can be told to not
 // allow a sign.

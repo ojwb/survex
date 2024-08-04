@@ -44,6 +44,28 @@ features are likely to be handled while more obscure features may not be.
   can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
   fixed point.
 
+- If an isolated LRUD (LRUD not on a leg, e.g. specified for the start or end
+  station of a traverse) is missing its closing delimiter, Walls will parse
+  the line as a data leg where the "to" station starts with ``*`` or ``<``,
+  which will usually succeed without errors or warnings.  A real-world example
+  is::
+
+    P25     *8 5 16 3.58
+
+  Survex parses this like Walls does, but issues a warning::
+
+    walls.srv:1:9: warning: Parsing as "to" station but may be isolated LRUD with missing closing delimiter
+     P25     *8 5 15 3.58
+             ^~
+
+  This warning will also be triggered if you have a "to" station which actually
+  starts with ``*`` or ``<``, if the station name was not previously seen.
+  This condition provides a simple way to suppress the warning - just add a
+  dummy ``#NOTE`` command before the line of data like so::
+
+    #note *8 ; Suppress Survex warning that this looks like broken LRUD
+    P25     *8 5 16 3.58
+
 - Walls allows hanging surveys, apparently without any complaint, and
   as a result large Walls datasets are likely to have hanging surveys.
   A hanging survey used to be an error in Survex but since 1.4.10
