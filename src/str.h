@@ -108,7 +108,7 @@ static inline bool s_eq(const string *pstr, const char *s) {
     return strcmp(pstr->s, s) == 0;
 }
 
-static inline bool s_back(const string *pstr) {
+static inline char s_back(const string *pstr) {
     return pstr->s[pstr->len - 1];
 }
 
