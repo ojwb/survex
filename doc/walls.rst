@@ -35,6 +35,10 @@ features are likely to be handled while more obscure features may not be.
   what look like genuine problems in existing datasets, but if there are
   particular instances which are noisy and not useful, let us know.
 
+  Some of these warnings use the same wording as errors - most of these
+  probably ought to be an error except Walls quietly accepts them so we
+  don't want to fail processing because of them.
+
   If you want a way to suppress the "unused fixed point" warning, using the
   station in a ``#NOTE`` or ``#FLAG`` command counts as a "use" so you
   can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
