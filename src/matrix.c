@@ -150,15 +150,24 @@ build_matrix(node *list)
 	 for (row = 0; row < end; row++) M[row] = (real)0.0;
       }
 
-      /* Construct matrix - Go thru' stn list & add all forward legs between
-       * two unfixed stations to M (so each leg goes on exactly once).
+      /* Construct matrix by going through the stn list.
        *
        * All legs between two fixed stations can be ignored here.
        *
-       * All legs between a fixed and an unfixed station are then considered
-       * from the unfixed end (if we consider them from the fixed end we'd
-       * need to somehow detect when we're at a fixed point cut line and work
-       * out which side we're dealing with at this time. */
+       * Other legs we want to add exactly once to M.  To achieve this we
+       * wan to:
+       *
+       * - add forward legs between two unfixed stations,
+       *
+       * - add legs from unfixed stations to fixed stations (we do them from
+       *   the unfixed end so we don't need to detect when we're at a fixed
+       *   point cut line and determine which side we're currently dealing
+       *   with).
+       *
+       * To implement this, we only look at legs from unfixed stations and add
+       * a leg if to a fixed station, or to an unfixed station and it's a
+       * forward leg.
+       */
       FOR_EACH_STN(stn, list) {
 #ifdef NO_COVARIANCES
 	 real e;
