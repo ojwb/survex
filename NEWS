@@ -1,6 +1,4 @@
-up to: f806e3895923c2df89d250509ac4746d7df82903
-
-Changes in 1.4.10 (2024-08-??):
+Changes in 1.4.10 (2024-08-05):
 
 * aven:
 
@@ -168,15 +166,12 @@ Changes in 1.4.10 (2024-08-??):
       them is currently ignored.
 
     - If a `#SEGMENT` value looks like a set of Compass shot flags (i.e. consists
-      only of upper case characters from ``CLPSX``, optionally prefixed with a
+      only of upper case characters from `CLPSX`, optionally prefixed with a
       `/` or `\`) then we interpret them as Compass shot flags (except that `X`
       is mapped the same way as `L`).  This is apparently a common way to use
       `#SEGMENT`, and unlikely to be triggered accidentally.
 
     - Avoid a doubled directory separator when building Walls path names.
-
-* dump3d:
-
 
 * documentation:
 
@@ -194,7 +189,7 @@ Changes in 1.4.10 (2024-08-??):
     providing them on the website years ago).  They could probably be
     reinstated if there's a demand for them.
 
-  + The conversion was partly automated followed by a full pass over the
+    The conversion was partly automated followed by a full pass over the
     result fixing issues with the automated conversion.  We took the
     opportunity to also review the content and update or remove out of
     date and other incorrect information, and to reorder some of the content.
@@ -220,11 +215,6 @@ Changes in 1.4.10 (2024-08-??):
 
   + Document how to suppress unused fixed point warning in Walls SRV.
 
-* img library:
-
-
-* Build system:
-
 * testsuite:
 
   + Add testcase for Walls `#units order=da`.
@@ -242,7 +232,7 @@ Changes in 1.4.10 (2024-08-??):
 * translations:
 
   + Diagnostics can now use positional arguments which sometimes allows a
-    more natural word order in the translation.
+    more natural word order in a translated message.
 
 Changes in 1.4.9 (2024-07-04):
 
