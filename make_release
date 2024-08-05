@@ -39,7 +39,21 @@ else
 fi
 
 VERSION=`sed 's/^VERSION *= *//p;d' Makefile`
-FILES="survex-$VERSION.tar.gz survex-win32-$VERSION.exe"
+HOST=thyestes.tartarus.org
+
+echo 'Tagging'
+git tag -s -m"Survex $VERSION" "v$VERSION"
+
+echo 'Pushing'
+git push --follow-tags
+ssh "$HOST" bin/survex-git-mirror
+
+win32=survex-win32-$VERSION.exe
+echo "Download and unzip $win32 into `pwd`"
+
+while test ! -f "$win32" ; do sleep 1 ; done
+
+FILES="survex-$VERSION.tar.gz $win32"
 echo "SHA256 checksums:"
 sha256sum $FILES
 echo
@@ -49,9 +63,7 @@ for f in $FILES ; do
     FILES="$FILES $f.asc"
 done
 
-echo "To tag this release and upload it to the webserver, run:"
-echo git tag -s -m"'Survex $VERSION'" "v$VERSION"
+echo "To upload to the webserver, run:"
 
-HOST=thyestes.tartarus.org
 echo ssh "$HOST" mkdir /srv/www/survex.com/software/"$VERSION"
 echo scp $FILES "$HOST":/srv/www/survex.com/software/"$VERSION"
