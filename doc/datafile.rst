@@ -746,11 +746,15 @@ Description
                16.1 20.4 8.7
              2
 
-         .. note:: Cartesian data are relative to **true** North not
-            **magnetic** North (i.e. they are unaffected by ``*declination``
-            and ``*calibrate declination``).  In Survex < 1.4.10, if ``*cs``
-            was used then cartesian data were incorrectly interpreted as
-            relative to grid North in the output coordinate system
+         By default, the North used is True North, but you can specify to use
+         Magnetic or Grid North (in the input coordinate system) with the
+         ``*cartesian`` command, and also specify an additional rotation to
+         apply (since Survex 1.4.10).
+
+         In Survex < 1.4.10, if ``*cs`` was used then cartesian data were
+         incorrectly interpreted as relative to Grid North in the output
+         coordinate system (if ``*cs`` is not used then Grid North in the
+         default unspecified coordinate system is the same as True North).
 
       CYLPOLAR
          A ``CYLPOLAR`` style survey is very similar to a diving survey, except
