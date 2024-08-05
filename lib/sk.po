@@ -125,7 +125,7 @@ msgstr "chyba"
 #. by the line number in that file.  Your translation should also contain
 #. %s:%u so that automatic parsing of error messages to determine the file
 #. and line number still works.
-#: ../src/datain.c:154
+#: ../src/datain.c:156
 #: n:5
 #, c-format
 msgid "In file included from %s:%u:\n"
@@ -145,23 +145,25 @@ msgstr "*prefix bol odmietnutý - použijte namiesto toho *begin a *end"
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr "Znak “%c” v mene bodu nie je povolený (použijte *SET NAMES pre nastavenie povolených znakov)"
 
-#: ../src/readval.c:628
-#: ../src/readval.c:669
+#: ../src/readval.c:641
+#: ../src/readval.c:682
 #: n:8
 msgid "Field may not be omitted"
 msgstr "Pole by nemalo zostať nevyplnené"
 
-#: ../src/datain.c:4372
-#: ../src/datain.c:4410
-#: ../src/datain.c:4533
-#: ../src/datain.c:4572
-#: ../src/datain.c:4615
-#: ../src/datain.c:4665
-#: ../src/datain.c:4707
+#: ../src/datain.c:4642
+#: ../src/datain.c:4680
+#: ../src/datain.c:4791
+#: ../src/datain.c:4830
+#: ../src/datain.c:4873
+#: ../src/datain.c:4923
+#: ../src/datain.c:4965
+#: ../src/datain.c:5011
 #: ../src/datain.c:5025
-#: ../src/readval.c:630
-#: ../src/readval.c:774
-#: ../src/readval.c:804
+#: ../src/datain.c:5308
+#: ../src/readval.c:643
+#: ../src/readval.c:787
+#: ../src/readval.c:817
 #: n:9
 #, c-format
 msgid "Expecting numeric field, found “%s”"
@@ -170,7 +172,7 @@ msgstr "predpokladá sa numerické pole, zistené “%s”"
 #. TRANSLATORS: The first %d will be replaced by the (inclusive) lower
 #. bound and the second by the (inclusive) upper bound, for example:
 #. Expecting integer in range -60 to 60
-#: ../src/readval.c:831
+#: ../src/readval.c:844
 #: n:489
 #, c-format
 msgid "Expecting integer in range %d to %d"
@@ -190,11 +192,11 @@ msgid "Bug in program detected! Please report this to the authors"
 msgstr "Zistená chyba programu! Prosíme, dajte to na vedomie autorom"
 
 #: ../src/commands.c:2738
-#: ../src/datain.c:1903
-#: ../src/datain.c:1915
-#: ../src/datain.c:2118
-#: ../src/datain.c:2727
-#: ../src/datain.c:3213
+#: ../src/datain.c:2116
+#: ../src/datain.c:2128
+#: ../src/datain.c:2331
+#: ../src/datain.c:2838
+#: ../src/datain.c:3324
 #: ../src/extend.c:455
 #: n:12
 #, c-format
@@ -210,20 +212,21 @@ msgstr "Bod “%s” je totožný sám so sebou"
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
-#: ../src/datain.c:3842
+#: ../src/datain.c:3954
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Nemalo by chýbať čítanie kompasu pokiaľ nejde o vertikálnu zámeru"
 
-#: ../src/datain.c:4804
-#: ../src/datain.c:4926
+#: ../src/datain.c:5098
+#: ../src/datain.c:5226
 #: n:94
 msgid "Tape reading may not be omitted"
 msgstr ""
 
-#: ../src/datain.c:471
-#: ../src/datain.c:2330
-#: ../src/datain.c:2701
+#: ../src/datain.c:462
+#: ../src/datain.c:2556
+#: ../src/datain.c:2814
+#: ../src/datain.c:4338
 #: ../src/extend.c:460
 #: n:15
 msgid "End of line not blank"
@@ -244,15 +247,14 @@ msgstr "Celkom bolo zaznamenaných %d varovaní."
 msgid "Couldn’t run external command: “%s”"
 msgstr "Vykonávanie príkazu “%s” zlyhalo"
 
-#: ../src/datain.c:132
-#: ../src/datain.c:140
-#: ../src/datain.c:175
-#: ../src/datain.c:197
-#: ../src/datain.c:214
-#: ../src/datain.c:224
-#: ../src/datain.c:237
-#: ../src/datain.c:3028
-#: ../src/datain.c:3374
+#: ../src/datain.c:134
+#: ../src/datain.c:142
+#: ../src/datain.c:176
+#: ../src/datain.c:205
+#: ../src/datain.c:215
+#: ../src/datain.c:228
+#: ../src/datain.c:3138
+#: ../src/datain.c:3485
 #: ../src/extend.c:689
 #: ../src/sorterr.c:78
 #: ../src/sorterr.c:95
@@ -276,7 +278,7 @@ msgstr "*DEFAULT bol odmietnutý - použijte namiesto toho *CALIBRATE/DATA/SD/UN
 #. TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 #. (a weight on a string).  So the problem here is that the leg is
 #. vertical, so a compass reading has no meaning!
-#: ../src/datain.c:3812
+#: ../src/datain.c:3924
 #: n:21
 msgid "Compass reading given on plumbed leg"
 msgstr "Pri vertikálnej zámere bol zadaný azimut"
@@ -288,8 +290,8 @@ msgstr "V tomto súbore sa vyskytlo END bez odpovadajúceho BEGIN"
 
 #. TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
 #. or #[ and #]
-#: ../src/datain.c:2217
-#: ../src/datain.c:3284
+#: ../src/datain.c:2430
+#: ../src/datain.c:3395
 #: n:23
 #, c-format
 msgid "%s with no matching %s in this file"
@@ -348,8 +350,8 @@ msgstr "“%s” nemôže byť súčasne bodom i meraním (survey)"
 #: ../src/extend.c:368
 #: ../src/extend.c:412
 #: ../src/readval.c:204
-#: ../src/readval.c:456
-#: ../src/readval.c:463
+#: ../src/readval.c:459
+#: ../src/readval.c:466
 #: n:28
 msgid "Expecting station name"
 msgstr "Predpokladá sa meno bodu"
@@ -416,7 +418,7 @@ msgstr ""
 
 #: ../src/commands.c:936
 #: ../src/commands.c:1172
-#: ../src/datain.c:2558
+#: ../src/datain.c:2668
 #: n:436
 #, c-format
 msgid "Failed to convert coordinates: %s"
@@ -440,19 +442,19 @@ msgstr ""
 #. TRANSLATORS: %s is replaced by the command that requires it, e.g.
 #. *DECLINATION AUTO
 #: ../src/commands.c:2009
-#: ../src/datain.c:3614
+#: ../src/datain.c:3725
 #: n:301
 #, c-format
 msgid "Input coordinate system must be specified for “%s”"
 msgstr ""
 
-#: ../src/datain.c:2570
-#: ../src/datain.c:3596
+#: ../src/datain.c:2680
+#: ../src/datain.c:3707
 #: n:488
 msgid "Output coordinate system not set"
 msgstr ""
 
-#: ../src/datain.c:3148
+#: ../src/datain.c:3259
 #: n:503
 #, c-format
 msgid "Datum “%s” not supported"
@@ -463,7 +465,7 @@ msgstr ""
 msgid "Expected number or “AUTO”"
 msgstr ""
 
-#: ../src/datain.c:3636
+#: ../src/datain.c:3747
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
 msgstr ""
@@ -554,15 +556,15 @@ msgid "Survey not all connected to fixed stations"
 msgstr "Časti merania nie sú pripojené na fixné body"
 
 #: ../src/commands.c:1264
-#: ../src/datain.c:947
-#: ../src/datain.c:2590
+#: ../src/datain.c:938
+#: ../src/datain.c:2701
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Bod je už fixný alebo je totožný s fixným bodom"
 
 #: ../src/commands.c:1269
-#: ../src/datain.c:952
-#: ../src/datain.c:2594
+#: ../src/datain.c:943
+#: ../src/datain.c:2705
 #: n:493
 msgid "Previously fixed or equated here"
 msgstr ""
@@ -598,8 +600,8 @@ msgstr "Zámera s tým istým bodom (“%s”) na oboch koncoch - preklep?"
 #. units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
 #. value" means the reading ignoring the sign (so it might be
 #. < -90° or > 90°.
-#: ../src/datain.c:3735
-#: ../src/datain.c:3748
+#: ../src/datain.c:3846
+#: ../src/datain.c:3859
 #: n:51
 #, c-format
 msgid "Clino reading over %.f%s (absolute value)"
@@ -630,8 +632,8 @@ msgstr "Príkaz FIX bez odpovedajúcich súradníc - priradené (0,0,0)"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
 #: ../src/commands.c:1267
-#: ../src/datain.c:949
-#: ../src/datain.c:2592
+#: ../src/datain.c:940
+#: ../src/datain.c:2703
 #: n:55
 msgid "Station already fixed at the same coordinates"
 msgstr "Bod už bol fixovaný s tými istými súradnicami"
@@ -663,30 +665,30 @@ msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "*EXPORT musí bezprostredne nasledovať “*BEGIN <SURVEY>”"
 
 #. TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918
-#: ../src/readval.c:912
-#: ../src/readval.c:994
+#: ../src/readval.c:925
+#: ../src/readval.c:1007
 #: n:76
 #, c-format
 msgid "Assuming 2 digit year is %d"
 msgstr ""
 
-#: ../src/readval.c:917
-#: ../src/readval.c:1000
+#: ../src/readval.c:930
+#: ../src/readval.c:1013
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr "Neplatný rok (< 1900 alebo > 2078)"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
-#: ../src/datain.c:3481
-#: ../src/datain.c:3490
-#: ../src/readval.c:705
+#: ../src/datain.c:3592
+#: ../src/datain.c:3601
+#: ../src/readval.c:718
 #: n:59
 msgid "Suspicious compass reading"
 msgstr "Podozrivé čítanie kompasu"
 
-#: ../src/datain.c:4379
-#: ../src/datain.c:4541
+#: ../src/datain.c:4649
+#: ../src/datain.c:4799
 #: n:60
 msgid "Negative tape reading"
 msgstr "Záporný dļžkový údaj"
@@ -701,7 +703,7 @@ msgstr "Niektorý z bodov bol fixovaný dvakrát bez súradníc"
 #. It could be a gross error (e.g. the decimal point is missing from the
 #. depth gauge reading) or it could just be due to random error on a near
 #. vertical leg
-#: ../src/datain.c:3997
+#: ../src/datain.c:4115
 #: n:62
 msgid "Tape reading is less than change in depth"
 msgstr "Dļžkový údaj je menší ako výškový rozdiel"
@@ -727,7 +729,7 @@ msgstr "Príliš málo údajov pre typ dát “%s”"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
 #: ../src/commands.c:1573
-#: ../src/datain.c:1867
+#: ../src/datain.c:2077
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -762,7 +764,7 @@ msgstr "Duplicitná hodnota “%s”"
 msgid "FLAG “%s” unknown"
 msgstr "FLAG “%s” je neznámy"
 
-#: ../src/readval.c:866
+#: ../src/readval.c:879
 #: n:69
 msgid "Missing \""
 msgstr "Chýba \""
@@ -821,9 +823,9 @@ msgstr "Údaj “%s” duplikuje predchádzajúci údaj/e"
 msgid "Solving one equation"
 msgstr "Rieši sa jedna rovnica"
 
-#: ../src/datain.c:3772
-#: ../src/datain.c:3986
-#: ../src/datain.c:4243
+#: ../src/datain.c:3883
+#: ../src/datain.c:4104
+#: ../src/datain.c:4509
 #: n:79
 msgid "Negative adjusted tape reading"
 msgstr "Záporná nastavená vzdialenosť"
@@ -851,27 +853,27 @@ msgstr "Priečny rez definovaný na neexistujúcom bode “%s”"
 #. TRANSLATORS: In data with backsights, the user has tried to give a
 #. plumb for the foresight and a clino reading for the backsight, or
 #. something similar.
-#: ../src/datain.c:3796
+#: ../src/datain.c:3907
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr "Hodnoty CLINO a BACKCLINO musí byť toho istého typu"
 
 #. TRANSLATORS: We've been told the foresight and backsight are
 #. both "UP", or that they're both "DOWN".
-#: ../src/datain.c:3821
+#: ../src/datain.c:3933
 #: n:92
 msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
 msgstr ""
 
-#: ../src/readval.c:928
-#: ../src/readval.c:1009
+#: ../src/readval.c:941
+#: ../src/readval.c:1022
 #: n:86
 msgid "Invalid month"
 msgstr "Nesprávny mesiac"
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
-#: ../src/readval.c:939
-#: ../src/readval.c:1017
+#: ../src/readval.c:952
+#: ../src/readval.c:1030
 #: n:87
 msgid "Invalid day of the month"
 msgstr "Tento deň v tomto mesiaci neexistuje"
@@ -887,9 +889,9 @@ msgstr "Sú podporované 3D formáty súborov %d až %d"
 msgid "Expecting survey name"
 msgstr "Predpokladá sa názov survey"
 
-#: ../src/datain.c:2997
-#: ../src/datain.c:2999
-#: ../src/datain.c:3316
+#: ../src/datain.c:3107
+#: ../src/datain.c:3109
+#: ../src/datain.c:3427
 #: ../src/extend.c:684
 #: ../src/gfxcore.cc:4595
 #: ../src/img_hosted.c:30
@@ -907,8 +909,8 @@ msgstr "Nie je možné otvoriť súbor “%s”"
 msgid "Couldn’t write file “%s”"
 msgstr "Súbor “%s” sa nedá zapísať"
 
-#: ../src/datain.c:2294
-#: ../src/datain.c:2299
+#: ../src/datain.c:2508
+#: ../src/datain.c:2513
 #: n:498
 msgid "Failed to create temporary file"
 msgstr ""
@@ -927,8 +929,8 @@ msgstr "Ďalšie použitia zamietnutej fukcie nebudú zaznamenané"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "0.12m" or "0.2ft".
-#: ../src/datain.c:4793
-#: ../src/datain.c:4915
+#: ../src/datain.c:5087
+#: ../src/datain.c:5215
 #: n:97
 #, c-format
 msgid "TAPE reading and BACKTAPE reading disagree by %s"
@@ -936,7 +938,7 @@ msgstr "Hodnoty TAPE a BACKTAPE sa líši o %s"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
-#: ../src/datain.c:3687
+#: ../src/datain.c:3798
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
@@ -944,7 +946,7 @@ msgstr "Hodnoty COMPASS a BACKCOMPASS sa líši o %s"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
-#: ../src/datain.c:3873
+#: ../src/datain.c:3985
 #: n:99
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s"
@@ -968,14 +970,14 @@ msgstr "Nesprávny 3D obrazový súbor  “%s”"
 #. files internally.  Probably best to keep it the same for all
 #. translations.
 #: ../src/img.c:49
-#: ../src/model.cc:391
+#: ../src/model.cc:380
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
-#: ../src/model.cc:384
+#: ../src/model.cc:373
 #: n:108
 msgid "Date and time not available."
 msgstr "Dátum a čas nie sú dostupné"
@@ -1078,7 +1080,7 @@ msgstr ""
 msgid "Calculating statistics"
 msgstr "Počíta sa štatistika"
 
-#: ../src/readval.c:881
+#: ../src/readval.c:894
 #: n:121
 msgid "Expecting string field"
 msgstr "Predpokladá sa textové pole"
@@ -1154,7 +1156,7 @@ msgstr "Zjednodušenie siete"
 msgid "Calculating network"
 msgstr "Výpočet siete"
 
-#: ../src/datain.c:4361
+#: ../src/datain.c:4631
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
@@ -1483,22 +1485,23 @@ msgstr "argument “%s” nie je integer"
 msgid "argument “%s” not a number"
 msgstr "argument “%s” nie je číslo"
 
-#: ../src/datain.c:616
-#: ../src/datain.c:624
-#: ../src/datain.c:1701
-#: ../src/datain.c:2471
+#: ../src/datain.c:607
+#: ../src/datain.c:615
+#: ../src/datain.c:1682
+#: ../src/datain.c:1911
+#: ../src/datain.c:4261
 #: n:497
 #, c-format
 msgid "Expecting “%s”"
 msgstr ""
 
-#: ../src/datain.c:919
-#: ../src/datain.c:1577
-#: ../src/datain.c:1736
-#: ../src/datain.c:1858
-#: ../src/datain.c:1995
-#: ../src/datain.c:2027
-#: ../src/datain.c:2378
+#: ../src/datain.c:910
+#: ../src/datain.c:1592
+#: ../src/datain.c:1946
+#: ../src/datain.c:2068
+#: ../src/datain.c:2208
+#: ../src/datain.c:2240
+#: ../src/datain.c:2596
 #: n:103
 #, c-format
 msgid "Expecting “%s” or “%s”"
@@ -1506,26 +1509,27 @@ msgstr "Predpokladá sa “%s” alebo “%s”"
 
 #: ../src/commands.c:1312
 #: ../src/commands.c:1967
-#: ../src/datain.c:1553
-#: ../src/datain.c:1758
-#: ../src/datain.c:1781
+#: ../src/datain.c:1549
+#: ../src/datain.c:1968
+#: ../src/datain.c:1991
+#: ../src/datain.c:4305
 #: n:188
 #, c-format
 msgid "Expecting “%s”, “%s”, or “%s”"
 msgstr "predpokladá sa “%s”, “%s”, alebo “%s”"
 
 #: ../src/commands.c:1316
-#: ../src/datain.c:1808
-#: ../src/datain.c:1835
+#: ../src/datain.c:2018
+#: ../src/datain.c:2045
 #: n:189
 #, c-format
 msgid "Expecting “%s”, “%s”, “%s”, or “%s”"
 msgstr "Predpokladá sa “%s”, “%s”, “%s”, alebo “%s”"
 
-#: ../src/readval.c:671
-#: ../src/readval.c:680
-#: ../src/readval.c:689
-#: ../src/readval.c:698
+#: ../src/readval.c:684
+#: ../src/readval.c:693
+#: ../src/readval.c:702
+#: ../src/readval.c:711
 #: n:483
 #, c-format
 msgid "Expecting quadrant bearing, found “%s”"
@@ -1542,9 +1546,9 @@ msgstr "Bod “%s” sa uvádza ako *%s ale nebol použitý"
 
 #. TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[
 #: ../src/commands.c:1016
-#: ../src/datain.c:2078
-#: ../src/datain.c:2224
-#: ../src/datain.c:3066
+#: ../src/datain.c:2291
+#: ../src/datain.c:2437
+#: ../src/datain.c:3176
 #: n:192
 #, c-format
 msgid "No matching %s"
@@ -1590,12 +1594,12 @@ msgstr "Rozsah zobrazenia %d v bitoch na pixel)"
 msgid " (colour)"
 msgstr " (pre farbu)"
 
-#: ../src/readval.c:904
-#: ../src/readval.c:925
-#: ../src/readval.c:935
-#: ../src/readval.c:957
-#: ../src/readval.c:965
-#: ../src/readval.c:971
+#: ../src/readval.c:917
+#: ../src/readval.c:938
+#: ../src/readval.c:948
+#: ../src/readval.c:970
+#: ../src/readval.c:978
+#: ../src/readval.c:984
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
@@ -1676,7 +1680,7 @@ msgstr ""
 msgid "*UNITS factor must be non-zero"
 msgstr "*UNITS faktor musí byť nenulový"
 
-#: ../src/model.cc:401
+#: ../src/model.cc:390
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -3152,7 +3156,7 @@ msgstr ""
 
 #. TRANSLATORS: Used in place of the station name when talking about an
 #. anonymous station.
-#: ../src/labelinfo.h:83
+#: ../src/labelinfo.h:98
 #: n:56
 msgid "anonymous station"
 msgstr ""
@@ -3160,7 +3164,7 @@ msgstr ""
 #: ../src/readval.c:121
 #: ../src/readval.c:137
 #: ../src/readval.c:155
-#: ../src/readval.c:413
+#: ../src/readval.c:414
 #: n:3
 msgid "Can't have a leg between two anonymous stations"
 msgstr ""
@@ -3576,18 +3580,24 @@ msgstr ""
 msgid "include items exported by default"
 msgstr ""
 
-#: ../src/datain.c:2276
+#: ../src/datain.c:2490
 #: n:499
 #, c-format
 msgid "Macro “%s” not defined"
 msgstr ""
 
-#: ../src/datain.c:2005
-#: ../src/datain.c:2037
-#: ../src/datain.c:2057
+#: ../src/datain.c:2218
+#: ../src/datain.c:2250
+#: ../src/datain.c:2270
+#: ../src/datain.c:4256
 #: n:506
 #, c-format
 msgid "Ignoring “%s”"
+msgstr ""
+
+#: ../src/datain.c:4357
+#: n:508
+msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
 msgstr ""
 
 #, c-format
