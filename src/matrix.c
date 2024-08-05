@@ -112,18 +112,14 @@ solve_matrix(node *list)
 static void
 build_matrix(node *list)
 {
-   real *M;
-   real *B;
-   int dim;
-
    if (n_stn_tab == 0) {
       if (!fQuiet)
 	 puts(msg(/*Network solved by reduction - no simultaneous equations to solve.*/74));
       return;
    }
    /* (OSSIZE_T) cast may be needed if n_stn_tab>=181 */
-   M = osmalloc((OSSIZE_T)((((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1)) * ossizeof(real));
-   B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));
+   real *M = osmalloc((OSSIZE_T)((((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1)) * ossizeof(real));
+   real *B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));
 
    if (!fQuiet) {
       if (n_stn_tab == 1)
@@ -133,9 +129,9 @@ build_matrix(node *list)
    }
 
 #ifdef NO_COVARIANCES
-   dim = 2;
+   int dim = 2;
 #else
-   dim = 0; /* fudge next loop for now */
+   int dim = 0; /* fudge next loop for now */
 #endif
    for ( ; dim >= 0; dim--) {
       node *stn;
@@ -175,15 +171,13 @@ build_matrix(node *list)
 	 svar e;
 	 delta a;
 #endif
-	 int f, t;
-	 int dirn;
 #if DEBUG_MATRIX_BUILD
 	 print_prefix(stn->name);
 	 printf(" used: %d colour %ld\n",
 		(!!stn->leg[2]) << 2 | (!!stn -> leg[1]) << 1 | (!!stn->leg[0]),
 		stn->colour);
 
-	 for (dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
+	 for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
 #ifdef NO_COVARIANCES
 	    printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
 		   stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
@@ -198,8 +192,8 @@ build_matrix(node *list)
 #endif /* DEBUG_MATRIX_BUILD */
 
 	 if (!fixed(stn)) {
-	    f = find_stn_in_tab(stn);
-	    for (dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
+	    int f = find_stn_in_tab(stn);
+	    for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
 	       linkfor *leg = stn->leg[dirn];
 	       node *to = leg->l.to;
 	       if (fixed(to)) {
@@ -220,15 +214,14 @@ build_matrix(node *list)
 		  }
 #else
 		  if (invert_svar(&e, &leg->v)) {
-		     delta b;
-		     int i;
 		     if (fRev) {
 			adddd(&a, &POSD(to), &leg->d);
 		     } else {
 			subdd(&a, &POSD(to), &leg->d);
 		     }
+		     delta b;
 		     mulsd(&b, &e, &a);
-		     for (i = 0; i < 3; i++) {
+		     for (int i = 0; i < 3; i++) {
 			M(f * FACTOR + i, f * FACTOR + i) += e[i];
 			B[f * FACTOR + i] += b[i];
 		     }
@@ -239,7 +232,7 @@ build_matrix(node *list)
 #endif
 	       } else if (data_here(leg)) {
 		  /* forward leg, unfixed -> unfixed */
-		  t = find_stn_in_tab(to);
+		  int t = find_stn_in_tab(to);
 #if DEBUG_MATRIX
 		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
 			 leg->d[dim]);
@@ -248,20 +241,18 @@ build_matrix(node *list)
 #ifdef NO_COVARIANCES
 		  e = leg->v[dim];
 		  if (t != f && e != (real)0.0) {
-		     real a;
 		     e = ((real)1.0) / e;
 		     M(f,f) += e;
 		     M(t,t) += e;
 		     if (f < t) M(t,f) -= e; else M(f,t) -= e;
-		     a = e * leg->d[dim];
+		     real a = e * leg->d[dim];
 		     B[f] -= a;
 		     B[t] += a;
 		  }
 #else
 		  if (t != f && invert_svar(&e, &leg->v)) {
-		     int i;
 		     mulsd(&a, &e, &leg->d);
-		     for (i = 0; i < 3; i++) {
+		     for (int i = 0; i < 3; i++) {
 			M(f * FACTOR + i, f * FACTOR + i) += e[i];
 			M(t * FACTOR + i, t * FACTOR + i) += e[i];
 			if (f < t)
@@ -312,8 +303,7 @@ build_matrix(node *list)
 	 choleski(M, B, n_stn_tab * FACTOR);
 
       {
-	 int m;
-	 for (m = (int)(n_stn_tab - 1); m >= 0; m--) {
+	 for (int m = (int)(n_stn_tab - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->p[dim] = B[m];
 	    if (dim == 0) {
@@ -321,8 +311,7 @@ build_matrix(node *list)
 		       "setting station coordinates didn't mark pos as fixed");
 	    }
 #else
-	    int i;
-	    for (i = 0; i < 3; i++) {
+	    for (int i = 0; i < 3; i++) {
 	       stn_tab[m]->p[i] = B[m * FACTOR + i];
 	    }
 	    SVX_ASSERT2(pos_fixed(stn_tab[m]),
@@ -330,7 +319,7 @@ build_matrix(node *list)
 #endif
 	 }
 #if EXPLICIT_FIXED_FLAG
-	 for (m = n_stn_tab - 1; m >= 0; m--) fixpos(stn_tab[m]);
+	 for (int m = n_stn_tab - 1; m >= 0; m--) fixpos(stn_tab[m]);
 #endif
       }
    }
@@ -381,35 +370,33 @@ add_stn_to_tab(node *stn)
 static void
 choleski(real *M, real *B, long n)
 {
-   int i, j, k;
-
-   for (j = 1; j < n; j++) {
+   for (int j = 1; j < n; j++) {
       real V;
-      for (i = 0; i < j; i++) {
+      for (int i = 0; i < j; i++) {
 	 V = (real)0.0;
-	 for (k = 0; k < i; k++) V += M(i,k) * M(j,k) * M(k,k);
+	 for (int k = 0; k < i; k++) V += M(i,k) * M(j,k) * M(k,k);
 	 M(j,i) = (M(j,i) - V) / M(i,i);
       }
       V = (real)0.0;
-      for (k = 0; k < j; k++) V += M(j,k) * M(j,k) * M(k,k);
+      for (int k = 0; k < j; k++) V += M(j,k) * M(j,k) * M(k,k);
       M(j,j) -= V; /* may be best to add M() last for numerical reasons too */
    }
 
    /* Multiply x by L inverse */
-   for (i = 0; i < n - 1; i++) {
-      for (j = i + 1; j < n; j++) {
+   for (int i = 0; i < n - 1; i++) {
+      for (int j = i + 1; j < n; j++) {
 	 B[j] -= M(j,i) * B[i];
       }
    }
 
    /* Multiply x by D inverse */
-   for (i = 0; i < n; i++) {
+   for (int i = 0; i < n; i++) {
       B[i] /= M(i,i);
    }
 
    /* Multiply x by (L transpose) inverse */
-   for (i = (int)(n - 1); i > 0; i--) {
-      for (j = i - 1; j >= 0; j--) {
+   for (int i = (int)(n - 1); i > 0; i--) {
+      for (int j = i - 1; j >= 0; j--) {
 	 B[j] -= M(i,j) * B[i];
       }
    }
@@ -426,37 +413,36 @@ choleski(real *M, real *B, long n)
 static void
 sor(real *M, real *B, long n)
 {
-   real t, x, delta, threshold, t2;
-   int row, col;
-   real *X;
    long it = 0;
 
-   X = osmalloc(n * ossizeof(real));
+   real *X = osmalloc(n * ossizeof(real));
 
-   threshold = 0.00001;
+   const real threshold = 0.00001;
 
    printf("reciprocating diagonal\n"); /* TRANSLATE */
 
    /* munge diagonal so we can multiply rather than divide */
-   for (row = n - 1; row >= 0; row--) {
+   for (int row = n - 1; row >= 0; row--) {
       M(row,row) = 1 / M(row,row);
       X[row] = 0;
    }
 
    printf("starting iteration\n"); /* TRANSLATE */
 
+   real t;
    do {
       /*printf("*");*/
       it++;
       t = 0.0;
-      for (row = 0; row < n; row++) {
-	 x = B[row];
+      for (int row = 0; row < n; row++) {
+	 real x = B[row];
+	 int col;
 	 for (col = 0; col < row; col++) x -= M(row,col) * X[col];
 	 for (col++; col < n; col++) x -= M(col,row) * X[col];
 	 x *= M(row,row);
-	 delta = (x - X[row]) * SOR_factor;
+	 real delta = (x - X[row]) * SOR_factor;
 	 X[row] += delta;
-	 t2 = fabs(delta);
+	 real t2 = fabs(delta);
 	 if (t2 > t) t = t2;
       }
       printf("% 6d: %8.6f\n", it, t);
@@ -471,9 +457,9 @@ sor(real *M, real *B, long n)
 
 #if 0
    putnl();
-   for (row = n - 1; row >= 0; row--) {
+   for (int row = n - 1; row >= 0; row--) {
       t = 0.0;
-      for (col = 0; col < row; col++) t += M(row, col) * X[col];
+      for (int col = 0; col < row; col++) t += M(row, col) * X[col];
       t += X[row] / M(row, row);
       for (col = row + 1; col < n; col++)
 	 t += M(col, row) * X[col];
@@ -481,7 +467,7 @@ sor(real *M, real *B, long n)
    }
 #endif
 
-   for (row = n - 1; row >= 0; row--) B[row] = X[row];
+   for (int row = n - 1; row >= 0; row--) B[row] = X[row];
 
    osfree(X);
    printf("\ndone\n"); /* TRANSLATE */
@@ -492,9 +478,9 @@ sor(real *M, real *B, long n)
 static void
 print_matrix(real *M, real *B, long n)
 {
-   long row, col;
    printf("Matrix, M and vector, B:\n");
-   for (row = 0; row < n; row++) {
+   for (long row = 0; row < n; row++) {
+      long col;
       for (col = 0; col <= row; col++) printf("%6.2f\t", M(row, col));
       for (; col <= n; col++) printf(" \t");
       printf("\t%6.2f\n", B[row]);
