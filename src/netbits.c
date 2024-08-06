@@ -50,7 +50,7 @@ void clear_last_leg(void) {
 static char freeleg(node **stnptr);
 
 #ifdef NO_COVARIANCES
-static void check_var(/*const*/ var *v) {
+static void check_var(const var *v) {
    int bad = 0;
    int i;
 
@@ -63,7 +63,7 @@ static void check_var(/*const*/ var *v) {
 }
 #else
 #define V(A,B) ((*v)[A][B])
-static void check_var(/*const*/ var *v) {
+static void check_var(const var *v) {
    int bad = 0;
    int ok = 0;
    int i, j;
@@ -109,7 +109,7 @@ static void check_var(/*const*/ var *v) {
 #define SN(V,A,B) ((*(V))[(A)==(B)?(A):2+(A)+(B)])
 #define S(A,B) SN(v,A,B)
 
-static void check_svar(/*const*/ svar *v) {
+static void check_svar(const svar *v) {
    int bad = 0;
    int ok = 0;
    int i;
@@ -147,7 +147,7 @@ static void check_svar(/*const*/ svar *v) {
 }
 #endif
 
-static void check_d(/*const*/ delta *d) {
+static void check_d(const delta *d) {
    int bad = 0;
    int i;
 
@@ -646,7 +646,7 @@ sprint_prefix(const prefix *ptr)
 
 /* r = ab ; r,a,b are variance matrices */
 void
-mulss(var *r, /*const*/ svar *a, /*const*/ svar *b)
+mulss(var *r, const svar *a, const svar *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -658,8 +658,8 @@ mulss(var *r, /*const*/ svar *a, /*const*/ svar *b)
    real tot;
 
 #if 0
-   SVX_ASSERT((/*const*/ var *)r != a);
-   SVX_ASSERT((/*const*/ var *)r != b);
+   SVX_ASSERT((const var *)r != a);
+   SVX_ASSERT((const var *)r != b);
 #endif
 
    check_svar(a);
@@ -681,15 +681,15 @@ mulss(var *r, /*const*/ svar *a, /*const*/ svar *b)
 #ifndef NO_COVARIANCES
 /* r = ab ; r,a,b are variance matrices */
 void
-smulvs(svar *r, /*const*/ var *a, /*const*/ svar *b)
+smulvs(svar *r, const var *a, const svar *b)
 {
    int i, j, k;
    real tot;
 
 #if 0
-   SVX_ASSERT((/*const*/ var *)r != a);
+   SVX_ASSERT((const var *)r != a);
 #endif
-   SVX_ASSERT((/*const*/ svar *)r != b);
+   SVX_ASSERT((const svar *)r != b);
 
    check_var(a);
    check_svar(b);
@@ -716,7 +716,7 @@ smulvs(svar *r, /*const*/ var *a, /*const*/ svar *b)
 
 /* r = vb ; r,b delta vectors; a variance matrix */
 void
-mulsd(delta *r, /*const*/ svar *v, /*const*/ delta *b)
+mulsd(delta *r, const svar *v, const delta *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -727,7 +727,7 @@ mulsd(delta *r, /*const*/ svar *v, /*const*/ delta *b)
    int i, j;
    real tot;
 
-   SVX_ASSERT((/*const*/ delta*)r != b);
+   SVX_ASSERT((const delta*)r != b);
    check_svar(v);
    check_d(b);
 
@@ -742,7 +742,7 @@ mulsd(delta *r, /*const*/ svar *v, /*const*/ delta *b)
 
 /* r = ca ; r,a variance matrices; c real scaling factor  */
 void
-mulsc(svar *r, /*const*/ svar *a, real c)
+mulsc(svar *r, const svar *a, real c)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -760,7 +760,7 @@ mulsc(svar *r, /*const*/ svar *a, real c)
 
 /* r = a + b ; r,a,b delta vectors */
 void
-adddd(delta *r, /*const*/ delta *a, /*const*/ delta *b)
+adddd(delta *r, const delta *a, const delta *b)
 {
    check_d(a);
    check_d(b);
@@ -772,7 +772,7 @@ adddd(delta *r, /*const*/ delta *a, /*const*/ delta *b)
 
 /* r = a - b ; r,a,b delta vectors */
 void
-subdd(delta *r, /*const*/ delta *a, /*const*/ delta *b) {
+subdd(delta *r, const delta *a, const delta *b) {
    check_d(a);
    check_d(b);
    (*r)[0] = (*a)[0] - (*b)[0];
@@ -783,7 +783,7 @@ subdd(delta *r, /*const*/ delta *a, /*const*/ delta *b) {
 
 /* r = a + b ; r,a,b variance matrices */
 void
-addss(svar *r, /*const*/ svar *a, /*const*/ svar *b)
+addss(svar *r, const svar *a, const svar *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -802,7 +802,7 @@ addss(svar *r, /*const*/ svar *a, /*const*/ svar *b)
 
 /* r = a - b ; r,a,b variance matrices */
 void
-subss(svar *r, /*const*/ svar *a, /*const*/ svar *b)
+subss(svar *r, const svar *a, const svar *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -821,7 +821,7 @@ subss(svar *r, /*const*/ svar *a, /*const*/ svar *b)
 
 /* inv = v^-1 ; inv,v variance matrices */
 extern int
-invert_svar(svar *inv, /*const*/ svar *v)
+invert_svar(svar *inv, const svar *v)
 {
 #ifdef NO_COVARIANCES
    int i;
@@ -833,7 +833,7 @@ invert_svar(svar *inv, /*const*/ svar *v)
    real det, a, b, c, d, e, f, bcff, efcd, dfbe;
 
 #if 0
-   SVX_ASSERT((/*const*/ var *)inv != v);
+   SVX_ASSERT((const var *)inv != v);
 #endif
 
    check_svar(v);
@@ -896,7 +896,7 @@ invert_svar(svar *inv, /*const*/ svar *v)
 /* r = (b^-1)a ; r,a delta vectors; b variance matrix */
 #ifndef NO_COVARIANCES
 void
-divds(delta *r, /*const*/ delta *a, /*const*/ svar *b)
+divds(delta *r, const delta *a, const svar *b)
 {
 #ifdef NO_COVARIANCES
    /* variance-only version */
@@ -915,7 +915,7 @@ divds(delta *r, /*const*/ delta *a, /*const*/ svar *b)
 #endif
 
 bool
-fZeros(/*const*/ svar *v) {
+fZeros(const svar *v) {
 #ifdef NO_COVARIANCES
    /* variance-only version */
    return ((*v)[0] == 0.0 && (*v)[1] == 0.0 && (*v)[2] == 0.0);
