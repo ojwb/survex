@@ -75,20 +75,16 @@ solve_matrix(node *list)
    }
    if (n == 0) return;
 
-   /* we just need n to be a reasonable estimate >= the number
-    * of stations left after reduction. If memory is
-    * plentiful, we can be crass.
+   /* We need to allocate stn_tab with one entry per unfixed cluster of equated
+    * stations, but it's much simpler to count the number of unfixed nodes.
+    * This will over-count stations with more than 3 legs and equated stations
+    * but in a typical survey that's a small minority of stations.
     */
    stn_tab = osmalloc((OSSIZE_T)(n * ossizeof(pos*)));
    n_stn_tab = 0;
 
    FOR_EACH_STN(stn, list) {
       if (!fixed(stn)) add_stn_to_tab(stn);
-   }
-
-   if (n_stn_tab < n) {
-      /* release unused entries in stn_tab */
-      stn_tab = osrealloc(stn_tab, n_stn_tab * ossizeof(pos*));
    }
 
    build_matrix(list);
