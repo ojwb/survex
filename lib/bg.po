@@ -795,11 +795,6 @@ msgstr ""
 msgid "Unused fixed point “%s”"
 msgstr ""
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr ""
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

@@ -796,11 +796,6 @@ msgstr "Meranie (survey) nemá fixné body. Preto bude fixovaný %s so súradnic
 msgid "Unused fixed point “%s”"
 msgstr "Nepoužitý fixný bod “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Sieť vyriešená redukciou - nie je treba riešiť simultánne rovnice"
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

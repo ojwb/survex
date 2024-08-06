@@ -795,11 +795,6 @@ msgstr "La topografia no tiene puntos fijados. De todos modos he fijado %s en (0
 msgid "Unused fixed point “%s”"
 msgstr "Punto fijado no utilizado “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Red resuelta por reducción - ningún sistema de ecuaciones por resolver."
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

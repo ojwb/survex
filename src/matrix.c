@@ -122,11 +122,7 @@ solve_matrix(node *list)
 static void
 build_matrix(node *list)
 {
-   if (n_stn_tab == 0) {
-      if (!fQuiet)
-	 puts(msg(/*Network solved by reduction - no simultaneous equations to solve.*/74));
-      return;
-   }
+   SVX_ASSERT(n_stn_tab > 0);
    /* (OSSIZE_T) cast may be needed if n_stn_tab>=181 */
    real *M = osmalloc((OSSIZE_T)((((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1)) * ossizeof(real));
    real *B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));

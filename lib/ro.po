@@ -796,11 +796,6 @@ msgstr "Topografia nu contine puncte fixate. Am fixat %s ca (0,0,0)"
 msgid "Unused fixed point “%s”"
 msgstr "Punct fix nefolosit “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Retea rezolvata prin reducere - nici un sistem de ecuatii de rezolvat."
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

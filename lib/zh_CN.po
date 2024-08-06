@@ -795,11 +795,6 @@ msgstr "测量没有固定点。 因此，我将%s固定在 (0,0,0)"
 msgid "Unused fixed point “%s”"
 msgstr "未使用的固定点“%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "通过归约法解网络-无联立方程式可解。"
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

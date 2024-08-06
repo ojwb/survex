@@ -795,11 +795,6 @@ msgstr "Survei tidak memiliki titik tetap. Oleh karena itu saya telah memperbaik
 msgid "Unused fixed point “%s”"
 msgstr "Titik tetap yang tidak digunakan “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Jaringan diselesaikan dengan pengurangan - tidak ada persamaan simultan untuk menyelesaikan."
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

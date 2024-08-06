@@ -795,11 +795,6 @@ msgstr "Pomiar nie ma żadnych punktów ustalonych. W związku z tym, ustalam %s
 msgid "Unused fixed point “%s”"
 msgstr "Niewykorzystany punkt ustalony “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Sieć rozwiązana poprzez redukcję - brak układu równań do rozwiązania."
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

@@ -800,11 +800,6 @@ msgstr "A felmérésnek nincsenek fiy pontjai. Ezért rögzítettem “%s”-t (
 msgid "Unused fixed point “%s”"
 msgstr "Fel nem használt fix pont, “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr ""
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

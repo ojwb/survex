@@ -795,11 +795,6 @@ msgstr "Survey has no control points. Therefore I’ve fixed %s at (0,0,0)"
 msgid "Unused fixed point “%s”"
 msgstr "Unused control point “%s”"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Network solved by reduction - no simultaneous equations to solve."
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format

@@ -796,11 +796,6 @@ msgstr "Vermessung hat keine Festpunkte. %s wurde als Nullpunkt (0,0,0) gewählt
 msgid "Unused fixed point “%s”"
 msgstr "Fester Messpunkt «%s» wird nicht verwendet"
 
-#: ../src/matrix.c:121
-#: n:74
-msgid "Network solved by reduction - no simultaneous equations to solve."
-msgstr "Netzausgleichung gelöst durch Reduktion - kein Gleichungssystem erforderlich."
-
 #: ../src/matrix.c:132
 #: n:75
 #, c-format
