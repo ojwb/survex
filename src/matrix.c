@@ -57,8 +57,6 @@ static void sor(real *M, real *B, long n);
 	      /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
 /*#define M_(X, Y) ((real *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
 
-static int find_stn_in_tab(node *stn);
-static int add_stn_to_tab(node *stn);
 static void build_matrix(node *list);
 
 static long n_stn_tab;
@@ -71,7 +69,8 @@ solve_matrix(node *list)
    node *stn;
    long n = 0;
    FOR_EACH_STN(stn, list) {
-      if (!fixed(stn)) n++;
+      if (!fixed(stn))
+	  n++;
    }
    if (n == 0) return;
 
@@ -83,8 +82,23 @@ solve_matrix(node *list)
    stn_tab = osmalloc((OSSIZE_T)(n * ossizeof(pos*)));
    n_stn_tab = 0;
 
+   /* We store the stn_tab index in stn->colour for quick and easy lookup in
+    * build_matrix().
+    */
    FOR_EACH_STN(stn, list) {
-      if (!fixed(stn)) add_stn_to_tab(stn);
+      if (!fixed(stn)) {
+	  int i;
+	  pos *p = stn->name->pos;
+	  for (i = 0; i < n_stn_tab; i++) {
+	      if (stn_tab[i] == p)
+		  break;
+	  }
+	  if (i == n_stn_tab)
+	      stn_tab[n_stn_tab++] = p;
+	  stn->colour = i;
+      } else {
+	  stn->colour = -1;
+      }
    }
 
    build_matrix(list);
@@ -188,7 +202,7 @@ build_matrix(node *list)
 #endif /* DEBUG_MATRIX_BUILD */
 
 	 if (!fixed(stn)) {
-	    int f = find_stn_in_tab(stn);
+	    int f = stn->colour;
 	    for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
 	       linkfor *leg = stn->leg[dirn];
 	       node *to = leg->l.to;
@@ -228,7 +242,7 @@ build_matrix(node *list)
 #endif
 	       } else if (data_here(leg)) {
 		  /* forward leg, unfixed -> unfixed */
-		  int t = find_stn_in_tab(to);
+		  int t = to->colour;
 #if DEBUG_MATRIX
 		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
 			 leg->d[dim]);
@@ -321,41 +335,6 @@ build_matrix(node *list)
    }
    osfree(B);
    osfree(M);
-}
-
-static int
-find_stn_in_tab(node *stn)
-{
-   int i = 0;
-   pos *p = stn->name->pos;
-   while (stn_tab[i] != p)
-      if (++i == n_stn_tab) {
-#if DEBUG_INVALID
-	 fputs("Station ", stderr);
-	 fprint_prefix(stderr, stn->name);
-	 fputs(" not in table\n\n", stderr);
-#endif
-#if 0
-	 print_prefix(stn->name);
-	 printf(" used: %d colour %d\n",
-		(!!stn->leg[2])<<2 | (!!stn->leg[1])<<1 | (!!stn->leg[0]),
-		stn->colour);
-#endif
-	 fatalerror(/*Bug in program detected! Please report this to the authors*/11);
-      }
-   return i;
-}
-
-static int
-add_stn_to_tab(node *stn)
-{
-   int i;
-   pos *p = stn->name->pos;
-   for (i = 0; i < n_stn_tab; i++) {
-      if (stn_tab[i] == p) return i;
-   }
-   stn_tab[n_stn_tab++] = p;
-   return i;
 }
 
 /* Solve MX=B for X by Choleski factorisation - modified Choleski actually

@@ -299,6 +299,12 @@ typedef struct Node {
    struct Prefix *name;
    struct Link *leg[3];
    struct Node *prev, *next;
+   // Used in netartic.c to identify unconnected components and articulation
+   // points within components.
+   //
+   // Used in matrix.c to record the matrix row corresponding to this node
+   // or -1 for nodes already fixed (more than one node may map to the same
+   // row).
    long colour;
 } node;
 
