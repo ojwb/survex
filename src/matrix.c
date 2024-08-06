@@ -411,12 +411,12 @@ sor(real *M, real *B, long n)
 	 for (col = 0; col < row; col++) x -= M(row,col) * X[col];
 	 for (col++; col < n; col++) x -= M(col,row) * X[col];
 	 x *= M(row,row);
-	 real delta = (x - X[row]) * SOR_factor;
-	 X[row] += delta;
-	 real t2 = fabs(delta);
+	 real sor_delta = (x - X[row]) * SOR_factor;
+	 X[row] += sor_delta;
+	 real t2 = fabs(sor_delta);
 	 if (t2 > t) t = t2;
       }
-      printf("% 6d: %8.6f\n", it, t);
+      printf("% 6ld: %8.6f\n", it, t);
    } while (t >= threshold && it < 100000);
 
    if (t >= threshold) {
