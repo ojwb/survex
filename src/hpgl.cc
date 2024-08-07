@@ -102,6 +102,7 @@ void HPGL::header(const char *, const char *, time_t,
 void
 HPGL::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending)
 {
+    // Pens 1 to 6 are apparently supported by HPGL.
     enum { PEN_LEG = 1, PEN_SURF = 2, PEN_SPLAY = 3 };
     int new_pen = PEN_LEG;
     if (flags & SURF) {
