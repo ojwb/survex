@@ -275,7 +275,6 @@ static wxString formats[] = {
     wxT("JSON"),
     wxT("KML"),
     wxT("Plot"),
-    wxT("Skencil"),
     wxT("Survex pos"),
     wxT("SVG")
 };

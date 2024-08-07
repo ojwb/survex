@@ -1,6 +1,5 @@
 /* export.h
- * Export to CAD-like formats (DXF, Skencil, SVG, EPS, HPGL) and also Compass
- * PLT.
+ * Export to CAD-like formats (DXF, SVG, EPS, HPGL) and also Compass PLT.
  */
 
 /* Copyright (C) 2004-2024 Olly Betts
@@ -40,7 +39,6 @@ typedef enum {
     FMT_JSON,
     FMT_KML,
     FMT_PLT,
-    FMT_SK,
     FMT_POS,
     FMT_SVG,
     FMT_MAX_PLUS_ONE_

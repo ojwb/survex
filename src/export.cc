@@ -1,5 +1,5 @@
 /* export.cc
- * Export to CAD-like formats (DXF, Skencil, SVG, EPS) and also Compass PLT.
+ * Export to CAD-like formats (DXF, SVG, EPS) and also Compass PLT.
  */
 
 /* Copyright (C) 1994-2024 Olly Betts
@@ -102,11 +102,6 @@ const format_info export_format_info[] = {
     { ".plt", /*Compass PLT for use with Carto*/415,
       LABELS|LEGS|SURF|SPLAYS|ORIENTABLE,
       LABELS|LEGS },
-    /* TRANSLATORS: "Skencil" is the name of a software package, so should not be
-     * translated: http://www.skencil.org/ */
-    { ".sk", /*Skencil files*/416,
-      LABELS|LEGS|SURF|SPLAYS|STNS|MARKER_SIZE|GRID|SCALE|ORIENTABLE,
-      LABELS|LEGS|STNS },
     /* TRANSLATORS: Survex is the name of the software, and "pos" refers to a
      * file extension, so neither should be translated. */
     { ".pos", /*Survex pos files*/166,
@@ -141,7 +136,7 @@ html_escape(FILE *fh, const char *s)
     }
 }
 
-// Used by Skencil and SVG.
+// Used by SVG.
 static const char *layer_name(int mask) {
     switch (mask) {
 	case LEGS: case LEGS|SURF:
@@ -471,101 +466,6 @@ DXF::footer()
 {
    fprintf(fh, "000\nENDSEC\n");
    fprintf(fh, "000\nEOF\n");
-}
-
-class Skencil : public ExportFilter {
-    double factor;
-  public:
-    explicit Skencil(double scale)
-	: factor(POINTS_PER_MM * 1000.0 / scale) { }
-    const int * passes() const override;
-    void header(const char *, const char *, time_t,
-		double min_x, double min_y, double min_z,
-		double max_x, double max_y, double max_z) override;
-    void start_pass(int layer) override;
-    void line(const img_point *, const img_point *, unsigned, bool) override;
-    void label(const img_point *, const wxString&, int, int) override;
-    void cross(const img_point *, const wxString&, int) override;
-    void footer() override;
-};
-
-const int *
-Skencil::passes() const
-{
-    static const int skencil_passes[] = { LEGS|SURF, STNS, LABELS, 0 };
-    return skencil_passes;
-}
-
-void
-Skencil::header(const char *, const char *, time_t,
-		double min_x, double min_y, double /*min_z*/,
-		double max_x, double max_y, double /*max_z*/)
-{
-   fprintf(fh, "##Sketch 1 2\n"); /* File format version */
-   fprintf(fh, "document()\n");
-   fprintf(fh, "layout((%.3f,%.3f),0)\n",
-	   (max_x - min_x) * factor, (max_y - min_y) * factor);
-}
-
-void
-Skencil::start_pass(int layer)
-{
-   fprintf(fh, "layer('%s',1,1,0,0,(0,0,0))\n", layer_name(layer));
-}
-
-void
-Skencil::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
-{
-   (void)flags; /* unused */
-   if (fPendingMove) {
-       fprintf(fh, "b()\n");
-       fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p1->x * factor, p1->y * factor, 0.0);
-   }
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n", p->x * factor, p->y * factor, 0.0);
-}
-
-void
-Skencil::label(const img_point *p, const wxString& str, int sflags, int)
-{
-   const char* s = str.utf8_str();
-   (void)sflags; /* unused */
-   fprintf(fh, "fp((0,0,0))\n");
-   fprintf(fh, "le()\n");
-   fprintf(fh, "Fn('Times-Roman')\n");
-   fprintf(fh, "Fs(5)\n");
-   fprintf(fh, "txt('");
-   while (*s) {
-      int ch = *s++;
-      if (ch == '\'' || ch == '\\') PUTC('\\', fh);
-      PUTC(ch, fh);
-   }
-   fprintf(fh, "',(%.3f,%.3f))\n", p->x * factor, p->y * factor);
-}
-
-void
-Skencil::cross(const img_point *p, const wxString&, int sflags)
-{
-   (void)sflags; /* unused */
-   fprintf(fh, "b()\n");
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor - marker_size, p->y * factor - marker_size, 0.0);
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor + marker_size, p->y * factor + marker_size, 0.0);
-   fprintf(fh, "bn()\n");
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor + marker_size, p->y * factor - marker_size, 0.0);
-   fprintf(fh, "bs(%.3f,%.3f,%.3f)\n",
-	   p->x * factor - marker_size, p->y * factor + marker_size, 0.0);
-}
-
-void
-Skencil::footer(void)
-{
-   fprintf(fh, "guidelayer('Guide Lines',1,0,0,1,(0,0,1))\n");
-   if (grid) {
-      fprintf(fh, "grid((0,0,%.3f,%.3f),1,(0,0,1),'Grid')\n",
-	      grid * factor, grid * factor);
-   }
 }
 
 typedef struct point {
@@ -1439,9 +1339,6 @@ Export(const wxString &fnm_out, const wxString &title,
 	   filt = new POS(model.GetSeparator(), false);
 	   show_mask |= FULL_COORDS;
 	   need_bounds = false;
-	   break;
-       case FMT_SK:
-	   filt = new Skencil(scale);
 	   break;
        case FMT_SVG:
 	   filt = new SVG(scale, text_height);

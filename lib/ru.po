@@ -1847,13 +1847,6 @@ msgstr "KML файлы"
 msgid "Compass PLT for use with Carto"
 msgstr "Compass PLT файлы для использования в Carto"
 
-#. TRANSLATORS: "Skencil" is the name of a software package, so should not be
-#. translated: http://www.skencil.org/
-#: ../src/export.cc:107
-#: n:416
-msgid "Skencil files"
-msgstr "Skencil файлы"
-
 #. TRANSLATORS: Survex is the name of the software, and "pos" refers to a
 #. file extension, so neither should be translated.
 #: ../src/export.cc:112
@@ -3523,13 +3516,6 @@ msgstr "создавать JSON"
 #: n:458
 msgid "produce KML output"
 msgstr "создавать KML"
-
-#. TRANSLATORS: "Skencil" is the name of a software package, so should not be
-#. translated.
-#: ../src/survexport.cc:174
-#: n:158
-msgid "produce Skencil output"
-msgstr "создавать Skencil"
 
 #: ../src/survexport.cc:175
 #: n:459

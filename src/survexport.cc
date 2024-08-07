@@ -113,7 +113,6 @@ main(int argc, char **argv)
 	{"json", no_argument, 0, OPT_FMT_BASE + FMT_JSON},
 	{"kml", no_argument, 0, OPT_FMT_BASE + FMT_KML},
 	{"plt", no_argument, 0, OPT_FMT_BASE + FMT_PLT},
-	{"skencil", no_argument, 0, OPT_FMT_BASE + FMT_SK},
 	{"pos", no_argument, 0, OPT_FMT_BASE + FMT_POS},
 	{"svg", no_argument, 0, OPT_FMT_BASE + FMT_SVG},
 	{"help", no_argument, 0, HLP_HELP},
@@ -169,11 +168,8 @@ main(int argc, char **argv)
 	/* TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 	 * so should not be translated. */
 	{HLP_ENCODELONG(32),  /*produce Compass PLT output for Carto*/159, 0},
-	/* TRANSLATORS: "Skencil" is the name of a software package, so should not be
-	 * translated. */
-	{HLP_ENCODELONG(33),  /*produce Skencil output*/158, 0},
-	{HLP_ENCODELONG(34),  /*produce Survex POS output*/459, 0},
-	{HLP_ENCODELONG(35),  /*produce SVG output*/160, 0},
+	{HLP_ENCODELONG(33),  /*produce Survex POS output*/459, 0},
+	{HLP_ENCODELONG(34),  /*produce SVG output*/160, 0},
 	{0, 0, 0}
    };
 
