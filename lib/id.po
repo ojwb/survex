@@ -2231,12 +2231,12 @@ msgstr "koordinat penuh"
 #: ../src/printing.cc:521
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Jepit ke tanah"
 
 #: ../src/survexport.cc:156
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "jepit ke tanah"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441

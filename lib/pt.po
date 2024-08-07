@@ -1317,7 +1317,7 @@ msgstr "Processada em %s"
 #: n:233
 #, c-format
 msgid "↑%s 1:%.0f"
-msgstr ""
+msgstr "↑%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an elevation view and what the viewing angle
@@ -1329,7 +1329,7 @@ msgstr ""
 #: n:235
 #, c-format
 msgid "%s↔%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a tilted elevation view and what the viewing
@@ -1342,7 +1342,7 @@ msgstr ""
 #: n:236
 #, c-format
 msgid "%s↔%s ∡%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s ∡%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an extended elevation view.  Aven will replace
@@ -2239,12 +2239,12 @@ msgstr ""
 #: ../src/printing.cc:521
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Assente no chão"
 
 #: ../src/survexport.cc:156
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "assente no chão"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441

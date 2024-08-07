@@ -2232,12 +2232,12 @@ msgstr "pełne współrzędne"
 #: ../src/printing.cc:521
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Obcięte do wysokości terenu"
 
 #: ../src/survexport.cc:156
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "obcięte do wysokości terenu"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441

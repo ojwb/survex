@@ -1294,7 +1294,7 @@ msgstr ""
 #: n:232
 #, c-format
 msgid "%d/%d"
-msgstr ""
+msgstr "%d/%d"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly indicate that
 #. the date which follows is the date that the survey data was processed.
@@ -1316,7 +1316,7 @@ msgstr ""
 #: n:233
 #, c-format
 msgid "↑%s 1:%.0f"
-msgstr ""
+msgstr "↑%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an elevation view and what the viewing angle
@@ -1328,7 +1328,7 @@ msgstr ""
 #: n:235
 #, c-format
 msgid "%s↔%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is a tilted elevation view and what the viewing
@@ -1341,7 +1341,7 @@ msgstr ""
 #: n:236
 #, c-format
 msgid "%s↔%s ∡%s 1:%.0f"
-msgstr ""
+msgstr "%s↔%s ∡%s 1:%.0f"
 
 #. TRANSLATORS: Used in the footer of printouts to compactly
 #. indicate this is an extended elevation view.  Aven will replace
@@ -2233,12 +2233,12 @@ msgstr ""
 #: ../src/printing.cc:521
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Ακινητοποίηση στο έδαφος"
 
 #: ../src/survexport.cc:156
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "ακινητοποίηση στο έδαφος"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:441
@@ -2904,7 +2904,7 @@ msgstr ""
 #: ../src/printing.cc:86
 #: n:344
 msgid "°"
-msgstr ""
+msgstr "°"
 
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 #. circle).
@@ -2917,7 +2917,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1942
 #: n:345
 msgid "ᵍ"
-msgstr ""
+msgstr "ᵍ"
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45
 #. degrees = 50 grad).
