@@ -22,6 +22,7 @@
 #include "exportfilter.h"
 
 class HPGL : public ExportFilter {
+    int pen;
   public:
     HPGL() {}
     void header(const char *, const char *, time_t,

@@ -101,7 +101,7 @@ esac
  samename tabinhighlight\
  3dexport \
  dxffullcoords dxfsurfequate\
- gpxexport jsonexport kmlexport pltexport svgexport\
+ gpxexport hpglexport jsonexport kmlexport pltexport svgexport\
 "}}
 
 # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
@@ -304,7 +304,7 @@ for file in $TESTS ; do
       $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
     fi
     ;;
-  dxf|gpx|json|kml|plt|svg)
+  dxf|gpx|hpgl|json|kml|plt|svg)
     # $pos gives us the file extension here.
     expectedfile=$basefile.$pos
     tmpfile=tmp.$pos

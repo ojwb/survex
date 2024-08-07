@@ -161,6 +161,7 @@ tabinhighlight.out tabinhighlight.svx\
 dxffullcoords.dxf dxffullcoords.svx\
 dxfsurfequate.svx dxfsurfequate.dxf\
 gpxexport.gpx gpxexport.svx\
+hpglexport.hpgl hpglexport.svx\
 jsonexport.json jsonexport.svx\
 kmlexport.kml kmlexport.svx\
 pltexport.plt pltexport.svx\

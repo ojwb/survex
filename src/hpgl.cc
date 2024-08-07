@@ -23,6 +23,7 @@
 #include <stdio.h>
 
 #include "hpgl.h"
+#include "export.h" // For SURF, etc
 #include "useful.h"
 
 # define HPGL_USE_UC
@@ -55,6 +56,8 @@ void HPGL::header(const char *, const char *, time_t,
 
    xpPageWidth = (long)(HPGL_UNITS_PER_MM * (double)PaperWidth);
    ypPageDepth = (long)(HPGL_UNITS_PER_MM * (double)PaperDepth);
+
+   pen = 1;
 
    /* SR scales characters relative to P1 and P2 */
    /* SI scales characters to size given (in cm) */
@@ -97,12 +100,23 @@ void HPGL::header(const char *, const char *, time_t,
 }
 
 void
-HPGL::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPending)
+HPGL::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending)
 {
-   if (fPending) {
-      fprintf(fh, "PU%ld,%ld;", long(p1->x - x_org), long(p1->y - y_org));
-   }
-   fprintf(fh, "PD%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
+    enum { PEN_LEG = 1, PEN_SURF = 2, PEN_SPLAY = 3 };
+    int new_pen = PEN_LEG;
+    if (flags & SURF) {
+	new_pen = PEN_SURF;
+    } else if (flags & SPLAYS) {
+	new_pen = PEN_SPLAY;
+    }
+    if (new_pen != pen) {
+	fprintf(fh, "SP%d;", new_pen);
+	pen = new_pen;
+    }
+    if (fPending) {
+	fprintf(fh, "PU%ld,%ld;", long(p1->x - x_org), long(p1->y - y_org));
+    }
+    fprintf(fh, "PD%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
 }
 
 #define CS HPGL_CROSS_SIZE
@@ -110,6 +124,10 @@ HPGL::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPe
 void
 HPGL::cross(const img_point *p, const wxString&, int)
 {
+    if (pen != 1) {
+	fprintf(fh, "SP1;");
+	pen = 1;
+    }
     fprintf(fh, "PU%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
     /* SM plots a symbol at each point, but it isn't very convenient here   */
     /* We can write PDPR%d,%dPR%d,%d... but the HP7475A manual doesn't say  */
@@ -124,6 +142,10 @@ HPGL::cross(const img_point *p, const wxString&, int)
 void
 HPGL::label(const img_point *p, const wxString& str, int /*sflags*/, int)
 {
+    if (pen != 1) {
+	fprintf(fh, "SP1;");
+	pen = 1;
+    }
     const char* s = str.utf8_str();
     /* LB is a text label, terminated with a ^C */
     fprintf(fh, "PU%ld,%ld;LB", long(p->x - x_org), long(p->y - y_org));
