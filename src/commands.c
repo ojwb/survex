@@ -1500,21 +1500,23 @@ cmd_data(void)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_NOSURVEY MASK_stns
 #define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
+#define MASK_IGNORE 0 // No readings in this style.
 
-   /* readings which may be given for each style */
+   // readings which may be given for each style (index is STYLE_*)
    static const unsigned long mask[] = {
       MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_NOSURVEY,
-      MASK_PASSAGE
+      MASK_PASSAGE, MASK_IGNORE
    };
 
-   /* readings which may be omitted for each style */
+   // readings which may be omitted for each style (index is STYLE_*)
    static const unsigned long mask_optional[] = {
       BIT(Dir) | BIT(Clino) | BIT(BackClino),
       BIT(Dir) | BIT(Clino) | BIT(BackClino),
       0,
       BIT(Dir),
       0,
-      0 /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
+      0, /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
+      0
    };
 
    /* all valid readings */
@@ -1524,7 +1526,8 @@ cmd_data(void)
       MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
+      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_IGNORE
    };
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
@@ -1534,6 +1537,7 @@ cmd_data(void)
 	{"CYLPOLAR",     STYLE_CYLPOLAR },
 	{"DEFAULT",      STYLE_DEFAULT },
 	{"DIVING",       STYLE_DIVING },
+	{"IGNORE",       STYLE_IGNORE },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
 	{"PASSAGE",      STYLE_PASSAGE },
@@ -1557,6 +1561,10 @@ cmd_data(void)
 
    if (style == STYLE_DEFAULT) {
       default_style(pcs);
+      return;
+   }
+
+   if (style == STYLE_IGNORE) {
       return;
    }
 

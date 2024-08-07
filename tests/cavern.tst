@@ -97,6 +97,7 @@ esac
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\
  cs csbad csbadsdfix csfeet cslonglat omitfixaroundsolve repeatreading\
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
+ cmd_data_ignore\
  quadrant_bearing bad_quadrant_bearing\
  samename tabinhighlight\
  3dexport \

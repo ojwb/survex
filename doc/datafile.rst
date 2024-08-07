@@ -573,6 +573,10 @@ Syntax
 
    ``*data``
 
+   ``*data default
+
+   ``*data ignore``
+
 Example
    ::
 
@@ -584,7 +588,7 @@ Example
 
 Description
    ``<style>``
-      ``DEFAULT|NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY|PASSAGE``
+      ``NORMAL|DIVING|CARTESIAN|TOPOFIL|CYLPOLAR|NOSURVEY|PASSAGE``
 
    ``<ordering>``
       ordered list of instruments - which are valid depends on the style.
@@ -593,7 +597,7 @@ Description
    left in to allow older data to be processed without modification.  Use the
    name ``NORMAL`` by preference.
 
-   There are two variants of each style - interleaved and non-interleaved.
+   Most of the styles support two variants - interleaved and non-interleaved.
    Non-interleaved is "one line per leg", interleaved has a line for the data
    shared between two legs (e.g. ``STATION``:``FROM``/``TO``,
    ``DEPTH``:``FROMDEPTH``/``TODEPTH``, ``COUNT``:``FROMCOUNT``/``TOCOUNT``).
@@ -640,6 +644,14 @@ Description
    DEFAULT
       Select the default data style and ordering (``NORMAL`` style, ordering:
       ``from to tape compass clino``).
+
+   IGNORE
+      Ignores survey data until another ``*data`` command sets a different
+      style, or until the end of the enclosing ``*begin``...\ ``*end`` block.
+      Note that commands are still processed, only survey data is ignored.
+      This is useful if you have some survey data which has been superseded by
+      a better survey of the same passage, but you want to keep the superseded
+      data around, just not process it.  Added in Survex 1.4.11.
 
    NORMAL
       The usual tape/compass/clino centreline survey. For non-interleaved data
