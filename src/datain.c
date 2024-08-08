@@ -3016,7 +3016,7 @@ data_file_walls_wpj(void)
 	}
 
 	nextch();
-	get_token_legacy_no_blanks();
+	get_token_no_blanks();
 	tok = match_tok(walls_wpj_cmd_tab, TABSIZE(walls_wpj_cmd_tab));
 	if (detached_nest_level) {
 	    switch (tok) {
