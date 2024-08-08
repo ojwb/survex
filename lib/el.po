@@ -36,7 +36,7 @@ msgstr "&Όψη"
 #: ../src/mainfrm.cc:1001
 #: n:214
 msgid "&Controls"
-msgstr ""
+msgstr "&Στοιχεία ελέγχου"
 
 #: ../src/mainfrm.cc:1013
 #: n:215
@@ -77,7 +77,7 @@ msgstr "Ανεπαρκής μνήμη (%lu bytes)"
 #: n:38
 #, fuzzy, c-format
 msgid "Out of memory trying to read file “%s”"
-msgstr "Ανεπαρκής μνήμη: “%s”"
+msgstr "Ανεπαρκής μνήμη: «%s»"
 
 #. TRANSLATORS: Feel free to translate as "or newer" instead of "or
 #. greater" if that gives a more natural translation.  It's
@@ -201,7 +201,7 @@ msgstr ""
 #: n:12
 #, c-format
 msgid "Unknown command “%s”"
-msgstr ""
+msgstr "Άγνωστη εντολή «%s»"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:440
@@ -245,7 +245,7 @@ msgstr ""
 #: n:17
 #, c-format
 msgid "Couldn’t run external command: “%s”"
-msgstr "Η εκτέλεση της εντολής “%s” απέτυχε"
+msgstr "Η εκτέλεση της εντολής «%s» απέτυχε"
 
 #: ../src/datain.c:134
 #: ../src/datain.c:142
@@ -894,7 +894,7 @@ msgstr ""
 #: n:24
 #, c-format
 msgid "Couldn’t open file “%s”"
-msgstr "Δεν είναι δυνατό το άνοιγμα του αρχείου “%s”"
+msgstr "Δεν είναι δυνατό το άνοιγμα του αρχείου «%s»"
 
 #: ../src/printing.cc:659
 #: ../src/survexport.cc:464
@@ -990,7 +990,7 @@ msgstr ""
 #: n:110
 #, fuzzy, c-format
 msgid "Error writing to file “%s”"
-msgstr "Σφάλμα κατά την εγγραφή στο αρχείο “%s”"
+msgstr "Σφάλμα κατά την εγγραφή στο αρχείο «%s»"
 
 #: ../src/filename.c:118
 #: n:111
@@ -2098,7 +2098,7 @@ msgstr "Όψη"
 #: ../src/printing.cc:361
 #: n:256
 msgid "Elements"
-msgstr ""
+msgstr "Στοιχεία"
 
 #: ../src/printing.cc:366
 #: n:410
@@ -2523,7 +2523,7 @@ msgstr ""
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
-msgstr "%s: η επιλογή “%s” απαιτεί ένα όρισμα\n"
+msgstr "%s: η επιλογή «%s» απαιτεί ένα όρισμα\n"
 
 #: ../src/z_getopt.c:1182
 #: n:306
@@ -2608,7 +2608,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1556
 #: n:321
 msgid "Save Screenshot"
-msgstr ""
+msgstr "Αποθήκευση στιγμιότυπου οθόνης"
 
 #: ../src/mainfrm.cc:2039
 #: ../src/mainfrm.cc:2042
@@ -2777,7 +2777,7 @@ msgstr ""
 #: ../src/printing.cc:1263
 #: n:423
 msgid "km"
-msgstr ""
+msgstr "χλμ"
 
 #. TRANSLATORS: abbreviation for "metres" (unit of length), used
 #. e.g. "10m".
@@ -2796,7 +2796,7 @@ msgstr ""
 #: ../src/printing.cc:1265
 #: n:424
 msgid "m"
-msgstr ""
+msgstr "m"
 
 #. TRANSLATORS: abbreviation for "centimetres" (unit of length),
 #. used e.g.  "50cm".
@@ -2807,7 +2807,7 @@ msgstr ""
 #: ../src/printing.cc:1268
 #: n:425
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #. TRANSLATORS: abbreviation for "miles" (unit of length,
 #. plural), used e.g.  "2 miles".
@@ -2817,7 +2817,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1440
 #: n:426
 msgid " miles"
-msgstr ""
+msgstr " μίλια"
 
 #. TRANSLATORS: abbreviation for "mile" (unit of length,
 #. singular), used e.g.  "1 mile".
@@ -2827,7 +2827,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1447
 #: n:427
 msgid " mile"
-msgstr ""
+msgstr " μίλι"
 
 #. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
 #. as "10ft".
@@ -2973,7 +2973,7 @@ msgstr "Εμφάνιση όλων"
 #: ../src/aventreectrl.cc:385
 #: n:246
 msgid "Hide others"
-msgstr ""
+msgstr "Απόκρυψη άλλων"
 
 #: ../src/aventreectrl.cc:389
 #: n:388
@@ -3035,7 +3035,7 @@ msgstr ""
 #: ../src/mainfrm.cc:806
 #: n:201
 msgid "&Screenshot..."
-msgstr ""
+msgstr "&Στιγμιότυπου..."
 
 #. TRANSLATORS: In the "File" menu - c.f. n:191
 #: ../src/mainfrm.cc:809
@@ -3111,7 +3111,7 @@ msgstr ""
 #: ../src/mainfrm.cc:176
 #: n:279
 msgid "Time: "
-msgstr ""
+msgstr "Χρόνος: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.
@@ -3356,14 +3356,14 @@ msgstr ""
 #: n:501
 #, c-format
 msgid "Added: %s"
-msgstr ""
+msgstr "Προστέθηκαν: %s"
 
 #. TRANSLATORS: for diffpos:
 #: ../src/diffpos.c:218
 #: n:502
 #, c-format
 msgid "Deleted: %s"
-msgstr ""
+msgstr "Διαγραμένα: %s"
 
 #. TRANSLATORS: The first of two warnings given when a survey which has
 #. already been completed is reentered.  This example file crawl.svx:
@@ -3587,7 +3587,7 @@ msgstr ""
 #: ../src/mainfrm.cc:954
 #: n:347
 #~ msgid "&Preferences..."
-#~ msgstr ""
+#~ msgstr "&Προτιμήσεις..."
 
 #: n:348
 #~ msgid "Draw passage walls"
