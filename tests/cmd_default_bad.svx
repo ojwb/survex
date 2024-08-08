@@ -1,0 +1,6 @@
+; pos=fail warn=3 error=3
+*fix 1 0 0 0
+1 2 1 0 0
+*default calibrate data
+*default foo
+*default un1ts

@@ -59,7 +59,8 @@ esac
  cmd_set_bad cmd_set_dot_in_name\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  expobug require export export2 includecomment\
- self_loop self_eq_loop reenterwarn cmd_default cmd_prefix cmd_prefix_bad\
+ self_loop self_eq_loop reenterwarn cmd_default cmd_default_bad\
+ cmd_prefix cmd_prefix_bad\
  cmd_begin_bad cmd_equate_bad cmd_export_bad\
  singlefixerr singlereffixerr\
  begin_no_end end_no_begin end_no_begin_nest require_fail\

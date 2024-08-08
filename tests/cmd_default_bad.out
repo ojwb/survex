@@ -1,0 +1,43 @@
+./cmd_default_bad.svx:4:2: warning: *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
+ *default calibrate data
+  ^~~~~~~
+./cmd_default_bad.svx:4:20: error: End of line not blank
+ *default calibrate data
+                    ^~~~
+./cmd_default_bad.svx:5:2: warning: *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
+ *default foo
+  ^~~~~~~
+./cmd_default_bad.svx:5:10: error: Unknown setting "foo"
+ *default foo
+          ^~~
+./cmd_default_bad.svx:6:2: warning: *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
+ *default un1ts
+  ^~~~~~~
+./cmd_default_bad.svx:6:10: error: Unknown setting "un"
+ *default un1ts
+          ^~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
+North-South range = 1.00m (from 2 at 1.00m to 1 at 0.00m)
+East-West range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
+   2 1-nodes.
+There were 3 warning(s) and 3 error(s) - no output files produced.

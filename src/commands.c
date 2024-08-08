@@ -2055,7 +2055,7 @@ cmd_default(void)
    if (default_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_COL, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
 	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
    }

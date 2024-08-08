@@ -44,7 +44,9 @@ angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\
 cmd_alias_bad.svx cmd_alias_bad.out\
-cmd_default.svx cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
+cmd_default.svx\
+cmd_default_bad.svx cmd_default_bad.out\
+cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
 cmd_case.svx cmd_case.pos\
 cmd_cartesian.svx cmd_cartesian.dump cmd_cartesian.out\
 cmd_cartesian_bad.svx cmd_cartesian_bad.out\
