@@ -2190,9 +2190,11 @@ typedef enum {
     CS_CUSTOM,
     CS_EPSG,
     CS_ESRI,
-    CS_EUR,
+    CS_EUR79Z30,
     CS_IJTSK,
+    CS_IJTSK03,
     CS_JTSK,
+    CS_JTSK03,
     CS_LAT,
     CS_LOCAL,
     CS_LONG,
@@ -2202,19 +2204,22 @@ typedef enum {
 } cs_class;
 
 static const sztok cs_tab[] = {
-     {"CUSTOM", CS_CUSTOM},
-     {"EPSG",   CS_EPSG},	/* EPSG:<number> */
-     {"ESRI",   CS_ESRI},	/* ESRI:<number> */
-     {"EUR",    CS_EUR},	/* EUR79Z30 */
-     {"IJTSK",  CS_IJTSK},	/* IJTSK or IJTSK03 */
-     {"JTSK",   CS_JTSK},	/* JTSK or JTSK03 */
-     {"LAT",    CS_LAT},	/* LAT-LONG */
-     {"LOCAL",  CS_LOCAL},
-     {"LONG",   CS_LONG},	/* LONG-LAT */
-     {"OSGB",   CS_OSGB},	/* OSGB:<H, N, O, S or T><A-Z except I> */
-     {"S",      CS_S_MERC},	/* S-MERC */
-     {"UTM",    CS_UTM},	/* UTM<zone><N or S or nothing> */
-     {NULL,     CS_NONE}
+     {"CUSTOM",   CS_CUSTOM},
+     {"EPSG",     CS_EPSG},	/* EPSG:<number> */
+     {"ESRI",     CS_ESRI},	/* ESRI:<number> */
+     {"EUR79Z30", CS_EUR79Z30},
+     {"IJTSK",    CS_IJTSK},
+     {"IJTSK03",  CS_IJTSK03},
+     {"JTSK",     CS_JTSK},
+     {"JTSK03",   CS_JTSK03},
+     {"LAT",      CS_LAT},	/* LAT-LONG */
+     {"LOCAL",    CS_LOCAL},
+     {"LONG",     CS_LONG},	/* LONG-LAT */
+     {"OSGB",     CS_OSGB},	/* OSGB:<H, N, O, S or T><A-Z except I> */
+     {"S",        CS_S_MERC},	/* S-MERC */
+     // UTM<zone><N or S or nothing> is handled separately to avoid needing 180
+     // entries in this lookup table.
+     {NULL,       CS_NONE}
 };
 
 static void
@@ -2238,121 +2243,126 @@ cmd_cs(void)
       }
    }
 
+   skipblanks();
    get_pos(&fp);
-   /* Note get_token_legacy() only accepts letters - it'll stop at digits so
-    * "UTM12" will give token "UTM". */
-   get_token_legacy();
+   get_token_no_blanks();
    if (S_EQ(&uctoken, "OUT")) {
       output = true;
+      skipblanks();
       get_pos(&fp);
-      get_token_legacy();
+      get_token_no_blanks();
    }
-   cs = match_tok(cs_tab, TABSIZE(cs_tab));
-   switch (cs) {
-      case CS_NONE:
-	 break;
-      case CS_CUSTOM:
-	 ok_for_output = MAYBE;
-	 get_pos(&fp);
-	 string str = S_INIT;
-	 read_string(&str);
-	 proj_str = s_steal(&str);
-	 cs_sub = 0;
-	 break;
-      case CS_EPSG: case CS_ESRI:
-	 ok_for_output = MAYBE;
-	 if (ch == ':' && isdigit(nextch())) {
-	    unsigned n = read_uint();
-	    if (n < 1000000) {
-	       cs_sub = (int)n;
-	    }
-	 }
-	 break;
-      case CS_EUR:
-	 if (isdigit(ch) &&
-	     read_uint() == 79 &&
-	     (ch == 'Z' || ch == 'z') &&
-	     isdigit(nextch()) &&
-	     read_uint() == 30) {
-	    cs_sub = 7930;
-	 }
-	 break;
-      case CS_JTSK:
-	 ok_for_output = NO;
-	 /* FALLTHRU */
-      case CS_IJTSK:
-	 if (ch == '0') {
-	    if (nextch() == '3') {
+
+   if (s_len(&uctoken) > 3 &&
+       memcmp(s_str(&uctoken), "UTM", 3) == 0 &&
+       isdigit((unsigned char)s_str(&uctoken)[3])) {
+       // The token starts "UTM" followed by a digit so handle that separately
+       // to avoid needing 180 entries for UTM zones in the cs_tab lookup
+       // table.
+       cs = CS_UTM;
+       // Reposition on the digit after "UTM".
+       set_pos(&fp);
+       nextch();
+       nextch();
+       nextch();
+       unsigned n = read_uint();
+       if (n >= 1 && n <= 60) {
+	   int uch = toupper(ch);
+	   cs_sub = (int)n;
+	   if (uch == 'S') {
 	       nextch();
-	       cs_sub = 3;
-	    }
-	 } else {
-	    cs_sub = 0;
-	 }
-	 break;
-      case CS_LAT: case CS_LONG:
-	 ok_for_output = NO;
-	 if (ch == '-') {
-	    nextch();
-	    get_token_no_blanks();
-	    cs_class cs2 = match_tok(cs_tab, TABSIZE(cs_tab));
-	    if ((cs ^ cs2) == (CS_LAT ^ CS_LONG)) {
-		cs_sub = 0;
-	    }
-	 }
-	 break;
-      case CS_LOCAL:
-	 cs_sub = 0;
-	 break;
-      case CS_OSGB:
-	 if (ch == ':') {
-	    int uch1 = toupper(nextch());
-	    if (strchr("HNOST", uch1)) {
-	       int uch2 = toupper(nextch());
-	       if (uch2 >= 'A' && uch2 <= 'Z' && uch2 != 'I') {
-		  int x, y;
-		  nextch();
-		  if (uch1 > 'I') --uch1;
-		  uch1 -= 'A';
-		  if (uch2 > 'I') --uch2;
-		  uch2 -= 'A';
-		  x = uch1 % 5;
-		  y = uch1 / 5;
-		  x = (x * 5) + uch2 % 5;
-		  y = (y * 5) + uch2 / 5;
-		  cs_sub = y * 25 + x;
+	       cs_sub = -cs_sub;
+	   } else if (uch == 'N') {
+	       nextch();
+	   }
+       }
+   } else {
+       cs = match_tok(cs_tab, TABSIZE(cs_tab));
+       switch (cs) {
+	 case CS_NONE:
+	   break;
+	 case CS_CUSTOM:
+	   ok_for_output = MAYBE;
+	   get_pos(&fp);
+	   string str = S_INIT;
+	   read_string(&str);
+	   proj_str = s_steal(&str);
+	   cs_sub = 0;
+	   break;
+	 case CS_EPSG: case CS_ESRI:
+	   ok_for_output = MAYBE;
+	   if (ch == ':' && isdigit(nextch())) {
+	       unsigned n = read_uint();
+	       if (n < 1000000) {
+		   cs_sub = (int)n;
 	       }
-	    }
-	 }
-	 break;
-      case CS_S_MERC:
-	 if (ch == '-') {
-	    nextch();
-	    get_token_no_blanks();
-	    if (S_EQ(&uctoken, "MERC")) {
-	       cs_sub = 0;
-	    }
-	 }
-	 break;
-      case CS_UTM:
-	 if (isdigit(ch)) {
-	    unsigned n = read_uint();
-	    if (n >= 1 && n <= 60) {
-	       int uch = toupper(ch);
-	       cs_sub = (int)n;
-	       if (uch == 'S') {
-		  nextch();
-		  cs_sub = -cs_sub;
-	       } else if (uch == 'N') {
-		  nextch();
+	   }
+	   break;
+	 case CS_EUR79Z30:
+	   cs_sub = 0;
+	   break;
+	 case CS_JTSK:
+	 case CS_JTSK03:
+	   ok_for_output = NO;
+	   cs_sub = 0;
+	   break;
+	 case CS_IJTSK:
+	 case CS_IJTSK03:
+	   cs_sub = 0;
+	   break;
+	 case CS_LAT: case CS_LONG:
+	   ok_for_output = NO;
+	   if (ch == '-') {
+	       nextch();
+	       get_token_no_blanks();
+	       cs_class cs2 = match_tok(cs_tab, TABSIZE(cs_tab));
+	       if ((cs ^ cs2) == (CS_LAT ^ CS_LONG)) {
+		   cs_sub = 0;
 	       }
-	    }
-	 }
-	 break;
+	   }
+	   break;
+	 case CS_LOCAL:
+	   cs_sub = 0;
+	   break;
+	 case CS_OSGB:
+	   if (ch == ':') {
+	       int uch1 = toupper(nextch());
+	       if (strchr("HNOST", uch1)) {
+		   int uch2 = toupper(nextch());
+		   if (uch2 >= 'A' && uch2 <= 'Z' && uch2 != 'I') {
+		       int x, y;
+		       nextch();
+		       if (uch1 > 'I') --uch1;
+		       uch1 -= 'A';
+		       if (uch2 > 'I') --uch2;
+		       uch2 -= 'A';
+		       x = uch1 % 5;
+		       y = uch1 / 5;
+		       x = (x * 5) + uch2 % 5;
+		       y = (y * 5) + uch2 / 5;
+		       cs_sub = y * 25 + x;
+		   }
+	       }
+	   }
+	   break;
+	 case CS_S_MERC:
+	   if (ch == '-') {
+	       nextch();
+	       get_token_no_blanks();
+	       if (S_EQ(&uctoken, "MERC")) {
+		   cs_sub = 0;
+	       }
+	   }
+	   break;
+	 case CS_UTM:
+	   // Handled outside of this switch, but avoid compiler warning about
+	   // unhandled enumeration value.
+	   break;
+       }
    }
    if (cs_sub == INT_MIN || isalnum(ch)) {
       set_pos(&fp);
-      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2371,20 +2381,20 @@ cmd_cs(void)
 	 proj_str = osmalloc(32);
 	 snprintf(proj_str, 32, "ESRI:%d", cs_sub);
 	 break;
-      case CS_EUR:
+      case CS_EUR79Z30:
 	 proj_str = osstrdup("+proj=utm +zone=30 +ellps=intl +towgs84=-86,-98,-119,0,0,0,0 +no_defs");
 	 break;
       case CS_IJTSK:
-	 if (cs_sub == 0)
-	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
-	 else
-	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
+	 proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
+	 break;
+      case CS_IJTSK03:
+	 proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
       case CS_JTSK:
-	 if (cs_sub == 0)
-	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
-	 else
-	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
+	 proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
+	 break;
+      case CS_JTSK03:
+	 proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
       case CS_LAT:
 	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be
