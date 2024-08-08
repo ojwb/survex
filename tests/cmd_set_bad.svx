@@ -1,4 +1,4 @@
-; pos=fail error=8
+; pos=fail error=10
 *fix 1 reference 0 0 0
 *begin
 *set blank ^
@@ -33,3 +33,5 @@
 *end
 *set FormFeed = ; error
 *set ROOT $
+*set names1
+*set names2 _-

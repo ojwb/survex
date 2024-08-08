@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=6
+; pos=fail warn=0 error=7
 *fix 1 0 0 0
 ; This '-' is an actual station
 1 - 1.00 090 0
@@ -14,3 +14,5 @@
 ; check error reporting in the presence of trailing comments
 *alias station _; comment
 *alias station - ...;comment
+; check token includes numerics
+*alias station0 - ..

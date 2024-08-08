@@ -1,0 +1,34 @@
+./cmd_truncate_bad.svx:3:11: error: Expecting numeric field, found "on"
+ *Truncate on
+           ^~
+./cmd_truncate_bad.svx:4:11: error: Expecting numeric field, found "off7"
+ *truncate off7
+           ^~~~
+./cmd_truncate_bad.svx:5:11: error: Expecting numeric field, found "o7"
+ *truncate o7
+           ^~
+./cmd_truncate_bad.svx:6:12: error: End of line not blank
+ *truncate 3.14159
+            ^~~~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 4 error(s) - no output files produced.

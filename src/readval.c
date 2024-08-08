@@ -674,7 +674,7 @@ read_quadrant(bool f_optional)
    const int quad = 90;
    filepos fp;
    get_pos(&fp);
-   get_token_no_blanks();
+   get_token_legacy_no_blanks();
    int first_point = match_tok(pointtab, TABSIZE(pointtab));
    if (first_point == POINT_NONE) {
       set_pos(&fp);
@@ -704,7 +704,7 @@ read_quadrant(bool f_optional)
       return 0.0; /* for brain-fried compilers */
    }
 
-   get_token_no_blanks();
+   get_token_legacy_no_blanks();
    int second_point = match_tok(pointewtab, TABSIZE(pointewtab));
    if (second_point == POINT_NONE) {
       set_pos(&fp);

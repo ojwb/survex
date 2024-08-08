@@ -4,6 +4,12 @@
 ./baddatacylpolar.svx:12:49: error: Reading "foo" not allowed in data style "cylpolar"
  *data cylpolar from to tape compass depthchange foo
                                                  ^~~
+./baddatacylpolar.svx:15:49: error: Reading "f0o" not allowed in data style "cylpolar"
+ *data cylpolar from to tape compass depthchange f0o
+                                                 ^~~
+./baddatacylpolar.svx:18:7: error: Data style "cylp0lar" unknown
+ *data cylp0lar from to tape compass depthchange
+       ^~~~~~~~
 
 Removing trailing traverses...
 
@@ -28,4 +34,4 @@ Vertical range = 5.00m (from 3 at 5.00m to 1 at 0.00m)
 North-South range = 2.99m (from 3 at 2.99m to 1 at 0.00m)
 East-West range = 0.26m (from 3 at 0.26m to 1 at 0.00m)
    2 1-nodes.
-There were 0 warning(s) and 2 error(s) - no output files produced.
+There were 0 warning(s) and 4 error(s) - no output files produced.

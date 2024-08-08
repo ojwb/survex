@@ -1,6 +1,10 @@
-; pos=fail warn=0 error=4
+; pos=fail warn=0 error=6
 *fix 1 reference 0 0 0
 *cartesian fridge
 *cartesian fridge 1.0 degrees
 *cartesian magnetic 0
 *cartesian true degrees
+*cartesian grid2degrees
+*cartesian magnetic2 degrees
+; FIXME: This should flag an error really.
+*cartesian true 2degrees

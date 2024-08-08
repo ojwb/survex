@@ -1,0 +1,82 @@
+./bad_cmd_flags.svx:3:7: error: Expecting "NOT", "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags
+       ^
+./bad_cmd_flags.svx:4:7: error: Expecting "NOT", "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags; comment
+       ^
+./bad_cmd_flags.svx:5:8: error: Expecting "NOT", "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags ; comment
+        ^
+./bad_cmd_flags.svx:6:8: error: FLAG "rubbish" unknown
+ *flags rubbish
+        ^~~~~~~
+./bad_cmd_flags.svx:7:12: error: FLAG "rubbish" unknown
+ *flags not rubbish
+            ^~~~~~~
+./bad_cmd_flags.svx:8:12: error: FLAG "not" unknown
+ *flags not not
+            ^~~
+./bad_cmd_flags.svx:9:11: error: Expecting "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags not
+           ^
+./bad_cmd_flags.svx:10:11: error: Expecting "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags not; comment
+           ^
+./bad_cmd_flags.svx:11:12: error: Expecting "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags not ; comment
+            ^
+./bad_cmd_flags.svx:12:14: error: FLAG "rubbish" unknown
+ *flags splay rubbish
+              ^~~~~~~
+./bad_cmd_flags.svx:13:18: error: FLAG "rubbish" unknown
+ *flags splay not rubbish
+                  ^~~~~~~
+./bad_cmd_flags.svx:14:18: error: FLAG "not" unknown
+ *flags splay not not
+                  ^~~
+./bad_cmd_flags.svx:15:17: error: Expecting "DUPLICATE", "SPLAY", or "SURFACE"
+ *flags splay not
+                 ^
+./bad_cmd_flags.svx:16:8: error: FLAG "rubbish" unknown
+ *flags rubbish splay
+        ^~~~~~~
+./bad_cmd_flags.svx:17:12: error: FLAG "rubbish" unknown
+ *flags not rubbish splay
+            ^~~~~~~
+./bad_cmd_flags.svx:18:12: error: FLAG "not" unknown
+ *flags not not splay
+            ^~~
+./bad_cmd_flags.svx:19:14: error: FLAG "rubbish" unknown
+ *flags splay rubbish surface
+              ^~~~~~~
+./bad_cmd_flags.svx:20:18: error: FLAG "rubbish" unknown
+ *flags splay not rubbish surface
+                  ^~~~~~~
+./bad_cmd_flags.svx:21:18: error: FLAG "not" unknown
+ *flags splay not not surface
+                  ^~~
+./bad_cmd_flags.svx:22:14: error: FLAG "n0t" unknown
+ *flags splay n0t surface
+              ^~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 20 error(s) - no output files produced.

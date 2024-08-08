@@ -47,7 +47,9 @@ cmd_alias_bad.svx cmd_alias_bad.out\
 cmd_default.svx\
 cmd_default_bad.svx cmd_default_bad.out\
 cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\
+cmd_truncate_bad.svx cmd_truncate_bad.out\
 cmd_case.svx cmd_case.pos\
+cmd_case_bad.svx cmd_case_bad.out\
 cmd_cartesian.svx cmd_cartesian.dump cmd_cartesian.out\
 cmd_cartesian_bad.svx cmd_cartesian_bad.out\
 cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.pos\
@@ -73,7 +75,7 @@ normignall.svx normignall.pos\
 nosurv.svx nosurv.pos nosurv.out\
 quadrant_bearing.svx quadrant_bearing.pos\
 bad_quadrant_bearing.svx bad_quadrant_bearing.out\
-cmd_flags.svx bad_cmd_flags.svx\
+cmd_flags.svx bad_cmd_flags.svx bad_cmd_flags.out\
 plumb.svx plumb.pos\
 cmd_begin_bad.svx cmd_begin_bad.out\
 cmd_equate_bad.svx cmd_equate_bad.out\
@@ -96,7 +98,7 @@ omitclino.svx omitclino.pos\
 back.svx back.out back.pos\
 back2.svx back2.out back2.pos\
 bad_back.svx bad_back.out\
-notentranceorexport.svx inferunknown.svx inferexports.svx\
+notentranceorexport.svx inferunknown.svx inferunknown.out inferexports.svx\
 bad_units_factor.svx bad_units_factor.out\
 bad_units_qlist.svx bad_units_qlist.out\
 percent_gradient.svx percent_gradient.pos\

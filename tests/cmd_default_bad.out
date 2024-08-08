@@ -13,9 +13,9 @@
 ./cmd_default_bad.svx:6:2: warning: *DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead
  *default un1ts
   ^~~~~~~
-./cmd_default_bad.svx:6:10: error: Unknown setting "un"
+./cmd_default_bad.svx:6:10: error: Unknown setting "un1ts"
  *default un1ts
-          ^~
+          ^~~~~
 
 Removing trailing traverses...
 

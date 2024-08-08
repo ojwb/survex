@@ -752,13 +752,6 @@ data_file_compass_dat_or_clp(bool is_clp)
 		get_token();
 	    }
 
-	    /* get_token() only reads alphas so we need special handling for
-	     * CORRECTIONS2 here.
-	     */
-	    if (ch == '2') {
-		s_catchar(&token, ch);
-		nextch();
-	    }
 	    if (S_EQ(&token, "CORRECTIONS2") && check_colon()) {
 		pcs->z[Q_BACKBEARING] = -rad(read_numeric(false));
 		pcs->z[Q_BACKGRADIENT] = -rad(read_numeric(false));
@@ -1531,7 +1524,7 @@ read_walls_angle(real default_units)
 {
     real angle = read_numeric(false);
     if (isalpha((unsigned char)ch)) {
-	get_token_walls();
+	get_token();
 	// Only one letter is allowed here.
 	if (s_str(&uctoken)[1] != '\0') goto bad_angle_units;
 	if (s_str(&uctoken)[0] == 'D') {
@@ -1568,7 +1561,7 @@ read_walls_distance(bool f_optional, real default_units)
     if (distance != HUGE_REAL) {
 	if (isalpha((unsigned char)ch)) {
 inches_only:
-	    get_token();
+	    get_token_legacy();
 	    // Only one letter is allowed here.
 	    if (s_str(&uctoken)[1] != '\0') goto bad_distance_units;
 	    switch (s_str(&uctoken)[0]) {
@@ -1750,7 +1743,7 @@ parse_walls_flags(bool check_for_quote)
 	    nextch();
 	    break;
 	}
-	get_token_walls();
+	get_token();
 	if (S_EQ(&uctoken, "ENTRANCE")) {
 	    station_flags |= BIT(SFLAGS_ENTRANCE);
 	} else if (S_EQ(&uctoken, "FIX")) {
@@ -1775,7 +1768,6 @@ parse_walls_flags(bool check_for_quote)
 		   S_EQ(&uctoken, "MYOTIS") ||
 		   S_EQ(&uctoken, "VELIFER") ||
 		   S_EQ(&uctoken, "GATED") ||
-		   S_EQ(&uctoken, "0") ||
 		   S_EQ(&uctoken, "LOCATION")) {
 	    // With DEBUG_WALLS_FLAGS defined, run on real-world
 	    // data to capture more words which might also be usefully
@@ -1868,7 +1860,7 @@ parse_options(void)
 {
     skipblanks();
     while (!isEol(ch)) {
-	get_token_walls();
+	get_token();
 	if (s_empty(&token) && isComm(ch)) {
 	    break;
 	}
@@ -1930,7 +1922,7 @@ parse_options(void)
 		pcs->units[Q_DZ] = METRES_PER_FOOT;
 	    break;
 	  case WALLS_UNITS_OPT_D:
-	    get_token_walls();
+	    get_token();
 	    // From testing it seems Walls only checks the initial letter - e.g.
 	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
 	    // but "X" gives an error.
@@ -1948,7 +1940,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_A:
-	    get_token_walls();
+	    get_token();
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
@@ -1971,7 +1963,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_AB:
-	    get_token_walls();
+	    get_token();
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
 		// Degrees.
@@ -1994,7 +1986,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_V:
-	    get_token_walls();
+	    get_token();
 	    pcs->f_clino_percent = false;
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
@@ -2021,7 +2013,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_VB:
-	    get_token_walls();
+	    get_token();
 	    pcs->f_backclino_percent = false;
 	    // It seems Walls only checks the initial letter.
 	    if (s_str(&uctoken)[0] == 'D') {
@@ -2048,7 +2040,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_S:
-	    get_token_walls();
+	    get_token();
 	    // From testing it seems Walls only checks the initial letter - e.g.
 	    // "M", "METERS", "METRES", "F", "FEET" and even "FISH" are accepted,
 	    // but "X" gives an error.
@@ -2070,7 +2062,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_ORDER:
-	    get_token_walls();
+	    get_token();
 	    int order = match_tok(walls_order_tab,
 				  TABSIZE(walls_order_tab));
 	    if (order < 0) {
@@ -2143,7 +2135,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CASE:
-	    get_token_walls();
+	    get_token();
 	    // Walls documents `CASE = Upper / Lower / Mixed` which hints that
 	    // it only actually tests the first character.  It also seems that
 	    // any other character is treated as `Mixed` too.
@@ -2190,12 +2182,12 @@ parse_options(void)
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_TAPE:
-	    get_token_walls();
+	    get_token();
 	    /* FIXME: Implement different taping methods? */
 	    /* IT, SS, IS, ST (default is IT). */
 	    break;
 	  case WALLS_UNITS_OPT_TYPEAB:
-	    get_token_walls();
+	    get_token();
 	    if (s_str(&uctoken)[0] == 'N') {
 		pcs->z[Q_BACKBEARING] = 0.0;
 	    } else if (s_str(&uctoken)[0] == 'C') {
@@ -2227,7 +2219,7 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_TYPEVB:
-	    get_token_walls();
+	    get_token();
 	    if (s_str(&uctoken)[0] == 'N') {
 		pcs->sc[Q_BACKGRADIENT] = 1.0;
 	    } else if (s_str(&uctoken)[0] == 'C') {
@@ -2438,7 +2430,7 @@ next_line:
 	}
 	skipblanks();
 	int blanks_after_hash = ftell(file.fh) - file.lpos - leading_blanks - 2;
-	get_token_walls();
+	get_token();
 	walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
 	parse file_store;
 	volatile int ch_store;
@@ -3024,7 +3016,7 @@ data_file_walls_wpj(void)
 	}
 
 	nextch();
-	get_token_no_blanks();
+	get_token_legacy_no_blanks();
 	tok = match_tok(walls_wpj_cmd_tab, TABSIZE(walls_wpj_cmd_tab));
 	if (detached_nest_level) {
 	    switch (tok) {
@@ -3520,7 +3512,7 @@ handle_plumb(clino_type *p_ctype)
    if (isalpha(ch)) {
       filepos fp;
       get_pos(&fp);
-      get_token();
+      get_token_legacy();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
 	 *p_ctype = (tok == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
@@ -4295,8 +4287,7 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
 	  case '#':
 	    // Allow for `#SEG` after a data leg.
 	    nextch();
-	    skipblanks();
-	    get_token_walls();
+	    get_token();
 	    walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
 	    if (directive == WALLS_CMD_SEGMENT) {
 		parse_walls_segment(p_compass_dat_flags);
@@ -4619,7 +4610,7 @@ data_normal(void)
 	     {"F",     DIR_FORE},
 	  };
 	  dir_tok tok;
-	  get_token();
+	  get_token_legacy();
 	  tok = match_tok(dir_tab, TABSIZE(dir_tab));
 	  switch (tok) {
 	   case DIR_FORE:

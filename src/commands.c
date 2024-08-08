@@ -312,16 +312,15 @@ string token = S_INIT;
 
 string uctoken = S_INIT;
 
-/* read token */
 extern void
-get_token(void)
+get_token_legacy(void)
 {
    skipblanks();
-   get_token_no_blanks();
+   get_token_legacy_no_blanks();
 }
 
 extern void
-get_token_no_blanks(void)
+get_token_legacy_no_blanks(void)
 {
    s_clear(&token);
    s_clear(&uctoken);
@@ -332,21 +331,29 @@ get_token_no_blanks(void)
    }
 
 #if 0
-   printf("get_token_no_blanks() got “%s”\n", s_str(&token));
+   printf("get_token_legacy_no_blanks() got “%s”\n", s_str(&token));
 #endif
 }
 
 extern void
-get_token_walls(void)
+get_token(void)
 {
-   skipblanks();
-   s_clear(&token);
-   s_clear(&uctoken);
-   while (isalnum(ch)) {
-      s_catchar(&token, ch);
-      s_catchar(&uctoken, toupper(ch));
-      nextch();
-   }
+    skipblanks();
+    get_token_no_blanks();
+}
+
+extern void
+get_token_no_blanks(void)
+{
+    s_clear(&token);
+    s_clear(&uctoken);
+    if (isalpha(ch)) {
+	do {
+	    s_catchar(&token, ch);
+	    s_catchar(&uctoken, toupper(ch));
+	    nextch();
+	} while (isalnum(ch));
+    }
 }
 
 /* read word */
@@ -492,9 +499,8 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"YARDS",	  UNITS_YARDS },
 	{NULL,		  UNITS_NULL }
    };
-   int units;
    get_token();
-   units = match_tok(utab, TABSIZE(utab));
+   int units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown units “%s”*/35,
 			 s_str(&token));
@@ -576,7 +582,7 @@ get_qlist(unsigned long mask_bad)
 
    while (1) {
       get_pos(&fp);
-      get_token();
+      get_token_legacy();
       tok = match_tok(qtab, TABSIZE(qtab));
       if (tok == Q_DEFAULT && !(mask_bad & BIT(Q_DEFAULT))) {
 	  /* Only recognise DEFAULT if it is the first quantity, and then don't
@@ -627,11 +633,10 @@ cmd_set(void)
 	{"SEPARATOR", SPECIAL_SEPARATOR },
 	{NULL,	      SPECIAL_UNKNOWN }
    };
-   int mask;
    int i;
 
    get_token();
-   mask = match_tok(chartab, TABSIZE(chartab));
+   int mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown character class “%s”*/42,
@@ -1086,7 +1091,7 @@ cmd_fix(void)
    prefix *fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 
    get_pos(&fp);
-   get_token();
+   get_token_legacy();
    bool reference = S_EQ(&uctoken, "REFERENCE");
    if (reference) {
       /* suppress "unused fixed point" warnings for this station */
@@ -1286,7 +1291,7 @@ cmd_flags(void)
       int flag;
       get_token();
       /* If token is empty, it could mean end of line, or maybe
-       * some non-letter junk which is better reported later */
+       * some non-alphanumeric junk which is better reported later */
       if (s_empty(&token)) break;
 
       fEmpty = false;
@@ -2005,7 +2010,7 @@ cmd_declination(void)
 {
     real v = read_numeric(true);
     if (v == HUGE_REAL) {
-	get_token_no_blanks();
+	get_token_legacy_no_blanks();
 	if (!S_EQ(&uctoken, "AUTO")) {
 	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or “AUTO”*/309);
 	    return;
@@ -2234,13 +2239,13 @@ cmd_cs(void)
    }
 
    get_pos(&fp);
-   /* Note get_token() only accepts letters - it'll stop at digits so "UTM12"
-    * will give token "UTM". */
-   get_token();
+   /* Note get_token_legacy() only accepts letters - it'll stop at digits so
+    * "UTM12" will give token "UTM". */
+   get_token_legacy();
    if (S_EQ(&uctoken, "OUT")) {
       output = true;
       get_pos(&fp);
-      get_token();
+      get_token_legacy();
    }
    cs = match_tok(cs_tab, TABSIZE(cs_tab));
    switch (cs) {
@@ -2748,7 +2753,7 @@ extern void
 handle_command(void)
 {
    int cmdtok;
-   get_token();
+   get_token_legacy();
    cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
 
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {

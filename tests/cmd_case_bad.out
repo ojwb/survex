@@ -1,0 +1,37 @@
+./cmd_case_bad.svx:3:7: error: Found "mixed", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+ *Case mixed
+       ^~~~~
+./cmd_case_bad.svx:4:7: error: Found "tol0wer", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+ *CASE tol0wer
+       ^~~~~~~
+./cmd_case_bad.svx:5:7: error: Found "to", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+ *case to lower
+       ^~
+./cmd_case_bad.svx:6:15: error: End of line not blank
+ *case tolower toupper
+               ^~~~~~~
+./cmd_case_bad.svx:7:7: error: Found "", expecting "PRESERVE", "TOUPPER", or "TOLOWER"
+ *case 42
+       ^
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 5 error(s) - no output files produced.

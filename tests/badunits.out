@@ -37,6 +37,12 @@
 ./badunits.svx:17:13: error: Invalid units "degrees" for quantity
  *units left degrees
              ^~~~~~~
+./badunits.svx:18:15: error: Unknown units "metres2"
+ *units length metres2
+               ^~~~~~~
+./badunits.svx:19:15: error: Unknown units "br0ken"
+ *units length br0ken
+               ^~~~~~
 
 Removing trailing traverses...
 
@@ -58,4 +64,4 @@ Total length of survey legs =    0.00ft (   0.00ft adjusted)
 Total plan length of survey legs =    0.00ft
 Total vertical length of survey legs =    0.00ft
    1 0-node.
-There were 0 warning(s) and 13 error(s) - no output files produced.
+There were 0 warning(s) and 15 error(s) - no output files produced.

@@ -1,3 +1,9 @@
-; pos=fail warn=0 error=1
+; pos=fail warn=0 error=7
 *fix 1 reference 0 0 0
 *infer qwerty on
+*infer exp0rts on
+*infer exp0rts 0n
+*infer 99 off
+*infer plumbs 0ff
+*infer plumbs 66
+*infer plumbs f00
