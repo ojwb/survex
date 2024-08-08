@@ -1,0 +1,31 @@
+./baddatacylpolar.svx:5:24: error: Reading "foo" not allowed in data style "cylpolar"
+ *data cylpolar from to foo
+                        ^~~
+./baddatacylpolar.svx:12:49: error: Reading "foo" not allowed in data style "cylpolar"
+ *data cylpolar from to tape compass depthchange foo
+                                                 ^~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    5.83m (   5.83m adjusted)
+Total plan length of survey legs =    3.00m
+Total vertical length of survey legs =    5.00m
+Vertical range = 5.00m (from 3 at 5.00m to 1 at 0.00m)
+North-South range = 2.99m (from 3 at 2.99m to 1 at 0.00m)
+East-West range = 0.26m (from 3 at 0.26m to 1 at 0.00m)
+   2 1-nodes.
+There were 0 warning(s) and 2 error(s) - no output files produced.

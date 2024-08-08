@@ -1606,6 +1606,15 @@ cmd_data(void)
       get_pos(&fp);
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
+      if (d == End && !s_empty(&token)) {
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			    /*Reading “%s” not allowed in data style “%s”*/63,
+			    s_str(&token), style_name);
+	 osfree(style_name);
+	 osfree(new_order);
+	 return;
+      }
+
       /* only token allowed after IGNOREALL is NEWLINE */
       if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
 	 set_pos(&fp);

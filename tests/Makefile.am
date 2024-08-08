@@ -84,7 +84,8 @@ cmd_set_dot_in_name.svx cmd_set_dot_in_name.dump\
 unusedstation.svx exportnakedbegin.svx\
 oldestyle.svx\
 pos.pos v0.3d v0b.3d v1.3d v2.3d v3.3d\
-baddatacylpolar.svx bugdz.svx bugdz.pos badnewline.svx\
+baddatacylpolar.svx baddatacylpolar.out\
+bugdz.svx bugdz.pos badnewline.svx\
 badquantities.svx imgoffbyone.svx imgoffbyone.pos\
 infereqtopofil.svx infereqtopofil.pos\
 3sdfixbug.svx 3sdfixbug.pos\
