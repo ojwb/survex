@@ -2026,24 +2026,20 @@ cmd_declination(void)
 	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or “AUTO”*/309);
 	    return;
 	}
-	filepos fp_auto;
-	get_pos(&fp_auto);
+	do_legacy_token_warning();
+	if (!pcs->proj_str) {
+	    // TRANSLATORS: %s is replaced by the command that requires it, e.g.
+	    // *DECLINATION AUTO
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN,
+			       /*Input coordinate system must be specified for “%s”*/301,
+			       "*DECLINATION AUTO");
+	    return;
+	}
 
 	/* *declination auto X Y Z */
 	real x = read_numeric(false);
 	real y = read_numeric(false);
 	real z = read_numeric(false);
-	if (!pcs->proj_str) {
-	    filepos fp;
-	    get_pos(&fp);
-	    set_pos(&fp_auto);
-	    // TRANSLATORS: %s is replaced by the command that requires it, e.g.
-	    // *DECLINATION AUTO
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Input coordinate system must be specified for “%s”*/301,
-			       "*DECLINATION AUTO");
-	    set_pos(&fp);
-	    return;
-	}
 	set_declination_location(x, y, z, pcs->proj_str);
     } else {
 	/* *declination D UNITS */
