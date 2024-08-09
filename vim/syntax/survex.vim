@@ -1,13 +1,13 @@
 " Vim syntax file
 " Language:     Survex
 " Maintainer:   David Loeffler <dave@cucc.survex.com>
-" Last Change:  2016-01-01
+" Last Change:  2024-08-09
 " Filenames:    *.svx
 " URL:          [NONE]
 " Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code.  Since updated for version 1.1.8.
 "
 " Copyright (C) 2005 David Loeffler
-" Copyright (C) 2006,2016,2017 Olly Betts
+" Copyright (C) 2006,2016,2017,2024 Olly Betts
 "
 " This program is free software; you can redistribute it and/or modify
 " it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ syn region svxString             start=+"+  end=+"+
 " Catch errors caused by filenames containing whitespace
 " This is just an example really, to show the kind of
 " error-trapping that's possible
-syn match svxFilenameError "\*include\s*[^"]\+\s\+[^\s"]\+"
+syn match svxFilenameError "\*\s*include\>\s*[^\s";]\+\s\+[^";]\+"
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
