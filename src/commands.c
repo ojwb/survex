@@ -335,6 +335,16 @@ get_token_legacy_no_blanks(void)
 #endif
 }
 
+void
+do_legacy_token_warning(void)
+{
+    if (!s_empty(&token)) {
+	if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+	    compile_diagnostic(DIAG_WARN|DIAG_COL, /*No blank after token*/74);
+	}
+    }
+}
+
 extern void
 get_token(void)
 {
@@ -1094,6 +1104,7 @@ cmd_fix(void)
    get_token_legacy();
    bool reference = S_EQ(&uctoken, "REFERENCE");
    if (reference) {
+      do_legacy_token_warning();
       /* suppress "unused fixed point" warnings for this station */
       fix_name->sflags |= BIT(SFLAGS_USED);
    } else {
@@ -2762,14 +2773,18 @@ static const cmd_fn cmd_funcs[] = {
 extern void
 handle_command(void)
 {
-   int cmdtok;
+   filepos fp;
+   get_pos(&fp);
    get_token_legacy();
-   cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
-
+   int cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
+      set_pos(&fp);
+      get_token();
       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
       return;
    }
+
+   do_legacy_token_warning();
 
    switch (cmdtok) {
     case CMD_EXPORT:

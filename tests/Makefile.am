@@ -163,6 +163,7 @@ cmd_data_default.svx\
 cmd_data_ignore.out cmd_data_ignore.pos cmd_data_ignore.svx\
 samename.svx\
 tabinhighlight.out tabinhighlight.svx\
+legacytokens.out legacytokens.svx\
 3dexport.dump 3dexport.svx\
 dxffullcoords.dxf dxffullcoords.svx\
 dxfsurfequate.svx dxfsurfequate.dxf\

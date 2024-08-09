@@ -71,6 +71,9 @@ extern string uctoken;
 void get_token_legacy(void);
 void get_token_legacy_no_blanks(void);
 
+/* Issue warning if isdigit(ch). */
+void do_legacy_token_warning(void);
+
 // Read a token, comprised of a letter followed by contiguous alphanumerics.
 void get_token(void);
 void get_token_no_blanks(void);

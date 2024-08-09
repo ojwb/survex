@@ -234,6 +234,10 @@ msgstr ""
 msgid "End of line not blank"
 msgstr ""
 
+#: n:74
+msgid "No blank after token"
+msgstr ""
+
 #: ../src/cavern.c:412
 #: n:16
 #, c-format

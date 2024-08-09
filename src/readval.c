@@ -750,10 +750,13 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
    skipblanks();
    if (!isOpen(ch)) {
       real r = 0;
-      if (!f_quadrants)
+      if (!f_quadrants) {
 	  r = read_number(f_optional, false);
-      else
+      } else {
 	  r = read_quadrant(f_optional);
+	  if (r != HUGE_REAL)
+	      do_legacy_token_warning();
+      }
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
    }
@@ -761,10 +764,12 @@ read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings)
 
    skipblanks();
    do {
-      if (!f_quadrants)
+      if (!f_quadrants) {
 	 tot += read_number(false, false);
-      else
+      } else {
 	 tot += read_quadrant(false);
+	 do_legacy_token_warning();
+      }
       ++n_readings;
       skipblanks();
    } while (!isClose(ch));

@@ -101,7 +101,7 @@ esac
  mixedeols utf8bom nonewlineateof suspectreadings cmd_data_default\
  cmd_data_ignore\
  quadrant_bearing bad_quadrant_bearing\
- samename tabinhighlight\
+ samename tabinhighlight legacytokens\
  3dexport \
  dxffullcoords dxfsurfequate\
  gpxexport hpglexport jsonexport kmlexport pltexport svgexport\

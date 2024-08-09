@@ -3515,6 +3515,7 @@ handle_plumb(clino_type *p_ctype)
       get_token_legacy();
       tok = match_tok(clino_tab, TABSIZE(clino_tab));
       if (tok != CLINO_NULL) {
+	 do_legacy_token_warning();
 	 *p_ctype = (tok == CLINO_LEVEL ? CTYPE_HORIZ : CTYPE_PLUMB);
 	 return clinos[tok];
       }
@@ -3524,6 +3525,7 @@ handle_plumb(clino_type *p_ctype)
       nextch();
       if (toupper(ch) == 'V') {
 	 nextch();
+	 do_legacy_token_warning();
 	 *p_ctype = CTYPE_PLUMB;
 	 return (!isMinus(chOld) ? M_PI_2 : -M_PI_2);
       }
@@ -4623,6 +4625,7 @@ data_normal(void)
 	     process_eol();
 	     return;
 	  }
+	  do_legacy_token_warning();
 	  break;
        }
        case Tape: case BackTape: {
