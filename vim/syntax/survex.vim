@@ -4,7 +4,7 @@
 " Last Change:  2024-08-09
 " Filenames:    *.svx
 " URL:          [NONE]
-" Note:         The definitions below are taken from the Survex user manual as of February 2005, for version 1.0.34; several inconsistencies discovered in the process were clarified by reference to source code.  Since updated for version 1.1.8.
+" Note:         This should be up to date for Survex 1.4.10
 "
 " Copyright (C) 2005 David Loeffler
 " Copyright (C) 2006,2016,2017,2024 Olly Betts
@@ -37,8 +37,8 @@ syn case ignore
 " * introduces a command
 syn match svxAsterisk "^\s*\*" nextgroup=SvxCmd,SvxCmdDeprecated skipwhite
 
-" Fudgery - this is used to mask out anything else from matching.
-syn match svxAnything ".*" contained
+" Other lines are data lines
+syn match svxData ".*" contained nextgroup=svxDataTokens skipwhite
 
 " Command names: these first few take no interesting arguments
 syn keyword svxCmd contained    alias begin cs date declination
@@ -52,18 +52,20 @@ syn keyword svxCmdDeprecated contained  default prefix
 syn keyword svxCmd contained	copyright instrument team nextgroup=svxAnything
 
 syn keyword svxCmd      calibrate sd units      contained nextgroup=svxQty skipwhite
-syn keyword svxQty contained    altitude backbearing backclino backlength nextgroup=svxQty,svxUnit skipwhite
-syn keyword svxQty contained    backcompass backgradient backtape bearing clino nextgroup=svxQty,svxUnit skipwhite
-syn keyword svxQty contained    compass count counter declination nextgroup=svxQty,svxUnit skipwhite
-syn keyword svxQty contained    default depth dx dy dz easting gradient nextgroup=svxQty,svxUnit skipwhite
-syn keyword svxQty contained    length level northing plumb position nextgroup=svxQty,svxUnit skipwhite
-syn keyword svxQty contained    tape nextgroup=svxQty,svxUnit skipwhite
+syn keyword svxQty contained    altitude backbearing backclino backlength nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
+syn keyword svxQty contained    backcompass backgradient backtape bearing clino nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
+syn keyword svxQty contained    compass count counter declination nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
+syn keyword svxQty contained    default depth dx dy dz easting gradient nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
+syn keyword svxQty contained    length level northing plumb position nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
+syn keyword svxQty contained    left right up down nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
+syn keyword svxQty contained    tape nextgroup=svxQty,svxUnit,svxUnitDeprecated skipwhite
 
 syn keyword svxCmd      case    contained nextgroup=svxCase skipwhite
 syn keyword svxCase contained   preserve toupper tolower contained
 
 syn keyword svxCmd      data    contained nextgroup=svxStyle skipwhite
-syn keyword svxStyle contained  default normal diving topofil nextgroup=svxField skipwhite
+syn keyword svxStyle contained  default ignore
+syn keyword svxStyle contained  normal diving topofil nextgroup=svxField skipwhite
 syn keyword svxStyle contained  cartesian cylpolar nosurvey nextgroup=svxField skipwhite
 syn keyword svxStyle contained  passage nextgroup=svxField skipwhite
 
@@ -76,12 +78,16 @@ syn keyword svxField contained nextgroup=svxField skipwhite     ignoreall length
 syn keyword svxField contained nextgroup=svxField skipwhite     station tape to tocount todepth
 syn keyword svxField contained nextgroup=svxField skipwhite     left right up down ceiling floor
 
-syn keyword svxCmd contained nextgroup=svxFlag skipwhite        flags
-syn keyword svxFlag contained nextgroup=svxFlag skipwhite       not duplicate surface splay
+syn keyword svxCmd contained nextgroup=svxFlag,svxNot skipwhite        flags
+syn keyword svxFlag contained nextgroup=svxFlag,svxNot skipwhite       duplicate surface splay
+syn keyword svxNot contained nextgroup=svxFlag,svxBadNot skipwhite     not
+syn keyword svxBadNot contained nextgroup=svxFlag,svxBadNot skipwhite  not
 
 syn keyword svxCmd contained nextgroup=svxInferrable skipwhite  infer
 syn keyword svxInferrable contained nextgroup=svxOnOff skipwhite plumbs equates exports
 syn keyword svxOnOff contained on off
+syn keyword svxCmd contained nextgroup=svxNorthType skipwhite  cartesian
+syn keyword svxNorthType contained skipwhite grid magnetic true
 
 syn keyword svxCmd contained nextgroup=svxVar,svxVarDeprecated skipwhite    set
 syn keyword svxVar contained               blank comment decimal eol keyword minus
@@ -90,14 +96,17 @@ syn keyword svxVarDeprecated contained     root
 
 syn keyword svxCmd contained nextgroup=svxQty skipwhite units
 syn keyword svxUnit contained           yards feet metric metres meters
-syn keyword svxUnit contained           degs degrees grads mils minutes
+syn keyword svxUnit contained           degs degrees grads minutes
 syn keyword svxUnit contained           percent percentage
+syn keyword svxUnitDeprecated contained mils
 
-syn keyword svxCmd contained nextgroup=svxRef skipwhite fix
-syn keyword svxRef contained		reference
+syn keyword svxCmd contained skipwhite fix
+"FIXME: This is wrong - it's "*fix <station> reference ..."
+"syn keyword svxCmd contained nextgroup=svxRef skipwhite fix
+"syn keyword svxRef contained		reference
 
-" Miscellaneous things that are spotted everywhere
-syn keyword svxMisc             - down up
+" Miscellaneous things that are highlighted in data lines
+syn match svxDataTokens "\<\(d\|u\|down\|up\|level\)\>\|[-+]v\>\|\(\s\|^\)\@<=\(-\|\.\{1,3}\|[-+]v\)\(\s\|;\|$\)\@="
 
 " Comments
 syn match svxComment ";.*"
@@ -130,13 +139,16 @@ if version >= 508 || !exists("did_survex_syn_inits")
    HiLink svxCase                 Identifier
    HiLink svxField                Identifier
    HiLink svxFlag                 Identifier
+   HiLink svxNot                  Identifier
+   HiLink svxBadNot               Error
    HiLink svxInferrable           Identifier
    HiLink svxOnOff                Special
    HiLink svxVar                  Identifier
-   HiLink svxMisc                 Special
+   HiLink svxDataTokens           Special
    HiLink svxAsterisk             Statement
    HiLink svxFilenameError        Error
    HiLink svxCmdDeprecated        Todo
+   HiLink svxUnitDeprecated       Todo
    HiLink svxVarDeprecated        Todo
    delcommand HiLink
 endif
