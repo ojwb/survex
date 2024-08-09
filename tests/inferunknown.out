@@ -1,0 +1,43 @@
+./inferunknown.svx:3:8: error: Found "qwerty", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+ *infer qwerty on
+        ^~~~~~
+./inferunknown.svx:4:8: error: Found "exp0rts", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+ *infer exp0rts on
+        ^~~~~~~
+./inferunknown.svx:5:8: error: Found "exp0rts", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+ *infer exp0rts 0n
+        ^~~~~~~
+./inferunknown.svx:6:8: error: Found "", expecting "EQUATES", "EXPORTS", or "PLUMBS"
+ *infer 99 off
+        ^
+./inferunknown.svx:7:15: error: Found "", expecting "ON" or "OFF"
+ *infer plumbs 0ff
+               ^
+./inferunknown.svx:8:15: error: Found "", expecting "ON" or "OFF"
+ *infer plumbs 66
+               ^
+./inferunknown.svx:9:15: error: Found "f00", expecting "ON" or "OFF"
+ *infer plumbs f00
+               ^~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 7 error(s) - no output files produced.
