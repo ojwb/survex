@@ -29,9 +29,10 @@
 typedef struct parse {
    FILE *fh;
    const char *filename;
-   unsigned int line;
    long lpos;
-   bool reported_where;
+   unsigned int line;
+   bool reported_where : 1;
+   unsigned prev_line_len;
    struct parse *parent;
 #ifdef HAVE_SETJMP_H
    jmp_buf jbSkipLine;

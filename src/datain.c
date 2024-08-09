@@ -238,10 +238,19 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
 {
    int col = 0;
    error_list_parent_files();
-   if (fpos >= file.lpos)
+   unsigned line = file.line;
+   if (fpos >= file.lpos) {
       col = fpos - file.lpos - caret_width;
-   v_report(severity, file.filename, file.line, col, en, ap);
+   } else if (fpos >= file.lpos - file.prev_line_len) {
+      file.lpos -= file.prev_line_len;
+      --line;
+      col = fpos - file.lpos - caret_width;
+   }
+   v_report(severity, file.filename, line, col, en, ap);
    if (file.fh) show_line(col, caret_width);
+   if (line != file.line) {
+      file.lpos += file.prev_line_len;
+   }
 }
 
 static void
@@ -475,7 +484,9 @@ process_eol(void)
       }
       if (ch == '\n') eolchar = ch;
    }
+   long old_lpos = file.lpos;
    file.lpos = ftell(file.fh) - 1;
+   file.prev_line_len = file.lpos - old_lpos;
 }
 
 static bool
@@ -856,6 +867,7 @@ data_file_compass_mak(void)
 			  file.line = base_line;
 			  long saved_lpos = file.lpos;
 			  file.lpos = base_lpos;
+			  file.prev_line_len = 0; // Not used for Compass MAK.
 			  set_declination_location(base_x, base_y, base_z,
 						   proj_str);
 			  file.line = saved_line;
@@ -3082,6 +3094,7 @@ process_entry:
 		set_pos(&fp_name);
 		file.lpos = name_lpos;
 		file.line = name_lineno;
+		file.prev_line_len = 0; // Not used for Walls WPJ.
 		// Report the resolved path.  FIXME: Maybe we should use
 		// full_file in the fopen_portable() call above so things
 		// align better?
@@ -3116,6 +3129,7 @@ process_entry:
 		file.line = 1;
 		file.lpos = 0;
 		file.reported_where = false;
+		file.prev_line_len = 0;
 		nextch();
 
 		using_data_file(file.filename);
@@ -3436,6 +3450,7 @@ data_file(const char *pth, const char *fnm)
       file.line = 1;
       file.lpos = 0;
       file.reported_where = false;
+      file.prev_line_len = 0;
       nextch();
    }
 

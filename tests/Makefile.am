@@ -59,7 +59,7 @@ tapelessthandepth.svx longname.svx\
 chinabug.svx chinabug.out chinabug2.svx\
 multinormal.svx multinormal.pos\
 multinormignall.svx multinormignall.pos\
-multidiving.svx multidiving.pos\
+multidiving.svx multidiving.out multidiving.pos\
 multicylpolar.svx multicylpolar.pos\
 multicartesian.svx multicartesian.pos multicartesian.out\
 multinosurv.svx multinosurv.pos multinosurv.out\
