@@ -249,8 +249,12 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
       --line;
       col = fpos - file.lpos - caret_width;
    }
-   v_report(severity, file.filename, line, col, en, ap);
+   v_report(severity == DIAG_FATAL ? DIAG_ERR : severity,
+	    file.filename, line, col, en, ap);
    if (file.fh) show_line(col, caret_width);
+   if (severity == DIAG_FATAL) {
+      exit(EXIT_FAILURE);
+   }
    if (line != file.line) {
       file.lpos += file.prev_line_len;
    }
@@ -270,13 +274,17 @@ compile_v_report(int diag_flags, int en, va_list ap)
       }
    }
    error_list_parent_files();
-   v_report(severity, file.filename, file.line, 0, en, ap);
+   v_report(severity == DIAG_FATAL ? DIAG_ERR : severity,
+	    file.filename, file.line, 0, en, ap);
    if (file.fh) {
       if (diag_flags & DIAG_TOKEN) {
 	 show_line(0, s_len(&token));
       } else {
 	 show_line(0, caret_width);
       }
+   }
+   if (severity == DIAG_FATAL) {
+      exit(EXIT_FAILURE);
    }
    if (diag_flags & DIAG_SKIP) skipline();
 }
@@ -286,7 +294,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL|DIAG_FROM_)) {
+   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL)) {
       int len = 0;
       skipblanks();
       if (diag_flags & DIAG_WORD) {
@@ -305,7 +313,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    nextch();
 	 }
       } else if (diag_flags & DIAG_TAIL) {
-	 filepos fp_last_nonblank = {0};
+	 filepos fp_last_nonblank = {0}; // Initialise to avoid warning.
 	 int len_last_nonblank = len;
 	 while (!isComm(ch) && !isEol(ch)) {
 	    ++len;
@@ -341,6 +349,10 @@ compile_diagnostic(int diag_flags, int en, ...)
 	 }
       }
       caret_width = len;
+      compile_v_report(diag_flags|DIAG_COL, en, ap);
+      caret_width = 0;
+   } else if (diag_flags & DIAG_FROM_) {
+      caret_width = diag_flags >> DIAG_FROM_SHIFT;
       compile_v_report(diag_flags|DIAG_COL, en, ap);
       caret_width = 0;
    } else if (diag_flags & DIAG_STRING) {

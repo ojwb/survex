@@ -2608,50 +2608,52 @@ cmd_ref(void)
 static void
 cmd_require(void)
 {
-   const unsigned int version[] = {COMMAVERSION};
-   const unsigned int *ver = version;
-   filepos fp;
+    // Add extra 0 so `*require 1.4.10.1` fails with cavern version 1.4.10.
+    const unsigned version[] = {COMMAVERSION, 0};
 
-   skipblanks();
-   get_pos(&fp);
-   while (1) {
-      int diff = (int)*ver++ - (int)read_uint();
-      if (diff > 0) break;
-      if (diff < 0) {
-	 size_t i, len;
-	 char *v;
-	 filepos fp_tmp;
+    skipblanks();
+    filepos fp;
+    get_pos(&fp);
 
-	 /* find end of version number */
-	 while (isdigit(ch) || ch == '.') nextch();
-	 get_pos(&fp_tmp);
-	 len = (size_t)(fp_tmp.offset - fp.offset);
-	 v = osmalloc(len + 1);
-	 set_pos(&fp);
-	 for (i = 0; i < len; i++) {
-	    v[i] = ch;
+    // Parse the required version number, storing its components in
+    // required_version.  We only store at most one more component than
+    // COMMAVERSION has since more than that can't affect the comparison.
+    size_t i = 0;
+    int diff = 0;
+    while (1) {
+	unsigned component = read_uint();
+	if (diff == 0 && i < sizeof(version) / sizeof(version[0])) {
+	    if (diff == 0) {
+		diff = (int)version[i++] - (int)component;
+	    }
+	}
+	if (ch != '.' || isBlank(nextch()) || isComm(ch) || isEol(ch))
+	    break;
+    }
+
+    if (diff < 0) {
+	// Requirement not satisfied
+	size_t len = (size_t)(ftell(file.fh) - fp.offset);
+	char *v = osmalloc(len + 1);
+	set_pos(&fp);
+	for (size_t j = 0; j < len; j++) {
+	    v[j] = ch;
 	    nextch();
-	 }
-	 v[i] = '\0';
-	 /* TRANSLATORS: Feel free to translate as "or newer" instead of "or
-	  * greater" if that gives a more natural translation.  It's
-	  * technically not quite right when there are parallel active release
-	  * series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
-	  * seems unlikely to confuse users.  "Survex" is the name of the
-	  * software, so should not be translated.
-	  *
-	  * Here "survey" is a "cave map" rather than list of questions - it should be
-	  * translated to the terminology that cavers using the language would use.
-	  */
-	 fatalerror_in_file(file.filename, file.line, /*Survex version %s or greater required to process this survey data.*/2, v);
-      }
-      if (ch != '.') break;
-      nextch();
-      if (!isdigit(ch) || ver == version + sizeof(version) / sizeof(*version))
-	 break;
-   }
-   /* skip rest of version number */
-   while (isdigit(ch) || ch == '.') nextch();
+	}
+	v[len] = '\0';
+	/* TRANSLATORS: Feel free to translate as "or newer" instead of "or
+	 * greater" if that gives a more natural translation.  It's
+	 * technically not quite right when there are parallel active release
+	 * series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
+	 * seems unlikely to confuse users.  "Survex" is the name of the
+	 * software, so should not be translated.
+	 *
+	 * Here "survey" is a "cave map" rather than list of questions - it should be
+	 * translated to the terminology that cavers using the language would use.
+	 */
+	compile_diagnostic(DIAG_FATAL|DIAG_FROM(fp), /*Survex version %s or greater required to process this survey data.*/2, v);
+	// Does not return so no point freeing v here.
+    }
 }
 
 /* allocate new meta_data if need be */

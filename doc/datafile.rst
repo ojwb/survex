@@ -1376,7 +1376,15 @@ Syntax
 Example
    ::
 
-       *require 0.98
+       *require 1.2.14 ; for *cs
+
+    ::
+
+       *require 1.4 ; equivalent to 1.4.0
+
+    ::
+
+       *require 1 ; equivalent to 1.0.0
 
 Description
    ``*require`` checks that the version of cavern in use is at least
@@ -1385,7 +1393,8 @@ Description
    If your dataset requires a feature introduced in a particular version, you
    can add a ``*require`` command and users will know what version they need to
    upgrade to, rather than getting an error message and having to guess what
-   the real problem is.
+   the real problem is.  We suggest noting the reason for the requirement in
+   a comment after the ``*require`` command, like in the first example above.
 
 SD
 --

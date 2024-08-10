@@ -22,7 +22,7 @@ calibrate_tape.svx calibrate_tape.pos\
 delatenda.pos delatendb.pos delatend.out\
 addatenda.pos addatendb.pos addatend.out\
 begin_no_end.svx end_no_begin.svx end_no_begin_nest.svx\
-require_fail.svx\
+require_fail.out require_fail.svx\
 extend.svx extendx.3d\
 revcomplist.svx\
 exporterr1.svx exporterr2.svx exporterr3.svx exporterr4.svx exporterr5.svx\
