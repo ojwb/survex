@@ -3247,6 +3247,7 @@ detached_or_not_srv:
 	    // The string names seem more likely to have not changed over time.
 	    (void)read_uint();
 
+	    skipblanks();
 	    filepos fp;
 	    get_pos(&fp);
 	    string datum_str = S_INIT;

@@ -1,5 +1,5 @@
 ./wallsdecl.wpj:6: info: Declination: -1.8dg @ 1990-09-09, grid convergence: 0.5dg
- .REF	4113846.340 580661.570 16 0.549 219 6 37 10 3.195 86 5 29.254 19 "NAD83"
+ .REF 4113846.340 580661.570 16 0.549 219 6 37 10 3.195 86 5 29.254 19 "NAD83"
 
 Removing trailing traverses...
 
