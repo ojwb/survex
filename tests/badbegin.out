@@ -1,15 +1,23 @@
 ./badbegin.svx:3:7: error: Matching BEGIN command has no survey name
  *end  foo
        ^~~
+./badbegin.svx:2: info: Corresponding BEGIN was here
+ *begin
 ./badbegin.svx:6:8: error: Survey name doesn't match BEGIN
  *end   bar
         ^~~
+./badbegin.svx:4:13: info: Corresponding BEGIN was here
+ *begin      foo
+             ^~~
 ./badbegin.svx:8:8: error: Character "<" not allowed in station name (use *SET NAMES to set allowed characters)
  *begin <
         ^
 ./badbegin.svx:11:5: warning: Survey name omitted from END
  *end
      ^
+./badbegin.svx:7:8: info: Corresponding BEGIN was here
+ *begin omitted
+        ^~~~~~~
 
 Removing trailing traverses...
 

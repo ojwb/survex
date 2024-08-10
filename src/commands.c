@@ -849,16 +849,22 @@ cmd_begin(void)
    pcsNew = osnew(settings);
    *pcsNew = *pcs; /* copy contents */
    pcsNew->begin_lineno = file.line;
+   pcsNew->begin_lpos = file.lpos;
    pcsNew->next = pcs;
    pcs = pcsNew;
 
    skipblanks();
    pcs->begin_survey = NULL;
+   pcs->begin_col = 0;
    if (!isEol(ch) && !isComm(ch)) {
       filepos fp;
       prefix *survey;
       get_pos(&fp);
+      int begin_col = fp.offset - file.lpos;
       survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
+      // read_prefix() might fail and longjmp() so only set begin_col if
+      // it succeeds.
+      pcs->begin_col = begin_col;
       pcs->begin_survey = survey;
       pcs->Prefix = survey;
       check_reentry(survey, &fp);
@@ -1021,10 +1027,10 @@ pop_settings(void)
 static void
 cmd_end(void)
 {
-   prefix *survey, *begin_survey;
    filepos fp;
 
-   if (pcs->begin_lineno == 0) {
+   int begin_lineno = pcs->begin_lineno;
+   if (begin_lineno == 0) {
       if (pcs->next == NULL) {
 	 /* more ENDs than BEGINs */
 	 /* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
@@ -1038,20 +1044,23 @@ cmd_end(void)
       return;
    }
 
-   begin_survey = pcs->begin_survey;
+   prefix *begin_survey = pcs->begin_survey;
+   long begin_lpos = pcs->begin_lpos;
+   int begin_col = pcs->begin_col;
 
    pop_settings();
 
    /* note need to read using root *before* BEGIN */
+   prefix *survey = NULL;
    skipblanks();
-   if (isEol(ch) || isComm(ch)) {
-      survey = NULL;
-   } else {
+   if (!isEol(ch) && !isComm(ch)) {
       get_pos(&fp);
       survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
    }
 
    if (survey != begin_survey) {
+      filepos fp_save;
+      get_pos(&fp_save);
       if (survey) {
 	 set_pos(&fp);
 	 if (!begin_survey) {
@@ -1067,7 +1076,6 @@ cmd_end(void)
 	     * same <survey> if it’s given at all */
 	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Survey name doesn’t match BEGIN*/193);
 	 }
-	 skipline();
       } else {
 	 /* TRANSLATORS: Used when a BEGIN command has a survey name, but the
 	  * END command omits it, e.g.:
@@ -1077,6 +1085,18 @@ cmd_end(void)
 	  * *end     <--[Message given here] */
 	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*Survey name omitted from END*/194);
       }
+      parse file_save = file;
+      file.line = begin_lineno;
+      file.lpos = begin_lpos;
+      int word_flag = 0;
+      if (begin_col) {
+	  word_flag = DIAG_WORD;
+	  fseek(file.fh, begin_lpos + begin_col - 1, SEEK_SET);
+	  nextch();
+      }
+      compile_diagnostic(DIAG_INFO|word_flag, /*Corresponding %s was here*/22, "BEGIN");
+      file = file_save;
+      set_pos(&fp_save);
    }
 }
 

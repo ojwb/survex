@@ -363,7 +363,9 @@ typedef struct Settings {
    real sc[Q_MAC];
    real units[Q_MAC];
    const reading *ordering;
+   long begin_lpos; /* File offset for start of BEGIN line */
    int begin_lineno; /* 0 means no block started in this file */
+   int begin_col; /* Column of prefix in BEGIN line (or 0 if none) */
    int flags;
    char* proj_str;
    /* Location at which we calculate the declination if
