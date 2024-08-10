@@ -1070,9 +1070,9 @@ write_passage_models(void)
 	     /* TRANSLATORS: e.g. the user specifies a passage cross-section at
 	      * station "entrance.27", but there is no station "entrance.27" in
 	      * the centre-line. */
-	     error_in_file(pfx->filename, pfx->line,
-			   /*Cross section specified at non-existent station “%s”*/83,
-			   name);
+	     compile_diagnostic_pfx(DIAG_ERR, pfx,
+				    /*Cross section specified at non-existent station “%s”*/83,
+				    name);
 	 } else {
 	     if (xsect == NULL) xflags = img_XFLAG_END;
 	     img_write_item(pimg, img_XSECT, xflags, name, 0, 0, 0);
