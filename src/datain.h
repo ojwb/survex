@@ -60,7 +60,7 @@ void data_file(const char *pth, const char *fnm);
 
 void skipline(void);
 
-/* Read the current line into a string.
+/* Read the current line into a string, converting each tab to a space.
  *
  * The string is allocated with malloc() the caller is responsible for calling
  * free().

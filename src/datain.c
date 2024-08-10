@@ -219,6 +219,9 @@ grab_line(void)
       int c = GETC(file.fh);
       /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
+      // Change tabs to spaces for consistency with how we should context
+      // lines for other diagnostics.
+      if (c == '\t') c = ' ';
       s_catchar(&p, c);
    }
 
@@ -3244,6 +3247,8 @@ detached_or_not_srv:
 	    // The string names seem more likely to have not changed over time.
 	    (void)read_uint();
 
+	    filepos fp;
+	    get_pos(&fp);
 	    string datum_str = S_INIT;
 	    read_string(&datum_str);
 	    int datum = img_parse_compass_datum_string(s_str(&datum_str),
@@ -3261,9 +3266,12 @@ detached_or_not_srv:
 		} else if (S_EQ(&datum_str, "Hu-Tzu-Shan")) {
 		    datum = img_DATUM_HUTZUSHAN1950;
 		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_WIDTH(s_len(&datum_str)),
+		    compile_diagnostic(DIAG_ERR|DIAG_FROM(fp),
 				       /*Datum “%s” not supported*/503,
 				       s_str(&datum_str));
+		    // Set a datum to avoid causing problems converting
+		    // coordinates.
+		    datum = img_DATUM_WGS84;
 		}
 	    }
 	    s_free(&datum_str);

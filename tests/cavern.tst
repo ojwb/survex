@@ -93,6 +93,7 @@ esac
  clptest.dat clptest.clp\
  walls.srv\
  badopts.srv\
+ wallsbaddatum.wpj\
  wallsdecl.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
@@ -191,6 +192,12 @@ for file in $TESTS ; do
       # These testcase files don't exist (or for ONELEG exist with a different
       # case).  They all have the same settings.
       pos=fail
+      ;;
+    wallsbaddatum.wpj)
+      # .wpj files can't start with a comment.
+      pos=fail
+      warn=0
+      err=1
       ;;
     *.wpj)
       # .wpj files can't start with a comment.
