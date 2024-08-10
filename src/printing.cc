@@ -260,6 +260,15 @@ static wxString scales[] = {
     wxT("25000"),
     wxT("50000"),
     wxT("100000"),
+    wxT("240 (1\":20')"),
+    wxT("300 (1\":25')"),
+    // This entry will be "304.8 (1mm:1ft)" but we need to use the
+    // locale-specific decimal point so this gets filled in on first
+    // use, after the locale is initialised.
+#define SCALES_INDEX_MM_TO_FEET 15
+    wxT(""),
+    wxT("480 (1\":40')"),
+    wxT("600 (1\":50')"),
     wxT("...")
 };
 
@@ -386,6 +395,9 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	v1->Add(formatbox, 0, wxALIGN_LEFT|wxALL, 0);
     }
 
+    if (scales[SCALES_INDEX_MM_TO_FEET][0] == '\0') {
+	scales[SCALES_INDEX_MM_TO_FEET] = wxString::FromDouble(304.8) + wxT(" (1mm:1ft)");
+    }
     wxStaticText* label;
     label = new wxStaticText(this, wxID_ANY, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
     if (printing && scales[0].empty()) {
@@ -809,7 +821,17 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	RecalcBounds();
 
 	if (m_scale) {
-	    if (!(m_scale->GetValue()).ToDouble(&(m_layout.Scale)) ||
+	    // Remove the comment part (e.g. `(1":20')`).
+	    wxString value = m_scale->GetValue();
+	    auto comment = value.find('(');
+	    if (comment != value.npos) value.resize(comment);
+	    // Strip spaces as trailing spaces cause wxWidgets to fail to
+	    // parse.
+	    value.Replace(" ", "");
+	    // Convert `,` to `.` and parse with ToCDouble() so either decimal
+	    // separator works regardless of locale settings.
+	    value.Replace(",", ".");
+	    if (!value.ToCDouble(&(m_layout.Scale)) ||
 		m_layout.Scale == 0.0) {
 		m_layout.pick_scale(1, 1);
 	    }
