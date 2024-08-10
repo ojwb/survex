@@ -1684,7 +1684,15 @@ Description
    ``DEGS``\|\ ``DEGREES``\|\ ``GRADS``\|\ ``MINUTES``\|\ ``QUADS``\|\ ``QUADRANTS`` (default:
    ``DEGREES``)
 
-   (360 degrees = 400 grads)
+   ``FEET`` and ``YARDS`` use the international definition of a foot (exactly
+   0.3048m).  If you want to use a different definition, you can specify it
+   explicitly - for example, for the US survey foot::
+
+     *units tape 0.3048006096012192 meters ; US survey foot
+
+   or for the Indian survey foot::
+
+     *units tape 0.3047996 meters ; Indian survey foot
 
    ``QUADRANTS`` are a style of bearing used predominantly in
    land survey, and occasionally in survey with handheld
@@ -1694,6 +1702,9 @@ Description
    format, exact cardinal directions may be simply
    alphabetic. E.g. N is equivalent to N0E and E is
    equivalent to N90E. This unit was added in Survex 1.2.44.
+
+   ``GRADS`` are an angle unit where 400 grads = 360 degrees.
+   They're also known as "neugrads" (or sometimes "gons").
 
    Survex has long supported ``MILS`` as an alias for ``GRADS``.
    However, this seems to be a bogus definition of a "mil"
