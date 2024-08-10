@@ -305,13 +305,21 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    nextch();
 	 }
       } else if (diag_flags & DIAG_TAIL) {
+	 filepos fp_last_nonblank = {0};
 	 int len_last_nonblank = len;
 	 while (!isComm(ch) && !isEol(ch)) {
 	    ++len;
-	    if (!isBlank(ch)) len_last_nonblank = len;
+	    bool non_blank = !isBlank(ch);
 	    nextch();
+	    if (non_blank) {
+		len_last_nonblank = len;
+		get_pos(&fp_last_nonblank);
+	    }
 	 }
-	 len = len_last_nonblank;
+	 if (len_last_nonblank != len) {
+	     len = len_last_nonblank;
+	     set_pos(&fp_last_nonblank);
+	 }
       } else if (diag_flags & DIAG_FROM_) {
 	 len = diag_flags >> DIAG_FROM_SHIFT;
       } else {

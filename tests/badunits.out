@@ -17,7 +17,7 @@
  *units Anemometer Knots
         ^~~~~~~~~~
 ./badunits.svx:10:16: error: End of line not blank
- *units DEFault MeterS
+ *units DEFault MeterS ; comment
                 ^~~~~~
 ./badunits.svx:11:16: error: End of line not blank
  *units DEFault 1.0 MeterS

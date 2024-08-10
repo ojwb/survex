@@ -7,7 +7,7 @@
 *units tape clino 0.1 Metres
 *units Anemometer Knots
 *units deFault
-*units DEFault MeterS
+*units DEFault MeterS ; comment
 *units DEFault 1.0 MeterS
 *units Tape DEFault MeterS
 *units Tape DEFault
