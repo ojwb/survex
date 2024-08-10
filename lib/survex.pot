@@ -289,13 +289,9 @@ msgstr ""
 msgid "Compass reading given on plumbed leg"
 msgstr ""
 
-#: ../src/commands.c:1018
-#: n:22
-msgid "END with no matching BEGIN in this file"
-msgstr ""
-
 #. TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-#. or #[ and #]
+#. or END and BEGIN or #[ and #]
+#: ../src/commands.c:1018
 #: ../src/datain.c:2430
 #: ../src/datain.c:3395
 #: n:23

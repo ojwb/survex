@@ -1030,7 +1030,10 @@ cmd_end(void)
 	 /* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
 	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching %s*/192, "BEGIN");
       } else {
-	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
+	 /* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
+	  * or END and BEGIN or #[ and #] */
+	 compile_diagnostic(DIAG_ERR|DIAG_SKIP,
+			    /*%s with no matching %s in this file*/23, "END", "BEGIN");
       }
       return;
    }

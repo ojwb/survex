@@ -2452,7 +2452,7 @@ next_line:
 	    }
 	    if (depth) {
 		/* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-		 * or #[ and #] */
+		 * or END and BEGIN or #[ and #] */
 		error_in_file(file.filename, start_lineno,
 			      /*%s with no matching %s in this file*/23,
 			      "#[", "#]");
@@ -3425,7 +3425,7 @@ data_file_survex(void)
 
     if (pcs->begin_lineno) {
 	/* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
-	 * or #[ and #] */
+	 * or END and BEGIN or #[ and #] */
 	error_in_file(file.filename, pcs->begin_lineno,
 		      /*%s with no matching %s in this file*/23,
 		      "BEGIN", "END");
