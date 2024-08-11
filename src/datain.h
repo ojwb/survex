@@ -68,25 +68,34 @@ void skipline(void);
 char* grab_line(void);
 
 /* The severity values are defined in message.h. */
-#define DIAG_SEVERITY_MASK 0x03
-// Report column number based of the current file position.
-#define DIAG_COL	0x04
+#define DIAG_SEVERITY_MASK	0x03
+
 // Call skipline() after reporting the diagnostic:
-#define DIAG_SKIP	0x08
+#define DIAG_SKIP		0x04
+
+// Context type values:
+
+#define DIAG_CONTEXT_MASK	0x78
+// Report column number based of the current file position.
+#define DIAG_COL		0x08
 // Set caret_width to s_len(&token):
-#define DIAG_TOKEN	0x10
+#define DIAG_TOKEN		0x10
 // The following codes say to parse and discard a value from the current file
 // position - caret_width is set to its length:
-#define DIAG_WORD	0x20	// Span of non-blanks (and non-comments).
-#define DIAG_UINT	0x40	// Span of digits.
-#define DIAG_DATE	0x80	// Span of digits and full stops.
-#define DIAG_NUM	0x100	// Real number.
-#define DIAG_STRING	0x200	// Possibly quoted string value.
-#define DIAG_TAIL	0x400	// Rest of the line (not including trailing blanks or comment).
-#define DIAG_FROM_	0x800	// The caret_width value is in bits above this one.
-#define DIAG_FROM_SHIFT 12
+#define DIAG_WORD		0x18	// Span of non-blanks and non-comments.
+#define DIAG_UINT		0x20	// Span of digits.
+#define DIAG_DATE		0x28	// Span of digits and full stops.
+#define DIAG_NUM		0x30	// Real number.
+#define DIAG_STRING		0x38	// Possibly quoted string value.
+#define DIAG_TAIL		0x40	// Rest of the line (not including
+					// trailing blanks or comment).
+
+// A non-zero caret_width value can be encoded in the upper bits.
+#define DIAG_FROM_SHIFT 7
+// Mask to detect embedded caret_width value.
+#define DIAG_FROM_MASK	(~((1U << DIAG_FROM_SHIFT) - 1))
 // Specify the caret_width explicitly.
-#define DIAG_WIDTH(W)	(DIAG_FROM_ | ((W) << DIAG_FROM_SHIFT))
+#define DIAG_WIDTH(W)	((W) << DIAG_FROM_SHIFT)
 // Specify caret_width to be from filepos POS to the current position.
 #define DIAG_FROM(POS)	DIAG_WIDTH(ftell(file.fh) - (POS).offset)
 

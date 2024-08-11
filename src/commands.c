@@ -907,7 +907,7 @@ report_declination(settings *p)
 	 * The first %s will be replaced by the declination range (or single
 	 * value), and %.1f%s by the grid convergence angle.
 	 */
-	compile_diagnostic_at(DIAG_INFO|DIAG_COL, p->dec_filename, p->dec_line,
+	compile_diagnostic_at(DIAG_INFO, p->dec_filename, p->dec_line,
 			      /*Declination: %s, grid convergence: %.1f%s*/484,
 			      range,
 			      deg(p->convergence), deg_sign);
@@ -1156,7 +1156,7 @@ cmd_fix(void)
 	 /* TRANSLATORS: Emitted after second and subsequent "FIX" command
 	  * with no coordinates.
 	  */
-	 compile_diagnostic_at(DIAG_ERR|DIAG_COL,
+	 compile_diagnostic_at(DIAG_ERR,
 			       name_omit_already_filename,
 			       name_omit_already_line,
 			       /*Already had FIX command with no coordinates for station “%s”*/441,

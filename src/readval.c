@@ -715,7 +715,7 @@ read_quadrant(bool f_optional)
 
    if (r > quad) {
       set_pos(&fp);
-      compile_diagnostic_token_show(DIAG_ERR|DIAG_COL, /*Suspicious compass reading*/59);
+      compile_diagnostic_token_show(DIAG_ERR, /*Suspicious compass reading*/59);
       LONGJMP(file.jbSkipLine);
       return 0.0; /* for brain-fried compilers */
    }

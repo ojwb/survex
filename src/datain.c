@@ -237,8 +237,9 @@ grab_line(void)
 static int caret_width = 0;
 
 static void
-compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
+compile_v_report_fpos(int diag_flags, long fpos, int en, va_list ap)
 {
+   int severity = (diag_flags & DIAG_SEVERITY_MASK);
    int col = 0;
    error_list_parent_files();
    unsigned line = file.line;
@@ -258,35 +259,8 @@ compile_v_report_fpos(int severity, long fpos, int en, va_list ap)
    if (line != file.line) {
       file.lpos += file.prev_line_len;
    }
-}
-
-static void
-compile_v_report(int diag_flags, int en, va_list ap)
-{
-   int severity = (diag_flags & DIAG_SEVERITY_MASK);
-   if (diag_flags & (DIAG_COL|DIAG_TOKEN)) {
-      if (file.fh) {
-	 if (diag_flags & DIAG_TOKEN) caret_width = s_len(&token);
-	 compile_v_report_fpos(severity, ftell(file.fh), en, ap);
-	 if (diag_flags & DIAG_TOKEN) caret_width = 0;
-	 if (diag_flags & DIAG_SKIP) skipline();
-	 return;
-      }
-   }
-   error_list_parent_files();
-   v_report(severity == DIAG_FATAL ? DIAG_ERR : severity,
-	    file.filename, file.line, 0, en, ap);
-   if (file.fh) {
-      if (diag_flags & DIAG_TOKEN) {
-	 show_line(0, s_len(&token));
-      } else {
-	 show_line(0, caret_width);
-      }
-   }
-   if (severity == DIAG_FATAL) {
-      exit(EXIT_FAILURE);
-   }
    if (diag_flags & DIAG_SKIP) skipline();
+   caret_width = 0;
 }
 
 void
@@ -294,25 +268,47 @@ compile_diagnostic(int diag_flags, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   if (diag_flags & (DIAG_DATE|DIAG_NUM|DIAG_UINT|DIAG_WORD|DIAG_TAIL)) {
+   long fpos = 0;
+   int diag_context_code = (diag_flags & DIAG_CONTEXT_MASK);
+   if (diag_context_code) {
       int len = 0;
-      skipblanks();
-      if (diag_flags & DIAG_WORD) {
+      if (diag_context_code != DIAG_COL && diag_context_code != DIAG_TOKEN) {
+	 skipblanks();
+      }
+      switch (diag_context_code) {
+	case DIAG_COL:
+	 break;
+	case DIAG_TOKEN:
+	 len = s_len(&token);
+	 break;
+	case DIAG_WORD:
 	 while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
 	    ++len;
 	    nextch();
 	 }
-      } else if (diag_flags & DIAG_UINT) {
+	 break;
+	case DIAG_UINT:
 	 while (isdigit(ch)) {
 	    ++len;
 	    nextch();
 	 }
-      } else if (diag_flags & DIAG_DATE) {
+	 break;
+	case DIAG_DATE:
 	 while (isdigit(ch) || ch == '.') {
 	    ++len;
 	    nextch();
 	 }
-      } else if (diag_flags & DIAG_TAIL) {
+	 break;
+	case DIAG_STRING: {
+	 string p = S_INIT;
+	 len = ftell(file.fh);
+	 read_string(&p);
+	 s_free(&p);
+	 /* We want to include any quotes, so can't use s_len(&p). */
+	 len = ftell(file.fh) - len;
+	 break;
+	}
+	case DIAG_TAIL:
 	 filepos fp_last_nonblank = {0}; // Initialise to avoid warning.
 	 int len_last_nonblank = len;
 	 while (!isComm(ch) && !isEol(ch)) {
@@ -328,9 +324,8 @@ compile_diagnostic(int diag_flags, int en, ...)
 	     len = len_last_nonblank;
 	     set_pos(&fp_last_nonblank);
 	 }
-      } else if (diag_flags & DIAG_FROM_) {
-	 len = diag_flags >> DIAG_FROM_SHIFT;
-      } else {
+	 break;
+	case DIAG_NUM:
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
 	    nextch();
@@ -347,27 +342,15 @@ compile_diagnostic(int diag_flags, int en, ...)
 	    ++len;
 	    nextch();
 	 }
+	 break;
       }
       caret_width = len;
-      compile_v_report(diag_flags|DIAG_COL, en, ap);
-      caret_width = 0;
-   } else if (diag_flags & DIAG_FROM_) {
+      fpos = ftell(file.fh);
+   } else if (diag_flags & DIAG_FROM_MASK) {
       caret_width = diag_flags >> DIAG_FROM_SHIFT;
-      compile_v_report(diag_flags|DIAG_COL, en, ap);
-      caret_width = 0;
-   } else if (diag_flags & DIAG_STRING) {
-      string p = S_INIT;
-      skipblanks();
-      caret_width = ftell(file.fh);
-      read_string(&p);
-      s_free(&p);
-      /* We want to include any quotes, so can't use s_len(&p). */
-      caret_width = ftell(file.fh) - caret_width;
-      compile_v_report(diag_flags|DIAG_COL, en, ap);
-      caret_width = 0;
-   } else {
-      compile_v_report(diag_flags, en, ap);
+      fpos = ftell(file.fh);
    }
+   compile_v_report_fpos(diag_flags, fpos, en, ap);
    va_end(ap);
 }
 
@@ -379,7 +362,6 @@ compile_diagnostic_reading(int diag_flags, reading r, int en, ...)
    va_start(ap, en);
    caret_width = WID(r);
    compile_v_report_fpos(severity, LOC(r) + caret_width, en, ap);
-   caret_width = 0;
    va_end(ap);
 }
 
@@ -390,7 +372,6 @@ compile_error_reading_skip(reading r, int en, ...)
    va_start(ap, en);
    caret_width = WID(r);
    compile_v_report_fpos(DIAG_ERR, LOC(r) + caret_width, en, ap);
-   caret_width = 0;
    va_end(ap);
    skipline();
 }
@@ -403,6 +384,7 @@ compile_diagnostic_at(int diag_flags, const char * filename, unsigned line, int 
    va_start(ap, en);
    v_report(severity, filename, line, 0, en, ap);
    va_end(ap);
+   caret_width = 0;
 }
 
 void
@@ -413,6 +395,7 @@ compile_diagnostic_pfx(int diag_flags, const prefix * pfx, int en, ...)
    va_start(ap, en);
    v_report(severity, pfx->filename, pfx->line, 0, en, ap);
    va_end(ap);
+   caret_width = 0;
 }
 
 void
@@ -425,9 +408,7 @@ compile_diagnostic_token_show(int diag_flags, int en)
       nextch();
    }
    if (!s_empty(&p)) {
-      caret_width = s_len(&p);
-      compile_diagnostic(diag_flags|DIAG_COL, en, s_str(&p));
-      caret_width = 0;
+      compile_diagnostic(diag_flags|DIAG_WIDTH(s_len(&p)), en, s_str(&p));
       s_free(&p);
    } else {
       compile_diagnostic(DIAG_ERR|DIAG_COL, en, "");
@@ -437,12 +418,15 @@ compile_diagnostic_token_show(int diag_flags, int en)
 static void
 compile_error_string(const char * s, int en, ...)
 {
-   va_list ap;
-   va_start(ap, en);
-   caret_width = strlen(s);
-   compile_v_report(DIAG_ERR|DIAG_COL, en, ap);
-   va_end(ap);
-   caret_width = 0;
+    va_list ap;
+    va_start(ap, en);
+    long fpos = 0;
+    if (file.fh) {
+	caret_width = strlen(s);
+	fpos = ftell(file.fh);
+    }
+    compile_v_report_fpos(DIAG_ERR, fpos, en, ap);
+    va_end(ap);
 }
 
 /* This function makes a note where to put output files */
