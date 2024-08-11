@@ -573,7 +573,7 @@ Syntax
 
    ``*data``
 
-   ``*data default
+   ``*data default``
 
    ``*data ignore``
 
