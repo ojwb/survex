@@ -1,3 +1,114 @@
+up to: bfe0bc012edf1afb72de84fe6456ad8981104e16
+
+Changes in 1.4.11 (2024-08-13):
+
+* aven:
+
+  + Add imperial scales for export and printing.  Fixes #132, reported by Eric
+    C. Landgraf.
+
+* aven/survexport:
+
+  + HPGL export now uses pen 2 for splays and pen 3 for surface legs.  Partly
+    addresses #60.
+
+  + HPGL export now supports scaling (previous the scale was always
+    1:40000).
+
+  + Remove Skencil export support.  The last release of Skencil was in 2005.
+    There was an attempt to revive the project in 2010, but that didn't lead to
+    another release and seems to have petered out.  No current Linux distro (or
+    other package system) seems to have Skencil packages, and the current git
+    version still appears to require Python 2 which is being phased out.
+
+* cavern:
+
+  + Support `*data ignore` to allow ignoring a block of survey data lines.
+    Closes #114, reported by Alastair Gott.
+
+  + Report error for bad final reading in `*data` command (previously such a
+    bad reading was quietly ignored).
+
+  + If the survey in `*end` doesn't match that in `*begin` the location of
+    that `*begin` is now reported as well - the second message here is new
+    for example:
+
+     badbegin.svx:6:8: error: Survey name doesn't match BEGIN
+      *end   bar
+             ^~~
+     badbegin.svx:4:13: info: Corresponding BEGIN was here
+      *begin      foo
+                  ^~~
+
+  + Now shows a context line for a reading which was on the previous line,
+    which can happen for interleaved data styles.
+
+  + Warn when a token is not followed by a blank, comment or end of line.
+    This is an unintentional tokenisation oddity which has been present
+    for a really long time.  We don't want to break files that rely on this
+    (even if they likely only do accidentally) so emit a warning rather than
+    an error.
+
+    This warning can easily be eliminated by adding a space where indicated,
+    which will work with old and new Survex versions.  Fixes #135.
+
+  + Errors and warnings which report an unexpected token now report a
+    contiguous span of letters and numbers rather than just letters in cases
+    where a number can't follow (which is the majority of cases).
+
+  + If `*require` isn't satisfied, the `*require` line is now shown for
+    context (especially helpful if there's a comment after the command noting
+    the reason for the requirement, as we now suggest in the manual).
+
+  + `*require` version parsing improved - spaces are no longer tolerated in
+    a version number and trailing junk after the version number is now
+    handled more consistently.
+
+  + Fixed several situations in which the highlighting of the context for a
+    diagnostic was off by a small number of columns.
+
+  + Optimise building of matrix during network solving.
+
+  + Enhancements and fixes to reading Walls WPJ and SRV files (thanks to Eric
+    C. Landgraf and Joe for a lot of great feedback from testing with large
+    datasets):
+
+    - After reporting an error for an unsupported datum, we now set the datum
+      to WGS84 to prevent triggering further errors from code which tries to
+      use the datum.
+
+    - Parse Walls WPJ commands as alphanumeric rather than alphabetic tokens,
+      which better matches how Walls parses them.  This only makes a difference
+      in the error message when we don't recognise a WPJ command.
+
+* Documentation:
+
+  + Note `feet` are international feet and how to select a different
+    definition in `*units` docs.
+
+  + Document `grads` are also known as "neugrads" and "gons" in `*units` docs.
+
+* Assorted translation updates.
+
+* testsuite:
+
+  + Fix bug in normalisation of `-0.00` to `0.00` in DXF output before
+    comparing with expected output.
+
+* Update and improve vim syntax highlighting:
+
+  + `*cartesian` added
+  + `*data ignore` added
+  + `mils` units now highlighted as deprecated
+  + `UP` and `DOWN` are no longer highlighted anywhere in a command
+  + `U`, `D`, `LEVEL`, `-V`, `+V`, `.`, `..` and `...` now highlighted in data
+    lines
+  + Repeated `NOT` in `*flags` is now highlighted as an error
+  + Fix error highlighting for unquoted `*include` to not flag an error just
+    because there's a comment after the filename
+  + Fix error highlighting for unquoted `*include` to work when there's
+    whitespace between `*` and `include`
+
 Changes in 1.4.10 (2024-08-05):
 
 * aven:
