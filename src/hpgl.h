@@ -21,10 +21,15 @@
 
 #include "exportfilter.h"
 
+#define HPGL_UNITS_PER_MM 40
+
 class HPGL : public ExportFilter {
+    double factor;
     int pen;
   public:
-    HPGL() {}
+    explicit HPGL(double scale)
+	: factor(HPGL_UNITS_PER_MM * 1000.0 / scale) {}
+
     void header(const char *, const char *, time_t,
 		double, double, double,
 		double, double, double) override;

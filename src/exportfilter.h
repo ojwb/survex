@@ -30,6 +30,7 @@
 class ExportFilter {
   protected:
     FILE * fh;
+
   public:
     ExportFilter() : fh(NULL) { }
     // FIXME: deal with errors closing file... (safe_fclose?)

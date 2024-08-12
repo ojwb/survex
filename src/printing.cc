@@ -1807,8 +1807,6 @@ svxPrintout::DrawTo(long x, long y)
     }
 }
 
-#define POINTS_PER_INCH 72.0
-#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 #define PWX_CROSS_SIZE (int)(2 * m_layout->scX / POINTS_PER_MM)
 
 void

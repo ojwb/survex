@@ -67,6 +67,8 @@
 
 #define MM_PER_INCH 25.4 /* exact value */
 #define METRES_PER_FOOT 0.3048 /* exact value */
+#define POINTS_PER_INCH	72.0
+#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
 #define putnl() putchar('\n')    /* print a newline char */
 #define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */

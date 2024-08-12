@@ -61,9 +61,6 @@
 #include "message.h"
 #include "useful.h"
 
-#define POINTS_PER_INCH	72.0
-#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
-
 #define SQRT_2		1.41421356237309504880168872420969
 
 // Order here needs to match order of export_format enum in export.h.
@@ -88,7 +85,7 @@ const format_info export_format_info[] = {
      * on a (usually large) sheet of paper using a pen mounted in a motorised
      * mechanism. */
     { ".hpgl", /*HPGL for plotters*/414,
-      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED|ORIENTABLE,
+      LABELS|LEGS|SURF|SPLAYS|STNS|CENTRED|SCALE|ORIENTABLE,
       LABELS|LEGS|STNS },
     { ".json", /*JSON files*/445,
       LEGS|SURF|SPLAYS|CENTRED,
@@ -1316,8 +1313,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   need_bounds = false;
 	   break;
        case FMT_HPGL:
-	   filt = new HPGL;
-	   // factor = POINTS_PER_MM * 1000.0 / scale;
+	   filt = new HPGL(scale);
 	   // HPGL doesn't use the bounds itself, but they are needed to set
 	   // the origin to the centre of lower left.
 	   break;
