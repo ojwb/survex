@@ -1,3 +1,10 @@
+survex (1.4.10-2) unstable; urgency=medium
+
+  * debian/patches/Fix-regexp-to-normalise-DXF-output.patch: Cherry-pick fix
+    from upstream.
+
+ -- Olly Betts <olly@survex.com>  Mon, 12 Aug 2024 16:28:12 +1200
+
 survex (1.4.10-1) unstable; urgency=medium
 
   * New upstream release.
