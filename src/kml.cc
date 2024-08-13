@@ -115,13 +115,13 @@ void KML::header(const char * title, const char *, time_t,
     fputs("</name>\n", fh);
     // Set up styles for the icons to reduce the file size.
     fputs("<Style id=\"fix\"><IconStyle>"
-	  "<Icon><href>http://maps.google.com/mapfiles/kml/paddle/red-blank.png</href></Icon>"
+	  "<Icon><href>https://maps.google.com/mapfiles/kml/paddle/red-blank.png</href></Icon>"
 	  "</IconStyle></Style>\n", fh);
     fputs("<Style id=\"exp\"><IconStyle>"
-	  "<Icon><href>http://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href></Icon>"
+	  "<Icon><href>https://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href></Icon>"
 	  "</IconStyle></Style>\n", fh);
     fputs("<Style id=\"ent\"><IconStyle>"
-	  "<Icon><href>http://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href></Icon>"
+	  "<Icon><href>https://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href></Icon>"
 	  "</IconStyle></Style>\n", fh);
     // FIXME: does KML allow bounds?
     // NB Lat+long bounds are not necessarily the same as the bounds in survex
