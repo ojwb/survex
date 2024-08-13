@@ -308,7 +308,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 	 len = ftell(file.fh) - len;
 	 break;
 	}
-	case DIAG_TAIL:
+	case DIAG_TAIL: {
 	 filepos fp_last_nonblank = {0}; // Initialise to avoid warning.
 	 int len_last_nonblank = len;
 	 while (!isComm(ch) && !isEol(ch)) {
@@ -325,6 +325,7 @@ compile_diagnostic(int diag_flags, int en, ...)
 	     set_pos(&fp_last_nonblank);
 	 }
 	 break;
+	}
 	case DIAG_NUM:
 	 if (isMinus(ch) || isPlus(ch)) {
 	    ++len;
