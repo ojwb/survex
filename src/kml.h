@@ -28,7 +28,7 @@
 
 class KML : public ExportFilter {
     PJ* pj = NULL;
-    bool in_linestring = false;
+    unsigned linestring_flags = 0;
     bool in_wall = false;
     bool in_passage = false;
     bool clamp_to_ground;

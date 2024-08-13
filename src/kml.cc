@@ -114,15 +114,29 @@ void KML::header(const char * title, const char *, time_t,
     html_escape(fh, title);
     fputs("</name>\n", fh);
     // Set up styles for the icons to reduce the file size.
+    // Note "color" code order is aabbggrr
     fputs("<Style id=\"fix\"><IconStyle>"
 	  "<Icon><href>https://maps.google.com/mapfiles/kml/paddle/red-blank.png</href></Icon>"
+	  "<color>ff0000ff</color>"
+	  "<hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>"
 	  "</IconStyle></Style>\n", fh);
     fputs("<Style id=\"exp\"><IconStyle>"
 	  "<Icon><href>https://maps.google.com/mapfiles/kml/paddle/blu-blank.png</href></Icon>"
+	  "<color>ffff0000</color>"
+	  "<hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>"
 	  "</IconStyle></Style>\n", fh);
     fputs("<Style id=\"ent\"><IconStyle>"
 	  "<Icon><href>https://maps.google.com/mapfiles/kml/paddle/grn-blank.png</href></Icon>"
+	  "<color>ff00ff00</color>"
+	  "<hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>"
 	  "</IconStyle></Style>\n", fh);
+    // Set up styles for surface legs and splays.
+    fputs("<Style id=\"surf\"><LineStyle>"
+	  "<color>ff00ff00</color>" // Green.
+	  "</LineStyle></Style>\n", fh);
+    fputs("<Style id=\"splay\"><LineStyle>"
+	  "<color>40ff00ff</color>" // Partly transparent magenta.
+	  "</LineStyle></Style>\n", fh);
     // FIXME: does KML allow bounds?
     // NB Lat+long bounds are not necessarily the same as the bounds in survex
     // coords translated to WGS84 lat+long...
@@ -131,19 +145,34 @@ void KML::header(const char * title, const char *, time_t,
 void
 KML::start_pass(int)
 {
-    if (in_linestring) {
+    if (linestring_flags) {
 	fputs("</coordinates></LineString></MultiGeometry></Placemark>\n", fh);
-	in_linestring = false;
+	linestring_flags = 0;
     }
 }
 
 void
-KML::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPendingMove)
+KML::line(const img_point *p1, const img_point *p, unsigned flags, bool fPendingMove)
 {
+    if (linestring_flags && linestring_flags != (flags & (LEGS|SURF|SPLAYS))) {
+	fputs("</coordinates></LineString></MultiGeometry></Placemark>\n", fh);
+	linestring_flags = 0;
+	fPendingMove = true;
+    }
     if (fPendingMove) {
-	if (!in_linestring) {
-	    in_linestring = true;
-	    fputs("<Placemark><MultiGeometry>\n", fh);
+	if (linestring_flags == 0) {
+	    linestring_flags = (flags & (LEGS|SURF|SPLAYS));
+	    if (flags & SURF) {
+		fputs("<Placemark>"
+		      "<styleUrl>#surf</styleUrl>"
+		      "<MultiGeometry>", fh);
+	    } else if (flags & SPLAYS) {
+		fputs("<Placemark>"
+		      "<styleUrl>#splay</styleUrl>"
+		      "<MultiGeometry>", fh);
+	    } else {
+		fputs("<Placemark><MultiGeometry>", fh);
+	    }
 	} else {
 	    fputs("</coordinates></LineString>\n", fh);
 	}
@@ -366,7 +395,7 @@ KML::label(const img_point *p, const wxString& str, int /*sflags*/, int type)
 void
 KML::footer()
 {
-    if (in_linestring)
+    if (linestring_flags)
 	fputs("</coordinates></LineString></MultiGeometry></Placemark>\n", fh);
     fputs("</Document></kml>\n", fh);
 }
