@@ -1,6 +1,4 @@
-up to: bfe0bc012edf1afb72de84fe6456ad8981104e16
-
-Changes in 1.4.11 (2024-08-13):
+Changes in 1.4.11 (2024-08-14):
 
 * aven:
 
@@ -14,6 +12,9 @@ Changes in 1.4.11 (2024-08-13):
 
   + HPGL export now supports scaling (previous the scale was always
     1:40000).
+
+  + KML export now distinguishes surface legs and splays using different
+    line styles.  Partly addresses #60.
 
   + Remove Skencil export support.  The last release of Skencil was in 2005.
     There was an attempt to revive the project in 2010, but that didn't lead to
@@ -69,9 +70,7 @@ Changes in 1.4.11 (2024-08-13):
 
   + Optimise building of matrix during network solving.
 
-  + Enhancements and fixes to reading Walls WPJ and SRV files (thanks to Eric
-    C. Landgraf and Joe for a lot of great feedback from testing with large
-    datasets):
+  + Enhancements and fixes to reading Walls WPJ and SRV files:
 
     - After reporting an error for an unsupported datum, we now set the datum
       to WGS84 to prevent triggering further errors from code which tries to
@@ -98,14 +97,21 @@ Changes in 1.4.11 (2024-08-13):
 * Update and improve vim syntax highlighting:
 
   + `*cartesian` added
+
   + `*data ignore` added
+
   + `mils` units now highlighted as deprecated
+
   + `UP` and `DOWN` are no longer highlighted anywhere in a command
+
   + `U`, `D`, `LEVEL`, `-V`, `+V`, `.`, `..` and `...` now highlighted in data
     lines
+
   + Repeated `NOT` in `*flags` is now highlighted as an error
+
   + Fix error highlighting for unquoted `*include` to not flag an error just
     because there's a comment after the filename
+
   + Fix error highlighting for unquoted `*include` to work when there's
     whitespace between `*` and `include`
 
