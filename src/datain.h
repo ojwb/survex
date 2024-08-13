@@ -32,7 +32,7 @@ typedef struct parse {
    long lpos;
    unsigned int line;
    bool reported_where : 1;
-   unsigned prev_line_len;
+   unsigned prev_line_len : 31;
    struct parse *parent;
 #ifdef HAVE_SETJMP_H
    jmp_buf jbSkipLine;

@@ -243,10 +243,11 @@ compile_v_report_fpos(int diag_flags, long fpos, int en, va_list ap)
    int col = 0;
    error_list_parent_files();
    unsigned line = file.line;
+   long prev_line_len = (long)file.prev_line_len;
    if (fpos >= file.lpos) {
       col = fpos - file.lpos - caret_width;
-   } else if (fpos >= file.lpos - file.prev_line_len) {
-      file.lpos -= file.prev_line_len;
+   } else if (fpos >= file.lpos - prev_line_len) {
+      file.lpos -= prev_line_len;
       --line;
       col = fpos - file.lpos - caret_width;
    }
@@ -257,7 +258,7 @@ compile_v_report_fpos(int diag_flags, long fpos, int en, va_list ap)
       exit(EXIT_FAILURE);
    }
    if (line != file.line) {
-      file.lpos += file.prev_line_len;
+      file.lpos += prev_line_len;
    }
    if (diag_flags & DIAG_SKIP) skipline();
    caret_width = 0;
