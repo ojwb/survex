@@ -3354,14 +3354,14 @@ msgstr ""
 #: n:501
 #, c-format
 msgid "Added: %s"
-msgstr ""
+msgstr "已添加：%s"
 
 #. TRANSLATORS: for diffpos:
 #: ../src/diffpos.c:218
 #: n:502
 #, c-format
 msgid "Deleted: %s"
-msgstr ""
+msgstr "已删除：%s"
 
 #. TRANSLATORS: The first of two warnings given when a survey which has
 #. already been completed is reentered.  This example file crawl.svx:

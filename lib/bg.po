@@ -201,7 +201,7 @@ msgstr "Намерена е грешка в програмата. Моля я д
 #: n:12
 #, c-format
 msgid "Unknown command “%s”"
-msgstr ""
+msgstr "Непозната команда “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:440
@@ -2024,7 +2024,7 @@ msgstr ""
 #: ../src/printing.cc:571
 #: n:230
 msgid "&Export..."
-msgstr ""
+msgstr "&Експортиране..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation.
@@ -2101,7 +2101,7 @@ msgstr "Изглед"
 #: ../src/printing.cc:361
 #: n:256
 msgid "Elements"
-msgstr ""
+msgstr "Елементи"
 
 #: ../src/printing.cc:366
 #: n:410
@@ -2660,7 +2660,7 @@ msgstr ""
 #: ../src/mainfrm.cc:2372
 #: n:328
 msgid "No matches were found."
-msgstr ""
+msgstr "Няма намерени съответствия."
 
 #. TRANSLATORS: "Find stations" button tooltip
 #: ../src/mainfrm.cc:1075
@@ -2722,7 +2722,7 @@ msgstr "%.2f и, %.2f с"
 #: n:339
 #, c-format
 msgid "From %s"
-msgstr ""
+msgstr "От %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
 #: ../src/mainfrm.cc:1912
@@ -2969,7 +2969,7 @@ msgstr "Презентация"
 #: ../src/aventreectrl.cc:371
 #: n:245
 msgid "Show all"
-msgstr ""
+msgstr "Покажи всички"
 
 #. TRANSLATORS: In aven's survey tree, right-clicking on a survey
 #. name gives a pop-up menu and this is an option.  It reloads the
@@ -2978,7 +2978,7 @@ msgstr ""
 #: ../src/aventreectrl.cc:385
 #: n:246
 msgid "Hide others"
-msgstr ""
+msgstr "Скриване на останалите"
 
 #: ../src/aventreectrl.cc:389
 #: n:388
@@ -3065,7 +3065,7 @@ msgstr ""
 #: ../src/printing.cc:303
 #: n:383
 msgid "Export"
-msgstr "Експорт"
+msgstr "Експортиране"
 
 #. TRANSLATORS: for about box:
 #: ../src/aboutdlg.cc:139
@@ -3361,14 +3361,14 @@ msgstr ""
 #: n:501
 #, c-format
 msgid "Added: %s"
-msgstr ""
+msgstr "Добавено: %s"
 
 #. TRANSLATORS: for diffpos:
 #: ../src/diffpos.c:218
 #: n:502
 #, c-format
 msgid "Deleted: %s"
-msgstr ""
+msgstr "Изтрито: %s"
 
 #. TRANSLATORS: The first of two warnings given when a survey which has
 #. already been completed is reentered.  This example file crawl.svx:
@@ -3648,7 +3648,7 @@ msgstr ""
 
 #: n:361
 #~ msgid "Draw a grid"
-#~ msgstr ""
+#~ msgstr "Рисувай мрежа"
 
 #: n:362
 #~ msgid "metric units"

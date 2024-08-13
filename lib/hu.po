@@ -48,7 +48,6 @@ msgstr "&Súgó"
 #. views.
 #: ../src/mainfrm.cc:1006
 #: n:216
-#, fuzzy
 msgid "&Presentation"
 msgstr "&Bemutató"
 
@@ -2115,7 +2114,7 @@ msgstr "Elemek"
 #: ../src/printing.cc:366
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Export-formátum"
 
 #: ../src/printing.cc:424
 #: ../src/printing.cc:822
@@ -2130,7 +2129,7 @@ msgstr ""
 #: ../src/printing.cc:396
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "Egy oldal"
 
 #: ../src/mainfrm.cc:157
 #: ../src/printing.cc:431
@@ -2591,7 +2590,7 @@ msgstr ""
 #: ../src/mainfrm.cc:856
 #: n:316
 msgid "Pla&y"
-msgstr ""
+msgstr "&Lejátszás"
 
 #: ../src/mainfrm.cc:857
 #: n:317
@@ -2608,7 +2607,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1627
 #: n:319
 msgid "Select an output filename"
-msgstr ""
+msgstr "Válasszon egy kimeneti fájlnevet"
 
 #: ../src/mainfrm.cc:361
 #: ../src/mainfrm.cc:2044
@@ -2620,7 +2619,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1556
 #: n:321
 msgid "Save Screenshot"
-msgstr ""
+msgstr "Képernyőkép mentése"
 
 #: ../src/mainfrm.cc:2039
 #: ../src/mainfrm.cc:2042
@@ -3048,7 +3047,7 @@ msgstr ""
 #: ../src/mainfrm.cc:806
 #: n:201
 msgid "&Screenshot..."
-msgstr ""
+msgstr "&Képernyőkép mentése..."
 
 #. TRANSLATORS: In the "File" menu - c.f. n:191
 #: ../src/mainfrm.cc:809
@@ -3369,14 +3368,14 @@ msgstr ""
 #: n:501
 #, c-format
 msgid "Added: %s"
-msgstr ""
+msgstr "Hozzáadva: %s"
 
 #. TRANSLATORS: for diffpos:
 #: ../src/diffpos.c:218
 #: n:502
 #, c-format
 msgid "Deleted: %s"
-msgstr ""
+msgstr "Törölve: %s"
 
 #. TRANSLATORS: The first of two warnings given when a survey which has
 #. already been completed is reentered.  This example file crawl.svx:
