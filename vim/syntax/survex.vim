@@ -4,7 +4,7 @@
 " Last Change:  2024-08-09
 " Filenames:    *.svx
 " URL:          [NONE]
-" Note:         This should be up to date for Survex 1.4.10
+" Note:         This should be up to date for Survex 1.4.11
 "
 " Copyright (C) 2005 David Loeffler
 " Copyright (C) 2006,2016,2017,2024 Olly Betts
