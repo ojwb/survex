@@ -1,3 +1,9 @@
+survex (1.4.11-3) unstable; urgency=medium
+
+  * debian/patches/series: Actually apply new patch. (Closes: #1077514)
+
+ -- Olly Betts <olly@survex.com>  Thu, 15 Aug 2024 08:43:09 +1200
+
 survex (1.4.11-2) unstable; urgency=medium
 
   * debian/patches/skip-hpglexport-testcase.patch: Skip new testcase
