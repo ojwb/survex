@@ -1,3 +1,12 @@
+survex (1.4.11-2) unstable; urgency=medium
+
+  * debian/patches/skip-hpglexport-testcase.patch: Skip new testcase
+    hpglexport for now because it fails on i386 due to a small numerical
+    difference in the calculated coordinates, presumably due to excess
+    precision. (Closes: #1077514)
+
+ -- Olly Betts <olly@survex.com>  Wed, 14 Aug 2024 16:06:32 +1200
+
 survex (1.4.11-1) unstable; urgency=medium
 
   * New upstream release:

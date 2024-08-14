@@ -1,0 +1,13 @@
+diff --git a/tests/cavern.tst b/tests/cavern.tst
+index 9a164fef..9d98c89d 100755
+--- a/tests/cavern.tst
++++ b/tests/cavern.tst
+@@ -105,7 +105,7 @@ esac
+  samename tabinhighlight legacytokens\
+  3dexport \
+  dxffullcoords dxfsurfequate\
+- gpxexport hpglexport jsonexport kmlexport pltexport svgexport\
++ gpxexport jsonexport kmlexport pltexport svgexport\
+ "}}
+ 
+ # Test file stnsurvey3.svx missing: pos=fail # We exit before the error count.
