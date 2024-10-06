@@ -560,7 +560,8 @@ stn_included(img *pimg)
     if (!pimg->survey_len) return 1;
     size_t l = pimg->survey_len;
     const char *s = pimg->label_buf;
-    if (strncmp(pimg->survey, s, l + 1) != 0) {
+    if (strncmp(pimg->survey, s, l) != 0 ||
+        s[l] != pimg->separator) {
 	return 0;
     }
     pimg->label += l + 1;
@@ -575,7 +576,7 @@ survey_included(img *pimg)
     size_t l = pimg->survey_len;
     const char *s = pimg->label_buf;
     if (strncmp(pimg->survey, s, l) != 0 ||
-	!(s[l] == '.' || s[l] == '\0')) {
+	!(s[l] == pimg->separator || s[l] == '\0')) {
        return 0;
     }
     pimg->label += l;
@@ -1167,6 +1168,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    if (survey) {
       len = strlen(survey);
       if (len) {
+	 // TODO pimg->separator not known yet
 	 if (survey[len - 1] == '.') len--;
 	 if (len) {
 	    char *p;
