@@ -182,6 +182,8 @@ imgtest_survey.svx
 EXTRA_DIST +=\
 cmapstn.adj cmapstn.dump\
 cmap.sht cmap.dump\
+filter.plt filter.dump\
+separator.3d separator.dump\
 multisection.plt multisection.dump\
 multisurvey.plt multisurvey.dump\
 pre1970.plt pre1970.dump

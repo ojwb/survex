@@ -45,7 +45,9 @@ esac
 
 : ${DUMP3D="$testdir"/../src/dump3d}
 
-: ${TESTS=${*:-"cmapstn.adj cmap.sht multisection.plt multisurvey.plt pre1970.plt"}}
+: ${TESTS=${*:-"cmapstn.adj cmap.sht \
+multisection.plt multisurvey.plt pre1970.plt \
+filter.plt separator.3d"}}
 
 # Suppress checking for leaks on exit if we're build with lsan - we don't
 # generally waste effort to free all allocations as the OS will reclaim
@@ -72,8 +74,18 @@ for file in $TESTS ; do
     expect="$srcdir/$file.dump"
     ;;
   esac
+  DUMP3D_OPTS='--show-dates --legs'
+  case $file in
+  filter.plt)
+    DUMP3D_OPTS="$DUMP3D_OPTS --survey=Z+"
+    ;;
+  separator.3d)
+    DUMP3D_OPTS="$DUMP3D_OPTS --survey=foo"
+    continue # FIXME: Currently this testcase fails
+    ;;
+  esac
   rm -f tmp.diff tmp.dump
-  $DUMP3D --show-dates --legs "$input" > tmp.dump
+  $DUMP3D $DUMP3D_OPTS "$input" > tmp.dump
   exitcode=$?
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
