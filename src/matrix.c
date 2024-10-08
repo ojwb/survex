@@ -157,7 +157,7 @@ build_matrix(node *list)
        * All legs between two fixed stations can be ignored here.
        *
        * Other legs we want to add exactly once to M.  To achieve this we
-       * wan to:
+       * want to:
        *
        * - add forward legs between two unfixed stations,
        *
