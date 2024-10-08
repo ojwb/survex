@@ -85,14 +85,14 @@ remove_subnets(void)
 #if PRINT_NETBITS
 	 printf("replacing lollipops\n");
 #endif
-	 /*      _
-	  *     ( )
-	  *      * stn
-	  *      |
-	  *      * stn2
-	  * stn /|
-	  *  4 * * stn3  -->  stn4 *-* stn3
-	  *    : :		   : :
+	 /*        _
+	  *       ( )
+	  *        * stn
+	  *        |
+	  *        * stn2
+	  *       / \
+	  * stn4 *   * stn3  -->  stn4 *---* stn3
+	  *      :   :                 :   :
 	  */
 	 /* NB can have non-fixed 0 nodes */
 	 FOR_EACH_STN(stn, stnlist) {
@@ -165,15 +165,15 @@ remove_subnets(void)
 #endif
 	 FOR_EACH_STN(stn, stnlist) {
 	    /*
-	     *  :
-	     *  * stn3
-	     *  |	     :
-	     *  * stn	     * stn3
-	     * ( )      ->   |
-	     *  * stn2       * stn4
-	     *  |	     :
-	     *  * stn4
-	     *  :
+	     *  :            :
+	     *  * stn3       * stn3
+	     *  |            |
+	     *  * stn        |
+	     * ( )      -->  |
+	     *  * stn2       |
+	     *  |            |
+	     *  * stn4       * stn4
+	     *  :            :
 	     */
 	    if (!fixed(stn) && three_node(stn)) {
 	       stn2 = stn->leg[0]->l.to;
@@ -300,15 +300,16 @@ remove_subnets(void)
 	 FOR_EACH_STN(stn, stnlist) {
 	    /*    printf("*");*/
 	    /*
-	     *		:
-	     *		* stn5		  :
-	     *		|		  * stn5
-	     *		* stn2		  |
-	     *	       / \	  ->	  O stnZ
-	     *    stn *---* stn3	 / \
-	     *       /     \       stn4 *   * stn6
-	     * stn4 *       * stn6      :   :
-	     *      :       :
+	     *          :                     :
+	     *          * stn5                * stn5
+	     *          |                     |
+	     *          * stn2                |
+	     *         / \        -->         O stnZ
+	     *        |   |                  / \
+	     *    stn *---* stn3            /   \
+	     *       /     \               /     \
+	     * stn4 *       * stn6   stn4 *       * stn6
+	     *      :       :             :       :
 	     */
 	    if (!fixed(stn) && three_node(stn)) {
 	       for (dirn0 = 0; ; dirn0++) {
