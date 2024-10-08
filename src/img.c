@@ -560,8 +560,7 @@ stn_included(img *pimg)
     if (!pimg->survey_len) return 1;
     size_t l = pimg->survey_len;
     const char *s = pimg->label_buf;
-    if (strncmp(pimg->survey, s, l) != 0 ||
-        s[l] != pimg->separator) {
+    if (strncmp(pimg->survey, s, l + 1) != 0) {
 	return 0;
     }
     pimg->label += l + 1;
@@ -620,7 +619,39 @@ img_open_survey(const char *fnm, const char *survey)
 }
 
 static int
-compass_plt_open(img *pimg)
+initialise_survey_filter(img *pimg, const char* survey)
+{
+    size_t len = strlen(survey);
+    if (survey[len - 1] == pimg->separator) len--;
+    if (len) {
+	char *p;
+	pimg->survey = (char *)xosmalloc(len + 2);
+	if (!pimg->survey) {
+	    return 0;
+	}
+	memcpy(pimg->survey, survey, len);
+
+	/* Set title to leaf survey name.  This overrides any title we've
+	 * got from the file already.
+	 */
+	pimg->survey[len] = '\0';
+	p = strrchr(pimg->survey, pimg->separator);
+	if (p) p++; else p = pimg->survey;
+	osfree(pimg->title);
+	pimg->title = my_strdup(p);
+	if (!pimg->title) {
+	    return 0;
+	}
+
+	pimg->survey[len] = pimg->separator;
+	pimg->survey[len + 1] = '\0';
+    }
+    pimg->survey_len = len;
+    return 1;
+}
+
+static int
+compass_plt_open(img *pimg, const char *survey)
 {
     int utm_zone = 0;
     int datum = img_DATUM_UNKNOWN;
@@ -640,6 +671,11 @@ compass_plt_open(img *pimg)
     pimg->data = compass_plt_allocate_hash();
     if (!pimg->data) {
 	return IMG_OUTOFMEMORY;
+    }
+
+    if (survey) {
+	if (!initialise_survey_filter(pimg, survey))
+	    return IMG_OUTOFMEMORY;
     }
 
     /* Read through the whole file first, recording any station flags
@@ -711,11 +747,20 @@ compass_plt_open(img *pimg)
 	    }
 
 	    osfree(from);
+
+	    /* We set pimg->title to an empty string if we have multiple
+	     * different non-empty section names.  Tidy that up before we
+	     * return.
+	     */
+	    if (pimg->title && !pimg->title[0]) {
+		osfree(pimg->title);
+		pimg->title = NULL;
+	    }
 	    return 0;
 	  case 'S':
-	    /* "Section" - in the case where we aren't filtering by survey
-	     * (i.e. pimg->survey == NULL): if there's only one non-empty
-	     * section name specified, we use it as the title.
+	    /* "Section" - in the case where we aren't filtering by survey:
+	     * if there's only one non-empty section name specified, we use it
+	     * as the title.
 	     */
 	    if (pimg->survey == NULL && (!pimg->title || pimg->title[0])) {
 		char *line = getline_alloc(pimg->fh);
@@ -958,7 +1003,7 @@ out_of_memory_error:
 }
 
 static int
-cmap_xyz_open(img *pimg)
+cmap_xyz_open(img *pimg, const char *survey)
 {
     size_t len;
     char *line = getline_alloc(pimg->fh);
@@ -974,6 +1019,11 @@ cmap_xyz_open(img *pimg)
     /* Spaces aren't legal in CMAP station names, but dots are, so
      * use space as the level separator. */
     pimg->separator = ' ';
+
+    if (survey) {
+	if (!initialise_survey_filter(pimg, survey))
+	    return IMG_OUTOFMEMORY;
+    }
 
     /* There doesn't seem to be a spec for what happens after 1999 with cmap
      * files, so this code allows for:
@@ -1104,7 +1154,6 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
 		       const char *survey)
 {
    img *pimg;
-   size_t len;
    char buf[LITLEN(FILEID) + 9];
    int ch;
    UINT32_T ext;
@@ -1119,6 +1168,10 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
       img_errno = IMG_OUTOFMEMORY;
       if (close_func) close_func(stream);
       return NULL;
+   }
+
+   if (survey != NULL && survey[0] == '\0') {
+      survey = NULL;
    }
 
    pimg->fh = stream;
@@ -1165,33 +1218,6 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    pimg->title = pimg->datestamp = pimg->cs = NULL;
    pimg->datestamp_numeric = (time_t)-1;
 
-   if (survey) {
-      len = strlen(survey);
-      if (len) {
-	 // TODO pimg->separator not known yet
-	 if (survey[len - 1] == '.') len--;
-	 if (len) {
-	    char *p;
-	    pimg->survey = (char *)xosmalloc(len + 2);
-	    if (!pimg->survey) {
-	       goto out_of_memory_error;
-	    }
-	    memcpy(pimg->survey, survey, len);
-	    /* Set title to leaf survey name */
-	    pimg->survey[len] = '\0';
-	    p = strrchr(pimg->survey, '.');
-	    if (p) p++; else p = pimg->survey;
-	    pimg->title = my_strdup(p);
-	    if (!pimg->title) {
-	       goto out_of_memory_error;
-	    }
-	    pimg->survey[len] = '.';
-	    pimg->survey[len + 1] = '\0';
-	 }
-      }
-      pimg->survey_len = len;
-   }
-
    /* [IMG_VERSION_COMPASS_PLT] bitwise-or of PENDING_* values, or -1.
     * [IMG_VERSION_CMAP_STATION, IMG_VERSION_CMAP_SHOT] pending IMG_LINE or
     * IMG_MOVE - both have 4 added.
@@ -1202,15 +1228,17 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
     */
    pimg->pending = 0;
 
-   len = strlen(fnm);
    /* Currently only 3 character extensions are tested below. */
    ext = 0;
-   if (len > 4 && fnm[len - 4] == '.') {
-       /* Read extension and pack into ext. */
-       int i;
-       for (i = 1; i < 4; ++i) {
-	   unsigned char ext_ch = fnm[len - i];
-	   ext = (ext << 8) | tolower(ext_ch);
+   {
+       size_t len = strlen(fnm);
+       if (len > 4 && fnm[len - 4] == '.') {
+	   /* Read extension and pack into ext. */
+	   int i;
+	   for (i = 1; i < 4; ++i) {
+	       unsigned char ext_ch = fnm[len - i];
+	       ext = (ext << 8) | tolower(ext_ch);
+	   }
        }
    }
    switch (ext) {
@@ -1222,13 +1250,13 @@ pos_file:
 	   goto out_of_memory_error;
        }
        pimg->start = 0;
-       goto successful_return;
+       goto initialise_survey_filter_and_return;
 
      case EXT3('p', 'l', 't'): /* Compass .plt */
      case EXT3('p', 'l', 'f'): /* Compass .plf */ {
        int result;
 plt_file:
-       result = compass_plt_open(pimg);
+       result = compass_plt_open(pimg, survey);
        if (result) {
 	   img_errno = result;
 	   goto error;
@@ -1248,7 +1276,7 @@ plt_file:
      case EXT3('x', 'y', 'z'): /* CMAP .xyz */ {
        int result;
 xyz_file:
-       result = cmap_xyz_open(pimg);
+       result = cmap_xyz_open(pimg, survey);
        if (result) {
 	   img_errno = result;
 	   goto error;
@@ -1437,7 +1465,7 @@ error:
       int flags = GETC(pimg->fh);
       if (flags & img_FFLAG_EXTENDED) pimg->is_extended_elevation = 1;
    } else if (pimg->title) {
-      len = strlen(pimg->title);
+      size_t len = strlen(pimg->title);
       if (len > 11 && strcmp(pimg->title + len - 11, " (extended)") == 0) {
 	  pimg->title[len - 11] = '\0';
 	  pimg->is_extended_elevation = 1;
@@ -1501,6 +1529,12 @@ error:
 bad_3d_date:
 
    pimg->start = ftell(pimg->fh);
+
+initialise_survey_filter_and_return:
+   if (survey) {
+       if (!initialise_survey_filter(pimg, survey))
+	   goto out_of_memory_error;
+   }
 
 successful_return:
    /* If no title from another source, default to the base leafname. */

@@ -81,7 +81,6 @@ for file in $TESTS ; do
     ;;
   separator.3d)
     DUMP3D_OPTS="$DUMP3D_OPTS --survey=foo"
-    continue # FIXME: Currently this testcase fails
     ;;
   esac
   rm -f tmp.diff tmp.dump
