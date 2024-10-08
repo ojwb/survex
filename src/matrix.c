@@ -1,6 +1,6 @@
 /* matrix.c
  * Matrix building and solving routines
- * Copyright (C) 1993-2003,2010,2013 Olly Betts
+ * Copyright (C) 1993-2003,2010,2013,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,60 +57,24 @@ static void sor(real *M, real *B, long n);
 	      /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
 /*#define M_(X, Y) ((real *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
 
-static void build_matrix(node *list);
+#define COLOUR_FIXED -1
+#define COLOUR_TODO -2
 
-static long n_stn_tab;
-
-static pos **stn_tab;
-
-extern void
-solve_matrix(node *list)
-{
-   node *stn;
-   long n = 0;
-   FOR_EACH_STN(stn, list) {
-      if (!fixed(stn))
-	  n++;
-   }
-   if (n == 0) return;
-
-   /* We need to allocate stn_tab with one entry per unfixed cluster of equated
-    * stations, but it's much simpler to count the number of unfixed nodes.
-    * This will over-count stations with more than 3 legs and equated stations
-    * but in a typical survey that's a small minority of stations.
-    */
-   stn_tab = osmalloc((OSSIZE_T)(n * ossizeof(pos*)));
-   n_stn_tab = 0;
-
-   /* We store the stn_tab index in stn->colour for quick and easy lookup in
-    * build_matrix().
-    */
-   FOR_EACH_STN(stn, list) {
-      if (!fixed(stn)) {
-	  int i;
-	  pos *p = stn->name->pos;
-	  for (i = 0; i < n_stn_tab; i++) {
-	      if (stn_tab[i] == p)
-		  break;
-	  }
-	  if (i == n_stn_tab)
-	      stn_tab[n_stn_tab++] = p;
-	  stn->colour = i;
-      } else {
-	  stn->colour = -1;
-      }
-   }
-
-   build_matrix(list);
-#if DEBUG_MATRIX
-   FOR_EACH_STN(stn, list) {
-      printf("(%8.2f, %8.2f, %8.2f ) ", POS(stn, 0), POS(stn, 1), POS(stn, 2));
-      print_prefix(stn->name);
-      putnl();
-   }
-#endif
-
-   osfree(stn_tab);
+static void set_row(node *stn, node *from, int row_number) {
+    // We store the matrix row/column index in stn->colour for quick and easy
+    // lookup when copying out the solved station coordinates.
+    stn->colour = row_number;
+    for (int d = 0; d < 3; d++) {
+	linkfor *leg = stn->leg[d];
+	if (!leg) break;
+	node *to = leg->l.to;
+	if (to == from || to->colour != COLOUR_TODO) {
+	    continue;
+	}
+	if (fZeros(data_here(leg) ? &leg->v : &reverse_leg(leg)->v)) {
+	    set_row(to, stn, row_number);
+	}
+    }
 }
 
 #ifdef NO_COVARIANCES
@@ -119,37 +83,62 @@ solve_matrix(node *list)
 # define FACTOR 3
 #endif
 
-static void
-build_matrix(node *list)
+extern void
+solve_matrix(node *list)
 {
-   SVX_ASSERT(n_stn_tab > 0);
-   /* (OSSIZE_T) cast may be needed if n_stn_tab>=181 */
-   real *M = osmalloc((OSSIZE_T)((((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1)) * ossizeof(real));
-   real *B = osmalloc((OSSIZE_T)(n_stn_tab * FACTOR * ossizeof(real)));
+   node *stn;
+   bool unfixed_stations = false;
+   FOR_EACH_STN(stn, list) {
+      if (!fixed(stn)) {
+	  unfixed_stations = true;
+	  stn->colour = COLOUR_TODO;
+      } else {
+	  stn->colour = COLOUR_FIXED;
+      }
+   }
+   if (!unfixed_stations) {
+       return;
+   }
+
+   // Assign a matrix row/column index to each group of stations with the same
+   // pos.
+   long n = 0;
+   FOR_EACH_STN(stn, list) {
+      if (stn->colour == COLOUR_TODO) {
+	  set_row(stn, NULL, n++);
+      }
+   }
+   SVX_ASSERT(n > 0);
+
+   // Array to map from row/column index to pos.  We fill this in as we build
+   // the matrix, and use it to know where to copy the solved station
+   // coordinates to.
+   pos **stn_tab = osmalloc((OSSIZE_T)(n * ossizeof(pos*)));
+
+   /* (OSSIZE_T) cast may be needed if n >= 181 */
+   real *M = osmalloc((OSSIZE_T)((((OSSIZE_T)n * FACTOR * (n * FACTOR + 1)) >> 1)) * ossizeof(real));
+   real *B = osmalloc((OSSIZE_T)(n * FACTOR * ossizeof(real)));
 
    if (!fQuiet) {
-      if (n_stn_tab == 1)
+      if (n == 1)
 	 out_current_action(msg(/*Solving one equation*/78));
       else
-	 out_current_action1(msg(/*Solving %d simultaneous equations*/75), n_stn_tab);
+	 out_current_action1(msg(/*Solving %d simultaneous equations*/75), n);
    }
 
 #ifdef NO_COVARIANCES
    int dim = 2;
 #else
-   int dim = 0; /* fudge next loop for now */
+   int dim = 0; /* Collapse loop to a single iteration. */
 #endif
    for ( ; dim >= 0; dim--) {
-      node *stn;
-      int row;
-
       /* Initialise M and B to zero - zeroing "linearly" will minimise
        * paging when the matrix is large */
       {
-	 int end = n_stn_tab * FACTOR;
-	 for (row = 0; row < end; row++) B[row] = (real)0.0;
-	 end = ((OSSIZE_T)n_stn_tab * FACTOR * (n_stn_tab * FACTOR + 1)) >> 1;
-	 for (row = 0; row < end; row++) M[row] = (real)0.0;
+	 int end = n * FACTOR;
+	 for (int row = 0; row < end; row++) B[row] = (real)0.0;
+	 end = ((OSSIZE_T)n * FACTOR * (n * FACTOR + 1)) >> 1;
+	 for (int row = 0; row < end; row++) M[row] = (real)0.0;
       }
 
       /* Construct matrix by going through the stn list.
@@ -171,6 +160,12 @@ build_matrix(node *list)
        * forward leg.
        */
       FOR_EACH_STN(stn, list) {
+	 if (dim == 0) {
+	     if (stn->colour != COLOUR_FIXED) {
+		 stn_tab[stn->colour] = stn->name->pos;
+	     }
+	 }
+
 #ifdef NO_COVARIANCES
 	 real e;
 #else
@@ -197,12 +192,13 @@ build_matrix(node *list)
 	 putnl();
 #endif /* DEBUG_MATRIX_BUILD */
 
-	 if (!fixed(stn)) {
-	    int f = stn->colour;
+	 int f = stn->colour;
+	 if (f != COLOUR_FIXED) {
 	    for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
 	       linkfor *leg = stn->leg[dirn];
 	       node *to = leg->l.to;
-	       if (fixed(to)) {
+	       int t = to->colour;
+	       if (t == COLOUR_FIXED) {
 		  bool fRev = !data_here(leg);
 		  if (fRev) leg = reverse_leg(leg);
 		  /* Ignore equated nodes */
@@ -238,7 +234,6 @@ build_matrix(node *list)
 #endif
 	       } else if (data_here(leg)) {
 		  /* forward leg, unfixed -> unfixed */
-		  int t = to->colour;
 #if DEBUG_MATRIX
 		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
 			 leg->d[dim]);
@@ -297,19 +292,19 @@ build_matrix(node *list)
       }
 
 #if PRINT_MATRICES
-      print_matrix(M, B, n_stn_tab * FACTOR); /* 'ave a look! */
+      print_matrix(M, B, n * FACTOR); /* 'ave a look! */
 #endif
 
 #ifdef SOR
       /* defined in network.c, may be altered by -z<letters> on command line */
       if (optimize & BITA('i'))
-	 sor(M, B, n_stn_tab * FACTOR);
+	 sor(M, B, n * FACTOR);
       else
 #endif
-	 choleski(M, B, n_stn_tab * FACTOR);
+	 choleski(M, B, n * FACTOR);
 
       {
-	 for (int m = (int)(n_stn_tab - 1); m >= 0; m--) {
+	 for (int m = (int)(n - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->p[dim] = B[m];
 # if !EXPLICIT_FIXED_FLAG
@@ -334,10 +329,19 @@ build_matrix(node *list)
       }
    }
 #if EXPLICIT_FIXED_FLAG && defined NO_COVARIANCES
-   for (int m = n_stn_tab - 1; m >= 0; m--) fixpos(stn_tab[m]);
+   for (int m = n - 1; m >= 0; m--) fixpos(stn_tab[m]);
 #endif
    osfree(B);
    osfree(M);
+   osfree(stn_tab);
+
+#if DEBUG_MATRIX
+   FOR_EACH_STN(stn, list) {
+      printf("(%8.2f, %8.2f, %8.2f ) ", POS(stn, 0), POS(stn, 1), POS(stn, 2));
+      print_prefix(stn->name);
+      putnl();
+   }
+#endif
 }
 
 /* Solve MX=B for X by Choleski factorisation - modified Choleski actually
