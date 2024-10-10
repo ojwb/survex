@@ -230,8 +230,14 @@ solve_matrix(node *list)
 	       } else if (data_here(leg)) {
 		  /* forward leg, unfixed -> unfixed */
 #if DEBUG_MATRIX
+# ifdef NO_COVARIANCES
 		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
 			 leg->d[dim]);
+# else
+		  printf("Leg %d to %d, var (%f, %f, %f; %f, %f, %f), "
+			 "delta %f\n", f, t, e[0], e[1], e[2], e[3], e[4], e[5],
+			 leg->d[dim]);
+# endif
 #endif
 		  /* Ignore equated nodes & lollipops */
 #ifdef NO_COVARIANCES
