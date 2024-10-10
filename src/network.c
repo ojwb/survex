@@ -595,7 +595,6 @@ replace_subnets(void)
 	       adddd(&POSD(stn2), &POSD(stn2), &tmp);
 	    }
 	 }
-	 fix(stn2);
 	 dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
 	 stn = stn2->leg[dirn2]->l.to;
 #if 0
@@ -613,8 +612,6 @@ replace_subnets(void)
 	 /* the "rope" of the noose is a new articulation */
 	 stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
 	 reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
-
-	 fix(stn);
 
 	 add_stn_to_list(&stnlist, stn);
 	 add_stn_to_list(&stnlist, stn2);
@@ -673,8 +670,6 @@ replace_subnets(void)
 	 }
 	 mulsd(&e2, &leg->v, &e);
 	 subdd(&POSD(stn2), &POSD(stn2), &e2);
-	 fix(stn);
-	 fix(stn2);
 #if 0
 	 printf("Replacing parallel with stn...stn4 = \n");
 	 print_prefix(stn->name); putnl();
@@ -746,7 +741,6 @@ replace_subnets(void)
 	       }
 	       adddd(&POSD(stn2), &POSD(stn2), &e);
 	    }
-	    fix(stn2);
 	    add_stn_to_list(&stnlist, stn2);
 	    osfree(leg);
 	    stn[i]->leg[dirn[i]] = legs[i];

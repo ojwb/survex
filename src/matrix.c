@@ -308,30 +308,20 @@ solve_matrix(node *list)
 	 for (int m = (int)(n - 1); m >= 0; m--) {
 #ifdef NO_COVARIANCES
 	    stn_tab[m]->p[dim] = B[m];
-# if !EXPLICIT_FIXED_FLAG
 	    if (dim == 0) {
 	       SVX_ASSERT2(pos_fixed(stn_tab[m]),
 		       "setting station coordinates didn't mark pos as fixed");
 	    }
-# endif
 #else
 	    for (int i = 0; i < 3; i++) {
 	       stn_tab[m]->p[i] = B[m * FACTOR + i];
 	    }
-# if !EXPLICIT_FIXED_FLAG
 	    SVX_ASSERT2(pos_fixed(stn_tab[m]),
 		    "setting station coordinates didn't mark pos as fixed");
-# endif
-#endif
-#if EXPLICIT_FIXED_FLAG && !defined NO_COVARIANCES
-	    fixpos(stn_tab[m]);
 #endif
 	 }
       }
    }
-#if EXPLICIT_FIXED_FLAG && defined NO_COVARIANCES
-   for (int m = n - 1; m >= 0; m--) fixpos(stn_tab[m]);
-#endif
    osfree(B);
    osfree(M);
    osfree(stn_tab);

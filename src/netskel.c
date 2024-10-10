@@ -141,7 +141,6 @@ solve_network(void /*node *stnlist*/)
 	 POS(stn,0) = (real)0.0;
 	 POS(stn,1) = (real)0.0;
 	 POS(stn,2) = (real)0.0;
-	 fix(stn);
       }
    }
 
@@ -649,7 +648,6 @@ replace_travs(void)
 	       mulsd(&e, &leg->v, &sc);
 	       adddd(&POSD(stn3), &POSD(stn3), &e);
 	    }
-	    fix(stn3);
 	 }
 
 	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
@@ -839,7 +837,6 @@ replace_trailing_travs(void)
 #endif
 	 }
 
-	 fix(stn2);
 	 add_stn_to_list(&stnlist, stn2);
 	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {

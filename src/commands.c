@@ -59,7 +59,6 @@ int fix_station(prefix *fix_name, double* coords) {
     POS(stn, 0) = coords[0];
     POS(stn, 1) = coords[1];
     POS(stn, 2) = coords[2];
-    fix(stn);
 
     // Make the station's file:line location reflect where it was fixed.
     fix_name->filename = file.filename;
@@ -96,7 +95,6 @@ void fix_station_with_variance(prefix *fix_name, double* coords,
 	POS(fixpt, 0) = coords[0];
 	POS(fixpt, 1) = coords[1];
 	POS(fixpt, 2) = coords[2];
-	fix(fixpt);
 	fixpt->leg[0] = fixpt->leg[1] = fixpt->leg[2] = NULL;
 	addfakeleg(fixpt, stn, 0, 0, 0,
 		   var_x, var_y, var_z
