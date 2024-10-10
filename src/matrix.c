@@ -179,13 +179,8 @@ solve_matrix(node *list)
 		stn->colour);
 
 	 for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
-#ifdef NO_COVARIANCES
 	    printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
 		   stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
-#else
-	    printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
-		   stn->leg[dirn]->v[0][0], stn->leg[dirn]->l.reverse);
-#endif
 	    print_prefix(stn->leg[dirn]->l.to->name);
 	    putnl();
 	 }
