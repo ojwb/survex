@@ -178,9 +178,13 @@ for file in $TESTS ; do
   pos=
 
   case $file in
-    backread.dat|clptest.dat|clptest.clp|depthguage.dat|flags.dat|karstcompat.dat)
+    backread.dat|clptest.dat|clptest.clp|depthguage.dat|karstcompat.dat)
       pos=dump
       warn=0
+      ;;
+    flags.dat)
+      pos=dump
+      warn=1
       ;;
     *.dat)
       # .dat files can't start with a comment.  All the other .dat tests

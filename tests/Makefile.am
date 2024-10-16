@@ -110,7 +110,7 @@ clptest.dat clptest.clp clptest.dump\
 corrections.dat corrections.pos\
 depthguage.dat depthguage.dump\
 karstcompat.dat karstcompat.dump\
-flags.dat flags.dump lrud.dat lrud.out lrud.pos\
+flags.dat flags.dump flags.out lrud.dat lrud.out lrud.pos\
 nomeasure.dat nomeasure.out nomeasure.pos noteam.dat noteam.out noteam.pos\
 badmak.mak badmak.out\
 fixfeet.mak fixfeet.pos\

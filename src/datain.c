@@ -602,6 +602,9 @@ initialise_common_compass_settings(void)
     pcsNew->Translate = t;
     pcsNew->Case = OFF;
     pcsNew->Truncate = INT_MAX;
+    // Compass itself appears to quietly ignore legs with the same station as
+    // `from` and `to`, but it seems like something to warn about.
+    pcsNew->from_equals_to_is_only_a_warning = true;
     pcsNew->next = pcs;
     pcs = pcsNew;
 

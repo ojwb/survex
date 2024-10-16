@@ -330,11 +330,12 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 {
    node *to, *fr;
    if (to_name == fr_name) {
+      int type = pcs->from_equals_to_is_only_a_warning ? DIAG_WARN : DIAG_ERR;
       /* TRANSLATORS: Here a "survey leg" is a set of measurements between two
        * "survey stations".
        *
        * %s is replaced by the name of the station. */
-      compile_diagnostic(DIAG_ERR, /*Survey leg with same station (“%s”) at both ends - typing error?*/50,
+      compile_diagnostic(type, /*Survey leg with same station (“%s”) at both ends - typing error?*/50,
 			 sprint_prefix(to_name));
       return;
    }
