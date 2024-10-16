@@ -48,12 +48,13 @@ echo 'Pushing'
 git push --follow-tags
 ssh "$HOST" bin/survex-git-mirror
 
-win32=survex-win32-$VERSION.exe
-echo "Download and unzip $win32 into `pwd`"
+msw=survex-microsoft-windows-$VERSION.exe
+echo "Download CI built microsoft-windows-installer.zip and unzip"
+echo "putting $msw into `pwd`"
 
-while test ! -f "$win32" ; do sleep 1 ; done
+while test ! -f "$msw" ; do sleep 1 ; done
 
-FILES="survex-$VERSION.tar.gz $win32"
+FILES="survex-$VERSION.tar.gz $msw"
 echo "SHA256 checksums:"
 sha256sum $FILES
 echo

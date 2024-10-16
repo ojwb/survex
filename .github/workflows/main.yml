@@ -309,7 +309,7 @@ jobs:
       with:
         name: microsoft-windows-installer
         path: |
-          survex-win32-*.exe
+          survex-microsoft-windows-*.exe
         # Files are already compressed so don't try to compress again.
         compression-level: 0
         retention-days: 1
