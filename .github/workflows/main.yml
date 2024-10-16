@@ -207,7 +207,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
-            libwxgtk3.0-gtk3-dev \
+            libwxgtk3.2-dev \
             libavcodec-dev \
             libavformat-dev \
             libgdal-dev \
