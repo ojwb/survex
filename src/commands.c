@@ -79,7 +79,7 @@ void fix_station_with_variance(prefix *fix_name, double* coords,
 	prefix *name;
 	name = osnew(prefix);
 	name->pos = osnew(pos);
-	name->ident = NULL;
+	name->ident.p = NULL;
 	name->shape = 0;
 	fixpt->name = name;
 	name->stn = fixpt;
@@ -211,7 +211,7 @@ scan_compass_station_name(prefix *stn)
      * separator_map via cmd_set() plus adding the defaults in
      * find_output_separator().
      */
-    for (const char *p = stn->ident; *p; ++p) {
+    for (const char *p = prefix_ident(stn); *p; ++p) {
 	separator_map[(unsigned char)*p] |= SPECIAL_NAMES;
     }
 }

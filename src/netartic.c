@@ -387,7 +387,7 @@ articulate(void)
 	     continue;
 	 }
 	 name->sflags |= BIT(SFLAGS_HANGING);
-	 if (name->ident) {
+	 if (prefix_ident(name)) {
 	    if (!fNotAttached) {
 	       fNotAttached = true;
 	       /* TRANSLATORS: Here "station" is a survey station, not a train
@@ -478,7 +478,7 @@ articulate(void)
    FOR_EACH_STN(stn, stnlist) {
       int d;
       int f;
-      if (stn->name->ident && TSTBIT(stn->name->sflags, SFLAGS_FIXED)) {
+      if (prefix_ident(stn->name) && TSTBIT(stn->name->sflags, SFLAGS_FIXED)) {
 	 stn->colour = 1;
       } else {
 	 stn->colour = 0;

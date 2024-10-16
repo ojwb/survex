@@ -144,9 +144,14 @@ typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED, SFLAGS_ANON, SFLAGS_WALL,
    /* These values don't need to match img.h, but mustn't clash. */
-   SFLAGS_HANGING = 10,
-   SFLAGS_USED = 11,
-   SFLAGS_SOLVED = 12, SFLAGS_SUSPECTTYPO = 13, SFLAGS_SURVEY = 14, SFLAGS_PREFIX_ENTERED = 15
+   SFLAGS_HANGING = 9,
+   SFLAGS_USED = 10,
+   SFLAGS_SOLVED = 11,
+   SFLAGS_SUSPECTTYPO = 12,
+   SFLAGS_SURVEY = 13,
+   SFLAGS_PREFIX_ENTERED = 14,
+   // If set, use ident.i; if unset, use ident.p
+   SFLAGS_IDENT_INLINE = 15
 } sflags;
 
 /* Mask to AND with to get bits to pass to img library. */
@@ -215,7 +220,10 @@ typedef struct Prefix {
    struct Prefix *up, *down, *right;
    struct Node *stn;
    struct Pos *pos;
-   const char *ident;
+   union {
+       const char *p;
+       char i[sizeof(const char*)];
+   } ident;
    // A filename:line where this name was used.  If it's a station used in *fix
    // then this will be the location of such a *fix, otherwise if it's a
    // station used in *equate then it's the location of such a *equate.
@@ -238,6 +246,10 @@ typedef struct Prefix {
    unsigned short sflags;
    short shape;
 } prefix;
+
+static inline const char *prefix_ident(const prefix *p) {
+    return TSTBIT(p->sflags, SFLAGS_IDENT_INLINE) ? p->ident.i : p->ident.p;
+}
 
 /* survey metadata */
 typedef struct Meta_data {

@@ -680,7 +680,7 @@ replace_travs(void)
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {
-	       if (!stn1->name->ident) {
+	       if (!prefix_ident(stn1->name)) {
 		  /* FIXME: not ideal */
 		  fputs("<fixed point>", fhErrStat);
 	       } else {
@@ -688,7 +688,7 @@ replace_travs(void)
 	       }
 	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       if (reached_end) {
-		  if (!stn3->name->ident) {
+		  if (!prefix_ident(stn3->name)) {
 		     /* FIXME: not ideal */
 		     fputs("<fixed point>", fhErrStat);
 		  } else {
@@ -915,7 +915,7 @@ skip_nosurvey:
 	    const char * label = NULL;
 	    if (TSTBIT(sf, SFLAGS_ANON)) {
 	       label = "";
-	    } else if (stn1->name->ident) {
+	    } else if (prefix_ident(stn1->name)) {
 	       label = sprint_prefix(stn1->name);
 	    }
 	    if (label) {
@@ -971,7 +971,7 @@ skip_nosurvey:
 	    unused_fixed_point = true;
 	 } else if (stn1->leg[0]) {
 	    prefix *pfx = stn1->leg[0]->l.to->name;
-	    if (!pfx->ident && !TSTBIT(pfx->sflags, SFLAGS_ANON)) {
+	    if (!prefix_ident(pfx) && !TSTBIT(pfx->sflags, SFLAGS_ANON)) {
 	       /* Unused fixed point with error estimates */
 	       unused_fixed_point = true;
 	    }
@@ -987,7 +987,7 @@ skip_nosurvey:
       /* For stations fixed with error estimates, we need to ignore the leg to
        * the "real" fixed point in the node stats.
        */
-      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident &&
+      if (stn1->leg[0] && !prefix_ident(stn1->leg[0]->l.to->name) &&
 	  !TSTBIT(stn1->leg[0]->l.to->name->sflags, SFLAGS_ANON))
 	 stn1->name->shape--;
 

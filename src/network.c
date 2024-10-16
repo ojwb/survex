@@ -470,7 +470,7 @@ remove_subnets(void)
 
 		    nameZ = osnew(prefix);
 		    nameZ->pos = osnew(pos);
-		    nameZ->ident = NULL;
+		    nameZ->ident.p = NULL;
 		    nameZ->shape = 3;
 		    stnZ = osnew(node);
 		    stnZ->name = nameZ;

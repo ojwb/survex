@@ -47,7 +47,7 @@ new_anon_station(void)
 {
     prefix *name = osnew(prefix);
     name->pos = NULL;
-    name->ident = NULL;
+    name->ident.p = NULL;
     name->shape = 0;
     name->stn = NULL;
     name->up = pcs->Prefix;
@@ -62,6 +62,9 @@ new_anon_station(void)
     return name;
 }
 
+static char *id = NULL;
+static size_t id_len = 0;
+
 /* if prefix is omitted: if PFX_OPT set return NULL, otherwise use longjmp */
 extern prefix *
 read_prefix(unsigned pfx_flags)
@@ -70,8 +73,6 @@ read_prefix(unsigned pfx_flags)
    bool fSurvey = !!(pfx_flags & PFX_SURVEY);
    bool fSuspectTypo = !!(pfx_flags & PFX_SUSPECT_TYPO);
    prefix *back_ptr, *ptr;
-   char *name;
-   size_t name_len = 32;
    size_t i;
    bool fNew;
    bool fImplicitPrefix = true;
@@ -166,12 +167,12 @@ anon_wall_station:
    }
 
    i = 0;
-   name = NULL;
    do {
       fNew = false;
-      if (name == NULL) {
-	 /* Need a new name buffer */
-	 name = osmalloc(name_len);
+      if (id == NULL) {
+	 /* Allocate buffer the first time */
+	 id_len = 256;
+	 id = osmalloc(id_len);
       }
       /* i==0 iff this is the first pass */
       if (i) {
@@ -181,11 +182,11 @@ anon_wall_station:
       while (isNames(ch)) {
 	 if (i < pcs->Truncate) {
 	    /* truncate name */
-	    name[i++] = (pcs->Case == LOWER ? tolower(ch) :
-			 (pcs->Case == OFF ? ch : toupper(ch)));
-	    if (i >= name_len) {
-	       name_len = name_len + name_len;
-	       name = osrealloc(name, name_len);
+	    id[i++] = (pcs->Case == LOWER ? tolower(ch) :
+		       (pcs->Case == OFF ? ch : toupper(ch)));
+	    if (i >= id_len) {
+	       id_len *= 2;
+	       id = osrealloc(id, id_len);
 	    }
 	 }
 	 nextch();
@@ -195,7 +196,6 @@ anon_wall_station:
 	 get_pos(&fp_firstsep);
       }
       if (i == 0) {
-	 osfree(name);
 	 if (!f_optional) {
 	    if (isEol(ch)) {
 	       if (fSurvey) {
@@ -212,16 +212,22 @@ anon_wall_station:
 	 return (prefix *)NULL;
       }
 
-      name[i++] = '\0';
+      id[i++] = '\0';
 
       back_ptr = ptr;
       ptr = ptr->down;
       if (ptr == NULL) {
 	 /* Special case first time around at each level */
-	 name = osrealloc(name, i);
 	 ptr = osnew(prefix);
-	 ptr->ident = name;
-	 name = NULL;
+	 ptr->sflags = BIT(SFLAGS_SURVEY);
+	 if (i <= sizeof(ptr->ident.i)) {
+	     memcpy(ptr->ident.i, id, i);
+	     ptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
+	 } else {
+	     char *new_id = osmalloc(i);
+	     memcpy(new_id, id, i);
+	     ptr->ident.p = new_id;
+	 }
 	 ptr->right = ptr->down = NULL;
 	 ptr->pos = NULL;
 	 ptr->shape = 0;
@@ -230,7 +236,6 @@ anon_wall_station:
 	 ptr->filename = file.filename;
 	 ptr->line = file.line;
 	 ptr->min_export = ptr->max_export = 0;
-	 ptr->sflags = BIT(SFLAGS_SURVEY);
 	 if (fSuspectTypo && !fImplicitPrefix)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	 back_ptr->down = ptr;
@@ -242,20 +247,25 @@ anon_wall_station:
 	 prefix *ptrPrev = NULL;
 	 int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
 	 if (cached_survey == back_ptr) {
-	    cmp = strcmp(cached_station->ident, name);
+	    cmp = strcmp(prefix_ident(cached_station), id);
 	    if (cmp <= 0) ptr = cached_station;
 	 }
-	 while (ptr && (cmp = strcmp(ptr->ident, name)) < 0) {
+	 while (ptr && (cmp = strcmp(prefix_ident(ptr), id)) < 0) {
 	    ptrPrev = ptr;
 	    ptr = ptr->right;
 	 }
 	 if (cmp) {
 	    /* ie we got to one that was higher, or the end */
-	    prefix *newptr;
-	    name = osrealloc(name, i);
-	    newptr = osnew(prefix);
-	    newptr->ident = name;
-	    name = NULL;
+	    prefix *newptr = osnew(prefix);
+	    newptr->sflags = BIT(SFLAGS_SURVEY);
+	    if (strlen(id) < sizeof(newptr->ident.i)) {
+		memcpy(newptr->ident.i, id, i);
+		newptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
+	    } else {
+		char *new_id = osmalloc(i);
+		memcpy(new_id, id, i);
+		newptr->ident.p = new_id;
+	    }
 	    if (ptrPrev == NULL)
 	       back_ptr->down = newptr;
 	    else
@@ -269,7 +279,6 @@ anon_wall_station:
 	    newptr->filename = file.filename;
 	    newptr->line = file.line;
 	    newptr->min_export = newptr->max_export = 0;
-	    newptr->sflags = BIT(SFLAGS_SURVEY);
 	    if (fSuspectTypo && !fImplicitPrefix)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
 	    ptr = newptr;
@@ -293,7 +302,6 @@ anon_wall_station:
 	 }
       }
    } while (isSep(ch));
-   if (name) osfree(name);
 
    /* don't warn about a station that is referred to twice */
    if (!fNew) ptr->sflags &= ~BIT(SFLAGS_SUSPECTTYPO);
@@ -487,7 +495,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 
 	prefix *ptr = root;
 	for (int i = 0; i < 4; ++i) {
-	    const char *name;
+	    char *name;
 	    int sflag = BIT(SFLAGS_SURVEY);
 	    if (i == 3) {
 		name = p;
@@ -523,7 +531,14 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		 * prefix is new the station must be. */
 		if (p_new) *p_new = true;
 		ptr = osnew(prefix);
-		ptr->ident = (i < 3 ? osstrdup(name) : name);
+		ptr->sflags = sflag;
+		if (strlen(name) < sizeof(ptr->ident.i)) {
+		    strcpy(ptr->ident.i, name);
+		    ptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
+		    if (i >= 3) osfree(name);
+		} else {
+		    ptr->ident.p = (i < 3 ? osstrdup(name) : name);
+		}
 		name = NULL;
 		ptr->right = ptr->down = NULL;
 		ptr->pos = NULL;
@@ -533,7 +548,6 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		ptr->filename = file.filename; // FIXME: Or location of #Prefix, etc for it?
 		ptr->line = file.line; // FIXME: Or location of #Prefix, etc for it?
 		ptr->min_export = ptr->max_export = 0;
-		ptr->sflags = sflag;
 		back_ptr->down = ptr;
 	    } else {
 		/* Use caching to speed up adding an increasing sequence to a
@@ -542,10 +556,10 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		prefix *ptrPrev = NULL;
 		int cmp = 1; /* result of strcmp ( -ve for <, 0 for =, +ve for > ) */
 		if (cached_survey == back_ptr) {
-		    cmp = strcmp(cached_station->ident, name);
+		    cmp = strcmp(prefix_ident(cached_station), name);
 		    if (cmp <= 0) ptr = cached_station;
 		}
-		while (ptr && (cmp = strcmp(ptr->ident, name))<0) {
+		while (ptr && (cmp = strcmp(prefix_ident(ptr), name))<0) {
 		    ptrPrev = ptr;
 		    ptr = ptr->right;
 		}
@@ -553,7 +567,14 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		    /* ie we got to one that was higher, or the end */
 		    if (p_new) *p_new = true;
 		    prefix *newptr = osnew(prefix);
-		    newptr->ident = (i < 3 ? osstrdup(name) : name);
+		    newptr->sflags = sflag;
+		    if (strlen(name) < sizeof(newptr->ident.i)) {
+			strcpy(newptr->ident.i, name);
+			newptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
+			if (i >= 3) osfree(name);
+		    } else {
+			newptr->ident.p = (i < 3 ? osstrdup(name) : name);
+		    }
 		    name = NULL;
 		    if (ptrPrev == NULL)
 			back_ptr->down = newptr;
@@ -568,7 +589,6 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		    newptr->filename = file.filename; // FIXME
 		    newptr->line = file.line;
 		    newptr->min_export = newptr->max_export = 0;
-		    newptr->sflags = sflag;
 		    ptr = newptr;
 		} else {
 		    ptr->sflags |= sflag;

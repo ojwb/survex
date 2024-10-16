@@ -203,7 +203,7 @@ main(int argc, char **argv)
    root->up = root->right = root->down = NULL;
    root->stn = NULL;
    root->pos = NULL;
-   root->ident = NULL;
+   root->ident.p = NULL;
    root->min_export = root->max_export = 0;
    root->sflags = BIT(SFLAGS_SURVEY);
    root->filename = NULL;
