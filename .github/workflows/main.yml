@@ -4,6 +4,8 @@ name: CI
 on:
   # Triggers the workflow on push, or for pull requests against master
   push:
+    branches:
+      - '**'
     # Only build release tags.
     tags:
       - v*
