@@ -165,6 +165,11 @@ assumptions:
 - Shot flag ``S`` is mapped to Survex's "splay" leg flag.
 - Surveys which indicate a depth gauge was used for azimuth
   readings are marked as ``STYLE_DIVING`` in the ``.3d`` file.
+- Compass seems to quietly ignore a shot with the same "from" and "to"
+  station. This seems likely to be a mistake in the data so Survex 1.4.12
+  and later warn about this in a Compass DAT file (in native Survex data
+  this is treated as an error, which is how older Survex versions treat
+  it in Compass DAT files).
 
 --------------------
 Compass .CLP support
