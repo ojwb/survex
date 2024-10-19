@@ -189,7 +189,7 @@ jobs:
         make check MSGFMT=: VERBOSE=1
 
   linux-latest:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'ubuntu-24.04'
     needs: makedist
     steps:
     - name: Install CCache
