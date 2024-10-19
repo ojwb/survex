@@ -342,8 +342,8 @@ main(int argc, char **argv)
 	  if (s_empty(&survey_title)) {
 	      s_donate(&survey_title, lf);
 	  } else {
-	      s_catchar(&survey_title, ' ');
-	      s_cat(&survey_title, lf);
+	      s_appendch(&survey_title, ' ');
+	      s_append(&survey_title, lf);
 	      osfree(lf);
 	  }
       }

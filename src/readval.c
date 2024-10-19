@@ -377,7 +377,7 @@ read_walls_prefix(void)
     if (!isNames(ch))
 	return NULL;
     do {
-	s_catchar(&name, ch);
+	s_appendch(&name, ch);
 	nextch();
     } while (isNames(ch));
     return s_steal(&name);
@@ -429,14 +429,14 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 	    if (p_new) *p_new = true;
 	    return pfx;
 	}
-	s_catn(&component, dashes, '-');
+	s_appendn(&component, dashes, '-');
     }
 
     char *w_prefix[3] = { NULL, NULL, NULL };
     int explicit_prefix_levels = 0;
     while (true) {
 	while (isNames(ch)) {
-	    s_catchar(&component, ch);
+	    s_appendch(&component, ch);
 	    nextch();
 	}
 	//printf("component = '%s'\n", s_str(&component));
@@ -474,7 +474,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 	    compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting station name*/28);
 	    // Use a name with a space in so it can't collide with a real
 	    // Walls station name.
-	    s_cat(&component, "empty name");
+	    s_append(&component, "empty name");
 	}
 	int len = s_len(&component);
 	char *p = s_steal(&component);
@@ -907,7 +907,7 @@ read_string(string *pstr)
 
 	 if (ch == '\"') break;
 
-	 s_catchar(pstr, ch);
+	 s_appendch(pstr, ch);
 	 nextch();
       }
       nextch();
@@ -924,7 +924,7 @@ read_string(string *pstr)
 
 	 if (isBlank(ch)) break;
 
-	 s_catchar(pstr, ch);
+	 s_appendch(pstr, ch);
 	 nextch();
       }
    }

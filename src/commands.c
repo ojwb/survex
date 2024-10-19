@@ -323,8 +323,8 @@ get_token_legacy_no_blanks(void)
    s_clear(&token);
    s_clear(&uctoken);
    while (isalpha(ch)) {
-      s_catchar(&token, ch);
-      s_catchar(&uctoken, toupper(ch));
+      s_appendch(&token, ch);
+      s_appendch(&uctoken, toupper(ch));
       nextch();
    }
 
@@ -357,8 +357,8 @@ get_token_no_blanks(void)
     s_clear(&uctoken);
     if (isalpha(ch)) {
 	do {
-	    s_catchar(&token, ch);
-	    s_catchar(&uctoken, toupper(ch));
+	    s_appendch(&token, ch);
+	    s_appendch(&uctoken, toupper(ch));
 	    nextch();
 	} while (isalnum(ch));
     }
@@ -371,7 +371,7 @@ get_word(void)
    s_clear(&token);
    skipblanks();
    while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
-      s_catchar(&token, ch);
+      s_appendch(&token, ch);
       nextch();
    }
 #if 0
