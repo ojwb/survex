@@ -219,7 +219,7 @@ grab_line(void)
       int c = GETC(file.fh);
       /* Note: isEol() is true for EOF */
       if (isEol(c)) break;
-      // Change tabs to spaces for consistency with how we should context
+      // Change tabs to spaces for consistency with how we show context
       // lines for other diagnostics.
       if (c == '\t') c = ' ';
       s_catchar(&p, c);
