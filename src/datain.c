@@ -1131,6 +1131,7 @@ typedef struct walls_macro {
     struct walls_macro *next;
     char *name;
     char *value;
+    int name_len;
 } walls_macro;
 
 // Macros set in the WPJ persist, but those set in an SRV only apply for that
@@ -1170,7 +1171,7 @@ walls_set_macro(walls_macro ***table, string *p_name, char *val)
 		 (WALLS_MACRO_HASH_SIZE - 1);
     walls_macro *p = (*table)[h];
     while (p) {
-	if (s_eq(p_name, p->name)) {
+	if (s_eqlen(p_name, p->name, p->name_len)) {
 	    // Update existing definition of macro.
 	    s_free(p_name);
 	    osfree(p->value);
@@ -1181,6 +1182,7 @@ walls_set_macro(walls_macro ***table, string *p_name, char *val)
     }
 
     walls_macro *entry = osnew(walls_macro);
+    entry->name_len = s_len(p_name);
     entry->name = s_steal(p_name);
     entry->value = val;
     entry->next = (*table)[h];
@@ -1196,7 +1198,7 @@ walls_get_macro(walls_macro ***table, const char *name, int name_len)
     unsigned h = hash_data(name, name_len) & (WALLS_MACRO_HASH_SIZE - 1);
     walls_macro *p = (*table)[h];
     while (p) {
-	if (strcmp(name, p->name) == 0) {
+	if (name_len == p->name_len && memcmp(name, p->name, name_len) == 0) {
 	    return p->value ? p->value : "";
 	}
 	p = p->next;
