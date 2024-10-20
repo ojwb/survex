@@ -4827,7 +4827,7 @@ erase_overlay:
 	proj_destroy(pj);
     }
 #else
-    wxMessageBox(wxT("GDAL support not enabled in this build").
+    wxMessageBox(wxT("GDAL support not enabled in this build"),
 		 wxT("Aven GDAL support"),
 		 wxCANCEL | wxICON_INFORMATION);
 #endif
