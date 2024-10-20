@@ -219,17 +219,15 @@ AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
 
 dnl Check for GDAL.
-have_gdal=1
 PKG_CHECK_MODULES([GDAL], [gdal >= 2.3], [
+  AC_DEFINE([HAVE_GDAL], [1], [Define to 1 if you have the 'GDAL' library.])
 ], [
   if test "$mswindows" = no ; then
     AC_MSG_ERROR([GDAL required for geodata handling])
   else
     AC_MSG_WARN([GDAL required for geodata handling])
   fi
-  have_gdal=0
 ])
-AC_DEFINE_UNQUOTED([HAVE_GDAL], [$have_gdal], [Define to 1 if you have the 'GDAL' library.])
 AC_SUBST([GDAL_LIBS])
 AC_SUBST([GDAL_CFLAGS])
 
