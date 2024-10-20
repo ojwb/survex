@@ -46,7 +46,9 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
-#include <ogrsf_frmts.h>
+#ifdef HAVE_GDAL
+# include <ogrsf_frmts.h>
+#endif
 #include <proj.h>
 
 #define WGS84_DATUM_STRING "EPSG:4326"
@@ -4576,6 +4578,7 @@ void GfxCore::ZoomBoxGo()
 
 void GfxCore::DrawOverlays()
 {
+#ifdef HAVE_GDAL
     AvenBusyCursor hourglass;
 
     SetColour(col_TURQUOISE);
@@ -4823,4 +4826,9 @@ erase_overlay:
 
 	proj_destroy(pj);
     }
+#else
+    wxMessageBox(wxT("GDAL support not enabled in this build").
+		 wxT("Aven GDAL support"),
+		 wxCANCEL | wxICON_INFORMATION);
+#endif
 }

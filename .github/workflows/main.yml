@@ -271,7 +271,9 @@ jobs:
         pacboy: >-
           gcc:p
           ffmpeg:p
-          gdal:p
+          # Build with GDAL broke somewhere between 1.4.9 and 1.4.10 releases.
+          # Rebuilding 1.4.9 now has the problem.  Unresolved as of 2024-10-19.
+          # gdal:p
           proj:p
           wxwidgets3.2-msw:p
           gdb:p
