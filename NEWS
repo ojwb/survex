@@ -1,3 +1,55 @@
+Changes in 1.4.12 (2024-10-23):
+
+* aven:
+
+  + (Microsoft Windows version): Geodata overlays are (hopefully temporarily)
+    no longer available in the pre-built version of Survex installed by the
+    Microsoft Windows installer.  We use the GDAL library to load them and
+    there's a hard to debug problem during DLL initialisation somewhere in its
+    dependency tree.  If you really need geodata overlays, the 1.4.9 installer
+    still works.  Thanks to Wookey for extensive testing to investigate the
+    problem, and to everyone else who reported this.
+
+* cavern:
+
+  + A leg with the same station as from and to is now only a warning in
+    Compass data.  Compass itself seems to quietly ignore such legs, but
+    they seem worth warning about.  In native Survex data this is still
+    an error.
+
+  + Short survey and station names are now stored without an extra memory
+    allocation.  On a 64-bit platform (most modern computers) we can store
+    name components up to 7 characters in this way; on a 32-bit platform
+    up to 3 characters.  On a large dataset which needs large matrices
+    solving this reduces cavern's memory usage by 3.5MB (~4.5%).  It's
+    also fractionally faster (but only ~0.05% which is not normally even
+    measurable).
+
+  + Assigning matrix row numbers to stations is now faster and allocates
+    less memory.
+
+* (Microsoft Windows version): The Microsoft Windows installer is now
+  named `survex-microsoft-windows-1.4.12.exe`.  The old name was
+  `survex-win32-1.4.11.exe` but the "win32" is now misleading as it's been a
+  64-bit build since 1.4.9.  Reported by Wookey.
+
+* Testsuite:
+
+  + dump3d.tst: Add tests of img library's survey filtering.
+
+  + cavern.tst: Normalise `-0.00` to `0.00` in JSON test output before
+    comparing with expected output.  We can get -0.00 on x86 due to excess
+    precision.
+
+* img library:
+
+  + Survey filtering now works correctly for files which use a survey level
+    separator other than `.`.  Patch https://github.com/ojwb/survex/pull/14
+    from Thomas Holder.
+
+  + Reading a v7 or earlier .3d format extended elevation with survey filtering
+    was failing to set is_extended_elevation.
+
 Changes in 1.4.11 (2024-08-14):
 
 * aven:
