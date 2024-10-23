@@ -384,7 +384,7 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 
 /* helper function for replace_pfx */
 static void
-replace_pfx_(node *stn, node *from, pos *pos_replace, pos *pos_with)
+replace_pfx_(node *stn, node *from, pos *pos_with)
 {
    int d;
    stn->name->pos = pos_with;
@@ -396,7 +396,7 @@ replace_pfx_(node *stn, node *from, pos *pos_replace, pos *pos_with)
       if (to == from) continue;
 
       if (fZeros(data_here(leg) ? &leg->v : &reverse_leg(leg)->v))
-	 replace_pfx_(to, stn, pos_replace, pos_with);
+	 replace_pfx_(to, stn, pos_with);
    }
 }
 
@@ -411,7 +411,7 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
    pos_replace = pfx_replace->pos;
    SVX_ASSERT(pos_replace != pfx_with->pos);
 
-   replace_pfx_(pfx_replace->stn, NULL, pos_replace, pfx_with->pos);
+   replace_pfx_(pfx_replace->stn, NULL, pfx_with->pos);
 
 #if DEBUG_INVALID
    {
