@@ -1,3 +1,10 @@
+survex (1.4.12-1) unstable; urgency=medium
+
+  * New upstream release:
+    + debian/patches: Remaining patch merged upstream so remove.
+
+ -- Olly Betts <olly@survex.com>  Wed, 23 Oct 2024 15:56:39 +1300
+
 survex (1.4.11-4) unstable; urgency=medium
 
   * debian/patches/fix-i386-test-failures.patch: Rename
