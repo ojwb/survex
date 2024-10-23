@@ -60,7 +60,7 @@ static void sor(real *M, real *B, long n);
 #define COLOUR_FIXED -1
 #define COLOUR_TODO -2
 
-static void set_row(node *stn, node *from, int row_number) {
+static void set_row(node *stn, int row_number) {
     // We store the matrix row/column index in stn->colour for quick and easy
     // lookup when copying out the solved station coordinates.
     stn->colour = row_number;
@@ -68,11 +68,8 @@ static void set_row(node *stn, node *from, int row_number) {
 	linkfor *leg = stn->leg[d];
 	if (!leg) break;
 	node *to = leg->l.to;
-	if (to == from || to->colour != COLOUR_TODO) {
-	    continue;
-	}
-	if (fZeros(data_here(leg) ? &leg->v : &reverse_leg(leg)->v)) {
-	    set_row(to, stn, row_number);
+	if (to->colour == COLOUR_TODO && stn->name->pos == to->name->pos) {
+	    set_row(to, row_number);
 	}
     }
 }
@@ -105,7 +102,7 @@ solve_matrix(node *list)
    long n = 0;
    FOR_EACH_STN(stn, list) {
       if (stn->colour == COLOUR_TODO) {
-	  set_row(stn, NULL, n++);
+	  set_row(stn, n++);
       }
    }
    SVX_ASSERT(n > 0);
