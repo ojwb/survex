@@ -1,3 +1,10 @@
+survex (1.4.12-2) unstable; urgency=medium
+
+  * debian/patches/skip-hpglexport-testcase.patch: Reinstate part of
+    patch which hasn't yet been addressed upstream.
+
+ -- Olly Betts <olly@survex.com>  Wed, 23 Oct 2024 17:50:43 +1300
+
 survex (1.4.12-1) unstable; urgency=medium
 
   * New upstream release:
