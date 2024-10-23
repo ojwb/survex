@@ -1,3 +1,11 @@
+survex (1.4.11-4) unstable; urgency=medium
+
+  * debian/patches/fix-i386-test-failures.patch: Rename
+    skip-hpgl-export-testcase.patch and include patch to normalise -0.00
+    in JSON export too.  (Closes: #1077514)
+
+ -- Olly Betts <olly@survex.com>  Thu, 15 Aug 2024 15:00:17 +1200
+
 survex (1.4.11-3) unstable; urgency=medium
 
   * debian/patches/series: Actually apply new patch. (Closes: #1077514)
