@@ -19,7 +19,6 @@
 
 #include <config.h>
 
-#include <assert.h>
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
 #include <string.h>
@@ -388,7 +387,7 @@ match_tok(const sztok *tab, int tab_size)
    int a = 0, b = tab_size - 1, c;
    int r;
    const char* tok = s_str(&uctoken);
-   assert(tab_size > 0); /* catch empty table */
+   SVX_ASSERT(tab_size > 0); /* catch empty table */
 /*  printf("[%d,%d]",a,b); */
    while (a <= b) {
       c = (unsigned)(a + b) / 2;
