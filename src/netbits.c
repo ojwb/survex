@@ -184,13 +184,16 @@ remove_stn_from_list(node **list, node *stn) {
 #endif
 #if DEBUG_INVALID
      {
-	/* check station is actually in this list */
-	node *stn_to_remove_is_in_list = *list;
+	/* Go back to the head of the list stn is actually on and
+	 * check it's the same as the list we were asked to remove
+	 * it from.
+	 */
 	validate();
-	while (stn_to_remove_is_in_list != stn) {
-	   SVX_ASSERT(stn_to_remove_is_in_list);
-	   stn_to_remove_is_in_list = stn_to_remove_is_in_list->next;
+	node *find_head = stn;
+	while (find_head->prev) {
+	    find_head = find_head->prev;
 	}
+	SVX_ASSERT(find_head == *list);
      }
 #endif
    /* adjust the iterator if it points to the element we're deleting */
