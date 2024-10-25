@@ -310,7 +310,8 @@ typedef struct Node {
 
 /* station position */
 typedef struct Pos {
-   delta p; /* Position */
+   // Easting, Northing, Altitude.
+   real p[3];
 } pos;
 
 /*
