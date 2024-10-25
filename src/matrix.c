@@ -57,9 +57,6 @@ static void sor(real *M, real *B, long n);
 	      /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
 /*#define M_(X, Y) ((real *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
 
-#define COLOUR_FIXED -1
-#define COLOUR_TODO -2
-
 static void set_row(node *stn, int row_number) {
     // We store the matrix row/column index in stn->colour for quick and easy
     // lookup when copying out the solved station coordinates.
@@ -68,7 +65,7 @@ static void set_row(node *stn, int row_number) {
 	linkfor *leg = stn->leg[d];
 	if (!leg) break;
 	node *to = leg->l.to;
-	if (to->colour == COLOUR_TODO && stn->name->pos == to->name->pos) {
+	if (to->colour < 0 && stn->name->pos == to->name->pos) {
 	    set_row(to, row_number);
 	}
     }
@@ -80,28 +77,28 @@ static void set_row(node *stn, int row_number) {
 # define FACTOR 3
 #endif
 
+/* Find positions for a subset of the reduced network by solving a matrix
+ * equation.
+ *
+ * list is a non-empty linked list of unfixed stations to solve for.
+ *
+ * As a pre-condition, all stations in list must have a negative value for
+ * stn->colour.  This can be ensured by the caller (which avoids having to
+ * make an extra pass over the list just to set the colours suitably).
+ */
 extern void
 solve_matrix(node *list)
 {
-   node *stn;
-   bool unfixed_stations = false;
-   FOR_EACH_STN(stn, list) {
-      if (!fixed(stn)) {
-	  unfixed_stations = true;
-	  stn->colour = COLOUR_TODO;
-      } else {
-	  stn->colour = COLOUR_FIXED;
-      }
-   }
-   if (!unfixed_stations) {
-       return;
-   }
-
    // Assign a matrix row/column index to each group of stations with the same
    // pos.
+   //
+   // We also set listend to the last station in the list while doing so, which
+   // we use after solving to splice list back into stnlist.
+   node *listend = NULL;
    long n = 0;
-   FOR_EACH_STN(stn, list) {
-      if (stn->colour == COLOUR_TODO) {
+   for (node *stn = list; stn; stn = stn->next) {
+      listend = stn;
+      if (stn->colour < 0) {
 	  set_row(stn, n++);
       }
    }
@@ -156,11 +153,9 @@ solve_matrix(node *list)
        * a leg if to a fixed station, or to an unfixed station and it's a
        * forward leg.
        */
-      FOR_EACH_STN(stn, list) {
+      for (node *stn = list; stn; stn = stn->next) {
 	 if (dim == 0) {
-	     if (stn->colour != COLOUR_FIXED) {
-		 stn_tab[stn->colour] = stn->name->pos;
-	     }
+	     stn_tab[stn->colour] = stn->name->pos;
 	 }
 
 #ifdef NO_COVARIANCES
@@ -185,12 +180,12 @@ solve_matrix(node *list)
 #endif /* DEBUG_MATRIX_BUILD */
 
 	 int f = stn->colour;
-	 if (f != COLOUR_FIXED) {
+	 SVX_ASSERT(f >= 0);
+	 {
 	    for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
 	       linkfor *leg = stn->leg[dirn];
 	       node *to = leg->l.to;
-	       int t = to->colour;
-	       if (t == COLOUR_FIXED) {
+	       if (fixed(to)) {
 		  bool fRev = !data_here(leg);
 		  if (fRev) leg = reverse_leg(leg);
 		  /* Ignore equated nodes */
@@ -224,8 +219,11 @@ solve_matrix(node *list)
 		     M(f * FACTOR + 2, f * FACTOR + 1) += e[5];
 		  }
 #endif
-	       } else if (data_here(leg)) {
+	       } else if (data_here(leg) &&
+			  (leg->l.reverse & FLAG_ARTICULATION) == 0) {
 		  /* forward leg, unfixed -> unfixed */
+		  int t = to->colour;
+		  SVX_ASSERT(t >= 0);
 #if DEBUG_MATRIX
 # ifdef NO_COVARIANCES
 		  printf("Leg %d to %d, var %f, delta %f\n", f, t, e,
@@ -319,12 +317,18 @@ solve_matrix(node *list)
 	 }
       }
    }
+
+   // Put the solved stations back on stnlist.
+   listend->next = stnlist;
+   if (stnlist) stnlist->prev = listend;
+   stnlist = list;
+
    osfree(B);
    osfree(M);
    osfree(stn_tab);
 
 #if DEBUG_MATRIX
-   FOR_EACH_STN(stn, list) {
+   for (node *stn = list; stn; stn = stn->next) {
       printf("(%8.2f, %8.2f, %8.2f ) ", POS(stn, 0), POS(stn, 1), POS(stn, 2));
       print_prefix(stn->name);
       putnl();
