@@ -108,7 +108,7 @@ solve_network(void /*node *stnlist*/)
        * this avoid problems, such as sub-nodes of the invented fix having been
        * removed.  It also means we can fix the "first" station, which makes
        * more sense to the user. */
-      FOR_EACH_STN(stn, stnlist)
+      for (stn = stnlist; stn; stn = stn->next)
 	 if (fixed(stn)) break;
 
       if (!stn) {
@@ -121,7 +121,7 @@ solve_network(void /*node *stnlist*/)
 
 	 /* New stations are pushed onto the head of the list, so the
 	  * first station added is the last in the list. */
-	 FOR_EACH_STN(stn, stnlist) {
+	 for (stn = stnlist; stn; stn = stn->next) {
 	     /* Prefer a station with legs attached when choosing one to fix
 	      * so that if there's a hanging station on a nosurvey leg we pick
 	      * the main clump of survey data. */
@@ -448,7 +448,7 @@ replace_travs(void)
    }
 
    /* First do all the one leg traverses */
-   FOR_EACH_STN(stn1, stnlist) {
+   for (stn1 = stnlist; stn1; stn1 = stn1->next) {
 #if PRINT_NETBITS
       printf("One leg traverses from ");
       print_prefix(stn1->name);
@@ -905,7 +905,7 @@ skip_nosurvey:
    }
 
    /* write stations to .3d file and free legs and stations */
-   FOR_EACH_STN(stn1, stnlist) {
+   for (stn1 = stnlist; stn1; stn1 = stn1->next) {
       int d;
       SVX_ASSERT(fixed(stn1));
       if (stn1->name->stn == stn1) {

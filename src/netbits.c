@@ -403,11 +403,8 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
    replace_pfx_(pfx_replace->stn, NULL, pfx_with->pos);
 
 #if DEBUG_INVALID
-   {
-      node *stn;
-      FOR_EACH_STN(stn, stnlist) {
-	 SVX_ASSERT(stn->name->pos != pos_replace);
-      }
+   for (node *stn = stnlist; stn; stn = stn->next) {
+      SVX_ASSERT(stn->name->pos != pos_replace);
    }
 #endif
 
