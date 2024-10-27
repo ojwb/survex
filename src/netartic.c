@@ -151,7 +151,8 @@ articulate(void)
 
 	    unsigned long tos = 0;
 iter:
-	    long oldest_reached = stn->colour = --colour;
+	    stn->colour = --colour;
+	    long oldest_reached = colour;
 #ifdef DEBUG_ARTIC
 	    printf("visit: stn [%p], back=%d,", stn, back);
 	    print_prefix(stn->name);
