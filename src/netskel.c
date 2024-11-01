@@ -178,7 +178,7 @@ remove_trailing_travs(void)
     * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Removing trailing traverses*/125));
    FOR_EACH_STN(stn, stnlist) {
-      if (!fixed(stn) && one_node(stn)) {
+      if (one_node(stn) && !fixed(stn)) {
 	 int i = 0;
 	 int j;
 	 node *stn2 = stn;
@@ -237,7 +237,7 @@ remove_travs(void)
     * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Concatenating traverses*/126));
    FOR_EACH_STN(stn, stnlist) {
-      if (fixed(stn) || three_node(stn)) {
+      if (three_node(stn) || fixed(stn)) {
 	 int d;
 	 for (d = 0; d <= 2; d++) {
 	    linkfor *leg = stn->leg[d];
@@ -257,8 +257,10 @@ concatenate_trav(node *stn, int i)
    linkfor *newleg, *newleg2;
 
    stn2 = stn->leg[i]->l.to;
-   /* Reject single legs as they may be already concatenated traverses */
-   if (fixed(stn2) || !two_node(stn2)) return;
+   /* If the traverse is already a single leg there's nothing to do (this
+    * may also be an already-replaced traverse).
+    */
+   if (!two_node(stn2) || fixed(stn2)) return;
 
    trav = osnew(stack);
    newleg2 = (linkfor*)osnew(linkrev);
@@ -283,8 +285,8 @@ concatenate_trav(node *stn, int i)
       fputs(szLink, stdout); print_prefix(stn->name); printf("<%p>",stn);
 #endif
 
-      /* stop if fixed or 3 or 1 node */
-      if (fixed(stn) || !two_node(stn)) break;
+      /* Check if we've reached the end of this traverse. */
+      if (!two_node(stn) || fixed(stn)) break;
 
       remove_stn_from_list(&stnlist, stn);
 

@@ -96,7 +96,7 @@ remove_subnets(void)
 	  */
 	 /* NB can have non-fixed 0 nodes */
 	 FOR_EACH_STN(stn, stnlist) {
-	    if (!fixed(stn) && three_node(stn)) {
+	    if (three_node(stn) && !fixed(stn)) {
 	       dirn = -1;
 	       if (stn->leg[1]->l.to == stn) dirn++;
 	       if (stn->leg[0]->l.to == stn) dirn += 2;
@@ -175,7 +175,7 @@ remove_subnets(void)
 	     *  * stn4       * stn4
 	     *  :            :
 	     */
-	    if (!fixed(stn) && three_node(stn)) {
+	    if (three_node(stn) && !fixed(stn)) {
 	       stn2 = stn->leg[0]->l.to;
 	       if (stn2 == stn->leg[1]->l.to) {
 		  dirn = 2;
@@ -188,7 +188,7 @@ remove_subnets(void)
 	       }
 
 	       /* stn == stn2 => noose */
-	       if (fixed(stn2) || stn == stn2) continue;
+	       if (stn == stn2 || fixed(stn2)) continue;
 
 	       SVX_ASSERT(three_node(stn2));
 
@@ -311,16 +311,16 @@ remove_subnets(void)
 	     * stn4 *       * stn6   stn4 *       * stn6
 	     *      :       :             :       :
 	     */
-	    if (!fixed(stn) && three_node(stn)) {
+	    if (three_node(stn) && !fixed(stn)) {
 	       for (dirn0 = 0; ; dirn0++) {
 		  if (dirn0 >= 3) goto nodeltastar; /* continue outer loop */
 		  dirn = dirn0;
 		  stn2 = stn->leg[dirn]->l.to;
-		  if (fixed(stn2) || stn2 == stn) continue;
+		  if (stn2 == stn || fixed(stn2)) continue;
 		  dirn2 = reverse_leg_dirn(stn->leg[dirn]);
 		  dirn2 = (dirn2 + 1) % 3;
 		  stn3 = stn2->leg[dirn2]->l.to;
-		  if (fixed(stn3) || stn3 == stn || stn3 == stn2)
+		  if (stn3 == stn || stn3 == stn2 || fixed(stn3))
 		     goto nextdirn2;
 		  dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
 		  dirn3 = (dirn3 + 1) % 3;
@@ -343,7 +343,7 @@ remove_subnets(void)
 		     nextdirn2:;
 		     dirn2 = (dirn2 + 1) % 3;
 		     stn3 = stn2->leg[dirn2]->l.to;
-		     if (fixed(stn3) || stn3 == stn || stn3 == stn2) continue;
+		     if (stn3 == stn || stn3 == stn2 || fixed(stn3)) continue;
 		     dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
 		     dirn3 = (dirn3 + 1) % 3;
 		     if (stn3->leg[dirn3]->l.to == stn) {
