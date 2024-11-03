@@ -1,0 +1,7 @@
+; pos=dump warn=1
+*begin
+*data nosurvey from to
+0 1
+1 2
+*end
+2 3  1 0 0

@@ -80,7 +80,8 @@ esac
  notentranceorexport inferunknown inferexports bad_units_factor\
  bad_units_qlist\
  percent_gradient dotinsurvey leandroclino lowsd revdir gettokennullderef\
- nosurveyhanging cmd_solve_nothing cmd_solve_nothing_implicit\
+ nosurveyhanging nosurveyhanging2\
+ cmd_solve_nothing cmd_solve_nothing_implicit\
  cmd_cartesian cmd_cartesian_bad\
  cmd_calibrate cmd_declination cmd_declination_auto cmd_declination_auto_bad\
  cmd_declination_conv cmd_declination_conv_proj_bug\

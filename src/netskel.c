@@ -125,7 +125,7 @@ solve_network(void)
 	     /* Prefer a station with legs attached when choosing one to fix
 	      * so that if there's a hanging station on a nosurvey leg we pick
 	      * the main clump of survey data. */
-	     if (stnFirst && !stnFirst->leg[0]) continue;
+	     if (stnFirst && !stn->leg[0]) continue;
 	     stnFirst = stn;
 	 }
 
