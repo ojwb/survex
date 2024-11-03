@@ -81,7 +81,7 @@ static void err_stat(int cLegsTrav, double lenTrav,
 		     double vTot, double vTotTheo);
 
 extern void
-solve_network(void /*node *stnlist*/)
+solve_network(void)
 {
    static int first_solve = 1;
    node *stn;

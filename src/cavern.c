@@ -353,7 +353,7 @@ main(int argc, char **argv)
 
    report_declination(pcs);
 
-   solve_network(/*stnlist*/); /* Find coordinates of all points */
+   solve_network(); /* Find coordinates of all points */
    validate();
 
    /* close .3d file */

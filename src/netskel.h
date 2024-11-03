@@ -17,7 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-void solve_network(void /*node *stnlist*/);
+void solve_network(void);
 
 /* Try to find a non-anonymous station which was attached to stn.
  *
