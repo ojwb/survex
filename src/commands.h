@@ -26,13 +26,13 @@
  *  1 if already fixed at the same coordinates
  * -1 if already fixed but at different coordinates
  */
-int fix_station(prefix *fix_name, double* coords);
+int fix_station(prefix *fix_name, const double* coords);
 
 /* Fix station with variance.
  *
  * Multiple fixes for the same station are OK.
  */
-void fix_station_with_variance(prefix *fix_name, double* coords,
+void fix_station_with_variance(prefix *fix_name, const double* coords,
 			       real var_x, real var_y, real var_z,
 #ifndef NO_COVARIANCES
 			       real cxy, real cyz, real cza

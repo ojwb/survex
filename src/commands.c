@@ -43,7 +43,7 @@
 
 #define WGS84_DATUM_STRING "EPSG:4326"
 
-int fix_station(prefix *fix_name, double* coords) {
+int fix_station(prefix *fix_name, const double* coords) {
     fix_name->sflags |= BIT(SFLAGS_FIXED);
     node *stn = StnFromPfx(fix_name);
     if (fixed(stn)) {
@@ -65,7 +65,7 @@ int fix_station(prefix *fix_name, double* coords) {
     return 0;
 }
 
-void fix_station_with_variance(prefix *fix_name, double* coords,
+void fix_station_with_variance(prefix *fix_name, const double* coords,
 			       real var_x, real var_y, real var_z,
 #ifndef NO_COVARIANCES
 			       real cxy, real cyz, real czx
