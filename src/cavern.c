@@ -47,12 +47,6 @@
 # include <conio.h> /* for _kbhit() and _getch() */
 #endif
 
-/* For funcs which want to be immune from messing around with different
- * calling conventions */
-#ifndef CDECL
-# define CDECL
-#endif
-
 /* Globals */
 node *stnlist = NULL;
 settings *pcs;
@@ -157,7 +151,7 @@ static void discarding_proj_logger(void *ctx, int level, const char *message) {
     (void)message;
 }
 
-extern CDECL int
+extern int
 main(int argc, char **argv)
 {
    int d;

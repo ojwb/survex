@@ -51,12 +51,6 @@
 
 #include <sys/stat.h>
 
-/* For funcs which want to be immune from messing around with different
- * calling conventions */
-#ifndef CDECL
-# define CDECL
-#endif
-
 int msg_warnings = 0; /* keep track of how many warnings we've given */
 int msg_errors = 0;   /* and how many (non-fatal) errors */
 
