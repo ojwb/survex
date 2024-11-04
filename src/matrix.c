@@ -93,7 +93,7 @@ solve_matrix(node *list)
    // pos.
    //
    // We also set listend to the last station in the list while doing so, which
-   // we use after solving to splice list back into stnlist.
+   // we use after solving to splice list into fixedlist.
    node *listend = NULL;
    long n = 0;
    for (node *stn = list; stn; stn = stn->next) {
@@ -318,10 +318,10 @@ solve_matrix(node *list)
       }
    }
 
-   // Put the solved stations back on stnlist.
-   listend->next = stnlist;
-   if (stnlist) stnlist->prev = listend;
-   stnlist = list;
+   // Put the solved stations back on fixedlist.
+   listend->next = fixedlist;
+   if (fixedlist) fixedlist->prev = listend;
+   fixedlist = list;
 
    osfree(B);
    osfree(M);

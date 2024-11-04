@@ -48,7 +48,8 @@
 #endif
 
 /* Globals */
-node *stnlist = NULL;
+node *fixedlist = NULL; // Fixed points
+node *stnlist = NULL; // Unfixed stations
 settings *pcs;
 prefix *root;
 prefix *anon_list = NULL;
@@ -204,6 +205,7 @@ main(int argc, char **argv)
 
    nosurveyhead = NULL;
 
+   fixedlist = NULL;
    stnlist = NULL;
    cLegs = cStns = cComponents = 0;
    totadj = total = totplan = totvert = 0.0;

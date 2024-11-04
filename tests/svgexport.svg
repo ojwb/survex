@@ -12,15 +12,15 @@ viewBox="0 0 27.080 27.080">
 </g>
 <g id="Labels" font-size="0.600em">
 <text transform="translate(17.080 -17.080)">svy.2</text>
-<text transform="translate(0.000 -0.000)">svy.1</text>
 <text transform="translate(0.000 -0.000)">entrance</text>
+<text transform="translate(0.000 -0.000)">svy.1</text>
 </g>
 <g id="Stations" stroke="black" fill="none" stroke-width="0.05px">
 <circle id="svy.2" cx="17.080" cy="-17.080" r="1.131"/>
 <path d="M16.280 -17.880L17.880 -16.280M17.880 -17.880L16.280 -16.280"/>
-<circle id="svy.1" cx="0.000" cy="-0.000" r="1.131"/>
-<path d="M-0.800 -0.800L0.800 0.800M0.800 -0.800L-0.800 0.800"/>
 <circle id="entrance" cx="0.000" cy="-0.000" r="1.131"/>
+<path d="M-0.800 -0.800L0.800 0.800M0.800 -0.800L-0.800 0.800"/>
+<circle id="svy.1" cx="0.000" cy="-0.000" r="1.131"/>
 <path d="M-0.800 -0.800L0.800 0.800M0.800 -0.800L-0.800 0.800"/>
 </g>
 </g>

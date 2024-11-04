@@ -89,7 +89,7 @@ solve_network(void)
    /* We can't average across solving to fix positions. */
    clear_last_leg();
 
-   if (stnlist == NULL) {
+   if (stnlist == NULL && fixedlist == NULL) {
       if (first_solve) fatalerror(/*No survey data*/43);
       /* We've had a *solve followed by another *solve (or the implicit
        * *solve at the end of the data.  Don't moan about that. */
@@ -108,10 +108,7 @@ solve_network(void)
        * this avoid problems, such as sub-nodes of the invented fix having been
        * removed.  It also means we can fix the "first" station, which makes
        * more sense to the user. */
-      for (stn = stnlist; stn; stn = stn->next)
-	 if (fixed(stn)) break;
-
-      if (!stn) {
+      if (!fixedlist) {
 	/* If we've had a *solve and all the new survey since then is hanging,
 	 * we don't want to invent a fixed point.  We want to complain but
 	 * the easiest way to is just to continue processing and let
@@ -138,9 +135,10 @@ solve_network(void)
 	 compile_diagnostic_pfx(DIAG_INFO, stn->name,
 				/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72,
 				sprint_prefix(stn->name));
-	 POS(stn,0) = (real)0.0;
-	 POS(stn,1) = (real)0.0;
-	 POS(stn,2) = (real)0.0;
+	 static const double origin[3] = { 0.0, 0.0, 0.0 };
+	 fix_station(stn->name, origin);
+	 // We should set the FIXED flag for the invented fix though.
+	 stn->name->sflags &= ~BIT(SFLAGS_FIXED);
       }
    }
 
@@ -178,7 +176,7 @@ remove_trailing_travs(void)
     * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Removing trailing traverses*/125));
    FOR_EACH_STN(stn, stnlist) {
-      if (one_node(stn) && !fixed(stn)) {
+      if (one_node(stn)) {
 	 int i = 0;
 	 int j;
 	 node *stn2 = stn;
@@ -236,14 +234,20 @@ remove_travs(void)
     * specific).  Feel free to follow this lead if you can't think of a better
     * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Concatenating traverses*/126));
+   FOR_EACH_STN(stn, fixedlist) {
+      for (int d = 0; d <= 2; d++) {
+	 linkfor *leg = stn->leg[d];
+	 if (!leg) break;
+	 if (!(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	    concatenate_trav(stn, d);
+      }
+   }
    FOR_EACH_STN(stn, stnlist) {
-      if (three_node(stn) || fixed(stn)) {
-	 int d;
-	 for (d = 0; d <= 2; d++) {
-	    linkfor *leg = stn->leg[d];
-	    if (leg && !(leg->l.reverse & FLAG_REPLACEMENTLEG))
-	       concatenate_trav(stn, d);
-	 }
+      if (!three_node(stn)) continue;
+      for (int d = 0; d <= 2; d++) {
+	 linkfor *leg = stn->leg[d];
+	 if (!(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	    concatenate_trav(stn, d);
       }
    }
 }
@@ -450,7 +454,7 @@ replace_travs(void)
    }
 
    /* First do all the one leg traverses */
-   for (stn1 = stnlist; stn1; stn1 = stn1->next) {
+   for (stn1 = fixedlist; stn1; stn1 = stn1->next) {
 #if PRINT_NETBITS
       printf("One leg traverses from ");
       print_prefix(stn1->name);
@@ -645,7 +649,7 @@ replace_travs(void)
 
 	 if (!fZeros(&leg->v)) fEquate = false;
 	 if (!reached_end) {
-	    add_stn_to_list(&stnlist, stn3);
+	    add_stn_to_list(&fixedlist, stn3);
 	    if (!fEquate) {
 	       mulsd(&e, &leg->v, &sc);
 	       adddd(&POSD(stn3), &POSD(stn3), &e);
@@ -839,7 +843,7 @@ replace_trailing_travs(void)
 #endif
 	 }
 
-	 add_stn_to_list(&stnlist, stn2);
+	 add_stn_to_list(&fixedlist, stn2);
 	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 		stn1->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -907,7 +911,7 @@ skip_nosurvey:
    }
 
    /* write stations to .3d file and free legs and stations */
-   for (stn1 = stnlist; stn1; stn1 = stn1->next) {
+   for (stn1 = fixedlist; stn1; stn1 = stn1->next) {
       int d;
       SVX_ASSERT(fixed(stn1));
       if (stn1->name->stn == stn1) {
@@ -1028,12 +1032,12 @@ skip_nosurvey:
    /* The station position is attached to the name, so we leave the names and
     * positions in place - they can then be picked up if we have a *solve
     * followed by more data */
-   for (stn1 = stnlist; stn1; stn1 = stn2) {
+   for (stn1 = fixedlist; stn1; stn1 = stn2) {
       stn2 = stn1->next;
       stn1->name->stn = NULL;
       osfree(stn1);
    }
-   stnlist = NULL;
+   fixedlist = NULL;
 }
 
 static void

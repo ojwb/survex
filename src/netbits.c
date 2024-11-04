@@ -376,8 +376,15 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 
 /* helper function for replace_pfx */
 static void
-replace_pfx_(node *stn, node *from, pos *pos_with)
+replace_pfx_(node *stn, node *from, pos *pos_with, bool move_to_fixedlist)
 {
+   SVX_ASSERT(!fixed(stn));
+   if (move_to_fixedlist) {
+      SVX_ASSERT(pos_fixed(pos_with));
+      SVX_ASSERT(!fixed(stn));
+      remove_stn_from_list(&stnlist, stn);
+      add_stn_to_list(&fixedlist, stn);
+   }
    stn->name->pos = pos_with;
    for (int d = 0; d < 3; d++) {
       linkfor *leg = stn->leg[d];
@@ -386,24 +393,28 @@ replace_pfx_(node *stn, node *from, pos *pos_with)
       if (to == from) continue;
 
       if (fZeros(data_here(leg) ? &leg->v : &reverse_leg(leg)->v))
-	 replace_pfx_(to, stn, pos_with);
+	 replace_pfx_(to, stn, pos_with, move_to_fixedlist);
    }
 }
 
 /* We used to iterate over the whole station list (inefficient) - now we
  * just look at any neighbouring nodes to see if they are equated */
 static void
-replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
+replace_pfx(const prefix *pfx_replace, const prefix *pfx_with,
+	    bool move_to_fixedlist)
 {
    SVX_ASSERT(pfx_replace);
    SVX_ASSERT(pfx_with);
    pos *pos_replace = pfx_replace->pos;
    SVX_ASSERT(pos_replace != pfx_with->pos);
 
-   replace_pfx_(pfx_replace->stn, NULL, pfx_with->pos);
+   replace_pfx_(pfx_replace->stn, NULL, pfx_with->pos, move_to_fixedlist);
 
 #if DEBUG_INVALID
    for (node *stn = stnlist; stn; stn = stn->next) {
+      SVX_ASSERT(stn->name->pos != pos_replace);
+   }
+   for (node *stn = fixedlist; stn; stn = stn->next) {
       SVX_ASSERT(stn->name->pos != pos_replace);
    }
 #endif
@@ -430,7 +441,8 @@ process_equate(prefix *name1, prefix *name2)
    /* equate nodes if not already equated */
    if (name1->pos != name2->pos) {
       if (pfx_fixed(name1)) {
-	 if (pfx_fixed(name2)) {
+	 bool name2_fixed = pfx_fixed(name2);
+	 if (name2_fixed) {
 	    /* both are fixed, but let them off iff their coordinates match */
 	    char *s = osstrdup(sprint_prefix(name1));
 	    for (int d = 2; d >= 0; d--) {
@@ -452,10 +464,10 @@ process_equate(prefix *name1, prefix *name2)
 	 }
 
 	 /* name1 is fixed, so replace all refs to name2's pos with name1's */
-	 replace_pfx(name2, name1);
+	 replace_pfx(name2, name1, !name2_fixed);
       } else {
 	 /* name1 isn't fixed, so replace all refs to its pos with name2's */
-	 replace_pfx(name1, name2);
+	 replace_pfx(name1, name2, pfx_fixed(name2));
       }
 
       /* count equates as legs for now... */
@@ -508,7 +520,7 @@ freeleg(node **stnptr)
 
    *stnptr = newstn;
 
-   add_stn_to_list(&stnlist, newstn);
+   add_stn_to_list(fixed(stn) ? &fixedlist : &stnlist, newstn);
    newstn->name = stn->name;
 
    leg->l.to = newstn;
@@ -545,12 +557,15 @@ StnFromPfx(prefix *name)
    if (name->stn != NULL) return name->stn;
    node *stn = osnew(node);
    stn->name = name;
+   bool fixed = false;
    if (name->pos == NULL) {
       name->pos = osnew(pos);
       unfix(stn);
+   } else {
+      fixed = pfx_fixed(name);
    }
    stn->leg[0] = stn->leg[1] = stn->leg[2] = NULL;
-   add_stn_to_list(&stnlist, stn);
+   add_stn_to_list(fixed ? &fixedlist : &stnlist, stn);
    name->stn = stn;
    cStns++;
    return stn;

@@ -96,7 +96,7 @@ remove_subnets(void)
 	  */
 	 /* NB can have non-fixed 0 nodes */
 	 FOR_EACH_STN(stn, stnlist) {
-	    if (three_node(stn) && !fixed(stn)) {
+	    if (three_node(stn)) {
 	       dirn = -1;
 	       if (stn->leg[1]->l.to == stn) dirn++;
 	       if (stn->leg[0]->l.to == stn) dirn += 2;
@@ -175,7 +175,7 @@ remove_subnets(void)
 	     *  * stn4       * stn4
 	     *  :            :
 	     */
-	    if (three_node(stn) && !fixed(stn)) {
+	    if (three_node(stn)) {
 	       stn2 = stn->leg[0]->l.to;
 	       if (stn2 == stn->leg[1]->l.to) {
 		  dirn = 2;
@@ -311,7 +311,7 @@ remove_subnets(void)
 	     * stn4 *       * stn6   stn4 *       * stn6
 	     *      :       :             :       :
 	     */
-	    if (three_node(stn) && !fixed(stn)) {
+	    if (three_node(stn)) {
 	       for (dirn0 = 0; ; dirn0++) {
 		  if (dirn0 >= 3) goto nodeltastar; /* continue outer loop */
 		  dirn = dirn0;
@@ -613,8 +613,8 @@ replace_subnets(void)
 	 stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
 	 reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
 
-	 add_stn_to_list(&stnlist, stn);
-	 add_stn_to_list(&stnlist, stn2);
+	 add_stn_to_list(&fixedlist, stn);
+	 add_stn_to_list(&fixedlist, stn2);
 
 	 osfree(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = ptrRed->join1;
@@ -678,8 +678,8 @@ replace_subnets(void)
 	 print_prefix(stn4->name); putnl();
 #endif
 
-	 add_stn_to_list(&stnlist, stn);
-	 add_stn_to_list(&stnlist, stn2);
+	 add_stn_to_list(&fixedlist, stn);
+	 add_stn_to_list(&fixedlist, stn2);
 
 	 osfree(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = ptrRed->join1;
@@ -741,7 +741,7 @@ replace_subnets(void)
 	       }
 	       adddd(&POSD(stn2), &POSD(stn2), &e);
 	    }
-	    add_stn_to_list(&stnlist, stn2);
+	    add_stn_to_list(&fixedlist, stn2);
 	    osfree(leg);
 	    stn[i]->leg[dirn[i]] = legs[i];
 	    /* transfer the articulation status of the radial legs */
@@ -753,7 +753,7 @@ replace_subnets(void)
 	    stnZ->leg[i] = NULL;
 	 }
 /*printf("---%f %f %f\n",POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
-	 remove_stn_from_list(&stnlist, stnZ);
+	 remove_stn_from_list(&fixedlist, stnZ);
 	 osfree(stnZ->name);
 	 osfree(stnZ);
       } else {

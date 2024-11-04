@@ -166,6 +166,8 @@ cmd_data_ignore.out cmd_data_ignore.pos cmd_data_ignore.svx\
 samename.svx\
 tabinhighlight.out tabinhighlight.svx\
 legacytokens.out legacytokens.svx\
+component_count_bug.svx component_count_bug.out\
+component_count_bug2.svx component_count_bug2.out\
 3dexport.dump 3dexport.svx\
 dxffullcoords.dxf dxffullcoords.svx\
 dxfsurfequate.svx dxfsurfequate.dxf\

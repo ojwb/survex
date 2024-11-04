@@ -104,6 +104,7 @@ esac
  cmd_data_ignore\
  quadrant_bearing bad_quadrant_bearing\
  samename tabinhighlight legacytokens\
+ component_count_bug component_count_bug2\
  3dexport \
  dxffullcoords dxfsurfequate\
  gpxexport hpglexport jsonexport kmlexport pltexport svgexport\

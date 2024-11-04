@@ -399,6 +399,7 @@ typedef struct Settings {
 extern settings *pcs;
 extern prefix *root;
 extern prefix *anon_list;
+extern node *fixedlist;
 extern node *stnlist;
 extern unsigned long optimize;
 extern char * proj_str_out;

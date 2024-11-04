@@ -43,8 +43,26 @@
 
 #define WGS84_DATUM_STRING "EPSG:4326"
 
+static void
+move_to_fixedlist(node *stn, int ignore_dirn)
+{
+    remove_stn_from_list(&stnlist, stn);
+    add_stn_to_list(&fixedlist, stn);
+    pos *p = stn->name->pos;
+    for (int d = 0; d < 3; d++) {
+	if (d == ignore_dirn) continue;
+	linkfor *leg = stn->leg[d];
+	if (!leg) break;
+	node *to = leg->l.to;
+	if (to->name->pos == p) {
+	    move_to_fixedlist(to, reverse_leg_dirn(leg));
+	}
+    }
+}
+
 int fix_station(prefix *fix_name, const double* coords) {
     fix_name->sflags |= BIT(SFLAGS_FIXED);
+    bool new_stn = (fix_name->stn == NULL);
     node *stn = StnFromPfx(fix_name);
     if (fixed(stn)) {
 	if (coords[0] != POS(stn, 0) ||
@@ -58,6 +76,13 @@ int fix_station(prefix *fix_name, const double* coords) {
     POS(stn, 0) = coords[0];
     POS(stn, 1) = coords[1];
     POS(stn, 2) = coords[2];
+
+    if (new_stn) {
+	remove_stn_from_list(&stnlist, stn);
+	add_stn_to_list(&fixedlist, stn);
+    } else {
+	move_to_fixedlist(stn, -1);
+    }
 
     // Make the station's file:line location reflect where it was fixed.
     fix_name->filename = file.filename;
@@ -90,7 +115,7 @@ void fix_station_with_variance(prefix *fix_name, const double* coords,
 	}
 	name->max_export = 0;
 	name->sflags = 0;
-	add_stn_to_list(&stnlist, fixpt);
+	add_stn_to_list(&fixedlist, fixpt);
 	POS(fixpt, 0) = coords[0];
 	POS(fixpt, 1) = coords[1];
 	POS(fixpt, 2) = coords[2];

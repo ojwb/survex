@@ -5,7 +5,7 @@
  *   NB The checks currently done aren't very comprehensive - more will be
  *    added if bugs require them
  *
- *   Copyright (C) 1993,1994,1996,2000,2001 Olly Betts
+ *   Copyright (C) 1993,1994,1996,2000,2001,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,25 +37,6 @@ static bool validate_prefix_tree(void);
 static bool validate_prefix_subtree(prefix *pfx);
 
 static bool validate_station_list(void);
-
-#if 0
-extern void
-check_fixed(void)
-{
-   /* not a requirement -- we allow hanging sections of survey
-    * which get spotted and removed */
-   node *stn;
-   printf("*** Checking fixed-ness\n");
-   /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
-   for (stn = stnlist; stn; stn = stn->next) {
-      if (stn->status && !fixed(stn)) {
-	 printf("*** Station '");
-	 print_prefix(stn->name);
-	 printf("' has status %d but isn't fixed\n", stn->status);
-      }
-   }
-}
-#endif
 
 #undef validate
 extern bool
@@ -139,111 +120,112 @@ static bool
 validate_station_list(void)
 {
    bool fOk = true;
-   node *stn, *stn2;
+   node *stn2;
    int d, d2;
 
    SVX_ASSERT(!stnlist || !stnlist->prev);
    /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
-   for (stn = stnlist; stn; stn = stn->next) {
-      bool fGap = false;
+   for (int fixed = 0; fixed < 2; ++fixed) {
+      for (node *stn = fixed ? fixedlist : stnlist; stn; stn = stn->next) {
+	 if (fixed(stn) != fixed) {
+	     printf("*** Station '");
+	     print_prefix(stn->name);
+	     printf("' is %sfixed but on %sfixed list\n",
+		    fixed ? "un" : "", fixed ? "" : "un");
+	     fOk = false;
+	 }
+
+	 bool fGap = false;
 #if 0
-      printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
+	 printf("V [%p]<-[%p]->[%p] ", stn->prev, stn, stn->next); print_prefix(stn->name); putnl();
 #endif
-      SVX_ASSERT(stn->prev == NULL || stn->prev->next == stn);
-      SVX_ASSERT(stn->next == NULL || stn->next->prev == stn);
-      for (d = 0; d <= 2; d++) {
-	 if (!stn->leg[d]) {
-	    fGap = true;
-	 } else {
-	    if (fGap) {
-	       printf("*** Station '");
-	       print_prefix(stn->name);
-	       printf("', leg %d is used, but an earlier leg isn't\n", d);
-	       fOk = false;
-	    }
-	    stn2 = stn->leg[d]->l.to;
-	    SVX_ASSERT(stn2);
-#if 0
-	    if (stn->status && !stn2->status) {
-	       printf("*** Station '");
-	       print_prefix(stn->name);
-	       printf("' has status %d and connects to '", stn->status);
-	       print_prefix(stn2->name);
-	       printf("' which has status %d\n", stn2->status);
-	       fOk = false;
-	    }
-#endif
-	    d2 = reverse_leg_dirn(stn->leg[d]);
-	    if (stn2->leg[d2] == NULL) {
-	       /* fine iff stn is at the disconnected end of a fragment */
-	       node *s;
-	       /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
-	       for (s = stnlist; s; s = s->next) if (s == stn) break;
-	       if (s) {
+	 SVX_ASSERT(stn->prev == NULL || stn->prev->next == stn);
+	 SVX_ASSERT(stn->next == NULL || stn->next->prev == stn);
+	 for (d = 0; d <= 2; d++) {
+	    if (!stn->leg[d]) {
+	       fGap = true;
+	    } else {
+	       if (fGap) {
 		  printf("*** Station '");
 		  print_prefix(stn->name);
-		  printf("', leg %d doesn't reciprocate from station '", d);
-		  print_prefix(stn2->name);
-		  printf("'\n");
+		  printf("', leg %d is used, but an earlier leg isn't\n", d);
 		  fOk = false;
 	       }
-	    } else if (stn2->leg[d2]->l.to == NULL) {
-	       printf("*** Station '");
-	       print_prefix(stn2->name);
-	       printf("' [%p], leg %d points to NULL\n", stn2, d2);
-	       fOk = false;
-	    } else if (stn2->leg[d2]->l.to!=stn) {
-	       /* fine iff stn is at the disconnected end of a fragment */
-	       node *s;
-	       /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
-	       for (s = stnlist; s; s = s->next) if (s == stn) break;
-	       if (s) {
+	       stn2 = stn->leg[d]->l.to;
+	       SVX_ASSERT(stn2);
+	       d2 = reverse_leg_dirn(stn->leg[d]);
+	       if (stn2->leg[d2] == NULL) {
+		  /* fine iff stn is at the disconnected end of a fragment */
+		  node *s;
+		  /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+		  for (s = stnlist; s; s = s->next) if (s == stn) break;
+		  if (!s) for (s = fixedlist; s; s = s->next) if (s == stn) break;
+		  if (s) {
+		     printf("*** Station '");
+		     print_prefix(stn->name);
+		     printf("', leg %d doesn't reciprocate from station '", d);
+		     print_prefix(stn2->name);
+		     printf("'\n");
+		     fOk = false;
+		  }
+	       } else if (stn2->leg[d2]->l.to == NULL) {
+		  printf("*** Station '");
+		  print_prefix(stn2->name);
+		  printf("' [%p], leg %d points to NULL\n", stn2, d2);
+		  fOk = false;
+	       } else if (stn2->leg[d2]->l.to!=stn) {
+		  /* fine iff stn is at the disconnected end of a fragment */
+		  node *s;
+		  /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+		  for (s = stnlist; s; s = s->next) if (s == stn) break;
+		  if (!s) for (s = fixedlist; s; s = s->next) if (s == stn) break;
+		  if (s) {
+		     printf("*** Station '");
+		     print_prefix(stn->name);
+		     printf("' [%p], leg %d reciprocates via station '", stn, d);
+		     print_prefix(stn2->name);
+		     printf("' to station '");
+		     print_prefix(stn2->leg[d2]->l.to->name);
+		     printf("'\n");
+		     fOk = false;
+		  }
+	       } else if ((data_here(stn->leg[d]) != 0) ^
+			  (data_here(stn2->leg[d2]) == 0)) {
 		  printf("*** Station '");
 		  print_prefix(stn->name);
 		  printf("' [%p], leg %d reciprocates via station '", stn, d);
 		  print_prefix(stn2->name);
-		  printf("' to station '");
-		  print_prefix(stn2->leg[d2]->l.to->name);
-		  printf("'\n");
+		  if (data_here(stn->leg[d]))
+		     printf("' - data on both legs\n");
+		  else
+		     printf("' - data on neither leg\n");
 		  fOk = false;
 	       }
-	    } else if ((data_here(stn->leg[d]) != 0) ^
-		       (data_here(stn2->leg[d2]) == 0)) {
-	       printf("*** Station '");
-	       print_prefix(stn->name);
-	       printf("' [%p], leg %d reciprocates via station '", stn, d);
-	       print_prefix(stn2->name);
-	       if (data_here(stn->leg[d]))
-		  printf("' - data on both legs\n");
-	       else
-		  printf("' - data on neither leg\n");
-	       fOk = false;
+	       if (data_here(stn->leg[d])) {
+		  int i;
+		  for (i = 0; i < 3; i++)
+		     if (fabs(stn->leg[d]->d[i]) > MAX_POS) {
+			printf("*** Station '");
+			print_prefix(stn->name);
+			printf("', leg %d, d[%d] = %g\n",
+			       d, i, (double)(stn->leg[d]->d[i]));
+			fOk = false;
+		     }
+	       }
 	    }
-	    if (data_here(stn->leg[d])) {
-	       int i;
-	       for (i = 0; i < 3; i++)
-		  if (fabs(stn->leg[d]->d[i]) > MAX_POS) {
-		     printf("*** Station '");
-		     print_prefix(stn->name);
-		     printf("', leg %d, d[%d] = %g\n",
-			    d, i, (double)(stn->leg[d]->d[i]));
-		     fOk = false;
-		  }
+
+	    if (fixed(stn)) {
+	       if (fabs(POS(stn, 0)) > MAX_POS ||
+		   fabs(POS(stn, 1)) > MAX_POS ||
+		   fabs(POS(stn, 2)) > MAX_POS) {
+		  printf("*** Station '");
+		  print_prefix(stn->name);
+		  printf("' fixed at coords (%f,%f,%f)\n",
+			 POS(stn, 0), POS(stn, 1), POS(stn, 2) );
+		  fOk = false;
+	       }
 	    }
 	 }
-
-	 if (fixed(stn)) {
-	    if (fabs(POS(stn, 0)) > MAX_POS ||
-		fabs(POS(stn, 1)) > MAX_POS ||
-		fabs(POS(stn, 2)) > MAX_POS) {
-	       printf("*** Station '");
-	       print_prefix(stn->name);
-	       printf("' fixed at coords (%f,%f,%f)\n",
-		      POS(stn, 0), POS(stn, 1), POS(stn, 2) );
-	       fOk = false;
-	    }
-	 }
-
       }
    }
    return fOk;
@@ -280,5 +262,6 @@ dump_network(void)
 {
    node *stn;
    /* NB: don't use FOR_EACH_STN as it isn't reentrant at present */
+   for (stn = fixedlist; stn; stn = stn->next) dump_node(stn);
    for (stn = stnlist; stn; stn = stn->next) dump_node(stn);
 }
