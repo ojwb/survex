@@ -292,7 +292,7 @@ remove_subnets(void)
 
       if (optimize & BITA('d')) {
 	 node *stn5, *stn6;
-	 int dirn5, dirn6, dirn0;
+	 int dirn5, dirn6;
 	 linkfor *legAB, *legBC, *legCA;
 #if PRINT_NETBITS
 	 printf("replacing deltas with stars\n");
@@ -312,88 +312,50 @@ remove_subnets(void)
 	     *      :       :             :       :
 	     */
 	    if (three_node(stn)) {
-	       for (dirn0 = 0; ; dirn0++) {
-		  if (dirn0 >= 3) goto nodeltastar; /* continue outer loop */
-		  dirn = dirn0;
-		  stn2 = stn->leg[dirn]->l.to;
+	       for (int dirn12 = 0; dirn12 <= 2; dirn12++) {
+		  stn2 = stn->leg[dirn12]->l.to;
 		  if (stn2 == stn || fixed(stn2)) continue;
-		  dirn2 = reverse_leg_dirn(stn->leg[dirn]);
-		  dirn2 = (dirn2 + 1) % 3;
-		  stn3 = stn2->leg[dirn2]->l.to;
-		  if (stn3 == stn || stn3 == stn2 || fixed(stn3))
-		     goto nextdirn2;
-		  dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
-		  dirn3 = (dirn3 + 1) % 3;
-		  if (stn3->leg[dirn3]->l.to == stn) {
-		     legAB = copy_link(stn->leg[dirn]);
-		     legBC = copy_link(stn2->leg[dirn2]);
-		     legCA = copy_link(stn3->leg[dirn3]);
-		     dirn = 0 + 1 + 2 - dirn - reverse_leg_dirn(stn3->leg[dirn3]);
-		     dirn2 = (dirn2 + 1) % 3;
-		     dirn3 = (dirn3 + 1) % 3;
-		  } else if (stn3->leg[(dirn3 + 1) % 3]->l.to == stn) {
-		     legAB = copy_link(stn->leg[dirn]);
-		     legBC = copy_link(stn2->leg[dirn2]);
-		     legCA = copy_link(stn3->leg[(dirn3 + 1) % 3]);
-		     dirn = (0 + 1 + 2 - dirn
-			     - reverse_leg_dirn(stn3->leg[(dirn3 + 1) % 3]));
-		     dirn2 = (dirn2 + 1) % 3;
-		     break;
-		  } else {
-		     nextdirn2:;
-		     dirn2 = (dirn2 + 1) % 3;
-		     stn3 = stn2->leg[dirn2]->l.to;
-		     if (stn3 == stn || stn3 == stn2 || fixed(stn3)) continue;
-		     dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
-		     dirn3 = (dirn3 + 1) % 3;
-		     if (stn3->leg[dirn3]->l.to == stn) {
-			legAB = copy_link(stn->leg[dirn]);
-			legBC = copy_link(stn2->leg[dirn2]);
-			legCA = copy_link(stn3->leg[dirn3]);
-			dirn = (0 + 1 + 2 - dirn
-				- reverse_leg_dirn(stn3->leg[dirn3]));
-			dirn2 = (dirn2 + 2) % 3;
-			dirn3 = (dirn3 + 1) % 3;
-			break;
-		     } else if (stn3->leg[(dirn3 + 1) % 3]->l.to == stn) {
-			legAB = copy_link(stn->leg[dirn]);
-			legBC = copy_link(stn2->leg[dirn2]);
-			legCA = copy_link(stn3->leg[(dirn3 + 1) % 3]);
-			dirn = (0 + 1 + 2 - dirn
-				- reverse_leg_dirn(stn3->leg[(dirn3 + 1) % 3]));
-			dirn2 = (dirn2 + 2) % 3;
-			break;
-		     }
+		  SVX_ASSERT(three_node(stn2));
+		  int dirn13 = (dirn12 + 1) % 3;
+		  stn3 = stn->leg[dirn13]->l.to;
+		  if (stn3 == stn || stn3 == stn2 || fixed(stn3)) continue;
+		  SVX_ASSERT(three_node(stn3));
+		  int dirn23 = reverse_leg_dirn(stn->leg[dirn12]);
+		  dirn23 = (dirn23 + 1) % 3;
+		  if (stn2->leg[dirn23]->l.to != stn3) {
+		      dirn23 = (dirn23 + 1) % 3;
+		      if (stn2->leg[dirn23]->l.to != stn3) {
+			  continue;
+		      }
 		  }
-	       }
-
-	       SVX_ASSERT(three_node(stn2));
-	       SVX_ASSERT(three_node(stn3));
-
-	       stn4 = stn->leg[dirn]->l.to;
-	       stn5 = stn2->leg[dirn2]->l.to;
-	       stn6 = stn3->leg[dirn3]->l.to;
-
-	       if (stn4 == stn2 || stn4 == stn3 || stn5 == stn3) break;
-
-	       dirn4 = reverse_leg_dirn(stn->leg[dirn]);
-	       dirn5 = reverse_leg_dirn(stn2->leg[dirn2]);
-	       dirn6 = reverse_leg_dirn(stn3->leg[dirn3]);
+		  legAB = copy_link(stn->leg[dirn12]);
+		  legBC = copy_link(stn2->leg[dirn23]);
+		  legCA = copy_link(stn3->leg[reverse_leg_dirn(stn->leg[dirn13])]);
+		  dirn = (0 + 1 + 2) - dirn12 - dirn13;
+		  dirn2 = (0 + 1 + 2) - dirn23 - reverse_leg_dirn(stn->leg[dirn12]);
+		  dirn3 = (0 + 1 + 2) - reverse_leg_dirn(stn->leg[dirn13]) - reverse_leg_dirn(stn2->leg[dirn23]);
+		  stn4 = stn->leg[dirn]->l.to;
+		  stn5 = stn2->leg[dirn2]->l.to;
+		  stn6 = stn3->leg[dirn3]->l.to;
+		  if (stn4 == stn2 || stn4 == stn3 || stn5 == stn3) continue;
+		  dirn4 = reverse_leg_dirn(stn->leg[dirn]);
+		  dirn5 = reverse_leg_dirn(stn2->leg[dirn2]);
+		  dirn6 = reverse_leg_dirn(stn3->leg[dirn3]);
 #if 0
-	       printf("delta-star, stn ... stn6 are:\n");
-	       (dump_node)(stn);
-	       (dump_node)(stn2);
-	       (dump_node)(stn3);
-	       (dump_node)(stn4);
-	       (dump_node)(stn5);
-	       (dump_node)(stn6);
+		  printf("delta-star, stn ... stn6 are:\n");
+		  (dump_node)(stn);
+		  (dump_node)(stn2);
+		  (dump_node)(stn3);
+		  (dump_node)(stn4);
+		  (dump_node)(stn5);
+		  (dump_node)(stn6);
 #endif
-	       SVX_ASSERT(stn4->leg[dirn4]->l.to == stn);
-	       SVX_ASSERT(stn5->leg[dirn5]->l.to == stn2);
-	       SVX_ASSERT(stn6->leg[dirn6]->l.to == stn3);
+		  SVX_ASSERT(stn4->leg[dirn4]->l.to == stn);
+		  SVX_ASSERT(stn5->leg[dirn5]->l.to == stn2);
+		  SVX_ASSERT(stn6->leg[dirn6]->l.to == stn3);
 
-	       trav = osnew(stackRed);
-		 {
+		  trav = osnew(stackRed);
+		  {
 		    linkfor *legAZ, *legBZ, *legCZ;
 		    node *stnZ;
 		    prefix *nameZ;
@@ -515,10 +477,10 @@ remove_subnets(void)
 		    stn4->leg[dirn4] = legAZ;
 		    stn5->leg[dirn5] = legBZ;
 		    stn6->leg[dirn6] = legCZ;
-		 }
-
+		  }
+		  break;
+	       }
 	    }
-	    nodeltastar:;
 	 }
       }
 
