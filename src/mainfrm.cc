@@ -1502,6 +1502,7 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
 
 void MainFrm::OnOverlayGeodata(wxCommandEvent&)
 {
+#ifdef HAVE_GDAL
     if (!m_Gfx) return;
 
     if (GetCSProj().empty()) {
@@ -1528,6 +1529,11 @@ void MainFrm::OnOverlayGeodata(wxCommandEvent&)
 	m_Tree->AddOverlay(dlg.GetPath());
 	m_Gfx->InvalidateOverlays();
     }
+#else
+    wxMessageBox(wxT("GDAL support not enabled in this build"),
+		 wxT("Aven GDAL support"),
+		 wxOK | wxICON_INFORMATION);
+#endif
 }
 
 void MainFrm::OnShowLog(wxCommandEvent&)
