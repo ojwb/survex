@@ -4578,13 +4578,16 @@ void GfxCore::ZoomBoxGo()
 
 void GfxCore::DrawOverlays()
 {
+    auto it = m_Parent->FirstOverlay();
+    if (!it.IsOk()) return;
+
 #ifdef HAVE_GDAL
     AvenBusyCursor hourglass;
 
     SetColour(col_TURQUOISE);
     GDALAllRegister();
     CPLSetConfigOption("GPX_ELE_AS_25D", "YES");
-    for (auto it = m_Parent->FirstOverlay(); it.IsOk(); it = m_Parent->NextOverlay(it)) {
+    for ( ; it.IsOk(); it = m_Parent->NextOverlay(it)) {
 	if (false) {
 erase_overlay:
 	    it = m_Parent->RemoveOverlay(it);
