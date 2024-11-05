@@ -2390,7 +2390,7 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
     while (pos != m_Labels.end()) {
 	LabelInfo* label = *pos++;
 
-	if (label->get_flags() & LFLAG_HIGHLIGHTED) {
+	if (label->IsHighLighted()) {
 	    if (label->GetX() < xmin) xmin = label->GetX();
 	    if (label->GetX() > xmax) xmax = label->GetX();
 	    if (label->GetY() < ymin) ymin = label->GetY();
