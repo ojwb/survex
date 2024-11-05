@@ -441,9 +441,6 @@ replace_travs(void)
      * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Calculating traverses*/127));
 
-   if (!fhErrStat && !fSuppress)
-      fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
-
    if (!pimg) {
       char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
       filename_register_output(fnm);
@@ -452,6 +449,9 @@ replace_travs(void)
       if (!pimg) fatalerror(img_error(), fnm);
       osfree(fnm);
    }
+
+   if (!fhErrStat && !fSuppress)
+      fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
 
    /* First do all the one leg traverses */
    for (stn1 = fixedlist; stn1; stn1 = stn1->next) {
