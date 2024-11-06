@@ -2646,7 +2646,7 @@ void GfxCore::GenerateList(unsigned int l)
 	    while (pos != m_Parent->GetLabelsEnd()) {
 		const LabelInfo* label = *pos++;
 
-		if (m_Splays == SHOW_HIDE && label->IsSplayEnd())
+		if (label->IsAnon())
 		    continue;
 
 		if ((m_Surface && label->IsSurface()) ||
