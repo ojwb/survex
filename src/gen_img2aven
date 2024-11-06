@@ -1,0 +1,30 @@
+#!/usr/bin/perl -w
+use strict;
+
+sub img_SFLAG_SURFACE { 0x01 }
+sub img_SFLAG_UNDERGROUND { 0x02 }
+sub img_SFLAG_ENTRANCE { 0x04 }
+sub img_SFLAG_EXPORTED { 0x08 }
+sub img_SFLAG_FIXED { 0x10 }
+sub img_SFLAG_ANON { 0x20 }
+sub img_SFLAG_WALL { 0x40 }
+
+sub PLOT_ORDER_KEY_SURFACE { 0x0080 }
+sub PLOT_ORDER_KEY_UNDERGROUND { 0x0100 }
+sub PLOT_ORDER_KEY_ENTRANCE { 0x0200 }
+sub PLOT_ORDER_KEY_EXPORTED { 0x0400 }
+sub PLOT_ORDER_KEY_FIXED { 0x0800 }
+sub PLOT_ORDER_KEY_NOT_ANON { 0x1000 }
+sub PLOT_ORDER_KEY_NOT_WALL { 0x2000 }
+
+my @tab;
+for (0 .. 0x7f) {
+    my $k = 0;
+    $k |= PLOT_ORDER_KEY_SURFACE if ($_ & img_SFLAG_SURFACE);
+    $k |= PLOT_ORDER_KEY_UNDERGROUND if ($_ & img_SFLAG_UNDERGROUND);
+    $k |= PLOT_ORDER_KEY_ENTRANCE if ($_ & img_SFLAG_ENTRANCE);
+    $k |= PLOT_ORDER_KEY_EXPORTED if ($_ & img_SFLAG_EXPORTED);
+    $k |= PLOT_ORDER_KEY_FIXED if ($_ & img_SFLAG_FIXED);
+    $k |= PLOT_ORDER_KEY_NOT_ANON unless ($_ & img_SFLAG_ANON);
+    $k |= PLOT_ORDER_KEY_NOT_WALL unless ($_ & img_SFLAG_WALL);
+    printf "\t0x%04x,\n", $k;}

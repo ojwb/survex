@@ -166,6 +166,11 @@ class Model {
 
     Vector3 m_Offset;
 
+    // We lazily set the higher bits of LabelInfo::flags to a value to give us
+    // the sort order we want via integer subtraction.  This is done the first
+    // time this sort happens after loading a file.
+    bool added_plot_order_keys = false;
+
     void do_prepare_tubes() const;
 
     void CentreDataset(const Vector3& vmin);

@@ -59,6 +59,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
     m_HasDupes = false;
     m_HasSurfaceLegs = false;
     m_HasErrorInformation = false;
+    added_plot_order_keys = false;
 
     // FIXME: discard existing presentation? ask user about saving if we do!
 
@@ -782,5 +783,14 @@ public:
 void
 Model::SortLabelsByPlotOrder()
 {
+    if (!added_plot_order_keys) {
+	const static int img2aven_tab[] = {
+#include "img2aven.h"
+	};
+	for (LabelInfo* i : m_Labels) {
+	    i->set_flags(img2aven_tab[i->get_flags() & LFLAG_IMG_MASK]);
+	}
+	added_plot_order_keys = true;
+    }
     m_Labels.sort(LabelPlotCmp(GetSeparator()));
 }

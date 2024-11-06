@@ -74,7 +74,11 @@ constexpr int LFLAG_IMG_MASK =
 
 static_assert(LFLAG_IMG_MASK < 0x80);
 
-constexpr int LFLAG_HIGHLIGHTED	= 0x80;
+// Bits 0x0100 to 0x2000 are set lazily to allow us to sort labels into plot
+// order with the first comparison being an integer subtraction.
+
+// Set for matching stations when a search is done (and cleared for others).
+constexpr int LFLAG_HIGHLIGHTED	= 0x4000;
 
 class LabelInfo : public Point {
     wxString text;
