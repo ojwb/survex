@@ -139,10 +139,9 @@ class Model {
     list<traverse> traverses[8];
     mutable list<vector<XSect>> tubes;
 
-  public: // FIXME
+  private:
     list<LabelInfo*> m_Labels;
 
-  private:
     Vector3 m_Ext;
     double m_DepthMin, m_DepthExt;
     int m_DateMin, m_DateExt;
@@ -280,6 +279,10 @@ class Model {
     list<LabelInfo*>::iterator GetLabelsNCEnd() {
 	return m_Labels.end();
     }
+
+    void SortLabelsByName();
+
+    void SortLabelsByPlotOrder();
 
     void prepare_tubes() const {
 	if (!m_TubesPrepared) {

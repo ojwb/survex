@@ -27,6 +27,7 @@
 #include "model.h"
 
 #include "img_hosted.h"
+#include "namecompare.h"
 #include "useful.h"
 
 #include <cfloat>
@@ -739,4 +740,47 @@ SurveyFilter::CheckVisible(const wxString& name) const
     if (name.StartsWith(*it) && name[it->size()] == separator)
 	return true;
     return false;
+}
+
+class LabelCmp : public greater<const LabelInfo*> {
+    wxChar separator;
+public:
+    explicit LabelCmp(wxChar separator_) : separator(separator_) {}
+    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
+	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
+    }
+};
+
+void
+Model::SortLabelsByName()
+{
+    m_Labels.sort(LabelCmp(GetSeparator()));
+}
+
+class LabelPlotCmp : public greater<const LabelInfo*> {
+    wxChar separator;
+public:
+    explicit LabelPlotCmp(wxChar separator_) : separator(separator_) {}
+    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
+	int n = pt1->get_flags() - pt2->get_flags();
+	if (n) return n > 0;
+	wxString l1 = pt1->GetText().AfterLast(separator);
+	wxString l2 = pt2->GetText().AfterLast(separator);
+	n = name_cmp(l1, l2, separator);
+	if (n) return n < 0;
+	// Prefer non-2-nodes...
+	// FIXME; implement
+	// if leaf names are the same, prefer shorter labels as we can
+	// display more of them
+	n = pt1->GetText().length() - pt2->GetText().length();
+	if (n) return n < 0;
+	// make sure that we don't ever compare different labels as equal
+	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
+    }
+};
+
+void
+Model::SortLabelsByPlotOrder()
+{
+    m_Labels.sort(LabelPlotCmp(GetSeparator()));
 }

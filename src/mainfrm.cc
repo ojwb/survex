@@ -31,7 +31,6 @@
 
 #include "message.h"
 #include "img_hosted.h"
-#include "namecompare.h"
 #include "printing.h"
 #include "filename.h"
 #include "useful.h"
@@ -669,37 +668,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_CTL_PERCENT, MainFrm::OnTogglePercentUpdate)
 END_EVENT_TABLE()
 
-class LabelCmp : public greater<const LabelInfo*> {
-    wxChar separator;
-public:
-    explicit LabelCmp(wxChar separator_) : separator(separator_) {}
-    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
-    }
-};
-
-class LabelPlotCmp : public greater<const LabelInfo*> {
-    wxChar separator;
-public:
-    explicit LabelPlotCmp(wxChar separator_) : separator(separator_) {}
-    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	int n = pt1->get_flags() - pt2->get_flags();
-	if (n) return n > 0;
-	wxString l1 = pt1->GetText().AfterLast(separator);
-	wxString l2 = pt2->GetText().AfterLast(separator);
-	n = name_cmp(l1, l2, separator);
-	if (n) return n < 0;
-	// Prefer non-2-nodes...
-	// FIXME; implement
-	// if leaf names are the same, prefer shorter labels as we can
-	// display more of them
-	n = pt1->GetText().length() - pt2->GetText().length();
-	if (n) return n < 0;
-	// make sure that we don't ever compare different labels as equal
-	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
-    }
-};
-
 #if wxUSE_DRAG_AND_DROP
 class DnDFile : public wxFileDropTarget {
     public:
@@ -1156,7 +1124,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
     SetTitle(GetSurveyTitle() + " - " APP_NAME);
 
     // Sort the labels ready for filling the tree.
-    m_Labels.sort(LabelCmp(GetSeparator()));
+    SortLabelsByName();
 
     // Fill the tree of stations and prefixes.
     wxString root_name = wxFileNameFromPath(file);
@@ -1173,7 +1141,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
     // Also sort by leaf name so that we'll tend to choose labels
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp(GetSeparator()));
+    SortLabelsByPlotOrder();
 
     if (!m_FindBox->GetValue().empty()) {
 	// Highlight any stations matching the current search.
@@ -2272,8 +2240,8 @@ void MainFrm::DoFind()
     wxString pattern = m_FindBox->GetValue();
     if (pattern.empty()) {
 	// Hide any search result highlights.
-	list<LabelInfo*>::iterator pos = m_Labels.begin();
-	while (pos != m_Labels.end()) {
+	list<LabelInfo*>::iterator pos = GetLabelsNC();
+	while (pos != GetLabelsNCEnd()) {
 	    LabelInfo* label = *pos++;
 	    label->clear_flags(LFLAG_HIGHLIGHTED);
 	}
@@ -2342,8 +2310,8 @@ void MainFrm::DoFind()
 
 	int found = 0;
 
-	list<LabelInfo*>::iterator pos = m_Labels.begin();
-	while (pos != m_Labels.end()) {
+	list<LabelInfo*>::iterator pos = GetLabelsNC();
+	while (pos != GetLabelsNCEnd()) {
 	    LabelInfo* label = *pos++;
 
 	    if (regex.Matches(label->GetText())) {
@@ -2357,7 +2325,7 @@ void MainFrm::DoFind()
 	m_NumHighlighted = found;
 
 	// Re-sort so highlighted points get names in preference
-	if (found) m_Labels.sort(LabelPlotCmp(GetSeparator()));
+	if (found) SortLabelsByPlotOrder();
     }
 
     m_Gfx->UpdateBlobs();
@@ -2386,8 +2354,8 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
     double zmin = DBL_MAX;
     double zmax = -DBL_MAX;
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
+    list<LabelInfo*>::iterator pos = GetLabelsNC();
+    while (pos != GetLabelsNCEnd()) {
 	LabelInfo* label = *pos++;
 
 	if (label->IsHighLighted()) {
