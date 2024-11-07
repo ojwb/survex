@@ -702,7 +702,7 @@ replace_subnets(void)
 	 BUG("reduction_stack has unknown type");
       }
 
-skip:
+skip:;
       reduction *ptrOld = reduction_stack;
       reduction_stack = reduction_stack->next;
       osfree(ptrOld);
