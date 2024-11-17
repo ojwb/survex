@@ -334,11 +334,11 @@ Changes in 1.4.10 (2024-08-05):
     - The delimiters around LRUD data are now parsed, but the LRUD data between
       them is currently ignored.
 
-    - If a `#SEGMENT` value looks like a set of Compass shot flags (i.e. consists
-      only of upper case characters from `CLPSX`, optionally prefixed with a
-      `/` or `\`) then we interpret them as Compass shot flags (except that `X`
-      is mapped the same way as `L`).  This is apparently a common way to use
-      `#SEGMENT`, and unlikely to be triggered accidentally.
+    - If a `#SEGMENT` value looks like a set of Compass shot flags (i.e.
+      consists only of upper case characters from `CLPSX`, optionally prefixed
+      with a `/` or `\`) then we interpret them as Compass shot flags (except
+      that `X` is mapped the same way as `L`).  This is apparently a common way
+      to use `#SEGMENT`, and unlikely to be triggered accidentally.
 
     - Avoid a doubled directory separator when building Walls path names.
 
