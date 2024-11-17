@@ -1,3 +1,63 @@
+up to: 7ee64a0faeebd36d58f939f072268af97eeb1552
+
+Changes in 1.4.13 (2024-11-??):
+
+* aven:
+
+  + Don't show crosses on anonymous stations since they just clutter up the
+    display (especially for anonymous splays).  Suggested by Andrew Atkinson.
+
+  + Fix 1.4.10 regression in plotting of station names.  Each anonymous station
+    was blocking out a small rectangle which no actual station name could
+    overlap.  Reported by Špela Borko.
+
+  + Reduced start-up time by only initialising GDAL if we have overlays to
+    show.
+
+  + (Microsoft Windows version): Avoid recurring "GDAL support not enabled in
+    this build" message box.  This message is now only shown once if you try to
+    add an overlay.  Reported by Špela Borko.
+
+* cavern:
+
+  + The component count was wrong in some cases, and we calculate the number
+    of loops using this component count, so the loop count would also be wrong
+    by the same amount in these cases.
+
+  + If the output directory isn't writable or doesn't exist we would complain
+    that we can't create the .err file - now we try to create the .3d file
+    first so complain about that instead which seems more helpful.  Reported by
+    Eric C. Landgraf.
+
+  + When inventing a fixed point we now avoid picking a fixed point which is
+    only attached to nosurvey legs if there's another option.  The code was
+    already meant to do this but it was buggy and we lacked a testcase for this
+    situation.
+
+  + Survey network reduction now finds some delta-star opportunities which were
+    being overlooked.  This allows more complicated networks to be reduced
+    further so fewer and/or smaller matrices need solving, which is faster.
+
+  + Survey network reduction now handles a "lollipop" with a fixed stick end
+    specially which is a little bit faster.  A more visible consequence is
+    fewer "Solving one equation..." messages when solving a complex survey
+    network.
+
+  + Survey network reduction now makes use of articulating legs to split up the
+    problem a little more, so we will often now solve more but smaller matrices
+    which should be faster.
+
+  + Assigning matrix row numbers now identifies equated stations in a slightly
+    more efficient way.
+
+* Test suite:
+
+  + Adjust hpglexport testcase to avoid i386 excess precision causing one of
+    the HPGL coordinates to differ by one from its value calculated without
+    excess precision.
+
+* Assorted translation updates.
+
 Changes in 1.4.12 (2024-10-23):
 
 * aven:
