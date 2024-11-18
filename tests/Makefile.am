@@ -6,7 +6,8 @@ EXTRA_DIST = compare.tst $(TESTS)\
 beginroot.svx beginroot.out\
 oneleg.svx oneleg.pos\
 midpoint.svx midpoint.pos\
-noose.svx noose.pos\
+lollipop.svx lollipop.out lollipop.pos\
+fixedlollipop.svx fixedlollipop.out fixedlollipop.pos\
 cross.svx cross.pos\
 deltastar.svx deltastar.pos\
 deltastar2.svx deltastar2.pos\

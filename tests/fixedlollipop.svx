@@ -1,0 +1,9 @@
+; pos=yes warn=0
+*fix A 0 0 0
+A B 3 000 0
+B C 2 000 0
+C B 2 180 0
+*fix W 9 0 0
+X W 3 180 0
+X Y 2 000 0
+Y X 2 180 0

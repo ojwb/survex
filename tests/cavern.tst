@@ -52,7 +52,8 @@ esac
 : ${DUMP3D="$testdir"/../src/dump3d}
 : ${SURVEXPORT="$testdir"/../src/survexport}
 
-: ${TESTS=${*:-"singlefix singlereffix oneleg midpoint noose cross firststn\
+: ${TESTS=${*:-"singlefix singlereffix oneleg midpoint lollipop fixedlollipop\
+ cross firststn\
  deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
  lengthunits angleunits cmd_alias cmd_alias_bad cmd_truncate cmd_truncate_bad\
  cmd_case cmd_case_bad cmd_fix\

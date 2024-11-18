@@ -71,15 +71,6 @@ remove_subnets(void)
 #if PRINT_NETBITS
 	 printf("replacing lollipops\n");
 #endif
-	 /*        _
-	  *       ( )
-	  *        * stn
-	  *        |
-	  *        * stn2
-	  *       / \
-	  * stn4 *   * stn3  -->  stn4 *---* stn3
-	  *      :   :                 :   :
-	  */
 	 /* NB can have non-fixed 0 nodes */
 	 FOR_EACH_STN(stn, stnlist) {
 	    if (three_node(stn)) {
@@ -89,10 +80,43 @@ remove_subnets(void)
 	       if (dirn < 0) continue;
 
 	       stn2 = stn->leg[dirn]->l.to;
-	       if (fixed(stn2)) continue;
+	       if (fixed(stn2)) {
+		   /*    _
+		    *   ( )
+		    *    * stn
+		    *    |
+		    *    * stn2 (fixed)
+		    *    : (may have other connections)
+		    *
+		    * The leg forming the "stick" of the lollipop is
+		    * articulating so we can just fix stn with coordinates
+		    * calculated by adding or subtracting the leg's vector.
+		    */
+		   linkfor *leg = stn->leg[dirn];
+		   linkfor *rev_leg = reverse_leg(leg);
+		   leg->l.reverse |= FLAG_ARTICULATION;
+		   rev_leg->l.reverse |= FLAG_ARTICULATION;
+		   if (data_here(leg)) {
+		       subdd(&POSD(stn), &POSD(stn2), &leg->d);
+		   } else {
+		       adddd(&POSD(stn), &POSD(stn2), &rev_leg->d);
+		   }
+		   remove_stn_from_list(&stnlist, stn);
+		   add_stn_to_list(&fixedlist, stn);
+		   continue;
+	       }
 
 	       SVX_ASSERT(three_node(stn2));
 
+	       /*        _
+		*       ( )
+		*        * stn
+		*        |
+		*        * stn2
+		*       / \
+		* stn4 *   * stn3  -->  stn4 *---* stn3
+		*      :   :                 :   :
+		*/
 	       dirn2 = reverse_leg_dirn(stn->leg[dirn]);
 	       dirn2 = (dirn2 + 1) % 3;
 	       stn3 = stn2->leg[dirn2]->l.to;
