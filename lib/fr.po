@@ -3563,7 +3563,7 @@ msgstr ""
 #: n:506
 #, c-format
 msgid "Ignoring “%s”"
-msgstr ""
+msgstr "“%s” ignorée"
 
 #: ../src/datain.c:4357
 #: n:508
