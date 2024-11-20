@@ -3167,7 +3167,7 @@ msgstr "Splay Legs (&z)"
 #: ../src/survexport.cc:145
 #: n:465
 msgid "splay legs"
-msgstr "splay legs"
+msgstr ""
 
 #: ../src/mainfrm.cc:898
 #: n:251
