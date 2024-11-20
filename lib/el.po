@@ -1887,7 +1887,7 @@ msgstr ""
 #: ../src/aboutdlg.cc:102
 #: n:219
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public Licence as published by the Free Software Foundation; either version 2 of the Licence, or (at your option) any later version."
-msgstr ""
+msgstr "Το παρόν πρόγραμμα είναι ελεύθερο λογισμικό: μπορείτε να το αναδιανείμετε ή/και να το τροποποιήσετε υπό τους όρους της Γενικής Άδειας Δημόσιας Χρήσης GNU, όπως αυτή έχει δημοσιευτεί από το Ίδρυμα Ελεύθερου Λογισμικού είτε με την έκδοση 2 της Άδειας είτε (κατ' επιλογήν) με οποιαδήποτε μεταγενέστερη έκδοση."
 
 #. TRANSLATORS: Part of diffpos --help
 #: ../src/diffpos.c:264
