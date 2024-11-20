@@ -1488,7 +1488,7 @@ msgstr "argumento “%s” não é um número"
 #: n:497
 #, c-format
 msgid "Expecting “%s”"
-msgstr ""
+msgstr "“%s” era esperado"
 
 #: ../src/datain.c:910
 #: ../src/datain.c:1592

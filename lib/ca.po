@@ -908,7 +908,7 @@ msgstr "No s’ha pogut escriure el fitxer “%s”"
 #: ../src/datain.c:2513
 #: n:498
 msgid "Failed to create temporary file"
-msgstr ""
+msgstr "No s’ha pogut crear un fitxer temporal"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -1488,7 +1488,7 @@ msgstr "L’argument “%s” no és un nombre"
 #: n:497
 #, c-format
 msgid "Expecting “%s”"
-msgstr ""
+msgstr "Esperant “%s”"
 
 #: ../src/datain.c:910
 #: ../src/datain.c:1592
@@ -3576,7 +3576,7 @@ msgstr ""
 #: n:506
 #, c-format
 msgid "Ignoring “%s”"
-msgstr ""
+msgstr "S'ignora a “%s”"
 
 #: ../src/datain.c:4357
 #: n:508

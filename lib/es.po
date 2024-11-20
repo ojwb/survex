@@ -907,7 +907,7 @@ msgstr "No se pudo escribir en el archivo “%s”"
 #: ../src/datain.c:2513
 #: n:498
 msgid "Failed to create temporary file"
-msgstr ""
+msgstr "No se puede crear un fichero temporal"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -1487,7 +1487,7 @@ msgstr "El argumento “%s” no es un número"
 #: n:497
 #, c-format
 msgid "Expecting “%s”"
-msgstr ""
+msgstr "Esperando “%s”"
 
 #: ../src/datain.c:910
 #: ../src/datain.c:1592

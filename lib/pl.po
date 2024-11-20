@@ -907,7 +907,7 @@ msgstr "Nie da się zapisywać do pliku “%s”"
 #: ../src/datain.c:2513
 #: n:498
 msgid "Failed to create temporary file"
-msgstr ""
+msgstr "Nie można utworzyć pliku tymczasowego"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -1487,7 +1487,7 @@ msgstr "argument “%s” nie jest liczbą"
 #: n:497
 #, c-format
 msgid "Expecting “%s”"
-msgstr ""
+msgstr "Spodziewałem się “%s”"
 
 #: ../src/datain.c:910
 #: ../src/datain.c:1592

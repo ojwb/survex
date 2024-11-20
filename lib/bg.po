@@ -907,7 +907,7 @@ msgstr "Неуспех при запис на файл: “%s”"
 #: ../src/datain.c:2513
 #: n:498
 msgid "Failed to create temporary file"
-msgstr ""
+msgstr "Не може да се създаде временен файл"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
@@ -3569,7 +3569,7 @@ msgstr ""
 #: n:506
 #, c-format
 msgid "Ignoring “%s”"
-msgstr ""
+msgstr "Отхвърляне на “%s”"
 
 #: ../src/datain.c:4357
 #: n:508
