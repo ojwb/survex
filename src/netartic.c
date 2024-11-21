@@ -324,11 +324,6 @@ articulate(void)
     printf("%ld components\n",cComponents);
 #endif
 
-    osfree(dirn_stack);
-    dirn_stack = NULL;
-    osfree(oldest_stack);
-    oldest_stack = NULL;
-
     if (stnlist) {
 	/* Any stations still in stnlist are unreachable from fixed points
 	 * which means we have one or more hanging surveys.
@@ -364,9 +359,60 @@ articulate(void)
 		putnl();
 	    }
 	}
-	stnlist = NULL;
-	hanging_surveys = true;
+
+	// We need to include hanging surveys in the count of connected
+	// components so that the loop count is correct.
+	//
+	// To do this we walk the hanging survey network from the first entry
+	// in stnlist, visiting unvisited stations and removing them from
+	// stnlist.  Each time we need to start a new walk is a new component.
+	while (stnlist) {
+	    ++cComponents;
+
+	    node *stn = stnlist;
+	    int back = -1; // Dummy value that won't match a real direction.
+	    unsigned long tos = 0;
+
+    iter2:
+	    // Colour each station we visit so we know which we've already
+	    // visited.
+	    stn->colour = 1;
+	    remove_stn_from_list(&stnlist, stn);
+	    for (int j = 0; j <= 2 && stn->leg[j]; j++) {
+		if (j == back) {
+		    // Ignore the reverse of the leg we just took to get
+		    // here.
+		    continue;
+		}
+
+		node *to = stn->leg[j]->l.to;
+		if (to->colour) {
+		    // Ignore station we already visited.
+		    continue;
+		}
+
+		SVX_ASSERT(tos < stack_size);
+		dirn_stack[tos] = back;
+		tos++;
+		back = reverse_leg_dirn(stn->leg[j]);
+		stn = to;
+		goto iter2;
+    uniter2:
+		--tos;
+		j = reverse_leg_dirn(stn->leg[back]);
+		to = stn;
+		stn = to->leg[back]->l.to;
+		back = dirn_stack[tos];
+	    }
+
+	    if (tos > 0) goto uniter2;
+	}
     }
+
+    osfree(dirn_stack);
+    dirn_stack = NULL;
+    osfree(oldest_stack);
+    oldest_stack = NULL;
 
     SVX_ASSERT(!fixedlist);
     fixedlist = new_fixedlist;
