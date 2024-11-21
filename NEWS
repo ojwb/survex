@@ -1,4 +1,4 @@
-up to: 7ee64a0faeebd36d58f939f072268af97eeb1552
+up to: 778e74882455b7d9f0fc42e4b7d647647823fd8f
 
 Changes in 1.4.13 (2024-11-??):
 
@@ -23,6 +23,9 @@ Changes in 1.4.13 (2024-11-??):
   + The component count was wrong in some cases, and we calculate the number
     of loops using this component count, so the loop count would also be wrong
     by the same amount in these cases.
+
+  + The component count and loop count are now reported when there are
+    unconnected survey stations.
 
   + If the output directory isn't writable or doesn't exist we would complain
     that we can't create the .err file - now we try to create the .3d file
