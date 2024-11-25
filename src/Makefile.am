@@ -106,7 +106,7 @@ all_sources = \
 
 EXTRA_DIST = \
  aven.rc getopt.c gettexttomsg.pl gradient.pov gdtconvert gen_img2aven \
- igrf13coeffs.txt igrf2c.py
+ igrf14coeffs.txt igrf2c.py
 
 BUILT_SOURCES = z_getopt.c avenpal.h img2aven.h thgeomagdata.h
 
@@ -121,8 +121,8 @@ img2aven.h: $(srcdir)/gen_img2aven
 
 PYTHON = python3
 
-thgeomagdata.h: $(srcdir)/igrf2c.py $(srcdir)/igrf13coeffs.txt
-	$(PYTHON) $(srcdir)/igrf2c.py $(srcdir)/igrf13coeffs.txt
+thgeomagdata.h: $(srcdir)/igrf2c.py $(srcdir)/igrf14coeffs.txt
+	$(PYTHON) $(srcdir)/igrf2c.py $(srcdir)/igrf14coeffs.txt
 	mv ../thgeomagdata.h .
 
 MAINTAINERCLEANFILES =\
