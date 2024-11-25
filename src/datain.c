@@ -103,9 +103,9 @@ typedef enum {
     CTYPE_HORIZ
 } clino_type;
 
-/* Don't explicitly initialise as we can't set the jmp_buf - this has
- * static scope so will be initialised like this anyway */
-parse file /* = { NULL, NULL, 0, false, NULL } */ ;
+parse file;
+
+jmp_buf jbSkipLine;
 
 bool f_export_ok;
 
@@ -678,7 +678,7 @@ data_file_compass_dat_or_clp(bool is_clp)
      * process CompassDATFr and CompassDATTo fields.
      */
 
-    if (setjmp(file.jbSkipLine)) {
+    if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
@@ -838,7 +838,7 @@ data_file_compass_mak(void)
     // characters due to how the syntax works.
     t['['] = t[','] = t[';'] = 0;
 
-    if (setjmp(file.jbSkipLine)) {
+    if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
@@ -2394,7 +2394,7 @@ data_file_walls_srv(void)
     update_output_separator();
 
     /* errors in nested functions can longjmp here */
-    if (setjmp(file.jbSkipLine)) {
+    if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
@@ -3004,7 +3004,7 @@ data_file_walls_wpj(void)
     // Start from the location of this WPJ.
     s_append(&p_walls_options->path, pth);
 
-    if (setjmp(file.jbSkipLine)) {
+    if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
@@ -3373,7 +3373,7 @@ data_file_survex(void)
 	}
     }
 
-    if (setjmp(file.jbSkipLine)) {
+    if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
