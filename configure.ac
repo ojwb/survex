@@ -93,8 +93,6 @@ AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 
 AC_CHECK_LIB(m, sqrt)
 
-AC_PATH_XTRA
-
 dnl The wxWidgets libraries we need:
 wx_libs="core,gl"
 

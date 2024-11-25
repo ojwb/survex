@@ -10,9 +10,6 @@
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
 
-/* Define if the X Window System is missing or not being used.  */
-#define X_DISPLAY_MISSING
-
 /* copyright message */
 #define COPYRIGHT_MSG "@COPYRIGHT_MSG@"
 
