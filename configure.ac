@@ -233,7 +233,7 @@ AC_SUBST([GDAL_CFLAGS])
 
 dnl Checks for header files.
 
-AC_CHECK_HEADERS(limits.h string.h)
+AC_CHECK_HEADERS(string.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
