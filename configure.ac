@@ -233,10 +233,6 @@ dnl Checks for header files.
 
 AC_CHECK_HEADERS(string.h)
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_TYPE_SIZE_T
-AC_STRUCT_TM
-
 dnl Check for 16-bit and 32-bit integer types.
 AC_TYPE_INT16_T
 AC_TYPE_UINT16_T
