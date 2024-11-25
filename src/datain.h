@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_SETJMP_H
-# include <setjmp.h>
-#endif
+#include <setjmp.h>
 
 #include <stdio.h> /* for FILE */
 
@@ -34,9 +32,7 @@ typedef struct parse {
    bool reported_where : 1;
    unsigned prev_line_len : 31;
    struct parse *parent;
-#ifdef HAVE_SETJMP_H
    jmp_buf jbSkipLine;
-#endif
 } parse;
 
 extern int ch;

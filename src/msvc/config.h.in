@@ -44,9 +44,6 @@ typedef unsigned __int32 uint32_t;
 /* Define if you have the popen function.  */
 #define HAVE_POPEN 1
 
-/* Define if you have the <setjmp.h> header file.  */
-#define HAVE_SETJMP_H 1
-
 /* Define if you have the strdup function.  */
 #define HAVE_STRDUP 1
 

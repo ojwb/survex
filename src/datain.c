@@ -678,13 +678,11 @@ data_file_compass_dat_or_clp(bool is_clp)
      * process CompassDATFr and CompassDATTo fields.
      */
 
-#ifdef HAVE_SETJMP_H
-    /* errors in nested functions can longjmp here */
     if (setjmp(file.jbSkipLine)) {
+	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
     }
-#endif
 
     while (ch != EOF && !ferror(file.fh)) {
 	static const reading compass_order[] = {
@@ -840,13 +838,11 @@ data_file_compass_mak(void)
     // characters due to how the syntax works.
     t['['] = t[','] = t[';'] = 0;
 
-#ifdef HAVE_SETJMP_H
-    /* errors in nested functions can longjmp here */
     if (setjmp(file.jbSkipLine)) {
+	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
     }
-#endif
 
     int datum = 0;
     int utm_zone = 0;
@@ -2397,13 +2393,12 @@ data_file_walls_srv(void)
     // followed.
     update_output_separator();
 
-#ifdef HAVE_SETJMP_H
     /* errors in nested functions can longjmp here */
     if (setjmp(file.jbSkipLine)) {
+	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
     }
-#endif
 
     if (pcs->style == STYLE_NORMAL)
 	pcs->ordering = p_walls_options->data_order_ct;
@@ -3009,13 +3004,11 @@ data_file_walls_wpj(void)
     // Start from the location of this WPJ.
     s_append(&p_walls_options->path, pth);
 
-#ifdef HAVE_SETJMP_H
-    /* errors in nested functions can longjmp here */
     if (setjmp(file.jbSkipLine)) {
+	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
     }
-#endif
 
     int status = -1;
     long name_lpos = -1;
@@ -3380,13 +3373,11 @@ data_file_survex(void)
 	}
     }
 
-#ifdef HAVE_SETJMP_H
-    /* errors in nested functions can longjmp here */
     if (setjmp(file.jbSkipLine)) {
+	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
     }
-#endif
 
     while (ch != EOF && !ferror(file.fh)) {
 	if (!process_non_data_line()) {
