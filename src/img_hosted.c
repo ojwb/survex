@@ -23,9 +23,10 @@
 
 #define IMG_HOSTED 1
 
-// We now require C99 which standardised lround().
+// We now require C99 which standardised lround(), <stdint.h>.
 #define HAVE_LROUND
 #define HAVE_DECL_LROUND 1
+#define HAVE_STDINT_H
 
 #include "img.c"
 

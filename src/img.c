@@ -35,10 +35,25 @@
 
 #include "img.h"
 
-#define TIMENA "?"
-#ifdef IMG_HOSTED
+#if defined HAVE_STDINT_H || \
+    (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
+    (defined __cplusplus && __cplusplus >= 201103L)
+# include <stdint.h>
 # define INT32_T int32_t
 # define UINT32_T uint32_t
+#else
+# include <limits.h>
+# if INT_MAX >= 2147483647
+#  define INT32_T int
+#  define UINT32_T unsigned
+# else
+#  define INT32_T long
+#  define UINT32_T unsigned long
+# endif
+#endif
+
+#define TIMENA "?"
+#ifdef IMG_HOSTED
 # define SNPRINTF snprintf
 # include "debug.h"
 # include "filelist.h"
@@ -48,22 +63,6 @@
 # include "useful.h"
 # define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
-# if defined HAVE_STDINT_H || \
-     (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
-     (defined __cplusplus && __cplusplus >= 201103L)
-#  include <stdint.h>
-#  define INT32_T int32_t
-#  define UINT32_T uint32_t
-# else
-#  include <limits.h>
-#  if INT_MAX >= 2147483647
-#   define INT32_T int
-#   define UINT32_T unsigned
-#  else
-#   define INT32_T long
-#   define UINT32_T unsigned long
-#  endif
-# endif
 # if defined HAVE_SNPRINTF || \
      (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
      (defined __cplusplus && __cplusplus >= 201103L)

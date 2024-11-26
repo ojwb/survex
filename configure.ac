@@ -233,12 +233,6 @@ dnl Checks for header files.
 
 AC_CHECK_HEADERS(string.h)
 
-dnl Check for 16-bit and 32-bit integer types.
-AC_TYPE_INT16_T
-AC_TYPE_UINT16_T
-AC_TYPE_INT32_T
-AC_TYPE_UINT32_T
-
 AC_CHECK_FUNCS([popen hypot mmap])
 
 dnl Much faster than using getc()/putc(), at least on Linux.
