@@ -239,7 +239,7 @@ AC_TYPE_UINT16_T
 AC_TYPE_INT32_T
 AC_TYPE_UINT32_T
 
-AC_CHECK_FUNCS([popen getpwuid hypot mmap])
+AC_CHECK_FUNCS([popen hypot mmap])
 
 dnl Much faster than using getc()/putc(), at least on Linux.
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])

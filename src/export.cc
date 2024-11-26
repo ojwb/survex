@@ -44,12 +44,6 @@
 #include <string.h>
 #include <time.h>
 
-#if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
-# include <pwd.h>
-# include <sys/types.h>
-# include <unistd.h>
-#endif
-
 #include <utility>
 #include <vector>
 
@@ -912,10 +906,6 @@ EPS::header(const char *title, const char *, time_t,
    }
 
    string name;
-#if defined(HAVE_GETPWUID) && !defined(__DJGPP__)
-   struct passwd * ent = getpwuid(getuid());
-   if (ent && ent->pw_gecos[0]) name = ent->pw_gecos;
-#endif
    if (name.empty()) {
        name = ::wxGetUserName().mb_str();
        if (name.empty()) {
