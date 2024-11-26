@@ -27,7 +27,9 @@
 #define HAVE_LROUND
 #define HAVE_DECL_LROUND 1
 #define HAVE_SNPRINTF
-#define HAVE_STDINT_H
+#ifndef HAVE_STDINT_H
+# define HAVE_STDINT_H // Defined by AC_INCLUDES_DEFAULT as a side-effect.
+#endif
 
 #include "img.c"
 
