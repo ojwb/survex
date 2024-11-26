@@ -52,23 +52,12 @@
 # endif
 #endif
 
-#define TIMENA "?"
-#ifdef IMG_HOSTED
+#if defined HAVE_SNPRINTF || \
+    (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
+    (defined __cplusplus && __cplusplus >= 201103L)
 # define SNPRINTF snprintf
-# include "debug.h"
-# include "filelist.h"
-# include "filename.h"
-# include "message.h"
-# include "osalloc.h"
-# include "useful.h"
-# define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
-# if defined HAVE_SNPRINTF || \
-     (defined __STDC_VERSION__ && __STDC_VERSION__ >= 199901L) || \
-     (defined __cplusplus && __cplusplus >= 201103L)
-#  define SNPRINTF snprintf
-# else
-#  define SNPRINTF my_snprintf
+# define SNPRINTF my_snprintf
 static int my_snprintf(char *s, size_t size, const char *format, ...) {
     int result;
     va_list ap;
@@ -78,7 +67,18 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
     va_end(ap);
     return result;
 }
-# endif
+#endif
+
+#define TIMENA "?"
+#ifdef IMG_HOSTED
+# include "debug.h"
+# include "filelist.h"
+# include "filename.h"
+# include "message.h"
+# include "osalloc.h"
+# include "useful.h"
+# define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
+#else
 # define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
 # define EXT_SVX_3D "3d"
 # define FNM_SEP_EXT '.'
