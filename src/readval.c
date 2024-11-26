@@ -657,7 +657,6 @@ read_number(bool f_optional, bool f_unsigned)
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
    }
    longjmp(jbSkipLine, 1);
-   return 0.0; /* for brain-fried compilers */
 }
 
 real
@@ -697,7 +696,6 @@ read_quadrant(bool f_optional)
       }
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       longjmp(jbSkipLine, 1);
-      return 0.0; /* for brain-fried compilers */
    }
    real r = read_number(true, true);
    if (r == HUGE_REAL) {
@@ -706,7 +704,6 @@ read_quadrant(bool f_optional)
 	 set_pos(&fp);
 	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
 	 longjmp(jbSkipLine, 1);
-	 return 0.0; /* for brain-fried compilers */
       }
       /* N, S, E or W. */
       return first_point * quad;
@@ -715,7 +712,6 @@ read_quadrant(bool f_optional)
       set_pos(&fp);
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       longjmp(jbSkipLine, 1);
-      return 0.0; /* for brain-fried compilers */
    }
 
    get_token_legacy_no_blanks();
@@ -724,14 +720,12 @@ read_quadrant(bool f_optional)
       set_pos(&fp);
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       longjmp(jbSkipLine, 1);
-      return 0.0; /* for brain-fried compilers */
    }
 
    if (r > quad) {
       set_pos(&fp);
       compile_diagnostic_token_show(DIAG_ERR, /*Suspicious compass reading*/59);
       longjmp(jbSkipLine, 1);
-      return 0.0; /* for brain-fried compilers */
    }
 
    if (first_point == POINT_N) {
@@ -805,7 +799,6 @@ read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
       if (!isOmit(ch)) {
 	 compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 	 longjmp(jbSkipLine, 1);
-	 return 0.0; /* for brain-fried compilers */
       }
       nextch();
    }
@@ -948,7 +941,6 @@ read_date(int *py, int *pm, int *pd)
       set_pos(&fp_date);
       compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
       longjmp(jbSkipLine, 1);
-      return; /* for brain-fried compilers */
    }
    if (ch == '.') {
       filepos fp;
@@ -959,7 +951,6 @@ read_date(int *py, int *pm, int *pd)
 	 set_pos(&fp);
 	 compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
 	 longjmp(jbSkipLine, 1);
-	 return; /* for brain-fried compilers */
       }
       if (ch == '.') {
 	 nextch();
@@ -970,7 +961,6 @@ read_date(int *py, int *pm, int *pd)
 	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
 	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
 	    longjmp(jbSkipLine, 1);
-	    return; /* for brain-fried compilers */
 	 }
       }
    }
@@ -1031,7 +1021,6 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 	    set_pos(&fp_date);
 	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
 	    longjmp(jbSkipLine, 1);
-	    return; /* for brain-fried compilers */
 	}
 	fp_year = fp_date;
     }
@@ -1040,7 +1029,6 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 	set_pos(&fp_month);
 	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
 	longjmp(jbSkipLine, 1);
-	return; /* for brain-fried compilers */
     }
 
     if (d < 1 || d > last_day(y, m)) {
@@ -1048,7 +1036,6 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 	/* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
 	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
 	longjmp(jbSkipLine, 1);
-	return; /* for brain-fried compilers */
     }
 
     if (py) *py = y;
