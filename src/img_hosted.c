@@ -1,6 +1,6 @@
 /* img_hosted.c
  * Build img for use in Survex code
- * Copyright (C) 1997,1999,2000,2001,2011,2013,2014,2015,2016 Olly Betts
+ * Copyright (C) 1997-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,10 @@
 #include "img_hosted.h"
 
 #define IMG_HOSTED 1
+
+// We now require C99 which standardised lround().
+#define HAVE_LROUND
+#define HAVE_DECL_LROUND 1
 
 #include "img.c"
 

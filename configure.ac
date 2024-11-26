@@ -239,12 +239,7 @@ AC_TYPE_UINT16_T
 AC_TYPE_INT32_T
 AC_TYPE_UINT32_T
 
-dnl Check if there's a declaration of lround().  Below we also check for
-dnl lround() with AC_CHECK_FUNCS, which just checks if it can be linked
-dnl against.  Some platforms are missing a prototype for lround(), so
-dnl both checks are useful.
-AC_CHECK_DECLS([lround], [], [], [[#include <math.h>]])
-AC_CHECK_FUNCS([popen getpwuid lround hypot mmap])
+AC_CHECK_FUNCS([popen getpwuid hypot mmap])
 
 dnl Much faster than using getc()/putc(), at least on Linux.
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
