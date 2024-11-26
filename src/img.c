@@ -86,7 +86,6 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 # define xosmalloc(L) malloc((L))
 # define xosrealloc(L,S) realloc((L),(S))
 # define osfree(P) free((P))
-# define osnew(T) (T*)malloc(sizeof(T))
 
 /* in IMG_HOSTED mode, this tests if a filename refers to a directory */
 # define fDirectory(X) 0
@@ -1162,7 +1161,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
       return NULL;
    }
 
-   pimg = osnew(img);
+   pimg = xosmalloc(sizeof(img));
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
       if (close_func) close_func(stream);
@@ -1597,7 +1596,7 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
       return NULL;
    }
 
-   pimg = osnew(img);
+   pimg = xosmalloc(sizeof(img));
    if (pimg == NULL) {
       img_errno = IMG_OUTOFMEMORY;
       if (close_func) close_func(stream);
