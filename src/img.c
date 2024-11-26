@@ -423,7 +423,7 @@ compass_plt_update_station(img *pimg, const char *name, int name_len,
 	    }
 	}
     }
-    p = malloc(offsetof(struct compass_station, name) + name_len);
+    p = xosmalloc(offsetof(struct compass_station, name) + name_len);
     if (!p) return -1;
     p->flags = flags;
     p->len = name_len;
