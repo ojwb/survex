@@ -375,7 +375,7 @@ typedef struct Settings {
     */
    real dec_lat, dec_lon, dec_alt;
    /* Cached auto-declination in radians, or HUGE_REAL for no cached value.
-    * Only meaningful if date1 != -1.
+    * Only meaningful if days1 != -1.
     */
    real declination;
    double min_declination, max_declination;
