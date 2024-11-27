@@ -896,12 +896,13 @@ Description
    ``*date`` specifies the date that the survey was done.  A range of dates can
    be specified (useful for overnight or multi-day surveying trips).
 
-   Dates must be in the order year then month then day, the day or month and day
-   can be omitted.  The separator between components must be ``.``.
+   Dates must be in the order year then month then day.  The separator between
+   components must be ``.``.
 
-   Dates with just a year (e.g. ``2001``) are treated as being in the middle of
-   that year.  Dates with a month and year (e.g. ``2000.10``) are treated as
-   being in the middle of that month.
+   The day or both the month and the day can be omitted.  Dates with just a
+   year (e.g. ``2001``) are treated as a date range for that whole year.
+   Dates without a day (e.g. ``2000.10``) are treated as a date range for that
+   whole month.
 
 See Also
    ``*begin``, ``*instrument``, ``*team``
@@ -947,13 +948,14 @@ Description
    Survex 1.2.43 updated to using version 13 in early 2020.
 
    The IGRF model takes a date and a location as inputs.  Survex uses the
-   specified date of the survey, and uses the "x y z" coordinates specified in
+   specified date of the survey (if the survey's date is a range, the centre
+   of that range is used), and uses the "x y z" coordinates specified in
    the ``*declination auto`` command as the location in the current input
    coordinate system (as set by ``*cs``).  Most users can just specify a single
    representative location somewhere in the area of the cave.  If you're not
-   sure what to use pick some coordinates roughly in the middle of the bounding
-   box of the cave - it doesn't need to be a fixed point or a known refindable
-   location, though it can be if you prefer.
+   sure what to use, pick some coordinates roughly in the middle of the
+   bounding box of the cave - it doesn't need to be a fixed point or a known
+   refindable location, though it can be if you prefer.
 
    Survex 1.2.27 and later also automatically correct for grid convergence (the
    difference between Grid North and True North) when ``*declination auto`` is
