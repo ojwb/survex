@@ -896,13 +896,17 @@ Description
    ``*date`` specifies the date that the survey was done.  A range of dates can
    be specified (useful for overnight or multi-day surveying trips).
 
-   Dates must be in the order year then month then day.  The separator between
-   components must be ``.``.
+   Date components must be in the order year then month then day.  Later
+   components can be omitted to specify the date to the granularity of a month
+   or year (which is sometimes useful for older survey data where the exact
+   date of a survey may no longer be known).  The separator between components
+   must be ``.``.
 
-   The day or both the month and the day can be omitted.  Dates with just a
-   year (e.g. ``2001``) are treated as a date range for that whole year.
-   Dates without a day (e.g. ``2000.10``) are treated as a date range for that
-   whole month.
+   Dates with just a year (e.g. ``2001``) are treated as a date range for that
+   whole year.  Dates without a day (e.g. ``2004.06``) are treated as a date
+   range for that whole month.  If used in a range, the appropriate extreme of
+   the year or month is used as that end of the range - e.g. ``2001-2004.06``
+   is from the start of 2001 to the end of June 2004.
 
 See Also
    ``*begin``, ``*instrument``, ``*team``
