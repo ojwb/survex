@@ -279,11 +279,6 @@ typedef struct {
 #define FLAG_FAKE 0x10 /* an equate or leg inside an sdfix */
 #define MASK_REVERSEDIRN 0x03
 
-/* reverse leg - deltas & vars stored on other dirn */
-typedef struct LinkRev {
-   linkcommon l;
-} linkrev;
-
 /* forward leg - deltas & vars stored here */
 typedef struct Link {
    linkcommon l;

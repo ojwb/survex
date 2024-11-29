@@ -127,7 +127,7 @@ remove_subnets(void)
 	       trav = allocate_reduction(2);
 	       trav->type = TYPE_LOLLIPOP;
 
-	       newleg2 = (linkfor*)osnew(linkrev);
+	       newleg2 = (linkfor*)osnew(linkcommon);
 
 	       newleg = copy_link(stn3->leg[dirn3]);
 
@@ -260,7 +260,7 @@ remove_subnets(void)
 #endif
 		 }
 	       osfree(newleg2);
-	       newleg2 = (linkfor*)osnew(linkrev);
+	       newleg2 = (linkfor*)osnew(linkcommon);
 
 	       addto_link(newleg, stn2->leg[dirn2]);
 	       addto_link(newleg, stn3->leg[dirn3]);
@@ -459,9 +459,9 @@ remove_subnets(void)
 		    legBZ->l.reverse = 1 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 		    legCZ->l.to = stnZ;
 		    legCZ->l.reverse = 2 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
-		    stnZ->leg[0] = (linkfor*)osnew(linkrev);
-		    stnZ->leg[1] = (linkfor*)osnew(linkrev);
-		    stnZ->leg[2] = (linkfor*)osnew(linkrev);
+		    stnZ->leg[0] = (linkfor*)osnew(linkcommon);
+		    stnZ->leg[1] = (linkfor*)osnew(linkcommon);
+		    stnZ->leg[2] = (linkfor*)osnew(linkcommon);
 		    stnZ->leg[0]->l.to = stn4;
 		    stnZ->leg[0]->l.reverse = dirn4;
 		    stnZ->leg[1]->l.to = stn5;

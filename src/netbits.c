@@ -268,7 +268,7 @@ addleg_(node *fr, node *to,
    SVX_ASSERT(fr->name != to->name);
 
    linkfor *leg = osnew(linkfor);
-   linkfor *leg2 = (linkfor*)osnew(linkrev);
+   linkfor *leg2 = (linkfor*)osnew(linkcommon);
 
    int i = freeleg(&fr);
    int j = freeleg(&to);
@@ -516,7 +516,7 @@ freeleg(node **stnptr)
    /* All legs used, so split node in two */
    node *newstn = osnew(node);
    linkfor *leg = osnew(linkfor);
-   linkfor *leg2 = (linkfor*)osnew(linkrev);
+   linkfor *leg2 = (linkfor*)osnew(linkcommon);
 
    *stnptr = newstn;
 

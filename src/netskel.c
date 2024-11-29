@@ -262,7 +262,7 @@ concatenate_trav(node *stn, int i)
    if (!two_node(stn2) || fixed(stn2)) return;
 
    trav = osnew(stack);
-   newleg2 = (linkfor*)osnew(linkrev);
+   newleg2 = (linkfor*)osnew(linkcommon);
 
 #if PRINT_NETBITS
    printf("Concatenating trav "); print_prefix(stn->name); printf("<%p>",stn);
