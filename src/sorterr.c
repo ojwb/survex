@@ -48,16 +48,16 @@ static const struct option long_opts[] = {
 static struct help_msg help[] = {
 /*				<-- */
    /* TRANSLATORS: --help output for sorterr --horizontal option */
-   {HLP_ENCODELONG(0),        /*sort by horizontal error factor*/179, 0},
+   {HLP_ENCODELONG(0),        /*sort by horizontal error factor*/179, 0, 0},
    /* TRANSLATORS: --help output for sorterr --vertical option */
-   {HLP_ENCODELONG(1),        /*sort by vertical error factor*/180, 0},
+   {HLP_ENCODELONG(1),        /*sort by vertical error factor*/180, 0, 0},
    /* TRANSLATORS: --help output for sorterr --percentage option */
-   {HLP_ENCODELONG(2),        /*sort by percentage error*/181, 0},
+   {HLP_ENCODELONG(2),        /*sort by percentage error*/181, 0, 0},
    /* TRANSLATORS: --help output for sorterr --per-leg option */
-   {HLP_ENCODELONG(3),        /*sort by error per leg*/182, 0},
+   {HLP_ENCODELONG(3),        /*sort by error per leg*/182, 0, 0},
    /* TRANSLATORS: --help output for sorterr --replace option */
-   {HLP_ENCODELONG(4),        /*replace .err file with re-sorted version*/183, 0},
-   {0, 0, 0}
+   {HLP_ENCODELONG(4),        /*replace .err file with re-sorted version*/183, 0, 0},
+   {0, 0, 0, 0}
 };
 
 typedef struct {

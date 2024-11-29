@@ -65,10 +65,10 @@ static struct help_msg help[] = {
     /* TRANSLATORS: --help output for --survey option.
      *
      * "this" has been added to English translation */
-    {HLP_ENCODELONG(0),       /*only load the sub-survey with this prefix*/199, 0},
+    {HLP_ENCODELONG(0),       /*only load the sub-survey with this prefix*/199, 0, 0},
     /* TRANSLATORS: --help output for aven --print option */
-    {HLP_ENCODELONG(1),       /*print and exit (requires a 3d file)*/119, 0},
-    {0, 0, 0}
+    {HLP_ENCODELONG(1),       /*print and exit (requires a 3d file)*/119, 0, 0},
+    {0, 0, 0, 0}
 };
 
 #ifdef __WXMSW__

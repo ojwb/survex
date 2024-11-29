@@ -111,19 +111,19 @@ static const struct option long_opts[] = {
 static struct help_msg help[] = {
 /*				<-- */
    /* TRANSLATORS: --help output for cavern --output option */
-   {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0},
+   {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0, 0},
    /* TRANSLATORS: --help output for cavern --quiet option */
-   {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0},
+   {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0, 0},
    /* TRANSLATORS: --help output for cavern --no-auxiliary-files option */
-   {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0},
+   {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0, 0},
    /* TRANSLATORS: --help output for cavern --warnings-are-errors option */
-   {HLP_ENCODELONG(5),	      /*turn warnings into errors*/165, 0},
+   {HLP_ENCODELONG(5),	      /*turn warnings into errors*/165, 0, 0},
    /* TRANSLATORS: --help output for cavern --log option */
-   {HLP_ENCODELONG(6),	      /*log output to .log file*/170, 0},
+   {HLP_ENCODELONG(6),	      /*log output to .log file*/170, 0, 0},
    /* TRANSLATORS: --help output for cavern --3d-version option */
-   {HLP_ENCODELONG(7),	      /*specify the 3d file format version to output*/171, 0},
+   {HLP_ENCODELONG(7),	      /*specify the 3d file format version to output*/171, 0, 0},
  /*{'z',			"set optimizations for network reduction"},*/
-   {0, 0, 0}
+   {0, 0, 0, 0}
 };
 
 /* atexit functions */

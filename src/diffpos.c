@@ -53,8 +53,8 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
-   {0, 0, 0}
+   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0, 0},
+   {0, 0, 0, 0}
 };
 
 /* We use a hashtable with linked list buckets - this is how many hash table

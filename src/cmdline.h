@@ -1,6 +1,6 @@
 /* cmdline.h
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001,2003,2011 Olly Betts
+ * Copyright (C) 1998-2001,2003,2011,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,11 @@ extern int optopt;
 struct help_msg {
    int opt;
    int msg_no;
-   const char * arg;
+   // String to substitute for %s in msg(msg_no); otherwise NULL.
+   const char *arg;
+   // String to use as placeholder (e.g. --long-opt=PLACEHOLDER).  If NULL
+   // then the option name is upper-cased and `-` changed to `_`.
+   const char *placeholder;
 };
 
 /* give -1 for max_args_ if there's no limit */

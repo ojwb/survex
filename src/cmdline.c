@@ -110,9 +110,13 @@ cmdline_help(void)
 
 	    putchar('=');
 
-	    for (p = longopt; *p ; p++) {
-		unsigned char ch = *p;
-		putchar((ch == '-') ? '_' : toupper(ch));
+	    if (help->placeholder) {
+		fputs(help->placeholder, stdout);
+	    } else {
+		for (p = longopt; *p ; p++) {
+		    unsigned char ch = *p;
+		    putchar((ch == '-') ? '_' : toupper(ch));
+		}
 	    }
 
 	    if (o->has_arg == optional_argument) putchar(']');

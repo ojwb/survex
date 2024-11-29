@@ -476,12 +476,12 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
+   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0, 0},
    /* TRANSLATORS: --help output for extend --specfile option */
-   {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0},
+   {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0, "ESPEC_FILE"},
    /* TRANSLATORS: --help output for extend --show-breaks option */
-   {HLP_ENCODELONG(2),        /*show breaks with surface survey legs in output*/91, 0},
-   {0, 0, 0}
+   {HLP_ENCODELONG(2),        /*show breaks with surface survey legs in output*/91, 0, 0},
+   {0, 0, 0, 0}
 };
 
 static point *
