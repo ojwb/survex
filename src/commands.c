@@ -2883,7 +2883,7 @@ try_date2:
 	}
     }
 
-process_dates:
+process_dates:;
     bool date_range = (year2 != 0);
     if (!date_range) {
 	year2 = year;
