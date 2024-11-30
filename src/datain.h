@@ -18,8 +18,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <setjmp.h>
+#ifndef DATAIN_H
+#define DATAIN_H
 
+#include <setjmp.h>
 #include <stdio.h> /* for FILE */
 
 #include "message.h" /* for DIAG_WARN, etc */
@@ -104,3 +106,5 @@ void compile_diagnostic_pfx(int flags, const prefix * pfx, int en, ...);
 
 void compile_diagnostic_token_show(int flags, int en);
 void compile_diagnostic_buffer(int flags, int en, ...);
+
+#endif

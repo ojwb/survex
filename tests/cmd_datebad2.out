@@ -67,6 +67,195 @@
 ./cmd_datebad2.svx:25:7: warning: Invalid year (< 1900 or > 2078)
  *date 11974.02.03
        ^~~~~
+./cmd_datebad2.svx:26:12: warning: Invalid year (< 1900 or > 2078)
+ *date 2078-2079
+            ^~~~
+./cmd_datebad2.svx:27:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899-2079
+       ^~~~
+./cmd_datebad2.svx:28:23: warning: Invalid month
+ *date 1984.12.13-1984.13.12
+                       ^~
+./cmd_datebad2.svx:29:26: warning: Invalid day of the month
+ *date 1984.12.13-1985.02.29
+                          ^~
+./cmd_datebad2.svx:31:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899-12-31
+       ^~~~
+./cmd_datebad2.svx:32:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899-12-31
+       ^~~~
+./cmd_datebad2.svx:33:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899-12
+       ^~~~
+./cmd_datebad2.svx:34:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899
+       ^~~~
+./cmd_datebad2.svx:35:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1800
+       ^~~~
+./cmd_datebad2.svx:36:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1700-12-01
+       ^~~~
+./cmd_datebad2.svx:37:7: warning: Invalid year (< 1900 or > 2078)
+ *date 100-01-01
+       ^~~
+./cmd_datebad2.svx:38:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899-02-03
+       ^~~~
+./cmd_datebad2.svx:39:7: warning: Invalid year (< 1900 or > 2078)
+ *date 999-9-9
+       ^~~
+./cmd_datebad2.svx:40:12: warning: Invalid month
+ *date 1984-13-01
+            ^~
+./cmd_datebad2.svx:41:12: warning: Invalid month
+ *date 1984-13-31
+            ^~
+./cmd_datebad2.svx:42:15: warning: Invalid day of the month
+ *date 1984-01-00
+               ^~
+./cmd_datebad2.svx:43:12: warning: Invalid month
+ *date 1984-00-12
+            ^~
+./cmd_datebad2.svx:44:12: warning: Assuming 2 digit year is 1900
+ *date 1984-00
+            ^~
+./cmd_datebad2.svx:44:7: error: End of date range is before the start
+ *date 1984-00
+       ^~~~~~~
+./cmd_datebad2.svx:45:12: warning: Assuming 2 digit year is 1913
+ *date 1984-13
+            ^~
+./cmd_datebad2.svx:45:7: error: End of date range is before the start
+ *date 1984-13
+       ^~~~~~~
+./cmd_datebad2.svx:46:7: error: End of date range is before the start
+ *date 1984-01-02 1984-01-01
+       ^~~~~~~~~~
+./cmd_datebad2.svx:47:7: warning: Assuming 2 digit year is 1971
+ *date 71 1970
+       ^~
+./cmd_datebad2.svx:47:7: error: End of date range is before the start
+ *date 71 1970
+       ^~
+./cmd_datebad2.svx:48:7: warning: Invalid year (< 1900 or > 2078)
+ *date 2079-01-01
+       ^~~~
+./cmd_datebad2.svx:49:7: warning: Invalid year (< 1900 or > 2078)
+ *date 2079-12-31
+       ^~~~
+./cmd_datebad2.svx:50:7: warning: Invalid year (< 1900 or > 2078)
+ *date 2099-06
+       ^~~~
+./cmd_datebad2.svx:51:7: warning: Invalid year (< 1900 or > 2078)
+ *date 3033
+       ^~~~
+./cmd_datebad2.svx:52:7: warning: Invalid year (< 1900 or > 2078)
+ *date 11974-02-03
+       ^~~~~
+./cmd_datebad2.svx:53:12: warning: Invalid year (< 1900 or > 2078)
+ *date 2078 2079
+            ^~~~
+./cmd_datebad2.svx:54:7: warning: Invalid year (< 1900 or > 2078)
+ *date 1899 2079
+       ^~~~
+./cmd_datebad2.svx:55:23: warning: Invalid month
+ *date 1984-12-13 1984-13-12
+                       ^~
+./cmd_datebad2.svx:56:26: warning: Invalid day of the month
+ *date 1984-12-13 1985-02-29
+                          ^~
+./cmd_datebad2.svx:58:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1899-12-31
+                ^~~~
+./cmd_datebad2.svx:59:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1899-12-31
+                ^~~~
+./cmd_datebad2.svx:60:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1899-12
+                ^~~~
+./cmd_datebad2.svx:61:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1899
+                ^~~~
+./cmd_datebad2.svx:62:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1800
+                ^~~~
+./cmd_datebad2.svx:63:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1700-12-01
+                ^~~~
+./cmd_datebad2.svx:64:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 100-01-01
+                ^~~
+./cmd_datebad2.svx:65:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1899-02-03
+                ^~~~
+./cmd_datebad2.svx:66:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 999-9-9
+                ^~~
+./cmd_datebad2.svx:67:21: warning: Invalid month
+ *date surveyed 1984-13-01
+                     ^~
+./cmd_datebad2.svx:68:21: warning: Invalid month
+ *date surveyed 1984-13-31
+                     ^~
+./cmd_datebad2.svx:69:24: warning: Invalid day of the month
+ *date surveyed 1984-01-00
+                        ^~
+./cmd_datebad2.svx:70:21: warning: Invalid month
+ *date surveyed 1984-00-12
+                     ^~
+./cmd_datebad2.svx:71:21: warning: Invalid month
+ *date surveyed 1984-00
+                     ^~
+./cmd_datebad2.svx:72:21: warning: Invalid month
+ *date surveyed 1984-13
+                     ^~
+./cmd_datebad2.svx:73:16: error: End of date range is before the start
+ *date surveyed 1984-01-02 1984-01-01
+                ^~~~~~~~~~
+./cmd_datebad2.svx:74:16: warning: Assuming 2 digit year is 1971
+ *date surveyed 71 1970
+                ^~
+./cmd_datebad2.svx:74:16: error: End of date range is before the start
+ *date surveyed 71 1970
+                ^~
+./cmd_datebad2.svx:75:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 2079-01-01
+                ^~~~
+./cmd_datebad2.svx:76:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 2079-12-31
+                ^~~~
+./cmd_datebad2.svx:77:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 2099-06
+                ^~~~
+./cmd_datebad2.svx:78:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 3033
+                ^~~~
+./cmd_datebad2.svx:79:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 11974-02-03
+                ^~~~~
+./cmd_datebad2.svx:80:21: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 2078 2079
+                     ^~~~
+./cmd_datebad2.svx:81:16: warning: Invalid year (< 1900 or > 2078)
+ *date surveyed 1899 2079
+                ^~~~
+./cmd_datebad2.svx:82:32: warning: Invalid month
+ *date surveyed 1984-12-13 1984-13-12
+                                ^~
+./cmd_datebad2.svx:83:35: warning: Invalid day of the month
+ *date surveyed 1984-12-13 1985-02-29
+                                   ^~
+./cmd_datebad2.svx:85:7: error: Expecting "SURVEYED" or "EXPLORED"
+ *date exploded 1984-12-13
+       ^~~~~~~~
+./cmd_datebad2.svx:86:25: error: Duplicate date type "surveyed"
+ *date surveyed explored surveyed 1984-12-13
+                         ^~~~~~~~
+./cmd_datebad2.svx:87:20: error: Expecting "-"
+ *date surveyed 1984.12.13
+                    ^
 
 Removing trailing traverses...
 
@@ -91,4 +280,4 @@ Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
 North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
 East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
    2 1-nodes.
-There were 21 warning(s) and 2 error(s) - no output files produced.
+There were 75 warning(s) and 11 error(s) - no output files produced.

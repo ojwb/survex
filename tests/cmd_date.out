@@ -1,66 +1,72 @@
-./cmd_date.svx:4:7: warning: Assuming 2 digit year is 1900
+./cmd_date.svx:5:7: warning: Assuming 2 digit year is 1900
  *date 00.01.01
        ^~
-./cmd_date.svx:5:7: warning: Assuming 2 digit year is 1900
+./cmd_date.svx:7:7: warning: Assuming 2 digit year is 1900
  *date 00.01
        ^~
-./cmd_date.svx:6:7: warning: Assuming 2 digit year is 1900
+./cmd_date.svx:9:7: warning: Assuming 2 digit year is 1900
  *date 00.02
        ^~
-./cmd_date.svx:7:7: warning: Assuming 2 digit year is 1900
+./cmd_date.svx:11:7: warning: Assuming 2 digit year is 1900
  *date 00
        ^~
-./cmd_date.svx:14:7: warning: Assuming 2 digit year is 1902
+./cmd_date.svx:25:7: warning: Assuming 2 digit year is 1902
  *date 02.01.01
        ^~
-./cmd_date.svx:15:7: warning: Assuming 2 digit year is 1902
+./cmd_date.svx:27:7: warning: Assuming 2 digit year is 1902
  *date 02.01
        ^~
-./cmd_date.svx:16:7: warning: Assuming 2 digit year is 1902
+./cmd_date.svx:29:7: warning: Assuming 2 digit year is 1902
  *date 02.02
        ^~
-./cmd_date.svx:17:7: warning: Assuming 2 digit year is 1902
+./cmd_date.svx:31:7: warning: Assuming 2 digit year is 1902
  *date 02
        ^~
-./cmd_date.svx:24:7: warning: Assuming 2 digit year is 1969
+./cmd_date.svx:45:7: warning: Assuming 2 digit year is 1969
  *date 69.12.31
        ^~
-./cmd_date.svx:28:7: warning: Assuming 2 digit year is 1970
+./cmd_date.svx:53:7: warning: Assuming 2 digit year is 1970
  *date 70.01.01
        ^~
-./cmd_date.svx:29:7: warning: Assuming 2 digit year is 1970
+./cmd_date.svx:55:7: warning: Assuming 2 digit year is 1970
  *date 70.01
        ^~
-./cmd_date.svx:30:7: warning: Assuming 2 digit year is 1970
+./cmd_date.svx:57:7: warning: Assuming 2 digit year is 1970
  *date 70.02
        ^~
-./cmd_date.svx:31:7: warning: Assuming 2 digit year is 1970
+./cmd_date.svx:59:7: warning: Assuming 2 digit year is 1970
  *date 70
        ^~
-./cmd_date.svx:32:7: warning: Assuming 2 digit year is 1999
+./cmd_date.svx:61:7: warning: Assuming 2 digit year is 1999
  *date 99.12.31
        ^~
-./cmd_date.svx:76:12: warning: Date is in the future!
+./cmd_date.svx:148:12: warning: Date is in the future!
  *date 1900-2078
             ^~~~
-./cmd_date.svx:77:7: warning: Date is in the future!
+./cmd_date.svx:150:7: warning: Date is in the future!
  *date 2078.12.31
        ^~~~~~~~~~
-./cmd_date.svx:78:7: warning: Date is in the future!
+./cmd_date.svx:152:7: warning: Date is in the future!
  *date 2078.06
        ^~~~~~~
-./cmd_date.svx:79:7: warning: Date is in the future!
+./cmd_date.svx:154:7: warning: Date is in the future!
  *date 2078
        ^~~~
-./cmd_date.svx:80:18: warning: Date is in the future!
+./cmd_date.svx:156:18: warning: Date is in the future!
  *date 2016.08.25-2078.12.31 ; long survey trip!
                   ^~~~~~~~~~
-./cmd_date.svx:82:7: warning: Date is in the future!
+./cmd_date.svx:159:7: warning: Date is in the future!
  *date 2078.12.01-2078.12.31
        ^~~~~~~~~~
-./cmd_date.svx:82:18: warning: Date is in the future!
+./cmd_date.svx:159:18: warning: Date is in the future!
  *date 2078.12.01-2078.12.31
                   ^~~~~~~~~~
+./cmd_date.svx:162:12: warning: Assuming 2 digit year is 1913
+ *date 1911-13
+            ^~
+./cmd_date.svx:164:7: warning: Interpreting as an ISO-format date - use "*date surveyed 1911-12" to suppress this warning, or "*date 1911 1912" if you wanted a date range
+ *date 1911-12
+       ^~~~~~~
 
 Removing trailing traverses...
 
@@ -76,13 +82,14 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 2 survey stations, joined by 1 leg.
+Survey contains 80 survey stations, joined by 79 legs.
 There are 0 loops.
-Total length of survey legs =    1.00m (   1.00m adjusted)
-Total plan length of survey legs =    1.00m
-Total vertical length of survey legs =    0.05m
-Vertical range = 0.05m (from 1 at 0.00m to 2 at -0.05m)
-North-South range = 0.94m (from 2 at 0.94m to 1 at 0.00m)
-East-West range = 0.34m (from 2 at 0.34m to 1 at 0.00m)
-   2 1-nodes.
-There were 21 warning(s).
+Total length of survey legs = 3160.00m (3160.00m adjusted)
+Total plan length of survey legs = 3160.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 1911_12 at 0.00m to 1911_12 at 0.00m)
+North-South range = 79.00m (from 1911_12 at 79.00m to _ at 0.00m)
+East-West range = 0.00m (from 1911_12 at 0.00m to 1911_12 at 0.00m)
+  79 1-nodes.
+   1 79-node.
+There were 23 warning(s).

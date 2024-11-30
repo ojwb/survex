@@ -29,7 +29,7 @@ is_leap_year(int year)
     return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
 }
 
-unsigned int
+int
 last_day(int year, int month)
 {
     static const unsigned char lastday[13] = {

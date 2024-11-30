@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "datain.h"
+
 extern int root_depr_count;
 
 enum {
@@ -56,12 +58,13 @@ real read_numeric(bool f_optional);
 real read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings);
 real read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings);
 
+/* Don't skip blanks, variable error code */
+unsigned int read_uint_raw(int errmsg, const filepos *fp);
+
 unsigned int read_uint(void);
 
 int read_int(int min_val, int max_val);
 
 void read_string(string *pstr);
-
-void read_date(int *py, int *pm, int *pd);
 
 void read_walls_srv_date(int *py, int *pm, int *pd);

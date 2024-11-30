@@ -673,6 +673,12 @@ msgstr ""
 msgid "Assuming 2 digit year is %d"
 msgstr ""
 
+#: ../src/commands.c:2806
+#: n:158
+#, c-format
+msgid "Interpreting as an ISO-format date - use “*date surveyed %d-%02d” to suppress this warning, or “*date %d %d” if you wanted a date range"
+msgstr ""
+
 #: ../src/readval.c:930
 #: ../src/readval.c:1013
 #: n:58
@@ -757,6 +763,12 @@ msgstr ""
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
+msgstr ""
+
+#: ../src/commands.c:2763
+#: n:416
+#, c-format
+msgid "Duplicate date type “%s”"
 msgstr ""
 
 #: ../src/commands.c:1296

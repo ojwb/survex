@@ -806,8 +806,8 @@ read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 }
 
 /* Don't skip blanks, variable error code */
-static unsigned int
-read_uint_internal(int errmsg, const filepos *fp)
+unsigned int
+read_uint_raw(int errmsg, const filepos *fp)
 {
    unsigned int n = 0;
    if (!isdigit(ch)) {
@@ -826,7 +826,7 @@ extern unsigned int
 read_uint(void)
 {
    skipblanks();
-   return read_uint_internal(/*Expecting numeric field, found “%s”*/9, NULL);
+   return read_uint_raw(/*Expecting numeric field, found “%s”*/9, NULL);
 }
 
 extern int
@@ -918,65 +918,13 @@ read_string(string *pstr)
 }
 
 extern void
-read_date(int *py, int *pm, int *pd)
-{
-   unsigned int y = 0, m = 0, d = 0;
-   filepos fp_date;
-
-   skipblanks();
-
-   get_pos(&fp_date);
-   y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
-   /* Two digit year is 19xx. */
-   if (y < 100) {
-      filepos fp_save;
-      get_pos(&fp_save);
-      y += 1900;
-      set_pos(&fp_date);
-      /* TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918 */
-      compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Assuming 2 digit year is %d*/76, y);
-      set_pos(&fp_save);
-   }
-   if (y < 1900 || y > 2078) {
-      set_pos(&fp_date);
-      compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
-      longjmp(jbSkipLine, 1);
-   }
-   if (ch == '.') {
-      filepos fp;
-      nextch();
-      get_pos(&fp);
-      m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
-      if (m < 1 || m > 12) {
-	 set_pos(&fp);
-	 compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
-	 longjmp(jbSkipLine, 1);
-      }
-      if (ch == '.') {
-	 nextch();
-	 get_pos(&fp);
-	 d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
-	 if (d < 1 || d > last_day(y, m)) {
-	    set_pos(&fp);
-	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
-	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);
-	    longjmp(jbSkipLine, 1);
-	 }
-      }
-   }
-   if (py) *py = y;
-   if (pm) *pm = m;
-   if (pd) *pd = d;
-}
-
-extern void
 read_walls_srv_date(int *py, int *pm, int *pd)
 {
     skipblanks();
 
     filepos fp_date;
     get_pos(&fp_date);
-    unsigned y = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    unsigned y = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date);
     int separator = -2;
     if (ch == '-' || ch == '/') {
 	separator = ch;
@@ -984,13 +932,13 @@ read_walls_srv_date(int *py, int *pm, int *pd)
     }
     filepos fp_month;
     get_pos(&fp_month);
-    unsigned m = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    unsigned m = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date);
     if (ch == separator) {
 	nextch();
     }
     filepos fp_day;
     get_pos(&fp_day);
-    unsigned d = read_uint_internal(/*Expecting date, found “%s”*/198, &fp_date);
+    unsigned d = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date);
 
     filepos fp_year;
     if (y < 100) {
@@ -1031,7 +979,7 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 	longjmp(jbSkipLine, 1);
     }
 
-    if (d < 1 || d > last_day(y, m)) {
+    if (d < 1 || d > (unsigned)last_day(y, m)) {
 	set_pos(&fp_day);
 	/* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
 	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid day of the month*/87);

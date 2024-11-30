@@ -868,18 +868,35 @@ DATE
 ----
 
 Syntax
-   ``*date <date>``
+   ``*date <date type(s)> <ISO date>``
 
-   ``*date <date1>-<date2>``
+   ``*date <date type(s)> <ISO date1> <ISO date2>``
+
+   ``*date <ISO date>``
+
+   ``*date <ISO date1> <ISO date2>``
+
+   ``*date <legacy date>``
+
+   ``*date <legacy date1>-<legacy date2>``
 
 Example
    ::
 
-       *date 2001
+       *date explored 1987-06-20 1987-06-28
+       *date surveyed 1987-07-11
 
    ::
 
-       *date 2000.10
+       *date explored surveyed 2024-11-29
+
+   ::
+
+       *date 1976-08
+
+   ::
+
+       *date 1968
 
    ::
 
@@ -889,24 +906,44 @@ Example
 
        *date 1985.08.12-1985.08.13
 
+   ::
+
+       *date 2000.10
+
 Validity
    valid at the start of a ``*begin``/``*end`` block.
 
 Description
    ``*date`` specifies the date that the survey was done.  A range of dates can
-   be specified (useful for overnight or multi-day surveying trips).
+   be specified (e.g. for "surveyed" date, this is useful for overnight or
+   multi-day surveying trips).
 
    Date components must be in the order year then month then day.  Later
    components can be omitted to specify the date to the granularity of a month
    or year (which is sometimes useful for older survey data where the exact
-   date of a survey may no longer be known).  The separator between components
-   must be ``.``.
+   date of a survey may no longer be known).  Such partial dates are treated
+   as a date range for that whole month or year; if used in a date range, the
+   appropriate extreme of the year or month is used as that end of the range -
+   e.g. ``2001 2004-06`` is from the start of 2001 to the end of June 2004.
 
-   Dates with just a year (e.g. ``2001``) are treated as a date range for that
-   whole year.  Dates without a day (e.g. ``2004.06``) are treated as a date
-   range for that whole month.  If used in a range, the appropriate extreme of
-   the year or month is used as that end of the range - e.g. ``2001-2004.06``
-   is from the start of 2001 to the end of June 2004.
+   Survex 1.4.13 added support for date types ``explored`` and ``surveyed``
+   (``*date`` without a type is assumed to be specifying the ``surveyed`` date
+   only).
+
+   Survex 1.4.13 also added support for the ISO date format, where the
+   separator between components is ``-``.  In older versions the separator
+   between components had to be ``.`` (with ``-`` used between dates in a
+   range).  The older date format is still accepted, but we strongly recommend
+   using ISO format dates in new data because it's a standardised date format.
+
+   We recommend avoiding two digit years because of the inherent ambiguity, but
+   they are accepted (with a warning) and assumed to be 19xx.
+
+   Currently dates before 1900 and after 2078 result in a warning and are
+   ignored.
+
+   The ``explored`` date is parsed but not currently stored anywhere.  A future
+   version will write it to the ``.3d`` file and make it available to aven, etc.
 
 See Also
    ``*begin``, ``*instrument``, ``*team``
