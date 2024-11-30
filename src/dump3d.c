@@ -34,14 +34,14 @@ static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
    {"survey", required_argument, 0, 's'},
    {"rewind", no_argument, 0, 'r'},
-   {"show-dates", no_argument, 0, 'd'},
+   {"show-dates", optional_argument, 0, 'd'},
    {"legs", no_argument, 0, 'l'},
    {"help", no_argument, 0, HLP_HELP},
    {"version", no_argument, 0, HLP_VERSION},
    {0, 0, 0, 0}
 };
 
-#define short_opts "rdls:"
+#define short_opts "rDdls:"
 
 static struct help_msg help[] = {
 /*				<-- */
@@ -49,6 +49,7 @@ static struct help_msg help[] = {
    /* TRANSLATORS: --help output for dump3d --rewind option */
    {HLP_ENCODELONG(1),	      /*rewind file and read it a second time*/204, 0, 0},
    {HLP_ENCODELONG(2),	      /*show survey date information (if present)*/396, 0, 0},
+   {'D',		      /*equivalent to --show-dates=-*/509, 0, 0},
    {HLP_ENCODELONG(3),	      /*convert MOVE and LINE into LEG*/486, 0, 0},
    {0, 0, 0, 0}
 };
@@ -63,7 +64,7 @@ main(int argc, char **argv)
    int code;
    const char *survey = NULL;
    bool fRewind = false;
-   bool show_dates = false;
+   const char *date_sep = NULL;
    bool make_legs = false;
 
    msg_init(argv);
@@ -74,10 +75,19 @@ main(int argc, char **argv)
       if (opt == EOF) break;
       if (opt == 's') survey = optarg;
       if (opt == 'r') fRewind = true;
-      if (opt == 'd') show_dates = true;
+      if (opt == 'd') {
+	  if (optarg) {
+	      date_sep = optarg;
+	  } else {
+	      date_sep = ".";
+	  }
+      }
+      if (opt == 'D') date_sep = "-";
       if (opt == 'l') make_legs = true;
    }
    fnm = argv[optind];
+
+   char date_range = (date_sep && strcmp(date_sep, ".") == 0) ? '-' : ' ';
 
    pimg = img_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
@@ -143,13 +153,14 @@ main(int argc, char **argv)
 	    if (pimg->flags & img_FLAG_SURFACE) printf(" SURFACE");
 	    if (pimg->flags & img_FLAG_DUPLICATE) printf(" DUPLICATE");
 	    if (pimg->flags & img_FLAG_SPLAY) printf(" SPLAY");
-	    if (show_dates && pimg->days1 != -1) {
+	    if (date_sep && pimg->days1 != -1) {
 		int y, m, d;
 		ymd_from_days_since_1900(pimg->days1, &y, &m, &d);
-		printf(" %04d.%02d.%02d", y, m, d);
+		printf(" %04d%s%02d%s%02d", y, date_sep, m, date_sep, d);
 		if (pimg->days1 != pimg->days2) {
 		    ymd_from_days_since_1900(pimg->days2, &y, &m, &d);
-		    printf("-%04d.%02d.%02d", y, m, d);
+		    printf("%c%04d%s%02d%s%02d", date_range,
+			   y, date_sep, m, date_sep, d);
 		}
 	    }
 	    printf("\n");
@@ -168,13 +179,14 @@ main(int argc, char **argv)
 	  case img_XSECT:
 	    printf("XSECT %.2f %.2f %.2f %.2f [%s]",
 		   pimg->l, pimg->r, pimg->u, pimg->d, pimg->label);
-	    if (show_dates && pimg->days1 != -1) {
+	    if (date_sep && pimg->days1 != -1) {
 		int y, m, d;
 		ymd_from_days_since_1900(pimg->days1, &y, &m, &d);
-		printf(" %04d.%02d.%02d", y, m, d);
+		printf(" %04d%s%02d%s%02d", y, date_sep, m, date_sep, d);
 		if (pimg->days1 != pimg->days2) {
 		    ymd_from_days_since_1900(pimg->days2, &y, &m, &d);
-		    printf("-%04d.%02d.%02d", y, m, d);
+		    printf("%c%04d%s%02d%s%02d", date_range,
+			   y, date_sep, m, date_sep, d);
 		}
 	    }
 	    printf("\n");

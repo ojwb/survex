@@ -47,7 +47,7 @@ esac
 
 : ${TESTS=${*:-"cmapstn.adj cmap.sht \
 multisection.plt multisurvey.plt pre1970.plt \
-extendsurveyx.3d filter.plt separator.3d"}}
+dump3ddate.3d extendsurveyx.3d filter.plt separator.3d"}}
 
 # Suppress checking for leaks on exit if we're build with lsan - we don't
 # generally waste effort to free all allocations as the OS will reclaim
@@ -84,6 +84,9 @@ for file in $TESTS ; do
     ;;
   separator.3d)
     DUMP3D_OPTS="$DUMP3D_OPTS --survey=foo"
+    ;;
+  dump3ddate.3d)
+    DUMP3D_OPTS="$DUMP3D_OPTS -D"
     ;;
   esac
   rm -f tmp.diff tmp.dump

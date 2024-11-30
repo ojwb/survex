@@ -24,7 +24,14 @@ If you're parsing the output in a script, you may want to use option ``-legs``
 so you get a ``LEG`` item for each leg with from and to coordinates instead of
 each traverse being a ``MOVE`` item followed by a series of ``LINE`` items.
 
-(The ``--rewind`` option is only here to allow debugging and testing the
+The ``--show-dates`` option uses ``.`` as the separator between date components
+by default (e.g. ``2024.12.01``), but (since Survex 1.4.13) you can specify a
+different separator.  If this separator is ``.`` then ``-`` is used between two
+dates which form a range, otherwise a space is used.  For convenience, ``-D``
+is provided as a short-cut for ``--show-dates=-`` which outputs dates in the
+ISO date format.
+
+(The ``--rewind`` option is only provided to allow debugging and testing the
 ``img_rewind()`` function.)
 
 ~~~~~~~
@@ -35,8 +42,10 @@ OPTIONS
    only load the sub-survey with this prefix
 ``-r``, ``--rewind``
    rewind file and read it a second time
-``-d``, ``--show-dates``
+``-d``, ``--show-dates[=SEPARATOR]``
    show survey date information (if present)
+``-D``
+   equivalent to --show-dates=-
 ``-l``, ``--legs``
    convert MOVE and LINE into LEG
 ``--help``
