@@ -8,9 +8,6 @@ Section: Science/Geoscience
 Format: PDF
 Files: /usr/share/doc/survex/manual.pdf*
 
-Format: Text
-Files: /usr/share/doc/survex/manual.txt.gz
-
 Format: HTML
 Index: /usr/share/doc/survex/manual/index.htm
 Files: /usr/share/doc/survex/manual/*.htm
