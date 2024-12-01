@@ -2757,7 +2757,7 @@ cmd_date(void)
 
 	if ((date_flags & new_flag)) {
 	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
-			       /*Duplicate date type “%s”*/416, token);
+			       /*Duplicate date type “%s”*/416, s_str(&token));
 	}
 	date_flags |= new_flag;
     }
