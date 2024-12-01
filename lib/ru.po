@@ -13,32 +13,32 @@ msgstr ""
 
 #. TRANSLATORS: Aven menu titles.  An “&” goes before the letter of any
 #. accelerator key.  The accelerators must be different within this group
-#: ../src/mainfrm.cc:996
+#: ../src/mainfrm.cc:964
 #: n:210
 msgid "&File"
 msgstr "&Файл"
 
-#: ../src/mainfrm.cc:997
+#: ../src/mainfrm.cc:965
 #: n:211
 msgid "&Rotation"
 msgstr "В&ращение"
 
-#: ../src/mainfrm.cc:998
+#: ../src/mainfrm.cc:966
 #: n:212
 msgid "&Orientation"
 msgstr "&Ориентация"
 
-#: ../src/mainfrm.cc:999
+#: ../src/mainfrm.cc:967
 #: n:213
 msgid "&View"
 msgstr "&Вид"
 
-#: ../src/mainfrm.cc:1001
+#: ../src/mainfrm.cc:969
 #: n:214
 msgid "&Controls"
 msgstr "&Управление"
 
-#: ../src/mainfrm.cc:1013
+#: ../src/mainfrm.cc:981
 #: n:215
 msgid "&Help"
 msgstr "По&мощь"
@@ -46,18 +46,18 @@ msgstr "По&мощь"
 #. TRANSLATORS: "Presentation" in the sense of a talk with a slideshow -
 #. the items in this menu allow the user to animate between preset
 #. views.
-#: ../src/mainfrm.cc:1006
+#: ../src/mainfrm.cc:974
 #: n:216
 msgid "&Presentation"
 msgstr "&Презентация"
 
 #. TRANSLATORS: as in: Usage: cavern …
-#: ../src/cmdline.c:169
+#: ../src/cmdline.c:173
 #: n:49
 msgid "Usage"
 msgstr "Использование"
 
-#: ../src/gfxcore.cc:4647
+#: ../src/gfxcore.cc:4653
 #: ../src/gla-gl.cc:257
 #: n:389
 msgid "Out of memory"
@@ -65,7 +65,7 @@ msgstr "Недостаточно памяти"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
-#: ../src/message.c:75
+#: ../src/message.c:69
 #: n:1
 #, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
@@ -73,7 +73,7 @@ msgstr "Недостаточно памяти (невозможно выдели
 
 #. TRANSLATORS: %s will be replaced by the filename that we were trying
 #. to read when we ran out of memory.
-#: ../src/img_hosted.c:34
+#: ../src/img_hosted.c:42
 #: n:38
 #, c-format
 msgid "Out of memory trying to read file “%s”"
@@ -88,7 +88,7 @@ msgstr "Возникла нехватка памяти при чтении фа�
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/commands.c:2607
+#: ../src/commands.c:2699
 #: n:2
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -97,8 +97,8 @@ msgstr "Для обработки данных этой топо-съемки т
 #. TRANSLATORS: Indicates a informational message e.g.:
 #. "spoon.svx:12: info: Declination: [...]"
 #: ../src/cavernlog.cc:527
-#: ../src/message.c:1206
-#: ../src/netartic.c:397
+#: ../src/message.c:1200
+#: ../src/netartic.c:357
 #: n:485
 msgid "info"
 msgstr "инфо"
@@ -107,7 +107,7 @@ msgstr "инфо"
 #. "spoon.svx:12: warning: *prefix is deprecated"
 #: ../src/aven.cc:469
 #: ../src/cavernlog.cc:528
-#: ../src/message.c:1211
+#: ../src/message.c:1205
 #: n:4
 msgid "warning"
 msgstr "предупреждение"
@@ -115,8 +115,8 @@ msgstr "предупреждение"
 #. TRANSLATORS: Indicates an error message e.g.:
 #. "spoon.svx:13:4: error: Field may not be omitted"
 #: ../src/cavernlog.cc:529
-#: ../src/message.c:1216
-#: ../src/survexport.cc:469
+#: ../src/message.c:1210
+#: ../src/survexport.cc:465
 #: n:93
 msgid "error"
 msgstr "ошибка"
@@ -133,37 +133,37 @@ msgstr "В файле включенном из %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:794
+#: ../src/commands.c:831
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix устарел - используйте *begin и *end вместо него"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/readval.c:208
+#: ../src/readval.c:202
 #: n:7
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr "Символ “%c” недопустим в имени пикета (используйте *SET NAMES для определения допустимых символов)"
 
-#: ../src/readval.c:641
-#: ../src/readval.c:682
+#: ../src/readval.c:655
+#: ../src/readval.c:695
 #: n:8
 msgid "Field may not be omitted"
 msgstr "Поле не может быть пропущено"
 
-#: ../src/datain.c:4642
-#: ../src/datain.c:4680
-#: ../src/datain.c:4791
-#: ../src/datain.c:4830
-#: ../src/datain.c:4873
-#: ../src/datain.c:4923
-#: ../src/datain.c:4965
-#: ../src/datain.c:5011
-#: ../src/datain.c:5025
-#: ../src/datain.c:5308
-#: ../src/readval.c:643
-#: ../src/readval.c:787
-#: ../src/readval.c:817
+#: ../src/datain.c:4668
+#: ../src/datain.c:4706
+#: ../src/datain.c:4817
+#: ../src/datain.c:4856
+#: ../src/datain.c:4899
+#: ../src/datain.c:4949
+#: ../src/datain.c:4991
+#: ../src/datain.c:5037
+#: ../src/datain.c:5051
+#: ../src/datain.c:5334
+#: ../src/readval.c:657
+#: ../src/readval.c:800
+#: ../src/readval.c:829
 #: n:9
 #, c-format
 msgid "Expecting numeric field, found “%s”"
@@ -172,13 +172,13 @@ msgstr "Ожидается числовое значение, но вместо 
 #. TRANSLATORS: The first %d will be replaced by the (inclusive) lower
 #. bound and the second by the (inclusive) upper bound, for example:
 #. Expecting integer in range -60 to 60
-#: ../src/readval.c:844
+#: ../src/readval.c:856
 #: n:489
 #, c-format
 msgid "Expecting integer in range %d to %d"
 msgstr ""
 
-#: ../src/commands.c:2162
+#: ../src/commands.c:2236
 #: n:10
 #, c-format
 msgid "Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”"
@@ -186,17 +186,16 @@ msgstr "Вместо “%s” ожидаются “PRESERVE”, “TOUPPER” �
 
 #: ../src/debug.h:45
 #: ../src/debug.h:47
-#: ../src/matrix.c:350
 #: n:11
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "Обнаружена ошибка в программе! Пожалуйста сообщите о ней авторам"
 
-#: ../src/commands.c:2738
-#: ../src/datain.c:2116
-#: ../src/datain.c:2128
-#: ../src/datain.c:2331
-#: ../src/datain.c:2838
-#: ../src/datain.c:3324
+#: ../src/commands.c:3001
+#: ../src/datain.c:2136
+#: ../src/datain.c:2148
+#: ../src/datain.c:2351
+#: ../src/datain.c:2857
+#: ../src/datain.c:3349
 #: ../src/extend.c:455
 #: n:12
 #, c-format
@@ -204,7 +203,7 @@ msgid "Unknown command “%s”"
 msgstr "Неизвестная комманда “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
-#: ../src/netbits.c:440
+#: ../src/netbits.c:435
 #: n:13
 #, c-format
 msgid "Station “%s” equated to itself"
@@ -212,31 +211,32 @@ msgstr "Пикет “%s” был объявлен эквивалентным �
 
 #. TRANSLATORS: Here "legs" are survey legs, i.e. measurements between
 #. survey stations.
-#: ../src/datain.c:3954
+#: ../src/datain.c:3980
 #: n:14
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "Азимут не может быть пропущен за исключением вертикальных замеров"
 
-#: ../src/datain.c:5098
-#: ../src/datain.c:5226
+#: ../src/datain.c:5124
+#: ../src/datain.c:5252
 #: n:94
 msgid "Tape reading may not be omitted"
 msgstr "Значение длинны не может отсутствовать"
 
-#: ../src/datain.c:462
-#: ../src/datain.c:2556
-#: ../src/datain.c:2814
-#: ../src/datain.c:4338
+#: ../src/datain.c:480
+#: ../src/datain.c:2575
+#: ../src/datain.c:2833
+#: ../src/datain.c:4363
 #: ../src/extend.c:460
 #: n:15
 msgid "End of line not blank"
 msgstr "Конец строки не пуст"
 
+#: ../src/commands.c:365
 #: n:74
 msgid "No blank after token"
 msgstr ""
 
-#: ../src/cavern.c:412
+#: ../src/cavern.c:408
 #: n:16
 #, c-format
 msgid "There were %d warning(s)."
@@ -245,7 +245,7 @@ msgstr "Получено %d предупреждений."
 #. TRANSLATORS: %s is replaced by the command we attempted to run.
 #: ../src/cavernlog.cc:414
 #: ../src/cavernlog.cc:466
-#: ../src/mainfrm.cc:1645
+#: ../src/mainfrm.cc:1619
 #: n:17
 #, c-format
 msgid "Couldn’t run external command: “%s”"
@@ -256,9 +256,9 @@ msgstr "Невозможно выполнить внешнюю команду: �
 #: ../src/datain.c:176
 #: ../src/datain.c:205
 #: ../src/datain.c:215
-#: ../src/datain.c:228
-#: ../src/datain.c:3138
-#: ../src/datain.c:3485
+#: ../src/datain.c:231
+#: ../src/datain.c:3157
+#: ../src/datain.c:3509
 #: ../src/extend.c:689
 #: ../src/sorterr.c:78
 #: ../src/sorterr.c:95
@@ -267,14 +267,14 @@ msgstr "Невозможно выполнить внешнюю команду: �
 msgid "Error reading file"
 msgstr "Ошибка при чтении файла"
 
-#: ../src/message.c:1239
+#: ../src/message.c:1233
 #: n:19
 msgid "Too many errors - giving up"
 msgstr "Возникло слишком много ошибок - выполнение прервано"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:2041
+#: ../src/commands.c:2115
 #: n:20
 msgid "*DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead"
 msgstr "*DEFAULT устарело - используйте *CALIBRATE/DATA/SD/UNITS с аргументом DEFAULT вместо него"
@@ -282,16 +282,16 @@ msgstr "*DEFAULT устарело - используйте *CALIBRATE/DATA/SD/UN
 #. TRANSLATORS: A "plumbed leg" is one measured using a plumbline
 #. (a weight on a string).  So the problem here is that the leg is
 #. vertical, so a compass reading has no meaning!
-#: ../src/datain.c:3924
+#: ../src/datain.c:3950
 #: n:21
 msgid "Compass reading given on plumbed leg"
 msgstr "Азимут указан для вертикального замера"
 
 #. TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
 #. or END and BEGIN or #[ and #]
-#: ../src/commands.c:1018
-#: ../src/datain.c:2430
-#: ../src/datain.c:3395
+#: ../src/commands.c:1064
+#: ../src/datain.c:2449
+#: ../src/datain.c:3418
 #: n:23
 #, c-format
 msgid "%s with no matching %s in this file"
@@ -311,11 +311,11 @@ msgstr "%s без соответствующего %s в этом файле"
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/commands.c:1386
-#: ../src/commands.c:1388
+#: ../src/commands.c:1447
+#: ../src/commands.c:1449
 #: ../src/listpos.c:113
-#: ../src/readval.c:342
-#: ../src/readval.c:345
+#: ../src/readval.c:344
+#: ../src/readval.c:347
 #: n:26
 #, c-format
 msgid "Station “%s” not exported from survey “%s”"
@@ -336,8 +336,8 @@ msgstr "Ссылка на пикет “%s” из несуществующей 
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/readval.c:291
-#: ../src/readval.c:316
+#: ../src/readval.c:294
+#: ../src/readval.c:318
 #: n:27
 #, c-format
 msgid "“%s” can’t be both a station and a survey"
@@ -349,20 +349,20 @@ msgstr "“%s” не может быть одновременно именем 
 #: ../src/extend.c:324
 #: ../src/extend.c:368
 #: ../src/extend.c:412
-#: ../src/readval.c:204
-#: ../src/readval.c:459
-#: ../src/readval.c:466
+#: ../src/readval.c:198
+#: ../src/readval.c:461
+#: ../src/readval.c:468
 #: n:28
 msgid "Expecting station name"
 msgstr "Ожидается имя пикета"
 
-#: ../src/commands.c:2525
+#: ../src/commands.c:2609
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr "Вместо “%s” ожидаются “EQUATES”, “EXPORTS” или “PLUMBS”"
 
-#: ../src/commands.c:2531
+#: ../src/commands.c:2615
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
@@ -372,100 +372,100 @@ msgstr "Вместо “%s” ожидаются “ON” или “OFF”"
 #. translated.
 #.
 #. Here "station" is a survey station, not a train station.
-#: ../src/commands.c:1345
+#: ../src/commands.c:1406
 #: n:33
 msgid "Only one station in EQUATE command"
 msgstr "Указано только одно имя пикета в команде EQUATE"
 
 #. TRANSLATORS: A "quantity" is something measured like "LENGTH",
 #. "BEARING", "ALTITUDE", etc.
-#: ../src/commands.c:600
+#: ../src/commands.c:638
 #: n:34
 #, c-format
 msgid "Unknown quantity “%s”"
 msgstr "Неизвестный тип замеров “%s”"
 
-#: ../src/commands.c:499
+#: ../src/commands.c:537
 #: n:35
 #, c-format
 msgid "Unknown units “%s”"
 msgstr "Неизвестная единица измерения “%s”"
 
-#: ../src/commands.c:511
+#: ../src/commands.c:549
 #: n:479
 #, c-format
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
 msgstr "Единица измерения “%s” считается устаревшей, используйте “grads” - подробности в руководстве пользователя"
 
-#: ../src/commands.c:2333
-#: ../src/commands.c:2412
+#: ../src/commands.c:2417
+#: ../src/commands.c:2496
 #: n:434
 msgid "Unknown coordinate system"
 msgstr "Неизвестная система координат"
 
-#: ../src/commands.c:2441
-#: ../src/commands.c:2482
+#: ../src/commands.c:2525
+#: ../src/commands.c:2566
 #: n:443
 #, c-format
 msgid "Invalid coordinate system: %s"
 msgstr "Недопустимая система координат: %s"
 
-#: ../src/commands.c:2420
-#: ../src/commands.c:2452
+#: ../src/commands.c:2504
+#: ../src/commands.c:2536
 #: n:435
 msgid "Coordinate system unsuitable for output"
 msgstr "Система координат не подходит для вывода результатов"
 
-#: ../src/commands.c:936
-#: ../src/commands.c:1172
-#: ../src/datain.c:2668
+#: ../src/commands.c:979
+#: ../src/commands.c:1233
+#: ../src/datain.c:2687
 #: n:436
 #, c-format
 msgid "Failed to convert coordinates: %s"
 msgstr "Неудача при переводе координат: %s"
 
-#: ../src/commands.c:1179
+#: ../src/commands.c:1240
 #: n:437
 msgid "The input projection is set but the output projection isn't"
 msgstr "Исходная проекция задана, а результирующая нет"
 
-#: ../src/commands.c:1181
+#: ../src/commands.c:1242
 #: n:438
 msgid "The output projection is set but the input projection isn't"
 msgstr "Результирующая проекция задана, а исходная нет"
 
-#: ../src/commands.c:1107
+#: ../src/commands.c:1168
 #: n:439
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "Координаты не могут быть пропущены если указана система координат"
 
 #. TRANSLATORS: %s is replaced by the command that requires it, e.g.
 #. *DECLINATION AUTO
-#: ../src/commands.c:2009
-#: ../src/datain.c:3725
+#: ../src/commands.c:2079
+#: ../src/datain.c:3751
 #: n:301
 #, c-format
 msgid "Input coordinate system must be specified for “%s”"
 msgstr "Система координат должна быть определена перед использованием “%s”"
 
-#: ../src/datain.c:2680
-#: ../src/datain.c:3707
+#: ../src/datain.c:2699
+#: ../src/datain.c:3733
 #: n:488
 msgid "Output coordinate system not set"
 msgstr ""
 
-#: ../src/datain.c:3259
+#: ../src/datain.c:3281
 #: n:503
 #, c-format
 msgid "Datum “%s” not supported"
 msgstr ""
 
-#: ../src/commands.c:1993
+#: ../src/commands.c:2071
 #: n:309
 msgid "Expected number or “AUTO”"
 msgstr "Ожидается число или “AUTO”"
 
-#: ../src/datain.c:3747
+#: ../src/datain.c:3773
 #: n:304
 msgid "No survey date specified - using 0 for magnetic declination"
 msgstr "Дата съёмки не указана - использовано магнитное склонение 0"
@@ -476,7 +476,7 @@ msgstr "Дата съёмки не указана - использовано м�
 #.
 #. The first %s will be replaced by the declination range (or single
 #. value), and %.1f%s by the grid convergence angle.
-#: ../src/commands.c:890
+#: ../src/commands.c:933
 #: n:484
 #, c-format
 msgid "Declination: %s, grid convergence: %.1f%s"
@@ -488,20 +488,20 @@ msgstr "Магнитное склонение: %s, сближение мерид
 #. *begin
 #. 1 2 10.00 178 -01
 #. *end entrance      <--[Message given here]
-#: ../src/commands.c:1046
+#: ../src/commands.c:1095
 #: n:36
 msgid "Matching BEGIN command has no survey name"
 msgstr "Для соответствующей команды BEGIN не указано имя топо-съемки"
 
 #. TRANSLATORS: Note: In English you talk about the *units* of a single
 #. measurement, but the correct term in other languages may be singular.
-#: ../src/commands.c:528
+#: ../src/commands.c:566
 #: n:37
 #, c-format
 msgid "Invalid units “%s” for quantity"
 msgstr "Недрпустимая единица измерения “%s” для значения"
 
-#: ../src/commands.c:592
+#: ../src/commands.c:630
 #: n:39
 #, c-format
 msgid "Unknown instrument “%s”"
@@ -509,38 +509,38 @@ msgstr "Неизвестный инструмент “%s”"
 
 #. TRANSLATORS: DECLINATION is a built-in keyword, so best not to
 #. translate
-#: ../src/commands.c:1933
+#: ../src/commands.c:2011
 #: n:40
 msgid "Scale factor must be 1.0 for DECLINATION"
 msgstr "Масштабный коэффициент должен равняться 1.0 для DECLINATION"
 
 #. TRANSLATORS: If the scale factor for an instrument is zero, then any
 #. reading would be mapped to zero, which doesn't make sense.
-#: ../src/commands.c:1941
+#: ../src/commands.c:2019
 #: n:391
 msgid "Scale factor must be non-zero"
 msgstr "Масштабный коэффициент должен быть ненулевым"
 
-#: ../src/commands.c:2061
+#: ../src/commands.c:2135
 #: n:41
 #, c-format
 msgid "Unknown setting “%s”"
 msgstr "Неизвестная настройка “%s”"
 
-#: ../src/commands.c:637
+#: ../src/commands.c:674
 #: n:42
 #, c-format
 msgid "Unknown character class “%s”"
 msgstr "Неизвестный класс символов “%s”"
 
 #: ../src/extend.c:699
-#: ../src/netskel.c:93
+#: ../src/netskel.c:92
 #: n:43
 msgid "No survey data"
 msgstr "Нет данных топо-съемки"
 
 #: ../src/filename.c:88
-#: ../src/img_hosted.c:39
+#: ../src/img_hosted.c:47
 #: n:44
 #, c-format
 msgid "Filename “%s” refers to directory"
@@ -549,38 +549,38 @@ msgstr "Имя файла “%s” ссылается на каталог фай
 #. TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
 #. cavern will issue this warning if there are any sections of the survey
 #. network which are hanging.
-#: ../src/netartic.c:382
+#: ../src/netartic.c:341
 #: n:45
 msgid "Survey not all connected to fixed stations"
 msgstr "Имеются цепочки замеров не привязанные к фиксированным пикетам (висящие)"
 
-#: ../src/commands.c:1264
-#: ../src/datain.c:938
-#: ../src/datain.c:2701
+#: ../src/commands.c:1325
+#: ../src/datain.c:957
+#: ../src/datain.c:2720
 #: n:46
 msgid "Station already fixed or equated to a fixed point"
 msgstr "Пикет уже зафиксирован или эквивалентен другому зафиксированному пикету"
 
-#: ../src/commands.c:1269
-#: ../src/datain.c:943
-#: ../src/datain.c:2705
+#: ../src/commands.c:1330
+#: ../src/datain.c:962
+#: ../src/datain.c:2724
 #: n:493
 msgid "Previously fixed or equated here"
 msgstr ""
 
-#: ../src/cavern.c:312
+#: ../src/cavern.c:308
 #: ../src/filename.c:91
-#: ../src/gfxcore.cc:4271
-#: ../src/img_hosted.c:35
+#: ../src/gfxcore.cc:4273
+#: ../src/img_hosted.c:43
 #: n:47
 #, c-format
 msgid "Failed to open output file “%s”"
 msgstr "Невозможно открыть выходной файл “%s”"
 
-#: ../src/commands.c:1188
-#: ../src/commands.c:1202
-#: ../src/commands.c:1214
-#: ../src/commands.c:2117
+#: ../src/commands.c:1249
+#: ../src/commands.c:1263
+#: ../src/commands.c:1275
+#: ../src/commands.c:2191
 #: n:48
 msgid "Standard deviation must be positive"
 msgstr "Стандартное отклонение должно быть положительным числом"
@@ -589,7 +589,7 @@ msgstr "Стандартное отклонение должно быть пол
 #. "survey stations".
 #.
 #. %s is replaced by the name of the station.
-#: ../src/netbits.c:337
+#: ../src/netbits.c:329
 #: n:50
 #, c-format
 msgid "Survey leg with same station (“%s”) at both ends - typing error?"
@@ -599,14 +599,14 @@ msgstr "Замер с одинаковым именем пикета (“%s”) 
 #. units currently in use, e.g. "90°" or "100ᵍ".  And "absolute
 #. value" means the reading ignoring the sign (so it might be
 #. < -90° or > 90°.
-#: ../src/datain.c:3846
-#: ../src/datain.c:3859
+#: ../src/datain.c:3872
+#: ../src/datain.c:3885
 #: n:51
 #, c-format
 msgid "Clino reading over %.f%s (absolute value)"
 msgstr "Абсолютное значение угла больше %.f%s"
 
-#: ../src/netbits.c:455
+#: ../src/netbits.c:450
 #: n:52
 #, c-format
 msgid "Tried to equate two non-equal fixed stations: “%s” and “%s”"
@@ -617,35 +617,35 @@ msgstr "Попытка объявить эквивалентными два фи
 #. *fix a 1 2 3
 #. *fix b 1 2 3
 #. *equate a b
-#: ../src/netbits.c:466
+#: ../src/netbits.c:461
 #: n:53
 #, c-format
 msgid "Equating two equal fixed points: “%s” and “%s”"
 msgstr "Объявление эквивалентности для двух фиксированных пикетов с одинаковыми координатами: “%s” и “%s”"
 
 #. TRANSLATORS: " *fix a " gives this message:
-#: ../src/commands.c:1127
+#: ../src/commands.c:1188
 #: n:54
 msgid "FIX command with no coordinates - fixing at (0,0,0)"
 msgstr "Команда FIX без указания координат - выполнена фиксация с координатами (0,0,0)"
 
 #. TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3
-#: ../src/commands.c:1267
-#: ../src/datain.c:940
-#: ../src/datain.c:2703
+#: ../src/commands.c:1328
+#: ../src/datain.c:959
+#: ../src/datain.c:2722
 #: n:55
 msgid "Station already fixed at the same coordinates"
 msgstr "Пикет с таким именем уже зафиксирован с такими же координатами"
 
 #. TRANSLATORS: Emitted after second and subsequent "FIX" command
 #. with no coordinates.
-#: ../src/commands.c:1123
+#: ../src/commands.c:1184
 #: n:441
 #, c-format
 msgid "Already had FIX command with no coordinates for station “%s”"
 msgstr "Повторное использование команды FIX без координат для пикета “%s”"
 
-#: ../src/commands.c:2214
+#: ../src/commands.c:2293
 #: n:442
 #, c-format
 msgid "Station “%s” fixed before CS command first used"
@@ -658,41 +658,49 @@ msgstr "Пикет “%s” фиксируется прежде чем кома�
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:2752
+#: ../src/commands.c:3017
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "Команда *EXPORT должна следовать непосредственно после команды “*BEGIN <имя_съемки>”"
 
 #. TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918
-#: ../src/readval.c:925
-#: ../src/readval.c:1007
+#: ../src/commands.c:2731
+#: ../src/commands.c:2806
+#: ../src/readval.c:964
 #: n:76
 #, c-format
 msgid "Assuming 2 digit year is %d"
 msgstr "Для года, указанного 2 цифрами использую значение %d"
 
-#: ../src/readval.c:930
-#: ../src/readval.c:1013
+#: ../src/commands.c:2795
+#: n:158
+#, c-format
+msgid "Interpreting as an ISO-format date - use “*date surveyed %d-%02d” to suppress this warning, or “*date %d %d” if you wanted a date range"
+msgstr ""
+
+#: ../src/commands.c:2735
+#: ../src/commands.c:2809
+#: ../src/readval.c:970
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr "Введите год в промежутке от 1900 до 2078"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
-#: ../src/datain.c:3592
-#: ../src/datain.c:3601
-#: ../src/readval.c:718
+#: ../src/datain.c:3618
+#: ../src/datain.c:3627
+#: ../src/readval.c:727
 #: n:59
 msgid "Suspicious compass reading"
 msgstr "Подозрительное значение азимута"
 
-#: ../src/datain.c:4649
-#: ../src/datain.c:4799
+#: ../src/datain.c:4675
+#: ../src/datain.c:4825
 #: n:60
 msgid "Negative tape reading"
 msgstr "Отрицательное значение длинны замера"
 
-#: ../src/commands.c:1112
+#: ../src/commands.c:1173
 #: n:61
 msgid "Same station fixed twice with no coordinates"
 msgstr "Один и тот же пикет заыиксирован дважды без указания координат"
@@ -702,7 +710,7 @@ msgstr "Один и тот же пикет заыиксирован дважды
 #. It could be a gross error (e.g. the decimal point is missing from the
 #. depth gauge reading) or it could just be due to random error on a near
 #. vertical leg
-#: ../src/datain.c:4115
+#: ../src/datain.c:4141
 #: n:62
 msgid "Tape reading is less than change in depth"
 msgstr "Длинна замера меньше чем изменение глубины"
@@ -713,22 +721,23 @@ msgstr "Длинна замера меньше чем изменение глу�
 #.
 #. This error complains about a "DEPTH" gauge reading in "NORMAL"
 #. style, for example.
-#: ../src/commands.c:1616
+#: ../src/commands.c:1672
+#: ../src/commands.c:1694
 #: n:63
 #, c-format
 msgid "Reading “%s” not allowed in data style “%s”"
 msgstr "Значения “%s” не допустимы для  стиля топо-данных “%s”"
 
 #. TRANSLATORS: i.e. not enough readings for the style.
-#: ../src/commands.c:1797
+#: ../src/commands.c:1875
 #: n:64
 #, c-format
 msgid "Too few readings for data style “%s”"
 msgstr "Недостаточно значений для стиля топо-данных “%s”"
 
 #. TRANSLATORS: e.g. trying to refer to an invalid FNORD data style
-#: ../src/commands.c:1573
-#: ../src/datain.c:2077
+#: ../src/commands.c:1642
+#: ../src/datain.c:2097
 #: n:65
 #, c-format
 msgid "Data style “%s” unknown"
@@ -743,7 +752,7 @@ msgstr "Неизвестный стиль топо-данных “%s”"
 #. *export 1
 #. 1 2 1.24 045 -6
 #. *end example
-#: ../src/commands.c:1437
+#: ../src/commands.c:1498
 #: n:66
 #, c-format
 msgid "Station “%s” already exported"
@@ -751,19 +760,25 @@ msgstr "Пикет с именем “%s” уже экспортирован"
 
 #. TRANSLATORS: complains about a situation like trying to define
 #. two from stations per leg
-#: ../src/commands.c:1641
+#: ../src/commands.c:1719
 #: n:67
 #, c-format
 msgid "Duplicate reading “%s”"
 msgstr "Дублирование значений для “%s” в определении стиля топо-данных"
 
-#: ../src/commands.c:1296
+#: ../src/commands.c:2760
+#: n:416
+#, c-format
+msgid "Duplicate date type “%s”"
+msgstr ""
+
+#: ../src/commands.c:1357
 #: n:68
 #, c-format
 msgid "FLAG “%s” unknown"
 msgstr "FLAG “%s” - неизвестный флаг"
 
-#: ../src/readval.c:879
+#: ../src/readval.c:891
 #: n:69
 msgid "Missing \""
 msgstr "Недостающие \""
@@ -775,27 +790,27 @@ msgstr "Недостающие \""
 msgid "Station “%s” referred to just once, with an explicit survey name - typo?"
 msgstr "Ссылка на пикет “%s” встречаетрся единственный раз и только с явным указанием имени топо-съемки - возможно это опечатка?"
 
-#. TRANSLATORS: Here "station" is a survey station, not a train
-#. station.
-#: ../src/netartic.c:395
+#. TRANSLATORS: Here "station" is a survey station, not a
+#. train station.
+#: ../src/netartic.c:354
 #: n:71
 msgid "The following survey stations are not attached to a fixed point:"
 msgstr "Следующие пикеты не связаны с фиксированными пикетами (висящие пикеты):"
 
-#: ../src/netskel.c:139
+#: ../src/netskel.c:132
 #: n:72
 #, c-format
 msgid "Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)"
 msgstr "В топо-съемке не определено фиксированных пикетов. Поэтому \"%s\" зафиксировано с координатами (0,0,0)"
 
 #. TRANSLATORS: fixed survey station that is not part of any survey
-#: ../src/netskel.c:986
+#: ../src/netskel.c:984
 #: n:73
 #, c-format
 msgid "Unused fixed point “%s”"
 msgstr "Фиксированный пикет “%s” нигде не используется"
 
-#: ../src/matrix.c:132
+#: ../src/matrix.c:120
 #: n:75
 #, c-format
 msgid "Solving %d simultaneous equations"
@@ -806,31 +821,31 @@ msgstr "Решение системы из %d уравнений"
 #. valid as the list of readings has already included the same
 #. reading, or an equivalent one (e.g. you can't have both
 #. DEPTH and DEPTHCHANGE together).
-#: ../src/commands.c:1705
+#: ../src/commands.c:1783
 #: n:77
 #, c-format
 msgid "Reading “%s” duplicates previous reading(s)"
 msgstr "Тип значений “%s” дублирует один из типов значений в данном стиле топо-данных"
 
-#: ../src/matrix.c:130
+#: ../src/matrix.c:118
 #: n:78
 msgid "Solving one equation"
 msgstr "Решение одного уравнения"
 
-#: ../src/datain.c:3883
-#: ../src/datain.c:4104
-#: ../src/datain.c:4509
+#: ../src/datain.c:3909
+#: ../src/datain.c:4130
+#: ../src/datain.c:4534
 #: n:79
 msgid "Negative adjusted tape reading"
 msgstr "В результате коррекций получена отрицательная длинна в замере"
 
-#: ../src/commands.c:2648
-#: ../src/commands.c:2670
+#: ../src/commands.c:2900
+#: ../src/commands.c:2921
 #: n:80
 msgid "Date is in the future!"
 msgstr "Дата больше текущей даты!"
 
-#: ../src/commands.c:2675
+#: ../src/commands.c:2929
 #: n:81
 msgid "End of date range is before the start"
 msgstr "Конечная дата меньше начальной"
@@ -838,7 +853,7 @@ msgstr "Конечная дата меньше начальной"
 #. TRANSLATORS: e.g. the user specifies a passage cross-section at
 #. station "entrance.27", but there is no station "entrance.27" in
 #. the centre-line.
-#: ../src/netskel.c:1074
+#: ../src/netskel.c:1072
 #: n:83
 #, c-format
 msgid "Cross section specified at non-existent station “%s”"
@@ -847,84 +862,86 @@ msgstr "Размеры сечения хода определены для не�
 #. TRANSLATORS: In data with backsights, the user has tried to give a
 #. plumb for the foresight and a clino reading for the backsight, or
 #. something similar.
-#: ../src/datain.c:3907
+#: ../src/datain.c:3933
 #: n:84
 msgid "CLINO and BACKCLINO readings must be of the same type"
 msgstr "Значения CLINO и BACKCLINO должны иметь одинаковый тип"
 
 #. TRANSLATORS: We've been told the foresight and backsight are
 #. both "UP", or that they're both "DOWN".
-#: ../src/datain.c:3933
+#: ../src/datain.c:3959
 #: n:92
 msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
 msgstr "У вертикальных замеров CLINO и BACKCLINO не могут совпадать"
 
-#: ../src/readval.c:941
-#: ../src/readval.c:1022
+#: ../src/commands.c:2837
+#: ../src/commands.c:2866
+#: ../src/readval.c:978
 #: n:86
 msgid "Invalid month"
 msgstr "Недопустимый месяц"
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
-#: ../src/readval.c:952
-#: ../src/readval.c:1030
+#: ../src/commands.c:2849
+#: ../src/commands.c:2879
+#: ../src/readval.c:985
 #: n:87
 msgid "Invalid day of the month"
 msgstr "Недопустимый день месяца"
 
-#: ../src/cavern.c:261
+#: ../src/cavern.c:257
 #: n:88
 #, c-format
 msgid "3d file format versions %d to %d supported"
 msgstr "Поддерживаются версии формата 3d файла с %d по %d"
 
-#: ../src/readval.c:202
+#: ../src/readval.c:196
 #: n:89
 msgid "Expecting survey name"
 msgstr "Ожидается имя топо-съемки"
 
-#: ../src/datain.c:3107
-#: ../src/datain.c:3109
-#: ../src/datain.c:3427
+#: ../src/datain.c:3125
+#: ../src/datain.c:3127
+#: ../src/datain.c:3450
 #: ../src/extend.c:684
-#: ../src/gfxcore.cc:4595
-#: ../src/img_hosted.c:30
-#: ../src/mainfrm.cc:411
+#: ../src/gfxcore.cc:4601
+#: ../src/img_hosted.c:38
+#: ../src/mainfrm.cc:410
 #: ../src/sorterr.c:144
 #: n:24
 #, c-format
 msgid "Couldn’t open file “%s”"
 msgstr "Невозможно открыть файл “%s”"
 
-#: ../src/printing.cc:659
-#: ../src/survexport.cc:464
+#: ../src/printing.cc:670
+#: ../src/survexport.cc:460
 #: n:402
 #, c-format
 msgid "Couldn’t write file “%s”"
 msgstr "Невозможно сохранить файл “%s”"
 
-#: ../src/datain.c:2508
-#: ../src/datain.c:2513
+#: ../src/datain.c:2527
+#: ../src/datain.c:2532
 #: n:498
 msgid "Failed to create temporary file"
 msgstr "Невозможно создать временный файл"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:656
-#: ../src/commands.c:772
-#: ../src/commands.c:796
-#: ../src/commands.c:1587
-#: ../src/commands.c:2043
-#: ../src/readval.c:93
+#: ../src/commands.c:693
+#: ../src/commands.c:809
+#: ../src/commands.c:833
+#: ../src/commands.c:1656
+#: ../src/commands.c:2117
+#: ../src/readval.c:88
 #: n:95
 msgid "Further uses of this deprecated feature will not be reported"
 msgstr "Дальнейшее использование устаревших и не рекомендованных к использованию возможностей не будет порождать сообщений"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "0.12m" or "0.2ft".
-#: ../src/datain.c:5087
-#: ../src/datain.c:5215
+#: ../src/datain.c:5113
+#: ../src/datain.c:5241
 #: n:97
 #, c-format
 msgid "TAPE reading and BACKTAPE reading disagree by %s"
@@ -932,7 +949,7 @@ msgstr "Значения TAPE и BACKTAPE различаются на %s"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
-#: ../src/datain.c:3798
+#: ../src/datain.c:3824
 #: n:98
 #, c-format
 msgid "COMPASS reading and BACKCOMPASS reading disagree by %s"
@@ -940,13 +957,13 @@ msgstr "Значения COMPASS и BACKCOMPASS различаются на %s"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "2.5°" or "3ᵍ".
-#: ../src/datain.c:3985
+#: ../src/datain.c:4011
 #: n:99
 #, c-format
 msgid "CLINO reading and BACKCLINO reading disagree by %s"
 msgstr "Значения CLINO и BACKCLINO различаются на %s"
 
-#: ../src/commands.c:1584
+#: ../src/commands.c:1653
 #: n:104
 #, c-format
 msgid "“*data %s %c …” is deprecated - use “*data %s …” instead"
@@ -954,7 +971,7 @@ msgstr "“*data %s %c …” устарело - используйте “*data
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
-#: ../src/img_hosted.c:38
+#: ../src/img_hosted.c:46
 #: n:106
 #, c-format
 msgid "Bad 3d image file “%s”"
@@ -963,20 +980,20 @@ msgstr "Файл “%s” не распознан как корректный .3
 #. TRANSLATORS: This is the date format string used to timestamp .3d
 #. files internally.  Probably best to keep it the same for all
 #. translations.
-#: ../src/img.c:49
-#: ../src/model.cc:380
+#: ../src/img.c:80
+#: ../src/model.cc:382
 #: n:107
 #, c-format
 msgid "%a,%Y.%m.%d %H:%M:%S %Z"
 msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 
 #. TRANSLATORS: used a processed survey with no processing date/time info
-#: ../src/model.cc:373
+#: ../src/model.cc:375
 #: n:108
 msgid "Date and time not available."
 msgstr "Дата и время недоступны."
 
-#: ../src/img_hosted.c:40
+#: ../src/img_hosted.c:48
 #: n:109
 #, c-format
 msgid "Error reading from file “%s”"
@@ -984,9 +1001,9 @@ msgstr "Ошибка чтения из файла “%s”"
 
 #: ../src/cavernlog.cc:658
 #: ../src/filename.c:115
-#: ../src/img_hosted.c:41
-#: ../src/mainfrm.cc:373
-#: ../src/mainfrm.cc:1570
+#: ../src/img_hosted.c:49
+#: ../src/mainfrm.cc:372
+#: ../src/mainfrm.cc:1544
 #: n:110
 #, c-format
 msgid "Error writing to file “%s”"
@@ -997,35 +1014,35 @@ msgstr "Ошибка записи в файла “%s”"
 msgid "Error writing to file"
 msgstr "Ошибка записи в файл"
 
-#: ../src/cavern.c:407
+#: ../src/cavern.c:403
 #: n:113
 #, c-format
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Визникло %d предупреждений и %d ошибок - результирующие файлы не созданы."
 
-#: ../src/img_hosted.c:42
+#: ../src/img_hosted.c:50
 #: n:114
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
 msgstr "Файл “%s” имеет более новый формат, с которым данная версия программы не может работать"
 
-#: ../src/printing.cc:1160
+#: ../src/printing.cc:1181
 #: n:115
 msgid "North"
 msgstr "Север"
 
 #. TRANSLATORS: "Elevation on" 020 <-> 200 degrees
-#: ../src/printing.cc:1185
+#: ../src/printing.cc:1206
 #: n:116
 msgid "Elevation on"
 msgstr "Разрез-сечение по азимуту"
 
-#: ../src/printing.cc:453
+#: ../src/printing.cc:464
 #: n:117
 msgid "P&lan view"
 msgstr "П&лан"
 
-#: ../src/printing.cc:455
+#: ../src/printing.cc:466
 #: n:285
 msgid "&Elevation"
 msgstr "&Разрез"
@@ -1038,9 +1055,9 @@ msgstr "&Разрез"
 #. Try to keep this translation short - ideally at most 10
 #. characters - as otherwise the compass and clino will be moved
 #. further apart to make room. */
-#: ../src/gfxcore.cc:958
-#: ../src/gfxcore.cc:2196
-#: ../src/mainfrm.cc:161
+#: ../src/gfxcore.cc:960
+#: ../src/gfxcore.cc:2198
+#: ../src/mainfrm.cc:160
 #: n:118
 msgid "Elevation"
 msgstr "Разрез"
@@ -1051,8 +1068,8 @@ msgstr "Разрез"
 #. Try to keep this translation short - ideally at most 10
 #. characters - as otherwise the compass and clino will be moved
 #. further apart to make room. */
-#: ../src/gfxcore.cc:858
-#: ../src/gfxcore.cc:2190
+#: ../src/gfxcore.cc:860
+#: ../src/gfxcore.cc:2192
 #: n:432
 msgid "Plan"
 msgstr "Вид сверху"
@@ -1063,35 +1080,35 @@ msgstr "Вид сверху"
 #. Try to keep this translation short - ideally at most 10
 #. characters - as otherwise the compass and clino will be moved
 #. further apart to make room. */
-#: ../src/gfxcore.cc:872
-#: ../src/gfxcore.cc:2193
+#: ../src/gfxcore.cc:874
+#: ../src/gfxcore.cc:2195
 #: n:433
 msgid "Kiwi Plan"
 msgstr "Вид снизу"
 
-#: ../src/cavern.c:371
+#: ../src/cavern.c:367
 #: n:120
 msgid "Calculating statistics"
 msgstr "Расчет статистики"
 
-#: ../src/readval.c:894
+#: ../src/readval.c:906
 #: n:121
 msgid "Expecting string field"
 msgstr "Ожидается строковое значение"
 
-#: ../src/cmdline.c:213
+#: ../src/cmdline.c:217
 #: n:122
 msgid "too few arguments"
 msgstr "слишком мало аргументов"
 
-#: ../src/cmdline.c:220
+#: ../src/cmdline.c:224
 #: n:123
 msgid "too many arguments"
 msgstr "слишком много аргументов"
 
-#: ../src/cmdline.c:179
-#: ../src/cmdline.c:182
+#: ../src/cmdline.c:183
 #: ../src/cmdline.c:186
+#: ../src/cmdline.c:190
 #: n:124
 msgid "FILE"
 msgstr "ФАЙЛ"
@@ -1103,7 +1120,7 @@ msgstr "ФАЙЛ"
 #. term - these messages mostly indicate how processing is progressing.
 #.
 #. A trailing traverse is a dead end back to a junction.
-#: ../src/netskel.c:180
+#: ../src/netskel.c:172
 #: n:125
 msgid "Removing trailing traverses"
 msgstr "Удаление тупиковых веток"
@@ -1113,7 +1130,7 @@ msgstr "Удаление тупиковых веток"
 #. (although toporobot actually uses this term to mean something more
 #. specific).  Feel free to follow this lead if you can't think of a better
 #. term - these messages mostly indicate how processing is progressing.
-#: ../src/netskel.c:239
+#: ../src/netskel.c:231
 #: n:126
 msgid "Concatenating traverses"
 msgstr "Соединение веток"
@@ -1135,107 +1152,107 @@ msgstr "Расчет колец"
 #. term - these messages mostly indicate how processing is progressing.
 #.
 #. A trailing traverse is a dead end back to a junction.
-#: ../src/netskel.c:787
+#: ../src/netskel.c:786
 #: n:128
 msgid "Calculating trailing traverses"
 msgstr "Расчет тупиковых веток"
 
-#: ../src/network.c:80
+#: ../src/network.c:66
 #: n:129
 msgid "Simplifying network"
 msgstr "Упрощение съемочной сети"
 
-#: ../src/network.c:538
+#: ../src/network.c:511
 #: n:130
 msgid "Calculating network"
 msgstr "Расчет съемочной сети"
 
-#: ../src/datain.c:4631
+#: ../src/datain.c:4656
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
 msgstr "Вместо “%s” ожидается “F” или “B”"
 
-#: ../src/cavern.c:495
+#: ../src/cavern.c:487
 #: n:132
 #, c-format
 msgid "Total length of survey legs = %7.2f%s (%7.2f%s adjusted)"
 msgstr "Общая длина замеров = %7.2f%s (%7.2f%s после коррекции)"
 
-#: ../src/cavern.c:498
+#: ../src/cavern.c:490
 #: n:133
 #, c-format
 msgid "Total plan length of survey legs = %7.2f%s"
 msgstr "Суммарная горизонтальная проекционная длина замеров (план) = %7.2f%s"
 
-#: ../src/cavern.c:501
+#: ../src/cavern.c:493
 #: n:134
 #, c-format
 msgid "Total vertical length of survey legs = %7.2f%s"
 msgstr "Суммарная вертикальная проекционная длинна замеров (разрез) = %7.2f%s"
 
 #. TRANSLATORS: numbers are altitudes of highest and lowest stations
-#: ../src/cavern.c:508
+#: ../src/cavern.c:500
 #: n:135
 #, c-format
 msgid "Vertical range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 msgstr "Амплитуда = %4.2f%s (от %s на %4.2f%s до %s на %4.2f%s)"
 
 #. TRANSLATORS: c.f. previous message
-#: ../src/cavern.c:511
+#: ../src/cavern.c:503
 #: n:136
 #, c-format
 msgid "North-South range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 msgstr "Диапазон Север-Юг = %4.2f%s (от %s на %4.2f%s до %s на %4.2f%s)"
 
 #. TRANSLATORS: c.f. previous two messages
-#: ../src/cavern.c:514
+#: ../src/cavern.c:506
 #: n:137
 #, c-format
 msgid "East-West range = %4.2f%s (from %s at %4.2f%s to %s at %4.2f%s)"
 msgstr "Диапазон Восток-Запад = %4.2f%s (от %s на %4.2f%s до %s на %4.2f%s)"
 
-#: ../src/cavern.c:479
+#: ../src/cavern.c:472
 #: n:138
 msgid "There is 1 loop."
 msgstr "Количество колец: 1"
 
-#: ../src/cavern.c:481
+#: ../src/cavern.c:474
 #: n:139
 #, c-format
 msgid "There are %ld loops."
 msgstr "Количество колец: %ld"
 
-#: ../src/cavern.c:393
+#: ../src/cavern.c:389
 #: n:140
 #, c-format
 msgid "CPU time used %5.2fs"
 msgstr "Затрачено времени процессора: %5.2fs"
 
-#: ../src/cavern.c:396
+#: ../src/cavern.c:392
 #: n:141
 #, c-format
 msgid "Time used %5.2fs"
 msgstr "Затрачено времени всего: %5.2fs"
 
-#: ../src/cavern.c:398
+#: ../src/cavern.c:394
 #: n:142
 msgid "Time used unavailable"
 msgstr "Отчет о затраченном времени недоступен"
 
-#: ../src/cavern.c:401
+#: ../src/cavern.c:397
 #: n:143
 #, c-format
 msgid "Time used %5.2fs (%5.2fs CPU time)"
 msgstr "Затрачено времени %5.2fs (%5.2fs затрачено процессором)"
 
-#: ../src/netskel.c:752
+#: ../src/netskel.c:751
 #: n:145
 #, c-format
 msgid "Original length %6.2fm (%3d legs), moved %6.2fm (%5.2fm/leg). "
 msgstr "Первоначальная длина %6.2fм (%3d замеров), откорректировано на %6.2fм (%5.2fм/замер). "
 
-#: ../src/netskel.c:755
+#: ../src/netskel.c:754
 #: n:146
 #, c-format
 msgid "Error %6.2f%%"
@@ -1246,51 +1263,51 @@ msgstr "Ошибка %6.2f%%"
 #.
 #. There should be 4 spaces between "Error" and "N/A" so that it lines
 #. up with the numbers in the message above.
-#: ../src/netskel.c:762
+#: ../src/netskel.c:761
 #: n:147
 msgid "Error    N/A"
 msgstr "Ошибка   N/A"
 
 #. TRANSLATORS: description of --help option
-#: ../src/cmdline.c:139
+#: ../src/cmdline.c:143
 #: n:150
 msgid "display this help and exit"
 msgstr "показать справку и выйти"
 
 #. TRANSLATORS: description of --version option
-#: ../src/cmdline.c:142
+#: ../src/cmdline.c:146
 #: n:151
 msgid "output version information and exit"
 msgstr "вывести информацию о версии и выйти"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
-#: ../src/cmdline.c:171
+#: ../src/cmdline.c:175
 #: n:153
 msgid "OPTION"
 msgstr "ОПЦИЯ"
 
-#: ../src/mainfrm.cc:165
-#: ../src/printing.cc:391
-#: ../src/printing.cc:1222
-#: ../src/printing.cc:1271
+#: ../src/mainfrm.cc:164
+#: ../src/printing.cc:402
+#: ../src/printing.cc:1243
+#: ../src/printing.cc:1292
 #: n:154
 msgid "Scale"
 msgstr "Масштаб"
 
 #. TRANSLATORS: These example input values should not be translated.
-#: ../src/survexport.cc:134
+#: ../src/survexport.cc:133
 #: n:217
 msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
 msgstr "масштаб (50, 0.02, 1:50 и 2:100 - все это равно 1:50)"
 
-#: ../src/cmdline.c:195
+#: ../src/cmdline.c:199
 #: n:157
 #, c-format
 msgid "Try “%s --help” for more information.\n"
 msgstr "Выполните “%s --help” для получения дополнительной информации.\n"
 
 #. TRANSLATORS: N/M meaning page N of M in the page footer of a printout.
-#: ../src/printing.cc:1930
+#: ../src/printing.cc:1949
 #: n:232
 #, c-format
 msgid "%d/%d"
@@ -1301,7 +1318,7 @@ msgstr "%d/%d"
 #.
 #. Aven will replace %s with a string giving the date and time (e.g.
 #. "2015-06-09 12:40:44").
-#: ../src/printing.cc:1971
+#: ../src/printing.cc:1990
 #: n:167
 #, c-format
 msgid "Processed: %s"
@@ -1312,7 +1329,7 @@ msgstr "Обработано: %s"
 #. Aven will replace %s with the bearing, and %.0f with the scale.
 #.
 #. This message probably doesn't need translating for most languages.
-#: ../src/printing.cc:1885
+#: ../src/printing.cc:1904
 #: n:233
 #, c-format
 msgid "↑%s 1:%.0f"
@@ -1324,7 +1341,7 @@ msgstr "↑%s 1:%.0f"
 #. left and right of the viewer, and %.0f with the scale.
 #.
 #. This message probably doesn't need translating for most languages.
-#: ../src/printing.cc:1896
+#: ../src/printing.cc:1915
 #: n:235
 #, c-format
 msgid "%s↔%s 1:%.0f"
@@ -1337,7 +1354,7 @@ msgstr "%s↔%s 1:%.0f"
 #. tilted at, and %.0f with the scale.
 #.
 #. This message probably doesn't need translating for most languages.
-#: ../src/printing.cc:1909
+#: ../src/printing.cc:1928
 #: n:236
 #, c-format
 msgid "%s↔%s ∡%s 1:%.0f"
@@ -1352,7 +1369,7 @@ msgstr "%s↔%s ∡%s 1:%.0f"
 #. in the footer, and the details there are mostly to make it easy
 #. to check that you have corresponding pages from a multiple page
 #. printout.
-#: ../src/printing.cc:1925
+#: ../src/printing.cc:1944
 #: n:244
 #, c-format
 msgid "Extended 1:%.0f"
@@ -1360,7 +1377,7 @@ msgstr "Разрез 1:%.0f"
 
 #. TRANSLATORS: This is used on printouts of plans, with %s replaced by
 #. something like "123°".  The bearing is up the page.
-#: ../src/printing.cc:1166
+#: ../src/printing.cc:1187
 #: n:168
 #, c-format
 msgid "Plan view, %s up page"
@@ -1369,14 +1386,14 @@ msgstr "План, верх страницы сориентирован на аз
 #. TRANSLATORS: This is used on printouts of elevations, with %s
 #. replaced by something like "123°".  The bearing is the direction
 #. we’re looking.
-#: ../src/printing.cc:1198
+#: ../src/printing.cc:1219
 #: n:169
 #, c-format
 msgid "Elevation facing %s"
 msgstr "Разрез-проекция, направление взгляда - азимут %s"
 
 #. TRANSLATORS: Don't translate example command line option --tilt=-90
-#: ../src/survexport.cc:140
+#: ../src/survexport.cc:139
 #: n:462
 msgid "plan view (equivalent to --tilt=-90)"
 msgstr "план (эквивалентно --tilt=-90)"
@@ -1385,41 +1402,41 @@ msgstr "план (эквивалентно --tilt=-90)"
 #. the first %s replaced by something like "123°", and the second by
 #. something like "-45°".  The bearing is the direction we’re
 #. looking.
-#: ../src/printing.cc:1205
+#: ../src/printing.cc:1226
 #: n:284
 #, c-format
 msgid "Elevation facing %s, tilted %s"
 msgstr "Разрез-проекция, направление взгляда  - азимут %s, угол %s"
 
 #. TRANSLATORS: Don't translate example command line option --tilt=0
-#: ../src/survexport.cc:142
+#: ../src/survexport.cc:141
 #: n:463
 msgid "elevation view (equivalent to --tilt=0)"
 msgstr "разрез (эквивалентно --tilt=0)"
 
 #. TRANSLATORS: This is used on printouts of extended elevations.
-#: ../src/printing.cc:1214
+#: ../src/printing.cc:1235
 #: n:191
 msgid "Extended elevation"
 msgstr "Разрез-развертка"
 
-#: ../src/cavern.c:462
+#: ../src/cavern.c:458
 #: n:172
 msgid "Survey contains 1 survey station,"
 msgstr "Топо-съемка содержит пикетов: 1,"
 
-#: ../src/cavern.c:464
+#: ../src/cavern.c:460
 #: n:173
 #, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "Топо-съемка содержит пикетов: %ld,"
 
-#: ../src/cavern.c:468
+#: ../src/cavern.c:464
 #: n:174
 msgid " joined by 1 leg."
 msgstr " замеров: 1."
 
-#: ../src/cavern.c:470
+#: ../src/cavern.c:466
 #: n:175
 #, c-format
 msgid " joined by %ld legs."
@@ -1440,7 +1457,7 @@ msgstr "реберных узлов съемочной сети"
 #. TRANSLATORS: "Connected component" in the graph theory sense - it
 #. means there are %ld bits of survey with no connections between them.
 #. This message is only used if there are more than 1.
-#: ../src/cavern.c:490
+#: ../src/cavern.c:483
 #: n:178
 #, c-format
 msgid "Survey has %ld connected components."
@@ -1460,70 +1477,72 @@ msgstr "&Сохранить журнал"
 msgid "&Reprocess"
 msgstr "&Перерасчитать"
 
-#: ../src/cmdline.c:243
-#: ../src/cmdline.c:262
+#: ../src/cmdline.c:247
+#: ../src/cmdline.c:266
 #: n:185
 #, c-format
 msgid "numeric argument “%s” out of range"
 msgstr "числовой аргумент “%s” имеет недопустимое значение"
 
-#: ../src/cmdline.c:245
+#: ../src/cmdline.c:249
 #: n:186
 #, c-format
 msgid "argument “%s” not an integer"
 msgstr "аргумент “%s” не является целым числом"
 
-#: ../src/cmdline.c:264
+#: ../src/cmdline.c:268
 #: n:187
 #, c-format
 msgid "argument “%s” not a number"
 msgstr "аргумент “%s” не является числом"
 
-#: ../src/datain.c:607
-#: ../src/datain.c:615
-#: ../src/datain.c:1682
-#: ../src/datain.c:1911
-#: ../src/datain.c:4261
+#: ../src/commands.c:2822
+#: ../src/datain.c:630
+#: ../src/datain.c:638
+#: ../src/datain.c:1703
+#: ../src/datain.c:1931
+#: ../src/datain.c:4287
 #: n:497
 #, c-format
 msgid "Expecting “%s”"
 msgstr "Ожидается “%s”"
 
-#: ../src/datain.c:910
-#: ../src/datain.c:1592
-#: ../src/datain.c:1946
-#: ../src/datain.c:2068
-#: ../src/datain.c:2208
-#: ../src/datain.c:2240
-#: ../src/datain.c:2596
+#: ../src/commands.c:2754
+#: ../src/datain.c:929
+#: ../src/datain.c:1613
+#: ../src/datain.c:1966
+#: ../src/datain.c:2088
+#: ../src/datain.c:2228
+#: ../src/datain.c:2260
+#: ../src/datain.c:2615
 #: n:103
 #, c-format
 msgid "Expecting “%s” or “%s”"
 msgstr "Ожидается “%s” или “%s”"
 
-#: ../src/commands.c:1312
-#: ../src/commands.c:1967
-#: ../src/datain.c:1549
-#: ../src/datain.c:1968
-#: ../src/datain.c:1991
-#: ../src/datain.c:4305
+#: ../src/commands.c:1373
+#: ../src/commands.c:2045
+#: ../src/datain.c:1570
+#: ../src/datain.c:1988
+#: ../src/datain.c:2011
+#: ../src/datain.c:4330
 #: n:188
 #, c-format
 msgid "Expecting “%s”, “%s”, or “%s”"
 msgstr "Ожидается “%s”, “%s” или “%s”"
 
-#: ../src/commands.c:1316
-#: ../src/datain.c:2018
-#: ../src/datain.c:2045
+#: ../src/commands.c:1377
+#: ../src/datain.c:2038
+#: ../src/datain.c:2065
 #: n:189
 #, c-format
 msgid "Expecting “%s”, “%s”, “%s”, or “%s”"
 msgstr "Ожидается “%s”, “%s”, “%s” или “%s”"
 
-#: ../src/readval.c:684
-#: ../src/readval.c:693
-#: ../src/readval.c:702
-#: ../src/readval.c:711
+#: ../src/readval.c:697
+#: ../src/readval.c:705
+#: ../src/readval.c:713
+#: ../src/readval.c:721
 #: n:483
 #, c-format
 msgid "Expecting quadrant bearing, found “%s”"
@@ -1539,10 +1558,10 @@ msgid "Station “%s” referred to by *%s but never used"
 msgstr "На пикет “%s” есть ссылки в  командах *%s но пикет не используется"
 
 #. TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[
-#: ../src/commands.c:1016
-#: ../src/datain.c:2291
-#: ../src/datain.c:2437
-#: ../src/datain.c:3176
+#: ../src/commands.c:1059
+#: ../src/datain.c:2311
+#: ../src/datain.c:2456
+#: ../src/datain.c:3195
 #: n:192
 #, c-format
 msgid "No matching %s"
@@ -1550,7 +1569,7 @@ msgstr "Нет соответствующей команды %s"
 
 #. TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 #. same <survey> if it’s given at all
-#: ../src/commands.c:1050
+#: ../src/commands.c:1099
 #: n:193
 msgid "Survey name doesn’t match BEGIN"
 msgstr "Имя топо-съемки не совпадает с именем, указанным в команде BEGIN"
@@ -1561,7 +1580,7 @@ msgstr "Имя топо-съемки не совпадает с именем, у
 #. *begin entrance
 #. 1 2 10.00 178 -01
 #. *end     <--[Message given here]
-#: ../src/commands.c:1060
+#: ../src/commands.c:1108
 #: n:194
 msgid "Survey name omitted from END"
 msgstr "Имя топосъемки указано в BEGIN, но отсутствует в END"
@@ -1586,12 +1605,15 @@ msgstr "Глубина цвета: %d bpp"
 msgid " (colour)"
 msgstr " (цветное)"
 
-#: ../src/readval.c:917
-#: ../src/readval.c:938
-#: ../src/readval.c:948
-#: ../src/readval.c:970
-#: ../src/readval.c:978
-#: ../src/readval.c:984
+#: ../src/commands.c:2723
+#: ../src/commands.c:2785
+#: ../src/commands.c:2828
+#: ../src/commands.c:2844
+#: ../src/commands.c:2862
+#: ../src/commands.c:2873
+#: ../src/readval.c:927
+#: ../src/readval.c:935
+#: ../src/readval.c:941
 #: n:198
 #, c-format
 msgid "Expecting date, found “%s”"
@@ -1604,7 +1626,7 @@ msgstr "Вместо “%s” ожидается дата"
 #: ../src/diffpos.c:56
 #: ../src/dump3d.c:48
 #: ../src/extend.c:479
-#: ../src/survexport.cc:132
+#: ../src/survexport.cc:131
 #: n:199
 msgid "only load the sub-survey with this prefix"
 msgstr "обрабатывать топо-съемки только с указаным префиксом"
@@ -1616,37 +1638,37 @@ msgid "print and exit (requires a 3d file)"
 msgstr "распечатать и выйти (нуобходимо указать 3d файл)"
 
 #. TRANSLATORS: --help output for cavern --output option
-#: ../src/cavern.c:120
+#: ../src/cavern.c:114
 #: n:162
 msgid "set location for output files"
 msgstr "указать местоположения для выходных файлов"
 
 #. TRANSLATORS: --help output for cavern --quiet option
-#: ../src/cavern.c:122
+#: ../src/cavern.c:116
 #: n:163
 msgid "only show brief summary (-qq for errors only)"
 msgstr "отображать только краткие итоги (-qq для отображения только ошибок)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
-#: ../src/cavern.c:124
+#: ../src/cavern.c:118
 #: n:164
 msgid "do not create .err file"
 msgstr "не создавать файл .err"
 
 #. TRANSLATORS: --help output for cavern --warnings-are-errors option
-#: ../src/cavern.c:126
+#: ../src/cavern.c:120
 #: n:165
 msgid "turn warnings into errors"
 msgstr "трактовать предупреждения как ошибки"
 
 #. TRANSLATORS: --help output for cavern --log option
-#: ../src/cavern.c:128
+#: ../src/cavern.c:122
 #: n:170
 msgid "log output to .log file"
 msgstr "выводить сообщения программы в .log файл"
 
 #. TRANSLATORS: --help output for cavern --3d-version option
-#: ../src/cavern.c:130
+#: ../src/cavern.c:124
 #: n:171
 msgid "specify the 3d file format version to output"
 msgstr "указать версию формата в котором будет сохранятся 3d файл"
@@ -1667,12 +1689,12 @@ msgstr "отображать разрывы нитки на разрезе ра�
 #. meaningless to say your tape is marked in "0 feet" (but you might
 #. measure distance by counting knots on a diving line, and tie them
 #. every "2 feet").
-#: ../src/commands.c:1848
+#: ../src/commands.c:1926
 #: n:200
 msgid "*UNITS factor must be non-zero"
 msgstr "Коэффициент в команде *UNITS должен быть ненулевым"
 
-#: ../src/model.cc:390
+#: ../src/model.cc:392
 #: n:202
 #, c-format
 msgid "No survey data in 3d file “%s”"
@@ -1685,8 +1707,8 @@ msgstr "Данные топо-съемки не найдены в файле “
 #. Try to keep this translation short - ideally at most 10 characters -
 #. as otherwise the compass and clino will be moved further apart to
 #. make room. */
-#: ../src/gfxcore.cc:844
-#: ../src/gfxcore.cc:2177
+#: ../src/gfxcore.cc:846
+#: ../src/gfxcore.cc:2179
 #: n:203
 msgid "Facing"
 msgstr "Азимут"
@@ -1700,22 +1722,22 @@ msgstr "О программе %s"
 
 #. TRANSLATORS: "Terrain file" being a digital model of the terrain (e.g. a
 #. grid of height values).
-#: ../src/mainfrm.cc:1495
+#: ../src/mainfrm.cc:1463
 #: n:451
 msgid "Select a terrain file to view"
 msgstr "Выберите файл с рельефом поверхности для отображения"
 
-#: ../src/mainfrm.cc:1524
+#: ../src/mainfrm.cc:1493
 #: n:496
 msgid "Select a geodata file to overlay"
 msgstr ""
 
-#: ../src/mainfrm.cc:1489
+#: ../src/mainfrm.cc:1457
 #: n:452
 msgid "Terrain files"
 msgstr "Файлы рельефа поверхности"
 
-#: ../src/mainfrm.cc:1520
+#: ../src/mainfrm.cc:1489
 #: n:495
 msgid "Geodata files"
 msgstr ""
@@ -1723,7 +1745,7 @@ msgstr ""
 #. TRANSLATORS: Aven shows a circle of terrain covering the area
 #. of the survey plus a bit, but the terrain data file didn't
 #. contain any data inside that circle.
-#: ../src/gfxcore.cc:3232
+#: ../src/gfxcore.cc:3234
 #: n:161
 msgid "No terrain data near area of survey"
 msgstr "Нет данных о поверхности над районом подземной съемки"
@@ -1733,25 +1755,25 @@ msgstr "Нет данных о поверхности над районом по
 #. language would use.
 #.
 #. File->Open dialog:
-#: ../src/mainfrm.cc:1466
+#: ../src/mainfrm.cc:1434
 #: n:206
 msgid "Select a survey file to view"
 msgstr "Выберите топо-съемку для просмотра"
 
 #. TRANSLATORS: Survex is the name of the software, and "3d" refers to a
 #. file extension, so neither should be translated.
-#: ../src/export.cc:72
-#: ../src/mainfrm.cc:1427
-#: ../src/mainfrm.cc:1624
+#: ../src/export.cc:63
+#: ../src/mainfrm.cc:1395
+#: ../src/mainfrm.cc:1598
 #: n:207
 msgid "Survex 3d files"
 msgstr "Survex 3d файлы"
 
+#: ../src/mainfrm.cc:1426
 #: ../src/mainfrm.cc:1458
 #: ../src/mainfrm.cc:1490
-#: ../src/mainfrm.cc:1521
-#: ../src/mainfrm.cc:2045
-#: ../src/printing.cc:629
+#: ../src/mainfrm.cc:2019
+#: ../src/printing.cc:640
 #: n:208
 msgid "All files"
 msgstr "Все файлы"
@@ -1759,69 +1781,69 @@ msgstr "Все файлы"
 #. TRANSLATORS: Here "survey" is a "cave map" rather than
 #. list of questions - it should be translated to the
 #. terminology that cavers using the language would use.
-#: ../src/mainfrm.cc:1424
+#: ../src/mainfrm.cc:1392
 #: n:229
 msgid "All survey files"
 msgstr "Все файлы топо-съемок"
 
 #. TRANSLATORS: Survex is the name of the software, and "svx" refers to a
 #. file extension, so neither should be translated.
-#: ../src/mainfrm.cc:1430
+#: ../src/mainfrm.cc:1398
 #: n:329
 msgid "Survex svx files"
 msgstr "Survex svx файлы"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1438
+#: ../src/mainfrm.cc:1406
 #: n:330
 msgid "Compass MAK files"
 msgstr "Compass MAK файлы"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1442
+#: ../src/mainfrm.cc:1410
 #: n:490
 msgid "Compass DAT files"
 msgstr "Compass DAT файлы"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1446
+#: ../src/mainfrm.cc:1414
 #: n:491
 msgid "Compass CLP files"
 msgstr "Compass CLP файлы"
 
 #. TRANSLATORS: "Walls" is David McKenzie's cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1450
+#: ../src/mainfrm.cc:1418
 #: n:504
 msgid "Walls project files"
 msgstr ""
 
 #. TRANSLATORS: "Walls" is David McKenzie's cave
 #. surveying package, so should not be translated
-#: ../src/mainfrm.cc:1454
+#: ../src/mainfrm.cc:1422
 #: n:505
 msgid "Walls survey data files"
 msgstr "Walls файл топосъемки"
 
-#: ../src/export.cc:75
+#: ../src/export.cc:66
 #: n:101
 msgid "CSV files"
 msgstr "CSV файлы"
 
-#: ../src/export.cc:78
+#: ../src/export.cc:69
 #: n:411
 msgid "DXF files"
 msgstr "DXF файлы"
 
-#: ../src/export.cc:81
+#: ../src/export.cc:72
 #: n:412
 msgid "EPS files"
 msgstr "EPS файлы"
 
-#: ../src/export.cc:84
+#: ../src/export.cc:75
 #: n:413
 msgid "GPX files"
 msgstr "GPX файлы"
@@ -1829,12 +1851,12 @@ msgstr "GPX файлы"
 #. TRANSLATORS: Here "plotter" refers to a machine which draws a printout
 #. on a (usually large) sheet of paper using a pen mounted in a motorised
 #. mechanism.
-#: ../src/export.cc:90
+#: ../src/export.cc:81
 #: n:414
 msgid "HPGL for plotters"
 msgstr "HPGL файлы (для плоттера)"
 
-#: ../src/export.cc:96
+#: ../src/export.cc:87
 #: n:444
 msgid "KML files"
 msgstr "KML файлы"
@@ -1842,24 +1864,24 @@ msgstr "KML файлы"
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated:
 #. http://www.fountainware.com/compass/
-#: ../src/export.cc:102
+#: ../src/export.cc:93
 #: n:415
 msgid "Compass PLT for use with Carto"
 msgstr "Compass PLT файлы для использования в Carto"
 
 #. TRANSLATORS: Survex is the name of the software, and "pos" refers to a
 #. file extension, so neither should be translated.
-#: ../src/export.cc:112
+#: ../src/export.cc:98
 #: n:166
 msgid "Survex pos files"
 msgstr "Survex pos файлы"
 
-#: ../src/export.cc:115
+#: ../src/export.cc:101
 #: n:417
 msgid "SVG files"
 msgstr "SVG файлы"
 
-#: ../src/export.cc:93
+#: ../src/export.cc:84
 #: n:445
 msgid "JSON files"
 msgstr "JSON файлы"
@@ -1929,7 +1951,7 @@ msgstr "[ФАЙЛ_ТОПОСЪЕМКИ]"
 #. language would use.
 #.
 #. Part of cavern --help
-#: ../src/cavern.c:227
+#: ../src/cavern.c:223
 #: n:507
 #, fuzzy
 msgid "[SURVEY_DATA_FILE]"
@@ -1937,7 +1959,7 @@ msgstr "[ФАЙЛ_ТОПОСЪЕМКИ]"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by date" if there
 #. are surveys without date information.  Try to keep this fairly short.
-#: ../src/gfxcore.cc:1220
+#: ../src/gfxcore.cc:1222
 #: n:221
 msgid "Undated"
 msgstr "Дата не указана"
@@ -1945,7 +1967,7 @@ msgstr "Дата не указана"
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information. Try to keep
 #. this fairly short.
-#: ../src/gfxcore.cc:1245
+#: ../src/gfxcore.cc:1247
 #: n:290
 msgid "Not in loop"
 msgstr "Не в кольце"
@@ -1953,7 +1975,7 @@ msgstr "Не в кольце"
 #. TRANSLATORS: error from:
 #.
 #. *data normal newline from to tape compass clino
-#: ../src/commands.c:1689
+#: ../src/commands.c:1767
 #: n:222
 msgid "NEWLINE can’t be the first reading"
 msgstr "NEWLINE не может быть первым значением"
@@ -1961,7 +1983,7 @@ msgstr "NEWLINE не может быть первым значением"
 #. TRANSLATORS: error from:
 #.
 #. *data normal from to tape compass clino newline
-#: ../src/commands.c:1730
+#: ../src/commands.c:1808
 #: n:223
 msgid "NEWLINE can’t be the last reading"
 msgstr "NEWLINE не может быть последним значением"
@@ -1971,7 +1993,7 @@ msgstr "NEWLINE не может быть последним значением"
 #. *data normal station tape compass clino
 #.
 #. ("station" signifies interleaved data).
-#: ../src/commands.c:1753
+#: ../src/commands.c:1831
 #: n:224
 msgid "Interleaved readings, but no NEWLINE"
 msgstr "Стиль данных подразумевает наличие перевода строки, но NEWLINE отсутствует"
@@ -1981,7 +2003,7 @@ msgstr "Стиль данных подразумевает наличие пер
 #. *data diving station newline depth tape compass
 #.
 #. ("depth" needs to occur before "newline").
-#: ../src/commands.c:1629
+#: ../src/commands.c:1707
 #: n:225
 #, c-format
 msgid "Reading “%s” must occur before NEWLINE"
@@ -1990,7 +2012,7 @@ msgstr "Значение “%s” должно быть перед NEWLINE"
 #. TRANSLATORS: e.g.
 #.
 #. *data normal from to tape newline compass clino
-#: ../src/commands.c:1680
+#: ../src/commands.c:1758
 #: n:226
 msgid "NEWLINE can only be preceded by STATION, DEPTH, and COUNT"
 msgstr "Значению NEWLINE могут предшествовать только значения STATION, DEPTH или COUNT"
@@ -1998,13 +2020,13 @@ msgstr "Значению NEWLINE могут предшествовать тол�
 #. TRANSLATORS: e.g.
 #.
 #. *calibrate tape compass 1 1
-#: ../src/commands.c:1898
+#: ../src/commands.c:1976
 #: n:227
 msgid "Can’t calibrate angular and length quantities together"
 msgstr "Недопустимо совместно калибровать величины для углов и длин"
 
-#: ../src/commands.c:814
-#: ../src/commands.c:826
+#: ../src/commands.c:851
+#: ../src/commands.c:863
 #: n:397
 msgid "Bad *alias command"
 msgstr "Недопустимая команда *alias"
@@ -2019,7 +2041,7 @@ msgstr "Журнал ошибок %s"
 
 #. TRANSLATORS: The text on the action button in the "Export" settings
 #. dialog
-#: ../src/printing.cc:571
+#: ../src/printing.cc:582
 #: n:230
 msgid "&Export..."
 msgstr "&Экспортi..."
@@ -2028,57 +2050,57 @@ msgstr "&Экспортi..."
 #. this group.  Tickable menu item which toggles auto rotation.
 #. Please don't translate "Space" - that's the shortcut key to use which
 #. wxWidgets needs to parse and it should then handle translating.
-#: ../src/mainfrm.cc:832
+#: ../src/mainfrm.cc:800
 #: n:231
 msgid "Au&to-Rotate\tSpace"
 msgstr "Ав&томатическое вращение\tSpace"
 
-#: ../src/mainfrm.cc:834
+#: ../src/mainfrm.cc:802
 #: n:234
 msgid "&Reverse Direction"
 msgstr "&Поменять направление вращения"
 
 #. TRANSLATORS: View *looking* North
-#: ../src/gfxcore.cc:4430
-#: ../src/mainfrm.cc:837
+#: ../src/gfxcore.cc:4432
+#: ../src/mainfrm.cc:805
 #: n:240
 msgid "View &North"
 msgstr "На &Север"
 
 #. TRANSLATORS: View *looking* East
-#: ../src/gfxcore.cc:4432
-#: ../src/mainfrm.cc:838
+#: ../src/gfxcore.cc:4434
+#: ../src/mainfrm.cc:806
 #: n:241
 msgid "View &East"
 msgstr "На &Восток"
 
 #. TRANSLATORS: View *looking* South
-#: ../src/gfxcore.cc:4434
-#: ../src/mainfrm.cc:839
+#: ../src/gfxcore.cc:4436
+#: ../src/mainfrm.cc:807
 #: n:242
 msgid "View &South"
 msgstr "На &Юг"
 
 #. TRANSLATORS: View *looking* West
-#: ../src/gfxcore.cc:4436
-#: ../src/mainfrm.cc:840
+#: ../src/gfxcore.cc:4438
+#: ../src/mainfrm.cc:808
 #: n:243
 msgid "View &West"
 msgstr "На &Запад"
 
-#: ../src/gfxcore.cc:4456
-#: ../src/mainfrm.cc:842
+#: ../src/gfxcore.cc:4458
+#: ../src/mainfrm.cc:810
 #: n:248
 msgid "&Plan View"
 msgstr "&План"
 
-#: ../src/gfxcore.cc:4457
-#: ../src/mainfrm.cc:843
+#: ../src/gfxcore.cc:4459
+#: ../src/mainfrm.cc:811
 #: n:249
 msgid "Ele&vation"
 msgstr "&Разрез"
 
-#: ../src/mainfrm.cc:845
+#: ../src/mainfrm.cc:813
 #: n:254
 msgid "Restore De&fault View"
 msgstr "Восстановить об&зор по умолчанию"
@@ -2086,7 +2108,7 @@ msgstr "Восстановить об&зор по умолчанию"
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
 #. the "what to print/export" dialog.
-#: ../src/printing.cc:356
+#: ../src/printing.cc:364
 #: n:283
 msgid "View"
 msgstr "Вид"
@@ -2095,18 +2117,18 @@ msgstr "Вид"
 #. legs" "stations" "names" etc checkboxes in the "what to print" dialog.
 #. "Elements" isn’t a good name for this but nothing better has yet come to
 #. mind!
-#: ../src/printing.cc:361
+#: ../src/printing.cc:369
 #: n:256
 msgid "Elements"
 msgstr "Элементы"
 
-#: ../src/printing.cc:366
+#: ../src/printing.cc:374
 #: n:410
 msgid "Export format"
 msgstr "Формат экспорта"
 
-#: ../src/printing.cc:424
-#: ../src/printing.cc:822
+#: ../src/printing.cc:435
+#: ../src/printing.cc:843
 #: n:257
 #, c-format
 msgid "%d pages (%dx%d)"
@@ -2115,19 +2137,19 @@ msgstr "%d страниц (%dx%d)"
 #. TRANSLATORS: used in the scale drop down selector in the print
 #. dialog the implicit meaning is "choose a suitable scale to fit
 #. the plot on a single page", but we need something shorter
-#: ../src/printing.cc:396
+#: ../src/printing.cc:407
 #: n:258
 msgid "One page"
 msgstr "Одна страница"
 
-#: ../src/mainfrm.cc:157
-#: ../src/printing.cc:431
+#: ../src/mainfrm.cc:156
+#: ../src/printing.cc:442
 #: n:259
 msgid "Bearing"
 msgstr "Азимут"
 
 #. TRANSLATORS: These example input values should not be translated.
-#: ../src/survexport.cc:136
+#: ../src/survexport.cc:135
 #: n:460
 msgid "bearing (90, 90d, 100g all mean 90°)"
 msgstr "азимут (90, 90d, 100g - все это равно 90°)"
@@ -2137,54 +2159,54 @@ msgstr "азимут (90, 90d, 100g - все это равно 90°)"
 msgid "Station Name"
 msgstr "Имя Пикета"
 
-#: ../src/printing.cc:481
+#: ../src/printing.cc:492
 #: n:260
 msgid "Station Names"
 msgstr "Названия пикетов"
 
-#: ../src/survexport.cc:147
+#: ../src/survexport.cc:146
 #: n:475
 msgid "station labels"
 msgstr "названия пикетов"
 
-#: ../src/printing.cc:477
+#: ../src/printing.cc:488
 #: n:261
 msgid "Crosses"
 msgstr "Пикеты"
 
-#: ../src/survexport.cc:146
+#: ../src/survexport.cc:145
 #: n:474
 msgid "station markers"
 msgstr "значки пикетов"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printing.cc:463
+#: ../src/printing.cc:474
 #: n:262
 msgid "Underground Survey Legs"
 msgstr "Подземные замеры"
 
-#: ../src/survexport.cc:143
+#: ../src/survexport.cc:142
 #: n:476
 msgid "underground survey legs"
 msgstr "подземные замеры"
 
-#: ../src/printing.cc:497
+#: ../src/printing.cc:508
 #: n:393
 msgid "Cross-sections"
 msgstr "Сечения"
 
-#: ../src/survexport.cc:151
+#: ../src/survexport.cc:150
 #: n:469
 msgid "cross-sections"
 msgstr "сечения"
 
-#: ../src/printing.cc:502
+#: ../src/printing.cc:513
 #: n:394
 msgid "Walls"
 msgstr "Стены ходов"
 
-#: ../src/survexport.cc:152
+#: ../src/survexport.cc:151
 #: n:470
 msgid "walls"
 msgstr "стены ходов"
@@ -2192,61 +2214,61 @@ msgstr "стены ходов"
 #. TRANSLATORS: Label for checkbox which controls whether there's a
 #. layer in the exported file (for formats such as DXF and SVG)
 #. containing polygons for the inside of cave passages).
-#: ../src/printing.cc:509
+#: ../src/printing.cc:520
 #: n:395
 msgid "Passages"
 msgstr "Пещерныхе ходы"
 
-#: ../src/survexport.cc:153
+#: ../src/survexport.cc:152
 #: n:471
 msgid "passages"
 msgstr "пещерныхе ходы"
 
-#: ../src/printing.cc:513
+#: ../src/printing.cc:524
 #: n:421
 msgid "Origin in centre"
 msgstr "Начало координат в центре"
 
-#: ../src/survexport.cc:154
+#: ../src/survexport.cc:153
 #: n:472
 msgid "origin in centre"
 msgstr "начало координат в центре"
 
-#: ../src/printing.cc:517
+#: ../src/printing.cc:528
 #: n:422
 msgid "Full coordinates"
 msgstr "Полные координаты"
 
-#: ../src/survexport.cc:155
+#: ../src/survexport.cc:154
 #: n:473
 msgid "full coordinates"
 msgstr "полные координаты"
 
-#: ../src/printing.cc:521
+#: ../src/printing.cc:532
 #: n:477
 msgid "Clamp to ground"
 msgstr "Прикрепить к поверхности"
 
-#: ../src/survexport.cc:156
+#: ../src/survexport.cc:155
 #: n:478
 msgid "clamp to ground"
 msgstr "прикрепить к поверхности"
 
 #. TRANSLATORS: Used in the print dialog:
-#: ../src/printing.cc:441
+#: ../src/printing.cc:452
 #: n:263
 msgid "Tilt angle"
 msgstr "Угол наклона"
 
 #. TRANSLATORS: These example input values should not be translated.
-#: ../src/survexport.cc:138
+#: ../src/survexport.cc:137
 #: n:461
 msgid "tilt (45, 45d, 50g, 100% all mean 45°)"
 msgstr "угол наклона (45, 45d, 50g, 100% - все это равно 45°)"
 
 #. TRANSLATORS: used in the print dialog - controls drawing lines
 #. around each page
-#: ../src/printing.cc:529
+#: ../src/printing.cc:540
 #: n:264
 msgid "Page Borders"
 msgstr "Границы страницы"
@@ -2254,131 +2276,131 @@ msgstr "Границы страницы"
 #. TRANSLATORS: As in the legend on a map.  Used in the print dialog -
 #. controls drawing the box at the lower left with survey name, view
 #. angles, etc
-#: ../src/printing.cc:540
+#: ../src/printing.cc:551
 #: n:265
 msgid "Legend"
 msgstr "Условные обозначения"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
-#: ../src/printing.cc:535
+#: ../src/printing.cc:546
 #: n:266
 msgid "Blank Pages"
 msgstr "Пустые страницы"
 
 #. TRANSLATORS: Items in the "View" menu:
-#: ../src/mainfrm.cc:862
+#: ../src/mainfrm.cc:830
 #: n:270
 msgid "Station &Names\tCtrl+N"
 msgstr "&Названия пикетов\tCtrl+N"
 
 #. TRANSLATORS: Toggles drawing of 3D passages
-#: ../src/mainfrm.cc:864
+#: ../src/mainfrm.cc:832
 #: n:346
 msgid "Passage &Tubes\tCtrl+T"
 msgstr "&Объемные ходы\tCtrl+T"
 
 #. TRANSLATORS: Toggles drawing the surface of the Earth
-#: ../src/mainfrm.cc:866
+#: ../src/mainfrm.cc:834
 #: n:449
 msgid "Terr&ain"
 msgstr "П&оверхность"
 
-#: ../src/mainfrm.cc:867
+#: ../src/mainfrm.cc:835
 #: n:271
 msgid "&Crosses\tCtrl+X"
 msgstr "Пикет&ы\tCtrl+X"
 
-#: ../src/mainfrm.cc:868
+#: ../src/mainfrm.cc:836
 #: n:297
 msgid "&Grid\tCtrl+G"
 msgstr "&Сетка\tCtrl+G"
 
-#: ../src/mainfrm.cc:869
+#: ../src/mainfrm.cc:837
 #: n:318
 msgid "&Bounding Box\tCtrl+B"
 msgstr "Вме&щающий прямоугольник\tCtrl+B"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:873
+#: ../src/mainfrm.cc:841
 #: n:272
 msgid "&Underground Survey Legs\tCtrl+L"
 msgstr "Под&земная нитка\tCtrl+L"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:876
+#: ../src/mainfrm.cc:844
 #: n:291
 msgid "&Surface Survey Legs\tCtrl+F"
 msgstr "Поверхностна&я нитка\tCtrl+F"
 
-#: ../src/survexport.cc:144
+#: ../src/survexport.cc:143
 #: n:464
 msgid "surface survey legs"
 msgstr "поверхностная нитка"
 
-#: ../src/mainfrm.cc:901
+#: ../src/mainfrm.cc:869
 #: n:273
 msgid "&Overlapping Names"
 msgstr "П&ерекрывающиеся надписи"
 
-#: ../src/mainfrm.cc:914
+#: ../src/mainfrm.cc:882
 #: n:450
 msgid "Co&lour by"
 msgstr "&Раскраска по"
 
-#: ../src/mainfrm.cc:917
+#: ../src/mainfrm.cc:885
 #: n:294
 msgid "Highlight &Entrances"
 msgstr "Подсветить &входы"
 
-#: ../src/mainfrm.cc:918
+#: ../src/mainfrm.cc:886
 #: n:295
 msgid "Highlight &Fixed Points"
 msgstr "Подсветить &фиксированные точки"
 
-#: ../src/mainfrm.cc:919
+#: ../src/mainfrm.cc:887
 #: n:296
 msgid "Highlight E&xported Points"
 msgstr "Подсветить &экспортированные точки"
 
-#: ../src/printing.cc:485
+#: ../src/printing.cc:496
 #: n:418
 msgid "Entrances"
 msgstr "Входы"
 
-#: ../src/survexport.cc:148
+#: ../src/survexport.cc:147
 #: n:466
 msgid "entrances"
 msgstr "входы"
 
-#: ../src/printing.cc:489
+#: ../src/printing.cc:500
 #: n:419
 msgid "Fixed Points"
 msgstr "Фиксированные точки"
 
-#: ../src/survexport.cc:149
+#: ../src/survexport.cc:148
 #: n:467
 msgid "fixed points"
 msgstr "фиксированные точки"
 
-#: ../src/printing.cc:493
+#: ../src/printing.cc:504
 #: n:420
 msgid "Exported Stations"
 msgstr "Экспортированные пикеты"
 
-#: ../src/survexport.cc:150
+#: ../src/survexport.cc:149
 #: n:468
 msgid "exported stations"
 msgstr "экспортированные пикеты"
 
-#: ../src/mainfrm.cc:928
+#: ../src/mainfrm.cc:896
 #: n:237
 msgid "&Perspective"
 msgstr "&Перспектива"
 
-#: ../src/mainfrm.cc:930
+#: ../src/mainfrm.cc:898
 #: n:238
 msgid "Textured &Walls"
 msgstr "Текстурированные &стены"
@@ -2386,101 +2408,101 @@ msgstr "Текстурированные &стены"
 #. TRANSLATORS: Toggles OpenGL "Depth Fogging" - feel free to translate
 #. using that term instead if it gives a better translation which most
 #. users will understand.
-#: ../src/mainfrm.cc:934
+#: ../src/mainfrm.cc:902
 #: n:239
 msgid "Fade Distant Ob&jects"
 msgstr "&Затенять отдаленные объекты"
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/mainfrm.cc:937
+#: ../src/mainfrm.cc:905
 #: n:298
 msgid "Smoot&hed Survey Legs"
 msgstr "Сглаживать &линии"
 
-#: ../src/mainfrm.cc:943
-#: ../src/mainfrm.cc:950
+#: ../src/mainfrm.cc:911
+#: ../src/mainfrm.cc:918
 #: n:356
 msgid "Full Screen &Mode\tF11"
 msgstr "Полноэкранный &режим\tF11"
 
-#: ../src/gfxcore.cc:4500
-#: ../src/mainfrm.cc:904
+#: ../src/gfxcore.cc:4502
+#: ../src/mainfrm.cc:872
 #: n:292
 msgid "Colour by &Depth"
 msgstr "Раскраска по &глубине"
 
-#: ../src/gfxcore.cc:4501
-#: ../src/mainfrm.cc:905
+#: ../src/gfxcore.cc:4503
+#: ../src/mainfrm.cc:873
 #: n:293
 msgid "Colour by D&ate"
 msgstr "Раскраска по д&ате"
 
-#: ../src/gfxcore.cc:4502
-#: ../src/mainfrm.cc:906
+#: ../src/gfxcore.cc:4504
+#: ../src/mainfrm.cc:874
 #: n:289
 msgid "Colour by &Error"
 msgstr "Раскраска по &ошибкам на кольцах"
 
-#: ../src/gfxcore.cc:4503
-#: ../src/mainfrm.cc:907
+#: ../src/gfxcore.cc:4505
+#: ../src/mainfrm.cc:875
 #: n:480
 msgid "Colour by &Horizontal Error"
 msgstr "Раскраска по гори&зонтальной компоненте в ошибках"
 
-#: ../src/gfxcore.cc:4504
-#: ../src/mainfrm.cc:908
+#: ../src/gfxcore.cc:4506
+#: ../src/mainfrm.cc:876
 #: n:481
 msgid "Colour by &Vertical Error"
 msgstr "Раскраска по &вертикальной компоненте в ошибках"
 
-#: ../src/gfxcore.cc:4505
-#: ../src/mainfrm.cc:909
+#: ../src/gfxcore.cc:4507
+#: ../src/mainfrm.cc:877
 #: n:85
 msgid "Colour by &Gradient"
 msgstr "Раскраска по &уклону хода"
 
-#: ../src/gfxcore.cc:4506
-#: ../src/mainfrm.cc:910
+#: ../src/gfxcore.cc:4508
+#: ../src/mainfrm.cc:878
 #: n:82
 msgid "Colour by &Length"
 msgstr "Раскраска по &длине"
 
-#: ../src/gfxcore.cc:4507
-#: ../src/mainfrm.cc:911
+#: ../src/gfxcore.cc:4509
+#: ../src/mainfrm.cc:879
 #: n:448
 msgid "Colour by &Survey"
 msgstr "Раскраска по &топо-съемке"
 
-#: ../src/gfxcore.cc:4508
-#: ../src/mainfrm.cc:912
+#: ../src/gfxcore.cc:4510
+#: ../src/mainfrm.cc:880
 #: n:482
 msgid "Colour by St&yle"
 msgstr "Раскраска по &стилю"
 
-#: ../src/mainfrm.cc:978
+#: ../src/mainfrm.cc:946
 #: n:274
 msgid "&Compass"
 msgstr "&Компас"
 
-#: ../src/mainfrm.cc:979
+#: ../src/mainfrm.cc:947
 #: n:275
 msgid "C&linometer"
 msgstr "&Угломер"
 
 #. TRANSLATORS: The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/mainfrm.cc:982
+#: ../src/mainfrm.cc:950
 #: n:276
 msgid "Colour &Key"
 msgstr "&Цветовая шкала"
 
-#: ../src/mainfrm.cc:983
+#: ../src/mainfrm.cc:951
 #: n:277
 msgid "&Scale Bar"
 msgstr "&Масштаб"
 
-#: ../src/mainfrm.cc:959
+#: ../src/mainfrm.cc:927
 #: n:280
 msgid "&Reverse Sense\tCtrl+R"
 msgstr "&Инвертировать управление\tCtrl+R"
@@ -2488,14 +2510,14 @@ msgstr "&Инвертировать управление\tCtrl+R"
 #. TRANSLATORS: Please don't translate "Escape" - that's the shortcut key
 #. to use which wxWidgets needs to parse and it should then handle
 #. translating.
-#: ../src/mainfrm.cc:926
-#: ../src/mainfrm.cc:968
-#: ../src/mainfrm.cc:974
+#: ../src/mainfrm.cc:894
+#: ../src/mainfrm.cc:936
+#: ../src/mainfrm.cc:942
 #: n:281
 msgid "&Cancel Measuring Line\tEscape"
 msgstr "&Выйти из режима измерения\tEscape"
 
-#: ../src/mainfrm.cc:984
+#: ../src/mainfrm.cc:952
 #: n:299
 msgid "&Indicators"
 msgstr "И&ндикаторы"
@@ -2548,74 +2570,74 @@ msgstr "%s: неизвестная опция “%c%s”\n"
 msgid "%s: invalid option -- %c\n"
 msgstr "%s: неверная опция -- %c\n"
 
-#: ../src/mainfrm.cc:848
+#: ../src/mainfrm.cc:816
 #: n:311
 msgid "&New Presentation"
 msgstr "&Новая презантация"
 
-#: ../src/mainfrm.cc:849
+#: ../src/mainfrm.cc:817
 #: n:312
 msgid "&Open Presentation..."
 msgstr "&Открвть презентацию..."
 
-#: ../src/mainfrm.cc:850
+#: ../src/mainfrm.cc:818
 #: n:313
 msgid "&Save Presentation"
 msgstr "&Сохранить презентацию"
 
-#: ../src/mainfrm.cc:851
+#: ../src/mainfrm.cc:819
 #: n:314
 msgid "Sa&ve Presentation As..."
 msgstr "Со&хранить презентацию как..."
 
 #. TRANSLATORS: "Mark" as in "Mark this position"
-#: ../src/mainfrm.cc:854
+#: ../src/mainfrm.cc:822
 #: n:315
 msgid "&Mark"
 msgstr "От&метить"
 
 #. TRANSLATORS: "Play" as in "Play back a recording"
-#: ../src/mainfrm.cc:856
+#: ../src/mainfrm.cc:824
 #: n:316
 msgid "Pla&y"
 msgstr "&Воспроизвести"
 
-#: ../src/mainfrm.cc:857
+#: ../src/mainfrm.cc:825
 #: n:317
 msgid "&Export as Movie..."
 msgstr "&Экспортировать видео..."
 
-#: ../src/mainfrm.cc:2122
+#: ../src/mainfrm.cc:2096
 #: n:331
 msgid "Export Movie"
 msgstr "Экспортировать видео"
 
 #: ../src/cavernlog.cc:651
-#: ../src/mainfrm.cc:364
-#: ../src/mainfrm.cc:1627
+#: ../src/mainfrm.cc:363
+#: ../src/mainfrm.cc:1601
 #: n:319
 msgid "Select an output filename"
 msgstr "Выберите имя выходного файла"
 
-#: ../src/mainfrm.cc:361
-#: ../src/mainfrm.cc:2044
+#: ../src/mainfrm.cc:360
+#: ../src/mainfrm.cc:2018
 #: n:320
 msgid "Aven presentations"
 msgstr "Презентации Aven"
 
 #. TRANSLATORS: title of the save screenshot dialog
-#: ../src/mainfrm.cc:1556
+#: ../src/mainfrm.cc:1530
 #: n:321
 msgid "Save Screenshot"
 msgstr "Сохранить снимок экрана"
 
-#: ../src/mainfrm.cc:2039
-#: ../src/mainfrm.cc:2042
+#: ../src/mainfrm.cc:2013
+#: ../src/mainfrm.cc:2016
 #: n:322
 msgid "Select a presentation to open"
 msgstr "Выберите презентацию для открытия"
 
-#: ../src/mainfrm.cc:435
+#: ../src/mainfrm.cc:434
 #: n:323
 #, c-format
 msgid "Error in format of presentation file “%s”"
@@ -2623,64 +2645,64 @@ msgstr "Ошибка формата в презентации “%s”"
 
 #. TRANSLATORS: "Compass" as in Larry Fish’s cave
 #. surveying package, so probably shouldn’t be translated
-#: ../src/mainfrm.cc:1434
+#: ../src/mainfrm.cc:1402
 #: n:324
 msgid "Compass PLT files"
 msgstr "Файлы Compass PLT"
 
 #. TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 #. package, so don’t translate it.
-#: ../src/mainfrm.cc:1457
+#: ../src/mainfrm.cc:1425
 #: n:325
 msgid "CMAP XYZ files"
 msgstr "Файлы CMAP XYZ"
 
 #. TRANSLATORS: title of message box
-#: ../src/mainfrm.cc:1663
-#: ../src/mainfrm.cc:2017
-#: ../src/mainfrm.cc:2033
+#: ../src/mainfrm.cc:1637
+#: ../src/mainfrm.cc:1991
+#: ../src/mainfrm.cc:2007
 #: n:326
 msgid "Modified Presentation"
 msgstr "Измененная презентация"
 
 #. TRANSLATORS: and the question in that box
-#: ../src/mainfrm.cc:1661
-#: ../src/mainfrm.cc:2016
-#: ../src/mainfrm.cc:2032
+#: ../src/mainfrm.cc:1635
+#: ../src/mainfrm.cc:1990
+#: ../src/mainfrm.cc:2006
 #: n:327
 msgid "The current presentation has been modified.  Abandon unsaved changes?"
 msgstr "Текущая презентация была изменена.  Отменить не сохраненные изменения?"
 
-#: ../src/mainfrm.cc:2361
-#: ../src/mainfrm.cc:2372
+#: ../src/mainfrm.cc:2335
+#: ../src/mainfrm.cc:2346
 #: n:328
 msgid "No matches were found."
 msgstr "Совпадений не найдено."
 
 #. TRANSLATORS: "Find stations" button tooltip
-#: ../src/mainfrm.cc:1075
+#: ../src/mainfrm.cc:1043
 #: n:332
 msgid "Find"
 msgstr "Поиск"
 
 #. TRANSLATORS: "Hide stations" button default tooltip
-#: ../src/mainfrm.cc:1077
-#: ../src/mainfrm.cc:2404
+#: ../src/mainfrm.cc:1045
+#: ../src/mainfrm.cc:2378
 #: n:333
 msgid "Hide"
 msgstr "Скрыть"
 
 #. TRANSLATORS: "Hide stations" button tooltip when stations are found
-#: ../src/mainfrm.cc:2365
+#: ../src/mainfrm.cc:2339
 #: n:334
 #, c-format
 msgid "Hide %d found stations"
 msgstr "Скрыть %d найденных пикетов"
 
-#: ../src/mainfrm.cc:245
-#: ../src/mainfrm.cc:1750
-#: ../src/mainfrm.cc:1826
-#: ../src/mainfrm.cc:1878
+#: ../src/mainfrm.cc:244
+#: ../src/mainfrm.cc:1724
+#: ../src/mainfrm.cc:1800
+#: ../src/mainfrm.cc:1852
 #: ../src/pos.cc:89
 #: n:335
 msgid "Altitude"
@@ -2688,22 +2710,22 @@ msgstr "Высота"
 
 #. TRANSLATORS: error if you try to drag multiple files to the aven
 #. window
-#: ../src/mainfrm.cc:723
+#: ../src/mainfrm.cc:691
 #: n:336
 msgid "You may only view one 3d file at a time."
 msgstr "Вы можете просматривать только один 3d файл одновременно."
 
-#: ../src/mainfrm.cc:985
+#: ../src/mainfrm.cc:953
 #: n:337
 msgid "&Side Panel"
 msgstr "&Боковая панель"
 
 #. TRANSLATORS: show coordinates (N = North or Northing, E = East or
 #. Easting)
-#: ../src/mainfrm.cc:1748
-#: ../src/mainfrm.cc:1770
-#: ../src/mainfrm.cc:1772
-#: ../src/mainfrm.cc:1877
+#: ../src/mainfrm.cc:1722
+#: ../src/mainfrm.cc:1744
+#: ../src/mainfrm.cc:1746
+#: ../src/mainfrm.cc:1851
 #: n:338
 #, c-format
 msgid "%.2f E, %.2f N"
@@ -2711,16 +2733,16 @@ msgstr "%.2f В, %.2f С"
 
 #. TRANSLATORS: Used in Aven:
 #. From <stationname>: H 12.24m, Brg 234.5°
-#: ../src/mainfrm.cc:1790
-#: ../src/mainfrm.cc:1835
-#: ../src/mainfrm.cc:1899
+#: ../src/mainfrm.cc:1764
+#: ../src/mainfrm.cc:1809
+#: ../src/mainfrm.cc:1873
 #: n:339
 #, c-format
 msgid "From %s"
 msgstr "От %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
-#: ../src/mainfrm.cc:1912
+#: ../src/mainfrm.cc:1886
 #: n:340
 #, c-format
 msgid "H %.2f%s, V %.2f%s"
@@ -2729,7 +2751,7 @@ msgstr "Проложение%.2f%s, Перепад %.2f%s"
 #. TRANSLATORS: "Dist" is short for "Distance", "Brg" for "Bearing" (as
 #. in Compass bearing) and "Grd" for "Gradient" (the slope angle
 #. measured by the clino)
-#: ../src/mainfrm.cc:1952
+#: ../src/mainfrm.cc:1926
 #: n:341
 #, c-format
 msgid "%s: %s, Dist %.2f%s, Brg %03.1f%s, Grd %s"
@@ -2738,9 +2760,9 @@ msgstr "%s: %s, Дл %.2f%s, Аз %03.1f%s, Угл %s"
 #. TRANSLATORS: tickable menu item in View menu.
 #.
 #. "Metric" here means metres, km, etc (rather than feet, miles, etc)
-#: ../src/gfxcore.cc:4488
-#: ../src/gfxcore.cc:4515
-#: ../src/mainfrm.cc:987
+#: ../src/gfxcore.cc:4490
+#: ../src/gfxcore.cc:4517
+#: ../src/mainfrm.cc:955
 #: n:342
 msgid "&Metric"
 msgstr "&Метрические длины"
@@ -2749,10 +2771,10 @@ msgstr "&Метрические длины"
 #.
 #. Degrees are the angular measurement where there are 360 in a full
 #. circle.
-#: ../src/gfxcore.cc:4444
-#: ../src/gfxcore.cc:4465
-#: ../src/gfxcore.cc:4517
-#: ../src/mainfrm.cc:988
+#: ../src/gfxcore.cc:4446
+#: ../src/gfxcore.cc:4467
+#: ../src/gfxcore.cc:4519
+#: ../src/mainfrm.cc:956
 #: n:343
 msgid "&Degrees"
 msgstr "&Градусы"
@@ -2761,8 +2783,8 @@ msgstr "&Градусы"
 #.
 #. Show the tilt of the survey as a percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/gfxcore.cc:4470
-#: ../src/mainfrm.cc:989
+#: ../src/gfxcore.cc:4472
+#: ../src/mainfrm.cc:957
 #: n:430
 msgid "&Percent"
 msgstr "&Печать"
@@ -2772,8 +2794,8 @@ msgstr "&Печать"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1412
-#: ../src/printing.cc:1263
+#: ../src/gfxcore.cc:1414
+#: ../src/printing.cc:1284
 #: n:423
 msgid "km"
 msgstr "км"
@@ -2783,16 +2805,16 @@ msgstr "км"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/commands.c:448
-#: ../src/gfxcore.cc:1190
-#: ../src/gfxcore.cc:1282
-#: ../src/gfxcore.cc:1419
-#: ../src/mainfrm.cc:1739
-#: ../src/mainfrm.cc:1801
-#: ../src/mainfrm.cc:1821
-#: ../src/mainfrm.cc:1870
-#: ../src/mainfrm.cc:1903
-#: ../src/printing.cc:1265
+#: ../src/commands.c:487
+#: ../src/gfxcore.cc:1192
+#: ../src/gfxcore.cc:1284
+#: ../src/gfxcore.cc:1421
+#: ../src/mainfrm.cc:1713
+#: ../src/mainfrm.cc:1775
+#: ../src/mainfrm.cc:1795
+#: ../src/mainfrm.cc:1844
+#: ../src/mainfrm.cc:1877
+#: ../src/printing.cc:1286
 #: n:424
 msgid "m"
 msgstr "м"
@@ -2802,8 +2824,8 @@ msgstr "м"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1427
-#: ../src/printing.cc:1268
+#: ../src/gfxcore.cc:1429
+#: ../src/printing.cc:1289
 #: n:425
 msgid "cm"
 msgstr "см"
@@ -2813,7 +2835,7 @@ msgstr "см"
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1440
+#: ../src/gfxcore.cc:1442
 #: n:426
 msgid " miles"
 msgstr " миль"
@@ -2823,7 +2845,7 @@ msgstr " миль"
 #.
 #. If there should be a space between the number and this,
 #. include one in the translation.
-#: ../src/gfxcore.cc:1447
+#: ../src/gfxcore.cc:1449
 #: n:427
 msgid " mile"
 msgstr " миля"
@@ -2833,15 +2855,15 @@ msgstr " миля"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/commands.c:449
-#: ../src/gfxcore.cc:1190
-#: ../src/gfxcore.cc:1282
-#: ../src/gfxcore.cc:1455
-#: ../src/mainfrm.cc:1744
-#: ../src/mainfrm.cc:1804
-#: ../src/mainfrm.cc:1824
-#: ../src/mainfrm.cc:1875
-#: ../src/mainfrm.cc:1908
+#: ../src/commands.c:488
+#: ../src/gfxcore.cc:1192
+#: ../src/gfxcore.cc:1284
+#: ../src/gfxcore.cc:1457
+#: ../src/mainfrm.cc:1718
+#: ../src/mainfrm.cc:1778
+#: ../src/mainfrm.cc:1798
+#: ../src/mainfrm.cc:1849
+#: ../src/mainfrm.cc:1882
 #: n:428
 msgid "ft"
 msgstr "футов"
@@ -2851,25 +2873,25 @@ msgstr "футов"
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
-#: ../src/gfxcore.cc:1463
+#: ../src/gfxcore.cc:1465
 #: n:429
 msgid "in"
 msgstr "дюймов"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
-#: ../src/gfxcore.cc:4439
+#: ../src/gfxcore.cc:4441
 #: n:387
 msgid "&Hide Compass"
 msgstr "Скрыть &компас"
 
 #. TRANSLATORS: Menu item which turns off the tilt indicator in aven.
-#: ../src/gfxcore.cc:4460
+#: ../src/gfxcore.cc:4462
 #: n:384
 msgid "&Hide Clino"
 msgstr "Скрыть &угол"
 
 #. TRANSLATORS: Menu item which turns off the scale bar in aven.
-#: ../src/gfxcore.cc:4483
+#: ../src/gfxcore.cc:4485
 #: n:385
 msgid "&Hide scale bar"
 msgstr "Скрыть &масштабную шкалу"
@@ -2877,22 +2899,22 @@ msgstr "Скрыть &масштабную шкалу"
 #. TRANSLATORS: Menu item which turns off the colour key.
 #. The "Colour Key" is the thing in aven showing which colour
 #. corresponds to which depth, date, survey closure error, etc.
-#: ../src/gfxcore.cc:4513
+#: ../src/gfxcore.cc:4515
 #: n:386
 msgid "&Hide colour key"
 msgstr "Скрыть &цветовую шкалу"
 
 #. TRANSLATORS: degree symbol - probably should be translated to
 #. itself.
-#: ../src/commands.c:451
-#: ../src/commands.c:452
-#: ../src/commands.c:870
-#: ../src/gfxcore.cc:826
-#: ../src/gfxcore.cc:916
-#: ../src/gfxcore.cc:1254
-#: ../src/mainfrm.cc:1793
-#: ../src/mainfrm.cc:1916
-#: ../src/mainfrm.cc:1939
+#: ../src/commands.c:490
+#: ../src/commands.c:491
+#: ../src/commands.c:913
+#: ../src/gfxcore.cc:828
+#: ../src/gfxcore.cc:918
+#: ../src/gfxcore.cc:1256
+#: ../src/mainfrm.cc:1767
+#: ../src/mainfrm.cc:1890
+#: ../src/mainfrm.cc:1913
 #: ../src/printing.cc:86
 #: n:344
 msgid "°"
@@ -2900,45 +2922,45 @@ msgstr "°"
 
 #. TRANSLATORS: symbol for grad (400 grad = 360 degrees = full
 #. circle).
-#: ../src/commands.c:453
-#: ../src/gfxcore.cc:831
-#: ../src/gfxcore.cc:921
-#: ../src/gfxcore.cc:1254
-#: ../src/mainfrm.cc:1796
-#: ../src/mainfrm.cc:1919
-#: ../src/mainfrm.cc:1942
+#: ../src/commands.c:492
+#: ../src/gfxcore.cc:833
+#: ../src/gfxcore.cc:923
+#: ../src/gfxcore.cc:1256
+#: ../src/mainfrm.cc:1770
+#: ../src/mainfrm.cc:1893
+#: ../src/mainfrm.cc:1916
 #: n:345
 msgid "ᵍ"
 msgstr "ᵍ"
 
 #. TRANSLATORS: symbol for percentage gradient (100% = 45
 #. degrees = 50 grad).
-#: ../src/commands.c:454
-#: ../src/gfxcore.cc:907
-#: ../src/gfxcore.cc:925
-#: ../src/mainfrm.cc:1937
+#: ../src/commands.c:493
+#: ../src/gfxcore.cc:909
+#: ../src/gfxcore.cc:927
+#: ../src/mainfrm.cc:1911
 #: n:96
 msgid "%"
 msgstr "%"
 
 #. TRANSLATORS: infinity symbol - used for the percentage gradient on
 #. vertical angles.
-#: ../src/gfxcore.cc:901
-#: ../src/mainfrm.cc:1935
+#: ../src/gfxcore.cc:903
+#: ../src/mainfrm.cc:1909
 #: n:431
 msgid "∞"
 msgstr "∞"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 #. in Compass bearing)
-#: ../src/mainfrm.cc:1808
+#: ../src/mainfrm.cc:1782
 #: n:374
 #, c-format
 msgid "%s: H %.2f%s, Brg %03.1f%s"
 msgstr "%s: Проложение %.2f%s, Азимут %03.1f%s"
 
 #. TRANSLATORS: "V" is short for "Vertical"
-#: ../src/mainfrm.cc:1841
+#: ../src/mainfrm.cc:1815
 #: n:375
 #, c-format
 msgid "%s: V %.2f%s"
@@ -2946,12 +2968,12 @@ msgstr "%s: Перепад %.2f%s"
 
 #. TRANSLATORS: labels for tabbed side panel this is for the tab with the
 #. tree hierarchy of survey station names
-#: ../src/mainfrm.cc:1132
+#: ../src/mainfrm.cc:1100
 #: n:376
 msgid "Surveys"
 msgstr "Топо-съемки"
 
-#: ../src/mainfrm.cc:1133
+#: ../src/mainfrm.cc:1101
 #: n:377
 msgid "Presentation"
 msgstr "Режим презентации"
@@ -2979,13 +3001,13 @@ msgstr "Скрыть остальные"
 msgid "Hide si&blings"
 msgstr "Скрыть остальные на &этом уровне"
 
-#: ../src/mainfrm.cc:243
+#: ../src/mainfrm.cc:242
 #: ../src/pos.cc:87
 #: n:378
 msgid "Easting"
 msgstr "Востосное отклонение (Easting)"
 
-#: ../src/mainfrm.cc:244
+#: ../src/mainfrm.cc:243
 #: ../src/pos.cc:88
 #: n:379
 msgid "Northing"
@@ -2998,65 +3020,65 @@ msgstr "Северное отклонение (Northing)"
 #.
 #. "File" menu.  The accelerators must be different within this group.
 #. c.f. 201, 380, 381.
-#: ../src/mainfrm.cc:794
+#: ../src/mainfrm.cc:762
 #: n:220
 msgid "&Open...\tCtrl+O"
 msgstr "&Открыть...\tCtrl+O"
 
 #. TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
 #. terrain.
-#: ../src/mainfrm.cc:797
+#: ../src/mainfrm.cc:765
 #: n:453
 msgid "Open &Terrain..."
 msgstr "Открыть &Рельеф..."
 
-#: ../src/mainfrm.cc:798
+#: ../src/mainfrm.cc:766
 #: n:494
 msgid "Overlay &Geodata..."
 msgstr ""
 
-#: ../src/mainfrm.cc:799
+#: ../src/mainfrm.cc:767
 #: n:144
 msgid "Show &Log"
 msgstr "Показать &журнал"
 
-#: ../src/mainfrm.cc:802
+#: ../src/mainfrm.cc:770
 #: n:380
 msgid "&Print...\tCtrl+P"
 msgstr "&Печать...\tCtrl+P"
 
-#: ../src/mainfrm.cc:803
+#: ../src/mainfrm.cc:771
 #: n:381
 msgid "P&age Setup..."
 msgstr "&Настройки страницы..."
 
 #. TRANSLATORS: In the "File" menu
-#: ../src/mainfrm.cc:806
+#: ../src/mainfrm.cc:774
 #: n:201
 msgid "&Screenshot..."
 msgstr "&Снимок экрана..."
 
 #. TRANSLATORS: In the "File" menu - c.f. n:191
-#: ../src/mainfrm.cc:809
+#: ../src/mainfrm.cc:777
 #: n:247
 msgid "E&xtended Elevation..."
 msgstr "Разрез-раз&вертка..."
 
-#: ../src/mainfrm.cc:807
+#: ../src/mainfrm.cc:775
 #: n:382
 msgid "&Export as..."
 msgstr "&Экспортировать как..."
 
 #. TRANSLATORS: Title of file dialog to choose name and type of exported
 #. file.
-#: ../src/printing.cc:635
+#: ../src/printing.cc:646
 #: n:401
 msgid "Export as:"
 msgstr "Экспортировать как:"
 
 #. TRANSLATORS: Title of the export
 #. dialog
-#: ../src/printing.cc:303
+#: ../src/printing.cc:311
 #: n:383
 msgid "Export"
 msgstr "Экспортировать"
@@ -3068,53 +3090,53 @@ msgid "System Information:"
 msgstr "Информация о системе:"
 
 #. TRANSLATORS: Title of the print preview dialog
-#: ../src/printing.cc:682
+#: ../src/printing.cc:693
 #: n:398
 msgid "Print Preview"
 msgstr "Предварительный просмотр печати"
 
 #. TRANSLATORS: Title of the print
 #. dialog
-#: ../src/printing.cc:300
+#: ../src/printing.cc:308
 #: n:399
 msgid "Print"
 msgstr "Печать"
 
-#: ../src/printing.cc:566
+#: ../src/printing.cc:577
 #: n:400
 msgid "&Print..."
 msgstr "&Печать..."
 
 #. TRANSLATORS: Here a "survey leg" is a set of measurements between two
 #. "survey stations".
-#: ../src/printing.cc:469
+#: ../src/printing.cc:480
 #: n:403
 msgid "Sur&face Survey Legs"
 msgstr "&Поверхностнные замеры"
 
 #. TRANSLATORS: Title of dialog to edit a waypoint in a presentation.
-#: ../src/mainfrm.cc:130
+#: ../src/mainfrm.cc:129
 #: n:404
 msgid "Edit Waypoint"
 msgstr "Редактировать точку маршрута"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
 #. in a presentation.
-#: ../src/mainfrm.cc:169
+#: ../src/mainfrm.cc:168
 #: n:278
 msgid " (unused in perspective view)"
 msgstr " (не используется с перспективной проекцией)"
 
 #. TRANSLATORS: Field label in dialog to edit a waypoint in a
 #. presentation.
-#: ../src/mainfrm.cc:176
+#: ../src/mainfrm.cc:175
 #: n:279
 msgid "Time: "
 msgstr "Время: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.
-#: ../src/mainfrm.cc:180
+#: ../src/mainfrm.cc:179
 #: n:282
 msgid " secs (0 = auto; *6 = 6 times auto)"
 msgstr " секунд (0 = авто; *6 = 6 раз авто)"
@@ -3127,38 +3149,38 @@ msgstr " секунд (0 = авто; *6 = 6 раз авто)"
 msgid "This version of %s requires OpenGL to work, but it isn’t available."
 msgstr "Данная версия %s для своей работы требует библиотеку OpenGL, но она не найдена."
 
-#: ../src/readval.c:358
+#: ../src/readval.c:360
 #: n:392
 msgid "Separator in survey name"
 msgstr "Разделитель в имени топо-съемки"
 
 #. TRANSLATORS: Used in place of the station name when talking about an
 #. anonymous station.
-#: ../src/labelinfo.h:98
+#: ../src/labelinfo.h:102
 #: n:56
 msgid "anonymous station"
 msgstr "анонимный пикет"
 
-#: ../src/readval.c:121
-#: ../src/readval.c:137
-#: ../src/readval.c:155
-#: ../src/readval.c:414
+#: ../src/readval.c:116
+#: ../src/readval.c:132
+#: ../src/readval.c:150
+#: ../src/readval.c:416
 #: n:3
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Отсутствует замер между двумя анонимными пикетами"
 
-#: ../src/mainfrm.cc:891
-#: ../src/printing.cc:473
+#: ../src/mainfrm.cc:859
+#: ../src/printing.cc:484
 #: n:406
 msgid "Spla&y Legs"
 msgstr "&Вспомогательные замеры"
 
-#: ../src/survexport.cc:145
+#: ../src/survexport.cc:144
 #: n:465
 msgid "splay legs"
 msgstr "вспомогательные замеры"
 
-#: ../src/mainfrm.cc:898
+#: ../src/mainfrm.cc:866
 #: n:251
 msgid "&Duplicate Legs"
 msgstr "&Дублирующиеся Замеры"
@@ -3166,24 +3188,24 @@ msgstr "&Дублирующиеся Замеры"
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are not shown.
 #: ../src/aventreectrl.cc:387
-#: ../src/mainfrm.cc:881
-#: ../src/mainfrm.cc:894
+#: ../src/mainfrm.cc:849
+#: ../src/mainfrm.cc:862
 #: n:407
 msgid "&Hide"
 msgstr "&Скрыть"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, aven will show such legs with less bright colours.
-#: ../src/mainfrm.cc:887
-#: ../src/mainfrm.cc:896
+#: ../src/mainfrm.cc:855
+#: ../src/mainfrm.cc:864
 #: n:408
 msgid "&Fade"
 msgstr "Пониженная &яркость"
 
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, aven will show such legs with dashed lines.
-#: ../src/mainfrm.cc:884
-#: ../src/mainfrm.cc:895
+#: ../src/mainfrm.cc:852
+#: ../src/mainfrm.cc:863
 #: n:250
 msgid "&Dashed"
 msgstr "Пун&ктир"
@@ -3191,8 +3213,8 @@ msgstr "Пун&ктир"
 #. TRANSLATORS: Item in the "Splay Legs" and "Duplicate Legs" submenus - if
 #. this is selected, such legs are shown the same as other legs.
 #: ../src/aventreectrl.cc:388
-#: ../src/mainfrm.cc:890
-#: ../src/mainfrm.cc:897
+#: ../src/mainfrm.cc:858
+#: ../src/mainfrm.cc:865
 #: n:409
 msgid "&Show"
 msgstr "&Показать"
@@ -3380,7 +3402,7 @@ msgstr "Удалено: %s"
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:746
+#: ../src/commands.c:783
 #: n:29
 msgid "Reentering an existing survey is deprecated"
 msgstr "Повторное определение для уже существующей топо-съемки устарело и не рекомендуется к использованию"
@@ -3402,14 +3424,15 @@ msgstr "Повторное определение для уже существу
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:765
+#: ../src/commands.c:802
 #: n:30
 msgid "Originally entered here"
 msgstr "Первоначально встречено здесь"
 
-#: ../src/commands.c:1083
+#: ../src/commands.c:1119
 #: n:22
-msgid "Corresponding BEGIN was here"
+#, c-format
+msgid "Corresponding %s was here"
 msgstr ""
 
 #. TRANSLATORS: Use of the ROOT character (which is "\" by default) is
@@ -3419,9 +3442,9 @@ msgstr ""
 #.
 #. If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
-#: ../src/commands.c:652
-#: ../src/readval.c:87
-#: ../src/readval.c:91
+#: ../src/commands.c:689
+#: ../src/readval.c:82
+#: ../src/readval.c:86
 #: n:25
 msgid "ROOT is deprecated"
 msgstr "Корневой символ в именах пикетов (ROOT символ, \"\\\")  устарел и не рекомендуется к использованию"
@@ -3438,6 +3461,11 @@ msgid "show survey date information (if present)"
 msgstr "отображать информацию о датах топо-съемок (если она присутствует)"
 
 #: ../src/dump3d.c:52
+#: n:509
+msgid "equivalent to --show-dates=-"
+msgstr ""
+
+#: ../src/dump3d.c:53
 #: n:486
 msgid "convert MOVE and LINE into LEG"
 msgstr ""
@@ -3449,7 +3477,7 @@ msgstr ""
 msgid "Failed to initialise input coordinate system “%s”"
 msgstr "Ошибка в инициализации входной системы координат “%s”"
 
-#: ../src/gfxcore.cc:3113
+#: ../src/gfxcore.cc:3115
 #: n:288
 #, c-format
 msgid "Failed to initialise output coordinate system “%s”"
@@ -3457,119 +3485,119 @@ msgstr "Ошибка в инициализации выходной систем
 
 #. TRANSLATORS: %s is replaced by the name of a geodata
 #. file, e.g. GPX, KML.
-#: ../src/gfxcore.cc:4636
-#: ../src/gfxcore.cc:4651
+#: ../src/gfxcore.cc:4642
+#: ../src/gfxcore.cc:4657
 #: n:492
 #, c-format
 msgid "File “%s” not georeferenced"
 msgstr ""
 
-#: ../src/survexport.cc:158
+#: ../src/survexport.cc:157
 #: n:148
 #, c-format
 msgid "generate grid (default %sm)"
 msgstr "создавать сетку (по умолчанию %sм)"
 
-#: ../src/survexport.cc:159
+#: ../src/survexport.cc:158
 #: n:149
 #, c-format
 msgid "station labels text height (default %s)"
 msgstr "высота текста для подписей имен пикетов (по умолчанию %s)"
 
-#: ../src/survexport.cc:160
+#: ../src/survexport.cc:159
 #: n:152
 #, c-format
 msgid "station marker size (default %s)"
 msgstr "размер значка пикета (по умолчанию %s)"
 
-#: ../src/survexport.cc:161
+#: ../src/survexport.cc:160
 #: n:487
 msgid "produce Survex 3d output"
 msgstr "создавать Survex 3d"
 
-#: ../src/survexport.cc:162
+#: ../src/survexport.cc:161
 #: n:102
 msgid "produce CSV output"
 msgstr "создавать CSV"
 
-#: ../src/survexport.cc:163
+#: ../src/survexport.cc:162
 #: n:156
 msgid "produce DXF output"
 msgstr "создавать DXF"
 
-#: ../src/survexport.cc:164
+#: ../src/survexport.cc:163
 #: n:454
 msgid "produce EPS output"
 msgstr "создавать EPS"
 
-#: ../src/survexport.cc:165
+#: ../src/survexport.cc:164
 #: n:455
 msgid "produce GPX output"
 msgstr "создавать GPX"
 
-#: ../src/survexport.cc:166
+#: ../src/survexport.cc:165
 #: n:456
 msgid "produce HPGL output"
 msgstr "создавать HPGL"
 
-#: ../src/survexport.cc:167
+#: ../src/survexport.cc:166
 #: n:457
 msgid "produce JSON output"
 msgstr "создавать JSON"
 
-#: ../src/survexport.cc:168
+#: ../src/survexport.cc:167
 #: n:458
 msgid "produce KML output"
 msgstr "создавать KML"
 
-#: ../src/survexport.cc:175
+#: ../src/survexport.cc:171
 #: n:459
 msgid "produce Survex POS output"
 msgstr "создавать Survex POS"
 
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated.
-#: ../src/survexport.cc:171
+#: ../src/survexport.cc:170
 #: n:159
 msgid "produce Compass PLT output for Carto"
 msgstr "создавать Compass PLT для Carto"
 
-#: ../src/survexport.cc:176
+#: ../src/survexport.cc:172
 #: n:160
 msgid "produce SVG output"
 msgstr "создавать SVG"
 
-#: ../src/survexport.cc:410
+#: ../src/survexport.cc:406
 #: n:252
 msgid "Export format not specified and not known from output file extension"
 msgstr "Формат экспорта не указан и его невозможно определить по расширению файла"
 
-#: ../src/survexport.cc:415
+#: ../src/survexport.cc:411
 #: n:253
 msgid "Export format not specified"
 msgstr "Формат экспорта не указан"
 
-#: ../src/survexport.cc:157
+#: ../src/survexport.cc:156
 #: n:155
 msgid "include items exported by default"
 msgstr "включены элементы, экспортируемые по умолчанию"
 
-#: ../src/datain.c:2490
+#: ../src/datain.c:2509
 #: n:499
 #, c-format
 msgid "Macro “%s” not defined"
 msgstr ""
 
-#: ../src/datain.c:2218
-#: ../src/datain.c:2250
+#: ../src/datain.c:2238
 #: ../src/datain.c:2270
-#: ../src/datain.c:4256
+#: ../src/datain.c:2290
+#: ../src/datain.c:4282
 #: n:506
 #, c-format
 msgid "Ignoring “%s”"
 msgstr "Игнорируется “%s”"
 
-#: ../src/datain.c:4357
+#: ../src/datain.c:4382
 #: n:508
 msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
 msgstr ""
@@ -3587,7 +3615,7 @@ msgstr ""
 #~ msgid "%d found"
 #~ msgstr "%d найдено"
 
-#: ../src/mainfrm.cc:954
+#: ../src/mainfrm.cc:922
 #: n:347
 #~ msgid "&Preferences..."
 #~ msgstr "&Настройки..."
