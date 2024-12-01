@@ -1,6 +1,4 @@
-up to: 778e74882455b7d9f0fc42e4b7d647647823fd8f
-
-Changes in 1.4.13 (2024-11-??):
+Changes in 1.4.13 (2024-12-01):
 
 * aven:
 
@@ -20,12 +18,21 @@ Changes in 1.4.13 (2024-11-??):
 
 * cavern:
 
+  + Update to use v14 of the IGRF model for calculating declinations.
+    This was issued in November 2024 and should give slightly more accurate
+    declinations for surveys made since 2015.  Fixes #137.
+
   + The component count was wrong in some cases, and we calculate the number
     of loops using this component count, so the loop count would also be wrong
     by the same amount in these cases.
 
   + The component count and loop count are now reported when there are
     unconnected survey stations.
+
+  + *date now support ISO format dates.  Fixes #96, reported by Milosch.
+
+  + *date now support date types "surveyed" and "explored" (existing usage
+    without an explicit type is interpreted as "surveyed").
 
   + If the output directory isn't writable or doesn't exist we would complain
     that we can't create the .err file - now we try to create the .3d file
@@ -52,6 +59,18 @@ Changes in 1.4.13 (2024-11-??):
 
   + Assigning matrix row numbers now identifies equated stations in a slightly
     more efficient way.
+
+* dump3d: Provide a way to get ISO format dates output.
+
+* Documentation:
+
+  + Improve documentation of *date in the manual.  When a partial date is
+    specified (just a year, or a year and month only) the documentation claimed
+    the centre of that year or month is used but actually this case is treated
+    as a date range covering the whole year or month (respectively).  The end
+    result is effectively the same as what was previously documented though
+    since the centre of a date range is used as the date for calculating
+    automatic declinations and is the date used by aven.
 
 * Test suite:
 
