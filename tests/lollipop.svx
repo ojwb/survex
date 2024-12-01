@@ -6,3 +6,4 @@ A 2 3 090 0
 A B 3 000 0
 B C 2 000 0
 C B 2 180 0
+1 S 1 180 0 ; Create stable south-most station
