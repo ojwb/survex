@@ -8,7 +8,7 @@ support for Walls formats is primarily to help people with existing Walls data
 to migrate.
 
 We've mostly implemented this support based on Walls documentation, but
-unfortunately the documentation of the SRV format sometimes incomplete or
+unfortunately the documentation of the SRV format is sometimes incomplete or
 incorrect, while the WPJ format seems to be largely undocumented.  Sadly
 David is no longer around to ask, but we can at least test actual behaviour
 of ``Walls32.exe`` on example data.
@@ -24,10 +24,10 @@ project is selected, and click the `Details / Rpts...` button which is towards
 the upper right.  Click the `Shapefile...` button in the new dialog box, and
 select what you want to output (e.g. `Vectors`).  Due to limitations in the
 Shapefile format each `Shape Type` selected here exports a separate Shapefile.
-To overlay a Shapefile in ``aven`` using `File->Overlay Geodata...`.
+To overlay a Shapefile in ``aven`` use `File->Overlay Geodata...`.
 
 See below for a list of known limitations.  We've mostly prioritised what
-to implemented based on testing with real-world datasets so commonly used
+to implement based on testing with real-world datasets so commonly used
 features are likely to be handled while more obscure features may not be.
 
 - Survex reports warnings in some suspect situations which Walls
@@ -79,12 +79,12 @@ features are likely to be handled while more obscure features may not be.
 - Variance overrides on survey legs are mostly supported, with the following
   limitations:
 
-  + An SD of 0 is currently treated as 1mm;
+  + An SD of 0 is currently treated as 1mm (approximately 0.04 inches).
   + Floating a leg both horizontally and vertically (with ``?``) replaces it
     with a "nosurvey" leg, which is effectively the same provided both ends
     of the leg are attached to fixed points.
   + Floating a leg either horizontally or vertically (with ``?``) uses an SD of
-    1000m in that direction instead of actually decoupling the connection;
+    1000m in that direction instead of actually decoupling the connection.
   + Floating the traverse containing a leg (with ``*``) currently just floats
     that leg (so it's the same as ``?``).
 
