@@ -55,8 +55,9 @@ Survey Station Names
 
 Survex has a powerful system for naming stations.  It uses a hierarchy of
 survey names, similar to the nested folders your computer stores files in.  So
-point 6 in the entrance survey of Kaninchenhöhle (cave number 161) is referred
-to as: 161.entrance.6
+point 6 in the entrance survey of Kaninchenhöhle (cave number 161) can just be
+referred to as station 6 in the context of that particular survey, but it has
+the fully qualified name: 161.entrance.6
 
 This seems a natural way to refer to station names.  It also means that it is
 very easy to include more levels, for example if you want to plot all the caves
@@ -82,6 +83,30 @@ Alphabetic characters may be forced to upper or lower case by using the
 ``*case`` command.  Station names may be any length - if you want to only treat
 the first few characters as significant you can get cavern to truncate the
 names using the ``*truncate`` command.
+
+If you have survey data which uses ``.`` as part of the station name (for
+example, if you use the Toporobot convention of naming stations along a
+side passage from station ``6`` as ``6.1``, ``6.2``, ``6.3``, etc) then
+there are two sensible options:
+
+ * You can change the separator to a different character which you don't want
+   to use in station names (e.g. ``:``) and set ``.`` as an allowed name
+   character like so::
+
+       *set separator :
+       *set names ._-
+
+   Note that the character(s) listed replace those previously allowed, so here
+   we have explicitly list ``_`` and ``-`` as still allowed in station names to
+   effectively add ``.``.
+
+   If you want to do this, you should use Survex 1.4.6 or later.  1.4.12 also
+   fixed a bug with survey filtering when loading ``.3d`` files which use a
+   separator other than ``.``.
+
+ * You can use a different character instead of ``.`` for naming such
+   side-passage stations, e.g. ``6_1``, ``6_2``, etc.  This has the advantage
+   of working with older Survex versions.
 
 Anonymous Stations
 ------------------
