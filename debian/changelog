@@ -1,3 +1,10 @@
+survex (1.4.13-2) unstable; urgency=medium
+
+  * debian/patches/fix-lollipop-test.patch: Backport testcase tweak to avoid
+    failure on i386 due to excess precision.
+
+ -- Olly Betts <olly@survex.com>  Mon, 02 Dec 2024 12:33:03 +1300
+
 survex (1.4.13-1) unstable; urgency=medium
 
   * New upstream release:
