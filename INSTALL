@@ -34,6 +34,9 @@ the corresponding runtime package too.
 * Version 7.2.0 or later of the PROJ library is needed for coordinate
   conversion functionality.
 
+* Optionally, GDAL is used to support reading geodata files.  If not available
+  this feature is disabled.
+
 * Optionally, FFMPEG is used if available to implement Aven's movie export
   feature.  If not available this feature is disabled.
 
