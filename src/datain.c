@@ -4369,15 +4369,19 @@ handle_isolated_lrud:
     bool new;
     *p_to = read_walls_station(p_walls_options->prefix, true, &new);
     if (might_be_lrud && new) {
-	// Walls behaviour here means isolated LRUD with a missing
-	// closing delimiter gets quietly misparsed as a survey leg so
-	// we issue a warning unless the affected station was already
-	// known.  Real world example:
-	//
-	// P25      *8 5 15 3.58
 	filepos fp_save;
 	get_pos(&fp_save);
 	set_pos(&fp);
+	// TRANSLATORS: Warning issued about a dubious case in survey data in
+	// Walls format (.srv).  Real world example:
+	//
+	// P25      *8 5 15 3.58
+	//
+	// This is treated by Walls as a leg from P25 to *8 but seems likely
+	// to be intended to be an isolated LRUD reading (one not on a survey
+	// leg, useful for the start or end of a traverse) but the closing *
+	// was missed (or perhaps in this particular case, mistyped as an 8
+	// by failing to press shift), so Survex issues a warning about it.
 	compile_diagnostic(DIAG_WARN|DIAG_WORD,
 			   /*Parsing as “to” station but may be isolated LRUD with missing closing delimiter*/508);
 	set_pos(&fp_save);

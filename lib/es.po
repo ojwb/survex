@@ -151,16 +151,16 @@ msgstr "Carácter “%c” no permitido en el nombre de una estación (utiliza *
 msgid "Field may not be omitted"
 msgstr "Campo que no puede ser omitido"
 
-#: ../src/datain.c:4668
-#: ../src/datain.c:4706
-#: ../src/datain.c:4817
-#: ../src/datain.c:4856
-#: ../src/datain.c:4899
-#: ../src/datain.c:4949
-#: ../src/datain.c:4991
-#: ../src/datain.c:5037
-#: ../src/datain.c:5051
-#: ../src/datain.c:5334
+#: ../src/datain.c:4672
+#: ../src/datain.c:4710
+#: ../src/datain.c:4821
+#: ../src/datain.c:4860
+#: ../src/datain.c:4903
+#: ../src/datain.c:4953
+#: ../src/datain.c:4995
+#: ../src/datain.c:5041
+#: ../src/datain.c:5055
+#: ../src/datain.c:5338
 #: ../src/readval.c:657
 #: ../src/readval.c:800
 #: ../src/readval.c:829
@@ -216,8 +216,8 @@ msgstr "Estación “%s” igualada a si misma"
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr "La lectura de la brújula no se puede omitir excepto en visuales a plomo"
 
-#: ../src/datain.c:5124
-#: ../src/datain.c:5252
+#: ../src/datain.c:5128
+#: ../src/datain.c:5256
 #: n:94
 msgid "Tape reading may not be omitted"
 msgstr "Lectura de longitud no se puede omitir"
@@ -694,8 +694,8 @@ msgstr "Año inválido (< 1900 ó > 2078)"
 msgid "Suspicious compass reading"
 msgstr "Lectura de brújula sospechosa"
 
-#: ../src/datain.c:4675
-#: ../src/datain.c:4825
+#: ../src/datain.c:4679
+#: ../src/datain.c:4829
 #: n:60
 msgid "Negative tape reading"
 msgstr "Lectura de longitud negativa"
@@ -834,7 +834,7 @@ msgstr "Resolviendo una ecuación"
 
 #: ../src/datain.c:3909
 #: ../src/datain.c:4130
-#: ../src/datain.c:4534
+#: ../src/datain.c:4538
 #: n:79
 msgid "Negative adjusted tape reading"
 msgstr "Distancia ajustada negativa"
@@ -940,8 +940,8 @@ msgstr "Usos futuros de ésta función obsoleta no serán informados"
 
 #. TRANSLATORS: %s is replaced by the amount the readings disagree
 #. by, e.g. "0.12m" or "0.2ft".
-#: ../src/datain.c:5113
-#: ../src/datain.c:5241
+#: ../src/datain.c:5117
+#: ../src/datain.c:5245
 #: n:97
 #, c-format
 msgid "TAPE reading and BACKTAPE reading disagree by %s"
@@ -1167,7 +1167,7 @@ msgstr "Simplificando la red"
 msgid "Calculating network"
 msgstr "Calculando la red"
 
-#: ../src/datain.c:4656
+#: ../src/datain.c:4660
 #: n:131
 #, c-format
 msgid "Found “%s”, expecting “F” or “B”"
@@ -3598,7 +3598,17 @@ msgstr ""
 msgid "Ignoring “%s”"
 msgstr "Omitiendo “%s”"
 
-#: ../src/datain.c:4382
+#. TRANSLATORS: Warning issued about a dubious case in survey data in
+#. Walls format (.srv).  Real world example:
+#.
+#. P25      *8 5 15 3.58
+#.
+#. This is treated by Walls as a leg from P25 to *8 but seems likely
+#. to be intended to be an isolated LRUD reading (one not on a survey
+#. leg, useful for the start or end of a traverse) but the closing *
+#. was missed (or perhaps in this particular case, mistyped as an 8
+#. by failing to press shift), so Survex issues a warning about it.
+#: ../src/datain.c:4386
 #: n:508
 msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
 msgstr ""
