@@ -524,7 +524,7 @@ Changes in 1.4.9 (2024-07-04):
 
   + Fix bug with Compass DAT diving data.  If a survey uses the depth gauge
     then since 1.4.6 we set its style to "diving", but we weren't clearing that
-    so all surveys after than in the same DAT file were also set as "diving".
+    so all surveys after that in the same DAT file were also set as "diving".
 
   + When parsing of Compass DAT files we report errors in more cases if the
     input doesn't conform to the format we expect, rather than potentially
