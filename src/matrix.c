@@ -336,8 +336,10 @@ solve_matrix(node *list)
 #endif
 }
 
-/* Solve MX=B for X by Choleski factorisation - modified Choleski actually
- * since we factor into LDL' while Choleski is just LL'
+/* Solve MX=B for X by first factoring M into LDL'.  This is a modified form
+ * of Choleski factorisation - the original Choleski factorisation is LL',
+ * but this modified version has the advantage of avoiding O(n) square root
+ * calculations.
  */
 /* Note M must be symmetric positive definite */
 /* routine is entitled to scribble on M and B if it wishes */
