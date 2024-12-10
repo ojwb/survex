@@ -8,7 +8,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h kml.h\
  labelinfo.h listpos.h matrix.h message.h namecmp.h namecompare.h netartic.h\
  netbits.h netskel.h network.h osalloc.h\
- out.h readval.h str.h useful.h validate.h whichos.h\
+ out.h readval.h str.h useful.h validate.h whichos.h gdalexport.h\
  glbitmapfont.h gllogerror.h guicontrol.h gla.h gpx.h moviemaker.h\
  export3d.h exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h\
  gfxcore.h json.h log.h mainfrm.h pos.h vector3.h wx.h aventypes.h\
