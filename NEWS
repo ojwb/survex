@@ -1,3 +1,24 @@
+Changes in 1.4.14 (2024-12-11):
+
+* aven/survexport: Add support for exporting shapefiles.  This requires GDAL so
+  currently isn't enabled in the Microsoft Windows build.  Thanks to Eric C.
+  Landgraf for testing.  Fixes #87.
+
+* cavern: If *date with just year is followed by a blank, cavern expects a date
+  range and gives an error if another date doesn't follow.  Bug was introduced
+  in 1.4.13.
+
+* aven/cavern: Use ′ and ″ for feet and inches.
+
+* Documentation: Add some details on how to handle Toporobot "serie" station
+  naming.
+
+* Updates to Bulgarian, Hugarian, Russian and Slovak translations.
+
+* Testsuite: Adjust lollipop testcase to pass on i386 where excess precision
+  was changing which station was reported as the southernmost of multiple
+  candidate stations).
+
 Changes in 1.4.13 (2024-12-01):
 
 * aven:
