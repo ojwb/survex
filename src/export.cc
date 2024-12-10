@@ -1339,10 +1339,14 @@ Export(const wxString &fnm_out, const wxString &title,
        case FMT_SHP_LINES:
 	   filt = new ShapefileLines(fnm_out.utf8_str(),
 				     model.GetCSProj().c_str());
+	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        case FMT_SHP_POINTS:
 	   filt = new ShapefilePoints(fnm_out.utf8_str(),
 				      model.GetCSProj().c_str());
+	   show_mask |= FULL_COORDS;
+	   need_bounds = false;
 	   break;
        default:
 	   return false;
