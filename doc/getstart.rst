@@ -223,7 +223,7 @@ scripted.
 The command line programs that come with Survex are:
 
 ``cavern``
-   Processes survey data.  Since version 1.2.3 you can process ``.svx``
+   Processes survey data.  Since Survex 1.2.3 you can process ``.svx``
    files by simply opening them with ``aven``, so you don't need to use
    ``cavern`` from the command line if you don't want to, but it's still
    available for users who prefer to work from the command line and for

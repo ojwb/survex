@@ -32,7 +32,7 @@ off so measurements were made from the 20cm point).
    *instrument clino "CUCC 2"
    ;Calibration: Cairn-Rock 071 072 071,  -22 -22 -22
    ;       Rock-Cairn 252 251 252,  +21 +21 +21
-   ;Calibration at 161d entrance from cairn nr entrance to
+   ;Calibration at 161d entrance from cairn near entrance to
    ;prominent rock edge lower down. This is different from
    ;calibration used for thighs survey of 5 July 1996
 
@@ -127,7 +127,7 @@ for now by creating a ``.svx`` file where the survey legs form a
 grid.
 
 If you want to do this, we suggest fixing points at the end of
-each grid line and using the ``NOSURVEY`` data style to addd
+each grid line and using the ``NOSURVEY`` data style to add
 effectively elastic legs between these fixed points.  This is
 simpler to generate than generating fake tape/compass/clino legs
 and is very fast for cavern to process.
