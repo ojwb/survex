@@ -67,10 +67,6 @@ AM_CFLAGS += $(PROJ_CFLAGS)
 aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(GDAL_CFLAGS) $(PROJ_CFLAGS) $(FFMPEG_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
-if MACOS
-# FIXME: It looks like modern wx-config should give us this...
-aven_LDFLAGS += -framework OpenGL
-endif
 
 survexport_CXXFLAGS = $(AM_CXXFLAGS) $(GDAL_CFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
 survexport_LDFLAGS =
