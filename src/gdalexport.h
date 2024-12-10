@@ -49,7 +49,9 @@ class ExportWithGDAL : public ExportFilter {
 		double, double, double) override;
     void start_pass(int pass) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
+#endif
     void label(const img_point *, const wxString&, int, int) override;
+#ifdef HAVE_GDAL
     void footer() override;
 #endif
 };

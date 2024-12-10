@@ -61,6 +61,9 @@ ExportWithGDAL::ExportWithGDAL(const char* filename,
 	// gdal_dataset->SetSpatialRef(srs);
     }
 #else
+    (void)filename;
+    (void)input_datum;
+    (void)gdal_driver_name;
     wxMessageBox(wxT("GDAL support not enabled in this build"),
 		 wxT("Aven GDAL support"),
 		 wxOK | wxICON_INFORMATION);
@@ -166,10 +169,12 @@ ExportWithGDAL::line(const img_point *p1, const img_point *p, unsigned /*flags*/
 
     line_string.addPoint(p->x, p->y, p->z);
 }
+#endif
 
 void
 ExportWithGDAL::label(const img_point *p, const wxString& str, int, int)
 {
+#ifdef HAVE_GDAL
     OGRFeature* feature = OGRFeature::CreateFeature(gdal_layer->GetLayerDefn());
     feature->SetField("Name", str.utf8_str());
 
@@ -184,8 +189,13 @@ ExportWithGDAL::label(const img_point *p, const wxString& str, int, int)
 	throw wmsg(/*Failed to create GDAL feature*/530);
     }
     OGRFeature::DestroyFeature(feature);
+#else
+    (void)p;
+    (void)str;
+#endif
 }
 
+#ifdef HAVE_GDAL
 void
 ExportWithGDAL::finish_line_string()
 {
