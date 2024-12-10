@@ -2852,8 +2852,15 @@ cmd_date(void)
     }
 
 try_date2:
-    if (date_sep == '-' ? isBlank(ch) : ch == '-') {
+    if (date_sep == '-') {
+	skipblanks();
+	if (!isdigit(ch)) goto process_dates;
+    } else if (ch == '-') {
 	nextch();
+    } else {
+	goto process_dates;
+    }
+    {
 	get_pos(&fp_date2);
 	year2 = read_year(&fp_date2);
 	if (ch == date_sep) {
