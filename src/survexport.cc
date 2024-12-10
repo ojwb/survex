@@ -114,6 +114,8 @@ main(int argc, char **argv)
 	{"kml", no_argument, 0, OPT_FMT_BASE + FMT_KML},
 	{"plt", no_argument, 0, OPT_FMT_BASE + FMT_PLT},
 	{"pos", no_argument, 0, OPT_FMT_BASE + FMT_POS},
+	{"shp-lines", no_argument, 0, OPT_FMT_BASE + FMT_SHP_LINES},
+	{"shp-points", no_argument, 0, OPT_FMT_BASE + FMT_SHP_POINTS},
 	{"svg", no_argument, 0, OPT_FMT_BASE + FMT_SVG},
 	{"help", no_argument, 0, HLP_HELP},
 	{"version", no_argument, 0, HLP_VERSION},
@@ -169,7 +171,9 @@ main(int argc, char **argv)
 	 * so should not be translated. */
 	{HLP_ENCODELONG(32),  /*produce Compass PLT output for Carto*/159, 0, 0},
 	{HLP_ENCODELONG(33),  /*produce Survex POS output*/459, 0, 0},
-	{HLP_ENCODELONG(34),  /*produce SVG output*/160, 0, 0},
+	{HLP_ENCODELONG(34),  /*produce Shapefile (lines) output*/525, 0, 0},
+	{HLP_ENCODELONG(35),  /*produce Shapefile (points) output*/526, 0, 0},
+	{HLP_ENCODELONG(36),  /*produce SVG output*/160, 0, 0},
 	{0, 0, 0, 0}
    };
 
@@ -398,6 +402,8 @@ main(int argc, char **argv)
 	    size_t l = strlen(info.extension);
 	    if (len > l + 1 &&
 		strcmp(ext + MAX_EXT_LEN + 1 - l, info.extension) == 0) {
+	       // Shapefile (lines) will be selected for .shp, which is
+	       // probably what's wanted.
 	       format = export_format(i);
 	       break;
 	    }

@@ -285,7 +285,11 @@ static wxString formats[] = {
     wxT("KML"),
     wxT("Plot"),
     wxT("Survex pos"),
-    wxT("SVG")
+    wxT("SVG"),
+    // These next two get filled in lazily since they are translated which
+    // means we need to wait until after the messages are loaded.
+    wxT(""), // "Shapefiles (lines)"
+    wxT("") // "Shapefiles (points)"
 };
 
 static_assert(sizeof(formats) == FMT_MAX_PLUS_ONE_ * sizeof(formats[0]),
@@ -372,6 +376,10 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     if (!printing) {
 	wxStaticText* label;
 	label = new wxStaticText(this, wxID_ANY, wxString(wmsg(/*Export format*/410)));
+	if (formats[FMT_SHP_LINES].empty()) {
+	    formats[FMT_SHP_LINES] = wmsg(/*Shapefiles (lines)*/523);
+	    formats[FMT_SHP_POINTS] = wmsg(/*Shapefiles (points)*/524);
+	}
 	const size_t n_formats = sizeof(formats) / sizeof(formats[0]);
 	m_format = new wxChoice(this, svx_FORMAT,
 				wxDefaultPosition, wxDefaultSize,

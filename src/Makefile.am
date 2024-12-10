@@ -40,8 +40,9 @@ cavern_SOURCES = cavern.c date.c commands.c datain.c hash.c listpos.c \
 cavern_LDADD = $(PROJ_LIBS)
 
 aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
- namecompare.cc aventreectrl.cc export.cc export3d.cc guicontrol.cc gla-gl.cc \
- glbitmapfont.cc gpx.cc json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
+ namecompare.cc aventreectrl.cc export.cc export3d.cc \
+ gdalexport.cc gla-gl.cc glbitmapfont.cc gpx.cc guicontrol.cc  \
+ json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
  cavernlog.cc avenprcore.cc printing.cc pos.cc \
  date.c img_hosted.c useful.c hash.c \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
@@ -66,15 +67,14 @@ AM_CFLAGS += $(PROJ_CFLAGS)
 aven_CFLAGS = $(AM_CFLAGS) $(WX_CFLAGS) -DAVEN
 aven_CXXFLAGS = $(AM_CXXFLAGS) $(GDAL_CFLAGS) $(PROJ_CFLAGS) $(FFMPEG_CFLAGS) $(WX_CXXFLAGS)
 aven_LDFLAGS =
-
-survexport_CXXFLAGS = $(AM_CXXFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
-survexport_LDFLAGS =
-survexport_LDADD = $(LIBOBJS) $(WX_LIBS) $(PROJ_LIBS)
-
 if MACOS
 # FIXME: It looks like modern wx-config should give us this...
 aven_LDFLAGS += -framework OpenGL
 endif
+
+survexport_CXXFLAGS = $(AM_CXXFLAGS) $(GDAL_CFLAGS) $(PROJ_CFLAGS) $(WX_CXXFLAGS)
+survexport_LDFLAGS =
+survexport_LDADD = $(LIBOBJS) $(WX_LIBS) $(GDAL_LIBS) $(PROJ_LIBS)
 
 diffpos_SOURCES = diffpos.c namecmp.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
@@ -83,7 +83,7 @@ extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
  $(COMMONSRC)
 
 survexport_SOURCES = survexport.cc model.cc export.cc export3d.cc \
-		namecompare.cc useful.c hash.c img_hosted.c \
+		gdalexport.cc namecompare.cc useful.c hash.c img_hosted.c \
 		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c

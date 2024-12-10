@@ -1890,6 +1890,18 @@ msgstr "SVG-Dateien"
 msgid "JSON files"
 msgstr "JSON-Dateien"
 
+#: ../src/export.cc:105
+#: ../src/printing.cc:380
+#: n:523
+msgid "Shapefiles (lines)"
+msgstr ""
+
+#: ../src/export.cc:108
+#: ../src/printing.cc:381
+#: n:524
+msgid "Shapefiles (points)"
+msgstr ""
+
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:648
 #: n:447
@@ -3561,11 +3573,6 @@ msgstr "JSON-Ausgabe erzeugen"
 msgid "produce KML output"
 msgstr "KML-Ausgabe erzeugen"
 
-#: ../src/survexport.cc:171
-#: n:459
-msgid "produce Survex POS output"
-msgstr "Survex POS-Ausgabe erzeugen"
-
 #. TRANSLATORS: "Compass" and "Carto" are the names of software packages,
 #. so should not be translated.
 #: ../src/survexport.cc:170
@@ -3573,7 +3580,22 @@ msgstr "Survex POS-Ausgabe erzeugen"
 msgid "produce Compass PLT output for Carto"
 msgstr "Compass PLT-Ausgabe für Carto erzeugen"
 
-#: ../src/survexport.cc:172
+#: ../src/survexport.cc:171
+#: n:459
+msgid "produce Survex POS output"
+msgstr "Survex POS-Ausgabe erzeugen"
+
+#: ../src/survexport.cc:174
+#: n:525
+msgid "produce Shapefile (lines) output"
+msgstr ""
+
+#: ../src/survexport.cc:175
+#: n:526
+msgid "produce Shapefile (points) output"
+msgstr ""
+
+#: ../src/survexport.cc:176
 #: n:160
 msgid "produce SVG output"
 msgstr "SVG-Ausgabe erzeugen"
@@ -3621,6 +3643,28 @@ msgstr ""
 #: ../src/datain.c:4386
 #: n:508
 msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
+msgstr ""
+
+#: ../src/gdalexport.cc:44
+#: ../src/gdalexport.cc:50
+#: n:527
+msgid "Failed to initialise GDAL “%s” driver"
+msgstr ""
+
+#: ../src/gdalexport.cc:125
+#: n:528
+msgid "Failed to create GDAL layer"
+msgstr ""
+
+#: ../src/gdalexport.cc:135
+#: n:529
+msgid "Failed to create GDAL field"
+msgstr ""
+
+#: ../src/gdalexport.cc:170
+#: ../src/gdalexport.cc:183
+#: n:530
+msgid "Failed to create GDAL feature"
 msgstr ""
 
 #, c-format

@@ -1,5 +1,5 @@
 /* export.cc
- * Export to CAD-like formats (DXF, SVG, EPS) and also Compass PLT.
+ * Export to GIS formats, CAD formats, and other formats.
  */
 
 /* Copyright (C) 1994-2024 Olly Betts
@@ -28,6 +28,7 @@
 #include <wx/utils.h>
 #include "export3d.h"
 #include "exportfilter.h"
+#include "gdalexport.h"
 #include "gpx.h"
 #include "hpgl.h"
 #include "json.h"
@@ -101,6 +102,12 @@ const format_info export_format_info[] = {
     { ".svg", /*SVG files*/417,
       LABELS|LEGS|SURF|SPLAYS|STNS|PASG|XSECT|WALLS|MARKER_SIZE|TEXT_HEIGHT|SCALE|ORIENTABLE,
       LABELS|LEGS|STNS },
+    { ".shp", /*Shapefiles (lines)*/523,
+      LEGS|SURF|SPLAYS,
+      LEGS },
+    { ".shp", /*Shapefiles (points)*/524,
+      LABELS|ENTS|FIXES|EXPORTS|STNS,
+      LABELS|STNS },
 };
 
 static_assert(sizeof(export_format_info) == FMT_MAX_PLUS_ONE_ * sizeof(export_format_info[0]),
@@ -1328,6 +1335,14 @@ Export(const wxString &fnm_out, const wxString &title,
 	   break;
        case FMT_SVG:
 	   filt = new SVG(scale, text_height);
+	   break;
+       case FMT_SHP_LINES:
+	   filt = new ShapefileLines(fnm_out.utf8_str(),
+				     model.GetCSProj().c_str());
+	   break;
+       case FMT_SHP_POINTS:
+	   filt = new ShapefilePoints(fnm_out.utf8_str(),
+				      model.GetCSProj().c_str());
 	   break;
        default:
 	   return false;
