@@ -17,7 +17,6 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
 
 LDADD = $(LIBOBJS)
 
-# FIXME: mingw_progs in top level Makefile.am needs keeping in step with this
 bin_PROGRAMS = cavern diffpos dump3d extend sorterr survexport aven
 
 install-exec-hook:
