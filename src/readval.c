@@ -682,15 +682,30 @@ read_footinch(bool f_optional)
    if (isDecimal(ch)) {
       nextch();
       while (isdigit(ch)) {
-        m = m * (real)10.0 + (char)(ch - '0');
-	nextch();
+	 m = m * (real)10.0 + (char)(ch - '0');
+	 nextch();
+      }
+      if (m >= 12) {
+	 compile_diagnostic(DIAG_ERR, /*Suspicious foot.inch value*/531);
       }
    }
-   if (m >= 12) {
-      compile_diagnostic(DIAG_ERR, /*Suspicious foot.inch value*/531);
+   if (fDigits) {
+      n = n * 12 + m;
+      return fPositive ? n : -n;
    }
-   n = n * 12 + m;
-   return fPositive ? n : -n;
+
+   /* didn't read a valid number.  If it's optional, reset filepos & return */
+   set_pos(&fp);
+   if (f_optional) {
+      return HUGE_REAL;
+   }
+
+   if (isOmit(ch_old)) {
+      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+   } else {
+      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+   }
+   longjmp(jbSkipLine, 1);
 }
 
 real
