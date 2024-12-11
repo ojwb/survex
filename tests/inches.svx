@@ -1,3 +1,4 @@
+; pos=yes warn=0
 *units tape inches
 *units backtape meters
 
