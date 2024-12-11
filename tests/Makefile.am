@@ -74,6 +74,7 @@ normal.svx normal.pos\
 normal_bad.svx normal_bad.out\
 normignall.svx normignall.pos\
 nosurv.svx nosurv.pos nosurv.out\
+inches.svx inches.pos\
 quadrant_bearing.svx quadrant_bearing.pos\
 bad_quadrant_bearing.svx bad_quadrant_bearing.out\
 cmd_flags.svx bad_cmd_flags.svx bad_cmd_flags.out\
