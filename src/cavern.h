@@ -340,7 +340,7 @@ typedef struct Settings {
    bool f_backbearing_quadrants;
    bool dash_for_anon_wall_station;
    bool from_equals_to_is_only_a_warning;
-   unsigned long len_footinches; /* argument that this could be an array of Q_MAC, but bitbashing is easier??? */
+   unsigned long len_footinches;
    unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;
    /* STYLE_xxx value to process data as. */
