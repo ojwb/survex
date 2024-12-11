@@ -413,7 +413,6 @@ msgstr "Érvénytelen koordináta rendszer: %s"
 #: ../src/commands.c:2504
 #: ../src/commands.c:2536
 #: n:435
-#, fuzzy
 msgid "Coordinate system unsuitable for output"
 msgstr "A koordináta rendszer alkalmatlan kimentenek"
 
@@ -437,7 +436,6 @@ msgstr "A kimeneti projekció beállítva, de a bemeneti NEM!"
 
 #: ../src/commands.c:1168
 #: n:439
-#, fuzzy
 msgid "Coordinates can't be omitted when coordinate system has been specified"
 msgstr "A koordináták nem elhagyhatók, ha a koordináta rendszer meghatározott"
 
@@ -499,7 +497,7 @@ msgstr ""
 #. measurement, but the correct term in other languages may be singular.
 #: ../src/commands.c:566
 #: n:37
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid units “%s” for quantity"
 msgstr "Érvénytelen “%s” egység a mennyiségnek"
 
@@ -546,14 +544,13 @@ msgstr "Nincs felmérési adat"
 #: n:44
 #, c-format
 msgid "Filename “%s” refers to directory"
-msgstr ""
+msgstr "Fájlnév “%s” egy mappára vonatkozik"
 
 #. TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
 #. cavern will issue this warning if there are any sections of the survey
 #. network which are hanging.
 #: ../src/netartic.c:341
 #: n:45
-#, fuzzy
 msgid "Survey not all connected to fixed stations"
 msgstr "A Felmérés nem teljesen kapcsolt rögzített állomásokhoz"
 
@@ -637,7 +634,6 @@ msgstr "Rögzítés parancs koordináták nélkül - rögzítés (0,0,0) ban"
 #: ../src/datain.c:959
 #: ../src/datain.c:2722
 #: n:55
-#, fuzzy
 msgid "Station already fixed at the same coordinates"
 msgstr "Már van rögzítve ezeken a koordinátákon állomás"
 
@@ -833,7 +829,6 @@ msgstr ""
 
 #: ../src/matrix.c:118
 #: n:78
-#, fuzzy
 msgid "Solving one equation"
 msgstr "Egy egyenlet megoldása"
 
@@ -852,7 +847,6 @@ msgstr "Dátum a jövőben lesz!"
 
 #: ../src/commands.c:2929
 #: n:81
-#, fuzzy
 msgid "End of date range is before the start"
 msgstr "Dátum tartomány végetér a kezdés előtt"
 
@@ -1429,13 +1423,12 @@ msgstr "Kifejtett hossz-metszet-szelvény"
 
 #: ../src/cavern.c:458
 #: n:172
-#, fuzzy
 msgid "Survey contains 1 survey station,"
 msgstr "A felmérés 1 db felmérési állomást tartalmaz,"
 
 #: ../src/cavern.c:460
 #: n:173
-#, fuzzy, c-format
+#, c-format
 msgid "Survey contains %ld survey stations,"
 msgstr "A felmérés %ld db felmérési állomást tartalmaz,"
 
@@ -1765,7 +1758,6 @@ msgstr ""
 #. File->Open dialog:
 #: ../src/mainfrm.cc:1434
 #: n:206
-#, fuzzy
 msgid "Select a survey file to view"
 msgstr "Válassz ki egy felmérési fájlt a megtekintéshez"
 
@@ -2999,7 +2991,6 @@ msgstr ""
 
 #: ../src/mainfrm.cc:1101
 #: n:377
-#, fuzzy
 msgid "Presentation"
 msgstr "Bemutató"
 
@@ -3019,7 +3010,7 @@ msgstr "Mutatsd mindet"
 #: ../src/aventreectrl.cc:385
 #: n:246
 msgid "Hide others"
-msgstr ""
+msgstr "Többi elrejtése"
 
 #: ../src/aventreectrl.cc:389
 #: n:388

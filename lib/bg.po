@@ -129,14 +129,14 @@ msgstr "грешка"
 #: n:5
 #, c-format
 msgid "In file included from %s:%u:\n"
-msgstr ""
+msgstr "Във файла включен на %s:%u:\n"
 
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:831
 #: n:6
 msgid "*prefix is deprecated - use *begin and *end instead"
-msgstr ""
+msgstr "*prefix вече не се употребява, използвайте *begin и *end вместо него"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:202
@@ -2617,7 +2617,7 @@ msgstr ""
 #: ../src/mainfrm.cc:824
 #: n:316
 msgid "Pla&y"
-msgstr ""
+msgstr "&Старт"
 
 #: ../src/mainfrm.cc:825
 #: n:317
@@ -2646,7 +2646,7 @@ msgstr ""
 #: ../src/mainfrm.cc:1530
 #: n:321
 msgid "Save Screenshot"
-msgstr ""
+msgstr "Запазване на кадър"
 
 #: ../src/mainfrm.cc:2013
 #: ../src/mainfrm.cc:2016

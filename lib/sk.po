@@ -3016,7 +3016,7 @@ msgstr "Zobraziť všetky"
 #: ../src/aventreectrl.cc:385
 #: n:246
 msgid "Hide others"
-msgstr ""
+msgstr "Skryť ostatné"
 
 #: ../src/aventreectrl.cc:389
 #: n:388
