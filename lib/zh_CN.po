@@ -2862,7 +2862,7 @@ msgid " mile"
 msgstr "英里"
 
 #. TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
-#. as "10ft".
+#. as: 10′
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
@@ -2876,18 +2876,18 @@ msgstr "英里"
 #: ../src/mainfrm.cc:1849
 #: ../src/mainfrm.cc:1882
 #: n:428
-msgid "ft"
-msgstr "英尺"
+msgid "′"
+msgstr "′"
 
 #. TRANSLATORS: abbreviation for "inches" (unit of length), used
-#. e.g. as "6in".
+#. e.g. as: 6″
 #.
 #. If there should be a space between the number and this, include
 #. one in the translation.
 #: ../src/gfxcore.cc:1465
 #: n:429
-msgid "in"
-msgstr "英寸"
+msgid "″"
+msgstr "″"
 
 #. TRANSLATORS: Menu item which turns off the "north arrow" in aven.
 #: ../src/gfxcore.cc:4441

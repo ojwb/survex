@@ -1071,7 +1071,7 @@ void GfxCore::SimpleDrawNames()
     }
 }
 
-void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxString & units)
+void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 {
     auto f = GetContentScaleFactor();
     int key_block_height = KEY_BLOCK_HEIGHT * f;
@@ -1079,7 +1079,6 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
     int total_block_height =
 	key_block_height * (num_bands == 1 ? num_bands : num_bands - 1);
     if (!other.empty()) total_block_height += key_block_height * 2;
-    if (!units.empty()) total_block_height += key_block_height;
 
     const int bottom = -total_block_height;
 
@@ -1106,7 +1105,6 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
     }
 
     int y = bottom;
-    if (!units.empty()) y += key_block_height;
 
     if (!other.empty()) {
 	DrawRectangle(NODATA_COLOUR, col_BLACK,
@@ -1140,11 +1138,6 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
     SetColour(TEXT_COLOUR);
 
     y = bottom;
-    if (!units.empty()) {
-	GetTextExtent(units, &size, NULL);
-	DrawIndicatorText(left + (key_block_width - size) / 2, y, units);
-	y += key_block_height;
-    }
     y -= GetFontSize() / 2;
     left += key_block_width + 5;
 
@@ -1178,6 +1171,7 @@ void GfxCore::DrawDepthKey()
     }
 
     double z_min = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
+    wxString units = wmsg(m_Metric ? /*m*/424: /*'*/428);
     for (int band = 0; band < num_bands; ++band) {
 	double z = z_min;
 	if (band)
@@ -1186,18 +1180,16 @@ void GfxCore::DrawDepthKey()
 	if (!m_Metric)
 	    z /= METRES_PER_FOOT;
 
-	key_legends[band].Printf(wxT("%.*f"), sf, z);
+	key_legends[band].Printf(wxT("%.*f%s"), sf, z, units);
     }
 
-    DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
+    DrawColourKey(num_bands, wxString());
 }
 
 void GfxCore::DrawDateKey()
 {
-    int num_bands;
-    if (!HasDateInformation()) {
-	num_bands = 0;
-    } else {
+    int num_bands = 0;
+    if (HasDateInformation()) {
 	int date_ext = m_Parent->GetDateExtent();
 	if (date_ext == 0) {
 	    num_bands = 1;
@@ -1222,7 +1214,7 @@ void GfxCore::DrawDateKey()
 	other = wmsg(/*Undated*/221);
     }
 
-    DrawColourKey(num_bands, other, wxString());
+    DrawColourKey(num_bands, other);
 }
 
 void GfxCore::DrawErrorKey()
@@ -1244,15 +1236,14 @@ void GfxCore::DrawErrorKey()
     /* TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
      * which aren’t part of a loop and so have no error information. Try to keep
      * this fairly short. */
-    DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
+    DrawColourKey(num_bands, wmsg(/*Not in loop*/290));
 }
 
 void GfxCore::DrawGradientKey()
 {
-    int num_bands;
     // Use fixed colours for each gradient so it's directly visually comparable
     // between surveys.
-    num_bands = GetNumColourBands();
+    int num_bands = GetNumColourBands();
     wxString units = wmsg(m_Degrees ? /*°*/344 : /*ᵍ*/345);
     for (int band = 0; band < num_bands; ++band) {
 	double gradient = double(band) / (num_bands - 1);
@@ -1264,24 +1255,24 @@ void GfxCore::DrawGradientKey()
 	key_legends[band].Printf(wxT("%.f%s"), gradient, units);
     }
 
-    DrawColourKey(num_bands, wxString(), wxString());
+    DrawColourKey(num_bands, wxString());
 }
 
 void GfxCore::DrawLengthKey()
 {
-    int num_bands;
     // Use fixed colours for each length so it's directly visually comparable
     // between surveys.
-    num_bands = GetNumColourBands();
+    int num_bands = GetNumColourBands();
+    wxString units = wmsg(m_Metric ? /*m*/424: /*'*/428);
     for (int band = 0; band < num_bands; ++band) {
 	double len = pow(10, LOG_LEN_MAX * band / (num_bands - 1));
 	if (!m_Metric) {
 	    len /= METRES_PER_FOOT;
 	}
-	key_legends[band].Printf(wxT("%.1f"), len);
+	key_legends[band].Printf(wxT("%.1f%s"), len, units);
     }
 
-    DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
+    DrawColourKey(num_bands, wxString());
 }
 
 static const gla_colour style_colours[] = {
@@ -1450,19 +1441,19 @@ void GfxCore::DrawScaleBar()
 	    }
 	} else if (size_snap >= 1.0) {
 	    /* TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
-	     * as "10ft".
+	     * as: 10'
 	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
-	    units = /*ft*/428;
+	    units = /*'*/428;
 	} else {
 	    size_snap *= 12.0;
 	    /* TRANSLATORS: abbreviation for "inches" (unit of length), used
-	     * e.g. as "6in".
+	     * e.g. as: 6"
 	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
-	    units = /*in*/429;
+	    units = /*\"*/429;
 	}
     }
     if (size_snap >= 1.0) {

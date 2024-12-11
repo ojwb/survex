@@ -314,7 +314,7 @@ private:
     void FirstShow();
 
     void DrawScaleBar();
-    void DrawColourKey(int num_bands, const wxString & other, const wxString & units);
+    void DrawColourKey(int num_bands, const wxString & other);
     void DrawDepthKey();
     void DrawDateKey();
     void DrawErrorKey();

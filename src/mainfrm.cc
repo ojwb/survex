@@ -1715,7 +1715,7 @@ void MainFrm::SetCoords(const Vector3 &v)
 	x /= METRES_PER_FOOT;
 	y /= METRES_PER_FOOT;
 	z /= METRES_PER_FOOT;
-	units = /*ft*/428;
+	units = /*'*/428;
     }
     /* TRANSLATORS: show coordinates (N = North or Northing, E = East or
      * Easting) */
@@ -1775,7 +1775,7 @@ void MainFrm::SetCoords(double x, double y, const LabelInfo * there)
 	    units = /*m*/424;
 	} else {
 	    dh /= METRES_PER_FOOT;
-	    units = /*ft*/428;
+	    units = /*'*/428;
 	}
 	/* TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 	 * in Compass bearing) */
@@ -1795,7 +1795,7 @@ void MainFrm::SetAltitude(double z, const LabelInfo * there)
 	units = /*m*/424;
     } else {
 	alt /= METRES_PER_FOOT;
-	units = /*ft*/428;
+	units = /*'*/428;
     }
     coords_text.Printf(wxT("%s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
 		       alt, wmsg(units).c_str());
@@ -1846,7 +1846,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	x /= METRES_PER_FOOT;
 	y /= METRES_PER_FOOT;
 	z /= METRES_PER_FOOT;
-	units = /*ft*/428;
+	units = /*'*/428;
     }
     s.Printf(wmsg(/*%.2f E, %.2f N*/338), x, y);
     s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
@@ -1879,7 +1879,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	    d_horiz /= METRES_PER_FOOT;
 	    dr /= METRES_PER_FOOT;
 	    dz /= METRES_PER_FOOT;
-	    units = /*ft*/428;
+	    units = /*'*/428;
 	}
 	wxString len_unit = wmsg(units);
 	/* TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical" */
