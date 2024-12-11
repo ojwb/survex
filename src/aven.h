@@ -84,12 +84,12 @@ class MainFrm;
 class wxPageSetupDialogData;
 
 class Aven : public wxApp {
-    MainFrm * m_Frame;
+    MainFrm * m_Frame = nullptr;
     // This must be a pointer, otherwise it gets initialised too early and
     // we get a segfault on MS Windows when it tries to look up paper
     // sizes in wxThePrintPaperDatabase which is still NULL at the point
     // when the Aven class is constructed.
-    wxPageSetupDialogData * m_pageSetupData;
+    wxPageSetupDialogData * m_pageSetupData = nullptr;
 
 public:
     Aven();

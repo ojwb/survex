@@ -126,12 +126,7 @@ END_EVENT_TABLE()
 AvenTreeCtrl::AvenTreeCtrl(MainFrm* parent, wxWindow* window_parent) :
     wxTreeCtrl(window_parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
 	       wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT),
-    m_Parent(parent),
-    m_Enabled(false),
-    m_LastItem(),
-    m_BackgroundColour(),
-    m_SelValid(false),
-    menu_data(NULL)
+    m_Parent(parent)
 {
     wxImageList* img_list = new wxImageList(15, 15, 2);
     img_list->Add(wxBitmap(blank_xpm));

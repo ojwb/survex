@@ -48,11 +48,11 @@ public:
 
 class AvenTreeCtrl : public wxTreeCtrl {
     MainFrm* m_Parent;
-    bool m_Enabled;
+    bool m_Enabled = false;
     wxTreeItemId m_LastItem;
     wxColour m_BackgroundColour;
-    bool m_SelValid;
-    const TreeData* menu_data;
+    bool m_SelValid = false;
+    const TreeData* menu_data = nullptr;
     wxTreeItemId menu_item;
 
     SurveyFilter filter;

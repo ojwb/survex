@@ -166,14 +166,14 @@ ExportFilter::passes() const
 }
 
 class DXF : public ExportFilter {
-    const char * to_close;
+    const char * to_close = nullptr;
     /* for station labels */
     double text_height;
     char pending[1024];
 
   public:
     explicit DXF(double text_height_)
-	: to_close(0), text_height(text_height_) { pending[0] = '\0'; }
+	: text_height(text_height_) { pending[0] = '\0'; }
     const int * passes() const override;
     bool fopen(const wxString& fnm_out) override;
     void header(const char *, const char *, time_t,
@@ -530,8 +530,8 @@ find_name(const img_point *p)
 }
 
 class SVG : public ExportFilter {
-    const char * to_close;
-    bool close_g;
+    const char * to_close = nullptr;
+    bool close_g = false;
     double factor;
     /* for station labels */
     double text_height;
@@ -539,9 +539,7 @@ class SVG : public ExportFilter {
 
   public:
     SVG(double scale, double text_height_)
-	: to_close(NULL),
-	  close_g(false),
-	  factor(1000.0 / scale),
+	: factor(1000.0 / scale),
 	  text_height(text_height_) {
 	pending[0] = '\0';
     }

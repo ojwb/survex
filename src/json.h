@@ -22,9 +22,9 @@
 #include "exportfilter.h"
 
 class JSON : public ExportFilter {
-    bool in_segment;
+    bool in_segment = false;
   public:
-    JSON() : in_segment(false) { }
+    JSON() { }
     const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double min_x, double min_y, double min_z,

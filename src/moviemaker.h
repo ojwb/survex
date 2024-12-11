@@ -45,24 +45,24 @@ extern "C" {
 
 class MovieMaker {
 #ifdef WITH_FFMPEG
-    AVFormatContext *oc;
-    AVStream *video_st;
+    AVFormatContext *oc = nullptr;
+    AVStream *video_st = nullptr;
 # if LIBAVCODEC_VERSION_MAJOR < 57
 #  ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    int out_size; // Legacy-only.
+    int out_size = 0; // Legacy-only.
 #  endif
 # endif
-    AVCodecContext *context;
-    AVFrame *frame;
+    AVCodecContext *context = nullptr;
+    AVFrame *frame = nullptr;
 # if LIBAVCODEC_VERSION_MAJOR < 57
 #  ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    unsigned char *outbuf; // Legacy-only.
+    unsigned char *outbuf = nullptr; // Legacy-only.
 #  endif
 # endif
-    unsigned char *pixels;
-    SwsContext *sws_ctx;
-    int averrno;
-    FILE* fh_to_close;
+    unsigned char *pixels = nullptr;
+    SwsContext *sws_ctx = nullptr;
+    int averrno = 0;
+    FILE* fh_to_close = nullptr;
 
     int encode_frame(AVFrame* frame);
     void release();

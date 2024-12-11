@@ -127,59 +127,9 @@ END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100),
-    m_Scale(0.0),
-    initial_scale(1.0),
-    m_ScaleBarWidth(0),
     m_Control(control),
-    m_LabelGrid(NULL),
     m_Parent(parent),
-    m_DoneFirstShow(false),
-    m_TiltAngle(0.0),
-    m_PanAngle(0.0),
-    m_Rotating(false),
-    m_RotationStep(0.0),
-    m_SwitchingTo(0),
-    m_Crosses(false),
-    m_Legs(true),
-    m_Splays(SHOW_FADED),
-    m_Dupes(SHOW_DASHED),
-    m_Names(false),
-    m_Scalebar(true),
-    m_ColourKey(true),
-    m_OverlappingNames(false),
-    m_Compass(true),
-    m_Clino(true),
-    m_Tubes(false),
-    m_ColourBy(COLOUR_BY_DEPTH),
-    m_HaveData(false),
-    m_HaveTerrain(true),
-    m_MouseOutsideCompass(false),
-    m_MouseOutsideElev(false),
-    m_Surface(false),
-    m_Entrances(false),
-    m_FixedPts(false),
-    m_ExportedPts(false),
-    m_Grid(false),
-    m_BoundingBox(false),
-    m_Terrain(false),
-    m_Degrees(false),
-    m_Metric(false),
-    m_Percent(false),
-    m_HitTestDebug(false),
-    m_RenderStats(false),
-    m_PointGrid(NULL),
-    m_HitTestGridValid(false),
-    m_here(NULL),
-    m_there(NULL),
-    presentation_mode(0),
-    pres_reverse(false),
-    pres_speed(0.0),
-    movie(NULL),
-    current_cursor(GfxCore::CURSOR_DEFAULT),
-    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD)),
-    dem(NULL),
-    last_time(0),
-    n_tris(0)
+    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD))
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
@@ -3045,10 +2995,10 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 
 // Like wxBusyCursor, but you can cancel it early and restart it.
 class AvenBusyCursor {
-    bool active;
+    bool active = true;
 
   public:
-    AvenBusyCursor() : active(true) {
+    AvenBusyCursor() {
 	wxBeginBusyCursor();
     }
 

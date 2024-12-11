@@ -29,10 +29,10 @@
 
 class ExportFilter {
   protected:
-    FILE * fh;
+    FILE * fh = nullptr;
 
   public:
-    ExportFilter() : fh(NULL) { }
+    ExportFilter() { }
     // FIXME: deal with errors closing file... (safe_fclose?)
     virtual ~ExportFilter() { if (fh) fclose(fh); }
     virtual const int * passes() const;

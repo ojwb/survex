@@ -227,17 +227,16 @@ class AvenPresList : public wxListCtrl {
     MainFrm * mainfrm;
     GfxCore * gfx;
     vector<PresentationMark> entries;
-    long current_item;
-    bool modified;
-    bool force_save_as;
+    long current_item = -1;
+    bool modified = false;
+    bool force_save_as = true;
     wxString filename;
 
     public:
 	AvenPresList(MainFrm * mainfrm_, wxWindow * parent, GfxCore * gfx_)
 	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
 			 wxLC_REPORT|wxLC_VIRTUAL),
-	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false),
-	      force_save_as(true)
+	      mainfrm(mainfrm_), gfx(gfx_)
 	{
 	    InsertColumn(0, wmsg(/*Easting*/378));
 	    InsertColumn(1, wmsg(/*Northing*/379));
@@ -698,13 +697,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 #endif
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
-    m_SashPosition(-1),
-    m_Gfx(NULL), m_Log(NULL),
-    pending_find(false), fullscreen_showing_menus(false)
-#ifdef PREFDLG
-    , m_PrefsDlg(NULL)
-#endif
+    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file

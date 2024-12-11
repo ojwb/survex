@@ -52,10 +52,10 @@ class MovieMaker;
 
 class PresentationMark : public Point {
   public:
-    double angle, tilt_angle;
-    double scale;
-    double time;
-    PresentationMark() : Point(), angle(0), tilt_angle(0), scale(0), time(0)
+    double angle = 0.0, tilt_angle = 0.0;
+    double scale = 0.0;
+    double time = 0.0;
+    PresentationMark() : Point()
 	{ }
     PresentationMark(const Vector3 & v, double angle_, double tilt_angle_,
 		     double scale_, double time_ = 0)
@@ -127,9 +127,9 @@ struct Split {
 const int MAX_FRAMERATE = 50;
 
 class GfxCore : public GLACanvas {
-    double m_Scale;
-    double initial_scale;
-    int m_ScaleBarWidth;
+    double m_Scale = 0.0;
+    double initial_scale = 1.0;
+    int m_ScaleBarWidth = 0;
 
     typedef enum {
 	LIST_COMPASS,
@@ -184,53 +184,53 @@ public:
 
 private:
     GUIControl* m_Control;
-    char* m_LabelGrid;
+    char* m_LabelGrid = nullptr;
     MainFrm* m_Parent;
-    bool m_DoneFirstShow;
-    double m_TiltAngle;
-    double m_PanAngle;
-    bool m_Rotating;
-    double m_RotationStep;
-    int m_SwitchingTo;
-    bool m_Crosses;
-    bool m_Legs;
-    int m_Splays;
-    int m_Dupes;
-    bool m_Names;
-    bool m_Scalebar;
-    bool m_ColourKey;
-    bool m_OverlappingNames;
-    bool m_Compass;
-    bool m_Clino;
-    bool m_Tubes;
-    int m_ColourBy;
+    bool m_DoneFirstShow = false;
+    double m_TiltAngle = 0.0;
+    double m_PanAngle = 0.0;
+    bool m_Rotating = false;
+    double m_RotationStep = 0.0;
+    int m_SwitchingTo = 0;
+    bool m_Crosses = false;
+    bool m_Legs = true;
+    int m_Splays = SHOW_FADED;
+    int m_Dupes = SHOW_DASHED;
+    bool m_Names = false;
+    bool m_Scalebar = true;
+    bool m_ColourKey = true;
+    bool m_OverlappingNames = false;
+    bool m_Compass = true;
+    bool m_Clino = true;
+    bool m_Tubes = false;
+    int m_ColourBy = COLOUR_BY_DEPTH;
     int error_type;
 
-    bool m_HaveData;
-    bool m_HaveTerrain;
-    bool m_MouseOutsideCompass;
-    bool m_MouseOutsideElev;
-    bool m_Surface;
-    bool m_Entrances;
-    bool m_FixedPts;
-    bool m_ExportedPts;
-    bool m_Grid;
-    bool m_BoundingBox;
-    bool m_Terrain;
+    bool m_HaveData = false;
+    bool m_HaveTerrain = true;
+    bool m_MouseOutsideCompass = false;
+    bool m_MouseOutsideElev = false;
+    bool m_Surface = false;
+    bool m_Entrances = false;
+    bool m_FixedPts = false;
+    bool m_ExportedPts = false;
+    bool m_Grid = false;
+    bool m_BoundingBox = false;
+    bool m_Terrain = false;
 
-    bool m_Degrees;
-    bool m_Metric;
-    bool m_Percent;
+    bool m_Degrees = false;
+    bool m_Metric = false;
+    bool m_Percent = false;
 
-    bool m_HitTestDebug;
-    bool m_RenderStats;
+    bool m_HitTestDebug = false;
+    bool m_RenderStats = false;
 
-    list<LabelInfo*> *m_PointGrid;
-    bool m_HitTestGridValid;
+    list<LabelInfo*> *m_PointGrid = nullptr;
+    bool m_HitTestGridValid = false;
 
     LabelInfo temp_here;
-    const LabelInfo * m_here;
-    const LabelInfo * m_there;
+    const LabelInfo * m_here = nullptr;
+    const LabelInfo * m_there = nullptr;
     wxString highlighted_survey;
 
     wxStopWatch timer;
@@ -242,16 +242,16 @@ private:
     GLAPen m_Pens[NUM_COLOUR_BANDS + 1];
 
 #define PLAYING 1
-    int presentation_mode; // for now, 0 => off, PLAYING => continuous play
-    bool pres_reverse;
-    double pres_speed;
+    int presentation_mode = 0; // for now, 0 => off, PLAYING => continuous play
+    bool pres_reverse = false;
+    double pres_speed = 0.0;
     PresentationMark next_mark;
     double next_mark_time;
     double this_mark_total;
 
-    MovieMaker * movie;
+    MovieMaker * movie = nullptr;
 
-    cursor current_cursor;
+    cursor current_cursor = GfxCore::CURSOR_DEFAULT;
 
     int sqrd_measure_threshold;
 
@@ -267,13 +267,13 @@ private:
     Vector3 offsets;
 
     // DEM:
-    unsigned short * dem;
+    unsigned short * dem = nullptr;
     unsigned long dem_width, dem_height;
     double o_x, o_y, step_x, step_y;
     long nodata_value;
     bool bigendian;
-    long last_time;
-    size_t n_tris;
+    long last_time = 0;
+    size_t n_tris = 0;
 
     void PlaceVertexWithColour(const Vector3 &v, double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v,

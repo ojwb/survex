@@ -129,9 +129,6 @@ const int OUTBUF_SIZE = 200000;
 #endif
 
 MovieMaker::MovieMaker()
-#ifdef WITH_FFMPEG
-    : oc(0), video_st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0), averrno(0)
-#endif
 {
 #ifdef WITH_FFMPEG
     static bool initialised_ffmpeg = false;

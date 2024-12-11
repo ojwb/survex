@@ -44,11 +44,11 @@ class BitmapFont {
 	BITMAPFONT_MAX_CHAR = 256
     };
 
-    int gllist_base;
+    int gllist_base = 0;
 
-    mutable const unsigned char * extra_data;
+    mutable const unsigned char * extra_data = nullptr;
 
-    mutable int * extra_chars;
+    mutable int * extra_chars = nullptr;
 
     unsigned char char_width[BITMAPFONT_MAX_CHAR];
 
@@ -64,7 +64,7 @@ class BitmapFont {
 
   public:
 
-    BitmapFont() : gllist_base(0), extra_data(0), extra_chars(0) { }
+    BitmapFont() { }
 
     ~BitmapFont();
 

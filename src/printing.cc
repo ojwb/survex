@@ -170,9 +170,9 @@ class svxPrintout : public wxPrintout {
     layout *m_layout;
     wxPageSetupDialogData* m_data;
     wxDC* pdc;
-    wxFont *font_labels, *font_default;
+    wxFont *font_labels = nullptr, *font_default = nullptr;
     // Currently unused, but "skip blank pages" would use it.
-    bool scan_for_blank_pages;
+    bool scan_for_blank_pages = false;
 
     wxPen *pen_frame, *pen_cross, *pen_leg, *pen_surface_leg, *pen_splay;
     wxColour colour_text, colour_labels;
@@ -316,11 +316,6 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	  m_layout(printing ? wxGetApp().GetPageSetupDialogData() : NULL),
 	  m_File(filename), mainfrm(mainfrm_), close_after(close_after_)
 {
-    m_scale = NULL;
-    m_printSize = NULL;
-    m_bearing = NULL;
-    m_tilt = NULL;
-    m_format = NULL;
     int show_mask = 0;
     if (labels)
 	show_mask |= LABELS;
@@ -1122,12 +1117,9 @@ static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
 			 wxPageSetupDialogData *data, const wxString & title)
-    : wxPrintout(title), font_labels(NULL), font_default(NULL),
-      scan_for_blank_pages(false)
+    : wxPrintout(title),
+      mainfrm(mainfrm_), m_layout(l), m_data(data)
 {
-    mainfrm = mainfrm_;
-    m_layout = l;
-    m_data = data;
 }
 
 void

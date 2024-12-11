@@ -34,11 +34,6 @@
 #include <wx/print.h>
 
 layout::layout(wxPageSetupDialogData* data)
-	: show_mask(0),
-	  SkipBlank(false), Border(true), Cutlines(true), Legend(true),
-	  title(), datestamp(), Scale(0), rot(0), tilt(0),
-	  view(PLAN), scX(1), scY(1), xMin(0), xMax(-1), yMin(0), yMax(-1),
-	  pagesX(1), pagesY(1), pages(1), xOrg(0), yOrg(0)
 {
     if (data) {
 	// Printing.

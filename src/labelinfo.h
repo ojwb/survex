@@ -83,12 +83,12 @@ constexpr int LFLAG_HIGHLIGHTED	= 0x4000;
 class LabelInfo : public Point {
     wxString text;
     unsigned width;
-    int flags;
+    int flags = 0;
 
 public:
     wxTreeItemId tree_id;
 
-    LabelInfo() : Point(), text(), flags(0) { }
+    LabelInfo() { }
     LabelInfo(const img_point &pt, const wxString &text_, int flags_)
 	: Point(pt), text(text_), flags(flags_) {
 	if (text.empty())

@@ -78,8 +78,7 @@ IMPLEMENT_APP_NO_MAIN(Aven)
 IMPLEMENT_WX_THEME_SUPPORT
 #endif
 
-Aven::Aven() :
-    m_Frame(NULL), m_pageSetupData(NULL)
+Aven::Aven()
 {
     wxFont::SetDefaultEncoding(wxFONTENCODING_UTF8);
 }

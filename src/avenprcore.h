@@ -36,23 +36,23 @@ class wxPageSetupDialogData;
 class layout {
 public:
     /* caller modifiable bits */
-    int show_mask;
-    bool SkipBlank;
-    bool Border;
-    bool Cutlines;
-    bool Legend;
+    int show_mask = 0;
+    bool SkipBlank = false;
+    bool Border = true;
+    bool Cutlines = true;
+    bool Legend = true;
     wxString title;
     wxString datestamp;
-    double Scale;
-    double rot, tilt;
-    enum {PLAN, ELEV, TILT, EXTELEV} view;
+    double Scale = 0.0;
+    double rot = 0.0, tilt = 0.0;
+    enum {PLAN, ELEV, TILT, EXTELEV} view = PLAN;
 
     /* internal data, but may be accessed */
-    double scX, scY;
-    double xMin, xMax, yMin, yMax;
+    double scX = 1.0, scY = 1.0;
+    double xMin = 0.0, xMax = -1.0, yMin = 0.0, yMax = -1.0;
     double PaperWidth, PaperDepth;
-    int pagesX, pagesY, pages;
-    double xOrg, yOrg;
+    int pagesX = 1, pagesY = 1, pages = 1;
+    double xOrg = 0.0, yOrg = 0.0;
 
     explicit layout(wxPageSetupDialogData* data);
 #if 0

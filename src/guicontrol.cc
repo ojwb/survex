@@ -31,14 +31,6 @@ const int DISPLAY_SHIFT = 10;
 const double FLYFREE_SHIFT = 0.2;
 const double ROTATE_STEP = 2.0;
 
-GUIControl::GUIControl()
-    : dragging(NO_DRAG)
-{
-    m_View = NULL;
-    m_ReverseControls = false;
-    m_LastDrag = drag_NONE;
-}
-
 void GUIControl::SetView(GfxCore* view)
 {
     m_View = view;

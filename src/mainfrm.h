@@ -156,10 +156,10 @@ class AvenPresList;
 
 class MainFrm : public wxFrame, public Model {
     wxFileHistory m_history;
-    int m_SashPosition;
+    int m_SashPosition = -1;
     bool was_showing_sidepanel_before_fullscreen;
-    GfxCore* m_Gfx;
-    wxWindow* m_Log;
+    GfxCore* m_Gfx = nullptr;
+    wxWindow* m_Log = nullptr;
     GUIControl* m_Control;
     wxSplitterWindow* m_Splitter;
     AvenTreeCtrl* m_Tree;
@@ -176,12 +176,12 @@ class MainFrm : public wxFrame, public Model {
     wxString here_text, coords_text, dist_text, distfree_text;
 
     int m_NumHighlighted = 0;
-    bool pending_find;
+    bool pending_find = false;
 
-    bool fullscreen_showing_menus;
+    bool fullscreen_showing_menus = false;
 
 #ifdef PREFDLG
-    PrefsDlg* m_PrefsDlg;
+    PrefsDlg* m_PrefsDlg = nullptr;
 #endif
 
     bool ProcessSVXFile(const wxString & file);

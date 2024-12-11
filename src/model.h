@@ -39,11 +39,11 @@ using namespace std;
 class MainFrm;
 
 class PointInfo : public Point {
-    int date;
+    int date = -1;
 
 public:
-    PointInfo() : Point(), date(-1) { }
-    explicit PointInfo(const img_point & pt) : Point(pt), date(-1) { }
+    PointInfo() : Point() { }
+    explicit PointInfo(const img_point & pt) : Point(pt) { }
     PointInfo(const img_point & pt, int date_) : Point(pt), date(date_) { }
     PointInfo(const Point & p, int date_) : Point(p), date(date_) { }
     int GetDate() const { return date; }
@@ -54,12 +54,12 @@ class XSect {
     const LabelInfo* stn;
     int date;
     double l, r, u, d;
-    double right_bearing;
+    double right_bearing = 0.0;
 
 public:
     XSect(const LabelInfo* stn_, int date_,
 	  double l_, double r_, double u_, double d_)
-	: stn(stn_), date(date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
+	: stn(stn_), date(date_), l(l_), r(r_), u(u_), d(d_) { }
     double GetL() const { return l; }
     double GetR() const { return r; }
     double GetU() const { return u; }

@@ -67,10 +67,10 @@ enum gla_colour {
 class GLAPen {
     friend class GLACanvas; // allow direct access to components
 
-    double components[3]; // red, green, blue
+    double components[3] = { 0.0, 0.0, 0.0 }; // red, green, blue
 
 public:
-    GLAPen();
+    GLAPen() {}
 
     void SetColour(double red, double green, double blue); // arguments in range 0 to 1.0
     void Interpolate(const GLAPen&, double how_far);
@@ -81,10 +81,10 @@ public:
 };
 
 class GLAList {
-    GLuint gl_list;
-    unsigned int flags;
+    GLuint gl_list = 0;
+    unsigned int flags = 0;
   public:
-    GLAList() : gl_list(0), flags(0) { }
+    GLAList() { }
     GLAList(GLuint gl_list_, unsigned int flags_)
 	: gl_list(gl_list_), flags(flags_) { }
     operator bool() { return gl_list != 0; }
@@ -113,35 +113,35 @@ class GLACanvas : public wxGLCanvas {
     GLint viewport[4];
 
     // Viewing volume diameter:
-    glaCoord m_VolumeDiameter;
+    glaCoord m_VolumeDiameter = 1.0;
 
     // Parameters for plotting data:
-    double m_Pan, m_Tilt;
-    double m_Scale;
+    double m_Pan = 0.0, m_Tilt = 0.0;
+    double m_Scale = 0.0;
     Vector3 m_Translation;
 
     BitmapFont m_Font;
 
-    GLUquadric* m_Quadric;
+    GLUquadric* m_Quadric = nullptr;
 
-    GLuint m_Texture;
+    GLuint m_Texture = 0;
     GLuint m_BlobTexture;
     GLuint m_CrossTexture;
 
-    double alpha;
+    double alpha = 1.0;
 
-    bool m_SmoothShading;
-    bool m_Textured;
-    bool m_Perspective;
-    bool m_Fog;
-    bool m_AntiAlias;
+    bool m_SmoothShading = false;
+    bool m_Textured = false;
+    bool m_Perspective = false;
+    bool m_Fog = false;
+    bool m_AntiAlias = false;
     bool save_hints;
     enum { UNKNOWN = 0, POINT = 'P', LINES = 'L', SPRITE = 'S' };
-    int blob_method;
-    int cross_method;
+    int blob_method = UNKNOWN;
+    int cross_method = UNKNOWN;
 
-    int x_size;
-    int y_size;
+    int x_size = 0;
+    int y_size = 0;
 
     // wxHAS_DPI_INDEPENDENT_PIXELS is new in 3.1.6.  In older versions we just
     // always do the scaling which is slightly less efficient for platforms
@@ -167,7 +167,7 @@ class GLACanvas : public wxGLCanvas {
 	NEVER_CACHE = 16,
 	CACHED = 32
     };
-    mutable unsigned int list_flags;
+    mutable unsigned int list_flags = 0;
 
     wxString vendor, renderer;
 

@@ -273,11 +273,6 @@ log_gl_error(const wxChar * str, GLenum error_code)
 //  GLAPen
 //
 
-GLAPen::GLAPen()
-{
-    components[0] = components[1] = components[2] = 0.0;
-}
-
 void GLAPen::SetColour(double red, double green, double blue)
 {
     components[0] = red;
@@ -402,24 +397,8 @@ END_EVENT_TABLE()
 GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wx_gl_attribs, wxDefaultPosition,
 		 wxDefaultSize, wxWANTS_CHARS),
-      ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
-      x_size(0), y_size(0)
+      ctx(this)
 {
-    // Constructor.
-
-    m_Quadric = NULL;
-    m_Pan = 0.0;
-    m_Tilt = 0.0;
-    m_Scale = 0.0;
-    m_VolumeDiameter = 1.0;
-    m_SmoothShading = false;
-    m_Texture = 0;
-    m_Textured = false;
-    m_Perspective = false;
-    m_Fog = false;
-    m_AntiAlias = false;
-    list_flags = 0;
-    alpha = 1.0;
 }
 
 GLACanvas::~GLACanvas()

@@ -20,7 +20,7 @@
 #include "wx.h"
 
 class MyLogWindow : public wxLogWindow {
-    bool first;
+    bool first = true;
   public:
     MyLogWindow();
   protected:
