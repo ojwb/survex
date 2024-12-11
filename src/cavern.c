@@ -175,6 +175,7 @@ main(int argc, char **argv)
    pcs = osnew(settings);
    pcs->next = NULL;
    pcs->from_equals_to_is_only_a_warning = false;
+   pcs->len_footinches = 0;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
    pcs->meta = NULL;
    pcs->proj_str = NULL;

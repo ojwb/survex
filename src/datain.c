@@ -609,6 +609,7 @@ initialise_common_compass_settings(void)
     // Compass itself appears to quietly ignore legs with the same station as
     // `from` and `to`, but it seems like something to warn about.
     pcsNew->from_equals_to_is_only_a_warning = true;
+    pcsNew->len_footinches = 0;
     pcsNew->next = pcs;
     pcs = pcsNew;
 
@@ -1526,6 +1527,7 @@ walls_initialise_settings(void)
     pcs->Truncate = INT_MAX;
     pcs->infer = BIT(INFER_EQUATES) |
 		 BIT(INFER_PLUMBS);
+    pcs->len_footinches = 0;
     // Walls cartesian data is aligned to True North.
     pcs->cartesian_north = TRUE_NORTH;
     pcs->cartesian_rotation = 0.0;
