@@ -180,6 +180,10 @@ class MainFrm : public wxFrame, public Model {
 
     bool fullscreen_showing_menus = false;
 
+#ifdef __WXMAC__
+    bool using_macos_full_screen_view = false;
+#endif
+
 #ifdef PREFDLG
     PrefsDlg* m_PrefsDlg = nullptr;
 #endif

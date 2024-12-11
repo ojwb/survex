@@ -707,10 +707,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetIcon(wxICON(aven));
 #endif
 
-#if wxCHECK_VERSION(3,1,0)
+#if defined(__WXMAC__) && wxCHECK_VERSION(3,1,0)
     // Add a full screen button to the right upper corner of title bar under OS
     // X 10.7 and later.
-    EnableFullScreenView();
+    using_macos_full_screen_view = EnableFullScreenView();
 #endif
     CreateMenuBar();
     MakeToolBar();
@@ -2410,11 +2410,23 @@ bool MainFrm::ShowingSidePanel()
 
 void MainFrm::ViewFullScreen() {
 #ifdef __WXMAC__
-    // On macOS, wxWidgets doesn't currently hide the toolbar or statusbar in
-    // full screen mode (last checked with 3.0.2), but it is easy to do
-    // ourselves.
+    // On macOS:
+    //
+    // If !using_macos_full_screen_view, wxWidgets doesn't currently hide the
+    // toolbar or statusbar in full screen mode (last checked with 3.0.2).
+    //
+    // If using_macos_full_screen_view, apparently wxWidgets hides the toolbar
+    // but not the statusbar (or maybe the status bar gets hidden by macOS
+    // unconditionally?)
     if (!IsFullScreen()) {
-	GetToolBar()->Hide();
+	// On macOS when not using the full screen view API, wxWidgets doesn't
+	// hide the toolbar in full screen mode (last checked with 3.0.2).
+	if (!using_macos_full_screen_view) GetToolBar()->Hide();
+	// The statusbar isn't automatically hidden without the full screen view
+	// API (last checked with 3.0.2); with the full screen view API the
+	// wxFULLSCREEN_NOSTATUSBAR flag is ignored, but possibly macOS
+	// unconditionally hides the status bar?  FIXME Need to get someone to
+	// test this.
 	GetStatusBar()->Hide();
     }
 #endif
@@ -2429,7 +2441,7 @@ void MainFrm::ViewFullScreen() {
 #ifdef __WXMAC__
     if (!IsFullScreen()) {
 	GetStatusBar()->Show();
-	GetToolBar()->Show();
+	if (!using_macos_full_screen_view) GetToolBar()->Show();
 #ifdef USING_GENERIC_TOOLBAR
 	Layout();
 #endif
@@ -2447,11 +2459,12 @@ void MainFrm::FullScreenModeShowMenus(bool show)
     if (!IsFullScreen() || show == fullscreen_showing_menus)
 	return;
 #ifdef __WXMAC__
-    // On macOS, enabling the menu bar while in full
-    // screen mode doesn't have any effect, so instead
-    // make moving the mouse to the top of the screen
-    // drop us out of full screen mode for now.
-    ViewFullScreen();
+    // If we're using the macOS full screen view API then auto-showing the menu
+    // bar happens automatically when the mouse is moved near it.  Otherwise
+    // enabling the menu bar while in full screen mode doesn't have any effect
+    // (probably last tested with 3.0.x), so instead make moving the mouse to
+    // the top of the screen drop us out of full screen mode.
+    if (!using_macos_full_screen_view) ViewFullScreen();
 #else
     GetMenuBar()->Show(show);
     fullscreen_showing_menus = show;
