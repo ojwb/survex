@@ -3638,6 +3638,7 @@ msgstr ""
 #: ../src/gdalexport.cc:44
 #: ../src/gdalexport.cc:50
 #: n:527
+#, c-format
 msgid "Failed to initialise GDAL “%s” driver"
 msgstr ""
 
