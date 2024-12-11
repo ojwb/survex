@@ -686,8 +686,7 @@ read_footinch(bool f_optional)
       }
    }
    if (m >= 12) {
-      compile_diagnostic_token_show(DIAG_ERR, /*Suspicious foot.inch value “%s”*/485);
-      /* suspicious m */
+      compile_diagnostic(DIAG_ERR, /*Suspicious foot.inch value*/531);
    }
    n = n * 12 + m;
    return fPositive ? n : -n;
