@@ -1950,10 +1950,9 @@ cmd_units(void)
    if (units == UNITS_FEETINCHES) {
       /* so that we don't have an enormous if list, we check for UNITS first,
        * and set the len_footinches flag for all of them that are lengths */
-      pcs->len_footinches = (pcs->len_footinches | (LEN_QMASK & qmask ) );
-   }
-   else {
-      pcs->len_footinches = (pcs->len_footinches & ~(LEN_QMASK & qmask ) );
+      pcs->len_footinches = (pcs->len_footinches | (LEN_QMASK & qmask));
+   } else {
+      pcs->len_footinches = (pcs->len_footinches & ~(LEN_QMASK & qmask));
    }
 
    if (factor == HUGE_REAL) {

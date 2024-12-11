@@ -685,11 +685,11 @@ read_footinch(bool f_optional)
         m = m * (real)10.0 + (char)(ch - '0');
       }
    }
-   if (m >= 12){
+   if (m >= 12) {
       compile_diagnostic_token_show(DIAG_ERR, /*Suspicious foot.inch value “%s”*/485);
       /* suspicious m */
    }
-   n = n*12 + m;
+   n = n * 12 + m;
    return n;
 }
 
@@ -799,7 +799,7 @@ read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches, int *p_
 	  if (r != HUGE_REAL)
 	      do_legacy_token_warning();
       } else {
-         r = read_footinch(f_optional);
+	 r = read_footinch(f_optional);
       }
       if (p_n_readings) *p_n_readings = (r == HUGE_REAL ? 0 : 1);
       return r;
@@ -814,7 +814,7 @@ read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches, int *p_
 	 tot += read_quadrant(false);
 	 do_legacy_token_warning();
       } else {
-         tot += read_footinch(f_optional);
+	 tot += read_footinch(f_optional);
       }
       ++n_readings;
       skipblanks();
