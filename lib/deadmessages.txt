@@ -709,7 +709,7 @@ sk:314 @Ukon&ccaron;i&tcaron; a ulo&zcaron;i&tcaron;
 en:315 @Erase Last Position
 fr:315 @Effacement de la derni&egrave;re position
 de:315 Letzte Position @l&ouml;schen
-pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
+pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o
 ca:315 @Esborra la &uacute;ltima posici&oacute;
 es:315 @Borra la &uacute;ltima posici&oacute;n
 it:315 Cancella l'@Ultima posizione
@@ -775,7 +775,7 @@ pt: 83 Escala para caber em uma p&aacute;gina
 ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
-sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
+sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku
 ro: 83 Redimensionata pentru a incapea pe 1 pagina
 #
 en: 86 No data in 3d Image file
