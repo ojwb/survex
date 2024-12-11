@@ -683,6 +683,7 @@ read_footinch(bool f_optional)
       nextch();
       while (isdigit(ch)) {
         m = m * (real)10.0 + (char)(ch - '0');
+	nextch();
       }
    }
    if (m >= 12) {
