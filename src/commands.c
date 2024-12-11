@@ -479,7 +479,7 @@ static const sztok cmd_tab[] = {
 
 /* ordering must be the same as the units enum */
 const real factor_tab[] = {
-   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0), (METRES_PER_FOOT/12), (METRES_PER_FOOT/12),
+   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0), (METRES_PER_FOOT/12.0), (METRES_PER_FOOT/12.0),
    (M_PI/180.0), (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
 };
 
