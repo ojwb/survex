@@ -690,7 +690,7 @@ read_footinch(bool f_optional)
       /* suspicious m */
    }
    n = n * 12 + m;
-   return n;
+   return fPositive ? n : -n;
 }
 
 real
