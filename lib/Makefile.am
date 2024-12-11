@@ -8,7 +8,7 @@ check-local: survex.pot
 	    echo 'Duplicate message code(s) in survex.pot'; exit 1;\
 	fi
 	for po in $(po_files) ; do\
-	    msgfmt -c --check-accelerators -o /dev/null "$(srcdir)/$$po" || exit 1;\
+	    $(MSGFMT) -c --check-accelerators -o /dev/null "$(srcdir)/$$po" || exit 1;\
 	done
 	if cd "$(srcdir)" && grep 'msgstr "[0-9][0-9]*"' $(po_files); then\
 	    echo '.po file with numeric code'; exit 1;\
@@ -23,9 +23,12 @@ msg_files = $(po_files:.po=.msg) en.msg
 
 EXTRA_DIST = survex.pot $(po_files)\
  po-to-msg.pl checkshortcut.pl extract-msgs.pl\
- Bulgarian.isl\
- ChineseSimplified.isl ChineseTraditional.isl\
- EnglishBritish.isl Indonesian.isl Romanian.isl Slovak.isl\
+ ChineseSimplified.isl\
+ ChineseTraditional.isl\
+ EnglishBritish.isl\
+ Greek.isl\
+ Indonesian.isl\
+ Romanian.isl\
  make-pixel-font preload_font.h
 
 MAINTAINERCLEANFILES = $(msg_files) unifont.pixelfont preload_font.h
@@ -35,11 +38,11 @@ dist_pkgdata_DATA = bcra3.svx bcra5.svx $(msg_files) unifont.pixelfont
 appsdir = $(datadir)/applications
 dist_apps_DATA = survex-aven.desktop
 
-gtksourceviewdir = $(datadir)/gtksourceview-3.0/language-specs
-dist_gtksourceview_DATA = survex.lang
+gtksourceview3dir = $(datadir)/gtksourceview-3.0/language-specs
+dist_gtksourceview3_DATA = survex.lang
 
-projdatadir = $(pkgdatadir)/proj
-dist_projdata_DATA = proj/esri
+gtksourceview4dir = $(datadir)/gtksourceview-4/language-specs
+dist_gtksourceview4_DATA = survex.lang
 
 $(msg_files): survex.pot $(po_files) po-to-msg.pl
 	LANG=C perl $(srcdir)/po-to-msg.pl $(po_files)
@@ -55,6 +58,11 @@ merge-pos:
 
 generate-todo:
 	cd '$(srcdir)' && ./generate-po-todo $(po_files)
+
+launchpad-upload.tar.bz2: survex.pot $(po_files)
+	cd '$(srcdir)' && tar --transform='s!^!survex/!' -jcf $@ $^
+	@echo 'Upload $@ to'
+	@echo 'https://translations.launchpad.net/survex/trunk/+translations-upload'
 
 launchpad-diff:
 	rm -rf lib

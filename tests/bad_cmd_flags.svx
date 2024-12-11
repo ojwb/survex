@@ -1,4 +1,4 @@
-; pos=fail error=19
+; pos=fail error=20
 *fix 1 reference 0 0 0
 *flags
 *flags; comment
@@ -19,3 +19,4 @@
 *flags splay rubbish surface
 *flags splay not rubbish surface
 *flags splay not not surface
+*flags splay n0t surface

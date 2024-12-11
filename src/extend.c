@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016,2017 Olly Betts
+ * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016,2017,2024 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <float.h>
 #include <stdio.h>
@@ -34,6 +32,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 
 /* To save memory we should probably use the prefix hash for the prefix on
@@ -477,12 +476,12 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
+   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0, 0},
    /* TRANSLATORS: --help output for extend --specfile option */
-   {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0},
+   {HLP_ENCODELONG(1),        /*.espec file to control extending*/90, 0, "ESPEC_FILE"},
    /* TRANSLATORS: --help output for extend --show-breaks option */
-   {HLP_ENCODELONG(2),        /*show breaks with surface survey legs in output*/91, 0},
-   {0, 0, 0}
+   {HLP_ENCODELONG(2),        /*show breaks with surface survey legs in output*/91, 0, 0},
+   {0, 0, 0, 0}
 };
 
 static point *
@@ -550,7 +549,7 @@ main(int argc, char **argv)
    msg_init(argv);
 
    /* TRANSLATORS: Part of extend --help */
-   cmdline_set_syntax_message(/*INPUT_3D_FILE [OUTPUT_3D_FILE]*/267, 0, NULL);
+   cmdline_set_syntax_message(/*INPUT_FILE [OUTPUT_3D_FILE]*/267, 0, NULL);
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, 2);
    while (1) {
       int opt = cmdline_getopt();

@@ -1,6 +1,6 @@
 /* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2002,2011,2012,2013,2014 Olly Betts
+ * Copyright (C) 1991-2002,2011,2012,2013,2014,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #define PRINT_STN_POS_LIST 1
 #define NODESTAT 1
@@ -68,19 +66,30 @@ static void
 check_node(prefix *p)
 {
    if (!p->pos) {
+      /* FIXME: Could do away with the SFLAGS_SURVEY check and check
+       * p->min_export instead of p->max_export I think ... */
       if (!TSTBIT(p->sflags, SFLAGS_SURVEY)) {
-	 /* Could do away with the SFLAGS_SURVEY check and check
-	  * p->min_export instead of p->max_export I think ... */
-	 if (TSTBIT(p->sflags, SFLAGS_ENTRANCE) || p->max_export) {
-	     /* p is a station which was referred to in "*entrance" and/or
-	      * "*export" but not elsewhere (otherwise it'd have a position).
-	      * p could also be a survey (SFLAGS_SURVEY) or be mentioned as
-	      * a station, but only in a line of data which was rejected
-	      * because of an error.
+	 /* We have no position for p.  Check if it was referred to in
+	  * "*entrance" and/or "*export" and flag a warning if so.
+	  * It could also be a survey (SFLAGS_SURVEY) or be mentioned as
+	  * a station, but only in a line of data which was rejected
+	  * because of an error.
+	  */
+	 if (TSTBIT(p->sflags, SFLAGS_ENTRANCE)) {
+	     /* TRANSLATORS: The first %s is replaced by a station name,
+	      * the second %s by "entrance" or "export".
 	      */
 	     warning_in_file(p->filename, p->line,
-		     /*Station “%s” referred to by *entrance or *export but never used*/190,
-		     sprint_prefix(p));
+		     /*Station “%s” referred to by *%s but never used*/190,
+		     sprint_prefix(p), "entrance");
+	 }
+	 if (p->max_export) {
+	     /* TRANSLATORS: The first %s is replaced by a station name,
+	      * the second %s by "entrance" or "export".
+	      */
+	     warning_in_file(p->filename, p->line,
+		     /*Station “%s” referred to by *%s but never used*/190,
+		     sprint_prefix(p), "export");
 	 }
       }
    } else {
@@ -132,12 +141,8 @@ static int icOrderMac;
 static void
 node_stat(prefix *p)
 {
-   if (p->pos) {
-      int order;
-      SVX_ASSERT(pfx_fixed(p));
-
-      order = p->shape;
-
+   if (p->pos && pfx_fixed(p)) {
+      int order = p->shape;
       if (order >= icOrderMac) {
 	 int c = order * 2;
 	 cOrder = osrealloc(cOrder, c * ossizeof(int));

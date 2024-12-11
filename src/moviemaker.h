@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004,2010,2011,2013,2014,2016 Olly Betts
+//  Copyright (C) 2004,2010,2011,2013,2014,2016,2023 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -36,25 +36,33 @@ struct AVFrame;
 struct AVPicture;
 struct SwsContext;
 
+#ifdef WITH_FFMPEG
+extern "C" {
+// To get LIBAVCODEC_VERSION_MAJOR defined:
+# include <libavcodec/avcodec.h>
+}
+#endif
+
 class MovieMaker {
-#ifdef WITH_LIBAV
-    AVFormatContext *oc;
-    AVStream *video_st;
-# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    int out_size; // Legacy-only.
-# endif
-    AVCodecContext *context;
-    AVFrame *frame;
+#ifdef WITH_FFMPEG
+    AVFormatContext *oc = nullptr;
+    AVStream *video_st = nullptr;
 # if LIBAVCODEC_VERSION_MAJOR < 57
-    unsigned char *outbuf; // Legacy-only.
+#  ifndef HAVE_AVCODEC_ENCODE_VIDEO2
+    int out_size = 0; // Legacy-only.
+#  endif
 # endif
-# ifndef HAVE_AVCODEC_ENCODE_VIDEO2
-    AVPicture *out; // Legacy-only.
+    AVCodecContext *context = nullptr;
+    AVFrame *frame = nullptr;
+# if LIBAVCODEC_VERSION_MAJOR < 57
+#  ifndef HAVE_AVCODEC_ENCODE_VIDEO2
+    unsigned char *outbuf = nullptr; // Legacy-only.
+#  endif
 # endif
-    unsigned char *pixels;
-    SwsContext *sws_ctx;
-    int averrno;
-    FILE* fh_to_close;
+    unsigned char *pixels = nullptr;
+    SwsContext *sws_ctx = nullptr;
+    int averrno = 0;
+    FILE* fh_to_close = nullptr;
 
     int encode_frame(AVFrame* frame);
     void release();

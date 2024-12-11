@@ -24,7 +24,7 @@ extern "C" {
 extern int is_leap_year(int year);
 
 /* Return last day for given month of given year. */
-unsigned int last_day(int year, int month);
+int last_day(int year, int month);
 
 int days_since_1900(int y, int m, int d);
 

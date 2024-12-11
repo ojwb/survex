@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - 3d to pos tests
-# Copyright (C) 1999-2003,2005,2010,2012,2018 Olly Betts
+# Copyright (C) 1999-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@ testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
+if [ -z "$SURVEXLIB" ] ; then
+  SURVEXLIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEXLIB
+fi
 
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
@@ -31,6 +35,12 @@ test -x "$testdir"/../src/cavern || testdir=.
 : ${SURVEXPORT="$testdir"/../src/survexport}
 
 : ${TESTS=${*:-"pos.pos v0 v0b v1 v2 v3"}}
+
+# Suppress checking for leaks on exit if we're build with lsan - we don't
+# generally waste effort to free all allocations as the OS will reclaim
+# memory on exit.
+LSAN_OPTIONS=leak_check_at_exit=0
+export LSAN_OPTIONS
 
 vg_error=123
 vg_log=vg.log

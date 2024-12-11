@@ -1,0 +1,29 @@
+./flags.dat:17: warning: Survey leg with same station ("y") at both ends - typing error?
+  y  y 3.281 0 0 0 0 0 0
+./flags.dat:10: info: Survey has no fixed points. Therefore I've fixed C1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 6 survey stations, joined by 5 legs.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from y at 0.00m to y at 0.00m)
+North-South range = 3.00m (from y at 3.00m to C1 at 0.00m)
+East-West range = 0.00m (from y at 0.00m to y at 0.00m)
+   4 1-nodes.
+   2 3-nodes.
+There were 1 warning(s).

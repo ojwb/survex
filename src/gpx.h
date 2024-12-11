@@ -2,7 +2,7 @@
  * Export from Aven as GPX.
  */
 
-/* Copyright (C) 2005,2013,2014,2015,2016 Olly Betts
+/* Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,21 +21,20 @@
 
 #include "exportfilter.h"
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 class GPX : public ExportFilter {
-    projPJ pj_input, pj_output;
-    bool in_trkseg;
-    const char * trk_name;
+    PJ* pj = NULL;
+    bool in_trkseg = false;
+    const char * trk_name = NULL;
   public:
     explicit GPX(const char * input_datum);
     ~GPX();
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double, double, double,
-		double, double, double);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void footer();
+		double, double, double) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, int, int) override;
+    void footer() override;
 };

@@ -1,3 +1,5 @@
+./cmd_declination_conv.svx:8: info: Declination: 3.1dg @ 2015-08-01, grid convergence: -1.7dg
+ *declination auto 328000 5260000 2500
 
 Removing trailing traverses...
 
@@ -20,5 +22,5 @@ Total plan length of survey legs = 1000.00m
 Total vertical length of survey legs =    0.00m
 Vertical range = 0.00m (from test.1 at 2500.00m to test.1 at 2500.00m)
 North-South range = 999.56m (from test.1 at 5260999.56m to test.0 at 5260000.00m)
-East-West range = 29.51m (from test.1 at 328029.51m to test.0 at 328000.00m)
+East-West range = 29.50m (from test.1 at 328029.50m to test.0 at 328000.00m)
    2 1-nodes.

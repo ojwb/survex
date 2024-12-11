@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=1
+; pos=fail warn=0 error=
 ; Regression test distilled from example from Carlos Grohmann
 *begin A
 1	2	1.23 123 12

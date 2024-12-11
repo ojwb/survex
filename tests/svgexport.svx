@@ -1,0 +1,6 @@
+; pos=svg warn=0
+*equate entrance svy.1
+*begin svy
+*export 1
+1 2 12.35 045 -12
+*end svy

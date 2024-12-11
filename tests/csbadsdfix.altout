@@ -1,0 +1,89 @@
+./csbadsdfix.svx:2: error: Station "1" fixed before CS command first used
+./csbadsdfix.svx:3:5: error: Unknown coordinate system
+ *cs EPSG:-1
+     ^~~~~~~
+./csbadsdfix.svx:4:5: error: Unknown coordinate system
+ *cs ERSI:1234
+     ^~~~~~~~~
+./csbadsdfix.svx:5:5: error: Unknown coordinate system
+ *cs EUR79Z31
+     ^~~~~~~~
+./csbadsdfix.svx:6:11: error: End of line not blank
+ *cs IJTSK 03
+           ^~
+./csbadsdfix.svx:7:5: error: Unknown coordinate system
+ *cs IJTSK04
+     ^~~~~~~
+./csbadsdfix.svx:8:5: error: Unknown coordinate system
+ *cs IJTSK99
+     ^~~~~~~
+./csbadsdfix.svx:9:5: error: Unknown coordinate system
+ *cs IJTSK3
+     ^~~~~~
+./csbadsdfix.svx:10:5: error: Unknown coordinate system
+ *cs IJTSK032
+     ^~~~~~~~
+./csbadsdfix.svx:11:5: error: Unknown coordinate system
+ *cs IJTSK03a
+     ^~~~~~~~
+./csbadsdfix.svx:12:5: error: Unknown coordinate system
+ *cs lat-lat
+     ^~~~~~~
+./csbadsdfix.svx:13:5: error: Unknown coordinate system
+ *cs Long-LONG
+     ^~~~~~~~~
+./csbadsdfix.svx:14:5: error: Unknown coordinate system
+ *cs OSGB:ZZ
+     ^~~~~~~
+./csbadsdfix.svx:15:5: error: Unknown coordinate system
+ *cs OSGB:HI
+     ^~~~~~~
+./csbadsdfix.svx:16:5: error: Unknown coordinate system
+ *cs S-LONG
+     ^~~~~~
+./csbadsdfix.svx:17:5: error: Unknown coordinate system
+ *cs UTM0
+     ^~~~
+./csbadsdfix.svx:18:5: error: Unknown coordinate system
+ *cs UTM61N
+     ^~~~~~
+./csbadsdfix.svx:19:5: error: Unknown coordinate system
+ *cs UTM61S
+     ^~~~~~
+./csbadsdfix.svx:20:12: error: Invalid coordinate system: unknown projection id
+ *cs custom "+proj=ection"
+            ^~~~~~~~~~~~~~
+./csbadsdfix.svx:21:9: error: Unknown coordinate system
+ *cs out lat-long
+         ^~~~~~~~
+./csbadsdfix.svx:22:9: error: Coordinate system unsuitable for output
+ *cs out long-lat
+         ^~~~~~~~
+./csbadsdfix.svx:23:9: error: Coordinate system unsuitable for output
+ *cs out jtsk
+         ^~~~
+./csbadsdfix.svx:24:9: error: Coordinate system unsuitable for output
+ *cs out jtsk03
+         ^~~~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 23 error(s) - no output files produced.

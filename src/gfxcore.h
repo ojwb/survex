@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2016,2017,2018 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -52,13 +52,13 @@ class MovieMaker;
 
 class PresentationMark : public Point {
   public:
-    Double angle, tilt_angle;
-    Double scale;
-    Double time;
-    PresentationMark() : Point(), angle(0), tilt_angle(0), scale(0), time(0)
+    double angle = 0.0, tilt_angle = 0.0;
+    double scale = 0.0;
+    double time = 0.0;
+    PresentationMark() : Point()
 	{ }
-    PresentationMark(const Vector3 & v, Double angle_, Double tilt_angle_,
-		     Double scale_, Double time_ = 0)
+    PresentationMark(const Vector3 & v, double angle_, double tilt_angle_,
+		     double scale_, double time_ = 0)
 	: Point(v), angle(angle_), tilt_angle(tilt_angle_), scale(scale_),
 	  time(time_)
 	{ }
@@ -127,9 +127,9 @@ struct Split {
 const int MAX_FRAMERATE = 50;
 
 class GfxCore : public GLACanvas {
-    Double m_Scale;
-    Double initial_scale;
-    int m_ScaleBarWidth;
+    double m_Scale = 0.0;
+    double initial_scale = 1.0;
+    int m_ScaleBarWidth = 0;
 
     typedef enum {
 	LIST_COMPASS,
@@ -150,6 +150,7 @@ class GfxCore : public GLACanvas {
 	LIST_GRID,
 	LIST_SHADOW,
 	LIST_TERRAIN,
+	LIST_OVERLAYS,
 	LIST_LIMIT_ // Leave this last.
     } drawing_list;
 
@@ -183,74 +184,74 @@ public:
 
 private:
     GUIControl* m_Control;
-    char* m_LabelGrid;
+    char* m_LabelGrid = nullptr;
     MainFrm* m_Parent;
-    bool m_DoneFirstShow;
-    Double m_TiltAngle;
-    Double m_PanAngle;
-    bool m_Rotating;
-    Double m_RotationStep;
-    int m_SwitchingTo;
-    bool m_Crosses;
-    bool m_Legs;
-    int m_Splays;
-    int m_Dupes;
-    bool m_Names;
-    bool m_Scalebar;
-    bool m_ColourKey;
-    bool m_OverlappingNames;
-    bool m_Compass;
-    bool m_Clino;
-    bool m_Tubes;
-    int m_ColourBy;
+    bool m_DoneFirstShow = false;
+    double m_TiltAngle = 0.0;
+    double m_PanAngle = 0.0;
+    bool m_Rotating = false;
+    double m_RotationStep = 0.0;
+    int m_SwitchingTo = 0;
+    bool m_Crosses = false;
+    bool m_Legs = true;
+    int m_Splays = SHOW_FADED;
+    int m_Dupes = SHOW_DASHED;
+    bool m_Names = false;
+    bool m_Scalebar = true;
+    bool m_ColourKey = true;
+    bool m_OverlappingNames = false;
+    bool m_Compass = true;
+    bool m_Clino = true;
+    bool m_Tubes = false;
+    int m_ColourBy = COLOUR_BY_DEPTH;
     int error_type;
 
-    bool m_HaveData;
-    bool m_HaveTerrain;
-    bool m_MouseOutsideCompass;
-    bool m_MouseOutsideElev;
-    bool m_Surface;
-    bool m_Entrances;
-    bool m_FixedPts;
-    bool m_ExportedPts;
-    bool m_Grid;
-    bool m_BoundingBox;
-    bool m_Terrain;
+    bool m_HaveData = false;
+    bool m_HaveTerrain = true;
+    bool m_MouseOutsideCompass = false;
+    bool m_MouseOutsideElev = false;
+    bool m_Surface = false;
+    bool m_Entrances = false;
+    bool m_FixedPts = false;
+    bool m_ExportedPts = false;
+    bool m_Grid = false;
+    bool m_BoundingBox = false;
+    bool m_Terrain = false;
 
-    bool m_Degrees;
-    bool m_Metric;
-    bool m_Percent;
+    bool m_Degrees = false;
+    bool m_Metric = false;
+    bool m_Percent = false;
 
-    bool m_HitTestDebug;
-    bool m_RenderStats;
+    bool m_HitTestDebug = false;
+    bool m_RenderStats = false;
 
-    list<LabelInfo*> *m_PointGrid;
-    bool m_HitTestGridValid;
+    list<LabelInfo*> *m_PointGrid = nullptr;
+    bool m_HitTestGridValid = false;
 
     LabelInfo temp_here;
-    const LabelInfo * m_here;
-    const LabelInfo * m_there;
+    const LabelInfo * m_here = nullptr;
+    const LabelInfo * m_there = nullptr;
     wxString highlighted_survey;
 
     wxStopWatch timer;
     long base_tilt_time;
     long base_pan_time;
-    Double base_tilt;
-    Double base_pan;
+    double base_tilt;
+    double base_pan;
 
     GLAPen m_Pens[NUM_COLOUR_BANDS + 1];
 
 #define PLAYING 1
-    int presentation_mode; // for now, 0 => off, PLAYING => continuous play
-    bool pres_reverse;
-    double pres_speed;
+    int presentation_mode = 0; // for now, 0 => off, PLAYING => continuous play
+    bool pres_reverse = false;
+    double pres_speed = 0.0;
     PresentationMark next_mark;
     double next_mark_time;
     double this_mark_total;
 
-    MovieMaker * movie;
+    MovieMaker * movie = nullptr;
 
-    cursor current_cursor;
+    cursor current_cursor = GfxCore::CURSOR_DEFAULT;
 
     int sqrd_measure_threshold;
 
@@ -266,32 +267,32 @@ private:
     Vector3 offsets;
 
     // DEM:
-    unsigned short * dem;
+    unsigned short * dem = nullptr;
     unsigned long dem_width, dem_height;
     double o_x, o_y, step_x, step_y;
     long nodata_value;
     bool bigendian;
-    long last_time;
-    size_t n_tris;
+    long last_time = 0;
+    size_t n_tris = 0;
 
-    void PlaceVertexWithColour(const Vector3 &v, Double factor = 1.0);
+    void PlaceVertexWithColour(const Vector3 &v, double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v,
 			       glaTexCoord tex_x, glaTexCoord tex_y,
-			       Double factor);
-    void SetDepthColour(Double z, Double factor);
-    void PlaceVertexWithDepthColour(const Vector3 & v, Double factor = 1.0);
+			       double factor);
+    void SetDepthColour(double z, double factor);
+    void PlaceVertexWithDepthColour(const Vector3 & v, double factor = 1.0);
     void PlaceVertexWithDepthColour(const Vector3 & v,
 				    glaTexCoord tex_x, glaTexCoord tex_y,
-				    Double factor);
+				    double factor);
 
-    void SetColourFrom01(double how_far, Double factor);
+    void SetColourFrom01(double how_far, double factor);
 
-    void SetColourFromDate(int date, Double factor);
-    void SetColourFromError(double E, Double factor);
-    void SetColourFromGradient(double angle, Double factor);
-    void SetColourFromLength(double len, Double factor);
+    void SetColourFromDate(int date, double factor);
+    void SetColourFromError(double E, double factor);
+    void SetColourFromGradient(double angle, double factor);
+    void SetColourFromLength(double len, double factor);
     void SetColourFromSurvey(const wxString& survey);
-    void SetColourFromSurveyStation(const wxString& survey, Double factor);
+    void SetColourFromSurveyStation(const wxString& survey, double factor);
 
     int GetClinoOffset() const;
     void DrawTick(int angle_cw);
@@ -313,7 +314,7 @@ private:
     void FirstShow();
 
     void DrawScaleBar();
-    void DrawColourKey(int num_bands, const wxString & other, const wxString & units);
+    void DrawColourKey(int num_bands, const wxString & other);
     void DrawDepthKey();
     void DrawDateKey();
     void DrawErrorKey();
@@ -386,24 +387,24 @@ public:
     void CentreOn(const Point &p);
 
     void TranslateCave(int dx, int dy);
-    void TiltCave(Double tilt_angle);
-    void TurnCave(Double angle);
-    void TurnCaveTo(Double angle);
+    void TiltCave(double tilt_angle);
+    void TurnCave(double angle);
+    void TurnCaveTo(double angle);
 
     void OnPaint(wxPaintEvent&);
     void OnSize(wxSizeEvent& event);
     void OnIdle(wxIdleEvent& event);
 
-    void OnMouseMove(wxMouseEvent& event) { m_Control->OnMouseMove(event); }
+    void OnMouseMove(wxMouseEvent& event) { ScaleMouseEvent(event); m_Control->OnMouseMove(event); }
     void OnLeaveWindow(wxMouseEvent& event);
 
-    void OnLButtonDown(wxMouseEvent& event) { SetFocus(); m_Control->OnLButtonDown(event); }
-    void OnLButtonUp(wxMouseEvent& event) { m_Control->OnLButtonUp(event); }
-    void OnMButtonDown(wxMouseEvent& event) { SetFocus(); m_Control->OnMButtonDown(event); }
-    void OnMButtonUp(wxMouseEvent& event) { m_Control->OnMButtonUp(event); }
-    void OnRButtonDown(wxMouseEvent& event) { SetFocus(); m_Control->OnRButtonDown(event); }
-    void OnRButtonUp(wxMouseEvent& event) { m_Control->OnRButtonUp(event); }
-    void OnMouseWheel(wxMouseEvent& event) { SetFocus(); m_Control->OnMouseWheel(event); }
+    void OnLButtonDown(wxMouseEvent& event) { ScaleMouseEvent(event); SetFocus(); m_Control->OnLButtonDown(event); }
+    void OnLButtonUp(wxMouseEvent& event) { ScaleMouseEvent(event); m_Control->OnLButtonUp(event); }
+    void OnMButtonDown(wxMouseEvent& event) { ScaleMouseEvent(event); SetFocus(); m_Control->OnMButtonDown(event); }
+    void OnMButtonUp(wxMouseEvent& event) { ScaleMouseEvent(event); m_Control->OnMButtonUp(event); }
+    void OnRButtonDown(wxMouseEvent& event) { ScaleMouseEvent(event); SetFocus(); m_Control->OnRButtonDown(event); }
+    void OnRButtonUp(wxMouseEvent& event) { ScaleMouseEvent(event); m_Control->OnRButtonUp(event); }
+    void OnMouseWheel(wxMouseEvent& event) { ScaleMouseEvent(event); SetFocus(); m_Control->OnMouseWheel(event); }
     void OnKeyPress(wxKeyEvent &event) { m_Control->OnKeyPress(event); }
 
     void Animate();
@@ -441,7 +442,7 @@ public:
     void SwitchToElevation();
     void SwitchToPlan();
 
-    void SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Double zmin, Double zmax);
+    void SetViewTo(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
 
     double GetCompassValue() const { return m_PanAngle; }
     bool ShowingPlan() const;
@@ -460,7 +461,7 @@ public:
     bool HasDateInformation() const;
 
     double GetScale() const { return m_Scale; }
-    void SetScale(Double scale);
+    void SetScale(double scale);
 
     bool ShowingStationNames() const { return m_Names; }
     bool ShowingOverlappingNames() const { return m_OverlappingNames; }
@@ -583,14 +584,14 @@ public:
 
     void SplitLineAcrossBands(int band, int band2,
 			      const Vector3 &p, const Vector3 &q,
-			      Double factor = 1.0);
+			      double factor = 1.0);
     void SplitPolyAcrossBands(vector<vector<Split>>& splits,
 			      int band, int band2,
 			      const Vector3 &p, const Vector3 &q,
 			      glaTexCoord ptx, glaTexCoord pty,
 			      glaTexCoord w, glaTexCoord h);
-    int GetDepthColour(Double z) const;
-    Double GetDepthBoundaryBetweenBands(int a, int b) const;
+    int GetDepthColour(double z) const;
+    double GetDepthBoundaryBetweenBands(int a, int b) const;
     void AddPolyline(const traverse & centreline);
     void AddPolylineDepth(const traverse & centreline);
     void AddPolylineDate(const traverse & centreline);
@@ -654,10 +655,16 @@ public:
 
     void ZoomBoxGo();
 
+    void DrawOverlays();
+
     void parse_hgt_filename(const wxString & lc_name);
     size_t parse_hdr(wxInputStream & is, unsigned long & skipbytes);
     bool read_bil(wxInputStream & is, size_t size, unsigned long skipbytes);
     bool LoadDEM(const wxString & file);
+
+    void InvalidateOverlays() {
+	InvalidateList(LIST_OVERLAYS);
+    }
 
 private:
     DECLARE_EVENT_TABLE()

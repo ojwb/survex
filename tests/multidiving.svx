@@ -1,4 +1,4 @@
-; pos=yes warn=0
+; pos=yes warn=1
 *fix 1 0 0 0
 *data diving station depth newline tape compass
 1 0.0
@@ -14,3 +14,5 @@
   ; testing
   1.00 270
 5 1.0
+  0.99 000
+6 2.0

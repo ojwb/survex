@@ -17,11 +17,11 @@
  *units Anemometer Knots
         ^~~~~~~~~~
 ./badunits.svx:10:16: error: End of line not blank
- *units DEFault MeterS
-                ^
+ *units DEFault MeterS ; comment
+                ^~~~~~
 ./badunits.svx:11:16: error: End of line not blank
  *units DEFault 1.0 MeterS
-                ^
+                ^~~~~~~~~~
 ./badunits.svx:12:13: error: Unknown units "DEFault"
  *units Tape DEFault MeterS
              ^~~~~~~
@@ -30,13 +30,19 @@
              ^~~~~~~
 ./badunits.svx:14:16: error: End of line not blank
  *units DEFault Tape
-                ^
+                ^~~~
 ./badunits.svx:15:16: error: End of line not blank
  *units DEFault Tape Feet
-                ^
+                ^~~~~~~~~
 ./badunits.svx:17:13: error: Invalid units "degrees" for quantity
  *units left degrees
              ^~~~~~~
+./badunits.svx:18:15: error: Unknown units "metres2"
+ *units length metres2
+               ^~~~~~~
+./badunits.svx:19:15: error: Unknown units "br0ken"
+ *units length br0ken
+               ^~~~~~
 
 Removing trailing traverses...
 
@@ -54,8 +60,8 @@ Calculating statistics...
 
 Survey contains 1 survey station, joined by 0 legs.
 There are 0 loops.
-Total length of survey legs =    0.00ft (   0.00ft adjusted)
-Total plan length of survey legs =    0.00ft
-Total vertical length of survey legs =    0.00ft
+Total length of survey legs =    0.00' (   0.00' adjusted)
+Total plan length of survey legs =    0.00'
+Total vertical length of survey legs =    0.00'
    1 0-node.
-There were 0 warning(s) and 13 error(s) - no output files produced.
+There were 0 warning(s) and 15 error(s) - no output files produced.

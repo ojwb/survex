@@ -1,5 +1,5 @@
 /* img.h
- * Header file for routines to read and write processed survey data files
+ * Routines for reading and writing processed survey data files
  *
  * These routines support reading processed survey data in a variety of formats
  * - currently:
@@ -7,11 +7,12 @@
  * - Survex ".3d" image files
  * - Survex ".pos" files
  * - Compass Plot files (".plt" and ".plf")
- * - CMAP XYZ files (".sht", ".adj", ".una", ".xyz")
+ * - CMAP XYZ files (".sht", ".adj", ".una"; ".xyz" also recognised though
+ *   it seems this is a misunderstanding)
  *
  * Writing Survex ".3d" image files is supported.
  *
- * Copyright (C) Olly Betts 1993,1994,1997,2001,2002,2003,2004,2005,2006,2010,2011,2012,2013,2014,2016,2018
+ * Copyright (C) Olly Betts 1993-2024
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +82,7 @@ extern "C" {
 
 /* File-wide flags */
 # define img_FFLAG_EXTENDED 0x80
+# define img_FFLAG_SEPARATOR(CH) (((((int)CH) & 0xff) << 9) | 0x100)
 
 /* When writing img_XSECT, img_XFLAG_END in pimg->flags means this is the last
  * img_XSECT in this tube:
@@ -104,8 +106,11 @@ typedef struct {
    char *label;
    int flags;
    char *title;
-   /* If the coordinate system was specified, this contains a PROJ4 string
-    * describing it.  If not, this member will be NULL.
+   /* This contains a string describing the coordinate system which the data is
+    * in, suitable for passing to PROJ.  For a coordinate system with an EPSG
+    * code this will typically be "EPSG:" followed by the code number.
+    *
+    * If no coordinate system was specified then this member will be NULL.
     */
    char *cs;
    /* Older .3d format versions stored a human readable datestamp string.
@@ -168,10 +173,10 @@ typedef struct {
    int fRead;        /* 1 for reading, 0 for writing */
    long start;
    /* version of file format:
-    *  -4 => CMAP .xyz file, shot format
-    *  -3 => CMAP .xyz file, station format
-    *  -2 => Compass .plt file
-    *  -1 => .pos file
+    *  IMG_VERSION_CMAP_SHOT => CMAP XYZ file, shot variant (.sht)
+    *  IMG_VERSION_CMAP_STATION => CMAP XYZ file, station variant (.adj, .una)
+    *  IMG_VERSION_COMPASS_PLT => Compass .plt file
+    *  IMG_VERSION_SURVEX_POS => .pos file
     *   0 => 0.01 ascii
     *   1 => 0.01 binary,
     *   2 => byte actions and flags
@@ -185,7 +190,9 @@ typedef struct {
    int version;
    char *survey;
    size_t survey_len;
-   int pending; /* for old style text format files and survey filtering */
+   /* Used to track state in various ways depending on the format, and also for
+    * filtering by survey. */
+   int pending;
    img_point mv;
 #if IMG_API_VERSION == 0
    time_t olddate1, olddate2;
@@ -193,7 +200,18 @@ typedef struct {
    int olddays1, olddays2;
 #endif
    int oldstyle;
+   /* Pointer to extra data reading some formats requires. */
+   void *data;
 } img;
+
+/* Fake "version numbers" for non-3d formats we can read, used in
+ * the version member of the img struct.  These are not valid in
+ * img_output_version.
+ */
+#define IMG_VERSION_CMAP_SHOT		-4
+#define IMG_VERSION_CMAP_STATION	-3
+#define IMG_VERSION_COMPASS_PLT		-2
+#define IMG_VERSION_SURVEX_POS		-1
 
 /* Which version of the file format to output (defaults to newest) */
 extern unsigned int img_output_version;
@@ -290,11 +308,17 @@ img *img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
  *
  * title is the title
  *
- * cs is a PROJ4 string describing the coordinate system (or NULL to not
- * specify a coordinate system).
+ * cs is a string describing the coordinate system, suitable for passing to
+ * PROJ (or NULL to not specify a coordinate system).  For a coordinate system
+ * with an assigned EPSG code number, "EPSG:" followed by the code number is
+ * the recommended way to specify this.
  *
- * flags contains a bitwise-or of any file-wide flags - currently only one
- * is available: img_FFLAG_EXTENDED.
+ * flags contains a bitwise-or of any file-wide flags - currently these are
+ * available:
+ *
+ * img_FFLAG_EXTENDED : this is an extended elevation
+ * img_FFLAG_SEPARATOR(CHARACTER) : specify the separator character
+ *		(default: '.')
  *
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details)
@@ -314,11 +338,17 @@ img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
  *
  * title is the title
  *
- * cs is a PROJ4 string describing the coordinate system (or NULL to not
- * specify a coordinate system).
+ * cs is a string describing the coordinate system, suitable for passing to
+ * PROJ (or NULL to not specify a coordinate system).  For a coordinate system
+ * with an EPSG, "EPSG:" followed by the code number is the recommended way
+ * to specify this.
  *
- * flags contains a bitwise-or of any file-wide flags - currently only one
- * is available: img_FFLAG_EXTENDED.
+ * flags contains a bitwise-or of any file-wide flags - currently these are
+ * available:
+ *
+ * img_FFLAG_EXTENDED : this is an extended elevation
+ * img_FFLAG_SEPARATOR(CHARACTER) : specify the separator character
+ *		(default: '.')
  *
  * Returns pointer to an img struct or NULL for error (check img_error()
  * for details).  Any close function specified is called on error (unless
@@ -405,6 +435,69 @@ typedef enum {
  * then you can call this function to discover why.
  */
 img_errcode img_error(void);
+
+/* Datum codes returned by img_parse_compass_datum_string().
+ *
+ * We currently don't handle the following, which appear in the datum list
+ * in Compass, but there don't seem to be any EPSG codes for UTM with any
+ * of these:
+ *
+ *   Australian 1966
+ *   Australian 1984
+ *   Camp Area Astro (Antarctica only)
+ *   European 1979
+ *   Hong Kong 1963
+ *   Oman
+ *   Ordnance Survey 1936
+ *   Pulkovo 1942
+ *   South American 1956
+ *   South American 1969
+ */
+typedef enum {
+    img_DATUM_UNKNOWN = 0,
+    img_DATUM_ADINDAN,
+    img_DATUM_ARC1950,
+    img_DATUM_ARC1960,
+    img_DATUM_CAPE,
+    img_DATUM_EUROPEAN1950,
+    img_DATUM_NZGD49,
+    img_DATUM_HUTZUSHAN1950,
+    img_DATUM_INDIAN1960,
+    img_DATUM_NAD27,
+    img_DATUM_NAD83,
+    img_DATUM_TOKYO,
+    img_DATUM_WGS72,
+    img_DATUM_WGS84
+} img_datum;
+
+/* Parse a Compass datum string and return an img_datum code. */
+img_datum img_parse_compass_datum_string(const char *s, size_t len);
+
+/* Return a CRS string to pass to PROJ from an img_datum and UTM zone.
+ *
+ * utm_zone can be between -60 and -1 (Southern Hemisphere), or 1 and 60
+ * (Northern Hemisphere).
+ *
+ * Where possible a string of the form "EPSG:1234" is returned.
+ *
+ * Example Compass files we've seen use "North American 1927" outside of where
+ * its defined for use, presumably because some users fail to change the datum
+ * from Compass' default.  To enable reading such files we return a PROJ4
+ * string of the form "+proj=utm ..." for "North American 1927" and "North
+ * American 1983" for UTM zones which don't have an EPSG code.
+ *
+ * If no mapping is known NULL is returned.
+ *
+ * The returned value is allocated with malloc() and the caller is responsible
+ * for calling free().
+ */
+char *img_compass_utm_proj_str(img_datum datum, int utm_zone);
+
+/* Return EPSG code for geodetic CRS (i.e. long/lat) with datum img_datum.
+ *
+ * Returns -1 for img_DATUM_UNKNOWN.
+ */
+int img_compass_longlat_epsg_code(img_datum datum);
 
 #ifdef __cplusplus
 }

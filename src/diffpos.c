@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,6 +30,7 @@
 #include "hash.h"
 #include "img_hosted.h"
 #include "namecmp.h"
+#include "osalloc.h"
 #include "useful.h"
 
 /* Don't complain if values mismatch by a tiny amount (1e-6m i.e. 0.001mm) */
@@ -54,8 +53,8 @@ static const struct option long_opts[] = {
 
 static struct help_msg help[] = {
 /*				<-- */
-   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0},
-   {0, 0, 0}
+   {HLP_ENCODELONG(0),        /*only load the sub-survey with this prefix*/199, 0, 0},
+   {0, 0, 0, 0}
 };
 
 /* We use a hashtable with linked list buckets - this is how many hash table
@@ -82,7 +81,7 @@ cmp_pname(const void *a, const void *b)
 }
 
 static station **htab;
-static bool fChanged = fFalse;
+static bool fChanged = false;
 
 static added *added_list = NULL;
 static OSSIZE_T c_added = 0;
@@ -126,7 +125,7 @@ tree_remove(const char *name, const img_point *pt)
    station **prev;
    station *p;
    station **found = NULL;
-   bool was_close_enough = fFalse;
+   bool was_close_enough = false;
 
    for (prev = &htab[v]; *prev; prev = &((*prev)->next)) {
       if (strcmp((*prev)->name, name) == 0) {
@@ -137,7 +136,7 @@ tree_remove(const char *name, const img_point *pt)
 	  */
 	 if (close_enough(pt, &((*prev)->pt))) {
 	    found = prev;
-	    was_close_enough = fTrue;
+	    was_close_enough = true;
 	 } else if (!was_close_enough) {
 	    found = prev;
 	 }
@@ -150,7 +149,7 @@ tree_remove(const char *name, const img_point *pt)
       add->next = added_list;
       added_list = add;
       c_added++;
-      fChanged = fTrue;
+      fChanged = true;
       return;
    }
 
@@ -162,7 +161,7 @@ tree_remove(const char *name, const img_point *pt)
 	     pt->z - (*found)->pt.z,
 	     name);
       putnl();
-      fChanged = fTrue;
+      fChanged = true;
    }
 
    osfree((*found)->name);
@@ -219,7 +218,7 @@ tree_check(void)
       printf(msg(/*Deleted: %s*/502), names[i]);
       putnl();
    }
-   return fTrue;
+   return true;
 }
 
 static int

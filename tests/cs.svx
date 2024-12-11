@@ -15,8 +15,15 @@
 *cs UTM1
 *cs UTM12N
 *cs UTM60S
-*cs custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
 *cs out custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
+
+; Reported as failing on Microsoft Windows with 1.4.6 (but not 1.4.5) with:
+; error: Invalid coordinate system: Unknown error (code 2) *cs EPSG:3912
+; error: Invalid coordinate system: Unknown error (code 2) *cs out EPSG:3912
+*cs EPSG:3912
+*cs out EPSG:3912
+
+*cs custom "+proj=tmerc +lat_0=0 +lon_0=13d20 +k=1 +x_0=0 +y_0=-5200000 +ellps=bessel +towgs84=577.326,90.129,463.919,5.137,1.474,5.297,2.4232"
 *cs out EUR79Z30
 *cs out IJTSK
 *cs out IJTSK03
@@ -29,4 +36,4 @@
 *fix 1 reference 36000 83000 1600
 ; regression test - until 1.2.21, *fix with sds ignored the coordinate system
 *cs UTM33N
-*fix 2 reference 410848.11 5281938.82 1646.82 10 10 30
+*fix 2 reference 410848.11 5281938.82 1600.00 10 10 30

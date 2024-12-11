@@ -1,54 +1,14 @@
 /* config.h.in.  Process with miniam.pl to produce config.h */
 
-/* Define to empty if the keyword does not work.  */
-/* #undef const */
-
-/* Define if you don't have vprintf but do have _doprnt.  */
-#undef HAVE_DOPRNT
-
-/* Define if you have the strftime function.  */
-#define HAVE_STRFTIME 1
-
-/* Define if you have the vprintf function.  */
-#define HAVE_VPRINTF 1
-
-/* Define to `unsigned' if <sys/types.h> doesn't define.  */
-/* #undef size_t */
-
-/* Define if you have the ANSI C header files.  */
-#define STDC_HEADERS
-
-/* Define if your <sys/time.h> declares struct tm.  */
-#undef TM_IN_SYS_TIME
-
 /* Define if your processor stores words with the most significant
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
-
-/* Define if the X Window System is missing or not being used.  */
-#define X_DISPLAY_MISSING
 
 /* copyright message */
 #define COPYRIGHT_MSG "@COPYRIGHT_MSG@"
 
 /* Copyright Message for Aven */
 #define AVEN_COPYRIGHT_MSG "@AVEN_COPYRIGHT_MSG@"
-
-#if _MSC_VER >= 1600
-# include <stdint.h>
-#else
-/* signed 16 bit integer type */
-typedef __int16 int16_t;
-
-/* signed 32 bit integer type */
-typedef __int32 int32_t;
-#endif
-
-/* strcasecmp define for systems which call it something else */
-#define strcasecmp stricmp
-
-/* Define if you have the difftime function.  */
-#define HAVE_DIFFTIME 1
 
 /* Define if you have the mktime function.  */
 #define HAVE_MKTIME 1
@@ -58,9 +18,6 @@ typedef __int32 int32_t;
 
 /* Define if you have the popen function.  */
 #define HAVE_POPEN 1
-
-/* Define if you have the <setjmp.h> header file.  */
-#define HAVE_SETJMP_H 1
 
 /* Define if you have the strdup function.  */
 #define HAVE_STRDUP 1
@@ -77,20 +34,11 @@ typedef __int32 int32_t;
 /* Define to 1 if you have the `hypot' function. */
 #define HAVE_HYPOT 1
 
-/* Define if you have the <limits.h> header file.  */
-#define HAVE_LIMITS_H 1
-
 /* Define if you have the <string.h> header file.  */
 #define HAVE_STRING_H 1
 
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM
-
-/* Use far in various declarations and definitions. */
-#undef HAVE_FAR_POINTERS
-
-/* Use img routines in a hosted way (i.e. they can use other survex code). */
-#define IMG_HOSTED 1
 
 /* Name of package */
 #define PACKAGE "@PACKAGE@"

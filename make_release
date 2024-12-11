@@ -11,16 +11,6 @@ if test x"$1" = x-t ; then
 fi
 
 if test x"$rel" = xyes ; then
-  cd src
-  perl -e 'while (<>) { if (m!(.*)//! && $1 !~ / \* /) {print "$ARGV:$.:// comment in C source\n"; exit 1}} continue { close ARGV if eof }' \
-      *.c \
-      cavern.h commands.h cmdline.h date.h datain.h debug.h\
-      filelist.h filename.h getopt.h hash.h img.c img.h img_hosted.h\
-      listpos.h matrix.h message.h namecmp.h netartic.h netbits.h\
-      netskel.h network.h osalloc.h osdepend.h ostypes.h out.h readval.h str.h\
-      useful.h validate.h whichos.h
-  cd ..
-
   # Check there are no uncommitted changes.
   if git commit -a --dry-run >/dev/null 2>/dev/null ; then
     echo 'There are uncommitted changes - please rectify'
@@ -42,64 +32,6 @@ else
   make dist
 fi
 
-# Perform mingw build on a clean unpacked source tree from the release tarball
-# so that (a) we don't need to "make distclean" on the source tree and (b) we
-# ensure that any files required to build the mingw version and installer
-# package are actually shipped in the source tarball.
-tarball=`ls -1t survex-1*.tar.gz|head -n1`
-tardir=`basename "$tarball" .tar.gz`
-rm -rf "$tardir"
-tar xf "$tarball"
-cd "$tardir"
-
-test -n "$build_platform" || build_platform=`sh config.guess`
-SAVE_PATH=$PATH
-for wxc in \
-  /usr/i686-w64-mingw32/lib/wx/config/i686-w64-mingw32-msw-unicode-static-3.0 \
-  /usr/i586-mingw32msvc/lib/wx/config/i586-mingw32msvc-msw-unicode-static-3.0 \
-  "" ; do
-  if test -z "$wxc" ; then
-    echo "wx-config for mingw not found" >&2
-    exit 1
-  fi
-  if test -x "$wxc" ; then
-    CC=`$wxc --cc`
-    CXX=`$wxc --cxx`
-    break
-  fi
-done
-host=mingw
-case $CC in
-  *i686-w64-mingw32-gcc)
-    # debian mingw package
-    host=i686-w64-mingw32
-    ;;
-  *i586-mingw32msvc-gcc)
-    # debian mingw32 package
-    host=i586-mingw32msvc
-    ;;
-  *i386-mingw32msvc-gcc)
-    # debian mingw32 package
-    host=i386-mingw32msvc
-    ;;
-esac
-PATH=/usr/$host/bin:$PATH
-
-# Passing -Werror to configure causes AC_CHECK_FUNCS to fail, so pass it to
-# make instead.
-cross_pkg_config_path=`echo "$wxc"|sed 's,/lib/.*,/lib/pkgconfig,'`
-PKG_CONFIG_PATH=$cross_pkg_config_path \
-PKG_CONFIG_LIBDIR=$cross_pkg_config_path \
-  ./configure --host="$host" --build="$build_platform" WX_CONFIG="$wxc" \
-      CC="$CC" CXX="$CXX" CXXFLAGS="-g -O2 -fno-strict-aliasing -Werror" \
-      LDFLAGS='-s -static'
-make CFLAGS='-g -O2 -Werror'
-make mingw_iss
-PATH=$SAVE_PATH
-
-mv survex-win32-*.exe ..
-cd ..
-
 if test x"$rel" = xyes ; then
   rm -rf "$tardir"
 else
@@ -107,7 +39,22 @@ else
 fi
 
 VERSION=`sed 's/^VERSION *= *//p;d' Makefile`
-FILES="survex-$VERSION.tar.gz survex-win32-$VERSION.exe"
+HOST=thyestes.tartarus.org
+
+echo 'Tagging'
+git tag -s -m"Survex $VERSION" "v$VERSION"
+
+echo 'Pushing'
+git push --follow-tags
+ssh "$HOST" bin/survex-git-mirror
+
+msw=survex-microsoft-windows-$VERSION.exe
+echo "Download CI built microsoft-windows-installer.zip and unzip"
+echo "putting $msw into `pwd`"
+
+while test ! -f "$msw" ; do sleep 1 ; done
+
+FILES="survex-$VERSION.tar.gz $msw"
 echo "SHA256 checksums:"
 sha256sum $FILES
 echo
@@ -117,9 +64,7 @@ for f in $FILES ; do
     FILES="$FILES $f.asc"
 done
 
-echo "To tag this release and upload it to the webserver, run:"
-echo git tag -s -m"'Survex $VERSION'" "$VERSION"
+echo "To upload to the webserver, run:"
 
-HOST=thyestes.tartarus.org
 echo ssh "$HOST" mkdir /srv/www/survex.com/software/"$VERSION"
 echo scp $FILES "$HOST":/srv/www/survex.com/software/"$VERSION"

@@ -1,0 +1,21 @@
+; pos=yes warn=0
+; Based on reduced testcase posted by Patrick Warren to the mailing list.
+;
+; The input coordinate system has been changed from OSGB:SD as that was giving
+; different output on Linux and macOS depending whether the datum grid is
+; installed.
+;
+; The convergence value was 90-v instead of v with PROJ < 9.3.0.  Survex 1.4.6
+; works around the problem.
+;
+; Also if *cs out was after *declination auto a grid convergence of 0 degrees
+; was used - Survex 1.4.6 calculates the convergence lazily which happens when
+; we read a compass reading, and gives an error if the output coordinate system
+; hasn't been set by then.
+*cs EPSG:25830
+*declination auto 562696.24 6000557.63 225
+*cs out EPSG:3042
+*date 2005.12.15
+*fix 1 562696.24 6000557.63 225
+*data normal from to tape compass clino
+1 2 25.0 000 0 ; due north, magnetic

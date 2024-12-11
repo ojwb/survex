@@ -1,6 +1,6 @@
 /* readval.h
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2003,2005,2010,2012,2013 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "datain.h"
+
 extern int root_depr_count;
 
 enum {
-    /* Can the prefix be omitted? */
+    /* Can the prefix be omitted?  If it is, read_prefix() returns NULL. */
     PFX_OPT = 1,
     /* Read a survey? */
     PFX_SURVEY = 2,
@@ -32,20 +34,37 @@ enum {
     PFX_WARN_SEPARATOR = 16,
     /* Anonymous stations OK? */
     PFX_ANON = 32,
-    /* */
-    PFX_NEW = 64,
     /* Read a station? */
     PFX_STATION = 0
 };
 
 prefix *read_prefix(unsigned flags);
 
+// Read a sequence of NAMES characters.  Returns NULL if none.
+// Caller is responsible for calling osfree() on the returned value.
+char *read_walls_prefix(void);
+
+prefix *read_walls_station(char * const walls_prefix[3],
+			   bool anon_allowed,
+			   bool *p_new);
+
+// Like read_numeric() but doesn't skipblanks() first and can be told to not
+// allow a sign.
+real read_number(bool f_optional, bool f_unsigned);
+
+real read_quadrant(bool f_optional);
+
 real read_numeric(bool f_optional);
 real read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches, int *p_n_readings);
 real read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings);
 
+/* Don't skip blanks, variable error code */
+unsigned int read_uint_raw(int errmsg, const filepos *fp);
+
 unsigned int read_uint(void);
 
-void read_string(char **pstr, int *plen);
+int read_int(int min_val, int max_val);
 
-void read_date(int *py, int *pm, int *pd);
+void read_string(string *pstr);
+
+void read_walls_srv_date(int *py, int *pm, int *pd);

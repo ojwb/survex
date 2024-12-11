@@ -1,0 +1,318 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push, or for pull requests against master
+  push:
+    branches:
+      - '**'
+    # Only build release tags.
+    tags:
+      - v*
+    paths-ignore:
+      - NEWS
+  pull_request:
+    branches: [ master ]
+    paths-ignore:
+      - NEWS
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  makedist:
+    # Need 24.04 for netpbm with pamtowinicon
+    runs-on: 'ubuntu-24.04'
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+      with:
+        show-progress: false
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            gettext \
+            libwxgtk3.2-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libgdal-dev \
+            libproj-dev \
+            libswscale-dev \
+            ghostscript \
+            inkscape \
+            netpbm \
+            liblocale-po-perl \
+            unifont \
+            python3-sphinx \
+            latexmk \
+            texlive-latex-extra \
+            tex-gyre \
+            w3m
+    - name: bootstrap source tree
+      run: |
+        autoreconf -fiv
+        git checkout INSTALL
+    - name: configure
+      run: ./configure --enable-werror CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: |
+        make check VERBOSE=1
+    - name: Check generated files are in .gitignore
+      # grep '^' passes through all input while giving a non-zero exit status
+      # if that input is empty.
+      run: |
+        printf '%s\n' .ccache > ".git/info/exclude"
+        git status --porcelain|grep '^' && { echo "The generated files listed above are not in .gitignore" ; exit 1; }; true
+    - name: Create distribution tarball
+      run: |
+        make dist
+    - uses: actions/upload-artifact@v4
+      with:
+        path: |
+          survex-*.tar.gz
+        # Files are already compressed so don't try to compress again.
+        compression-level: 0
+        retention-days: 1
+        if-no-files-found: error
+
+  wxwidgets3-0:
+    runs-on: 'ubuntu-20.04'
+    needs: makedist
+    steps:
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            libwxgtk3.0-gtk3-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libgdal-dev \
+            libproj-dev \
+            libswscale-dev
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: |
+        make check MSGFMT=: VERBOSE=1
+
+  valgrind:
+    runs-on: 'ubuntu-22.04'
+    needs: makedist
+    steps:
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            libwxgtk3.0-gtk3-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libgdal-dev \
+            libproj-dev \
+            libswscale-dev
+        sudo apt-get install valgrind
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: |
+        VALGRIND=valgrind make check MSGFMT=: VERBOSE=1
+
+  # Debian stable has wxWidgets 3.2.
+  debian-stable:
+    runs-on: 'ubuntu-latest'
+    needs: makedist
+    container: debian:stable
+    steps:
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: Install package dependencies
+      run: |
+        apt-get update
+        apt-get install -y \
+            gcc \
+            g++ \
+            make \
+            pkg-config \
+            libwxgtk3.2-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libgdal-dev \
+            libproj-dev \
+            libswscale-dev
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: configure
+      run: ./configure --enable-werror CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: |
+        make check MSGFMT=: VERBOSE=1
+
+  linux-latest:
+    runs-on: 'ubuntu-24.04'
+    needs: makedist
+    steps:
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install \
+            libwxgtk3.2-dev \
+            libavcodec-dev \
+            libavformat-dev \
+            libgdal-dev \
+            libproj-dev \
+            libswscale-dev
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: make -j2
+    - name: Run tests
+      run: |
+        make check MSGFMT=: VERBOSE=1
+
+  macos:
+    runs-on: 'macos-latest'
+    needs: makedist
+    steps:
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: Install package dependencies
+      run: |
+        # Workaround apparent homebrew bug 2024-03-05
+        rm -f /usr/local/bin/2to3-3.* /usr/local/bin/idle3.* /usr/local/bin/pydoc3.* /usr/local/bin/python3.* /usr/local/bin/python3.*-config
+        rm -f /usr/local/bin/2to3 /usr/local/bin/idle3 /usr/local/bin/pydoc3 /usr/local/bin/python3 /usr/local/bin/python3-config
+        brew update
+        brew install \
+            ffmpeg \
+            gdal \
+            gnu-tar \
+            proj \
+            wxwidgets
+    - name: configure
+      run: ./configure CC='ccache gcc' CXX='ccache g++'
+    - name: make
+      run: |
+        make -j3
+    - name: Run tests
+      run: |
+        make check MSGFMT=: VERBOSE=1
+
+  msys2-ucrt64:
+    runs-on: 'windows-latest'
+    needs: makedist
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: ucrt64
+        install: base-devel
+        pacboy: >-
+          gcc:p
+          ffmpeg:p
+          proj:p
+          wxwidgets3.2-msw:p
+          gdb:p
+          ntldd:p
+        # Build with GDAL broke somewhere between 1.4.9 and 1.4.10 releases.
+        # Rebuilding 1.4.9 now has the problem.  Unresolved as of 2024-10-19.
+        # gdal:p
+    - name: Install CCache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ github.job }}
+        variant: sccache
+    - name: Fetch distribution
+      uses: actions/download-artifact@v4
+    - name: Unpack distribution
+      run: |
+        mv artifact/* .
+        rmdir artifact
+        tar --strip-components=1 -xf survex-*.tar.gz
+    - name: configure
+      run: |
+        PATH=/c/Users/runneradmin/.cargo/bin:$PATH
+        export CC='sccache gcc'
+        export CXX='sccache g++'
+        ./configure
+    - name: make
+      run: |
+        PATH=/c/Users/runneradmin/.cargo/bin:$PATH
+        make -j2
+    - name: Run tests
+      run: |
+        PATH=/c/Users/runneradmin/.cargo/bin:$PATH
+        make check MSGFMT=: VERBOSE=1
+    - name: Run innosetup
+      run: |
+        make mingw_iss RUN_EXE= NTLDD=ntldd PROJ_PREFIX=/ucrt64
+    - uses: actions/upload-artifact@v4
+      with:
+        name: microsoft-windows-installer
+        path: |
+          survex-microsoft-windows-*.exe
+        # Files are already compressed so don't try to compress again.
+        compression-level: 0
+        retention-days: 1
+        if-no-files-found: error

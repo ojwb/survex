@@ -1,7 +1,7 @@
 /* pos.cc
  * Export from Aven as Survex .pos or .csv.
  */
-/* Copyright (C) 2001,2002,2011,2013,2014,2015,2018 Olly Betts
+/* Copyright (C) 2001-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "pos.h"
 
@@ -32,7 +30,6 @@
 
 #include "message.h"
 #include "namecompare.h"
-#include "osalloc.h"
 #include "useful.h"
 
 using namespace std;
@@ -104,8 +101,9 @@ void POS::header(const char *, const char *, time_t,
 }
 
 void
-POS::label(const img_point *p, const char *s, bool /*fSurface*/, int /*type*/)
+POS::label(const img_point *p, const wxString& str, int /*sflags*/, int /*type*/)
 {
+    const char* s = str.utf8_str();
     size_t len = strlen(s);
     pos_label * l = (pos_label*)malloc(offsetof(pos_label, name) + len + 1);
     if (l == NULL)

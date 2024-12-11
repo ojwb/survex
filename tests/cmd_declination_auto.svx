@@ -35,6 +35,12 @@
 ; Regression test for bug fixed in 1.2.27 - cavern caches the declination,
 ; but fails to invalidate the cache when the declination coordinates are
 ; changed, only when the date changed.
+*date 2000.12.26
 *declination auto 0490600 5282000 1234
 1 2a 50.0 000 0
+*date 2000.12.27
+1 2b 10.0 090 0
+; We shouldn't report for this, but did in 1.4.6 and earlier (and convergence
+; was reported as "inf").
+*declination auto 0490600 5282001 1234
 *end d

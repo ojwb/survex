@@ -1,0 +1,83 @@
+./legacytokens.svx:4:5: warning: No blank after token
+ *fix2 reference0 0 0
+     ^
+./legacytokens.svx:4:16: warning: No blank after token
+ *fix2 reference0 0 0
+                ^
+./legacytokens.svx:6:6: warning: No blank after token
+ 0 1 F- DOWN1.00
+      ^
+./legacytokens.svx:6:12: warning: No blank after token
+ 0 1 F- DOWN1.00
+            ^
+./legacytokens.svx:7:10: warning: No blank after token
+ 1 2 F - D1.00
+          ^
+./legacytokens.svx:8:11: warning: No blank after token
+ 3 2 F - UP1.00
+           ^
+./legacytokens.svx:9:10: warning: No blank after token
+ 4 3 F - U1.00
+          ^
+./legacytokens.svx:10:11: warning: No blank after token
+ 5 4 F - +V1.00
+           ^
+./legacytokens.svx:11:11: warning: No blank after token
+ 5 6 F - -V1.00
+           ^
+./legacytokens.svx:12:6: warning: No blank after token
+ 6 7 F000 LEVEL1.00
+      ^
+./legacytokens.svx:12:15: warning: No blank after token
+ 6 7 F000 LEVEL1.00
+               ^
+./legacytokens.svx:13:10: warning: No blank after token
+ 7 8 F - D+1.00
+          ^
+./legacytokens.svx:15:14: warning: No blank after token
+ 8 9 1.00 DOWN-
+              ^
+./legacytokens.svx:16:13: warning: No blank after token
+ 10 9 1.00 UP-
+             ^
+./legacytokens.svx:18:5: warning: No blank after token
+ DOWN11 F 10 1.00 -
+     ^
+./legacytokens.svx:19:5: warning: No blank after token
+ DOWN_12 F 11 1.00 -
+     ^
+./legacytokens.svx:21:2: error: Unknown command "corrections2"
+ *corrections2 3.00 
+  ^~~~~~~~~~~~
+./legacytokens.svx:22:18: warning: No blank after token
+ *declination auto0 0 0
+                  ^
+./legacytokens.svx:22:14: error: Input coordinate system must be specified for "*DECLINATION AUTO"
+ *declination auto0 0 0
+              ^~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 13 survey stations, joined by 12 legs.
+There are 0 loops.
+Total length of survey legs =   12.00m (  12.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =   11.00m
+Vertical range = 9.00m (from 0 at 2.00m to 10 at -7.00m)
+North-South range = 1.00m (from _12 at 1.00m to 6 at 0.00m)
+East-West range = 0.00m (from _12 at 0.00m to _12 at 0.00m)
+   2 1-nodes.
+  11 2-nodes.
+There were 17 warning(s) and 2 error(s) - no output files produced.

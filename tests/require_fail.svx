@@ -1,4 +1,6 @@
 ; pos=fail
-; require a version later than the current one
-*require 1.3
-*fix a reference 0 0 0
+*require 1.0abc ; test warning with suffix (added in 1.4.11)
+*require 1. 42 ; spaces in the version rejected in 1.4.11 and later
+*require 1.4. ; trailing dot is OK
+*require 1.5  ; require a version later than the current one
+SHOULD_EXIT_AND_NOT_GET_HERE

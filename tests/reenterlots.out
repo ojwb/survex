@@ -1,24 +1,24 @@
 ./reenterlots.svx:7:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:10:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:13:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:16:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
+./reenterlots.svx:3: info: Originally entered here
 ./reenterlots.svx:19:8: warning: Reentering an existing survey is deprecated
  *begin svy
         ^~~
-./reenterlots.svx:3: warning: Originally entered here
-./reenterlots.svx:19: warning: Further uses of this deprecated feature will not be reported
+./reenterlots.svx:3: info: Originally entered here
+./reenterlots.svx:19: info: Further uses of this deprecated feature will not be reported
  *begin svy
 
 Removing trailing traverses...
@@ -36,8 +36,7 @@ Calculating trailing traverses...
 Calculating statistics...
 
 Survey contains 9 survey stations, joined by 8 legs.
-There is 1 loop.
-Survey has 2 connected components.
+There are 0 loops.
 Total length of survey legs =   80.00m (  80.00m adjusted)
 Total plan length of survey legs =   60.00m
 Total vertical length of survey legs =   20.00m
@@ -46,4 +45,4 @@ North-South range = 20.00m (from svy.2 at 10.00m to svy.5 at -10.00m)
 East-West range = 17.32m (from svy.4 at 8.66m to svy.7 at -8.66m)
    8 1-nodes.
    1 8-node.
-There were 11 warning(s).
+There were 5 warning(s).

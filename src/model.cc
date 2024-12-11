@@ -4,7 +4,7 @@
 //  Cave survey model.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018,2019 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -22,30 +22,18 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "model.h"
 
 #include "img_hosted.h"
+#include "namecompare.h"
 #include "useful.h"
 
 #include <cfloat>
 #include <map>
 
 using namespace std;
-
-const static int img2aven_tab[] = {
-#include "img2aven.h"
-};
-
-inline int
-img2aven(int flags)
-{
-    flags &= (sizeof(img2aven_tab) / sizeof(img2aven_tab[0]) - 1);
-    return img2aven_tab[flags];
-}
 
 int Model::Load(const wxString& file, const wxString& prefix)
 {
@@ -71,6 +59,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
     m_HasDupes = false;
     m_HasSurfaceLegs = false;
     m_HasErrorInformation = false;
+    added_plot_order_keys = false;
 
     // FIXME: discard existing presentation? ask user about saving if we do!
 
@@ -237,7 +226,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
 			s = wxString(survey->label, wxConvISO8859_1);
 		    }
 		}
-		int flags = img2aven(survey->flags);
+		int flags = (survey->flags & LFLAG_IMG_MASK);
 		LabelInfo* label = new LabelInfo(pt, s, flags);
 		if (label->IsEntrance()) {
 		    m_NumEntrances++;
@@ -728,10 +717,10 @@ SurveyFilter::SetSeparator(wxChar separator_)
     std::set<wxString, std::greater<wxString>> old_redundant_filters;
     swap(filters, old_filters);
     swap(redundant_filters, old_redundant_filters);
-    for (auto& s : filters) {
+    for (auto& s : old_filters) {
 	add(s);
     }
-    for (auto& s : redundant_filters) {
+    for (auto& s : old_redundant_filters) {
 	add(s);
     }
 }
@@ -752,4 +741,56 @@ SurveyFilter::CheckVisible(const wxString& name) const
     if (name.StartsWith(*it) && name[it->size()] == separator)
 	return true;
     return false;
+}
+
+class LabelCmp : public greater<const LabelInfo*> {
+    wxChar separator;
+public:
+    explicit LabelCmp(wxChar separator_) : separator(separator_) {}
+    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
+	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
+    }
+};
+
+void
+Model::SortLabelsByName()
+{
+    m_Labels.sort(LabelCmp(GetSeparator()));
+}
+
+class LabelPlotCmp : public greater<const LabelInfo*> {
+    wxChar separator;
+public:
+    explicit LabelPlotCmp(wxChar separator_) : separator(separator_) {}
+    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
+	int n = pt1->get_flags() - pt2->get_flags();
+	if (n) return n > 0;
+	wxString l1 = pt1->GetText().AfterLast(separator);
+	wxString l2 = pt2->GetText().AfterLast(separator);
+	n = name_cmp(l1, l2, separator);
+	if (n) return n < 0;
+	// Prefer non-2-nodes...
+	// FIXME; implement
+	// if leaf names are the same, prefer shorter labels as we can
+	// display more of them
+	n = pt1->GetText().length() - pt2->GetText().length();
+	if (n) return n < 0;
+	// make sure that we don't ever compare different labels as equal
+	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
+    }
+};
+
+void
+Model::SortLabelsByPlotOrder()
+{
+    if (!added_plot_order_keys) {
+	const static int img2aven_tab[] = {
+#include "img2aven.h"
+	};
+	for (LabelInfo* i : m_Labels) {
+	    i->set_flags(img2aven_tab[i->get_flags() & LFLAG_IMG_MASK]);
+	}
+	added_plot_order_keys = true;
+    }
+    m_Labels.sort(LabelPlotCmp(GetSeparator()));
 }

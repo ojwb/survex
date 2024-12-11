@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "date.h"
 
@@ -31,7 +29,7 @@ is_leap_year(int year)
     return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
 }
 
-unsigned int
+int
 last_day(int year, int month)
 {
     static const unsigned char lastday[13] = {

@@ -1,7 +1,7 @@
 //
 //  moviemaker.cc
 //
-//  Class for writing movies from Aven for old libav/ffmpeg
+//  Class for writing movies from Aven for old FFmpeg
 //
 //  Copyright (C) 2004,2011,2012,2013,2014,2015,2016 Olly Betts
 //
@@ -46,9 +46,7 @@
  * THE SOFTWARE.
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #define __STDC_CONSTANT_MACROS
 
@@ -58,7 +56,7 @@
 
 #include "moviemaker.h"
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 extern "C" {
 # include <libavutil/imgutils.h>
 # include <libavutil/mathematics.h>
@@ -131,11 +129,8 @@ const int OUTBUF_SIZE = 200000;
 #endif
 
 MovieMaker::MovieMaker()
-#ifdef WITH_LIBAV
-    : oc(0), video_st(0), frame(0), outbuf(0), pixels(0), sws_ctx(0), averrno(0)
-#endif
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     static bool initialised_ffmpeg = false;
     if (initialised_ffmpeg) return;
 
@@ -147,7 +142,7 @@ MovieMaker::MovieMaker()
 #endif
 }
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 static int
 write_packet(void *opaque, uint8_t *buf, int buf_size) {
     FILE * fh = (FILE*)opaque;
@@ -166,7 +161,7 @@ seek_stream(void *opaque, int64_t offset, int whence) {
 
 bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     fh_to_close = fh;
 
     AVOutputFormat * fmt = NULL;
@@ -352,7 +347,7 @@ bool MovieMaker::Open(FILE* fh, const char * ext, int width, int height)
 }
 
 unsigned char * MovieMaker::GetBuffer() const {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     return pixels + GetWidth() * GetHeight() * 3;
 #else
     return NULL;
@@ -360,7 +355,7 @@ unsigned char * MovieMaker::GetBuffer() const {
 }
 
 int MovieMaker::GetWidth() const {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     assert(video_st);
     AVCodecContext *c = video_st->codec;
     return c->width;
@@ -370,7 +365,7 @@ int MovieMaker::GetWidth() const {
 }
 
 int MovieMaker::GetHeight() const {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     assert(video_st);
     AVCodecContext *c = video_st->codec;
     return c->height;
@@ -381,7 +376,7 @@ int MovieMaker::GetHeight() const {
 
 bool MovieMaker::AddFrame()
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     AVCodecContext * c = video_st->codec;
 
     if (c->pix_fmt != AV_PIX_FMT_YUV420P) {
@@ -470,7 +465,7 @@ bool MovieMaker::AddFrame()
 bool
 MovieMaker::Close()
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     if (video_st && averrno == 0) {
 	// No more frames to compress.  The codec may have a few frames
 	// buffered if we're using B frames, so write those too.
@@ -547,7 +542,7 @@ MovieMaker::Close()
     return true;
 }
 
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
 void
 MovieMaker::release()
 {
@@ -592,7 +587,7 @@ MovieMaker::release()
 
 MovieMaker::~MovieMaker()
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     release();
 #endif
 }
@@ -600,7 +595,7 @@ MovieMaker::~MovieMaker()
 const char *
 MovieMaker::get_error_string() const
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     switch (averrno) {
 	case AVERROR(EIO):
 	    return "I/O error";

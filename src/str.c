@@ -1,5 +1,5 @@
 /* append a string */
-/* Copyright (c) Olly Betts 1999, 2014
+/* Copyright (c) Olly Betts 1999, 2014, 2024
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,56 +16,34 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <config.h>
+
+#include "str.h"
+
 #include <string.h>
 
 #include "osalloc.h"
-#include "str.h"
 
-/* append a string */
-void
-s_cat(char **pstr, int *plen, const char *s)
-{
-   s_catlen(pstr, plen, s, strlen(s));
+void s_expand_(string *pstr, int addition) {
+    int new_size = (pstr->len + addition + 33) & ~7;
+    pstr->s = osrealloc(pstr->s, new_size);
+    pstr->capacity = new_size - 1;
 }
 
-/* append a string with length */
 void
-s_catlen(char **pstr, int *plen, const char *s, int s_len)
+s_appendlen(string* pstr, const char *s, int s_len)
 {
-   int new_len = s_len + 1; /* extra 1 for nul */
-   int len = 0;
-
-   if (*pstr) {
-      len = strlen(*pstr);
-      new_len += len;
-   }
-
-   if (!*pstr || new_len > *plen) {
-      *plen = (new_len + 32) & ~3;
-      *pstr = osrealloc(*pstr, *plen);
-   }
-
-   memcpy(*pstr + len, s, s_len);
-   (*pstr + len)[s_len] = '\0';
+   if (pstr->capacity - pstr->len < s_len || s_len == 0)
+       s_expand_(pstr, s_len);
+   memcpy(pstr->s + pstr->len, s, s_len);
+   pstr->len += s_len;
 }
 
-/* append a character */
 void
-s_catchar(char **pstr, int *plen, char ch)
+s_appendn(string *pstr, int n, char c)
 {
-   int new_len = 2; /* extra 1 for nul */
-   int len = 0;
-
-   if (*pstr) {
-      len = strlen(*pstr);
-      new_len += len;
-   }
-
-   if (!*pstr || new_len > *plen) {
-      *plen = (new_len + 32) & ~3;
-      *pstr = osrealloc(*pstr, *plen);
-   }
-
-   (*pstr)[len] = ch;
-   (*pstr)[len + 1] = '\0';
+   if (pstr->capacity - pstr->len < n || n == 0)
+       s_expand_(pstr, n);
+   memset(pstr->s + pstr->len, c, n);
+   pstr->len += n;
 }

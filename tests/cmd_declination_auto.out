@@ -2,6 +2,10 @@
  1 2 10.00 320 -06
 ./cmd_declination_auto.svx:27: warning: No survey date specified - using 0 for magnetic declination
  2 3 2.0 123 -66
+./cmd_declination_auto.svx:6: info: Declination: 1.7dg @ 2000-12-25, grid convergence: -0.9dg
+ *declination auto 0410600 5282000 1234
+./cmd_declination_auto.svx:39: info: Declination: 2.0dg @ 2000-12-26 / 2.0dg @ 2000-12-27, grid convergence: -0.1dg
+ *declination auto 0490600 5282000 1234
 
 Removing trailing traverses...
 
@@ -17,15 +21,16 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 12 survey stations, joined by 11 legs.
+Survey contains 13 survey stations, joined by 12 legs.
 There are 0 loops.
-Total length of survey legs =  165.23m ( 165.23m adjusted)
-Total plan length of survey legs =  161.98m
+Total length of survey legs =  175.23m ( 175.23m adjusted)
+Total plan length of survey legs =  171.98m
 Total vertical length of survey legs =    5.00m
 Vertical range = 4.87m (from a.1 at 1234.00m to c.3 at 1229.13m)
 North-South range = 107.61m (from d.2 at 5282107.61m to a.1 at 5282000.00m)
-East-West range = 6.27m (from a.1 at 410600.00m to d.1 at 410593.73m)
-   5 1-nodes.
+East-West range = 9.99m (from d.2b at 410603.72m to d.1 at 410593.73m)
+   6 1-nodes.
    4 2-nodes.
-   3 3-nodes.
+   2 3-nodes.
+   1 4-node.
 There were 2 warning(s).

@@ -2155,7 +2155,7 @@ Changes in 0.80:
   "./configure" then "make"
 
 * Messages file now represents accents like in HTML (e.g. &eacute;
-  for é)
+  for Ã©)
 
 * caverot: fixed up standard DOS (allegro) version to work much
   better.  In particular, it will now try to choose a video mode for

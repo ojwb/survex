@@ -1,0 +1,26 @@
+./wallsdecl.wpj:6: info: Declination: -1.8dg @ 1990-09-09, grid convergence: 0.5dg
+ .REF 4113846.340 580661.570 16 0.549 219 6 37 10 3.195 86 5 29.254 19 "NAD83"
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =  100.00m ( 100.00m adjusted)
+Total plan length of survey legs =  100.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 1 at 1000.00m to 1 at 1000.00m)
+North-South range = 99.92m (from 1 at 580099.92m to 0 at 580000.00m)
+East-West range = 4.10m (from 0 at 410000.00m to 1 at 409995.90m)
+   2 1-nodes.

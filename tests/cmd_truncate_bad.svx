@@ -1,0 +1,6 @@
+; pos=fail warn=0 error=4
+*fix 1 reference 0 0 0
+*Truncate on
+*truncate off7
+*truncate o7
+*truncate 3.14159

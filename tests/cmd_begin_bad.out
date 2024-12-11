@@ -16,6 +16,8 @@
 ./cmd_begin_bad.svx:12:6: error: Matching BEGIN command has no survey name
  *end a
       ^
+./cmd_begin_bad.svx:11: info: Corresponding BEGIN was here
+ *begin =
 ./cmd_begin_bad.svx:14:6: error: Character "=" not allowed in station name (use *SET NAMES to set allowed characters)
  *end =
       ^

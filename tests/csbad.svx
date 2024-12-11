@@ -1,4 +1,4 @@
-; pos=fail warn=0 error=24
+; pos=fail warn=0 error=29
 *fix 1 reference 0 0 0
 *cs EPSG:-1
 *cs ERSI:1234
@@ -17,11 +17,16 @@
 *cs UTM0
 *cs UTM61N
 *cs UTM61S
+*cs lat-l0ng
+*cs s-m3rc
 *cs custom "+proj=ection"
+*cs custom "+proj=ection +with +spaces"
 *cs out lat-long
 *cs out long-lat
 *cs out jtsk
 *cs out jtsk03
+*cs out EPSG:4326
+*cs out ESRI:104305
 ; Check that an error from PROJ is usefully relayed by cavern.  PROJ >= 6 uses
 ; a more accurate conversion for default for tmerc which works for the whole
 ; world, so we specify +approx to force the old conversion to be used.  Older

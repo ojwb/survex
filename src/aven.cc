@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002,2003,2004,2005,2006,2011,2013,2014,2015,2016,2017,2018 Olly Betts
+//  Copyright (C) 2002-2024 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,9 +21,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #define MSG_SETUP_PROJ_SEARCH_PATH 1
 
@@ -67,10 +65,10 @@ static struct help_msg help[] = {
     /* TRANSLATORS: --help output for --survey option.
      *
      * "this" has been added to English translation */
-    {HLP_ENCODELONG(0),       /*only load the sub-survey with this prefix*/199, 0},
+    {HLP_ENCODELONG(0),       /*only load the sub-survey with this prefix*/199, 0, 0},
     /* TRANSLATORS: --help output for aven --print option */
-    {HLP_ENCODELONG(1),       /*print and exit (requires a 3d file)*/119, 0},
-    {0, 0, 0}
+    {HLP_ENCODELONG(1),       /*print and exit (requires a 3d file)*/119, 0, 0},
+    {0, 0, 0, 0}
 };
 
 #ifdef __WXMSW__
@@ -80,8 +78,7 @@ IMPLEMENT_APP_NO_MAIN(Aven)
 IMPLEMENT_WX_THEME_SUPPORT
 #endif
 
-Aven::Aven() :
-    m_Frame(NULL), m_pageSetupData(NULL)
+Aven::Aven()
 {
     wxFont::SetDefaultEncoding(wxFONTENCODING_UTF8);
 }
@@ -178,17 +175,21 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 int main(int argc, char **argv)
 {
 #ifdef __WXGTK3__
-    // Currently wxGLCanvas doesn't work under Wayland, and the code segfaults.
-    // https://trac.wxwidgets.org/ticket/17702
+# if !(wxUSE_GLCANVAS_EGL-0)
+    // The GLX-based wxGLCanvas doesn't work under Wayland, and the code
+    // segfaults: https://trac.wxwidgets.org/ticket/17702
+    //
+    // Therefore we force X11 unless we're using the EGL-based wxGLCanvas
+    // (which was added in wxWidgets 3.1.5 and hasn't been backported to
+    // 3.0.x).
+    //
     // Setting GDK_BACKEND=x11 is the recommended workaround, and it seems to
     // work to set it here.  GTK2 doesn't support Wayland, so doesn't need
     // this.
     setenv("GDK_BACKEND", "x11", 1);
-    // FIXME: The OpenGL code needs work before scaling on hidpi displays will
-    // work usefully, so for now disable such scaling (which simulates how
-    // things are when using GTK2).
-    setenv("GDK_SCALE", "1", 1);
+# endif
 #endif
+
 #ifdef __WXMAC__
     // MacOS passes a magic -psn_XXXX command line argument in argv[1] which
     // wx ignores for us, but in wxApp::Initialize() which hasn't been
@@ -463,13 +464,20 @@ aven_v_report(int severity, const char *fnm, int line, int en, va_list ap)
 	m += wxT(": ");
     }
 
-    if (severity == 0) {
+    if (severity == DIAG_WARN) {
 	m += wmsg(/*warning*/4);
 	m += wxT(": ");
     }
 
     char buf[1024];
+#ifdef HAVE__VSPRINTF_P
+    // Microsoft's vsnprintf() doesn't support positional argument specifiers,
+    // so we need to use the Microsoft-specific _vsprintf_p() which (despite
+    // its name) takes a buffer size like vsnprintf() does.
+    _vsprintf_p(buf, sizeof(buf), msg(en), ap);
+#else
     vsnprintf(buf, sizeof(buf), msg(en), ap);
+#endif
     m += wxString(buf, wxConvUTF8);
     if (wxTheApp == NULL) {
 	// We haven't initialised the Aven app object yet.

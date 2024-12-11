@@ -1,7 +1,7 @@
 /* kml.h
  * Export from Aven as KML.
  */
-/* Copyright (C) 2005,2013,2014,2015,2016,2017,2018 Olly Betts
+/* Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,16 +20,15 @@
 
 #include "exportfilter.h"
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 #include "vector3.h"
 
 #include <vector>
 
 class KML : public ExportFilter {
-    projPJ pj_input = NULL, pj_output = NULL;
-    bool in_linestring = false;
+    PJ* pj = NULL;
+    unsigned linestring_flags = 0;
     bool in_wall = false;
     bool in_passage = false;
     bool clamp_to_ground;
@@ -37,16 +36,16 @@ class KML : public ExportFilter {
   public:
     KML(const char * input_datum, bool clamp_to_ground_);
     ~KML();
-    const int * passes() const;
+    const int * passes() const override;
     void header(const char *, const char *, time_t,
 		double, double, double,
-		double, double, double);
-    void start_pass(int pass);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void xsect(const img_point *, double, double, double);
-    void wall(const img_point *, double, double);
-    void passage(const img_point *, double, double, double);
-    void tube_end();
-    void footer();
+		double, double, double) override;
+    void start_pass(int pass) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, int, int) override;
+    void xsect(const img_point *, double, double, double) override;
+    void wall(const img_point *, double, double) override;
+    void passage(const img_point *, double, double, double) override;
+    void tube_end() override;
+    void footer() override;
 };

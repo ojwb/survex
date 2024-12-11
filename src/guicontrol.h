@@ -29,9 +29,9 @@
 class GfxCore;
 
 class GUIControl {
-    GfxCore* m_View;
+    GfxCore* m_View = nullptr;
 
-    enum { NO_DRAG = 0, LEFT_DRAG, MIDDLE_DRAG, RIGHT_DRAG } dragging;
+    enum { NO_DRAG = 0, LEFT_DRAG, MIDDLE_DRAG, RIGHT_DRAG } dragging = NO_DRAG;
 
     wxPoint m_DragStart;
     wxPoint m_DragRealStart;
@@ -44,11 +44,11 @@ class GUIControl {
 	drag_ELEV,
 	drag_SCALE,
 	drag_ZOOM
-    } m_LastDrag;
+    } m_LastDrag = drag_NONE;
 
     enum { lock_NONE, lock_ROTATE, lock_SCALE } m_ScaleRotateLock;
 
-    bool m_ReverseControls;
+    bool m_ReverseControls = false;
 
     void HandleRotate(wxPoint);
     void HandleTilt(wxPoint);
@@ -62,7 +62,7 @@ class GUIControl {
     void HandleNonDrag(const wxPoint & point);
 
 public:
-    GUIControl();
+    GUIControl() {}
 
     void SetView(GfxCore* view);
 

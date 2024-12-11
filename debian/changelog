@@ -1,3 +1,213 @@
+survex (1.4.13-2) unstable; urgency=medium
+
+  * debian/patches/fix-lollipop-test.patch: Backport testcase tweak to avoid
+    failure on i386 due to excess precision.
+
+ -- Olly Betts <olly@survex.com>  Mon, 02 Dec 2024 12:33:03 +1300
+
+survex (1.4.13-1) unstable; urgency=medium
+
+  * New upstream release:
+    + debian/patches: Remaining patch merged upstream so remove.
+  * debian/doc-base: The plain text version of the manual is no longer
+    generated (upstream change in 1.4.10) so stop trying to register it
+    with doc-base.
+
+ -- Olly Betts <olly@survex.com>  Sun, 01 Dec 2024 16:59:54 +1300
+
+survex (1.4.12-2) unstable; urgency=medium
+
+  * debian/patches/skip-hpglexport-testcase.patch: Reinstate part of
+    patch which hasn't yet been addressed upstream.
+
+ -- Olly Betts <olly@survex.com>  Wed, 23 Oct 2024 17:50:43 +1300
+
+survex (1.4.12-1) unstable; urgency=medium
+
+  * New upstream release:
+    + debian/patches: Remaining patch merged upstream so remove.
+
+ -- Olly Betts <olly@survex.com>  Wed, 23 Oct 2024 15:56:39 +1300
+
+survex (1.4.11-4) unstable; urgency=medium
+
+  * debian/patches/fix-i386-test-failures.patch: Rename
+    skip-hpgl-export-testcase.patch and include patch to normalise -0.00
+    in JSON export too.  (Closes: #1077514)
+
+ -- Olly Betts <olly@survex.com>  Thu, 15 Aug 2024 15:00:17 +1200
+
+survex (1.4.11-3) unstable; urgency=medium
+
+  * debian/patches/series: Actually apply new patch. (Closes: #1077514)
+
+ -- Olly Betts <olly@survex.com>  Thu, 15 Aug 2024 08:43:09 +1200
+
+survex (1.4.11-2) unstable; urgency=medium
+
+  * debian/patches/skip-hpglexport-testcase.patch: Skip new testcase
+    hpglexport for now because it fails on i386 due to a small numerical
+    difference in the calculated coordinates, presumably due to excess
+    precision. (Closes: #1077514)
+
+ -- Olly Betts <olly@survex.com>  Wed, 14 Aug 2024 16:06:32 +1200
+
+survex (1.4.11-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Fixes new i386 testcase failure in 1.4.10. (Closes: #1077514)
+    + debian/patches/Fix-regexp-to-normalise-DXF-output.patch: Drop patch
+      cherry-picked from upstream.
+
+ -- Olly Betts <olly@survex.com>  Wed, 14 Aug 2024 12:46:16 +1200
+
+survex (1.4.10-2) unstable; urgency=medium
+
+  * debian/patches/Fix-regexp-to-normalise-DXF-output.patch: Cherry-pick fix
+    from upstream.
+
+ -- Olly Betts <olly@survex.com>  Mon, 12 Aug 2024 16:28:12 +1200
+
+survex (1.4.10-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Fixes i386 test failures due to excess precision. (Closes: #1077514)
+    + debian/patches/disable-testcase-which-fails-on-i386.patch: Drop, no
+      longer needed.
+    + debian/patches/fix-manual-chapter-names.patch: Drop, no longer needed.
+
+ -- Olly Betts <olly@survex.com>  Mon, 12 Aug 2024 13:56:30 +1200
+
+survex (1.4.9-1) unstable; urgency=medium
+
+  * New upstream release.
+    + debian/control: Add B-D on libgdal-dev (new upstream dependency).
+  * debian/patches/fix-manual-chapter-names.patch: Fix new chapters which
+    were annotated with the same HTML filename and so overwrite one another.
+
+ -- Olly Betts <olly@survex.com>  Fri, 05 Jul 2024 08:32:24 +1200
+
+survex (1.4.8-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Fix to build with newer FFmpeg versions. (Closes: #1072454)
+    + debian/patches/fix-s390x-tests.patch: Drop patch cherry-picked from
+      upstream.
+  * debian/control: Remove Build-Depends which are no longer needed (the
+    resulting binary packages are bit-for-bit identical before and after this
+    change).
+
+ -- Olly Betts <olly@survex.com>  Mon, 03 Jun 2024 16:40:23 +1200
+
+survex (1.4.7-4) unstable; urgency=medium
+
+  * debian/tests/control: Set DUMP3D=dump3d since cavern.tst started to
+    use it in 1.4.6.
+
+ -- Olly Betts <olly@survex.com>  Tue, 09 Apr 2024 15:15:17 +1200
+
+survex (1.4.7-3) unstable; urgency=medium
+
+  * debian/patches/fix-s390x-tests.patch: Cherry-pick patch from upstream to
+    fix test failures of s390x (also powerpc and maybe some other
+    architectures).
+
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 16:35:54 +1200
+
+survex (1.4.7-2) unstable; urgency=medium
+
+  * debian/patches/disable-testcase-which-fails-on-i386.patch: Skip pltexport
+    testcase for now because it fails on i386 due to a small numerical
+    difference in the calculated coordinates, presumably due to excess
+    precision.
+  * debian/control: Really mark conformance with policy 4.7.0.
+  * debian/vim-survex.yaml: Fix typo which prevented enabling the vim addon.
+  * debian/README.Debian: Update.
+  * debian/copyright: Update years.
+
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 14:12:11 +1200
+
+survex (1.4.7-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control: B-D on pkgconf instead of pkg-config.
+  * debian/control: Mark conformance with policy 4.7.0.
+
+ -- Olly Betts <olly@survex.com>  Mon, 08 Apr 2024 12:55:30 +1200
+
+survex (1.4.4-1) unstable; urgency=medium
+
+  * New upstream release:
+    + Drop cherry-picked patch: fix-clino-red-line.patch
+    + Drop cherry-picked patch: fix-cavern-tst.patch
+  * debian/control: Mark conformance with policy 4.6.2.
+
+ -- Olly Betts <olly@survex.com>  Fri, 03 Feb 2023 16:02:13 +1300
+
+survex (1.4.3-2) unstable; urgency=medium
+
+  * debian/control: Switch to use wxwidgets3.2.
+
+ -- Olly Betts <olly@survex.com>  Mon, 12 Sep 2022 10:10:05 +1200
+
+survex (1.4.3-1) unstable; urgency=medium
+
+  * New upstream release.
+  * New patch cherry picked from upstream: fix-clino-red-line.patch
+  * New patch cherry picked from upstream: fix-cavern-tst.patch
+  * debian/control: Mark conformance with policy 4.6.1.
+
+ -- Olly Betts <olly@survex.com>  Wed, 18 May 2022 11:20:53 +1200
+
+survex (1.4.2-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Supports FFmpeg 5.0 (Closes: #1004811)
+    + debian/control: Relax libproj-dev dependency to (>= 6.2.0) since that's
+      what this upstream release supports (just to aid backporting).
+  * debian/survex-aven.lintian-overrides: Update chasing Lintian warning
+    message format changes.
+  * debian/source/include-binaries: Remove file as only entry was for
+    "debian/upstream-signing-key.pgp" which was replaced with an ASCII
+    armoured version in 1.2.37-1.
+
+ -- Olly Betts <olly@survex.com>  Sun, 27 Feb 2022 09:15:08 +1300
+
+survex (1.4.1-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Includes patch fix-testsuite.patch so drop.
+  * debian/survex.install: Install a second copy of survex.lang so
+    gtksourceview 4 can find it.
+  * debian/compat,debian/control: Update to dh compat level 12.
+    Debug information is now compressed with dwz.
+
+ -- Olly Betts <olly@survex.com>  Tue, 09 Nov 2021 15:50:13 +1300
+
+survex (1.4.0-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Supports PROJ 8 (Closes: #983229)
+    + Needs new patch: fix-testsuite.patch
+  * debian/control: Mark conformance with policy 4.6.0.
+
+ -- Olly Betts <olly@survex.com>  Sun, 07 Nov 2021 11:45:43 +1300
+
+survex (1.2.45-1) unstable; urgency=medium
+
+  * New upstream release.
+    + Fixes undefined behaviour in shifts of signed values
+    + Fixes UTF-8 handling bug
+
+ -- Olly Betts <olly@survex.com>  Tue, 09 Mar 2021 16:21:35 +1300
+
+survex (1.2.44-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control: Mark conformance with policy 4.5.1.
+
+ -- Olly Betts <olly@survex.com>  Thu, 11 Feb 2021 14:21:24 +1300
+
 survex (1.2.42-1) unstable; urgency=medium
 
   * New upstream release

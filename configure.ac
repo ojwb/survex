@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script
 dnl Need autoconf 2.50 or later for AC_ARG_VAR.  2.59 has been around for
 dnl long enough, that we might as well just require that.
 AC_PREREQ(2.59)
-AC_INIT([survex], [1.2.43], [https://trac.survex.com/])
+AC_INIT([survex], [1.4.14], [https://trac.survex.com/])
 AM_INIT_AUTOMAKE([1.5 gnu -Wall -Wportability -Werror])
 RELEASE=1
 
@@ -11,7 +11,7 @@ AC_SUBST(RELEASE)
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_SRCDIR([src/aven.cc])
 
-COPYRIGHT_MSG="Copyright (C) 1990-2020 Olly Betts"
+COPYRIGHT_MSG="Copyright (C) 1990-2024 Olly Betts"
 AVEN_COPYRIGHT_MSG="Copyright (C) 1999-2003,2005,2006 Mark R. Shinwell"
 
 AC_DEFINE_UNQUOTED(COPYRIGHT_MSG, ["$COPYRIGHT_MSG"], [Copyright Message])
@@ -52,11 +52,11 @@ esac
 PKGDOCDIR="$enableval"
 ]
 )
-PKGDOCDIR_EXPANDED=`(
+PKGDOCDIR_EXPANDED=`
  test NONE = "$prefix" && prefix="$ac_default_prefix"
  test NONE = "$exec_prefix" && exec_prefix="$prefix"
  eval echo "$PKGDOCDIR"
-)`
+`
 AC_SUBST(PKGDOCDIR)
 AC_SUBST(PKGDOCDIR_EXPANDED)
 
@@ -74,9 +74,7 @@ AX_CXX_COMPILE_STDCXX_11
 
 AM_PROG_CC_C_O
 
-AC_LANG_C
-
-AC_C_INLINE
+AC_LANG([C])
 
 AC_EXEEXT
 AC_OBJEXT
@@ -95,10 +93,8 @@ AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 
 AC_CHECK_LIB(m, sqrt)
 
-AC_PATH_XTRA
-
 dnl The wxWidgets libraries we need:
-wx_libs="core,gl,html"
+wx_libs="core,gl"
 
 AC_ARG_VAR(WXCONFIG, [Old name for WX_CONFIG, accepted for compatibility])
 AC_ARG_VAR(WX_CONFIG, [wxWidgets configuration script to use to build Aven])
@@ -126,7 +122,8 @@ else
   dnl See if wx-config exists and is for the correct version.
   dnl Fedora install wx3's wx-config as wx-config-3.0, so look for that in
   dnl preference.
-  AC_PATH_PROGS(WX_CONFIG, [wx-config-3.0 wx-config])
+  dnl Arch Linux uses wx-config-gtk3.
+  AC_PATH_PROGS(WX_CONFIG, [wx-config-3.0 wx-config-gtk3 wx-config])
   if test -n "$WX_CONFIG" ; then
     if (exec >&5 2>&5;$WX_CONFIG --cflags "$wx_libs"|grep -e -D"$wxdef";exit $?) then
       :
@@ -153,12 +150,16 @@ esac
 WX_LIBS=`$WX_CONFIG --libs "$wx_libs"`
 dnl Needed for nvidia drivers on linux (for some setups anyway).
 AC_CHECK_LIB(Xxf86vm, XF86VidModeQueryVersion, [WX_LIBS="$WX_LIBS -lXxf86vm"], [], [$WX_LIBS])
-dnl We use functions from libGLU so always link -lGLU explicitly if it's
-dnl present.
-AC_CHECK_LIB([GLU], [gluProject], [WX_LIBS="$WX_LIBS -lGLU"], [], [$WX_LIBS])
-dnl We use functions from libGL so always link -lGL explicitly if it's
-dnl present.
-AC_CHECK_LIB([GL], [glPushMatrix], [WX_LIBS="$WX_LIBS -lGL"], [], [$WX_LIBS])
+
+save_LIBS=$LIBS
+dnl Check if we need a library for OpenGL functions.  Usually it's the "GL"
+dnl library, but it's called opengl32 on Microsoft Windows).
+AC_SEARCH_LIBS([glPushMatrix], [GL opengl32], [WX_LIBS="$WX_LIBS $ac_cv_search_glPushMatrix"], [], [$WX_LIBS])
+dnl Check if we need a library for GLU functions.  Usually it's the "GLU"
+dnl library, but it's called glu32 on Microsoft Windows).
+AC_SEARCH_LIBS([gluProject], [GLU glu32], [WX_LIBS="$WX_LIBS $ac_cv_search_gluProject"], [], [$WX_LIBS])
+LIBS=$save_LIBS
+
 AC_SUBST(WX_LIBS)
 dnl macOS has OpenGL/gl.h.
 AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
@@ -170,7 +171,7 @@ AC_SUBST(WX_CFLAGS)
 WX_CXXFLAGS=`$WX_CONFIG --cxxflags "$wx_libs"`
 AC_SUBST(WX_CXXFLAGS)
 
-AC_LANG_C
+AC_LANG([C])
 save_CFLAGS=$CFLAGS
 CFLAGS="$CFLAGS $WX_CFLAGS"
 AC_CHECK_SIZEOF([wxChar], [], [
@@ -179,13 +180,13 @@ AC_CHECK_SIZEOF([wxChar], [], [
 ])
 CFLAGS=$save_CFLAGS
 
-dnl Check for libav (FIXME: does our code still work with ffmpeg?)
-PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
-  AC_DEFINE([WITH_LIBAV], [1], [Use libav for movie export])
+dnl Check for FFmpeg libraries.
+PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libswscale libavutil], [
+  AC_DEFINE([WITH_FFMPEG], [1], [Use FFmpeg for movie export])
   save_CXXFLAGS=$CXXFLAGS
   save_LIBS=$LIBS
-  CFLAGS="$CFLAGS $LIBAV_CFLAGS"
-  LIBS="$LIBS $LIBAV_LIBS"
+  CFLAGS="$CFLAGS $FFMPEG_CFLAGS"
+  LIBS="$LIBS $FFMPEG_LIBS"
   AC_CHECK_FUNCS([av_guess_format avio_open avio_close avformat_write_header avcodec_encode_video2 avcodec_free_frame avcodec_open2 avformat_new_stream av_frame_alloc av_frame_free])
   AC_CHECK_DECLS([AVMEDIA_TYPE_VIDEO], [], [], [#include <libavcodec/avcodec.h>])
   AC_CHECK_DECLS([AV_CODEC_ID_NONE], [], [], [#include <libavcodec/avcodec.h>])
@@ -196,132 +197,78 @@ PKG_CHECK_MODULES([LIBAV], [libavcodec libavformat libswscale libavutil], [
 ], [
   dnl Build without movie export feature.
 ])
-AC_SUBST([LIBAV_LIBS])
-AC_SUBST([LIBAV_CFLAGS])
+AC_SUBST([FFMPEG_LIBS])
+AC_SUBST([FFMPEG_CFLAGS])
 
-dnl Check for PROJ4
-PKG_CHECK_MODULES([PROJ], [proj], [
+dnl Check for PROJ.
+PKG_CHECK_MODULES([PROJ], [proj >= 6.2.0], [
 ], [
   dnl pkg-config support in proj seems quite new, so probe directly if not
-  dnl found.
-  AC_CHECK_LIB([proj], [pj_init_plus], [
+  dnl found.  We need proj_create_crs_to_crs_from_pj() which was added in
+  dnl 6.2.0.
+  AC_CHECK_LIB([proj], [proj_create_crs_to_crs_from_pj], [
       PROJ_LIBS=-lproj
       PROJ_CFLAGS=
     ], [
-      AC_MSG_ERROR([PROJ4 required for coordinate transformations])
+      AC_MSG_ERROR([PROJ required for coordinate transformations])
     ])
 ])
 AC_SUBST([PROJ_LIBS])
 AC_SUBST([PROJ_CFLAGS])
-dnl Check for new-style PROJ header.
-AC_CHECK_HEADERS([proj.h])
+
+dnl Check for GDAL.
+PKG_CHECK_MODULES([GDAL], [gdal >= 2.3], [
+  AC_DEFINE([HAVE_GDAL], [1], [Define to 1 if you have the 'GDAL' library.])
+], [
+  if test "$mswindows" = no ; then
+    AC_MSG_ERROR([GDAL required for geodata handling])
+  else
+    AC_MSG_WARN([GDAL required for geodata handling])
+  fi
+])
+AC_SUBST([GDAL_LIBS])
+AC_SUBST([GDAL_CFLAGS])
 
 dnl Checks for header files.
-AC_HEADER_STDC
-dnl don't use AC_CHECK_FUNCS for setjmp - mingw #define-s it to _setjmp
-AC_CHECK_HEADERS(limits.h string.h setjmp.h sys/select.h)
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_TYPE_SIZE_T
-AC_STRUCT_TM
-AC_TYPE_SIGNAL
+AC_CHECK_HEADERS(string.h)
 
-dnl check if CLOCKS_PER_SEC is defined by time.h (as ANSI says it should be)
-dnl if it isn't, assume it is 1000000, as it is on SunOS 4
-AC_TRY_COMPILE([#include <time.h>],[
-#ifndef CLOCKS_PER_SEC
-choke me
-#endif
-], , AC_DEFINE(CLOCKS_PER_SEC, 1000000, [For old systems which don't define it themselves]))
-
-dnl Check for 16-bit and 32-bit integer types.
-AC_TYPE_INT16_T
-AC_TYPE_INT32_T
-
-dnl Checks for library functions.
-AC_FUNC_STRFTIME
-if test yes != "$ac_cv_func_strftime"; then
-  AC_LIBOBJ(strftime)
-fi
-AC_FUNC_VPRINTF
-dnl Check if there's a declaration of lround().  Below we also check for
-dnl lround() with AC_CHECK_FUNCS, which just checks if it can be linked
-dnl against.  Some platforms are missing a prototype for lround(), so
-dnl both checks are useful.
-AC_CHECK_DECLS([lround], [], [], [[#include <math.h>]])
-dnl check for strcasecmp here as well as below - this one is to get
-dnl HAVE_STRCASECMP defined if appropriate (for img.c)
-AC_CHECK_FUNCS([popen getpwuid lround strcasecmp hypot mmap])
-
-dnl difftime seems to be an ANSI invention
-AC_CHECK_FUNCS(difftime)
+AC_CHECK_FUNCS([popen hypot mmap])
 
 dnl Much faster than using getc()/putc(), at least on Linux.
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
 
 AC_CHECK_FUNCS([setenv unsetenv])
 
-dnl try to find a case-insensitive compare
+AC_CHECK_FUNCS([fmemopen])
 
-strcasecmp=no
-dnl The order of these tests is important.
-AC_CHECK_FUNC(strcasecmp, [strcasecmp=strcasecmp])
-if test no = "$strcasecmp"; then
-  AC_CHECK_FUNC(stricmp, [strcasecmp=stricmp])
-fi
-if test no = "$strcasecmp"; then
-  AC_CHECK_FUNC(strcmpi, [strcasecmp=strcmpi])
-fi
+dnl Microsoft-specific functions which support positional argument specifiers.
+AC_CHECK_FUNCS([_vfprintf_p _vsprintf_p])
 
-AC_MSG_CHECKING([how to compare strings ignoring case])
-case $strcasecmp in
-no)
-  AC_LIBOBJ(strcasecmp)
-  AC_MSG_RESULT([using own implementation of strcasecmp]) ;;
-strcasecmp)
-  AC_MSG_RESULT([strcasecmp]) ;;
-*)
-  AC_DEFINE_UNQUOTED(strcasecmp, "$strcasecmp",
-    [strcasecmp define for systems which call it something else])
-  AC_MSG_RESULT([$strcasecmp]) ;;
-esac
+AC_PATH_PROG([SPHINX_BUILD], [sphinx-build], [$MISSING sphinx-build])
+AC_ARG_VAR([SPHINX_BUILD], [sphinx-build from python3-sphinx])
 
-AC_MSG_CHECKING(for sgmltools v2 or v3)
-if test : != "$SGMLTOOLS" ; then
-  : ${SGMLTOOLS=sgmltools}
-  case `(exec 2>&5 ; $SGMLTOOLS --version)` in
-  *" version 3"*)
-    AC_MSG_RESULT([$SGMLTOOLS]) ;;
-  *" version 2"*)
-    AC_MSG_RESULT([$SGMLTOOLS]) ;;
-  *)
-    SGMLTOOLS="$MISSING sgmltools"
-    AC_MSG_RESULT(not found) ;;
-  esac
-else
-  AC_MSG_RESULT([$SGMLTOOLS])
-fi
-AC_SUBST(SGMLTOOLS)
-AC_ARG_VAR(SGMLTOOLS, [sgmltools command])
+AC_PATH_PROG([MSGFMT], [msgfmt], [$MISSING msgfmt])
+AC_ARG_VAR([MSGFMT], [msgfmt from gettext])
 
-AC_MSG_CHECKING(for docbook2man)
-if test : != "$DOCBOOK2MAN" ; then
-  : ${DOCBOOK2MAN=docbook2man}
-  $DOCBOOK2MAN 2> /dev/null
-  if test $? = 1 ; then
-    AC_MSG_RESULT([$DOCBOOK2MAN])
-  else
-    DOCBOOK2MAN="$MISSING docbook2man"
-    AC_MSG_RESULT([not found])
-  fi
-else
-  AC_MSG_RESULT([$DOCBOOK2MAN])
-fi
-AC_SUBST(DOCBOOK2MAN)
-AC_ARG_VAR(DOCBOOK2MAN, [docbook2man command])
+AC_ARG_ENABLE([werror],
+  [AS_HELP_STRING([--enable-werror], [enable treating compiler warnings as errors [default=no]])],
+  [case ${enableval} in
+    yes|no) ;;
+  *) AC_MSG_ERROR([bad value ${enableval} for --enable-werror]) ;;
+  esac],
+  [enable_werror=no])
+
+dnl Put -Werror or equivalent in its own make variable so that it can easily
+dnl be overridden by `make WERROR=` if needed during development (e.g. if
+dnl you want to get a full list of compile warnings to fix rather than
+dnl stopping at the first file with warnings).
+WERROR=
+AC_SUBST([WERROR])
 
 dnl extra warning flags for building with GCC
 if test yes = "$GCC"; then
+  WERROR=-Werror
   if test yes = "$cross_compiling"; then
 dnl    AM_CFLAGS="$AM_CFLAGS -Werror -Wall -Wunused -Wpointer-arith\
 dnl      -Wwrite-strings -Wcast-align"
@@ -343,6 +290,10 @@ fi
 AC_SUBST(AM_CFLAGS)
 AC_SUBST(AM_CXXFLAGS)
 
+if test x$enable_werror != xyes; then
+  WERROR=
+fi
+
 dnl See if large file support is available.  Survex is unlikely to need to
 dnl process files > 2GB in size, but LFS is also needed for stat() to work
 dnl on filing systems which return 64 bit inode values, such as CIFS mounts.
@@ -357,9 +308,6 @@ AC_ARG_ENABLE(profiling,
   no) ;;
   *) AC_MSG_ERROR(bad value $enableval for --enable-profiling) ;;
 esac])
-
-HTMLFILES="AUTHORS.htm HACKING.htm NEWS.htm OLDNEWS.htm TODO.htm index.htm 3dformat.htm 3dformat-old.htm"
-AC_SUBST(HTMLFILES)
 
 EXTRA_TEXT="AUTHORS COPYING NEWS TODO ChangeLog"
 AC_SUBST(EXTRA_TEXT)
@@ -390,12 +338,19 @@ AH_BOTTOM(
 #else
 # define PUTC(C, F) putc(C, F)
 #endif
+
+#ifndef __cplusplus
+/* C23 added bool, false and true as keywords - let's emulate that and
+ * avoid every C file which uses these needing to include <stdbool.h>.
+ */
+# include <stdbool.h>
+#endif
 ])
 
 AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  lib/images/Makefile
- tests/Makefile vim/Makefile survex.iss doc/index.htm doc/survex.7
+ tests/Makefile vim/Makefile survex.iss doc/index.htm
  survex.spec lib/Info.plist
  ])
 AC_OUTPUT

@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2003,2005,2006,2010,2013,2014,2015,2016,2019,2021 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,35 +33,15 @@
 #include <math.h>
 #include <float.h>
 
-#ifdef HAVE_PROJ_H
-/* Work around broken check in proj.h:
- * https://github.com/OSGeo/PROJ/issues/1523
- */
-# ifndef PROJ_H
-#  include <proj.h>
-# endif
-#endif
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#include <proj.h>
 
 #include "img_hosted.h"
+#include "str.h"
 #include "useful.h"
-
-/* Set EXPLICIT_FIXED_FLAG to 1 to force an explicit fixed flag to be used
- * in each pos struct, rather than using p[0]==UNFIXED_VAL to indicate
- * unfixed-ness.  This may be slightly faster, but uses more memory.
- */
-#ifndef EXPLICIT_FIXED_FLAG
-# define EXPLICIT_FIXED_FLAG 0
-#endif
 
 typedef double real; /* so we can change the precision used easily */
 #define HUGE_REAL HUGE_VAL
 #define REAL_EPSILON DBL_EPSILON
-
-#if (!EXPLICIT_FIXED_FLAG)
-# define UNFIXED_VAL HUGE_VAL /* if p[0]==UNFIXED_VAL, station is unfixed */
-#endif
 
 #define SPECIAL_EOL		0x0001
 #define SPECIAL_BLANK		0x0002
@@ -97,7 +77,18 @@ typedef enum {
 } q_quantity;
 
 typedef enum {
-   INFER_NULL = -1, INFER_EQUATES, INFER_EXPORTS, INFER_PLUMBS, INFER_SUBSURVEYS
+   INFER_NULL = -1,
+   INFER_EQUATES,
+   INFER_EXPORTS,
+   INFER_PLUMBS,
+   INFER_SUBSURVEYS,
+   /* In Compass DAT files a dummy zero-length leg from a station to itself is
+    * used to provide a place to specify LRUD for the start or end of a
+    * traverse (depending if dimensions are measured at the from or to
+    * station), so we shouldn't warn about equating a station to itself.
+    * This should be set *as well as* INFER_EQUATES.
+    */
+   INFER_EQUATES_SELF_OK
 } infer_what;
 
 /* unsigned long to cope with 16-bit int-s */
@@ -153,8 +144,14 @@ typedef enum {
    SFLAGS_SURFACE = 0, SFLAGS_UNDERGROUND, SFLAGS_ENTRANCE, SFLAGS_EXPORTED,
    SFLAGS_FIXED, SFLAGS_ANON, SFLAGS_WALL,
    /* These values don't need to match img.h, but mustn't clash. */
-   SFLAGS_USED = 11,
-   SFLAGS_SOLVED = 12, SFLAGS_SUSPECTTYPO = 13, SFLAGS_SURVEY = 14, SFLAGS_PREFIX_ENTERED = 15
+   SFLAGS_HANGING = 9,
+   SFLAGS_USED = 10,
+   SFLAGS_SOLVED = 11,
+   SFLAGS_SUSPECTTYPO = 12,
+   SFLAGS_SURVEY = 13,
+   SFLAGS_PREFIX_ENTERED = 14,
+   // If set, use ident.i; if unset, use ident.p
+   SFLAGS_IDENT_INLINE = 15
 } sflags;
 
 /* Mask to AND with to get bits to pass to img library. */
@@ -191,9 +188,16 @@ typedef enum {
     * so can have enum values >= 32 because we only use a
     * bitmask for those readings used in commands.c.
     */
+   CompassDATFr, CompassDATTo,
    CompassDATComp, CompassDATClino, CompassDATBackComp, CompassDATBackClino,
    CompassDATLeft, CompassDATRight, CompassDATUp, CompassDATDown,
-   CompassDATFlags
+   CompassDATFlags,
+
+   WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
+   // Optional pair of readings giving heights above stations on CT surveys.
+   WallsSRVHeights,
+   // Optional delimited LRUD and variance overrides.
+   WallsSRVExtras
 } reading;
 
 /* if IgnoreAll is >= 32, the compiler will choke on this */
@@ -216,7 +220,14 @@ typedef struct Prefix {
    struct Prefix *up, *down, *right;
    struct Node *stn;
    struct Pos *pos;
-   const char *ident;
+   union {
+       const char *p;
+       char i[sizeof(const char*)];
+   } ident;
+   // A filename:line where this name was used.  If it's a station used in *fix
+   // then this will be the location of such a *fix, otherwise if it's a
+   // station used in *equate then it's the location of such a *equate.
+   // Otherwise it's the first place it was used.
    const char *filename;
    unsigned int line;
    /* If (min_export == 0) then max_export is max # levels above is this
@@ -235,6 +246,10 @@ typedef struct Prefix {
    unsigned short sflags;
    short shape;
 } prefix;
+
+static inline const char *prefix_ident(const prefix *p) {
+    return TSTBIT(p->sflags, SFLAGS_IDENT_INLINE) ? p->ident.i : p->ident.p;
+}
 
 /* survey metadata */
 typedef struct Meta_data {
@@ -264,11 +279,6 @@ typedef struct {
 #define FLAG_FAKE 0x10 /* an equate or leg inside an sdfix */
 #define MASK_REVERSEDIRN 0x03
 
-/* reverse leg - deltas & vars stored on other dirn */
-typedef struct LinkRev {
-   linkcommon l;
-} linkrev;
-
 /* forward leg - deltas & vars stored here */
 typedef struct Link {
    linkcommon l;
@@ -284,15 +294,19 @@ typedef struct Node {
    struct Prefix *name;
    struct Link *leg[3];
    struct Node *prev, *next;
+   // Used in netartic.c to identify unconnected components and articulation
+   // points within components.
+   //
+   // Used in matrix.c to record the matrix row corresponding to this node
+   // or -1 for nodes already fixed (more than one node may map to the same
+   // row).
    long colour;
 } node;
 
 /* station position */
 typedef struct Pos {
-   delta p; /* Position */
-#if EXPLICIT_FIXED_FLAG
-   unsigned char fFixed; /* flag indicating if station is a fixed point */
-#endif
+   // Easting, Northing, Altitude.
+   real p[3];
 } pos;
 
 /*
@@ -325,10 +339,17 @@ typedef struct Settings {
    bool f_bearing_quadrants;
    bool f_backbearing_quadrants;
    bool dash_for_anon_wall_station;
+   bool from_equals_to_is_only_a_warning;
    unsigned long len_footinches; /* argument that this could be an array of Q_MAC, but bitbashing is easier??? */
    unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;
+   /* STYLE_xxx value to process data as. */
    int style;
+   /* STYLE_xxx value to put in 3d file (different for Compass DAT diving
+    * data, as the data in the DAT file is always presented in the format
+    * tape,compass,clino even if that isn't how it was really measured).
+    */
+   int recorded_style;
    prefix *Prefix;
    prefix *begin_survey; /* used to check BEGIN and END match */
    short *Translate; /* if short is >= 16 bits, which ANSI requires */
@@ -337,18 +358,36 @@ typedef struct Settings {
    real sc[Q_MAC];
    real units[Q_MAC];
    const reading *ordering;
+   long begin_lpos; /* File offset for start of BEGIN line */
    int begin_lineno; /* 0 means no block started in this file */
+   int begin_col; /* Column of prefix in BEGIN line (or 0 if none) */
    int flags;
-   projPJ proj;
+   char* proj_str;
    /* Location at which we calculate the declination if
-    * z[Q_DECLINATION] == HUGE_REAL. */
-   real dec_x, dec_y, dec_z;
-   /* Cached auto-declination, or HUGE_REAL for no cached value.  Only
-    * meaningful if date1 != -1.
+    * z[Q_DECLINATION] == HUGE_REAL.
+    *
+    * Latitude and longitude are in radians; altitude is in metres above the
+    * ellipsoid.
+    */
+   real dec_lat, dec_lon, dec_alt;
+   /* Cached auto-declination in radians, or HUGE_REAL for no cached value.
+    * Only meaningful if days1 != -1.
     */
    real declination;
-   /* Grid convergence. */
+   double min_declination, max_declination;
+   int min_declination_days, max_declination_days;
+   const char* dec_filename;
+   int dec_line;
+   /* Copy of the text of the `*declination auto ...` line (malloced). */
+   char* dec_context;
+   /* Grid convergence in radians. */
    real convergence;
+   /* Input grid convergence in radians. */
+   real input_convergence;
+   /* Rotation from North for `*data cartesian`. */
+   real cartesian_rotation;
+   /* Which North to use for `*data cartesian`. */
+   enum { TRUE_NORTH, GRID_NORTH, MAGNETIC_NORTH } cartesian_north;
    meta_data * meta;
 } settings;
 
@@ -356,21 +395,21 @@ typedef struct Settings {
 extern settings *pcs;
 extern prefix *root;
 extern prefix *anon_list;
+extern node *fixedlist;
 extern node *stnlist;
 extern unsigned long optimize;
-extern projPJ proj_out;
 extern char * proj_str_out;
+extern PJ * pj_cached;
 
-extern char *survey_title;
-extern int survey_title_len;
+extern string survey_title;
 
 extern bool fExplicitTitle;
 extern long cLegs, cStns, cComponents;
 extern FILE *fhErrStat;
 extern img *pimg;
 extern real totadj, total, totplan, totvert;
-extern real min[3], max[3];
-extern prefix *pfxHi[3], *pfxLo[3];
+extern real min[6], max[6];
+extern prefix *pfxHi[6], *pfxLo[6];
 extern bool fQuiet; /* just show brief summary + errors */
 extern bool fMute; /* just show errors */
 extern bool fSuppress; /* only output 3d file */
@@ -384,19 +423,11 @@ extern bool fSuppress; /* only output 3d file */
 #define reverse_leg_dirn(L) ((L)->l.reverse & MASK_REVERSEDIRN)
 #define reverse_leg(L) ((L)->l.to->leg[reverse_leg_dirn(L)])
 
-#if EXPLICIT_FIXED_FLAG
-# define pfx_fixed(N) ((N)->pos->fFixed)
-# define pos_fixed(P) ((P)->fFixed)
-# define fix(S) (S)->name->pos->fFixed = (char)fTrue
-# define fixpos(P) (P)->fFixed = (char)fTrue
-# define unfix(S) (S)->name->pos->fFixed = (char)fFalse
-#else
-# define pfx_fixed(N) ((N)->pos->p[0] != UNFIXED_VAL)
-# define pos_fixed(P) ((P)->p[0] != UNFIXED_VAL)
-# define fix(S) NOP
-# define fixpos(P) NOP
-# define unfix(S) POS((S), 0) = UNFIXED_VAL
-#endif
+/* if p[0]==UNFIXED_VAL, station is unfixed */
+#define UNFIXED_VAL HUGE_VAL
+#define pfx_fixed(N) ((N)->pos->p[0] != UNFIXED_VAL)
+#define pos_fixed(P) ((P)->p[0] != UNFIXED_VAL)
+#define unfix(S) POS((S), 0) = UNFIXED_VAL
 #define fixed(S) pfx_fixed((S)->name)
 
 /* macros for special chars */
@@ -446,5 +477,7 @@ typedef struct lrudlist {
 extern lrudlist * model;
 
 extern lrud ** next_lrud;
+
+extern char output_separator;
 
 #endif /* CAVERN_H */

@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003,2004,2005,2006,2007,2010,2011,2012,2013,2014,2015,2017,2018 Olly Betts
+//  Copyright (C) 2003-2022 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,9 +21,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <wx/confbase.h>
 #include <wx/image.h>
@@ -143,7 +141,8 @@ string GetGLSystemDescription()
     info += (const char*)glGetString(GL_VENDOR);
     info += '\n';
     info += (const char*)glGetString(GL_RENDERER);
-#if defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__
+#if !(wxUSE_GLCANVAS_EGL-0) && \
+    (defined __WXGTK__ || defined __WXX11__ || defined __WXMOTIF__)
     info += string_format("\nGLX %0.1f\n", wxGLCanvas::GetGLXVersion() * 0.1);
 #else
     info += '\n';
@@ -274,11 +273,6 @@ log_gl_error(const wxChar * str, GLenum error_code)
 //  GLAPen
 //
 
-GLAPen::GLAPen()
-{
-    components[0] = components[1] = components[2] = 0.0;
-}
-
 void GLAPen::SetColour(double red, double green, double blue)
 {
     components[0] = red;
@@ -394,30 +388,17 @@ bool GLAList::DrawList() const {
 
 BEGIN_EVENT_TABLE(GLACanvas, wxGLCanvas)
     EVT_SIZE(GLACanvas::OnSize)
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
+    EVT_MOVE(GLACanvas::OnMove)
+#endif
 END_EVENT_TABLE()
 
 // Pass wxWANTS_CHARS so that the window gets cursor keys on MS Windows.
 GLACanvas::GLACanvas(wxWindow* parent, int id)
     : wxGLCanvas(parent, id, wx_gl_attribs, wxDefaultPosition,
 		 wxDefaultSize, wxWANTS_CHARS),
-      ctx(this), m_Translation(), blob_method(UNKNOWN), cross_method(UNKNOWN),
-      x_size(0), y_size(0)
+      ctx(this)
 {
-    // Constructor.
-
-    m_Quadric = NULL;
-    m_Pan = 0.0;
-    m_Tilt = 0.0;
-    m_Scale = 0.0;
-    m_VolumeDiameter = 1.0;
-    m_SmoothShading = false;
-    m_Texture = 0;
-    m_Textured = false;
-    m_Perspective = false;
-    m_Fog = false;
-    m_AntiAlias = false;
-    list_flags = 0;
-    alpha = 1.0;
 }
 
 GLACanvas::~GLACanvas()
@@ -432,8 +413,14 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
+    content_scale_factor = wxGLCanvas::GetContentScaleFactor();
+#endif
+
     // Update our record of the client area size and centre.
     GetClientSize(&x_size, &y_size);
+    x_size *= content_scale_factor;
+    y_size *= content_scale_factor;
     if (x_size < 1) x_size = 1;
     if (y_size < 1) y_size = 1;
 
@@ -521,7 +508,7 @@ void GLACanvas::FirstShow()
     wxString path = wmsg_cfgpth();
     path += wxCONFIG_PATH_SEPARATOR;
     path += wxT("unifont.pixelfont");
-    if (!m_Font.load(path)) {
+    if (!m_Font.load(path, content_scale_factor >= 2)) {
 	// FIXME: do something better.
 	// We have this message available: Error in format of font file “%s”
 	fprintf(stderr, "Failed to parse compiled-in font data\n");
@@ -619,37 +606,73 @@ void GLACanvas::Clear()
     CHECK_GL_ERROR("Clear", "glClear");
 }
 
-void GLACanvas::SetScale(Double scale)
+void GLACanvas::ClearNative()
+{
+    // Clear the canvas to the native background colour.
+
+    wxColour background_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME);
+    glClearColor(background_colour.Red() / 255.,
+		 background_colour.Green() / 255.,
+		 background_colour.Blue() / 255.,
+		 1.0);
+    CHECK_GL_ERROR("ClearNative", "glClearColor");
+    glClear(GL_COLOR_BUFFER_BIT);
+    CHECK_GL_ERROR("ClearNative", "glClear");
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    CHECK_GL_ERROR("ClearNative", "glClearColor (2)");
+}
+
+void GLACanvas::SetScale(double scale)
 {
     if (scale != m_Scale) {
-	vector<GLAList>::iterator i;
-	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	    i->invalidate_if(INVALIDATE_ON_SCALE);
+	for (auto & i : drawing_lists) {
+	    i.invalidate_if(INVALIDATE_ON_SCALE);
 	}
 
 	m_Scale = scale;
     }
 }
 
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
+void GLACanvas::UpdateContentScaleFactor()
+{
+    double new_content_scale_factor = wxGLCanvas::GetContentScaleFactor();
+    if (new_content_scale_factor == content_scale_factor) return;
+
+    content_scale_factor = new_content_scale_factor;
+    for (auto& i : drawing_lists) {
+	i.invalidate_if(INVALIDATE_ON_HIDPI);
+    }
+}
+
+void GLACanvas::OnMove(wxMoveEvent & event)
+{
+    UpdateContentScaleFactor();
+    event.Skip();
+}
+#endif
+
 void GLACanvas::OnSize(wxSizeEvent & event)
 {
+    UpdateContentScaleFactor();
+
     wxSize size = event.GetSize();
 
+    int new_w = size.GetWidth() * content_scale_factor;
+    int new_h = size.GetHeight() * content_scale_factor;
+    // The width and height go to zero when the panel is dragged right
+    // across so we clamp them to be at least 1 to avoid problems.
+    if (new_w < 1) new_w = 1;
+    if (new_h < 1) new_h = 1;
     unsigned int mask = 0;
-    if (size.GetWidth() != x_size) mask |= INVALIDATE_ON_X_RESIZE;
-    if (size.GetHeight() != y_size) mask |= INVALIDATE_ON_Y_RESIZE;
+    if (new_w != x_size) mask |= INVALIDATE_ON_X_RESIZE;
+    if (new_h != y_size) mask |= INVALIDATE_ON_Y_RESIZE;
     if (mask) {
-	vector<GLAList>::iterator i;
-	for (i = drawing_lists.begin(); i != drawing_lists.end(); ++i) {
-	    i->invalidate_if(mask);
+	x_size = new_w;
+	y_size = new_h;
+	for (auto& i : drawing_lists) {
+	    i.invalidate_if(mask);
 	}
-
-	// The width and height go to zero when the panel is dragged right
-	// across so we clamp them to be at least 1 to avoid problems.
-	x_size = size.GetWidth();
-	y_size = size.GetHeight();
-	if (x_size < 1) x_size = 1;
-	if (y_size < 1) y_size = 1;
     }
 
     event.Skip();
@@ -808,19 +831,19 @@ void GLACanvas::SetDataTransform()
 
     double aspect = double(y_size) / double(x_size);
 
-    Double near_plane = 1.0;
+    GLdouble near_plane = 1.0;
     if (m_Perspective) {
-	Double lr = near_plane * tan(rad(25.0));
-	Double far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
-	Double tb = lr * aspect;
+	GLdouble lr = near_plane * tan(rad(25.0));
+	GLdouble far_plane = m_VolumeDiameter * 5 + near_plane; // FIXME: work out properly
+	GLdouble tb = lr * aspect;
 	glFrustum(-lr, lr, -tb, tb, near_plane, far_plane);
 	CHECK_GL_ERROR("SetViewportAndProjection", "glFrustum");
     } else {
 	near_plane = 0.0;
 	assert(m_Scale != 0.0);
-	Double lr = m_VolumeDiameter / m_Scale * 0.5;
-	Double far_plane = m_VolumeDiameter + near_plane;
-	Double tb = lr;
+	GLdouble lr = m_VolumeDiameter / m_Scale * 0.5;
+	GLdouble far_plane = m_VolumeDiameter + near_plane;
+	GLdouble tb = lr;
 	if (aspect >= 1.0) {
 	    tb *= aspect;
 	} else {
@@ -1017,7 +1040,7 @@ void GLACanvas::DrawListZPrepass(unsigned int l)
     glDepthFunc(GL_LESS);
 }
 
-void GLACanvas::DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation)
+void GLACanvas::DrawList2D(unsigned int l, glaCoord x, glaCoord y, double rotation)
 {
     glMatrixMode(GL_PROJECTION);
     CHECK_GL_ERROR("DrawList2D", "glMatrixMode");
@@ -1197,6 +1220,27 @@ void GLACanvas::EndPolygon()
     CHECK_GL_ERROR("EndPolygon", "glEnd GL_POLYGON");
 }
 
+void GLACanvas::BeginPoints()
+{
+    // Commence drawing points.
+
+    glPushAttrib(GL_POINT_BIT);
+    CHECK_GL_ERROR("BeginPoints", "glPushAttrib");
+    glPointSize(3);
+    CHECK_GL_ERROR("BeginPoints", "glPointSize");
+    glBegin(GL_POINTS);
+}
+
+void GLACanvas::EndPoints()
+{
+    // Finish drawing points.
+
+    glEnd();
+    CHECK_GL_ERROR("EndPoints", "glEnd GL_POINTS");
+    glPopAttrib();
+    CHECK_GL_ERROR("EndPoints", "glPopAttrib");
+}
+
 void GLACanvas::PlaceVertex(glaCoord x, glaCoord y, glaCoord z)
 {
     // Place a vertex for the current object being drawn.
@@ -1339,6 +1383,8 @@ void GLACanvas::BeginCrosses()
 {
     // Plot crosses.
     if (cross_method == SPRITE) {
+	list_flags |= NEVER_CACHE;
+	SetDataTransform();
 	glPushAttrib(GL_ENABLE_BIT|GL_POINT_BIT);
 	CHECK_GL_ERROR("BeginCrosses", "glPushAttrib");
 	glBindTexture(GL_TEXTURE_2D, m_CrossTexture);
@@ -1531,28 +1577,6 @@ void GLACanvas::DrawSemicircle(gla_colour edge, gla_colour fill,
     CHECK_GL_ERROR("DrawSemicircle", "glPopMatrix");
 }
 
-void
-GLACanvas::DrawTriangle(gla_colour edge, gla_colour fill,
-			const Vector3 &p0, const Vector3 &p1, const Vector3 &p2)
-{
-    // Draw a filled triangle with an edge.
-
-    SetColour(fill);
-    BeginTriangles();
-    PlaceIndicatorVertex(p0.GetX(), p0.GetY());
-    PlaceIndicatorVertex(p1.GetX(), p1.GetY());
-    PlaceIndicatorVertex(p2.GetX(), p2.GetY());
-    EndTriangles();
-
-    SetColour(edge);
-    glBegin(GL_LINE_STRIP);
-    PlaceIndicatorVertex(p0.GetX(), p0.GetY());
-    PlaceIndicatorVertex(p1.GetX(), p1.GetY());
-    PlaceIndicatorVertex(p2.GetX(), p2.GetY());
-    glEnd();
-    CHECK_GL_ERROR("DrawTriangle", "glEnd GL_LINE_STRIP");
-}
-
 void GLACanvas::EnableDashedLines()
 {
     // Enable dashed lines, and start drawing in them.
@@ -1570,7 +1594,7 @@ void GLACanvas::DisableDashedLines()
 }
 
 bool GLACanvas::Transform(const Vector3 & v,
-			  double* x_out, double* y_out, double* z_out) const
+			  glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const
 {
     // Convert from data coordinates to screen coordinates.
 
@@ -1580,8 +1604,8 @@ bool GLACanvas::Transform(const Vector3 & v,
 		      x_out, y_out, z_out);
 }
 
-void GLACanvas::ReverseTransform(Double x, Double y,
-				 double* x_out, double* y_out, double* z_out) const
+void GLACanvas::ReverseTransform(double x, double y,
+				 glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const
 {
     // Convert from screen coordinates to data coordinates.
 
@@ -1591,14 +1615,14 @@ void GLACanvas::ReverseTransform(Double x, Double y,
     CHECK_GL_ERROR("ReverseTransform", "gluUnProject");
 }
 
-Double GLACanvas::SurveyUnitsAcrossViewport() const
+double GLACanvas::SurveyUnitsAcrossViewport() const
 {
     // Measure the current viewport in survey units, taking into account the
     // current display scale.
 
     assert(m_Scale != 0.0);
     list_flags |= INVALIDATE_ON_SCALE;
-    Double result = m_VolumeDiameter / m_Scale;
+    double result = m_VolumeDiameter / m_Scale;
     if (y_size < x_size) {
 	result = result * x_size / y_size;
     }

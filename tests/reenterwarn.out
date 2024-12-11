@@ -1,0 +1,29 @@
+./reenterwarn.svx:4:8: warning: Reentering an existing survey is deprecated
+ *begin 1
+        ^
+./reenterwarn.svx:2: info: Originally entered here
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from b at 0.00m to b at 0.00m)
+North-South range = 1.00m (from b at 1.00m to a at 0.00m)
+East-West range = 0.00m (from b at 0.00m to b at 0.00m)
+   2 1-nodes.
+There were 1 warning(s).

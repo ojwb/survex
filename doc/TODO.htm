@@ -25,8 +25,6 @@ over?
 
 <ul>
 
-<li>Compare HPGL export with what printhpgl used to give.
-
 <li>loading a .3d file with no survey data (or which has a valid header but is broken later) with a survey already loaded doesn't work well.
 
 <li>After keyboard controlled movement, the measuring line/circle doesn't
@@ -149,10 +147,6 @@ visual fidelity check, check which is fastest.
 
 <li>improve 3d torture test and try to automate its use if possible.
 
-<li>Compass .mak and .plt and CMAP .xyz in test suite?
-
-<li>img.c: explicitly test routines in test suite?
-
 </ul>
 
 <H2>Miscellaneous</H2>
@@ -243,8 +237,6 @@ points?
 <li>Allow angles as deg/min/sec (for theodolite data) (060&deg;10'15" as 060 10
 15, or 060.1005 (crap notation))
 
-<li>Add support for bearings of form N20E (ie [NS][0-9]+[EW])?
-
 <li>should % after a clino reading work?
 
 <li>Fixing a point by triangulation?
@@ -281,8 +273,6 @@ repeated?
 </ul>
 
 <li>Infinite sds so we can fix in x and y only (or z only)?
-
-<li>legs: "commented out" flag?  syntax check data but otherwise ignore
 
 <li>legs: hydrology - fossil/active/not recorded/static water/underwater
 (sump) [diving underwater by default? except style can mean altimeter
@@ -328,10 +318,6 @@ flag to produce points for a surface triangulation...
 <li>?outlaw prefixes on stations in data legs (as Todd has lobbied for)
 and then the prefix of a leg == prefix of each end...?
 
-<li>comma separated dates in *date?
-
-<li>Find a solution to Thilo's "." problem.
-
 <li>Units in *fix (currently metres)
 
 </ul>
@@ -339,10 +325,6 @@ and then the prefix of a leg == prefix of each end...?
 <H2>img library</H2>
 
 <ul>
-
-<li>eliminate duplicate img_LABELs when reading .PLT files.
-
-<li>img should return img_XSECT from Compass PLT files.
 
 <li>make img more modular (convert to C++?)
 

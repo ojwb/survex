@@ -41,7 +41,7 @@ string GetGLSystemDescription();
 
 // #define GLA_DEBUG
 
-typedef Double glaCoord;
+typedef GLdouble glaCoord;
 
 typedef GLfloat glaTexCoord;
 
@@ -67,10 +67,10 @@ enum gla_colour {
 class GLAPen {
     friend class GLACanvas; // allow direct access to components
 
-    double components[3]; // red, green, blue
+    double components[3] = { 0.0, 0.0, 0.0 }; // red, green, blue
 
 public:
-    GLAPen();
+    GLAPen() {}
 
     void SetColour(double red, double green, double blue); // arguments in range 0 to 1.0
     void Interpolate(const GLAPen&, double how_far);
@@ -81,10 +81,10 @@ public:
 };
 
 class GLAList {
-    GLuint gl_list;
-    unsigned int flags;
+    GLuint gl_list = 0;
+    unsigned int flags = 0;
   public:
-    GLAList() : gl_list(0), flags(0) { }
+    GLAList() { }
     GLAList(GLuint gl_list_, unsigned int flags_)
 	: gl_list(gl_list_), flags(flags_) { }
     operator bool() { return gl_list != 0; }
@@ -113,35 +113,49 @@ class GLACanvas : public wxGLCanvas {
     GLint viewport[4];
 
     // Viewing volume diameter:
-    glaCoord m_VolumeDiameter;
+    glaCoord m_VolumeDiameter = 1.0;
 
     // Parameters for plotting data:
-    Double m_Pan, m_Tilt;
-    Double m_Scale;
+    double m_Pan = 0.0, m_Tilt = 0.0;
+    double m_Scale = 0.0;
     Vector3 m_Translation;
 
     BitmapFont m_Font;
 
-    GLUquadric* m_Quadric;
+    GLUquadric* m_Quadric = nullptr;
 
-    GLuint m_Texture;
+    GLuint m_Texture = 0;
     GLuint m_BlobTexture;
     GLuint m_CrossTexture;
 
-    Double alpha;
+    double alpha = 1.0;
 
-    bool m_SmoothShading;
-    bool m_Textured;
-    bool m_Perspective;
-    bool m_Fog;
-    bool m_AntiAlias;
+    bool m_SmoothShading = false;
+    bool m_Textured = false;
+    bool m_Perspective = false;
+    bool m_Fog = false;
+    bool m_AntiAlias = false;
     bool save_hints;
     enum { UNKNOWN = 0, POINT = 'P', LINES = 'L', SPRITE = 'S' };
-    int blob_method;
-    int cross_method;
+    int blob_method = UNKNOWN;
+    int cross_method = UNKNOWN;
 
-    int x_size;
-    int y_size;
+    int x_size = 0;
+    int y_size = 0;
+
+    // wxHAS_DPI_INDEPENDENT_PIXELS is new in 3.1.6.  In older versions we just
+    // always do the scaling which is slightly less efficient for platforms
+    // where pixel coordinates don't scale with DPI.
+#if defined wxHAS_DPI_INDEPENDENT_PIXELS || \
+    !wxCHECK_VERSION(3,1,6)
+# define HAS_DPI_INDEPENDENT_PIXELS
+#endif
+
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
+    double content_scale_factor = 1.0;
+#else
+    static constexpr unsigned content_scale_factor = 1;
+#endif
 
     vector<GLAList> drawing_lists;
 
@@ -149,10 +163,11 @@ class GLACanvas : public wxGLCanvas {
 	INVALIDATE_ON_SCALE = 1,
 	INVALIDATE_ON_X_RESIZE = 2,
 	INVALIDATE_ON_Y_RESIZE = 4,
-	NEVER_CACHE = 8,
-	CACHED = 16
+	INVALIDATE_ON_HIDPI = 8,
+	NEVER_CACHE = 16,
+	CACHED = 32
     };
-    mutable unsigned int list_flags;
+    mutable unsigned int list_flags = 0;
 
     wxString vendor, renderer;
 
@@ -167,6 +182,7 @@ public:
     void FirstShow();
 
     void Clear();
+    void ClearNative();
     void StartDrawing();
     void FinishDrawing();
 
@@ -176,7 +192,7 @@ public:
 
     void DrawList(unsigned int l);
     void DrawListZPrepass(unsigned int l);
-    void DrawList2D(unsigned int l, glaCoord x, glaCoord y, Double rotation);
+    void DrawList2D(unsigned int l, glaCoord x, glaCoord y, double rotation);
     void InvalidateList(unsigned int l) {
 	if (l < drawing_lists.size()) {
 	    // Invalidate any existing cached list.
@@ -210,6 +226,8 @@ public:
     void EndPolyloop();
     void BeginPolygon();
     void EndPolygon();
+    void BeginPoints();
+    void EndPoints();
     void BeginBlobs();
     void EndBlobs();
     void BeginCrosses();
@@ -221,8 +239,6 @@ public:
 			     glaCoord x0, glaCoord y0, glaCoord w, glaCoord h);
     void DrawCircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius);
     void DrawSemicircle(gla_colour edge, gla_colour fill, glaCoord cx, glaCoord cy, glaCoord radius, glaCoord start);
-    void DrawTriangle(gla_colour edge, gla_colour fill,
-		      const Vector3 &p0, const Vector3 &p1, const Vector3 &p2);
 
     void DrawBlob(glaCoord x, glaCoord y, glaCoord z);
     void DrawBlob(glaCoord x, glaCoord y);
@@ -252,7 +268,7 @@ public:
 	m_Pan = pan;
 	m_Tilt = tilt;
     }
-    void SetScale(Double);
+    void SetScale(double);
     void SetTranslation(const Vector3 &v) {
 	m_Translation = v;
     }
@@ -264,15 +280,15 @@ public:
     }
     void AddTranslationScreenCoordinates(int dx, int dy);
 
-    bool Transform(const Vector3 & v, double* x_out, double* y_out, double* z_out) const;
-    void ReverseTransform(Double x, Double y, double* x_out, double* y_out, double* z_out) const;
+    bool Transform(const Vector3 & v, glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const;
+    void ReverseTransform(double x, double y, glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const;
 
     int GetFontSize() const { return m_Font.get_font_size(); }
 
     void ToggleSmoothShading();
     bool GetSmoothShading() const { return m_SmoothShading; }
 
-    Double SurveyUnitsAcrossViewport() const;
+    double SurveyUnitsAcrossViewport() const;
 
     void ToggleTextured();
     bool GetTextured() const { return m_Textured; }
@@ -292,12 +308,42 @@ public:
 
     void PolygonOffset(bool on) const;
 
-    int GetXSize() const { list_flags |= INVALIDATE_ON_X_RESIZE; return x_size; }
-    int GetYSize() const { list_flags |= INVALIDATE_ON_Y_RESIZE; return y_size; }
+    int GetXSize() const {
+	list_flags |= INVALIDATE_ON_X_RESIZE;
+	return x_size;
+    }
+
+    int GetYSize() const {
+	list_flags |= INVALIDATE_ON_Y_RESIZE;
+	return y_size;
+    }
+
+#ifdef HAS_DPI_INDEPENDENT_PIXELS
+    double GetContentScaleFactor() const {
+	list_flags |= INVALIDATE_ON_HIDPI;
+	return content_scale_factor;
+    }
+
+    void UpdateContentScaleFactor();
+    void OnMove(wxMoveEvent & event);
+#else
+    // wxWindow::GetContentScaleFactor() will always return 1.0, so arrange
+    // things so it's a compile-time constant the compiler can optimise away.
+    // Use a macro so we can return unsigned instead of double without a lot
+    // of pain from trying to override a virtual method while changing the
+    // return type.
+# define GetContentScaleFactor() 1u
+    void UpdateContentScaleFactor() { }
+#endif
 
     void OnSize(wxSizeEvent & event);
 
     glaCoord GetVolumeDiameter() const { return m_VolumeDiameter; }
+
+    void ScaleMouseEvent(wxMouseEvent& e) const {
+	e.SetX(e.GetX() * content_scale_factor);
+	e.SetY(e.GetY() * content_scale_factor);
+    }
 
 private:
     DECLARE_EVENT_TABLE()

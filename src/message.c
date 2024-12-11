@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017,2019 Olly Betts
+ * Copyright (C) 1993-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,7 @@
 
 /*#define DEBUG 1*/
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -35,7 +33,7 @@
 #include "whichos.h"
 #include "filename.h"
 #include "message.h"
-#include "osdepend.h"
+#include "osalloc.h"
 #include "filelist.h"
 #include "debug.h"
 #include "str.h"
@@ -52,12 +50,6 @@
 #endif
 
 #include <sys/stat.h>
-
-/* For funcs which want to be immune from messing around with different
- * calling conventions */
-#ifndef CDECL
-# define CDECL
-#endif
 
 int msg_warnings = 0; /* keep track of how many warnings we've given */
 int msg_errors = 0;   /* and how many (non-fatal) errors */
@@ -238,9 +230,10 @@ default_charset(void)
 
 	 if (only_digit) goto iso;
 
-	 switch (tolower(chset[0])) {
+	 switch (tolower((unsigned char)chset[0])) {
 	  case 'i':
-	    if (tolower(chset[1]) == 's' && tolower(chset[2]) == 'o') {
+	    if (tolower((unsigned char)chset[1]) == 's' &&
+		tolower((unsigned char)chset[2]) == 'o') {
 	       chset += 3;
 	       iso:
 	       if (strncmp(chset, "8859", 4) == 0) {
@@ -257,7 +250,8 @@ default_charset(void)
 	    }
 	    break;
 	  case 'u':
-	    if (tolower(chset[1]) == 't' && tolower(chset[2]) == 'f') {
+	    if (tolower((unsigned char)chset[1]) == 't' &&
+		tolower((unsigned char)chset[2]) == 'f') {
 	       chset += 3;
 	       while (chset < p && *chset && !isdigit((unsigned char)*chset))
 		  chset++;
@@ -302,6 +296,16 @@ add_unicode(int charset, unsigned char *p, int value)
 	 *p = value;
 	 return 1;
       }
+      switch (value) {
+	case 0x2032:
+	  /* prime -> spacing acute accent */
+	  *p = '\xb4';
+	  return 1;
+	case 0x2033:
+	  /* double prime -> 2x spacing acute accent */
+	  p[1] = *p = '\xb4';
+	  return 2;
+      }
       break;
    case CHARSET_ISO_8859_2:
       if (value >= 0xa0) {
@@ -329,6 +333,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x105: v = '\xb1'; break;
 	    case 0x2db: v = '\xb2'; break;
 	    case 0x142: v = '\xb3'; break;
+	    case 0x2032: v = '\xb4'; break; /* prime -> spacing acute accent */
 	    case 0x13e: v = '\xb5'; break;
 	    case 0x15b: v = '\xb6'; break;
 	    case 0x2c7: v = '\xb7'; break;
@@ -337,6 +342,7 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x165: v = '\xbb'; break;
 	    case 0x17a: v = '\xbc'; break;
 	    case 0x2dd: v = '\xbd'; break;
+	    case 0x2033: v = '\xbd'; break; /* double prime -> spacing double acute accent */
 	    case 0x17e: v = '\xbe'; break;
 	    case 0x17c: v = '\xbf'; break;
 	    case 0x154: v = '\xc0'; break;
@@ -455,10 +461,12 @@ add_unicode(int charset, unsigned char *p, int value)
 	    case 0x017b: v = '\xaf'; break;
 	    case 0x02db: v = '\xb2'; break;
 	    case 0x0142: v = '\xb3'; break;
+	    case 0x2032: v = '\xb4'; break; /* prime -> spacing acute accent */
 	    case 0x0105: v = '\xb9'; break;
 	    case 0x015f: v = '\xba'; break; /* scedil */
 	    case 0x013d: v = '\xbc'; break;
 	    case 0x02dd: v = '\xbd'; break;
+	    case 0x2033: v = '\xbd'; break; /* double prime -> spacing double acute accent */
 	    case 0x013e: v = '\xbe'; break;
 	    case 0x017c: v = '\xbf'; break;
 	    case 0x0154: v = '\xc0'; break;
@@ -509,7 +517,7 @@ add_unicode(int charset, unsigned char *p, int value)
        case 0x0160: value = 0x8a; break; /* Scaron */
        case 0x0152: value = 0x8c; break; /* OElig */
        case 0x017d: value = 0x8e; break; /* Zcaron */
-       case 0x2019: value = 0x92; break; /* lsquo */
+       case 0x2019: value = 0x92; break; /* rsquo */
        case 0x201c: value = 0x93; break; /* ldquo */
        case 0x201d: value = 0x94; break; /* rdquo */
        case 0x0161: value = 0x9a; break; /* scaron */
@@ -517,24 +525,29 @@ add_unicode(int charset, unsigned char *p, int value)
        case 0x017e: value = 0x9e; break; /* zcaron */
 #if 0
        /* there are a few other obscure ones we don't currently need */
-       case 0x20ac: value = 0x80; break;
-       case 0x201a: value = 0x82; break;
-       case 0x0192: value = 0x83; break;
-       case 0x201e: value = 0x84; break;
-       case 0x2020: value = 0x86; break;
-       case 0x2021: value = 0x87; break;
-       case 0x02c6: value = 0x88; break;
-       case 0x2030: value = 0x89; break;
-       case 0x2039: value = 0x8b; break;
-       case 0x2018: value = 0x91; break;
-       case 0x2022: value = 0x95; break;
-       case 0x2013: value = 0x96; break;
-       case 0x2014: value = 0x97; break;
-       case 0x02dc: value = 0x98; break;
-       case 0x2122: value = 0x99; break;
-       case 0x203a: value = 0x9b; break;
-       case 0x0178: value = 0x9f; break;
+       case 0x20ac: value = 0x80; break; /* euro */
+       case 0x201a: value = 0x82; break; /* sbquo */
+       case 0x0192: value = 0x83; break; /* fnof */
+       case 0x201e: value = 0x84; break; /* bdquo */
+       case 0x2020: value = 0x86; break; /* dagger */
+       case 0x2021: value = 0x87; break; /* Dagger */
+       case 0x02c6: value = 0x88; break; /* circ */
+       case 0x2030: value = 0x89; break; /* permil */
+       case 0x2039: value = 0x8b; break; /* lsaquo */
+       case 0x2018: value = 0x91; break; /* lsquo */
+       case 0x2022: value = 0x95; break; /* bull */
+       case 0x2013: value = 0x96; break; /* ndash */
+       case 0x2014: value = 0x97; break; /* mdash */
+       case 0x02dc: value = 0x98; break; /* tilde */
+       case 0x2122: value = 0x99; break; /* trade */
+       case 0x203a: value = 0x9b; break; /* rsaquo */
+       case 0x0178: value = 0x9f; break; /* Yuml */
 #endif
+       case 0x2032: value = 0xb4; break; /* prime -> spacing acute accent */
+       case 0x2033:
+	  /* double prime -> 2x spacing acute accent */
+	  p[1] = *p = '\xb4';
+	  return 2;
       }
       if (value < 0x100) {
 	 *p = value;
@@ -561,6 +574,16 @@ add_unicode(int charset, unsigned char *p, int value)
       if (value >= 160 && value < 256) {
 	 *p = (int)uni2dostab[value - 160];
 	 return 1;
+      }
+      switch (value) {
+	case 0x2032:
+	  /* prime -> spacing acute accent */
+	  *p = '\xef';
+	  return 1;
+	case 0x2033:
+	  /* double prime -> 2x spacing acute accent */
+	  p[1] = *p = '\xef';
+	  return 2;
       }
 #if 0
       if (value == 305) { /* LATIN SMALL LETTER DOTLESS I */
@@ -685,6 +708,10 @@ add_unicode(int charset, unsigned char *p, int value)
       *p = '"'; return 1;
     case 0x2026: /* &hellip; */
       *p = '.'; p[1] = '.'; p[2] = '.'; return 3;
+    case 0x2032: /* prime -> apostrophe */
+      *p = '\''; return 1;
+    case 0x2033: /* double prime -> double quote */
+      *p = '"'; return 1;
     case 0x2192: /* &rarr; */
       *p = '-'; p[1] = '>'; return 2;
     case 0x1d4d: /* gradient symbol */
@@ -711,7 +738,7 @@ static const char *pth_cfg_files = "";
 static int num_msgs = 0;
 static char **msg_array = NULL;
 
-static bool msg_lang_explicit = fFalse;
+static bool msg_lang_explicit = false;
 const char *msg_lang = NULL;
 const char *msg_lang2 = NULL;
 
@@ -890,12 +917,9 @@ msg_appname(void)
 }
 
 void
-msg_init_(char * const *argv)
+(msg_init)(char * const *argv)
 {
    char *p;
-#if OS_UNIX_MACOS
-   int msg_macos_relocatable = 0;
-#endif
    SVX_ASSERT(argv);
 
    /* Point to argv[0] itself so we report a more helpful error if the
@@ -909,9 +933,15 @@ msg_init_(char * const *argv)
    p = leaf_from_fnm(argv[0]);
    appname_copy = p;
    while (*p) {
-      *p = tolower(*p);
+      *p = tolower((unsigned char)*p);
       ++p;
    }
+#if OS_WIN32
+   /* Remove .exe extension if present. */
+   if (p - appname_copy > 4 && memcmp(p - 4, ".exe", 4) == 0) {
+       p[-4] = '\0';
+   }
+#endif
 #endif
 
    /* shortcut --version so you can check the version number even when the
@@ -920,25 +950,21 @@ msg_init_(char * const *argv)
       cmdline_version();
       exit(0);
    }
-   if (argv[0]) {
+   char *pth = getenv("SURVEXLIB");
+   if (pth && pth[0]) {
+      pth_cfg_files = osstrdup(pth);
+   } else if (argv[0]) {
       exe_pth = path_from_fnm(argv[0]);
 #if OS_UNIX && defined DATADIR && defined PACKAGE
-      bool free_pth = fFalse;
-      char *pth = getenv("srcdir");
-      if (!pth || !pth[0]) {
-	 pth = path_from_fnm(argv[0]);
-	 free_pth = fTrue;
-      }
-      if (pth[0]) {
+      if (exe_pth[0]) {
 	 struct stat buf;
 #if OS_UNIX_MACOS
 # ifndef AVEN
 	 /* On macOS the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
-	 p = use_path(pth, "share/survex/en.msg");
+	 p = use_path(exe_pth, "share/survex/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
-	    pth_cfg_files = use_path(pth, "share/survex");
-	    msg_macos_relocatable = 1;
+	    pth_cfg_files = use_path(exe_pth, "share/survex");
 	    goto macos_got_msg;
 	 }
 	 osfree(p);
@@ -947,10 +973,9 @@ msg_init_(char * const *argv)
 	  * the hardlinked copies of cavern and extend alongside the aven
 	  * binary, which are the ones which aven runs.
 	  */
-	 p = use_path(pth, "../Resources/en.msg");
+	 p = use_path(exe_pth, "../Resources/en.msg");
 	 if (stat(p, &buf) == 0 && S_ISREG(buf.st_mode)) {
-	    pth_cfg_files = use_path(pth, "../Resources");
-	    msg_macos_relocatable = 1;
+	    pth_cfg_files = use_path(exe_pth, "../Resources");
 	    goto macos_got_msg;
 	 }
 	 osfree(p);
@@ -959,17 +984,17 @@ msg_init_(char * const *argv)
 	  * from the program's path exists, and if so look there for
 	  * support files - this allows us to test binaries in the build
 	  * tree easily. */
-	 p = use_path(pth, "../lib/en.msg");
+	 p = use_path(exe_pth, "../lib/en.msg");
 	 if (stat(p, &buf) == 0) {
 #ifdef S_ISREG
 	    /* POSIX way */
 	    if (S_ISREG(buf.st_mode)) {
-	       pth_cfg_files = use_path(pth, "../lib");
+	       pth_cfg_files = use_path(exe_pth, "../lib");
 	    }
 #else
 	    /* BSD way */
 	    if ((buf.st_mode & S_IFMT) == S_IFREG) {
-	       pth_cfg_files = use_path(pth, "../lib");
+	       pth_cfg_files = use_path(exe_pth, "../lib");
 	    }
 #endif
 	 }
@@ -978,8 +1003,6 @@ macos_got_msg:
 #endif
 	 osfree(p);
       }
-
-      if (free_pth) osfree(pth);
 #elif OS_WIN32
       DWORD len = 256;
       char *buf = NULL, *modname;
@@ -997,7 +1020,7 @@ macos_got_msg:
       osfree(buf);
 #else
       /* Get the path to the support files from argv[0] */
-      pth_cfg_files = path_from_fnm(argv[0]);
+      pth_cfg_files = exe_path;
 #endif
    }
 
@@ -1006,9 +1029,9 @@ macos_got_msg:
    fprintf(stderr, "msg_lang = %p (= \"%s\")\n", msg_lang, msg_lang?msg_lang:"(null)");
 #endif
 
-   msg_lang_explicit = fTrue;
+   msg_lang_explicit = true;
    if (!msg_lang || !*msg_lang) {
-      msg_lang_explicit = fFalse;
+      msg_lang_explicit = false;
       msg_lang = getenv("LC_ALL");
    }
    if (!msg_lang || !*msg_lang) {
@@ -1029,20 +1052,9 @@ macos_got_msg:
 #endif
 #if OS_WIN32
 	 /* GetUserDefaultUILanguage() requires Microsoft Windows 2000 or
-	  * newer.  For older versions, we use GetUserDefaultLCID().
+	  * newer, but we don't support anything earlier than Vista.
 	  */
-	 {
-	    HMODULE win32 = GetModuleHandle(TEXT("kernel32.dll"));
-	    FARPROC f = GetProcAddress(win32, "GetUserDefaultUILanguage");
-	    if (f) {
-	       typedef LANGID (WINAPI *func_GetUserDefaultUILanguage)(void);
-	       func_GetUserDefaultUILanguage g;
-	       g = (func_GetUserDefaultUILanguage)f;
-	       locid = g();
-	    } else {
-	       locid = GetUserDefaultLCID();
-	    }
-	 }
+	 locid = GetUserDefaultUILanguage();
 	 if (locid) {
 	    WORD langid = LANGIDFROMLCID(locid);
 	    switch (PRIMARYLANGID(langid)) {
@@ -1151,20 +1163,6 @@ macos_got_msg:
    select_charset(default_charset());
 }
 
-const char *
-msg_proj_finder_(const char * file)
-{
-    struct stat sb;
-    static char * r = NULL;
-    static int r_len = 0;
-    s_zero(&r);
-    s_cat(&r, &r_len, pth_cfg_files);
-    s_cat(&r, &r_len, "/proj/");
-    s_cat(&r, &r_len, file);
-    if (stat(r, &sb) < 0) return NULL;
-    return r;
-}
-
 #ifndef AVEN
 /* Return message if messages available, else a fallback value. */
 static const char *
@@ -1228,87 +1226,65 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
    }
    fputs(": ", STDERR);
 
-   if (severity == 0) {
+   switch (severity) {
+    case DIAG_INFO:
+      /* TRANSLATORS: Indicates a informational message e.g.:
+       * "spoon.svx:12: info: Declination: [...]" */
+      level = msg_opt(/*info*/485, "info");
+      break;
+    case DIAG_WARN:
       /* TRANSLATORS: Indicates a warning message e.g.:
        * "spoon.svx:12: warning: *prefix is deprecated" */
       level = msg_opt(/*warning*/4, "warning");
-   } else {
+      break;
+    default:
       /* TRANSLATORS: Indicates an error message e.g.:
        * "spoon.svx:13:4: error: Field may not be omitted" */
       level = msg_opt(/*error*/93, "error");
+      break;
    }
    fputs(level, STDERR);
    fputs(": ", STDERR);
 
+#ifdef HAVE__VSPRINTF_P
+   // Microsoft's vfprintf() doesn't support positional argument specifiers,
+   // so we need to use the Microsoft-specific _vfprintf_p().
+   _vfprintf_p(STDERR, msg(en), ap);
+#else
    vfprintf(STDERR, msg(en), ap);
+#endif
    fputnl(STDERR);
 #endif
 
    switch (severity) {
-    case 0:
+    case DIAG_WARN:
       msg_warnings++;
       break;
-    case 1:
+    case DIAG_ERR:
       msg_errors++;
       if (msg_errors == 50)
 	 fatalerror_in_file(fnm, 0, /*Too many errors - giving up*/19);
       break;
-    case 2:
+    case DIAG_FATAL:
       exit(EXIT_FAILURE);
    }
 }
 
 void
-warning(int en, ...)
+diag(int severity, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(0, NULL, 0, 0, en, ap);
+   v_report(severity, NULL, 0, 0, en, ap);
    va_end(ap);
 }
 
 void
-error(int en, ...)
+diag_in_file(int severity, const char *fnm, int line, int en, ...)
 {
    va_list ap;
    va_start(ap, en);
-   v_report(1, NULL, 0, 0, en, ap);
-   va_end(ap);
-}
-
-void
-fatalerror(int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(2, NULL, 0, 0, en, ap);
-   va_end(ap);
-}
-
-void
-warning_in_file(const char *fnm, int line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(0, fnm, line, 0, en, ap);
-   va_end(ap);
-}
-
-void
-error_in_file(const char *fnm, int line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(1, fnm, line, 0, en, ap);
-   va_end(ap);
-}
-
-void
-fatalerror_in_file(const char *fnm, int line, int en, ...)
-{
-   va_list ap;
-   va_start(ap, en);
-   v_report(2, fnm, line, 0, en, ap);
+   v_report(severity, fnm, line, 0, en, ap);
    va_end(ap);
 }
 

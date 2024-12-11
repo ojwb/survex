@@ -1,6 +1,6 @@
 /* cmdline.c
  * Wrapper for GNU getopt which deals with standard options
- * Copyright (C) 1998-2001,2003,2004,2011,2012,2014 Olly Betts
+ * Copyright (C) 1998-2001,2003,2004,2011,2012,2014,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <ctype.h>
 #include <errno.h>
@@ -112,7 +110,14 @@ cmdline_help(void)
 
 	    putchar('=');
 
-	    for (p = longopt; *p ; p++) putchar(toupper(*p));
+	    if (help->placeholder) {
+		fputs(help->placeholder, stdout);
+	    } else {
+		for (p = longopt; *p ; p++) {
+		    unsigned char ch = *p;
+		    putchar((ch == '-') ? '_' : toupper(ch));
+		}
+	    }
 
 	    if (o->has_arg == optional_argument) putchar(']');
 	 }

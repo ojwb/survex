@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2018 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -22,9 +22,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "cavernlog.h"
 #include "mainfrm.h"
@@ -33,7 +31,6 @@
 
 #include "message.h"
 #include "img_hosted.h"
-#include "namecompare.h"
 #include "printing.h"
 #include "filename.h"
 #include "useful.h"
@@ -104,7 +101,8 @@ class AvenSplitterWindow : public wxSplitterWindow {
 
     public:
 	explicit AvenSplitterWindow(MainFrm *parent_)
-	    : wxSplitterWindow(parent_, -1, wxDefaultPosition, wxDefaultSize,
+	    : wxSplitterWindow(parent_, wxID_ANY,
+			       wxDefaultPosition, wxDefaultSize,
 			       wxSP_3DSASH),
 	      parent(parent_)
 	{
@@ -119,7 +117,7 @@ class AvenSplitterWindow : public wxSplitterWindow {
 };
 
 BEGIN_EVENT_TABLE(AvenSplitterWindow, wxSplitterWindow)
-    EVT_SPLITTER_DCLICK(-1, AvenSplitterWindow::OnSplitterDClick)
+    EVT_SPLITTER_DCLICK(wxID_ANY, AvenSplitterWindow::OnSplitterDClick)
 END_EVENT_TABLE()
 
 class EditMarkDlg : public wxDialog {
@@ -216,7 +214,7 @@ private:
 // Write a value without trailing zeros after the decimal point.
 static void write_double(double d, FILE * fh) {
     char buf[64];
-    sprintf(buf, "%.21f", d);
+    snprintf(buf, sizeof(buf), "%.21f", d);
     char * p = strchr(buf, ',');
     if (p) *p = '.';
     size_t l = strlen(buf);
@@ -229,22 +227,21 @@ class AvenPresList : public wxListCtrl {
     MainFrm * mainfrm;
     GfxCore * gfx;
     vector<PresentationMark> entries;
-    long current_item;
-    bool modified;
-    bool force_save_as;
+    long current_item = -1;
+    bool modified = false;
+    bool force_save_as = true;
     wxString filename;
 
     public:
 	AvenPresList(MainFrm * mainfrm_, wxWindow * parent, GfxCore * gfx_)
 	    : wxListCtrl(parent, listctrl_PRES, wxDefaultPosition, wxDefaultSize,
 			 wxLC_REPORT|wxLC_VIRTUAL),
-	      mainfrm(mainfrm_), gfx(gfx_), current_item(-1), modified(false),
-	      force_save_as(true)
-	    {
-		InsertColumn(0, wmsg(/*Easting*/378));
-		InsertColumn(1, wmsg(/*Northing*/379));
-		InsertColumn(2, wmsg(/*Altitude*/335));
-	    }
+	      mainfrm(mainfrm_), gfx(gfx_)
+	{
+	    InsertColumn(0, wmsg(/*Easting*/378));
+	    InsertColumn(1, wmsg(/*Northing*/379));
+	    InsertColumn(2, wmsg(/*Altitude*/335));
+	}
 
 	void OnBeginLabelEdit(wxListEvent& event) {
 	    event.Veto(); // No editting allowed
@@ -503,6 +500,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
 
     EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
     EVT_MENU(menu_FILE_OPEN_TERRAIN, MainFrm::OnOpenTerrain)
+    EVT_MENU(menu_FILE_OVERLAY_GEODATA, MainFrm::OnOverlayGeodata)
     EVT_MENU(menu_FILE_LOG, MainFrm::OnShowLog)
     EVT_MENU(wxID_PRINT, MainFrm::OnPrint)
     EVT_MENU(menu_FILE_PAGE_SETUP, MainFrm::OnPageSetup)
@@ -603,6 +601,7 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_MENU(wxID_ABOUT, MainFrm::OnAbout)
 
     EVT_UPDATE_UI(menu_FILE_OPEN_TERRAIN, MainFrm::OnOpenTerrainUpdate)
+    EVT_UPDATE_UI(menu_FILE_OVERLAY_GEODATA, MainFrm::OnOverlayGeodataUpdate)
     EVT_UPDATE_UI(menu_FILE_LOG, MainFrm::OnShowLogUpdate)
     EVT_UPDATE_UI(wxID_PRINT, MainFrm::OnPrintUpdate)
     EVT_UPDATE_UI(menu_FILE_SCREENSHOT, MainFrm::OnScreenshotUpdate)
@@ -668,43 +667,12 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_UPDATE_UI(menu_CTL_PERCENT, MainFrm::OnTogglePercentUpdate)
 END_EVENT_TABLE()
 
-class LabelCmp : public greater<const LabelInfo*> {
-    wxChar separator;
-public:
-    explicit LabelCmp(wxChar separator_) : separator(separator_) {}
-    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
-    }
-};
-
-class LabelPlotCmp : public greater<const LabelInfo*> {
-    wxChar separator;
-public:
-    explicit LabelPlotCmp(wxChar separator_) : separator(separator_) {}
-    bool operator()(const LabelInfo* pt1, const LabelInfo* pt2) {
-	int n = pt1->get_flags() - pt2->get_flags();
-	if (n) return n > 0;
-	wxString l1 = pt1->GetText().AfterLast(separator);
-	wxString l2 = pt2->GetText().AfterLast(separator);
-	n = name_cmp(l1, l2, separator);
-	if (n) return n < 0;
-	// Prefer non-2-nodes...
-	// FIXME; implement
-	// if leaf names are the same, prefer shorter labels as we can
-	// display more of them
-	n = pt1->GetText().length() - pt2->GetText().length();
-	if (n) return n < 0;
-	// make sure that we don't ever compare different labels as equal
-	return name_cmp(pt1->GetText(), pt2->GetText(), separator) < 0;
-    }
-};
-
 #if wxUSE_DRAG_AND_DROP
 class DnDFile : public wxFileDropTarget {
     public:
 	explicit DnDFile(MainFrm *parent) : m_Parent(parent) { }
 	virtual bool OnDropFiles(wxCoord, wxCoord,
-			const wxArrayString &filenames);
+				 const wxArrayString &filenames);
 
     private:
 	MainFrm * m_Parent;
@@ -729,13 +697,7 @@ DnDFile::OnDropFiles(wxCoord, wxCoord, const wxArrayString &filenames)
 #endif
 
 MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) :
-    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE),
-    m_SashPosition(-1),
-    m_Gfx(NULL), m_Log(NULL),
-    pending_find(false), fullscreen_showing_menus(false)
-#ifdef PREFDLG
-    , m_PrefsDlg(NULL)
-#endif
+    wxFrame(NULL, 101, title, pos, size, wxDEFAULT_FRAME_STYLE)
 {
 #ifdef _WIN32
     // The peculiar name is so that the icon is the first in the file
@@ -745,10 +707,10 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetIcon(wxICON(aven));
 #endif
 
-#if wxCHECK_VERSION(3,1,0)
+#if defined(__WXMAC__) && wxCHECK_VERSION(3,1,0)
     // Add a full screen button to the right upper corner of title bar under OS
     // X 10.7 and later.
-    EnableFullScreenView();
+    using_macos_full_screen_view = EnableFullScreenView();
 #endif
     CreateMenuBar();
     MakeToolBar();
@@ -769,6 +731,12 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
 #if wxUSE_DRAG_AND_DROP
     SetDropTarget(new DnDFile(this));
 #endif
+
+#ifdef __WXMAC__
+    m_Gfx->ForceRefresh();
+    m_Gfx->Show(true);
+#endif
+    m_Gfx->SetFocus();
 }
 
 void MainFrm::CreateMenuBar()
@@ -788,6 +756,7 @@ void MainFrm::CreateMenuBar()
     /* TRANSLATORS: Open a "Terrain file" - i.e. a digital model of the
      * terrain. */
     filemenu->Append(menu_FILE_OPEN_TERRAIN, wmsg(/*Open &Terrain...*/453));
+    filemenu->Append(menu_FILE_OVERLAY_GEODATA, wmsg(/*Overlay &Geodata...*/494));
     filemenu->AppendCheckItem(menu_FILE_LOG, wmsg(/*Show &Log*/144));
     filemenu->AppendSeparator();
     // wxID_PRINT stock label lacks the ellipses
@@ -1148,7 +1117,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
     SetTitle(GetSurveyTitle() + " - " APP_NAME);
 
     // Sort the labels ready for filling the tree.
-    m_Labels.sort(LabelCmp(GetSeparator()));
+    SortLabelsByName();
 
     // Fill the tree of stations and prefixes.
     wxString root_name = wxFileNameFromPath(file);
@@ -1165,7 +1134,7 @@ bool MainFrm::LoadData(const wxString& file, const wxString& prefix)
     // Also sort by leaf name so that we'll tend to choose labels
     // from different surveys, rather than labels from surveys which
     // are earlier in the list.
-    m_Labels.sort(LabelPlotCmp(GetSeparator()));
+    SortLabelsByPlotOrder();
 
     if (!m_FindBox->GetValue().empty()) {
 	// Highlight any stations matching the current search.
@@ -1185,19 +1154,19 @@ MainFrm::FixLRUD(traverse & centreline)
 {
     assert(centreline.size() > 1);
 
-    Double last_size = 0;
+    double last_size = 0;
     vector<PointInfo>::iterator i = centreline.begin();
     while (i != centreline.end()) {
 	// Get the coordinates of this vertex.
 	Point & pt_v = *i++;
-	Double size;
+	double size;
 
 	if (i != centreline.end()) {
-	    Double h = sqrd(i->GetX() - pt_v.GetX()) +
+	    double h = sqrd(i->GetX() - pt_v.GetX()) +
 		       sqrd(i->GetY() - pt_v.GetY());
-	    Double v = sqrd(i->GetZ() - pt_v.GetZ());
+	    double v = sqrd(i->GetZ() - pt_v.GetZ());
 	    if (h + v > 30.0 * 30.0) {
-		Double scale = 30.0 / sqrt(h + v);
+		double scale = 30.0 / sqrt(h + v);
 		h *= scale;
 		v *= scale;
 	    }
@@ -1217,10 +1186,10 @@ MainFrm::FixLRUD(traverse & centreline)
 	    size = last_size;
 	}
 
-	Double & l = pt_v.l;
-	Double & r = pt_v.r;
-	Double & u = pt_v.u;
-	Double & d = pt_v.d;
+	double & l = pt_v.l;
+	double & r = pt_v.r;
+	double & u = pt_v.u;
+	double & d = pt_v.d;
 
 	if (l == 0 && r == 0 && u == 0 && d == 0) {
 	    l = r = u = d = -size;
@@ -1277,7 +1246,8 @@ void MainFrm::OpenFile(const wxString& file, const wxString& survey)
     if (file.length() > 4 && file[file.length() - 4] == '.') {
 	wxString ext(file, file.length() - 3, 3);
 	ext.MakeLower();
-	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak")) {
+	if (ext == wxT("svx") || ext == wxT("dat") || ext == wxT("mak") ||
+	    ext == wxT("clp") || ext == wxT("srv") || ext == wxT("wpj")) {
 	    CavernLogWindow * log = new CavernLogWindow(this, survey, m_Splitter);
 	    wxWindow * win = m_Splitter->GetWindow1();
 	    m_Splitter->ReplaceWindow(win, log);
@@ -1396,12 +1366,16 @@ void MainFrm::OnOpen(wxCommandEvent&)
     wxString filetypes = wxT("*.3d");
 #else
     wxString filetypes;
-    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.adj;*.sht;*.una;*.xyz"
-		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.ADJ;*.SHT;*.UNA;*.XYZ")
+    filetypes.Printf(wxT("%s|*.3d;*.svx;*.plt;*.plf;*.dat;*.mak;*.clp;*.adj;*.sht;*.una;*.xyz"
+		     CASE("*.3D;*.SVX;*.PLT;*.PLF;*.DAT;*.MAK;*.CLP;*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|*.3d" CASE("*.3D")
 		     "|%s|*.svx" CASE("*.SVX")
 		     "|%s|*.plt;*.plf" CASE("*.PLT;*.PLF")
-		     "|%s|*.dat;*.mak" CASE("*.DAT;*.MAK")
+		     "|%s|*.mak" CASE("*.MAK")
+		     "|%s|*.dat" CASE("*.DAT")
+		     "|%s|*.clp" CASE("*.CLP")
+		     "|%s|*.wpj" CASE("*.WPJ")
+		     "|%s|*.srv" CASE("*.SRV")
 		     "|%s|*.adj;*.sht;*.una;*.xyz" CASE("*.ADJ;*.SHT;*.UNA;*.XYZ")
 		     "|%s|%s"),
 		     /* TRANSLATORS: Here "survey" is a "cave map" rather than
@@ -1422,7 +1396,23 @@ void MainFrm::OnOpen(wxCommandEvent&)
 		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
 		      * surveying package, so should not be translated
 		      */
-		     wmsg(/*Compass DAT and MAK files*/330).c_str(),
+		     wmsg(/*Compass MAK files*/330).c_str(),
+		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Compass DAT files*/490).c_str(),
+		     /* TRANSLATORS: "Compass" as in Larry Fish’s cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Compass CLP files*/491).c_str(),
+		     /* TRANSLATORS: "Walls" is David McKenzie's cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Walls project files*/504).c_str(),
+		     /* TRANSLATORS: "Walls" is David McKenzie's cave
+		      * surveying package, so should not be translated
+		      */
+		     wmsg(/*Walls survey data files*/505).c_str(),
 		     /* TRANSLATORS: "CMAP" is Bob Thrun’s cave surveying
 		      * package, so don’t translate it. */
 		     wmsg(/*CMAP XYZ files*/325).c_str(),
@@ -1469,6 +1459,42 @@ void MainFrm::OnOpenTerrain(wxCommandEvent&)
     if (dlg.ShowModal() == wxID_OK && m_Gfx->LoadDEM(dlg.GetPath())) {
 	if (!m_Gfx->DisplayingTerrain()) m_Gfx->ToggleTerrain();
     }
+}
+
+void MainFrm::OnOverlayGeodata(wxCommandEvent&)
+{
+#ifdef HAVE_GDAL
+    if (!m_Gfx) return;
+
+    if (GetCSProj().empty()) {
+	wxMessageBox(wxT("No coordinate system specified in survey data"));
+	return;
+    }
+
+#ifdef __WXMOTIF__
+    wxString filetypes = wxT("*.*");
+#else
+    wxString filetypes;
+    // FIXME: Add more extensions here?
+    filetypes.Printf(wxT("%s|*.gpx;*.kml;*.geojson;*.json;*.shp"
+		       CASE("*.GPX;*.KML;*.GEOJSON;*.JSON;*.SHP")
+		     "|%s|%s"),
+		     wmsg(/*Geodata files*/495).c_str(),
+		     wmsg(/*All files*/208).c_str(),
+		     wxFileSelectorDefaultWildcardStr);
+#endif
+    wxFileDialog dlg(this, wmsg(/*Select a geodata file to overlay*/496),
+		     wxString(), wxString(),
+		     filetypes, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    if (dlg.ShowModal() == wxID_OK) {
+	m_Tree->AddOverlay(dlg.GetPath());
+	m_Gfx->InvalidateOverlays();
+    }
+#else
+    wxMessageBox(wxT("GDAL support not enabled in this build"),
+		 wxT("Aven GDAL support"),
+		 wxOK | wxICON_INFORMATION);
+#endif
 }
 
 void MainFrm::OnShowLog(wxCommandEvent&)
@@ -1672,9 +1698,9 @@ void MainFrm::ClearCoords()
 
 void MainFrm::SetCoords(const Vector3 &v)
 {
-    Double x = v.GetX();
-    Double y = v.GetY();
-    Double z = v.GetZ();
+    double x = v.GetX();
+    double y = v.GetY();
+    double z = v.GetZ();
     int units;
     if (m_Gfx->GetMetric()) {
 	units = /*m*/424;
@@ -1682,7 +1708,7 @@ void MainFrm::SetCoords(const Vector3 &v)
 	x /= METRES_PER_FOOT;
 	y /= METRES_PER_FOOT;
 	z /= METRES_PER_FOOT;
-	units = /*ft*/428;
+	units = /*'*/428;
     }
     /* TRANSLATORS: show coordinates (N = North or Northing, E = East or
      * Easting) */
@@ -1704,7 +1730,7 @@ const LabelInfo * MainFrm::GetTreeSelection() const {
     return data->GetLabel();
 }
 
-void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
+void MainFrm::SetCoords(double x, double y, const LabelInfo * there)
 {
     wxString & s = coords_text;
     if (m_Gfx->GetMetric()) {
@@ -1720,8 +1746,8 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	auto offset = GetOffset();
 	Vector3 delta(x - offset.GetX() - there->GetX(),
 		      y - offset.GetY() - there->GetY(), 0);
-	Double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
-	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
+	double dh = sqrt(delta.GetX()*delta.GetX() + delta.GetY()*delta.GetY());
+	double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
 
 	wxString from_str;
@@ -1742,7 +1768,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
 	    units = /*m*/424;
 	} else {
 	    dh /= METRES_PER_FOOT;
-	    units = /*ft*/428;
+	    units = /*'*/428;
 	}
 	/* TRANSLATORS: "H" is short for "Horizontal", "Brg" for "Bearing" (as
 	 * in Compass bearing) */
@@ -1754,7 +1780,7 @@ void MainFrm::SetCoords(Double x, Double y, const LabelInfo * there)
     UpdateStatusBar();
 }
 
-void MainFrm::SetAltitude(Double z, const LabelInfo * there)
+void MainFrm::SetAltitude(double z, const LabelInfo * there)
 {
     double alt = z;
     int units;
@@ -1762,7 +1788,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
 	units = /*m*/424;
     } else {
 	alt /= METRES_PER_FOOT;
-	units = /*ft*/428;
+	units = /*'*/428;
     }
     coords_text.Printf(wxT("%s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
 		       alt, wmsg(units).c_str());
@@ -1770,7 +1796,7 @@ void MainFrm::SetAltitude(Double z, const LabelInfo * there)
     wxString & t = distfree_text;
     t = wxString();
     if (m_Gfx->ShowingMeasuringLine() && there) {
-	Double dz = z - GetOffset().GetZ() - there->GetZ();
+	double dz = z - GetOffset().GetZ() - there->GetZ();
 
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
@@ -1803,9 +1829,9 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 
     Vector3 v = *here + GetOffset();
     wxString & s = here_text;
-    Double x = v.GetX();
-    Double y = v.GetY();
-    Double z = v.GetZ();
+    double x = v.GetX();
+    double y = v.GetY();
+    double z = v.GetZ();
     int units;
     if (m_Gfx->GetMetric()) {
 	units = /*m*/424;
@@ -1813,7 +1839,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	x /= METRES_PER_FOOT;
 	y /= METRES_PER_FOOT;
 	z /= METRES_PER_FOOT;
-	units = /*ft*/428;
+	units = /*'*/428;
     }
     s.Printf(wmsg(/*%.2f E, %.2f N*/338), x, y);
     s += wxString::Format(wxT(", %s %.2f%s"), wmsg(/*Altitude*/335).c_str(),
@@ -1826,15 +1852,15 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
     if (m_Gfx->ShowingMeasuringLine() && there) {
 	Vector3 delta = *here - *there;
 
-	Double d_horiz = sqrt(delta.GetX()*delta.GetX() +
+	double d_horiz = sqrt(delta.GetX()*delta.GetX() +
 			      delta.GetY()*delta.GetY());
-	Double dr = delta.magnitude();
-	Double dz = delta.GetZ();
+	double dr = delta.magnitude();
+	double dz = delta.GetZ();
 
-	Double brg = deg(atan2(delta.GetX(), delta.GetY()));
+	double brg = deg(atan2(delta.GetX(), delta.GetY()));
 	if (brg < 0) brg += 360;
 
-	Double grd = deg(atan2(delta.GetZ(), d_horiz));
+	double grd = deg(atan2(delta.GetZ(), d_horiz));
 
 	wxString from_str;
 	from_str.Printf(wmsg(/*From %s*/339), there->name_or_anon().c_str());
@@ -1846,7 +1872,7 @@ void MainFrm::ShowInfo(const LabelInfo *here, const LabelInfo *there)
 	    d_horiz /= METRES_PER_FOOT;
 	    dr /= METRES_PER_FOOT;
 	    dz /= METRES_PER_FOOT;
-	    units = /*ft*/428;
+	    units = /*'*/428;
 	}
 	wxString len_unit = wmsg(units);
 	/* TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical" */
@@ -1908,11 +1934,13 @@ void MainFrm::DisplayTreeInfo(const wxTreeItemData* item)
     if (data) {
 	if (data->IsStation()) {
 	    m_Gfx->SetHereFromTree(data->GetLabel());
-	} else {
+	    return;
+	}
+	if (data->IsSurvey()) {
 	    m_Gfx->SetHereSurvey(data->GetSurvey());
 	    ShowInfo();
+	    return;
 	}
-	return;
     }
     m_Gfx->SetHereSurvey(wxString());
     ShowInfo();
@@ -1939,8 +1967,10 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item)
 	    // Must be the root.
 	    wxCommandEvent dummy;
 	    OnDefaults(dummy);
-	} else {
+	} else if (data->IsSurvey()) {
 	    m_Gfx->ZoomToSurvey(data->GetSurvey());
+	} else {
+	    // FIXME: Click on overlay
 	}
     }
     UpdateStatusBar();
@@ -2051,7 +2081,7 @@ void MainFrm::OnPresStop(wxCommandEvent&)
 
 void MainFrm::OnPresExportMovie(wxCommandEvent&)
 {
-#ifdef WITH_LIBAV
+#ifdef WITH_FFMPEG
     // FIXME : Taking the leaf of the currently loaded presentation as the
     // default might make more sense?
     wxString baseleaf;
@@ -2095,6 +2125,11 @@ void MainFrm::RestrictTo(const wxString & survey)
 }
 
 void MainFrm::OnOpenTerrainUpdate(wxUpdateUIEvent& event)
+{
+    event.Enable(!m_File.empty());
+}
+
+void MainFrm::OnOverlayGeodataUpdate(wxUpdateUIEvent& event)
 {
     event.Enable(!m_File.empty());
 }
@@ -2198,8 +2233,8 @@ void MainFrm::DoFind()
     wxString pattern = m_FindBox->GetValue();
     if (pattern.empty()) {
 	// Hide any search result highlights.
-	list<LabelInfo*>::iterator pos = m_Labels.begin();
-	while (pos != m_Labels.end()) {
+	list<LabelInfo*>::iterator pos = GetLabelsNC();
+	while (pos != GetLabelsNCEnd()) {
 	    LabelInfo* label = *pos++;
 	    label->clear_flags(LFLAG_HIGHLIGHTED);
 	}
@@ -2268,8 +2303,8 @@ void MainFrm::DoFind()
 
 	int found = 0;
 
-	list<LabelInfo*>::iterator pos = m_Labels.begin();
-	while (pos != m_Labels.end()) {
+	list<LabelInfo*>::iterator pos = GetLabelsNC();
+	while (pos != GetLabelsNCEnd()) {
 	    LabelInfo* label = *pos++;
 
 	    if (regex.Matches(label->GetText())) {
@@ -2283,7 +2318,7 @@ void MainFrm::DoFind()
 	m_NumHighlighted = found;
 
 	// Re-sort so highlighted points get names in preference
-	if (found) m_Labels.sort(LabelPlotCmp(GetSeparator()));
+	if (found) SortLabelsByPlotOrder();
     }
 
     m_Gfx->UpdateBlobs();
@@ -2305,18 +2340,18 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
 	return;
     }
 
-    Double xmin = DBL_MAX;
-    Double xmax = -DBL_MAX;
-    Double ymin = DBL_MAX;
-    Double ymax = -DBL_MAX;
-    Double zmin = DBL_MAX;
-    Double zmax = -DBL_MAX;
+    double xmin = DBL_MAX;
+    double xmax = -DBL_MAX;
+    double ymin = DBL_MAX;
+    double ymax = -DBL_MAX;
+    double zmin = DBL_MAX;
+    double zmax = -DBL_MAX;
 
-    list<LabelInfo*>::iterator pos = m_Labels.begin();
-    while (pos != m_Labels.end()) {
+    list<LabelInfo*>::iterator pos = GetLabelsNC();
+    while (pos != GetLabelsNCEnd()) {
 	LabelInfo* label = *pos++;
 
-	if (label->get_flags() & LFLAG_HIGHLIGHTED) {
+	if (label->IsHighLighted()) {
 	    if (label->GetX() < xmin) xmin = label->GetX();
 	    if (label->GetX() > xmax) xmax = label->GetX();
 	    if (label->GetY() < ymin) ymin = label->GetY();
@@ -2375,11 +2410,23 @@ bool MainFrm::ShowingSidePanel()
 
 void MainFrm::ViewFullScreen() {
 #ifdef __WXMAC__
-    // On macOS, wxWidgets doesn't currently hide the toolbar or statusbar in
-    // full screen mode (last checked with 3.0.2), but it is easy to do
-    // ourselves.
+    // On macOS:
+    //
+    // If !using_macos_full_screen_view, wxWidgets doesn't currently hide the
+    // toolbar or statusbar in full screen mode (last checked with 3.0.2).
+    //
+    // If using_macos_full_screen_view, apparently wxWidgets hides the toolbar
+    // but not the statusbar (or maybe the status bar gets hidden by macOS
+    // unconditionally?)
     if (!IsFullScreen()) {
-	GetToolBar()->Hide();
+	// On macOS when not using the full screen view API, wxWidgets doesn't
+	// hide the toolbar in full screen mode (last checked with 3.0.2).
+	if (!using_macos_full_screen_view) GetToolBar()->Hide();
+	// The statusbar isn't automatically hidden without the full screen view
+	// API (last checked with 3.0.2); with the full screen view API the
+	// wxFULLSCREEN_NOSTATUSBAR flag is ignored, but possibly macOS
+	// unconditionally hides the status bar?  FIXME Need to get someone to
+	// test this.
 	GetStatusBar()->Hide();
     }
 #endif
@@ -2394,7 +2441,7 @@ void MainFrm::ViewFullScreen() {
 #ifdef __WXMAC__
     if (!IsFullScreen()) {
 	GetStatusBar()->Show();
-	GetToolBar()->Show();
+	if (!using_macos_full_screen_view) GetToolBar()->Show();
 #ifdef USING_GENERIC_TOOLBAR
 	Layout();
 #endif
@@ -2412,11 +2459,12 @@ void MainFrm::FullScreenModeShowMenus(bool show)
     if (!IsFullScreen() || show == fullscreen_showing_menus)
 	return;
 #ifdef __WXMAC__
-    // On macOS, enabling the menu bar while in full
-    // screen mode doesn't have any effect, so instead
-    // make moving the mouse to the top of the screen
-    // drop us out of full screen mode for now.
-    ViewFullScreen();
+    // If we're using the macOS full screen view API then auto-showing the menu
+    // bar happens automatically when the mouse is moved near it.  Otherwise
+    // enabling the menu bar while in full screen mode doesn't have any effect
+    // (probably last tested with 3.0.x), so instead make moving the mouse to
+    // the top of the screen drop us out of full screen mode.
+    if (!using_macos_full_screen_view) ViewFullScreen();
 #else
     GetMenuBar()->Show(show);
     fullscreen_showing_menus = show;

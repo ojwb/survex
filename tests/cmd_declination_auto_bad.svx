@@ -1,0 +1,38 @@
+; pos=fail warn=0 error=3
+
+*cs out utm33
+*fix 1 0410600 5282000 1234
+*declination auto 0410600 5282000 1234
+
+*equate 1 a.1
+*begin a
+*export 1 2
+1 2 10.00 320 -06
+2 3  1.23 000 +06
+*end a
+
+*equate a.2 b.1
+*begin b
+*export 1 2
+; No declination warning here
+1 2 1.0 - down
+*end b
+
+*equate b.2 c.1
+*begin c
+*export 1 2
+1 2 1.0 - down
+; Declination warning here:
+2 3 2.0 123 -66
+*end c
+
+*equate c.2 d.1
+*begin d
+*export 1 2
+*date 2000.12.25
+1 2 100.0 000 0
+*declination auto 0490600 5282000 1234
+1 2a 50.0 000 0
+*date 2000.12.26
+1 2b 10.0 090 0
+*end d

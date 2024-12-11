@@ -1,10 +1,27 @@
-Survey has no fixed points. Therefore I've fixed test.2 at (0,0,0)
+./nosurveyhanging.svx:6: info: Survey has no fixed points. Therefore I've fixed test.2 at (0,0,0)
 
 Removing trailing traverses...
 
 Concatenating traverses...
 
 Simplifying network...
-cavern: error: Survey not all connected to fixed stations
+cavern: warning: Survey not all connected to fixed stations
 The following survey stations are not attached to a fixed point:
-test.1
+./nosurveyhanging.svx:6: info: test.1
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 0 legs.
+There are 0 loops.
+Survey has 2 connected components.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 1 warning(s).

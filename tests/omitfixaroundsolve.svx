@@ -1,4 +1,4 @@
-; pos=fail warn=2 error=1
+; pos=fail warn=0 error=1
 ; Regression test for bug fixed in 1.2.14
 a 0 012 15.0 +12
 *fix a

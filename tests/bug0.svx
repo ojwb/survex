@@ -1,4 +1,4 @@
-; pos=no warn=0 dummy=crlf
+; pos=no warn=0 dummycrprotection=
 *FIX A00 0 0 0
 A01 A02 1 2 3
 *equate A03 A01

@@ -21,16 +21,14 @@
 #ifndef USEFUL_H
 #define USEFUL_H
 
-#include <config.h>
-
-#if HAVE_STDINT_H
-# include <stdint.h>
+#ifndef PACKAGE
+# error config.h must be included first in each C/C++ source file
 #endif
 
+#include <stdint.h>
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
-#include "osalloc.h"
 
 /* Macro to allow easy building of macros contain multiple statements, such
  * that the likes of “if (x == y) macro1(x); else x = 2;” works properly  */
@@ -69,33 +67,8 @@
 
 #define MM_PER_INCH 25.4 /* exact value */
 #define METRES_PER_FOOT 0.3048 /* exact value */
-
-/* DJGPP needs these: */
-
-#ifndef EXIT_FAILURE
-# define EXIT_FAILURE 1
-#endif /* !EXIT_FAILURE */
-
-#ifndef EXIT_SUCCESS
-# define EXIT_SUCCESS 0
-#endif /* !EXIT_SUCCESS */
-
-#ifndef SEEK_SET
-# define SEEK_SET 0
-# define SEEK_CUR 1
-# define SEEK_END 2
-#endif /* !SEEK_SET */
-
-/* Older UNIX libraries and DJGPP libraries have HUGE instead of HUGE_VAL */
-#ifndef HUGE_VAL
-# ifdef HUGE
-#  define HUGE_VAL HUGE
-# else
-#  error Neither HUGE_VAL nor HUGE is defined
-# endif
-#endif
-
-#include "ostypes.h"
+#define POINTS_PER_INCH	72.0
+#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
 #define putnl() putchar('\n')    /* print a newline char */
 #define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */
@@ -114,12 +87,13 @@
 #define STRING(X) STRING_(X)
 #define STRING_(X) #X
 
-#include "osdepend.h"
-
 #ifndef WORDS_BIGENDIAN
 # define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
 # define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)
 
+# ifdef __GNUC__
+__attribute__((unused))
+# endif
 static inline int16_t get16(FILE *fh) {
     int16_t w;
     if (fread(&w, 2, 1, fh) == 0) {
@@ -130,6 +104,9 @@ static inline int16_t get16(FILE *fh) {
     return w;
 }
 
+# ifdef __GNUC__
+__attribute__((unused))
+# endif
 static inline int32_t get32(FILE *fh) {
     int32_t w;
     if (fread(&w, 4, 1, fh) == 0) {

@@ -1,5 +1,5 @@
-; pos=fail warn=21 error=2
-; invalid dates:
+; pos=fail warn=75 error=11
+; Invalid dates:
 *begin
 *date 1899.12.31
 *date 1899.12.31
@@ -23,6 +23,69 @@
 *date 2099.06
 *date 3033
 *date 11974.02.03
+*date 2078-2079
+*date 1899-2079
+*date 1984.12.13-1984.13.12
+*date 1984.12.13-1985.02.29
+; Invalid ISO dates:
+*date 1899-12-31
+*date 1899-12-31
+*date 1899-12
+*date 1899
+*date 1800
+*date 1700-12-01
+*date 100-01-01
+*date 1899-02-03
+*date 999-9-9
+*date 1984-13-01
+*date 1984-13-31
+*date 1984-01-00
+*date 1984-00-12
+*date 1984-00
+*date 1984-13
+*date 1984-01-02 1984-01-01
+*date 71 1970
+*date 2079-01-01
+*date 2079-12-31
+*date 2099-06
+*date 3033
+*date 11974-02-03
+*date 2078 2079
+*date 1899 2079
+*date 1984-12-13 1984-13-12
+*date 1984-12-13 1985-02-29
+; Invalid ISO dates with explicit type:
+*date surveyed 1899-12-31
+*date surveyed 1899-12-31
+*date surveyed 1899-12
+*date surveyed 1899
+*date surveyed 1800
+*date surveyed 1700-12-01
+*date surveyed 100-01-01
+*date surveyed 1899-02-03
+*date surveyed 999-9-9
+*date surveyed 1984-13-01
+*date surveyed 1984-13-31
+*date surveyed 1984-01-00
+*date surveyed 1984-00-12
+*date surveyed 1984-00
+*date surveyed 1984-13
+*date surveyed 1984-01-02 1984-01-01
+*date surveyed 71 1970
+*date surveyed 2079-01-01
+*date surveyed 2079-12-31
+*date surveyed 2099-06
+*date surveyed 3033
+*date surveyed 11974-02-03
+*date surveyed 2078 2079
+*date surveyed 1899 2079
+*date surveyed 1984-12-13 1984-13-12
+*date surveyed 1984-12-13 1985-02-29
+; Error cases for typed dates:
+*date exploded 1984-12-13
+*date surveyed explored surveyed 1984-12-13
+*date surveyed 1984.12.13
+
 *fix 1 0 0 0
 1 2 1.0 020 -03
 *end

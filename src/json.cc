@@ -1,7 +1,7 @@
 /* json.cc
  * Export from Aven as JSON.
  */
-/* Copyright (C) 2015,2016 Olly Betts
+/* Copyright (C) 2015,2016,2022,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "json.h"
 
@@ -33,7 +31,7 @@ using namespace std;
 const int *
 JSON::passes() const
 {
-    static const int default_passes[] = { LEGS, 0 };
+    static const int default_passes[] = { LEGS|SURF, 0 };
     return default_passes;
 }
 
@@ -54,9 +52,8 @@ JSON::header(const char * title, const char *, time_t datestamp_numeric,
 	fprintf("date: %ld,\n", (long)datestamp_numeric);
     }
 #endif
-    fprintf(fh, "var p = [%.2f,%.2f,%.2f,%.2f,%.2f,%.2f]\n",
+    fprintf(fh, "{\"bounds\":[%.2f,%.2f,%.2f,%.2f,%.2f,%.2f],\n\"traverses\":[\n",
 	    min_x, min_z, min_y, max_x, max_z, max_y);
-    fputs("var groups = [\n", fh);
 }
 
 void
@@ -75,10 +72,9 @@ JSON::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPe
 }
 
 void
-JSON::label(const img_point *p, const char *s, bool /*fSurface*/, int type)
+JSON::label(const img_point *p, const wxString&, int /*sflags*/, int type)
 {
     (void)p;
-    (void)s;
     (void)type;
 }
 
@@ -87,5 +83,5 @@ JSON::footer()
 {
     if (in_segment)
 	fputs("]\n", fh);
-    fputs("];\n", fh);
+    fputs("]}\n", fh);
 }

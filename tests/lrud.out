@@ -1,0 +1,26 @@
+./lrud.dat:10: info: Survey has no fixed points. Therefore I've fixed AA1 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 5 survey stations, joined by 4 legs.
+There are 0 loops.
+Total length of survey legs =   39.31m (  39.31m adjusted)
+Total plan length of survey legs =   38.72m
+Total vertical length of survey legs =    6.55m
+Vertical range = 6.55m (from AA1 at 0.00m to AA5 at -6.55m)
+North-South range = 24.79m (from AA5 at 24.79m to AA1 at 0.00m)
+East-West range = 29.60m (from AA5 at 29.60m to AA1 at 0.00m)
+   2 1-nodes.
+   3 2-nodes.

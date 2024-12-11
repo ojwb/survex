@@ -2,7 +2,7 @@
  * Export from Aven as HPGL.
  */
 
-/* Copyright (C) 2005,2014,2015,2016 Olly Betts
+/* Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,20 @@
 
 #include "exportfilter.h"
 
+#define HPGL_UNITS_PER_MM 40
+
 class HPGL : public ExportFilter {
+    double factor;
+    int pen;
   public:
-    HPGL() {}
+    explicit HPGL(double scale)
+	: factor(HPGL_UNITS_PER_MM * 1000.0 / scale) {}
+
     void header(const char *, const char *, time_t,
 		double, double, double,
-		double, double, double);
-    void line(const img_point *, const img_point *, unsigned, bool);
-    void label(const img_point *, const char *, bool, int);
-    void cross(const img_point *, bool);
-    void footer();
+		double, double, double) override;
+    void line(const img_point *, const img_point *, unsigned, bool) override;
+    void label(const img_point *, const wxString&, int, int) override;
+    void cross(const img_point *, const wxString&, int) override;
+    void footer() override;
 };

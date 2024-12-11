@@ -1,8 +1,9 @@
-; pos=yes warn=0
+; pos=yes warn=1
 *fix 1 0 0 0
 *data diving from to fromdepth todepth tape compass
 1 2 0.0 0.0 1.00 000
 2 3 0.0 0.0 1.00 090
+3 3a 0.0 1.1 1.00 180
 
 *data diving to from fromdepth todepth tape compass
 4 3 1.0 1.0 1.00 180

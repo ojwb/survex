@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2003,2004,2005,2010,2011,2013,2014,2015,2016,2017 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #define MSG_SETUP_PROJ_SEARCH_PATH 1
 
@@ -40,7 +38,6 @@
 #include "listpos.h"
 #include "netbits.h"
 #include "netskel.h"
-#include "osdepend.h"
 #include "out.h"
 #include "str.h"
 #include "validate.h"
@@ -50,47 +47,43 @@
 # include <conio.h> /* for _kbhit() and _getch() */
 #endif
 
-/* For funcs which want to be immune from messing around with different
- * calling conventions */
-#ifndef CDECL
-# define CDECL
-#endif
-
 /* Globals */
-node *stnlist = NULL;
+node *fixedlist = NULL; // Fixed points
+node *stnlist = NULL; // Unfixed stations
 settings *pcs;
 prefix *root;
 prefix *anon_list = NULL;
 long cLegs, cStns;
 long cComponents;
-bool fExportUsed = fFalse;
-projPJ proj_out = NULL;
+bool fExportUsed = false;
 char * proj_str_out = NULL;
+PJ * pj_cached = NULL;
 
 FILE *fhErrStat = NULL;
 img *pimg = NULL;
-bool fQuiet = fFalse; /* just show brief summary + errors */
-bool fMute = fFalse; /* just show errors */
-bool fSuppress = fFalse; /* only output 3d file */
-static bool fLog = fFalse; /* stdout to .log file */
-static bool f_warnings_are_errors = fFalse; /* turn warnings into errors */
+bool fQuiet = false; /* just show brief summary + errors */
+bool fMute = false; /* just show errors */
+bool fSuppress = false; /* only output 3d file */
+static bool fLog = false; /* stdout to .log file */
+static bool f_warnings_are_errors = false; /* turn warnings into errors */
 
 nosurveylink *nosurveyhead;
 
 real totadj, total, totplan, totvert;
-real min[3], max[3];
-prefix *pfxHi[3], *pfxLo[3];
+real min[6], max[6];
+prefix *pfxHi[6], *pfxLo[6];
 
-char *survey_title = NULL;
-int survey_title_len;
+string survey_title = S_INIT;
 
-bool fExplicitTitle = fFalse;
+bool fExplicitTitle = false;
 
 char *fnm_output_base = NULL;
 int fnm_output_base_is_dir = 0;
 
 lrudlist * model = NULL;
 lrud ** next_lrud = NULL;
+
+char output_separator = '.';
 
 static void do_stats(void);
 
@@ -118,19 +111,19 @@ static const struct option long_opts[] = {
 static struct help_msg help[] = {
 /*				<-- */
    /* TRANSLATORS: --help output for cavern --output option */
-   {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0},
+   {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0, 0},
    /* TRANSLATORS: --help output for cavern --quiet option */
-   {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0},
+   {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0, 0},
    /* TRANSLATORS: --help output for cavern --no-auxiliary-files option */
-   {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0},
+   {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0, 0},
    /* TRANSLATORS: --help output for cavern --warnings-are-errors option */
-   {HLP_ENCODELONG(5),	      /*turn warnings into errors*/165, 0},
+   {HLP_ENCODELONG(5),	      /*turn warnings into errors*/165, 0, 0},
    /* TRANSLATORS: --help output for cavern --log option */
-   {HLP_ENCODELONG(6),	      /*log output to .log file*/170, 0},
+   {HLP_ENCODELONG(6),	      /*log output to .log file*/170, 0, 0},
    /* TRANSLATORS: --help output for cavern --3d-version option */
-   {HLP_ENCODELONG(7),	      /*specify the 3d file format version to output*/171, 0},
+   {HLP_ENCODELONG(7),	      /*specify the 3d file format version to output*/171, 0, 0},
  /*{'z',			"set optimizations for network reduction"},*/
-   {0, 0, 0}
+   {0, 0, 0, 0}
 };
 
 /* atexit functions */
@@ -152,7 +145,13 @@ pause_on_exit(void)
 
 int current_days_since_1900;
 
-extern CDECL int
+static void discarding_proj_logger(void *ctx, int level, const char *message) {
+    (void)ctx;
+    (void)level;
+    (void)message;
+}
+
+extern int
 main(int argc, char **argv)
 {
    int d;
@@ -168,38 +167,60 @@ main(int argc, char **argv)
    /* Always buffer by line for aven's benefit. */
    setvbuf(stdout, NULL, _IOLBF, 0);
 
+   /* Prevent stderr spew from PROJ. */
+   proj_log_func(PJ_DEFAULT_CTX, NULL, discarding_proj_logger);
+
    msg_init(argv);
 
    pcs = osnew(settings);
    pcs->next = NULL;
+   pcs->from_equals_to_is_only_a_warning = false;
    pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
    pcs->meta = NULL;
-   pcs->proj = NULL;
+   pcs->proj_str = NULL;
    pcs->declination = HUGE_REAL;
-   pcs->convergence = 0.0;
+   pcs->convergence = HUGE_REAL;
+   pcs->input_convergence = HUGE_REAL;
+   pcs->dec_filename = NULL;
+   pcs->dec_line = 0;
+   pcs->dec_context = NULL;
+   pcs->dec_lat = HUGE_VAL;
+   pcs->dec_lon = HUGE_VAL;
+   pcs->dec_alt = HUGE_VAL;
+   pcs->min_declination = HUGE_VAL;
+   pcs->max_declination = -HUGE_VAL;
+   pcs->cartesian_north = TRUE_NORTH;
+   pcs->cartesian_rotation = 0.0;
 
    /* Set up root of prefix hierarchy */
    root = osnew(prefix);
    root->up = root->right = root->down = NULL;
    root->stn = NULL;
    root->pos = NULL;
-   root->ident = NULL;
+   root->ident.p = NULL;
    root->min_export = root->max_export = 0;
    root->sflags = BIT(SFLAGS_SURVEY);
    root->filename = NULL;
 
    nosurveyhead = NULL;
 
+   fixedlist = NULL;
    stnlist = NULL;
    cLegs = cStns = cComponents = 0;
    totadj = total = totplan = totvert = 0.0;
 
-   for (d = 0; d <= 2; d++) {
+   for (d = 0; d < 6; d++) {
       min[d] = HUGE_REAL;
       max[d] = -HUGE_REAL;
       pfxHi[d] = pfxLo[d] = NULL;
    }
 
+   // TRANSLATORS: Here "survey" is a "cave map" rather than list of questions
+   // - it should be translated to the terminology that cavers using the
+   // language would use.
+   //
+   // Part of cavern --help
+   cmdline_set_syntax_message(/*[SURVEY_DATA_FILE]*/507, 0, NULL);
    /* at least one argument must be given */
    cmdline_init(argc, argv, short_opts, long_opts, NULL, help, 1, -1);
    while (1) {
@@ -254,7 +275,7 @@ main(int argc, char **argv)
 	    if (islower((unsigned char)c)) optimize |= BITA(c);
 	 break;
        case 1:
-	 fLog = fTrue;
+	 fLog = true;
 	 break;
 #if OS_WIN32
        case 2:
@@ -312,11 +333,14 @@ main(int argc, char **argv)
       const char *fnm = argv[optind];
 
       if (!fExplicitTitle) {
-	 char *lf;
-	 lf = baseleaf_from_fnm(fnm);
-	 if (survey_title) s_catchar(&survey_title, &survey_title_len, ' ');
-	 s_cat(&survey_title, &survey_title_len, lf);
-	 osfree(lf);
+	  char *lf = baseleaf_from_fnm(fnm);
+	  if (s_empty(&survey_title)) {
+	      s_donate(&survey_title, lf);
+	  } else {
+	      s_appendch(&survey_title, ' ');
+	      s_append(&survey_title, lf);
+	      osfree(lf);
+	  }
       }
 
       /* Select defaults settings */
@@ -328,7 +352,9 @@ main(int argc, char **argv)
 
    validate();
 
-   solve_network(/*stnlist*/); /* Find coordinates of all points */
+   report_declination(pcs);
+
+   solve_network(); /* Find coordinates of all points */
    validate();
 
    /* close .3d file */
@@ -388,6 +414,19 @@ main(int argc, char **argv)
 static void
 do_range(int d, int msgno, real length_factor, const char * units)
 {
+   if (d < 3) {
+      /* If the bound including anonymous stations is at an anonymous station
+       * but the bound only considering named stations is the same, use the
+       * named station for the anonymous bound too.
+       */
+      if (TSTBIT(pfxHi[d]->sflags, SFLAGS_ANON) && max[d] == max[d + 3]) {
+	 pfxHi[d] = pfxHi[d + 3];
+      }
+      if (TSTBIT(pfxLo[d]->sflags, SFLAGS_ANON) && min[d] == min[d + 3]) {
+	 pfxLo[d] = pfxLo[d + 3];
+      }
+   }
+
    /* sprint_prefix uses a single buffer, so to report two stations in one
     * message we need to make a temporary copy of the string for one of them.
     */
@@ -398,6 +437,11 @@ do_range(int d, int msgno, real length_factor, const char * units)
    printf(msg(msgno), hi - lo, units, pfx_hi, hi, units, pfx_lo, lo, units);
    osfree(pfx_hi);
    putnl();
+
+   /* Range without anonymous stations at offset 3. */
+   if (d < 3 && (pfxHi[d] != pfxHi[d + 3] || pfxLo[d] != pfxLo[d + 3])) {
+      do_range(d + 3, msgno, length_factor, units);
+   }
 }
 
 static void

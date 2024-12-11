@@ -1,6 +1,6 @@
 /* message.h
  * Function prototypes for message.c
- * Copyright (C) 1998-2003,2005,2010,2015,2017,2019 Olly Betts
+ * Copyright (C) 1998-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,24 +26,8 @@ extern "C" {
 
 #include <stdarg.h>
 
-#include "osdepend.h"
+#include "filename.h"
 #include "osalloc.h"
-
-/* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
- * hooks to setup proj4's search path to look for data files we bundle.
- */
-#ifdef MSG_SETUP_PROJ_SEARCH_PATH
-# define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-# include <proj_api.h>
-# define msg_init(ARGV) do {\
-	msg_init_(ARGV); \
-	pj_set_finder(msg_proj_finder_); \
-    } while (0)
-#endif
-
-#ifndef msg_init
-# define msg_init(ARGV) msg_init_(ARGV)
-#endif
 
 #define STDERR stdout
 
@@ -66,15 +50,7 @@ extern const char *msg_lang;
  * be just the language code.  Otherwise it's NULL.  e.g. "en" */
 extern const char *msg_lang2;
 
-/* Not intended for direct use - use msg_init() instead, optionally defining
- * MSG_SETUP_PROJ_SEARCH_PATH.
- */
-void msg_init_(char *const *argv);
-
-/* Not intended for direct use - use msg_init() instead, optionally defining
- * MSG_SETUP_PROJ_SEARCH_PATH.
- */
-const char * msg_proj_finder_(const char * file);
+void msg_init(char *const *argv);
 
 const char *msg_cfgpth(void);
 const char *msg_exepth(void);
@@ -83,20 +59,53 @@ const char *msg_appname(void);
 /* Return the message string corresponding to number en */
 const char *msg(int en);
 
+/* These need to fit within DIAG_SEVERITY_MASK defined in datain.h. */
+#define DIAG_INFO	0x00
+#define DIAG_WARN	0x01
+#define DIAG_ERR	0x02
+#define DIAG_FATAL	0x03
+
 void v_report(int severity, const char *fnm, int line, int col, int en, va_list ap);
 
-void warning(int en, ...);
-void error(int en, ...);
-void fatalerror(int en, ...);
+void diag(int severity, int en, ...);
 
-void warning_in_file(const char *fnm, int line, int en, ...);
-void error_in_file(const char *fnm, int line, int en, ...);
-void fatalerror_in_file(const char *fnm, int line, int en, ...);
+#define information(...) diag(DIAG_INFO, __VA_ARGS__)
+#define warning(...) diag(DIAG_WARN, __VA_ARGS__)
+#define error(...) diag(DIAG_ERR, __VA_ARGS__)
+#define fatalerror(...) diag(DIAG_FATAL, __VA_ARGS__)
+
+void diag_in_file(int severity, const char *fnm, int line, int en, ...);
+
+#define information_in_file(...) diag_in_file(DIAG_INFO, __VA_ARGS__)
+#define warning_in_file(...) diag_in_file(DIAG_WARN, __VA_ARGS__)
+#define error_in_file(...) diag_in_file(DIAG_ERR, __VA_ARGS__)
+#define fatalerror_in_file(...) diag_in_file(DIAG_FATAL, __VA_ARGS__)
 
 int select_charset(int charset_code);
 
 #ifdef __cplusplus
 }
+#endif
+
+/* Define MSG_SETUP_PROJ_SEARCH_PATH before including this header to enable the
+ * hooks to setup proj's search path to be relative to the executable if this
+ * is a relocatable install.
+ */
+#ifdef MSG_SETUP_PROJ_SEARCH_PATH
+/* We only need this on these platforms. */
+# if OS_WIN32
+#  include <proj.h>
+#  define msg_init(ARGV) do {\
+	(msg_init)(ARGV); \
+	char* msg_init_proj_path = use_path(msg_cfgpth(), "proj");\
+	if (fDirectory(msg_init_proj_path)) {\
+	    const char* msg_init_proj_path_const = msg_init_proj_path;\
+	    proj_context_set_search_paths(PJ_DEFAULT_CTX, 1,\
+					  &msg_init_proj_path_const);\
+	}\
+	osfree(msg_init_proj_path);\
+    } while (0)
+# endif
 #endif
 
 #endif /* MESSAGE_H */

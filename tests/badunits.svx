@@ -1,4 +1,4 @@
-; pos=fail error=13
+; pos=fail error=15
 *fix 1 reference 0 0 0
 *units length FURLONGS
 *units compass 0.0174532925 Radians
@@ -7,7 +7,7 @@
 *units tape clino 0.1 Metres
 *units Anemometer Knots
 *units deFault
-*units DEFault MeterS
+*units DEFault MeterS ; comment
 *units DEFault 1.0 MeterS
 *units Tape DEFault MeterS
 *units Tape DEFault
@@ -15,3 +15,5 @@
 *units DEFault Tape Feet
 *units tape feet
 *units left degrees
+*units length metres2
+*units length br0ken

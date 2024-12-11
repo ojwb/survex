@@ -97,7 +97,10 @@ for my $po_file (@ARGV) {
 	${$loc{$language}}[$msgno] = $where;
 	if (defined $ent) {
 	    my $msg = c_unescape($po_entry->dequote($ent->msgstr));
-	    next if $msg eq '';
+	    if ($msg eq '') {
+		print STDERR "$where: warning: Empty translation marked as fuzzy\n" if $ent->fuzzy();
+		next;
+	    }
 	    if (${$msgs{$language}}[$msgno]) {
 		print STDERR "$where: warning: already had message $msgno for language $language\n";
 	    }

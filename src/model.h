@@ -39,11 +39,11 @@ using namespace std;
 class MainFrm;
 
 class PointInfo : public Point {
-    int date;
+    int date = -1;
 
 public:
-    PointInfo() : Point(), date(-1) { }
-    explicit PointInfo(const img_point & pt) : Point(pt), date(-1) { }
+    PointInfo() : Point() { }
+    explicit PointInfo(const img_point & pt) : Point(pt) { }
     PointInfo(const img_point & pt, int date_) : Point(pt), date(date_) { }
     PointInfo(const Point & p, int date_) : Point(p), date(date_) { }
     int GetDate() const { return date; }
@@ -54,12 +54,12 @@ class XSect {
     const LabelInfo* stn;
     int date;
     double l, r, u, d;
-    double right_bearing;
+    double right_bearing = 0.0;
 
 public:
     XSect(const LabelInfo* stn_, int date_,
 	  double l_, double r_, double u_, double d_)
-	: stn(stn_), date(date_), l(l_), r(r_), u(u_), d(d_), right_bearing(0) { }
+	: stn(stn_), date(date_), l(l_), r(r_), u(u_), d(d_) { }
     double GetL() const { return l; }
     double GetR() const { return r; }
     double GetU() const { return u; }
@@ -139,10 +139,9 @@ class Model {
     list<traverse> traverses[8];
     mutable list<vector<XSect>> tubes;
 
-  public: // FIXME
+  private:
     list<LabelInfo*> m_Labels;
 
-  private:
     Vector3 m_Ext;
     double m_DepthMin, m_DepthExt;
     int m_DateMin, m_DateExt;
@@ -166,6 +165,11 @@ class Model {
     time_t m_DateStamp_numeric;
 
     Vector3 m_Offset;
+
+    // We lazily set the higher bits of LabelInfo::flags to a value to give us
+    // the sort order we want via integer subtraction.  This is done the first
+    // time this sort happens after loading a file.
+    bool added_plot_order_keys = false;
 
     void do_prepare_tubes() const;
 
@@ -280,6 +284,10 @@ class Model {
     list<LabelInfo*>::iterator GetLabelsNCEnd() {
 	return m_Labels.end();
     }
+
+    void SortLabelsByName();
+
+    void SortLabelsByPlotOrder();
 
     void prepare_tubes() const {
 	if (!m_TubesPrepared) {

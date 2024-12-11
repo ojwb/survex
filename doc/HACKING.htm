@@ -43,38 +43,59 @@ already covered).
 <P>You'll need automake 1.5 or later (earlier versions don't support
 per-executable CFLAGS; 1.6 has been tested and works, but wasn't a
 very stable release - automake 1.6.1 is a better bet)
-and autoconf 2.50 or later (autoconf 2.52, 2.53 and 2.64 have all
+and autoconf 2.50 or later (autoconf 2.52, 2.53, 2.64 and 2.71 have all
 been used successfully).
 
-<P>For building the documentation you'll need sgmltools 2 or later,
-jadetex, docbook-utils, and w3m.
+<p>The wxWidgets library is used for aven's UI.  Currently &gt;= 3.0.0 is
+supported.
+
+<p>The PROJ library is used for coordinate conversions.  Currently &gt;= 6.2.0 is
+supported.
+
+<P>The Perl Locale::PO module is used for process message translation files.
+
+<P>For building the documentation you'll need sphinx-doc (Debian/Ubuntu package
+<tt>python3-sphinx</tt>) and w3m.
 
 <P>And for building unifont.pixelfont, you'll need unifont installed.
 
 <P>On Debian, you can install the required packages using:
 
 <pre>
-sudo apt-get install autoconf automake inkscape netpbm sgmltools-lite jadetex docbook-utils w3m unifont
+sudo apt-get install autoconf automake liblocale-po-perl libproj-dev libwxgtk3.0-gtk3-dev inkscape netpbm python3-sphinx w3m unifont
 </pre>
 
 <H2>Building on Non-Unix Platforms</H2>
 
 <H3>Mingw (Microsoft Windows)</H3>
 
-<P>Currently I build this with a Linux hosted cross-compiler.  I use
-the packaged cross-compiler in the debian testing/unstable distribution:
+<p>Survex can be built in an MSYS2+mingw64 environment - since 1.4.9 the
+pre-built installer for Microsoft Windows is built in such an environment
+by a CI job running on Github Actions.
+</p>
+
+<p>
+It should also be possible to use a Linux-hosted cross-compiler, which is
+how we used to built releases, but this requires cross-building a lot of
+required libraries so we gave up on doing this.  Some notes on this are
+left below in case anyone wants to try.
+</p>
+
+<p>
+I use the packaged cross-compiler in the debian testing/unstable distribution:
+</p>
 
 <pre>
 sudo apt-get install mingw-w64-i686-dev
 </pre>
 
 <p>
-I then install the various libraries by compiling from source.  For wxWidgets
-3.0.4, I apply a
-<a href="https://survex.com/software/wxWidgets-3.0.4.patch">patch</a> to
-disable a pointless and annoying compiler ABI check (with this check
-aven stops working each time my cross compiler package is upgraded to
-a new GCC version; without it everything works fine).
+Then install the various libraries by compiling from source.  For wxWidgets
+I apply a
+<a href="https://survex.com/software/wxWidgets-3.2.4.patch">patch</a> to
+disable a pointless and annoying compiler ABI check
+(with this check aven stops working each time my cross compiler package is
+upgraded to a new GCC version; without it everything works fine).
 </p>
 
 <p>
@@ -88,19 +109,57 @@ sudo make install
 </pre>
 
 <p>
-For PROJ 4.8.0:
+For sqlite (needed by PROJ):
 </p>
 
 <pre>
+wget https://www.sqlite.org/2021/sqlite-autoconf-3360000.tar.gz
+tar xvf sqlite-autoconf-3360000.tar.gz
 mkdir BUILD
 cd BUILD
-../configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --disable-shared host_alias=i686-w64-mingw32
+../configure --prefix=/usr/i686-w64-mingw32 --host i686-w64-mingw32 --disable-shared --disable-fts4 --disable-fts5 --disable-json1 --disable-rtree host_alias=i686-w64-mingw32
 make
 sudo make install
 </pre>
 
 <p>
-For libav 10.3:
+Sadly newer versions of PROJ have to be built with cmake.  For PROJ 9.3.0
+I used the following (TIFF is apparently useful for some grids, but would also
+need libtiff):
+</p>
+
+<pre>
+mkdir BUILD
+cd BUILD
+cmake .. -DCMAKE_TOOLCHAIN_FILE=~/git/survex/cross-mingw.cmake -DCMAKE_INSTALL_PREFIX=/usr/i686-w64-mingw32 -DENABLE_CURL=OFF -DENABLE_TIFF=OFF -DBUILD_PROJSYNC=OFF -DBUILD_SHARED_LIBS=OFF -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON -DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF -DCMAKE_FIND_PACKAGE_NO_PACKAGE_REGISTRY=ON -DFETCHCONTENT_FULLY_DISCONNECTED=ON -DBUILD_TESTING=OFF
+make
+sudo make install
+</pre>
+
+<p>where <tt>cross-mingw.cmake</tt> contains:</p>
+
+<pre>
+# the name of the target operating system
+set(CMAKE_SYSTEM_NAME Windows)
+
+# which compilers to use for C and C++
+set(CMAKE_C_COMPILER   i686-w64-mingw32-gcc)
+set(CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
+
+# where is the target environment located
+set(CMAKE_FIND_ROOT_PATH  /usr/i686-w64-mingw32)
+
+# adjust the default behaviour of the FIND_XXX() commands:
+# search programs in the host environment
+set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
+
+# search headers and libraries in the target environment
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+</pre>
+
+<p>
+For ffmpeg 4.4.1:
 </p>
 
 <pre>
@@ -112,51 +171,38 @@ make
 sudo make install
 </pre>
 
-<P>Building on Windows in a native mingw environment will probably
-require tinkering.  Best bet is probably to install bash and use the
-current configure script.  I'm happy to help if you want to try this,
-and I'll incorporate patches provided they're fairly clean.
+<p>
+You'll also need to install GDAL, which requires a lot of other libraries
+installed to build.  I gave up at this point.
+</p>
 
 <H2>Microsoft Windows Installer Builder</H2>
 
-<P>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
-build the MS Windows Installer.  Survex 1.2.23 was built using InnoSetup
-5.5.6 (non-Unicode version, which apparently produces smaller installer
-packages).
+<p>We use <A HREF="http://www.jrsoftware.org/isinfo.php">InnoSetup</A> to
+build the MS Windows Installer.  Since 1.4.9 we use the InnoSetup version
+which is pre-installed in the Github CI images.
+</p>
 
-<P>Here are some random notes:
+<p>
+Survex 1.4.8 was built using InnoSetup 6.2.2.
+</p>
+
+<p>
+Here are some random notes on the old cross-building approach:
+</p>
 
 <H3>Packages Needed</H3>
 
-<P>On Debian, the commands to install wine vary depending on the architecture
-you're running - to check this use:
-
-<pre>
-dpkg-architecture -qDEB_HOST_GNU_CPU
-</pre>
-
-<H4>For i386</H4>
+<P>On Debian unstable/testing:
 
 <pre>
 sudo apt-get install wine wx3.0-i18n
 </pre>
 
-<H4>For x86_64</H4>
-
-<P>You'll need to enable multi-arch and install the i386 packages of wine:
-
-<pre>
-sudo dpkg --add-architecture i386
-sudo apt-get update
-sudo apt-get install wine wine-bin:i386 wx3.0-i18n
-</pre>
-
-<H4>Common</H4>
-
 <P>And then run:
 
 <pre>
-wine ~/Downloads/isetup-5.5.3.exe
+wine ~/Downloads/innosetup-6.2.2.exe
 </pre>
 
 <H3>Translations</H3>
@@ -166,17 +212,16 @@ add these, which you can find in the <code>lib</code> subdirectory of Survex's
 source tree:
 
 <UL>
-<li>ChineseSimplified.isl (Unofficial translation; for 5.5.3+)
-<li>ChineseTraditional.isl (Candidate official translation; for 5.5.3+)
-<li>EnglishBritish.isl (Unofficial translation; for 5.5.3+)
-<li>Indonesian.isl (Unofficial translation; for 5.5.3+)
-<li>Romanian.isl (Unofficial translation; for 5.5.3+)
-<li>Slovak.isl (Unofficial translation; for 5.5.3+)
+<li>ChineseSimplified.isl (6.1.0+)
+<li>ChineseTraditional.isl (6.1.0+)
+<li>EnglishBritish.isl (6.1.0+)
+<li>Greek.isl (6.1.0+)
+<li>Indonesian.isl (6.1.0+)
+<li>Romanian.isl (6.1.0+)
 </UL>
 
-These are taken from the innosetup repo at
-https://github.com/jrsoftware/issrc.git
-(look in the <code>Files/Languages/Unofficial</code> subdirectory).
+These are taken from the <a href="https://jrsoftware.org/files/istrans/">Inno
+Setup Translations</a> page.
 
 <H3>survex.iss</H3>
 

@@ -1,0 +1,15 @@
+; pos=yes warn=0
+*fix 1 0 0 0
+*data ignore
+1 a 10 361 -91
+a b c d e f
+*data default
+1 2 1 0 0
+*begin
+*data ignore
+2 x 1 0 0
+; *data by itself should reinitialise the current style.
+*data
+x y -1 -1 -99
+*end
+2 3 1 0 0

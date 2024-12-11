@@ -55,8 +55,17 @@ can be omitted along with the separating zero byte before them.
  <ul>
   <li>Survey title: Human readable description of the data in the file.
 There's no length limit on this string.
-  <li>Coordinate system: PROJ4 string describing the coordinate
-system in use.
+  <li>Coordinate system: string describing the coordinate system in use
+which can be passed to PROJ.  For a coordinate system with an EPSG code
+<code>EPSG:</code> followed by the code number can be used (we recommend
+using this if an EPSG code exists).  Similarly, an ESRI code can be specified
+with <code>ESRI:</code> followed by the code number.
+  <li>Survey hierarchy separator character.  Survey station names form a
+hierarchy, and this character separates levels in the hierarchy.  E.g.
+<code>161.entrance.6</code>.  Defaults to <code>.</code> if this item is not
+specified, which is also the recommended character to use unless <code>.</code>
+is used in survey or station names (especially as older software will not see
+this metadata and will use <code>.</code> unconditionally).
  </ul>
 <li> Timestamp: A string consisting of an '@' followed by a count of
 seconds since the start of 1970 in UTC ("Unix time_t") as a string
@@ -345,7 +354,7 @@ first byte of an item is a code identifying what the item is:</P>
 </tr>
 </table>
 
-<p>A &lt;label&gt; value in the tabel above encodes modifications to the
+<p>A &lt;label&gt; value in the table above encodes modifications to the
 current label buffer, which consist of removing the last <i>D</i> bytes
 from the buffer, and then appending the next <i>A</i> bytes from the file
 to the buffer.  <i>D</i> and <i>A</i> are encoded as follows:</p>
@@ -380,5 +389,5 @@ number of different &lt;LABEL&gt; items).</li>
 referenced (e.g. in &lt;XSECT&gt; items)</li>
 </ul>
 
-<P>Authors: Olly Betts and Mike McCombe, last updated: 2016-05-17</P>
+<P>Authors: Olly Betts and Mike McCombe, last updated: 2024-03-05</P>
 </BODY></HTML>

@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - test using img library non-hosted
-# Copyright (C) 2020 Olly Betts
+# Copyright (C) 2020-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,21 +19,35 @@
 
 testdir=`echo $0 | sed 's!/[^/]*$!!' || echo '.'`
 
+test -x "$testdir"/../src/cavern || testdir=.
+
+# Make testdir absolute, so we can cd before running cavern to get a consistent
+# path in diagnostic messages.
+testdir=`cd "$testdir" && pwd`
+
 # allow us to run tests standalone more easily
 : ${srcdir="$testdir"}
+if [ -z "$SURVEXLIB" ] ; then
+  SURVEXLIB=`cd "$srcdir/../lib" && pwd`
+  export SURVEXLIB
+fi
 
 # force VERBOSE if we're run on a subset of tests
 test -n "$*" && VERBOSE=1
-
-test -x "$testdir"/../src/cavern || testdir=.
 
 : ${CAVERN="$testdir"/../src/cavern}
 : ${IMGTEST="$testdir"/../src/imgtest}
 
 : ${TESTS=${*:-"simple survey"}}
 
+# Suppress checking for leaks on exit if we're build with lsan - we don't
+# generally waste effort to free all allocations as the OS will reclaim
+# memory on exit.
+LSAN_OPTIONS=leak_check_at_exit=0
+export LSAN_OPTIONS
+
 vg_error=123
-vg_log=vg.log
+vg_log=$testdir/vg.log
 if [ -n "$VALGRIND" ] ; then
   rm -f "$vg_log"
   CAVERN="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $CAVERN"
@@ -44,11 +58,12 @@ for test in $TESTS ; do
   echo $test
   file=imgtest_$test
   rm -f "$file.3d" "$file.err" cavern.tmp imgtest.tmp
-  $CAVERN "$file.svx" > cavern.tmp 2>&1
+  pwd=`pwd`
+  cd "$srcdir"
+  srcdir=. $CAVERN "$file.svx" --output="$pwd/$file" > "$pwd/cavern.tmp" 2>&1
   exitcode=$?
-  if test -n "$VERBOSE" ; then
-    cat cavern.tmp
-  fi
+  cd "$pwd"
+  test -n "$VERBOSE" && cat cavern.tmp
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
       cat "$vg_log"

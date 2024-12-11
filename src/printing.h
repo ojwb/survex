@@ -41,13 +41,13 @@ class wxSpinEvent;
 // This dialog is also use for Export as well as Print.
 class svxPrintDlg : public wxDialog {
 	layout m_layout;
-	wxComboBox* m_scale;
+	wxComboBox* m_scale = nullptr;
 	wxBoxSizer* m_scalebox;
 	wxBoxSizer* m_viewbox;
-	wxChoice* m_format;
-	wxStaticText* m_printSize;
-	wxSpinCtrlDouble* m_bearing;
-	wxSpinCtrlDouble* m_tilt;
+	wxChoice* m_format = nullptr;
+	wxStaticText* m_printSize = nullptr;
+	wxSpinCtrlDouble* m_bearing = nullptr;
+	wxSpinCtrlDouble* m_tilt = nullptr;
 //	wxCheckBox* m_blanks;
 	wxString m_File;
 	MainFrm* mainfrm;
@@ -81,6 +81,7 @@ class svxPrintDlg : public wxDialog {
 	void OnElevationUpdate(wxUpdateUIEvent& e);
 	void OnChangeSpin(wxSpinDoubleEvent& event);
 	void OnChange(wxCommandEvent& event);
+	void OnChangeScale(wxCommandEvent& event);
 	void OnCancel(wxCommandEvent& event);
  private:
 	DECLARE_EVENT_TABLE()

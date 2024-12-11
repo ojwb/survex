@@ -27,6 +27,7 @@ Total vertical length of survey legs =    0.03m
 Vertical range = 0.03m (from x.3 at 0.03m to x.1 at 0.00m)
 North-South range = 1.97m (from x.3 at 1.97m to x.1 at 0.00m)
 East-West range = 0.35m (from x.3 at 0.35m to x.1 at 0.00m)
+./cmd_export_bad.svx:10: warning: Station "x.4" referred to by *export but never used
    2 1-nodes.
    1 2-node.
-There were 0 warning(s) and 2 error(s) - no output files produced.
+There were 1 warning(s) and 2 error(s) - no output files produced.

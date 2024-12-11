@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2004,2005,2006,2010,2011,2012,2013,2014,2015 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,13 @@
 #define DUMP_NETWORK 1
 #endif
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "validate.h"
 #include "debug.h"
 #include "cavern.h"
+#include "commands.h"
+#include "datain.h"
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
@@ -81,15 +81,14 @@ static void err_stat(int cLegsTrav, double lenTrav,
 		     double vTot, double vTotTheo);
 
 extern void
-solve_network(void /*node *stnlist*/)
+solve_network(void)
 {
-   static int first_solve = 1;
-   node *stn;
+   static bool first_solve = true;
 
    /* We can't average across solving to fix positions. */
    clear_last_leg();
 
-   if (stnlist == NULL) {
+   if (stnlist == NULL && fixedlist == NULL) {
       if (first_solve) fatalerror(/*No survey data*/43);
       /* We've had a *solve followed by another *solve (or the implicit
        * *solve at the end of the data.  Don't moan about that. */
@@ -99,53 +98,46 @@ solve_network(void /*node *stnlist*/)
    ptrTrail = NULL;
    dump_network();
 
-   if (first_solve && !pcs->proj && !proj_out) {
-      /* If we haven't already solved to find some station positions, and
-       * there's no specified coordinate system, then check if there are any
-       * fixed points, and if there aren't, invent one at (0,0,0).
+   if (!fixedlist && first_solve && !pcs->proj_str && !proj_str_out) {
+      /* If there are no fixed points and we haven't already solved to find
+       * some station positions, and there's no specified coordinate system,
+       * the we pick a station and fixed it at (0,0,0).
        *
        * We do this first so the solving part is just like the standard case -
        * this avoid problems, such as sub-nodes of the invented fix having been
        * removed.  It also means we can fix the "first" station, which makes
-       * more sense to the user. */
-      FOR_EACH_STN(stn, stnlist)
-	 if (fixed(stn)) break;
+       * more sense to the user.
+       *
+       * Note that articulate() checks for and deals with any survey legs not
+       * connected to fixed points.
+       */
+      node *stn_to_fix = NULL;
 
-      if (!stn) {
-	/* If we've had a *solve and all the new survey since then is hanging,
-	 * we don't want to invent a fixed point.  We want to complain but
-	 * the easiest way to is just to continue processing and let
-	 * articulate() catch this condition as it will any hanging survey
-	 * data. */
-	 node *stnFirst = NULL;
-
-	 /* New stations are pushed onto the head of the list, so the
-	  * first station added is the last in the list. */
-	 FOR_EACH_STN(stn, stnlist) {
-	     /* Prefer a station with legs attached when choosing one to fix
-	      * so that if there's a hanging station on a nosurvey leg we pick
-	      * the main clump of survey data. */
-	     if (stnFirst && !stnFirst->leg[0]) continue;
-	     stnFirst = stn;
-	 }
-
-	 /* If we've got nosurvey legs, then the station we find to fix could
-	  * have no real legs attached. */
-	 SVX_ASSERT2(nosurveyhead || stnFirst->leg[0],
-		     "no fixed stns, but we've got a zero node!");
-	 SVX_ASSERT2(stnFirst, "no stations left in net!");
-	 stn = stnFirst;
-	 printf(msg(/*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72),
-		sprint_prefix(stn->name));
-	 putnl();
-	 POS(stn,0) = (real)0.0;
-	 POS(stn,1) = (real)0.0;
-	 POS(stn,2) = (real)0.0;
-	 fix(stn);
+      /* New stations are pushed onto the head of the list, so the
+       * first station added is the last in the list. */
+      for (node *stn = stnlist; stn; stn = stn->next) {
+	  /* Prefer a station with legs attached when choosing one to fix
+	   * so that if there's a hanging station on a nosurvey leg we pick
+	   * the main clump of survey data. */
+	  if (stn_to_fix && !stn->leg[0]) continue;
+	  stn_to_fix = stn;
       }
+
+      /* If we've got nosurvey legs, then the station we find to fix could
+       * have no real legs attached. */
+      SVX_ASSERT2(nosurveyhead || stn_to_fix->leg[0],
+		  "no fixed stns, but we've got a zero node!");
+      SVX_ASSERT2(stn_to_fix, "no stations left in net!");
+      compile_diagnostic_pfx(DIAG_INFO, stn_to_fix->name,
+			     /*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72,
+			     sprint_prefix(stn_to_fix->name));
+      static const double origin[3] = { 0.0, 0.0, 0.0 };
+      fix_station(stn_to_fix->name, origin);
+      // We should set the FIXED flag for the invented fix though.
+      stn_to_fix->name->sflags &= ~BIT(SFLAGS_FIXED);
    }
 
-   first_solve = 0;
+   first_solve = false;
 
    remove_trailing_travs();
    validate(); dump_network();
@@ -179,7 +171,7 @@ remove_trailing_travs(void)
     * A trailing traverse is a dead end back to a junction. */
    out_current_action(msg(/*Removing trailing traverses*/125));
    FOR_EACH_STN(stn, stnlist) {
-      if (!fixed(stn) && one_node(stn)) {
+      if (one_node(stn)) {
 	 int i = 0;
 	 int j;
 	 node *stn2 = stn;
@@ -237,14 +229,20 @@ remove_travs(void)
     * specific).  Feel free to follow this lead if you can't think of a better
     * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Concatenating traverses*/126));
+   FOR_EACH_STN(stn, fixedlist) {
+      for (int d = 0; d <= 2; d++) {
+	 linkfor *leg = stn->leg[d];
+	 if (!leg) break;
+	 if (!(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	    concatenate_trav(stn, d);
+      }
+   }
    FOR_EACH_STN(stn, stnlist) {
-      if (fixed(stn) || three_node(stn)) {
-	 int d;
-	 for (d = 0; d <= 2; d++) {
-	    linkfor *leg = stn->leg[d];
-	    if (leg && !(leg->l.reverse & FLAG_REPLACEMENTLEG))
-	       concatenate_trav(stn, d);
-	 }
+      if (!three_node(stn)) continue;
+      for (int d = 0; d <= 2; d++) {
+	 linkfor *leg = stn->leg[d];
+	 if (!(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	    concatenate_trav(stn, d);
       }
    }
 }
@@ -258,11 +256,13 @@ concatenate_trav(node *stn, int i)
    linkfor *newleg, *newleg2;
 
    stn2 = stn->leg[i]->l.to;
-   /* Reject single legs as they may be already concatenated traverses */
-   if (fixed(stn2) || !two_node(stn2)) return;
+   /* If the traverse is already a single leg there's nothing to do (this
+    * may also be an already-replaced traverse).
+    */
+   if (!two_node(stn2) || fixed(stn2)) return;
 
    trav = osnew(stack);
-   newleg2 = (linkfor*)osnew(linkrev);
+   newleg2 = (linkfor*)osnew(linkcommon);
 
 #if PRINT_NETBITS
    printf("Concatenating trav "); print_prefix(stn->name); printf("<%p>",stn);
@@ -284,8 +284,8 @@ concatenate_trav(node *stn, int i)
       fputs(szLink, stdout); print_prefix(stn->name); printf("<%p>",stn);
 #endif
 
-      /* stop if fixed or 3 or 1 node */
-      if (fixed(stn) || !two_node(stn)) break;
+      /* Check if we've reached the end of this traverse. */
+      if (!two_node(stn) || fixed(stn)) break;
 
       remove_stn_from_list(&stnlist, stn);
 
@@ -436,19 +436,20 @@ replace_travs(void)
      * term - these messages mostly indicate how processing is progressing. */
    out_current_action(msg(/*Calculating traverses*/127));
 
-   if (!fhErrStat && !fSuppress)
-      fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
-
    if (!pimg) {
       char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);
       filename_register_output(fnm);
-      pimg = img_open_write_cs(fnm, survey_title, proj_str_out, 0);
+      pimg = img_open_write_cs(fnm, s_str(&survey_title), proj_str_out,
+			       img_FFLAG_SEPARATOR(output_separator));
       if (!pimg) fatalerror(img_error(), fnm);
       osfree(fnm);
    }
 
+   if (!fhErrStat && !fSuppress)
+      fhErrStat = safe_fopen_with_ext(fnm_output_base, EXT_SVX_ERRS, "w");
+
    /* First do all the one leg traverses */
-   FOR_EACH_STN(stn1, stnlist) {
+   for (stn1 = fixedlist; stn1; stn1 = stn1->next) {
 #if PRINT_NETBITS
       printf("One leg traverses from ");
       print_prefix(stn1->name);
@@ -549,7 +550,10 @@ replace_travs(void)
       printf("<%p>[%d]\n", stn2, j);
 #endif
 
-      SVX_ASSERT(fixed(stn1));
+      if (!fixed(stn1)) {
+	  SVX_ASSERT(!fixed(stn2));
+	  goto skip_hanging_traverse;
+      }
       SVX_ASSERT(fixed(stn2));
 
       /* calculate scaling factors for error distribution */
@@ -602,11 +606,11 @@ replace_travs(void)
 		 (do_blunder ? "suspect:" : "OK"));
       }
 #endif
-      while (fTrue) {
+      while (true) {
 	 int reached_end;
 	 prefix *leg_pfx;
 
-	 fEquate = fTrue;
+	 fEquate = true;
 	 /* get next node in traverse
 	  * should have stn3->leg[k]->l.to == stn1 */
 	 stn3 = stn1->leg[i]->l.to;
@@ -638,14 +642,13 @@ replace_travs(void)
 
 	 lenTot = sqrdd(leg->d);
 
-	 if (!fZeros(&leg->v)) fEquate = fFalse;
+	 if (!fZeros(&leg->v)) fEquate = false;
 	 if (!reached_end) {
-	    add_stn_to_list(&stnlist, stn3);
+	    add_stn_to_list(&fixedlist, stn3);
 	    if (!fEquate) {
 	       mulsd(&e, &leg->v, &sc);
 	       adddd(&POSD(stn3), &POSD(stn3), &e);
 	    }
-	    fix(stn3);
 	 }
 
 	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
@@ -678,7 +681,7 @@ replace_travs(void)
 	     * (not equate at start of traverse) */
 #ifndef BLUNDER_DETECTION
 	    if (fhErrStat && !fArtic) {
-	       if (!stn1->name->ident) {
+	       if (!prefix_ident(stn1->name)) {
 		  /* FIXME: not ideal */
 		  fputs("<fixed point>", fhErrStat);
 	       } else {
@@ -686,7 +689,7 @@ replace_travs(void)
 	       }
 	       fputs(fEquate ? szLinkEq : szLink, fhErrStat);
 	       if (reached_end) {
-		  if (!stn3->name->ident) {
+		  if (!prefix_ident(stn3->name)) {
 		     /* FIXME: not ideal */
 		     fputs("<fixed point>", fhErrStat);
 		  } else {
@@ -724,6 +727,7 @@ replace_travs(void)
 	 err_stat(cLegsTrav, lenTrav, eTot, eTotTheo,
 		  hTot, hTotTheo, vTot, vTotTheo);
 
+skip_hanging_traverse:
       ptrOld = ptr;
       ptr = ptr->next;
       osfree(ptrOld);
@@ -785,6 +789,10 @@ replace_trailing_travs(void)
       leg = ptrTrail->join1;
       leg = reverse_leg(leg);
       stn1 = leg->l.to;
+      if (!fixed(stn1)) {
+	  // This happens in a component which wasn't attached to fixed points.
+	  goto skip;
+      }
       i = reverse_leg_dirn(leg);
 #if PRINT_NETBITS
       printf(" Trailing trav ");
@@ -805,7 +813,6 @@ replace_trailing_travs(void)
 	 stn1->leg[j] = stn1->leg[i];
       }
       stn1->leg[i] = ptrTrail->join1;
-      SVX_ASSERT(fixed(stn1));
       img_write_item(pimg, img_MOVE, 0, NULL,
 		     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 
@@ -831,8 +838,7 @@ replace_trailing_travs(void)
 #endif
 	 }
 
-	 fix(stn2);
-	 add_stn_to_list(&stnlist, stn2);
+	 add_stn_to_list(&fixedlist, stn2);
 	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 		stn1->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -863,6 +869,7 @@ replace_trailing_travs(void)
 	 i = j ^ 1; /* flip direction for other leg of 2 node */
       }
 
+skip:
       ptrOld = ptrTrail;
       ptrTrail = ptrTrail->next;
       osfree(ptrOld);
@@ -871,8 +878,9 @@ replace_trailing_travs(void)
    /* write out connections with no survey data */
    while (nosurveyhead) {
       nosurveylink *p = nosurveyhead;
-      SVX_ASSERT(fixed(p->fr));
-      SVX_ASSERT(fixed(p->to));
+      if (!fixed(p->fr) || !fixed(p->to)) {
+	  goto skip_nosurvey;
+      }
       if (TSTBIT(p->flags, FLAGS_SURFACE)) {
 	 p->fr->name->sflags |= BIT(SFLAGS_SURFACE);
 	 p->to->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -892,12 +900,13 @@ replace_trailing_travs(void)
       img_write_item(pimg, img_LINE, (p->flags & FLAGS_MASK),
 		     sprint_prefix(p->fr->name->up),
 		     POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
+skip_nosurvey:
       nosurveyhead = p->next;
       osfree(p);
    }
 
    /* write stations to .3d file and free legs and stations */
-   FOR_EACH_STN(stn1, stnlist) {
+   for (stn1 = fixedlist; stn1; stn1 = stn1->next) {
       int d;
       SVX_ASSERT(fixed(stn1));
       if (stn1->name->stn == stn1) {
@@ -907,7 +916,7 @@ replace_trailing_travs(void)
 	    const char * label = NULL;
 	    if (TSTBIT(sf, SFLAGS_ANON)) {
 	       label = "";
-	    } else if (stn1->name->ident) {
+	    } else if (prefix_ident(stn1->name)) {
 	       label = sprint_prefix(stn1->name);
 	    }
 	    if (label) {
@@ -939,19 +948,33 @@ replace_trailing_travs(void)
 	       pfxHi[d] = stn1->name;
 	    }
 	 }
+
+	 /* Range without anonymous stations at offset 3. */
+	 if (!TSTBIT(stn1->name->sflags, SFLAGS_ANON)) {
+	    for (d = 0; d < 3; d++) {
+	       if (POS(stn1, d) < min[d + 3]) {
+		  min[d + 3] = POS(stn1, d);
+		  pfxLo[d + 3] = stn1->name;
+	       }
+	       if (POS(stn1, d) > max[d + 3]) {
+		  max[d + 3] = POS(stn1, d);
+		  pfxHi[d + 3] = stn1->name;
+	       }
+	    }
+	 }
       }
 
       d = stn1->name->shape;
       if (d <= 1 && !TSTBIT(stn1->name->sflags, SFLAGS_USED)) {
-	 bool unused_fixed_point = fFalse;
+	 bool unused_fixed_point = false;
 	 if (d == 0) {
 	    /* Unused fixed point without error estimates */
-	    unused_fixed_point = fTrue;
+	    unused_fixed_point = true;
 	 } else if (stn1->leg[0]) {
 	    prefix *pfx = stn1->leg[0]->l.to->name;
-	    if (!pfx->ident && !TSTBIT(pfx->sflags, SFLAGS_ANON)) {
+	    if (!prefix_ident(pfx) && !TSTBIT(pfx->sflags, SFLAGS_ANON)) {
 	       /* Unused fixed point with error estimates */
-	       unused_fixed_point = fTrue;
+	       unused_fixed_point = true;
 	    }
 	 }
 	 if (unused_fixed_point) {
@@ -965,7 +988,7 @@ replace_trailing_travs(void)
       /* For stations fixed with error estimates, we need to ignore the leg to
        * the "real" fixed point in the node stats.
        */
-      if (stn1->leg[0] && !stn1->leg[0]->l.to->name->ident &&
+      if (stn1->leg[0] && !prefix_ident(stn1->leg[0]->l.to->name) &&
 	  !TSTBIT(stn1->leg[0]->l.to->name->sflags, SFLAGS_ANON))
 	 stn1->name->shape--;
 
@@ -1004,12 +1027,12 @@ replace_trailing_travs(void)
    /* The station position is attached to the name, so we leave the names and
     * positions in place - they can then be picked up if we have a *solve
     * followed by more data */
-   for (stn1 = stnlist; stn1; stn1 = stn2) {
+   for (stn1 = fixedlist; stn1; stn1 = stn2) {
       stn2 = stn1->next;
       stn1->name->stn = NULL;
       osfree(stn1);
    }
-   stnlist = NULL;
+   fixedlist = NULL;
 }
 
 static void
@@ -1045,9 +1068,9 @@ write_passage_models(void)
 	     /* TRANSLATORS: e.g. the user specifies a passage cross-section at
 	      * station "entrance.27", but there is no station "entrance.27" in
 	      * the centre-line. */
-	     error_in_file(pfx->filename, pfx->line,
-			   /*Cross section specified at non-existent station “%s”*/83,
-			   name);
+	     compile_diagnostic_pfx(DIAG_ERR, pfx,
+				    /*Cross section specified at non-existent station “%s”*/83,
+				    name);
 	 } else {
 	     if (xsect == NULL) xflags = img_XFLAG_END;
 	     img_write_item(pimg, img_XSECT, xflags, name, 0, 0, 0);
@@ -1058,4 +1081,29 @@ write_passage_models(void)
       osfree(oldp);
    }
    model = NULL;
+}
+
+node *
+find_non_anon_stn(node *stn)
+{
+    if (TSTBIT(stn->name->sflags, SFLAGS_ANON)) {
+	/* An anonymous stations must be at the end of a trailing traverse
+	 * (since the same anonymous station can't be referred to more
+	 * than once), and trailing traverses have been removed at this
+	 * point.
+	 *
+	 * However, we may remove a hanging trailing traverse back to an
+	 * anonymous station.  It's not helpful to fail to point to a
+	 * station in such a case so we look through the list of trailing
+	 * traverses to find the one which would reattach to this station
+	 * and report a station from that traverse instead.
+	 */
+	for (stackTrail* p = ptrTrail; p; p = p->next) {
+	    linkfor *leg = ptrTrail->join1;
+	    if (reverse_leg(leg)->l.to == stn) {
+		return leg->l.to;
+	    }
+	}
+    }
+    return stn;
 }

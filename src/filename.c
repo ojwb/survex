@@ -16,12 +16,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "filename.h"
 #include "debug.h"
+#include "osalloc.h"
+#include "whichos.h"
 
 #include <ctype.h>
 #include <string.h>
@@ -35,6 +35,42 @@ typedef struct filelist {
 static filelist *flhead = NULL;
 
 static void filename_register_output_with_fh(const char *fnm, FILE *fh);
+
+/* fDirectory( fnm ) returns true if fnm is a directory; false if fnm is a
+ * file, doesn't exist, or another error occurs (eg disc not in drive, ...)
+ * NB If fnm has a trailing directory separator (e.g. “/” or “/home/olly/”
+ * then it's assumed to be a directory even if it doesn't exist (as is an
+ * empty string).
+ */
+
+#if OS_UNIX || OS_WIN32
+
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <stdio.h>
+
+bool
+fDirectory(const char *fnm)
+{
+   struct stat buf;
+   if (!fnm[0] || fnm[strlen(fnm) - 1] == FNM_SEP_LEV
+#ifdef FNM_SEP_LEV2
+       || fnm[strlen(fnm) - 1] == FNM_SEP_LEV2
+#endif
+       ) return 1;
+   if (stat(fnm, &buf) != 0) return 0;
+#ifdef S_ISDIR
+   /* POSIX way */
+   return S_ISDIR(buf.st_mode);
+#else
+   /* BSD way */
+   return ((buf.st_mode & S_IFMT) == S_IFDIR);
+#endif
+}
+
+#else
+# error Unknown OS
+#endif
 
 /* safe_fopen should be used when writing a file
  * fopenWithPthAndExt should be used when reading a file
@@ -197,7 +233,7 @@ use_path(const char *pth, const char *lf)
 {
    char *fnm;
    int len, len_total;
-   bool fAddSep = fFalse;
+   bool fAddSep = false;
 
    len = strlen(pth);
    len_total = len + strlen(lf) + 1;
@@ -210,7 +246,7 @@ use_path(const char *pth, const char *lf)
 #ifdef FNM_SEP_DRV
 	 if (pth[len - 1] != FNM_SEP_DRV) {
 #endif
-	    fAddSep = fTrue;
+	    fAddSep = true;
 	    len_total++;
 #ifdef FNM_SEP_DRV
 	 }
@@ -233,27 +269,44 @@ add_ext(const char *fnm, const char *ext)
 {
    char * fnmNew;
    int len, len_total;
-#ifdef FNM_SEP_EXT
-   bool fAddSep = fFalse;
-#endif
+   bool fAddSep = false;
 
    len = strlen(fnm);
    len_total = len + strlen(ext) + 1;
-#ifdef FNM_SEP_EXT
    if (ext[0] != FNM_SEP_EXT) {
-      fAddSep = fTrue;
+      fAddSep = true;
       len_total++;
    }
-#endif
 
    fnmNew = osmalloc(len_total);
    strcpy(fnmNew, fnm);
-#ifdef FNM_SEP_EXT
    if (fAddSep) fnmNew[len++] = FNM_SEP_EXT;
-#endif
    strcpy(fnmNew + len, ext);
    return fnmNew;
 }
+
+#if OS_WIN32
+
+/* NB "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
+static bool
+fAbsoluteFnm(const char *fnm)
+{
+   /* <drive letter>: or \<path> or /<path>
+    * or \\<host>\... or //<host>/... */
+   unsigned char ch = (unsigned char)*fnm;
+   return ch == '/' || ch == '\\' ||
+       (ch && fnm[1] == ':' && (ch | 32) >= 'a' && (ch | 32) <= 'z');
+}
+
+#elif OS_UNIX
+
+static bool
+fAbsoluteFnm(const char *fnm)
+{
+   return (fnm[0] == '/');
+}
+
+#endif
 
 /* fopen file, found using pth and fnm
  * fnmUsed is used to return filename used to open file (ignored if NULL)
@@ -265,13 +318,11 @@ fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
 {
    char *fnmFull = NULL;
    FILE *fh = NULL;
-   bool fAbs;
 
-   /* if no pth treat fnm as absolute */
-   fAbs = (pth == NULL || *pth == '\0' || fAbsoluteFnm(fnm));
-
-   /* if appropriate, try it without pth */
-   if (fAbs) {
+   /* Don't try to use pth if it is unset or empty, or if the filename is
+    * already absolute.
+    */
+   if (pth == NULL || *pth == '\0' || fAbsoluteFnm(fnm)) {
       fh = fopen_not_dir(fnm, mode);
       if (fh) {
 	 if (fnmUsed) fnmFull = osstrdup(fnm);
@@ -315,32 +366,54 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
    FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, fnmUsed);
    if (fh == NULL) {
 #if OS_UNIX
-      int f_changed = 0;
-      char *fnm_trans, *p;
-      fnm_trans = osstrdup(fnm);
-      for (p = fnm_trans; *p; p++) {
+      bool changed = false;
+      char *fnm_trans = osstrdup(fnm);
+      for (char *p = fnm_trans; *p; p++) {
 	 switch (*p) {
 	 case '\\': /* swap a backslash to a forward slash */
 	    *p = '/';
-	    f_changed = 1;
+	    changed = true;
 	    break;
 	 }
       }
-      if (f_changed)
+      if (changed)
 	 fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
 
-      /* as a last ditch measure, try lowercasing the filename */
+      /* To help users process data that originated on a case-insensitive
+       * filing system, try lowercasing the filename if not found.
+       */
       if (fh == NULL) {
-	 f_changed = 0;
-	 for (p = fnm_trans; *p ; p++) {
+	 bool had_lower = false;
+	 changed = false;
+	 for (char *p = fnm_trans; *p ; p++) {
 	    unsigned char ch = *p;
 	    if (isupper(ch)) {
 	       *p = tolower(ch);
-	       f_changed = 1;
+	       changed = true;
+	    } else if (islower(ch)) {
+	       had_lower = true;
 	    }
 	 }
-	 if (f_changed)
+	 if (changed)
 	    fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
+
+	 /* If that fails, try upper casing the initial character of the leaf. */
+	 if (fh == NULL) {
+	    char *leaf = strrchr(fnm_trans, '/');
+	    leaf = (leaf ? leaf + 1 : fnm_trans);
+	    if (islower((unsigned char)*leaf)) {
+	       *leaf = toupper((unsigned char)*leaf);
+	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
+	    }
+	    if (fh == NULL && had_lower) {
+	       /* Finally, try upper casing the filename if it wasn't all
+		* upper case to start with. */
+	       for (char *p = fnm_trans; *p ; p++) {
+		  *p = toupper((unsigned char)*p);
+	       }
+	       fh = fopenWithPthAndExt(pth, fnm_trans, ext, mode, fnmUsed);
+	    }
+	 }
       }
       osfree(fnm_trans);
 #endif

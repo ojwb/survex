@@ -709,7 +709,7 @@ sk:314 @Ukon&ccaron;i&tcaron; a ulo&zcaron;i&tcaron;
 en:315 @Erase Last Position
 fr:315 @Effacement de la derni&egrave;re position
 de:315 Letzte Position @l&ouml;schen
-pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o   
+pt:315 R@emover &Uacute;ltima Posi&ccedil;&atilde;o
 ca:315 @Esborra la &uacute;ltima posici&oacute;
 es:315 @Borra la &uacute;ltima posici&oacute;n
 it:315 Cancella l'@Ultima posizione
@@ -775,7 +775,7 @@ pt: 83 Escala para caber em uma p&aacute;gina
 ca: 83 Escala per a encaixar en 1 p&agrave;gina
 es: 83 Escala para encajar en 1 p&aacute;gina
 it: 83 Scala per rientrare in una pagina
-sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku 
+sk: 83 Zmena mer&iacute;tka na jedin&uacute; str&aacute;nku
 ro: 83 Redimensionata pentru a incapea pe 1 pagina
 #
 en: 86 No data in 3d Image file
@@ -1357,3 +1357,89 @@ it "fattore di scala (predefinito %s)"
 pl "współczynnik podskalowania (domyślnie %s)"
 ru "коэффициент масштаба с округлением вниз (по умолчанию %s)"
 sk "koeficient pre zmenšenie o (defaultne %sm)"
+
+msgid "Network solved by reduction - no simultaneous equations to solve."
+ca "Xarxa resolta per reducció - cap sistema d’equacions per resoldre."
+de "Netzausgleichung gelöst durch Reduktion - kein Gleichungssystem erforderlich."
+de_CH "Netzausgleichung gelöst durch Reduktion - kein Gleichungssystem erforderlich."
+en_US "Network solved by reduction - no simultaneous equations to solve."
+es "Red resuelta por reducción - ningún sistema de ecuaciones por resolver."
+fr "Système résolu par réduction - pas d’équations simultanées à résoudre."
+id "Jaringan diselesaikan dengan pengurangan - tidak ada persamaan simultan untuk menyelesaikan."
+it "Rete risolta per riduzione - nessun sistema da risolvere."
+pl "Sieć rozwiązana poprzez redukcję - brak układu równań do rozwiązania."
+pt "Coordenadas já calculadas - nenhum sistema de equações para resolver."
+pt_BR "Coordenadas já calculadas - nenhum sistema de equações para resolver."
+ro "Retea rezolvata prin reducere - nici un sistem de ecuatii de rezolvat."
+ru "Съемочная сеть вычислена путем сведения - нет системы уравнений для решения"
+sk "Sieť vyriešená redukciou - nie je treba riešiť simultánne rovnice"
+zh_CN "通过归约法解网络-无联立方程式可解。"
+
+msgid "Skencil files"
+bg "Skencil файл"
+ca "Fitxers Skencil"
+de "Skencil-Dateien"
+de_CH "Skencil-Dateien"
+el "Skencil αρχεία"
+en_US "Skencil files"
+es "Archivos Skencil"
+fr "Fichiers Skencil"
+hu "Skencil fájlok"
+id "Berkas Skencil"
+it "File Skencil"
+pl "Pliki Skencil"
+pt "Ficheiros Skencil"
+pt_BR "Arquivos Skencil"
+ro "Fişier Skencil"
+ru "Skencil файлы"
+sk "Súbory Skencil"
+zh_CN "Skencil 文件"
+
+msgid "produce Skencil output"
+ca "generar sortida Skencil"
+de "Skencil-Ausgabe erzeugen"
+de_CH "Skencil-Ausgabe erzeugen"
+en_US "produce Skencil output"
+es "producir salida Skencil"
+fr "produire une sortie Skencil"
+hu "Skencil kimenet készítése"
+id "menghasilkan keluaran Skencil"
+it "produce un file Skencil"
+pl "wyjście w formacie Skencil"
+pt_BR "produzir arquivo Skencil"
+ru "создавать Skencil"
+sk "vygenerovať formát Skencil"
+
+msgid "ft"
+bg "футове"
+ca "peu"
+de "ft"
+de_CH "ft"
+el "πόδια"
+en_US "ft"
+es "ft"
+fr "pi"
+id "ft"
+it "pd"
+pl " stóp"
+pt "ft"
+pt_BR "ft"
+ro "ft"
+ru "футов"
+sk "ft"
+zh_CN "英尺"
+
+msgid "in"
+bg " Инча"
+de "in"
+de_CH "in"
+el "ίντσες"
+en_US "in"
+es "in"
+fr "po"
+id "in"
+it "in"
+pl " cali"
+ro "in"
+ru "дюймов"
+zh_CN "英寸"

@@ -10,7 +10,7 @@
      ^~~~~~~~
 ./csbadsdfix.svx:6:11: error: End of line not blank
  *cs IJTSK 03
-           ^
+           ^~
 ./csbadsdfix.svx:7:5: error: Unknown coordinate system
  *cs IJTSK04
      ^~~~~~~
@@ -50,7 +50,7 @@
 ./csbadsdfix.svx:19:5: error: Unknown coordinate system
  *cs UTM61S
      ^~~~~~
-./csbadsdfix.svx:20:12: error: Invalid coordinate system: unknown projection id
+./csbadsdfix.svx:20:12: error: Invalid coordinate system: Invalid value for an argument
  *cs custom "+proj=ection"
             ^~~~~~~~~~~~~~
 ./csbadsdfix.svx:21:9: error: Unknown coordinate system

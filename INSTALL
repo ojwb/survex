@@ -5,24 +5,43 @@ If you are using Debian Linux or Ubuntu Linux or a distribution based
 on one of these, you will find it easier to install one of the
 prepackaged versions of Survex.
 
-Otherwise building from source is very easy.  First of all, you need
-to make sure you have the required libraries installed.  The main
-dependency is wxWidgets 3.0 or later - if there's a suitable wxWidgets
-package for your platform, then just use that (note: library packages
-are usually split into runtime and development, usually with the same
-name but with a -dev or -devel or similar suffix on the latter - you'll
-need both to build Survex).
+Otherwise you'll need to build from source.  These instructions assume you're
+building from released tar archive - if you want to build from by checking out
+code from the git repository then you'll need additional tools installed,
+documented at: https://survex.com/cvs.html
 
-Otherwise download the source code from https://wxwidgets.org/ and
-follow their build instructions.  IMPORTANT: You must enable OpenGL
-support by adding --with-opengl to the configure command line, and
-you probably want to use --enable-unicode too.
+First of all, you need to make sure you have the required libraries installed.
+Where possible it's usually easier to install these using your Linux
+distribution's package manager.
 
-You'll also need a working C and C++ compiler (with support for C++11), and
-also the OpenGL development libraries if these aren't pulled in by installing
-wxWidgets.
+Note that C/C++ library packages are usually split into runtime and
+development, usually with similar names but with a -dev or -devel or similar
+suffix on the development one.  You'll need both installed to build Survex,
+but typically installing the development package will automatically install
+the corresponding runtime package too.
 
-Then at a shell prompt, enter the following commands:
+* The main dependency is wxWidgets 3.0 or later - if there's a suitable
+  wxWidgets package for your platform, then just use that.
+
+  Otherwise download the source code from https://wxwidgets.org/ and
+  follow their build instructions.  IMPORTANT: You must enable OpenGL
+  support by adding --with-opengl to the configure command line.
+
+* You'll also need a working C and C++ compiler (with support for C99 and
+  C++11), and also the OpenGL development libraries if these aren't pulled in
+  by installing wxWidgets.
+
+* Version 7.2.0 or later of the PROJ library is needed for coordinate
+  conversion functionality.
+
+* Optionally, GDAL is used to support reading geodata files.  If not available
+  this feature is disabled.
+
+* Optionally, FFMPEG is used if available to implement Aven's movie export
+  feature.  If not available this feature is disabled.
+
+Then at a shell prompt, unpack the source code, cd into the directory, and
+enter the following commands:
 
 ./configure
 make

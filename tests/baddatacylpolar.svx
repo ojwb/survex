@@ -1,6 +1,19 @@
-; pos=fail warn=0 error=1
+; pos=fail warn=0 error=4
 *fix 1 reference 0 0 0
 ; this next line should ignore the data until the next *data - until
 ; 0.99pre7 it would switch to style cylpolar and cause an internal error
 *data cylpolar from to foo
 1 2 3.00 004 05 06
+; Test handling of a comment right after an ignored reading.  Regression
+; test for bug fixed in 1.4.10.
+*data cylpolar from to tape compass depthchange ignore
+1 3 3.00 005 05 06; comment
+; Check final token being bad gives an error (bug fixed in 1.4.11).
+*data cylpolar from to tape compass depthchange foo
+1 4 2.00 270 05
+; Check tokens include numerics
+*data cylpolar from to tape compass depthchange f0o
+1 5 1.00 090 00
+; An unknown data style should ignore data that follows.
+*data cylp0lar from to tape compass depthchange
+1 q 2 90 0

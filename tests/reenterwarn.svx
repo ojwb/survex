@@ -1,4 +1,4 @@
-; pos=no warn=2
+; pos=no warn=1
 *begin 1
 *end 1
 *begin 1

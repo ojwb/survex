@@ -1,0 +1,16 @@
+; pos=dump warn=0
+*fix 0 0 0 0
+*data cartesian from to dx dy dz
+*declination 90 degrees
+*cartesian true
+0 true 10 0 0
+*cartesian grid
+0 grid 10 0 0
+*cartesian magnetic
+0 magnetic 0 10 0
+*cartesian true 90 degrees
+0 true2 0 -10 0
+*cartesian grid 100 grads
+0 grid2 0 -10 0
+*cartesian magnetic 5400 minutes
+0 magnetic2 10 0 0

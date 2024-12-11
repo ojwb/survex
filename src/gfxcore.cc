@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2003,2004,2005,2006,2007,2010,2011,2012,2014,2015,2016,2017,2018 Olly Betts
+//  Copyright (C) 2001-2024 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -22,9 +22,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include <assert.h>
 #include <float.h>
@@ -37,6 +35,7 @@
 #include "hash.h"
 #include "mainfrm.h"
 #include "message.h"
+#include "osalloc.h"
 #include "useful.h"
 #include "printing.h"
 #include "guicontrol.h"
@@ -47,8 +46,12 @@
 #include <wx/image.h>
 #include <wx/zipstrm.h>
 
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
+#ifdef HAVE_GDAL
+# include <ogrsf_frmts.h>
+#endif
+#include <proj.h>
+
+#define WGS84_DATUM_STRING "EPSG:4326"
 
 const unsigned long DEFAULT_HGT_DIM = 3601;
 const unsigned long DEFAULT_HGT_SIZE = sqrd(DEFAULT_HGT_DIM) * 2;
@@ -65,7 +68,7 @@ const unsigned long DEFAULT_HGT_SIZE = sqrd(DEFAULT_HGT_DIM) * 2;
 #define MAX_ERROR 12.0
 
 // Any length greater than pow(10, LOG_LEN_MAX) will be clamped to this.
-const Double LOG_LEN_MAX = 1.5;
+const double LOG_LEN_MAX = 1.5;
 
 // How many bins per letter height to use when working out non-overlapping
 // labels.
@@ -74,7 +77,7 @@ const unsigned int QUANTISE_FACTOR = 2;
 #include "avenpal.h"
 
 static const int INDICATOR_BOX_SIZE = 60;
-static const int INDICATOR_GAP = 2;
+static const int INDICATOR_GAP = 8;
 static const int INDICATOR_MARGIN = 5;
 static const int INDICATOR_OFFSET_X = 15;
 static const int INDICATOR_OFFSET_Y = 15;
@@ -86,7 +89,7 @@ static const int KEY_BLOCK_WIDTH = 20;
 static const int KEY_BLOCK_HEIGHT = 16;
 static const int TICK_LENGTH = 4;
 static const int SCALE_BAR_OFFSET_X = 15;
-static const int SCALE_BAR_OFFSET_Y = 12;
+static const int SCALE_BAR_OFFSET_Y = 8;
 static const int SCALE_BAR_HEIGHT = 12;
 
 static const gla_colour TEXT_COLOUR = col_GREEN;
@@ -124,59 +127,9 @@ END_EVENT_TABLE()
 
 GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
     GLACanvas(parent_win, 100),
-    m_Scale(0.0),
-    initial_scale(1.0),
-    m_ScaleBarWidth(0),
     m_Control(control),
-    m_LabelGrid(NULL),
     m_Parent(parent),
-    m_DoneFirstShow(false),
-    m_TiltAngle(0.0),
-    m_PanAngle(0.0),
-    m_Rotating(false),
-    m_RotationStep(0.0),
-    m_SwitchingTo(0),
-    m_Crosses(false),
-    m_Legs(true),
-    m_Splays(SHOW_FADED),
-    m_Dupes(SHOW_DASHED),
-    m_Names(false),
-    m_Scalebar(true),
-    m_ColourKey(true),
-    m_OverlappingNames(false),
-    m_Compass(true),
-    m_Clino(true),
-    m_Tubes(false),
-    m_ColourBy(COLOUR_BY_DEPTH),
-    m_HaveData(false),
-    m_HaveTerrain(true),
-    m_MouseOutsideCompass(false),
-    m_MouseOutsideElev(false),
-    m_Surface(false),
-    m_Entrances(false),
-    m_FixedPts(false),
-    m_ExportedPts(false),
-    m_Grid(false),
-    m_BoundingBox(false),
-    m_Terrain(false),
-    m_Degrees(false),
-    m_Metric(false),
-    m_Percent(false),
-    m_HitTestDebug(false),
-    m_RenderStats(false),
-    m_PointGrid(NULL),
-    m_HitTestGridValid(false),
-    m_here(NULL),
-    m_there(NULL),
-    presentation_mode(0),
-    pres_reverse(false),
-    pres_speed(0.0),
-    movie(NULL),
-    current_cursor(GfxCore::CURSOR_DEFAULT),
-    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD)),
-    dem(NULL),
-    last_time(0),
-    n_tris(0)
+    sqrd_measure_threshold(sqrd(MEASURE_THRESHOLD))
 {
     AddQuad = &GfxCore::AddQuadrilateralDepth;
     AddPoly = &GfxCore::AddPolylineDepth;
@@ -248,6 +201,7 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_GRID);
     InvalidateList(LIST_SHADOW);
     InvalidateList(LIST_TERRAIN);
+    InvalidateList(LIST_OVERLAYS);
 
     // Set diameter of the viewing volume.
     auto ext = m_Parent->GetExtent();
@@ -304,7 +258,7 @@ void GfxCore::FirstShow()
 //  Recalculating methods
 //
 
-void GfxCore::SetScale(Double scale)
+void GfxCore::SetScale(double scale)
 {
     if (scale < 0.05) {
 	scale = 0.05;
@@ -411,6 +365,8 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	    // Draw the surface legs.
 	    DrawList(LIST_SURFACE_LEGS);
 	}
+
+	DrawList(LIST_OVERLAYS);
 
 	if (m_BoundingBox) {
 	    DrawShadowedBoundingBox();
@@ -558,8 +514,17 @@ void GfxCore::OnPaint(wxPaintEvent&)
 
 	FinishDrawing();
     } else {
+#ifdef __WXMAC__
+	if (!m_DoneFirstShow) {
+	    FirstShow();
+	}
+	StartDrawing();
+	ClearNative();
+	FinishDrawing();
+#else
 	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
 	dc.Clear();
+#endif
     }
 }
 
@@ -621,11 +586,11 @@ void GfxCore::DrawGrid()
     SetColour(col_RED);
 
     // Calculate the extent of the survey, in metres across the screen plane.
-    Double m_across_screen = SurveyUnitsAcrossViewport();
+    double m_across_screen = SurveyUnitsAcrossViewport();
     // Calculate the length of the scale bar in metres.
     //--move this elsewhere
-    Double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
-    Double t = m_across_screen * 0.75 / size_snap;
+    double size_snap = pow(10.0, floor(log10(0.75 * m_across_screen)));
+    double t = m_across_screen * 0.75 / size_snap;
     if (t >= 5.0) {
 	size_snap *= 5.0;
     }
@@ -633,30 +598,30 @@ void GfxCore::DrawGrid()
 	size_snap *= 2.0;
     }
 
-    Double grid_size = size_snap * 0.1;
-    Double edge = grid_size * 2.0;
+    double grid_size = size_snap * 0.1;
+    double edge = grid_size * 2.0;
     auto ext = m_Parent->GetExtent();
-    Double grid_z = -ext.GetZ() * 0.5 - grid_size;
-    Double left = -ext.GetX() * 0.5 - edge;
-    Double right = ext.GetX() * 0.5 + edge;
-    Double bottom = -ext.GetY() * 0.5 - edge;
-    Double top = ext.GetY() * 0.5 + edge;
+    double grid_z = -ext.GetZ() * 0.5 - grid_size;
+    double left = -ext.GetX() * 0.5 - edge;
+    double right = ext.GetX() * 0.5 + edge;
+    double bottom = -ext.GetY() * 0.5 - edge;
+    double top = ext.GetY() * 0.5 + edge;
     int count_x = (int) ceil((right - left) / grid_size);
     int count_y = (int) ceil((top - bottom) / grid_size);
-    Double actual_right = left + count_x*grid_size;
-    Double actual_top = bottom + count_y*grid_size;
+    double actual_right = left + count_x*grid_size;
+    double actual_top = bottom + count_y*grid_size;
 
     BeginLines();
 
     for (int xc = 0; xc <= count_x; xc++) {
-	Double x = left + xc*grid_size;
+	double x = left + xc*grid_size;
 
 	PlaceVertex(x, bottom, grid_z);
 	PlaceVertex(x, actual_top, grid_z);
     }
 
     for (int yc = 0; yc <= count_y; yc++) {
-	Double y = bottom + yc*grid_size;
+	double y = bottom + yc*grid_size;
 	PlaceVertex(left, y, grid_z);
 	PlaceVertex(actual_right, y, grid_z);
     }
@@ -666,35 +631,56 @@ void GfxCore::DrawGrid()
 
 int GfxCore::GetClinoOffset() const
 {
-    int result = INDICATOR_OFFSET_X;
+    auto f = GetContentScaleFactor();
+    int result = INDICATOR_OFFSET_X * f;
     if (m_Compass) {
-	result += 6 + GetCompassWidth() + INDICATOR_GAP;
+	result += GetCompassWidth() + INDICATOR_GAP * f;
     }
     return result;
 }
 
 void GfxCore::DrawTick(int angle_cw)
 {
-    const Double theta = rad(angle_cw);
-    const wxCoord length1 = INDICATOR_RADIUS;
-    const wxCoord length0 = length1 + TICK_LENGTH;
-    wxCoord x0 = wxCoord(length0 * sin(theta));
-    wxCoord y0 = wxCoord(length0 * cos(theta));
-    wxCoord x1 = wxCoord(length1 * sin(theta));
-    wxCoord y1 = wxCoord(length1 * cos(theta));
+    auto f = GetContentScaleFactor();
+    auto length0 = (INDICATOR_RADIUS + TICK_LENGTH) * f;
+    auto length1 = INDICATOR_RADIUS * f;
+    const double theta = rad(angle_cw);
+    auto s = sin(theta);
+    auto c = cos(theta);
+    wxCoord x0 = wxCoord(length0 * s);
+    wxCoord y0 = wxCoord(length0 * c);
+    wxCoord x1 = wxCoord(length1 * s);
+    wxCoord y1 = wxCoord(length1 * c);
 
     PlaceIndicatorVertex(x0, y0);
     PlaceIndicatorVertex(x1, y1);
 }
 
 void GfxCore::DrawArrow(gla_colour col1, gla_colour col2) {
-    Vector3 p1(0, INDICATOR_RADIUS, 0);
-    Vector3 p2(INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 150deg
-    Vector3 p3(-INDICATOR_RADIUS/2, INDICATOR_RADIUS*-.866025404, 0); // 210deg
-    Vector3 pc(0, 0, 0);
+    auto f = GetContentScaleFactor();
+    glaCoord r = INDICATOR_RADIUS * f;
+    glaCoord x = r * .5;
+    glaCoord y = r * -.866025404;
 
-    DrawTriangle(col_LIGHT_GREY, col1, p2, p1, pc);
-    DrawTriangle(col_LIGHT_GREY, col2, p3, p1, pc);
+    BeginTriangles();
+    SetColour(col1);
+    PlaceIndicatorVertex(x, y);
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, 0);
+    SetColour(col2);
+    PlaceIndicatorVertex(-x, y);
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, 0);
+    EndTriangles();
+    BeginPolyline();
+    glBegin(GL_LINE_STRIP);
+    PlaceIndicatorVertex(0, 0);
+    PlaceIndicatorVertex(x, y);
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, 0);
+    PlaceIndicatorVertex(-x, y);
+    PlaceIndicatorVertex(0, r);
+    EndPolyline();
 }
 
 void GfxCore::DrawCompass() {
@@ -708,7 +694,8 @@ void GfxCore::DrawCompass() {
     EndLines();
 
     // Compass background.
-    DrawCircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS);
+    DrawCircle(col_LIGHT_GREY_2, col_GREY, 0, 0,
+	       INDICATOR_RADIUS * GetContentScaleFactor());
 
     // Compass arrow.
     DrawArrow(col_INDICATOR_1, col_INDICATOR_2);
@@ -722,10 +709,11 @@ void GfxCore::DrawClinoBack() {
     }
 
     SetColour(col_GREY);
-    PlaceIndicatorVertex(0, INDICATOR_RADIUS);
-    PlaceIndicatorVertex(0, -INDICATOR_RADIUS);
+    glaCoord r = INDICATOR_RADIUS * GetContentScaleFactor();
+    PlaceIndicatorVertex(0, r);
+    PlaceIndicatorVertex(0, -r);
     PlaceIndicatorVertex(0, 0);
-    PlaceIndicatorVertex(INDICATOR_RADIUS, 0);
+    PlaceIndicatorVertex(r, 0);
 
     EndLines();
 }
@@ -738,7 +726,7 @@ void GfxCore::DrawClino() {
     EndLines();
 
     // Clino background.
-    DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS, 0);
+    DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS * GetContentScaleFactor(), 0);
 
     // Elevation arrow.
     DrawArrow(col_INDICATOR_2, col_INDICATOR_1);
@@ -748,7 +736,8 @@ void GfxCore::Draw2dIndicators()
 {
     // Draw the compass and elevation indicators.
 
-    const int centre_y = INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y;
+    auto f = GetContentScaleFactor();
+    const int centre_y = (INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y) * f;
 
     const int comp_centre_x = GetCompassXPosition();
 
@@ -776,7 +765,7 @@ void GfxCore::Draw2dIndicators()
     if (!triple_zero_width) {
 	GetTextExtent(wxT("000"), &triple_zero_width, &height);
     }
-    const int y_off = INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE + height / 2;
+    const int y_off = (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE) * f + height / 2;
 
     if (m_Compass && !m_Parent->IsExtendedElevation()) {
 	wxString str;
@@ -1032,12 +1021,14 @@ void GfxCore::SimpleDrawNames()
     }
 }
 
-void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxString & units)
+void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 {
+    auto f = GetContentScaleFactor();
+    int key_block_height = KEY_BLOCK_HEIGHT * f;
+    int key_block_width = KEY_BLOCK_WIDTH * f;
     int total_block_height =
-	KEY_BLOCK_HEIGHT * (num_bands == 1 ? num_bands : num_bands - 1);
-    if (!other.empty()) total_block_height += KEY_BLOCK_HEIGHT * 2;
-    if (!units.empty()) total_block_height += KEY_BLOCK_HEIGHT;
+	key_block_height * (num_bands == 1 ? num_bands : num_bands - 1);
+    if (!other.empty()) total_block_height += key_block_height * 2;
 
     const int bottom = -total_block_height;
 
@@ -1050,9 +1041,9 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
 	if (x > size) size = x;
     }
 
-    int left = -KEY_BLOCK_WIDTH - size;
+    int left = -key_block_width - size;
 
-    key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN * f;
     key_lowerleft[m_ColourBy].y = bottom;
     switch (m_ColourBy) {
 	case COLOUR_BY_ERROR:
@@ -1064,33 +1055,32 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
     }
 
     int y = bottom;
-    if (!units.empty()) y += KEY_BLOCK_HEIGHT;
 
     if (!other.empty()) {
 	DrawRectangle(NODATA_COLOUR, col_BLACK,
 		      left, y,
-		      KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
-	y += KEY_BLOCK_HEIGHT * 2;
+		      key_block_height, key_block_height);
+	y += key_block_height * 2;
     }
 
     int start = y;
     if (num_bands == 1) {
 	DrawShadedRectangle(GetPen(0), GetPen(0), left, y,
-			    KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
-	y += KEY_BLOCK_HEIGHT;
+			    key_block_width, key_block_height);
+	y += key_block_height;
     } else {
 	for (band = 0; band < num_bands - 1; ++band) {
 	    DrawShadedRectangle(GetPen(band), GetPen(band + 1), left, y,
-				KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
-	    y += KEY_BLOCK_HEIGHT;
+				key_block_width, key_block_height);
+	    y += key_block_height;
 	}
     }
 
     SetColour(col_BLACK);
     BeginPolyline();
     PlaceIndicatorVertex(left, y);
-    PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, y);
-    PlaceIndicatorVertex(left + KEY_BLOCK_WIDTH, start);
+    PlaceIndicatorVertex(left + key_block_width, y);
+    PlaceIndicatorVertex(left + key_block_width, start);
     PlaceIndicatorVertex(left, start);
     PlaceIndicatorVertex(left, y);
     EndPolyline();
@@ -1098,64 +1088,58 @@ void GfxCore::DrawColourKey(int num_bands, const wxString & other, const wxStrin
     SetColour(TEXT_COLOUR);
 
     y = bottom;
-    if (!units.empty()) {
-	GetTextExtent(units, &size, NULL);
-	DrawIndicatorText(left + (KEY_BLOCK_WIDTH - size) / 2, y, units);
-	y += KEY_BLOCK_HEIGHT;
-    }
     y -= GetFontSize() / 2;
-    left += KEY_BLOCK_WIDTH + 5;
+    left += key_block_width + 5;
 
     if (!other.empty()) {
-	y += KEY_BLOCK_HEIGHT / 2;
+	y += key_block_height / 2;
 	DrawIndicatorText(left, y, other);
-	y += KEY_BLOCK_HEIGHT * 2 - KEY_BLOCK_HEIGHT / 2;
+	y += key_block_height * 2 - key_block_height / 2;
     }
 
     if (num_bands == 1) {
-	y += KEY_BLOCK_HEIGHT / 2;
+	y += key_block_height / 2;
 	DrawIndicatorText(left, y, key_legends[0]);
     } else {
 	for (band = 0; band < num_bands; ++band) {
 	    DrawIndicatorText(left, y, key_legends[band]);
-	    y += KEY_BLOCK_HEIGHT;
+	    y += key_block_height;
 	}
     }
 }
 
 void GfxCore::DrawDepthKey()
 {
-    Double z_ext = m_Parent->GetDepthExtent();
+    double z_ext = m_Parent->GetDepthExtent();
     int num_bands = 1;
     int sf = 0;
     if (z_ext > 0.0) {
 	num_bands = GetNumColourBands();
-	Double z_range = z_ext;
+	double z_range = z_ext;
 	if (!m_Metric) z_range /= METRES_PER_FOOT;
 	sf = max(0, 1 - (int)floor(log10(z_range)));
     }
 
-    Double z_min = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
+    double z_min = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
+    wxString units = wmsg(m_Metric ? /*m*/424: /*'*/428);
     for (int band = 0; band < num_bands; ++band) {
-	Double z = z_min;
+	double z = z_min;
 	if (band)
 	    z += z_ext * band / (num_bands - 1);
 
 	if (!m_Metric)
 	    z /= METRES_PER_FOOT;
 
-	key_legends[band].Printf(wxT("%.*f"), sf, z);
+	key_legends[band].Printf(wxT("%.*f%s"), sf, z, units);
     }
 
-    DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
+    DrawColourKey(num_bands, wxString());
 }
 
 void GfxCore::DrawDateKey()
 {
-    int num_bands;
-    if (!HasDateInformation()) {
-	num_bands = 0;
-    } else {
+    int num_bands = 0;
+    if (HasDateInformation()) {
 	int date_ext = m_Parent->GetDateExtent();
 	if (date_ext == 0) {
 	    num_bands = 1;
@@ -1180,7 +1164,7 @@ void GfxCore::DrawDateKey()
 	other = wmsg(/*Undated*/221);
     }
 
-    DrawColourKey(num_bands, other, wxString());
+    DrawColourKey(num_bands, other);
 }
 
 void GfxCore::DrawErrorKey()
@@ -1202,15 +1186,14 @@ void GfxCore::DrawErrorKey()
     /* TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
      * which aren’t part of a loop and so have no error information. Try to keep
      * this fairly short. */
-    DrawColourKey(num_bands, wmsg(/*Not in loop*/290), wxString());
+    DrawColourKey(num_bands, wmsg(/*Not in loop*/290));
 }
 
 void GfxCore::DrawGradientKey()
 {
-    int num_bands;
     // Use fixed colours for each gradient so it's directly visually comparable
     // between surveys.
-    num_bands = GetNumColourBands();
+    int num_bands = GetNumColourBands();
     wxString units = wmsg(m_Degrees ? /*°*/344 : /*ᵍ*/345);
     for (int band = 0; band < num_bands; ++band) {
 	double gradient = double(band) / (num_bands - 1);
@@ -1222,24 +1205,24 @@ void GfxCore::DrawGradientKey()
 	key_legends[band].Printf(wxT("%.f%s"), gradient, units);
     }
 
-    DrawColourKey(num_bands, wxString(), wxString());
+    DrawColourKey(num_bands, wxString());
 }
 
 void GfxCore::DrawLengthKey()
 {
-    int num_bands;
     // Use fixed colours for each length so it's directly visually comparable
     // between surveys.
-    num_bands = GetNumColourBands();
+    int num_bands = GetNumColourBands();
+    wxString units = wmsg(m_Metric ? /*m*/424: /*'*/428);
     for (int band = 0; band < num_bands; ++band) {
 	double len = pow(10, LOG_LEN_MAX * band / (num_bands - 1));
 	if (!m_Metric) {
 	    len /= METRES_PER_FOOT;
 	}
-	key_legends[band].Printf(wxT("%.1f"), len);
+	key_legends[band].Printf(wxT("%.1f%s"), len, units);
     }
 
-    DrawColourKey(num_bands, wxString(), wmsg(m_Metric ? /*m*/424: /*ft*/428));
+    DrawColourKey(num_bands, wxString());
 }
 
 static const gla_colour style_colours[] = {
@@ -1263,8 +1246,11 @@ static const char* style_names[] = {
 
 void GfxCore::DrawStyleKey()
 {
+    auto f = GetContentScaleFactor();
+    int key_block_height = KEY_BLOCK_HEIGHT * f;
+    int key_block_width = KEY_BLOCK_WIDTH * f;
     int num_bands = sizeof(style_names) / sizeof(style_names[0]);
-    int total_block_height = KEY_BLOCK_HEIGHT * (2 * num_bands - 1);
+    int total_block_height = key_block_height * (2 * num_bands - 1);
 
     const int bottom = -total_block_height;
 
@@ -1275,27 +1261,27 @@ void GfxCore::DrawStyleKey()
 	if (x > size) size = x;
     }
 
-    int left = -KEY_BLOCK_WIDTH - size;
+    int left = -key_block_width - size;
 
-    key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN;
+    key_lowerleft[m_ColourBy].x = left - KEY_EXTRA_LEFT_MARGIN * f;
     key_lowerleft[m_ColourBy].y = bottom;
 
     int y = bottom;
     for (int band = 0; band < num_bands; ++band) {
 	DrawRectangle(style_colours[band], col_BLACK,
 		      left, y,
-		      KEY_BLOCK_WIDTH, KEY_BLOCK_HEIGHT);
-	y += KEY_BLOCK_HEIGHT * 2;
+		      key_block_width, key_block_height);
+	y += key_block_height * 2;
     }
 
     SetColour(TEXT_COLOUR);
 
     y = bottom;
-    left += KEY_BLOCK_WIDTH + 5;
+    left += key_block_width + 5;
 
     for (int band = 0; band < num_bands; ++band) {
 	DrawIndicatorText(left, y, style_names[band]);
-	y += KEY_BLOCK_HEIGHT * 2;
+	y += key_block_height * 2;
     }
 }
 
@@ -1303,9 +1289,9 @@ void GfxCore::DrawScaleBar()
 {
     // Calculate how many metres of survey are currently displayed across the
     // screen.
-    Double across_screen = SurveyUnitsAcrossViewport();
+    double across_screen = SurveyUnitsAcrossViewport();
 
-    double f = double(GetClinoXPosition() - INDICATOR_BOX_SIZE / 2 - SCALE_BAR_OFFSET_X) / GetXSize();
+    double f = double(GetClinoXPosition() - (INDICATOR_BOX_SIZE / 2 + SCALE_BAR_OFFSET_X) * GetContentScaleFactor()) / GetXSize();
     if (f > 0.75) {
 	f = 0.75;
     } else if (f < 0.5) {
@@ -1316,7 +1302,7 @@ void GfxCore::DrawScaleBar()
     }
 
     // Convert to imperial measurements if required.
-    Double multiplier = 1.0;
+    double multiplier = 1.0;
     if (!m_Metric) {
 	across_screen /= METRES_PER_FOOT;
 	multiplier = METRES_PER_FOOT;
@@ -1327,8 +1313,8 @@ void GfxCore::DrawScaleBar()
     }
 
     // Calculate the length of the scale bar.
-    Double size_snap = pow(10.0, floor(log10(f * across_screen)));
-    Double t = across_screen * f / size_snap;
+    double size_snap = pow(10.0, floor(log10(f * across_screen)));
+    double t = across_screen * f / size_snap;
     if (t >= 5.0) {
 	size_snap *= 5.0;
     } else if (t >= 2.0) {
@@ -1342,14 +1328,14 @@ void GfxCore::DrawScaleBar()
     m_ScaleBarWidth = size;
 
     // Draw it...
-    const int end_y = SCALE_BAR_OFFSET_Y + SCALE_BAR_HEIGHT;
+    const int end_y = SCALE_BAR_OFFSET_Y * GetContentScaleFactor() + GetFontSize();
     int interval = size / 10;
 
     gla_colour col = col_WHITE;
     for (int ix = 0; ix < 10; ix++) {
-	int x = SCALE_BAR_OFFSET_X + int(ix * ((Double) size / 10.0));
+	int x = SCALE_BAR_OFFSET_X * GetContentScaleFactor() + int(ix * ((double) size / 10.0));
 
-	DrawRectangle(col, col, x, end_y, interval + 2, SCALE_BAR_HEIGHT);
+	DrawRectangle(col, col, x, end_y, interval + 2, SCALE_BAR_HEIGHT * GetContentScaleFactor());
 
 	col = (col == col_WHITE) ? col_GREY : col_WHITE;
     }
@@ -1358,7 +1344,7 @@ void GfxCore::DrawScaleBar()
     wxString str;
     int units;
     if (m_Metric) {
-	Double km = size_snap * 1e-3;
+	double km = size_snap * 1e-3;
 	if (km >= 1.0) {
 	    size_snap = km;
 	    /* TRANSLATORS: abbreviation for "kilometres" (unit of length),
@@ -1385,7 +1371,7 @@ void GfxCore::DrawScaleBar()
 	}
     } else {
 	size_snap /= METRES_PER_FOOT;
-	Double miles = size_snap / 5280.0;
+	double miles = size_snap / 5280.0;
 	if (miles >= 1.0) {
 	    size_snap = miles;
 	    if (size_snap >= 2.0) {
@@ -1405,19 +1391,19 @@ void GfxCore::DrawScaleBar()
 	    }
 	} else if (size_snap >= 1.0) {
 	    /* TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
-	     * as "10ft".
+	     * as: 10'
 	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
-	    units = /*ft*/428;
+	    units = /*'*/428;
 	} else {
 	    size_snap *= 12.0;
 	    /* TRANSLATORS: abbreviation for "inches" (unit of length), used
-	     * e.g. as "6in".
+	     * e.g. as: 6"
 	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
-	    units = /*in*/429;
+	    units = /*\"*/429;
 	}
     }
     if (size_snap >= 1.0) {
@@ -1431,8 +1417,8 @@ void GfxCore::DrawScaleBar()
     GetTextExtent(str, &text_width, &text_height);
     const int text_y = end_y - text_height + 1;
     SetColour(TEXT_COLOUR);
-    DrawIndicatorText(SCALE_BAR_OFFSET_X, text_y, wxT("0"));
-    DrawIndicatorText(SCALE_BAR_OFFSET_X + size - text_width, text_y, str);
+    DrawIndicatorText(SCALE_BAR_OFFSET_X * GetContentScaleFactor(), text_y, wxT("0"));
+    DrawIndicatorText(SCALE_BAR_OFFSET_X * GetContentScaleFactor() + size - text_width, text_y, str);
 }
 
 bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
@@ -1484,7 +1470,9 @@ bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
 	if (centre) {
 	    // FIXME: allow Ctrl-Click to not set there or something?
 	    CentreOn(*best);
-	    WarpPointer(GetXSize() / 2, GetYSize() / 2);
+	    int w, h;
+	    GetClientSize(&w, &h);
+	    WarpPointer(w / 2, h / 2);
 	    SetThere(best);
 	    m_Parent->SelectTreeItem(best);
 	}
@@ -1622,7 +1610,7 @@ void GfxCore::Animate()
 	// passed the last mark, but that's complicated by the speed
 	// potentially changing (or even the direction of playback reversing)
 	// at any point during playback.
-	Double tick = t * 0.001 * fabs(pres_speed);
+	double tick = t * 0.001 * fabs(pres_speed);
 	while (tick >= next_mark_time) {
 	    tick -= next_mark_time;
 	    this_mark_total = 0;
@@ -1704,20 +1692,20 @@ void GfxCore::Animate()
 
     // When rotating...
     if (m_Rotating) {
-	Double step = base_pan + (t - base_pan_time) * 1e-3 * m_RotationStep - m_PanAngle;
+	double step = base_pan + (t - base_pan_time) * 1e-3 * m_RotationStep - m_PanAngle;
 	TurnCave(step);
     }
 
     if (m_SwitchingTo == PLAN) {
 	// When switching to plan view...
-	Double step = base_tilt - (t - base_tilt_time) * 1e-3 * 90.0 - m_TiltAngle;
+	double step = base_tilt - (t - base_tilt_time) * 1e-3 * 90.0 - m_TiltAngle;
 	TiltCave(step);
 	if (m_TiltAngle == -90.0) {
 	    m_SwitchingTo = 0;
 	}
     } else if (m_SwitchingTo == ELEVATION) {
 	// When switching to elevation view...
-	Double step;
+	double step;
 	if (m_TiltAngle > 0.0) {
 	    step = base_tilt - (t - base_tilt_time) * 1e-3 * 90.0 - m_TiltAngle;
 	} else {
@@ -1730,10 +1718,9 @@ void GfxCore::Animate()
 	TiltCave(step);
     } else if (m_SwitchingTo) {
 	// Rotate the shortest way around to the destination angle.  If we're
-	// 180 off, we favour turning anticlockwise, as auto-rotation does by
-	// default.
-	Double target = (m_SwitchingTo - NORTH) * 90;
-	Double diff = target - m_PanAngle;
+	// 180 off, we turn the same way auto-rotation would.
+	double target = (m_SwitchingTo - NORTH) * 90;
+	double diff = target - m_PanAngle;
 	diff = fmod(diff, 360);
 	if (diff <= -180)
 	    diff += 360;
@@ -1741,8 +1728,8 @@ void GfxCore::Animate()
 	    diff -= 360;
 	if (m_RotationStep < 0 && diff == 180.0)
 	    diff = -180.0;
-	Double step = base_pan - m_PanAngle;
-	Double delta = (t - base_pan_time) * 1e-3 * fabs(m_RotationStep);
+	double step = base_pan - m_PanAngle;
+	double delta = (t - base_pan_time) * 1e-3 * 60.0;
 	if (diff > 0) {
 	    step += delta;
 	} else {
@@ -1840,7 +1827,6 @@ void GfxCore::HighlightSurvey()
     double xpy_min = HUGE_VAL, xpy_max = -HUGE_VAL;
     double xmy_min = HUGE_VAL, xmy_max = -HUGE_VAL;
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
-    double x_tot = 0, y_tot = 0;
     size_t c = 0;
     while (pos != m_Parent->GetLabelsEnd()) {
 	const LabelInfo* label = *pos++;
@@ -1859,8 +1845,6 @@ void GfxCore::HighlightSurvey()
 	double xmy = x - y;
 	if (xmy < xmy_min) xmy_min = xmy;
 	if (xmy > xmy_max) xmy_max = xmy;
-	x_tot += x;
-	y_tot += y;
 	++c;
     }
     for (int f = 0; f != 8; ++f) {
@@ -1880,8 +1864,6 @@ void GfxCore::HighlightSurvey()
 		double xmy = x - y;
 		if (xmy < xmy_min) xmy_min = xmy;
 		if (xmy > xmy_max) xmy_max = xmy;
-		x_tot += x;
-		y_tot += y;
 		++c;
 	    }
 	    trav = m_Parent->traverses_next(f, &filter, trav);
@@ -1921,12 +1903,12 @@ void GfxCore::ZoomToSurvey(const wxString& survey) {
     filter.add(survey);
     filter.SetSeparator(m_Parent->GetSeparator());
 
-    Double xmin = DBL_MAX;
-    Double xmax = -DBL_MAX;
-    Double ymin = DBL_MAX;
-    Double ymax = -DBL_MAX;
-    Double zmin = DBL_MAX;
-    Double zmax = -DBL_MAX;
+    double xmin = DBL_MAX;
+    double xmax = -DBL_MAX;
+    double ymin = DBL_MAX;
+    double ymax = -DBL_MAX;
+    double zmin = DBL_MAX;
+    double zmax = -DBL_MAX;
 
     list<LabelInfo*>::const_iterator pos = m_Parent->GetLabels();
     while (pos != m_Parent->GetLabelsEnd()) {
@@ -2026,7 +2008,7 @@ void GfxCore::CreateHitTestGrid()
 //  Methods for controlling the orientation of the survey
 //
 
-void GfxCore::TurnCave(Double angle)
+void GfxCore::TurnCave(double angle)
 {
     // Turn the cave around its z-axis by a given angle.
 
@@ -2043,7 +2025,7 @@ void GfxCore::TurnCave(Double angle)
     SetRotation(m_PanAngle, m_TiltAngle);
 }
 
-void GfxCore::TurnCaveTo(Double angle)
+void GfxCore::TurnCaveTo(double angle)
 {
     if (m_Rotating) {
 	// If we're rotating, jump to the specified angle.
@@ -2064,7 +2046,7 @@ void GfxCore::TurnCaveTo(Double angle)
     }
 }
 
-void GfxCore::TiltCave(Double tilt_angle)
+void GfxCore::TiltCave(double tilt_angle)
 {
     // Tilt the cave by a given angle.
     if (m_TiltAngle + tilt_angle > 90.0) {
@@ -2133,7 +2115,7 @@ int GfxCore::GetCompassWidth() const
 {
     static int result = 0;
     if (result == 0) {
-	result = INDICATOR_BOX_SIZE;
+	result = INDICATOR_BOX_SIZE * GetContentScaleFactor();
 	int width;
 	const wxString & msg = wmsg(/*Facing*/203);
 	GetTextExtent(msg, &width, NULL);
@@ -2146,7 +2128,7 @@ int GfxCore::GetClinoWidth() const
 {
     static int result = 0;
     if (result == 0) {
-	result = INDICATOR_BOX_SIZE;
+	result = INDICATOR_BOX_SIZE * GetContentScaleFactor();
 	int width;
 	const wxString & msg1 = wmsg(/*Plan*/432);
 	GetTextExtent(msg1, &width, NULL);
@@ -2165,7 +2147,7 @@ int GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
     // coordinates.
-    return GetXSize() - INDICATOR_OFFSET_X - GetCompassWidth() / 2;
+    return GetXSize() - INDICATOR_OFFSET_X * GetContentScaleFactor() - GetCompassWidth() / 2;
 }
 
 int GfxCore::GetClinoXPosition() const
@@ -2179,13 +2161,13 @@ int GfxCore::GetIndicatorYPosition() const
 {
     // Return the y-coordinate of the centre of the indicators in window
     // coordinates.
-    return GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE / 2;
+    return GetYSize() - (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE / 2) * GetContentScaleFactor();
 }
 
 int GfxCore::GetIndicatorRadius() const
 {
     // Return the radius of each indicator.
-    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2;
+    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2 * GetContentScaleFactor();
 }
 
 bool GfxCore::PointWithinCompass(wxPoint point) const
@@ -2219,17 +2201,21 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
     // bar.
     if (!ShowingScaleBar()) return false;
 
-    return (point.x >= SCALE_BAR_OFFSET_X &&
-	    point.x <= SCALE_BAR_OFFSET_X + m_ScaleBarWidth &&
-	    point.y <= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT &&
-	    point.y >= GetYSize() - SCALE_BAR_OFFSET_Y - SCALE_BAR_HEIGHT*2);
+    auto f = GetContentScaleFactor();
+    wxCoord y = (GetYSize() - SCALE_BAR_OFFSET_Y * f - GetFontSize()) - point.y;
+    if (y > wxCoord(SCALE_BAR_HEIGHT * f) || y < 0) return false;
+
+    wxCoord x = point.x - SCALE_BAR_OFFSET_X * f;
+    if (x > m_ScaleBarWidth || x < 0) return false;
+
+    return true;
 }
 
 bool GfxCore::PointWithinColourKey(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the key.
-    point.x -= GetXSize() - KEY_OFFSET_X;
-    point.y = KEY_OFFSET_Y - point.y;
+    point.x -= GetXSize() - KEY_OFFSET_X * GetContentScaleFactor();
+    point.y = KEY_OFFSET_Y * GetContentScaleFactor() - point.y;
     return (point.x >= key_lowerleft[m_ColourBy].x && point.x <= 0 &&
 	    point.y >= key_lowerleft[m_ColourBy].y && point.y <= 0);
 }
@@ -2269,10 +2255,10 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
 	TiltCave(-deg(atan2(double(dy), double(dx))) - m_TiltAngle);
 	m_MouseOutsideElev = false;
-    } else if (dy >= INDICATOR_MARGIN) {
+    } else if (dy >= INDICATOR_MARGIN * GetContentScaleFactor()) {
 	TiltCave(-90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
-    } else if (dy <= -INDICATOR_MARGIN) {
+    } else if (dy <= -INDICATOR_MARGIN * GetContentScaleFactor()) {
 	TiltCave(90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
     } else {
@@ -2296,11 +2282,11 @@ void GfxCore::RedrawIndicators()
 {
     // Redraw the compass and clino indicators.
 
-    int total_width = GetCompassWidth() + INDICATOR_GAP + GetClinoWidth();
-    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X - total_width,
-		       GetYSize() - INDICATOR_OFFSET_Y - INDICATOR_BOX_SIZE,
+    int total_width = GetCompassWidth() + INDICATOR_GAP * GetContentScaleFactor() + GetClinoWidth();
+    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X * GetContentScaleFactor() - total_width,
+		       GetYSize() - (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE) * GetContentScaleFactor(),
 		       total_width,
-		       INDICATOR_BOX_SIZE), false);
+		       INDICATOR_BOX_SIZE * GetContentScaleFactor()), false);
 }
 
 void GfxCore::StartRotation()
@@ -2405,22 +2391,22 @@ void GfxCore::SwitchToPlan()
     }
 }
 
-void GfxCore::SetViewTo(Double xmin, Double xmax, Double ymin, Double ymax, Double zmin, Double zmax)
+void GfxCore::SetViewTo(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
 
     SetTranslation(-Vector3((xmin + xmax) / 2, (ymin + ymax) / 2, (zmin + zmax) / 2));
-    Double scale = HUGE_VAL;
+    double scale = HUGE_VAL;
     const Vector3 ext = m_Parent->GetExtent();
     if (xmax > xmin) {
-	Double s = ext.GetX() / (xmax - xmin);
+	double s = ext.GetX() / (xmax - xmin);
 	if (s < scale) scale = s;
     }
     if (ymax > ymin) {
-	Double s = ext.GetY() / (ymax - ymin);
+	double s = ext.GetY() / (ymax - ymin);
 	if (s < scale) scale = s;
     }
     if (!ShowingPlan() && zmax > zmin) {
-	Double s = ext.GetZ() / (zmax - zmin);
+	double s = ext.GetZ() / (zmax - zmin);
 	if (s < scale) scale = s;
     }
     if (scale != HUGE_VAL) SetScale(scale);
@@ -2601,7 +2587,7 @@ void GfxCore::GenerateList(unsigned int l)
 	    while (pos != m_Parent->GetLabelsEnd()) {
 		const LabelInfo* label = *pos++;
 
-		if (m_Splays == SHOW_HIDE && label->IsSplayEnd())
+		if (label->IsAnon())
 		    continue;
 
 		if ((m_Surface && label->IsSurface()) ||
@@ -2625,6 +2611,9 @@ void GfxCore::GenerateList(unsigned int l)
 	    break;
 	case LIST_TERRAIN:
 	    DrawTerrain();
+	    break;
+	case LIST_OVERLAYS:
+	    DrawOverlays();
 	    break;
 	default:
 	    assert(false);
@@ -2996,7 +2985,7 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
 {
     Vector3 n = (b - a) * (c - a);
     n.normalise();
-    Double factor = dot(n, light) * .95 + .05;
+    double factor = dot(n, light) * .95 + .05;
     SetColour(col_WHITE, factor);
     PlaceVertex(a);
     PlaceVertex(b);
@@ -3004,12 +2993,12 @@ void GfxCore::DrawTerrainTriangle(const Vector3 & a, const Vector3 & b, const Ve
     ++n_tris;
 }
 
-// Like wxBusyCursor, but you can cancel it early.
+// Like wxBusyCursor, but you can cancel it early and restart it.
 class AvenBusyCursor {
-    bool active;
+    bool active = true;
 
   public:
-    AvenBusyCursor() : active(true) {
+    AvenBusyCursor() {
 	wxBeginBusyCursor();
     }
 
@@ -3020,10 +3009,19 @@ class AvenBusyCursor {
 	}
     }
 
+    void restart() {
+	if (!active) {
+	    active = true;
+	    wxBeginBusyCursor();
+	}
+    }
+
     ~AvenBusyCursor() {
 	stop();
     }
 };
+
+static void discarding_proj_logger(void *, int, const char *) { }
 
 void GfxCore::DrawTerrain()
 {
@@ -3033,18 +3031,24 @@ void GfxCore::DrawTerrain()
 
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
-#define WGS84_DATUM_STRING "+proj=longlat +ellps=WGS84 +datum=WGS84"
-    static projPJ pj_in = pj_init_plus(WGS84_DATUM_STRING);
-    if (!pj_in) {
-	ToggleTerrain();
-	delete [] dem;
-	dem = NULL;
-	hourglass.stop();
-	error(/*Failed to initialise input coordinate system “%s”*/287, WGS84_DATUM_STRING);
-	return;
+
+    /* Prevent stderr spew from PROJ. */
+    proj_log_func(PJ_DEFAULT_CTX, nullptr, discarding_proj_logger);
+
+    PJ* pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+				    WGS84_DATUM_STRING,
+				    m_Parent->GetCSProj().c_str(),
+				    NULL);
+
+    if (pj) {
+	// Normalise the output order so x is longitude and y latitude - by default
+	// new PROJ has them switched for EPSG:4326 which just seems confusing.
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+	proj_destroy(pj);
+	pj = pj_norm;
     }
-    static projPJ pj_out = pj_init_plus(m_Parent->GetCSProj().c_str());
-    if (!pj_out) {
+
+    if (!pj) {
 	ToggleTerrain();
 	delete [] dem;
 	dem = NULL;
@@ -3058,7 +3062,7 @@ void GfxCore::DrawTerrain()
     const Vector3 & off = m_Parent->GetOffset();
     vector<Vector3> prevcol(dem_height + 1);
     for (size_t x = 0; x < dem_width; ++x) {
-	double X_ = (o_x + x * step_x) * DEG_TO_RAD;
+	PJ_COORD coord{{o_x + x * step_x, 0.0, 0.0, HUGE_VAL}};
 	Vector3 prev;
 	for (size_t y = 0; y < dem_height; ++y) {
 	    unsigned short elev = dem[x + y * dem_width];
@@ -3079,13 +3083,20 @@ void GfxCore::DrawTerrain()
 	    if (Z == nodata_value) {
 		pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
 	    } else {
-		double X = X_;
-		double Y = (o_y - y * step_y) * DEG_TO_RAD;
-		pj_transform(pj_in, pj_out, 1, 1, &X, &Y, &Z);
-		pt = Vector3(X, Y, Z) - off;
-		double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
-		if (dist_2 > r_sqrd) {
+		coord.xyzt.y = o_y - y * step_y;
+		coord.xyzt.z = Z;
+		PJ_COORD r = proj_trans(pj, PJ_FWD, coord);
+		if (r.xyzt.x == HUGE_VAL ||
+		    r.xyzt.y == HUGE_VAL ||
+		    r.xyzt.z == HUGE_VAL) {
 		    pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+		    // FIXME report?
+		} else {
+		    pt = Vector3(r.xyzt.x, r.xyzt.y, r.xyzt.z) - off;
+		    double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
+		    if (dist_2 > r_sqrd) {
+			pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+		    }
 		}
 	    }
 	    if (x > 0 && y > 0) {
@@ -3163,6 +3174,8 @@ void GfxCore::DrawTerrain()
 	 */
 	error(/*No terrain data near area of survey*/161);
     }
+
+    proj_destroy(pj);
 }
 
 // Plot blobs.
@@ -3249,8 +3262,8 @@ void GfxCore::DrawIndicators()
 		key_list = LIST_STYLE_KEY; break;
 	}
 	if (key_list != LIST_LIMIT_) {
-	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X,
-		       GetYSize() - KEY_OFFSET_Y, 0);
+	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X * GetContentScaleFactor(),
+		       GetYSize() - KEY_OFFSET_Y * GetContentScaleFactor(), 0);
 	}
     }
 
@@ -3267,15 +3280,15 @@ void GfxCore::DrawIndicators()
 
 void GfxCore::PlaceVertexWithColour(const Vector3 & v,
 				    glaTexCoord tex_x, glaTexCoord tex_y,
-				    Double factor)
+				    double factor)
 {
     SetColour(col_WHITE, factor);
     PlaceVertex(v, tex_x, tex_y);
 }
 
-void GfxCore::SetDepthColour(Double z, Double factor) {
+void GfxCore::SetDepthColour(double z, double factor) {
     // Set the drawing colour based on the altitude.
-    Double z_ext = m_Parent->GetDepthExtent();
+    double z_ext = m_Parent->GetDepthExtent();
 
     z -= m_Parent->GetDepthMin();
     // points arising from tubes may be slightly outside the limits...
@@ -3288,7 +3301,7 @@ void GfxCore::SetDepthColour(Double z, Double factor) {
     }
 
     assert(z_ext > 0.0);
-    Double how_far = z / z_ext;
+    double how_far = z / z_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
 
@@ -3297,8 +3310,8 @@ void GfxCore::SetDepthColour(Double z, Double factor) {
     if (band < GetNumColourBands() - 1) {
 	const GLAPen& pen2 = GetPen(band + 1);
 
-	Double interval = z_ext / (GetNumColourBands() - 1);
-	Double into_band = z / interval - band;
+	double interval = z_ext / (GetNumColourBands() - 1);
+	double into_band = z / interval - band;
 
 //	printf("%g z_offset=%g interval=%g band=%d\n", into_band,
 //	       z_offset, interval, band);
@@ -3314,7 +3327,7 @@ void GfxCore::SetDepthColour(Double z, Double factor) {
     SetColour(pen1, factor);
 }
 
-void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
+void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, double factor)
 {
     SetDepthColour(v.GetZ(), factor);
     PlaceVertex(v);
@@ -3322,7 +3335,7 @@ void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v, Double factor)
 
 void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v,
 					 glaTexCoord tex_x, glaTexCoord tex_y,
-					 Double factor)
+					 double factor)
 {
     SetDepthColour(v.GetZ(), factor);
     PlaceVertex(v, tex_x, tex_y);
@@ -3330,21 +3343,21 @@ void GfxCore::PlaceVertexWithDepthColour(const Vector3 &v,
 
 void GfxCore::SplitLineAcrossBands(int band, int band2,
 				   const Vector3 &p, const Vector3 &q,
-				   Double factor)
+				   double factor)
 {
     const int step = (band < band2) ? 1 : -1;
     for (int i = band; i != band2; i += step) {
-	const Double z = GetDepthBoundaryBetweenBands(i, i + step);
+	const double z = GetDepthBoundaryBetweenBands(i, i + step);
 
 	// Find the intersection point of the line p -> q
 	// with the plane parallel to the xy-plane with z-axis intersection z.
 	assert(q.GetZ() - p.GetZ() != 0.0);
 
-	const Double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
+	const double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
 //	assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
 
-	const Double x = p.GetX() + t * (q.GetX() - p.GetX());
-	const Double y = p.GetY() + t * (q.GetY() - p.GetY());
+	const double x = p.GetX() + t * (q.GetX() - p.GetX());
+	const double y = p.GetY() + t * (q.GetY() - p.GetY());
 
 	PlaceVertexWithDepthColour(Vector3(x, y, z), factor);
     }
@@ -3358,17 +3371,17 @@ void GfxCore::SplitPolyAcrossBands(vector<vector<Split>>& splits,
 {
     const int step = (band < band2) ? 1 : -1;
     for (int i = band; i != band2; i += step) {
-	const Double z = GetDepthBoundaryBetweenBands(i, i + step);
+	const double z = GetDepthBoundaryBetweenBands(i, i + step);
 
 	// Find the intersection point of the line p -> q
 	// with the plane parallel to the xy-plane with z-axis intersection z.
 	assert(q.GetZ() - p.GetZ() != 0.0);
 
-	const Double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
+	const double t = (z - p.GetZ()) / (q.GetZ() - p.GetZ());
 //	assert(0.0 <= t && t <= 1.0);		FIXME: rounding problems!
 
-	const Double x = p.GetX() + t * (q.GetX() - p.GetX());
-	const Double y = p.GetY() + t * (q.GetY() - p.GetY());
+	const double x = p.GetX() + t * (q.GetX() - p.GetX());
+	const double y = p.GetY() + t * (q.GetY() - p.GetY());
 	glaTexCoord tx = ptx, ty = pty;
 	if (w) tx += t * w;
 	if (h) ty += t * h;
@@ -3378,10 +3391,10 @@ void GfxCore::SplitPolyAcrossBands(vector<vector<Split>>& splits,
     }
 }
 
-int GfxCore::GetDepthColour(Double z) const
+int GfxCore::GetDepthColour(double z) const
 {
     // Return the (0-based) depth colour band index for a z-coordinate.
-    Double z_ext = m_Parent->GetDepthExtent();
+    double z_ext = m_Parent->GetDepthExtent();
     z -= m_Parent->GetDepthMin();
     // We seem to get rounding differences causing z to sometimes be slightly
     // less than GetDepthMin() here, and it can certainly be true for passage
@@ -3394,7 +3407,7 @@ int GfxCore::GetDepthColour(Double z) const
     return int(z / z_ext * (GetNumColourBands() - 1));
 }
 
-Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
+double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
 {
     // Return the z-coordinate of the depth colour boundary between
     // two adjacent depth colour bands (specified by 0-based indices).
@@ -3403,7 +3416,7 @@ Double GfxCore::GetDepthBoundaryBetweenBands(int a, int b) const
     if (GetNumColourBands() == 1) return 0;
 
     int band = (a > b) ? a : b; // boundary N lies on the bottom of band N.
-    Double z_ext = m_Parent->GetDepthExtent();
+    double z_ext = m_Parent->GetDepthExtent();
     return (z_ext * band / (GetNumColourBands() - 1)) + m_Parent->GetDepthMin();
 }
 
@@ -3462,7 +3475,7 @@ void GfxCore::AddQuadrilateral(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3479,7 +3492,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     int a_band, b_band, c_band, d_band;
     a_band = GetDepthColour(a.GetZ());
     a_band = min(max(a_band, 0), GetNumColourBands());
@@ -3532,7 +3545,7 @@ void GfxCore::AddQuadrilateralDepth(const Vector3 &a, const Vector3 &b,
     }
 }
 
-void GfxCore::SetColourFromDate(int date, Double factor)
+void GfxCore::SetColourFromDate(int date, double factor)
 {
     // Set the drawing colour based on a date.
 
@@ -3550,7 +3563,7 @@ void GfxCore::SetColourFromDate(int date, Double factor)
     }
 
     int date_ext = m_Parent->GetDateExtent();
-    Double how_far = (Double)date_offset / date_ext;
+    double how_far = (double)date_offset / date_ext;
     assert(how_far >= 0.0);
     assert(how_far <= 1.0);
     SetColourFrom01(how_far, factor);
@@ -3581,7 +3594,7 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3597,7 +3610,7 @@ void GfxCore::AddQuadrilateralDate(const Vector3 &a, const Vector3 &b,
 
 static double static_E_hack; // FIXME
 
-void GfxCore::SetColourFromError(double E, Double factor)
+void GfxCore::SetColourFromError(double E, double factor)
 {
     // Set the drawing colour based on an error value.
 
@@ -3606,7 +3619,7 @@ void GfxCore::SetColourFromError(double E, Double factor)
 	return;
     }
 
-    Double how_far = E / MAX_ERROR;
+    double how_far = E / MAX_ERROR;
     assert(how_far >= 0.0);
     if (how_far > 1.0) how_far = 1.0;
     SetColourFrom01(how_far, factor);
@@ -3617,7 +3630,7 @@ void GfxCore::AddQuadrilateralError(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3642,13 +3655,13 @@ void GfxCore::AddPolylineError(const traverse & centreline)
 }
 
 // gradient is in *radians*.
-void GfxCore::SetColourFromGradient(double gradient, Double factor)
+void GfxCore::SetColourFromGradient(double gradient, double factor)
 {
     // Set the drawing colour based on the gradient of the leg.
 
-    const Double GRADIENT_MAX = M_PI_2;
+    const double GRADIENT_MAX = M_PI_2;
     gradient = fabs(gradient);
-    Double how_far = gradient / GRADIENT_MAX;
+    double how_far = gradient / GRADIENT_MAX;
     SetColourFrom01(how_far, factor);
 }
 
@@ -3673,7 +3686,7 @@ void GfxCore::AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3687,12 +3700,12 @@ void GfxCore::AddQuadrilateralGradient(const Vector3 &a, const Vector3 &b,
     EndQuadrilaterals();
 }
 
-void GfxCore::SetColourFromLength(double length, Double factor)
+void GfxCore::SetColourFromLength(double length, double factor)
 {
     // Set the drawing colour based on log(length_of_leg).
 
-    Double log_len = log10(length);
-    Double how_far = log_len / LOG_LEN_MAX;
+    double log_len = log10(length);
+    double how_far = log_len / LOG_LEN_MAX;
     how_far = max(how_far, 0.0);
     how_far = min(how_far, 1.0);
     SetColourFrom01(how_far, factor);
@@ -3709,7 +3722,7 @@ void GfxCore::SetColourFromSurvey(const wxString& survey)
     SetColour(pen);
 }
 
-void GfxCore::SetColourFromSurveyStation(const wxString& name, Double factor)
+void GfxCore::SetColourFromSurveyStation(const wxString& name, double factor)
 {
     // Set the drawing colour based on hash of survey name.
     const char* p = name.utf8_str();
@@ -3723,7 +3736,7 @@ void GfxCore::SetColourFromSurveyStation(const wxString& name, Double factor)
     SetColour(pen, factor);
 }
 
-void GfxCore::SetColourFrom01(double how_far, Double factor)
+void GfxCore::SetColourFrom01(double how_far, double factor)
 {
     double b;
     double into_band = modf(how_far * (GetNumColourBands() - 1), &b);
@@ -3758,7 +3771,7 @@ void GfxCore::AddQuadrilateralLength(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3789,7 +3802,7 @@ void GfxCore::AddQuadrilateralSurvey(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3822,7 +3835,7 @@ void GfxCore::AddQuadrilateralStyle(const Vector3 &a, const Vector3 &b,
 {
     Vector3 normal = (a - c) * (d - b);
     normal.normalise();
-    Double factor = dot(normal, light) * .3 + .7;
+    double factor = dot(normal, light) * .3 + .7;
     glaTexCoord w(((b - a).magnitude() + (d - c).magnitude()) * .5);
     glaTexCoord h(((b - c).magnitude() + (d - a).magnitude()) * .5);
     // FIXME: should plot triangles instead to avoid rendering glitches.
@@ -3939,7 +3952,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 		// "torsional stress" - FIXME: use
 		// triangles instead of rectangles?
 		int shift = 0;
-		Double maxdotp = 0;
+		double maxdotp = 0;
 
 		// Scale to unit vectors in the LRUD plane.
 		right.normalise();
@@ -3948,7 +3961,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 		for (int orient = 0; orient <= 3; ++orient) {
 		    Vector3 tmp = U[orient] - prev_pt_v->GetPoint();
 		    tmp.normalise();
-		    Double dotp = dot(vec, tmp);
+		    double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
 			maxdotp = dotp;
 			shift = orient;
@@ -3974,7 +3987,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 		for (int j = 0; j <= 3; ++j) {
 		    Vector3 tmp = U[j] - *prev_pt_v;
 		    tmp.normalise();
-		    Double dotp = dot(vec, tmp);
+		    double dotp = dot(vec, tmp);
 		    if (dotp > maxdotp) {
 			maxdotp = dotp + 1e-6; // Add small tolerance to stop 45 degree offset cases being flagged...
 			shift = j;
@@ -3987,7 +4000,7 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 		    for (int j = 0; j <= 3; ++j) {
 			Vector3 tmp = U[j] - *prev_pt_v;
 			tmp.normalise();
-			Double dotp = dot(vec, tmp);
+			double dotp = dot(vec, tmp);
 			printf("    %d : %.8f\n", j, dotp);
 		    }
 		}
@@ -4003,10 +4016,10 @@ GfxCore::SkinPassage(vector<XSect> & centreline)
 	right.normalise();
 	up.normalise();
 
-	Double l = fabs(pt_v.GetL());
-	Double r = fabs(pt_v.GetR());
-	Double u = fabs(pt_v.GetU());
-	Double d = fabs(pt_v.GetD());
+	double l = fabs(pt_v.GetL());
+	double r = fabs(pt_v.GetR());
+	double u = fabs(pt_v.GetU());
+	double d = fabs(pt_v.GetD());
 
 	// Produce coordinates of the corners of the LRUD "plane".
 	Vector3 v[4];
@@ -4205,9 +4218,8 @@ bool GfxCore::ExportMovie(const wxString & fnm)
     wxString ext;
     wxFileName::SplitPath(fnm, NULL, NULL, NULL, &ext, wxPATH_NATIVE);
 
-    int width;
-    int height;
-    GetSize(&width, &height);
+    int width = GetXSize();
+    int height = GetYSize();
     // Round up to next multiple of 2 (required by ffmpeg).
     width += (width & 1);
     height += (height & 1);
@@ -4501,4 +4513,262 @@ void GfxCore::ZoomBoxGo()
     zoombox.unset();
 
     SetScale(GetScale() * factor);
+}
+
+//#define DEBUG_LOAD_OVERLAYS
+
+void GfxCore::DrawOverlays()
+{
+    auto it = m_Parent->FirstOverlay();
+    if (!it.IsOk()) return;
+
+#ifdef HAVE_GDAL
+    AvenBusyCursor hourglass;
+
+    SetColour(col_TURQUOISE);
+    GDALAllRegister();
+    CPLSetConfigOption("GPX_ELE_AS_25D", "YES");
+    for ( ; it.IsOk(); it = m_Parent->NextOverlay(it)) {
+	if (false) {
+erase_overlay:
+	    it = m_Parent->RemoveOverlay(it);
+	    if (!it.IsOk()) break;
+	}
+	const char* p = m_Parent->GetOverlayFilename(it).utf8_str();
+	GDALDataset* poDS = (GDALDataset*)GDALOpenEx(p, GDAL_OF_VECTOR,
+						     NULL, NULL, NULL);
+	if (!poDS) {
+	    hourglass.stop();
+	    wxGetApp().ReportError(wxString::Format(wmsg(/*Couldn’t open file “%s”*/24), p));
+	    hourglass.restart();
+	    goto erase_overlay;
+	}
+
+	const OGRSpatialReference* current_ogrsr = nullptr;
+	PJ* pj = nullptr;
+
+	bool gpx = (strcmp(poDS->GetDriverName(), "GPX") == 0);
+
+	const Vector3 & off = m_Parent->GetOffset();
+
+	auto layer_count = poDS->GetLayerCount();
+#ifdef DEBUG_LOAD_OVERLAYS
+	printf("%d layers\n", (int)layer_count);
+#endif
+	for (int i = 0; i < layer_count; ++i) {
+	    OGRLayer* poLayer = poDS->GetLayer(i);
+	    if (gpx) {
+		// GDAL's GPX driver gives a MultiLineString for each route and
+		// track but also exposes layers with the points from each route
+		// and track separately.  We ignore these points as they are
+		// redundant and not useful to us.
+		const char* layer_name = poLayer->GetName();
+		if (strcmp(layer_name, "route_points") == 0 ||
+		    strcmp(layer_name, "track_points") == 0) {
+		    continue;
+		}
+	    }
+#ifdef DEBUG_LOAD_OVERLAYS
+	    printf("  #%d: %s %ld features\n", i, poLayer->GetName(), (long)poLayer->GetFeatureCount());
+#endif
+	    for (auto& poFeature : poLayer) {
+		OGRGeometry* poGeometry = poFeature->GetGeometryRef();
+		if (!poGeometry) continue;
+
+		const OGRSpatialReference* ogrsr = poGeometry->getSpatialReference();
+		if (!ogrsr) {
+		    hourglass.stop();
+		    // TRANSLATORS: %s is replaced by the name of a geodata
+		    // file, e.g. GPX, KML.
+		    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p));
+		    hourglass.restart();
+		    goto erase_overlay;
+		}
+		if (ogrsr != current_ogrsr) {
+		    current_ogrsr = ogrsr;
+		    char* cs_wkt = nullptr;
+		    auto result = ogrsr->exportToWkt(&cs_wkt);
+		    if (result != OGRERR_NONE) {
+			hourglass.stop();
+			if (result == OGRERR_NOT_ENOUGH_MEMORY) {
+			    wxGetApp().ReportError(wmsg(/*Out of memory*/389));
+			} else {
+			    // TRANSLATORS: %s is replaced by the name of a geodata
+			    // file, e.g. GPX, KML.
+			    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p));
+			}
+			hourglass.restart();
+			goto erase_overlay;
+		    }
+
+		    proj_destroy(pj);
+		    pj = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+						cs_wkt,
+						m_Parent->GetCSProj().c_str(),
+						NULL);
+		    if (pj) {
+			// Normalise the output order so x is longitude and y latitude - by
+			// default new PROJ has them switched for EPSG:4326 which just seems
+			// confusing.
+			PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
+			proj_destroy(pj);
+			pj = pj_norm;
+		    }
+		}
+
+		switch (wkbFlatten(poGeometry->getGeometryType())) {
+		    case wkbPoint: {
+			OGRPoint* poPoint = poGeometry->toPoint();
+			PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+			coord = proj_trans(pj, PJ_FWD, coord);
+			if (coord.xyzt.x == HUGE_VAL ||
+			    coord.xyzt.y == HUGE_VAL ||
+			    coord.xyzt.z == HUGE_VAL) {
+			    // FIXME report errors
+			    double x = coord.xyzt.x;
+			    double y = coord.xyzt.y;
+			    double z = coord.xyzt.z;
+			    printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+			    continue;
+			}
+			double x = coord.xyzt.x - off.GetX();
+			double y = coord.xyzt.y - off.GetY();
+			double z = coord.xyzt.z - off.GetZ();
+			BeginPoints();
+			PlaceVertex(x, y, z);
+			EndPoints();
+			break;
+		    }
+		    case wkbLineString: {
+			OGRLineString* poLineString = poGeometry->toLineString();
+
+			BeginPolyline();
+			for (auto& point : poLineString) {
+			    OGRPoint* poPoint = &point;
+			    PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+			    coord = proj_trans(pj, PJ_FWD, coord);
+			    if (coord.xyzt.x == HUGE_VAL ||
+				coord.xyzt.y == HUGE_VAL ||
+				coord.xyzt.z == HUGE_VAL) {
+				// FIXME report errors
+				double x = coord.xyzt.x;
+				double y = coord.xyzt.y;
+				double z = coord.xyzt.z;
+				printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+				continue;
+			    }
+			    double x = coord.xyzt.x - off.GetX();
+			    double y = coord.xyzt.y - off.GetY();
+			    double z = coord.xyzt.z - off.GetZ();
+			    PlaceVertex(x, y, z);
+			}
+			EndPolyline();
+			break;
+		    }
+		    case wkbMultiLineString: {
+			OGRMultiLineString* poMultiLineString = poGeometry->toMultiLineString();
+			for (auto& poLineString : poMultiLineString) {
+			    BeginPolyline();
+			    for (auto& point : poLineString) {
+				OGRPoint* poPoint = &point;
+				PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+				coord = proj_trans(pj, PJ_FWD, coord);
+				if (coord.xyzt.x == HUGE_VAL ||
+				    coord.xyzt.y == HUGE_VAL ||
+				    coord.xyzt.z == HUGE_VAL) {
+				    // FIXME report errors
+				    double x = coord.xyzt.x;
+				    double y = coord.xyzt.y;
+				    double z = coord.xyzt.z;
+				    printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+				    continue;
+				}
+				double x = coord.xyzt.x - off.GetX();
+				double y = coord.xyzt.y - off.GetY();
+				double z = coord.xyzt.z - off.GetZ();
+				PlaceVertex(x, y, z);
+			    }
+			    EndPolyline();
+			}
+			break;
+		    }
+		    case wkbPolygon: {
+			OGRPolygon* poPolygon = poGeometry->toPolygon();
+			{
+			    for (auto& poRing : poPolygon) {
+#ifdef DEBUG_LOAD_OVERLAYS
+				printf("---Ring---\n");
+#endif
+				BeginPolygon();
+				for (auto& point : poRing) {
+				    OGRPoint* poPoint = &point;
+				    PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+    //				    printf("(%.2f, %.2f, %.2f) -> ", poPoint->getX(), poPoint->getY(), poPoint->getZ());
+				    coord = proj_trans(pj, PJ_FWD, coord);
+				    if (coord.xyzt.x == HUGE_VAL ||
+					coord.xyzt.y == HUGE_VAL ||
+					coord.xyzt.z == HUGE_VAL) {
+					// FIXME report errors
+					double x = coord.xyzt.x;
+					double y = coord.xyzt.y;
+					double z = coord.xyzt.z;
+					printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+					continue;
+				    }
+				    double x = coord.xyzt.x - off.GetX();
+				    double y = coord.xyzt.y - off.GetY();
+				    double z = coord.xyzt.z - off.GetZ();
+    //				    printf("Polygon vertex at (%.3f, %.3f, %.3f)\n", x, y, z);
+				    PlaceVertex(x, y, z);
+				}
+				EndPolygon();
+			    }
+			}
+			break;
+		    }
+		    case wkbMultiPolygon: {
+			OGRMultiPolygon* poMultiPolygon = poGeometry->toMultiPolygon();
+			for (auto& poPolygon : poMultiPolygon) {
+			    for (auto& poRing : poPolygon) {
+#ifdef DEBUG_LOAD_OVERLAYS
+				printf("---Ring---\n");
+#endif
+				BeginPolygon();
+				for (auto& point : poRing) {
+				    OGRPoint* poPoint = &point;
+				    PJ_COORD coord{{poPoint->getX(), poPoint->getY(), poPoint->getZ(), HUGE_VAL}};
+    //				    printf("(%.2f, %.2f, %.2f) -> ", poPoint->getX(), poPoint->getY(), poPoint->getZ());
+				    coord = proj_trans(pj, PJ_FWD, coord);
+				    if (coord.xyzt.x == HUGE_VAL ||
+					coord.xyzt.y == HUGE_VAL ||
+					coord.xyzt.z == HUGE_VAL) {
+					// FIXME report errors
+					double x = coord.xyzt.x;
+					double y = coord.xyzt.y;
+					double z = coord.xyzt.z;
+					printf("Failed to convert (%.3f, %.3f, %.3f)\n", x, y, z);
+					continue;
+				    }
+				    double x = coord.xyzt.x - off.GetX();
+				    double y = coord.xyzt.y - off.GetY();
+				    double z = coord.xyzt.z - off.GetZ();
+    //				    printf("Polygon vertex at (%.3f, %.3f, %.3f)\n", x, y, z);
+				    PlaceVertex(x, y, z);
+				}
+				EndPolygon();
+			    }
+			}
+			break;
+		    }
+		    default:
+			printf("Unhandled wkb type %d\n", (int)wkbFlatten(poGeometry->getGeometryType()));
+		}
+	    }
+	}
+
+	delete poDS;
+
+	proj_destroy(pj);
+    }
+#endif
 }

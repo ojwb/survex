@@ -1,7 +1,7 @@
 /* datain.h
  * Header file for code that...
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1994-2002,2005,2010,2012,2014 Olly Betts
+ * Copyright (C) 1994-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,26 +18,29 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifdef HAVE_SETJMP_H
-# include <setjmp.h>
-#endif
+#ifndef DATAIN_H
+#define DATAIN_H
 
+#include <setjmp.h>
 #include <stdio.h> /* for FILE */
 
+#include "message.h" /* for DIAG_WARN, etc */
+
+// We rely on implicit initialisation of this struct, so members will be
+// initialised to NULL, 0, false, etc.
 typedef struct parse {
    FILE *fh;
    const char *filename;
-   unsigned int line;
    long lpos;
-   bool reported_where;
+   unsigned int line;
+   bool reported_where : 1;
+   unsigned prev_line_len : 31;
    struct parse *parent;
-#ifdef HAVE_SETJMP_H
-   jmp_buf jbSkipLine;
-#endif
 } parse;
 
 extern int ch;
 extern parse file;
+extern jmp_buf jbSkipLine;
 extern bool f_export_ok;
 
 #define nextch() (ch = GETC(file.fh))
@@ -57,17 +60,44 @@ void data_file(const char *pth, const char *fnm);
 
 void skipline(void);
 
-#define DIAG_SEVERITY_MASK 0x03
-#define DIAG_COL	0x04
-#define DIAG_SKIP	0x08
-#define DIAG_BUF	0x10
-#define DIAG_TOKEN	0x20
-#define DIAG_UINT	0x40
-#define DIAG_DATE	0x80
-#define DIAG_NUM	0x100
+/* Read the current line into a string, converting each tab to a space.
+ *
+ * The string is allocated with malloc() the caller is responsible for calling
+ * free().
+ */
+char* grab_line(void);
 
-#define DIAG_WARN	0x00
-#define DIAG_ERR	0x01
+/* The severity values are defined in message.h. */
+#define DIAG_SEVERITY_MASK	0x03
+
+// Call skipline() after reporting the diagnostic:
+#define DIAG_SKIP		0x04
+
+// Context type values:
+
+#define DIAG_CONTEXT_MASK	0x78
+// Report column number based of the current file position.
+#define DIAG_COL		0x08
+// Set caret_width to s_len(&token):
+#define DIAG_TOKEN		0x10
+// The following codes say to parse and discard a value from the current file
+// position - caret_width is set to its length:
+#define DIAG_WORD		0x18	// Span of non-blanks and non-comments.
+#define DIAG_UINT		0x20	// Span of digits.
+#define DIAG_DATE		0x28	// Span of digits and full stops.
+#define DIAG_NUM		0x30	// Real number.
+#define DIAG_STRING		0x38	// Possibly quoted string value.
+#define DIAG_TAIL		0x40	// Rest of the line (not including
+					// trailing blanks or comment).
+
+// A non-zero caret_width value can be encoded in the upper bits.
+#define DIAG_FROM_SHIFT 7
+// Mask to detect embedded caret_width value.
+#define DIAG_FROM_MASK	(~((1U << DIAG_FROM_SHIFT) - 1))
+// Specify the caret_width explicitly.
+#define DIAG_WIDTH(W)	((W) << DIAG_FROM_SHIFT)
+// Specify caret_width to be from filepos POS to the current position.
+#define DIAG_FROM(POS)	DIAG_WIDTH(ftell(file.fh) - (POS).offset)
 
 void compile_diagnostic(int flags, int en, ...);
 
@@ -76,3 +106,5 @@ void compile_diagnostic_pfx(int flags, const prefix * pfx, int en, ...);
 
 void compile_diagnostic_token_show(int flags, int en);
 void compile_diagnostic_buffer(int flags, int en, ...);
+
+#endif

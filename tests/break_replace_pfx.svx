@@ -1,4 +1,4 @@
-; pos=no warn=0 dummy=crlf
+; pos=no warn=0 dummycrprotection=
 W X 1 0 0
 X Y 1 0 0
 *equate X A

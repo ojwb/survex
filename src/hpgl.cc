@@ -1,7 +1,7 @@
 /* hpgl.cc
  * Export from Aven as HPGL.
  */
-/* Copyright (C) 1993-2003,2005,2010,2014,2015,2016,2019 Olly Betts
+/* Copyright (C) 1993-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <stdio.h>
 
 #include "hpgl.h"
+#include "export.h" // For SURF, etc
 #include "useful.h"
 
 # define HPGL_USE_UC
 /*# define HPGL_USE_SR */ /* for text sized relative to page size */
 
-# define HPGL_UNITS_PER_MM 40
 # define HPGL_EOL "\003" /* terminates labelling commands: LB<string>\003 */
 
 # ifndef HPGL_USE_UC
@@ -40,36 +38,26 @@
 
 # define HPGL_CROSS_SIZE 28 /* length of cross arms (in HPGL units) */
 
-static long xpPageWidth, ypPageDepth;
-
-static long x_org = 0, y_org = 0;
-static bool fNewLines = fTrue;
-static bool fOriginInCentre = fFalse;
+static bool fNewLines = true;
 
 /* Check if this line intersects the current page */
 /* Initialise HPGL routines. */
 void HPGL::header(const char *, const char *, time_t,
 		  double, double, double, double, double, double)
 {
-   // FIXME: mm_across_page, mm_down_page, origin_in_centre, scale
-   double PaperWidth = 9999999, PaperDepth = 9999999;
-   fOriginInCentre = true;
+   pen = 1;
 
-   xpPageWidth = (long)(HPGL_UNITS_PER_MM * (double)PaperWidth);
-   ypPageDepth = (long)(HPGL_UNITS_PER_MM * (double)PaperDepth);
-
-   /* SR scales characters relative to P1 and P2 */
-   /* SI scales characters to size given (in cm) */
    /* INitialise; Select Pen 1;  */
-   /* Either: Scale chars Relative to P1 & P2 0.5,1.0 (2/3 deflt size) */
-   /*     Or: Scale chars absolute to 2/3 of default size on A4 page */
    fputs("IN;SP1;"
 #ifndef HPGL_USE_UC
 	 "CA-1;GM0,800;" /* Char set Alternate -1; Get Memory; */
 #endif
 #ifdef HPGL_USE_SR
+	 // SR scales characters relative to P1 and P2.
+	 // (0.5,1.0) is 2/3 of the default size.
 	 "SR0.5,1.0;"
 #else
+	 // SI scales characters to size given (in cm).
 	 "SI0.125,.179;"
 #endif
 	 , fh);
@@ -92,27 +80,50 @@ void HPGL::header(const char *, const char *, time_t,
    if (fNewLines) PUTC('\n', fh);
 #endif
 #if 0
+   // FIXME: This was needed when printhpgl supported splitting a plot over
+   // multiple pages, but is it useful now we leave that to the OS printer
+   // drivers?
+   int PaperWidth, PaperDepth; // In mm
+   xpPageWidth = (long)(HPGL_UNITS_PER_MM * (double)PaperWidth);
+   ypPageDepth = (long)(HPGL_UNITS_PER_MM * (double)PaperDepth);
+
    /* and set clipping (Input Window!) on plotter (left,bottom,right,top) */
-   fprintf(fh, "IW%ld,%ld,%ld,%ld;", clip.x_min - x_org, clip.y_min - y_org,
-	   clip.x_min - x_org + xpPageWidth, clip.y_min - y_org + ypPageDepth);
+   fprintf(fh, "IW%ld,%ld,%ld,%ld;", clip.x_min, clip.y_min,
+	   clip.x_min + xpPageWidth, clip.y_min + ypPageDepth);
 #endif
 }
 
 void
-HPGL::line(const img_point *p1, const img_point *p, unsigned /*flags*/, bool fPending)
+HPGL::line(const img_point *p1, const img_point *p, unsigned flags, bool fPending)
 {
-   if (fPending) {
-      fprintf(fh, "PU%ld,%ld;", long(p1->x - x_org), long(p1->y - y_org));
-   }
-   fprintf(fh, "PD%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
+    // Pens 1 to 6 are apparently supported by HPGL.
+    enum { PEN_LEG = 1, PEN_SPLAY = 2, PEN_SURF = 3 };
+    int new_pen = PEN_LEG;
+    if (flags & SURF) {
+	new_pen = PEN_SURF;
+    } else if (flags & SPLAYS) {
+	new_pen = PEN_SPLAY;
+    }
+    if (new_pen != pen) {
+	fprintf(fh, "SP%d;", new_pen);
+	pen = new_pen;
+    }
+    if (fPending) {
+	fprintf(fh, "PU%ld,%ld;", long(p1->x * factor), long(p1->y * factor));
+    }
+    fprintf(fh, "PD%ld,%ld;", long(p->x * factor), long(p->y * factor));
 }
 
 #define CS HPGL_CROSS_SIZE
 #define CS2 (2 * HPGL_CROSS_SIZE)
 void
-HPGL::cross(const img_point *p, bool /*fSurface*/)
+HPGL::cross(const img_point *p, const wxString&, int)
 {
-    fprintf(fh, "PU%ld,%ld;", long(p->x - x_org), long(p->y - y_org));
+    if (pen != 1) {
+	fprintf(fh, "SP1;");
+	pen = 1;
+    }
+    fprintf(fh, "PU%ld,%ld;", long(p->x * factor), long(p->y * factor));
     /* SM plots a symbol at each point, but it isn't very convenient here   */
     /* We can write PDPR%d,%dPR%d,%d... but the HP7475A manual doesn't say  */
     /* clearly if this will work on older plotters (such as the HP9872)     */
@@ -124,10 +135,15 @@ HPGL::cross(const img_point *p, bool /*fSurface*/)
 #undef CS2
 
 void
-HPGL::label(const img_point *p, const char *s, bool /*fSurface*/, int)
+HPGL::label(const img_point *p, const wxString& str, int /*sflags*/, int)
 {
+    if (pen != 1) {
+	fprintf(fh, "SP1;");
+	pen = 1;
+    }
+    const char* s = str.utf8_str();
     /* LB is a text label, terminated with a ^C */
-    fprintf(fh, "PU%ld,%ld;LB", long(p->x - x_org), long(p->y - y_org));
+    fprintf(fh, "PU%ld,%ld;LB", long(p->x * factor), long(p->y * factor));
     while (*s) {
 	switch (*s) {
 	    case '\xB0':

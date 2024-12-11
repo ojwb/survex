@@ -3,7 +3,7 @@
 //
 //  Draw text using glBitmap.
 //
-//  Copyright (C) 2011,2013,2014 Olly Betts
+//  Copyright (C) 2011-2022 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -44,11 +44,11 @@ class BitmapFont {
 	BITMAPFONT_MAX_CHAR = 256
     };
 
-    int gllist_base;
+    int gllist_base = 0;
 
-    mutable const unsigned char * extra_data;
+    mutable const unsigned char * extra_data = nullptr;
 
-    mutable int * extra_chars;
+    mutable int * extra_chars = nullptr;
 
     unsigned char char_width[BITMAPFONT_MAX_CHAR];
 
@@ -60,16 +60,17 @@ class BitmapFont {
 
     wxString font_file;
 
+    int font_size;
+
   public:
 
-    BitmapFont() : gllist_base(0), extra_data(0), extra_chars(0) { }
+    BitmapFont() { }
 
     ~BitmapFont();
 
-    bool load(const wxString & font_file);
+    bool load(const wxString & font_file, bool double_size);
 
-    // Hard-code for now.
-    int get_font_size() const { return 16; }
+    int get_font_size() const { return font_size; }
 
     void get_text_extent(const wxChar *s, size_t len, int *width, int *height) const {
 	if (width) {

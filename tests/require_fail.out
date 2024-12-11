@@ -1,0 +1,9 @@
+./require_fail.svx:2:13: error: End of line not blank
+ *require 1.0abc ; test warning with suffix (added in 1.4.11)
+             ^~~
+./require_fail.svx:3:13: error: End of line not blank
+ *require 1. 42 ; spaces in the version rejected in 1.4.11 and later
+             ^~
+./require_fail.svx:5:10: error: Survex version 1.5 or greater required to process this survey data.
+ *require 1.5  ; require a version later than the current one
+          ^~~

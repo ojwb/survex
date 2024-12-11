@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2003,2004,2005,2006,2010,2011,2012,2013,2014,2015,2016,2019 Olly Betts
+ * Copyright (C) 1991-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,25 +17,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
-#include <assert.h>
 #include <limits.h>
 #include <stddef.h> /* for offsetof */
 #include <string.h>
 
-#ifdef HAVE_PROJ_H
-/* Work around broken check in proj.h:
- * https://github.com/OSGeo/PROJ/issues/1523
- */
-# ifndef PROJ_H
-#  include <proj.h>
-# endif
+#include <proj.h>
+#if PROJ_VERSION_MAJOR < 8
+# define proj_context_errno_string(CTX, ERR) proj_errno_string(ERR)
 #endif
-#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1
-#include <proj_api.h>
 
 #include "cavern.h"
 #include "commands.h"
@@ -50,28 +41,93 @@
 #include "readval.h"
 #include "str.h"
 
-#ifndef HAVE_PROJ_H
-/*** Extracted from PROJ 4.x projects.h (yuck, but grass also does this): */
-struct DERIVS {
-    double x_l, x_p; /* derivatives of x for lambda-phi */
-    double y_l, y_p; /* derivatives of y for lambda-phi */
-};
+#define WGS84_DATUM_STRING "EPSG:4326"
 
-struct FACTORS {
-    struct DERIVS der;
-    double h, k;	/* meridinal, parallel scales */
-    double omega, thetap;	/* angular distortion, theta prime */
-    double conv;	/* convergence */
-    double s;		/* areal scale factor */
-    double a, b;	/* max-min scale error */
-    int code;		/* info as to analytics, see following */
-};
+static void
+move_to_fixedlist(node *stn, int ignore_dirn)
+{
+    remove_stn_from_list(&stnlist, stn);
+    add_stn_to_list(&fixedlist, stn);
+    pos *p = stn->name->pos;
+    for (int d = 0; d < 3; d++) {
+	if (d == ignore_dirn) continue;
+	linkfor *leg = stn->leg[d];
+	if (!leg) break;
+	node *to = leg->l.to;
+	if (to->name->pos == p) {
+	    move_to_fixedlist(to, reverse_leg_dirn(leg));
+	}
+    }
+}
 
-int pj_factors(projLP, projPJ *, double, struct FACTORS *);
-/***/
+int fix_station(prefix *fix_name, const double* coords) {
+    fix_name->sflags |= BIT(SFLAGS_FIXED);
+    bool new_stn = (fix_name->stn == NULL);
+    node *stn = StnFromPfx(fix_name);
+    if (fixed(stn)) {
+	if (coords[0] != POS(stn, 0) ||
+	    coords[1] != POS(stn, 1) ||
+	    coords[2] != POS(stn, 2)) {
+	    return -1;
+	}
+	return 1;
+    }
+
+    POS(stn, 0) = coords[0];
+    POS(stn, 1) = coords[1];
+    POS(stn, 2) = coords[2];
+
+    if (new_stn) {
+	remove_stn_from_list(&stnlist, stn);
+	add_stn_to_list(&fixedlist, stn);
+    } else {
+	move_to_fixedlist(stn, -1);
+    }
+
+    // Make the station's file:line location reflect where it was fixed.
+    fix_name->filename = file.filename;
+    fix_name->line = file.line;
+    return 0;
+}
+
+void fix_station_with_variance(prefix *fix_name, const double* coords,
+			       real var_x, real var_y, real var_z,
+#ifndef NO_COVARIANCES
+			       real cxy, real cyz, real czx
 #endif
-
-static projPJ proj_wgs84;
+			      )
+{
+    node *stn = StnFromPfx(fix_name);
+    if (!fixed(stn)) {
+	node *fixpt = osnew(node);
+	prefix *name;
+	name = osnew(prefix);
+	name->pos = osnew(pos);
+	name->ident.p = NULL;
+	name->shape = 0;
+	fixpt->name = name;
+	name->stn = fixpt;
+	name->up = NULL;
+	if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
+	    name->min_export = USHRT_MAX;
+	} else {
+	    name->min_export = 0;
+	}
+	name->max_export = 0;
+	name->sflags = 0;
+	add_stn_to_list(&fixedlist, fixpt);
+	POS(fixpt, 0) = coords[0];
+	POS(fixpt, 1) = coords[1];
+	POS(fixpt, 2) = coords[2];
+	fixpt->leg[0] = fixpt->leg[1] = fixpt->leg[2] = NULL;
+	addfakeleg(fixpt, stn, 0, 0, 0,
+		   var_x, var_y, var_z
+#ifndef NO_COVARIANCES
+		   , cxy, cyz, czx
+#endif
+		  );
+    }
+}
 
 static void
 default_grade(settings *s)
@@ -110,9 +166,9 @@ static reading default_order[] = { Fr, To, Tape, Comp, Clino, End };
 static void
 default_style(settings *s)
 {
-   s->style = STYLE_NORMAL;
+   s->recorded_style = s->style = STYLE_NORMAL;
    s->ordering = default_order;
-   s->dash_for_anon_wall_station = fFalse;
+   s->dash_for_anon_wall_station = false;
 }
 
 static void
@@ -122,28 +178,18 @@ default_prefix(settings *s)
 }
 
 static void
-default_translate(settings *s)
+init_default_translate_map(short * t)
 {
    int i;
-   short *t;
-   if (s->next && s->next->Translate == s->Translate) {
-      t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
-      memcpy(t - 1, s->Translate - 1, sizeof(short) * 257);
-      s->Translate = t;
-   }
-/*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
-   t = s->Translate;
-   memset(t - 1, 0, sizeof(short) * 257);
-   for (i = '0'; i <= '9'; i++) t[i] = SPECIAL_NAMES;
-   for (i = 'A'; i <= 'Z'; i++) t[i] = SPECIAL_NAMES;
-   for (i = 'a'; i <= 'z'; i++) t[i] = SPECIAL_NAMES;
+   for (i = '0'; i <= '9'; i++) t[i] |= SPECIAL_NAMES;
+   for (i = 'A'; i <= 'Z'; i++) t[i] |= SPECIAL_NAMES;
+   for (i = 'a'; i <= 'z'; i++) t[i] |= SPECIAL_NAMES;
 
    t['\t'] |= SPECIAL_BLANK;
    t[' '] |= SPECIAL_BLANK;
    t[','] |= SPECIAL_BLANK;
    t[';'] |= SPECIAL_COMMENT;
    t['\032'] |= SPECIAL_EOL; /* Ctrl-Z, so olde DOS text files are handled ok */
-   t[EOF] |= SPECIAL_EOL;
    t['\n'] |= SPECIAL_EOL;
    t['\r'] |= SPECIAL_EOL;
    t['*'] |= SPECIAL_KEYWORD;
@@ -161,6 +207,84 @@ default_translate(settings *s)
 #endif
 }
 
+static void
+default_translate(settings *s)
+{
+   if (s->next && s->next->Translate == s->Translate) {
+      /* We're currently using the same character translation map as our parent
+       * scope so allocate a new one before we modify it.
+       */
+      s->Translate = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+   } else {
+/*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
+   }
+   s->Translate[EOF] = SPECIAL_EOL;
+   memset(s->Translate, 0, sizeof(short) * 256);
+   init_default_translate_map(s->Translate);
+}
+
+/* Flag anything used in SPECIAL_* cumulatively to help us pick a suitable
+ * separator to use in the .3d file. */
+static short separator_map[256];
+
+void
+scan_compass_station_name(prefix *stn)
+{
+    /* We only need to scan the leaf station name - any survey hierarchy above
+     * that must have been set up in .svx files for which we update
+     * separator_map via cmd_set() plus adding the defaults in
+     * find_output_separator().
+     */
+    for (const char *p = prefix_ident(stn); *p; ++p) {
+	separator_map[(unsigned char)*p] |= SPECIAL_NAMES;
+    }
+}
+
+static char
+find_output_separator(void)
+{
+    // Fast path to handle most common cases where we'd pick '.'.
+    if ((separator_map['.'] & SPECIAL_NAMES) == 0) {
+	return '.';
+    }
+
+    static bool added_defaults = false;
+    if (!added_defaults) {
+	/* Add the default settings to separator_map. */
+	init_default_translate_map(separator_map);
+	added_defaults = true;
+    }
+
+    /* 30 punctuation characters plus space to try arranged in a sensible order
+     * of decreasing preference (these are all the ASCII punctuation characters
+     * excluding '_' and '-' since those are allowed in names by default so are
+     * poor choices for the separator).
+     */
+    int best = -1;
+    for (const char *p = "./:;,!|\\ ~+*^='`\"#$%&?@<>()[]{}"; *p; ++p) {
+	unsigned char candidate = *p;
+	int mask = separator_map[candidate];
+	switch (mask & (SPECIAL_SEPARATOR|SPECIAL_NAMES)) {
+	    case SPECIAL_SEPARATOR:
+		/* A character which is set as a separator character at some
+		 * point but never set as a name character is perfect.
+		 */
+		return candidate;
+	    case 0:
+		/* A character which is never set as either a separator
+		 * character or a name character is a reasonable option.
+		 */
+		if (best < 0) best = candidate;
+		break;
+	}
+    }
+    if (best < 0) {
+	/* Argh, no plausible choice!  Just return the default for now. */
+	return '.';
+    }
+    return best;
+}
+
 void
 default_units(settings *s)
 {
@@ -171,8 +295,8 @@ default_units(settings *s)
       else
 	 s->units[quantity] = (real)1.0; /* metres */
    }
-   s->f_clino_percent = s->f_backclino_percent = fFalse;
-   s->f_bearing_quadrants = s->f_backbearing_quadrants = fFalse;
+   s->f_clino_percent = s->f_backclino_percent = false;
+   s->f_bearing_quadrants = s->f_backbearing_quadrants = false;
 }
 
 void
@@ -206,57 +330,76 @@ default_all(settings *s)
    default_flags(s);
 }
 
-char *buffer = NULL;
-static int buf_len;
+string token = S_INIT;
 
-static char *ucbuffer = NULL;
+string uctoken = S_INIT;
 
-/* read token */
+extern void
+get_token_legacy(void)
+{
+   skipblanks();
+   get_token_legacy_no_blanks();
+}
+
+extern void
+get_token_legacy_no_blanks(void)
+{
+   s_clear(&token);
+   s_clear(&uctoken);
+   while (isalpha(ch)) {
+      s_appendch(&token, ch);
+      s_appendch(&uctoken, toupper(ch));
+      nextch();
+   }
+
+#if 0
+   printf("get_token_legacy_no_blanks() got “%s”\n", s_str(&token));
+#endif
+}
+
+void
+do_legacy_token_warning(void)
+{
+    if (!s_empty(&token)) {
+	if (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+	    compile_diagnostic(DIAG_WARN|DIAG_COL, /*No blank after token*/74);
+	}
+    }
+}
+
 extern void
 get_token(void)
 {
-   skipblanks();
-   get_token_no_blanks();
+    skipblanks();
+    get_token_no_blanks();
 }
 
 extern void
 get_token_no_blanks(void)
 {
-   int i = -1;
-
-   s_zero(&buffer);
-   osfree(ucbuffer);
-   while (isalpha(ch)) {
-      s_catchar(&buffer, &buf_len, (char)ch);
-      nextch();
-   }
-
-   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
-
-   ucbuffer = osmalloc(buf_len);
-   do {
-      i++;
-      ucbuffer[i] = toupper(buffer[i]);
-   } while (buffer[i]);
-#if 0
-   printf("get_token_no_blanks() got “%s”\n", buffer);
-#endif
+    s_clear(&token);
+    s_clear(&uctoken);
+    if (isalpha(ch)) {
+	do {
+	    s_appendch(&token, ch);
+	    s_appendch(&uctoken, toupper(ch));
+	    nextch();
+	} while (isalnum(ch));
+    }
 }
 
 /* read word */
-static void
+void
 get_word(void)
 {
-   s_zero(&buffer);
+   s_clear(&token);
    skipblanks();
-   while (!isBlank(ch) && !isEol(ch)) {
-      s_catchar(&buffer, &buf_len, (char)ch);
+   while (!isBlank(ch) && !isComm(ch) && !isEol(ch)) {
+      s_appendch(&token, ch);
       nextch();
    }
-
-   if (!buffer) s_catchar(&buffer, &buf_len, '\0');
 #if 0
-   printf("get_word() got “%s”\n", buffer);
+   printf("get_word() got “%s”\n", s_str(&token));
 #endif
 }
 
@@ -268,12 +411,13 @@ match_tok(const sztok *tab, int tab_size)
 {
    int a = 0, b = tab_size - 1, c;
    int r;
-   assert(tab_size > 0); /* catch empty table */
+   const char* tok = s_str(&uctoken);
+   SVX_ASSERT(tab_size > 0); /* catch empty table */
 /*  printf("[%d,%d]",a,b); */
    while (a <= b) {
       c = (unsigned)(a + b) / 2;
 /*     printf(" %d",c); */
-      r = strcmp(tab[c].sz, ucbuffer);
+      r = strcmp(tab[c].sz, tok);
       if (r == 0) return tab[c].tok; /* match */
       if (r < 0)
 	 a = c + 1;
@@ -284,17 +428,18 @@ match_tok(const sztok *tab, int tab_size)
 }
 
 typedef enum {
-   CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CASE, CMD_COPYRIGHT,
-   CMD_CS, CMD_DATA, CMD_DATE, CMD_DECLINATION, CMD_DEFAULT, CMD_END,
-   CMD_ENTRANCE, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS, CMD_INCLUDE,
-   CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REF, CMD_REQUIRE, CMD_SD,
-   CMD_SET, CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
+   CMD_NULL = -1, CMD_ALIAS, CMD_BEGIN, CMD_CALIBRATE, CMD_CARTESIAN, CMD_CASE,
+   CMD_COPYRIGHT, CMD_CS, CMD_DATA, CMD_DATE, CMD_DECLINATION, CMD_DEFAULT,
+   CMD_END, CMD_ENTRANCE, CMD_EQUATE, CMD_EXPORT, CMD_FIX, CMD_FLAGS,
+   CMD_INCLUDE, CMD_INFER, CMD_INSTRUMENT, CMD_PREFIX, CMD_REF, CMD_REQUIRE,
+   CMD_SD, CMD_SET, CMD_SOLVE, CMD_TEAM, CMD_TITLE, CMD_TRUNCATE, CMD_UNITS
 } cmds;
 
 static const sztok cmd_tab[] = {
      {"ALIAS",     CMD_ALIAS},
      {"BEGIN",     CMD_BEGIN},
      {"CALIBRATE", CMD_CALIBRATE},
+     {"CARTESIAN", CMD_CARTESIAN},
      {"CASE",      CMD_CASE},
      {"COPYRIGHT", CMD_COPYRIGHT},
      {"CS",        CMD_CS},
@@ -340,7 +485,7 @@ const real factor_tab[] = {
 
 const int units_to_msgno[] = {
     /*m*/424,
-    /*ft*/428,
+    /*'*/428,
     -1, /* yards */
     -1, /* inches */
     -1, /* footinches */
@@ -391,11 +536,11 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"YARDS",	  UNITS_YARDS },
 	{NULL,		  UNITS_NULL }
    };
-   int units;
    get_token();
-   units = match_tok(utab, TABSIZE(utab));
+   int units = match_tok(utab, TABSIZE(utab));
    if (units == UNITS_NULL) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown units “%s”*/35, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown units “%s”*/35,
+			 s_str(&token));
       return UNITS_NULL;
    }
    /* Survex has long misdefined "mils" as an alias for "grads", of which
@@ -405,9 +550,9 @@ get_units(unsigned long qmask, bool percent_ok)
     * use by cave surveyors, so we now just warn if mils are used.
     */
    if (units == UNITS_DEPRECATED_ALIAS_FOR_GRADS) {
-      compile_diagnostic(DIAG_WARN|DIAG_BUF|DIAG_SKIP,
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP,
 			 /*Units “%s” are deprecated, assuming “grads” - see manual for details*/479,
-			 buffer);
+			 s_str(&token));
       units = UNITS_GRADS;
    }
    if (units == UNITS_PERCENT && percent_ok &&
@@ -423,7 +568,7 @@ get_units(unsigned long qmask, bool percent_ok)
       /* TRANSLATORS: Note: In English you talk about the *units* of a single
        * measurement, but the correct term in other languages may be singular.
        */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Invalid units “%s” for quantity*/37, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Invalid units “%s” for quantity*/37, s_str(&token));
       return UNITS_NULL;
    }
    return units;
@@ -474,7 +619,7 @@ get_qlist(unsigned long mask_bad)
 
    while (1) {
       get_pos(&fp);
-      get_token();
+      get_token_legacy();
       tok = match_tok(qtab, TABSIZE(qtab));
       if (tok == Q_DEFAULT && !(mask_bad & BIT(Q_DEFAULT))) {
 	  /* Only recognise DEFAULT if it is the first quantity, and then don't
@@ -487,7 +632,7 @@ get_qlist(unsigned long mask_bad)
       if (tok == Q_NULL) break;
       qmask |= BIT(tok);
       if (qmask & mask_bad) {
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown instrument “%s”*/39, buffer);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown instrument “%s”*/39, s_str(&token));
 	 return 0;
       }
    }
@@ -495,7 +640,7 @@ get_qlist(unsigned long mask_bad)
    if (qmask == 0) {
       /* TRANSLATORS: A "quantity" is something measured like "LENGTH",
        * "BEARING", "ALTITUDE", etc. */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown quantity “%s”*/34, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown quantity “%s”*/34, s_str(&token));
    } else {
       set_pos(&fp);
    }
@@ -525,14 +670,14 @@ cmd_set(void)
 	{"SEPARATOR", SPECIAL_SEPARATOR },
 	{NULL,	      SPECIAL_UNKNOWN }
    };
-   int mask;
    int i;
 
    get_token();
-   mask = match_tok(chartab, TABSIZE(chartab));
+   int mask = match_tok(chartab, TABSIZE(chartab));
 
    if (mask == SPECIAL_UNKNOWN) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown character class “%s”*/42, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown character class “%s”*/42,
+			 s_str(&token));
       return;
    }
 
@@ -546,11 +691,11 @@ cmd_set(void)
 	  *
 	  * If you're unsure what "deprecated" means, see:
 	  * https://en.wikipedia.org/wiki/Deprecation */
-	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*ROOT is deprecated*/25);
+	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*ROOT is deprecated*/25);
 	 if (++root_depr_count == 5)
 	     /* TRANSLATORS: If you're unsure what "deprecated" means, see:
 	      * https://en.wikipedia.org/wiki/Deprecation */
-	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	    compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
    }
 #endif
@@ -572,8 +717,9 @@ cmd_set(void)
 
    /* now set this flag for all specified chars */
    while (!isEol(ch)) {
+      int char_to_set;
       if (!isalnum(ch)) {
-	 pcs->Translate[ch] |= mask;
+	 char_to_set = ch;
       } else if (tolower(ch) == 'x') {
 	 int hex;
 	 filepos fp;
@@ -590,12 +736,22 @@ cmd_set(void)
 	    break;
 	 }
 	 hex = hex << 4 | (isdigit(ch) ? ch - '0' : tolower(ch) - 'a');
-	 pcs->Translate[hex] |= mask;
+	 char_to_set = hex;
       } else {
 	 break;
       }
+      pcs->Translate[char_to_set] |= mask;
+      separator_map[char_to_set] |= mask;
       nextch();
    }
+
+   output_separator = find_output_separator();
+}
+
+void
+update_output_separator(void)
+{
+   output_separator = find_output_separator();
 }
 
 static void
@@ -624,38 +780,38 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
        *
        * Would lead to:
        *
-       * crawl.svx:4: Reentering an existing survey is deprecated
-       * crawl.svx:1: Originally entered here
+       * crawl.svx:4:8: warning: Reentering an existing survey is deprecated
+       * crawl.svx:1: info: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*Reentering an existing survey is deprecated*/29);
+      compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Reentering an existing survey is deprecated*/29);
       set_pos(&fp_tmp);
       /* TRANSLATORS: The second of two warnings given when a survey which has
        * already been completed is reentered.  This example file crawl.svx:
        *
-       * *begin crawl
-       * 1 2 9.45 234 -01 # <- second warning here
+       * *begin crawl     ; <- second warning here
+       * 1 2 9.45 234 -01
        * *end crawl
-       * *begin crawl     # <- first warning here
+       * *begin crawl     ; <- first warning here
        * 2 3 7.67 223 -03
        * *end crawl
        *
        * Would lead to:
        *
-       * crawl.svx:3: Reentering an existing survey is deprecated
-       * crawl.svx:1: Originally entered here
+       * crawl.svx:4:8: warning: Reentering an existing survey is deprecated
+       * crawl.svx:1: info: Originally entered here
        *
        * If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic_pfx(DIAG_WARN, survey, /*Originally entered here*/30);
+      compile_diagnostic_pfx(DIAG_INFO, survey, /*Originally entered here*/30);
       if (++reenter_depr_count == 5) {
 	 /* After we've warned about 5 uses of the same deprecated feature, we
 	  * give up for the rest of the current processing run.
 	  *
 	  * If you're unsure what "deprecated" means, see:
 	  * https://en.wikipedia.org/wiki/Deprecation */
-	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
    } else {
       survey->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
@@ -677,9 +833,9 @@ cmd_prefix(void)
    if (prefix_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_BUF, /**prefix is deprecated - use *begin and *end instead*/6);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/6);
       if (++prefix_depr_count == 5)
-	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
    }
    get_pos(&fp);
    survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
@@ -696,18 +852,20 @@ cmd_alias(void)
     * *alias station -
     */
    get_token();
-   if (strcmp(ucbuffer, "STATION") != 0)
-      goto bad;
+   if (!S_EQ(&uctoken, "STATION")) {
+       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Bad *alias command*/397);
+       return;
+   }
    get_word();
-   if (strcmp(buffer, "-") != 0)
-      goto bad;
+   if (!S_EQ(&token, "-"))
+      goto bad_word;
    get_word();
-   if (*buffer && strcmp(buffer, "..") != 0)
-      goto bad;
-   pcs->dash_for_anon_wall_station = (*buffer != '\0');
+   if (!s_empty(&token) && !S_EQ(&token, ".."))
+      goto bad_word;
+   pcs->dash_for_anon_wall_station = !s_empty(&token);
    return;
-bad:
-   compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Bad *alias command*/397);
+bad_word:
+   compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Bad *alias command*/397);
 }
 
 static void
@@ -718,80 +876,218 @@ cmd_begin(void)
    pcsNew = osnew(settings);
    *pcsNew = *pcs; /* copy contents */
    pcsNew->begin_lineno = file.line;
+   pcsNew->begin_lpos = file.lpos;
    pcsNew->next = pcs;
    pcs = pcsNew;
 
    skipblanks();
    pcs->begin_survey = NULL;
+   pcs->begin_col = 0;
    if (!isEol(ch) && !isComm(ch)) {
       filepos fp;
       prefix *survey;
       get_pos(&fp);
+      int begin_col = fp.offset - file.lpos;
       survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT|PFX_WARN_SEPARATOR);
+      // read_prefix() might fail and longjmp() so only set begin_col if
+      // it succeeds.
+      pcs->begin_col = begin_col;
       pcs->begin_survey = survey;
       pcs->Prefix = survey;
       check_reentry(survey, &fp);
-      f_export_ok = fTrue;
+      f_export_ok = true;
    }
 }
 
-extern void
-free_settings(settings *p) {
-   /* don't free default ordering or ordering used by parent */
-   const reading *order = p->ordering;
-   if (order != default_order && (!p->next || order != p->next->ordering))
-      osfree((reading*)order);
+void
+invalidate_pj_cached(void)
+{
+    /* Invalidate the cached PJ. */
+    if (pj_cached) {
+	proj_destroy(pj_cached);
+	pj_cached = NULL;
+    }
+}
 
-   /* free Translate if not used by parent */
-   if (!p->next || p->Translate != p->next->Translate)
-      osfree(p->Translate - 1);
+void
+report_declination(settings *p)
+{
+    if (p->min_declination <= p->max_declination) {
+	int y, m, d;
+	char range[128];
+	const char* deg_sign = msg(/*°*/344);
+	ymd_from_days_since_1900(p->min_declination_days, &y, &m, &d);
+	snprintf(range, sizeof(range),
+		 "%.1f%s @ %04d-%02d-%02d",
+		 deg(p->min_declination), deg_sign, y, m, d);
+	if (p->min_declination_days != p->max_declination_days) {
+	    size_t len = strlen(range);
+	    ymd_from_days_since_1900(p->max_declination_days, &y, &m, &d);
+	    snprintf(range + len, sizeof(range) - len,
+		     " / %.1f%s @ %04d-%02d-%02d",
+		     deg(p->max_declination), deg_sign, y, m, d);
+	}
+	/* TRANSLATORS: This message gives information about the range of
+	 * declination values and the grid convergence value calculated for
+	 * each "*declination auto ..." command.
+	 *
+	 * The first %s will be replaced by the declination range (or single
+	 * value), and %.1f%s by the grid convergence angle.
+	 */
+	compile_diagnostic_at(DIAG_INFO, p->dec_filename, p->dec_line,
+			      /*Declination: %s, grid convergence: %.1f%s*/484,
+			      range,
+			      deg(p->convergence), deg_sign);
+	PUTC(' ', STDERR);
+	fputs(p->dec_context, STDERR);
+	fputnl(STDERR);
+	if (p->next && p->dec_context != p->next->dec_context)
+	    free(p->dec_context);
+	p->dec_context = NULL;
+	p->min_declination = HUGE_VAL;
+	p->max_declination = -HUGE_VAL;
+    }
+}
 
-   /* free meta if not used by parent, or in this block */
-   if (p->meta && (!p->next || p->meta != p->next->meta) && p->meta->ref_count == 0)
-       osfree(p->meta);
+void
+set_declination_location(real x, real y, real z, const char *proj_str)
+{
+    /* Convert to WGS84 lat long. */
+    PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+					   proj_str,
+					   WGS84_DATUM_STRING,
+					   NULL);
+    if (transform) {
+	/* Normalise the output order so x is longitude and y latitude - by
+	 * default new PROJ has them switched for EPSG:4326 which just seems
+	 * confusing.
+	 */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+						       transform);
+	proj_destroy(transform);
+	transform = pj_norm;
+    }
 
-   /* free proj if not used by parent, or as the output projection */
-   if (p->proj && (!p->next || p->proj != p->next->proj) && p->proj != proj_out)
-       pj_free(p->proj);
+    if (proj_angular_input(transform, PJ_FWD)) {
+	/* Input coordinate system expects radians. */
+	x = rad(x);
+	y = rad(y);
+    }
 
-   osfree(p);
+    PJ_COORD coord = {{x, y, z, HUGE_VAL}};
+    coord = proj_trans(transform, PJ_FWD, coord);
+    x = coord.xyzt.x;
+    y = coord.xyzt.y;
+    z = coord.xyzt.z;
+
+    if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
+       compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
+			  proj_context_errno_string(PJ_DEFAULT_CTX,
+						    proj_errno(transform)));
+       /* Set dummy values which are finite. */
+       x = y = z = 0;
+    }
+    proj_destroy(transform);
+
+    report_declination(pcs);
+
+    double lon = rad(x);
+    double lat = rad(y);
+    pcs->z[Q_DECLINATION] = HUGE_REAL;
+    pcs->dec_lat = lat;
+    pcs->dec_lon = lon;
+    pcs->dec_alt = z;
+    pcs->dec_filename = file.filename;
+    pcs->dec_line = file.line;
+    pcs->dec_context = grab_line();
+    /* Invalidate cached declination. */
+    pcs->declination = HUGE_REAL;
+    /* Invalidate cached grid convergence values. */
+    pcs->convergence = HUGE_REAL;
+    pcs->input_convergence = HUGE_REAL;
+}
+
+void
+pop_settings(void)
+{
+    settings * p = pcs;
+    pcs = pcs->next;
+
+    SVX_ASSERT(pcs);
+
+    if (pcs->dec_lat != p->dec_lat ||
+	pcs->dec_lon != p->dec_lon ||
+	pcs->dec_alt != p->dec_alt) {
+	report_declination(p);
+    } else {
+	pcs->min_declination_days = p->min_declination_days;
+	pcs->max_declination_days = p->max_declination_days;
+	pcs->min_declination = p->min_declination;
+	pcs->max_declination = p->max_declination;
+	pcs->convergence = p->convergence;
+    }
+
+    if (p->proj_str != pcs->proj_str) {
+	if (!p->proj_str || !pcs->proj_str ||
+	    strcmp(p->proj_str, pcs->proj_str) != 0) {
+	    invalidate_pj_cached();
+	}
+	/* free proj_str if not used by parent */
+	osfree(p->proj_str);
+    }
+
+    /* don't free default ordering or ordering used by parent */
+    if (p->ordering != default_order && p->ordering != pcs->ordering)
+	osfree((reading*)p->ordering);
+
+    /* free Translate if not used by parent */
+    if (p->Translate != pcs->Translate)
+	osfree(p->Translate - 1);
+
+    /* free meta if not used by parent, or in this block */
+    if (p->meta && p->meta != pcs->meta && p->meta->ref_count == 0)
+	osfree(p->meta);
+
+    osfree(p);
 }
 
 static void
 cmd_end(void)
 {
-   settings *pcsParent;
-   prefix *survey, *begin_survey;
    filepos fp;
 
-   pcsParent = pcs->next;
-
-   if (pcs->begin_lineno == 0) {
-      if (pcsParent == NULL) {
+   int begin_lineno = pcs->begin_lineno;
+   if (begin_lineno == 0) {
+      if (pcs->next == NULL) {
 	 /* more ENDs than BEGINs */
-	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching BEGIN*/192);
+	 /* TRANSLATORS: %s is replaced with e.g. BEGIN or .BOOK or #[ */
+	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*No matching %s*/192, "BEGIN");
       } else {
-	 compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*END with no matching BEGIN in this file*/22);
+	 /* TRANSLATORS: %s and %s are replaced with e.g. BEGIN and END
+	  * or END and BEGIN or #[ and #] */
+	 compile_diagnostic(DIAG_ERR|DIAG_SKIP,
+			    /*%s with no matching %s in this file*/23, "END", "BEGIN");
       }
       return;
    }
 
-   begin_survey = pcs->begin_survey;
+   prefix *begin_survey = pcs->begin_survey;
+   long begin_lpos = pcs->begin_lpos;
+   int begin_col = pcs->begin_col;
 
-   SVX_ASSERT(pcsParent);
-   free_settings(pcs);
-   pcs = pcsParent;
+   pop_settings();
 
    /* note need to read using root *before* BEGIN */
+   prefix *survey = NULL;
    skipblanks();
-   if (isEol(ch) || isComm(ch)) {
-      survey = NULL;
-   } else {
+   if (!isEol(ch) && !isComm(ch)) {
       get_pos(&fp);
       survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
    }
 
    if (survey != begin_survey) {
+      filepos fp_save;
+      get_pos(&fp_save);
       if (survey) {
 	 set_pos(&fp);
 	 if (!begin_survey) {
@@ -801,13 +1097,12 @@ cmd_end(void)
 	     * *begin
 	     * 1 2 10.00 178 -01
 	     * *end entrance      <--[Message given here] */
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Matching BEGIN command has no survey name*/36);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Matching BEGIN command has no survey name*/36);
 	 } else {
 	    /* TRANSLATORS: *BEGIN <survey> and *END <survey> should have the
 	     * same <survey> if it’s given at all */
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Survey name doesn’t match BEGIN*/193);
+	    compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Survey name doesn’t match BEGIN*/193);
 	 }
-	 skipline();
       } else {
 	 /* TRANSLATORS: Used when a BEGIN command has a survey name, but the
 	  * END command omits it, e.g.:
@@ -817,6 +1112,18 @@ cmd_end(void)
 	  * *end     <--[Message given here] */
 	 compile_diagnostic(DIAG_WARN|DIAG_COL, /*Survey name omitted from END*/194);
       }
+      parse file_save = file;
+      file.line = begin_lineno;
+      file.lpos = begin_lpos;
+      int word_flag = 0;
+      if (begin_col) {
+	  word_flag = DIAG_WORD;
+	  fseek(file.fh, begin_lpos + begin_col - 1, SEEK_SET);
+	  nextch();
+      }
+      compile_diagnostic(DIAG_INFO|word_flag, /*Corresponding %s was here*/22, "BEGIN");
+      file = file_save;
+      set_pos(&fp_save);
    }
 }
 
@@ -824,7 +1131,7 @@ static void
 cmd_entrance(void)
 {
    prefix *pfx = read_prefix(PFX_STATION);
-   pfx->sflags |= BIT(SFLAGS_ENTRANCE);
+   pfx->sflags |= BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_USED);
 }
 
 static const prefix * first_fix_name = NULL;
@@ -834,34 +1141,35 @@ static unsigned first_fix_line;
 static void
 cmd_fix(void)
 {
-   prefix *fix_name;
-   node *stn = NULL;
    static prefix *name_omit_already = NULL;
    static const char * name_omit_already_filename = NULL;
    static unsigned int name_omit_already_line;
-   real x, y, z;
-   filepos fp;
+   PJ_COORD coord;
+   filepos fp_stn, fp;
 
-   fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
-   fix_name->sflags |= BIT(SFLAGS_FIXED);
+   get_pos(&fp_stn);
+   prefix *fix_name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT);
 
    get_pos(&fp);
-   get_token();
-   if (strcmp(ucbuffer, "REFERENCE") == 0) {
+   get_token_legacy();
+   bool reference = S_EQ(&uctoken, "REFERENCE");
+   if (reference) {
+      do_legacy_token_warning();
       /* suppress "unused fixed point" warnings for this station */
       fix_name->sflags |= BIT(SFLAGS_USED);
    } else {
-      if (*ucbuffer) set_pos(&fp);
+      if (!s_empty(&uctoken)) set_pos(&fp);
    }
 
-   x = read_numeric(fTrue);
-   if (x == HUGE_REAL) {
+   // If `REFERENCE` is specified the coordinates can't be omitted.
+   coord.v[0] = read_numeric(!reference);
+   if (coord.v[0] == HUGE_REAL) {
       /* If the end of the line isn't blank, read a number after all to
        * get a more helpful error message */
-      if (!isEol(ch) && !isComm(ch)) x = read_numeric(fFalse);
+      if (!isEol(ch) && !isComm(ch)) coord.v[0] = read_numeric(false);
    }
-   if (x == HUGE_REAL) {
-      if (pcs->proj || proj_out) {
+   if (coord.v[0] == HUGE_REAL) {
+      if (pcs->proj_str || proj_str_out) {
 	 compile_diagnostic(DIAG_ERR|DIAG_COL|DIAG_SKIP, /*Coordinates can't be omitted when coordinate system has been specified*/439);
 	 return;
       }
@@ -871,48 +1179,76 @@ cmd_fix(void)
 	 return;
       }
 
-      /* TRANSLATORS: " *fix a " gives this message: */
-      compile_diagnostic(DIAG_WARN|DIAG_COL, /*FIX command with no coordinates - fixing at (0,0,0)*/54);
-
       if (name_omit_already) {
-	 /* TRANSLATORS: Emitted after second and subsequent "FIX command with
-	  * no coordinates - fixing at (0,0,0)" warnings.
+	 /* TRANSLATORS: Emitted after second and subsequent "FIX" command
+	  * with no coordinates.
 	  */
-	 compile_diagnostic_at(DIAG_ERR|DIAG_COL,
+	 compile_diagnostic_at(DIAG_ERR,
 			       name_omit_already_filename,
 			       name_omit_already_line,
 			       /*Already had FIX command with no coordinates for station “%s”*/441,
 			       sprint_prefix(name_omit_already));
       } else {
+	 /* TRANSLATORS: " *fix a " gives this message: */
+	 compile_diagnostic(DIAG_INFO|DIAG_COL, /*FIX command with no coordinates - fixing at (0,0,0)*/54);
+
 	 name_omit_already = fix_name;
 	 name_omit_already_filename = file.filename;
 	 name_omit_already_line = file.line;
       }
 
-      x = y = z = (real)0.0;
+      coord.v[0] = coord.v[1] = coord.v[2] = (real)0.0;
    } else {
-      real sdx;
-      y = read_numeric(fFalse);
-      z = read_numeric(fFalse);
+      coord.v[1] = read_numeric(false);
+      coord.v[2] = read_numeric(false);
 
-      if (pcs->proj && proj_out) {
-	 if (pj_is_latlong(pcs->proj)) {
-	    /* PROJ expects lat and long in radians. */
-	    x = rad(x);
-	    y = rad(y);
+      if (pcs->proj_str && proj_str_out) {
+	 PJ *transform = pj_cached;
+	 if (!transform) {
+	     transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+						pcs->proj_str,
+						proj_str_out,
+						NULL);
+	     if (transform) {
+		/* Normalise the output order so x is longitude and y latitude - by
+		 * default new PROJ has them switched for EPSG:4326 which just seems
+		 * confusing.
+		 */
+		PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+							       transform);
+		proj_destroy(transform);
+		transform = pj_norm;
+	     }
+
+	     pj_cached = transform;
 	 }
-	 int r = pj_transform(pcs->proj, proj_out, 1, 1, &x, &y, &z);
-	 if (r != 0) {
-	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436, pj_strerrno(r));
+
+	 if (proj_angular_input(transform, PJ_FWD)) {
+	    /* Input coordinate system expects radians. */
+	    coord.v[0] = rad(coord.v[0]);
+	    coord.v[1] = rad(coord.v[1]);
 	 }
-      } else if (pcs->proj) {
+
+	 coord.v[3] = HUGE_VAL;
+	 coord = proj_trans(transform, PJ_FWD, coord);
+
+	 if (coord.v[0] == HUGE_VAL ||
+	     coord.v[1] == HUGE_VAL ||
+	     coord.v[2] == HUGE_VAL) {
+	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
+			       proj_context_errno_string(PJ_DEFAULT_CTX,
+							 proj_errno(transform)));
+	    /* Set dummy values which are finite. */
+	    coord.v[0] = coord.v[1] = coord.v[2] = 0;
+	 }
+      } else if (pcs->proj_str) {
 	 compile_diagnostic(DIAG_ERR, /*The input projection is set but the output projection isn't*/437);
-      } else if (proj_out) {
+      } else if (proj_str_out) {
 	 compile_diagnostic(DIAG_ERR, /*The output projection is set but the input projection isn't*/438);
       }
 
       get_pos(&fp);
-      sdx = read_numeric(fTrue);
+      real sdx = read_numeric(true);
       if (sdx <= 0) {
 	  set_pos(&fp);
 	  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
@@ -922,7 +1258,7 @@ cmd_fix(void)
 	 real sdy, sdz;
 	 real cxy = 0, cyz = 0, czx = 0;
 	 get_pos(&fp);
-	 sdy = read_numeric(fTrue);
+	 sdy = read_numeric(true);
 	 if (sdy == HUGE_REAL) {
 	    /* only one variance given */
 	    sdy = sdz = sdx;
@@ -933,7 +1269,7 @@ cmd_fix(void)
 	       return;
 	    }
 	    get_pos(&fp);
-	    sdz = read_numeric(fTrue);
+	    sdz = read_numeric(true);
 	    if (sdz == HUGE_REAL) {
 	       /* two variances given - horizontal & vertical */
 	       sdz = sdy;
@@ -944,47 +1280,22 @@ cmd_fix(void)
 		  compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_NUM, /*Standard deviation must be positive*/48);
 		  return;
 	       }
-	       cxy = read_numeric(fTrue);
+	       cxy = read_numeric(true);
 	       if (cxy != HUGE_REAL) {
 		  /* covariances given */
-		  cyz = read_numeric(fFalse);
-		  czx = read_numeric(fFalse);
+		  cyz = read_numeric(false);
+		  czx = read_numeric(false);
 	       } else {
 		  cxy = 0;
 	       }
 	    }
 	 }
-	 stn = StnFromPfx(fix_name);
-	 if (!fixed(stn)) {
-	    node *fixpt = osnew(node);
-	    prefix *name;
-	    name = osnew(prefix);
-	    name->pos = osnew(pos);
-	    name->ident = NULL;
-	    name->shape = 0;
-	    fixpt->name = name;
-	    name->stn = fixpt;
-	    name->up = NULL;
-	    if (TSTBIT(pcs->infer, INFER_EXPORTS)) {
-	       name->min_export = USHRT_MAX;
-	    } else {
-	       name->min_export = 0;
-	    }
-	    name->max_export = 0;
-	    name->sflags = 0;
-	    add_stn_to_list(&stnlist, fixpt);
-	    POS(fixpt, 0) = x;
-	    POS(fixpt, 1) = y;
-	    POS(fixpt, 2) = z;
-	    fix(fixpt);
-	    fixpt->leg[0] = fixpt->leg[1] = fixpt->leg[2] = NULL;
-	    addfakeleg(fixpt, stn, 0, 0, 0,
-		       sdx * sdx, sdy * sdy, sdz * sdz
+	 fix_station_with_variance(fix_name, coord.v,
+				   sdx * sdx, sdy * sdy, sdz * sdz
 #ifndef NO_COVARIANCES
-		       , cxy, cyz, czx
+				   , cxy, cyz, czx
 #endif
-		       );
-	 }
+				  );
 
 	 if (!first_fix_name) {
 	    /* We track if we've fixed a station yet, and if so what the name
@@ -1008,21 +1319,21 @@ cmd_fix(void)
       first_fix_line = file.line;
    }
 
-   stn = StnFromPfx(fix_name);
-   if (!fixed(stn)) {
-      POS(stn, 0) = x;
-      POS(stn, 1) = y;
-      POS(stn, 2) = z;
-      fix(stn);
+   int fix_result = fix_station(fix_name, coord.v);
+   if (fix_result == 0) {
       return;
    }
 
-   if (x != POS(stn, 0) || y != POS(stn, 1) || z != POS(stn, 2)) {
-      compile_diagnostic(DIAG_ERR, /*Station already fixed or equated to a fixed point*/46);
-      return;
+   get_pos(&fp);
+   set_pos(&fp_stn);
+   if (fix_result < 0) {
+       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Station already fixed or equated to a fixed point*/46);
+   } else {
+       /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
+       compile_diagnostic(DIAG_WARN|DIAG_WORD, /*Station already fixed at the same coordinates*/55);
    }
-   /* TRANSLATORS: *fix a 1 2 3 / *fix a 1 2 3 */
-   compile_diagnostic(DIAG_WARN, /*Station already fixed at the same coordinates*/55);
+   compile_diagnostic_pfx(DIAG_INFO, fix_name, /*Previously fixed or equated here*/493);
+   set_pos(&fp);
 }
 
 static void
@@ -1035,67 +1346,76 @@ cmd_flags(void)
 	{"SURFACE",   FLAGS_SURFACE },
 	{NULL,	      FLAGS_UNKNOWN }
    };
-   bool fNot = fFalse;
-   bool fEmpty = fTrue;
+   bool fNot = false;
+   bool fEmpty = true;
    while (1) {
       int flag;
       get_token();
-      /* If buffer is empty, it could mean end of line, or maybe
-       * some non-letter junk which is better reported later */
-      if (!buffer[0]) break;
+      /* If token is empty, it could mean end of line, or maybe
+       * some non-alphanumeric junk which is better reported later */
+      if (s_empty(&token)) break;
 
-      fEmpty = fFalse;
+      fEmpty = false;
       flag = match_tok(flagtab, TABSIZE(flagtab));
       /* treat the second NOT in "NOT NOT" as an unknown flag */
       if (flag == FLAGS_UNKNOWN || (fNot && flag == FLAGS_NOT)) {
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF, /*FLAG “%s” unknown*/68, buffer);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*FLAG “%s” unknown*/68,
+			    s_str(&token));
 	 /* Recover from “*FLAGS NOT BOGUS SURFACE” by ignoring "NOT BOGUS" */
-	 fNot = fFalse;
+	 fNot = false;
       } else if (flag == FLAGS_NOT) {
-	 fNot = fTrue;
+	 fNot = true;
       } else if (fNot) {
 	 pcs->flags &= ~BIT(flag);
-	 fNot = fFalse;
+	 fNot = false;
       } else {
 	 pcs->flags |= BIT(flag);
       }
    }
 
    if (fNot) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF, /*Expecting “DUPLICATE”, “SPLAY”, or “SURFACE”*/188);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			 /*Expecting “%s”, “%s”, or “%s”*/188,
+			 "DUPLICATE", "SPLAY", "SURFACE");
    } else if (fEmpty) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF, /*Expecting “NOT”, “DUPLICATE”, “SPLAY”, or “SURFACE”*/189);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			 /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+			 "NOT", "DUPLICATE", "SPLAY", "SURFACE");
    }
 }
 
 static void
 cmd_equate(void)
 {
-   prefix *name1, *name2;
-   bool fOnlyOneStn = fTrue; /* to trap eg *equate entrance.6 */
    filepos fp;
-
    get_pos(&fp);
-   name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
-   while (fTrue) {
-      name2 = name1;
+   prefix *prev_name = NULL;
+   prefix *name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
+   while (true) {
+      if (!name->stn || !fixed(name->stn)) {
+	  // If the station isn't already fixed, make its file:line location
+	  // reflect this *equate.
+	  name->filename = file.filename;
+	  name->line = file.line;
+      }
       skipblanks();
       if (isEol(ch) || isComm(ch)) {
-	 if (fOnlyOneStn) {
+	 if (prev_name == NULL) {
+	    /* E.g. *equate entrance.6 */
 	    set_pos(&fp);
 	    /* TRANSLATORS: EQUATE is a command name, so shouldn’t be
 	     * translated.
 	     *
 	     * Here "station" is a survey station, not a train station.
 	     */
-	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN, /*Only one station in EQUATE command*/33);
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_WORD, /*Only one station in EQUATE command*/33);
 	 }
 	 return;
       }
 
-      name1 = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
-      process_equate(name1, name2);
-      fOnlyOneStn = fFalse;
+      prev_name = name;
+      name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
+      process_equate(name, prev_name);
    }
 }
 
@@ -1141,14 +1461,11 @@ cmd_export(void)
 {
    prefix *pfx;
 
-   fExportUsed = fTrue;
+   fExportUsed = true;
    do {
       int depth = 0;
-      pfx = read_prefix(PFX_STATION|PFX_NEW);
-      if (pfx == NULL) {
-	 /* The argument was an existing station. */
-	 /* FIXME */
-      } else {
+      pfx = read_prefix(PFX_STATION);
+      {
 	 prefix *p = pfx;
 	 while (p != NULL && p != pcs->Prefix) {
 	    depth++;
@@ -1249,21 +1566,23 @@ cmd_data(void)
 #define MASK_CYLPOLAR  MASK_stns | BIT(Dir) | MASK_tape | MASK_comp | MASK_dpth
 #define MASK_NOSURVEY MASK_stns
 #define MASK_PASSAGE BIT(Station) | BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down)
+#define MASK_IGNORE 0 // No readings in this style.
 
-   /* readings which may be given for each style */
+   // readings which may be given for each style (index is STYLE_*)
    static const unsigned long mask[] = {
       MASK_NORMAL, MASK_DIVING, MASK_CARTESIAN, MASK_CYLPOLAR, MASK_NOSURVEY,
-      MASK_PASSAGE
+      MASK_PASSAGE, MASK_IGNORE
    };
 
-   /* readings which may be omitted for each style */
+   // readings which may be omitted for each style (index is STYLE_*)
    static const unsigned long mask_optional[] = {
       BIT(Dir) | BIT(Clino) | BIT(BackClino),
       BIT(Dir) | BIT(Clino) | BIT(BackClino),
       0,
       BIT(Dir),
       0,
-      0 /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
+      0, /* BIT(Left) | BIT(Right) | BIT(Up) | BIT(Down), */
+      0
    };
 
    /* all valid readings */
@@ -1273,7 +1592,8 @@ cmd_data(void)
       MASK_CARTESIAN | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_CYLPOLAR | BIT(Newline) | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
       MASK_NOSURVEY | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
-      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End)
+      MASK_PASSAGE | BIT(Ignore) | BIT(IgnoreAll) | BIT(End),
+      MASK_IGNORE
    };
 #define STYLE_DEFAULT   -2
 #define STYLE_UNKNOWN   -1
@@ -1283,6 +1603,7 @@ cmd_data(void)
 	{"CYLPOLAR",     STYLE_CYLPOLAR },
 	{"DEFAULT",      STYLE_DEFAULT },
 	{"DIVING",       STYLE_DIVING },
+	{"IGNORE",       STYLE_IGNORE },
 	{"NORMAL",       STYLE_NORMAL },
 	{"NOSURVEY",     STYLE_NOSURVEY },
 	{"PASSAGE",      STYLE_PASSAGE },
@@ -1299,7 +1620,7 @@ cmd_data(void)
 
    /* after a bad *data command ignore survey data until the next
     * *data command to avoid an avalanche of errors */
-   pcs->style = STYLE_IGNORE;
+   pcs->recorded_style = pcs->style = STYLE_IGNORE;
 
    get_token();
    style = match_tok(styletab, TABSIZE(styletab));
@@ -1309,16 +1630,21 @@ cmd_data(void)
       return;
    }
 
+   if (style == STYLE_IGNORE) {
+      return;
+   }
+
    if (style == STYLE_UNKNOWN) {
-      if (!buffer[0]) {
-	 /* "*data" reinitialises the current style - for *data passage that
-	  * breaks the passage.
+      if (s_empty(&token)) {
+	 /* "*data" without arguments reinitialises the current style - useful
+	  * when using *data passage as it provides a way to break the passage
+	  * tube without having to repeat the full *data passage command.
 	  */
-	 pcs->style = style = old_style;
+	 pcs->recorded_style = pcs->style = style = old_style;
 	 goto reinit_style;
       }
       /* TRANSLATORS: e.g. trying to refer to an invalid FNORD data style */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Data style “%s” unknown*/65, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Data style “%s” unknown*/65, s_str(&token));
       return;
    }
 
@@ -1329,10 +1655,10 @@ cmd_data(void)
    if (isOmit(ch)) {
       static int data_depr_count = 0;
       if (data_depr_count < 5) {
-	 compile_diagnostic(DIAG_WARN|DIAG_BUF, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
-			    buffer, ch, buffer);
+	 compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /*“*data %s %c …” is deprecated - use “*data %s …” instead*/104,
+			    s_str(&token), ch, s_str(&token));
 	 if (++data_depr_count == 5)
-	    compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	    compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
       }
       nextch();
    }
@@ -1340,12 +1666,21 @@ cmd_data(void)
 
    int kMac = 6; /* minimum for NORMAL style */
    reading *new_order = osmalloc(kMac * sizeof(reading));
-   char *style_name = osstrdup(buffer);
+   char *style_name = s_steal(&token);
    do {
       filepos fp;
       get_pos(&fp);
       get_token();
       d = match_tok(dtab, TABSIZE(dtab));
+      if (d == End && !s_empty(&token)) {
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			    /*Reading “%s” not allowed in data style “%s”*/63,
+			    s_str(&token), style_name);
+	 osfree(style_name);
+	 osfree(new_order);
+	 return;
+      }
+
       /* only token allowed after IGNOREALL is NEWLINE */
       if (k && new_order[k - 1] == IgnoreAll && d != Newline) {
 	 set_pos(&fp);
@@ -1355,12 +1690,14 @@ cmd_data(void)
       if (!TSTBIT(mask_all[style], d)) {
 	 /* TRANSLATORS: a data "style" is something like NORMAL, DIVING, etc.
 	  * a "reading" is one of FROM, TO, TAPE, COMPASS, CLINO for NORMAL
-	  * neither style nor reading is a keyword in the program This error
-	  * complains about a depth gauge reading in normal style, for example
+	  * style.  Neither "style" nor "reading" is a keyword in the program.
+	  *
+	  * This error complains about a "DEPTH" gauge reading in "NORMAL"
+	  * style, for example.
 	  */
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
-			    buffer, style_name);
+			    s_str(&token), style_name);
 	 osfree(style_name);
 	 osfree(new_order);
 	 return;
@@ -1371,8 +1708,8 @@ cmd_data(void)
 	  * *data diving station newline depth tape compass
 	  *
 	  * ("depth" needs to occur before "newline"). */
-	 compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP,
-			    /*Reading “%s” must occur before NEWLINE*/225, buffer);
+	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			    /*Reading “%s” must occur before NEWLINE*/225, s_str(&token));
 	 osfree(style_name);
 	 osfree(new_order);
 	 return;
@@ -1384,46 +1721,46 @@ cmd_data(void)
 	 if (TSTBIT(mUsed, d)) {
 	    /* TRANSLATORS: complains about a situation like trying to define
 	     * two from stations per leg */
-	    compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Duplicate reading “%s”*/67, buffer);
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Duplicate reading “%s”*/67, s_str(&token));
 	    osfree(style_name);
 	    osfree(new_order);
 	    return;
 	 } else {
 	    /* Check for previously listed readings which are incompatible
 	     * with this one - e.g. Count vs FrCount */
-	    bool fBad = fFalse;
+	    bool fBad = false;
 	    switch (d) {
 	     case Station:
-	       if (mUsed & (BIT(Fr) | BIT(To))) fBad = fTrue;
+	       if (mUsed & (BIT(Fr) | BIT(To))) fBad = true;
 	       break;
 	     case Fr: case To:
-	       if (TSTBIT(mUsed, Station)) fBad = fTrue;
+	       if (TSTBIT(mUsed, Station)) fBad = true;
 	       break;
 	     case Count:
 	       if (mUsed & (BIT(FrCount) | BIT(ToCount) | BIT(Tape)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case FrCount: case ToCount:
 	       if (mUsed & (BIT(Count) | BIT(Tape)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case Depth:
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(DepthChange)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case FrDepth: case ToDepth:
-	       if (mUsed & (BIT(Depth) | BIT(DepthChange))) fBad = fTrue;
+	       if (mUsed & (BIT(Depth) | BIT(DepthChange))) fBad = true;
 	       break;
 	     case DepthChange:
 	       if (mUsed & (BIT(FrDepth) | BIT(ToDepth) | BIT(Depth)))
-		  fBad = fTrue;
+		  fBad = true;
 	       break;
 	     case Newline:
 	       if (mUsed & ~m_multi) {
 		  /* TRANSLATORS: e.g.
 		   *
 		   * *data normal from to tape newline compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1432,7 +1769,7 @@ cmd_data(void)
 		  /* TRANSLATORS: error from:
 		   *
 		   * *data normal newline from to tape compass clino */
-		  compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
+		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
 		  osfree(style_name);
 		  osfree(new_order);
 		  return;
@@ -1448,8 +1785,8 @@ cmd_data(void)
 		* valid as the list of readings has already included the same
 		* reading, or an equivalent one (e.g. you can't have both
 		* DEPTH and DEPTHCHANGE together). */
-	       compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
-					 buffer);
+	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
+				  s_str(&token));
 	       osfree(style_name);
 	       osfree(new_order);
 	       return;
@@ -1473,7 +1810,7 @@ cmd_data(void)
       /* TRANSLATORS: error from:
        *
        * *data normal from to tape compass clino newline */
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
       osfree(style_name);
       osfree(new_order);
       return;
@@ -1551,7 +1888,7 @@ cmd_data(void)
        !(pcs->next && pcs->next->ordering == pcs->ordering))
       osfree((reading*)pcs->ordering);
 
-   pcs->style = style;
+   pcs->recorded_style = pcs->style = style;
    pcs->ordering = new_order;
 
    osfree(style_name);
@@ -1584,19 +1921,19 @@ cmd_units(void)
    }
 
    get_pos(&fp);
-   factor = read_numeric(fTrue);
+   factor = read_numeric(true);
    if (factor == 0.0) {
       set_pos(&fp);
       /* TRANSLATORS: error message given by "*units tape 0 feet" - it’s
        * meaningless to say your tape is marked in "0 feet" (but you might
        * measure distance by counting knots on a diving line, and tie them
        * every "2 feet"). */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /**UNITS factor must be non-zero*/200);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /**UNITS factor must be non-zero*/200);
       skipline();
       return;
    }
 
-   units = get_units(qmask, fTrue);
+   units = get_units(qmask, true);
    if (units == UNITS_NULL) return;
    if (TSTBIT(qmask, Q_GRADIENT))
       pcs->f_clino_percent = (units == UNITS_PERCENT);
@@ -1654,17 +1991,17 @@ cmd_calibrate(void)
       return;
    }
 
-   z = read_numeric(fFalse);
+   z = read_numeric(false);
    get_pos(&fp);
-   sc = read_numeric(fTrue);
+   sc = read_numeric(true);
    if (sc == HUGE_REAL) {
       if (isalpha(ch)) {
-	 int units = get_units(qmask, fFalse);
+	 int units = get_units(qmask, false);
 	 if (units == UNITS_NULL) {
 	    return;
 	 }
 	 z *= factor_tab[units];
-	 sc = read_numeric(fTrue);
+	 sc = read_numeric(true);
 	 if (sc == HUGE_REAL) {
 	    sc = (real)1.0;
 	 } else {
@@ -1685,7 +2022,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: DECLINATION is a built-in keyword, so best not to
        * translate */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be 1.0 for DECLINATION*/40);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Scale factor must be 1.0 for DECLINATION*/40);
       skipline();
       return;
    }
@@ -1693,7 +2030,7 @@ cmd_calibrate(void)
       set_pos(&fp);
       /* TRANSLATORS: If the scale factor for an instrument is zero, then any
        * reading would be mapped to zero, which doesn't make sense. */
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Scale factor must be non-zero*/391);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Scale factor must be non-zero*/391);
       skipline();
       return;
    }
@@ -1705,62 +2042,67 @@ cmd_calibrate(void)
    }
 }
 
+static const sztok north_tab[] = {
+     { "GRID",		GRID_NORTH },
+     { "MAGNETIC",	MAGNETIC_NORTH },
+     { "TRUE",		TRUE_NORTH },
+     { NULL,		-1 }
+};
+
+static void
+cmd_cartesian(void)
+{
+    get_token();
+    int north = match_tok(north_tab, TABSIZE(north_tab));
+    if (north < 0) {
+	compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
+			   /*Expecting “%s”, “%s”, or “%s”*/188,
+			   "GRID", "MAGNETIC", "TRUE");
+	return;
+    }
+    pcs->cartesian_north = north;
+    pcs->cartesian_rotation = 0.0;
+
+    skipblanks();
+    if (!isEol(ch) && !isComm(ch)) {
+	real rotation = read_numeric(false);
+	// Accept the same units as *declination does.
+	int units = get_units(BIT(Q_DECLINATION), false);
+	if (units == UNITS_NULL) {
+	    return;
+	}
+	pcs->cartesian_rotation = rotation * factor_tab[units];
+    }
+}
+
 static void
 cmd_declination(void)
 {
-    real v = read_numeric(fTrue);
+    real v = read_numeric(true);
     if (v == HUGE_REAL) {
-	get_token_no_blanks();
-	if (strcmp(ucbuffer, "AUTO") != 0) {
+	get_token_legacy_no_blanks();
+	if (!S_EQ(&uctoken, "AUTO")) {
 	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Expected number or “AUTO”*/309);
 	    return;
 	}
+	do_legacy_token_warning();
+	if (!pcs->proj_str) {
+	    // TRANSLATORS: %s is replaced by the command that requires it, e.g.
+	    // *DECLINATION AUTO
+	    compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN,
+			       /*Input coordinate system must be specified for “%s”*/301,
+			       "*DECLINATION AUTO");
+	    return;
+	}
+
 	/* *declination auto X Y Z */
-	real x = read_numeric(fFalse);
-	real y = read_numeric(fFalse);
-	real z = read_numeric(fFalse);
-	if (!pcs->proj) {
-	    compile_diagnostic(DIAG_ERR, /*Input coordinate system must be specified for “*DECLINATION AUTO”*/301);
-	    return;
-	}
-	if (!proj_wgs84) {
-	    proj_wgs84 = pj_init_plus("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
-	}
-	/* Convert to WGS84 lat long. */
-	if (pj_is_latlong(pcs->proj)) {
-	    /* PROJ expects lat and long in radians. */
-	    x = rad(x);
-	    y = rad(y);
-	}
-	int r = pj_transform(pcs->proj, proj_wgs84, 1, 1, &x, &y, &z);
-	if (r != 0) {
-	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436, pj_strerrno(r));
-	    return;
-	}
-	pcs->z[Q_DECLINATION] = HUGE_REAL;
-	pcs->dec_x = x;
-	pcs->dec_y = y;
-	pcs->dec_z = z;
-	/* Invalidate cached declination. */
-	pcs->declination = HUGE_REAL;
-	{
-#ifdef HAVE_PROJ_H
-	    PJ_COORD lp;
-	    lp.lp.lam = x;
-	    lp.lp.phi = y;
-	    PJ_FACTORS factors = proj_factors(proj_out, lp);
-	    pcs->convergence = factors.meridian_convergence;
-#else
-	    projLP lp = { x, y };
-	    struct FACTORS factors;
-	    memset(&factors, 0, sizeof(factors));
-	    pj_factors(lp, proj_out, 0.0, &factors);
-	    pcs->convergence = factors.conv;
-#endif
-	}
+	real x = read_numeric(false);
+	real y = read_numeric(false);
+	real z = read_numeric(false);
+	set_declination_location(x, y, z, pcs->proj_str);
     } else {
 	/* *declination D UNITS */
-	int units = get_units(BIT(Q_DECLINATION), fFalse);
+	int units = get_units(BIT(Q_DECLINATION), false);
 	if (units == UNITS_NULL) {
 	    return;
 	}
@@ -1784,9 +2126,9 @@ cmd_default(void)
    if (default_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_COL, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
       if (++default_depr_count == 5)
-	 compile_diagnostic(DIAG_WARN, /*Further uses of this deprecated feature will not be reported*/95);
+	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
    }
 
    get_token();
@@ -1797,12 +2139,15 @@ cmd_default(void)
     case CMD_DATA:
       default_style(pcs);
       default_grade(pcs);
+      pcs->cartesian_north = TRUE_NORTH;
+      pcs->cartesian_rotation = 0.0;
       break;
     case CMD_UNITS:
       default_units(pcs);
       break;
     default:
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown setting “%s”*/41, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown setting “%s”*/41,
+			 s_str(&token));
    }
 }
 #endif
@@ -1810,8 +2155,8 @@ cmd_default(void)
 static void
 cmd_include(void)
 {
-   char *pth, *fnm = NULL;
-   int fnm_len;
+   char *pth = NULL;
+   string fnm = S_INIT;
 #ifndef NO_DEPRECATED
    prefix *root_store;
 #endif
@@ -1819,7 +2164,7 @@ cmd_include(void)
 
    pth = path_from_fnm(file.filename);
 
-   read_string(&fnm, &fnm_len);
+   read_string(&fnm);
 
 #ifndef NO_DEPRECATED
    /* Since *begin / *end nesting cannot cross file boundaries we only
@@ -1830,7 +2175,7 @@ cmd_include(void)
 #endif
    ch_store = ch;
 
-   data_file(pth, fnm);
+   data_file(pth, s_str(&fnm));
 
 #ifndef NO_DEPRECATED
    root = root_store; /* and restore root */
@@ -1855,12 +2200,12 @@ cmd_sd(void)
       default_grade(pcs);
       return;
    }
-   sd = read_numeric(fFalse);
+   sd = read_numeric(false);
    if (sd <= (real)0.0) {
       compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
       return;
    }
-   units = get_units(qmask, fFalse);
+   units = get_units(qmask, false);
    if (units == UNITS_NULL) return;
 
    sd *= factor_tab[units];
@@ -1876,13 +2221,12 @@ cmd_title(void)
    if (!fExplicitTitle && pcs->Prefix == root) {
        /* If we don't have an explicit title yet, and we're currently in the
 	* root prefix, use this title explicitly. */
-      fExplicitTitle = fTrue;
-      read_string(&survey_title, &survey_title_len);
+      fExplicitTitle = true;
+      read_string(&survey_title);
    } else {
       /* parse and throw away this title (but still check rest of line) */
-      char *s = NULL;
-      int len;
-      read_string(&s, &len);
+      string s = S_INIT;
+      read_string(&s);
       s_free(&s);
    }
 }
@@ -1903,7 +2247,7 @@ cmd_case(void)
    if (setting != -1) {
       pcs->Case = setting;
    } else {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “PRESERVE”, “TOUPPER”, or “TOLOWER”*/10, s_str(&token));
    }
 }
 
@@ -1912,9 +2256,11 @@ typedef enum {
     CS_CUSTOM,
     CS_EPSG,
     CS_ESRI,
-    CS_EUR,
+    CS_EUR79Z30,
     CS_IJTSK,
+    CS_IJTSK03,
     CS_JTSK,
+    CS_JTSK03,
     CS_LAT,
     CS_LOCAL,
     CS_LONG,
@@ -1924,35 +2270,37 @@ typedef enum {
 } cs_class;
 
 static const sztok cs_tab[] = {
-     {"CUSTOM", CS_CUSTOM},
-     {"EPSG",   CS_EPSG},	/* EPSG:<number> */
-     {"ESRI",   CS_ESRI},	/* ESRI:<number> */
-     {"EUR",    CS_EUR},	/* EUR79Z30 */
-     {"IJTSK",  CS_IJTSK},	/* IJTSK or IJTSK03 */
-     {"JTSK",   CS_JTSK},	/* JTSK or JTSK03 */
-     {"LAT",    CS_LAT},	/* LAT-LONG */
-     {"LOCAL",  CS_LOCAL},
-     {"LONG",   CS_LONG},	/* LONG-LAT */
-     {"OSGB",   CS_OSGB},	/* OSGB:<H, N, O, S or T><A-Z except I> */
-     {"S",      CS_S_MERC},	/* S-MERC */
-     {"UTM",    CS_UTM},	/* UTM<zone><N or S or nothing> */
-     {NULL,     CS_NONE}
+     {"CUSTOM",   CS_CUSTOM},
+     {"EPSG",     CS_EPSG},	/* EPSG:<number> */
+     {"ESRI",     CS_ESRI},	/* ESRI:<number> */
+     {"EUR79Z30", CS_EUR79Z30},
+     {"IJTSK",    CS_IJTSK},
+     {"IJTSK03",  CS_IJTSK03},
+     {"JTSK",     CS_JTSK},
+     {"JTSK03",   CS_JTSK03},
+     {"LAT",      CS_LAT},	/* LAT-LONG */
+     {"LOCAL",    CS_LOCAL},
+     {"LONG",     CS_LONG},	/* LONG-LAT */
+     {"OSGB",     CS_OSGB},	/* OSGB:<H, N, O, S or T><A-Z except I> */
+     {"S",        CS_S_MERC},	/* S-MERC */
+     // UTM<zone><N or S or nothing> is handled separately to avoid needing 180
+     // entries in this lookup table.
+     {NULL,       CS_NONE}
 };
 
 static void
 cmd_cs(void)
 {
-   char * proj_str = NULL;
-   int proj_str_len;
+   char *proj_str = NULL;
    cs_class cs;
    int cs_sub = INT_MIN;
    filepos fp;
-   bool output = fFalse;
+   bool output = false;
    enum { YES, NO, MAYBE } ok_for_output = YES;
-   static bool had_cs = fFalse;
+   static bool had_cs = false;
 
    if (!had_cs) {
-      had_cs = fTrue;
+      had_cs = true;
       if (first_fix_name) {
 	 compile_diagnostic_at(DIAG_ERR,
 			       first_fix_filename, first_fix_line,
@@ -1961,119 +2309,126 @@ cmd_cs(void)
       }
    }
 
+   skipblanks();
    get_pos(&fp);
-   /* Note get_token() only accepts letters - it'll stop at digits so "UTM12"
-    * will give token "UTM". */
-   get_token();
-   if (strcmp(ucbuffer, "OUT") == 0) {
-      output = fTrue;
+   get_token_no_blanks();
+   if (S_EQ(&uctoken, "OUT")) {
+      output = true;
+      skipblanks();
       get_pos(&fp);
-      get_token();
+      get_token_no_blanks();
    }
-   cs = match_tok(cs_tab, TABSIZE(cs_tab));
-   switch (cs) {
-      case CS_NONE:
-	 break;
-      case CS_CUSTOM:
-	 ok_for_output = MAYBE;
-	 get_pos(&fp);
-	 read_string(&proj_str, &proj_str_len);
-	 cs_sub = 0;
-	 break;
-      case CS_EPSG: case CS_ESRI:
-	 ok_for_output = MAYBE;
-	 if (ch == ':' && isdigit(nextch())) {
-	    unsigned n = read_uint();
-	    if (n < 1000000) {
-	       cs_sub = (int)n;
-	    }
-	 }
-	 break;
-      case CS_EUR:
-	 if (isdigit(ch) &&
-	     read_uint() == 79 &&
-	     (ch == 'Z' || ch == 'z') &&
-	     isdigit(nextch()) &&
-	     read_uint() == 30) {
-	    cs_sub = 7930;
-	 }
-	 break;
-      case CS_JTSK:
-	 ok_for_output = NO;
-	 /* FALLTHRU */
-      case CS_IJTSK:
-	 if (ch == '0') {
-	    if (nextch() == '3') {
+
+   if (s_len(&uctoken) > 3 &&
+       memcmp(s_str(&uctoken), "UTM", 3) == 0 &&
+       isdigit((unsigned char)s_str(&uctoken)[3])) {
+       // The token starts "UTM" followed by a digit so handle that separately
+       // to avoid needing 180 entries for UTM zones in the cs_tab lookup
+       // table.
+       cs = CS_UTM;
+       // Reposition on the digit after "UTM".
+       set_pos(&fp);
+       nextch();
+       nextch();
+       nextch();
+       unsigned n = read_uint();
+       if (n >= 1 && n <= 60) {
+	   int uch = toupper(ch);
+	   cs_sub = (int)n;
+	   if (uch == 'S') {
 	       nextch();
-	       cs_sub = 3;
-	    }
-	 } else {
-	    cs_sub = 0;
-	 }
-	 break;
-      case CS_LAT: case CS_LONG:
-	 ok_for_output = NO;
-	 if (ch == '-') {
-	    nextch();
-	    get_token_no_blanks();
-	    cs_class cs2 = match_tok(cs_tab, TABSIZE(cs_tab));
-	    if ((cs ^ cs2) == (CS_LAT ^ CS_LONG)) {
-		cs_sub = 0;
-	    }
-	 }
-	 break;
-      case CS_LOCAL:
-	 cs_sub = 0;
-	 break;
-      case CS_OSGB:
-	 if (ch == ':') {
-	    int uch1 = toupper(nextch());
-	    if (strchr("HNOST", uch1)) {
-	       int uch2 = toupper(nextch());
-	       if (uch2 >= 'A' && uch2 <= 'Z' && uch2 != 'I') {
-		  int x, y;
-		  nextch();
-		  if (uch1 > 'I') --uch1;
-		  uch1 -= 'A';
-		  if (uch2 > 'I') --uch2;
-		  uch2 -= 'A';
-		  x = uch1 % 5;
-		  y = uch1 / 5;
-		  x = (x * 5) + uch2 % 5;
-		  y = (y * 5) + uch2 / 5;
-		  cs_sub = y * 25 + x;
+	       cs_sub = -cs_sub;
+	   } else if (uch == 'N') {
+	       nextch();
+	   }
+       }
+   } else {
+       cs = match_tok(cs_tab, TABSIZE(cs_tab));
+       switch (cs) {
+	 case CS_NONE:
+	   break;
+	 case CS_CUSTOM:
+	   ok_for_output = MAYBE;
+	   get_pos(&fp);
+	   string str = S_INIT;
+	   read_string(&str);
+	   proj_str = s_steal(&str);
+	   cs_sub = 0;
+	   break;
+	 case CS_EPSG: case CS_ESRI:
+	   ok_for_output = MAYBE;
+	   if (ch == ':' && isdigit(nextch())) {
+	       unsigned n = read_uint();
+	       if (n < 1000000) {
+		   cs_sub = (int)n;
 	       }
-	    }
-	 }
-	 break;
-      case CS_S_MERC:
-	 if (ch == '-') {
-	    nextch();
-	    get_token_no_blanks();
-	    if (strcmp(ucbuffer, "MERC") == 0) {
-	       cs_sub = 0;
-	    }
-	 }
-	 break;
-      case CS_UTM:
-	 if (isdigit(ch)) {
-	    unsigned n = read_uint();
-	    if (n >= 1 && n <= 60) {
-	       int uch = toupper(ch);
-	       cs_sub = (int)n;
-	       if (uch == 'S') {
-		  nextch();
-		  cs_sub = -cs_sub;
-	       } else if (uch == 'N') {
-		  nextch();
+	   }
+	   break;
+	 case CS_EUR79Z30:
+	   cs_sub = 0;
+	   break;
+	 case CS_JTSK:
+	 case CS_JTSK03:
+	   ok_for_output = NO;
+	   cs_sub = 0;
+	   break;
+	 case CS_IJTSK:
+	 case CS_IJTSK03:
+	   cs_sub = 0;
+	   break;
+	 case CS_LAT: case CS_LONG:
+	   ok_for_output = NO;
+	   if (ch == '-') {
+	       nextch();
+	       get_token_no_blanks();
+	       cs_class cs2 = match_tok(cs_tab, TABSIZE(cs_tab));
+	       if ((cs ^ cs2) == (CS_LAT ^ CS_LONG)) {
+		   cs_sub = 0;
 	       }
-	    }
-	 }
-	 break;
+	   }
+	   break;
+	 case CS_LOCAL:
+	   cs_sub = 0;
+	   break;
+	 case CS_OSGB:
+	   if (ch == ':') {
+	       int uch1 = toupper(nextch());
+	       if (strchr("HNOST", uch1)) {
+		   int uch2 = toupper(nextch());
+		   if (uch2 >= 'A' && uch2 <= 'Z' && uch2 != 'I') {
+		       int x, y;
+		       nextch();
+		       if (uch1 > 'I') --uch1;
+		       uch1 -= 'A';
+		       if (uch2 > 'I') --uch2;
+		       uch2 -= 'A';
+		       x = uch1 % 5;
+		       y = uch1 / 5;
+		       x = (x * 5) + uch2 % 5;
+		       y = (y * 5) + uch2 / 5;
+		       cs_sub = y * 25 + x;
+		   }
+	       }
+	   }
+	   break;
+	 case CS_S_MERC:
+	   if (ch == '-') {
+	       nextch();
+	       get_token_no_blanks();
+	       if (S_EQ(&uctoken, "MERC")) {
+		   cs_sub = 0;
+	       }
+	   }
+	   break;
+	 case CS_UTM:
+	   // Handled outside of this switch, but avoid compiler warning about
+	   // unhandled enumeration value.
+	   break;
+       }
    }
    if (cs_sub == INT_MIN || isalnum(ch)) {
       set_pos(&fp);
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2086,26 +2441,26 @@ cmd_cs(void)
 	 break;
       case CS_EPSG:
 	 proj_str = osmalloc(32);
-	 sprintf(proj_str, "+init=epsg:%d +no_defs", cs_sub);
+	 snprintf(proj_str, 32, "EPSG:%d", cs_sub);
 	 break;
       case CS_ESRI:
 	 proj_str = osmalloc(32);
-	 sprintf(proj_str, "+init=esri:%d +no_defs", cs_sub);
+	 snprintf(proj_str, 32, "ESRI:%d", cs_sub);
 	 break;
-      case CS_EUR:
+      case CS_EUR79Z30:
 	 proj_str = osstrdup("+proj=utm +zone=30 +ellps=intl +towgs84=-86,-98,-119,0,0,0,0 +no_defs");
 	 break;
       case CS_IJTSK:
-	 if (cs_sub == 0)
-	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
-	 else
-	    proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
+	 proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
+	 break;
+      case CS_IJTSK03:
+	 proj_str = osstrdup("+proj=krovak +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
       case CS_JTSK:
-	 if (cs_sub == 0)
-	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
-	 else
-	    proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
+	 proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=570.8285,85.6769,462.842,4.9984,1.5867,5.2611,3.5623 +no_defs");
+	 break;
+      case CS_JTSK03:
+	 proj_str = osstrdup("+proj=krovak +czech +ellps=bessel +towgs84=485.021,169.465,483.839,7.786342,4.397554,4.102655,0 +no_defs");
 	 break;
       case CS_LAT:
 	 /* FIXME: Requires PROJ >= 4.8.0 for +axis, and the SDs will be
@@ -2124,24 +2479,27 @@ cmd_cs(void)
 	 /* FIXME: Is it useful to be able to explicitly specify this? */
 	 break;
       case CS_LONG:
-	 proj_str = osstrdup("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
+	 proj_str = osstrdup("EPSG:4326");
 	 break;
       case CS_OSGB: {
 	 int x = 14 - (cs_sub % 25);
 	 int y = (cs_sub / 25) - 20;
 	 proj_str = osmalloc(160);
-	 sprintf(proj_str, "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=%d +y_0=%d +ellps=airy +datum=OSGB36 +units=m +no_defs", x * 100000, y * 100000);
+	 snprintf(proj_str, 160,
+		  "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 "
+		  "+x_0=%d +y_0=%d +ellps=airy +datum=OSGB36 +units=m +no_defs",
+		  x * 100000, y * 100000);
 	 break;
       }
       case CS_S_MERC:
-	 proj_str = osstrdup("+proj=merc +lat_ts=0 +lon_0=0 +k=1 +x_0=0 +y_0=0 +a=6378137 +b=6378137 +units=m +nadgrids=@null +no_defs");
+	 proj_str = osstrdup("EPSG:3857");
 	 break;
       case CS_UTM:
-	 proj_str = osmalloc(74);
+	 proj_str = osmalloc(32);
 	 if (cs_sub > 0) {
-	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +no_defs", cs_sub);
+	    snprintf(proj_str, 32, "EPSG:%d", 32600 + cs_sub);
 	 } else {
-	    sprintf(proj_str, "+proj=utm +ellps=WGS84 +datum=WGS84 +units=m +zone=%d +south +no_defs", -cs_sub);
+	    snprintf(proj_str, 32, "EPSG:%d", 32700 - cs_sub);
 	 }
 	 break;
    }
@@ -2149,7 +2507,7 @@ cmd_cs(void)
    if (!proj_str) {
       /* printf("CS %d:%d\n", (int)cs, cs_sub); */
       set_pos(&fp);
-      compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Unknown coordinate system*/434);
+      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Unknown coordinate system*/434);
       skipline();
       return;
    }
@@ -2157,61 +2515,84 @@ cmd_cs(void)
    if (output) {
       if (ok_for_output == NO) {
 	 set_pos(&fp);
-	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
+	 compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Coordinate system unsuitable for output*/435);
 	 skipline();
 	 return;
       }
 
-      /* If the output projection is already set, we still need to create the
-       * projection object for a custom projection, so we can report errors.
-       * But if the string is identical, we know it's valid.
-       */
-      if (!proj_out ||
-	  (ok_for_output == MAYBE && strcmp(proj_str, proj_str_out) != 0)) {
-	 projPJ pj = pj_init_plus(proj_str);
-	 if (!pj) {
-	    set_pos(&fp);
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
-			       pj_strerrno(pj_errno));
-	    skipline();
-	    return;
-	 }
-	 if (ok_for_output == MAYBE && pj_is_latlong(pj)) {
-	    set_pos(&fp);
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Coordinate system unsuitable for output*/435);
-	    skipline();
-	    return;
-	 }
-	 if (proj_out) {
-	    pj_free(pj);
-	    osfree(proj_str);
-	 } else {
-	    proj_out = pj;
-	    proj_str_out = proj_str;
-	 }
-      }
-   } else {
-      projPJ pj;
       if (proj_str_out && strcmp(proj_str, proj_str_out) == 0) {
-	 /* Same as the current output projection. */
-	 pj = proj_out;
-      } else {
-	 pj = pj_init_plus(proj_str);
-	 if (!pj) {
-	    set_pos(&fp);
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Invalid coordinate system: %s*/443,
-			       pj_strerrno(pj_errno));
-	    skipline();
-	    return;
-	 }
+	  /* Same as the output cs that's already set, so nothing to do. */
+	  osfree(proj_str);
+	  return;
       }
 
-      /* Free proj if not used by parent, or as the output projection. */
+      if (ok_for_output == MAYBE) {
+	  /* We only actually create the transformation from input to output when
+	   * we need it, but for a custom proj string or EPSG/ESRI code we need
+	   * to check that the specified coordinate system is valid and also if
+	   * it's suitable for output so we need to test creating it here.
+	   */
+	  proj_errno_reset(NULL);
+	  PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
+	  if (!pj) {
+	      set_pos(&fp);
+	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
+				 proj_context_errno_string(PJ_DEFAULT_CTX,
+							   proj_context_errno(PJ_DEFAULT_CTX)));
+	      skipline();
+	      osfree(proj_str);
+	      return;
+	  }
+	  int type = proj_get_type(pj);
+	  if (type == PJ_TYPE_GEOGRAPHIC_2D_CRS ||
+	      type == PJ_TYPE_GEOGRAPHIC_3D_CRS) {
+	      set_pos(&fp);
+	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Coordinate system unsuitable for output*/435);
+	      skipline();
+	      osfree(proj_str);
+	      return;
+	  }
+      }
+
+      if (proj_str_out) {
+	  /* If the output cs is already set, subsequent attempts to set it
+	   * are silently ignored (so you can combine two datasets and set
+	   * the output cs to use before you include either).
+	   */
+	  osfree(proj_str);
+      } else {
+	  proj_str_out = proj_str;
+      }
+   } else {
+      if (proj_str_out && strcmp(proj_str, proj_str_out) == 0) {
+	 /* Same as the current output projection, so valid for input. */
+      } else if (pcs->proj_str && strcmp(proj_str, pcs->proj_str) == 0) {
+	 /* Same as the current input projection, so nothing to do! */
+	 return;
+      } else if (ok_for_output == MAYBE) {
+	 /* (ok_for_output == MAYBE) also happens to indicate whether we need
+	  * to check that the coordinate system is valid for input.
+	  */
+	 proj_errno_reset(NULL);
+	 PJ* pj = proj_create(PJ_DEFAULT_CTX, proj_str);
+	 if (!pj) {
+	    set_pos(&fp);
+	    compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Invalid coordinate system: %s*/443,
+			       proj_context_errno_string(PJ_DEFAULT_CTX,
+							 proj_context_errno(PJ_DEFAULT_CTX)));
+	    skipline();
+	    return;
+	 }
+	 proj_destroy(pj);
+      }
+
+      /* Free current input proj_str if not used by parent. */
       settings * p = pcs;
-      if (p->proj && (!p->next || p->proj != p->next->proj))
-	 if (p->proj != proj_out)
-	    pj_free(p->proj);
-      p->proj = pj;
+      if (!p->next || p->proj_str != p->next->proj_str)
+	 osfree(p->proj_str);
+      p->proj_str = proj_str;
+      p->input_convergence = HUGE_REAL;
+      invalidate_pj_cached();
    }
 }
 
@@ -2239,19 +2620,19 @@ cmd_infer(void)
    get_token();
    setting = match_tok(infer_tab, TABSIZE(infer_tab));
    if (setting == INFER_NULL) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”*/31, s_str(&token));
       return;
    }
    get_token();
    on = match_tok(onoff_tab, TABSIZE(onoff_tab));
    if (on == -1) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Found “%s”, expecting “ON” or “OFF”*/32, buffer);
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Found “%s”, expecting “ON” or “OFF”*/32, s_str(&token));
       return;
    }
 
    if (on) {
       pcs->infer |= BIT(setting);
-      if (setting == INFER_EXPORTS) fExportUsed = fTrue;
+      if (setting == INFER_EXPORTS) fExportUsed = true;
    } else {
       pcs->infer &= ~BIT(setting);
    }
@@ -2266,8 +2647,8 @@ cmd_truncate(void)
    get_pos(&fp);
 
    get_token();
-   if (strcmp(ucbuffer, "OFF") != 0) {
-      if (*ucbuffer) set_pos(&fp);
+   if (!S_EQ(&uctoken, "OFF")) {
+      if (!s_empty(&uctoken)) set_pos(&fp);
       truncate_at = read_uint();
    }
    /* for backward compatibility, "*truncate 0" means "*truncate off" */
@@ -2278,59 +2659,60 @@ static void
 cmd_ref(void)
 {
    /* Just syntax check for now. */
-   char *ref = NULL;
-   int ref_len;
-   read_string(&ref, &ref_len);
+   string ref = S_INIT;
+   read_string(&ref);
    s_free(&ref);
 }
 
 static void
 cmd_require(void)
 {
-   const unsigned int version[] = {COMMAVERSION};
-   const unsigned int *ver = version;
-   filepos fp;
+    // Add extra 0 so `*require 1.4.10.1` fails with cavern version 1.4.10.
+    const unsigned version[] = {COMMAVERSION, 0};
 
-   skipblanks();
-   get_pos(&fp);
-   while (1) {
-      int diff = *ver++ - read_uint();
-      if (diff > 0) break;
-      if (diff < 0) {
-	 size_t i, len;
-	 char *v;
-	 filepos fp_tmp;
+    skipblanks();
+    filepos fp;
+    get_pos(&fp);
 
-	 /* find end of version number */
-	 while (isdigit(ch) || ch == '.') nextch();
-	 get_pos(&fp_tmp);
-	 len = (size_t)(fp_tmp.offset - fp.offset);
-	 v = osmalloc(len + 1);
-	 set_pos(&fp);
-	 for (i = 0; i < len; i++) {
-	    v[i] = ch;
+    // Parse the required version number, storing its components in
+    // required_version.  We only store at most one more component than
+    // COMMAVERSION has since more than that can't affect the comparison.
+    size_t i = 0;
+    int diff = 0;
+    while (1) {
+	unsigned component = read_uint();
+	if (diff == 0 && i < sizeof(version) / sizeof(version[0])) {
+	    if (diff == 0) {
+		diff = (int)version[i++] - (int)component;
+	    }
+	}
+	if (ch != '.' || isBlank(nextch()) || isComm(ch) || isEol(ch))
+	    break;
+    }
+
+    if (diff < 0) {
+	// Requirement not satisfied
+	size_t len = (size_t)(ftell(file.fh) - fp.offset);
+	char *v = osmalloc(len + 1);
+	set_pos(&fp);
+	for (size_t j = 0; j < len; j++) {
+	    v[j] = ch;
 	    nextch();
-	 }
-	 v[i] = '\0';
-	 /* TRANSLATORS: Feel free to translate as "or newer" instead of "or
-	  * greater" if that gives a more natural translation.  It's
-	  * technically not quite right when there are parallel active release
-	  * series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
-	  * seems unlikely to confuse users.  "Survex" is the name of the
-	  * software, so should not be translated.
-	  *
-	  * Here "survey" is a "cave map" rather than list of questions - it should be
-	  * translated to the terminology that cavers using the language would use.
-	  */
-	 fatalerror_in_file(file.filename, file.line, /*Survex version %s or greater required to process this survey data.*/2, v);
-      }
-      if (ch != '.') break;
-      nextch();
-      if (!isdigit(ch) || ver == version + sizeof(version) / sizeof(*version))
-	 break;
-   }
-   /* skip rest of version number */
-   while (isdigit(ch) || ch == '.') nextch();
+	}
+	v[len] = '\0';
+	/* TRANSLATORS: Feel free to translate as "or newer" instead of "or
+	 * greater" if that gives a more natural translation.  It's
+	 * technically not quite right when there are parallel active release
+	 * series (e.g. Survex 1.0.40 was released *after* 1.2.0), but this
+	 * seems unlikely to confuse users.  "Survex" is the name of the
+	 * software, so should not be translated.
+	 *
+	 * Here "survey" is a "cave map" rather than list of questions - it should be
+	 * translated to the terminology that cavers using the language would use.
+	 */
+	compile_diagnostic(DIAG_FATAL|DIAG_FROM(fp), /*Survex version %s or greater required to process this survey data.*/2, v);
+	// Does not return so no point freeing v here.
+    }
 }
 
 /* allocate new meta_data if need be */
@@ -2349,60 +2731,242 @@ copy_on_write_meta(settings *s)
    }
 }
 
+static int
+read_year(filepos *fp_date_ptr)
+{
+    int y = read_uint_raw(/*Expecting date, found “%s”*/198, fp_date_ptr);
+    if (y < 100) {
+	/* Two digit year is 19xx. */
+	y += 1900;
+	filepos fp_save;
+	get_pos(&fp_save);
+	set_pos(fp_date_ptr);
+	/* TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918 */
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Assuming 2 digit year is %d*/76, y);
+	set_pos(&fp_save);
+    } else if (y < 1900 || y > 2078) {
+	set_pos(fp_date_ptr);
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year (< 1900 or > 2078)*/58);
+	longjmp(jbSkipLine, 1);
+    }
+    return y;
+}
+
 static void
 cmd_date(void)
 {
-    int year, month, day;
-    int days1, days2;
-    bool implicit_range = fFalse;
-    filepos fp, fp2;
+    enum { DATE_SURVEYED = 1, DATE_EXPLORED = 2 };
+    unsigned date_flags = 0;
+    while (get_token(), !s_empty(&uctoken)) {
+	unsigned new_flag = 0;
+	if (S_EQ(&uctoken, "SURVEYED")) {
+	    new_flag = DATE_SURVEYED;
+	} else if (S_EQ(&uctoken, "EXPLORED")) {
+	    new_flag = DATE_EXPLORED;
+	} else {
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			       /*Expecting “%s” or “%s”*/103, "SURVEYED", "EXPLORED");
+	    continue;
+	}
 
-    get_pos(&fp);
-    read_date(&year, &month, &day);
-    days1 = days_since_1900(year, month ? month : 1, day ? day : 1);
+	if ((date_flags & new_flag)) {
+	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+			       /*Duplicate date type “%s”*/416, s_str(&token));
+	}
+	date_flags |= new_flag;
+    }
+
+    int date_sep = '-';
+    if (date_flags == 0) {
+	// `*date` without qualification sets the surveyed date.
+	date_flags = DATE_SURVEYED;
+	// Also allow '.' for compatibility.
+	date_sep = 0;
+    }
+
+    filepos fp_date1, fp_date2, fp;
+    get_pos(&fp_date1);
+    int year = read_year(&fp_date1);
+    int month = 0, day = 0, year2 = 0, month2 = 0, day2 = 0;
+
+    if (ch == '-') {
+	// Could be ISO-format date (e.g. 2024-10 or 2024-10-21 or 1912-11), or
+	// a range of old-format dates (e.g. 1973-1975 or 1911-12.02.03) or an
+	// ambiguous case like 1911-12 which we need to warn about in a `*date`
+	// command without `surveyed` or `explored` qualifiers.
+	nextch();
+	get_pos(&fp_date2);
+	int v = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date1);
+	if (date_sep == '-') {
+	    // We're only accepting ISO dates.
+	} else if (ch == '-') {
+	    // Two `-` so must be an ISO date, e.g. `2024-10-21`.
+	} else if (v >= 1 && v <= 12) {
+	    // Valid month number so assume it's an ISO date.
+	    if (year < 1900 + v) {
+		// Warn about ambiguous cases.
+		compile_diagnostic(DIAG_WARN|DIAG_FROM(fp_date1),
+				   /*Interpreting as an ISO-format date - use “*date surveyed %d-%02d” to suppress this warning, or “*date %d %d” if you wanted a date range*/158,
+				   year, v, year, 1900 + v);
+	    }
+	} else {
+	    date_sep = '.';
+	    year2 = v;
+	    if (year2 < 100) {
+		/* Two digit year is 19xx. */
+		year2 += 1900;
+		/* TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918 */
+		compile_diagnostic(DIAG_WARN|DIAG_FROM(fp_date2),
+				   /*Assuming 2 digit year is %d*/76, year2);
+	    } else if (year2 < 1900 || year2 > 2078) {
+		compile_diagnostic(DIAG_WARN|DIAG_FROM(fp_date2),
+				   /*Invalid year (< 1900 or > 2078)*/58);
+		longjmp(jbSkipLine, 1);
+	    }
+	    goto process_dates;
+	}
+
+	date_sep = '-';
+	month = v;
+	fp = fp_date2;
+    } else if (ch == '.') {
+	if (date_sep == '-') {
+	    char date_sep_string[2] = { date_sep, '\0' };
+	    compile_diagnostic(DIAG_ERR|DIAG_COL|DIAG_SKIP,
+			       /*Expecting “%s”*/497, date_sep_string);
+	    return;
+	}
+	date_sep = ch;
+	nextch();
+	get_pos(&fp);
+	month = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date1);
+    } else {
+	// Just a year - might be a ISO date range though.
+	date_sep = '-';
+	goto try_date2;
+    }
+
+    if (month < 1 || month > 12) {
+	set_pos(&fp);
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
+	longjmp(jbSkipLine, 1);
+    }
+
+    if (ch == date_sep) {
+	nextch();
+	get_pos(&fp);
+	day = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date1);
+	if (day < 1 || day > last_day(year, month)) {
+	    set_pos(&fp);
+	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT,
+			       /*Invalid day of the month*/87);
+	    longjmp(jbSkipLine, 1);
+	}
+    }
+
+try_date2:
+    if (date_sep == '-') {
+	skipblanks();
+	if (!isdigit(ch)) goto process_dates;
+    } else if (ch == '-') {
+	nextch();
+    } else {
+	goto process_dates;
+    }
+    {
+	get_pos(&fp_date2);
+	year2 = read_year(&fp_date2);
+	if (ch == date_sep) {
+	    nextch();
+	    get_pos(&fp);
+	    month2 = read_uint_raw(/*Expecting date, found “%s”*/198,
+				   &fp_date2);
+	    if (month2 < 1 || month2 > 12) {
+		set_pos(&fp);
+		compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid month*/86);
+		longjmp(jbSkipLine, 1);
+	    }
+
+	    if (ch == date_sep) {
+		nextch();
+		get_pos(&fp);
+		day2 = read_uint_raw(/*Expecting date, found “%s”*/198,
+				     &fp_date2);
+		if (day2 < 1 || day2 > last_day(year2, month2)) {
+		    set_pos(&fp);
+		    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
+		    compile_diagnostic(DIAG_WARN|DIAG_UINT,
+				       /*Invalid day of the month*/87);
+		    longjmp(jbSkipLine, 1);
+		}
+	    }
+	}
+    }
+
+process_dates:;
+    bool date_range = (year2 != 0);
+    if (!date_range) {
+	year2 = year;
+	month2 = month;
+	day2 = day;
+    }
+
+    int days1 = days_since_1900(year, month ? month : 1, day ? day : 1);
 
     if (days1 > current_days_since_1900) {
-	set_pos(&fp);
+	filepos fp_save;
+	get_pos(&fp_save);
+	set_pos(&fp_date1);
 	compile_diagnostic(DIAG_WARN|DIAG_DATE, /*Date is in the future!*/80);
+	set_pos(&fp_save);
     }
 
-    skipblanks();
-    if (ch == '-') {
-	nextch();
-	get_pos(&fp2);
-	read_date(&year, &month, &day);
-    } else {
-	if (month && day) {
-	    days2 = days1;
-	    goto read;
-	}
-	implicit_range = fTrue;
+    if (month2 == 0) {
+	month2 = 12;
+	day2 = 31;
+    } else if (day2 == 0) {
+	day2 = last_day(year2, month2);
     }
-
-    if (month == 0) month = 12;
-    if (day == 0) day = last_day(year, month);
-    days2 = days_since_1900(year, month, day);
-
-    if (!implicit_range && days2 > current_days_since_1900) {
-	set_pos(&fp2);
+    int days2 = days_since_1900(year2, month2, day2);
+    if (date_range && days2 > current_days_since_1900) {
+	// If !date_range, either we already emitted this warning when
+	// processing the start date, or the date is partial and for the
+	// current year or current month, in which case it's not helpful
+	// to warn that the end is on the future, but it makes sense to
+	// process for the end date so the result doesn't change as time
+	// passes.
+	filepos fp_save;
+	get_pos(&fp_save);
+	set_pos(&fp_date2);
 	compile_diagnostic(DIAG_WARN|DIAG_DATE, /*Date is in the future!*/80);
+	set_pos(&fp_save);
     }
 
     if (days2 < days1) {
-	set_pos(&fp);
-	compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*End of date range is before the start*/81);
+	filepos fp_save;
+	get_pos(&fp_save);
+	set_pos(&fp_date1);
+	compile_diagnostic(DIAG_ERR|DIAG_WORD, /*End of date range is before the start*/81);
+	set_pos(&fp_save);
+	// Swap range ends to put us in a consistent state.
 	int tmp = days1;
 	days1 = days2;
 	days2 = tmp;
     }
 
-read:
-    if (!pcs->meta || pcs->meta->days1 != days1 || pcs->meta->days2 != days2) {
-	copy_on_write_meta(pcs);
-	pcs->meta->days1 = days1;
-	pcs->meta->days2 = days2;
-	/* Invalidate cached declination. */
-	pcs->declination = HUGE_REAL;
+    if ((date_flags & DATE_SURVEYED)) {
+	if (!pcs->meta || pcs->meta->days1 != days1 || pcs->meta->days2 != days2) {
+	    copy_on_write_meta(pcs);
+	    pcs->meta->days1 = days1;
+	    pcs->meta->days2 = days2;
+	    /* Invalidate cached declination. */
+	    pcs->declination = HUGE_REAL;
+	}
+    }
+
+    if ((date_flags & DATE_EXPLORED)) {
+	// FIXME: Need to revise 3d format to allow storing EXPLORED date too.
     }
 }
 
@@ -2412,6 +2976,7 @@ static const cmd_fn cmd_funcs[] = {
    cmd_alias,
    cmd_begin,
    cmd_calibrate,
+   cmd_cartesian,
    cmd_case,
    skipline, /*cmd_copyright,*/
    cmd_cs,
@@ -2447,14 +3012,18 @@ static const cmd_fn cmd_funcs[] = {
 extern void
 handle_command(void)
 {
-   int cmdtok;
-   get_token();
-   cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
-
+   filepos fp;
+   get_pos(&fp);
+   get_token_legacy();
+   int cmdtok = match_tok(cmd_tab, TABSIZE(cmd_tab));
    if (cmdtok < 0 || cmdtok >= (int)(sizeof(cmd_funcs) / sizeof(cmd_fn))) {
-      compile_diagnostic(DIAG_ERR|DIAG_BUF|DIAG_SKIP, /*Unknown command “%s”*/12, buffer);
+      set_pos(&fp);
+      get_token();
+      compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
       return;
    }
+
+   do_legacy_token_warning();
 
    switch (cmdtok) {
     case CMD_EXPORT:
@@ -2470,6 +3039,7 @@ handle_command(void)
       break;
     case CMD_ALIAS:
     case CMD_CALIBRATE:
+    case CMD_CARTESIAN:
     case CMD_CASE:
     case CMD_COPYRIGHT:
     case CMD_CS:
@@ -2492,7 +3062,7 @@ handle_command(void)
       break;
     default:
       /* NB: additional handling for "*begin <survey>" in cmd_begin */
-      f_export_ok = fFalse;
+      f_export_ok = false;
       break;
    }
 

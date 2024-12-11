@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  */
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include <wx/confbase.h>
 #include <wx/filename.h>
@@ -172,9 +170,9 @@ class svxPrintout : public wxPrintout {
     layout *m_layout;
     wxPageSetupDialogData* m_data;
     wxDC* pdc;
-    wxFont *font_labels, *font_default;
+    wxFont *font_labels = nullptr, *font_default = nullptr;
     // Currently unused, but "skip blank pages" would use it.
-    bool scan_for_blank_pages;
+    bool scan_for_blank_pages = false;
 
     wxPen *pen_frame, *pen_cross, *pen_leg, *pen_surface_leg, *pen_splay;
     wxColour colour_text, colour_labels;
@@ -224,8 +222,8 @@ class svxPrintout : public wxPrintout {
 
 BEGIN_EVENT_TABLE(svxPrintDlg, wxDialog)
     EVT_CHOICE(svx_FORMAT, svxPrintDlg::OnChange)
-    EVT_TEXT(svx_SCALE, svxPrintDlg::OnChange)
-    EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChange)
+    EVT_TEXT(svx_SCALE, svxPrintDlg::OnChangeScale)
+    EVT_COMBOBOX(svx_SCALE, svxPrintDlg::OnChangeScale)
     EVT_SPINCTRLDOUBLE(svx_BEARING, svxPrintDlg::OnChangeSpin)
     EVT_SPINCTRLDOUBLE(svx_TILT, svxPrintDlg::OnChangeSpin)
     EVT_BUTTON(wxID_PRINT, svxPrintDlg::OnPrint)
@@ -261,12 +259,23 @@ static wxString scales[] = {
     wxT("10000"),
     wxT("25000"),
     wxT("50000"),
-    wxT("100000")
+    wxT("100000"),
+    wxT("240 (1\":20')"),
+    wxT("300 (1\":25')"),
+    // This entry will be "304.8 (1mm:1ft)" but we need to use the
+    // locale-specific decimal point so this gets filled in on first
+    // use, after the locale is initialised.
+#define SCALES_INDEX_MM_TO_FEET 15
+    wxT(""),
+    wxT("480 (1\":40')"),
+    wxT("600 (1\":50')"),
+    wxT("...")
 };
 
 // The order of these arrays must match export_format in export.h.
 
 static wxString formats[] = {
+    wxT("Survex 3d"),
     wxT("CSV"),
     wxT("DXF"),
     wxT("EPS"),
@@ -275,15 +284,18 @@ static wxString formats[] = {
     wxT("JSON"),
     wxT("KML"),
     wxT("Plot"),
-    wxT("Skencil"),
     wxT("Survex pos"),
-    wxT("SVG")
+    wxT("SVG"),
+    // These next two get filled in lazily since they are translated which
+    // means we need to wait until after the messages are loaded.
+    wxT(""), // "Shapefiles (lines)"
+    wxT("") // "Shapefiles (points)"
 };
 
 static_assert(sizeof(formats) == FMT_MAX_PLUS_ONE_ * sizeof(formats[0]),
 	      "formats[] matches enum export_format");
 
-// We discriminate as "One Page" isn't valid for exporting.
+// We discriminate as "One page" isn't valid for exporting.
 static wxString default_scale_print;
 static wxString default_scale_export;
 
@@ -294,21 +306,16 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 			 bool labels, bool crosses, bool legs, bool surf,
 			 bool splays, bool tubes, bool ents, bool fixes,
 			 bool exports, bool printing, bool close_after_)
-	: wxDialog(mainfrm_, -1, wxString(printing ?
-					  /* TRANSLATORS: Title of the print
-					   * dialog */
-					  wmsg(/*Print*/399) :
-					  /* TRANSLATORS: Title of the export
-					   * dialog */
-					  wmsg(/*Export*/383))),
+	: wxDialog(mainfrm_, wxID_ANY,
+		   wxString(printing ? /* TRANSLATORS: Title of the print
+					* dialog */
+				       wmsg(/*Print*/399) :
+				       /* TRANSLATORS: Title of the export
+					* dialog */
+				       wmsg(/*Export*/383))),
 	  m_layout(printing ? wxGetApp().GetPageSetupDialogData() : NULL),
 	  m_File(filename), mainfrm(mainfrm_), close_after(close_after_)
 {
-    m_scale = NULL;
-    m_printSize = NULL;
-    m_bearing = NULL;
-    m_tilt = NULL;
-    m_format = NULL;
     int show_mask = 0;
     if (labels)
 	show_mask |= LABELS;
@@ -353,17 +360,21 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
     /* TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
      * and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in
      * the "what to print/export" dialog. */
-    m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*View*/283)), wxVERTICAL);
+    m_viewbox = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wmsg(/*View*/283)), wxVERTICAL);
     /* TRANSLATORS: Used as a label for the surrounding box for the "survey
      * legs" "stations" "names" etc checkboxes in the "what to print" dialog.
      * "Elements" isn’t a good name for this but nothing better has yet come to
      * mind! */
-    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, -1, wmsg(/*Elements*/256)), wxVERTICAL);
+    wxBoxSizer* v2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, wmsg(/*Elements*/256)), wxVERTICAL);
     wxBoxSizer* h2 = new wxBoxSizer(wxHORIZONTAL); // holds buttons
 
     if (!printing) {
 	wxStaticText* label;
-	label = new wxStaticText(this, -1, wxString(wmsg(/*Export format*/410)));
+	label = new wxStaticText(this, wxID_ANY, wxString(wmsg(/*Export format*/410)));
+	if (formats[FMT_SHP_LINES].empty()) {
+	    formats[FMT_SHP_LINES] = wmsg(/*Shapefiles (lines)*/523);
+	    formats[FMT_SHP_POINTS] = wmsg(/*Shapefiles (points)*/524);
+	}
 	const size_t n_formats = sizeof(formats) / sizeof(formats[0]);
 	m_format = new wxChoice(this, svx_FORMAT,
 				wxDefaultPosition, wxDefaultSize,
@@ -387,8 +398,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	v1->Add(formatbox, 0, wxALIGN_LEFT|wxALL, 0);
     }
 
+    if (scales[SCALES_INDEX_MM_TO_FEET][0] == '\0') {
+	scales[SCALES_INDEX_MM_TO_FEET] = wxString::FromDouble(304.8) + wxT(" (1mm:1ft)");
+    }
     wxStaticText* label;
-    label = new wxStaticText(this, -1, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
+    label = new wxStaticText(this, wxID_ANY, wxString(wmsg(/*Scale*/154)) + wxT(" 1:"));
     if (printing && scales[0].empty()) {
 	/* TRANSLATORS: used in the scale drop down selector in the print
 	 * dialog the implicit meaning is "choose a suitable scale to fit
@@ -421,14 +435,14 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	// Make the dummy string wider than any sane value and use that to
 	// fix the width of the control so the sizers allow space for bigger
 	// page layouts.
-	m_printSize = new wxStaticText(this, -1, wxString::Format(wmsg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
+	m_printSize = new wxStaticText(this, wxID_ANY, wxString::Format(wmsg(/*%d pages (%dx%d)*/257), 9604, 98, 98));
 	m_viewbox->Add(m_printSize, 0, wxALIGN_LEFT|wxALL, 5);
     }
 
     if (m_layout.view != layout::EXTELEV) {
 	wxFlexGridSizer* anglebox = new wxFlexGridSizer(2);
 	wxStaticText * brg_label, * tilt_label;
-	brg_label = new wxStaticText(this, -1, wmsg(/*Bearing*/259));
+	brg_label = new wxStaticText(this, wxID_ANY, wmsg(/*Bearing*/259));
 	anglebox->Add(brg_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
 	// wSP_WRAP means that you can scroll past 360 to 0, and vice versa.
 	m_bearing = new wxSpinCtrlDouble(this, svx_BEARING, wxEmptyString,
@@ -438,9 +452,11 @@ svxPrintDlg::svxPrintDlg(MainFrm* mainfrm_, const wxString & filename,
 	m_bearing->SetDigits(ANGLE_DP);
 	anglebox->Add(m_bearing, 0, wxALIGN_CENTRE|wxALL, 5);
 	/* TRANSLATORS: Used in the print dialog: */
-	tilt_label = new wxStaticText(this, -1, wmsg(/*Tilt angle*/263));
+	tilt_label = new wxStaticText(this, wxID_ANY, wmsg(/*Tilt angle*/263));
 	anglebox->Add(tilt_label, 0, wxALIGN_CENTRE_VERTICAL|wxALIGN_LEFT|wxALL, 5);
-	m_tilt = new wxSpinCtrlDouble(this, svx_TILT);
+	m_tilt = new wxSpinCtrlDouble(this, svx_TILT, wxEmptyString,
+		wxDefaultPosition, wxDefaultSize,
+		wxSP_ARROW_KEYS|wxALIGN_RIGHT);
 	m_tilt->SetRange(-90.0, 90.0);
 	m_tilt->SetDigits(ANGLE_DP);
 	anglebox->Add(m_tilt, 0, wxALIGN_CENTRE|wxALL, 5);
@@ -597,7 +613,7 @@ svxPrintDlg::OnPrint(wxCommandEvent&) {
 #if 0
 	po.scan_for_blank_pages = true;
 	for (int page = 1; page <= m_layout->pages; ++page) {
-	    po.fBlankPage = fTrue;
+	    po.fBlankPage = true;
 	    po.OnPrintPage(page);
 	    // FIXME: Do something with po.fBlankPage
 	}
@@ -733,10 +749,21 @@ svxPrintDlg::OnChangeSpin(wxSpinDoubleEvent& e) {
 
 void
 svxPrintDlg::OnChange(wxCommandEvent& e) {
-    if (e.GetId() == svx_SCALE && m_scale) {
-	default_scale_print = m_scale->GetValue();
+    SomethingChanged(e.GetId());
+}
+
+void
+svxPrintDlg::OnChangeScale(wxCommandEvent& e) {
+    // Seems to be needed on macOS.
+    if (!m_scale) return;
+    wxString value = m_scale->GetValue();
+    if (value == "...") {
+	m_scale->SetValue("");
+	m_scale->SetFocus();
+    } else {
+	default_scale_print = value;
 	if (default_scale_print != scales[0]) {
-	    // Don't store "One Page" for use when exporting.
+	    // Don't store "One page" for use when exporting.
 	    default_scale_export = default_scale_print;
 	}
     }
@@ -781,6 +808,8 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	    m_scalebox->Show(bool(mask & SCALE));
 	    m_viewbox->Show(bool(mask & ORIENTABLE));
 	    GetSizer()->Layout();
+	    // Force the window to resize to match the updated layout.
+	    if (control_id) SetSizerAndFit(GetSizer());
 	    if (control_id == svx_FORMAT) {
 		wxConfigBase * cfg = wxConfigBase::Get();
 		cfg->Write(wxT("export_format"), formats[new_filter_idx]);
@@ -795,7 +824,17 @@ svxPrintDlg::SomethingChanged(int control_id) {
 	RecalcBounds();
 
 	if (m_scale) {
-	    if (!(m_scale->GetValue()).ToDouble(&(m_layout.Scale)) ||
+	    // Remove the comment part (e.g. `(1":20')`).
+	    wxString value = m_scale->GetValue();
+	    auto comment = value.find('(');
+	    if (comment != value.npos) value.resize(comment);
+	    // Strip spaces as trailing spaces cause wxWidgets to fail to
+	    // parse.
+	    value.Replace(" ", "");
+	    // Convert `,` to `.` and parse with ToCDouble() so either decimal
+	    // separator works regardless of locale settings.
+	    value.Replace(",", ".");
+	    if (!value.ToCDouble(&(m_layout.Scale)) ||
 		m_layout.Scale == 0.0) {
 		m_layout.pick_scale(1, 1);
 	    }
@@ -910,8 +949,8 @@ svxPrintDlg::RecalcBounds()
 		// get the coordinates of this vertex
 		const XSect & pt_v = *i++;
 		if (m_layout.tilt == 0.0) {
-		    Double u = pt_v.GetU();
-		    Double d = pt_v.GetD();
+		    double u = pt_v.GetU();
+		    double d = pt_v.GetD();
 
 		    if (u >= 0 || d >= 0) {
 			if (filter && !filter->CheckVisible(pt_v.GetLabel()))
@@ -999,8 +1038,8 @@ svxPrintDlg::RecalcBounds()
 		    // Scale to unit vectors in the LRUD plane.
 		    right.normalise();
 
-		    Double l = pt_v.GetL();
-		    Double r = pt_v.GetR();
+		    double l = pt_v.GetL();
+		    double r = pt_v.GetR();
 
 		    if (l >= 0 || r >= 0) {
 			if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
@@ -1078,12 +1117,9 @@ static const char *fontname = "Arial", *fontname_labels = "Arial";
 
 svxPrintout::svxPrintout(MainFrm *mainfrm_, layout *l,
 			 wxPageSetupDialogData *data, const wxString & title)
-    : wxPrintout(title), font_labels(NULL), font_default(NULL),
-      scan_for_blank_pages(false)
+    : wxPrintout(title),
+      mainfrm(mainfrm_), m_layout(l), m_data(data)
 {
-    mainfrm = mainfrm_;
-    m_layout = l;
-    m_data = data;
 }
 
 void
@@ -1385,13 +1421,13 @@ svxPrintout::drawticks(int tsize, int x, int y)
    long i;
    int s = tsize * 4;
    int o = s / 8;
-   bool fAtCorner = fFalse;
+   bool fAtCorner = false;
    pdc->SetPen(*pen_frame);
    if (x == 0 && m_layout->Border) {
       /* solid left border */
       MoveTo(clip.x_min, clip.y_min);
       DrawTo(clip.x_min, clip.y_max);
-      fAtCorner = fTrue;
+      fAtCorner = true;
    } else {
       if (x > 0 || y > 0) {
 	 MoveTo(clip.x_min, clip.y_min);
@@ -1409,7 +1445,7 @@ svxPrintout::drawticks(int tsize, int x, int y)
       if (x > 0 || y < m_layout->pagesY - 1) {
 	 MoveTo(clip.x_min, clip.y_max - tsize);
 	 DrawTo(clip.x_min, clip.y_max);
-	 fAtCorner = fTrue;
+	 fAtCorner = true;
       }
    }
 
@@ -1417,7 +1453,7 @@ svxPrintout::drawticks(int tsize, int x, int y)
       /* solid top border */
       if (!fAtCorner) MoveTo(clip.x_min, clip.y_max);
       DrawTo(clip.x_max, clip.y_max);
-      fAtCorner = fTrue;
+      fAtCorner = true;
    } else {
       if (y < m_layout->pagesY - 1 || x > 0) {
 	 if (!fAtCorner) MoveTo(clip.x_min, clip.y_max);
@@ -1435,9 +1471,9 @@ svxPrintout::drawticks(int tsize, int x, int y)
       if (y < m_layout->pagesY - 1 || x < m_layout->pagesX - 1) {
 	 MoveTo(clip.x_max - tsize, clip.y_max);
 	 DrawTo(clip.x_max, clip.y_max);
-	 fAtCorner = fTrue;
+	 fAtCorner = true;
       } else {
-	 fAtCorner = fFalse;
+	 fAtCorner = false;
       }
    }
 
@@ -1445,7 +1481,7 @@ svxPrintout::drawticks(int tsize, int x, int y)
       /* solid right border */
       if (!fAtCorner) MoveTo(clip.x_max, clip.y_max);
       DrawTo(clip.x_max, clip.y_min);
-      fAtCorner = fTrue;
+      fAtCorner = true;
    } else {
       if (x < m_layout->pagesX - 1 || y < m_layout->pagesY - 1) {
 	 if (!fAtCorner) MoveTo(clip.x_max, clip.y_max);
@@ -1463,9 +1499,9 @@ svxPrintout::drawticks(int tsize, int x, int y)
       if (x < m_layout->pagesX - 1 || y > 0) {
 	 MoveTo(clip.x_max, clip.y_min + tsize);
 	 DrawTo(clip.x_max, clip.y_min);
-	 fAtCorner = fTrue;
+	 fAtCorner = true;
       } else {
-	 fAtCorner = fFalse;
+	 fAtCorner = false;
       }
    }
 
@@ -1767,12 +1803,10 @@ svxPrintout::DrawTo(long x, long y)
     if (!scan_for_blank_pages) {
 	pdc->DrawLine(x_p, y_p, x_t, y_t);
     } else {
-	if (check_intersection(x_p, y_p)) fBlankPage = fFalse;
+	if (check_intersection(x_p, y_p)) fBlankPage = false;
     }
 }
 
-#define POINTS_PER_INCH 72.0
-#define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 #define PWX_CROSS_SIZE (int)(2 * m_layout->scX / POINTS_PER_MM)
 
 void
@@ -1789,7 +1823,7 @@ svxPrintout::DrawCross(long x, long y)
 	   x - PWX_CROSS_SIZE < clip.x_max) ||
 	  (y + PWX_CROSS_SIZE > clip.y_min &&
 	   y - PWX_CROSS_SIZE < clip.y_max)) {
-	 fBlankPage = fFalse;
+	 fBlankPage = false;
       }
    }
 }
@@ -1809,7 +1843,7 @@ svxPrintout::WriteString(const wxString & s)
 	pdc->GetTextExtent(s, &w, &h);
 	if ((y_t + h > 0 && y_t - h < clip.y_max - clip.y_min) ||
 	    (x_t < clip.x_max - clip.x_min && x_t + w > 0)) {
-	    fBlankPage = fFalse;
+	    fBlankPage = false;
 	}
     }
     pdc->SetUserScale(xsc, ysc);
@@ -2090,8 +2124,8 @@ svxPrintout::PlotLR(const vector<XSect> & centreline)
 	// Scale to unit vectors in the LRUD plane.
 	right.normalise();
 
-	Double l = pt_v.GetL();
-	Double r = pt_v.GetR();
+	double l = pt_v.GetL();
+	double r = pt_v.GetR();
 
 	if (l >= 0 || r >= 0) {
 	    if (!filter || filter->CheckVisible(pt_v.GetLabel())) {
@@ -2175,8 +2209,8 @@ svxPrintout::PlotUD(const vector<XSect> & centreline)
 	// get the coordinates of this vertex
 	const XSect & pt_v = *i++;
 
-	Double u = pt_v.GetU();
-	Double d = pt_v.GetD();
+	double u = pt_v.GetU();
+	double d = pt_v.GetD();
 
 	if (u >= 0 || d >= 0) {
 	    if (filter && !filter->CheckVisible(pt_v.GetLabel()))

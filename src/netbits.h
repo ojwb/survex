@@ -70,7 +70,7 @@ char *sprint_prefix(const prefix *ptr);
 void fprint_prefix(FILE *fh, const prefix *ptr);
 
 /* r = ab ; r,a,b are variance matrices */
-void mulss(var *r, /*const*/ svar *a, /*const*/ svar *b);
+void mulss(var *r, const svar *a, const svar *b);
 
 #ifdef NO_COVARIANCES
 /* In the NO_COVARIANCES case, v and s are the same so we only need one
@@ -78,35 +78,35 @@ void mulss(var *r, /*const*/ svar *a, /*const*/ svar *b);
 # define smulvs(R,A,B) mulss(R,A,B)
 #else
 /* r = ab ; r,a,b are variance matrices */
-void smulvs(svar *r, /*const*/ var *a, /*const*/ svar *b);
+void smulvs(svar *r, const var *a, const svar *b);
 #endif
 
 /* r = ab ; r,b delta vectors; a variance matrix */
-void mulsd(delta *r, /*const*/ svar *a, /*const*/ delta *b);
+void mulsd(delta *r, const svar *a, const delta *b);
 
 /* r = ca ; r,a variance matrices; c real scaling factor  */
-void mulsc(svar *r, /*const*/ svar *a, real c);
+void mulsc(svar *r, const svar *a, real c);
 
 /* r = a + b ; r,a,b delta vectors */
-void adddd(delta *r, /*const*/ delta *a, /*const*/ delta *b);
+void adddd(delta *r, const delta *a, const delta *b);
 
 /* r = a - b ; r,a,b delta vectors */
-void subdd(delta *r, /*const*/ delta *a, /*const*/ delta *b);
+void subdd(delta *r, const delta *a, const delta *b);
 
 /* r = a + b ; r,a,b variance matrices */
-void addss(svar *r, /*const*/ svar *a, /*const*/ svar *b);
+void addss(svar *r, const svar *a, const svar *b);
 
 /* r = a - b ; r,a,b variance matrices */
-void subss(svar *r, /*const*/ svar *a, /*const*/ svar *b);
+void subss(svar *r, const svar *a, const svar *b);
 
 /* r = (b^-1)a ; r,a delta vectors; b variance matrix */
-void divds(delta *r, /*const*/ delta *a, /*const*/ svar *b);
+void divds(delta *r, const delta *a, const svar *b);
 
 /* inv = v^-1 ; inv,v variance matrices */
-int invert_svar(svar *inv, /*const*/ svar *v);
+int invert_svar(svar *inv, const svar *v);
 
 /* Is v zero? */
-bool fZeros(/*const*/ svar *v);
+bool fZeros(const svar *v);
 
 #define PR "%8.6f"
 

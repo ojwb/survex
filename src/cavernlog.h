@@ -1,7 +1,7 @@
 /* cavernlog.h
  * Run cavern inside an Aven window
  *
- * Copyright (C) 2005,2006,2010,2015,2016 Olly Betts
+ * Copyright (C) 2005-2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,52 +22,55 @@
 #define SURVEX_CAVERNLOG_H
 
 #include "wx.h"
-#include <wx/html/htmlwin.h>
 #include <wx/process.h>
 
 #include <string>
+#include <vector>
 
-// We probably want to use a thread if we can - that way we can use a blocking
-// read from cavern rather than busy-waiting via idle events.
-#ifdef wxUSE_THREADS
-# define CAVERNLOG_USE_THREADS
-#endif
-
-#ifdef CAVERNLOG_USE_THREADS
-class CavernThread;
-#endif
 class MainFrm;
 
-class CavernLogWindow : public wxHtmlWindow {
-#ifdef CAVERNLOG_USE_THREADS
-    friend class CavernThread;
-#endif
-
+class CavernLogWindow : public wxScrolledWindow {
     wxString filename;
 
     MainFrm * mainfrm;
 
-    wxProcess * cavern_out;
-    wxString cur;
-    wxString source_line;
-    const wxChar * highlight;
-    int link_count;
-    unsigned char buf[1024];
-    unsigned char * end;
+    wxProcess * cavern_out = nullptr;
+    size_t ptr = 0;
+    bool expecting_caret_line = false;
+    int info_count = 0;
+    int link_count = 0;
 
-    bool init_done;
+    bool init_done = false;
 
     wxString survey;
 
+    wxTimer timer;
+
     std::string log_txt;
 
-#ifdef CAVERNLOG_USE_THREADS
-    void stop_thread();
+    enum { LOG_NONE, LOG_ERROR, LOG_WARNING, LOG_INFO };
 
-    CavernThread * thread;
+    class LineInfo {
+      public:
+	unsigned start_offset = 0;
+	unsigned len = 0;
+	unsigned link_len = 0;
+	unsigned link_pixel_width = 0;
+	unsigned colour = LOG_NONE;
+	unsigned colour_start = 0;
+	unsigned colour_len = 0;
 
-    wxCriticalSection thread_lock;
-#endif
+	LineInfo() { }
+
+	explicit LineInfo(unsigned start_offset_)
+	    : start_offset(start_offset_) { }
+    };
+
+    std::vector<LineInfo> line_info;
+
+    wxButton* save_button = nullptr;
+    wxButton* reprocess_button = nullptr;
+    wxButton* ok_button = nullptr;
 
   public:
     CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, wxWindow * parent);
@@ -77,7 +80,9 @@ class CavernLogWindow : public wxHtmlWindow {
     /** Start to process survey data in file. */
     void process(const wxString &file);
 
-    virtual void OnLinkClicked(const wxHtmlLinkInfo &link);
+    void OnMouseMove(wxMouseEvent& e);
+
+    void OnLinkClicked(wxMouseEvent& e);
 
     void OnReprocess(wxCommandEvent &);
 
@@ -85,13 +90,23 @@ class CavernLogWindow : public wxHtmlWindow {
 
     void OnOK(wxCommandEvent &);
 
-    void OnCavernOutput(wxCommandEvent & e);
+    void ProcessCavernOutput();
 
-#ifdef CAVERNLOG_USE_THREADS
-    void OnClose(wxCloseEvent &);
-#else
-    void OnIdle(wxIdleEvent &);
-#endif
+    void OnCavernOutput(wxCommandEvent&) {
+	ProcessCavernOutput();
+	Update();
+	timer.StartOnce();
+    }
+
+    void CheckForOutput(bool immediate = false);
+
+    void OnIdle(wxIdleEvent&) { CheckForOutput(); }
+
+    void OnTimer(wxTimerEvent&) { CheckForOutput(); }
+
+    int OnPaintButton(wxButton* b, int x);
+
+    void OnPaint(wxPaintEvent&);
 
     void OnEndProcess(wxProcessEvent & e);
 

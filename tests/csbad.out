@@ -10,7 +10,7 @@
      ^~~~~~~~
 ./csbad.svx:6:11: error: End of line not blank
  *cs IJTSK 03
-           ^
+           ^~
 ./csbad.svx:7:5: error: Unknown coordinate system
  *cs IJTSK04
      ^~~~~~~
@@ -50,22 +50,37 @@
 ./csbad.svx:19:5: error: Unknown coordinate system
  *cs UTM61S
      ^~~~~~
-./csbad.svx:20:12: error: Invalid coordinate system: unknown projection id
+./csbad.svx:20:5: error: Unknown coordinate system
+ *cs lat-l0ng
+     ^~~~~~~~
+./csbad.svx:21:5: error: Unknown coordinate system
+ *cs s-m3rc
+     ^~~~~~
+./csbad.svx:22:12: error: Invalid coordinate system: Invalid value for an argument
  *cs custom "+proj=ection"
             ^~~~~~~~~~~~~~
-./csbad.svx:21:9: error: Unknown coordinate system
+./csbad.svx:23:12: error: Invalid coordinate system: Invalid value for an argument
+ *cs custom "+proj=ection +with +spaces"
+            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+./csbad.svx:24:9: error: Unknown coordinate system
  *cs out lat-long
          ^~~~~~~~
-./csbad.svx:22:9: error: Coordinate system unsuitable for output
+./csbad.svx:25:9: error: Coordinate system unsuitable for output
  *cs out long-lat
          ^~~~~~~~
-./csbad.svx:23:9: error: Coordinate system unsuitable for output
+./csbad.svx:26:9: error: Coordinate system unsuitable for output
  *cs out jtsk
          ^~~~
-./csbad.svx:24:9: error: Coordinate system unsuitable for output
+./csbad.svx:27:9: error: Coordinate system unsuitable for output
  *cs out jtsk03
          ^~~~~~
-./csbad.svx:32: error: Failed to convert coordinates: latitude or longitude exceeded limits
+./csbad.svx:28:9: error: Coordinate system unsuitable for output
+ *cs out EPSG:4326
+         ^~~~~~~~~
+./csbad.svx:29:9: error: Coordinate system unsuitable for output
+ *cs out ESRI:104305
+         ^~~~~~~~~~~
+./csbad.svx:37: error: Failed to convert coordinates: Point outside of projection domain
  *fix 2 reference 179 -89 1000
 
 Removing trailing traverses...
@@ -89,4 +104,4 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
    2 0-nodes.
-There were 0 warning(s) and 24 error(s) - no output files produced.
+There were 0 warning(s) and 29 error(s) - no output files produced.

@@ -1,0 +1,7 @@
+; pos=fail warn=0 error=5
+*fix A reference 0 0 0
+*Case mixed
+*CASE tol0wer
+*case to lower
+*case tolower toupper
+*case 42

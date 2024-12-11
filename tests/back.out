@@ -1,7 +1,9 @@
-./back.svx:16: warning: CLINO reading and BACKCLINO reading disagree by 4grd
+./back.svx:16:21: warning: CLINO reading and BACKCLINO reading disagree by 4grd
  1 Y 10 000  -   02  02
-./back.svx:17: warning: CLINO reading and BACKCLINO reading disagree by 2.5grd
+                     ^~
+./back.svx:17:23: warning: CLINO reading and BACKCLINO reading disagree by 2.5grd
  1 Z 10 000  -  -01.25 -01.25
+                       ^~~~~~
 
 Removing trailing traverses...
 
@@ -17,15 +19,14 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 15 survey stations, joined by 14 legs.
-There is 1 loop.
-Survey has 2 connected components.
-Total length of survey legs =   88.00m (  88.00m adjusted)
-Total plan length of survey legs =   62.79m
-Total vertical length of survey legs =   40.50m
-Vertical range = 36.50m (from max at 36.00m to e at -0.50m)
-North-South range = 12.00m (from max at 12.00m to 1 at 0.00m)
-East-West range = 9.00m (from max at 9.00m to z at 0.00m)
-  14 1-nodes.
-   1 14-node.
+Survey contains 16 survey stations, joined by 15 legs.
+There are 0 loops.
+Total length of survey legs =   89.73m (  89.73m adjusted)
+Total plan length of survey legs =   64.21m
+Total vertical length of survey legs =   41.50m
+Vertical range = 37.00m (from max at 36.00m to min at -1.00m)
+North-South range = 13.00m (from max at 12.00m to min at -1.00m)
+East-West range = 10.00m (from max at 9.00m to min at -1.00m)
+  15 1-nodes.
+   1 15-node.
 There were 2 warning(s).

@@ -3,10 +3,10 @@
        ^~~~~~~~~~
 ./cmd_set_bad.svx:11:1: error: End of line not blank
  ; comment ; error
- ^
+ ^~~~~~~~~~~~~~~~~
 ./cmd_set_bad.svx:13:1: error: End of line not blank
  *end ; error
- ^
+ ^~~~~~~~~~~~
 ./cmd_set_bad.svx:20:21: error: Expecting numeric field, found ".0"
  *fix+(2)+reference+1.0+2/0+3 ; error
                      ^~
@@ -25,6 +25,12 @@
 ./cmd_set_bad.svx:35:6: warning: ROOT is deprecated
  *set ROOT $
       ^~~~
+./cmd_set_bad.svx:36:6: error: Unknown character class "names1"
+ *set names1
+      ^~~~~~
+./cmd_set_bad.svx:37:6: error: Unknown character class "names2"
+ *set names2 _-
+      ^~~~~~
 
 Removing trailing traverses...
 
@@ -45,6 +51,6 @@ There are 0 loops.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
-./cmd_set_bad.svx:30: warning: Station "bar.1" referred to by *entrance or *export but never used
+./cmd_set_bad.svx:30: warning: Station "bar.1" referred to by *export but never used
    1 0-node.
-There were 2 warning(s) and 8 error(s) - no output files produced.
+There were 2 warning(s) and 10 error(s) - no output files produced.

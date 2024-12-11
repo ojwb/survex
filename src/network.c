@@ -1,6 +1,6 @@
 /* network.c
  * Survex network reduction - find patterns and apply network reductions
- * Copyright (C) 1991-2002,2005 Olly Betts
+ * Copyright (C) 1991-2002,2005,2024 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,7 @@
 #define DUMP_NETWORK 1
 #endif
 
-#ifdef HAVE_CONFIG_H
-# include <config.h>
-#endif
+#include <config.h>
 
 #include "validate.h"
 #include "debug.h"
@@ -35,34 +33,20 @@
 #include "network.h"
 #include "out.h"
 
-/* type field isn't vital - join3 is unused except for deltastar, so
- * we can set its value to indicate which type this is:
- * join3 == NULL for noose, join3 == join1 for ||, otherwise D* */
-#ifdef EXPLICIT_STACKRED_TYPE
-#define SET_NOOSE(SR) (SR)->type = 1
-#define IS_NOOSE(SR) ((SR)->type == 1)
-#define SET_PARALLEL(SR) (SR)->type = 0
-#define IS_PARALLEL(SR) ((SR)->type == 0)
-#define SET_DELTASTAR(SR) (SR)->type = 2
-#define IS_DELTASTAR(SR) ((SR)->type == 2)
-#else
-#define IS_NOOSE(SR) ((SR)->join3 == NULL)
-#define SET_NOOSE(SR) (SR)->join3 = NULL
-#define IS_PARALLEL(SR) ((SR)->join3 == (SR)->join1)
-#define SET_PARALLEL(SR) (SR)->join3 = (SR)->join1
-#define IS_DELTASTAR(SR) (!IS_NOOSE(SR) && !IS_PARALLEL(SR))
-#define SET_DELTASTAR(SR) NOP
-#endif
+typedef struct reduction {
+   struct reduction *next;
+   enum {
+       TYPE_PARALLEL,
+       TYPE_LOLLIPOP,
+       TYPE_DELTASTAR,
+   } type;
+   linkfor* join[];
+} reduction;
 
-typedef struct StackRed {
-   struct Link *join1, *join2, *join3;
-#ifdef EXPLICIT_STACKRED_TYPE
-   int type; /* 1 => noose, 0 => parallel legs, 2 => delta-star */
-#endif
-   struct StackRed *next;
-} stackRed;
+#define allocate_reduction(N) osmalloc(sizeof(reduction) + (N) * sizeof(linkfor*))
 
-static stackRed *ptrRed; /* Ptr to TRaverse linked list for C*-*< , -*=*- */
+// Head of linked list of reductions.
+static reduction *reduction_stack;
 
 /* can be altered by -z<letters> on command line */
 unsigned long optimize = BITA('l') | BITA('p') | BITA('d');
@@ -73,42 +57,66 @@ remove_subnets(void)
 {
    node *stn, *stn2, *stn3, *stn4;
    int dirn, dirn2, dirn3, dirn4;
-   stackRed *trav;
+   reduction *trav;
    linkfor *newleg, *newleg2;
-   bool fMore = fTrue;
+   bool fMore = true;
 
-   ptrRed = NULL;
+   reduction_stack = NULL;
 
    out_current_action(msg(/*Simplifying network*/129));
 
    while (fMore) {
-      fMore = fFalse;
+      fMore = false;
       if (optimize & BITA('l')) {
 #if PRINT_NETBITS
 	 printf("replacing lollipops\n");
 #endif
-	 /*      _
-	  *     ( )
-	  *      * stn
-	  *      |
-	  *      * stn2
-	  * stn /|
-	  *  4 * * stn3  -->  stn4 *-* stn3
-	  *    : :		   : :
-	  */
 	 /* NB can have non-fixed 0 nodes */
 	 FOR_EACH_STN(stn, stnlist) {
-	    if (!fixed(stn) && three_node(stn)) {
+	    if (three_node(stn)) {
 	       dirn = -1;
 	       if (stn->leg[1]->l.to == stn) dirn++;
 	       if (stn->leg[0]->l.to == stn) dirn += 2;
 	       if (dirn < 0) continue;
 
 	       stn2 = stn->leg[dirn]->l.to;
-	       if (fixed(stn2)) continue;
+	       if (fixed(stn2)) {
+		   /*    _
+		    *   ( )
+		    *    * stn
+		    *    |
+		    *    * stn2 (fixed)
+		    *    : (may have other connections)
+		    *
+		    * The leg forming the "stick" of the lollipop is
+		    * articulating so we can just fix stn with coordinates
+		    * calculated by adding or subtracting the leg's vector.
+		    */
+		   linkfor *leg = stn->leg[dirn];
+		   linkfor *rev_leg = reverse_leg(leg);
+		   leg->l.reverse |= FLAG_ARTICULATION;
+		   rev_leg->l.reverse |= FLAG_ARTICULATION;
+		   if (data_here(leg)) {
+		       subdd(&POSD(stn), &POSD(stn2), &leg->d);
+		   } else {
+		       adddd(&POSD(stn), &POSD(stn2), &rev_leg->d);
+		   }
+		   remove_stn_from_list(&stnlist, stn);
+		   add_stn_to_list(&fixedlist, stn);
+		   continue;
+	       }
 
 	       SVX_ASSERT(three_node(stn2));
 
+	       /*        _
+		*       ( )
+		*        * stn
+		*        |
+		*        * stn2
+		*       / \
+		* stn4 *   * stn3  -->  stn4 *---* stn3
+		*      :   :                 :   :
+		*/
 	       dirn2 = reverse_leg_dirn(stn->leg[dirn]);
 	       dirn2 = (dirn2 + 1) % 3;
 	       stn3 = stn2->leg[dirn2]->l.to;
@@ -116,8 +124,10 @@ remove_subnets(void)
 
 	       dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
 
-	       trav = osnew(stackRed);
-	       newleg2 = (linkfor*)osnew(linkrev);
+	       trav = allocate_reduction(2);
+	       trav->type = TYPE_LOLLIPOP;
+
+	       newleg2 = (linkfor*)osnew(linkcommon);
 
 	       newleg = copy_link(stn3->leg[dirn3]);
 
@@ -125,7 +135,7 @@ remove_subnets(void)
 	       stn4 = stn2->leg[dirn2]->l.to;
 	       dirn4 = reverse_leg_dirn(stn2->leg[dirn2]);
 #if 0
-	       printf("Noose found with stn...stn4 = \n");
+	       printf("Lollipop found with stn...stn4 = \n");
 	       print_prefix(stn->name); putnl();
 	       print_prefix(stn2->name); putnl();
 	       print_prefix(stn3->name); putnl();
@@ -138,25 +148,24 @@ remove_subnets(void)
 	       remove_stn_from_list(&stnlist, stn);
 	       remove_stn_from_list(&stnlist, stn2);
 
-	       /* stack noose and replace with a leg between stn3 and stn4 */
-	       trav->join1 = stn3->leg[dirn3];
+	       /* stack lollipop and replace with a leg between stn3 and stn4 */
+	       trav->join[0] = stn3->leg[dirn3];
 	       newleg->l.to = stn4;
 	       newleg->l.reverse = dirn4 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 
-	       trav->join2 = stn4->leg[dirn4];
+	       trav->join[1] = stn4->leg[dirn4];
 	       newleg2->l.to = stn3;
 	       newleg2->l.reverse = dirn3 | FLAG_REPLACEMENTLEG;
 
 	       stn3->leg[dirn3] = newleg;
 	       stn4->leg[dirn4] = newleg2;
 
-	       trav->next = ptrRed;
-	       SET_NOOSE(trav);
+	       trav->next = reduction_stack;
 #if PRINT_NETBITS
-	       printf("remove noose\n");
+	       printf("remove lollipop\n");
 #endif
-	       ptrRed = trav;
-	       fMore = fTrue;
+	       reduction_stack = trav;
+	       fMore = true;
 	    }
 	 }
       }
@@ -167,17 +176,17 @@ remove_subnets(void)
 #endif
 	 FOR_EACH_STN(stn, stnlist) {
 	    /*
-	     *  :
-	     *  * stn3
-	     *  |	     :
-	     *  * stn	     * stn3
-	     * ( )      ->   |
-	     *  * stn2       * stn4
-	     *  |	     :
-	     *  * stn4
-	     *  :
+	     *  :            :
+	     *  * stn3       * stn3
+	     *  |            |
+	     *  * stn        |
+	     * ( )      -->  |
+	     *  * stn2       |
+	     *  |            |
+	     *  * stn4       * stn4
+	     *  :            :
 	     */
-	    if (!fixed(stn) && three_node(stn)) {
+	    if (three_node(stn)) {
 	       stn2 = stn->leg[0]->l.to;
 	       if (stn2 == stn->leg[1]->l.to) {
 		  dirn = 2;
@@ -189,8 +198,8 @@ remove_subnets(void)
 		  dirn = 0;
 	       }
 
-	       /* stn == stn2 => noose */
-	       if (fixed(stn2) || stn == stn2) continue;
+	       /* stn == stn2 => lollipop */
+	       if (stn == stn2 || fixed(stn2)) continue;
 
 	       SVX_ASSERT(three_node(stn2));
 
@@ -205,7 +214,8 @@ remove_subnets(void)
 	       stn4 = stn2->leg[dirn2]->l.to;
 	       dirn4 = reverse_leg_dirn(stn2->leg[dirn2]);
 
-	       trav = osnew(stackRed);
+	       trav = allocate_reduction(2);
+	       trav->type = TYPE_PARALLEL;
 
 	       newleg = copy_link(stn->leg[(dirn + 1) % 3]);
 	       /* use newleg2 for scratch */
@@ -250,7 +260,7 @@ remove_subnets(void)
 #endif
 		 }
 	       osfree(newleg2);
-	       newleg2 = (linkfor*)osnew(linkrev);
+	       newleg2 = (linkfor*)osnew(linkcommon);
 
 	       addto_link(newleg, stn2->leg[dirn2]);
 	       addto_link(newleg, stn3->leg[dirn3]);
@@ -270,31 +280,30 @@ remove_subnets(void)
 	       remove_stn_from_list(&stnlist, stn2);
 
 	       /* stack parallel and replace with a leg between stn3 and stn4 */
-	       trav->join1 = stn3->leg[dirn3];
+	       trav->join[0] = stn3->leg[dirn3];
 	       newleg->l.to = stn4;
 	       newleg->l.reverse = dirn4 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 
-	       trav->join2 = stn4->leg[dirn4];
+	       trav->join[1] = stn4->leg[dirn4];
 	       newleg2->l.to = stn3;
 	       newleg2->l.reverse = dirn3 | FLAG_REPLACEMENTLEG;
 
 	       stn3->leg[dirn3] = newleg;
 	       stn4->leg[dirn4] = newleg2;
 
-	       trav->next = ptrRed;
-	       SET_PARALLEL(trav);
+	       trav->next = reduction_stack;
 #if PRINT_NETBITS
 	       printf("remove parallel\n");
 #endif
-	       ptrRed = trav;
-	       fMore = fTrue;
+	       reduction_stack = trav;
+	       fMore = true;
 	    }
 	 }
       }
 
       if (optimize & BITA('d')) {
 	 node *stn5, *stn6;
-	 int dirn5, dirn6, dirn0;
+	 int dirn5, dirn6;
 	 linkfor *legAB, *legBC, *legCA;
 #if PRINT_NETBITS
 	 printf("replacing deltas with stars\n");
@@ -302,99 +311,63 @@ remove_subnets(void)
 	 FOR_EACH_STN(stn, stnlist) {
 	    /*    printf("*");*/
 	    /*
-	     *		:
-	     *		* stn5		  :
-	     *		|		  * stn5
-	     *		* stn2		  |
-	     *	       / \	  ->	  O stnZ
-	     *    stn *---* stn3	 / \
-	     *       /     \       stn4 *   * stn6
-	     * stn4 *       * stn6      :   :
-	     *      :       :
+	     *          :                     :
+	     *          * stn5                * stn5
+	     *          |                     |
+	     *          * stn2                |
+	     *         / \        -->         O stnZ
+	     *        |   |                  / \
+	     *    stn *---* stn3            /   \
+	     *       /     \               /     \
+	     * stn4 *       * stn6   stn4 *       * stn6
+	     *      :       :             :       :
 	     */
-	    if (!fixed(stn) && three_node(stn)) {
-	       for (dirn0 = 0; ; dirn0++) {
-		  if (dirn0 >= 3) goto nodeltastar; /* continue outer loop */
-		  dirn = dirn0;
-		  stn2 = stn->leg[dirn]->l.to;
-		  if (fixed(stn2) || stn2 == stn) continue;
-		  dirn2 = reverse_leg_dirn(stn->leg[dirn]);
-		  dirn2 = (dirn2 + 1) % 3;
-		  stn3 = stn2->leg[dirn2]->l.to;
-		  if (fixed(stn3) || stn3 == stn || stn3 == stn2)
-		     goto nextdirn2;
-		  dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
-		  dirn3 = (dirn3 + 1) % 3;
-		  if (stn3->leg[dirn3]->l.to == stn) {
-		     legAB = copy_link(stn->leg[dirn]);
-		     legBC = copy_link(stn2->leg[dirn2]);
-		     legCA = copy_link(stn3->leg[dirn3]);
-		     dirn = 0 + 1 + 2 - dirn - reverse_leg_dirn(stn3->leg[dirn3]);
-		     dirn2 = (dirn2 + 1) % 3;
-		     dirn3 = (dirn3 + 1) % 3;
-		  } else if (stn3->leg[(dirn3 + 1) % 3]->l.to == stn) {
-		     legAB = copy_link(stn->leg[dirn]);
-		     legBC = copy_link(stn2->leg[dirn2]);
-		     legCA = copy_link(stn3->leg[(dirn3 + 1) % 3]);
-		     dirn = (0 + 1 + 2 - dirn
-			     - reverse_leg_dirn(stn3->leg[(dirn3 + 1) % 3]));
-		     dirn2 = (dirn2 + 1) % 3;
-		     break;
-		  } else {
-		     nextdirn2:;
-		     dirn2 = (dirn2 + 1) % 3;
-		     stn3 = stn2->leg[dirn2]->l.to;
-		     if (fixed(stn3) || stn3 == stn || stn3 == stn2) continue;
-		     dirn3 = reverse_leg_dirn(stn2->leg[dirn2]);
-		     dirn3 = (dirn3 + 1) % 3;
-		     if (stn3->leg[dirn3]->l.to == stn) {
-			legAB = copy_link(stn->leg[dirn]);
-			legBC = copy_link(stn2->leg[dirn2]);
-			legCA = copy_link(stn3->leg[dirn3]);
-			dirn = (0 + 1 + 2 - dirn
-				- reverse_leg_dirn(stn3->leg[dirn3]));
-			dirn2 = (dirn2 + 2) % 3;
-			dirn3 = (dirn3 + 1) % 3;
-			break;
-		     } else if (stn3->leg[(dirn3 + 1) % 3]->l.to == stn) {
-			legAB = copy_link(stn->leg[dirn]);
-			legBC = copy_link(stn2->leg[dirn2]);
-			legCA = copy_link(stn3->leg[(dirn3 + 1) % 3]);
-			dirn = (0 + 1 + 2 - dirn
-				- reverse_leg_dirn(stn3->leg[(dirn3 + 1) % 3]));
-			dirn2 = (dirn2 + 2) % 3;
-			break;
-		     }
+	    if (three_node(stn)) {
+	       for (int dirn12 = 0; dirn12 <= 2; dirn12++) {
+		  stn2 = stn->leg[dirn12]->l.to;
+		  if (stn2 == stn || fixed(stn2)) continue;
+		  SVX_ASSERT(three_node(stn2));
+		  int dirn13 = (dirn12 + 1) % 3;
+		  stn3 = stn->leg[dirn13]->l.to;
+		  if (stn3 == stn || stn3 == stn2 || fixed(stn3)) continue;
+		  SVX_ASSERT(three_node(stn3));
+		  int dirn23 = reverse_leg_dirn(stn->leg[dirn12]);
+		  dirn23 = (dirn23 + 1) % 3;
+		  if (stn2->leg[dirn23]->l.to != stn3) {
+		      dirn23 = (dirn23 + 1) % 3;
+		      if (stn2->leg[dirn23]->l.to != stn3) {
+			  continue;
+		      }
 		  }
-	       }
-
-	       SVX_ASSERT(three_node(stn2));
-	       SVX_ASSERT(three_node(stn3));
-
-	       stn4 = stn->leg[dirn]->l.to;
-	       stn5 = stn2->leg[dirn2]->l.to;
-	       stn6 = stn3->leg[dirn3]->l.to;
-
-	       if (stn4 == stn2 || stn4 == stn3 || stn5 == stn3) break;
-
-	       dirn4 = reverse_leg_dirn(stn->leg[dirn]);
-	       dirn5 = reverse_leg_dirn(stn2->leg[dirn2]);
-	       dirn6 = reverse_leg_dirn(stn3->leg[dirn3]);
+		  legAB = copy_link(stn->leg[dirn12]);
+		  legBC = copy_link(stn2->leg[dirn23]);
+		  legCA = copy_link(stn3->leg[reverse_leg_dirn(stn->leg[dirn13])]);
+		  dirn = (0 + 1 + 2) - dirn12 - dirn13;
+		  dirn2 = (0 + 1 + 2) - dirn23 - reverse_leg_dirn(stn->leg[dirn12]);
+		  dirn3 = (0 + 1 + 2) - reverse_leg_dirn(stn->leg[dirn13]) - reverse_leg_dirn(stn2->leg[dirn23]);
+		  stn4 = stn->leg[dirn]->l.to;
+		  stn5 = stn2->leg[dirn2]->l.to;
+		  stn6 = stn3->leg[dirn3]->l.to;
+		  if (stn4 == stn2 || stn4 == stn3 || stn5 == stn3) continue;
+		  dirn4 = reverse_leg_dirn(stn->leg[dirn]);
+		  dirn5 = reverse_leg_dirn(stn2->leg[dirn2]);
+		  dirn6 = reverse_leg_dirn(stn3->leg[dirn3]);
 #if 0
-	       printf("delta-star, stn ... stn6 are:\n");
-	       (dump_node)(stn);
-	       (dump_node)(stn2);
-	       (dump_node)(stn3);
-	       (dump_node)(stn4);
-	       (dump_node)(stn5);
-	       (dump_node)(stn6);
+		  printf("delta-star, stn ... stn6 are:\n");
+		  (dump_node)(stn);
+		  (dump_node)(stn2);
+		  (dump_node)(stn3);
+		  (dump_node)(stn4);
+		  (dump_node)(stn5);
+		  (dump_node)(stn6);
 #endif
-	       SVX_ASSERT(stn4->leg[dirn4]->l.to == stn);
-	       SVX_ASSERT(stn5->leg[dirn5]->l.to == stn2);
-	       SVX_ASSERT(stn6->leg[dirn6]->l.to == stn3);
+		  SVX_ASSERT(stn4->leg[dirn4]->l.to == stn);
+		  SVX_ASSERT(stn5->leg[dirn5]->l.to == stn2);
+		  SVX_ASSERT(stn6->leg[dirn6]->l.to == stn3);
 
-	       trav = osnew(stackRed);
-		 {
+		  trav = allocate_reduction(3);
+		  trav->type = TYPE_DELTASTAR;
+		  {
 		    linkfor *legAZ, *legBZ, *legCZ;
 		    node *stnZ;
 		    prefix *nameZ;
@@ -471,7 +444,7 @@ remove_subnets(void)
 
 		    nameZ = osnew(prefix);
 		    nameZ->pos = osnew(pos);
-		    nameZ->ident = NULL;
+		    nameZ->ident.p = NULL;
 		    nameZ->shape = 3;
 		    stnZ = osnew(node);
 		    stnZ->name = nameZ;
@@ -486,9 +459,9 @@ remove_subnets(void)
 		    legBZ->l.reverse = 1 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 		    legCZ->l.to = stnZ;
 		    legCZ->l.reverse = 2 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
-		    stnZ->leg[0] = (linkfor*)osnew(linkrev);
-		    stnZ->leg[1] = (linkfor*)osnew(linkrev);
-		    stnZ->leg[2] = (linkfor*)osnew(linkrev);
+		    stnZ->leg[0] = (linkfor*)osnew(linkcommon);
+		    stnZ->leg[1] = (linkfor*)osnew(linkcommon);
+		    stnZ->leg[2] = (linkfor*)osnew(linkcommon);
 		    stnZ->leg[0]->l.to = stn4;
 		    stnZ->leg[0]->l.reverse = dirn4;
 		    stnZ->leg[1]->l.to = stn5;
@@ -499,16 +472,15 @@ remove_subnets(void)
 		    addto_link(legBZ, stn5->leg[dirn5]);
 		    addto_link(legCZ, stn6->leg[dirn6]);
 		    /* stack stuff */
-		    trav->join1 = stn4->leg[dirn4];
-		    trav->join2 = stn5->leg[dirn5];
-		    trav->join3 = stn6->leg[dirn6];
-		    trav->next = ptrRed;
-		    SET_DELTASTAR(trav);
+		    trav->join[0] = stn4->leg[dirn4];
+		    trav->join[1] = stn5->leg[dirn5];
+		    trav->join[2] = stn6->leg[dirn6];
+		    trav->next = reduction_stack;
 #if PRINT_NETBITS
 		    printf("remove delta*\n");
 #endif
-		    ptrRed = trav;
-		    fMore = fTrue;
+		    reduction_stack = trav;
+		    fMore = true;
 
 		    remove_stn_from_list(&stnlist, stn);
 		    remove_stn_from_list(&stnlist, stn2);
@@ -516,10 +488,10 @@ remove_subnets(void)
 		    stn4->leg[dirn4] = legAZ;
 		    stn5->leg[dirn5] = legBZ;
 		    stn6->leg[dirn6] = legCZ;
-		 }
-
+		  }
+		  break;
+	       }
 	    }
-	    nodeltastar:;
 	 }
       }
 
@@ -529,7 +501,6 @@ remove_subnets(void)
 extern void
 replace_subnets(void)
 {
-   stackRed *ptrOld;
    node *stn2, *stn3, *stn4;
    int dirn2, dirn3, dirn4;
 
@@ -539,41 +510,39 @@ replace_subnets(void)
 
    out_current_action(msg(/*Calculating network*/130));
 
-   while (ptrRed != NULL) {
-      /*  printf("replace_subnets() type %d\n", ptrRed->type);*/
+   while (reduction_stack != NULL) {
+      /*  printf("replace_subnets() type %d\n", reduction_stack->type);*/
 
 #if PRINT_NETBITS
       printf("replace_subnets\n");
-      if (IS_NOOSE(ptrRed)) printf("isnoose\n");
-      if (IS_PARALLEL(ptrRed)) printf("isparallel\n");
-      if (IS_DELTASTAR(ptrRed)) printf("isdelta*\n");
+      if (reduction_stack->type == TYPE_LOLLIPOP) printf("islollipop\n");
+      if (reduction_stack->type == TYPE_PARALLEL) printf("isparallel\n");
+      if (reduction_stack->type == TYPE_DELTASTAR) printf("isdelta*\n");
 #endif
 
-      if (!IS_DELTASTAR(ptrRed)) {
+      if (reduction_stack->type != TYPE_DELTASTAR) {
 	 linkfor *leg;
-	 leg = ptrRed->join1; leg = reverse_leg(leg);
+	 leg = reduction_stack->join[0]; leg = reverse_leg(leg);
 	 stn3 = leg->l.to; dirn3 = reverse_leg_dirn(leg);
-	 leg = ptrRed->join2; leg = reverse_leg(leg);
+	 leg = reduction_stack->join[1]; leg = reverse_leg(leg);
 	 stn4 = leg->l.to; dirn4 = reverse_leg_dirn(leg);
 
-	 SVX_ASSERT(fixed(stn3));
-	 SVX_ASSERT(fixed(stn4));
+	 if (!fixed(stn3) || !fixed(stn4)) {
+	     SVX_ASSERT(!fixed(stn3) && !fixed(stn4));
+	     goto skip;
+	 }
 	 SVX_ASSERT(data_here(stn3->leg[dirn3]));
       }
 
-      if (IS_NOOSE(ptrRed)) {
-	 /* noose (hanging-loop) */
+      if (reduction_stack->type == TYPE_LOLLIPOP) {
 	 node *stn;
 	 delta e;
 	 linkfor *leg;
 	 int zero;
 
-	 SVX_ASSERT(fixed(stn3));
-	 SVX_ASSERT(fixed(stn4));
-
 	 leg = stn3->leg[dirn3];
-	 stn2 = ptrRed->join1->l.to;
-	 dirn2 = reverse_leg_dirn(ptrRed->join1);
+	 stn2 = reduction_stack->join[0]->l.to;
+	 dirn2 = reverse_leg_dirn(reduction_stack->join[0]);
 
 	 zero = fZeros(&leg->v);
 	 if (!zero) {
@@ -582,11 +551,11 @@ replace_subnets(void)
 	    subdd(&tmp, &e, &leg->d);
 	    divds(&e, &tmp, &leg->v);
 	 }
-	 if (data_here(ptrRed->join1)) {
-	    adddd(&POSD(stn2), &POSD(stn3), &ptrRed->join1->d);
+	 if (data_here(reduction_stack->join[0])) {
+	    adddd(&POSD(stn2), &POSD(stn3), &reduction_stack->join[0]->d);
 	    if (!zero) {
 	       delta tmp;
-	       mulsd(&tmp, &ptrRed->join1->v, &e);
+	       mulsd(&tmp, &reduction_stack->join[0]->v, &e);
 	       adddd(&POSD(stn2), &POSD(stn2), &tmp);
 	    }
 	 } else {
@@ -597,11 +566,10 @@ replace_subnets(void)
 	       adddd(&POSD(stn2), &POSD(stn2), &tmp);
 	    }
 	 }
-	 fix(stn2);
 	 dirn2 = (dirn2 + 2) % 3; /* point back at stn again */
 	 stn = stn2->leg[dirn2]->l.to;
 #if 0
-	 printf("Replacing noose with stn...stn4 = \n");
+	 printf("Replacing lollipop with stn...stn4 = \n");
 	 print_prefix(stn->name); putnl();
 	 print_prefix(stn2->name); putnl();
 	 print_prefix(stn3->name); putnl();
@@ -612,40 +580,36 @@ replace_subnets(void)
 	 else
 	    subdd(&POSD(stn), &POSD(stn2), &reverse_leg(stn2->leg[dirn2])->d);
 
-	 /* the "rope" of the noose is a new articulation */
+	 /* The "stick" of the lollipop is a new articulation. */
 	 stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
 	 reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
 
-	 fix(stn);
-
-	 add_stn_to_list(&stnlist, stn);
-	 add_stn_to_list(&stnlist, stn2);
+	 add_stn_to_list(&fixedlist, stn);
+	 add_stn_to_list(&fixedlist, stn2);
 
 	 osfree(stn3->leg[dirn3]);
-	 stn3->leg[dirn3] = ptrRed->join1;
+	 stn3->leg[dirn3] = reduction_stack->join[0];
 	 osfree(stn4->leg[dirn4]);
-	 stn4->leg[dirn4] = ptrRed->join2;
-      } else if (IS_PARALLEL(ptrRed)) {
+	 stn4->leg[dirn4] = reduction_stack->join[1];
+      } else if (reduction_stack->type == TYPE_PARALLEL) {
 	 /* parallel legs */
 	 node *stn;
 	 delta e, e2;
 	 linkfor *leg;
 	 int dirn;
 
-	 stn = ptrRed->join1->l.to;
-	 stn2 = ptrRed->join2->l.to;
-	 SVX_ASSERT(fixed(stn3));
-	 SVX_ASSERT(fixed(stn4));
+	 stn = reduction_stack->join[0]->l.to;
+	 stn2 = reduction_stack->join[1]->l.to;
 
-	 dirn = reverse_leg_dirn(ptrRed->join1);
-	 dirn2 = reverse_leg_dirn(ptrRed->join2);
+	 dirn = reverse_leg_dirn(reduction_stack->join[0]);
+	 dirn2 = reverse_leg_dirn(reduction_stack->join[1]);
 
 	 leg = stn3->leg[dirn3];
 
 	 if (leg->l.reverse & FLAG_ARTICULATION) {
-	    ptrRed->join1->l.reverse |= FLAG_ARTICULATION;
+	    reduction_stack->join[0]->l.reverse |= FLAG_ARTICULATION;
 	    stn->leg[dirn]->l.reverse |= FLAG_ARTICULATION;
-	    ptrRed->join2->l.reverse |= FLAG_ARTICULATION;
+	    reduction_stack->join[1]->l.reverse |= FLAG_ARTICULATION;
 	    stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
 	 }
 
@@ -658,8 +622,8 @@ replace_subnets(void)
 	    divds(&e, &tmp, &leg->v);
 	 }
 
-	 if (data_here(ptrRed->join1)) {
-	    leg = ptrRed->join1;
+	 if (data_here(reduction_stack->join[0])) {
+	    leg = reduction_stack->join[0];
 	    adddd(&POSD(stn), &POSD(stn3), &leg->d);
 	 } else {
 	    leg = stn->leg[dirn];
@@ -668,8 +632,8 @@ replace_subnets(void)
 	 mulsd(&e2, &leg->v, &e);
 	 adddd(&POSD(stn), &POSD(stn), &e2);
 
-	 if (data_here(ptrRed->join2)) {
-	    leg = ptrRed->join2;
+	 if (data_here(reduction_stack->join[1])) {
+	    leg = reduction_stack->join[1];
 	    adddd(&POSD(stn2), &POSD(stn4), &leg->d);
 	 } else {
 	    leg = stn2->leg[dirn2];
@@ -677,8 +641,6 @@ replace_subnets(void)
 	 }
 	 mulsd(&e2, &leg->v, &e);
 	 subdd(&POSD(stn2), &POSD(stn2), &e2);
-	 fix(stn);
-	 fix(stn2);
 #if 0
 	 printf("Replacing parallel with stn...stn4 = \n");
 	 print_prefix(stn->name); putnl();
@@ -687,31 +649,30 @@ replace_subnets(void)
 	 print_prefix(stn4->name); putnl();
 #endif
 
-	 add_stn_to_list(&stnlist, stn);
-	 add_stn_to_list(&stnlist, stn2);
+	 add_stn_to_list(&fixedlist, stn);
+	 add_stn_to_list(&fixedlist, stn2);
 
 	 osfree(stn3->leg[dirn3]);
-	 stn3->leg[dirn3] = ptrRed->join1;
+	 stn3->leg[dirn3] = reduction_stack->join[0];
 	 osfree(stn4->leg[dirn4]);
-	 stn4->leg[dirn4] = ptrRed->join2;
-      } else if (IS_DELTASTAR(ptrRed)) {
+	 stn4->leg[dirn4] = reduction_stack->join[1];
+      } else if (reduction_stack->type == TYPE_DELTASTAR) {
 	 node *stnZ;
 	 node *stn[3];
 	 int dirn[3];
-	 linkfor *legs[3];
 	 int i;
 	 linkfor *leg;
 
-	 legs[0] = ptrRed->join1;
-	 legs[1] = ptrRed->join2;
-	 legs[2] = ptrRed->join3;
-
 	 /* work out ends as we don't bother stacking them */
-	 leg = reverse_leg(legs[0]);
+	 leg = reverse_leg(reduction_stack->join[0]);
 	 stn[0] = leg->l.to;
 	 dirn[0] = reverse_leg_dirn(leg);
 	 stnZ = stn[0]->leg[dirn[0]]->l.to;
 	 SVX_ASSERT(fixed(stnZ));
+	 if (!fixed(stnZ)) {
+	    SVX_ASSERT(!fixed(stn[0]));
+	    goto skip;
+	 }
 	 stn[1] = stnZ->leg[1]->l.to;
 	 dirn[1] = reverse_leg_dirn(stnZ->leg[1]);
 	 stn[2] = stnZ->leg[2]->l.to;
@@ -726,12 +687,12 @@ replace_subnets(void)
 	    SVX_ASSERT2(data_here(leg), "data not on leg for D*");
 	    SVX_ASSERT2(leg->l.to == stnZ, "bad sub-network for D*");
 
-	    stn2 = legs[i]->l.to;
+	    stn2 = reduction_stack->join[i]->l.to;
 
-	    if (data_here(legs[i])) {
-	       adddd(&POSD(stn2), &POSD(stn[i]), &legs[i]->d);
+	    if (data_here(reduction_stack->join[i])) {
+	       adddd(&POSD(stn2), &POSD(stn[i]), &reduction_stack->join[i]->d);
 	    } else {
-	       subdd(&POSD(stn2), &POSD(stn[i]), &reverse_leg(legs[i])->d);
+	       subdd(&POSD(stn2), &POSD(stn[i]), &reverse_leg(reduction_stack->join[i])->d);
 	    }
 
 	    if (!fZeros(&leg->v)) {
@@ -739,35 +700,35 @@ replace_subnets(void)
 	       subdd(&e, &POSD(stnZ), &POSD(stn[i]));
 	       subdd(&e, &e, &leg->d);
 	       divds(&tmp, &e, &leg->v);
-	       if (data_here(legs[i])) {
-		  mulsd(&e, &legs[i]->v, &tmp);
+	       if (data_here(reduction_stack->join[i])) {
+		  mulsd(&e, &reduction_stack->join[i]->v, &tmp);
 	       } else {
-		  mulsd(&e, &reverse_leg(legs[i])->v, &tmp);
+		  mulsd(&e, &reverse_leg(reduction_stack->join[i])->v, &tmp);
 	       }
 	       adddd(&POSD(stn2), &POSD(stn2), &e);
 	    }
-	    fix(stn2);
-	    add_stn_to_list(&stnlist, stn2);
+	    add_stn_to_list(&fixedlist, stn2);
 	    osfree(leg);
-	    stn[i]->leg[dirn[i]] = legs[i];
+	    stn[i]->leg[dirn[i]] = reduction_stack->join[i];
 	    /* transfer the articulation status of the radial legs */
 	    if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
-	       legs[i]->l.reverse |= FLAG_ARTICULATION;
-	       reverse_leg(legs[i])->l.reverse |= FLAG_ARTICULATION;
+	       reduction_stack->join[i]->l.reverse |= FLAG_ARTICULATION;
+	       reverse_leg(reduction_stack->join[i])->l.reverse |= FLAG_ARTICULATION;
 	    }
 	    osfree(stnZ->leg[i]);
 	    stnZ->leg[i] = NULL;
 	 }
 /*printf("---%f %f %f\n",POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
-	 remove_stn_from_list(&stnlist, stnZ);
+	 remove_stn_from_list(&fixedlist, stnZ);
 	 osfree(stnZ->name);
 	 osfree(stnZ);
       } else {
-	 BUG("ptrRed has unknown type");
+	 BUG("reduction_stack has unknown type");
       }
 
-      ptrOld = ptrRed;
-      ptrRed = ptrRed->next;
+skip:;
+      reduction *ptrOld = reduction_stack;
+      reduction_stack = reduction_stack->next;
       osfree(ptrOld);
    }
 }

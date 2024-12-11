@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <config.h>
+
 #include <ctype.h>
 
 #include "debug.h"
@@ -25,6 +27,9 @@
 /* some (preferably prime) number for the hashing function */
 #define HASH_PRIME 29363
 
+#ifdef __clang__
+__attribute__((no_sanitize("unsigned-integer-overflow")))
+#endif
 int
 hash_string(const char *p)
 {
@@ -35,6 +40,9 @@ hash_string(const char *p)
    return hash;
 }
 
+#ifdef __clang__
+__attribute__((no_sanitize("unsigned-integer-overflow")))
+#endif
 int
 hash_lc_string(const char *p)
 {
@@ -45,6 +53,9 @@ hash_lc_string(const char *p)
    return hash;
 }
 
+#ifdef __clang__
+__attribute__((no_sanitize("unsigned-integer-overflow")))
+#endif
 int
 hash_data(const char *p, size_t len)
 {

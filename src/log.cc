@@ -17,9 +17,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 //
 
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
 
 #include "aven.h"
 #include "log.h"
@@ -30,8 +28,7 @@ MyLogWindow::MyLogWindow()
      * currently) */
     : wxLogWindow(NULL,
 		  wxString::Format(wmsg(/*%s Error Log*/228), APP_NAME).c_str(),
-		  false, false),
-      first(true)
+		  false, false)
 {
 }
 
