@@ -1,3 +1,11 @@
+survex (1.4.14-2) unstable; urgency=medium
+
+  * debian/patches/normalise-dxf-bounds-for-i386.patch: Backport testcase
+    tweak to avoid failure on i386 due to excess precision resulting in
+    -0.00 in DXF export test output.
+
+ -- Olly Betts <olly@survex.com>  Thu, 12 Dec 2024 17:38:11 +1300
+
 survex (1.4.14-1) unstable; urgency=medium
 
   * New upstream release.
