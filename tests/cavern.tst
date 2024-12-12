@@ -346,7 +346,7 @@ for file in $TESTS ; do
     case $pos in
       dxf)
 	# On x86 excess precision can result in -0.00 for some coordinates.
-	sed 's/-0\.00\>/ 0.00/g' < "$tmpfile" > tmp.tmp
+	sed 's/^-0\.00\>/0.00/;s/ -0\.00\>/  0.00/g' < "$tmpfile" > tmp.tmp
 	mv tmp.tmp "$tmpfile"
 	;;
       json)
