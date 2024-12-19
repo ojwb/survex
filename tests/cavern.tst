@@ -54,7 +54,8 @@ esac
 
 : ${TESTS=${*:-"singlefix singlereffix oneleg midpoint lollipop fixedlollipop\
  cross firststn\
- deltastar deltastar2 bug3 calibrate_tape nosurvey2 cartesian cartesian2\
+ deltastar deltastar2 deltastarhanging\
+ bug3 calibrate_tape nosurvey2 cartesian cartesian2\
  lengthunits angleunits cmd_alias cmd_alias_bad cmd_truncate cmd_truncate_bad\
  cmd_case cmd_case_bad cmd_fix\
  cmd_solve cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_fix_bad cmd_set\
