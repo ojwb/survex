@@ -116,6 +116,7 @@ img2aven.h: $(srcdir)/gen_img2aven
 
 PYTHON = python3
 
+# When updating to a new IGRF version, update table in doc/datafile.rst too.
 thgeomagdata.h: $(srcdir)/igrf2c.py $(srcdir)/igrf14coeffs.txt
 	$(PYTHON) $(srcdir)/igrf2c.py $(srcdir)/igrf14coeffs.txt
 	mv ../thgeomagdata.h .

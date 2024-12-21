@@ -1011,7 +1011,17 @@ Description
    Field) model.  A revised version of the IGRF model is usually issued every 5
    years, and calculates values using a model based on observations for years
    before it is issued, and on predictions for 5 years after it is issued.
-   Survex 1.2.43 updated to using version 13 in early 2020.
+
+   Here's a table of the first Survex version to support each version of the
+   IGRF model:
+
+   ============  ==============  ===========================
+   IGRF Version  Survex version  Survex version release date
+   ============  ==============  ===========================
+   14            1.4.13          2024-12-01
+   13            1.2.43          2020-02-28
+   12            1.2.21          2015-07-28
+   ============  ==============  ===========================
 
    The IGRF model takes a date and a location as inputs.  Survex uses the
    specified date of the survey (if the survey's date is a range, the centre
