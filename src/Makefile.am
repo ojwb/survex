@@ -44,6 +44,7 @@ aven_SOURCES = aven.cc gfxcore.cc mainfrm.cc model.cc vector3.cc aboutdlg.cc \
  json.cc kml.cc log.cc moviemaker.cc hpgl.cc \
  cavernlog.cc avenprcore.cc printing.cc pos.cc \
  date.c img_hosted.c useful.c hash.c \
+ terminatehandler.cc \
  brotatemask.xbm brotate.xbm handmask.xbm hand.xbm \
  rotatemask.xbm rotate.xbm vrotatemask.xbm vrotate.xbm \
  rotatezoom.xbm rotatezoommask.xbm \
@@ -79,6 +80,7 @@ extend_SOURCES = extend.c img_hosted.c useful.c hash.c \
 
 survexport_SOURCES = survexport.cc model.cc export.cc export3d.cc \
 		gdalexport.cc namecompare.cc useful.c hash.c img_hosted.c \
+		terminatehandler.cc \
 		gpx.cc hpgl.cc json.cc kml.cc pos.cc vector3.cc $(COMMONSRC)
 
 #testerr_SOURCES = testerr.c message.c filename.c useful.c
