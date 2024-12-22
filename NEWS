@@ -13,7 +13,7 @@ Changes in 1.4.14 (2024-12-11):
 * Documentation: Add some details on how to handle Toporobot "serie" station
   naming.
 
-* Updates to Bulgarian, Hugarian, Russian and Slovak translations.
+* Updates to Bulgarian, Hungarian, Russian and Slovak translations.
 
 * Testsuite: Adjust lollipop testcase to pass on i386 where excess precision
   was changing which station was reported as the southernmost of multiple
