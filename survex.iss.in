@@ -72,7 +72,15 @@ Name: "{app}\proj"
 Type: files; Name: "{app}\cad3d.exe"
 
 [Files]
-Source: "*.exe"; DestDir: "{app}"
+Source: "*.exe"; Excludes: "aven.exe,survexport.exe,wrapaven.exe,wrapsurvexport.exe"; DestDir: "{app}"
+; Install aven.exe as ave_.exe and survexport.exe as survexpor_.exe.
+Source: "aven.exe"; DestDir: "{app}"; DestName: "ave_.exe"
+Source: "survexport.exe"; DestDir: "{app}"; DestName: "survexpor_.exe"
+; Install wrapper versions under real name.
+Source: "wrapaven.exe"; DestDir: "{app}"; DestName: "aven.exe"
+Source: "wrapsurvexport.exe"; DestDir: "{app}"; DestName: "survexport.exe"
+; Also install wrapsurvexport.exe as 3dtopos.exe so existing Tunnel releases work.
+Source: "wrapsurvexport.exe"; DestDir: "{app}"; DestName: "3dtopos.exe"
 Source: "*.dll"; DestDir: "{app}"; Flags: skipifsourcedoesntexist
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
@@ -84,8 +92,6 @@ Source: "proj\*"; DestDir: "{app}\proj"
 Source: "manual\*.*"; DestDir: "{app}\manual"
 ; Generate iss file for including the wxstd.mo files
 #include "i18nfiles.iss"
-; Also install survexport.exe as 3dtopos.exe so existing Tunnel releases work.
-Source: "survexport.exe"; DestDir: "{app}"; DestName: "3dtopos.exe"
 
 ; FIXME This should be translated (think there's a standard custommessage)
 ;[Run]

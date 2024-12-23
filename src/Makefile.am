@@ -59,6 +59,13 @@ aven_LDADD += avenrc.o
 
 avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
 	cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir '$(abs_top_builddir)/lib/icons' -o '$(abs_builddir)/avenrc.o' aven.rc
+
+bin_PROGRAMS += wrapaven wrapsurvexport
+
+wrapaven_SOURCES = wrapaven.c
+wrapaven_LDFLAGS = -mwindows -municode
+
+wrapsurvexport_SOURCES = wrapsurvexport.c
 endif
 
 AM_CFLAGS += $(PROJ_CFLAGS)

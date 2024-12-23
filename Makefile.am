@@ -76,6 +76,9 @@ mingw_iss : survex.iss
 	cp -a $(PROJ_PREFIX)/share/proj iss_tmp/proj
 	: # Include required non-system DLLs.
 	[ -z "$(NTLDD)" ] || cp -a $$($(NTLDD) --recursive src/aven.exe 2>/dev/null|sed -n 's!\\!/!g;s!.*msys64\(/ucrt64/bin/[^ ]*\).*!\1!p') iss_tmp
+	: # libpodofo triggers openssl to dynamically load its legacy.dll at startup.
+	: # Looks like this may get fixed in libpodofo 1.0
+	cp /ucrt64/lib/ossl-modules/legacy.dll iss_tmp
 	$(STRIP) iss_tmp/*.dll
 	$(RUN_EXE) "c:/Program Files (x86)/Inno Setup 6/ISCC.exe" iss_tmp/survex.iss
 	mv iss_tmp/Output/*.exe .
