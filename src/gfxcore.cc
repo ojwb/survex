@@ -4529,18 +4529,23 @@ void GfxCore::DrawOverlays()
     GDALAllRegister();
     CPLSetConfigOption("GPX_ELE_AS_25D", "YES");
     for ( ; it.IsOk(); it = m_Parent->NextOverlay(it)) {
+	wxString error;
 	if (false) {
 erase_overlay:
+	    // Remove overlay before showing error dialog since otherwise when
+	    // the dialog is closed we get another redraw request and enter an
+	    // infinite loop.
 	    it = m_Parent->RemoveOverlay(it);
+	    hourglass.stop();
+	    wxGetApp().ReportError(error);
+	    hourglass.restart();
 	    if (!it.IsOk()) break;
 	}
 	const char* p = m_Parent->GetOverlayFilename(it).utf8_str();
 	GDALDataset* poDS = (GDALDataset*)GDALOpenEx(p, GDAL_OF_VECTOR,
 						     NULL, NULL, NULL);
 	if (!poDS) {
-	    hourglass.stop();
-	    wxGetApp().ReportError(wxString::Format(wmsg(/*Couldn’t open file “%s”*/24), p));
-	    hourglass.restart();
+	    error = wxString::Format(wmsg(/*Couldn’t open file “%s”*/24), p);
 	    goto erase_overlay;
 	}
 
@@ -4577,11 +4582,9 @@ erase_overlay:
 
 		const OGRSpatialReference* ogrsr = poGeometry->getSpatialReference();
 		if (!ogrsr) {
-		    hourglass.stop();
 		    // TRANSLATORS: %s is replaced by the name of a geodata
 		    // file, e.g. GPX, KML.
-		    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p));
-		    hourglass.restart();
+		    error = wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p);
 		    goto erase_overlay;
 		}
 		if (ogrsr != current_ogrsr) {
@@ -4589,15 +4592,13 @@ erase_overlay:
 		    char* cs_wkt = nullptr;
 		    auto result = ogrsr->exportToWkt(&cs_wkt);
 		    if (result != OGRERR_NONE) {
-			hourglass.stop();
 			if (result == OGRERR_NOT_ENOUGH_MEMORY) {
-			    wxGetApp().ReportError(wmsg(/*Out of memory*/389));
+			    error = wmsg(/*Out of memory*/389);
 			} else {
 			    // TRANSLATORS: %s is replaced by the name of a geodata
 			    // file, e.g. GPX, KML.
-			    wxGetApp().ReportError(wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p));
+			    error = wxString::Format(wmsg(/*File “%s” not georeferenced*/492), p);
 			}
-			hourglass.restart();
 			goto erase_overlay;
 		    }
 
