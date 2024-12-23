@@ -43,7 +43,7 @@ PROJ_PREFIX = /usr/i686-w64-mingw32
 mingw_iss : survex.iss
 	$(RM) -rf iss_tmp
 	mkdir iss_tmp
-	$(MAKE) install DESTDIR=$(PWD)/iss_tmp
+	$(MAKE) install-strip DESTDIR=$(PWD)/iss_tmp
 	:
 	cp survex.iss iss_tmp
 	: # so the installer can display the license
@@ -76,6 +76,7 @@ mingw_iss : survex.iss
 	cp -a $(PROJ_PREFIX)/share/proj iss_tmp/proj
 	: # Include required non-system DLLs.
 	[ -z "$(NTLDD)" ] || cp -a $$($(NTLDD) --recursive src/aven.exe 2>/dev/null|sed -n 's!\\!/!g;s!.*msys64\(/ucrt64/bin/[^ ]*\).*!\1!p') iss_tmp
+	$(STRIP) iss_tmp/*.dll
 	$(RUN_EXE) "c:/Program Files (x86)/Inno Setup 6/ISCC.exe" iss_tmp/survex.iss
 	mv iss_tmp/Output/*.exe .
 	$(RM) -rf iss_tmp
