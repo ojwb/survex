@@ -1087,7 +1087,7 @@ node *
 find_non_anon_stn(node *stn)
 {
     if (TSTBIT(stn->name->sflags, SFLAGS_ANON)) {
-	/* An anonymous stations must be at the end of a trailing traverse
+	/* An anonymous station must be at the end of a trailing traverse
 	 * (since the same anonymous station can't be referred to more
 	 * than once), and trailing traverses have been removed at this
 	 * point.
