@@ -1,3 +1,24 @@
+Changes in 1.4.15 (2024-12-24):
+
+* aven: Avoid infinite redraw loop if GDAL gives an error loading geodata to
+  overlay.
+
+* aven: Turn off full-screen mode bodges when running on macOS 10.7 or later.
+  Fixes #110
+
+* aven/survexport: (Microsoft Windows version): Enable GDAL support so you
+  can now overlay geodata (in aven) and export shapefiles.
+
+* cavern: Remove now-bogus assertion which can fire when there's a survey not
+  connected to any fixed points (since 1.4.10 made unconnected data a warning
+  instead of an error).  Reported by Philip Balister.
+
+* (Microsoft Windows version): Strip debug data from .exe and .dll files which
+  reduces the installer size by around 5%.
+
+* Testsuite: Normalise -0.00 in DXF bounds too to avoid possible test failures
+  on x86.
+
 Changes in 1.4.14 (2024-12-11):
 
 * aven/survexport: Add support for exporting shapefiles.  This requires GDAL so
