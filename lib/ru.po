@@ -1890,13 +1890,13 @@ msgstr "JSON файлы"
 #: ../src/printing.cc:380
 #: n:523
 msgid "Shapefiles (lines)"
-msgstr ""
+msgstr "Шейп-файлы (линии)"
 
 #: ../src/export.cc:108
 #: ../src/printing.cc:381
 #: n:524
 msgid "Shapefiles (points)"
-msgstr ""
+msgstr "Шейп-файлы (точки)"
 
 #. TRANSLATORS: Log files from running cavern (extension .log)
 #: ../src/cavernlog.cc:648
@@ -2056,7 +2056,7 @@ msgstr "Журнал ошибок %s"
 #: ../src/printing.cc:582
 #: n:230
 msgid "&Export..."
-msgstr "&Экспортi..."
+msgstr "&Экспорт..."
 
 #. TRANSLATORS: "Rotation" menu.  The accelerators must be different within
 #. this group.  Tickable menu item which toggles auto rotation.
@@ -3577,12 +3577,12 @@ msgstr "создавать Survex POS"
 #: ../src/survexport.cc:174
 #: n:525
 msgid "produce Shapefile (lines) output"
-msgstr ""
+msgstr "создавать Шейп-файл (линии)"
 
 #: ../src/survexport.cc:175
 #: n:526
 msgid "produce Shapefile (points) output"
-msgstr ""
+msgstr "создавать Шейп-файл (точки)"
 
 #: ../src/survexport.cc:176
 #: n:160
@@ -3632,30 +3632,30 @@ msgstr "Игнорируется “%s”"
 #: ../src/datain.c:4386
 #: n:508
 msgid "Parsing as “to” station but may be isolated LRUD with missing closing delimiter"
-msgstr ""
+msgstr "Распознано как номер второго пикета в замере, но возможно это отдельный ЛПВН без закрывающего разделителя"
 
 #: ../src/gdalexport.cc:44
 #: ../src/gdalexport.cc:50
 #: n:527
 #, c-format
 msgid "Failed to initialise GDAL “%s” driver"
-msgstr ""
+msgstr "Не удалось инициализировать GDAL драйвер “%s”"
 
 #: ../src/gdalexport.cc:125
 #: n:528
 msgid "Failed to create GDAL layer"
-msgstr ""
+msgstr "Не удалось создать слой GDAL (layer)"
 
 #: ../src/gdalexport.cc:135
 #: n:529
 msgid "Failed to create GDAL field"
-msgstr ""
+msgstr "Не удалось создать поле GDAL (field)"
 
 #: ../src/gdalexport.cc:170
 #: ../src/gdalexport.cc:183
 #: n:530
 msgid "Failed to create GDAL feature"
-msgstr ""
+msgstr "Не удалось создать объект GDAL (feature)"
 
 #, c-format
 #~ msgid "Error in format of font file “%s”"
