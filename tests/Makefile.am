@@ -64,7 +64,7 @@ multinormignall.svx multinormignall.pos\
 multidiving.svx multidiving.out multidiving.pos\
 multicylpolar.svx multicylpolar.pos\
 multicartesian.svx multicartesian.pos multicartesian.out\
-multinosurv.svx multinosurv.pos multinosurv.out\
+multinosurv.svx multinosurv.dump multinosurv.out\
 multinormalbad.svx multibug.svx\
 cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\

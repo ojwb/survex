@@ -1,10 +1,16 @@
-; pos=yes warn=0
+; pos=dump warn=0
 *fix 1 0 0 0
 *fix 2 1 0 0
 *fix 3 0 1 0 1 1 1
 *fix 4 0 0 1 1 1 1
+*fix 5 .5 .5 .5
 *data nosurvey station
 1
 2
 3
+
+2
 4
+*data
+2
+5
