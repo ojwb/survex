@@ -1,0 +1,43 @@
+./baddatanosurv.svx:4:21: error: Reading "too" not allowed in data style "nosurvey"
+ *data nosurvey from too
+                     ^~~
+./baddatanosurv.svx:7:24: error: Reading "foo" not allowed in data style "nosurvey"
+ *data nosurvey from to foo
+                        ^~~
+./baddatanosurv.svx:10:24: error: Reading "f0o" not allowed in data style "nosurvey"
+ *data nosurvey from to f0o
+                        ^~~
+./baddatanosurv.svx:14:21: error: Reading "newline" not allowed in data style "nosurvey"
+ *data nosurvey from newline to
+                     ^~~~~~~
+./baddatanosurv.svx:16:24: error: Reading "newline" not allowed in data style "nosurvey"
+ *data nosurvey station newline
+                        ^~~~~~~
+./baddatanosurv.svx:19:21: error: Reading "station" duplicates previous reading(s)
+ *data nosurvey from station
+                     ^~~~~~~
+./baddatanosurv.svx:21:24: error: Reading "to" duplicates previous reading(s)
+ *data nosurvey station to
+                        ^~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 1 survey station, joined by 0 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+   1 0-node.
+There were 0 warning(s) and 7 error(s) - no output files produced.

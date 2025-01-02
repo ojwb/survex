@@ -1,0 +1,22 @@
+; pos=fail warn=0 error=7
+*fix 1 reference 0 0 0
+; this next line should ignore the data until the next *data
+*data nosurvey from too
+1 a
+; Check final token being bad gives an error
+*data nosurvey from to foo
+1 b
+; Check tokens include numerics
+*data nosurvey from to f0o
+1 c
+; "Interleaved" nosurvey data is just a list of stations so
+; "newline" isn't allowed.
+*data nosurvey from newline to
+1 d
+*data nosurvey station newline
+1 e
+; Check errors for mixing interleaved and non-interleaved
+*data nosurvey from station
+1 f
+*data nosurvey station to
+1 g

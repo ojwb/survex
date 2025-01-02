@@ -77,7 +77,8 @@ esac
  cmd_title cmd_titlebad cmd_dummy cmd_infer cmd_date cmd_datebad cmd_datebad2\
  cartes diving cylpolar normal normal_bad normignall nosurv cmd_flags\
  bad_cmd_flags plumb unusedstation exportnakedbegin oldestyle bugdz\
- baddatacylpolar badnewline badquantities imgoffbyone infereqtopofil 3sdfixbug\
+ baddatacylpolar baddatanosurv badnewline badquantities\
+ imgoffbyone infereqtopofil 3sdfixbug\
  omitclino back back2 bad_back\
  notentranceorexport inferunknown inferexports bad_units_factor\
  bad_units_qlist\
