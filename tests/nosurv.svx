@@ -6,5 +6,5 @@
 *data nosurvey from to
 1 2
 2 3
-*data nosurvey to from
-4 3
+*data nosurvey to from ignore
+4 3 42; Test handling of a comment right after an ignored reading.
