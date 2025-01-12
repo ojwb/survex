@@ -213,9 +213,9 @@ Most common tasks can now be accomplished through ``aven`` - processing survey
 data, viewing the processed data, printing, exporting to other formats, and
 producing simple extended elevations.  
 
-A few tasks still require you to use the command line, and some functionality
-is available both via ``aven`` and from the command line, which allows it to be
-scripted.
+A few tasks still require you to use the command line; some functionality
+which is available via ``aven`` is also available from the command line, which
+allows it to be scripted.
 
 .. FIXME the remainder of this section seems rather redundant with the
 .. cmdline section that follows.
@@ -224,7 +224,7 @@ The command line programs that come with Survex are:
 
 ``cavern``
    Processes survey data.  Since Survex 1.2.3 you can process ``.svx``
-   files by simply opening them with ``aven``, so you don't need to use
+   files by opening them with ``aven``, so you don't need to use
    ``cavern`` from the command line if you don't want to, but it's still
    available for users who prefer to work from the command line and for
    use in scripts.
@@ -246,7 +246,7 @@ The command line programs that come with Survex are:
    survey is extended, which you can't currently do via ``aven``.
 
 ``sorterr``
-   Re-sorts a .err file by a specified field.
+   Reorders a .err file by a specified field.
 
 ``survexport``
    Provides access to ``aven``'s "Export" functionality from the command line,
