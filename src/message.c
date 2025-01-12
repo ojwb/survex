@@ -238,7 +238,7 @@ default_charset(void)
 	       iso:
 	       if (strncmp(chset, "8859", 4) == 0) {
 		  chset += 4;
-		  while (chset < p && *chset && !isdigit((unsigned char)*chset))
+		  while (chset < p && *chset && !isalnum((unsigned char)*chset))
 		     chset++;
 		  switch (atoi(chset)) {
 		   case 1: return CHARSET_ISO_8859_1;
@@ -253,7 +253,7 @@ default_charset(void)
 	    if (tolower((unsigned char)chset[1]) == 't' &&
 		tolower((unsigned char)chset[2]) == 'f') {
 	       chset += 3;
-	       while (chset < p && *chset && !isdigit((unsigned char)*chset))
+	       while (chset < p && *chset && !isalnum((unsigned char)*chset))
 		  chset++;
 	       switch (atoi(chset)) {
 		case 8: return CHARSET_UTF8;
