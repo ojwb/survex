@@ -18,7 +18,7 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = 'Survex'
-copyright = '1998-2024'
+copyright = '1998-2025'
 author = ''
 
 # The full version, including alpha/beta/rc tags
