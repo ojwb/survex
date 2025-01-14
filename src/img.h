@@ -12,7 +12,7 @@
  *
  * Writing Survex ".3d" image files is supported.
  *
- * Copyright (C) Olly Betts 1993-2024
+ * Copyright (C) Olly Betts 1993-2025
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -480,11 +480,12 @@ img_datum img_parse_compass_datum_string(const char *s, size_t len);
  *
  * Where possible a string of the form "EPSG:1234" is returned.
  *
- * Example Compass files we've seen use "North American 1927" outside of where
- * its defined for use, presumably because some users fail to change the datum
+ * Example Compass files we've seen use "North American 1927" outside of its
+ * defined area of use, presumably because some users fail to change the datum
  * from Compass' default.  To enable reading such files we return a PROJ4
  * string of the form "+proj=utm ..." for "North American 1927" and "North
- * American 1983" for UTM zones which don't have an EPSG code.
+ * American 1983" when there's no EPSG code for the specified datum and
+ * utm_zone combination.
  *
  * If no mapping is known NULL is returned.
  *
