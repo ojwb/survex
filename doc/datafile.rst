@@ -585,7 +585,7 @@ Description
    address, but you shouldn't need to worry about it if your fixed points are
    in the same coordinate system as your output, or if they all use the same
    ellipsoid.  For a more detailed discussion of this, please see:
-   http://expo.survex.com/handbook/survey/coord.htm
+   https://expo.survex.com/handbook/survey/coord.htm
 
 See Also
    ``*fix``

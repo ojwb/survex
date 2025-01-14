@@ -327,7 +327,7 @@ sure that the special \*sd settings only apply to this one leg.
 
 For more information on the expected errors from radiolocations
 see Compass Points Issue 10, available online at
-http://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm
+https://www.chaos.org.uk/survex/cp/CP10/CPoint10.htm
 
 -----------
 Diving Data
