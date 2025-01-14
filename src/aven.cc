@@ -177,7 +177,7 @@ int main(int argc, char **argv)
 #ifdef __WXGTK3__
 # if !(wxUSE_GLCANVAS_EGL-0)
     // The GLX-based wxGLCanvas doesn't work under Wayland, and the code
-    // segfaults: https://trac.wxwidgets.org/ticket/17702
+    // segfaults: https://github.com/wxWidgets/wxWidgets/issues/17702
     //
     // Therefore we force X11 unless we're using the EGL-based wxGLCanvas
     // (which was added in wxWidgets 3.1.5 and hasn't been backported to
