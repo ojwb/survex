@@ -1,3 +1,10 @@
+survex (1.4.14-3) UNRELEASED; urgency=medium
+
+  * debian/control: Add sse2-support to Build-Depends and Depends to avoid
+    recurring problems from excess precision.
+
+ -- Olly Betts <olly@survex.com>  Fri, 24 Jan 2025 11:34:51 +1300
+
 survex (1.4.14-2) unstable; urgency=medium
 
   * debian/patches/normalise-dxf-bounds-for-i386.patch: Backport testcase
