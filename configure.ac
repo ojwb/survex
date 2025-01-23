@@ -93,6 +93,53 @@ AC_PATH_TOOL(STRIP, strip, [echo "not stripping "])
 
 AC_CHECK_LIB(m, sqrt)
 
+dnl x86 has excess precision issues with 387 FP instructions, which are
+dnl avoided by using SSE instructions instead.  By default we require SSE2
+dnl which for Intel means a Pentium 4 which was launched in 2000; Pentium
+dnl 3 was finally discontinued in 2007.
+AC_ARG_ENABLE([sse],
+[AS_HELP_STRING([--disable-sse],
+		[disable use of SSE FP instructions on x86])]
+[AS_HELP_STRING([[--enable-sse[=sse|sse2]]],
+		[set which SSE FP instructions to use on x86 (default: sse2)])],
+  [case ${enableval} in
+    sse|sse2|yes|no) ;;
+    *) AC_MSG_ERROR([bad value ${enableval} for --enable-sse or --disable-sse]) ;;
+  esac],
+  [enable_sse=yes])
+
+AC_MSG_CHECKING([whether to use SSE instructions on x86])
+case $host_cpu in
+  i*86)
+    if test "$enable_sse" = no ; then
+      AC_MSG_RESULT([no - WARNING: Testsuite will probably fail])
+      if test yes = "$msvc"; then
+	dnl MSVC defaults to SSE2.
+	AM_CXXFLAGS="$AM_CXXFLAGS -arch:IA32"
+      fi
+    else
+      dnl Default to sse2.
+      test "$enable_sse" != yes || enable_sse=sse2
+      if test yes = "$GXX"; then
+	AC_MSG_RESULT([yes (configure with --disable-sse to disable)])
+	dnl We can unconditionally use -mtune=generic as it was added in GCC
+	dnl 4.2, and supported at least as far back as clang 3.0.
+	AM_CXXFLAGS="$AM_CXXFLAGS -mfpmath=sse -m$enable_sse -mtune=generic"
+      elif test yes = "$msvc"; then
+	AC_MSG_RESULT([yes (configure with --disable-sse to disable)])
+	if test sse = "$enable_sse"; then
+	  dnl MSVC defaults to SSE2.
+	  AM_CXXFLAGS="$AM_CXXFLAGS -arch:SSE"
+	fi
+      else
+	AC_MSG_RESULT([don't know how to for compiler $CXX])
+      fi
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT([non-x86 arch ($host_cpu)]) ;;
+esac
+
 dnl The wxWidgets libraries we need:
 wx_libs="core,gl"
 
