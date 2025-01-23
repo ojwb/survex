@@ -54,7 +54,8 @@ Microsoft Windows
 
 This version comes packaged with an installation wizard.  Just run the
 downloaded installer package and it will lead you through the installation
-process.
+process.  Since Survex 1.4.9, this pre-built version requires a 64-bit
+version of Microsoft Windows 7 or later.
 
 Survex 1.4.8 and later support installing for all users (which requires
 administrator rights) or just for the current user (which doesn't).  If
