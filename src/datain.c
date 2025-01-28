@@ -3632,7 +3632,7 @@ handle_comp_units(void)
 }
 
 static real
-calculate_convergence(const char *proj_str)
+calculate_convergence_lonlat(const char *proj_str, double lon, double lat)
 {
     // PROJ < 8.1.0 dereferences the context without a NULL check inside
     // proj_create_ellipsoidal_2D_cs() but PJ_DEFAULT_CTX is really just
@@ -3645,8 +3645,8 @@ calculate_convergence(const char *proj_str)
 #endif
     PJ * pj = proj_create(ctx, proj_str);
     PJ_COORD lp;
-    lp.lp.lam = pcs->dec_lon;
-    lp.lp.phi = pcs->dec_lat;
+    lp.lp.lam = lon;
+    lp.lp.phi = lat;
 #if PROJ_VERSION_MAJOR < 8 || \
     (PROJ_VERSION_MAJOR == 8 && PROJ_VERSION_MINOR < 2)
     /* Code adapted from fix in PROJ 8.2.0 to make proj_factors() work in
@@ -3654,11 +3654,12 @@ calculate_convergence(const char *proj_str)
      */
     switch (proj_get_type(pj)) {
 	case PJ_TYPE_PROJECTED_CRS: {
-	    /* If it is a projected CRS, then compute the factors on the conversion
-	     * associated to it. We need to start from a temporary geographic CRS
-	     * using the same datum as the one of the projected CRS, and with
-	     * input coordinates being in longitude, latitude order in radian,
-	     * to be consistent with the expectations of the lp input parameter.
+	    /* If it is a projected CRS, then compute the factors on the
+	     * conversion associated to it. We need to start from a temporary
+	     * geographic CRS using the same datum as the one of the projected
+	     * CRS, and with input coordinates being in longitude, latitude
+	     * order in radian, to be consistent with the expectations of the
+	     * lp input parameter.
 	     */
 
 	    PJ * geodetic_crs = proj_get_source_crs(ctx, pj);
@@ -3719,6 +3720,49 @@ calculate_convergence(const char *proj_str)
     proj_context_destroy(ctx);
 #endif
     return factors.meridian_convergence;
+}
+
+static real
+calculate_convergence(const char *proj_str)
+{
+    return calculate_convergence_lonlat(proj_str, pcs->dec_lon, pcs->dec_lat);
+}
+
+real
+calculate_convergence_xy(const char *proj_str, double x, double y, double z)
+{
+    /* Convert to WGS84 lat long. */
+    PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+					   proj_str,
+					   WGS84_DATUM_STRING,
+					   NULL);
+    if (transform) {
+	/* Normalise the output order so x is longitude and y latitude - by
+	 * default new PROJ has them switched for EPSG:4326 which just seems
+	 * confusing.
+	 */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+						       transform);
+	proj_destroy(transform);
+	transform = pj_norm;
+    }
+
+    PJ_COORD coord = {{x, y, z, HUGE_VAL}};
+    coord = proj_trans(transform, PJ_FWD, coord);
+    x = coord.xyzt.x;
+    y = coord.xyzt.y;
+    z = coord.xyzt.z;
+
+    if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
+       compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
+			  proj_context_errno_string(PJ_DEFAULT_CTX,
+						    proj_errno(transform)));
+       /* Set dummy values which are finite. */
+       x = y = z = 0;
+    }
+    proj_destroy(transform);
+
+    return calculate_convergence_lonlat(proj_str, rad(x), rad(y));
 }
 
 static real

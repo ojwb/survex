@@ -58,6 +58,9 @@ void skipblanks(void);
 /* reads complete data file */
 void data_file(const char *pth, const char *fnm);
 
+real calculate_convergence_xy(const char *proj_str,
+			      double x, double y, double z);
+
 void skipline(void);
 
 /* Read the current line into a string, converting each tab to a space.

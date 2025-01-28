@@ -41,8 +41,6 @@
 #include "readval.h"
 #include "str.h"
 
-#define WGS84_DATUM_STRING "EPSG:4326"
-
 static void
 move_to_fixedlist(node *stn, int ignore_dirn)
 {

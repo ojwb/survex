@@ -964,6 +964,21 @@ skip_nosurvey:
 	 }
       }
 
+      if (stn1->leg[0]) {
+	  // Track range of coordinates for all stations with legs so we can
+	  // report approximate full range of convergence values.
+	  for (d = 0; d < 3; d++) {
+	      if (POS(stn1, d) < min[d + 6]) {
+		  min[d + 6] = POS(stn1, d);
+		  pfxLo[d + 6] = stn1->name;
+	      }
+	      if (POS(stn1, d) > max[d + 6]) {
+		  max[d + 6] = POS(stn1, d);
+		  pfxHi[d + 6] = stn1->name;
+	      }
+	  }
+      }
+
       d = stn1->name->shape;
       if (d <= 1 && !TSTBIT(stn1->name->sflags, SFLAGS_USED)) {
 	 bool unused_fixed_point = false;

@@ -43,6 +43,8 @@ typedef double real; /* so we can change the precision used easily */
 #define HUGE_REAL HUGE_VAL
 #define REAL_EPSILON DBL_EPSILON
 
+#define WGS84_DATUM_STRING "EPSG:4326"
+
 #define SPECIAL_EOL		0x0001
 #define SPECIAL_BLANK		0x0002
 #define SPECIAL_KEYWORD		0x0004
@@ -407,8 +409,8 @@ extern long cLegs, cStns, cComponents;
 extern FILE *fhErrStat;
 extern img *pimg;
 extern real totadj, total, totplan, totvert;
-extern real min[6], max[6];
-extern prefix *pfxHi[6], *pfxLo[6];
+extern real min[9], max[9];
+extern prefix *pfxHi[9], *pfxLo[9];
 extern bool fQuiet; /* just show brief summary + errors */
 extern bool fMute; /* just show errors */
 extern bool fSuppress; /* only output 3d file */

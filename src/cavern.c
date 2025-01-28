@@ -70,8 +70,8 @@ static bool f_warnings_are_errors = false; /* turn warnings into errors */
 nosurveylink *nosurveyhead;
 
 real totadj, total, totplan, totvert;
-real min[6], max[6];
-prefix *pfxHi[6], *pfxLo[6];
+real min[9], max[9];
+prefix *pfxHi[9], *pfxLo[9];
 
 string survey_title = S_INIT;
 
@@ -209,7 +209,7 @@ main(int argc, char **argv)
    cLegs = cStns = cComponents = 0;
    totadj = total = totplan = totvert = 0.0;
 
-   for (d = 0; d < 6; d++) {
+   for (d = 0; d < 9; d++) {
       min[d] = HUGE_REAL;
       max[d] = -HUGE_REAL;
       pfxHi[d] = pfxLo[d] = NULL;
@@ -448,11 +448,61 @@ static void
 do_stats(void)
 {
    long cLoops = cComponents + cLegs - cStns;
-   int length_units = get_length_units(Q_LENGTH);
-   const char * units = get_units_string(length_units);
-   real length_factor = 1.0 / get_units_factor(length_units);
 
    putnl();
+
+   if (proj_str_out) {
+       prefix *name_min = NULL;
+       prefix *name_max = NULL;
+       double convergence_min = HUGE_VAL;
+       double convergence_max = -HUGE_VAL;
+       prefix **pfx = pfxLo;
+       for (int bound = 0; bound < 2; ++bound) {
+	   for (int d = 6; d <= 9; ++d) {
+	       if (pfx[d]) {
+		   pos *p = pfx[d]->pos;
+		   double convergence = calculate_convergence_xy(proj_str_out,
+								 p->p[0],
+								 p->p[1],
+								 p->p[2]);
+		   if (convergence < convergence_min) {
+		       convergence_min = convergence;
+		       name_min = pfx[d];
+		   }
+		   if (convergence > convergence_max) {
+		       convergence_max = convergence;
+		       name_max = pfx[d];
+		   }
+	       }
+	   }
+	   pfx = pfxHi;
+       }
+       if (name_min && name_max) {
+	   const char* deg_sign = msg(/*°*/344);
+	   /* sprint_prefix uses a single buffer, so to report two stations in
+	    * one message we need to make a temporary copy of the string for
+	    * one of them.
+	    */
+	   char *pfx_hi = osstrdup(sprint_prefix(name_max));
+	   char *pfx_lo = sprint_prefix(name_min);
+	   // TRANSLATORS: Cavern computes the grid convergence at the
+	   // representative location(s) specified by the
+	   // `*declination auto` command(s).  The convergence values
+	   // for the most N, S, E and W survey stations with legs
+	   // attached are also computed and the range of these values
+	   // is reported in this message.  It's approximate because the
+	   // min or max convergence could actually be beyond this range
+	   // but it's unlikely to be very wrong.
+	   //
+	   // Each %.1f%s will be replaced with a convergence angle (e.g.
+	   // 0.9°) and the following %s with the station name where that
+	   // convergence angle was computed.
+	   printf(msg(/*Approximate full range of grid convergence: %.1f%s at %s to %.1f%s at %s\n*/531),
+		  deg(convergence_min), deg_sign, pfx_lo,
+		  deg(convergence_max), deg_sign, pfx_hi);
+	   osfree(pfx_hi);
+       }
+   }
 
    if (cStns == 1) {
       fputs(msg(/*Survey contains 1 survey station,*/172), stdout);
@@ -483,6 +533,10 @@ do_stats(void)
       printf(msg(/*Survey has %ld connected components.*/178), cComponents);
       putnl();
    }
+
+   int length_units = get_length_units(Q_LENGTH);
+   const char * units = get_units_string(length_units);
+   real length_factor = 1.0 / get_units_factor(length_units);
 
    printf(msg(/*Total length of survey legs = %7.2f%s (%7.2f%s adjusted)*/132),
 	  total * length_factor, units, totadj * length_factor, units);

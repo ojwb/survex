@@ -487,7 +487,9 @@ Description
 
    The "output" coordinate system is set with ``*cs out`` and is what the
    survey data is processed in and the coordinate system used for resultant
-   ``.3d`` file.  The output coordinate system must be in metres with axis
+   ``.3d`` file (which means Aven knows how to translate coordinates to allow
+   export to formats such as GPX and KML, and to overlay terrain data and other
+   geodata).  The output coordinate system must be in metres with axis
    order (East, North, Up), so for example ``*cs out long-lat`` isn't valid
    because it isn't in metres, while ``*cs out jtsk`` isn't valid because
    the axes point West and South.
@@ -588,7 +590,7 @@ Description
    https://expo.survex.com/handbook/survey/coord.htm
 
 See Also
-   ``*fix``
+   ``*declination auto``, ``*fix``
 
 DATA
 ----
@@ -983,20 +985,45 @@ Syntax
 
 Description
    The ``*declination`` command is the modern way to specify magnetic
-   declinations in Survex.  Magnetic declination is the difference between
-   Magnetic North and True North.  It varies over time as the Earth's magnetic
-   field moves, and also with location.  Compass bearings are measured relative
-   to Magnetic North - adding the magnetic declination gives bearings relative
-   to True North.
+   declinations in Survex.  It was added in Survex 1.2.21 but buggy so not
+   really usable until 1.2.22.
 
-   Prior to 1.2.22, ``*calibrate declination`` was used instead.  If you use a
+   Magnetic declination is the difference between Magnetic North and True
+   North.  A compass measures an angle relative to Magnetic North
+   - adding the magnetic declination gives bearings relative to True North.
+   The magnetic declination varies with location and also with time as the
+   Earth's magnetic field moves.
+
+   Generally it's best to specify a suitable output coordinate system, and use
+   ``*declination auto`` so Survex corrects for magnetic declination for you.
+   Survex 1.2.27 and later will also automatically correct for grid convergence
+   (the difference between Grid North and True North).
+
+   If you don't specify an output coordinate system, but fix one or more points
+   then Survex works implicitly in the coordinate system your fixed points were
+   specified in.  This mode of operation is provided for compatibility with
+   datasets from before support for explicit coordinate systems was added to
+   Survex - it's much better to specify the output coordinate system as above.
+   But if you have a survey of a cave which isn't connected to any known fixed
+   points then you'll need to handle it this way, either fixing an entrance to
+   some arbitrary coordinates (probably (0,0,0)) or letting Survex pick a
+   station as the origin. If the survey was all done in a short enough period
+   of time that the magnetic declination won't have changed significantly, you
+   can just ignore it and Grid North in the implicit coordinate system will be
+   Magnetic North at the time of the survey.  If you want to correct
+   for magnetic declination, you can't use ``*declination auto`` because the
+   IGRF model needs the real world coordinates, but you can specify literal
+   declination values for each survey using ``*declination <declination>
+   <units>``.  Then Grid North in the implicit coordinate system is True North.
+
+   Prior to 1.2.21, ``*calibrate declination`` was used instead.  If you use a
    mixture of ``*calibrate declination`` and ``*declination``, they interact in
    the natural way - whichever was set most recently is used for each compass
    reading (taking into account survey scope).  We don't generally recommend
    mixing the two, but it's useful to understand how they interact if you want
-   to combine datasets using the old and new commands, and perhaps if you have
-   a large existing dataset and want to migrate it without having to change
-   everything at once.
+   to combine datasets using the old and new commands, or if you have a large
+   existing dataset and want to migrate it without having to change everything
+   at once.
 
    Note that the value specified uses the conventional sign for magnetic
    declination, unlike the old ``*calibrate declination`` which needed a value
@@ -1004,12 +1031,10 @@ Description
    take care when updating old data, or if you're used to the semantics of
    ``*calibrate declination``.
 
-   If you have specified the output coordinate system (using ``*cs out``) then
-   you can use ``*declination auto`` (and we recommend that you do).  This is
-   supported since Survex 1.2.21 and automatically calculates magnetic
-   declinations based on the IGRF (International Geomagnetic Reference
-   Field) model.  A revised version of the IGRF model is usually issued every 5
-   years, and calculates values using a model based on observations for years
+   When ``*declination auto`` is used cavern uses the IGRF (International
+   Geomagnetic Reference Field) model to compute magnetic declinations.  A
+   revised version of the IGRF model is usually issued every 5 years, and
+   calculates values using a model based on observations for years
    before it is issued, and on predictions for 5 years after it is issued.
 
    Here's a table of the first Survex version to support each version of the
@@ -1033,10 +1058,6 @@ Description
    bounding box of the cave - it doesn't need to be a fixed point or a known
    refindable location, though it can be if you prefer.
 
-   Survex 1.2.27 and later also automatically correct for grid convergence (the
-   difference between Grid North and True North) when ``*declination auto`` is
-   in use, based on the same specified representative location.
-
    You might wonder why Survex needs a representative location instead of
    calculating the magnetic declination and grid convergence for the actual
    position of each survey station.  The reason is that we need to adjust the
@@ -1059,31 +1080,23 @@ Description
        1623.svx:20: info: Declination: -0.4° @ 1977-07-02 / 3.8° @ 2018-07-21, grid convergence: -0.9°
         *declination auto 36670.37 83317.43 1903.97
 
-   Generally it's best to specify a suitable output coordinate system, and use
-   ``*declination auto`` so Survex corrects for magnetic declination and grid
-   convergence for you.  Then Aven knows how to translate coordinates to
-   allow export to formats such as GPX and KML, and to overlay terrain data
-   and other geodata.
+   It also (since Survex 1.4.16) reports the approximate true range of
+   convergence values - by comparing this with the reported convergence values
+   for the representative locations you can see if you might need to add more.
+   This looks like::
 
-   If you don't specify an output coordinate system, but fix one or more points
-   then Survex works implicitly in the coordinate system your fixed points were
-   specified in.  This mode of operation is provided for compatibility with
-   datasets from before support for explicit coordinate systems was added to
-   Survex - it's much better to specify the output coordinate system as above.
-   But if you have a survey of a cave which isn't connected to any known fixed
-   points then you'll need to handle it this way, either fixing an entrance to
-   some arbitrary coordinates (probably (0,0,0)) or letting Survex pick a
-   station as the origin. If the survey was all done in a short enough period
-   of time that the magnetic declination won't have changed significantly, you
-   can just ignore it and Grid North in the implicit coordinate system will be
-   Magnetic North at the time of the survey.  If you want to correct
-   for magnetic declination, you can't use ``*declination auto`` because the
-   IGRF model needs the real world coordinates, but you can specify literal
-   declination values for each survey using ``*declination <declination>
-   <units>``.  Then Grid North in the implicit coordinate system is True North.
+       Approximate full range of grid convergence: -0.9° at 1626.5.1 to -0.8° at 1624.133.1-6
+
+   This is "approximate" because it's only computed for the North-most,
+   South-most, East-most and West-most stations and it's possible the actual
+   minimum or maximum not at one of these.  It's unlikely to be much outside
+   the reported range though.
+
+   We don't (currently) attempt to report a similar range for declination
+   values (it's harder to do because declination also varies by date).
 
 See Also
-   ``*calibrate``
+   ``*calibrate``, ``*cs``
 
 DEFAULT
 -------
