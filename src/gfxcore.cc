@@ -1121,7 +1121,7 @@ void GfxCore::DrawDepthKey()
     }
 
     double z_min = m_Parent->GetDepthMin() + m_Parent->GetOffset().GetZ();
-    wxString units = wmsg(m_Metric ? /*m*/424: /*'*/428);
+    wxString units = wmsg(m_Metric ? /*m*/424: /*′*/428);
     for (int band = 0; band < num_bands; ++band) {
 	double z = z_min;
 	if (band)
@@ -1213,7 +1213,7 @@ void GfxCore::DrawLengthKey()
     // Use fixed colours for each length so it's directly visually comparable
     // between surveys.
     int num_bands = GetNumColourBands();
-    wxString units = wmsg(m_Metric ? /*m*/424: /*'*/428);
+    wxString units = wmsg(m_Metric ? /*m*/424: /*′*/428);
     for (int band = 0; band < num_bands; ++band) {
 	double len = pow(10, LOG_LEN_MAX * band / (num_bands - 1));
 	if (!m_Metric) {
@@ -1391,19 +1391,19 @@ void GfxCore::DrawScaleBar()
 	    }
 	} else if (size_snap >= 1.0) {
 	    /* TRANSLATORS: abbreviation for "feet" (unit of length), used e.g.
-	     * as: 10'
+	     * as: 10′
 	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
-	    units = /*'*/428;
+	    units = /*′*/428;
 	} else {
 	    size_snap *= 12.0;
 	    /* TRANSLATORS: abbreviation for "inches" (unit of length), used
-	     * e.g. as: 6"
+	     * e.g. as: 6″
 	     *
 	     * If there should be a space between the number and this, include
 	     * one in the translation. */
-	    units = /*\"*/429;
+	    units = /*″*/429;
 	}
     }
     if (size_snap >= 1.0) {

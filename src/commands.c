@@ -483,7 +483,7 @@ const real factor_tab[] = {
 
 const int units_to_msgno[] = {
     /*m*/424,
-    /*'*/428,
+    /*′*/428,
     -1, /* yards */
     /*°*/344, /* quadrants */
     /*°*/344,
