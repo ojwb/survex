@@ -479,7 +479,6 @@ static point **htab;
 static void
 set_name(const img_point *p, const char *s)
 {
-   int hash;
    point *pt;
    union {
       char data[sizeof(int) * 3];
@@ -489,7 +488,7 @@ set_name(const img_point *p, const char *s)
    u.x[0] = (int)(p->x * 100);
    u.x[1] = (int)(p->y * 100);
    u.x[2] = (int)(p->z * 100);
-   hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
+   unsigned hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z) {
 	 /* already got name for these coordinates */
@@ -510,7 +509,6 @@ set_name(const img_point *p, const char *s)
 static const char *
 find_name(const img_point *p)
 {
-   int hash;
    point *pt;
    union {
       char data[sizeof(int) * 3];
@@ -521,7 +519,7 @@ find_name(const img_point *p)
    u.x[0] = (int)(p->x * 100);
    u.x[1] = (int)(p->y * 100);
    u.x[2] = (int)(p->z * 100);
-   hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
+   unsigned hash = (hash_data(u.data, sizeof(int) * 3) & (HTAB_SIZE - 1));
    for (pt = htab[hash]; pt; pt = pt->next) {
       if (pt->p.x == p->x && pt->p.y == p->y && pt->p.z == p->z)
 	 return pt->label;

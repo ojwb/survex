@@ -3714,7 +3714,7 @@ void GfxCore::SetColourFromLength(double length, double factor)
 void GfxCore::SetColourFromSurvey(const wxString& survey)
 {
     // Set the drawing colour based on hash of name.
-    int hash = hash_string(survey.utf8_str());
+    unsigned hash = hash_string(survey.utf8_str());
     wxImage::HSVValue hsv((hash & 0xff) / 256.0, (((hash >> 8) & 0x7f) | 0x80) / 256.0, 0.9);
     wxImage::RGBValue rgb = wxImage::HSVtoRGB(hsv);
     GLAPen pen;
@@ -3728,7 +3728,7 @@ void GfxCore::SetColourFromSurveyStation(const wxString& name, double factor)
     const char* p = name.utf8_str();
     const char* q = strrchr(p, m_Parent->GetSeparator());
     size_t len = q ? (q - p) : strlen(p);
-    int hash = hash_data(p, len);
+    unsigned hash = hash_data(p, len);
     wxImage::HSVValue hsv((hash & 0xff) / 256.0, (((hash >> 8) & 0x7f) | 0x80) / 256.0, 0.9);
     wxImage::RGBValue rgb = wxImage::HSVtoRGB(hsv);
     GLAPen pen;

@@ -97,7 +97,7 @@ tree_init(void)
 static void
 tree_insert(const char *name, const img_point *pt)
 {
-   int v = hash_string(name) & (TREE_SIZE - 1);
+   unsigned v = hash_string(name) & (TREE_SIZE - 1);
    station * stn = osnew(station);
    stn->name = osstrdup(name);
    stn->pt = *pt;
@@ -121,7 +121,7 @@ tree_remove(const char *name, const img_point *pt)
     * Survex) but extended .3d files repeat the label where a loop is broken,
     * and data read from foreign formats might repeat labels.
     */
-   int v = hash_string(name) & (TREE_SIZE - 1);
+   unsigned v = hash_string(name) & (TREE_SIZE - 1);
    station **prev;
    station *p;
    station **found = NULL;

@@ -103,11 +103,10 @@ static const char *
 find_prefix(const char *prefix)
 {
    pfx *p;
-   int hash;
 
    SVX_ASSERT(prefix);
 
-   hash = hash_string(prefix) & (HTAB_SIZE - 1);
+   unsigned hash = hash_string(prefix) & (HTAB_SIZE - 1);
    for (p = htab[hash]; p; p = p->next) {
       if (strcmp(prefix, p->label) == 0) return p->label;
    }
