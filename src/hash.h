@@ -22,7 +22,6 @@ extern "C" {
 #endif
 
 int hash_string(const char *p);
-int hash_lc_string(const char *p);
 int hash_data(const char *p, size_t len);
 
 #ifdef __cplusplus

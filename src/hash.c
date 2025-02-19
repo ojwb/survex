@@ -44,19 +44,6 @@ hash_string(const char *p)
 __attribute__((no_sanitize("unsigned-integer-overflow")))
 #endif
 int
-hash_lc_string(const char *p)
-{
-   int hash;
-   SVX_ASSERT(p);
-   for (hash = 0; *p; p++)
-      hash = (hash * HASH_PRIME + tolower(*(const unsigned char*)p)) & 0x7fff;
-   return hash;
-}
-
-#ifdef __clang__
-__attribute__((no_sanitize("unsigned-integer-overflow")))
-#endif
-int
 hash_data(const char *p, size_t len)
 {
    int hash;
