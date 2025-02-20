@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2001-2024 Olly Betts
+//  Copyright (C) 2001-2025 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -176,7 +176,10 @@ class MainFrm : public wxFrame, public Model {
     wxString here_text, coords_text, dist_text, distfree_text;
 
     int m_NumHighlighted = 0;
-    bool pending_find = false;
+    enum {
+	PENDING_FIND_NONE,
+	PENDING_FIND,
+	PENDING_FIND_AND_GO } pending_find = PENDING_FIND_NONE;
 
     bool fullscreen_showing_menus = false;
 
@@ -435,6 +438,7 @@ public:
     void ShowInfo(const LabelInfo *here = NULL, const LabelInfo *there = NULL);
     void DisplayTreeInfo(const wxTreeItemData* data = NULL);
     void TreeItemSelected(const wxTreeItemData* data);
+    void TreeItemSearch(const wxTreeItemData* item);
     PresentationMark GetPresMark(int which);
     bool Animating() const { return m_Gfx && m_Gfx->Animating(); }
 

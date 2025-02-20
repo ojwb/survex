@@ -4,7 +4,7 @@
 //  Main frame handling for Aven.
 //
 //  Copyright (C) 2000-2002,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2024 Olly Betts
+//  Copyright (C) 2001-2025 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -1976,6 +1976,19 @@ void MainFrm::TreeItemSelected(const wxTreeItemData* item)
     UpdateStatusBar();
 }
 
+void MainFrm::TreeItemSearch(const wxTreeItemData* item)
+{
+    const TreeData* data = static_cast<const TreeData*>(item);
+    if (!data) return;
+
+    if (data->IsStation()) {
+	m_FindBox->ChangeValue(data->GetLabel()->GetText());
+    } else {
+	m_FindBox->ChangeValue(data->GetSurvey() + ".*");
+    }
+    pending_find = PENDING_FIND_AND_GO;
+}
+
 void MainFrm::OnPresNew(wxCommandEvent&)
 {
     if (m_PresList->Modified()) {
@@ -2214,7 +2227,7 @@ void MainFrm::OnPresExportMovieUpdate(wxUpdateUIEvent& event)
 
 void MainFrm::OnFind(wxCommandEvent&)
 {
-    pending_find = true;
+    pending_find = PENDING_FIND;
 }
 
 void MainFrm::OnIdle(wxIdleEvent&)
@@ -2226,7 +2239,6 @@ void MainFrm::OnIdle(wxIdleEvent&)
 
 void MainFrm::DoFind()
 {
-    pending_find = false;
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression pattern.
 
@@ -2297,6 +2309,7 @@ void MainFrm::DoFind()
 
 	wxRegEx regex;
 	if (!regex.Compile(pattern, re_flags)) {
+	    pending_find = PENDING_FIND_NONE;
 	    wxBell();
 	    return;
 	}
@@ -2331,6 +2344,11 @@ void MainFrm::DoFind()
 	 */
 	GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format(wmsg(/*Hide %d found stations*/334).c_str(), m_NumHighlighted));
     }
+    if (pending_find == PENDING_FIND_AND_GO) {
+	wxCommandEvent dummy;
+	OnGotoFound(dummy);
+    }
+    pending_find = PENDING_FIND_NONE;
 }
 
 void MainFrm::OnGotoFound(wxCommandEvent&)

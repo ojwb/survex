@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2001-2003,2005,2006,2016,2018 Olly Betts
+//  Copyright (C) 2001-2003,2005,2006,2016,2018,2025 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -120,6 +120,7 @@ BEGIN_EVENT_TABLE(AvenTreeCtrl, wxTreeCtrl)
     EVT_MENU(menu_SURVEY_HIDE, AvenTreeCtrl::OnHide)
     EVT_MENU(menu_SURVEY_SHOW, AvenTreeCtrl::OnShow)
     EVT_MENU(menu_SURVEY_HIDE_SIBLINGS, AvenTreeCtrl::OnHideSiblings)
+    EVT_MENU(wxID_FIND, AvenTreeCtrl::OnFind)
     EVT_TREE_STATE_IMAGE_CLICK(wxID_ANY, AvenTreeCtrl::OnStateClick)
 END_EVENT_TABLE()
 
@@ -369,6 +370,9 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 	PopupMenu(&menu);
     } else if (data->IsStation()) {
 	// Station: name is data->GetLabel()->GetText()
+	wxMenu menu;
+	menu.Append(wxID_FIND, wmsg(/*Find*/332));
+	PopupMenu(&menu);
     } else if (ItemHasChildren(menu_item)) {
 	// Survey:
 	wxMenu menu;
@@ -398,6 +402,7 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
 		break;
 #endif
 	}
+	menu.Append(wxID_FIND, wmsg(/*Find*/332));
 	PopupMenu(&menu);
     } else {
 	// Overlay - FIXME: menu here?
@@ -553,6 +558,13 @@ void AvenTreeCtrl::OnHideSiblings(wxCommandEvent&)
     }
     Thaw();
     m_Parent->ForceFullRedraw();
+}
+
+void AvenTreeCtrl::OnFind(wxCommandEvent&)
+{
+    // Shouldn't be available for the root item.
+    wxASSERT(menu_data);
+    m_Parent->TreeItemSearch(GetItemData(menu_item));
 }
 
 void AvenTreeCtrl::OnStateClick(wxTreeEvent& e)

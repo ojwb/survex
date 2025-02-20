@@ -4,7 +4,7 @@
 //  Tree control used for the survey tree.
 //
 //  Copyright (C) 2001, Mark R. Shinwell.
-//  Copyright (C) 2002,2006,2018 Olly Betts
+//  Copyright (C) 2002,2006,2018,2025 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -75,6 +75,7 @@ public:
     void OnHide(wxCommandEvent& e);
     void OnShow(wxCommandEvent& e);
     void OnHideSiblings(wxCommandEvent& e);
+    void OnFind(wxCommandEvent& e);
     void OnStateClick(wxTreeEvent& e);
 
     bool GetSelectionData(wxTreeItemData**) const;
