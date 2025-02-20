@@ -71,9 +71,9 @@ Changes in 1.4.13 (2024-12-01):
   + The component count and loop count are now reported when there are
     unconnected survey stations.
 
-  + *date now support ISO format dates.  Fixes #96, reported by Milosch.
+  + *date now supports ISO format dates.  Fixes #96, reported by Milosch.
 
-  + *date now support date types "surveyed" and "explored" (existing usage
+  + *date now supports date types "surveyed" and "explored" (existing usage
     without an explicit type is interpreted as "surveyed").
 
   + If the output directory isn't writable or doesn't exist we would complain
