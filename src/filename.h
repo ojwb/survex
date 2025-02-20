@@ -25,26 +25,23 @@ extern "C" {
 #endif
 
 #include "useful.h"
-#include "whichos.h"
 
 /* Characters with special meaning in filenames.  FNM_SEP_LEV and FNM_SEP_EXT
  * are required; FNM_SEP_DRV and FNM_SEP_LEV2 needn't be defined.
  */
-# if OS_WIN32
+# ifdef _WIN32
 
 #  define FNM_SEP_LEV '\\'
 #  define FNM_SEP_LEV2 '/'
 #  define FNM_SEP_DRV ':'
 #  define FNM_SEP_EXT '.'
 
-# elif OS_UNIX
+# else
 
 /* UNIX doesn't have drive letters and has only one directory separator. */
 #  define FNM_SEP_LEV '/'
 #  define FNM_SEP_EXT '.'
 
-# else
-#  error Do not know what to do for this operating system
 # endif
 
 char * path_from_fnm(const char *fnm);

@@ -30,7 +30,6 @@
 #include <locale.h>
 
 #include "cmdline.h"
-#include "whichos.h"
 #include "filename.h"
 #include "message.h"
 #include "osalloc.h"
@@ -42,10 +41,10 @@
 # include "aven.h"
 #endif
 
-#if OS_WIN32
+#ifdef _WIN32
 # define WIN32_LEAN_AND_MEAN
 # include <windows.h>
-#elif OS_UNIX
+#else
 # include <sys/types.h>
 #endif
 
@@ -177,7 +176,7 @@ static int
 default_charset(void)
 {
    if (getenv("SURVEX_UTF8")) return CHARSET_UTF8;
-#if OS_WIN32
+#ifdef _WIN32
 # ifdef AVEN
 #  define CODEPAGE GetACP()
 # else
@@ -190,7 +189,7 @@ default_charset(void)
     case 850: return CHARSET_DOSCP850;
    }
    return CHARSET_USASCII;
-#elif OS_UNIX
+#else
 #ifdef AVEN
    return CHARSET_UTF8;
 #else
@@ -265,8 +264,6 @@ default_charset(void)
    }
    return CHARSET_USASCII;
 #endif
-#else
-# error Do not know operating system!
 #endif
 }
 
@@ -408,7 +405,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       donthave:
       break;
-#if OS_WIN32
+#ifdef _WIN32
    case CHARSET_WINCP1250:
       /* MS Windows rough equivalent to ISO-8859-2 */
       if (value >= 0x80) {
@@ -555,7 +552,7 @@ add_unicode(int charset, unsigned char *p, int value)
       }
       break;
 #endif
-#if OS_WIN32
+#ifdef _WIN32
    case CHARSET_DOSCP850: {
       static const unsigned char uni2dostab[] = {
 	 255, 173, 189, 156, 207, 190, 221, 245,
@@ -727,7 +724,7 @@ add_unicode(int charset, unsigned char *p, int value)
    return 0;
 }
 
-#if OS_UNIX && defined DATADIR && defined PACKAGE
+#if !defined _WIN32 && defined DATADIR && defined PACKAGE
 /* Under Unix, we compile in the configured path */
 static const char *pth_cfg_files = DATADIR "/" PACKAGE;
 #else
@@ -925,23 +922,21 @@ void
    /* Point to argv[0] itself so we report a more helpful error if the
     * code to work out the clean appname generates a signal */
    appname_copy = argv[0];
-#if OS_UNIX
+#ifndef _WIN32
    /* use name as-is on Unix - programs run from path get name as supplied */
    appname_copy = osstrdup(argv[0]);
 #else
-   /* use the lower-cased leafname on other platforms */
+   // Use the lower-cased leafname on Microsoft Windows.
    p = leaf_from_fnm(argv[0]);
    appname_copy = p;
    while (*p) {
       *p = tolower((unsigned char)*p);
       ++p;
    }
-#if OS_WIN32
    /* Remove .exe extension if present. */
    if (p - appname_copy > 4 && memcmp(p - 4, ".exe", 4) == 0) {
        p[-4] = '\0';
    }
-#endif
 #endif
 
    /* shortcut --version so you can check the version number even when the
@@ -955,10 +950,10 @@ void
       pth_cfg_files = osstrdup(pth);
    } else if (argv[0]) {
       exe_pth = path_from_fnm(argv[0]);
-#if OS_UNIX && defined DATADIR && defined PACKAGE
+#if !defined _WIN32 && defined DATADIR && defined PACKAGE
       if (exe_pth[0]) {
 	 struct stat buf;
-#if OS_UNIX_MACOS
+#ifdef __APPLE__
 # ifndef AVEN
 	 /* On macOS the programs may be installed anywhere, with the
 	  * share directory and the binaries in the same directory. */
@@ -998,12 +993,12 @@ void
 	    }
 #endif
 	 }
-#if defined(__GNUC__) && defined(__APPLE_CC__)
+#ifdef __APPLE__
 macos_got_msg:
 #endif
 	 osfree(p);
       }
-#elif OS_WIN32
+#elif defined _WIN32
       DWORD len = 256;
       char *buf = NULL, *modname;
       while (1) {
@@ -1042,7 +1037,7 @@ macos_got_msg:
 	 if (msg_lang && !isalpha(msg_lang[0])) msg_lang = NULL;
       }
       if (!msg_lang || !*msg_lang) {
-#if OS_WIN32
+#ifdef _WIN32
 	 LCID locid;
 #endif
 #ifdef DEFAULTLANG
@@ -1050,7 +1045,7 @@ macos_got_msg:
 #else
 	 msg_lang = "en";
 #endif
-#if OS_WIN32
+#ifdef _WIN32
 	 /* GetUserDefaultUILanguage() requires Microsoft Windows 2000 or
 	  * newer, but we don't support anything earlier than Vista.
 	  */

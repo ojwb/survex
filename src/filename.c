@@ -21,10 +21,12 @@
 #include "filename.h"
 #include "debug.h"
 #include "osalloc.h"
-#include "whichos.h"
 
 #include <ctype.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
 
 typedef struct filelist {
    char *fnm;
@@ -42,12 +44,6 @@ static void filename_register_output_with_fh(const char *fnm, FILE *fh);
  * then it's assumed to be a directory even if it doesn't exist (as is an
  * empty string).
  */
-
-#if OS_UNIX || OS_WIN32
-
-# include <sys/types.h>
-# include <sys/stat.h>
-# include <stdio.h>
 
 bool
 fDirectory(const char *fnm)
@@ -67,10 +63,6 @@ fDirectory(const char *fnm)
    return ((buf.st_mode & S_IFMT) == S_IFDIR);
 #endif
 }
-
-#else
-# error Unknown OS
-#endif
 
 /* safe_fopen should be used when writing a file
  * fopenWithPthAndExt should be used when reading a file
@@ -285,7 +277,7 @@ add_ext(const char *fnm, const char *ext)
    return fnmNew;
 }
 
-#if OS_WIN32
+#ifdef _WIN32
 
 /* NB "c:fred" isn't relative. Eg "c:\data\c:fred" won't work */
 static bool
@@ -298,7 +290,7 @@ fAbsoluteFnm(const char *fnm)
        (ch && fnm[1] == ':' && (ch | 32) >= 'a' && (ch | 32) <= 'z');
 }
 
-#elif OS_UNIX
+#else
 
 static bool
 fAbsoluteFnm(const char *fnm)
@@ -365,7 +357,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 {
    FILE *fh = fopenWithPthAndExt(pth, fnm, ext, mode, fnmUsed);
    if (fh == NULL) {
-#if OS_UNIX
+#ifndef _WIN32
       bool changed = false;
       char *fnm_trans = osstrdup(fnm);
       for (char *p = fnm_trans; *p; p++) {

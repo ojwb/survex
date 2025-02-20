@@ -29,7 +29,6 @@
 #include "filename.h"
 #include "message.h"
 #include "osalloc.h"
-#include "whichos.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -248,7 +247,7 @@ main(int argc, char **argv)
 
    if (fnm_out) {
       safe_fclose(fh_out);
-#if OS_WIN32
+#ifdef _WIN32
       /* UNIX rename atomically replaces, so doesn't need this.
        * WIN32 won't overwrite (from tests) so needs this code.
        */

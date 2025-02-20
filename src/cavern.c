@@ -41,9 +41,8 @@
 #include "out.h"
 #include "str.h"
 #include "validate.h"
-#include "whichos.h"
 
-#if OS_WIN32
+#ifdef _WIN32
 # include <conio.h> /* for _kbhit() and _getch() */
 #endif
 
@@ -98,7 +97,7 @@ static const struct option long_opts[] = {
    {"warnings-are-errors", no_argument, 0, 'w'},
    {"log", no_argument, 0, 1},
    {"3d-version", required_argument, 0, 'v'},
-#if OS_WIN32
+#ifdef _WIN32
    {"pause", no_argument, 0, 2},
 #endif
    {"help", no_argument, 0, HLP_HELP},
@@ -134,7 +133,7 @@ delete_output_on_error(void)
       filename_delete_output();
 }
 
-#if OS_WIN32
+#ifdef _WIN32
 static void
 pause_on_exit(void)
 {
@@ -277,7 +276,7 @@ main(int argc, char **argv)
        case 1:
 	 fLog = true;
 	 break;
-#if OS_WIN32
+#ifdef _WIN32
        case 2:
 	 atexit(pause_on_exit);
 	 break;

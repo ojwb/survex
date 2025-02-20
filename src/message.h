@@ -93,7 +93,7 @@ int select_charset(int charset_code);
  */
 #ifdef MSG_SETUP_PROJ_SEARCH_PATH
 /* We only need this on these platforms. */
-# if OS_WIN32
+# ifdef _WIN32
 #  include <proj.h>
 #  define msg_init(ARGV) do {\
 	(msg_init)(ARGV); \
