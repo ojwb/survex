@@ -1,4 +1,4 @@
-; pos=fail warn=75 error=11
+; pos=fail warn=76 error=12
 ; Invalid dates:
 *begin
 *date 1899.12.31
@@ -27,6 +27,7 @@
 *date 1899-2079
 *date 1984.12.13-1984.13.12
 *date 1984.12.13-1985.02.29
+*date 2013.04.12-13
 ; Invalid ISO dates:
 *date 1899-12-31
 *date 1899-12-31
