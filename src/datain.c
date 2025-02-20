@@ -3714,8 +3714,10 @@ calculate_convergence_lonlat(const char *proj_str, double lon, double lat)
 	 * normalising the output order here works too.
 	 */
 	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX, pj);
-	proj_destroy(pj);
-	pj = pj_norm;
+	if (pj_norm) {
+	    proj_destroy(pj);
+	    pj = pj_norm;
+	}
     }
 #endif
     PJ_FACTORS factors = proj_factors(pj, lp);
