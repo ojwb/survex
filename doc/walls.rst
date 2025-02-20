@@ -93,14 +93,19 @@ features are likely to be handled while more obscure features may not be.
   set ``CLPSX`` with an optional leading ``/`` or ``\\`` then we map it to
   Survex flags like so (since Survex 1.4.10):
 
-  + ``C`` is ignored
+  + ``C`` in Compass causes legs it is set on to not be affected by loop
+    closure, but setting Compass flags in the Walls ``#SEGMENT`` is just a
+    user-level convention so Walls won't do anything in response to ``C``, so
+    Survex ignores it too.
   + ``L`` is mapped to Survex's "duplicate" flag
   + ``P`` is mapped to Survex's "surface" flag
   + ``S`` is mapped to Survex's "splay" flag
-  + ``X`` in Compass completely excludes the leg from processing, but it can't
-    in Walls and it seems in practice it's sometimes used in Walls to flag
-    data to just exclude from the surveyed length, so we treat it as an alias
-    for ``L`` and map it to Survex's "duplicate" flag.
+  + ``X`` in Compass completely excludes the leg from processing, but setting
+    Compass flags in the Walls ``#SEGMENT`` is just a user-level convention
+    so Walls won't do anything in response to ``X``.  It seems in practice that
+    ``X`` is sometimes used in Walls datasets to flag data to just exclude from
+    the surveyed length, so we treat it as an alias for ``L`` and map it to
+    Survex's "duplicate" flag.
 
   Other values of ``#SEGMENT`` are ignored.
 
