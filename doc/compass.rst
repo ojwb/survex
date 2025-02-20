@@ -153,7 +153,10 @@ assumptions:
   since this is the date Compass stores in this situation, and it
   seems very unlikely to occur in real data.
 - Passage dimensions are currently ignored.
-- Shot flag ``C`` is currently ignored.
+- Shot flag ``C`` in Compass causes flagged legs to not be subject to
+  loop closure.  Survex currently sets the SDs of such legs to 1mm,
+  so flagged legs can still move slightly during loop closure.
+  (Since 1.4.16; earlier versions ignored this flag entirely.)
 - Shot flag ``L`` is mapped to Survex's "duplicate" leg flag.
 - Shot flag ``P`` is mapped to Survex's "surface" leg flag. The
   Compass documentation describes shot flag ``P`` as "Exclude this
@@ -228,7 +231,8 @@ limitations and assumptions:
 - Passage dimensions are translated to passage tubes, but Survex
   may interpret them differently from Compass.
 
-- Shot flag ``C`` is currently ignored.
+- Shot flag ``C`` is ignored.  It only seems to be useful in unprocessed survey
+  data.
 
 - Shot flag ``L`` is mapped to Survex's "duplicate" leg flag.
 

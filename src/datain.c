@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2024 Olly Betts
+ * Copyright (C) 1991-2025 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1844,6 +1844,11 @@ parse_walls_segment(unsigned long* p_compass_dat_flags)
     }
     if (isBlank(ch) || isEol(ch) || isComm(ch)) {
 	if ((possible_compass_dat_flags &~ valid_compass_dat_flags) == 0) {
+	    // In Compass the C flag causes flagged legs to not be subject to
+	    // loop closure.  However C being set in the Walls #SEGMENT value
+	    // has no effect on Walls' loop closure, so it shouldn't in Survex
+	    // either and we mask it out here to achieve that.
+	    possible_compass_dat_flags &= ~BIT('C' - 'A');
 	    // Compass DAT `X` means exclude the data, but it seems to be used
 	    // in Walls data to mark duplicate data, so we map it to `L`.
 	    if (possible_compass_dat_flags & BIT('X' - 'A')) {
@@ -4129,10 +4134,25 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
       }
    }
 
-   // Apply any Walls variance overrides.
-   if (VAR(Dx) >= 0) vx = VAR(Dx);
-   if (VAR(Dy) >= 0) vy = VAR(Dy);
-   if (VAR(Dz) >= 0) vz = VAR(Dz);
+   // Apply any Walls variance overrides (also from Compass C shot flag).
+   if (VAR(Dx) >= 0) {
+       vx = VAR(Dx);
+#ifndef NO_COVARIANCES
+       czx = cxy = 0.0;
+#endif
+   }
+   if (VAR(Dy) >= 0) {
+       vy = VAR(Dy);
+#ifndef NO_COVARIANCES
+       cxy = cyz = 0.0;
+#endif
+   }
+   if (VAR(Dz) >= 0) {
+       vz = VAR(Dz);
+#ifndef NO_COVARIANCES
+       cyz = czx = 0.0;
+#endif
+   }
 
 #if DEBUG_DATAIN_1
    printf("Just before addleg, vx = %f\n", vx);
@@ -4537,6 +4557,13 @@ data_cartesian(void)
 	     }
 	     if (compass_dat_flags) {
 		pcs->flags |= convert_compass_dat_flags(compass_dat_flags);
+		if ((compass_dat_flags & BIT('C' - 'A'))) {
+		    // Set SDs to 1mm (station position error is not currently
+		    // applied to cartesian data).
+		    VAR(Dx) = 1e-6;
+		    VAR(Dy) = 1e-6;
+		    VAR(Dz) = 1e-6;
+		}
 	     }
 	     process_cartesian(fr, to, first_stn == To);
 	     pcs->flags = save_flags;
@@ -4822,10 +4849,9 @@ data_normal(void)
 		    *   S (splay)
 		    *   P (no plot) (mapped to FLAG_SURFACE)
 		    *   X (exclude data)
-		    * FIXME: Defined flags we currently ignore:
-		    *   C (no adjustment) (set all (co)variances to 0?  Then
-		    *	  we need to handle a loop of such legs or a traverse
-		    *	  of such legs between two fixed points...)
+		    *   C (no adjustment) (Currently Survex sets the leg's
+		    *     SDs to 1mm so we can still handle a loop of such legs
+		    *     or a traverse of such legs between two fixed points.)
 		    */
 		   nextch();
 		}
@@ -5309,6 +5335,12 @@ inches_only:
 	     }
 	     if (compass_dat_flags) {
 		pcs->flags |= convert_compass_dat_flags(compass_dat_flags);
+		if ((compass_dat_flags & BIT('C' - 'A'))) {
+		    // Set override SDs to 1mm.
+		    VAR(Dx) = 1e-6;
+		    VAR(Dy) = 1e-6;
+		    VAR(Dz) = 1e-6;
+		}
 	     }
 	     switch (pcs->style) {
 	      case STYLE_NORMAL:
