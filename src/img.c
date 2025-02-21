@@ -121,39 +121,6 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 #  endif
 # endif
 
-#if defined __BYTE_ORDER__ && defined __ORDER_LITTLE_ENDIAN__ && \
-    __BYTE_ORDER__-0 == __ORDER_LITTLE_ENDIAN__-0
-/* Use optimised versions when we know the byte order is little-endian. */
-
-static inline INT32_T get32(FILE *fh) {
-    INT32_T w = 0;
-    if (fread(&w, 4, 1, fh) == 0) {
-	/* We check feof() and ferror() afterwards, so checking the return
-	 * value achieves nothing, but we get a warning from glibc's
-	 * _FORTIFY_SOURCE if we don't pretend to. */
-    }
-    return w;
-}
-
-static void put32(INT32_T w, FILE *fh) {
-    fwrite(&w, 4, 1, fh);
-}
-
-static inline INT16_T get16(FILE *fh) {
-    INT16_T w = 0;
-    if (fread(&w, 2, 1, fh) == 0) {
-	/* We check feof() and ferror() afterwards, so checking the return
-	 * value achieves nothing, but we get a warning from glibc's
-	 * _FORTIFY_SOURCE if we don't pretend to. */
-    }
-    return w;
-}
-
-static void put16(INT16_T w, FILE *fh) {
-    fwrite(&w, 2, 1, fh);
-}
-
-#else
 static INT32_T
 get32(FILE *fh)
 {
@@ -188,7 +155,6 @@ put16(INT16_T word, FILE *fh)
    PUTC((char)(w), fh);
    PUTC((char)(w >> 8l), fh);
 }
-#endif
 
 #ifdef __cplusplus
 # include <algorithm>
