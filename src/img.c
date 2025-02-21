@@ -1,7 +1,7 @@
 /* img.c
  * Routines for reading and writing processed survey data files
  *
- * Copyright (C) 1993-2024 Olly Betts
+ * Copyright (C) 1993-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@
 # include <stdint.h>
 # define INT32_T int32_t
 # define UINT32_T uint32_t
+# define INT16_T int16_t
+# define UINT16_T uint16_t
 #else
 # include <limits.h>
 # if INT_MAX >= 2147483647
@@ -50,6 +52,8 @@
 #  define INT32_T long
 #  define UINT32_T unsigned long
 # endif
+# define INT16_T short
+# define UINT16_T unsigned short
 #endif
 
 #if defined HAVE_SNPRINTF || \
@@ -66,6 +70,75 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
     result = vsprintf(s, format, ap);
     va_end(ap);
     return result;
+}
+#endif
+
+#if defined __BYTE_ORDER__ && defined __ORDER_LITTLE_ENDIAN__ && \
+    __BYTE_ORDER__-0 == __ORDER_LITTLE_ENDIAN__-0
+/* Use optimised versions when we know the byte order is little-endian. */
+
+static inline INT32_T get32(FILE *fh) {
+    INT32_T w = 0;
+    if (fread(&w, 4, 1, fh) == 0) {
+	/* We check feof() and ferror() afterwards, so checking the return
+	 * value achieves nothing, but we get a warning from glibc's
+	 * _FORTIFY_SOURCE if we don't pretend to. */
+    }
+    return w;
+}
+
+static void put32(INT32_T w, FILE *fh) {
+    fwrite(&w, 4, 1, fh);
+}
+
+static inline INT16_T get16(FILE *fh) {
+    INT16_T w = 0;
+    if (fread(&w, 2, 1, fh) == 0) {
+	/* We check feof() and ferror() afterwards, so checking the return
+	 * value achieves nothing, but we get a warning from glibc's
+	 * _FORTIFY_SOURCE if we don't pretend to. */
+    }
+    return w;
+}
+
+static void put16(INT16_T w, FILE *fh) {
+    fwrite(&w, 2, 1, fh);
+}
+
+#else
+static INT32_T
+get32(FILE *fh)
+{
+   UINT32_T w = GETC(fh);
+   w |= (UINT32_T)GETC(fh) << 8l;
+   w |= (UINT32_T)GETC(fh) << 16l;
+   w |= (UINT32_T)GETC(fh) << 24l;
+   return (INT32_T)w;
+}
+
+static void
+put32(UINT32_T w, FILE *fh)
+{
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
+   PUTC((char)(w >> 16l), fh);
+   PUTC((char)(w >> 24l), fh);
+}
+
+static short
+get16(FILE *fh)
+{
+   UINT32_T w = GETC(fh);
+   w |= (UINT32_T)GETC(fh) << 8l;
+   return (short)w;
+}
+
+static void
+put16(short word, FILE *fh)
+{
+   unsigned short w = (unsigned short)word;
+   PUTC((char)(w), fh);
+   PUTC((char)(w >> 8l), fh);
 }
 #endif
 
@@ -117,41 +190,6 @@ using std::min;
 #  define min(X, Y) ((X) < (Y) ? (X) : (Y))
 # endif
 #endif
-
-static INT32_T
-get32(FILE *fh)
-{
-   UINT32_T w = GETC(fh);
-   w |= (UINT32_T)GETC(fh) << 8l;
-   w |= (UINT32_T)GETC(fh) << 16l;
-   w |= (UINT32_T)GETC(fh) << 24l;
-   return (INT32_T)w;
-}
-
-static void
-put32(UINT32_T w, FILE *fh)
-{
-   PUTC((char)(w), fh);
-   PUTC((char)(w >> 8l), fh);
-   PUTC((char)(w >> 16l), fh);
-   PUTC((char)(w >> 24l), fh);
-}
-
-static short
-get16(FILE *fh)
-{
-   UINT32_T w = GETC(fh);
-   w |= (UINT32_T)GETC(fh) << 8l;
-   return (short)w;
-}
-
-static void
-put16(short word, FILE *fh)
-{
-   unsigned short w = (unsigned short)word;
-   PUTC((char)(w), fh);
-   PUTC((char)(w >> 8l), fh);
-}
 
 static char *
 baseleaf_from_fnm(const char *fnm)

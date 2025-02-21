@@ -25,7 +25,6 @@
 # error config.h must be included first in each C/C++ source file
 #endif
 
-#include <stdint.h>
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
@@ -86,46 +85,5 @@
 /* macro to convert argument to a string literal */
 #define STRING(X) STRING_(X)
 #define STRING_(X) #X
-
-#ifndef WORDS_BIGENDIAN
-# define put16(W, FH) BLK(int16_t w = (W); fwrite(&w, 2, 1, (FH));)
-# define put32(W, FH) BLK(int32_t w = (W); fwrite(&w, 4, 1, (FH));)
-
-# ifdef __GNUC__
-__attribute__((unused))
-# endif
-static inline int16_t get16(FILE *fh) {
-    int16_t w;
-    if (fread(&w, 2, 1, fh) == 0) {
-	/* We check feof() and ferror() afterwards, so checking the return
-	 * value achieves nothing, but we get a warning from glibc's
-	 * _FORTIFY_SOURCE if we don't pretend to. */
-    }
-    return w;
-}
-
-# ifdef __GNUC__
-__attribute__((unused))
-# endif
-static inline int32_t get32(FILE *fh) {
-    int32_t w;
-    if (fread(&w, 4, 1, fh) == 0) {
-	/* We check feof() and ferror() afterwards, so checking the return
-	 * value achieves nothing, but we get a warning from glibc's
-	 * _FORTIFY_SOURCE if we don't pretend to. */
-    }
-    return w;
-}
-#else
-void useful_put16(int16_t, FILE *);
-void useful_put32(int32_t, FILE *);
-int16_t useful_get16(FILE *);
-int32_t useful_get32(FILE *);
-
-# define put16(W, FH) useful_put16(W, FH)
-# define put32(W, FH) useful_put32(W, FH)
-# define get16(FH) useful_get16(FH)
-# define get32(FH) useful_get32(FH)
-#endif
 
 #endif /* !USEFUL_H */

@@ -51,6 +51,7 @@
 #define __STDC_CONSTANT_MACROS
 
 #include <assert.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
