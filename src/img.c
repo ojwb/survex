@@ -173,18 +173,18 @@ put32(UINT32_T w, FILE *fh)
    PUTC((char)(w >> 24l), fh);
 }
 
-static short
+static INT16_T
 get16(FILE *fh)
 {
-   UINT32_T w = GETC(fh);
-   w |= (UINT32_T)GETC(fh) << 8l;
+   UINT16_T w = GETC(fh);
+   w |= (UINT16_T)GETC(fh) << 8l;
    return (short)w;
 }
 
 static void
-put16(short word, FILE *fh)
+put16(INT16_T word, FILE *fh)
 {
-   unsigned short w = (unsigned short)word;
+   UINT16_T w = (UINT16_T)word;
    PUTC((char)(w), fh);
    PUTC((char)(w >> 8l), fh);
 }
