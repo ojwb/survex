@@ -1,5 +1,0 @@
-addon: survex
-description: "syntax highlighting for Survex data files"
-files:
-  - ftdetect/survex.vim
-  - syntax/survex.vim

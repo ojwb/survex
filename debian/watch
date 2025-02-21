@@ -1,7 +1,0 @@
-# watch control file
-# Run "uscan" to check for upstream updates and more.
-version=3
-# Site		Directory		Pattern			Version	Script
-opts="pgpsigurlmangle=s/$/.asc/" https://survex.com/software/([\d\.]*)/survex-([\d\.]*).tar.gz	debian	uupdate
-# For stable releases:
-# https://survex.com/download.html?platform=unix	software/[\d\.]*/survex-([\d\.]*).tar.gz	debian	uupdate
