@@ -149,9 +149,8 @@ get16(FILE *fh)
 }
 
 static void
-put16(INT16_T word, FILE *fh)
+put16(INT16_T w, FILE *fh)
 {
-   UINT16_T w = (UINT16_T)word;
    PUTC((char)(w), fh);
    PUTC((char)(w >> 8l), fh);
 }
