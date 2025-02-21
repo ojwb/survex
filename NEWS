@@ -1,3 +1,45 @@
+Changes in 1.4.16 (2025-02-21):
+
+* aven: Improve "Colour by Survey".  Surveys whose names only differ in the
+  final character tended to get visually similar colours (often
+  indistinguishable), but now should get very different colours.  Reported by
+  Eric C. Landgraf and Patrick Warren.
+
+* aven: Add "Find" item to right-click menu on survey tree which triggers a
+  search for the survey or station that was right-clicked on which highlights
+  with a yellow blob on each station, like double-clicking used to before
+  1.2.36.  Requested by Patrick Warren.
+
+* cavern: Fix calculation of convergence which could incorrectly give zero
+  with some PROJ versions < 9.3.0.  Unclear exactly which versions are
+  affected, but seen with PROJ 8.2 and can't affect PROJ >= 9.3.0.  Reported by
+  Eric C. Landgraf.
+
+* cavern: Report approximate true grid convergence range which provides a way
+  to assess if the representative location(s) specified by `*declination auto`
+  are suitable.  Fixes #141, reported by Eric C. Landgraf
+
+* cavern: Support Compass 'C' shot flag.  In Compass this causes flagged legs
+  to not be subject to loop closure.  Survex now sets the SDs of such legs to
+  1mm, so flagged legs can still move slightly during loop closure.  Previously
+  Survex ignore this flag entirely.
+
+* Document Microsoft Windows version requirements.
+
+* Enable SSE2 by default on 32-bit x86.  Intel CPUs without SSE2 were
+  discontinued ~18 years ago so it seems very unlikely anyone is actually still
+  using one for Survex.  We keep hitting testcase failures due to excess
+  precision from 387 FP instructions, and the time spent adjusting testcases to
+  avoid these would be better spent on new features, etc.
+
+* Tighten up charset name parsing a little.
+
+* Merge updates to Russian translation from Vasily Vl. Suhachev.
+
+* Various minor improvements to documentation.
+
+* Various minor improvements to test coverage.
+
 Changes in 1.4.15 (2024-12-24):
 
 * aven: Avoid infinite redraw loop if GDAL gives an error loading geodata to
