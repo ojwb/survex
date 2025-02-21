@@ -1,6 +1,6 @@
 /* debug.h
  * SURVEX debugging info control macros
- * Copyright (C) 1993-1996,2001,2002,2015 Olly Betts
+ * Copyright (C) 1993-1996,2001,2002,2015,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,13 @@
 
 /* macro to report detected bug */
 #ifdef DEBUG_INVALID
-# define BUG(M) BLK(fputsnl(__FILE__ ":" STRING(__LINE__) ": " M, STDERR);\
- fatalerror(/*Bug in program detected! Please report this to the authors*/11);)
+# define BUG(M) do {\
+    fputsnl(__FILE__ ":" STRING(__LINE__) ": " M, STDERR);\
+    fatalerror(/*Bug in program detected! Please report this to the authors*/11);\
+  } while (0)
 #else
-# define BUG(M) fatalerror(/*Bug in program detected! Please report this to the authors*/11)
+# define BUG(M) \
+    fatalerror(/*Bug in program detected! Please report this to the authors*/11)
 #endif
 
 /* assert macro, which calls BUG() if it fails */

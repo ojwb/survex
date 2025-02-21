@@ -60,8 +60,10 @@ static const char *szLink = " - ";
 static const char *szLinkEq = " = "; /* use this one for equates */
 
 #if 0
-#define fprint_prefix(FH, NAME) BLK((fprint_prefix)((FH), (NAME));\
-				    fprintf((FH), " [%p]", (void*)(NAME)); )
+#define fprint_prefix(FH, NAME) do {\
+    (fprint_prefix)((FH), (NAME));\
+    fprintf((FH), " [%p]", (void*)(NAME));\
+  } while (0)
 #endif
 
 static stack *ptr; /* Ptr to TRaverse linked list for in-between travs */

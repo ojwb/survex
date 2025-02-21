@@ -1,7 +1,7 @@
 /* validate.h
  * Header file for validate.c
  *
- * Copyright (C) 1994,1996,2001 Olly Betts
+ * Copyright (C) 1994,1996,2001,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,12 +29,12 @@ void dump_node(node *stn);
 void dump_network(void);
 
 #if (VALIDATE==0)
-# define validate() NOP
-# define dump_node(S) NOP
+# define validate() (void)0
+# define dump_node(S) (void)0
 #endif
 
 #if (DUMP_NETWORK==0)
-# define dump_network() NOP
+# define dump_network() (void)0
 #endif
 
 #endif

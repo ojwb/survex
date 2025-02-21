@@ -1,6 +1,6 @@
 /* useful.h
  * Lots of oddments that come in handy generally
- * Copyright (C) 1993-2003,2004,2010,2011,2014 Olly Betts
+ * Copyright (C) 1993-2003,2004,2010,2011,2014,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,6 @@
 #include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
-
-/* Macro to allow easy building of macros contain multiple statements, such
- * that the likes of “if (x == y) macro1(x); else x = 2;” works properly  */
-#define BLK(X) do {X} while(0)
-
-/* Macro to do nothing, but avoid compiler warnings about empty if bodies &c */
-#define NOP (void)0
 
 /* In C++ code, #include<algorithm> and use std::max and std::min instead. */
 #ifndef __cplusplus
@@ -72,7 +65,7 @@
 #define putnl() putchar('\n')    /* print a newline char */
 #define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */
 /* print a line followed by a newline char to a file */
-#define fputsnl(SZ, FH) BLK(fputs((SZ), (FH)); PUTC('\n', (FH));)
+#define fputsnl(SZ, FH) do { fputs((SZ), (FH)); PUTC('\n', (FH)); } while (0)
 #define sqrd(X) ((X) * (X))        /* macro to square things */
 
 /* 2D Euclidean distance */
