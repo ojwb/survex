@@ -457,7 +457,7 @@ do_stats(void)
        double convergence_max = -HUGE_VAL;
        prefix **pfx = pfxLo;
        for (int bound = 0; bound < 2; ++bound) {
-	   for (int d = 6; d <= 9; ++d) {
+	   for (int d = 6; d < 9; ++d) {
 	       if (pfx[d]) {
 		   pos *p = pfx[d]->pos;
 		   double convergence = calculate_convergence_xy(proj_str_out,
