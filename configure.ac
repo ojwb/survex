@@ -282,8 +282,12 @@ AC_CHECK_HEADERS(string.h)
 
 AC_CHECK_FUNCS([popen hypot mmap])
 
-dnl Much faster than using getc()/putc(), at least on Linux.
+dnl We don't access a FILE* from multiple threads and using the unlocked
+dnl versions has significantly less overhead, especially when reading/writing
+dnl byte-by-byte.  These are specified by POSIX:
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
+dnl These are GNU extensions in glibc:
+AC_CHECK_FUNCS([feof_unlocked ferror_unlocked fread_unlocked fwrite_unlocked])
 
 AC_CHECK_FUNCS([setenv unsetenv])
 
@@ -371,15 +375,40 @@ if test no = "$mswindows"; then
 fi
 
 AH_BOTTOM(
-[/* Use getc_unlocked() and putc_unlocked() where available, since they are
+[/* Use _unlocked() variants of stdio functions where available, since they are
  * faster, and we don't multithread file accesses.
  */
+
+#ifdef HAVE_FEOF_UNLOCKED
+# define FEOF(F) feof_unlocked(F)
+#else
+# define FEOF(F) feof(F)
+#endif
+
+#ifdef HAVE_FERROR_UNLOCKED
+# define FERROR(F) ferror_unlocked(F)
+#else
+# define FERROR(F) ferror(F)
+#endif
+
+#ifdef HAVE_FREAD_UNLOCKED
+# define FREAD(P, S, N, F) fread_unlocked(P, S, N, F)
+#else
+# define FREAD(P, S, N, F) fread(P, S, N, F)
+#endif
+
+#ifdef HAVE_FWRITE_UNLOCKED
+# define FWRITE(P, S, N, F) fwrite_unlocked(P, S, N, F)
+#else
+# define FWRITE(P, S, N, F) fwrite(P, S, N, F)
+#endif
 
 #ifdef HAVE_GETC_UNLOCKED
 # define GETC(F) getc_unlocked(F)
 #else
 # define GETC(F) getc(F)
 #endif
+
 #ifdef HAVE_PUTC_UNLOCKED
 # define PUTC(C, F) putc_unlocked(C, F)
 #else

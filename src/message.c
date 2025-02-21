@@ -867,7 +867,7 @@ parse_msg_file(int charset_code)
 		 fnm, pth_cfg_files);
    }
 
-   if (fread(header, 1, 20, fh) < 20 ||
+   if (FREAD(header, 1, 20, fh) < 20 ||
        memcmp(header, "Svx\nMsg\r\n\xfe\xff", 12) != 0) {
       fatalerror(/*Problem with message file “%s”*/1001, fnm);
    }
@@ -881,7 +881,7 @@ parse_msg_file(int charset_code)
    for (i = 16; i < 20; i++) len = (len << 8) | header[i];
 
    p = osmalloc(len);
-   if (fread(p, 1, len, fh) < len)
+   if (FREAD(p, 1, len, fh) < len)
       fatalerror(/*Message file truncated?*/1003);
 
    fclose(fh);

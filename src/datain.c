@@ -684,7 +684,7 @@ data_file_compass_dat_or_clp(bool is_clp)
 	process_eol();
     }
 
-    while (ch != EOF && !ferror(file.fh)) {
+    while (ch != EOF && !FERROR(file.fh)) {
 	static const reading compass_order[] = {
 	    CompassDATFr, CompassDATTo, Tape, CompassDATComp, CompassDATClino,
 	    CompassDATLeft, CompassDATUp, CompassDATDown, CompassDATRight,
@@ -857,7 +857,7 @@ data_file_compass_mak(void)
 	int len;
     } *folder_stack = NULL;
 
-    while (ch != EOF && !ferror(file.fh)) {
+    while (ch != EOF && !FERROR(file.fh)) {
 	switch (ch) {
 	  case '#': {
 	      /* include a file */
@@ -2410,7 +2410,7 @@ data_file_walls_srv(void)
     else
 	pcs->ordering = p_walls_options->data_order_rect;
 
-    while (ch != EOF && !ferror(file.fh)) {
+    while (ch != EOF && !FERROR(file.fh)) {
 next_line:
 	skipblanks();
 	if (ch != '#') {
@@ -2536,7 +2536,7 @@ next_line:
 		if (!file.fh) {
 		    fatalerror(/*Failed to create temporary file*/498);
 		}
-		fwrite(s_str(&line), s_len(&line), 1, file.fh);
+		FWRITE(s_str(&line), s_len(&line), 1, file.fh);
 #endif
 		fseek(file.fh, fp_args.offset - file.lpos, SEEK_SET);
 		ch = (unsigned char)s_str(&line)[fp_args.offset - file.lpos - 1];
@@ -3027,7 +3027,7 @@ data_file_walls_wpj(void)
     int depth = 0;
     int detached_nest_level = 0;
     bool in_survey = false;
-    while (!ferror(file.fh)) {
+    while (!FERROR(file.fh)) {
 	walls_wpj_cmd tok = WALLS_WPJ_CMD_NULL;
 	skipblanks();
 	if (ch != '.') {
@@ -3158,7 +3158,7 @@ process_entry:
 		walls_swap_macro_tables();
 		pop_walls_options();
 
-		if (ferror(file.fh))
+		if (FERROR(file.fh))
 		    fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
 		(void)fclose(file.fh);
@@ -3384,7 +3384,7 @@ data_file_survex(void)
 	process_eol();
     }
 
-    while (ch != EOF && !ferror(file.fh)) {
+    while (ch != EOF && !FERROR(file.fh)) {
 	if (!process_non_data_line()) {
 	    f_export_ok = false;
 	    switch (pcs->style) {
@@ -3510,7 +3510,7 @@ data_file(const char *pth, const char *fnm)
        break;
    }
 
-   if (ferror(file.fh))
+   if (FERROR(file.fh))
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 
    (void)fclose(file.fh);

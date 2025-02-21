@@ -681,7 +681,7 @@ main(int argc, char **argv)
       putnl();
       fs = fopenWithPthAndExt("", specfile, NULL, "r", &fnm_used);
       if (fs == NULL) fatalerror(/*Couldn’t open file “%s”*/24, specfile);
-      while (!feof(fs)) {
+      while (!FEOF(fs)) {
 	 char *lbuf = getline_alloc(fs, 32);
 	 lineno++;
 	 if (!lbuf)

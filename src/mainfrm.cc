@@ -220,7 +220,7 @@ static void write_double(double d, FILE * fh) {
     size_t l = strlen(buf);
     while (l > 1 && buf[l - 1] == '0') --l;
     if (l > 1 && buf[l - 1] == '.') --l;
-    fwrite(buf, l, 1, fh);
+    FWRITE(buf, l, 1, fh);
 }
 
 class AvenPresList : public wxListCtrl {
@@ -412,7 +412,7 @@ class AvenPresList : public wxListCtrl {
 	    }
 	    DeleteAllItems();
 	    long item = 0;
-	    while (!feof(fh_pres)) {
+	    while (!FEOF(fh_pres)) {
 		char buf[4096];
 		size_t i = 0;
 		while (i < sizeof(buf) - 1) {

@@ -73,6 +73,54 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 }
 #endif
 
+# ifndef FEOF
+#  ifdef HAVE_FEOF_UNLOCKED
+#   define FEOF(F) feof_unlocked(F)
+#  else
+#   define FEOF(F) feof(F)
+#  endif
+#endif
+
+# ifndef FERROR
+#  ifdef HAVE_FERROR_UNLOCKED
+#   define FERROR(F) ferror_unlocked(F)
+#  else
+#   define FERROR(F) ferror(F)
+#  endif
+#endif
+
+# ifndef FREAD
+#  ifdef HAVE_FREAD_UNLOCKED
+#   define FREAD(P, S, N, F) fread_unlocked(P, S, N, F)
+#  else
+#   define FREAD(P, S, N, F) fread(P, S, N, F)
+#  endif
+#endif
+
+# ifndef FWRITE
+#  ifdef HAVE_FWRITE_UNLOCKED
+#   define FWRITE(P, S, N, F) fwrite_unlocked(P, S, N, F)
+#  else
+#   define FWRITE(P, S, N, F) fwrite(P, S, N, F)
+#  endif
+# endif
+
+# ifndef GETC
+#  ifdef HAVE_GETC_UNLOCKED
+#   define GETC(F) getc_unlocked(F)
+#  else
+#   define GETC(F) getc(F)
+#  endif
+# endif
+
+# ifndef PUTC
+#  ifdef HAVE_PUTC_UNLOCKED
+#   define PUTC(C, F) putc_unlocked(C, F)
+#  else
+#   define PUTC(C, F) putc(C, F)
+#  endif
+# endif
+
 #if defined __BYTE_ORDER__ && defined __ORDER_LITTLE_ENDIAN__ && \
     __BYTE_ORDER__-0 == __ORDER_LITTLE_ENDIAN__-0
 /* Use optimised versions when we know the byte order is little-endian. */
@@ -182,13 +230,8 @@ using std::min;
 /* path isn't used in img.c, but EXT is */
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) \
     ((*(X) = NULL), fopen(FNM,MODE))
-# ifndef PUTC
-#  define PUTC(C, FH) putc(C, FH)
-# endif
-# ifndef GETC
-#  define GETC(FH) getc(FH)
-# endif
-# define fputsnl(S, FH) (fputs((S), (FH)) == EOF ? EOF : putc('\n', (FH)))
+
+# define fputsnl(S, FH) (fputs((S), (FH)) == EOF ? EOF : PUTC('\n', (FH)))
 # define SVX_ASSERT(X)
 
 static char *
@@ -1321,9 +1364,9 @@ xyz_file:
      }
    }
 
-   if (fread(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
+   if (FREAD(buf, LITLEN(FILEID) + 1, 1, pimg->fh) != 1 ||
        memcmp(buf, FILEID"\n", LITLEN(FILEID) + 1) != 0) {
-      if (fread(buf + LITLEN(FILEID) + 1, 8, 1, pimg->fh) == 1 &&
+      if (FREAD(buf + LITLEN(FILEID) + 1, 8, 1, pimg->fh) == 1 &&
 	  memcmp(buf, FILEID"\r\nv0.01\r\n", LITLEN(FILEID) + 9) == 0) {
 	 /* v0 3d file with DOS EOLs */
 	 pimg->version = 0;
@@ -1363,7 +1406,7 @@ xyz_file:
    }
    ch = GETC(pimg->fh);
    if (ch == '0') {
-      if (fread(buf, 4, 1, pimg->fh) != 1 || memcmp(buf, ".01\n", 4) != 0) {
+      if (FREAD(buf, 4, 1, pimg->fh) != 1 || memcmp(buf, ".01\n", 4) != 0) {
 	 img_errno = IMG_BADFORMAT;
 	 goto error;
       }
@@ -1729,7 +1772,7 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
 	   4,  8,  8,  16, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 	   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
        };
-       fwrite(codelengths, 32, 1, pimg->fh);
+       FWRITE(codelengths, 32, 1, pimg->fh);
    }
 #endif
    pimg->fRead = 0; /* writing to this file */
@@ -1808,8 +1851,8 @@ read_coord(FILE *fh, img_point *pt)
    pt->x = get32(fh) / 100.0;
    pt->y = get32(fh) / 100.0;
    pt->z = get32(fh) / 100.0;
-   if (ferror(fh) || feof(fh)) {
-      img_errno = feof(fh) ? IMG_BADFORMAT : IMG_READERROR;
+   if (FERROR(fh) || FEOF(fh)) {
+      img_errno = FEOF(fh) ? IMG_BADFORMAT : IMG_READERROR;
       return 0;
    }
    return 1;
@@ -1827,26 +1870,26 @@ read_v3label(img *pimg)
    char *q;
    long len = GETC(pimg->fh);
    if (len == EOF) {
-      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
       return img_BAD;
    }
    if (len == 0xfe) {
       len += get16(pimg->fh);
-      if (feof(pimg->fh)) {
+      if (FEOF(pimg->fh)) {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
-      if (ferror(pimg->fh)) {
+      if (FERROR(pimg->fh)) {
 	 img_errno = IMG_READERROR;
 	 return img_BAD;
       }
    } else if (len == 0xff) {
       len = get32(pimg->fh);
-      if (ferror(pimg->fh)) {
+      if (FERROR(pimg->fh)) {
 	 img_errno = IMG_READERROR;
 	 return img_BAD;
       }
-      if (feof(pimg->fh) || len < 0xfe + 0xffff) {
+      if (FEOF(pimg->fh) || len < 0xfe + 0xffff) {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
@@ -1858,8 +1901,8 @@ read_v3label(img *pimg)
    }
    q = pimg->label_buf + pimg->label_len;
    pimg->label_len += len;
-   if (len && fread(q, len, 1, pimg->fh) != 1) {
-      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+   if (len && FREAD(q, len, 1, pimg->fh) != 1) {
+      img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
       return img_BAD;
    }
    q[len] = '\0';
@@ -1877,7 +1920,7 @@ read_v8label(img *pimg, int common_flag, size_t common_val)
    } else {
       int ch = GETC(pimg->fh);
       if (ch == EOF) {
-	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
       }
       if (ch != 0x00) {
@@ -1886,28 +1929,28 @@ read_v8label(img *pimg, int common_flag, size_t common_val)
       } else {
 	 ch = GETC(pimg->fh);
 	 if (ch == EOF) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	    img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
 	 if (ch != 0xff) {
 	    del = ch;
 	 } else {
 	    del = get32(pimg->fh);
-	    if (ferror(pimg->fh)) {
+	    if (FERROR(pimg->fh)) {
 	       img_errno = IMG_READERROR;
 	       return img_BAD;
 	    }
 	 }
 	 ch = GETC(pimg->fh);
 	 if (ch == EOF) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	    img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
 	 if (ch != 0xff) {
 	    add = ch;
 	 } else {
 	    add = get32(pimg->fh);
-	    if (ferror(pimg->fh)) {
+	    if (FERROR(pimg->fh)) {
 	       img_errno = IMG_READERROR;
 	       return img_BAD;
 	    }
@@ -1926,8 +1969,8 @@ read_v8label(img *pimg, int common_flag, size_t common_val)
    pimg->label_len -= del;
    q = pimg->label_buf + pimg->label_len;
    pimg->label_len += add;
-   if (add && fread(q, add, 1, pimg->fh) != 1) {
-      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+   if (add && FREAD(q, add, 1, pimg->fh) != 1) {
+      img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
       return img_BAD;
    }
    q[add] = '\0';
@@ -1976,7 +2019,7 @@ img_read_item_new(img *pimg, img_point *p)
    pimg->label = pimg->label_buf;
    opt = GETC(pimg->fh);
    if (opt == EOF) {
-      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
       return img_BAD;
    }
    if (opt >> 6 == 0) {
@@ -2133,7 +2176,7 @@ img_read_item_v3to7(img *pimg, img_point *p)
    pimg->label = pimg->label_buf;
    opt = GETC(pimg->fh);
    if (opt == EOF) {
-      img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
       return img_BAD;
    }
    switch (opt >> 6) {
@@ -2222,11 +2265,11 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  pimg->E = get32(pimg->fh) / 100.0;
 		  pimg->H = get32(pimg->fh) / 100.0;
 		  pimg->V = get32(pimg->fh) / 100.0;
-		  if (feof(pimg->fh)) {
+		  if (FEOF(pimg->fh)) {
 		      img_errno = IMG_BADFORMAT;
 		      return img_BAD;
 		  }
-		  if (ferror(pimg->fh)) {
+		  if (FERROR(pimg->fh)) {
 		      img_errno = IMG_READERROR;
 		      return img_BAD;
 		  }
@@ -2238,11 +2281,11 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  }
 		  int days1 = (int)getu16(pimg->fh);
 		  int days2 = (int)getu16(pimg->fh);
-		  if (feof(pimg->fh)) {
+		  if (FEOF(pimg->fh)) {
 		      img_errno = IMG_BADFORMAT;
 		      return img_BAD;
 		  }
-		  if (ferror(pimg->fh)) {
+		  if (FERROR(pimg->fh)) {
 		      img_errno = IMG_READERROR;
 		      return img_BAD;
 		  }
@@ -2278,11 +2321,11 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		      pimg->u = get32(pimg->fh) / 100.0;
 		      pimg->d = get32(pimg->fh) / 100.0;
 		  }
-		  if (feof(pimg->fh)) {
+		  if (FEOF(pimg->fh)) {
 		      img_errno = IMG_BADFORMAT;
 		      return img_BAD;
 		  }
-		  if (ferror(pimg->fh)) {
+		  if (FERROR(pimg->fh)) {
 		      img_errno = IMG_READERROR;
 		      return img_BAD;
 		  }
@@ -2300,11 +2343,11 @@ img_read_item_v3to7(img *pimg, img_point *p)
 		  img_errno = IMG_BADFORMAT;
 		  return img_BAD;
 	  }
-	  if (feof(pimg->fh)) {
+	  if (FEOF(pimg->fh)) {
 	      img_errno = IMG_BADFORMAT;
 	      return img_BAD;
 	  }
-	  if (ferror(pimg->fh)) {
+	  if (FERROR(pimg->fh)) {
 	      img_errno = IMG_READERROR;
 	      return img_BAD;
 	  }
@@ -2382,11 +2425,11 @@ img_read_item_ancient(img *pimg, img_point *p)
       opt = GETC(pimg->fh);
    }
 
-   if (feof(pimg->fh)) {
+   if (FEOF(pimg->fh)) {
       img_errno = IMG_BADFORMAT;
       return img_BAD;
    }
-   if (ferror(pimg->fh)) {
+   if (FERROR(pimg->fh)) {
       img_errno = IMG_READERROR;
       return img_BAD;
    }
@@ -2397,7 +2440,7 @@ img_read_item_ancient(img *pimg, img_point *p)
     case 1:
       /* skip coordinates */
       if (!skip_coord(pimg->fh)) {
-	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
       }
       goto again;
@@ -2405,7 +2448,7 @@ img_read_item_ancient(img *pimg, img_point *p)
       size_t len;
       result = img_LABEL;
       if (!fgets(pimg->label_buf, pimg->buf_len, pimg->fh)) {
-	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	 img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
       }
       if (pimg->label[0] == '\\') pimg->label++;
@@ -2432,11 +2475,11 @@ img_read_item_ancient(img *pimg, img_point *p)
 
       len = get32(pimg->fh);
 
-      if (feof(pimg->fh)) {
+      if (FEOF(pimg->fh)) {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
-      if (ferror(pimg->fh)) {
+      if (FERROR(pimg->fh)) {
 	 img_errno = IMG_READERROR;
 	 return img_BAD;
       }
@@ -2447,8 +2490,8 @@ img_read_item_ancient(img *pimg, img_point *p)
 	 img_errno = IMG_OUTOFMEMORY;
 	 return img_BAD;
       }
-      if (fread(pimg->label_buf, len, 1, pimg->fh) != 1) {
-	 img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+      if (FREAD(pimg->label_buf, len, 1, pimg->fh) != 1) {
+	 img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	 return img_BAD;
       }
       pimg->label_buf[len] = '\0';
@@ -2471,7 +2514,7 @@ img_read_item_ancient(img *pimg, img_point *p)
 	 pimg->flags = (int)opt & 0x3f;
 	 result = img_LABEL;
 	 if (!fgets(pimg->label_buf, pimg->buf_len, pimg->fh)) {
-	    img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	    img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	    return img_BAD;
 	 }
 	 q = pimg->label_buf + strlen(pimg->label_buf) - 1;
@@ -2504,11 +2547,11 @@ img_read_item_ancient(img *pimg, img_point *p)
       /* peek at next code and see if it's an old-style label */
       opt_lookahead = get32(pimg->fh);
 
-      if (feof(pimg->fh)) {
+      if (FEOF(pimg->fh)) {
 	 img_errno = IMG_BADFORMAT;
 	 return img_BAD;
       }
-      if (ferror(pimg->fh)) {
+      if (FERROR(pimg->fh)) {
 	 img_errno = IMG_READERROR;
 	 return img_BAD;
       }
@@ -2542,7 +2585,7 @@ img_read_item_ascii(img *pimg, img_point *p)
    if (pimg->version == 0) {
       ascii_again:
       pimg->label[0] = '\0';
-      if (feof(pimg->fh)) return img_STOP;
+      if (FEOF(pimg->fh)) return img_STOP;
       if (pimg->pending) {
 	 pimg->pending = 0;
 	 result = img_LINE;
@@ -2560,7 +2603,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 	    result = img_MOVE;
 	 } else if (strcmp(cmd, "cross") == 0) {
 	    if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
-	       img_errno = feof(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
+	       img_errno = FEOF(pimg->fh) ? IMG_BADFORMAT : IMG_READERROR;
 	       return img_BAD;
 	    }
 	    goto ascii_again;
@@ -2570,7 +2613,7 @@ img_read_item_ascii(img *pimg, img_point *p)
 	    if (ch == ' ') ch = GETC(pimg->fh);
 	    while (ch != ' ') {
 	       if (ch == '\n' || ch == EOF) {
-		  img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
+		  img_errno = FERROR(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
 		  return img_BAD;
 	       }
 	       if (off == pimg->buf_len) {
@@ -2597,7 +2640,7 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
 
       if (fscanf(pimg->fh, "%lf%lf%lf", &p->x, &p->y, &p->z) < 3) {
-	 img_errno = ferror(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
+	 img_errno = FERROR(pimg->fh) ? IMG_READERROR : IMG_BADFORMAT;
 	 return img_BAD;
       }
 
@@ -2613,11 +2656,11 @@ img_read_item_ascii(img *pimg, img_point *p)
       pimg->flags = img_SFLAG_UNDERGROUND; /* default flags */
       againpos:
       while (fscanf(pimg->fh, "(%lf,%lf,%lf )", &p->x, &p->y, &p->z) != 3) {
-	 if (ferror(pimg->fh)) {
+	 if (FERROR(pimg->fh)) {
 	    img_errno = IMG_READERROR;
 	    return img_BAD;
 	 }
-	 if (feof(pimg->fh)) return img_STOP;
+	 if (FEOF(pimg->fh)) return img_STOP;
 	 if (pimg->pending) {
 	    img_errno = IMG_BADFORMAT;
 	    return img_BAD;
@@ -2640,7 +2683,7 @@ img_read_item_ascii(img *pimg, img_point *p)
       }
       pimg->label_buf[0] = ch;
       off = 1;
-      while (!feof(pimg->fh)) {
+      while (!FEOF(pimg->fh)) {
 	 if (!fgets(pimg->label_buf + off, pimg->buf_len - off, pimg->fh)) {
 	    img_errno = IMG_READERROR;
 	    return img_BAD;
@@ -2840,7 +2883,7 @@ bad_plt_date:
 	       /* Compass stores coordinates as North, East, Up = (y,x,z)! */
 	       if (sscanf(line, "%lf%lf%lf", &p->y, &p->x, &p->z) != 3) {
 		  osfree(line);
-		  if (ferror(pimg->fh)) {
+		  if (FERROR(pimg->fh)) {
 		     img_errno = IMG_READERROR;
 		  } else {
 		     img_errno = IMG_BADFORMAT;
@@ -2890,7 +2933,7 @@ bad_plt_date:
 			      &dim[0], &dim[1], &dim[2], &dim[3],
 			      &bytes_used) != 4) {
 		       osfree(line);
-		       if (ferror(pimg->fh)) {
+		       if (FERROR(pimg->fh)) {
 			   img_errno = IMG_READERROR;
 		       } else {
 			   img_errno = IMG_BADFORMAT;
@@ -3041,7 +3084,7 @@ cmap_xyz_next_line:
       pimg->label = pimg->label_buf;
       do {
 	 osfree(line);
-	 if (feof(pimg->fh)) return img_STOP;
+	 if (FEOF(pimg->fh)) return img_STOP;
 	 line = getline_alloc(pimg->fh);
 	 if (!line) {
 out_of_memory_error:
@@ -3220,7 +3263,7 @@ write_v3label(img *pimg, int opt, const char *s)
       PUTC(0xff, pimg->fh);
       put32(n, pimg->fh);
    }
-   fwrite(s + len, n, 1, pimg->fh);
+   FWRITE(s + len, n, 1, pimg->fh);
 
    n += len;
    pimg->label_len = n;
@@ -3228,7 +3271,7 @@ write_v3label(img *pimg, int opt, const char *s)
       return 0; /* FIXME: distinguish out of memory... */
    memcpy(pimg->label_buf + len, s + len, n - len + 1);
 
-   return !ferror(pimg->fh);
+   return !FERROR(pimg->fh);
 }
 
 static int
@@ -3269,7 +3312,7 @@ write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
    }
 
    if (add)
-      fwrite(s + len, add, 1, pimg->fh);
+      FWRITE(s + len, add, 1, pimg->fh);
 
    pimg->label_len = len + add;
    if (add > del && !check_label_space(pimg, pimg->label_len + 1))
@@ -3277,7 +3320,7 @@ write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
 
    memcpy(pimg->label_buf + len, s + len, add + 1);
 
-   return !ferror(pimg->fh);
+   return !FERROR(pimg->fh);
 }
 
 static void
@@ -3668,7 +3711,7 @@ img_close(img *pimg)
 	       break;
 	    }
 	 }
-	 if (ferror(pimg->fh)) result = 0;
+	 if (FERROR(pimg->fh)) result = 0;
 	 if (pimg->close_func && pimg->close_func(pimg->fh))
 	     result = 0;
 	 if (!result) img_errno = pimg->fRead ? IMG_READERROR : IMG_WRITEERROR;

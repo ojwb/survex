@@ -73,7 +73,7 @@ skipline(const char *fnm, FILE *fh)
    } while (ch != '\n' && ch != EOF);
 
    if (ch == EOF) {
-      if (ferror(fh))
+      if (FERROR(fh))
 	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
       fatalerror_in_file(fnm, 0, /*Couldn’t parse .err file*/112);
    }
@@ -90,7 +90,7 @@ printline(const char *fnm, FILE *fh, FILE *fh_out)
    PUTC('\n', fh_out);
 
    if (ch == EOF) {
-      if (ferror(fh))
+      if (FERROR(fh))
 	 fatalerror_in_file(fnm, 0, /*Error reading file*/18);
       fatalerror_in_file(fnm, 0, /*Couldn’t parse .err file*/112);
    }

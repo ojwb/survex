@@ -94,7 +94,7 @@ safe_fclose(FILE *f)
 {
    SVX_ASSERT(f);
    /* NB: use of | rather than || - we always want to call fclose() */
-   if (ferror(f) | (fclose(f) == EOF)) {
+   if (FERROR(f) | (fclose(f) == EOF)) {
       filelist *p;
       for (p = flhead; p != NULL; p = p->next)
 	 if (p->fh == f) break;
