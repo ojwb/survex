@@ -142,6 +142,22 @@ put16(short word, FILE *fh)
 }
 #endif
 
+#ifdef __cplusplus
+# include <algorithm>
+using std::max;
+using std::min;
+#else
+/* Return max/min of two numbers. */
+/* May be defined already (e.g. by Borland C in stdlib.h) */
+/* NB Bad news if X or Y has side-effects... */
+# ifndef max
+#  define max(X, Y) ((X) > (Y) ? (X) : (Y))
+# endif
+# ifndef min
+#  define min(X, Y) ((X) < (Y) ? (X) : (Y))
+# endif
+#endif
+
 #define TIMENA "?"
 #ifdef IMG_HOSTED
 # include "debug.h"
@@ -174,22 +190,6 @@ put16(short word, FILE *fh)
 # endif
 # define fputsnl(S, FH) (fputs((S), (FH)) == EOF ? EOF : putc('\n', (FH)))
 # define SVX_ASSERT(X)
-
-#ifdef __cplusplus
-# include <algorithm>
-using std::max;
-using std::min;
-#else
-/* Return max/min of two numbers. */
-/* May be defined already (e.g. by Borland C in stdlib.h) */
-/* NB Bad news if X or Y has side-effects... */
-# ifndef max
-#  define max(X, Y) ((X) > (Y) ? (X) : (Y))
-# endif
-# ifndef min
-#  define min(X, Y) ((X) < (Y) ? (X) : (Y))
-# endif
-#endif
 
 static char *
 baseleaf_from_fnm(const char *fnm)

@@ -28,6 +28,7 @@
 #include "mainfrm.h"
 #include "osalloc.h"
 
+#include <algorithm>
 #include <stack>
 
 using namespace std;

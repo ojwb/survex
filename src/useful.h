@@ -25,22 +25,8 @@
 # error config.h must be included first in each C/C++ source file
 #endif
 
-#include <stdlib.h> /* for Borland C which #defines max() & min() there */
 #include <stdio.h>
 #include <math.h>
-
-/* In C++ code, #include<algorithm> and use std::max and std::min instead. */
-#ifndef __cplusplus
-/* Return max/min of two numbers. */
-/* May be defined already (e.g. by Borland C in stdlib.h) */
-/* NB Bad news if X or Y has side-effects... */
-# ifndef max
-#  define max(X, Y) ((X) > (Y) ? (X) : (Y))
-# endif
-# ifndef min
-#  define min(X, Y) ((X) < (Y) ? (X) : (Y))
-# endif
-#endif
 
 /* M_PI, etc may be defined in math.h */
 #ifndef M_PI

@@ -27,6 +27,8 @@
 #include "message.h"
 #include "osalloc.h"
 
+#include <algorithm>
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>

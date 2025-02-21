@@ -21,6 +21,8 @@
 
 #include "namecompare.h"
 
+#include <algorithm>
+
 inline bool u_digit(unsigned ch) {
     return (ch - unsigned('0')) <= unsigned('9' - '0');
 }

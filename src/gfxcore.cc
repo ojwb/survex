@@ -24,6 +24,8 @@
 
 #include <config.h>
 
+#include <algorithm>
+
 #include <assert.h>
 #include <stdint.h>
 #include <float.h>

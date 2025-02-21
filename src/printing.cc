@@ -29,6 +29,7 @@
 #include <wx/statbox.h>
 #include <wx/valgen.h>
 
+#include <algorithm>
 #include <vector>
 
 #include <stdio.h>
