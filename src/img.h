@@ -340,8 +340,8 @@ img *img_open_write_cs(const char *fnm, const char *title, const char * cs,
  *
  * cs is a string describing the coordinate system, suitable for passing to
  * PROJ (or NULL to not specify a coordinate system).  For a coordinate system
- * with an EPSG, "EPSG:" followed by the code number is the recommended way
- * to specify this.
+ * with an assigned EPSG code number, "EPSG:" followed by the code number is
+ * the recommended way to specify this.
  *
  * flags contains a bitwise-or of any file-wide flags - currently these are
  * available:

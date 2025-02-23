@@ -1458,7 +1458,7 @@ v03d:
 		       /* Allow +no_defs to be omitted as it seems to not
 			* actually do anything with recent PROJ - cavern always
 			* included it, but other software generating 3d files
-			* may not have.
+			* might not.
 			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
 			   /* There are at least 45 bytes (see memcmp above)
@@ -1471,7 +1471,7 @@ v03d:
 		       /* Allow +no_defs to be omitted as it seems to not
 			* actually do anything with recent PROJ - cavern always
 			* included it, but other software generating 3d files
-			* may not have.
+			* might not.
 			*/
 		       if (*p == '\0' || strcmp(p, " +no_defs") == 0) {
 			   strcpy(cs, "EPSG:3857");
