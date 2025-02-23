@@ -52,7 +52,7 @@ csv_quote(const char* s, FILE* fh)
 	++i;
     }
     PUTC('"', fh);
-    FWRITE(s, i, 1, fh);
+    FWRITE_(s, i, 1, fh);
     while (s[i]) {
 	// Double up any " in the string to escape them.
 	if (s[i] == '"')

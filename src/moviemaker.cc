@@ -104,7 +104,7 @@ write_packet(void *opaque,
 	     int buf_size)
 {
     FILE * fh = (FILE*)opaque;
-    size_t res = FWRITE(buf, 1, buf_size, fh);
+    size_t res = FWRITE_(buf, 1, buf_size, fh);
     return res > 0 ? res : -1;
 }
 

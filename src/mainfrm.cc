@@ -220,7 +220,7 @@ static void write_double(double d, FILE * fh) {
     size_t l = strlen(buf);
     while (l > 1 && buf[l - 1] == '0') --l;
     if (l > 1 && buf[l - 1] == '.') --l;
-    FWRITE(buf, l, 1, fh);
+    FWRITE_(buf, l, 1, fh);
 }
 
 class AvenPresList : public wxListCtrl {

@@ -387,10 +387,15 @@ AH_BOTTOM(
 # define FREAD(P, S, N, F) fread(P, S, N, F)
 #endif
 
+/* If we call this FWRITE() then macos errors out on uses with:
+ * error: called object type 'int' is not a function or function pointer
+ * Unclear what's going on - a conditional `#undef FWRITE` before defining
+ * doesn't help.
+ */
 #ifdef HAVE_FWRITE_UNLOCKED
-# define FWRITE(P, S, N, F) fwrite_unlocked(P, S, N, F)
+# define FWRITE_(P, S, N, F) fwrite_unlocked(P, S, N, F)
 #else
-# define FWRITE(P, S, N, F) fwrite(P, S, N, F)
+# define FWRITE_(P, S, N, F) fwrite(P, S, N, F)
 #endif
 
 #ifdef HAVE_GETC_UNLOCKED

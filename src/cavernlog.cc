@@ -660,7 +660,7 @@ CavernLogWindow::OnSave(wxCommandEvent &)
 	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), filelog.c_str()));
 	return;
     }
-    FWRITE(log_txt.data(), log_txt.size(), 1, fh_log);
+    FWRITE_(log_txt.data(), log_txt.size(), 1, fh_log);
     fclose(fh_log);
 }
 

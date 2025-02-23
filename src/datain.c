@@ -2536,7 +2536,7 @@ next_line:
 		if (!file.fh) {
 		    fatalerror(/*Failed to create temporary file*/498);
 		}
-		FWRITE(s_str(&line), s_len(&line), 1, file.fh);
+		FWRITE_(s_str(&line), s_len(&line), 1, file.fh);
 #endif
 		fseek(file.fh, fp_args.offset - file.lpos, SEEK_SET);
 		ch = (unsigned char)s_str(&line)[fp_args.offset - file.lpos - 1];

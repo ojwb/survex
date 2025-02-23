@@ -97,11 +97,11 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 #  endif
 #endif
 
-# ifndef FWRITE
+# ifndef FWRITE_
 #  ifdef HAVE_FWRITE_UNLOCKED
-#   define FWRITE(P, S, N, F) fwrite_unlocked(P, S, N, F)
+#   define FWRITE_(P, S, N, F) fwrite_unlocked(P, S, N, F)
 #  else
-#   define FWRITE(P, S, N, F) fwrite(P, S, N, F)
+#   define FWRITE_(P, S, N, F) fwrite(P, S, N, F)
 #  endif
 # endif
 
@@ -1737,7 +1737,7 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
 	   4,  8,  8,  16, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 	   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
        };
-       FWRITE(codelengths, 32, 1, pimg->fh);
+       FWRITE_(codelengths, 32, 1, pimg->fh);
    }
 #endif
    pimg->fRead = 0; /* writing to this file */
@@ -3228,7 +3228,7 @@ write_v3label(img *pimg, int opt, const char *s)
       PUTC(0xff, pimg->fh);
       put32(n, pimg->fh);
    }
-   FWRITE(s + len, n, 1, pimg->fh);
+   FWRITE_(s + len, n, 1, pimg->fh);
 
    n += len;
    pimg->label_len = n;
@@ -3277,7 +3277,7 @@ write_v8label(img *pimg, int opt, int common_flag, size_t common_val,
    }
 
    if (add)
-      FWRITE(s + len, add, 1, pimg->fh);
+      FWRITE_(s + len, add, 1, pimg->fh);
 
    pimg->label_len = len + add;
    if (add > del && !check_label_space(pimg, pimg->label_len + 1))

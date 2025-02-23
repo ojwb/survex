@@ -319,7 +319,7 @@ main(int argc, char **argv)
 	      puts(q);
 	      break;
 	  }
-	  FWRITE(q, 1, p - q, stdout);
+	  FWRITE_(q, 1, p - q, stdout);
 	  fputs(msg(/*©*/0), stdout);
 	  p += 3;
       }
