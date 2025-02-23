@@ -61,7 +61,7 @@ extern const format_info export_format_info[];
 // img_FLAG_DUPLICATE
 #define SPLAYS		img_FLAG_SPLAY
 #define MASK_ (img_FLAG_SURFACE|img_FLAG_DUPLICATE|img_FLAG_SPLAY)
-static_assert(MASK_ < 0x00000008);
+static_assert(MASK_ < 0x00000008, "MASK_ only contains expected bits");
 #define LEGS		0x00000008
 #define STNS		0x00000010
 #define LABELS		0x00000020

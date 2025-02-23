@@ -72,7 +72,7 @@ constexpr int LFLAG_IMG_MASK =
 	LFLAG_ANON |
 	LFLAG_WALL;
 
-static_assert(LFLAG_IMG_MASK < 0x80);
+static_assert(LFLAG_IMG_MASK < 0x80, "LFLAG_IMG_MASK only contains expected bits");
 
 // Bits 0x0100 to 0x2000 are set lazily to allow us to sort labels into plot
 // order with the first comparison being an integer subtraction.
