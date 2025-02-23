@@ -30,11 +30,7 @@
 
 /* M_PI, etc may be defined in math.h */
 #ifndef M_PI
-# ifdef PI /* MSVC defines PI IIRC */
-#  define M_PI PI
-# else
-#  define M_PI 3.14159265358979323846264338327950288419716939937510582097494459
-# endif
+# define M_PI 3.14159265358979323846264338327950288419716939937510582097494459
 #endif
 #ifndef M_PI_2
 # define M_PI_2 (M_PI / 2.0)
