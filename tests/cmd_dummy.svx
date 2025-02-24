@@ -6,7 +6,7 @@
 *date 2001
 *date 1990.07-2001.09
 *instrument light "Jamie's magic torch"
-*team Hannibal "Face Man" B.A. "Murdoch"
+
 *ref "page 42 of 2001 survey book"
 
 *fix no_warnings_please reference 0 0 0

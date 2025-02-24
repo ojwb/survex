@@ -1,0 +1,43 @@
+./cmd_team_bad.svx:3:14: warning: Unknown team role "note"
+ *team Wookey note
+              ^~~~
+./cmd_team_bad.svx:4:32: warning: Unknown team role "tap"
+ *team "Olly Betts" instruments tap
+                                ^~~
+./cmd_team_bad.svx:8:20: warning: Unknown team role "lefts"
+ *team "Olly Betts" lefts rights
+                    ^~~~~
+./cmd_team_bad.svx:10:11: warning: Unknown team role ""
+ *team Bob "pics"
+           ^
+./cmd_team_bad.svx:11:15: error: Missing "
+ *team "Al Jobs
+               ^
+./cmd_team_bad.svx:12:6: error: Expecting string field
+ *team
+      ^
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
+North-South range = 1.00m (from survey.2 at 1.00m to survey.1 at 0.00m)
+East-West range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
+   2 1-nodes.
+There were 4 warning(s) and 2 error(s) - no output files produced.

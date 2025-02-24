@@ -1657,6 +1657,9 @@ Example
 
        *team "Nick Proctor" compass clino tape
        *team "Anthony Day" notes pictures tape
+       *team Wookey assistant
+       ; Role not recorded
+       *team "Olly Betts"
 
 Validity
    valid at the start of a ``*begin``/``*end`` block.
@@ -1665,6 +1668,53 @@ Description
    ``*team`` specifies the people involved in a survey and optionally what role
    or roles they filled during that trip. Unless the person is only identified
    by one name you need to put double quotes around their name.
+
+   The syntax of ``*team`` commands has been defined for a very long time, but
+   prior to Survex 1.4.17 there weren't any checks of the syntax.  Essentially
+   ``*team`` used to be treated like a named comment.
+
+   With Survey 1.4.17 and later you'll get an error for an empty ``*team`` or
+   if you open but fail to close double quotes.
+
+   Roles are now checked against an allowed list (which is the same list that
+   Therion uses, with the addition of ``explorer`` which Therion handles via
+   a separate ``explo-team`` command).  You'll get a warning if a role is not
+   recognised (this was made a warning to avoid breaking existing datasets
+   which might contain ``*team`` lines which don't conform with the defined
+   syntax, or with this newly adopted list of roles).
+
+   ``<role>`` should be one of the following (grouped entries are just
+   alternative names for the same thing).  The intended meanings are noted
+   to encourage consistent usage:
+
+      =========== ============ ============================================
+      Role        Alias        Intended meaning
+      =========== ============ ============================================
+      tape        length       Measured leg lengths
+      compass     bearing      Measured bearings
+      clino       gradient     Measured vertical angles
+      backtape    backlength   Like ``tape`` but for backsights
+      backcompass backbearing  Like ``compass`` but for backsights
+      backclino   backgradient Like ``clino`` but for backsights
+      instruments insts        All instruments: both compass and clino; use
+                               for all-in-one instruments such as Disto-X.
+      counter     count        Topofil length measurements
+      depth                    Depth gauge
+      station
+      position
+      notes       notebook     Recorded instrument readings
+      pictures    pics         Drew sketches
+      assistant   dog          General helper (e.g. held the end of the
+                               tape on stations)
+      altitude    dz           Measured changes in height between stations
+                               (e.g. with a manometer)
+      dimensions               Measured all passage dimensions
+      left                     Measured ``left`` passage dimension
+      right                    Measured ``right`` passage dimension
+      up          ceiling      Measured ``up`` passage dimension
+      down        floor        Measured ``down`` passage dimension
+      explorer                 Explored the area of cave being surveyed
+      =========== ============ ============================================
 
 See Also
    ``*begin``, ``*date``, ``*instrument``

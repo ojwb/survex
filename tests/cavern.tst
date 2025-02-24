@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - cavern tests
-# Copyright (C) 1999-2024 Olly Betts
+# Copyright (C) 1999-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ esac
  tapelessthandepth longname chinabug chinabug2\
  multinormal multinormignall multidiving multicylpolar multicartesian\
  multinosurv multinormalbad multibug\
+ cmd_team cmd_team_bad\
  cmd_title cmd_titlebad cmd_dummy cmd_infer cmd_date cmd_datebad cmd_datebad2\
  cartes diving cylpolar normal normal_bad normignall nosurv cmd_flags\
  bad_cmd_flags plumb unusedstation exportnakedbegin oldestyle bugdz\

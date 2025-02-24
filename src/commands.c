@@ -1,6 +1,6 @@
 /* commands.c
  * Code for directives
- * Copyright (C) 1991-2024 Olly Betts
+ * Copyright (C) 1991-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2199,6 +2199,91 @@ cmd_sd(void)
       if (qmask & m) pcs->Var[quantity] = variance;
 }
 
+enum {
+    ROLE_BACKTAPE,
+    ROLE_BACKCOMPASS,
+    ROLE_BACKCLINO,
+    ROLE_TAPE,
+    ROLE_COMPASS,
+    ROLE_CLINO,
+    ROLE_COUNTER,
+    ROLE_DEPTH,
+    ROLE_STATION,
+    ROLE_POSITION,
+    ROLE_NOTES,
+    ROLE_PICTURES,
+    ROLE_INSTRUMENTS,
+    ROLE_ASSISTANT,
+    ROLE_ALTITUDE,
+    ROLE_DIMENSIONS,
+    ROLE_LEFT,
+    ROLE_RIGHT,
+    ROLE_UP,
+    ROLE_DOWN,
+    ROLE_EXPLORER
+};
+
+static const sztok role_tab[] = {
+    {"ALTITUDE",	ROLE_ALTITUDE},
+    {"ASSISTANT",	ROLE_ASSISTANT},
+    {"BACKBEARING",	ROLE_BACKCOMPASS},
+    {"BACKCLINO",	ROLE_BACKCLINO},
+    {"BACKCOMPASS",	ROLE_BACKCOMPASS},
+    {"BACKGRADIENT",	ROLE_BACKCLINO},
+    {"BACKLENGTH",	ROLE_BACKTAPE},
+    {"BACKTAPE",	ROLE_BACKTAPE},
+    {"BEARING",		ROLE_COMPASS},
+    {"CEILING",		ROLE_UP},
+    {"CLINO",		ROLE_CLINO},
+    {"COMPASS",		ROLE_COMPASS},
+    {"COUNT",		ROLE_COUNTER},
+    {"COUNTER",		ROLE_COUNTER},
+    {"DEPTH",		ROLE_DEPTH},
+    {"DIMENSIONS",	ROLE_DIMENSIONS},
+    {"DOG",		ROLE_ASSISTANT},
+    {"DOWN",		ROLE_DOWN},
+    {"DZ",		ROLE_ALTITUDE},
+    {"EXPLORER",	ROLE_EXPLORER},
+    {"FLOOR",		ROLE_DOWN},
+    {"GRADIENT",	ROLE_CLINO},
+    {"INSTRUMENTS",	ROLE_INSTRUMENTS},
+    {"INSTS",		ROLE_INSTRUMENTS},
+    {"LEFT",		ROLE_LEFT},
+    {"LENGTH",		ROLE_TAPE},
+    {"NOTEBOOK",	ROLE_NOTES},
+    {"NOTES",		ROLE_NOTES},
+    {"PICS",		ROLE_PICTURES},
+    {"PICTURES",	ROLE_PICTURES},
+    {"POSITION",	ROLE_POSITION},
+    {"RIGHT",		ROLE_RIGHT},
+    {"STATION",		ROLE_STATION},
+    {"TAPE",		ROLE_TAPE},
+    {"UP",		ROLE_UP},
+    {NULL,		-1}
+};
+
+static void
+cmd_team(void)
+{
+    string name = S_INIT;
+    read_string(&name);
+    s_free(&name);
+
+    while (true) {
+	skipblanks();
+	if (isComm(ch) || isEol(ch)) return;
+	get_token();
+	int role = match_tok(role_tab, TABSIZE(role_tab));
+	if (role < 0) {
+	    // Skip after a bad role to avoid triggering multiple warnings for
+	    // one *team command in existing data from before this check was
+	    // implemented.
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown team role “%s”*/532,
+			       s_str(&token));
+	}
+    }
+}
+
 static void
 cmd_title(void)
 {
@@ -2987,7 +3072,7 @@ static const cmd_fn cmd_funcs[] = {
    cmd_sd,
    cmd_set,
    solve_network,
-   skipline, /*cmd_team,*/
+   cmd_team,
    cmd_title,
    cmd_truncate,
    cmd_units

@@ -393,6 +393,12 @@ msgstr ""
 msgid "Unknown units “%s”"
 msgstr ""
 
+#: ../src/commands.c:2278
+#: n:532
+#, c-format
+msgid "Unknown team role “%s”"
+msgstr ""
+
 #: ../src/commands.c:549
 #: n:479
 #, c-format

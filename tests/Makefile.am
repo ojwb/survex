@@ -66,6 +66,8 @@ multicylpolar.svx multicylpolar.pos\
 multicartesian.svx multicartesian.pos multicartesian.out\
 multinosurv.svx multinosurv.dump multinosurv.out\
 multinormalbad.svx multibug.svx\
+cmd_team.svx\
+cmd_team_bad.svx cmd_team_bad.out\
 cmd_title.svx cmd_titlebad.svx\
 cmd_dummy.svx cmd_infer.svx cmd_infer.pos\
 cartes.svx cartes.pos cartes.out\

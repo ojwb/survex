@@ -1,0 +1,15 @@
+; pos=fail warn=4 error=2
+*begin survey
+*team Wookey note
+*team "Olly Betts" instruments tap
+; We deliberately skip the line after a bad role to avoid triggering multiple
+; warnings for one *team command in existing data from before this check was
+; implemented.
+*team "Olly Betts" lefts rights
+; Roles should not be quoted.
+*team Bob "pics"
+*team "Al Jobs
+*team
+*fix 1 0 0 0
+1 2 1 0 0
+*end survey
