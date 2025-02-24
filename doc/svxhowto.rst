@@ -93,8 +93,8 @@ enclosing survey to join them together.  For example:
    *export 157.0 ; tag bolt
 
    *begin entpitch
-   *team Notes Olly Betts
-   *team Insts Jenny Black
+   *team "Olly Betts" Notes
+   *team "Jenny Black" Insts
    *date 2012.08.05
    *data normal from to tape compass clino
    *export 0 5
@@ -110,8 +110,8 @@ enclosing survey to join them together.  For example:
    *equate entpitch.5 pt2.1
 
    *begin pt2
-   *team Notes Olly Betts
-   *team Insts Jenny Black
+   *team "Olly Betts" Notes
+   *team "Jenny Black" Insts
    *date 2012.08.29
    *export 1
 
