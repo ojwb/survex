@@ -25,12 +25,11 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 3 survey stations, joined by 2 legs.
+Survey contains 4 survey stations, joined by 2 legs.
 Total length of survey legs =    2.00m (   2.00m adjusted)
 Total plan length of survey legs =    2.00m
 Total vertical length of survey legs =    0.00m
-Vertical range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
-North-South range = 2.00m (from 3 at 2.00m to 1 at 0.00m)
-East-West range = 0.00m (from 2 at 0.00m to 2 at 0.00m)
-   2 1-nodes.
-   1 2-node.
+Vertical range = 0.00m (from 3 at 0.00m to 3 at 0.00m)
+North-South range = 1.00m (from 3 at 1.00m to 2 at 0.00m)
+East-West range = 1.00m (from 4 at 1.00m to 3 at 0.00m)
+   4 1-nodes.

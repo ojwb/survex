@@ -1,0 +1,8 @@
+; pos=no warn=0 error=0
+; Regression test for bug fixed in 1.4.17: We used to incorrectly warn:
+; ./cmd_fix2.svx:2: warning: Unused fixed point "1"
+*fix 1 0 0 0
+*fix 2 0 0 0
+2 3 1 0 0
+*solve
+1 4 1 90 0

@@ -1,0 +1,8 @@
+; pos=fail warn=1 error=1
+a b 1 0 0
+*equate a c
+*equate a d
+*solve
+*fix a 0 0 0
+*fix c 1 1 1
+*fix d 1 1 1 1

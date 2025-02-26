@@ -54,7 +54,9 @@ cmd_case.svx cmd_case.pos\
 cmd_case_bad.svx cmd_case_bad.out\
 cmd_cartesian.svx cmd_cartesian.dump cmd_cartesian.out\
 cmd_cartesian_bad.svx cmd_cartesian_bad.out\
-cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.out cmd_solve.pos\
+cmd_fix.svx cmd_fix.out cmd_fix.pos\
+cmd_fix2.svx cmd_fix2.out\
+cmd_solve.svx cmd_solve.out cmd_solve.pos\
 cmd_entrance.svx\
 stnsurvey1.svx stnsurvey2.svx\
 tapelessthandepth.svx longname.svx\
@@ -85,6 +87,7 @@ cmd_begin_bad.svx cmd_begin_bad.out\
 cmd_equate_bad.svx cmd_equate_bad.out\
 cmd_export_bad.svx cmd_export_bad.out\
 cmd_fix_bad.svx cmd_fix_bad.out\
+cmd_fix_bad2.svx cmd_fix_bad2.out\
 cmd_sd.svx cmd_sd_bad.svx cmd_sd_bad.out\
 cmd_set.svx cmd_set.pos\
 cmd_set_bad.svx cmd_set_bad.out\

@@ -979,27 +979,6 @@ skip_nosurvey:
 	  }
       }
 
-      d = stn1->name->shape;
-      if (d <= 1 && !TSTBIT(stn1->name->sflags, SFLAGS_USED)) {
-	 bool unused_fixed_point = false;
-	 if (d == 0) {
-	    /* Unused fixed point without error estimates */
-	    unused_fixed_point = true;
-	 } else if (stn1->leg[0]) {
-	    prefix *pfx = stn1->leg[0]->l.to->name;
-	    if (!prefix_ident(pfx) && !TSTBIT(pfx->sflags, SFLAGS_ANON)) {
-	       /* Unused fixed point with error estimates */
-	       unused_fixed_point = true;
-	    }
-	 }
-	 if (unused_fixed_point) {
-	    /* TRANSLATORS: fixed survey station that is not part of any survey
-	     */
-	    warning_in_file(stn1->name->filename, stn1->name->line,
-		    /*Unused fixed point “%s”*/73, sprint_prefix(stn1->name));
-	 }
-      }
-
       /* For stations fixed with error estimates, we need to ignore the leg to
        * the "real" fixed point in the node stats.
        */

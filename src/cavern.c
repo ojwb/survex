@@ -356,6 +356,8 @@ main(int argc, char **argv)
    solve_network(); /* Find coordinates of all points */
    validate();
 
+   check_for_unused_fixed_points();
+
    /* close .3d file */
    if (!img_close(pimg)) {
       char *fnm = add_ext(fnm_output_base, EXT_SVX_3D);

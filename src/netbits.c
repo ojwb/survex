@@ -364,6 +364,10 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
    }
    cLegs++;
 
+   /* Suppress "unused fixed point" warnings for these stations. */
+   fr_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+   to_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+
    last_leg.to_name = to_name;
    last_leg.fr_name = fr_name;
    last_leg.n = 1;
@@ -470,6 +474,10 @@ process_equate(prefix *name1, prefix *name2)
 	 replace_pfx(name1, name2, pfx_fixed(name2));
       }
 
+      /* Suppress "unused fixed point" warnings for these stations. */
+      name1->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+      name2->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+
       /* count equates as legs for now... */
       cLegs++;
       addleg_(stn1, stn2,
@@ -482,10 +490,11 @@ process_equate(prefix *name1, prefix *name2)
    }
 }
 
-/* Add a 'fake' leg (not counted) between existing stations *fr and *to
- * (which *must* be different)
+/* Add a 'fake' leg (not counted or treated as a use of a fixed point) between
+ * existing stations *fr and *to (which *must* be different).
+ *
  * If either node is a three node, then it is split into two
- * and the data structure adjusted as necessary
+ * and the data structure adjusted as necessary.
  */
 void
 addfakeleg(node *fr, node *to,
@@ -567,7 +576,9 @@ StnFromPfx(prefix *name)
    stn->leg[0] = stn->leg[1] = stn->leg[2] = NULL;
    add_stn_to_list(fixed ? &fixedlist : &stnlist, stn);
    name->stn = stn;
-   cStns++;
+   // Don't re-count a station which already exists from before a `*solve`.
+   // After we solve we delete and NULL-out its `node*`, but set SFLAGS_SOLVED.
+   if (!TSTBIT(name->sflags, SFLAGS_SOLVED)) cStns++;
    return stn;
 }
 

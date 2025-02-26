@@ -2797,9 +2797,6 @@ next_line:
 		break;
 	    }
 
-	    // Suppress "unused fixed point" warnings for stations in #flag.
-	    station_flags |= BIT(SFLAGS_USED);
-
 	    // Go back and read stations and apply the flags.
 	    filepos fp_end;
 	    get_pos(&fp_end);
@@ -2814,6 +2811,9 @@ next_line:
 		prefix *name = read_walls_station(p_walls_options->prefix,
 						  false, NULL);
 		name->sflags |= station_flags;
+		// Suppress "unused fixed point" warnings for stations in #flag.
+		name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+
 		skipblanks();
 	    }
 	    pcs->Translate['/'] = save_translate_slash;
@@ -2841,11 +2841,11 @@ next_line:
 	  }
 	  case WALLS_CMD_NOTE: {
 	    // A text note attached to a station - ignore for now except we
-	    // read the station name and flag it to avoid an "unused fixed
-	    // point" warning.
+	    // read the station name and count this as a use so suppress
+	    // "unused fixed point" warnings.
 	    prefix *name = read_walls_station(p_walls_options->prefix,
 					      false, NULL);
-	    name->sflags |= BIT(SFLAGS_USED);
+	    name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
 	    skipline();
 	    break;
 	  }
@@ -5441,9 +5441,9 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
 {
    nosurveylink *link;
 
-   /* Suppress "unused fixed point" warnings for these stations */
-   fr->sflags |= BIT(SFLAGS_USED);
-   to->sflags |= BIT(SFLAGS_USED);
+   /* Suppress "unused fixed point" warnings for these stations. */
+   fr->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+   to->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);

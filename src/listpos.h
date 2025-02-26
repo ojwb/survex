@@ -1,6 +1,6 @@
 /* listpos.h
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1994,2001,2012 Olly Betts
+ * Copyright (C) 1994,2001,2012,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,3 +21,8 @@ void print_node_stats(void);
 
 /* Check but don't print, for getting the checks we do during the scan. */
 void check_node_stats(void);
+
+/* Scan the prefix tree and issue warnings for any SFLAGS_UNUSED_FIXED_POINT
+ * still set.
+ */
+void check_for_unused_fixed_points(void);

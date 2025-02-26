@@ -1,6 +1,6 @@
 /* listpos.c
  * SURVEX Cave surveying software: stuff to do with stn position output
- * Copyright (C) 1991-2002,2011,2012,2013,2014,2024 Olly Betts
+ * Copyright (C) 1991-2002,2011,2012,2013,2014,2024,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,22 @@ traverse_prefix_tree(prefix *from, void (*fn)(prefix *))
 	 p = p->right;
       }
    }
+}
+
+static void
+check_if_unused_fixed_point(prefix *name)
+{
+    if (TSTBIT(name->sflags, SFLAGS_UNUSED_FIXED_POINT)) {
+	// TRANSLATORS: fixed survey station that is not part of any survey
+	warning_in_file(name->filename, name->line,
+			/*Unused fixed point “%s”*/73, sprint_prefix(name));
+    }
+}
+
+void
+check_for_unused_fixed_points(void)
+{
+    traverse_prefix_tree(root, check_if_unused_fixed_point);
 }
 
 static void

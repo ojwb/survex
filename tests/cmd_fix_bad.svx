@@ -1,4 +1,4 @@
-; pos=fail error=44
+; pos=fail warn=1 error=44
 *fix A 0
 *fix B 0 0
 *fix C 0 0 0 1.0 2.0 3.0 3.14
