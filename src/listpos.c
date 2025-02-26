@@ -19,7 +19,6 @@
 
 #include <config.h>
 
-#define PRINT_STN_POS_LIST 1
 #define NODESTAT 1
 
 #include <limits.h>
