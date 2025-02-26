@@ -103,7 +103,7 @@ solve_network(void)
    if (!fixedlist && first_solve && !pcs->proj_str && !proj_str_out) {
       /* If there are no fixed points and we haven't already solved to find
        * some station positions, and there's no specified coordinate system,
-       * the we pick a station and fixed it at (0,0,0).
+       * then we pick a station and fix it at (0,0,0).
        *
        * We do this first so the solving part is just like the standard case -
        * this avoid problems, such as sub-nodes of the invented fix having been
@@ -135,7 +135,7 @@ solve_network(void)
 			     sprint_prefix(stn_to_fix->name));
       static const double origin[3] = { 0.0, 0.0, 0.0 };
       fix_station(stn_to_fix->name, origin);
-      // We should set the FIXED flag for the invented fix though.
+      // We should not set the FIXED flag for the invented fix though.
       stn_to_fix->name->sflags &= ~BIT(SFLAGS_FIXED);
    }
 
