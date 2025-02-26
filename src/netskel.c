@@ -979,13 +979,6 @@ skip_nosurvey:
 	  }
       }
 
-      /* For stations fixed with error estimates, we need to ignore the leg to
-       * the "real" fixed point in the node stats.
-       */
-      if (stn1->leg[0] && !prefix_ident(stn1->leg[0]->l.to->name) &&
-	  !TSTBIT(stn1->leg[0]->l.to->name->sflags, SFLAGS_ANON))
-	 stn1->name->shape--;
-
       for (i = 0; i <= 2; i++) {
 	 leg = stn1->leg[i];
 	 /* only want to think about forwards legs */

@@ -23,6 +23,5 @@ North-South range = 1.71m (from entrance.1 at 0.00m to entrance.2 at -1.71m)
 East-West range = 9.70m (from entrance.2 at 9.70m to entrance.1 at 0.00m)
 ./equatenosuchstn.svx:8: error: Reference to station "nosuchsurvey.1" from non-existent survey "nosuchsurvey"
 ./equatenosuchstn.svx:8: warning: Station "nosuchsurvey.1" referred to just once, with an explicit survey name - typo?
-   2 1-nodes.
-   1 2-node.
+
 There were 1 warning(s) and 1 error(s) - no output files produced.

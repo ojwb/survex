@@ -246,7 +246,6 @@ typedef struct Prefix {
    /* stn flags - e.g. surface, underground, entrance
     * also suspecttypo and survey */
    unsigned short sflags;
-   short shape;
 } prefix;
 
 static inline const char *prefix_ident(const prefix *p) {

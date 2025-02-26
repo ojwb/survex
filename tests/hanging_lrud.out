@@ -23,5 +23,5 @@ Total vertical length of survey legs =    0.09m
 Vertical range = 0.09m (from test.1 at 0.00m to test.2 at -0.09m)
 North-South range = 0.86m (from test.2 at 0.86m to test.1 at 0.00m)
 East-West range = 0.50m (from test.2 at 0.50m to test.1 at 0.00m)
-   2 1-nodes.
+
 There were 0 warning(s) and 1 error(s) - no output files produced.

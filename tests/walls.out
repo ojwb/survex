@@ -101,11 +101,5 @@ Vertical range = 56.04m (from U12b at 51.00m to anonymous station at -5.04m)
 Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
-   1 0-node.
-  14 1-nodes.
-  16 2-nodes.
-   3 3-nodes.
-   1 4-node.
-   1 5-node.
-   1 6-node.
+
 There were 26 warning(s).

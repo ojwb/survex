@@ -52,5 +52,5 @@ Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
 ./cmd_set_bad.svx:30: warning: Station "bar.1" referred to by *export but never used
-   1 0-node.
+
 There were 2 warning(s) and 10 error(s) - no output files produced.

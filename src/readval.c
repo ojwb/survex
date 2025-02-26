@@ -42,7 +42,6 @@ new_anon_station(void)
     prefix *name = osnew(prefix);
     name->pos = NULL;
     name->ident.p = NULL;
-    name->shape = 0;
     name->stn = NULL;
     name->up = pcs->Prefix;
     name->down = NULL;
@@ -224,7 +223,6 @@ anon_wall_station:
 	 }
 	 ptr->right = ptr->down = NULL;
 	 ptr->pos = NULL;
-	 ptr->shape = 0;
 	 ptr->stn = NULL;
 	 ptr->up = back_ptr;
 	 ptr->filename = file.filename;
@@ -267,7 +265,6 @@ anon_wall_station:
 	    newptr->right = ptr;
 	    newptr->down = NULL;
 	    newptr->pos = NULL;
-	    newptr->shape = 0;
 	    newptr->stn = NULL;
 	    newptr->up = back_ptr;
 	    newptr->filename = file.filename;
@@ -536,7 +533,6 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		name = NULL;
 		ptr->right = ptr->down = NULL;
 		ptr->pos = NULL;
-		ptr->shape = 0;
 		ptr->stn = NULL;
 		ptr->up = back_ptr;
 		ptr->filename = file.filename; // FIXME: Or location of #Prefix, etc for it?
@@ -577,7 +573,6 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		    newptr->right = ptr;
 		    newptr->down = NULL;
 		    newptr->pos = NULL;
-		    newptr->shape = 0;
 		    newptr->stn = NULL;
 		    newptr->up = back_ptr;
 		    newptr->filename = file.filename; // FIXME

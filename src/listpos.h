@@ -17,8 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-void print_node_stats(void);
-
 /* Check but don't print, for getting the checks we do during the scan. */
 void check_node_stats(void);
 

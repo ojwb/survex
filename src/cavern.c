@@ -400,6 +400,7 @@ main(int argc, char **argv)
       putnl();
    }
    if (msg_warnings || msg_errors) {
+      putnl();
       if (msg_errors || (f_warnings_are_errors && msg_warnings)) {
 	 printf(msg(/*There were %d warning(s) and %d error(s) - no output files produced.*/113),
 		msg_warnings, msg_errors);
@@ -564,9 +565,5 @@ do_stats(void)
 	       length_factor, units);
    }
 
-   print_node_stats();
-   /* Also, could give:
-    *  # nodes stations (ie have other than two references or are fixed)
-    *  # fixed stations (list of?)
-    */
+   check_node_stats();
 }

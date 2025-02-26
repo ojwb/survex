@@ -108,7 +108,6 @@ void fix_station_with_variance(prefix *fix_name, const double* coords,
 	name = osnew(prefix);
 	name->pos = osnew(pos);
 	name->ident.p = NULL;
-	name->shape = 0;
 	fixpt->name = name;
 	name->stn = fixpt;
 	name->up = NULL;

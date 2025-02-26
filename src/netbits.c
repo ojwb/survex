@@ -301,9 +301,6 @@ addleg_(node *fr, node *to,
    fr->leg[i] = leg;
    to->leg[j] = leg2;
 
-   ++fr->name->shape;
-   ++to->name->shape;
-
    return leg;
 }
 
