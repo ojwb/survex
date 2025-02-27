@@ -85,22 +85,20 @@ static void err_stat(int cLegsTrav, double lenTrav,
 extern void
 solve_network(void)
 {
-   static bool first_solve = true;
-
    /* We can't average across solving to fix positions. */
    clear_last_leg();
 
    if (stnlist == NULL && fixedlist == NULL) {
-      if (first_solve) fatalerror(/*No survey data*/43);
-      /* We've had a *solve followed by another *solve (or the implicit
-       * *solve at the end of the data.  Don't moan about that. */
+      if (cSolves == 0) fatalerror(/*No survey data*/43);
+      /* We've had a *solve followed immediately by another *solve (or the
+       * implicit *solve at the end of the data).  Don't moan about that. */
       return;
    }
    ptr = NULL;
    ptrTrail = NULL;
    dump_network();
 
-   if (!fixedlist && first_solve && !pcs->proj_str && !proj_str_out) {
+   if (!fixedlist && cSolves == 0 && !pcs->proj_str && !proj_str_out) {
       /* If there are no fixed points and we haven't already solved to find
        * some station positions, and there's no specified coordinate system,
        * then we pick a station and fix it at (0,0,0).
@@ -139,7 +137,7 @@ solve_network(void)
       stn_to_fix->name->sflags &= ~BIT(SFLAGS_FIXED);
    }
 
-   first_solve = false;
+   ++cSolves;
 
    remove_trailing_travs();
    validate(); dump_network();

@@ -14,7 +14,7 @@ deltastar2.svx deltastar2.pos\
 deltastarhanging.svx deltastarhanging.out\
 firststn.svx firststn.pos\
 break_replace_pfx.svx\
-bug0.svx bug1.svx bug2.svx bug3.svx bug3.pos bug4.svx bug5.svx\
+bug0.svx bug1.svx bug2.svx bug3.svx bug3.out bug3.pos bug4.svx bug5.svx\
 expobug.svx\
 nosurvey2.svx nosurvey2.pos nosurvey2.out\
 cartesian.svx cartesian.pos cartesian.out\
@@ -54,7 +54,7 @@ cmd_case.svx cmd_case.pos\
 cmd_case_bad.svx cmd_case_bad.out\
 cmd_cartesian.svx cmd_cartesian.dump cmd_cartesian.out\
 cmd_cartesian_bad.svx cmd_cartesian_bad.out\
-cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.pos\
+cmd_fix.svx cmd_fix.out cmd_fix.pos cmd_solve.svx cmd_solve.out cmd_solve.pos\
 cmd_entrance.svx\
 stnsurvey1.svx stnsurvey2.svx\
 tapelessthandepth.svx longname.svx\
@@ -129,7 +129,8 @@ dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos\
 nosurveyhanging.svx nosurveyhanging.out\
 nosurveyhanging2.svx nosurveyhanging2.dump nosurveyhanging2.out\
 cmd_solve_hanging.svx passage.svx hanging_lrud.svx\
-cmd_solve_nothing.svx cmd_solve_nothing_implicit.svx\
+cmd_solve_nothing.svx\
+cmd_solve_nothing_implicit.svx cmd_solve_nothing_implicit.out\
 cmd_date.dump cmd_date.svx cmd_date.out\
 cmd_datebad.svx cmd_datebad.out cmd_datebad2.svx cmd_datebad2.out\
 cmd_calibrate.svx cmd_calibrate.out cmd_calibrate.pos\

@@ -405,7 +405,7 @@ extern PJ * pj_cached;
 extern string survey_title;
 
 extern bool fExplicitTitle;
-extern long cLegs, cStns, cComponents;
+extern long cLegs, cStns, cComponents, cSolves;
 extern FILE *fhErrStat;
 extern img *pimg;
 extern real totadj, total, totplan, totvert;

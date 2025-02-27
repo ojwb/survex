@@ -52,8 +52,9 @@ node *stnlist = NULL; // Unfixed stations
 settings *pcs;
 prefix *root;
 prefix *anon_list = NULL;
-long cLegs, cStns;
-long cComponents;
+long cLegs = 0, cStns = 0;
+long cComponents = 0;
+long cSolves = 0;
 bool fExportUsed = false;
 char * proj_str_out = NULL;
 PJ * pj_cached = NULL;
@@ -205,7 +206,6 @@ main(int argc, char **argv)
 
    fixedlist = NULL;
    stnlist = NULL;
-   cLegs = cStns = cComponents = 0;
    totadj = total = totplan = totvert = 0.0;
 
    for (d = 0; d < 9; d++) {
@@ -446,8 +446,6 @@ do_range(int d, int msgno, real length_factor, const char * units)
 static void
 do_stats(void)
 {
-   long cLoops = cComponents + cLegs - cStns;
-
    putnl();
 
    if (proj_str_out) {
@@ -514,23 +512,27 @@ do_stats(void)
    } else {
       printf(msg(/* joined by %ld legs.*/175), cLegs);
    }
-
    putnl();
 
-   if (cLoops == 1) {
-      fputs(msg(/*There is 1 loop.*/138), stdout);
-   } else {
-      printf(msg(/*There are %ld loops.*/139), cLoops);
-   }
+   if (cSolves == 1) {
+       // If *solve is used then cComponents will often be wrong.  Rather than
+       // reporting incorrect counts of loops and components we omit these in
+       // this case for now.
+       long cLoops = cComponents + cLegs - cStns;
+       if (cLoops == 1) {
+	  fputs(msg(/*There is 1 loop.*/138), stdout);
+       } else {
+	  printf(msg(/*There are %ld loops.*/139), cLoops);
+       }
+       putnl();
 
-   putnl();
-
-   if (cComponents != 1) {
-      /* TRANSLATORS: "Connected component" in the graph theory sense - it
-       * means there are %ld bits of survey with no connections between them.
-       * This message is only used if there are more than 1. */
-      printf(msg(/*Survey has %ld connected components.*/178), cComponents);
-      putnl();
+       if (cComponents != 1) {
+	  /* TRANSLATORS: "Connected component" in the graph theory sense - it
+	   * means there are %ld bits of survey with no connections between
+	   * them.  This message is only used if there are more than 1. */
+	  printf(msg(/*Survey has %ld connected components.*/178), cComponents);
+	  putnl();
+       }
    }
 
    int length_units = get_length_units(Q_LENGTH);
