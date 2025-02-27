@@ -42,6 +42,7 @@
 #include <wx/imaglist.h>
 #include <wx/process.h>
 #include <wx/regex.h>
+#include <wx/spinctrl.h>
 #ifdef USING_GENERIC_TOOLBAR
 # include <wx/sysopt.h>
 #endif
@@ -493,6 +494,7 @@ END_EVENT_TABLE()
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT(textctrl_FIND, MainFrm::OnFind)
     EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnGotoFound)
+    EVT_SPINCTRLDOUBLE(spinctrl_Z_STRETCH, MainFrm::OnZStretch)
     EVT_MENU(wxID_FIND, MainFrm::OnGotoFound)
     EVT_MENU(button_HIDE, MainFrm::OnHide)
     EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
@@ -1036,6 +1038,16 @@ void MainFrm::MakeToolBar()
     toolbar->AddTool(wxID_FIND, wmsg(/*Find*/332), TOOL(find)/*, "Search for station name"*/);
     /* TRANSLATORS: "Hide stations" button default tooltip */
     toolbar->AddTool(button_HIDE, wmsg(/*Hide*/333), TOOL(hideresults)/*, "Hide search results"*/);
+
+    auto z_stretch = new wxSpinCtrlDouble(toolbar, spinctrl_Z_STRETCH,
+					  wxEmptyString,
+					  wxDefaultPosition, wxDefaultSize,
+					  wxSP_ARROW_KEYS|wxALIGN_RIGHT);
+    z_stretch->SetValue(1.0);
+    z_stretch->SetRange(0.1, 10.0);
+    z_stretch->SetIncrement(0.1);
+    toolbar->AddSeparator();
+    toolbar->AddControl(z_stretch);
 
     toolbar->Realize();
 }
@@ -2392,6 +2404,14 @@ void MainFrm::OnHide(wxCommandEvent&)
 void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)
 {
     ui.Enable(m_NumHighlighted != 0);
+}
+
+void MainFrm::OnZStretch(wxSpinDoubleEvent& event)
+{
+    m_Gfx->SetZStretch(event.GetValue());
+    if (static_cast<wxWindow*>(event.GetEventObject())->HasFocus()) {
+	m_Gfx->SetFocus();
+    }
 }
 
 void MainFrm::OnViewSidePanel(wxCommandEvent&)

@@ -4,7 +4,7 @@
 //  Header file for the GLA abstraction layer.
 //
 //  Copyright (C) 2002 Mark R. Shinwell.
-//  Copyright (C) 2003,2004,2005,2006,2007,2011,2012,2014,2017,2018 Olly Betts
+//  Copyright (C) 2003-2025 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -119,6 +119,8 @@ class GLACanvas : public wxGLCanvas {
     double m_Pan = 0.0, m_Tilt = 0.0;
     double m_Scale = 0.0;
     Vector3 m_Translation;
+
+    double z_stretch = 1.0;
 
     BitmapFont m_Font;
 
@@ -282,6 +284,8 @@ public:
 
     bool Transform(const Vector3 & v, glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const;
     void ReverseTransform(double x, double y, glaCoord* x_out, glaCoord* y_out, glaCoord* z_out) const;
+
+    void SetZStretch(double z_stretch_) { z_stretch = z_stretch_; }
 
     int GetFontSize() const { return m_Font.get_font_size(); }
 

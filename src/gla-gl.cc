@@ -4,7 +4,7 @@
 //  OpenGL implementation for the GLA abstraction layer.
 //
 //  Copyright (C) 2002-2003,2005 Mark R. Shinwell
-//  Copyright (C) 2003-2022 Olly Betts
+//  Copyright (C) 2003-2025 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -870,12 +870,16 @@ void GLACanvas::SetDataTransform()
     glRotated(-m_Tilt, 1.0, 0.0, 0.0);
     CHECK_GL_ERROR("SetDataTransform", "glRotated");
     glRotated(m_Pan, 0.0, 0.0, 1.0);
-    CHECK_GL_ERROR("SetDataTransform", "CopyToOpenGL");
+    CHECK_GL_ERROR("SetDataTransform", "glRotated");
     if (m_Perspective) {
 	glTranslated(m_Translation.GetX(),
 		     m_Translation.GetY(),
 		     m_Translation.GetZ());
 	CHECK_GL_ERROR("SetDataTransform", "glTranslated");
+    }
+    if (z_stretch != 1.0) {
+	glScaled(1.0, 1.0, z_stretch);
+	CHECK_GL_ERROR("SetDataTransform", "glScaled");
     }
 
     // Save projection matrix.

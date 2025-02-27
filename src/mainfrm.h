@@ -30,6 +30,7 @@
 #include <wx/notebook.h>
 #include <wx/print.h>
 #include <wx/printdlg.h>
+#include <wx/spinctrl.h>
 
 #include "aventreectrl.h"
 #include "gfxcore.h"
@@ -149,6 +150,7 @@ enum {
     menu_SURVEY_HIDE_SIBLINGS,
     textctrl_FIND,
     button_HIDE,
+    spinctrl_Z_STRETCH,
     listctrl_PRES
 };
 
@@ -244,6 +246,7 @@ public:
     void OnGotoFound(wxCommandEvent& event);
     void OnHide(wxCommandEvent& event);
     void OnHideUpdate(wxUpdateUIEvent& ui);
+    void OnZStretch(wxSpinDoubleEvent& event);
 
     void OnOpen(wxCommandEvent& event);
     void OnOpenTerrain(wxCommandEvent&);
