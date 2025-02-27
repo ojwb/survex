@@ -171,20 +171,16 @@ using std::min;
 # endif
 #endif
 
+#define EXT_SVX_3D "3d"
+
+#define METRES_PER_FOOT 0.3048 /* exact value */
+
 #define TIMENA "?"
 #ifdef IMG_HOSTED
 # include "debug.h"
-# include "filelist.h"
 # include "filename.h"
-# include "message.h"
 # include "osalloc.h"
-# include "useful.h"
-# define TIMEFMT msg(/*%a,%Y.%m.%d %H:%M:%S %Z*/107)
 #else
-# define TIMEFMT "%a,%Y.%m.%d %H:%M:%S %Z"
-# define EXT_SVX_3D "3d"
-# define FNM_SEP_EXT '.'
-# define METRES_PER_FOOT 0.3048 /* exact value */
 # define xosmalloc(L) malloc((L))
 # define xosrealloc(L,S) realloc((L),(S))
 # define osfree(P) free((P))
@@ -196,7 +192,6 @@ using std::min;
 # define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) \
     ((*(X) = NULL), fopen(FNM,MODE))
 
-# define fputsnl(S, FH) (fputs((S), (FH)) == EOF ? EOF : PUTC('\n', (FH)))
 # define SVX_ASSERT(X)
 
 static char *
@@ -1715,12 +1710,17 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
    }
 
    if (tm == (time_t)-1) {
-      fputsnl(TIMENA, pimg->fh);
+      fputs(TIMENA, pimg->fh);
+      PUTC('\n', pimg->fh);
    } else if (pimg->version <= 7) {
       char date[256];
-      /* output current date and time in format specified */
-      strftime(date, 256, TIMEFMT, localtime(&tm));
-      fputsnl(date, pimg->fh);
+      /* 3d formats <= 7 stored the time the file was generated in this
+       * particular string format, which we then try to parse when
+       * reading.
+       */
+      strftime(date, 256, "%a,%Y.%m.%d %H:%M:%S %Z", localtime(&tm));
+      fputs(date, pimg->fh);
+      PUTC('\n', pimg->fh);
    } else {
       fprintf(pimg->fh, "@%ld\n", (long)tm);
    }
@@ -3589,7 +3589,8 @@ img_write_item_ancient(img *pimg, int code, int flags, const char *s,
 	 /* put a move before each label */
 	 img_write_item_ancient(pimg, img_MOVE, 0, NULL, x, y, z);
 	 put32(2, pimg->fh);
-	 fputsnl(s, pimg->fh);
+	 fputs(s, pimg->fh);
+	 PUTC('\n', pimg->fh);
 	 return;
       }
       len = strlen(s);
@@ -3603,7 +3604,8 @@ img_write_item_ancient(img *pimg, int code, int flags, const char *s,
 	 fputs(s, pimg->fh);
       } else {
 	 PUTC(0x40 | (flags & 0x3f), pimg->fh);
-	 fputsnl(s, pimg->fh);
+	 fputs(s, pimg->fh);
+	 PUTC('\n', pimg->fh);
       }
       opt = 0;
       break;
