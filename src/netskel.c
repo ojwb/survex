@@ -310,7 +310,7 @@ concatenate_trav(node *stn, int i)
    stn->leg[j] = newleg2;
 
 #if PRINT_NETBITS
-   putchar(' ');
+   PUTCHAR(' ');
    print_var(&(newleg->v));
    printf("\nStacked ");
    print_prefix(newleg2->l.to->name);

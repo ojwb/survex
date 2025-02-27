@@ -45,7 +45,7 @@
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
 // Write a newline char.
-#define putnl() putchar('\n')
+#define putnl() PUTCHAR('\n')
 
 // Write a newline char to a file.
 #define fputnl(FH) PUTC('\n', (FH))

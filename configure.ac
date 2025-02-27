@@ -275,7 +275,7 @@ AC_CHECK_FUNCS([popen hypot mmap])
 dnl We don't access a FILE* from multiple threads and using the unlocked
 dnl versions has significantly less overhead, especially when reading/writing
 dnl byte-by-byte.  These are specified by POSIX:
-AC_CHECK_FUNCS([getc_unlocked putc_unlocked])
+AC_CHECK_FUNCS([getc_unlocked putc_unlocked putchar_unlocked])
 dnl These are GNU extensions in glibc:
 AC_CHECK_FUNCS([feof_unlocked ferror_unlocked fread_unlocked fwrite_unlocked])
 
@@ -408,6 +408,12 @@ AH_BOTTOM(
 # define PUTC(C, F) putc_unlocked(C, F)
 #else
 # define PUTC(C, F) putc(C, F)
+#endif
+
+#ifdef HAVE_PUTC_UNLOCKED
+# define PUTCHAR(C) putchar_unlocked(C)
+#else
+# define PUTCHAR(C) putchar(C)
 #endif
 
 #ifndef __cplusplus
