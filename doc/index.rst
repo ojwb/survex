@@ -22,5 +22,6 @@ cave surveyors.
    compass
    walls
    cmap
+   img
    maillist
    future
