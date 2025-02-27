@@ -44,11 +44,14 @@
 #define POINTS_PER_INCH	72.0
 #define POINTS_PER_MM (POINTS_PER_INCH / MM_PER_INCH)
 
-#define putnl() putchar('\n')    /* print a newline char */
-#define fputnl(FH) PUTC('\n', (FH)) /* print a newline char to a file */
-/* print a line followed by a newline char to a file */
-#define fputsnl(SZ, FH) do { fputs((SZ), (FH)); PUTC('\n', (FH)); } while (0)
-#define sqrd(X) ((X) * (X))        /* macro to square things */
+// Write a newline char.
+#define putnl() putchar('\n')
+
+// Write a newline char to a file.
+#define fputnl(FH) PUTC('\n', (FH))
+
+// Square X.
+#define sqrd(X) ((X) * (X))
 
 /* 2D Euclidean distance */
 #ifndef HAVE_HYPOT

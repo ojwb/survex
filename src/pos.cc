@@ -92,12 +92,12 @@ void POS::header(const char *, const char *, time_t,
 	    csv_quote(msg(msgno), fh);
 	    comma = true;
 	}
-	PUTC('\n', fh);
     } else {
 	/* TRANSLATORS: Heading line for .pos file.  Please try to ensure the
 	 * “,”s (or at least the columns) are in the same place */
-	fputsnl(msg(/*( Easting, Northing, Altitude )*/195), fh);
+	fputs(msg(/*( Easting, Northing, Altitude )*/195), fh);
     }
+    PUTC('\n', fh);
 }
 
 void

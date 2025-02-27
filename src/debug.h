@@ -42,7 +42,8 @@
 /* macro to report detected bug */
 #ifdef DEBUG_INVALID
 # define BUG(M) do {\
-    fputsnl(__FILE__ ":" STRING(__LINE__) ": " M, STDERR);\
+    fputs(__FILE__ ":" STRING(__LINE__) ": " M, STDERR);\
+    PUTC('\n', STDERR);\
     fatalerror(/*Bug in program detected! Please report this to the authors*/11);\
   } while (0)
 #else
