@@ -458,7 +458,6 @@ main(int argc, char **argv)
 
    try {
        if (!Export(fnm_out, model.GetSurveyTitle(),
-		   model.GetDateString(),
 		   model, filter,
 		   pan, tilt, show_mask, format,
 		   grid, text_height, marker_size,

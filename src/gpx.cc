@@ -103,7 +103,7 @@ GPX::passes() const
 }
 
 /* Initialise GPX routines. */
-void GPX::header(const char * title, const char *, time_t datestamp_numeric,
+void GPX::header(const char * title, time_t datestamp_numeric,
 		 double, double, double, double, double, double)
 {
     fputs(

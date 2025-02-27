@@ -31,7 +31,7 @@ class GPX : public ExportFilter {
     explicit GPX(const char * input_datum);
     ~GPX();
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double, double, double,
 		double, double, double) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;

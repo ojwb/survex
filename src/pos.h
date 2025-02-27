@@ -41,7 +41,7 @@ class POS : public ExportFilter {
     POS(char separator_, bool csv_) : separator(separator_), csv(csv_) { }
     ~POS();
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double, double, double,
 		double, double, double) override;
     void label(const img_point *, const wxString&, int, int) override;

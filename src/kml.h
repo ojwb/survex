@@ -37,7 +37,7 @@ class KML : public ExportFilter {
     KML(const char * input_datum, bool clamp_to_ground_);
     ~KML();
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double, double, double,
 		double, double, double) override;
     void start_pass(int pass) override;

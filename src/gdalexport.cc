@@ -79,7 +79,7 @@ ExportWithGDAL::~ExportWithGDAL()
 
 #ifdef HAVE_GDAL
 /* Initialise ExportWithGDAL routines. */
-void ExportWithGDAL::header(const char * title, const char *, time_t,
+void ExportWithGDAL::header(const char * title, time_t,
 		 double, double, double, double, double, double)
 {
     (void)title;

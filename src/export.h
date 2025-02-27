@@ -88,7 +88,6 @@ static_assert(MASK_ < 0x00000008, "MASK_ only contains expected bits");
 #define DEFAULT_MARKER_SIZE 0.8
 
 bool Export(const wxString &fnm_out, const wxString &title,
-	    const wxString &datestamp,
 	    const Model& model,
 	    const SurveyFilter* filter,
 	    double pan, double tilt, int show_mask, export_format format,

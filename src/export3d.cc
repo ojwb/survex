@@ -41,7 +41,7 @@ Export3D::passes() const
     return default_passes;
 }
 
-void Export3D::header(const char* title, const char *, time_t,
+void Export3D::header(const char* title, time_t,
 		      double, double, double, double, double, double)
 {
     pimg = img_write_stream(fh, NULL, title,

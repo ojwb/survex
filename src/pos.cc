@@ -79,7 +79,7 @@ POS::passes() const
     return default_passes;
 }
 
-void POS::header(const char *, const char *, time_t,
+void POS::header(const char *, time_t,
 		 double, double, double, double, double, double)
 {
     if (csv) {

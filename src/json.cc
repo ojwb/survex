@@ -36,7 +36,7 @@ JSON::passes() const
 }
 
 void
-JSON::header(const char * title, const char *, time_t datestamp_numeric,
+JSON::header(const char * title, time_t datestamp_numeric,
 	     double min_x, double min_y, double min_z,
 	     double max_x, double max_y, double max_z)
 {

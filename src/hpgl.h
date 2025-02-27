@@ -30,7 +30,7 @@ class HPGL : public ExportFilter {
     explicit HPGL(double scale)
 	: factor(HPGL_UNITS_PER_MM * 1000.0 / scale) {}
 
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double, double, double,
 		double, double, double) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;

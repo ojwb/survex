@@ -176,7 +176,7 @@ class DXF : public ExportFilter {
 	: text_height(text_height_) { pending[0] = '\0'; }
     const int * passes() const override;
     bool fopen(const wxString& fnm_out) override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
@@ -207,7 +207,7 @@ DXF::fopen(const wxString& fnm_out)
 }
 
 void
-DXF::header(const char *, const char *, time_t,
+DXF::header(const char *, time_t,
 	    double min_x, double min_y, double min_z,
 	    double max_x, double max_y, double max_z)
 {
@@ -542,7 +542,7 @@ class SVG : public ExportFilter {
 	pending[0] = '\0';
     }
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z) override;
     void start_pass(int layer) override;
@@ -566,7 +566,7 @@ SVG::passes() const
 }
 
 void
-SVG::header(const char * title, const char *, time_t,
+SVG::header(const char * title, time_t,
 	    double min_x, double min_y, double /*min_z*/,
 	    double max_x, double max_y, double /*max_z*/)
 {
@@ -742,7 +742,7 @@ class PLT : public ExportFilter {
   public:
     PLT() { }
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;
@@ -758,7 +758,7 @@ PLT::passes() const
 }
 
 void
-PLT::header(const char *title, const char *, time_t,
+PLT::header(const char *title, time_t,
 	    double min_x, double min_y, double min_z,
 	    double max_x, double max_y, double max_z)
 {
@@ -865,7 +865,7 @@ class EPS : public ExportFilter {
     explicit EPS(double scale)
 	: factor(POINTS_PER_MM * 1000.0 / scale) { }
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z) override;
     void start_pass(int layer) override;
@@ -889,7 +889,7 @@ EPS::passes() const
 }
 
 void
-EPS::header(const char *title, const char *, time_t,
+EPS::header(const char *title, time_t,
 	    double min_x, double min_y, double /*min_z*/,
 	    double max_x, double max_y, double /*max_z*/)
 {
@@ -1261,7 +1261,6 @@ transform_point(const Point& pos, const Vector3* pre_offset,
 
 bool
 Export(const wxString &fnm_out, const wxString &title,
-       const wxString &datestamp,
        const Model& model,
        const SurveyFilter* filter,
        double pan, double tilt, int show_mask, export_format format,
@@ -1445,7 +1444,7 @@ Export(const wxString &fnm_out, const wxString &title,
    }
 
    /* Header */
-   filt->header(title.utf8_str(), datestamp.utf8_str(), model.GetDateStamp(),
+   filt->header(title.utf8_str(), model.GetDateStamp(),
 		min_x, min_y, min_z, max_x, max_y, max_z);
 
    p1.x = p1.y = p1.z = 0; /* avoid compiler warning */

@@ -42,7 +42,7 @@ static bool fNewLines = true;
 
 /* Check if this line intersects the current page */
 /* Initialise HPGL routines. */
-void HPGL::header(const char *, const char *, time_t,
+void HPGL::header(const char *, time_t,
 		  double, double, double, double, double, double)
 {
    pen = 1;

@@ -26,7 +26,7 @@ class JSON : public ExportFilter {
   public:
     JSON() { }
     const int * passes() const override;
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double min_x, double min_y, double min_z,
 		double max_x, double max_y, double max_z) override;
     void line(const img_point *, const img_point *, unsigned, bool) override;

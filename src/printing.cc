@@ -667,7 +667,7 @@ svxPrintDlg::OnExport(wxCommandEvent&) {
 		tilt = -90.0;
 	    }
 	    if (!Export(export_fnm, m_layout.title,
-			m_layout.datestamp, *mainfrm, mainfrm->GetTreeFilter(),
+			*mainfrm, mainfrm->GetTreeFilter(),
 			rot, tilt, m_layout.get_effective_show_mask(),
 			export_format(format_idx),
 			grid, text_height, marker_size, m_layout.Scale)) {

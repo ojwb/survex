@@ -104,7 +104,7 @@ KML::passes() const
 }
 
 /* Initialise KML routines. */
-void KML::header(const char * title, const char *, time_t,
+void KML::header(const char * title, time_t,
 		 double, double, double, double, double, double)
 {
     fputs(

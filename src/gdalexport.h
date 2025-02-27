@@ -44,7 +44,7 @@ class ExportWithGDAL : public ExportFilter {
 		   const char* gdal_driver_name);
     ~ExportWithGDAL();
 #ifdef HAVE_GDAL
-    void header(const char *, const char *, time_t,
+    void header(const char *, time_t,
 		double, double, double,
 		double, double, double) override;
     void start_pass(int pass) override;
