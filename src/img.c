@@ -208,7 +208,7 @@ baseleaf_from_fnm(const char *fnm)
    q = strrchr(p, '\\');
    if (q) p = q + 1;
 
-   q = strrchr(p, FNM_SEP_EXT);
+   q = strrchr(p, '.');
    if (q) len = (const char *)q - p; else len = strlen(p);
 
    res = (char *)xosmalloc(len + 1);
