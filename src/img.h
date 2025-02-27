@@ -172,11 +172,9 @@ typedef struct {
    size_t label_len;
    int fRead;        /* 1 for reading, 0 for writing */
    long start;
-   /* version of file format:
-    *  IMG_VERSION_CMAP_SHOT => CMAP XYZ file, shot variant (.sht)
-    *  IMG_VERSION_CMAP_STATION => CMAP XYZ file, station variant (.adj, .una)
-    *  IMG_VERSION_COMPASS_PLT => Compass .plt file
-    *  IMG_VERSION_SURVEX_POS => .pos file
+   /* Version of file format.
+    *
+    * Positive values are .3d file format versions:
     *   0 => 0.01 ascii
     *   1 => 0.01 binary,
     *   2 => byte actions and flags
@@ -186,6 +184,12 @@ typedef struct {
     *   6 => error info
     *   7 => more compact dates with wider range
     *   8 => lots of changes
+    *
+    * Negative values are other formats which img can read:
+    *  IMG_VERSION_CMAP_SHOT => CMAP XYZ file, shot variant (.sht)
+    *  IMG_VERSION_CMAP_STATION => CMAP XYZ file, station variant (.adj, .una)
+    *  IMG_VERSION_COMPASS_PLT => Compass .plt (or .plf) file
+    *  IMG_VERSION_SURVEX_POS => .pos file
     */
    int version;
    char *survey;
