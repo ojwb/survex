@@ -1699,15 +1699,18 @@ Description
       instruments insts        All instruments: both compass and clino; use
                                for all-in-one instruments such as Disto-X.
       counter     count        Topofil length measurements
-      depth                    Depth gauge
-      station
-      position
+      depth                    Measured differences in height between stations,
+                               e.g. underwater with a diver's depth gauge, or
+                               above water with a manometer
+      station                  Added markers at stations
+      position                 Recorded absolute positions of stations (e.g.
+                               fixed surface stations with a GPS)
       notes       notebook     Recorded instrument readings
       pictures    pics         Drew sketches
       assistant   dog          General helper (e.g. held the end of the
                                tape on stations)
-      altitude    dz           Measured changes in height between stations
-                               (e.g. with a manometer)
+      altitude    dz           Recorded the altitudes of stations (e.g. with an
+                               altimeter)
       dimensions               Measured all passage dimensions
       left                     Measured ``left`` passage dimension
       right                    Measured ``right`` passage dimension
