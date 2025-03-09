@@ -477,12 +477,12 @@ static const sztok cmd_tab[] = {
 };
 
 /* masks for units which are length and angles respectively */
-#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS))
+#define LEN_UMASK (BIT(UNITS_METRES) | BIT(UNITS_FEET) | BIT(UNITS_YARDS) | BIT(UNITS_INCHES) | BIT(UNITS_FEETINCHES))
 #define ANG_UMASK (BIT(UNITS_DEGS) | BIT(UNITS_GRADS) | BIT(UNITS_MINUTES))
 
 /* ordering must be the same as the units enum */
 const real factor_tab[] = {
-   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0),
+   1.0, METRES_PER_FOOT, (METRES_PER_FOOT*3.0), (METRES_PER_FOOT/12.0), (METRES_PER_FOOT/12.0),
    (M_PI/180.0), (M_PI/180.0), (M_PI/200.0), 0.01, (M_PI/180.0/60.0)
 };
 
@@ -490,6 +490,8 @@ const int units_to_msgno[] = {
     /*m*/424,
     /*′*/428,
     -1, /* yards */
+    -1, /* inches */
+    -1, /* footinches */
     /*°*/344, /* quadrants */
     /*°*/344,
     /*ᵍ*/345,
@@ -521,7 +523,10 @@ get_units(unsigned long qmask, bool percent_ok)
 	{"DEGREES",       UNITS_DEGS },
 	{"DEGS",	  UNITS_DEGS },
 	{"FEET",	  UNITS_FEET },
+	{"FEETINCHES",    UNITS_FEETINCHES },
+	{"FOOTINCHES",    UNITS_FEETINCHES },
 	{"GRADS",	  UNITS_GRADS },
+	{"INCHES",        UNITS_INCHES },
 	{"METERS",	  UNITS_METRES },
 	{"METRES",	  UNITS_METRES },
 	{"METRIC",	  UNITS_METRES },
@@ -1950,6 +1955,14 @@ cmd_units(void)
    }
    if (TSTBIT(qmask, Q_BACKBEARING)) {
       pcs->f_backbearing_quadrants = (units == UNITS_QUADRANTS);
+   }
+
+   if (units == UNITS_FEETINCHES) {
+      /* so that we don't have an enormous if list, we check for UNITS first,
+       * and set the len_footinches flag for all of them that are lengths */
+      pcs->len_footinches = (pcs->len_footinches | (LEN_QMASK & qmask));
+   } else {
+      pcs->len_footinches = (pcs->len_footinches & ~(LEN_QMASK & qmask));
    }
 
    if (factor == HUGE_REAL) {

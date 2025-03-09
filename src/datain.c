@@ -520,6 +520,7 @@ read_reading(reading r, bool f_optional)
 {
    int n_readings;
    q_quantity q;
+   bool footinches = false;
    switch (r) {
       case Tape: q = Q_LENGTH; break;
       case BackTape: q = Q_BACKLENGTH; break;
@@ -540,9 +541,12 @@ read_reading(reading r, bool f_optional)
 	q = Q_NULL; /* Suppress compiler warning */;
 	BUG("Unexpected case");
    }
+   if (TSTBIT(pcs->len_footinches, q)) {
+      footinches = true;
+   }
    LOC(r) = ftell(file.fh);
    /* since we don't handle bearings in read_readings, it's never quadrant */
-   VAL(r) = read_numeric_multi(f_optional, false, &n_readings);
+   VAL(r) = read_numeric_multi(f_optional, false, footinches, &n_readings);
    WID(r) = ftell(file.fh) - LOC(r);
    VAR(r) = var(q);
    if (n_readings > 1) VAR(r) /= sqrt(n_readings);
@@ -605,6 +609,7 @@ initialise_common_compass_settings(void)
     // Compass itself appears to quietly ignore legs with the same station as
     // `from` and `to`, but it seems like something to warn about.
     pcsNew->from_equals_to_is_only_a_warning = true;
+    pcsNew->len_footinches = 0;
     pcsNew->next = pcs;
     pcs = pcsNew;
 
@@ -1522,6 +1527,7 @@ walls_initialise_settings(void)
     pcs->Truncate = INT_MAX;
     pcs->infer = BIT(INFER_EQUATES) |
 		 BIT(INFER_PLUMBS);
+    pcs->len_footinches = 0;
     // Walls cartesian data is aligned to True North.
     pcs->cartesian_north = TRUE_NORTH;
     pcs->cartesian_rotation = 0.0;

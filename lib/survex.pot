@@ -726,6 +726,11 @@ msgstr ""
 msgid "Negative tape reading"
 msgstr ""
 
+#: ../src/readval.c:689
+#: n:531
+msgid "Suspicious foot.inch value"
+msgstr ""
+
 #: ../src/commands.c:1173
 #: n:61
 msgid "Same station fixed twice with no coordinates"

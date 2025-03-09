@@ -109,7 +109,7 @@ typedef enum {
 
 /* if you add/change the order, check factor_tab in commands.c */
 typedef enum {
-   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS,
+   UNITS_NULL = -1, UNITS_METRES, UNITS_FEET, UNITS_YARDS, UNITS_INCHES, UNITS_FEETINCHES,
    UNITS_DEGS, UNITS_QUADRANTS, UNITS_GRADS, UNITS_PERCENT, UNITS_MINUTES,
    UNITS_MAC, UNITS_DEPRECATED_ALIAS_FOR_GRADS
 } u_units;
@@ -341,6 +341,7 @@ typedef struct Settings {
    bool f_backbearing_quadrants;
    bool dash_for_anon_wall_station;
    bool from_equals_to_is_only_a_warning;
+   unsigned long len_footinches;
    unsigned char infer;
    enum {OFF, LOWER, UPPER} Case;
    /* STYLE_xxx value to process data as. */

@@ -55,7 +55,7 @@ real read_number(bool f_optional, bool f_unsigned);
 real read_quadrant(bool f_optional);
 
 real read_numeric(bool f_optional);
-real read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings);
+real read_numeric_multi(bool f_optional, bool f_quadrants, bool f_footinches, int *p_n_readings);
 real read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings);
 
 /* Don't skip blanks, variable error code */
