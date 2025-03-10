@@ -2,7 +2,7 @@
  * Export from Aven as GPX.
  */
 /* Copyright (C) 2012 Olaf Kähler
- * Copyright (C) 2012-2024 Olly Betts
+ * Copyright (C) 2012-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@
 
 #include "aven.h"
 #include "message.h"
+#include "osalloc.h"
 
 using namespace std;
 
@@ -117,7 +118,7 @@ void GPX::header(const char * title, time_t datestamp_numeric,
 	fputs("<name>", fh);
 	html_escape(fh, title);
 	fputs("</name>\n", fh);
-	trk_name = strdup(title);
+	trk_name = osstrdup(title);
     }
     if (datestamp_numeric != time_t(-1)) {
 	struct tm * tm = gmtime(&datestamp_numeric);

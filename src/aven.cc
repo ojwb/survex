@@ -4,7 +4,7 @@
 //  Main class for Aven.
 //
 //  Copyright (C) 2001 Mark R. Shinwell.
-//  Copyright (C) 2002-2024 Olly Betts
+//  Copyright (C) 2002-2025 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -148,6 +148,9 @@ bool Aven::Initialize(int& my_argc, wxChar **my_argv)
 	// Convert wide characters to UTF-8.
 	utf8_argv = new char * [utf8_argc + 1];
 	for (int i = 0; i < utf8_argc; ++i){
+	    // We can't use osstrdup() before msg_init() but this is
+	    // platform-specific code so we can assume strdup() is
+	    // available.
 	    utf8_argv[i] = strdup(wxString(new_argv[i]).utf8_str());
 	}
 	utf8_argv[utf8_argc] = NULL;
