@@ -21,7 +21,7 @@
 
 #include "img_hosted.h"
 
-#define IMG_HOSTED 1
+#include "debug.h" // For SVX_ASSERT().
 
 #include "img.c"
 

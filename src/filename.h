@@ -46,7 +46,9 @@ extern "C" {
 
 char * path_from_fnm(const char *fnm);
 char * base_from_fnm(const char *fnm);
-char * baseleaf_from_fnm(const char *fnm);
+char * baseleaf_from_fnm_(const char *fnm);
+// Define as a macro so img.c can test for it.
+#define baseleaf_from_fnm(FNM) baseleaf_from_fnm_(FNM)
 char * leaf_from_fnm(const char *fnm);
 char * use_path(const char *pth, const char *lf);
 char * add_ext(const char *fnm, const char *ext);

@@ -180,12 +180,12 @@ using std::min;
 #define METRES_PER_FOOT 0.3048 /* exact value */
 
 #define TIMENA "?"
-#ifdef IMG_HOSTED
-# include "debug.h"
-# include "filename.h"
-#else
-# define SVX_ASSERT(X)
 
+#ifndef SVX_ASSERT
+# define SVX_ASSERT(X)
+#endif
+
+#ifndef baseleaf_from_fnm
 static char *
 baseleaf_from_fnm(const char *fnm)
 {
