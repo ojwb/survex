@@ -438,7 +438,7 @@ struct compass_station {
 static void*
 compass_plt_allocate_hash(void)
 {
-    struct compass_station_name** htab = malloc(HASH_BUCKETS * sizeof(struct compass_station_name*));
+    struct compass_station** htab = malloc(HASH_BUCKETS * sizeof(struct compass_station*));
     if (htab) {
 	unsigned i;
 	for (i = 0; i < HASH_BUCKETS; ++i)
