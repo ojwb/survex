@@ -237,6 +237,18 @@ delimword(char *ln, char** lr)
    return ln;
 }
 
+static const char*
+check_label(const char* label, const char* ll, const char* ln)
+{
+    if (strcmp(label, ll) == 0) {
+	return ln;
+    } else if (strcmp(label, ln) == 0) {
+	return ll;
+    } else {
+	return NULL;
+    }
+}
+
 static void
 parseconfigline(const char *fnm, char *ln)
 {
@@ -296,9 +308,8 @@ parseconfigline(const char *fnm, char *ln)
 	    point * to = l->to;
 	    if (fr && to) {
 	       for (s=fr->stns; s; s=s->next) {
-		  int b = 0;
-		  if (strcmp(s->label,ll)==0 || (strcmp(s->label, ln)==0 && (b = 1)) ) {
-		     char * lr = (b ? ll : ln);
+		  const char* lr = check_label(s->label, ll, ln);
+		  if (lr) {
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
 			   /* TRANSLATORS: for extend: */
@@ -343,9 +354,8 @@ parseconfigline(const char *fnm, char *ln)
 	    point * to = l->to;
 	    if (fr && to) {
 	       for (s=fr->stns; s; s=s->next) {
-		  int b = 0;
-		  if (strcmp(s->label,ll)==0 || (strcmp(s->label, ln)==0 && (b = 1)) ) {
-		     char * lr = (b ? ll : ln);
+		  const char* lr = check_label(s->label, ll, ln);
+		  if (lr) {
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
 			   /* TRANSLATORS: for extend: */
@@ -387,9 +397,8 @@ parseconfigline(const char *fnm, char *ln)
 	    point * to = l->to;
 	    if (fr && to) {
 	       for (s=fr->stns; s; s=s->next) {
-		  int b = 0;
-		  if (strcmp(s->label,ll)==0 || (strcmp(s->label, ln)==0 && (b = 1)) ) {
-		     char * lr = (b ? ll : ln);
+		  const char* lr = check_label(s->label, ll, ln);
+		  if (lr) {
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
 			   /* TRANSLATORS: for extend: */
@@ -432,15 +441,14 @@ parseconfigline(const char *fnm, char *ln)
 	    point * to = l->to;
 	    if (fr && to) {
 	       for (s=fr->stns; s; s=s->next) {
-		  int b = 0;
-		  if (strcmp(s->label,ll)==0 || (strcmp(s->label, ln)==0 && (b = 1)) ) {
-		     char * lr = (b ? ll : ln);
+		  const char* lr = check_label(s->label, ll, ln);
+		  if (lr) {
 		     for (t=to->stns; t; t=t->next) {
 			if (strcmp(t->label,lr)==0) {
 			   /* TRANSLATORS: for extend: */
 			   printf(msg(/*Breaking survey loop at leg %s → %s*/518), s->label, t->label);
 			   putnl();
-			   l->broken = (b ? BREAK_TO : BREAK_FR);
+			   l->broken = (lr == ll ? BREAK_TO : BREAK_FR);
 			   goto loopend;
 			}
 		     }
