@@ -2,7 +2,7 @@
  * Export to GIS formats, CAD formats, and other formats.
  */
 
-/* Copyright (C) 1994-2024 Olly Betts
+/* Copyright (C) 1994-2025 Olly Betts
  * Copyright (C) 2004 John Pybus (SVG Output code)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1268,7 +1268,7 @@ Export(const wxString &fnm_out, const wxString &title,
        double scale)
 {
    UseNumericCLocale dummy;
-   int fPendingMove = 0;
+   bool fPendingMove = false;
    img_point p, p1;
    const int *pass;
    double SIN = sin(rad(pan));
@@ -1481,10 +1481,10 @@ Export(const wxString &fnm_out, const wxString &title,
 
 		      if (pos == trav->begin()) {
 			  // First point is move...
-			  fPendingMove = 1;
+			  fPendingMove = true;
 		      } else {
 			  filt->line(&p1, &p, flags, fPendingMove);
-			  fPendingMove = 0;
+			  fPendingMove = false;
 		      }
 		      p1 = p;
 		  }

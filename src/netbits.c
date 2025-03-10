@@ -1,6 +1,6 @@
 /* netbits.c
  * Miscellaneous primitive network routines for Survex
- * Copyright (C) 1992-2024 Olly Betts
+ * Copyright (C) 1992-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,11 +51,11 @@ static char freeleg(node **stnptr);
 
 #ifdef NO_COVARIANCES
 static void check_var(const var *v) {
-   int bad = 0;
+   bool bad = false;
 
    for (int i = 0; i < 3; i++) {
       if (isnan(v[i])
-	 printf("*** NaN!!!\n"), bad = 1;
+	 printf("*** NaN!!!\n"), bad = true;
    }
    if (bad) print_var(v);
    return;
@@ -63,8 +63,8 @@ static void check_var(const var *v) {
 #else
 #define V(A,B) ((*v)[A][B])
 static void check_var(const var *v) {
-   int bad = 0;
-   int ok = 0;
+   bool bad = false;
+   bool ok = false;
 #if DEBUG_INVALID
    real det = 0.0;
 #endif
@@ -72,8 +72,8 @@ static void check_var(const var *v) {
    for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
 	 if (isnan(V(i, j)))
-	    printf("*** NaN!!!\n"), bad = 1, ok = 1;
-	 if (V(i, j) != 0.0) ok = 1;
+	    printf("*** NaN!!!\n"), bad = true, ok = true;
+	 if (V(i, j) != 0.0) ok = true;
       }
    }
    if (!ok) return; /* ignore all-zero matrices */
@@ -85,7 +85,7 @@ static void check_var(const var *v) {
    }
 
    if (fabs(det) < THRESHOLD)
-      printf("*** Singular!!!\n"), bad = 1;
+      printf("*** Singular!!!\n"), bad = true;
 #endif
 
 #if 0
@@ -93,13 +93,13 @@ static void check_var(const var *v) {
    if (fabs(V(0,1) - V(1,0)) > THRESHOLD ||
        fabs(V(0,2) - V(2,0)) > THRESHOLD ||
        fabs(V(1,2) - V(2,1)) > THRESHOLD)
-      printf("*** Not symmetric!!!\n"), bad = 1;
+      printf("*** Not symmetric!!!\n"), bad = true;
    if (V(0,0) <= 0.0 || V(1,1) <= 0.0 || V(2,2) <= 0.0)
-      printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
+      printf("*** Not positive definite (diag <= 0)!!!\n"), bad = true;
    if (sqrd(V(0,1)) >= V(0,0)*V(1,1) || sqrd(V(0,2)) >= V(0,0)*V(2,2) ||
        sqrd(V(1,0)) >= V(0,0)*V(1,1) || sqrd(V(2,0)) >= V(0,0)*V(2,2) ||
        sqrd(V(1,2)) >= V(2,2)*V(1,1) || sqrd(V(2,1)) >= V(2,2)*V(1,1))
-      printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = 1;
+      printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = true;
 #endif
    if (bad) print_var(*v);
 }
@@ -108,16 +108,16 @@ static void check_var(const var *v) {
 #define S(A,B) SN(v,A,B)
 
 static void check_svar(const svar *v) {
-   int bad = 0;
-   int ok = 0;
+   bool bad = false;
+   bool ok = false;
 #if DEBUG_INVALID
    real det = 0.0;
 #endif
 
    for (int i = 0; i < 6; i++) {
       if (isnan((*v)[i]))
-	 printf("*** NaN!!!\n"), bad = 1, ok = 1;
-      if ((*v)[i] != 0.0) ok = 1;
+	 printf("*** NaN!!!\n"), bad = true, ok = true;
+      if ((*v)[i] != 0.0) ok = true;
    }
    if (!ok) return; /* ignore all-zero matrices */
 
@@ -128,28 +128,28 @@ static void check_svar(const svar *v) {
    }
 
    if (fabs(det) < THRESHOLD)
-      printf("*** Singular!!!\n"), bad = 1;
+      printf("*** Singular!!!\n"), bad = true;
 #endif
 
 #if 0
    /* don't check this - it isn't always the case! */
    if ((*v)[0] <= 0.0 || (*v)[1] <= 0.0 || (*v)[2] <= 0.0)
-      printf("*** Not positive definite (diag <= 0)!!!\n"), bad = 1;
+      printf("*** Not positive definite (diag <= 0)!!!\n"), bad = true;
    if (sqrd((*v)[3]) >= (*v)[0]*(*v)[1] ||
        sqrd((*v)[4]) >= (*v)[0]*(*v)[2] ||
        sqrd((*v)[5]) >= (*v)[1]*(*v)[2])
-      printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = 1;
+      printf("*** Not positive definite (off diag^2 >= diag product)!!!\n"), bad = true;
 #endif
    if (bad) print_svar(*v);
 }
 #endif
 
 static void check_d(const delta *d) {
-   int bad = 0;
+   bool bad = false;
 
    for (int i = 0; i < 3; i++) {
       if (isnan((*d)[i]))
-	 printf("*** NaN!!!\n"), bad = 1;
+	 printf("*** NaN!!!\n"), bad = true;
    }
 
    if (bad) printf("(%4.2f,%4.2f,%4.2f)\n", (*d)[0], (*d)[1], (*d)[2]);

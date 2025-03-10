@@ -1,7 +1,7 @@
 /* netskel.c
  * Survex network reduction - remove trailing traverses and concatenate
  * traverses between junctions
- * Copyright (C) 1991-2024 Olly Betts
+ * Copyright (C) 1991-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -329,7 +329,7 @@ do_gross(delta e, delta v, node *stn1, node *stn2, double expected_error)
    double hsqrd, rsqrd, s, cx, cy, cz;
    double tot;
    int i;
-   int output = 0;
+   bool output = false;
    prefix *name1 = stn1->name, *name2 = stn2->name;
 
 #if 0
@@ -357,7 +357,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
       fprintf(fhErrStat, " L: %.2f", sqrt(tot));
       /* checked - works */
       fprintf(fhErrStat, " (%.2fm -> %.2fm)", sqrt(sqrdd(v)), sqrt(sqrdd(v)) * (1 - s));
-      output = 1;
+      output = true;
    }
 
    s = sqrd(cx) + sqrd(cy);
@@ -381,7 +381,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
 	 oldval = deg(atan2(v[0], v[1]));
 	 if (oldval < 0) oldval += 360;
 	 fprintf(fhErrStat, " (%.2fdeg -> %.2fdeg)", oldval, newval);
-	 output = 1;
+	 output = true;
       }
    }
 
@@ -407,7 +407,7 @@ printf( " v = ( %.2f, %.2f, %.2f )\n", v[0], v[1], v[2] );
 	    fprintf(fhErrStat, " (%.2fdeg -> %.2fdeg)",
 		    deg(atan2(v[2], sqrt(v[0] * v[0] + v[1] * v[1]))),
 		    deg(atan2(cz, sqrt(nx * nx + ny * ny))));
-	    output = 1;
+	    output = true;
 	 }
       }
    }

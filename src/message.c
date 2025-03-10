@@ -218,12 +218,12 @@ default_charset(void)
       name_len = p - chset;
 
       if (name_len) {
-	 int only_digit = 1;
+	 bool only_digit = true;
 	 size_t cnt;
 
 	 for (cnt = 0; cnt < name_len; ++cnt)
 	    if (isalpha((unsigned char)chset[cnt])) {
-	       only_digit = 0;
+	       only_digit = false;
 	       break;
 	    }
 

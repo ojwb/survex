@@ -1,6 +1,6 @@
 /* extend.c
  * Produce an extended elevation
- * Copyright (C) 1995-2002,2005,2010,2011,2013,2014,2016,2017,2024 Olly Betts
+ * Copyright (C) 1995-2025 Olly Betts
  * Copyright (C) 2004,2005 John Pybus
  *
  * This program is free software; you can redistribute it and/or modify
@@ -86,7 +86,7 @@ static leg headleg = {NULL, NULL, NULL, 0, 0, 0, 0, NULL};
 
 static img *pimg_out;
 
-static int show_breaks = 0;
+static bool show_breaks = false;
 
 static void do_stn(point *, double, const char *, int, int, double, double);
 
@@ -555,7 +555,7 @@ main(int argc, char **argv)
       if (opt == EOF) break;
       switch (opt) {
 	 case 'b':
-	    show_breaks = 1;
+	    show_breaks = true;
 	    break;
 	 case 's':
 	    survey = optarg;

@@ -1,6 +1,6 @@
 /* cavern.h
  * SURVEX Cave surveying software - header file
- * Copyright (C) 1991-2024 Olly Betts
+ * Copyright (C) 1991-2025 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -62,7 +62,7 @@ typedef double real; /* so we can change the precision used easily */
 #define SPECIAL_CLOSE		0x1000
 
 extern char *fnm_output_base;
-extern int fnm_output_base_is_dir;
+extern bool fnm_output_base_is_dir;
 
 extern bool fExportUsed;
 

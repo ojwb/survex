@@ -1,6 +1,6 @@
 /* cavern.c
  * SURVEX Cave surveying software: data reduction main and related functions
- * Copyright (C) 1991-2024 Olly Betts
+ * Copyright (C) 1991-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ string survey_title = S_INIT;
 bool fExplicitTitle = false;
 
 char *fnm_output_base = NULL;
-int fnm_output_base_is_dir = 0;
+bool fnm_output_base_is_dir = false;
 
 lrudlist * model = NULL;
 lrud ** next_lrud = NULL;
@@ -237,7 +237,7 @@ main(int argc, char **argv)
 	    /* this is a little tricky - we need to note the path here,
 	     * and then add the leaf later on (in datain.c) */
 	    fnm_output_base = base_from_fnm(optarg);
-	    fnm_output_base_is_dir = 1;
+	    fnm_output_base_is_dir = true;
 	 } else {
 	    fnm_output_base = base_from_fnm(optarg);
 	 }
@@ -263,11 +263,11 @@ main(int argc, char **argv)
 	 break;
        case 'z': {
 	 /* Control which network optimisations are used (development tool) */
-	 static int first_opt_z = 1;
+	 static bool seen_opt_z = false;
 	 char c;
-	 if (first_opt_z) {
+	 if (!seen_opt_z) {
 	    optimize = 0;
-	    first_opt_z = 0;
+	    seen_opt_z = true;
 	 }
 	 /* Lollipops, Parallel legs, Iterate mx, Delta* */
 	 while ((c = *optarg++) != '\0')
