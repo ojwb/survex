@@ -1,5 +1,5 @@
 /* OS dependent filename manipulation routines
- * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011,2014
+ * Copyright (c) Olly Betts 1998-2003,2004,2005,2010,2011,2014,2025
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ extern char *
 baseleaf_from_fnm(const char *fnm)
 {
    const char *p;
-   char *q;
+   const char *q;
    size_t len;
 
    p = fnm;
@@ -196,10 +196,10 @@ baseleaf_from_fnm(const char *fnm)
    q = strrchr(p, FNM_SEP_EXT);
    if (q) len = (const char *)q - p; else len = strlen(p);
 
-   q = osmalloc(len + 1);
-   memcpy(q, p, len);
-   q[len] = '\0';
-   return q;
+   char* res = osmalloc(len + 1);
+   memcpy(res, p, len);
+   res[len] = '\0';
+   return res;
 }
 
 extern char *
