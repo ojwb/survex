@@ -112,7 +112,7 @@ read_prefix(unsigned pfx_flags)
 	     */
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 	       set_pos(&here);
-	       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/3);
+	       compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/47);
 	       longjmp(jbSkipLine, 1);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -128,7 +128,7 @@ read_prefix(unsigned pfx_flags)
 anon_wall_station:
 	       if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		  set_pos(&here);
-		  compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/3);
+		  compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/47);
 		  longjmp(jbSkipLine, 1);
 	       }
 	       pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -146,7 +146,7 @@ anon_wall_station:
 		   */
 		  if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		     set_pos(&here);
-		     compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/3);
+		     compile_diagnostic(DIAG_ERR|DIAG_WORD, /*Can't have a leg between two anonymous stations*/47);
 		     longjmp(jbSkipLine, 1);
 		  }
 		  pcs->flags |= BIT(FLAGS_ANON_ONE_END);
@@ -198,7 +198,7 @@ anon_wall_station:
 	       }
 	    } else {
 	       /* TRANSLATORS: Here "station" is a survey station, not a train station. */
-	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/7, ch);
+	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)*/110, ch);
 	    }
 	    longjmp(jbSkipLine, 1);
 	 }
@@ -410,7 +410,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 	    if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END)) {
 		set_pos(&fp);
 		// Walls also rejects this case.
-		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/3);
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Can't have a leg between two anonymous stations*/47);
 		longjmp(jbSkipLine, 1);
 	    }
 	    pcs->flags |= BIT(FLAGS_ANON_ONE_END) | BIT(FLAGS_IMPLICIT_SPLAY);
@@ -647,7 +647,7 @@ read_number(bool f_optional, bool f_unsigned)
    }
 
    if (isOmit(ch_old)) {
-      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/114);
    } else {
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
    }
@@ -687,7 +687,7 @@ read_quadrant(bool f_optional)
    if (first_point == POINT_NONE) {
       set_pos(&fp);
       if (isOmit(ch)) {
-	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/8);
+	 compile_diagnostic(DIAG_ERR|DIAG_COL, /*Field may not be omitted*/114);
       }
       compile_diagnostic_token_show(DIAG_ERR, /*Expecting quadrant bearing, found “%s”*/483);
       longjmp(jbSkipLine, 1);

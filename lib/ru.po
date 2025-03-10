@@ -57,7 +57,6 @@ msgstr "&Презентация"
 msgid "Usage"
 msgstr "Использование"
 
-#: ../src/gfxcore.cc:4618
 #: ../src/gla-gl.cc:257
 #: n:389
 msgid "Out of memory"
@@ -66,15 +65,16 @@ msgstr "Недостаточно памяти"
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
 #: ../src/message.c:68
-#: n:1
+#: n:24
 #, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Недостаточно памяти (невозможно выделить %lu байт)."
 
-#. TRANSLATORS: %s will be replaced by the filename that we were trying
-#. to read when we ran out of memory.
-#: ../src/img_hosted.c:34
-#: n:38
+#. TRANSLATORS: %s will be replaced by the filename
+#. that we were trying to read when we ran out of
+#. memory.
+#: ../src/gfxcore.cc:4622
+#: n:2
 #, c-format
 msgid "Out of memory trying to read file “%s”"
 msgstr "Возникла нехватка памяти при чтении файл “%s”"
@@ -89,7 +89,7 @@ msgstr "Возникла нехватка памяти при чтении фа�
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
 #: ../src/commands.c:2794
-#: n:2
+#: n:38
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Для обработки данных этой топо-съемки требуется Survex версии %s и старше."
@@ -108,7 +108,7 @@ msgstr "инфо"
 #: ../src/aven.cc:470
 #: ../src/cavernlog.cc:530
 #: ../src/message.c:1233
-#: n:4
+#: n:106
 msgid "warning"
 msgstr "предупреждение"
 
@@ -126,7 +126,7 @@ msgstr "ошибка"
 #. %s:%u so that automatic parsing of error messages to determine the file
 #. and line number still works.
 #: ../src/datain.c:156
-#: n:5
+#: n:44
 #, c-format
 msgid "In file included from %s:%u:\n"
 msgstr "В файле включенном из %s:%u:\n"
@@ -134,20 +134,20 @@ msgstr "В файле включенном из %s:%u:\n"
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:834
-#: n:6
+#: n:109
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix устарел - используйте *begin и *end вместо него"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:201
-#: n:7
+#: n:110
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr "Символ “%c” недопустим в имени пикета (используйте *SET NAMES для определения допустимых символов)"
 
 #: ../src/readval.c:650
 #: ../src/readval.c:690
-#: n:8
+#: n:114
 msgid "Field may not be omitted"
 msgstr "Поле не может быть пропущено"
 
@@ -567,8 +567,7 @@ msgid "No survey data"
 msgstr "Нет данных топо-съемки"
 
 #: ../src/filename.c:80
-#: ../src/img_hosted.c:39
-#: n:44
+#: n:5
 #, c-format
 msgid "Filename “%s” refers to directory"
 msgstr "Имя файла “%s” ссылается на каталог файловой системы"
@@ -598,8 +597,7 @@ msgstr "Пикет ранее зафиксирован или приравнен
 #: ../src/cavern.c:307
 #: ../src/filename.c:83
 #: ../src/gfxcore.cc:4236
-#: ../src/img_hosted.c:35
-#: n:47
+#: n:3
 #, c-format
 msgid "Failed to open output file “%s”"
 msgstr "Невозможно открыть выходной файл “%s”"
@@ -933,10 +931,9 @@ msgstr "Ожидается имя топо-съемки"
 #: ../src/datain.c:3455
 #: ../src/extend.c:691
 #: ../src/gfxcore.cc:4570
-#: ../src/img_hosted.c:30
 #: ../src/mainfrm.cc:410
 #: ../src/sorterr.c:143
-#: n:24
+#: n:1
 #, c-format
 msgid "Couldn’t open file “%s”"
 msgstr "Невозможно открыть файл “%s”"
@@ -999,8 +996,8 @@ msgstr "“*data %s %c …” устарело - используйте “*data
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
-#: ../src/img_hosted.c:38
-#: n:106
+#: ../src/img_hosted.h:41
+#: n:4
 #, c-format
 msgid "Bad 3d image file “%s”"
 msgstr "Файл “%s” не распознан как корректный .3d файл Survex"
@@ -1020,18 +1017,17 @@ msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 msgid "Date and time not available."
 msgstr "Дата и время недоступны."
 
-#: ../src/img_hosted.c:40
-#: n:109
+#: ../src/img_hosted.h:42
+#: n:6
 #, c-format
 msgid "Error reading from file “%s”"
 msgstr "Ошибка чтения из файла “%s”"
 
 #: ../src/cavernlog.cc:660
 #: ../src/filename.c:107
-#: ../src/img_hosted.c:41
 #: ../src/mainfrm.cc:372
 #: ../src/mainfrm.cc:1549
-#: n:110
+#: n:7
 #, c-format
 msgid "Error writing to file “%s”"
 msgstr "Ошибка записи в файла “%s”"
@@ -1047,8 +1043,8 @@ msgstr "Ошибка записи в файл"
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Визникло %d предупреждений и %d ошибок - результирующие файлы не созданы."
 
-#: ../src/img_hosted.c:42
-#: n:114
+#: ../src/img_hosted.h:43
+#: n:8
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
 msgstr "Файл “%s” имеет более новый формат, с которым данная версия программы не может работать"
@@ -3205,7 +3201,7 @@ msgstr "анонимный пикет"
 #: ../src/readval.c:131
 #: ../src/readval.c:149
 #: ../src/readval.c:413
-#: n:3
+#: n:47
 msgid "Can't have a leg between two anonymous stations"
 msgstr "Отсутствует замер между двумя анонимными пикетами"
 
@@ -3526,7 +3522,7 @@ msgstr "Ошибка в инициализации выходной систем
 #. TRANSLATORS: %s is replaced by the name of a geodata
 #. file, e.g. GPX, KML.
 #: ../src/gfxcore.cc:4609
-#: ../src/gfxcore.cc:4622
+#: ../src/gfxcore.cc:4626
 #: n:492
 #, c-format
 msgid "File “%s” not georeferenced"

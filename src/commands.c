@@ -831,7 +831,7 @@ cmd_prefix(void)
    if (prefix_depr_count < 5) {
       /* TRANSLATORS: If you're unsure what "deprecated" means, see:
        * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/6);
+      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/109);
       if (++prefix_depr_count == 5)
 	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
    }
@@ -2791,7 +2791,7 @@ cmd_require(void)
 	 * Here "survey" is a "cave map" rather than list of questions - it should be
 	 * translated to the terminology that cavers using the language would use.
 	 */
-	compile_diagnostic(DIAG_FATAL|DIAG_FROM(fp), /*Survex version %s or greater required to process this survey data.*/2, v);
+	compile_diagnostic(DIAG_FATAL|DIAG_FROM(fp), /*Survex version %s or greater required to process this survey data.*/38, v);
 	// Does not return so no point freeing v here.
     }
 }

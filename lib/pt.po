@@ -57,7 +57,6 @@ msgstr "A&presentação"
 msgid "Usage"
 msgstr "Uso"
 
-#: ../src/gfxcore.cc:4618
 #: ../src/gla-gl.cc:257
 #: n:389
 msgid "Out of memory"
@@ -66,15 +65,16 @@ msgstr "Memória insuficiente"
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
 #: ../src/message.c:68
-#: n:1
+#: n:24
 #, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Memória insuficiente (são necesssários mais %lu bytes)."
 
-#. TRANSLATORS: %s will be replaced by the filename that we were trying
-#. to read when we ran out of memory.
-#: ../src/img_hosted.c:34
-#: n:38
+#. TRANSLATORS: %s will be replaced by the filename
+#. that we were trying to read when we ran out of
+#. memory.
+#: ../src/gfxcore.cc:4622
+#: n:2
 #, fuzzy, c-format
 msgid "Out of memory trying to read file “%s”"
 msgstr "Memória insuficiente: “%s”"
@@ -89,7 +89,7 @@ msgstr "Memória insuficiente: “%s”"
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
 #: ../src/commands.c:2794
-#: n:2
+#: n:38
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
 msgstr "Para processar estes dados é necessária a versão %s (ou posterior) do Survex."
@@ -108,7 +108,7 @@ msgstr "informação"
 #: ../src/aven.cc:470
 #: ../src/cavernlog.cc:530
 #: ../src/message.c:1233
-#: n:4
+#: n:106
 msgid "warning"
 msgstr "alerta"
 
@@ -126,7 +126,7 @@ msgstr "erro"
 #. %s:%u so that automatic parsing of error messages to determine the file
 #. and line number still works.
 #: ../src/datain.c:156
-#: n:5
+#: n:44
 #, c-format
 msgid "In file included from %s:%u:\n"
 msgstr "No arquivo incluído em %s:%u:\n"
@@ -134,20 +134,20 @@ msgstr "No arquivo incluído em %s:%u:\n"
 #. TRANSLATORS: If you're unsure what "deprecated" means, see:
 #. https://en.wikipedia.org/wiki/Deprecation
 #: ../src/commands.c:834
-#: n:6
+#: n:109
 msgid "*prefix is deprecated - use *begin and *end instead"
 msgstr "*prefix descontinuado - use *begin e *end em seu lugar"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/readval.c:201
-#: n:7
+#: n:110
 #, c-format
 msgid "Character “%c” not allowed in station name (use *SET NAMES to set allowed characters)"
 msgstr "Caractere “%c” não permitido em nome de base (use *SET NAMES para configurar os caracteres permitidos)"
 
 #: ../src/readval.c:650
 #: ../src/readval.c:690
-#: n:8
+#: n:114
 msgid "Field may not be omitted"
 msgstr "Campo não pode ser omitido"
 
@@ -568,8 +568,7 @@ msgid "No survey data"
 msgstr "Nenhum dado topográfico"
 
 #: ../src/filename.c:80
-#: ../src/img_hosted.c:39
-#: n:44
+#: n:5
 #, c-format
 msgid "Filename “%s” refers to directory"
 msgstr "Nome de arquivo “%s” referencia diretório ao invés de arquivo"
@@ -599,8 +598,7 @@ msgstr ""
 #: ../src/cavern.c:307
 #: ../src/filename.c:83
 #: ../src/gfxcore.cc:4236
-#: ../src/img_hosted.c:35
-#: n:47
+#: n:3
 #, c-format
 msgid "Failed to open output file “%s”"
 msgstr "Não foi possível abrir arquivo de saída “%s”"
@@ -934,10 +932,9 @@ msgstr "Esperando nome de topografia"
 #: ../src/datain.c:3455
 #: ../src/extend.c:691
 #: ../src/gfxcore.cc:4570
-#: ../src/img_hosted.c:30
 #: ../src/mainfrm.cc:410
 #: ../src/sorterr.c:143
-#: n:24
+#: n:1
 #, c-format
 msgid "Couldn’t open file “%s”"
 msgstr "Impossível abrir ficheiro “%s”"
@@ -1000,8 +997,8 @@ msgstr "“*data %s %c …” obsoleto - use “*data %s …” no lugar"
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
-#: ../src/img_hosted.c:38
-#: n:106
+#: ../src/img_hosted.h:41
+#: n:4
 #, c-format
 msgid "Bad 3d image file “%s”"
 msgstr "Ficheiro de imagem 3d “%s” com problemas"
@@ -1021,18 +1018,17 @@ msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 msgid "Date and time not available."
 msgstr "Data e hora não disponível."
 
-#: ../src/img_hosted.c:40
-#: n:109
+#: ../src/img_hosted.h:42
+#: n:6
 #, c-format
 msgid "Error reading from file “%s”"
 msgstr "Erro ao ler o ficheiro “%s”"
 
 #: ../src/cavernlog.cc:660
 #: ../src/filename.c:107
-#: ../src/img_hosted.c:41
 #: ../src/mainfrm.cc:372
 #: ../src/mainfrm.cc:1549
-#: n:110
+#: n:7
 #, c-format
 msgid "Error writing to file “%s”"
 msgstr "Erro escrevendo no arquivo “%s”"
@@ -1048,8 +1044,8 @@ msgstr "Erro escrevendo em arquivo"
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Há %d alerta(s) e %d erro(s) - nenhum arquivo de saída criado"
 
-#: ../src/img_hosted.c:42
-#: n:114
+#: ../src/img_hosted.h:43
+#: n:8
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
 msgstr "Arquivo “%s” tem um formato mais novo do que este programa consegue entender"
@@ -3219,7 +3215,7 @@ msgstr ""
 #: ../src/readval.c:131
 #: ../src/readval.c:149
 #: ../src/readval.c:413
-#: n:3
+#: n:47
 msgid "Can't have a leg between two anonymous stations"
 msgstr ""
 
@@ -3542,7 +3538,7 @@ msgstr ""
 #. TRANSLATORS: %s is replaced by the name of a geodata
 #. file, e.g. GPX, KML.
 #: ../src/gfxcore.cc:4609
-#: ../src/gfxcore.cc:4622
+#: ../src/gfxcore.cc:4626
 #: n:492
 #, c-format
 msgid "File “%s” not georeferenced"

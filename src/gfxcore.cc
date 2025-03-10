@@ -4233,7 +4233,7 @@ bool GfxCore::ExportMovie(const wxString & fnm)
 {
     FILE* fh = wxFopen(fnm.fn_str(), wxT("wb"));
     if (fh == NULL) {
-	wxGetApp().ReportError(wxString::Format(wmsg(/*Failed to open output file “%s”*/47), fnm.c_str()));
+	wxGetApp().ReportError(wxString::Format(wmsg(/*Failed to open output file “%s”*/3), fnm.c_str()));
 	return false;
     }
 
@@ -4567,7 +4567,7 @@ erase_overlay:
 	GDALDataset* poDS = (GDALDataset*)GDALOpenEx(p, GDAL_OF_VECTOR,
 						     NULL, NULL, NULL);
 	if (!poDS) {
-	    error = wxString::Format(wmsg(/*Couldn’t open file “%s”*/24), p);
+	    error = wxString::Format(wmsg(/*Couldn’t open file “%s”*/1), p);
 	    goto erase_overlay;
 	}
 
@@ -4615,7 +4615,11 @@ erase_overlay:
 		    auto result = ogrsr->exportToWkt(&cs_wkt);
 		    if (result != OGRERR_NONE) {
 			if (result == OGRERR_NOT_ENOUGH_MEMORY) {
-			    error = wmsg(/*Out of memory*/389);
+			    /* TRANSLATORS: %s will be replaced by the filename
+			     * that we were trying to read when we ran out of
+			     * memory.
+			     */
+			    error = wxString::Format(wmsg(/*Out of memory trying to read file “%s”*/2), p);
 			} else {
 			    // TRANSLATORS: %s is replaced by the name of a geodata
 			    // file, e.g. GPX, KML.

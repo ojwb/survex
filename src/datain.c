@@ -153,7 +153,7 @@ report_parent(parse * p) {
      * by the line number in that file.  Your translation should also contain
      * %s:%u so that automatic parsing of error messages to determine the file
      * and line number still works. */
-    fprintf(STDERR, msg(/*In file included from %s:%u:\n*/5), p->filename, p->line);
+    fprintf(STDERR, msg(/*In file included from %s:%u:\n*/44), p->filename, p->line);
 }
 
 static void
@@ -3127,9 +3127,9 @@ process_entry:
 		    //
 		    // FIXME: This should take case into account like
 		    // opening the file does.
-		    compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&full_file));
+		    compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*Couldn’t open file “%s”*/1, s_str(&full_file));
 		} else {
-		    compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/24, s_str(&full_file));
+		    compile_diagnostic(DIAG_ERR|DIAG_TAIL, /*Couldn’t open file “%s”*/1, s_str(&full_file));
 		}
 		s_free(&full_file);
 		set_pos(&fp);
@@ -3452,7 +3452,7 @@ data_file(const char *pth, const char *fnm)
       }
 
       if (fh == NULL) {
-	 compile_error_string(fnm, /*Couldn’t open file “%s”*/24, fnm);
+	 compile_error_string(fnm, /*Couldn’t open file “%s”*/1, fnm);
 	 return;
       }
 

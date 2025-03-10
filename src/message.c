@@ -65,7 +65,7 @@ outofmem(OSSIZE_T size)
 {
    /* TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
     * was trying to allocate space for. */
-   fatalerror(/*Out of memory (couldn’t find %lu bytes).*/1,
+   fatalerror(/*Out of memory (couldn’t find %lu bytes).*/24,
 	      (unsigned long)size);
 }
 
@@ -1230,7 +1230,7 @@ v_report(int severity, const char *fnm, int line, int col, int en, va_list ap)
     case DIAG_WARN:
       /* TRANSLATORS: Indicates a warning message e.g.:
        * "spoon.svx:12: warning: *prefix is deprecated" */
-      level = msg_opt(/*warning*/4, "warning");
+      level = msg_opt(/*warning*/106, "warning");
       break;
     default:
       /* TRANSLATORS: Indicates an error message e.g.:

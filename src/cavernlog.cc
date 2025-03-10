@@ -527,7 +527,7 @@ CavernLogWindow::ProcessCavernOutput()
 		line_info.back().link_len = link_len;
 
 		static string info_marker = string(msg(/*info*/485)) + ':';
-		static string warning_marker = string(msg(/*warning*/4)) + ':';
+		static string warning_marker = string(msg(/*warning*/106)) + ':';
 		static string error_marker = string(msg(/*error*/93)) + ':';
 
 		size_t offset = link_len + 2;
@@ -657,7 +657,7 @@ CavernLogWindow::OnSave(wxCommandEvent &)
     filelog = dlg.GetPath();
     FILE * fh_log = wxFopen(filelog, wxT("w"));
     if (!fh_log) {
-	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/110), filelog.c_str()));
+	wxGetApp().ReportError(wxString::Format(wmsg(/*Error writing to file “%s”*/7), filelog.c_str()));
 	return;
     }
     FWRITE_(log_txt.data(), log_txt.size(), 1, fh_log);
