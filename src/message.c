@@ -1,6 +1,6 @@
 /* message.c
  * Fairly general purpose message and error routines
- * Copyright (C) 1993-2024 Olly Betts
+ * Copyright (C) 1993-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,32 +69,14 @@ outofmem(OSSIZE_T size)
 	      (unsigned long)size);
 }
 
-#ifdef TOMBSTONES
-#define TOMBSTONE_SIZE 16
-static const char tombstone[TOMBSTONE_SIZE] = "012345\xfftombstone";
-#endif
-
 /* malloc with error catching if it fails. Also allows us to write special
  * versions easily eg for MS Windows.
  */
 void *
 osmalloc(OSSIZE_T size)
 {
-   void *p;
-#ifdef TOMBSTONES
-   size += TOMBSTONE_SIZE * 2;
-   p = malloc(size);
-#else
-   p = xosmalloc(size);
-#endif
+   void *p = xosmalloc(size);
    if (p == NULL) outofmem(size);
-#ifdef TOMBSTONES
-   printf("osmalloc truep=%p truesize=%d\n", p, size);
-   memcpy(p, tombstone, TOMBSTONE_SIZE);
-   memcpy(p + size - TOMBSTONE_SIZE, tombstone, TOMBSTONE_SIZE);
-   *(size_t *)p = size;
-   p += TOMBSTONE_SIZE;
-#endif
    return p;
 }
 
@@ -106,32 +88,7 @@ osrealloc(void *p, OSSIZE_T size)
    if (p == NULL) {
       p = xosmalloc(size);
    } else {
-#ifdef TOMBSTONES
-      int true_size;
-      size += TOMBSTONE_SIZE * 2;
-      p -= TOMBSTONE_SIZE;
-      true_size = *(size_t *)p;
-      printf("osrealloc (in truep=%p truesize=%d)\n", p, true_size);
-      if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
-		 TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
-	 printf("start tombstone for block %p, size %d corrupted!",
-		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
-      }
-      if (memcmp(p + true_size - TOMBSTONE_SIZE, tombstone,
-		 TOMBSTONE_SIZE) != 0) {
-	 printf("end tombstone for block %p, size %d corrupted!",
-		p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
-      }
-      p = realloc(p, size);
-      if (p == NULL) outofmem(size);
-      printf("osrealloc truep=%p truesize=%d\n", p, size);
-      memcpy(p, tombstone, TOMBSTONE_SIZE);
-      memcpy(p + size - TOMBSTONE_SIZE, tombstone, TOMBSTONE_SIZE);
-      *(size_t *)p = size;
-      p += TOMBSTONE_SIZE;
-#else
       p = xosrealloc(p, size);
-#endif
    }
    if (p == NULL) outofmem(size);
    return p;
@@ -148,29 +105,7 @@ osstrdup(const char *str)
    return p;
 }
 
-/* osfree is usually just a macro in osalloc.h */
-#ifdef TOMBSTONES
-void
-osfree(void *p)
-{
-   int true_size;
-   if (!p) return;
-   p -= TOMBSTONE_SIZE;
-   true_size = *(size_t *)p;
-   printf("osfree truep=%p truesize=%d\n", p, true_size);
-   if (memcmp(p + sizeof(size_t), tombstone + sizeof(size_t),
-	      TOMBSTONE_SIZE - sizeof(size_t)) != 0) {
-      printf("start tombstone for block %p, size %d corrupted!",
-	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
-   }
-   if (memcmp(p + true_size - TOMBSTONE_SIZE, tombstone,
-	      TOMBSTONE_SIZE) != 0) {
-      printf("end tombstone for block %p, size %d corrupted!",
-	     p + TOMBSTONE_SIZE, true_size - TOMBSTONE_SIZE * 2);
-   }
-   free(p);
-}
-#endif
+/* osfree is just a macro in osalloc.h */
 
 static int
 default_charset(void)

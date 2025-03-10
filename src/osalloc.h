@@ -1,6 +1,6 @@
 /* osalloc.h
  * Function prototypes for OS dep. malloc etc - funcs in error.c
- * Copyright (C) 1996,1997,2001,2003,2004,2010 Olly Betts
+ * Copyright (C) 1996,1997,2001,2003,2004,2010,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,24 +24,14 @@
 extern "C" {
 #endif
 
-/* define TOMBSTONES to enable tombstones on malloc blocks
- * for bounds checking */
-/*#define TOMBSTONES 1*/
-
 #include <stdlib.h>
 
 /* OSSIZE_T is to osmalloc, etc what size_t is to malloc, etc */
-#ifndef TOMBSTONES
-# define osfree(p) free((p))
-# define xosmalloc(s) malloc((s))
-# define xosrealloc(p, s) realloc((p), (s))
-#else
-void osfree(void *p);
-/* ick: */
-# define xosmalloc(s) osmalloc((s))
-# define xosrealloc(p, s) osrealloc((p), (s))
-#endif
 #define OSSIZE_T size_t
+
+#define osfree(p) free((p))
+#define xosmalloc(s) malloc((s))
+#define xosrealloc(p, s) realloc((p), (s))
 
 /* NB No extra () around X as sizeof((char*)) doesn't work */
 #define ossizeof(X) ((OSSIZE_T)sizeof(X))
