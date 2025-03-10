@@ -270,7 +270,7 @@ dnl Checks for header files.
 
 AC_CHECK_HEADERS(string.h)
 
-AC_CHECK_FUNCS([popen hypot mmap])
+AC_CHECK_FUNCS([popen hypot mmap strdup])
 
 dnl We don't access a FILE* from multiple threads and using the unlocked
 dnl versions has significantly less overhead, especially when reading/writing

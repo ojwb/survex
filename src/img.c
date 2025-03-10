@@ -79,6 +79,23 @@ static int my_snprintf(char *s, size_t size, const char *format, ...) {
 }
 #endif
 
+// strdup() is POSIX but not in any C/C++ standard (yet at least).
+#ifdef HAVE_STRDUP
+# define STRDUP(STR) strdup(STR)
+#else
+# define STRDUP(STR) my_strdup(STR)
+
+static char *
+my_strdup(const char *str)
+{
+   char *p;
+   size_t len = strlen(str) + 1;
+   p = (char *)malloc(len);
+   if (p) memcpy(p, str, len);
+   return p;
+}
+#endif
+
 # ifndef FEOF
 #  ifdef HAVE_FEOF_UNLOCKED
 #   define FEOF(F) feof_unlocked(F)
@@ -211,8 +228,6 @@ baseleaf_from_fnm(const char *fnm)
 }
 #endif
 
-static char * my_strdup(const char *str);
-
 static time_t
 mktime_with_tz(struct tm * tm, const char * tz)
 {
@@ -220,7 +235,7 @@ mktime_with_tz(struct tm * tm, const char * tz)
     char * old_tz = getenv("TZ");
 #ifdef _MSC_VER
     if (old_tz) {
-	old_tz = my_strdup(old_tz);
+	old_tz = STRDUP(old_tz);
 	if (!old_tz)
 	    return (time_t)-1;
     }
@@ -230,7 +245,7 @@ mktime_with_tz(struct tm * tm, const char * tz)
     }
 #elif defined HAVE_SETENV
     if (old_tz) {
-	old_tz = my_strdup(old_tz);
+	old_tz = STRDUP(old_tz);
 	if (!old_tz)
 	    return (time_t)-1;
     }
@@ -517,16 +532,6 @@ compass_plt_get_station_flags(img *pimg, const char *name, int name_len)
     return -1;
 }
 
-static char *
-my_strdup(const char *str)
-{
-   char *p;
-   size_t len = strlen(str) + 1;
-   p = (char *)malloc(len);
-   if (p) memcpy(p, str, len);
-   return p;
-}
-
 #define getline_alloc(FH) getline_alloc_len(FH, NULL)
 
 static char *
@@ -658,7 +663,7 @@ initialise_survey_filter(img *pimg, const char* survey)
 	p = strrchr(pimg->survey, pimg->separator);
 	if (p) p++; else p = pimg->survey;
 	free(pimg->title);
-	pimg->title = my_strdup(p);
+	pimg->title = STRDUP(p);
 	if (!pimg->title) {
 	    return 0;
 	}
@@ -684,7 +689,7 @@ compass_plt_open(img *pimg, const char *survey)
      * use space as the level separator */
     pimg->separator = ' ';
     pimg->start = -1;
-    pimg->datestamp = my_strdup(TIMENA);
+    pimg->datestamp = STRDUP(TIMENA);
     if (!pimg->datestamp) {
 	return IMG_OUTOFMEMORY;
     }
@@ -829,9 +834,9 @@ compass_plt_open(img *pimg, const char *survey)
 	      q = strchr(line + len, 'C');
 	      if (q && q[1]) {
 		  free(pimg->title);
-		  pimg->title = my_strdup(q + 1);
+		  pimg->title = STRDUP(q + 1);
 	      } else if (!pimg->title) {
-		  pimg->title = my_strdup(pimg->label);
+		  pimg->title = STRDUP(pimg->label);
 	      }
 	      free(line);
 	      if (!pimg->title) {
@@ -1069,7 +1074,7 @@ cmap_xyz_open(img *pimg, const char *survey)
 	struct tm tm;
 	unsigned long v;
 	char * p;
-	pimg->datestamp = my_strdup(line + 45);
+	pimg->datestamp = STRDUP(line + 45);
 	if (!pimg->datestamp) {
 	    free(line);
 	    return IMG_OUTOFMEMORY;
@@ -1118,7 +1123,7 @@ cmap_xyz_open(img *pimg, const char *survey)
 	 */
 	pimg->datestamp_numeric = mktime_with_tz(&tm, "");
     } else {
-	pimg->datestamp = my_strdup(TIMENA);
+	pimg->datestamp = STRDUP(TIMENA);
 	if (!pimg->datestamp) {
 	    free(line);
 	    return IMG_OUTOFMEMORY;
@@ -1135,7 +1140,7 @@ bad_cmap_date:
 	while (len > 2 && line[len - 1] == ' ') --len;
 	if (len > 2) {
 	    line[len] = '\0';
-	    pimg->title = my_strdup(line + 2);
+	    pimg->title = STRDUP(line + 2);
 	    if (!pimg->title) {
 		free(line);
 		return IMG_OUTOFMEMORY;
@@ -1264,7 +1269,7 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
      case EXT3('p', 'o', 's'): /* Survex .pos */
 pos_file:
        pimg->version = IMG_VERSION_SURVEX_POS;
-       pimg->datestamp = my_strdup(TIMENA);
+       pimg->datestamp = STRDUP(TIMENA);
        if (!pimg->datestamp) {
 	   goto out_of_memory_error;
        }
@@ -1453,7 +1458,7 @@ v03d:
 		       }
 		   }
 	       }
-	       if (cs[0]) pimg->cs = my_strdup(cs);
+	       if (cs[0]) pimg->cs = STRDUP(cs);
 	   }
 
 	   if (real_len != title_len) {
@@ -2519,7 +2524,7 @@ img_read_item_ascii_wrapper(img *pimg, img_point *p)
    /* We need to set the default locale for fscanf() to work on
     * numbers with "." as decimal point. */
    int result;
-   char * current_locale = my_strdup(setlocale(LC_NUMERIC, NULL));
+   char * current_locale = STRDUP(setlocale(LC_NUMERIC, NULL));
    setlocale(LC_NUMERIC, "C");
    result = img_read_item_ascii(pimg, p);
    setlocale(LC_NUMERIC, current_locale);
