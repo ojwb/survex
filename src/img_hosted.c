@@ -24,3 +24,28 @@
 #define IMG_HOSTED 1
 
 #include "img.c"
+
+#include "filename.h"
+
+img *
+img_hosted_open_survey(const char *fnm, const char *survey)
+{
+   if (fDirectory(fnm)) {
+      img_errno = IMG_DIRECTORY;
+      return NULL;
+   }
+
+   char *filename_opened = NULL;
+   FILE *fh = fopenWithPthAndExt("", fnm, "3d", "rb", &filename_opened);
+#ifdef ENOMEM
+   if (!fh && errno == ENOMEM) {
+       img_errno = IMG_OUTOFMEMORY;
+       return NULL;
+   }
+#endif
+   img *pimg = img_read_stream_survey(fh, fclose,
+				      filename_opened ? filename_opened : fnm,
+				      survey);
+   free(filename_opened);
+   return pimg;
+}

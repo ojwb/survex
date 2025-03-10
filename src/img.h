@@ -149,13 +149,15 @@ typedef struct {
    double length;
    double E, H, V;
 
-   /* The filename actually opened (e.g. may have ".3d" added).
+   /* This member was documented as being set to the filename of the file 
+    * loaded but was actually always set to NULL when using img outside the
+    * Survex code.
     *
-    * This is only set if img opened the filename - if an existing stream
-    * is used (via img_read_stream() or similar) then this member will be
-    * NULL.
+    * It has now been removed, so if you are referencing it in your code
+    * then instead use the filename you passed to img_open_survey() when
+    * opening the file.
     */
-   char * filename_opened;
+   /* char * filename_opened; */
 
    /* Non-zero if reading an extended elevation: */
    int is_extended_elevation;

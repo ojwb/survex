@@ -587,7 +587,7 @@ main(int argc, char **argv)
    }
 
    /* try to open image file, and check it has correct header */
-   pimg = img_open_survey(fnm_in, survey);
+   pimg = img_hosted_open_survey(fnm_in, survey);
    if (pimg == NULL) fatalerror(img_error2msg(img_error()), fnm_in);
 
    putnl();

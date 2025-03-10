@@ -89,7 +89,7 @@ main(int argc, char **argv)
 
    char date_range = (date_sep && strcmp(date_sep, ".") == 0) ? '-' : ' ';
 
-   pimg = img_open_survey(fnm, survey);
+   pimg = img_hosted_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
 
    printf("TITLE \"%s\"\n", pimg->title);

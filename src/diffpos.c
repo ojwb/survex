@@ -229,7 +229,7 @@ parse_file(const char *fnm, const char *survey,
    int result;
    int separator;
 
-   img *pimg = img_open_survey(fnm, survey);
+   img *pimg = img_hosted_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
    separator = pimg->separator;
 

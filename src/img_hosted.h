@@ -47,6 +47,10 @@ static inline int img_error2msg(img_errcode err) {
     return err_int;
 }
 
+// Like img_open_survey() but use Survex's filename handling to try adding an
+// extension, etc.
+img * img_hosted_open_survey(const char *fnm, const char *survey);
+
 #ifdef __cplusplus
 }
 #endif

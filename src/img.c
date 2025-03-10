@@ -177,8 +177,6 @@ using std::min;
 # endif
 #endif
 
-#define EXT_SVX_3D "3d"
-
 #define METRES_PER_FOOT 0.3048 /* exact value */
 
 #define TIMENA "?"
@@ -186,13 +184,6 @@ using std::min;
 # include "debug.h"
 # include "filename.h"
 #else
-/* in IMG_HOSTED mode, this tests if a filename refers to a directory */
-# define fDirectory(X) 0
-/* open file FNM with mode MODE, maybe using path PTH and/or extension EXT */
-/* path isn't used in img.c, but EXT is */
-# define fopenWithPthAndExt(PTH,FNM,EXT,MODE,X) \
-    ((*(X) = NULL), fopen(FNM,MODE))
-
 # define SVX_ASSERT(X)
 
 static char *
@@ -637,25 +628,14 @@ buf_included(img *pimg, const char *buf, size_t len)
 img *
 img_open_survey(const char *fnm, const char *survey)
 {
-   img *pimg;
-   FILE *fh;
-   char* filename_opened = NULL;
-
-   if (fDirectory(fnm)) {
-      img_errno = IMG_DIRECTORY;
-      return NULL;
+   FILE *fh = fopen(fnm, "rb");
+#ifdef ENOMEM
+   if (!fh && errno == ENOMEM) {
+       img_errno = IMG_OUTOFMEMORY;
+       return NULL;
    }
-
-   fh = fopenWithPthAndExt("", fnm, EXT_SVX_3D, "rb", &filename_opened);
-   pimg = img_read_stream_survey(fh, fclose,
-				 filename_opened ? filename_opened : fnm,
-				 survey);
-   if (pimg) {
-       pimg->filename_opened = filename_opened;
-   } else {
-       free(filename_opened);
-   }
-   return pimg;
+#endif
+   return img_read_stream_survey(fh, fclose, fnm, survey);
 }
 
 static int
@@ -1230,7 +1210,6 @@ img_read_stream_survey(FILE *stream, int (*close_func)(FILE*),
    img_errno = IMG_NONE;
 
    pimg->flags = 0;
-   pimg->filename_opened = NULL;
    pimg->data = NULL;
 
    /* for version >= 3 we use label_buf to store the prefix for reuse */
@@ -1495,7 +1474,6 @@ error:
       free(pimg->title);
       free(pimg->cs);
       free(pimg->datestamp);
-      free(pimg->filename_opened);
       if (pimg->close_func) pimg->close_func(pimg->fh);
       free(pimg);
       return NULL;
@@ -1618,12 +1596,20 @@ img_rewind(img *pimg)
 img *
 img_open_write_cs(const char *fnm, const char *title, const char *cs, int flags)
 {
-   if (fDirectory(fnm)) {
-      img_errno = IMG_DIRECTORY;
-      return NULL;
+   FILE *fh = fopen(fnm, "wb");
+#ifdef EISDIR
+   if (!fh && errno == EISDIR) {
+       img_errno = IMG_DIRECTORY;
+       return NULL;
    }
-
-   return img_write_stream(fopen(fnm, "wb"), fclose, title, cs, flags);
+#endif
+#ifdef ENOMEM
+   if (!fh && errno == ENOMEM) {
+       img_errno = IMG_OUTOFMEMORY;
+       return NULL;
+   }
+#endif
+   return img_write_stream(fh, fclose, title, cs, flags);
 }
 
 img *
@@ -1656,7 +1642,6 @@ img_write_stream(FILE *stream, int (*close_func)(FILE*),
       return NULL;
    }
 
-   pimg->filename_opened = NULL;
    pimg->data = NULL;
 
    pimg->separator = (flags & 0x100) ? (flags >> 9) : '.';
@@ -3694,7 +3679,6 @@ img_close(img *pimg)
 	  }
       }
       free(pimg->label_buf);
-      free(pimg->filename_opened);
       free(pimg);
    }
    return result;
