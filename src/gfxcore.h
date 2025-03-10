@@ -29,7 +29,7 @@
 #include <limits.h>
 #include <time.h>
 
-#include "img_hosted.h"
+#include "img_for_survex.h"
 
 #include "guicontrol.h"
 #include "labelinfo.h"

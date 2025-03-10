@@ -1,4 +1,4 @@
-/* img_hosted.h
+/* img_for_survex.h
  * Build img for use in Survex code
  * Copyright (C) 2013,2025 Olly Betts
  *
@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef IMG_HOSTED_H
-#define IMG_HOSTED_H
+#ifndef IMG_FOR_SURVEX_H
+#define IMG_FOR_SURVEX_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,10 +49,10 @@ static inline int img_error2msg(img_errcode err) {
 
 // Like img_open_survey() but use Survex's filename handling to try adding an
 // extension, etc.
-img * img_hosted_open_survey(const char *fnm, const char *survey);
+img * img_for_survex_open_survey(const char *fnm, const char *survey);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* IMG_HOSTED_H */
+#endif /* IMG_FOR_SURVEX_H */

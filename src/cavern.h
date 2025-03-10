@@ -35,7 +35,7 @@
 
 #include <proj.h>
 
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "str.h"
 #include "useful.h"
 

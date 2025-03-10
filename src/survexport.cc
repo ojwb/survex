@@ -35,7 +35,7 @@
 
 #include "cmdline.h"
 #include "filename.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "message.h"
 #include "osalloc.h"
 #include "useful.h"

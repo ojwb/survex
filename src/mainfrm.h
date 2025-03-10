@@ -35,7 +35,7 @@
 #include "aventreectrl.h"
 #include "gfxcore.h"
 #include "guicontrol.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "labelinfo.h"
 #include "message.h"
 #include "model.h"

@@ -1,4 +1,4 @@
-/* img_hosted.c
+/* img_for_survex.c
  * Build img for use in Survex code
  * Copyright (C) 1997-2025 Olly Betts
  *
@@ -19,7 +19,7 @@
 
 #include <config.h>
 
-#include "img_hosted.h"
+#include "img_for_survex.h"
 
 #include "debug.h" // For SVX_ASSERT().
 
@@ -28,7 +28,7 @@
 #include "filename.h"
 
 img *
-img_hosted_open_survey(const char *fnm, const char *survey)
+img_for_survex_open_survey(const char *fnm, const char *survey)
 {
    if (fDirectory(fnm)) {
       img_errno = IMG_DIRECTORY;

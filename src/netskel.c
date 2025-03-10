@@ -36,7 +36,7 @@
 #include "filename.h"
 #include "message.h"
 #include "filelist.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "netartic.h"
 #include "netbits.h"
 #include "netskel.h"

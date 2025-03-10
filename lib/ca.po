@@ -997,7 +997,7 @@ msgstr "“*data %s %c …” obsolet - utilitza “*data %s …” en el seu ll
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
-#: ../src/img_hosted.h:41
+#: ../src/img_for_survex.h:41
 #: n:4
 #, c-format
 msgid "Bad 3d image file “%s”"
@@ -1018,7 +1018,7 @@ msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 msgid "Date and time not available."
 msgstr "Data i hora no disponibles."
 
-#: ../src/img_hosted.h:42
+#: ../src/img_for_survex.h:42
 #: n:6
 #, c-format
 msgid "Error reading from file “%s”"
@@ -1044,7 +1044,7 @@ msgstr "Error escribint a fitxer"
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Hi havia %d alerta(es) i %d error(s) - no s’han generat fitxers de sortida."
 
-#: ../src/img_hosted.h:43
+#: ../src/img_for_survex.h:43
 #: n:8
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"

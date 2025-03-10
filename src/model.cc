@@ -26,7 +26,7 @@
 
 #include "model.h"
 
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "namecompare.h"
 #include "useful.h"
 

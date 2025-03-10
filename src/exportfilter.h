@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "wx.h"
 
-#include "img_hosted.h"
+#include "img_for_survex.h"
 
 class ExportFilter {
   protected:

@@ -30,7 +30,7 @@
 #include "aboutdlg.h"
 
 #include "message.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "printing.h"
 #include "filename.h"
 #include "useful.h"

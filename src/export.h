@@ -22,7 +22,7 @@
 #ifndef SURVEX_INCLUDED_EXPORT_H
 #define SURVEX_INCLUDED_EXPORT_H
 
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "wx.h"
 
 class Model;

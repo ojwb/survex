@@ -41,15 +41,27 @@ I'm aware of (there's a very low number of applications which link to it and
 the effort to do that seems more usefully directed; we also don't
 guarantee ABI stability, but it should be upwardly API compatible).
 
+The current img code makes decisions about the availability of standard C
+library headers, functions and types based on the C/C++ standard version the
+compiler claims to support (via the ``__STDC_VERSION__`` and ``__cplusplus``
+macros).  In general these tests should be sensible but a bit conservative
+(e.g.  ``snprintf()`` was widely supported before it was standardised by C99)
+but currently the highest standards tested for are C99 and C++11 and modern
+compilers likely default to at least these.  If you want more control you can
+probe in your build system and define various macros named with a ``HAVE_``
+prefix - e.g. ``HAVE_SNPRINTF`` to indicate that ``snprintf`` is available.
+
 ---
 API
 ---
 
 The API is documented by comments in ``src/img.h``.
 
-See ``src/imgtest.c`` for an example program using img in "unhosted mode"
-(which is how you'd use it outside of Survex).  Also ``src/dump3d.c`` shows
-how to access all the different types of data returned (that's built "hosted"
-but that only affects the ``#include`` lines, linking and error reporting).
+See ``src/imgtest.c`` for an example program using img as you would from
+outside of Survex.  Also ``src/dump3d.c`` shows how to access all the different
+types of data returned (that's using img as it is in the Survex code so has
+different ``#include`` lines, opens the file in a more complex way, and has
+Survex-specific translation from img error codes to Survex message numbers
+- none of these are relevant for using img outside of Survex).
 
 If anything is unclear, please ask on the mailing list and we can clarify.

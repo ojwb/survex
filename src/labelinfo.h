@@ -25,7 +25,7 @@
 #define labelinfo_h
 
 #include "aven.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "message.h"
 #include "vector3.h"
 #include "wx.h"

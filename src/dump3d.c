@@ -28,7 +28,7 @@
 #include "date.h"
 #include "debug.h"
 #include "filelist.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 
 static const struct option long_opts[] = {
    /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
@@ -89,7 +89,7 @@ main(int argc, char **argv)
 
    char date_range = (date_sep && strcmp(date_sep, ".") == 0) ? '-' : ' ';
 
-   pimg = img_hosted_open_survey(fnm, survey);
+   pimg = img_for_survex_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
 
    printf("TITLE \"%s\"\n", pimg->title);

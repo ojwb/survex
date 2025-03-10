@@ -996,7 +996,7 @@ msgstr "« *data %s %c … » est obsolète - utiliser plutôt « *data %s … �
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
-#: ../src/img_hosted.h:41
+#: ../src/img_for_survex.h:41
 #: n:4
 #, c-format
 msgid "Bad 3d image file “%s”"
@@ -1017,7 +1017,7 @@ msgstr "%a,%Y.%m.%d %H:%M:%S %Z"
 msgid "Date and time not available."
 msgstr "Date et heure non disponibles."
 
-#: ../src/img_hosted.h:42
+#: ../src/img_for_survex.h:42
 #: n:6
 #, c-format
 msgid "Error reading from file “%s”"
@@ -1043,7 +1043,7 @@ msgstr "Erreur à l’écriture du fichier"
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr "Il y a %d avertissement(s) et %d erreur(s) - aucun fichier n’a été produit"
 
-#: ../src/img_hosted.h:43
+#: ../src/img_for_survex.h:43
 #: n:8
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"

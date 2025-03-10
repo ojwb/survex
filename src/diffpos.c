@@ -28,7 +28,7 @@
 #include "debug.h"
 #include "filelist.h"
 #include "hash.h"
-#include "img_hosted.h"
+#include "img_for_survex.h"
 #include "namecmp.h"
 #include "osalloc.h"
 #include "useful.h"
@@ -229,7 +229,7 @@ parse_file(const char *fnm, const char *survey,
    int result;
    int separator;
 
-   img *pimg = img_hosted_open_survey(fnm, survey);
+   img *pimg = img_for_survex_open_survey(fnm, survey);
    if (!pimg) fatalerror(img_error2msg(img_error()), fnm);
    separator = pimg->separator;
 

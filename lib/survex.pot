@@ -998,7 +998,7 @@ msgstr ""
 
 #. TRANSLATORS: Perhaps the user tried to load a different type of file as
 #. a Survex .3d file, or the .3d file was corrupted.
-#: ../src/img_hosted.h:41
+#: ../src/img_for_survex.h:41
 #: n:4
 #, c-format
 msgid "Bad 3d image file “%s”"
@@ -1019,7 +1019,7 @@ msgstr ""
 msgid "Date and time not available."
 msgstr ""
 
-#: ../src/img_hosted.h:42
+#: ../src/img_for_survex.h:42
 #: n:6
 #, c-format
 msgid "Error reading from file “%s”"
@@ -1045,7 +1045,7 @@ msgstr ""
 msgid "There were %d warning(s) and %d error(s) - no output files produced."
 msgstr ""
 
-#: ../src/img_hosted.h:43
+#: ../src/img_for_survex.h:43
 #: n:8
 #, c-format
 msgid "File “%s” has a newer format than this program can understand"
