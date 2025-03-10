@@ -1,5 +1,5 @@
 /* imgtest.c */
-/* Test img in unhosted mode */
+/* Test img as it would be used outside of Survex */
 /* Copyright (C) 2014,2020 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify

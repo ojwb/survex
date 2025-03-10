@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Survex test suite - test using img library non-hosted
+# Survex test suite - test using img library outside of Survex
 # Copyright (C) 2020-2024 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
