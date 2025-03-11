@@ -25,12 +25,6 @@
 
 #include "wx.h"
 
-#ifdef HAVE_GL_GL_H
-# include <GL/gl.h>
-#elif defined HAVE_OPENGL_GL_H
-# include <OpenGL/gl.h>
-#endif
-
 class BitmapFont {
     enum {
 	// The highest character point to generate an OpenGL list for.

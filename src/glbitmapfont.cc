@@ -24,7 +24,18 @@
 
 #include "glbitmapfont.h"
 
-#include "aventypes.h"
+#ifdef HAVE_GL_GL_H
+# include <GL/gl.h>
+#elif defined HAVE_OPENGL_GL_H
+# include <OpenGL/gl.h>
+#endif
+
+#ifdef HAVE_GL_GLU_H
+# include <GL/glu.h>
+#elif defined HAVE_OPENGL_GLU_H
+# include <OpenGL/glu.h>
+#endif
+
 #include "gllogerror.h"
 #include "useful.h"
 #include "wx.h"

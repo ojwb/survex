@@ -40,6 +40,12 @@
 # include <OpenGL/gl.h>
 #endif
 
+#ifdef HAVE_GL_GLU_H
+# include <GL/glu.h>
+#elif defined HAVE_OPENGL_GLU_H
+# include <OpenGL/glu.h>
+#endif
+
 #ifdef HAVE_GL_GLEXT_H
 # include <GL/glext.h>
 #elif defined HAVE_OPENGL_GLEXT_H

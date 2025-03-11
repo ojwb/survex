@@ -198,10 +198,18 @@ AC_SEARCH_LIBS([gluProject], [GLU glu32], [WX_LIBS="$WX_LIBS $ac_cv_search_gluPr
 LIBS=$save_LIBS
 
 AC_SUBST(WX_LIBS)
-dnl macOS has OpenGL/gl.h.
+dnl macOS has OpenGL/gl.h and OpenGL/glu.h.
 AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h], [], [], [ ])
-dnl The Debian mingw-w64 packages lack GL/glext.h; macOS has OpenGL/glext.h.
-AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [#include <GL/gl.h>])
+AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h], [], [], [ ])
+dnl Older Debian mingw-w64 packages lacked GL/glext.h; macOS has OpenGL/glext.h.
+dnl Requires an explicit include of gl.h first.
+AC_CHECK_HEADERS([GL/glext.h OpenGL/glext.h], [], [], [
+  #ifdef HAVE_GL_GL_H
+  # include <GL/gl.h>
+  #elif defined HAVE_OPENGL_GL_H
+  # include <OpenGL/gl.h>
+  #endif
+  ])
 
 WX_CFLAGS=`$WX_CONFIG --cflags "$wx_libs"`
 AC_SUBST(WX_CFLAGS)
