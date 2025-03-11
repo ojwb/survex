@@ -41,6 +41,7 @@
 #include "netbits.h"
 #include "netskel.h"
 #include "network.h"
+#include "osalloc.h"
 #include "out.h"
 
 #define sqrdd(X) (sqrd((X)[0]) + sqrd((X)[1]) + sqrd((X)[2]))

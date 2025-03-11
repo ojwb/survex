@@ -33,6 +33,7 @@
 #include "netbits.h"
 #include "netskel.h"
 #include "matrix.h"
+#include "osalloc.h"
 #include "out.h"
 
 static void

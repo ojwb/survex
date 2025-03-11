@@ -29,6 +29,7 @@
 #include "filelist.h"
 #include "netbits.h"
 #include "listpos.h"
+#include "osalloc.h"
 #include "out.h"
 
 /* Traverse prefix tree depth first starting at from, and calling function fn

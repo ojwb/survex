@@ -31,6 +31,7 @@
 #include "message.h"
 #include "netbits.h"
 #include "matrix.h"
+#include "osalloc.h"
 #include "out.h"
 
 #undef PRINT_MATRICES

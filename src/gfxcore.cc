@@ -37,7 +37,6 @@
 #include "gfxcore.h"
 #include "mainfrm.h"
 #include "message.h"
-#include "osalloc.h"
 #include "useful.h"
 #include "printing.h"
 #include "guicontrol.h"

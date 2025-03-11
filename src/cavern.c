@@ -38,6 +38,7 @@
 #include "listpos.h"
 #include "netbits.h"
 #include "netskel.h"
+#include "osalloc.h"
 #include "out.h"
 #include "str.h"
 #include "validate.h"

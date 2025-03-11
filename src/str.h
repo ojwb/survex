@@ -19,8 +19,8 @@
 #ifndef SURVEX_INCLUDED_STR_H
 #define SURVEX_INCLUDED_STR_H
 
-#include "osalloc.h"
 #include <string.h>
+#include <stdlib.h>
 
 typedef struct {
     char *s;

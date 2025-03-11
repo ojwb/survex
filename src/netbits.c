@@ -29,6 +29,7 @@
 #include "message.h"
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
+#include "osalloc.h"
 #include "validate.h"
 #include <math.h>
 

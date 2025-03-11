@@ -36,6 +36,7 @@
 #include "readval.h"
 #include "datain.h"
 #include "commands.h"
+#include "osalloc.h"
 #include "out.h"
 #include "str.h"
 #include "thgeomag.h"
