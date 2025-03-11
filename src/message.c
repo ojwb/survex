@@ -110,12 +110,7 @@ default_charset(void)
 {
    if (getenv("SURVEX_UTF8")) return CHARSET_UTF8;
 #ifdef _WIN32
-# ifdef AVEN
-#  define CODEPAGE GetACP()
-# else
-#  define CODEPAGE GetConsoleOutputCP()
-# endif
-   switch (CODEPAGE) {
+   switch (GetConsoleOutputCP()) {
     case 0: return CHARSET_UTF8;
     case 1252: return CHARSET_WINCP1252;
     case 1250: return CHARSET_WINCP1250;
@@ -123,17 +118,11 @@ default_charset(void)
    }
    return CHARSET_USASCII;
 #else
-#ifdef AVEN
-   return CHARSET_UTF8;
-#else
    const char *p = getenv("LC_ALL");
    if (p == NULL || p[0] == '\0') {
       p = getenv("LC_CTYPE");
       if (p == NULL || p[0] == '\0') {
 	 p = getenv("LANG");
-	 /* Something (AutoCAD?) on Microsoft Windows sets LANG to a number. */
-	 if (p == NULL || !isalpha((unsigned char)p[0]))
-	    p = msg_lang;
       }
    }
 
@@ -196,7 +185,6 @@ default_charset(void)
       }
    }
    return CHARSET_USASCII;
-#endif
 #endif
 }
 
