@@ -442,7 +442,7 @@ replace_travs(void)
       pimg = img_open_write_cs(fnm, s_str(&survey_title), proj_str_out,
 			       img_FFLAG_SEPARATOR(output_separator));
       if (!pimg) fatalerror(img_error(), fnm);
-      osfree(fnm);
+      free(fnm);
    }
 
    if (!fhErrStat && !fSuppress)
@@ -585,10 +585,10 @@ replace_travs(void)
 		     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 
       fArtic = stn1->leg[i]->l.reverse & FLAG_ARTICULATION;
-      osfree(stn1->leg[i]);
+      free(stn1->leg[i]);
       stn1->leg[i] = ptr->join1; /* put old link back in */
 
-      osfree(stn2->leg[j]);
+      free(stn2->leg[j]);
       stn2->leg[j] = ptr->join2; /* and the other end */
 
 #ifdef BLUNDER_DETECTION
@@ -730,7 +730,7 @@ replace_travs(void)
 skip_hanging_traverse:
       ptrOld = ptr;
       ptr = ptr->next;
-      osfree(ptrOld);
+      free(ptrOld);
    }
 
    /* Leave fhErrStat open in case we're asked to close loops again... */
@@ -872,7 +872,7 @@ replace_trailing_travs(void)
 skip:
       ptrOld = ptrTrail;
       ptrTrail = ptrTrail->next;
-      osfree(ptrOld);
+      free(ptrOld);
    }
 
    /* write out connections with no survey data */
@@ -902,7 +902,7 @@ skip:
 		     POS(p->to, 0), POS(p->to, 1), POS(p->to, 2));
 skip_nosurvey:
       nosurveyhead = p->next;
-      osfree(p);
+      free(p);
    }
 
    /* write stations to .3d file and free legs and stations */
@@ -1004,8 +1004,8 @@ skip_nosurvey:
 		  totvert += fabs(leg->d[2]);
 	       }
 	    }
-	    osfree(leg);
-	    osfree(legRev);
+	    free(leg);
+	    free(legRev);
 	    stn1->leg[i] = stnB->leg[iB] = NULL;
 	 }
       }
@@ -1017,7 +1017,7 @@ skip_nosurvey:
    for (stn1 = fixedlist; stn1; stn1 = stn2) {
       stn2 = stn1->next;
       stn1->name->stn = NULL;
-      osfree(stn1);
+      free(stn1);
    }
    fixedlist = NULL;
 }
@@ -1049,7 +1049,7 @@ write_passage_models(void)
 	 name = sprint_prefix(pfx);
 	 oldx = xsect;
 	 xsect = xsect->next;
-	 osfree(oldx);
+	 free(oldx);
 
 	 if (!pfx->pos) {
 	     /* TRANSLATORS: e.g. the user specifies a passage cross-section at
@@ -1065,7 +1065,7 @@ write_passage_models(void)
       }
       oldp = psg;
       psg = psg->next;
-      osfree(oldp);
+      free(oldp);
    }
    model = NULL;
 }

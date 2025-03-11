@@ -129,7 +129,7 @@ find_point(const img_point *pt)
       }
    }
 
-   p = osmalloc(ossizeof(point));
+   p = osmalloc(sizeof(point));
    p->p = *pt;
    p->X = HUGE_VAL;
    p->stns = NULL;
@@ -149,7 +149,7 @@ add_leg(point *fr, point *to, const char *prefix, int flags)
    leg *l;
    fr->order++;
    to->order++;
-   l = osmalloc(ossizeof(leg));
+   l = osmalloc(sizeof(leg));
    l->fr = fr;
    l->to = to;
    if (prefix)
@@ -184,7 +184,7 @@ getline_alloc(FILE *fh, size_t ilen)
    int ch;
    size_t i = 0;
    size_t len = ilen;
-   char *buf = xosmalloc(len);
+   char *buf = malloc(len);
    if (!buf) return NULL;
 
    ch = GETC(fh);
@@ -193,9 +193,9 @@ getline_alloc(FILE *fh, size_t ilen)
       if (i == len - 1) {
 	 char *p;
 	 len += len;
-	 p = xosrealloc(buf, len);
+	 p = realloc(buf, len);
 	 if (!p) {
-	    osfree(buf);
+	    free(buf);
 	    return NULL;
 	 }
 	 buf = p;
@@ -582,8 +582,8 @@ main(int argc, char **argv)
       strcpy(base_out, base_in);
       strcat(base_out, "_extend");
       fnm_out = add_ext(base_out, EXT_SVX_3D);
-      osfree(base_in);
-      osfree(base_out);
+      free(base_in);
+      free(base_out);
    }
 
    /* try to open image file, and check it has correct header */
@@ -593,7 +593,7 @@ main(int argc, char **argv)
    putnl();
    puts(msg(/*Reading in data - please wait…*/105));
 
-   htab = osmalloc(ossizeof(pfx*) * HTAB_SIZE);
+   htab = osmalloc(sizeof(pfx*) * HTAB_SIZE);
    {
        int i;
        for (i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
@@ -652,7 +652,7 @@ main(int argc, char **argv)
 	    to = find_point(&pt);
 	    if (!(pimg->flags & img_FLAG_SURFACE)) {
 	       if (pimg->flags & img_FLAG_SPLAY) {
-		  splay *sp = osmalloc(ossizeof(splay));
+		  splay *sp = osmalloc(sizeof(splay));
 		  --splays;
 		  if (fr->order) {
 		     if (to->order == 0) {
@@ -661,7 +661,7 @@ main(int argc, char **argv)
 			fr->splays = sp;
 		     } else {
 			printf("Splay without a dead end from %s to %s\n", fr->stns->label, to->stns->label);
-			osfree(sp);
+			free(sp);
 		     }
 		  } else if (to->order) {
 		     sp->pt = fr;
@@ -669,7 +669,7 @@ main(int argc, char **argv)
 		     to->splays = sp;
 		  } else {
 		     printf("Isolated splay from %s to %s\n", fr->stns->label, to->stns->label);
-		     osfree(sp);
+		     free(sp);
 		  }
 	       }
 	    }
@@ -695,9 +695,9 @@ main(int argc, char **argv)
 	 if (!lbuf)
 	    fatalerror_in_file(fnm_used, lineno, /*Error reading file*/18);
 	 parseconfigline(fnm_used, lbuf);
-	 osfree(lbuf);
+	 free(lbuf);
       }
-      osfree(fnm_used);
+      free(fnm_used);
    }
 
    if (start == NULL) {
@@ -731,7 +731,7 @@ main(int argc, char **argv)
 	    if (result == img_XSECT_END)
 	       flags |= img_XFLAG_END;
 	    img_write_item(pimg_out, img_XSECT, flags, label, 0, 0, 0);
-	    osfree(label);
+	    free(label);
 	    label = NULL;
 	 }
 	 if (result == img_XSECT) {

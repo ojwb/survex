@@ -26,20 +26,11 @@ extern "C" {
 
 #include <stdlib.h>
 
-/* OSSIZE_T is to osmalloc, etc what size_t is to malloc, etc */
-#define OSSIZE_T size_t
-
-#define osfree(p) free((p))
-#define xosmalloc(s) malloc((s))
-#define xosrealloc(p, s) realloc((p), (s))
-
-/* NB No extra () around X as sizeof((char*)) doesn't work */
-#define ossizeof(X) ((OSSIZE_T)sizeof(X))
 /* Allocate like C++ new -- call osnew(<type>) eg. osnew(point) */
-#define osnew(T) (T*)osmalloc(ossizeof(T))
+#define osnew(T) (T*)osmalloc(sizeof(T))
 
-void *osmalloc(OSSIZE_T);
-void *osrealloc(void *, OSSIZE_T);
+void *osmalloc(size_t);
+void *osrealloc(void *, size_t);
 char *osstrdup(const char *str);
 
 #ifdef __cplusplus

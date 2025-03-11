@@ -153,7 +153,7 @@ main(int argc, char **argv)
       int ch;
       if (next == len) {
 	 len += len;
-	 blk = osrealloc(blk, len * ossizeof(trav));
+	 blk = osrealloc(blk, len * sizeof(trav));
       }
       blk[next].fpos = ftell(fh);
       ch = GETC(fh);
@@ -227,7 +227,7 @@ main(int argc, char **argv)
    if (fh_out == NULL) {
       char *base = base_from_fnm(fnm);
       fnm_out = add_ext(base, "tmp");
-      osfree(base);
+      free(base);
       fh_out = safe_fopen(fnm_out, "w");
    }
 

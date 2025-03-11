@@ -443,8 +443,8 @@ using_data_file(const char *fnm)
       char *lf, *p;
       lf = baseleaf_from_fnm(fnm);
       p = use_path(fnm_output_base, lf);
-      osfree(lf);
-      osfree(fnm_output_base);
+      free(lf);
+      free(fnm_output_base);
       fnm_output_base = p;
       fnm_output_base_is_dir = 0;
    }
@@ -580,7 +580,7 @@ read_bearing_or_omit(reading r)
 static void
 initialise_common_compass_settings(void)
 {
-    short *t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+    short *t = ((short*)osmalloc(sizeof(short) * 257)) + 1;
     int i;
     t[EOF] = SPECIAL_EOL;
     memset(t, 0, sizeof(short) * 33);
@@ -893,7 +893,7 @@ data_file_compass_mak(void)
 			      }
 			      pcs->input_convergence = HUGE_REAL;
 			  } else {
-			      osfree(proj_str);
+			      free(proj_str);
 			  }
 		      }
 		  }
@@ -987,7 +987,7 @@ data_file_compass_mak(void)
 
 update_proj_str:
 	    if (!pcs->next || pcs->proj_str != pcs->next->proj_str)
-		osfree(pcs->proj_str);
+		free(pcs->proj_str);
 	    pcs->proj_str = NULL;
 	    pcs->input_convergence = HUGE_REAL;
 	    if (datum && utm_zone && abs(utm_zone) <= 60) {
@@ -1049,7 +1049,7 @@ update_proj_str:
 	      }
 	      s_truncate(&path, folder_stack->len);
 	      folder_stack = folder_stack->next;
-	      osfree(p);
+	      free(p);
 	      nextch();
 	      skipblanks();
 	      if (ch == ';') nextch_handling_eol();
@@ -1103,7 +1103,7 @@ update_proj_str:
     while (folder_stack) {
 	// FIXME: Error?  Check what Compass does.
 	struct mak_folder *next = folder_stack->next;
-	osfree(folder_stack);
+	free(folder_stack);
 	folder_stack = next;
     }
 
@@ -1158,7 +1158,7 @@ walls_set_macro(walls_macro ***table, string *p_name, char *val)
 {
     //printf("MACRO: $|%s|=\"%s\":\n", name, val);
     if (!*table) {
-	*table = osmalloc(WALLS_MACRO_HASH_SIZE * ossizeof(walls_macro*));
+	*table = osmalloc(WALLS_MACRO_HASH_SIZE * sizeof(walls_macro*));
 	for (size_t i = 0; i < WALLS_MACRO_HASH_SIZE; i++)
 	    (*table)[i] = NULL;
     }
@@ -1170,7 +1170,7 @@ walls_set_macro(walls_macro ***table, string *p_name, char *val)
 	if (s_eqlen(p_name, p->name, p->name_len)) {
 	    // Update existing definition of macro.
 	    s_free(p_name);
-	    osfree(p->value);
+	    free(p->value);
 	    p->value = val;
 	    return;
 	}
@@ -1467,10 +1467,10 @@ pop_walls_options(void)
     walls_options *p = p_walls_options;
     p_walls_options = p_walls_options->next;
     for (int i = 0; i < 3; ++i) {
-	osfree(p->prefix[i]);
+	free(p->prefix[i]);
     }
     s_free(&p->path);
-    osfree(p);
+    free(p);
 }
 
 static void
@@ -1479,7 +1479,7 @@ walls_initialise_settings(void)
     push_walls_options();
 
     // Generic settings.
-    short *t = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+    short *t = ((short*)osmalloc(sizeof(short) * 257)) + 1;
     // "Unprefixed names can have a maximum of eight characters and must not
     // contain any colons, semicolons, commas, pound signs (#), or embedded
     // tabs or spaces.  In order to avoid possible problems when printing or
@@ -1542,7 +1542,7 @@ walls_reset(void)
     pcs->ordering = p_walls_options->data_order_ct;
 
     for (int i = 0; i < 3; ++i) {
-	osfree(p_walls_options->prefix[i]);
+	free(p_walls_options->prefix[i]);
     }
     *p_walls_options = walls_options_default;
 }
@@ -2199,7 +2199,7 @@ parse_options(void)
 		new_prefix = read_walls_prefix();
 	    }
 	    int i = (int)WALLS_UNITS_OPT_PREFIX3 - (int)opt;
-	    osfree(p_walls_options->prefix[i]);
+	    free(p_walls_options->prefix[i]);
 	    p_walls_options->prefix[i] = new_prefix;
 	    break;
 	  }
@@ -2826,7 +2826,7 @@ next_line:
 	  case WALLS_CMD_PREFIX3: {
 	    char *new_prefix = read_walls_prefix();
 	    int i = (int)WALLS_CMD_PREFIX3 - (int)directive;
-	    osfree(p_walls_options->prefix[i]);
+	    free(p_walls_options->prefix[i]);
 	    p_walls_options->prefix[i] = new_prefix;
 	    skipblanks();
 	    if (!isEol(ch) && !isComm(ch)) {
@@ -2883,7 +2883,7 @@ next_line:
 	    while (p) {
 		walls_macro *to_free = p;
 		p = p->next;
-		osfree(to_free);
+		free(to_free);
 	    }
 	    walls_macros[i] = NULL;
 	}
@@ -3164,7 +3164,7 @@ process_entry:
 		(void)fclose(file.fh);
 
 		/* don't free this - it may be pointed to by prefix.file */
-		/* osfree(file.filename); */
+		/* free(file.filename); */
 
 		file = file_store;
 		ch = ch_store;
@@ -3304,7 +3304,7 @@ detached_or_not_srv:
 		    }
 		    pcs->input_convergence = HUGE_REAL;
 		} else {
-		    osfree(proj_str);
+		    free(proj_str);
 		}
 	    } else if (datum == img_DATUM_WGS84 && abs(walls_ref.zone) == 61) {
 		// Polar UPS zones.
@@ -3356,7 +3356,7 @@ detached_or_not_srv:
 	process_eol();
     }
 
-    osfree(pth);
+    free(pth);
 
     pop_walls_options();
 }
@@ -3518,7 +3518,7 @@ data_file(const char *pth, const char *fnm)
    file = file_store;
 
    /* don't free this - it may be pointed to by prefix.file */
-   /* osfree(file.filename); */
+   /* free(file.filename); */
 }
 
 static real

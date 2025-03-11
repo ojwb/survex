@@ -606,7 +606,7 @@ void AvenTreeCtrl::AddOverlay(const wxString& file)
 {
     char* leaf = leaf_from_fnm(file.utf8_str());
     auto id = AppendItem(GetRootItem(), leaf);
-    osfree(leaf);
+    free(leaf);
     SetItemState(id, STATE_ON);
     SetItemData(id, new TreeData(file));
 }

@@ -421,7 +421,7 @@ replace_pfx(const prefix *pfx_replace, const prefix *pfx_with,
 #endif
 
    /* free the (now-unused) old pos */
-   osfree(pos_replace);
+   free(pos_replace);
 }
 
 // Add equating leg between existing stations whose names are name1 and name2.
@@ -450,7 +450,7 @@ process_equate(prefix *name1, prefix *name2)
 	       if (name1->pos->p[d] != name2->pos->p[d]) {
 		  compile_diagnostic(DIAG_ERR, /*Tried to equate two non-equal fixed stations: “%s” and “%s”*/52,
 				     s, sprint_prefix(name2));
-		  osfree(s);
+		  free(s);
 		  return;
 	       }
 	    }
@@ -461,7 +461,7 @@ process_equate(prefix *name1, prefix *name2)
 	     * *equate a b */
 	    compile_diagnostic(DIAG_WARN, /*Equating two equal fixed points: “%s” and “%s”*/53,
 			       s, sprint_prefix(name2));
-	    osfree(s);
+	    free(s);
 	 }
 
 	 /* name1 is fixed, so replace all refs to name2's pos with name1's */
@@ -600,17 +600,17 @@ fprint_prefix(FILE *fh, const prefix *ptr)
 }
 
 static char *buffer = NULL;
-static OSSIZE_T buffer_len = 256;
+static size_t buffer_len = 256;
 
-static OSSIZE_T
+static size_t
 sprint_prefix_(const prefix *ptr)
 {
-   OSSIZE_T len = 1;
+   size_t len = 1;
    if (ptr->up != NULL) {
       const char *ident = prefix_ident(ptr);
       SVX_ASSERT(ident);
       len = sprint_prefix_(ptr->up);
-      OSSIZE_T end = len - 1;
+      size_t end = len - 1;
       if (ptr->up->up != NULL) len++;
       len += strlen(ident);
       if (len > buffer_len) {

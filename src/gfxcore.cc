@@ -2752,7 +2752,7 @@ GfxCore::parse_hgt_filename(const wxString & lc_name)
 	o_x = -o_x;
     bigendian = true;
     nodata_value = -32768;
-    osfree(leaf);
+    free(leaf);
 }
 
 size_t

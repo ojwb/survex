@@ -269,7 +269,7 @@ wxString get_command_path(const wxChar * command_name)
 	if (slash) {
 	    cmd.assign(start, slash - start + 1);
 	}
-	osfree(buf);
+	free(buf);
     }
 #else
     wxString cmd = wxString::FromUTF8(msg_exepth());

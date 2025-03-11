@@ -217,7 +217,7 @@ default_translate(settings *s)
       /* We're currently using the same character translation map as our parent
        * scope so allocate a new one before we modify it.
        */
-      s->Translate = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+      s->Translate = ((short*)osmalloc(sizeof(short) * 257)) + 1;
    } else {
 /*  SVX_ASSERT(EOF==-1);*/ /* important, since we rely on this */
    }
@@ -702,7 +702,7 @@ cmd_set(void)
     * table, and copy old one into it */
    if (pcs->next && pcs->next->Translate == pcs->Translate) {
       short *p;
-      p = ((short*)osmalloc(ossizeof(short) * 257)) + 1;
+      p = ((short*)osmalloc(sizeof(short) * 257)) + 1;
       memcpy(p - 1, pcs->Translate - 1, sizeof(short) * 257);
       pcs->Translate = p;
    }
@@ -1031,22 +1031,22 @@ pop_settings(void)
 	    invalidate_pj_cached();
 	}
 	/* free proj_str if not used by parent */
-	osfree(p->proj_str);
+	free(p->proj_str);
     }
 
     /* don't free default ordering or ordering used by parent */
     if (p->ordering != default_order && p->ordering != pcs->ordering)
-	osfree((reading*)p->ordering);
+	free((reading*)p->ordering);
 
     /* free Translate if not used by parent */
     if (p->Translate != pcs->Translate)
-	osfree(p->Translate - 1);
+	free(p->Translate - 1);
 
     /* free meta if not used by parent, or in this block */
     if (p->meta && p->meta != pcs->meta && p->meta->ref_count == 0)
-	osfree(p->meta);
+	free(p->meta);
 
-    osfree(p);
+    free(p);
 }
 
 static void
@@ -1458,7 +1458,7 @@ report_missing_export(prefix *pfx, int depth)
    } else {
       compile_diagnostic(DIAG_ERR, /*Station “%s” not exported from survey “%s”*/26, p, s);
    }
-   osfree(s);
+   free(s);
 }
 
 static void
@@ -1681,8 +1681,8 @@ cmd_data(void)
 	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
 			    s_str(&token), style_name);
-	 osfree(style_name);
-	 osfree(new_order);
+	 free(style_name);
+	 free(new_order);
 	 return;
       }
 
@@ -1703,8 +1703,8 @@ cmd_data(void)
 	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” not allowed in data style “%s”*/63,
 			    s_str(&token), style_name);
-	 osfree(style_name);
-	 osfree(new_order);
+	 free(style_name);
+	 free(new_order);
 	 return;
       }
       if (TSTBIT(mUsed, Newline) && TSTBIT(m_multi, d)) {
@@ -1715,8 +1715,8 @@ cmd_data(void)
 	  * ("depth" needs to occur before "newline"). */
 	 compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP,
 			    /*Reading “%s” must occur before NEWLINE*/225, s_str(&token));
-	 osfree(style_name);
-	 osfree(new_order);
+	 free(style_name);
+	 free(new_order);
 	 return;
       }
       /* Check for duplicates unless it's a special reading:
@@ -1727,8 +1727,8 @@ cmd_data(void)
 	    /* TRANSLATORS: complains about a situation like trying to define
 	     * two from stations per leg */
 	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Duplicate reading “%s”*/67, s_str(&token));
-	    osfree(style_name);
-	    osfree(new_order);
+	    free(style_name);
+	    free(new_order);
 	    return;
 	 } else {
 	    /* Check for previously listed readings which are incompatible
@@ -1766,8 +1766,8 @@ cmd_data(void)
 		   *
 		   * *data normal from to tape newline compass clino */
 		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can only be preceded by STATION, DEPTH, and COUNT*/226);
-		  osfree(style_name);
-		  osfree(new_order);
+		  free(style_name);
+		  free(new_order);
 		  return;
 	       }
 	       if (k == 0) {
@@ -1775,8 +1775,8 @@ cmd_data(void)
 		   *
 		   * *data normal newline from to tape compass clino */
 		  compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the first reading*/222);
-		  osfree(style_name);
-		  osfree(new_order);
+		  free(style_name);
+		  free(new_order);
 		  return;
 	       }
 	       break;
@@ -1792,8 +1792,8 @@ cmd_data(void)
 		* DEPTH and DEPTHCHANGE together). */
 	       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Reading “%s” duplicates previous reading(s)*/77,
 				  s_str(&token));
-	       osfree(style_name);
-	       osfree(new_order);
+	       free(style_name);
+	       free(new_order);
 	       return;
 	    }
 	    mUsed |= BIT(d); /* used to catch duplicates */
@@ -1816,8 +1816,8 @@ cmd_data(void)
        *
        * *data normal from to tape compass clino newline */
       compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*NEWLINE can’t be the last reading*/223);
-      osfree(style_name);
-      osfree(new_order);
+      free(style_name);
+      free(new_order);
       return;
    }
 
@@ -1839,8 +1839,8 @@ cmd_data(void)
        *
        * ("station" signifies interleaved data). */
       compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Interleaved readings, but no NEWLINE*/224);
-      osfree(style_name);
-      osfree(new_order);
+      free(style_name);
+      free(new_order);
       return;
    }
 
@@ -1883,20 +1883,20 @@ cmd_data(void)
 	      &~ mask[style]) == 0);
       /* TRANSLATORS: i.e. not enough readings for the style. */
       compile_diagnostic(DIAG_ERR|DIAG_SKIP, /*Too few readings for data style “%s”*/64, style_name);
-      osfree(style_name);
-      osfree(new_order);
+      free(style_name);
+      free(new_order);
       return;
    }
 
    /* don't free default ordering or ordering used by parent */
    if (pcs->ordering != default_order &&
        !(pcs->next && pcs->next->ordering == pcs->ordering))
-      osfree((reading*)pcs->ordering);
+      free((reading*)pcs->ordering);
 
    pcs->recorded_style = pcs->style = style;
    pcs->ordering = new_order;
 
-   osfree(style_name);
+   free(style_name);
 
 reinit_style:
    if (style == STYLE_PASSAGE) {
@@ -2179,7 +2179,7 @@ cmd_include(void)
    ch = ch_store;
 
    s_free(&fnm);
-   osfree(pth);
+   free(pth);
 }
 
 static void
@@ -2603,7 +2603,7 @@ cmd_cs(void)
 
       if (proj_str_out && strcmp(proj_str, proj_str_out) == 0) {
 	  /* Same as the output cs that's already set, so nothing to do. */
-	  osfree(proj_str);
+	  free(proj_str);
 	  return;
       }
 
@@ -2621,7 +2621,7 @@ cmd_cs(void)
 				 proj_context_errno_string(PJ_DEFAULT_CTX,
 							   proj_context_errno(PJ_DEFAULT_CTX)));
 	      skipline();
-	      osfree(proj_str);
+	      free(proj_str);
 	      return;
 	  }
 	  int type = proj_get_type(pj);
@@ -2630,7 +2630,7 @@ cmd_cs(void)
 	      set_pos(&fp);
 	      compile_diagnostic(DIAG_ERR|DIAG_STRING, /*Coordinate system unsuitable for output*/435);
 	      skipline();
-	      osfree(proj_str);
+	      free(proj_str);
 	      return;
 	  }
       }
@@ -2640,7 +2640,7 @@ cmd_cs(void)
 	   * are silently ignored (so you can combine two datasets and set
 	   * the output cs to use before you include either).
 	   */
-	  osfree(proj_str);
+	  free(proj_str);
       } else {
 	  proj_str_out = proj_str;
       }
@@ -2670,7 +2670,7 @@ cmd_cs(void)
       /* Free current input proj_str if not used by parent. */
       settings * p = pcs;
       if (!p->next || p->proj_str != p->next->proj_str)
-	 osfree(p->proj_str);
+	 free(p->proj_str);
       p->proj_str = proj_str;
       p->input_convergence = HUGE_REAL;
       invalidate_pj_cached();

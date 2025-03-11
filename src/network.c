@@ -259,7 +259,7 @@ remove_subnets(void)
 		    }
 #endif
 		 }
-	       osfree(newleg2);
+	       free(newleg2);
 	       newleg2 = (linkfor*)osnew(linkcommon);
 
 	       addto_link(newleg, stn2->leg[dirn2]);
@@ -425,9 +425,9 @@ remove_subnets(void)
 		    subdd(&temp, &temp, &temp2);
 		    mulsd(&legCZ->d, &sumCZAZ, &temp);
 
-		    osfree(legAB);
-		    osfree(legBC);
-		    osfree(legCA);
+		    free(legAB);
+		    free(legBC);
+		    free(legCA);
 
 		    /* Now add two, subtract third, and scale by 0.5 */
 		    addss(&sum, &sumAZBZ, &sumCZAZ);
@@ -587,9 +587,9 @@ replace_subnets(void)
 	 add_stn_to_list(&fixedlist, stn);
 	 add_stn_to_list(&fixedlist, stn2);
 
-	 osfree(stn3->leg[dirn3]);
+	 free(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = reduction_stack->join[0];
-	 osfree(stn4->leg[dirn4]);
+	 free(stn4->leg[dirn4]);
 	 stn4->leg[dirn4] = reduction_stack->join[1];
       } else if (reduction_stack->type == TYPE_PARALLEL) {
 	 /* parallel legs */
@@ -652,9 +652,9 @@ replace_subnets(void)
 	 add_stn_to_list(&fixedlist, stn);
 	 add_stn_to_list(&fixedlist, stn2);
 
-	 osfree(stn3->leg[dirn3]);
+	 free(stn3->leg[dirn3]);
 	 stn3->leg[dirn3] = reduction_stack->join[0];
-	 osfree(stn4->leg[dirn4]);
+	 free(stn4->leg[dirn4]);
 	 stn4->leg[dirn4] = reduction_stack->join[1];
       } else if (reduction_stack->type == TYPE_DELTASTAR) {
 	 node *stnZ;
@@ -707,20 +707,20 @@ replace_subnets(void)
 	       adddd(&POSD(stn2), &POSD(stn2), &e);
 	    }
 	    add_stn_to_list(&fixedlist, stn2);
-	    osfree(leg);
+	    free(leg);
 	    stn[i]->leg[dirn[i]] = reduction_stack->join[i];
 	    /* transfer the articulation status of the radial legs */
 	    if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
 	       reduction_stack->join[i]->l.reverse |= FLAG_ARTICULATION;
 	       reverse_leg(reduction_stack->join[i])->l.reverse |= FLAG_ARTICULATION;
 	    }
-	    osfree(stnZ->leg[i]);
+	    free(stnZ->leg[i]);
 	    stnZ->leg[i] = NULL;
 	 }
 /*printf("---%f %f %f\n",POS(stnZ, 0), POS(stnZ, 1), POS(stnZ, 2));*/
 	 remove_stn_from_list(&fixedlist, stnZ);
-	 osfree(stnZ->name);
-	 osfree(stnZ);
+	 free(stnZ->name);
+	 free(stnZ);
       } else {
 	 BUG("reduction_stack has unknown type");
       }
@@ -728,6 +728,6 @@ replace_subnets(void)
 skip:;
       reduction *ptrOld = reduction_stack;
       reduction_stack = reduction_stack->next;
-      osfree(ptrOld);
+      free(ptrOld);
    }
 }

@@ -343,7 +343,7 @@ anon_wall_station:
       } else {
 	 compile_diagnostic(DIAG_ERR, /*Station “%s” not exported from survey “%s”*/26, p, s);
       }
-      osfree(s);
+      free(s);
 #if 0
       printf(" *** pfx %s warning not exported enough depth %d "
 	     "ptr->max_export %d\n", sprint_prefix(ptr),
@@ -438,7 +438,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		// FIXME Make this a proper error
 		printf("too many prefix levels\n");
 		s_free(&component);
-		for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+		for (int i = 0; i < 3; ++i) free(w_prefix[i]);
 		longjmp(jbSkipLine, 1);
 	    }
 
@@ -457,7 +457,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 	    if (explicit_prefix_levels == 0) {
 		compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting station name*/28);
 		s_free(&component);
-		for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+		for (int i = 0; i < 3; ++i) free(w_prefix[i]);
 		longjmp(jbSkipLine, 1);
 	    }
 	    // Walls allows an empty station name if there's an explicit prefix.
@@ -526,7 +526,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		if (strlen(name) < sizeof(ptr->ident.i)) {
 		    strcpy(ptr->ident.i, name);
 		    ptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
-		    if (i >= 3) osfree(name);
+		    if (i >= 3) free(name);
 		} else {
 		    ptr->ident.p = (i < 3 ? osstrdup(name) : name);
 		}
@@ -561,7 +561,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		    if (strlen(name) < sizeof(newptr->ident.i)) {
 			strcpy(newptr->ident.i, name);
 			newptr->sflags |= BIT(SFLAGS_IDENT_INLINE);
-			if (i >= 3) osfree(name);
+			if (i >= 3) free(name);
 		    } else {
 			newptr->ident.p = (i < 3 ? osstrdup(name) : name);
 		    }
@@ -588,7 +588,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		cached_survey = back_ptr;
 		cached_station = ptr;
 	    }
-	    if (name == p) osfree(p);
+	    if (name == p) free(p);
 	}
 
 	// Do the equivalent of "*infer exports" for Walls stations with an
@@ -598,7 +598,7 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		ptr->max_export = explicit_prefix_levels;
 	}
 
-	for (int i = 0; i < 3; ++i) osfree(w_prefix[i]);
+	for (int i = 0; i < 3; ++i) free(w_prefix[i]);
 
 	return ptr;
     }

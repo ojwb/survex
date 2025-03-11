@@ -118,7 +118,7 @@ safe_fopen_with_ext(const char *fnm, const char *ext, const char *mode)
    char *p;
    p = add_ext(fnm, ext);
    f = safe_fopen(p, mode);
-   osfree(p);
+   free(p);
    return f;
 }
 
@@ -335,7 +335,7 @@ fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
 	    char *fnmTmp;
 	    fnmTmp = fnmFull;
 	    fnmFull = add_ext(fnmFull, ext);
-	    osfree(fnmTmp);
+	    free(fnmTmp);
 	    fh = fopen_not_dir(fnmFull, mode);
 	 }
       }
@@ -344,7 +344,7 @@ fopenWithPthAndExt(const char *pth, const char *fnm, const char *ext,
    /* either it opened or didn't. If not, fh == NULL from fopen_not_dir() */
 
    /* free name if it didn't open or name isn't wanted */
-   if (fh == NULL || fnmUsed == NULL) osfree(fnmFull);
+   if (fh == NULL || fnmUsed == NULL) free(fnmFull);
    if (fnmUsed) *fnmUsed = (fh ? fnmFull : NULL);
    return fh;
 }
@@ -407,7 +407,7 @@ fopen_portable(const char *pth, const char *fnm, const char *ext,
 	    }
 	 }
       }
-      osfree(fnm_trans);
+      free(fnm_trans);
 #endif
    }
    return fh;
@@ -443,8 +443,8 @@ filename_delete_output(void)
       flhead = flhead->next;
       if (p->fnm) {
 	 (void)remove(p->fnm);
-	 osfree(p->fnm);
+	 free(p->fnm);
       }
-      osfree(p);
+      free(p);
    }
 }

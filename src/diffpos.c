@@ -84,13 +84,13 @@ static station **htab;
 static bool fChanged = false;
 
 static added *added_list = NULL;
-static OSSIZE_T c_added = 0;
+static size_t c_added = 0;
 
 static void
 tree_init(void)
 {
    size_t i;
-   htab = osmalloc(TREE_SIZE * ossizeof(station *));
+   htab = osmalloc(TREE_SIZE * sizeof(station *));
    for (i = 0; i < TREE_SIZE; i++) htab[i] = NULL;
 }
 
@@ -164,10 +164,10 @@ tree_remove(const char *name, const img_point *pt)
       fChanged = true;
    }
 
-   osfree((*found)->name);
+   free((*found)->name);
    p = *found;
    *found = p->next;
-   osfree(p);
+   free(p);
 }
 
 static int
@@ -178,14 +178,14 @@ tree_check(void)
    size_t i;
 
    if (c_added) {
-      names = osmalloc(c_added * ossizeof(char *));
+      names = osmalloc(c_added * sizeof(char *));
       for (i = 0; i < c_added; i++) {
 	 added *old;
 	 SVX_ASSERT(added_list);
 	 names[i] = added_list->name;
 	 old = added_list;
 	 added_list = old->next;
-	 osfree(old);
+	 free(old);
       }
       SVX_ASSERT(added_list == NULL);
       sort_separator = new_separator;
@@ -194,9 +194,9 @@ tree_check(void)
 	 /* TRANSLATORS: for diffpos: */
 	 printf(msg(/*Added: %s*/501), names[i]);
 	 putnl();
-	 osfree(names[i]);
+	 free(names[i]);
       }
-      osfree(names);
+      free(names);
    }
 
    for (i = 0; i < TREE_SIZE; i++) {
@@ -205,7 +205,7 @@ tree_check(void)
    }
    if (c == 0) return fChanged;
 
-   names = osmalloc(c * ossizeof(char *));
+   names = osmalloc(c * sizeof(char *));
    c = 0;
    for (i = 0; i < TREE_SIZE; i++) {
       station *p;

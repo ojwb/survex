@@ -68,7 +68,7 @@ main(int argc, char **argv)
        if (strcmp(progname, "3dtopos") == 0) {
 	   format = FMT_POS;
        }
-       osfree(progname);
+       free(progname);
    }
 
    const int OPT_FMT_BASE = 20000;
@@ -419,7 +419,7 @@ main(int argc, char **argv)
       char *baseleaf = baseleaf_from_fnm(fnm_in);
       /* note : memory allocated by fnm_out gets leaked in this case... */
       fnm_out = add_ext(baseleaf, export_format_info[format].extension);
-      osfree(baseleaf);
+      free(baseleaf);
    }
 
    const auto& format_info_mask = export_format_info[format].mask;

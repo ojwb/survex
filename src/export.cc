@@ -572,7 +572,7 @@ SVG::header(const char * title, time_t,
 {
    const char *unit = "mm";
    const double SVG_MARGIN = 5.0; // In units of "unit".
-   htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
+   htab = (point **)osmalloc(HTAB_SIZE * sizeof(point *));
    for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    fprintf(fh, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
    double width = (max_x - min_x) * factor + SVG_MARGIN * 2;
@@ -764,7 +764,7 @@ PLT::header(const char *title, time_t,
 {
    // FIXME: allow survey to be set from aven somehow!
    const char *survey = NULL;
-   htab = (point **)osmalloc(HTAB_SIZE * ossizeof(point *));
+   htab = (point **)osmalloc(HTAB_SIZE * sizeof(point *));
    for (size_t i = 0; i < HTAB_SIZE; ++i) htab[i] = NULL;
    /* Survex is E, N, Alt - PLT file is N, E, Alt */
    min_N = min_y / METRES_PER_FOOT;
@@ -1236,7 +1236,7 @@ class UseNumericCLocale {
 
     ~UseNumericCLocale() {
 	setlocale(LC_NUMERIC, current_locale);
-	osfree(current_locale);
+	free(current_locale);
     }
 };
 
@@ -1583,7 +1583,7 @@ Export(const wxString &fnm_out, const wxString &title,
    }
    filt->footer();
    delete filt;
-   osfree(htab);
+   free(htab);
    htab = NULL;
    return true;
 }

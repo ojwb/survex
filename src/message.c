@@ -61,7 +61,7 @@ static const char *exe_pth = "";
 
 /* error code for failed osmalloc and osrealloc calls */
 static void
-outofmem(OSSIZE_T size)
+outofmem(size_t size)
 {
    /* TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
     * was trying to allocate space for. */
@@ -73,22 +73,22 @@ outofmem(OSSIZE_T size)
  * versions easily eg for MS Windows.
  */
 void *
-osmalloc(OSSIZE_T size)
+osmalloc(size_t size)
 {
-   void *p = xosmalloc(size);
+   void *p = malloc(size);
    if (p == NULL) outofmem(size);
    return p;
 }
 
 /* realloc with error catching if it fails. */
 void *
-osrealloc(void *p, OSSIZE_T size)
+osrealloc(void *p, size_t size)
 {
    /* some pre-ANSI realloc implementations don't cope with a NULL pointer */
    if (p == NULL) {
-      p = xosmalloc(size);
+      p = malloc(size);
    } else {
-      p = xosrealloc(p, size);
+      p = realloc(p, size);
    }
    if (p == NULL) outofmem(size);
    return p;
@@ -98,14 +98,12 @@ char *
 osstrdup(const char *str)
 {
    char *p;
-   OSSIZE_T len;
+   size_t len;
    len = strlen(str) + 1;
    p = osmalloc(len);
    memcpy(p, str, len);
    return p;
 }
-
-/* osfree is just a macro in osalloc.h */
 
 static int
 default_charset(void)
@@ -791,7 +789,7 @@ parse_msg_file(int charset_code)
       if (fnm[0] && fnm[1]) {
 	 strcpy(fnm, "en");
       } else {
-	 osfree(fnm);
+	 free(fnm);
 	 fnm = osstrdup("en");
       }
       fh = fopenWithPthAndExt(pth_cfg_files, fnm, EXT_SVX_MSG, "rb", NULL);
@@ -824,7 +822,7 @@ parse_msg_file(int charset_code)
 #ifdef DEBUG
    fprintf(stderr, "fnm = “%s”, n = %d, len = %d\n", fnm, n, len);
 #endif
-   osfree(fnm);
+   free(fnm);
 
    msg_array = parse_msgs(n, p, charset_code);
    num_msgs = n;
@@ -897,7 +895,7 @@ void
 	    pth_cfg_files = use_path(exe_pth, "share/survex");
 	    goto macos_got_msg;
 	 }
-	 osfree(p);
+	 free(p);
 # endif
 	 /* In the diskimage package, this case is used for aven, and for
 	  * the hardlinked copies of cavern and extend alongside the aven
@@ -908,7 +906,7 @@ void
 	    pth_cfg_files = use_path(exe_pth, "../Resources");
 	    goto macos_got_msg;
 	 }
-	 osfree(p);
+	 free(p);
 #endif
 	 /* If we're run with an explicit path, check if "../lib/en.msg"
 	  * from the program's path exists, and if so look there for
@@ -931,7 +929,7 @@ void
 #ifdef __APPLE__
 macos_got_msg:
 #endif
-	 osfree(p);
+	 free(p);
       }
 #elif defined _WIN32
       DWORD len = 256;
@@ -947,7 +945,7 @@ macos_got_msg:
       /* Strange Win32 nastiness - strip prefix "\\?\" if present */
       if (strncmp(modname, "\\\\?\\", 4) == 0) modname += 4;
       pth_cfg_files = path_from_fnm(modname);
-      osfree(buf);
+      free(buf);
 #else
       /* Get the path to the support files from argv[0] */
       pth_cfg_files = exe_path;

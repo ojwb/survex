@@ -53,9 +53,9 @@ static void sor(real *M, real *B, long n);
 #endif
 
 /* for M(row, col) col must be <= row, so Y <= X */
-# define M(X, Y) ((real *)M)[((((OSSIZE_T)(X)) * ((X) + 1)) >> 1) + (Y)]
+# define M(X, Y) ((real *)M)[((((size_t)(X)) * ((X) + 1)) >> 1) + (Y)]
 	      /* +(Y>X?0*printf("row<col (line %d)\n",__LINE__):0) */
-/*#define M_(X, Y) ((real *)M)[((((OSSIZE_T)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
+/*#define M_(X, Y) ((real *)M)[((((size_t)(Y)) * ((Y) + 1)) >> 1) + (X)]*/
 
 static void set_row(node *stn, int row_number) {
     // We store the matrix row/column index in stn->colour for quick and easy
@@ -95,7 +95,7 @@ solve_matrix(node *list)
    // We also set listend to the last station in the list while doing so, which
    // we use after solving to splice list into fixedlist.
    node *listend = NULL;
-   long n = 0;
+   size_t n = 0;
    for (node *stn = list; stn; stn = stn->next) {
       listend = stn;
       if (stn->colour < 0) {
@@ -107,17 +107,16 @@ solve_matrix(node *list)
    // Array to map from row/column index to pos.  We fill this in as we build
    // the matrix, and use it to know where to copy the solved station
    // coordinates to.
-   pos **stn_tab = osmalloc((OSSIZE_T)(n * ossizeof(pos*)));
+   pos **stn_tab = osmalloc(n * sizeof(pos*));
 
-   /* (OSSIZE_T) cast may be needed if n >= 181 */
-   real *M = osmalloc((OSSIZE_T)((((OSSIZE_T)n * FACTOR * (n * FACTOR + 1)) >> 1)) * ossizeof(real));
-   real *B = osmalloc((OSSIZE_T)(n * FACTOR * ossizeof(real)));
+   real *M = osmalloc((((n * FACTOR * (n * FACTOR + 1)) >> 1)) * sizeof(real));
+   real *B = osmalloc(n * FACTOR * sizeof(real));
 
    if (!fQuiet) {
       if (n == 1)
 	 out_current_action(msg(/*Solving one equation*/78));
       else
-	 out_current_action1(msg(/*Solving %d simultaneous equations*/75), n);
+	 out_current_action1(msg(/*Solving %d simultaneous equations*/75), (int)n);
    }
 
 #ifdef NO_COVARIANCES
@@ -131,7 +130,7 @@ solve_matrix(node *list)
       {
 	 int end = n * FACTOR;
 	 for (int row = 0; row < end; row++) B[row] = (real)0.0;
-	 end = ((OSSIZE_T)n * FACTOR * (n * FACTOR + 1)) >> 1;
+	 end = ((size_t)n * FACTOR * (n * FACTOR + 1)) >> 1;
 	 for (int row = 0; row < end; row++) M[row] = (real)0.0;
       }
 
@@ -323,9 +322,9 @@ solve_matrix(node *list)
    if (fixedlist) fixedlist->prev = listend;
    fixedlist = list;
 
-   osfree(B);
-   osfree(M);
-   osfree(stn_tab);
+   free(B);
+   free(M);
+   free(stn_tab);
 
 #if DEBUG_MATRIX
    for (node *stn = list; stn; stn = stn->next) {
@@ -391,7 +390,7 @@ sor(real *M, real *B, long n)
 {
    long it = 0;
 
-   real *X = osmalloc(n * ossizeof(real));
+   real *X = osmalloc(n * sizeof(real));
 
    const real threshold = 0.00001;
 
@@ -445,7 +444,7 @@ sor(real *M, real *B, long n)
 
    for (int row = n - 1; row >= 0; row--) B[row] = X[row];
 
-   osfree(X);
+   free(X);
    printf("\ndone\n"); /* TRANSLATE */
 }
 #endif

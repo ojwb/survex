@@ -175,7 +175,7 @@ main(int argc, char **argv)
    pcs = osnew(settings);
    pcs->next = NULL;
    pcs->from_equals_to_is_only_a_warning = false;
-   pcs->Translate = ((short*) osmalloc(ossizeof(short) * 257)) + 1;
+   pcs->Translate = ((short*) osmalloc(sizeof(short) * 257)) + 1;
    pcs->meta = NULL;
    pcs->proj_str = NULL;
    pcs->declination = HUGE_REAL;
@@ -230,7 +230,7 @@ main(int argc, char **argv)
 	 /* Ignore for compatibility with older versions. */
 	 break;
        case 'o': {
-	 osfree(fnm_output_base); /* in case of multiple -o options */
+	 free(fnm_output_base); /* in case of multiple -o options */
 	 /* can be a directory (in which case use basename of leaf input)
 	  * or a file (in which case just trim the extension off) */
 	 if (fDirectory(optarg)) {
@@ -291,14 +291,14 @@ main(int argc, char **argv)
 	 char *p;
 	 p = baseleaf_from_fnm(argv[optind]);
 	 fnm = add_ext(p, EXT_LOG);
-	 osfree(p);
+	 free(p);
       } else if (fnm_output_base_is_dir) {
 	 char *p;
 	 fnm = baseleaf_from_fnm(argv[optind]);
 	 p = use_path(fnm_output_base, fnm);
-	 osfree(fnm);
+	 free(fnm);
 	 fnm = add_ext(p, EXT_LOG);
-	 osfree(p);
+	 free(p);
       } else {
 	 fnm = add_ext(fnm_output_base, EXT_LOG);
       }
@@ -306,7 +306,7 @@ main(int argc, char **argv)
       if (!freopen(fnm, "w", stdout))
 	 fatalerror(/*Failed to open output file “%s”*/3, fnm);
 
-      osfree(fnm);
+      free(fnm);
    }
 
    if (!fMute) {
@@ -338,7 +338,7 @@ main(int argc, char **argv)
 	  } else {
 	      s_appendch(&survey_title, ' ');
 	      s_append(&survey_title, lf);
-	      osfree(lf);
+	      free(lf);
 	  }
       }
 
@@ -437,7 +437,7 @@ do_range(int d, int msgno, real length_factor, const char * units)
    real hi = max[d] * length_factor;
    real lo = min[d] * length_factor;
    printf(msg(msgno), hi - lo, units, pfx_hi, hi, units, pfx_lo, lo, units);
-   osfree(pfx_hi);
+   free(pfx_hi);
    putnl();
 
    /* Range without anonymous stations at offset 3. */
@@ -500,7 +500,7 @@ do_stats(void)
 	   printf(msg(/*Approximate full range of grid convergence: %.1f%s at %s to %.1f%s at %s\n*/531),
 		  deg(convergence_min), deg_sign, pfx_lo,
 		  deg(convergence_max), deg_sign, pfx_hi);
-	   osfree(pfx_hi);
+	   free(pfx_hi);
        }
    }
 

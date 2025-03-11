@@ -133,7 +133,7 @@ check_node(prefix *p)
 	       }
 	       compile_diagnostic_pfx(DIAG_ERR, where, msgno,
 				      sprint_prefix(p), s);
-	       osfree(s);
+	       free(s);
 	   }
        }
 
