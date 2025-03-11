@@ -1240,6 +1240,8 @@ select_charset(int charset_code)
 	   charset);
 #endif
 
+   if (charset == charset_code) return charset;
+
    charset = charset_code;
 
    /* check if we've already parsed messages for new charset */
