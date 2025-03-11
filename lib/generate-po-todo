@@ -71,7 +71,7 @@ for my $po_file (@ARGV) {
 }
 
 my $host = 'atreus.tartarus.org';
-my $webpath = '/srv/www/survex.com/software.i18n';
+my $webpath = '/srv/www/survex.com/software/i18n';
 
 print "To update the files on the webserver:\n";
 if (@nonempty) {
