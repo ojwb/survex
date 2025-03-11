@@ -29,7 +29,7 @@
 #include "message.h"
 #include "netbits.h"
 #include "datain.h" /* for compile_error */
-#include "validate.h" /* for compile_error */
+#include "validate.h"
 #include <math.h>
 
 #define THRESHOLD (REAL_EPSILON * 1000) /* 100 was too small */
