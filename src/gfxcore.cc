@@ -675,7 +675,6 @@ void GfxCore::DrawArrow(gla_colour col1, gla_colour col2) {
     PlaceIndicatorVertex(0, 0);
     EndTriangles();
     BeginPolyline();
-    glBegin(GL_LINE_STRIP);
     PlaceIndicatorVertex(0, 0);
     PlaceIndicatorVertex(x, y);
     PlaceIndicatorVertex(0, r);
