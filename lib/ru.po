@@ -397,7 +397,7 @@ msgstr "Неизвестная единица измерения “%s”"
 #: n:532
 #, c-format
 msgid "Unknown team role “%s”"
-msgstr ""
+msgstr "Неизвестная роль “%s”"
 
 #: ../src/commands.c:552
 #: n:479
@@ -507,7 +507,7 @@ msgstr "Магнитное склонение: %s, сближение мерид
 #: n:531
 #, c-format
 msgid "Approximate full range of grid convergence: %.1f%s at %s to %.1f%s at %s\n"
-msgstr ""
+msgstr "Приблизительный диапазон сближения меридианов: от %.1f%s на %s до %.1f%s на %s\n"
 
 #. TRANSLATORS: Used when a BEGIN command has no survey, but the
 #. END command does, e.g.:
