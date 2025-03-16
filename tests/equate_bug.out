@@ -1,4 +1,4 @@
-./equate_bug.svx:10: warning: Equating two equal fixed points: "b" and "a"
+./equate_bug.svx:10: warning: Equating two equal fixed points: "a" and "b"
  *equate A B
 
 Removing trailing traverses...

@@ -1421,7 +1421,7 @@ cmd_equate(void)
 
       prev_name = name;
       name = read_prefix(PFX_STATION|PFX_ALLOW_ROOT|PFX_SUSPECT_TYPO);
-      process_equate(name, prev_name);
+      process_equate(prev_name, name);
    }
 }
 

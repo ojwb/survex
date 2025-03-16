@@ -6,7 +6,7 @@
 
 *fix A 0 0 0
 *fix B 0 0 0
-; warning: Equating two equal fixed points: "b" and "a"
+; warning: Equating two equal fixed points: "a" and "b"
 *equate A B
 
 *fix 1 0 0 0
