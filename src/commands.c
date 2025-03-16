@@ -2293,6 +2293,7 @@ cmd_team(void)
 	    // implemented.
 	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown team role “%s”*/532,
 			       s_str(&token));
+	    return;
 	}
     }
 }
