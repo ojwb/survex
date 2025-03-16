@@ -1673,15 +1673,17 @@ Description
    prior to Survex 1.4.17 there weren't any checks of the syntax.  Essentially
    ``*team`` used to be treated like a named comment.
 
-   With Survey 1.4.17 and later you'll get an error for an empty ``*team`` or
-   if you open but fail to close double quotes.
+   With Survey 1.4.17 and later you'll get a warning for an empty ``*team`` or
+   if you open but fail to close double quotes around the person's name.
 
    Roles are now checked against an allowed list (which is the same list that
    Therion uses, with the addition of ``explorer`` which Therion handles via
    a separate ``explo-team`` command).  You'll get a warning if a role is not
-   recognised (this was made a warning to avoid breaking existing datasets
-   which might contain ``*team`` lines which don't conform with the defined
-   syntax, or with this newly adopted list of roles).
+   recognised.
+
+   These diagnostic messages were made warnings to avoid breaking processing
+   of existing datasets which might contain ``*team`` lines which don't conform
+   with the defined syntax, or with this newly adopted list of roles.
 
    ``<role>`` should be one of the following (grouped entries are just
    alternative names for the same thing).  The intended meanings are noted

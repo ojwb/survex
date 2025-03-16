@@ -1,4 +1,4 @@
-; pos=fail warn=4 error=2
+; pos=no warn=6
 *begin survey
 *team Wookey note
 *team "Olly Betts" instruments tap

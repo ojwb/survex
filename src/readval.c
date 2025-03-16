@@ -1,6 +1,6 @@
 /* readval.c
  * Routines to read a prefix or number from the current input file
- * Copyright (C) 1991-2024 Olly Betts
+ * Copyright (C) 1991-2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -872,8 +872,8 @@ bad_value:
     return (int)n;
 }
 
-extern void
-read_string(string *pstr)
+static bool
+read_string_(string *pstr, int diag_type)
 {
    s_clear(pstr);
 
@@ -883,8 +883,9 @@ read_string(string *pstr)
       nextch();
       while (1) {
 	 if (isEol(ch)) {
-	    compile_diagnostic(DIAG_ERR|DIAG_COL, /*Missing \"*/69);
-	    longjmp(jbSkipLine, 1);
+	    compile_diagnostic(diag_type|DIAG_COL, /*Missing \"*/69);
+	    if (diag_type == DIAG_ERR) longjmp(jbSkipLine, 1);
+	    return false;
 	 }
 
 	 if (ch == '\"') break;
@@ -898,10 +899,11 @@ read_string(string *pstr)
       while (1) {
 	 if (isEol(ch) || isComm(ch)) {
 	    if (s_empty(pstr)) {
-	       compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting string field*/121);
-	       longjmp(jbSkipLine, 1);
+	       compile_diagnostic(diag_type|DIAG_COL, /*Expecting string field*/121);
+		if (diag_type == DIAG_ERR) longjmp(jbSkipLine, 1);
+		return false;
 	    }
-	    return;
+	    return true;
 	 }
 
 	 if (isBlank(ch)) break;
@@ -910,6 +912,19 @@ read_string(string *pstr)
 	 nextch();
       }
    }
+   return true;
+}
+
+extern void
+read_string(string *pstr)
+{
+    (void)read_string_(pstr, DIAG_ERR);
+}
+
+extern bool
+read_string_warning(string *pstr)
+{
+    return read_string_(pstr, DIAG_WARN);
 }
 
 extern void

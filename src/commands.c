@@ -2279,7 +2279,10 @@ static void
 cmd_team(void)
 {
     string name = S_INIT;
-    read_string(&name);
+    if (!read_string_warning(&name)) {
+	skipline();
+	return;
+    }
     s_free(&name);
 
     while (true) {

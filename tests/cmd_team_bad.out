@@ -10,10 +10,10 @@
 ./cmd_team_bad.svx:10:11: warning: Unknown team role ""
  *team Bob "pics"
            ^
-./cmd_team_bad.svx:11:15: error: Missing "
+./cmd_team_bad.svx:11:15: warning: Missing "
  *team "Al Jobs
                ^
-./cmd_team_bad.svx:12:6: error: Expecting string field
+./cmd_team_bad.svx:12:6: warning: Expecting string field
  *team
       ^
 
@@ -40,4 +40,4 @@ Vertical range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
 North-South range = 1.00m (from survey.2 at 1.00m to survey.1 at 0.00m)
 East-West range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
 
-There were 4 warning(s) and 2 error(s) - no output files produced.
+There were 6 warning(s).
