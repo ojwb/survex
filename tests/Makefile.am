@@ -12,6 +12,7 @@ cross.svx cross.pos\
 deltastar.svx deltastar.pos\
 deltastar2.svx deltastar2.pos\
 deltastarhanging.svx deltastarhanging.out\
+equate_bug.svx equate_bug.out\
 firststn.svx firststn.pos\
 break_replace_pfx.svx\
 bug0.svx bug1.svx bug2.svx bug3.svx bug3.out bug3.pos bug4.svx bug5.svx\

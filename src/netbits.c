@@ -380,10 +380,7 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
 static void
 replace_pfx_(node *stn, node *from, pos *pos_with, bool move_to_fixedlist)
 {
-   SVX_ASSERT(!fixed(stn));
    if (move_to_fixedlist) {
-      SVX_ASSERT(pos_fixed(pos_with));
-      SVX_ASSERT(!fixed(stn));
       remove_stn_from_list(&stnlist, stn);
       add_stn_to_list(&fixedlist, stn);
    }
@@ -402,11 +399,11 @@ replace_pfx_(node *stn, node *from, pos *pos_with, bool move_to_fixedlist)
 /* We used to iterate over the whole station list (inefficient) - now we
  * just look at any neighbouring nodes to see if they are equated */
 static void
-replace_pfx(const prefix *pfx_replace, const prefix *pfx_with,
-	    bool move_to_fixedlist)
+replace_pfx(const prefix *pfx_replace, const prefix *pfx_with)
 {
    SVX_ASSERT(pfx_replace);
    SVX_ASSERT(pfx_with);
+   bool move_to_fixedlist = !pfx_fixed(pfx_replace) && pfx_fixed(pfx_with);
    pos *pos_replace = pfx_replace->pos;
    SVX_ASSERT(pos_replace != pfx_with->pos);
 
@@ -466,10 +463,10 @@ process_equate(prefix *name1, prefix *name2)
 	 }
 
 	 /* name1 is fixed, so replace all refs to name2's pos with name1's */
-	 replace_pfx(name2, name1, !name2_fixed);
+	 replace_pfx(name2, name1);
       } else {
 	 /* name1 isn't fixed, so replace all refs to its pos with name2's */
-	 replace_pfx(name1, name2, pfx_fixed(name2));
+	 replace_pfx(name1, name2);
       }
 
       /* Suppress "unused fixed point" warnings for these stations. */

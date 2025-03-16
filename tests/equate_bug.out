@@ -1,0 +1,28 @@
+./equate_bug.svx:10: warning: Equating two equal fixed points: "b" and "a"
+ *equate A B
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 9 survey stations, joined by 7 legs.
+There are 0 loops.
+Survey has 2 connected components.
+Total length of survey legs =    5.00m (   5.00m adjusted)
+Total plan length of survey legs =    5.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from 2d at 0.00m to 2d at 0.00m)
+North-South range = 1.00m (from 2d at 1.00m to 2 at 0.00m)
+East-West range = 0.00m (from 2d at 0.00m to 2d at 0.00m)
+
+There were 1 warning(s).

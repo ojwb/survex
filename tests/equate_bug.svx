@@ -1,0 +1,18 @@
+; pos=no warn=1 error=0
+
+; Each of the examples below triggered an assertion failure starting with 1.4.13.
+; Fixed in 1.4.17.
+; https://trac.survex.com/ticket/143
+
+*fix A 0 0 0
+*fix B 0 0 0
+; warning: Equating two equal fixed points: "b" and "a"
+*equate A B
+
+*fix 1 0 0 0
+1 1a 1 0 0
+2 2a 1 0 0
+2 2b 1 0 0
+2 2c 1 0 0
+2 2d 1 0 0
+*equate 1 2

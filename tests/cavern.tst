@@ -61,6 +61,7 @@ esac
  cmd_solve cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_set\
  cmd_set_bad cmd_set_dot_in_name\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
+ equate_bug\
  expobug require export export2 includecomment\
  self_loop self_eq_loop reenterwarn cmd_default cmd_default_bad\
  cmd_prefix cmd_prefix_bad\
