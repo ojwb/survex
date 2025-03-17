@@ -717,23 +717,21 @@ parse_msgs(int n, unsigned char *p, int charset_code) {
    return msgs;
 }
 
-/* This is the name of the default language, which can be set like so:
- * ./configure --enable-defaultlang=fr
+/* No point making these errors translatable as they only get used if we fail
+ * to open the messages file.
+ *
+ * NB These messages should be in plain ASCII.
  */
-#ifdef DEFAULTLANG
-/* No point extracting these errors as they won't get used if file opens */
-# include "../lib/defaultlang.h"
-#else
-#define N_DONTEXTRACTMSGS 5
-static unsigned char dontextractmsgs[] =
-   "Can't open message file \"%s\" using path \"%s\"\0"/*1000*/
-   "Problem with message file \"%s\"\0"/*1001*/
-   "I don't understand this message file version\0"/*1002*/
-   "Message file truncated?\0"/*1003*/
-   "Out of memory (couldn't find %lu bytes).\0"/*1004*/;
-#endif
-
-static char **dontextract = NULL;
+static const char dontextractmsgs[][45] = {
+   "Out of memory (couldn't find %lu bytes)."/*1000*/,
+   "Problem with message file \"%s\""/*1001*/,
+   "I don't understand this message file version"/*1002*/,
+   "Message file truncated?"/*1003*/,
+   "Can't open message file \"%s\" using path \"%s\""/*1004*/
+};
+#define N_DONTEXTRACTMSGS \
+    ((int)(sizeof(dontextractmsgs) / sizeof(dontextractmsgs[0])))
+#define DONTEXTRACTMSGS_BASE 1000
 
 static void
 parse_msg_file(int charset_code)
@@ -749,9 +747,6 @@ parse_msg_file(int charset_code)
 #ifdef DEBUG
    fprintf(stderr, "parse_msg_file(%d)\n", charset_code);
 #endif
-
-   /* sort out messages we need to print if we can't open the message file */
-   dontextract = parse_msgs(N_DONTEXTRACTMSGS, dontextractmsgs, charset_code);
 
    fnm = osstrdup(msg_lang);
    /* trim off charset from stuff like "de_DE.iso8859_1" */
@@ -784,7 +779,7 @@ parse_msg_file(int charset_code)
    }
 
    if (!fh) {
-      fatalerror(/*Can't open message file “%s” using path “%s”*/1000,
+      fatalerror(/*Can't open message file “%s” using path “%s”*/1004,
 		 fnm, pth_cfg_files);
    }
 
@@ -1096,33 +1091,36 @@ msg_opt(int en, const char * fallback)
 const char *
 msg(int en)
 {
-   /* NB can't use SVX_ASSERT here! */
-   if (dontextract && en >= 1000 && en < 1000 + N_DONTEXTRACTMSGS)
-      return dontextract[en - 1000];
-   if (!msg_array) {
-      if (en != 1)  {
-	 fprintf(STDERR, "Message %d requested before fully initialised\n", en);
-	 return "Message requested before fully initialised\n";
-      }
-      /* this should be the only other message which can be requested before
-       * the message file is opened and read... */
-      if (!dontextract) return "Out of memory (couldn't find %lu bytes).";
-      return dontextract[(/*Out of memory (couldn't find %lu bytes).*/1004)
-			 - 1000];
-   }
+    /* NB can't use SVX_ASSERT here! */
+    if (en >= DONTEXTRACTMSGS_BASE &&
+	en < DONTEXTRACTMSGS_BASE + N_DONTEXTRACTMSGS) {
+	return dontextractmsgs[en - DONTEXTRACTMSGS_BASE];
+    }
 
-   if (en < 0 || en >= num_msgs) {
-      fprintf(STDERR, "Message %d out of range\n", en);
-      return "Message out of range\n";
-   }
+    if (!msg_array) {
+	/* This should be the only other message which can be requested before
+	 * the message file is opened and read.
+	 */
+	if (en != /*Out of memory (couldn’t find %lu bytes).*/24)  {
+	    fprintf(STDERR, "Message %d requested before fully initialised\n", en);
+	    return "Message requested before fully initialised\n";
+	}
+	en = /*Out of memory (couldn't find %lu bytes).*/1000;
+	return dontextractmsgs[en - DONTEXTRACTMSGS_BASE];
+    }
 
-   if (en == 0) {
-      const char *p = msg_array[0];
-      if (!*p) p = "(C)";
-      return p;
-   }
+    if (en < 0 || en >= num_msgs) {
+	fprintf(STDERR, "Message %d out of range\n", en);
+	return "Message out of range\n";
+    }
 
-   return msg_array[en];
+    if (en == 0) {
+	const char *p = msg_array[0];
+	if (!*p) p = "(C)";
+	return p;
+    }
+
+    return msg_array[en];
 }
 
 void
