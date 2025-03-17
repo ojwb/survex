@@ -42,6 +42,7 @@
 #include <wx/imaglist.h>
 #include <wx/process.h>
 #include <wx/regex.h>
+#include <wx/srchctrl.h>
 #include <wx/spinctrl.h>
 #ifdef USING_GENERIC_TOOLBAR
 # include <wx/sysopt.h>
@@ -84,8 +85,6 @@
 #include "../lib/icons/pres_ff.xpm"
 #include "../lib/icons/pres_fff.xpm"
 #include "../lib/icons/pres_stop.xpm"
-#include "../lib/icons/find.xpm"
-#include "../lib/icons/hideresults.xpm"
 #include "../lib/icons/survey_tree.xpm"
 #include "../lib/icons/pres_tree.xpm"
 #undef static
@@ -495,9 +494,6 @@ BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT(textctrl_FIND, MainFrm::OnFind)
     EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnGotoFound)
     EVT_SPINCTRLDOUBLE(spinctrl_Z_STRETCH, MainFrm::OnZStretch)
-    EVT_MENU(wxID_FIND, MainFrm::OnGotoFound)
-    EVT_MENU(button_HIDE, MainFrm::OnHide)
-    EVT_UPDATE_UI(button_HIDE, MainFrm::OnHideUpdate)
     EVT_IDLE(MainFrm::OnIdle)
 
     EVT_MENU(wxID_OPEN, MainFrm::OnOpen)
@@ -1031,13 +1027,11 @@ void MainFrm::MakeToolBar()
     toolbar->AddTool(wxID_STOP, wxT("Stop"), TOOL(pres_stop), wxT("Stop"));
 
     toolbar->AddSeparator();
-    m_FindBox = new wxTextCtrl(toolbar, textctrl_FIND, wxString(), wxDefaultPosition,
-			       wxDefaultSize, wxTE_PROCESS_ENTER);
+    m_FindBox = new wxSearchCtrl(toolbar, textctrl_FIND);
+    m_FindBox->SetSize(160, -1);
+    // TRANSLATORS: Placeholder text in aven's station search control.
+    m_FindBox->SetDescriptiveText(wmsg(/*Find stations*/333));
     toolbar->AddControl(m_FindBox);
-    /* TRANSLATORS: "Find stations" button tooltip */
-    toolbar->AddTool(wxID_FIND, wmsg(/*Find*/332), TOOL(find)/*, "Search for station name"*/);
-    /* TRANSLATORS: "Hide stations" button default tooltip */
-    toolbar->AddTool(button_HIDE, wmsg(/*Hide*/333), TOOL(hideresults)/*, "Hide search results"*/);
 
     auto z_stretch = new wxSpinCtrlDouble(toolbar, spinctrl_Z_STRETCH,
 					  wxEmptyString,
@@ -1993,12 +1987,12 @@ void MainFrm::TreeItemSearch(const wxTreeItemData* item)
     const TreeData* data = static_cast<const TreeData*>(item);
     if (!data) return;
 
+    pending_find = PENDING_FIND_AND_GO;
     if (data->IsStation()) {
 	m_FindBox->ChangeValue(data->GetLabel()->GetText());
     } else {
 	m_FindBox->ChangeValue(data->GetSurvey() + ".*");
     }
-    pending_find = PENDING_FIND_AND_GO;
 }
 
 void MainFrm::OnPresNew(wxCommandEvent&)
@@ -2239,7 +2233,7 @@ void MainFrm::OnPresExportMovieUpdate(wxUpdateUIEvent& event)
 
 void MainFrm::OnFind(wxCommandEvent&)
 {
-    pending_find = PENDING_FIND;
+    if (pending_find == PENDING_FIND_NONE) pending_find = PENDING_FIND;
 }
 
 void MainFrm::OnIdle(wxIdleEvent&)
@@ -2254,6 +2248,7 @@ void MainFrm::DoFind()
     wxBusyCursor hourglass;
     // Find stations specified by a string or regular expression pattern.
 
+    bool substring = true;
     wxString pattern = m_FindBox->GetValue();
     if (pattern.empty()) {
 	// Hide any search result highlights.
@@ -2270,7 +2265,6 @@ void MainFrm::DoFind()
 	    re_flags |= wxRE_ICASE;
 	}
 
-	bool substring = true;
 	if (false /*m_RegexpCheckBox->GetValue()*/) {
 	    re_flags |= wxRE_EXTENDED;
 	} else if (true /* simple glob-style */) {
@@ -2350,11 +2344,18 @@ void MainFrm::DoFind()
     m_Gfx->ForceRefresh();
 
     if (!m_NumHighlighted) {
-	GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*No matches were found.*/328));
+	GetToolBar()->SetToolShortHelp(textctrl_FIND, wmsg(/*No matches were found.*/328));
     } else {
-	/* TRANSLATORS: "Hide stations" button tooltip when stations are found
+	pattern = m_FindBox->GetValue();
+	/* TRANSLATORS: Find station tooltip when stations are found.  %d is
+	 * replaced by the number of matching stations and %s%s%s by the
+	 * pattern searched for.
 	 */
-	GetToolBar()->SetToolShortHelp(button_HIDE, wxString::Format(wmsg(/*Hide %d found stations*/334).c_str(), m_NumHighlighted));
+	GetToolBar()->SetToolShortHelp(textctrl_FIND, wxString::Format(wmsg(/*%d stations match %s%s%s*/334).c_str(),
+								       m_NumHighlighted,
+								       substring ? "*" : "",
+								       m_FindBox->GetValue(),
+								       substring ? "*" : ""));
     }
     if (pending_find == PENDING_FIND_AND_GO) {
 	wxCommandEvent dummy;
@@ -2398,7 +2399,9 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
 void MainFrm::OnHide(wxCommandEvent&)
 {
     m_FindBox->SetValue(wxString());
-    GetToolBar()->SetToolShortHelp(button_HIDE, wmsg(/*Hide*/333));
+    // TRANSLATORS: Status bar help message for aven's station search control.
+    GetToolBar()->SetToolShortHelp(textctrl_FIND,
+				   wmsg(/*Station name search (substring or wildcard)*/533));
 }
 
 void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)

@@ -26,8 +26,6 @@ xpm_files = \
 	pres_ff.xpm \
 	pres_fff.xpm \
 	pres_stop.xpm \
-	find.xpm \
-	hideresults.xpm \
 	survey_tree.xpm \
 	pres_tree.xpm
 

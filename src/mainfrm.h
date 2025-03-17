@@ -30,6 +30,7 @@
 #include <wx/notebook.h>
 #include <wx/print.h>
 #include <wx/printdlg.h>
+#include <wx/srchctrl.h>
 #include <wx/spinctrl.h>
 
 #include "aventreectrl.h"
@@ -149,7 +150,6 @@ enum {
     menu_SURVEY_SHOW,
     menu_SURVEY_HIDE_SIBLINGS,
     textctrl_FIND,
-    button_HIDE,
     spinctrl_Z_STRETCH,
     listctrl_PRES
 };
@@ -165,7 +165,7 @@ class MainFrm : public wxFrame, public Model {
     GUIControl* m_Control;
     wxSplitterWindow* m_Splitter;
     AvenTreeCtrl* m_Tree;
-    wxTextCtrl* m_FindBox;
+    wxSearchCtrl* m_FindBox;
     // wxCheckBox* m_RegexpCheckBox;
     wxNotebook* m_Notebook;
     AvenPresList* m_PresList;

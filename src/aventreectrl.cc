@@ -371,6 +371,7 @@ void AvenTreeCtrl::OnMenu(wxTreeEvent& e)
     } else if (data->IsStation()) {
 	// Station: name is data->GetLabel()->GetText()
 	wxMenu menu;
+        // TRANSLATORS: Menu item in right-click menu in survey tree.
 	menu.Append(wxID_FIND, wmsg(/*Find*/332));
 	PopupMenu(&menu);
     } else if (ItemHasChildren(menu_item)) {
