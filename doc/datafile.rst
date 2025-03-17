@@ -969,6 +969,16 @@ Description
    Currently dates before 1900 and after 2078 result in a warning and are
    ignored.
 
+   A date which is in the future in the local timezone will also be warned
+   about to help catch date errors.  This warning could be incorrectly
+   triggered if you surveyed some data and promptly sent it to somebody in a
+   timezone behind yours - e.g. American Samoa (UTC-11) is always a day behind
+   Samoa (UTC+13).  This could be avoided by making the threshold for the
+   warning less tight (e.g. add a day or interpret today's date as "anywhere on
+   Earth"), but then we could fail to warn when locally processed data you've
+   just entered with tomorrow's date which seems worse than an incorrect
+   warning in an unusual case which will go away after less than a day.
+
    The ``explored`` date is parsed but not currently stored anywhere.  A future
    version will write it to the ``.3d`` file and make it available to aven, etc.
 
