@@ -1,4 +1,4 @@
-; pos=no warn=25
+; pos=no warn=31
 *begin survey
 *copyright
 *copyright "
@@ -24,6 +24,10 @@
 *copyright 1999-2001 No opening quote"
 *copyright 2000-1999 "Doctor Who"
 *copyright 2000-1999 DrWho
+*copyright 2078 "Doctor Who"
+*copyright 1900-2078 "Doctor Who"
+*copyright 2077-2078 "Doctor Who"
+*copyright 2078-2077 "Doctor Who"
 *fix 1 0 0 0
 1 2 1 0 0
 *end survey

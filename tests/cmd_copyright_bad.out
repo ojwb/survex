@@ -73,6 +73,24 @@
 ./cmd_copyright_bad.svx:26:17: warning: End of date range is before the start
  *copyright 2000-1999 DrWho
                  ^~~~
+./cmd_copyright_bad.svx:27:12: warning: Date is in the future!
+ *copyright 2078 "Doctor Who"
+            ^~~~
+./cmd_copyright_bad.svx:28:17: warning: Date is in the future!
+ *copyright 1900-2078 "Doctor Who"
+                 ^~~~
+./cmd_copyright_bad.svx:29:12: warning: Date is in the future!
+ *copyright 2077-2078 "Doctor Who"
+            ^~~~
+./cmd_copyright_bad.svx:29:17: warning: Date is in the future!
+ *copyright 2077-2078 "Doctor Who"
+                 ^~~~
+./cmd_copyright_bad.svx:30:12: warning: Date is in the future!
+ *copyright 2078-2077 "Doctor Who"
+            ^~~~
+./cmd_copyright_bad.svx:30:17: warning: End of date range is before the start
+ *copyright 2078-2077 "Doctor Who"
+                 ^~~~
 
 Removing trailing traverses...
 
@@ -97,4 +115,4 @@ Vertical range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
 North-South range = 1.00m (from survey.2 at 1.00m to survey.1 at 0.00m)
 East-West range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
 
-There were 25 warning(s).
+There were 31 warning(s).

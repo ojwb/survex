@@ -2347,6 +2347,9 @@ cmd_copyright(void)
     if (y1 < 1000) {
 	set_pos(&fp);
 	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year*/534, y1);
+    } else if (y1 > current_year) {
+	set_pos(&fp);
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Date is in the future!*/80);
     }
     if (ch == '-') {
 	nextch();
@@ -2358,6 +2361,9 @@ cmd_copyright(void)
 	} else if (y2 < y1) {
 	    set_pos(&fp);
 	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*End of date range is before the start*/81);
+	} else if (y2 > current_year) {
+	    set_pos(&fp);
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Date is in the future!*/80);
 	}
     }
 

@@ -145,6 +145,7 @@ pause_on_exit(void)
 #endif
 
 int current_days_since_1900;
+unsigned current_year;
 
 static void discarding_proj_logger(void *ctx, int level, const char *message) {
     (void)ctx;
@@ -164,6 +165,7 @@ main(int argc, char **argv)
        // in the future.
        struct tm * t = localtime(&tmUserStart);
        int y = t->tm_year + 1900;
+       current_year = (unsigned)y;
        current_days_since_1900 = days_since_1900(y, t->tm_mon + 1, t->tm_mday);
    }
 

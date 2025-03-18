@@ -67,6 +67,7 @@ extern bool fnm_output_base_is_dir;
 extern bool fExportUsed;
 
 extern int current_days_since_1900;
+extern unsigned current_year;
 
 /* Types */
 
