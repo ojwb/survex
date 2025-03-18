@@ -61,10 +61,6 @@
 
 enum { LOG_REPROCESS = 1234, LOG_SAVE = 1235 };
 
-static const wxString badutf8_html(
-    wxT("<span style=\"color:white;background-color:red;\">&#xfffd;</span>"));
-static const wxString badutf8(wxUniChar(0xfffd));
-
 // New event type for signalling cavern output to process.
 wxDEFINE_EVENT(EVT_CAVERN_OUTPUT, wxCommandEvent);
 
