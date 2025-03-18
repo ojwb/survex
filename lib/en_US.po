@@ -2723,7 +2723,7 @@ msgstr "Find"
 #: ../src/mainfrm.cc:1033
 #: n:333
 msgid "Find stations"
-msgstr ""
+msgstr "Find stations"
 
 #. TRANSLATORS: Find station tooltip when stations are found.  %d is
 #. replaced by the number of matching stations and %s%s%s by the
@@ -2738,7 +2738,7 @@ msgstr "%d stations match %s%s%s"
 #: ../src/mainfrm.cc:2404
 #: n:533
 msgid "Station name search (substring or wildcard)"
-msgstr ""
+msgstr "Station name search (substring or wildcard)"
 
 #: ../src/mainfrm.cc:243
 #: ../src/mainfrm.cc:1723
