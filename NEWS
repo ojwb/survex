@@ -1,3 +1,84 @@
+up to: 9929d60b4f17209badafa31e400596420c06eb31
+
+Changes in 1.4.17 (2025-03-??):
+
+* aven: Add support for exaggerating Z.  You can now set a Z scale factor
+  from 0.1 to 10.0 via a new widget on the toolbar.  Fixes #49.
+
+* aven: The station search feature now uses the standard search
+  widget on GTK 3.6 or later and on macOS.  There's now a placeholder
+  text shown when there's no search to make it clearer what this
+  widget is for.
+
+* aven: Fix the output encoding of `aven --help`, `--version`, etc.
+  Previously these were always encoded as UTF-8 which is usually right
+  on a modern system, but the terminal could be using a different
+  encoding.
+
+* aven: Reduce startup overhead a little when the terminal has a UTF-8
+  locale (which is now the default on most Linux distros).
+
+* cavern: Fix an "assertion failed" error in some situations when
+  equating to a fixed point.  This bug was introduced by changes
+  in 1.4.13.  Fixes #143, reported by Juan Corrin.
+
+* cavern: The syntax of *copyright commands is now checked and a warning
+  issued for problems.  The information in the command is still not yet used.
+
+* cavern: The syntax of *team commands is now checked and a warning
+  issued for problems.  The information in the command is still not yet used.
+
+* cavern: Stop reporting node stats.  These are kind of interesting, but
+  with the widespread use of Disto-X and similar devices which can easily
+  shoot multiple splay legs from each station means the number of larger order
+  nodes has increased and this information is now quite verbose and any utility
+  it had has substantially declined.  If these statistics are still wanted then
+  they could make a reappearance in the future in aven, with splays excluded
+  when counting the number of legs at each station.  Fixes #86, reported by
+  Wookey.
+
+* cavern: Fix wrong "unused fixed point" warning with *solve.
+
+* cavern: Fix double counting of stations which are referenced both before and
+  after *solve.
+
+* cavern: Suppress loop and component counts if *solve is used.  Our component
+  count was often wrong in this case but this looks very hard to fix.  These
+  counts are not vital so better to omit than report wrong values.
+
+* cavern: The "Equating two equal fixed points" warning now lists the
+  stations on the same order as they are in the `.svx` file which
+  seems clearer.
+
+* Speed up reading and writing of .3d files.  The time to read a large .3d file
+  and just count the stations and legs was more than halved by this change.
+
+* Testsuite: Add proper test coverage for `*ref`.
+
+* Simplify handling of errors loading the messages file.  The error
+  messages for this case are now stored as separate ASCII strings in
+  the executables which reduces the startup overhead a little as we
+  no longer need to scan them and potentially reencode them.
+
+* Documentation: Add details of warning about future dates in *date.
+
+* Merge updates to Russian translation from Vasily Vl. Suhachev.
+
+* img library: The img struct's filename_opened member was always NULL when
+  used outside of Survex (and set but never actually used inside of Survex)
+  so it has been removed.  If you are referencing it in your code then instead
+  use the filename you passed to img_open_survey() when opening the file.
+
+* Documentation: Added new manual chapter on the img library.
+
+* Documentation: Improve comments document API in img.h.
+
+* Portability: Eliminate unintended use of C++17 feature (static_assert
+  with only one argument).
+
+* Portability: Avoid compiler warnings/errors in getopt code by properly
+  declaring getenv().
+
 Changes in 1.4.16 (2025-02-21):
 
 * aven: Improve "Colour by Survey".  Surveys whose names only differ in the
