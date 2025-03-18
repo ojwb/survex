@@ -220,10 +220,12 @@ static char *posixly_correct;
 /* Avoid depending on library functions or files
    whose names are inconsistent.  */
 
+#if 0 /* Survex doesn't use getopt() so we include <stdlib.h>. */
 #ifndef getenv
 /* avoid "warning C4273: 'getenv' : inconsistent dll linkage." */
 #ifndef __WIN32__
 extern char *getenv ();
+#endif
 #endif
 #endif
 
