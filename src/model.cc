@@ -305,7 +305,7 @@ int Model::Load(const wxString& file, const wxString& prefix)
 		break;
 
 	    case img_ERROR_INFO: {
-		if (survey->E == 0.0) {
+		if (survey->E == 0.0 && survey->H == 0.0 && survey->V == 0.0) {
 		    // Currently cavern doesn't spot all articulating traverses
 		    // so we assume that any traverse with no error isn't part
 		    // of a loop.  FIXME: fix cavern!
