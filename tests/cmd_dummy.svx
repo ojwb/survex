@@ -1,9 +1,9 @@
 ; pos=no warn=0
 *begin it_all
+; This was originally a test of various "dummy" commands which were treated
+; like comment lines, but we now actually parse most of these.  It is still
+; used as a simple file to include doubleinc.svx.
 *copyright 2001 "Space Oddity Speleos"
-*date 1971.02.07
-*date 2000.01
-*date 2001
 *date 1990.07-2001.09
 *instrument light "Jamie's magic torch"
 
