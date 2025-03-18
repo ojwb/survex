@@ -235,23 +235,41 @@ validate_station_list(void)
 extern void
 dump_node(node *stn)
 {
-   int d;
-   if (stn->name)
-      print_prefix(stn->name);
-   else
-      printf("<null>");
+    printf("stn [%p]", stn);
+    if (stn->name) {
+	if (stn->name->stn == stn) {
+	    printf("<->");
+	} else {
+	    printf("-->");
+	}
+	printf("name ");
+	print_prefix(stn->name);
+	printf(" (%p)", stn->name);
+    } else {
+	printf("-->NULL");
+    }
 
-   printf(" stn [%p] name (%p) colour %ld %sfixed\n",
-	  stn, stn->name, stn->colour, fixed(stn) ? "" : "un");
+    printf(" colour %ld", stn->colour);
+    if (fixed(stn)) {
+	printf(" FIXED\n");
+    } else {
+	putnl();
+    }
 
-   for (d = 0; d <= 2; d++) {
-      if (stn->leg[d]) {
-	 printf("  leg %d -> stn [%p] rev %d ", d, stn->leg[d]->l.to,
-		reverse_leg_dirn(stn->leg[d]));
-	 print_prefix(stn->leg[d]->l.to->name);
-	 putnl();
-      }
-   }
+    for (int d = 0; d <= 2; d++) {
+	linkfor *leg = stn->leg[d];
+	if (leg) {
+	    const char* type;
+	    if (data_here(leg)) {
+		type = fZeros(&leg->v) ? "=>" : "->";
+	    } else {
+		type = fZeros(&reverse_leg(leg)->v) ? "<=" : "<-";
+	    }
+	    printf("  leg #%d %s stn [%p] ", d, type, leg->l.to);
+	    print_prefix(leg->l.to->name);
+	    printf(" | rev %d\n", reverse_leg_dirn(leg));
+	}
+    }
 }
 
 /* This doesn't cover removed stations - might be nice to have
