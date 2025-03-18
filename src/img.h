@@ -149,7 +149,7 @@ typedef struct {
    double length;
    double E, H, V;
 
-   /* This member was documented as being set to the filename of the file 
+   /* This member was documented as being set to the filename of the file
     * loaded but was actually always set to NULL when using img outside the
     * Survex code.
     *
