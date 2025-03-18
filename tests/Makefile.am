@@ -47,6 +47,8 @@ angleunits.svx angleunits.pos\
 lengthunits.svx lengthunits.out lengthunits.pos\
 cmd_alias.svx cmd_alias.out cmd_alias.pos\
 cmd_alias_bad.svx cmd_alias_bad.out\
+cmd_copyright.svx\
+cmd_copyright_bad.svx cmd_copyright_bad.out\
 cmd_default.svx\
 cmd_default_bad.svx cmd_default_bad.out\
 cmd_prefix.svx cmd_truncate.svx cmd_truncate.pos\

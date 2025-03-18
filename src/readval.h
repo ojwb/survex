@@ -58,8 +58,8 @@ real read_numeric(bool f_optional);
 real read_numeric_multi(bool f_optional, bool f_quadrants, int *p_n_readings);
 real read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings);
 
-/* Don't skip blanks, variable error code */
-unsigned int read_uint_raw(int errmsg, const filepos *fp);
+/* Don't skip blanks; can specify diagnostic type and error code. */
+unsigned int read_uint_raw(int diag_type, int errmsg, const filepos *fp);
 
 unsigned int read_uint(void);
 

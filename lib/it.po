@@ -52,7 +52,7 @@ msgid "&Presentation"
 msgstr "&Presentazione"
 
 #. TRANSLATORS: as in: Usage: cavern …
-#: ../src/cmdline.c:174
+#: ../src/cmdline.c:167
 #: n:49
 msgid "Usage"
 msgstr "Utilizzo"
@@ -89,7 +89,7 @@ msgstr "Memoria insufficiente: “%s”"
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/commands.c:2799
+#: ../src/commands.c:2835
 #: n:38
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
@@ -191,7 +191,7 @@ msgstr "Trovato “%s”, atteso “PRESERVE”, “TOUPPER” o “TOLOWER”"
 msgid "Bug in program detected! Please report this to the authors"
 msgstr "Individuato un errore nel programma! Per favore comunicatelo agli autori"
 
-#: ../src/commands.c:3108
+#: ../src/commands.c:3144
 #: ../src/datain.c:2142
 #: ../src/datain.c:2154
 #: ../src/datain.c:2357
@@ -223,6 +223,7 @@ msgstr "La lettura della bussola non puó essere omessa qui eccettto che nelle b
 msgid "Tape reading may not be omitted"
 msgstr "La distanza non puó essere omessa"
 
+#: ../src/commands.c:2373
 #: ../src/datain.c:481
 #: ../src/datain.c:2581
 #: ../src/datain.c:2839
@@ -359,13 +360,13 @@ msgstr "“%s” non può essere contemporaneamente una stazione e un rilievo"
 msgid "Expecting station name"
 msgstr "Manca il nome della stazione"
 
-#: ../src/commands.c:2709
+#: ../src/commands.c:2745
 #: n:31
 #, c-format
 msgid "Found “%s”, expecting “EQUATES”, “EXPORTS”, or “PLUMBS”"
 msgstr "Trovato “%s”, atteso “EQUATES”, “EXPORTS” o “PLUMBS”"
 
-#: ../src/commands.c:2715
+#: ../src/commands.c:2751
 #: n:32
 #, c-format
 msgid "Found “%s”, expecting “ON” or “OFF”"
@@ -406,21 +407,21 @@ msgstr ""
 msgid "Units “%s” are deprecated, assuming “grads” - see manual for details"
 msgstr ""
 
-#: ../src/commands.c:2517
-#: ../src/commands.c:2596
+#: ../src/commands.c:2553
+#: ../src/commands.c:2632
 #: n:434
 msgid "Unknown coordinate system"
 msgstr ""
 
-#: ../src/commands.c:2625
-#: ../src/commands.c:2666
+#: ../src/commands.c:2661
+#: ../src/commands.c:2702
 #: n:443
 #, c-format
 msgid "Invalid coordinate system: %s"
 msgstr ""
 
-#: ../src/commands.c:2604
-#: ../src/commands.c:2636
+#: ../src/commands.c:2640
+#: ../src/commands.c:2672
 #: n:435
 msgid "Coordinate system unsuitable for output"
 msgstr ""
@@ -672,7 +673,7 @@ msgstr "Stazione giá fissata alle stesse coordinate"
 msgid "Already had FIX command with no coordinates for station “%s”"
 msgstr "Piú di un comando FIX senza coordinate: “%s”"
 
-#: ../src/commands.c:2393
+#: ../src/commands.c:2429
 #: n:442
 #, c-format
 msgid "Station “%s” fixed before CS command first used"
@@ -685,32 +686,40 @@ msgstr ""
 #. 1 2 1.23 045 -6
 #. *export 2
 #. *end fred
-#: ../src/commands.c:3124
+#: ../src/commands.c:3160
 #: n:57
 msgid "*EXPORT must immediately follow “*BEGIN <SURVEY>”"
 msgstr "*EXPORT deve seguire “*BEGIN <TOPOGRAFIA>”"
 
 #. TRANSLATORS: %d will be replaced by the assumed year, e.g. 1918
-#: ../src/commands.c:2831
-#: ../src/commands.c:2906
+#: ../src/commands.c:2867
+#: ../src/commands.c:2942
 #: ../src/readval.c:974
 #: n:76
 #, c-format
 msgid "Assuming 2 digit year is %d"
 msgstr ""
 
-#: ../src/commands.c:2895
+#: ../src/commands.c:2931
 #: n:158
 #, c-format
 msgid "Interpreting as an ISO-format date - use “*date surveyed %d-%02d” to suppress this warning, or “*date %d %d” if you wanted a date range"
 msgstr ""
 
-#: ../src/commands.c:2835
-#: ../src/commands.c:2909
+#: ../src/commands.c:2871
+#: ../src/commands.c:2945
 #: ../src/readval.c:980
 #: n:58
 msgid "Invalid year (< 1900 or > 2078)"
 msgstr "Anno non valido (<1900 o >2078)"
+
+#: ../src/commands.c:2346
+#: ../src/commands.c:2349
+#: ../src/commands.c:2354
+#: ../src/commands.c:2357
+#: n:534
+msgid "Invalid year"
+msgstr "Anno non valido"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
@@ -793,7 +802,7 @@ msgstr "Stazione “%s” giá esportata"
 msgid "Duplicate reading “%s”"
 msgstr "Dato duplicato “%s”"
 
-#: ../src/commands.c:2860
+#: ../src/commands.c:2896
 #: n:416
 #, c-format
 msgid "Duplicate date type “%s”"
@@ -867,13 +876,14 @@ msgstr "Sto risolvendo una equazione"
 msgid "Negative adjusted tape reading"
 msgstr "Distanza corretta negativa"
 
-#: ../src/commands.c:3007
-#: ../src/commands.c:3028
+#: ../src/commands.c:3043
+#: ../src/commands.c:3064
 #: n:80
 msgid "Date is in the future!"
 msgstr "La data é nel futuro!"
 
-#: ../src/commands.c:3036
+#: ../src/commands.c:2360
+#: ../src/commands.c:3072
 #: n:81
 msgid "End of date range is before the start"
 msgstr "La data finale é anteriore a quella finale"
@@ -902,16 +912,16 @@ msgstr "Le letture CLINO e BACKCLINO devono essere dello stesso tipo"
 msgid "Plumbed CLINO and BACKCLINO readings can't be in the same direction"
 msgstr ""
 
-#: ../src/commands.c:2937
 #: ../src/commands.c:2973
+#: ../src/commands.c:3009
 #: ../src/readval.c:988
 #: n:86
 msgid "Invalid month"
 msgstr "Mese non valido"
 
 #. TRANSLATORS: e.g. 31st of April, or 32nd of any month
-#: ../src/commands.c:2949
-#: ../src/commands.c:2986
+#: ../src/commands.c:2985
+#: ../src/commands.c:3022
 #: ../src/readval.c:995
 #: n:87
 msgid "Invalid day of the month"
@@ -1121,19 +1131,19 @@ msgstr "Sto calcolando le statistiche"
 msgid "Expecting string field"
 msgstr "Questo é un campo di tipo stringa"
 
-#: ../src/cmdline.c:218
+#: ../src/cmdline.c:211
 #: n:122
 msgid "too few arguments"
 msgstr "Numero di parametri insufficiente"
 
-#: ../src/cmdline.c:225
+#: ../src/cmdline.c:218
 #: n:123
 msgid "too many arguments"
 msgstr "Troppi parametri"
 
+#: ../src/cmdline.c:177
+#: ../src/cmdline.c:180
 #: ../src/cmdline.c:184
-#: ../src/cmdline.c:187
-#: ../src/cmdline.c:191
 #: n:124
 msgid "FILE"
 msgstr "FILE"
@@ -1294,19 +1304,19 @@ msgid "Error    N/A"
 msgstr "Errore    N/A"
 
 #. TRANSLATORS: description of --help option
-#: ../src/cmdline.c:144
+#: ../src/cmdline.c:137
 #: n:150
 msgid "display this help and exit"
 msgstr "mostra questo aiuto ed esce"
 
 #. TRANSLATORS: description of --version option
-#: ../src/cmdline.c:147
+#: ../src/cmdline.c:140
 #: n:151
 msgid "output version information and exit"
 msgstr "Mostra informazioni sulla versione ed esce"
 
 #. TRANSLATORS: in command line usage messages e.g. Usage: cavern [OPTION]…
-#: ../src/cmdline.c:176
+#: ../src/cmdline.c:169
 #: n:153
 msgid "OPTION"
 msgstr "OPZIONI"
@@ -1325,7 +1335,7 @@ msgstr "Scala"
 msgid "scale (50, 0.02, 1:50 and 2:100 all mean 1:50)"
 msgstr ""
 
-#: ../src/cmdline.c:200
+#: ../src/cmdline.c:193
 #: n:157
 #, c-format
 msgid "Try “%s --help” for more information.\n"
@@ -1500,26 +1510,26 @@ msgstr "&Salva Log"
 msgid "&Reprocess"
 msgstr "&Riprocessa"
 
-#: ../src/cmdline.c:248
-#: ../src/cmdline.c:267
+#: ../src/cmdline.c:241
+#: ../src/cmdline.c:260
 #: n:185
 #, c-format
 msgid "numeric argument “%s” out of range"
 msgstr "argomento numerico “%s” al di fuori dell’intervallo consentito"
 
-#: ../src/cmdline.c:250
+#: ../src/cmdline.c:243
 #: n:186
 #, c-format
 msgid "argument “%s” not an integer"
 msgstr "L’argomento “%s” non é un intero"
 
-#: ../src/cmdline.c:269
+#: ../src/cmdline.c:262
 #: n:187
 #, c-format
 msgid "argument “%s” not a number"
 msgstr "L’argomento “%s” non é un numero"
 
-#: ../src/commands.c:2922
+#: ../src/commands.c:2958
 #: ../src/datain.c:631
 #: ../src/datain.c:639
 #: ../src/datain.c:1704
@@ -1530,7 +1540,7 @@ msgstr "L’argomento “%s” non é un numero"
 msgid "Expecting “%s”"
 msgstr "Atteso “%s”"
 
-#: ../src/commands.c:2854
+#: ../src/commands.c:2890
 #: ../src/datain.c:930
 #: ../src/datain.c:1614
 #: ../src/datain.c:1972
@@ -1630,12 +1640,12 @@ msgstr "Profondità display: %d bpp"
 msgid " (colour)"
 msgstr " (colore)"
 
-#: ../src/commands.c:2823
-#: ../src/commands.c:2885
-#: ../src/commands.c:2928
-#: ../src/commands.c:2944
-#: ../src/commands.c:2969
+#: ../src/commands.c:2859
+#: ../src/commands.c:2921
+#: ../src/commands.c:2964
 #: ../src/commands.c:2980
+#: ../src/commands.c:3005
+#: ../src/commands.c:3016
 #: ../src/readval.c:937
 #: ../src/readval.c:945
 #: ../src/readval.c:951
@@ -2565,49 +2575,49 @@ msgstr "&Cancella la linea di misura\tEscape"
 msgid "&Indicators"
 msgstr "I&ndicatori"
 
-#: ../src/z_getopt.c:712
+#: ../src/z_getopt.c:716
 #: n:300
 #, c-format
 msgid "%s: option “%s” is ambiguous\n"
 msgstr "%s: l’opzione “%s” è ambigua\n"
 
-#: ../src/z_getopt.c:762
+#: ../src/z_getopt.c:766
 #: n:302
 #, c-format
 msgid "%s: option “%c%s” doesn’t allow an argument\n"
 msgstr "%s: l’opzione “%c%s” non permette un argomento\n"
 
-#: ../src/z_getopt.c:749
+#: ../src/z_getopt.c:753
 #: n:303
 #, c-format
 msgid "%s: option “--%s” doesn’t allow an argument\n"
 msgstr "%s: l’opzione “--%s” non permette un argomento\n"
 
-#: ../src/z_getopt.c:810
+#: ../src/z_getopt.c:814
 #: n:305
 #, c-format
 msgid "%s: option “%s” requires an argument\n"
 msgstr "%s: l’opzione “%s” richiede un argomento\n"
 
-#: ../src/z_getopt.c:1182
+#: ../src/z_getopt.c:1186
 #: n:306
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
 msgstr "%s: l’opzione richiede un argomento -- %c\n"
 
-#: ../src/z_getopt.c:851
+#: ../src/z_getopt.c:855
 #: n:307
 #, c-format
 msgid "%s: unrecognized option “--%s”\n"
 msgstr "%s: opzione non riconosciuta “--%s”\n"
 
-#: ../src/z_getopt.c:862
+#: ../src/z_getopt.c:866
 #: n:308
 #, c-format
 msgid "%s: unrecognized option “%c%s”\n"
 msgstr "%s: opzione non riconosciuta “%c%s”\n"
 
-#: ../src/z_getopt.c:923
+#: ../src/z_getopt.c:927
 #: n:310
 #, c-format
 msgid "%s: invalid option -- %c\n"

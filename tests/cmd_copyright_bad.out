@@ -1,0 +1,100 @@
+./cmd_copyright_bad.svx:3:11: warning: Invalid year
+ *copyright
+           ^
+./cmd_copyright_bad.svx:4:12: warning: Invalid year
+ *copyright "
+            ^
+./cmd_copyright_bad.svx:5:12: warning: Invalid year
+ *copyright "X
+            ^
+./cmd_copyright_bad.svx:6:12: warning: Invalid year
+ *copyright "Just terrible
+            ^
+./cmd_copyright_bad.svx:7:12: warning: Invalid year
+ *copyright NoYear
+            ^
+./cmd_copyright_bad.svx:8:12: warning: Invalid year
+ *copyright "No year"
+            ^
+./cmd_copyright_bad.svx:9:12: warning: Invalid year
+ *copyright WrongOrder 2000
+            ^
+./cmd_copyright_bad.svx:10:12: warning: Invalid year
+ *copyright "Wrong Order" 2000
+            ^
+./cmd_copyright_bad.svx:11:20: warning: End of line not blank
+ *copyright 1999 No quotes
+                    ^~~~~~
+./cmd_copyright_bad.svx:12:12: warning: Invalid year
+ *copyright 999 BadYear
+            ^~~
+./cmd_copyright_bad.svx:13:12: warning: Invalid year
+ *copyright 999 "Bad Year"
+            ^~~
+./cmd_copyright_bad.svx:14:34: warning: Missing "
+ *copyright 1999 "No closing quote
+                                  ^
+./cmd_copyright_bad.svx:15:34: warning: Missing "
+ *copyright 1999 "No_closing_quote
+                                  ^
+./cmd_copyright_bad.svx:16:20: warning: End of line not blank
+ *copyright 1999 No opening quote"
+                    ^~~~~~~~~~~~~~
+./cmd_copyright_bad.svx:17:12: warning: Invalid year
+ *copyright WrongOrder 2000-2001
+            ^
+./cmd_copyright_bad.svx:18:12: warning: Invalid year
+ *copyright "Wrong Order" 2000-2001
+            ^
+./cmd_copyright_bad.svx:19:25: warning: End of line not blank
+ *copyright 1999-2000 No quotes
+                         ^~~~~~
+./cmd_copyright_bad.svx:20:12: warning: Invalid year
+ *copyright 999-1000 BadYear
+            ^~~
+./cmd_copyright_bad.svx:21:12: warning: Invalid year
+ *copyright 998-999 "Bad Year"
+            ^~~
+./cmd_copyright_bad.svx:21:16: warning: Invalid year
+ *copyright 998-999 "Bad Year"
+                ^~~
+./cmd_copyright_bad.svx:22:39: warning: Missing "
+ *copyright 1999-2020 "No closing quote
+                                       ^
+./cmd_copyright_bad.svx:23:39: warning: Missing "
+ *copyright 1999-2012 "No_closing_quote
+                                       ^
+./cmd_copyright_bad.svx:24:25: warning: End of line not blank
+ *copyright 1999-2001 No opening quote"
+                         ^~~~~~~~~~~~~~
+./cmd_copyright_bad.svx:25:17: warning: End of date range is before the start
+ *copyright 2000-1999 "Doctor Who"
+                 ^~~~
+./cmd_copyright_bad.svx:26:17: warning: End of date range is before the start
+ *copyright 2000-1999 DrWho
+                 ^~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
+North-South range = 1.00m (from survey.2 at 1.00m to survey.1 at 0.00m)
+East-West range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
+
+There were 25 warning(s).

@@ -802,12 +802,16 @@ read_bearing_multi_or_omit(bool f_quadrants, int *p_n_readings)
 
 /* Don't skip blanks, variable error code */
 unsigned int
-read_uint_raw(int errmsg, const filepos *fp)
+read_uint_raw(int diag_type, int errmsg, const filepos *fp)
 {
    unsigned int n = 0;
    if (!isdigit(ch)) {
       if (fp) set_pos(fp);
-      compile_diagnostic_token_show(DIAG_ERR, errmsg);
+      if ((diag_type & DIAG_UINT)) {
+	  compile_diagnostic(diag_type, errmsg);
+      } else {
+	  compile_diagnostic_token_show(diag_type, errmsg);
+      }
       longjmp(jbSkipLine, 1);
    }
    while (isdigit(ch)) {
@@ -821,7 +825,7 @@ extern unsigned int
 read_uint(void)
 {
    skipblanks();
-   return read_uint_raw(/*Expecting numeric field, found “%s”*/9, NULL);
+   return read_uint_raw(DIAG_ERR, /*Expecting numeric field, found “%s”*/9, NULL);
 }
 
 extern int
@@ -934,7 +938,7 @@ read_walls_srv_date(int *py, int *pm, int *pd)
 
     filepos fp_date;
     get_pos(&fp_date);
-    unsigned y = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date);
+    unsigned y = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, &fp_date);
     int separator = -2;
     if (ch == '-' || ch == '/') {
 	separator = ch;
@@ -942,13 +946,13 @@ read_walls_srv_date(int *py, int *pm, int *pd)
     }
     filepos fp_month;
     get_pos(&fp_month);
-    unsigned m = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date);
+    unsigned m = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, &fp_date);
     if (ch == separator) {
 	nextch();
     }
     filepos fp_day;
     get_pos(&fp_day);
-    unsigned d = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date);
+    unsigned d = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, &fp_date);
 
     filepos fp_year;
     if (y < 100) {

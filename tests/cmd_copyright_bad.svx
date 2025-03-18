@@ -1,0 +1,29 @@
+; pos=no warn=25
+*begin survey
+*copyright
+*copyright "
+*copyright "X
+*copyright "Just terrible
+*copyright NoYear
+*copyright "No year"
+*copyright WrongOrder 2000
+*copyright "Wrong Order" 2000
+*copyright 1999 No quotes
+*copyright 999 BadYear
+*copyright 999 "Bad Year"
+*copyright 1999 "No closing quote
+*copyright 1999 "No_closing_quote
+*copyright 1999 No opening quote"
+*copyright WrongOrder 2000-2001
+*copyright "Wrong Order" 2000-2001
+*copyright 1999-2000 No quotes
+*copyright 999-1000 BadYear
+*copyright 998-999 "Bad Year"
+*copyright 1999-2020 "No closing quote
+*copyright 1999-2012 "No_closing_quote
+*copyright 1999-2001 No opening quote"
+*copyright 2000-1999 "Doctor Who"
+*copyright 2000-1999 DrWho
+*fix 1 0 0 0
+1 2 1 0 0
+*end survey

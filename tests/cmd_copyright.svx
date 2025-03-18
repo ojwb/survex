@@ -1,0 +1,8 @@
+; pos=no warn=0
+*begin survey
+*copyright 1999 Wookey
+*copyright 1066 "William the Conqueror"
+*copyright 2000-2001 "Space Oddity Speleos"
+*fix 1 0 0 0
+1 2 1 0 0
+*end survey

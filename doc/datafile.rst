@@ -437,7 +437,8 @@ COPYRIGHT
 ---------
 
 Syntax
-   ``*copyright <date> <text>``
+   ``*copyright <year> <text>``
+   ``*copyright <year1>-<year2> <text>``
 
 Example
    ::
@@ -448,12 +449,35 @@ Example
        2 3  1.56 092 +10
        *end littlebit
 
+   ::
+
+       *copyright 1976-2024 "CUCC Expo"
+
 Validity
    valid at the start of a ``*begin``/``*end`` block.
 
 Description
    ``*copyright`` allows the copyright information to be recorded in a way that
    can be automatically collated.
+
+   The date can be specified as a single year or a range of years.  Two digit
+   years are not allowed and the end of the range can not be before the start.
+
+   The text is expected to identify the copyright holder - typically it will be
+   the name of a person or group.  Unless it is a single word you should put
+   double quotes around it.
+
+   Prior to Survex 1.4.17 there weren't any checks of the syntax.  Essentially
+   ``*copyright`` used to be treated like a named comment line.
+
+   With Survex 1.4.17 and later you'll get a warning for an empty
+   ``*copyright``, for an invalid date, or if you open but fail to close double
+   quotes around the text.
+
+   These diagnostic messages were made warnings to avoid breaking processing
+   of existing datasets which might contain ``*copyright`` lines which don't
+   conform with the defined syntax (especially as the format of the date and
+   text fields were not documented prior to 1.4.17).
 
 See Also
    ``*begin``
@@ -1681,9 +1705,9 @@ Description
 
    The syntax of ``*team`` commands has been defined for a very long time, but
    prior to Survex 1.4.17 there weren't any checks of the syntax.  Essentially
-   ``*team`` used to be treated like a named comment.
+   ``*team`` used to be treated like a named comment line.
 
-   With Survey 1.4.17 and later you'll get a warning for an empty ``*team`` or
+   With Survex 1.4.17 and later you'll get a warning for an empty ``*team`` or
    if you open but fail to close double quotes around the person's name.
 
    Roles are now checked against an allowed list (which is the same list that

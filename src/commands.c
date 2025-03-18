@@ -2337,6 +2337,42 @@ cmd_case(void)
    }
 }
 
+static void
+cmd_copyright(void)
+{
+    skipblanks();
+    filepos fp;
+    get_pos(&fp);
+    unsigned y1 = read_uint_raw(DIAG_WARN|DIAG_UINT, /*Invalid year*/534, NULL);
+    if (y1 < 1000) {
+	set_pos(&fp);
+	compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year*/534, y1);
+    }
+    if (ch == '-') {
+	nextch();
+	get_pos(&fp);
+	unsigned y2 = read_uint_raw(DIAG_WARN|DIAG_UINT, /*Invalid year*/534, NULL);
+	if (y2 < 1000) {
+	    set_pos(&fp);
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*Invalid year*/534, y2);
+	} else if (y2 < y1) {
+	    set_pos(&fp);
+	    compile_diagnostic(DIAG_WARN|DIAG_UINT, /*End of date range is before the start*/81);
+	}
+    }
+
+    string text = S_INIT;
+    if (!read_string_warning(&text)) {
+	skipline();
+	return;
+    }
+    s_free(&text);
+
+    skipblanks();
+    if (!isComm(ch) && !isEol(ch))
+	compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);
+}
+
 typedef enum {
     CS_NONE = -1,
     CS_CUSTOM,
@@ -2820,7 +2856,7 @@ copy_on_write_meta(settings *s)
 static int
 read_year(filepos *fp_date_ptr)
 {
-    int y = read_uint_raw(/*Expecting date, found “%s”*/198, fp_date_ptr);
+    int y = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, fp_date_ptr);
     if (y < 100) {
 	/* Two digit year is 19xx. */
 	y += 1900;
@@ -2882,7 +2918,7 @@ cmd_date(void)
 	// command without `surveyed` or `explored` qualifiers.
 	nextch();
 	get_pos(&fp_date2);
-	int v = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date1);
+	int v = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, &fp_date1);
 	if (date_sep == '-') {
 	    // We're only accepting ISO dates.
 	} else if (ch == '-') {
@@ -2925,7 +2961,7 @@ cmd_date(void)
 	date_sep = ch;
 	nextch();
 	get_pos(&fp);
-	month = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date1);
+	month = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, &fp_date1);
     } else {
 	// Just a year - might be a ISO date range though.
 	date_sep = '-';
@@ -2941,7 +2977,7 @@ cmd_date(void)
     if (ch == date_sep) {
 	nextch();
 	get_pos(&fp);
-	day = read_uint_raw(/*Expecting date, found “%s”*/198, &fp_date1);
+	day = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198, &fp_date1);
 	if (day < 1 || day > last_day(year, month)) {
 	    set_pos(&fp);
 	    /* TRANSLATORS: e.g. 31st of April, or 32nd of any month */
@@ -2966,7 +3002,7 @@ try_date2:
 	if (ch == date_sep) {
 	    nextch();
 	    get_pos(&fp);
-	    month2 = read_uint_raw(/*Expecting date, found “%s”*/198,
+	    month2 = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198,
 				   &fp_date2);
 	    if (month2 < 1 || month2 > 12) {
 		set_pos(&fp);
@@ -2977,7 +3013,7 @@ try_date2:
 	    if (ch == date_sep) {
 		nextch();
 		get_pos(&fp);
-		day2 = read_uint_raw(/*Expecting date, found “%s”*/198,
+		day2 = read_uint_raw(DIAG_ERR, /*Expecting date, found “%s”*/198,
 				     &fp_date2);
 		if (day2 < 1 || day2 > last_day(year2, month2)) {
 		    set_pos(&fp);
@@ -3064,7 +3100,7 @@ static const cmd_fn cmd_funcs[] = {
    cmd_calibrate,
    cmd_cartesian,
    cmd_case,
-   skipline, /*cmd_copyright,*/
+   cmd_copyright,
    cmd_cs,
    cmd_data,
    cmd_date,
