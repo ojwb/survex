@@ -1,0 +1,43 @@
+./cmd_ref_bad.svx:3:5: error: Expecting string field
+ *ref
+     ^
+./cmd_ref_bad.svx:4:7: error: Missing "
+ *ref "
+       ^
+./cmd_ref_bad.svx:5:9: error: End of line not blank
+ *ref No quotes
+         ^~~~~~
+./cmd_ref_bad.svx:6:23: error: Missing "
+ *ref "No closing quote
+                       ^
+./cmd_ref_bad.svx:7:23: error: Missing "
+ *ref "No_closing_quote
+                       ^
+./cmd_ref_bad.svx:8:9: error: End of line not blank
+ *ref No opening quote"
+         ^~~~~~~~~~~~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from othermic.2 at 0.00m to othermic.2 at 0.00m)
+North-South range = 1.00m (from othermic.2 at 1.00m to othermic.1 at 0.00m)
+East-West range = 0.00m (from othermic.2 at 0.00m to othermic.2 at 0.00m)
+
+There were 0 warning(s) and 6 error(s) - no output files produced.

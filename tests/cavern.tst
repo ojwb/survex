@@ -58,8 +58,9 @@ esac
  bug3 calibrate_tape nosurvey2 cartesian cartesian2\
  lengthunits angleunits cmd_alias cmd_alias_bad cmd_case cmd_case_bad\
  cmd_copyright cmd_copyright_bad cmd_fix cmd_fix2 cmd_fix_bad cmd_fix_bad2\
- cmd_solve cmd_entrance cmd_entrance_bad cmd_sd cmd_sd_bad cmd_set\
- cmd_set_bad cmd_set_dot_in_name cmd_truncate cmd_truncate_bad\
+ cmd_solve cmd_entrance cmd_entrance_bad cmd_ref cmd_ref_bad\
+ cmd_sd cmd_sd_bad cmd_set cmd_set_bad cmd_set_dot_in_name\
+ cmd_truncate cmd_truncate_bad\
  beginroot revcomplist break_replace_pfx bug0 bug1 bug2 bug4 bug5\
  equate_bug\
  expobug require export export2 includecomment\

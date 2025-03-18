@@ -1,0 +1,11 @@
+; pos=fail warn=0 error=6
+*begin othermic
+*ref
+*ref "
+*ref No quotes
+*ref "No closing quote
+*ref "No_closing_quote
+*ref No opening quote"
+*fix 1 0 0 0
+1 2 1 0 0
+*end othermic

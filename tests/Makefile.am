@@ -59,6 +59,8 @@ cmd_cartesian.svx cmd_cartesian.dump cmd_cartesian.out\
 cmd_cartesian_bad.svx cmd_cartesian_bad.out\
 cmd_fix.svx cmd_fix.out cmd_fix.pos\
 cmd_fix2.svx cmd_fix2.out\
+cmd_ref.svx\
+cmd_ref_bad.svx cmd_ref_bad.out\
 cmd_solve.svx cmd_solve.out cmd_solve.pos\
 cmd_entrance.svx\
 stnsurvey1.svx stnsurvey2.svx\
