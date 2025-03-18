@@ -136,7 +136,7 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
 	    dc.SetFont(font);
 	}
 	if (info.colour_len) {
-	    dc.SetTextForeground(*wxBLACK);
+	    dc.SetTextForeground(dark_mode ? *wxWHITE : *wxBLACK);
 	    {
 		size_t s_len = info.start_offset + info.colour_start - offset;
 		wxString s = wxString::FromUTF8(&log_txt[offset], s_len);
@@ -164,7 +164,7 @@ CavernLogWindow::OnPaint(wxPaintEvent&)
 	    x += dc.GetTextExtent(d).GetWidth();
 	    dc.SetFont(font);
 	}
-	dc.SetTextForeground(*wxBLACK);
+	dc.SetTextForeground(dark_mode ? *wxWHITE : *wxBLACK);
 	dc.DrawText(wxString::FromUTF8(&log_txt[offset], len), x, y);
     }
     int x = GetClientSize().x;
@@ -281,6 +281,12 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
       survey(survey_),
       timer(this)
 {
+    if (wxSystemSettings::GetAppearance().IsDark()) {
+	SetOwnBackgroundColour(*wxBLACK);
+	dark_mode = true;
+    } else {
+	SetOwnBackgroundColour(*wxWHITE);
+    }
 }
 
 CavernLogWindow::~CavernLogWindow()
