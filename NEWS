@@ -1,14 +1,30 @@
-up to: 9929d60b4f17209badafa31e400596420c06eb31
+up to: f498802b891b10a19be6eb0643914d1ccc693eaf
 
 Changes in 1.4.17 (2025-03-??):
 
 * aven: Add support for exaggerating Z.  You can now set a Z scale factor
   from 0.1 to 10.0 via a new widget on the toolbar.  Fixes #49.
 
+* aven: The cavern log window now choses foreground and background colours
+  based on the desktop's light mode/dark mode setting.  Previously it
+  used the default window colour but always used black text, which made it
+  hard to read with a dark desktop theme.
+
 * aven: The station search feature now uses the standard search
   widget on GTK 3.6 or later and on macOS.  There's now a placeholder
   text shown when there's no search to make it clearer what this
   widget is for.
+
+* aven: There's currently a cavern bug where it can fail to identify all
+  traverses which are not involved in loop closure, which results in the .3d
+  file contains error information for them (unfortunately this seems tricky to
+  fully fix).  This error information is always zero, so as a workaround aven
+  attempts to detect these so that "colour by error" shows them as "not in
+  loop".  This workaround previously only checked for E being zero, but now
+  H and V are both also required to be zero.  This should help avoid some very
+  low error traverses being incorrectly treated as "not in loop", although in
+  practice I've not yet found a real world case where this actually makes a
+  difference.
 
 * aven: Fix the output encoding of `aven --help`, `--version`, etc.
   Previously these were always encoded as UTF-8 which is usually right
@@ -53,27 +69,27 @@ Changes in 1.4.17 (2025-03-??):
 * Speed up reading and writing of .3d files.  The time to read a large .3d file
   and just count the stations and legs was more than halved by this change.
 
-* Testsuite: Add proper test coverage for `*ref`.
-
 * Simplify handling of errors loading the messages file.  The error
   messages for this case are now stored as separate ASCII strings in
   the executables which reduces the startup overhead a little as we
   no longer need to scan them and potentially reencode them.
-
-* Documentation: Add details of warning about future dates in *date.
-
-* Merge updates to Russian translation from Vasily Vl. Suhachev.
 
 * img library: The img struct's filename_opened member was always NULL when
   used outside of Survex (and set but never actually used inside of Survex)
   so it has been removed.  If you are referencing it in your code then instead
   use the filename you passed to img_open_survey() when opening the file.
 
+* Documentation: Add details of warning about future dates in *date.
+
 * Documentation: Added new manual chapter on the img library.
 
 * Documentation: Improve comments document API in img.h.
 
-* Portability: Eliminate unintended use of C++17 feature (static_assert
+* Testsuite: Add proper test coverage for `*ref`.
+
+* Merge updates to Russian translation from Vasily Vl. Suhachev.
+
+* Portability: Eliminate unintended use of a C++17 feature (static_assert
   with only one argument).
 
 * Portability: Avoid compiler warnings/errors in getopt code by properly
