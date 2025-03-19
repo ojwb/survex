@@ -8,7 +8,9 @@ Changes in 1.4.17 (2025-03-??):
 * aven: The cavern log window now choses foreground and background colours
   based on the desktop's light mode/dark mode setting.  Previously it
   used the default window colour but always used black text, which made it
-  hard to read with a dark desktop theme.
+  hard to read with a dark desktop theme.  (The wxWidgets API to detect
+  dark mode is new in 3.2, so if built with wxWidgets 3.0 then we assume
+  light mode.)
 
 * aven: The station search feature now uses the standard search
   widget on GTK 3.6 or later and on macOS.  There's now a placeholder

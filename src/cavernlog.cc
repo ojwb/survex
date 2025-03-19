@@ -281,12 +281,15 @@ CavernLogWindow::CavernLogWindow(MainFrm * mainfrm_, const wxString & survey_, w
       survey(survey_),
       timer(this)
 {
+#if wxCHECK_VERSION(3,2,0)
     if (wxSystemSettings::GetAppearance().IsDark()) {
 	SetOwnBackgroundColour(*wxBLACK);
 	dark_mode = true;
-    } else {
-	SetOwnBackgroundColour(*wxWHITE);
+	return;
     }
+#endif
+
+    SetOwnBackgroundColour(*wxWHITE);
 }
 
 CavernLogWindow::~CavernLogWindow()
