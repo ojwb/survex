@@ -1045,6 +1045,9 @@ void MainFrm::MakeToolBar()
     z_stretch->SetIncrement(0.1);
     toolbar->AddSeparator();
     toolbar->AddControl(z_stretch);
+    // TRANSLATORS: Tooltip for Z exaggeration control.
+    GetToolBar()->SetToolShortHelp(spinctrl_Z_STRETCH,
+				   wmsg(/*Z exaggeration factor*/535));
 
     toolbar->Realize();
 }

@@ -2752,6 +2752,11 @@ msgstr ""
 msgid "Station name search (substring or wildcard)"
 msgstr ""
 
+#: ../src/mainfrm.cc:1050
+#: n:535
+msgid "Z exaggeration factor"
+msgstr ""
+
 #: ../src/mainfrm.cc:243
 #: ../src/mainfrm.cc:1723
 #: ../src/mainfrm.cc:1799
