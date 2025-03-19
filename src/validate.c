@@ -30,8 +30,15 @@
 #include "netbits.h"
 #include "validate.h"
 
-/* maximum absolute value allowed for a coordinate of a fixed station */
-#define MAX_POS 10000000.0
+/* Maximum absolute value of a coordinate of a fixed station for validate()
+ * to allow, in metres.
+ *
+ * The Northing of the equator in southern hemisphere UTM zones is 10000000m,
+ * which seems to be the largest coordinate in any common CRS.  We add an
+ * extra 100km to allow for extending such a zone North to cover a cave system
+ * which straddles the equator.
+ */
+#define MAX_POS 10100000.0
 
 static bool validate_prefix_tree(void);
 static bool validate_prefix_subtree(prefix *pfx);
