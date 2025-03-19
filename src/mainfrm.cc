@@ -1032,6 +1032,9 @@ void MainFrm::MakeToolBar()
     // TRANSLATORS: Placeholder text in aven's station search control.
     m_FindBox->SetDescriptiveText(wmsg(/*Find stations*/333));
     toolbar->AddControl(m_FindBox);
+    // TRANSLATORS: Tooltip for aven's station search control.
+    GetToolBar()->SetToolShortHelp(textctrl_FIND,
+				   wmsg(/*Station name search (substring or wildcard)*/533));
 
     auto z_stretch = new wxSpinCtrlDouble(toolbar, spinctrl_Z_STRETCH,
 					  wxEmptyString,
@@ -2126,8 +2129,7 @@ PresentationMark MainFrm::GetPresMark(int which)
 void MainFrm::RestrictTo(const wxString & survey)
 {
     // The station names will change, so clear the current search.
-    wxCommandEvent dummy;
-    OnHide(dummy);
+    m_FindBox->SetValue(wxString());
 
     wxString new_prefix;
     if (!survey.empty()) {
@@ -2343,9 +2345,7 @@ void MainFrm::DoFind()
     m_Gfx->UpdateBlobs();
     m_Gfx->ForceRefresh();
 
-    if (!m_NumHighlighted) {
-	GetToolBar()->SetToolShortHelp(textctrl_FIND, wmsg(/*No matches were found.*/328));
-    } else {
+    if (m_NumHighlighted) {
 	pattern = m_FindBox->GetValue();
 	/* TRANSLATORS: Find station tooltip when stations are found.  %d is
 	 * replaced by the number of matching stations and %s%s%s by the
@@ -2356,8 +2356,15 @@ void MainFrm::DoFind()
 								       substring ? "*" : "",
 								       m_FindBox->GetValue(),
 								       substring ? "*" : ""));
+    } else if (pattern.empty()) {
+	// TRANSLATORS: Tooltip for aven's station search control.
+	GetToolBar()->SetToolShortHelp(textctrl_FIND,
+				       wmsg(/*Station name search (substring or wildcard)*/533));
+    } else {
+	GetToolBar()->SetToolShortHelp(textctrl_FIND, wmsg(/*No matches were found.*/328));
     }
-    if (pending_find == PENDING_FIND_AND_GO) {
+
+    if (pending_find == PENDING_FIND_AND_GO && !pattern.empty()) {
 	wxCommandEvent dummy;
 	OnGotoFound(dummy);
     }
@@ -2394,19 +2401,6 @@ void MainFrm::OnGotoFound(wxCommandEvent&)
 
     m_Gfx->SetViewTo(xmin, xmax, ymin, ymax, zmin, zmax);
     m_Gfx->SetFocus();
-}
-
-void MainFrm::OnHide(wxCommandEvent&)
-{
-    m_FindBox->SetValue(wxString());
-    // TRANSLATORS: Status bar help message for aven's station search control.
-    GetToolBar()->SetToolShortHelp(textctrl_FIND,
-				   wmsg(/*Station name search (substring or wildcard)*/533));
-}
-
-void MainFrm::OnHideUpdate(wxUpdateUIEvent& ui)
-{
-    ui.Enable(m_NumHighlighted != 0);
 }
 
 void MainFrm::OnZStretch(wxSpinDoubleEvent& event)

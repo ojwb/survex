@@ -244,8 +244,6 @@ public:
     void OnFind(wxCommandEvent& event);
     void OnIdle(wxIdleEvent& event);
     void OnGotoFound(wxCommandEvent& event);
-    void OnHide(wxCommandEvent& event);
-    void OnHideUpdate(wxUpdateUIEvent& ui);
     void OnZStretch(wxSpinDoubleEvent& event);
 
     void OnOpen(wxCommandEvent& event);
