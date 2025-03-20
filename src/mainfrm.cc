@@ -492,7 +492,7 @@ END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT(textctrl_FIND, MainFrm::OnFind)
-    EVT_TEXT_ENTER(textctrl_FIND, MainFrm::OnGotoFound)
+    EVT_SEARCH(textctrl_FIND, MainFrm::OnGotoFound)
     EVT_SPINCTRLDOUBLE(spinctrl_Z_STRETCH, MainFrm::OnZStretch)
     EVT_IDLE(MainFrm::OnIdle)
 
