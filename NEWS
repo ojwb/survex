@@ -1,14 +1,12 @@
-up to: f498802b891b10a19be6eb0643914d1ccc693eaf
-
-Changes in 1.4.17 (2025-03-??):
+Changes in 1.4.17 (2025-03-20):
 
 * aven: Add support for exaggerating Z.  You can now set a Z scale factor
   from 0.1 to 10.0 via a new widget on the toolbar.  Fixes #49.
 
 * aven: The cavern log window now choses foreground and background colours
   based on the desktop's light mode/dark mode setting.  Previously it
-  used the default window colour but always used black text, which made it
-  hard to read with a dark desktop theme.  (The wxWidgets API to detect
+  used the default window background colour but always used black text, which
+  made it hard to read with a dark desktop theme.  (The wxWidgets API to detect
   dark mode is new in 3.2, so if built with wxWidgets 3.0 then we assume
   light mode.)
 
