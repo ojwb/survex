@@ -20,12 +20,14 @@ suffix on the development one.  You'll need both installed to build Survex,
 but typically installing the development package will automatically install
 the corresponding runtime package too.
 
-* The main dependency is wxWidgets 3.0 or later - if there's a suitable
+* The main dependency is wxWidgets 3.2 or later - if there's a suitable
   wxWidgets package for your platform, then just use that.
 
   Otherwise download the source code from https://wxwidgets.org/ and
   follow their build instructions.  IMPORTANT: You must enable OpenGL
   support by adding --with-opengl to the configure command line.
+
+  The last release to support wxWidgets 3.0 was Survex 1.4.17.
 
 * You'll also need a working C and C++ compiler (with support for C99 and
   C++11), and also the OpenGL development libraries if these aren't pulled in

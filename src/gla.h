@@ -156,15 +156,7 @@ class GLACanvas : public wxGLCanvas {
     int x_size = 0;
     int y_size = 0;
 
-    // wxHAS_DPI_INDEPENDENT_PIXELS is new in 3.1.6.  In older versions we just
-    // always do the scaling which is slightly less efficient for platforms
-    // where pixel coordinates don't scale with DPI.
-#if defined wxHAS_DPI_INDEPENDENT_PIXELS || \
-    !wxCHECK_VERSION(3,1,6)
-# define HAS_DPI_INDEPENDENT_PIXELS
-#endif
-
-#ifdef HAS_DPI_INDEPENDENT_PIXELS
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
     double content_scale_factor = 1.0;
 #else
     static constexpr unsigned content_scale_factor = 1;
@@ -333,7 +325,7 @@ public:
 	return y_size;
     }
 
-#ifdef HAS_DPI_INDEPENDENT_PIXELS
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
     double GetContentScaleFactor() const {
 	list_flags |= INVALIDATE_ON_HIDPI;
 	return content_scale_factor;

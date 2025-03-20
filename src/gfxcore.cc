@@ -4289,10 +4289,8 @@ static wxCursor
 make_cursor(const unsigned char * bits, const unsigned char * mask,
 	    int hotx, int hoty)
 {
-#if defined __WXGTK__ && !defined __WXGTK3__
-    // Use this code for GTK < 3 only - it doesn't work properly with GTK3
-    // (reported and should be fixed in wxWidgets 3.0.4 and 3.1.1, see:
-    // https://trac.wxwidgets.org/ticket/17916)
+#ifdef __WXGTK__
+    // wxGTK can construct directly from XBM data.
     return wxCursor((const char *)bits, 32, 32, hotx, hoty,
 		    (const char *)mask, wxBLACK, wxWHITE);
 #else

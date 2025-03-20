@@ -82,39 +82,6 @@ jobs:
         retention-days: 1
         if-no-files-found: error
 
-  wxwidgets3-0:
-    runs-on: 'ubuntu-22.04'
-    needs: makedist
-    steps:
-    - name: Install CCache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: ${{ github.job }}
-    - name: Fetch distribution
-      uses: actions/download-artifact@v4
-    - name: Unpack distribution
-      run: |
-        mv artifact/* .
-        rmdir artifact
-        tar --strip-components=1 -xf survex-*.tar.gz
-    - name: Install package dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install \
-            libwxgtk3.0-gtk3-dev \
-            libavcodec-dev \
-            libavformat-dev \
-            libgdal-dev \
-            libproj-dev \
-            libswscale-dev
-    - name: configure
-      run: ./configure CC='ccache gcc' CXX='ccache g++'
-    - name: make
-      run: make -j2
-    - name: Run tests
-      run: |
-        make check MSGFMT=: VERBOSE=1
-
   valgrind:
     runs-on: 'ubuntu-22.04'
     needs: makedist
@@ -134,7 +101,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install \
-            libwxgtk3.0-gtk3-dev \
+            libwxgtk3.2-dev \
             libavcodec-dev \
             libavformat-dev \
             libgdal-dev \

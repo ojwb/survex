@@ -44,7 +44,7 @@ layout::layout(wxPageSetupDialogData* data)
 	//
 	// It may seem like data->GetPaperSize() would tell us this page size
 	// without having to construct a temporary DC, but that just returns
-	// (0, 0) for the size, at least with wxGTK 3.0.2.
+	// (0, 0) for the size (most recent version checked was wxGTK 3.2.6).
 #if defined __WXMSW__ || defined __WXMAC__
 	wxPrinterDC pdc(data->GetPrintData());
 #else

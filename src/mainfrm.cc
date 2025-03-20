@@ -493,6 +493,7 @@ END_EVENT_TABLE()
 BEGIN_EVENT_TABLE(MainFrm, wxFrame)
     EVT_TEXT(textctrl_FIND, MainFrm::OnFind)
     EVT_SEARCH(textctrl_FIND, MainFrm::OnGotoFound)
+
     EVT_SPINCTRLDOUBLE(spinctrl_Z_STRETCH, MainFrm::OnZStretch)
     EVT_IDLE(MainFrm::OnIdle)
 
@@ -705,7 +706,7 @@ MainFrm::MainFrm(const wxString& title, const wxPoint& pos, const wxSize& size) 
     SetIcon(wxICON(aven));
 #endif
 
-#if defined(__WXMAC__) && wxCHECK_VERSION(3,1,0)
+#ifdef __WXMAC__
     // Add a full screen button to the right upper corner of title bar under OS
     // X 10.7 and later.
     using_macos_full_screen_view = EnableFullScreenView();

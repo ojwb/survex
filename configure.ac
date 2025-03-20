@@ -157,10 +157,11 @@ else
     wxdef=__WXGTK__
   fi
   dnl See if wx-config exists and is for the correct version.
-  dnl Fedora install wx3's wx-config as wx-config-3.0, so look for that in
-  dnl preference.
+  dnl Fedora seem to install as wx-config-3.2 with a symlink from wx-config, so
+  dnl look for the versioned name in preference.
+  dnl
   dnl Arch Linux uses wx-config-gtk3.
-  AC_PATH_PROGS(WX_CONFIG, [wx-config-3.0 wx-config-gtk3 wx-config])
+  AC_PATH_PROGS(WX_CONFIG, [wx-config-3.2 wx-config-gtk3 wx-config])
   if test -n "$WX_CONFIG" ; then
     if (exec >&5 2>&5;$WX_CONFIG --cflags "$wx_libs"|grep -e -D"$wxdef";exit $?) then
       :
