@@ -56,6 +56,10 @@ typedef GLdouble glaCoord;
 
 typedef GLfloat glaTexCoord;
 
+enum stereo_mode_type {
+    STEREO_MONO = 0, STEREO_ANAGLYPH, STEREO_2UP, STEREO_BUFFERS
+};
+
 // Colours for drawing.  Don't reorder these!
 enum gla_colour {
     col_BLACK = 0,
@@ -178,11 +182,18 @@ class GLACanvas : public wxGLCanvas {
 
     bool CheckVisualFidelity(const unsigned char * target) const;
 
+protected:
+    int m_Eye;
+
+    const stereo_mode_type& stereo_mode;
+
 public:
     GLACanvas(wxWindow* parent, int id);
     ~GLACanvas();
 
     static bool check_visual();
+
+    static void SetStereoMode(stereo_mode_type mode);
 
     void FirstShow();
 
@@ -317,7 +328,7 @@ public:
 
     int GetXSize() const {
 	list_flags |= INVALIDATE_ON_X_RESIZE;
-	return x_size;
+	return (stereo_mode == STEREO_2UP ? x_size / 2 : x_size);
     }
 
     int GetYSize() const {

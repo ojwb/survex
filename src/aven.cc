@@ -51,10 +51,15 @@
 #include <windows.h>
 #endif
 
+enum {
+    OPT_STEREO = 0x100
+};
+
 static const struct option long_opts[] = {
     /* const char *name; int has_arg (0 no_argument, 1 required_*, 2 optional_*); int *flag; int val; */
     {"survey", required_argument, 0, 's'},
     {"print", no_argument, 0, 'p'},
+    {"stereo", required_argument, 0, OPT_STEREO},
     {"help", no_argument, 0, HLP_HELP},
     {"version", no_argument, 0, HLP_VERSION},
     {0, 0, 0, 0}
@@ -267,18 +272,32 @@ bool Aven::OnInit()
 	    opt = cmdline_getopt();
 	}
 	if (opt == EOF) break;
-	if (opt == 's') {
-	    if (opt_survey != NULL) {
-		// FIXME: Not a helpful error, but this is temporary until
-		// we actually hook up support for specifying multiple
-		// --survey options properly here.
-		cmdline_syntax();
-		exit(1);
-	    }
-	    opt_survey = optarg;
-	}
-	if (opt == 'p') {
-	    print_and_exit = true;
+	switch (opt) {
+	    case 's':
+		if (opt_survey != NULL) {
+		    // FIXME: Not a helpful error, but this is temporary until
+		    // we actually hook up support for specifying multiple
+		    // --survey options properly here.
+		    cmdline_syntax();
+		    exit(1);
+		}
+		opt_survey = optarg;
+		break;
+	    case 'p':
+		print_and_exit = true;
+		break;
+	    case OPT_STEREO:
+		if (strcmp(optarg, "anaglyph") == 0) {
+		    GLACanvas::SetStereoMode(STEREO_ANAGLYPH);
+		} else if (strcmp(optarg, "buffers") == 0) {
+		    GLACanvas::SetStereoMode(STEREO_BUFFERS);
+		} else if (strcmp(optarg, "2up") == 0) {
+		    GLACanvas::SetStereoMode(STEREO_2UP);
+		} else {
+		    cmdline_syntax(); // FIXME : not a helpful error...
+		    exit(1);
+		}
+		break;
 	}
     }
 

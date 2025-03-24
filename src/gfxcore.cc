@@ -144,6 +144,9 @@ GfxCore::GfxCore(MainFrm* parent, wxWindow* parent_win, GUIControl* control) :
 			      BLUES[pen] / 255.0);
     }
 
+    if (stereo_mode == STEREO_ANAGLYPH) {
+	SetColourBy(COLOUR_BY_NONE);
+    }
     timer.Start();
 }
 
@@ -334,17 +337,31 @@ void GfxCore::OnPaint(wxPaintEvent&)
     // Get a graphics context.
     wxPaintDC dc(this);
 
-    if (m_HaveData) {
-	// Make sure we're initialised.
-	bool first_time = !m_DoneFirstShow;
-	if (first_time) {
+    if (!m_HaveData) {
+#ifdef __WXMAC__
+	if (!m_DoneFirstShow) {
 	    FirstShow();
 	}
-
 	StartDrawing();
+	ClearNative();
+	FinishDrawing();
+#else
+	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
+	dc.Clear();
+#endif
+	return;
+    }
 
-	// Clear the background.
-	Clear();
+    // Make sure we're initialised.
+    bool first_time = !m_DoneFirstShow;
+    if (first_time) {
+	FirstShow();
+    }
+
+    int n_Eyes = (stereo_mode == STEREO_MONO ? 1 : 2);
+    // 0 for left eye, 1 for right.
+    for (m_Eye = 0; m_Eye < n_Eyes; m_Eye++) {
+	StartDrawing();
 
 	// Set up model transformation matrix.
 	SetDataTransform();
@@ -514,18 +531,6 @@ void GfxCore::OnPaint(wxPaintEvent&)
 	}
 
 	FinishDrawing();
-    } else {
-#ifdef __WXMAC__
-	if (!m_DoneFirstShow) {
-	    FirstShow();
-	}
-	StartDrawing();
-	ClearNative();
-	FinishDrawing();
-#else
-	dc.SetBackground(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWFRAME));
-	dc.Clear();
-#endif
     }
 }
 
@@ -1555,7 +1560,7 @@ void GfxCore::DefaultParameters()
     m_Grid = false;
     m_BoundingBox = false;
     m_Tubes = false;
-    if (GetPerspective()) TogglePerspective();
+    if (!GetPerspective()) TogglePerspective();
 
     // Set the initial scale.
     SetScale(initial_scale);
