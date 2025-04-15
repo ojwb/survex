@@ -166,6 +166,7 @@ en    International English
 en_US US English
 bg    Bulgarian
 ca    Catalan
+cs    Czech
 de    German
 de_CH Swiss German
 el    Greek

@@ -982,6 +982,9 @@ macos_got_msg:
 	     case LANG_CHINESE:
 	       msg_lang = "zh_CN";
 	       break;
+	     case LANG_CZECH:
+	       msg_lang = "cs";
+	       break;
 	     case LANG_ENGLISH:
 	       if (SUBLANGID(langid) == SUBLANG_ENGLISH_US)
 		  msg_lang = "en_US";

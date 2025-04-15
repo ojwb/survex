@@ -16,7 +16,7 @@ check-local: survex.pot
 
 SUBDIRS = icons images
 
-po_files = bg.po ca.po de.po de_CH.po el.po en_US.po es.po fr.po\
+po_files = bg.po ca.po cs.po de.po de_CH.po el.po en_US.po es.po fr.po\
  hu.po id.po it.po pl.po pt.po pt_BR.po ro.po ru.po sk.po zh_CN.po
 
 msg_files = $(po_files:.po=.msg) en.msg
