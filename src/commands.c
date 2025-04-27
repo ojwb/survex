@@ -949,64 +949,6 @@ report_declination(settings *p)
 }
 
 void
-set_declination_location(real x, real y, real z, const char *proj_str)
-{
-    /* Convert to WGS84 lat long. */
-    PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
-					   proj_str,
-					   WGS84_DATUM_STRING,
-					   NULL);
-    if (transform) {
-	/* Normalise the output order so x is longitude and y latitude - by
-	 * default new PROJ has them switched for EPSG:4326 which just seems
-	 * confusing.
-	 */
-	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
-						       transform);
-	proj_destroy(transform);
-	transform = pj_norm;
-    }
-
-    if (proj_angular_input(transform, PJ_FWD)) {
-	/* Input coordinate system expects radians. */
-	x = rad(x);
-	y = rad(y);
-    }
-
-    PJ_COORD coord = {{x, y, z, HUGE_VAL}};
-    coord = proj_trans(transform, PJ_FWD, coord);
-    x = coord.xyzt.x;
-    y = coord.xyzt.y;
-    z = coord.xyzt.z;
-
-    if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
-       compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
-			  proj_context_errno_string(PJ_DEFAULT_CTX,
-						    proj_errno(transform)));
-       /* Set dummy values which are finite. */
-       x = y = z = 0;
-    }
-    proj_destroy(transform);
-
-    report_declination(pcs);
-
-    double lon = rad(x);
-    double lat = rad(y);
-    pcs->z[Q_DECLINATION] = HUGE_REAL;
-    pcs->dec_lat = lat;
-    pcs->dec_lon = lon;
-    pcs->dec_alt = z;
-    pcs->dec_filename = file.filename;
-    pcs->dec_line = file.line;
-    pcs->dec_context = grab_line();
-    /* Invalidate cached declination. */
-    pcs->declination = HUGE_REAL;
-    /* Invalidate cached grid convergence values. */
-    pcs->convergence = HUGE_REAL;
-    pcs->input_convergence = HUGE_REAL;
-}
-
-void
 pop_settings(void)
 {
     settings * p = pcs;
@@ -1159,6 +1101,9 @@ cmd_fix(void)
       if (!s_empty(&uctoken)) set_pos(&fp);
    }
 
+   skipblanks();
+   get_pos(&fp);
+
    // If `REFERENCE` is specified the coordinates can't be omitted.
    coord.v[0] = read_numeric(!reference);
    if (coord.v[0] == HUGE_REAL) {
@@ -1233,7 +1178,8 @@ cmd_fix(void)
 	 if (coord.v[0] == HUGE_VAL ||
 	     coord.v[1] == HUGE_VAL ||
 	     coord.v[2] == HUGE_VAL) {
-	    compile_diagnostic(DIAG_ERR, /*Failed to convert coordinates: %s*/436,
+	    compile_diagnostic(DIAG_ERR|DIAG_FROM(fp),
+			       /*Failed to convert coordinates: %s*/436,
 			       proj_context_errno_string(PJ_DEFAULT_CTX,
 							 proj_errno(transform)));
 	    /* Set dummy values which are finite. */
@@ -2093,10 +2039,12 @@ cmd_declination(void)
 	}
 
 	/* *declination auto X Y Z */
+	filepos fp;
+	get_pos(&fp);
 	real x = read_numeric(false);
 	real y = read_numeric(false);
 	real z = read_numeric(false);
-	set_declination_location(x, y, z, pcs->proj_str);
+	set_declination_location(x, y, z, pcs->proj_str, &fp);
     } else {
 	/* *declination D UNITS */
 	int units = get_units(BIT(Q_DECLINATION), false);

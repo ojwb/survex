@@ -53,6 +53,9 @@ typedef struct {
 void get_pos(filepos *fp);
 void set_pos(const filepos *fp);
 
+void set_declination_location(real x, real y, real z, const char *proj_str,
+			      filepos *fp);
+
 void skipblanks(void);
 
 /* reads complete data file */

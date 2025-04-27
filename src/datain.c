@@ -143,6 +143,67 @@ set_pos(const filepos *fp)
       fatalerror_in_file(file.filename, 0, /*Error reading file*/18);
 }
 
+void
+set_declination_location(real x, real y, real z, const char *proj_str,
+			 filepos *fp)
+{
+    /* Convert to WGS84 lat long. */
+    PJ *transform = proj_create_crs_to_crs(PJ_DEFAULT_CTX,
+					   proj_str,
+					   WGS84_DATUM_STRING,
+					   NULL);
+    if (transform) {
+	/* Normalise the output order so x is longitude and y latitude - by
+	 * default new PROJ has them switched for EPSG:4326 which just seems
+	 * confusing.
+	 */
+	PJ* pj_norm = proj_normalize_for_visualization(PJ_DEFAULT_CTX,
+						       transform);
+	proj_destroy(transform);
+	transform = pj_norm;
+    }
+
+    if (proj_angular_input(transform, PJ_FWD)) {
+	/* Input coordinate system expects radians. */
+	x = rad(x);
+	y = rad(y);
+    }
+
+    PJ_COORD coord = {{x, y, z, HUGE_VAL}};
+    coord = proj_trans(transform, PJ_FWD, coord);
+    x = coord.xyzt.x;
+    y = coord.xyzt.y;
+    z = coord.xyzt.z;
+
+    if (x == HUGE_VAL || y == HUGE_VAL || z == HUGE_VAL) {
+       int diag_flags = DIAG_ERR;
+       if (fp) diag_flags |= DIAG_FROM(*fp);
+       compile_diagnostic(diag_flags, /*Failed to convert coordinates: %s*/436,
+			  proj_context_errno_string(PJ_DEFAULT_CTX,
+						    proj_errno(transform)));
+       /* Set dummy values which are finite. */
+       x = y = z = 0;
+    }
+    proj_destroy(transform);
+
+    report_declination(pcs);
+
+    double lon = rad(x);
+    double lat = rad(y);
+    pcs->z[Q_DECLINATION] = HUGE_REAL;
+    pcs->dec_lat = lat;
+    pcs->dec_lon = lon;
+    pcs->dec_alt = z;
+    pcs->dec_filename = file.filename;
+    pcs->dec_line = file.line;
+    pcs->dec_context = grab_line();
+    /* Invalidate cached declination. */
+    pcs->declination = HUGE_REAL;
+    /* Invalidate cached grid convergence values. */
+    pcs->convergence = HUGE_REAL;
+    pcs->input_convergence = HUGE_REAL;
+}
+
 static void
 report_parent(parse * p) {
     if (p->parent)
@@ -884,7 +945,7 @@ data_file_compass_mak(void)
 			  file.lpos = base_lpos;
 			  file.prev_line_len = 0; // Not used for Compass MAK.
 			  set_declination_location(base_x, base_y, base_z,
-						   proj_str);
+						   proj_str, NULL);
 			  file.line = saved_line;
 			  file.lpos = saved_lpos;
 			  if (!pcs->proj_str) {
@@ -3297,7 +3358,7 @@ detached_or_not_srv:
 		char *proj_str = img_compass_utm_proj_str(datum,
 							  walls_ref.zone);
 		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
-					 proj_str);
+					 proj_str, NULL);
 		if (!pcs->proj_str) {
 		    pcs->proj_str = proj_str;
 		    if (!proj_str_out) {
@@ -3312,7 +3373,7 @@ detached_or_not_srv:
 		const char *proj_str =
 		    (walls_ref.zone > 0 ? "EPSG:5041" : "EPSG:5042");
 		set_declination_location(walls_ref.x, walls_ref.y, walls_ref.z,
-					 proj_str);
+					 proj_str, NULL);
 		if (!pcs->proj_str) {
 		    pcs->proj_str = osstrdup(proj_str);
 		    if (!proj_str_out) {

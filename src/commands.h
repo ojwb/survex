@@ -57,7 +57,6 @@ void default_calib(settings *s);
 void pop_settings(void);
 void invalidate_pj_cached(void);
 void report_declination(settings *p);
-void set_declination_location(real x, real y, real z, const char *proj_str);
 
 void copy_on_write_meta(settings *s);
 
