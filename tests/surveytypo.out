@@ -4,7 +4,7 @@ Removing trailing traverses...
 Concatenating traverses...
 
 Simplifying network...
-./surveytypo.svx:15: error: Reference to station "gos.1" from non-existent survey "gos"
+./surveytypo.svx:15:9: error: Reference to station "gos.1" from non-existent survey "gos"
 ./surveytypo.svx:15: warning: Station "gos.1" referred to just once, with an explicit survey name - typo?
 cavern: warning: Survey not all connected to fixed stations
 The following survey stations are not attached to a fixed point:
@@ -25,7 +25,7 @@ Survey has 2 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
-./surveytypo.svx:15: error: Reference to station "gos.1" from non-existent survey "gos"
+./surveytypo.svx:15:9: error: Reference to station "gos.1" from non-existent survey "gos"
 ./surveytypo.svx:15: warning: Station "gos.1" referred to just once, with an explicit survey name - typo?
 
 There were 4 warning(s) and 2 error(s) - no output files produced.

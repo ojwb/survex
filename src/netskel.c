@@ -133,7 +133,7 @@ solve_network(void)
 			     /*Survey has no fixed points. Therefore I’ve fixed %s at (0,0,0)*/72,
 			     sprint_prefix(stn_to_fix->name));
       static const double origin[3] = { 0.0, 0.0, 0.0 };
-      fix_station(stn_to_fix->name, origin);
+      fix_station(stn_to_fix->name, origin, -1);
       // We should not set the FIXED flag for the invented fix though.
       stn_to_fix->name->sflags &= ~BIT(SFLAGS_FIXED);
    }

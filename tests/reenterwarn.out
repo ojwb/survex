@@ -1,7 +1,7 @@
 ./reenterwarn.svx:4:8: warning: Reentering an existing survey is deprecated
  *begin 1
         ^
-./reenterwarn.svx:2: info: Originally entered here
+./reenterwarn.svx:2:8: info: Originally entered here
 
 Removing trailing traverses...
 

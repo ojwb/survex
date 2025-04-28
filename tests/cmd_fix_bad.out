@@ -121,22 +121,22 @@
 ./cmd_fix_bad.svx:51:6: error: Station already fixed or equated to a fixed point
  *fix W 0 0 1
       ^
-./cmd_fix_bad.svx:49: info: Previously fixed or equated here
+./cmd_fix_bad.svx:49:6: info: Previously fixed or equated here
 ./cmd_fix_bad.svx:52:6: error: Station already fixed or equated to a fixed point
  *fix Wa 0 0 2
       ^~
-./cmd_fix_bad.svx:50: info: Previously fixed or equated here
+./cmd_fix_bad.svx:50:9: info: Previously fixed or equated here
 ./cmd_fix_bad.svx:53:6: error: Station already fixed or equated to a fixed point
  *fix Wb 0 0 3
       ^~
-./cmd_fix_bad.svx:50: info: Previously fixed or equated here
+./cmd_fix_bad.svx:50:14: info: Previously fixed or equated here
 ./cmd_fix_bad.svx:54:8: info: FIX command with no coordinates - fixing at (0,0,0)
  *fix Wa;comment
         ^
 ./cmd_fix_bad.svx:54:6: warning: Station already fixed at the same coordinates
  *fix Wa;comment
       ^~
-./cmd_fix_bad.svx:50: info: Previously fixed or equated here
+./cmd_fix_bad.svx:50:9: info: Previously fixed or equated here
 ./cmd_fix_bad.svx:57:17: error: Expecting numeric field, found ""
  *fix Z reference
                  ^

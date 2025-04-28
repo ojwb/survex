@@ -227,12 +227,16 @@ typedef struct Prefix {
        const char *p;
        char i[sizeof(const char*)];
    } ident;
-   // A filename:line where this name was used.  If it's a station used in *fix
-   // then this will be the location of such a *fix, otherwise if it's a
-   // station used in *equate then it's the location of such a *equate.
+   // A filename:line:column where this name was used.  If it's a station used
+   // in *fix then this will be the location of such a *fix, otherwise if it's
+   // a station used in *equate then it's the location of such a *equate.
    // Otherwise it's the first place it was used.
    const char *filename;
    unsigned int line;
+   unsigned short column;
+   /* stn flags - e.g. surface, underground, entrance
+    * also suspecttypo and survey */
+   unsigned short sflags;
    /* If (min_export == 0) then max_export is max # levels above is this
     * prefix is used (and so needs to be exported) (0 == parent only).
     * If (min_export > 0) then max_export is max # levels above this
@@ -244,9 +248,6 @@ typedef struct Prefix {
     * the end of the run, we also mark stations with min_export == USHRT_MAX
     * and max_export > 0 as exported. */
    unsigned short max_export, min_export;
-   /* stn flags - e.g. surface, underground, entrance
-    * also suspecttypo and survey */
-   unsigned short sflags;
 } prefix;
 
 static inline const char *prefix_ident(const prefix *p) {

@@ -1,4 +1,4 @@
-./nosurveyhanging2.svx:5: info: Survey has no fixed points. Therefore I've fixed 2 at (0,0,0)
+./nosurveyhanging2.svx:5:3: info: Survey has no fixed points. Therefore I've fixed 2 at (0,0,0)
 
 Removing trailing traverses...
 

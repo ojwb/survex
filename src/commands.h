@@ -21,12 +21,15 @@
 
 /* Fix station if not already fixed.
  *
+ * stn_offset gives column info - it should be the file offset (offset member
+ * of a filepos) or -1 for no column info.
+ *
  * Returns:
  *  0 if not already fixed
  *  1 if already fixed at the same coordinates
  * -1 if already fixed but at different coordinates
  */
-int fix_station(prefix *fix_name, const double* coords);
+int fix_station(prefix *fix_name, const double* coords, long stn_offset);
 
 /* Fix station with variance.
  *

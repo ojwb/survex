@@ -457,7 +457,7 @@ compile_diagnostic_pfx(int diag_flags, const prefix * pfx, int en, ...)
    va_list ap;
    int severity = (diag_flags & DIAG_SEVERITY_MASK);
    va_start(ap, en);
-   v_report(severity, pfx->filename, pfx->line, 0, en, ap);
+   v_report(severity, pfx->filename, pfx->line, pfx->column, en, ap);
    va_end(ap);
    caret_width = 0;
 }
@@ -966,6 +966,7 @@ data_file_compass_mak(void)
 	      }
 	      while (ch != ';' && ch != EOF) {
 		  nextch_handling_eol();
+		  skipblanks();
 		  filepos fp_name;
 		  get_pos(&fp_name);
 		  prefix *name = read_prefix(PFX_STATION|PFX_OPT);
@@ -1010,7 +1011,7 @@ data_file_compass_mak(void)
 			      coords[1] *= METRES_PER_FOOT;
 			      coords[2] *= METRES_PER_FOOT;
 			  }
-			  int fix_result = fix_station(name, coords);
+			  int fix_result = fix_station(name, coords, fp_name.offset);
 			  if (fix_result) {
 			      filepos fp;
 			      get_pos(&fp);
@@ -2645,6 +2646,7 @@ next_line:
 	  }
 	  case WALLS_CMD_FIX: {
 	    real coords[3];
+	    skipblanks();
 	    filepos fp_stn;
 	    get_pos(&fp_stn);
 	    prefix *name = read_walls_station(p_walls_options->prefix,
@@ -2775,7 +2777,7 @@ next_line:
 
 	    if (var_xy == 0.0 && var_z == 0.0) {
 		// Exact fix.
-		int fix_result = fix_station(name, coords);
+		int fix_result = fix_station(name, coords, fp_stn.offset);
 		if (fix_result) {
 		    filepos fp;
 		    get_pos(&fp);

@@ -4,15 +4,15 @@
 ./cmd_fix.svx:12:6: warning: Station already fixed at the same coordinates
  *fix W 0 0 0
       ^
-./cmd_fix.svx:10: info: Previously fixed or equated here
+./cmd_fix.svx:10:6: info: Previously fixed or equated here
 ./cmd_fix.svx:13:6: warning: Station already fixed at the same coordinates
  *fix W1 0 0 0
       ^~
-./cmd_fix.svx:11: info: Previously fixed or equated here
+./cmd_fix.svx:11:9: info: Previously fixed or equated here
 ./cmd_fix.svx:14:6: warning: Station already fixed at the same coordinates
  *fix W2 0 0 0
       ^~
-./cmd_fix.svx:11: info: Previously fixed or equated here
+./cmd_fix.svx:11:14: info: Previously fixed or equated here
 
 Removing trailing traverses...
 

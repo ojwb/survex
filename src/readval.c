@@ -47,6 +47,7 @@ new_anon_station(void)
     name->down = NULL;
     name->filename = file.filename;
     name->line = file.line;
+    name->column = 0;
     name->min_export = name->max_export = 0;
     name->sflags = BIT(SFLAGS_ANON);
     /* Keep linked list of anon stations for node stats. */
@@ -227,6 +228,7 @@ anon_wall_station:
 	 ptr->up = back_ptr;
 	 ptr->filename = file.filename;
 	 ptr->line = file.line;
+	 ptr->column = here.offset - file.lpos;
 	 ptr->min_export = ptr->max_export = 0;
 	 if (fSuspectTypo && !fImplicitPrefix)
 	    ptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
@@ -269,6 +271,7 @@ anon_wall_station:
 	    newptr->up = back_ptr;
 	    newptr->filename = file.filename;
 	    newptr->line = file.line;
+	    newptr->column = here.offset - file.lpos;
 	    newptr->min_export = newptr->max_export = 0;
 	    if (fSuspectTypo && !fImplicitPrefix)
 	       newptr->sflags |= BIT(SFLAGS_SUSPECTTYPO);
@@ -535,8 +538,11 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		ptr->pos = NULL;
 		ptr->stn = NULL;
 		ptr->up = back_ptr;
-		ptr->filename = file.filename; // FIXME: Or location of #Prefix, etc for it?
-		ptr->line = file.line; // FIXME: Or location of #Prefix, etc for it?
+		// FIXME: Or location of #Prefix, etc for it?
+		ptr->filename = file.filename;
+		ptr->line = file.line;
+		ptr->column = fp.offset - file.lpos;
+
 		ptr->min_export = ptr->max_export = 0;
 		back_ptr->down = ptr;
 	    } else {
@@ -575,8 +581,11 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 		    newptr->pos = NULL;
 		    newptr->stn = NULL;
 		    newptr->up = back_ptr;
-		    newptr->filename = file.filename; // FIXME
+		    // FIXME: Or location of #Prefix, etc for it?
+		    newptr->filename = file.filename;
 		    newptr->line = file.line;
+		    newptr->column = fp.offset - file.lpos;
+
 		    newptr->min_export = newptr->max_export = 0;
 		    ptr = newptr;
 		} else {

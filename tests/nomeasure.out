@@ -1,4 +1,4 @@
-./nomeasure.dat:10: info: Survey has no fixed points. Therefore I've fixed C1 at (0,0,0)
+./nomeasure.dat:10:2: info: Survey has no fixed points. Therefore I've fixed C1 at (0,0,0)
 
 Removing trailing traverses...
 

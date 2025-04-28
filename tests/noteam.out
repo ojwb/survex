@@ -1,4 +1,4 @@
-./noteam.dat:10: info: Survey has no fixed points. Therefore I've fixed GX1 at (0,0,0)
+./noteam.dat:10:10: info: Survey has no fixed points. Therefore I've fixed GX1 at (0,0,0)
 
 Removing trailing traverses...
 

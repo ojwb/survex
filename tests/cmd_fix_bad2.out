@@ -1,4 +1,4 @@
-./cmd_fix_bad2.svx:4: info: Survey has no fixed points. Therefore I've fixed a at (0,0,0)
+./cmd_fix_bad2.svx:4:9: info: Survey has no fixed points. Therefore I've fixed a at (0,0,0)
 
 Removing trailing traverses...
 
@@ -18,7 +18,7 @@ Calculating trailing traverses...
 ./cmd_fix_bad2.svx:7:6: error: Station already fixed or equated to a fixed point
  *fix c 1 1 1
       ^
-./cmd_fix_bad2.svx:3: info: Previously fixed or equated here
+./cmd_fix_bad2.svx:3:9: info: Previously fixed or equated here
 
 Removing trailing traverses...
 

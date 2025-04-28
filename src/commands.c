@@ -59,7 +59,7 @@ move_to_fixedlist(node *stn, int ignore_dirn)
     }
 }
 
-int fix_station(prefix *fix_name, const double* coords) {
+int fix_station(prefix *fix_name, const double* coords, long offset) {
     bool new_stn = (fix_name->stn == NULL &&
 		    !TSTBIT(fix_name->sflags, SFLAGS_SOLVED));
     fix_name->sflags |= BIT(SFLAGS_FIXED);
@@ -88,6 +88,7 @@ int fix_station(prefix *fix_name, const double* coords) {
     // Make the station's file:line location reflect where it was fixed.
     fix_name->filename = file.filename;
     fix_name->line = file.line;
+    fix_name->column = offset >= 0 ? offset - file.lpos : 0;
     return 0;
 }
 
@@ -816,6 +817,7 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
       survey->sflags |= BIT(SFLAGS_PREFIX_ENTERED);
       survey->filename = file.filename;
       survey->line = file.line;
+      survey->column = fpos_ptr->offset - file.lpos;
    }
 }
 
@@ -823,21 +825,9 @@ check_reentry(prefix *survey, const filepos* fpos_ptr)
 static void
 cmd_prefix(void)
 {
-   static int prefix_depr_count = 0;
-   prefix *survey;
    filepos fp;
-   /* Issue warning first, so "*prefix \" warns first that *prefix is
-    * deprecated and then that ROOT is...
-    */
-   if (prefix_depr_count < 5) {
-      /* TRANSLATORS: If you're unsure what "deprecated" means, see:
-       * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/109);
-      if (++prefix_depr_count == 5)
-	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
-   }
    get_pos(&fp);
-   survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
+   prefix *survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
    pcs->Prefix = survey;
    check_reentry(survey, &fp);
 }
@@ -879,7 +869,6 @@ cmd_begin(void)
    pcsNew->next = pcs;
    pcs = pcsNew;
 
-   skipblanks();
    pcs->begin_survey = NULL;
    pcs->begin_col = 0;
    if (!isEol(ch) && !isComm(ch)) {
@@ -1020,7 +1009,6 @@ cmd_end(void)
 
    /* note need to read using root *before* BEGIN */
    prefix *survey = NULL;
-   skipblanks();
    if (!isEol(ch) && !isComm(ch)) {
       get_pos(&fp);
       survey = read_prefix(PFX_SURVEY|PFX_ALLOW_ROOT);
@@ -1267,7 +1255,7 @@ cmd_fix(void)
       first_fix_line = file.line;
    }
 
-   int fix_result = fix_station(fix_name, coord.v);
+   int fix_result = fix_station(fix_name, coord.v, fp_stn.offset);
    if (reference) {
        // `*fix reference` so suppress "unused fixed point" warning.
        fix_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
@@ -1349,6 +1337,7 @@ cmd_equate(void)
 	  // reflect this *equate.
 	  name->filename = file.filename;
 	  name->line = file.line;
+	  name->column = fp.offset - file.lpos;
       }
       skipblanks();
       if (isEol(ch) || isComm(ch)) {
@@ -2066,15 +2055,6 @@ cmd_default(void)
       { "UNITS",     CMD_UNITS },
       { NULL,	     CMD_NULL }
    };
-   static int default_depr_count = 0;
-
-   if (default_depr_count < 5) {
-      /* TRANSLATORS: If you're unsure what "deprecated" means, see:
-       * https://en.wikipedia.org/wiki/Deprecation */
-      compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
-      if (++default_depr_count == 5)
-	 compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
-   }
 
    get_token();
    switch (match_tok(defaulttab, TABSIZE(defaulttab))) {
@@ -2288,7 +2268,6 @@ cmd_case(void)
 static void
 cmd_copyright(void)
 {
-    skipblanks();
     filepos fp;
     get_pos(&fp);
     unsigned y1 = read_uint_raw(DIAG_WARN|DIAG_UINT, /*Invalid year*/534, NULL);
@@ -2746,7 +2725,6 @@ cmd_require(void)
     // Add extra 0 so `*require 1.4.10.1` fails with cavern version 1.4.10.
     const unsigned version[] = {COMMAVERSION, 0};
 
-    skipblanks();
     filepos fp;
     get_pos(&fp);
 
@@ -3122,7 +3100,6 @@ handle_command(void)
     case CMD_DATA:
     case CMD_DATE:
     case CMD_DECLINATION:
-    case CMD_DEFAULT:
     case CMD_FLAGS:
     case CMD_INFER:
     case CMD_INSTRUMENT:
@@ -3134,13 +3111,41 @@ handle_command(void)
     case CMD_TITLE:
     case CMD_TRUNCATE:
     case CMD_UNITS:
-      /* These can occur between *begin and *export */
+      /* These can all occur between *begin and *export */
       break;
+    case CMD_DEFAULT: {
+      // Issue warning here before we skipblanks().
+      static int default_depr_count = 0;
+      if (default_depr_count < 5) {
+	  /* TRANSLATORS: If you're unsure what "deprecated" means, see:
+	   * https://en.wikipedia.org/wiki/Deprecation */
+	  compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**DEFAULT is deprecated - use *CALIBRATE/DATA/SD/UNITS with argument DEFAULT instead*/20);
+	  if (++default_depr_count == 5)
+	      compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
+      }
+      /* Can occur between *begin and *export */
+      break;
+    }
+    case CMD_PREFIX: {
+      // Issue warning here before we skipblanks().
+      static int prefix_depr_count = 0;
+      if (prefix_depr_count < 5) {
+	  /* TRANSLATORS: If you're unsure what "deprecated" means, see:
+	   * https://en.wikipedia.org/wiki/Deprecation */
+	  compile_diagnostic(DIAG_WARN|DIAG_TOKEN, /**prefix is deprecated - use *begin and *end instead*/109);
+	  if (++prefix_depr_count == 5)
+	      compile_diagnostic(DIAG_INFO, /*Further uses of this deprecated feature will not be reported*/95);
+      }
+      f_export_ok = false;
+      break;
+    }
     default:
       /* NB: additional handling for "*begin <survey>" in cmd_begin */
       f_export_ok = false;
       break;
    }
+
+   skipblanks();
 
    cmd_funcs[cmdtok]();
 }
