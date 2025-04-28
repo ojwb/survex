@@ -31,6 +31,7 @@
 typedef struct parse {
    FILE *fh;
    const char *filename;
+   // ftell() at start of the current line.
    long lpos;
    unsigned int line;
    bool reported_where : 1;
