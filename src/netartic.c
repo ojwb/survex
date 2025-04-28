@@ -327,14 +327,9 @@ articulate(void)
 
     if (stnlist) {
 	/* Any stations still in stnlist are unreachable from fixed points
-	 * which means we have one or more hanging surveys.
-	 *
-	 * The cause of the problem is pretty likely to be a typo, so run the
-	 * checks which report errors and warnings about issues which such a
-	 * typo is likely to result in.
+	 * which means we have one or more hanging surveys.  Since Survex
+	 * 1.4.10 we warn about these and then ignore them.
 	 */
-	check_node_stats();
-
 	bool fNotAttached = false;
 	/* TRANSLATORS: At the end of processing (or if a *SOLVE command is used)
 	 * cavern will issue this warning if there are any sections of the survey
