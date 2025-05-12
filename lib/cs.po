@@ -2353,8 +2353,9 @@ msgstr ""
 
 #: ../src/mainfrm.cc:826
 #: n:271
+#, fuzzy
 msgid "&Crosses\tCtrl+X"
-msgstr ""
+msgstr "C&rosses\tCtrl+X"
 
 #: ../src/mainfrm.cc:827
 #: n:297
@@ -2387,8 +2388,9 @@ msgstr ""
 
 #: ../src/mainfrm.cc:860
 #: n:273
+#, fuzzy
 msgid "&Overlapping Names"
-msgstr ""
+msgstr "O&verlapping Names"
 
 #: ../src/mainfrm.cc:873
 #: n:450
@@ -3089,8 +3091,9 @@ msgstr "&Otevřít...\tCtrl+O"
 #. terrain.
 #: ../src/mainfrm.cc:756
 #: n:453
+#, fuzzy
 msgid "Open &Terrain..."
-msgstr ""
+msgstr "Open Te&rrain..."
 
 #: ../src/mainfrm.cc:757
 #: n:494
