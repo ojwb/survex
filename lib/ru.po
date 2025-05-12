@@ -718,7 +718,7 @@ msgstr "Введите год в промежутке от 1900 до 2078"
 #: ../src/commands.c:2360
 #: n:534
 msgid "Invalid year"
-msgstr ""
+msgstr "Неверно указан год"
 
 #. TRANSLATORS: Suspicious means something like 410 degrees or -20
 #. degrees
@@ -2736,7 +2736,7 @@ msgstr "Поиск"
 #: ../src/mainfrm.cc:1033
 #: n:333
 msgid "Find stations"
-msgstr ""
+msgstr "Поиск пикетов"
 
 #. TRANSLATORS: Find station tooltip when stations are found.  %d is
 #. replaced by the number of matching stations and %s%s%s by the
@@ -2745,19 +2745,19 @@ msgstr ""
 #: n:334
 #, c-format
 msgid "%d stations match %s%s%s"
-msgstr ""
+msgstr "%d пикетов найдено по %s%s%s"
 
 #. TRANSLATORS: Tooltip for aven's station search control.
 #: ../src/mainfrm.cc:1037
 #: ../src/mainfrm.cc:2365
 #: n:533
 msgid "Station name search (substring or wildcard)"
-msgstr ""
+msgstr "Поиск по названию пикета (подстрока или wildcard-шаблон)"
 
 #: ../src/mainfrm.cc:1050
 #: n:535
 msgid "Z exaggeration factor"
-msgstr ""
+msgstr "Коэффициент вертикального преувеличения"
 
 #: ../src/mainfrm.cc:243
 #: ../src/mainfrm.cc:1729
