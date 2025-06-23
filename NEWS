@@ -1,3 +1,34 @@
+up to: 186ddea93ec9c0ff745d09ac9ed067062e0e3dbf
+
+Changes in 1.4.18 (2025-06-??):
+
+* aven: Fix "Enter" in search control to zoom to results.  This was broken
+  by the switch to wxSearchCtrl in 1.4.17.
+
+* cavern: Avoid duplicate errors/warnings with unconnected data.  Since 1.4.10,
+  unconnected data is only a warning but that resulted in us running some
+  checks on the survey tree twice, which could result in duplicate
+  errors/warnings.
+
+* cavern: We now track the column as well as file:line where a station or
+  survey name was used, so diagnostics which use these locations now report
+  a column number too.
+
+* cavern: Show context if proj can't convert coords.  We only do this for .svx
+  files currently as it is more complex for Compass and Walls data.
+
+* Merge updates to Russian translation.
+
+* Add the start of a Czech translation.
+
+* Update unofficial Inno Setup translations for the installer.
+
+* Drop support for wxWidgets < 3.2.  It is starting to become hard to keep
+  everything working with 3.0.0 and the time and effort seems better directed
+  to other things.  The last 3.0.x release was 3.0.5.1, released 2020-05-02.
+  3.2.0 was released 2022-07-06 and it seems everywhere with wxWidgets packages
+  upgraded to 3.2.x some time ago.
+
 Changes in 1.4.17 (2025-03-20):
 
 * aven: Add support for exaggerating Z.  You can now set a Z scale factor
