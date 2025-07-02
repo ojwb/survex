@@ -40,6 +40,7 @@ lib/Makefile
 lib/Makefile.in
 lib/bg.msg
 lib/ca.msg
+lib/cs.msg
 lib/de.msg
 lib/de_CH.msg
 lib/el.msg
