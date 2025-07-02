@@ -156,11 +156,7 @@ class GLACanvas : public wxGLCanvas {
     int x_size = 0;
     int y_size = 0;
 
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
-    double content_scale_factor = 1.0;
-#else
-    static constexpr unsigned content_scale_factor = 1;
-#endif
+    double dpi_scale_factor = 1.0;
 
     vector<GLAList> drawing_lists;
 
@@ -325,31 +321,21 @@ public:
 	return y_size;
     }
 
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
-    double GetContentScaleFactor() const {
+    double GetDPIScaleFactor() const {
 	list_flags |= INVALIDATE_ON_HIDPI;
-	return content_scale_factor;
+	return dpi_scale_factor;
     }
 
-    void UpdateContentScaleFactor();
+    void UpdateDPIScaleFactor();
     void OnMove(wxMoveEvent & event);
-#else
-    // wxWindow::GetContentScaleFactor() will always return 1.0, so arrange
-    // things so it's a compile-time constant the compiler can optimise away.
-    // Use a macro so we can return unsigned instead of double without a lot
-    // of pain from trying to override a virtual method while changing the
-    // return type.
-# define GetContentScaleFactor() 1u
-    void UpdateContentScaleFactor() { }
-#endif
 
     void OnSize(wxSizeEvent & event);
 
     glaCoord GetVolumeDiameter() const { return m_VolumeDiameter; }
 
     void ScaleMouseEvent(wxMouseEvent& e) const {
-	e.SetX(e.GetX() * content_scale_factor);
-	e.SetY(e.GetY() * content_scale_factor);
+	e.SetX(e.GetX() * dpi_scale_factor);
+	e.SetY(e.GetY() * dpi_scale_factor);
     }
 
 private:

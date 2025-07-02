@@ -419,14 +419,12 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
-    content_scale_factor = wxGLCanvas::GetContentScaleFactor();
-#endif
+    dpi_scale_factor = wxGLCanvas::GetDPIScaleFactor();
 
     // Update our record of the client area size and centre.
     GetClientSize(&x_size, &y_size);
-    x_size *= content_scale_factor;
-    y_size *= content_scale_factor;
+    x_size *= dpi_scale_factor;
+    y_size *= dpi_scale_factor;
     if (x_size < 1) x_size = 1;
     if (y_size < 1) y_size = 1;
 
@@ -514,7 +512,7 @@ void GLACanvas::FirstShow()
     wxString path = wmsg_cfgpth();
     path += wxCONFIG_PATH_SEPARATOR;
     path += wxT("unifont.pixelfont");
-    if (!m_Font.load(path, content_scale_factor >= 2)) {
+    if (!m_Font.load(path, dpi_scale_factor >= 2)) {
 	// FIXME: do something better.
 	// We have this message available: Error in format of font file “%s”
 	fprintf(stderr, "Failed to parse compiled-in font data\n");
@@ -639,13 +637,12 @@ void GLACanvas::SetScale(double scale)
     }
 }
 
-#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
-void GLACanvas::UpdateContentScaleFactor()
+void GLACanvas::UpdateDPIScaleFactor()
 {
-    double new_content_scale_factor = wxGLCanvas::GetContentScaleFactor();
-    if (new_content_scale_factor == content_scale_factor) return;
+    double new_dpi_scale_factor = wxGLCanvas::GetDPIScaleFactor();
+    if (new_dpi_scale_factor == dpi_scale_factor) return;
 
-    content_scale_factor = new_content_scale_factor;
+    dpi_scale_factor = new_dpi_scale_factor;
     for (auto& i : drawing_lists) {
 	i.invalidate_if(INVALIDATE_ON_HIDPI);
     }
@@ -653,19 +650,18 @@ void GLACanvas::UpdateContentScaleFactor()
 
 void GLACanvas::OnMove(wxMoveEvent & event)
 {
-    UpdateContentScaleFactor();
+    UpdateDPIScaleFactor();
     event.Skip();
 }
-#endif
 
 void GLACanvas::OnSize(wxSizeEvent & event)
 {
-    UpdateContentScaleFactor();
+    UpdateDPIScaleFactor();
 
     wxSize size = event.GetSize();
 
-    int new_w = size.GetWidth() * content_scale_factor;
-    int new_h = size.GetHeight() * content_scale_factor;
+    int new_w = size.GetWidth() * dpi_scale_factor;
+    int new_h = size.GetHeight() * dpi_scale_factor;
     // The width and height go to zero when the panel is dragged right
     // across so we clamp them to be at least 1 to avoid problems.
     if (new_w < 1) new_w = 1;

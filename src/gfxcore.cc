@@ -632,7 +632,7 @@ void GfxCore::DrawGrid()
 
 int GfxCore::GetClinoOffset() const
 {
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     int result = INDICATOR_OFFSET_X * f;
     if (m_Compass) {
 	result += GetCompassWidth() + INDICATOR_GAP * f;
@@ -642,7 +642,7 @@ int GfxCore::GetClinoOffset() const
 
 void GfxCore::DrawTick(int angle_cw)
 {
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     auto length0 = (INDICATOR_RADIUS + TICK_LENGTH) * f;
     auto length1 = INDICATOR_RADIUS * f;
     const double theta = rad(angle_cw);
@@ -658,7 +658,7 @@ void GfxCore::DrawTick(int angle_cw)
 }
 
 void GfxCore::DrawArrow(gla_colour col1, gla_colour col2) {
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     glaCoord r = INDICATOR_RADIUS * f;
     glaCoord x = r * .5;
     glaCoord y = r * -.866025404;
@@ -695,7 +695,7 @@ void GfxCore::DrawCompass() {
 
     // Compass background.
     DrawCircle(col_LIGHT_GREY_2, col_GREY, 0, 0,
-	       INDICATOR_RADIUS * GetContentScaleFactor());
+	       INDICATOR_RADIUS * GetDPIScaleFactor());
 
     // Compass arrow.
     DrawArrow(col_INDICATOR_1, col_INDICATOR_2);
@@ -709,7 +709,7 @@ void GfxCore::DrawClinoBack() {
     }
 
     SetColour(col_GREY);
-    glaCoord r = INDICATOR_RADIUS * GetContentScaleFactor();
+    glaCoord r = INDICATOR_RADIUS * GetDPIScaleFactor();
     PlaceIndicatorVertex(0, r);
     PlaceIndicatorVertex(0, -r);
     PlaceIndicatorVertex(0, 0);
@@ -726,7 +726,7 @@ void GfxCore::DrawClino() {
     EndLines();
 
     // Clino background.
-    DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS * GetContentScaleFactor(), 0);
+    DrawSemicircle(col_LIGHT_GREY_2, col_GREY, 0, 0, INDICATOR_RADIUS * GetDPIScaleFactor(), 0);
 
     // Elevation arrow.
     DrawArrow(col_INDICATOR_2, col_INDICATOR_1);
@@ -736,7 +736,7 @@ void GfxCore::Draw2dIndicators()
 {
     // Draw the compass and elevation indicators.
 
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     const int centre_y = (INDICATOR_BOX_SIZE / 2 + INDICATOR_OFFSET_Y) * f;
 
     const int comp_centre_x = GetCompassXPosition();
@@ -1023,7 +1023,7 @@ void GfxCore::SimpleDrawNames()
 
 void GfxCore::DrawColourKey(int num_bands, const wxString & other)
 {
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     int key_block_height = KEY_BLOCK_HEIGHT * f;
     int key_block_width = KEY_BLOCK_WIDTH * f;
     int total_block_height =
@@ -1246,7 +1246,7 @@ static const char* style_names[] = {
 
 void GfxCore::DrawStyleKey()
 {
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     int key_block_height = KEY_BLOCK_HEIGHT * f;
     int key_block_width = KEY_BLOCK_WIDTH * f;
     int num_bands = sizeof(style_names) / sizeof(style_names[0]);
@@ -1291,7 +1291,7 @@ void GfxCore::DrawScaleBar()
     // screen.
     double across_screen = SurveyUnitsAcrossViewport();
 
-    double f = double(GetClinoXPosition() - (INDICATOR_BOX_SIZE / 2 + SCALE_BAR_OFFSET_X) * GetContentScaleFactor()) / GetXSize();
+    double f = double(GetClinoXPosition() - (INDICATOR_BOX_SIZE / 2 + SCALE_BAR_OFFSET_X) * GetDPIScaleFactor()) / GetXSize();
     if (f > 0.75) {
 	f = 0.75;
     } else if (f < 0.5) {
@@ -1328,14 +1328,14 @@ void GfxCore::DrawScaleBar()
     m_ScaleBarWidth = size;
 
     // Draw it...
-    const int end_y = SCALE_BAR_OFFSET_Y * GetContentScaleFactor() + GetFontSize();
+    const int end_y = SCALE_BAR_OFFSET_Y * GetDPIScaleFactor() + GetFontSize();
     int interval = size / 10;
 
     gla_colour col = col_WHITE;
     for (int ix = 0; ix < 10; ix++) {
-	int x = SCALE_BAR_OFFSET_X * GetContentScaleFactor() + int(ix * ((double) size / 10.0));
+	int x = SCALE_BAR_OFFSET_X * GetDPIScaleFactor() + int(ix * ((double) size / 10.0));
 
-	DrawRectangle(col, col, x, end_y, interval + 2, SCALE_BAR_HEIGHT * GetContentScaleFactor());
+	DrawRectangle(col, col, x, end_y, interval + 2, SCALE_BAR_HEIGHT * GetDPIScaleFactor());
 
 	col = (col == col_WHITE) ? col_GREY : col_WHITE;
     }
@@ -1417,8 +1417,8 @@ void GfxCore::DrawScaleBar()
     GetTextExtent(str, &text_width, &text_height);
     const int text_y = end_y - text_height + 1;
     SetColour(TEXT_COLOUR);
-    DrawIndicatorText(SCALE_BAR_OFFSET_X * GetContentScaleFactor(), text_y, wxT("0"));
-    DrawIndicatorText(SCALE_BAR_OFFSET_X * GetContentScaleFactor() + size - text_width, text_y, str);
+    DrawIndicatorText(SCALE_BAR_OFFSET_X * GetDPIScaleFactor(), text_y, wxT("0"));
+    DrawIndicatorText(SCALE_BAR_OFFSET_X * GetDPIScaleFactor() + size - text_width, text_y, str);
 }
 
 bool GfxCore::CheckHitTestGrid(const wxPoint& point, bool centre)
@@ -2115,7 +2115,7 @@ int GfxCore::GetCompassWidth() const
 {
     static int result = 0;
     if (result == 0) {
-	result = INDICATOR_BOX_SIZE * GetContentScaleFactor();
+	result = INDICATOR_BOX_SIZE * GetDPIScaleFactor();
 	int width;
 	const wxString & msg = wmsg(/*Facing*/203);
 	GetTextExtent(msg, &width, NULL);
@@ -2128,7 +2128,7 @@ int GfxCore::GetClinoWidth() const
 {
     static int result = 0;
     if (result == 0) {
-	result = INDICATOR_BOX_SIZE * GetContentScaleFactor();
+	result = INDICATOR_BOX_SIZE * GetDPIScaleFactor();
 	int width;
 	const wxString & msg1 = wmsg(/*Plan*/432);
 	GetTextExtent(msg1, &width, NULL);
@@ -2147,7 +2147,7 @@ int GfxCore::GetCompassXPosition() const
 {
     // Return the x-coordinate of the centre of the compass in window
     // coordinates.
-    return GetXSize() - INDICATOR_OFFSET_X * GetContentScaleFactor() - GetCompassWidth() / 2;
+    return GetXSize() - INDICATOR_OFFSET_X * GetDPIScaleFactor() - GetCompassWidth() / 2;
 }
 
 int GfxCore::GetClinoXPosition() const
@@ -2161,13 +2161,13 @@ int GfxCore::GetIndicatorYPosition() const
 {
     // Return the y-coordinate of the centre of the indicators in window
     // coordinates.
-    return GetYSize() - (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE / 2) * GetContentScaleFactor();
+    return GetYSize() - (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE / 2) * GetDPIScaleFactor();
 }
 
 int GfxCore::GetIndicatorRadius() const
 {
     // Return the radius of each indicator.
-    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2 * GetContentScaleFactor();
+    return (INDICATOR_BOX_SIZE - INDICATOR_MARGIN * 2) / 2 * GetDPIScaleFactor();
 }
 
 bool GfxCore::PointWithinCompass(wxPoint point) const
@@ -2201,7 +2201,7 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
     // bar.
     if (!ShowingScaleBar()) return false;
 
-    auto f = GetContentScaleFactor();
+    auto f = GetDPIScaleFactor();
     wxCoord y = (GetYSize() - SCALE_BAR_OFFSET_Y * f - GetFontSize()) - point.y;
     if (y > wxCoord(SCALE_BAR_HEIGHT * f) || y < 0) return false;
 
@@ -2214,8 +2214,8 @@ bool GfxCore::PointWithinScaleBar(wxPoint point) const
 bool GfxCore::PointWithinColourKey(wxPoint point) const
 {
     // Determine whether a point (in window coordinates) lies within the key.
-    point.x -= GetXSize() - KEY_OFFSET_X * GetContentScaleFactor();
-    point.y = KEY_OFFSET_Y * GetContentScaleFactor() - point.y;
+    point.x -= GetXSize() - KEY_OFFSET_X * GetDPIScaleFactor();
+    point.y = KEY_OFFSET_Y * GetDPIScaleFactor() - point.y;
     return (point.x >= key_lowerleft[m_ColourBy].x && point.x <= 0 &&
 	    point.y >= key_lowerleft[m_ColourBy].y && point.y <= 0);
 }
@@ -2255,10 +2255,10 @@ void GfxCore::SetClinoFromPoint(wxPoint point)
     if (dx >= 0 && dx * dx + dy * dy <= radius * radius) {
 	TiltCave(-deg(atan2(double(dy), double(dx))) - m_TiltAngle);
 	m_MouseOutsideElev = false;
-    } else if (dy >= INDICATOR_MARGIN * GetContentScaleFactor()) {
+    } else if (dy >= INDICATOR_MARGIN * GetDPIScaleFactor()) {
 	TiltCave(-90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
-    } else if (dy <= -INDICATOR_MARGIN * GetContentScaleFactor()) {
+    } else if (dy <= -INDICATOR_MARGIN * GetDPIScaleFactor()) {
 	TiltCave(90.0 - m_TiltAngle);
 	m_MouseOutsideElev = true;
     } else {
@@ -2282,11 +2282,11 @@ void GfxCore::RedrawIndicators()
 {
     // Redraw the compass and clino indicators.
 
-    int total_width = GetCompassWidth() + INDICATOR_GAP * GetContentScaleFactor() + GetClinoWidth();
-    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X * GetContentScaleFactor() - total_width,
-		       GetYSize() - (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE) * GetContentScaleFactor(),
+    int total_width = GetCompassWidth() + INDICATOR_GAP * GetDPIScaleFactor() + GetClinoWidth();
+    RefreshRect(wxRect(GetXSize() - INDICATOR_OFFSET_X * GetDPIScaleFactor() - total_width,
+		       GetYSize() - (INDICATOR_OFFSET_Y + INDICATOR_BOX_SIZE) * GetDPIScaleFactor(),
 		       total_width,
-		       INDICATOR_BOX_SIZE * GetContentScaleFactor()), false);
+		       INDICATOR_BOX_SIZE * GetDPIScaleFactor()), false);
 }
 
 void GfxCore::StartRotation()
@@ -3262,8 +3262,8 @@ void GfxCore::DrawIndicators()
 		key_list = LIST_STYLE_KEY; break;
 	}
 	if (key_list != LIST_LIMIT_) {
-	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X * GetContentScaleFactor(),
-		       GetYSize() - KEY_OFFSET_Y * GetContentScaleFactor(), 0);
+	    DrawList2D(key_list, GetXSize() - KEY_OFFSET_X * GetDPIScaleFactor(),
+		       GetYSize() - KEY_OFFSET_Y * GetDPIScaleFactor(), 0);
 	}
     }
 
