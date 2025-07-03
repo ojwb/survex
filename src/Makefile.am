@@ -57,8 +57,11 @@ aven_LDADD = $(LIBOBJS) $(WX_LIBS) $(GDAL_LIBS) $(PROJ_LIBS) $(FFMPEG_LIBS)
 if WIN32
 aven_LDADD += avenrc.o
 
+# We used to use `$(WX_CONFIG) --rescomp` here, but that now seems to return an
+# empty string with current mingw.  We don't support building with MSVC, so
+# hardcoding `windres` here isn't really a problem in practice.
 avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
-	cd $(srcdir) && `$(WX_CONFIG) --rescomp` --include-dir '$(abs_top_builddir)/lib/icons' -o '$(abs_builddir)/avenrc.o' aven.rc
+	cd $(srcdir) && windres `$(WX_CONFIG) --cppflags` --include-dir '$(abs_top_builddir)/lib/icons' -o '$(abs_builddir)/avenrc.o' aven.rc
 
 bin_PROGRAMS += wrapaven wrapsurvexport
 
