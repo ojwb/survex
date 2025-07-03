@@ -287,6 +287,8 @@ dnl byte-by-byte.  These are specified by POSIX:
 AC_CHECK_FUNCS([getc_unlocked putc_unlocked putchar_unlocked])
 dnl These are GNU extensions in glibc:
 AC_CHECK_FUNCS([feof_unlocked ferror_unlocked fread_unlocked fwrite_unlocked])
+dnl Microsoft extensions:
+AC_CHECK_FUNCS([_getc_nolock _putc_nolock _putchar_nolock _fread_nolock _fwrite_nolock])
 
 AC_CHECK_FUNCS([setenv unsetenv])
 
@@ -392,6 +394,8 @@ AH_BOTTOM(
 
 #ifdef HAVE_FREAD_UNLOCKED
 # define FREAD(P, S, N, F) fread_unlocked(P, S, N, F)
+#elif defined HAVE__FREAD_NOLOCK
+# define FREAD(P, S, N, F) _fread_nolock(P, S, N, F)
 #else
 # define FREAD(P, S, N, F) fread(P, S, N, F)
 #endif
@@ -403,24 +407,32 @@ AH_BOTTOM(
  */
 #ifdef HAVE_FWRITE_UNLOCKED
 # define FWRITE_(P, S, N, F) fwrite_unlocked(P, S, N, F)
+#elif defined HAVE__FWRITE_NOLOCK
+# define FWRITE_(P, S, N, F) _fwrite_nolock(P, S, N, F)
 #else
 # define FWRITE_(P, S, N, F) fwrite(P, S, N, F)
 #endif
 
 #ifdef HAVE_GETC_UNLOCKED
 # define GETC(F) getc_unlocked(F)
+#elif defined HAVE__GETC_NOLOCK
+# define GETC(F) _getc_nolock(F)
 #else
 # define GETC(F) getc(F)
 #endif
 
 #ifdef HAVE_PUTC_UNLOCKED
 # define PUTC(C, F) putc_unlocked(C, F)
+#elif defined HAVE__PUTC_NOLOCK
+# define PUTC(C, F) _putc_nolock(C, F)
 #else
 # define PUTC(C, F) putc(C, F)
 #endif
 
 #ifdef HAVE_PUTC_UNLOCKED
 # define PUTCHAR(C) putchar_unlocked(C)
+#elif defined HAVE__PUTCHAR_NOLOCK
+# define PUTCHAR(C) _putchar_nolock(C)
 #else
 # define PUTCHAR(C) putchar(C)
 #endif
