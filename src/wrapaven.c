@@ -1,7 +1,7 @@
 /* wrapaven.c
  * Set OPENSSL_MODULES to .exe's directory and run real .exe
  *
- * Copyright (C) 2002,2010,2014,2024 Olly Betts
+ * Copyright (C) 2002,2010,2014,2024,2025 Olly Betts
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ wWinMain(HINSTANCE hInst, HINSTANCE hPrevInst, LPWSTR lpCmdLine, int nCmdShow)
 	       got -= 4;
 	   }
 	   wchar_t *p = wcsrchr(buf, L'\\');
-	   wchar_t *e_val = buf;
+	   const wchar_t *e_val = buf;
 	   size_t e_len;
 	   if (p) {
 	       e_len = p - buf;
