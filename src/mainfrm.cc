@@ -1030,6 +1030,7 @@ void MainFrm::MakeToolBar()
     toolbar->AddSeparator();
     m_FindBox = new wxSearchCtrl(toolbar, textctrl_FIND);
     m_FindBox->SetSize(160, -1);
+    m_FindBox->SetMinSize(wxSize(160, wxDefaultCoord));
     // TRANSLATORS: Placeholder text in aven's station search control.
     m_FindBox->SetDescriptiveText(wmsg(/*Find stations*/333));
     toolbar->AddControl(m_FindBox);
