@@ -1,9 +1,16 @@
-up to: 186ddea93ec9c0ff745d09ac9ed067062e0e3dbf
+up to: d6a183087846672f82e9b4b866c568e10a2155c0
 
-Changes in 1.4.18 (2025-06-??):
+Changes in 1.4.18 (2025-10-??):
 
 * aven: Fix "Enter" in search control to zoom to results.  This was broken
   by the switch to wxSearchCtrl in 1.4.17.
+
+* aven: Fix "Find stations" search box width with wxWidgets >= 3.2.7.  Patch
+  https://github.com/ojwb/survex/pull/15 from Thomas Holder.
+
+* aven: (Microsoft Windows version): Fix sizing of indicators (scalebar,
+  compass, clino, colour key) on HiDPI monitors.  Fixes #144, reported by Juan
+  Corrin.
 
 * cavern: Avoid duplicate errors/warnings with unconnected data.  Since 1.4.10,
   unconnected data is only a warning but that resulted in us running some
