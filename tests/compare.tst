@@ -48,6 +48,24 @@ if [ -n "$VALGRIND" ] ; then
   DIFFPOS="$VALGRIND --log-file=$vg_log --error-exitcode=$vg_error $DIFFPOS"
 fi
 
+case $TESTS in
+  ""|*--help*)
+    echo "Usage: $0 SVX_FILE..."
+    echo ""
+    echo "Process each SVX_FILE in turn with two versions of cavern and compare."
+    echo ""
+    echo "Cavern versions specified by environment variables:"
+    echo ""
+    echo "  CAVERN_ORIG (default: $CAVERN_ORIG)"
+    echo "  CAVERN (default: $CAVERN)"
+    if [ -z "$TESTS" ] ; then
+      exit 1
+    else
+      exit 0
+    fi
+    ;;
+esac
+
 for file in $TESTS ; do
   if test -n "$file" ; then
     echo "$file"
