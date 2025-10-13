@@ -26,9 +26,6 @@ if [ -z "$SURVEXLIB" ] ; then
   export SURVEXLIB
 fi
 
-# force VERBOSE if we're run on a subset of tests
-#test -n "$*" && VERBOSE=1
-
 test -x "$testdir"/../src/cavern || testdir=.
 
 : ${CAVERN="$testdir"/../src/cavern}
@@ -56,11 +53,11 @@ for file in $TESTS ; do
     echo "$file"
     rm -f tmp.* tmp_orig.*
     if test -n "$VERBOSE" ; then
-      $CAVERN_ORIG "$file" --output=tmp_orig | tee tmp_orig.out || exit 1
-      $CAVERN "$file" --output=tmp | tee tmp.out
-      exitcode=$?
+      { $CAVERN_ORIG "$file" --output=tmp_orig ; exitcode_orig=$? ; } | tee tmp_orig.out
+      { $CAVERN "$file" --output=tmp ; exitcode=$? ; } | tee tmp.out
     else
-      $CAVERN_ORIG "$file" --output=tmp_orig > tmp_orig.out || exit 1
+      $CAVERN_ORIG "$file" --output=tmp_orig > tmp_orig.out
+      exitcode_orig=$?
       $CAVERN "$file" --output=tmp > tmp.out
       exitcode=$?
     fi
@@ -72,14 +69,14 @@ for file in $TESTS ; do
       fi
       rm "$vg_log"
     fi
-    [ "$exitcode" = 0 ] || exit 1
-    warn_orig=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp_orig.out`
-    warn=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp.out`
-    if test x"$warn_orig" != x"$warn" ; then
-      echo "$CAVERN_ORIG gave $warn_orig warning(s)"
-      echo "$CAVERN gave $warn warning(s)"
+    diag_orig=`sed 's/^There were \([0-9]* warning(s) and [0-9]* error(s)\).*/\1/p;d' tmp_orig.out`
+    diag=`sed 's/^There were \([0-9]* warning(s) and [0-9]* error(s)\).*/\1/p;d' tmp.out`
+    if test x"$diag_orig" != x"$diag" ; then
+      echo "  $diag_orig from $CAVERN_ORIG"
+      echo "  $diag from $CAVERN"
       exit 1
     fi
+    [ "$exitcode_orig:$exitcode" = "0:0" ] || exit 1
     if test -n "$VERBOSE" ; then
       $DIFFPOS tmp.3d tmp_orig.3d
       exitcode=$?
