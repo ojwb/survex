@@ -678,6 +678,8 @@ initialise_survey_filter(img *pimg, const char* survey)
 static int
 compass_plt_open(img *pimg, const char *survey)
 {
+    // Format documentation:
+    // https://www.fountainware.com/compass/HTML_Help/Compass_Viewer/plotfileformat.htm
     int utm_zone = 0;
     int datum = img_DATUM_UNKNOWN;
     long fpos;

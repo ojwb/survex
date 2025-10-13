@@ -719,6 +719,8 @@ get_token_and_check_colon_len(const char *expect, size_t len)
 static void
 data_file_compass_dat_or_clp(bool is_clp)
 {
+    // Format documentation:
+    // https://fountainware.com/compass/HTML_Help/Project_Manager/projectfileformat.htm
     initialise_common_compass_settings();
     default_units(pcs);
     default_calib(pcs);
@@ -894,6 +896,8 @@ data_file_compass_clp(void)
 static void
 data_file_compass_mak(void)
 {
+    // Format documentation:
+    // https://fountainware.com/compass/HTML_Help/Project_Manager/projectfileformat.htm
     initialise_common_compass_settings();
     short *t = pcs->Translate;
     // In a Compass MAK file a station name can't contain these three
