@@ -73,7 +73,7 @@ for file in $TESTS ; do
       rm "$vg_log"
     fi
     [ "$exitcode" = 0 ] || exit 1
-    warn_orig=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp_orig.out
+    warn_orig=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp_orig.out`
     warn=`sed '$!d;s/^There were \([0-9]*\).*/\1/;s/^[^0-9].*$/0/' tmp.out`
     if test x"$warn_orig" != x"$warn" ; then
       echo "$CAVERN_ORIG gave $warn_orig warning(s)"
