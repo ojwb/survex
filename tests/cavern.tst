@@ -176,6 +176,7 @@ for file in $TESTS ; do
   # yes : diffpos 3D file output with <testcase_name>.pos
   # no : Check that a 3D file is produced, but not positions in it
   # fail : Check that a 3D file is NOT produced
+  # dump : Compare output of dump3d to <testcase_name>.dump
   # 3d : Convert to 3D with survexport, compare dump3d to <testcase_name>.dump
   # dxf : Convert to DXF with survexport and compare with <testcase_name>.dxf
   # gpx : Convert to GPX with survexport and compare with <testcase_name>.gpx
