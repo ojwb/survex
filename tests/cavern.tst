@@ -251,7 +251,15 @@ for file in $TESTS ; do
   srcdir=. SOURCE_DATE_EPOCH=1 $CAVERN "$input" --output="$pwd/tmp" > "$pwd/tmp.out"
   exitcode=$?
   cd "$pwd"
-  test -n "$VERBOSE" && cat tmp.out
+  if test "$VERBOSE" = 1 ; then
+    if test fail = "$pos" ; then
+      test $exitcode != 0 || cat tmp.out
+    else
+      test $exitcode = 0 || cat tmp.out
+    fi
+  elif test -n "$VERBOSE" ; then
+    cat tmp.out
+  fi
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
       cat "$vg_log"
@@ -289,7 +297,12 @@ for file in $TESTS ; do
 
   case $pos in
   yes)
-    if test -n "$VERBOSE" ; then
+    if test "$VERBOSE" = 1 ; then
+      $DIFFPOS "$posfile" tmp.3d > tmp.stdout
+      exitcode=$?
+      test $exitcode = 0 || cat tmp.stdout
+      rm tmp.stdout
+    elif test -n "$VERBOSE" ; then
       $DIFFPOS "$posfile" tmp.3d
       exitcode=$?
     else
@@ -321,17 +334,21 @@ for file in $TESTS ; do
     fi
     [ "$exitcode" = 0 ] || exit 1
 
-    if test -n "$VERBOSE" ; then
-      $DIFF "$expectedfile" "$tmpfile" || exit 1
-    else
-      $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
+    if ! $QUIET_DIFF "$expectedfile" "$tmpfile" ; then
+      test -z "$VERBOSE" || $DIFF "$expectedfile" "$tmpfile"
+      exit 1
     fi
     ;;
   dxf|gpx|hpgl|json|kml|plt|svg)
     # $pos gives us the file extension here.
     expectedfile=$basefile.$pos
     tmpfile=tmp.$pos
-    if test -n "$VERBOSE" ; then
+    if test "$VERBOSE" = 1 ; then
+      $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile" > tmp.stdout
+      exitcode=$?
+      test $exitcode = 0 || cat tmp.stdout
+      rm tmp.stdout
+    elif test -n "$VERBOSE" ; then
       $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile"
       exitcode=$?
     else
@@ -366,16 +383,19 @@ for file in $TESTS ; do
 	;;
     esac
 
-    if test -n "$VERBOSE" ; then
-      $DIFF "$expectedfile" "$tmpfile" || exit 1
-    else
-      $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
+    if ! $QUIET_DIFF "$expectedfile" "$tmpfile" ; then
+      test -z "$VERBOSE" || $DIFF "$expectedfile" "$tmpfile"
+      exit 1
     fi
     ;;
   3d)
     expectedfile=$basefile.dump
     tmpfile=tmp.dump
-    if test -n "$VERBOSE" ; then
+    if test "$VERBOSE" = 1 ; then
+      SOURCE_DATE_EPOCH=1 $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile.3d" > tmp.stdout
+      exitcode=$?
+      test $exitcode = 0 || cat tmp.stdout
+    elif test -n "$VERBOSE" ; then
       SOURCE_DATE_EPOCH=1 $SURVEXPORT --defaults$survexportopts tmp.3d "$tmpfile.3d"
       exitcode=$?
     else
@@ -393,10 +413,9 @@ for file in $TESTS ; do
     fi
     [ "$exitcode" = 0 ] || exit 1
 
-    if test -n "$VERBOSE" ; then
-      $DIFF "$expectedfile" "$tmpfile" || exit 1
-    else
-      $QUIET_DIFF "$expectedfile" "$tmpfile" || exit 1
+    if ! $QUIET_DIFF "$expectedfile" "$tmpfile" ; then
+      test -z "$VERBOSE" || $DIFF "$expectedfile" "$tmpfile"
+      exit 1
     fi
     ;;
   no)

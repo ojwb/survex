@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - test using img library outside of Survex
-# Copyright (C) 2020-2024 Olly Betts
+# Copyright (C) 2020-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ for test in $TESTS ; do
   srcdir=. $CAVERN "$file.svx" --output="$pwd/$file" > "$pwd/cavern.tmp" 2>&1
   exitcode=$?
   cd "$pwd"
-  test -n "$VERBOSE" && cat cavern.tmp
+  test $exitcode != 0 && test -n "$VERBOSE" && cat cavern.tmp
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
       cat "$vg_log"
@@ -82,9 +82,7 @@ for test in $TESTS ; do
 
   $IMGTEST "$file.3d" $args > imgtest.tmp 2>&1
   exitcode=$?
-  if test -n "$VERBOSE" ; then
-    cat imgtest.tmp
-  fi
+  test $exitcode != 0 && test -n "$VERBOSE" && cat imgtest.tmp
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
       cat "$vg_log"

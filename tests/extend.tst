@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - extend tests
-# Copyright (C) 1999-2024 Olly Betts
+# Copyright (C) 1999-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -58,8 +58,10 @@ for file in $TESTS ; do
   test -f "$srcdir/$file.espec" && EXTEND_ARGS="--specfile $srcdir/$file.espec"
   rm -f tmp.*
   if test -n "$VERBOSE" ; then
-    $CAVERN "$srcdir/$file.svx" --output=tmp
+    $CAVERN "$srcdir/$file.svx" --output=tmp > tmp.stdout
     exitcode=$?
+    [ $exitcode = 0 ] || cat tmp.stdout
+    rm tmp.stdout
   else
     $CAVERN "$srcdir/$file.svx" --output=tmp > /dev/null
     exitcode=$?
@@ -74,8 +76,10 @@ for file in $TESTS ; do
   fi
   [ "$exitcode" = 0 ] || exit 1
   if test -n "$VERBOSE" ; then
-    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d
+    $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d > tmp.stdout
     exitcode=$?
+    [ $exitcode = 0 ] || cat tmp.stdout
+    rm tmp.stdout
   else
     $EXTEND $EXTEND_ARGS tmp.3d tmp.x.3d > /dev/null
     exitcode=$?
@@ -90,8 +94,10 @@ for file in $TESTS ; do
   fi
   [ "$exitcode" = 0 ] || exit 1
   if test -n "$VERBOSE" ; then
-    $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d"
+    $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" > tmp.stdout
     exitcode=$?
+    [ $exitcode = 0 ] || cat tmp.stdout
+    rm tmp.stdout
   else
     $DIFFPOS tmp.x.3d "$srcdir/${file}x.3d" > /dev/null
     exitcode=$?

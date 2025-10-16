@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - aven tests
-# Copyright (C) 1999-2024 Olly Betts
+# Copyright (C) 1999-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,8 +53,10 @@ case `uname -s` in
     # Regression test - aven in 1.2.6 segfaulted.
     echo "SURVEXLANG=nosuch aven --help"
     if test -n "$VERBOSE"; then
-      DISPLAY= SURVEXLANG=nosuch $AVEN --help
+      DISPLAY= SURVEXLANG=nosuch $AVEN --help > tmp.out 2>&1
       exitcode=$?
+      [ $exitcode = 0 ] || cat tmp.out
+      rm tmp.out
     else
       DISPLAY= SURVEXLANG=nosuch $AVEN --help > /dev/null 2>&1
       exitcode=$?
@@ -74,8 +76,10 @@ esac
 # Regression test - aven in 1.2.6 segfaulted.
 echo "SURVEXLANG= LANG=nosuch aven --help"
 if test -n "$VERBOSE"; then
-  DISPLAY= SURVEXLANG= LANG=nosuch $AVEN --help
+  DISPLAY= SURVEXLANG= LANG=nosuch $AVEN --help > tmp.out 2>&1
   exitcode=$?
+  [ $exitcode = 0 ] || cat tmp.out
+  rm tmp.out
 else
   DISPLAY= SURVEXLANG= LANG=nosuch $AVEN --help > /dev/null 2>&1
   exitcode=$?

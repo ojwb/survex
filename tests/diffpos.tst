@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - diffpos tests
-# Copyright (C) 1999-2024 Olly Betts
+# Copyright (C) 1999-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -76,11 +76,9 @@ for file in $TESTS ; do
     fi
     rm "$vg_log"
   fi
-  if test -n "$VERBOSE" ; then
-    cat diffpos.tmp
-    $DIFF diffpos.tmp "$srcdir/${file}.out" || exit 1
-  else
-    $QUIET_DIFF diffpos.tmp "$srcdir/${file}.out" > /dev/null || exit 1
+  if ! $QUIET_DIFF diffpos.tmp "$srcdir/${file}.out" > /dev/null ; then
+    [ -z "$VERBOSE"] || $DIFF diffpos.tmp "$srcdir/${file}.out"
+    exit 1
   fi
   rm -f diffpos.tmp
 done
@@ -89,10 +87,14 @@ for args in '' '--survey survey' '--survey survey.xyzzy' '--survey xyzzy' ; do
   echo "diffpos $args"
   rm -f diffpos.tmp
   $DIFFPOS $args "$srcdir/v0.3d" "$srcdir/v0.3d" > diffpos.tmp
-  if test -n "$VERBOSE" ; then
-    cat diffpos.tmp
+  exitcode=$?
+  if [ $exitcode != 0 ] ; then
+    [ -z "$VERBOSE"] || cat diffpos.tmp
   fi
-  $QUIET_DIFF diffpos.tmp /dev/null > /dev/null || exit 1
+  if ! $QUIET_DIFF diffpos.tmp /dev/null > /dev/null ; then
+    [ -z "$VERBOSE"] || $DIFF diffpos.tmp /dev/null
+    exit 1
+  fi
   rm -f diffpos.tmp
 done
 test -n "$VERBOSE" && echo "Test passed"

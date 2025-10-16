@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - 3d to pos tests
-# Copyright (C) 1999-2024 Olly Betts
+# Copyright (C) 1999-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ for file in $TESTS ; do
   $DIFFPOS "$input" tmp.pos > diffpos.tmp
   exitcode=$?
   if test -n "$VERBOSE" ; then
-    cat diffpos.tmp
+    [ $exitcode = 0 ] || cat diffpos.tmp
   fi
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then

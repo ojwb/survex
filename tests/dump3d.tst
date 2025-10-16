@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # Survex test suite - dump3d tests
-# Copyright (C) 1999-2024 Olly Betts
+# Copyright (C) 1999-2025 Olly Betts
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -101,12 +101,9 @@ for file in $TESTS ; do
     rm "$vg_log"
   fi
   test $exitcode = 0 || exit 1
-  if test -n "$VERBOSE" ; then
-    $DIFF tmp.dump "$expect"
-    exitcode=$?
-  else
-    $QUIET_DIFF tmp.dump "$expect" > /dev/null
-    exitcode=$?
+  if ! $QUIET_DIFF tmp.dump "$expect" > /dev/null ; then
+    [ -z "$VERBOSE" ] || $DIFF tmp.dump "$expect"
+    exit 1
   fi
   if [ -n "$VALGRIND" ] ; then
     if [ $exitcode = "$vg_error" ] ; then
