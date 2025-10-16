@@ -203,6 +203,7 @@ jobs:
         msystem: ucrt64
         install: base-devel
         pacboy: >-
+          binutils:p
           gcc:p
           ffmpeg:p
           proj:p
