@@ -54,7 +54,7 @@ esac
 
 # FIXME survexport is failing to run in CI on msys+mingw.
 TESTS_=
-[ "$OSTYPE" = "msys" ] || TESTS_="3dexport \
+[ "$OSTYPE" = "cygwin" ] || TESTS_="3dexport \
  dxffullcoords dxfsurfequate\
  gpxexport hpglexport jsonexport kmlexport pltexport svgexport"
 

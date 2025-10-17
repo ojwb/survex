@@ -35,7 +35,7 @@ export DISPLAY
 PROGS="cavern diffpos extend sorterr"
 
 # FIXME aven and survexport are failing to run in CI on msys+mingw.
-[ "$OSTYPE" = "msys" ] || PROGS="$PROGS survexport aven"
+[ "$OSTYPE" = "cygwin" ] || PROGS="$PROGS survexport aven"
 
 # Suppress checking for leaks on exit if we're build with lsan - we don't
 # generally waste effort to free all allocations as the OS will reclaim
