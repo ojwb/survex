@@ -1,4 +1,29 @@
-up to: d6a183087846672f82e9b4b866c568e10a2155c0
+up to: 4db072a31ef21fe06f3b8e9271d895363bee5139
+
+    Turn off aven+survexport tests on mingw
+    We can't seem to run these programs during the build now.  This
+    appears to be due to some change in the Github CI images or a
+    dependency, as rebuilding the last good commit now fails.  There
+    is no error message, but bash shows exit code 127 which means it
+    failed to run the command.
+
+    Improve handling of VERBOSE in tests
+    Previously VERBOSE showed output from all testcases, even ones which
+    passed.  Now we only show output from testcases which fail for
+    VERBOSE=1.  Other non-empty values of VERBOSE continue to show all
+    output for cavern.tst and smoke.tst, but have the same effect as
+    VERBOSE=1 for other tests.
+
+    compare.tst: Add --help message
+    compare.tst: Compare cavern runs which fail too
+    compare.tst: Fix missing ` in script
+    This bug was introduced in 2014 so it seems this script isn't used
+    much but it seems useful to keep.
+
+    Work around --rescomp not working
+    wx-config --rescomp seems to now return an empty string with current
+    mingw.  We don't support building with MSVC, so hardcoding `windres`
+    here isn't really a problem in practice.
 
 Changes in 1.4.18 (2025-10-??):
 
@@ -23,6 +48,28 @@ Changes in 1.4.18 (2025-10-??):
 
 * cavern: Show context if proj can't convert coords.  We only do this for .svx
   files currently as it is more complex for Compass and Walls data.
+
+* cavern: Compass MAK file parsing improvements:
+
+  + Comments are now skipped.  The comment format doesn't seem to be
+    documented, but it appears `/` introduces a comment which lasts until
+    the end of the line.  Previously a commented out MAK file command would
+    still be interpreted by cavern, which was incorrect.
+
+  + Unknown commands are now warned about.  This seems more helpful as
+    it will help identify any bugs in Survex's parsing of MAK files,
+    and any undocumented MAK file commands which we don't support.
+
+  + We now skip to the closing `;` for unknown commands and commands we
+    ignore as not relevant to us.  This doesn't seem to make any difference
+    in practice as none of these commands appear to be able to contain text
+    which could be interpreted as a different valid Compass MAK file command.
+
+* (Microsoft Windows version): Use unlocked file I/O if available, like we
+  already do for Unix.  Unlocked file I/O can be much faster in some cases (we
+  don't need the locking as we don't do multithreaded file I/O).
+
+* (Microsoft Windows version): Fix compiler warning in wrapaven.c.
 
 * Merge updates to Russian translation.
 
