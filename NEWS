@@ -1,4 +1,4 @@
-up to: 4db072a31ef21fe06f3b8e9271d895363bee5139
+up to: 136a5271b1737f55e939599f1db60c7a3fc33de4
 
     Turn off aven+survexport tests on mingw
     We can't seem to run these programs during the build now.  This
@@ -51,19 +51,23 @@ Changes in 1.4.18 (2025-10-??):
 
 * cavern: Compass MAK file parsing improvements:
 
-  + Comments are now skipped.  The comment format doesn't seem to be
-    documented, but it appears `/` introduces a comment which lasts until
-    the end of the line.  Previously a commented out MAK file command would
-    still be interpreted by cavern, which was incorrect.
+  + Comments are now skipped.  Previously a commented-out MAK file command
+    would still be interpreted by cavern, which was incorrect.
 
-  + Unknown commands are now warned about.  This seems more helpful as
-    it will help identify any bugs in Survex's parsing of MAK files,
-    and any undocumented MAK file commands which we don't support.
+  + Whitespace handling has been adjusted to more closely match Compass.
+
+  + Unknown commands are now warned about.  Compass seems to quietly ignore
+    unknown commands, but it seems helpful for cavern to report them as it
+    will help identify any bugs in Survex's parsing of MAK files, and any
+    new or undocumented MAK file commands which we don't support.  It can also
+    help detect typos in data entry.
 
   + We now skip to the closing `;` for unknown commands and commands we
-    ignore as not relevant to us.  This doesn't seem to make any difference
-    in practice as none of these commands appear to be able to contain text
-    which could be interpreted as a different valid Compass MAK file command.
+    ignore as not relevant to us, whereas previously we're just skip the
+    initial character which gives the type of command and then look for
+    another command.  This doesn't seem to make any difference in practice as
+    none of these commands appear to be able to contain text which could be
+    interpreted as a different valid Compass MAK file command.
 
 * (Microsoft Windows version): Use unlocked file I/O if available, like we
   already do for Unix.  Unlocked file I/O can be much faster in some cases (we
