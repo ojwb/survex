@@ -20,24 +20,31 @@ or aven as if it were a ``.svx`` file.
 Survex understands most MAK file features.  Known current
 limitations and assumptions:
 
-- Survex handles the UTM zone and datum provided the combination
-  can be expressed as an EPSG code (lack of any EPSG codes for a
-  datum suggests it's obsolete; lack of a code for a particular
-  datum+zone combination suggests the zone is outside of the
-  defined area of use of the datum). Example Compass files we've
-  seen use "North American 1927" outside of where it's defined
-  for use, presumably because some users fail to change the datum
-  from Compass' default. To enable reading such files we return a
-  PROJ4 string of the form "+proj=utm ..." for "North American
-  1927" and "North American 1983" for UTM zones which don't have
-  an EPSG code. Please let us know if support for additional
-  cases which aren't currently supported would be useful to you.
+- Survex handles any UTM zone and datum specified in the MAK file so
+  long as the combination can be expressed as an EPSG code.  If there
+  aren't any EPSG codes for a datum that suggests it's obsolete; lack of
+  a code for a particular datum+zone combination suggests the zone is
+  outside of the defined area of use of the datum.
+
+  Some additional cases are also supported.  Example Compass files we've
+  seen use "North American 1927" outside of its defined area of use,
+  presumably because some users fail to change the datum from Compass'
+  default.  To enable reading such files, if the datum is "North
+  American 1927" or "North American 1983" and there isn't an EPSG code
+  for the specified UTM zone in that datum, we generate a PROJ4 string
+  of the form "+proj=utm ...".  Please let us know if support for
+  additional cases which aren't currently supported would be useful to
+  you.
 
 - The ``@`` command which specifies a base location to calculate
   magnetic declinations at is handled, provided the datum and UTM
   zone are supported (see previous bullet point). The UTM
   convergence angle specified as part of this command is ignored
-  as Survex knows how to calculate it.
+  as Survex knows how to calculate grid convergence.
+
+- The ``%`` and ``*`` commands specify the UTM convergence angle
+  (file-level and non-file-level respectively) and are ignored
+  as Survex knows how to calculate grid convergence.
 
 - Link stations are ignored. These have two uses in Compass. They
   were a way to allow processing large surveys on computers from
@@ -77,16 +84,18 @@ limitations and assumptions:
 
   Note that the ``.svx`` version is able to more precisely represent
   what's actually required here - in the MAK version "you must
-  carry ``A16`` into ``FILE2`` even though ``FILE2`` doesn't need it for its
-  own processing". If you want the exact analog of the MAK
-  version you can change the ``A16`` equate to:
+  carry ``A16`` into ``FILE2`` so you can then carry it into ``FILE3``
+  even though ``FILE2`` doesn't need it for its own processing". If you want
+  the exact analog of the MAK version you can change the ``A16`` equate to:
   ::
 
      *equate file1.A16 file2.A16 file3.A16
 
-- The following commands (and any other unknown commands) are
-  currently ignored: ``%`` (Convergence angle (file-level)), ``*``
-  (Convergence angle (non file-level)), ``!`` (Project parameters)
+- The ``!`` command specifies project parameters, which are currently
+  ignored.
+
+- Unknown commands result in a warning (since Survex 1.4.18 - older versions
+  quietly ignored them).
 
 --------------------
 Compass .DAT support

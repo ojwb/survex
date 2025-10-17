@@ -1042,6 +1042,7 @@ data_file_compass_mak(void)
 			  nextch_handling_eol();
 		  }
 	      }
+	      if (ch == ';') nextch_handling_eol();
 	      break;
 	  }
 	  case '$':
@@ -1161,9 +1162,49 @@ update_proj_str:
 	      if (ch == ';') nextch_handling_eol();
 	      break;
 	  }
-	  default:
-	    nextch_handling_eol();
-	    break;
+	  case '/':
+	      // Comment (doesn't seem to be document, but appears to
+	      // ignore the rest of the current line).
+	      skipline();
+	      process_eol();
+	      break;
+	  case '%': // UTM convergence angle (file-level).
+	  case '*': // UTM convergence angle (non-file-level)
+	  case '!': // Project parameters.
+	      // We quietly ignore these commands.
+	      while (ch != ';' && !isEol(ch)) {
+		  nextch();
+	      }
+	      if (ch == ';') nextch_handling_eol();
+	      break;
+	  default: {
+	      // Warn for unknown commands.
+	      filepos fp;
+	      get_pos(&fp);
+	      string p = S_INIT;
+	      int trimmed_len = 0;
+	      int c = 0;
+	      while (ch != ';' && !isEol(ch)) {
+		  s_appendch(&p, (char)ch);
+		  ++c;
+		  /* Ignore trailing blanks. */
+		  if (!isBlank(ch)) trimmed_len = c;
+		  nextch();
+	      }
+	      if (ch == ';') {
+		  s_appendch(&p, (char)ch);
+		  nextch_handling_eol();
+	      } else {
+		  s_truncate(&p, trimmed_len);
+	      }
+	      filepos fp_save;
+	      get_pos(&fp_save);
+	      set_pos(&fp);
+	      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Unknown command “%s”*/12, s_str(&p));
+	      set_pos(&fp_save);
+	      s_free(&p);
+	      break;
+	  }
 	}
     }
 
