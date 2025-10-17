@@ -94,8 +94,11 @@ limitations and assumptions:
 - The ``!`` command specifies project parameters, which are currently
   ignored.
 
-- Unknown commands result in a warning (since Survex 1.4.18 - older versions
-  quietly ignored them).
+- Compass seems to quietly ignore unknown commands, but Survex will issue a
+  warning (since Survex 1.4.18 - older versions quietly ignored them).
+  This warning will help identify any bugs in Survex's parsing of MAK files,
+  and any new or undocumented MAK file commands which we don't support.
+  It can also help detect typos in data entry.
 
 --------------------
 Compass .DAT support

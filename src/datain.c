@@ -673,14 +673,57 @@ initialise_common_compass_settings(void)
     update_output_separator();
 }
 
-/* For reading Compass MAK files which have a freeform syntax */
+/* For reading Compass MAK files which have a free-form syntax */
+static void
+skipblanks_mak(void)
+{
+    while (true) {
+	skipblanks();
+	if (ch == '/') {
+	    // Comment which spans to the next `/` or the end of the line.
+	    // Their syntax is very free-form - e.g. a comment can occur in the
+	    // middle of a filename!
+	    do {
+		nextch();
+	    } while (!isEol(ch) && ch != '/' && ch != EOF);
+	    if (ch == '/') nextch();
+	    if (isEol(ch)) process_eol();
+	    continue;
+	}
+	if (!isEol(ch) || ch == EOF)
+	    return;
+	process_eol();
+    }
+}
+
+static void
+nextch_mak(void)
+{
+    nextch();
+    skipblanks_mak();
+}
+
+// Like nextch_mak() but doesn't skip blanks.
 static void
 nextch_handling_eol(void)
 {
-   nextch();
-   while (ch != EOF && isEol(ch)) {
-      process_eol();
-   }
+    nextch();
+    while (true) {
+	if (ch == '/') {
+	    // Comment which spans to the next `/` or the end of the line.
+	    // Their syntax is very free-form - e.g. a comment can occur in the
+	    // middle of a filename!
+	    do {
+		nextch();
+	    } while (!isEol(ch) && ch != '/' && ch != EOF);
+	    if (ch == '/') nextch();
+	    if (isEol(ch)) process_eol();
+	    continue;
+	}
+	if (!isEol(ch) || ch == EOF)
+	    return;
+	process_eol();
+    }
 }
 
 static bool
@@ -720,7 +763,7 @@ static void
 data_file_compass_dat_or_clp(bool is_clp)
 {
     // Format documentation:
-    // https://fountainware.com/compass/HTML_Help/Project_Manager/projectfileformat.htm
+    // https://fountainware.com/compass/HTML_Help/Compass_Editor/surveyfileformat.htm
     initialise_common_compass_settings();
     default_units(pcs);
     default_calib(pcs);
@@ -923,19 +966,29 @@ data_file_compass_mak(void)
 	int len;
     } *folder_stack = NULL;
 
+    skipblanks_mak();
     while (ch != EOF && !FERROR(file.fh)) {
 	switch (ch) {
 	  case '#': {
-	      /* include a file */
+	      /* Include a file. */
 	      int ch_store;
 	      string dat_fnm = S_INIT;
-	      nextch_handling_eol();
+	      while (isEol(ch)) process_eol();
+	      nextch_mak();
+	      int trim_len = 0;
 	      while (ch != ',' && ch != ';' && ch != EOF) {
-		  while (isEol(ch)) process_eol();
 		  s_appendch(&dat_fnm, (char)ch);
+		  if (!isBlank(ch)) trim_len = s_len(&dat_fnm);
+		  // Compass ignores embedded newlines and comments in
+		  // filenames here (as documented!)  The documentation
+		  // suggests this is also true for spaces, but experimentation
+		  // shows that embedded spaces are in fact included in the
+		  // filename.
 		  nextch_handling_eol();
 	      }
-	      if (!s_empty(&dat_fnm)) {
+	      if (trim_len > 0) {
+		  // However whitespace after the filename is not included.
+		  s_truncate(&dat_fnm, trim_len);
 		  if (base_utm_zone) {
 		      // Process the previous @ command using the datum from &.
 		      char *proj_str = img_compass_utm_proj_str(datum,
@@ -966,17 +1019,16 @@ data_file_compass_mak(void)
 		  ch_store = ch;
 		  data_file(s_str(&path), s_str(&dat_fnm));
 		  ch = ch_store;
-		  s_free(&dat_fnm);
 	      }
+	      s_free(&dat_fnm);
 	      while (ch != ';' && ch != EOF) {
-		  nextch_handling_eol();
-		  skipblanks();
+		  nextch_mak();
 		  filepos fp_name;
 		  get_pos(&fp_name);
 		  prefix *name = read_prefix(PFX_STATION|PFX_OPT);
 		  if (name) {
 		      scan_compass_station_name(name);
-		      skipblanks();
+		      skipblanks_mak();
 		      if (ch == '[') {
 			  /* fixed pt */
 			  real coords[3];
@@ -986,28 +1038,28 @@ data_file_compass_mak(void)
 			  // from 0.0 at these points) so we do too.
 			  name->sflags |= BIT(SFLAGS_FIXED) |
 					  BIT(SFLAGS_ENTRANCE);
-			  nextch_handling_eol();
+			  nextch_mak();
 			  if (ch == 'F' || ch == 'f') {
 			      in_feet = true;
-			      nextch_handling_eol();
+			      nextch_mak();
 			  } else if (ch == 'M' || ch == 'm') {
-			      nextch_handling_eol();
+			      nextch_mak();
 			  } else {
 			      compile_diagnostic(DIAG_ERR|DIAG_COL, /*Expecting “%s” or “%s”*/103, "F", "M");
 			  }
 			  while (!isdigit(ch) && ch != '+' && ch != '-' &&
 				 ch != '.' && ch != ']' && ch != EOF) {
-			      nextch_handling_eol();
+			      nextch_mak();
 			  }
 			  coords[0] = read_numeric(false);
 			  while (!isdigit(ch) && ch != '+' && ch != '-' &&
 				 ch != '.' && ch != ']' && ch != EOF) {
-			      nextch_handling_eol();
+			      nextch_mak();
 			  }
 			  coords[1] = read_numeric(false);
 			  while (!isdigit(ch) && ch != '+' && ch != '-' &&
 				 ch != '.' && ch != ']' && ch != EOF) {
-			      nextch_handling_eol();
+			      nextch_mak();
 			  }
 			  coords[2] = read_numeric(false);
 			  if (in_feet) {
@@ -1028,10 +1080,9 @@ data_file_compass_mak(void)
 			      set_pos(&fp);
 			      compile_diagnostic_pfx(DIAG_INFO, name, /*Previously fixed or equated here*/493);
 			  }
-			  while (ch != ']' && ch != EOF) nextch_handling_eol();
+			  while (ch != ']' && ch != EOF) nextch_mak();
 			  if (ch == ']') {
-			      nextch_handling_eol();
-			      skipblanks();
+			      nextch_mak();
 			  }
 		      } else {
 			  /* FIXME: link station - ignore for now */
@@ -1039,19 +1090,18 @@ data_file_compass_mak(void)
 			   * can be "reused", which is problematic... */
 		      }
 		      while (ch != ',' && ch != ';' && ch != EOF)
-			  nextch_handling_eol();
+			  nextch_mak();
 		  }
 	      }
-	      if (ch == ';') nextch_handling_eol();
+	      if (ch == ';') nextch_mak();
 	      break;
 	  }
 	  case '$':
 	    /* UTM zone */
-	    nextch();
-	    skipblanks();
+	    nextch_mak();
 	    utm_zone = read_int(-60, 60);
-	    skipblanks();
-	    if (ch == ';') nextch_handling_eol();
+	    skipblanks_mak();
+	    if (ch == ';') nextch_mak();
 
 update_proj_str:
 	    if (!pcs->next || pcs->proj_str != pcs->next->proj_str)
@@ -1075,16 +1125,15 @@ update_proj_str:
 	      string p = S_INIT;
 	      int datum_len = 0;
 	      int c = 0;
-	      nextch();
-	      skipblanks();
+	      nextch_mak();
 	      while (ch != ';' && !isEol(ch)) {
 		  s_appendch(&p, (char)ch);
 		  ++c;
 		  /* Ignore trailing blanks. */
 		  if (!isBlank(ch)) datum_len = c;
-		  nextch();
+		  nextch_handling_eol();
 	      }
-	      if (ch == ';') nextch_handling_eol();
+	      if (ch == ';') nextch_mak();
 	      datum = img_parse_compass_datum_string(s_str(&p), datum_len);
 	      s_free(&p);
 	      goto update_proj_str;
@@ -1097,15 +1146,15 @@ update_proj_str:
 	      folder_stack->len = s_len(&path);
 	      if (!s_empty(&path))
 		  s_appendch(&path, FNM_SEP_LEV);
-	      nextch();
+	      nextch_mak();
 	      while (ch != ';' && !isEol(ch)) {
 		  if (ch == '\\') {
 		      ch = FNM_SEP_LEV;
 		  }
 		  s_appendch(&path, (char)ch);
-		  nextch();
+		  nextch_mak();
 	      }
-	      if (ch == ';') nextch_handling_eol();
+	      if (ch == ';') nextch_mak();
 	      break;
 	  }
 	  case ']': {
@@ -1118,9 +1167,8 @@ update_proj_str:
 	      s_truncate(&path, folder_stack->len);
 	      folder_stack = folder_stack->next;
 	      free(p);
-	      nextch();
-	      skipblanks();
-	      if (ch == ';') nextch_handling_eol();
+	      nextch_mak();
+	      if (ch == ';') nextch_mak();
 	      break;
 	  }
 	  case '@': {
@@ -1128,23 +1176,23 @@ update_proj_str:
 	       * UTM East, UTM North, Elevation, UTM Zone, Convergence Angle
 	       * The first three are in metres.
 	       */
-	      nextch();
+	      nextch_mak();
 	      real easting = read_numeric(false);
-	      skipblanks();
+	      skipblanks_mak();
 	      if (ch != ',') break;
-	      nextch();
+	      nextch_mak();
 	      real northing = read_numeric(false);
-	      skipblanks();
+	      skipblanks_mak();
 	      if (ch != ',') break;
-	      nextch();
+	      nextch_mak();
 	      real elevation = read_numeric(false);
-	      skipblanks();
+	      skipblanks_mak();
 	      if (ch != ',') break;
-	      nextch();
+	      nextch_mak();
 	      int zone = read_int(-60, 60);
-	      skipblanks();
+	      skipblanks_mak();
 	      if (ch != ',') break;
-	      nextch();
+	      nextch_mak();
 	      real convergence_angle = read_numeric(false);
 	      /* We've now read them all successfully so store them.  The
 	       * Compass documentation gives an example which specifies the
@@ -1159,41 +1207,43 @@ update_proj_str:
 	      // We ignore the stored UTM grid convergence angle since we get
 	      // this from PROJ.
 	      (void)convergence_angle;
-	      if (ch == ';') nextch_handling_eol();
+	      if (ch == ';') nextch_mak();
 	      break;
 	  }
-	  case '/':
-	      // Comment (doesn't seem to be document, but appears to
-	      // ignore the rest of the current line).
-	      skipline();
-	      process_eol();
-	      break;
-	  case '%': // UTM convergence angle (file-level).
-	  case '*': // UTM convergence angle (non-file-level)
-	  case '!': // Project parameters.
-	      // We quietly ignore these commands.
-	      while (ch != ';' && !isEol(ch)) {
-		  nextch();
+	  case '%':
+	      // UTM convergence angle (file-level).  We quietly ignore this
+	      // and always calculate the convergence angle instead.
+	  case '*':
+	      // UTM convergence angle (non file-level).  We quietly ignore
+	      // this and always calculate the convergence angle instead.
+	  case '!':
+	      // Project parameters.  These are mostly only really meaningful
+	      // inside Compass so we quietly ignore them.
+	      while (ch != ';' && ch != EOF) {
+		  nextch_mak();
 	      }
-	      if (ch == ';') nextch_handling_eol();
+	      if (ch == ';')
+		  nextch_mak();
 	      break;
 	  default: {
-	      // Warn for unknown commands.
+	      // Warn for unknown commands.  Compass actually quietly ignores
+	      // them but if we do the same it risks hiding missing support for
+	      // new commands and any bugs in our parsing.  It also risks
+	      // hiding typos in user-entered data.
 	      filepos fp;
 	      get_pos(&fp);
 	      string p = S_INIT;
 	      int trimmed_len = 0;
 	      int c = 0;
-	      while (ch != ';' && !isEol(ch)) {
+	      while (ch != ';' && ch != EOF) {
 		  s_appendch(&p, (char)ch);
 		  ++c;
 		  /* Ignore trailing blanks. */
 		  if (!isBlank(ch)) trimmed_len = c;
-		  nextch();
+		  nextch_mak();
 	      }
 	      if (ch == ';') {
 		  s_appendch(&p, (char)ch);
-		  nextch_handling_eol();
 	      } else {
 		  s_truncate(&p, trimmed_len);
 	      }
@@ -1203,6 +1253,9 @@ update_proj_str:
 	      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Unknown command “%s”*/12, s_str(&p));
 	      set_pos(&fp_save);
 	      s_free(&p);
+	      if (ch == ';') {
+		  nextch_handling_eol();
+	      }
 	      break;
 	  }
 	}
