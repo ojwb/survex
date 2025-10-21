@@ -4,9 +4,11 @@ Larry Fish's Compass
 
 Survex can read Compass survey data - it supports survey data files
 and project files (``.DAT`` and ``.MAK files``), closed data files (``.CLP``),
-and processed survey data (``.PLT`` and ``.PLF`` files).  Survex 1.4.6 made
-significant improvements to this support so we recommend using this
-version or newer if you're working with Compass data.
+and processed survey data (``.PLT`` and ``.PLF`` files).  Survex 1.0.19 was
+the first to support this but we currently recommend using 1.4.6 or newer if
+you're working with Compass data as this version made significant improvements
+to this support.  If you're using Compass ``.MAK`` files, then Survex 1.4.18
+further improved parsing these.
 
 --------------------
 Compass .MAK support
@@ -99,6 +101,12 @@ limitations and assumptions:
   This warning will help identify any bugs in Survex's parsing of MAK files,
   and any new or undocumented MAK file commands which we don't support.
   It can also help detect typos in data entry.
+
+- ``.MAK`` files can contain comments, which last from a ``/`` to the
+  next ``/`` or end of the line.  Survex 1.4.18 added support for these
+  (older Survex versions quietly ignored the ``/`` characters as unknown, but
+  that meant they would still interpret any commented out ``.MAK`` file
+  commands).
 
 --------------------
 Compass .DAT support
