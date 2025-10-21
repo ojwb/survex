@@ -31,6 +31,7 @@
 #include "gdalexport.h"
 #include "gpx.h"
 #include "hpgl.h"
+#include "img.h"
 #include "json.h"
 #include "kml.h"
 #include "mainfrm.h"
@@ -739,8 +740,12 @@ class PLT : public ExportFilter {
 
     unsigned anon_counter = 0;
 
+    img_datum datum = img_DATUM_UNKNOWN;
+
+    int utm_zone = 0;
+
   public:
-    PLT() { }
+    PLT(const char * input_datum);
     const int * passes() const override;
     void header(const char *, time_t,
 		double min_x, double min_y, double min_z,
@@ -749,6 +754,146 @@ class PLT : public ExportFilter {
     void label(const img_point *, const wxString&, int, int) override;
     void footer() override;
 };
+
+PLT::PLT(const char * input_datum) 
+{
+    if (!input_datum || input_datum[0] == '\0') return;
+
+    // If the coordinate system is an EPSG code, we check if it is UTM in a
+    // datum which Compass supports and if so write out `G` and `O` commands in
+    // the generated PLT file.
+    if (strncmp(input_datum, "EPSG:", 5) != 0) return;
+
+    /* First check the three which seem to be commonly used in Compass data. */
+    int epsg_code = atoi(input_datum + 5);
+    if (epsg_code > 32600 && epsg_code <= 32660) {
+	datum = img_DATUM_WGS84;
+	utm_zone = epsg_code - 32600;
+	return;
+    }
+    if (epsg_code > 32700 && epsg_code <= 32760) {
+	datum = img_DATUM_WGS84;
+	utm_zone = 32700 - epsg_code;
+	return;
+    }
+    if (epsg_code > 26700 && epsg_code <= 26723) {
+	datum = img_DATUM_NAD27;
+	utm_zone = epsg_code - 26700;
+	return;
+    }
+    if (epsg_code >= 3311 + 59 && epsg_code <= 3311 + 60) {
+	datum = img_DATUM_NAD27;
+	utm_zone = epsg_code - 3311;
+	return;
+    }
+    if (epsg_code > 26900 && epsg_code <= 26923) {
+	datum = img_DATUM_NAD83;
+	utm_zone = epsg_code - 26900;
+	return;
+    }
+    if (epsg_code == 9712) {
+	datum = img_DATUM_NAD83;
+	utm_zone = 24;
+	return;
+    }
+
+    if (epsg_code >= 3313 + 59 && epsg_code <= 3313 + 60) {
+	datum = img_DATUM_NAD83;
+	utm_zone = epsg_code - 3313;
+	return;
+    }
+    if (epsg_code >= 20135 && epsg_code <= 20138) {
+	datum = img_DATUM_ADINDAN;
+	utm_zone = epsg_code - 20100;
+	return;
+    }
+    if (epsg_code >= 20934 && epsg_code <= 20936) {
+	datum = img_DATUM_ARC1950;
+	utm_zone = 20900 - epsg_code;
+	return;
+    }
+    if (epsg_code >= 21035 && epsg_code <= 21037) {
+	datum = img_DATUM_ARC1960;
+	utm_zone = 21000 - epsg_code;
+	return;
+    }
+    if (epsg_code >= 22234 && epsg_code <= 22236) {
+	datum = img_DATUM_CAPE;
+	utm_zone = 22200 - epsg_code;
+	return;
+    }
+    if (epsg_code >= 23028 && epsg_code <= 23038) {
+	datum = img_DATUM_EUROPEAN1950;
+	utm_zone = epsg_code - 23000;
+	return;
+    }
+    if (epsg_code >= 27258 && epsg_code <= 27260) {
+	datum = img_DATUM_NZGD49;
+	utm_zone = epsg_code - 27200;
+	return;
+    }
+    if (epsg_code == 3829) {
+	datum = img_DATUM_HUTZUSHAN1950;
+	utm_zone = 51;
+	return;
+    }
+    if (epsg_code >= 3148 && epsg_code <= 3149) {
+	datum = img_DATUM_INDIAN1960;
+	utm_zone = epsg_code - 3100;
+	return;
+    }
+    if (epsg_code >= 3041 + 51 && epsg_code <= 3041 + 55) {
+	datum = img_DATUM_TOKYO;
+	utm_zone = epsg_code - 3041;
+	return;
+    }
+    if (epsg_code > 32200 && epsg_code <= 32260) {
+	datum = img_DATUM_WGS72;
+	utm_zone = epsg_code - 32200;
+	return;
+    }
+    if (epsg_code > 32300 && epsg_code <= 32360) {
+	datum = img_DATUM_WGS72;
+	utm_zone = 32300 - epsg_code;
+	return;
+    }
+
+    // img_compass_utm_proj_str() also returns PROJ4 strings for NAD27 and
+    // NAD83 zones which don't have an EPSG code, so handle these too here:
+    //
+    // "+proj=utm +zone=%d +datum=NAD27 +units=m +no_defs +type=crs"
+    // "+proj=utm +zone=%d +datum=NAD83 +units=m +no_defs +type=crs"
+    // "+proj=utm +zone=%d +south +datum=NAD27 +units=m +no_defs +type=crs"
+    // "+proj=utm +zone=%d +south +datum=NAD83 +units=m +no_defs +type=crs"
+    if (strncmp(input_datum, "+proj=utm +zone=", 16) == 0) {
+	const char * p = input_datum + 16;
+	int zone = 0;
+	while (isdigit((unsigned char)*p)) {
+	    zone = zone * 10 + (*p - '0');
+	    ++p;
+	}
+	if (zone >= 1 && zone <= 60) {
+	    if (strncmp(p, " +south", 7) == 0) {
+		p += 7;
+		zone = -zone;
+	    }
+	    if (strncmp(p, " +datum=NAD", 11) == 0 &&
+		strcmp(p + 13, " +units=m +no_defs +type=crs") == 0) {
+		p += 11;
+		if (memcmp(p, "27", 2) == 0) {
+		    datum = img_DATUM_NAD27;
+		    utm_zone = zone;
+		    return;
+		}
+		if (memcmp(p, "83", 2) == 0) {
+		    datum = img_DATUM_NAD83;
+		    utm_zone = zone;
+		    return;
+		}
+	    }
+	}
+    }
+}
 
 const int *
 PLT::passes() const
@@ -775,6 +920,28 @@ PLT::header(const char *title, time_t,
    max_A = max_z / METRES_PER_FOOT;
    fprintf(fh, "Z %.3f %.3f %.3f %.3f %.3f %.3f\r\n",
 	   min_N, max_N, min_E, max_E, min_A, max_A);
+   if (utm_zone) {
+       // The file format doesn't seem to specify the ordering of `O` and `G`, but
+       // Compass always seems to write `G` before `O` so follow this lead to
+       // try to maximise compatibility with other programs parsing this format.
+       static const char * compass_datum_names[] = {
+	   "",
+	   "Adindan",
+	   "Arc 1950",
+	   "Arc 1960",
+	   "Cape",
+	   "European 1950",
+	   "Geodetic 1949",
+	   "Hu Tzu Shan",
+	   "Indian",
+	   "North American 1927",
+	   "North American 1983",
+	   "Tokyo",
+	   "WGS 1972",
+	   "WGS 1984",
+       };
+       fprintf(fh, "G%d\r\nO%s\r\n", utm_zone, compass_datum_names[datum]);
+   }
    fprintf(fh, "N%s D 1 1 1 C%s\r\n", survey ? survey : "X",
 	   (title && title[0]) ? title : "X");
 }
@@ -1320,7 +1487,7 @@ Export(const wxString &fnm_out, const wxString &title,
 	   break;
        }
        case FMT_PLT:
-	   filt = new PLT;
+	   filt = new PLT(model.GetCSProj().c_str());
 	   show_mask |= FULL_COORDS;
 	   break;
        case FMT_POS:

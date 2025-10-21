@@ -302,14 +302,14 @@ from the command line via ``survexport --plt``.
 This export was originally added to allow importing data from Survex into
 Carto.  The principal author of Carto has sadly died and it seems Carto is no
 longer actively developed, but we've left this support in place in case it is
-useful - the generated files can be used with Compass itself for example,
-though they are currently rather crudely structured.  Here are some notes on
-this support:
+useful - the generated files can be used with Compass itself for example.
+Here are some notes on this support:
 
-- The whole Survex survey tree is exported as a single survey.
+- The whole Survex survey tree is currently exported as a single survey in
+  the PLT file.
 
 - Compass station names can't contain spaces, so any spaces (and also ASCII
-  control characters) are in station names are replaced by ``%`` follow by two
+  control characters) in station names are replaced by ``%`` follow by two
   lowercase hex digits giving the byte value (like the escaping used in URLs).
   ``%`` itself is also escaped as ``%25``.
 
@@ -341,5 +341,9 @@ this support:
 - Survex's "duplicate" leg flag is mapped to Compass shot flag ``L``.  Since
   Survex 1.4.10.
 
-- The Datum and UTM zone information is not currently set in exported PLT
-  files.
+- The Datum and UTM zone information is set if the Survex data has a coordinate
+  system set which is expressed as an ``EPSG:nnnn`` code which corresponds to
+  a UTM zone in a datum supported by Compass, or a PROJ4 string which matches
+  those which Survex generates when processing Compass and Walls data which
+  specifies a NAD27 or NAD83 UTM zone which doesn't have an EPSG code.  Since
+  Survex 1.4.18.
