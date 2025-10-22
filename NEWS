@@ -92,7 +92,7 @@ Changes in 1.4.17 (2025-03-20):
 * aven: Add support for exaggerating Z.  You can now set a Z scale factor
   from 0.1 to 10.0 via a new widget on the toolbar.  Fixes #49.
 
-* aven: The cavern log window now choses foreground and background colours
+* aven: The cavern log window now chooses foreground and background colours
   based on the desktop's light mode/dark mode setting.  Previously it
   used the default window background colour but always used black text, which
   made it hard to read with a dark desktop theme.  (The wxWidgets API to detect
@@ -764,7 +764,7 @@ Changes in 1.4.9 (2024-07-04):
     it can be read from the filing system and is geo-referenced vector data -
     see https://gdal.org/drivers/vector/index.html for a list.  Currently the
     dialog to select a file defaults to showing GPX, KML, GeoJSON and shape
-    files - set the filter to "All Files" to chose other formats.
+    files - set the filter to "All Files" to choose other formats.
 
   + Reimplement display of cavern output.  The old version turned the log into
     HTML and displayed it using wxHtmlWindow, but that adds a lot of overhead
@@ -3756,7 +3756,7 @@ Changes in 1.2.4 (2012-01-01):
     to abort on others.  This is now fixed, and there's a check in place to
     help avoid similar issues in future. (ticket#34)
 
-  + Always use metres or feet for the depth colour key, and chose a consistent
+  + Always use metres or feet for the depth colour key, and choose a consistent
     precision by looking at the depth range. (ticket#30)
 
   + Show the depth units below the colour bar rather than after every value.
