@@ -657,7 +657,7 @@ cmd_set(void)
 /*FIXME	{"CLOSE",     SPECIAL_CLOSE }, */
 	{"COMMENT",   SPECIAL_COMMENT },
 	{"DECIMAL",   SPECIAL_DECIMAL },
-	{"EOL",       SPECIAL_EOL }, /* EOL won't work well */
+	{"EOL",       SPECIAL_EOL },
 	{"KEYWORD",   SPECIAL_KEYWORD },
 	{"MINUS",     SPECIAL_MINUS },
 	{"NAMES",     SPECIAL_NAMES },
@@ -729,13 +729,13 @@ cmd_set(void)
 	    set_pos(&fp);
 	    break;
 	 }
-	 hex = isdigit(ch) ? ch - '0' : tolower(ch) - 'a';
+	 hex = isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10;
 	 nextch();
 	 if (!isxdigit(ch)) {
 	    set_pos(&fp);
 	    break;
 	 }
-	 hex = hex << 4 | (isdigit(ch) ? ch - '0' : tolower(ch) - 'a');
+	 hex = hex << 4 | (isdigit(ch) ? ch - '0' : tolower(ch) - 'a' + 10);
 	 char_to_set = hex;
       } else {
 	 break;

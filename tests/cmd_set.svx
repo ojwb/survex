@@ -1,4 +1,4 @@
-; pos=yes warn=0
+; pos=yes warn=1
 *begin
 ; This should be enough to hint the output separator
 *set separator :
@@ -40,4 +40,13 @@
 *set decimal ,
 *set names .
 1 3.1 1,00 200 -01,5
+*end
+*begin ; Check EOL works and that parsing a-f after x is no longer buggy.
+*set eol ^^;this comment should continue until the caret before the next *set
+
+*fix should_be_ignored 0 0 0
+
+^*set eol x0a
+
+*fix unused 0 0 0 ; trigger a warning to check line numbering
 *end
