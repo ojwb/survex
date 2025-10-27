@@ -13,14 +13,15 @@ Calculating trailing traverses...
 ./mixedeols.svx:2: warning: Unused fixed point "1"
 ./mixedeols.svx:7: warning: Unused fixed point "2"
 ./mixedeols.svx:10: warning: Unused fixed point "3"
+./mixedeols.svx:13: warning: Unused fixed point "4"
 
 Calculating statistics...
 
-Survey contains 3 survey stations, joined by 0 legs.
+Survey contains 4 survey stations, joined by 0 legs.
 There are 0 loops.
-Survey has 3 connected components.
+Survey has 4 connected components.
 Total length of survey legs =    0.00m (   0.00m adjusted)
 Total plan length of survey legs =    0.00m
 Total vertical length of survey legs =    0.00m
 
-There were 3 warning(s).
+There were 4 warning(s).

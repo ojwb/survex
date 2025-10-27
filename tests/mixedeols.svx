@@ -1,4 +1,4 @@
-; pos=no warn=3
+; pos=no warn=4
 *fix 1 0 0 0
 ; This file has erratic line endings, which used to confuse cavern's line
 ; counting in some cases - we sprinkle in unused *fix commands to generate
@@ -8,3 +8,6 @@
 
 
 *fix 3 0 0 0
+
+
+*fix 4 0 0 0
