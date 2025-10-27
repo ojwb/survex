@@ -94,7 +94,7 @@ cmd_export_bad.svx cmd_export_bad.out\
 cmd_fix_bad.svx cmd_fix_bad.out\
 cmd_fix_bad2.svx cmd_fix_bad2.out\
 cmd_sd.svx cmd_sd_bad.svx cmd_sd_bad.out\
-cmd_set.svx cmd_set.pos\
+cmd_set.svx cmd_set.out cmd_set.pos\
 cmd_set_bad.svx cmd_set_bad.out\
 cmd_set_dot_in_name.svx cmd_set_dot_in_name.dump\
 unusedstation.svx exportnakedbegin.svx\
