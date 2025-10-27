@@ -5050,12 +5050,19 @@ data_normal(void)
 		  VAL(Tape) = 0.0;
 		  goto inches_only;
 	      }
-	      // Walls expects 2 or more - for an omitted value.
-	      if (ch != '-' || nextch() != '-') {
+	      if (ch != '-') {
+bad_walls_omit:
 		  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 		  /* Avoid also warning about omitted tape reading. */
 		  VAL(Tape) = 0;
 	      } else {
+		  filepos fp;
+		  get_pos(&fp);
+		  if (nextch() != '-') {
+		      // Walls expects 2 or more `-` for an omitted value.
+		      set_pos(&fp);
+		      goto bad_walls_omit;
+		  }
 		  while (nextch() == '-') { }
 	      }
 	  } else {
