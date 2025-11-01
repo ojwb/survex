@@ -132,6 +132,7 @@ utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
 wallsbaddatum.out wallsbaddatum.wpj\
 wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
+badomit.srv badomit.out\
 badopts.srv badopts.out\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos\
 nosurveyhanging.svx nosurveyhanging.out\

@@ -105,8 +105,7 @@ TESTS_=
  fixfeet.mak utm.mak\
  clptest.dat clptest.clp\
  walls.srv\
- badomit.srv badomit.out\
- badopts.srv\
+ badomit.srv badopts.srv\
  wallsbaddatum.wpj\
  wallsdecl.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\
