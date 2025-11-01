@@ -5041,7 +5041,9 @@ data_normal(void)
 	      return;
 	  }
 	  break;
-       case WallsSRVTape:
+       case WallsSRVTape: {
+	  filepos fp;
+	  get_pos(&fp);
 	  LOC(Tape) = ftell(file.fh);
 	  VAL(Tape) = read_numeric(true);
 	  if (VAL(Tape) == HUGE_REAL) {
@@ -5050,19 +5052,14 @@ data_normal(void)
 		  VAL(Tape) = 0.0;
 		  goto inches_only;
 	      }
-	      if (ch != '-') {
-bad_walls_omit:
+	      // Walls expects 2 or more `-` for an omitted value in this
+	      // context, so a single `-` is an error.
+	      if (ch != '-' || nextch() != '-') {
+		  set_pos(&fp);
 		  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
 		  /* Avoid also warning about omitted tape reading. */
 		  VAL(Tape) = 0;
 	      } else {
-		  filepos fp;
-		  get_pos(&fp);
-		  if (nextch() != '-') {
-		      // Walls expects 2 or more `-` for an omitted value.
-		      set_pos(&fp);
-		      goto bad_walls_omit;
-		  }
 		  while (nextch() == '-') { }
 	      }
 	  } else {
@@ -5088,6 +5085,7 @@ inches_only:
 	  WID(Tape) = ftell(file.fh) - LOC(Tape);
 	  VAR(Tape) = var(Q_LENGTH);
 	  break;
+       }
        case WallsSRVComp: {
 	  skipblanks();
 	  LOC(Comp) = ftell(file.fh);
