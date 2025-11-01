@@ -1,0 +1,29 @@
+./badomit.srv:3:5: error: Expecting numeric field, found "-"
+ B C - 4 5
+     ^
+./badomit.srv:4:5: error: Expecting numeric field, found "bad"
+ C D bad 4 5
+     ^~~
+./badomit.srv:2:1: info: Survey has no fixed points. Therefore I've fixed A at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 4 survey stations, joined by 3 legs.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+
+There were 0 warning(s) and 2 error(s) - no output files produced.
