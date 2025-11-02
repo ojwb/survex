@@ -419,14 +419,7 @@ GLACanvas::~GLACanvas()
 
 void GLACanvas::FirstShow()
 {
-    dpi_scale_factor = wxGLCanvas::GetDPIScaleFactor();
-
-    // Update our record of the client area size and centre.
-    GetClientSize(&x_size, &y_size);
-    x_size *= dpi_scale_factor;
-    y_size *= dpi_scale_factor;
-    if (x_size < 1) x_size = 1;
-    if (y_size < 1) y_size = 1;
+    UpdateSize();
 
     ctx.SetCurrent(*this);
     opengl_initialised = true;
@@ -637,45 +630,49 @@ void GLACanvas::SetScale(double scale)
     }
 }
 
-void GLACanvas::UpdateDPIScaleFactor()
-{
-    double new_dpi_scale_factor = wxGLCanvas::GetDPIScaleFactor();
-    if (new_dpi_scale_factor == dpi_scale_factor) return;
-
-    dpi_scale_factor = new_dpi_scale_factor;
-    for (auto& i : drawing_lists) {
-	i.invalidate_if(INVALIDATE_ON_HIDPI);
-    }
-}
-
 void GLACanvas::OnMove(wxMoveEvent & event)
 {
-    UpdateDPIScaleFactor();
+    UpdateSize();
     event.Skip();
 }
 
-void GLACanvas::OnSize(wxSizeEvent & event)
-{
-    UpdateDPIScaleFactor();
+void GLACanvas::UpdateSize() {
+    // Update our record of the DPI and client area size, and invalidate any
+    // cached lists which depend on anything that has changed.
+    unsigned int mask = 0;
 
-    wxSize size = event.GetSize();
+    double new_dpi_scale_factor = wxGLCanvas::GetDPIScaleFactor();
+    if (dpi_scale_factor != new_dpi_scale_factor) {
+	dpi_scale_factor = new_dpi_scale_factor;
+	mask |= INVALIDATE_ON_HIDPI;
+    }
 
-    int new_w = size.GetWidth() * dpi_scale_factor;
-    int new_h = size.GetHeight() * dpi_scale_factor;
+    int new_w, new_h;
+    GetClientSize(&new_w, &new_h);
+    new_w *= dpi_scale_factor;
+    new_h *= dpi_scale_factor;
     // The width and height go to zero when the panel is dragged right
     // across so we clamp them to be at least 1 to avoid problems.
     if (new_w < 1) new_w = 1;
     if (new_h < 1) new_h = 1;
-    unsigned int mask = 0;
-    if (new_w != x_size) mask |= INVALIDATE_ON_X_RESIZE;
-    if (new_h != y_size) mask |= INVALIDATE_ON_Y_RESIZE;
-    if (mask) {
+    if (x_size != new_w) {
 	x_size = new_w;
+	mask |= INVALIDATE_ON_X_RESIZE;
+    }
+    if (y_size != new_h) {
 	y_size = new_h;
+	mask |= INVALIDATE_ON_Y_RESIZE;
+    }
+    if (mask) {
 	for (auto& i : drawing_lists) {
 	    i.invalidate_if(mask);
 	}
     }
+}
+
+void GLACanvas::OnSize(wxSizeEvent & event)
+{
+    UpdateSize();
 
     event.Skip();
 

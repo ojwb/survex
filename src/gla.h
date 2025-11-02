@@ -174,6 +174,8 @@ class GLACanvas : public wxGLCanvas {
 
     bool CheckVisualFidelity(const unsigned char * target) const;
 
+    void UpdateSize();
+
 public:
     GLACanvas(wxWindow* parent, int id);
     ~GLACanvas();
@@ -326,7 +328,6 @@ public:
 	return dpi_scale_factor;
     }
 
-    void UpdateDPIScaleFactor();
     void OnMove(wxMoveEvent & event);
 
     void OnSize(wxSizeEvent & event);
