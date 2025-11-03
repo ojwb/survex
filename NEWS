@@ -1,4 +1,10 @@
-up to: 136a5271b1737f55e939599f1db60c7a3fc33de4
+up to: 8c1ec3a57fc43e076555b1f461644bf94fec6a10
+
+    Define wxUSE_RC_MANIFEST
+    It seems this also needs to be defined for wxUSE_DPI_AWARE_MANIFEST
+    to have any effect.
+
+    cavern.tst: Test more mixed EOL cases
 
     Turn off aven+survexport tests on mingw
     We can't seem to run these programs during the build now.  This
@@ -25,7 +31,7 @@ up to: 136a5271b1737f55e939599f1db60c7a3fc33de4
     mingw.  We don't support building with MSVC, so hardcoding `windres`
     here isn't really a problem in practice.
 
-Changes in 1.4.18 (2025-10-??):
+Changes in 1.4.18 (2025-11-??):
 
 * aven: Fix "Enter" in search control to zoom to results.  This was broken
   by the switch to wxSearchCtrl in 1.4.17.
@@ -37,10 +43,15 @@ Changes in 1.4.18 (2025-10-??):
   compass, clino, colour key) on HiDPI monitors.  Fixes #144, reported by Juan
   Corrin.
 
+* aven/survexport: Set UTM zone and datum in exported Compass PLT.
+
 * cavern: Avoid duplicate errors/warnings with unconnected data.  Since 1.4.10,
   unconnected data is only a warning but that resulted in us running some
   checks on the survey tree twice, which could result in duplicate
   errors/warnings.
+
+* cavern: Fix parsing of hex digits in *set.  Hex digits a-f were incorrectly
+  being handled as 0-5, so 0x0a was byte 0 not byte 10.
 
 * cavern: We now track the column as well as file:line where a station or
   survey name was used, so diagnostics which use these locations now report
@@ -48,6 +59,9 @@ Changes in 1.4.18 (2025-10-??):
 
 * cavern: Show context if proj can't convert coords.  We only do this for .svx
   files currently as it is more complex for Compass and Walls data.
+
+* cavern: Fix reported column for error for `-` for Walls tape field.
+  In this context, Walls requires 2 or more `-` to indicate an omitted field.
 
 * cavern: Compass MAK file parsing improvements:
 
@@ -74,6 +88,10 @@ Changes in 1.4.18 (2025-10-??):
   don't need the locking as we don't do multithreaded file I/O).
 
 * (Microsoft Windows version): Fix compiler warning in wrapaven.c.
+
+* Manual: Document that *set eol default includes x1A (Ctrl-Z) to provide
+  compatibility with old DOS text files (it always has done but was missing
+  from the documentation).
 
 * Merge updates to Russian translation.
 
