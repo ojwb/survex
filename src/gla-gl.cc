@@ -649,8 +649,11 @@ void GLACanvas::UpdateSize() {
 
     int new_w, new_h;
     GetClientSize(&new_w, &new_h);
-    new_w *= dpi_scale_factor;
-    new_h *= dpi_scale_factor;
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+    auto content_scale_factor = GetContentScaleFactor();
+    new_w *= content_scale_factor;
+    new_h *= content_scale_factor;
+#endif
     // The width and height go to zero when the panel is dragged right
     // across so we clamp them to be at least 1 to avoid problems.
     if (new_w < 1) new_w = 1;

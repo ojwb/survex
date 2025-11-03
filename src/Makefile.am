@@ -61,11 +61,13 @@ aven_LDADD += avenrc.o
 # empty string with current mingw.  We don't support building with MSVC, so
 # hardcoding `windres` here isn't really a problem in practice.
 avenrc.o: $(srcdir)/aven.rc ../lib/icons/aven.ico
-	cd $(srcdir) && windres `$(WX_CONFIG) --cppflags` --include-dir '$(abs_top_builddir)/lib/icons' -o '$(abs_builddir)/avenrc.o' aven.rc
+	cd $(srcdir) && windres `$(WX_CONFIG) --cppflags` --include-dir '$(abs_top_builddir)/lib/icons' -o '$(abs_builddir)/avenrc.o' --define __WIN32__ --define __GNUWIN32__ aven.rc
 
 bin_PROGRAMS += wrapaven wrapsurvexport
 
 wrapaven_SOURCES = wrapaven.c
+# Link in the resources so wrapper gets aven's icon.
+wrapaven_LDADD = avenrc.o
 wrapaven_LDFLAGS = -mwindows -municode
 
 wrapsurvexport_SOURCES = wrapsurvexport.c

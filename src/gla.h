@@ -335,8 +335,14 @@ public:
     glaCoord GetVolumeDiameter() const { return m_VolumeDiameter; }
 
     void ScaleMouseEvent(wxMouseEvent& e) const {
-	e.SetX(e.GetX() * dpi_scale_factor);
-	e.SetY(e.GetY() * dpi_scale_factor);
+#ifdef wxHAS_DPI_INDEPENDENT_PIXELS
+	auto content_scale_factor = GetContentScaleFactor();
+
+	e.SetX(e.GetX() * content_scale_factor);
+	e.SetY(e.GetY() * content_scale_factor);
+#else
+	(void)e;
+#endif
     }
 
 private:
