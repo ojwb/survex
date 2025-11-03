@@ -1,37 +1,4 @@
-up to: 8c1ec3a57fc43e076555b1f461644bf94fec6a10
-
-    Define wxUSE_RC_MANIFEST
-    It seems this also needs to be defined for wxUSE_DPI_AWARE_MANIFEST
-    to have any effect.
-
-    cavern.tst: Test more mixed EOL cases
-
-    Turn off aven+survexport tests on mingw
-    We can't seem to run these programs during the build now.  This
-    appears to be due to some change in the Github CI images or a
-    dependency, as rebuilding the last good commit now fails.  There
-    is no error message, but bash shows exit code 127 which means it
-    failed to run the command.
-
-    Improve handling of VERBOSE in tests
-    Previously VERBOSE showed output from all testcases, even ones which
-    passed.  Now we only show output from testcases which fail for
-    VERBOSE=1.  Other non-empty values of VERBOSE continue to show all
-    output for cavern.tst and smoke.tst, but have the same effect as
-    VERBOSE=1 for other tests.
-
-    compare.tst: Add --help message
-    compare.tst: Compare cavern runs which fail too
-    compare.tst: Fix missing ` in script
-    This bug was introduced in 2014 so it seems this script isn't used
-    much but it seems useful to keep.
-
-    Work around --rescomp not working
-    wx-config --rescomp seems to now return an empty string with current
-    mingw.  We don't support building with MSVC, so hardcoding `windres`
-    here isn't really a problem in practice.
-
-Changes in 1.4.18 (2025-11-??):
+Changes in 1.4.18 (2025-11-04):
 
 * aven: Fix "Enter" in search control to zoom to results.  This was broken
   by the switch to wxSearchCtrl in 1.4.17.
@@ -83,11 +50,26 @@ Changes in 1.4.18 (2025-11-??):
     none of these commands appear to be able to contain text which could be
     interpreted as a different valid Compass MAK file command.
 
+* (Microsoft Windows version): The toolchain we use to build this version
+  seems to have changed in an unhelpful way.  We've got the build working
+  again, but when aven is launched a black window opens first, then the
+  aven window opens over the top.  The black window stays around until
+  aven is closed.  This extra window doesn't really get in the way of using
+  aven, but it's not supposed to be there.  It doesn't seem to be due to a
+  change in the Survex code as the 1.2.17 build doesn't do this, but a
+  rebuild of 1.2.17 with just the minimum of build system changes does.
+  If you have suitable skills help fixing this would be much appreciated.
+
 * (Microsoft Windows version): Use unlocked file I/O if available, like we
   already do for Unix.  Unlocked file I/O can be much faster in some cases (we
   don't need the locking as we don't do multithreaded file I/O).
 
 * (Microsoft Windows version): Fix compiler warning in wrapaven.c.
+
+* (Microsoft Windows version): Work around wx-config --rescomp no longer
+  working.  The mingw package of wxWidgets has started to return an empty
+  string here.  We don't support building with MSVC, so hardcoding `windres`
+  here isn't really a problem in practice.
 
 * Manual: Document that *set eol default includes x1A (Ctrl-Z) to provide
   compatibility with old DOS text files (it always has done but was missing
@@ -104,6 +86,27 @@ Changes in 1.4.18 (2025-11-??):
   to other things.  The last 3.0.x release was 3.0.5.1, released 2020-05-02.
   3.2.0 was released 2022-07-06 and it seems everywhere with wxWidgets packages
   upgraded to 3.2.x some time ago.
+
+* Test suite:
+
+  + cavern.tst: Test more mixed line ending cases.
+
+  + Turn off tests involving aven and survexport on mingw, as we can no longer
+    seem to run these programs during the build.  Rebuilding the last commit
+    that worked now fails, so this is not due to a change in the Survex code.
+    There is no error message, but bash shows exit code 127 which means it
+    failed to run the command.
+
+  + Improve handling of VERBOSE in tests.  Previously VERBOSE showed output
+    from all testcases, even ones which passed.  Now we only show output from
+    testcases which fail for VERBOSE=1.  Other non-empty values of VERBOSE
+    continue to show all output for cavern.tst and smoke.tst, but have the same
+    effect as VERBOSE=1 for other tests.
+
+  + compare.tst: Fix to actually work, support --help, and allow comparing
+    cavern runs which fail.  This script is not run as part of the automated
+    tests but assists manually comparing two versions of cavern on the same
+    data which can be helpful for debugging and during development.
 
 Changes in 1.4.17 (2025-03-20):
 
