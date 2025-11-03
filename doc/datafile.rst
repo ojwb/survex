@@ -1639,8 +1639,9 @@ Description
       The rest of the current line is a comment
    DECIMAL (``.``)
       Decimal point character
-   EOL (``x0Ax0D``)
-      End of line character
+   EOL (``x0Ax0Dx1A``)
+      End of line character (includes ``x1A`` to allow reading older DOS
+      text files which use Ctrl-Z as an end of file marker).
    KEYWORD (``*``)
       Introduces keywords
    MINUS (``-``)
