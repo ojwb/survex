@@ -1626,7 +1626,9 @@ Description
    since these characters are used for station names and for readings.
 
    In ``<character list>``, ``x`` followed by two hex digits means the
-   character with that hex value, e.g. ``x20`` is a space.
+   character with that hex value, e.g. ``x20`` is a space.  The handling of
+   hex digits ``a`` to ``f`` was buggy in older versions, but was fixed in
+   Survex 1.4.18.
 
    The complete list of items that can be set, the defaults (in brackets), and
    the meaning of the item, is:
