@@ -57,16 +57,16 @@ msgstr "Pre&zentace"
 msgid "Usage"
 msgstr "Použití"
 
-#: ../src/gfxcore.cc:4647
-#: ../src/gla-gl.cc:257
+#: ../src/gla-gl.cc:263
 #: n:389
 msgid "Out of memory"
 msgstr "Nedostatek paměti"
 
 #. TRANSLATORS: "%lu" is a placeholder for the number of bytes which Survex
 #. was trying to allocate space for.
-#: ../src/message.c:75
-#: n:1
+#: ../src/message.c:68
+#: ../src/message.c:1104
+#: n:24
 #, fuzzy, c-format
 msgid "Out of memory (couldn’t find %lu bytes)."
 msgstr "Nedostatek paměti (%lu bajtů)."
@@ -89,8 +89,8 @@ msgstr "Nedostatek paměti: “%s”"
 #.
 #. Here "survey" is a "cave map" rather than list of questions - it should be
 #. translated to the terminology that cavers using the language would use.
-#: ../src/commands.c:2607
-#: n:2
+#: ../src/commands.c:2841
+#: n:38
 #, c-format
 msgid "Survex version %s or greater required to process this survey data."
 msgstr ""
@@ -217,17 +217,18 @@ msgstr ""
 msgid "Compass reading may not be omitted except on plumbed legs"
 msgstr ""
 
-#: ../src/datain.c:5098
-#: ../src/datain.c:5226
+#: ../src/datain.c:5201
+#: ../src/datain.c:5329
 #: n:94
 msgid "Tape reading may not be omitted"
 msgstr ""
 
-#: ../src/datain.c:462
-#: ../src/datain.c:2556
-#: ../src/datain.c:2814
-#: ../src/datain.c:4338
-#: ../src/extend.c:460
+#: ../src/commands.c:2379
+#: ../src/datain.c:481
+#: ../src/datain.c:2581
+#: ../src/datain.c:2839
+#: ../src/datain.c:4430
+#: ../src/extend.c:467
 #: n:15
 msgid "End of line not blank"
 msgstr ""
@@ -268,7 +269,7 @@ msgstr ""
 msgid "Error reading file"
 msgstr "Chyba při načítání souboru"
 
-#: ../src/message.c:1239
+#: ../src/message.c:1180
 #: n:19
 msgid "Too many errors - giving up"
 msgstr ""
