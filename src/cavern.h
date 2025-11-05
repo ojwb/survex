@@ -412,8 +412,7 @@ extern img *pimg;
 extern real totadj, total, totplan, totvert;
 extern real min[9], max[9];
 extern prefix *pfxHi[9], *pfxLo[9];
-extern bool fQuiet; /* just show brief summary + errors */
-extern bool fMute; /* just show errors */
+extern int quiet; // 1 to turn off progress messages; >=2 turns off summary too.
 extern bool fSuppress; /* only output 3d file */
 
 /* macros */

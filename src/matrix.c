@@ -113,12 +113,10 @@ solve_matrix(node *list)
    real *M = osmalloc((((n * FACTOR * (n * FACTOR + 1)) >> 1)) * sizeof(real));
    real *B = osmalloc(n * FACTOR * sizeof(real));
 
-   if (!fQuiet) {
-      if (n == 1)
-	 out_current_action(msg(/*Solving one equation*/78));
-      else
-	 out_current_action1(msg(/*Solving %d simultaneous equations*/75), (int)n);
-   }
+   if (n == 1)
+      out_current_action(msg(/*Solving one equation*/78));
+   else
+      out_current_action1(msg(/*Solving %d simultaneous equations*/75), (int)n);
 
 #ifdef NO_COVARIANCES
    int dim = 2;

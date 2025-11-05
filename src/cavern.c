@@ -62,8 +62,7 @@ PJ * pj_cached = NULL;
 
 FILE *fhErrStat = NULL;
 img *pimg = NULL;
-bool fQuiet = false; /* just show brief summary + errors */
-bool fMute = false; /* just show errors */
+int quiet = 0; // 1 to turn off progress messages; >=2 turns off summary too.
 bool fSuppress = false; /* only output 3d file */
 static bool fLog = false; /* stdout to .log file */
 static bool f_warnings_are_errors = false; /* turn warnings into errors */
@@ -249,8 +248,7 @@ main(int argc, char **argv)
 	 break;
        }
        case 'q':
-	 if (fQuiet) fMute = 1;
-	 fQuiet = 1;
+	 ++quiet;
 	 break;
        case 's':
 	 fSuppress = 1;
@@ -314,7 +312,7 @@ main(int argc, char **argv)
       free(fnm);
    }
 
-   if (!fMute) {
+   if (quiet < 2) {
       const char *p = COPYRIGHT_MSG;
       puts(PRETTYPACKAGE" "VERSION);
       while (1) {
@@ -371,8 +369,8 @@ main(int argc, char **argv)
    if (fhErrStat) safe_fclose(fhErrStat);
 
    out_current_action(msg(/*Calculating statistics*/120));
-   if (!fMute) do_stats();
-   if (!fQuiet) {
+   if (quiet < 2) do_stats();
+   if (!quiet) {
       /* clock() typically wraps after 72 minutes, but there doesn't seem
        * to be a better way.  Still 72 minutes means some cave!
        * We detect if clock() could have wrapped and suppress CPU time

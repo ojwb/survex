@@ -1,6 +1,6 @@
 /* out.h
  * Header file for output stuff
- * Copyright (C) Olly Betts 2000,2001,2013
+ * Copyright (C) Olly Betts 2000,2001,2013,2025
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -16,5 +16,5 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#define out_current_action(S) if(fQuiet)(void)0;else printf("\n%s...\n", (S))
-#define out_current_action1(S,A) if(!fQuiet){putnl();printf(S,A);printf("...\n");}else(void)0
+#define out_current_action(S) if(quiet)(void)0;else printf("\n%s...\n", (S))
+#define out_current_action1(S,A) if(!quiet){putnl();printf(S,A);printf("...\n");}else(void)0
