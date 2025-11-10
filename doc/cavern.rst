@@ -38,8 +38,9 @@ OPTIONS
    Sets location for output files.
 
 ``-q``, ``--quiet``
-   Only show a brief summary (``--quiet --quiet`` or ``-qq`` will display
-   warnings and errors only).
+   Suppresses the messages indicating the current stage of processing.
+   Repeating this option (``--quiet --quiet`` or ``-qq``) this also suppresses
+   reporting the number of stations, legs, loops, and length totals.
 
 ``-s``, ``--no-auxiliary-files``
    do not create .err file.

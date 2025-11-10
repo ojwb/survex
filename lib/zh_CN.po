@@ -1680,7 +1680,8 @@ msgstr "设置输出文件的位置"
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:117
 #: n:163
-msgid "only show brief summary (-qq for errors only)"
+#, fuzzy
+msgid "fewer messages (-qq for even fewer)"
 msgstr "仅显示简要摘要（-qq仅用于错误）"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option

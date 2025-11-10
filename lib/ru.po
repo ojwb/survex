@@ -1680,7 +1680,8 @@ msgstr "указать местоположения для выходных фа
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:117
 #: n:163
-msgid "only show brief summary (-qq for errors only)"
+#, fuzzy
+msgid "fewer messages (-qq for even fewer)"
 msgstr "отображать только краткие итоги (-qq для отображения только ошибок)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option

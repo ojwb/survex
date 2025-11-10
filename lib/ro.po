@@ -1683,7 +1683,7 @@ msgstr ""
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:117
 #: n:163
-msgid "only show brief summary (-qq for errors only)"
+msgid "fewer messages (-qq for even fewer)"
 msgstr ""
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option

@@ -113,7 +113,7 @@ static struct help_msg help[] = {
    /* TRANSLATORS: --help output for cavern --output option */
    {HLP_ENCODELONG(2),	      /*set location for output files*/162, 0, 0},
    /* TRANSLATORS: --help output for cavern --quiet option */
-   {HLP_ENCODELONG(3),	      /*only show brief summary (-qq for errors only)*/163, 0, 0},
+   {HLP_ENCODELONG(3),	      /*fewer messages (-qq for even fewer)*/163, 0, 0},
    /* TRANSLATORS: --help output for cavern --no-auxiliary-files option */
    {HLP_ENCODELONG(4),	      /*do not create .err file*/164, 0, 0},
    /* TRANSLATORS: --help output for cavern --warnings-are-errors option */

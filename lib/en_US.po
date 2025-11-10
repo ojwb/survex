@@ -1680,8 +1680,8 @@ msgstr "set location for output files"
 #. TRANSLATORS: --help output for cavern --quiet option
 #: ../src/cavern.c:117
 #: n:163
-msgid "only show brief summary (-qq for errors only)"
-msgstr "only show brief summary (-qq for errors only)"
+msgid "fewer messages (-qq for even fewer)"
+msgstr "fewer messages (-qq for even fewer)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:119
