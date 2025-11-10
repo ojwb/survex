@@ -29,11 +29,11 @@ specify the prefix of a sub-survey to restrict reading to:
 Short and Long Options
 ======================
 
-Options have two forms: short (a dash followed by a single letter e.g. ``cavern
--q``) and long (two dashes followed by one or more words e.g. ``cavern
+Options can have two forms: short (a dash followed by a single letter e.g.
+``cavern -q``) and long (two dashes followed by one or more words e.g. ``cavern
 --quiet``).  The long form is generally easier to remember, while the short
 form is quicker to type.  Options are often available in both forms, but more
-obscure or potentially dangerous options may only have a long form.
+obscure or potentially destructive options may only have a long form.
 
 .. note:: Command line options are case sensitive, so ``-B`` and ``-b``
    are different (this didn't used to be the case before Survex 0.90).  Case
