@@ -13,7 +13,7 @@ noinst_HEADERS = cavern.h commands.h cmdline.h date.h datain.h debug.h\
  export3d.h exportfilter.h hpgl.h cavernlog.h aboutdlg.h aven.h avenpal.h\
  gfxcore.h json.h log.h mainfrm.h pos.h vector3.h wx.h\
  aventreectrl.h export.h model.h printing.h avenprcore.h img2aven.h\
- thgeomag.h thgeomagdata.h moviemaker-legacy.cc
+ thgeomag.h thgeomagdata.h
 
 LDADD = $(LIBOBJS)
 

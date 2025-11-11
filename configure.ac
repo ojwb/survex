@@ -227,7 +227,7 @@ AC_CHECK_SIZEOF([wxChar], [], [
 CFLAGS=$save_CFLAGS
 
 dnl Check for FFmpeg libraries.
-PKG_CHECK_MODULES([FFMPEG], [libavcodec libavformat libswscale libavutil], [
+PKG_CHECK_MODULES([FFMPEG], [libavcodec >= 57 libavformat libswscale libavutil], [
   AC_DEFINE([WITH_FFMPEG], [1], [Use FFmpeg for movie export])
   save_CXXFLAGS=$CXXFLAGS
   save_LIBS=$LIBS

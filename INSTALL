@@ -39,8 +39,9 @@ the corresponding runtime package too.
 * Optionally, GDAL is used to support reading geodata files.  If not available
   this feature is disabled.
 
-* Optionally, FFMPEG is used if available to implement Aven's movie export
-  feature.  If not available this feature is disabled.
+* Optionally, FFmpeg is used if available to implement Aven's movie export
+  feature.  You need libavcodec >= 57, which seems to correspond to FFmpeg
+  >= 3.2.
 
 Then at a shell prompt, unpack the source code, cd into the directory, and
 enter the following commands:

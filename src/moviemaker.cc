@@ -3,7 +3,7 @@
 //
 //  Class for writing movies from Aven.
 //
-//  Copyright (C) 2004-2024 Olly Betts
+//  Copyright (C) 2004-2025 Olly Betts
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -452,6 +452,6 @@ MovieMaker::get_error_string() const
 
 #else
 
-#include "moviemaker-legacy.cc"
+#error Need libavcodec 57 or newer (FFmpeg >= 3.2)
 
 #endif
