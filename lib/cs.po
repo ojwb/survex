@@ -201,7 +201,7 @@ msgstr ""
 #: n:12
 #, c-format
 msgid "Unknown command “%s”"
-msgstr ""
+msgstr "Neznámý příkaz “%s”"
 
 #. TRANSLATORS: Here "station" is a survey station, not a train station.
 #: ../src/netbits.c:434
@@ -1502,7 +1502,7 @@ msgstr ""
 #: ../src/cavernlog.cc:600
 #: n:446
 msgid "&Save Log"
-msgstr "&Uložit Log"
+msgstr "&Uložit záznamy"
 
 #. TRANSLATORS: Label for button in aven’s cavern log window which
 #. causes the survey data to be reprocessed.
@@ -2008,7 +2008,7 @@ msgstr ""
 #: ../src/gfxcore.cc:1164
 #: n:221
 msgid "Undated"
-msgstr ""
+msgstr "Bez data"
 
 #. TRANSLATORS: Used in the "colour key" for "colour by error" for surveys
 #. which aren’t part of a loop and so have no error information. Try to keep
@@ -2104,7 +2104,7 @@ msgstr ""
 #: ../src/mainfrm.cc:793
 #: n:234
 msgid "&Reverse Direction"
-msgstr ""
+msgstr "Opačný smě&r"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393
@@ -2166,12 +2166,12 @@ msgstr "Pohled"
 #: ../src/printing.cc:369
 #: n:256
 msgid "Elements"
-msgstr ""
+msgstr "Prvky"
 
 #: ../src/printing.cc:374
 #: n:410
 msgid "Export format"
-msgstr ""
+msgstr "Exportovat formát"
 
 #: ../src/printing.cc:439
 #: ../src/printing.cc:847
@@ -2186,7 +2186,7 @@ msgstr ""
 #: ../src/printing.cc:411
 #: n:258
 msgid "One page"
-msgstr ""
+msgstr "Jedna strana"
 
 #: ../src/mainfrm.cc:156
 #: ../src/printing.cc:446
@@ -2218,7 +2218,7 @@ msgstr ""
 #: ../src/printing.cc:492
 #: n:261
 msgid "Crosses"
-msgstr ""
+msgstr "Křížky"
 
 #: ../src/survexport.cc:146
 #: n:474
@@ -2293,12 +2293,12 @@ msgstr ""
 #: ../src/printing.cc:536
 #: n:477
 msgid "Clamp to ground"
-msgstr ""
+msgstr "Vztaženo k zemi"
 
 #: ../src/survexport.cc:156
 #: n:478
 msgid "clamp to ground"
-msgstr ""
+msgstr "vztaženo k zemi"
 
 #. TRANSLATORS: Used in the print dialog:
 #: ../src/printing.cc:456
@@ -2325,7 +2325,7 @@ msgstr ""
 #: ../src/printing.cc:555
 #: n:265
 msgid "Legend"
-msgstr ""
+msgstr "Vysvětlívky"
 
 #. TRANSLATORS: will be used in the print dialog - check this to print
 #. blank pages (otherwise they’ll be skipped to save paper)
@@ -2354,9 +2354,8 @@ msgstr ""
 
 #: ../src/mainfrm.cc:826
 #: n:271
-#, fuzzy
 msgid "&Crosses\tCtrl+X"
-msgstr "C&rosses\tCtrl+X"
+msgstr "&Křížky\tCtrl+X"
 
 #: ../src/mainfrm.cc:827
 #: n:297
@@ -2530,7 +2529,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:937
 #: n:274
-msgid "&Compass"
+msgid "&Kompas"
 msgstr ""
 
 #: ../src/mainfrm.cc:938
@@ -2548,7 +2547,7 @@ msgstr ""
 #: ../src/mainfrm.cc:942
 #: n:277
 msgid "&Scale Bar"
-msgstr ""
+msgstr "&Pruh s měřítkem"
 
 #: ../src/mainfrm.cc:918
 #: n:280
@@ -2801,7 +2800,7 @@ msgstr "%.2f V, %.2f S"
 #: n:339
 #, c-format
 msgid "From %s"
-msgstr ""
+msgstr "Od %s"
 
 #. TRANSLATORS: "H" is short for "Horizontal", "V" for "Vertical"
 #: ../src/mainfrm.cc:1891
@@ -3034,7 +3033,7 @@ msgstr "%s: S %.2f%s"
 #: ../src/mainfrm.cc:1105
 #: n:376
 msgid "Surveys"
-msgstr ""
+msgstr "Měření"
 
 #: ../src/mainfrm.cc:1106
 #: n:377
@@ -3057,7 +3056,7 @@ msgstr "Zobrazit vše"
 #: ../src/aventreectrl.cc:385
 #: n:246
 msgid "Hide others"
-msgstr ""
+msgstr "Schovat ostatní"
 
 #: ../src/aventreectrl.cc:389
 #: n:388
@@ -3104,7 +3103,7 @@ msgstr ""
 #: ../src/mainfrm.cc:758
 #: n:144
 msgid "Show &Log"
-msgstr ""
+msgstr "Zobrazit &záznamy"
 
 #: ../src/mainfrm.cc:761
 #: n:380
@@ -3182,7 +3181,7 @@ msgstr ""
 #: ../src/mainfrm.cc:129
 #: n:404
 msgid "Edit Waypoint"
-msgstr ""
+msgstr "Změna místa"
 
 #. TRANSLATORS: Note after "Scale" field in dialog to edit a waypoint
 #. in a presentation.
@@ -3196,7 +3195,7 @@ msgstr ""
 #: ../src/mainfrm.cc:175
 #: n:279
 msgid "Time: "
-msgstr ""
+msgstr "Čas: "
 
 #. TRANSLATORS: units+info after time field in dialog to edit a
 #. waypoint in a presentation.
@@ -3725,7 +3724,7 @@ msgstr ""
 #: ../src/mainfrm.cc:913
 #: n:347
 #~ msgid "&Preferences..."
-#~ msgstr ""
+#~ msgstr "&Nastavení..."
 
 #: n:348
 #~ msgid "Draw passage walls"
