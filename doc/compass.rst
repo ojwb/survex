@@ -309,22 +309,48 @@ Here are some notes on this support:
   the PLT file.
 
 - Compass station names can't contain spaces, so any spaces (and also ASCII
-  control characters) in station names are replaced by ``%`` follow by two
-  lowercase hex digits giving the byte value (like the escaping used in URLs).
-  ``%`` itself is also escaped as ``%25``.
+  control characters) in Survex station names are replaced.
 
-- The full Survex station name include survey prefixes is used - no attempt is
-  currently made to shorten station names to fit within the 12 character limit
-  documented for the Compass PLT format.  If you export a single survey the
-  names should be short enough, but exporting the whole of a complex survey
+  Since Survex 1.4.19, the replacements are ``^`` followed by another
+  character.  Byte value 0 becomes ``^@``, byte values 1 to 26 become ``^A`` to
+  ``^Z``, byte values 27 to 31 become ``^a`` to ``^e``, space becomes ``^_``
+  and ``^`` becomes ``^^`` (to ensure the mapping is reversible).  In real
+  world use, only space and ``^`` are at all likely to occur.
+
+  From Survex 1.2.1 to 1.4.18, a different system of replacements was used,
+  based on that used in URLs: each replacement was ``%`` follow by two lowercase
+  hex digits, e.g. space became ``%20``.  Additionally, ``%`` became ``%25``.
+  The drawback of this encoding was that it needed 3 characters to represent
+  each escaped one, which wass unhelpful as PLT format documents a 12 character
+  limit on station names.
+
+  Survex 1.2.0 and earlier didn't do any escaping.
+
+- Survex supports anonymous survey stations.  However we can't write these
+  as empty station names in Compass PLT (they aren't explicitly disallowed in
+  the format documentation, but Compass' viewer gives an error if you ask it to
+  read a PLT file with an empty station name).
+
+  Since Survex 1.4.19, each anonymous station gets given a unique name of
+  ``^`` followed by a number starting from one and incrementing for each
+  anonymous station.  (Note that these invented names can't collide with actual
+  station names because ``^`` is escaped to ``^^`` as documented above.)
+
+  From Survex 1.4.10 to 1.4.18, the unique names were instead ``%:`` followed
+  by the counter.
+
+  Survex 1.4.6 first implemented support for exporting anonymous stations to
+  PLT, but with names which typically exceeded the documented 12 character
+  limit of the format.
+
+  Survex 1.4.5 and earlier generated PLT files with empty station names, but
+  as noted above, at least Compass' viewer wouldn't read these.
+
+- The full Survex station name including survey prefixes is used - no attempt
+  is currently made to shorten station names to fit within the 12 character
+  limit documented for the Compass PLT format.  If you export a single survey
+  the names should be short enough, but exporting the whole of a complex survey
   project will likely give names longer than 12 characters.
-
-- Anonymous stations are given a name ``%:`` followed by a number starting from
-  one and incrementing for each anonymous station (Compass doesn't allow empty
-  station names, and these invented names can't collide with actual station
-  names).  Since Survex 1.4.10 (1.4.6 implemented support for exporting
-  anonymous stations to PLT, but with names which typically exceeded the
-  documented 12 character limit of the format).
 
 - Passage data is not included in the export (each exported leg has dummy LRUD
   readings of all ``-9`` which is needed to avoid a bug in some versions of

@@ -977,25 +977,39 @@ PLT::find_name_plt(const img_point *p)
     escaped.resize(0);
     if (*s == '\0') {
 	// Anonymous station - number sequentially using a counter.  We start
-	// the name with "%:" since we escape any % in a real station name
-	// below, but only insert % followed by two hex digits.
+	// the name with "^" which gives a unique name since we escape any ^ in
+	// a real station name below, but only insert ^ followed by one of
+	// @, A-Z, a-e, ^, _.
 	char buf[32];
-	snprintf(buf, sizeof(buf), "%%:%u", ++anon_counter);
+	snprintf(buf, sizeof(buf), "^%u", ++anon_counter);
 	escaped = buf;
 	return escaped.c_str();
     }
 
     // PLT format can't handle spaces or control characters, so escape them
-    // like in URLs (an arbitrary choice of escaping, but at least a familiar
-    // one and % isn't likely to occur in station names).
+    // as `^` followed by another character (which is a bit arbitrary, but `^`
+    // is not likely to occur in station names, the encoding is compact, and
+    // it is somewhat mnemonic since e.g byte 8 (Ctrl-H) -> `^H`, space ->
+    // `^_`, `^` -> `^^`
     const char * q;
     for (q = s; *q; ++q) {
 	unsigned char ch = *q;
-	if (ch <= ' ' || ch == '%') {
+	if (ch <= 32) {
 	    escaped.append(s, q - s);
-	    escaped += '%';
-	    escaped += "0123456789abcdef"[ch >> 4];
-	    escaped += "0123456789abcdef"[ch & 0x0f];
+	    if (ch == 32) {
+		escaped.append("^_");
+	    } else {
+		escaped += '^';
+		if (ch <= 26) {
+		    escaped += (ch + 0x40);
+		} else {
+		    escaped += (ch + 0x60 - 26);
+		}
+	    }
+	    s = q + 1;
+	} else if (ch == '^') {
+	    escaped.append(s, q - s);
+	    escaped.append("^^");
 	    s = q + 1;
 	}
     }
