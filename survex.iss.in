@@ -81,7 +81,14 @@ Source: "wrapaven.exe"; DestDir: "{app}"; DestName: "aven.exe"
 Source: "wrapsurvexport.exe"; DestDir: "{app}"; DestName: "survexport.exe"
 ; Also install wrapsurvexport.exe as 3dtopos.exe so existing Tunnel releases work.
 Source: "wrapsurvexport.exe"; DestDir: "{app}"; DestName: "3dtopos.exe"
-Source: "*.dll"; DestDir: "{app}"; Flags: skipifsourcedoesntexist
+; Always update installed DLLs if the files differ rather than checking the
+; embedded version information.  This avoids problems when DLLs change in an
+; upwardly but not downwardly compatible way but keep the same version number.
+; It also means downgrading gives an install more like installing the older
+; version from scratch would.  Our DLLs are all private and installed into our
+; own install directory so there are no concerns with breaking other installed
+; software.
+Source: "*.dll"; DestDir: "{app}"; Flags: ignoreversion skipifsourcedoesntexist
 Source: "*.svx"; DestDir: "{app}"
 Source: "*.ico"; DestDir: "{app}"
 Source: "*.pixelfont"; DestDir: "{app}"
