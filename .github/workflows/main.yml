@@ -212,6 +212,7 @@ jobs:
           ntldd:p
           gdal:p
           pkgconf:p
+        update: true # To get wxwidgets3.2-msw --rescomp fix
     - name: Install CCache
       uses: hendrikmuhs/ccache-action@v1
       with:
