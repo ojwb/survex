@@ -4,3 +4,6 @@
 ; this failed up to Survex 1.0.7:
 *set omit @
 2 3 11.00 090 @
+
+*data normal from to tape compass
+2 4 10.00 090
