@@ -1,3 +1,37 @@
+up to: 51b4ff51d6bc077bc4760ce649e3a4625197fad5
+
+Changes in 1.4.19 (2025-12-??):
+
+* aven/survexport: Rework PLT export to use 2 character escapes for spaces
+  and other characters which aren't valid in Compass station names.  We were
+  using 3 character escapes, but that's unhelpful since Compass has a 12
+  character station name limit.
+
+* cavern: Improve description of --quiet option.  Reported by Wookey.
+
+* (Microsoft Windows version): The installer now always updates DLLs it
+  installs rather than skipping DLLs which declare the same version number.
+  This avoids problems when DLLs change in an upwardly but not downwardly
+  compatible way but keep the same version number.  It also means downgrading
+  now gives an install more like installing the older version from scratch
+  would.  Our DLLs are all private and installed into our own install directory
+  so there are no concerns with breaking other installed software.  Fixes #145.
+  Reported by Footleg and Juan Corrin.
+
+* Fill in some missing Czech translations.
+
+* Update unofficial Inno Setup translations for the installer.
+
+* We now require at least FFmpeg >= 3.2 to build Survex.  This version was
+  released in 2016 so should be easily available everywhere now.
+
+* (Microsoft Windows version): Drop workaround for wx-config --rescomp not
+  working as this has now been fixed in the mingw package of wxWidgets.
+
+* Test suite:
+
+  + Add test coverage for `*data normal` without `clino`.
+
 Changes in 1.4.18 (2025-11-04):
 
 * aven: Fix "Enter" in search control to zoom to results.  This was broken
