@@ -1,0 +1,15 @@
+; pos=no warn=7
+*begin survey
+*instrument
+*instrument tape
+*instrument compass clino
+*instrument "compass" "#2"
+*instrument altitude "unclosed quotes
+*instrument left "unclosed
+; We deliberately skip the line after a bad role to avoid triggering multiple
+; warnings for one *instrument command in existing data from before this check
+; was implemented.
+*instrument lefts rights "red open reel tape"
+*fix 1 0 0 0
+1 2 1 0 0
+*end survey

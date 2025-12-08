@@ -1428,21 +1428,61 @@ INSTRUMENT
 ----------
 
 Syntax
-   ``*instrument <instrument> <identifier>``
+   ``*instrument <type>... <identifier>``
 
 Example
    ::
 
-       *instrument compass "CUCC 2"
-       *instrument clino "CUCC 2"
+       *instrument Compass #949847
+       *instrument Clino #240641
+       *instrument Tape CUCC#4
+
+       *instrument compass clino "CUCC Suunto Set #2"
        *instrument tape "CUCC Fisco Ranger open reel"
+
+       *instrument compass clino "Blue SAP #4"
+       *instrument tape "Bosch EDM"
+
+       *instrument insts "DistoX2 #1234"
+       *instrument notes "TopoDroid v 3.1.4"
 
 Validity
    valid at the start of a ``*begin``/``*end`` block.
 
 Description
    ``*instrument`` specifies the particular instruments used to perform a
-   survey.
+   survey.  It is useful to record these in case you later discover an
+   instrument is miscalibrated or faulty so you know which surveys are
+   affected.  Then you can either apply a correction (via `*calibrate`) or if
+   necessary go and resurvey.
+
+   ``<identifier>`` should include enough information to uniquely identify a
+   particular instrument.  It's usually in double quotes, but the quotes can be
+   omitted if it's a single word (strictly speaking, if it does not contain any
+   of the characters set as ``BLANK`` which are space, tab and comma by
+   default).  In the unlikely event of it being a single word which is a
+   valid instrument type, you'll also need to put double quotes around it.
+
+   The syntax of ``*instrument`` commands has been defined for a very long
+   time, but prior to Survex 1.4.19 there weren't any checks of the syntax.
+   Essentially ``*instrument`` used to be treated like a named comment line.
+   Survex 1.4.19 implemented format checking, and also extended the documented
+   format to allow multiple instrument types (to match Therion's implementation).
+
+   You'll get a warning for an empty ``*instrument`` or if you open but fail to
+   close double quotes around the instrument identifier.
+
+   ``<type>`` is now checked against an allowed list (the same list as
+   ``<role>`` in ``*team`` so see the ``*team`` documentation for the list of
+   valid instrument types; some team roles such as ``assistant`` don't really
+   make sense as instrument types, but we've chosen to follow Therion's lead
+   here for the benefit of people using both).  You'll get a warning if a type
+   is not recognised.
+
+   These diagnostic messages were made warnings to avoid breaking processing
+   of existing datasets which might contain ``*instrument`` lines which don't
+   conform with the defined syntax, or with this newly adopted list of
+   instrument types.
 
 See Also
    ``*begin``, ``*date``, ``*team``

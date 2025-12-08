@@ -2111,35 +2111,6 @@ cmd_include(void)
    free(pth);
 }
 
-static void
-cmd_sd(void)
-{
-   real sd, variance;
-   int units;
-   unsigned long qmask, m;
-   int quantity;
-   qmask = get_qlist(BIT(Q_DECLINATION));
-   if (!qmask) return; /* no quantities found - error already reported */
-
-   if (qmask == BIT(Q_DEFAULT)) {
-      default_grade(pcs);
-      return;
-   }
-   sd = read_numeric(false);
-   if (sd <= (real)0.0) {
-      compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
-      return;
-   }
-   units = get_units(qmask, false);
-   if (units == UNITS_NULL) return;
-
-   sd *= factor_tab[units];
-   variance = sqrd(sd);
-
-   for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
-      if (qmask & m) pcs->Var[quantity] = variance;
-}
-
 enum {
     ROLE_BACKTAPE,
     ROLE_BACKCOMPASS,
@@ -2202,6 +2173,72 @@ static const sztok role_tab[] = {
     {"UP",		ROLE_UP},
     {NULL,		-1}
 };
+
+static void
+cmd_instrument(void)
+{
+    int n_roles = 0;
+    while (true) {
+	filepos fp;
+	get_pos(&fp);
+	get_token();
+	int role = match_tok(role_tab, TABSIZE(role_tab));
+	if (role < 0) {
+	    if (n_roles > 0) {
+		set_pos(&fp);
+		break;
+	    }
+	    // Skip after warning to avoid triggering multiple warnings for one
+	    // *instrument command in existing data from before this check was
+	    // implemented.
+	    compile_diagnostic(DIAG_WARN|DIAG_TOKEN|DIAG_SKIP, /*Unknown instrument type “%s”*/536,
+			       s_str(&token));
+	    return;
+	}
+	++n_roles;
+    }
+
+    skipblanks();
+    string name = S_INIT;
+    if (!read_string_warning(&name)) {
+	skipline();
+	return;
+    }
+    s_free(&name);
+
+    skipblanks();
+    if (!isComm(ch) && !isEol(ch))
+	compile_diagnostic(DIAG_WARN|DIAG_TAIL, /*End of line not blank*/15);
+}
+
+static void
+cmd_sd(void)
+{
+   real sd, variance;
+   int units;
+   unsigned long qmask, m;
+   int quantity;
+   qmask = get_qlist(BIT(Q_DECLINATION));
+   if (!qmask) return; /* no quantities found - error already reported */
+
+   if (qmask == BIT(Q_DEFAULT)) {
+      default_grade(pcs);
+      return;
+   }
+   sd = read_numeric(false);
+   if (sd <= (real)0.0) {
+      compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_COL, /*Standard deviation must be positive*/48);
+      return;
+   }
+   units = get_units(qmask, false);
+   if (units == UNITS_NULL) return;
+
+   sd *= factor_tab[units];
+   variance = sqrd(sd);
+
+   for (quantity = 0, m = BIT(quantity); m <= qmask; quantity++, m <<= 1)
+      if (qmask & m) pcs->Var[quantity] = variance;
+}
 
 static void
 cmd_team(void)
@@ -3048,7 +3085,7 @@ static const cmd_fn cmd_funcs[] = {
    cmd_flags,
    cmd_include,
    cmd_infer,
-   skipline, /*cmd_instrument,*/
+   cmd_instrument,
 #ifndef NO_DEPRECATED
    cmd_prefix,
 #endif

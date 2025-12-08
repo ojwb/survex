@@ -1,11 +1,11 @@
 ; pos=no warn=0
 *begin it_all
 ; This was originally a test of various "dummy" commands which were treated
-; like comment lines, but we now actually parse most of these.  It is still
-; used as a simple file to include doubleinc.svx.
+; like comment lines, but we now actually parse these.  It is still used as a
+; simple file to include from doubleinc.svx.
 *copyright 2001 "Space Oddity Speleos"
 *date 1990.07-2001.09
-*instrument light "Jamie's magic torch"
+*instrument compass clino "Shetland Attack Pony"
 
 *ref "page 42 of 2001 survey book"
 

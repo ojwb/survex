@@ -1,0 +1,13 @@
+; pos=no warn=0
+*begin survey
+*instrument notes "yellow notebook #1"
+*instrument tape ruler
+; Check that an instrument type can start the description if quoted
+*instrument altitude "station height finder #1"
+; Check that an instrument type can start the description if quoted
+*instrument assistant "right"
+; All other *team roles should work here too
+*instrument BACKBEARING BACKCLINO BACKCOMPASS BACKGRADIENT BACKLENGTH BACKTAPE BEARING CEILING CLINO COMPASS COUNT COUNTER DEPTH DIMENSIONS DOG DOWN DZ EXPLORER FLOOR GRADIENT INSTRUMENTS INSTS LEFT LENGTH NOTEBOOK PICS PICTURES POSITION RIGHT STATION UP "swiss army survey instrument"
+*fix 1 0 0 0
+1 2 1 0 0
+*end survey

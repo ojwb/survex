@@ -401,6 +401,12 @@ msgstr "Unknown units “%s”"
 msgid "Unknown team role “%s”"
 msgstr "Unknown team role “%s”"
 
+#: ../src/commands.c:2195
+#: n:536
+#, c-format
+msgid "Unknown instrument type “%s”"
+msgstr "Unknown instrument type “%s”"
+
 #: ../src/commands.c:553
 #: n:479
 #, c-format

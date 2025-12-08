@@ -1,0 +1,46 @@
+./cmd_instruments_bad.svx:3:12: warning: Unknown instrument type ""
+ *instrument
+            ^
+./cmd_instruments_bad.svx:4:17: warning: Expecting string field
+ *instrument tape
+                 ^
+./cmd_instruments_bad.svx:5:26: warning: Expecting string field
+ *instrument compass clino
+                          ^
+./cmd_instruments_bad.svx:6:13: warning: Unknown instrument type ""
+ *instrument "compass" "#2"
+             ^
+./cmd_instruments_bad.svx:7:38: warning: Missing "
+ *instrument altitude "unclosed quotes
+                                      ^
+./cmd_instruments_bad.svx:8:27: warning: Missing "
+ *instrument left "unclosed
+                           ^
+./cmd_instruments_bad.svx:12:13: warning: Unknown instrument type "lefts"
+ *instrument lefts rights "red open reel tape"
+             ^~~~~
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    1.00m (   1.00m adjusted)
+Total plan length of survey legs =    1.00m
+Total vertical length of survey legs =    0.00m
+Vertical range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
+North-South range = 1.00m (from survey.2 at 1.00m to survey.1 at 0.00m)
+East-West range = 0.00m (from survey.2 at 0.00m to survey.2 at 0.00m)
+
+There were 7 warning(s).

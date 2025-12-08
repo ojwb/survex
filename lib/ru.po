@@ -401,6 +401,12 @@ msgstr "Неизвестная единица измерения “%s”"
 msgid "Unknown team role “%s”"
 msgstr "Неизвестная роль “%s”"
 
+#: ../src/commands.c:2195
+#: n:536
+#, c-format
+msgid "Unknown instrument type “%s”"
+msgstr ""
+
 #: ../src/commands.c:553
 #: n:479
 #, c-format
