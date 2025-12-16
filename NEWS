@@ -1,11 +1,12 @@
-up to: 51b4ff51d6bc077bc4760ce649e3a4625197fad5
-
-Changes in 1.4.19 (2025-12-??):
+Changes in 1.4.19 (2025-12-17):
 
 * aven/survexport: Rework PLT export to use 2 character escapes for spaces
   and other characters which aren't valid in Compass station names.  We were
   using 3 character escapes, but that's unhelpful since Compass has a 12
   character station name limit.
+
+* cavern: The syntax of *instrument commands is now checked and a warning
+  issued for problems.  The information in the command is still not yet used.
 
 * cavern: Improve description of --quiet option.  Reported by Wookey.
 
