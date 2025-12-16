@@ -2529,8 +2529,8 @@ msgstr ""
 
 #: ../src/mainfrm.cc:937
 #: n:274
-msgid "&Kompas"
-msgstr ""
+msgid "&Compass"
+msgstr "&Kompas"
 
 #: ../src/mainfrm.cc:938
 #: n:275
