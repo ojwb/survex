@@ -3,10 +3,10 @@ In file included from ./doubleinc.svx:3:
  *begin it_all
         ^~~~~~
 ./cmd_dummy.svx:2:8: info: Originally entered here
-./cmd_dummy.svx:12:6: warning: Station already fixed at the same coordinates
+./cmd_dummy.svx:16:6: warning: Station already fixed at the same coordinates
  *fix no_warnings_please reference 0 0 0
       ^~~~~~~~~~~~~~~~~~
-./cmd_dummy.svx:12:6: info: Previously fixed or equated here
+./cmd_dummy.svx:16:6: info: Previously fixed or equated here
 
 Removing trailing traverses...
 

@@ -6,6 +6,10 @@
 *copyright 2001 "Space Oddity Speleos"
 *date 1990.07-2001.09
 *instrument compass clino "Shetland Attack Pony"
+*team Hannibal
+*team "Face Man"
+*team B.A.
+*team "Murdoch"
 
 *ref "page 42 of 2001 survey book"
 
