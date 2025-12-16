@@ -184,7 +184,7 @@ assumptions:
   surface data, and shots flagged ``P`` "[do] not support passage
   modeling". Even if it's actually being used for a different
   purpose, Survex programs don't show surface legs by default so
-  the end effect is at least to not plot as intended.
+  the end effect is at least to not plot, which is what's intended.
 - Shot flag ``S`` is mapped to Survex's "splay" leg flag.
 - Surveys which indicate a depth gauge was used for azimuth
   readings are marked as ``STYLE_DIVING`` in the ``.3d`` file.
@@ -262,9 +262,9 @@ limitations and assumptions:
   is for surface data, and shots flagged ``P`` "[do] not support
   passage modeling". Even if it's actually being used for a
   different purpose, Survex programs don't show surface legs by
-  default so the end effect is at least to not plot as intended.
-  Stations are flagged as surface and/or underground based on
-  whether they are at the ends of legs flagged surface or
+  default so the end effect is at least to not plot, which is what's
+  intended.  Stations are flagged as surface and/or underground based
+  on whether they are at the ends of legs flagged surface or
   non-surface (a station at the boundary can be flagged as both).
 
 - Shot flag ``S`` is mapped to Survex's "splay" leg flag. A station
