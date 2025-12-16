@@ -2541,8 +2541,9 @@ msgstr ""
 #. corresponds to which depth, date, survey closure error, etc.
 #: ../src/mainfrm.cc:941
 #: n:276
+#, fuzzy
 msgid "Colour &Key"
-msgstr ""
+msgstr "Colour Ke&y"
 
 #: ../src/mainfrm.cc:942
 #: n:277
