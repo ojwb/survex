@@ -1437,12 +1437,15 @@ Example
        *instrument Clino #240641
        *instrument Tape CUCC#4
 
+    ::
        *instrument compass clino "CUCC Suunto Set #2"
        *instrument tape "CUCC Fisco Ranger open reel"
 
+    ::
        *instrument compass clino "Blue SAP #4"
        *instrument tape "Bosch EDM"
 
+    ::
        *instrument insts "DistoX2 #1234"
        *instrument notes "TopoDroid v 3.1.4"
 
