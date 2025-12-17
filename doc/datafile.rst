@@ -1144,8 +1144,8 @@ Syntax
 
 Description
    ``*default`` restores defaults for given settings.  This command is
-   deprecated - you should instead use: ``*calibrate default``, ``*data
-   default``, ``*units default``.
+   deprecated since Survex 0.92 - you should instead use: ``*calibrate
+   default``, ``*data default``, ``*units default``.
 
 See Also
    ``*calibrate``, ``*data``, ``*units``
@@ -1502,7 +1502,8 @@ Description
    ``*prefix`` sets the current survey.
 
 Caveats
-   ``*prefix`` is deprecated - you should use ``*begin`` and ``*end`` instead.
+   ``*prefix`` is deprecated since Survex 0.92 - you should use ``*begin`` and
+   ``*end`` instead.
 
 See Also
    ``*begin``, ``*end``
@@ -1694,7 +1695,8 @@ Description
    PLUS (``+``)
       Indicates positive number
    ROOT (``\``)
-      Prefix in force at start of current file (use of ``ROOT`` is deprecated)
+      Prefix in force at start of current file (use of ``ROOT`` is deprecated
+      since Survex 0.97)
    SEPARATOR (``.``)
       Level separator in prefix hierarchy
 
