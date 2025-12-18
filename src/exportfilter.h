@@ -23,7 +23,7 @@
 #define SURVEX_EXPORTFILTER_H
 
 #include <stdio.h>
-#include "wx.h"
+#include <wx/wx.h>
 
 #include "img_for_survex.h"
 

@@ -40,7 +40,6 @@
 #include <stdio.h>
 
 #include <wx/confbase.h>
-#include <wx/image.h>
 #if wxUSE_DISPLAY
 // wxDisplay was added in wx 2.5; but it may not be built for mingw (because
 // the header seems to be missing).

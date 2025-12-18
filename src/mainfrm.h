@@ -24,7 +24,7 @@
 #ifndef mainfrm_h
 #define mainfrm_h
 
-#include "wx.h"
+#include <wx/wx.h>
 #include <wx/docview.h> // for m_FileHistory
 #include <wx/listctrl.h>
 #include <wx/notebook.h>
@@ -32,6 +32,7 @@
 #include <wx/printdlg.h>
 #include <wx/srchctrl.h>
 #include <wx/spinctrl.h>
+#include <wx/splitter.h>
 
 #include "aventreectrl.h"
 #include "gfxcore.h"

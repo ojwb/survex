@@ -24,12 +24,12 @@
 #ifndef gla_h
 #define gla_h
 
-#include <string>
-#include <vector>
+#include <wx/wx.h>
+#if !wxUSE_GLCANVAS
+# error wxWidgets must be built with wxUSE_GLCANVAS set to 1
+#endif
+#include <wx/glcanvas.h>
 
-using namespace std;
-
-#include "wx.h"
 #include "vector3.h"
 
 #include "glbitmapfont.h"
@@ -45,6 +45,11 @@ using namespace std;
 #elif defined HAVE_OPENGL_GLU_H
 # include <OpenGL/glu.h>
 #endif
+
+#include <string>
+#include <vector>
+
+using namespace std;
 
 class GfxCore;
 

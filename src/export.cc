@@ -24,8 +24,8 @@
 
 #include "export.h"
 
-#include "wx.h"
-#include <wx/utils.h>
+#include <wx/wx.h>
+
 #include "export3d.h"
 #include "exportfilter.h"
 #include "gdalexport.h"

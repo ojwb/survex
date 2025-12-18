@@ -28,7 +28,7 @@
 #include "img_for_survex.h"
 #include "message.h"
 #include "vector3.h"
-#include "wx.h"
+#include <wx/treectrl.h>
 
 // macOS headers pollute the global namespace with generic names like
 // "class Point", which clashes with our "class Point".  So for __WXMAC__

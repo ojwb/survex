@@ -36,9 +36,9 @@
 #include "useful.h"
 
 #include <wx/confbase.h>
+#include <wx/dnd.h>
 //#include <wx/filefn.h>
 #include <wx/filename.h>
-#include <wx/image.h>
 #include <wx/imaglist.h>
 #include <wx/process.h>
 #include <wx/regex.h>

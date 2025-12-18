@@ -25,7 +25,8 @@
 #ifndef aventreectrl_h
 #define aventreectrl_h
 
-#include "wx.h"
+#include <wx/wx.h>
+#include <wx/treectrl.h>
 
 #include "model.h"
 

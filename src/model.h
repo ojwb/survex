@@ -24,7 +24,7 @@
 #ifndef model_h
 #define model_h
 
-#include "wx.h"
+#include <wx/wx.h>
 
 #include "labelinfo.h"
 #include "vector3.h"

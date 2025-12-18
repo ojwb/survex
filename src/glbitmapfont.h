@@ -23,7 +23,7 @@
 #ifndef GLBITMAPFONT_H_INCLUDED
 #define GLBITMAPFONT_H_INCLUDED
 
-#include "wx.h"
+#include <wx/wx.h>
 
 class BitmapFont {
     enum {

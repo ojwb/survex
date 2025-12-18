@@ -21,7 +21,7 @@
 #ifndef survex_included_avenprcore_h
 #define survex_included_avenprcore_h
 
-#include <wx.h>
+#include <wx/wx.h>
 #include "export.h"
 
 /* 1:<DEFAULT_SCALE> is the default scale */

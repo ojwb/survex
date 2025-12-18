@@ -17,6 +17,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "wx.h"
+#include <wx/wx.h>
 
 extern int name_cmp(const wxString &a, const wxString &b, int separator);

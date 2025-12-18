@@ -44,7 +44,6 @@
 
 #include <wx/confbase.h>
 #include <wx/wfstream.h>
-#include <wx/image.h>
 #include <wx/zipstrm.h>
 
 #ifdef HAVE_GDAL

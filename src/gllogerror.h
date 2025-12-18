@@ -21,7 +21,7 @@
 //  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-#include "wx.h"
+#include <wx/wx.h>
 
 void log_gl_error(const wxChar * str, GLenum error_code);
 

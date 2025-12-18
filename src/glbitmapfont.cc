@@ -38,7 +38,7 @@
 
 #include "gllogerror.h"
 #include "useful.h"
-#include "wx.h"
+#include <wx/wx.h>
 
 #include <cerrno>
 #include <cstdint>

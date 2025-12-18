@@ -23,7 +23,7 @@
 #define SURVEX_INCLUDED_EXPORT_H
 
 #include "img_for_survex.h"
-#include "wx.h"
+#include <wx/wx.h>
 
 class Model;
 class SurveyFilter;

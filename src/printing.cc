@@ -25,8 +25,6 @@
 #include <wx/print.h>
 #include <wx/printdlg.h>
 #include <wx/spinctrl.h>
-#include <wx/radiobox.h>
-#include <wx/statbox.h>
 #include <wx/valgen.h>
 
 #include <algorithm>

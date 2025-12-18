@@ -34,7 +34,7 @@
 #include "guicontrol.h"
 #include "labelinfo.h"
 #include "vector3.h"
-#include "wx.h"
+#include <wx/wx.h>
 #include "gla.h"
 
 #include <list>

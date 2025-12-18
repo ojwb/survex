@@ -26,9 +26,7 @@
 #include "useful.h"
 #include "avenprcore.h"
 
-#if defined __WXMSW__ || defined __WXMAC__
-# include <wx/dcprint.h>
-#else
+#if !(defined __WXMSW__ || defined __WXMAC__)
 # include <wx/dcps.h>
 #endif
 #include <wx/print.h>

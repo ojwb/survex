@@ -24,7 +24,7 @@
 #ifndef aboutdlg_h
 #define aboutdlg_h
 
-#include "wx.h"
+#include <wx/wx.h>
 
 enum {
     about_TIMER = 1000

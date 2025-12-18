@@ -21,7 +21,7 @@
 #ifndef SURVEX_CAVERNLOG_H
 #define SURVEX_CAVERNLOG_H
 
-#include "wx.h"
+#include <wx/wx.h>
 #include <wx/process.h>
 
 #include <string>

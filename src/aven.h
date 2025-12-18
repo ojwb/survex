@@ -41,7 +41,11 @@ void aven_v_report(int severity, const char *fnm, int line, int en,
 #ifdef __cplusplus
 
 #include "message.h"
-#include "wx.h"
+
+#include <wx/wx.h>
+#if !wxCHECK_VERSION(3,2,0)
+# error We support building with wxWidgets 3.2.0 or newer
+#endif
 
 #include <string>
 

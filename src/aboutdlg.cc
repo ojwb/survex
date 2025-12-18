@@ -30,7 +30,6 @@
 
 #include <wx/clipbrd.h>
 #include <wx/confbase.h>
-#include <wx/image.h>
 
 BEGIN_EVENT_TABLE(AboutDlg, wxDialog)
     EVT_TIMER(about_TIMER, AboutDlg::OnTimer)
