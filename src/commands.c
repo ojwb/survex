@@ -1995,6 +1995,8 @@ cmd_cartesian(void)
     pcs->cartesian_north = north;
     pcs->cartesian_rotation = 0.0;
 
+    do_legacy_token_warning();
+
     skipblanks();
     if (!isEol(ch) && !isComm(ch)) {
 	real rotation = read_numeric(false);
