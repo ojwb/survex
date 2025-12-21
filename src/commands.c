@@ -2159,6 +2159,7 @@ static const sztok role_tab[] = {
     {"DZ",		ROLE_ALTITUDE},
     {"EXPLORER",	ROLE_EXPLORER},
     {"FLOOR",		ROLE_DOWN},
+    {"GPS",		ROLE_POSITION},
     {"GRADIENT",	ROLE_CLINO},
     {"INSTRUMENTS",	ROLE_INSTRUMENTS},
     {"INSTS",		ROLE_INSTRUMENTS},

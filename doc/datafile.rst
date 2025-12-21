@@ -1771,37 +1771,42 @@ Description
    alternative names for the same thing).  The intended meanings are noted
    to encourage consistent usage:
 
-      =========== ============ ============================================
-      Role        Alias        Intended meaning
-      =========== ============ ============================================
-      tape        length       Measured leg lengths
-      compass     bearing      Measured bearings
-      clino       gradient     Measured vertical angles
-      backtape    backlength   Like ``tape`` but for backsights
-      backcompass backbearing  Like ``compass`` but for backsights
-      backclino   backgradient Like ``clino`` but for backsights
-      instruments insts        All instruments: both compass and clino; use
-                               for all-in-one instruments such as Disto-X.
-      counter     count        Topofil length measurements
-      depth                    Measured differences in height between stations,
-                               e.g. underwater with a diver's depth gauge, or
-                               above water with a manometer
-      station                  Added markers at stations
-      position                 Recorded absolute positions of stations (e.g.
-                               fixed surface stations with a GPS)
-      notes       notebook     Recorded instrument readings
-      pictures    pics         Drew sketches
-      assistant   dog          General helper (e.g. held the end of the
-                               tape on stations)
-      altitude    dz           Recorded the altitudes of stations (e.g. with an
-                               altimeter)
-      dimensions               Measured all passage dimensions
-      left                     Measured ``left`` passage dimension
-      right                    Measured ``right`` passage dimension
-      up          ceiling      Measured ``up`` passage dimension
-      down        floor        Measured ``down`` passage dimension
-      explorer                 Explored the area of cave being surveyed
-      =========== ============ ============================================
+      =============== ================ ========================================
+      Role            Alias            Intended meaning
+      =============== ================ ========================================
+      ``tape``        ``length``       Measured leg lengths
+      ``compass``     ``bearing``      Measured bearings
+      ``clino``       ``gradient``     Measured vertical angles
+      ``backtape``    ``backlength``   Like ``tape`` but for backsights
+      ``backcompass`` ``backbearing``  Like ``compass`` but for backsights
+      ``backclino``   ``backgradient`` Like ``clino`` but for backsights
+      ``instruments`` ``insts``        All instruments: both compass and clino;
+                                       use for all-in-one instruments such as
+                                       Disto-X.
+      ``counter``     ``count``        Topofil length measurements
+      ``depth``                        Measured differences in height between
+                                       stations, e.g. underwater with a diver's
+                                       depth gauge, or above water with a
+                                       manometer
+      ``station``                      Added markers at stations
+      ``position``    ``gps`` [#]_     Recorded absolute positions of stations
+                                       (e.g.  fixed surface stations with a
+                                       GPS)
+      ``notes``       ``notebook``     Recorded instrument readings
+      ``pictures``    ``pics``         Drew sketches
+      ``assistant``   ``dog``          General helper (e.g. held the end of the
+                                       tape on stations)
+      ``altitude``    ``dz``           Recorded the altitudes of stations (e.g.
+                                       with an altimeter)
+      ``dimensions``                   Measured all passage dimensions
+      ``left``                         Measured ``left`` passage dimension
+      ``right``                        Measured ``right`` passage dimension
+      ``up``          ``ceiling``      Measured ``up`` passage dimension
+      ``down``        ``floor``        Measured ``down`` passage dimension
+      ``explorer``                     Explored the area of cave being surveyed
+      =============== ================ ========================================
+
+   .. [#] ``gps`` was added as an alias for ``position`` in Survex 1.4.20.
 
 See Also
    ``*begin``, ``*date``, ``*instrument``

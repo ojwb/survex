@@ -8,6 +8,7 @@
 *instrument assistant "right"
 ; All other *team roles should work here too
 *instrument BACKBEARING BACKCLINO BACKCOMPASS BACKGRADIENT BACKLENGTH BACKTAPE BEARING CEILING CLINO COMPASS COUNT COUNTER DEPTH DIMENSIONS DOG DOWN DZ EXPLORER FLOOR GRADIENT INSTRUMENTS INSTS LEFT LENGTH NOTEBOOK PICS PICTURES POSITION RIGHT STATION UP "swiss army survey instrument"
+*instrument gps "test alias for position added in 1.4.20"
 *fix 1 0 0 0
 1 2 1 0 0
 *end survey
