@@ -159,30 +159,30 @@ language you understand best.
 To do this, you set the ``SURVEXLANG`` environment variable.  Here's a list of
 the codes currently supported:
 
-===== =====================
-Code  Language
-===== =====================
-en    International English
-en_US US English
-bg    Bulgarian
-ca    Catalan
-cs    Czech
-de    German
-de_CH Swiss German
-el    Greek
-es    Spanish
-fr    French
-hu    Hungarian
-id    Indonesian
-it    Italian
-pl    Polish
-pt    Portuguese
-pt_BR Brazillian Portuguese
-ro    Romanian
-ru    Russian
-sk    Slovak
-zh_CN Chinese (Simplified)
-===== =====================
+========= =====================
+Code      Language
+========= =====================
+``en``    International English
+``en_US`` US English
+``bg``    Bulgarian
+``ca``    Catalan
+``cs``    Czech
+``de``    German
+``de_CH`` Swiss German
+``el``    Greek
+``es``    Spanish
+``fr``    French
+``hu``    Hungarian
+``id``    Indonesian
+``it``    Italian
+``pl``    Polish
+``pt``    Portuguese
+``pt_BR`` Brazillian Portuguese
+``ro``    Romanian
+``ru``    Russian
+``sk``    Slovak
+``zh_CN`` Chinese (Simplified)
+========= =====================
 
 Here are examples of how to set this environment variable to give messages in
 French (language code ``fr``):
