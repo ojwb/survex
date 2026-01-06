@@ -1123,7 +1123,7 @@ Description
 
    This is "approximate" because it's only computed for the North-most,
    South-most, East-most and West-most stations and it's possible the actual
-   minimum or maximum not at one of these.  It's unlikely to be much outside
+   minimum or maximum is not at one of these.  It's unlikely to be much outside
    the reported range though.
 
    We don't (currently) attempt to report a similar range for declination
