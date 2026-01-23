@@ -209,6 +209,11 @@ features are likely to be handled while more obscure features may not be.
   a space) - so ``PEP:`` in Walls becomes ``PEP.empty name`` in Survex.
   Since Survex 1.4.10.
 
+- Explicit units on clino readings are supported since Survex 1.4.10.  Survex
+  1.4.20 improved support: ``P``/``p`` for percentage gradient is now
+  supported, and a bug fixed in the handling of explicit units when the default
+  has been set to percentage gradient.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really

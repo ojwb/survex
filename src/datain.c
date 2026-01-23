@@ -1,6 +1,6 @@
 /* datain.c
  * Reads in survey files, dealing with special characters, keywords & data
- * Copyright (C) 1991-2025 Olly Betts
+ * Copyright (C) 1991-2026 Olly Betts
  * Copyright (C) 2004 Simeon Warner
  *
  * This program is free software; you can redistribute it and/or modify
@@ -4051,14 +4051,12 @@ handle_compass(real *p_var)
 }
 
 static real
-handle_clino(q_quantity q, reading r, real val, bool percent, clino_type *p_ctype)
+handle_clino(q_quantity q, reading r, real val, clino_type *p_ctype)
 {
    bool range_0_180;
    real z;
    real diff_from_abs90;
    val *= pcs->units[q];
-   /* percentage scale */
-   if (percent) val = atan(val);
    /* We want to warn if there's a reading which it would be impossible
     * to have read from the instrument (e.g. on a -90 to 90 degree scale
     * you can't read "96" (it's probably a typo for "69").  However, the
@@ -4125,13 +4123,11 @@ process_normal(prefix *fr, prefix *to, bool fToFirst,
    reading comp_given = handle_comp_units();
 
    if (ctype == CTYPE_READING) {
-      clin = handle_clino(Q_GRADIENT, Clino, clin,
-			  pcs->f_clino_percent, &ctype);
+      clin = handle_clino(Q_GRADIENT, Clino, clin, &ctype);
    }
 
    if (backctype == CTYPE_READING) {
-      backclin = handle_clino(Q_BACKGRADIENT, BackClino, backclin,
-			      pcs->f_backclino_percent, &backctype);
+      backclin = handle_clino(Q_BACKGRADIENT, BackClino, backclin, &backctype);
    }
 
    /* un-infer the plumb if the backsight was just a reading */
@@ -4947,6 +4943,23 @@ data_normal(void)
 	     process_eol();
 	     return;
 	  }
+	  if (r == Clino) {
+	      if (pcs->f_clino_percent) {
+		  VAL(r) *= pcs->units[Q_GRADIENT];
+		  VAL(r) = atan(VAL(r));
+		  // Scale result of atan() back so handle_clino() can reapply
+		  // the scale factor unconditionally.
+		  VAL(r) /= pcs->units[Q_GRADIENT];
+	      }
+	  } else {
+	      if (pcs->f_backclino_percent) {
+		  VAL(r) *= pcs->units[Q_BACKGRADIENT];
+		  VAL(r) = atan(VAL(r));
+		  // Scale result of atan() back so handle_clino() can reapply
+		  // the scale factor unconditionally.
+		  VAL(r) /= pcs->units[Q_BACKGRADIENT];
+	      }
+	  }
 	  *p_ctype = CTYPE_READING;
 	  break;
        }
@@ -5216,6 +5229,16 @@ inches_only:
 		      clin *= M_PI / 3200.0 / pcs->units[Q_GRADIENT];
 		      nextch();
 		      break;
+		    case 'P': case 'p':
+		      // Percent.
+		      clin = atan(clin * 0.01) / pcs->units[Q_GRADIENT];
+		      nextch();
+		      break;
+		    default:
+		      if (pcs->f_clino_percent) {
+			  clin = atan(clin * 0.01) / pcs->units[Q_GRADIENT];
+		      }
+		      break;
 		  }
 		  VAL(Clino) = clin;
 		  ctype = CTYPE_READING;
@@ -5255,6 +5278,16 @@ inches_only:
 		      // Mils.
 		      backclin *= M_PI / 3200.0 / pcs->units[Q_BACKGRADIENT];
 		      nextch();
+		      break;
+		    case 'P': case 'p':
+		      // Percent.
+		      backclin = atan(backclin * 0.01) / pcs->units[Q_BACKGRADIENT];
+		      nextch();
+		      break;
+		    default:
+		      if (pcs->f_backclino_percent) {
+			  backclin = atan(backclin * 0.01) / pcs->units[Q_BACKGRADIENT];
+		      }
 		      break;
 		  }
 		  VAL(BackClino) = backclin;

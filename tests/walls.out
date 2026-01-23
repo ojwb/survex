@@ -1,79 +1,79 @@
 ./walls.srv:5:18: warning: End of line not blank
  #date 2024-03-09 walls appears to ignore anything here
                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:27:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
+./walls.srv:32:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
-./walls.srv:47:14: warning: End of line not blank
+./walls.srv:52:14: warning: End of line not blank
  #prefix test walls appears to ignore anything here
               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-./walls.srv:55:8: warning: Unknown command "inch"
+./walls.srv:60:8: warning: Unknown command "inch"
  #units inch=1 ; regression test
         ^~~~
-./walls.srv:59:12: warning: Ignoring "gradeb)"
+./walls.srv:64:12: warning: Ignoring "gradeb)"
  #units uv=4gradeb) inch=1
             ^~~~~~~
-./walls.srv:59:20: warning: Unknown command "inch"
+./walls.srv:64:20: warning: Unknown command "inch"
  #units uv=4gradeb) inch=1
                     ^~~~
-./walls.srv:60:13: warning: Ignoring "gradeb"
+./walls.srv:65:13: warning: Ignoring "gradeb"
  #units uvv=4gradeb inch=1
              ^~~~~~
-./walls.srv:60:20: warning: Unknown command "inch"
+./walls.srv:65:20: warning: Unknown command "inch"
  #units uvv=4gradeb inch=1
                     ^~~~
-./walls.srv:61:13: warning: Ignoring "gradeb"
+./walls.srv:66:13: warning: Ignoring "gradeb"
  #units uvh=4gradeb inch=1
              ^~~~~~
-./walls.srv:61:20: warning: Unknown command "inch"
+./walls.srv:66:20: warning: Unknown command "inch"
  #units uvh=4gradeb inch=1
                     ^~~~
-./walls.srv:62:18: warning: Ignoring "Q)"
+./walls.srv:67:18: warning: Ignoring "Q)"
  #units typeab=n,4Q),X inch=1
                   ^~
-./walls.srv:62:23: warning: Unknown command "inch"
+./walls.srv:67:23: warning: Unknown command "inch"
  #units typeab=n,4Q),X inch=1
                        ^~~~
-./walls.srv:63:20: warning: Ignoring "Q"
+./walls.srv:68:20: warning: Ignoring "Q"
  #units typevb=c,1.2Q inch=1
                     ^
-./walls.srv:63:22: warning: Unknown command "inch"
+./walls.srv:68:22: warning: Unknown command "inch"
  #units typevb=c,1.2Q inch=1
                       ^~~~
-./walls.srv:74:11: warning: Expecting station name
+./walls.srv:79:11: warning: Expecting station name
  U11 EMPTY: 1.00 -- 90
            ^
-./walls.srv:83:36: warning: Ignoring ">"
+./walls.srv:88:36: warning: Ignoring ">"
  U13 U14 1.00 000 00 1 0.5 <0,1,0,1>>
                                     ^
-./walls.srv:84:48: warning: Ignoring "."
+./walls.srv:89:48: warning: Ignoring "."
  U14 U15 0.5 354.4/174.5 -7.4/+7.4 *0.5 3 2.5 2*.
                                                 ^
-./walls.srv:85:37: warning: Ignoring "3"
+./walls.srv:90:37: warning: Ignoring "3"
  U15 U16 1.5 45/224 +1/0 *15 0 3 1.5*3
                                      ^
-./walls.srv:86:43: warning: Ignoring "0.5*"
+./walls.srv:91:43: warning: Ignoring "0.5*"
  U16 U17 0.7 87.9/267.9 48.9/-48.9 *2,1,5,*0.5*
                                            ^~~~
-./walls.srv:87:15: warning: End of line not blank
+./walls.srv:92:15: warning: End of line not blank
  U17 <1,2,3,0> 'random comment here
                ^~~~~~~~~~~~~~~~~~~~
-./walls.srv:88:38: warning: Ignoring "6*"
+./walls.srv:93:38: warning: Ignoring "6*"
  U17 U18 1.4 043/224 +5/-3.5 *0 9 4.5*6*
                                       ^~
-./walls.srv:89:40: warning: Ignoring "+"
+./walls.srv:94:40: warning: Ignoring "+"
  U18 U19 1.6 200/19 -34/+33 *0 20 100 5*+ #seg /X
                                         ^
-./walls.srv:90:38: warning: Ignoring "K1"
+./walls.srv:95:38: warning: Ignoring "K1"
  U19 U20 1.2 0/180 -90/90 *20 5 0 3.2*K1
                                       ^~
-./walls.srv:91:36: warning: Ignoring "/"
+./walls.srv:96:36: warning: Ignoring "/"
  U20 U21 1.10 265/84 -5/5 *2 3 15 4*/
                                     ^
-./walls.srv:98:5: warning: Parsing as "to" station but may be isolated LRUD with missing closing delimiter
+./walls.srv:103:5: warning: Parsing as "to" station but may be isolated LRUD with missing closing delimiter
  U23 *8 5 15 3.58
      ^~
-./walls.srv:100:5: warning: Parsing as "to" station but may be isolated LRUD with missing closing delimiter
+./walls.srv:105:5: warning: Parsing as "to" station but may be isolated LRUD with missing closing delimiter
  U23 <8 5 15 3.58
      ^~
 
@@ -91,12 +91,12 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 37 survey stations, joined by 35 legs.
+Survey contains 41 survey stations, joined by 39 legs.
 There are 0 loops.
 Survey has 2 connected components.
-Total length of survey legs =  105.38m ( 105.38m adjusted)
-Total plan length of survey legs =   77.59m
-Total vertical length of survey legs =   60.94m
+Total length of survey legs =  118.18m ( 118.18m adjusted)
+Total plan length of survey legs =   85.23m
+Total vertical length of survey legs =   70.57m
 Vertical range = 56.04m (from U12b at 51.00m to anonymous station at -5.04m)
 Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
