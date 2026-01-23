@@ -83,7 +83,7 @@ char* grab_line(void);
 // Context type values:
 
 #define DIAG_CONTEXT_MASK	0x78
-// Report column number based of the current file position.
+// Report column number based on the current file position.
 #define DIAG_COL		0x08
 // Set caret_width to s_len(&token):
 #define DIAG_TOKEN		0x10
