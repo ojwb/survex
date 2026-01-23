@@ -1,4 +1,4 @@
-; pos=dump warn=26 dummycrprotection=
+; pos=dump warn=30 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg FOO
@@ -9,12 +9,18 @@
 Q0 U0  0 0 0 (?) #segment /Q ; We treat (?) as a NOSURVEY leg.
 #UNITS CASE=U
 u0 u1 5.4 203d +100P/-100P ; Feature test for "p" override supported since 1.4.20.
-#Units V=Percent VB=P
+#Units V=Percent VB=P a=g
 u0 u1p 5.4 203d +100/-100 ; Test percent is applied
 u0 u1d 5.4 203d +45D ; Regression test for degrees overriding percent
 u0 u1vu 1.0 --  +90D ; Regression test for degrees overriding percent
 u0 u1vd 1.0 --  -90D ; Regression test for degrees overriding percent
-#units v=d vb=d case=none ; undocumented but unknown "case=" values -> "mixed"
+u0 u1dms1 10.0 12:30 0:0:0
+u0 u1dms2 10.0 12:30: 0:0:
+u0 u1dms3 10.0 12.5:0 0:0
+u0 u1dms4 10.0 12.5: 0:
+u0 u1dms5 10.0 12.5d 0d
+u0 u1dms6 10.0 12:29.5:30 0d
+#units v=d vb=d a=d case=none ; undocumented but unknown "case=" values -> "mixed"
 #[
 U1 X1 3 4 5
 #[

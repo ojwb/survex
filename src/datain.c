@@ -5134,6 +5134,35 @@ inches_only:
 			  VAL(Comp) *= M_PI / 3200.0 / pcs->units[Q_BEARING];
 			  nextch();
 			  break;
+			case ':': {
+			  // Degree:Minute:Second (or Degree:Minute).
+			  nextch();
+			  if (isdigit(ch)) {
+			      real minutes = read_number(false, true);
+			      if (VAL(Comp) >= 0.0) {
+				  VAL(Comp) += minutes / 60.0;
+			      } else {
+				  VAL(Comp) -= minutes / 60.0;
+			      }
+			      if (ch == ':') {
+				  nextch();
+				  if (isdigit(ch)) {
+				      real seconds = read_number(false, true);
+				      if (VAL(Comp) >= 0.0) {
+					  VAL(Comp) += seconds / (60.0 * 60.0);
+				      } else {
+					  VAL(Comp) -= seconds / (60.0 * 60.0);
+				      }
+				  } else {
+				      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+				  }
+			      }
+			  } else {
+			      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			  }
+			  VAL(Comp) *= M_PI / 180.0 / pcs->units[Q_BEARING];
+			  break;
+			}
 		      }
 		  }
 	      }
@@ -5177,6 +5206,35 @@ inches_only:
 			  VAL(BackComp) *= M_PI / 3200.0 / pcs->units[Q_BACKBEARING];
 			  nextch();
 			  break;
+			case ':': {
+			  // Degree:Minute:Second (or Degree:Minute).
+			  nextch();
+			  if (isdigit(ch)) {
+			      real minutes = read_number(false, true);
+			      if (VAL(BackComp) >= 0.0) {
+				  VAL(BackComp) += minutes / 60.0;
+			      } else {
+				  VAL(BackComp) -= minutes / 60.0;
+			      }
+			      if (ch == ':') {
+				  nextch();
+				  if (isdigit(ch)) {
+				      real seconds = read_number(false, true);
+				      if (VAL(BackComp) >= 0.0) {
+					  VAL(BackComp) += seconds / (60.0 * 60.0);
+				      } else {
+					  VAL(BackComp) -= seconds / (60.0 * 60.0);
+				      }
+				  } else {
+				      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+				  }
+			      }
+			  } else {
+			      compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			  }
+			  VAL(BackComp) *= M_PI / 180.0 / pcs->units[Q_BACKBEARING];
+			  break;
+			}
 		      }
 		  }
 	      }
@@ -5234,6 +5292,35 @@ inches_only:
 		      clin = atan(clin * 0.01) / pcs->units[Q_GRADIENT];
 		      nextch();
 		      break;
+		    case ':': {
+		      // Degree:Minute:Second (or Degree:Minute).
+		      nextch();
+		      if (isdigit(ch)) {
+			  real minutes = read_number(false, true);
+			  if (clin >= 0.0) {
+			      clin += minutes / 60.0;
+			  } else {
+			      clin -= minutes / 60.0;
+			  }
+			  if (ch == ':') {
+			      nextch();
+			      if (isdigit(ch)) {
+				  real seconds = read_number(false, true);
+				  if (clin >= 0.0) {
+				      clin += seconds / (60.0 * 60.0);
+				  } else {
+				      clin -= seconds / (60.0 * 60.0);
+				  }
+			      } else {
+				  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			      }
+			  }
+		      } else {
+			  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+		      }
+		      clin *= M_PI / 180.0 / pcs->units[Q_GRADIENT];
+		      break;
+		    }
 		    default:
 		      if (pcs->f_clino_percent) {
 			  clin = atan(clin * 0.01) / pcs->units[Q_GRADIENT];
@@ -5284,6 +5371,35 @@ inches_only:
 		      backclin = atan(backclin * 0.01) / pcs->units[Q_BACKGRADIENT];
 		      nextch();
 		      break;
+		    case ':': {
+		      // Degree:Minute:Second (or Degree:Minute).
+		      nextch();
+		      if (isdigit(ch)) {
+			  real minutes = read_number(false, true);
+			  if (backclin >= 0.0) {
+			      backclin += minutes / 60.0;
+			  } else {
+			      backclin -= minutes / 60.0;
+			  }
+			  if (ch == ':') {
+			      nextch();
+			      if (isdigit(ch)) {
+				  real seconds = read_number(false, true);
+				  if (backclin >= 0.0) {
+				      backclin += seconds / (60.0 * 60.0);
+				  } else {
+				      backclin -= seconds / (60.0 * 60.0);
+				  }
+			      } else {
+				  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+			      }
+			  }
+		      } else {
+			  compile_diagnostic(DIAG_WARN|DIAG_COL, /*Expecting numeric field, found “%s”*/9, "");
+		      }
+		      backclin *= M_PI / 180.0 / pcs->units[Q_BACKGRADIENT];
+		      break;
+		    }
 		    default:
 		      if (pcs->f_backclino_percent) {
 			  backclin = atan(backclin * 0.01) / pcs->units[Q_BACKGRADIENT];

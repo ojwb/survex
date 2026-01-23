@@ -214,6 +214,9 @@ features are likely to be handled while more obscure features may not be.
   supported, and a bug fixed in the handling of explicit units when the default
   has been set to percentage gradient.
 
+- Explicit ``degree:minute:second`` angle readings are supported since Survex
+  1.4.20.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really
