@@ -1,0 +1,74 @@
+./badreadings.srv:2:10: error: Expecting quadrant bearing, found "f"
+ a b 10.0 f 005d +10
+          ^
+./badreadings.srv:3:11: warning: Suspicious compass reading
+ a c 10.0f 365d +10
+           ^~~~
+./badreadings.srv:4:9: error: Expecting "F" or "M"
+ a d 10.0d 005d N10E
+         ^
+./badreadings.srv:4:16: error: Expecting numeric field, found "N10E"
+ a d 10.0d 005d N10E
+                ^~~~
+./badreadings.srv:5:9: error: Expecting "F" or "M"
+ a e 10.0i6 N10E 81
+         ^
+./badreadings.srv:6:10: error: Expecting quadrant bearing, found "N-10W"
+ a f 10i6 N-10W 81
+          ^~~~~
+./badreadings.srv:7:15: warning: Clino reading over 90dg (absolute value)
+ a g 10i6 N10E 91
+               ^~
+./badreadings.srv:8:15: error: Expecting numeric field, found ":20"
+ a h 10.0  30.5:20 -11g
+               ^~~
+./badreadings.srv:9:17: warning: Clino reading over 90dg (absolute value)
+ a i 10.0  30:50 -101g
+                 ^~~~~
+./badreadings.srv:10:9: warning: Suspicious compass reading
+ a j 1.0 -1 +10
+         ^~
+./badreadings.srv:11:5: warning: Negative tape reading
+ a k -10.0  30:20 -11g
+     ^~~
+./badreadings.srv:11:5: warning: Negative adjusted tape reading
+ a k -10.0  30:20 -11g
+     ^~~~~
+./badreadings.srv:12:14: error: Expecting numeric field, found ":0"
+ a l 10.0 12.5:0 0:0
+              ^~
+./badreadings.srv:13:18: error: End of line not blank
+ a m 10.0 12:0 0.5:0
+                  ^~
+./badreadings.srv:14:17: error: Expecting numeric field, found ":30"
+ a n 10.0 12:29.5:30 0d
+                 ^~~
+./badreadings.srv:15:20: error: End of line not blank
+ a o 10.0 12:0 0:1.5:1
+                    ^~
+./badreadings.srv:2:1: info: Survey has no fixed points. Therefore I've fixed a at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 9 survey stations, joined by 8 legs.
+There are 0 loops.
+Total length of survey legs =   57.25m (  57.25m adjusted)
+Total plan length of survey legs =   35.61m
+Total vertical length of survey legs =   25.59m
+Vertical range = 19.88m (from e at 9.88m to i at -10.00m)
+North-South range = 18.28m (from o at 9.78m to k at -8.50m)
+East-West range = 7.05m (from o at 2.08m to k at -4.98m)
+
+There were 6 warning(s) and 10 error(s) - no output files produced.

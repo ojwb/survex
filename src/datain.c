@@ -1817,13 +1817,15 @@ bad_angle_units:
 static real
 read_walls_distance(bool f_optional, real default_units)
 {
+    bool f_decimal_point = false;
     real distance;
+    skipblanks();
     if (ch == 'i' || ch == 'I') {
 	// Length specified in inches only, e.g. `i6` is 6 inches.
 	distance = 0.0;
 	goto inches_only;
     }
-    distance = read_numeric(f_optional);
+    distance = read_number_or_int(f_optional, false, &f_decimal_point);
     if (distance != HUGE_REAL) {
 	if (isalpha((unsigned char)ch)) {
 inches_only:
@@ -1839,16 +1841,28 @@ inches_only:
 		distance *= METRES_PER_FOOT;
 		break;
 	      case 'I':
-		if (isdigit(ch)) {
-		    real inches = read_numeric(false);
-		    distance += inches / 12.0;
+		if (!f_decimal_point) {
+		    // 'i' is only valid if the first part does not contain a
+		    // decimal point (e.g. 10.0i6 is invalid).
+		    if (isdigit(ch)) {
+			real inches = read_numeric(false);
+			distance += inches / 12.0;
+		    }
+		    distance *= METRES_PER_FOOT;
+		    break;
 		}
-		distance *= METRES_PER_FOOT;
-		break;
+		// FALLTHRU
 	      default:
 bad_distance_units:
-		compile_diagnostic(DIAG_ERR|DIAG_COL,
-				   /*Expecting “%s” or “%s”*/103, "F", "M");
+		if (f_decimal_point) {
+		    compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+				       /*Expecting “%s” or “%s”*/103, "F", "M");
+		} else {
+		    compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+				       /*Expecting “%s”, “%s”, or “%s”*/188, "F", "I", "M");
+		}
+		// Skip past rest of this field to try to reduce error avalanche.
+		while (!isBlank(ch) && !isEol(ch)) nextch();
 	    }
 	} else {
 	    distance *= default_units;
@@ -1891,15 +1905,7 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 	    nextch();
 	}
 
-	val_h = read_walls_distance(false, true);
-	if (ch == 'F' || ch == 'f') {
-	    val_h *= METRES_PER_FOOT;
-	    nextch();
-	} else if (ch == 'M' || ch == 'm') {
-	    nextch();
-	} else {
-	    val_h *= pcs->units[Q_LENGTH];
-	}
+	val_h = read_walls_distance(false, pcs->units[Q_LENGTH]);
     }
     bool rms_v = rms_h;
     real val_v = val_h;
@@ -2852,13 +2858,13 @@ next_line:
 					   e_or_w ? "N" : "E", e_or_w ? "S" : "W");
 		    }
 		    nextch();
-		    coord = read_number(false, true);
-		    if (ch == ':') {
-			// FIXME: This accepts decimals on any component e.g `N40.1:1:1`.
+		    bool f_decimal_point = false;
+		    coord = read_number_or_int(false, true, &f_decimal_point);
+		    if (!f_decimal_point && ch == ':') {
 			nextch();
-			real minutes = read_number(false, true);
+			real minutes = read_number_or_int(false, true, &f_decimal_point);
 			coord += minutes / 60.0;
-			if (ch == ':') {
+			if (!f_decimal_point && ch == ':') {
 			    nextch();
 			    real seconds = read_number(false, true);
 			    coord += seconds / 3600.0;
@@ -5144,13 +5150,8 @@ data_normal(void)
 	  filepos fp;
 	  get_pos(&fp);
 	  LOC(Tape) = ftell(file.fh);
-	  VAL(Tape) = read_numeric(true);
+	  VAL(Tape) = read_walls_distance(true, pcs->units[Q_LENGTH]);
 	  if (VAL(Tape) == HUGE_REAL) {
-	      if (ch == 'i' || ch == 'I') {
-		  // Length specified in inches only, e.g. `i6` is 6 inches.
-		  VAL(Tape) = 0.0;
-		  goto inches_only;
-	      }
 	      // Walls expects 2 or more `-` for an omitted value in this
 	      // context, so a single `-` is an error.
 	      if (ch != '-' || nextch() != '-') {
@@ -5162,24 +5163,11 @@ data_normal(void)
 		  while (nextch() == '-') { }
 	      }
 	  } else {
+	      // Adjust to what the length would be in the globally specified
+	      // units, as that gets scaled for later.
+	      VAL(Tape) /= pcs->units[Q_LENGTH];
 	      if (VAL(Tape) < (real)0.0)
 		  compile_diagnostic_reading(DIAG_WARN, Tape, /*Negative tape reading*/60);
-	      switch (ch) {
-		case 'I': case 'i':
-inches_only:
-		  nextch();
-		  if (isdigit(ch)) {
-		      real inches = read_numeric(false);
-		      VAL(Tape) += inches / 12.0;
-		  }
-		  /* FALLTHRU */
-		case 'F': case 'f':
-		  VAL(Tape) *= METRES_PER_FOOT;
-		  /* FALLTHRU */
-		case 'M': case 'm':
-		  VAL(Tape) /= pcs->units[Q_LENGTH];
-		  nextch();
-	      }
 	  }
 	  WID(Tape) = ftell(file.fh) - LOC(Tape);
 	  VAR(Tape) = var(Q_LENGTH);
@@ -5192,7 +5180,8 @@ inches_only:
 	      if (isalpha(ch)) {
 		  VAL(Comp) = read_quadrant(false);
 	      } else {
-		  VAL(Comp) = read_number(true, false);
+		  bool f_decimal_point = false;
+		  VAL(Comp) = read_number_or_int(true, false, &f_decimal_point);
 		  if (VAL(Comp) == HUGE_REAL) {
 		      if (ch != '-') {
 			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -5221,16 +5210,17 @@ inches_only:
 			  nextch();
 			  break;
 			case ':': {
+			  if (f_decimal_point) break;
 			  // Degree:Minute:Second (or Degree:Minute).
 			  nextch();
 			  if (isdigit(ch)) {
-			      real minutes = read_number(false, true);
+			      real minutes = read_number_or_int(false, true, &f_decimal_point);
 			      if (VAL(Comp) >= 0.0) {
 				  VAL(Comp) += minutes / 60.0;
 			      } else {
 				  VAL(Comp) -= minutes / 60.0;
 			      }
-			      if (ch == ':') {
+			      if (!f_decimal_point && ch == ':') {
 				  nextch();
 				  if (isdigit(ch)) {
 				      real seconds = read_number(false, true);
@@ -5264,7 +5254,8 @@ inches_only:
 	      if (isalpha(ch)) {
 		  VAL(BackComp) = read_quadrant(false);
 	      } else {
-		  VAL(BackComp) = read_number(true, false);
+		  bool f_decimal_point = false;
+		  VAL(BackComp) = read_number_or_int(true, false, &f_decimal_point);
 		  if (VAL(BackComp) == HUGE_REAL) {
 		      if (ch != '-') {
 			  compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -5293,16 +5284,17 @@ inches_only:
 			  nextch();
 			  break;
 			case ':': {
+			  if (f_decimal_point) break;
 			  // Degree:Minute:Second (or Degree:Minute).
 			  nextch();
 			  if (isdigit(ch)) {
-			      real minutes = read_number(false, true);
+			      real minutes = read_number_or_int(false, true, &f_decimal_point);
 			      if (VAL(BackComp) >= 0.0) {
 				  VAL(BackComp) += minutes / 60.0;
 			      } else {
 				  VAL(BackComp) -= minutes / 60.0;
 			      }
-			      if (ch == ':') {
+			      if (!f_decimal_point && ch == ':') {
 				  nextch();
 				  if (isdigit(ch)) {
 				      real seconds = read_number(false, true);
@@ -5338,7 +5330,8 @@ inches_only:
 	  skipblanks();
 	  LOC(Clino) = ftell(file.fh);
 	  if (ch != '/') {
-	      real clin = read_number(true, false);
+	      bool f_decimal_point = false;
+	      real clin = read_number_or_int(true, false, &f_decimal_point);
 	      if (clin == HUGE_REAL) {
 		  if (ch != '-') {
 		      if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END) &&
@@ -5379,16 +5372,17 @@ inches_only:
 		      nextch();
 		      break;
 		    case ':': {
+		      if (f_decimal_point) break;
 		      // Degree:Minute:Second (or Degree:Minute).
 		      nextch();
 		      if (isdigit(ch)) {
-			  real minutes = read_number(false, true);
+			  real minutes = read_number_or_int(false, true, &f_decimal_point);
 			  if (clin >= 0.0) {
 			      clin += minutes / 60.0;
 			  } else {
 			      clin -= minutes / 60.0;
 			  }
-			  if (ch == ':') {
+			  if (!f_decimal_point && ch == ':') {
 			      nextch();
 			      if (isdigit(ch)) {
 				  real seconds = read_number(false, true);
@@ -5424,7 +5418,8 @@ inches_only:
 	  }
 	  if (ch == '/' && !isBlank(nextch())) {
 	      LOC(BackClino) = ftell(file.fh);
-	      real backclin = read_number(true, false);
+	      bool f_decimal_point = false;
+	      real backclin = read_number_or_int(true, false, &f_decimal_point);
 	      if (backclin == HUGE_REAL) {
 		  if (ch != '-') {
 		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -5458,16 +5453,17 @@ inches_only:
 		      nextch();
 		      break;
 		    case ':': {
+		      if (f_decimal_point) break;
 		      // Degree:Minute:Second (or Degree:Minute).
 		      nextch();
 		      if (isdigit(ch)) {
-			  real minutes = read_number(false, true);
+			  real minutes = read_number_or_int(false, true, &f_decimal_point);
 			  if (backclin >= 0.0) {
 			      backclin += minutes / 60.0;
 			  } else {
 			      backclin -= minutes / 60.0;
 			  }
-			  if (ch == ':') {
+			  if (!f_decimal_point && ch == ':') {
 			      nextch();
 			      if (isdigit(ch)) {
 				  real seconds = read_number(false, true);

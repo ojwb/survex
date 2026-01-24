@@ -621,8 +621,9 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 
 /* if numeric expr is omitted: if f_optional return HUGE_REAL, else longjmp */
 real
-read_number(bool f_optional, bool f_unsigned)
+read_number_or_int(bool f_optional, bool f_unsigned, bool* pf_decimal_point)
 {
+   if (pf_decimal_point) *pf_decimal_point = false;
    bool fPositive = true, fDigits = false;
    real n = (real)0.0;
    filepos fp;
@@ -642,6 +643,7 @@ read_number(bool f_optional, bool f_unsigned)
    }
 
    if (isDecimal(ch)) {
+      if (pf_decimal_point) *pf_decimal_point = true;
       real mult = (real)1.0;
       nextch();
       while (isdigit(ch)) {

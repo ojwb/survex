@@ -1,4 +1,4 @@
-; pos=dump warn=30 dummycrprotection=
+; pos=dump warn=31 dummycrprotection=
 #u o=EUN v=g
 #Fix U0 0 1 0
 #seg FOO
@@ -16,10 +16,10 @@ u0 u1vu 1.0 --  +90D ; Regression test for degrees overriding percent
 u0 u1vd 1.0 --  -90D ; Regression test for degrees overriding percent
 u0 u1dms1 10.0 12:30 0:0:0
 u0 u1dms2 10.0 12:30: 0:0:
-u0 u1dms3 10.0 12.5:0 0:0
-u0 u1dms4 10.0 12.5: 0:
+u0 u1dms3 10.0 12 0:
+u0 u1dms4 10.0 12: 0
 u0 u1dms5 10.0 12.5d 0d
-u0 u1dms6 10.0 12:29.5:30 0d
+u0 u1dms6 10.0 12: 0d
 #units v=d vb=d a=d case=none ; undocumented but unknown "case=" values -> "mixed"
 #[
 U1 X1 3 4 5
@@ -111,3 +111,14 @@ U23 *8 2 3 4 ; Should not warn because `*8` is a known station now.
 U23 <8 5 15 3.58
 #note *1 ; Suppress Survex warning
 U23 *1 2 3 4 ; Should not warn because `*1` is a known station.
+; Test examples from Walls_Help_HTML/suffixes.htm
+U23 suf1a 10.5f 100.5g 45d <-.5m,10.5f,10i6.5,i6>
+U23 suf1b 3.2004m 90.45d 45d <-.5m,38.4048m,38.5572m,1.8288m>
+U23 suf2a 10i6.5 15:10:30 -5p
+U23 suf2b 3.2131m 15.175d -2.8624d
+; 800m = 800 mils (360d=6400m)
+; :50 = 50 minutes (0.8333333333333d)
+; N50.5W = North 50.5 degrees West (=309.5d)
+; S:15.5E = South 15.5 minutes East
+; 320d/N41W = foresight/backsight pair (=319.5d)
+; /-20 = isolated back-inclination        (default units)

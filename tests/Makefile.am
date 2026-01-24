@@ -137,6 +137,7 @@ wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
 wallsdiving.srv wallsdiving.dump wallsdiving.out\
 badomit.srv badomit.out\
 badopts.srv badopts.out\
+badreadings.srv badreadings.out\
 unknowndirective.srv unknowndirective.out\
 dot17.svx dot17.pos 3dcorner.svx 3dcorner.pos\
 nosurveyhanging.svx nosurveyhanging.out\

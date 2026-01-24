@@ -48,9 +48,20 @@ prefix *read_walls_station(char * const walls_prefix[3],
 			   bool anon_allowed,
 			   bool *p_new);
 
+// Like read_number() but reports if the number contains a decimal point or
+// not.
+//
+// pf_decimal_point can be NULL (but use read_numeric() instead if always
+// NULL).
+real read_number_or_int(bool f_optional, bool f_unsigned,
+			bool *pf_decimal_point);
+
 // Like read_numeric() but doesn't skipblanks() first and can be told to not
 // allow a sign.
-real read_number(bool f_optional, bool f_unsigned);
+static inline real read_number(bool f_optional, bool f_unsigned)
+{
+    return read_number_or_int(f_optional, f_unsigned, NULL);
+}
 
 real read_quadrant(bool f_optional);
 

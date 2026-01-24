@@ -7,12 +7,15 @@
 ./walls.srv:18:27: warning: Expecting numeric field, found ""
  u0 u1dms2 10.0 12:30: 0:0:
                            ^
-./walls.srv:20:21: warning: Expecting numeric field, found ""
- u0 u1dms4 10.0 12.5: 0:
+./walls.srv:19:21: warning: Expecting numeric field, found ""
+ u0 u1dms3 10.0 12 0:
                      ^
-./walls.srv:20:24: warning: Expecting numeric field, found ""
- u0 u1dms4 10.0 12.5: 0:
-                        ^
+./walls.srv:20:19: warning: Expecting numeric field, found ""
+ u0 u1dms4 10.0 12: 0
+                   ^
+./walls.srv:22:19: warning: Expecting numeric field, found ""
+ u0 u1dms6 10.0 12: 0d
+                   ^
 ./walls.srv:38:28: warning: CLINO reading and BACKCLINO reading disagree by 4dg
  :U1 U2 10.1m N79E/S79W -28/24 *15 25 4 3*
                             ^~
@@ -103,15 +106,15 @@ Calculating trailing traverses...
 
 Calculating statistics...
 
-Survey contains 47 survey stations, joined by 45 legs.
+Survey contains 51 survey stations, joined by 49 legs.
 There are 0 loops.
 Survey has 2 connected components.
-Total length of survey legs =  178.18m ( 178.18m adjusted)
-Total plan length of survey legs =  145.23m
-Total vertical length of survey legs =   70.57m
+Total length of survey legs =  191.00m ( 191.00m adjusted)
+Total plan length of survey legs =  156.17m
+Total vertical length of survey legs =   75.42m
 Vertical range = 56.04m (from U12b at 51.00m to anonymous station at -5.04m)
 Vertical range = 55.37m (from U12b at 51.00m to 12#4 at -4.37m)
 North-South range = 53.08m (from U12b at 40.00m to 12#4 at -13.08m)
 East-West range = 31.49m (from U12a at 30.00m to U1 at -1.49m)
 
-There were 30 warning(s).
+There were 31 warning(s).
