@@ -791,7 +791,7 @@ void MainFrm::CreateMenuBar()
      */
     rotmenu->AppendCheckItem(menu_ROTATION_TOGGLE, wmsg(/*Au&to-Rotate\tSpace*/231));
     rotmenu->AppendSeparator();
-    rotmenu->Append(menu_ROTATION_REVERSE, wmsg(/*&Reverse Direction*/234));
+    rotmenu->Append(menu_ROTATION_REVERSE, wmsg(/*&Reverse Direction\tR*/234));
 
     wxMenu* orientmenu = new wxMenu;
     orientmenu->Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North\tN*/240));

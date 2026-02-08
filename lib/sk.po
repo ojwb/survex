@@ -2112,8 +2112,8 @@ msgstr "&Autorotácia\tSpace"
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
-msgstr "&Otočiť rotáciu"
+msgid "&Reverse Direction\tR"
+msgstr "&Otočiť rotáciu\tR"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393

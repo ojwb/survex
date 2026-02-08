@@ -2110,8 +2110,8 @@ msgstr "Ав&томатическое вращение\tSpace"
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
-msgstr "&Поменять направление вращения"
+msgid "&Reverse Direction\tR"
+msgstr "&Поменять направление вращения\tR"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393

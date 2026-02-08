@@ -2110,7 +2110,7 @@ msgstr ""
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
+msgid "&Reverse Direction\tR"
 msgstr ""
 
 #. TRANSLATORS: View *looking* North

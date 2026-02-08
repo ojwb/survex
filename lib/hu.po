@@ -2112,8 +2112,8 @@ msgstr ""
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
-msgstr "&Fordított irány"
+msgid "&Reverse Direction\tR"
+msgstr "&Fordított irány\tR"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393

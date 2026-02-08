@@ -2112,8 +2112,8 @@ msgstr "&Включи ротация\tSpace"
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
-msgstr "&Обръщане на посока"
+msgid "&Reverse Direction\tR"
+msgstr "&Обръщане на посока\tR"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393

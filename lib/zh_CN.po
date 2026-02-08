@@ -2109,8 +2109,8 @@ msgstr ""
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
-msgstr "反向(&R)"
+msgid "&Reverse Direction\tR"
+msgstr "反向(&R)\tR"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393

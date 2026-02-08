@@ -2114,8 +2114,8 @@ msgstr "Au&to-Rodar\tSpace"
 
 #: ../src/mainfrm.cc:793
 #: n:234
-msgid "&Reverse Direction"
-msgstr "&Inverter Sentido"
+msgid "&Reverse Direction\tR"
+msgstr "&Inverter Sentido\tR"
 
 #. TRANSLATORS: View *looking* North
 #: ../src/gfxcore.cc:4393
