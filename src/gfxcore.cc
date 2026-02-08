@@ -4387,13 +4387,13 @@ bool GfxCore::HandleRClick(wxPoint point)
 	// Pop up menu.
 	wxMenu menu;
 	/* TRANSLATORS: View *looking* North */
-	menu.Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North*/240));
+	menu.Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North\tN*/240));
 	/* TRANSLATORS: View *looking* East */
-	menu.Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East*/241));
+	menu.Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East\tE*/241));
 	/* TRANSLATORS: View *looking* South */
-	menu.Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
+	menu.Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South\tS*/242));
 	/* TRANSLATORS: View *looking* West */
-	menu.Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
+	menu.Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West\tW*/243));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the "north arrow" in aven. */
 	menu.AppendCheckItem(menu_IND_COMPASS, wmsg(/*&Hide Compass*/387));
@@ -4413,8 +4413,8 @@ bool GfxCore::HandleRClick(wxPoint point)
     if (PointWithinClino(point)) {
 	// Pop up menu.
 	wxMenu menu;
-	menu.Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
-	menu.Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation*/249));
+	menu.Append(menu_ORIENT_PLAN, wmsg(/*&Plan View\tP*/248));
+	menu.Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation\tL*/249));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the tilt indicator in aven. */
 	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));

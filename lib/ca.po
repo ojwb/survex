@@ -2119,46 +2119,46 @@ msgstr "&Inverteix el sentit"
 #: ../src/gfxcore.cc:4393
 #: ../src/mainfrm.cc:796
 #: n:240
-msgid "View &North"
-msgstr "Vista cap al &Nord"
+msgid "View &North\tN"
+msgstr "Vista cap al &Nord\tN"
 
 #. TRANSLATORS: View *looking* East
 #: ../src/gfxcore.cc:4395
 #: ../src/mainfrm.cc:797
 #: n:241
-msgid "View &East"
-msgstr "Vista cap al &Est"
+msgid "View &East\tE"
+msgstr "Vista cap al &Est\tE"
 
 #. TRANSLATORS: View *looking* South
 #: ../src/gfxcore.cc:4397
 #: ../src/mainfrm.cc:798
 #: n:242
-msgid "View &South"
-msgstr "Vista cap al &Sud"
+msgid "View &South\tS"
+msgstr "Vista cap al &Sud\tS"
 
 #. TRANSLATORS: View *looking* West
 #: ../src/gfxcore.cc:4399
 #: ../src/mainfrm.cc:799
 #: n:243
-msgid "View &West"
-msgstr "Vista cap a l’&Oest"
+msgid "View &West\tW"
+msgstr "Vista cap a l’&Oest\tW"
 
 #: ../src/gfxcore.cc:4419
 #: ../src/mainfrm.cc:801
 #: n:248
-msgid "&Plan View"
-msgstr "&Planta"
+msgid "&Plan View\tP"
+msgstr "&Planta\tP"
 
 #: ../src/gfxcore.cc:4420
 #: ../src/mainfrm.cc:802
 #: n:249
-msgid "Ele&vation"
-msgstr "Alça&t"
+msgid "Ele&vation\tL"
+msgstr "Alça&t\tL"
 
 #: ../src/mainfrm.cc:804
 #: n:254
-msgid "Restore De&fault View"
-msgstr "Restablei&x la vista per defecte"
+msgid "Restore De&fault View\tDelete"
+msgstr "Restablei&x la vista per defecte\tDelete"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in

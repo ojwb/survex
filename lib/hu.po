@@ -2119,46 +2119,46 @@ msgstr "&Fordított irány"
 #: ../src/gfxcore.cc:4393
 #: ../src/mainfrm.cc:796
 #: n:240
-msgid "View &North"
+msgid "View &North\tN"
 msgstr ""
 
 #. TRANSLATORS: View *looking* East
 #: ../src/gfxcore.cc:4395
 #: ../src/mainfrm.cc:797
 #: n:241
-msgid "View &East"
+msgid "View &East\tE"
 msgstr ""
 
 #. TRANSLATORS: View *looking* South
 #: ../src/gfxcore.cc:4397
 #: ../src/mainfrm.cc:798
 #: n:242
-msgid "View &South"
+msgid "View &South\tS"
 msgstr ""
 
 #. TRANSLATORS: View *looking* West
 #: ../src/gfxcore.cc:4399
 #: ../src/mainfrm.cc:799
 #: n:243
-msgid "View &West"
+msgid "View &West\tW"
 msgstr ""
 
 #: ../src/gfxcore.cc:4419
 #: ../src/mainfrm.cc:801
 #: n:248
-msgid "&Plan View"
-msgstr "&Felülnézet"
+msgid "&Plan View\tP"
+msgstr "&Felülnézet\tP"
 
 #: ../src/gfxcore.cc:4420
 #: ../src/mainfrm.cc:802
 #: n:249
-msgid "Ele&vation"
+msgid "Ele&vation\tL"
 msgstr ""
 
 #: ../src/mainfrm.cc:804
 #: n:254
-msgid "Restore De&fault View"
-msgstr "Restore &Default View"
+msgid "Restore De&fault View\tDelete"
+msgstr "Restore &Default View\tDelete"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in

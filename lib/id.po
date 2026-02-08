@@ -2116,46 +2116,46 @@ msgstr "A&rah Sebaliknya"
 #: ../src/gfxcore.cc:4393
 #: ../src/mainfrm.cc:796
 #: n:240
-msgid "View &North"
-msgstr "Lihat &Utara"
+msgid "View &North\tN"
+msgstr "Lihat &Utara\tN"
 
 #. TRANSLATORS: View *looking* East
 #: ../src/gfxcore.cc:4395
 #: ../src/mainfrm.cc:797
 #: n:241
-msgid "View &East"
-msgstr "Lihat &Timur"
+msgid "View &East\tE"
+msgstr "Lihat &Timur\tE"
 
 #. TRANSLATORS: View *looking* South
 #: ../src/gfxcore.cc:4397
 #: ../src/mainfrm.cc:798
 #: n:242
-msgid "View &South"
-msgstr "Lihat &Selatan"
+msgid "View &South\tS"
+msgstr "Lihat &Selatan\tS"
 
 #. TRANSLATORS: View *looking* West
 #: ../src/gfxcore.cc:4399
 #: ../src/mainfrm.cc:799
 #: n:243
-msgid "View &West"
-msgstr "Lihat &Barat"
+msgid "View &West\tW"
+msgstr "Lihat &Barat\tW"
 
 #: ../src/gfxcore.cc:4419
 #: ../src/mainfrm.cc:801
 #: n:248
-msgid "&Plan View"
-msgstr "Tam&pilan Atas"
+msgid "&Plan View\tP"
+msgstr "Tam&pilan Atas\tP"
 
 #: ../src/gfxcore.cc:4420
 #: ../src/mainfrm.cc:802
 #: n:249
-msgid "Ele&vation"
-msgstr "Ele&vasi"
+msgid "Ele&vation\tL"
+msgstr "Ele&vasi\tL"
 
 #: ../src/mainfrm.cc:804
 #: n:254
-msgid "Restore De&fault View"
-msgstr "Kembali ta&mpilan Baku"
+msgid "Restore De&fault View\tDelete"
+msgstr "Kembali ta&mpilan Baku\tDelete"
 
 #. TRANSLATORS: Used as a label for the surrounding box for the "Bearing"
 #. and "Tilt angle" fields, and the "Plan view" and "Elevation" buttons in

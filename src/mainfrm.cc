@@ -794,15 +794,15 @@ void MainFrm::CreateMenuBar()
     rotmenu->Append(menu_ROTATION_REVERSE, wmsg(/*&Reverse Direction*/234));
 
     wxMenu* orientmenu = new wxMenu;
-    orientmenu->Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North*/240));
-    orientmenu->Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East*/241));
-    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South*/242));
-    orientmenu->Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West*/243));
+    orientmenu->Append(menu_ORIENT_MOVE_NORTH, wmsg(/*View &North\tN*/240));
+    orientmenu->Append(menu_ORIENT_MOVE_EAST, wmsg(/*View &East\tE*/241));
+    orientmenu->Append(menu_ORIENT_MOVE_SOUTH, wmsg(/*View &South\tS*/242));
+    orientmenu->Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West\tW*/243));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_PLAN, wmsg(/*&Plan View*/248));
-    orientmenu->Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation*/249));
+    orientmenu->Append(menu_ORIENT_PLAN, wmsg(/*&Plan View\tP*/248));
+    orientmenu->Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation\tL*/249));
     orientmenu->AppendSeparator();
-    orientmenu->Append(menu_ORIENT_DEFAULTS, wmsg(/*Restore De&fault View*/254));
+    orientmenu->Append(menu_ORIENT_DEFAULTS, wmsg(/*Restore De&fault View\tDelete*/254));
 
     wxMenu* presmenu = new wxMenu;
     presmenu->Append(menu_PRES_NEW, wmsg(/*&New Presentation*/311));
