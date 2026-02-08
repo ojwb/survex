@@ -2154,7 +2154,7 @@ msgstr "&Grundriss\tP"
 #: ../src/gfxcore.cc:4420
 #: ../src/mainfrm.cc:802
 #: n:249
-msgid "Ele&vation\tL"
+msgid "E&levation\tL"
 msgstr "&Aufriss\tL"
 
 #: ../src/mainfrm.cc:804

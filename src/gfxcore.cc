@@ -4414,7 +4414,7 @@ bool GfxCore::HandleRClick(wxPoint point)
 	// Pop up menu.
 	wxMenu menu;
 	menu.Append(menu_ORIENT_PLAN, wmsg(/*&Plan View\tP*/248));
-	menu.Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation\tL*/249));
+	menu.Append(menu_ORIENT_ELEVATION, wmsg(/*E&levation\tL*/249));
 	menu.AppendSeparator();
 	/* TRANSLATORS: Menu item which turns off the tilt indicator in aven. */
 	menu.AppendCheckItem(menu_IND_CLINO, wmsg(/*&Hide Clino*/384));

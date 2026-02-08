@@ -800,7 +800,7 @@ void MainFrm::CreateMenuBar()
     orientmenu->Append(menu_ORIENT_MOVE_WEST, wmsg(/*View &West\tW*/243));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_PLAN, wmsg(/*&Plan View\tP*/248));
-    orientmenu->Append(menu_ORIENT_ELEVATION, wmsg(/*Ele&vation\tL*/249));
+    orientmenu->Append(menu_ORIENT_ELEVATION, wmsg(/*E&levation\tL*/249));
     orientmenu->AppendSeparator();
     orientmenu->Append(menu_ORIENT_DEFAULTS, wmsg(/*Restore De&fault View\tDelete*/254));
 

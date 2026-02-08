@@ -2129,7 +2129,7 @@ msgstr "Olhar para &Norte\tN"
 #: ../src/mainfrm.cc:797
 #: n:241
 msgid "View &East\tE"
-msgstr "Olhar para &Leste\tE"
+msgstr "Olhar para L&este\tE"
 
 #. TRANSLATORS: View *looking* South
 #: ../src/gfxcore.cc:4397
@@ -2154,8 +2154,8 @@ msgstr "&Planta\tP"
 #: ../src/gfxcore.cc:4420
 #: ../src/mainfrm.cc:802
 #: n:249
-msgid "Ele&vation\tL"
-msgstr "Per&fil\tL"
+msgid "E&levation\tL"
+msgstr "Perfi&l\tL"
 
 #: ../src/mainfrm.cc:804
 #: n:254

@@ -2148,8 +2148,8 @@ msgstr "&Plan View\tP"
 #: ../src/gfxcore.cc:4420
 #: ../src/mainfrm.cc:802
 #: n:249
-msgid "Ele&vation\tL"
-msgstr "Pro&file\tL"
+msgid "E&levation\tL"
+msgstr "Profi&le\tL"
 
 #: ../src/mainfrm.cc:804
 #: n:254
