@@ -95,11 +95,12 @@ keyboard shortcut for a particular action.
 rotation speed, so that the cave returns to the centre of the screen.  There
 are also keyboard controls to use
 
-``P`` and ``L`` select Plan and eLevation respectively.  Changing between plan
-to elevation is animated to help you see where you are and how things relate.
-This animation is automatically disabled on slow machines to avoid user
-frustration.  You can force skipping the animation by pressing the key again
-during it, so a double press will always take you there quickly.
+``P`` and ``L`` select Plan and eLevation respectively, while ``N``, ``S``,
+``E`` and ``W`` select a view looking North, South, East and West respectively.
+The change of view is animated to help you see where you are and how things
+relate.  This animation is automatically disabled on slow machines to avoid
+user frustration.  You can force skipping the animation by pressing the key
+again during it, so a double press will always take you there quickly.
 
 ``Space`` toggles on and off automatic rotation about a vertical axis through
 the current centre point (which is moved by panning the view or by selecting
