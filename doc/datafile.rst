@@ -332,9 +332,9 @@ Description
 
    ``<quantity list>`` is one or more of:
 
-      ================ ===========
+      ================ ===============
       Quantity         Aliases
-      ================ ===========
+      ================ ===============
       ``LENGTH``       ``TAPE``
       ``BEARING``      ``COMPASS``
       ``GRADIENT``     ``CLINO``
