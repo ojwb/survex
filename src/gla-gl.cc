@@ -710,7 +710,12 @@ void GLACanvas::SetVolumeDiameter(glaCoord diameter)
     // Set the size of the data drawing volume by giving the diameter of the
     // smallest sphere containing it.
 
-    m_VolumeDiameter = max(glaCoord(1.0), diameter);
+    diameter = max(glaCoord(1.0), diameter);
+    if (diameter != m_VolumeDiameter) {
+	// Adjust scale so on-screen scale is unchanged.
+	SetScale(m_Scale * diameter / m_VolumeDiameter);
+	m_VolumeDiameter = diameter;
+    }
 }
 
 void GLACanvas::StartDrawing()

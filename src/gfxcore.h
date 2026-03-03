@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2001,2002,2005 Mark R. Shinwell.
-//  Copyright (C) 2001-2025 Olly Betts
+//  Copyright (C) 2001-2026 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -274,6 +274,7 @@ private:
     bool bigendian;
     long last_time = 0;
     size_t n_tris = 0;
+    double terrain_diameter = 0.0;
 
     void PlaceVertexWithColour(const Vector3 &v, double factor = 1.0);
     void PlaceVertexWithColour(const Vector3 & v,
@@ -311,6 +312,7 @@ private:
     void DrawIndicators();
 
     void TryToFreeArrays();
+    double UpdateVolumeDiameter();
     void FirstShow();
 
     void DrawScaleBar();

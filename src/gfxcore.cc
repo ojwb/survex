@@ -4,7 +4,7 @@
 //  Core drawing code for Aven.
 //
 //  Copyright (C) 2000-2003,2005,2006 Mark R. Shinwell
-//  Copyright (C) 2001-2024 Olly Betts
+//  Copyright (C) 2001-2026 Olly Betts
 //  Copyright (C) 2005 Martin Green
 //
 //  This program is free software; you can redistribute it and/or modify
@@ -203,37 +203,33 @@ void GfxCore::Initialise(bool same_file)
     InvalidateList(LIST_TERRAIN);
     InvalidateList(LIST_OVERLAYS);
 
-    // Set diameter of the viewing volume.
-    auto ext = m_Parent->GetExtent();
-    double cave_diameter = sqrt(sqrd(ext.GetX()) +
-				sqrd(ext.GetY()) +
-				sqrd(ext.GetZ()));
-
-    // Allow for terrain.
-    double diameter = max(1000.0 * 2, cave_diameter * 2);
-
+    initial_scale = UpdateVolumeDiameter();
     if (!same_file) {
-	SetVolumeDiameter(diameter);
-
 	// Set initial scale based on the size of the cave.
-	initial_scale = diameter / cave_diameter;
 	SetScale(initial_scale);
     } else {
 	// Adjust the position when restricting the view to a subsurvey (or
 	// expanding the view to show the whole survey).
 	AddTranslation(m_Parent->GetOffset() - offsets);
 
-	// Try to keep the same scale, allowing for the
-	// cave having grown (or shrunk).
-	double rescale = GetVolumeDiameter() / diameter;
-	SetVolumeDiameter(diameter);
-	SetScale(GetScale() / rescale); // ?
-	initial_scale = initial_scale * rescale;
+	// Don't change the current scale when reloading a file.
     }
 
     offsets = m_Parent->GetOffset();
 
     ForceRefresh();
+}
+
+double GfxCore::UpdateVolumeDiameter() {
+    // Set diameter of the viewing volume.
+    auto ext = m_Parent->GetExtent();
+    double cave_diameter = sqrt(sqrd(ext.GetX()) +
+				sqrd(ext.GetY()) +
+				sqrd(ext.GetZ()));
+    // Allow for terrain.
+    double diameter = max(cave_diameter, terrain_diameter);
+    SetVolumeDiameter(diameter);
+    return diameter / cave_diameter;
 }
 
 void GfxCore::FirstShow()
@@ -3028,6 +3024,9 @@ void GfxCore::DrawTerrain()
 
     AvenBusyCursor hourglass;
 
+    // Track vertical extent of terrain to feed into viewing volume diameter.
+    double abs_z_max = 0.0;
+
     // Draw terrain to twice the extent, or at least 1km.
     double r_sqrd = sqrd(max(m_Parent->GetExtent().magnitude(), 1000.0));
 
@@ -3095,6 +3094,8 @@ void GfxCore::DrawTerrain()
 		    double dist_2 = sqrd(pt.GetX()) + sqrd(pt.GetY());
 		    if (dist_2 > r_sqrd) {
 			pt = Vector3(DBL_MAX, DBL_MAX, DBL_MAX);
+		    } else {
+			abs_z_max = std::max(abs_z_max, fabs(pt.GetZ()));
 		    }
 		}
 	    }
@@ -3172,6 +3173,9 @@ void GfxCore::DrawTerrain()
 	 * contain any data inside that circle.
 	 */
 	error(/*No terrain data near area of survey*/161);
+    } else {
+	terrain_diameter = sqrt(r_sqrd + sqrd(abs_z_max)) * 2.0;
+	UpdateVolumeDiameter();
     }
 
     proj_destroy(pj);
