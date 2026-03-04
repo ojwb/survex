@@ -1,3 +1,46 @@
+Changes in 1.4.20 (2026-03-04):
+
+* aven: The viewing volume now includes the vertical extent of terrain which
+  fixes problems with the terrain being clipped when there's an extreme
+  vertical difference between the terrain and the cave is extreme.
+  Hopefully fixes #148, reported by Chris Curry.
+
+* aven: Improve handling of the scale when reloading an updated version of the
+  .3d file already being viewed.
+
+* aven: Add missing shortcuts to Orientation menu and "Reverse Direction" menu
+  item.  Reported by echarlie's friend.
+
+* aven: Where possible use L for "Elevation" menu accelerator, which matches
+  the shortcut key.
+
+* cavern: Improve handling of Walls percentage gradient.  Support explicit
+  percentage override ('p' suffix) and fix handling of overriding percentage
+  gradient to specify a plumb.  Reported by echarlie on #survex.
+
+* cavern: Support d:m:s for Walls bearings and gradients.  Reported by echarlie
+  on #survex.
+
+* cavern: Add `gps` as alias for `position` team role.  See:
+  https://github.com/therion/therion/issues/709
+
+* cavern: Warn for no blank after token in *cartesian (another case related to
+  #135).
+
+* manual: Document N, S, E and W shortcut keys for aven.
+
+* manual: Mark up codes and tokens in tables which avoids them getting
+  word-wrapped and hyphenated.  It also means they now get rendered in the
+  tables the same way they are referred to in the text.
+
+* manual: Separate each block of *instrument examples.
+
+* manual: Consistently document versions where features were deprecated.
+
+* Eliminate out-of-date postal address from licensing information.  Direct
+  people who somehow didn't receive the licence text to a copy on the FSF
+  website instead.
+
 Changes in 1.4.19 (2025-12-17):
 
 * aven/survexport: Rework PLT export to use 2 character escapes for spaces
