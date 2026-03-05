@@ -40,7 +40,7 @@ features are likely to be handled while more obscure features may not be.
   don't want to fail processing because of them.
 
   If you want a way to suppress the "unused fixed point" warning, using the
-  station in a ``#NOTE`` or ``#FLAG`` command counts as a "use" so you
+  station in a ``#NOTE`` or ``#FLAG`` directive counts as a "use" so you
   can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
   fixed point.
 
@@ -81,7 +81,7 @@ features are likely to be handled while more obscure features may not be.
   This warning will also be triggered if you have a "to" station which actually
   starts with ``*`` or ``<``, if the station name was not previously seen.
   This condition provides a simple way to suppress the warning - just add a
-  dummy ``#NOTE`` command before the line of data like so::
+  dummy ``#NOTE`` directive before the line of data like so::
 
     #note *8 ; Suppress Survex warning that this looks like broken LRUD
     P25     *8 5 16 3.58
@@ -205,7 +205,7 @@ features are likely to be handled while more obscure features may not be.
   colons, semicolons, commas, pound signs (#), or embedded tabs or spaces.` but
   it actually allows ``#`` in station names (though it can't be used as the
   first character of the from station name as that will be interpreted as a
-  command.  Since Survex 1.4.10.
+  directive.  Since Survex 1.4.10.
 
 - Walls ignores junk after the numeric argument in ``TYPEAB=``, ``TYPEVB=``,
   ``UV=``, ``UVH=``, and ``UVV=``.  Survex warns and skips the junk.  Since
