@@ -107,6 +107,7 @@ TESTS_=
  clptest.dat clptest.clp\
  walls.srv\
  badomit.srv badopts.srv\
+ unknowndirective.srv\
  wallsbaddatum.wpj\
  wallsdecl.wpj\
  passage hanging_lrud equatenosuchstn surveytypo\

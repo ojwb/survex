@@ -237,6 +237,26 @@ features are likely to be handled while more obscure features may not be.
 - Explicit ``degree:minute:second`` angle readings are supported since Survex
   1.4.20.
 
+- Walls doesn't issue an error for some directive lines which seem like they
+  are invalid (at least there's no documented meaning), for example all of
+  these are quietly accepted:
+
+  ::
+
+    #
+    #<L,R,U,D>
+    #<,>
+    #*,>
+    #!,"
+    #THANK,YOU
+
+  Survex 1.4.21 and later downgrades the "Unknown command" error to a warning
+  for these.  The complete pattern for what is accepted by Walls is hard to
+  reliably discern (it seems to be either empty directives or those with a
+  comma somewhere on the line after the invalid directive with no intervening
+  whitespace) so it's possible there are cases which are still errors should
+  also be warnings - please report any you come across.
+
 If you find some Walls data which Survex doesn't handle or handles
 incorrectly, and it is not already noted above, please let us know.
 If you can provide some data demonstrating the problem, that's really

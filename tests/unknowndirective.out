@@ -1,0 +1,113 @@
+./unknowndirective.srv:5:2: warning: Unknown command ""
+ #<L,R,U,D>
+  ^
+./unknowndirective.srv:6:2: warning: Unknown command ""
+ #<1,2,3,hello>
+  ^
+./unknowndirective.srv:7:2: warning: Unknown command ""
+ #*L,R,U,D*
+  ^
+./unknowndirective.srv:8:2: warning: Unknown command ""
+ #<,>
+  ^
+./unknowndirective.srv:9:2: warning: Unknown command ""
+ #*,>
+  ^
+./unknowndirective.srv:10:2: warning: Unknown command ""
+ #<,*
+  ^
+./unknowndirective.srv:11:2: warning: Unknown command ""
+ #*,*
+  ^
+./unknowndirective.srv:12:3: warning: Unknown command ""
+ # <L,R,U,D>
+   ^
+./unknowndirective.srv:13:3: warning: Unknown command ""
+ # <1,2,3,hello>
+   ^
+./unknowndirective.srv:14:3: warning: Unknown command ""
+ # *L,R,U,D*
+   ^
+./unknowndirective.srv:15:3: warning: Unknown command ""
+ # <,>
+   ^
+./unknowndirective.srv:16:3: warning: Unknown command ""
+ # *,>
+   ^
+./unknowndirective.srv:17:3: warning: Unknown command ""
+ # <,*
+   ^
+./unknowndirective.srv:18:3: warning: Unknown command ""
+ # *,*
+   ^
+./unknowndirective.srv:19:2: warning: Unknown command ""
+ #
+  ^
+./unknowndirective.srv:20:2: warning: Unknown command ""
+ #!,!
+  ^
+./unknowndirective.srv:21:2: warning: Unknown command ""
+ #","
+  ^
+./unknowndirective.srv:22:3: warning: Unknown command ""
+ # !,!
+   ^
+./unknowndirective.srv:23:3: warning: Unknown command ""
+ # ","
+   ^
+./unknowndirective.srv:24:3: warning: Unknown command ""
+ # !,"
+   ^
+./unknowndirective.srv:25:3: warning: Unknown command ""
+ # ",!
+   ^
+./unknowndirective.srv:26:3: warning: Unknown command "Q"
+ # Q,Q
+   ^
+./unknowndirective.srv:27:3: warning: Unknown command "W"
+ # W-T, F
+   ^
+./unknowndirective.srv:28:3: warning: Unknown command "THANK"
+ # THANK,YOU
+   ^~~~~
+./unknowndirective.srv:31:2: error: Unknown command "unknown"
+ #unknown directive
+  ^~~~~~~
+./unknowndirective.srv:32:3: error: Unknown command "bad"
+ # bad
+   ^~~
+./unknowndirective.srv:33:2: error: Unknown command ""
+ #<
+  ^
+./unknowndirective.srv:34:2: error: Unknown command ""
+ #<>
+  ^
+./unknowndirective.srv:35:2: error: Unknown command ""
+ #!/bin/sh
+  ^
+./unknowndirective.srv:36:15: error: Expecting "S", "SEG", or "SEGMENT"
+ Q0 U0  0 0 0 #sygment /TYPO
+               ^~~~~~~
+./unknowndirective.srv:36:1: info: Survey has no fixed points. Therefore I've fixed Q0 at (0,0,0)
+
+Removing trailing traverses...
+
+Concatenating traverses...
+
+Simplifying network...
+
+Calculating network...
+
+Calculating traverses...
+
+Calculating trailing traverses...
+
+Calculating statistics...
+
+Survey contains 2 survey stations, joined by 1 leg.
+There are 0 loops.
+Total length of survey legs =    0.00m (   0.00m adjusted)
+Total plan length of survey legs =    0.00m
+Total vertical length of survey legs =    0.00m
+
+There were 24 warning(s) and 6 error(s) - no output files produced.

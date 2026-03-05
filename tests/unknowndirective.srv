@@ -1,0 +1,36 @@
+; pos=fail warn=24 dummycrprotection=
+
+; Walls quietly accepts (and seems to ignore) all of these, so we issue a
+; warning instead of an error:
+#<L,R,U,D>
+#<1,2,3,hello>
+#*L,R,U,D*
+#<,>
+#*,>
+#<,*
+#*,*
+# <L,R,U,D>
+# <1,2,3,hello>
+# *L,R,U,D*
+# <,>
+# *,>
+# <,*
+# *,*
+#
+#!,!
+#","
+# !,!
+# ","
+# !,"
+# ",!
+# Q,Q
+# W-T, F
+# THANK,YOU
+
+; These should actually give an error though:
+#unknown directive
+# bad
+#<
+#<>
+#!/bin/sh
+Q0 U0  0 0 0 #sygment /TYPO

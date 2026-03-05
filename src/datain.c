@@ -3019,10 +3019,32 @@ next_line:
 	    // presentation information, so we just ignore it.
 	    skipline();
 	    break;
-	  case WALLS_CMD_NULL:
+	  case WALLS_CMD_NULL: {
+	    // Walls quietly accepts some apparently invalid directive lines.
+	    // The exact rules are hard to discern, but it seems there needs
+	    // to be a comma after the invalid directive, with no whitespace
+	    // in between.  Also `#` followed only by whitespace is allowed.
+	    // We check for these cases and emit a warning instead of an error.
+	    //
 	    // FIXME it's a "directive" in Walls-speak.
-	    compile_diagnostic(DIAG_ERR|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
+	    int diag_type = DIAG_ERR;
+	    if (s_empty(&token) && isEol(ch)) {
+		diag_type = DIAG_WARN;
+	    } else {
+		filepos fp;
+		get_pos(&fp);
+		while (!isspace((unsigned char)ch) && !isEol(ch)) {
+		    if (ch == ',') {
+			diag_type = DIAG_WARN;
+			break;
+		    }
+		    nextch();
+		}
+		set_pos(&fp);
+	    }
+	    compile_diagnostic(diag_type|DIAG_TOKEN|DIAG_SKIP, /*Unknown command “%s”*/12, s_str(&token));
 	    break;
+	  }
 	}
 
 	if (!s_empty(&line)) {
