@@ -44,6 +44,26 @@ features are likely to be handled while more obscure features may not be.
   can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
   fixed point.
 
+- Walls only runs on Microsoft Windows, where filenames are case-insensitive
+  and you may find the case of filenames in the ``.PRJ`` file doesn't match
+  the actual case of the filename on disk.  If processing a Walls dataset on a
+  platform where filenames are case-sensitive this can cause problems.
+
+  This same issue can affect native Survex datasets too, and the same
+  workaround is used when opening ``.SRV`` files: if the file isn't found
+  cavern will try a few variations of the case.  First it will try all lower
+  case, then all lower case except with the first character of the leafname
+  in upper case, and finally all upper case.
+
+  If the filename on disk has mixed case (aside from the initial character)
+  and the ``.PRJ`` file doesn't specify it with this case then this workaround
+  won't help.
+
+  One specific trick the workaround enables which is worth noting is that you
+  can unpack a ZIP archive using ``unzip -L`` which will unpack all the
+  filenames in lower case and then ``cavern`` should successfully process it
+  thanks to the "try lowercase" part of the workaround.
+
 - If an isolated LRUD (LRUD not on a leg, e.g. specified for the start or end
   station of a traverse) is missing its closing delimiter, Walls will parse
   the line as a data leg where the "to" station starts with ``*`` or ``<``,
