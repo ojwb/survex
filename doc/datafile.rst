@@ -1285,7 +1285,10 @@ Description
    By default cavern will warn about stations which have been ``*fix``-ed but
    are not used otherwise, as this might be due to a typo in the station name.
    Uses in survey data and (since 1.4.9) ``*entrance`` count for these
-   purposes.  This warning is unhelpful if you want to include a standard file
+   purposes.  (From 1.4.9 to 1.4.20, ``*entrance`` had to come after ``*fix``
+   to suppress the warning; since 1.4.21 it can come before or after.)
+
+   This warning is unhelpful if you want to include a standard file
    of benchmarks, some of which won't be used.  In this sort of situation,
    specify ``reference`` after the station name in the ``*fix`` command to
    suppress this warning for a particular station.  It's OK to use
