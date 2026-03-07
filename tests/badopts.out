@@ -40,4 +40,13 @@
 ./badopts.srv:4:51: error: Expecting "C" or "N"
  #units odrer=dav ract order=bad typeab=bad typevb=bad
                                                    ^
+./badopts.srv:5:13: error: Expecting "IS", "IT", "SS", or "ST"
+ #units tape=SI tape=TS tape=
+             ^~
+./badopts.srv:5:21: error: Expecting "IS", "IT", "SS", or "ST"
+ #units tape=SI tape=TS tape=
+                     ^~
+./badopts.srv:5:29: error: Expecting "IS", "IT", "SS", or "ST"
+ #units tape=SI tape=TS tape=
+                             ^
 cavern: error: No survey data

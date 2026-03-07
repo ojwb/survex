@@ -1522,6 +1522,21 @@ static const sztok walls_order_tab[] = {
     {NULL,	-1}
 };
 
+enum {
+    WALLS_TAPE_IT, // Default.
+    WALLS_TAPE_IS,
+    WALLS_TAPE_SS,
+    WALLS_TAPE_ST
+};
+
+static const sztok walls_tape_tab[] = {
+    {"IS",	WALLS_TAPE_IS},
+    {"IT",	WALLS_TAPE_IT},
+    {"SS",	WALLS_TAPE_SS},
+    {"ST",	WALLS_TAPE_ST},
+    {NULL,	-1}
+};
+
 // In #FLAG Walls seems to only document `/` but based on real-world use also
 // allows `\`.  FIXME: Are there other places that allow `\`?
 static inline bool isWallsSlash(int c) { return c == '/' || c == '\\'; }
@@ -1547,6 +1562,9 @@ typedef struct walls_options {
 
     // Default Compass-compatible flags to apply to legs.
     unsigned long compass_dat_flags;
+
+    // Current TAPE= setting.
+    int tape_method;
 
     // Current path including trailing directory separator if one is needed.
     string path;
@@ -1580,6 +1598,9 @@ static const walls_options walls_options_default = {
 
     // compass_dat_flags
     0,
+
+    // tape_method
+    WALLS_TAPE_IT,
 
     // path
     S_INIT,
@@ -2375,11 +2396,19 @@ parse_options(void)
 	    s_free(&val);
 	    break;
 	  }
-	  case WALLS_UNITS_OPT_TAPE:
+	  case WALLS_UNITS_OPT_TAPE: {
 	    get_token();
-	    /* FIXME: Implement different taping methods? */
-	    /* IT, SS, IS, ST (default is IT). */
+	    int tape_method = match_tok(walls_tape_tab,
+					TABSIZE(walls_tape_tab));
+	    if (tape_method < 0) {
+		compile_diagnostic(DIAG_ERR|DIAG_TOKEN,
+				   /*Expecting “%s”, “%s”, “%s”, or “%s”*/189,
+				   "IS", "IT", "SS", "ST");
+		break;
+	    }
+	    p_walls_options->tape_method = tape_method;
 	    break;
+	  }
 	  case WALLS_UNITS_OPT_TYPEAB:
 	    get_token();
 	    if (s_str(&uctoken)[0] == 'N') {
@@ -5444,8 +5473,8 @@ inches_only:
 	  real instrument_height = read_walls_distance(true,
 						       pcs->units[Q_LENGTH]);
 	  if (instrument_height == HUGE_REAL) {
-	      instrument_height = 0.0;
 	      if (ch == '-') {
+		  instrument_height = 0.0;
 		  // Walls expects 2 or more - for an omitted value.
 		  if (nextch() != '-') {
 		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
@@ -5470,6 +5499,7 @@ inches_only:
 	      }
 	      // FIXME: Ideally we'd make use of these, or at least warn if
 	      // they aren't equal...
+	      // FIXME: Tape tape_method into account too...
 	      (void)instrument_height;
 	      (void)target_height;
 	  }

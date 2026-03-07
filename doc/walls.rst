@@ -157,8 +157,9 @@ features are likely to be handled while more obscure features may not be.
 
 - LRUD data is currently ignored.
 
-- The ``TAPE=`` option is currently quietly skipped, and tape
-  measurements are assumed to be station to station.
+- The ``TAPE=`` option is checked for validity (since Survex 1.4.21)
+  but currently not otherwise handled, and tape measurements are assumed to be
+  station to station.
 
 - In ``TYPEAB=`` and ``TYPEVB=``, the threshold is ignored, as is the ``X``
   meaning to only use foresights (but still check backsights).
