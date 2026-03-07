@@ -197,6 +197,7 @@ typedef enum {
    CompassDATFlags,
 
    WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
+   WallsSRVFrDepth, WallsSRVToDepth,
    // Optional pair of readings giving heights above stations on CT surveys.
    WallsSRVHeights,
    // Optional delimited LRUD and variance overrides.

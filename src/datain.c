@@ -1548,14 +1548,14 @@ typedef struct walls_options {
     // NULL for any level not currently set (all NULL by default).
     char* prefix[3];
 
-    // Data order for CT legs.
-    reading data_order_ct[8];
-
-    // Data order for RECT legs (also used for #Fix coordinate order).
-    reading data_order_rect[7];
+    // Current (computed) data order.
+    reading data_order[8];
 
     // Is this from SAVE in .OPTIONS / #Units?
     bool explicit;
+
+    // RECT in effect?
+    bool rect;
 
     // Flags to apply to stations in #FIX.
     int fix_station_flags;
@@ -1565,6 +1565,12 @@ typedef struct walls_options {
 
     // Current TAPE= setting.
     int tape_method;
+
+    // Current ORDER= setting for CT data.
+    int order_ct;
+
+    // Current ORDER= setting for RECT data.
+    int order_rect;
 
     // Current path including trailing directory separator if one is needed.
     string path;
@@ -1578,19 +1584,16 @@ static const walls_options walls_options_default = {
     // prefix[3]
     { NULL, NULL, NULL },
 
-    // data_order_ct[8]
+    // data_order[8]
     {
 	WallsSRVFr, WallsSRVTo, WallsSRVTape, WallsSRVComp, WallsSRVClino,
 	WallsSRVHeights, WallsSRVExtras, End
     },
 
-    // data_order_rect[7]
-    {
-	WallsSRVFr, WallsSRVTo, Dx, Dy, Dz,
-	WallsSRVExtras, End
-    },
-
     // explicit
+    false,
+
+    // rect
     false,
 
     // fix_station_flags
@@ -1601,6 +1604,12 @@ static const walls_options walls_options_default = {
 
     // tape_method
     WALLS_TAPE_IT,
+
+    // order_ct
+    WALLS_ORDER_CT(WallsSRVTape, WallsSRVComp, WallsSRVClino),
+
+    // order_rect
+    WALLS_ORDER_CT(Dx, Dy, Dz) & ((1 << 24) - 1),
 
     // path
     S_INIT,
@@ -1710,6 +1719,47 @@ walls_initialise_settings(void)
 }
 
 static void
+walls_update_data_order(void)
+{
+    bool rect = p_walls_options->rect;
+    reading* p = p_walls_options->data_order + 2;
+    int order;
+    int style;
+    if (rect) {
+	// "RECT" order.
+	style = STYLE_CARTESIAN;
+	order = p_walls_options->order_rect;
+    } else {
+	// "CT" order.
+	style = STYLE_NORMAL;
+	order = p_walls_options->order_ct;
+    }
+    while (order) {
+	*p++ = (order & 0xff);
+	order >>= 8;
+    }
+    if (!rect) {
+	if (p_walls_options->tape_method == WALLS_TAPE_SS &&
+	    (p - p_walls_options->data_order) == 4) {
+	    // Walls manual recommends recording diving data using `TAPE=SS
+	    // ORDER=DA` or `TAPE=SS ORDER=AD`, so we map this combination to
+	    // Survex's diving style.
+	    style = STYLE_DIVING;
+	    *p++ = WallsSRVFrDepth;
+	    *p++ = WallsSRVToDepth;
+	} else {
+	    *p++ = WallsSRVHeights;
+	}
+    }
+    *p++ = WallsSRVExtras;
+    *p = End;
+
+    pcs->ordering = p_walls_options->data_order;
+
+    pcs->recorded_style = pcs->style = style;
+}
+
+static void
 walls_reset(void)
 {
     // "[S]et all parameters (including the current name prefix) to their
@@ -1720,13 +1770,12 @@ walls_reset(void)
     default_calib(pcs);
     // FIXME: pcs->z[Q_DECLINATION] = HUGE_REAL;
 
-    pcs->recorded_style = pcs->style = STYLE_NORMAL;
-    pcs->ordering = p_walls_options->data_order_ct;
-
     for (int i = 0; i < 3; ++i) {
 	free(p_walls_options->prefix[i]);
     }
     *p_walls_options = walls_options_default;
+
+    walls_update_data_order();
 }
 
 static real
@@ -1930,7 +1979,7 @@ read_walls_variance_overrides(real* p_var_xy, real* p_var_z)
 // Walls #FLAG values seem to be arbitrary strings - we attempt to infer
 // suitable Survex station flags from a few key words.
 static int
-parse_walls_flags(bool check_for_quote)
+walls_parse_flags(bool check_for_quote)
 {
 //#define DEBUG_WALLS_FLAGS
     int station_flags = 0;
@@ -1998,7 +2047,7 @@ parse_walls_flags(bool check_for_quote)
 }
 
 static void
-parse_walls_segment(unsigned long* p_compass_dat_flags)
+walls_parse_segment(unsigned long* p_compass_dat_flags)
 {
     *p_compass_dat_flags = 0;
     const unsigned long valid_compass_dat_flags =
@@ -2070,8 +2119,12 @@ convert_compass_dat_flags(unsigned long compass_dat_flags)
 }
 
 static void
-parse_options(void)
+walls_parse_options(void)
 {
+    // Track if we need to call walls_update_data_order().  We postpone
+    // doing so until after we've parsed a set of options to avoid some
+    // redundant calls.
+    bool update_data_order = false;
     skipblanks();
     while (!isEol(ch)) {
 	get_token();
@@ -2275,7 +2328,7 @@ parse_options(void)
 		set_pos(&fp);
 	    }
 	    break;
-	  case WALLS_UNITS_OPT_ORDER:
+	  case WALLS_UNITS_OPT_ORDER: {
 	    get_token();
 	    int order = match_tok(walls_order_tab,
 				  TABSIZE(walls_order_tab));
@@ -2283,24 +2336,15 @@ parse_options(void)
 		compile_diagnostic(DIAG_ERR|DIAG_TOKEN, /*Data style “%s” unknown*/65, s_str(&token));
 		break;
 	    }
-	    reading* p;
 	    bool rect = (order & (1 << 24));
 	    if (rect) {
-		order &= ((1 << 24) - 1);
-		// "RECT" order.
-		p = p_walls_options->data_order_rect + 2;
+		p_walls_options->order_rect = order & ((1 << 24) - 1);
 	    } else {
-		// "CT" order.
-		p = p_walls_options->data_order_ct + 2;
+		p_walls_options->order_ct = order;
 	    }
-	    while (order) {
-		*p++ = (order & 0xff);
-		order >>= 8;
-	    }
-	    if (!rect) *p++ = WallsSRVHeights;
-	    *p++ = WallsSRVExtras;
-	    *p = End;
+	    update_data_order = true;
 	    break;
+	  }
 	  case WALLS_UNITS_OPT_DECL:
 	    pcs->z[Q_DECLINATION] = -read_walls_angle(M_PI / 180.0);
 	    break;
@@ -2344,8 +2388,8 @@ parse_options(void)
 		// North.
 		pcs->cartesian_rotation = read_walls_angle(M_PI / 180.0);
 	    } else {
-		pcs->recorded_style = pcs->style = STYLE_CARTESIAN;
-		pcs->ordering = p_walls_options->data_order_rect;
+		p_walls_options->rect = true;
+		update_data_order = true;
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CASE:
@@ -2366,8 +2410,8 @@ parse_options(void)
 	    }
 	    break;
 	  case WALLS_UNITS_OPT_CT:
-	    pcs->recorded_style = pcs->style = STYLE_NORMAL;
-	    pcs->ordering = p_walls_options->data_order_ct;
+	    p_walls_options->rect = false;
+	    update_data_order = true;
 	    break;
 	  case WALLS_UNITS_OPT_PREFIX:
 	  case WALLS_UNITS_OPT_PREFIX2:
@@ -2406,6 +2450,7 @@ parse_options(void)
 		break;
 	    }
 	    p_walls_options->tape_method = tape_method;
+	    update_data_order = true;
 	    break;
 	  }
 	  case WALLS_UNITS_OPT_TYPEAB:
@@ -2489,7 +2534,7 @@ parse_options(void)
 	    skipblanks();
 	    if (ch == '=') {
 		nextch();
-		p_walls_options->fix_station_flags = parse_walls_flags(true);
+		p_walls_options->fix_station_flags = walls_parse_flags(true);
 	    } else {
 		p_walls_options->fix_station_flags = 0;
 	    }
@@ -2556,11 +2601,10 @@ parse_options(void)
 //		pcs->z[Q_BACKGRADIENT] = pcs->z[Q_GRADIENT] = -rad(read_numeric(false));
 //		pcs->z[Q_LENGTH] = -METRES_PER_FOOT * read_numeric(false);
 
-    /* Original "Inclination Units" were "Depth Gauge". */
-    //pcs->recorded_style = STYLE_DIVING;
-    //skipline();
 	skipblanks();
     }
+
+    if (update_data_order) walls_update_data_order();
 }
 
 static void
@@ -2587,17 +2631,14 @@ data_file_walls_srv(void)
     // followed.
     update_output_separator();
 
+    walls_update_data_order();
+
     /* errors in nested functions can longjmp here */
     if (setjmp(jbSkipLine)) {
 	// Recover from errors in nested functions by longjmp() to here.
 	skipline();
 	process_eol();
     }
-
-    if (pcs->style == STYLE_NORMAL)
-	pcs->ordering = p_walls_options->data_order_ct;
-    else
-	pcs->ordering = p_walls_options->data_order_rect;
 
     while (ch != EOF && !FERROR(file.fh)) {
 next_line:
@@ -2606,7 +2647,8 @@ next_line:
 	    if (ch == ';' || isEol(ch)) {
 		skipline();
 		process_eol();
-	    } else if (pcs->style == STYLE_NORMAL) {
+	    } else if (pcs->style != STYLE_CARTESIAN) {
+		// STYLE_NORMAL and STYLE_DIVING.
 		data_normal();
 	    } else {
 		// Set up Dz in case it's omitted.
@@ -2740,7 +2782,7 @@ next_line:
 
 	switch (directive) {
 	  case WALLS_CMD_UNITS:
-	    parse_options();
+	    walls_parse_options();
 	    break;
 	  case WALLS_CMD_DATE: {
 	    int year, month, day;
@@ -2781,18 +2823,18 @@ next_line:
 	    // Or E/S instead of W/N.
 
 	    enum { UNKNOWN, LATLONG, UTM } format = UNKNOWN;
-	    for (int i = 0; i < 3; ++i) {
-		// The order of the coordinates is specified by data_order_rect.
+	    // The order of the coordinates is specified by order_rect.
+	    int order = p_walls_options->order_rect;
+	    if ((order & 0xff0000) == 0) {
+		// FIXME: Survex doesn't currently support horizontal-only
+		// fixes.
+		coords[2] = 0.0;
+	    }
+	    while (order) {
 		int compiletimeassert_dxdydz[Dy - Dx == 1 && Dz - Dy == 1 ? 1 : -1];
 		(void)compiletimeassert_dxdydz;
-		int dim = p_walls_options->data_order_rect[i + 2] - Dx;
-		if ((unsigned)dim > 2) {
-		    // FIXME: Survex doesn't currently support horizontal-only
-		    // fixes.
-		    coords[2] = 0.0;
-		    break;
-		}
-
+		int dim = (order & 0xff) - Dx;
+		order >>= 8;
 		real coord;
 		skipblanks();
 		int upper_ch = toupper(ch);
@@ -2984,7 +3026,7 @@ next_line:
 		nextch();
 	    }
 	    nextch();
-	    station_flags = parse_walls_flags(false);
+	    station_flags = walls_parse_flags(false);
 
 	    if (setting_default_flag) {
 		fix_station_flags = station_flags;
@@ -3045,7 +3087,7 @@ read_flagged_stations:
 	    break;
 	  }
 	  case WALLS_CMD_SEGMENT:
-	    parse_walls_segment(&p_walls_options->compass_dat_flags);
+	    walls_parse_segment(&p_walls_options->compass_dat_flags);
 	    break;
 	  case WALLS_CMD_SYMBOL:
 	    // Now to draw symbols.  Not really appropriate here as this is
@@ -3421,7 +3463,7 @@ detached_or_not_srv:
 	    in_survey = false;
 	    break;
 	  case WALLS_WPJ_CMD_OPTIONS:
-	    parse_options();
+	    walls_parse_options();
 	    break;
 	  case WALLS_WPJ_CMD_PATH: {
 	    skipblanks();
@@ -4603,7 +4645,7 @@ read_walls_extras(unsigned long* p_compass_dat_flags)
 	    get_token();
 	    walls_cmd directive = match_tok(walls_cmd_tab, TABSIZE(walls_cmd_tab));
 	    if (directive == WALLS_CMD_SEGMENT) {
-		parse_walls_segment(p_compass_dat_flags);
+		walls_parse_segment(p_compass_dat_flags);
 	    } else {
 		compile_diagnostic(DIAG_ERR|DIAG_SKIP|DIAG_TOKEN,
 				   /*Expecting “%s”, “%s”, or “%s”*/188,
@@ -4858,6 +4900,10 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
 		);
    return 1;
 }
+
+typedef int compiletimeassert_depth_constant_values_ok[
+    (WallsSRVToDepth - WallsSRVFrDepth == 1) &&
+    (ToDepth - FrDepth == 1) ? 1 : -1];
 
 /* Process tape/compass/clino, diving, and cylpolar styles of survey data
  * Also handles topofil (fromcount/tocount or count) in place of tape */
@@ -5311,7 +5357,7 @@ inches_only:
 	      if (clin == HUGE_REAL) {
 		  if (ch != '-') {
 		      if (TSTBIT(pcs->flags, FLAGS_ANON_ONE_END) &&
-			  p_walls_options->data_order_ct[4] == WallsSRVClino) {
+			  p_walls_options->data_order[4] == WallsSRVClino) {
 			  // The clino can be completely omitted with order=dav
 			  // or order=adv on a leg to/from an anonymous station.
 		      } else {
@@ -5471,6 +5517,27 @@ inches_only:
 	      LOC(BackClino) = ftell(file.fh);
 	      WID(BackClino) = 0;
 	  }
+	  break;
+       }
+       case WallsSRVFrDepth:
+       case WallsSRVToDepth: {
+	  reading r = *ordering - WallsSRVFrDepth + FrDepth;
+	  LOC(r) = ftell(file.fh);
+	  real depth = read_walls_distance(true, pcs->units[Q_LENGTH]);
+	  if (depth == HUGE_REAL) {
+	      depth = 0.0;
+	      if (ch == '-') {
+		  // Walls expects 2 or more - for an omitted value.
+		  if (nextch() != '-') {
+		      compile_diagnostic_token_show(DIAG_ERR, /*Expecting numeric field, found “%s”*/9);
+		  } else {
+		      while (nextch() == '-') { }
+		  }
+	      }
+	  }
+	  VAL(r) = -depth;
+	  WID(r) = ftell(file.fh) - LOC(r);
+	  VAR(r) = var(Q_DEPTH);
 	  break;
        }
        case WallsSRVHeights: {

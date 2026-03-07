@@ -110,6 +110,7 @@ TESTS_=
  unknowndirective.srv\
  wallsbaddatum.wpj\
  wallsdecl.wpj\
+ wallsdiving.srv\
  passage hanging_lrud equatenosuchstn surveytypo\
  skipafterbadomit passagebad badreadingdotplus badcalibrate calibrate_clino\
  badunits badbegin anonstn anonstnbad anonstnrev doubleinc reenterlots\

@@ -134,6 +134,7 @@ utm.mak utm.out utm.dump\
 walls.srv walls.out walls.dump\
 wallsbaddatum.out wallsbaddatum.wpj\
 wallsdecl.wpj wallsdecl.srv wallsdecl.out wallsdecl.dump\
+wallsdiving.srv wallsdiving.dump wallsdiving.out\
 badomit.srv badomit.out\
 badopts.srv badopts.out\
 unknowndirective.srv unknowndirective.out\
