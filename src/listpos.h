@@ -20,7 +20,7 @@
 /* Check but don't print, for getting the checks we do during the scan. */
 void check_node_stats(void);
 
-/* Scan the prefix tree and issue warnings for any SFLAGS_UNUSED_FIXED_POINT
- * still set.
+/* Scan the prefix tree and issue warnings for any stations with SFLAGS_FIXED
+ * set but SFLAGS_USED not.
  */
 void check_for_unused_fixed_points(void);

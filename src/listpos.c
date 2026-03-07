@@ -72,8 +72,8 @@ void
 check_for_unused_fixed_points(void)
 {
     traverse_prefix_tree(root,
-			 BIT(SFLAGS_UNUSED_FIXED_POINT),
-			 BIT(SFLAGS_UNUSED_FIXED_POINT),
+			 BIT(SFLAGS_FIXED)|BIT(SFLAGS_USED),
+			 BIT(SFLAGS_FIXED),
 			 check_if_unused_fixed_point);
 }
 

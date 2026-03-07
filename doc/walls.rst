@@ -42,7 +42,9 @@ features are likely to be handled while more obscure features may not be.
   If you want a way to suppress the "unused fixed point" warning, using the
   station in a ``#NOTE`` or ``#FLAG`` directive counts as a "use" so you
   can suppress these with e.g. ``#NOTE ABC123 /unused`` for each such
-  fixed point.
+  fixed point.  (This works fully since Survex 1.4.21 - before this it only
+  worked if the ``#FIX`` came first, and didn't work for ``#FLAG`` without
+  any flags.)
 
 - Walls only runs on Microsoft Windows, where filenames are case-insensitive
   and you may find the case of filenames in the ``.PRJ`` file doesn't match
@@ -131,9 +133,11 @@ features are likely to be handled while more obscure features may not be.
 
 - Walls ``FLAG`` values seem to be arbitrary text strings.  We try to
   infer appropriate Survex station flags by checking for certain key
-  words in that text (currently we map words ``ENTRANCE`` and ``FIX``
-  to the corresponding Survex station flags) and otherwise ignore ``FLAG``
-  values.
+  words in that text and otherwise ignore ``FLAG`` values.
+
+  Currently we map ``ENTRANCE`` to the corresponding Survex station flag;
+  Survex <= 1.4.20 also mapped ``FIX`` but we set that for a station used
+  in ``#FIX`` so inferring it based on ``FLAG`` values doesn't seem useful.
 
 - ``#NOTE`` is parsed and the station name is marked as "used" (which
   suppresses the unused fixed point warning) but the note text is

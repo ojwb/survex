@@ -363,8 +363,8 @@ addlegbyname(prefix *fr_name, prefix *to_name, bool fToFirst,
    cLegs++;
 
    /* Suppress "unused fixed point" warnings for these stations. */
-   fr_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
-   to_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+   fr_name->sflags |= BIT(SFLAGS_USED);
+   to_name->sflags |= BIT(SFLAGS_USED);
 
    last_leg.to_name = to_name;
    last_leg.fr_name = fr_name;
@@ -470,8 +470,8 @@ process_equate(prefix *name1, prefix *name2)
       }
 
       /* Suppress "unused fixed point" warnings for these stations. */
-      name1->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
-      name2->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+      name1->sflags |= BIT(SFLAGS_USED);
+      name2->sflags |= BIT(SFLAGS_USED);
 
       /* count equates as legs for now... */
       cLegs++;

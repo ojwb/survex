@@ -1956,8 +1956,6 @@ parse_walls_flags(bool check_for_quote)
 	get_token();
 	if (S_EQ(&uctoken, "ENTRANCE")) {
 	    station_flags |= BIT(SFLAGS_ENTRANCE);
-	} else if (S_EQ(&uctoken, "FIX")) {
-	    station_flags |= BIT(SFLAGS_FIXED);
 	} else if (s_empty(&token)) {
 	    nextch();
 #ifdef DEBUG_WALLS_FLAGS
@@ -1972,7 +1970,8 @@ parse_walls_flags(bool check_for_quote)
 		   S_EQ(&uctoken, "SHAFT") ||
 		   S_EQ(&uctoken, "UPPER") ||
 		   S_EQ(&uctoken, "CAVE") ||
-		   S_EQ(&uctoken, "GPS") || // -> FIXED flag?
+		   S_EQ(&uctoken, "FIX") || // FIXED flag is set based on #FIX.
+		   S_EQ(&uctoken, "GPS") ||
 		   S_EQ(&uctoken, "SURVEYED") ||
 		   S_EQ(&uctoken, "BATS") ||
 		   S_EQ(&uctoken, "MYOTIS") ||
@@ -2956,6 +2955,7 @@ next_line:
 		break;
 	    }
 	    bool setting_default_flag = isWallsSlash(ch);
+	    int station_flags = 0;
 
 	    filepos fp;
 	    get_pos(&fp);
@@ -2974,20 +2974,24 @@ next_line:
 		    //
 		    // These seem to occur in real data, but we ignore
 		    // unknown flag names, so it seems reasonable to just
-		    // ignore these too.  Or maybe we should warn?  FIXME
-		    process_eol();
-		    goto next_line;
+		    // ignore these too (except that we want to read them
+		    // for syntax-checking purposes and to handle #FLAG
+		    // suppressing unused fix point warnings).
+		    //
+		    // Or maybe we should warn?  FIXME
+		    goto read_flagged_stations;
 		}
 		nextch();
 	    }
 	    nextch();
-	    int station_flags = parse_walls_flags(false);
+	    station_flags = parse_walls_flags(false);
 
 	    if (setting_default_flag) {
 		fix_station_flags = station_flags;
 		break;
 	    }
 
+read_flagged_stations:
 	    // Go back and read stations and apply the flags.
 	    filepos fp_end;
 	    get_pos(&fp_end);
@@ -2998,12 +3002,12 @@ next_line:
 	    int save_translate_bslash = pcs->Translate['\\'];
 	    pcs->Translate['/'] = 0;
 	    pcs->Translate['\\'] = 0;
-	    while (!isWallsSlash(ch)) {
+	    while (!isWallsSlash(ch) && !isEol(ch) && !isComm(ch)) {
 		prefix *name = read_walls_station(p_walls_options->prefix,
 						  false, NULL);
 		name->sflags |= station_flags;
 		// Suppress "unused fixed point" warnings for stations in #flag.
-		name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+		name->sflags |= BIT(SFLAGS_USED);
 
 		skipblanks();
 	    }
@@ -3036,7 +3040,7 @@ next_line:
 	    // "unused fixed point" warnings.
 	    prefix *name = read_walls_station(p_walls_options->prefix,
 					      false, NULL);
-	    name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+	    name->sflags |= BIT(SFLAGS_USED);
 	    skipline();
 	    break;
 	  }
@@ -5810,8 +5814,8 @@ process_nosurvey(prefix *fr, prefix *to, bool fToFirst)
    nosurveylink *link;
 
    /* Suppress "unused fixed point" warnings for these stations. */
-   fr->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
-   to->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+   fr->sflags |= BIT(SFLAGS_USED);
+   to->sflags |= BIT(SFLAGS_USED);
 
    /* add to linked list which is dealt with after network is solved */
    link = osnew(nosurveylink);

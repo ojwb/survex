@@ -63,7 +63,6 @@ int fix_station(prefix *fix_name, const double* coords, long offset) {
     bool new_stn = (fix_name->stn == NULL &&
 		    !TSTBIT(fix_name->sflags, SFLAGS_SOLVED));
     fix_name->sflags |= BIT(SFLAGS_FIXED);
-    if (new_stn) fix_name->sflags |= BIT(SFLAGS_UNUSED_FIXED_POINT);
     node *stn = StnFromPfx(fix_name);
     if (fixed(stn)) {
 	if (coords[0] != POS(stn, 0) ||
@@ -99,10 +98,7 @@ void fix_station_with_variance(prefix *fix_name, const double* coords,
 #endif
 			      )
 {
-    bool new_stn = (fix_name->stn == NULL &&
-		    !TSTBIT(fix_name->sflags, SFLAGS_SOLVED));
-    if (new_stn) fix_name->sflags |= BIT(SFLAGS_UNUSED_FIXED_POINT);
-
+    fix_name->sflags |= BIT(SFLAGS_FIXED);
     node *stn = StnFromPfx(fix_name);
     if (!fixed(stn)) {
 	node *fixpt = osnew(node);
@@ -1060,8 +1056,7 @@ static void
 cmd_entrance(void)
 {
    prefix *pfx = read_prefix(PFX_STATION);
-   pfx->sflags |= BIT(SFLAGS_ENTRANCE);
-   pfx->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+   pfx->sflags |= BIT(SFLAGS_ENTRANCE)|BIT(SFLAGS_USED);
 }
 
 static const prefix * first_fix_name = NULL;
@@ -1231,7 +1226,7 @@ cmd_fix(void)
 
 	 if (reference) {
 	     // `*fix reference` so suppress "unused fixed point" warning.
-	     fix_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+	     fix_name->sflags |= BIT(SFLAGS_USED);
 	 }
 	 if (!first_fix_name) {
 	    /* We track if we've fixed a station yet, and if so what the name
@@ -1258,7 +1253,7 @@ cmd_fix(void)
    int fix_result = fix_station(fix_name, coord.v, fp_stn.offset);
    if (reference) {
        // `*fix reference` so suppress "unused fixed point" warning.
-       fix_name->sflags &= ~BIT(SFLAGS_UNUSED_FIXED_POINT);
+       fix_name->sflags |= BIT(SFLAGS_USED);
    }
    if (fix_result == 0) {
       return;
