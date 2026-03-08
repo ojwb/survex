@@ -405,7 +405,7 @@ msgstr "Неизвестная роль “%s”"
 #: n:536
 #, c-format
 msgid "Unknown instrument type “%s”"
-msgstr ""
+msgstr "Неизвестный тип инструмента “%s”"
 
 #: ../src/commands.c:553
 #: n:479
@@ -1688,7 +1688,7 @@ msgstr "указать местоположения для выходных фа
 #: n:163
 #, fuzzy
 msgid "fewer messages (-qq for even fewer)"
-msgstr "отображать только краткие итоги (-qq для отображения только ошибок)"
+msgstr "выводить меньше сообщений (-qq еще меньше)"
 
 #. TRANSLATORS: --help output for cavern --no-auxiliary-files option
 #: ../src/cavern.c:119
