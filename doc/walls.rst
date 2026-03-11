@@ -224,6 +224,17 @@ features are likely to be handled while more obscure features may not be.
   first character of the from station name as that will be interpreted as a
   directive.  Since Survex 1.4.10.
 
+- Walls uses ``:`` as a separator between prefixes and between any prefix and
+  the station name.  Since Survex 1.4.21, cavern takes into account which
+  characters are allowed in Walls station names when picking the separator to
+  use in the ``.3d`` file - for a pure Walls dataset, it will pick ``:``, so
+  Walls station names shown by ``aven`` and other tools should match the names
+  as shown in Walls.  If you have a dataset which mixes data in Walls format
+  with Survex and/or Compass data, then it's possible ``:`` is used in a Survex
+  or Compass station name - if so a different separator will be chosen.  Before
+  Survex 1.4.21, ``.`` would be used as the ``.3d`` file separator for a pure
+  Walls dataset, even though if it was used in station names.
+
 - Walls ignores junk after the numeric argument in ``TYPEAB=``, ``TYPEVB=``,
   ``UV=``, ``UVH=``, and ``UVV=``.  Survex warns and skips the junk.  Since
   Survex 1.4.10.

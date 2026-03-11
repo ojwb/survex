@@ -229,15 +229,43 @@ default_translate(settings *s)
 static short separator_map[256];
 
 void
-scan_compass_station_name(prefix *stn)
+update_separator_map_for_foreign_name(const char* p)
 {
-    /* We only need to scan the leaf station name - any survey hierarchy above
+    /* Used for Compass, where we scan every station name used to see what
+     * characters are actually used (since Compass allows pretty much every
+     * character except space.
+     *
+     * We only need to scan the leaf station name - any survey hierarchy above
      * that must have been set up in .svx files for which we update
      * separator_map via cmd_set() plus adding the defaults in
      * find_output_separator().
+     *
+     * Also used for Walls SRV to mark space as used if we use the special
+     * name "empty name".
      */
-    for (const char *p = prefix_ident(stn); *p; ++p) {
+    while (*p) {
 	separator_map[(unsigned char)*p] |= SPECIAL_NAMES;
+	++p;
+    }
+}
+
+// Update the separator_map to reflect what can be SPECIAL_NAMES in the passed
+// translation table.
+//
+// Used for Walls currently.  Compass DAT allows everything >= ASCII 33 except
+// 127 in station names so there we scan each station name to see what's actually
+// used (see update_separator_map_for_foreign_name()).
+//
+// In a pure Walls dataset this will lead to `:` being picked as the separator
+// for the .3d file, which makes sense as it matches Walls native separator.
+// (If you process Walls data with Survex and/or Compass data, potentially `:`
+// could be in SPECIAL_NAMES for Survex or used in a Compass station name in
+// which case another separator character may be chosen).
+void
+update_separator_map_for_foreign_format(const short *t)
+{
+    for (int i = 0; i <= 0xff; i++) {
+	separator_map[i] |= t[i];
     }
 }
 

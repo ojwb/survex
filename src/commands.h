@@ -88,5 +88,6 @@ int match_tok(const sztok *tab, int tab_size);
 
 #define TABSIZE(T) ((sizeof(T) / sizeof(sztok)) - 1)
 
-void scan_compass_station_name(prefix *stn);
+void update_separator_map_for_foreign_name(const char* name);
+void update_separator_map_for_foreign_format(const short *t);
 void update_output_separator(void);

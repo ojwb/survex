@@ -469,6 +469,12 @@ read_walls_station(char * const walls_prefix[3], bool anon_allowed, bool *p_new)
 	    // Use a name with a space in so it can't collide with a real
 	    // Walls station name.
 	    s_append(&component, "empty name");
+	    static bool marked_space_as_used = false;
+	    if (!marked_space_as_used) {
+		marked_space_as_used = true;
+		update_separator_map_for_foreign_name(" ");
+		update_output_separator();
+	    }
 	}
 	int len = s_len(&component);
 	char *p = s_steal(&component);

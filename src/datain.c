@@ -1027,7 +1027,7 @@ data_file_compass_mak(void)
 		  get_pos(&fp_name);
 		  prefix *name = read_prefix(PFX_STATION|PFX_OPT);
 		  if (name) {
-		      scan_compass_station_name(name);
+		      update_separator_map_for_foreign_name(prefix_ident(name));
 		      skipblanks_mak();
 		      if (ch == '[') {
 			  /* fixed pt */
@@ -1706,6 +1706,13 @@ walls_initialise_settings(void)
     t['-'] |= SPECIAL_MINUS;
     t['+'] |= SPECIAL_PLUS;
     pcs->Translate = t;
+
+    static bool separator_map_updated_for_walls = false;
+    if (!separator_map_updated_for_walls) {
+	separator_map_updated_for_walls = true;
+	update_separator_map_for_foreign_format(t);
+	update_output_separator();
+    }
 
     pcs->begin_lineno = 0;
     // Spec says "maximum of eight characters" - we currently allow arbitrarily
@@ -2623,14 +2630,6 @@ data_file_walls_srv(void)
     // Default flags assigned to stations in #FIX.
     int fix_station_flags = p_walls_options->fix_station_flags;
 
-    // FIXME: We need to update the separator_map to reflect what can be
-    // SPECIAL_NAMES.  Or should we use the Compass approach and base this
-    // on what's actually used?  The first approach would pick the separator
-    // from {':', ';', ',', '#', space}; the latter would pick '.' if
-    // the station naming recommendations in the Walls documentation are
-    // followed.
-    update_output_separator();
-
     walls_update_data_order();
 
     /* errors in nested functions can longjmp here */
@@ -3247,23 +3246,6 @@ data_file_walls_wpj(void)
 
     walls_initialise_settings();
     walls_reset();
-
-    // FIXME: We need to update the separator_map to reflect what can be
-    // SPECIAL_NAMES.  Or should we use the Compass approach and base this
-    // on what's actually used?  The first approach would pick the separator
-    // from {':', ';', ',', '#', space}; the latter would pick '.' if
-    // the documentation station naming recommendations were followed.
-    update_output_separator();
-
-    /* We need to update separator_map so we don't pick a separator character
-     * which occurs in a station name.  However Compass DAT allows everything
-     * >= ASCII char 33 except 127 in station names so if we just added all
-     * the valid station name characters we'd always pick space as the
-     * separator for any dataset which included a DAT file, yet in practice
-     * '.' is never used in any of the sample DAT files I've seen.  So
-     * instead we scan the characters actually used in station names when we
-     * process CompassDATFr and CompassDATTo fields. (FIXME)
-     */
 
     // Start from the location of this WPJ.
     s_append(&p_walls_options->path, pth);
@@ -4960,11 +4942,11 @@ data_normal(void)
 	  // Compass DAT is always From then To.
 	  first_stn = Fr;
 	  fr = read_prefix(PFX_STATION);
-	  scan_compass_station_name(fr);
+	  update_separator_map_for_foreign_name(prefix_ident(fr));
 	  break;
        case CompassDATTo:
 	  to = read_prefix(PFX_STATION);
-	  scan_compass_station_name(to);
+	  update_separator_map_for_foreign_name(prefix_ident(to));
 	  break;
        case Station:
 	  fr = to;
