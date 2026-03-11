@@ -11,8 +11,8 @@ each line is fully specifiable.  So you can enter your data much as it appears
 on the survey notes, which is important in reducing the opportunities for
 transcription errors.
 
-Also all the special characters are user-definable - for example, the
-separators can be spaces and tabs, or commas (e.g. when exporting from a
+Also all the special characters are user-definable - for example, data items
+can be separated by spaces and tabs, or commas (e.g. when exporting from a
 spreadsheet), etc; the decimal point can changed to be a comma (as used in
 continental Europe), or a slash (sometimes used for clarity in written survey
 notes), or anything else you care to choose.  This flexibility means that it
