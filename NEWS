@@ -1,6 +1,28 @@
-up to: b426882c392c908827fc5221a26ff053923a7ca1
+up to: 947c6ecf139cbfce9335dd3e694b656e7ed7c183
 
 Changes in 1.4.21 (2026-0?-??):
+
+    Improve manual wording
+
+    cavern: Pick better 3d file separator for Walls
+    Walls uses `:` as a separator between prefixes and between any prefix and
+    the station name, so now cavern takes into account which characters are
+    allowed in Walls station names when picking the separator to use in the
+    .3d file - for a pure Walls dataset, it will pick `:`, so Walls station
+    names in the .3d file should match the names as shown in Walls.
+    If a dataset mixes data in Walls format with Survex and/or Compass data,
+    then it's possible `:` is used in a Survex or Compass station name - if
+    so a different separator will be chosen.
+    Previously, cavern would pick `.` for the separator for a pure Walls
+    dataset, even though if it was used in station names.
+
+    Merge updates to Russian translation
+
+    Implement support for Walls diving data
+    The Walls manual says to use the combination of ``TAPE=SS`` with
+    ``ORDER=DA`` or ``ORDER=AD`` for underwater legs, so map this to
+    Survex's diving style.
+    Issue highlighted by a dataset from Darek Lubomski.
 
     *entrance before unused *fix ...
 
