@@ -2989,6 +2989,10 @@ next_line:
 	    // store a list of the stations we note the position, scan ahead
 	    // and parse the flag, then come back and actually parse the
 	    // stations and apply the flag.
+
+	    // Declare here to workaround error on macOS 14 (compiler bug?)
+	    filepos fp_end;
+
 	    skipblanks();
 	    if (isEol(ch) || isComm(ch)) {
 		// Just "#FLAG" with no arguments clears the default flag.
@@ -3034,7 +3038,6 @@ next_line:
 
 read_flagged_stations:
 	    // Go back and read stations and apply the flags.
-	    filepos fp_end;
 	    get_pos(&fp_end);
 	    set_pos(&fp);
 	    // It seems / and \ can't be used in #flag station names?
