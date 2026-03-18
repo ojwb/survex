@@ -1087,7 +1087,7 @@ find_non_anon_stn(node *stn)
 	 * and report a station from that traverse instead.
 	 */
 	for (stackTrail* p = ptrTrail; p; p = p->next) {
-	    linkfor *leg = ptrTrail->join1;
+	    linkfor *leg = p->join1;
 	    if (reverse_leg(leg)->l.to == stn) {
 		return leg->l.to;
 	    }

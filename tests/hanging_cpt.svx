@@ -8,3 +8,11 @@
 3 7  1 0 0
 4 5  1 0 0
 6 7  1 0 0
+
+; Regression test for bug in code to find a neighbour for an anonymous station.
+;
+; This component gets reduced to a single anonymous station (by removing a
+; trailing traverse ending at the other anonymous station).
+a .. 1 0 0
+a b  1 0 0
+b .. 1 0 0
