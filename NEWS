@@ -1,55 +1,67 @@
-up to: 947c6ecf139cbfce9335dd3e694b656e7ed7c183
+up to: ee934092aa1a5bcf5b26b09d21b7b447b41cf387
 
 Changes in 1.4.21 (2026-0?-??):
 
-    Improve manual wording
+* cavern:
 
-    cavern: Pick better 3d file separator for Walls
-    Walls uses `:` as a separator between prefixes and between any prefix and
-    the station name, so now cavern takes into account which characters are
-    allowed in Walls station names when picking the separator to use in the
-    .3d file - for a pure Walls dataset, it will pick `:`, so Walls station
-    names in the .3d file should match the names as shown in Walls.
-    If a dataset mixes data in Walls format with Survex and/or Compass data,
-    then it's possible `:` is used in a Survex or Compass station name - if
-    so a different separator will be chosen.
-    Previously, cavern would pick `.` for the separator for a pure Walls
-    dataset, even though if it was used in station names.
+  + Fix missing reports of unconnected survey stations.  We aim to report at
+    least one station in every unconnected piece of survey.  1.4.10 added code
+    to handle when a piece had been simplified to only anonymous stations, but
+    this was buggy and was only checking the first entry in the removed
+    traverse list.  We now check the full list, and if we somehow fail to find
+    an neighbouring named station, we report the anonymous station (we give the
+    filename and line number which is enough context by itself).  Reported by
+    Paweł Gogolak.
 
-    Merge updates to Russian translation
+  + `*entrance` now also suppresses unused fixed point warnings when it appears
+    before the `*fix` (previously this only worked for `*entrance` after
+    `*fix`.
 
-    Implement support for Walls diving data
-    The Walls manual says to use the combination of ``TAPE=SS`` with
-    ``ORDER=DA`` or ``ORDER=AD`` for underwater legs, so map this to
-    Survex's diving style.
-    Issue highlighted by a dataset from Darek Lubomski.
+  + `*fix` with SDs now sets the "fixed" flag on the station in the .3d file.
 
-    *entrance before unused *fix ...
+  + Pick better 3d file separator for Walls data (previously cavern would pick
+    `.` for the separator in a pure Walls dataset, even if it was used in
+    station names).  Walls uses `:` as a prefix separator, so now cavern takes
+    into account which characters are allowed in Walls station names when
+    picking the separator to use in the .3d file.  For a pure Walls dataset, it
+    will pick `:`, so Walls station names in the .3d file should match the
+    names as shown in Walls.  If a dataset mixes data in Walls format with
+    Survex and/or Compass data, then it's possible `:` is used in a Survex or
+    Compass station name and if so a different separator will be chosen.
 
-    In native Survex data, `*fix` with SDs now sets the "fixed" flag
-    on the station in the .3d file.
+  + The Walls manual says to represent underwater data using the combination of
+    `TAPE=SS` with `ORDER=DA` or `ORDER=AD`, so we now map this to Survex's
+    diving style.  Issue highlighted by a dataset from Darek Lubomski.
 
-    In Walls data, `#note` and `#flags` are meant to suppress unused
-    fixed point warnings, but only did if they came after the `#fix`.
-    Also `#flags` without any flags didn't suppress the warning but
-    now does.
+  + In Walls data, downgrade the "Unknown command" error to a warning for some
+    invalid directives which Walls quietly accepts.  Issue highlighted by a
+    dataset from Darek Lubomski.
 
-    In Walls data, the word `fix` in `#flags` no longer sets the "fixed"
-    flags in the .3d file - we now only set it for stations used in `#fix`.
-    This seems a more logical approach, since `#flags` is just free-form
-    text which Walls itself doesn't ascribe particular semantics to.
+  + In Walls data, `#note` and `#flags` are meant to suppress unused fixed
+    point warnings, but only did if they came after the `#fix`.  Also `#flags`
+    without any flags didn't suppress the warning but now does.
 
-    cavern: Check value after TAPE= in Walls data
+  + In Walls data, the word `fix` in `#flags` no longer sets the "fixed" flag
+    in the .3d file - we now only set it for stations used in `#fix`.  This
+    seems a more logical approach, since `#flags` is just free-form text which
+    Walls itself doesn't ascribe particular semantics to.  (The word `entrance`
+    in `#flags` still sets the "entrance" flag since Walls lacks a way to
+    properly mark entrances.)
 
-    Say "directive" instead of "command" in Walls docs
-    This is the terminology Walls uses.
+  + Check value after `TAPE=` in Walls data and give an error if it's not
+    valid.
 
-    cavern: In Walls data, downgrade the "Unknown command" error to a
-    warning for some invalid directives which Walls quietly accepts.
-    Issue highlighted by a dataset from Darek Lubomski.
+* Documentation:
 
-    Document filename case mismatch issue.
-    Issue highlighted by a dataset from Darek Lubomski.
+  + Say "directive" instead of "command" in Walls docs since this is the
+    terminology Walls uses.
+
+  + Document Walls filename case mismatch issue.  Issue highlighted by a
+    dataset from Darek Lubomski.
+
+  + Minor improvements to wording.
+
+* Merge updates to Russian translation.
 
 Changes in 1.4.20 (2026-03-04):
 
