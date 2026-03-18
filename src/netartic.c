@@ -336,24 +336,40 @@ articulate(void)
 	 * network which are hanging. */
 	warning(/*Survey not all connected to fixed stations*/45);
 	for (node *stn = stnlist; stn; stn = stn->next) {
+	    // If this is an anonymous station, find the neighbouring station
+	    // in the unreduced network and report that instead as a named
+	    // station will mean more to the user trying to understand where
+	    // the problem is.
+	    //
+	    // There should always be such a station, but if there isn't or we
+	    // fail to find it, we'll report the file and line number which is
+	    // still useful, e.g.
+	    //
+	    // foo.svx:16: info: anonymous station
 	    prefix *name = find_non_anon_stn(stn)->name;
 	    if (TSTBIT(name->sflags, SFLAGS_HANGING)) {
 		/* Already reported this name as hanging. */
 		continue;
 	    }
 	    name->sflags |= BIT(SFLAGS_HANGING);
-	    if (prefix_ident(name)) {
-		if (!fNotAttached) {
-		    fNotAttached = true;
-		    /* TRANSLATORS: Here "station" is a survey station, not a
-		     * train station. */
-		    puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
-		}
-		printf("%s:%d: %s: ",
-		       name->filename, name->line, msg(/*info*/485));
-		print_prefix(name);
-		putnl();
+
+	    if (!name->filename) {
+		// Invented station (e.g. from delta-star transform) - there's
+		// no name and no location so these aren't useful to report.
+		// FIXME: Will there always be another station in the reduced
+		// network or should we try to find a named neighbour?
+		continue;
 	    }
+
+	    if (!fNotAttached) {
+		fNotAttached = true;
+		/* TRANSLATORS: Here "station" is a survey station, not a
+		 * train station. */
+		puts(msg(/*The following survey stations are not attached to a fixed point:*/71));
+	    }
+	    printf("%s:%d: %s: ", name->filename, name->line, msg(/*info*/485));
+	    print_prefix(name);
+	    putnl();
 	}
 
 	// We need to include hanging surveys in the count of connected
