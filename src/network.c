@@ -450,6 +450,7 @@ remove_subnets(void)
 		    stnZ->name = nameZ;
 		    nameZ->stn = stnZ;
 		    nameZ->up = NULL;
+		    nameZ->filename = NULL;
 		    nameZ->min_export = nameZ->max_export = 0;
 		    nameZ->sflags = 0;
 		    unfix(stnZ);

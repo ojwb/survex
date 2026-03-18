@@ -231,7 +231,8 @@ typedef struct Prefix {
    // A filename:line:column where this name was used.  If it's a station used
    // in *fix then this will be the location of such a *fix, otherwise if it's
    // a station used in *equate then it's the location of such a *equate.
-   // Otherwise it's the first place it was used.
+   // Otherwise it's the first place it was used.  (For a station invented to
+   // do a delta-star transform, this will be NULL.)
    const char *filename;
    unsigned int line;
    unsigned short column;
