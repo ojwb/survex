@@ -116,7 +116,12 @@ U23 suf1a 10.5f 100.5g 45d <-.5m,10.5f,10i6.5,i6>
 U23 suf1b 3.2004m 90.45d 45d <-.5m,38.4048m,38.5572m,1.8288m>
 U23 suf2a 10i6.5 15:10:30 -5p
 U23 suf2b 3.2131m 15.175d -2.8624d
-; 800m = 800 mils (360d=6400m)
+U23 suf2c i126.5 15:10:30 -2:51.744
+U23 suf2d 3.2131m 15.175d -2:51:44.64
+; Test mils (360d=6400m)
+U23 suf2e 3.2131m 269.7778m -50.8871m
+
+; FIXME: These should all work now - make sure they are tested.
 ; :50 = 50 minutes (0.8333333333333d)
 ; N50.5W = North 50.5 degrees West (=309.5d)
 ; S:15.5E = South 15.5 minutes East
