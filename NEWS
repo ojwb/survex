@@ -67,8 +67,8 @@ Changes in 1.4.20 (2026-03-04):
 
 * aven: The viewing volume now includes the vertical extent of terrain which
   fixes problems with the terrain being clipped when there's an extreme
-  vertical difference between the terrain and the cave is extreme.
-  Hopefully fixes #148, reported by Chris Curry.
+  vertical difference between the terrain and the cave.  Hopefully fixes #148,
+  reported by Chris Curry.
 
 * aven: Improve handling of the scale when reloading an updated version of the
   .3d file already being viewed.
