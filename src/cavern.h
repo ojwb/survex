@@ -265,11 +265,14 @@ typedef struct Meta_data {
 /* stuff stored for both forward & reverse legs */
 typedef struct {
    struct Node *to;
-   /* bits 0..1 = reverse leg number; bit7 is fFullLeg */
-   /* bit6 = fReplacementLeg (by reduction rules) */
-   /* bit5 = articulation leg (i.e. carries no error) */
+   // bits 0..1: reverse leg number (0, 1 or 2)
+   // bits 2..3: currently unused
+   // bit 4: FLAG_FAKE (an equate or leg inside an sdfix
+   // bit 5: FLAG_ARTICULATION (i.e. carries no error)
+   // bit 6: FLAG_REPLACEMENTLEG (by reduction rules)
+   // bit 7: FLAG_DATAHERE (i.e. this is a forward leg)
    unsigned char reverse;
-   /* flags - e.g. surface, duplicate survey
+   /* flags - e.g. FLAGS_SURFACE, FLAGS_DUPLICATE.
     * only used if (FLAG_DATAHERE & !(FLAG_REPLACEMENTLEG|FLAG_FAKE))
     * This could be only in linkfor, but this is actually more space
     * efficient.
