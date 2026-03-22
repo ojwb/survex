@@ -132,15 +132,15 @@ typedef enum {
 } flags;
 
 /* flags are currently stored in an unsigned char */
-typedef int compiletimeassert_flags0[FLAGS_STYLE_BIT2 <= 7 ? 1 : -1];
+static_assert(FLAGS_STYLE_BIT2 <= 7, "FLAGS_* don't fit in a byte");
 
 /* Mask to AND with to get bits to pass to img library. */
 #define FLAGS_MASK \
     (BIT(FLAGS_SURFACE) | BIT(FLAGS_DUPLICATE) | BIT(FLAGS_SPLAY))
 
-typedef int compiletimeassert_flags1[BIT(FLAGS_SURFACE) == img_FLAG_SURFACE ? 1 : -1];
-typedef int compiletimeassert_flags2[BIT(FLAGS_DUPLICATE) == img_FLAG_DUPLICATE ? 1 : -1];
-typedef int compiletimeassert_flags3[BIT(FLAGS_SPLAY) == img_FLAG_SPLAY ? 1 : -1];
+static_assert(BIT(FLAGS_SURFACE) == img_FLAG_SURFACE, "*_SURFACE differ");
+static_assert(BIT(FLAGS_DUPLICATE) == img_FLAG_DUPLICATE, "*_DUPLICATE differ");
+static_assert(BIT(FLAGS_SPLAY) == img_FLAG_SPLAY, "*_SPLAY differ");
 
 typedef enum {
    /* Don't reorder these values!  They need to match with img.h too. */
@@ -162,13 +162,13 @@ typedef enum {
 	BIT(SFLAGS_ENTRANCE) | BIT(SFLAGS_EXPORTED) | BIT(SFLAGS_FIXED) |\
 	BIT(SFLAGS_ANON) | BIT(SFLAGS_WALL))
 
-typedef int compiletimeassert_sflags1[BIT(SFLAGS_SURFACE) == img_SFLAG_SURFACE ? 1 : -1];
-typedef int compiletimeassert_sflags2[BIT(SFLAGS_UNDERGROUND) == img_SFLAG_UNDERGROUND ? 1 : -1];
-typedef int compiletimeassert_sflags3[BIT(SFLAGS_ENTRANCE) == img_SFLAG_ENTRANCE ? 1 : -1];
-typedef int compiletimeassert_sflags4[BIT(SFLAGS_EXPORTED) == img_SFLAG_EXPORTED ? 1 : -1];
-typedef int compiletimeassert_sflags5[BIT(SFLAGS_FIXED) == img_SFLAG_FIXED ? 1 : -1];
-typedef int compiletimeassert_sflags6[BIT(SFLAGS_ANON) == img_SFLAG_ANON ? 1 : -1];
-typedef int compiletimeassert_sflags7[BIT(SFLAGS_WALL) == img_SFLAG_WALL ? 1 : -1];
+static_assert(BIT(SFLAGS_SURFACE) == img_SFLAG_SURFACE, "*_SURFACE differ");
+static_assert(BIT(SFLAGS_UNDERGROUND) == img_SFLAG_UNDERGROUND, "*_UNDERGROUND differ");
+static_assert(BIT(SFLAGS_ENTRANCE) == img_SFLAG_ENTRANCE, "*_ENTRANCE differ");
+static_assert(BIT(SFLAGS_EXPORTED) == img_SFLAG_EXPORTED, "*_EXPORTED differ");
+static_assert(BIT(SFLAGS_FIXED) == img_SFLAG_FIXED, "*_FIXED differ");
+static_assert(BIT(SFLAGS_ANON) == img_SFLAG_ANON, "*_ANON differ");
+static_assert(BIT(SFLAGS_WALL) == img_SFLAG_WALL, "*_WALL differ");
 
 /* enumeration of field types */
 typedef enum {
@@ -204,8 +204,7 @@ typedef enum {
    WallsSRVExtras
 } reading;
 
-/* if IgnoreAll is >= 32, the compiler will choke on this */
-typedef char compiletimeassert_reading[IgnoreAll < 32 ? 1 : -1];
+static_assert(IgnoreAll < 32, "IgnoreAll doesn't fit in 32-bit mask");
 
 /* position or length vector */
 typedef real delta[3];
@@ -329,11 +328,12 @@ typedef struct Inst {
 #define STYLE_PASSAGE    5
 #define STYLE_IGNORE     6
 
-typedef int compiletimeassert_style1[STYLE_NORMAL == img_STYLE_NORMAL ? 1 : -1];
-typedef int compiletimeassert_style2[STYLE_DIVING == img_STYLE_DIVING ? 1 : -1];
-typedef int compiletimeassert_style3[STYLE_CARTESIAN == img_STYLE_CARTESIAN ? 1 : -1];
-typedef int compiletimeassert_style4[STYLE_CYLPOLAR == img_STYLE_CYLPOLAR ? 1 : -1];
-typedef int compiletimeassert_style5[STYLE_NOSURVEY == img_STYLE_NOSURVEY ? 1 : -1];
+static_assert(STYLE_NORMAL == img_STYLE_NORMAL, "*_NORMAL differ");
+static_assert(STYLE_DIVING == img_STYLE_DIVING, "*_DIVING differ");
+static_assert(STYLE_CARTESIAN == img_STYLE_CARTESIAN, "*_CARTESIAN differ");
+static_assert(STYLE_CYLPOLAR == img_STYLE_CYLPOLAR, "*_CYLPOLAR differ");
+static_assert(STYLE_NOSURVEY == img_STYLE_NOSURVEY, "*_NOSURVEY differ");
+static_assert(STYLE_NORMAL == img_STYLE_NORMAL, "*_NORMAL differ");
 
 /* various settings preserved by *BEGIN and *END */
 typedef struct Settings {

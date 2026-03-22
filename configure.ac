@@ -442,6 +442,29 @@ AH_BOTTOM(
  * avoid every C file which uses these needing to include <stdbool.h>.
  */
 # include <stdbool.h>
+
+/* C23 made static_assert() available by default - let's emulate that. */
+# if __STDC_VERSION__ >= 202311L
+// Available by default.
+# elif __STDC_VERSION__ >= 201112L
+# include <assert.h>
+# elif defined __COUNTER__
+// As a fallback for < C11, use a typedef for an array type where the size
+// is negative if the assertion fails.  Prior to C11 redefining a typedef was
+// not allowed so we need to generate unique typedef names (within a single
+// compilation).  __COUNTER__ provides an way to do this - it is a non-standard
+// extension, but supported by at least GCC, clang and MSVC.
+//
+// Using the standardised __LINE__ instead of __COUNTER__ here would fail if
+// two headers (or a header and the source file) happen to use static_assert()
+// on the same line number.
+#  define STATICASSERTTYPEDEFNAME(N) staticassert_##N
+#  define static_assert(CONDITION, MESSAGE) \
+    typedef int STATICASSERTTYPEDEFNAME(__COUNTER__)[(CONDITION) ? 1 : -1]
+# else
+// We don't check static_assert for pre-C11 compilers without __COUNTER__.
+#  define static_assert(...)
+# endif
 #endif
 ])
 

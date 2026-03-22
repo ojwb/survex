@@ -1499,8 +1499,8 @@ static const sztok walls_units_opt_tab[] = {
 
 // Here we rely on the integer values of the reading codes used fitting in
 // a byte so assert that is the case.
-typedef int compiletimeassert_order_byte_encoding_ok[
-    (WallsSRVTape|WallsSRVComp|WallsSRVClino|Dx|Dy|Dz) < 0x100 ? 1 : -1];
+static_assert((WallsSRVTape|WallsSRVComp|WallsSRVClino|Dx|Dy|Dz) < 0x100,
+	      "WallsSRV* codes don't all fit in a byte");
 
 static const sztok walls_order_tab[] = {
     {"AD",	WALLS_ORDER_CT(WallsSRVComp, WallsSRVTape, 0)},
@@ -2836,8 +2836,8 @@ next_line:
 		coords[2] = 0.0;
 	    }
 	    while (order) {
-		int compiletimeassert_dxdydz[Dy - Dx == 1 && Dz - Dy == 1 ? 1 : -1];
-		(void)compiletimeassert_dxdydz;
+		static_assert(Dy - Dx == 1 && Dz - Dy == 1,
+			      "Dx, Dy, Dz not consecutive integers");
 		int dim = (order & 0xff) - Dx;
 		order >>= 8;
 		real coord;
@@ -4892,9 +4892,9 @@ process_cylpolar(prefix *fr, prefix *to, bool fToFirst, bool fDepthChange)
    return 1;
 }
 
-typedef int compiletimeassert_depth_constant_values_ok[
-    (WallsSRVToDepth - WallsSRVFrDepth == 1) &&
-    (ToDepth - FrDepth == 1) ? 1 : -1];
+static_assert((WallsSRVToDepth - WallsSRVFrDepth == 1) &&
+	      (ToDepth - FrDepth == 1),
+	      "*ToDepth values not all one more than corresponding *FrDepth");
 
 /* Process tape/compass/clino, diving, and cylpolar styles of survey data
  * Also handles topofil (fromcount/tocount or count) in place of tape */
