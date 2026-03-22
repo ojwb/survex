@@ -169,8 +169,9 @@ solve_matrix(node *list)
 		stn->colour);
 
 	 for (int dirn = 0; dirn <= 2 && stn->leg[dirn]; dirn++) {
-	    printf("Leg %d, vx=%f, reverse=%d, to ", dirn,
-		   stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse);
+	    printf("Leg %d, vx=%f, reverse=%d, bits = 0x%02x, to ", dirn,
+		   stn->leg[dirn]->v[0], stn->leg[dirn]->l.reverse,
+		   stn->leg[dirn]->l.bits);
 	    print_prefix(stn->leg[dirn]->l.to->name);
 	    putnl();
 	 }
@@ -218,7 +219,7 @@ solve_matrix(node *list)
 		  }
 #endif
 	       } else if (data_here(leg) &&
-			  (leg->l.reverse & FLAG_ARTICULATION) == 0) {
+			  (leg->l.bits & FLAG_ARTICULATION) == 0) {
 		  /* forward leg, unfixed -> unfixed */
 		  int t = to->colour;
 		  SVX_ASSERT(t >= 0);

@@ -207,7 +207,7 @@ remove_trailing_travs(void)
 	    /* i is the direction to swap with */
 	    i = (three_node(stn2)) ? 2 : 1;
 	    /* change the other direction of leg i to use leg j */
-	    reverse_leg(stn2->leg[i])->l.reverse += j - i;
+	    reverse_leg(stn2->leg[i])->l.reverse = j;
 	    stn2->leg[j] = stn2->leg[i];
 	    j = i;
 	 }
@@ -234,7 +234,7 @@ remove_travs(void)
       for (int d = 0; d <= 2; d++) {
 	 linkfor *leg = stn->leg[d];
 	 if (!leg) break;
-	 if (!(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	 if (!(leg->l.bits & FLAG_REPLACEMENTLEG))
 	    concatenate_trav(stn, d);
       }
    }
@@ -242,7 +242,7 @@ remove_travs(void)
       if (!three_node(stn)) continue;
       for (int d = 0; d <= 2; d++) {
 	 linkfor *leg = stn->leg[d];
-	 if (!(leg->l.reverse & FLAG_REPLACEMENTLEG))
+	 if (!(leg->l.bits & FLAG_REPLACEMENTLEG))
 	    concatenate_trav(stn, d);
       }
    }
@@ -270,7 +270,8 @@ concatenate_trav(node *stn, int i)
 #endif
 
    newleg2->l.to = stn;
-   newleg2->l.reverse = i | FLAG_REPLACEMENTLEG;
+   newleg2->l.reverse = i;
+   newleg2->l.bits = FLAG_REPLACEMENTLEG;
    trav->join1 = stn->leg[i];
 
    j = reverse_leg_dirn(stn->leg[i]);
@@ -303,7 +304,8 @@ concatenate_trav(node *stn, int i)
    ptr = trav;
 
    newleg->l.to = stn;
-   newleg->l.reverse = j | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+   newleg->l.reverse = j;
+   newleg->l.bits = FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 
    newleg2->l.to->leg[reverse_leg_dirn(newleg2)] = newleg;
    /* i.e. stn->leg[i] = newleg; with original stn and i */
@@ -459,7 +461,7 @@ replace_travs(void)
       for (i = 0; i <= 2; i++) {
 	 linkfor *leg = stn1->leg[i];
 	 if (leg && data_here(leg) &&
-	     !(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	     !(leg->l.bits & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	    SVX_ASSERT(fixed(stn1));
 	    SVX_ASSERT(!fZeros(&leg->v));
 
@@ -483,7 +485,7 @@ replace_travs(void)
 	    img_write_item(pimg, img_LINE, leg->l.flags & FLAGS_MASK,
 			   sprint_prefix(stn1->name->up),
 			   POS(stn2, 0), POS(stn2, 1), POS(stn2, 2));
-	    if (!(leg->l.reverse & FLAG_ARTICULATION)) {
+	    if (!(leg->l.bits & FLAG_ARTICULATION)) {
 #ifdef BLUNDER_DETECTION
 	       delta err;
 	       int do_blunder;
@@ -585,7 +587,7 @@ replace_travs(void)
       img_write_item(pimg, img_MOVE, 0, NULL,
 		     POS(stn1, 0), POS(stn1, 1), POS(stn1, 2));
 
-      fArtic = stn1->leg[i]->l.reverse & FLAG_ARTICULATION;
+      fArtic = stn1->leg[i]->l.bits & FLAG_ARTICULATION;
       free(stn1->leg[i]);
       stn1->leg[i] = ptr->join1; /* put old link back in */
 
@@ -652,7 +654,7 @@ replace_travs(void)
 	    }
 	 }
 
-	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	 if (!(leg->l.bits & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 		stn1->name->sflags |= BIT(SFLAGS_SURFACE);
 		stn3->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -810,7 +812,7 @@ replace_trailing_travs(void)
 	 /* j is the direction to swap with */
 	 int j = (stn1->leg[1]) ? 2 : 1;
 	 /* change the other direction of leg i to use leg j */
-	 reverse_leg(stn1->leg[i])->l.reverse += j - i;
+	 reverse_leg(stn1->leg[i])->l.reverse = j;
 	 stn1->leg[j] = stn1->leg[i];
       }
       stn1->leg[i] = ptrTrail->join1;
@@ -840,7 +842,7 @@ replace_trailing_travs(void)
 	 }
 
 	 add_stn_to_list(&fixedlist, stn2);
-	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	 if (!(leg->l.bits & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	     if (TSTBIT(leg->l.flags, FLAGS_SURFACE)) {
 		stn1->name->sflags |= BIT(SFLAGS_SURFACE);
 		stn2->name->sflags |= BIT(SFLAGS_SURFACE);
@@ -849,7 +851,7 @@ replace_trailing_travs(void)
 		stn2->name->sflags |= BIT(SFLAGS_UNDERGROUND);
 	     }
 	 }
-	 if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	 if (!(leg->l.bits & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 	    SVX_ASSERT(!fZeros(&leg->v));
 	    if (leg->meta) {
 		pimg->days1 = leg->meta->days1;
@@ -996,7 +998,7 @@ skip_nosurvey:
 		  (BIT(FLAGS_DUPLICATE)|BIT(FLAGS_SPLAY)|
 		   BIT(FLAGS_SURFACE)))) {
 	       /* check not an equating leg, or one inside an sdfix point */
-	       if (!(leg->l.reverse & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
+	       if (!(leg->l.bits & (FLAG_REPLACEMENTLEG | FLAG_FAKE))) {
 		  totadj += sqrt(sqrd(POS(stnB, 0) - POS(stn1, 0)) +
 				 sqrd(POS(stnB, 1) - POS(stn1, 1)) +
 				 sqrd(POS(stnB, 2) - POS(stn1, 2)));

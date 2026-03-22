@@ -95,8 +95,8 @@ remove_subnets(void)
 		    */
 		   linkfor *leg = stn->leg[dirn];
 		   linkfor *rev_leg = reverse_leg(leg);
-		   leg->l.reverse |= FLAG_ARTICULATION;
-		   rev_leg->l.reverse |= FLAG_ARTICULATION;
+		   leg->l.bits |= FLAG_ARTICULATION;
+		   rev_leg->l.bits |= FLAG_ARTICULATION;
 		   if (data_here(leg)) {
 		       subdd(&POSD(stn), &POSD(stn2), &leg->d);
 		   } else {
@@ -152,11 +152,13 @@ remove_subnets(void)
 	       /* stack lollipop and replace with a leg between stn3 and stn4 */
 	       trav->join[0] = stn3->leg[dirn3];
 	       newleg->l.to = stn4;
-	       newleg->l.reverse = dirn4 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+	       newleg->l.reverse = dirn4;
+	       newleg->l.bits = FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 
 	       trav->join[1] = stn4->leg[dirn4];
 	       newleg2->l.to = stn3;
-	       newleg2->l.reverse = dirn3 | FLAG_REPLACEMENTLEG;
+	       newleg2->l.reverse = dirn3;
+	       newleg2->l.bits = FLAG_REPLACEMENTLEG;
 
 	       stn3->leg[dirn3] = newleg;
 	       stn4->leg[dirn4] = newleg2;
@@ -283,11 +285,13 @@ remove_subnets(void)
 	       /* stack parallel and replace with a leg between stn3 and stn4 */
 	       trav->join[0] = stn3->leg[dirn3];
 	       newleg->l.to = stn4;
-	       newleg->l.reverse = dirn4 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+	       newleg->l.reverse = dirn4;
+	       newleg->l.bits = FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 
 	       trav->join[1] = stn4->leg[dirn4];
 	       newleg2->l.to = stn3;
-	       newleg2->l.reverse = dirn3 | FLAG_REPLACEMENTLEG;
+	       newleg2->l.reverse = dirn3;
+	       newleg2->l.bits = FLAG_REPLACEMENTLEG;
 
 	       stn3->leg[dirn3] = newleg;
 	       stn4->leg[dirn4] = newleg2;
@@ -456,20 +460,26 @@ remove_subnets(void)
 		    unfix(stnZ);
 		    add_stn_to_list(&stnlist, stnZ);
 		    legAZ->l.to = stnZ;
-		    legAZ->l.reverse = 0 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+		    legAZ->l.reverse = 0;
+		    legAZ->l.bits = FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 		    legBZ->l.to = stnZ;
-		    legBZ->l.reverse = 1 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+		    legBZ->l.reverse = 1;
+		    legBZ->l.bits = FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 		    legCZ->l.to = stnZ;
-		    legCZ->l.reverse = 2 | FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
+		    legCZ->l.reverse = 2;
+		    legCZ->l.bits = FLAG_DATAHERE | FLAG_REPLACEMENTLEG;
 		    stnZ->leg[0] = (linkfor*)osnew(linkcommon);
 		    stnZ->leg[1] = (linkfor*)osnew(linkcommon);
 		    stnZ->leg[2] = (linkfor*)osnew(linkcommon);
 		    stnZ->leg[0]->l.to = stn4;
 		    stnZ->leg[0]->l.reverse = dirn4;
+		    stnZ->leg[0]->l.bits = 0;
 		    stnZ->leg[1]->l.to = stn5;
 		    stnZ->leg[1]->l.reverse = dirn5;
+		    stnZ->leg[1]->l.bits = 0;
 		    stnZ->leg[2]->l.to = stn6;
 		    stnZ->leg[2]->l.reverse = dirn6;
+		    stnZ->leg[2]->l.bits = 0;
 		    addto_link(legAZ, stn4->leg[dirn4]);
 		    addto_link(legBZ, stn5->leg[dirn5]);
 		    addto_link(legCZ, stn6->leg[dirn6]);
@@ -583,8 +593,8 @@ replace_subnets(void)
 	    subdd(&POSD(stn), &POSD(stn2), &reverse_leg(stn2->leg[dirn2])->d);
 
 	 /* The "stick" of the lollipop is a new articulation. */
-	 stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
-	 reverse_leg(stn2->leg[dirn2])->l.reverse |= FLAG_ARTICULATION;
+	 stn2->leg[dirn2]->l.bits |= FLAG_ARTICULATION;
+	 reverse_leg(stn2->leg[dirn2])->l.bits |= FLAG_ARTICULATION;
 
 	 add_stn_to_list(&fixedlist, stn);
 	 add_stn_to_list(&fixedlist, stn2);
@@ -608,11 +618,11 @@ replace_subnets(void)
 
 	 leg = stn3->leg[dirn3];
 
-	 if (leg->l.reverse & FLAG_ARTICULATION) {
-	    reduction_stack->join[0]->l.reverse |= FLAG_ARTICULATION;
-	    stn->leg[dirn]->l.reverse |= FLAG_ARTICULATION;
-	    reduction_stack->join[1]->l.reverse |= FLAG_ARTICULATION;
-	    stn2->leg[dirn2]->l.reverse |= FLAG_ARTICULATION;
+	 if (leg->l.bits & FLAG_ARTICULATION) {
+	    reduction_stack->join[0]->l.bits |= FLAG_ARTICULATION;
+	    stn->leg[dirn]->l.bits |= FLAG_ARTICULATION;
+	    reduction_stack->join[1]->l.bits |= FLAG_ARTICULATION;
+	    stn2->leg[dirn2]->l.bits |= FLAG_ARTICULATION;
 	 }
 
 	 if (fZeros(&leg->v))
@@ -712,9 +722,9 @@ replace_subnets(void)
 	    free(leg);
 	    stn[i]->leg[dirn[i]] = reduction_stack->join[i];
 	    /* transfer the articulation status of the radial legs */
-	    if (stnZ->leg[i]->l.reverse & FLAG_ARTICULATION) {
-	       reduction_stack->join[i]->l.reverse |= FLAG_ARTICULATION;
-	       reverse_leg(reduction_stack->join[i])->l.reverse |= FLAG_ARTICULATION;
+	    if (stnZ->leg[i]->l.bits & FLAG_ARTICULATION) {
+	       reduction_stack->join[i]->l.bits |= FLAG_ARTICULATION;
+	       reverse_leg(reduction_stack->join[i])->l.bits |= FLAG_ARTICULATION;
 	    }
 	    free(stnZ->leg[i]);
 	    stnZ->leg[i] = NULL;

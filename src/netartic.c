@@ -258,8 +258,8 @@ articulate(void)
 			    // Mark leg as an articulation, which is used while
 			    // building the matrix and when reporting
 			    // misclosures.
-			    to->leg[back]->l.reverse |= FLAG_ARTICULATION;
-			    stn->leg[j]->l.reverse |= FLAG_ARTICULATION;
+			    to->leg[back]->l.bits |= FLAG_ARTICULATION;
+			    stn->leg[j]->l.bits |= FLAG_ARTICULATION;
 
 			    /* start new articulation */
 			    articulation *art = osnew(articulation);
@@ -466,12 +466,12 @@ articulate(void)
 		if (f) {
 		    printf("awooga - gap in legs\n");
 		}
-		if (stn->leg[d]->l.reverse & FLAG_ARTICULATION) {
-		    if (!(reverse_leg(stn->leg[d])->l.reverse & FLAG_ARTICULATION)) {
+		if (stn->leg[d]->l.bits & FLAG_ARTICULATION) {
+		    if (!(reverse_leg(stn->leg[d])->l.bits & FLAG_ARTICULATION)) {
 			printf("awooga - bad articulation (one way art)\n");
 		    }
 		} else {
-		    if (reverse_leg(stn->leg[d])->l.reverse & FLAG_ARTICULATION) {
+		    if (reverse_leg(stn->leg[d])->l.bits & FLAG_ARTICULATION) {
 			printf("awooga - bad articulation (one way art)\n");
 		    }
 		}
@@ -496,7 +496,7 @@ articulate(void)
 			    printf("awooga - gap in legs\n");
 			}
 			if (stn2->colour) {
-			    if (!(stn->leg[d]->l.reverse & FLAG_ARTICULATION)) {
+			    if (!(stn->leg[d]->l.bits & FLAG_ARTICULATION)) {
 				if (stn->colour == 0) {
 				    stn->colour = stn2->colour;
 				    c++;
@@ -528,7 +528,7 @@ articulate(void)
 		    printf("awooga - gap in legs\n");
 		}
 #ifdef DEBUG_ARTIC
-		if (stn->leg[d]->l.reverse & FLAG_ARTICULATION) {
+		if (stn->leg[d]->l.bits & FLAG_ARTICULATION) {
 		    node *stn2 = stn->leg[d]->l.to;
 		    printf("art: %ld %ld [%p] ", stn->colour, stn2->colour, stn);
 		    print_prefix(stn->name);

@@ -293,7 +293,9 @@ addleg_(node *fr, node *to,
    leg->v[2] = vz;
 #endif
    leg2->l.reverse = i;
-   leg->l.reverse = j | FLAG_DATAHERE | leg_flags;
+   leg2->l.bits = 0;
+   leg->l.reverse = j;
+   leg->l.bits = FLAG_DATAHERE | leg_flags;
 
    leg->l.flags = pcs->flags | (pcs->recorded_style << FLAGS_STYLE_BIT0);
    leg->meta = pcs->meta;
@@ -535,11 +537,13 @@ freeleg(node **stnptr)
 #else
    leg->v[0] = leg->v[1] = leg->v[2] = (real)0.0;
 #endif
-   leg->l.reverse = 1 | FLAG_DATAHERE | FLAG_FAKE;
+   leg->l.reverse = 1;
+   leg->l.bits = FLAG_DATAHERE | FLAG_FAKE;
    leg->l.flags = pcs->flags | (pcs->recorded_style << FLAGS_STYLE_BIT0);
 
    leg2->l.to = stn;
    leg2->l.reverse = 0;
+   leg2->l.bits = 0;
 
    // NB this preserves pos->stn->leg[0] pointing to the "real" fixed point
    // for stations fixed with error estimates.

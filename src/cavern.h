@@ -265,13 +265,14 @@ typedef struct Meta_data {
 /* stuff stored for both forward & reverse legs */
 typedef struct {
    struct Node *to;
-   // bits 0..1: reverse leg number (0, 1 or 2)
-   // bits 2..3: currently unused
+   // Reverse leg number (0, 1 or 2)
+   unsigned char reverse;
+   // These are "internal" flag bits:
    // bit 4: FLAG_FAKE (an equate or leg inside an sdfix
    // bit 5: FLAG_ARTICULATION (i.e. carries no error)
    // bit 6: FLAG_REPLACEMENTLEG (by reduction rules)
    // bit 7: FLAG_DATAHERE (i.e. this is a forward leg)
-   unsigned char reverse;
+   unsigned char bits;
    /* flags - e.g. FLAGS_SURFACE, FLAGS_DUPLICATE.
     * only used if (FLAG_DATAHERE & !(FLAG_REPLACEMENTLEG|FLAG_FAKE))
     * This could be only in linkfor, but this is actually more space
@@ -425,8 +426,8 @@ extern bool fSuppress; /* only output 3d file */
 #define POS(S, D) ((S)->name->pos->p[(D)])
 #define POSD(S) ((S)->name->pos->p)
 
-#define data_here(L) ((L)->l.reverse & FLAG_DATAHERE)
-#define reverse_leg_dirn(L) ((L)->l.reverse & MASK_REVERSEDIRN)
+#define data_here(L) ((L)->l.bits & FLAG_DATAHERE)
+#define reverse_leg_dirn(L) ((L)->l.reverse)
 #define reverse_leg(L) ((L)->l.to->leg[reverse_leg_dirn(L)])
 
 /* if p[0]==UNFIXED_VAL, station is unfixed */
