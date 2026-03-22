@@ -2,7 +2,7 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push, or for pull requests against master
+  # Triggers the workflow on push, or for pull requests against main
   push:
     branches:
       - '**'
@@ -12,7 +12,7 @@ on:
     paths-ignore:
       - NEWS
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths-ignore:
       - NEWS
 
