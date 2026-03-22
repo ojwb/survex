@@ -54,11 +54,12 @@ clearly enough to follow when you don't know what's going on.  It's helpful is
 you can suggest a better wording, but don't worry if you can't, just explain
 the problem as precisely as you can.
 
-The master version of this manual is maintained as `reStructured Text
+The source version of this manual is maintained as `reStructured Text
 <https://docutils.sourceforge.io/rst.html>`__, and
-automatically converted to a number of other formats.  If you are going to send
-us *major* changes, it's much easier to include them if you work from this
-master version rather than changing one of the generated files.
+automatically converted to a number of other formats.  If you spot a typo or
+spelling mistake it's easy to locate and fix in the source, but if you want to
+send us more significant documentation changes, please work from this source
+version rather than sending us changes to one of the generated files.
 
 Terminology
 -----------
