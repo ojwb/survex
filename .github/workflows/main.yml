@@ -43,7 +43,6 @@ jobs:
             libgdal-dev \
             libproj-dev \
             libswscale-dev \
-            ghostscript \
             inkscape \
             netpbm \
             liblocale-po-perl \
