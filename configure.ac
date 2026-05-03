@@ -472,6 +472,6 @@ AC_CONFIG_FILES([
  Makefile src/Makefile doc/Makefile lib/Makefile lib/icons/Makefile
  lib/images/Makefile
  tests/Makefile vim/Makefile survex.iss doc/index.htm
- survex.spec lib/Info.plist
+ lib/Info.plist
  ])
 AC_OUTPUT

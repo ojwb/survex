@@ -9,7 +9,7 @@ SUBDIRS = . lib src doc tests
 DIST_SUBDIRS = $(SUBDIRS) vim
 
 EXTRA_DIST = TODO OLDNEWS\
- desc.txt desc-aven.txt survex.spec
+ desc.txt desc-aven.txt
 
 AUTHORS: doc/AUTHORS.htm
 	w3m -dump doc/AUTHORS.htm > AUTHORS

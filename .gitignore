@@ -84,7 +84,6 @@ src/thgeomagdata.h
 src/z_getopt.c
 stamp-h1
 survex.iss
-survex.spec
 survex-*.*.*.tar.gz
 survex-*.*.*
 test-driver
